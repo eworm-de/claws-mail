@@ -1,3 +1,10 @@
+2003-02-16 [match]	0.8.10claws15
+
+	* src/addressbook.c
+		Eliminates reloading of address data when items
+		deleted or added. Applied submitted by
+		Luke Plant <lukeplant@softhome.net>
+
 2003-02-16 [paul]	0.8.10claws14
 
 	* src/news.c
