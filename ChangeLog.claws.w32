@@ -1,3 +1,8 @@
+2003-11-27 [thorsten]	0.9.7claws-1
+
+	* src/common/utils.c
+		remove trailing dir separator in is_dir_exist()
+
 2003-10-05 [thorsten]	0.9.6claws14-1
 
 	* win32/sylpheed_dll[_d].dsp

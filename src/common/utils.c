@@ -1810,11 +1810,25 @@ gboolean file_exist(const gchar *file, gboolean allow_fifo)
 gboolean is_dir_exist(const gchar *dir)
 {
 	struct stat s;
+#ifdef WIN32
+	gchar dir_noslash[8192];
+#endif
 
 	if (dir == NULL)
 		return FALSE;
 
+#ifdef WIN32
+	g_snprintf(dir_noslash,
+		(dir[strlen(dir)-1]=='/'
+		|| dir[strlen(dir)-1]=='\\')
+		? strlen(dir)
+		: strlen(dir)+1,
+		"%s", dir);
+	
+	if (stat(dir_noslash, &s) < 0) {
+#else
 	if (stat(dir, &s) < 0) {
+#endif
 		if (ENOENT != errno) FILE_OP_ERROR(dir, "stat");
 		return FALSE;
 	}
