@@ -323,7 +323,8 @@ MsgInfo *mh_get_msginfo(Folder *folder, FolderItem *item, gint num)
 	if (!file) return NULL;
 
 	msginfo = mh_parse_msg(file, item);
-	msginfo->msgnum = num;
+	if (msginfo)
+		msginfo->msgnum = num;
 
 	g_free(file);
 

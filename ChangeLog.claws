@@ -1,3 +1,8 @@
+2003-02-02 [thorsten]	0.8.9claws32
+
+	* src/mh.c
+		Fix mh_get_msginfo() segfault if file is inaccessible
+
 2003-01-31 [colin]	0.8.9claws31
 
 	* src/procheader.c
