@@ -119,6 +119,9 @@ static void prefs_filter_ok		(void);
 
 void prefs_filter_open(void)
 {
+	if (prefs_rc_is_readonly(FILTER_RC))
+		return;
+
 	inc_autocheck_timer_remove();
 
 	if (!filter.window) {

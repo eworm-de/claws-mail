@@ -1,3 +1,22 @@
+2001-06-06 [hoa]
+
+	* added src/quote_fmt_parse.h
+	* src/compose.c
+		removed warnings
+
+	* src/prefs.[ch]
+		don't modify readonly configuration files
+
+	* src/prefs_account.c
+	* src/prefs_common.c
+	* src/prefs_customheader.c
+	* src/prefs_display_header.c
+	* src/prefs_filter.c
+	* src/prefs_filtering.c
+	* src/prefs_scoring.c
+		don't open dialog box when configuration files
+		are readonly
+
 2001-06-05 [sergey]
 
 	* configure.in: added AM_PROG_LEX and AC_PROG_YACC.

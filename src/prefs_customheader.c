@@ -99,6 +99,9 @@ static PrefsAccount *cur_ac = NULL;
 
 void prefs_custom_header_open(PrefsAccount *ac)
 {
+	if (prefs_rc_is_readonly(CUSTOM_HEADER_RC))
+		return;
+
 	if (!customhdr.window) {
 		prefs_custom_header_create();
 	}

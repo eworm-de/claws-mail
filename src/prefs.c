@@ -267,6 +267,11 @@ PrefFile *prefs_write_open(const gchar *path)
 
 	g_return_val_if_fail(path != NULL, NULL);
 
+	if (prefs_is_readonly(path)) {
+		g_warning(_("no permission - %s\n"), path);
+		return NULL;
+	}
+
 	tmppath = g_strconcat(path, ".tmp", NULL);
 	if ((fp = fopen(tmppath, "w")) == NULL) {
 		FILE_OP_ERROR(tmppath, "fopen");
@@ -767,4 +772,27 @@ void prefs_set_spinbtn(PrefParam *pparam)
 		g_warning("Invalid PrefType for GtkSpinButton widget: %d\n",
 			  pparam->type);
 	}
+}
+
+gboolean prefs_is_readonly(const gchar * path)
+{
+	if (path == NULL)
+		return TRUE;
+
+	return (access(path, W_OK) != 0 && access(path, F_OK) == 0);
+}
+
+gboolean prefs_rc_is_readonly(const gchar * rcfile)
+{
+	gboolean result;
+	gchar * rcpath;
+
+	if (rcfile == NULL)
+		return TRUE;
+
+	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, rcfile, NULL);
+	result = prefs_is_readonly(rcpath);
+	g_free(rcpath);
+
+	return result;
 }

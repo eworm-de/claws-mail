@@ -111,6 +111,9 @@ static gint cur_kill_score;
 
 void prefs_scoring_open(FolderItem * item)
 {
+	if (prefs_rc_is_readonly(SCORING_RC))
+		return;
+
 	inc_autocheck_timer_remove();
 
 	if (!scoring.window) {

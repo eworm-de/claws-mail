@@ -140,6 +140,9 @@ static void prefs_display_header_set_default(void)
 
 void prefs_display_header_open(void)
 {
+	if (prefs_rc_is_readonly(DISPLAY_HEADER_RC))
+		return;
+
 	if (!dispheader.window) {
 		prefs_display_header_create();
 	}

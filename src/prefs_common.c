@@ -638,6 +638,9 @@ void prefs_common_save_config(void)
 
 void prefs_common_open(void)
 {
+	if (prefs_rc_is_readonly(COMMON_RC))
+		return;
+
 	inc_autocheck_timer_remove();
 
 	if (!dialog.window) {

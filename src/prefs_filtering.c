@@ -202,6 +202,9 @@ gchar * action_text [] = {
 
 void prefs_filtering_open(void)
 {
+	if (prefs_rc_is_readonly(FILTERING_RC))
+		return;
+
 	inc_autocheck_timer_remove();
 
 	if (!filtering.window) {

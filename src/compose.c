@@ -103,7 +103,7 @@
 #  include "rfc2015.h"
 #endif
 
-/* #include "quote_fmt_parse.h" */
+#include "quote_fmt_parse.h"
 
 typedef enum
 {

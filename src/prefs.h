@@ -150,5 +150,7 @@ void prefs_set_data_from_toggle	(PrefParam	*pparam);
 void prefs_set_toggle		(PrefParam	*pparam);
 void prefs_set_data_from_spinbtn(PrefParam	*pparam);
 void prefs_set_spinbtn		(PrefParam	*pparam);
+gboolean prefs_is_readonly(const gchar * path);
+gboolean prefs_rc_is_readonly(const gchar * rcfile);
 
 #endif /* __PREFS_H__ */

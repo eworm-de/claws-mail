@@ -427,6 +427,9 @@ PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs)
 {
 	gboolean new_account = FALSE;
 
+	if (prefs_rc_is_readonly(ACCOUNT_RC))
+		return ac_prefs;
+
 	debug_print(_("Opening account preferences window...\n"));
 
 	inc_autocheck_timer_remove();
