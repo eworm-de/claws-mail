@@ -1223,10 +1223,10 @@ static gboolean execute_actions(gchar *action, GtkWidget *window,
 		g_free(children);
 		if (!(action_type & ACTION_ASYNC) && window) {
 			gtk_widget_set_sensitive(window, TRUE);
+		}
 #ifdef WIN32
 			return is_ok;
 #endif
-		}
 	} else {
 		GSList *cur;
 
@@ -1700,6 +1700,9 @@ static void create_io_dialog(Children *children)
 	debug_print(_("Creating actions dialog\n"));
 
 	dialog = gtk_dialog_new();
+#ifdef WIN32
+	if (children->action)
+#endif
 	label = gtk_label_new(children->action);
 	gtk_misc_set_padding(GTK_MISC(label), 8, 8);
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE,
@@ -1873,7 +1876,11 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 			is_selection = TRUE;
 		gtk_stext_freeze(GTK_STEXT(text));
 		while (TRUE) {
+#ifdef WIN32
+			g_io_channel_read(channel, buf, PREFSBUFSIZE - 1, &c);
+#else
 			c = read(source, buf, PREFSBUFSIZE - 1);
+#endif
 			if (c == 0)
 				break;
 			gtk_stext_insert(GTK_STEXT(text), NULL, NULL, NULL,
@@ -1889,7 +1896,11 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 		}
 		gtk_stext_thaw(GTK_STEXT(child_info->text));
 	} else {
+#ifdef WIN32
+			g_io_channel_read(channel, buf, PREFSBUFSIZE - 1, &c);
+#else
 		c = read(source, buf, PREFSBUFSIZE - 1);
+#endif
 		for (i = 0; i < c; i++)
 			child_info->output = g_string_append_c
 				(child_info->output, buf[i]);

@@ -1,3 +1,8 @@
+2002-07-23 [thorsten]	0.7.8claws92-2
+
+	* src/prefs_actions.c
+		fix: async action crashed
+
 2002-09-23 [thorsten]	0.7.8claws92-1
 
 	* libjconv/conv.c
