@@ -1,3 +1,10 @@
+2003-09-11 [alfons]	0.9.5claws8
+
+	* src/summaryview.c
+		don't open separate message views when View | Separate message view
+		is active 
+		(please look carefully for any navigation regressions)
+
 2003-09-11 [alfons]	0.9.5claws7
 
 	* src/mainwindow.c

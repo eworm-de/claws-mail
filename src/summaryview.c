@@ -2513,9 +2513,12 @@ void summary_redisplay_msg(SummaryView *summaryview)
 void summary_open_msg(SummaryView *summaryview)
 {
 	if (!summaryview->selected) return;
-
+	
+	/* CLAWS: if separate message view, don't open a new window
+	 * but rather use the current separated message view */
 	summary_display_msg_full(summaryview, summaryview->selected,
-				 TRUE, FALSE);
+				 prefs_common.sep_msg ? FALSE : TRUE, 
+				 FALSE);
 }
 
 void summary_view_source(SummaryView * summaryview)
