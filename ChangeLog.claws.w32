@@ -1,3 +1,8 @@
+2002-09-10 [thorsten]	0.8.2claws30-2
+
+	* src/utils.c
+		fix: limited tempfile creation (mktemp)
+
 2002-09-10 [thorsten]	0.8.2claws30-1
 
 	* src/compose.c

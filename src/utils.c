@@ -65,7 +65,8 @@ static GSList *tempfiles=NULL;
 #ifdef WIN32
 gint mkstemp(const gchar const *template)
 {
-	gchar *name_used = g_strdup(_mktemp(template));
+	static gulong count=0; /* W32-_mktemp only supports up to 27 tempfiles... */
+	gchar *name_used = g_strdup_printf("%s.%d",_mktemp(template),count++);
 	int tmpfd = _open(name_used, _O_CREAT | _O_RDWR | _O_BINARY );
 
 	tempfiles=g_slist_append(tempfiles, name_used);
