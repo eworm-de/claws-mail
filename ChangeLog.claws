@@ -1,3 +1,8 @@
+2004-07-08 [colin]	0.9.12cvs17
+
+	* src/common/smtp.c
+		use to_human_readable() for sizes
+
 2004-07-08 [paul]	0.9.12cvs16
 
 	* src/inc.c [1.174]
