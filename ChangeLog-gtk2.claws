@@ -8,7 +8,9 @@
 	* src/folder_item_prefs.c
 	* src/main.c
 	* src/messageview.c
+	* src/mimeview.c
 	* src/news.c
+	* src/pgpmime.c
 	* src/pop.c
 	* src/pop.h
 	* src/prefs_account.c
@@ -19,6 +21,7 @@
 	* src/prefs_gtk.c
 	* src/prefs_gtk.h
 	* src/procheader.c
+	* src/procmime.c
 		sync with 0.9.12cvs26 HEAD	
 
 2004-07-15 [colin]	0.9.12cvs18.14
