@@ -300,6 +300,7 @@ static void prefs_toolbar_save(void)
 	}
 	toolbar_save_config_file();
 	toolbar_update();
+	main_window_reflect_prefs_all_real(TRUE);
 }
 
 static void prefs_toolbar_ok(void)

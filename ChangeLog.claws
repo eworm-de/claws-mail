@@ -1,3 +1,9 @@
+2002-08-15 [paul]	0.8.1claws63
+
+	* src/prefs_toolbar.c
+		fix bug where clicking 'OK' creates an icon & text
+		toolbar regardless of prefs
+
 2002-08-14 [alfons]	0.8.1claws62
 
 	* src/main.c
