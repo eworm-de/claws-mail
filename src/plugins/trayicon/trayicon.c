@@ -126,11 +126,6 @@ static gboolean click_cb(GtkWidget * widget,
 	return TRUE;
 }
 
-static void resize_cb(GtkWidget *widget, GtkAllocation *allocation)
-{
-	update();
-}
-
 static void create_trayicon(void);
 
 static void destroy_cb(GtkWidget *widget, gpointer *data)
@@ -176,8 +171,6 @@ static void create_trayicon()
 	destroy_signal_id =
 	g_signal_connect(G_OBJECT(trayicon), "destroy",
                      	 G_CALLBACK(destroy_cb), NULL);
-	g_signal_connect(G_OBJECT(trayicon), "size_allocate",
-		    	 G_CALLBACK(resize_cb), NULL);
 	g_signal_connect(G_OBJECT(eventbox), "button-press-event",
 		    	 G_CALLBACK(click_cb), NULL);
 

@@ -1,3 +1,9 @@
+2004-06-26 [colin]	0.9.11cvs17.2
+
+	* src/plugins/trayicon/trayicon.c
+		Remove useless signal handler on resize, which causes
+		an infinite "loop"
+	
 2004-06-26 [colin]	0.9.11cvs17.1
 	
 	* tools/Makefile.am
