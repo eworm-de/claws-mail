@@ -57,6 +57,8 @@ static gint news_get_header		 (NNTPSession	*session,
 					  gint		 num,
 					  gchar		*filename);
 
+static gint news_select_group		 (NNTPSession	*session,
+					  const char	*group);
 static GSList *news_get_uncached_articles(NNTPSession	*session,
 					  FolderItem	*item,
 					  gint		 cache_last,
@@ -243,6 +245,14 @@ gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 		return NULL;
 	}
 
+	ok = news_select_group(NNTP_SESSION(REMOTE_FOLDER(folder)->session),
+			       item->path);
+	if (ok != NN_SUCCESS) {
+		g_warning(_("can't select group %s\n"), item->path);
+		g_free(filename);
+		return NULL;
+	}
+
 	debug_print(_("getting article %d...\n"), num);
 	ok = news_get_article(NNTP_SESSION(REMOTE_FOLDER(folder)->session),
 			      num, filename);
@@ -321,6 +331,36 @@ static gint news_get_header(NNTPSession *session, gint num, gchar *filename)
 	return news_get_article_cmd(session, "HEAD", num, filename);
 }
 
+/**
+ * news_select_group:
+ * @session: Active NNTP session.
+ * @group: Newsgroup name.
+ * 
+ * Select newsgroup @group with the GROUP command if it is not already
+ * selected in @session.
+ * 
+ * Return value: NNTP result code.
+ **/
+static gint news_select_group(NNTPSession *session,
+			      const char *group)
+{
+	gint ok;
+	gint num, first, last;
+
+	if (g_strcasecmp(session->group, group) == 0)
+		return NN_SUCCESS;
+
+	g_free(session->group);
+	session->group = NULL;
+
+	ok = nntp_group(session->nntp_sock, group, &num, &first, &last);
+
+	if (ok == NN_SUCCESS)
+		session->group = g_strdup(group);
+
+	return ok;
+}
+
 static GSList *news_get_uncached_articles(NNTPSession *session,
 					  FolderItem *item, gint cache_last,
 					  gint *rfirst, gint *rlast)
@@ -340,12 +380,17 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 	g_return_val_if_fail(item->folder != NULL, NULL);
 	g_return_val_if_fail(item->folder->type == F_NEWS, NULL);
 
+	g_free(session->group);
+	session->group = NULL;
+
 	ok = nntp_group(session->nntp_sock, item->path,
 			&num, &first, &last);
 	if (ok != NN_SUCCESS) {
 		log_warning(_("can't set group: %s\n"), item->path);
 		return NULL;
 	}
+
+	session->group = g_strdup(item->path);
 
 	/* calculate getting overview range */
 	if (first > last) {

@@ -1,3 +1,13 @@
+2001-05-03 [sergey]
+
+	* src/news.c: fixed a bug when no article can be fetched after
+	server timeout if the connection was restored by news_post():
+	(news_select_group): new function.
+	(news_fetch_msg): call news_select_group() before fetching
+	article.
+	(news_get_uncached_articles): set session->group after successful
+	GROUP command.
+
 2001-05-03 [hoa]
 
 	* src/defs.h
