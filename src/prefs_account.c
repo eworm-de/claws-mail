@@ -73,6 +73,7 @@ static struct Basic {
 	GtkWidget *nntpserv_entry;
 	GtkWidget *nntpauth_chkbtn;
 	GtkWidget *localmbox_entry;
+	GtkWidget *mailcmd_chkbtn;
 	GtkWidget *mailcmd_entry;
 	GtkWidget *uid_label;
 	GtkWidget *pass_label;
@@ -137,6 +138,8 @@ static void prefs_account_sign_key_set_radiobtn		  (PrefParam *pparam);
 
 static void prefs_account_nntpauth_toggled(GtkToggleButton *button,
 					   gpointer user_data);
+static void prefs_account_mailcmd_toggled(GtkToggleButton *button,
+					  gpointer user_data);
 
 static PrefParam param[] = {
 	/* Basic */
@@ -172,6 +175,9 @@ static PrefParam param[] = {
 
 	{"local_mbox", NULL, &tmp_ac_prefs.local_mbox, P_STRING,
 	 &basic.localmbox_entry, prefs_set_data_from_entry, prefs_set_entry},
+
+	{"use_mail_command", "FALSE", &tmp_ac_prefs.use_mail_command, P_BOOL,
+	 &basic.mailcmd_chkbtn, prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"mail_command", "mail", &tmp_ac_prefs.mail_command, P_STRING,
 	 &basic.mailcmd_entry, prefs_set_data_from_entry, prefs_set_entry},
@@ -461,6 +467,11 @@ PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs)
 		gtk_widget_show(dialog.apply_btn);
 	}
 
+	if (ac_prefs->protocol != A_LOCAL) {
+		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
+		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
+	}
+
 	gtk_widget_show(dialog.window);
 	gtk_main();
 	gtk_widget_hide(dialog.window);
@@ -553,6 +564,7 @@ static void prefs_account_basic_create(void)
 	GtkWidget *nntpserv_entry;
 	GtkWidget *nntpauth_chkbtn;
 	GtkWidget *localmbox_entry;
+	GtkWidget *mailcmd_chkbtn;
 	GtkWidget *mailcmd_entry;
 	GtkWidget *uid_label;
 	GtkWidget *pass_label;
@@ -655,10 +667,12 @@ static void prefs_account_basic_create(void)
 	SET_ACTIVATE (menuitem);
 	MENUITEM_ADD (optmenu_menu, menuitem, _("News (NNTP)"), A_NNTP);
 	SET_ACTIVATE (menuitem);
-	MENUITEM_ADD (optmenu_menu, menuitem, _("Local (with SMTP server)"), A_LOCAL);
+	MENUITEM_ADD (optmenu_menu, menuitem, _("Local"), A_LOCAL);
 	SET_ACTIVATE (menuitem);
+	/*
 	MENUITEM_ADD (optmenu_menu, menuitem, _("Local (without SMTP server)"), A_LOCAL_CMD);
 	SET_ACTIVATE (menuitem);
+	*/
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu), optmenu_menu);
 
@@ -671,7 +685,7 @@ static void prefs_account_basic_create(void)
 	gtk_widget_set_usize (inbox_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), inbox_entry, TRUE, TRUE, 0);
 
-	serv_table = gtk_table_new (7, 4, FALSE);
+	serv_table = gtk_table_new (8, 4, FALSE);
 	gtk_widget_show (serv_table);
 	gtk_box_pack_start (GTK_BOX (vbox2), serv_table, FALSE, FALSE, 0);
 	gtk_table_set_row_spacings (GTK_TABLE (serv_table), VSPACING_NARROW);
@@ -704,14 +718,14 @@ static void prefs_account_basic_create(void)
 
 	mailcmd_entry = gtk_entry_new ();
 	gtk_widget_show (mailcmd_entry);
-	gtk_table_attach (GTK_TABLE (serv_table), mailcmd_entry, 1, 4, 4, 5,
+	gtk_table_attach (GTK_TABLE (serv_table), mailcmd_entry, 1, 4, 5, 6,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
 
 	nntpauth_chkbtn = gtk_check_button_new_with_label
 		(_("NNTP server requires authentication"));
 	gtk_widget_show (nntpauth_chkbtn);
-	gtk_table_attach (GTK_TABLE (serv_table), nntpauth_chkbtn, 0, 4, 5, 6,
+	gtk_table_attach (GTK_TABLE (serv_table), nntpauth_chkbtn, 0, 4, 6, 7,
 			  GTK_EXPAND | GTK_FILL,
 			  0, 0, 0);
 	gtk_signal_connect(GTK_OBJECT(nntpauth_chkbtn), "toggled",
@@ -721,14 +735,14 @@ static void prefs_account_basic_create(void)
 	uid_entry = gtk_entry_new ();
 	gtk_widget_show (uid_entry);
 	gtk_widget_set_usize (uid_entry, DEFAULT_ENTRY_WIDTH, -1);
-	gtk_table_attach (GTK_TABLE (serv_table), uid_entry, 1, 2, 6, 7,
+	gtk_table_attach (GTK_TABLE (serv_table), uid_entry, 1, 2, 7, 8,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
 
 	pass_entry = gtk_entry_new ();
 	gtk_widget_show (pass_entry);
 	gtk_widget_set_usize (pass_entry, DEFAULT_ENTRY_WIDTH, -1);
-	gtk_table_attach (GTK_TABLE (serv_table), pass_entry, 3, 4, 6, 7,
+	gtk_table_attach (GTK_TABLE (serv_table), pass_entry, 3, 4, 7, 8,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
 	gtk_entry_set_visibility (GTK_ENTRY (pass_entry), FALSE);
@@ -759,22 +773,32 @@ static void prefs_account_basic_create(void)
 	gtk_misc_set_alignment (GTK_MISC (localmbox_label), 1, 0.5);
 	gtk_table_set_row_spacing (GTK_TABLE (serv_table), 2, 0);
 
+	mailcmd_chkbtn = gtk_check_button_new_with_label
+		(_("Use mail command rather than SMTP server"));
+	gtk_widget_show (mailcmd_chkbtn);
+	gtk_table_attach (GTK_TABLE (serv_table), mailcmd_chkbtn, 0, 4, 4, 5,
+			  GTK_EXPAND | GTK_FILL,
+			  0, 0, 0);
+	gtk_signal_connect(GTK_OBJECT(mailcmd_chkbtn), "toggled",
+			   GTK_SIGNAL_FUNC(prefs_account_mailcmd_toggled),
+			   NULL);
+
 	mailcmd_label = gtk_label_new (_("command to send mails"));
 	gtk_widget_show (mailcmd_label);
-	gtk_table_attach (GTK_TABLE (serv_table), mailcmd_label, 0, 1, 4, 5,
+	gtk_table_attach (GTK_TABLE (serv_table), mailcmd_label, 0, 1, 5, 6,
 			  GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment (GTK_MISC (mailcmd_label), 1, 0.5);
 	gtk_table_set_row_spacing (GTK_TABLE (serv_table), 2, 0);
 
 	uid_label = gtk_label_new (_("User ID"));
 	gtk_widget_show (uid_label);
-	gtk_table_attach (GTK_TABLE (serv_table), uid_label, 0, 1, 6, 7,
+	gtk_table_attach (GTK_TABLE (serv_table), uid_label, 0, 1, 7, 8,
 			  GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment (GTK_MISC (uid_label), 1, 0.5);
 
 	pass_label = gtk_label_new (_("Password"));
 	gtk_widget_show (pass_label);
-	gtk_table_attach (GTK_TABLE (serv_table), pass_label, 2, 3, 6, 7,
+	gtk_table_attach (GTK_TABLE (serv_table), pass_label, 2, 3, 7, 8,
 			  0, 0, 0, 0);
 
 	basic.acname_entry   = acname_entry;
@@ -798,6 +822,7 @@ static void prefs_account_basic_create(void)
 	basic.nntpauth_chkbtn  = nntpauth_chkbtn;
 	basic.localmbox_label   = localmbox_label;
 	basic.localmbox_entry   = localmbox_entry;
+	basic.mailcmd_chkbtn   = mailcmd_chkbtn;
 	basic.mailcmd_label   = mailcmd_label;
 	basic.mailcmd_entry   = mailcmd_entry;
 	basic.uid_label        = uid_label;
@@ -1177,8 +1202,8 @@ static gint prefs_account_apply(void)
 		alertpanel_error(_("Mail address is not entered."));
 		return -1;
 	}
-	if ((protocol == A_POP3 || protocol == A_APOP || protocol == A_LOCAL) &&
-	    *gtk_entry_get_text(GTK_ENTRY(basic.smtpserv_entry)) == '\0') {
+	if ((protocol == A_POP3 || protocol == A_APOP
+	     || (protocol == A_LOCAL && !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(basic.mailcmd_chkbtn)))) && *gtk_entry_get_text(GTK_ENTRY(basic.smtpserv_entry)) == '\0') {
 		alertpanel_error(_("SMTP server is not entered."));
 		return -1;
 	}
@@ -1203,9 +1228,15 @@ static gint prefs_account_apply(void)
 		return -1;
 	}
 
-	if (protocol == A_LOCAL_CMD &&
+	if (protocol == A_LOCAL &&
 	    *gtk_entry_get_text(GTK_ENTRY(basic.localmbox_entry)) == '\0') {
 		alertpanel_error(_("local mailbox filename is not entered."));
+		return -1;
+	}
+
+	if (protocol == A_LOCAL &&
+	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(basic.mailcmd_chkbtn)) && *gtk_entry_get_text(GTK_ENTRY(basic.mailcmd_entry)) == '\0') {
+		alertpanel_error(_("mail command is not entered."));
 		return -1;
 	}
 
@@ -1302,9 +1333,11 @@ static void prefs_account_protocol_set_optmenu(PrefParam *pparam)
 	case A_LOCAL:
 		gtk_option_menu_set_history(optmenu, 4);
 		break;
+		/*
 	case A_LOCAL_CMD:
 		gtk_option_menu_set_history(optmenu, 5);
 		break;
+		*/
 	default:
 	}
 
@@ -1335,6 +1368,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_hide(basic.localmbox_entry);
 		gtk_widget_hide(basic.mailcmd_label);
 		gtk_widget_hide(basic.mailcmd_entry);
+		gtk_widget_hide(basic.mailcmd_chkbtn);
 		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table), 3, 0);
 		/* update userid/passwd sensitive state */
 		prefs_account_nntpauth_toggled
@@ -1355,8 +1389,9 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_show(basic.smtpserv_entry);
 		gtk_widget_show(basic.localmbox_label);
 		gtk_widget_show(basic.localmbox_entry);
-		gtk_widget_hide(basic.mailcmd_label);
-		gtk_widget_hide(basic.mailcmd_entry);
+		gtk_widget_show(basic.mailcmd_label);
+		gtk_widget_show(basic.mailcmd_entry);
+		gtk_widget_show(basic.mailcmd_chkbtn);
 		gtk_table_set_row_spacing
 			(GTK_TABLE (basic.serv_table), 3, VSPACING_NARROW);
 		gtk_widget_set_sensitive(basic.uid_label,  FALSE);
@@ -1364,7 +1399,10 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.uid_entry,  FALSE);
 		gtk_widget_set_sensitive(basic.pass_entry, FALSE);
 		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
+		prefs_account_mailcmd_toggled
+			(GTK_TOGGLE_BUTTON(basic.mailcmd_chkbtn), NULL);
 		break;
+		/*
 	case A_LOCAL_CMD:
 		gtk_widget_set_sensitive(basic.inbox_label, TRUE);
 		gtk_widget_set_sensitive(basic.inbox_entry, TRUE);
@@ -1381,6 +1419,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_show(basic.localmbox_entry);
 		gtk_widget_show(basic.mailcmd_label);
 		gtk_widget_show(basic.mailcmd_entry);
+		gtk_widget_hide(basic.mailcmd_chkbtn);
 		gtk_table_set_row_spacing
 			(GTK_TABLE (basic.serv_table), 3, VSPACING_NARROW);
 		gtk_widget_set_sensitive(basic.uid_label,  FALSE);
@@ -1389,6 +1428,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.pass_entry, FALSE);
 		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
 		break;
+		*/
 	case A_IMAP4:
 		gtk_widget_set_sensitive(basic.inbox_label, TRUE);
 		gtk_widget_set_sensitive(basic.inbox_entry, TRUE);
@@ -1405,6 +1445,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_hide(basic.localmbox_entry);
 		gtk_widget_hide(basic.mailcmd_label);
 		gtk_widget_hide(basic.mailcmd_entry);
+		gtk_widget_hide(basic.mailcmd_chkbtn);
 		gtk_table_set_row_spacing
 			(GTK_TABLE (basic.serv_table), 3, VSPACING_NARROW);
 		gtk_widget_set_sensitive(basic.uid_label,  TRUE);
@@ -1412,8 +1453,10 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.uid_entry,  TRUE);
 		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
 		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
+		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
+		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
 		break;
-	default:
+	default: // POP3
 		gtk_widget_set_sensitive(basic.inbox_label, TRUE);
 		gtk_widget_set_sensitive(basic.inbox_entry, TRUE);
 		gtk_widget_hide(basic.nntpserv_label);
@@ -1429,6 +1472,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_hide(basic.localmbox_entry);
 		gtk_widget_hide(basic.mailcmd_label);
 		gtk_widget_hide(basic.mailcmd_entry);
+		gtk_widget_hide(basic.mailcmd_chkbtn);
 		gtk_table_set_row_spacing
 			(GTK_TABLE (basic.serv_table), 3, VSPACING_NARROW);
 		gtk_widget_set_sensitive(basic.uid_label,  TRUE);
@@ -1436,6 +1480,8 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.uid_entry,  TRUE);
 		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
 		gtk_widget_set_sensitive(receive.pop3_frame, TRUE);
+		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
+		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
 		break;
 	}
 
@@ -1452,4 +1498,17 @@ static void prefs_account_nntpauth_toggled(GtkToggleButton *button,
 	gtk_widget_set_sensitive(basic.pass_label, auth);
 	gtk_widget_set_sensitive(basic.uid_entry,  auth);
 	gtk_widget_set_sensitive(basic.pass_entry, auth);
+}
+
+static void prefs_account_mailcmd_toggled(GtkToggleButton *button,
+					  gpointer user_data)
+{
+	gboolean use_mailcmd;
+
+	use_mailcmd = gtk_toggle_button_get_active (button);
+
+	gtk_widget_set_sensitive(basic.mailcmd_entry,  use_mailcmd);
+	gtk_widget_set_sensitive(basic.mailcmd_label, use_mailcmd);
+	gtk_widget_set_sensitive(basic.smtpserv_entry, !use_mailcmd);
+	gtk_widget_set_sensitive(basic.smtpserv_label, !use_mailcmd);
 }

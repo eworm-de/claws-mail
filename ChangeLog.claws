@@ -1,3 +1,17 @@
+2001-05-02 [hoa]
+
+	* src/account.c
+	* src/inc.c
+	* src/prefs_account.[ch]
+	* src/send.c
+		removed local account without SMTP server
+		added option to use mail command instead of a connexion
+		to SMTP server when a local account is used
+	* src/prefs_headers.c
+		fixed a bug
+	* src/news.c
+		fixed a bug when connexion immediately closed
+
 2001-05-01 [alfons]
 
 	0.4.66claws1

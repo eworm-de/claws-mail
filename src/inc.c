@@ -862,10 +862,8 @@ static void inc_all_spool(void)
 		IncSession *session;
 		PrefsAccount *account = list->data;
 
-		if ((account->protocol == A_LOCAL)
-		    || (account->protocol == A_LOCAL_CMD)) {
+		if (account->protocol == A_LOCAL)
 			inc_spool_account(account);
-		}
 	}
 }
 

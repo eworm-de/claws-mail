@@ -591,6 +591,7 @@ static gint account_clist_set_row(PrefsAccount *ac_prefs, gint row)
 	text[COL_PROTOCOL] = ac_prefs->protocol == A_POP3  ? "POP3"  :
 			     ac_prefs->protocol == A_APOP  ? "APOP"  :
 			     ac_prefs->protocol == A_IMAP4 ? "IMAP4" :
+			     ac_prefs->protocol == A_LOCAL ? "Local" :
 			     ac_prefs->protocol == A_NNTP  ? "NNTP"  :  "";
 	text[COL_SERVER] = ac_prefs->protocol == A_NNTP
 		? ac_prefs->nntp_server : ac_prefs->recv_server;

@@ -37,7 +37,7 @@ typedef enum {
 	A_IMAP4,
 	A_NNTP,
 	A_LOCAL,
-	A_LOCAL_CMD
+	//	A_LOCAL_CMD
 } RecvProtocol;
 
 #if USE_GPGME
@@ -68,6 +68,7 @@ struct _PrefsAccount
 	gchar *passwd;
 
 	gchar * local_mbox;
+	gboolean use_mail_command;
 	gchar * mail_command;
 
 	/* Temporarily preserved password */

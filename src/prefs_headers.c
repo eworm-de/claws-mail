@@ -606,7 +606,7 @@ static void prefs_headers_select(GtkCList *clist, gint row, gint column,
 				GdkEvent *event)
 {
  	CustomHeader *ch;
- 	CustomHeader default_ch = { "", NULL };
+ 	CustomHeader default_ch = { 0, "", NULL };
  
  	ch = gtk_clist_get_row_data(clist, row);
  	if (!ch)

@@ -88,7 +88,7 @@ gint send_message(const gchar *file, PrefsAccount *ac_prefs, GSList *to_list)
 		return -1;
 	}
 
-	if (ac_prefs->protocol == A_LOCAL_CMD)
+	if (ac_prefs->protocol == A_LOCAL && ac_prefs->use_mail_command)
 		{
 			val = send_message_with_command(to_list,
 							ac_prefs->mail_command,

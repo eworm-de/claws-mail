@@ -83,7 +83,7 @@ static Session *news_session_new(const gchar *server, gushort port,
 		nntp_sock = nntp_open_auth(server, port, buf, userid, passwd);
 	else
 		nntp_sock = nntp_open(server, port, buf);
-	if (nntp_sock < 0)
+	if (nntp_sock == NULL)
 		return NULL;
 
 	session = g_new(NNTPSession, 1);
