@@ -1,4 +1,9 @@
-2003-03-06 [christoph]	0.8.10claws87
+2003-03-06 [oliver]	0.8.10claws88
+	
+	* src/messageview.c
+		remove include
+
+2003-03-06 [oliver]	0.8.10claws87
 	
 	* src/folderview.c 
 		remove changes introduced inclaws74

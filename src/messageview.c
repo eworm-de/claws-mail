@@ -52,7 +52,7 @@
 #include "pgptext.h"
 #include "menu.h"
 #include "stock_pixmap.h"
-#include "foldersel.h"
+
 
 static void messageview_change_view_type(MessageView	*messageview,
 					 MessageType	 type);
