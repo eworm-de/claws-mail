@@ -124,7 +124,10 @@ static GdkColor quote_color = {0, 0, 0, 0xbfff};
 
 static GList *compose_list = NULL;
 
-static void compose_set_undo (UndoMain *undostruct, gint undo_state, gint redo_state, GtkWidget *changewidget);
+static void compose_set_undo			(UndoMain       *undostruct, 
+                                                 gint            undo_state, 
+						 gint            redo_state, 
+						 GtkWidget	*changewidget);
 Compose *compose_generic_new			(PrefsAccount	*account,
 						 const gchar	*to,
 						 FolderItem	*item);
@@ -6140,7 +6143,9 @@ void compose_headerentry_changed_cb(GtkWidget *entry,
  *
  * Change the sensivity of the menuentries undo and redo
  **/
-static void compose_set_undo (UndoMain *undostruct, gint undo_state, gint redo_state, GtkWidget *changewidget) {
+static void compose_set_undo(UndoMain *undostruct, gint undo_state, 
+			     gint redo_state, GtkWidget *changewidget) 
+{
 	GtkItemFactory *ifactory;
         debug_print ("Set_undo.  UNDO:%i  REDO:%i\n",
                  undo_state,
@@ -6172,6 +6177,7 @@ static void compose_set_undo (UndoMain *undostruct, gint undo_state, gint redo_s
                 break;
         default:
                 g_warning ("Undo state not recognized");
+		break;
         }
 
         /* Set redo*/
@@ -6195,5 +6201,6 @@ static void compose_set_undo (UndoMain *undostruct, gint undo_state, gint redo_s
                 break;
         default:
                 g_warning ("Redo state not recognized");
+		break;
         }
 }
