@@ -1,3 +1,8 @@
+2001-11-19 [paul]	0.6.5claws21
+
+	* sync with sylpheed 0.6.5cvs10
+        	see ChangeLog entry 2001-11-19
+
 2001-11-18 [alfons]	0.6.5claws20
 	
 	* src/filtering.c

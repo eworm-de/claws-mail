@@ -486,8 +486,7 @@ static gboolean get_uri_part(const gchar *start, const gchar *scanpos,
 	 * should pass some URI type to this function and decide on that whether
 	 * to perform punctuation stripping */
 
-#define IS_REAL_PUNCT(ch) \
-	(ispunct(ch) && ((ch) != '/')) 
+#define IS_REAL_PUNCT(ch)	(ispunct(ch) && ((ch) != '/')) 
 
 	for (; ep_ - 1 > scanpos + 1 && IS_REAL_PUNCT(*(ep_ - 1)); ep_--)
 		;
@@ -512,6 +511,8 @@ static gchar *make_uri_string(const gchar *bp, const gchar *ep)
 	 !isspace(ch) && \
 	 !strchr("()<>\"", (ch)))
 
+/* alphabet and number within 7bit ASCII */
+#define IS_ASCII_ALNUM(ch)	(isascii(ch) && isalnum(ch))
 #define IS_QUOTE(ch) ((ch) == '\'' || (ch) == '"')
 
 /* get_email_part() - retrieves an email address. Returns TRUE if succesful */
@@ -541,7 +542,7 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 
 	/* TODO: should start with an alnum? */
 	bp_++;
-	for (; bp_ < scanpos && !isalnum(*bp_); bp_++)
+	for (; bp_ < scanpos && !IS_ASCII_ALNUM(*bp_); bp_++)
 		;
 
 	if (bp_ != scanpos) {
@@ -550,7 +551,7 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 			;
 
 		/* TODO: really should terminate with an alnum? */
-		for (; ep_ > scanpos  && !isalnum(*ep_); --ep_)
+		for (; ep_ > scanpos && !IS_ASCII_ALNUM(*ep_); --ep_)
 			;
 		ep_++;
 
