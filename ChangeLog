@@ -1,3 +1,54 @@
+2003-09-10
+
+	* src/action.c: improved synchronous action exit code (fixes long
+	  delay after action exit on RH9) (thanks to Melvin).
+	* src/stringtable.[ch]: string_table_insert_string(): modified the
+	  code to remove the warning "dereferencing type-punned pointer will
+	  break strict-aliasing rules".
+	  Use const gchar * instead of gchar * for arguments.
+
+2003-09-05
+
+	* src/utils.[ch]: generate_mime_boundary(): a new function to create
+	  MIME boundary (moved from rfc2015.c).
+	  Removed more special characters.
+	  Use random() instead of lrand48() which is obsolete.
+	  Added an argument for prefix to prevent duplication.
+	  Always add "=_" as a counter-QP sequence to simplify the code.
+	* src/rfc2015.c:
+	  rfc2015_decrypt_message()
+	  rfc2015_encrypt()
+	  rfc2015_sign(): fixed a bug that didn't handle continuous content
+	  lines correctly.
+	* src/compose.c
+	  src/rfc2015.c: use generate_mime_boundary().
+
+2003-09-05
+
+	* src/folderview.c:
+	  folderview_delete_folder_cb()
+	  folderview_remove_mailbox_cb(): close currently displayed folder
+	  before removing FolderItem (fixes crash on deleting folder).
+	* src/folder.h
+	  src/imap.[ch]: imap_scan_tree()
+	  src/mh.[ch]: mh_scan_tree(): return -1 when scanning failed.
+	* src/summaryview.c: summary_clear_all(): also clear the message view.
+	* src/imap.c: imap_close(): fail if the specified folder is not
+	  selected.
+	  imap_scan_tree(): check if the specified root directory exist, and
+	  try creating it if not.
+	  imap_parse_list(): output warning if a server returns error.
+	  imap_find_namespace_from_list(): support not slash-delimited path.
+	  imap_status(): don't return values if they're not specified.
+
+2003-09-02
+
+	* sylpheed.spec.in: fixed a typo.
+
+2003-09-02
+
+	* version 0.9.5
+
 2003-09-01
 
 	* src/inc.[ch]
