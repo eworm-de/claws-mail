@@ -307,7 +307,7 @@ static void summary_create_filter_cb	(SummaryView		*summaryview,
 
 static void summary_mark_clicked	(GtkWidget		*button,
 					 SummaryView		*summaryview);
-static void summary_unread_clicked	(GtkWidget		*button,
+static void summary_status_clicked	(GtkWidget		*button,
 					 SummaryView		*summaryview);
 static void summary_mime_clicked	(GtkWidget		*button,
 					 SummaryView		*summaryview);
@@ -4446,7 +4446,7 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 		 summaryview)
 
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_MARK   , summary_mark_clicked);
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_STATUS , summary_unread_clicked);
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_STATUS , summary_status_clicked);
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_MIME   , summary_mime_clicked);
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_NUMBER , summary_num_clicked);
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SIZE   , summary_size_clicked);
@@ -4857,7 +4857,7 @@ static void summary_mark_clicked(GtkWidget *button, SummaryView *summaryview)
 	summary_sort_by_column_click(summaryview, SORT_BY_MARK);
 }
 
-static void summary_unread_clicked(GtkWidget *button, SummaryView *summaryview)
+static void summary_status_clicked(GtkWidget *button, SummaryView *summaryview)
 {
 	summary_sort_by_column_click(summaryview, SORT_BY_STATUS);
 }
