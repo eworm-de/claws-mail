@@ -4757,7 +4757,7 @@ static void summary_drag_data_get(GtkWidget        *widget,
 				(ctree, GTK_CTREE_NODE(cur->data));
 			tmp2 = procmsg_get_message_file(msginfo);
 			if (!tmp2) continue;
-			tmp1 = g_strconcat("file:/", tmp2, NULL);
+			tmp1 = g_strconcat("file://", tmp2, NULL);
 			g_free(tmp2);
 
 			if (!mail_list) {

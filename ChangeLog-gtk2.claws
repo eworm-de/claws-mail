@@ -1,3 +1,9 @@
+2004-09-06 [colin]	0.9.12cvs95.1
+
+	* src/summaryview.c
+	* src/mimeview.c
+		Sync with HEAD (fix dropped URIs)
+
 2004-09-06 [colin]	0.9.12cvs94.1
 
 	* src/addressbook.c
