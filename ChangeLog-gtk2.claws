@@ -1,3 +1,9 @@
+2004-07-08 [colin]	0.9.11cvs17.12
+
+	* src/common/smtp.c
+	* src/common/smtp.h
+		Sync smtp size verification with HEAD
+
 2004-07-08 [colin]	0.9.11cvs17.11
 
 	* src/summaryview.c
