@@ -37,3 +37,6 @@
 #undef VERSION
 
 #undef CLAWS
+
+/* Has ispell path */
+#undef ISPELL_PATH

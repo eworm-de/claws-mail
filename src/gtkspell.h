@@ -28,14 +28,26 @@
 
 #include "gtkxtext.h"
 
-extern void gtkspell_attach(GtkXText *text_ccc);
+typedef struct _Dictionary {
+	gchar *name;
+	gchar *path;
+} Dictionary;
 
-int gtkspell_start(unsigned char *path, char * args[]); 
+int gtkspell_start(unsigned char *path, char * args[]);
+
+void gtkspell_attach(GtkXText *text_ccc);
 
 void gtkspell_detach(GtkXText *gtktext);
 
 void gtkspell_check_all(GtkXText *gtktext);
 
 void gtkspell_uncheck_all(GtkXText *gtktext);
+
+GSList *gtkspell_get_dictionary_list(const char *ispell_path);
+
+void gtkspell_free_dictionary_list(GSList *list);
+
+GtkWidget *gtkspell_dictionary_option_menu_new(const gchar *ispell_path);
+gchar *gtkspell_get_dictionary_menu_active_item(GtkWidget *menu);
 
 #endif /* __gtkspell_h__ */

@@ -1,3 +1,13 @@
+2001-07-31 [alfons]
+
+	* src/prefs_common.c, src/prefs_common.h, 
+	  src/gtkspell.c, src/gtkspell.h
+		add global spelling checker settings (compose tab) +
+		selection of dictionary 
+	  
+	* configure.in  
+		guess valid ispell location
+
 2001-07-31 [paul]
 
 	* po/POTFILES.in
@@ -5,7 +15,6 @@
 	* po/de.po
 		Updated de.po
 		(submitted by Jens Oberender <didge@suse.de>)
-
 
 2001-07-31 [darko]
 
@@ -40,6 +49,7 @@
 		updated
 		(submitted by Fabio Junior Beneditto)
 
+>>>>>>> 1.258
 2001-07-28 [paul]
 
 	* src/procmime.c

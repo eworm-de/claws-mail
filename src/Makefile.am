@@ -99,7 +99,8 @@ sylpheed_SOURCES = \
 	editldap.c editldap.h \
 	editldap_basedn.c editldap_basedn.h \
 	labelcolors.c labelcolors.h \
-	ssl.c ssl.h
+	ssl.c ssl.h \
+	gtkspell.c gtkspell.h gtkxtext.h
 
 EXTRA_DIST = \
 	quote_fmt_parse.h \

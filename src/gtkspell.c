@@ -47,7 +47,15 @@
 #include <prefs_common.h>
 #include <utils.h>
 
+#include <dirent.h>
+
+#include <gtk/gtkoptionmenu.h>
+#include <gtk/gtkmenu.h>
+#include <gtk/gtkmenuitem.h>
+
 #include "gtkxtext.h"
+
+#include "gtkspell.h"
 
 /* size of the text buffer used in various word-processing routines. */
 #define BUFSIZE 1024
@@ -658,3 +666,144 @@ static void set_up_signal()
     signal(SIGCHLD, sigchld);
 #endif
 }
+
+/*** Sylpheed (Claws) ***/
+
+static GSList *create_empty_dictionary_list(void)
+{
+	GSList *list = NULL;
+	Dictionary *dict;
+	
+	dict = g_new0(Dictionary, 1);
+	dict->name = g_strdup(_("None"));
+	dict->path = NULL;
+	return g_slist_append(list, dict);
+}
+
+/* gtkspell_get_dictionary_list() - returns list of dictionary names and the full 
+ * path of file names. */
+GSList *gtkspell_get_dictionary_list(const gchar *ispell_path)
+{
+	GSList *list;
+	gchar *dict_path, *tmp, *prevdir;
+	GSList *walk;
+	Dictionary *dict;
+	DIR *dir;
+	struct dirent *ent;
+
+	list = NULL;
+
+	/* ASSUME: ispell_path is full path */
+	dict_path = strstr(ispell_path + 1, G_DIR_SEPARATOR_S);
+	tmp = g_strndup(ispell_path, dict_path - ispell_path);
+	
+	/* ASSUME: ispell dictionaries in PREFIX/lib/ispell */
+	dict_path = g_strconcat(tmp, G_DIR_SEPARATOR_S, "lib", G_DIR_SEPARATOR_S, "ispell", NULL);
+	g_free(tmp);
+
+#ifdef USE_THREADS
+#warning TODO: no directory change
+#endif
+	
+	prevdir = g_get_current_dir();
+	if (chdir(dict_path) <0) {
+		FILE_OP_ERROR(dict_path, "chdir");
+		g_free(prevdir);
+		g_free(dict_path);
+		return create_empty_dictionary_list();
+	}
+
+	debug_print(_("Checking for dictionaries in %s\n"), dict_path);
+
+	if (NULL != (dir = opendir("."))) {
+		while (NULL != (ent = readdir(dir))) {
+			/* search for hash table */
+			if (NULL != (tmp = strstr(ent->d_name, ".hash"))) {
+				dict = g_new0(Dictionary, 1);
+				dict->name = g_strndup(ent->d_name, tmp - ent->d_name);
+				dict->path = g_strconcat(dict_path, G_DIR_SEPARATOR_S, ent->d_name, NULL);
+				debug_print(_("Found dictionary %s\n"), dict->path);
+				list = g_slist_append(list, dict);
+			}
+		}			
+		closedir(dir);
+	}
+	else {
+		FILE_OP_ERROR(dict_path, "opendir");
+		debug_print(_("No dictionary found\n"));
+		list = create_empty_dictionary_list();
+	}
+	chdir(prevdir);
+	g_free(dict_path);
+	g_free(prevdir);
+	return list;
+}
+
+void gtkspell_free_dictionary_list(GSList *list)
+{
+	Dictionary *dict;
+	GSList *walk;
+	for (walk = list; walk != NULL; walk = g_slist_next(walk))
+		if (walk->data) {
+			dict = (Dictionary *) walk->data;
+			if (dict->name)
+				g_free(dict->name);
+			if (dict->path)
+				g_free(dict->path);
+			g_free(dict);
+		}				
+	g_slist_free(list);
+}
+
+static void dictionary_option_menu_item_data_destroy(gpointer data)
+{
+	gchar *str = (gchar *) data;
+
+	if (str)
+		g_free(str);
+}
+
+GtkWidget *gtkspell_dictionary_option_menu_new(const gchar *ispell_path)
+{
+	GSList *dict_list, *tmp;
+	GtkWidget *item;
+	GtkWidget *menu;
+	Dictionary *dict;
+
+	dict_list = gtkspell_get_dictionary_list(ispell_path);
+	g_return_val_if_fail(dict_list, NULL);
+
+	menu = gtk_menu_new();
+	
+	for (tmp = dict_list; tmp != NULL; tmp = g_slist_next(tmp)) {
+		dict = (Dictionary *) tmp->data;
+		item = gtk_menu_item_new_with_label(dict->name);
+		if (dict->path)
+			gtk_object_set_data_full(GTK_OBJECT(item), "full_path",
+					 g_strdup(dict->path), 
+					 dictionary_option_menu_item_data_destroy);
+		gtk_menu_append(GTK_MENU(menu), item);					 
+		gtk_widget_show(item);
+	}
+
+	gtk_widget_show(menu);
+
+	gtkspell_free_dictionary_list(dict_list);
+
+	return menu;
+}
+
+gchar *gtkspell_get_dictionary_menu_active_item(GtkWidget *menu)
+{
+	GtkWidget *menuitem;
+	gchar *result;
+
+	g_return_val_if_fail(GTK_IS_MENU(menu), NULL);
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	
+	result = gtk_object_get_data(GTK_OBJECT(menuitem), "full_path");
+	g_return_val_if_fail(result, NULL);
+
+	return g_strdup(result);
+}
+

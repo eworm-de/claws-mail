@@ -75,6 +75,9 @@ struct _PrefsCommon
 	gchar *fw_quotefmt;
 	gboolean forward_as_attachment;
 	gboolean smart_wrapping;
+	gboolean enable_ispell;
+	gchar *ispell_path;
+	gchar *dictionary_path;
 
 	/* Display */
 	gchar *widgetfont;

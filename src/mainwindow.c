@@ -75,6 +75,7 @@
 #include "about.h"
 #include "manual.h"
 
+
 #define AC_LABEL_WIDTH	240
 
 #define STATUSBAR_PUSH(mainwin, str) \

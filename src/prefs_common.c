@@ -49,6 +49,8 @@
 #include "gtkutils.h"
 #include "alertpanel.h"
 #include "folder.h"
+#include "gtkspell.h"
+#include "filesel.h"
 #include "folderview.h"
 
 PrefsCommon prefs_common;
@@ -106,6 +108,12 @@ static struct Compose {
 
 	GtkWidget * checkbtn_forward_as_attachment;
 	GtkWidget * checkbtn_smart_wrapping;
+
+	/* spelling */
+	GtkWidget *checkbtn_enable_ispell;
+	GtkWidget *entry_ispell_path;
+	GtkWidget *btn_ispell_path;
+	GtkWidget *optmenu_dictionary_path;
 } compose;
 
 static struct Display {
@@ -199,6 +207,10 @@ static void prefs_common_default_signkey_set_optmenu	(PrefParam *pparam);
 #endif
 static void prefs_recvdialog_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_recvdialog_set_optmenu(PrefParam *pparam);
+
+static void prefs_dictionary_set_data_from_optmenu(PrefParam *param);
+static void prefs_dictionary_set_optmenu(PrefParam *pparam);
+
 
 /*
    parameter name, default value, pointer to the prefs variable, data type,
@@ -303,6 +315,15 @@ static PrefParam param[] = {
         {"smart_wrapping", "TRUE", &prefs_common.smart_wrapping,
 	 P_BOOL, &compose.checkbtn_smart_wrapping,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"enable_ispell", "TRUE", &prefs_common.enable_ispell,
+	 P_BOOL, &compose.checkbtn_enable_ispell,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"ispell_path", ISPELL_PATH, &prefs_common.ispell_path, 
+	 P_STRING, &compose.entry_ispell_path, 
+	 prefs_set_data_from_entry, prefs_set_entry},
+	{"dictionary_path",  "", &prefs_common.dictionary_path,
+	 P_STRING, &compose.optmenu_dictionary_path, 
+	 prefs_dictionary_set_data_from_optmenu, prefs_dictionary_set_optmenu },
 
 	{"show_ruler", "TRUE", &prefs_common.show_ruler, P_BOOL,
 	 NULL, NULL, NULL},
@@ -1060,6 +1081,96 @@ static void prefs_send_create(void)
 	send.optmenu_charset = optmenu;
 }
 
+static void prefs_dictionary_set_data_from_optmenu(PrefParam *param)
+{
+	gchar *str;
+	gchar *dict_path;
+	
+	g_return_if_fail(param);
+	g_return_if_fail(param->data);
+	g_return_if_fail(param->widget);
+	g_return_if_fail(*(param->widget));
+
+	dict_path = gtkspell_get_dictionary_menu_active_item
+		(gtk_option_menu_get_menu(GTK_OPTION_MENU(*(param->widget))));
+	str = *((gchar **) param->data);
+	if (str)
+		g_free(str);
+	*((gchar **) param->data) = dict_path;
+}
+
+static void prefs_dictionary_set_optmenu(PrefParam *pparam)
+{
+	GList *cur;
+	GtkOptionMenu *optmenu = GTK_OPTION_MENU(*pparam->widget);
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+	gchar *dict_path;
+	gint n = 0;
+
+	g_return_if_fail(optmenu != NULL);
+	g_return_if_fail(pparam->data != NULL);
+
+	if (*(gchar **) pparam->data) {
+		menu = gtk_option_menu_get_menu(optmenu);
+		for (cur = GTK_MENU_SHELL(menu)->children;
+		     cur != NULL; cur = cur->next) {
+			menuitem = GTK_WIDGET(cur->data);
+			dict_path = gtk_object_get_data(GTK_OBJECT(menuitem), "full_path");
+			if (!strcmp(dict_path, *((gchar **)pparam->data))) {
+				gtk_option_menu_set_history(optmenu, n);
+				return;
+			}
+			n++;
+		}
+	}		
+
+	gtk_option_menu_set_history(optmenu, 0);
+	prefs_dictionary_set_data_from_optmenu(pparam);
+}
+
+static void prefs_compose_checkbtn_enable_ispell_toggle_cb
+	(GtkWidget *widget,
+	 gpointer data)
+{
+	gboolean toggled;
+
+	toggled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+	gtk_widget_set_sensitive(compose.entry_ispell_path, toggled);
+	gtk_widget_set_sensitive(compose.optmenu_dictionary_path, toggled);
+	gtk_widget_set_sensitive(compose.btn_ispell_path, toggled);
+}
+
+static void prefs_compose_btn_ispell_path_clicked_cb(GtkWidget *widget,
+						     gpointer data)
+{
+	gchar *file_path;
+	GtkWidget *new_menu;
+
+	file_path = filesel_select_file(_("Select spelling checker location"),
+					prefs_common.ispell_path);
+	if (file_path == NULL) {
+		/* don't change */	
+	}
+	else {
+		if (prefs_common.ispell_path)
+			g_free(prefs_common.ispell_path);
+		prefs_common.ispell_path = file_path;			
+
+		new_menu = gtkspell_dictionary_option_menu_new(file_path);
+		gtk_option_menu_set_menu(GTK_OPTION_MENU(compose.optmenu_dictionary_path),
+					 new_menu);
+
+		gtk_entry_set_text(GTK_ENTRY(compose.entry_ispell_path), file_path);					 
+		/* select first one */
+		gtk_option_menu_set_history(GTK_OPTION_MENU(compose.optmenu_dictionary_path), 0);
+		
+		prefs_common.dictionary_path = gtkspell_get_dictionary_menu_active_item(
+				gtk_option_menu_get_menu(GTK_OPTION_MENU(compose.optmenu_dictionary_path)));
+	}
+	
+}
+
 static void prefs_compose_create(void)
 {
 	GtkWidget *vbox1;
@@ -1100,6 +1211,18 @@ static void prefs_compose_create(void)
 
 	GtkWidget *checkbtn_forward_as_attachment;
 	GtkWidget *checkbtn_smart_wrapping;
+
+	GtkWidget *frame_spell;
+	GtkWidget *hbox_spell;
+	GtkWidget *vbox_spell;
+	GtkWidget *hbox_ispell_path;
+	GtkWidget *checkbtn_enable_ispell;
+	GtkWidget *label_ispell_path;
+	GtkWidget *entry_ispell_path;
+	GtkWidget *btn_ispell_path;
+	GtkWidget *hbox_dictionary_path;
+	GtkWidget *label_dictionary_path;
+	GtkWidget *optmenu_dictionary_path;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1234,6 +1357,58 @@ static void prefs_compose_create(void)
 	PACK_CHECK_BUTTON (vbox1, checkbtn_smart_wrapping,
 			   _("Smart wrapping (EXPERIMENTAL)"));
 
+	/* spell checker defaults */			   
+	PACK_FRAME(vbox1, frame_spell, _("Global spelling checker settings"));
+	vbox_spell = gtk_vbox_new(FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox_spell);
+	gtk_container_add(GTK_CONTAINER(frame_spell), vbox_spell);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox_spell), 8);
+
+	PACK_CHECK_BUTTON(vbox_spell, checkbtn_enable_ispell, 
+			  _("Enable spell checker"));
+
+	gtk_signal_connect(GTK_OBJECT(checkbtn_enable_ispell), "toggled",
+			   GTK_SIGNAL_FUNC(prefs_compose_checkbtn_enable_ispell_toggle_cb),
+			   NULL);
+
+	hbox_ispell_path = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show(hbox_ispell_path);
+	gtk_box_pack_start(GTK_BOX(vbox_spell), hbox_ispell_path, TRUE, TRUE, 0);
+
+	label_ispell_path = gtk_label_new (_("Ispelll path"));
+	gtk_widget_show(label_ispell_path);
+	gtk_box_pack_start(GTK_BOX(hbox_ispell_path), label_ispell_path, FALSE, FALSE, 0);
+	
+	entry_ispell_path = gtk_entry_new();
+	gtk_widget_show(entry_ispell_path);
+	gtk_box_pack_start(GTK_BOX(hbox_ispell_path), entry_ispell_path, FALSE, FALSE, 0);
+	gtk_widget_set_usize(entry_ispell_path, 150, -1);
+	gtk_widget_set_sensitive(entry_ispell_path, prefs_common.enable_ispell);
+
+	btn_ispell_path = gtk_button_new_with_label(_("..."));
+	gtk_widget_show(btn_ispell_path);
+	gtk_box_pack_start(GTK_BOX(hbox_ispell_path), btn_ispell_path, FALSE, FALSE, 0);
+	gtk_widget_set_sensitive(btn_ispell_path, prefs_common.enable_ispell);
+
+	gtk_signal_connect(GTK_OBJECT(btn_ispell_path), "clicked", 
+			   GTK_SIGNAL_FUNC(prefs_compose_btn_ispell_path_clicked_cb),
+			   NULL);
+
+	hbox_dictionary_path = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show(hbox_dictionary_path);
+	gtk_box_pack_start(GTK_BOX(vbox_spell), hbox_dictionary_path, TRUE, TRUE, 0);
+
+	label_dictionary_path = gtk_label_new(_("Dictionaries"));
+	gtk_widget_show(label_dictionary_path);
+	gtk_box_pack_start(GTK_BOX(hbox_dictionary_path), label_dictionary_path, FALSE, FALSE, 0);
+
+	optmenu_dictionary_path = gtk_option_menu_new();
+	gtk_widget_show(optmenu_dictionary_path);
+	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu_dictionary_path), 
+				 gtkspell_dictionary_option_menu_new(prefs_common.ispell_path));
+	gtk_box_pack_start(GTK_BOX(hbox_dictionary_path), optmenu_dictionary_path, FALSE, FALSE, 0);
+	gtk_widget_set_sensitive(optmenu_dictionary_path, prefs_common.enable_ispell);
+
 	/*
 	compose.checkbtn_quote   = checkbtn_quote;
 	compose.entry_quotemark  = entry_quotemark;
@@ -1253,6 +1428,11 @@ static void prefs_compose_create(void)
 		checkbtn_forward_as_attachment;
 	compose.checkbtn_smart_wrapping = 
 		checkbtn_smart_wrapping;
+
+	compose.checkbtn_enable_ispell = checkbtn_enable_ispell;
+	compose.entry_ispell_path      = entry_ispell_path;
+	compose.btn_ispell_path	       = btn_ispell_path;
+	compose.optmenu_dictionary_path = optmenu_dictionary_path;
 }
 
 static void prefs_display_create(void)
