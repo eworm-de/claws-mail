@@ -1,3 +1,10 @@
+2003-03-26 [oliver]	0.8.11claws54
+
+	*src/pop.h
+		remove POP3_TOP*
+	* README.claws
+		remove selective donwload readme
+
 2003-03-26 [oliver]	0.8.11claws53
 	* src/matcher.[ch]
 	* src/matcher_parser_parse.y 

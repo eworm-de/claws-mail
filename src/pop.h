@@ -51,8 +51,6 @@ typedef enum {
 	POP3_GETSIZE_LIST,
 	POP3_GETSIZE_LIST_RECV,
 	POP3_RETR,
-	POP3_TOP,                   
-	POP3_TOP_RECV,                    
 	POP3_RETR_RECV,
 	POP3_DELETE,
 	POP3_LOGOUT,
