@@ -1545,8 +1545,13 @@ static void folderview_new_folder_cb(FolderView *folderview, guint action,
 	}
 
 	new_item = item->folder->create_folder(item->folder, item, new_folder);
+	if (!new_item) {
+		alertpanel_error(_("The folder `%s' could not be created."), 
+				 new_folder);
+		g_free(new_folder);
+		return;
+	} 
 	g_free(new_folder);
-	if (!new_item) return;
 
 	gtk_clist_freeze(GTK_CLIST(ctree));
 

@@ -6,6 +6,10 @@
 	* src/compose.c
 		code cleanup, nearly killed all of wwp's patch
 		for folder's default account in compose
+	* src/folderview.c
+		error panel when a folder could not be created
+		(closes bug #471080 new folder name & already
+		 existing file)
 
 2001-10-26 [alfons]
 
