@@ -149,6 +149,7 @@ void plugin_unload(Plugin *plugin)
 
 	g_module_close(plugin->module);
 	plugins = g_slist_remove(plugins, plugin);
+	g_free(plugin->filename);
 	g_free(plugin);
 }
 
