@@ -155,6 +155,8 @@ static gint add_address(const gchar *name, const gchar *address)
 
 	if (!name || !address) return -1;
 
+	debug_print( "completion: add_address: %s - %s\n", name, address );
+
 	ae = g_new0(address_entry, 1);
 	ce1 = g_new0(completion_entry, 1),
 	ce2 = g_new0(completion_entry, 1);
@@ -217,7 +219,12 @@ gchar *get_address_from_edit(GtkEntry *entry, gint *start_pos)
 	wchar_t *wtext;
 	wchar_t *wp;
 	wchar_t rfc_mail_sep;
+	wchar_t quote;
+	gboolean in_quote = FALSE;
 	gchar *str;
+
+	if (mbtowc(&rfc_mail_sep, ",", 1) < 0) return NULL;
+	if (mbtowc(&quote, "\"", 1) < 0) return NULL;
 
 	edit_text = gtk_entry_get_text(entry);
 	if (edit_text == NULL) return NULL;
@@ -227,14 +234,13 @@ gchar *get_address_from_edit(GtkEntry *entry, gint *start_pos)
 
 	cur_pos = gtk_editable_get_position(GTK_EDITABLE(entry));
 
-	if (mbtowc(&rfc_mail_sep, ",", 1) < 0) {
-		g_free(wtext);
-		return NULL;
-	}
-
 	/* scan for a separator. doesn't matter if walk points at null byte. */
-	for (wp = wtext + cur_pos; wp > wtext && *wp != rfc_mail_sep; wp--)
-		;
+	for (wp = wtext + cur_pos; wp > wtext; wp--) {
+		if (!in_quote && *wp == rfc_mail_sep)
+			break;
+		if (*wp == quote)
+			in_quote ^= TRUE;
+	}
 
 	/* have something valid */
 	if (wcslen(wp) == 0) {
@@ -242,7 +248,7 @@ gchar *get_address_from_edit(GtkEntry *entry, gint *start_pos)
 		return NULL;
 	}
 
-#define IS_VALID_CHAR(x)	(iswalnum(x) || ((x) > 0x7f))
+#define IS_VALID_CHAR(x)	(iswalnum(x) || (x) == quote || ((x) > 0x7f))
 
 	/* now scan back until we hit a valid character */
 	for (; *wp && !IS_VALID_CHAR(*wp); wp++)
@@ -329,22 +335,27 @@ guint complete_address(const gchar *str)
 gchar *get_complete_address(gint index)
 {
 	const address_entry *p;
-	
+	gchar *address = NULL;
+
 	if (index < g_completion_count) {
 		if (index == 0)
-			return g_strdup(g_completion_prefix);
+			address = g_strdup(g_completion_prefix);
 		else {
 			/* get something from the unique addresses */
 			p = (address_entry *)g_slist_nth_data
 				(g_completion_addresses, index - 1);
-			if (p == NULL)
-				return NULL;
-			else
-				return g_strdup_printf
-					("%s <%s>", p->name, p->address);
+			if (p != NULL) {
+				if (strchr_with_skip_quote(p->name, '"', ','))
+					address = g_strdup_printf
+						("\"%s\" <%s>", p->name, p->address);
+				else
+					address = g_strdup_printf
+						("%s <%s>", p->name, p->address);
+			}
 		}
-	} else
-		return NULL;
+	}
+
+	return address;
 }
 
 gchar *get_next_complete_address(void)

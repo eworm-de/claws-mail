@@ -1,3 +1,14 @@
+2002-02-06
+
+	* src/imap.c: imap_copy_msgs_with_dest(): fixed a bug on traversing
+	  list.
+	* src/prefs_common.c: made the key binding setting separate dialog.
+	* src/addressbook.c: addressbook_format_address(): add "" around
+	  the display name if it contains comma (thanks to Satoshi Watanabe).
+	* src/addr_compl.c: get_complete_address(): add "" around the
+	  display name if it contains comma.
+	  get_address_from_edit(): handle the quotation character correctly.
+
 2002-02-05
 
 	* src/compose.c: compose_exec_ext_editor_real(): replaced

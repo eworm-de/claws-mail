@@ -199,7 +199,6 @@ static struct Interface {
 	GtkWidget *checkbtn_addaddrbyclick;
 	GtkWidget *optmenu_recvdialog;
  	GtkWidget *optmenu_nextunreadmsgdialog;
-	GtkWidget *keybind_combo;
 } interface;
 
 static struct Other {
@@ -221,6 +220,11 @@ static struct MessageColorButtons {
 	GtkWidget *uri_btn;
 	GtkWidget *tgt_folder_btn;
 } color_buttons;
+
+static struct KeybindDialog {
+	GtkWidget *window;
+	GtkWidget *combo;
+} keybind;
 
 static GtkWidget *quote_desc_win;
 static GtkWidget *font_sel_win;
@@ -779,6 +783,15 @@ static void prefs_font_selection_key_pressed	(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 gpointer	 data);
 static void prefs_font_selection_ok		(GtkButton	*button, GtkEntry *entry);
+
+static void prefs_keybind_select		(void);
+static gint prefs_keybind_deleted		(GtkWidget	*widget,
+						 GdkEventAny	*event,
+						 gpointer	 data);
+static void prefs_keybind_key_pressed		(GtkWidget	*widget,
+						 GdkEventKey	*event,
+						 gpointer	 data);
+static void prefs_keybind_cancel		(void);
 static void prefs_keybind_apply_clicked		(GtkWidget	*widget);
 
 static gint prefs_common_deleted	(GtkWidget	*widget,
@@ -2347,13 +2360,10 @@ static void prefs_interface_create(void)
 	GtkWidget *menuitem;
 
 	GtkWidget *frame_addr;
-        GtkWidget *vbox_addr;
+	GtkWidget *vbox_addr;
 	GtkWidget *checkbtn_addaddrbyclick;
 
-	GtkWidget *keybind_frame;
-	GtkWidget *keybind_label;
-	GtkWidget *keybind_combo;
-	GtkWidget *keybind_btn;
+	GtkWidget *button_keybind;
 
  	GtkWidget *hbox2;
  	GtkWidget *optmenu_nextunreadmsgdialog;
@@ -2483,48 +2493,15 @@ static void prefs_interface_create(void)
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (recvdialog_optmenu), recvdialog_optmenu_menu);     */
 
-PACK_FRAME(vbox1, keybind_frame, _("Shortcut key"));
-
-	vbox2 = gtk_vbox_new (FALSE, 8);
-	gtk_widget_show (vbox2);
-	gtk_container_add (GTK_CONTAINER (keybind_frame), vbox2);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
-
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
-	keybind_label = gtk_label_new
-		(_("Select the preset key bindings.\n"
-		   "You can also modify each menu's shortcuts by pressing\n"
-		   "any key(s) when placing the mouse pointer on the item."));
-	gtk_widget_show (keybind_label);
-	gtk_box_pack_start (GTK_BOX (hbox1), keybind_label, FALSE, FALSE, 0);
-	gtk_label_set_justify (GTK_LABEL (keybind_label), GTK_JUSTIFY_LEFT);
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
-
-	keybind_combo = gtk_combo_new ();
-	gtk_widget_show (keybind_combo);
-	gtk_box_pack_start (GTK_BOX (hbox1), keybind_combo, TRUE, TRUE, 0);
-	gtkut_combo_set_items (GTK_COMBO (keybind_combo),
-			       _("Default"),
-			       "Mew / Wanderlust",
-			       "Mutt",
-			       _("Old Sylpheed"),
-			       NULL);
-	gtk_entry_set_editable (GTK_ENTRY (GTK_COMBO (keybind_combo)->entry),
-				FALSE);
-
-	keybind_btn = gtk_button_new_with_label(_(" Apply "));
-	gtk_widget_show (keybind_btn);
-	gtk_box_pack_end (GTK_BOX (hbox1), keybind_btn, FALSE, TRUE, 0);
-	gtk_signal_connect (GTK_OBJECT (keybind_btn), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_keybind_apply_clicked),
-			    NULL);
-
+	button_keybind = gtk_button_new_with_label (_(" Set key bindings... "));
+	gtk_widget_show (button_keybind);
+	gtk_box_pack_start (GTK_BOX (hbox1), button_keybind, FALSE, FALSE, 0);
+	gtk_signal_connect (GTK_OBJECT (button_keybind), "clicked",
+			    GTK_SIGNAL_FUNC (prefs_keybind_select), NULL);
 	/* interface.checkbtn_emacs          = checkbtn_emacs; */
 	interface.checkbtn_openunread         = checkbtn_openunread;
 	interface.checkbtn_openinbox          = checkbtn_openinbox;
@@ -2532,7 +2509,6 @@ PACK_FRAME(vbox1, keybind_frame, _("Shortcut key"));
 	interface.optmenu_recvdialog	      = optmenu_recvdialog;
 	interface.checkbtn_addaddrbyclick     = checkbtn_addaddrbyclick;
 	interface.optmenu_nextunreadmsgdialog = optmenu_nextunreadmsgdialog;
-	interface.keybind_combo               = keybind_combo;
 }
 
 static void prefs_other_create(void)
@@ -3456,14 +3432,110 @@ static void prefs_font_selection_ok(GtkButton *button, GtkEntry *entry)
 	gtk_widget_hide(font_sel_win);
 }
 
+static void prefs_keybind_select(void)
+{
+	GtkWidget *window;
+	GtkWidget *vbox1;
+	GtkWidget *hbox1;
+	GtkWidget *label;
+	GtkWidget *combo;
+	GtkWidget *confirm_area;
+	GtkWidget *ok_btn;
+	GtkWidget *cancel_btn;
+
+	window = gtk_window_new (GTK_WINDOW_DIALOG);
+	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
+	gtk_window_set_title (GTK_WINDOW (window), _("Key bindings"));
+	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
+	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
+	gtk_window_set_policy (GTK_WINDOW (window), FALSE, FALSE, FALSE);
+	manage_window_set_transient (GTK_WINDOW (window));
+
+	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	gtk_container_add (GTK_CONTAINER (window), vbox1);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
+
+	label = gtk_label_new
+		(_("Select the preset of key bindings.\n"
+		   "You can also modify each menu's shortcuts by pressing\n"
+		   "any key(s) when placing the mouse pointer on the item."));
+	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
+	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
+
+	combo = gtk_combo_new ();
+	gtk_box_pack_start (GTK_BOX (hbox1), combo, TRUE, TRUE, 0);
+	gtkut_combo_set_items (GTK_COMBO (combo),
+			       _("Default"),
+			       "Mew / Wanderlust",
+			       "Mutt",
+			       _("Old Sylpheed"),
+			       NULL);
+	gtk_entry_set_editable (GTK_ENTRY (GTK_COMBO (combo)->entry), FALSE);
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
+
+	gtkut_button_set_create (&confirm_area, &ok_btn, _("OK"),
+				 &cancel_btn, _("Cancel"), NULL, NULL);
+	gtk_box_pack_end (GTK_BOX (hbox1), confirm_area, FALSE, FALSE, 0);
+	gtk_widget_grab_default (ok_btn);
+
+	gtk_signal_connect (GTK_OBJECT (window), "focus_in_event",
+			    GTK_SIGNAL_FUNC (manage_window_focus_in), NULL);
+	gtk_signal_connect (GTK_OBJECT (window), "focus_out_event",
+			    GTK_SIGNAL_FUNC (manage_window_focus_out), NULL);
+	gtk_signal_connect (GTK_OBJECT (window), "delete_event",
+			    GTK_SIGNAL_FUNC (prefs_keybind_deleted), NULL);
+	gtk_signal_connect (GTK_OBJECT (window), "key_press_event",
+			    GTK_SIGNAL_FUNC (prefs_keybind_key_pressed), NULL);
+	gtk_signal_connect (GTK_OBJECT (ok_btn), "clicked",
+			    GTK_SIGNAL_FUNC (prefs_keybind_apply_clicked),
+			    NULL);
+	gtk_signal_connect (GTK_OBJECT (cancel_btn), "clicked",
+			    GTK_SIGNAL_FUNC (prefs_keybind_cancel),
+			    NULL);
+
+	gtk_widget_show_all(window);
+
+	keybind.window = window;
+	keybind.combo = combo;
+}
+
+static void prefs_keybind_key_pressed(GtkWidget *widget, GdkEventKey *event,
+				      gpointer data)
+{
+	if (event && event->keyval == GDK_Escape)
+		prefs_keybind_cancel();
+}
+
+static gint prefs_keybind_deleted(GtkWidget *widget, GdkEventAny *event,
+				  gpointer data)
+{
+	prefs_keybind_cancel();
+	return TRUE;
+}
+
+static void prefs_keybind_cancel(void)
+{
+	gtk_widget_destroy(keybind.window);
+	keybind.window = NULL;
+	keybind.combo = NULL;
+}
+
 static void prefs_keybind_apply_clicked(GtkWidget *widget)
 {
-	GtkEntry *entry = GTK_ENTRY(GTK_COMBO(interface.keybind_combo)->entry);
+	GtkEntry *entry = GTK_ENTRY(GTK_COMBO(keybind.combo)->entry);
 	gchar *text;
 	gchar *rc_str;
 
 	static gchar *default_menurc =
-		"(menu-path \"<Main>/File/Empty trash\" \"<shift>D\")\n"
+		"(menu-path \"<Main>/File/Empty trash\" \"\")\n"
 		"(menu-path \"<Main>/File/Save as...\" \"<control>S\")\n"
 		"(menu-path \"<Main>/File/Print...\" \"\")\n"
 		"(menu-path \"<Main>/File/Exit\" \"<control>Q\")\n"
@@ -3741,6 +3813,10 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 
 	gtk_item_factory_parse_rc_string(empty_menurc);
 	gtk_item_factory_parse_rc_string(rc_str);
+
+	gtk_widget_destroy(keybind.window);
+	keybind.window = NULL;
+	keybind.combo = NULL;
 }
 
 static void prefs_common_charset_set_data_from_optmenu(PrefParam *pparam)

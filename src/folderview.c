@@ -2320,9 +2320,13 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 	}
 
 	if (acceptable) {
-		gtk_signal_handler_block_by_func(GTK_OBJECT(widget),GTK_SIGNAL_FUNC(folderview_selected), folderview);
+		gtk_signal_handler_block_by_func
+			(GTK_OBJECT(widget),
+			 GTK_SIGNAL_FUNC(folderview_selected), folderview);
 		gtk_ctree_select(GTK_CTREE(widget), node);
-		gtk_signal_handler_unblock_by_func(GTK_OBJECT(widget),GTK_SIGNAL_FUNC(folderview_selected), folderview);
+		gtk_signal_handler_unblock_by_func
+			(GTK_OBJECT(widget),
+			 GTK_SIGNAL_FUNC(folderview_selected), folderview);
 		gdk_drag_status(context, 
 					(context->actions == GDK_ACTION_COPY ?
 					GDK_ACTION_COPY : GDK_ACTION_MOVE) , time);
@@ -2372,7 +2376,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 			case GDK_ACTION_DEFAULT:
 			default:
 		if (src_item->folder->type != item->folder->type ||
-		    (src_item->folder->type == F_IMAP &&
+		    (item->folder->type == F_IMAP &&
 		     src_item->folder != item->folder))
 			summary_copy_selected_to(folderview->summaryview, item);
 		else

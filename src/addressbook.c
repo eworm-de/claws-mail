@@ -383,8 +383,8 @@ static GtkItemFactoryEntry addressbook_entries[] =
 	{N_("/_Address/_Edit"),		"<alt>Return",	addressbook_edit_address_cb,    0, NULL},
 	{N_("/_Address/_Delete"),	NULL,		addressbook_delete_address_cb,  0, NULL},
 	{N_("/_Tools/---"),		NULL,		NULL, 0, "<Separator>"},
-	{N_("/_Tools/Import _LDIF"),	NULL,           addressbook_import_ldif_cb,	0, NULL},
-	{N_("/_Tools/Import M_utt"),	NULL,           addressbook_import_mutt_cb,	0, NULL},
+	{N_("/_Tools/Import _LDIF file"), NULL,		addressbook_import_ldif_cb,	0, NULL},
+	{N_("/_Tools/Import M_utt file"), NULL,         addressbook_import_mutt_cb,	0, NULL},
 	{N_("/_Help"),			NULL,		NULL, 0, "<LastBranch>"},
 	{N_("/_Help/_About"),		NULL,		about_show, 0, NULL}
 };
@@ -395,7 +395,7 @@ static GtkItemFactoryEntry addressbook_entries[] =
 	{N_("/_Tools/Import _Mozilla"),	NULL,           NULL,				0, NULL},
 	{N_("/_Tools/Import _vCard"),	NULL,           NULL,				0, NULL},
 	{N_("/_Tools/---"),		NULL,		NULL, 0, "<Separator>"},
-	{N_("/_Tools/Export _LDIF"),	NULL,           NULL,				0, NULL},
+	{N_("/_Tools/Export _LDIF file"), NULL,		NULL,				0, NULL},
 	{N_("/_Tools/Export v_Card"),	NULL,           NULL,				0, NULL},
 */
 
@@ -447,18 +447,18 @@ void addressbook_open(Compose *target)
 		addressbook_load_tree();
 		gtk_ctree_select(GTK_CTREE(addrbook.ctree),
 				 GTK_CTREE_NODE(GTK_CLIST(addrbook.ctree)->row_list));
-	}
-	else {
+	} else
 		gtk_widget_hide(addrbook.window);
-	}
 
 	gtk_widget_show_all(addrbook.window);
+
 	addressbook_set_target_compose(target);
 }
 
 void addressbook_set_target_compose(Compose *target)
 {
 	addrbook.target_compose = target;
+
 	addressbook_button_set_sensitive();
 }
 
@@ -1029,7 +1029,10 @@ gchar *addressbook_format_address( AddrItemObject * aio ) {
 	}
 	if( address ) {
 		if( name ) {
-			buf = g_strdup_printf( "%s <%s>", name, address );
+			if( strchr_with_skip_quote( name, '"', ',' ) )
+				buf = g_strdup_printf( "\"%s\" <%s>", name, address );
+			else
+				buf = g_strdup_printf( "%s <%s>", name, address );
 		}
 		else {
 			buf = g_strdup( address );

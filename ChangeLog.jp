@@ -1,3 +1,14 @@
+2002-02-06
+
+	* src/imap.c: imap_copy_msgs_with_dest(): リストのトラバース時の
+	  バグを修正。
+	* src/prefs_common.c: キーバインドの設定を別ダイアログにした。
+	* src/addressbook.c: addressbook_format_address(): 表示名にカンマ
+	  が含まれていれば "" を追加するようにした(渡部さん thanks)。
+	* src/addr_compl.c: get_complete_address(): 表示名にカンマが含まれて
+	  いれば "" を追加するようにした。
+	  get_address_from_edit(): 引用文字を正しく扱うようにした。
+
 2002-02-05
 
 	* src/compose.c: compose_exec_ext_editor_real(): g_strsplit() を

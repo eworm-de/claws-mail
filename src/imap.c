@@ -770,7 +770,7 @@ gint imap_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
 			(folder, dest, msglist, FALSE);
 
 	for (cur = msglist; cur != NULL; cur = cur->next) {
-		msginfo = (MsgInfo *)msglist->data;
+		msginfo = (MsgInfo *)cur->data;
 		ret = imap_copy_msg(folder, dest, msginfo);
 		if (ret != 0) break;
 	}
