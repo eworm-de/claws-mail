@@ -1,3 +1,7 @@
+2001-05-06 [alfons]
+
+	* src/gtkstext.c: bug in cursor up navigation fixed
+
 2001-05-06 [hoa]
 
 	* src/Makefile.am

@@ -4280,7 +4280,7 @@ static void move_cursor_to_display_row_up(GtkSText *text)
 	/* get the previous line */
 	if (mark.index != 0) {
 		decrement_mark(&mark);
-		if (mark.index - 1 > 0) {
+		if (mark.index != 0) {
 			GtkSPropertyMark smark = mark;
 			XDEBUG( ("%s(%d) finding line start mark", __FILE__, __LINE__) );
 			mark = find_this_line_start_mark(text, smark.index -1,  &smark);
