@@ -1,3 +1,16 @@
+2003-11-21
+
+	* configure.in: added check for d_type member in struct dirent.
+	* src/mh.c: mh_scan_folder(): use d->d_type if available.
+	  mh_get_uncached_msgs(): removed redundant stat().
+	  mh_parse_msg(): return NULL if not a regular file.
+	  mh_scan_tree_recursive(): use d->d_type if available.
+	* src/utils.[ch]:
+	  dirent_is_regular_file()
+	  dirent_is_directory(): new. Use d->d_type to determine the type
+	  of entry if available.
+	  remove_dir_recursive(): use dirent_is_directory().
+
 2003-11-14
 
 	* src/folder.h: added 'updated' flag to FolderItem.

@@ -1,3 +1,78 @@
+2003-11-26 [paul]	0.9.7claws
+
+	* 0.9.7claws released
+
+2003-11-26 [paul]	0.9.6claws99
+
+	* src/Makefile.am
+		add reference to pixmaps/mime_message.xpm
+
+2003-11-26 [paul]	0.9.6claws98
+
+	* po/POTFILES.in
+		remove reference to src/sigstatus.c
+
+2003-11-26 [christoph]	0.9.6claws97
+
+	* src/Makefile.am
+	* src/prefs_common.c
+	* src/rfc2015.c
+	* src/sigstatus.[ch]		** REMOVE **
+		remove signature result popup option and window
+
+2003-11-26 [paul]	0.9.6claws96
+
+	* po/es.po
+	  po/ja.po
+	  po/pl.po
+	  po/sk.po
+	  po/sr.po
+	  	update translations. submitted by Ricardo Mones Lastra,
+		Rui Hirokawa, Emil Nowak, Andrej Kacian, and Urke MMI
+
+2003-11-25 [christoph]	0.9.6claws95
+
+	* src/procmime.c
+		display mime structure only in debug mode
+
+2003-11-25 [melvin]	0.9.6claws94
+
+	* po/fr.po
+		Updated French translations + typos fixes of older
+		translations (thanks to Fabien Vantard for pointing
+		to some of them)
+
+2003-11-25 [melvin]	0.9.6claws93
+
+	* src/editldap.c
+		Fixed a couple of typos.
+
+2003-11-24 [paul]	0.9.6claws92
+
+	* po/POTFILES.in
+		add 'src/textview.c'
+
+2003-11-24 [paul]	0.9.6claws91
+
+	* src/sgpgme.c
+		fix typo. spotted by Rui Hirokawa <rui_hirokawa@ybb.ne.jp>
+
+2003-11-24 [paul]	0.9.6claws90
+
+	* src/plugins/image_viewer/viewer.c
+		image_viewer_show_mimepart(): 
+		use procmime_mimeinfo_get_parameter() to get the file name
+
+2003-11-24 [paul]	0.9.6claws89
+
+	* src/textview.c
+		textview_show_mime_part(): rewrite text hint
+
+2003-11-22 [paul]	0.9.6claws88
+
+	* sync with 0.9.7cvs5
+		see ChangeLog 2003-11-21
+
 2003-11-21 [paul]	0.9.6claws87
 
 	* src/mimeview.c

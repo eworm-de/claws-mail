@@ -620,10 +620,6 @@ SOURCE=..\src\setup.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\sigstatus.c
-# End Source File
-# Begin Source File
-
 SOURCE="..\src\simple-gettext.c"
 # End Source File
 # Begin Source File
@@ -1221,10 +1217,6 @@ SOURCE=..\src\setup.h
 # Begin Source File
 
 SOURCE=..\src\sgpgme.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\sigstatus.h
 # End Source File
 # Begin Source File
 

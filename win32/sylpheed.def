@@ -571,6 +571,8 @@ EXPORTS
 	delete_aspell_string_map 
 	delete_aspell_string_pair_enumeration 
 	description_window_create 
+	dirent_is_directory 
+	dirent_is_regular_file 
 	display_header_prop_free 
 	display_header_prop_get_str 
 	display_header_prop_read_str 
@@ -826,10 +828,6 @@ EXPORTS
 	gpgmegtk_passphrase_cb 
 	gpgmegtk_recipient_selection 
 	gpgmegtk_set_passphrase_grab 
-	gpgmegtk_sig_status_create 
-	gpgmegtk_sig_status_destroy 
-	gpgmegtk_sig_status_to_string 
-	gpgmegtk_sig_status_update 
 	grouplist_dialog 
 	gtk_sctree_get_type 
 	gtk_sctree_new_with_titles 

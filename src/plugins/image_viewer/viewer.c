@@ -214,7 +214,8 @@ static void image_viewer_show_mimepart(MimeViewer *_mimeviewer, const gchar *fil
 	if (imageviewerprefs.display_img)
 		image_viewer_load_image(imageviewer);
 	else {
-		gtk_label_set_text(GTK_LABEL(imageviewer->filename), mimeinfo->filename);
+		gtk_label_set_text(GTK_LABEL(imageviewer->filename),
+				   procmime_mimeinfo_get_parameter(mimeinfo, "name"));
 		gtk_label_set_text(GTK_LABEL(imageviewer->filesize), to_human_readable(mimeinfo->length));
 		gtk_label_set_text(GTK_LABEL(imageviewer->content_type), mimeinfo->subtype);
 	}

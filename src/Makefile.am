@@ -108,7 +108,6 @@ sylpheed_SOURCES = \
 	send_message.c \
 	setup.c \
 	sgpgme.c \
-	sigstatus.c \
 	simple-gettext.c \
 	sourcewindow.c \
 	ssl_manager.c \
@@ -234,7 +233,6 @@ sylpheedinclude_HEADERS = \
 	send_message.h \
 	setup.h \
 	sgpgme.h \
-	sigstatus.h \
 	sourcewindow.h \
 	ssl_manager.h \
 	statusbar.h \
@@ -302,6 +300,7 @@ EXTRA_DIST = \
 	pixmaps/mime_application.xpm \
 	pixmaps/mime_audio.xpm \
 	pixmaps/mime_image.xpm \
+	pixmaps/mime_message.xpm \
 	pixmaps/mime_text_enriched.xpm \
 	pixmaps/mime_text_html.xpm \
 	pixmaps/mime_text_plain.xpm \

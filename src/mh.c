@@ -183,7 +183,6 @@ void mh_get_last_num(Folder *folder, FolderItem *item)
 	gchar *path;
 	DIR *dp;
 	struct dirent *d;
-	struct stat s;
 	gint max = 0;
 	gint num;
 
@@ -206,8 +205,7 @@ void mh_get_last_num(Folder *folder, FolderItem *item)
 
 	while ((d = readdir(dp)) != NULL) {
 		if ((num = to_number(d->d_name)) >= 0 &&
-		    stat(d->d_name, &s) == 0 &&
-		    S_ISREG(s.st_mode)) {
+		    dirent_is_regular_file(d)) {
 			if (max < num)
 				max = num;
 		}
@@ -224,7 +222,6 @@ gint mh_get_num_list(Folder *folder, FolderItem *item, GSList **list, gboolean *
 	gchar *path;
 	DIR *dp;
 	struct dirent *d;
-	struct stat s;
 	gint num, nummsgs = 0;
 
 	g_return_val_if_fail(item != NULL, -1);
@@ -247,11 +244,9 @@ gint mh_get_num_list(Folder *folder, FolderItem *item, GSList **list, gboolean *
 	}
 
 	while ((d = readdir(dp)) != NULL) {
-		if ((num = to_number(d->d_name)) >= 0 &&
-		    stat(d->d_name, &s) == 0 &&
-		    S_ISREG(s.st_mode)) {
+		if ((num = to_number(d->d_name)) >= 0) {
 			*list = g_slist_prepend(*list, GINT_TO_POINTER(num));
-		    nummsgs++;
+		   	nummsgs++;
 		}
 	}
 	closedir(dp);
@@ -744,11 +739,11 @@ static MsgInfo *mh_parse_msg(const gchar *file, FolderItem *item)
 	MsgInfo *msginfo;
 	MsgFlags flags;
 
-	flags.perm_flags = MSG_NEW|MSG_UNREAD;
-	flags.tmp_flags = 0;
-
 	g_return_val_if_fail(item != NULL, NULL);
 	g_return_val_if_fail(file != NULL, NULL);
+
+	flags.perm_flags = MSG_NEW|MSG_UNREAD;
+	flags.tmp_flags = 0;
 
 	if (item->stype == F_QUEUE) {
 		MSG_SET_TMP_FLAGS(flags, MSG_QUEUED);
@@ -756,20 +751,20 @@ static MsgInfo *mh_parse_msg(const gchar *file, FolderItem *item)
 		MSG_SET_TMP_FLAGS(flags, MSG_DRAFT);
 	}
 
+	if (stat(file, &s) < 0) {
+		FILE_OP_ERROR(file, "stat");
+		return NULL;
+	}
+	if (!S_ISREG(s.st_mode))
+		return NULL;
+
 	msginfo = procheader_parse_file(file, flags, FALSE, FALSE);
 	if (!msginfo) return NULL;
 
 	msginfo->msgnum = atoi(file);
 	msginfo->folder = item;
-
-	if (stat(file, &s) < 0) {
-		FILE_OP_ERROR(file, "stat");
-		msginfo->size = 0;
-		msginfo->mtime = 0;
-	} else {
-		msginfo->size = s.st_size;
-		msginfo->mtime = s.st_mtime;
-	}
+	msginfo->size = s.st_size;
+	msginfo->mtime = s.st_mtime;
 
 	return msginfo;
 }
@@ -867,13 +862,16 @@ static void mh_scan_tree_recursive(FolderItem *item)
 		else
 			entry = g_strdup(d->d_name);
 
-		if (stat(entry, &s) < 0) {
-			FILE_OP_ERROR(entry, "stat");
-			g_free(entry);
-			continue;
-		}
-
-		if (S_ISDIR(s.st_mode)) {
+		if (
+#ifdef HAVE_DIRENT_D_TYPE
+			d->d_type == DT_DIR ||
+			(d->d_type == DT_UNKNOWN &&
+#endif
+			stat(entry, &s) == 0 && S_ISDIR(s.st_mode)
+#ifdef HAVE_DIRENT_D_TYPE
+			)
+#endif
+		   ) {
 			FolderItem *new_item = NULL;
 			GNode *node;
 

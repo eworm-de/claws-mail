@@ -1840,6 +1840,34 @@ gboolean is_file_entry_exist(const gchar *file)
 	return TRUE;
 }
 
+gboolean dirent_is_regular_file(struct dirent *d)
+{
+	struct stat s;
+
+#ifdef HAVE_DIRENT_D_TYPE
+	if (d->d_type == DT_REG)
+		return TRUE;
+	else if (d->d_type != DT_UNKNOWN)
+		return FALSE;
+#endif
+
+	return (stat(d->d_name, &s) == 0 && S_ISREG(s.st_mode));
+}
+
+gboolean dirent_is_directory(struct dirent *d)
+{
+	struct stat s;
+
+#ifdef HAVE_DIRENT_D_TYPE
+	if (d->d_type == DT_DIR)
+		return TRUE;
+	else if (d->d_type != DT_UNKNOWN)
+		return FALSE;
+#endif
+
+	return (stat(d->d_name, &s) == 0 && S_ISDIR(s.st_mode));
+}
+
 gint change_dir(const gchar *dir)
 {
 	gchar *prevdir = NULL;
@@ -2154,14 +2182,9 @@ gint remove_dir_recursive(const gchar *dir)
 		    !strcmp(d->d_name, ".."))
 			continue;
 
-		if (stat(d->d_name, &s) < 0) {
-			FILE_OP_ERROR(d->d_name, "stat");
-			continue;
-		}
-
 		/* g_print("removing %s\n", d->d_name); */
 
-		if (S_ISDIR(s.st_mode)) {
+		if (dirent_is_directory(d)) {
 			if (remove_dir_recursive(d->d_name) < 0) {
 				g_warning("can't remove directory\n");
 				return -1;

@@ -34,6 +34,9 @@
  #include <unistd.h>
 #endif
 #include <sys/types.h>
+#ifndef WIN32
+#include <dirent.h>
+#endif
 #include <time.h>
 #if HAVE_ALLOCA_H
 #  include <alloca.h>
@@ -375,6 +378,8 @@ gboolean file_exist		(const gchar	*file,
 				 gboolean	 allow_fifo);
 gboolean is_dir_exist		(const gchar	*dir);
 gboolean is_file_entry_exist	(const gchar	*file);
+gboolean dirent_is_regular_file	(struct dirent	*d);
+gboolean dirent_is_directory	(struct dirent	*d);
 
 #define is_file_exist(file)		file_exist(file, FALSE)
 #define is_file_or_fifo_exist(file)	file_exist(file, TRUE)

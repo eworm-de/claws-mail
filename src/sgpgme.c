@@ -131,7 +131,7 @@ gchar *sgpgme_sigstat_info_short(GpgmeCtx ctx, GpgmeSigStat status)
 	case GPGME_SIG_STAT_NOKEY:
 		return g_strdup(_("You have no key to verify this signature"));
 	case GPGME_SIG_STAT_NOSIG:
-		return g_strdup(_("Bo signature found"));
+		return g_strdup(_("No signature found"));
 	case GPGME_SIG_STAT_ERROR:
 		return g_strdup(_("An error occured"));
 	case GPGME_SIG_STAT_NONE:

@@ -327,7 +327,6 @@ OBJECTS= \
 	session.o \
 	setup.o \
 	sgpgme.o \
-	sigstatus.o \
 	simple-gettext.o \
 	smtp.o \
 	socket.o \
@@ -663,7 +662,6 @@ send_message.o:	send_message.c send_message.h
 session.o: 	session.c session.h
 setup.o: 	setup.c setup.h
 sgpgme.o:	sgpgme.c sgpgme.h
-sigstatus.o: 	sigstatus.c sigstatus.h
 simple-gettext.o: 	simple-gettext.c
 smtp.o: 	smtp.c smtp.h
 socket.o: 	socket.c socket.h

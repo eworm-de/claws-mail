@@ -611,7 +611,7 @@ static void addressbook_edit_ldap_page_search( gint pageNum, gchar *pageLbl ) {
 	gtk_tooltips_set_tip( toolTip, check_matchoption, _( 
 		"Searches for names and addresses can be performed either " \
 		"using \"begins-with\" or \"contains\" search term. Check " \
-		"this option to perform a contains search; this type of " \
+		"this option to perform a \"contains\" search; this type of " \
 		"search usually takes longer to complete. Note that for " \
 		"performance reasons, address completion uses " \
 		"\"begins-with\" for all searches against other address " \
@@ -674,7 +674,7 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 
 	toolTip = gtk_tooltips_new();
 	gtk_tooltips_set_tip( toolTip, entry_bindDN, _( 
-		"The LDAP user account name to be used to connect to the " \
+		"The LDAP user account name to be used to connect to the server. " \
 		"This is usually only used for protected servers. This name " \
 		"is typically formatted as: \"cn=user,dc=sylpheed,dc=com\". " \
 		"This is usually left empty when performing a search." ),
@@ -732,8 +732,8 @@ static void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) 
 
 	toolTip = gtk_tooltips_new();
 	gtk_tooltips_set_tip( toolTip, spinbtn_maxentry, _( 
-		"The maximum number of entries that should be returned be " \
-		"returned in the search results." ),
+		"The maximum number of entries that should be returned " \
+		"in the search result." ),
 		NULL );
 
 	/* Done */

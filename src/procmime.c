@@ -1270,7 +1270,8 @@ static MimeInfo *procmime_scan_file_with_offset(const gchar *filename, int offse
 	mimeinfo->length = buf.st_size - offset;
 
 	procmime_parse_message_rfc822(mimeinfo);
-	output_mime_structure(mimeinfo, 0);
+	if (debug_get_mode())
+		output_mime_structure(mimeinfo, 0);
 
 	return mimeinfo;
 }
