@@ -1295,6 +1295,10 @@ void compose_reedit(MsgInfo *msginfo)
 	g_signal_handlers_block_by_func(G_OBJECT(textbuf),
 					G_CALLBACK(compose_changed_cb),
 					compose);
+					
+	g_signal_handlers_block_by_func(G_OBJECT(textbuf),
+					G_CALLBACK(text_inserted),
+					compose);
 
 	if ((fp = procmime_get_first_text_content(msginfo)) == NULL)
 		g_warning("Can't get text part\n");
@@ -1302,12 +1306,16 @@ void compose_reedit(MsgInfo *msginfo)
 		while (fgets(buf, sizeof(buf), fp) != NULL) {
 			strcrchomp(buf);
 			gtk_text_buffer_insert(textbuf, &iter, buf, -1);
+			gtk_text_buffer_get_iter_at_mark(textbuf, &iter, mark);
 		}
 		fclose(fp);
 	}
 	
 	compose_attach_parts(compose, msginfo);
 
+	g_signal_handlers_unblock_by_func(G_OBJECT(textbuf),
+					G_CALLBACK(text_inserted),
+					compose);
 	g_signal_handlers_unblock_by_func(G_OBJECT(textbuf),
 					G_CALLBACK(compose_changed_cb),
 					compose);
