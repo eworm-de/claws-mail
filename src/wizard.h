@@ -27,6 +27,6 @@
 
 #include "mainwindow.h"
 
-gboolean wizard_run(MainWindow *, gboolean create_mailbox);
+gboolean run_wizard(MainWindow *, gboolean create_mailbox);
 
 #endif

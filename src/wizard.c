@@ -99,7 +99,6 @@ static void wizard_write_config(WizardWindow *wizard)
 	PrefsAccount *prefs_account = prefs_account_new();
 	GList *account_list = NULL;
 	GtkWidget *menu, *menuitem;
-	int tmp;
 	
 	if (wizard->create_mailbox) {
 		mailbox_ok = setup_write_mailbox_path(wizard->mainwin, 
@@ -132,11 +131,12 @@ static void wizard_write_config(WizardWindow *wizard)
 #ifdef USE_OPENSSL			
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wizard->smtp_use_ssl)))
 		prefs_account->ssl_smtp = SSL_TUNNEL;
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wizard->smtp_use_ssl)))
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(wizard->smtp_use_ssl))) {
 		if (prefs_account->protocol == A_IMAP4)
 			prefs_account->ssl_imap = SSL_TUNNEL;
 		else
 			prefs_account->ssl_pop = SSL_TUNNEL;
+	}
 #endif
 
 	account_list = g_list_append(account_list, prefs_account);
@@ -252,7 +252,6 @@ static GtkWidget* user_page (WizardWindow * wizard)
 static GtkWidget* mailbox_page (WizardWindow * wizard)
 {
 	GtkWidget *table = gtk_table_new(1,2, FALSE);
-	gchar *text;
 	gint i = 0;
 	
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
@@ -368,7 +367,6 @@ static GtkWidget* recv_page (WizardWindow * wizard)
 static GtkWidget* ssl_page (WizardWindow * wizard)
 {
 	GtkWidget *table = gtk_table_new(2,2, FALSE);
-	gchar *text;
 	gint i = 0;
 	
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);

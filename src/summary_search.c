@@ -247,7 +247,6 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 	gboolean body_matched;
 	const gchar *body_str, *from_str, *to_str, *subj_str;
 	char *(*findfunc) (const char *haystack, const char *needle);
-	GError *error = NULL;
 
 	if (summary_is_locked(summaryview)) return;
 	summary_lock(summaryview);
@@ -389,7 +388,6 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 				break;
 			}
 		}
-skip:
 		node = backward ? gtkut_ctree_node_prev(ctree, node)
 				: gtkut_ctree_node_next(ctree, node);
 	}

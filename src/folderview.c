@@ -423,8 +423,6 @@ FolderView *folderview_create(void)
 
 void folderview_init(FolderView *folderview)
 {
-	static GdkFont *boldfont = NULL;
-	static GdkFont *normalfont = NULL;
 	GtkWidget *ctree = folderview->ctree;
 	GtkWidget *label_new;
 	GtkWidget *label_unread;

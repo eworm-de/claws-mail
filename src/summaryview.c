@@ -611,8 +611,6 @@ SummaryView *summary_create(void)
 
 void summary_init(SummaryView *summaryview)
 {
-	static GdkFont *boldfont = NULL;
-	static GdkFont *smallfont = NULL;
 	GtkStyle *style;
 	GtkWidget *pixmap;
 

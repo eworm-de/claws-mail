@@ -1,3 +1,16 @@
+2004-09-01 [colin]	0.9.12cvs86.1
+
+	* src/filtering.c
+	* src/folderview.c
+	* src/imap.c
+	* src/prefs_matcher.c
+	* src/stock_pixmap.c
+	* src/summary_search.c
+	* src/summaryview.c
+	* src/wizard.c
+	* src/wizard.h
+		Sync with HEAD + gtk2 specific warning fixes
+
 2004-08-31 [colin]	0.9.12cvs85.1
 
 	* src/folder.c
