@@ -1,3 +1,24 @@
+2002-03-11 [paul]	version 0.7.4claws released
+
+2002-03-11 [paul]	0.7.4claws
+
+	* po/es.po
+	  po/it.po
+   	  po/nl.po
+	  po/pt_BR.po
+		update message catalogs. Submitted by Ricardo Mones 
+		Lastra, Alessandro Maestri, Wilbert Berendsen, and 
+		Fabio Junior Beneditto
+
+	* configure.in
+	  faq/Makefile.am
+	  faq/it/Makefile
+	  faq/it/sylpheed-faq*
+	  src/mainwindow.c
+	  src/manual.[ch]
+		add FAQ in Italian
+	
+
 2002-03-11 [jens]	0.7.3claws7
 
 	* po/de.po

@@ -5,10 +5,10 @@ PACKAGE=sylpheed
 dnl version number
 MAJOR_VERSION=0
 MINOR_VERSION=7
-MICRO_VERSION=3
+MICRO_VERSION=4
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws7
+EXTRA_VERSION=claws
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -354,6 +354,7 @@ faq/Makefile
 faq/en/Makefile
 faq/es/Makefile
 faq/fr/Makefile
+faq/it/Makefile
 manual/Makefile
 manual/en/Makefile
 manual/fr/Makefile
