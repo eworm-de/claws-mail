@@ -1,3 +1,9 @@
+2004-12-09 [colin]	0.9.13cvs10
+
+	* src/procmime.c
+		Fix procmime_encode_content doing horribly wrong
+		stuff when encoding to B64 from memory
+
 2004-12-08 [colin]	0.9.13cvs9
 
 	* src/gtk/colorlabel.c
