@@ -1070,7 +1070,7 @@ static void procmime_parse_content_type(const gchar *content_type, MimeInfo *mim
 	for (strarray = &content_type_parts[1]; *strarray != NULL; strarray++) {
 		gchar **parameters_parts;
 
-		parameters_parts = g_strsplit(*strarray, "=", 1);
+		parameters_parts = g_strsplit(*strarray, "=", 2);
 		g_strdown(parameters_parts[0]);
 		if(parameters_parts[1][0] == '"')
 			extract_quote(parameters_parts[1], '"');
