@@ -266,7 +266,8 @@ static gint pop3_getrange_uidl_recv(Pop3Session *session, const gchar *data,
 		partial_recv = (gint)g_hash_table_lookup(
 					session->partial_recv_table, id);
 
-		if (!session->ac_prefs->getall && recv_time != RECV_TIME_NONE) {
+		if (!session->ac_prefs->getall && recv_time != RECV_TIME_NONE
+		||  partial_recv != POP3_TOTALLY_RECEIVED) {
 			session->msg[num].received = 
 				(partial_recv != POP3_MUST_COMPLETE_RECV);
 			session->msg[num].partial_recv = partial_recv;
