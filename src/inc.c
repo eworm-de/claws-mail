@@ -266,14 +266,20 @@ static IncProgressDialog *inc_progress_dialog_create(void)
 
 	progress_dialog_set_value(progress, 0.0);
 
-	gtk_widget_show(progress->window);
+	if((prefs_common.receive_dialog == RECVDIALOG_ALWAYS) ||
+	    ((prefs_common.receive_dialog == RECVDIALOG_WINDOW_ACTIVE) && focus_window)) {
+		gtk_widget_show(progress->window);
+	}
 
 	PIXMAP_CREATE(progress->clist, okxpm, okxpmmask, complete_xpm);
 	PIXMAP_CREATE(progress->clist,
 		      currentxpm, currentxpmmask, continue_xpm);
 	PIXMAP_CREATE(progress->clist, errorxpm, errorxpmmask, error_xpm);
 
-	gtk_widget_show_now(progress->window);
+	if((prefs_common.receive_dialog == RECVDIALOG_ALWAYS) ||
+	    ((prefs_common.receive_dialog == RECVDIALOG_WINDOW_ACTIVE) && focus_window)) {
+		gtk_widget_show_now(progress->window);
+	}
 
 	dialog->dialog = progress;
 	dialog->queue_list = NULL;

@@ -33,4 +33,6 @@ gint manage_window_focus_out		(GtkWidget	*widget,
 
 void manage_window_set_transient	(GtkWindow	*window);
 
+extern GtkWidget *focus_window;
+
 #endif /* __MANAGE_WINDOW_H__ */

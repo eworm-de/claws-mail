@@ -24,7 +24,7 @@
 #include "manage_window.h"
 #include "utils.h"
 
-static GtkWidget *focus_window;
+GtkWidget *focus_window;
 
 gint manage_window_focus_in(GtkWidget *widget, GdkEventFocus *event,
 			    gpointer data)

@@ -1,3 +1,11 @@
+2001-06-23 [christoph]
+
+	* src/inc.c
+	* src/manage_window.[ch]
+	* src/prefs_common.[ch]
+		mail retrieval dialog can be enabled, disabled
+		or hidden if non of sylpheed's windows is active
+
 2001-06-22 [paul]
 
         0.5.0claws2

@@ -163,6 +163,7 @@ static struct Interface {
 	GtkWidget *checkbtn_askonclean;
 	GtkWidget *checkbtn_warnqueued;
 	GtkWidget *checkbtn_addaddrbyclick;
+	GtkWidget *recvdialog_optmenu;
 } interface;
 
 static struct Other {
@@ -192,6 +193,8 @@ static void prefs_common_default_signkey_set_data_from_optmenu
 							(PrefParam *pparam);
 static void prefs_common_default_signkey_set_optmenu	(PrefParam *pparam);
 #endif
+static void prefs_recvdialog_set_data_from_optmenu(PrefParam *pparam);
+static void prefs_recvdialog_set_optmenu(PrefParam *pparam);
 
 /*
    parameter name, default value, pointer to the prefs variable, data type,
@@ -531,6 +534,10 @@ static PrefParam param[] = {
 	{"add_address_by_click", "FALSE", &prefs_common.add_address_by_click,
 	 P_BOOL, &interface.checkbtn_addaddrbyclick,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"receive_dialog", NULL, &prefs_common.receive_dialog, P_ENUM,
+	 &interface.recvdialog_optmenu,
+	 prefs_recvdialog_set_data_from_optmenu,
+	 prefs_recvdialog_set_optmenu},
 
 	{"confirm_on_exit", "TRUE", &prefs_common.confirm_on_exit, P_BOOL,
 	 &interface.checkbtn_confonexit,
@@ -1950,6 +1957,10 @@ static void prefs_interface_create(void)
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
 	GtkWidget *checkbtn_addaddrbyclick;
+	GtkWidget *hbox;
+	GtkWidget *recvdialog_optmenu;
+	GtkWidget *recvdialog_optmenu_menu;
+	GtkWidget *recvdialog_menuitem;
 	GtkWidget *label;
 
 	GtkWidget *frame_exit;
@@ -2005,6 +2016,28 @@ static void prefs_interface_create(void)
 		(vbox2, checkbtn_addaddrbyclick,
 		 _("Add address to destination when double-clicked"));
 
+	/* Receive Dialog */
+	hbox = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
+
+	label = gtk_label_new (_("Show receive Dialog"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
+	recvdialog_optmenu = gtk_option_menu_new ();
+	gtk_widget_show (recvdialog_optmenu);
+	gtk_box_pack_start (GTK_BOX (hbox), recvdialog_optmenu, FALSE, FALSE, 0);
+
+	recvdialog_optmenu_menu = gtk_menu_new ();
+
+	MENUITEM_ADD (recvdialog_optmenu_menu, recvdialog_menuitem, _("Always"),  RECVDIALOG_ALWAYS);
+	MENUITEM_ADD (recvdialog_optmenu_menu, recvdialog_menuitem, _("Only if a sylpheed window is active"),  RECVDIALOG_WINDOW_ACTIVE);
+	MENUITEM_ADD (recvdialog_optmenu_menu, recvdialog_menuitem, _("Never"), RECVDIALOG_NEVER);
+
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (recvdialog_optmenu), recvdialog_optmenu_menu);
+
+	/* On Exit */
 	PACK_FRAME (vbox1, frame_exit, _("On exit"));
 
 	vbox_exit = gtk_vbox_new (FALSE, VSPACING_NARROW);
@@ -2033,6 +2066,7 @@ static void prefs_interface_create(void)
 	interface.checkbtn_openinbox      = checkbtn_openinbox;
 	interface.checkbtn_immedexec      = checkbtn_immedexec;
 	interface.checkbtn_addaddrbyclick = checkbtn_addaddrbyclick;
+	interface.recvdialog_optmenu	  = recvdialog_optmenu;
 	interface.checkbtn_confonexit     = checkbtn_confonexit;
 	interface.checkbtn_cleanonexit    = checkbtn_cleanonexit;
 	interface.checkbtn_askonclean     = checkbtn_askonclean;
@@ -2992,4 +3026,42 @@ static void compose_prefs_key_pressed(GtkWidget *widget, GdkEventKey *event)
 	if (event && event->keyval == GDK_Escape) {
 		gtk_widget_hide(composeprefs.window);
 	}
+}
+
+static void prefs_recvdialog_set_data_from_optmenu(PrefParam *pparam)
+{
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+
+	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(*pparam->widget));
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	*((RecvDialogShow *)pparam->data) = GPOINTER_TO_INT
+		(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
+}
+
+static void prefs_recvdialog_set_optmenu(PrefParam *pparam)
+{
+	RecvDialogShow dialog_show;
+	GtkOptionMenu *optmenu = GTK_OPTION_MENU(*pparam->widget);
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+
+	dialog_show = *((RecvDialogShow *)pparam->data);
+
+	switch (dialog_show) {
+	case RECVDIALOG_ALWAYS:
+		gtk_option_menu_set_history(optmenu, 0);
+		break;
+	case RECVDIALOG_WINDOW_ACTIVE:
+		gtk_option_menu_set_history(optmenu, 1);
+		break;
+	case RECVDIALOG_NEVER:
+		gtk_option_menu_set_history(optmenu, 2);
+		break;
+	default:
+	}
+
+	menu = gtk_option_menu_get_menu(optmenu);
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
 }

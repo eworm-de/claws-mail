@@ -32,6 +32,13 @@
 
 typedef struct _PrefsCommon	PrefsCommon;
 
+typedef enum
+{
+	RECVDIALOG_ALWAYS,
+	RECVDIALOG_WINDOW_ACTIVE,
+	RECVDIALOG_NEVER
+} RecvDialogShow;
+
 struct _PrefsCommon
 {
 	/* Receive */
@@ -180,6 +187,7 @@ struct _PrefsCommon
 	gboolean open_inbox_on_inc;
 	gboolean immediate_exec;
 	gboolean add_address_by_click;
+	RecvDialogShow receive_dialog;
 
 	gboolean confirm_on_exit;
 	gboolean clean_on_exit;
