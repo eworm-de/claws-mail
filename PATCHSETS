@@ -77,3 +77,4 @@
 ( cvs diff -u -r 1.382.2.33 -r 1.382.2.34 src/compose.c; cvs diff -u -r 1.9.2.6 -r 1.9.2.7 src/gtk/gtkaspell.c; cvs diff -u -r 1.5.2.1 -r 1.5.2.2 src/gtk/gtkaspell.h; ) > 0.9.12cvs33.21.patchset
 ( cvs diff -u -r 1.382.2.34 -r 1.382.2.35 src/compose.c; ) > 0.9.12cvs33.22.patchset
 ( cvs diff -u -r 1.58.2.2 -r 1.58.2.3 po/de.po; cvs diff -u -r 1.60.2.2 -r 1.60.2.3 po/es.po; cvs diff -u -r 1.42.2.2 -r 1.42.2.3 po/fr.po; cvs diff -u -r 1.34 -r 1.35 po/it.po; cvs diff -u -r 1.16.2.1 -r 1.16.2.2 po/ja.po; cvs diff -u -r 1.10.2.2 -r 1.10.2.3 po/pl.po; cvs diff -u -r 1.17 -r 1.18 po/ru.po; cvs diff -u -r 1.2.2.2 -r 1.2.2.3 po/sk.po; cvs diff -u -r 1.17.2.2 -r 1.17.2.3 po/sr.po; cvs diff -u -r 1.5.2.2 -r 1.5.2.3 po/zh_CN.po; ) > 0.9.12cvs33.23.patchset
+( cvs diff -u -r 1.17.2.2 -r 1.17.2.3 src/alertpanel.c; ) > 0.9.12cvs33.24.patchset

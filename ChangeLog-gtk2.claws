@@ -1,3 +1,8 @@
+2004-07-26 [colin]	0.9.12cvs33.24
+
+	* src/alertpanel.c
+		Maybe fix 551 (Truncated font in alert window)
+
 2004-07-26 [colin]	0.9.12cvs33.23
 
 	* po/de.po

@@ -39,7 +39,7 @@
 #define TITLE_HEIGHT		72
 #define MESSAGE_HEIGHT		62
 
-#define DEFAULT_TITLE_FONT	"Helvetica 16"
+#define DEFAULT_TITLE_FONT	"Sans Bold 12"
 
 static gboolean alertpanel_is_open = FALSE;
 static AlertValue value;
@@ -259,7 +259,6 @@ static void alertpanel_create(const gchar *title,
 	/* pixmapwid = create_pixmapwid(dialog, GNUstep_xpm); */
 	/* gtk_box_pack_start(GTK_BOX(hbox), pixmapwid, FALSE, FALSE, 16); */
 	label = gtk_label_new(title);
-	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 16);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	if (!font_desc) {
 		gchar *fontstr = prefs_common.titlefont
@@ -270,6 +269,7 @@ static void alertpanel_create(const gchar *title,
 	if (font_desc) {
 		gtk_widget_modify_font (label, font_desc);
 	}
+	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 16);
 
 	/* for message and button(s) */
 	vbox = gtk_vbox_new(FALSE, 0);
