@@ -5526,7 +5526,7 @@ msgstr "jours"
 
 #: src/prefs_account.c:1188
 msgid "(0 days: remove immediately)"
-msgstr "(0 jours : supprimmer immédiatement)"
+msgstr "(0 jours : supprimer immédiatement)"
 
 #: src/prefs_account.c:1195
 msgid "Download all messages on server"
@@ -5554,7 +5554,7 @@ msgstr "Nombre maximum d'articles à récupérer"
 
 #: src/prefs_account.c:1267
 msgid "unlimited if 0 is specified"
-msgstr "pas de limites si 0 est spécifié"
+msgstr "pas de limite si 0 est spécifié"
 
 #: src/prefs_account.c:1283 src/prefs_account.c:1406
 msgid "Authentication method"
@@ -8350,7 +8350,7 @@ msgstr "Plus de messages non lus"
 
 #: src/summaryview.c:1415
 msgid "No unread message found. Search from the end?"
-msgstr "Plus de message non lu. Aller au dossier suivant ?"
+msgstr "Plus de message non lu. Chercher depuis la fin ?"
 
 #: src/summaryview.c:1427 src/summaryview.c:1471
 msgid ""
@@ -8364,7 +8364,7 @@ msgstr "Plus de messages non lus"
 
 #: src/summaryview.c:1459
 msgid "No unread message found. Go to next folder?"
-msgstr "Pas de message non lu. Passage au dossier suivant ?"
+msgstr "Pas de message non lu. Aller au dossier suivant ?"
 
 #: src/summaryview.c:1501 src/summaryview.c:1525
 msgid "No more new messages"
