@@ -1,3 +1,13 @@
+2002-12-04 [paul]	0.8.6claws58
+
+	* po/es.po
+		updated by Ricardo Mones Lastra
+		
+	* configure.in
+	  po/hu.po	** NEW FILE **
+	  	initial Hungarian translation, submitted
+		by Gál Zoltán <galzoli@hu.inter.net>
+
 2002-12-03 [christoph]	0.8.6claws57
 
 	* src/Makefile.am
