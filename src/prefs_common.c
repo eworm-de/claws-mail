@@ -243,6 +243,7 @@ static struct MessageColorButtons {
 	GtkWidget *quote_level3_btn;
 	GtkWidget *uri_btn;
 	GtkWidget *tgt_folder_btn;
+	GtkWidget *signature_btn;
 } color_buttons;
 
 static struct KeybindDialog {
@@ -644,7 +645,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"target_folder_color", "14294218", &prefs_common.tgt_folder_col, P_INT,
 	 NULL, NULL, NULL},
-	{"signature_color", "0", &prefs_common.sig_col, P_USHORT,
+	{"signature_color", "7960953", &prefs_common.signature_col, P_INT,
 	 NULL, NULL, NULL},
 	{"recycle_quote_colors", "FALSE", &prefs_common.recycle_quote_colors,
 	 P_BOOL, NULL, NULL, NULL},
@@ -3254,6 +3255,7 @@ static void prefs_quote_colors_dialog_create(void)
 	GtkWidget *quotelevel2_label;
 	GtkWidget *quotelevel3_label;
 	GtkWidget *uri_label;
+	GtkWidget *signature_label;
 	GtkWidget *tgt_folder_label;
 	GtkWidget *hbbox;
 	GtkWidget *ok_btn;
@@ -3272,7 +3274,7 @@ static void prefs_quote_colors_dialog_create(void)
 	gtk_container_set_border_width (GTK_CONTAINER (vbox), 8);
 	PACK_FRAME(vbox, frame_colors, _("Colors"));
 
-	table = gtk_table_new (4, 2, FALSE);
+	table = gtk_table_new (5, 2, FALSE);
 	gtk_container_add (GTK_CONTAINER (frame_colors), table);
 	gtk_container_set_border_width (GTK_CONTAINER (table), 8);
 	gtk_table_set_row_spacings (GTK_TABLE (table), 2);
@@ -3311,6 +3313,12 @@ static void prefs_quote_colors_dialog_create(void)
 	gtk_widget_set_usize (color_buttons.tgt_folder_btn, 40, 30);
 	gtk_container_set_border_width (GTK_CONTAINER (color_buttons.tgt_folder_btn), 5);
 
+	color_buttons.signature_btn = gtk_button_new_with_label ("");
+	gtk_table_attach (GTK_TABLE (table), color_buttons.signature_btn,
+			  0, 1, 5, 6, 0, 0, 0, 0);
+	gtk_widget_set_usize (color_buttons.signature_btn, 40, 30);
+	gtk_container_set_border_width (GTK_CONTAINER (color_buttons.signature_btn), 5);
+
 	quotelevel1_label = gtk_label_new (_("Quoted Text - First Level"));
 	gtk_table_attach (GTK_TABLE (table), quotelevel1_label, 1, 2, 0, 1,
 			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
@@ -3341,6 +3349,12 @@ static void prefs_quote_colors_dialog_create(void)
 	gtk_label_set_justify (GTK_LABEL (tgt_folder_label), GTK_JUSTIFY_LEFT);
 	gtk_misc_set_alignment (GTK_MISC (tgt_folder_label), 0, 0.5);
 
+	signature_label = gtk_label_new (_("Signatures"));
+	gtk_table_attach (GTK_TABLE (table), signature_label, 1, 2, 5, 6,
+			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
+	gtk_label_set_justify (GTK_LABEL (signature_label), GTK_JUSTIFY_LEFT);
+	gtk_misc_set_alignment (GTK_MISC (signature_label), 0, 0.5);
+
 	PACK_CHECK_BUTTON (vbox, recycle_colors_btn,
 			   _("Recycle quote colors"));
 
@@ -3366,6 +3380,8 @@ static void prefs_quote_colors_dialog_create(void)
 			   GTK_SIGNAL_FUNC(quote_color_set_dialog), "URI");
 	gtk_signal_connect(GTK_OBJECT(color_buttons.tgt_folder_btn), "clicked",
 			   GTK_SIGNAL_FUNC(quote_color_set_dialog), "TGTFLD");
+	gtk_signal_connect(GTK_OBJECT(color_buttons.signature_btn), "clicked",
+			   GTK_SIGNAL_FUNC(quote_color_set_dialog), "SIGNATURE");
 	gtk_signal_connect(GTK_OBJECT(recycle_colors_btn), "toggled",
 			   GTK_SIGNAL_FUNC(prefs_recycle_colors_toggled), NULL);
 	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
@@ -3382,6 +3398,8 @@ static void prefs_quote_colors_dialog_create(void)
 			    prefs_common.uri_col);
 	set_button_bg_color(color_buttons.tgt_folder_btn,
 			    prefs_common.tgt_folder_col);
+	set_button_bg_color(color_buttons.signature_btn,
+			    prefs_common.signature_col);
 	gtk_toggle_button_set_active((GtkToggleButton *)recycle_colors_btn,
 				     prefs_common.recycle_quote_colors);
 
@@ -3419,6 +3437,9 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 	} else if(g_strcasecmp(type, "TGTFLD") == 0) {
 		title = _("Pick color for target folder");
 		rgbvalue = prefs_common.tgt_folder_col;
+	} else if(g_strcasecmp(type, "SIGNATURE") == 0) {
+		title = _("Pick color for signatures");
+		rgbvalue = prefs_common.signature_col;
 #if USE_ASPELL		
 	} else if(g_strcasecmp(type, "Misspelled word") == 0) {
 		title = _("Pick color for misspelled word");
@@ -3491,6 +3512,9 @@ static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
 		prefs_common.tgt_folder_col = rgbvalue;
 		set_button_bg_color(color_buttons.tgt_folder_btn, rgbvalue);
 		folderview_set_target_folder_color(prefs_common.tgt_folder_col);
+	} else if (g_strcasecmp(type, "SIGNATURE") == 0) {
+		prefs_common.signature_col = rgbvalue;
+		set_button_bg_color(color_buttons.signature_btn, rgbvalue);
 #if USE_ASPELL		
 	} else if (g_strcasecmp(type, "Misspelled word") == 0) {
 		prefs_common.misspelled_col = rgbvalue;

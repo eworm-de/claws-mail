@@ -295,9 +295,11 @@ void textview_update_message_colors(void)
 					       &quote_colors[2]);
 		gtkut_convert_int_to_gdk_color(prefs_common.uri_col,
 					       &uri_color);
+		gtkut_convert_int_to_gdk_color(prefs_common.signature_col,
+					       &signature_color);
 	} else {
 		quote_colors[0] = quote_colors[1] = quote_colors[2] = 
-			uri_color = emphasis_color = black;
+			uri_color = emphasis_color = signature_color = black;
 	}
 }
 

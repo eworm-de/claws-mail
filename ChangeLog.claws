@@ -1,3 +1,10 @@
+2002-09-03 [colin]	0.8.2claws27 
+
+	* src/prefs_common.[ch]
+		Added signature color configuration
+	* src/textview.c
+		Use user-specified signature color
+
 2002-09-03 [colin]      0.8.2claws26
 
 	* src/prefs_common.[ch]
