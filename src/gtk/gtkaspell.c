@@ -487,6 +487,8 @@ static void entry_insert_cb(GtkTextBuffer *textbuf,
 
 	if (!gtkaspell->check_while_typing)
 		return;
+
+	pos = gtk_text_iter_get_offset(iter);
 	
 	if (iswordsep(newtext[0])) {
 		/* did we just end a word? */

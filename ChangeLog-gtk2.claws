@@ -1,3 +1,9 @@
+2004-07-24 [colin]	0.9.12cvs33.20
+
+	* src/gtk/gtkaspell.c
+		Fix over-eager code deletion breaking
+		Check while typing
+
 2004-07-24 [colin]	0.9.12cvs33.19
 
 	* src/browseldap.c
