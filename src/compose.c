@@ -6742,10 +6742,10 @@ static void compose_redo_cb(Compose *compose)
 	undo_redo(compose->undostruct);
 }
 
-static void entry_cut_clipboard(GtkWidget *entry) {
+static void entry_cut_clipboard(GtkWidget *entry)
+{
 	if (GTK_IS_EDITABLE(entry))
-		gtk_editable_cut_clipboard
-			(GTK_EDITABLE(entry));
+		gtk_editable_cut_clipboard (GTK_EDITABLE(entry));
 	else if (GTK_IS_TEXT_VIEW(entry))
 		gtk_text_buffer_cut_clipboard(
 			gtk_text_view_get_buffer(GTK_TEXT_VIEW(entry)),
@@ -6753,20 +6753,20 @@ static void entry_cut_clipboard(GtkWidget *entry) {
 			TRUE);
 }
 
-static void entry_copy_clipboard(GtkWidget *entry) {
+static void entry_copy_clipboard(GtkWidget *entry)
+{
 	if (GTK_IS_EDITABLE(entry))
-		gtk_editable_copy_clipboard
-			(GTK_EDITABLE(entry));
+		gtk_editable_copy_clipboard (GTK_EDITABLE(entry));
 	else if (GTK_IS_TEXT_VIEW(entry))
 		gtk_text_buffer_copy_clipboard(
 			gtk_text_view_get_buffer(GTK_TEXT_VIEW(entry)),
 			gtk_clipboard_get(GDK_NONE));
 }
 
-static void entry_paste_clipboard(GtkWidget *entry) {
+static void entry_paste_clipboard(GtkWidget *entry)
+{
 	if (GTK_IS_EDITABLE(entry))
-		gtk_editable_paste_clipboard
-			(GTK_EDITABLE(entry));
+		gtk_editable_paste_clipboard (GTK_EDITABLE(entry));
 	else if (GTK_IS_TEXT_VIEW(entry))
 		gtk_text_buffer_paste_clipboard(
 			gtk_text_view_get_buffer(GTK_TEXT_VIEW(entry)),
@@ -6774,10 +6774,10 @@ static void entry_paste_clipboard(GtkWidget *entry) {
 			NULL, TRUE);
 }
 
-static void entry_allsel(GtkWidget *entry) {
+static void entry_allsel(GtkWidget *entry)
+{
 	if (GTK_IS_EDITABLE(entry))
-		gtk_editable_select_region
-			(GTK_EDITABLE(entry), 0, -1);
+		gtk_editable_select_region(GTK_EDITABLE(entry), 0, -1);
 	else if (GTK_IS_TEXT_VIEW(entry)) {
 		GtkTextIter startiter, enditer;
 		GtkTextBuffer *textbuf;
