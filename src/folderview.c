@@ -2605,6 +2605,9 @@ static void folderview_move_to(FolderView *folderview, FolderItem *from_folder,
 		case F_MOVE_FAILED_DEST_IS_CHILD:
 			alertpanel_error(_("Can't move a folder to one of its children."));
 			break;
+		case F_MOVE_FAILED_DEST_OUTSIDE_MAILBOX:
+			alertpanel_error(_("Folder moving cannot be done between different mailboxes."));
+			break;
 		default:
 			alertpanel_error(_("Move failed!"));
 			break;

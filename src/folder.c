@@ -1615,6 +1615,10 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_ite
 		return F_MOVE_FAILED;
 	}
 
+	if (src->folder != dest->folder) {
+		return F_MOVE_FAILED_DEST_OUTSIDE_MAILBOX;
+	}
+
 	phys_srcpath = folder_item_get_path(src);
 	phys_dstpath = g_strconcat(folder_item_get_path(dest),G_DIR_SEPARATOR_S,g_basename(phys_srcpath),NULL);
 
