@@ -811,11 +811,11 @@ gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_list, g
 	dir = news_folder_get_path(folder);
 	if (num <= 0)
 		remove_all_numbered_files(dir);
-	else if(last < first)
+	else if (last < first)
 		log_warning(_("invalid article range: %d - %d\n"),
 			    first, last);
 	else {
-		for(i = first; i <= last; i++) {
+		for (i = first; i <= last; i++) {
 			*msgnum_list = g_slist_prepend(*msgnum_list, 
 						       GINT_TO_POINTER(i));
 			nummsgs++;
