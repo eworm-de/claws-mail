@@ -485,14 +485,7 @@ static gint send_send_data_progressive(Session *session, guint cur_len,
 
 static gint send_send_data_finished(Session *session, guint len, gpointer data)
 {
-	SendProgressDialog *dialog = (SendProgressDialog *)data;
-	gchar buf[BUFFSIZE];
-
-	g_snprintf(buf, sizeof(buf), _("Sending message (%d / %d bytes)"),
-		   len, len);
-	progress_dialog_set_label(dialog->dialog, buf);
-	progress_dialog_set_percentage(dialog->dialog, 1.0);
-
+	send_send_data_progressive(session, len, len, data);
 	return 0;
 }
 

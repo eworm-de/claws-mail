@@ -67,8 +67,6 @@ static gint pop3_retr_send		(Pop3Session *session);
 static gint pop3_retr_recv		(Pop3Session *session,
 					 const gchar *data,
 					 guint        len);
-static gint pop3_retr_eom_recv		(Pop3Session *session,
-					 const gchar *msg);
 static gint pop3_delete_send		(Pop3Session *session);
 static gint pop3_delete_recv		(Pop3Session *session);
 static gint pop3_logout_send		(Pop3Session *session);
@@ -392,19 +390,6 @@ static gint pop3_retr_recv(Pop3Session *session, const gchar *data, guint len)
 		drop_ok == 1 ? RECV_TIME_KEEP : session->current_time;
 
 	return PS_SUCCESS;
-}
-
-static gint pop3_retr_eom_recv(Pop3Session *session, const gchar *msg)
-{
-	if (msg[0] == '.' && msg[1] == '\0')
-		return PS_SUCCESS;
-	else {
-		g_warning("pop3_retr_eom_recv(): "
-			  "invalid end of message: '%s'.\n"
-			  "Maybe given size and actual one is different?\n",
-			  msg);
-		return PS_PROTOCOL;
-	}
 }
 
 static gint pop3_delete_send(Pop3Session *session)
@@ -872,8 +857,7 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 
 	body = msg;
 	if (pop3_session->state != POP3_GETRANGE_UIDL_RECV &&
-	    pop3_session->state != POP3_GETSIZE_LIST_RECV &&
-	    pop3_session->state != POP3_RETR_EOM) {
+	    pop3_session->state != POP3_GETSIZE_LIST_RECV) {
 		log_print("POP3< %s\n", msg);
 		val = pop3_ok(pop3_session, msg);
 		if (val != PS_SUCCESS) {
@@ -971,20 +955,6 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 			(session,
 			 pop3_session->msg[pop3_session->cur_msg].size, TRUE);
 		break;
-	case POP3_RETR_EOM:
-		if (pop3_retr_eom_recv(pop3_session, body) != PS_SUCCESS)
-			return -1;
-		if (pop3_session->ac_prefs->rmmail &&
-		    pop3_session->ac_prefs->msg_leave_time == 0)
-			pop3_delete_send(pop3_session);
-		else if (pop3_session->cur_msg == pop3_session->count)
-			pop3_logout_send(pop3_session);
-		else {
-			pop3_session->cur_msg++;
-			if (pop3_lookup_next(pop3_session) == POP3_ERROR)
-				return -1;
-		}
-		break;
 	case POP3_DELETE:
 		pop3_delete_recv(pop3_session);
 		if (pop3_session->cur_msg == pop3_session->count)
@@ -1017,7 +987,16 @@ static gint pop3_session_recv_data_finished(Session *session, guchar *data,
 	if (pop3_retr_recv(pop3_session, data, len) < 0)
 		return -1;
 
-	pop3_session->state = POP3_RETR_EOM;
+	if (pop3_session->ac_prefs->rmmail &&
+	    pop3_session->ac_prefs->msg_leave_time == 0)
+		pop3_delete_send(pop3_session);
+	else if (pop3_session->cur_msg == pop3_session->count)
+		pop3_logout_send(pop3_session);
+	else {
+		pop3_session->cur_msg++;
+		if (pop3_lookup_next(pop3_session) == POP3_ERROR)
+			return -1;
+	}
 
-	return 1;
+	return 0;
 }

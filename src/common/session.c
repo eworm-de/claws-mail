@@ -51,7 +51,8 @@ static guchar *session_recv_data_from_sock	(Session	*session,
 						 guint		 size);
 
 static guchar *session_recv_data_from_sock_unescape	(Session *session,
-							 guint	  size);
+							 guint	  size,
+							 guint	 *actual_size);
 
 gboolean session_parent_input_cb	(GIOChannel	*source,
 					 GIOCondition	 condition,
@@ -509,52 +510,43 @@ static guchar *session_recv_data_from_sock(Session *session, guint size)
 }
 
 static guchar *session_recv_data_from_sock_unescape(Session *session,
-						    guint size)
+						    guint size,
+						    guint *actual_size)
 {
-	guchar *data;
-	guchar *cur;
+	GString *data;
+	guchar *ret_data;
 	gint bytes_read;
-	gint total_read_len = 0;
-	guint left = size;
 	gchar buf[BUFFSIZE];
 	gchar *msg;
 	struct timeval tv_prev, tv_cur;
 
 	gettimeofday(&tv_prev, NULL);
 
-	cur = data = g_malloc(size);
+	data = g_string_sized_new(size + 1);
+	*actual_size = 0;
 
 	while (1) {
 		bytes_read = sock_gets(session->sock, buf, sizeof(buf));
 		if (bytes_read <= 0) {
-			g_free(data);
+			g_string_free(data, TRUE);
 			return NULL;
 		}
 
-		if (buf[0] == '.' && buf[1] == '.') {
-			bytes_read--;
-			if (left < bytes_read)
-				bytes_read = left;
-			memcpy(cur, buf + 1, bytes_read);
-		} else {
-			if (left < bytes_read)
-				bytes_read = left;
-			memcpy(cur, buf, bytes_read);
-		}
-		left -= bytes_read;
-		cur += bytes_read;
-		total_read_len += bytes_read;
-		if (left == 0)
+		if (buf[0] == '.' && buf[1] == '\r' && buf[2] == '\n')
 			break;
+		if (buf[0] == '.' && buf[1] == '.')
+			g_string_append(data, buf + 1);
+		else
+			g_string_append(data, buf);
 
 		gettimeofday(&tv_cur, NULL);
 		if (tv_cur.tv_sec - tv_prev.tv_sec > 0 ||
 		    tv_cur.tv_usec - tv_prev.tv_usec > UI_REFRESH_INTERVAL) {
 			g_snprintf(buf, sizeof(buf), "DATARECVINPROG %d %d",
-				   total_read_len, size);
+				   data->len, MAX(data->len, size));
 			session_send_msg(session, SESSION_MSG_CONTROL, buf);
 			if ((msg = session_recv_msg(session)) == NULL) {
-				g_free(data);
+				g_string_free(data, TRUE);
 				return NULL;
 			}
 			g_free(msg);
@@ -562,7 +554,11 @@ static guchar *session_recv_data_from_sock_unescape(Session *session,
 		}
 	}
 
-	return data;
+	ret_data = data->str;
+	*actual_size = data->len;
+	g_string_free(data, FALSE);
+
+	return ret_data;
 }
 
 static SessionMsgType session_get_msg_type(const gchar *str)
@@ -705,6 +701,7 @@ gboolean session_child_input(Session *session)
 	guchar *send_data;
 	guchar *recv_data;
 	guint size;
+	guint actual_size;
 
 	if ((msg = session_recv_msg(session)) == NULL) {
 		session_send_msg(session, SESSION_MSG_ERROR,
@@ -764,10 +761,11 @@ gboolean session_child_input(Session *session)
 		msg_data = msg + strlen("RECVDATA ");
 		size = atoi(msg_data);
 		session->state = SESSION_RECV;
-		if (strstr(msg_data, "UNESCAPE") != NULL)
+		if (strstr(msg_data, "UNESCAPE") != NULL) {
 			recv_data = session_recv_data_from_sock_unescape
-				(session, size);
-		else
+				(session, size, &actual_size);
+			size = actual_size;
+		} else
 			recv_data = session_recv_data_from_sock(session, size);
 		if (!recv_data) {
 			session_send_msg(session, SESSION_MSG_ERROR,

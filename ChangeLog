@@ -1,3 +1,10 @@
+2003-03-26
+
+	* src/pop.[ch]
+	  src/session.c: fixed breakage of POP3 retrieval.
+	  session_recv_data_from_sock_unescape(): read until terminator
+	  appears and also return the actual size.
+
 2003-03-25
 
 	* src/automaton.[ch]: removed.

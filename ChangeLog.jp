@@ -1,3 +1,10 @@
+2003-03-26
+
+	* src/pop.[ch]
+	  src/session.c: POP3 の受信が壊れていたのを修正。
+	  session_recv_data_from_sock_unescape(): 終端記号が現れるまで読み
+	  こみ、実際のサイズも返すようにした。
+
 2003-03-25
 
 	* src/automaton.[ch]: 削除。
