@@ -284,6 +284,9 @@ static gboolean sock_check(GSource *source)
 	fd_set fds;
 	GIOCondition condition = sock->condition;
 
+	if (!sock || !sock->sock)
+		return FALSE;
+
 #if USE_OPENSSL
 	if (sock->ssl) {
 		if (condition & G_IO_IN) {
