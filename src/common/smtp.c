@@ -48,7 +48,7 @@ static gint smtp_helo(SMTPSession *session);
 static gint smtp_rcpt(SMTPSession *session);
 static gint smtp_data(SMTPSession *session);
 static gint smtp_send_data(SMTPSession *session);
-static gint smtp_rset(SMTPSession *session);
+/* static gint smtp_rset(SMTPSession *session); */
 static gint smtp_quit(SMTPSession *session);
 static gint smtp_eom(SMTPSession *session);
 
@@ -378,6 +378,7 @@ static gint smtp_send_data(SMTPSession *session)
 	return SM_OK;
 }
 
+#if 0
 static gint smtp_rset(SMTPSession *session)
 {
 	session->state = SMTP_RSET;
@@ -387,6 +388,7 @@ static gint smtp_rset(SMTPSession *session)
 
 	return SM_OK;
 }
+#endif
 
 static gint smtp_quit(SMTPSession *session)
 {

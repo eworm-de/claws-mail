@@ -1901,23 +1901,16 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 	gtk_stext_freeze(text);
 
 	if (replace && compose->sig_str) {
-		gchar *tmp;
 		gint pos;
 		gint len;
 
-		if (compose->account->sig_sep)
-			tmp = g_strconcat(compose->account->sig_sep, "\n",
-					  compose->sig_str, NULL);
-		else
-			tmp = g_strdup(compose->sig_str);
-
-		if (tmp[0] == '\0')
+		if (compose->sig_str[0] == '\0')
 			pos = -1;
 		else
-			pos = gtkut_stext_find(text, 0, tmp, TRUE);
+			pos = gtkut_stext_find(text, 0, compose->sig_str, TRUE);
 
 		if (pos != -1) {
-			len = get_mbs_len(tmp);
+			len = get_mbs_len(compose->sig_str);
 			if (len >= 0) {
 				gtk_stext_set_point(text, pos);
 				gtk_stext_forward_delete(text, len);
@@ -1929,16 +1922,8 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 			len = gtk_stext_get_length(text);
 			gtk_stext_set_point(text, len);
 		}
-
-		g_free(tmp);
 	} else
 		gtk_stext_insert(text, NULL, NULL, NULL, "\n\n", 2);
-
-	if (compose->account->sig_sep) {
-		gtk_stext_insert(text, NULL, NULL, NULL, 
-				 compose->account->sig_sep, -1);
-		gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
-	}
 
 	g_free(compose->sig_str);
 	compose->sig_str = compose_get_signature_str(compose);
@@ -1958,42 +1943,40 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 
 static gchar *compose_get_signature_str(Compose *compose)
 {
-	static gchar *default_sigfile;
-	gchar *sig_file = NULL;
+	gchar *sig_body = NULL;
 	gchar *sig_str = NULL;
 
 	g_return_val_if_fail(compose->account != NULL, NULL);
 
-	if (compose->account->sig_type == SIG_FILE) {
-		if (compose->account->sig_path)
-			sig_file = compose->account->sig_path;
-		else {
-			if (!default_sigfile)
-				default_sigfile = g_strconcat
-					(get_home_dir(), G_DIR_SEPARATOR_S,
-					 DEFAULT_SIGNATURE, NULL);
-			sig_file = default_sigfile;
-		}
+	if (!compose->account->sig_path)
+		return NULL;
 
-		if (!is_file_or_fifo_exist(sig_file)) {
-			g_warning("can't open signature file: %s\n", sig_file);
+	if (compose->account->sig_type == SIG_FILE) {
+		if (!is_file_or_fifo_exist(compose->account->sig_path)) {
+			g_warning("can't open signature file: %s\n",
+				  compose->account->sig_path);
 			return NULL;
 		}
 	}
 
-	if (compose->account->sig_type == SIG_COMMAND) {
-		if (compose->account->sig_path)
-			sig_str = get_command_output
-				(compose->account->sig_path);
-	} else {
+	if (compose->account->sig_type == SIG_COMMAND)
+		sig_body = get_command_output(compose->account->sig_path);
+	else {
 		gchar *tmp;
 
-		tmp = file_read_to_str(sig_file);
+		tmp = file_read_to_str(compose->account->sig_path);
 		if (!tmp)
 			return NULL;
-		sig_str = normalize_newlines(tmp);
+		sig_body = normalize_newlines(tmp);
 		g_free(tmp);
 	}
+
+	if (compose->account->sig_sep) {
+		sig_str = g_strconcat(compose->account->sig_sep, "\n", sig_body,
+				      NULL);
+		g_free(sig_body);
+	} else
+		sig_str = sig_body;
 
 	return sig_str;
 }
@@ -2896,7 +2879,7 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 	activate_gnupg_mode(compose, account);		
 #endif /* USE_GPGME */
 
-	if (!init && account->auto_sig)
+	if (!init)
 		compose_insert_sig(compose, TRUE);
 }
 
