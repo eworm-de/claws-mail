@@ -27,7 +27,7 @@
 /*
  * Modified by the Sylpheed Team and others 2001. Interesting 
  * parts are marked using comment block following this one.
- * This modification is based on the GtkSText of GTK 1.2.8
+ * This modification is based on the GtkText of GTK 1.2.10
  */
 
 /* SYLPHEED: 
@@ -814,6 +814,13 @@ gtk_stext_new (GtkAdjustment *hadj,
 			 "hadjustment", hadj,
 			 "vadjustment", vadj,
 			 NULL);
+
+  /* SYLPHEED:
+   * force widget name to be GtkText so it silently adapts
+   * the GtkText widget's style... 
+   */
+  gtk_widget_set_name(text, "GtkText");			
+  gtk_widget_ensure_style(text);
 
   return text;
 }
@@ -5654,12 +5661,23 @@ undraw_cursor (GtkSText* text, gint absolute)
 
 	  gdk_gc_set_foreground (text->gc, MARK_CURRENT_FORE (text, &text->cursor_mark));
 
-	  gdk_draw_text_wc (text->text_area, font,
-			 text->gc,
-			 text->cursor_pos_x,
-			 text->cursor_pos_y - text->cursor_char_offset,
-			 &text->cursor_char,
-			 1);
+          if (text->use_wchar)
+	    gdk_draw_text_wc (text->text_area, font,
+			      text->gc,
+			      text->cursor_pos_x,
+			      text->cursor_pos_y - text->cursor_char_offset,
+			      &text->cursor_char,
+			      1);
+	  else
+	    {
+	      guchar ch = text->cursor_char;
+	      gdk_draw_text (text->text_area, font,
+			     text->gc,
+			     text->cursor_pos_x,
+			     text->cursor_pos_y - text->cursor_char_offset,
+			     (gchar *)&ch,
+			     1);         
+	    }
 	}
 
 	gdk_gc_copy(text->gc, gc);
