@@ -1,3 +1,9 @@
+2002-11-30 [christoph]	0.8.6claws44
+
+	* autogen.sh
+		run libtoolize --force in autogen to create missing
+		libtool scripts
+
 2002-11-30 [christoph]	0.8.6claws43
 
 	* src/Makefile.am
