@@ -146,7 +146,7 @@ gint recv_write(SockInfo *sock, FILE *fp)
 		{
 			int i;
 
-			for (i = len - 1; 0 < i; i--){
+			for (i = len - 1; 0 <= i; i--){
 				if (!(buf[i] == '\r' || buf[i] == '\n')){
 					i++;
 					break;

@@ -1,3 +1,8 @@
+2003-12-04 [thorsten]	0.9.7claws9-2
+
+	* src/recv.c
+		fix: bugzilla#388 'Single letter on line disappears'
+
 2003-11-30 [thorsten]	0.9.7claws9-1
 
 	* src/summaryview.c
