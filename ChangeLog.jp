@@ -1,3 +1,15 @@
+2004-02-24
+
+	* src/codeconv.[ch]: ISO-2022-JP-3 エンコーディングを追加。
+
+2004-02-24
+
+	* src/codeconv.c
+	  src/mainwindow.c
+	  src/messageview.c: KOI8-U エンコーディングを追加。
+	* src/prefs_common.c: prefs_message_create(): 画像リサイズオプション
+	  の文字列を修正。
+
 2004-02-19
 
 	* src/addressbook.c: addressbook_list_selected(): 引数を修正。

@@ -196,6 +196,8 @@ static GtkItemFactoryEntry msgview_entries[] =
 	 CODESET_ACTION(C_ISO_8859_5)},
 	{N_("/_View/_Code set/Cyrillic (KOI8-_R)"),
 	 CODESET_ACTION(C_KOI8_R)},
+	{N_("/_View/_Code set/Cyrillic (KOI8-U)"),
+	 CODESET_ACTION(C_KOI8_U)},
 	{N_("/_View/_Code set/Cyrillic (Windows-1251)"),
 	 CODESET_ACTION(C_CP1251)},
 	CODESET_SEPARATOR,

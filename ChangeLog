@@ -1,3 +1,15 @@
+2004-02-24
+
+	* src/codeconv.[ch]: added ISO-2022-JP-3 encoding.
+
+2004-02-24
+
+	* src/codeconv.c
+	  src/mainwindow.c
+	  src/messageview.c: added KOI8-U encoding.
+	* src/prefs_common.c: prefs_message_create(): modified the string
+	  of resizing image option.
+
 2004-02-19
 
 	* src/addressbook.c: addressbook_list_selected(): corrected its
