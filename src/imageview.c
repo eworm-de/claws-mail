@@ -112,6 +112,7 @@ void imageview_show_image(ImageView *imageview, MimeInfo *mimeinfo,
 	gtk_widget_show(imageview->image);
 
 	gdk_pixbuf_unref(pixbuf);
+	gdk_pixbuf_unref(pixbuf_scaled);
 
 	if (imageview->messageview->mainwin)
 		main_window_cursor_normal(imageview->messageview->mainwin);

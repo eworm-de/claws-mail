@@ -1,3 +1,8 @@
+2002-10-25 [melvin]	0.8.5claws54
+
+	* src/imageview.c
+		Fixed a memleak introduced in the scaling code.
+
 2002-10-24 [alfons]	0.8.5claws53
 
 	* src/filtering.c
