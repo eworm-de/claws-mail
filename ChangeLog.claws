@@ -1,3 +1,10 @@
+2001-10-28 [match]
+
+	* src/mutt.[ch] src/importmutt.[ch] src/mgutils.[ch] src/addressbook.c src/Makefile.am
+		import Mutt address book
+	* src/ldif.[ch] src/importldif.h
+		modified import LDIF handle user attributes
+
 2001-10-28 [christoph]	0.6.4claws12
 
 	* src/summaryview.c
