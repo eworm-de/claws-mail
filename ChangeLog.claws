@@ -1,3 +1,8 @@
+2003-06-10 [alfons]	0.9.0claws26
+
+	* src/procmsg.c
+		fix bug #176 by don't checking MsgInfos with a NULL msgid 
+
 2003-06-09 [alfons]	0.9.0claws25
 
 	* src/prefs_common.c

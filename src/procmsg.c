@@ -1135,7 +1135,12 @@ gint procmsg_send_message_queue(const gchar *file)
 			MsgInfo *msginfo;
 			
 			msginfo = folder_item_get_msginfo(item, atoi(tokens[1]));
-			if ((msginfo != NULL) && (strcmp(msginfo->msgid, tokens[2]) != 0)) {
+			
+			/*!< note that if the message has no msgid (maybe it was invalid), 
+			* we also refuse to do something with the reply to flag */
+			if ((msginfo != NULL) && 
+			    (msginfo->msgid != NULL) &&
+			    (strcmp(msginfo->msgid, tokens[2]) != 0)) {
 				procmsg_msginfo_free(msginfo);
 				msginfo = NULL;
 			}
