@@ -3532,7 +3532,7 @@ gboolean imap_check_msgnum_validity(Folder *folder, FolderItem *_item)
 	g_return_val_if_fail(folder != NULL, FALSE);
 	g_return_val_if_fail(item != NULL, FALSE);
 	g_return_val_if_fail(item->item.folder != NULL, FALSE);
-	g_return_val_if_fail(FOLDER_TYPE(&item->item.folder) == F_IMAP, FALSE);
+	g_return_val_if_fail(FOLDER_TYPE(item->item.folder) == F_IMAP, FALSE);
 
 	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, FALSE);

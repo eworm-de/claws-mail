@@ -1,3 +1,8 @@
+2003-03-12 [christoph]	0.8.11claws2
+
+	* src/imap.c
+		fix imap uid validity check
+
 2003-03-12 [christoph]	0.8.11claws1
 
 	* src/account.c
