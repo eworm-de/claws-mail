@@ -663,7 +663,8 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Si_gn"),   	NULL, compose_toggle_sign_cb   , 0, "<ToggleItem>"},
 	{N_("/_Message/_Encrypt"),	NULL, compose_toggle_encrypt_cb, 0, "<ToggleItem>"},
-	{N_("/_Message/Mode/MIME"), 		NULL, compose_set_gnupg_mode_cb,   GNUPG_MODE_DETACH, "<RadioItem>"},	
+	{N_("/_Message/Mode"),		NULL, NULL,   0, "<Branch>"},
+	{N_("/_Message/Mode/MIME"), 	NULL, compose_set_gnupg_mode_cb,   GNUPG_MODE_DETACH, "<RadioItem>"},	
 	{N_("/_Message/Mode/Inline"),	NULL, compose_set_gnupg_mode_cb,   GNUPG_MODE_INLINE, "/Message/Mode/MIME"},	
 #endif /* USE_GPGME */
 	{N_("/_Message/---"),		NULL,		NULL,	0, "<Separator>"},

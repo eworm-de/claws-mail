@@ -1,3 +1,10 @@
+2004-03-13 [paul]	0.9.10claws12
+
+	* src/compose.c
+	  src/plugins/dillo_viewer/dillo_prefs.c
+	  src/plugins/image_viewer/viewerprefs.c
+	  	gettextise some forgotten parts
+
 2004-03-13 [alfons]	0.9.10claws11
 
 	* src/imap.c
