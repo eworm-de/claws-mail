@@ -1,3 +1,8 @@
+2003-02-13 [thorsten]	0.8.10claws9
+
+	* src/news.c
+		revert news progressbar (GUI separation)
+
 2003-02-13 [paul]	0.8.10claws8
 
 	* src/compose.c
