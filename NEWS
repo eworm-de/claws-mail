@@ -1,5 +1,14 @@
 Changes of Sylpheed
 
+* 0.9.6
+
+    * A crash bug when deleting currently opened folder has been fixed.
+    * The performance issue of the address book has been fixed.
+    * The behavior of manual signature insertion has been reverted.
+    * A crash bug on startup when a font can't be loaded has been fixed.
+    * The format of MIME boundary has been modified again.
+    * Other minor bugfixes have been made.
+
 * 0.9.5
 
     * The size, the position, and the visibility of separated views are now

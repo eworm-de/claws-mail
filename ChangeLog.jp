@@ -1,5 +1,9 @@
 2003-09-17
 
+	* version 0.9.6
+
+2003-09-17
+
 	* src/addressbook.c:
 	  addressbook_folder_load_person()
 	  addressbook_folder_load_group(): ループの後で ctree をソートする
