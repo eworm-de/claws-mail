@@ -930,6 +930,7 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 	case CRITERIA_DELETED:
 	case CRITERIA_REPLIED:
 	case CRITERIA_FORWARDED:
+	case CRITERIA_EXECUTE:
 		if (value_pred_flag == PREDICATE_FLAG_DISABLED)
 			criteria = prefs_matcher_not_criteria(criteria);
 		break;
@@ -944,7 +945,6 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 	case CRITERIA_HEADERS_PART:
 	case CRITERIA_BODY_PART:
 	case CRITERIA_MESSAGE:
-	case CRITERIA_EXECUTE:
 	case CRITERIA_AGE_GREATER:
 	case CRITERIA_AGE_LOWER:
 	case CRITERIA_HEADER:
