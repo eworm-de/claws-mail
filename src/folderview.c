@@ -2554,6 +2554,10 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 		node = gtk_ctree_node_nth(GTK_CTREE(widget), row);
 		item = gtk_ctree_node_get_row_data(GTK_CTREE(widget), node);
 		src_item = folderview->summaryview->folder_item;
+		/* FIXME: Dragging on a "root folder" (ie, ~/Mail) should be
+		   possible when the source is the folderview. Requires hacking
+		   folder_item_move_to() because there's no identifier for these
+		   folders. */
 		if (item && item->folder && item->path &&
 		    src_item && src_item != item) {
 			switch (item->folder->type) {
