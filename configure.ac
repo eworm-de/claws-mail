@@ -413,9 +413,9 @@ fi
 AM_CONDITIONAL(BUILD_IMAGE_VIEWER_PLUGIN, test x"$ac_cv_enable_image_viewer_plugin" = xyes)
 if test x"$ac_cv_enable_image_viewer_plugin" = xyes; then
 	if test "$ac_cv_enable_gdk_pixbuf" = yes; then
-		PLUGINS="image-viewer(gdk-pixbuf)"
+		PLUGINS="image-viewer(gdk-pixbuf) $PLUGINS"
 	elif test "$ac_cv_enable_imlib" = yes; then
-		PLUGINS="image-viewer(gdk_imlib)"
+		PLUGINS="image-viewer(gdk_imlib) $PLUGINS"
 	fi
 fi
 
