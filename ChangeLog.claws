@@ -1,3 +1,9 @@
+2002-03-17 [alfons]	0.7.4claws20
+
+	* src/matcher.c
+		more stringent checks for NULL params when writing
+		filtering actions to a file
+		
 2002-03-17 [hoa]	0.7.3claws20
 
 	* src/news.c

@@ -1061,8 +1061,11 @@ static void prefs_filtering_write(FILE * fp, GSList * prefs_scoring)
 		gchar *filtering_str;
 		FilteringProp * prop;
 
-		prop = (FilteringProp *) cur->data;
-		filtering_str = filteringprop_to_string(prop);
+		if (NULL == (prop = (FilteringProp *) cur->data))
+			continue;
+		
+		if (NULL == (filtering_str = filteringprop_to_string(prop)))
+			continue;
 		
 		if (fputs(filtering_str, fp) == EOF ||
 		    fputc('\n', fp) == EOF) {
