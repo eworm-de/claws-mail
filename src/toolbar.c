@@ -41,6 +41,7 @@
 
 #include "intl.h"
 #include "mainwindow.h"
+#include "summaryview.h"
 #include "compose.h"
 #include "utils.h"
 #include "xml.h"
@@ -1091,9 +1092,7 @@ static void toolbar_delete_cb(GtkWidget *widget, gpointer data)
 	switch (toolbar_item->type) {
 	case TOOLBAR_MSGVIEW:
 		msgview = (MessageView*)toolbar_item->parent;
-		/* make sure the selected msg in summaryview is 
-		   the one we are asked to delete */
-		delete_msgview_cb(msgview, 0, widget);
+		messageview_delete(msgview);
         	break;
         case TOOLBAR_MAIN:
 		mainwin = (MainWindow*)toolbar_item->parent;
@@ -1236,13 +1235,9 @@ static void toolbar_next_unread_cb(GtkWidget *widget, gpointer data)
 		
 	case TOOLBAR_MSGVIEW:
 		msgview = (MessageView*)toolbar_item->parent;
-/*
- * TODO: Check if summaryview stay in the same place when this message view was created 
- * if summary have other message select the next will be based on message selected in summaryview
- */
 		summary_select_next_unread(msgview->mainwin->summaryview);
 		
-		/** Now we need to update the messageview window */
+		/* Now we need to update the messageview window */
 		if (msgview->mainwin->summaryview->selected) {
 			GtkCTree *ctree = GTK_CTREE(msgview->mainwin->summaryview->ctree);
 			
@@ -1940,190 +1935,46 @@ void toolbar_init(Toolbar * toolbar) {
 	toolbar_destroy(toolbar);
 }
 
-/* exported functions */
-
-void delete_msgview_cb(gpointer data, guint action, GtkWidget *widget)
-{
-	MessageView *msgview = (MessageView*)data;
-
-	if (msgview->mainwin->summaryview->selected) {
-		SummaryView *summaryview = msgview->mainwin->summaryview;
-		GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-		MsgInfo *msginfo = gtk_ctree_node_get_row_data(ctree, 
-							       summaryview->selected);	
-		if (msginfo->msgnum != msgview->msginfo->msgnum) {
-			alertpanel_error(_("Message already removed from folder."));
-			return;
-		}
-	}
-	
-	summary_delete(msgview->mainwin->summaryview);	
-	
-	if (msgview->mainwin->summaryview->selected) {
-		SummaryView *summaryview = msgview->mainwin->summaryview;
-		GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-		MsgInfo *msginfo = gtk_ctree_node_get_row_data(ctree, 
-							       summaryview->selected);
-		messageview_show(msgview, msginfo, 
-				 msgview->all_headers);
-	} else {
-		toolbar_clear_list(TOOLBAR_MSGVIEW);
-		toolbar_destroy(msgview->toolbar);
-		gtk_widget_destroy(msgview->window);
-	}	
-}
-
-void toolbar_menu_reply(ToolbarType type, gpointer data, guint action)
-{
-	ToolbarItem *item;
-
-	g_return_if_fail(data != NULL);
-
-	item = g_new0(ToolbarItem, 1);
-	item->parent = data;
-	item->type = type;
-	toolbar_reply(item, action);
-	g_free(item);	
-}
-
+/*
+ */
 static void toolbar_reply(gpointer data, guint action)
 {
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
 	MainWindow *mainwin;
 	MessageView *msgview;
-	SummaryView *summaryview;
-	GList *sel = NULL;
-	MsgInfo *msginfo = NULL;
-	gchar *text;
+	GSList *msginfo_list = NULL;
+	gchar *body;
+
+	g_return_if_fail(toolbar_item != NULL);
 
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
 		mainwin = (MainWindow*)toolbar_item->parent;
-		summaryview = mainwin->summaryview;
-		msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
-						      summaryview->selected);
-		msgview = mainwin->summaryview->messageview;
-		sel = GTK_CLIST(summaryview->ctree)->selection;
+		msginfo_list = summary_get_selection(mainwin->summaryview);
+		msgview = (MessageView*)mainwin->messageview;
 		break;
 	case TOOLBAR_MSGVIEW:
 		msgview = (MessageView*)toolbar_item->parent;
-		summaryview = msgview->mainwin->summaryview;
-		msginfo = msgview->msginfo;
+		msginfo_list = g_slist_append(msginfo_list, msgview->msginfo);
 		break;
 	default:
 		return;
 	}
 
-	g_return_if_fail (msginfo != NULL);
-	g_return_if_fail (summaryview != NULL);
+	g_return_if_fail(msgview != NULL);
+	body = messageview_get_selection(msgview);
 
-	text = gtkut_editable_get_selection
-		(GTK_EDITABLE(msgview->textview->text));
-	
-	if (!text && msgview->type == MVIEW_MIME
-	    && msgview->mimeview->type == MIMEVIEW_TEXT
-	    && msgview->mimeview->textview
-	    && !msgview->mimeview->textview->default_text) {
-		text = gtkut_editable_get_selection 
-			(GTK_EDITABLE(msgview->mimeview->textview->text));   
-	}
+	g_return_if_fail(msginfo_list != NULL);
+	compose_reply_mode((ComposeMode)action, msginfo_list, body);
 
-	switch (action) {
-	case COMPOSE_REPLY:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-		    	      FALSE, prefs_common.default_reply_list, FALSE, text);
-		break;
-	case COMPOSE_REPLY_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, FALSE, prefs_common.default_reply_list, FALSE, text);
-		break;
-	case COMPOSE_REPLY_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, FALSE, prefs_common.default_reply_list, FALSE, NULL);
-		break;
-	case COMPOSE_REPLY_TO_SENDER:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      FALSE, FALSE, TRUE, text);
-		break;
-	case COMPOSE_FOLLOWUP_AND_REPLY_TO:
-		compose_followup_and_reply_to(msginfo,
-					      prefs_common.reply_with_quote,
-					      FALSE, FALSE, text);
-		break;
-	case COMPOSE_REPLY_TO_SENDER_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, FALSE, FALSE, TRUE, text);
-		break;
-	case COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, FALSE, FALSE, TRUE, NULL);
-		break;
-	case COMPOSE_REPLY_TO_ALL:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      TRUE, FALSE, FALSE, text);
-		break;
-	case COMPOSE_REPLY_TO_ALL_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, TRUE, FALSE, FALSE, text);
-		break;
-	case COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, TRUE, FALSE, FALSE, NULL);
-		break;
-	case COMPOSE_REPLY_TO_LIST:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      FALSE, TRUE, FALSE, text);
-		break;
-	case COMPOSE_REPLY_TO_LIST_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, FALSE, TRUE, FALSE, text);
-		break;
-	case COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, FALSE, TRUE, FALSE, NULL);
-		break;
-	case COMPOSE_FORWARD:
-		if (prefs_common.forward_as_attachment) {
-			toolbar_reply(data, COMPOSE_FORWARD_AS_ATTACH);
-			return;
-		} else {
-			toolbar_reply(data, COMPOSE_FORWARD_INLINE);
-			return;
-		}
-		break;
-	case COMPOSE_FORWARD_INLINE:
-		/* check if we reply to more than one Message */
-		if (sel && !sel->next && toolbar_item->type == TOOLBAR_MAIN) {
-				compose_forward(NULL, msginfo, FALSE, text);
-				break;
-		} else if (sel == NULL && toolbar_item->type == TOOLBAR_MSGVIEW) {
-			compose_forward(NULL, msginfo, FALSE, text);
-			break;
-		}
-		/* more messages FALL THROUGH */
-	case COMPOSE_FORWARD_AS_ATTACH:
-		{
-			GSList *msginfo_list = NULL;
-			/* check if we reply to more than one Message */
-			if (sel != NULL) {
-				for ( ; sel != NULL; sel = sel->next)
-					msginfo_list = 
-						g_slist_append(msginfo_list, 
-							       gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
-											  GTK_CTREE_NODE(sel->data)));
-			} else {
-				/* invoked from messageview */
-				msginfo_list = g_slist_append(msginfo_list, msginfo);
-			}
-			
-			compose_forward_multiple(NULL, msginfo_list);
-			g_slist_free(msginfo_list);
+	g_free(body);
+	g_slist_free(msginfo_list);
 
-		}			
-		break;
-	case COMPOSE_REDIRECT:
-		compose_redirect(NULL, msginfo);
-		break;
-	default:
-		g_warning("toolbar_reply(): invalid action: %d\n", action);
-	}
-	
-	summary_set_marks_selected(summaryview);
-
-	g_free(text); 	
+	/* TODO: update reply state ion summaryview */
 }
+
+
+/* exported functions */
 
 void inc_mail_cb(gpointer data, guint action, GtkWidget *widget)
 {

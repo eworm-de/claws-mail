@@ -803,6 +803,91 @@ Compose *compose_new_followup_and_replyto(PrefsAccount *account,
 }
 */
 
+void compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar *body)
+{
+	MsgInfo *msginfo;
+	guint list_len;
+
+	g_return_if_fail(msginfo_list != NULL);
+
+	msginfo = (MsgInfo*)g_slist_nth_data(msginfo_list, 0);
+	g_return_if_fail(msginfo != NULL);
+
+	list_len = g_slist_length(msginfo_list);
+
+	switch (mode) {
+	case COMPOSE_REPLY:
+		compose_reply(msginfo, prefs_common.reply_with_quote,
+		    	      FALSE, prefs_common.default_reply_list, FALSE, body);
+		break;
+	case COMPOSE_REPLY_WITH_QUOTE:
+		compose_reply(msginfo, TRUE, FALSE, prefs_common.default_reply_list, FALSE, body);
+		break;
+	case COMPOSE_REPLY_WITHOUT_QUOTE:
+		compose_reply(msginfo, FALSE, FALSE, prefs_common.default_reply_list, FALSE, NULL);
+		break;
+	case COMPOSE_REPLY_TO_SENDER:
+		compose_reply(msginfo, prefs_common.reply_with_quote,
+			      FALSE, FALSE, TRUE, body);
+		break;
+	case COMPOSE_FOLLOWUP_AND_REPLY_TO:
+		compose_followup_and_reply_to(msginfo,
+					      prefs_common.reply_with_quote,
+					      FALSE, FALSE, body);
+		break;
+	case COMPOSE_REPLY_TO_SENDER_WITH_QUOTE:
+		compose_reply(msginfo, TRUE, FALSE, FALSE, TRUE, body);
+		break;
+	case COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE:
+		compose_reply(msginfo, FALSE, FALSE, FALSE, TRUE, NULL);
+		break;
+	case COMPOSE_REPLY_TO_ALL:
+		compose_reply(msginfo, prefs_common.reply_with_quote,
+			      TRUE, FALSE, FALSE, body);
+		break;
+	case COMPOSE_REPLY_TO_ALL_WITH_QUOTE:
+		compose_reply(msginfo, TRUE, TRUE, FALSE, FALSE, body);
+		break;
+	case COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE:
+		compose_reply(msginfo, FALSE, TRUE, FALSE, FALSE, NULL);
+		break;
+	case COMPOSE_REPLY_TO_LIST:
+		compose_reply(msginfo, prefs_common.reply_with_quote,
+			      FALSE, TRUE, FALSE, body);
+		break;
+	case COMPOSE_REPLY_TO_LIST_WITH_QUOTE:
+		compose_reply(msginfo, TRUE, FALSE, TRUE, FALSE, body);
+		break;
+	case COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE:
+		compose_reply(msginfo, FALSE, FALSE, TRUE, FALSE, NULL);
+		break;
+	case COMPOSE_FORWARD:
+		if (prefs_common.forward_as_attachment) {
+			compose_reply_mode(COMPOSE_FORWARD_AS_ATTACH, msginfo_list, body);
+			return;
+		} else {
+			compose_reply_mode(COMPOSE_FORWARD_INLINE, msginfo_list, body);
+			return;
+		}
+		break;
+	case COMPOSE_FORWARD_INLINE:
+		/* check if we reply to more than one Message */
+		if (list_len == 1) {
+			compose_forward(NULL, msginfo, FALSE, body);
+			break;
+		} 
+		/* more messages FALL THROUGH */
+	case COMPOSE_FORWARD_AS_ATTACH:
+		compose_forward_multiple(NULL, msginfo_list);
+		break;
+	case COMPOSE_REDIRECT:
+		compose_redirect(NULL, msginfo);
+		break;
+	default:
+		g_warning("compose_reply(): invalid Compose Mode: %d\n", mode);
+	}
+}
+
 void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
 		   gboolean to_ml, gboolean to_sender, 
 		   const gchar *body)

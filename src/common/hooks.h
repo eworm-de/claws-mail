@@ -20,6 +20,8 @@
 #ifndef HOOKS_H
 #define HOOKS_H
 
+#include <glib.h>
+
 typedef gboolean (*SylpheedHookFunction)	(gpointer source,
 						 gpointer userdata);
 

@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=10
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws68
+EXTRA_VERSION=claws79
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -195,6 +195,11 @@ fi
 
 dnl Check for OpenSSL
 AM_PATH_OPENSSL
+
+dnl Key for password encryption
+AC_ARG_WITH(passcrypt-key, [  --with-passcrypt-key=KEY     Key used to encode passwords (8 byte string)],
+	    with_passcrypt_key="$withval", with_passcrypt_key="passkey0")
+AC_SUBST(PASSCRYPT_KEY, $with_passcrypt_key)
 
 dnl ************************
 dnl ** GTK user interface **
@@ -398,6 +403,7 @@ po/Makefile.in
 src/common/version.h
 src/Makefile
 src/common/Makefile
+src/common/passcrypt.h
 src/gtk/Makefile
 src/plugins/Makefile
 src/plugins/demo/Makefile

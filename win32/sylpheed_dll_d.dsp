@@ -424,6 +424,10 @@ SOURCE=..\src\noticeview.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\common\passcrypt.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\passphrase.c
 # End Source File
 # Begin Source File
@@ -521,6 +525,10 @@ SOURCE=..\src\procmsg.c
 # Begin Source File
 
 SOURCE=..\src\progressdialog.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\common\progressindicator.c
 # End Source File
 # Begin Source File
 
@@ -992,6 +1000,10 @@ SOURCE=..\src\noticeview.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\common\passcrypt.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\passphrase.h
 # End Source File
 # Begin Source File
@@ -1069,6 +1081,10 @@ SOURCE=..\src\procmsg.h
 # Begin Source File
 
 SOURCE=..\src\progressdialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\common\progressindicator.h
 # End Source File
 # Begin Source File
 
@@ -1282,6 +1298,10 @@ SOURCE=..\..\..\lib\libeay32.lib
 # Begin Source File
 
 SOURCE=..\..\..\lib\ssleay32.lib
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\lib\libcrypt.lib
 # End Source File
 # End Target
 # End Project

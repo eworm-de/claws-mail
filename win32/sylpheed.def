@@ -471,6 +471,7 @@ EXPORTS
 	compose_reflect_prefs_pixmap_theme 
 	compose_remove_draft 
 	compose_reply 
+	compose_reply_mode 
 	compose_send 
 	compose_toolbar_cb 
 	conv_X_any_to_disp 
@@ -520,6 +521,9 @@ EXPORTS
 	copy_file_part 
 	copy_flags_data 
 	copy_mbox 
+	crypt_cfb_blocksize 
+	crypt_cfb_buf 
+	crypt_cfb_iv 
 	cur_account 
 	custom_header_find 
 	custom_header_free 
@@ -541,7 +545,6 @@ EXPORTS
 	delete_aspell_string_list 
 	delete_aspell_string_map 
 	delete_aspell_string_pair_enumeration 
-	delete_msgview_cb 
 	description_window_create 
 	display_header_prop_free 
 	display_header_prop_get_str 
@@ -997,6 +1000,7 @@ EXPORTS
 	main_window_unlock 
 	mainwindow_get_mainwindow 
 	mainwindow_key_pressed 
+	mainwindow_progressindicator_hook 
 	make_dir 
 	make_dir_hier 
 	manage_window_delete 
@@ -1096,9 +1100,11 @@ EXPORTS
 	messageview_copy_clipboard 
 	messageview_create 
 	messageview_create_with_new_window 
+	messageview_delete 
 	messageview_destroy 
 	messageview_get_current_textview 
 	messageview_get_msgview_list 
+	messageview_get_selection 
 	messageview_init 
 	messageview_is_visible 
 	messageview_quote_color_set 
@@ -1186,7 +1192,6 @@ EXPORTS
 	new_aspell_string_list 
 	new_aspell_string_map 
 	news_cancel_article 
-	news_doprogress 
 	news_fetch_msg 
 	news_fetch_msgnum_sort 
 	news_folder_destroy 
@@ -1232,6 +1237,8 @@ EXPORTS
 	noticeview_show 
 	open_uri 
 	parentmsgs_hash_remove 
+	passcrypt_decrypt 
+	passcrypt_encrypt 
 	path_cmp 
 	pgptext_check_signature 
 	pgptext_decrypt_message 
@@ -1670,6 +1677,7 @@ EXPORTS
 	summary_filter_open 
 	summary_find_next_important_score 
 	summary_find_prev_important_score 
+	summary_get_selection 
 	summary_get_selection_type 
 	summary_harvest_address 
 	summary_init 
@@ -1760,7 +1768,6 @@ EXPORTS
 	toolbar_init 
 	toolbar_is_duplicate 
 	toolbar_main_set_sensitive 
-	toolbar_menu_reply 
 	toolbar_read_config_file 
 	toolbar_ret_descr_from_val 
 	toolbar_ret_val_from_descr 

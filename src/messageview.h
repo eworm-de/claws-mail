@@ -88,6 +88,7 @@ void messageview_set_position			(MessageView	*messageview,
 						 gint		 pos);
 void messageview_toggle_view_real		(MessageView 	*messageview);
 GList *messageview_get_msgview_list		(void);
+void messageview_delete				(MessageView 	*messageview);
 gboolean messageview_search_string		(MessageView	*messageview,
 						 const gchar	*str,
 						 gboolean	 case_sens);
@@ -97,7 +98,8 @@ gboolean messageview_search_string_backward	(MessageView	*messageview,
 
 gboolean messageview_is_visible			(MessageView	*messageview);
 
-void messageview_add_toolbar			(MessageView *msgview,
-						 GtkWidget *vbox);
+void messageview_add_toolbar			(MessageView 	*msgview,
+						 GtkWidget 	*vbox);
 void messageview_reflect_prefs_pixmap_theme	(void);
+gchar *messageview_get_selection		(MessageView 	*msgview);
 #endif /* __MESSAGEVIEW_H__ */

@@ -1,3 +1,98 @@
+2003-03-03 [christoph]	0.8.10claws79
+
+	* src/news.c
+		have to multiply the percentage of the current fetch with
+		the percentage that it has of the total fetch operation
+		for correct values
+
+2003-03-03 [christoph]	0.8.10claws78
+
+	* src/news.c
+		fix calculation of expected lines for progress indicator
+
+2003-03-03 [christoph]	0.8.10claws77
+
+	* src/summaryview.c
+	* src/common/utils.c
+		fix segfault when opening the root news folder
+
+2003-03-03 [christoph]	0.8.10claws76
+
+	* src/mainwindow.[ch]
+	* src/common/Makefile.am
+	* src/common/progressindicator.[ch]
+		add UI independent progress indicator handling
+
+	* src/news.[ch]
+		use new progress indicator for message info fetching
+
+	* src/common/hooks.h
+		code cleanup
+
+2003-03-03 [oliver]	0.8.10claws75
+
+	* src/toolbar.c
+	* src/compose.c
+		removed commented code
+
+2003-03-03 [oliver]	0.8.10claws74
+
+	* src/toolbar.[ch]
+		cleanups and refactoring
+	* src/compose.[ch]
+		compose_reply_mode reply & forwarding interface for
+		toolbar buttons
+	* src/folderview.c
+		act on messages marked for deletion in folderview_selected
+		based on prefs_common.immediate_exec since a message might 
+		have been deleted by messageview in a folder we are changing 
+		to (does anybody understand what I'm on about ?)
+
+2003-03-03 [oliver]	0.8.10claws73
+	
+	* src/messageview.[ch]
+		new functions
+		- messageview_delete: delete message shown in messagview
+		- messageview_update_view: update messageview to currently 
+		  selected summaryview message
+ 		- add separate messageview to msgview_list in order to update 
+		  toolbar to new toolbar style on the fly (TOOLBAR_NONE, TOOLBAR_ICON etc.)
+	* src/summaryview.[ch]
+		summary_get_selection returns a list of selected msgs
+		in summaryview
+	* src/mainwindow.c
+		toolbar reply refactoring
+
+2003-03-03 [paul]	0.8.10claws72
+
+	* sync with 0.8.10cvs21
+		see ChangeLog 2003-03-03
+
+2003-03-02 [christoph]	0.8.10claws71
+
+	* src/common/passcrypt.c
+		use POSIX includes
+
+2003-03-02 [christoph]	0.8.10claws70
+
+	* configure.ac
+	* src/prefs_account.c
+	* src/prefs_gtk.[ch]
+	* src/common/.cvsignore
+	* src/common/Makefile.am
+	* src/common/passcrypt.c		** NEW **
+	* src/common/passcrypt.h.in		** NEW **
+		Implement password encryption in config files
+		using unix encrypt and setkey functions. The crypt
+		key can be set as a configure parameter. Old
+		passwords will be converted if they do not begin
+		with '!'
+
+2003-03-02 [paul]	0.8.10claws69
+
+	* src/prefs_account.c
+		fix compile error
+
 2003-03-01 [thorsten]	0.8.10claws68
 
 	* po/el.po
@@ -13,7 +108,8 @@
 
 2003-03-01 [oliver]	0.8.10claws67
 
-	* ???
+	* src/summaryview.c
+		menu callbacks call toolbar_menu_reply
 
 2003-03-01 [oliver]	0.8.10claws66
 

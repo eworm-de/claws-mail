@@ -36,6 +36,8 @@
 #include "prefs_gtk.h"
 #include "utils.h"
 #include "gtkutils.h"
+#include "passcrypt.h"
+#include "base64.h"
 
 #define CL(x)	(((gulong) (x) >> (gulong) 8) & 0xFFUL)
 #define RGB_FROM_GDK_COLOR(c) \
@@ -180,6 +182,22 @@ void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 				/* be compatible and accept ints */
 				*((gulong *)param[i].data) = strtoul(value, 0, 10); 
 			break;
+		case P_PASSWORD:
+			g_free(*((gchar **)param[i].data));
+			if (value[0] == '!') {
+				gchar tmp[1024];
+				gint len;
+
+				len = base64_decode(tmp, &value[1], strlen(value) - 1);
+				passcrypt_decrypt(tmp, len);
+				tmp[len] = '\0';
+				*((gchar **)param[i].data) =
+					*tmp ? g_strdup(tmp) : NULL;
+			} else {
+				*((gchar **)param[i].data) =
+					*value ? g_strdup(value) : NULL;
+			}
+			break;
 		default:
 			break;
 		}
@@ -309,6 +327,26 @@ gint prefs_write_param(PrefParam *param, FILE *fp)
 			g_snprintf(buf, sizeof buf,  "%s=#%6.6lx\n", param[i].name,
 				   *((gulong *) param[i].data));
 			break;
+		case P_PASSWORD:
+			{
+				gchar *tmp = NULL, tmp2[1024] = {0};
+
+				tmp = *((gchar **)param[i].data);
+				if (tmp) {
+					gint len;
+
+					tmp = g_strdup(tmp);
+					len = strlen(tmp);
+					passcrypt_encrypt(tmp, len);
+					base64_encode(tmp2, tmp, len);
+					g_free(tmp);
+					tmp = tmp2;
+				}
+				g_snprintf(buf, sizeof(buf), "%s=!%s\n", param[i].name,
+					   tmp ?
+					   tmp : "");
+			}
+			break;
 		default:
 			buf[0] = '\0';
 		}
@@ -336,6 +374,7 @@ void prefs_set_default(PrefParam *param)
 
 		switch (param[i].type) {
 		case P_STRING:
+		case P_PASSWORD:
 			if (param[i].defval != NULL) {
 				if (!strncasecmp(param[i].defval, "ENV_", 4))
 					*((gchar **)param[i].data) =
@@ -411,6 +450,7 @@ void prefs_free(PrefParam *param)
 
 		switch (param[i].type) {
 		case P_STRING:
+		case P_PASSWORD:
 			g_free(*((gchar **)param[i].data));
 			break;
 		default:
@@ -521,6 +561,7 @@ void prefs_set_dialog_to_default(PrefParam *param)
 
 		switch (tmpparam.type) {
 		case P_STRING:
+		case P_PASSWORD:
 			if (tmpparam.defval) {
 				if (!strncasecmp(tmpparam.defval, "ENV_", 4)) {
 					str_data = g_strdup(g_getenv(param[i].defval + 4));
@@ -589,6 +630,7 @@ void prefs_set_data_from_entry(PrefParam *pparam)
 
 	switch (pparam->type) {
 	case P_STRING:
+	case P_PASSWORD:
 		str = (gchar **)pparam->data;
 		g_free(*str);
 		*str = entry_str[0] ? g_strdup(entry_str) : NULL;
@@ -613,6 +655,7 @@ void prefs_set_entry(PrefParam *pparam)
 
 	switch (pparam->type) {
 	case P_STRING:
+	case P_PASSWORD:
 		str = (gchar **)pparam->data;
 		gtk_entry_set_text(GTK_ENTRY(*pparam->widget),
 				   *str ? *str : "");
@@ -641,6 +684,7 @@ void prefs_set_data_from_text(PrefParam *pparam)
 
 	switch (pparam->type) {
 	case P_STRING:
+	case P_PASSWORD:
 		str = (gchar **)pparam->data;
 		g_free(*str);
 		tp = text = gtk_editable_get_chars
@@ -681,6 +725,7 @@ void prefs_set_text(PrefParam *pparam)
 
 	switch (pparam->type) {
 	case P_STRING:
+	case P_PASSWORD:
 		str = (gchar **)pparam->data;
 		if (*str) {
 			bufp = buf = alloca(strlen(*str) + 1);

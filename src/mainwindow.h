@@ -130,6 +130,8 @@ struct _MainWindow
 	SummaryView	*summaryview;
 	MessageView	*messageview;
 	LogWindow	*logwin;
+
+	gint	progressindicator_hook;
 };
 
 MainWindow *main_window_create		(SeparateType	 type);

@@ -118,6 +118,12 @@ MICRO_VERSION=$(shell grep ^MICRO_VERSION= $(CONFIGURE_AC)|sed -e "s/.*=//" -)
 EXTRA_VERSION=$(shell grep ^EXTRA_VERSION= $(CONFIGURE_AC)|sed -e "s/.*=//" -)
 VERSION=$(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)$(EXTRA_VERSION)
 
+### password encryption
+
+PASSCRYPT_KEY=passkey0
+PASSCRYPT_H=$(SRCDIR)/common/passcrypt.h
+PASSCRYPT_H_IN=$(PASSCRYPT_H).in
+
 ### bisonfiles
 
 # names of parser output files and escaped versions
@@ -176,6 +182,7 @@ LIBS= \
 	$(LIBDIR)/libeay32.lib \
 	$(LIBDIR)/ssleay32.lib \
 	$(LIBDIR)/RSAglue.lib \
+	$(LIBDIR)/libcrypt.lib \
 	$(FNMATCHDIR)/fnmatch.lib \
 	$(GPGMEDIR)/gpgme.lib \
 	$(LIBCOMPFACEDIR)/libcompface.lib \
@@ -266,6 +273,7 @@ OBJECTS= \
 	news.o \
 	nntp.o \
 	noticeview.o \
+	passcrypt.o \
 	passphrase.o \
 	pgptext.o \
 	pine.o \
@@ -291,6 +299,7 @@ OBJECTS= \
 	procmime.o \
 	procmsg.o \
 	progressdialog.o \
+	progressindicator.o \
 	quote_fmt.o \
 	quote_fmt_lex.o \
 	quote_fmt_parse.o \
@@ -442,6 +451,10 @@ $(VERSION_H): $(CONFIGURE_AC) $(VERSION_H_IN)
 	echo Version: $(PACKAGE) $(VERSION)
 	$(SED) -e "s/@PACKAGE@/$(PACKAGE)/;s/@VERSION@/$(VERSION)/;" $(VERSION_H_IN) > $@
 
+### password encryption
+
+$(PASSCRYPT_H): $(PASSCRYPT_H_IN)
+	$(SED) -e "s/@PASSCRYPT_KEY@/$(PASSCRYPT_KEY)/" $(PASSCRYPT_H_IN) > $@
 ### translations
 
 %.mo: $(PODIR)/%.po
@@ -563,6 +576,7 @@ mutt.o: 	mutt.c mutt.h
 news.o: 	news.c news.h
 nntp.o: 	nntp.c nntp.h
 noticeview.o:	noticeview.c noticeview.h 
+passcrypt.o: 	passcrypt.c passcrypt.h
 passphrase.o: 	passphrase.c passphrase.h
 pgptext.o: 	pgptext.c pgptext.h
 pine.o: 	pine.c pine.h
@@ -588,6 +602,7 @@ procheader.o: 	procheader.c procheader.h
 procmime.o: 	procmime.c procmime.h
 procmsg.o: 	procmsg.c procmsg.h
 progressdialog.o: 	progressdialog.c progressdialog.h
+progressindicator.o: 	progressindicator.c progressindicator.h
 quote_fmt.o:	quote_fmt.c quote_fmt.h
 recv.o: 	recv.c recv.h
 rfc2015.o: 	rfc2015.c rfc2015.h

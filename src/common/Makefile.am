@@ -9,8 +9,10 @@ libsylpheedcommon_la_SOURCES = \
 	md5.c md5.h \
 	mgutils.c mgutils.h \
 	nntp.c nntp.h \
+	passcrypt.c passcrypt.h \
 	plugin.c plugin.h \
 	prefs.c prefs.h \
+	progressindicator.c progressindicator.h \
 	quoted-printable.c quoted-printable.h \
 	session.c session.h \
 	smtp.c smtp.h \
@@ -33,7 +35,8 @@ CPPFLAGS = \
 
 libsylpheedcommon_la_LIBADD = \
 	$(GLIB_LIBS) \
-	$(OPENSSL_LIBS)
+	$(OPENSSL_LIBS) \
+	-lcrypt
 
 EXTRA_DIST = \
 	version.h.in

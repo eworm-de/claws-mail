@@ -1,3 +1,13 @@
+2003-03-03
+
+	* src/codeconv.c: UTF-8 locale 対応を修正。
+	  conv_get_code_conv_func(): locale のエンコーディングが UTF-8 の
+	  場合は conv_noconv を返すようにした。 ISO-8859-* から locale
+	  エンコーディングへの変換の場合は conv_latintodisp を返すようにした。
+	  conv_convert(): conv_codeset_strdup() の代わりに conv_iconv_strdup()
+	  を呼ぶようにした。
+	  conv_codeset_strdup(): 一部のコードを conv_iconv_strdup() に移動。
+
 2003-02-28
 
 	* src/prefs_account.[ch]: 署名にコマンドの出力を使用するオプション

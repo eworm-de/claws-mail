@@ -695,7 +695,7 @@ gint conv_convert(CodeConverter *conv, gchar *outbuf, gint outlen,
 	else {
 		gchar *str;
 
-		str = conv_codeset_strdup(inbuf, conv->charset_str, NULL);
+		str = conv_iconv_strdup(inbuf, conv->charset_str, NULL);
 		if (!str)
 			return -1;
 		else {
@@ -727,19 +727,6 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 	}
 
 #if HAVE_ICONV
-	if (!src_code)
-		src_code = conv_get_outgoing_charset_str();
-	if (!dest_code)
-		dest_code = conv_get_current_charset_str();
-
-	/* don't convert if current codeset is US-ASCII */
-	if (!strcasecmp(dest_code, CS_US_ASCII))
-		return g_strdup(inbuf);
-
-	/* don't convert if src and dest codeset are identical */
-	if (!strcasecmp(src_code, dest_code))
-		return g_strdup(inbuf);
-
 	return conv_iconv_strdup(inbuf, src_code, dest_code);
 #else
 	return g_strdup(inbuf);
@@ -770,6 +757,10 @@ CodeConvFunc conv_get_code_conv_func(const gchar *src_charset_str,
 
 	if (dest_charset == C_US_ASCII)
 		return conv_ustodisp;
+	else if (dest_charset == C_UTF_8 ||
+		 (dest_charset == C_AUTO &&
+		  conv_get_current_charset() == C_UTF_8))
+		return conv_noconv;
 
 	switch (src_charset) {
 	case C_ISO_2022_JP:
@@ -784,7 +775,6 @@ CodeConvFunc conv_get_code_conv_func(const gchar *src_charset_str,
 			code_conv = conv_ustodisp;
 		break;
 	case C_ISO_8859_1:
-#if !HAVE_ICONV
 	case C_ISO_8859_2:
 	case C_ISO_8859_4:
 	case C_ISO_8859_5:
@@ -794,7 +784,6 @@ CodeConvFunc conv_get_code_conv_func(const gchar *src_charset_str,
 	case C_ISO_8859_11:
 	case C_ISO_8859_13:
 	case C_ISO_8859_15:
-#endif
 		if (dest_charset == C_AUTO)
 			code_conv = conv_latintodisp;
 		break;
@@ -831,6 +820,19 @@ gchar *conv_iconv_strdup(const gchar *inbuf,
 	gint out_size;
 	gint out_left;
 	gint n_conv;
+
+	if (!src_code)
+		src_code = conv_get_outgoing_charset_str();
+	if (!dest_code)
+		dest_code = conv_get_current_charset_str();
+
+	/* don't convert if current codeset is US-ASCII */
+	if (!strcasecmp(dest_code, CS_US_ASCII))
+		return g_strdup(inbuf);
+
+	/* don't convert if src and dest codeset are identical */
+	if (!strcasecmp(src_code, dest_code))
+		return g_strdup(inbuf);
 
 	cd = iconv_open(dest_code, src_code);
 	if (cd == (iconv_t)-1)

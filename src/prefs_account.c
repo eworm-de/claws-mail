@@ -276,7 +276,7 @@ static PrefParam param[] = {
 	{"user_id", "ENV_USER", &tmp_ac_prefs.userid, P_STRING,
 	 &basic.uid_entry, prefs_set_data_from_entry, prefs_set_entry},
 
-	{"password", NULL, &tmp_ac_prefs.passwd, P_STRING,
+	{"password", NULL, &tmp_ac_prefs.passwd, P_PASSWORD,
 	 &basic.pass_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"inbox", "inbox", &tmp_ac_prefs.inbox, P_STRING,
@@ -346,7 +346,7 @@ static PrefParam param[] = {
 
 	{"smtp_user_id", NULL, &tmp_ac_prefs.smtp_userid, P_STRING,
 	 &p_send.smtp_uid_entry, prefs_set_data_from_entry, prefs_set_entry},
-	{"smtp_password", NULL, &tmp_ac_prefs.smtp_passwd, P_STRING,
+	{"smtp_password", NULL, &tmp_ac_prefs.smtp_passwd, P_PASSWORD,
 	 &p_send.smtp_pass_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"pop_before_smtp", "FALSE", &tmp_ac_prefs.pop_before_smtp, P_BOOL,
@@ -2262,7 +2262,6 @@ static void prefs_account_edit_custom_header(void)
 	prefs_custom_header_open(&tmp_ac_prefs);
 }
 
-#if USE_GPGME || USE_OPENSSL
 static void prefs_account_enum_set_data_from_radiobtn(PrefParam *pparam)
 {
 	GtkRadioButton *radiobtn;
@@ -2300,8 +2299,6 @@ static void prefs_account_enum_set_radiobtn(PrefParam *pparam)
 		group = group->next;
 	}
 }
-
-#endif /* USE_GPGME || USE_OPENSSL */
 
 #if USE_GPGME
 static void prefs_account_gnupg_inline_warning(GtkWidget *widget)

@@ -1963,12 +1963,16 @@ static void summary_status_show(SummaryView *summaryview)
 	}
 
 	if (summaryview->folder_item->folder->type == F_NEWS) {
-		gchar *group;
-		group = get_abbrev_newsgroup_name
-			(g_basename(summaryview->folder_item->path),
-			 prefs_common.ng_abbrev_len);
-		gtk_label_set(GTK_LABEL(summaryview->statlabel_folder), group);
-		g_free(group);
+		if (summaryview->folder_item->path != NULL) {
+			gchar *group;
+			group = get_abbrev_newsgroup_name
+				(g_basename(summaryview->folder_item->path),
+				 prefs_common.ng_abbrev_len);
+			gtk_label_set(GTK_LABEL(summaryview->statlabel_folder), group);
+			g_free(group);
+		} else {
+			gtk_label_set(GTK_LABEL(summaryview->statlabel_folder), "");
+		}
 	} else {
 		gtk_label_set(GTK_LABEL(summaryview->statlabel_folder),
 			      summaryview->folder_item->path);
@@ -4865,10 +4869,50 @@ static void summary_col_resized(GtkCList *clist, gint column, gint width,
 	prefs_common.summary_col_size[type] = width;
 }
 
+
+/*
+ * \brief get List of msginfo selected in SummaryView
+ *
+ * \param summaryview
+ *
+ * \return GSList holding MsgInfo
+ */
+GSList *summary_get_selection(SummaryView *summaryview)
+{
+	GList *sel = NULL;
+	GSList *msginfo_list = NULL;
+	
+	g_return_val_if_fail(summaryview != NULL, NULL);
+
+	sel = GTK_CLIST(summaryview->ctree)->selection;
+
+	g_return_val_if_fail(sel != NULL, NULL);
+
+	for ( ; sel != NULL; sel = sel->next)
+		msginfo_list = 
+			g_slist_append(msginfo_list, 
+				       gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
+								   GTK_CTREE_NODE(sel->data)));
+	return msginfo_list;
+}
+
 static void summary_reply_cb(SummaryView *summaryview, guint action,
 			     GtkWidget *widget)
 {
-	toolbar_menu_reply(TOOLBAR_MAIN, summaryview->mainwin, action);
+	MessageView *msgview = (MessageView*)summaryview->messageview;
+	GSList *msginfo_list;
+	gchar *body;
+
+	g_return_if_fail(msgview != NULL);
+
+	msginfo_list = summary_get_selection(summaryview);
+	g_return_if_fail(msginfo_list != NULL);
+
+	body = messageview_get_selection(msgview);
+
+	compose_reply_mode((ComposeMode)action, msginfo_list, body);
+	g_free(body);
+	g_slist_free(msginfo_list);
 }
 
 static void summary_execute_cb(SummaryView *summaryview, guint action,

@@ -74,10 +74,15 @@ static PrefsAccount *select_account_from_list
 static void messageview_menubar_cb	(MessageView 	*msgview,
 					 guint 		 action, 
 					 GtkWidget 	*widget);
-					 
+static void messageview_delete_cb	(MessageView 	*msgview, 
+					 guint 		 action, 
+					 GtkWidget 	*widget);					 
 static void messageview_close_cb	(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
+static void messageview_update		(MessageView *msgview);
+static void messageview_update_all	(MessageView *msgview);
+
 static GList *msgview_list = NULL;
 
 MessageView *messageview_create(MainWindow *mainwin)
@@ -156,7 +161,7 @@ static GtkItemFactoryEntry messageview_entries[] =
 	{N_("/_Message/_Forward"),		"<control><alt>F", messageview_menubar_cb, COMPOSE_FORWARD, NULL},
 	{N_("/_Message/Redirect"),		NULL, messageview_menubar_cb, COMPOSE_REDIRECT, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_Delete"),		"<control>D", delete_msgview_cb,  0, NULL},
+	{N_("/_Message/_Delete"),		"<control>D", messageview_delete_cb,  0, NULL},
 	
 	{N_("/_Help"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_Help/_About"),			NULL, about_show, 0, NULL}
@@ -193,6 +198,8 @@ void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 
 	gtk_container_add(GTK_CONTAINER(vbox),
 			  GTK_WIDGET_PTR(msgview));
+
+	msgview_list = g_list_append(msgview_list, msgview);
 }
 
 MessageView *messageview_create_with_new_window(MainWindow *mainwin)
@@ -229,7 +236,6 @@ MessageView *messageview_create_with_new_window(MainWindow *mainwin)
 	toolbar_set_style(msgview->toolbar->toolbar, msgview->handlebox, 
 			  prefs_common.toolbar_style);
 	messageview_init(msgview);
-	msgview_list = g_list_append(msgview_list, msgview);
 
 	return msgview;
 }
@@ -631,6 +637,116 @@ void messageview_destroy(MessageView *messageview)
 	gtk_widget_unref(mimeview);
 }
 
+void messageview_delete(MessageView *msgview)
+{
+	MsgInfo *msginfo = (MsgInfo*)msgview->msginfo;
+	SummaryView *summaryview = (SummaryView*)msgview->mainwin->summaryview;
+	FolderItem *trash = folder_get_default_trash();
+
+	g_return_if_fail(msginfo != NULL);
+	g_return_if_fail(trash != NULL);
+
+	if (!procmsg_msg_exist(msginfo)) {
+		alertpanel_error(_("Message already removed from folder."));
+		messageview_update_all(msgview);
+		return;
+	}
+
+	if (MSG_IS_MOVE(msginfo->flags)) {
+		alertpanel_error(_("Message already moved to Trash Folder."));
+		messageview_update_all(msgview);
+		return;
+	}
+
+	if (MSG_IS_LOCKED(msginfo->flags)) {
+		alertpanel_error(_("Message is locked."));
+		messageview_update_all(msgview);
+		return;
+	}
+
+	/* TODO: move summaryview's check_permission somewhere sane 
+	 * (maybe MSG_IS_NOT_AUTHOR ????) 
+	 */
+	if(msginfo->folder->folder->type == F_NEWS) {
+		alertpanel_error(_("Deleting News not implemented."));	
+		return;
+	}
+
+	/* set moved Flags 
+	 * deleting them is no option since this garbles our 
+	 * msgview->msginfo pointer
+	 */
+	procmsg_msginfo_set_to_folder(msginfo, trash);
+	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, MSG_COPY);
+	if (!MSG_IS_MOVE(msginfo->flags)) {
+		procmsg_msginfo_set_flags(msginfo, 0, MSG_MOVE);
+	}
+
+	/* if messageview holds message which is also in 
+	 * currently active summaryview --> update summaryview
+	 * if not: folderview_selected updates summaryview (summary_show) 
+	 * and deletes messages marked for deletion
+	 */
+	if (g_strcasecmp(summaryview->folder_item->path, msginfo->folder->path) == 0) {
+		//summary_show(summaryview, summaryview->folder_item);
+		//if (prefs_common.immediate_exec)
+		//	summary_execute(summaryview); 
+		summary_delete(summaryview);
+	} 
+	messageview_update_all(msgview);
+}
+
+/*	
+ * scan List of MessageViews checking whether there are any Views holding messages 
+ * which need to be updated because another view has deleted the one this MessagView holds
+ */
+static void messageview_update_all(MessageView *msgview)
+{
+	MsgInfo *msginfo = (MsgInfo*)msgview->msginfo;
+	GList *cur;
+	
+	g_return_if_fail(msginfo != NULL);
+
+	for (cur = msgview_list; cur != NULL; cur = cur->next) {
+		MessageView *msgview_list = (MessageView*)cur->data;
+		MsgInfo *msginfo_list = (MsgInfo*)msgview->msginfo;
+
+		if (msginfo->msgnum == msginfo_list->msgnum &&
+		    g_strcasecmp(msginfo->folder->path, msginfo_list->folder->path) == 0)
+			messageview_update(msgview_list);
+	}
+
+}
+
+/* 
+ * \brief update messageview with currently selected message in summaryview
+ *
+ * \param pointer to MessageView
+ */	
+static void messageview_update(MessageView *msgview)
+{
+	SummaryView *summaryview = (SummaryView*)msgview->mainwin->summaryview;
+
+	g_return_if_fail(summaryview != NULL);
+	
+	if (summaryview->selected) {
+		GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+		MsgInfo *msginfo = gtk_ctree_node_get_row_data(ctree, 
+						      summaryview->selected);
+		g_return_if_fail(msginfo != NULL);
+
+		messageview_show(msgview, msginfo, 
+				 msgview->all_headers);
+	} 
+	
+	/*
+	else {
+		toolbar_destroy(msgview->toolbar);
+		gtk_widget_destroy(msgview->window);
+	}	
+	*/
+}
+
 void messageview_quote_color_set(void)
 {
 }
@@ -826,9 +942,58 @@ static PrefsAccount *select_account_from_list(GList *ac_list)
 	return account_find_from_id(account_id);
 }
 
+
+/* 
+ * \brief return selected messageview text used by composing 
+ * 	  to reply to selected text only
+ *
+ * \param  pointer to Messageview 
+ *
+ * \return pointer to text (needs to be free'd by calling func)
+ */
+gchar *messageview_get_selection(MessageView *msgview)
+{
+	gchar *text = NULL;
+	
+	g_return_val_if_fail(msgview != NULL, NULL);
+
+	text = gtkut_editable_get_selection
+		(GTK_EDITABLE(msgview->textview->text));
+	
+	if (!text && msgview->type == MVIEW_MIME
+	    && msgview->mimeview->type == MIMEVIEW_TEXT
+	    && msgview->mimeview->textview
+	    && !msgview->mimeview->textview->default_text) {
+		text = gtkut_editable_get_selection 
+			(GTK_EDITABLE(msgview->mimeview->textview->text));   
+	}
+
+	return text;
+}
+
+static void messageview_delete_cb(MessageView *msgview, guint action, GtkWidget *widget)
+{
+	messageview_delete(msgview);
+}
+
 static void messageview_menubar_cb(MessageView *msgview, guint action, GtkWidget *widget)
 {
-	toolbar_menu_reply(TOOLBAR_MSGVIEW, msgview, action);
+	GSList *msginfo_list = NULL;
+	gchar *body;
+	MsgInfo *msginfo;
+
+	g_return_if_fail(msgview != NULL);
+
+	msginfo = (MsgInfo*)msgview->msginfo;
+	g_return_if_fail(msginfo != NULL);
+
+	msginfo_list = g_slist_append(msginfo_list, msginfo);
+	g_return_if_fail(msginfo_list);
+
+	body =  messageview_get_selection(msgview);
+	compose_reply_mode((ComposeMode)action, msginfo_list, body);
+	g_free(body);
+	g_slist_free(msginfo_list);
 }
 
 static void messageview_close_cb(gpointer data, guint action, GtkWidget *widget)
