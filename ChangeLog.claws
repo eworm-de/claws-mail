@@ -1,9 +1,13 @@
+2001-05-03 [alfons]
+
+	* src/textview.c: re-edited, prepared for fixing the email address
+		scanner.
+
 2001-05-03 [darko]
 
 	* src/prefs_common.c: use alfons' strftime ui code
 	entry_datefmt and datefmt_sample widgets have to be
 	global in this module because of this change
-
 
 2001-05-03 [hoa]
 

@@ -533,12 +533,16 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 			result = TRUE;
 		}
 	}
-	
+
+	/* we now have at least the address. now see if this is <bracketed>; in this
+	 * case we also scan for the informative part. we could make this a useful
+	 * function because it tries to parse out an email address backwards. :) */
 	if (result) {
-		/* we now have at least the address. now see if this is <bracketed>; in this
-		 * case we also scan for the informative part. we could make this a useful
-		 * function because it tries to parse out an email address backwards. :) */
 		if ( ((bp_ - 1 > start) && *(bp_ - 1) == '<') &&  (*ep_ == '>')) {
+			
+			/* the informative part of the email address (describing the name
+			 * of the email address owner) may contain quoted parts. the
+			 * closure stack stores the last encountered quotes. */
 			char	closure_stack[128];
 			char   *ptr = closure_stack;
 #define FULL_STACK()	((ptr - closure_stack) >= sizeof closure_stack) 
@@ -552,7 +556,8 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 
 			ep_++;
 
-			/* scan for the informative part */
+			/* scan for the informative part. */
+			
 			for (bp_ -= 2; bp_ >= start; bp_--) {
 				/* if closure on the stack keep scanning */
 				if (PEEK_STACK() == *bp_) {
@@ -563,11 +568,11 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 						PUSH_STACK(*bp_);
 					}						
 					else {
+						/* if nothing in the closure stack, do the special conditions
+						 * the following if..else expression simply checks whether 
+						 * a token is acceptable. if not acceptable, the clause
+						 * should terminate the loop with a 'break' */
 						if (!PEEK_STACK()) {
-							/* if nothing in the closure stack, do the special conditions
-							 * the following if..else expression simply checks whether 
-							 * a token is acceptable. if not acceptable, the clause
-							 * should terminate the loop with a 'break' */
 							if ( *bp_ == '-' 
 							&&   (((bp_ - 1) >= start) && isalnum(*(bp_ - 1))) 
 							&&   (((bp_ + 1) < ep_)    && isalnum(*(bp_ + 1))) ) {
