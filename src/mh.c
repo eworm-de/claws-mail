@@ -103,6 +103,7 @@ FolderClass mh_class =
 	mh_create_folder,
 	mh_rename_folder,
 	mh_remove_folder,
+	NULL,
 	mh_get_num_list,
 	NULL,
 	NULL,

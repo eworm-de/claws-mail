@@ -91,6 +91,7 @@ FolderClass mbox_class =
 	mbox_create_folder,
 	mbox_rename_folder,
 	mbox_remove_folder,
+	NULL,
 	mbox_get_num_list,
 	NULL,
 	NULL,

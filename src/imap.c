@@ -177,6 +177,8 @@ static gint imap_remove_all_msg(Folder * folder, FolderItem * item);
 static gboolean imap_is_msg_changed(Folder * folder,
 				    FolderItem * item, MsgInfo * msginfo);
 
+static gint imap_close(Folder * folder, FolderItem * item);
+
 static void imap_scan_tree(Folder * folder);
 
 static gint imap_create_tree(Folder * folder);
@@ -358,6 +360,7 @@ static gint imap_cmd_store	(IMAPSession	*sock,
 				 IMAPSet	 set,
 				 gchar		*sub_cmd);
 static gint imap_cmd_expunge	(IMAPSession	*sock);
+static gint imap_cmd_close     (IMAPSession    *session);
 
 static gint imap_cmd_ok		(IMAPSession	*session,
 				 GPtrArray	*argbuf);
@@ -425,6 +428,7 @@ FolderClass imap_class =
 	imap_create_folder,
 	imap_rename_folder,
 	imap_remove_folder,
+	imap_close,
 	imap_get_num_list,
 	NULL,
 	NULL,
@@ -1033,6 +1037,30 @@ gboolean imap_is_msg_changed(Folder *folder, FolderItem *item, MsgInfo *msginfo)
 {
 	/* TODO: properly implement this method */
 	return FALSE;
+}
+
+gint imap_close(Folder *folder, FolderItem *item)
+{
+	gint ok;
+	IMAPSession *session;
+
+	g_return_val_if_fail(folder != NULL, -1);
+
+	session = imap_session_get(folder);
+	if (!session) return -1;
+
+	if (session->mbox) {
+		ok = imap_cmd_close(session);
+		if (ok != IMAP_SUCCESS)
+			log_warning(_("can't close folder\n"));
+
+		g_free(session->mbox);
+		session->mbox = NULL;
+
+		return ok;
+	}
+
+	return 0;
 }
 
 void imap_scan_tree(Folder *folder)
@@ -2937,6 +2965,17 @@ static gint imap_cmd_expunge(IMAPSession *session)
 	}
 
 	return IMAP_SUCCESS;
+}
+
+static gint imap_cmd_close(IMAPSession *session)
+{
+	gint ok;
+
+	imap_gen_send(session, "CLOSE");
+	if ((ok = imap_cmd_ok(session, NULL)) != IMAP_SUCCESS)
+		log_warning(_("error while imap command: CLOSE\n"));
+
+	return ok;
 }
 
 static gint imap_cmd_ok(IMAPSession *session, GPtrArray *argbuf)

@@ -192,6 +192,8 @@ struct _FolderClass
 						 const gchar	*name);
 	gint     	(*remove_folder)	(Folder		*folder,
 						 FolderItem	*item);
+	gint		(*close)		(Folder		*folder,
+						 FolderItem	*item);
 	gint	 	(*get_num_list)		(Folder		*folder,
 						 FolderItem	*item,
 						 GSList	       **list);
@@ -409,7 +411,7 @@ void folder_unref_account_all		(PrefsAccount	*account);
 gchar *folder_item_get_path		(FolderItem	*item);
 
 gint   folder_item_open			(FolderItem	*item);
-void   folder_item_close		(FolderItem	*item);
+gint   folder_item_close		(FolderItem	*item);
 gint   folder_item_scan			(FolderItem	*item);
 void   folder_item_scan_foreach		(GHashTable	*table);
 MsgInfo *folder_item_get_msginfo	(FolderItem 	*item,
@@ -449,7 +451,7 @@ gboolean folder_item_is_msg_changed	(FolderItem	*item,
 					 MsgInfo	*msginfo);
 gchar *folder_item_get_cache_file	(FolderItem	*item);
 gchar *folder_item_get_mark_file	(FolderItem	*item);
-gchar * folder_item_get_identifier(FolderItem * item);
+gchar * folder_item_get_identifier	(FolderItem * item);
 
 GHashTable *folder_persist_prefs_new	(Folder *folder);
 void folder_persist_prefs_free		(GHashTable *pptable);

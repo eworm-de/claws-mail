@@ -1034,11 +1034,12 @@ gint folder_item_open(FolderItem *item)
 	return 0;
 }
 
-void folder_item_close(FolderItem *item)
+gint folder_item_close(FolderItem *item)
 {
 	GSList *mlist, *cur;
+	Folder *folder;
 	
-	g_return_if_fail(item != NULL);
+	g_return_val_if_fail(item != NULL, -1);
 
 	if (item->new_msgs) {
 		folder_item_update_freeze();
@@ -1058,6 +1059,14 @@ void folder_item_close(FolderItem *item)
 	folder_item_write_cache(item);
 	
 	folder_item_update(item, F_ITEM_UPDATE_MSGCNT);
+
+	item->opened = FALSE;
+	folder = item->folder;
+
+	if (folder->klass->close == NULL)
+		return 0;
+
+	return folder->klass->close(folder, item);
 }
 
 gint folder_item_scan_full(FolderItem *item, gboolean filtering)

@@ -130,6 +130,7 @@ FolderClass news_class =
 	NULL,
 	NULL,
 	NULL,
+	NULL,
 	news_get_num_list,
 	NULL,
 	NULL,
