@@ -1,3 +1,22 @@
+2003-01-17
+
+	* src/quoted-printable.c: qp_encode_line(): 元の文字列に CRLF が
+	  あった場合に改行が重複するバグを修正。
+	* src/utils.[ch]
+	  canonicalize_str(): 新規。新規に確保された正規化された文字列を
+	  返す。
+	  uncanonicalize_file(): 新規。正規化を解除する(CRLF -> LF)。
+	  uncanonicalize_file_replace(): 新規。
+	* src/compose.c: 処理の前に常に本文を正規化し、戻る前に正規化を
+	  解除するようにした。
+
+2003-01-17
+
+	* src/procmime.c: procmime_get_encoding_for_charset(): ロシア語
+	  charset の場合は ENC_8BIT を選ぶようにした。
+	* src/compose.c: compose_write_to_file(): 8bit メッセージを署名する
+	  場合は base64 を使用するようにした。
+
 2003-01-16
 
 	* src/prefs_common.c: prefs_send_create(): Content-Transfer-Encoding

@@ -49,6 +49,8 @@ void qp_encode_line(gchar *out, const guchar *in)
 		if (IS_LBREAK(inp)) {
 			*outp++ = '\n';
 			len = 0;
+			if (*inp == '\r')
+				inp++;
 			inp++;
 		} else if (ch == '\t' || ch == ' ') {
 			if (IS_LBREAK(inp + 1)) {

@@ -3180,8 +3180,7 @@ static gint compose_clearsign_text(Compose *compose, gchar **text)
 		return -1;
 	}
 
-	if (canonicalize_file_replace(tmp_file) < 0 ||
-	    compose_create_signers_list(compose, &key_list) < 0 ||
+	if (compose_create_signers_list(compose, &key_list) < 0 ||
 	    rfc2015_clearsign(tmp_file, key_list) < 0) {
 		unlink(tmp_file);
 		g_free(tmp_file);
@@ -3206,6 +3205,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	size_t len;
 	gchar *chars;
 	gchar *buf;
+	gchar *canon_buf;
 	const gchar *out_codeset;
 	EncodingType encoding;
 
@@ -3248,7 +3248,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 		if (!is_draft &&
 		    compose->use_signing && !compose->gnupg_mode &&
 		    encoding == ENC_8BIT)
-			encoding = ENC_QUOTED_PRINTABLE;
+			encoding = ENC_BASE64;
 #endif
 
 		src_codeset = conv_get_current_charset_str();
@@ -3281,33 +3281,9 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	}
 	g_free(chars);
 
-	/* Canonicalize line endings in the message text */
-	{
-		gchar *canon_buf, *out;
-		const gchar *p;
-		guint new_len = 0;
-
-		for (p = buf ; *p; ++p) {
-			if (*p != '\r') {
-				++new_len;
-				if (*p == '\n')
-					++new_len;
-			}
-		}
-
-		out = canon_buf = g_new(gchar, new_len + 1);
-		for (p = buf; *p; ++p) {
-			if (*p != '\r') {
-				if (*p == '\n')
-					*out++ = '\r';
-				*out++ = *p;
-			}
-		}
-		*out = '\0';
-
-		free(buf);
-		buf = canon_buf;
-	}
+	canon_buf = canonicalize_str(buf);
+	g_free(buf);
+	buf = canon_buf;
 
 #if USE_GPGME
 	if (!is_draft && compose->use_signing && compose->gnupg_mode) {
@@ -3395,8 +3371,10 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	}
 
 #if USE_GPGME
-	if (is_draft)
+	if (is_draft) {
+		uncanonicalize_file_replace(file);
 		return 0;
+	}
 
 	if ((compose->use_signing && !compose->gnupg_mode) ||
 	    compose->use_encryption) {
@@ -3423,6 +3401,8 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 		}
 	}
 #endif /* USE_GPGME */
+
+	uncanonicalize_file_replace(file);
 
 	return 0;
 }

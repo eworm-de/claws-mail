@@ -1241,7 +1241,7 @@ EncodingType procmime_get_encoding_for_charset(const gchar *charset)
 	else if (!strcasecmp(charset, "ISO-8859-5") ||
 		 !strncasecmp(charset, "KOI8-", 5) ||
 		 !strcasecmp(charset, "Windows-1251"))
-		return ENC_BASE64;
+		return ENC_8BIT;
 	else if (!strncasecmp(charset, "ISO-8859-", 9))
 		return ENC_QUOTED_PRINTABLE;
 	else
