@@ -1,3 +1,16 @@
+2004-11-06 [paul]	0.9.12cvs139.2
+
+	* AUTHORS
+	* src/textview.c
+	* src/textview.h
+		textview URI handling. hovering over a 
+		link displays it in the status bar,
+		and changes the mouse pointer to a hand 
+		cursor. a link is activated with a single 
+		click. (Modified from the) patch by Jean-Yves 
+		Lefort <jylefort@users.sourceforge.net>
+		
+
 2004-11-05 [colin]	0.9.12cvs139.1
 
 	* src/compose.c

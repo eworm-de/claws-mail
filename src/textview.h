@@ -26,8 +26,10 @@
 
 #include <glib.h>
 #include <gtk/gtkwidget.h>
+#include <gtk/gtktextiter.h>
 
 typedef struct _TextView	TextView;
+typedef struct _RemoteURI	RemoteURI;
 
 #include "messageview.h"
 #include "procmime.h"
@@ -51,8 +53,10 @@ struct _TextView
 
 	MessageView *messageview;
 	gint last_buttonpress;
-	gint show_url_msgid;
-	gint show_url_timeout_tag;
+
+	RemoteURI *uri_hover;
+	GtkTextIter uri_hover_start_iter;
+	GtkTextIter uri_hover_end_iter;
 };
 
 TextView *textview_create	(void);
