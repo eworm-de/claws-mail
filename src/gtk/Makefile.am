@@ -3,6 +3,7 @@ noinst_LTLIBRARIES = libsylpheedgtk.la
 libsylpheedgtk_la_SOURCES = \
 	about.c \
 	colorlabel.c \
+	colorsel.c \
 	description_window.c \
 	filesel.c \
 	gtkaspell.c \
@@ -21,6 +22,7 @@ sylpheedgtkincludedir = $(pkgincludedir)/gtk
 sylpheedgtkinclude_HEADERS = \
 	about.h \
 	colorlabel.h \
+	colorsel.h \
 	description_window.h \
 	filesel.h \
 	gtkaspell.h \

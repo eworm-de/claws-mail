@@ -41,6 +41,7 @@
 #include "gtkutils.h"
 #include "filtering.h"
 #include "folder_item_prefs.h"
+#include "gtk/colorsel.h"
 
 struct FolderItemGeneralPage
 {
@@ -53,10 +54,9 @@ struct FolderItemGeneralPage
 	GtkWidget *entry_simplify_subject;
 	GtkWidget *checkbtn_folder_chmod;
 	GtkWidget *entry_folder_chmod;
-	GtkWidget *folder_color;
 	GtkWidget *folder_color_btn;
 
-	GtkWidget *color_dialog;
+	gint	   folder_color;
 };
 
 struct FolderItemComposePage
@@ -80,13 +80,7 @@ struct FolderItemComposePage
 
 gint prefs_folder_item_chmod_mode		(gchar *folder_chmod);
 
-static void set_button_color(guint rgbvalue, GtkWidget *button);
 static void folder_color_set_dialog(GtkWidget *widget, gpointer data);
-static void folder_color_set_dialog_ok(GtkWidget *widget, gpointer data);
-static void folder_color_set_dialog_cancel(GtkWidget *widget, gpointer data);
-static void folder_color_set_dialog_key_pressed(GtkWidget *widget,
-						GdkEventKey *event,
-						gpointer data);
 
 #define SAFE_STRING(str) \
 	(str) ? (str) : ""
@@ -108,9 +102,6 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * _page,
 	GtkWidget *entry_folder_chmod;
 	GtkWidget *folder_color;
 	GtkWidget *folder_color_btn;
-	GtkWidget *menu;
-	GtkWidget *menuitem;
-	gint account_index, index;
 
 	page->item	   = item;
 
@@ -178,13 +169,13 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * _page,
 	gtk_widget_set_usize(folder_color_btn, 36, 26);
   	gtk_box_pack_start (GTK_BOX(hbox), folder_color_btn, FALSE, FALSE, 0);
 
-	page->item->prefs->color = item->prefs->color;
+	page->folder_color = item->prefs->color;
 
 	gtk_signal_connect(GTK_OBJECT(folder_color_btn), "clicked",
 			   GTK_SIGNAL_FUNC(folder_color_set_dialog),
 			   page);
 
-	set_button_color(item->prefs->color, folder_color_btn);
+	gtkut_set_widget_bgcolor_rgb(folder_color_btn, item->prefs->color);
 
 	rowcount++;
 
@@ -193,7 +184,6 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * _page,
 	page->entry_simplify_subject = entry_simplify_subject;
 	page->checkbtn_folder_chmod = checkbtn_folder_chmod;
 	page->entry_folder_chmod = entry_folder_chmod;
-	page->folder_color = folder_color;
 	page->folder_color_btn = folder_color_btn;
 
 	page->page.widget = table;
@@ -201,7 +191,7 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * _page,
 
 void prefs_folder_item_general_destroy_widget_func(PrefsPage *_page) 
 {
-	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) _page;
+	/* struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) _page; */
 }
 
 void prefs_folder_item_general_save_func(PrefsPage *_page) 
@@ -209,8 +199,6 @@ void prefs_folder_item_general_save_func(PrefsPage *_page)
 	gchar *buf;
 	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) _page;
 	FolderItemPrefs *prefs = page->item->prefs;
-	GtkWidget *menu;
-	GtkWidget *menuitem;
 	gboolean   old_simplify_val;
 	gchar     *old_simplify_str;
 
@@ -242,7 +230,7 @@ void prefs_folder_item_general_save_func(PrefsPage *_page)
 	prefs->folder_chmod = prefs_folder_item_chmod_mode(buf);
 	g_free(buf);
 
-	prefs->color = page->item->prefs->color;
+	prefs->color = page->folder_color;
 	/* update folder view */
 	if (prefs->color > 0)
 		folder_item_update(page->item, F_ITEM_UPDATE_MSGCNT);
@@ -413,7 +401,6 @@ void prefs_folder_item_compose_destroy_widget_func(PrefsPage *_page)
 
 void prefs_folder_item_compose_save_func(PrefsPage *_page) 
 {
-	gchar *buf;
 	struct FolderItemComposePage *page = (struct FolderItemComposePage *) _page;
 	FolderItemPrefs *prefs = page->item->prefs;
 	GtkWidget *menu;
@@ -464,84 +451,15 @@ gint prefs_folder_item_chmod_mode(gchar *folder_chmod)
 	return newmode;
 }
 
-static void set_button_color(guint rgbvalue, GtkWidget *button)
-{
-	GtkStyle *newstyle;
-	GdkColor gdk_color;
-
-	gtkut_convert_int_to_gdk_color(rgbvalue, &gdk_color);
-	newstyle = gtk_style_copy(gtk_widget_get_default_style());
-	newstyle->bg[GTK_STATE_NORMAL]   = gdk_color;
-	newstyle->bg[GTK_STATE_PRELIGHT] = gdk_color;
-	newstyle->bg[GTK_STATE_ACTIVE]   = gdk_color;
-	gtk_widget_set_style(GTK_WIDGET(button), newstyle);
-}
-
 static void folder_color_set_dialog(GtkWidget *widget, gpointer data)
 {
 	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) data;
-	GtkColorSelectionDialog *dialog;
-	gdouble color[4] = {0.0, 0.0, 0.0, 0.0};
-	guint rgbcolor;
+	gint rgbcolor;
 
-	page->color_dialog = gtk_color_selection_dialog_new(_("Pick color for folder"));
-	gtk_window_set_position(GTK_WINDOW(page->color_dialog), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(page->color_dialog), TRUE);
-	gtk_window_set_policy(GTK_WINDOW(page->color_dialog), FALSE, FALSE, FALSE);
-	manage_window_set_transient(GTK_WINDOW(page->color_dialog));
-
-	gtk_signal_connect(GTK_OBJECT(GTK_COLOR_SELECTION_DIALOG(page->color_dialog)->ok_button),
-			   "clicked", GTK_SIGNAL_FUNC(folder_color_set_dialog_ok), data);
-	gtk_signal_connect(GTK_OBJECT(GTK_COLOR_SELECTION_DIALOG(page->color_dialog)->cancel_button),
-			   "clicked", GTK_SIGNAL_FUNC(folder_color_set_dialog_cancel), data);
-	gtk_signal_connect(GTK_OBJECT(page->color_dialog), "key_press_event",
-			   GTK_SIGNAL_FUNC(folder_color_set_dialog_key_pressed),
-			   data);
-
-	rgbcolor = page->item->prefs->color;
-	color[0] = (gdouble) ((rgbcolor & 0xff0000) >> 16) / 255.0;
-	color[1] = (gdouble) ((rgbcolor & 0x00ff00) >>  8) / 255.0;
-	color[2] = (gdouble)  (rgbcolor & 0x0000ff)        / 255.0;
-
-	dialog = GTK_COLOR_SELECTION_DIALOG(page->color_dialog);
-	gtk_color_selection_set_color(GTK_COLOR_SELECTION(dialog->colorsel), color);
-
-	gtk_widget_show(page->color_dialog);
-}
-
-static void folder_color_set_dialog_ok(GtkWidget *widget, gpointer data)
-{
-	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) data;
-	GtkColorSelection *colorsel = (GtkColorSelection *)
-				((GtkColorSelectionDialog *) page->color_dialog)->colorsel;
-	gdouble color[4];
-	guint red, green, blue, rgbvalue;
-
-	gtk_color_selection_get_color(colorsel, color);
-
-	red      = (guint) (color[0] * 255.0);
-	green    = (guint) (color[1] * 255.0);
-	blue     = (guint) (color[2] * 255.0);
-	rgbvalue = (guint) ((red * 0x10000) | (green * 0x100) | blue);
-
-	page->item->prefs->color = rgbvalue;
-	set_button_color(rgbvalue, page->folder_color_btn);
-
-	gtk_widget_destroy(page->color_dialog);
-}
-
-static void folder_color_set_dialog_cancel(GtkWidget *widget, gpointer data)
-{
-	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) data;
-	gtk_widget_destroy(page->color_dialog);
-}
-
-static void folder_color_set_dialog_key_pressed(GtkWidget *widget,
-						GdkEventKey *event,
-						gpointer data)
-{
-	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) data;
-	gtk_widget_destroy(page->color_dialog);
+	rgbcolor = colorsel_select_color_rgb(_("Pick color for folder"), 
+					     page->folder_color);
+	gtkut_set_widget_bgcolor_rgb(page->folder_color_btn, rgbcolor);
+	page->folder_color = rgbcolor;
 }
 
 struct FolderItemGeneralPage folder_item_general_page;

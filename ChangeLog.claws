@@ -1,3 +1,21 @@
+2003-08-09 [christoph]	0.9.4claws11
+
+	* src/gtk/Makefile.am
+	* src/gtk/colorsel.[ch]			** NEW **
+		create a color selection dialog that can be used as a simple
+		function call with it's own gtk main loop like filesel.[ch]
+
+	* src/Makefile.am
+	* src/main.c
+	* src/prefs_common.c
+	* src/prefs_spelling.[ch]		** NEW **
+	* src/prefs_spelling.glade		** NEW **
+	* src/gtk/gtkutils.[ch]
+		move "Spell Checker" prefs to new prefs dialog
+
+	* src/prefs_folder_item.c
+		use new colorsel dialog
+
 2003-08-08 [paul]	0.9.4claws10
 
 	* src/inc.c

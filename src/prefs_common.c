@@ -57,10 +57,6 @@
 #include "stock_pixmap.h"
 #include "quote_fmt.h"
 
-#if USE_ASPELL
-#include "gtkaspell.h"
-#endif
-
 PrefsCommon prefs_common;
 
 static PrefsDialog dialog;
@@ -131,20 +127,6 @@ static struct Compose {
 	GtkWidget *checkbtn_autosave;
 	GtkWidget *entry_autosave_length;
 } compose;
-
-	/* spelling */
-#if USE_ASPELL
-static struct Spelling {
-	GtkWidget *checkbtn_enable_aspell;
-	GtkWidget *entry_aspell_path;
-	GtkWidget *btn_aspell_path;
-	GtkWidget *optmenu_dictionary;
-	GtkWidget *optmenu_sugmode;
-	GtkWidget *misspelled_btn;
-	GtkWidget *checkbtn_use_alternate;
-	GtkWidget *checkbtn_check_while_typing;
-} spelling;
-#endif
 
 static struct Quote {
 	GtkWidget *entry_quotemark;
@@ -277,14 +259,6 @@ static void prefs_common_send_dialog_set_optmenu(PrefParam *pparam);
 static void prefs_nextunreadmsgdialog_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_nextunreadmsgdialog_set_optmenu(PrefParam *pparam);
 
-#if USE_ASPELL
-static void prefs_dictionary_set_data_from_optmenu	(PrefParam *param);
-static void prefs_dictionary_set_optmenu		(PrefParam *pparam);
-static void prefs_speller_sugmode_set_data_from_optmenu	(PrefParam *pparam);
-static void prefs_speller_sugmode_set_optmenu 		(PrefParam *pparam);
-#endif
-
-
 /*
    parameter name, default value, pointer to the prefs variable, data type,
    pointer to the widget pointer,
@@ -411,24 +385,18 @@ static PrefParam param[] = {
 	 P_INT, &compose.entry_autosave_length,
 	 prefs_set_data_from_entry, prefs_set_entry},
 #if USE_ASPELL
-	{"enable_aspell", "TRUE", &prefs_common.enable_aspell,
-	 P_BOOL, &spelling.checkbtn_enable_aspell,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"aspell_path", ASPELL_PATH, &prefs_common.aspell_path, 
-	 P_STRING, &spelling.entry_aspell_path, 
-	 prefs_set_data_from_entry, prefs_set_entry},
-	{"dictionary",  "", &prefs_common.dictionary,
-	 P_STRING, &spelling.optmenu_dictionary, 
-	 prefs_dictionary_set_data_from_optmenu, prefs_dictionary_set_optmenu },
-	{"aspell_sugmode",  "1", &prefs_common.aspell_sugmode,
-	 P_INT, &spelling.optmenu_sugmode, 
-	 prefs_speller_sugmode_set_data_from_optmenu, prefs_speller_sugmode_set_optmenu },
-	{"use_alternate_dict", "FALSE", &prefs_common.use_alternate,
-	 P_BOOL, &spelling.checkbtn_use_alternate,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"check_while_typing", "TRUE", &prefs_common.check_while_typing,
-	 P_BOOL, &spelling.checkbtn_check_while_typing,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"enable_aspell", "TRUE", &prefs_common.enable_aspell, P_BOOL,
+	 NULL, NULL, NULL},
+	{"aspell_path", ASPELL_PATH, &prefs_common.aspell_path, P_STRING,
+	 NULL, NULL, NULL},
+	{"dictionary",  "", &prefs_common.dictionary, P_STRING,
+	 NULL, NULL, NULL},
+	{"aspell_sugmode", "1", &prefs_common.aspell_sugmode, P_INT,
+	 NULL, NULL, NULL},
+	{"use_alternate_dict", "FALSE", &prefs_common.use_alternate, P_BOOL,
+	 NULL, NULL, NULL},
+	{"check_while_typing", "TRUE", &prefs_common.check_while_typing, P_BOOL,
+	 NULL, NULL, NULL},
 	{"misspelled_color", "16711680", &prefs_common.misspelled_col, P_COLOR,
 	 NULL, NULL, NULL},
 #endif
@@ -847,9 +815,6 @@ static PrefParam param[] = {
 static void prefs_common_create		(void);
 static void prefs_receive_create	(void);
 static void prefs_send_create		(void);
-#ifdef USE_ASPELL
-static void prefs_spelling_create	(void);
-#endif
 static void prefs_compose_create	(void);
 static void prefs_quote_create		(void);
 static void prefs_display_create	(void);
@@ -1040,10 +1005,6 @@ static void prefs_common_create(void)
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Send"),      page++);
 	prefs_compose_create();
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Compose"),   page++);
-#if USE_ASPELL
-	prefs_spelling_create();
-	SET_NOTEBOOK_LABEL(dialog.notebook, _("Spell Checker"),   page++);
-#endif	
 	prefs_quote_create();
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Quote"),   page++);
 	prefs_display_create();
@@ -1517,292 +1478,6 @@ static void prefs_common_recv_dialog_newmail_notify_toggle_cb(GtkWidget *w, gpoi
 			(GTK_TOGGLE_BUTTON(receive.checkbtn_newmail_auto));
 	gtk_widget_set_sensitive(receive.hbox_newmail_notify, toggled);
 }
-
-#if USE_ASPELL
-static void prefs_dictionary_set_data_from_optmenu(PrefParam *param)
-{
-	gchar *str;
-	gchar *dict_fullname;
-	
-	g_return_if_fail(param);
-	g_return_if_fail(param->data);
-	g_return_if_fail(param->widget);
-	g_return_if_fail(*(param->widget));
-
-	dict_fullname = gtkaspell_get_dictionary_menu_active_item
-		(gtk_option_menu_get_menu(GTK_OPTION_MENU(*(param->widget))));
-	str = *((gchar **) param->data);
-	if (str)
-		g_free(str);
-	*((gchar **) param->data) = dict_fullname;
-}
-
-static void prefs_dictionary_set_optmenu(PrefParam *pparam)
-{
-	GList *cur;
-	GtkOptionMenu *optmenu = GTK_OPTION_MENU(*pparam->widget);
-	GtkWidget *menu;
-	GtkWidget *menuitem;
-	gchar *dict_name;
-	gint n = 0;
-
-	g_return_if_fail(optmenu != NULL);
-	g_return_if_fail(pparam->data != NULL);
-
-	if (*(gchar **) pparam->data) {
-		menu = gtk_option_menu_get_menu(optmenu);
-		for (cur = GTK_MENU_SHELL(menu)->children;
-		     cur != NULL; cur = cur->next) {
-			menuitem = GTK_WIDGET(cur->data);
-			dict_name = gtk_object_get_data(GTK_OBJECT(menuitem), 
-							"dict_name");
-			if (!strcmp2(dict_name, *((gchar **)pparam->data))) {
-				gtk_option_menu_set_history(optmenu, n);
-				return;
-			}
-			n++;
-		}
-	}		
-
-	gtk_option_menu_set_history(optmenu, 0);
-	prefs_dictionary_set_data_from_optmenu(pparam);
-}
-
-static void prefs_speller_sugmode_set_data_from_optmenu(PrefParam *param)
-{
-	gint sugmode;
-	g_return_if_fail(param);
-	g_return_if_fail(param->data);
-	g_return_if_fail(param->widget);
-	g_return_if_fail(*(param->widget));
-
-	sugmode = gtkaspell_get_sugmode_from_option_menu
-		(GTK_OPTION_MENU(*(param->widget)));
-	*((gint *) param->data) = sugmode;
-}
-
-static void prefs_speller_sugmode_set_optmenu(PrefParam *pparam)
-{
-	GtkOptionMenu *optmenu = GTK_OPTION_MENU(*pparam->widget);
-	gint sugmode;
-
-	g_return_if_fail(optmenu != NULL);
-	g_return_if_fail(pparam->data != NULL);
-
-	sugmode = *(gint *) pparam->data;
-	gtkaspell_sugmode_option_menu_set(optmenu, sugmode);
-}
-	
-	
-static void prefs_spelling_checkbtn_enable_aspell_toggle_cb
-	(GtkWidget *widget,
-	 gpointer data)
-{
-	gboolean toggled;
-
-	toggled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
-
-	gtk_widget_set_sensitive(spelling.entry_aspell_path,   toggled);
-	gtk_widget_set_sensitive(spelling.optmenu_dictionary,  toggled);
-	gtk_widget_set_sensitive(spelling.optmenu_sugmode,     toggled);
-	gtk_widget_set_sensitive(spelling.btn_aspell_path,     toggled);
-	gtk_widget_set_sensitive(spelling.misspelled_btn,      toggled);
-	gtk_widget_set_sensitive(spelling.checkbtn_use_alternate,      toggled);
-	gtk_widget_set_sensitive(spelling.checkbtn_check_while_typing, toggled);
-}
-
-static void prefs_spelling_btn_aspell_path_clicked_cb(GtkWidget *widget,
-						     gpointer data)
-{
-	gchar *file_path, *tmp;
-	GtkWidget *new_menu;
-
-	file_path = filesel_select_file(_("Select dictionaries location"),
-					prefs_common.aspell_path);
-	if (file_path == NULL) {
-		/* don't change */	
-	}
-	else {
-	  tmp=g_dirname(file_path);
-	  
-		if (prefs_common.aspell_path)
-			g_free(prefs_common.aspell_path);
-		prefs_common.aspell_path = g_strdup_printf("%s%s",tmp,
-							   G_DIR_SEPARATOR_S);
-
-		new_menu = gtkaspell_dictionary_option_menu_new(prefs_common.aspell_path);
-		gtk_option_menu_set_menu(GTK_OPTION_MENU(spelling.optmenu_dictionary),
-					 new_menu);
-
-		gtk_entry_set_text(GTK_ENTRY(spelling.entry_aspell_path), 
-				   prefs_common.aspell_path);					 
-		/* select first one */
-		gtk_option_menu_set_history(GTK_OPTION_MENU(
-					spelling.optmenu_dictionary), 0);
-	
-		if (prefs_common.dictionary)
-			g_free(prefs_common.dictionary);
-
-		prefs_common.dictionary = 
-			gtkaspell_get_dictionary_menu_active_item(
-				gtk_option_menu_get_menu(
-					GTK_OPTION_MENU(
-						spelling.optmenu_dictionary)));
-		g_free(tmp);
-
-	}
-}
-
-static void prefs_spelling_create()
-{
-	GtkWidget *vbox1;
-	GtkWidget *frame_spell;
-	GtkWidget *vbox_spell;
-	GtkWidget *hbox_aspell_path;
-	GtkWidget *checkbtn_enable_aspell;
-	GtkWidget *label_aspell_path;
-	GtkWidget *entry_aspell_path;
-	GtkWidget *btn_aspell_path;
-	GtkWidget *spell_table;
-	GtkWidget *label_dictionary;
-	GtkWidget *optmenu_dictionary;
-	GtkWidget *sugmode_label;
-	GtkWidget *sugmode_optmenu;
-	GtkWidget *checkbtn_use_alternate;
-	GtkWidget *help_label;
-	GtkWidget *checkbtn_check_while_typing;
-	GtkWidget *color_label;
-	GtkWidget *col_align;
-
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
-	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
-
-	/* spell checker defaults */			   
-	PACK_FRAME(vbox1, frame_spell, _("Global spelling checker settings"));
-	vbox_spell = gtk_vbox_new(FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox_spell);
-	gtk_container_add(GTK_CONTAINER(frame_spell), vbox_spell);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox_spell), 8);
-
-	PACK_CHECK_BUTTON(vbox_spell, checkbtn_enable_aspell, 
-			  _("Enable spell checker"));
-
-	gtk_signal_connect(GTK_OBJECT(checkbtn_enable_aspell), "toggled",
-			   GTK_SIGNAL_FUNC(prefs_spelling_checkbtn_enable_aspell_toggle_cb),
-			   NULL);
-
-	/* Check while typing */
-	PACK_CHECK_BUTTON(vbox_spell, checkbtn_check_while_typing, 
-			  _("Check while typing"));
-
-	PACK_CHECK_BUTTON(vbox_spell, checkbtn_use_alternate, 
-			  _("Enable alternate dictionary"));
-
-	help_label = gtk_label_new(_("Enabling an alternate dictionary makes switching\n"
-				     "with the last used dictionary faster."));
-	gtk_misc_set_alignment (GTK_MISC (help_label), 0, 0);
-	gtk_widget_show(help_label);
-	gtk_box_pack_start(GTK_BOX(vbox_spell), help_label, FALSE, TRUE, 0);
-	
-	spell_table = gtk_table_new(4, 3, FALSE);
-	gtk_container_set_border_width (GTK_CONTAINER (spell_table), VSPACING);
-	gtk_table_set_row_spacings(GTK_TABLE(spell_table), 8);
-	gtk_table_set_col_spacings(GTK_TABLE(spell_table), 8);
-
-	gtk_box_pack_start(GTK_BOX(vbox_spell), spell_table, TRUE, TRUE, 0);
-
-	label_aspell_path = gtk_label_new (_("Dictionaries path:"));
-	gtk_misc_set_alignment(GTK_MISC(label_aspell_path), 1.0, 0.5);
-	gtk_widget_show(label_aspell_path);
-	gtk_table_attach (GTK_TABLE (spell_table), label_aspell_path, 0, 1, 0,
-			  1, GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-	
-	hbox_aspell_path = gtk_hbox_new (FALSE, 8);
-	gtk_table_attach (GTK_TABLE (spell_table), hbox_aspell_path, 1, 2, 0,
-			  1, GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-	gtk_widget_show(hbox_aspell_path);
-
-	entry_aspell_path = gtk_entry_new();
-	gtk_widget_show(entry_aspell_path);
-	gtk_box_pack_start(GTK_BOX(hbox_aspell_path), entry_aspell_path, TRUE,
-			   TRUE, 0);	
-	
-	gtk_widget_set_sensitive(entry_aspell_path, prefs_common.enable_aspell);
-
-	btn_aspell_path = gtk_button_new_with_label(" ... ");
-	gtk_widget_show(btn_aspell_path);
-	gtk_box_pack_start(GTK_BOX(hbox_aspell_path), btn_aspell_path, FALSE, FALSE, 0);
-	gtk_widget_set_sensitive(btn_aspell_path, prefs_common.enable_aspell);
-
-	gtk_signal_connect(GTK_OBJECT(btn_aspell_path), "clicked", 
-			   GTK_SIGNAL_FUNC(prefs_spelling_btn_aspell_path_clicked_cb),
-			   NULL);
-
-	label_dictionary = gtk_label_new(_("Default dictionary:"));
-	gtk_misc_set_alignment(GTK_MISC(label_dictionary), 1.0, 0.5);
-	gtk_widget_show(label_dictionary);
-	gtk_table_attach (GTK_TABLE (spell_table), label_dictionary, 0, 1, 1, 2,
-			  GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-
-	optmenu_dictionary = gtk_option_menu_new();
-	gtk_widget_show(optmenu_dictionary);
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu_dictionary), 
-				 gtkaspell_dictionary_option_menu_new(
-					 prefs_common.aspell_path));
-	gtk_table_attach (GTK_TABLE (spell_table), optmenu_dictionary, 1, 2, 1,
-			  2, GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-	gtk_widget_set_sensitive(optmenu_dictionary, prefs_common.enable_aspell);
-
-	/* Suggestion mode */
-	sugmode_label = gtk_label_new(_("Default suggestion mode"));
-	gtk_misc_set_alignment(GTK_MISC(sugmode_label), 1.0, 0.5);
-	gtk_widget_show(sugmode_label);
-	gtk_table_attach(GTK_TABLE (spell_table), sugmode_label, 0, 1, 2, 3,
-			 GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-
-	sugmode_optmenu = gtk_option_menu_new();
-	gtk_widget_show(sugmode_optmenu);
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(sugmode_optmenu),
-			    gtkaspell_sugmode_option_menu_new(prefs_common.aspell_sugmode));
-	gtk_table_attach(GTK_TABLE(spell_table), sugmode_optmenu, 1, 2, 2, 3,
-			 GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-	gtk_widget_set_sensitive(sugmode_optmenu, prefs_common.enable_aspell);
-
-	/* Color */
-	color_label = gtk_label_new(_("Misspelled word color:"));
-	gtk_misc_set_alignment(GTK_MISC(color_label), 1.0, 0.5);
-	gtk_table_attach (GTK_TABLE (spell_table), color_label, 0, 1, 3, 4,
-			  GTK_FILL, GTK_SHRINK, 0, 0);
-	gtk_widget_show(color_label);
-	
-	col_align = gtk_alignment_new(0.0, 0.5, 0, 0);
-	gtk_widget_show(col_align);
-	gtk_table_attach (GTK_TABLE (spell_table), col_align, 1, 2, 3, 4,
-			  GTK_FILL, GTK_SHRINK, 0, 0);
-
-	spelling.misspelled_btn = gtk_button_new_with_label ("");
-	set_button_bg_color(spelling.misspelled_btn,
-			    prefs_common.misspelled_col);
-	gtk_widget_set_usize (spelling.misspelled_btn, 30, 20);
-	gtk_widget_set_sensitive(spelling.misspelled_btn, prefs_common.enable_aspell);
-	gtk_signal_connect (GTK_OBJECT (spelling.misspelled_btn), "clicked",
-			    GTK_SIGNAL_FUNC(quote_color_set_dialog), "Misspelled word");
-	gtk_container_add(GTK_CONTAINER(col_align), spelling.misspelled_btn);
-
-
-	spelling.checkbtn_enable_aspell = checkbtn_enable_aspell;
-	spelling.entry_aspell_path      = entry_aspell_path;
-	spelling.btn_aspell_path	= btn_aspell_path;
-	spelling.optmenu_dictionary     = optmenu_dictionary;
-	spelling.optmenu_sugmode        = sugmode_optmenu;
-	spelling.checkbtn_use_alternate = checkbtn_use_alternate;
-	spelling.checkbtn_check_while_typing = checkbtn_check_while_typing;
-}
-
-#endif
-
 
 static void prefs_compose_create(void)
 {
@@ -3545,11 +3220,6 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 	} else if(g_strcasecmp(type, "SIGNATURE") == 0) {
 		title = _("Pick color for signatures");
 		rgbvalue = prefs_common.signature_col;
-#if USE_ASPELL		
-	} else if(g_strcasecmp(type, "Misspelled word") == 0) {
-		title = _("Pick color for misspelled word");
-		rgbvalue = prefs_common.misspelled_col;
-#endif		
 	} else {   /* Should never be called */
 		g_warning("Unrecognized datatype '%s' in quote_color_set_dialog\n", type);
 		return;
@@ -3620,11 +3290,6 @@ static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
 	} else if (g_strcasecmp(type, "SIGNATURE") == 0) {
 		prefs_common.signature_col = rgbvalue;
 		set_button_bg_color(color_buttons.signature_btn, rgbvalue);
-#if USE_ASPELL		
-	} else if (g_strcasecmp(type, "Misspelled word") == 0) {
-		prefs_common.misspelled_col = rgbvalue;
-		set_button_bg_color(spelling.misspelled_btn, rgbvalue);
-#endif		
 	} else
 		fprintf( stderr, "Unrecognized datatype '%s' in quote_color_set_dialog_ok\n", type );
 

@@ -1,0 +1,98 @@
+/*
+ * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 2003 Hiroyuki Yamamoto & The Sylpheed Claws Team
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+#include <gtk/gtk.h>
+
+#include "colorsel.h"
+#include "manage_window.h"
+
+static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
+{
+	*((gint *) data) = 0;
+	gtk_main_quit();
+}
+
+static void quote_colors_set_dialog_cancel(GtkWidget *widget, gpointer data)
+{
+	*((gint *) data) = 1;
+	gtk_main_quit();
+}
+
+static void quote_colors_set_dialog_key_pressed(GtkWidget *widget,
+						GdkEventKey *event,
+						gpointer data)
+{
+	*((gint *) data) = 1;
+	gtk_main_quit();
+}
+
+gint colorsel_select_color_rgb(gchar *title, gint rgbvalue)
+{
+	gdouble color[4] = {0.0, 0.0, 0.0, 0.0};
+	GtkColorSelectionDialog *color_dialog;
+	gint result;
+
+	color_dialog = GTK_COLOR_SELECTION_DIALOG(gtk_color_selection_dialog_new(title));
+	gtk_window_set_position(GTK_WINDOW(color_dialog), GTK_WIN_POS_CENTER);
+	gtk_window_set_modal(GTK_WINDOW(color_dialog), TRUE);
+	gtk_window_set_policy(GTK_WINDOW(color_dialog), FALSE, FALSE, FALSE);
+	manage_window_set_transient(GTK_WINDOW(color_dialog));
+
+	gtk_signal_connect(GTK_OBJECT(GTK_COLOR_SELECTION_DIALOG(color_dialog)->ok_button),
+			   "clicked", GTK_SIGNAL_FUNC(quote_colors_set_dialog_ok), &result);
+	gtk_signal_connect(GTK_OBJECT(GTK_COLOR_SELECTION_DIALOG(color_dialog)->cancel_button),
+			   "clicked", GTK_SIGNAL_FUNC(quote_colors_set_dialog_cancel), &result);
+	gtk_signal_connect(GTK_OBJECT(color_dialog), "key_press_event",
+			   GTK_SIGNAL_FUNC(quote_colors_set_dialog_key_pressed),
+			   &result);
+
+	/* preselect the previous color in the color selection dialog */
+	color[0] = (gdouble) ((rgbvalue & 0xff0000) >> 16) / 255.0;
+	color[1] = (gdouble) ((rgbvalue & 0x00ff00) >>  8) / 255.0;
+	color[2] = (gdouble)  (rgbvalue & 0x0000ff)        / 255.0;
+	gtk_color_selection_set_color
+		(GTK_COLOR_SELECTION(color_dialog->colorsel), color);
+
+	gtk_widget_show(GTK_WIDGET(color_dialog));
+	gtk_main();
+
+	if (result == 0) {
+		gint red, green, blue, rgbvalue_new;
+
+		gtk_color_selection_get_color(GTK_COLOR_SELECTION(color_dialog->colorsel), color);
+
+		red          = (gint) (color[0] * 255.0);
+		green        = (gint) (color[1] * 255.0);
+		blue         = (gint) (color[2] * 255.0);
+		rgbvalue_new = (gint) ((red * 0x10000) | (green * 0x100) | blue);
+		
+#if 0
+		fprintf(stderr, "redc = %f, greenc = %f, bluec = %f\n", color[0], color[1], color[2]);
+		fprintf(stderr, "red = %d, green = %d, blue = %d\n", red, green, blue);
+		fprintf(stderr, "Color is %x\n", rgbvalue);
+#endif
+
+		rgbvalue = rgbvalue_new;
+	}
+
+	gtk_widget_destroy(GTK_WIDGET(color_dialog));
+
+	return rgbvalue;
+}
+

@@ -87,6 +87,7 @@ sylpheed_SOURCES = \
 	prefs_gtk.c \
 	prefs_matcher.c \
 	prefs_scoring.c \
+	prefs_spelling.c \
 	prefs_summary_column.c \
 	prefs_template.c \
 	prefs_toolbar.c \
@@ -206,6 +207,7 @@ sylpheedinclude_HEADERS = \
 	prefs_gtk.h \
 	prefs_matcher.h \
 	prefs_scoring.h \
+	prefs_spelling.h \
 	prefs_summary_column.h \
 	prefs_template.h \
 	prefs_toolbar.h \
