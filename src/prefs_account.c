@@ -1515,6 +1515,22 @@ static void prefs_account_compose_create(void)
 	gtk_container_add (GTK_CONTAINER (frame_sig), vbox_sig);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_sig), 8);
 
+	PACK_CHECK_BUTTON (vbox_sig, checkbtn_autosig,
+			   _("Insert signature automatically"));
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox_sig), hbox1, TRUE, TRUE, 0);
+	label_sigsep = gtk_label_new (_("Signature separator"));
+	gtk_widget_show (label_sigsep);
+	gtk_box_pack_start (GTK_BOX (hbox1), label_sigsep, FALSE, FALSE, 0);
+
+	entry_sigsep = gtk_entry_new ();
+	gtk_widget_show (entry_sigsep);
+	gtk_box_pack_start (GTK_BOX (hbox1), entry_sigsep, FALSE, FALSE, 0);
+
+	gtk_widget_set_usize (entry_sigsep, 64, -1);
+
 	sig_hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (sig_hbox);
 	gtk_box_pack_start (GTK_BOX (vbox_sig), sig_hbox, FALSE, FALSE, 0);
@@ -1534,26 +1550,10 @@ static void prefs_account_compose_create(void)
 	gtk_object_set_user_data (GTK_OBJECT (sigcmd_radiobtn),
 				  GINT_TO_POINTER (SIG_COMMAND));
 
-	PACK_CHECK_BUTTON (vbox_sig, checkbtn_autosig,
-			   _("Insert signature automatically"));
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox_sig), hbox1, TRUE, TRUE, 0);
-	label_sigsep = gtk_label_new (_("Signature separator"));
-	gtk_widget_show (label_sigsep);
-	gtk_box_pack_start (GTK_BOX (hbox1), label_sigsep, FALSE, FALSE, 0);
-
-	entry_sigsep = gtk_entry_new ();
-	gtk_widget_show (entry_sigsep);
-	gtk_box_pack_start (GTK_BOX (hbox1), entry_sigsep, FALSE, FALSE, 0);
-
-	gtk_widget_set_usize (entry_sigsep, 64, -1);
-
 	hbox2 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (vbox_sig), hbox2, TRUE, TRUE, 0);
-	label_sigpath = gtk_label_new (_("Signature file"));
+	label_sigpath = gtk_label_new (_("Signature"));
 	gtk_widget_show (label_sigpath);
 	gtk_box_pack_start (GTK_BOX (hbox2), label_sigpath, FALSE, FALSE, 0);
 

@@ -1,3 +1,8 @@
+2003-02-28 [paul]	0.8.10claws61
+
+	* src/prefs_account.c
+		re-order 'Signature' items
+
 2003-02-28 [paul]	0.8.10claws60
 
 	* sync with 0.8.10cvs20
