@@ -270,7 +270,7 @@ gint msgcache_get_memory_usage(MsgCache *cache)
 	} \
 }
 
-static FILE *msgcache_open_data_file(const gchar *file, gint version,
+static FILE *msgcache_open_data_file(const gchar *file, guint version,
 				     DataOpenMode mode,
 				     gchar *buf, size_t buf_size)
 {
@@ -293,14 +293,14 @@ static FILE *msgcache_open_data_file(const gchar *file, gint version,
 
 	/* check version */
 	if ((fp = fopen(file, "rb")) == NULL)
-		debug_print("Mark/Cache file not found\n");
+		debug_print("Mark/Cache file '%s' not found\n", file);
 	else {
 		if (buf && buf_size > 0)
 			setvbuf(fp, buf, _IOFBF, buf_size);
 		if (fread(&data_ver, sizeof(data_ver), 1, fp) != 1 ||
 			 version != data_ver) {
-			debug_print("Mark/Cache version is different (%d != %d). "
-				    "Discarding it.\n", data_ver, version);
+			g_message("%s: Mark/Cache version is different (%u != %u). Discarding it.\n",
+				  file, data_ver, version);
 			fclose(fp);
 			fp = NULL;
 		}
@@ -391,6 +391,7 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 	MsgTmpFlags tmp_flags = 0;
 	gchar file_buf[BUFFSIZE];
 	guint32 num;
+        guint refnum;
 	gboolean error = FALSE;
 	StringConverter *conv = NULL;
 	gchar *srccharset = NULL;
@@ -462,10 +463,21 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 		READ_CACHE_DATA(msginfo->subject, fp);
 		READ_CACHE_DATA(msginfo->msgid, fp);
 		READ_CACHE_DATA(msginfo->inreplyto, fp);
-		READ_CACHE_DATA(msginfo->references, fp);
 		READ_CACHE_DATA(msginfo->xref, fp);
 		READ_CACHE_DATA_INT(msginfo->planned_download, fp);
 		READ_CACHE_DATA_INT(msginfo->total_size, fp);
+
+		READ_CACHE_DATA_INT(refnum, fp);
+		for (; refnum != 0; refnum--) {
+			gchar *ref;
+
+			READ_CACHE_DATA(ref, fp);
+			msginfo->references =
+				g_slist_prepend(msginfo->references, ref);
+		}
+		if (msginfo->references)
+			msginfo->references =
+				g_slist_reverse(msginfo->references);
 
 		msginfo->folder = item;
 		msginfo->flags.tmp_flags |= tmp_flags;
@@ -523,6 +535,7 @@ void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
 void msgcache_write_cache(MsgInfo *msginfo, FILE *fp)
 {
 	MsgTmpFlags flags = msginfo->flags.tmp_flags & MSG_CACHED_FLAG_MASK;
+	GSList *cur;
 
 	WRITE_CACHE_DATA_INT(msginfo->msgnum, fp);
 	WRITE_CACHE_DATA_INT(msginfo->size, fp);
@@ -540,10 +553,14 @@ void msgcache_write_cache(MsgInfo *msginfo, FILE *fp)
 	WRITE_CACHE_DATA(msginfo->subject, fp);
 	WRITE_CACHE_DATA(msginfo->msgid, fp);
 	WRITE_CACHE_DATA(msginfo->inreplyto, fp);
-	WRITE_CACHE_DATA(msginfo->references, fp);
 	WRITE_CACHE_DATA(msginfo->xref, fp);
 	WRITE_CACHE_DATA_INT(msginfo->planned_download, fp);
 	WRITE_CACHE_DATA_INT(msginfo->total_size, fp);
+        
+	WRITE_CACHE_DATA_INT(g_slist_length(msginfo->references), fp);
+	for (cur = msginfo->references; cur != NULL; cur = cur->next) {
+		WRITE_CACHE_DATA((gchar *)cur->data, fp);
+	}
 }
 
 static void msgcache_write_flags(MsgInfo *msginfo, FILE *fp)

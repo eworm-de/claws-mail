@@ -512,6 +512,7 @@ special:
 	}
 	| SHOW_REFERENCES
 	{
+                /* CLAWS: use in reply to header */
 		/* if (msginfo->references)
 			INSERT(msginfo->references); */
 	}
@@ -631,6 +632,7 @@ query:
 	}
 	| QUERY_REFERENCES
 	{
+                /* CLAWS: use in-reply-to header */
 		/* add_visibility(msginfo->references != NULL); */
 	}
 	OPARENT quote_fmt CPARENT

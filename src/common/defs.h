@@ -77,7 +77,7 @@
 #define FOLDER_LIST		"folderlist.xml"
 #define CACHE_FILE		".sylpheed_claws_cache"
 #define MARK_FILE		".sylpheed_mark"
-#define CACHE_VERSION		23
+#define CACHE_VERSION		24
 #define MARK_VERSION		2
 
 #define DEFAULT_SIGNATURE	".signature"

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -223,6 +223,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 	GRelation *subject_relation;
 	MsgInfo *msginfo;
 	const gchar *msgid;
+        GSList *reflist;
 
 	root = g_node_new(NULL);
 	msgid_table = g_hash_table_new(g_str_hash, g_str_equal);
@@ -253,20 +254,31 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 
 	/* complete the unfinished threads */
 	for (node = root->children; node != NULL; ) {
-		parent = NULL;
 		next = node->next;
 		msginfo = (MsgInfo *)node->data;
-		if (msginfo->inreplyto) { 
+		parent = NULL;
+		
+                if (msginfo->inreplyto)
 			parent = g_hash_table_lookup(msgid_table, msginfo->inreplyto);
-			/* node should not be the parent, and node should not 
-			   be an ancestor of parent (circular reference) */
-			if (parent && parent != node && 
-			    !g_node_is_ancestor(node, parent)) {
-				g_node_unlink(node);
-				g_node_insert_before
-					(parent, parent->children, node);
-			}				
+
+		/* try looking for the indirect parent */
+		if (!parent && msginfo->references) {
+			for (reflist = msginfo->references;
+			     reflist != NULL; reflist = reflist->next)
+				if ((parent = g_hash_table_lookup
+					(msgid_table, reflist->data)) != NULL)
+					break;
+                }                                        
+              
+		/* node should not be the parent, and node should not
+		   be an ancestor of parent (circular reference) */
+		if (parent && parent != node &&
+		    !g_node_is_ancestor(node, parent)) {
+			g_node_unlink(node);
+			g_node_insert_before
+				(parent, parent->children, node);
 		}
+               
 		node = next;
 	}
 
@@ -840,6 +852,7 @@ MsgInfo *procmsg_msginfo_new(void)
 MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 {
 	MsgInfo *newmsginfo;
+        GSList *refs;
 
 	if (msginfo == NULL) return NULL;
 
@@ -876,7 +889,13 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 	MEMBDUP(xface);
 	MEMBDUP(dispositionnotificationto);
 	MEMBDUP(returnreceiptto);
-	MEMBDUP(references);
+
+        refs = msginfo->references;
+        for (refs = msginfo->references; refs != NULL; refs = refs->next) {
+                newmsginfo->references = g_slist_prepend
+                        (newmsginfo->references, g_strdup(refs->data)); 
+        }
+        newmsginfo->references = g_slist_reverse(newmsginfo->references);
 
 	MEMBCOPY(score);
 	MEMBCOPY(threadscore);
@@ -946,7 +965,6 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 	}
 
 	g_free(msginfo->fromspace);
-	g_free(msginfo->references);
 	g_free(msginfo->returnreceiptto);
 	g_free(msginfo->dispositionnotificationto);
 	g_free(msginfo->xface);
@@ -967,6 +985,9 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 	g_free(msginfo->account_server);
 	g_free(msginfo->account_login);
 	
+	slist_free_strings(msginfo->references);
+	g_slist_free(msginfo->references);
+
 	g_free(msginfo->plaintext_file);
 
 	g_free(msginfo);
@@ -1001,8 +1022,11 @@ guint procmsg_msginfo_memusage(MsgInfo *msginfo)
 		memusage += strlen(msginfo->dispositionnotificationto);
 	if (msginfo->returnreceiptto)
 		memusage += strlen(msginfo->returnreceiptto);
+#warning FIXME: Calculate size of references list                
+#if 0
 	if (msginfo->references)
 		memusage += strlen(msginfo->references);
+#endif                
 	if (msginfo->fromspace)
 		memusage += strlen(msginfo->fromspace);
 

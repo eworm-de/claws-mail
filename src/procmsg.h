@@ -195,7 +195,7 @@ struct _MsgInfo
 	gchar *dispositionnotificationto;
 	gchar *returnreceiptto;
 
-	gchar *references;
+	GSList *references;
 	gchar *fromspace;
 
 	gint score;

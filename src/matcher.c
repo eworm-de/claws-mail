@@ -508,10 +508,12 @@ gboolean matcherprop_match(MatcherProp *prop,
 		return matcherprop_string_match(prop, info->inreplyto);
 	case MATCHCRITERIA_NOT_INREPLYTO:
 		return !matcherprop_string_match(prop, info->inreplyto);
-	case MATCHCRITERIA_REFERENCES:
-		return matcherprop_string_match(prop, info->references);
+	/* FIXME: Using inreplyto, but matching the (newly implemented)
+         * list of references is better */
+        case MATCHCRITERIA_REFERENCES:
+		return matcherprop_string_match(prop, info->inreplyto);
 	case MATCHCRITERIA_NOT_REFERENCES:
-		return !matcherprop_string_match(prop, info->references);
+		return !matcherprop_string_match(prop, info->inreplyto);
 	case MATCHCRITERIA_TEST:
 		return matcherprop_match_test(prop, info);
 	case MATCHCRITERIA_NOT_TEST:
@@ -1273,7 +1275,8 @@ gchar *matching_build_command(const gchar *cmd, MsgInfo *info)
 				size += STRLEN_DEFAULT(info->newsgroups, no_newsgroups) - 2;
 				break;
 			case 'r': /* references */
-				size += STRLEN_DEFAULT(info->references, no_references) - 2;
+                                /* FIXME: using the inreplyto header for reference */
+				size += STRLEN_DEFAULT(info->inreplyto, no_references) - 2;
 				break;
 			case 'F': /* file */
 				if (filename == NULL)
@@ -1337,8 +1340,8 @@ gchar *matching_build_command(const gchar *cmd, MsgInfo *info)
 						no_newsgroups);
 				break;
 			case 'r': /* references */
-				add_str_default(&p, info->references,
-						no_references);
+                                /* FIXME: using the inreplyto header for references */
+				add_str_default(&p, info->inreplyto, no_references);
 				break;
 			case 'F': /* file */
 				if (filename != NULL)

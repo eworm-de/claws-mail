@@ -652,19 +652,27 @@ static MsgInfo *news_parse_xover(const gchar *xover_str)
 
         msginfo->subject = conv_unmime_header(subject, NULL);
 
-	extract_parenthesis(msgid, '<', '>');
-	remove_space(msgid);
-	if (*msgid != '\0')
-		msginfo->msgid = g_strdup(msgid);
+        if (msgid) {
+                extract_parenthesis(msgid, '<', '>');
+                remove_space(msgid);
+                if (*msgid != '\0')
+                        msginfo->msgid = g_strdup(msgid);
+        }                        
 
-	msginfo->references = g_strdup(ref);
-	eliminate_parenthesis(ref, '(', ')');
-	if ((p = strrchr(ref, '<')) != NULL) {
-		extract_parenthesis(p, '<', '>');
-		remove_space(p);
-		if (*p != '\0')
-			msginfo->inreplyto = g_strdup(p);
-	}
+        /* FIXME: this is a quick fix; references' meaning was changed
+         * into having the actual list of references in the References: header.
+         * We need a GSList here, so msginfo_free() and msginfo_copy() can do 
+         * their things properly. */ 
+        if (ref) {         
+                msginfo->references = g_slist_append(msginfo->references, g_strdup(ref)); 
+                eliminate_parenthesis(ref, '(', ')');
+                if ((p = strrchr(ref, '<')) != NULL) {
+                        extract_parenthesis(p, '<', '>');
+                        remove_space(p);
+                        if (*p != '\0')
+                                msginfo->inreplyto = g_strdup(p);
+                }
+        }                
 
 	/*
 	msginfo->xref = g_strdup(xref);
