@@ -252,14 +252,6 @@ int main(int argc, char *argv[])
 	}
 	set_log_file(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log");
 
-	if (is_file_exist(RC_DIR G_DIR_SEPARATOR_S "assortrc") &&
-	    !is_file_exist(RC_DIR G_DIR_SEPARATOR_S "filterrc")) {
-		if (rename(RC_DIR G_DIR_SEPARATOR_S "assortrc",
-			   RC_DIR G_DIR_SEPARATOR_S "filterrc") < 0)
-			FILE_OP_ERROR(RC_DIR G_DIR_SEPARATOR_S "assortrc",
-				      "rename");
-	}
-
 	prefs_common_init();
 	prefs_common_read_config();
 

@@ -45,7 +45,6 @@
 #define MIME_TMP_DIR		"mimetmp"
 #define COMMON_RC		"sylpheedrc"
 #define ACCOUNT_RC		"accountrc"
-#define FILTER_RC		"filterrc"
 #define CUSTOM_HEADER_RC	"customheaderrc"
 #define DISPLAY_HEADER_RC	"dispheaderrc"
 #define FOLDERITEM_RC           "folderitemrc"
