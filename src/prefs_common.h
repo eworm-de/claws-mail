@@ -157,6 +157,7 @@ struct _PrefsCommon
 	gboolean default_encrypt;
 	gboolean default_sign;
         gboolean auto_check_signatures;
+        gboolean signature_popup;
 	gboolean passphrase_grab;
 	gchar *default_signkey;
 

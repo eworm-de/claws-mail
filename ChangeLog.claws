@@ -1,3 +1,10 @@
+2001-05-08 [sergey]
+
+	* src/prefs_common.[ch]: added option to enable/disable GnuPG
+	signature check popup.
+	* src/rfc2015.c (check_signature): show signature check popup only
+	if it is enabled in preferences.
+
 2001-05-07 [alfons]
 
 	0.4.66claws4

@@ -281,8 +281,10 @@ static void check_signature (MimeInfo *mimeinfo, MimeInfo *partinfo, FILE *fp)
     GpgmeSigStat status = GPGME_SIG_STAT_NONE;
     GpgmegtkSigStatus statuswindow;
     const char *result = NULL;
+    gboolean signature_popup = prefs_common.signature_popup;
 
-    statuswindow = gpgmegtk_sig_status_create ();
+    if (signature_popup)
+	statuswindow = gpgmegtk_sig_status_create ();
 
     err = gpgme_new (&ctx);
     if (err) {
@@ -317,7 +319,8 @@ static void check_signature (MimeInfo *mimeinfo, MimeInfo *partinfo, FILE *fp)
 leave:
     result = gpgmegtk_sig_status_to_string(status);
     debug_print("verification status: %s\n", result);
-    gpgmegtk_sig_status_update(statuswindow,ctx);
+    if (signature_popup)
+	gpgmegtk_sig_status_update(statuswindow,ctx);
 
     g_assert (!err); /* FIXME: Hey: this may indeed happen */
     g_free (partinfo->sigstatus);
@@ -326,7 +329,8 @@ leave:
     gpgme_data_release (sig);
     gpgme_data_release (text);
     gpgme_release (ctx);
-    gpgmegtk_sig_status_destroy(statuswindow);
+    if (signature_popup)
+	gpgmegtk_sig_status_destroy(statuswindow);
 }
 
 static const char *

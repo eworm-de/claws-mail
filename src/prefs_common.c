@@ -133,6 +133,7 @@ static struct Privacy {
 	GtkWidget *checkbtn_default_sign;
 	GtkWidget *checkbtn_auto_check_signatures;
 	GtkWidget *checkbtn_passphrase_grab;
+	GtkWidget *checkbtn_signature_popup;
 	GtkWidget *optmenu_default_signkey;
 } privacy;
 #endif
@@ -453,6 +454,10 @@ static PrefParam param[] = {
 	{"auto_check_signatures", "TRUE",
 	 &prefs_common.auto_check_signatures, P_BOOL,
 	 &privacy.checkbtn_auto_check_signatures,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"signature_popup", "FALSE",
+	 &prefs_common.signature_popup, P_BOOL,
+	 &privacy.checkbtn_signature_popup,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 #ifndef __MINGW32__
 	{"passphrase_grab", "FALSE", &prefs_common.passphrase_grab, P_BOOL,
@@ -1587,6 +1592,7 @@ static void prefs_privacy_create(void)
 	GtkWidget *checkbtn_default_encrypt;
 	GtkWidget *checkbtn_default_sign;
 	GtkWidget *checkbtn_auto_check_signatures;
+	GtkWidget *checkbtn_signature_popup;
 	GtkWidget *checkbtn_passphrase_grab;
 	GtkWidget *label;
 	GtkWidget *menuitem;
@@ -1614,6 +1620,9 @@ static void prefs_privacy_create(void)
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_auto_check_signatures,
 			   _("Automatically check signatures"));
+
+	PACK_CHECK_BUTTON (vbox2, checkbtn_signature_popup,
+			   _("Show signature check result in a popup window"));
 
 #ifndef __MINGW32__
 	PACK_CHECK_BUTTON (vbox2, checkbtn_passphrase_grab,
@@ -1644,6 +1653,7 @@ static void prefs_privacy_create(void)
 	privacy.checkbtn_default_sign    = checkbtn_default_sign;
 	privacy.checkbtn_auto_check_signatures
 					 = checkbtn_auto_check_signatures;
+	privacy.checkbtn_signature_popup = checkbtn_signature_popup;
 	privacy.checkbtn_passphrase_grab = checkbtn_passphrase_grab;
 	privacy.optmenu_default_signkey  = optmenu;
 }
