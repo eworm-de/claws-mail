@@ -44,7 +44,7 @@
 #include <signal.h>
 
 #include "intl.h"
-#include "prefs.h"
+#include "prefs_gtk.h"
 #include "inc.h"
 #include "utils.h"
 #include "gtkutils.h"

@@ -198,6 +198,7 @@ int matcher_parserwrap(void)
 %token MATCHER_OR MATCHER_AND  
 %token MATCHER_COLOR MATCHER_SCORE_EQUAL MATCHER_REDIRECT MATCHER_DELETE_ON_SERVER
 %token MATCHER_SIZE_GREATER MATCHER_SIZE_SMALLER MATCHER_SIZE_EQUAL
+%token MATCHER_LOCKED MATCHER_NOT_LOCKED
 
 %start file
 
@@ -445,6 +446,20 @@ MATCHER_ALL
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_NOT_FORWARDED;
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+}
+| MATCHER_LOCKED
+{
+	gint criteria = 0;
+
+	criteria = MATCHCRITERIA_LOCKED;
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+}
+| MATCHER_NOT_LOCKED
+{
+	gint criteria = 0;
+
+	criteria = MATCHCRITERIA_NOT_LOCKED;
 	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_SUBJECT match_type MATCHER_STRING

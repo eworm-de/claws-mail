@@ -22,6 +22,9 @@
 #endif
 
 #include <glib.h>
+#ifdef WIN32
+#include <defs.h>
+#endif
 
 #include "prefs.h"
 #include "utils.h"
@@ -82,7 +85,7 @@ gint prefs_write_close(PrefFile *pfile)
 
 	if (is_file_exist(path)) {
 		bakpath = g_strconcat(path, ".bak", NULL);
-		if (rename(path, bakpath) < 0) {
+		if (Xrename(path, bakpath) < 0) {
 			FILE_OP_ERROR(path, "rename");
 			unlink(tmppath);
 			g_free(path);
@@ -92,7 +95,7 @@ gint prefs_write_close(PrefFile *pfile)
 		}
 	}
 
-	if (rename(tmppath, path) < 0) {
+	if (Xrename(tmppath, path) < 0) {
 		FILE_OP_ERROR(tmppath, "rename");
 		unlink(tmppath);
 		g_free(path);

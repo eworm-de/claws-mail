@@ -33,7 +33,7 @@
 
 #include "intl.h"
 #include "main.h"
-#include "prefs.h"
+#include "prefs_gtk.h"
 #include "prefs_matcher.h"
 #include "prefs_common.h"
 #include "mainwindow.h"
@@ -103,16 +103,17 @@ enum {
 	CRITERIA_DELETED = 18,
 	CRITERIA_REPLIED = 19,
 	CRITERIA_FORWARDED = 20,
+	CRITERIA_LOCKED = 21,
 
-	CRITERIA_SCORE_GREATER = 21,
-	CRITERIA_SCORE_LOWER = 22,
-	CRITERIA_SCORE_EQUAL = 23,
+	CRITERIA_SCORE_GREATER = 22,
+	CRITERIA_SCORE_LOWER = 23,
+	CRITERIA_SCORE_EQUAL = 24,
 
-	CRITERIA_EXECUTE = 24,
+	CRITERIA_EXECUTE = 25,
 
-	CRITERIA_SIZE_GREATER = 25,
-	CRITERIA_SIZE_SMALLER = 26,
-	CRITERIA_SIZE_EQUAL   = 27
+	CRITERIA_SIZE_GREATER = 26,
+	CRITERIA_SIZE_SMALLER = 27,
+	CRITERIA_SIZE_EQUAL   = 28
 };
 
 enum {
@@ -152,6 +153,7 @@ gchar * criteria_text [] = {
 	N_("Unread flag"), N_("New flag"),
 	N_("Marked flag"), N_("Deleted flag"),
 	N_("Replied flag"), N_("Forwarded flag"),
+	N_("Locked flag"), 
 	N_("Score greater than"), N_("Score lower than"),
 	N_("Score equal to"),
 	N_("Execute"),
@@ -720,13 +722,15 @@ static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 	case MATCHCRITERIA_NOT_DELETED:
 	case MATCHCRITERIA_DELETED:
 		return CRITERIA_DELETED;
-		break;
 	case MATCHCRITERIA_NOT_REPLIED:
 	case MATCHCRITERIA_REPLIED:
 		return CRITERIA_REPLIED;
 	case MATCHCRITERIA_NOT_FORWARDED:
 	case MATCHCRITERIA_FORWARDED:
 		return CRITERIA_FORWARDED;
+	case MATCHCRITERIA_LOCKED:
+	case MATCHCRITERIA_NOT_LOCKED:
+		return CRITERIA_LOCKED;
 	case MATCHCRITERIA_NOT_SUBJECT:
 	case MATCHCRITERIA_SUBJECT:
 		return CRITERIA_SUBJECT;
@@ -805,6 +809,8 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 		return MATCHCRITERIA_REPLIED;
 	case CRITERIA_FORWARDED:
 		return MATCHCRITERIA_FORWARDED;
+	case CRITERIA_LOCKED:
+		return MATCHCRITERIA_LOCKED;
 	case CRITERIA_SUBJECT:
 		return MATCHCRITERIA_SUBJECT;
 	case CRITERIA_FROM:
@@ -867,6 +873,8 @@ static gint prefs_matcher_not_criteria(gint matcher_criteria)
 		return MATCHCRITERIA_NOT_REPLIED;
 	case MATCHCRITERIA_FORWARDED:
 		return MATCHCRITERIA_NOT_FORWARDED;
+	case MATCHCRITERIA_LOCKED:
+		return MATCHCRITERIA_NOT_LOCKED;
 	case MATCHCRITERIA_SUBJECT:
 		return MATCHCRITERIA_NOT_SUBJECT;
 	case MATCHCRITERIA_FROM:
@@ -930,6 +938,7 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 	case CRITERIA_DELETED:
 	case CRITERIA_REPLIED:
 	case CRITERIA_FORWARDED:
+	case CRITERIA_LOCKED:
 	case CRITERIA_EXECUTE:
 		if (value_pred_flag == PREDICATE_FLAG_DISABLED)
 			criteria = prefs_matcher_not_criteria(criteria);
@@ -978,6 +987,7 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 	case CRITERIA_DELETED:
 	case CRITERIA_REPLIED:
 	case CRITERIA_FORWARDED:
+	case CRITERIA_LOCKED:
 		break;
 
 	case CRITERIA_SUBJECT:
@@ -1154,6 +1164,7 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 	case MATCHCRITERIA_NOT_DELETED:
 	case MATCHCRITERIA_NOT_REPLIED:
 	case MATCHCRITERIA_NOT_FORWARDED:
+	case MATCHCRITERIA_NOT_LOCKED:
 	case MATCHCRITERIA_NOT_SUBJECT:
 	case MATCHCRITERIA_NOT_FROM:
 	case MATCHCRITERIA_NOT_TO:
@@ -1275,6 +1286,7 @@ static void prefs_matcher_criteria_select(GtkList *list,
 	case CRITERIA_DELETED:
 	case CRITERIA_REPLIED:
 	case CRITERIA_FORWARDED:
+	case CRITERIA_LOCKED:
 		gtk_widget_set_sensitive(matcher.header_combo, FALSE);
 		gtk_widget_set_sensitive(matcher.header_label, FALSE);
 		gtk_widget_set_sensitive(matcher.value_label, FALSE);

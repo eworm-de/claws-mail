@@ -257,5 +257,7 @@ void compose_reflect_prefs_pixmap_theme	(void);
 
 void compose_destroy_all                (void);
 void compose_draft	                (gpointer data);
+void compose_toolbar_cb			(gint 		action, 
+					 gpointer 	data);
 
 #endif /* __COMPOSE_H__ */

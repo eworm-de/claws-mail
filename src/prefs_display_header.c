@@ -32,7 +32,7 @@
 #include <errno.h>
 
 #include "intl.h"
-#include "prefs.h"
+#include "prefs_gtk.h"
 #include "prefs_display_header.h"
 #include "prefs_common.h"
 #include "manage_window.h"

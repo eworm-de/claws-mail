@@ -46,7 +46,7 @@
 #  include "rfc2015.h"
 #endif
 
-#include "prefs.h"
+#include "prefs_gtk.h"
 
 static GHashTable *procmime_get_mime_type_table	(void);
 

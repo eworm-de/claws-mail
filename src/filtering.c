@@ -29,7 +29,7 @@
 #include "procheader.h"
 #include "matcher.h"
 #include "filtering.h"
-#include "prefs.h"
+#include "prefs_gtk.h"
 #include "compose.h"
 
 #define PREFSBUFSIZE		1024

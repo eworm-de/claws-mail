@@ -1096,7 +1096,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	summary_status_show(summaryview);
 	summary_set_menu_sensitive(summaryview);
-	toolbar_set_sensitive(summaryview->mainwin);
+	toolbar_main_set_sensitive(summaryview->mainwin);
 
 	debug_print("\n");
 	STATUSBAR_PUSH(summaryview->mainwin, _("Done."));
@@ -1159,7 +1159,7 @@ void summary_clear_all(SummaryView *summaryview)
 {
 	summary_clear_list(summaryview);
 	summary_set_menu_sensitive(summaryview);
-	toolbar_set_sensitive(summaryview->mainwin);
+	toolbar_main_set_sensitive(summaryview->mainwin);
 	summary_status_show(summaryview);
 }
 
@@ -2506,7 +2506,7 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	}
 
 	summary_set_menu_sensitive(summaryview);
-	toolbar_set_sensitive(summaryview->mainwin);
+	toolbar_main_set_sensitive(summaryview->mainwin);
 
 	summary_unlock(summaryview);
 }
@@ -3201,20 +3201,25 @@ static void summary_unmark_row(SummaryView *summaryview, GtkCTreeNode *row)
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted--;
 	if (MSG_IS_MOVE(msginfo->flags)) {
+		if (!prefs_common.immediate_exec) {
+			msginfo->to_folder->op_count--;
+			if (msginfo->to_folder->op_count == 0)
+				folder_update_item(msginfo->to_folder, FALSE);
+		}
 		summaryview->moved--;
 		changed = TRUE;
 	}
 	if (MSG_IS_COPY(msginfo->flags)) {
+		if (!prefs_common.immediate_exec) {
+			msginfo->to_folder->op_count--;
+			if (msginfo->to_folder->op_count == 0)
+				folder_update_item(msginfo->to_folder, FALSE);
+		}
 		summaryview->copied--;
 		changed = TRUE;
 	}
 	changed |= summary_update_unread_children (summaryview, msginfo, FALSE);
 
-	if (changed && !prefs_common.immediate_exec) {
-		msginfo->to_folder->op_count--;
-		if (msginfo->to_folder->op_count == 0)
-			folder_update_item(msginfo->to_folder, FALSE);
-	}
 	msginfo->to_folder = NULL;
 	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, MSG_MOVE | MSG_COPY);
 	summary_set_row_marks(summaryview, row);
@@ -3772,12 +3777,12 @@ static void summary_execute_delete_func(GtkCTree *ctree, GtkCTreeNode *node,
 						msginfo->msgid)) {
 			g_hash_table_remove(summaryview->msgid_table,
 					    msginfo->msgid);
-		}					   
+		}	
 		if (msginfo->subject && *msginfo->subject && 
-		    node == g_hash_table_lookup(summaryview->subject_table,
-						msginfo->subject)) {
-			g_hash_table_remove(summaryview->subject_table,
-					    msginfo->subject);
+		    node == subject_table_lookup(summaryview->subject_table,
+						 msginfo->subject)) {
+			subject_table_remove(summaryview->subject_table,
+					     msginfo->subject);
 		}					    
 	}
 }
@@ -3843,6 +3848,8 @@ void summary_thread_build(SummaryView *summaryview)
 			summary_set_row_marks(summaryview, node);
 		node = next;
 	}
+
+	gtkut_ctree_set_focus_row(ctree, summaryview->selected);
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
 	gtk_signal_handler_unblock_by_func(GTK_OBJECT(ctree),
@@ -4880,7 +4887,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	     GTK_CLIST(ctree)->selection->next) {
 		summaryview->display_msg = FALSE;
 		summary_set_menu_sensitive(summaryview);
-		toolbar_set_sensitive(summaryview->mainwin);
+		toolbar_main_set_sensitive(summaryview->mainwin);
 		return;
 	}
 
@@ -4924,7 +4931,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		summaryview->display_msg = FALSE;
 	} else {
 		summary_set_menu_sensitive(summaryview);
-		toolbar_set_sensitive(summaryview->mainwin);
+		toolbar_main_set_sensitive(summaryview->mainwin);
 	}
 }
 

@@ -136,8 +136,7 @@ void prefs_toolbar_open(ToolbarType source)
 
 	toolbar_read_config_file(prefs_toolbar.source);
 
-	//if (!prefs_toolbar.window)
-		prefs_toolbar_create();
+	prefs_toolbar_create();
 
 	manage_window_set_transient(GTK_WINDOW(prefs_toolbar.window));
 	prefs_toolbar_populate();
@@ -152,6 +151,8 @@ void prefs_toolbar_close(void)
 		main_window_reflect_prefs_all_real(TRUE);
 	else if (prefs_toolbar.source == TOOLBAR_COMPOSE)
 		compose_reflect_prefs_pixmap_theme();
+	else if (prefs_toolbar.source == TOOLBAR_MSGVIEW)
+		messageview_reflect_prefs_pixmap_theme();
 	
 	while (prefs_toolbar.combo_action_list != NULL) {
 		gchar *item = prefs_toolbar.combo_action_list->data;
@@ -178,7 +179,7 @@ static void prefs_toolbar_set_displayed(void)
 	for (cur = toolbar_list; cur != NULL; cur = cur->next) {
 		ToolbarItem *item = (ToolbarItem*) cur->data;
 	
-		if (g_strcasecmp(item->file, SEPARATOR) != 0) {
+		if (item->index != A_SEPARATOR) {
 			gint row_num;
 			StockPixmap icon = stock_pixmap_get_icon(item->file);
 			
@@ -196,7 +197,7 @@ static void prefs_toolbar_set_displayed(void)
 			activ[0] = g_strdup(SEPARATOR_PIXMAP);
 			activ[1] = g_strdup(item->file);
 			activ[2] = g_strdup("");
-			activ[3] = g_strdup("");
+			activ[3] = g_strdup(toolbar_ret_descr_from_val(A_SEPARATOR));
 			gtk_clist_append(clist_set, activ);
 		}
 
@@ -228,7 +229,7 @@ static void prefs_toolbar_populate(void)
 
 	/* set available icons */
 	avail[0] = g_strdup(SEPARATOR_PIXMAP);
-	avail[1] = g_strdup(SEPARATOR);
+	avail[1] = g_strdup(toolbar_ret_descr_from_val(A_SEPARATOR));
 	gtk_clist_append(clist_icons, avail);
 	g_free(avail[0]);
 	g_free(avail[1]);
@@ -253,7 +254,8 @@ static void prefs_toolbar_populate(void)
 		g_list_free(syl_actions);
 	}
 
-	for (i = 0; i < N_STOCK_PIXMAPS; i++) {
+	for (i = 0; i < STOCK_PIXMAP_SYLPHEED_LOGO; i++) {
+
 		avail[0] = g_strdup("");
 		avail[1] = g_strdup(stock_pixmap_get_name((StockPixmap)i));
 
@@ -307,8 +309,8 @@ static void prefs_toolbar_save(void)
 	gint row = 0;
 	GtkCList *clist = GTK_CLIST(prefs_toolbar.clist_set);
 	gchar *entry = NULL;
-	GSList *toolbar_list = NULL;
-	
+	ToolbarItem *item;
+
 	toolbar_clear_list(prefs_toolbar.source);
 
 	if (clist->rows == 0) {
@@ -316,23 +318,23 @@ static void prefs_toolbar_save(void)
 	}
 	else {
 		do {
-			ToolbarItem *t_item = g_new0(ToolbarItem, 1);
+			item = g_new0(ToolbarItem, 1);
 			
 			gtk_clist_get_text(clist, row, 1, &entry);
-			t_item->file = g_strdup(entry);
+			item->file = g_strdup(entry);
 			
 			gtk_clist_get_text(clist, row, 2, &entry);
-			t_item->text = g_strdup(entry);
+			item->text = g_strdup(entry);
 			
 			gtk_clist_get_text(clist, row, 3, &entry);	
-			t_item->index = toolbar_ret_val_from_descr(entry);
-			
-			/* TODO: save A_SYL_ACTIONS only if they are still active */
-			toolbar_set_list_item(t_item, prefs_toolbar.source);
+			item->index = toolbar_ret_val_from_descr(entry);
 
-			g_free(t_item->file);
-			g_free(t_item->text);
-			g_free(t_item);
+			/* TODO: save A_SYL_ACTIONS only if they are still active */
+			toolbar_set_list_item(item, prefs_toolbar.source);
+
+			g_free(item->file);
+			g_free(item->text);
+			g_free(item);
 			row++;
 			
 		} while(gtk_clist_get_text(clist, row, 3, &entry));
@@ -397,7 +399,7 @@ static void prefs_toolbar_register(GtkButton *button, gpointer data)
 	item[3] = g_strdup(gtk_entry_get_text(GTK_ENTRY(prefs_toolbar.combo_entry)));
 	
 	/* SEPARATOR or other ? */
-	if (g_strcasecmp(item[1], SEPARATOR) == 0) {
+	if (g_strcasecmp(item[1], toolbar_ret_descr_from_val(A_SEPARATOR)) == 0) {
 		item[0] = g_strdup(SEPARATOR_PIXMAP);
 		item[2] = g_strdup("");
 		item[3] = g_strdup("");
@@ -467,7 +469,7 @@ static void prefs_toolbar_substitute(GtkButton *button, gpointer data)
 	gtk_clist_get_text(clist_set, row_set, 3, &ac_set);
 	item[3] = g_strdup(gtk_entry_get_text(GTK_ENTRY(prefs_toolbar.combo_entry)));
 
-	if (g_strcasecmp(item[1], SEPARATOR) == 0) {
+	if (g_strcasecmp(item[1], toolbar_ret_descr_from_val(A_SEPARATOR)) == 0) {
 		item[0] = g_strdup(SEPARATOR_PIXMAP);
 		item[2] = g_strdup("");
 		item[3] = g_strdup("");
@@ -615,7 +617,7 @@ static void prefs_toolbar_select_row_icons(GtkCList *clist, gint row, gint colum
 
 	if (!text) return;
 
-	if (g_strcasecmp(SEPARATOR, text) == 0) {
+	if (g_strcasecmp(toolbar_ret_descr_from_val(A_SEPARATOR), text) == 0) {
 		gtk_widget_set_sensitive(prefs_toolbar.combo_action,     FALSE);
 		gtk_widget_set_sensitive(prefs_toolbar.entry_icon_text,  FALSE);
 		gtk_widget_set_sensitive(prefs_toolbar.combo_syl_action, FALSE);

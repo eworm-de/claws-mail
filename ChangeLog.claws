@@ -1,10 +1,103 @@
+2002-12-25 [alfons]	0.8.7claws9
+
+	* src/matcher.[ch]
+	* src/matcher_parser_lex.l
+	* src/matcher_parser_parse.y
+	* src/prefs_matcher.c
+		add locked flag to possible filtering / matcher 
+		conditions (also a good example what should be
+		done to add a simple boolean condition)
+
+2002-12-25 [christoph]	0.8.7claws8
+
+	* src/Makefile.am
+	* src/account.[ch]
+	* src/addrbook.c
+	* src/addressbook.c
+	* src/addrindex.c
+	* src/filtering.c
+	* src/folder.c
+	* src/matcher.c
+	* src/prefs.[ch]		** REMOVE **
+	* src/prefs_account.c
+	* src/prefs_actions.c
+	* src/prefs_common.c
+	* src/prefs_customheader.c
+	* src/prefs_display_header.c
+	* src/prefs_filtering.c
+	* src/prefs_folder_item.c
+	* src/prefs_gtk.[ch]		** NEW **
+	* src/prefs_matcher.c
+	* src/prefs_scoring.c
+	* src/prefs_summary_column.c
+	* src/procmime.c
+	* src/selective_download.c
+	* src/toolbar.c
+	* src/common/Makefile.am
+	* src/common/prefs.[ch]		** NEW **
+		split prefs.[ch] into prefs_gtk.[ch] and common/prefs.[ch]
+
+2002-12-24 [alfons]	0.8.7claws7
+
+	* src/summaryview.c
+		summary_thread_build(): fix real cause of the crash mentioned in
+		0.8.7claws3. use subject_XXX() and not g_hash_table_XXX() functions,
+		this way we get meaningful ctree nodes 
+
+2002-12-24 [oliver]	0.8.7claws6
+
+	* src/mainwindow.[ch]
+	* src/messageview.[ch]
+	* src/compose.[ch]
+	* src/inc.c
+	* src/summaryview.c
+		changes to use updated toolbar handling
+		
+2002-12-24 [oliver]	0.8.7claws5
+
+	* src/toolbar.[ch]
+		generic toolbar handling
+		used ideas from Ivan Francolin Martinez (ivanfm@users.sourceforge.net)
+	* src/prefs_toolbar.[ch]
+		adjust to handling
+	
+2002-12-24 [oliver]	0.8.7claws4
+	
+	* src/stock_pixmap.[ch]
+		move SYLPHEED_LOGO to end of list in order 
+		to remove it from Custom Toolbar`s Icon View
+
+2002-12-24 [alfons]	0.8.7claws3
+
+	* src/summaryview.c
+		summary_thread_build(): fix crash because of focus != selection 
+		after threading. when deleting the selection, gtk tries but fails 
+		to find the correct focusable element. we now force the selection
+		to be focused. this should solve the infamous bug reported by 
+		Jason Wojciechowski (bug "[ 633443 ] Crash on deleting messages"). 
+		a test case is available. 
+
+2002-12-24 [darko]	0.8.7claws2
+
+	* src/summaryview.c
+		don't crash when unmarking message with unread children
+
+2002-12-23 [christoph]	0.8.7claws1
+
+	* src/Makefile.am
+	* src/common/Makefile.am
+		update Makefiles for moved intl.h, version.h and defs.h
+	* src/imap.c
+		rewrite imap_session_get to avoid duplicate code
+
 2002-12-23 [paul]	0.8.7claws
 
 	* Santa-Claws released
 	
-	* po/ru.po
-		squeeze in an updated Russian translation.
-		Submitted by Ruslan N. Balkin <baron@voices.ru>
+	* po/hu.po
+	  po/ru.po
+		squeeze in updated Hungarian and Russian translations.
+		Submitted by  Gál Zoltán and Ruslan N. Balkin
 
 2002-12-23 [paul]	0.8.6claws129
 
@@ -143,17 +236,17 @@
 2002-12-13 [christoph]	0.8.6claws109
 
 	* src/Makefile.am
-	* src/manage_window.[ch]
+	* src/manage_window.[ch] 	** REMOVE **
 	* src/gtk/Makefile.am
-	* src/gtk/manage_window.[ch]
+	* src/gtk/manage_window.[ch] 	** NEW **
 		move manage_window files to gtk directory
 
 2002-12-13 [christoph]	0.8.6claws108
 
 	* src/Makefile.am
-	* src/gtkshruler.[ch]
+	* src/gtkshruler.[ch]		** REMOVE **
 	* src/gtk/Makefile.am
-	* src/gtk/gtkshruler.[ch]
+	* src/gtk/gtkshruler.[ch]	** NEW **
 		move gtkshruler files to gtk directory
 
 2002-12-13 [christoph]	0.8.6claws107

@@ -43,7 +43,7 @@
 #include "utils.h"
 #include "xml.h"
 #include "codeconv.h"
-#include "prefs.h"
+#include "prefs_gtk.h"
 #include "account.h"
 #include "filtering.h"
 #include "scoring.h"

@@ -40,7 +40,7 @@
 
 #include "intl.h"
 #include "main.h"
-#include "prefs.h"
+#include "prefs_gtk.h"
 #include "prefs_common.h"
 #include "prefs_display_header.h"
 #include "prefs_summary_column.h"

@@ -130,6 +130,7 @@ CLEAN :
 	-@erase "$(INTDIR)\prefs_display_header.obj"
 	-@erase "$(INTDIR)\prefs_filtering.obj"
 	-@erase "$(INTDIR)\prefs_folder_item.obj"
+	-@erase "$(INTDIR)\prefs_gtk.obj"
 	-@erase "$(INTDIR)\prefs_matcher.obj"
 	-@erase "$(INTDIR)\prefs_scoring.obj"
 	-@erase "$(INTDIR)\prefs_summary_column.obj"
@@ -188,7 +189,7 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /ML /GX /O2 /I "..\src" /I "..\src\common" /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /Fp"$(INTDIR)\sylpheed_debug.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /ML /GX /O2 /I "..\src" /I "..\src\common" /I "..\src\gtk" /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /Fp"$(INTDIR)\sylpheed_debug.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
@@ -317,6 +318,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\pine.obj" \
 	"$(INTDIR)\pop.obj" \
 	"$(INTDIR)\prefs.obj" \
+	"$(INTDIR)\prefs_gtk.obj" \
 	"$(INTDIR)\prefs_account.obj" \
 	"$(INTDIR)\prefs_actions.obj" \
 	"$(INTDIR)\prefs_common.obj" \
@@ -591,6 +593,8 @@ CLEAN :
 	-@erase "$(INTDIR)\prefs_filtering.sbr"
 	-@erase "$(INTDIR)\prefs_folder_item.obj"
 	-@erase "$(INTDIR)\prefs_folder_item.sbr"
+	-@erase "$(INTDIR)\prefs_gtk.obj"
+	-@erase "$(INTDIR)\prefs_gtk.sbr"
 	-@erase "$(INTDIR)\prefs_matcher.obj"
 	-@erase "$(INTDIR)\prefs_matcher.sbr"
 	-@erase "$(INTDIR)\prefs_scoring.obj"
@@ -828,6 +832,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\pine.sbr" \
 	"$(INTDIR)\pop.sbr" \
 	"$(INTDIR)\prefs.sbr" \
+	"$(INTDIR)\prefs_gtk.sbr" \
 	"$(INTDIR)\prefs_account.sbr" \
 	"$(INTDIR)\prefs_actions.sbr" \
 	"$(INTDIR)\prefs_common.sbr" \
@@ -980,6 +985,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\pine.obj" \
 	"$(INTDIR)\pop.obj" \
 	"$(INTDIR)\prefs.obj" \
+	"$(INTDIR)\prefs_gtk.obj" \
 	"$(INTDIR)\prefs_account.obj" \
 	"$(INTDIR)\prefs_actions.obj" \
 	"$(INTDIR)\prefs_common.obj" \
@@ -2599,7 +2605,7 @@ SOURCE=..\src\pop.c
 
 !ENDIF 
 
-SOURCE=..\src\prefs.c
+SOURCE=..\src\common\prefs.c
 
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 
@@ -2738,6 +2744,24 @@ SOURCE=..\src\prefs_folder_item.c
 
 
 "$(INTDIR)\prefs_folder_item.obj"	"$(INTDIR)\prefs_folder_item.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=..\src\prefs_gtk.c
+
+!IF  "$(CFG)" == "sylpheed - Win32 Release"
+
+
+"$(INTDIR)\prefs_gtk.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
+
+
+"$(INTDIR)\prefs_gtk.obj"	"$(INTDIR)\prefs_gtk.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

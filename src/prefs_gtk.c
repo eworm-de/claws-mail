@@ -25,7 +25,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifndef WIN32
 #include <unistd.h>
+#endif
 #include <errno.h>
 
 #include "intl.h"
@@ -39,6 +41,31 @@ typedef enum
 {
 	DUMMY_PARAM
 } DummyEnum;
+
+#ifdef WIN32
+void prefs_init_config(PrefParam *param)
+{
+	gchar *value;
+	int i;
+
+	for (i = 0; param[i].name != NULL; i++) {
+		switch (param[i].type) {
+		case P_STRING:
+			value = param[i].defval;
+			if (value){
+				value = g_strdup(value);
+				locale_to_utf8(&value);
+				/* g_free(param[i].defval); */
+				param[i].defval = g_strdup(value);
+				g_free(value);
+			}
+			break;
+		default:
+			break;
+		}
+	}
+}
+#endif
 
 void prefs_read_config(PrefParam *param, const gchar *label,
 		       const gchar *rcfile)
@@ -108,8 +135,19 @@ void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 		switch (param[i].type) {
 		case P_STRING:
 			g_free(*((gchar **)param[i].data));
+#ifdef WIN32
+			if (*value) {
+				gchar *p_value;
+				p_value = g_strdup(value);
+				locale_to_utf8(&p_value);
+				*((gchar **)param[i].data) = g_strdup(p_value);
+				g_free(p_value);
+			} else
+				*((gchar **)param[i].data) = NULL;
+#else
 			*((gchar **)param[i].data) =
 				*value ? g_strdup(value) : NULL;
+#endif
 			break;
 		case P_INT:
 			*((gint *)param[i].data) =
@@ -227,6 +265,15 @@ gint prefs_write_param(PrefParam *param, FILE *fp)
 			g_snprintf(buf, sizeof(buf), "%s=%s\n", param[i].name,
 				   *((gchar **)param[i].data) ?
 				   *((gchar **)param[i].data) : "");
+#ifdef WIN32
+			{
+				gchar *p_buf;
+				p_buf = g_strdup(buf);
+				locale_from_utf8(&p_buf);
+				strncpy(buf, p_buf, sizeof(buf));
+				g_free(p_buf);
+			}
+#endif
 			break;
 		case P_INT:
 			g_snprintf(buf, sizeof(buf), "%s=%d\n", param[i].name,
@@ -371,7 +418,11 @@ void prefs_dialog_create(PrefsDialog *dialog)
 	gtk_box_pack_start (GTK_BOX (vbox), notebook, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (notebook), 2);
 	/* GTK_WIDGET_UNSET_FLAGS (notebook, GTK_CAN_FOCUS); */
+#ifdef WIN32 /* accelerator tab not displayed in Gtk-1/Win */
+	gtk_notebook_set_scrollable (GTK_NOTEBOOK(notebook), FALSE);
+#else
 	gtk_notebook_set_scrollable (GTK_NOTEBOOK (notebook), TRUE);
+#endif /* WIN32 */
 	
 	gtk_notebook_popup_enable (GTK_NOTEBOOK (notebook));
 	

@@ -77,3 +77,4 @@ src/ssl_manager.c
 src/string_match.c
 src/summary_search.c
 src/summaryview.c
+src/toolbar.c

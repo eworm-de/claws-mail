@@ -33,7 +33,7 @@
 #include <gdk/gdkkeysyms.h>
 
 #include "intl.h"
-#include "prefs.h"
+#include "prefs_gtk.h"
 #include "prefs_common.h"
 #include "prefs_summary_column.h"
 #include "manage_window.h"

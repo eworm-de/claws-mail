@@ -27,7 +27,7 @@
 #include "matcher.h"
 #include "intl.h"
 #include "matcher_parser.h"
-#include "prefs.h"
+#include "prefs_gtk.h"
 
 struct _MatchParser {
 	gint id;
@@ -51,6 +51,8 @@ static MatchParser matchparser_tab[] = {
 	{MATCHCRITERIA_NOT_REPLIED, "~replied"},
 	{MATCHCRITERIA_FORWARDED, "forwarded"},
 	{MATCHCRITERIA_NOT_FORWARDED, "~forwarded"},
+	{MATCHCRITERIA_LOCKED, "locked"},
+	{MATCHCRITERIA_NOT_LOCKED, "~locked"},
 
 	/* msginfo headers */
 	{MATCHCRITERIA_SUBJECT, "subject"},
@@ -436,6 +438,10 @@ gboolean matcherprop_match(MatcherProp * prop, MsgInfo * info)
 		return MSG_IS_FORWARDED(info->flags);
 	case MATCHCRITERIA_NOT_FORWARDED:
 		return !MSG_IS_FORWARDED(info->flags);
+	case MATCHCRITERIA_LOCKED:
+		return MSG_IS_LOCKED(info->flags);
+	case MATCHCRITERIA_NOT_LOCKED:
+		return !MSG_IS_LOCKED(info->flags);
 	case MATCHCRITERIA_SUBJECT:
 		return matcherprop_string_match(prop, info->subject);
 	case MATCHCRITERIA_NOT_SUBJECT:
@@ -844,6 +850,8 @@ gboolean matcherlist_match(MatcherList * matchers, MsgInfo * info)
 		case MATCHCRITERIA_NOT_REPLIED:
 		case MATCHCRITERIA_FORWARDED:
 		case MATCHCRITERIA_NOT_FORWARDED:
+		case MATCHCRITERIA_LOCKED:
+		case MATCHCRITERIA_NOT_LOCKED:
 		case MATCHCRITERIA_SUBJECT:
 		case MATCHCRITERIA_NOT_SUBJECT:
 		case MATCHCRITERIA_FROM:
@@ -939,6 +947,8 @@ gchar * matcherprop_to_string(MatcherProp * matcher)
 	case MATCHCRITERIA_NOT_REPLIED:
 	case MATCHCRITERIA_FORWARDED:
 	case MATCHCRITERIA_NOT_FORWARDED:
+	case MATCHCRITERIA_LOCKED:
+	case MATCHCRITERIA_NOT_LOCKED:
 		return g_strdup(criteria_str);
 	case MATCHCRITERIA_EXECUTE:
 	case MATCHCRITERIA_NOT_EXECUTE:

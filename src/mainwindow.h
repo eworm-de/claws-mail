@@ -166,8 +166,6 @@ void main_window_toolbar_set_compose_button	(MainWindow *mainwin,
 
 SensitiveCond main_window_get_current_state   (MainWindow *mainwin);
 
-void toolbar_set_sensitive                    (MainWindow *mainwin);
-
 void toolbar_set_compose_button               (Toolbar		 *toolbar, 
 					       ComposeButtonType  compose_btn_type);
 void main_window_destroy_all                  (void);

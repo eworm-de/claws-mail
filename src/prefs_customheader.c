@@ -33,7 +33,7 @@
 
 #include "intl.h"
 #include "main.h"
-#include "prefs.h"
+#include "prefs_gtk.h"
 #include "prefs_customheader.h"
 #include "prefs_common.h"
 #include "prefs_account.h"

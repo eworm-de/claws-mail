@@ -40,54 +40,111 @@
 #include <setjmp.h>
 
 #include "intl.h"
+#include "mainwindow.h"
+#include "compose.h"
 #include "utils.h"
 #include "xml.h"
 #include "mgutils.h"
-#include "prefs.h"
+#include "prefs_gtk.h"
 #include "codeconv.h"
 #include "stock_pixmap.h"
-#include "mainwindow.h"
-#include "messageview.h"
-#include "prefs_common.h"
-#include "menu.h"
-#include "prefs_actions.h"
 #include "manage_window.h"
 #include "gtkutils.h"
 #include "toolbar.h"
+#include "menu.h"
+#include "inc.h"
+#include "prefs_actions.h"
+#include "prefs_common.h"
 #include "prefs_toolbar.h"
 #include "alertpanel.h"
 
 /* elements */
 #define TOOLBAR_TAG_INDEX        "toolbar"
 #define TOOLBAR_TAG_ITEM         "item"
-#define TOOLBAR_TAG_SEPARATOR    SEPARATOR
+#define TOOLBAR_TAG_SEPARATOR    "separator"
 
 #define TOOLBAR_ICON_FILE   "file"    
 #define TOOLBAR_ICON_TEXT   "text"     
 #define TOOLBAR_ICON_ACTION "action"    
 
-gboolean      toolbar_is_duplicate           (gint            	action,
-					      ToolbarType	source);
-static void   toolbar_parse_item             (XMLFile        	*file,
-					      ToolbarType	source);
+gboolean      toolbar_is_duplicate		(gint           action,
+					      	 ToolbarType	source);
+static void   toolbar_parse_item		(XMLFile        *file,
+					      	 ToolbarType	source);
 
-static gint   toolbar_ret_val_from_text      (const gchar	*text);
-static gchar *toolbar_ret_text_from_val      (gint            	val);
+static gint   toolbar_ret_val_from_text		(const gchar	*text);
+static gchar *toolbar_ret_text_from_val		(gint           val);
 
-static void   toolbar_set_default_main       (void);
-static void   toolbar_set_default_compose    (void);
-static void   toolbar_set_default_msgview    (void);
+static void   toolbar_set_default_main		(void);
+static void   toolbar_set_default_compose	(void);
+static void   toolbar_set_default_msgview	(void);
 
-struct ToolbarText 
-{
+static void	toolbar_style			(ToolbarType 	 type, 
+						 guint 		 action, 
+						 gpointer 	 data);
+
+static GtkWidget *get_window_widget		(ToolbarType 	 type, 
+						 gpointer 	 data);
+static MainWindow *get_mainwin			(gpointer data);
+static void activate_compose_button 		(Toolbar	*toolbar,
+				     		 ToolbarStyle	 style,
+				     		 ComposeButtonType type);
+
+/* toolbar callbacks */
+static void toolbar_delete_cb			(GtkWidget	*widget,
+					 	 gpointer        data);
+
+static void toolbar_compose_cb			(GtkWidget	*widget,
+					    	 gpointer	 data);
+
+static void toolbar_reply_cb		   	(GtkWidget	*widget,
+					    	 gpointer	 data);
+
+static void toolbar_reply_to_all_cb	   	(GtkWidget	*widget,
+					    	 gpointer	 data);
+
+static void toolbar_reply_to_list_cb	   	(GtkWidget	*widget,
+					    	 gpointer	 data);
+
+static void toolbar_reply_to_sender_cb	   	(GtkWidget	*widget,
+					    	 gpointer 	 data);
+
+static void toolbar_forward_cb		   	(GtkWidget	*widget,
+					    	 gpointer 	 data);
+
+static void toolbar_next_unread_cb	   	(GtkWidget	*widget,
+					    	 gpointer 	 data);
+
+static void toolbar_actions_execute_cb	   	(GtkWidget     	*widget,
+				  	    	 gpointer      	 data);
+
+
+static void toolbar_send_cb			(GtkWidget	*widget,
+					 	 gpointer	 data);
+static void toolbar_send_later_cb		(GtkWidget	*widget,
+					 	 gpointer	 data);
+static void toolbar_draft_cb			(GtkWidget	*widget,
+					 	 gpointer	 data);
+static void toolbar_insert_cb			(GtkWidget	*widget,
+					 	 gpointer	 data);
+static void toolbar_attach_cb			(GtkWidget	*widget,
+					 	 gpointer	 data);
+static void toolbar_sig_cb			(GtkWidget	*widget,
+					 	 gpointer	 data);
+static void toolbar_ext_editor_cb		(GtkWidget	*widget,
+					 	 gpointer	 data);
+static void toolbar_linewrap_cb			(GtkWidget	*widget,
+					 	 gpointer	 data);
+static void toolbar_addrbook_cb   		(GtkWidget   	*widget, 
+					 	 gpointer     	 data);
+
+static void toolbar_popup_cb			(gpointer 	 data, 
+					 	 guint 		 action, 
+					 	 GtkWidget 	*widget);
+struct {
 	gchar *index_str;
 	const gchar *descr;
-};
-/* 
- *  Text Database linked to enumarated values in toolbar.h 
- */
-static struct ToolbarText toolbar_text [] = {
-	
+} toolbar_text [] = {
 	{ "A_RECEIVE_ALL",   N_("Receive Mail on all Accounts")         },
 	{ "A_RECEIVE_CUR",   N_("Receive Mail on current Account")      },
 	{ "A_SEND_QUEUED",   N_("Send Queued Message(s)")               },
@@ -113,7 +170,7 @@ static struct ToolbarText toolbar_text [] = {
 	{ "A_ADDRBOOK",      N_("Address book")                         },
 
 	{ "A_SYL_ACTIONS",   N_("Sylpheed Actions Feature")             }, 
-	{ "A_SEPARATOR",     ("")                                       }
+	{ "A_SEPARATOR",     N_("Separator")				}
 };
 
 /* struct holds configuration files and a list of
@@ -121,11 +178,41 @@ static struct ToolbarText toolbar_text [] = {
  * TOOLBAR_MAIN, TOOLBAR_COMPOSE and TOOLBAR_MSGVIEW
  * give us an index
  */
-static ToolbarConfig toolbar_config[3] = {
+struct {
+	const gchar  *conf_file;
+	GSList       *item_list;
+} toolbar_config[3] = {
 	{ "toolbar_main.xml",    NULL},
 	{ "toolbar_compose.xml", NULL}, 
   	{ "toolbar_msgview.xml", NULL}
 };
+
+static GtkItemFactoryEntry reply_popup_entries[] =
+{
+	{N_("/Reply with _quote"), NULL, toolbar_popup_cb, COMPOSE_REPLY_WITH_QUOTE, NULL},
+	{N_("/_Reply without quote"), NULL, toolbar_popup_cb, COMPOSE_REPLY_WITHOUT_QUOTE, NULL}
+};
+static GtkItemFactoryEntry replyall_popup_entries[] =
+{
+	{N_("/Reply to all with _quote"), "<shift>A", toolbar_popup_cb, COMPOSE_REPLY_TO_ALL_WITH_QUOTE, NULL},
+	{N_("/_Reply to all without quote"), "a", toolbar_popup_cb, COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE, NULL}
+};
+static GtkItemFactoryEntry replylist_popup_entries[] =
+{
+	{N_("/Reply to list with _quote"), NULL, toolbar_popup_cb, COMPOSE_REPLY_TO_LIST_WITH_QUOTE, NULL},
+	{N_("/_Reply to list without quote"), NULL, toolbar_popup_cb, COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE, NULL}
+};
+static GtkItemFactoryEntry replysender_popup_entries[] =
+{
+	{N_("/Reply to sender with _quote"), NULL, toolbar_popup_cb, COMPOSE_REPLY_TO_SENDER_WITH_QUOTE, NULL},
+	{N_("/_Reply to sender without quote"), NULL, toolbar_popup_cb, COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE, NULL}
+};
+static GtkItemFactoryEntry fwd_popup_entries[] =
+{
+	{N_("/_Forward message (inline style)"), "f", toolbar_popup_cb, COMPOSE_FORWARD_INLINE, NULL},
+	{N_("/Forward message as _attachment"), "<shift>F", toolbar_popup_cb, COMPOSE_FORWARD_AS_ATTACH, NULL}
+};
+
 
 gint toolbar_ret_val_from_descr(const gchar *descr)
 {
@@ -206,9 +293,9 @@ GList *toolbar_get_action_items(ToolbarType source)
 			items = g_list_append(items, gettext(toolbar_text[comp_items[i]].descr));
 	}
 	else if (source == TOOLBAR_MSGVIEW) {
-		gint msgv_items[8/*9*/] = { A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER,
-					    A_REPLY_ALL,     A_REPLY_ML,      A_FORWARD,
-					    A_DELETE,	     A_GOTO_NEXT/*   A_SYL_ACTIONS*/ };	
+		gint msgv_items[8] = { A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER,
+				       A_REPLY_ALL,     A_REPLY_ML,      A_FORWARD,
+				       A_DELETE,        A_GOTO_NEXT };	
 
 		for (i = 0; i < sizeof(msgv_items)/sizeof(msgv_items[0]); i++) 
 			items = g_list_append(items, gettext(toolbar_text[msgv_items[i]].descr));
@@ -288,7 +375,7 @@ static void toolbar_set_default_main(void)
 			toolbar_item->text  = g_strdup(default_toolbar[i].text);
 		} else {
 
-			toolbar_item->file   = g_strdup(SEPARATOR);
+			toolbar_item->file  = g_strdup(TOOLBAR_TAG_SEPARATOR);
 			toolbar_item->index = A_SEPARATOR;
 		}
 		
@@ -336,7 +423,7 @@ static void toolbar_set_default_compose(void)
 			toolbar_item->text  = g_strdup(default_toolbar[i].text);
 		} else {
 
-			toolbar_item->file   = g_strdup(SEPARATOR);
+			toolbar_item->file  = g_strdup(TOOLBAR_TAG_SEPARATOR);
 			toolbar_item->index = A_SEPARATOR;
 		}
 		
@@ -355,8 +442,6 @@ static void toolbar_set_default_msgview(void)
 		gint icon;
 		gchar *text;
 	} default_toolbar[] = {
-		/*{ A_COMPOSE_EMAIL, STOCK_PIXMAP_MAIL_COMPOSE,         _("Email")   },
-		  { A_SEPARATOR,     0,                                 ("")         },*/
 		{ A_REPLY_MESSAGE, STOCK_PIXMAP_MAIL_REPLY,           _("Reply")   }, 
 		{ A_REPLY_ALL,     STOCK_PIXMAP_MAIL_REPLY_TO_ALL,    _("All")     },
 		{ A_REPLY_SENDER,  STOCK_PIXMAP_MAIL_REPLY_TO_AUTHOR, _("Sender")  },
@@ -381,7 +466,7 @@ static void toolbar_set_default_msgview(void)
 			toolbar_item->text  = g_strdup(default_toolbar[i].text);
 		} else {
 
-			toolbar_item->file   = g_strdup(SEPARATOR);
+			toolbar_item->file  = g_strdup(TOOLBAR_TAG_SEPARATOR);
 			toolbar_item->index = A_SEPARATOR;
 		}
 		
@@ -401,7 +486,6 @@ void toolbar_set_default(ToolbarType source)
 		toolbar_set_default_compose();
 	else if  (source == TOOLBAR_MSGVIEW)
 		toolbar_set_default_msgview();
-
 }
 
 void toolbar_save_config_file(ToolbarType source)
@@ -426,7 +510,7 @@ void toolbar_save_config_file(ToolbarType source)
 		for (cur = toolbar_config[source].item_list; cur != NULL; cur = cur->next) {
 			ToolbarItem *toolbar_item = (ToolbarItem*) cur->data;
 			
-			if (g_strcasecmp(toolbar_item->file, SEPARATOR) != 0)
+			if (toolbar_item->index != A_SEPARATOR) 
 #ifdef WIN32
 			{
 			  	gchar *p_text=g_locale_from_utf8(toolbar_item->text,
@@ -499,7 +583,7 @@ void toolbar_read_config_file(ToolbarType source)
 			} else if (xml_compare_tag(file, TOOLBAR_TAG_SEPARATOR)) {
 				ToolbarItem *item = g_new0(ToolbarItem, 1);
 			
-				item->file   = g_strdup(SEPARATOR);
+				item->file   = g_strdup(TOOLBAR_TAG_SEPARATOR);
 				item->index  = A_SEPARATOR;
 				toolbar_config[source].item_list = 
 					g_slist_append(toolbar_config[source].item_list, item);
@@ -611,41 +695,53 @@ void toolbar_action_execute(GtkWidget    *widget,
 		g_warning ("Error: did not find Sylpheed Action to execute");
 }
 
-/*
- * Change the style of toolbar
- */
-void common_toolbar_set_style(gpointer data, ToolbarType type)
+static void activate_compose_button (Toolbar           *toolbar,
+				     ToolbarStyle      style,
+				     ComposeButtonType type)
 {
-	GtkWidget  *handlebox_wid;
-	GtkWidget  *toolbar_wid;
-	MainWindow *mainwin;
-	Compose    *compose;
-	MessageView *msgview;
-	
-	g_return_if_fail(data != NULL);
-	
-	switch (type) {
-	case TOOLBAR_MAIN:
-		mainwin = (MainWindow*)data;
-		handlebox_wid = mainwin->handlebox;
-		toolbar_wid = mainwin->toolbar->toolbar;
-		break;
-	case TOOLBAR_COMPOSE:
-		compose = (Compose*)data;
-		handlebox_wid = compose->handlebox;
-		toolbar_wid = compose->toolbar->toolbar;
-		break;
-	case TOOLBAR_MSGVIEW: 
-		msgview = (MessageView*)data;
-		handlebox_wid = msgview->handlebox;
-		toolbar_wid = msgview->toolbar->toolbar;
-		break;
-	default:
-		debug_print("toolbar_set_style: not supported for this type of window\n");
+	if ((!toolbar->compose_mail_btn) || (!toolbar->compose_news_btn))
 		return;
+
+	gtk_widget_hide(type == COMPOSEBUTTON_NEWS ? toolbar->compose_mail_btn 
+			: toolbar->compose_news_btn);
+	gtk_widget_show(type == COMPOSEBUTTON_NEWS ? toolbar->compose_news_btn
+			: toolbar->compose_mail_btn);
+	toolbar->compose_btn_type = type;	
+}
+
+void toolbar_set_compose_button(Toolbar            *toolbar, 
+				ComposeButtonType  compose_btn_type)
+{
+	if (toolbar->compose_btn_type != compose_btn_type)
+		activate_compose_button(toolbar, 
+					prefs_common.toolbar_style,
+					compose_btn_type);
+}
+
+void toolbar_toggle(guint action, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow*)data;
+	GList *list;
+	GList *cur;
+
+	g_return_if_fail(mainwin != NULL);
+
+	toolbar_style(TOOLBAR_MAIN, action, mainwin);
+
+	list = compose_get_compose_list();
+	for (cur = list; cur != NULL; cur = cur->next) {
+		toolbar_style(TOOLBAR_COMPOSE, action, cur->data);
+	}
+	list = messageview_get_msgview_list();
+	for (cur = list; cur != NULL; cur = cur->next) {
+		toolbar_style(TOOLBAR_MSGVIEW, action, cur->data);
 	}
 	
-	switch (prefs_common.toolbar_style) {
+}
+
+void toolbar_set_style(GtkWidget *toolbar_wid, GtkWidget *handlebox_wid, guint action)
+{
+	switch ((ToolbarStyle)action) {
 	case TOOLBAR_NONE:
 		gtk_widget_hide(handlebox_wid);
 		break;
@@ -661,66 +757,343 @@ void common_toolbar_set_style(gpointer data, ToolbarType type)
 		gtk_toolbar_set_style(GTK_TOOLBAR(toolbar_wid),
 				      GTK_TOOLBAR_BOTH);
 		break;
+	default:
+		return;
 	}
-	
+
+	prefs_common.toolbar_style = (ToolbarStyle)action;
 	if (prefs_common.toolbar_style != TOOLBAR_NONE) {
 		gtk_widget_show(handlebox_wid);
 		gtk_widget_queue_resize(handlebox_wid);
 	}
 }
+/*
+ * Change the style of toolbar
+ */
+static void toolbar_style(ToolbarType type, guint action, gpointer data)
+{
+	GtkWidget  *handlebox_wid;
+	GtkWidget  *toolbar_wid;
+	MainWindow *mainwin = (MainWindow*)data;
+	Compose    *compose = (Compose*)data;
+	MessageView *msgview = (MessageView*)data;
+	
+	g_return_if_fail(data != NULL);
+	
+	switch (type) {
+	case TOOLBAR_MAIN:
+		handlebox_wid = mainwin->handlebox;
+		toolbar_wid = mainwin->toolbar->toolbar;
+		break;
+	case TOOLBAR_COMPOSE:
+		handlebox_wid = compose->handlebox;
+		toolbar_wid = compose->toolbar->toolbar;
+		break;
+	case TOOLBAR_MSGVIEW: 
+		handlebox_wid = msgview->handlebox;
+		toolbar_wid = msgview->toolbar->toolbar;
+		break;
+	default:
+
+		return;
+	}
+	toolbar_set_style(toolbar_wid, handlebox_wid, action);
+}
+
+/* Toolbar handling */
+static void toolbar_inc_cb(GtkWidget	*widget,
+			   gpointer	 data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
+
+	g_return_if_fail(toolbar_item != NULL);
+
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow*)toolbar_item->parent;	
+		inc_mail_cb(mainwin, 0, NULL);
+		break;
+	default:
+		break;
+	}
+}
+
+static void toolbar_inc_all_cb(GtkWidget	*widget,
+			       gpointer	 	 data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
+
+	g_return_if_fail(toolbar_item != NULL);
+
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow*)toolbar_item->parent;
+		inc_all_account_mail_cb(mainwin, 0, NULL);
+		break;
+	default:
+		break;
+	}
+}
+
+static void toolbar_send_queued_cb(GtkWidget *widget,gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
+
+	g_return_if_fail(toolbar_item != NULL);
+
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow*)toolbar_item->parent;
+		send_queue_cb(mainwin, 0, NULL);
+		break;
+	default:
+		break;
+	}
+}
+
+static void toolbar_exec_cb(GtkWidget	*widget,
+			    gpointer	 data)
+{
+	MainWindow *mainwin = get_mainwin(data);
+
+	g_return_if_fail(mainwin != NULL);
+	summary_execute(mainwin->summaryview);
+}
+
+
+
+/* popup callback functions */
+static void toolbar_reply_popup_cb(GtkWidget       *widget, 
+				   GdkEventButton  *event, 
+				   gpointer         data)
+{
+	Toolbar *toolbar_data = (Toolbar*)data;
+	
+	if (!event) return;
+	
+	if (event->button == 3) {
+		gtk_button_set_relief(GTK_BUTTON(widget), GTK_RELIEF_NORMAL);
+		gtk_menu_popup(GTK_MENU(toolbar_data->reply_popup), NULL, NULL,
+		       menu_button_position, widget,
+		       event->button, event->time);
+	}
+}
+
+static void toolbar_reply_popup_closed_cb(GtkMenuShell *menu_shell, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	GtkWidget *window;
+	GtkWidget *reply_btn;
+	MainWindow *mainwin;
+	MessageView *msgview;
+
+	g_return_if_fail(toolbar_item != NULL);
+
+	switch(toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin   = (MainWindow*)toolbar_item->parent;
+		reply_btn = mainwin->toolbar->reply_btn;
+		window    = mainwin->window;
+		break;
+	case TOOLBAR_MSGVIEW:
+		msgview   = (MessageView*)toolbar_item->parent;
+		reply_btn = msgview->toolbar->reply_btn;
+		window    = msgview->window;
+		break;
+	default:
+		return;
+	}
+
+	gtk_button_set_relief(GTK_BUTTON(reply_btn), GTK_RELIEF_NONE);
+	manage_window_focus_in(window, NULL, NULL);
+}
+
+static void toolbar_reply_to_all_popup_cb(GtkWidget *widget, GdkEventButton *event, gpointer data)
+{
+	Toolbar *toolbar_data = (Toolbar*)data;
+	
+	if (!event) return;
+	
+	if (event->button == 3) {
+		gtk_button_set_relief(GTK_BUTTON(widget), GTK_RELIEF_NORMAL);
+		gtk_menu_popup(GTK_MENU(toolbar_data->replyall_popup), NULL, NULL,
+		       menu_button_position, widget,
+		       event->button, event->time);
+	}
+}
+
+static void toolbar_reply_to_all_popup_closed_cb(GtkMenuShell *menu_shell, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	GtkWidget *window;
+	GtkWidget *replyall_btn;
+	MainWindow *mainwin;
+	MessageView *msgview;
+
+	g_return_if_fail(toolbar_item != NULL);
+
+	switch(toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin      = (MainWindow*)toolbar_item->parent; 
+		replyall_btn = mainwin->toolbar->replyall_btn;
+		window       = mainwin->window;
+		break;
+	case TOOLBAR_MSGVIEW:
+		msgview      = (MessageView*)toolbar_item->parent;
+		replyall_btn = msgview->toolbar->replyall_btn;
+		window       = msgview->window;
+		break;
+	default:
+		return;
+	}
+
+	gtk_button_set_relief(GTK_BUTTON(replyall_btn), GTK_RELIEF_NONE);
+	manage_window_focus_in(window, NULL, NULL);
+}
+
+static void toolbar_reply_to_list_popup_cb(GtkWidget *widget, GdkEventButton *event, gpointer data)
+{
+	Toolbar *toolbar_data = (Toolbar*)data;
+
+	if (event->button == 3) {
+		gtk_button_set_relief(GTK_BUTTON(widget), GTK_RELIEF_NORMAL);
+		gtk_menu_popup(GTK_MENU(toolbar_data->replylist_popup), NULL, NULL,
+		       menu_button_position, widget,
+		       event->button, event->time);
+	}
+}
+
+static void toolbar_reply_to_list_popup_closed_cb(GtkMenuShell *menu_shell, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	gpointer parent = toolbar_item->parent;
+	GtkWidget *window;
+	GtkWidget *replylist_btn;
+
+
+	g_return_if_fail(toolbar_item != NULL);
+
+	switch(toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		replylist_btn = ((MainWindow*)parent)->toolbar->replylist_btn;
+		window        = ((MainWindow*)parent)->window;
+		break;
+	case TOOLBAR_MSGVIEW:
+		replylist_btn = ((MessageView*)parent)->toolbar->replylist_btn;
+		window        = ((MessageView*)parent)->window;
+		break;
+	default:
+		return;
+	}
+
+	gtk_button_set_relief(GTK_BUTTON(replylist_btn), GTK_RELIEF_NONE);
+	manage_window_focus_in(window, NULL, NULL);
+}
+
+static void toolbar_reply_to_sender_popup_cb(GtkWidget *widget, GdkEventButton *event, gpointer data)
+{
+	Toolbar *toolbar_data = (Toolbar*)data;
+
+	if (event->button == 3) {
+		gtk_button_set_relief(GTK_BUTTON(widget), GTK_RELIEF_NORMAL);
+		gtk_menu_popup(GTK_MENU(toolbar_data->replysender_popup), NULL, NULL,
+		       menu_button_position, widget,
+		       event->button, event->time);
+	}
+}
+
+static void toolbar_reply_to_sender_popup_closed_cb(GtkMenuShell *menu_shell, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	gpointer parent = toolbar_item->parent;
+	GtkWidget *window;
+	GtkWidget *replysender_btn;
+
+	g_return_if_fail(toolbar_item != NULL);
+
+	switch(toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		replysender_btn = ((MainWindow*)parent)->toolbar->replysender_btn;
+		window          = ((MainWindow*)parent)->window;
+		break;
+	case TOOLBAR_MSGVIEW:
+		replysender_btn = ((MessageView*)parent)->toolbar->replysender_btn;
+		window          = ((MessageView*)parent)->window;
+		break;
+	default:
+		return;
+	}
+
+	gtk_button_set_relief(GTK_BUTTON(replysender_btn), GTK_RELIEF_NONE);
+	manage_window_focus_in(window, NULL, NULL);
+}
+
+static void toolbar_forward_popup_cb(GtkWidget *widget, GdkEventButton *event, gpointer data)
+{
+	Toolbar *toolbar_data = (Toolbar*)data;
+
+	if (event->button == 3) {
+		gtk_button_set_relief(GTK_BUTTON(widget), GTK_RELIEF_NORMAL);
+		gtk_menu_popup(GTK_MENU(toolbar_data->fwd_popup), NULL, NULL,
+			       menu_button_position, widget,
+			       event->button, event->time);
+	}
+}
+
+static void toolbar_forward_popup_closed_cb (GtkMenuShell *menu_shell, 
+					     gpointer     data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	gpointer parent = toolbar_item->parent;
+	GtkWidget *window;
+	GtkWidget *fwd_btn;
+
+	g_return_if_fail(toolbar_item != NULL);
+
+	switch(toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		fwd_btn = ((MainWindow*)parent)->toolbar->fwd_btn;
+		window  = ((MainWindow*)parent)->window;
+		break;
+	case TOOLBAR_MSGVIEW:
+		fwd_btn = ((MessageView*)parent)->toolbar->fwd_btn;
+		window  = ((MessageView*)parent)->window;
+		break;
+	default:
+		return;
+	}
+
+	gtk_button_set_relief(GTK_BUTTON(fwd_btn), GTK_RELIEF_NONE);
+	manage_window_focus_in(window, NULL, NULL);
+}
 
 /*
  * Delete current/selected(s) message(s)
  */
-void common_toolbar_delete_cb(GtkWidget	  *widget,
-			      gpointer	   data)
+static void toolbar_delete_cb(GtkWidget *widget, gpointer data)
 {
-	ToolbarParent *parent = (ToolbarParent*)data;
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
 	MainWindow *mainwin;
 	MessageView *msgview;
 
-	g_return_if_fail(parent != NULL);
+	g_return_if_fail(toolbar_item != NULL);
 	
-	switch (parent->type) {
+	switch (toolbar_item->type) {
 	case TOOLBAR_MSGVIEW:
-		msgview = (MessageView*)parent->data;
-		
+		msgview = (MessageView*)toolbar_item->parent;
 		/* make sure the selected msg in summaryview is 
-		   the one we are asked to delete
-		*/
-		if (msgview->mainwin->summaryview->selected) {
-			SummaryView *summaryview = msgview->mainwin->summaryview;
-			GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-			MsgInfo *msginfo = gtk_ctree_node_get_row_data(ctree, 
-								       summaryview->selected);	
-			if (msginfo->msgnum != msgview->msginfo->msgnum) {
-				alertpanel_error(_("Message already removed from folder."));
-				return;
-			}
-		}
-		
-		summary_delete(msgview->mainwin->summaryview);	
-
-		if (msgview->mainwin->summaryview->selected) {
-			SummaryView *summaryview = msgview->mainwin->summaryview;
-			GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-			MsgInfo *msginfo = gtk_ctree_node_get_row_data(ctree, 
-								       summaryview->selected);
-			messageview_show(msgview, msginfo, 
-					 msgview->all_headers);
-		} else {
-			toolbar_clear_list(TOOLBAR_MSGVIEW);
-			TOOLBAR_DESTROY_ITEMS(msgview->toolbar->item_list);	
-			TOOLBAR_DESTROY_ACTIONS(msgview->toolbar->action_list);
-			gtk_widget_destroy(msgview->window);
-		}
+		   the one we are asked to delete */
+		delete_msgview_cb(msgview, 0, widget);
         	break;
         case TOOLBAR_MAIN:
-		mainwin = (MainWindow*)parent->data;
+		mainwin = (MainWindow*)toolbar_item->parent;
         	summary_delete(mainwin->summaryview);
         	break;
         default: 
-        	debug_print("toolbar_delete: Not supported for this type of window\n");
+        	debug_print("toolbar event not supported\n");
         	break;
 	}
 }
@@ -729,47 +1102,75 @@ void common_toolbar_delete_cb(GtkWidget	  *widget,
 /*
  * Compose new message
  */
-void common_toolbar_compose_cb(GtkWidget  *widget,
-			       gpointer	   data)
+static void toolbar_compose_cb(GtkWidget *widget, gpointer data)
 {
-	ToolbarParent *parent = (ToolbarParent*)data;
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
 	MessageView *msgview;
 
-	g_return_if_fail(parent != NULL);
+	g_return_if_fail(toolbar_item != NULL);
 
-	switch (parent->type) {
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow*)toolbar_item->parent;
+		if (mainwin->toolbar->compose_btn_type == COMPOSEBUTTON_NEWS) 
+			compose_news_cb(mainwin, 0, NULL);
+		else
+			compose_mail_cb(mainwin, 0, NULL);
+		break;
 	case TOOLBAR_MSGVIEW:
-		msgview = (MessageView*)parent->data;
+		msgview = (MessageView*)toolbar_item->parent;
 		compose_new_with_folderitem(NULL, 
 					    msgview->msginfo->folder);
 		break;	
 	default:
-		debug_print("toolbar_compose: Not supported for this type of window\n");
+		debug_print("toolbar event not supported\n");
 	}
+}
+
+static void toolbar_popup_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MainWindow *mainwin = get_mainwin(data);
+
+	g_return_if_fail(mainwin != NULL);
+	reply_cb(mainwin, action, widget);
 }
 
 
 /*
  * Reply Message
  */
-void common_toolbar_reply_cb(GtkWidget   *widget, 
-			     gpointer     data)
+static void toolbar_reply_cb(GtkWidget *widget, gpointer data)
 {
-	ToolbarParent *parent = (ToolbarParent*)data;
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
 	MessageView *msgview;
 
-	g_return_if_fail(parent != NULL);
+	g_return_if_fail(toolbar_item != NULL);
 
-	switch (parent->type) {
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow*)toolbar_item->parent;
+		if (prefs_common.default_reply_list)
+			reply_cb(mainwin, 
+				 prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_LIST_WITH_QUOTE 
+				 : COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE, 
+				 NULL);
+		else
+			reply_cb(mainwin, 
+				 prefs_common.reply_with_quote ? COMPOSE_REPLY_WITH_QUOTE 
+				 : COMPOSE_REPLY_WITHOUT_QUOTE,
+				 NULL);
+		break;
 	case TOOLBAR_MSGVIEW:
-		msgview = (MessageView*)parent->data;
+		msgview = (MessageView*)toolbar_item->parent;
 		compose_reply(msgview->msginfo,
 			      prefs_common.reply_with_quote ? COMPOSE_REPLY_WITH_QUOTE 
 			      : COMPOSE_REPLY_WITHOUT_QUOTE,
 			      FALSE, FALSE, FALSE, NULL);
 		break;
 	default:
-		debug_print("toolbar_reply: Not supported for this type of window\n");
+		debug_print("toolbar event not supported\n");
 	}
 }
 
@@ -777,24 +1178,31 @@ void common_toolbar_reply_cb(GtkWidget   *widget,
 /*
  * Reply message to Sender and All recipients
  */
-void common_toolbar_reply_to_all_cb(GtkWidget   *widget, 
-				    gpointer     data)
+static void toolbar_reply_to_all_cb(GtkWidget *widget, gpointer data)
 {
-	ToolbarParent *parent = (ToolbarParent*)data;
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
 	MessageView *msgview;
 
-	g_return_if_fail(parent != NULL);
+	g_return_if_fail(toolbar_item != NULL);
 
-	switch (parent->type) {
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow*)toolbar_item->parent;
+		reply_cb(mainwin, 
+			 prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_ALL_WITH_QUOTE 
+			 : COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE, 
+			 NULL);
+		break;
 	case TOOLBAR_MSGVIEW:
-		msgview = (MessageView*)parent->data;
+		msgview = (MessageView*)toolbar_item->parent;
 		compose_reply(msgview->msginfo,
 			      prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_ALL_WITH_QUOTE 
 			      : COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE,
 			      TRUE, FALSE, FALSE, NULL);
 		break;
 	default:
-		debug_print("toolbar_reply_to_all: Not supported for this type of window\n");
+		debug_print("toolbar event not supported\n");
 	}
 }
 
@@ -802,24 +1210,31 @@ void common_toolbar_reply_to_all_cb(GtkWidget   *widget,
 /*
  * Reply to Mailing List
  */
-void common_toolbar_reply_to_list_cb(GtkWidget   *widget, 
-				     gpointer     data)
+static void toolbar_reply_to_list_cb(GtkWidget *widget, gpointer data)
 {
-	ToolbarParent *parent = (ToolbarParent*)data;
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
 	MessageView *msgview;
 
-	g_return_if_fail(parent != NULL);
+	g_return_if_fail(toolbar_item != NULL);
 
-	switch (parent->type) {
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow*)toolbar_item->parent;
+		reply_cb(mainwin, 
+			 prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_LIST_WITH_QUOTE 
+			 : COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE, 
+			 NULL);
+		break;
 	case TOOLBAR_MSGVIEW:
-		msgview = (MessageView*)parent->data;
+		msgview = (MessageView*)toolbar_item->parent;
 		compose_reply(msgview->msginfo,
 			      prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_LIST_WITH_QUOTE 
 			      : COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE,
 			      FALSE, TRUE, FALSE, NULL);
 		break;
 	default:
-		debug_print("toolbar_reply_to_list: Not supported for this type of window\n");
+		debug_print("toolbar event not supported\n");
 	}
 }
 
@@ -827,51 +1242,76 @@ void common_toolbar_reply_to_list_cb(GtkWidget   *widget,
 /*
  * Reply to sender of message
  */ 
-void common_toolbar_reply_to_sender_cb(GtkWidget   *widget, 
-				       gpointer     data)
+static void toolbar_reply_to_sender_cb(GtkWidget *widget, gpointer data)
 {
-	ToolbarParent *parent = (ToolbarParent*)data;
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
 	MessageView *msgview;
 
-	g_return_if_fail(parent != NULL);
+	g_return_if_fail(toolbar_item != NULL);
 
-	switch (parent->type) {
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow*)toolbar_item->parent;
+		reply_cb(mainwin, 
+			 prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_SENDER_WITH_QUOTE 
+			 : COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE, 
+			 NULL);
+		break;
 	case TOOLBAR_MSGVIEW:
-		msgview = (MessageView*)parent->data;
+		msgview = (MessageView*)toolbar_item->parent;
 		compose_reply(msgview->msginfo,
 			      prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_SENDER_WITH_QUOTE 
 			      : COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE,
 			      FALSE, FALSE, FALSE, NULL);
 		break;
 	default:
-		debug_print("toolbar_reply_to_sender: Not supported for this type of window\n");
+		debug_print("toolbar event not supported\n\n");
 	}
+}
+
+/*
+ * Open addressbook
+ */ 
+static void toolbar_addrbook_cb(GtkWidget *widget, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	Compose *compose;
+
+	g_return_if_fail(toolbar_item != NULL);
+
+	switch (toolbar_item->type) {
+	case TOOLBAR_COMPOSE:
+		compose = (Compose *)toolbar_item->parent;
+		break;
+	default:
+		compose = NULL;
+	}
+	addressbook_open(compose);
 }
 
 
 /*
  * Forward current/selected(s) message(s)
  */
-void common_toolbar_forward_cb(GtkWidget	*widget,
-			       gpointer	         data)
+static void toolbar_forward_cb(GtkWidget *widget, gpointer data)
 {
-	ToolbarParent *parent = (ToolbarParent*)data;
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
 
-	g_return_if_fail(parent != NULL);
+	g_return_if_fail(toolbar_item != NULL);
 
-	switch (parent->type) {
-/* 
-  REFERENCE FROM mainwindow.c
-  
+	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
+		mainwin = (MainWindow*)toolbar_item->parent;
 		if (prefs_common.forward_as_attachment)
 			reply_cb(mainwin, COMPOSE_FORWARD_AS_ATTACH, NULL);
 		else
 			reply_cb(mainwin, COMPOSE_FORWARD, NULL);
 		break;
-*/		
+		
 	default:
-		debug_print("toolbar_forward: Not supported for this type of window\n");
+		debug_print("toolbar event not supported\n");
 	}
 }
 
@@ -879,23 +1319,22 @@ void common_toolbar_forward_cb(GtkWidget	*widget,
 /*
  * Goto Next Unread Message
  */
-void common_toolbar_next_unread_cb(GtkWidget	*widget,
-				   gpointer	 data)
+static void toolbar_next_unread_cb(GtkWidget *widget, gpointer data)
 {
-	ToolbarParent *parent = (ToolbarParent*)data;
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
 	MainWindow *mainwin;
 	MessageView *msgview;
 
-	g_return_if_fail(parent != NULL);
+	g_return_if_fail(toolbar_item != NULL);
 
-	switch (parent->type) {
+	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
-		mainwin = (MainWindow*)parent->data;
+		mainwin = (MainWindow*)toolbar_item->parent;
 		summary_select_next_unread(mainwin->summaryview);
 		break;
 		
 	case TOOLBAR_MSGVIEW:
-		msgview = (MessageView*)parent->data;
+		msgview = (MessageView*)toolbar_item->parent;
 /*
  * TODO: Check if summaryview stay in the same place when this message view was created 
  * if summary have other message select the next will be based on message selected in summaryview
@@ -916,38 +1355,825 @@ void common_toolbar_next_unread_cb(GtkWidget	*widget,
 		}
 		break;
 	default:
-		debug_print("toolbar_next_unread: Not supported for this type of window\n");
+		debug_print("toolbar event not supported\n");
 	}
 }
 
+static void toolbar_send_cb(GtkWidget *widget, gpointer data)
+{
+	compose_toolbar_cb(A_SEND, data);
+}
+
+static void toolbar_send_later_cb(GtkWidget *widget, gpointer data)
+{
+	compose_toolbar_cb(A_SENDL, data);
+}
+
+static void toolbar_draft_cb(GtkWidget *widget, gpointer data)
+{
+	compose_toolbar_cb(A_DRAFT, data);
+}
+
+static void toolbar_insert_cb(GtkWidget *widget, gpointer data)
+{
+	compose_toolbar_cb(A_INSERT, data);
+}
+
+static void toolbar_attach_cb(GtkWidget *widget, gpointer data)
+{
+	compose_toolbar_cb(A_ATTACH, data);
+}
+
+static void toolbar_sig_cb(GtkWidget *widget, gpointer data)
+{
+	compose_toolbar_cb(A_SIG, data);
+}
+
+static void toolbar_ext_editor_cb(GtkWidget *widget, gpointer data)
+{
+	compose_toolbar_cb(A_EXTEDITOR, data);
+}
+
+static void toolbar_linewrap_cb(GtkWidget *widget, gpointer data)
+{
+	compose_toolbar_cb(A_LINEWRAP, data);
+}
 
 /*
  * Execute actions from toolbar
  */
-void common_toolbar_actions_execute_cb(GtkWidget *widget,
-				       gpointer   data)
+static void toolbar_actions_execute_cb(GtkWidget *widget, gpointer data)
 {
-	ToolbarParent *parent = (ToolbarParent*)data;
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
 	GSList *action_list;
 	MainWindow *mainwin;
 	Compose *compose;
 
-	g_return_if_fail(parent != NULL);
+	g_return_if_fail(toolbar_item != NULL);
 
-	switch (parent->type) {
+	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
-		mainwin = (MainWindow*)parent->data;
+		mainwin = (MainWindow*)toolbar_item->parent;
 		action_list = mainwin->toolbar->action_list;
 		break;
 	case TOOLBAR_COMPOSE:
-		compose = (Compose*)parent->data;
+		compose = (Compose*)toolbar_item->parent;
 		action_list = compose->toolbar->action_list;
 		break;
 		/* case TOOLBAR_MSGVIEW: not supported yet */
 	default:
-		debug_print("toolbar_actions: not supported for this window type\n");
+		debug_print("toolbar event not supported\n");
 		return;
 	}
 
-	toolbar_action_execute(widget, action_list, parent->data, parent->type);
+	toolbar_action_execute(widget, action_list, toolbar_item->parent, toolbar_item->type);
+}
+
+static MainWindow *get_mainwin(gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin = NULL;
+	MessageView *msgview;
+
+	g_return_val_if_fail(toolbar_item != NULL, NULL);
+
+	switch(toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow*)toolbar_item->parent;
+		break;
+	case TOOLBAR_MSGVIEW:
+		msgview = (MessageView*)toolbar_item->parent;
+		mainwin = (MainWindow*)msgview->mainwin;
+		break;
+	default:
+		break;
+	}
+
+	return mainwin;
+}
+
+static GtkWidget *get_window_widget(ToolbarType type, gpointer data)
+{
+	MainWindow *mainwin;
+	MessageView *msgview;
+
+	switch (type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow*)data;
+		return mainwin->window;
+		break;
+	case TOOLBAR_MSGVIEW:
+		msgview = (MessageView*)data;
+		return msgview->vbox;
+		break;
+	default:
+		break;
+	}
+	return NULL;
+}
+
+static void toolbar_buttons_cb(GtkWidget   *widget, 
+				      ToolbarItem *item)
+{
+	gint num_items;
+	gint i;
+	struct {
+		gint   index;
+		void (*func)(GtkWidget *widget, gpointer data);
+	} callbacks[] = {
+		{ A_RECEIVE_ALL,	toolbar_inc_all_cb		},
+		{ A_RECEIVE_CUR,	toolbar_inc_cb			},
+		{ A_SEND_QUEUED,	toolbar_send_queued_cb		},
+		{ A_COMPOSE_EMAIL,	toolbar_compose_cb		},
+		{ A_COMPOSE_NEWS,	toolbar_compose_cb		},
+		{ A_REPLY_MESSAGE,	toolbar_reply_cb		},
+		{ A_REPLY_SENDER,	toolbar_reply_to_sender_cb	},
+		{ A_REPLY_ALL,		toolbar_reply_to_all_cb		},
+		{ A_REPLY_ML,		toolbar_reply_to_list_cb	},
+		{ A_FORWARD,		toolbar_forward_cb		},
+		{ A_DELETE,         	toolbar_delete_cb		},
+		{ A_EXECUTE,        	toolbar_exec_cb			},
+		{ A_GOTO_NEXT,      	toolbar_next_unread_cb		},
+
+		{ A_SEND,		toolbar_send_cb       		},
+		{ A_SENDL,		toolbar_send_later_cb 		},
+		{ A_DRAFT,		toolbar_draft_cb      		},
+		{ A_INSERT,		toolbar_insert_cb     		},
+		{ A_ATTACH,		toolbar_attach_cb     		},
+		{ A_SIG,		toolbar_sig_cb	      		},
+		{ A_EXTEDITOR,		toolbar_ext_editor_cb 		},
+		{ A_LINEWRAP,		toolbar_linewrap_cb   		},
+		{ A_ADDRBOOK,		toolbar_addrbook_cb		},
+
+		{ A_SYL_ACTIONS,	toolbar_actions_execute_cb	}
+	};
+
+	num_items = sizeof(callbacks)/sizeof(callbacks[0]);
+
+	for (i = 0; i < num_items; i++) {
+		if (callbacks[i].index == item->index) {
+			callbacks[i].func(widget, item);
+			return;
+		}
+	}
+}
+
+/**
+ * Create a new toolbar with specified type
+ * if a callback list is passed it will be used before the 
+ * common callback list
+ **/
+Toolbar *toolbar_create(ToolbarType 	 type, 
+	  		GtkWidget 	*container,
+			gpointer 	 data)
+{
+	ToolbarItem *toolbar_item;
+
+	GtkWidget *toolbar;
+	GtkWidget *icon_wid = NULL;
+	GtkWidget *icon_news;
+	GtkWidget *item;
+	GtkWidget *item_news;
+	GtkWidget *window_wid;
+
+	guint n_menu_entries;
+	GtkWidget *reply_popup;
+	GtkWidget *replyall_popup;
+	GtkWidget *replylist_popup;
+	GtkWidget *replysender_popup;
+	GtkWidget *fwd_popup;
+
+	GtkTooltips *toolbar_tips;
+	ToolbarSylpheedActions *action_item;
+	GSList *cur;
+	GSList *toolbar_list;
+	Toolbar *toolbar_data;
+
+	
+ 	toolbar_tips = gtk_tooltips_new();
+	
+	toolbar_read_config_file(type);
+	toolbar_list = toolbar_get_list(type);
+
+	toolbar_data = g_new0(Toolbar, 1); 
+
+	toolbar = gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL,
+				  GTK_TOOLBAR_BOTH);
+	gtk_container_add(GTK_CONTAINER(container), toolbar);
+	gtk_container_set_border_width(GTK_CONTAINER(container), 2);
+	gtk_toolbar_set_button_relief(GTK_TOOLBAR(toolbar), GTK_RELIEF_NONE);
+	gtk_toolbar_set_space_style(GTK_TOOLBAR(toolbar),
+				    GTK_TOOLBAR_SPACE_LINE);
+	
+	for (cur = toolbar_list; cur != NULL; cur = cur->next) {
+
+		if (g_strcasecmp(((ToolbarItem*)cur->data)->file, TOOLBAR_TAG_SEPARATOR) == 0) {
+			gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
+			continue;
+		}
+		
+		toolbar_item = g_new0(ToolbarItem, 1); 
+		toolbar_item->index = ((ToolbarItem*)cur->data)->index;
+		toolbar_item->file = g_strdup(((ToolbarItem*)cur->data)->file);
+		toolbar_item->text = g_strdup(((ToolbarItem*)cur->data)->text);
+		toolbar_item->parent = data;
+		toolbar_item->type = type;
+
+		/* collect toolbar items in list to keep track */
+		toolbar_data->item_list = 
+			g_slist_append(toolbar_data->item_list, 
+				       toolbar_item);
+
+		icon_wid = stock_pixmap_widget(container, stock_pixmap_get_icon(toolbar_item->file));
+		item  = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
+						toolbar_item->text,
+						(""),
+						(""),
+						icon_wid, toolbar_buttons_cb, 
+						toolbar_item);
+		
+		switch (toolbar_item->index) {
+
+		case A_RECEIVE_ALL:
+			toolbar_data->getall_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->getall_btn, 
+					   _("Receive Mail on all Accounts"), NULL);
+			break;
+		case A_RECEIVE_CUR:
+			toolbar_data->get_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->get_btn,
+					   _("Receive Mail on current Account"), NULL);
+			break;
+		case A_SEND_QUEUED:
+			toolbar_data->send_btn = item; 
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->send_btn,
+					   _("Send Queued Message(s)"), NULL);
+			break;
+		case A_COMPOSE_EMAIL:
+			icon_news = stock_pixmap_widget(container, STOCK_PIXMAP_NEWS_COMPOSE);
+			item_news = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
+							    _("News"),
+							    (""),
+							    (""),
+							    icon_news, toolbar_buttons_cb, 
+							    toolbar_item);
+			toolbar_data->compose_mail_btn = item; 
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->compose_mail_btn,
+					   _("Compose Email"), NULL);
+			toolbar_data->compose_news_btn = item_news;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->compose_news_btn,
+					   _("Compose News"), NULL);
+			break;
+		case A_REPLY_MESSAGE:
+			toolbar_data->reply_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->reply_btn,
+					   _("Reply to Message"), NULL);
+			gtk_signal_connect(GTK_OBJECT(toolbar_data->reply_btn), 
+					   "button_press_event",
+					   GTK_SIGNAL_FUNC(toolbar_reply_popup_cb),
+					   toolbar_data);
+			n_menu_entries = sizeof(reply_popup_entries) /
+				sizeof(reply_popup_entries[0]);
+
+			window_wid = get_window_widget(type, data);
+			reply_popup = popupmenu_create(window_wid,
+						       reply_popup_entries, n_menu_entries,
+						       "<ReplyPopup>", (gpointer)toolbar_item);
+
+			gtk_signal_connect(GTK_OBJECT(reply_popup), "selection_done",
+					   GTK_SIGNAL_FUNC(toolbar_reply_popup_closed_cb), toolbar_item);
+			toolbar_data->reply_popup = reply_popup;
+			break;
+		case A_REPLY_SENDER:
+			toolbar_data->replysender_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->replysender_btn,
+					   _("Reply to Sender"), NULL);
+			gtk_signal_connect(GTK_OBJECT(toolbar_data->replysender_btn), 
+					   "button_press_event",
+					   GTK_SIGNAL_FUNC(toolbar_reply_to_sender_popup_cb),
+					   toolbar_data);
+			n_menu_entries = sizeof(replysender_popup_entries) /
+				sizeof(replysender_popup_entries[0]);
+
+			window_wid = get_window_widget(type, data);
+			replysender_popup = popupmenu_create(window_wid, 
+							     replysender_popup_entries, n_menu_entries,
+							     "<ReplySenderPopup>", (gpointer)toolbar_item);
+
+			gtk_signal_connect(GTK_OBJECT(replysender_popup), "selection_done",
+					   GTK_SIGNAL_FUNC(toolbar_reply_to_sender_popup_closed_cb), toolbar_item);
+			toolbar_data->replysender_popup = replysender_popup;
+			break;
+		case A_REPLY_ALL:
+			toolbar_data->replyall_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->replyall_btn,
+					   _("Reply to All"), NULL);
+			gtk_signal_connect(GTK_OBJECT(toolbar_data->replyall_btn), 
+					   "button_press_event",
+					   GTK_SIGNAL_FUNC(toolbar_reply_to_all_popup_cb),
+					   toolbar_data);
+			n_menu_entries = sizeof(replyall_popup_entries) /
+				sizeof(replyall_popup_entries[0]);
+
+			window_wid = get_window_widget(type, data);	
+			replyall_popup = popupmenu_create(window_wid, 
+							  replyall_popup_entries, n_menu_entries,
+							  "<ReplyAllPopup>", (gpointer)toolbar_item);
+	
+			gtk_signal_connect(GTK_OBJECT(replyall_popup), "selection_done",
+					   GTK_SIGNAL_FUNC(toolbar_reply_to_all_popup_closed_cb), toolbar_item);
+			toolbar_data->replyall_popup = replyall_popup;
+			break;
+		case A_REPLY_ML:
+			toolbar_data->replylist_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->replylist_btn,
+					   _("Reply to Mailing-list"), NULL);
+			gtk_signal_connect(GTK_OBJECT(toolbar_data->replylist_btn), 
+					   "button_press_event",
+					   GTK_SIGNAL_FUNC(toolbar_reply_to_list_popup_cb),
+					   toolbar_data);
+			n_menu_entries = sizeof(replylist_popup_entries) /
+				sizeof(replylist_popup_entries[0]);
+
+			window_wid = get_window_widget(type, data);
+			replylist_popup = popupmenu_create(window_wid, 
+							   replylist_popup_entries, n_menu_entries,
+							   "<ReplyMlPopup>", (gpointer)toolbar_item);
+		
+			gtk_signal_connect(GTK_OBJECT(replylist_popup), "selection_done",
+					   GTK_SIGNAL_FUNC(toolbar_reply_to_list_popup_closed_cb), toolbar_item);
+			toolbar_data->replylist_popup = replylist_popup;
+			break;
+		case A_FORWARD:
+			toolbar_data->fwd_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->fwd_btn,
+					     _("Forward Message"), NULL);
+			gtk_signal_connect(GTK_OBJECT(toolbar_data->fwd_btn), 
+					   "button_press_event",
+					   GTK_SIGNAL_FUNC(toolbar_forward_popup_cb),
+					   toolbar_data);
+			n_menu_entries = sizeof(fwd_popup_entries) /
+				sizeof(fwd_popup_entries[0]);
+
+			window_wid = get_window_widget(type, data);
+			fwd_popup = popupmenu_create(window_wid, 
+						     fwd_popup_entries, n_menu_entries,
+						     "<ForwardPopup>", (gpointer)toolbar_item);
+
+			gtk_signal_connect(GTK_OBJECT(fwd_popup), "selection_done",
+					   GTK_SIGNAL_FUNC(toolbar_forward_popup_closed_cb), toolbar_item);
+			toolbar_data->fwd_popup = fwd_popup;
+			break;
+		case A_DELETE:
+			toolbar_data->delete_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->delete_btn,
+					     _("Delete Message"), NULL);
+			break;
+		case A_EXECUTE:
+			toolbar_data->exec_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->exec_btn,
+					   _("Execute"), NULL);
+			break;
+		case A_GOTO_NEXT:
+			toolbar_data->next_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->next_btn,
+					     _("Goto Next Message"), NULL);
+			break;
+		
+		/* Compose Toolbar */
+		case A_SEND:
+			toolbar_data->send_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->send_btn, 
+					     _("Send Message"), NULL);
+			break;
+		case A_SENDL:
+			toolbar_data->sendl_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->sendl_btn,
+					     _("Put into queue folder and send later"), NULL);
+			break;
+		case A_DRAFT:
+			toolbar_data->draft_btn = item; 
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->draft_btn,
+					     _("Save to draft folder"), NULL);
+			break;
+		case A_INSERT:
+			toolbar_data->insert_btn = item; 
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->insert_btn,
+					     _("Insert file"), NULL);
+			break;
+		case A_ATTACH:
+			toolbar_data->attach_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->attach_btn,
+					     _("Attach file"), NULL);
+			break;
+		case A_SIG:
+			toolbar_data->sig_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->sig_btn,
+					     _("Insert signature"), NULL);
+			break;
+		case A_EXTEDITOR:
+			toolbar_data->exteditor_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->exteditor_btn,
+					     _("Edit with external editor"), NULL);
+			break;
+		case A_LINEWRAP:
+			toolbar_data->linewrap_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->linewrap_btn,
+					     _("Wrap all long lines"), NULL);
+			break;
+		case A_ADDRBOOK:
+			toolbar_data->addrbook_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->addrbook_btn,
+					     _("Address book"), NULL);
+			break;
+
+		case A_SYL_ACTIONS:
+			action_item = g_new0(ToolbarSylpheedActions, 1);
+			action_item->widget = item;
+			action_item->name   = g_strdup(toolbar_item->text);
+
+			toolbar_data->action_list = 
+				g_slist_append(toolbar_data->action_list,
+					       action_item);
+
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     item,
+					     action_item->name, NULL);
+
+			gtk_widget_show(item);
+			break;
+		default:
+			break;
+		}
+
+	}
+	toolbar_data->toolbar = toolbar;
+	if (type == TOOLBAR_MAIN)
+		activate_compose_button(toolbar_data, 
+					prefs_common.toolbar_style, 
+					toolbar_data->compose_btn_type);
+	
+	gtk_widget_show_all(toolbar);
+	
+	return toolbar_data; 
+}
+
+/**
+ * Free toolbar structures
+ */ 
+void toolbar_destroy(Toolbar * toolbar) {
+
+	TOOLBAR_DESTROY_ITEMS(toolbar->item_list);	
+	TOOLBAR_DESTROY_ACTIONS(toolbar->action_list);
+}
+
+void toolbar_update(ToolbarType type, gpointer data)
+{
+	Toolbar *toolbar_data;
+	GtkWidget *handlebox;
+	MainWindow *mainwin = (MainWindow*)data;
+	Compose    *compose = (Compose*)data;
+	MessageView *msgview = (MessageView*)data;
+
+	switch(type) {
+	case TOOLBAR_MAIN:
+		toolbar_data = mainwin->toolbar;
+		handlebox    = mainwin->handlebox;
+		break;
+	case TOOLBAR_COMPOSE:
+		toolbar_data = compose->toolbar;
+		handlebox    = compose->handlebox;
+		break;
+	case TOOLBAR_MSGVIEW:
+		toolbar_data = msgview->toolbar;
+		handlebox    = msgview->handlebox;
+		break;
+	default:
+		return;
+	}
+
+	gtk_container_remove(GTK_CONTAINER(handlebox), 
+			     GTK_WIDGET(toolbar_data->toolbar));
+
+	toolbar_init(toolbar_data);
+ 	toolbar_data = toolbar_create(type, handlebox, data);
+	switch(type) {
+	case TOOLBAR_MAIN:
+		mainwin->toolbar = toolbar_data;
+		break;
+	case TOOLBAR_COMPOSE:
+		compose->toolbar = toolbar_data;
+		break;
+	case TOOLBAR_MSGVIEW:
+		msgview->toolbar = toolbar_data;
+		break;
+	}
+
+	toolbar_style(type, prefs_common.toolbar_style, data);
+
+	if (type == TOOLBAR_MAIN)
+		toolbar_main_set_sensitive((MainWindow*)data);
+}
+
+void toolbar_main_set_sensitive(gpointer data)
+{
+	SensitiveCond state;
+	gboolean sensitive;
+	MainWindow *mainwin = (MainWindow*)data;
+	Toolbar *toolbar = mainwin->toolbar;
+	GSList *cur;
+	GSList *entry_list = NULL;
+	
+	typedef struct _Entry Entry;
+	struct _Entry {
+		GtkWidget *widget;
+		SensitiveCond cond;
+		gboolean empty;
+	};
+
+#define SET_WIDGET_COND(w, c)     \
+{ \
+	Entry *e = g_new0(Entry, 1); \
+	e->widget = w; \
+	e->cond   = c; \
+	entry_list = g_slist_append(entry_list, e); \
+}
+
+	SET_WIDGET_COND(toolbar->get_btn, M_HAVE_ACCOUNT|M_UNLOCKED);
+	SET_WIDGET_COND(toolbar->getall_btn, M_HAVE_ACCOUNT|M_UNLOCKED);
+	SET_WIDGET_COND(toolbar->compose_news_btn, M_HAVE_ACCOUNT);
+	SET_WIDGET_COND(toolbar->reply_btn,
+			M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST);
+	SET_WIDGET_COND(toolbar->replyall_btn,
+			M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST);
+	SET_WIDGET_COND(toolbar->replylist_btn,
+			M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST);
+	SET_WIDGET_COND(toolbar->replysender_btn,
+			M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST);
+	SET_WIDGET_COND(toolbar->fwd_btn, M_HAVE_ACCOUNT|M_TARGET_EXIST);
+
+	SET_WIDGET_COND(toolbar->next_btn, M_MSG_EXIST);
+	SET_WIDGET_COND(toolbar->delete_btn,
+			M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED);
+	SET_WIDGET_COND(toolbar->exec_btn, M_DELAY_EXEC);
+
+	for (cur = toolbar->action_list; cur != NULL;  cur = cur->next) {
+		ToolbarSylpheedActions *act = (ToolbarSylpheedActions*)cur->data;
+		
+		SET_WIDGET_COND(act->widget, M_TARGET_EXIST|M_UNLOCKED);
+	}
+
+#undef SET_WIDGET_COND
+
+	state = main_window_get_current_state(mainwin);
+
+	for (cur = entry_list; cur != NULL; cur = cur->next) {
+		Entry *e = (Entry*) cur->data;
+
+		if (e->widget != NULL) {
+			sensitive = ((e->cond & state) == e->cond);
+			gtk_widget_set_sensitive(e->widget, sensitive);	
+		}
+	}
+	
+	while (entry_list != NULL) {
+		Entry *e = (Entry*) entry_list->data;
+
+		if (e)
+			g_free(e);
+		entry_list = g_slist_remove(entry_list, e);
+	}
+
+	g_slist_free(entry_list);
+
+	activate_compose_button(toolbar, 
+				prefs_common.toolbar_style,
+				toolbar->compose_btn_type);
+}
+
+void toolbar_comp_set_sensitive(gpointer data, gboolean sensitive)
+{
+	Compose *compose = (Compose*)data;
+	GSList *items = compose->toolbar->action_list;
+
+	if (compose->toolbar->send_btn)
+		gtk_widget_set_sensitive(compose->toolbar->send_btn, sensitive);
+	if (compose->toolbar->sendl_btn)
+		gtk_widget_set_sensitive(compose->toolbar->sendl_btn, sensitive);
+	if (compose->toolbar->draft_btn )
+		gtk_widget_set_sensitive(compose->toolbar->draft_btn , sensitive);
+	if (compose->toolbar->insert_btn )
+		gtk_widget_set_sensitive(compose->toolbar->insert_btn , sensitive);
+	if (compose->toolbar->attach_btn)
+		gtk_widget_set_sensitive(compose->toolbar->attach_btn, sensitive);
+	if (compose->toolbar->sig_btn)
+		gtk_widget_set_sensitive(compose->toolbar->sig_btn, sensitive);
+	if (compose->toolbar->exteditor_btn)
+		gtk_widget_set_sensitive(compose->toolbar->exteditor_btn, sensitive);
+	if (compose->toolbar->linewrap_btn)
+		gtk_widget_set_sensitive(compose->toolbar->linewrap_btn, sensitive);
+	if (compose->toolbar->addrbook_btn)
+		gtk_widget_set_sensitive(compose->toolbar->addrbook_btn, sensitive);
+	for (; items != NULL; items = g_slist_next(items)) {
+		ToolbarSylpheedActions *item = (ToolbarSylpheedActions *)items->data;
+		gtk_widget_set_sensitive(item->widget, sensitive);
+	}
+}
+
+/**
+ * Initialize toolbar structure
+ **/
+void toolbar_init(Toolbar * toolbar) {
+
+	toolbar->toolbar          = NULL;
+	toolbar->get_btn          = NULL;
+	toolbar->getall_btn       = NULL;
+	toolbar->send_btn         = NULL;
+	toolbar->compose_mail_btn = NULL;
+	toolbar->compose_news_btn = NULL;
+	toolbar->reply_btn        = NULL;
+	toolbar->replysender_btn  = NULL;
+	toolbar->replyall_btn     = NULL;
+	toolbar->replylist_btn    = NULL;
+	toolbar->fwd_btn          = NULL;
+	toolbar->delete_btn       = NULL;
+	toolbar->next_btn         = NULL;
+	toolbar->exec_btn         = NULL;
+
+	/* compose buttons */ 
+	toolbar->sendl_btn        = NULL;
+	toolbar->draft_btn        = NULL;
+	toolbar->insert_btn       = NULL;
+	toolbar->attach_btn       = NULL;
+	toolbar->sig_btn          = NULL;	
+	toolbar->exteditor_btn    = NULL;	
+	toolbar->linewrap_btn     = NULL;	
+	toolbar->addrbook_btn     = NULL;	
+
+	toolbar_destroy(toolbar);
+}
+
+/* exported functions */
+
+void delete_msgview_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *msgview = (MessageView*)data;
+
+	if (msgview->mainwin->summaryview->selected) {
+		SummaryView *summaryview = msgview->mainwin->summaryview;
+		GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+		MsgInfo *msginfo = gtk_ctree_node_get_row_data(ctree, 
+							       summaryview->selected);	
+		if (msginfo->msgnum != msgview->msginfo->msgnum) {
+			alertpanel_error(_("Message already removed from folder."));
+			return;
+		}
+	}
+	
+	summary_delete(msgview->mainwin->summaryview);	
+	
+	if (msgview->mainwin->summaryview->selected) {
+		SummaryView *summaryview = msgview->mainwin->summaryview;
+		GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+		MsgInfo *msginfo = gtk_ctree_node_get_row_data(ctree, 
+							       summaryview->selected);
+		messageview_show(msgview, msginfo, 
+				 msgview->all_headers);
+	} else {
+		toolbar_clear_list(TOOLBAR_MSGVIEW);
+		toolbar_destroy(msgview->toolbar);
+		gtk_widget_destroy(msgview->window);
+	}	
+}
+
+void reply_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MainWindow *mainwin = (MainWindow*)data;
+
+	g_return_if_fail(mainwin != NULL);
+
+	summary_reply(mainwin->summaryview, (ComposeMode)action);
+}
+
+void inc_mail_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MainWindow *mainwin = (MainWindow*)data;
+
+	inc_mail(mainwin, prefs_common.newmail_notify_manu);
+}
+
+void inc_all_account_mail_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MainWindow *mainwin = (MainWindow*)data;
+
+	inc_all_account_mail(mainwin, prefs_common.newmail_notify_manu);
+}
+
+void send_queue_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	GList *list;
+
+	if (prefs_common.work_offline)
+		if (alertpanel(_("Offline warning"), 
+			       _("You're working offline. Override?"),
+			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
+		return;
+
+	for (list = folder_get_list(); list != NULL; list = list->next) {
+		Folder *folder = list->data;
+
+		if (folder->queue) {
+			if (procmsg_send_queue
+				(folder->queue, prefs_common.savemsg) < 0)
+				alertpanel_error(_("Some errors occurred while sending queued messages."));
+			folder_item_scan(folder->queue);
+			folder_update_item(folder->queue, TRUE);
+		}
+	}
+}
+
+void compose_mail_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MainWindow *mainwin = (MainWindow*)data;
+	PrefsAccount *ac = NULL;
+	FolderItem *item = mainwin->summaryview->folder_item;	
+        GList * list;
+        GList * cur;
+
+	if (item) {
+		ac = account_find_from_item(item);
+		if (ac && ac->protocol != A_NNTP) {
+			compose_new_with_folderitem(ac, item);		/* CLAWS */
+			return;
+		}
+	}
+
+	/*
+	 * CLAWS - use current account
+	 */
+	if (cur_account && (cur_account->protocol != A_NNTP)) {
+		compose_new_with_folderitem(cur_account, item);
+		return;
+	}
+
+	/*
+	 * CLAWS - just get the first one
+	 */
+	list = account_get_list();
+	for (cur = list ; cur != NULL ; cur = g_list_next(cur)) {
+		ac = (PrefsAccount *) cur->data;
+		if (ac->protocol != A_NNTP) {
+			compose_new_with_folderitem(ac, item);
+			return;
+		}
+	}
+}
+
+void compose_news_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MainWindow *mainwin = (MainWindow*)data;
+	PrefsAccount * ac = NULL;
+	GList * list;
+	GList * cur;
+
+	if (mainwin->summaryview->folder_item) {
+		ac = mainwin->summaryview->folder_item->folder->account;
+		if (ac && ac->protocol == A_NNTP) {
+			compose_new(ac,
+				    mainwin->summaryview->folder_item->path,
+				    NULL);
+			return;
+		}
+	}
+
+	list = account_get_list();
+	for(cur = list ; cur != NULL ; cur = g_list_next(cur)) {
+		ac = (PrefsAccount *) cur->data;
+		if (ac->protocol == A_NNTP) {
+			compose_new(ac, NULL, NULL);
+			return;
+		}
+	}
 }

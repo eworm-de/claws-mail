@@ -3,9 +3,6 @@ SUBDIRS = common gtk
 bin_PROGRAMS = sylpheed
 
 sylpheed_SOURCES = \
-	intl.h \
-	defs.h \
-	version.h \
 	main.c main.h \
 	mainwindow.c mainwindow.h \
 	folderview.c folderview.h \
@@ -24,7 +21,7 @@ sylpheed_SOURCES = \
 	compose.c compose.h \
 	menu.c menu.h \
 	stock_pixmap.c stock_pixmap.h \
-	prefs.c prefs.h \
+	prefs_gtk.c prefs_gtk.h \
 	prefs_common.c prefs_common.h \
 	prefs_account.c prefs_account.h \
 	prefs_folder_item.c prefs_folder_item.h \

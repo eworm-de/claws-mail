@@ -170,7 +170,6 @@ static StockPixmapData pixmaps[] =
 	{outbox_hrm_xpm			, NULL, NULL, "queue_close_hrm", "  "},
 	{outbox_xpm				, NULL, NULL, "queue_open", "  "},
 	{outbox_hrm_xpm			, NULL, NULL, "queue_open_hrm", "  "},
-	{sylpheed_logo_xpm		, NULL, NULL, "sylpheed_logo", "  "},
 	{trash_xpm				, NULL, NULL, "trash_open", "  "},
 	{trash_hrm_xpm			, NULL, NULL, "trash_open_hrm", "  "},
 	{trash_xpm				, NULL, NULL, "trash_close", "  "},
@@ -183,6 +182,7 @@ static StockPixmapData pixmaps[] =
 	{notice_error_xpm			, NULL, NULL, "notice_error",  "  "},
 	{notice_note_xpm			, NULL, NULL, "notice_note",  "  "},
 	{quicksearch_xpm			, NULL, NULL, "quicksearch",  "  "},
+	{sylpheed_logo_xpm			, NULL, NULL, "sylpheed_logo", "  "},
 };
 
 /* return newly constructed GtkPixmap from GdkPixmap */

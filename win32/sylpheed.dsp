@@ -432,7 +432,11 @@ SOURCE=..\src\pop.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\prefs.c
+SOURCE=..\src\common\prefs.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\prefs_gtk.c
 # End Source File
 # Begin Source File
 
@@ -964,7 +968,11 @@ SOURCE=..\src\pop.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\prefs.h
+SOURCE=..\src\common\prefs.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\prefs_gtk.h
 # End Source File
 # Begin Source File
 
