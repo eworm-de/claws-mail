@@ -346,6 +346,8 @@ MsgInfo *mh_fetch_msginfo(Folder *folder, FolderItem *item, gint num)
 		msginfo->mtime = s.st_mtime;
 	}
 
+	g_free(file);
+
 	return msginfo;
 }
 
