@@ -1,3 +1,8 @@
+2002-02-12 [paul]	0.7.0claws65
+
+	* sync with sylpheed 0.7.1cvs1
+		see ChangeLog entry 2002-02-12
+
 2002-02-12 [melvin]	0.7.0claws64
 
 	* src/prefs_actions.c

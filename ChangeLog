@@ -1,3 +1,9 @@
+2002-02-12
+
+	* src/procmsg.c: procmsg_open_message(): modified so that it
+	  returns the stream of decrypted message file if it exists
+	  (this fixes the failure of gpg decryption in messageview.c).
+
 2002-02-11
 
 	* version 0.7.1

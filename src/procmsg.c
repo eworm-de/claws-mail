@@ -707,8 +707,14 @@ FILE *procmsg_open_message(MsgInfo *msginfo)
 
 	g_return_val_if_fail(msginfo != NULL, NULL);
 
-	file = procmsg_get_message_file(msginfo);
+	file = procmsg_get_message_file_path(msginfo);
 	g_return_val_if_fail(file != NULL, NULL);
+
+	if (!is_file_exist(file)) {
+		g_free(file);
+		file = procmsg_get_message_file(msginfo);
+		g_return_val_if_fail(file != NULL, NULL);
+	}
 
 	if ((fp = fopen(file, "r")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");

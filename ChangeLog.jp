@@ -1,3 +1,9 @@
+2002-02-12
+
+	* src/procmsg.c: procmsg_open_message(): デコードされたメッセージ
+	  ファイルが存在すればそのストリームを返すように修正
+	  (messageview.c で gpg 暗号解除に失敗するのを修正)。
+
 2002-02-11
 
 	* version 0.7.1
