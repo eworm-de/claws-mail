@@ -152,10 +152,6 @@ static gint generic_get_one_field(gchar *buf, gint len, void *data,
 		if (nexthead == ' ' || nexthead == '\t') {
 			size_t buflen = strlen(buf);
 			
-			/* discard 1*WSP when one header or unfolding was requested */
-			if (UNFOLD_LINE())
-				getchar_(data);
-				
 			/* concatenate next line */
 			if ((len - buflen) > 2) {
 				if (getline(buf + buflen, len - buflen, data) == NULL)

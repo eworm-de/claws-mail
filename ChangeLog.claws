@@ -1,3 +1,11 @@
+2003-12-17 [christoph]	0.9.7claws49
+
+	* src/procheader.c
+		revert discarding of whitespace from 0.9.7claws44
+
+		RFC2822 2.2.3: Unfolding is accomplished by simply
+		removing any CRLF that is immediately followed by WSP.
+
 2003-12-17 [paul]	0.9.7claws48
 
 	* src/folder.c
