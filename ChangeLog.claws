@@ -1,3 +1,11 @@
+2003-07-10 [christoph]	0.9.0claws94
+
+	* src/folder.c
+		correct check if folder supports removing when a message is
+		moved. if not the message is only copied.
+
+	(closes Bug 132 crash on startup in newsgroups folders)
+
 2003-07-09 [alfons]	0.9.0claws93
 
 	* configure.ac

@@ -1876,12 +1876,15 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 }
 */
 
-
-
+/**
+ * Copy a list of messages to a new folder.
+ *
+ * \param dest Destination folder
+ * \param msglist List of messages
+ */
 gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 {
 	Folder *folder;
-	FolderItem *item;
 	GSList *newmsgnums = NULL;
 	GSList *l, *l2;
 	gint num, lastnum = -1;
@@ -1893,18 +1896,13 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 	folder = dest->folder;
 
 	g_return_val_if_fail(folder->klass->copy_msg != NULL, -1);
-	g_return_val_if_fail(folder->klass->remove_msg != NULL, -1);
 
 	/* 
 	 * Copy messages to destination folder and 
 	 * store new message numbers in newmsgnums
 	 */
-	item = NULL;
 	for (l = msglist ; l != NULL ; l = g_slist_next(l)) {
 		MsgInfo * msginfo = (MsgInfo *) l->data;
-
-		if (!item && msginfo->folder != NULL)
-			item = msginfo->folder;
 
 		num = folder->klass->copy_msg(folder, dest, msginfo);
 		newmsgnums = g_slist_append(newmsgnums, GINT_TO_POINTER(num));
@@ -1964,11 +1962,12 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 	l2 = newmsgnums;
 	for (l = msglist; l != NULL; l = g_slist_next(l)) {
 		MsgInfo *msginfo = (MsgInfo *) l->data;
+		FolderItem *item = msginfo->folder;
 
 		num = GPOINTER_TO_INT(l2->data);
 		l2 = g_slist_next(l2);
 		
-		if (num >= 0) {
+		if ((num >= 0) && (item->folder->klass->remove_msg != NULL)) {
 			item->folder->klass->remove_msg(item->folder,
 					    	        msginfo->folder,
 						        msginfo->msgnum);
