@@ -1,3 +1,13 @@
+2002-12-27 [alfons]	0.8.8claws14
+
+	re-organize matcher part 2; more to come but this should
+	work. cc me if there are any regressions.
+
+	* src/matcher.h
+		add prototype for get_matchparser_tab_id()
+	* src/matcher_parser_lex.l
+		look up keywords using matchparser_tab_id();
+
 2002-12-27 [alfons]	0.8.8claws12
 
 	re-organize matcher part 1

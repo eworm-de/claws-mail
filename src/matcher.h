@@ -124,6 +124,7 @@ enum {
 };
 
 gchar * get_matchparser_tab_str(gint id);
+gint get_matchparser_tab_id(const gchar *str); 
 MatcherProp * matcherprop_new(gint criteria, gchar * header,
 			      gint matchtype, gchar * expr,
 			      int age);
