@@ -1,3 +1,8 @@
+2003-02-03 [alfons]
+
+	* win32/pubobj.c
+		fix: stupid error: we need to increment the number of symbols seen
+
 2004-02-03 [thorsten]	0.9.8claws59-7
 
 	* win32/pubobj.c					*** NEW FILE ***

@@ -168,7 +168,8 @@ int main(int argc, char **argv)
 				fseek(fin, ims.number_of_aux_symbols * IMAGE_SYMBOL_SIZE, 
 				      SEEK_CUR);
 				n += ims.number_of_aux_symbols;
-			}
+			} else
+				n++;
 		}
 		free(string_table);
 		fclose(fin);
