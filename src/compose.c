@@ -428,6 +428,8 @@ static void compose_set_gnupg_mode_cb	(gpointer 	 data,
 static void compose_update_gnupg_mode_menu_item(Compose * compose);
 static void activate_gnupg_mode 	(Compose *compose, 
 					 PrefsAccount *account);
+static void compose_use_signing(Compose *compose, gboolean use_signing);
+static void compose_use_encryption(Compose *compose, gboolean use_encryption);
 #endif
 static void compose_toggle_return_receipt_cb(gpointer data, guint action,
 					     GtkWidget *widget);
@@ -1222,33 +1224,61 @@ void compose_reedit(MsgInfo *msginfo)
 	GtkSText *text;
 	FILE *fp;
 	gchar buf[BUFFSIZE];
+#ifdef USE_GPGME
+	gboolean use_signing = FALSE;
+	gboolean use_encryption = FALSE;
+	gboolean gnupg_mode = FALSE;
+#endif
 
 	g_return_if_fail(msginfo != NULL);
 	g_return_if_fail(msginfo->folder != NULL);
 
         if (msginfo->folder->stype == F_QUEUE || msginfo->folder->stype == F_DRAFT) {
 		gchar queueheader_buf[BUFFSIZE];
-		gint id;
+		gint id, param;
 
 		/* Select Account from queue headers */
 		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
 					     sizeof(queueheader_buf), "X-Sylpheed-Account-Id:")) {
-			id = atoi(&queueheader_buf[22]);
+			id = atoi(&queueheader_buf[strlen("X-Sylpheed-Account-Id:")]);
 			account = account_find_from_id(id);
 		}
 		if (!account && !procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
 					     sizeof(queueheader_buf), "NAID:")) {
-			id = atoi(&queueheader_buf[5]);
+			id = atoi(&queueheader_buf[strlen("NAID:")]);
 			account = account_find_from_id(id);
 		}
 		if (!account && !procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
 		                                    sizeof(queueheader_buf), "MAID:")) {
-			id = atoi(&queueheader_buf[5]);
+			id = atoi(&queueheader_buf[strlen("MAID:")]);
 			account = account_find_from_id(id);
 		}
 		if (!account && !procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
 		                                                sizeof(queueheader_buf), "S:")) {
 			account = account_find_from_address(queueheader_buf);
+		}
+#ifdef USE_GPGME		
+		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
+					     sizeof(queueheader_buf), "X-Sylpheed-Sign:")) {
+			param = atoi(&queueheader_buf[strlen("X-Sylpheed-Sign:")]);
+			use_signing = param;
+			
+		}
+		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
+					     sizeof(queueheader_buf), "X-Sylpheed-Encrypt:")) {
+			param = atoi(&queueheader_buf[strlen("X-Sylpheed-Encrypt:")]);
+			use_encryption = param;
+		}
+		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
+					     sizeof(queueheader_buf), "X-Sylpheed-Gnupg-Mode:")) {
+			param = atoi(&queueheader_buf[strlen("X-Sylpheed-Gnupg-Mode:")]);
+			gnupg_mode = param;
+		}
+#endif		
+		if (!procheader_get_header_from_msginfo(msginfo, queueheader_buf, 
+					     sizeof(queueheader_buf), "X-Priority: ")) {
+			param = atoi(&queueheader_buf[strlen("X-Priority: ")]); /* mind the space */
+			compose->priority = param;
 		}
 	} else 
 		account = msginfo->folder->folder->account;
@@ -1264,6 +1294,11 @@ void compose_reedit(MsgInfo *msginfo)
 	g_return_if_fail(account != NULL);
 
 	compose = compose_create(account, COMPOSE_REEDIT);
+#ifdef USE_GPGME
+	compose->gnupg_mode = gnupg_mode;
+	compose_use_signing(compose, use_signing);
+	compose_use_encryption(compose, use_encryption);
+#endif
 	compose->targetinfo = procmsg_msginfo_copy(msginfo);
 
         if (msginfo->folder->stype == F_QUEUE
@@ -2201,6 +2236,21 @@ static void compose_use_signing(Compose *compose, gboolean use_signing)
 		(ifactory, "/Message/Sign");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), 
 				       use_signing);
+	compose_update_gnupg_mode_menu_item(compose);
+}
+
+static void compose_use_encryption(Compose *compose, gboolean use_encryption)
+{
+	GtkItemFactory *ifactory;
+	GtkWidget *menuitem = NULL;
+
+	compose->use_encryption = use_encryption;
+	ifactory = gtk_item_factory_from_widget(compose->menubar);
+	menuitem = gtk_item_factory_get_item
+		(ifactory, "/Message/Encrypt");
+
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), 
+				       use_encryption);
 	compose_update_gnupg_mode_menu_item(compose);
 }
 #endif /* USE_GPGME */
@@ -3960,6 +4010,12 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	if (newsac) {
 		fprintf(fp, "NAID:%d\n", newsac->account_id);
 	}
+#ifdef USE_GPGME
+	fprintf(fp, "X-Sylpheed-Sign:%d\n", compose->use_signing);
+	fprintf(fp, "X-Sylpheed-Encrypt:%d\n", compose->use_encryption);
+	fprintf(fp, "X-Sylpheed-Gnupg-Mode:%d\n", compose->gnupg_mode);
+#endif
+
 	/* Save copy folder */
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn))) {
 		gchar *savefolderid;
@@ -4229,6 +4285,11 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 			fprintf(fp, "SCF:%s\n", savefolderid);
 			g_free(savefolderid);
 		}
+#ifdef USE_GPGME
+		fprintf(fp, "X-Sylpheed-Sign:%d\n", compose->use_signing);
+		fprintf(fp, "X-Sylpheed-Encrypt:%d\n", compose->use_encryption);
+		fprintf(fp, "X-Sylpheed-Gnupg-Mode:%d\n", compose->gnupg_mode);
+#endif
 		fprintf(fp, "\n");
 	}
 

@@ -1,3 +1,10 @@
+2004-08-21 [colin]	0.9.12cvs72
+
+	* src/compose.c
+		Save Sign, Encrypt and Mode status when drafting or queuing
+		Fixes bug 502 (drafted message does not keep sign / encrypt 
+		state)
+
 2004-08-21 [colin]	0.9.12cvs71
 
 	* src/summaryview.c
