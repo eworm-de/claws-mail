@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=3
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=95
+EXTRA_VERSION=96
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}claws
 else
@@ -484,7 +484,7 @@ if test x"$ac_cv_enable_clamav_plugin" = xyes; then
 
 		PLUGINS="clamav $PLUGINS"
 	else
-		AC_MSG_NOTICE(clamav library not found, will not build clamaw plugin)
+		AC_MSG_NOTICE(clamav library not found, will not build clamav plugin)
 	fi
 fi
 AM_CONDITIONAL(BUILD_CLAMAV_PLUGIN, test x"$ac_cv_enable_clamav_plugin" = xyes)
