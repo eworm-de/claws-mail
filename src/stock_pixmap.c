@@ -117,6 +117,7 @@
 #include "pixmaps/mime_message.xpm"                  
 #include "pixmaps/address_search.xpm"
 #include "pixmaps/check_spelling.xpm"
+#include "pixmaps/dir-noselect.xpm"
 
 typedef struct _StockPixmapData	StockPixmapData;
 
@@ -253,6 +254,7 @@ static StockPixmapData pixmaps[] =
 	{sylpheed_icon_xpm			, NULL, NULL, "sylpheed_icon", NULL},
 	{read_xpm				, NULL, NULL, "read", NULL},
 	{sylpheed_logo_xpm			, NULL, NULL, "sylpheed_logo", NULL},
+        {dir_noselect_xpm                       , NULL, NULL, "dir_noselect" , NULL}
 };
 
 /* return newly constructed GtkPixmap from GdkPixmap */

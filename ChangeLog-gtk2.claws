@@ -1,3 +1,12 @@
+2005-03-31 [colin]	1.9.6cvs16
+
+	* src/Makefile.am
+	* src/foldersel.c
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/pixmaps/dir-noselect.xpm
+		Update foldersel.c (sync from main, patch by Alfons)
+
 2005-03-30 [colin]	1.9.6cvs15
 
 	* src/imap.c

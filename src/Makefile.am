@@ -276,7 +276,8 @@ EXTRA_DIST = \
 	pixmaps/continue.xpm \
 	pixmaps/deleted.xpm \
 	pixmaps/dir_close.xpm \
-	pixmaps/dir_open_hrm.xpm \
+	pixmaps/dir_no_select.xpm \
+        pixmaps/dir_open_hrm.xpm \
 	pixmaps/dir_open.xpm \
 	pixmaps/down_arrow.xpm \
 	pixmaps/drafts_close.xpm \
