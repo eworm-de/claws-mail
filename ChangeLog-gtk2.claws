@@ -1,3 +1,8 @@
+2004-07-26 [paul]	0.9.12cvs33.22
+
+	* src/compose.c
+		fix Bug 556 'Organisation-header is sent even if empty'
+
 2004-07-24 [colin]	0.9.12cvs33.21
 
 	* src/compose.c
