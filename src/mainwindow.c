@@ -67,6 +67,7 @@
 #include "prefs_folder_item.h"
 #include "prefs_summary_column.h"
 #include "prefs_template.h"
+#include "action.h"
 #include "account.h"
 #include "addressbook.h"
 #include "logwindow.h"

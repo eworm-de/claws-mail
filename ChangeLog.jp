@@ -1,3 +1,37 @@
+2003-04-16
+
+	* src/prefs_actions.[ch]: アクション実行ルーチンを action.[ch] に
+	  分離。
+
+2003-04-16
+
+	* src/prefs_actions.c: 少しコードの整理。
+
+2003-04-16
+
+	* src/codeconv.[ch]: conv_iconv_strdup(): EILSEQ の処理を修正。
+
+2003-04-16
+
+	* src/inc.c:
+	  inc_recv_data_progressive()
+	  inc_recv_data_finished()
+	  inc_recv_message()
+	  send_recv_message()
+	  send_send_data_progressive()
+	  send_send_data_finished(): assertion を追加。
+
+2003-04-16
+
+	* src/codeconv.[ch]: conv_iconv_strdup(): 潜在的なメモリ破壊バグを
+	  修正。
+
+2003-04-16
+
+	* src/codeconv.[ch]: conv_iconv_strdup(): 一部のエンコーディング変換
+	  (UTF-7 等)を混乱させていたため、ソースバッファにヌル文字を含めない
+	  ようにした。
+
 2003-04-15
 
 	* src/procmsg.c: procmsg_get_filter_keyword(): ヘッダの改行を除去し、

@@ -50,6 +50,7 @@
 #include "toolbar.h"
 #include "menu.h"
 #include "inc.h"
+#include "action.h"
 #include "prefs_actions.h"
 #include "prefs_common.h"
 #include "prefs_toolbar.h"

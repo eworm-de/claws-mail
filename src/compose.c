@@ -84,7 +84,7 @@
 #include "customheader.h"
 #include "prefs_common.h"
 #include "prefs_account.h"
-#include "prefs_actions.h"
+#include "action.h"
 #include "account.h"
 #include "filesel.h"
 #include "procheader.h"

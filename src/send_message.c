@@ -426,14 +426,12 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 
 static gint send_recv_message(Session *session, const gchar *msg, gpointer data)
 {
-	SMTPSession *smtp_session;
-	SendProgressDialog *dialog; 
 	gchar buf[BUFFSIZE];
-	gchar *state_str;
+	SMTPSession *smtp_session = SMTP_SESSION(session);
+	SendProgressDialog *dialog = (SendProgressDialog *)data;
+	gchar *state_str = NULL;
 
-	dialog = (SendProgressDialog *) data;
-	state_str = NULL;
-	smtp_session = SMTP_SESSION(session);
+	g_return_val_if_fail(dialog != NULL, -1);
 
 	switch (smtp_session->state) {
 	case SMTP_READY:
@@ -485,27 +483,27 @@ static gint send_recv_message(Session *session, const gchar *msg, gpointer data)
 static gint send_send_data_progressive(Session *session, guint cur_len,
 				       guint total_len, gpointer data)
 {
-	SendProgressDialog *dialog = (SendProgressDialog *)data;
 	gchar buf[BUFFSIZE];
+	SendProgressDialog *dialog = (SendProgressDialog *)data;
+
+	g_return_val_if_fail(dialog != NULL, -1);
 
 	g_snprintf(buf, sizeof(buf), _("Sending message (%d / %d bytes)"),
 		   cur_len, total_len);
 	progress_dialog_set_label(dialog->dialog, buf);
 	progress_dialog_set_percentage
 		(dialog->dialog, (gfloat)cur_len / (gfloat)total_len);
+
 	return 0;
 }
 
 static gint send_send_data_finished(Session *session, guint len, gpointer data)
 {
 	SendProgressDialog *dialog = (SendProgressDialog *)data;
-	gchar buf[BUFFSIZE];
-	
-	g_snprintf(buf, sizeof(buf), _("Sending message (%d / %d bytes)"),
-		   len, len);
-	progress_dialog_set_label(dialog->dialog, buf);
-	progress_dialog_set_percentage
-		(dialog->dialog, (gfloat)len / (gfloat)len);
+
+	g_return_val_if_fail(dialog != NULL, -1);
+
+	send_send_data_progressive(session, len, len, dialog);
 	return 0;
 }
 

@@ -764,10 +764,15 @@ static gint inc_recv_data_progressive(Session *session, guint cur_len,
 	gchar buf[MSGBUFSIZE];
 	IncSession *inc_session = (IncSession *)data;
 	Pop3Session *pop3_session = POP3_SESSION(session);
-	IncProgressDialog *inc_dialog = (IncProgressDialog *)inc_session->data;
-	ProgressDialog *dialog = inc_dialog->dialog;
+	IncProgressDialog *inc_dialog;
+	ProgressDialog *dialog;
 	gint cur_total;
 	gchar *total_size;
+
+	g_return_val_if_fail(inc_session != NULL, -1);
+
+	inc_dialog = (IncProgressDialog *)inc_session->data;
+	dialog = inc_dialog->dialog;
 
 	cur_total = pop3_session->cur_total_bytes + cur_len;
 	if (cur_total > pop3_session->total_bytes)
@@ -793,7 +798,11 @@ static gint inc_recv_data_progressive(Session *session, guint cur_len,
 
 static gint inc_recv_data_finished(Session *session, guint len, gpointer data)
 {
-	inc_recv_data_progressive(session, 0, len, data);
+	IncSession *inc_session = (IncSession *)data;
+
+	g_return_val_if_fail(inc_session != NULL, -1);
+
+	inc_recv_data_progressive(session, 0, len, inc_session);
 	return 0;
 }
 
@@ -802,8 +811,13 @@ static gint inc_recv_message(Session *session, const gchar *msg, gpointer data)
 	gchar buf[MSGBUFSIZE];
 	IncSession *inc_session = (IncSession *)data;
 	Pop3Session *pop3_session = POP3_SESSION(session);
-	IncProgressDialog *inc_dialog = (IncProgressDialog *)inc_session->data;
-	ProgressDialog *dialog = inc_dialog->dialog;
+	IncProgressDialog *inc_dialog;
+	ProgressDialog *dialog;
+
+	g_return_val_if_fail(inc_session != NULL, -1);
+
+	inc_dialog = (IncProgressDialog *)inc_session->data;
+	dialog = inc_dialog->dialog;
 
 	switch (pop3_session->state) {
 	case POP3_GREETING:

@@ -1,3 +1,38 @@
+2003-04-16
+
+	* src/prefs_actions.[ch]: separated action execution routine into
+	  action.[ch].
+
+2003-04-16
+
+	* src/prefs_actions.c: minor code cleanup.
+
+2003-04-16
+
+	* src/codeconv.[ch]: conv_iconv_strdup(): fixed the handling of
+	  EILSEQ.
+
+2003-04-16
+
+	* src/inc.c:
+	  inc_recv_data_progressive()
+	  inc_recv_data_finished()
+	  inc_recv_message()
+	  send_recv_message()
+	  send_send_data_progressive()
+	  send_send_data_finished(): added assertion.
+
+2003-04-16
+
+	* src/codeconv.[ch]: conv_iconv_strdup(): fixed potential memory
+	  corruption bug.
+
+2003-04-16
+
+	* src/codeconv.[ch]: conv_iconv_strdup(): don't include nul character
+	  in source buffer since it messed up some encoding conversion (like
+	  UTF-7).
+
 2003-04-15
 
 	* src/procmsg.c: procmsg_get_filter_keyword(): unfold headers and
