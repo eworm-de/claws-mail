@@ -4,9 +4,13 @@ source /tmp/commitTool.tmp
 if [ -z "$EXTRA_GTK2_VERSION" ]; then
 	EXTRA_VERSION=`echo $EXTRA_VERSION | awk -F'.' '{for (i=1;i<NF;i++){printf $i"."};printf $NF+1}'`
 	nextsversion="${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}cvs${EXTRA_VERSION}"
+	nextextra="$EXTRA_VERSION"
+	nextextratype="head"
 else
 	EXTRA_GTK2_VERSION=`echo $EXTRA_GTK2_VERSION | awk -F'.' '{for (i=1;i<NF;i++){printf $i"."};printf $NF+1}'`
 	nextsversion="${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}cvs${EXTRA_VERSION}${EXTRA_GTK2_VERSION}"
+	nextextra="$EXTRA_GTK2_VERSION"
+	nextextratype="gtk2"
 fi
 rm /tmp/commitTool.tmp
 
@@ -64,19 +68,28 @@ elif [ -f ChangeLog.claws ]; then
 else
 	chlog="ChangeLog"
 fi
-echo -n "Is it ok (write to $chlog) [y/N]?"
+echo -n "Is it ok (write to $chlog and update configure.ac) [y/N]?"
 read ans
 if [ "$ans" == "y" ]; then
 	mv $chlog $chlog.old
 	echo -e -n $log > $chlog
 	cat $chlog.old >> $chlog
 	rm $chlog.old
+
+	if [ "$nextextratype" == "head" ]; then
+		cat configure.ac | sed "s/^EXTRA_VERSION=.*/EXTRA_VERSION=$nextextra/" > configure.ac.new \
+		&& mv configure.ac.new configure.ac ;
+	else
+		cat configure.ac | sed "s/^EXTRA_GTK2_VERSION=.*/EXTRA_GTK2_VERSION=$nextextra/" > configure.ac.new \
+		&& mv configure.ac.new configure.ac ;
+	fi;
+	
 	echo "$patchset" >> PATCHSETS
-	echo "editing $chlog configure.ac..."
+	echo "editing $chlog ..."
 	if [ "$EDITOR" == "" ]; then
 		EDITOR=vi
 	fi;
-	$EDITOR $chlog configure.ac
+	$EDITOR $chlog 
 	if [ "$@" != "" ]; then
 		echo running cvs commit $@ PATCHSETS $chlog configure.ac
 		cvs commit $@ PATCHSETS $chlog configure.ac
