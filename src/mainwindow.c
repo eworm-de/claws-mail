@@ -136,9 +136,6 @@ static void message_window_size_allocate_cb	(GtkWidget	*widget,
 static void new_folder_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
-static void add_mbox_cb 	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
 static void rename_folder_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -425,7 +422,6 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, update_folderview_cb, 0, NULL},
 	{N_("/_File/_Add mailbox"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Add mailbox/MH..."),	NULL, add_mailbox_cb, 0, NULL},
-	{N_("/_File/_Add mailbox/mbox..."),     NULL, add_mbox_cb, 0, NULL},
 	{N_("/_File/_Import mbox file..."),	NULL, import_mbox_cb, 0, NULL},
 	{N_("/_File/_Export to mbox file..."),	NULL, export_mbox_cb, 0, NULL},
 	{N_("/_File/Empty _trash"),		"<shift>D", empty_trash_cb, 0, NULL},
@@ -1483,38 +1479,6 @@ void main_window_add_mailbox(MainWindow *mainwin)
 	folderview_set(mainwin->folderview);
 }
 
-void main_window_add_mbox(MainWindow *mainwin)
-{
-	gchar *path;
-	Folder *folder;
-
-	path = input_dialog(_("Add mbox mailbox"),
-			    _("Input the location of mailbox."),
-			    "mail");
-
-	if (!path) return;
-
-	if (folder_find_from_path(path)) {
-		alertpanel_error(_("The mailbox `%s' already exists."), path);
-		g_free(path);
-		return;
-	}
-
-	folder = folder_new(folder_get_class_from_string("mbox"), 
-			    g_basename(path), path);
-	g_free(path);
-
-	if (folder->klass->create_tree(folder) < 0) {
-		alertpanel_error(_("Creation of the mailbox failed."));
-		folder_destroy(folder);
-		return;
-	}
-
-	folder_add(folder);
-
-	folderview_set(mainwin->folderview);
-}
-
 SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 {
 	SensitiveCond state = 0;
@@ -2157,12 +2121,6 @@ static void add_mailbox_cb(MainWindow *mainwin, guint action,
 			   GtkWidget *widget)
 {
 	main_window_add_mailbox(mainwin);
-}
-
-static void add_mbox_cb(MainWindow *mainwin, guint action,
-			GtkWidget *widget)
-{
-	main_window_add_mbox(mainwin);
 }
 
 static void update_folderview_cb(MainWindow *mainwin, guint action,

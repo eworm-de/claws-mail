@@ -18,8 +18,6 @@ sylpheed_SOURCES = \
 	addrquery.c \
 	addrselect.c \
 	alertpanel.c \
-	carray.c \
-	chash.c \
 	codeconv.c \
 	compose.c \
 	crash.c \
@@ -59,7 +57,6 @@ sylpheed_SOURCES = \
 	ldapserver.c \
 	ldaputil.c \
 	ldif.c \
-	maillock.c \
 	main.c \
 	mainwindow.c \
 	manual.c \
@@ -67,10 +64,6 @@ sylpheed_SOURCES = \
 	matcher_parser_lex.l \
 	matcher_parser_parse.y \
 	mbox.c \
-	mailmbox_folder.c \
-	mailmbox.c \
-	mailmbox_parse.c \
-	mailmbox_types.c \
 	message_search.c \
 	messageview.c \
 	mh.c \
@@ -147,8 +140,6 @@ sylpheedinclude_HEADERS = \
 	addrquery.h \
 	addrselect.h \
 	alertpanel.h \
-	carray.h \
-	chash.h \
 	codeconv.h \
 	compose.h \
 	crash.h \
@@ -188,7 +179,6 @@ sylpheedinclude_HEADERS = \
 	ldapserver.h \
 	ldaputil.h \
 	ldif.h \
-	maillock.h \
 	main.h \
 	mainwindow.h \
 	manual.h \
@@ -197,10 +187,6 @@ sylpheedinclude_HEADERS = \
 	matcher_parser_lex.h \
 	matcher_parser_parse.h \
 	mbox.h \
-	mailmbox_folder.h \
-	mailmbox.h \
-	mailmbox_parse.h \
-	mailmbox_types.h \
 	message_search.h \
 	messageview.h \
 	mh.h \
