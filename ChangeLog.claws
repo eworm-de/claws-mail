@@ -1,3 +1,9 @@
+2001-12-25 [alfons]	0.6.6claws20
+	
+	* src/summaryview.c
+		catch a *potentially* inadvertent write back of  
+		the message cache(s) introduced by 0.6.5claws37
+
 2001-12-25 [christoph]	0.6.6claws19
 
 	* src/stock_pixmap.[ch]

@@ -704,9 +704,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 			return FALSE;
 		}
    		folder_update_op_count();
-	}
-        
-	summary_write_cache(summaryview);
+	} else
+		summary_write_cache(summaryview);
         
 	summaryview->folderview->opened = selected_node;
 
