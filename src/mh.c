@@ -229,8 +229,8 @@ gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 		    dest->stype == F_QUEUE  ||
 		    dest->stype == F_DRAFT  ||
 		    dest->stype == F_TRASH)
-			MSG_UNSET_FLAGS(newmsginfo.flags,
-					MSG_NEW|MSG_UNREAD|MSG_DELETED);
+			MSG_UNSET_PERM_FLAGS(newmsginfo.flags,
+					     MSG_NEW|MSG_UNREAD|MSG_DELETED);
 
 		procmsg_write_flags(&newmsginfo, fp);
 		fclose(fp);
@@ -294,8 +294,9 @@ gint mh_move_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 			    dest->stype == F_QUEUE  ||
 			    dest->stype == F_DRAFT  ||
 			    dest->stype == F_TRASH)
-				MSG_UNSET_FLAGS(newmsginfo.flags,
-						MSG_NEW|MSG_UNREAD|MSG_DELETED);
+				MSG_UNSET_PERM_FLAGS
+					(newmsginfo.flags,
+					 MSG_NEW|MSG_UNREAD|MSG_DELETED);
 
 			procmsg_write_flags(&newmsginfo, fp);
 		}
@@ -371,8 +372,8 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 		    dest->stype == F_QUEUE  ||
 		    dest->stype == F_DRAFT  ||
 		    dest->stype == F_TRASH)
-			MSG_UNSET_FLAGS(newmsginfo.flags,
-					MSG_NEW|MSG_UNREAD|MSG_DELETED);
+			MSG_UNSET_PERM_FLAGS(newmsginfo.flags,
+					     MSG_NEW|MSG_UNREAD|MSG_DELETED);
 		procmsg_write_flags(&newmsginfo, fp);
 		fclose(fp);
 	}
@@ -491,8 +492,9 @@ gint mh_copy_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 			    dest->stype == F_QUEUE  ||
 			    dest->stype == F_DRAFT  ||
 			    dest->stype == F_TRASH)
-				MSG_UNSET_FLAGS(newmsginfo.flags,
-						MSG_NEW|MSG_UNREAD|MSG_DELETED);
+				MSG_UNSET_PERM_FLAGS
+					(newmsginfo.flags,
+					 MSG_NEW|MSG_UNREAD|MSG_DELETED);
 			procmsg_write_flags(&newmsginfo, fp);
 		}
 	}
@@ -883,15 +885,18 @@ static MsgInfo *mh_parse_msg(const gchar *file, FolderItem *item)
 {
 	struct stat s;
 	MsgInfo *msginfo;
-	MsgFlags flags = MSG_NEW|MSG_UNREAD;
+	MsgFlags flags;
+
+	flags.perm_flags = MSG_NEW|MSG_UNREAD;
+	flags.tmp_flags = 0;
 
 	g_return_val_if_fail(item != NULL, NULL);
 	g_return_val_if_fail(file != NULL, NULL);
 
 	if (item->stype == F_QUEUE) {
-		MSG_SET_FLAGS(flags, MSG_QUEUED);
+		MSG_SET_TMP_FLAGS(flags, MSG_QUEUED);
 	} else if (item->stype == F_DRAFT) {
-		MSG_SET_FLAGS(flags, MSG_DRAFT);
+		MSG_SET_TMP_FLAGS(flags, MSG_DRAFT);
 	}
 
 	msginfo = procheader_parse(file, flags, FALSE);

@@ -613,10 +613,12 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 	src_folder = msginfo->folder->folder;
 
 	num = folder->copy_msg(folder, dest, msginfo);
-	if (num != -1)
+
+	if (num != -1) {
 		src_folder->remove_msg(src_folder,
 				       msginfo->folder,
 				       msginfo->msgnum);
+	}				       
 	
 	if (folder->finished_copy)
 		folder->finished_copy(folder, dest);

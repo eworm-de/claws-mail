@@ -420,7 +420,6 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		info->flags = 0;
 		filteringaction_update_mark(info);
 		 */
-		
 		if (folder_table) {
 			val = GPOINTER_TO_INT(g_hash_table_lookup
 					      (folder_table, dest_folder));
@@ -437,7 +436,6 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 						    GINT_TO_POINTER(1));
 			}
 		}
-
 		return TRUE;
 
 	case MATCHING_ACTION_COPY:
@@ -480,7 +478,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		return TRUE;
 
 	case MATCHING_ACTION_MARK:
-		MSG_SET_FLAGS(info->flags, MSG_MARKED);
+		MSG_SET_PERM_FLAGS(info->flags, MSG_MARKED);
 		filteringaction_update_mark(info);
 
 		CHANGE_FLAGS(info);
@@ -488,7 +486,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		return TRUE;
 
 	case MATCHING_ACTION_UNMARK:
-		MSG_UNSET_FLAGS(info->flags, MSG_MARKED);
+		MSG_UNSET_PERM_FLAGS(info->flags, MSG_MARKED);
 		filteringaction_update_mark(info);
 
 		CHANGE_FLAGS(info);
@@ -496,7 +494,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		return TRUE;
 		
 	case MATCHING_ACTION_MARK_AS_READ:
-		MSG_UNSET_FLAGS(info->flags, MSG_UNREAD | MSG_NEW);
+		MSG_UNSET_PERM_FLAGS(info->flags, MSG_UNREAD | MSG_NEW);
 		filteringaction_update_mark(info);
 
 		CHANGE_FLAGS(info);
@@ -504,7 +502,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		return TRUE;
 
 	case MATCHING_ACTION_MARK_AS_UNREAD:
-		MSG_SET_FLAGS(info->flags, MSG_UNREAD | MSG_NEW);
+		MSG_SET_PERM_FLAGS(info->flags, MSG_UNREAD | MSG_NEW);
 		filteringaction_update_mark(info);
 
 		CHANGE_FLAGS(info);
@@ -669,6 +667,7 @@ void filter_message(GSList * filtering_list, FolderItem * item,
 {
 	MsgInfo * msginfo;
 	gchar * filename;
+	MsgFlags  msgflags = { 0, 0 };
 
 	if (item == NULL) {
 		g_warning(_("folderitem not set"));
@@ -682,8 +681,8 @@ void filter_message(GSList * filtering_list, FolderItem * item,
 		return;
 	}
 
-	msginfo = procheader_parse(filename, 0, TRUE);
-
+	msginfo = procheader_parse(filename, msgflags, TRUE);
+	
 	g_free(filename);
 
 	if (msginfo == NULL) {

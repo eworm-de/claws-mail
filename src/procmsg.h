@@ -27,78 +27,104 @@
 #include <string.h>
 
 typedef struct _MsgInfo		MsgInfo;
+typedef struct _MsgFlags	MsgFlags;
 
 #include "folder.h"
 
 typedef enum
 {
-	/* permanent flags (0x0000ffff) */
 	MSG_NEW		= 1 << 0,
 	MSG_UNREAD	= 1 << 1,
 	MSG_MARKED	= 1 << 2,
 	MSG_DELETED	= 1 << 3,
 	MSG_REPLIED	= 1 << 4,
 	MSG_FORWARDED	= 1 << 5,
-	MSG_REALLY_DELETED = 1 << 6,
+	
+	MSG_REALLY_DELETED = 1 << 6,		/* mbox stuff */
 
-	MSG_LABEL         = 1 << 9 | 1 << 8 | 1 << 7,
-	MSG_LABEL_NONE    = 0 << 9 | 0 << 8 | 0 << 7,
-	MSG_LABEL_ORANGE  = 0 << 9 | 0 << 8 | 1 << 7,
-	MSG_LABEL_RED     = 0 << 9 | 1 << 8 | 0 << 7,
-	MSG_LABEL_PINK    = 0 << 9 | 1 << 8 | 1 << 7,
-	MSG_LABEL_SKYBLUE = 1 << 9 | 0 << 8 | 0 << 7,
-	MSG_LABEL_BLUE    = 1 << 9 | 0 << 8 | 1 << 7,
-	MSG_LABEL_GREEN   = 1 << 9 | 1 << 8 | 0 << 7,
-	MSG_LABEL_BROWN   = 1 << 9 | 1 << 8 | 1 << 7,
+#define MSG_LABEL_SBIT (7)		/* start bit message label */
+#define MAKE_MSG_LABEL(h, m, l) ((h) << (MSG_LABEL_SBIT+2)) | \
+				((m) << (MSG_LABEL_SBIT+1)) | \
+				((l) << (MSG_LABEL_SBIT+0))
+				
+	MSG_LABEL	= MAKE_MSG_LABEL(1, 1, 1),
+	MSG_LABEL_NONE  = MAKE_MSG_LABEL(0, 0, 0),
+	MSG_LABEL_1	= MAKE_MSG_LABEL(0, 0, 1),
+	MSG_LABEL_2	= MAKE_MSG_LABEL(0, 1, 0),
+	MSG_LABEL_3	= MAKE_MSG_LABEL(0, 1, 1),
+	MSG_LABEL_4	= MAKE_MSG_LABEL(1, 0, 0),
+	MSG_LABEL_5	= MAKE_MSG_LABEL(1, 0, 1),
+	MSG_LABEL_6	= MAKE_MSG_LABEL(1, 1, 0),
+	MSG_LABEL_7	= MAKE_MSG_LABEL(1, 1, 1),
 
-	MSG_IGNORE_THREAD = 1 << 10,
+#define MSG_LABEL_ORANGE   (MSG_LABEL_1)
+#define MSG_LABEL_RED      (MSG_LABEL_2)
+#define MSG_LABEL_PINK     (MSG_LABEL_3)
+#define MSG_LABEL_SKYBLUE  (MSG_LABEL_4)
+#define MSG_LABEL_BLUE     (MSG_LABEL_5)
+#define MSG_LABEL_GREEN    (MSG_LABEL_6)
+#define MSG_LABEL_BROWN    (MSG_LABEL_7)
 
-	/* temporary flags (0xffff0000) */
-	MSG_MOVE	= 1 << 16,
-	MSG_COPY	= 1 << 17,
+	MSG_IGNORE_THREAD   = 1 << 10,   /* ignore threads */
 
-	MSG_QUEUED	= 1 << 25,
-	MSG_DRAFT	= 1 << 26,
-	MSG_ENCRYPTED   = 1 << 27,
-	MSG_IMAP	= 1 << 28,
+	/* RESERVED */
+	MSG_RESERVED_CLAWS  = 1 << 30,	/* for sylpheed-claws */
+	MSG_RESERVED_MAIN   = 1 << 31	/* for sylpheed-main  */
+} MsgPermFlags;
+
+typedef enum
+{
+	MSG_MOVE	= 1 << 0,
+	MSG_COPY	= 1 << 1,
+	
+	MSG_QUEUED	= 1 << 16,
+	MSG_DRAFT	= 1 << 17,
+	MSG_ENCRYPTED   = 1 << 18,
+	MSG_IMAP	= 1 << 19,
+	MSG_NEWS	= 1 << 20,
+
 	MSG_MIME	= 1 << 29,
-	MSG_NEWS	= 1 << 30,
 	MSG_CACHED	= 1 << 31
-} MsgFlags;
+} MsgTmpFlags;
 
-#define MSG_PERMANENT_FLAG_MASK		(MSG_NEW       | \
-					 MSG_UNREAD    | \
-					 MSG_MARKED    | \
-					 MSG_DELETED   | \
-					 MSG_REPLIED   | \
-					 MSG_FORWARDED | \
-                                         MSG_REALLY_DELETED | \
-                                         MSG_LABEL     | \
-					 MSG_IGNORE_THREAD)
 #define MSG_CACHED_FLAG_MASK		(MSG_MIME)
 
 #define MSG_SET_FLAGS(msg, flags)	{ (msg) |= (flags); }
 #define MSG_UNSET_FLAGS(msg, flags)	{ (msg) &= ~(flags); }
-#define MSG_IS_NEW(msg)			((msg & MSG_NEW) != 0)
-#define MSG_IS_UNREAD(msg)		((msg & MSG_UNREAD) != 0)
-#define MSG_IS_MARKED(msg)		((msg & MSG_MARKED) != 0)
-#define MSG_IS_DELETED(msg)		((msg & MSG_DELETED) != 0)
-#define MSG_IS_REPLIED(msg)		((msg & MSG_REPLIED) != 0)
-#define MSG_IS_FORWARDED(msg)		((msg & MSG_FORWARDED) != 0)
+#define MSG_SET_PERM_FLAGS(msg, flags) \
+	MSG_SET_FLAGS((msg).perm_flags, flags)
+#define MSG_SET_TMP_FLAGS(msg, flags) \
+	MSG_SET_FLAGS((msg).tmp_flags, flags)
+#define MSG_UNSET_PERM_FLAGS(msg, flags) \
+	MSG_UNSET_FLAGS((msg).perm_flags, flags)
+#define MSG_UNSET_TMP_FLAGS(msg, flags) \
+	MSG_UNSET_FLAGS((msg).tmp_flags, flags)
 
-#define MSG_IS_MOVE(msg)		((msg & MSG_MOVE) != 0)
-#define MSG_IS_COPY(msg)		((msg & MSG_COPY) != 0)
-#define MSG_IS_REALLY_DELETED(msg)	((msg & MSG_REALLY_DELETED) != 0)
+#define MSG_IS_NEW(msg)			(((msg).perm_flags & MSG_NEW) != 0)
+#define MSG_IS_UNREAD(msg)		(((msg).perm_flags & MSG_UNREAD) != 0)
+#define MSG_IS_MARKED(msg)		(((msg).perm_flags & MSG_MARKED) != 0)
+#define MSG_IS_DELETED(msg)		(((msg).perm_flags & MSG_DELETED) != 0)
+#define MSG_IS_REPLIED(msg)		(((msg).perm_flags & MSG_REPLIED) != 0)
+#define MSG_IS_FORWARDED(msg)		(((msg).perm_flags & MSG_FORWARDED) != 0)
 
-#define MSG_IS_QUEUED(msg)		((msg & MSG_QUEUED) != 0)
-#define MSG_IS_DRAFT(msg)		((msg & MSG_DRAFT) != 0)
-#define MSG_IS_ENCRYPTED(msg)		((msg & MSG_ENCRYPTED) != 0)
-#define MSG_IS_IMAP(msg)		((msg & MSG_IMAP) != 0)
-#define MSG_IS_MIME(msg)		((msg & MSG_MIME) != 0)
-#define MSG_IS_NEWS(msg)		((msg & MSG_NEWS) != 0)
-#define MSG_IS_CACHED(msg)		((msg & MSG_CACHED) != 0)
-#define MSG_GET_LABEL(msg)		(msg & MSG_LABEL)
-#define MSG_IS_IGNORE_THREAD(msg)	((msg & MSG_IGNORE_THREAD) != 0)
+#define MSG_IS_MOVE(msg)		(((msg).tmp_flags & MSG_MOVE) != 0)
+#define MSG_IS_COPY(msg)		(((msg).tmp_flags & MSG_COPY) != 0)
+
+#define MSG_IS_QUEUED(msg)		(((msg).tmp_flags & MSG_QUEUED) != 0)
+#define MSG_IS_DRAFT(msg)		(((msg).tmp_flags & MSG_DRAFT) != 0)
+#define MSG_IS_ENCRYPTED(msg)		(((msg).tmp_flags & MSG_ENCRYPTED) != 0)
+#define MSG_IS_IMAP(msg)		(((msg).tmp_flags & MSG_IMAP) != 0)
+#define MSG_IS_NEWS(msg)		(((msg).tmp_flags & MSG_NEWS) != 0)
+#define MSG_IS_MIME(msg)		(((msg).tmp_flags & MSG_MIME) != 0)
+#define MSG_IS_CACHED(msg)		(((msg).tmp_flags & MSG_CACHED) != 0)
+
+/* Claws related flags */
+#define MSG_IS_REALLY_DELETED(msg)	(((msg).perm_flags & MSG_REALLY_DELETED) != 0)
+#define MSG_IS_IGNORE_THREAD(msg)	(((msg).perm_flags & MSG_IGNORE_THREAD) != 0)
+#define MSG_GET_LABEL(msg)		(((msg).perm_flags & MSG_LABEL))
+#define MSG_GET_LABEL_VALUE(msg)	(MSG_GET_LABEL(msg) >> MSG_LABEL_SBIT)
+/* 7 == nr. of colors excl. none */
+#define MSG_SET_LABEL_VALUE(msg, val)	MSG_SET_PERM_FLAGS(msg, ((((int)(val)) & 7) << MSG_LABEL_SBIT))
 
 #define WRITE_CACHE_DATA_INT(n, fp) \
 	fwrite(&n, sizeof(n), 1, fp)
@@ -117,12 +143,19 @@ typedef enum
 	} \
 }
 
+struct _MsgFlags
+{
+	MsgPermFlags perm_flags;
+	MsgTmpFlags  tmp_flags;
+};
+
 struct _MsgInfo
 {
 	guint  msgnum;
 	off_t  size;
 	time_t mtime;
 	time_t date_t;
+
 	MsgFlags flags;
 
 	gchar *fromname;

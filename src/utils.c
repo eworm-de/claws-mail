@@ -81,6 +81,17 @@ void hash_free_strings(GHashTable *table)
 	g_hash_table_foreach(table, hash_free_strings_func, NULL);
 }
 
+static void hash_free_value_mem_func(gpointer key, gpointer value,
+				     gpointer data)
+{
+	g_free(value);
+}
+
+void hash_free_value_mem(GHashTable *table)
+{
+	g_hash_table_foreach(table, hash_free_value_mem_func, NULL);
+}
+
 void ptr_array_free_strings(GPtrArray *array)
 {
 	gint i;
@@ -2067,4 +2078,9 @@ void log_error(const gchar *format, ...)
 
 	g_warning("%s", buf);
 	log_window_append(buf, LOG_ERROR);
+	if (log_fp) {
+		fputs("*** error: ", log_fp);
+		fputs(buf, log_fp);
+		fflush(log_fp);
+	}
 }

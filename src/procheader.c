@@ -508,7 +508,12 @@ MsgInfo *procheader_file_parse(FILE * fp, MsgFlags flags,
 	}
 
 	msginfo = g_new0(MsgInfo, 1);
-	msginfo->flags = flags != 0 ? flags : MSG_NEW|MSG_UNREAD;
+	
+	if (flags.tmp_flags || flags.perm_flags) 
+		msginfo->flags = flags;
+	else 
+		MSG_SET_PERM_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
+	
 	msginfo->inreplyto = NULL;
 
 	while ((hnum = procheader_get_one_field(buf, sizeof(buf), fp, hentry))
@@ -595,11 +600,11 @@ MsgInfo *procheader_file_parse(FILE * fp, MsgFlags flags,
 			break;
 		case H_CONTENT_TYPE:
 			if (!strncasecmp(hp, "multipart", 9))
-				msginfo->flags |= MSG_MIME;
+				MSG_SET_TMP_FLAGS(msginfo->flags, MSG_MIME);
 			break;
 		case H_SEEN:
 			/* mnews Seen header */
-			MSG_UNSET_FLAGS(msginfo->flags, MSG_NEW|MSG_UNREAD);
+			MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_NEW|MSG_UNREAD);
 			break;
 		case H_X_FACE:
 			if (msginfo->xface) break;
@@ -615,24 +620,24 @@ MsgInfo *procheader_file_parse(FILE * fp, MsgFlags flags,
 			break;
 		case H_STATUS:
 			if (strchr(hp, 'R') != NULL)
-				MSG_UNSET_FLAGS(msginfo->flags, MSG_UNREAD);
+				MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_UNREAD);
 			if (strchr(hp, 'O') != NULL)
-				MSG_UNSET_FLAGS(msginfo->flags, MSG_NEW);
+				MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_NEW);
 			if (strchr(hp, 'U') != NULL)
-				MSG_SET_FLAGS(msginfo->flags, MSG_UNREAD);
+				MSG_SET_PERM_FLAGS(msginfo->flags, MSG_UNREAD);
 			break;
 		case H_X_STATUS:
 			if (strchr(hp, 'D') != NULL)
-				MSG_SET_FLAGS(msginfo->flags,
+				MSG_SET_PERM_FLAGS(msginfo->flags,
 					      MSG_REALLY_DELETED);
 			if (strchr(hp, 'F') != NULL)
-				MSG_SET_FLAGS(msginfo->flags, MSG_MARKED);
+				MSG_SET_PERM_FLAGS(msginfo->flags, MSG_MARKED);
 			if (strchr(hp, 'd') != NULL)
-				MSG_SET_FLAGS(msginfo->flags, MSG_DELETED);
+				MSG_SET_PERM_FLAGS(msginfo->flags, MSG_DELETED);
 			if (strchr(hp, 'r') != NULL)
-				MSG_SET_FLAGS(msginfo->flags, MSG_REPLIED);
+				MSG_SET_PERM_FLAGS(msginfo->flags, MSG_REPLIED);
 			if (strchr(hp, 'f') != NULL)
-				MSG_SET_FLAGS(msginfo->flags, MSG_FORWARDED);
+				MSG_SET_PERM_FLAGS(msginfo->flags, MSG_FORWARDED);
 			break;
 		case H_FROM_SPACE:
 			if (msginfo->fromspace) break;

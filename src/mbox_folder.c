@@ -1,3 +1,22 @@
+/*
+ * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto & The Sylpheed Claws Team
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
 #include <unistd.h>
 #include <fcntl.h>
 #include <glib.h>
@@ -301,6 +320,11 @@ struct _message
 	gboolean fetched;
 };
 
+#define MSG_IS_INVALID(msg) \
+	((msg).perm_flags == (msg).tmp_flags && (msg).tmp_flags == -1)
+
+#define MSG_SET_INVALID(msg) \
+	((msg).perm_flags = (msg).tmp_flags = -1)
 
 static int startFrom(char * s)
 {
@@ -381,8 +405,8 @@ static mailfile * mailfile_init_from_file(FILE * f, gchar * filename)
 				data->content = 0;
 				data->messageid = NULL;
 				data->fromspace = NULL;
-				data->flags = -1;
-				data->old_flags = -1;
+				MSG_SET_INVALID(data->flags);
+				MSG_SET_INVALID(data->old_flags);
 				data->fetched = FALSE;
 				msg_list = g_list_append(msg_list,
 							 (gpointer) data);
@@ -655,15 +679,17 @@ static MsgInfo *mbox_parse_msg(FILE * fp, struct _message * msg,
 			       FolderItem *item)
 {
 	MsgInfo *msginfo;
-	MsgFlags flags = MSG_NEW|MSG_UNREAD;
+	MsgFlags flags = { 0, 0 };
+
+	MSG_SET_PERM_FLAGS(flags, MSG_NEW | MSG_UNREAD);
 
 	g_return_val_if_fail(fp != NULL, NULL);
 
 	if (item != NULL) {
 		if (item->stype == F_QUEUE) {
-			MSG_SET_FLAGS(flags, MSG_QUEUED);
+			MSG_SET_TMP_FLAGS(flags, MSG_QUEUED);
 		} else if (item->stype == F_DRAFT) {
-			MSG_SET_FLAGS(flags, MSG_DRAFT);
+			MSG_SET_TMP_FLAGS(flags, MSG_DRAFT);
 		}
 	}
 
@@ -880,9 +906,7 @@ static void mbox_cache_synchronize_lists(GList * old_msg_list,
 
 			if ((strcmp(msg->messageid, msg2->messageid) == 0) &&
 			    (strcmp(msg->fromspace, msg2->fromspace) == 0)) {
-				if ((msg2->flags & MSG_PERMANENT_FLAG_MASK) !=
-				    (msg2->old_flags &
-				     MSG_PERMANENT_FLAG_MASK)) {
+				if (msg2->flags.perm_flags != msg2->old_flags.perm_flags) {
 					msg->flags = msg2->flags;
 					break;
 				}
@@ -1140,12 +1164,12 @@ GSList *mbox_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 
 		msg = (struct _message *) l->data;
 
-		if (msg->flags == -1 || !MSG_IS_REALLY_DELETED(msg->flags)) {
+		if (MSG_IS_INVALID(msg->flags) || !MSG_IS_REALLY_DELETED(msg->flags)) {
 			fseek(fp, msg->header, SEEK_SET);
 
 			msginfo = mbox_parse_msg(fp, msg, item);
 
-			if (msg->flags != -1)
+			if (!MSG_IS_INVALID(msg->flags))
 				msginfo->flags = msg->flags;
 			else {
 				msg->old_flags = msginfo->flags;
@@ -1155,7 +1179,7 @@ GSList *mbox_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 			mlist = g_slist_append(mlist, msginfo);
 		}
 		else {
-			msg->flags = MSG_REALLY_DELETED;
+			MSG_SET_PERM_FLAGS(msg->flags, MSG_REALLY_DELETED);
 		}
 	}
 
@@ -1446,7 +1470,7 @@ gint mbox_remove_msg(Folder *folder, FolderItem *item, gint num)
 	g_free(mbox_path);
 	
 	if (msg != NULL)
-		MSG_SET_FLAGS(msg->flags, MSG_REALLY_DELETED);
+		MSG_SET_PERM_FLAGS(msg->flags, MSG_REALLY_DELETED);
 
 	return 0;
 }
@@ -1803,7 +1827,7 @@ static gboolean mbox_write_message(FILE * mbox_fp, FILE * new_fp,
 
 	g_ptr_array_free(headers, FALSE);
 
-	if (msg->flags != -1) {
+	if (!MSG_IS_INVALID(msg->flags)) {
 		/* Status header */
 		fwrite("Status: ", strlen("Status: "), 1, new_fp);
 		if (!MSG_IS_UNREAD(msg->flags))
@@ -1812,9 +1836,11 @@ static gboolean mbox_write_message(FILE * mbox_fp, FILE * new_fp,
 		fwrite("\n", 1, 1, new_fp);
 		
 		/* X-Status header */
-		if (msg->flags & 
-		    (MSG_REALLY_DELETED | MSG_MARKED | MSG_DELETED
-		     | MSG_REPLIED | MSG_FORWARDED)) {
+		if (MSG_IS_REALLY_DELETED(msg->flags)
+		||  MSG_IS_MARKED(msg->flags)
+		||  MSG_IS_DELETED(msg->flags)
+		||  MSG_IS_REPLIED(msg->flags)
+		||  MSG_IS_FORWARDED(msg->flags)) {
 			fwrite("X-Status: ", strlen("X-Status: "), 1, new_fp);
 			if (MSG_IS_REALLY_DELETED(msg->flags))
 				fwrite("D", 1, 1, new_fp); /* really deleted */
@@ -1982,7 +2008,7 @@ static gboolean mbox_purge_deleted(gchar * mbox)
 
 	for(l = msg_list ; l != NULL ; l = g_list_next(l)) {
 		struct _message * msg = (struct _message *) l->data;
-		if (msg->flags != -1 && MSG_IS_REALLY_DELETED(msg->flags)) {
+		if (MSG_IS_INVALID(msg->flags) && MSG_IS_REALLY_DELETED(msg->flags)) {
 			modification = TRUE;
 			break;
 		}
@@ -2016,7 +2042,7 @@ static gboolean mbox_purge_deleted(gchar * mbox)
 	msg_list = mbox_cache_get_msg_list(mbox);
 	for(l = msg_list ; l != NULL ; l = g_list_next(l)) {
 		struct _message * msg = (struct _message *) l->data;
-		if (msg->flags == -1 || !MSG_IS_REALLY_DELETED(msg->flags)) {
+		if (MSG_IS_INVALID(msg->flags) || !MSG_IS_REALLY_DELETED(msg->flags)) {
 			if (!mbox_write_message(mbox_fp, new_fp, new, msg)) {
 				result = FALSE;
 				break;

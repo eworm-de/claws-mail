@@ -263,7 +263,7 @@ static gint disposition_notification_queue(PrefsAccount * account,
 		MsgInfo newmsginfo;
 
 		newmsginfo.msgnum = num;
-		newmsginfo.flags = 0;
+		newmsginfo.flags.perm_flags = newmsginfo.flags.tmp_flags = 0;
 		procmsg_write_flags(&newmsginfo, fp);
 		fclose(fp);
 	}
@@ -377,7 +377,7 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo)
 
 		if (!MSG_IS_ENCRYPTED(msginfo->flags) &&
 		    rfc2015_is_encrypted(mimeinfo)) {
-			MSG_SET_FLAGS(msginfo->flags, MSG_ENCRYPTED);
+			MSG_SET_TMP_FLAGS(msginfo->flags, MSG_ENCRYPTED);
 		}
 		if (MSG_IS_ENCRYPTED(msginfo->flags) &&
 		    !msginfo->plaintext_file  &&

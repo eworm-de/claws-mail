@@ -1,3 +1,23 @@
+2001-07-17
+
+	* src/procmsg.[ch]: separated the permanent flags and temporary
+	  flags into two variables, and made MsgFlags a structure that
+	  includes them.
+	  MSG_SET_PERM_FLAGS()
+	  MSG_SET_TMP_FLAGS()
+	  MSG_UNSET_PERM_FLAGS()
+	  MSG_UNSET_TMP_FLAGS(): new macros.
+	* src/compose.c
+	  src/imap.c
+	  src/inc.c
+	  src/messageview.c
+	  src/mh.c
+	  src/news.c
+	  src/procheader.c
+	  src/summaryview.c: modified for the new MsgFlags.
+	* src/utils.[ch]: hash_free_value_mem(): new. It frees the values
+	  of hash table.
+
 2001-07-16
 
 	* src/inc.c: inc_pop3_recv_func(), inc_progress_update():

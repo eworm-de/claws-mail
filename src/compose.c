@@ -572,9 +572,8 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 			return;
 	} else
 		reply_account = account;
-
-	MSG_UNSET_FLAGS(msginfo->flags, MSG_FORWARDED);
-	MSG_SET_FLAGS(msginfo->flags, MSG_REPLIED);
+	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_FORWARDED);
+	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_REPLIED);
 
 	CHANGE_FLAGS(msginfo);
 
@@ -715,7 +714,7 @@ static void compose_attach_parts(Compose * compose,
 
 		if (!MSG_IS_ENCRYPTED(msginfo->flags) &&
 		    rfc2015_is_encrypted(mimeinfo)) {
-			MSG_SET_FLAGS(msginfo->flags, MSG_ENCRYPTED);
+			MSG_SET_TMP_FLAGS(msginfo->flags, MSG_ENCRYPTED);
 		}
 		if (MSG_IS_ENCRYPTED(msginfo->flags) &&
 		    !msginfo->plaintext_file  &&
@@ -881,9 +880,8 @@ Compose * compose_forward(PrefsAccount * account, MsgInfo *msginfo,
 	}
 	g_return_val_if_fail(account != NULL, NULL);
 
-	MSG_UNSET_FLAGS(msginfo->flags, MSG_REPLIED);
-	MSG_SET_FLAGS(msginfo->flags, MSG_FORWARDED);
-
+	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_REPLIED);
+	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_FORWARDED);
 	CHANGE_FLAGS(msginfo);
 
 	compose = compose_create(account);
@@ -1936,6 +1934,8 @@ gint compose_send(Compose *compose)
 			ac = compose->account;
 		else if (compose->orig_account->protocol != A_NNTP)
 			ac = compose->orig_account;
+		else if (cur_account && cur_account->protocol != A_NNTP)
+			ac = cur_account;
 		else {
 			ac = compose_current_mail_account();
 			if (!ac) {
@@ -2191,7 +2191,8 @@ static gint compose_save_to_outbox(Compose *compose, const gchar *file)
 		MsgInfo newmsginfo;
 
 		newmsginfo.msgnum = num;
-		newmsginfo.flags = 0;
+		newmsginfo.flags.perm_flags = 0;
+		newmsginfo.flags.tmp_flags = 0;
 		procmsg_write_flags(&newmsginfo, fp);
 		fclose(fp);
 	}
@@ -2301,7 +2302,8 @@ static gint compose_queue(Compose *compose, const gchar *file)
 		MsgInfo newmsginfo;
 
 		newmsginfo.msgnum = num;
-		newmsginfo.flags = 0;
+		newmsginfo.flags.perm_flags = 0;
+		newmsginfo.flags.tmp_flags = 0;
 		procmsg_write_flags(&newmsginfo, fp);
 		fclose(fp);
 	}
@@ -2404,7 +2406,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		get_rfc822_date(buf, sizeof(buf));
 		fprintf(fp, "Date: %s\n", buf);
 	}
-	
+
 	/* From */
 	if (!IS_IN_CUSTOM_HEADER("From")) {
 		if (compose->account->name && *compose->account->name) {
@@ -2439,7 +2441,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 			}
 		}
 	}
-	
+
 	slist_free_strings(compose->newsgroup_list);
 	g_slist_free(compose->newsgroup_list);
 	compose->newsgroup_list = NULL;
@@ -2483,7 +2485,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 			}
 		}
 	}
-	
+
 	/* Bcc */
 	if (compose->use_bcc) {
 		str = gtk_entry_get_text(GTK_ENTRY(compose->bcc_entry));
@@ -2613,7 +2615,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 				fprintf(fp, "%s: %s\n", chdr->name, buf);
 		}
 	}
-	
+
 	/* MIME */
 	fprintf(fp, "Mime-Version: 1.0\n");
 	if (compose->use_attach) {
@@ -2997,7 +2999,7 @@ static Compose *compose_create(PrefsAccount *account)
 
 	style = gtk_widget_get_style(text);
 
-	/* workaround for the slow down of GtkSText when using Pixmap theme */
+	/* workaround for the slow down of GtkText when using Pixmap theme */
 	if (style->engine) {
 		GtkThemeEngine *engine;
 

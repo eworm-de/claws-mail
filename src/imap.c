@@ -1496,20 +1496,20 @@ static MsgFlags imap_parse_flags(const gchar *flag_str)
 	const gchar *p = flag_str;
 	MsgFlags flags;
 
-	flags = 0;
-	MSG_SET_FLAGS(flags, MSG_UNREAD|MSG_IMAP);
+	flags.perm_flags = MSG_UNREAD;
+	flags.tmp_flags  = MSG_IMAP;
 
 	while ((p = strchr(p, '\\')) != NULL) {
 		p++;
 
 		if (g_strncasecmp(p, "Recent", 6) == 0) {
-			MSG_SET_FLAGS(flags, MSG_NEW|MSG_UNREAD);
+			MSG_SET_PERM_FLAGS(flags, MSG_NEW|MSG_UNREAD);
 		} else if (g_strncasecmp(p, "Seen", 4) == 0) {
-			MSG_UNSET_FLAGS(flags, MSG_NEW|MSG_UNREAD);
+			MSG_UNSET_PERM_FLAGS(flags, MSG_NEW|MSG_UNREAD);
 		} else if (g_strncasecmp(p, "Deleted", 7) == 0) {
-			MSG_SET_FLAGS(flags, MSG_DELETED);
+			MSG_SET_PERM_FLAGS(flags, MSG_DELETED);
 		} else if (g_strncasecmp(p, "Flagged", 7) == 0) {
-			MSG_SET_FLAGS(flags, MSG_MARKED);
+			MSG_SET_PERM_FLAGS(flags, MSG_MARKED);
 		}
 	}
 
@@ -1536,7 +1536,7 @@ static MsgInfo *imap_parse_envelope(SockInfo *sock, GString *line_str)
 	gchar *to = NULL;
 	gchar *inreplyto = NULL;
 	gchar *msgid = NULL;
-	MsgFlags flags = 0;
+	MsgFlags flags = {0, 0};
 
 	g_return_val_if_fail(line_str != NULL, NULL);
 	g_return_val_if_fail(line_str->str[0] == '*' &&

@@ -1,3 +1,22 @@
+2001-07-17 [alfons]
+
+	0.5.0claws5
+
+	* sync with Hiroyuki's 0.5.0cvs5; this version allows us to put more 
+	  bits in the mark file, without affecting either branch. Lots of
+	  files changed, also in claws branch.
+
+	  UNTESTED: use of mbox folders
+
+	* src/summaryview.c
+		added mark all read; however this was a quick hack used for
+		cleaning up mess after initial merge with Hiroyuki
+
+	* configure.in
+		change claws version number back to 0.5.0claws5 to clear up 
+		confusion & pretension (recent release was technically 
+		0.5.0claws4, so we neatly align with Hiroyuki :-)
+
 2001-07-16 [alfons]
 
 	sync with Hiroyuki's 0.5.0cvs4

@@ -861,10 +861,6 @@ void inc_progress_update(Pop3State *state, Pop3Phase phase)
 			   state->cur_msg, state->count,
 			   to_human_readable(state->cur_total_bytes),
 			   total_size);
-		//g_snprintf(buf, sizeof(buf),
-		//	   _("Retrieving message (%d / %d) (%d / %d bytes)"),
-		//	   state->cur_msg, state->count,
-		//	   state->cur_total_bytes, state->total_bytes);
 		progress_dialog_set_label(dialog, buf);
 		progress_dialog_set_percentage
 			(dialog,

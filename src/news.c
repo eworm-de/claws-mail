@@ -538,7 +538,8 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 		}
 
 		msginfo->folder = item;
-		msginfo->flags = MSG_NEW|MSG_UNREAD|MSG_NEWS;
+		msginfo->flags.perm_flags = MSG_NEW|MSG_UNREAD;
+		msginfo->flags.tmp_flags = MSG_NEWS;
 		msginfo->newsgroups = g_strdup(item->path);
 
 		if (!newlist)

@@ -309,6 +309,8 @@ static gint summary_cmp_by_label	(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
 
+static void summary_mark_all_read (SummaryView *summaryview);					 
+
 GtkTargetEntry summary_drag_types[1] =
 {
 	{"text/plain", GTK_TARGET_SAME_APP, TARGET_DUMMY}
@@ -326,6 +328,7 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/_Mark/---"),		NULL, NULL,		0, "<Separator>"},
 	{N_("/_Mark/Mark as unr_ead"),	NULL, summary_mark_as_unread, 0, NULL},
 	{N_("/_Mark/Mark as rea_d"),	NULL, summary_mark_as_read, 0, NULL},
+	{N_("/_Mark/Mark all read"),    NULL, summary_mark_all_read, 0, NULL},
 	{N_("/_Mark/Ignore thread"),	NULL, summary_ignore_thread, 0, NULL},
 	{N_("/_Mark/Unignore thread"),	NULL, summary_unignore_thread, 0, NULL},
 
@@ -384,8 +387,6 @@ static void label_menu_item_activate_cb(GtkWidget *widget, gpointer data)
 	if (gtk_object_get_data(GTK_OBJECT(view->label_menu), "dont_toggle"))
 		return;
 		
-	color <<= 7;
-
 	summary_set_label(view, color, NULL);
 }
 
@@ -397,7 +398,9 @@ void summary_set_label_color(GtkCTree *ctree, GtkCTreeNode *node,
 	GdkColor  color;
 	GtkStyle *style, *prev_style, *ctree_style;
 	MsgInfo  *msginfo;
-	gint     color_index = ((gint)(labelcolor >> 7)) - 1;
+	gint     color_index; 
+
+	color_index = (gint) labelcolor - 1;
 
 	ctree_style = gtk_widget_get_style(GTK_WIDGET(ctree));
 
@@ -409,7 +412,7 @@ void summary_set_label_color(GtkCTree *ctree, GtkCTreeNode *node,
 	style = gtk_style_copy(prev_style);
 
 	if (color_index < 0 || color_index >= LABEL_COLORS_ELEMS) {
-		labelcolor = 0;
+		color_index = 0;
 		color.red = ctree_style->fg[GTK_STATE_NORMAL].red;
 		color.green = ctree_style->fg[GTK_STATE_NORMAL].green;
 		color.blue = ctree_style->fg[GTK_STATE_NORMAL].blue;
@@ -421,13 +424,14 @@ void summary_set_label_color(GtkCTree *ctree, GtkCTreeNode *node,
 		style->fg[GTK_STATE_SELECTED] = color;
 		gtk_ctree_node_set_row_style(ctree, node, style);
 	}
-	else
+	else {
 		color = label_colors[color_index].color;
+	}		
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, node);
 
-	MSG_UNSET_FLAGS(msginfo->flags, MSG_LABEL);
-	MSG_SET_FLAGS(msginfo->flags, labelcolor);
+	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_LABEL);
+	MSG_SET_LABEL_VALUE(msginfo->flags, labelcolor);
 
 	if ( style ) {
 		style->fg[GTK_STATE_NORMAL] = color;
@@ -539,7 +543,7 @@ static void label_menu_item_activate_item_cb(GtkMenuItem *label_menu_item, gpoin
 						GTK_CTREE_NODE(sel->data));
 			gint menu_item;   			
 			if (msginfo) {
-				menu_item = ((msginfo->flags & MSG_LABEL) >> 7);
+				menu_item = MSG_GET_LABEL_VALUE(msginfo->flags);
 				if (!items[menu_item]->active)
 					gtk_check_menu_item_set_state(items[menu_item], TRUE);
 			}
@@ -616,7 +620,7 @@ static void summary_create_label_menu(SummaryView *summaryview)
 		gtk_menu_append(GTK_MENU(label_menu), item);
 		gtk_signal_connect(GTK_OBJECT(item), "activate", 
 				   GTK_SIGNAL_FUNC(label_menu_item_activate_cb),
-				   GUINT_TO_POINTER(i + 1));
+				   GUINT_TO_POINTER(i + 1)); /* color index + 1 */
 		gtk_object_set_data(GTK_OBJECT(item), "view", summaryview);
 		gtk_widget_show(item);
 
@@ -821,8 +825,6 @@ SummaryView *summary_create(void)
 	summaryview->msg_is_toggled_on = TRUE;
 	summaryview->sort_mode = SORT_BY_NONE;
 	summaryview->sort_type = GTK_SORT_ASCENDING;
-
-//	summary_create_label_menu(summaryview);
 
 	summary_change_display_item(summaryview);
 
@@ -1128,7 +1130,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 		(summaryview->mainwin, summaryview->selected ? TRUE : FALSE);
 
 	debug_print("\n");
-	STATUSBAR_PUSH(summaryview->mainwin, _("done."));
+	STATUSBAR_PUSH(summaryview->mainwin, _("Done."));
 
 	main_window_cursor_normal(summaryview->mainwin);
 
@@ -1223,7 +1225,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 		menu_set_insensitive_all
 			(GTK_MENU_SHELL(summaryview->popupmenu));
 		return;
-	} 
+	}
 
 	if (summaryview->folder_item->folder->type != F_NEWS) {
 		if (summaryview->folder_item->stype != F_TRASH)
@@ -1260,6 +1262,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 
 	menu_set_sensitive(ifactory, "/Mark/Mark as unread", TRUE);
 	menu_set_sensitive(ifactory, "/Mark/Mark as read",   TRUE);
+	menu_set_sensitive(ifactory, "/Mark/Mark all read", TRUE);
 	menu_set_sensitive(ifactory, "/Mark/Ignore thread",   TRUE);
 	menu_set_sensitive(ifactory, "/Mark/Unignore thread", TRUE);
 
@@ -1898,7 +1901,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 					if (MSG_IS_UNREAD(msginfo->flags))
 						summaryview->unread--;
 */
-					MSG_SET_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
+					MSG_SET_PERM_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
 				}
 			}
 
@@ -1910,7 +1913,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 			summary_set_marks_func(ctree, node, summaryview);
 			
 			if ( MSG_GET_LABEL(msginfo->flags) )
-			  summary_set_label_color(ctree, node, (msginfo->flags & MSG_LABEL));
+			  summary_set_label_color(ctree, node, MSG_GET_LABEL_VALUE(msginfo->flags));
 
 			/* preserve previous node if the message is
 			   duplicated */
@@ -1975,7 +1978,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 			summary_set_marks_func(ctree, node, summaryview);
 
 			if ( MSG_GET_LABEL(msginfo->flags) )
-			  summary_set_label_color(ctree, node, (msginfo->flags & MSG_LABEL));
+			  summary_set_label_color(ctree, node, MSG_GET_LABEL_VALUE(msginfo->flags));
 
 			if (msginfo->msgid && *msginfo->msgid &&
 			    g_hash_table_lookup(msgid_table, msginfo->msgid)
@@ -2202,10 +2205,8 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->unread--;
 	if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
-		MSG_UNSET_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
-
+		MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
 		CHANGE_FLAGS(msginfo);
-
 		summary_set_row_marks(summaryview, row);
 		gtk_clist_thaw(GTK_CLIST(ctree));
 		summary_status_show(summaryview);
@@ -2394,8 +2395,7 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 	else if ((global_scoring ||
 		  summaryview->folder_item->prefs->scoring) &&
 		 (msginfo->score >= summaryview->important_score) &&
-		 ((msginfo->flags &
-		   (MSG_MARKED | MSG_MOVE | MSG_COPY)) == 0)) {
+		 (MSG_IS_MARKED(msginfo->flags) || MSG_IS_MOVE(msginfo->flags) || MSG_IS_COPY(msginfo->flags))) {
 		gtk_ctree_node_set_text(ctree, row, S_COL_MARK, "!");
 		gtk_ctree_node_set_foreground(ctree, row,
 					      &summaryview->color_important);
@@ -2429,11 +2429,10 @@ static void summary_mark_row(SummaryView *summaryview, GtkCTreeNode *row)
 		summaryview->moved--;
 	if (MSG_IS_COPY(msginfo->flags))
 		summaryview->copied--;
-	MSG_UNSET_FLAGS(msginfo->flags, MSG_DELETED | MSG_MOVE | MSG_COPY);
-	MSG_SET_FLAGS(msginfo->flags, MSG_MARKED);
-
+	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_DELETED);
+	MSG_UNSET_TMP_FLAGS(msginfo->flags, MSG_MOVE | MSG_COPY);
+	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_MARKED);
 	CHANGE_FLAGS(msginfo);
-
 	summary_set_row_marks(summaryview, row);
 	debug_print(_("Message %d is marked\n"), msginfo->msgnum);
 }
@@ -2463,10 +2462,8 @@ static void summary_mark_row_as_read(SummaryView *summaryview,
 		summaryview->unread--;
 	if (MSG_IS_NEW(msginfo->flags) ||
 	    MSG_IS_UNREAD(msginfo->flags)) {
-		MSG_UNSET_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
-
+		MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
 		CHANGE_FLAGS(msginfo);
-		
 		summary_set_row_marks(summaryview, row);
 		debug_print(_("Message %d is marked as read\n"),
 			    msginfo->msgnum);
@@ -2485,6 +2482,13 @@ void summary_mark_as_read(SummaryView *summaryview)
 	summary_status_show(summaryview);
 }
 
+static void summary_mark_all_read(SummaryView *summaryview)
+{
+	summary_select_all(summaryview);
+	summary_mark_as_read(summaryview);
+	summary_unselect_all(summaryview);
+}
+
 static void summary_mark_row_as_unread(SummaryView *summaryview,
 				       GtkCTreeNode *row)
 {
@@ -2494,12 +2498,12 @@ static void summary_mark_row_as_unread(SummaryView *summaryview,
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 	if (MSG_IS_DELETED(msginfo->flags)) {
 		msginfo->to_folder = NULL;
-		MSG_UNSET_FLAGS(msginfo->flags, MSG_DELETED);
+		MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_DELETED);
 		summaryview->deleted--;
 	}
-	MSG_UNSET_FLAGS(msginfo->flags, MSG_REPLIED | MSG_FORWARDED);
+	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_REPLIED | MSG_FORWARDED);
 	if (!MSG_IS_UNREAD(msginfo->flags)) {
-		MSG_SET_FLAGS(msginfo->flags, MSG_UNREAD);
+		MSG_SET_PERM_FLAGS(msginfo->flags, MSG_UNREAD);
 		gtk_ctree_node_set_pixmap(ctree, row, S_COL_UNREAD,
 					  unreadxpm, unreadxpmmask);
 		summaryview->unread++;
@@ -2538,14 +2542,10 @@ static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 		summaryview->moved--;
 	if (MSG_IS_COPY(msginfo->flags))
 		summaryview->copied--;
-	MSG_UNSET_FLAGS(msginfo->flags,
-			MSG_MARKED |
-			MSG_MOVE |
-			MSG_COPY);
-	MSG_SET_FLAGS(msginfo->flags, MSG_DELETED);
-
+	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_MARKED);
+	MSG_UNSET_TMP_FLAGS(msginfo->flags, MSG_MOVE | MSG_COPY);
+	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_DELETED);
 	CHANGE_FLAGS(msginfo);
-
 	summaryview->deleted++;
 
 	if (!prefs_common.immediate_exec)
@@ -2632,14 +2632,9 @@ static void summary_unmark_row(SummaryView *summaryview, GtkCTreeNode *row)
 		summaryview->moved--;
 	if (MSG_IS_COPY(msginfo->flags))
 		summaryview->copied--;
-	MSG_UNSET_FLAGS(msginfo->flags,
-			MSG_MARKED |
-			MSG_DELETED |
-			MSG_MOVE |
-			MSG_COPY);
-
+	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_MARKED | MSG_DELETED);
+	MSG_UNSET_TMP_FLAGS(msginfo->flags, MSG_MOVE | MSG_COPY);
 	CHANGE_FLAGS(msginfo);
-
 	summary_set_row_marks(summaryview, row);
 
 	debug_print(_("Message %s/%d is unmarked\n"),
@@ -2670,13 +2665,12 @@ static void summary_move_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 	msginfo->to_folder = to_folder;
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted--;
-	MSG_UNSET_FLAGS(msginfo->flags,
-			MSG_MARKED | MSG_DELETED | MSG_COPY);
+	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_MARKED | MSG_DELETED);
+	MSG_UNSET_TMP_FLAGS(msginfo->flags, MSG_COPY);
 	if (!MSG_IS_MOVE(msginfo->flags)) {
-		MSG_SET_FLAGS(msginfo->flags, MSG_MOVE);
+		MSG_SET_TMP_FLAGS(msginfo->flags, MSG_MOVE);
 		summaryview->moved++;
 	}
-
 	if (!prefs_common.immediate_exec)
 		summary_set_row_marks(summaryview, row);
 
@@ -2732,13 +2726,12 @@ static void summary_copy_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 	msginfo->to_folder = to_folder;
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted--;
-	MSG_UNSET_FLAGS(msginfo->flags,
-			MSG_MARKED | MSG_DELETED | MSG_MOVE);
+	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_MARKED | MSG_DELETED);
+	MSG_UNSET_TMP_FLAGS(msginfo->flags, MSG_MOVE);
 	if (!MSG_IS_COPY(msginfo->flags)) {
-		MSG_SET_FLAGS(msginfo->flags, MSG_COPY);
+		MSG_SET_TMP_FLAGS(msginfo->flags, MSG_COPY);
 		summaryview->copied++;
 	}
-
 	if (!prefs_common.immediate_exec)
 		summary_set_row_marks(summaryview, row);
 
@@ -2859,7 +2852,7 @@ void summary_print(SummaryView *summaryview)
 			(ctree, GTK_CTREE_NODE(cur->data));
 		if (msginfo) procmsg_print_message(msginfo, cmdline);
 	}
-	
+
 	g_free(cmdline);
 }
 
@@ -3012,8 +3005,7 @@ static void summary_execute_copy_func(GtkCTree *ctree, GtkCTreeNode *node,
 		summaryview->mlist =
 			g_slist_append(summaryview->mlist, msginfo);
 
-		MSG_UNSET_FLAGS(msginfo->flags, MSG_COPY);
-		
+		MSG_UNSET_TMP_FLAGS(msginfo->flags, MSG_COPY);
 		summary_set_row_marks(summaryview, node);
 	}
 }
@@ -3038,7 +3030,7 @@ static void summary_execute_delete(SummaryView *summaryview)
 
 	for(cur = summaryview->mlist ; cur != NULL ; cur = cur->next) {
 		MsgInfo * msginfo = cur->data;
-		MSG_UNSET_FLAGS(msginfo->flags, MSG_DELETED);
+		MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_DELETED);
 	}
 
 	folder_item_move_msgs_with_dest(trash, summaryview->mlist);
@@ -3546,10 +3538,8 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	switch (column) {
 	case S_COL_MARK:
 		if (MSG_IS_MARKED(msginfo->flags)) {
-			MSG_UNSET_FLAGS(msginfo->flags, MSG_MARKED);
-
+			MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_MARKED);
 			CHANGE_FLAGS(msginfo);
-			
 			summary_set_row_marks(summaryview, row);
 		} else
 			summary_mark_row(summaryview, row);
@@ -3959,7 +3949,7 @@ static void summary_ignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpoin
 		summaryview->newmsgs--;
 	if (MSG_IS_UNREAD(msginfo->flags))
 		summaryview->unread--;
-	MSG_SET_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
+	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
 
 	CHANGE_FLAGS(msginfo);
 		
@@ -3990,7 +3980,7 @@ static void summary_unignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpo
 		summaryview->newmsgs++;
 	if (MSG_IS_UNREAD(msginfo->flags))
 		summaryview->unread++;
-	MSG_UNSET_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
+	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
 
 	CHANGE_FLAGS(msginfo);
 		

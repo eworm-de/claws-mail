@@ -125,6 +125,7 @@ void list_free_strings		(GList		*list);
 void slist_free_strings		(GSList		*list);
 
 void hash_free_strings		(GHashTable	*table);
+void hash_free_value_mem	(GHashTable	*table);
 
 void ptr_array_free_strings	(GPtrArray	*array);
 

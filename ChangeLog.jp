@@ -1,3 +1,22 @@
+2001-07-17
+
+	* src/procmsg.[ch]: 永続フラグと一時フラグを2つの変数に分離し、
+	  MsgFlags をそれらを含む構造体にした。
+	  MSG_SET_PERM_FLAGS()
+	  MSG_SET_TMP_FLAGS()
+	  MSG_UNSET_PERM_FLAGS()
+	  MSG_UNSET_TMP_FLAGS(): 新規マクロ。
+	* src/compose.c
+	  src/imap.c
+	  src/inc.c
+	  src/messageview.c
+	  src/mh.c
+	  src/news.c
+	  src/procheader.c
+	  src/summaryview.c: 新しい MsgFlags のために変更。
+	* src/utils.[ch]: hash_free_value_mem(): 新規。ハッシュテーブルの
+	  値を解放する。
+
 2001-07-16
 
 	* src/inc.c: inc_pop3_recv_func(), inc_progress_update():

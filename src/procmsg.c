@@ -174,17 +174,18 @@ GSList *procmsg_read_cache(FolderItem *item, gboolean scan_file)
 	g_return_val_if_fail(item->folder != NULL, NULL);
 	type = item->folder->type;
 
-	default_flags = MSG_NEW|MSG_UNREAD|MSG_CACHED;
+	default_flags.perm_flags = MSG_NEW|MSG_UNREAD;
+	default_flags.tmp_flags = MSG_CACHED;
 	if (type == F_MH) {
 		if (item->stype == F_QUEUE) {
-			MSG_SET_FLAGS(default_flags, MSG_QUEUED);
+			MSG_SET_TMP_FLAGS(default_flags, MSG_QUEUED);
 		} else if (item->stype == F_DRAFT) {
-			MSG_SET_FLAGS(default_flags, MSG_DRAFT);
+			MSG_SET_TMP_FLAGS(default_flags, MSG_DRAFT);
 		}
 	} else if (type == F_IMAP) {
-		MSG_SET_FLAGS(default_flags, MSG_IMAP);
+		MSG_SET_TMP_FLAGS(default_flags, MSG_IMAP);
 	} else if (type == F_NEWS) {
-		MSG_SET_FLAGS(default_flags, MSG_NEWS);
+		MSG_SET_TMP_FLAGS(default_flags, MSG_NEWS);
 	}
 
 	if (type == F_MH) {
@@ -222,7 +223,7 @@ GSList *procmsg_read_cache(FolderItem *item, gboolean scan_file)
 		READ_CACHE_DATA_INT(msginfo->size, fp);
 		READ_CACHE_DATA_INT(msginfo->mtime, fp);
 		READ_CACHE_DATA_INT(msginfo->date_t, fp);
-		READ_CACHE_DATA_INT(msginfo->flags, fp);
+		READ_CACHE_DATA_INT(msginfo->flags.tmp_flags, fp);
 
 		READ_CACHE_DATA(msginfo->fromname, fp);
 
@@ -236,7 +237,8 @@ GSList *procmsg_read_cache(FolderItem *item, gboolean scan_file)
 		READ_CACHE_DATA(msginfo->inreplyto, fp);
 		READ_CACHE_DATA(msginfo->references, fp);
 
-		MSG_SET_FLAGS(msginfo->flags, default_flags);
+		MSG_SET_PERM_FLAGS(msginfo->flags, default_flags.perm_flags);
+		MSG_SET_TMP_FLAGS(msginfo->flags, default_flags.tmp_flags);
 
 		/* if the message file doesn't exist or is changed,
 		   don't add the data */
@@ -272,7 +274,7 @@ void procmsg_set_flags(GSList *mlist, FolderItem *item)
 	gchar *markdir;
 	MsgInfo *msginfo;
 	GHashTable *mark_table;
-	MsgFlags flags;
+	MsgFlags *flags;
 
 	if (!mlist) return;
 	g_return_if_fail(item != NULL);
@@ -295,25 +297,22 @@ void procmsg_set_flags(GSList *mlist, FolderItem *item)
 		if (lastnum < msginfo->msgnum)
 			lastnum = msginfo->msgnum;
 
-		flags = GPOINTER_TO_UINT(g_hash_table_lookup(mark_table,
-					 GUINT_TO_POINTER(msginfo->msgnum)));
+		flags = g_hash_table_lookup
+			(mark_table, GUINT_TO_POINTER(msginfo->msgnum));
 
-		if (flags != 0) {
+		if (flags != NULL) {
 			/* add the permanent flags only */
-			MSG_UNSET_FLAGS(msginfo->flags,
-					MSG_PERMANENT_FLAG_MASK);
-			MSG_SET_FLAGS(msginfo->flags,
-				      flags & MSG_PERMANENT_FLAG_MASK);
+			msginfo->flags.perm_flags = flags->perm_flags;
 			if (item->folder->type == F_IMAP) {
-				MSG_SET_FLAGS(msginfo->flags, MSG_IMAP);
+				MSG_SET_TMP_FLAGS(msginfo->flags, MSG_IMAP);
 			} else if (item->folder->type == F_NEWS) {
-				MSG_SET_FLAGS(msginfo->flags, MSG_NEWS);
+				MSG_SET_TMP_FLAGS(msginfo->flags, MSG_NEWS);
 			}
 		} else {
 			/* not found (new message) */
 			if (newmsg == 0) {
 				for (tmp = mlist; tmp != cur; tmp = tmp->next)
-					MSG_UNSET_FLAGS
+					MSG_UNSET_PERM_FLAGS
 						(((MsgInfo *)tmp->data)->flags,
 						 MSG_NEW);
 			}
@@ -327,6 +326,7 @@ void procmsg_set_flags(GSList *mlist, FolderItem *item)
 	if (newmsg)
 		debug_print(_("\t%d new message(s)\n"), newmsg);
 
+	hash_free_value_mem(mark_table);
 	g_hash_table_destroy(mark_table);
 }
 
@@ -361,7 +361,7 @@ void procmsg_msg_list_free(GSList *mlist)
 
 void procmsg_write_cache(MsgInfo *msginfo, FILE *fp)
 {
-	MsgFlags flags = msginfo->flags & MSG_CACHED_FLAG_MASK;
+	MsgTmpFlags flags = msginfo->flags.tmp_flags & MSG_CACHED_FLAG_MASK;
 
 	WRITE_CACHE_DATA_INT(msginfo->msgnum, fp);
 	WRITE_CACHE_DATA_INT(msginfo->size, fp);
@@ -384,9 +384,7 @@ void procmsg_write_cache(MsgInfo *msginfo, FILE *fp)
 
 void procmsg_write_flags(MsgInfo *msginfo, FILE *fp)
 {
-	MsgFlags flags;
-
-	flags = msginfo->flags & MSG_PERMANENT_FLAG_MASK;
+	MsgPermFlags flags = msginfo->flags.perm_flags;
 
 	WRITE_CACHE_DATA_INT(msginfo->msgnum, fp);
 	WRITE_CACHE_DATA_INT(flags, fp);
@@ -400,11 +398,11 @@ struct MarkSum {
 
 static void mark_sum_func(gpointer key, gpointer value, gpointer data)
 {
-	MsgFlags flags = GPOINTER_TO_UINT(value);
+	MsgFlags *flags = value;
 	struct MarkSum *marksum = data;
 
-	if (MSG_IS_NEW(flags) && !MSG_IS_IGNORE_THREAD(flags)) (*marksum->new)++;
-	if (MSG_IS_UNREAD(flags) && !MSG_IS_IGNORE_THREAD(flags)) (*marksum->unread)++;
+	if (MSG_IS_NEW(*flags) && !MSG_IS_IGNORE_THREAD(*flags)) (*marksum->new)++;
+	if (MSG_IS_UNREAD(*flags) && !MSG_IS_IGNORE_THREAD(*flags)) (*marksum->unread)++;
 	(*marksum->total)++;
 }
 
@@ -432,7 +430,8 @@ static GHashTable *procmsg_read_mark_file(const gchar *folder)
 	FILE *fp;
 	GHashTable *mark_table = NULL;
 	gint num;
-	MsgFlags flags;
+	MsgFlags *flags;
+	MsgPermFlags perm_flags;
 
 	if ((fp = procmsg_open_mark_file(folder, FALSE)) == NULL)
 		return NULL;
@@ -440,12 +439,12 @@ static GHashTable *procmsg_read_mark_file(const gchar *folder)
 	mark_table = g_hash_table_new(NULL, g_direct_equal);
 
 	while (fread(&num, sizeof(num), 1, fp) == 1) {
-		if (fread(&flags, sizeof(flags), 1, fp) != 1) break;
+		if (fread(&perm_flags, sizeof(flags), 1, fp) != 1) break;
 
-		MSG_SET_FLAGS(flags, MSG_CACHED);
-		g_hash_table_insert(mark_table,
-				    GUINT_TO_POINTER(num),
-				    GUINT_TO_POINTER(flags));
+		flags = g_new0(MsgFlags, 1);
+		flags->perm_flags = perm_flags;
+
+		g_hash_table_insert(mark_table, GUINT_TO_POINTER(num), flags);
 	}
 
 	fclose(fp);
@@ -575,7 +574,6 @@ gchar *procmsg_get_message_file_path(MsgInfo *msginfo)
 		file = g_strdup(msginfo->plaintext_file);
 	else {
 		path = folder_item_get_path(msginfo->folder);
-
 		file = g_strconcat(path, G_DIR_SEPARATOR_S,
 				   itos(msginfo->msgnum), NULL);
 		g_free(path);
