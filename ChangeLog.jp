@@ -1,3 +1,10 @@
+2002-11-07
+
+	* src/prefs_account.[ch]: 使われていないため
+	  prefs_account_save_config() を削除。
+	* src/procmime.[ch]: procmime_mimeinfo_free_all() が全ての場合に
+	  使えるため procmime_mimeinfo_free() を削除。
+
 2002-11-06
 
 	* src/account.c: account_get_special_folder(): F_INBOX に対応し、

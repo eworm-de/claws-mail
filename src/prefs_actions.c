@@ -686,7 +686,7 @@ static gboolean parse_append_msgpart(GString **cmd, MsgInfo *msginfo,
 #endif
 		fclose(fp);
 		if (!partinfo) {
-			procmime_mimeinfo_free(partinfo);
+			procmime_mimeinfo_free_all(partinfo);
 			alertpanel_error(_("Could not get message part."));
 			return FALSE;
 		}
@@ -711,7 +711,7 @@ static gboolean parse_append_msgpart(GString **cmd, MsgInfo *msginfo,
 	ret = procmime_get_part(partname, filename, partinfo); 
 
 	if (!mimeview) {
-		procmime_mimeinfo_free(partinfo);
+		procmime_mimeinfo_free_all(partinfo);
 		g_free(filename);
 	}
 

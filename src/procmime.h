@@ -124,7 +124,6 @@ struct _MimeInfo
 /* MimeInfo handling */
 
 MimeInfo *procmime_mimeinfo_new		(void);
-void procmime_mimeinfo_free		(MimeInfo	*mimeinfo);
 void procmime_mimeinfo_free_all		(MimeInfo	*mimeinfo);
 
 MimeInfo *procmime_mimeinfo_insert	(MimeInfo	*parent,

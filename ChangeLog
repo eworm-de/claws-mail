@@ -1,3 +1,10 @@
+2002-11-07
+
+	* src/prefs_account.[ch]: removed prefs_account_save_config() since
+	  it is not used.
+	* src/procmime.[ch]: removed procmime_mimeinfo_free() since
+	  procmime_mimeinfo_free_all() can be used in every case.
+
 2002-11-06
 
 	* src/account.c: account_get_special_folder(): support F_INBOX, and
