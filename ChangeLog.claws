@@ -1,3 +1,8 @@
+2003-12-10 [hoa]	0.9.7claws33
+
+	* src/matcher.c
+	        fixed quotation of string for matcher.
+
 2003-12-08 [paul]	0.9.7claws32
 
 	* src/imap.c

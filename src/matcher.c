@@ -952,7 +952,7 @@ static gint quote_filter_str(gchar * result, guint size,
 
 	for(p = path ; * p != '\0' ; p ++) {
 
-		if ((* p != '\"') || (* p != '\\')) {
+		if ((* p != '\"') && (* p != '\\')) {
 			if (remaining > 0) {
 				* result_p = * p;
 				result_p ++; 
