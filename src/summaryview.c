@@ -1097,6 +1097,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			summary_select_node(summaryview, node, FALSE, TRUE);
 	}
 
+	summary_set_column_titles(summaryview);
 	summary_status_show(summaryview);
 	summary_set_menu_sensitive(summaryview);
 	toolbar_main_set_sensitive(summaryview->mainwin);
@@ -3143,9 +3144,12 @@ void summary_delete(SummaryView *summaryview)
 				 FALSE);
 	}
 
-	if (prefs_common.immediate_exec || item->stype == F_TRASH)
+	if (prefs_common.immediate_exec || item->stype == F_TRASH) {
 		summary_execute(summaryview);
-	else
+		/* after deleting, the anchor may be at an invalid row
+		 * so reset it to the node we found earlier */
+		gtk_sctree_set_anchor_row(GTK_SCTREE(ctree), node);
+	} else
 		summary_status_show(summaryview);
 }
 
@@ -5108,77 +5112,59 @@ static void summary_drag_data_get(GtkWidget        *widget,
 
 /* custom compare functions for sorting */
 
-static gint summary_cmp_by_mark(GtkCList *clist,
-				gconstpointer ptr1, gconstpointer ptr2)
-{
-	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;
-	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
-
-	return MSG_IS_MARKED(msginfo1->flags) - MSG_IS_MARKED(msginfo2->flags);
+#define CMP_FUNC_DEF(func_name, val)					 \
+static gint func_name(GtkCList *clist,					 \
+		      gconstpointer ptr1, gconstpointer ptr2)		 \
+{									 \
+	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;		 \
+	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;		 \
+									 \
+	if (!msginfo1 || !msginfo2)					 \
+		return -1;						 \
+									 \
+	return (val);							 \
 }
 
-static gint summary_cmp_by_unread(GtkCList *clist,
-				  gconstpointer ptr1, gconstpointer ptr2)
-{
-	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;
-	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
+CMP_FUNC_DEF(summary_cmp_by_mark,
+	     MSG_IS_MARKED(msginfo1->flags) - MSG_IS_MARKED(msginfo2->flags))
+CMP_FUNC_DEF(summary_cmp_by_unread,
+	     MSG_IS_UNREAD(msginfo1->flags) - MSG_IS_UNREAD(msginfo2->flags))
+CMP_FUNC_DEF(summary_cmp_by_mime,
+	     MSG_IS_MIME(msginfo1->flags) - MSG_IS_MIME(msginfo2->flags))
+CMP_FUNC_DEF(summary_cmp_by_label,
+	     MSG_GET_COLORLABEL(msginfo1->flags) -
+	     MSG_GET_COLORLABEL(msginfo2->flags))
+CMP_FUNC_DEF(summary_cmp_by_locked,
+	     MSG_IS_LOCKED(msginfo1->flags) - MSG_IS_LOCKED(msginfo2->flags))
 
-	return MSG_IS_UNREAD(msginfo1->flags) - MSG_IS_UNREAD(msginfo2->flags);
+CMP_FUNC_DEF(summary_cmp_by_num, msginfo1->msgnum - msginfo2->msgnum)
+CMP_FUNC_DEF(summary_cmp_by_size, msginfo1->size - msginfo2->size)
+CMP_FUNC_DEF(summary_cmp_by_date, msginfo1->date_t - msginfo2->date_t)
+
+#undef CMP_FUNC_DEF
+#define CMP_FUNC_DEF(func_name, var_name)				 \
+static gint func_name(GtkCList *clist,					 \
+		      gconstpointer ptr1, gconstpointer ptr2)		 \
+{									 \
+	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;		 \
+	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;		 \
+									 \
+	if (!msginfo1->var_name)					 \
+		return (msginfo2->var_name != NULL);			 \
+	if (!msginfo2->var_name)					 \
+		return -1;						 \
+									 \
+	return strcasecmp(msginfo1->var_name, msginfo2->var_name);	 \
 }
 
-static gint summary_cmp_by_mime(GtkCList *clist,
-				gconstpointer ptr1, gconstpointer ptr2)
-{
-	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;
-	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
+CMP_FUNC_DEF(summary_cmp_by_subject, subject);
+CMP_FUNC_DEF(summary_cmp_by_to, to);
 
-	return MSG_IS_MIME(msginfo1->flags) - MSG_IS_MIME(msginfo2->flags);
-}
+#undef CMP_FUNC_DEF
 
-static gint summary_cmp_by_num(GtkCList *clist,
-			       gconstpointer ptr1, gconstpointer ptr2)
-{
-	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;
-	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
-
-	return msginfo1->msgnum - msginfo2->msgnum;
-}
-
-static gint summary_cmp_by_size(GtkCList *clist,
-				gconstpointer ptr1, gconstpointer ptr2)
-{
-	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;
-	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
-
-	return msginfo1->size - msginfo2->size;
-}
-
-static gint summary_cmp_by_date(GtkCList *clist,
-			       gconstpointer ptr1, gconstpointer ptr2)
-{
-	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;
-	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
-
-	return msginfo1->date_t - msginfo2->date_t;
-}
-
-static gint summary_cmp_by_from(GtkCList *clist,
-			       gconstpointer ptr1, gconstpointer ptr2)
-{
-	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;
-	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
-
-	if (!msginfo1->fromname)
-		return (msginfo2->fromname != NULL);
-	if (!msginfo2->fromname)
-		return -1;
-
-	return strcasecmp(msginfo1->fromname, msginfo2->fromname);
-}
-
-static gint summary_cmp_by_to(GtkCList *clist,
-			      gconstpointer ptr1, gconstpointer ptr2)
-{
+ static gint summary_cmp_by_from(GtkCList *clist, gconstpointer ptr1,
+ 				 gconstpointer ptr2)
+ {
 	const gchar *str1, *str2;
 	const GtkCListRow *r1 = (const GtkCListRow *) ptr1;
 	const GtkCListRow *r2 = (const GtkCListRow *) ptr2;
@@ -5191,33 +5177,14 @@ static gint summary_cmp_by_to(GtkCList *clist,
 
 	if (!str1)
 		return str2 != NULL;
-
+ 
 	if (!str2)
-		return -1;
-
-	if (g_strncasecmp(str1, "-->", 3) == 0)
-		str1 += 3;
-	if (g_strncasecmp(str2, "-->", 3) == 0)
-		str2 += 3;
-
+ 		return -1;
+ 
 	return strcasecmp(str1, str2);
-}
-
-static gint summary_cmp_by_subject(GtkCList *clist,
-			       gconstpointer ptr1, gconstpointer ptr2)
-{
-	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;
-	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
-
-	if (!msginfo1->subject)
-		return (msginfo2->subject != NULL);
-	if (!msginfo2->subject)
-		return -1;
-
-	return strcasecmp(msginfo1->subject, msginfo2->subject);
-}
-
-static gint summary_cmp_by_simplified_subject
+ }
+ 
+ static gint summary_cmp_by_simplified_subject
 	(GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
 {
 	const PrefsFolderItem *prefs;
@@ -5249,14 +5216,20 @@ static gint summary_cmp_by_simplified_subject
 	return strcasecmp(str1, str2);
 }
 
-static gint summary_cmp_by_label(GtkCList *clist,
+static gint summary_cmp_by_score(GtkCList *clist,
 				 gconstpointer ptr1, gconstpointer ptr2)
 {
 	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;
 	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
+	int diff;
 
-	return MSG_GET_COLORLABEL(msginfo1->flags) -
-		MSG_GET_COLORLABEL(msginfo2->flags);
+	/* if score are equal, sort by date */
+
+	diff = msginfo1->threadscore - msginfo2->threadscore;
+	if (diff != 0)
+		return diff;
+	else
+		return summary_cmp_by_date(clist, ptr1, ptr2);
 }
 
 static void news_flag_crosspost(MsgInfo *msginfo)
@@ -5284,31 +5257,6 @@ static void news_flag_crosspost(MsgInfo *msginfo)
 		g_string_free(line, TRUE);
 		debug_print("\n");
 	}
-}
-
-static gint summary_cmp_by_score(GtkCList *clist,
-				 gconstpointer ptr1, gconstpointer ptr2)
-{
-	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;
-	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
-	int diff;
-
-	/* if score are equal, sort by date */
-
-	diff = msginfo1->threadscore - msginfo2->threadscore;
-	if (diff != 0)
-		return diff;
-	else
-		return summary_cmp_by_date(clist, ptr1, ptr2);
-}
-
-static gint summary_cmp_by_locked(GtkCList *clist,
-				  gconstpointer ptr1, gconstpointer ptr2)
-{
-	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;
-	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
-
-	return MSG_IS_LOCKED(msginfo1->flags) - MSG_IS_LOCKED(msginfo2->flags);
 }
 
 static void summary_ignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpointer data)
@@ -5598,6 +5546,3 @@ static gboolean summary_update_msg(gpointer source, gpointer data) {
 	return FALSE;
 }
 
-/*
- * End of Source.
- */

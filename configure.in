@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=8
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws
+EXTRA_VERSION=claws39
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -95,10 +95,118 @@ else
   AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}", PACKAGE_DATA_DIR)
 fi
 
-dnl Checks for libraries.
+AC_CHECK_LIB(xpg4, setlocale)
+
+dnl for GThread support (currently disabled)
+dnl AC_ARG_ENABLE(threads,
+dnl	[  --enable-threads        Enable multithread support [default=no]],
+dnl	[use_threads=$enableval], [use_threads=no])
+
+AC_MSG_CHECKING([whether to use threads])
+if test x"$use_threads" = xyes ; then
+	AC_MSG_RESULT(yes)
+	if test ! -z `$GLIB_CONFIG --help 2>&1 |grep 'gthread'` ; then
+		CFLAGS="$CFLAGS `$GLIB_CONFIG --cflags gthread`"
+		LIBS="$LIBS `$GLIB_CONFIG --libs gthread`"
+		AC_DEFINE(USE_THREADS, 1, Whether to use multithread or not)
+	else
+		AC_MSG_ERROR([Sylpheed requires GThread from GLib to use threading.])
+	fi
+else
+	AC_MSG_RESULT(no)
+fi
+
+dnl Checks for header files.
+AC_HEADER_DIRENT
+AC_HEADER_STDC
+AC_HEADER_SYS_WAIT
+AC_CHECK_HEADERS(fcntl.h sys/file.h unistd.h paths.h \
+		 sys/param.h sys/utsname.h sys/select.h \
+		 wchar.h wctype.h)
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_TYPE_OFF_T
+AC_TYPE_PID_T
+AC_TYPE_SIZE_T
+AC_STRUCT_TM
+
+dnl AC_CHECK_TYPE(wint_t, unsigned int) does not work because wint_t
+dnl may be defined only in wchar.h (this happens with gcc-2.96).
+dnl So we need to use this extended macro.
+SYLPHEED_CHECK_TYPE(wint_t, unsigned int,
+[
+#if HAVE_WCHAR_H
+#include <wchar.h>
+#endif
+], Define to `unsigned int' if <stddef.h> or <wchar.h> doesn't define.)
+
+GNUPG_CHECK_TYPEDEF(u32, HAVE_U32_TYPEDEF, Used to test for a u32 typedef)
+AC_CHECK_SIZEOF(unsigned short, 2)
+AC_CHECK_SIZEOF(unsigned int, 4)
+AC_CHECK_SIZEOF(unsigned long, 4)
+
+dnl Checks for library functions.
+AC_FUNC_ALLOCA
+AC_CHECK_FUNCS(gethostname mkdir mktime socket strstr strchr \
+	       wcsstr wcswcs iswalnum iswspace towlower \
+	       wcslen wcscpy wcsncpy \
+	       uname flock lockf inet_aton inet_addr \
+	       fchmod mkstemp)
+
+dnl *****************
+dnl ** common code **
+dnl *****************
+
+dnl check for glib
 AM_PATH_GLIB(1.2.6,,
 	AC_MSG_ERROR(Test for GLIB failed. See the file 'INSTALL' for help.),
 	gthread)
+
+dnl check for IPv6 option
+AC_ARG_ENABLE(ipv6,
+	[  --enable-ipv6           Enable IPv6 support [default=no]],
+	[ac_cv_enable_ipv6=$enableval], [ac_cv_enable_ipv6=no])
+
+dnl automated checks for IPv6 support.
+AC_MSG_CHECKING([whether to use IPv6])
+if test x"$ac_cv_enable_ipv6" = xyes; then
+	AC_MSG_RESULT(yes)
+	AC_MSG_CHECKING([for IPv6 support])
+	AC_CACHE_VAL(ac_cv_ipv6,[
+		AC_TRY_COMPILE([#define INET6
+				#include <sys/types.h>
+				#include <netinet/in.h>],
+			[int x = IPPROTO_IPV6; struct in6_addr a;],
+			ac_cv_ipv6=yes, ac_cv_ipv6=no)
+	])
+	AC_MSG_RESULT($ac_cv_ipv6)
+	if test $ac_cv_ipv6 = yes; then
+		AC_DEFINE(INET6, 1, Define if you want IPv6 support.)
+	else
+		AC_MSG_WARN(*** IPv6 will not be supported ***)
+		ac_cv_enable_ipv6=no
+	fi
+else
+	AC_MSG_RESULT(no)
+fi
+
+dnl Check for OpenSSL
+AM_PATH_OPENSSL
+
+dnl Check for libjconv
+AC_ARG_ENABLE(jconv,
+	[  --disable-jconv         Do not use libjconv],
+	[ac_cv_enable_jconv=$enableval], [ac_cv_enable_jconv=yes])
+if test "$ac_cv_enable_jconv" = yes; then
+	AC_CHECK_LIB(jconv, jconv_alloc_conv,,[ac_cv_enable_jconv=no])
+fi
+
+dnl ************************
+dnl ** GTK user interface **
+dnl ************************
+
+dnl Checks for GTK
 AM_PATH_GTK(1.2.6,,
 	AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
 
@@ -119,66 +227,39 @@ fi
 CFLAGS="$CFLAGS_SAVE"
 LDFLAGS="$LDFLAGS_SAVE"
 
-dnl Check for built-in image view support
-AC_ARG_ENABLE(gdk-pixbuf,
-	[  --disable-gdk-pixbuf    Do not use gdk-pixbuf],
-	[ac_cv_enable_gdk_pixbuf=$enableval], [ac_cv_enable_gdk_pixbuf=yes])
-AC_ARG_ENABLE(imlib,
-	[  --disable-imlib         Do not use imlib],
-	[ac_cv_enable_imlib=$enableval], [ac_cv_enable_imlib=yes])
-
-if test "$ac_cv_enable_gdk_pixbuf" = yes; then
-	AM_PATH_GDK_PIXBUF(0.8.0,
-		[AC_DEFINE(HAVE_GDK_PIXBUF, 1, Define if you use gdk-pixbuf to support image view)
-		 ac_cv_enable_imlib=no], [ac_cv_enable_gdk_pixbuf=no])
-fi
-if test "$ac_cv_enable_imlib" = yes; then
-	AM_PATH_GDK_IMLIB(1.9,
-		AC_DEFINE(HAVE_GDK_IMLIB, 1, Define if you use gdk_imlib to support image view),
-		[ac_cv_enable_imlib=no])
-fi
-if test "$ac_cv_enable_gdk_pixbuf" = no -a "$ac_cv_enable_imlib" = no; then
-	AC_MSG_WARN(*** Built-in image view will not be supported ***)
-fi
-
-dnl GPGME is used to support OpenPGP 
-AC_ARG_ENABLE(gpgme,
-	[  --enable-gpgme          Enable GnuPG support using GPGME [default=no]],
-	[ac_cv_enable_gpgme=$enableval], [ac_cv_enable_gpgme=no])
-AC_MSG_CHECKING([whether to use GPGME])
-if test $ac_cv_enable_gpgme = yes; then
+dnl GNU/Aspell is used for spell checking
+AC_ARG_ENABLE(aspell,
+	[  --enable-aspell         Enable GNU/aspell support [default=no]],
+	[ac_cv_enable_aspell=$enableval], [ac_cv_enable_aspell=no])
+AC_MSG_CHECKING([whether to use GNU/aspell])
+if test $ac_cv_enable_aspell = yes; then
 	AC_MSG_RESULT(yes)
-	AM_PATH_GPGME(0.3.10, AC_DEFINE(USE_GPGME, 1, Define if you use GPGME to support OpenPGP.),
-		      [use_gpgme=no
-		       ac_cv_enable_gpgme=no])
+	AM_PATH_ASPELL(0.50, AC_DEFINE(USE_ASPELL, 1, Define if you use ASPELL to support spell checking),
+		      [use_aspell=no ac_cv_enable_aspell=no])
 else
 	AC_MSG_RESULT(no)
 fi
 
-dnl for JPilot support in addressbook
-dnl no check for libraries; these are dynamically loaded
-AC_ARG_ENABLE(jpilot,
-	[  --enable-jpilot         Enable JPilot support [default=no]],
-	[ac_cv_enable_jpilot=$enableval], [ac_cv_enable_jpilot=no])
-AC_MSG_CHECKING([whether to use JPilot])
-if test "$ac_cv_enable_jpilot" = yes; then
-	AC_MSG_RESULT(yes)
-	AC_CHECK_HEADERS(pi-args.h pi-appinfo.h pi-address.h,
-			 [ AC_DEFINE(USE_JPILOT, 1, Define if you want JPilot support in addressbook.) ],
-			 [ ac_cv_enable_jpilot=no ])
-	if test "$ac_cv_enable_jpilot" = no; then
-		AC_CHECK_HEADERS(libpisock/pi-args.h libpisock/pi-appinfo.h libpisock/pi-address.h,
-				 [ ac_cv_enable_jpilot=yes
-				   AC_DEFINE(USE_JPILOT, 1, Define if you want JPilot support in addressbook.) ])
+dnl want crash dialog
+AC_ARG_ENABLE(crash-dialog,
+	[  --enable-crash-dialog   Enable crash dialog [default=no]],
+	[ac_cv_enable_crash_dialog=$enableval], [ac_cv_enable_crash_dialog=no])
+if test $ac_cv_enable_crash_dialog = yes; then
+dnl check if GDB is somewhere
+	AC_CHECK_PROG(ac_cv_enable_crash_dialog, gdb, yes, no)
+	AC_MSG_CHECKING([whether to use crash dialog])
+	if test $ac_cv_enable_crash_dialog = yes; then
+		AC_DEFINE(CRASH_DIALOG, 1, Pop up crash dialog)
 	fi
-	AC_MSG_CHECKING([whether jpilot is available])
-	AC_MSG_RESULT($ac_cv_enable_jpilot)
+	AC_MSG_RESULT($ac_cv_enable_crash_dialog)
+fi
 
-	if test "$ac_cv_enable_jpilot" = yes; then
-		LIBS="$LIBS -lpisock"
-	fi
-else
-	AC_MSG_RESULT(no)
+dnl Check for X-Face support
+AC_ARG_ENABLE(compface,
+	[  --disable-compface      Do not use compface (X-Face)],
+	[ac_cv_enable_compface=$enableval], [ac_cv_enable_compface=yes])
+if test "$ac_cv_enable_compface" = yes; then
+	AC_CHECK_LIB(compface, uncompface,,[ac_cv_enable_compface=no])
 fi
 
 dnl for LDAP support in addressbook
@@ -225,138 +306,96 @@ else
 	AC_MSG_RESULT(no)
 fi
 
-dnl Check for OpenSSL
-AM_PATH_OPENSSL
-
-dnl Check for X-Face support
-AC_ARG_ENABLE(compface,
-	[  --disable-compface      Do not use compface (X-Face)],
-	[ac_cv_enable_compface=$enableval], [ac_cv_enable_compface=yes])
-if test "$ac_cv_enable_compface" = yes; then
-	AC_CHECK_LIB(compface, uncompface,,[ac_cv_enable_compface=no])
-fi
-
-dnl Check for libjconv
-AC_ARG_ENABLE(jconv,
-	[  --disable-jconv         Do not use libjconv],
-	[ac_cv_enable_jconv=$enableval], [ac_cv_enable_jconv=yes])
-if test "$ac_cv_enable_jconv" = yes; then
-	AC_CHECK_LIB(jconv, jconv_alloc_conv,,[ac_cv_enable_jconv=no])
-fi
-
-AC_CHECK_LIB(xpg4, setlocale)
-
-dnl for GThread support (currently disabled)
-dnl AC_ARG_ENABLE(threads,
-dnl	[  --enable-threads        Enable multithread support [default=no]],
-dnl	[use_threads=$enableval], [use_threads=no])
-
-AC_MSG_CHECKING([whether to use threads])
-if test x"$use_threads" = xyes ; then
+dnl for JPilot support in addressbook
+dnl no check for libraries; these are dynamically loaded
+AC_ARG_ENABLE(jpilot,
+	[  --enable-jpilot         Enable JPilot support [default=no]],
+	[ac_cv_enable_jpilot=$enableval], [ac_cv_enable_jpilot=no])
+AC_MSG_CHECKING([whether to use JPilot])
+if test "$ac_cv_enable_jpilot" = yes; then
 	AC_MSG_RESULT(yes)
-	if test ! -z `$GLIB_CONFIG --help 2>&1 |grep 'gthread'` ; then
-		CFLAGS="$CFLAGS `$GLIB_CONFIG --cflags gthread`"
-		LIBS="$LIBS `$GLIB_CONFIG --libs gthread`"
-		AC_DEFINE(USE_THREADS, 1, Whether to use multithread or not)
-	else
-		AC_MSG_ERROR([Sylpheed requires GThread from GLib to use threading.])
+	AC_CHECK_HEADERS(pi-args.h pi-appinfo.h pi-address.h,
+			 [ AC_DEFINE(USE_JPILOT, 1, Define if you want JPilot support in addressbook.) ],
+			 [ ac_cv_enable_jpilot=no ])
+	if test "$ac_cv_enable_jpilot" = no; then
+		AC_CHECK_HEADERS(libpisock/pi-args.h libpisock/pi-appinfo.h libpisock/pi-address.h,
+				 [ ac_cv_enable_jpilot=yes
+				   AC_DEFINE(USE_JPILOT, 1, Define if you want JPilot support in addressbook.) ])
+	fi
+	AC_MSG_CHECKING([whether jpilot is available])
+	AC_MSG_RESULT($ac_cv_enable_jpilot)
+
+	if test "$ac_cv_enable_jpilot" = yes; then
+		LIBS="$LIBS -lpisock"
 	fi
 else
 	AC_MSG_RESULT(no)
 fi
 
-dnl check for IPv6 option
-AC_ARG_ENABLE(ipv6,
-	[  --enable-ipv6           Enable IPv6 support [default=no]],
-	[ac_cv_enable_ipv6=$enableval], [ac_cv_enable_ipv6=no])
+dnl Check for built-in image view support
+AC_ARG_ENABLE(gdk-pixbuf,
+	[  --disable-gdk-pixbuf    Do not use gdk-pixbuf],
+	[ac_cv_enable_gdk_pixbuf=$enableval], [ac_cv_enable_gdk_pixbuf=yes])
+AC_ARG_ENABLE(imlib,
+	[  --disable-imlib         Do not use imlib],
+	[ac_cv_enable_imlib=$enableval], [ac_cv_enable_imlib=yes])
 
-dnl automated checks for IPv6 support.
-AC_MSG_CHECKING([whether to use IPv6])
-if test x"$ac_cv_enable_ipv6" = xyes; then
+if test "$ac_cv_enable_gdk_pixbuf" = yes; then
+	AM_PATH_GDK_PIXBUF(0.8.0,
+		[AC_DEFINE(HAVE_GDK_PIXBUF, 1, Define if you use gdk-pixbuf to support image view)
+		 ac_cv_enable_imlib=no], [ac_cv_enable_gdk_pixbuf=no])
+fi
+if test "$ac_cv_enable_imlib" = yes; then
+	AM_PATH_GDK_IMLIB(1.9,
+		AC_DEFINE(HAVE_GDK_IMLIB, 1, Define if you use gdk_imlib to support image view),
+		[ac_cv_enable_imlib=no])
+fi
+if test "$ac_cv_enable_gdk_pixbuf" = no -a "$ac_cv_enable_imlib" = no; then
+	AC_MSG_WARN(*** Built-in image view will not be supported ***)
+fi
+
+dnl GPGME is used to support OpenPGP 
+AC_ARG_ENABLE(gpgme,
+	[  --enable-gpgme          Enable GnuPG support using GPGME [default=no]],
+	[ac_cv_enable_gpgme=$enableval], [ac_cv_enable_gpgme=no])
+AC_MSG_CHECKING([whether to use GPGME])
+if test $ac_cv_enable_gpgme = yes; then
 	AC_MSG_RESULT(yes)
-	AC_MSG_CHECKING([for IPv6 support])
-	AC_CACHE_VAL(ac_cv_ipv6,[
-		AC_TRY_COMPILE([#define INET6
-				#include <sys/types.h>
-				#include <netinet/in.h>],
-			[int x = IPPROTO_IPV6; struct in6_addr a;],
-			ac_cv_ipv6=yes, ac_cv_ipv6=no)
-	])
-	AC_MSG_RESULT($ac_cv_ipv6)
-	if test $ac_cv_ipv6 = yes; then
-		AC_DEFINE(INET6, 1, Define if you want IPv6 support.)
-	else
-		AC_MSG_WARN(*** IPv6 will not be supported ***)
-		ac_cv_enable_ipv6=no
-	fi
+	AM_PATH_GPGME(0.3.10, AC_DEFINE(USE_GPGME, 1, Define if you use GPGME to support OpenPGP.),
+		      [use_gpgme=no
+		       ac_cv_enable_gpgme=no])
 else
 	AC_MSG_RESULT(no)
 fi
 
-dnl GNU/Aspell is used for spell checking
-AC_ARG_ENABLE(aspell,
-	[  --enable-aspell         Enable GNU/aspell support [default=no]],
-	[ac_cv_enable_aspell=$enableval], [ac_cv_enable_aspell=no])
-AC_MSG_CHECKING([whether to use GNU/aspell])
-if test $ac_cv_enable_aspell = yes; then
-	AC_MSG_RESULT(yes)
-	AM_PATH_ASPELL(0.50, AC_DEFINE(USE_ASPELL, 1, Define if you use ASPELL to support spell checking),
-		      [use_aspell=no ac_cv_enable_aspell=no])
-else
-	AC_MSG_RESULT(no)
+dnl *************************
+dnl ** section for plugins **
+dnl *************************
+
+PLUGINS=""
+
+AC_ARG_ENABLE(demo-plugin,
+	[  --enable-demo-plugin    Build demo plugin [default=no]],
+	[ac_cv_enable_demo_plugin=$enableval], [ac_cv_enable_demo_plugin=no])
+if test x"$ac_cv_enable_demo_plugin" = xyes; then
+	PLUGINS="demo $PLUGINS"
 fi
 
-dnl want crash dialog
-AC_ARG_ENABLE(crash-dialog,
-	[  --enable-crash-dialog   Enable crash dialog [default=no]],
-	[ac_cv_enable_crash_dialog=$enableval], [ac_cv_enable_crash_dialog=no])
-if test $ac_cv_enable_crash_dialog = yes; then
-dnl check if GDB is somewhere
-	AC_CHECK_PROG(ac_cv_enable_crash_dialog, gdb, yes, no)
-	AC_MSG_CHECKING([whether to use crash dialog])
-	if test $ac_cv_enable_crash_dialog = yes; then
-		AC_DEFINE(CRASH_DIALOG, 1, Pop up crash dialog)
-	fi
-	AC_MSG_RESULT($ac_cv_enable_crash_dialog)
+AC_ARG_ENABLE(spamassassin-plugin,
+	[  --enable-spamassassin-plugin    Build spamassassin plugin [default=no]],
+	[ac_cv_enable_spamassassin_plugin=$enableval], [ac_cv_enable_spamassassin_plugin=no])
+if test x"$ac_cv_enable_spamassassin_plugin" = xyes; then
+	AC_SPAMASSASSIN
+
+	PLUGINS="spamassassin $PLUGINS"
 fi
 
-dnl Checks for header files.
-AC_HEADER_DIRENT
-AC_HEADER_STDC
-AC_HEADER_SYS_WAIT
-AC_CHECK_HEADERS(fcntl.h sys/file.h unistd.h paths.h \
-		 sys/param.h sys/utsname.h sys/select.h \
-		 wchar.h wctype.h)
+AC_SUBST(PLUGINS)
+AC_SUBST(PLUGINDIR)
 
-dnl Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
-AC_TYPE_OFF_T
-AC_TYPE_PID_T
-AC_TYPE_SIZE_T
-AC_STRUCT_TM
-
-dnl AC_CHECK_TYPE(wint_t, unsigned int) does not work because wint_t
-dnl may be defined only in wchar.h (this happens with gcc-2.96).
-dnl So we need to use this extended macro.
-SYLPHEED_CHECK_TYPE(wint_t, unsigned int,
-[
-#if HAVE_WCHAR_H
-#include <wchar.h>
-#endif
-], Define to `unsigned int' if <stddef.h> or <wchar.h> doesn't define.)
-
-GNUPG_CHECK_TYPEDEF(u32, HAVE_U32_TYPEDEF, Used to test for a u32 typedef)
-AC_CHECK_SIZEOF(unsigned short, 2)
-AC_CHECK_SIZEOF(unsigned int, 4)
-AC_CHECK_SIZEOF(unsigned long, 4)
-
-dnl Checks for library functions.
-AC_FUNC_ALLOCA
-AC_CHECK_FUNCS(gethostname mkdir mktime socket strstr strchr \
-	       wcsstr wcswcs iswalnum iswspace towlower \
-	       wcslen wcscpy wcsncpy \
-	       uname flock lockf inet_aton inet_addr \
-	       fchmod mkstemp)
+dnl ****************************
+dnl ** Final configure output **
+dnl ****************************
 
 AC_OUTPUT([
 Makefile
@@ -368,6 +407,9 @@ src/common/version.h
 src/Makefile
 src/common/Makefile
 src/gtk/Makefile
+src/plugins/Makefile
+src/plugins/demo/Makefile
+src/plugins/spamassassin/Makefile
 faq/Makefile
 faq/de/Makefile
 faq/en/Makefile
@@ -405,6 +447,7 @@ echo "libjconv      : $ac_cv_enable_jconv"
 echo "IPv6          : $ac_cv_enable_ipv6"
 echo "GNU/aspell    : $ac_cv_enable_aspell"
 echo "Crash dialog  : $ac_cv_enable_crash_dialog"
+echo "Plugins       : $PLUGINS"
 echo ""
 echo "The binary will be installed in $prefix/bin"
 echo ""

@@ -22,15 +22,10 @@
 
 #include "matcher.h"
 
-/*
-void prefs_matcher_read_config	(void);
-void prefs_matcher_write_config	(void);
-*/
+typedef void PrefsMatcherSignal	(MatcherList *matchers);
 
-typedef void PrefsMatcherSignal(MatcherList * matchers);
-
-void prefs_matcher_open		(MatcherList * matchers,
-				 PrefsMatcherSignal * cb);
-void prefs_matcher_exec_info(void);
+void prefs_matcher_open		(MatcherList *matchers,
+				 PrefsMatcherSignal *cb);
+void prefs_matcher_exec_info	(void);
 
 #endif /* __PREFS_FILTER_H__ */

@@ -1603,17 +1603,42 @@ void procmsg_msginfo_write_flags(MsgInfo *msginfo)
 	g_free(destdir);
 }
 
-gboolean procmsg_msg_has_marked_parent	(MsgInfo *info)
+/*!
+ *\brief	check for flags (e.g. mark) in prior msgs of current thread
+ *
+ *\param	info Current message
+ *\param	perm_flags Flags to be checked
+ *\param	parentmsgs Hash of prior msgs to avoid loops
+ *
+ *\return	gboolean TRUE if perm_flags are found
+ */
+gboolean procmsg_msg_has_flagged_parent_real(MsgInfo *info,
+		MsgPermFlags perm_flags, GHashTable *parentmsgs)
 {
 	MsgInfo *tmp;
+
 	g_return_val_if_fail(info != NULL, FALSE);
+
 	if (info != NULL && info->folder != NULL && info->inreplyto != NULL) {
-		tmp = folder_item_get_msginfo_by_msgid(info->folder, info->inreplyto);
-		if (tmp && MSG_IS_MARKED(tmp->flags)) {
+		tmp = folder_item_get_msginfo_by_msgid(info->folder,
+				info->inreplyto);
+		if (tmp && (tmp->flags.perm_flags & perm_flags)) {
 			procmsg_msginfo_free(tmp);
 			return TRUE;
 		} else if (tmp != NULL) {
-			gboolean result = procmsg_msg_has_marked_parent(tmp);
+			gboolean result;
+
+			if (g_hash_table_lookup(parentmsgs, info)) {
+				debug_print("loop detected: %s%c%d\n",
+					folder_item_get_path(info->folder),
+					G_DIR_SEPARATOR, info->msgnum);
+				result = FALSE;
+			} else {
+				g_hash_table_insert(parentmsgs, info, "1");
+				procmsg_msg_has_flagged_parent_real(tmp,
+						perm_flags, parentmsgs);
+				result = TRUE;
+			}
 			procmsg_msginfo_free(tmp);
 			return result;
 		} else {
@@ -1621,7 +1646,42 @@ gboolean procmsg_msg_has_marked_parent	(MsgInfo *info)
 		}
 	} else
 		return FALSE;
-}	
+}
+
+/*!
+ *\brief	Callback for cleaning up hash of parentmsgs
+ */
+gboolean parentmsgs_hash_remove(gpointer key,
+                            gpointer value,
+                            gpointer user_data)
+{
+	return TRUE;
+}
+
+/*!
+ *\brief	Set up list of parentmsgs
+ *		See procmsg_msg_has_flagged_parent_real()
+ */
+gboolean procmsg_msg_has_flagged_parent(MsgInfo *info, MsgPermFlags perm_flags)
+{
+	gboolean result;
+	GHashTable *parentmsgs = g_hash_table_new(NULL, NULL); 
+
+	result = procmsg_msg_has_flagged_parent_real(info, perm_flags, parentmsgs);
+	g_hash_table_foreach_remove(parentmsgs, parentmsgs_hash_remove, NULL);
+	g_hash_table_destroy(parentmsgs);
+	return result;
+}
+
+/*!
+ *\brief	Check if msgs prior in thread are marked
+ *		See procmsg_msg_has_flagged_parent_real()
+ */
+gboolean procmsg_msg_has_marked_parent(MsgInfo *info)
+{
+	return procmsg_msg_has_flagged_parent(info, MSG_MARKED);
+}
+
 
 GSList *procmsg_find_children (MsgInfo *info)
 {

@@ -95,7 +95,7 @@ RM=rm
 
 ###
 
-VPATH=$(SRCDIR):$(SRCDIR)/common:$(SRCDIR)/gtk:$(PODIR):$(LIBJCONVDIR)
+VPATH=$(SRCDIR):$(SRCDIR)/common:$(SRCDIR)/gtk:$(PODIR):$(LIBJCONVDIR):$(SRCDIR)/plugins/demo
 DEFINES=-DHAVE_CONFIG_H -DHAVE_BYTE_TYPEDEF $(DEBUGDEF)
 EXTRALIBS=-lwsock32
 RESOURCE=appicon
@@ -163,6 +163,7 @@ CFLAGS=$(FLAGS) $(DEFINES) $(INCLUDES)
 
 LIBS= \
 	$(LIBDIR)/glib-2.0.lib \
+	$(LIBDIR)/gmodule-2.0.lib \
 	$(LIBDIR)/gdk.lib \
 	$(LIBDIR)/gtk.lib \
 	$(LIBDIR)/iconv.lib \
@@ -262,6 +263,7 @@ OBJECTS= \
 	passphrase.o \
 	pgptext.o \
 	pine.o \
+	plugin.o \
 	pop.o \
 	prefs.o \
 	prefs_account.o \
@@ -271,6 +273,7 @@ OBJECTS= \
 	prefs_display_header.o \
 	prefs_filtering.o \
 	prefs_folder_item.o \
+	prefs_gtk.o \
 	prefs_matcher.o \
 	prefs_scoring.o \
 	prefs_summary_column.o \
@@ -449,6 +452,7 @@ noticeview.o:	noticeview.c noticeview.h
 passphrase.o: 	passphrase.c passphrase.h
 pgptext.o: 	pgptext.c pgptext.h
 pine.o: 	pine.c pine.h
+plugin.o: 	plugin.c plugin.h
 pop.o: 	pop.c pop.h
 prefs.o: 	prefs.c prefs.h
 prefs_account.o: 	prefs_account.c prefs_account.h
@@ -458,6 +462,7 @@ prefs_customheader.o: 	prefs_customheader.c prefs_customheader.h
 prefs_display_header.o: 	prefs_display_header.c prefs_display_header.h
 prefs_filtering.o: 	prefs_filtering.c prefs_filtering.h
 prefs_folder_item.o: 	prefs_folder_item.c prefs_folder_item.h
+prefs_gtk.o: 	prefs_gtk.c prefs_gtk.h
 prefs_matcher.o: 	prefs_matcher.c prefs_matcher.h
 prefs_scoring.o: 	prefs_scoring.c prefs_scoring.h
 prefs_summary_column.o: 	prefs_summary_column.c prefs_summary_column.h

@@ -43,13 +43,13 @@ src/logwindow.c
 src/main.c
 src/mainwindow.c
 src/matcher.c
-src/menu.c
 src/message_search.c
 src/messageview.c
 src/mimeview.c
 src/news.c
 src/passphrase.c
 src/pop.c
+src/prefs_gtk.c
 src/prefs_account.c
 src/prefs_actions.c
 src/prefs_common.c

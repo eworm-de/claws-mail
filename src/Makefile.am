@@ -1,4 +1,4 @@
-SUBDIRS = common gtk
+SUBDIRS = common gtk plugins
 
 bin_PROGRAMS = sylpheed
 
@@ -19,7 +19,6 @@ sylpheed_SOURCES = \
 	procmsg.c procmsg.h \
 	procheader.c procheader.h \
 	compose.c compose.h \
-	menu.c menu.h \
 	stock_pixmap.c stock_pixmap.h \
 	prefs_gtk.c prefs_gtk.h \
 	prefs_common.c prefs_common.h \
@@ -104,7 +103,6 @@ sylpheed_SOURCES = \
 	sigstatus.c sigstatus.h \
 	simple-gettext.c \
 	manual.c manual.h \
-	stringtable.c stringtable.h \
 	scoring.c scoring.h \
 	matcher.c matcher.h \
 	prefs_matcher.c prefs_matcher.h \
@@ -135,7 +133,6 @@ BUILT_SOURCES = \
 
 EXTRA_DIST = \
 	quote_fmt_parse.h \
-	version.h.in \
 	pixmaps/address_book.xpm \
 	pixmaps/address.xpm \
 	pixmaps/book.xpm \

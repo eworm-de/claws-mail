@@ -170,7 +170,7 @@ static gint xmlprops_write_to( XmlProperty *props, const gchar *fileSpec ) {
 
 		xmlprops_write_elem_e( fp, 0, XMLS_ELTAG_PROP_LIST );
 		props->retVal = MGU_SUCCESS;
-		if( prefs_write_close( pfile ) < 0 ) {
+		if( prefs_file_close( pfile ) < 0 ) {
 			props->retVal = MGU_ERROR_WRITE;
 		}
 	}

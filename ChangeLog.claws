@@ -1,3 +1,334 @@
+2003-01-02 [thorsten]	0.8.8claws39
+
+	* src/prefs.c
+		fixed printing wrong variable
+
+2003-01-02 [thorsten]	0.8.8claws38
+
+	* src/prefs.c
+		fixed acessing members of freed pfile struct
+
+2003-01-02 [thorsten]	0.8.8claws37
+
+	* src/procmsg.c
+		detect loops across several messages
+		as suggested by Christoph Hohmann
+
+2003-01-01 [match]	0.8.8claws36
+
+	* src/addrindex.c
+		fixed another memory leak.
+
+2003-01-01 [match]	0.8.8claws35
+
+	* src/jpilot.[ch]
+		fixed memory leaks. applied Doxygen comments.
+
+2003-01-01 [thorsten]	0.8.8claws34
+
+	* src/procmsg.c
+		inhibit endless loop if msg references itself
+		(closes Bug [ 660477 ] Infinite loop in parent flag search)
+
+2003-01-01 [christoph]	0.8.8claws33
+
+	* src/mainwindow.c
+	* src/gtk/Makefile.am
+	* src/gtk/pluginwindow.c		** NEW **
+	* src/gtk/pluginwindow.h		** NEW **
+		add plugin window
+
+	* src/plugins/demo/demo.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		write better plugin descriptions
+
+2002-12-31 [christoph]	0.8.8claws32
+
+	* src/gtk/prefswindow.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		some small improvements to GTK code
+
+2002-12-31 [christoph]	0.8.8claws31
+
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		enable folder select button
+
+2002-12-31 [christoph]	0.8.8claws30
+
+	* src/mainwindow.c
+	* src/gtk/Makefile.am
+	* src/gtk/prefswindow.c				** NEW **
+	* src/gtk/prefswindow.h				** NEW **
+		add new prefs window
+
+	* src/common/plugin.c
+		don't try to load empty config lines
+	
+	* src/plugins/spamassassin/Makefile.am
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin.h	** NEW **
+	* src/plugins/spamassassin/spamassassin_gtk.c	** NEW **
+		GTK config for SpamAssassin Plugin using
+		the new prefs window
+
+2002-12-31 [paul]	0.8.8claws29
+
+	* po/POTFILES.in
+		remove obsolete entry 'src/menu.c'
+
+2002-12-31 [alfons]	0.8.8claws28
+
+	* src/matcher.[ch]
+	* src/matcher_parser_parse.y
+	* src/prefs_matcher.c
+		add "ignore_thread" and "~ignore_thread" condition so it's
+		possible to make the actions / scoring operate on the ignore
+		thread flag
+
+2002-12-31 [christoph]	0.8.8claws27
+
+	* src/addrbook.c
+	* src/addrindex.c
+	* src/folder.c
+	* src/matcher.c
+	* src/prefs_account.c
+	* src/prefs_actions.c
+	* src/prefs_customheader.c
+	* src/prefs_display_header.c
+	* src/prefs_gtk.c
+	* src/procmime.c
+	* src/toolbar.c
+	* src/xmlprops.c
+	* src/common/prefs.[ch]
+		extend prefs file handling for reading and automatic handling
+		of blocks. When reading prefs_set_block_label will automatically
+		move on to the block. When writing it will copy all other blocks
+		automatically
+
+	* src/common/plugin.c
+		Now loading plugin filenames from [Plugins] block in
+		sylpheed rc file
+
+2002-12-30 [christoph]	0.8.8claws26
+
+	* src/common/hooks.[ch]
+		return abort status to caller of hooks_invoke
+		
+	* src/inc.[ch]
+		invoke message filtering hook and stop
+		default handling when filter returns abort
+
+	* src/common/plugin.[ch]
+	* src/plugins/demo/demo.c
+		modify plugin loader, because resolving symbols for strings
+		does not work correctly
+	
+	* configure.in
+	* ac/spamassassin.m4				** NEW **
+	* src/plugins/spamassassin/.cvsignore		** NEW **
+	* src/plugins/spamassassin/Makefile.am		** NEW **
+	* src/plugins/spamassassin/README		** NEW **
+	* src/plugins/spamassassin/libspamc.[ch]	** NEW **
+	* src/plugins/spamassassin/spamassassin.c	** NEW **
+	* src/plugins/spamassassin/utils.[ch]		** NEW **
+		add spamassassin plugin, see src/plugins/spamassassin/README
+		for details
+
+2002-12-29 [alfons]	0.8.8claws25
+
+	* src/mainwindow.c
+		when moving focus from a message view to the main 
+		window, don't forget to select the summary node
+		of the displayed message. should fix "[ 659103 ] 
+		focus-follows-mouse confuses sylpheed"
+
+2002-12-29 [christoph]	0.8.8claws24
+
+	* src/Makefile.am
+	* src/stringtable.[ch]		** REMOVE **
+	* src/common/Makefile.am
+	* src/common/stringtable.[ch]	** NEW **
+		move stringtable files to common directory
+
+2002-12-29 [christoph]	0.8.8claws23
+
+	* src/Makefile.am
+	* src/menu.[ch]			** REMOVE **
+	* src/gtk/Makefile.am
+	* src/gtk/menu.[ch]		** NEW **
+		move menu files to gtk directory
+
+2002-12-29 [match]	0.8.8claws22
+
+	* src/addressbook.c
+	* src/syldap.c
+		moved UI specific code out of LDAP code into addressbook
+		UI code. fixed memory leak.
+
+2002-12-29 [christoph]	0.8.8claws21
+
+	* src/folder.c
+		only check for IGNORED parent message when message is
+		not IGNORED itself
+
+2002-12-29 [alfons]	0.8.8claws20
+
+	* src/summaryview.c
+		set gtksctree's anchor correct (immediate execute
+		changes the tree's layout, and anchor points at 
+		the incorrect row). fixes "[ 657233 ] multiple msg 
+		delete sometimes off by 1".
+		we probably have to look for more tree layout /
+		anchor glitches.
+
+2002-12-29 [paul]	0.8.8claws19
+
+	* src/summaryview.c
+		fix bug [ 659054 ] incorrect sorting of 'From' column
+		when using 'display sender using address book'
+		thanks to Alfons and Luke Plant
+
+2002-12-29 [christoph]	0.8.8claws18
+
+	* src/folder.c
+	* src/procmsg.[ch]
+		check parent messages for IGNORE THREAD flag, when adding,
+		moving or copying messages to a folder
+
+2002-12-27 [alfons]	0.8.8claws17
+
+	re-organize matcher part 5; more to come
+
+	* src/matcher.c
+		hash keywords in matchparser_tab 
+
+2002-12-27 [alfons]	0.8.8claws16
+
+	re-organize matcher part 4; more to come
+
+	* src/matcher_parser.h
+	* src/matcher_parser_lex.l
+	* src/matcher_parser_parse.y
+		cleanup
+
+2002-12-27 [alfons]	0.8.8claws15
+
+	re-organize matcher part 3; more to come
+
+	* src/matcher.[ch]
+		cleanup
+
+2002-12-27 [alfons]	0.8.8claws14
+
+	re-organize matcher part 2; more to come but this should
+	work. cc me if there are any regressions.
+
+	* src/matcher.h
+		add prototype for get_matchparser_tab_id()
+	* src/matcher_parser_lex.l
+		look up keywords using matchparser_tab_id();
+
+2002-12-27 [alfons]	0.8.8claws12
+
+	re-organize matcher part 1
+
+	* src/matcher.h
+		map yacc generated constants to sylpheed matcher constants
+	* src/matcher.c
+		add function to find a matcher constant from a string
+
+2002-12-27 [christoph]	0.8.8claws11
+
+	* src/compose.c
+		MENUITEM_ADD casts the 4th argument from integer to pointer
+		so it probably should not be a pointer, this means we
+		should use account id for it and not the account's pointer
+
+2002-12-27 [paul]	0.8.8claws10
+
+	* src/mainwindow.c
+		remove unneeded 'GtkWidget *vbox'
+		
+	* src/summaryview.c
+		further sync with 0.8.8 - make sort
+		by recipient work as expected
+		
+	* NEWS
+		sync with 0.8.8
+
+2002-12-27 [paul]	0.8.8claws9
+
+	* po/pt_BR.po
+		updated by Ivan F. Martinez
+		
+2002-12-27 [darko]	0.8.8claws8
+
+	* src/common/utils.c
+		added locked pattern to extended search
+
+2002-12-27 [alfons]	0.8.8claws7
+
+	* src/prefs_matcher.[ch]
+		clean up
+
+2002-12-26 [alfons]	0.8.8claws6
+
+	* src/matcher.[ch]
+	* src/matcher_parser_lex.l
+	* src/matcher_parser_parse.y
+	* src/prefs_matcher.c
+		allow color label as a condition in the matcher
+
+2002-12-26 [oliver]	0.8.8claws5
+	
+	* src/toolbar.c 
+		enable Addressbook for Main and Messageview
+	* src/prefs_actions.c
+		enable actions in Messageview
+
+2002-12-26 [christoph]	0.8.8claws4
+
+	* src/common/plugin.c
+		add a little debug output
+	* configure.in
+	* src/plugins/demo/Makefile.am
+		better use of automake
+
+2002-12-26 [christoph]	0.8.8claws3
+
+	* src/Makefile.am
+	* src/common/Makefile.am
+		fix "make distdir"
+
+2002-12-26 [christoph]	0.8.8claws2
+
+	* configure.in
+		sort configure checks into common / gtk / plugins
+	* po/POTFILES.in
+		add src/prefs_gtk.c
+	* src/Makefile.am
+		add plugins SUBDIR
+	* src/main.c
+	* src/common/sylpheed.[ch]
+		added now sylpheed_done function for shutdown
+	* src/common/Makefile.am
+	* src/common/plugin.[ch]		** NEW **
+		plugin loader and unloader
+	* src/plugins/.cvsignore		** NEW **
+	* src/plugins/Makefile.am		** NEW **
+		build plugins
+	* src/plugins/demo/.cvsignore		** NEW **
+	* src/plugins/demo/Makefile.am		** NEW **
+	* src/plugins/demo/demo.c		** NEW **
+		small demo plugin that installs a logtext hook and
+		outputs the log text to stdout
+
+2002-12-26 [paul]	0.8.8claws1
+
+	* po/es.po
+		updated by Ricardo Mones Lastra
+
 2002-12-26 [paul]	0.8.8claws
 
 	* 0.8.8claws released

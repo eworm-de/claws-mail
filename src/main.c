@@ -443,6 +443,7 @@ int main(int argc, char *argv[])
 #if USE_ASPELL       
 	gtkaspell_checkers_delete();
 #endif
+	sylpheed_done();
 
 #ifdef WIN32
 	stop_mswin_helper();
@@ -697,10 +698,6 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 #endif
 		unlink(get_crashfile_name());
 
-#if USE_OPENSSL
-	ssl_done();
-#endif
-
 	gtk_main_quit();
 }
 
@@ -751,9 +748,9 @@ static gint prohibit_duplicate_launch(void)
 	gchar *path;
 
 	path = NULL;
-	lock_sock = sock_connect("localhost", LOCK_PORT);
+	lock_sock = sock_connect("localhost", LOCK_PORT+1);
 	if (!lock_sock) {
-		return fd_open_lock_service(LOCK_PORT);
+		return fd_open_lock_service(LOCK_PORT+1);
 	}
 #else
 	gint uxsock;

@@ -121,6 +121,8 @@ CLEAN :
 	-@erase "$(INTDIR)\noticeview.obj"
 	-@erase "$(INTDIR)\passphrase.obj"
 	-@erase "$(INTDIR)\pine.obj"
+	-@erase "$(INTDIR)\plugin.obj"
+	-@erase "$(INTDIR)\pluginwindow.obj"
 	-@erase "$(INTDIR)\pop.obj"
 	-@erase "$(INTDIR)\prefs.obj"
 	-@erase "$(INTDIR)\prefs_account.obj"
@@ -136,6 +138,7 @@ CLEAN :
 	-@erase "$(INTDIR)\prefs_summary_column.obj"
 	-@erase "$(INTDIR)\prefs_template.obj"
 	-@erase "$(INTDIR)\prefs_toolbar.obj"
+	-@erase "$(INTDIR)\prefswindow.obj"
 	-@erase "$(INTDIR)\procheader.obj"
 	-@erase "$(INTDIR)\procmime.obj"
 	-@erase "$(INTDIR)\procmsg.obj"
@@ -316,9 +319,10 @@ LINK32_OBJS= \
 	"$(INTDIR)\noticeview.obj" \
 	"$(INTDIR)\passphrase.obj" \
 	"$(INTDIR)\pine.obj" \
+	"$(INTDIR)\plugin.obj" \
+	"$(INTDIR)\pluginwindow.obj" \
 	"$(INTDIR)\pop.obj" \
 	"$(INTDIR)\prefs.obj" \
-	"$(INTDIR)\prefs_gtk.obj" \
 	"$(INTDIR)\prefs_account.obj" \
 	"$(INTDIR)\prefs_actions.obj" \
 	"$(INTDIR)\prefs_common.obj" \
@@ -326,11 +330,13 @@ LINK32_OBJS= \
 	"$(INTDIR)\prefs_display_header.obj" \
 	"$(INTDIR)\prefs_filtering.obj" \
 	"$(INTDIR)\prefs_folder_item.obj" \
+	"$(INTDIR)\prefs_gtk.obj" \
 	"$(INTDIR)\prefs_matcher.obj" \
 	"$(INTDIR)\prefs_scoring.obj" \
 	"$(INTDIR)\prefs_summary_column.obj" \
 	"$(INTDIR)\prefs_template.obj" \
 	"$(INTDIR)\prefs_toolbar.obj" \
+	"$(INTDIR)\prefswindow.obj" \
 	"$(INTDIR)\procheader.obj" \
 	"$(INTDIR)\procmime.obj" \
 	"$(INTDIR)\procmsg.obj" \
@@ -378,6 +384,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\xmlprops.obj" \
 	"$(INTDIR)\sylpheed.res" \
 	"..\..\..\lib\glib-2.0.lib" \
+	"..\..\..\lib\gmodule-2.0.lib" \
 	"..\..\..\lib\gtk.lib" \
 	"..\..\..\lib\gdk.lib" \
 	"..\..\..\lib\iconv.lib" \
@@ -575,6 +582,10 @@ CLEAN :
 	-@erase "$(INTDIR)\passphrase.sbr"
 	-@erase "$(INTDIR)\pine.obj"
 	-@erase "$(INTDIR)\pine.sbr"
+	-@erase "$(INTDIR)\plugin.obj"
+	-@erase "$(INTDIR)\plugin.sbr"
+	-@erase "$(INTDIR)\pluginwindow.obj"
+	-@erase "$(INTDIR)\pluginwindow.sbr"
 	-@erase "$(INTDIR)\pop.obj"
 	-@erase "$(INTDIR)\pop.sbr"
 	-@erase "$(INTDIR)\prefs.obj"
@@ -605,6 +616,8 @@ CLEAN :
 	-@erase "$(INTDIR)\prefs_template.sbr"
 	-@erase "$(INTDIR)\prefs_toolbar.obj"
 	-@erase "$(INTDIR)\prefs_toolbar.sbr"
+	-@erase "$(INTDIR)\prefswindow.obj"
+	-@erase "$(INTDIR)\prefswindow.sbr"
 	-@erase "$(INTDIR)\procheader.obj"
 	-@erase "$(INTDIR)\procheader.sbr"
 	-@erase "$(INTDIR)\procmime.obj"
@@ -707,7 +720,7 @@ CLEAN :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
 CPP=cl.exe
-CPP_PROJ=/nologo /MD /W3 /Gm /GX /ZI /Od /I "..\src" /I "..\src\common" /I "..\src\gtk" /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /I "\dev\proj\aspell\interfaces\cc" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\sylpheed_debug.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+CPP_PROJ=/nologo /MD /W3 /Gm /GX /ZI /Od /I "." /I "\dev\proj\aspell\interfaces\cc" /I "..\src" /I "..\src\common" /I "..\src\gtk" /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\sylpheed_debug.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 
 .c{$(INTDIR)}.obj::
    $(CPP) @<<
@@ -830,9 +843,10 @@ BSC32_SBRS= \
 	"$(INTDIR)\noticeview.sbr" \
 	"$(INTDIR)\passphrase.sbr" \
 	"$(INTDIR)\pine.sbr" \
+	"$(INTDIR)\plugin.sbr" \
+	"$(INTDIR)\pluginwindow.sbr" \
 	"$(INTDIR)\pop.sbr" \
 	"$(INTDIR)\prefs.sbr" \
-	"$(INTDIR)\prefs_gtk.sbr" \
 	"$(INTDIR)\prefs_account.sbr" \
 	"$(INTDIR)\prefs_actions.sbr" \
 	"$(INTDIR)\prefs_common.sbr" \
@@ -840,11 +854,13 @@ BSC32_SBRS= \
 	"$(INTDIR)\prefs_display_header.sbr" \
 	"$(INTDIR)\prefs_filtering.sbr" \
 	"$(INTDIR)\prefs_folder_item.sbr" \
+	"$(INTDIR)\prefs_gtk.sbr" \
 	"$(INTDIR)\prefs_matcher.sbr" \
 	"$(INTDIR)\prefs_scoring.sbr" \
 	"$(INTDIR)\prefs_summary_column.sbr" \
 	"$(INTDIR)\prefs_template.sbr" \
 	"$(INTDIR)\prefs_toolbar.sbr" \
+	"$(INTDIR)\prefswindow.sbr" \
 	"$(INTDIR)\procheader.sbr" \
 	"$(INTDIR)\procmime.sbr" \
 	"$(INTDIR)\procmsg.sbr" \
@@ -983,9 +999,10 @@ LINK32_OBJS= \
 	"$(INTDIR)\noticeview.obj" \
 	"$(INTDIR)\passphrase.obj" \
 	"$(INTDIR)\pine.obj" \
+	"$(INTDIR)\plugin.obj" \
+	"$(INTDIR)\pluginwindow.obj" \
 	"$(INTDIR)\pop.obj" \
 	"$(INTDIR)\prefs.obj" \
-	"$(INTDIR)\prefs_gtk.obj" \
 	"$(INTDIR)\prefs_account.obj" \
 	"$(INTDIR)\prefs_actions.obj" \
 	"$(INTDIR)\prefs_common.obj" \
@@ -993,11 +1010,13 @@ LINK32_OBJS= \
 	"$(INTDIR)\prefs_display_header.obj" \
 	"$(INTDIR)\prefs_filtering.obj" \
 	"$(INTDIR)\prefs_folder_item.obj" \
+	"$(INTDIR)\prefs_gtk.obj" \
 	"$(INTDIR)\prefs_matcher.obj" \
 	"$(INTDIR)\prefs_scoring.obj" \
 	"$(INTDIR)\prefs_summary_column.obj" \
 	"$(INTDIR)\prefs_template.obj" \
 	"$(INTDIR)\prefs_toolbar.obj" \
+	"$(INTDIR)\prefswindow.obj" \
 	"$(INTDIR)\procheader.obj" \
 	"$(INTDIR)\procmime.obj" \
 	"$(INTDIR)\procmsg.obj" \
@@ -1045,6 +1064,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\xmlprops.obj" \
 	"$(INTDIR)\sylpheed.res" \
 	"..\..\..\lib\glib-2.0.lib" \
+	"..\..\..\lib\gmodule-2.0.lib" \
 	"..\..\..\lib\gtk.lib" \
 	"..\..\..\lib\gdk.lib" \
 	"..\..\..\lib\iconv.lib" \
@@ -2353,7 +2373,7 @@ SOURCE=..\src\common\md5.c
 
 !ENDIF 
 
-SOURCE=..\src\menu.c
+SOURCE=..\src\gtk\menu.c
 
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 
@@ -2582,6 +2602,42 @@ SOURCE=..\src\pine.c
 
 
 "$(INTDIR)\pine.obj"	"$(INTDIR)\pine.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=..\src\common\plugin.c
+
+!IF  "$(CFG)" == "sylpheed - Win32 Release"
+
+
+"$(INTDIR)\plugin.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
+
+
+"$(INTDIR)\plugin.obj"	"$(INTDIR)\plugin.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=..\src\gtk\pluginwindow.c
+
+!IF  "$(CFG)" == "sylpheed - Win32 Release"
+
+
+"$(INTDIR)\pluginwindow.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
+
+
+"$(INTDIR)\pluginwindow.obj"	"$(INTDIR)\pluginwindow.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -2852,6 +2908,24 @@ SOURCE=..\src\prefs_toolbar.c
 
 
 "$(INTDIR)\prefs_toolbar.obj"	"$(INTDIR)\prefs_toolbar.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=..\src\gtk\prefswindow.c
+
+!IF  "$(CFG)" == "sylpheed - Win32 Release"
+
+
+"$(INTDIR)\prefswindow.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
+
+
+"$(INTDIR)\prefswindow.obj"	"$(INTDIR)\prefswindow.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -3361,7 +3435,7 @@ SOURCE=..\src\string_match.c
 
 !ENDIF 
 
-SOURCE=..\src\stringtable.c
+SOURCE=..\src\common\stringtable.c
 
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 

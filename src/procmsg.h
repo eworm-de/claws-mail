@@ -290,6 +290,8 @@ void procmsg_msginfo_unset_flags	(MsgInfo *msginfo,
 gint procmsg_remove_special_headers	(const gchar 	*in, 
 					 const gchar 	*out);
 
+gboolean procmsg_msg_has_flagged_parent	(MsgInfo 	*info,
+					 MsgPermFlags    perm_flags);
 gboolean procmsg_msg_has_marked_parent	(MsgInfo	*info);
 GSList *procmsg_find_children		(MsgInfo	*info);
 #endif /* __PROCMSG_H__ */

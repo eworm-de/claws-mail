@@ -161,7 +161,12 @@ void crash_main(const char *arg)
 }
 
 /*!
- *\brief	(can't get pixmap working, so discarding it)
+ *\brief	show crash dialog
+ *
+ *\param	text Description
+ *\param	debug_output Output text by gdb
+ *
+ *\return	GtkWidget * Dialog widget
  */
 static GtkWidget *crash_dialog_show(const gchar *text, const gchar *debug_output)
 {

@@ -1,5 +1,13 @@
 Changes of Sylpheed
 
+* 0.8.8
+
+    * The option to sort by recipient has been added.
+    * The performance of initial sorting when opening folders has been
+      improved.
+    * The bug which would run into infinite loop and eventual crash when
+      encountering invalid characters in header MIME encoding has been fixed.
+
 * 0.8.7
 
     * The extended regular expression has been supported on filtering.

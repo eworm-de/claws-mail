@@ -492,7 +492,7 @@ void folder_write_list(void)
 
 	fputs("</folderlist>\n", pfile->fp);
 
-	if (prefs_write_close(pfile) < 0)
+	if (prefs_file_close(pfile) < 0)
 		g_warning("failed to write folder list.\n");
 }
 
@@ -1235,6 +1235,8 @@ gint folder_item_scan(FolderItem *item)
 						unreadcnt++;
 					if (MSG_IS_UNREAD(newmsginfo->flags) && procmsg_msg_has_marked_parent(newmsginfo))
 						unreadmarkedcnt++;
+					if (procmsg_msg_has_flagged_parent(newmsginfo, MSG_IGNORE_THREAD))
+						procmsg_msginfo_set_flags(newmsginfo, MSG_IGNORE_THREAD, 0);
 					procmsg_msginfo_free(newmsginfo);
 				}					
 
@@ -1246,6 +1248,8 @@ gint folder_item_scan(FolderItem *item)
 					unreadcnt++;
 				if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 					unreadmarkedcnt++;
+				if (!MSG_IS_IGNORE_THREAD(msginfo->flags) && procmsg_msg_has_flagged_parent(msginfo, MSG_IGNORE_THREAD))
+					procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 			}
 			totalcnt++;
 			procmsg_msginfo_free(msginfo);
@@ -1293,6 +1297,8 @@ gint folder_item_scan(FolderItem *item)
 					unreadcnt++;
 				if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 					unreadmarkedcnt++;
+				if (procmsg_msg_has_flagged_parent(msginfo, MSG_IGNORE_THREAD))
+					procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 				totalcnt++;
 				procmsg_msginfo_free(msginfo);
 			}
@@ -1315,6 +1321,8 @@ gint folder_item_scan(FolderItem *item)
 				    unreadcnt++;
 				if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 					unreadmarkedcnt++;
+				if (procmsg_msg_has_flagged_parent(msginfo, MSG_IGNORE_THREAD))
+					procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 				totalcnt++;
 				procmsg_msginfo_free(msginfo);
 				debug_print("Added newly found message %d to cache.\n", num);
@@ -1570,6 +1578,8 @@ gint folder_item_add_msg(FolderItem *dest, const gchar *file,
 				dest->unread++;
 			if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 				dest->unreadmarked++;
+			if (procmsg_msg_has_flagged_parent(msginfo, MSG_IGNORE_THREAD))
+				procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 			dest->total++;
 			dest->need_update = TRUE;
 
@@ -1782,6 +1792,8 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 				dest->unread++;
 			if (MSG_IS_UNREAD(newmsginfo->flags) && procmsg_msg_has_marked_parent(newmsginfo))
 				dest->unreadmarked++;
+			if (procmsg_msg_has_flagged_parent(newmsginfo, MSG_IGNORE_THREAD))
+				procmsg_msginfo_set_flags(newmsginfo, MSG_IGNORE_THREAD, 0);
 			dest->total++;
 			dest->need_update = TRUE;
 
@@ -1895,6 +1907,8 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 					dest->unread++;
 				if (MSG_IS_UNREAD(newmsginfo->flags) && procmsg_msg_has_marked_parent(newmsginfo))
 					dest->unreadmarked++;
+				if (procmsg_msg_has_flagged_parent(newmsginfo, MSG_IGNORE_THREAD))
+					procmsg_msginfo_set_flags(newmsginfo, MSG_IGNORE_THREAD, 0);
 				dest->total++;
 				dest->need_update = TRUE;
 
@@ -1997,6 +2011,8 @@ gint folder_item_copy_msg(FolderItem *dest, MsgInfo *msginfo)
 				dest->unread++;
 			if (MSG_IS_UNREAD(newmsginfo->flags) && procmsg_msg_has_marked_parent(newmsginfo))
 				dest->unreadmarked++;
+			if (procmsg_msg_has_flagged_parent(newmsginfo, MSG_IGNORE_THREAD))
+				procmsg_msginfo_set_flags(newmsginfo, MSG_IGNORE_THREAD, 0);
 			dest->total++;
 			dest->need_update = TRUE;
 
@@ -2088,6 +2104,8 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 					dest->unread++;
 				if (MSG_IS_UNREAD(newmsginfo->flags) && procmsg_msg_has_marked_parent(newmsginfo))
 					dest->unreadmarked++;
+				if (procmsg_msg_has_flagged_parent(newmsginfo, MSG_IGNORE_THREAD))
+					procmsg_msginfo_set_flags(newmsginfo, MSG_IGNORE_THREAD, 0);
 				dest->total++;
 				dest->need_update = TRUE;
 

@@ -1,4 +1,25 @@
+
 %{
+
+/*
+ * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (c) 2001-2002 by Hiroyuki Yamamoto & The Sylpheed Claws Team.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
 #include "defs.h"
 
 #include <glib.h>
@@ -10,42 +31,42 @@
 #include "matcher.h"
 #include "matcher_parser.h"
 #include "matcher_parser_lex.h"
+#include "procmsg.h"
+
+#define MAX_COLORLABELS (MSG_CLABEL_7 - MSG_CLABEL_NONE)
 
 static gint error = 0;
 static gint bool_op = 0;
 static gint match_type = 0;
-static gchar * header = NULL;
+static gchar *header = NULL;
 
-static MatcherProp * prop;
+static MatcherProp *prop;
 
-static GSList * matchers_list = NULL;
+static GSList *matchers_list = NULL;
 
-static MatcherList * cond;
+static MatcherList *cond;
 static gint score = 0;
-static FilteringAction * action = NULL;
+static FilteringAction *action = NULL;
 
-static FilteringProp *  filtering;
-static ScoringProp * scoring = NULL;
+static FilteringProp *filtering;
+static ScoringProp *scoring = NULL;
 
-static GSList ** prefs_scoring = NULL;
-static GSList ** prefs_filtering = NULL;
+static GSList **prefs_scoring = NULL;
+static GSList **prefs_filtering = NULL;
 
 static int matcher_parser_dialog = 0;
 
-
 /* ******************************************************************** */
 
-
-
-void matcher_parser_start_parsing(FILE * f)
+void matcher_parser_start_parsing(FILE *f)
 {
 	matcher_parserrestart(f);
 	matcher_parserparse();
 }
  
-FilteringProp * matcher_parser_get_filtering(gchar * str)
+FilteringProp *matcher_parser_get_filtering(gchar *str)
 {
-	void * bufstate;
+	void *bufstate;
 
 	/* bad coding to enable the sub-grammar matching
 	   in yacc */
@@ -62,9 +83,9 @@ FilteringProp * matcher_parser_get_filtering(gchar * str)
 	return filtering;
 }
 
-ScoringProp * matcher_parser_get_scoring(gchar * str)
+ScoringProp *matcher_parser_get_scoring(gchar *str)
 {
-	void * bufstate;
+	void *bufstate;
 
 	/* bad coding to enable the sub-grammar matching
 	   in yacc */
@@ -81,7 +102,7 @@ ScoringProp * matcher_parser_get_scoring(gchar * str)
 	return scoring;
 }
 
-static gboolean check_quote_symetry (gchar *str)
+static gboolean check_quote_symetry(gchar *str)
 {
 	gchar *walk;
 	int ret = 0;
@@ -97,12 +118,12 @@ static gboolean check_quote_symetry (gchar *str)
 				ret ++;
 		}
 	}
-	return !(ret%2);
+	return !(ret % 2);
 }
 
-MatcherList * matcher_parser_get_cond(gchar * str)
+MatcherList *matcher_parser_get_cond(gchar *str)
 {
-	void * bufstate;
+	void *bufstate;
 
 	if (!check_quote_symetry(str)) {
 		cond = NULL;
@@ -122,10 +143,10 @@ MatcherList * matcher_parser_get_cond(gchar * str)
 	return cond;
 }
 
-MatcherProp * matcher_parser_get_prop(gchar * str)
+MatcherProp *matcher_parser_get_prop(gchar *str)
 {
-	MatcherList * list;
-	MatcherProp * prop;
+	MatcherList *list;
+	MatcherProp *prop;
 
 	matcher_parserlineno = 1;
 	list = matcher_parser_get_cond(str);
@@ -146,13 +167,12 @@ MatcherProp * matcher_parser_get_prop(gchar * str)
 	return prop;
 }
 
-void matcher_parsererror(char * str)
+void matcher_parsererror(char *str)
 {
-	GSList * l;
+	GSList *l;
 
 	if (matchers_list) {
-		for(l = matchers_list ; l != NULL ;
-		    l = g_slist_next(l)) {
+		for (l = matchers_list; l != NULL; l = g_slist_next(l)) {
 			matcherprop_free((MatcherProp *)
 					 l->data);
 			l->data = NULL;
@@ -173,7 +193,7 @@ int matcher_parserwrap(void)
 %}
 
 %union {
-	char * str;
+	char *str;
 	int value;
 }
 
@@ -199,6 +219,8 @@ int matcher_parserwrap(void)
 %token MATCHER_COLOR MATCHER_SCORE_EQUAL MATCHER_REDIRECT MATCHER_DELETE_ON_SERVER
 %token MATCHER_SIZE_GREATER MATCHER_SIZE_SMALLER MATCHER_SIZE_EQUAL
 %token MATCHER_LOCKED MATCHER_NOT_LOCKED
+%token MATCHER_COLORLABEL MATCHER_NOT_COLORLABEL
+%token MATCHER_IGNORE_THREAD MATCHER_NOT_IGNORE_THREAD
 
 %start file
 
@@ -234,8 +256,8 @@ section_notification
 section_notification:
 MATCHER_SECTION MATCHER_EOL
 {
-	gchar * folder = $1;
-	FolderItem * item = NULL;
+	gchar *folder = $1;
+	FolderItem *item = NULL;
 
 	if (!matcher_parser_dialog) {
 		item = folder_find_item_from_identifier(folder);
@@ -289,8 +311,8 @@ filtering_action
 	cond = NULL;
 	action = NULL;
 	if (!matcher_parser_dialog) {
-		* prefs_filtering = g_slist_append(* prefs_filtering,
-						   filtering);
+		*prefs_filtering = g_slist_append(*prefs_filtering,
+						  filtering);
 		filtering = NULL;
 	}
 }
@@ -300,7 +322,7 @@ filtering_action
 	cond = NULL;
 	score = 0;
 	if (!matcher_parser_dialog) {
-		* prefs_scoring = g_slist_append(* prefs_scoring, scoring);
+		*prefs_scoring = g_slist_append(*prefs_scoring, scoring);
 		scoring = NULL;
 	}
 }
@@ -462,10 +484,46 @@ MATCHER_ALL
 	criteria = MATCHCRITERIA_NOT_LOCKED;
 	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
 }
+| MATCHER_COLORLABEL MATCHER_INTEGER
+{
+	gint criteria = 0;
+	gint value = 0;
+
+	criteria = MATCHCRITERIA_COLORLABEL;
+	value = atoi($2);
+	if (value < 1) value = 1;
+	else if (value > MAX_COLORLABELS) value = MAX_COLORLABELS;
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
+}
+| MATCHER_NOT_COLORLABEL MATCHER_INTEGER
+{
+	gint criteria = 0;
+	gint value = 0;
+
+	criteria = MATCHCRITERIA_NOT_COLORLABEL;
+	value = atoi($2);
+	if (value < 1) value = 1;
+	else if (value > MAX_COLORLABELS) value = MAX_COLORLABELS;
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
+}
+| MATCHER_IGNORE_THREAD
+{
+	gint criteria = 0;
+
+	criteria = MATCHCRITERIA_IGNORE_THREAD;
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+}
+| MATCHER_NOT_IGNORE_THREAD
+{
+	gint criteria = 0;
+
+	criteria = MATCHCRITERIA_NOT_IGNORE_THREAD;
+	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, 0);
+}
 | MATCHER_SUBJECT match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_SUBJECT;
 	expr = $3;
@@ -474,7 +532,7 @@ MATCHER_ALL
 | MATCHER_NOT_SUBJECT match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_NOT_SUBJECT;
 	expr = $3;
@@ -483,7 +541,7 @@ MATCHER_ALL
 | MATCHER_FROM match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_FROM;
 	expr = $3;
@@ -492,7 +550,7 @@ MATCHER_ALL
 | MATCHER_NOT_FROM match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_NOT_FROM;
 	expr = $3;
@@ -501,7 +559,7 @@ MATCHER_ALL
 | MATCHER_TO match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_TO;
 	expr = $3;
@@ -510,7 +568,7 @@ MATCHER_ALL
 | MATCHER_NOT_TO match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_NOT_TO;
 	expr = $3;
@@ -519,7 +577,7 @@ MATCHER_ALL
 | MATCHER_CC match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_CC;
 	expr = $3;
@@ -528,7 +586,7 @@ MATCHER_ALL
 | MATCHER_NOT_CC match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_NOT_CC;
 	expr = $3;
@@ -537,7 +595,7 @@ MATCHER_ALL
 | MATCHER_TO_OR_CC match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_TO_OR_CC;
 	expr = $3;
@@ -546,7 +604,7 @@ MATCHER_ALL
 | MATCHER_NOT_TO_AND_NOT_CC match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_NOT_TO_AND_NOT_CC;
 	expr = $3;
@@ -573,7 +631,7 @@ MATCHER_ALL
 | MATCHER_NEWSGROUPS match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_NEWSGROUPS;
 	expr = $3;
@@ -582,7 +640,7 @@ MATCHER_ALL
 | MATCHER_NOT_NEWSGROUPS match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_NOT_NEWSGROUPS;
 	expr = $3;
@@ -591,7 +649,7 @@ MATCHER_ALL
 | MATCHER_INREPLYTO match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_INREPLYTO;
 	expr = $3;
@@ -600,7 +658,7 @@ MATCHER_ALL
 | MATCHER_NOT_INREPLYTO match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_NOT_INREPLYTO;
 	expr = $3;
@@ -609,7 +667,7 @@ MATCHER_ALL
 | MATCHER_REFERENCES match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_REFERENCES;
 	expr = $3;
@@ -618,7 +676,7 @@ MATCHER_ALL
 | MATCHER_NOT_REFERENCES match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_NOT_REFERENCES;
 	expr = $3;
@@ -681,7 +739,7 @@ MATCHER_ALL
 } match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_HEADER;
 	expr = $2;
@@ -694,7 +752,7 @@ MATCHER_ALL
 } match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_NOT_HEADER;
 	expr = $2;
@@ -704,7 +762,7 @@ MATCHER_ALL
 | MATCHER_HEADERS_PART match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_HEADERS_PART;
 	expr = $3;
@@ -713,7 +771,7 @@ MATCHER_ALL
 | MATCHER_NOT_HEADERS_PART match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_NOT_HEADERS_PART;
 	expr = $3;
@@ -722,7 +780,7 @@ MATCHER_ALL
 | MATCHER_MESSAGE match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_MESSAGE;
 	expr = $3;
@@ -731,7 +789,7 @@ MATCHER_ALL
 | MATCHER_NOT_MESSAGE match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_NOT_MESSAGE;
 	expr = $3;
@@ -740,7 +798,7 @@ MATCHER_ALL
 | MATCHER_BODY_PART match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_BODY_PART;
 	expr = $3;
@@ -749,7 +807,7 @@ MATCHER_ALL
 | MATCHER_NOT_BODY_PART match_type MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_NOT_BODY_PART;
 	expr = $3;
@@ -758,7 +816,7 @@ MATCHER_ALL
 | MATCHER_EXECUTE MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_EXECUTE;
 	expr = $2;
@@ -767,7 +825,7 @@ MATCHER_ALL
 | MATCHER_NOT_EXECUTE MATCHER_STRING
 {
 	gint criteria = 0;
-	gchar * expr = NULL;
+	gchar *expr = NULL;
 
 	criteria = MATCHCRITERIA_NOT_EXECUTE;
 	expr = $2;
@@ -778,7 +836,7 @@ MATCHER_ALL
 filtering_action:
 MATCHER_EXECUTE MATCHER_STRING
 {
-	gchar * cmd = NULL;
+	gchar *cmd = NULL;
 	gint action_type = 0;
 
 	action_type = MATCHACTION_EXECUTE;
@@ -787,7 +845,7 @@ MATCHER_EXECUTE MATCHER_STRING
 }
 | MATCHER_MOVE MATCHER_STRING
 {
-	gchar * destination = NULL;
+	gchar *destination = NULL;
 	gint action_type = 0;
 
 	action_type = MATCHACTION_MOVE;
@@ -796,7 +854,7 @@ MATCHER_EXECUTE MATCHER_STRING
 }
 | MATCHER_COPY MATCHER_STRING
 {
-	gchar * destination = NULL;
+	gchar *destination = NULL;
 	gint action_type = 0;
 
 	action_type = MATCHACTION_COPY;
@@ -840,7 +898,7 @@ MATCHER_EXECUTE MATCHER_STRING
 }
 | MATCHER_FORWARD MATCHER_INTEGER MATCHER_STRING
 {
-	gchar * destination = NULL;
+	gchar *destination = NULL;
 	gint action_type = 0;
 	gint account_id = 0;
 
@@ -851,7 +909,7 @@ MATCHER_EXECUTE MATCHER_STRING
 }
 | MATCHER_FORWARD_AS_ATTACHMENT MATCHER_INTEGER MATCHER_STRING
 {
-	gchar * destination = NULL;
+	gchar *destination = NULL;
 	gint action_type = 0;
 	gint account_id = 0;
 
@@ -862,7 +920,7 @@ MATCHER_EXECUTE MATCHER_STRING
 }
 | MATCHER_REDIRECT MATCHER_INTEGER MATCHER_STRING
 {
-	gchar * destination = NULL;
+	gchar *destination = NULL;
 	gint action_type = 0;
 	gint account_id = 0;
 

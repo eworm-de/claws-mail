@@ -38,3 +38,7 @@ manage_window.[ch]	gtk/manage_window.[ch]	ok
 
 prefs.[ch]		common/prefs.[ch]	
 			prefs_gtk.[ch]		not completed
+
+menu.[ch]		gtk/menu.[ch]		ok
+
+stringtable.[ch]	common/stringtable.[ch]	ok

@@ -584,19 +584,19 @@ void prefs_account_save_config_all(GList *account_list)
 			    tmp_ac_prefs.account_id) <= 0 ||
 		    prefs_write_param(param, pfile->fp) < 0) {
 			g_warning("failed to write configuration to file\n");
-			prefs_write_close_revert(pfile);
+			prefs_file_close_revert(pfile);
 			return;
 		}
 		if (cur->next) {
 			if (fputc('\n', pfile->fp) == EOF) {
 				FILE_OP_ERROR(rcpath, "fputc");
-				prefs_write_close_revert(pfile);
+				prefs_file_close_revert(pfile);
 				return;
 			}
 		}
 	}
 
-	if (prefs_write_close(pfile) < 0)
+	if (prefs_file_close(pfile) < 0)
 		g_warning("failed to write configuration to file\n");
 }
 

@@ -34,8 +34,11 @@
 #include "automaton.h"
 #include "socket.h"
 
+#define MAIL_FILTERING_HOOKLIST "mail_filtering_hooklist"
+
 typedef struct _IncProgressDialog	IncProgressDialog;
 typedef struct _IncSession		IncSession;
+typedef struct _MailFilteringData	MailFilteringData;
 
 typedef enum
 {
@@ -68,6 +71,11 @@ struct _IncSession
 	IncState inc_state;
 
 	gpointer data;
+};
+
+struct _MailFilteringData
+{
+	MsgInfo	*msginfo;
 };
 
 #define TIMEOUT_ITV	200

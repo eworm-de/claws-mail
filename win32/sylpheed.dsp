@@ -376,7 +376,7 @@ SOURCE=..\src\common\md5.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\menu.c
+SOURCE=..\src\gtk\menu.c
 # End Source File
 # Begin Source File
 
@@ -428,15 +428,19 @@ SOURCE=..\src\pine.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\common\plugin.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\gtk\pluginwindow.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\pop.c
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\common\prefs.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\prefs_gtk.c
 # End Source File
 # Begin Source File
 
@@ -468,6 +472,10 @@ SOURCE=..\src\prefs_folder_item.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\prefs_gtk.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\prefs_matcher.c
 # End Source File
 # Begin Source File
@@ -485,6 +493,10 @@ SOURCE=..\src\prefs_template.c
 # Begin Source File
 
 SOURCE=..\src\prefs_toolbar.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\gtk\prefswindow.c
 # End Source File
 # Begin Source File
 
@@ -600,7 +612,7 @@ SOURCE=..\src\string_match.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\stringtable.c
+SOURCE=..\src\common\stringtable.c
 # End Source File
 # Begin Source File
 
@@ -920,7 +932,7 @@ SOURCE=..\src\common\md5.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\menu.h
+SOURCE=..\src\gtk\menu.h
 # End Source File
 # Begin Source File
 
@@ -964,15 +976,19 @@ SOURCE=..\src\passphrase.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\common\plugin.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\gtk\pluginwindow.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\pop.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\common\prefs.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\prefs_gtk.h
 # End Source File
 # Begin Source File
 
@@ -996,6 +1012,10 @@ SOURCE=..\src\prefs_folder_item.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\prefs_gtk.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\prefs_summary_column.h
 # End Source File
 # Begin Source File
@@ -1005,6 +1025,10 @@ SOURCE=..\src\prefs_template.h
 # Begin Source File
 
 SOURCE=..\src\prefs_toolbar.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\gtk\prefswindow.h
 # End Source File
 # Begin Source File
 
@@ -1104,7 +1128,7 @@ SOURCE=..\src\stock_pixmap.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\stringtable.h
+SOURCE=..\src\common\stringtable.h
 # End Source File
 # Begin Source File
 
@@ -1186,6 +1210,10 @@ SOURCE=.\sylpheed.ico
 # Begin Source File
 
 SOURCE="..\..\..\lib\glib-2.0.lib"
+# End Source File
+# Begin Source File
+
+SOURCE="..\..\..\lib\gmodule-2.0.lib"
 # End Source File
 # Begin Source File
 

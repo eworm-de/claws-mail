@@ -160,6 +160,7 @@ void plugin_load_all()
 			g_free(error);
 		}							
 	}
+//fclose(pfile->fp);
 	prefs_file_close(pfile);
 
 	g_free(rcpath);

@@ -171,6 +171,9 @@ static void mainwin_actions_execute_cb 	(MainWindow	*mainwin,
 static void compose_actions_execute_cb	(Compose	*compose,
 					 guint		 action_nb,
 					 GtkWidget	*widget);
+static void msgview_actions_execute_cb	(MessageView 	*msgview, 
+					 guint		 action_nb,
+				       	 GtkWidget 	*widget);
 static guint get_action_type		(gchar		*action);
 
 static gboolean execute_actions		(gchar		*action, 
@@ -532,7 +535,7 @@ void prefs_actions_write_config(void)
 		if (fputs(act, pfile->fp) == EOF ||
 		    fputc('\n', pfile->fp) == EOF) {
 			FILE_OP_ERROR(rcpath, "fputs || fputc");
-			prefs_write_close_revert(pfile);
+			prefs_file_close_revert(pfile);
 			g_free(rcpath);
 			return;
 		}
@@ -540,7 +543,7 @@ void prefs_actions_write_config(void)
 	
 	g_free(rcpath);
 
-	if (prefs_write_close(pfile) < 0) {
+	if (prefs_file_close(pfile) < 0) {
 		g_warning("failed to write configuration to file\n");
 		return;
 	}
@@ -1036,6 +1039,7 @@ void update_compose_actions_menu(GtkItemFactory *ifactory,
 			    compose);
 }
 
+
 void actions_execute(gpointer data, 
 		     guint action_nb,
 		     GtkWidget *widget,
@@ -1043,9 +1047,10 @@ void actions_execute(gpointer data,
 {
 	if (source == TOOLBAR_MAIN) 
 		mainwin_actions_execute_cb((MainWindow*)data, action_nb, widget);
-
 	else if (source == TOOLBAR_COMPOSE)
 		compose_actions_execute_cb((Compose*)data, action_nb, widget);
+	else if (source == TOOLBAR_MSGVIEW)
+		msgview_actions_execute_cb((MessageView*)data, action_nb, widget);	
 }
 
 
@@ -1160,6 +1165,46 @@ static void mainwin_actions_execute_cb(MainWindow *mainwin, guint action_nb,
 
 	execute_actions(action, mainwin->window,
 			GTK_CTREE(mainwin->summaryview->ctree), textview->text,
+			textview->msgfont, textview->body_pos, mimeview);
+}
+
+/* FIXME: Code duplication mainwindow_actions_execute_cb
+ */
+static void msgview_actions_execute_cb(MessageView *msgview, guint action_nb,
+				       GtkWidget *widget)
+{
+	TextView    *textview = NULL;
+	gchar 	    *buf,
+		    *action;
+	MimeView    *mimeview = NULL;
+
+	g_return_if_fail(action_nb < g_slist_length(prefs_common.actions_list));
+
+	buf = (gchar *)g_slist_nth_data(prefs_common.actions_list, action_nb);
+
+	g_return_if_fail(buf);
+	g_return_if_fail(action = strstr(buf, ": "));
+
+	/* Point to the beginning of the command-line */
+	action += 2;
+
+	switch (msgview->type) {
+	case MVIEW_TEXT:
+		if (msgview->textview && msgview->textview->text)
+			textview = msgview->textview;
+		break;
+	case MVIEW_MIME:
+		if (msgview->mimeview) {
+			mimeview = msgview->mimeview;
+			if (msgview->mimeview->type == MIMEVIEW_TEXT &&
+			    msgview->mimeview->textview &&
+			    msgview->mimeview->textview->text)
+				textview = msgview->mimeview->textview;
+		} 
+		break;
+	}
+
+	execute_actions(action, msgview->window, NULL, textview->text,
 			textview->msgfont, textview->body_pos, mimeview);
 }
 

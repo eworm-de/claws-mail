@@ -28,8 +28,6 @@
 #ifdef USE_LDAP
 
 #include <glib.h>
-#include <gdk/gdk.h>
-#include <gtk/gtkmain.h>
 #include <sys/time.h>
 #include <string.h>
 #include <ldap.h>
@@ -608,10 +606,10 @@ gint syldap_search( SyldapServer *ldapServer ) {
 			if( strcasecmp( attribute, SYLDAP_ATTR_DN ) == 0 ) {
 				listDN = syldap_add_single_value( ld, e, attribute );
 			}
-		}
 
-		/* Free memory used to store attribute */
-		ldap_memfree( attribute );
+			/* Free memory used to store attribute */
+			ldap_memfree( attribute );
+		}
 
 		/* Format and add items to cache */
 		syldap_build_items_fl( ldapServer, listAddress, listFirst, listLast );
@@ -641,20 +639,6 @@ gint syldap_search( SyldapServer *ldapServer ) {
 	return ldapServer->retVal;
 }
 
-/* syldap_display_search_results() - updates the ui. this function is called from the
- * main thread (the thread running the GTK event loop). */
-static gint syldap_display_search_results(SyldapServer *ldapServer)
-{
-	/* NOTE: when this function is called the accompanying thread should
-	 * already be terminated. */
-	gtk_idle_remove(ldapServer->idleId);
-	ldapServer->callBack(ldapServer);
-	/* FIXME:  match should know whether to free this SyldapServer stuff. */
-	g_free(ldapServer->thread);
-	ldapServer->thread = NULL;
-	return TRUE;
-}
-
 /* ============================================================================================ */
 /*
 * Read data into list. Main entry point
@@ -675,18 +659,7 @@ gint syldap_read_data( SyldapServer *ldapServer ) {
 		ldapServer->addressCache->dataRead = TRUE;
 		ldapServer->addressCache->accessFlag = FALSE;
 	}
-
-	/* Callback */
 	ldapServer->busyFlag = FALSE;
-	if( ldapServer->callBack ) {
-		/* make the ui thread update the search results */
-		/* TODO: really necessary to call gdk_threads_XXX()??? gtk_idle_add()
-		 * should do this - could someone check the GTK sources please? */
-		gdk_threads_enter();
-		ldapServer->idleId = gtk_idle_add((GtkFunction)syldap_display_search_results,
-				ldapServer);
-		gdk_threads_leave();
-	}
 
 	return ldapServer->retVal;
 }
@@ -699,12 +672,11 @@ gint syldap_read_data( SyldapServer *ldapServer ) {
 void syldap_cancel_read( SyldapServer *ldapServer ) {
 	g_return_if_fail( ldapServer != NULL );
 
-	/* DELETEME: this is called from inside UI thread so it's OK, Christoph! */
 	if( ldapServer->thread ) {
 		/* printf( "thread cancelled\n" ); */
 		pthread_cancel( *ldapServer->thread );
+		g_free(ldapServer->thread);
 	}
-	g_free(ldapServer->thread);
 	ldapServer->thread = NULL;
 	ldapServer->busyFlag = FALSE;
 }
@@ -722,11 +694,13 @@ gint syldap_read_data_th( SyldapServer *ldapServer ) {
 	ldapServer->busyFlag = FALSE;
 	syldap_check_search( ldapServer );
 	if( ldapServer->retVal == MGU_SUCCESS ) {
-		/* debug_print("Staring LDAP read thread\n"); */
+		/* debug_print("Starting LDAP read thread\n"); */
 
 		ldapServer->busyFlag = TRUE;
 		ldapServer->thread = g_new0(pthread_t, 1);
-		pthread_create( ldapServer->thread, NULL, (void *) syldap_read_data, (void *) ldapServer );
+		pthread_create(
+			ldapServer->thread, NULL, (void *) syldap_read_data,
+			(void *) ldapServer );
 	}
 	return ldapServer->retVal;
 }
@@ -828,8 +802,8 @@ GList *syldap_read_basedn_s( const gchar *host, const gint port, const gchar *bi
 					}
 					ldap_value_free( vals );
 				}
+				ldap_memfree( attribute );
 			}
-			ldap_memfree( attribute );
 			if( ber != NULL ) {
 				ber_free( ber, 0 );
 			}
@@ -870,8 +844,8 @@ GList *syldap_read_basedn_s( const gchar *host, const gint port, const gchar *bi
 						}
 						ldap_value_free( vals );
 					}
+					ldap_memfree( attribute );
 				}
-				ldap_memfree( attribute );
 				if( ber != NULL ) {
 					ber_free( ber, 0 );
 				}
@@ -957,8 +931,8 @@ GList *syldap_read_basedn( SyldapServer *ldapServer ) {
 					}
 					ldap_value_free( vals );
 				}
+				ldap_memfree( attribute );
 			}
-			ldap_memfree( attribute );
 			if( ber != NULL ) {
 				ber_free( ber, 0 );
 			}
@@ -1001,8 +975,8 @@ GList *syldap_read_basedn( SyldapServer *ldapServer ) {
 						}
 						ldap_value_free( vals );
 					}
+					ldap_memfree( attribute );
 				}
-				ldap_memfree( attribute );
 				if( ber != NULL ) {
 					ber_free( ber, 0 );
 				}

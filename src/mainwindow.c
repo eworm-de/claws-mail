@@ -84,6 +84,8 @@
 #include "selective_download.h"
 #include "ssl_manager.h"
 #include "sslcertwindow.h"
+#include "prefswindow.h"
+#include "pluginwindow.h"
 
 #define AC_LABEL_WIDTH	240
 
@@ -371,6 +373,11 @@ static void new_account_cb	 (MainWindow	*mainwin,
 static void account_menu_cb	 (GtkMenuItem	*menuitem,
 				  gpointer	 data);
 
+static void prefs_open_cb	(GtkMenuItem	*menuitem,
+				 gpointer 	 data);
+static void plugins_open_cb	(GtkMenuItem	*menuitem,
+				 gpointer 	 data);
+
 static void online_switch_clicked(GtkButton     *btn, 
 				  gpointer data);
 
@@ -391,6 +398,10 @@ static void addr_harvest_cb	 ( MainWindow  *mainwin,
 static void addr_harvest_msg_cb	 ( MainWindow  *mainwin,
 				   guint       action,
 				   GtkWidget   *widget );
+
+static gboolean mainwindow_focus_in_event	(GtkWidget	*widget, 
+						 GdkEventFocus	*focus,
+						 gpointer	 data);
 
 #define  SEPARATE_ACTION 500 
 
@@ -688,6 +699,9 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, account_edit_open, 0, NULL},
 	{N_("/_Configuration/C_hange current account"),
 						NULL, NULL, 0, "<Branch>"},
+	{N_("/_Configuration/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_Configuration/Preferences..."),  NULL, prefs_open_cb, 0, NULL},
+	{N_("/_Configuration/Plugins..."),  	NULL, plugins_open_cb, 0, NULL},
 
 	{N_("/_Help"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_Help/_Manual (Local)"),		NULL, manual_open_cb, MANUAL_MANUAL_LOCAL, NULL},
@@ -752,6 +766,9 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
 			   GTK_SIGNAL_FUNC(main_window_close_cb), mainwin);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
+	gtk_signal_connect(GTK_OBJECT(window), "focus_in_event",
+			   GTK_SIGNAL_FUNC(mainwindow_focus_in_event),
+			   mainwin);
 	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
 				GTK_SIGNAL_FUNC(mainwindow_key_pressed), mainwin);
 
@@ -1674,7 +1691,6 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 	GtkWidget *vbox_body = mainwin->vbox_body;
 	GtkItemFactory *ifactory = mainwin->menu_factory;
 	GtkWidget *menuitem;
-	GtkWidget *vbox;
 	GtkItemFactory *msgview_ifactory;
 
 	debug_print("Setting widgets...");
@@ -2591,6 +2607,16 @@ static void account_menu_cb(GtkMenuItem	*menuitem, gpointer data)
 	main_window_reflect_prefs_all();
 }
 
+static void prefs_open_cb(GtkMenuItem *menuitem, gpointer data)
+{
+	prefswindow_create();
+}
+
+static void plugins_open_cb(GtkMenuItem *menuitem, gpointer data)
+{
+	pluginwindow_create();
+}
+
 static void manual_open_cb(MainWindow *mainwin, guint action,
 			   GtkWidget *widget)
 {
@@ -2614,6 +2640,19 @@ static void scan_tree_func(Folder *folder, FolderItem *item, gpointer data)
 	STATUSBAR_PUSH(mainwin, str);
 	STATUSBAR_POP(mainwin);
 	g_free(str);
+}
+
+static gboolean mainwindow_focus_in_event(GtkWidget *widget, GdkEventFocus *focus,
+					  gpointer data)
+{
+	SummaryView *summary;
+
+	g_return_val_if_fail(data, FALSE);
+	summary = ((MainWindow *)data)->summaryview;
+	g_return_val_if_fail(summary, FALSE);
+	if (summary->selected != summary->displayed)
+		summary_select_node(summary, summary->displayed, FALSE, TRUE);
+	return FALSE;
 }
 
 #define BREAK_ON_MODIFIER_KEY() \

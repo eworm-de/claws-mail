@@ -26,13 +26,18 @@ typedef struct _PrefFile	PrefFile;
 
 struct _PrefFile {
 	FILE *fp;
+	FILE *orig_fp;
 	gchar *path;
+	gboolean writing;
 };
 
+PrefFile *prefs_read_open	(const gchar	*path);
 PrefFile *prefs_write_open	(const gchar	*path);
-gint prefs_write_close		(PrefFile	*pfile);
-gint prefs_write_close_revert	(PrefFile	*pfile);
+gint prefs_file_close		(PrefFile	*pfile);
+gint prefs_file_close_revert	(PrefFile	*pfile);
 gboolean prefs_is_readonly	(const gchar 	*path);
 gboolean prefs_rc_is_readonly	(const gchar 	*rcfile);
+gint prefs_set_block_label	(PrefFile       *pfile,
+				 const gchar	*block_label);
 
 #endif
