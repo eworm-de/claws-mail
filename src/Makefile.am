@@ -310,11 +310,6 @@ EXTRA_DIST = \
 	pixmaps/mark.xpm \
 	pixmaps/mime_application.xpm \
 	pixmaps/mime_audio.xpm \
-	pixmaps/mime_gpg_expired.xpm \
-	pixmaps/mime_gpg_failed.xpm \
-	pixmaps/mime_gpg_passed.xpm \
-	pixmaps/mime_gpg_signed.xpm \
-	pixmaps/mime_gpg_unknown.xpm \
 	pixmaps/mime_image.xpm \
 	pixmaps/mime_text_enriched.xpm \
 	pixmaps/mime_text_html.xpm \
@@ -329,6 +324,12 @@ EXTRA_DIST = \
 	pixmaps/outbox.xpm \
 	pixmaps/paste.xpm \
 	pixmaps/preferences.xpm \
+	pixmaps/privacy_expired.xpm \
+	pixmaps/privacy_failed.xpm \
+	pixmaps/privacy_passed.xpm \
+	pixmaps/privacy_signed.xpm \
+	pixmaps/privacy_unknown.xpm \
+	pixmaps/privacy_warn.xpm \
 	pixmaps/properties.xpm \
 	pixmaps/quicksearch.xpm \
 	pixmaps/regular.xpm \

@@ -1,3 +1,9 @@
+2003-10-22 [paul]	0.9.6claws45
+
+	* src/Makefile.am
+		update to reflect the changes to the icons that
+		happened in 0.9.6claws35
+
 2003-10-22 [alfons]	0.9.6claws44
 	
 	* src/carray.h
