@@ -108,6 +108,34 @@ if test "$ac_cv_disable_compface" = no; then
 	AC_CHECK_LIB(compface, uncompface)
 fi
 
+dnl for JPilot support in addressbook
+AC_ARG_ENABLE(jpilot,
+	[  --enable-jpilot         Enable JPilot support [default=no]],
+	[ac_cv_enable_jpilot=$enableval], [ac_cv_enable_jpilot=no])
+
+AC_MSG_CHECKING([whether to use jpilot])
+if test "$ac_cv_enable_jpilot" = yes; then
+	AC_MSG_RESULT(yes)
+	LIBS="$LIBS -lpisock"
+	AC_DEFINE(USE_JPILOT)
+else
+	AC_MSG_RESULT(no)
+fi
+
+dnl for LDAP support in addressbook
+AC_ARG_ENABLE(ldap,
+	[  --enable-ldap         Enable JPilot support [default=no]],
+	[ac_cv_enable_ldap=$enableval], [ac_cv_enable_ldap=no])
+
+AC_MSG_CHECKING([whether to use ldap])
+if test "$ac_cv_enable_ldap" = yes; then
+	AC_MSG_RESULT(yes)
+	LIBS="$LIBS -lldap -llber -lpthread -lresolv"
+	AC_DEFINE(USE_LDAP)
+else
+	AC_MSG_RESULT(no)
+fi
+
 dnl Check for libjconv
 AC_ARG_ENABLE(jconv,
 	[  --disable-jconv         Do not use libjconv],
