@@ -1,3 +1,11 @@
+2003-01-°7 [melvin]	0.8.8claws64
+
+	* src/prefs_actions.c
+		Fixed bug where an '%p' Action on a displayed image crashed 
+			Sylpheed
+		Code clean up (get rid of duplicated code and removed unnecessary 
+				structure member)
+
 2003-01-07 [christoph]	0.8.8claws63
 
 	* src/compose.c

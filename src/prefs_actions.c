@@ -84,7 +84,6 @@ typedef struct _ChildInfo ChildInfo;
 
 struct _Children
 {
-	GtkWidget	*window;
 	GtkWidget	*dialog;
 	GtkWidget	*text;
 	GtkWidget	*input_entry;
@@ -159,19 +158,21 @@ static void update_actions_menu		(GtkItemFactory	*ifactory,
 					 gchar		*branch_path,
 					 gpointer	 callback,
 					 gpointer	 data);
-static void mainwin_actions_execute_cb 	(MainWindow	*mainwin,
-					 guint		 action_nb,
-					 GtkWidget 	*widget);
 static void compose_actions_execute_cb	(Compose	*compose,
 					 guint		 action_nb,
 					 GtkWidget	*widget);
+static void mainwin_actions_execute_cb 	(MainWindow	*mainwin,
+					 guint		 action_nb,
+					 GtkWidget 	*widget);
 static void msgview_actions_execute_cb	(MessageView 	*msgview, 
 					 guint		 action_nb,
 				       	 GtkWidget 	*widget);
+static void message_actions_execute	(MessageView	*msgview,
+					 guint		 action_nb,
+				    	 GtkCTree	*ctree);
 static guint get_action_type		(gchar		*action);
 
 static gboolean execute_actions		(gchar		*action, 
-					 GtkWidget	*window,
 					 GtkCTree	*ctree, 
 					 GtkWidget	*text,
 					 GdkFont 	*msgfont,
@@ -1074,59 +1075,33 @@ static void compose_actions_execute_cb(Compose *compose, guint action_nb,
 		return;
 	}
 
-	execute_actions(action, compose->window, NULL, compose->text, NULL, 0,
-			NULL);
+	execute_actions(action, NULL, compose->text, NULL, 0, NULL);
 }
 
 static void mainwin_actions_execute_cb(MainWindow *mainwin, guint action_nb,
 				       GtkWidget *widget)
 {
-	MessageView *messageview = mainwin->messageview;
-	TextView    *textview = NULL;
-	gchar 	    *buf,
-		    *action;
-	MimeView    *mimeview = NULL;
-
-	g_return_if_fail(action_nb < g_slist_length(prefs_common.actions_list));
-
-	buf = (gchar *)g_slist_nth_data(prefs_common.actions_list, action_nb);
-
-	g_return_if_fail(buf);
-	g_return_if_fail(action = strstr(buf, ": "));
-
-	/* Point to the beginning of the command-line */
-	action += 2;
-
-	switch (messageview->type) {
-	case MVIEW_TEXT:
-		if (messageview->textview && messageview->textview->text)
-			textview = messageview->textview;
-		break;
-	case MVIEW_MIME:
-		if (messageview->mimeview) {
-			mimeview = messageview->mimeview;
-			if (messageview->mimeview->type == MIMEVIEW_TEXT &&
-					messageview->mimeview->textview &&
-					messageview->mimeview->textview->text)
-				textview = messageview->mimeview->textview;
-		} 
-		break;
-	}
-
-	execute_actions(action, mainwin->window,
-			GTK_CTREE(mainwin->summaryview->ctree), textview->text,
-			textview->msgfont, textview->body_pos, mimeview);
+	message_actions_execute(mainwin->messageview, action_nb,
+				GTK_CTREE(mainwin->summaryview->ctree));
 }
 
-/* FIXME: Code duplication mainwindow_actions_execute_cb
- */
 static void msgview_actions_execute_cb(MessageView *msgview, guint action_nb,
 				       GtkWidget *widget)
+{
+	message_actions_execute(msgview, action_nb, NULL);
+	
+}
+
+static void message_actions_execute(MessageView *msgview, guint action_nb,
+				    GtkCTree *ctree)
 {
 	TextView    *textview = NULL;
 	gchar 	    *buf,
 		    *action;
 	MimeView    *mimeview = NULL;
+	GdkFont	    *msgfont  = NULL;
+	guint        body_pos = 0;
+	GtkWidget   *text     = NULL;
 
 	g_return_if_fail(action_nb < g_slist_length(prefs_common.actions_list));
 
@@ -1154,14 +1129,21 @@ static void msgview_actions_execute_cb(MessageView *msgview, guint action_nb,
 		break;
 	}
 
-	execute_actions(action, msgview->window, NULL, textview->text,
-			textview->msgfont, textview->body_pos, mimeview);
+	if (textview) {
+		text     = textview->text;
+		msgfont  = textview->msgfont;
+		body_pos = textview->body_pos;
+	}
+	
+	execute_actions(action, ctree, text, msgfont, body_pos, mimeview);
 }
 
-static gboolean execute_actions(gchar *action, GtkWidget *window,
-				GtkCTree *ctree, GtkWidget *text, 
-				GdkFont *msgfont, gint body_pos,
-				MimeView *mimeview)
+static gboolean execute_actions(gchar 	  *action, 
+				GtkCTree  *ctree,
+				GtkWidget *text, 
+				GdkFont   *msgfont,
+				gint 	   body_pos,
+				MimeView  *mimeview)
 {
 	GList *cur, *selection = NULL;
 	GSList *children_list = NULL;
@@ -1249,7 +1231,6 @@ static gboolean execute_actions(gchar *action, GtkWidget *window,
 		GSList *cur;
 
 		children->action  = g_strdup(action);
-		children->window  = window;
 		children->dialog  = NULL;
 		children->list    = children_list;
 		children->nb	  = g_slist_length(children_list);
