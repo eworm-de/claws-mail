@@ -1,3 +1,16 @@
+2004-08-23 [paul]
+
+	* po/es.po
+	* po/fr.po
+	* po/pl.po
+	* po/pt_BR.po
+	* po/sk.po
+	* po/sr.po
+		update translations. submitted by Ricardo
+		Mones Lastra, Fabien Vantard, Emilian Nowak,
+		Frederico Goncalves Guimaraes, Andrej Kacian,
+		Urke MMI
+
 2004-08-22 [paul]	0.9.12cvs76
 
 	* src/plugins/trayicon/trayicon.c
