@@ -1,3 +1,10 @@
+2002-12-14 [christoph]	0.8.6vlaws114
+
+	* src/imap.c
+		o don't create a session if imap greeting fails
+		o don't close socket when authentication fails
+		  this is done by imap_session_destroy
+
 2002-12-14 [thorsten]	0.8.6claws113
 
 	* tools/Makefile.am

@@ -515,11 +515,14 @@ Session *imap_session_new(const PrefsAccount *account)
 	}
 
 	/* Only need to log in if the connection was not PREAUTH */
-	imap_greeting(imap_sock, &is_preauth);
+	if (imap_greeting(imap_sock, &is_preauth) != IMAP_SUCCESS) {
+		sock_close(imap_sock);
+		return NULL;
+	}
 	log_message("IMAP connection is %s-authenticated\n",
 		    (is_preauth) ? "pre" : "un");
-	session = g_new(IMAPSession, 1);
 
+	session = g_new(IMAPSession, 1);
 	SESSION(session)->type             = SESSION_IMAP;
 	SESSION(session)->server           = g_strdup(account->recv_server);
 	SESSION(session)->sock             = imap_sock;
@@ -556,7 +559,6 @@ void imap_session_authenticate(IMAPSession *session, const PrefsAccount *account
 
 	if (imap_cmd_login(SESSION(session)->sock, account->userid, pass) != IMAP_SUCCESS) {
 		imap_cmd_logout(SESSION(session)->sock);
-		sock_close(SESSION(session)->sock);
 		return;
 	}
 
