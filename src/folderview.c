@@ -1200,21 +1200,21 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 
 	gtk_ctree_node_set_foreground(ctree, node, NULL);
 
-	if (use_bold && use_color)
+	if (use_bold && use_color) {
 		style = bold_color_style;
-	else if (use_bold) {
+	} else if (use_bold) {
 		style = bold_style;
 		if (item->op_count > 0) {
 			style = bold_tgtfold_style;
 		}
-	}
-	else if (use_color) {
+	} else if (use_color) {
 		style = normal_color_style;
 		gtk_ctree_node_set_foreground(ctree, node,
 					      &folderview->color_new);
-	}
-	else if (item->op_count > 0) {
+	} else if (item->op_count > 0) {
 		style = bold_tgtfold_style;
+	} else if (item->prefs->color > 0) {
+		style = item->color_style;
 	} else {
 		style = normal_style;
 	}

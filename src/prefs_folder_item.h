@@ -23,6 +23,7 @@
 
 #include "folder.h"
 #include <glib.h>
+#include <gtk/gtk.h>
 #include <sys/types.h>
 
 struct _PrefsFolderItem {
@@ -55,6 +56,7 @@ struct _PrefsFolderItem {
 	gboolean enable_default_account;
 	gint default_account;
 	gboolean save_copy_to_folder;
+	guint color;
 };
 
 typedef struct _PrefsFolderItem PrefsFolderItem;

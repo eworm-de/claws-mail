@@ -1,3 +1,11 @@
+2002-08-20 [darko]	0.8.1claws81
+
+	* src/folder.h
+	* src/prefs_folder_item.h
+	* src/folderview.c
+	* src/prefs_folder_item.c
+		ability to set folder color in folderview
+
 2002-08-19 [alfons]	0.8.1claws80
 
 	* src/summaryview.c
