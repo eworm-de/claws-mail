@@ -1,3 +1,10 @@
+2003-07-23 [paul]	0.9.3claws42
+
+	* src/compose.c
+		Redirect fixes: enable automatic account selection and
+		do not append signature to message on changing account
+		fixes Bug[s] #248
+
 2003-07-23 [paul]	0.9.3claws41
 
 	* sync with 0.9.3cvs16

@@ -1286,7 +1286,8 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	g_return_val_if_fail(msginfo != NULL, NULL);
 
 	if (!account)
- 		account = cur_account;
+		account = account_get_reply_account(msginfo,
+					prefs_common.reply_account_autosel);
 	g_return_val_if_fail(account != NULL, NULL);
 
 	compose = compose_create(account, COMPOSE_REDIRECT);
@@ -2902,7 +2903,7 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 	activate_gnupg_mode(compose, account);		
 #endif /* USE_GPGME */
 
-	if (!init)
+	if (!init && compose->mode != COMPOSE_REDIRECT)
 		compose_insert_sig(compose, TRUE);
 }
 
