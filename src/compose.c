@@ -1166,6 +1166,8 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 	gtk_stext_set_point(GTK_STEXT(compose->text), 0);
 
 	gtk_stext_thaw(text);
+	gtk_widget_grab_focus(compose->header_last->entry);
+	
 #if 0 /* NEW COMPOSE GUI */
 	if (account->protocol != A_NNTP)
 		gtk_widget_grab_focus(compose->to_entry);

@@ -1,6 +1,13 @@
+2002-08-24 [alfons]	0.8.1claws110
+
+	* src/compose.c
+		move cursor to "To" entry when forwarding as attachment
+		(reported and solved by Steve Lamb, closes bug report
+		"[ 592880 ] Forward as attachment; cursor not in to")
+
 2002-08-24 [colin]	0.8.1claws109
 
-	*src/mainwindow.c
+	* src/mainwindow.c
 		fix quick search visibility after GUI (de)separations.
 
 2002-08-23 [colin]	0.8.1claws108
