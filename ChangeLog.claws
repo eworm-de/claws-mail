@@ -1,3 +1,15 @@
+2003-01-26 [christoph]	0.8.9claws14
+
+	* src/Makefile.am
+	* src/mgutils.[ch]
+	* src/xml.[ch]
+	* src/xmlprops.[ch]
+	* src/common/Makefile.am
+	* src/common/mgutils.[ch]
+	* src/common/xml.[ch]
+	* src/common/xmlprops.[ch]
+		move xml files to common directory
+
 2003-01-26 [christoph]	0.8.9claws13
 
 	* src/plugins/spamassassin/spamassassin_gtk.c

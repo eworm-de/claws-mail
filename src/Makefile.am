@@ -42,7 +42,6 @@ sylpheed_SOURCES = \
 	addrselect.c addrselect.h \
 	addrbook.c addrbook.h \
 	addrindex.c addrindex.h \
-	mgutils.c mgutils.h \
 	vcard.c vcard.h \
 	ldif.c ldif.h \
 	importldif.c importldif.h \
@@ -64,7 +63,6 @@ sylpheed_SOURCES = \
 	addrgather.c addrgather.h \
 	exporthtml.c exporthtml.h \
 	exphtmldlg.c exphtmldlg.h \
-	xmlprops.c xmlprops.h \
 	filesel.c filesel.h \
 	foldersel.c foldersel.h \
 	statusbar.c statusbar.h \
@@ -91,7 +89,6 @@ sylpheed_SOURCES = \
 	export.c export.h \
 	news.c news.h \
 	imap.c imap.h \
-	xml.c xml.h \
 	html.c html.h \
 	enriched.c enriched.h \
 	procmime.c procmime.h \
