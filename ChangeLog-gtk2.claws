@@ -1,3 +1,9 @@
+2004-09-29 [paul]	0.9.12cvs113.1
+
+	* src/quote_fmt_parse.y
+		sync with HEAD
+ 
+
 2004-09-28 [colin]	0.9.12cvs112.1
 
 	* src/folderview.c
