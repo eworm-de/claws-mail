@@ -1,3 +1,8 @@
+2003-10-29 [paul]	0.9.6claws60
+
+	* src/mimeview.c
+		don't use Subject for unknown part name
+
 2003-10-29 [paul]	0.9.6claws59
 
 	* src/compose.c

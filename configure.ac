@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=6
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=58
+EXTRA_VERSION=60
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}claws
 else
@@ -291,8 +291,19 @@ dnl Check for X-Face support
 AC_ARG_ENABLE(compface,
 	[  --disable-compface      Do not use compface (X-Face)],
 	[ac_cv_enable_compface=$enableval], [ac_cv_enable_compface=yes])
+AC_MSG_CHECKING([whether to use compface])
 if test "$ac_cv_enable_compface" = yes; then
-	AC_CHECK_LIB(compface, uncompface,,[ac_cv_enable_compface=no])
+	AC_MSG_RESULT(yes)
+	AC_MSG_CHECKING([whether compface library is available])
+	AC_MSG_RESULT($ac_cv_enable_compface)
+
+	if test "$ac_cv_enable_compface" = yes; then
+		COMPFACE_LIBS="$COMPFACE_LIBS -lcompface"
+		AC_DEFINE(HAVE_LIBCOMPFACE, 1, Define if you want compface support.)
+		AC_SUBST(COMPFACE_LIBS)
+	fi
+else
+	AC_MSG_RESULT(no)
 fi
 
 dnl for LDAP support in addressbook
