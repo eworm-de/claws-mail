@@ -39,16 +39,26 @@ Detailed Descriptions:
 Action scripts
 --------------
 
-* gpg-sign-syl
-  WORKS ON: selection, whole message
-  COMMAND: |gpg-sign-syl|
-  Clear-sign current selection using gpg.
+* freshmeat_search.pl
+  WORKS ON: selection
+  COMMAND: |freshmeat_search.pl
+  Search freshmeat.net for selected text using the default Sylpheed browser
 
 * google_msgid.pl
   WORKS ON: selection
   COMMAND: |google_msgid.pl
   Lookup selected message-id in google using mozilla. Edit the script to use
   different browsers.
+
+* google_search.pl
+  WORKS ON: selection
+  COMMAND: |google_search.pl
+  Search google.com for selected text using the default Sylpheed browser
+
+* gpg-sign-syl
+  WORKS ON: selection, whole message
+  COMMAND: |gpg-sign-syl|
+  Clear-sign current selection using gpg.
 
 * uudec
   WORKS ON: current message (or part of multipart message)
