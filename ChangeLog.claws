@@ -1,3 +1,8 @@
+2004-08-13 [colin]	0.9.12cvs61
+
+	* src/plugins/pgpmime/plugin.c
+		Add plugin's description
+
 2004-08-12 [christoph]	0.9.12cvs60
 
 	* src/folderutils.c

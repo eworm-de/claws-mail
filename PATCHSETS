@@ -42,3 +42,5 @@
 ( cvs diff -u -r 1.1117 -r 1.1118 configure.ac; cvs diff -u -r 1.7 -r 1.8 sylpheed.desktop; cvs diff -u -r 1.185 -r 1.186 src/Makefile.am; cvs diff -u -r 1.142 -r 1.143 src/main.c; ) > 0.9.12cvs58.patchset
 ( cvs diff -u -r 1.14 -r 1.15 src/plugins/trayicon/trayicon.c; ) > 0.9.12cvs59.patchset
 ( cvs diff -u -r 1.6 -r 1.7 src/folderutils.c; ) > 0.9.12cvs60.patchset
+( cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/plugin.c; ) > 0.9.12cvs61.patchset
+
