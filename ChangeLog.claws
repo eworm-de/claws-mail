@@ -1,3 +1,8 @@
+2001-09-09 [alfons]
+	
+	* src/folderview.c
+		fix bug with default font used for trash folder text
+
 2001-09-06 [paul]
 
 	* po/de.po, po/es.po, po/nl.po, po/pt_BR.po
