@@ -4493,7 +4493,7 @@ GtkWidget *compose_create_attach(Compose *compose)
 	/* drag and drop */
 	gtk_drag_dest_set(attach_clist,
 			  GTK_DEST_DEFAULT_ALL, compose_mime_types, 1,
-			  GDK_ACTION_COPY);
+			  GDK_ACTION_COPY | GDK_ACTION_MOVE);
 	gtk_signal_connect(GTK_OBJECT(attach_clist), "drag_data_received",
 			   GTK_SIGNAL_FUNC(compose_attach_drag_received_cb),
 			   compose);
@@ -4774,7 +4774,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	/* drag and drop */
 	gtk_drag_dest_set(text, GTK_DEST_DEFAULT_ALL, compose_mime_types, 1,
-			  GDK_ACTION_COPY);
+			  GDK_ACTION_COPY | GDK_ACTION_MOVE);
 	gtk_signal_connect(GTK_OBJECT(text), "drag_data_received",
 			   GTK_SIGNAL_FUNC(compose_insert_drag_received_cb),
 			   compose);
