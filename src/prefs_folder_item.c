@@ -17,6 +17,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+/* alfons - all folder item specific settings should migrate into 
+ * folderlist.xml!!! the old folderitemrc file will only serve for a few 
+ * versions (for compatibility) */
+
 #include "intl.h"
 #include "defs.h"
 #include "folder.h"
@@ -59,6 +63,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"important_score", "1", &tmp_prefs.important_score, P_INT,
 	 NULL, NULL, NULL},
+	/* MIGRATION */	 
 	{"request_return_receipt", "", &tmp_prefs.request_return_receipt, P_BOOL,
 	 NULL, NULL, NULL},
 	{"enable_default_to", "", &tmp_prefs.enable_default_to, P_BOOL,
@@ -88,7 +93,10 @@ void prefs_folder_item_read_config(FolderItem * item)
 	prefs_read_config(param, id, FOLDERITEM_RC);
 	g_free(id);
 
-	* item->prefs = tmp_prefs;
+	*item->prefs = tmp_prefs;
+
+	/* MIGRATION */
+	item->ret_rcpt = tmp_prefs.request_return_receipt ? TRUE : FALSE; 
 }
 
 void prefs_folder_item_save_config(FolderItem * item)
@@ -101,6 +109,9 @@ void prefs_folder_item_save_config(FolderItem * item)
 
 	prefs_save_config(param, id, FOLDERITEM_RC);
 	g_free(id);
+
+	/* MIGRATION: make sure migrated items are not saved
+	 */
 }
 
 void prefs_folder_item_set_config(FolderItem * item,
@@ -255,7 +266,7 @@ void prefs_folder_item_create(FolderItem *item) {
 	PACK_CHECK_BUTTON(vbox, checkbtn_request_return_receipt,
 			   _("Request Return Receipt"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_request_return_receipt),
-	    item->prefs->request_return_receipt);
+				     item->ret_rcpt);
 
 	/* Default To */
 	hbox = gtk_hbox_new(FALSE, 8);
@@ -333,6 +344,9 @@ void prefs_folder_item_ok_cb(GtkWidget *widget, struct PrefsFolderItemDialog *di
 
 	prefs->request_return_receipt = 
 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->checkbtn_request_return_receipt));
+	/* MIGRATION */    
+	dialog->item->ret_rcpt = prefs->request_return_receipt;
+	    
 	prefs->enable_default_to = 
 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->checkbtn_default_to));
 	g_free(prefs->default_to);

@@ -520,7 +520,7 @@ Compose * compose_generic_new(PrefsAccount *account, const gchar *to, FolderItem
 				gtk_widget_grab_focus(compose->header_last->entry);
 			}
 		}
-		if(item && item->prefs->request_return_receipt) {
+		if (item && item->ret_rcpt) {
 			GtkItemFactory *ifactory;
 		
 			ifactory = gtk_item_factory_from_widget(compose->menubar);
@@ -643,7 +643,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 		compose->use_to = TRUE;
 	}
 */
-    	if(msginfo->folder && msginfo->folder->prefs->request_return_receipt) {
+    	if (msginfo->folder && msginfo->folder->ret_rcpt) {
 		GtkItemFactory *ifactory;
 	
 		ifactory = gtk_item_factory_from_widget(compose->menubar);

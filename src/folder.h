@@ -216,10 +216,11 @@ struct _FolderItem
 	gint last_num;
 
 	/* special flags */
-	guint no_sub    : 1; /* no child allowed? */
-	guint no_select : 1; /* not selectable?   */
-	guint collapsed : 1; /* collapsed item    */
+	guint no_sub    : 1; /* no child allowed?    */
+	guint no_select : 1; /* not selectable?      */
+	guint collapsed : 1; /* collapsed item       */
 	guint threaded  : 1; /* threaded folder view */
+	guint ret_rcpt  : 1; /* return receipt       */
 
 	gint op_count;
 
