@@ -1,3 +1,18 @@
+2002-12-03
+
+	* autogen.sh: 現在の ltmain.sh を上書きするために
+	  'libtoolize --force --copy' を追加。
+	* acconfig.h: 削除。
+	* configure.in: GPGME の最低バージョンを 0.3.10 に上げた。
+	  XIM のチェックを修正。
+	* ac/check-type.m4
+	  ac/gnupg-check-typedef.m4: コメント用の引数を追加。
+
+2002-11-29
+
+	* src/imageview.[ch]: 衝突する imageview_show_image() の定義を修正
+	  (Thorsten Maerz さん thanks)。
+
 2002-11-28
 
 	* src/compose.c: compose_entry_append(): サブジェクトエントリで

@@ -57,6 +57,8 @@ open(FILTERRC, "<filterrc") or die("Can't find your old filter rules ('filterrc'
         $mode_two,
         $action) = split(/\t/);
 
+    $value_one =~ s/\"/\\\"/g ;
+    $value_two =~ s/\"/\\\"/g ;
     $action = $action eq "m" ? "move" : "delete";
     $destination = $destination =~ m!^\#mh/! ?
                      $destination :

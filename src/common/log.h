@@ -26,6 +26,24 @@
 
 #include <glib.h>
 
+#define LOG_APPEND_TEXT_HOOKLIST "log_append_text"
+
+typedef enum
+{
+	LOG_NORMAL,
+	LOG_MSG,
+	LOG_WARN,
+	LOG_ERROR
+} LogType;
+
+typedef struct _LogText LogText;
+
+struct _LogText
+{
+	const gchar	*text;
+	LogType		 type;	
+};
+
 /* logging */
 void set_log_file	(const gchar *filename);
 void close_log_file	(void);

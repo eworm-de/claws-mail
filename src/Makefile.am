@@ -23,7 +23,6 @@ sylpheed_SOURCES = \
 	procheader.c procheader.h \
 	compose.c compose.h \
 	gtkshruler.c gtkshruler.h \
-	gtksctree.c gtksctree.h \
 	gtkstext.c gtkstext.h \
 	menu.c menu.h \
 	stock_pixmap.c stock_pixmap.h \
@@ -89,7 +88,6 @@ sylpheed_SOURCES = \
 	gtkutils.c gtkutils.h \
 	codeconv.c codeconv.h \
 	unmime.c unmime.h \
-	md5.c md5.h \
 	ssl_certificate.c ssl_certificate.h \
 	ssl_manager.c ssl_manager.h \
 	automaton.c automaton.h \
@@ -217,6 +215,7 @@ EXTRA_DIST = \
 
 INCLUDES = \
 	-Icommon \
+	-Igtk \
 	-DG_LOG_DOMAIN=\"Sylpheed\" \
 	-I$(top_srcdir)/intl \
         $(ASPELL_CFLAGS)    \

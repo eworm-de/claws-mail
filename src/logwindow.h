@@ -25,14 +25,6 @@
 
 typedef struct _LogWindow	LogWindow;
 
-typedef enum
-{
-	LOG_NORMAL,
-	LOG_MSG,
-	LOG_WARN,
-	LOG_ERROR
-} LogType;
-
 struct _LogWindow
 {
 	GtkWidget *window;
@@ -42,12 +34,12 @@ struct _LogWindow
 	GdkColor msg_color;
 	GdkColor warn_color;
 	GdkColor error_color;
+
+	guint hook_id;
 };
 
 LogWindow *log_window_create(void);
 void log_window_init(LogWindow *logwin);
 void log_window_show(LogWindow *logwin);
-
-void log_window_append(const gchar *str, LogType type);
 
 #endif /* __LOGWINDOW_H__ */

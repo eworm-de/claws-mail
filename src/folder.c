@@ -2847,7 +2847,7 @@ void folder_update_item(FolderItem *item, gboolean contentchange)
 	
 	source.item = item;
 	source.content_change = contentchange;
-	hooks_invoke("folder_item_update", &source);
+	hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &source);
 }
 
 static void folder_update_item_func(FolderItem *item, gpointer contentchange)
@@ -2857,7 +2857,7 @@ static void folder_update_item_func(FolderItem *item, gpointer contentchange)
 	if (item->need_update) {
 		source.item = item;
 		source.content_change = GPOINTER_TO_INT(contentchange);
-		hooks_invoke("folder_item_update", &source);
+		hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &source);
 
 		item->need_update = FALSE;
 	}
@@ -2878,14 +2878,14 @@ void folder_update_item_recursive(FolderItem *item, gboolean update_summary)
 
 	source.item = item;
 	source.content_change = update_summary;	
-	hooks_invoke("folder_item_update", &source);
+	hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &source);
 	while (node != NULL) {
 		if (node && node->data) {
 			FolderItem *next_item = (FolderItem*) node->data;
 
 			source.item = next_item;
 			source.content_change = update_summary;	
-			hooks_invoke("folder_item_update", &source);
+			hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &source);
 		}
 		node = node->next;
 	}

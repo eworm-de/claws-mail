@@ -1,5 +1,11 @@
 noinst_LTLIBRARIES = libsylpheedgtk.la
 
-libsylpheedgtk_la_SOURCES = 
+libsylpheedgtk_la_SOURCES = \
+	gtksctree.c gtksctree.h
 
-libsylpheedgtk_la_LIBADD = ../common/libsylpheedcommon.la
+INCLUDES = \
+	$(GTK_CFLAGS)
+
+libsylpheedgtk_la_LIBADD = \
+	../common/libsylpheedcommon.la \
+	$(GTK_LIBS)

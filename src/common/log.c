@@ -26,6 +26,8 @@
 
 #include "defs.h"
 #include "utils.h"
+#include "log.h"
+#include "hooks.h"
 
 static FILE *log_fp = NULL;
 
@@ -62,6 +64,7 @@ void log_print(const gchar *format, ...)
 	va_list args;
 	gchar buf[BUFFSIZE + TIME_LEN];
 	time_t t;
+	LogText logtext;
 
 	time(&t);
 	strftime(buf, TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
@@ -71,10 +74,9 @@ void log_print(const gchar *format, ...)
 	va_end(args);
 
 	if (debug_get_mode()) fputs(buf, stdout);
-/*	FIXME:
-	callback for gui logging
-
-	log_window_append(buf, LOG_NORMAL); */
+	logtext.text = buf;
+	logtext.type = LOG_NORMAL;
+	hooks_invoke(LOG_APPEND_TEXT_HOOKLIST, &logtext);
 	if (log_fp) {
 		fputs(buf, log_fp);
 		fflush(log_fp);
@@ -91,6 +93,7 @@ void log_message(const gchar *format, ...)
 	va_list args;
 	gchar buf[BUFFSIZE + TIME_LEN];
 	time_t t;
+	LogText logtext;
 
 	time(&t);
 	strftime(buf, TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
@@ -100,10 +103,9 @@ void log_message(const gchar *format, ...)
 	va_end(args);
 
 	if (debug_get_mode()) g_message("%s", buf + TIME_LEN);
-/*	FIXME:
-	callback for gui logging
-
-	log_window_append(buf + TIME_LEN, LOG_MSG); */
+	logtext.text = buf + TIME_LEN;
+	logtext.type = LOG_MSG;
+	hooks_invoke(LOG_APPEND_TEXT_HOOKLIST, &logtext);
 	if (log_fp) {
 		fwrite(buf, TIME_LEN, 1, log_fp);
 		fputs("* message: ", log_fp);
@@ -121,6 +123,7 @@ void log_warning(const gchar *format, ...)
 	va_list args;
 	gchar buf[BUFFSIZE + TIME_LEN];
 	time_t t;
+	LogText logtext;
 
 	time(&t);
 	strftime(buf, TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
@@ -130,10 +133,9 @@ void log_warning(const gchar *format, ...)
 	va_end(args);
 
 	g_warning("%s", buf);
-/*	FIXME:
-	callback for gui logging
-
-	log_window_append(buf + TIME_LEN, LOG_WARN); */
+	logtext.text = buf + TIME_LEN;
+	logtext.type = LOG_WARN;
+	hooks_invoke(LOG_APPEND_TEXT_HOOKLIST, &logtext);
 	if (log_fp) {
 		fwrite(buf, TIME_LEN, 1, log_fp);
 		fputs("** warning: ", log_fp);
@@ -147,6 +149,7 @@ void log_error(const gchar *format, ...)
 	va_list args;
 	gchar buf[BUFFSIZE + TIME_LEN];
 	time_t t;
+	LogText logtext;
 
 	time(&t);
 	strftime(buf, TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
@@ -156,10 +159,9 @@ void log_error(const gchar *format, ...)
 	va_end(args);
 
 	g_warning("%s", buf);
-/*	FIXME:
-	callback for gui logging
-
-	log_window_append(buf + TIME_LEN, LOG_ERROR); */
+	logtext.text = buf + TIME_LEN;
+	logtext.type = LOG_ERROR;
+	hooks_invoke(LOG_APPEND_TEXT_HOOKLIST, &logtext);
 	if (log_fp) {
 		fwrite(buf, TIME_LEN, 1, log_fp);
 		fputs("*** error: ", log_fp);

@@ -55,6 +55,7 @@
 #include "gtkutils.h"
 #include "toolbar.h"
 #include "prefs_toolbar.h"
+#include "alertpanel.h"
 
 /* elements */
 #define TOOLBAR_TAG_INDEX        "toolbar"
@@ -76,8 +77,6 @@ static gchar *toolbar_ret_text_from_val      (gint            	val);
 static void   toolbar_set_default_main       (void);
 static void   toolbar_set_default_compose    (void);
 static void   toolbar_set_default_msgview    (void);
-
-static ToolbarType detect_window(gpointer data);
 
 struct ToolbarText 
 {
@@ -857,7 +856,6 @@ void common_toolbar_forward_cb(GtkWidget	*widget,
 			       gpointer	         data)
 {
 	ToolbarParent *parent = (ToolbarParent*)data;
-	MessageView *msgview;
 
 	g_return_if_fail(parent != NULL);
 

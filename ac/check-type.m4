@@ -1,4 +1,4 @@
-dnl SYLPHEED_CHECK_TYPE(TYPE, DEFAULT [, INCLUDES])
+dnl SYLPHEED_CHECK_TYPE(TYPE, DEFAULT [, INCLUDES, COMMENT])
 dnl
 dnl Like AC_CHECK_TYPE, but in addition to `sys/types.h', `stdlib.h' and
 dnl `stddef.h' checks files included by INCLUDES, which should be a

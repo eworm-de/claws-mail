@@ -239,11 +239,11 @@ LINK32_OBJS= \
 	"$(INTDIR)\folderview.obj" \
 	"$(INTDIR)\grouplistdialog.obj" \
 	"$(INTDIR)\gtkaspell.obj" \
-	"$(INTDIR)\gtksctree.obj" \
 	"$(INTDIR)\gtkshruler.obj" \
 	"$(INTDIR)\gtkstext.obj" \
 	"$(INTDIR)\gtkutils.obj" \
 	"$(INTDIR)\headerview.obj" \
+	"$(INTDIR)\hooks.obj" \
 	"$(INTDIR)\html.obj" \
 	"$(INTDIR)\imageview.obj" \
 	"$(INTDIR)\imap.obj" \
@@ -267,7 +267,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\matcher_parser_parse.obj" \
 	"$(INTDIR)\mbox.obj" \
 	"$(INTDIR)\mbox_folder.obj" \
-	"$(INTDIR)\md5.obj" \
 	"$(INTDIR)\menu.obj" \
 	"$(INTDIR)\message_search.obj" \
 	"$(INTDIR)\messageview.obj" \
@@ -350,7 +349,8 @@ LINK32_OBJS= \
 	"..\..\fnmatch\fnmatch_d.lib" \
 	"..\..\..\lib\libeay32.lib" \
 	"..\..\..\lib\ssleay32.lib" \
-	"$(INTDIR)\hooks.obj"
+	"$(INTDIR)\gtksctree.obj" \
+	"$(INTDIR)\md5.obj"
 
 "$(OUTDIR)\sylpheed.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -660,7 +660,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MD /Gm /GX /ZI /Od /I "..\src" /I "..\src\common" /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /I "\dev\proj\aspell\interfaces\cc" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\sylpheed_debug.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+CPP_PROJ=/nologo /MD /Gm /GX /ZI /Od /I "..\src" /I "..\src\common" /I "..\src\gtk" /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /I "\dev\proj\aspell\interfaces\cc" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\sylpheed_debug.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
 RSC_PROJ=/l 0x411 /fo"$(INTDIR)\sylpheed.res" /d "_DEBUG" 
 BSC32=bscmake.exe
@@ -707,11 +707,11 @@ BSC32_SBRS= \
 	"$(INTDIR)\folderview.sbr" \
 	"$(INTDIR)\grouplistdialog.sbr" \
 	"$(INTDIR)\gtkaspell.sbr" \
-	"$(INTDIR)\gtksctree.sbr" \
 	"$(INTDIR)\gtkshruler.sbr" \
 	"$(INTDIR)\gtkstext.sbr" \
 	"$(INTDIR)\gtkutils.sbr" \
 	"$(INTDIR)\headerview.sbr" \
+	"$(INTDIR)\hooks.sbr" \
 	"$(INTDIR)\html.sbr" \
 	"$(INTDIR)\imageview.sbr" \
 	"$(INTDIR)\imap.sbr" \
@@ -735,7 +735,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\matcher_parser_parse.sbr" \
 	"$(INTDIR)\mbox.sbr" \
 	"$(INTDIR)\mbox_folder.sbr" \
-	"$(INTDIR)\md5.sbr" \
 	"$(INTDIR)\menu.sbr" \
 	"$(INTDIR)\message_search.sbr" \
 	"$(INTDIR)\messageview.sbr" \
@@ -805,7 +804,8 @@ BSC32_SBRS= \
 	"$(INTDIR)\w32_mailcap.sbr" \
 	"$(INTDIR)\xml.sbr" \
 	"$(INTDIR)\xmlprops.sbr" \
-	"$(INTDIR)\hooks.sbr"
+	"$(INTDIR)\gtksctree.sbr" \
+	"$(INTDIR)\md5.sbr"
 
 "$(OUTDIR)\sylpheed_debug.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -856,11 +856,11 @@ LINK32_OBJS= \
 	"$(INTDIR)\folderview.obj" \
 	"$(INTDIR)\grouplistdialog.obj" \
 	"$(INTDIR)\gtkaspell.obj" \
-	"$(INTDIR)\gtksctree.obj" \
 	"$(INTDIR)\gtkshruler.obj" \
 	"$(INTDIR)\gtkstext.obj" \
 	"$(INTDIR)\gtkutils.obj" \
 	"$(INTDIR)\headerview.obj" \
+	"$(INTDIR)\hooks.obj" \
 	"$(INTDIR)\html.obj" \
 	"$(INTDIR)\imageview.obj" \
 	"$(INTDIR)\imap.obj" \
@@ -884,7 +884,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\matcher_parser_parse.obj" \
 	"$(INTDIR)\mbox.obj" \
 	"$(INTDIR)\mbox_folder.obj" \
-	"$(INTDIR)\md5.obj" \
 	"$(INTDIR)\menu.obj" \
 	"$(INTDIR)\message_search.obj" \
 	"$(INTDIR)\messageview.obj" \
@@ -967,7 +966,8 @@ LINK32_OBJS= \
 	"..\..\fnmatch\fnmatch_d.lib" \
 	"..\..\..\lib\libeay32.lib" \
 	"..\..\..\lib\ssleay32.lib" \
-	"$(INTDIR)\hooks.obj"
+	"$(INTDIR)\gtksctree.obj" \
+	"$(INTDIR)\md5.obj"
 
 "$(OUTDIR)\sylpheed_d.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -1755,7 +1755,7 @@ SOURCE=..\src\gtkaspell.c
 
 !ENDIF 
 
-SOURCE=..\src\gtksctree.c
+SOURCE=..\src\gtk\gtksctree.c
 
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 
@@ -2277,7 +2277,7 @@ SOURCE=..\src\mbox_folder.c
 
 !ENDIF 
 
-SOURCE=..\src\md5.c
+SOURCE=..\src\common\md5.c
 
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 

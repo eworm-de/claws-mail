@@ -506,7 +506,7 @@ FolderView *folderview_create(void)
 	folderview->mbox_factory = mbox_factory;
 
 	folderview->folder_item_update_callback_id =
-		hooks_register_hook("folder_item_update", folderview_update_item, (gpointer) folderview);
+		hooks_register_hook(FOLDER_ITEM_UPDATE_HOOKLIST, folderview_update_item, (gpointer) folderview);
 
 	gtk_widget_show_all(scrolledwin);
 
