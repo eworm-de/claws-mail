@@ -1,3 +1,16 @@
+2004-01-29
+
+	* src/summaryview.c: summary_key_pressed(): サマリビューの水平
+	  スクロールバーが左端にあるときのみ GDK_Left でフォルダビューに
+	  切り替えるようにした(Alfons さん thanks)。
+
+2004-01-29
+
+	* src/codeconv.c: conv_euctojis(): JIS X 0201 カナ変換を設定可能に
+	  した。
+	* src/prefs_common.[ch]: PrefsCommon::allow_jisx0201_kana (隠し設定)
+	  を追加。
+
 2004-01-28
 
 	* src/codeconv.c: conv_euctojis(): JIS X 0201 カナから JIS X 0208

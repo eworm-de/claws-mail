@@ -1,3 +1,16 @@
+2004-01-29
+
+	* src/summaryview.c: summary_key_pressed(): GDK_Left should only
+	  switch to folderview when summaryview hscrollbar is at the leftmost
+	  position (thanks to Alfons).
+
+2004-01-29
+
+	* src/codeconv.c: conv_euctojis(): made JIS X 0201 Kana conversion
+	  configurable.
+	* src/prefs_common.[ch]: added PrefsCommon::allow_jisx0201_kana
+	  (hidden setting).
+
 2004-01-28
 
 	* src/codeconv.c: conv_euctojis(): force JIS X 0201 Kana to JIS X 0208

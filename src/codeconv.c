@@ -265,30 +265,32 @@ void conv_euctojis(gchar *outbuf, gint outlen, const gchar *inbuf)
 			}
 		} else if (iseuchwkana1(*in)) {
 			if (iseuchwkana2(*(in + 1))) {
-#ifdef CONV_ALLOW_HWKANA
-				HW_IN();
-				in++;
-				*out++ = *in++ & 0x7f;
-#else
-				guchar jis_ch[2];
-				gint len;
+				if (prefs_common.allow_jisx0201_kana) {
+					HW_IN();
+					in++;
+					*out++ = *in++ & 0x7f;
+				} else {
+					guchar jis_ch[2];
+					gint len;
 
-				if (iseuchwkana1(*(in + 2)) &&
-				    iseuchwkana2(*(in + 3)))
-					len = conv_jis_hantozen
-						(jis_ch, *(in + 1), *(in + 3));
-				else
-					len = conv_jis_hantozen
-						(jis_ch, *(in + 1), '\0');
-				if (len == 0)
-					in += 2;
-				else {
-					K_IN();
-					in += len * 2;
-					*out++ = jis_ch[0];
-					*out++ = jis_ch[1];
+					if (iseuchwkana1(*(in + 2)) &&
+					    iseuchwkana2(*(in + 3)))
+						len = conv_jis_hantozen
+							(jis_ch,
+							 *(in + 1), *(in + 3));
+					else
+						len = conv_jis_hantozen
+							(jis_ch,
+							 *(in + 1), '\0');
+					if (len == 0)
+						in += 2;
+					else {
+						K_IN();
+						in += len * 2;
+						*out++ = jis_ch[0];
+						*out++ = jis_ch[1];
+					}
 				}
-#endif
 			} else {
 				K_OUT();
 				in++;
