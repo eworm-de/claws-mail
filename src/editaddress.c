@@ -977,6 +977,9 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent, I
 	gtk_clist_select_row( GTK_CLIST(personeditdlg.clist_email), 0, 0 );
 	gtk_clist_select_row( GTK_CLIST(personeditdlg.clist_attrib), 0, 0 );
 	edit_person_email_clear( NULL );
+	if (person)
+		edit_person_email_list_selected(GTK_CLIST(personeditdlg.clist_email), 0, 0, NULL, NULL);
+
 	edit_person_attrib_clear( NULL );
 
 	gtk_main();
