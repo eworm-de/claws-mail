@@ -2,7 +2,7 @@
 
 	* src/mimeview.c
 	* src/common/utils.c
-		Sync with HEAD
+		Sync with HEAD (filename chars substitution)
 
 2005-02-15 [colin]	1.0.1cvs7.3
 
@@ -19,13 +19,13 @@
 
 	* src/compose.c
 	* src/procmime.c
-		Sync with HEAD
+		Sync with HEAD (optimisation of cvs6)
 
 2005-02-14 [colin]	1.0.1cvs6.1
 
 	* src/compose.c
 	* src/procmime.c
-		Sync with HEAD
+		Sync with HEAD (encode "From " at line beginning)
 
 2005-02-14 [colin]	1.0.1cvs5.3
 
@@ -42,7 +42,7 @@
 2005-02-12 [colin]	1.0.1cvs5.1
 
 	* src/filtering.c
-		Sync with HEAD
+		Sync with HEAD (remove wrong use of compose after send)
 
 2005-02-12 [paul]	1.0.1cvs4.5
 
@@ -71,7 +71,7 @@
 	* ChangeLog.jp
 	* configure.ac
 	* src/compose.c
-		sync with HEAD
+		sync with HEAD (sync with main)
 
 2005-02-10 [paul]	1.0.1cvs3.2
 
@@ -260,12 +260,12 @@
 2005-02-10 [colin]	1.0.1cvs3.1
 
 	* src/mainwindow.c
-		Sync with HEAD
+		Sync with HEAD (fix occasional crasher)
 
 2005-02-10 [colin]	1.0.1cvs2.1
 
 	* src/messageview.c
-		Synw with HEAD
+		Synw with HEAD (don't automatically display html)
 
 2005-02-09 [colin]	1.0.1cvs1.3
 
@@ -286,7 +286,7 @@
 	* src/messageview.c
 	* src/mimeview.c
 	* src/mimeview.h
-		Sync with HEAD
+		Sync with HEAD (display non text/plain mails with plugin)
 
 2005-02-08 [colin]	1.0.1.1
 

@@ -1,3 +1,32 @@
+2005-02-15 [colin]	1.0.1cvs8
+
+	* src/mimeview.c
+	* src/common/utils.c
+		Sanitize substitution for saved filenames:
+		only \ / * and \r \n \t are bad. 
+
+2005-02-15 [colin]	1.0.1cvs7
+
+	* src/compose.c
+	* src/procmime.c
+		Optimize (constant instead of strlen). Thanks
+		Alfons for the hint.
+
+2005-02-14 [colin]	1.0.1cvs6
+
+	* src/compose.c
+	* src/procmime.c
+		Use quoted-printable instead of 7bit or 8bit
+		to encode "^From " and avoid mail corruption 
+		on the MTA, as specified by RFC 3156. Thanks
+		Hoa for the hint.
+
+2005-02-12 [colin]	1.0.1cvs5
+
+	* src/filtering.c
+		Remove wrong use of compose struct after
+		compose_send(). Spotted by Alfons and Holger Berndt.
+
 2005-02-10 [paul]	1.0.1cvs4
 
 	* src/compose.c
