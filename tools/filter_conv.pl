@@ -20,21 +20,6 @@
 chdir;
 chdir '.sylpheed' || die("You don't appear to have Sylpheed installed\n");
 
-open(FOLDERLIST, "<folderlist.xml") || die("Can't find folderlist.xml\n");
-@folderlist = <FOLDERLIST>;
-close FOLDERLIST;
-
-foreach $folderlist (@folderlist) {
-	if ($folderlist =~ m/<folder type="mh"/) {
-      		$folderlist =~ s/<folder type="mh" name="//;
-                $folderlist =~ s/" path="[A-Z0-9]+"//ig;
-		$folderlist =~ s/ collapsed="1"//;
-		$folderlist =~ s/>\n//ig;
-                $folderlist =~ s/^ +//;
-                $mailbox = $folderlist;
-        }
-}
-
 open (FILTERRC, "<filterrc") || die("Can't find your old filter rules\n");
 @filterrc = <FILTERRC>;
 close FILTERRC;
@@ -62,6 +47,33 @@ $WRITE_THIS .= "[global]\n";
 foreach $filterrc (@filterrc) {
 	$COUNT++;
 	@split_lines = split("\t", $filterrc);
+	if ($split_lines[6] eq "0") {
+		$match_type = "matchcase";
+		$predicate_one = "~";
+	} elsif ($split_lines[6] eq "1") {
+		$match_type = "matchcase";
+		$predicate_one = "";
+	} elsif ($split_lines[6] eq "4") {
+		$match_type = "regexpcase";
+		$predicate_one = "~";
+	} elsif ($split_lines[6] eq "5") {
+		$match_type =  "regexpcase";
+		$predicate_one = "";
+	}
+	if ($split_lines[7] eq "0") {
+		$match_type = "matchcase";
+		$predicate_two = "~";
+	} elsif ($split_lines[7] eq "1") {
+		$match_type = "matchcase";
+		$predicate_two = "";
+	} elsif ($split_lines[7] eq "4") {
+		$match_type = "regexpcase";
+		$predicate_two = "~";
+	} elsif ($split_lines[7] eq "5") {
+		$match_type =  "regexpcase";
+		$predicate_two = "";
+	}
+
 	if ($split_lines[2] eq "&") {
 		$operator = "&";
 		&sort_data;
@@ -70,18 +82,23 @@ foreach $filterrc (@filterrc) {
 		$operator = "|";
 		&sort_data;
 	} elsif ($split_lines[0] eq "To") {
-		$WRITE_THIS .= "to matchcase \"$split_lines[1]\"";
+		$WRITE_THIS .= "$predicate_one"."to $match_type \"$split_lines[1]\"";
 	} elsif ($split_lines[0] eq "Reply-To") {
-		$WRITE_THIS .= "inreplyto matchcase \"$split_lines[1]\"";
+		$WRITE_THIS .= "$predicate_one"."inreplyto $match_type \"$split_lines[1]\"";
 	} elsif ($split_lines[0] eq "Subject") {
-		$WRITE_THIS .= "subject matchcase \"$split_lines[1]\"";
-	} elsif (($split_lines[0] eq "From") || ($split_lines[0] eq "Sender")){
-		$WRITE_THIS .= "from matchcase \"$split_lines[1]\"";
+		$WRITE_THIS .= "$predicate_one"."subject $match_type \"$split_lines[1]\"";
+	} elsif ($split_lines[0] eq "From"){
+		$WRITE_THIS .= "$predicate_one"."from $match_type \"$split_lines[1]\"";
+	} elsif ($split_lines[0] eq "Sender" || $split_lines[0] eq "List-Id" || 
+		 $split_lines[0] eq "X-ML-Name" || $split_lines[0] eq "X-List" ||
+		 $split_lines[0] eq "X-Sequence" || $split_lines[0] eq "X-Mailer" ||
+		 $split_lines[0] eq "Cc") {
+		$WRITE_THIS .= "$predicate_one"."header $split_lines[0] $match_type \"$split_lines[1]\"";
 	}
-	if (!$split_lines[5]) {
+	if ($split_lines[8] eq "n\n") {
 		$WRITE_THIS .= " delete";
 	} elsif ($split_lines[8] eq "m\n"){
-		$WRITE_THIS .= " move \"\#mh/$mailbox/$split_lines[5]\"";
+		$WRITE_THIS .= " move \"$split_lines[5]\"";
 	}
 	$WRITE_THIS .= "\n";
 	@split_lines = "";
@@ -100,24 +117,36 @@ exit;
 sub sort_data {
 	if ($split_lines[0] eq "To" && $split_lines[3] eq "Cc" && 
 	$split_lines[1] eq $split_lines[4]) {
-		$WRITE_THIS .= "to_or_cc matchcase \"$split_lines[1]\"";		
+		$WRITE_THIS .= "$predicate_one"."to_or_cc $match_type \"$split_lines[1]\"";		
 	}
 	elsif ($split_lines[0] eq "To") {
-		$WRITE_THIS .= "to matchcase \"$split_lines[1]\" $operator ";
+		$WRITE_THIS .= "$predicate_one"."to $match_type \"$split_lines[1]\" $operator ";
 	} elsif ($split_lines[0] eq "Reply-To") {
-		$WRITE_THIS .= "inreplyto matchcase \"$split_lines[1]\" $operator ";
+		$WRITE_THIS .= "$predicate_one"."inreplyto $match_type \"$split_lines[1]\" $operator ";
 	} elsif ($split_lines[0] eq "Subject") {
-		$WRITE_THIS .= "subject matchcase \"$split_lines[1]\" $operator ";
-	} elsif (($split_lines[0] eq "From") || ($split_lines[0] eq "Sender")) {
-		$WRITE_THIS .= "from matchcase \"$split_lines[1]\" $operator ";
+		$WRITE_THIS .= "$predicate_one"."subject $match_type \"$split_lines[1]\" $operator ";
+	} elsif ($split_lines[0] eq "From") {
+		$WRITE_THIS .= "$predicate_one"."from $match_type \"$split_lines[1]\" $operator ";
+	} elsif ($split_lines[0] eq "Sender" || $split_lines[0] eq "List-Id" || 
+		 $split_lines[0] eq "X-ML-Name" || $split_lines[0] eq "X-List" ||
+		 $split_lines[0] eq "X-Sequence" || $split_lines[0] eq "X-Mailer" ||
+		 $split_lines[0] eq "Cc") {
+		$WRITE_THIS .= "$predicate_one"."header $split_lines[0] $match_type \"$split_lines[1]\" $operator ";
 	}
+
 	if ($split_lines[3] eq "To") {
-		$WRITE_THIS .= "to matchcase \"$split_lines[4]\"";
+		$WRITE_THIS .= "$predicate_two"."to $match_type \"$split_lines[4]\"";
 	} elsif ($split_lines[3] eq "Reply-To") {
-		$WRITE_THIS .= "inreplyto matchcase \"$split_lines[4]\"";
+		$WRITE_THIS .= "$predicate_two"."inreplyto $match_type \"$split_lines[4]\"";
 	} elsif ($split_lines[3] eq "Subject") {
-		$WRITE_THIS .= "subject matchcase \"$split_lines[4]\"";
-	} elsif (($split_lines[3] eq "From") || ($split_lines[3] eq "Sender")) {
-		$WRITE_THIS .= "from matchcase \"$split_lines[4]\"";
-	}
+		$WRITE_THIS .= "$predicate_two"."subject $match_type \"$split_lines[4]\"";
+	} elsif ($split_lines[3] eq "From") {
+		$WRITE_THIS .= "$predicate_two"."from $match_type \"$split_lines[4]\"";
+	} elsif ($split_lines[3] eq "Sender" || $split_lines[3] eq "List-Id" || 
+		 $split_lines[3] eq "X-ML-Name" || $split_lines[3] eq "X-List" ||
+		 $split_lines[3] eq "X-Sequence" || $split_lines[3] eq "X-Mailer" ||
+		 $split_lines[3] eq "Cc") {
+		$WRITE_THIS .= "$predicate_two"."header $split_lines[3] $match_type \"$split_lines[4]\"";
+	} 
+
 }
