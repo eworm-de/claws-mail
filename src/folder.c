@@ -980,7 +980,7 @@ void folder_item_close(FolderItem *item)
 	}
 	g_slist_free(mlist);
 
-	folder_item_write_cache(olditem);
+	folder_item_write_cache(item);
 	
 	folder_update_item(item, FALSE);
 
