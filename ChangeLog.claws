@@ -1,3 +1,20 @@
+2003-03-25 [christoph]	0.8.11claws46
+
+	* configure.ac
+	* src/Makefile.am
+	* src/imageview.[ch]				** REMOVE **
+	* src/messageview.[ch]
+	* src/mimeview.[ch]
+	* src/prefs_common.[ch]
+	* src/textview.c
+	* src/plugins/Makefile.am
+	* src/plugins/image_viewer/.cvsignore		** NEW **
+	* src/plugins/image_viewer/Makefile.am		** NEW **
+	* src/plugins/image_viewer/plugin.c		** NEW **
+	* src/plugins/image_viewer/viewer.[ch]		** NEW **
+		move image viewer into a plugin (building is enabled by default)
+		[ToDo: Prefs for resize and autoview]
+
 2003-03-25 [paul]	0.8.11claws45
 
 	* sync with 0.8.11cvs12

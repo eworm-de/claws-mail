@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,34 +17,30 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __IMAGEVIEW_H__
-#define __IMAGEVIEW_H__
+#include "viewer.h"
 
-#include <glib.h>
-#include <gtk/gtkwidget.h>
-
-typedef struct _ImageView	ImageView;
-
-#include "messageview.h"
-#include "procmime.h"
-
-struct _ImageView
+gint plugin_init(gchar **error)
 {
-	GtkWidget *scrolledwin;
-	GtkWidget *image;
+	mimeview_register_viewer_factory(&image_viewer_factory);
+	return 0;	
+}
 
-	MessageView *messageview;
-};
+void plugin_done()
+{
+	mimeview_unregister_viewer_factory(&image_viewer_factory);
+}
 
-ImageView *imageview_create	(void);
-void imageview_init		(ImageView	*imageview);
-void imageview_show_image	(ImageView	*imageview,
-				 MimeInfo	*mimeinfo,
-				 const gchar	*file,
-				 gboolean	 resize);
-void imageview_clear		(ImageView	*imageview);
-void imageview_destroy		(ImageView	*imageview);
-void imageview_get_resized_size	(gint w, gint h, gint aw, gint ah,
-				 gint *sw, gint *sh);
+const gchar *plugin_name()
+{
+	return "Image Viewer";
+}
 
-#endif /* __IMAGEVIEW_H__ */
+const gchar *plugin_desc()
+{
+	return "";
+}
+
+const gchar *plugin_type()
+{
+	return "GTK";
+}

@@ -36,7 +36,6 @@
 #include "headerview.h"
 #include "summaryview.h"
 #include "textview.h"
-#include "imageview.h"
 #include "mimeview.h"
 #include "procmsg.h"
 #include "procheader.h"
@@ -92,7 +91,6 @@ MessageView *messageview_create(MainWindow *mainwin)
 	GtkWidget *vbox;
 	HeaderView *headerview;
 	TextView *textview;
-	ImageView *imageview;
 	MimeView *mimeview;
 	NoticeView *noticeview;
 
@@ -108,13 +106,9 @@ MessageView *messageview_create(MainWindow *mainwin)
 	textview = textview_create();
 	textview->messageview = messageview;
 
-	imageview = imageview_create();
-	imageview->messageview = messageview;
-
 	mimeview = mimeview_create();
 	mimeview->textview = textview_create();
 	mimeview->textview->messageview = messageview;
-	mimeview->imageview = imageview;
 	mimeview->messageview = messageview;
 
 	vbox = gtk_vbox_new(FALSE, 0);
@@ -127,7 +121,6 @@ MessageView *messageview_create(MainWindow *mainwin)
 
 	/* to remove without destroyed */
 	gtk_widget_ref(GTK_WIDGET_PTR(textview));
-	gtk_widget_ref(GTK_WIDGET_PTR(imageview));
 	gtk_widget_ref(GTK_WIDGET_PTR(mimeview));
 	gtk_widget_ref(GTK_WIDGET_PTR(mimeview->textview));
 
@@ -136,7 +129,6 @@ MessageView *messageview_create(MainWindow *mainwin)
 	messageview->window     = NULL;
 	messageview->headerview = headerview;
 	messageview->textview   = textview;
-	messageview->imageview  = imageview;
 	messageview->mimeview   = mimeview;
 	messageview->noticeview = noticeview;
 	messageview->mainwin    = mainwin;
@@ -245,7 +237,6 @@ void messageview_init(MessageView *messageview)
 {
 	headerview_init(messageview->headerview);
 	textview_init(messageview->textview);
-	imageview_init(messageview->imageview);
 	mimeview_init(messageview->mimeview);
 	/*messageview_set_font(messageview);*/
 
@@ -606,20 +597,17 @@ void messageview_clear(MessageView *messageview)
 	messageview_change_view_type(messageview, MVIEW_TEXT);
 	headerview_clear(messageview->headerview);
 	textview_clear(messageview->textview);
-	imageview_clear(messageview->imageview);
 	noticeview_hide(messageview->noticeview);
 }
 
 void messageview_destroy(MessageView *messageview)
 {
 	GtkWidget *textview  = GTK_WIDGET_PTR(messageview->textview);
-	GtkWidget *imageview = GTK_WIDGET_PTR(messageview->imageview);
 	GtkWidget *mimeview  = GTK_WIDGET_PTR(messageview->mimeview);
 
 	debug_print("destroy messageview\n");
 	headerview_destroy(messageview->headerview);
 	textview_destroy(messageview->textview);
-	imageview_destroy(messageview->imageview);
 	mimeview_destroy(messageview->mimeview);
 	noticeview_destroy(messageview->noticeview);
 
@@ -634,7 +622,6 @@ void messageview_destroy(MessageView *messageview)
 	g_free(messageview);
 
 	gtk_widget_unref(textview);
-	gtk_widget_unref(imageview);
 	gtk_widget_unref(mimeview);
 }
 

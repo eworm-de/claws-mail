@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=11
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws44
+EXTRA_VERSION=claws46
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -335,28 +335,6 @@ else
 	AC_MSG_RESULT(no)
 fi
 
-dnl Check for built-in image view support
-AC_ARG_ENABLE(gdk-pixbuf,
-	[  --disable-gdk-pixbuf    Do not use gdk-pixbuf],
-	[ac_cv_enable_gdk_pixbuf=$enableval], [ac_cv_enable_gdk_pixbuf=yes])
-AC_ARG_ENABLE(imlib,
-	[  --disable-imlib         Do not use imlib],
-	[ac_cv_enable_imlib=$enableval], [ac_cv_enable_imlib=yes])
-
-if test "$ac_cv_enable_gdk_pixbuf" = yes; then
-	AM_PATH_GDK_PIXBUF(0.8.0,
-		[AC_DEFINE(HAVE_GDK_PIXBUF, 1, Define if you use gdk-pixbuf to support image view)
-		 ac_cv_enable_imlib=no], [ac_cv_enable_gdk_pixbuf=no])
-fi
-if test "$ac_cv_enable_imlib" = yes; then
-	AM_PATH_GDK_IMLIB(1.9,
-		AC_DEFINE(HAVE_GDK_IMLIB, 1, Define if you use gdk_imlib to support image view),
-		[ac_cv_enable_imlib=no])
-fi
-if test "$ac_cv_enable_gdk_pixbuf" = no -a "$ac_cv_enable_imlib" = no; then
-	AC_MSG_WARN(*** Built-in image view will not be supported ***)
-fi
-
 dnl GPGME is used to support OpenPGP 
 AC_ARG_ENABLE(gpgme,
 	[  --enable-gpgme          Enable GnuPG support using GPGME [default=no]],
@@ -409,10 +387,40 @@ fi
 
 AC_ARG_ENABLE(dillo-viewer-plugin,
 	[  --enable-dillo-viewer-plugin   Build Dillo plugin for html mail rendering [default=no]],
-	[ac_cv_enable_dillo_plugin=$enableval], [ac_cv_enable_dillo_plugin=no])
-AM_CONDITIONAL(BUILD_DILLO_VIEWER_PLUGIN, test x"$ac_cv_enable_dillo_plugin" = xyes)
-if test x"$ac_cv_enable_dillo_plugin" = xyes; then
-	PLUGINS="dillo $PLUGINS"
+	[ac_cv_enable_dillo_viewer_plugin=$enableval], [ac_cv_enable_dillo_viewer_plugin=no])
+AM_CONDITIONAL(BUILD_DILLO_VIEWER_PLUGIN, test x"$ac_cv_enable_dillo_viewer_plugin" = xyes)
+if test x"$ac_cv_enable_dillo_viewer_plugin" = xyes; then
+	PLUGINS="dillo-viewer $PLUGINS"
+fi
+
+AC_ARG_ENABLE(image-viewer-plugin,
+	[  --disable-image-viewer-plugin   Do not build image viewer plugin],
+	[ac_cv_enable_image_viewer_plugin=$enableval], [ac_cv_enable_image_viewer_plugin=yes])
+if test x"$ac_cv_enable_image_viewer_plugin" = xyes; then
+	AC_ARG_ENABLE(gdk-pixbuf,
+		[  --disable-gdk-pixbuf    Do not use gdk-pixbuf],
+		[ac_cv_enable_gdk_pixbuf=$enableval], [ac_cv_enable_gdk_pixbuf=yes])
+	AC_ARG_ENABLE(imlib,
+		[  --disable-imlib         Do not use imlib],
+		[ac_cv_enable_imlib=$enableval], [ac_cv_enable_imlib=yes])
+
+	if test "$ac_cv_enable_gdk_pixbuf" = yes; then
+		AM_PATH_GDK_PIXBUF(0.8.0,
+			[AC_DEFINE(HAVE_GDK_PIXBUF, 1, Define if you use gdk-pixbuf to support image viewer)
+			 ac_cv_enable_imlib=no], [ac_cv_enable_gdk_pixbuf=no])
+	fi
+	if test "$ac_cv_enable_imlib" = yes; then
+		AM_PATH_GDK_IMLIB(1.9,
+			AC_DEFINE(HAVE_GDK_IMLIB, 1, Define if you use gdk_imlib to support image viewer),
+			[ac_cv_enable_imlib=no])
+	fi
+	if test "$ac_cv_enable_gdk_pixbuf" = no -a "$ac_cv_enable_imlib" = no; then
+		$ac_cv_enable_image_viewer_plugin = no
+	fi
+fi
+AM_CONDITIONAL(BUILD_IMAGE_VIEWER_PLUGIN, test x"$ac_cv_enable_image_viewer_plugin" = xyes)
+if test x"$ac_cv_enable_image_viewer_plugin" = xyes; then
+	PLUGINS="image $PLUGINS"
 fi
 
 AC_ARG_ENABLE(trayicon-plugin,
@@ -443,6 +451,7 @@ src/plugins/demo/Makefile
 src/plugins/spamassassin/Makefile
 src/plugins/mathml_viewer/Makefile
 src/plugins/dillo_viewer/Makefile
+src/plugins/image_viewer/Makefile
 src/plugins/trayicon/Makefile
 faq/Makefile
 faq/de/Makefile

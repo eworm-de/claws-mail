@@ -187,9 +187,6 @@ static struct Message {
 	GtkObject *spinbtn_scrollstep_adj;
 	GtkWidget *chkbtn_halfpage;
 
-	GtkWidget *chkbtn_display_img;
-	GtkWidget *chkbtn_resize_image;
-
 	GtkWidget *chkbtn_attach_desc;
 } message;
 
@@ -682,13 +679,6 @@ static PrefParam param[] = {
 	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 	{"scroll_half_page", "FALSE", &prefs_common.scroll_halfpage, P_BOOL,
 	 &message.chkbtn_halfpage,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-
-	{"display_img", "TRUE", &prefs_common.display_img, P_BOOL,
-	 &message.chkbtn_display_img,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"resize_image", "TRUE", &prefs_common.resize_image, P_BOOL,
-	 &message.chkbtn_resize_image,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"show_other_header", "FALSE", &prefs_common.show_other_header, P_BOOL,
@@ -2341,9 +2331,6 @@ static void prefs_message_create(void)
 	GtkWidget *spinbtn_scrollstep;
 	GtkWidget *chkbtn_halfpage;
 
-	GtkWidget *chkbtn_display_img;
-	GtkWidget *chkbtn_resize_image;
-
 	GtkWidget *chkbtn_attach_desc;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
@@ -2474,12 +2461,6 @@ static void prefs_message_create(void)
 	gtk_widget_show (vbox3);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox3, FALSE, FALSE, 0);
 
-	PACK_CHECK_BUTTON(vbox3, chkbtn_display_img,
-			   _("Automatically display attached images"));
-
-	PACK_CHECK_BUTTON(vbox3, chkbtn_resize_image,
-			  _("Resize attached images"));
-
 	PACK_CHECK_BUTTON(vbox3, chkbtn_attach_desc,
 			  _("Show attachment descriptions (rather than names)"));
 
@@ -2496,9 +2477,6 @@ static void prefs_message_create(void)
 	message.spinbtn_scrollstep     = spinbtn_scrollstep;
 	message.spinbtn_scrollstep_adj = spinbtn_scrollstep_adj;
 	message.chkbtn_halfpage        = chkbtn_halfpage;
-
-	message.chkbtn_display_img  = chkbtn_display_img;
-	message.chkbtn_resize_image = chkbtn_resize_image;
 
 	message.chkbtn_attach_desc  = chkbtn_attach_desc;
 }

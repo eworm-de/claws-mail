@@ -10,7 +10,6 @@ sylpheed_SOURCES = \
 	messageview.c messageview.h \
 	headerview.c headerview.h \
 	textview.c textview.h \
-	imageview.c imageview.h \
 	mimeview.c mimeview.h \
 	summary_search.c summary_search.h \
 	message_search.c message_search.h \
@@ -208,8 +207,6 @@ INCLUDES = \
 	-I$(top_srcdir)/intl \
         $(ASPELL_CFLAGS)    \
 	$(GTK_CFLAGS) \
-	$(GDK_IMLIB_CFLAGS) \
-	$(GDK_PIXBUF_CFLAGS) \
 	$(GPGME_CFLAGS) \
 	$(OPENSSL_CFLAGS) \
 	-I$(includedir)
@@ -219,8 +216,6 @@ sylpheed_LDADD = \
 	$(INTLLIBS) \
 	$(ASPELL_LIBS) \
 	$(GTK_LIBS) \
-	$(GDK_IMLIB_LIBS) \
-	$(GDK_PIXBUF_LIBS) \
 	$(GPGME_LIBS) \
 	$(LDAP_LIBS) \
 	$(OPENSSL_LIBS) \
