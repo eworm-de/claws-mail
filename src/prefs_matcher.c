@@ -130,7 +130,7 @@ gchar * predicate_flag_text [] = {
 gchar * criteria_text [] = {
 	"All messages", "Subject",
 	"From", "To", "Cc", "To or Cc",
-	"Newsgroups", "In reply to"
+	"Newsgroups", "In reply to",
 	"Age greater than", "Age lower than",
 	"Header", "Headers part",
 	"Body part", "Whole message",

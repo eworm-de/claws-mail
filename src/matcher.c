@@ -74,7 +74,9 @@ MatchParser matchparser_tab[] = {
 	{MATCHING_ACTION_MARK, "mark"},
 	{MATCHING_ACTION_MARK_AS_READ, "mark_as_read"},
 	{MATCHING_ACTION_FORWARD, "forward"},
-	{MATCHING_ACTION_FORWARD_AS_ATTACHEMENT, "forward_as_attachement"}
+	{MATCHING_ACTION_FORWARD_AS_ATTACHEMENT, "forward_as_attachement"},
+	{MATCHING_ACTION_FORWARD_NEWS, "forward_news"},
+	{MATCHING_ACTION_FORWARD_NEWS_AS_ATTACHEMENT, "forward_news_as_attachement"}
 };
 
 /*
