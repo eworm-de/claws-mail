@@ -1,3 +1,10 @@
+2003-02-04
+
+	* src/procmsg.h: WRITE_CACHE_DATA(): little speed improvement
+	  (thanks to Colin Leroy).
+	* src/mh.c: mh_get_msginfo(): added NULL check (thanks to Thorsten
+	  Maerz).
+
 2003-02-03
 
 	* src/textview.c: textview_write_line(): don't convert if conv is

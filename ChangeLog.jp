@@ -1,3 +1,10 @@
+2003-02-04
+
+	* src/procmsg.h: WRITE_CACHE_DATA(): 速度を少し向上(Colin Leroy
+	  さん thanks)。
+	* src/mh.c: mh_get_msginfo(): NULL チェックを追加(Thorsten Maerz
+	  さん thanks)。
+
 2003-02-03
 
 	* src/textview.c: textview_write_line(): conv が NULL の場合は
