@@ -1,3 +1,10 @@
+2002-11-22 [alfons]	0.8.5claws178
+
+	* src/summaryview.c
+		summary_execute_delete_func(): if message is deleted, make 
+		sure to also remove its entry in the subject hash table. 
+		fixes a corner case bug.
+
 2002-11-22 [paul]	0.8.5claws177
 
 	* .cvsignore
