@@ -20,6 +20,7 @@ Addressbook conversion:
 
 Mailbox conversion:
   calypso_convert.pl            Import mbox files with attachments from Calypso
+  convert_mbox.pl		Import mbox files
 
 Other tools:
   filter_conv.pl                Convert old-style filters to new filtering
@@ -284,6 +285,24 @@ Mailbox conversion
   	structure manually (contentmenu from folderview).
 
   Contact: Thorsten Maerz <torte@netztorte.de>
+
+* convert_mbox.pl
+
+  WHAT IT DOES
+	This perl script converts an mbox directory's contents into 
+	Sylpheed's MH format.
+  
+  HOW TO USE IT
+  
+	Run the script using:
+	 
+    		perl convert_mbox.pl MBOX MH_DIR
+		
+	Move the outputted MH_DIR and its contents into your Sylpheed
+	Mail folder; in Sylpheed right-click the top-level folder
+	and choose 'Rebuild folder tree' from the popup menu.	
+
+  Contact: Fred Marton <Fred.Marton@uni-bayreuth.de>
 
 --------------------------------------------------------------------------------
 

@@ -1,6 +1,7 @@
 EXTRA_TOOLS = \
 	OOo2sylpheed.pl \
 	calypso_convert.pl \
+	convert_mbox.pl \
 	eud2gc.py \
 	filter_conv.pl \
 	freshmeat_search.pl \
