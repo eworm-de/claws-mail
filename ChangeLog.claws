@@ -1,3 +1,8 @@
+2002-12-27 [darko]	0.8.8claws8
+
+	* src/common/utils.c
+		added locked pattern to extended search
+
 2002-12-27 [alfons]	0.8.8claws7
 
 	* src/prefs_matcher.[ch]

@@ -3037,6 +3037,7 @@ gchar *expand_search_string(const gchar *search_string)
 		{ "h",	"headers_part",			1,	TRUE,	TRUE  },
 		{ "i",	"header \"Message-Id\"",	1,	TRUE,	TRUE  },
 		{ "I",	"inreplyto",			1,	TRUE,	TRUE  },
+		{ "L",	"locked",			0,	FALSE,	FALSE },
 		{ "n",	"newsgroups",			1,	TRUE,	TRUE  },
 		{ "N",	"new",				0,	FALSE,	FALSE },
 		{ "O",	"~new",				0,	FALSE,	FALSE },

@@ -502,6 +502,7 @@ mention it.
     h        S          messages which contain header S
     i        S          messages which contain S in Message-Id header
     I        S          messages which contain S in inreplyto header
+    L                   locked messages
     n        S          messages which are in newsgroup S
     N                   new messages
     O                   old messages
@@ -531,7 +532,7 @@ mention it.
     f "john beavis"    messages from john beavis
     %f "John Beavis"   messages from John Beavis (case sensitive)
     ~s foo             messages which do not have foo in the subject
-    f foo & s bar      messages from foo that do not have bar in thesubject
+    f foo & ~s bar     messages from foo that do not have bar in thesubject
 
 
 4. How to contribute
