@@ -1,3 +1,8 @@
+2004-11-06 [colin]	0.9.12cvs140
+
+	* src/compose.c
+		Don't ask for passphrase if not sending
+
 2004-11-05 [christoph]	0.9.12cvs139
 
 	* src/compose.c
