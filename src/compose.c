@@ -4737,10 +4737,10 @@ static void compose_template_apply(Compose *compose, Template *tmpl)
 
 	gtk_stext_freeze(GTK_STEXT(compose->text));
         
-	if (tmpl->subject)
+	if (tmpl->subject && *tmpl->subject != '\0')
 		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry),
 				   tmpl->subject);
-	if (tmpl->to)
+	if (tmpl->to && *tmpl->to != '\0')
 		compose_entry_append(compose, tmpl->to, COMPOSE_TO);
 
 	if (compose->replyinfo == NULL) {

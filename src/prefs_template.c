@@ -447,9 +447,18 @@ static gint prefs_template_clist_set_row(gint row)
 	name = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_name),
 				      0, -1);
 	subject = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_subject),
-				      0, -1);
+					 0, -1);
 	to = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_to),
 				    0, -1);
+
+	if (subject && *subject == '\0') {
+		g_free(subject);
+		subject = NULL;
+	}
+	if (to && *to == '\0') {
+		g_free(to);
+		to = NULL;
+	}
 
 	tmpl = g_new(Template, 1);
 	tmpl->name = name;

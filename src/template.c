@@ -194,9 +194,9 @@ void template_write_config(GSList *tmpl_list)
 		debug_print(_("%s:%d writing template \"%s\" to %s\n"),
 		            __FILE__, __LINE__, tmpl->name, filename);
 		fprintf(fp, "Name: %s\n", tmpl->name);
-		if (tmpl->subject)
+		if (tmpl->subject && *tmpl->subject != '\0')
 			fprintf(fp, "Subject: %s\n", tmpl->subject);
-		if (tmpl->to)
+		if (tmpl->to && *tmpl->to != '\0')
 			fprintf(fp, "To: %s\n", tmpl->to);
 		fputs("\n", fp);
 		fwrite(tmpl->value, sizeof(gchar) * strlen(tmpl->value), 1,

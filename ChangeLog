@@ -1,3 +1,21 @@
+2001-12-16
+
+	* src/compose.c: compose_template_apply()
+	  src/prefs_template.c: prefs_template_clist_set_row()
+	  src/template.c: template_write_config(): don't replace To: and
+	  Subject: entry in composition window if they are empty.
+
+2001-12-16
+
+	* version 0.6.6
+
+2001-12-15
+
+	* src/folderview.c: folderview_drag_motion_cb(): fixed a DnD bug.
+	* src/ldif.c: ldif_get_line(): ignore CR.
+	* src/mimeview.c: mimeview_show_message(): search also text/html
+	  for first text part.
+
 2001-12-14
 
 	* src/prefs_account.c: prefs_account_save_config_all(): fixed a bug

@@ -1,3 +1,8 @@
+2001-12-17 [paul]	0.6.6claws2
+
+	* sync with sylpheed 0.6.6cvs1
+		see ChangeLog entry 2001-12-16
+
 2000-12-17 [alfons]	0.6.6claws1
 
 	* src/filtering.c
@@ -19,12 +24,14 @@
 		update for last minute sync
 	* po/de.po
 		updated by Jens Oberender
+	* po/pt_BR.po
+		updated by Fabio Junior Beneditto
 
 	* src/prefs_common.[ch]
 	* src/undo.c
 		number of undo levels is user configurable
 		(squeeze it into the release in the dying
-		moments)	
+		moments) Submitted by Jens Oberender	
 
 2001-12-15 [melvin]
 

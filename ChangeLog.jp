@@ -1,3 +1,21 @@
+2001-12-16
+
+	* src/compose.c: compose_template_apply()
+	  src/prefs_template.c: prefs_template_clist_set_row()
+	  src/template.c: template_write_config(): メッセージ作成ウィンドウ
+	  の To: と Subject: エントリが空の場合は置き換えないようにした。
+
+2001-12-16
+
+	* version 0.6.6
+
+2001-12-15
+
+	* src/folderview.c: folderview_drag_motion_cb(): DnD のバグを修正。
+	* src/ldif.c: ldif_get_line(): CR を無視。
+	* src/mimeview.c: mimeview_show_message(): 最初のテキストパートと
+	  して text/html も探すようにした。
+
 2001-12-14
 
 	* src/prefs_account.c: prefs_account_save_config_all(): account_list
