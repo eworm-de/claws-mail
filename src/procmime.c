@@ -1112,6 +1112,8 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 		base = g_basename(base);
 #endif
 		if (*base == '\0') base = "mimetmp";
+		Xstrdup_a(base, base, return NULL);
+		subst_for_filename(base);
 	}
 
 	filename = g_strconcat(get_mime_tmp_dir(), G_DIR_SEPARATOR_S,

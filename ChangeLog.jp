@@ -1,3 +1,27 @@
+2002-05-11
+
+	* src/imap.c: imap_scan_tree(): namespace をプレフィクスに使用しない
+	  ようにした。
+	* src/prefs_folder_item.c: 識別子パスも表示。
+	  table を使ってレイアウト。編集不可なエントリをウィンドウの背景色
+	  で表示。
+	* src/procmime.c: procmime_get_tmp_file_name(): 安全なファイル名を
+	  生成。
+
+2002-05-11
+
+	* src/automaton.[ch]: Automaton に UI コールバックを追加。
+	* src/inc.c
+	  src/pop.c: inc_progress_update() を直接呼ぶ代わりにコールバックを
+	  使用。
+	  pop3_getrange_uidl_recv(): 「全受信」オプションが指定されている
+	  ときは LAST に fallback しないようにした。
+
+2002-05-10
+
+	* src/folderview.c: 簡略表示されたニュースグループを正しくソート
+	  するようにした。
+
 2002-05-10
 
 	* src/folderview.c

@@ -25,7 +25,7 @@ diff -urN version.h version.h
 +#define __VERSION_H__
 +
 +#define PACKAGE			"sylpheed"
-+#define VERSION			"0.7.5claws16 WIN32"
++#define VERSION			"0.7.5claws17 WIN32"
 +#define PROG_VERSION	"Sylpheed version "VERSION
 +
 +#endif /* __VERSION_H__ */

@@ -695,6 +695,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	}
 
 	atm->terminate = (AtmHandler)pop3_automaton_terminate;
+	atm->ui_func = (AtmUIFunc)inc_progress_update;
 
 	atm->num = POP3_GREETING_RECV;
 
@@ -951,35 +952,27 @@ void inc_progress_update(Pop3State *state, Pop3Phase phase)
 	case POP3_GREETING_RECV:
 		break;
 	case POP3_GETAUTH_USER_SEND:
-	case POP3_GETAUTH_USER_RECV:
 	case POP3_GETAUTH_PASS_SEND:
-	case POP3_GETAUTH_PASS_RECV:
 	case POP3_GETAUTH_APOP_SEND:
-	case POP3_GETAUTH_APOP_RECV:
 		progress_dialog_set_label(dialog, _("Authenticating..."));
 		break;
 	case POP3_GETRANGE_STAT_SEND:
-	case POP3_GETRANGE_STAT_RECV:
 		progress_dialog_set_label
 			(dialog, _("Getting the number of new messages (STAT)..."));
 		break;
 	case POP3_GETRANGE_LAST_SEND:
-	case POP3_GETRANGE_LAST_RECV:
 		progress_dialog_set_label
 			(dialog, _("Getting the number of new messages (LAST)..."));
 		break;
 	case POP3_GETRANGE_UIDL_SEND:
-	case POP3_GETRANGE_UIDL_RECV:
 		progress_dialog_set_label
 			(dialog, _("Getting the number of new messages (UIDL)..."));
 		break;
 	case POP3_GETSIZE_LIST_SEND:
-	case POP3_GETSIZE_LIST_RECV:
 		progress_dialog_set_label
 			(dialog, _("Getting the size of messages (LIST)..."));
 		break;
 	case POP3_TOP_SEND:
-	case POP3_TOP_RECV:
 		g_snprintf(buf, sizeof(buf),
 			   _("Retrieving header (%d / %d)"),
 			   state->cur_msg, state->count);
@@ -994,7 +987,6 @@ void inc_progress_update(Pop3State *state, Pop3Phase phase)
 			 (gfloat)(state->count));
 		break;
 	case POP3_RETR_SEND:
-	case POP3_RETR_RECV:
 		Xstrdup_a(total_size, to_human_readable(state->total_bytes), return);
 		g_snprintf(buf, sizeof(buf),
 			   _("Retrieving message (%d / %d) (%s / %s)"),
@@ -1011,12 +1003,12 @@ void inc_progress_update(Pop3State *state, Pop3Phase phase)
 			 (gfloat)(state->cur_total_bytes) /
 			 (gfloat)(state->total_bytes));
 		break;
+#if 0
 	case POP3_DELETE_SEND:
-	case POP3_DELETE_RECV:
 		progress_dialog_set_label(dialog, _("Deleting message"));
 		break;
+#endif
 	case POP3_LOGOUT_SEND:
-	case POP3_LOGOUT_RECV:
 		progress_dialog_set_label(dialog, _("Quitting"));
 		break;
 	default:

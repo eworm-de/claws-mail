@@ -1,3 +1,8 @@
+2002-05-11 [paul]	0.7.5claws17
+
+	* sync with 0.7.5cvs19 (except src/prefs_folder_item.c)
+		see ChangeLog 2002-05-10 and 2002-05-11
+
 2002-05-10 [paul]	0.7.5claws16
 
 	* sync with 0.7.5cvs16
