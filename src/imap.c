@@ -1173,7 +1173,7 @@ void imap_scan_tree(Folder *folder)
 			folder_tree_destroy(folder);
 			item = folder_item_new(folder, folder->name, NULL);
 			item->folder = folder;
-			folder->node = g_node_new(item);
+			folder->node = item->node = g_node_new(item);
 		}
 		return;
 	}
@@ -1187,10 +1187,9 @@ void imap_scan_tree(Folder *folder)
 	item = folder_item_new(folder, folder->name, root_folder);
 	item->folder = folder;
 	item->no_select = TRUE;
-	folder->node = g_node_new(item);
+	folder->node = item->node = g_node_new(item);
 
 	imap_scan_tree_recursive(session, item);
-
 	imap_create_missing_folders(folder);
 }
 
@@ -1209,13 +1208,13 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 	g_return_val_if_fail(item->folder != NULL, -1);
 	g_return_val_if_fail(item->no_sub == FALSE, -1);
 
-	folder = FOLDER(item->folder);
+	folder = item->folder;
 	imapfolder = IMAP_FOLDER(folder);
 
 	separator = imap_get_path_separator(imapfolder, item->path);
 
-	if (item->folder->ui_func)
-		item->folder->ui_func(folder, item, folder->ui_func_data);
+	if (folder->ui_func)
+		folder->ui_func(folder, item, folder->ui_func_data);
 
 	if (item->path) {
 		wildcard[0] = separator;
@@ -1244,7 +1243,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 		if (!strcmp(new_item->path, "INBOX")) {
 			if (!folder->inbox) {
 				new_item->stype = F_INBOX;
-				item->folder->inbox = new_item;
+				folder->inbox = new_item;
 			} else {
 				folder_item_destroy(new_item);
 				continue;
@@ -1272,6 +1271,8 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 		if (new_item->no_sub == FALSE)
 			imap_scan_tree_recursive(session, new_item);
 	}
+
+	g_slist_free(item_list);
 
 	return IMAP_SUCCESS;
 }
@@ -1577,7 +1578,6 @@ gint imap_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 	gchar *newpath;
 	gchar *real_oldpath;
 	gchar *real_newpath;
-	GNode *node;
 	gchar *paths[2];
 	gchar *old_cache_dir;
 	gchar *new_cache_dir;
@@ -1632,11 +1632,9 @@ gint imap_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 
 	old_cache_dir = folder_item_get_path(item);
 
-	node = g_node_find(item->folder->node, G_PRE_ORDER, G_TRAVERSE_ALL,
-			   item);
 	paths[0] = g_strdup(item->path);
 	paths[1] = newpath;
-	g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
+	g_node_traverse(item->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
 			imap_rename_folder_func, paths);
 
 	if (is_dir_exist(old_cache_dir)) {

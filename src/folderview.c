@@ -1293,6 +1293,16 @@ static void folderview_expand_func(GtkCTree *ctree, GtkCTreeNode *node,
 				sibling = GTK_CTREE_ROW(prev)->sibling; \
 			else \
 				sibling = GTK_CTREE_ROW(parent)->children; \
+			while (sibling) { \
+				FolderItem *tmp; \
+ \
+				tmp = gtk_ctree_node_get_row_data \
+					(ctree, sibling); \
+				if (tmp->stype != F_NORMAL) \
+					sibling = GTK_CTREE_ROW(sibling)->sibling; \
+				else \
+					break; \
+			} \
 			if (node != sibling) \
 				gtk_ctree_move(ctree, node, parent, sibling); \
 		} \

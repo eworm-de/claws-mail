@@ -1,3 +1,16 @@
+2003-08-25
+
+	* src/folder.[ch]: added a reference to its own GNode in FolderItem.
+	  folder_item_remove(): free all FolderItem's.
+	  folder_tree_destroy(): use folder_item_remove().
+	* src/folderview.c: folderview_sort_folders(): keep the order even
+	  if special folders' parents are different.
+	* src/imap.c: imap_scan_tree_recursive(): fixed a memory leak.
+	* src/mh.c: mh_scan_tree(): preserve the previous FolderItem's.
+	  mh_remove_missing_folder_items(): scan the directories and remove
+	  missing folders.
+	  mh_scan_tree_recursive(): reuse the previous FolderItem objects.
+
 2003-08-20
 
 	* src/mainwindow.c: always reflect window size changes.
