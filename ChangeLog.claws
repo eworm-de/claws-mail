@@ -1,3 +1,15 @@
+2003-03-14 [christoph]	0.8.11claws12
+
+	* src/folder.[ch]
+		o error return code's should better be negative
+		o replace printf with debug_print
+
+	* src/imap.c
+		improve IMAP folder scan by checking UID-NEXT
+
+	* src/summaryview.c
+		remove check that are unnecessary in my opinion
+
 2003-03-13 [christoph]	0.8.11claws11
 
 	* src/folder.[ch]

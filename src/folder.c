@@ -1661,7 +1661,7 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_ite
 		dst_identifier = folder_get_identifier(dest->folder);
 	}
 	if (src_identifier == NULL || dst_identifier == NULL) {
-		printf("Can't get identifiers\n");
+		debug_print("Can't get identifiers\n");
 		return F_MOVE_FAILED;
 	}
 

@@ -74,6 +74,7 @@ struct _IMAPFolderItem
 	FolderItem item;
 
 	guint lastuid;
+	guint uid_next;
 	GSList *uid_list;
 };
 
@@ -374,6 +375,7 @@ static FolderItem *imap_folder_item_new(Folder *folder)
 	
 	item = g_new0(IMAPFolderItem, 1);
 	item->lastuid = 0;
+	item->uid_next = 0;
 	item->uid_list = NULL;
 
 	return (FolderItem *)item;
@@ -394,6 +396,7 @@ static gboolean imap_reset_uid_lists_func(GNode *node, gpointer data)
 	IMAPFolderItem *item = (IMAPFolderItem *)node->data;
 	
 	item->lastuid = 0;
+	item->uid_next = 0;
 	g_slist_free(item->uid_list);
 	item->uid_list = NULL;
 	
@@ -3301,7 +3304,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 {
 	IMAPFolderItem *item = (IMAPFolderItem *)_item;
 	IMAPSession *session;
-	gint ok, lastuid_old, nummsgs = 0, exists, resent, unseen, uid_val;
+	gint ok, lastuid_old, nummsgs = 0, exists, recent, unseen, uid_val, uid_next;
 	GSList *uidlist, *elem;
 	gchar *dir, *cmd_buf;
 
@@ -3314,13 +3317,42 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, -1);
 
-	ok = imap_select(session, IMAP_FOLDER(folder), item->item.path,
-			 &exists, &resent, &unseen, &uid_val);
+	ok = imap_status(session, IMAP_FOLDER(folder), item->item.path,
+			 &exists, &recent, &uid_next, &uid_val, &unseen);
 	if (ok != IMAP_SUCCESS)
 		return -1;
 
-	if (exists == 0)
+	/* If old uid_next matches new uid_next we can be sure no message
+	   was added to the folder */
+	if (uid_next == item->uid_next) {
+		nummsgs = g_slist_length(item->uid_list);
+		
+		/* If number of messages is still the same we
+                   know our caches message numbers are still valid,
+                   otherwise if the number of messages has decrease
+		   we discard our cache to start a new scan to find
+		   out which numbers have been removed */
+		if (exists == nummsgs) {
+			*msgnum_list = g_slist_copy(item->uid_list);
+			return nummsgs;
+		} else if (exists < nummsgs) {
+			debug_print("Freeing imap uid cache");
+			item->lastuid = 0;
+			g_slist_free(item->uid_list);
+			item->uid_list = NULL;
+		}
+	}
+	item->uid_next = uid_next;
+
+	if (exists == 0) {
+		*msgnum_list = NULL;
 		return 0;
+	}
+
+	ok = imap_select(session, IMAP_FOLDER(folder), item->item.path,
+			 &exists, &recent, &unseen, &uid_val);
+	if (ok != IMAP_SUCCESS)
+		return -1;
 
 	cmd_buf = g_strdup_printf("UID %d:*", item->lastuid + 1);
 	ok = imap_cmd_search(SESSION(session)->sock, cmd_buf, &uidlist);
@@ -3361,6 +3393,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 
 	lastuid_old = item->lastuid;
 	*msgnum_list = g_slist_copy(item->uid_list);
+	nummsgs = g_slist_length(*msgnum_list);
 	debug_print("Got %d uids from cache\n", g_slist_length(item->uid_list));
 
 	for (elem = uidlist; elem != NULL; elem = g_slist_next(elem)) {
@@ -3378,9 +3411,11 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 	}
 	g_slist_free(uidlist);
 
-	if (g_slist_length(item->uid_list) != exists) {
+	if (nummsgs != exists) {
 		/* Cache contains more messages then folder, we have cached
-                   an old UID of a message that was removed */
+                   an old UID of a message that was removed and new messages
+                   have been added too, otherwise the uid_next check would
+		   not have failed */
 		debug_print("Freeing imap uid cache");
 		item->lastuid = 0;
 		g_slist_free(item->uid_list);
