@@ -1941,6 +1941,7 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 					}
 					compose_new(account, uri->uri + 7, NULL);
 				}
+				return TRUE;
 			} else {
 				if (textview_uri_security_check(textview, uri) == TRUE) 
 					open_uri(uri->uri,
