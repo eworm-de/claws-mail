@@ -1,4 +1,14 @@
-#!/bin/sh
+#!/bin/bash
+if [ "$1" == "--syncgtk2" ]; then
+	shift
+	echo -n "sync with EXTRA_VERSION ? [xx] "
+	read newmicro
+	cat configure.ac | sed "s/^EXTRA_VERSION=.*/EXTRA_VERSION=$newmicro/" > configure.ac.new \
+		&& mv configure.ac.new configure.ac ;	
+	cat configure.ac | sed "s/^EXTRA_GTK2_VERSION=.*/EXTRA_GTK2_VERSION=.0/" > configure.ac.new \
+		&& mv configure.ac.new configure.ac ;	
+fi;
+
 head -16 configure.ac | grep VERSION= > /tmp/commitTool.tmp
 source /tmp/commitTool.tmp
 if [ -z "$EXTRA_GTK2_VERSION" ]; then
@@ -64,12 +74,12 @@ if [ "$EDITOR" == "" ]; then
 	EDITOR=vi
 fi;
 
-echo -e "\n#please type in the changelog entry" > /tmp/logentry.$$
-$EDITOR /tmp/logentry.$$
-grep -v "^#" /tmp/logentry.$$ |grep -v "^$" | sed "s/^/		/" > /tmp/log.tmp.$$ \
-&& mv /tmp/log.tmp.$$ /tmp/logentry.$$
-echo >> /tmp/logentry.$$ 
-cat /tmp/logentry.$$
+echo -e "\n#please type in the changelog entry" > /tmp/logentry
+$EDITOR /tmp/logentry
+grep -v "^#" /tmp/logentry |grep -v "^$" | sed "s/^/		/" > /tmp/log.tmp.$$ \
+&& mv /tmp/log.tmp.$$ /tmp/logentry
+echo >> /tmp/logentry
+cat /tmp/logentry
 
 echo "--8<----------"
 if [ -f ChangeLog-gtk2.claws ]; then
@@ -84,7 +94,7 @@ read ans
 if [ "$ans" == "y" ]; then
 	mv $chlog $chlog.old
 	echo -e -n $log > $chlog
-	cat /tmp/logentry.$$ >> $chlog
+	cat /tmp/logentry >> $chlog
 	cat $chlog.old >> $chlog
 	rm $chlog.old
 
@@ -100,10 +110,10 @@ if [ "$ans" == "y" ]; then
 
 	if [ "$@" != "" ]; then
 		echo commiting $@ PATCHSETS $chlog configure.ac
-		cvs commit -m "`cat /tmp/logentry.$$`" $@ PATCHSETS $chlog configure.ac
+		cvs commit -m "`cat /tmp/logentry`" $@ PATCHSETS $chlog configure.ac
 	else
 		echo commiting recursively
-		cvs commit -m "`cat /tmp/logentry.$$` "
+		cvs commit -m "`cat /tmp/logentry` "
 	fi;
 fi
-rm -f /tmp/logentry.$$
+rm -f /tmp/logentry
