@@ -7570,7 +7570,8 @@ void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list,
 {
 	gchar *body;
 	GSList *new_msglist = NULL;
-
+	MsgInfo *tmp_msginfo = NULL;
+	
 	g_return_if_fail(msgview != NULL);
 
 	g_return_if_fail(msginfo_list != NULL);
@@ -7582,7 +7583,7 @@ void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list,
 		if (mimeinfo != NULL && mimeinfo->type == MIMETYPE_MESSAGE && 
 		    !g_ascii_strcasecmp(mimeinfo->subtype, "rfc822")) {
 	    		
-			MsgInfo *tmp_msginfo = procmsg_msginfo_new_from_mimeinfo(
+			tmp_msginfo = procmsg_msginfo_new_from_mimeinfo(
 						orig_msginfo, mimeinfo);
 			if (tmp_msginfo != NULL) {
 				new_msglist = g_slist_append(NULL, tmp_msginfo);
@@ -7594,6 +7595,7 @@ void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list,
 
 	if (new_msglist) {
 		compose_reply_mode((ComposeMode)action, new_msglist, body);
+		procmsg_msginfo_free(tmp_msginfo);
 		g_slist_free(new_msglist);
 	} else
 		compose_reply_mode((ComposeMode)action, msginfo_list, body);

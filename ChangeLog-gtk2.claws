@@ -1,3 +1,8 @@
+2005-01-31 [colin]	1.0.0cvs24.1
+
+	* src/compose.c
+		Sync with HEAD
+
 2005-01-29 [paul]	1.0.0cvs23.2
 
 	* src/account.c
