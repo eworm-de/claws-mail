@@ -1238,7 +1238,7 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 			destp--;				\
 		else if (plaintext && isspace(*srcp))		\
 			srcp++;					\
-		if (*srcp) {					\
+		if (destp > dest && *srcp) {			\
 			*destp++ = '\n';			\
 			*destp++ = ' ';				\
 			left = MAX_LINELEN - 1;			\
@@ -1294,7 +1294,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 			word_len = get_next_word_len(srcp);
 			LBREAK_IF_REQUIRED(left < word_len, TRUE);
 			while (word_len > 0) {
-				LBREAK_IF_REQUIRED(left <= 0, TRUE);
+				LBREAK_IF_REQUIRED(left + 22 <= 0, TRUE);
 				*destp++ = *srcp++;
 				left--;
 				word_len--;
