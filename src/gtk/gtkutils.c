@@ -795,3 +795,54 @@ gchar *gtkut_text_view_get_selection(GtkTextView *textview)
 	else
 		return NULL;
 }
+
+/*!
+ *\brief	Tries to find a focused child using a lame strategy
+ */
+GtkWidget *gtkut_get_focused_child(GtkContainer *parent)
+{
+	GtkWidget *result = NULL;
+	GList *child_list = NULL;
+	GList *c;
+
+	g_return_val_if_fail(parent, NULL);
+
+	/* Get children list and see which has the focus. */
+	child_list = gtk_container_get_children(parent);
+	if (!child_list)
+		return NULL;
+
+	for (c = child_list; c != NULL; c = g_list_next(c)) {
+		if (c->data && GTK_IS_WIDGET(c->data)) {
+			if (GTK_WIDGET_HAS_FOCUS(GTK_WIDGET(c->data))) {
+				result = GTK_WIDGET(c->data);
+				break;
+			}
+		}
+	}
+	
+	/* See if the returned widget is a container itself; if it is,
+	 * see if one of its children is focused. If the focused 
+	 * container has no focused child, it is itself a focusable 
+	 * child, and has focus. */
+	if (result && GTK_IS_CONTAINER(result)) {
+		GtkWidget *tmp =  gtkut_get_focused_child(GTK_CONTAINER(result)); 
+		
+		if (tmp) 
+			result = tmp;
+	} else {
+		/* Try the same for each container in the chain */
+		for (c = child_list; c != NULL && !result; c = g_list_next(c)) {
+			if (c->data && GTK_IS_WIDGET(c->data) 
+			&&  GTK_IS_CONTAINER(c->data)) {
+				result = gtkut_get_focused_child
+					(GTK_CONTAINER(c->data));
+			}
+		}
+	
+	}
+	
+	g_list_free(child_list);
+		
+	return result;
+}

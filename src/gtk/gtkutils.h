@@ -181,5 +181,5 @@ gboolean gtkut_text_buffer_is_uri_string(GtkTextBuffer	*text,
 					 guint		 start_pos,
 					 guint		 text_len);
 gchar *gtkut_text_view_get_selection	(GtkTextView	*textview);
-
+GtkWidget *gtkut_get_focused_child	(GtkContainer 	*parent);
 #endif /* __GTKUTILS_H__ */

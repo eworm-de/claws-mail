@@ -1,3 +1,34 @@
+2004-12-13
+
+	* src/compose.c: compose_wrap_line_all_full(): 次の行の最初の文字が
+	  空白でない場合、またはマルチバイトとシングルバイトの境界の場合
+	  のみ行結合時に空白を挿入するようにした。
+
+2004-12-13
+
+	* src/action.c: parse_append_filename(): 特別文字をエスケープする
+	  ようにした(IWAMOTO Kouichi さん thanks)。
+	* src/utils.c: subst_for_filename(): シングルクォートも置換する
+	  ようにした。
+
+2004-12-10
+
+	* src/compose.c: compose_wrap_line_all_full(): 次の行の最初の文字が
+	  英数字でない場合の行の結合の問題を修正。
+
+2004-12-09
+
+	* src/main.c: send_queue()
+	  src/mainwindow.c: send_queue_cb()
+	  src/compose.c: compose_send(), compose_send_later_cb(): 送信時、
+	  オフラインモードのときは ユーザにオンラインに切り替えるように
+	  促すようにした。
+
+2004-12-08
+
+	* src/imap.c: bitlength_clean_up.imap.c.patch を適用(64-bit 環境での
+	  整数長の問題を修正) (Alfons さん thanks)。
+
 2004-12-03
 
 	* version 1.0.0beta4

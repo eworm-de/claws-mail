@@ -23,6 +23,7 @@
 
 #include <string.h>
 #include <gtk/gtk.h>
+#include <gtk/gtktext.h>
 #include <gdk/gdkkeysyms.h>
 
 #include "intl.h"
@@ -206,8 +207,10 @@ gint compare_func(GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
 }
 
 static gboolean prefswindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
-				    gpointer data)
+				    PrefsWindow *data)
 {
+	GtkWidget *focused_child;
+
 	if (event) {
 		switch (event->keyval) {
 			case GDK_Escape :
@@ -215,7 +218,13 @@ static gboolean prefswindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				break;
 			case GDK_Return : 
 			case GDK_KP_Enter :
-				ok_button_released(NULL, data);
+				focused_child = gtkut_get_focused_child
+					(GTK_CONTAINER(data->notebook));
+				/* Press ok, if the focused child is not a text view
+				 * and text (anything that accepts return) (can pass
+				 * NULL to any of the GTK_xxx() casts) */
+				if (!GTK_IS_TEXT_VIEW(focused_child))
+					ok_button_released(NULL, data);
 				break;
 			default:
 				break;
