@@ -61,6 +61,7 @@ struct _FolderView
 	
 	/* for drag and drop */
 	GSList *nodes_to_recollapse;
+	GtkTargetList *target_list; /* DnD */
 };
 
 FolderView *folderview_create		(void);

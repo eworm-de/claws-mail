@@ -228,6 +228,8 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	mimeview->popupfactory  = popupfactory;
 	mimeview->type          = -1;
 
+	mimeview->target_list	= gtk_target_list_new(mimeview_mime_types, 1); 
+	
 	mimeviews = g_slist_prepend(mimeviews, mimeview);
 
 	return mimeview;
@@ -362,6 +364,7 @@ void mimeview_destroy(MimeView *mimeview)
 		viewer->destroy_viewer(viewer);
 	}
 	g_slist_free(mimeview->viewers);
+	gtk_target_list_unref(mimeview->target_list);
 
 	procmime_mimeinfo_free_all(mimeview->mimeinfo);
 	g_free(mimeview->file);
@@ -682,7 +685,6 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 static void mimeview_start_drag(GtkWidget *widget, gint button,
 				GdkEvent *event, MimeView *mimeview)
 {
-	GtkTargetList *list;
 	GdkDragContext *context;
 	MimeInfo *partinfo;
 
@@ -691,8 +693,7 @@ static void mimeview_start_drag(GtkWidget *widget, gint button,
 	partinfo = mimeview_get_selected_part(mimeview);
 	if (partinfo->filename == NULL && partinfo->name == NULL) return;
 
-	list = gtk_target_list_new(mimeview_mime_types, 1);
-	context = gtk_drag_begin(widget, list,
+	context = gtk_drag_begin(widget, mimeview->target_list,
 				 GDK_ACTION_COPY, button, event);
 	gtk_drag_set_icon_default(context);
 }

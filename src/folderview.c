@@ -352,6 +352,10 @@ static GtkItemFactoryEntry folderview_news_popup_entries[] =
 	{N_("/S_coring..."),		NULL, folderview_scoring_cb, 0, NULL}
 };
 
+GtkTargetEntry folderview_drag_types[] =
+{
+	{"text/plain", GTK_TARGET_SAME_APP, TARGET_DUMMY}
+};
 
 FolderView *folderview_create(void)
 {
@@ -486,10 +490,9 @@ FolderView *folderview_create(void)
 			   folderview);
 
         /* drop callback */
-	gtk_drag_dest_set(ctree, GTK_DEST_DEFAULT_ALL &
-			  ~GTK_DEST_DEFAULT_HIGHLIGHT,
+	gtk_drag_dest_set(ctree, GTK_DEST_DEFAULT_ALL & ~GTK_DEST_DEFAULT_HIGHLIGHT,
 			  summary_drag_types, 1,
-			  GDK_ACTION_MOVE|GDK_ACTION_COPY|GDK_ACTION_DEFAULT);
+			  GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_DEFAULT);
 	gtk_signal_connect(GTK_OBJECT(ctree), "drag_motion",
 			   GTK_SIGNAL_FUNC(folderview_drag_motion_cb),
 			   folderview);
@@ -518,6 +521,7 @@ FolderView *folderview_create(void)
 
 	gtk_widget_show_all(scrolledwin);
 
+	folderview->target_list = gtk_target_list_new(folderview_drag_types, 1);
 	folderview_list = g_list_append(folderview_list, folderview);
 
 	return folderview;
@@ -2799,26 +2803,17 @@ void folderview_reflect_prefs_pixmap_theme(FolderView *folderview)
 	folderview_set_all();
 }
 
-GtkTargetEntry folderview_drag_types[1] =
-{
-	{"text/plain", GTK_TARGET_SAME_APP, TARGET_DUMMY}
-};
-
-
 static void folderview_start_drag(GtkWidget *widget, gint button, GdkEvent *event,
 			          FolderView       *folderview)
 {
-	GtkTargetList *list;
 	GdkDragContext *context;
 
 	g_return_if_fail(folderview != NULL);
 	if (folderview->selected == NULL) return;
 
-	list = gtk_target_list_new(folderview_drag_types, 1);
-
 	folderview->nodes_to_recollapse = NULL; /* in case the last drag has been cancelled */
 	
-	context = gtk_drag_begin(widget, list,
+	context = gtk_drag_begin(widget, folderview->target_list,
 				 GDK_ACTION_MOVE|GDK_ACTION_COPY|GDK_ACTION_DEFAULT, button, event);
 	gtk_drag_set_icon_default(context);
 }

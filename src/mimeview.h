@@ -70,6 +70,8 @@ struct _MimeView
 	gchar *file;
 
 	GSList *viewers;
+
+	GtkTargetList *target_list; /* DnD */
 };
 
 struct _MimeViewerFactory

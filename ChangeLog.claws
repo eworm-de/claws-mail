@@ -1,3 +1,10 @@
+2003-07-17 [alfons]	0.9.3claws15
+
+	* src/folderview.[ch]
+	* src/summaryview.[ch]
+	* src/mimeview.[ch]
+		plug DnD leaks 
+
 2003-07-17 [paul]	0.9.3claws14
 
 	* src/inc.c

@@ -709,6 +709,8 @@ SummaryView *summary_create(void)
 	summaryview->msginfo_update_callback_id =
 		hooks_register_hook(MSGINFO_UPDATE_HOOKLIST, summary_update_msg, (gpointer) summaryview);
 
+	summaryview->target_list = gtk_target_list_new(summary_drag_types, 1);
+
 	/* CLAWS: need this to get the SummaryView * from
 	 * the CList */
 	gtk_object_set_data(GTK_OBJECT(ctree), "summaryview", (gpointer)summaryview); 
@@ -4836,7 +4838,6 @@ static void summary_locked_clicked(GtkWidget *button,
 static void summary_start_drag(GtkWidget *widget, gint button, GdkEvent *event,
 			       SummaryView *summaryview)
 {
-	GtkTargetList *list;
 	GdkDragContext *context;
 
 	g_return_if_fail(summaryview != NULL);
@@ -4844,9 +4845,7 @@ static void summary_start_drag(GtkWidget *widget, gint button, GdkEvent *event,
 	g_return_if_fail(summaryview->folder_item->folder != NULL);
 	if (summaryview->selected == NULL) return;
 
-	list = gtk_target_list_new(summary_drag_types, 1);
-
-	context = gtk_drag_begin(widget, list,
+	context = gtk_drag_begin(widget, summaryview->target_list,
 				 GDK_ACTION_MOVE|GDK_ACTION_COPY|GDK_ACTION_DEFAULT, button, event);
 	gtk_drag_set_icon_default(context);
 }

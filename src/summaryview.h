@@ -165,6 +165,8 @@ private:
 	/* list for moving/deleting messages */
 	GSList *mlist;
 	int msginfo_update_callback_id;
+
+	GtkTargetList *target_list; /* DnD */
 };
 
 SummaryView	*summary_create(void);
