@@ -1,3 +1,8 @@
+2005-01-06 [colin]	0.9.13cvs28
+
+	* src/prefs_matcher.c
+		Plug leak. Patch by Alfons
+
 2005-01-04 [christoph]	0.9.13cvs27
 
 	* src/folderview.c

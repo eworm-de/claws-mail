@@ -1668,6 +1668,7 @@ static void prefs_matcher_ok(void)
 		matcherprop = prefs_matcher_dialog_to_matcher();
 		if (matcherprop != NULL) {
 			str = matcherprop_to_string(matcherprop);
+			matcherprop_free(matcherprop);
 			if(strcmp(str, "all") != 0) {
 				while (gtk_clist_get_text(GTK_CLIST(matcher.cond_clist),
 						  row, 0, &matcher_str)) {
