@@ -1,3 +1,8 @@
+2003-07-16 [paul]	0.9.3claws11
+
+	* sync with 0.9.3cvs12
+		see ChangeLog 2003-07-14 and 2003-07-15
+
 2003-07-16 [christoph]	0.9.3claws10
 
 	* src/imap.[ch]

@@ -365,6 +365,8 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 	port = ac_prefs->set_smtpport ? ac_prefs->smtpport :
 		ac_prefs->ssl_smtp == SSL_TUNNEL ? SSMTP_PORT : SMTP_PORT;
 	session->ssl_type = ac_prefs->ssl_smtp;
+	if (ac_prefs->ssl_smtp != SSL_NONE)
+		session->nonblocking = ac_prefs->use_nonblocking_ssl;
 #else
 	port = ac_prefs->set_smtpport ? ac_prefs->smtpport : SMTP_PORT;
 #endif

@@ -167,6 +167,8 @@ static struct SSLPrefs {
 	GtkWidget *smtp_nossl_radiobtn;
 	GtkWidget *smtp_ssltunnel_radiobtn;
 	GtkWidget *smtp_starttls_radiobtn;
+
+	GtkWidget *use_nonblocking_ssl_chkbtn;
 } ssl;
 #endif /* USE_OPENSSL */
 
@@ -438,6 +440,10 @@ static PrefParam param[] = {
 	 &ssl.smtp_nossl_radiobtn,
 	 prefs_account_enum_set_data_from_radiobtn,
 	 prefs_account_enum_set_radiobtn},
+
+	{"use_nonblocking_ssl", "1", &tmp_ac_prefs.use_nonblocking_ssl, P_BOOL,
+	 &ssl.use_nonblocking_ssl_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
 #endif /* USE_OPENSSL */
 
 	/* Advanced */
@@ -1828,6 +1834,12 @@ static void prefs_account_ssl_create(void)
 	GtkWidget *smtp_ssltunnel_radiobtn;
 	GtkWidget *smtp_starttls_radiobtn;
 
+	GtkWidget *vbox6;
+	GtkWidget *use_nonblocking_ssl_chkbtn;
+	GtkWidget *hbox;
+	GtkWidget *hbox_spc;
+	GtkWidget *label;
+
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
@@ -1901,6 +1913,27 @@ static void prefs_account_ssl_create(void)
 			     _("Use STARTTLS command to start SSL session"),
 			     SSL_STARTTLS);
 
+	vbox6 = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox6);
+	gtk_box_pack_start (GTK_BOX (vbox1), vbox6, FALSE, FALSE, 0);
+
+	PACK_CHECK_BUTTON(vbox6, use_nonblocking_ssl_chkbtn,
+			  _("Use non-blocking SSL"));
+
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox6), hbox, FALSE, FALSE, 0);
+
+	hbox_spc = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox_spc);
+	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
+	gtk_widget_set_usize (hbox_spc, 16, -1);
+
+	label = gtk_label_new
+		(_("(Turn this off if you have problems in SSL connection)"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
 	ssl.pop_frame               = pop_frame;
 	ssl.pop_nossl_radiobtn      = pop_nossl_radiobtn;
 	ssl.pop_ssltunnel_radiobtn  = pop_ssltunnel_radiobtn;
@@ -1919,6 +1952,8 @@ static void prefs_account_ssl_create(void)
 	ssl.smtp_nossl_radiobtn     = smtp_nossl_radiobtn;
 	ssl.smtp_ssltunnel_radiobtn = smtp_ssltunnel_radiobtn;
 	ssl.smtp_starttls_radiobtn  = smtp_starttls_radiobtn;
+
+	ssl.use_nonblocking_ssl_chkbtn = use_nonblocking_ssl_chkbtn;
 }
 
 #undef CREATE_RADIO_BUTTONS

@@ -2060,13 +2060,24 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 	if (content_type) {
 		ainfo->content_type = g_strdup(content_type);
 		if (!strcasecmp(content_type, "message/rfc822")) {
+			MsgInfo *msginfo;
+			MsgFlags flags = {0, 0};
+			gchar *name;
+
 			if (procmime_get_encoding_for_file(file) == ENC_7BIT)
 				ainfo->encoding = ENC_7BIT;
 			else
 				ainfo->encoding = ENC_8BIT;
-			ainfo->name = g_strdup_printf
-				(_("Message: %s"),
-				 g_basename(filename ? filename : file));
+
+			msginfo = procheader_parse_file(file, flags, FALSE, FALSE);
+			if (msginfo && msginfo->subject)
+				name = msginfo->subject;
+			else
+				name = g_basename(filename ? filename : file);
+
+			ainfo->name = g_strdup_printf(_("Message: %s"), name);
+
+			procmsg_msginfo_free(msginfo);
 		} else {
 			if (!g_strncasecmp(content_type, "text", 4))
 				ainfo->encoding =

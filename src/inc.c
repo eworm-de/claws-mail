@@ -725,6 +725,9 @@ static IncState inc_pop3_session_do(IncSession *session)
 		pop3_session->ac_prefs->popport :
 		pop3_session->ac_prefs->ssl_pop == SSL_TUNNEL ? 995 : 110;
 	SESSION(pop3_session)->ssl_type = pop3_session->ac_prefs->ssl_pop;
+	if (pop3_session->ac_prefs->ssl_pop != SSL_NONE)
+		SESSION(pop3_session)->nonblocking =
+			pop3_session->ac_prefs->use_nonblocking_ssl;
 #else
 	port = pop3_session->ac_prefs->set_popport ?
 		pop3_session->ac_prefs->popport : 110;

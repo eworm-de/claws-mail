@@ -1,7 +1,83 @@
+2003-07-15
+
+	* src/inc.c
+	  src/prefs_account.[ch]
+	  src/send_message.c
+	  src/session.[ch]: 非ブロッキング SSL を有効/無効にするオプションを
+	  追加。
+
+2003-07-15
+
+	* src/compose.c: compose_attach_append(): message/rfc822 ファイルを
+	  添付するときにメッセージの件名を表示。
+
+2003-07-14
+
+	* src/session.[ch]:
+	  session_recv_msg()
+	  session_recv_data()
+	  session_read_msg_cb()
+	  session_read_data_cb(): sock_peek() を削除し、ユーザ空間でメッセージ
+	  をバッファリングして最適化(今回は正しく実装)。
+
+2003-07-11
+
+	* src/session.c: メッセージの後のデータ受信を正しく扱えなかったため、
+	  前の変更を元に戻した。
+
+2003-07-11
+
+	* src/session.c
+	  session_recv_msg()
+	  session_read_msg_cb(): sock_peek() を削除し、ユーザ空間でメッセージ
+	  をバッファリングして最適化。
+
+2003-07-11
+
+	* src/imap.[ch]: リファクタリング。
+	  SockInfo を引数にもつ全ての関数を IMAPSession をとるように変更。
+	  imap_cmd_count をインスタンス変数: IMAPSession::cmd_count にした。
+	  imap_open(): TCP (または SSL)コネクションのみを確立するようにした。
+	  imap_session_new(): グリーティングと認証をここで処理。
+
+2003-07-10
+
+	* src/imap.[ch]: CRAM-MD5 認証を実装し、コードを整理。
+	* src/prefs_account.[ch]: 受信タブに IMAP4 認証方式のオプション
+	  メニューを追加し、他のプロトコルのフレームを隠すようにした。
+
+2003-07-10
+
+	* src/mainwindow.c: send_queue_cb(): エラーが起こった場合はフォルダ
+	  を2重にスキャンしないようにした。
+	* src/procmsg.c: procmsg_send_queue(): 送信したメッセージ数を返す
+	  ようにした。
+
+2003-07-09
+
+	* src/mainwindow.c:
+	  main_window_set_toolbar_sensitive()
+	  main_window_set_menu_sensitive(): メール受信中のファイル操作の
+	  ロックを除去。
+
+2003-07-09
+
+	* src/folder.[ch]: folder_item_remove_msg(): メッセージ番号の代わりに
+	  MsgInfo を引数にとるようにした。
+	* src/imap.[ch]: imap_remove_msg(): imap_remove_msgs() を使用して
+	  再実装。
+	* src/mh.[ch]: mh_do_move(): mh_do_move_msgs_with_dest() を使用して
+	  再実装。
+	  mh_copy_msg(): mh_copy_msgs_with_dest() を使用して再実装。
+	* src/procmsg.c: procmsg_send_queue(): メッセージリストを使用する
+	  ように修正。
+
 2003-07-08
 
 	* src/rfc2015.c: rfc2015_is_encrypted(): 警告を抑えるために
 	  MimeInfo::mime_type をチェック。
+	* src/logwindow.c: log_window_append(): 行を削除するときに上に
+	  スクロールしないようにした。
 
 2003-07-07
 

@@ -95,6 +95,8 @@ struct _Session
 	SSLType ssl_type;
 #endif
 
+	gboolean nonblocking;
+
 	SessionState state;
 
 	time_t last_access_time;
@@ -104,7 +106,11 @@ struct _Session
 
 	gint io_tag;
 
-	GString *read_buf;
+	gchar read_buf[SESSION_BUFFSIZE];
+	gchar *read_buf_p;
+	gint read_buf_len;
+
+	GString *read_msg_buf;
 	GByteArray *read_data_buf;
 	gchar *read_data_terminator;
 

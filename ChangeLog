@@ -1,7 +1,85 @@
+2003-07-15
+
+	* src/inc.c
+	  src/prefs_account.[ch]
+	  src/send_message.c
+	  src/session.[ch]: added an option to enable/disable non-blocking
+	  SSL.
+
+2003-07-15
+
+	* src/compose.c: compose_attach_append(): display message's subject
+	  when attaching message/rfc822 file.
+
+2003-07-14
+
+	* src/session.[ch]:
+	  session_recv_msg()
+	  session_recv_data()
+	  session_read_msg_cb()
+	  session_read_data_cb(): optimized by removing sock_peek() and
+	  buffering received data in user space (correctly implemented
+	  this time).
+
+2003-07-11
+
+	* src/session.c: reverted the previous change because it couldn't
+	  handle data receiving after messages correctly.
+
+2003-07-11
+
+	* src/session.c:
+	  session_recv_msg()
+	  session_read_msg_cb(): optimized by removing sock_peek() and
+	  buffering messages in user space.
+
+2003-07-11
+
+	* src/imap.[ch]: refactored.
+	  Changed all functions that have SockInfo arguments to take
+	  IMAPSession.
+	  Made imap_cmd_count an instance variable: IMAPSession::cmd_count.
+	  imap_open(): only establish TCP (or SSL) connection.
+	  imap_session_new(): process greeting and authentication here.
+
+2003-07-10
+
+	* src/imap.[ch]: implemented CRAM-MD5 authentication, and made code
+	  cleanups.
+	* src/prefs_account.[ch]: added option menu for IMAP4 authentication
+	  type in Receive tab, and hide other protocols' frames.
+
+2003-07-10
+
+	* src/mainwindow.c: send_queue_cb(): don't scan folder twice if
+	  error occurred.
+	* src/procmsg.c: procmsg_send_queue(): return number of sent
+	  messages.
+
+2003-07-09
+
+	* src/mainwindow.c:
+	  main_window_set_toolbar_sensitive()
+	  main_window_set_menu_sensitive(): removed the locking of file
+	  operations while receiving mail.
+
+2003-07-09
+
+	* src/folder.[ch]: folder_item_remove_msg(): take MsgInfo as an
+	  argument instead of message number.
+	* src/imap.[ch]: imap_remove_msg(): reimplemented using
+	  imap_remove_msgs().
+	* src/mh.[ch]: mh_do_move(): reimplemented using
+	  mh_do_move_msgs_with_dest().
+	  mh_copy_msg(): reimplemented using mh_copy_msgs_with_dest().
+	* src/procmsg.c: procmsg_send_queue(): modified to use message list.
+
 2003-07-08
 
 	* src/rfc2015.c: rfc2015_is_encrypted(): check MimeInfo::mime_type
 	  to suppress some warnings.
+	* src/logwindow.c: log_window_append(): don't scroll up when trimming
+	  lines.
 
 2003-07-07
 
