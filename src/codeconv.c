@@ -580,7 +580,7 @@ void conv_unreadable_utf8(gchar *str)
 
 	while (*p != '\0') {
 		/* convert CR+LF -> LF */
-		printf("p %c (%d)\n", *p, *p);
+
 		if (*p == '\r' && *(p + 1) == '\n')
 			memmove(p, p + 1, strlen(p));
 		else if (((*p & 0xff) >= 0x7f && (*p & 0xff) <= 0x9f) 
