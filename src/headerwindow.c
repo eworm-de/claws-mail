@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -159,11 +159,11 @@ void header_window_show_cb(gpointer data, guint action, GtkWidget *widget)
 	GtkCTreeNode *node = mainwin->summaryview->selected;
 	MsgInfo *msginfo;
 
-	g_return_if_fail(node != NULL);
-
-	msginfo = gtk_ctree_node_get_row_data
-		(GTK_CTREE(mainwin->summaryview->ctree), node);
-	header_window_show(mainwin->headerwin, msginfo);
+	if (node) {
+		msginfo = gtk_ctree_node_get_row_data
+			(GTK_CTREE(mainwin->summaryview->ctree), node);
+		header_window_show(mainwin->headerwin, msginfo);
+	}
 
 	gtk_widget_hide(mainwin->headerwin->window);
 	gtk_widget_show(mainwin->headerwin->window);

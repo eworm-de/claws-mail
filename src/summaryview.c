@@ -676,6 +676,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	} else
 		summary_write_cache(summaryview);
 
+	summaryview->folderview->opened = summaryview->folderview->selected;
+
 	gtk_clist_freeze(GTK_CLIST(ctree));
 
 	summary_clear_list(summaryview);
@@ -770,13 +772,13 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 			   GTK_SIGNAL_FUNC(summary_open_row), summaryview);
 
 	/*connect drag and drop signal*/
-	gtk_signal_connect (GTK_OBJECT (ctree),"start_drag",
-			    GTK_SIGNAL_FUNC (summary_start_drag),
-			    summaryview);
-	gtk_signal_connect (GTK_OBJECT (ctree),"drag_data_get",
-			    GTK_SIGNAL_FUNC (summary_drag_data_get),
-			    summaryview);
-	
+	gtk_signal_connect(GTK_OBJECT (ctree),"start_drag",
+			   GTK_SIGNAL_FUNC (summary_start_drag),
+			   summaryview);
+	gtk_signal_connect(GTK_OBJECT (ctree),"drag_data_get",
+			   GTK_SIGNAL_FUNC (summary_drag_data_get),
+			   summaryview);
+
 	gtk_clist_thaw(GTK_CLIST(ctree));
 
 	/* sort before */

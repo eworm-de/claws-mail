@@ -1,3 +1,15 @@
+2001-06-05
+
+	* src/folderview.c: folderview_selected()
+	  src/summaryview.c: summary_show(): fixed a bug that updated wrong
+	  folder when remaining marks were processed.
+
+2001-06-04
+
+	* src/headerwindow.c: headerwindow_show_cb(): always try to show
+	  msginfo, and use the selected message, not the displayed one.
+	* src/smtp.c: smtp_ok(): fixed sock_gets() error handling.
+
 2001-06-02
 
 	* src/folderview.c: folderview_selected()

@@ -1,3 +1,16 @@
+2001-06-05
+
+	* src/folderview.c: folderview_selected()
+	  src/summaryview.c: summary_show(): 残ったマークを処理した場合に
+	  誤ったフォルダを更新していたバグを修正。
+
+2001-06-04
+
+	* src/headerwindow.c: headerwindow_show_cb(): 常に msginfo を表示
+	  するようにし、表示されているメッセージではなく選択されているもの
+	  を使用するようにした。
+	* src/smtp.c: smtp_ok(): sock_gets() のエラー処理を修正。
+
 2001-06-02
 
 	* src/folderview.c: folderview_selected()
