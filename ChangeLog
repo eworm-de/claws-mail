@@ -1,3 +1,15 @@
+2002-03-01
+
+	* src/messageview.c: messageview_show(): set header state of
+	  MimeView's TextView, too.
+	* src/mimeview.c: mimeview_show_message(): call
+	  textview_show_message() to display message.
+	* src/textview.c: textview_add_part(): new. It adds the content
+	  of message part without clearing the view.
+	  textview_show_message(): display all parts with appropriate
+	  style.
+	  textview_write_body(): separated from textview_show_part().
+
 2002-02-28
 
 	* src/mainwindow.c
@@ -90,7 +102,7 @@
 	  src/prefs_filter.c
 	  src/prefs_template.c
 	  src/summary_search.c
-	  src/summaryview.c: use MANAGE_WINDO_SIGNALS_CONNECT() macro to
+	  src/summaryview.c: use MANAGE_WINDOW_SIGNALS_CONNECT() macro to
 	  connect signals for window management.
 
 2002-02-21
@@ -2184,7 +2196,7 @@
 
 	* src/alertpanel.c: alertpanel_create(): fixed truncated message.
 	* src/rfc2015.c: rfc2015_decrypt_message(): fixed the case problem
-	  of content-type (thanks to René Rebe for the patch).
+	  of content-type (thanks to René Rebe for the patch).
 	* src/codeconv.c: code_get_code_conv_func(): fixed the ISO-8859-1
 	  detection.
 	* src/prefs_common.c: prefs_send_create(): made some more character
@@ -3313,7 +3325,7 @@
 	  src/mainwindow.c
 	  src/summaryview.[ch]
 	  src/sourcewindow.[ch]: integrated the viewing source patch from
-	  DINH V. Hoà (thanks!).
+	  DINH V. Hoßþ(thanks!).
 
 2001-03-10
 

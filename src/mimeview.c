@@ -327,17 +327,11 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 		partinfo = gtk_ctree_node_get_row_data(ctree, node);
 		if (partinfo &&
 		    (partinfo->mime_type == MIME_TEXT ||
-		     partinfo->mime_type == MIME_TEXT_HTML)) {
-			if (fseek(fp, partinfo->fpos, SEEK_SET) < 0)
-				perror("fseek");
-			else
-				textview_show_part
-					(mimeview->messageview->textview,
-					 partinfo, fp);
+		     partinfo->mime_type == MIME_TEXT_HTML))
 			break;
-		}
 	}
 	fclose(fp);
+	textview_show_message(mimeview->messageview->textview, mimeinfo, file);
 
 	if (!node)
 		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);

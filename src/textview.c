@@ -92,12 +92,14 @@ static GdkColor emphasis_color = {
 	(gushort)0xcfff
 };
 
+#if 0
 static GdkColor error_color = {
 	(gulong)0,
 	(gushort)0xefff,
 	(gushort)0,
 	(gushort)0
 };
+#endif
 
 static GdkFont *text_sb_font;
 static GdkFont *text_mb_font;
@@ -108,6 +110,13 @@ static gint text_mb_font_orig_descent;
 static GdkFont *spacingfont;
 
 static void textview_show_ertf		(TextView	*textview,
+					 FILE		*fp,
+					 CodeConverter	*conv);
+static void textview_add_part		(TextView	*textview,
+					 MimeInfo	*mimeinfo,
+					 FILE		*fp);
+static void textview_write_body		(TextView	*textview,
+					 MimeInfo	*mimeinfo,
 					 FILE		*fp,
 					 CodeConverter	*conv);
 static void textview_show_html		(TextView	*textview,
@@ -285,13 +294,41 @@ void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 			   const gchar *file)
 {
 	FILE *fp;
+	const gchar *charset = NULL;
+	GPtrArray *headers = NULL;
 
 	if ((fp = fopen(file, "r")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return;
 	}
 
-	textview_show_part(textview, mimeinfo, fp);
+	if (prefs_common.force_charset)
+		charset = prefs_common.force_charset;
+	else if (mimeinfo->charset)
+		charset = mimeinfo->charset;
+	textview_set_font(textview, charset);
+	textview_clear(textview);
+	textview->body_pos = 0;
+	textview->cur_pos  = 0;
+
+	if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0) perror("fseek");
+	headers = textview_scan_header(textview, fp);
+	if (headers) {
+		textview_show_header(textview, headers);
+		procheader_header_array_destroy(headers);
+	}
+
+	while (mimeinfo != NULL) {
+		textview_add_part(textview, mimeinfo, fp);
+		if (mimeinfo->parent && mimeinfo->parent->content_type &&
+		    !strcasecmp(mimeinfo->parent->content_type,
+				"multipart/alternative"))
+			mimeinfo = mimeinfo->parent->next;
+		else if (mimeinfo->sub)
+			mimeinfo = mimeinfo->next;
+		else
+			mimeinfo = procmime_mimeinfo_next(mimeinfo);
+	}
 
 	fclose(fp);
 }
@@ -303,7 +340,6 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	const gchar *boundary = NULL;
 	gint boundary_len = 0;
 	const gchar *charset = NULL;
-	FILE *tmpfp;
 	GPtrArray *headers = NULL;
 	CodeConverter *conv;
 
@@ -325,7 +361,9 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 		boundary_len = strlen(boundary);
 	}
 
-	if (!boundary && (mimeinfo->mime_type == MIME_TEXT || mimeinfo->mime_type == MIME_TEXT_HTML || mimeinfo->mime_type == MIME_TEXT_ENRICHED)) {
+	if (!boundary && (mimeinfo->mime_type == MIME_TEXT || 
+			  mimeinfo->mime_type == MIME_TEXT_HTML || 
+			  mimeinfo->mime_type == MIME_TEXT_ENRICHED)) {
 	
 		if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0)
 			perror("fseek");
@@ -378,8 +416,6 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 		charset = mimeinfo->charset;
 	textview_set_font(textview, charset);
 
-	conv = conv_code_converter_new(charset);
-
 	textview_clear(textview);
 	text = GTK_STEXT(textview->text);
 	gtk_stext_freeze(text);
@@ -392,29 +428,92 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 		procheader_header_array_destroy(headers);
 	}
 
-/* #if 0 */
-	tmpfp = procmime_decode_content(NULL, fp, mimeinfo);
-
-	if (tmpfp) {
-		if (mimeinfo->mime_type == MIME_TEXT_HTML)
-			textview_show_html(textview, tmpfp, conv);
-		else if (mimeinfo->mime_type == MIME_TEXT_ENRICHED)
-			textview_show_ertf(textview, tmpfp, conv);
-		else
-			while (fgets(buf, sizeof(buf), tmpfp) != NULL)
-				textview_write_line(textview, buf, conv);
-		fclose(tmpfp);
-	}
-/* #else
-	tmpfp = procmime_get_text_content(mimeinfo, fp);
-
-	while (fgets(buf, sizeof(buf), tmpfp) != NULL)
-		textview_write_line(textview, buf, conv);
-
-	fclose(tmpfp);
-#endif */
-
+	conv = conv_code_converter_new(charset);
+	textview_write_body(textview, mimeinfo, fp, conv);
 	conv_code_converter_destroy(conv);
+
+	gtk_stext_thaw(text);
+}
+
+static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
+{
+	GtkSText *text;
+	gchar buf[BUFFSIZE];
+	const gchar *boundary = NULL;
+	gint boundary_len = 0;
+	const gchar *charset = NULL;
+	GPtrArray *headers = NULL;
+	CodeConverter *conv;
+
+	g_return_if_fail(mimeinfo != NULL);
+	g_return_if_fail(fp != NULL);
+
+	if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0) {
+		perror("fseek");
+		return;
+	}
+
+	if (mimeinfo->mime_type == MIME_MULTIPART) {
+		if (mimeinfo->sub) {
+			mimeinfo = mimeinfo->sub;
+			if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0) {
+				perror("fseek");
+				return;
+			}
+		} else
+			return;
+	}
+	if (mimeinfo->parent && mimeinfo->parent->boundary) {
+		boundary = mimeinfo->parent->boundary;
+		boundary_len = strlen(boundary);
+	}
+
+	while (fgets(buf, sizeof(buf), fp) != NULL)
+		if (buf[0] == '\r' || buf[0] == '\n') break;
+
+	/* display attached RFC822 single text message */
+	if (mimeinfo->parent && mimeinfo->mime_type == MIME_MESSAGE_RFC822) {
+		if (headers) procheader_header_array_destroy(headers);
+		if (!mimeinfo->sub || mimeinfo->sub->children) return;
+		headers = textview_scan_header(textview, fp);
+		mimeinfo = mimeinfo->sub;
+	} else if (!mimeinfo->parent &&
+		   mimeinfo->mime_type == MIME_MESSAGE_RFC822) {
+		if (headers) procheader_header_array_destroy(headers);
+		if (!mimeinfo->sub) return;
+		headers = textview_scan_header(textview, fp);
+		mimeinfo = mimeinfo->sub;
+	}
+
+	if (prefs_common.force_charset)
+		charset = prefs_common.force_charset;
+	else if (mimeinfo->charset)
+		charset = mimeinfo->charset;
+
+	text = GTK_STEXT(textview->text);
+	gtk_stext_freeze(text);
+
+	if (headers) {
+		textview_show_header(textview, headers);
+		procheader_header_array_destroy(headers);
+	}
+
+	if (mimeinfo->mime_type != MIME_TEXT &&
+	    mimeinfo->mime_type != MIME_TEXT_HTML &&
+	    mimeinfo->mime_type != MIME_TEXT_ENRICHED) {
+		if (mimeinfo->filename)
+			g_snprintf(buf, sizeof(buf), "\n[%s  %s (%d bytes)]\n",
+				   mimeinfo->content_type, mimeinfo->filename,
+				   mimeinfo->size);
+		else
+			g_snprintf(buf, sizeof(buf), "\n[%s (%d bytes)]\n",
+				   mimeinfo->content_type, mimeinfo->size);
+		gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
+	} else {
+		conv = conv_code_converter_new(charset);
+		textview_write_body(textview, mimeinfo, fp, conv);
+		conv_code_converter_destroy(conv);
+	}
 
 	gtk_stext_thaw(text);
 }
@@ -475,6 +574,25 @@ void textview_show_signature_part(TextView *textview, MimeInfo *partinfo)
 #endif /* USE_GPGME */
 
 #undef TEXT_INSERT
+
+static void textview_write_body(TextView *textview, MimeInfo *mimeinfo,
+				FILE *fp, CodeConverter *conv)
+{
+	FILE *tmpfp;
+	gchar buf[BUFFSIZE];
+
+	tmpfp = procmime_decode_content(NULL, fp, mimeinfo);
+	if (tmpfp) {
+		if (mimeinfo->mime_type == MIME_TEXT_HTML)
+			textview_show_html(textview, tmpfp, conv);
+		else if (mimeinfo->mime_type == MIME_TEXT_ENRICHED)
+			textview_show_ertf(textview, tmpfp, conv);
+		else
+			while (fgets(buf, sizeof(buf), tmpfp) != NULL)
+				textview_write_line(textview, buf, conv);
+		fclose(tmpfp);
+	}
+}
 
 static void textview_show_html(TextView *textview, FILE *fp,
 			       CodeConverter *conv)
@@ -852,6 +970,7 @@ static void textview_write_link(TextView *textview, const gchar *url,
 
     /* this part is taken from textview_write_line. Right now the only place
      * that calls this function passes NULL for conv, but you never know. */
+#if 0
     if (!conv)
 	    strncpy2(buf, str, sizeof(buf));
     else if (conv_convert(conv, buf, sizeof(buf), str) < 0) {
@@ -862,6 +981,7 @@ static void textview_write_link(TextView *textview, const gchar *url,
 		            -1);
 	    return;
     }
+#endif
 
     /* this part is based on the code in make_clickable_parts */
     if (prefs_common.enable_color) {

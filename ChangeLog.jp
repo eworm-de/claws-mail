@@ -1,3 +1,14 @@
+2002-03-01
+
+	* src/messageview.c: messageview_show(): MimeView の TextView の
+	  ヘッダの状態も指定するようにした。
+	* src/mimeview.c: mimeview_show_message(): メッセージを表示するのに
+	  textview_show_message() を呼ぶようにした。
+	* src/textview.c: textview_add_part(): 新規。ビューをクリアせずに
+	  メッセージパートの内容を追加する。
+	  textview_show_message(): 全パートを適切なスタイルで表示。
+	  textview_write_body(): textview_show_part() から分離。
+
 2002-02-28
 
 	* src/mainwindow.c
@@ -93,7 +104,7 @@
 	  src/prefs_template.c
 	  src/summary_search.c
 	  src/summaryview.c: ウィンドウ管理のためにシグナルを接続するのに
-	  MANAGE_WINDO_SIGNALS_CONNECT() マクロを使用するようにした。
+	  MANAGE_WINDOW_SIGNALS_CONNECT() マクロを使用するようにした。
 
 2002-02-21
 

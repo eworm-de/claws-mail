@@ -416,6 +416,7 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	procmsg_msginfo_free(tmpmsginfo);
 
 	textview_set_all_headers(messageview->textview, all_headers);
+	textview_set_all_headers(messageview->mimeview->textview, all_headers);
 
 	if (mimeinfo->mime_type != MIME_TEXT) {
 		messageview_change_view_type(messageview, MVIEW_MIME);

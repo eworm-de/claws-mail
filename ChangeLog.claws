@@ -1,3 +1,8 @@
+2002-03-02 [paul]	0.7.2claws24
+
+	* sync with sylpheed 0.7.2cvs22
+		see ChangeLog entry 2002-03-01
+
 2002-03-01 [hoa]	0.7.2claws23
 
 	* src/mainwindow.c
