@@ -428,7 +428,7 @@ special:
 			else {
 				while (fgets(buf, sizeof(buf), fp) != NULL) {
 					strcrchomp(buf);
-					if (strncmp(buf, "-- ", 3) == 0)
+					if (strncmp(buf, "-- \n", 5) == 0)
 						break;
 					INSERT(buf);
 				}
@@ -452,7 +452,7 @@ special:
 			else {
 				while (fgets(buf, sizeof(buf), fp) != NULL) {
 					strcrchomp(buf);
-					if (strncmp(buf, "-- ", 3) == 0)
+					if (strncmp(buf, "-- \n", 5) == 0)
 						break;
 					if (quote_str)
 						INSERT(quote_str);

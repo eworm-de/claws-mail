@@ -1,3 +1,9 @@
+2002-12-23 [paul]	0.8.6claws125
+
+	* src/quote_fmt_parse.y
+		fix signature-stripping on replies bug. match
+		'-- \n' and not '-- '.
+
 2002-12-22 [paul]	0.8.6claws124
 
 	* po/bg.po
