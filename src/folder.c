@@ -2104,20 +2104,24 @@ gchar *folder_item_fetch_msg(FolderItem *item, gint num)
 
 	msgfile = folder->klass->fetch_msg(folder, item, num);
 
-	msginfo = folder_item_get_msginfo(item, num);
-	if ((msginfo != NULL) && !MSG_IS_SCANNED(msginfo->flags)) {
-		MimeInfo *mimeinfo;
+	if (msgfile != NULL) {
+		msginfo = folder_item_get_msginfo(item, num);
+		if ((msginfo != NULL) && !MSG_IS_SCANNED(msginfo->flags)) {
+			MimeInfo *mimeinfo;
 
-		if (msginfo->folder->stype != F_QUEUE && 
-		    msginfo->folder->stype != F_DRAFT)
-			mimeinfo = procmime_scan_file(msgfile);
-		else
-			mimeinfo = procmime_scan_queue_file(msgfile);
-		/* check for attachments */
-		g_node_children_foreach(mimeinfo->node, G_TRAVERSE_ALL, msginfo_set_mime_flags, msginfo);
-		procmime_mimeinfo_free_all(mimeinfo);
+			if (msginfo->folder->stype != F_QUEUE && 
+			    msginfo->folder->stype != F_DRAFT)
+				mimeinfo = procmime_scan_file(msgfile);
+			else
+				mimeinfo = procmime_scan_queue_file(msgfile);
+			/* check for attachments */
+			if (mimeinfo != NULL) {	
+				g_node_children_foreach(mimeinfo->node, G_TRAVERSE_ALL, msginfo_set_mime_flags, msginfo);
+				procmime_mimeinfo_free_all(mimeinfo);
 
-		procmsg_msginfo_set_flags(msginfo, 0, MSG_SCANNED);
+				procmsg_msginfo_set_flags(msginfo, 0, MSG_SCANNED);
+			}
+		}
 	}
 
 	return msgfile;
