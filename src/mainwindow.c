@@ -646,17 +646,17 @@ static GtkItemFactoryEntry mainwin_entries[] =
 static GtkItemFactoryEntry reply_popup_entries[] =
 {
 	{N_("/Reply with _quote"), NULL, reply_cb, COMPOSE_REPLY_WITH_QUOTE, NULL},
-	{N_("/_Reply"), NULL, reply_cb, COMPOSE_REPLY_WITHOUT_QUOTE, NULL}
+	{N_("/_Reply without quote"), NULL, reply_cb, COMPOSE_REPLY_WITHOUT_QUOTE, NULL}
 };
 static GtkItemFactoryEntry replyall_popup_entries[] =
 {
 	{N_("/Reply to all with _quote"), NULL, reply_cb, COMPOSE_REPLY_TO_ALL_WITH_QUOTE, NULL},
-	{N_("/_Reply to all"), NULL, reply_cb, COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE, NULL}
+	{N_("/_Reply to all without quote"), NULL, reply_cb, COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE, NULL}
 };
 static GtkItemFactoryEntry replysender_popup_entries[] =
 {
 	{N_("/Reply to sender with _quote"), NULL, reply_cb, COMPOSE_REPLY_TO_SENDER_WITH_QUOTE, NULL},
-	{N_("/_Reply to sender"), NULL, reply_cb, COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE, NULL}
+	{N_("/_Reply to sender without quote"), NULL, reply_cb, COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE, NULL}
 };
 static GtkItemFactoryEntry fwd_popup_entries[] =
 {
