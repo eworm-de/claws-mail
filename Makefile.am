@@ -2,7 +2,6 @@ SUBDIRS = ac po intl src man manual faq tools config
 
 EXTRA_DIST = \
 	ChangeLog.jp \
-	INSTALL.jp \
 	README.jp \
 	ChangeLog.claws \
 	README.claws \

@@ -71,7 +71,7 @@ rm -rf ${RPM_BUILD_ROOT}
 %{prefix}/bin/sylpheed
 %{prefix}/share/locale/*/LC_MESSAGES/sylpheed.mo
 %{prefix}/share/sylpheed/manual/*
-%doc ABOUT-NLS AUTHORS COPYING ChangeLog ChangeLog.claws ChangeLog.jp README README.claws README.jp INSTALL INSTALL.jp TODO TODO.jp tools
+%doc ABOUT-NLS AUTHORS COPYING ChangeLog ChangeLog.claws ChangeLog.jp README README.claws README.jp INSTALL TODO TODO.jp tools
 
 %changelog
 * Sun Nov 10 2002 Jens Oberender <j.obi@troja.net>
