@@ -1,3 +1,71 @@
+2003-08-17 [christoph]	0.9.4claws28
+
+	* src/procmsg.c
+		no subject threading when the subject has no reply prefix
+
+2003-08-16 [christoph]	0.9.4claws27
+
+	* src/mainwindow.c
+		remember and restore window sizes and position when the main
+		window is hidden or shown
+
+	(closes Bug 274 Window size in 0.9.4claws18 not remembered when
+	 minimised/reopened using trayicon)
+
+2003-08-16 [paul]	0.9.4claws26
+
+	* src/crash.c
+		add #include "defs.h"
+
+2003-08-16 [paul]	0.9.4claws25
+
+	* src/plugins/clamav/clamav_plugin.c
+		reword a debug_print
+		
+	* src/plugins/dillo_viewer/dillo_prefs.c
+		cosmetic: change the labels' text, add tooltips, and
+		left-align the hint
+
+2003-08-15 [christoph]	0.9.4claws24
+
+	* src/news.c
+		complete last change (forgot some changes)
+
+2003-08-15 [christoph]	0.9.4claws23
+
+	* src/news.c
+		o check number of messages and don't return a 0 message
+		  when no messages are available
+		o don't parse xref header anymore
+
+	(closes Bug 203 I'm not getting any news)
+
+2003-08-15 [paul]	0.9.4claws22
+
+	* src/common/defs.h
+	  src/crash.c
+	  	update and define claws bugzilla location
+
+2003-08-15 [paul]	0.9.4claws21
+
+	* po/ru.po
+		update submitted by Ruslan N. Balkin
+
+2003-08-14 [christoph]	0.9.4claws20
+
+	* src/procmsg.c
+		fix search for oldest node in subject threading
+
+2003-08-14 [christoph]	0.9.4claws19
+
+	* src/procmsg.c
+	* src/common/utils.h
+		add possibility to check all nodes with the same subject for
+		subject threading, not only the oldest node. Should not break
+		threads anymore if the oldest node is thread_by_subject_max_age
+		days older then parent, because it can now find a child of
+		oldest node as new parent.
+
 2003-08-11 [christoph]	0.9.4claws18
 
 	* src/plugins/spamassassin/spamassassin.c

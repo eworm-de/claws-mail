@@ -95,7 +95,7 @@ Name: "{sendto}\Sylpheed-Claws";                                Filename: "{app}
 Name: "{userdesktop}\Sylpheed-Claws";                           Filename: "{app}\bin\sylpheed.exe"; MinVersion: 4,4; Tasks: desktopicon
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\Sylpheed-Claws"; Filename: "{app}\bin\sylpheed.exe"; MinVersion: 4,4; Tasks: quicklaunchicon
 
-Name: "{group}\Sylpheed-Claws";                                 Filename: "{app}\bin\sylpheed.exe"
+Name: "{group}\Sylpheed-Claws";                                 Filename: "{app}\bin\sylpheed.exe"; WorkingDir: "{app}"
 Name: "{group}\Uninstall Sylpheed for Win32";                   Filename: "{uninstallexe}"
 Name: "{group}\Win32-Readme (html)";                            Filename: "{app}\Readme.html";
 Name: "{group}\Win32-Readme (text)";                            Filename: "{app}\Readme.txt";

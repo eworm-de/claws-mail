@@ -599,9 +599,15 @@ static MsgInfo *news_parse_xover(const gchar *xover_str)
 	PARSE_ONE_PARAM(ref, msgid);
 	PARSE_ONE_PARAM(size, ref);
 	PARSE_ONE_PARAM(line, size);
-	PARSE_ONE_PARAM(xref, line);
+	/*
+	 * PARSE_ONE_PARAM(xref, line);
+	 *
+         * if we parse extra headers we should first examine the
+	 * LIST OVERVIEW.FMT response from the server. See
+	 * RFC2980 for details
+	 */
 
-	tmp = strchr(xref, '\t');
+	tmp = strchr(line, '\t');
 	if (!tmp) tmp = strchr(line, '\r');
 	if (!tmp) tmp = strchr(line, '\n');
 	if (tmp) *tmp = '\0';
@@ -639,12 +645,14 @@ static MsgInfo *news_parse_xover(const gchar *xover_str)
 			msginfo->inreplyto = g_strdup(p);
 	}
 
+	/*
 	msginfo->xref = g_strdup(xref);
 	p = msginfo->xref+strlen(msginfo->xref) - 1;
 	while (*p == '\r' || *p == '\n') {
 		*p = '\0';
 		p--;
 	}
+	*/
 
 	return msginfo;
 }
@@ -777,6 +785,11 @@ gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_list)
 	if (ok != NN_SUCCESS) {
 		log_warning(_("can't set group: %s\n"), item->path);
 		return -1;
+	}
+
+	if (num <= 0) {
+		remove_all_numbered_files(dir);
+		return 0;
 	}
 
 	if(last < first) {

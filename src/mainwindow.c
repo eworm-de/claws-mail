@@ -1771,40 +1771,53 @@ void main_window_show(MainWindow *mainwin)
 	gtk_widget_show(mainwin->window);
 	gtk_widget_show(mainwin->vbox_body);
 
-	switch (mainwin->type) {
-	case SEPARATE_FOLDER:
-		gtk_widget_show(mainwin->win.sep_folder.folderwin);
-		break;
-	case SEPARATE_MESSAGE:
-		gtk_widget_show(mainwin->win.sep_message.messagewin);
-		break;
-	case SEPARATE_BOTH:
-		gtk_widget_show(mainwin->win.sep_both.folderwin);
-		gtk_widget_show(mainwin->win.sep_both.messagewin);
-		break;
-	default:
-		break;
+        gtk_widget_set_uposition(mainwin->window,
+                                 prefs_common.mainwin_x,
+                                 prefs_common.mainwin_y);
+
+	gtk_widget_set_usize(GTK_WIDGET_PTR(mainwin->folderview),
+			     prefs_common.folderview_width,
+			     prefs_common.folderview_height);
+	gtk_widget_set_usize(GTK_WIDGET_PTR(mainwin->summaryview),
+			     prefs_common.summaryview_width,
+			     prefs_common.summaryview_height);
+	gtk_widget_set_usize(GTK_WIDGET_PTR(mainwin->messageview),
+			     prefs_common.msgview_width,
+			     prefs_common.msgview_height);
+
+	if (mainwin->type & SEPARATE_FOLDER) {
+		GtkWidget *folderwin;
+
+		folderwin = main_window_get_folder_window(mainwin);
+		gtk_widget_show(folderwin);
+		gtk_widget_set_uposition(folderwin, prefs_common.folderwin_x,
+                                         prefs_common.folderwin_y);
+	}
+
+	if (mainwin->type & SEPARATE_MESSAGE) {
+		GtkWidget *messagewin;
+
+		messagewin = main_window_get_message_window(mainwin);
+		gtk_widget_show(messagewin);
+		gtk_widget_set_uposition(messagewin, prefs_common.main_msgwin_x,
+                                         prefs_common.main_msgwin_y);
 	}
 }
 
 void main_window_hide(MainWindow *mainwin)
 {
+	main_window_get_size(mainwin);
+	main_window_get_position(mainwin);
+
 	gtk_widget_hide(mainwin->window);
 	gtk_widget_hide(mainwin->vbox_body);
 
-	switch (mainwin->type) {
-	case SEPARATE_FOLDER:
+	if (mainwin->type & SEPARATE_FOLDER) {
 		gtk_widget_hide(mainwin->win.sep_folder.folderwin);
-		break;
-	case SEPARATE_MESSAGE:
+	}
+
+	if (mainwin->type & SEPARATE_MESSAGE) {
 		gtk_widget_hide(mainwin->win.sep_message.messagewin);
-		break;
-	case SEPARATE_BOTH:
-		gtk_widget_hide(mainwin->win.sep_both.folderwin);
-		gtk_widget_hide(mainwin->win.sep_both.messagewin);
-		break;
-	default:
-		break;
 	}
 }
 

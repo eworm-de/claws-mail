@@ -23,6 +23,8 @@
 
 #ifdef CRASH_DIALOG
 
+#include "defs.h"
+
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
@@ -307,8 +309,7 @@ static void crash_save_crash_log(GtkButton *button, const gchar *text)
  */
 static void crash_create_bug_report(GtkButton *button, const gchar *data)
 {
-	open_uri("http://sylpheed-claws.sourceforge.net/cgi-bin/bugzilla/enter_bug.cgi",
-		 prefs_common.uri_cmd);
+	open_uri(CLAWS_BUGZILLA_URI, prefs_common.uri_cmd);
 }
 
 /*!
