@@ -1,3 +1,9 @@
+2002-02-05 [paul]	0.7.0claws48
+
+	* src/compose.c
+		re-add 'Edit/Advanced/Delete entire line', previously named
+		'Delete Line+'
+
 2002-02-04 [paul]	0.7.0claws47
 
 	* src/compose.c
