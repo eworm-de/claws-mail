@@ -1,0 +1,8 @@
+; dlltool -D demo.dll -z demo.dll.def --export-all-symbols --exclude-symbols WinMain@16 demo.o
+EXPORTS
+	my_log_hook @ 1 ; 
+	plugin_desc @ 2 ; 
+	plugin_done @ 3 ; 
+	plugin_init @ 4 ; 
+	plugin_name @ 5 ; 
+	mswin_helper_timeout_tag @ 6 DATA ; 

@@ -1,0 +1,17 @@
+; dlltool -D spamassassin_gtk.dll -k -z spamassassin_gtk.dll.def --export-all-symbols --exclude-symbols WinMain@16 spamassassin_gtk.o
+EXPORTS
+	getconf @ 1 ; 
+	gpg_started @ 2 DATA ; 
+	mswin_helper_timeout_tag @ 3 DATA ; 
+	plugin_desc @ 4 ; 
+	plugin_done @ 5 ; 
+	plugin_init @ 6 ; 
+	plugin_name @ 7 ; 
+	setconf @ 8 ; 
+	spamassassin_cfg @ 9 DATA ; 
+	spamassassin_enable @ 10 DATA ; 
+	spamassassin_hostname @ 11 DATA ; 
+	spamassassin_max_size @ 12 DATA ; 
+	spamassassin_port @ 13 DATA ; 
+	spamassassin_receive_spam @ 14 DATA ; 
+	spamassassin_save_folder @ 15 DATA ; 

@@ -365,7 +365,8 @@ spamassassin.dll: libspamc_utils.c $(spamassassin_OBJECTS)
 	$(CC) -mdll $(CFLAGS) -o junk.tmp -Wl,--base-file,$@.base $(spamassassin_OBJECTS) $(spamassassin_LIBS)
 	dlltool --dllname $@ --base-file $@.base --output-exp $@.exp --def $@.def
 	$(CC) -mdll $(CFLAGS) -o $@ $(spamassassin_OBJECTS) -Wl,$@.exp $(spamassassin_LIBS)
-	-rm $@.def $@.base $@.exp $@.lib junk.tmp
+	-rm $@.base $@.exp $@.lib junk.tmp
+	#-rm $@.def $@.base $@.exp $@.lib junk.tmp
 	#$(CC) -shared $? $(APPNAME).dll -lwsock32 /dev/lib/libglib-2.0.dll.a -o $@
 spamassassin_clean:
 	-rm $(spamassassin_OBJECTS) libspamc_utils.c
@@ -379,11 +380,11 @@ spamassassin_gtk_OBJECTS = \
 	spamassassin_gtk.o
 
 spamassassin_gtk.dll: $(spamassassin_gtk_OBJECTS)
-	-rm $@.def $@.base $@.exp $@.lib junk.tmp
 	dlltool -D $@ -z $@.def --export-all-symbols --exclude-symbols WinMain@16 $(spamassassin_gtk_OBJECTS)
 	$(CC) -mdll $(CFLAGS) -o junk.tmp -Wl,--base-file,$@.base $(spamassassin_gtk_OBJECTS) $(spamassassin_gtk_LIBS)
 	dlltool --dllname $@ --base-file $@.base --output-exp $@.exp --def $@.def
 	$(CC) -mdll $(CFLAGS) -o $@ $(spamassassin_gtk_OBJECTS) -Wl,$@.exp $(spamassassin_gtk_LIBS)
+	-rm $@.base $@.exp $@.lib junk.tmp
 	#$(CC) -shared $? $(APPNAME).dll spamassassin.dll $(LIBDIR)/intl.lib /dev/lib/libglib-2.0.dll.a /dev/lib/libgtk.dll.a -o $@
 spamassassin_gtk_clean:
 	-rm $(spamassassin_gtk_OBJECTS)
@@ -391,9 +392,18 @@ spamassassin_gtk_clean:
 ### demo plugin
 
 demo.o:	demo.c
-	$(CC) -c $(PLGDEFINES) $(PLGINCLUDE) $< -o demo.o
-demo.dll:	demo.o hooks.o
-	$(CC) -shared demo.o $(APPNAME).dll /dev/lib/libglib-2.0.dll.a -o $@
+
+demo_LIBS = $(APPNAME).dll $(EXTRALIBS) $(LIBS)
+demo_OBJECTS = \
+	demo.o
+
+demo.dll:	$(demo_OBJECTS)
+	dlltool -D $@ -z $@.def --export-all-symbols --exclude-symbols WinMain@16 $(demo_OBJECTS)
+	$(CC) -mdll $(CFLAGS) -o junk.tmp -Wl,--base-file,$@.base $(demo_OBJECTS) $(demo_LIBS)
+	dlltool --dllname $@ --base-file $@.base --output-exp $@.exp --def $@.def
+	$(CC) -mdll $(CFLAGS) -o $@ $(demo_OBJECTS) -Wl,$@.exp $(demo_LIBS)
+	-rm $@.base $@.exp $@.lib junk.tmp
+	#$(CC) -shared demo.o $(APPNAME).dll /dev/lib/libglib-2.0.dll.a -o $@
 demo_clean:
 	-rm demo.o
 
@@ -401,6 +411,7 @@ demo_clean:
 
 $(APPNAME).dll: $(OBJECTS) $(APPNAME).dll.def $(APPNAME).dll.base $(APPNAME).dll.exp #$(APPNAME).dll.lib
 	$(CC) -mdll $(FLAGS) -o $@ $(OBJECTS) -Wl,$@.exp $(EXTRALIBS) $(LIBS)
+	-rm $@.base $@.exp $@.lib junk.tmp
 $(APPNAME).dll.def:
 	dlltool -D $(APPNAME).dll -z $@ --export-all-symbols --exclude-symbols WinMain@16 $(OBJECTS)
 $(APPNAME).dll.base:

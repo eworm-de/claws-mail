@@ -1,3 +1,15 @@
+2003-01-13 [thorsten]	0.8.5claws89-1
+
+	* win32/*_dll*.dsp
+	  win32/Makefile
+	  win32/demo.def			*** DELETED ***
+	  win32/spamassassin.def		*** DELETED ***
+	  win32/spamassassin_gtk.def		*** DELETED ***
+	  win32/demo.dll.def			*** NEW FILE***
+	  win32/spamassassin.dll.def		*** NEW FILE***
+	  win32/spamassassin_gtk.dll.def	*** NEW FILE***
+	  	fix: use .def files names from gcc makefile
+
 2003-01-13 [thorsten]	0.8.8claws66-2
 
 	* win32/Makefile
