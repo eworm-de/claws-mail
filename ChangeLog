@@ -1,3 +1,11 @@
+2002-01-30
+
+	* src/compose.c: compose_wrap_line_all(): wrap quoted part even
+	  if prefs_common.linewrap_quote is not set (it is only for
+	  auto-wrapping on reply).
+	* src/prefs_account.c: prefs_account_open(): initialize tmp_ac_prefs
+	  when creating a new account.
+
 2002-01-29
 
 	* src/mimeview.c: fixed multiple dialog / moving by correcting
@@ -7,6 +15,8 @@
 	  mode.
 	* src/prefs_filter.c: fixed a bug that didn't set the order of
 	  rules correctly.
+	* src/prefs_common.c: prefs_keybind_apply_clicked(): fixed
+	  empty_menurc string.
 
 2002-01-28
 

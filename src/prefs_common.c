@@ -2495,9 +2495,9 @@ PACK_FRAME(vbox1, keybind_frame, _("Shortcut key"));
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
 
 	keybind_label = gtk_label_new
-		(_("Select the preset of key bindings.\n"
-		   "You can also modify each menu shortcuts by pressing\n"
-		   "any key when placing mouse pointer on the item."));
+		(_("Select the preset key bindings.\n"
+		   "You can also modify each menu shortcut by pressing\n"
+		   "any key(s) when placing the mouse pointer on the item."));
 	gtk_widget_show (keybind_label);
 	gtk_box_pack_start (GTK_BOX (hbox1), keybind_label, FALSE, FALSE, 0);
 	gtk_label_set_justify (GTK_LABEL (keybind_label), GTK_JUSTIFY_LEFT);
@@ -3469,7 +3469,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 	gchar *rc_str;
 
 	static gchar *default_menurc =
-		"(menu-path \"<Main>/File/Empty trash\" \"\")\n"
+		"(menu-path \"<Main>/File/Empty trash\" \"<shift>D\")\n"
 		"(menu-path \"<Main>/File/Save as...\" \"<control>S\")\n"
 		"(menu-path \"<Main>/File/Print...\" \"\")\n"
 		"(menu-path \"<Main>/File/Exit\" \"<control>Q\")\n"
@@ -3477,9 +3477,10 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/Edit/Copy\" \"<control>C\")\n"
 		"(menu-path \"<Main>/Edit/Select all\" \"<control>A\")\n"
 		"(menu-path \"<Main>/Edit/Find in current message...\" \"<control>F\")\n"
-		"(menu-path \"<Main>/Edit/Search messages...\" \"<shift><control>F\")\n"
+		"(menu-path \"<Main>/Edit/Search folder...\" \"<shift><control>F\")\n"
 
-		"(menu-path \"<Main>/View/Toggle summary view\" \"V\")\n"
+		"(menu-path \"<Main>/View/Expand Summary View\" \"V\")\n"
+		"(menu-path \"<Main>/View/Expand Message View\" \"<shift>V\")\n"
 		"(menu-path \"<Main>/View/Thread view\" \"<control>T\")\n"
 		"(menu-path \"<Main>/View/Unthread view\" \"<shift><control>T\")\n"
 		"(menu-path \"<Main>/View/Go to/Prev message\" \"P\")\n"
@@ -3494,12 +3495,12 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 
 		"(menu-path \"<Main>/Message/Get new mail\" \"<control>I\")\n"
 		"(menu-path \"<Main>/Message/Get from all accounts\" \"<shift><control>I\")\n"
-		"(menu-path \"<Main>/Message/Compose new message\" \"<shift><control>N\")\n"
+		"(menu-path \"<Main>/Message/Compose an email message\" \"<shift><control>N\")\n"
 		"(menu-path \"<Main>/Message/Reply\" \"<control>R\")\n"
+		"(menu-path \"<Main>/Message/Reply to sender\" \"<control><alt>R\")\n"
 		"(menu-path \"<Main>/Message/Reply to all\" \"<shift><control>R\")\n"
-		"(menu-path \"<Main>/Message/Reply to sender\" \"\")\n"
 		"(menu-path \"<Main>/Message/Forward\" \"<control><alt>F\")\n"
-		"(menu-path \"<Main>/Message/Forward as attachment\" \"\")\n"
+		/* "(menu-path \"<Main>/Message/Forward as attachment\" \"\")\n" */
 		"(menu-path \"<Main>/Message/Move...\" \"<control>O\")\n"
 		"(menu-path \"<Main>/Message/Copy...\" \"<shift><control>O\")\n"
 		"(menu-path \"<Main>/Message/Delete\" \"<control>D\")\n"
@@ -3518,9 +3519,10 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/Edit/Copy\" \"<control>C\")\n"
 		"(menu-path \"<Main>/Edit/Select all\" \"<control>A\")\n"
 		"(menu-path \"<Main>/Edit/Find in current message...\" \"<control>F\")\n"
-		"(menu-path \"<Main>/Edit/Search messages...\" \"<control>S\")\n"
+		"(menu-path \"<Main>/Edit/Search folder...\" \"<control>S\")\n"
 
-		"(menu-path \"<Main>/View/Toggle summary view\" \"V\")\n"
+		"(menu-path \"<Main>/View/Expand Summary View\" \"\")\n"
+		"(menu-path \"<Main>/View/Expand Message View\" \"\")\n"
 		"(menu-path \"<Main>/View/Thread view\" \"<control>T\")\n"
 		"(menu-path \"<Main>/View/Unthread view\" \"<shift><control>T\")\n"
 		"(menu-path \"<Main>/View/Go to/Prev message\" \"P\")\n"
@@ -3535,12 +3537,12 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 
 		"(menu-path \"<Main>/Message/Get new mail\" \"<control>I\")\n"
 		"(menu-path \"<Main>/Message/Get from all accounts\" \"<shift><control>I\")\n"
-		"(menu-path \"<Main>/Message/Compose new message\" \"W\")\n"
+		"(menu-path \"<Main>/Message/Compose an email message\" \"W\")\n"
 		"(menu-path \"<Main>/Message/Reply\" \"<control>R\")\n"
-		"(menu-path \"<Main>/Message/Reply to all\" \"<shift>A\")\n"
 		"(menu-path \"<Main>/Message/Reply to sender\" \"\")\n"
+		"(menu-path \"<Main>/Message/Reply to all\" \"<shift>A\")\n"
 		"(menu-path \"<Main>/Message/Forward\" \"F\")\n"
-		"(menu-path \"<Main>/Message/Forward as attachment\" \"<shift>F\")\n"
+		/* "(menu-path \"<Main>/Message/Forward as attachment\" \"<shift>F\")\n" */
 		"(menu-path \"<Main>/Message/Move...\" \"O\")\n"
 		"(menu-path \"<Main>/Message/Copy...\" \"<shift>O\")\n"
 		"(menu-path \"<Main>/Message/Delete\" \"D\")\n"
@@ -3559,9 +3561,10 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/Edit/Copy\" \"<control>C\")\n"
 		"(menu-path \"<Main>/Edit/Select all\" \"<control>A\")\n"
 		"(menu-path \"<Main>/Edit/Find in current message...\" \"<control>F\")\n"
-		"(menu-path \"<Main>/Edit/Search messages...\" \"<control>S\")\n"
+		"(menu-path \"<Main>/Edit/Search folder...\" \"<control>S\")\n"
 
-		"(menu-path \"<Main>/View/Toggle summary view\" \"V\")\n"
+		"(menu-path \"<Main>/View/Expand Summary View\" \"\")\n"
+		"(menu-path \"<Main>/View/Expand Message View\" \"\")\n"
 		"(menu-path \"<Main>/View/Thread view\" \"<control>T\")\n"
 		"(menu-path \"<Main>/View/Unthread view\" \"<shift><control>T\")\n"
 		"(menu-path \"<Main>/View/Go to/Prev message\" \"P\")\n"
@@ -3576,12 +3579,12 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 
 		"(menu-path \"<Main>/Message/Get new mail\" \"<alt>I\")\n"
 		"(menu-path \"<Main>/Message/Get from all accounts\" \"<shift><alt>I\")\n"
-		"(menu-path \"<Main>/Message/Compose new message\" \"<alt>N\")\n"
+		"(menu-path \"<Main>/Message/Compose an email message\" \"<alt>N\")\n"
 		"(menu-path \"<Main>/Message/Reply\" \"<alt>R\")\n"
-		"(menu-path \"<Main>/Message/Reply to all\" \"<shift><alt>R\")\n"
 		"(menu-path \"<Main>/Message/Reply to sender\" \"<control><alt>R\")\n"
+		"(menu-path \"<Main>/Message/Reply to all\" \"<shift><alt>R\")\n"
 		"(menu-path \"<Main>/Message/Forward\" \"<shift><alt>F\")\n"
-		"(menu-path \"<Main>/Message/Forward as attachment\" \"<shift><control>F\")\n"
+		/* "(menu-path \"<Main>/Message/Forward as attachment\" \"<shift><control>F\")\n" */
 		"(menu-path \"<Main>/Message/Move...\" \"<alt>O\")\n"
 		"(menu-path \"<Main>/Message/Copy...\" \"\")\n"
 		"(menu-path \"<Main>/Message/Delete\" \"<alt>D\")\n"
@@ -3600,12 +3603,16 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/Edit/Copy\" \"\")\n"
 		"(menu-path \"<Main>/Edit/Select all\" \"\")\n"
 		"(menu-path \"<Main>/Edit/Find in current message...\" \"\")\n"
-		"(menu-path \"<Main>/Edit/Search messages...\" \"\")\n"
+		"(menu-path \"<Main>/Edit/Search folder...\" \"\")\n"
 
+		"(menu-path \"<Main>/View/Expand Summary View\" \"\")\n"
+		"(menu-path \"<Main>/View/Expand Message View\" \"\")\n"
 		"(menu-path \"<Main>/View/Thread view\" \"\")\n"
 		"(menu-path \"<Main>/View/Unthread view\" \"\")\n"
 		"(menu-path \"<Main>/View/Go to/Prev message\" \"\")\n"
 		"(menu-path \"<Main>/View/Go to/Next message\" \"\")\n"
+		"(menu-path \"<Main>/View/Go to/Prev unread message\" \"\")\n"
+		"(menu-path \"<Main>/View/Go to/Next unread message\" \"\")\n"
 		"(menu-path \"<Main>/View/Go to/Other folder...\" \"\")\n"
 		"(menu-path \"<Main>/View/Open in new window\" \"\")\n"
 		"(menu-path \"<Main>/View/View source\" \"\")\n"
@@ -3614,12 +3621,12 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 
 		"(menu-path \"<Main>/Message/Get new mail\" \"\")\n"
 		"(menu-path \"<Main>/Message/Get from all accounts\" \"\")\n"
-		"(menu-path \"<Main>/Message/Compose new message\" \"\")\n"
+		"(menu-path \"<Main>/Message/Compose an email message\" \"\")\n"
 		"(menu-path \"<Main>/Message/Reply\" \"\")\n"
-		"(menu-path \"<Main>/Message/Reply to all\" \"\")\n"
 		"(menu-path \"<Main>/Message/Reply to sender\" \"\")\n"
+		"(menu-path \"<Main>/Message/Reply to all\" \"\")\n"
 		"(menu-path \"<Main>/Message/Forward\" \"\")\n"
-		"(menu-path \"<Main>/Message/Forward as attachment\" \"\")\n"
+		/* "(menu-path \"<Main>/Message/Forward as attachment\" \"\")\n" */
 		"(menu-path \"<Main>/Message/Move...\" \"\")\n"
 		"(menu-path \"<Main>/Message/Copy...\" \"\")\n"
 		"(menu-path \"<Main>/Message/Delete\" \"\")\n"

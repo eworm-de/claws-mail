@@ -567,6 +567,7 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Edit/Edit with e_xternal editor"),
 					"<control>X", compose_ext_editor_cb, 0, NULL},
 #if USE_PSPELL
+	{N_("/_Spelling"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Spelling/Check all or selection"),NULL, compose_check_all, 0, NULL},
 	{N_("/_Spelling/Check backwards misspelled word"),	NULL, compose_check_backwards , 0, NULL},
 	{N_("/_Spelling/Forward to next misspelled word"),	NULL, compose_check_forwards_go, 0, NULL},
@@ -2345,7 +2346,7 @@ static void compose_wrap_line_all(Compose *compose)
 	gint ch_len;
 	gboolean is_new_line = TRUE, do_delete = FALSE;
 	guint qlen = 0, i_len = 0;
-	guint linewrap_quote = prefs_common.linewrap_quote;
+	gboolean linewrap_quote = TRUE;
 	guint linewrap_len = prefs_common.linewrap_len;
 	gchar *qfmt = prefs_common.quotemark;
 	gchar cbuf[MB_LEN_MAX];

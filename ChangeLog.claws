@@ -1,3 +1,17 @@
+2002-01-30 [paul]	0.7.0claws40
+
+	* sync with sylpheed 0.7.0cvs24
+		see ChangeLog entries 2002-01-29 (src/prefs_common.c)
+		and 2002-01-30
+
+	* src/compose.c
+		add {N_("/_Spelling"), ... "<Branch>"} to 
+		GtkItemFactoryEntry compose_entries[]
+
+	* src/prefs_common.c
+		add claws menu items to prefs_keybind_apply_clicked()
+		and remove non-claws menu items
+
 2002-01-29 [paul]	0.7.0claws39
 
 	* sync with sylpheed 0.7.0cvs22

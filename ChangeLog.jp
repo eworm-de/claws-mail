@@ -1,3 +1,12 @@
+2002-01-30
+
+	* src/compose.c: compose_wrap_line_all():
+	  prefs_common.linewrap_quote が指定されていなくても引用部を整形
+	  するようにした(prefs_common.linewrap_quote は単に返信時の自動
+	  改行のためにあるので)。
+	* src/prefs_account.c: prefs_account_open(): 新規アカウントを作成
+	  するときに tmp_ac_prefs を初期化するようにした。
+
 2002-01-29
 
 	* src/mimeview.c: ボタン / キーイベント処理を修正して多重ダイアログ
@@ -6,6 +15,8 @@
 	  src/textview.c: MIME モードでいくつかのキープレスイベントを
 	  MimeView に渡すようにした。
 	* src/prefs_filter.c: ルールの順序を正しくセットしないバグを修正。
+	* src/prefs_common.c: prefs_keybind_apply_clicked(): empty_menurc
+	  の文字列を修正。
 
 2002-01-28
 
