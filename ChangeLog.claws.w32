@@ -1,3 +1,9 @@
+2003-04-18 [thorsten]	0.8.11claws88-2
+
+	* src/folder.c
+	  src/mainwindow.c
+		fix: locale chars in mailbox names
+
 2003-04-13 [thorsten]	0.8.11claws88-1
 
 	* sylpheed-128x128.png

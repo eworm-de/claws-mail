@@ -574,11 +574,18 @@ Folder *folder_find_from_name(const gchar *name, FolderClass *klass)
 	GList *list;
 	Folder *folder;
 
+#ifdef WIN32
+	name = g_strdup(name);
+	locale_to_utf8(&name);
+#endif
 	for (list = folder_list; list != NULL; list = list->next) {
 		folder = list->data;
 		if (folder->klass == klass && strcmp2(name, folder->name) == 0)
 			return folder;
 	}
+#ifdef WIN32
+	g_free(name);
+#endif
 
 	return NULL;
 }

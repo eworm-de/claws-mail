@@ -1412,9 +1412,20 @@ void main_window_add_mailbox(MainWindow *mainwin)
 		g_free(path);
 		return;
 	}
+#ifdef WIN32
+	{
+		gchar *p_mail = g_strdup(_("Mailbox"));
+		locale_from_utf8(&p_mail);
+	folder = folder_new(folder_get_class_from_string("mh"), 
+			    !strcmp(path, "Mail") ? p_mail : g_basename(path),
+			    path);
+		g_free(p_mail);
+	}
+#else
 	folder = folder_new(folder_get_class_from_string("mh"), 
 			    !strcmp(path, "Mail") ? _("Mailbox") : g_basename(path),
 			    path);
+#endif
 	g_free(path);
 
 	if (folder->klass->create_tree(folder) < 0) {
