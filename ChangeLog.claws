@@ -1,3 +1,9 @@
+2003-10-21 [paul]	0.9.6claws39
+
+	* src/prefs_matcher.[ch]
+		replace remnants of the old, renamed 'Execute' matchtype
+		add a brief description to the Info window
+
 2003-10-21 [hoa]	0.9.6claws38
 	
 	* src/Makefile.am
