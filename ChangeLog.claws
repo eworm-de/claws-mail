@@ -1,3 +1,9 @@
+2001-12-14 [carsten]	0.6.5claws90
+	* src/folderview.c
+		probably found the bug reported by wwb opening or closing
+		a folder tree just before dnd (found the solution in the
+		balsa source -- thanks to them)
+
 2001-12-14 [carsten]	0.6.5claws89
 	* src/gtkutils.c
 	* src/account.c

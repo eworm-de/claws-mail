@@ -2266,7 +2266,9 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 	}
 
 	if (acceptable) {
+		gtk_signal_handler_block_by_func(GTK_OBJECT(widget),GTK_SIGNAL_FUNC(folderview_selected), folderview);
 		gtk_ctree_select(GTK_CTREE(widget), node);
+		gtk_signal_handler_unblock_by_func(GTK_OBJECT(widget),GTK_SIGNAL_FUNC(folderview_selected), folderview);
 		gdk_drag_status(context, context->suggested_action, time);
 	} else {
 		gtk_ctree_select(GTK_CTREE(widget), folderview->opened);
