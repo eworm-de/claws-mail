@@ -448,6 +448,10 @@ static void messageview_change_view_type(MessageView *messageview,
 		gtkut_container_remove
 			(GTK_CONTAINER(GTK_WIDGET_PTR(messageview)),
 			 GTK_WIDGET_PTR(textview));
+		gtk_box_pack_start(GTK_BOX(messageview->vbox),
+				   GTK_WIDGET_PTR(mimeview), TRUE, TRUE, 0);
+		gtk_container_add(GTK_CONTAINER(mimeview->vbox),
+				  GTK_WIDGET_PTR(textview));
 	} else if (type == MVIEW_TEXT) {
 		gtkut_container_remove
 			(GTK_CONTAINER(GTK_WIDGET_PTR(messageview)),

@@ -1,3 +1,10 @@
+2002-06-23 [paul]	0.7.8claws18
+
+	* src/messageview.c
+		fix bug introduced in last commit:
+		removed too much code in last commit - put back what's
+		needed
+
 2002-06-23 [paul]	0.7.8claws17
 
 	* src/messageview.[ch]
