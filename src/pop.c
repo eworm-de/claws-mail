@@ -36,6 +36,7 @@
 #include "utils.h"
 #include "inc.h"
 #include "recv.h"
+#include "selective_download.h"
 
 #define LOOKUP_NEXT_MSG() \
 	for (;;) { \
@@ -65,6 +66,7 @@
 static gint pop3_ok(SockInfo *sock, gchar *argbuf);
 static void pop3_gen_send(SockInfo *sock, const gchar *format, ...);
 static gint pop3_gen_recv(SockInfo *sock, gchar *buf, gint size);
+static gboolean pop3_delete_header (Pop3State *state);
 
 gint pop3_greeting_recv(SockInfo *sock, gpointer data)
 {
@@ -123,8 +125,13 @@ gint pop3_getauth_pass_recv(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 
-	if (pop3_ok(sock, NULL) == PS_SUCCESS)
-		return POP3_GETRANGE_STAT_SEND;
+	if (pop3_ok(sock, NULL) == PS_SUCCESS) {
+		
+		if (pop3_delete_header(state) == TRUE)
+			return POP3_DELETE_SEND;
+		else
+			return POP3_GETRANGE_STAT_SEND;
+	}
 	else {
 		log_warning(_("error occurred on authentication\n"));
 		state->error_val = PS_AUTHFAIL;
@@ -171,8 +178,14 @@ gint pop3_getauth_apop_recv(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 
-	if (pop3_ok(sock, NULL) == PS_SUCCESS)
+	if (pop3_ok(sock, NULL) == PS_SUCCESS) {
+		
+		if (pop3_delete_header(state) == TRUE)
+			return POP3_DELETE_SEND;
+		else
 		return POP3_GETRANGE_STAT_SEND;
+	}
+
 	else {
 		log_warning(_("error occurred on authentication\n"));
 		state->error_val = PS_AUTHFAIL;
@@ -342,7 +355,66 @@ gint pop3_getsize_list_recv(SockInfo *sock, gpointer data)
 	}
 
 	LOOKUP_NEXT_MSG();
-	return POP3_RETR_SEND;
+	if (state->ac_prefs->session_type == RETR_HEADER) 
+		return POP3_TOP_SEND;
+	else
+ 		return POP3_RETR_SEND;
+ }
+ 
+gint pop3_top_send(SockInfo *sock, gpointer data)
+{
+	Pop3State *state = (Pop3State *)data;
+
+	inc_progress_update(state, POP3_TOP_SEND); 
+
+	pop3_gen_send(sock, "TOP %i 0", state->cur_msg );
+
+	return POP3_TOP_RECV;
+}
+
+gint pop3_top_recv(SockInfo *sock, gpointer data)
+{
+	Pop3State *state = (Pop3State *)data;
+	FILE  *fp;
+	gchar buf[POPBUFSIZE];
+	gchar *header;
+	gchar *filename, *path;
+	
+	inc_progress_update(state, POP3_TOP_RECV); 
+
+	if (pop3_ok(sock, NULL) != PS_SUCCESS) 
+		return POP3_LOGOUT_SEND;
+
+	path = g_strconcat(get_header_cache_dir(), G_DIR_SEPARATOR_S, NULL);
+
+	if ( !is_dir_exist(path) )
+		make_dir_hier(path);
+	
+	filename = g_strdup_printf("%s%i", path, state->cur_msg);
+				   
+	if (recv_write_to_file(sock, filename) < 0) {
+		state->inc_state = INC_NOSPACE;
+		return -1;
+	}
+	/* we add a Complete-Size Header Item ...
+	   note: overwrites first line  --> this is dirty */
+	if ( (fp = fopen(filename, "r+")) != NULL ) {
+		gchar *buf = g_strdup_printf("%s%i", SIZE_HEADER, 
+					     state->sizes[state->cur_msg]);
+	
+		if (change_file_mode_rw(fp, filename) == 0) 
+			fprintf(fp, "%s\n", buf);
+		fclose(fp);
+	}
+	
+	g_free(path);
+	g_free(filename);
+
+	if (state->cur_msg < state->count) {
+		state->cur_msg++;
+		return POP3_TOP_SEND;
+	} else
+		return POP3_LOGOUT_SEND;
 }
 
 gint pop3_retr_send(SockInfo *sock, gpointer data)
@@ -416,6 +488,10 @@ gint pop3_delete_recv(SockInfo *sock, gpointer data)
 	gint ok;
 
 	if ((ok = pop3_ok(sock, NULL)) == PS_SUCCESS) {
+
+		if (pop3_delete_header(state) == TRUE) 
+			return POP3_DELETE_SEND;
+
 		if (state->cur_msg < state->count) {
 			state->cur_msg++;
 			LOOKUP_NEXT_MSG();
@@ -517,4 +593,19 @@ static gint pop3_gen_recv(SockInfo *sock, gchar *buf, gint size)
 
 		return PS_SUCCESS;
 	}
+}
+
+gboolean pop3_delete_header (Pop3State *state)
+{
+	
+	if ( (state->ac_prefs->session_type == DELE_HEADER) &&
+	     (g_slist_length(state->ac_prefs->to_delete) > 0) ) {
+
+		state->cur_msg = (gint) state->ac_prefs->to_delete->data;
+		debug_print(_("next to delete %i\n"), state->cur_msg);
+		state->ac_prefs->to_delete = g_slist_remove 
+			(state->ac_prefs->to_delete, state->ac_prefs->to_delete->data);
+		return TRUE;
+	}
+	return FALSE;
 }

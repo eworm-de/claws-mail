@@ -102,6 +102,8 @@ struct _Pop3State
 
 void inc_mail			(MainWindow	*mainwin);
 void inc_all_account_mail	(MainWindow	*mainwin);
+gint inc_selective_download     (MainWindow	*mainwin, 
+				 gint           session_type);
 void inc_progress_update	(Pop3State	*state,
 				 Pop3Phase	 phase);
 gint inc_drop_message		(const gchar	*file,

@@ -64,6 +64,7 @@
 #include "automaton.h"
 #include "folder.h"
 #include "filtering.h"
+#include "selective_download.h"
 
 static guint inc_lock_count = 0;
 
@@ -185,6 +186,18 @@ void inc_mail(MainWindow *mainwin)
 	inc_autocheck_timer_set();
 }
 
+gint inc_selective_download(MainWindow *mainwin, gint session_type)
+{
+	PrefsAccount *account = cur_account;
+	gint new_msgs = 0;	
+
+	account->session_type = session_type;
+	new_msgs = inc_account_mail(account, mainwin);
+	account->session_type = RETR_NORMAL;
+	
+	return new_msgs;
+}
+
 static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 {
 	IncProgressDialog *inc_dialog;
@@ -247,7 +260,7 @@ void inc_all_account_mail(MainWindow *mainwin)
 	for (list = account_get_list(); list != NULL; list = list->next) {
 		IncSession *session;
 		PrefsAccount *account = list->data;
-
+		account->session_type = RETR_NORMAL;
 		if (account->recv_at_getall) {
 			session = inc_session_new(account);
 			if (session)
@@ -563,6 +576,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 		pop3_getrange_last_send , pop3_getrange_last_recv,
 		pop3_getrange_uidl_send , pop3_getrange_uidl_recv,
 		pop3_getsize_list_send  , pop3_getsize_list_recv,
+		pop3_top_send           , pop3_top_recv,
 		pop3_retr_send          , pop3_retr_recv,
 		pop3_delete_send        , pop3_delete_recv,
 		pop3_logout_send        , pop3_logout_recv
@@ -806,6 +820,21 @@ void inc_progress_update(Pop3State *state, Pop3Phase phase)
 	case POP3_GETSIZE_LIST_RECV:
 		progress_dialog_set_label
 			(dialog, _("Getting the size of messages (LIST)..."));
+		break;
+	case POP3_TOP_SEND:
+	case POP3_TOP_RECV:
+		g_snprintf(buf, sizeof(buf),
+			   _("Retrieving header (%d / %d)"),
+			   state->cur_msg, state->count);
+		progress_dialog_set_label (dialog, buf);
+		progress_dialog_set_percentage
+			(dialog,
+			 (gfloat)(state->cur_msg) /
+			 (gfloat)(state->count));
+		gtk_progress_bar_update 
+			(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar),
+			 (gfloat)(state->cur_msg) /
+			 (gfloat)(state->count));
 		break;
 	case POP3_RETR_SEND:
 	case POP3_RETR_RECV:

@@ -75,11 +75,13 @@ src/procheader.c
 src/procmime.c
 src/procmsg.c
 src/progressdialog.c
+src/quote_fmt.c
 src/recv.c
 src/rfc822.c
 src/rfc2015.c
 src/scoring.c
 src/select-keys.c
+src/selective_download.c
 src/send.c
 src/session.c
 src/setup.c

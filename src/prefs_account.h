@@ -43,6 +43,15 @@ typedef enum {
 	A_LOCAL
 } RecvProtocol;
 
+typedef enum {
+	/* login and retrieve messages, as before */
+	RETR_NORMAL,
+	/* send TOP to server and retrieve Header */
+	RETR_HEADER, 
+	/* delete selected Headers on Server */
+	DELE_HEADER 
+} Pop3SessionType;
+
 #if USE_GPGME
 typedef enum {
 	SIGN_KEY_DEFAULT,
@@ -100,6 +109,10 @@ struct _PrefsAccount
 	gint size_limit;
 	gboolean filter_on_recv;
 	gchar *inbox;
+
+	/* selective Download */
+	gint   session_type;
+	GSList *to_delete;
 
 	gchar *imap_dir;
 

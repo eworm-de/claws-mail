@@ -1,3 +1,30 @@
+2002-02-22 [paul]	0.7.2claws6
+
+	* src/Makefile.am
+	  src/defs.h
+	  src/filtering.c
+	  src/inc.[ch]
+	  src/mainwindow.c
+	  src/matcher.[ch]
+	  src/matcher_parser_lex.c	*** NEW FILE ***
+	  src/matcher_parser_lex.l
+	  src/matcher_parser_parse.[ch]	*** NEW FILES ***
+	  src/matcher_parser_parse.y
+	  src/pop.[ch]
+	  src/prefs_account.h
+	  src/prefs_filtering.c
+	  src/selective_download.[ch]	*** NEW FILES ***
+	  src/utils.[ch]
+	  po/POTFILES.in
+		Selective Download added to 'Tool' menu. 
+		Retrieves email headers of the currently selected pop3 
+		account and allows the user to mark emails for deletion 
+		right on the pop3 server. Patch submitted by Oliver Haertel 
+		<oha@users.sourceforge.net>.
+	
+	* po/POTFILES.in
+		add 'src/quote_fmt.c'		
+
 2002-02-22 [christoph]	0.7.2claws5
 
 	* src/Makefile.am

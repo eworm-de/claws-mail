@@ -129,6 +129,7 @@ enum {
 	ACTION_BOUNCE = 9,
 	ACTION_EXECUTE = 10,
 	ACTION_COLOR = 11,
+	ACTION_DELETE_ON_SERVER = 12,
 };
 
 static gint get_sel_from_list(GtkList * list)
@@ -209,6 +210,8 @@ static gint prefs_filtering_get_matching_from_action(gint action_id)
 		return MATCHACTION_EXECUTE;
 	case ACTION_COLOR:
 		return MATCHACTION_COLOR;
+	case ACTION_DELETE_ON_SERVER:
+		return MATCHACTION_DELETE_ON_SERVER;
 	default:
 		return -1;
 	}
@@ -226,7 +229,8 @@ static gchar * action_text [] = {
 	N_("Forward as attachment"), 
 	N_("Bounce"), 
 	N_("Execute"),
-	N_("Color")
+	N_("Color"),
+	N_("Delete on Server")
 };
 
 void prefs_filtering_open(FolderItem * item)
@@ -783,6 +787,9 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(void)
 			gtk_option_menu_get_menu(GTK_OPTION_MENU(filtering.color_optmenu)));
 		destination = NULL;	
 		break;
+	case ACTION_DELETE_ON_SERVER:
+		destination = NULL;
+		break;
 	default:
 		destination = NULL;
 		break;
@@ -970,6 +977,10 @@ static void prefs_filtering_select_set(FilteringProp * prop)
 		gtk_list_select_item(GTK_LIST(filtering.action_list),
 				     ACTION_COLOR);
 		gtk_option_menu_set_history(GTK_OPTION_MENU(filtering.color_optmenu), action->labelcolor);     
+		break;
+	case MATCHACTION_DELETE_ON_SERVER:
+		gtk_list_select_item(GTK_LIST(filtering.action_list),
+				     ACTION_DELETE_ON_SERVER);
 		break;
 	}
 
@@ -1177,6 +1188,17 @@ static void prefs_filtering_action_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering.exec_btn, FALSE);
 		gtk_widget_show(filtering.color_optmenu);
 		gtk_widget_show(filtering.color_label);
+		break;
+	case ACTION_DELETE_ON_SERVER:
+		gtk_widget_set_sensitive(filtering.account_combo, FALSE);
+		gtk_widget_hide(filtering.dest_entry);
+		gtk_widget_hide(filtering.dest_btn);
+		gtk_widget_hide(filtering.dest_label);
+		gtk_widget_hide(filtering.exec_label);
+		gtk_widget_show(filtering.exec_btn);
+		gtk_widget_hide(filtering.exec_btn);
+		gtk_widget_hide(filtering.color_optmenu);
+		gtk_widget_hide(filtering.color_label);
 		break;
 	}
 }

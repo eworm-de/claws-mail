@@ -81,6 +81,7 @@
 #include "about.h"
 #include "manual.h"
 #include "version.h"
+#include "selective_download.h"
 
 #define AC_LABEL_WIDTH	240
 
@@ -251,6 +252,9 @@ static void addressbook_open_cb	(MainWindow	*mainwin,
 static void log_window_show_cb	(MainWindow	*mainwin,
 				 guint		 action,
 				 GtkWidget	*widget);
+static void sel_download_cb     (MainWindow *mainwin, 
+				 guint action,
+				 GtkWidget *widget);
 
 static void inc_mail_cb			(MainWindow	*mainwin,
 					 guint		 action,
@@ -669,6 +673,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Tool/E_xecute"),			"X", execute_summary_cb, 0, NULL},
 	{N_("/_Tool/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tool/_Log window"),		"<control>L", log_window_show_cb, 0, NULL},
+	{N_("/_Tool/_Selective Download"),	"<alt>S", sel_download_cb, 0, NULL},
 
 	{N_("/_Configuration"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Configuration/_Common preferences..."),
@@ -2513,6 +2518,12 @@ static void log_window_show_cb(MainWindow *mainwin, guint action,
 			       GtkWidget *widget)
 {
 	log_window_show(mainwin->logwin);
+}
+
+static void sel_download_cb(MainWindow *mainwin, guint action,
+			       GtkWidget *widget)
+{
+	selective_download(mainwin);
 }
 
 static void inc_mail_cb(MainWindow *mainwin, guint action, GtkWidget *widget)

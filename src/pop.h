@@ -40,6 +40,8 @@ typedef enum {
 	POP3_GETRANGE_UIDL_RECV,
 	POP3_GETSIZE_LIST_SEND,
 	POP3_GETSIZE_LIST_RECV,
+	POP3_TOP_SEND,                   
+	POP3_TOP_RECV,                    
 	POP3_RETR_SEND,
 	POP3_RETR_RECV,
 	POP3_DELETE_SEND,
@@ -50,6 +52,7 @@ typedef enum {
 	N_POP3_PHASE
 } Pop3Phase;
 
+#define MAX_HEADER_LEN  5000
 #define POPBUFSIZE	512
 #define IDLEN		128
 
@@ -90,6 +93,8 @@ gint pop3_getrange_uidl_send	(SockInfo *sock, gpointer data);
 gint pop3_getrange_uidl_recv	(SockInfo *sock, gpointer data);
 gint pop3_getsize_list_send	(SockInfo *sock, gpointer data);
 gint pop3_getsize_list_recv	(SockInfo *sock, gpointer data);
+gint pop3_top_send              (SockInfo *sock, gpointer data);
+gint pop3_top_recv              (SockInfo *sock, gpointer data);
 gint pop3_retr_send		(SockInfo *sock, gpointer data);
 gint pop3_retr_recv		(SockInfo *sock, gpointer data);
 gint pop3_delete_send		(SockInfo *sock, gpointer data);

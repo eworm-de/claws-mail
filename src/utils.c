@@ -1268,6 +1268,17 @@ gchar *get_template_dir(void)
 	return template_dir;
 }
 
+gchar *get_header_cache_dir(void)
+{
+	static gchar *header_dir = NULL;
+
+	if (!header_dir)
+		header_dir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+					 HEADER_CACHE_DIR, NULL);
+
+	return header_dir;
+}
+
 gchar *get_tmp_file(void)
 {
 	static gchar *tmp_file = NULL;

@@ -160,7 +160,7 @@ int matcher_parserwrap(void)
 %token MATCHER_MARK_AS_READ  MATCHER_MARK_AS_UNREAD  MATCHER_FORWARD
 %token MATCHER_FORWARD_AS_ATTACHMENT  MATCHER_EOL  MATCHER_STRING  
 %token MATCHER_OR MATCHER_AND  
-%token MATCHER_COLOR MATCHER_SCORE_EQUAL MATCHER_BOUNCE
+%token MATCHER_COLOR MATCHER_SCORE_EQUAL MATCHER_BOUNCE MATCHER_DELETE_ON_SERVER
 
 %start file
 
@@ -803,6 +803,12 @@ MATCHER_EXECUTE MATCHER_STRING
 	action_type = MATCHACTION_COLOR;
 	color = atoi($2);
 	action = filteringaction_new(action_type, 0, NULL, color);
+}
+| MATCHER_DELETE_ON_SERVER
+{
+	gint action_type = 0;
+	action_type = MATCHACTION_DELETE_ON_SERVER;
+	action = filteringaction_new(action_type, 0, NULL, 0);
 }
 ;
 
