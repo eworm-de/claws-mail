@@ -738,8 +738,6 @@ static IncState inc_pop3_session_do(IncSession *session)
 
 	progress_dialog_set_label(inc_dialog->dialog, buf);
 	g_free(buf);
-	GTK_EVENTS_FLUSH();
-
 
 	if (session_connect(SESSION(pop3_session), server, port) < 0) {
 		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
@@ -902,7 +900,6 @@ static gint inc_recv_data_progressive(Session *session, guint cur_len,
 		gtk_progress_bar_update
 			(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar),
 			 (gfloat)cur_total / (gfloat)pop3_session->total_bytes);
-	GTK_EVENTS_FLUSH();
 
 	return 0;
 }
