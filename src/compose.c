@@ -3839,8 +3839,10 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 			return -1;
 		}
 		tmpbuf = conv_codeset_strdup(buf, CS_UTF_8, out_codeset);
-		g_free(buf);
-		buf = tmpbuf;
+		if (tmpbuf) {
+			g_free(buf);
+			buf = tmpbuf;
+		}
 	}
 #endif
 

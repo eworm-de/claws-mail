@@ -13,7 +13,7 @@ INTERFACE_AGE=0
 BINARY_AGE=0
 EXTRA_VERSION=79
 EXTRA_RELEASE=
-EXTRA_GTK2_VERSION=.1
+EXTRA_GTK2_VERSION=.2
 
 if test \( $EXTRA_VERSION -eq 0 \) -o \( "x$EXTRA_RELEASE" != "x" \); then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}${EXTRA_RELEASE}${EXTRA_GTK2_VERSION}
@@ -535,7 +535,7 @@ AC_ARG_ENABLE(pgpmime-plugin,
 	[  --disable-pgpmime-plugin           Do not build PGP/MIME plugin],
 	[ac_cv_enable_pgpmime_plugin=$enableval], [ac_cv_enable_pgpmime_plugin=yes])
 if test x"$ac_cv_enable_gpgme" = xyes -a x"$ac_cv_enable_pgpmime_plugin" = xyes; then
-	PLUGINS="pgpmime $PLUGINS"
+	PLUGINS="pgpmime pgpinline $PLUGINS"
 fi
 AM_CONDITIONAL(BUILD_PGPMIME_PLUGIN, test x"$ac_cv_enable_pgpmime_plugin" = xyes)
 
@@ -643,6 +643,7 @@ src/plugins/trayicon/Makefile
 src/plugins/trayicon/libeggtrayicon/Makefile
 src/plugins/clamav/Makefile
 src/plugins/pgpmime/Makefile
+src/plugins/pgpinline/Makefile
 doc/Makefile
 doc/faq/Makefile
 doc/faq/de/Makefile
