@@ -662,6 +662,71 @@ FolderItem *folder_find_item_from_identifier(const gchar *identifier)
 	return d[1];
 }
 
+/**
+ * Get a displayable name for a FolderItem
+ *
+ * \param item FolderItem for that a name should be created
+ * \return Displayable name for item, returned string has to
+ *         be freed
+ */
+gchar *folder_item_get_name(FolderItem *item)
+{
+	gchar *name = NULL;
+
+	switch (item->stype) {
+	case F_INBOX:
+		name = g_strdup(FOLDER_IS_LOCAL(item->folder) &&
+				!strcmp2(item->name, INBOX_DIR) ? _("Inbox") :
+				item->name);
+		break;
+	case F_OUTBOX:
+		name = g_strdup(FOLDER_IS_LOCAL(item->folder) &&
+				!strcmp2(item->name, OUTBOX_DIR) ? _("Sent") :
+				item->name);
+		break;
+	case F_QUEUE:
+		name = g_strdup(FOLDER_IS_LOCAL(item->folder) &&
+				!strcmp2(item->name, QUEUE_DIR) ? _("Queue") :
+				item->name);
+		break;
+	case F_TRASH:
+		name = g_strdup(FOLDER_IS_LOCAL(item->folder) &&
+				!strcmp2(item->name, TRASH_DIR) ? _("Trash") :
+				item->name);
+		break;
+	case F_DRAFT:
+		name = g_strdup(FOLDER_IS_LOCAL(item->folder) &&
+				!strcmp2(item->name, DRAFT_DIR) ? _("Drafts") :
+				item->name);
+		break;
+	default:
+		break;
+	}
+
+	if (name == NULL) {
+		/*
+		 * should probably be done by a virtual function,
+		 * the folder knows the ui string and how to abbrev
+		*/
+		if (!item->parent) {
+			name = g_strconcat(item->name, " (", item->folder->class->uistr, ")", NULL);
+		} else {
+			if (FOLDER_CLASS(item->folder) == news_get_class() &&
+			    item->path && !strcmp2(item->name, item->path))
+				name = get_abbrev_newsgroup_name
+					(item->path,
+					 prefs_common.ng_abbrev_len);
+			else
+				name = g_strdup(item->name);
+		}
+	}
+
+	if (name == NULL)
+		name = g_strdup("");
+
+	return name;
+}
+
 Folder *folder_get_default_folder(void)
 {
 	return folder_list ? FOLDER(folder_list->data) : NULL;

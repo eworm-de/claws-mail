@@ -1103,9 +1103,6 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 			openxpm = inboxopenxpm;
 			openmask = inboxopenxpmmask;
 		}
-		name = g_strdup(FOLDER_IS_LOCAL(item->folder) &&
-				!strcmp2(item->name, INBOX_DIR) ? _("Inbox") :
-				item->name);
 		break;
 	case F_OUTBOX:
 		if (item->hide_read_msgs) {
@@ -1119,9 +1116,6 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 			openxpm = outboxopenxpm;
 			openmask = outboxopenxpmmask;
 		}
-		name = g_strdup(FOLDER_IS_LOCAL(item->folder) &&
-				!strcmp2(item->name, OUTBOX_DIR) ? _("Sent") :
-				item->name);
 		break;
 	case F_QUEUE:
 		if (item->hide_read_msgs) {
@@ -1135,9 +1129,6 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 			openxpm = queueopenxpm;
 			openmask = queueopenxpmmask;
 		}
-		name = g_strdup(FOLDER_IS_LOCAL(item->folder) &&
-				!strcmp2(item->name, QUEUE_DIR) ? _("Queue") :
-				item->name);
 		break;
 	case F_TRASH:
 		if (item->hide_read_msgs) {
@@ -1151,18 +1142,12 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 			openxpm = trashopenxpm;
 			openmask = trashopenxpmmask;
 		}
-		name = g_strdup(FOLDER_IS_LOCAL(item->folder) &&
-				!strcmp2(item->name, TRASH_DIR) ? _("Trash") :
-				item->name);
 		break;
 	case F_DRAFT:
 		xpm = draftsxpm;
 		mask = draftsxpmmask;
 		openxpm = draftsopenxpm;
 		openmask = draftsopenxpmmask;
-		name = g_strdup(FOLDER_IS_LOCAL(item->folder) &&
-				!strcmp2(item->name, DRAFT_DIR) ? _("Drafts") :
-				item->name);
 		break;
 	default:
 		if (item->hide_read_msgs) {
@@ -1176,31 +1161,8 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 			openxpm = folderopenxpm;
 			openmask = folderopenxpmmask;
 		}
-		if (!item->parent) {
-			switch (FOLDER_TYPE(item->folder)) {
-			case F_MH:
-				name = " (MH)"; break;
-			case F_MBOX:
-				name = " (mbox)"; break;
-			case F_IMAP:
-				name = " (IMAP4)"; break;
-			case F_NEWS:
-				name = " (News)"; break;
-			default:
-				name = "";
-			}
-			name = g_strconcat(item->name, name, NULL);
-		} else {
-			if (FOLDER_TYPE(item->folder) == F_NEWS &&
-			    item->path &&
-			    !strcmp2(item->name, item->path))
-				name = get_abbrev_newsgroup_name
-					(item->path,
-					 prefs_common.ng_abbrev_len);
-			else
-				name = g_strdup(item->name);
-		}
 	}
+	name = folder_item_get_name(item);
 
 	if (!GTK_CTREE_ROW(node)->expanded &&
 	    folderview_have_unread_children(folderview, node))
