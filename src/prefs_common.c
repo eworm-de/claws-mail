@@ -2422,17 +2422,17 @@ static void prefs_quote_description_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 0);
 
 	label = gtk_label_new
-		("d:\n"
-		 "f:\n"
-		 "n:\n"
-		 "N:\n"
-		 "I:\n"
-		 "s:\n"
-		 "t:\n"
-		 "c:\n"
-		 "n:\n"
-		 "i:\n"
-		 "r:\n"
+		("d:\n"		/* date */
+		 "f:\n"		/* from */
+		 "N:\n"		/* full name */
+		 "F:\n"		/* first name */
+		 "I:\n"		/* sender's initial */
+		 "s:\n"		/* subject line */
+		 "t:\n"		/* to */
+		 "c:\n"		/* cc */
+		 "n:\n"		/* newsgroups */
+		 "i:\n"		/* message id */
+		 "r:\n"		/* references */
 		 "\n"
 		 "%x\n"
 		 "?x(expr)\n"

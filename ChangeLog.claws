@@ -1,3 +1,10 @@
+2001-06-09 [alfons]
+	
+	* src/prefs_common.c: 
+
+		(prefs_quote_description_create): corrected description of 
+		quote format characters
+
 2001-06-09 [paul]
 
         0.4.99claws8
