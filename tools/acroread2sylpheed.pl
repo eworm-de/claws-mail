@@ -23,31 +23,20 @@ use strict;
 
 my $input = <>;
 
-my $option;
 my $pdf;
 my $output = $ARGV;
 
 if ($ARGV =~ m/^\//) {
-	$option = "KMAIL or MUTT";
+	$pdf = $output;
 } elsif ($ARGV =~ m/^mailto/) {
-	$option = "EVOLUTION";
-} elsif ($ARGV =~ m/^to/) {
-	$option = "MOZILLA or NETSCAPE";
-} else {
-	$option = "KMAIL";
-}
-
-if ($option eq "MOZILLA or NETSCAPE") {
-	my @parts = split(/,/, $output);
-	$parts[3] =~ s/^attachment=file:\/\///;
-	$pdf = $parts[3];
-} elsif ($option eq "EVOLUTION") {
 	my @parts = split(/&[a-z]*=/, $output);
 	$parts[0] =~ s/^mailto:\?attach=//;
 	$pdf = $parts[0];
-} elsif ($option eq "KMAIL or MUTT") {
-	$pdf = $output;
-} elsif ($option eq "KMAIL") {
+} elsif ($ARGV =~ m/^to/) {
+	my @parts = split(/,/, $output);
+	$parts[3] =~ s/^attachment=file:\/\///;
+	$pdf = $parts[3];
+} else {
 	$pdf = $ENV{HOME}."/".$output;
 }
 
