@@ -870,11 +870,15 @@ static void prefs_filtering_select(GtkCList *clist, gint row, gint column,
 static void prefs_filtering_select_dest(void)
 {
 	FolderItem *dest;
+	gchar * path;
 
 	dest = foldersel_folder_sel(NULL);
 	if (!dest) return;
 
-	gtk_entry_set_text(GTK_ENTRY(filtering.dest_entry), dest->path);
+	path = folder_item_get_identifier(dest);
+
+	gtk_entry_set_text(GTK_ENTRY(filtering.dest_entry), path);
+	g_free(path);
 }
 
 static void prefs_filtering_action_select(GtkList *list,

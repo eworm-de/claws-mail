@@ -57,6 +57,7 @@
 #include "export.h"
 #include "prefs_common.h"
 #include "prefs_filter.h"
+#include "prefs_filtering.h"
 #include "prefs_scoring.h"
 #include "prefs_account.h"
 #include "prefs_folder_item.h"
@@ -1030,10 +1031,12 @@ void main_window_add_mailbox(MainWindow *mainwin)
 		g_free(path);
 		return;
 	}
+
 	if (!strcmp(path, "Mail"))
 		folder = folder_new(F_MH, _("Mailbox"), path);
 	else
 		folder = folder_new(F_MH, g_basename(path), path);
+
 	g_free(path);
 
 	if (folder->create_tree(folder) < 0) {
@@ -1063,13 +1066,11 @@ void main_window_add_mbox(MainWindow *mainwin)
 
 	if (!path) return;
 
-	/*
 	if (folder_find_from_path(path)) {
 		alertpanel_error(_("The mailbox `%s' already exists."), path);
 		g_free(path);
 		return;
 	}
-	*/
 
 	/*
 	if (!strcmp(path, "Mail"))
@@ -1092,11 +1093,11 @@ void main_window_add_mbox(MainWindow *mainwin)
 	item->folder = folder;
 	folder->node = g_node_new(item);
 
-	mbox_create_folder(folder, item, "inbox");
-	mbox_create_folder(folder, item, "outbox");
-	mbox_create_folder(folder, item, "queue");
-	mbox_create_folder(folder, item, "draft");
-	mbox_create_folder(folder, item, "trash");
+	folder->create_folder(folder, item, "inbox");
+	folder->create_folder(folder, item, "outbox");
+	folder->create_folder(folder, item, "queue");
+	folder->create_folder(folder, item, "draft");
+	folder->create_folder(folder, item, "trash");
 
 	folderview_set(mainwin->folderview);
 }

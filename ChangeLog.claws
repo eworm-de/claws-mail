@@ -1,3 +1,23 @@
+2001-05-29 [hoa]
+
+	* src/compose.c
+		removed some warnings
+
+	* src/filtering.c
+	* src/folder.[ch]
+	* src/prefs_filtering.c
+		global string to identify any folders		
+		removed some debug info
+		filtering to mbox folders is now possible
+
+	* src/mainwindow.c
+		removed some warnings
+
+	* src/mbox_folder.c
+		permission on files are changed to read/write for user only,
+		nothing for other.
+		creation of subfolder is handled better.
+
 2001-05-28 [alfons]
 
 	Verified the sync for src/prefs_common.[ch] and

@@ -281,5 +281,7 @@ gboolean folder_item_is_msg_changed	(FolderItem	*item,
 					 MsgInfo	*msginfo);
 gchar *folder_item_get_cache_file	(FolderItem	*item);
 gchar *folder_item_get_mark_file	(FolderItem	*item);
+gchar * folder_item_get_identifier(FolderItem * item);
+FolderItem * folder_find_item_from_identifier(const gchar *identifier);
 
 #endif /* __FOLDER_H__ */

@@ -25,6 +25,23 @@ static gchar * mbox_get_folderitem_name(gchar * name);
 
 
 
+static gchar * mbox_folder_create_parent(const gchar * path)
+{
+	if (!is_file_exist(path)) {
+		gchar * new_path;
+
+		new_path = g_dirname(path);
+		if (new_path[strlen(new_path) - 1] == G_DIR_SEPARATOR)
+			new_path[strlen(new_path) - 1] = '\0';
+
+		if (!is_dir_exist(new_path))
+			make_dir_hier(new_path);
+		g_free(new_path);
+		
+	}
+}
+
+
 static gchar *mbox_folder_get_path(FolderItem *item)
 {
 	gchar *folder_path;
@@ -33,6 +50,7 @@ static gchar *mbox_folder_get_path(FolderItem *item)
 	g_return_val_if_fail(item != NULL, NULL);
 
 	if (item->path && item->path[0] == G_DIR_SEPARATOR) {
+		mbox_folder_create_parent(item->path);
 		return g_strdup(item->path);
 	}
 
@@ -57,26 +75,8 @@ static gchar *mbox_folder_get_path(FolderItem *item)
 	}
 
 	g_free(folder_path);
-
-
-	if (!is_file_exist(path) && item->parent != NULL) {
-
-		gchar * parent_path;
-		gchar * new_path;
-
-		parent_path = mbox_folder_get_path(item->parent);
-			
-		if (item->parent->parent != NULL)
-			new_path = g_strconcat(parent_path, ".sbd", NULL);
-		else
-			new_path = g_strdup(parent_path);
-		g_free(parent_path);
-		
-		if (!is_dir_exist(new_path))
-			make_dir_hier(new_path);
-		g_free(new_path);
-		
-	}
+	
+	mbox_folder_create_parent(path);
 
 	return path;
 }
@@ -867,10 +867,6 @@ static void mbox_cache_synchronize_lists(GList * old_msg_list,
 	for(l2 = old_msg_list ; l2 != NULL ; l2 = g_list_next(l2)) {
 		struct _message * msg2 = l2->data;
 
-		printf("lili %p\n", msg2);
-	
-		printf("lili %p\n", msg2->messageid);
-	
 		if ((msg2->messageid == NULL) ||
 		    (msg2->fromspace == NULL))
 			continue;
@@ -1343,6 +1339,12 @@ gint mbox_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 		g_free(mbox_path);
 		return -1;
 	}
+
+	if (change_file_mode_rw(dest_fp, mbox_path) < 0) {
+		FILE_OP_ERROR(mbox_path, "chmod");
+		g_warning(_("can't change file mode\n"));
+	}
+
 	old_size = ftell(dest_fp);
 
 	mbox_lockwrite_file(dest_fp, mbox_path);
@@ -1904,6 +1906,11 @@ static gboolean mbox_rewrite(gchar * mbox)
 	new = g_strconcat(mbox, ".new", NULL);
 	new_fp = fopen(new, "w");
 
+	if (change_file_mode_rw(new_fp, new) < 0) {
+		FILE_OP_ERROR(new, "chmod");
+		g_warning(_("can't change file mode\n"));
+	}
+
 	mbox_lockwrite_file(new_fp, new);
 
 	result = TRUE;
@@ -1928,6 +1935,11 @@ static gboolean mbox_rewrite(gchar * mbox)
 		mbox_unlock_file(mbox_fp, mbox);
 		fclose(mbox_fp);
 		return -1;
+	}
+
+	if (change_file_mode_rw(new_fp, mbox) < 0) {
+		FILE_OP_ERROR(new, "chmod");
+		g_warning(_("can't change file mode\n"));
 	}
 
 	mbox_unlock_file(new_fp, new);
@@ -1985,8 +1997,14 @@ static gboolean mbox_purge_deleted(gchar * mbox)
 
 	mbox_cache_synchronize_from_file(mbox_fp, mbox, TRUE);
 
+	// better filename should be used
 	new = g_strconcat(mbox, ".new", NULL);
 	new_fp = fopen(new, "w");
+
+	if (change_file_mode_rw(new_fp, new) < 0) {
+		FILE_OP_ERROR(new, "chmod");
+		g_warning(_("can't change file mode\n"));
+	}
 
 	mbox_lockwrite_file(new_fp, new);
 
@@ -2014,6 +2032,11 @@ static gboolean mbox_purge_deleted(gchar * mbox)
 		mbox_unlock_file(mbox_fp, mbox);
 		fclose(mbox_fp);
 		return -1;
+	}
+
+	if (change_file_mode_rw(new_fp, mbox) < 0) {
+		FILE_OP_ERROR(new, "chmod");
+		g_warning(_("can't change file mode\n"));
 	}
 
 	mbox_unlock_file(new_fp, new);
@@ -2083,21 +2106,9 @@ static gchar * mbox_get_new_path(FolderItem * parent, gchar * name)
 static gchar * mbox_get_folderitem_name(gchar * name)
 {
 	gchar * foldername;
-	gchar * p;
 
-	if ((p = strchr(name, '/')) == NULL)
-		foldername = g_strdup(name);
-	else {
-		gchar * newp = p;
-
-		while (newp != NULL) {
-			newp = strchr(p, '/');
-			if (newp != NULL)
-				p = newp + 1;
-		}
-
-		foldername = g_strdup(p);
-	}
+	foldername = g_strdup(g_basename(name));
+	
 	return foldername;
 }
 

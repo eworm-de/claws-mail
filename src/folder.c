@@ -341,7 +341,7 @@ Folder *folder_find_from_path(const gchar *path)
 
 	for (list = folder_list; list != NULL; list = list->next) {
 		folder = list->data;
-		if (folder->type == F_MH &&
+		if ((folder->type == F_MH || folder->type == F_MBOX) &&
 		    !path_cmp(LOCAL_FOLDER(folder)->rootpath, path))
 			return folder;
 	}
@@ -666,13 +666,9 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 	if (folder->finished_copy)
 		folder->finished_copy(folder, dest);
 
-	printf("là scan\n");
-
 	if (item && item->folder->scan)
 		item->folder->scan(item->folder, item);
 	folder->scan(folder, dest);
-
-	printf("ici scan\n");
 
 	return dest->last_num;
 }
@@ -1230,4 +1226,154 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 		fprintf(fp, "</%s>\n", depth == 1 ? "folder" : "folderitem");
 	} else
 		fputs(" />\n", fp);
+}
+
+typedef struct _type_str {
+	gchar * str;
+	gint type;
+} type_str;
+
+
+static type_str type_str_table[] = 
+{
+	{"#mh", F_MH},
+	{"#mbox", F_MBOX},
+	{"#maildir", F_MAILDIR},
+	{"#imap", F_IMAP},
+	{"#news", F_NEWS}
+};
+
+
+static gchar * folder_get_type_string(gint type)
+{
+	gint i;
+
+	for(i = 0 ; i < sizeof(type_str_table) / sizeof(type_str) ; i++) {
+		if (type_str_table[i].type == type)
+			return type_str_table[i].str;
+	}
+	return NULL;
+}
+
+static gint folder_get_type_from_string(gchar * str)
+{
+	gint i;
+
+	for(i = 0 ; i < sizeof(type_str_table) / sizeof(type_str) ; i++) {
+		if (g_strcasecmp(type_str_table[i].str, str))
+			return type_str_table[i].type;
+	}
+	return F_UNKNOWN;
+}
+
+gchar * folder_get_identifier(Folder * folder)
+{
+	gchar * type_str;
+	type_str = folder_get_type_string(folder->type);
+
+	return g_strconcat(type_str, "/", folder->name, NULL);
+}
+
+/*
+static gchar * folder_item_get_tree_identifier(FolderItem * item)
+{
+	if (item->parent != NULL) {
+		gchar * path;
+		gchar * id;
+
+		path = folder_item_get_tree_identifier(item->parent);
+		if (path == NULL)
+			return NULL;
+
+		id = g_strconcat(path, "/", item->name, NULL);
+		g_free(path);
+
+		return id;
+	}
+	else {
+		return g_strconcat("/", item->name, NULL);
+	}
+}
+*/
+
+gchar * folder_item_get_identifier(FolderItem * item)
+{
+	gchar * path;
+	gchar * id;
+	gchar * folder_str;
+
+	folder_str = folder_get_identifier(item->folder);
+
+	if (item->path == NULL) {
+		g_free(folder_str);
+		return NULL;
+	}
+
+	id = g_strconcat(folder_str, "/", item->path, NULL);
+
+	return id;
+}
+
+Folder * folder_find_from_name(const gchar * name)
+{
+	GList *list;
+	Folder *folder;
+
+	for (list = g_list_first(folder_list); list != NULL;
+	     list = list->next) {
+		folder = list->data;
+		if (strcmp(name, folder->name) == 0)
+			return folder;
+	}
+	return NULL;
+}
+
+FolderItem * folder_find_item_from_identifier(const gchar *identifier)
+{
+	Folder *folder;
+	gpointer d[2];
+	gchar * str;
+	gchar * p;
+	gint type;
+	gchar * name;
+	gchar * path;
+
+	Xalloca(str, strlen(identifier) + 1, return NULL);
+	strcpy(str, identifier);
+
+	/* extract box type */
+
+	p = strchr(str, '/');
+
+	if (p == NULL)
+		return NULL;
+
+	*p = '\0';
+
+	type = folder_get_type_from_string(str);
+
+	str = p + 1;
+
+	/* extract box name */
+
+	p = strchr(str, '/');
+
+	if (p == NULL)
+		return NULL;
+
+	*p = '\0';
+
+	name = str;
+
+	folder = folder_find_from_name(name);
+	if (folder == NULL)
+		return;
+
+	path = p + 1;
+
+	d[0] = (gpointer)path;
+	d[1] = NULL;
+	g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
+			folder_item_find_func, d);
+	return d[1];
 }

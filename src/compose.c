@@ -442,7 +442,7 @@ Compose * compose_new_with_recipient(PrefsAccount *account, const gchar *to)
 	Compose *compose;
 
 	if (!account) account = cur_account;
-	g_return_if_fail(account != NULL);
+	g_return_val_if_fail(account != NULL, NULL);
 
 	compose = compose_create(account);
 	compose->mode = COMPOSE_NEW;
@@ -552,14 +552,14 @@ Compose * compose_forward(PrefsAccount * account, MsgInfo *msginfo,
 	FILE *fp;
 	gchar buf[BUFFSIZE];
 
-	g_return_if_fail(msginfo != NULL);
-	g_return_if_fail(msginfo->folder != NULL);
+	g_return_val_if_fail(msginfo != NULL, NULL);
+	g_return_val_if_fail(msginfo->folder != NULL, NULL);
 
 	if (account == NULL) {
 		account = msginfo->folder->folder->account;
 		if (!account) account = cur_account;
 	}
-	g_return_if_fail(account != NULL);
+	g_return_val_if_fail(account != NULL, NULL);
 
 	MSG_UNSET_FLAGS(msginfo->flags, MSG_REPLIED);
 	MSG_SET_FLAGS(msginfo->flags, MSG_FORWARDED);

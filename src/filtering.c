@@ -222,7 +222,8 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 
 	switch(action->type) {
 	case MATCHING_ACTION_MOVE:
-		dest_folder = folder_find_item_from_path(action->destination);
+		dest_folder =
+			folder_find_item_from_identifier(action->destination);
 		if (!dest_folder)
 			return FALSE;
 
@@ -250,7 +251,8 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		return TRUE;
 
 	case MATCHING_ACTION_COPY:
-		dest_folder = folder_find_item_from_path(action->destination);
+		dest_folder =
+			folder_find_item_from_identifier(action->destination);
 		if (!dest_folder)
 			return FALSE;
 
