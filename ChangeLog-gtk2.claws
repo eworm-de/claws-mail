@@ -1,3 +1,8 @@
+2005-02-21 [paul]	1.0.1cvs15.3
+
+	* src/main.c
+		fix --help output
+
 2005-02-21 [paul]	1.0.1cvs15.2
 
 	* po/Makefile.in.in
