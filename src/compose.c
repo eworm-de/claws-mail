@@ -4020,14 +4020,15 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 
 static gint compose_write_headers_from_headerlist(Compose *compose, 
 						  FILE *fp, 
-						  gchar *header)
+						  const gchar *header,
+						  const gchar *seperator)
 {
-	gchar buf[BUFFSIZE];
 	gchar *str, *header_w_colon, *trans_hdr;
-	gboolean first_address;
+	gboolean write_header = FALSE;
 	GSList *list;
 	ComposeHeaderEntry *headerentry;
 	gchar * headerentryname;
+	GString *headerstr;
 
 	if (IS_IN_CUSTOM_HEADER(header)) {
 		return 0;
@@ -4035,10 +4036,11 @@ static gint compose_write_headers_from_headerlist(Compose *compose,
 
 	debug_print("Writing %s-header\n", header);
 
+	headerstr = g_string_sized_new(64);
+
 	header_w_colon = g_strconcat(header, ":", NULL);
 	trans_hdr = (prefs_common.trans_hdr ? gettext(header_w_colon) : header_w_colon);
 
-	first_address = TRUE;
 	for (list = compose->header_list; list; list = list->next) {
     		headerentry = ((ComposeHeaderEntry *)list->data);
 		headerentryname = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(headerentry->combo)->entry));
@@ -4048,24 +4050,26 @@ static gint compose_write_headers_from_headerlist(Compose *compose,
 			Xstrdup_a(str, str, return -1);
 			g_strstrip(str);
 			if (str[0] != '\0') {
-				compose_convert_header
-					(buf, sizeof(buf), str,
-					strlen(header) + 2, TRUE);
-				if (first_address) {
-					fprintf(fp, "%s: ", header);
-					first_address = FALSE;
-				} else {
-					fprintf(fp, ",");
-				}
-				fprintf(fp, "%s", buf);
+				g_string_append(headerstr, str);
+				if (write_header)
+					g_string_append(headerstr, seperator);
+				write_header = TRUE;
 			}
 		}
 	}
-	if (!first_address) {
-		fprintf(fp, "\n");
+	if (write_header) {
+		gchar *buf;
+
+		buf = g_new0(gchar, headerstr->len * 2);
+		compose_convert_header
+			(buf, headerstr->len * 2, headerstr->str,
+			strlen(header) + 2, TRUE);
+		fprintf(fp, "%s: %s\n", header, buf);
+		g_free(buf);
 	}
 
 	g_free(header_w_colon);
+	g_string_free(headerstr, TRUE);
 
 	return(0);
 }
@@ -4121,7 +4125,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	}
 	
 	/* To */
-	compose_write_headers_from_headerlist(compose, fp, "To");
+	compose_write_headers_from_headerlist(compose, fp, "To", ", ");
 #if 0 /* NEW COMPOSE GUI */
 	if (compose->use_to) {
 		str = gtk_entry_get_text(GTK_ENTRY(compose->to_entry));
@@ -4130,7 +4134,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 #endif
 
 	/* Newsgroups */
-	compose_write_headers_from_headerlist(compose, fp, "Newsgroups");
+	compose_write_headers_from_headerlist(compose, fp, "Newsgroups", ",");
 #if 0 /* NEW COMPOSE GUI */
 	if (compose->use_newsgroups) {
 		str = gtk_entry_get_text(GTK_ENTRY(compose->newsgroups_entry));
@@ -4151,7 +4155,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	}
 #endif
 	/* Cc */
-	compose_write_headers_from_headerlist(compose, fp, "Cc");
+	compose_write_headers_from_headerlist(compose, fp, "Cc", ", ");
 #if 0 /* NEW COMPOSE GUI */
 	if (compose->use_cc) {
 		str = gtk_entry_get_text(GTK_ENTRY(compose->cc_entry));
@@ -4159,7 +4163,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	}
 #endif
 	/* Bcc */
-	compose_write_headers_from_headerlist(compose, fp, "Bcc");
+	compose_write_headers_from_headerlist(compose, fp, "Bcc", ", ");
 #if 0 /* NEW COMPOSE GUI */
 	if (compose->use_bcc) {
 		str = gtk_entry_get_text(GTK_ENTRY(compose->bcc_entry));
@@ -4197,7 +4201,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	}
 
 	/* Followup-To */
-	compose_write_headers_from_headerlist(compose, fp, "Followup-To");
+	compose_write_headers_from_headerlist(compose, fp, "Followup-To", ",");
 #if 0 /* NEW COMPOSE GUI */
 	if (compose->use_followupto && !IS_IN_CUSTOM_HEADER("Followup-To")) {
 		str = gtk_entry_get_text(GTK_ENTRY(compose->followup_entry));
@@ -4215,7 +4219,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	}
 #endif
 	/* Reply-To */
-	compose_write_headers_from_headerlist(compose, fp, "Reply-To");
+	compose_write_headers_from_headerlist(compose, fp, "Reply-To", ", ");
 #if 0 /* NEW COMPOSE GUI */
 	if (compose->use_replyto && !IS_IN_CUSTOM_HEADER("Reply-To")) {
 		str = gtk_entry_get_text(GTK_ENTRY(compose->reply_entry));

@@ -1,3 +1,12 @@
+2003-09-17 [christoph]	0.9.5claws19
+
+	* src/compose.c
+		use ", " as address seperator for mail headers and pass whole
+		header line at once to compose_convert_header to make sure
+		it is correctly folded
+
+	(closes Bug 64 Problem when sending to many recipients)
+
 2003-09-17 [hoa]	0.9.5claws18
 	
 	* changed the keyword used for command execution in condition
