@@ -1,3 +1,9 @@
+2004-09-06 [colin]	0.9.12cvs96
+
+	* src/toolbar.c
+		Fix graying out Redirect in non english languages
+		Patch by Fabien Vantard
+
 2004-09-06 [colin]	0.9.12cvs95
 
 	* src/summaryview.c
