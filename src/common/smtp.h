@@ -34,14 +34,20 @@ typedef struct _SMTPSession	SMTPSession;
 
 #define MSGBUFSIZE		8192
 
-#define	SM_OK			0
-#define	SM_ERROR		128
-#define	SM_UNRECOVERABLE	129
-#define SM_AUTHFAIL		130
+typedef enum
+{
+	SM_OK			= 0,
+	SM_ERROR		= 128,
+	SM_UNRECOVERABLE	= 129,
+	SM_AUTHFAIL		= 130
+} SMTPErrorValue;
 
-#define	ESMTP_8BITMIME		0x01
-#define	ESMTP_SIZE		0x02
-#define	ESMTP_ETRN		0x04
+typedef enum
+{
+	ESMTP_8BITMIME	= 1 << 0,
+	ESMTP_SIZE	= 1 << 1,
+	ESMTP_ETRN	= 1 << 2
+} ESMTPFlag;
 
 typedef enum
 {
@@ -101,6 +107,8 @@ struct _SMTPSession
 	SMTPAuthType avail_auth_type;
 	SMTPAuthType forced_auth_type;
 	SMTPAuthType auth_type;
+
+	SMTPErrorValue error_val;
 };
 
 Session *smtp_session_new	(void);

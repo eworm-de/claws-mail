@@ -1,5 +1,15 @@
 2003-03-28
 
+	* send_message.c: send_message_smtp():
+	  re-enabled forcing of SMTP AUTH method.
+	  Clear temporary password if authentication failed.
+	* smtp.c: output warning to log and set SMTPSession::error_val
+	  if error occurs.
+	* smtp.h: changed error value to enum. Added SMTPSession::error_val.
+	* src/mbox.c: proc_mbox(): force updating of folder.
+
+2003-03-28
+
 	* src/pop.h: changed error value to enum.
 	* src/pop.c: pop3_retr_recv(): return PS_IOERR when inc_drop_message()
 	  failed.

@@ -1,5 +1,15 @@
 2003-03-28
 
+	* send_message.c: send_message_smtp():
+	  SMTP AUTH の認証方法の強制を再び有効にした。
+	  認証に失敗したら一時パスワードをクリアするようにした。
+	* smtp.c: エラーが発生した場合は警告をログに出力し、
+	  SMTPSession::error_val をセットするようにした。
+	* smtp.h: エラー値を enum に変更。 SMTPSession::error_val を追加。
+	* src/mbox.c: proc_mbox(): フォルダの更新を強制するようにした。
+
+2003-03-28
+
 	* src/pop.h: エラー値を enum に変更。
 	* src/pop.c: pop3_retr_recv(): inc_drop_message() が失敗したら
 	  PS_IOERR を返すようにした。
