@@ -1,3 +1,11 @@
+2002-10-24 [alfons]	0.8.5claws53
+
+	* src/filtering.c
+		make filtering's forward message action forward from the 
+		correct account
+		(closes bug [628089 ] Filter -> Forward from address problem
+		reported by Oktay)
+
 2002-10-24 [christoph]	0.8.5claws52
 
 	* src/mainwindow.c
