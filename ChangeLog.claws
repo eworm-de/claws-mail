@@ -1,3 +1,11 @@
+2001-10-02 [alfons]
+
+	* configure.in
+	* po/zh_CN.GB2312.po, po/zh_TW.Big5.po
+		close bug "[ #466566 ] compile error on mdk 8.0" by removing
+		references to chinese translations (hope someone picks up
+		this)
+
 2001-10-02 [christoph]	0.6.2claws15
 
 	* src/compose.c
