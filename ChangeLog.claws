@@ -1,5 +1,10 @@
 2003-05-12 [paul]
 
+	* tools/convert_mbox.pl
+		bug fixed by Fred Marton
+
+2003-05-12 [paul]
+
 	* sync with 0.9.0pre1
 
 2003-05-09 [paul]	0.8.11claws149

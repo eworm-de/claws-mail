@@ -45,11 +45,15 @@ $i = 0;
 open (IN, $mbox);
 while ($line = <IN>) {
 # check for the beginning of an e-mail
-   @word = split(/ /m,$line);
+   @word = split(/ +/m,$line);
+# some lines might start with "From ", so check
+# to see if the seventh word is a year
+   chomp($word[6]);
+   $year = $word[6];
 # ignore the MAILER-DAEMON message from pine
    if (@word[1] ne "MAILER-DAEMON") {
 # start a new file
-      if (@word[0] eq "From") {
+      if (@word[0] eq "From" && $year > 1970) {
          $i++;
          close (OUT);
          open (OUT, ">$mh/$i");
