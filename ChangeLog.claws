@@ -1,3 +1,9 @@
+2003-11-28 [paul]	0.9.7claws4
+
+	* src/account.c
+		add 'Clone Account' function. patch submitted by
+		Ricardo Mones Lastra
+
 2003-11-27 [thorsten]	0.9.7claws3
 
 	* src/mimeview.c
