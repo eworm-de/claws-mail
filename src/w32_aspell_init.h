@@ -38,7 +38,6 @@ extern "C" {
 int w32_init_aspell(void);
 int w32_aspell_loaded(void);
 
-#define W32_ASPELL_DECLARE(nam) t##nam nam ;
 
 /******************************* type id *******************************/
 
@@ -67,7 +66,7 @@ typedef int (__cdecl * taspell_mutable_container_remove)(struct AspellMutableCon
 
 typedef void (__cdecl * taspell_mutable_container_clear)(struct AspellMutableContainer * ths);
 
-// typedef struct AspellMutableContainer * (__cdecl * taspell_mutable_container_to_mutable_container)(struct AspellMutableContainer * ths); */
+/* typedef struct AspellMutableContainer * (__cdecl * taspell_mutable_container_to_mutable_container)(struct AspellMutableContainer * ths); */
 
 
 
@@ -662,10 +661,16 @@ typedef void (__cdecl * taspell_string_pair_enumeration_assign)(struct AspellStr
 
 /* typedefs */
 
+#ifdef W32_ASPELL_INIT
+#define W32_ASPELL_DECLARE(nam) __declspec(dllexport) t##nam nam ;
+#else
+#define W32_ASPELL_DECLARE(nam) __declspec(dllimport) t##nam nam ;
+#endif
+
 W32_ASPELL_DECLARE( aspell_mutable_container_add                                          )
 W32_ASPELL_DECLARE( aspell_mutable_container_remove                                       )
 W32_ASPELL_DECLARE( aspell_mutable_container_clear                                        )
-//W32_ASPELL_DECLARE( spell_mutable_container_to_mutable_container                          )
+/* W32_ASPELL_DECLARE( spell_mutable_container_to_mutable_container                          ) */
 W32_ASPELL_DECLARE( aspell_key_info_enumeration_next                                      )
 W32_ASPELL_DECLARE( delete_aspell_key_info_enumeration                                    )
 W32_ASPELL_DECLARE( aspell_key_info_enumeration_clone                                     )
@@ -782,6 +787,8 @@ W32_ASPELL_DECLARE( aspell_string_pair_enumeration_next                         
 W32_ASPELL_DECLARE( delete_aspell_string_pair_enumeration                                 )
 W32_ASPELL_DECLARE( aspell_string_pair_enumeration_clone                                  )
 W32_ASPELL_DECLARE( aspell_string_pair_enumeration_assign                                 )
+
+#undef W32_ASPELL_DECLARE
 
 #ifdef __cplusplus
 }

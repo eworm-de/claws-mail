@@ -1,3 +1,27 @@
+2004-02-03 [thorsten]	0.9.8claws59-7
+
+	* win32/pubobj.c					*** NEW FILE ***
+	  win32/pubobj.dsp					*** NEW FILE ***
+	  win32/sylpheed.ds[pw]
+	  	add: dump exported symbols of COFF .obj files
+		contributed by Alfons Hoogervorst
+	* win32/Makefile
+	  win32/build_def.bat					*** NEW FILE ***
+	  win32/mk_ALL.bat
+	  win32/demo.def					*** REMOVED ***
+	  win32/spamassassin.def				*** REMOVED ***
+	  win32/spamassassin_gtk.def				*** REMOVED ***
+	  win32/sylpheed.def					*** REMOVED ***
+	  win32/demo[_d].dsp
+	  win32/spamassassin[_d].dsp
+	  win32/spamassassin_gtk[_d].dsp
+	  win32/sylpheed_dll[_d].dsp
+		add: autogenerate module definitions using pubobj
+	* src/main.c
+	  src/common/utils.[ch]
+	  src/w32_aspell_init.[ch]
+		fix: avoid duplicate exports
+
 2004-02-01 [thorsten]	0.9.8claws59-6
 
 	* src/mimeview.c

@@ -9,6 +9,7 @@ call mk_passcrypt.bat
 call mk_bison.bat
 call mk_translation.bat
 cd ..
+msdev pubobj.dsp /make "pubobj - Win32 Release"
 
 :debug
 msdev sylpheed_dll_d.dsp /make "sylpheed_dll_d - Win32 Debug" /rebuild

@@ -103,6 +103,7 @@ static gint lock_socket = -1;
 static gint lock_socket_tag = 0;
 #ifdef WIN32
 static guint log_hid,gtklog_hid, gdklog_hid;
+static gint mswin_helper_timeout_tag;
 #endif
 
 typedef enum 
@@ -317,7 +318,7 @@ int main(int argc, char *argv[])
 
 #ifdef WIN32
 	prefs_common_init_config();
-	start_mswin_helper();
+	mswin_helper_timeout_tag=start_mswin_helper();
 	w32_mailcap_create();
 #endif
 	folder_system_init();
@@ -527,7 +528,7 @@ static void exit_sylpheed(MainWindow *mainwin)
 	sylpheed_done();
 
 #ifdef WIN32
-	stop_mswin_helper();
+	stop_mswin_helper(mswin_helper_timeout_tag);
 	g_log_remove_handler("Gtk", gtklog_hid);
 	g_log_remove_handler("Gdk", gdklog_hid);
 	g_log_remove_handler(NULL, log_hid);

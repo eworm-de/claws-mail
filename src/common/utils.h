@@ -504,8 +504,7 @@ void locale_from_utf8(gchar **buf);
 void unlink_tempfiles(void);
 
 /* timer needed for socket(gdk_input) */
-gint mswin_helper_timeout_tag;
-void start_mswin_helper(void);
+int start_mswin_helper(void);
 void stop_mswin_helper(void);
 static gint mswin_helper_timeout_cb(gpointer *data);
 

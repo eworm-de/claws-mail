@@ -361,7 +361,7 @@ OBJECTS= \
 
 ### targets
 
-all: version_rc version bisonfiles compile translation msvcdefs
+all: version_rc version bisonfiles compile translation
 
 compile: $(APPNAME).dll $(APPNAME).exe $(PLUGINS)
 version: $(VERSION_H)
@@ -520,13 +520,6 @@ $(PASSCRYPT_H): $(PASSCRYPT_H_IN)
 # hack: prevent autogeneration
 %_lex.l %_parse.y:
 	@echo dummy:$@
-
-### msvc .def : strip ordinals
-msvcdefs:
-	$(SED) -e "s/ @ .* ;//; s/;.*//; /gai_strerror.@/ s/^/;/;" sylpheed.dll.def > sylpheed.def
-	$(SED) -e "s/ @ .* ;//; s/;.*//" demo.dll.def > demo.def
-	$(SED) -e "s/ @ .* ;//; s/;.*//" spamassassin.dll.def > spamassassin.def
-	$(SED) -e "s/ @ .* ;//; s/;.*//" spamassassin_gtk.dll.def > spamassassin_gtk.def
 
 ### cleanup
 

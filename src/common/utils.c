@@ -4325,12 +4325,12 @@ void locale_from_utf8(gchar **buf){
 }
 
 /* glib otherwise gets stuck on pop3 */
-void start_mswin_helper(void) {
-	mswin_helper_timeout_tag = gtk_timeout_add( 1, mswin_helper_timeout_cb, NULL );
+int start_mswin_helper(void) {
+	return gtk_timeout_add( 1, mswin_helper_timeout_cb, NULL );
 }
 
-void stop_mswin_helper(void) {
-	gtk_timeout_remove( mswin_helper_timeout_tag );
+void stop_mswin_helper(int tag) {
+	gtk_timeout_remove( tag );
 }
 
 static gint mswin_helper_timeout_cb(gpointer *data) {

@@ -23,10 +23,14 @@
 
 #ifdef USE_ASPELL
 
+#define W32_ASPELL_INIT
+
 #include <windows.h>
 #include "w32_aspell_init.h"
 #include "prefs_common.h"
 #include "utils.h"
+
+#undef W32_ASPELL_INIT
 
 HMODULE hMod_aspell_common;
 HMODULE hMod_aspell;
@@ -34,11 +38,6 @@ HMODULE hMod_aspell;
 void w32_aspell_assign(void);
 int w32_aspell_null(void);
 
-#define W32_ASPELL_ASSIGN(nam) nam = \
-	(w32_aspell_loaded()) \
-	? (t##nam)GetProcAddress(hMod_aspell,#nam) \
-	: (t##nam)w32_aspell_null \
-	;
 
 int w32_aspell_init(void) {
   	gchar *aspell_dll;
@@ -46,12 +45,14 @@ int w32_aspell_init(void) {
 
 	g_return_val_if_fail(prefs_common.enable_aspell, 0);
 
-	ver  = read_w32_registry_string("HKLM", "SOFTWARE\\Aspell", "AspellVersion");
-	path = read_w32_registry_string("HKLM", "SOFTWARE\\Aspell", "Path");
+	ver  = read_w32_registry_string("HKLM", "SOFTWARE\\Aspell",
+					"AspellVersion");
+	path = read_w32_registry_string("HKLM", "SOFTWARE\\Aspell",
+					"Path");
 	g_return_val_if_fail(ver || path, 0);
 
-	aspell_dll = g_strdup_printf("%s%c%s%d%s",
-	    path, G_DIR_SEPARATOR, "aspell-", ver[0], ".dll");
+	aspell_dll = g_strdup_printf("%s%c%s%d%s", path, G_DIR_SEPARATOR,
+				     "aspell-", ver[0], ".dll");
 	hMod_aspell = LoadLibrary(aspell_dll);
 	g_free(ver);
 	g_free(path);
@@ -65,7 +66,8 @@ int w32_aspell_init(void) {
 		/* get dict-dir from registry */
 		gchar * tmppath;
 		tmppath = g_strdup_printf("%s%c%s%c",
-			read_w32_registry_string("HKLM", "Software\\Aspell", NULL),
+			read_w32_registry_string("HKLM", "Software\\Aspell",
+						 NULL),
 			G_DIR_SEPARATOR, "dict", G_DIR_SEPARATOR);
 		subst_char(tmppath, G_DIR_SEPARATOR, '/');
 		prefs_common.aspell_path=tmppath;
@@ -84,11 +86,16 @@ int w32_aspell_null(void) {
 	return 0;
 }
 
+#define W32_ASPELL_ASSIGN(nam) nam = \
+	(w32_aspell_loaded()) \
+	? (t##nam)GetProcAddress(hMod_aspell,#nam) \
+	: (t##nam)w32_aspell_null ;
+
 void w32_aspell_assign(void) {
 W32_ASPELL_ASSIGN(  aspell_mutable_container_add                                          )
 W32_ASPELL_ASSIGN(  aspell_mutable_container_remove                                       )
 W32_ASPELL_ASSIGN(  aspell_mutable_container_clear                                        )
-//W32_ASPELL_ASSIGN(  spell_mutable_container_to_mutable_container                          )
+/* W32_ASPELL_ASSIGN(  spell_mutable_container_to_mutable_container                          ) */
 W32_ASPELL_ASSIGN(  aspell_key_info_enumeration_next                                      )
 W32_ASPELL_ASSIGN(  delete_aspell_key_info_enumeration                                    )
 W32_ASPELL_ASSIGN(  aspell_key_info_enumeration_clone                                     )
@@ -206,5 +213,6 @@ W32_ASPELL_ASSIGN(  delete_aspell_string_pair_enumeration                       
 W32_ASPELL_ASSIGN(  aspell_string_pair_enumeration_clone                                  )
 W32_ASPELL_ASSIGN(  aspell_string_pair_enumeration_assign                                 )
 }
+#undef W32_ASPELL_ASSIGN
 
 #endif /* USE_ASPELL */
