@@ -507,7 +507,7 @@ static void initial_processing(FolderItem *item, gpointer data)
 	main_window_cursor_normal(mainwin);
 }
 
-void clean_quit(void)	
+static void draft_all_messages(void)
 {
 	GList * compose_list = compose_get_compose_list();
 	GList * elem = NULL;
@@ -516,7 +516,13 @@ void clean_quit(void)
 			Compose *c = (Compose*)elem->data;
 			compose_draft(c);
 		}
-	}
+	}	
+}
+
+void clean_quit(void)	
+{
+	draft_all_messages();
+
 	if (prefs_common.warn_queued_on_exit)
 	{	/* disable the popup */ 
 		prefs_common.warn_queued_on_exit = FALSE;	
@@ -533,12 +539,20 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 {
 	MainWindow *mainwin = data;
 	gchar *filename;
-
+	
 	if (compose_get_compose_list()) {
-		if (alertpanel(_("Notice"),
-			       _("Composing message exists. Really quit?"),
-			       _("OK"), _("Cancel"), NULL) != G_ALERTDEFAULT)
-			return;
+		gint val = alertpanel(_("Notice"),
+			       _("Composing message exists."),
+			       _("Draft them"), _("Discard them"), _("Don't quit"));
+		switch (val) {
+			case G_ALERTOTHER:
+				return;
+			case G_ALERTALTERNATE:
+				break;
+			default:
+				draft_all_messages();
+		}
+		
 		manage_window_focus_in(mainwin->window, NULL, NULL);
 	}
 
