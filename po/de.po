@@ -1760,7 +1760,7 @@ msgstr ""
 #: src/gtkspell.c:328
 #, c-format
 msgid "Pspell config: added path %s\n"
-msgstr "Pspellconfiguration: Pfad hinzugef?gt %s\n"
+msgstr "Pspellconfiguration: Pfad hinzugefügt %s\n"
 
 #: src/gtkspell.c:330
 #, c-format

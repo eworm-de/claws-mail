@@ -3719,10 +3719,10 @@ static void compose_create_header_entry(Compose *compose) {
 	} else {
 		switch(compose->account->protocol) {
 			case A_NNTP:
-				header = _("Newsgroups:");
+				header = prefs_common.trans_hdr ? _("Newsgroups:") : "Newsgroups:";
 				break;
 			default:
-				header = _("To:");
+				header = prefs_common.trans_hdr ? _("To:") : "To:";
 				break;
 		}								    
 	}

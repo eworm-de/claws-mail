@@ -1,3 +1,10 @@
+2001-11-26 [christoph]	0.6.5claws39
+
+	* po/de.po	
+		fixed one more umlaut
+	* src/compose.c
+		fix translated header when it should not be translated
+
 2001-11-26 [paul]	0.6.5claws38
 
 	* src/mainwindow.c
