@@ -1,6 +1,7 @@
 /*
  * Sylpheed -- regexp pattern matching utilities
  * Copyright (C) 2001 Thomas Link, Hiroyuki Yamamoto
+ *                    Modified by Melvin Hadasht.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,22 +18,24 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+
 #ifndef STRING_MATCH_H__
 #define STRING_MATCH_H__
 
-/* remove substring matching REXP from TXT. Destructive! */
-/* for documentation of CFLAGS and EFLAGS see "man regex" */
-/* returns -1 = not found; N = next find pos */
-/* if the match is an empty string (e.g. "x\?"), the find position will
-   be increased by 1 */
-int string_remove_match	(char *txt, char *rexp, int cflags, int eflags);
+#include <sys/types.h>
+#include <regex.h>
+#include <glib.h>
 
-/* remove all substrings matching REXP from TXT. Destructive! */
-/* for documentation of CFLAGS and EFLAGS see "man regex" */
-/* returns position of last replacement (i.e. TXT has been modified up
-   to this position, use this as the starting point for further mangling) */
-int string_remove_all_matches	(char *txt, char *rexp, int cflags, int eflags);
+/* Precompile the preg buffer for the rexp regexp string. See regex man for the
+ * meaning of cflags.  
+ */
 
+int string_match_precompile (gchar *rexp, regex_t *preg, int cflags);
+
+/* remove from txt the substrings matching the regexp in the precompiled preg buffer.  
+ * The result is stored in the preallocated buf buffer which maximal length
+ * is buflen.
+ */
+gchar *string_remove_match(gchar *buf, gint buflen, gchar * txt, regex_t *preg);
 
 #endif /* STRING_MATCH_H__ */
-

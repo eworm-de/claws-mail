@@ -1,6 +1,7 @@
 /*
  * Sylpheed -- regexp pattern matching utilities
  * Copyright (C) 2001 Thomas Link, Hiroyuki Yamamoto
+ *                    Modified by Melvin Hadasht.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,80 +18,55 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <glib.h>
-#include <sys/types.h>
-#include <regex.h>
+#include "intl.h"
 #include "string_match.h"
 
-/* the size used for regexec in string_remove_match */
-#define STRING_MATCH_MR_SIZE 30
-
-
-static int string_match_regexp	(char * txt, char * rexp,
-			         int size, regmatch_t matches[],
-			         int cflags, int eflags);
-
-int string_remove_match(char *txt, char *rexp, int cflags, int eflags)
+int string_match_precompile (gchar *rexp, regex_t *preg, int cflags)
 {
-	regmatch_t matches[STRING_MATCH_MR_SIZE];
-	int foundp;
+	int problem = 0;
 
-	g_return_val_if_fail(txt, -1);
 	g_return_val_if_fail(rexp, -1);
+	g_return_val_if_fail(*rexp, -1);
 
-	if (strlen(txt) > 0 && strlen(rexp) > 0) {
-		foundp = string_match_regexp(txt, rexp, STRING_MATCH_MR_SIZE, 
-					     matches, cflags, eflags);
-	} else {
-		return -1;
-	}
-
-	if (foundp && matches[0].rm_so != -1 && matches[0].rm_eo != -1) {
-		if (matches[0].rm_so == matches[0].rm_eo) {
-			/* in case the match is an empty string */
-			return matches[0].rm_so + 1;
-		} else {
-			strcpy(txt + matches[0].rm_so, txt + matches[0].rm_eo);
-			return matches[0].rm_so;
-		}
-	} else {
-		return -1;
-	}
+	problem = regcomp(preg, rexp, cflags);  
+	
+	return problem;
 }
 
-int string_remove_all_matches(char *txt, char *rexp, int cflags, int eflags)
+
+gchar *string_remove_match(gchar *buf, gint buflen, gchar * txt, regex_t *preg)
 {
-	int pos = 0;
-	int pos0 = pos;
+	regmatch_t match;
+	int notfound;
+	gint i, j ,k;
 
-	g_return_val_if_fail(txt, 0);
-	g_return_val_if_fail(rexp, 0);
-
-	while (pos0 >= 0 && pos < strlen(txt) && strlen(txt) > 0) {
-		/* printf("%s %d:%d\n", txt, pos0, pos); */
-		pos0 = string_remove_match(txt + pos, rexp, cflags, eflags);
-		if (pos0 >= 0) {
-			pos = pos + pos0;
-		}
+	if (!preg)
+		return txt;
+	if (*txt != 0x00) {
+		i = 0;
+		j = 0;
+		do {
+			notfound = regexec(preg, txt+j, 1, &match, (j ? REG_NOTBOL : 0));
+			if (notfound) {
+				while (txt[j] && i < buflen -1)
+					buf[i++] = txt[j++];
+			} else {
+				if ( match.rm_so == match.rm_eo)
+					buf[i++] = txt[j++];
+				else {
+					k = j;
+					while (txt[j] &&  j != k + match.rm_so)	
+						buf[i++] = txt[j++];
+					if (txt[j])
+						j = k + match.rm_eo;
+				}
+			}
+		} while (txt[j] && i < buflen - 1);
+		buf[i] = 0x00;
+		if (buf[0] == 0x00)
+			strcpy(buf, _("(Subject cleared by regexp)"));
+		return buf;		
 	}
-	return pos;
-}
-
-static int string_match_regexp(char * txt, char * rexp,
-			       int size, regmatch_t matches[],
-			       int cflags, int eflags)
-{
-	regex_t re;
-	int problem;
-
-	g_return_val_if_fail(txt, 0);
-	g_return_val_if_fail(rexp, 0);
-
-	problem = regcomp(&re, rexp, cflags);  
-	if (problem == 0) {
-		problem = regexec(&re, txt, size, matches, eflags);
-	}
-	regfree(&re);
-	return problem == 0;
+	return txt;
 }
 

@@ -1,3 +1,19 @@
+2001-12-29 [melvin]	0.6.6claws30
+
+	* src/string_match.[ch]
+		Optimized a bit: regexp pattern buffer compiled only once, and
+		  one subroutine call removed. Fixed ^ regexp search: Now, 
+		  "(^Re: )|(^Hello)" removes only "Re: " from "Re: Hello".
+	
+	* src/summaryview.c
+		Subject filtering changed to filter summary columns and
+		  not directly the messages subject cache. The loss in 
+		  performance is balanced by the improvement of string_match.
+		Added an alert panel if there is an error in the regexp.
+
+	* src/src/prefs_folder_item.h
+		Added a regexp pattern buffer.
+
 2001-12-28 [alfons]	0.6.6claws29
 
 	* src/string_match.[ch]
