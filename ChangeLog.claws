@@ -2052,7 +2052,7 @@
 2004-07-14 [christoph]	0.9.12cvs23
 
 	* src/pgpmime.c
-		add missing fclose
+		add missing fclose. Patch by Thomas Gilgin.
 
 	* src/procmime.c
 		add checks if fopen really worked
