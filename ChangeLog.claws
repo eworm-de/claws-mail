@@ -1,3 +1,9 @@
+2002-11-27 [colin]	0.8.6claws17
+
+	* src/prefs_matcher.c
+		Fix Execute criteria's NOT flag
+
+
 2002-11-26 [christoph]	0.8.6claws16
 
 	* src/ssl.c
