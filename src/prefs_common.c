@@ -1165,7 +1165,7 @@ static void prefs_receive_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_newmail_notify, FALSE, 
 			    FALSE, 0);
 
-	label_newmail_notify_cmd = gtk_label_new (_("Command  to execute:\n"
+	label_newmail_notify_cmd = gtk_label_new (_("Command to execute:\n"
 						    "(use %d as number of new "
 						    "mails)"));
 	gtk_label_set_justify(GTK_LABEL(label_newmail_notify_cmd), 

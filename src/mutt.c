@@ -22,6 +22,8 @@
  */
 
 #include <sys/stat.h>
+#include <ctype.h>
+#include <string.h>
 #include <glib.h>
 
 #include "mgutils.h"

@@ -26,6 +26,8 @@
 #include <gdk/gdkkeysyms.h>
 
 #include "intl.h"
+#include "manage_window.h"
+#include "gtkutils.h"
 
 static GtkWidget *quote_desc_win;
 

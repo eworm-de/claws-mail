@@ -652,7 +652,7 @@ static void prefs_toolbar_create(void)
 
 	gchar *titles[N_DISPLAYED_ITEMS_COLS];
 
-	debug_print(_("Creating custom toolbar window...\n"));
+	debug_print("Creating custom toolbar window...\n");
 
 	window = gtk_window_new (GTK_WINDOW_DIALOG);
 	gtk_widget_set_usize (window, 450, -1); 

@@ -23,7 +23,6 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkwidget.h>
-#include <gtk/gtkctree.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkscrolledwindow.h>
@@ -42,6 +41,7 @@
 #include "main.h"
 #include "utils.h"
 #include "gtkutils.h"
+#include "gtksctree.h"
 #include "stock_pixmap.h"
 #include "foldersel.h"
 #include "alertpanel.h"

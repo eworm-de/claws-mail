@@ -1,3 +1,21 @@
+2002-08-14 [melvin]	0.8.1claws59
+
+	* src/crash.c
+		Made bug report not translatable
+	* src/exporthtml.c
+		Fixed exporthtml_build_filespec() return value
+	* src/foldersel.c
+		Fixed incorrect include file
+	* src/gtkspell.c
+	* src/prefs_actions.c
+	* src/prefs_toolbar.c
+		Made debug info not translatable
+	* src/mutt.c
+	* src/quote_fmt.c
+		Added missing includes
+	* src/prefs_common.c
+		Fixed typo
+
 2002-08-14 [paul]	0.8.1claws58
 
 	* faq/es/sylpheed-faq.html

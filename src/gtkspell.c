@@ -210,7 +210,7 @@ GtkPspellCheckers *gtkpspell_checkers_delete()
 		return NULL;
 
 	if ((checkers = gtkpspellcheckers->checkers) != NULL) {
-		debug_print(_("Pspell: number of running checkers to delete %d\n"),
+		debug_print("Pspell: number of running checkers to delete %d\n",
 				g_slist_length(checkers));
 
 		g_slist_foreach(checkers, free_checkers, NULL);
@@ -218,7 +218,7 @@ GtkPspellCheckers *gtkpspell_checkers_delete()
 	}
 
 	if ((dict_list = gtkpspellcheckers->dictionary_list) != NULL) {
-		debug_print(_("Pspell: number of dictionaries to delete %d\n"),
+		debug_print("Pspell: number of dictionaries to delete %d\n",
 				g_slist_length(dict_list));
 
 		gtkpspell_free_dictionary_list(dict_list);
@@ -505,22 +505,22 @@ static GtkPspeller *gtkpspeller_new(Dictionary *dictionary)
 		gtkpspeller = (GtkPspeller *) exist->data;
 		dictionary_delete(dict);
 
-		debug_print(_("Pspell: Using existing ispell checker %0x\n"),
+		debug_print("Pspell: Using existing ispell checker %0x\n",
 			    (gint) gtkpspeller);
 	} else {
 		if ((gtkpspeller = gtkpspeller_real_new(dict)) != NULL) {
 			gtkpspellcheckers->checkers = 
 				g_slist_append(gtkpspellcheckers->checkers,
 					       gtkpspeller);
-			debug_print(_("Pspell: Created a new gtkpspeller %0x\n"),
+			debug_print("Pspell: Created a new gtkpspeller %0x\n",
 				    (gint) gtkpspeller);
 		} else {
 			dictionary_delete(dict);
-			debug_print(_("Pspell: Could not create spell checker.\n"));
+			debug_print("Pspell: Could not create spell checker.\n");
 		}
 	}
 
-	debug_print(_("Pspell: number of existing checkers %d\n"), 
+	debug_print("Pspell: number of existing checkers %d\n", 
 		    g_slist_length(gtkpspellcheckers->checkers));
 
 	return gtkpspeller;
@@ -568,20 +568,20 @@ static GtkPspeller *gtkpspeller_delete(GtkPspeller *gtkpspeller)
 	g_return_val_if_fail(gtkpspellcheckers, NULL);
 	
 	if (gtkpspeller->ispell) 
-		debug_print(_("Pspell: Won't remove existing ispell checker %0x.\n"), 
+		debug_print("Pspell: Won't remove existing ispell checker %0x.\n", 
 			    (gint) gtkpspeller);
 	else {
 		gtkpspellcheckers->checkers = 
 			g_slist_remove(gtkpspellcheckers->checkers, 
 				       gtkpspeller);
 
-		debug_print(_("Pspell: Deleting gtkpspeller %0x.\n"), 
+		debug_print("Pspell: Deleting gtkpspeller %0x.\n", 
 			    (gint) gtkpspeller);
 		
 		gtkpspeller_real_delete(gtkpspeller);
 	}
 
-	debug_print(_("Pspell: number of existing checkers %d\n"), 
+	debug_print("Pspell: number of existing checkers %d\n", 
 		    g_slist_length(gtkpspellcheckers->checkers));
 
 	return gtkpspeller;
@@ -598,7 +598,7 @@ static GtkPspeller *gtkpspeller_real_delete(GtkPspeller *gtkpspeller)
 
 	dictionary_delete(gtkpspeller->dictionary);
 
-	debug_print(_("Pspell: gtkpspeller %0x deleted.\n"), 
+	debug_print("Pspell: gtkpspeller %0x deleted.\n", 
 		    (gint) gtkpspeller);
 
 	g_free(gtkpspeller);
@@ -627,10 +627,10 @@ static gboolean set_dictionary(PspellConfig *config, Dictionary *dict)
 	buf[dict->dictname - dict->fullname] = 0x00;
 
 	CONFIG_REPLACE_RETURN_FALSE_IF_FAIL("rem-all-word-list-path", "");
-	debug_print(_("Pspell: removed all paths.\n"));
+	debug_print("Pspell: removed all paths.\n");
 
 	CONFIG_REPLACE_RETURN_FALSE_IF_FAIL("add-word-list-path", buf);
-	debug_print(_("Pspell: added path %s.\n"), buf);
+	debug_print("Pspell: added path %s.\n", buf);
 
 	strncpy(buf, dict->dictname, BUFSIZE-1);
 	language = buf;
@@ -658,7 +658,7 @@ static gboolean set_dictionary(PspellConfig *config, Dictionary *dict)
 	else
 		spelling = NULL;
 
-	debug_print(_("Pspell: Language: %s, spelling: %s, jargon: %s, module: %s\n"),
+	debug_print("Pspell: Language: %s, spelling: %s, jargon: %s, module: %s\n",
 		    language, spelling, jargon, module);
 	
 	if (language)
@@ -743,7 +743,7 @@ static void set_real_sug_mode(GtkPspell *gtkpspell, const char *themode)
 	result = gtkpspell_set_sug_mode(gtkpspell, mode);
 
 	if(!result) {
-		debug_print(_("Pspell: error while changing suggestion mode:%s\n"),
+		debug_print("Pspell: error while changing suggestion mode:%s\n",
 			    gtkpspellcheckers->error_message);
 		gtkpspell_checkers_reset_error();
 	}
@@ -1497,7 +1497,7 @@ GSList *gtkpspell_get_dictionary_list(const gchar *pspell_path, gint refresh)
 	dict_path = g_strdup(pspell_path);
 	prevdir   = g_get_current_dir();
 	if (chdir(dict_path) <0) {
-		debug_print(_("Pspell: error when searching for dictionaries:\n%s\n"),
+		debug_print("Pspell: error when searching for dictionaries:\n%s\n",
 			    g_strerror(errno));
 		g_free(prevdir);
 		g_free(dict_path);
@@ -1507,7 +1507,7 @@ GSList *gtkpspell_get_dictionary_list(const gchar *pspell_path, gint refresh)
 		return gtkpspellcheckers->dictionary_list; 
 	}
 
-	debug_print(_("Pspell: checking for dictionaries in %s\n"), dict_path);
+	debug_print("Pspell: checking for dictionaries in %s\n", dict_path);
 
 	if (NULL != (dir = opendir("."))) {
 		while (NULL != (ent = readdir(dir))) {
@@ -1525,7 +1525,7 @@ GSList *gtkpspell_get_dictionary_list(const gchar *pspell_path, gint refresh)
 				dict->dictname = strrchr(dict->fullname, 
 							 G_DIR_SEPARATOR) + 1;
 				dict->encoding = NULL;
-				debug_print(_("Pspell: found dictionary %s %s\n"),
+				debug_print("Pspell: found dictionary %s %s\n",
 					    dict->fullname, dict->dictname);
 				list = g_slist_insert_sorted(list, dict,
 						(GCompareFunc) compare_dict);
@@ -1534,13 +1534,13 @@ GSList *gtkpspell_get_dictionary_list(const gchar *pspell_path, gint refresh)
 		closedir(dir);
 	}
 	else {
-		debug_print(_("Pspell: error when searching for dictionaries.\nNo dictionary found.\n(%s)"), 
+		debug_print("Pspell: error when searching for dictionaries.\nNo dictionary found.\n(%s)", 
 			    g_strerror(errno));
 		list = create_empty_dictionary_list();
 	}
         if(list==NULL){
 		
-		debug_print(_("Pspell: error when searching for dictionaries.\nNo dictionary found.\n"));
+		debug_print("Pspell: error when searching for dictionaries.\nNo dictionary found.\n");
 		list = create_empty_dictionary_list();
 	}
 

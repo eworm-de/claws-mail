@@ -144,7 +144,7 @@ static GtkWidget *crash_dialog_new(const gchar *text, const gchar *debug_output)
 	gtk_container_add(GTK_CONTAINER(scrolledwindow1), text1);
 	
 	crash_report = g_strdup_printf(
-		_("Sylpheed version %s\nGTK+ version %d.%d.%d\nFeatures:%s\nOperating system: %s\nC Library: %s\n--\n%s"),
+		"Sylpheed version %s\nGTK+ version %d.%d.%d\nFeatures:%s\nOperating system: %s\nC Library: %s\n--\n%s",
 		VERSION,
 		gtk_major_version, gtk_minor_version, gtk_micro_version,
 		get_compiled_in_features(),

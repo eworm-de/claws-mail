@@ -264,7 +264,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 
 	gchar *title[1];
 
-	debug_print(_("Creating actions setting window...\n"));
+	debug_print("Creating actions setting window...\n");
 
 	window = gtk_window_new (GTK_WINDOW_DIALOG);
 
@@ -456,7 +456,7 @@ void prefs_actions_read_config(void)
 	gchar buf[PREFSBUFSIZE];
 	gchar *act;
 
-	debug_print(_("Reading actions configurations...\n"));
+	debug_print("Reading actions configurations...\n");
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ACTIONS_RC, NULL);
 	if ((fp = fopen(rcpath, "rb")) == NULL) {
@@ -491,7 +491,7 @@ void prefs_actions_write_config(void)
 	PrefFile *pfile;
 	GSList *cur;
 
-	debug_print(_("Writing actions configuration...\n"));
+	debug_print("Writing actions configuration...\n");
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ACTIONS_RC, NULL);
 	if ((pfile= prefs_write_open(rcpath)) == NULL) {
@@ -1168,7 +1168,7 @@ static gboolean execute_actions(gchar *action, GtkWidget *window,
 			cmd = parse_action_cmd(action, msginfo, ctree,
 					       mimeview);
 			if (!cmd) {
-				debug_print(_("Action command error\n"));
+				debug_print("Action command error\n");
 				is_ok  = FALSE; /* ERR: incorrect command */
 				break;
 			}
@@ -1260,7 +1260,7 @@ ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 		}
 	}
 
-	debug_print(_("Forking child and grandchild.\n"));
+	debug_print("Forking child and grandchild.\n");
 
 	pid = fork();
 	if (pid == 0) { /* Child */
@@ -1320,9 +1320,9 @@ ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 				close(chld_status[0]);
 			}
 
-			debug_print(_("Child: Waiting for grandchild\n"));
+			debug_print("Child: Waiting for grandchild\n");
 			waitpid(gch_pid, NULL, 0);
-			debug_print(_("Child: grandchild ended\n"));
+			debug_print("Child: grandchild ended\n");
 			if (sync) {
 				write(chld_status[1], "0\n", 2);
 				close(chld_status[1]);
@@ -1424,7 +1424,7 @@ static void kill_children_cb(GtkWidget *widget, gpointer data)
 
 	for (cur = children->list; cur; cur = cur->next) {
 		child_info = (ChildInfo *)(cur->data);
-		debug_print(_("Killing child group id %d\n"), child_info->pid);
+		debug_print("Killing child group id %d\n", child_info->pid);
 		if (child_info->pid && kill(-child_info->pid, SIGTERM) < 0)
 			perror("kill");
 	}
@@ -1516,7 +1516,7 @@ static void free_children(Children *children)
 	GSList *cur;
 	ChildInfo *child_info;
 
-	debug_print(_("Freeing children data %p\n"), children);
+	debug_print("Freeing children data %p\n", children);
 
 	g_free(children->action);
 	for (cur = children->list; cur;) {
@@ -1534,7 +1534,7 @@ static void update_io_dialog(Children *children)
 {
 	GSList *cur;
 
-	debug_print(_("Updating actions input/output dialog.\n"));
+	debug_print("Updating actions input/output dialog.\n");
 
 	if (!children->nb) {
 		gtk_widget_set_sensitive(children->abort_btn, FALSE);
@@ -1685,7 +1685,7 @@ static void catch_status(gpointer data, gint source, GdkInputCondition cond)
 	gdk_input_remove(child_info->tag_status);
 
 	c = read(source, &buf, 1);
-	debug_print(_("Child returned %c\n"), buf);
+	debug_print("Child returned %c\n", buf);
 
 	waitpid(-child_info->pid, NULL, 0);
 	childinfo_close_pipes(child_info);
@@ -1701,7 +1701,7 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 	gchar *input;
 	gint c;
 
-	debug_print(_("Sending input to grand child.\n"));
+	debug_print("Sending input to grand child.\n");
 	if (!(cond && GDK_INPUT_WRITE))
 		return;
 
@@ -1718,7 +1718,7 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 
 	gtk_entry_set_text(GTK_ENTRY(children->input_entry), "");
 	gtk_widget_set_sensitive(children->input_hbox, TRUE);
-	debug_print(_("Input to grand child sent.\n"));
+	debug_print("Input to grand child sent.\n");
 }
 
 static void catch_output(gpointer data, gint source, GdkInputCondition cond)
@@ -1727,7 +1727,7 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 	gint c, i;
 	gchar buf[PREFSBUFSIZE];
 
-	debug_print(_("Catching grand child's output.\n"));
+	debug_print("Catching grand child's output.\n");
 	if (child_info->type & ACTION_PIPE_OUT
 	    && source == child_info->chld_out) {
 		gboolean is_selection = FALSE;
