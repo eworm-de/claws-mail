@@ -1737,10 +1737,23 @@ static gchar *imap_parse_atom(SockInfo *sock, gchar *src,
 			      gchar *dest, gint dest_len, GString *str)
 {
 	gchar *cur_pos = src;
+	gchar *nextline;
 
 	g_return_val_if_fail(str != NULL, cur_pos);
 
-	while (*cur_pos == ' ') cur_pos++;
+	/* read the next line if the current response buffer is empty */
+	while (isspace(*cur_pos)) cur_pos++;
+	while (*cur_pos == '\0') {
+		if ((nextline = sock_getline(sock)) == NULL)
+			return cur_pos;
+		g_string_assign(str, nextline);
+		cur_pos = str->str;
+		strretchomp(nextline);
+		log_print("IMAP4< %s\n", nextline);
+		g_free(nextline);
+
+		while (isspace(*cur_pos)) cur_pos++;
+	}
 
 	if (!strncmp(cur_pos, "NIL", 3)) {
 		*dest = '\0';
@@ -1753,21 +1766,27 @@ static gchar *imap_parse_atom(SockInfo *sock, gchar *src,
 	} else if (*cur_pos == '{') {
 		gchar buf[32];
 		gint len;
-		gchar *nextline;
+		gint line_len = 0;
 
 		cur_pos = strchr_cpy(cur_pos + 1, '}', buf, sizeof(buf));
 		len = atoi(buf);
 
-		if ((nextline = sock_getline(sock)) == NULL)
-			return cur_pos;
-		strretchomp(nextline);
-		log_print("IMAP4< %s\n", nextline);
-		g_string_assign(str, nextline);
+		g_string_truncate(str, 0);
+		cur_pos = str->str;
 
-		len = MIN(len, strlen(nextline));
-		memcpy(dest, nextline, MIN(len, dest_len - 1));
+		do {
+			if ((nextline = sock_getline(sock)) == NULL)
+				return cur_pos;
+			line_len += strlen(nextline);
+			g_string_append(str, nextline);
+			strretchomp(nextline);
+			log_print("IMAP4< %s\n", nextline);
+			g_free(nextline);
+		} while (line_len < len);
+
+		memcpy(dest, cur_pos, MIN(len, dest_len - 1));
 		dest[MIN(len, dest_len - 1)] = '\0';
-		cur_pos = str->str + len;
+		cur_pos += len;
 	}
 
 	return cur_pos;

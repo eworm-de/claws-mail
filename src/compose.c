@@ -198,6 +198,9 @@ static void compose_set_title			(Compose	*compose);
 
 static PrefsAccount *compose_current_mail_account(void);
 /* static gint compose_send			(Compose	*compose); */
+static gboolean compose_check_for_valid_recipient
+						(Compose	*compose);
+static gboolean compose_check_entries		(Compose	*compose);
 static gint compose_write_to_file		(Compose	*compose,
 						 const gchar	*file,
 						 gboolean	 is_draft);
@@ -2570,6 +2573,29 @@ gboolean compose_check_for_valid_recipient(Compose *compose) {
 	return recipient_found;
 }
 
+static gboolean compose_check_entries(Compose *compose)
+{
+	gchar *str;
+
+	if (compose_check_for_valid_recipient(compose) == FALSE) {
+		alertpanel_error(_("Recipient is not specified."));
+		return FALSE;
+	}
+
+	str = gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
+	if (*str == '\0') {
+		AlertValue aval;
+
+		aval = alertpanel(_("Send"),
+				  _("Subject is empty. Send it anyway?"),
+				  _("Yes"), _("No"), NULL);
+		if (aval != G_ALERTDEFAULT)
+			return FALSE;
+	}
+
+	return TRUE;
+}
+
 gint compose_send(Compose *compose)
 {
 	gint msgnum;
@@ -2604,8 +2630,7 @@ gint compose_send(Compose *compose)
 
 	lock = TRUE;
 
-	if(!compose_check_for_valid_recipient(compose)) {
-		alertpanel_error(_("Recipient is not specified."));
+	if (compose_check_entries(compose) == FALSE) {
 		lock = FALSE;
 		return 1;
 	}
@@ -3144,12 +3169,17 @@ static gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item)
 
         lock = TRUE;
 	
-        if(!compose_check_for_valid_recipient(compose)) {
+/*        if(!compose_check_for_valid_recipient(compose)) {
                 alertpanel_error(_("Recipient is not specified."));
                 lock = FALSE;
                 return -1;
-        }
+        } */
 									
+	if (compose_check_entries(compose) == FALSE) {
+                lock = FALSE;
+                return -1;
+	}
+
 	if (!compose->to_list && !compose->newsgroup_list) {
 	        g_warning(_("can't get recipient list."));
 	        lock = FALSE;

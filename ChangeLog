@@ -1,3 +1,17 @@
+2002-03-27
+
+	* src/compose.c: show confirmation dialog before sending if Subject
+	  is empty.
+	  compose_check_entries(): new.
+	  compose_send()
+	  compose_send_later_cb(): use compose_check_entries().
+	* src/imap.c: imap_parse_atom(): more fix for parsing responses.
+
+2002-03-26
+
+	* src/imap.c: imap_parse_atom(): fixed a bug that didn't parse the
+	  responses with continuous line correctly, and fixed a memory leak.
+
 2002-03-26
 
 	* src/undo.c: undo_insert_text_cb(): fixed a crash bug if the text

@@ -1,3 +1,16 @@
+2002-03-27
+
+	* src/compose.c: Subject が空のときは送信前に確認ダイアログを表示。
+	  compose_check_entries(): 新規。
+	  compose_send()
+	  compose_send_later_cb(): compose_check_entries() を使用。
+	* src/imap.c: imap_parse_atom(): 応答解析をさらに修正。
+
+2002-03-26
+
+	* src/imap.c: imap_parse_atom(): 継続行応答を正しくパースしていな
+	  かったバグとメモリリークを修正。
+
 2002-03-26
 
 	* src/undo.c: undo_insert_text_cb(): テキストの長さが大きいときに
