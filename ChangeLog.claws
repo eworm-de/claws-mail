@@ -1,3 +1,9 @@
+2002-12-10 [paul]	0.8.6claws91
+
+	* po/POTFILES.in
+		updated to reflect recent changes
+		submitted by Alessandro Maestri
+
 2002-12-09 [christoph]	0.8.6claws90
 
 	* src/Makefile.am
