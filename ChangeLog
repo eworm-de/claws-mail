@@ -1,3 +1,24 @@
+2001-12-14
+
+	* src/utils.h: added the macro Xstrcat_a() that concatenates
+	  two strings and return alloca'd string.
+	* src/imap.c: imap_scan_tree_recursive(): fixed a bug that didn't
+	  handle folder name which includes some spaces correctly
+	  (based on the patch from Willem van Engen (thanks!)).
+	* src/compose.c: compose_wrap_line_all(): fixed the crash when
+	  wrapping long lines if linewrap quotation is disabled and
+	  a word spanning more than one line.
+
+2001-12-14
+
+	* applied the Tobias' patch with modification (thanks!).
+	* src/imap.[ch]:
+	  imap_msg_set_perm_flags()
+	  imap_msg_unset_perm_flags(): new. They set permanent flags to
+	  a IMAP message.
+	* src/compose.c
+	  src/summaryview.c: set flags on IMAP server when flags are changed.
+
 2001-12-11
 
 	* src/gtkutils.[ch]: gtkut_container_remove(): new. It's a wrapper

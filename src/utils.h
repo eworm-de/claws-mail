@@ -111,16 +111,19 @@
 	ptr = __tmp; \
 }
 
-#define Xstrconcat_a(ptr, str1, str2, iffail) \
+#define Xstrcat_a(ptr, str1, str2, iffail) \
 { \
 	gchar *__tmp; \
+	gint len1, len2; \
  \
-	if ((__tmp = alloca(strlen(str1) + strlen(str2) + 1)) == NULL) { \
+	len1 = strlen(str1); \
+	len2 = strlen(str2); \
+	if ((__tmp = alloca(len1 + len2 + 1)) == NULL) { \
 		g_warning("can't allocate memory\n"); \
 		iffail; \
 	} else { \
-		strcpy(__tmp, str1); \
-		strcat(__tmp, str2); \
+		memcpy(__tmp, str1, len1); \
+		memcpy(__tmp + len1, str2, len2 + 1); \
 	} \
  \
 	ptr = __tmp; \

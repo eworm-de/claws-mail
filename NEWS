@@ -1,5 +1,19 @@
 Changes of Sylpheed
 
+* 0.6.6
+
+    * The newsgroup subscription dialog has been enhanced.
+    * Template function has been improved.
+    * New wrapping function for composition window has been implemented.
+    * Mailto URL has been supported on the --compose option.
+    * The --status option that displays current message count was added.
+    * Workaround for RFC-incompliant Date header has been made.
+    * Check connection between IMAP or NNTP server only if access time
+      limit is expired.
+    * Thai encodings have been supported.
+    * Copy and paste problems have been fixed.
+    * Some other bugs have been fixed.
+
 * 0.6.5
 
     * The template function has been implemented.

@@ -1,3 +1,24 @@
+2001-12-14
+
+	* src/utils.h: 2つの文字列を結合して alloca 済の文字列を返すマクロ
+	  Xstrcat_a() を追加。
+	* src/imap.c: imap_scan_tree_recursive(): スペースを含むフォルダ名
+	  を正しく扱えないバグを修正(Willem van Engen さんのパッチに基づい
+	  ています(thanks!))。
+	* src/compose.c: compose_wrap_line_all(): 引用部の自動改行が無効
+	  で、単語が1行以上に渡っている場合にクラッシュするのを修正。
+
+2001-12-14
+
+	* Tobias さんのパッチを修正して適用(thanks!)。
+	* src/imap.[ch]:
+	  imap_msg_set_perm_flags()
+	  imap_msg_unset_perm_flags(): 新規。 IMAP メッセージに永続フラグを
+	  セットする。
+	* src/compose.c
+	  src/summaryview.c: フラグが変更されたら IMAP サーバ上のフラグも
+	  変更するようにした。
+
 2001-12-11
 
 	* src/gtkutils.[ch]: gtkut_container_remove(): 新規。 Gtk{Text,Entry}

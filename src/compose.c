@@ -78,6 +78,7 @@
 #include "procmsg.h"
 #include "menu.h"
 #include "send.h"
+#include "imap.h"
 #include "news.h"
 #include "customheader.h"
 #include "prefs_common.h"
@@ -706,8 +707,8 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
 	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_FORWARDED);
 	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_REPLIED);
-	imap_do_reply(msginfo);
-
+	if (MSG_IS_IMAP(msginfo->flags))
+		imap_msg_set_perm_flags(msginfo, MSG_REPLIED);
 	CHANGE_FLAGS(msginfo);
 
 	compose = compose_create(account, COMPOSE_REPLY);
@@ -1023,6 +1024,8 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
 	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_REPLIED);
 	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_FORWARDED);
+	if (MSG_IS_IMAP(msginfo->flags))
+		imap_msg_unset_perm_flags(msginfo, MSG_REPLIED);
 	CHANGE_FLAGS(msginfo);
 
 	compose = compose_create(account, COMPOSE_FORWARD);
@@ -2179,11 +2182,13 @@ static void compose_wrap_line_all(Compose *compose)
 	for (; cur_pos < tlen; cur_pos++) {
 		/* mark position of new line - needed for quotation wrap */
 		if (is_new_line) {
-			if (linewrap_quote && is_new_line) {
+			if (linewrap_quote) {
 				qlen = gtkut_text_str_compare
 					(text, cur_pos, tlen, qfmt);
+				is_new_line = FALSE;
 				if (qlen)
-					i_len = get_indent_length(text, cur_pos, tlen);
+					i_len = get_indent_length
+						(text, cur_pos, tlen);
 				else
 					i_len = 0;
 			}

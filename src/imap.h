@@ -29,6 +29,7 @@
 
 #include "folder.h"
 #include "session.h"
+#include "procmsg.h"
 
 typedef struct _IMAPSession	IMAPSession;
 typedef struct _IMAPNameSpace	IMAPNameSpace;
@@ -133,8 +134,9 @@ FolderItem *imap_create_folder		(Folder		*folder,
 gint imap_remove_folder			(Folder		*folder,
 					 FolderItem	*item);
 
-gint imap_do_mark        		(MsgInfo    	*msginfo);
-gint imap_do_unmark      		(MsgInfo    	*msginfo);
-gint imap_do_reply       		(MsgInfo    	*msginfo);
+gint imap_msg_set_perm_flags		(MsgInfo	*msginfo,
+					 MsgPermFlags	 flags);
+gint imap_msg_unset_perm_flags		(MsgInfo	*msginfo,
+					 MsgPermFlags	 flags);
 
 #endif /* __IMAP_H__ */
