@@ -405,12 +405,17 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo)
 	file = procmsg_get_message_file_path(msginfo);
 	g_return_if_fail(file != NULL);
 
+	/* FIXME - doesn't tmpmsginfo->flags have the value
+	 * of msginfo->flags after procheader_parse()???
+	 * in any case, checking tmpmsginfo->flags for MSG_UNREAD
+	 * fixes the return-receipt-request bug */
+
 	tmpmsginfo = procheader_parse(file, msginfo->flags, TRUE);
 
 	if (prefs_common.return_receipt
 	    && (tmpmsginfo->dispositionnotificationto
 		|| tmpmsginfo->returnreceiptto)
-	    && (MSG_IS_UNREAD(msginfo->flags))) {
+	    && (MSG_IS_UNREAD(tmpmsginfo->flags))) {
 		gint ok;
 		
 		if (alertpanel(_("Return Receipt"), _("Send return receipt ?"),
