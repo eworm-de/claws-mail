@@ -1,3 +1,8 @@
+2003-12-20 [luke]	0.9.8claws5
+	* src/procheader.c
+		fix unfolding/newline stripping for multiline fields
+		in generic_get_one_field()
+
 2003-12-19 [christoph]	0.9.8claws4
 
 	* src/summaryview.c
