@@ -1,3 +1,9 @@
+2001-12-09 [melvin]	0.6.5claws70
+	
+	* src/textview.[ch]
+		fixed bug #490076 (hunted down by Alfons who implemented
+		a workaround in 0.6.5claws65)
+
 2001-12-09 [christoph]	0.6.5claws69
 
 	* src/summaryview.c

@@ -54,6 +54,8 @@ struct _TextView
 	gint prev_descent;
 
 	MessageView *messageview;
+
+	gint last_buttonpress;
 };
 
 TextView *textview_create	(void);

@@ -119,7 +119,10 @@ static void textview_show_header	(TextView	*textview,
 static void textview_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 TextView	*textview);
-static void textview_button_pressed	(GtkWidget	*widget,
+static gint textview_button_pressed	(GtkWidget	*widget,
+					 GdkEventButton	*event,
+					 TextView	*textview);
+static gint textview_button_released	(GtkWidget	*widget,
 					 GdkEventButton	*event,
 					 TextView	*textview);
 
@@ -194,11 +197,17 @@ TextView *textview_create(void)
 	gtk_signal_connect_after(GTK_OBJECT(text_sb), "button_press_event",
 				 GTK_SIGNAL_FUNC(textview_button_pressed),
 				 textview);
+	gtk_signal_connect_after(GTK_OBJECT(text_sb), "button_release_event",
+				 GTK_SIGNAL_FUNC(textview_button_released),
+				 textview);
 	gtk_signal_connect(GTK_OBJECT(text_mb), "key_press_event",
 			   GTK_SIGNAL_FUNC(textview_key_pressed),
 			   textview);
 	gtk_signal_connect_after(GTK_OBJECT(text_mb), "button_press_event",
 				 GTK_SIGNAL_FUNC(textview_button_pressed),
+				 textview);
+	gtk_signal_connect_after(GTK_OBJECT(text_mb), "button_release_event",
+				 GTK_SIGNAL_FUNC(textview_button_released),
 				 textview);
 
 	gtk_widget_show(scrolledwin_sb);
@@ -218,6 +227,7 @@ TextView *textview_create(void)
 	textview->uri_list       = NULL;
 	textview->body_pos       = 0;
 	textview->cur_pos        = 0;
+	textview->last_buttonpress = GDK_NOTHING;
 
 	return textview;
 }
@@ -1438,21 +1448,29 @@ static void textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	}
 }
 
-static void textview_button_pressed(GtkWidget *widget, GdkEventButton *event,
+static gint textview_button_pressed(GtkWidget *widget, GdkEventButton *event,
+				    TextView *textview)
+{
+	if (event)
+		textview->last_buttonpress = event->type;
+	return FALSE;
+}
+
+static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 				    TextView *textview)
 {
 	textview->cur_pos = 
 		gtk_editable_get_position(GTK_EDITABLE(textview->text));
 
-	if (event &&
-	    ((event->button == 1 && event->type == GDK_2BUTTON_PRESS)
+	if (event && 
+	    ((event->button == 1 && textview->last_buttonpress == GDK_2BUTTON_PRESS)
 	     || event->button == 2 || event->button == 3)) {
 		GSList *cur;
 
 		/* double click seems to set the cursor after the current
 		 * word. The cursor position needs fixing, otherwise the
 		 * last word of a clickable zone will not work */
-		if (event->button == 1 && event->type == GDK_2BUTTON_PRESS) {
+		if (event->button == 1 && textview->last_buttonpress == GDK_2BUTTON_PRESS) {
 		        textview->cur_pos--;
 		}
 
@@ -1475,20 +1493,6 @@ static void textview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 						/* Add to address book - Match */
 						addressbook_add_contact( fromname, fromaddress, NULL );
 						
-						/* force press and release at (0, 0) to work around secondary 
-						 * selection claim */
-						tmpev	      = *event;
-						tmpev.x_root -= tmpev.x;
-						tmpev.y_root -= tmpev.y;
-						tmpev.x       = 0;
-						tmpev.y       = 0;
-						tmpev.time    = GDK_CURRENT_TIME;
-						gtk_widget_event(widget, (GdkEvent *)&tmpev);
-
-						tmpev.type    = GDK_BUTTON_RELEASE;
-						tmpev.time    = GDK_CURRENT_TIME;
-						gtk_widget_event(widget, (GdkEvent *)&tmpev);
-
 						g_free(fromaddress);
 						g_free(fromname);
 					} else {
@@ -1502,7 +1506,9 @@ static void textview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 			}
 		}
 	}
-	return TRUE;
+	if (event)
+		textview->last_buttonpress = event->type;
+	return FALSE;
 }
 
 static void textview_uri_list_remove_all(GSList *uri_list)
