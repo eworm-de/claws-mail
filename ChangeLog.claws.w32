@@ -1,3 +1,13 @@
+2004-11-29 [thorsten]	0.9.12cvs176.1
+
+	* ChangeLog.claws
+	* PATCHSETS
+	* configure.ac
+	* src/folderview.c
+	* src/pop.c
+	* src/procmime.c
+		sync 0.9.12cvs176
+
 2004-11-29 [thorsten]	0.9.12cvs173.2
 
 	* ChangeLog.claws.w32
