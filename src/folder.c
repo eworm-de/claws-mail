@@ -1518,6 +1518,8 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 	FolderItem *next_item;
 	GNode *srcnode;
 	int cnt = 0;
+	gchar *old_id, *new_id;
+
 	mlist = folder_item_get_msg_list(src);
 
 	/* move messages */
@@ -1545,6 +1547,8 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 		folder_item_move_msg(new_item, msginfo);
 		if (cnt%500)
 			statusbar_pop_all();
+
+		procmsg_msginfo_free(msginfo);
 	}
 	
 	/*copy prefs*/
@@ -1570,7 +1574,17 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 				return NULL;
 		}
 	}
+	old_id = folder_item_get_identifier(src);
+	new_id = folder_item_get_identifier(new_item);
+	debug_print("updating rules : %s => %s\n", old_id, new_id);
+	
 	src->folder->remove_folder(src->folder, src);
+	folder_write_list();
+
+	if (old_id != NULL && new_id != NULL)
+		prefs_filtering_rename_path(old_id, new_id);
+	g_free(old_id);
+	g_free(new_id);
 
 	return new_item;
 }
@@ -1626,15 +1640,8 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_ite
 		debug_print("can't remove node: it's null!\n");
 	/* not to much worry if remove fails, move has been done */
 	
-	debug_print("updating rules ....\n");
-	new_identifier = g_strconcat(dst_identifier, G_DIR_SEPARATOR_S, g_basename(phys_srcpath), NULL);
-	prefs_filtering_rename_path(src_identifier, new_identifier);
-
-	folder_write_list();
-
 	g_free(src_identifier);
 	g_free(dst_identifier);
-	g_free(new_identifier);
 	g_free(phys_srcpath);
 	g_free(phys_dstpath);
 
