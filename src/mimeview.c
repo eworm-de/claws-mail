@@ -409,7 +409,16 @@ static GtkCTreeNode *mimeview_append_part(MimeView *mimeview,
 	str[COL_MIMETYPE] =
 		partinfo->content_type ? partinfo->content_type : "";
 	str[COL_SIZE] = to_human_readable(partinfo->size);
+#ifdef WIN32
+	{
+	 	gchar *g_name = g_strdup( get_part_name(partinfo) );
+		locale_to_utf8(&g_name);
+	str[COL_NAME] = g_name;
+		//g_free(g_name);
+	}
+#else
 	str[COL_NAME] = get_part_name(partinfo);
+#endif
 
 	node = gtk_ctree_insert_node(ctree, parent, NULL, str, 0,
 				     NULL, NULL, NULL, NULL,
@@ -832,7 +841,16 @@ static void mimeview_save_as(MimeView *mimeview)
 		subst_for_filename(defname);
 	}
 
+#ifdef WIN32
+	{
+		gchar *p_defname = g_strdup(defname);
+		locale_to_utf8(&p_defname);
+	filename = filesel_select_file(_("Save as"), p_defname);
+		//g_free(p_defname);
+	}
+#else
 	filename = filesel_select_file(_("Save as"), defname);
+#endif
 	if (!filename) return;
 	if (is_file_exist(filename)) {
 		AlertValue aval;

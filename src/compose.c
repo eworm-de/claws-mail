@@ -5515,10 +5515,27 @@ static void compose_attach_property(Compose *compose)
 
 	gtk_entry_set_text(GTK_ENTRY(attach_prop.mimetype_entry),
 			   ainfo->content_type ? ainfo->content_type : "");
+#ifdef WIN32
+	{
+		gchar *p_file = g_strdup(ainfo->file);
+		gchar *p_name = g_strdup(ainfo->name);
+		locale_to_utf8(&p_file);
+		locale_to_utf8(&p_name);
+		
+	gtk_entry_set_text(GTK_ENTRY(attach_prop.path_entry),
+			   p_file ? p_file : "");
+	gtk_entry_set_text(GTK_ENTRY(attach_prop.filename_entry),
+			   p_name ? p_name : "");
+
+		g_free(p_file);
+		g_free(p_name);
+	}
+#else
 	gtk_entry_set_text(GTK_ENTRY(attach_prop.path_entry),
 			   ainfo->file ? ainfo->file : "");
 	gtk_entry_set_text(GTK_ENTRY(attach_prop.filename_entry),
 			   ainfo->name ? ainfo->name : "");
+#endif
 
 	for (;;) {
 		gchar *text;
@@ -6541,6 +6558,9 @@ static void compose_attach_cb(gpointer data, guint action, GtkWidget *widget)
 
 		for ( tmp = file_list; tmp; tmp = tmp->next) {
 			gchar *file = (gchar *) tmp->data;
+#ifdef WIN32
+			locale_from_utf8(&file);
+#endif
 			compose_attach_append(compose, file, file, NULL);
 			compose_changed_cb(NULL, compose);
 			g_free(file);
@@ -6562,6 +6582,9 @@ static void compose_insert_file_cb(gpointer data, guint action,
 
 		for ( tmp = file_list; tmp; tmp = tmp->next) {
 			gchar *file = (gchar *) tmp->data;
+#ifdef WIN32
+			locale_from_utf8(&file);
+#endif
 			compose_insert_file(compose, file);
 			g_free(file);
 		}
@@ -6980,9 +7003,29 @@ static void compose_attach_drag_received_cb (GtkWidget		*widget,
 
 	list = uri_list_extract_filenames((const gchar *)data->data);
 	for (tmp = list; tmp != NULL; tmp = tmp->next)
+#ifdef WIN32
+	{	/* Process dragged files: decode, utf8, strip leading /// */ 
+		int offset ;
+		gchar *filename = g_strdup(tmp->data);
+
+		if (strlen(filename)>4
+			&& strncmp("////",filename,4) == 0)
+				offset = 2 ;	/* UNC file : ////hostname/file */
+		else if (strlen(filename)>3
+			&& strncmp("///",filename,3) == 0)
+				offset = 3 ;	/* local file : ///c:/foo.txt */
+		decode_uri(filename, (const gchar *)tmp->data + offset);
+		locale_from_utf8(&filename);
+		compose_attach_append
+			(compose, filename,
+			 filename, NULL);
+		g_free(filename);
+	}
+#else
 		compose_attach_append
 			(compose, (const gchar *)tmp->data,
 			 (const gchar *)tmp->data, NULL);
+#endif
 	if (list) compose_changed_cb(NULL, compose);
 	list_free_strings(list);
 	g_list_free(list);
@@ -7002,7 +7045,24 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 
 	list = uri_list_extract_filenames((const gchar *)data->data);
 	for (tmp = list; tmp != NULL; tmp = tmp->next)
+#ifdef WIN32 /* file:////HOST/dir/file | file:////HOST/dir/file */
+	{
+		gint offset = 0;
+		gchar *filename = g_strdup((const gchar *)tmp->data);
+		if (strlen(filename)>4
+			&& strncmp("////",filename,4) == 0)
+				offset = 2 ;	/* UNC file : ////hostname/file */
+		else if (strlen(filename)>3
+			&& strncmp("///",filename,3) == 0)
+				offset = 3 ;	/* local file : ///c:/foo.txt */
+		decode_uri(filename, (const gchar *)tmp->data + offset);
+		locale_from_utf8(&filename);
+		compose_insert_file(compose, filename);
+		g_free(filename);
+	}
+#else
 		compose_insert_file(compose, (const gchar *)tmp->data);
+#endif
 	list_free_strings(list);
 	g_list_free(list);
 }
