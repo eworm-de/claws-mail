@@ -1,3 +1,10 @@
+2005-02-16 [christoph]	1.0.1cvs11
+
+	* src/mh.c
+		add scan required function for MH folders
+
+	(Patch by Ivan Rayner <ivanr@sgi.com>)
+
 2005-02-15 [christoph]	1.0.1cvs10
 
 	* src/plugins/pgpmime/pgpmime.cpp
