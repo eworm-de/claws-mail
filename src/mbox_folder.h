@@ -31,6 +31,19 @@ char * mailfile_readheader(mailfile f, int index);
 void mailfile_done(mailfile f);
 int mailfile_count(mailfile f);
 */
+typedef struct _MBOXFolder	MBOXFolder;
+
+#define MBOX_FOLDER(obj)	((MBOXFolder *)obj)
+
+struct _MBOXFolder
+{
+	LocalFolder lfolder;
+};
+
+Folder	*mbox_folder_new	(const gchar	*name,
+				 const gchar	*path);
+void     mbox_folder_destroy	(MBOXFolder	*folder);
+
 
 GSList *mbox_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache);
 gchar *mbox_fetch_msg(Folder *folder, FolderItem *item, gint num);

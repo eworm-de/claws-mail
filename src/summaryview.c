@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3194,13 +3194,18 @@ void summary_save_as(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
+	gchar *filename = NULL;
 	gchar *src, *dest;
 
 	if (!summaryview->selected) return;
 	msginfo = gtk_ctree_node_get_row_data(ctree, summaryview->selected);
 	if (!msginfo) return;
 
-	dest = filesel_select_file(_("Save as"), NULL);
+	if (msginfo->subject) {
+		Xstrdup_a(filename, msginfo->subject, return);
+		subst_for_filename(filename);
+	}
+	dest = filesel_select_file(_("Save as"), filename);
 	if (!dest) return;
 	if (is_file_exist(dest)) {
 		AlertValue aval;

@@ -76,8 +76,6 @@ static SendProgressDialog *send_progress_dialog_create(void);
 static void send_progress_dialog_destroy(SendProgressDialog *dialog);
 static void send_cancel(GtkWidget *widget, gpointer data);
 
-static gchar *send_query_password(const gchar *server, const gchar *user);
-
 
 gint send_message(const gchar *file, PrefsAccount *ac_prefs, GSList *to_list)
 {
@@ -306,8 +304,8 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 			else if (ac_prefs->tmp_pass)
 				pass = ac_prefs->tmp_pass;
 			else {
-				pass = send_query_password(ac_prefs->smtp_server,
-							   ac_prefs->smtp_userid);
+				pass = input_dialog_query_password
+					(ac_prefs->smtp_server, ac_prefs->smtp_userid);
 				if (!pass) pass = g_strdup("");
 				ac_prefs->tmp_pass = pass;
 			}
@@ -318,8 +316,8 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 			} else if (ac_prefs->tmp_pass)
 				pass = ac_prefs->tmp_pass;
 			else {
-				pass = send_query_password(ac_prefs->smtp_server,
-							   ac_prefs->userid);
+				pass = input_dialog_query_password
+					(ac_prefs->smtp_server, ac_prefs->userid);
 				if (!pass) pass = g_strdup("");
 				ac_prefs->tmp_pass = pass;
 			}
@@ -604,17 +602,4 @@ static void send_cancel(GtkWidget *widget, gpointer data)
 	SendProgressDialog *dialog = data;
 
 	dialog->cancelled = TRUE;
-}
-
-static gchar *send_query_password(const gchar *server, const gchar *user)
-{
-	gchar *message;
-	gchar *pass;
-
-	message = g_strdup_printf(_("Input password for %s on %s:"),
-				  user, server);
-	pass = input_dialog_with_invisible(_("Input password"), message, NULL);
-	g_free(message);
-
-	return pass;
 }

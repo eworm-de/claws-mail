@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,9 +70,11 @@ static GList *session_list = NULL;
 
 static gint imap_cmd_count = 0;
 
+static void imap_folder_init		(Folder		*folder,
+					 const gchar	*name,
+					 const gchar	*path);
+
 static IMAPSession *imap_session_get	(Folder		*folder);
-static gchar *imap_query_password	(const gchar	*server,
-					 const gchar	*user);
 
 static gint imap_scan_tree_recursive	(IMAPSession	*session,
 					 FolderItem	*item,
@@ -248,6 +250,45 @@ static gchar *search_array_starts		(GPtrArray *array,
 static void imap_path_separator_subst		(gchar		*str,
 						 gchar		 separator);
 
+
+Folder *imap_folder_new(const gchar *name, const gchar *path)
+{
+	Folder *folder;
+
+	folder = (Folder *)g_new0(IMAPFolder, 1);
+	imap_folder_init(folder, name, path);
+
+	return folder;
+}
+
+void imap_folder_destroy(IMAPFolder *folder)
+{
+	folder_remote_folder_destroy(REMOTE_FOLDER(folder));
+}
+
+static void imap_folder_init(Folder *folder, const gchar *name,
+			     const gchar *path)
+{
+	folder_remote_folder_init(folder, name, path);
+
+	folder->type = F_IMAP;
+
+	folder->get_msg_list        = imap_get_msg_list;
+	folder->fetch_msg           = imap_fetch_msg;
+	folder->add_msg             = imap_add_msg;
+	folder->move_msg            = imap_move_msg;
+	folder->move_msgs_with_dest = imap_move_msgs_with_dest;
+	folder->copy_msg            = imap_copy_msg;
+	folder->copy_msgs_with_dest = imap_copy_msgs_with_dest;
+	folder->remove_msg          = imap_remove_msg;
+	folder->remove_all_msg      = imap_remove_all_msg;
+	folder->scan                = imap_scan_folder;
+	folder->scan_tree           = imap_scan_tree;
+	folder->create_tree         = imap_create_tree;
+	folder->create_folder       = imap_create_folder;
+	folder->remove_folder       = imap_remove_folder;
+}
+
 static IMAPSession *imap_session_get(Folder *folder)
 {
 	RemoteFolder *rfolder = REMOTE_FOLDER(folder);
@@ -309,19 +350,6 @@ static IMAPSession *imap_session_get(Folder *folder)
 	return IMAP_SESSION(rfolder->session);
 }
 
-static gchar *imap_query_password(const gchar *server, const gchar *user)
-{
-	gchar *message;
-	gchar *pass;
-
-	message = g_strdup_printf(_("Input password for %s on %s:"),
-				  user, server);
-	pass = input_dialog_with_invisible(_("Input password"), message, NULL);
-	g_free(message);
-
-	return pass;
-}
-
 Session *imap_session_new(const PrefsAccount *account)
 {
 	IMAPSession *session;
@@ -372,7 +400,7 @@ Session *imap_session_new(const PrefsAccount *account)
 		pass = account->passwd;
 		if (!pass) {
 			gchar *tmp_pass;
-			tmp_pass = imap_query_password(account->recv_server, account->userid);
+			tmp_pass = input_dialog_query_password(account->recv_server, account->userid);
 			if (!tmp_pass)
 				return NULL;
 			Xstrdup_a(pass, tmp_pass, {g_free(tmp_pass); return NULL;});

@@ -414,16 +414,11 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 				g_strdup(pop3_state->ac_prefs->tmp_pass);
 		else {
 			gchar *pass;
-			gchar *message;
 
-			message = g_strdup_printf
-				(_("Input password for %s on %s:"),
-				 pop3_state->user,
-				 pop3_state->ac_prefs->recv_server);
+			pass = input_dialog_query_password
+				(pop3_state->ac_prefs->recv_server,
+				 pop3_state->user);
 
-			pass = input_dialog_with_invisible(_("Input password"),
-							   message, NULL);
-			g_free(message);
 			if (inc_dialog->show_dialog)
 				manage_window_focus_in
 					(inc_dialog->mainwin->window,

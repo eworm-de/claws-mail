@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,12 +31,21 @@
 #include "session.h"
 #include "procmsg.h"
 
+typedef struct _IMAPFolder	IMAPFolder;
 typedef struct _IMAPSession	IMAPSession;
 typedef struct _IMAPNameSpace	IMAPNameSpace;
 
 #include "prefs_account.h"
 
+#define IMAP_FOLDER(obj)	((IMAPFolder *)obj)
 #define IMAP_SESSION(obj)	((IMAPSession *)obj)
+
+struct _IMAPFolder
+{
+	RemoteFolder rfolder;
+
+	GList *namespace;	/* list of IMAPNameSpace */
+};
 
 struct _IMAPSession
 {
@@ -76,6 +85,10 @@ typedef enum
 #define IMAP_IS_FLAGGED(flags)	((flags & IMAP_FLAG_FLAGGED) != 0)
 #define IMAP_IS_DELETED(flags)	((flags & IMAP_FLAG_DELETED) != 0)
 #define IMAP_IS_DRAFT(flags)	((flags & IMAP_FLAG_DRAFT) != 0)
+
+Folder	*imap_folder_new		(const gchar	*name,
+					 const gchar	*path);
+void	 imap_folder_destroy		(IMAPFolder	*folder);
 
 Session *imap_session_new		(const PrefsAccount *account);
 void imap_session_destroy		(IMAPSession	*session);

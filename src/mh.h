@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,19 @@
 
 #include "folder.h"
 #include "procmsg.h"
+
+typedef struct _MHFolder	MHFolder;
+
+#define MH_FOLDER(obj)		((MHFolder *)obj)
+
+struct _MHFolder
+{
+	LocalFolder lfolder;
+};
+
+Folder	*mh_folder_new		(const gchar	*name,
+				 const gchar	*path);
+void     mh_folder_destroy	(MHFolder	*folder);
 
 GSList  *mh_get_msg_list	(Folder		*folder,
 				 FolderItem	*item,

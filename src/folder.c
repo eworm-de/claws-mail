@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,21 +41,12 @@
 #include "prefs.h"
 #include "account.h"
 #include "prefs_account.h"
-#include "mbox_folder.h"
 #include "prefs_folder_item.h"
 
 static GList *folder_list = NULL;
 
 static void folder_init		(Folder		*folder,
-				 FolderType	 type,
 				 const gchar	*name);
-
-static void local_folder_destroy	(LocalFolder	*lfolder);
-static void remote_folder_destroy	(RemoteFolder	*rfolder);
-static void mh_folder_destroy		(MHFolder	*folder);
-static void mbox_folder_destroy		(MboxFolder	*folder);
-static void imap_folder_destroy		(IMAPFolder	*folder);
-static void news_folder_destroy		(NewsFolder	*folder);
 
 static gboolean folder_read_folder_func	(GNode		*node,
 					 gpointer	 data);
@@ -95,27 +86,89 @@ Folder *folder_new(FolderType type, const gchar *name, const gchar *path)
 	return folder;
 }
 
-Folder *mh_folder_new(const gchar *name, const gchar *path)
+static void folder_init(Folder *folder, const gchar *name)
 {
-	Folder *folder;
+	FolderItem *item;
 
-	folder = (Folder *)g_new0(MHFolder, 1);
-	folder_init(folder, F_MH, name);
-	LOCAL_FOLDER(folder)->rootpath = g_strdup(path);
+	g_return_if_fail(folder != NULL);
 
-	return folder;
+	folder_set_name(folder, name);
+	folder->type = F_UNKNOWN;
+	folder->account = NULL;
+	folder->inbox = NULL;
+	folder->outbox = NULL;
+	folder->draft = NULL;
+	folder->queue = NULL;
+	folder->trash = NULL;
+	folder->ui_func = NULL;
+	folder->ui_func_data = NULL;
+	item = folder_item_new(name, NULL);
+	item->folder = folder;
+	folder->node = g_node_new(item);
+	folder->data = NULL;
 }
 
+void folder_local_folder_init(Folder *folder, const gchar *name,
+			      const gchar *path)
+{
+	folder_init(folder, name);
+	LOCAL_FOLDER(folder)->rootpath = g_strdup(path);
+}
+
+void folder_remote_folder_init(Folder *folder, const gchar *name,
+			       const gchar *path)
+{
+	folder_init(folder, name);
+	REMOTE_FOLDER(folder)->session = NULL;
+}
+
+void folder_destroy(Folder *folder)
+{
+	g_return_if_fail(folder != NULL);
+
+	switch (folder->type) {
+	case F_MBOX:
+		mbox_folder_destroy(MBOX_FOLDER(folder));
+	case F_MH:
+		mh_folder_destroy(MH_FOLDER(folder));
+		break;
+	case F_IMAP:
+		imap_folder_destroy(IMAP_FOLDER(folder));
+		break;
+	case F_NEWS:
+		news_folder_destroy(NEWS_FOLDER(folder));
+		break;
+	default:
+		break;
+	}
+
+	folder_list = g_list_remove(folder_list, folder);
+
+	folder_tree_destroy(folder);
+	g_free(folder->name);
+	g_free(folder);
+}
+
+void folder_local_folder_destroy(LocalFolder *lfolder)
+{
+	g_return_if_fail(lfolder != NULL);
+
+	g_free(lfolder->rootpath);
+}
+
+void folder_remote_folder_destroy(RemoteFolder *rfolder)
+{
+	g_return_if_fail(rfolder != NULL);
+
+	if (rfolder->session)
+		session_destroy(rfolder->session);
+}
+
+#if 0
 Folder *mbox_folder_new(const gchar *name, const gchar *path)
 {
-	/* implementing */
-	Folder *folder;
-
-	folder = (Folder *)g_new0(MboxFolder, 1);
-	folder_init(folder, F_MBOX, name);
-	LOCAL_FOLDER(folder)->rootpath = g_strdup(path);
-
-	return folder;
+	/* not yet implemented */
+	return NULL;
 }
 
 Folder *maildir_folder_new(const gchar *name, const gchar *path)
@@ -123,26 +176,7 @@ Folder *maildir_folder_new(const gchar *name, const gchar *path)
 	/* not yet implemented */
 	return NULL;
 }
-
-Folder *imap_folder_new(const gchar *name, const gchar *path)
-{
-	Folder *folder;
-
-	folder = (Folder *)g_new0(IMAPFolder, 1);
-	folder_init(folder, F_IMAP, name);
-
-	return folder;
-}
-
-Folder *news_folder_new(const gchar *name, const gchar *path)
-{
-	Folder *folder;
-
-	folder = (Folder *)g_new0(NewsFolder, 1);
-	folder_init(folder, F_NEWS, name);
-
-	return folder;
-}
+#endif
 
 FolderItem *folder_item_new(const gchar *name, const gchar *path)
 {
@@ -236,34 +270,6 @@ void folder_set_name(Folder *folder, const gchar *name)
 		g_free(item->name);
 		item->name = name ? g_strdup(name) : NULL;
 	}
-}
-
-void folder_destroy(Folder *folder)
-{
-	g_return_if_fail(folder != NULL);
-
-	folder_list = g_list_remove(folder_list, folder);
-
-	switch (folder->type) {
-	case F_MH:
-		mh_folder_destroy(MH_FOLDER(folder));
-		break;
-	case F_MBOX:
-		mbox_folder_destroy(MBOX_FOLDER(folder));
-		break;
-	case F_IMAP:
-		imap_folder_destroy(IMAP_FOLDER(folder));
-		break;
-	case F_NEWS:
-		news_folder_destroy(NEWS_FOLDER(folder));
-		break;
-	default:
-		break;
-	}
-
-	folder_tree_destroy(folder);
-	g_free(folder->name);
-	g_free(folder);
 }
 
 void folder_tree_destroy(Folder *folder)
@@ -956,150 +962,6 @@ gchar *folder_item_get_mark_file(FolderItem *item)
 	g_free(path);
 
 	return file;
-}
-
-
-static void folder_init(Folder *folder, FolderType type, const gchar *name)
-{
-	FolderItem *item;
-
-	g_return_if_fail(folder != NULL);
-
-	folder->type = type;
-	folder_set_name(folder, name);
-	folder->account = NULL;
-	folder->inbox = NULL;
-	folder->outbox = NULL;
-	folder->draft = NULL;
-	folder->queue = NULL;
-	folder->trash = NULL;
-	folder->ui_func = NULL;
-	folder->ui_func_data = NULL;
-	item = folder_item_new(name, NULL);
-	item->folder = folder;
-	folder->node = g_node_new(item);
-	folder->data = NULL;
-
-	switch (type) {
-	case F_MH:
-		folder->get_msg_list        = mh_get_msg_list;
-		folder->fetch_msg           = mh_fetch_msg;
-		folder->add_msg             = mh_add_msg;
-		/*
-		folder->move_msg            = mh_move_msg;
-		folder->move_msgs_with_dest = mh_move_msgs_with_dest;
-		folder->copy_msg            = mh_copy_msg;
-		folder->copy_msgs_with_dest = mh_copy_msgs_with_dest;
-		*/
-		folder->copy_msg            = mh_copy_msg;
-		folder->remove_msg          = mh_remove_msg;
-		folder->remove_all_msg      = mh_remove_all_msg;
-		folder->is_msg_changed      = mh_is_msg_changed;
-		folder->scan                = mh_scan_folder;
-		folder->scan_tree           = mh_scan_tree;
-		folder->create_tree         = mh_create_tree;
-		folder->create_folder       = mh_create_folder;
-		folder->rename_folder       = mh_rename_folder;
-		folder->remove_folder       = mh_remove_folder;
-		break;
-	case F_IMAP:
-		folder->get_msg_list        = imap_get_msg_list;
-		folder->fetch_msg           = imap_fetch_msg;
-		folder->add_msg             = imap_add_msg;
-		folder->move_msg            = imap_move_msg;
-		folder->move_msgs_with_dest = imap_move_msgs_with_dest;
-		folder->copy_msg            = imap_copy_msg;
-		folder->copy_msgs_with_dest = imap_copy_msgs_with_dest;
-		folder->remove_msg          = imap_remove_msg;
-		folder->remove_all_msg      = imap_remove_all_msg;
-		folder->scan                = imap_scan_folder;
-		folder->scan_tree           = imap_scan_tree;
-		folder->create_tree         = imap_create_tree;
-		folder->create_folder       = imap_create_folder;
-		folder->remove_folder       = imap_remove_folder;
-		break;
-	case F_NEWS:
-		folder->get_msg_list        = news_get_article_list;
-		folder->fetch_msg           = news_fetch_msg;
-		folder->scan                = news_scan_group;
-		break;
-	case F_MBOX:
-		folder->get_msg_list        = mbox_get_msg_list;
-		folder->fetch_msg           = mbox_fetch_msg;
-		folder->scan                = mbox_scan_folder;
-		folder->add_msg             = mbox_add_msg;
-		folder->remove_all_msg      = mbox_remove_all_msg;
-		folder->remove_msg          = mbox_remove_msg;
-		/*
-		folder->move_msg            = mbox_move_msg;
-		folder->move_msgs_with_dest = mbox_move_msgs_with_dest;
-		folder->copy_msg            = mbox_copy_msg;
-		folder->copy_msgs_with_dest = mbox_copy_msgs_with_dest;
-		*/
-		folder->copy_msg            = mbox_copy_msg;
-
-		folder->create_tree         = mbox_create_tree;
-		folder->create_folder       = mbox_create_folder;
-		folder->rename_folder       = mbox_rename_folder;
-		folder->remove_folder       = mbox_remove_folder;
-
-		folder->update_mark         = mbox_update_mark;
-		folder->change_flags        = mbox_change_flags;
-		folder->finished_copy       = mbox_finished_copy;
-
-		break;
-	default:
-		break;
-	}
-
-	switch (type) {
-	case F_MH:
-	case F_MBOX:
-	case F_MAILDIR:
-		LOCAL_FOLDER(folder)->rootpath = NULL;
-		break;
-	case F_IMAP:
-	case F_NEWS:
-		REMOTE_FOLDER(folder)->session = NULL;
-		break;
-	default:
-		break;
-	}
-}
-
-static void local_folder_destroy(LocalFolder *lfolder)
-{
-	g_return_if_fail(lfolder != NULL);
-
-	g_free(lfolder->rootpath);
-}
-
-static void remote_folder_destroy(RemoteFolder *rfolder)
-{
-	g_return_if_fail(rfolder != NULL);
-
-	if (rfolder->session)
-		session_destroy(rfolder->session);
-}
-
-static void mh_folder_destroy(MHFolder *folder)
-{
-	local_folder_destroy(LOCAL_FOLDER(folder));
-}
-
-static void mbox_folder_destroy(MboxFolder *folder)
-{
-	local_folder_destroy(LOCAL_FOLDER(folder));
-}
-
-static void imap_folder_destroy(IMAPFolder *folder)
-{
-	remote_folder_destroy(REMOTE_FOLDER(folder));
-}
-
-static void news_folder_destroy(NewsFolder *folder)
-{
-	remote_folder_destroy(REMOTE_FOLDER(folder));
 }
 
 static gboolean folder_build_tree(GNode *node, gpointer data)

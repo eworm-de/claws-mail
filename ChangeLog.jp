@@ -1,3 +1,50 @@
+2002-01-16
+
+	* src/prefs_filter.c: inc_autocheck_timer_{remove|set}() の代わりに
+	  inc_(un)lock() を使用。
+	* src/summaryview.c: summary_sort(): スレッド内のメッセージもソート
+	  されるように gtk_ctree_sort_node() の代わりに
+	  gtk_ctree_sort_recursive() を使用。
+	* src/procmsg.c: procmsg_read_mark_file(): sizeof の対象が間違って
+	  いて、 Alpha アーキテクチャでクラッシュを起こすバグを修正(市村
+	  さん thanks)。
+
+2002-01-15
+
+	* src/foldersel.c:
+	  foldersel_gnode_func(): 特別フォルダの名前を翻訳済文字列にした。
+	  foldersel_set_tree(): 特別フォルダを先頭に移動。
+	* src/inputdialog.[ch]: input_dialog_query_password(): 新規。
+	* src/imap.c
+	  src/inc.c
+	  src/news.c
+	  src/send.c: 各自のクエリ関数の代わりに input_dialog_query_password()
+	  を使用。
+
+2002-01-14
+
+	* src/defs.h: デフォルトフォントを修正。
+	* src/folder.[ch]
+	  src/mh.[ch]
+	  src/imap.[ch]
+	  src/news.[ch]: クラス定義といくつかのメソッドを適切な位置に移動。
+
+2002-01-11
+
+	* src/mimeview.c: mimeview_save_as()
+	  src/summaryview.c: summary_save_as(): subject に基づいてデフォルト
+	  のファイル名を出すようにした。
+	* src/utils.[ch]: subst_chars() と、いくつかの特殊文字をアンダー
+	  スコアで置換する subst_for_filename() を追加。
+	* src/filesel.c: filesel_select_file(): デフォルトのファイル名を
+	  選択するようにした。
+
+2002-01-10
+
+	* INSTALL
+	  INSTALL.jp: libjconv の 説明と URL を追加。
+	* src/mainwindow.c: メニューエントリの整理。
+
 2002-01-09
 
 	* README

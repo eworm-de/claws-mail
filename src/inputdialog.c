@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -138,6 +138,19 @@ gchar *input_dialog_combo(const gchar *title, const gchar *message,
 		gtk_combo_set_popdown_strings(GTK_COMBO(combo), list);
 
 	return input_dialog_open(title, message, default_string);
+}
+
+gchar *input_dialog_query_password(const gchar *server, const gchar *user)
+{
+	gchar *message;
+	gchar *pass;
+
+	message = g_strdup_printf(_("Input password for %s on %s:"),
+				  user, server);
+	pass = input_dialog_with_invisible(_("Input password"), message, NULL);
+	g_free(message);
+
+	return pass;
 }
 
 static void input_dialog_create(void)

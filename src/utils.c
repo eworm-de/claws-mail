@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -938,6 +938,22 @@ void subst_char(gchar *str, gchar orig, gchar subst)
 			*p = subst;
 		p++;
 	}
+}
+
+void subst_chars(gchar *str, gchar *orig, gchar subst)
+{
+	register gchar *p = str;
+
+	while (*p) {
+		if (strchr(orig, *p) != NULL)
+			*p = subst;
+		p++;
+	}
+}
+
+void subst_for_filename(gchar *str)
+{
+	subst_chars(str, " \t\r\n\"/\\", '_');
 }
 
 gboolean is_header_line(const gchar *str)

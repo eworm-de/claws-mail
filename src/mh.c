@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,10 @@
 #include "procheader.h"
 #include "utils.h"
 
+static void	mh_folder_init			(Folder		*folder,
+						 const gchar	*name,
+						 const gchar	*path);
+
 static GSList  *mh_get_uncached_msgs		(GHashTable	*msg_table,
 						 FolderItem	*item);
 static MsgInfo *mh_parse_msg			(const gchar	*file,
@@ -53,6 +57,45 @@ static void	mh_scan_tree_recursive		(FolderItem	*item,
 static gboolean mh_rename_folder_func		(GNode		*node,
 						 gpointer	 data);
 
+
+Folder *mh_folder_new(const gchar *name, const gchar *path)
+{
+	Folder *folder;
+
+	folder = (Folder *)g_new0(MHFolder, 1);
+	mh_folder_init(folder, name, path);
+
+	return folder;
+}
+
+void mh_folder_destroy(MHFolder *folder)
+{
+	folder_local_folder_destroy(LOCAL_FOLDER(folder));
+}
+
+static void mh_folder_init(Folder *folder, const gchar *name, const gchar *path)
+{
+	folder_local_folder_init(folder, name, path);
+
+	folder->type = F_MH;
+
+	folder->get_msg_list        = mh_get_msg_list;
+	folder->fetch_msg           = mh_fetch_msg;
+	folder->add_msg             = mh_add_msg;
+	folder->move_msg            = mh_move_msg;
+	folder->move_msgs_with_dest = mh_move_msgs_with_dest;
+	folder->copy_msg            = mh_copy_msg;
+	folder->copy_msgs_with_dest = mh_copy_msgs_with_dest;
+	folder->remove_msg          = mh_remove_msg;
+	folder->remove_all_msg      = mh_remove_all_msg;
+	folder->is_msg_changed      = mh_is_msg_changed;
+	folder->scan                = mh_scan_folder;
+	folder->scan_tree           = mh_scan_tree;
+	folder->create_tree         = mh_create_tree;
+	folder->create_folder       = mh_create_folder;
+	folder->rename_folder       = mh_rename_folder;
+	folder->remove_folder       = mh_remove_folder;
+}
 
 GSList *mh_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 {

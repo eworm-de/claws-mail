@@ -1,3 +1,51 @@
+2002-01-16
+
+	* src/prefs_filter.c: use inc_(un)lock() instead of
+	  inc_autocheck_timer_{remove|set}().
+	* src/summaryview.c: summary_sort(): use gtk_ctree_sort_recursive()
+	  instead of gtk_ctree_sort_node() so that messages within threads
+	  are also sorted.
+	* src/procmsg.c: procmsg_read_mark_file(): fixed a bug that the
+	  target of sizeof was wrong and caused crash on Alpha architecture
+	  (thanks to Motonobu Ichimura).
+
+2002-01-15
+
+	* src/foldersel.c:
+	  foldersel_gnode_func(): made the names of special folders
+	  translated strings.
+	  foldersel_set_tree(): move the special folder to the top.
+	* src/inputdialog.[ch]: input_dialog_query_password(): new.
+	* src/imap.c
+	  src/inc.c
+	  src/news.c
+	  src/send.c: use input_dialog_query_password() instead of their
+	  own query functions.
+
+2002-01-14
+
+	* src/defs.h: modified the default font.
+	* src/folder.[ch]
+	  src/mh.[ch]
+	  src/imap.[ch]
+	  src/news.[ch]: moved the class definition and some methods to
+	  the proper location.
+
+2002-01-11
+
+	* src/mimeview.c: mimeview_save_as()
+	  src/summaryview.c: summary_save_as(): put the default filename
+	  based on the subject.
+	* src/utils.[ch]: added subst_chars() and subst_for_filename()
+	  which substitute some special characters with underscore.
+	* src/filesel.c: filesel_select_file(): select the default filename.
+
+2002-01-10
+
+	* INSTALL
+	  INSTALL.jp: added the description and the URL for libjconv.
+	* src/mainwindow.c: menu entries cleanup.
+
 2002-01-09
 
 	* README

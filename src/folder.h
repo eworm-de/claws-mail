@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,11 +26,9 @@
 typedef struct _Folder		Folder;
 typedef struct _LocalFolder	LocalFolder;
 typedef struct _RemoteFolder	RemoteFolder;
-typedef struct _MHFolder	MHFolder;
-typedef struct _MboxFolder	MboxFolder;
+#if 0
 typedef struct _MaildirFolder	MaildirFolder;
-typedef struct _IMAPFolder	IMAPFolder;
-typedef struct _NewsFolder	NewsFolder;
+#endif
 typedef struct _FolderItem	FolderItem;
 
 #include "prefs_folder_item.h"
@@ -49,11 +47,9 @@ typedef struct _FolderItem	FolderItem;
 				 FOLDER_TYPE(obj) == F_MBOX    || \
 				 FOLDER_TYPE(obj) == F_MAILDIR)
 
-#define MH_FOLDER(obj)		((MHFolder *)obj)
-#define MBOX_FOLDER(obj)	((MboxFolder *)obj)
+#if 0
 #define MAILDIR_FOLDER(obj)	((MaildirFolder *)obj)
-#define IMAP_FOLDER(obj)	((IMAPFolder *)obj)
-#define NEWS_FOLDER(obj)	((NewsFolder *)obj)
+#endif
 
 #define FOLDER_ITEM(obj)	((FolderItem *)obj)
 
@@ -171,34 +167,12 @@ struct _RemoteFolder
 	Session *session;
 };
 
-struct _MHFolder
-{
-	LocalFolder lfolder;
-};
-
-struct _MboxFolder
-{
-	LocalFolder lfolder;
-};
-
+#if 0
 struct _MaildirFolder
 {
 	LocalFolder lfolder;
 };
-
-struct _IMAPFolder
-{
-	RemoteFolder rfolder;
-
-	GList *namespace;	/* list of IMAPNameSpace */
-};
-
-struct _NewsFolder
-{
-	RemoteFolder rfolder;
-
-	gboolean use_auth;
-};
+#endif
 
 struct _FolderItem
 {
@@ -242,32 +216,32 @@ typedef struct {
 	guint	ret_rcpt	: 1; /* CLAWS */
 } PersistPrefs;
 
+Folder     *folder_new			(FolderType	 type,
+					 const gchar	*name,
+					 const gchar	*path);
+void        folder_local_folder_init	(Folder		*folder,
+					 const gchar	*name,
+					 const gchar	*path);
+void        folder_remote_folder_init	(Folder		*folder,
+					 const gchar	*name,
+					 const gchar	*path);
 
-Folder     *folder_new		(FolderType	 type,
-				 const gchar	*name,
-				 const gchar	*path);
-Folder     *mh_folder_new	(const gchar	*name,
-				 const gchar	*path);
-Folder     *mbox_folder_new	(const gchar	*name,
-				 const gchar	*path);
-Folder     *maildir_folder_new	(const gchar	*name,
-				 const gchar	*path);
-Folder     *imap_folder_new	(const gchar	*name,
-				 const gchar	*path);
-Folder     *news_folder_new	(const gchar	*name,
-				 const gchar	*path);
+void        folder_destroy		(Folder		*folder);
+void        folder_local_folder_destroy	(LocalFolder	*lfolder);
+void        folder_remote_folder_destroy(RemoteFolder	*rfolder);
+
 FolderItem *folder_item_new	(const gchar	*name,
 				 const gchar	*path);
 void        folder_item_append	(FolderItem	*parent,
 				 FolderItem	*item);
 void        folder_item_remove	(FolderItem	*item);
 void        folder_item_destroy	(FolderItem	*item);
+
 void        folder_set_ui_func	(Folder		*folder,
 				 FolderUIFunc	 func,
 				 gpointer	 data);
 void        folder_set_name	(Folder		*folder,
 				 const gchar	*name);
-void        folder_destroy	(Folder		*folder);
 void        folder_tree_destroy	(Folder		*folder);
 
 void   folder_add		(Folder		*folder);

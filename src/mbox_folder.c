@@ -35,6 +35,10 @@
 
 #define MSGBUFSIZE	8192
 
+static void	mbox_folder_init		(Folder		*folder,
+						 const gchar	*name,
+						 const gchar	*path);
+
 static gboolean mbox_write_data(FILE * mbox_fp, FILE * new_fp,
 				gchar * new_filename, gint size);
 static gboolean mbox_rewrite(gchar * mbox);
@@ -42,7 +46,39 @@ static gboolean mbox_purge_deleted(gchar * mbox);
 static gchar * mbox_get_new_path(FolderItem * parent, gchar * name);
 static gchar * mbox_get_folderitem_name(gchar * name);
 
+Folder *mbox_folder_new(const gchar *name, const gchar *path)
+{
+	Folder *folder;
 
+	folder = (Folder *)g_new0(MBOXFolder, 1);
+	mbox_folder_init(folder, name, path);
+
+	return folder;
+}
+
+void mbox_folder_destroy(MBOXFolder *folder)
+{
+	folder_local_folder_destroy(LOCAL_FOLDER(folder));
+}
+
+static void mbox_folder_init(Folder *folder, const gchar *name, const gchar *path)
+{
+	folder_local_folder_init(folder, name, path);
+
+	folder->type = F_MBOX;
+
+	folder->get_msg_list        = mbox_get_msg_list;
+	folder->fetch_msg           = mbox_fetch_msg;
+	folder->add_msg             = mbox_add_msg;
+	folder->copy_msg            = mbox_copy_msg;
+	folder->remove_msg          = mbox_remove_msg;
+	folder->remove_all_msg      = mbox_remove_all_msg;
+	folder->scan                = mbox_scan_folder;
+	folder->create_tree         = mbox_create_tree;
+	folder->create_folder       = mbox_create_folder;
+	folder->rename_folder       = mbox_rename_folder;
+	folder->remove_folder       = mbox_remove_folder;
+}
 
 static gchar * mbox_folder_create_parent(const gchar * path)
 {

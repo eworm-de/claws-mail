@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -200,9 +200,45 @@ static gboolean foldersel_gnode_func(GtkCTree *ctree, guint depth,
 				     gpointer data)
 {
 	FolderItem *item = FOLDER_ITEM(gnode->data);
+	gchar *name;
+
+	switch (item->stype) {
+	case F_INBOX:
+		name = _("Inbox");
+		break;
+	case F_OUTBOX:
+		name = _("Outbox");
+		break;
+	case F_QUEUE:
+		name = _("Queue");
+		break;
+	case F_TRASH:
+		name = _("Trash");
+		break;
+	case F_DRAFT:
+		name = _("Draft");
+		break;
+	default:
+		name = item->name;
+
+		if (!item->parent) {
+			switch (item->folder->type) {
+			case F_MBOX:
+				Xstrcat_a(name, name, " (MBOX)", ); break;
+			case F_MH:
+				Xstrcat_a(name, name, " (MH)", ); break;
+			case F_IMAP:
+				Xstrcat_a(name, name, " (IMAP4)", ); break;
+			case F_NEWS:
+				Xstrcat_a(name, name, " (News)", ); break;
+			default:
+				break;
+			}
+		}
+	}
 
 	gtk_ctree_node_set_row_data(ctree, cnode, item);
-	gtk_ctree_set_node_info(ctree, cnode, item->name,
+	gtk_ctree_set_node_info(ctree, cnode, name,
 				FOLDER_SPACING,
 				folderxpm, folderxpmmask,
 				folderopenxpm, folderopenxpmmask,
@@ -218,6 +254,29 @@ static void foldersel_expand_func(GtkCTree *ctree, GtkCTreeNode *node,
 		gtk_ctree_expand(ctree, node);
 }
 
+#define SET_SPECIAL_FOLDER(item) \
+{ \
+	if (item) { \
+		GtkCTreeNode *node_, *sibling; \
+ \
+		node_ = gtk_ctree_find_by_row_data \
+			(GTK_CTREE(ctree), node, item); \
+		if (!node_) \
+			g_warning("%s not found.\n", item->path); \
+		else { \
+			if (!prev) \
+				sibling = GTK_CTREE_ROW(node)->children; \
+			else \
+				sibling = GTK_CTREE_ROW(prev)->sibling; \
+			if (node_ != sibling) \
+				gtk_ctree_move(GTK_CTREE(ctree), \
+					       node_, node, sibling); \
+		} \
+ \
+		prev = node_; \
+	} \
+}
+
 static void foldersel_set_tree(Folder *cur_folder)
 {
 	Folder *folder;
@@ -229,6 +288,8 @@ static void foldersel_set_tree(Folder *cur_folder)
 	gtk_clist_freeze(GTK_CLIST(ctree));
 
 	for (; list != NULL; list = list->next) {
+		GtkCTreeNode *prev = NULL;
+
 		folder = FOLDER(list->data);
 		g_return_if_fail(folder != NULL);
 
@@ -246,6 +307,11 @@ static void foldersel_set_tree(Folder *cur_folder)
 					      foldersel_gnode_func,
 					      NULL);
 		gtk_ctree_sort_recursive(GTK_CTREE(ctree), node);
+		SET_SPECIAL_FOLDER(folder->inbox);
+		SET_SPECIAL_FOLDER(folder->outbox);
+		SET_SPECIAL_FOLDER(folder->draft);
+		SET_SPECIAL_FOLDER(folder->queue);
+		SET_SPECIAL_FOLDER(folder->trash);
 		gtk_ctree_pre_recursive(GTK_CTREE(ctree), node,
 					foldersel_expand_func,
 					NULL);

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,10 @@
 
 #define NNTP_PORT	119
 
+static void news_folder_init		 (Folder	*folder,
+					  const gchar	*name,
+					  const gchar	*path);
+
 static Session *news_session_new	 (const gchar	*server,
 					  gushort	 port,
 					  const gchar	*userid,
@@ -81,6 +85,33 @@ static GSList *news_delete_old_articles	 (GSList	*alist,
 					  gint		 first);
 static void news_delete_all_articles	 (FolderItem	*item);
 
+
+Folder *news_folder_new(const gchar *name, const gchar *path)
+{
+	Folder *folder;
+
+	folder = (Folder *)g_new0(NewsFolder, 1);
+	news_folder_init(folder, name, path);
+
+	return folder;
+}
+
+void news_folder_destroy(NewsFolder *folder)
+{
+	folder_remote_folder_destroy(REMOTE_FOLDER(folder));
+}
+
+static void news_folder_init(Folder *folder, const gchar *name,
+			     const gchar *path)
+{
+	folder_remote_folder_init(folder, name, path);
+
+	folder->type = F_NEWS;
+
+	folder->get_msg_list = news_get_article_list;
+	folder->fetch_msg    = news_fetch_msg;
+	folder->scan         = news_scan_group;
+}
 
 static Session *news_session_new(const gchar *server, gushort port,
 				 const gchar *userid, const gchar *passwd)
@@ -123,19 +154,6 @@ void news_session_destroy(NNTPSession *session)
 	g_free(session->group);
 }
 
-static gchar *news_query_password(const gchar *server, const gchar *user)
-{
-	gchar *message;
-	gchar *pass;
-
-	message = g_strdup_printf(_("Input password for %s on %s:"),
-				  user, server);
-	pass = input_dialog_with_invisible(_("Input password"), message, NULL);
-	g_free(message);
-
-	return pass;
-}
-
 static Session *news_session_new_for_folder(Folder *folder)
 {
 	Session *session;
@@ -152,7 +170,8 @@ static Session *news_session_new_for_folder(Folder *folder)
 		if (ac->passwd && ac->passwd[0])
 			passwd = g_strdup(ac->passwd);
 		else
-			passwd = news_query_password(ac->nntp_server, userid);
+			passwd = input_dialog_query_password(ac->nntp_server,
+							     userid);
 	}
 
 	session = news_session_new(ac->nntp_server,

@@ -445,7 +445,7 @@ static GHashTable *procmsg_read_mark_file(const gchar *folder)
 	mark_table = g_hash_table_new(NULL, g_direct_equal);
 
 	while (fread(&num, sizeof(num), 1, fp) == 1) {
-		if (fread(&perm_flags, sizeof(flags), 1, fp) != 1) break;
+		if (fread(&perm_flags, sizeof(perm_flags), 1, fp) != 1) break;
 
 		flags = g_new0(MsgFlags, 1);
 		flags->perm_flags = perm_flags;
