@@ -1,3 +1,12 @@
+2003-07-18 [christoph]	0.9.3claws23
+
+	* src/common/hooks.c
+		fix crash when hooks where unregisted
+
+	* src/plugins/trayicon/trayicon.c
+		unregister detroy signal before destroying the widget
+		(still crashes when the plugin is unloaded)
+
 2003-07-18 [alfons]	0.9.3claws22
 	
 	* src/folderview.c

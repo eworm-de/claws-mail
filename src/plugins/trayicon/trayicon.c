@@ -48,6 +48,7 @@ static EggTrayIcon *trayicon;
 static GtkWidget *eventbox;
 static GtkWidget *image;
 static GtkTooltips *tooltips;
+guint destroy_signal_id;
 
 typedef enum
 {
@@ -158,6 +159,7 @@ static void create_trayicon()
         image = gtk_pixmap_new(nomail_pixmap, nomail_bitmap);
         gtk_packer_add_defaults(GTK_PACKER(packer), GTK_WIDGET(image), GTK_SIDE_TOP, GTK_ANCHOR_CENTER, GTK_PACK_EXPAND);
 
+	destroy_signal_id =
 	gtk_signal_connect(GTK_OBJECT(trayicon), "destroy",
                      GTK_SIGNAL_FUNC(destroy_cb), NULL);
 	gtk_signal_connect(GTK_OBJECT(trayicon), "size_allocate",
@@ -189,6 +191,8 @@ int plugin_init(gchar **error)
 
 void plugin_done(void)
 {
+	gtk_signal_disconnect(GTK_OBJECT(trayicon), destroy_signal_id);
+
 	gtk_widget_destroy(GTK_WIDGET(trayicon));
 	hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, hook_id);
 }
