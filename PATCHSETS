@@ -163,3 +163,4 @@
 ( cvs diff -u -r 1.395.2.31 -r 1.395.2.32 src/summaryview.c; cvs diff -u -r 1.83.2.18 -r 1.83.2.19 src/mimeview.c; ) > 0.9.12cvs95.1.patchset
 ( cvs diff -u -r 1.43.2.9 -r 1.43.2.10 src/toolbar.c; ) > 0.9.12cvs96.1.patchset
 ( cvs diff -u -r 1.2504.2.18 -r 1.2504.2.19 ChangeLog.claws; cvs diff -u -r 1.149.2.13 -r 1.149.2.14 src/inc.c; ) > 0.9.12cvs97.1.patchset
+( cvs diff -u -r 1.395.2.32 -r 1.395.2.33 src/summaryview.c; ) > 0.9.12cvs97.2.patchset

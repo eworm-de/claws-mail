@@ -1,3 +1,9 @@
+2004-09-08 [colin]	0.9.12cvs97.2
+
+	* src/summaryview.c
+		Don't select mails in collapsed threads 
+		when navigating with up/down
+
 2004-09-07 [colin]	0.9.12cvs97.1
 
 	* src/inc.c

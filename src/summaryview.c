@@ -4379,9 +4379,12 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_Down:
 		if ((node = summaryview->selected) != NULL) {
 			GtkCTreeNode *next = NULL;
-			next = (event->keyval == GDK_Down)
-					? gtkut_ctree_node_next(ctree, node)
-					: gtkut_ctree_node_prev(ctree, node);
+			do {
+				next = (event->keyval == GDK_Down)
+					? gtkut_ctree_node_next(ctree, next ? next:node)
+					: gtkut_ctree_node_prev(ctree, next ? next:node);
+			} while (next && !gtk_ctree_is_viewable(ctree, next));
+
 			if (next) {
 				gtk_sctree_select_with_state
 					(GTK_SCTREE(ctree), next, event->state);
