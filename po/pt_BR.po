@@ -2,21 +2,18 @@
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # André Casteliano <digitalcoder@users.sourceforge.net>, 2000.
 # Fabio Junior Beneditto <kamikazenh@linuxbr.com.br>, 2001
-#
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: sylpheed-0.5.0claws3\n"
+"Project-Id-Version: sylpheed-0.5.0\n"
 "POT-Creation-Date: 2001-06-20 17:53+0900\n"
-"PO-Revision-Date: 2001-06-29\n"
+"PO-Revision-Date: 2001-07-12\n"
 "Last-Translator: Fabio Junior Beneditto <kamikazenh@linuxbr.com.br>\n"
 "Language-Team: André Casteliano <digitalcoder@users.sourceforge.net> Isaías "
 "V. Prestes <isix@uol.com.br> Fabio Junior Beneditto <kamikazenh@linuxbr.com.br>\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8Bit\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
-"Content-Transfer-Encoding: ENCODING\n"
+"X-Generator: ViM 5.6\n"
 
 
 #: src/about.c:90
@@ -4076,11 +4073,11 @@ msgstr "/_Responder"
 
 #: src/summaryview.c:322
 msgid "/Repl_y to sender"
-msgstr ""
+msgstr "/Res_ponder ao remetente"
 
 #: src/summaryview.c:323
 msgid "/Follow-up and reply to"
-msgstr ""
+msgstr "/_Encaminhar e responder"
 
 #: src/summaryview.c:324
 msgid "/Reply to a_ll"
