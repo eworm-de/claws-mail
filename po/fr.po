@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed\n"
 "Report-Msgid-Bugs-To: twb@users.sourceforge.net\n"
-"POT-Creation-Date: 2003-12-18 18:49+0100\n"
-"PO-Revision-Date: 2003-12-18 23:43+0100\n"
+"POT-Creation-Date: 2003-12-19 12:32+0100\n"
+"PO-Revision-Date: 2003-12-19 13:42+0100\n"
 "Last-Translator: Melvin Hadasht <melvin.hadasht@free.fr>\n"
 "Language-Team: Melvin Hadasht <melvin.hadasht@free.fr>\n"
 "MIME-Version: 1.0\n"
@@ -269,7 +269,7 @@ msgstr "Choisissez un dossier"
 #: src/gtk/gtkaspell.c:2378 src/gtk/prefswindow.c:318
 #: src/gtk/sslcertwindow.c:230 src/import.c:190 src/importmutt.c:287
 #: src/importpine.c:287 src/inputdialog.c:203 src/main.c:654
-#: src/mainwindow.c:2223 src/messageview.c:908 src/mimeview.c:1018
+#: src/mainwindow.c:2223 src/messageview.c:910 src/mimeview.c:1018
 #: src/mimeview.c:1082 src/passphrase.c:130 src/prefs_actions.c:161
 #: src/prefs_common.c:2758 src/prefs_common.c:2927 src/prefs_common.c:3185
 #: src/prefs_customheader.c:157 src/prefs_display_header.c:194
@@ -288,7 +288,7 @@ msgstr "OK"
 #: src/gtk/gtkaspell.c:1434 src/gtk/prefswindow.c:319
 #: src/gtk/progressdialog.c:77 src/import.c:191 src/importldif.c:1034
 #: src/importmutt.c:288 src/importpine.c:288 src/inputdialog.c:204
-#: src/main.c:654 src/mainwindow.c:2223 src/messageview.c:908
+#: src/main.c:654 src/mainwindow.c:2223 src/messageview.c:910
 #: src/mimeview.c:1019 src/mimeview.c:1083 src/passphrase.c:134
 #: src/prefs_actions.c:162 src/prefs_common.c:2759 src/prefs_common.c:3186
 #: src/prefs_customheader.c:158 src/prefs_display_header.c:195
@@ -400,7 +400,7 @@ msgstr "/_Adresse/_Supprimer"
 #: src/addressbook.c:391 src/addressbook.c:395 src/mainwindow.c:665
 #: src/mainwindow.c:685 src/mainwindow.c:687 src/mainwindow.c:690
 #: src/mainwindow.c:693 src/mainwindow.c:697 src/messageview.c:265
-#: src/messageview.c:284
+#: src/messageview.c:286
 msgid "/_Tools/---"
 msgstr "/_Outils/---"
 
@@ -425,12 +425,12 @@ msgid "/_Tools/Export LDI_F..."
 msgstr "/_Outils/Exporter le carnet d'adresses en LDI_F..."
 
 #: src/addressbook.c:398 src/compose.c:677 src/mainwindow.c:723
-#: src/messageview.c:287
+#: src/messageview.c:289
 msgid "/_Help"
 msgstr "/_Aide"
 
 #: src/addressbook.c:399 src/compose.c:678 src/mainwindow.c:733
-#: src/messageview.c:288
+#: src/messageview.c:290
 msgid "/_Help/_About"
 msgstr "/Aide/_A propos"
 
@@ -845,7 +845,7 @@ msgstr "En-tête"
 msgid "Address Count"
 msgstr "Nombre d'adresses"
 
-#: src/addrgather.c:527 src/alertpanel.c:155 src/messageview.c:491
+#: src/addrgather.c:527 src/alertpanel.c:155 src/messageview.c:493
 #: src/sgpgme.c:279 src/textview.c:1863
 msgid "Warning"
 msgstr "Alerte"
@@ -1369,7 +1369,7 @@ msgstr "/_Outils/_Carnet d'adresses"
 msgid "/_Tools/_Template"
 msgstr "/Outils/_Modèles"
 
-#: src/compose.c:676 src/mainwindow.c:686 src/messageview.c:285
+#: src/compose.c:676 src/mainwindow.c:686 src/messageview.c:287
 msgid "/_Tools/Actio_ns"
 msgstr "/Outils/_Actions"
 
@@ -1447,7 +1447,7 @@ msgstr ""
 msgid "Recipient is not specified."
 msgstr "Destinataire non spécifié."
 
-#: src/compose.c:3075 src/messageview.c:491 src/prefs_account.c:768
+#: src/compose.c:3075 src/messageview.c:493 src/prefs_account.c:768
 #: src/prefs_common.c:970 src/toolbar.c:374 src/toolbar.c:421
 msgid "Send"
 msgstr "Envoyer"
@@ -4496,7 +4496,7 @@ msgstr ""
 msgid "Sylpheed - Folder View"
 msgstr "Sylpheed - Dossiers"
 
-#: src/mainwindow.c:1838 src/messageview.c:378
+#: src/mainwindow.c:1838 src/messageview.c:380
 msgid "Sylpheed - Message View"
 msgstr "Sylpheed - Message"
 
@@ -4578,26 +4578,30 @@ msgid "/_Message/Redirec_t"
 msgstr "/_Message/Rediri_ger"
 
 #: src/messageview.c:276
+msgid "/_Tools/Create processing rule/"
+msgstr "/_Outils/Créer une règle de _traitement"
+
+#: src/messageview.c:278
 msgid "/_Tools/Create processing rule/_Automatically"
 msgstr "/_Outils/Créer une règle de traitement/Automatiquement"
 
-#: src/messageview.c:278
+#: src/messageview.c:280
 msgid "/_Tools/Create processing rule/by _From"
 msgstr "/_Outils/Créer une règle de traitement/avec « De »"
 
-#: src/messageview.c:280
+#: src/messageview.c:282
 msgid "/_Tools/Create processing rule/by _To"
 msgstr "/_Outils/Créer une règle de traitement/avec « À »"
 
-#: src/messageview.c:282
+#: src/messageview.c:284
 msgid "/_Tools/Create processing rule/by _Subject"
 msgstr "/_Outils/Créer une règle de traitement/avec « Sujet »"
 
-#: src/messageview.c:476
+#: src/messageview.c:478
 msgid "<No Return-Path found>"
 msgstr "< « Return-Path: » introuvable>"
 
-#: src/messageview.c:484
+#: src/messageview.c:486
 #, c-format
 msgid ""
 "The notification address to which the return receipt is to be sent\n"
@@ -4612,11 +4616,11 @@ msgstr ""
 "Return-Path : %s\n"
 "Il est conseillé de ne pas envoyer l'accusé de réception."
 
-#: src/messageview.c:492
+#: src/messageview.c:494
 msgid "+Don't Send"
 msgstr "+Ne pas envoyer"
 
-#: src/messageview.c:502
+#: src/messageview.c:504
 msgid ""
 "This message is asking for a return receipt notification\n"
 "but according to its 'To:' and 'CC:' headers it was not\n"
@@ -4628,39 +4632,39 @@ msgstr ""
 "destinataire officiel.\n"
 "L'accusé de réception ne sera pas envoyé."
 
-#: src/messageview.c:901 src/mimeview.c:969 src/mimeview.c:1076
+#: src/messageview.c:903 src/mimeview.c:969 src/mimeview.c:1076
 #: src/summaryview.c:3448
 msgid "Save as"
 msgstr "Enregistrer sous"
 
-#: src/messageview.c:906 src/mimeview.c:1018 src/mimeview.c:1082
+#: src/messageview.c:908 src/mimeview.c:1018 src/mimeview.c:1082
 #: src/summaryview.c:3453
 msgid "Overwrite"
 msgstr "Écraser"
 
-#: src/messageview.c:907
+#: src/messageview.c:909
 msgid "Overwrite existing file?"
 msgstr "Écraser le fichier existant ?"
 
-#: src/messageview.c:914 src/summaryview.c:3461 src/summaryview.c:3465
+#: src/messageview.c:916 src/summaryview.c:3461 src/summaryview.c:3465
 #: src/summaryview.c:3482
 #, c-format
 msgid "Can't save the file `%s'."
 msgstr "Impossible de sauvegarder le fichier « %s »."
 
-#: src/messageview.c:979
+#: src/messageview.c:981
 msgid "This message asks for a return receipt"
 msgstr "Ce message demande l'envoi d'un accusé de réception."
 
-#: src/messageview.c:980
+#: src/messageview.c:982
 msgid "Send receipt"
 msgstr "Envoyer"
 
-#: src/messageview.c:1033
+#: src/messageview.c:1035
 msgid "Return Receipt Notification"
 msgstr "Accusé de réception."
 
-#: src/messageview.c:1034
+#: src/messageview.c:1036
 msgid ""
 "The message was sent to several of your accounts.\n"
 "Please choose which account do you want to use for sending the receipt "
@@ -4670,20 +4674,20 @@ msgstr ""
 "Veuillze choisir le compte que vous souhaitez utiliser pour l'envoi de \n"
 "l'accusé de réception :"
 
-#: src/messageview.c:1038
+#: src/messageview.c:1040
 msgid "Send Notification"
 msgstr "Envoyer"
 
-#: src/messageview.c:1038
+#: src/messageview.c:1040
 msgid "+Cancel"
 msgstr "Annuler"
 
-#: src/messageview.c:1092 src/prefs_common.c:2348 src/summaryview.c:3500
+#: src/messageview.c:1094 src/prefs_common.c:2348 src/summaryview.c:3500
 #: src/toolbar.c:171
 msgid "Print"
 msgstr "Impression"
 
-#: src/messageview.c:1093 src/summaryview.c:3501
+#: src/messageview.c:1095 src/summaryview.c:3501
 #, c-format
 msgid ""
 "Enter the print command line:\n"
@@ -4692,7 +4696,7 @@ msgstr ""
 "Saisissez la ligne de commande d'impression :\n"
 "('%s' sera remplacé par le nom du fichier)"
 
-#: src/messageview.c:1099 src/summaryview.c:3507
+#: src/messageview.c:1101 src/summaryview.c:3507
 #, c-format
 msgid ""
 "Print command line is invalid:\n"
@@ -4866,11 +4870,15 @@ msgid ""
 "moving the message. You probably want to load the Gtk+ User Interface plugin "
 "too, otherwise you will have to manually write the plugin configuration.\n"
 msgstr ""
-"Ce plugin utilise l'antivirus Clam pour scanner tous les fichiers attachés reçus des comptes locaux, POP ou IMAP.\n"
+"Ce plugin utilise l'antivirus Clam pour scanner tous les fichiers attachés "
+"reçus des comptes locaux, POP ou IMAP.\n"
 "\n"
-"Lorsqu'un fichier attaché se revèle infecté par un virus il peut soit être effacé soit déplacé dans un dossier spécifique.\n"
+"Lorsqu'un fichier attaché se revèle infecté par un virus il peut soit être "
+"effacé soit déplacé dans un dossier spécifique.\n"
 "\n"
-"Ce plugin ne contient que les fonctions de scannage, d'effacement et de déplacement.  Pour le configurer, il faut charger le plugin « Antivirus Clam GTK », sinon il faudrait éditer manuellement le fichier de configuration.\n"
+"Ce plugin ne contient que les fonctions de scannage, d'effacement et de "
+"déplacement.  Pour le configurer, il faut charger le plugin « Antivirus Clam "
+"GTK », sinon il faudrait éditer manuellement le fichier de configuration.\n"
 
 #: src/plugins/clamav/clamav_plugin_gtk.c:93
 msgid "Enable virus scanning"
@@ -5050,11 +5058,16 @@ msgid ""
 "moving the message. You probably want to load a User Interface plugin too, "
 "otherwise you will have to manually write the plugin configuration.\n"
 msgstr ""
-"Ce plugin utilise SpamAssassin pour vérifier si les messages récus par un compte local, POP ou IMAP sont des SPAMs. Pour cela il doit accéder à un serveur SpamAssassin (spamd).\n"
+"Ce plugin utilise SpamAssassin pour vérifier si les messages récus par un "
+"compte local, POP ou IMAP sont des SPAMs. Pour cela il doit accéder à un "
+"serveur SpamAssassin (spamd).\n"
 "\n"
-"Lorsqu'un message est identifié comme SPAM, il peut soit être effacé soit déplacé dans un dossier spécifique.\n"
+"Lorsqu'un message est identifié comme SPAM, il peut soit être effacé soit "
+"déplacé dans un dossier spécifique.\n"
 "\n"
-"Ce plugin ne contient que la fonctionnalité de détection et de déplacement.  Pour le configurer, il faut charger le plugin « SpamAssassin GTK », sinon il faudrait éditer le fichier de configuration manuellement.\n"
+"Ce plugin ne contient que la fonctionnalité de détection et de déplacement.  "
+"Pour le configurer, il faut charger le plugin « SpamAssassin GTK », sinon il "
+"faudrait éditer le fichier de configuration manuellement.\n"
 
 #: src/plugins/spamassassin/spamassassin_gtk.c:76
 msgid "Disabled"
@@ -7962,7 +7975,8 @@ msgstr "messages contenant S dans l'en-tête References:"
 
 #: src/summaryview.c:521
 msgid "messages returning 0 when passed to command"
-msgstr "messages qui lorsqu'ils sont passés à la commande « cmd », celle-ci retourn 0"
+msgstr ""
+"messages qui lorsqu'ils sont passés à la commande « cmd », celle-ci retourn 0"
 
 #: src/summaryview.c:522
 msgid "messages which contain S in X-Label header"
@@ -8428,4 +8442,3 @@ msgstr "Justifier"
 #: src/toolbar.c:1576
 msgid "News"
 msgstr "Article"
-
