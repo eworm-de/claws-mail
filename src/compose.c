@@ -7127,8 +7127,10 @@ void compose_headerentry_changed_cb(GtkWidget *entry,
 static gboolean compose_headerentry_button_pressed
 	(GtkWidget *entry, GdkEventButton *event, gpointer data)
 {
-	gtk_widget_grab_focus(entry);
-	return TRUE;
+	/* if this is a lclick, grab the focus */
+	if (event->button == 1)
+		gtk_widget_grab_focus(entry);
+	return FALSE;
 }
 
 static void compose_show_first_last_header(Compose *compose, gboolean show_first)

@@ -1,3 +1,10 @@
+2004-04-02 [alfons]	0.9.8claws62
+
+	* src/compose.c
+		grab focus only when lbutton was pressed (bug #430 cont'd; 
+		don't have clue yet why the cursor pos is at the end of the
+		text.)
+
 2004-04-02 [alfons]	0.9.8claws61
 
 	* src/compose.c
