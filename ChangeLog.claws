@@ -1,3 +1,21 @@
+2002-01-28 [melvin]	0.7.0claws38
+
+	* src/compose.c
+		Added the declartion of compose_send_control_enter.
+
+	* src/compose.c
+	* src/gtkspell.[ch]
+		Added in a 'Spelling' menu which includes the configuration menu. 
+		Added a real 'Check all' and got rid from the old one which only
+		highlited misspelled word.
+		Made 'Check while typing' a disableable option.
+		Added a dialog when there are no more misspelled word.
+		Added a dialog if error occurs when switching to a dictionary.
+	
+	* src/prefs_common.[ch]
+		Added option for the default 'Check while typing' option.
+
+
 2002-01-28 [alfons]	0.7.0claws37
 
 	* src/compose.c

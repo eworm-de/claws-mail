@@ -60,6 +60,8 @@ typedef struct _GtkPspeller {
 	PspellManager *	checker;
 } GtkPspeller;
 
+typedef void (*ContCheckFunc)	(gpointer *gtkpspell);
+
 #define GTKPSPELLWORDSIZE 1024
 typedef struct _GtkPspell {
 	GtkPspeller *	gtkpspeller;
@@ -67,13 +69,21 @@ typedef struct _GtkPspell {
 	gchar 		newword[GTKPSPELLWORDSIZE];
 	gint  		start_pos;
 	gint  		end_pos;
-        guint 		orig_pos;
+        gint 		orig_pos;
+	gint		last_check_pos;
+	gboolean	misspelled;
+	gboolean	check_while_typing;
+
+	ContCheckFunc 	continue_check; 
 
 	Dictionary *	dict1;
 	Dictionary *	dict2;
 
 	GtkWidget *	gui;
 	gpointer *	compose;
+	
+	GtkWidget*	config_menu;
+	GtkWidget *	replace_entry;
 
 	gint 		default_sug_mode;
 	gint  		max_sug;
@@ -94,7 +104,8 @@ GtkPspellCheckers*	gtkpspell_checkers_delete	();
 void 			gtkpspell_checkers_reset	();
 
 GtkPspell*		gtkpspell_new			(const gchar *dictionary, 
-							 const gchar *encoding, 
+							 const gchar *encoding,
+							 gboolean check_while_typing,  
 							 GtkSText *gtktext);
 
 void 			gtkpspell_delete		(GtkPspell *gtkpspell); 
@@ -116,6 +127,9 @@ void 			gtkpspell_check_backwards	(GtkPspell *gtkpspell);
 
 void 			gtkpspell_check_all		(GtkPspell *gtkpspell);
 void 			gtkpspell_uncheck_all		(GtkPspell *gtkpspell);
+
+void 			gtkpspell_populate_submenu	(GtkPspell *gtkpspell, 
+							 GtkWidget *menuitem);
 
 GtkWidget*		gtkpspell_dictionary_option_menu_new
 							(const gchar *pspell_path);

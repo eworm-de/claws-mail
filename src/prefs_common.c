@@ -131,6 +131,8 @@ static struct Spelling {
 	GtkWidget *btn_pspell_path;
 	GtkWidget *optmenu_dictionary;
 	GtkWidget *optmenu_sugmode;
+	GtkWidget *misspelled_btn;
+	GtkWidget *checkbtn_check_while_typing;
 } spelling;
 #endif
 
@@ -218,7 +220,6 @@ static struct MessageColorButtons {
 	GtkWidget *quote_level3_btn;
 	GtkWidget *uri_btn;
 	GtkWidget *tgt_folder_btn;
-	GtkWidget *misspelled_btn;
 } color_buttons;
 
 static GtkWidget *quote_desc_win;
@@ -358,6 +359,9 @@ static PrefParam param[] = {
 	{"pspell_sugmode",  "1", &prefs_common.pspell_sugmode,
 	 P_INT, &spelling.optmenu_sugmode, 
 	 prefs_speller_sugmode_set_data_from_optmenu, prefs_speller_sugmode_set_optmenu },
+	{"check_while_typing", "TRUE", &prefs_common.check_while_typing,
+	 P_BOOL, &spelling.checkbtn_check_while_typing,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"misspelled_color", "16711680", &prefs_common.misspelled_col, P_INT,
 	 NULL, NULL, NULL},
 #endif
@@ -1250,19 +1254,19 @@ static void prefs_send_create(void)
 static void prefs_dictionary_set_data_from_optmenu(PrefParam *param)
 {
 	gchar *str;
-	gchar *dict_name;
+	gchar *dict_fullname;
 	
 	g_return_if_fail(param);
 	g_return_if_fail(param->data);
 	g_return_if_fail(param->widget);
 	g_return_if_fail(*(param->widget));
 
-	dict_name = gtkpspell_get_dictionary_menu_active_item
+	dict_fullname = gtkpspell_get_dictionary_menu_active_item
 		(gtk_option_menu_get_menu(GTK_OPTION_MENU(*(param->widget))));
 	str = *((gchar **) param->data);
 	if (str)
 		g_free(str);
-	*((gchar **) param->data) = dict_name;
+	*((gchar **) param->data) = dict_fullname;
 }
 
 static void prefs_dictionary_set_optmenu(PrefParam *pparam)
@@ -1335,7 +1339,8 @@ static void prefs_spelling_checkbtn_enable_pspell_toggle_cb
 	gtk_widget_set_sensitive(spelling.optmenu_dictionary,  toggled);
 	gtk_widget_set_sensitive(spelling.optmenu_sugmode,     toggled);
 	gtk_widget_set_sensitive(spelling.btn_pspell_path,     toggled);
-	gtk_widget_set_sensitive(color_buttons.misspelled_btn, toggled);
+	gtk_widget_set_sensitive(spelling.misspelled_btn, toggled);
+	gtk_widget_set_sensitive(spelling.checkbtn_check_while_typing,  toggled);
 }
 
 static void prefs_spelling_btn_pspell_path_clicked_cb(GtkWidget *widget,
@@ -1363,7 +1368,10 @@ static void prefs_spelling_btn_pspell_path_clicked_cb(GtkWidget *widget,
 		gtk_entry_set_text(GTK_ENTRY(spelling.entry_pspell_path), prefs_common.pspell_path);					 
 		/* select first one */
 		gtk_option_menu_set_history(GTK_OPTION_MENU(spelling.optmenu_dictionary), 0);
-		
+	
+		if (prefs_common.dictionary)
+			g_free(prefs_common.dictionary);
+
 		prefs_common.dictionary = gtkpspell_get_dictionary_menu_active_item(
 				gtk_option_menu_get_menu(GTK_OPTION_MENU(spelling.optmenu_dictionary)));
 		g_free(tmp);
@@ -1388,6 +1396,7 @@ static void prefs_spelling_create()
 	GtkWidget *optmenu_dictionary;
 	GtkWidget *sugmode_label;
 	GtkWidget *sugmode_optmenu;
+	GtkWidget *checkbtn_check_while_typing;
 	GtkWidget *color_label;
 	GtkWidget *hbox_col;
 	GtkWidget *col_align;
@@ -1407,6 +1416,14 @@ static void prefs_spelling_create()
 
 	PACK_CHECK_BUTTON(vbox_spell, checkbtn_enable_pspell, 
 			  _("Enable spell checker (EXPERIMENTAL)"));
+
+	gtk_signal_connect(GTK_OBJECT(checkbtn_enable_pspell), "toggled",
+			   GTK_SIGNAL_FUNC(prefs_spelling_checkbtn_enable_pspell_toggle_cb),
+			   NULL);
+
+	/* Check while typing */
+	PACK_CHECK_BUTTON(vbox_spell, checkbtn_check_while_typing, 
+			  _("Check while typing"));
 
 	gtk_signal_connect(GTK_OBJECT(checkbtn_enable_pspell), "toggled",
 			   GTK_SIGNAL_FUNC(prefs_spelling_checkbtn_enable_pspell_toggle_cb),
@@ -1487,14 +1504,14 @@ static void prefs_spelling_create()
 	gtk_table_attach (GTK_TABLE (spell_table), col_align, 1, 2, 3, 4,
 			  GTK_FILL, GTK_SHRINK, 0, 0);
 
-	color_buttons.misspelled_btn = gtk_button_new_with_label ("");
-	set_button_bg_color(color_buttons.misspelled_btn,
+	spelling.misspelled_btn = gtk_button_new_with_label ("");
+	set_button_bg_color(spelling.misspelled_btn,
 			    prefs_common.misspelled_col);
-	gtk_widget_set_usize (color_buttons.misspelled_btn, 30, 20);
-	gtk_widget_set_sensitive(color_buttons.misspelled_btn, prefs_common.enable_pspell);
-	gtk_signal_connect (GTK_OBJECT (color_buttons.misspelled_btn), "clicked",
+	gtk_widget_set_usize (spelling.misspelled_btn, 30, 20);
+	gtk_widget_set_sensitive(spelling.misspelled_btn, prefs_common.enable_pspell);
+	gtk_signal_connect (GTK_OBJECT (spelling.misspelled_btn), "clicked",
 			    GTK_SIGNAL_FUNC(quote_color_set_dialog), "Misspelled word");
-	gtk_container_add(GTK_CONTAINER(col_align), color_buttons.misspelled_btn);
+	gtk_container_add(GTK_CONTAINER(col_align), spelling.misspelled_btn);
 
 
 	spelling.checkbtn_enable_pspell = checkbtn_enable_pspell;
@@ -1502,6 +1519,7 @@ static void prefs_spelling_create()
 	spelling.btn_pspell_path	= btn_pspell_path;
 	spelling.optmenu_dictionary     = optmenu_dictionary;
 	spelling.optmenu_sugmode        = sugmode_optmenu;
+	spelling.checkbtn_check_while_typing = checkbtn_check_while_typing;
 }
 
 #endif
@@ -3185,7 +3203,7 @@ static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
 #if USE_PSPELL		
 	} else if (g_strcasecmp(type, "Misspelled word") == 0) {
 		prefs_common.misspelled_col = rgbvalue;
-		set_button_bg_color(color_buttons.misspelled_btn, rgbvalue);
+		set_button_bg_color(spelling.misspelled_btn, rgbvalue);
 #endif		
 	} else
 		fprintf( stderr, "Unrecognized datatype '%s' in quote_color_set_dialog_ok\n", type );

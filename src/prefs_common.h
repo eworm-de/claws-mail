@@ -96,6 +96,7 @@ struct _PrefsCommon
 	gchar *dictionary;
 	gint misspelled_col;
 	gint pspell_sugmode;
+	gboolean check_while_typing;
 #endif
         
 	/* Display */
