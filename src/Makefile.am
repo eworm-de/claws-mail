@@ -201,6 +201,7 @@ INCLUDES = \
 	$(GTK_CFLAGS) \
 	$(GDK_IMLIB_CFLAGS) \
 	$(GDK_PIXBUF_CFLAGS) \
+	$(GPGME_CFLAGS) \
         $(PSPELL_CFLAGS)    \
 	-I$(includedir)
 

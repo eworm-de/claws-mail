@@ -1,3 +1,10 @@
+2002-01-25 [paul]	0.7.0claws26
+
+	* src/Makefile.am
+		add $(GPGME_CFLAGS) to INCLUDES so that gpgme can 
+		be found in non-standard locations. 
+		Closes Patch #507976, submitted by Stoyen Genov.
+
 2002-01-25 [paul]	0.7.0claws25
 
 	* sync with sylpheed 0.7.0cvs16
