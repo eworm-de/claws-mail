@@ -192,7 +192,7 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 			if (new_msgs < 0)
 				new_msgs = 0;
 		}
-
+		cur_account->session = STYPE_NORMAL;
 		new_msgs += inc_account_mail(cur_account, mainwin);
 	}
 
