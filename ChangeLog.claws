@@ -1,3 +1,9 @@
+2002-06-25 [paul]	0.7.8claws24
+
+	* src/summaryview.c
+		fix "No more unread messages" persistant pop-up
+		window bug
+
 2002-06-25 [paul]	0.7.8claws23
 
 	* po/it.po
