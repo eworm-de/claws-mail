@@ -37,7 +37,6 @@
 #include "folder.h"
 #include "prefs.h"
 #include "prefs_gtk.h"
-#include "statusbar.h"
 
 #include "clamav_plugin.h"
 
