@@ -31,7 +31,7 @@
 #include "gtkutils.h"
 
 static void description_create			(DescriptionWindow *dwindow);
-static void description_window_key_pressed	(GtkWidget *widget,
+static gboolean description_window_key_pressed	(GtkWidget *widget,
 						 GdkEventKey *event,
 						 gpointer data);
 
@@ -147,11 +147,12 @@ static void description_create(DescriptionWindow * dwindow)
 	gtk_widget_show_all(table);
 }
 
-static void description_window_key_pressed(GtkWidget *widget,
+static gboolean description_window_key_pressed(GtkWidget *widget,
 					   GdkEventKey *event,
 					   gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		gtk_main_quit();
+	return FALSE;
 }
 

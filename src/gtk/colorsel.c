@@ -34,7 +34,7 @@ static void quote_colors_set_dialog_cancel(GtkWidget *widget, gpointer data)
 	gtk_main_quit();
 }
 
-static void quote_colors_set_dialog_key_pressed(GtkWidget *widget,
+static gboolean quote_colors_set_dialog_key_pressed(GtkWidget *widget,
 						GdkEventKey *event,
 						gpointer data)
 {

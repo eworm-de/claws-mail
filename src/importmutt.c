@@ -210,11 +210,12 @@ static gint imp_mutt_delete_event( GtkWidget *widget, GdkEventAny *event, gboole
 	return TRUE;
 }
 
-static void imp_mutt_key_pressed( GtkWidget *widget, GdkEventKey *event, gboolean *cancelled ) {
+static gboolean imp_mutt_key_pressed( GtkWidget *widget, GdkEventKey *event, gboolean *cancelled ) {
 	if (event && event->keyval == GDK_Escape) {
 		*cancelled = TRUE;
 		gtk_main_quit();
 	}
+	return FALSE;
 }
 
 static void imp_mutt_create( gboolean *cancelled ) {

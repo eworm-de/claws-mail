@@ -70,7 +70,7 @@ static void messageview_destroy_cb	(GtkWidget	*widget,
 					 MessageView	*messageview);
 static void messageview_size_allocate_cb(GtkWidget	*widget,
 					 GtkAllocation	*allocation);
-static void key_pressed			(GtkWidget	*widget,
+static gboolean key_pressed		(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 MessageView	*messageview);
 
@@ -929,11 +929,12 @@ static void messageview_size_allocate_cb(GtkWidget *widget,
 	prefs_common.msgwin_height = allocation->height;
 }
 
-static void key_pressed(GtkWidget *widget, GdkEventKey *event,
+static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
 			MessageView *messageview)
 {
 	if (event && event->keyval == GDK_Escape && messageview->window)
 		gtk_widget_destroy(messageview->window);
+	return FALSE;
 }
 
 void messageview_toggle_view_real(MessageView *messageview)

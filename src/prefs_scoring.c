@@ -90,7 +90,7 @@ static void prefs_scoring_select		(GtkCList	*clist,
 static gint prefs_scoring_deleted	(GtkWidget	*widget,
 					 GdkEventAny	*event,
 					 gpointer	 data);
-static void prefs_scoring_key_pressed	(GtkWidget	*widget,
+static gboolean prefs_scoring_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
 static void prefs_scoring_cancel		(void);
@@ -712,7 +712,7 @@ static gint prefs_scoring_deleted(GtkWidget *widget, GdkEventAny *event,
 	return TRUE;
 }
 
-static void prefs_scoring_key_pressed(GtkWidget *widget, GdkEventKey *event,
+static gboolean prefs_scoring_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				     gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)

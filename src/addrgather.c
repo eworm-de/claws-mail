@@ -127,13 +127,14 @@ static gint addrgather_dlg_delete_event(
 	return TRUE;
 }
 
-static void addrgather_dlg_key_pressed(
+static gboolean addrgather_dlg_key_pressed(
 	GtkWidget *widget, GdkEventKey *event, gpointer data )
 {
 	if( event && event->keyval == GDK_Escape ) {
 		addrgather_dlg.cancelled = TRUE;
 		gtk_main_quit();
 	}
+	return FALSE;
 }
 
 #define FMT_BUFSIZE 32

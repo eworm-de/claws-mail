@@ -2808,7 +2808,7 @@ static gboolean mainwindow_focus_in_event(GtkWidget *widget, GdkEventFocus *focu
 #define BREAK_ON_MODIFIER_KEY() \
 	if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) != 0) break
 
-void mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
+gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 				    gpointer data)
 {
 	MainWindow *mainwin = (MainWindow*) data;
@@ -2832,6 +2832,7 @@ void mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 	default:
 		break;
 	}
+	return FALSE;
 }
 
 #undef BREAK_ON_MODIFIER_KEY
