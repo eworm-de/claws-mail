@@ -97,23 +97,25 @@ struct _MainWindow
 	/* for the reply buttons */
 	GtkWidget *reply_btn;
 	GtkWidget *reply_btn_plain;
-	GtkWidget *reply_quote_btn;
-	GtkWidget *reply_quote_btn_plain;
 	GtkWidget *reply_popup_btn;
 	GtkWidget *reply_popup;
 	GtkWidget *replyall_btn;
 	GtkWidget *replyall_btn_plain;
-	GtkWidget *replyall_quote_btn;
-	GtkWidget *replyall_quote_btn_plain;
 	GtkWidget *replyall_popup_btn;
 	GtkWidget *replyall_popup;
 	GtkWidget *replysender_btn;
 	GtkWidget *replysender_btn_plain;
-	GtkWidget *replysender_quote_btn;
-	GtkWidget *replysender_quote_btn_plain;
 	GtkWidget *replysender_popup_btn;
 	GtkWidget *replysender_popup;
+	
+	/* the forward button similar to the reply buttons*/
 	GtkWidget *fwd_btn;
+	GtkWidget *fwd_btn_plain;
+	GtkWidget *fwd_inline_btn;
+	GtkWidget *fwd_inline_btn_plain;
+	GtkWidget *fwd_popup_btn;
+	GtkWidget *fwd_popup;
+	
 	GtkWidget *send_btn;
 	/*
 	GtkWidget *prefs_btn;

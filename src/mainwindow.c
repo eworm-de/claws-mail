@@ -547,8 +547,6 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/Follow-up and reply to"), NULL, reply_cb, COMPOSE_FOLLOWUP_AND_REPLY_TO, NULL},
 	{N_("/_Message/Reply to a_ll"),		"<shift><alt>R", reply_cb, COMPOSE_REPLY_TO_ALL, NULL},
 	{N_("/_Message/_Forward"),		"<shift><alt>F", reply_cb, COMPOSE_FORWARD, NULL},
-	{N_("/_Message/Forward as a_ttachment"),
-						"<shift><control>F", reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
 	{N_("/_Message/Bounce"),		NULL, reply_cb, COMPOSE_BOUNCE, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Re-_edit"),		NULL, reedit_cb, 0, NULL},
@@ -660,6 +658,12 @@ static GtkItemFactoryEntry replysender_popup_entries[] =
 	{N_("/Reply to sender with _quoting the message"), NULL, reply_cb, COMPOSE_REPLY_TO_SENDER_WITH_QUOTE, NULL},
 	{N_("/_Reply to sender without quoting the message"), NULL, reply_cb, COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE, NULL}
 };
+static GtkItemFactoryEntry fwd_popup_entries[] =
+{
+	{N_("/_Forward message (inline style)"), NULL, reply_cb, COMPOSE_FORWARD_INLINE, NULL},
+	{N_("/Forward message as _attachement"), NULL, reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL}
+};
+
 
 MainWindow *main_window_create(SeparateType type)
 {
@@ -689,6 +693,7 @@ MainWindow *main_window_create(SeparateType type)
 	GtkWidget *reply_popup;
 	GtkWidget *replyall_popup;
 	GtkWidget *replysender_popup;
+	GtkWidget *fwd_popup;
 	gint i;
 
 	debug_print(_("Creating main window...\n"));
@@ -738,7 +743,12 @@ MainWindow *main_window_create(SeparateType type)
 			sizeof(replysender_popup_entries[0]);
 	replysender_popup = popupmenu_create(window, replysender_popup_entries, n_menu_entries,
 				      "<ReplySenderPopup>", mainwin);
-
+	/* create the popup menu for the forward button */
+	n_menu_entries = sizeof(fwd_popup_entries) /
+			sizeof(fwd_popup_entries[0]);
+	fwd_popup = popupmenu_create(window, fwd_popup_entries, n_menu_entries,
+				      "<ForwardPopup>", mainwin);
+					  
 	main_window_toolbar_create(mainwin, handlebox);
 
 	/* vbox that contains body */
@@ -802,9 +812,10 @@ MainWindow *main_window_create(SeparateType type)
 	mainwin->statuslabel = statuslabel;
 	mainwin->ac_button   = ac_button;
 	mainwin->ac_label    = ac_label;
-	mainwin->reply_popup			 = reply_popup;
-	mainwin->replyall_popup			 = replyall_popup;
-	mainwin->replysender_popup		 = replysender_popup;
+	mainwin->reply_popup = reply_popup;
+	mainwin->replyall_popup = replyall_popup;
+	mainwin->replysender_popup = replysender_popup;
+	mainwin->fwd_popup = fwd_popup;
 	
 	/* set context IDs for status bar */
 	mainwin->mainwin_cid = gtk_statusbar_get_context_id
@@ -996,12 +1007,6 @@ void main_window_reflect_prefs_all(void)
 		main_window_show_cur_account(mainwin);
 		main_window_set_menu_sensitive(mainwin);
 		main_window_set_toolbar_sensitive(mainwin);
-		set_toolbar_reply_button(mainwin, 
-					 prefs_common.toolbar_style);
-		set_toolbar_replyall_button(mainwin, 
-					 prefs_common.toolbar_style);
-		set_toolbar_replysender_button(mainwin, 
-					 prefs_common.toolbar_style);
 
 		if (prefs_common.immediate_exec)
 			gtk_widget_hide(mainwin->exec_btn);
@@ -1305,9 +1310,10 @@ typedef enum
 	M_EXEC                = 1 << 4,
 	M_ALLOW_REEDIT        = 1 << 5,
 	M_HAVE_ACCOUNT        = 1 << 6,
-	M_THREADED	      = 1 << 7,
+	M_THREADED            = 1 << 7,
 	M_UNTHREADED	      = 1 << 8,
-	M_NEWS                = 1 << 9
+	M_NEWS                = 1 << 9,
+	M_HAVE_NEWS_ACCOUNT   = 1 << 10
 } SensitiveCond;
 
 static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
@@ -1315,7 +1321,8 @@ static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 	SensitiveCond state = 0;
 	SummarySelection selection;
 	FolderItem *item = mainwin->summaryview->folder_item;
-
+	GList *account_list = account_get_list();
+	
 	selection = summary_get_selection_type(mainwin->summaryview);
 
 	if (mainwin->lock_count == 0)
@@ -1345,6 +1352,13 @@ static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 		state |= M_ALLOW_REEDIT;
 	if (cur_account)
 		state |= M_HAVE_ACCOUNT;
+	
+	for ( ; account_list != NULL; account_list = account_list->next) {
+		if (((PrefsAccount*)account_list->data)->protocol == A_NNTP) {
+			state |= M_HAVE_NEWS_ACCOUNT;
+			break;
+		}
+	}
 
 	return state;
 }
@@ -1352,7 +1366,7 @@ static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 void main_window_set_toolbar_sensitive(MainWindow *mainwin)
 {
 	SensitiveCond state;
-        gboolean sensitive;
+    gboolean sensitive;
 	gint i;
 
 	const struct {
@@ -1363,22 +1377,16 @@ void main_window_set_toolbar_sensitive(MainWindow *mainwin)
 		{mainwin->getall_btn      , M_HAVE_ACCOUNT|M_UNLOCKED},
 		{mainwin->compose_mail_btn, M_HAVE_ACCOUNT},
 		{mainwin->compose_mail_btn_plain, M_HAVE_ACCOUNT},
-		{mainwin->compose_news_btn, M_HAVE_ACCOUNT},
-		{mainwin->compose_news_btn_plain, M_HAVE_ACCOUNT},
+		{mainwin->compose_news_btn, M_HAVE_NEWS_ACCOUNT},
+		{mainwin->compose_news_btn_plain, M_HAVE_NEWS_ACCOUNT},
 		{mainwin->reply_btn       , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{mainwin->reply_btn_plain, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{mainwin->reply_quote_btn , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{mainwin->reply_quote_btn_plain, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{mainwin->reply_popup_btn , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{mainwin->replyall_btn    , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{mainwin->replyall_btn_plain	, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{mainwin->replyall_quote_btn    , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{mainwin->replyall_quote_btn_plain	, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{mainwin->replyall_popup_btn , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{mainwin->replysender_btn , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{mainwin->replysender_btn_plain , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{mainwin->replysender_quote_btn , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{mainwin->replysender_quote_btn_plain , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{mainwin->replysender_popup_btn , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{mainwin->fwd_btn         , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		/* {mainwin->prefs_btn      , M_UNLOCKED},
@@ -1426,6 +1434,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Get new mail"          , M_HAVE_ACCOUNT|M_UNLOCKED},
 		{"/Message/Get from all accounts" , M_HAVE_ACCOUNT|M_UNLOCKED},
 /*		{"/Message/Compose new message"   , M_HAVE_ACCOUNT}, */
+		{"/Message/Compose a news message", M_HAVE_NEWS_ACCOUNT},
 		{"/Message/Reply"                 , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{"/Message/Reply to sender"       , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{"/Message/Reply to all"          , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
@@ -1685,11 +1694,8 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 #include "pixmaps/stock_mail_compose.xpm"
 #include "pixmaps/stock_news_compose.xpm"
 #include "pixmaps/stock_mail_reply.xpm"
-#include "pixmaps/stock_mail_reply_quote.xpm"
 #include "pixmaps/stock_mail_reply_to_all.xpm"
-#include "pixmaps/stock_mail_reply_to_all_quote.xpm"
 #include "pixmaps/stock_mail_reply_to_author.xpm"
-#include "pixmaps/stock_mail_reply_to_author_quote.xpm"
 #include "pixmaps/stock_mail_forward.xpm"
 #include "pixmaps/stock_mail_send.xpm"
 #include "pixmaps/stock_preferences.xpm"
@@ -1721,16 +1727,10 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	GtkWidget *compose_news_btn_plain;
 	GtkWidget *reply_btn;
 	GtkWidget *reply_btn_plain;
-	GtkWidget *reply_quote_btn;
-	GtkWidget *reply_quote_btn_plain;
 	GtkWidget *replyall_btn;
 	GtkWidget *replyall_btn_plain;
-	GtkWidget *replyall_quote_btn;
-	GtkWidget *replyall_quote_btn_plain;
 	GtkWidget *replysender_btn;
 	GtkWidget *replysender_btn_plain;
-	GtkWidget *replysender_quote_btn;
-	GtkWidget *replysender_quote_btn_plain;
 	GtkWidget *fwd_btn;
 	GtkWidget *send_btn;
 	/*
@@ -1746,16 +1746,10 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	GtkWidget *compose_label;
 	GtkWidget *reply_box;
 	GtkWidget *reply_label;
-	GtkWidget *reply_quote_box;
-	GtkWidget *reply_quote_label;
 	GtkWidget *replyall_box;
 	GtkWidget *replyall_label;
-	GtkWidget *replyall_quote_box;
-	GtkWidget *replyall_quote_label;
 	GtkWidget *replysender_box;
 	GtkWidget *replysender_label;
-	GtkWidget *replysender_quote_box;
-	GtkWidget *replysender_quote_label;
 	/* the popup menus */
 	GtkWidget *reply_popup_btn;
 	GtkWidget *reply_popup_arrow;
@@ -1928,41 +1922,8 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 					    icon_wid,
 					    toolbar_reply_cb,
 					    mainwin);
-						
-	/* reply with quote button */
-	
-	reply_quote_btn = gtk_button_new();
-	gtk_widget_show(reply_quote_btn);
-	tooltips = gtk_tooltips_new();
-	gtk_tooltips_set_tip(tooltips, reply_quote_btn, 
-						 _("Reply to the message quoting it"),
-						 _("Reply quoting"));
-	reply_quote_box = gtk_vbox_new(0, 0);
-	gtk_widget_show(reply_quote_box);
-	
-	gtk_container_add(GTK_CONTAINER(reply_quote_btn), reply_quote_box);
-	CREATE_TOOLBAR_ICON(stock_mail_reply_quote_xpm);
-	gtk_box_pack_start(GTK_BOX(reply_quote_box), icon_wid, FALSE, FALSE, 0);
 
-	reply_quote_label = gtk_label_new(_("Reply"));
-	gtk_widget_show(reply_quote_label);
-	gtk_box_pack_start(GTK_BOX(reply_quote_box), reply_quote_label, FALSE, FALSE, 0);
-	
-	GTK_WIDGET_UNSET_FLAGS(GTK_WIDGET(reply_quote_btn), GTK_CAN_FOCUS);
-	gtk_button_set_relief(GTK_BUTTON(reply_quote_btn), GTK_RELIEF_NONE);
-	gtk_toolbar_append_widget(GTK_TOOLBAR(toolbar), reply_quote_btn, NULL, NULL);
-	
-	/* plain reply with quote button */
-	CREATE_TOOLBAR_ICON(stock_mail_reply_quote_xpm);
-	reply_quote_btn_plain = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
-					    _("Reply"),
-					    _("Reply to the message quoting it"),
-					    "Reply quoting",
-					    icon_wid,
-					    toolbar_reply_cb,
-					    mainwin);
-		
-	/* button for selecting the reply type */
+	/* button for showing the reply popup */
 	reply_popup_btn = gtk_button_new();
 	gtk_widget_show(reply_popup_btn);
 
@@ -2010,41 +1971,8 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 					       icon_wid,
 					       toolbar_reply_to_all_cb,
 					       mainwin);
-						
-	/* reply to all with quote button */
-	
-	replyall_quote_btn = gtk_button_new();
-	gtk_widget_show(replyall_quote_btn);
-	tooltips = gtk_tooltips_new();
-	gtk_tooltips_set_tip(tooltips, replyall_quote_btn, 
-						 _("Reply to all quoting the message"),
-						 _("Reply to all quoting"));
-	replyall_quote_box = gtk_vbox_new(0, 0);
-	gtk_widget_show(replyall_quote_box);
-	
-	gtk_container_add(GTK_CONTAINER(replyall_quote_btn), replyall_quote_box);
-	CREATE_TOOLBAR_ICON(stock_mail_reply_to_all_quote_xpm);
-	gtk_box_pack_start(GTK_BOX(replyall_quote_box), icon_wid, FALSE, FALSE, 0);
 
-	replyall_quote_label = gtk_label_new(_("All"));
-	gtk_widget_show(replyall_quote_label);
-	gtk_box_pack_start(GTK_BOX(replyall_quote_box), replyall_quote_label, FALSE, FALSE, 0);
-	
-	GTK_WIDGET_UNSET_FLAGS(GTK_WIDGET(replyall_quote_btn), GTK_CAN_FOCUS);
-	gtk_button_set_relief(GTK_BUTTON(replyall_quote_btn), GTK_RELIEF_NONE);
-	gtk_toolbar_append_widget(GTK_TOOLBAR(toolbar), replyall_quote_btn, NULL, NULL);
-	
-	/* plain reply to all with quote button */
-	CREATE_TOOLBAR_ICON(stock_mail_reply_to_all_quote_xpm);
-	replyall_quote_btn_plain = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
-					       _("All"),
-					       _("Reply to all quoting the message"),
-					       "Reply to all quoting",
-					       icon_wid,
-					       toolbar_reply_to_all_cb,
-					       mainwin);
-		
-	/* button for selecting the reply to all popup */
+	/* button for showing the reply to all popup */
 	replyall_popup_btn = gtk_button_new();
 	gtk_widget_show(replyall_popup_btn);
 	
@@ -2092,40 +2020,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 						  icon_wid,
 						  toolbar_reply_to_sender_cb,
 						  mainwin);
-						
-	/* reply to sender with quote button */
-	
-	replysender_quote_btn = gtk_button_new();
-	gtk_widget_show(replysender_quote_btn);
-	tooltips = gtk_tooltips_new();
-	gtk_tooltips_set_tip(tooltips, replysender_quote_btn, 
-						 _("Reply to sender quoting the message"),
-						 _("Reply to sender quoting"));
-	replysender_quote_box = gtk_vbox_new(0, 0);
-	gtk_widget_show(replysender_quote_box);
-	
-	gtk_container_add(GTK_CONTAINER(replysender_quote_btn), replysender_quote_box);
-	CREATE_TOOLBAR_ICON(stock_mail_reply_to_author_quote_xpm);
-	gtk_box_pack_start(GTK_BOX(replysender_quote_box), icon_wid, FALSE, FALSE, 0);
 
-	replysender_quote_label = gtk_label_new(_("Sender"));
-	gtk_widget_show(replysender_quote_label);
-	gtk_box_pack_start(GTK_BOX(replysender_quote_box), replysender_quote_label, FALSE, FALSE, 0);
-	
-	GTK_WIDGET_UNSET_FLAGS(GTK_WIDGET(replysender_quote_btn), GTK_CAN_FOCUS);
-	gtk_button_set_relief(GTK_BUTTON(replysender_quote_btn), GTK_RELIEF_NONE);
-	gtk_toolbar_append_widget(GTK_TOOLBAR(toolbar), replysender_quote_btn, NULL, NULL);
-	
-	/* plain reply to sender with quote button */
-	CREATE_TOOLBAR_ICON(stock_mail_reply_to_author_quote_xpm);
-	replysender_quote_btn_plain = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
-						  _("Sender"),
-						  _("Reply to sender quoting the message"),
-						  "Reply to sender quoting",
-						  icon_wid,
-						  toolbar_reply_to_sender_cb,
-						  mainwin);
-		
 	/* button for selecting the reply to sender popup */
 	replysender_popup_btn = gtk_button_new();
 	gtk_widget_show(replysender_popup_btn);
@@ -2218,10 +2113,6 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 		GTK_SIGNAL_FUNC(toolbar_reply_cb),
 		mainwin);
 	
-	gtk_signal_connect(GTK_OBJECT(reply_quote_btn), "clicked",
-		GTK_SIGNAL_FUNC(toolbar_reply_cb),
-		mainwin);
-		
 	gtk_signal_connect(GTK_OBJECT(reply_popup_btn), "clicked",
 		GTK_SIGNAL_FUNC(toolbar_reply_popup_cb),
 		mainwin);
@@ -2230,10 +2121,6 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 		GTK_SIGNAL_FUNC(toolbar_reply_to_all_cb),
 		mainwin);
 	
-	gtk_signal_connect(GTK_OBJECT(replyall_quote_btn), "clicked",
-		GTK_SIGNAL_FUNC(toolbar_reply_to_all_cb),
-		mainwin);
-		
 	gtk_signal_connect(GTK_OBJECT(replyall_popup_btn), "clicked",
 		GTK_SIGNAL_FUNC(toolbar_reply_to_all_popup_cb),
 		mainwin);
@@ -2242,10 +2129,6 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 		GTK_SIGNAL_FUNC(toolbar_reply_to_sender_cb),
 		mainwin);
 	
-	gtk_signal_connect(GTK_OBJECT(replysender_quote_btn), "clicked",
-		GTK_SIGNAL_FUNC(toolbar_reply_to_sender_cb),
-		mainwin);
-		
 	gtk_signal_connect(GTK_OBJECT(replysender_popup_btn), "clicked",
 		GTK_SIGNAL_FUNC(toolbar_reply_to_sender_popup_cb),
 		mainwin);
@@ -2261,18 +2144,12 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	/* the reply buttons and the popups */
 	mainwin->reply_btn      		 = reply_btn;
 	mainwin->reply_btn_plain		 = reply_btn_plain;
-	mainwin->reply_quote_btn		 = reply_quote_btn;
-	mainwin->reply_quote_btn_plain	 = reply_quote_btn_plain;
 	mainwin->reply_popup_btn		 = reply_popup_btn;
 	mainwin->replyall_btn   		 = replyall_btn;
 	mainwin->replyall_btn_plain		 = replyall_btn_plain;
-	mainwin->replyall_quote_btn		 = replyall_quote_btn;
-	mainwin->replyall_quote_btn_plain = replyall_quote_btn_plain;
 	mainwin->replyall_popup_btn		 = replyall_popup_btn;
 	mainwin->replysender_btn		 = replysender_btn;
 	mainwin->replysender_btn_plain	 = replysender_btn_plain;
-	mainwin->replysender_quote_btn	 = replysender_quote_btn;
-	mainwin->replysender_quote_btn_plain = replysender_quote_btn_plain;
 	mainwin->replysender_popup_btn	 = replysender_popup_btn;
 	
 	mainwin->fwd_btn         = fwd_btn;
@@ -2904,6 +2781,15 @@ static void reply_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 		compose_reply(msginfo, FALSE, TRUE, TRUE);
 		break;
 	case COMPOSE_FORWARD:
+		if (prefs_common.forward_as_attachment) {
+			reply_cb(mainwin, COMPOSE_FORWARD_AS_ATTACH, widget);
+			return;
+		} else {
+			reply_cb(mainwin, COMPOSE_FORWARD_INLINE, widget);
+			return;
+		}
+		break;
+	case COMPOSE_FORWARD_INLINE:
 		if (!sel->next) {
 			compose_forward(NULL, msginfo, FALSE);
 			break;
@@ -3281,19 +3167,11 @@ static void set_toolbar_reply_button(MainWindow *mainwin, ToolbarStyle style)
 
 	if (style == TOOLBAR_BOTH) {
 		gtk_widget_hide(mainwin->reply_btn_plain);
-		gtk_widget_hide(mainwin->reply_quote_btn_plain);
-		gtk_widget_hide(prefs_common.reply_with_quote ? mainwin->reply_btn 
-			: mainwin->reply_quote_btn);
-		gtk_widget_show(prefs_common.reply_with_quote ? mainwin->reply_quote_btn
-			: mainwin->reply_btn);
+		gtk_widget_show(mainwin->reply_btn);
 	}
 	else {
 		gtk_widget_hide(mainwin->reply_btn);
-		gtk_widget_hide(mainwin->reply_quote_btn);
-		gtk_widget_hide(prefs_common.reply_with_quote ? mainwin->reply_btn_plain 
-			: mainwin->reply_quote_btn_plain);
-		gtk_widget_show(prefs_common.reply_with_quote ? mainwin->reply_quote_btn_plain
-			: mainwin->reply_btn_plain);
+		gtk_widget_show(mainwin->reply_btn_plain);
 	}
 }
 
@@ -3304,19 +3182,11 @@ static void set_toolbar_replyall_button(MainWindow *mainwin, ToolbarStyle style)
 
 	if (style == TOOLBAR_BOTH) {
 		gtk_widget_hide(mainwin->replyall_btn_plain);
-		gtk_widget_hide(mainwin->replyall_quote_btn_plain);
-		gtk_widget_hide(prefs_common.reply_with_quote ? mainwin->replyall_btn 
-			: mainwin->replyall_quote_btn);
-		gtk_widget_show(prefs_common.reply_with_quote ? mainwin->replyall_quote_btn
-			: mainwin->replyall_btn);
+		gtk_widget_show(mainwin->replyall_btn);
 	}
 	else {
 		gtk_widget_hide(mainwin->replyall_btn);
-		gtk_widget_hide(mainwin->replyall_quote_btn);
-		gtk_widget_hide(prefs_common.reply_with_quote ? mainwin->replyall_btn_plain 
-			: mainwin->replyall_quote_btn_plain);
-		gtk_widget_show(prefs_common.reply_with_quote ? mainwin->replyall_quote_btn_plain
-			: mainwin->replyall_btn_plain);
+		gtk_widget_show(mainwin->replyall_btn_plain);
 	}
 }
 
@@ -3327,18 +3197,10 @@ static void set_toolbar_replysender_button(MainWindow *mainwin, ToolbarStyle sty
 
 	if (style == TOOLBAR_BOTH) {
 		gtk_widget_hide(mainwin->replysender_btn_plain);
-		gtk_widget_hide(mainwin->replysender_quote_btn_plain);
-		gtk_widget_hide(prefs_common.reply_with_quote ? mainwin->replysender_btn 
-			: mainwin->replysender_quote_btn);
-		gtk_widget_show(prefs_common.reply_with_quote ? mainwin->replysender_quote_btn
-			: mainwin->replysender_btn);
+		gtk_widget_show(mainwin->replysender_btn);
 	}
 	else {
 		gtk_widget_hide(mainwin->replysender_btn);
-		gtk_widget_hide(mainwin->replysender_quote_btn);
-		gtk_widget_hide(prefs_common.reply_with_quote ? mainwin->replysender_btn_plain 
-			: mainwin->replysender_quote_btn_plain);
-		gtk_widget_show(prefs_common.reply_with_quote ? mainwin->replysender_quote_btn_plain
-			: mainwin->replysender_btn_plain);
+		gtk_widget_show(mainwin->replysender_btn_plain);
 	}
 }
