@@ -35,6 +35,11 @@
 #include "mainwindow.h"
 #include "gtkutils.h"
 #include "intl.h"
+#include "menu.h"
+#include "toolbar.h"
+#include "prefs_common.h"
+#include "main.h"
+#include "alertpanel.h"
 
 #include "eggtrayicon.h"
 #include "newmail.xpm"
@@ -54,6 +59,8 @@ static EggTrayIcon *trayicon;
 static GtkWidget *eventbox;
 static GtkWidget *image;
 static GtkTooltips *tooltips;
+static GtkWidget *traymenu_popup;
+
 guint destroy_signal_id;
 
 typedef enum
@@ -64,7 +71,22 @@ typedef enum
 	TRAYICON_NOTHING,
 } TrayIconType;
 
-/* static gboolean mainwin_hidden = FALSE; */
+static void trayicon_get_cb	    ( gpointer data, guint action, GtkWidget *widget );
+static void trayicon_get_all_cb	    ( gpointer data, guint action, GtkWidget *widget );
+static void trayicon_compose_cb	    ( gpointer data, guint action, GtkWidget *widget );
+static void trayicon_addressbook_cb ( gpointer data, guint action, GtkWidget *widget );
+static void trayicon_exit_cb	    ( gpointer data, guint action, GtkWidget *widget );
+
+static GtkItemFactoryEntry trayicon_popup_menu_entries[] =
+{
+	{N_("/_Get"),			NULL, trayicon_get_cb, 		0, NULL},
+	{N_("/_Get _All"),		NULL, trayicon_get_all_cb, 	0, NULL},
+	{N_("/---"),			NULL, NULL, 			0, "<Separator>"},
+	{N_("/_Email"),			NULL, trayicon_compose_cb,   	0, NULL},
+	{N_("/Open A_ddressbook"),	NULL, trayicon_addressbook_cb, 	0, NULL},
+	{N_("/---"),			NULL, NULL, 			0, "<Separator>"},
+	{N_("/E_xit Sylpheed"),		NULL, trayicon_exit_cb,     	0, NULL}
+};
 
 static void set_trayicon_pixmap(TrayIconType icontype)
 {
@@ -117,12 +139,26 @@ static gboolean click_cb(GtkWidget * widget,
 {
 	MainWindow *mainwin;
 
+	if (event == NULL)
+		return TRUE;
+
 	mainwin = mainwindow_get_mainwindow();
-	if (GTK_WIDGET_VISIBLE(GTK_WIDGET(mainwin->window))) {
-		main_window_hide(mainwin);
-	} else {
-		main_window_show(mainwin);
-        }
+	
+	switch (event->button) {
+	case 1:
+		if (GTK_WIDGET_VISIBLE(GTK_WIDGET(mainwin->window))) {
+			main_window_hide(mainwin);
+		} else {
+			main_window_show(mainwin);
+        	}
+		break;
+	case 3:
+		gtk_menu_popup( GTK_MENU(traymenu_popup), NULL, NULL, NULL, NULL,
+		       event->button, event->time );
+		break;
+	default:
+		return TRUE;
+	}
 	return TRUE;
 }
 
@@ -137,12 +173,13 @@ static void destroy_cb(GtkWidget *widget, gpointer *data)
 
 static void create_trayicon()
 {
+	gint n_entries = 0;
+	GtkItemFactory *traymenu_factory;
 #if 0
 	GtkPacker *packer;
 #endif
 
         trayicon = egg_tray_icon_new("Sylpheed-Claws");
-//        trayicon = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_widget_realize(GTK_WIDGET(trayicon));
 	gtk_window_set_default_size(GTK_WINDOW(trayicon), 16, 16);
         gtk_container_set_border_width(GTK_CONTAINER(trayicon), 0);
@@ -155,18 +192,8 @@ static void create_trayicon()
         gtk_container_set_border_width(GTK_CONTAINER(eventbox), 0);
         gtk_container_add(GTK_CONTAINER(trayicon), GTK_WIDGET(eventbox));
 
-#warning FIXME_GTK2
-#if 0
-	packer = GTK_PACKER(gtk_packer_new());
-        gtk_container_add(GTK_CONTAINER(eventbox), GTK_WIDGET(packer));
-        gtk_container_set_border_width(GTK_CONTAINER(packer), 0);
-
-        image = gtk_image_new_from_pixmap(nomail_pixmap, nomail_bitmap);
-        gtk_packer_add_defaults(GTK_PACKER(packer), GTK_WIDGET(image), GTK_SIDE_TOP, GTK_ANCHOR_CENTER, GTK_PACK_EXPAND);
-#else
         image = gtk_image_new_from_pixmap(nomail_pixmap, nomail_bitmap);
         gtk_container_add(GTK_CONTAINER(eventbox), image);
-#endif
 
 	destroy_signal_id =
 	g_signal_connect(G_OBJECT(trayicon), "destroy",
@@ -177,6 +204,13 @@ static void create_trayicon()
         tooltips = gtk_tooltips_new();
         gtk_tooltips_set_delay(tooltips, 1000);
         gtk_tooltips_enable(tooltips);
+
+	n_entries = sizeof(trayicon_popup_menu_entries) /
+		sizeof(trayicon_popup_menu_entries[0]);
+	traymenu_popup = menu_create_items(trayicon_popup_menu_entries,
+				       n_entries,
+				       "<TrayiconMenu>", &traymenu_factory,
+				       NULL);
 
         gtk_widget_show_all(GTK_WIDGET(trayicon));
 
@@ -235,4 +269,48 @@ const gchar *plugin_desc(void)
 const gchar *plugin_type(void)
 {
 	return "GTK2";
+}
+
+/* popup menu callbacks */
+static void trayicon_get_cb( gpointer data, guint action, GtkWidget *widget )
+{
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+	inc_mail_cb(mainwin, 0, NULL);
+}
+
+static void trayicon_get_all_cb( gpointer data, guint action, GtkWidget *widget )
+{
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+	inc_all_account_mail_cb(mainwin, 0, NULL);
+}
+
+static void trayicon_compose_cb( gpointer data, guint action, GtkWidget *widget )
+{
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+	compose_mail_cb(mainwin, 0, NULL);
+}
+
+static void trayicon_addressbook_cb( gpointer data, guint action, GtkWidget *widget )
+{
+	addressbook_open(NULL);
+}
+
+static void app_exit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+{
+	if (prefs_common.confirm_on_exit) {
+		if (alertpanel(_("Exit"), _("Exit this program?"),
+			       _("OK"), _("Cancel"), NULL) != G_ALERTDEFAULT)
+			return;
+		manage_window_focus_in(mainwin->window, NULL, NULL);
+	}
+
+	app_will_exit(NULL, mainwin);
+}
+
+static void trayicon_exit_cb( gpointer data, guint action, GtkWidget *widget )
+{
+	MainWindow *mainwin = mainwindow_get_mainwindow();
+
+	if (mainwin->lock_count == 0)
+		app_exit_cb(mainwin, 0, NULL);
 }
