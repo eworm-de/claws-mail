@@ -1,3 +1,8 @@
+2004-07-21 [colin]	0.9.12cvs33.11
+
+	* src/gtk/filesel.c
+		More check
+
 2004-07-21 [colin]	0.9.12cvs33.10
 
 	* src/compose.c
