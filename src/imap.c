@@ -1717,7 +1717,7 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 	g_return_val_if_fail(item->path != NULL, -1);
 	g_return_val_if_fail(name != NULL, -1);
 
-	if (strchr(name, imap_get_path_separator(folder, item->path)) != NULL) {
+	if (strchr(name, imap_get_path_separator(IMAP_FOLDER(folder), item->path)) != NULL) {
 		g_warning(_("New folder name must not contain the namespace "
 			    "path seperator"));
 		return -1;
@@ -2761,7 +2761,7 @@ static gint imap_cmd_do_select(IMAPSession *session, const gchar *folder,
 			g_warning("imap_cmd_select(): invalid UIDVALIDITY line.\n");
 			THROW;
 		}
-		uid_validity = uid_validity_;
+		*uid_validity = uid_validity_;
 	}
 
 	resp_str = search_array_contain_str(argbuf, "UNSEEN");

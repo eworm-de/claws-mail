@@ -1,3 +1,9 @@
+2004-04-12 [alfons]	0.9.10claws7
+
+	* src/imap.c
+		o quiet compiler and typecast Folder * to IMAP Folder *
+		o wake up and fix my previous incompatible type assignment bug
+
 2004-04-12 [alfons]	0.9.10claws6
 
 	* src/imap.c
