@@ -2759,8 +2759,12 @@ void summary_mark(SummaryView *summaryview)
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GList *cur;
 
+	folder_item_update_freeze();
+	gtk_clist_freeze(GTK_CLIST(summaryview->ctree));
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
 		summary_mark_row(summaryview, GTK_CTREE_NODE(cur->data));
+	folder_item_update_thaw();
+	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 
 	/* summary_step(summaryview, GTK_SCROLL_STEP_FORWARD); */
 	summary_status_show(summaryview);
@@ -3089,8 +3093,14 @@ void summary_unmark(SummaryView *summaryview)
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GList *cur;
 
+	folder_item_update_freeze();
+	gtk_clist_freeze(GTK_CLIST(summaryview->ctree)); 
+
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
 		summary_unmark_row(summaryview, GTK_CTREE_NODE(cur->data));
+
+	folder_item_update_thaw();
+	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 
 	summary_status_show(summaryview);
 }
@@ -3138,10 +3148,16 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 		return;
 	}
 
+	folder_item_update_freeze();
+	gtk_clist_freeze(GTK_CLIST(summaryview->ctree)); 
+
 	for (cur = GTK_CLIST(summaryview->ctree)->selection;
 	     cur != NULL; cur = cur->next)
 		summary_move_row_to
 			(summaryview, GTK_CTREE_NODE(cur->data), to_folder);
+
+	folder_item_update_thaw();
+	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 
 	summary_step(summaryview, GTK_SCROLL_STEP_FORWARD);
 
@@ -3215,10 +3231,16 @@ void summary_copy_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 		return;
 	}
 
+	folder_item_update_freeze();
+	gtk_clist_freeze(GTK_CLIST(summaryview->ctree)); 
+
 	for (cur = GTK_CLIST(summaryview->ctree)->selection;
 	     cur != NULL; cur = cur->next)
 		summary_copy_row_to
 			(summaryview, GTK_CTREE_NODE(cur->data), to_folder);
+
+	folder_item_update_thaw();
+	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 
 	summary_step(summaryview, GTK_SCROLL_STEP_FORWARD);
 

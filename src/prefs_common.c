@@ -379,7 +379,7 @@ static PrefParam param[] = {
 	/* new fonts */
 	{"widget_font_gtk2",	NULL,
 	  &prefs_common.widgetfont,		P_STRING, NULL, NULL, NULL},
-	{"message_font_gtk2",	"fixed 9",
+	{"message_font_gtk2",	"Monospace 9",
 	 &prefs_common.textfont,		P_STRING, NULL, NULL, NULL},
 	{"small_font_gtk2",	"Sans 9",
 	  &prefs_common.smallfont,		P_STRING, NULL, NULL, NULL},

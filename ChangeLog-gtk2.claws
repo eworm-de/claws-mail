@@ -1,3 +1,13 @@
+2005-02-21 [colin]	1.0.1cvs15.4
+
+	* src/compose.c
+		Fix Sign/Encrypt when unselecting privacy
+		system
+	* src/prefs_common.c
+		Change default message font to Monospace
+	* src/summaryview.c
+		More freezing during potentially large operations
+
 2005-02-21 [paul]	1.0.1cvs15.3
 
 	* src/main.c
@@ -13,7 +23,7 @@
 	* src/common/utils.h
 		sync with main (revision 117)
 
-2005-02-20 [colin]	1.0.1cvs151
+2005-02-20 [colin]	1.0.1cvs15.1
 
 	* src/common/defs.h
 		Change cache file to .sylpheed_claws_cache, as

@@ -4977,7 +4977,11 @@ static void compose_set_privacy_system_cb(GtkWidget *widget, gpointer data)
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 	menu_set_sensitive(ifactory, "/Options/Sign", can_sign);
+	if (!can_sign)
+		menu_set_active(ifactory, "/Options/Sign", FALSE);
 	menu_set_sensitive(ifactory, "/Options/Encrypt", can_encrypt);
+	if (!can_encrypt)
+		menu_set_active(ifactory, "/Options/Encrypt", FALSE);
 }
 
 static void compose_update_privacy_system_menu_item(Compose * compose)
