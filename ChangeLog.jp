@@ -1,5 +1,20 @@
 2001-05-13
 
+	* src/prefs_customheader.[ch]: prefs_headers_* を
+	  prefs_custom_header_* に名称変更。 `(New)' 行と `置換' ボタンを
+	  削除。空の内容に対応。
+	  prefs_custom_header_row_moved(): 新規。 "row_move" シグナルを
+	  それに接続し、ヘッダリストをセットするようにした。
+	* src/customheader.c: custom_header_get_str()
+	  src/compose.c: compose_write_headers(): 空の内容に対応。
+	* src/prefs_display_header.c: prefs_display_header_row_moved(): 新規。
+	  "row_move" シグナルをそれに接続し、ヘッダリストをセットするように
+	  した。
+	* src/compose.c: compose_write_headers(): ヘッダの順序を修正し、
+	  カスタムヘッダをエンコードするようにした。
+
+2001-05-13
+
 	* claws ブランチからカスタムヘッダ関連をマージ:
 	* src/customheader.[ch]
 	  src/prefs_customheader.[ch]: 新規。

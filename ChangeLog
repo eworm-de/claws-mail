@@ -1,5 +1,20 @@
 2001-05-13
 
+	* src/prefs_customheader.[ch]: renamed prefs_headers_* to
+	  prefs_custom_header_*. Removed `(New)' row and `Substitute'
+	  button. Supported empty value.
+	  prefs_custom_header_row_moved(): new. Connected "row_move" signal
+	  to the function, and made it set header list.
+	* src/customheader.c: custom_header_get_str()
+	  src/compose.c: compose_write_headers(): supported empty value.
+	* src/prefs_display_header.c: prefs_display_header_row_moved(): new.
+	  Connected "row_move" signal to the function, and made it set
+	  header list.
+	* src/compose.c: compose_write_headers(): modified the order of
+	  headers, and made it encode the custom headers.
+
+2001-05-13
+
 	* merged the custom header stuff from claws branch:
 	* src/customheader.[ch]
 	  src/prefs_customheader.[ch]: new.

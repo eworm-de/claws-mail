@@ -25,7 +25,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "intl.h"
 #include "customheader.h"
 #include "utils.h"
 
@@ -33,7 +32,8 @@
 gchar *custom_header_get_str(CustomHeader *ch)
 {
 	return g_strdup_printf("%i:%s: %s",
-			       ch->account_id, ch->name, ch->value);
+			       ch->account_id, ch->name,
+			       ch->value ? ch->value : "");
 }
 
 CustomHeader *custom_header_read_str(const gchar *buf)
@@ -63,16 +63,13 @@ CustomHeader *custom_header_read_str(const gchar *buf)
 
 	while (*name == ' ') name++;
 
+	value = strchr(name, ':');
+	if (!value) return NULL;
+
+	*value++ = '\0';
+
 	ch = g_new0(CustomHeader, 1);
 	ch->account_id = id;
-
-	value = strchr(name, ':');
-	if (!value) {
-		g_free(ch);
-		return NULL;
-	} else
-		*value++ = '\0';
-
 	ch->name = *name ? g_strdup(name) : NULL;
 	while (*value == ' ') value++;
 	ch->value = *value ? g_strdup(value) : NULL;
@@ -98,10 +95,7 @@ void custom_header_free(CustomHeader *ch)
 {
 	if (!ch) return;
 
-	if (ch->name)
-		g_free(ch->name);
-	if (ch->value)
-		g_free(ch->value);
-
+	g_free(ch->name);
+	g_free(ch->value);
 	g_free(ch);
 }

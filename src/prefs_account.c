@@ -349,7 +349,7 @@ void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 	if (id < 0) g_warning("wrong account id: %d\n", id);
 	ac_prefs->account_id = id;
 
-	prefs_headers_read_config(ac_prefs);
+	prefs_custom_header_read_config(ac_prefs);
 }
 
 void prefs_account_save_config(PrefsAccount *ac_prefs)
@@ -1291,7 +1291,7 @@ static void prefs_account_cancel(void)
 
 static void prefs_account_edit_custom_header(void)
 {
-	prefs_headers_open(&tmp_ac_prefs);
+	prefs_custom_header_open(&tmp_ac_prefs);
 }
 
 #if USE_GPGME

@@ -20,8 +20,10 @@
 #ifndef __PREFS_CUSTOMHEADER_H__
 #define __PREFS_CUSTOMHEADER_H__
 
-void prefs_headers_read_config	(PrefsAccount *ac);
-void prefs_headers_write_config	(PrefsAccount *ac);
-void prefs_headers_open		(PrefsAccount *ac);
+#include "prefs_account.h"
+
+void prefs_custom_header_read_config	(PrefsAccount *ac);
+void prefs_custom_header_write_config	(PrefsAccount *ac);
+void prefs_custom_header_open		(PrefsAccount *ac);
 
 #endif /* __PREFS_CUSTOMHEADER_H__ */

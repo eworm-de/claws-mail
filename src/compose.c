@@ -2043,6 +2043,15 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		}
 	}
 
+	/* Organization */
+	if (compose->account->organization &&
+	    !IS_IN_CUSTOM_HEADER("Organization")) {
+		compose_convert_header(buf, sizeof(buf),
+				       compose->account->organization,
+				       strlen("Organization: "));
+		fprintf(fp, "Organization: %s\n", buf);
+	}
+
 	/* Program version and system info */
 	/* uname(&utsbuf); */
 	str = gtk_entry_get_text(GTK_ENTRY(compose->to_entry));
@@ -2062,15 +2071,30 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 			/* utsbuf.sysname, utsbuf.release, utsbuf.machine); */
 	}
 
-	/* Organization */
-	if (compose->account->organization &&
-	    !IS_IN_CUSTOM_HEADER("Organization")) {
-		compose_convert_header(buf, sizeof(buf),
-				       compose->account->organization,
-				       strlen("Organization: "));
-		fprintf(fp, "Organization: %s\n", buf);
-	}
+	/* custom headers */
+	if (compose->account->add_customhdr) {
+		GSList *cur;
 
+		for (cur = compose->account->customhdr_list; cur != NULL;
+		     cur = cur->next) {
+			CustomHeader *chdr = (CustomHeader *)cur->data;
+
+			if (strcasecmp(chdr->name, "Date")         != 0 &&
+			    strcasecmp(chdr->name, "Message-Id")   != 0 &&
+			    strcasecmp(chdr->name, "In-Reply-To")  != 0 &&
+			    strcasecmp(chdr->name, "References")   != 0 &&
+			    strcasecmp(chdr->name, "Mime-Version") != 0 &&
+			    strcasecmp(chdr->name, "Content-Type") != 0 &&
+			    strcasecmp(chdr->name, "Content-Transfer-Encoding")
+			    != 0)
+				compose_convert_header
+					(buf, sizeof(buf),
+					 chdr->value ? chdr->value : "",
+					 strlen(chdr->name) + 2);
+				fprintf(fp, "%s: %s\n", chdr->name, buf);
+		}
+	}
+	
 	/* MIME */
 	fprintf(fp, "Mime-Version: 1.0\n");
 	if (compose->use_attach) {
@@ -2086,26 +2110,6 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		fprintf(fp, "Content-Type: text/plain; charset=%s\n", charset);
 		fprintf(fp, "Content-Transfer-Encoding: %s\n",
 			procmime_get_encoding_str(encoding));
-	}
-
-	/* custom headers */
-	if (compose->account->add_customhdr) {
-		GSList *cur;
-
-		for (cur = compose->account->customhdr_list; cur != NULL;
-		     cur = cur->next) {
-			CustomHeader *chdr = (CustomHeader *)cur->data;
-
-			if (strcasecmp(chdr->name, "Date") != 0 &&
-			    strcasecmp(chdr->name, "Message-Id") != 0 &&
-			    strcasecmp(chdr->name, "In-Reply-To") != 0 &&
-			    strcasecmp(chdr->name, "References") != 0 &&
-			    strcasecmp(chdr->name, "Mime-Version") != 0 &&
-			    strcasecmp(chdr->name, "Content-Type") != 0 &&
-			    strcasecmp(chdr->name, "Content-Transfer-Encoding") != 0)
-				fprintf(fp, "%s: %s\n",
-					chdr->name, chdr->value);
-		}
 	}
 
 	/* Request Return Receipt */

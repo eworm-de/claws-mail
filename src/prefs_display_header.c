@@ -83,13 +83,19 @@ static void prefs_display_header_delete_cb	(GtkButton	*btn,
 static void prefs_display_header_up		(void);
 static void prefs_display_header_down		(void);
 
+static void prefs_display_header_row_moved	(GtkCList	*clist,
+						 gint		 source_row,
+						 gint		 dest_row,
+						 gpointer	 data);
+
 static void prefs_display_header_key_pressed	(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 gpointer	 data);
 static void prefs_display_header_ok		(void);
 static void prefs_display_header_cancel		(void);
-static gint prefs_display_header_deleted(GtkWidget *widget, GdkEventAny *event,
-					 gpointer data);
+static gint prefs_display_header_deleted	(GtkWidget	*widget,
+						 GdkEventAny	*event,
+						 gpointer	 data);
 
 static gchar *defaults[] =
 {
@@ -125,7 +131,7 @@ static void prefs_display_header_set_default(void)
 	gint i;
 	DisplayHeaderProp *dp;
 
-	for(i = 0; i < (gint) (sizeof(defaults) / sizeof(defaults[0])); i++) {
+	for(i = 0; i < sizeof(defaults) / sizeof(defaults[0]); i++) {
 		dp = display_header_prop_read_str(defaults[i]);
 		prefs_common.disphdr_list =
 			g_slist_append(prefs_common.disphdr_list, dp);
@@ -202,16 +208,16 @@ static void prefs_display_header_create(void)
 
 	gtk_window_set_title (GTK_WINDOW(window),
 			      _("Display header setting"));
+	gtk_signal_connect (GTK_OBJECT(window), "focus_in_event",
+			    GTK_SIGNAL_FUNC(manage_window_focus_in), NULL);
+	gtk_signal_connect (GTK_OBJECT(window), "focus_out_event",
+			    GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
 	gtk_signal_connect (GTK_OBJECT(window), "delete_event",
 			    GTK_SIGNAL_FUNC(prefs_display_header_deleted),
 			    NULL);
 	gtk_signal_connect (GTK_OBJECT(window), "key_press_event",
 			    GTK_SIGNAL_FUNC(prefs_display_header_key_pressed),
 			    NULL);
-	gtk_signal_connect (GTK_OBJECT(window), "focus_in_event",
-			    GTK_SIGNAL_FUNC(manage_window_focus_in), NULL);
-	gtk_signal_connect (GTK_OBJECT(window), "focus_out_event",
-			    GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
 	gtk_signal_connect (GTK_OBJECT(ok_btn), "clicked",
 			    GTK_SIGNAL_FUNC(prefs_display_header_ok),
 			    NULL);
@@ -270,6 +276,9 @@ static void prefs_display_header_create(void)
 	gtk_clist_set_use_drag_icons (GTK_CLIST (headers_clist), FALSE);
 	GTK_WIDGET_UNSET_FLAGS (GTK_CLIST (headers_clist)->column[0].button,
 				GTK_CAN_FOCUS);
+	gtk_signal_connect_after
+		(GTK_OBJECT (headers_clist), "row_move",
+		 GTK_SIGNAL_FUNC (prefs_display_header_row_moved), NULL);
 
 	btn_vbox = gtk_vbox_new (FALSE, 8);
 	gtk_widget_show (btn_vbox);
@@ -590,10 +599,8 @@ static void prefs_display_header_up(void)
 	if (!clist->selection) return;
 
 	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row > 0) {
+	if (row > 0)
 		gtk_clist_row_move(clist, row, row - 1);
-		prefs_display_header_set_list();
-	}
 }
 
 static void prefs_display_header_down(void)
@@ -604,10 +611,14 @@ static void prefs_display_header_down(void)
 	if (!clist->selection) return;
 
 	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row >= 0 && row < clist->rows - 1) {
+	if (row >= 0 && row < clist->rows - 1)
 		gtk_clist_row_move(clist, row, row + 1);
-		prefs_display_header_set_list();
-	}
+}
+
+static void prefs_display_header_row_moved(GtkCList *clist, gint source_row,
+					   gint dest_row, gpointer data)
+{
+	prefs_display_header_set_list();
 }
 
 static void prefs_display_header_key_pressed(GtkWidget *widget,
