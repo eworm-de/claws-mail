@@ -151,9 +151,9 @@ typedef enum {
 	MSGINFO_UPDATE_DELETED = 1 << 1,
 } MsgInfoUpdateFlags;
 
-#include "folder.h"
 #include "procmime.h"
 #include "prefs_filtering.h"
+#include "folder.h"
 
 struct _MsgFlags
 {

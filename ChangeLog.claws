@@ -1,3 +1,24 @@
+2003-12-02 [christoph]	0.9.7claws10
+
+	* src/Makefile.am
+	* src/account.c
+	* src/folder.[ch]
+	* src/folderview.h
+	* src/imap.c
+	* src/localfolder.[ch]		** NEW **
+	* src/mainwindow.c
+	* src/mh.[ch]
+	* src/news.[ch]
+	* src/prefs_account.[ch]
+	* src/prefs_filtering.h
+	* src/procmsg.h
+	* src/remotefolder.[ch]		** NEW **
+	* src/common/xml.[ch]
+		add item_set_xml() and item_get_xml() virtual functions to
+		FolderClass to give folders the ability to add extra information
+		to the saved FolderItem data. If NULL the default function for
+		FolderItem will be used.
+
 2003-11-29 [christoph]	0.9.7claws9
 
 	* src/procheader.c

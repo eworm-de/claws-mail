@@ -26,30 +26,18 @@
 typedef struct _Folder		Folder;
 typedef struct _FolderClass	FolderClass;
 
-typedef struct _LocalFolder	LocalFolder;
-typedef struct _RemoteFolder	RemoteFolder;
-#if 0
-typedef struct _MaildirFolder	MaildirFolder;
-#endif
-
 typedef struct _FolderItem	FolderItem;
 typedef struct _FolderUpdateData	FolderUpdateData;
 typedef struct _FolderItemUpdateData	FolderItemUpdateData;
+typedef struct _PersistPrefs		PersistPrefs;
 
 #define FOLDER(obj)		((Folder *)obj)
 #define FOLDER_CLASS(obj)	(FOLDER(obj)->klass)
 #define FOLDER_TYPE(obj)	(FOLDER(obj)->klass->type)
 
-#define LOCAL_FOLDER(obj)	((LocalFolder *)obj)
-#define REMOTE_FOLDER(obj)	((RemoteFolder *)obj)
-
 #define FOLDER_IS_LOCAL(obj)	(FOLDER_TYPE(obj) == F_MH      || \
 				 FOLDER_TYPE(obj) == F_MBOX    || \
 				 FOLDER_TYPE(obj) == F_MAILDIR)
-
-#if 0
-#define MAILDIR_FOLDER(obj)	((MaildirFolder *)obj)
-#endif
 
 #define FOLDER_ITEM(obj)	((FolderItem *)obj)
 
@@ -130,12 +118,13 @@ typedef void (*FolderDestroyNotify)	(Folder		*folder,
 typedef void (*FolderItemFunc)		(FolderItem	*item,
 					 gpointer	 data);
 
+
 #include "folder_item_prefs.h"
 
-#include "prefs_account.h"
-#include "session.h"
 #include "procmsg.h"
 #include "msgcache.h"
+#include "xml.h"
+#include "prefs_account.h"
 
 struct _Folder
 {
@@ -178,21 +167,26 @@ struct _FolderClass
 
 	/* FolderItem functions */
 	FolderItem	*(*item_new)		(Folder		*folder);
-	void	 	(*item_destroy)		(Folder		*folder,
+	void	 	 (*item_destroy)	(Folder		*folder,
+						 FolderItem	*item);
+	void		 (*item_set_xml)	(Folder		*folder,
+						 FolderItem	*item,
+						 XMLTag		*tag);
+	XMLTag		*(*item_get_xml)	(Folder		*folder,
 						 FolderItem	*item);
 	gchar		*(*item_get_path)	(Folder		*folder,
 						 FolderItem	*item);
 	FolderItem 	*(*create_folder)	(Folder		*folder,
 						 FolderItem	*parent,
 						 const gchar	*name);
-	gint     	(*rename_folder)	(Folder		*folder,
+	gint     	 (*rename_folder)	(Folder		*folder,
 						 FolderItem	*item,
 						 const gchar	*name);
-	gint     	(*remove_folder)	(Folder		*folder,
+	gint     	 (*remove_folder)	(Folder		*folder,
 						 FolderItem	*item);
-	gint		(*close)		(Folder		*folder,
+	gint		 (*close)		(Folder		*folder,
 						 FolderItem	*item);
-	gint	 	(*get_num_list)		(Folder		*folder,
+	gint	 	 (*get_num_list)	(Folder		*folder,
 						 FolderItem	*item,
 						 GSList	       **list,
 						 gboolean	*old_uids_valid);
@@ -243,27 +237,6 @@ struct _FolderClass
 						 MsgInfo        *msginfo,
 						 MsgPermFlags	 newflags);
 };
-
-struct _LocalFolder
-{
-	Folder folder;
-
-	gchar *rootpath;
-};
-
-struct _RemoteFolder
-{
-	Folder folder;
-
-	Session *session;
-};
-
-#if 0
-struct _MaildirFolder
-{
-	LocalFolder lfolder;
-};
-#endif
 
 struct _FolderItem
 {
@@ -316,7 +289,8 @@ struct _FolderItem
 	FolderItemPrefs * prefs;
 };
 
-typedef struct {
+struct _PersistPrefs
+{
 	FolderSortKey	sort_key;
 	FolderSortType	sort_type;
 	guint		collapsed	: 1;
@@ -324,7 +298,7 @@ typedef struct {
 	guint		threaded	: 1;
 	guint		hide_read_msgs	: 1; /* CLAWS */
 	guint		ret_rcpt	: 1; /* CLAWS */
-} PersistPrefs;
+};
 
 struct _FolderUpdateData
 {
@@ -344,16 +318,13 @@ void	    folder_register_class	(FolderClass	*klass);
 Folder     *folder_new			(FolderClass	*type,
 					 const gchar	*name,
 					 const gchar	*path);
-void        folder_local_folder_init	(Folder		*folder,
-					 const gchar	*name,
-					 const gchar	*path);
-void        folder_remote_folder_init	(Folder		*folder,
-					 const gchar	*name,
-					 const gchar	*path);
+void 	    folder_init			(Folder		*folder,
+					 const gchar	*name);
 
 void        folder_destroy		(Folder		*folder);
-void        folder_local_folder_destroy	(LocalFolder	*lfolder);
-void        folder_remote_folder_destroy(RemoteFolder	*rfolder);
+
+XMLTag 	   *folder_item_get_attrs	(Folder		 *folder,
+					 FolderItem	 *item);
 
 FolderItem *folder_item_new		(Folder		*folder,
 				 	 const gchar	*name,

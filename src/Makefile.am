@@ -120,6 +120,8 @@ sylpheed_SOURCES = \
 	toolbar.c \
 	undo.c \
 	unmime.c \
+	localfolder.c \
+	remotefolder.c \
 	vcard.c
 
 sylpheedincludedir = $(pkgincludedir)
@@ -244,6 +246,8 @@ sylpheedinclude_HEADERS = \
 	toolbar.h \
 	undo.h \
 	unmime.h \
+	localfolder.h \
+	remotefolder.h \
 	vcard.h
 
 BUILT_SOURCES = \

@@ -23,6 +23,7 @@
 #include <glib.h>
 
 #include "folder.h"
+#include "localfolder.h"
 
 typedef struct _MHFolder	MHFolder;
 

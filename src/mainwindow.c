@@ -86,6 +86,7 @@
 #include "pluginwindow.h"
 #include "hooks.h"
 #include "progressindicator.h"
+#include "localfolder.h"
 
 #define AC_LABEL_WIDTH	240
 

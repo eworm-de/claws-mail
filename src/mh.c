@@ -119,6 +119,8 @@ static FolderClass mh_class =
 	/* FolderItem functions */
 	NULL,
 	NULL,
+	NULL,
+	NULL,
 	mh_item_get_path,
 	mh_create_folder,
 	mh_rename_folder,

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 2002 by the Sylpheed Claws Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,33 +17,21 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __NEWS_H__
-#define __NEWS_H__
-
 #include <glib.h>
-#include <stdio.h>
 
-typedef struct _NewsGroupInfo	NewsGroupInfo;
+#include "remotefolder.h"
 
-#include "folder.h"
-
-struct _NewsGroupInfo
+void folder_remote_folder_init(Folder *folder, const gchar *name,
+			       const gchar *path)
 {
-	gchar *name;
-	guint first;
-	guint last;
-	gchar type;
-};
+	folder_init(folder, name);
+	REMOTE_FOLDER(folder)->session = NULL;
+}
 
-FolderClass *news_get_class		(void);
+void folder_remote_folder_destroy(RemoteFolder *rfolder)
+{
+	g_return_if_fail(rfolder != NULL);
 
-GSList *news_get_group_list		(Folder		*folder);
-void news_group_list_free		(GSList		*group_list);
-void news_remove_group_list_cache	(Folder		*folder);
-
-gint news_post				(Folder		*folder,
-					 const gchar	*file);
-gint news_cancel_article		(Folder 	*folder,
-					 MsgInfo 	*msginfo);
-
-#endif /* __NEWS_H__ */
+	if (rfolder->session)
+		session_destroy(rfolder->session);
+}

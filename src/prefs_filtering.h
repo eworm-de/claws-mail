@@ -36,6 +36,8 @@ typedef enum
 	FILTER_BY_SUBJECT
 } PrefsFilterType;
 
+#include "folder.h"
+
 void prefs_filtering_open		(FolderItem * item,
 					 const gchar	*header,
 					 const gchar	*key);

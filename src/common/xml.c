@@ -57,7 +57,6 @@ static void xml_string_table_create(void)
 
 #endif /* SPARSE_MEMORY */
 
-static void xml_free_tag	(XMLTag		*tag);
 static gint xml_get_parenthesis	(XMLFile	*file,
 				 gchar		*buf,
 				 gint		 len);
@@ -511,7 +510,7 @@ void xml_free_tree(GNode *node)
 	g_node_destroy(node);
 }
 
-static void xml_free_tag(XMLTag *tag)
+void xml_free_tag(XMLTag *tag)
 {
 	if (!tag) return;
 

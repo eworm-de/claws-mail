@@ -48,6 +48,7 @@
 #include "inputdialog.h"
 #include "log.h"
 #include "progressindicator.h"
+#include "remotefolder.h"
 #if USE_OPENSSL
 #  include "ssl.h"
 #endif
@@ -56,6 +57,17 @@
 #if USE_OPENSSL
 #define NNTPS_PORT	563
 #endif
+
+typedef struct _NewsFolder	NewsFolder;
+
+#define NEWS_FOLDER(obj)	((NewsFolder *)obj)
+
+struct _NewsFolder
+{
+	RemoteFolder rfolder;
+
+	gboolean use_auth;
+};
 
 static void news_folder_init		 (Folder	*folder,
 					  const gchar	*name,
@@ -131,6 +143,8 @@ static FolderClass news_class =
 	NULL,
 
 	/* FolderItem functions */
+	NULL,
+	NULL,
 	NULL,
 	NULL,
 	news_item_get_path,
