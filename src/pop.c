@@ -66,6 +66,7 @@ static gint pop3_ok(SockInfo *sock, gchar *argbuf);
 static void pop3_gen_send(SockInfo *sock, const gchar *format, ...);
 static gint pop3_gen_recv(SockInfo *sock, gchar *buf, gint size);
 static gboolean pop3_delete_header (Pop3State *state);
+static gboolean should_delete (const char *uidl, gpointer data); 
 
 gint pop3_greeting_recv(SockInfo *sock, gpointer data)
 {
@@ -313,7 +314,7 @@ gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 			}
 		}
 
-		if(should_delete(buf, (Pop3State *)state))
+		if (should_delete(buf, (Pop3State *) state))
 			state->uidl_todelete_list = g_slist_append
 					(state->uidl_todelete_list, g_strdup(buf));		
 		
@@ -326,31 +327,47 @@ gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 	else
 		return POP3_LOGOUT_SEND;
 }
-gboolean should_delete(char * uidl, gpointer data) {
-	Pop3State *state = (Pop3State *)data;
+
+static gboolean should_delete(const char *uidl, gpointer data) 
+{
 	/* answer[0] will contain id
-	   answer[0] will contain uidl */
+	 * answer[0] will contain uidl */
+	Pop3State *state = (Pop3State *) data;
 	gchar **answer;
-	GDate *curdate = g_date_new();
-	int id = 0;
+	GDate *curdate;
+	int  id = 0;
+	const gchar *sdate;
+	gboolean result;
+
+	if (!state->ac_prefs->rmmail || !strchr(uidl, ' '))
+		return FALSE;
+
+	curdate = g_date_new();	
+	g_return_val_if_fail(curdate, FALSE);	
+	
 	g_date_set_time(curdate, time(NULL));
-	if( state->ac_prefs->rmmail && strchr(uidl,' ') ) {
-		/* remove \r\n */
-		uidl = g_strndup(uidl, strlen(uidl)-2);
-		answer = g_strsplit(uidl, " ", 2);
-		id = atoi(answer[0]);
-		if( g_hash_table_lookup(state->uidl_table, answer[1]) != NULL ) {
-			gchar *sdate = g_hash_table_lookup(state->uidl_table, answer[1]);
-			int tdate = atoi(sdate);
-			int keep_for = atoi(state->ac_prefs->leave_time);
-			int today = g_date_day_of_year(curdate);
-			int nb_days = 365;
-			if ( g_date_is_leap_year (g_date_year(curdate)) ) 
-				nb_days = 366;
-			return ( (tdate + keep_for)%nb_days <= today );
-		}
-	}
-	return FALSE;
+	
+	/* remove \r\n */
+	uidl   = g_strndup(uidl, strlen(uidl) - 2);
+	answer = g_strsplit(uidl, " ", 2);
+	id     = atoi(answer[0]);
+
+	if (NULL != (sdate = g_hash_table_lookup(state->uidl_table, answer[1]))) {
+		int tdate    = atoi(sdate);
+		int keep_for = atoi(state->ac_prefs->leave_time); /* FIXME: leave time should be an int */
+		int today    = g_date_day_of_year(curdate);
+		int nb_days  = 365;
+
+		nb_days = g_date_is_leap_year(g_date_year(curdate)) ? 366 : 365;
+		result = ( (tdate + keep_for)%nb_days <= today );
+	} else
+		result = FALSE;
+
+	g_date_free(curdate);
+	g_free(uidl);
+	g_strfreev(answer);
+	
+	return result;
 }
 
 gint pop3_getsize_list_send(SockInfo *sock, gpointer data)
@@ -541,10 +558,11 @@ gint pop3_logout_send(SockInfo *sock, gpointer data)
 	while (state->uidl_todelete_list != NULL) {
 		gchar **parts;
 		gint ok;
-		parts=g_strsplit((gchar *)state->uidl_todelete_list->data," ",2);
-		state->uidl_todelete_list = g_slist_remove(
-					state->uidl_todelete_list, state->uidl_todelete_list->data);
-		pop3_gen_send(sock, "DELE %s",parts[0]);
+		
+		parts = g_strsplit((gchar *) state->uidl_todelete_list->data, " ", 2);
+		state->uidl_todelete_list = g_slist_remove
+			(state->uidl_todelete_list, state->uidl_todelete_list->data);
+		pop3_gen_send(sock, "DELE %s", parts[0]);
 		if ((ok = pop3_ok(sock, NULL)) != PS_SUCCESS)
 			log_warning(_("error occurred on DELE\n"));
 	}
