@@ -58,11 +58,14 @@
 #include "inc.h"
 
 #include "pixmaps/inbox.xpm"
+#include "pixmaps/inbox-hrm.xpm"
 #include "pixmaps/outbox.xpm"
+#include "pixmaps/outbox-hrm.xpm"
 #include "pixmaps/dir-close.xpm"
 #include "pixmaps/dir-open.xpm"
 #include "pixmaps/dir-open-hrm.xpm"
 #include "pixmaps/trash.xpm"
+#include "pixmaps/trash-hrm.xpm"
 
 typedef enum
 {
@@ -102,8 +105,12 @@ static GtkStyle *bold_tgtfold_style;
 
 static GdkPixmap *inboxxpm;
 static GdkBitmap *inboxxpmmask;
+static GdkPixmap *inboxhrmxpm;
+static GdkBitmap *inboxhrmxpmmask;
 static GdkPixmap *outboxxpm;
 static GdkBitmap *outboxxpmmask;
+static GdkPixmap *outboxhrmxpm;
+static GdkBitmap *outboxhrmxpmmask;
 static GdkPixmap *folderxpm;
 static GdkBitmap *folderxpmmask;
 static GdkPixmap *folderopenxpm;
@@ -112,6 +119,8 @@ static GdkPixmap *folderopenhrmxpm;
 static GdkBitmap *folderopenhrmxpmmask;
 static GdkPixmap *trashxpm;
 static GdkBitmap *trashxpmmask;
+static GdkPixmap *trashhrmxpm;
+static GdkBitmap *trashhrmxpmmask;
 
 static void folderview_select_node	 (FolderView	*folderview,
 					  GtkCTreeNode	*node);
@@ -447,12 +456,15 @@ void folderview_init(FolderView *folderview)
 	GtkWidget *ctree = folderview->ctree;
 
 	PIXMAP_CREATE(ctree, inboxxpm, inboxxpmmask, inbox_xpm);
+	PIXMAP_CREATE(ctree, inboxhrmxpm, inboxhrmxpmmask, inbox_hrm_xpm);
 	PIXMAP_CREATE(ctree, outboxxpm, outboxxpmmask, outbox_xpm);
+	PIXMAP_CREATE(ctree, outboxhrmxpm, outboxhrmxpmmask, outbox_hrm_xpm);
 	PIXMAP_CREATE(ctree, folderxpm, folderxpmmask, dir_close_xpm);
 	PIXMAP_CREATE(ctree, folderopenxpm, folderopenxpmmask, dir_open_xpm);
 	PIXMAP_CREATE(ctree, folderopenhrmxpm, folderopenhrmxpmmask,
 		      dir_open_hrm_xpm);
 	PIXMAP_CREATE(ctree, trashxpm, trashxpmmask, trash_xpm);
+	PIXMAP_CREATE(ctree, trashhrmxpm, trashhrmxpmmask, trash_hrm_xpm);
 
 	if (!normalfont)
 		normalfont = gdk_fontset_load(NORMAL_FONT);
@@ -878,30 +890,63 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 
 	switch (item->stype) {
 	case F_INBOX:
-		xpm = openxpm = inboxxpm;
-		mask = openmask = inboxxpmmask;
+		xpm = inboxxpm;
+		mask = inboxxpmmask;
+		if (item->hide_read_msgs) {
+			openxpm = inboxhrmxpm;
+			openmask = inboxhrmxpmmask;
+		} else {
+			openxpm = inboxxpm;
+			openmask = inboxxpmmask;
+		}
 		name = g_strdup(_("Inbox"));
 		break;
 	case F_OUTBOX:
-		xpm = openxpm = outboxxpm;
-		mask = openmask = outboxxpmmask;
+		xpm = outboxxpm;
+		mask =outboxxpmmask;
+		if (item->hide_read_msgs) {
+			openxpm = outboxhrmxpm;
+			openmask = outboxhrmxpmmask;
+		} else {
+			openxpm = outboxxpm;
+			openmask = outboxxpmmask;
+		}
 		name = g_strdup(_("Outbox"));
 		break;
 	case F_QUEUE:
-		xpm = openxpm = outboxxpm;
-		mask = openmask = outboxxpmmask;
+		xpm = outboxxpm;
+		mask =outboxxpmmask;
+		if (item->hide_read_msgs) {
+			openxpm = outboxhrmxpm;
+			openmask = outboxhrmxpmmask;
+		} else {
+			openxpm = outboxxpm;
+			openmask = outboxxpmmask;
+		}
 		name = g_strdup(_("Queue"));
 		break;
 	case F_TRASH:
-		xpm = openxpm = trashxpm;
-		mask = openmask = trashxpmmask;
+		xpm = trashxpm;
+		mask = trashxpmmask;
+		if (item->hide_read_msgs) {
+			openxpm = trashhrmxpm;
+			openmask = trashhrmxpmmask;
+		} else {
+			openxpm = trashxpm;
+			openmask = trashxpmmask;
+		}
 		name = g_strdup(_("Trash"));
 		break;
 	case F_DRAFT:
 		xpm = folderxpm;
 		mask = folderxpmmask;
-		openxpm = folderopenxpm;
-		openmask = folderopenxpmmask;
+		if (item->hide_read_msgs) {
+			openxpm = folderopenhrmxpm;
+			openmask = folderopenhrmxpmmask;
+		} else {
+			openxpm = folderopenxpm;
+			openmask = folderopenxpmmask;
+		}
 		name = g_strdup(_("Draft"));
 		break;
 	default:

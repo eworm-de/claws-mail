@@ -1,3 +1,12 @@
+2001-12-13 [paul]	0.6.5claws82
+
+	* src/folderview.c
+	* src/pixmaps/inbox-hrm.xpm 	** NEW FILE **
+	* src/pixmaps/outbox-hrm.xpm	** NEW FILE **
+	* src/pixmaps/trash-hrm.xpm	** NEW FILE **
+		improvements to 'Hide read messages': Inbox, Outbox,
+		and Trash icons now reveal presence of hidden messages
+
 2001-12-12 [alfons]	0.6.5claws81
 
 	0.6.5claws80 was tagged as LAST_STABLE
@@ -101,7 +110,7 @@
 	* src/folderview.c
 	* src/mainwindow.c
 	* src/summaryview.[ch]
-	* src/pixmaps/open-dir-hrm.xpm	** NEW FILE **
+	* src/pixmaps/dir-open-hrm.xpm	** NEW FILE **
 		enable ability to hide read messages on per folder basis via 
 		'/Summary/Hide read messages'; when selected, a folder will 
 		have a red open folder icon, instead of a blue icon, if the 
