@@ -1,3 +1,8 @@
+2004-07-06 [colin]	0.9.12cvs14
+
+	* src/gtk/quicksearch.c [1.4]
+		Add Clear button
+
 2004-07-06 [christoph]	0.9.12cvs13
 
 	* src/toolbar.c
