@@ -1,2 +1,2 @@
-SUBDIRS = $(PLUGINS)
+SUBDIRS = demo spamassassin
 
