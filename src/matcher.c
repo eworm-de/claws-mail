@@ -79,6 +79,7 @@ static MatchParser matchparser_tab[] = {
 	{MATCHING_NOT_REFERENCES, "~references"},
 	{MATCHING_SCORE_GREATER, "score_greater"},
 	{MATCHING_SCORE_LOWER, "score_lower"},
+	{MATCHING_SCORE_EQUAL, "score_equal"},
 
 	/* content have to be read */
 	{MATCHING_HEADER, "header"},
@@ -170,6 +171,7 @@ MatcherProp * matcherprop_parse(gchar ** str)
 	case MATCHING_AGE_GREATER:
 	case MATCHING_SCORE_LOWER:
 	case MATCHING_SCORE_GREATER:
+	case MATCHING_SCORE_EQUAL:
 		value = matcher_parse_number(&tmp);
 		if (tmp == NULL) {
 			* str = NULL;
@@ -646,6 +648,8 @@ gboolean matcherprop_match(MatcherProp * prop, MsgInfo * info)
 		return info->score >= prop->value;
 	case MATCHING_SCORE_LOWER:
 		return info->score <= prop->value;
+	case MATCHING_SCORE_EQUAL:
+		return info->score == prop->value;
 	case MATCHING_NEWSGROUPS:
 		return matcherprop_string_match(prop, info->newsgroups);
 	case MATCHING_NOT_NEWSGROUPS:
@@ -1088,6 +1092,7 @@ gboolean matcherlist_match(MatcherList * matchers, MsgInfo * info)
 		case MATCHING_NOT_REFERENCES:
 		case MATCHING_SCORE_GREATER:
 		case MATCHING_SCORE_LOWER:
+		case MATCHING_SCORE_EQUAL:
 		case MATCHING_EXECUTE:
 		case MATCHING_NOT_EXECUTE:
 			if (matcherprop_match(matcher, info)) {
@@ -1183,6 +1188,7 @@ gchar * matcherprop_to_string(MatcherProp * matcher)
 	case MATCHING_AGE_LOWER:
 	case MATCHING_SCORE_GREATER:
 	case MATCHING_SCORE_LOWER:
+	case MATCHING_SCORE_EQUAL:
 		return g_strdup_printf("%s %i", criteria_str, matcher->value);
 		break;
 	case MATCHING_ALL:

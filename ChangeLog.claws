@@ -2,7 +2,12 @@
 
 	* configure.in
 		change to version 0.6.2claws1
-	* sync with sylpheed 0.6.2cvs1 
+	* sync with sylpheed 0.6.2cvs1
+
+	* src/matcher.c 
+	* src/prefs_matcher.c
+		add 'score equal to' option, submitted by
+		Paul Evans <nerd@freeuk.com>
 
 2001-09-15 [christoph]
 

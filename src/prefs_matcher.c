@@ -104,8 +104,9 @@ enum {
 
 	CRITERIA_SCORE_GREATER = 21,
 	CRITERIA_SCORE_LOWER = 22,
+	CRITERIA_SCORE_EQUAL = 23,
 
-	CRITERIA_EXECUTE = 23
+	CRITERIA_EXECUTE = 24
 };
 
 enum {
@@ -146,6 +147,7 @@ gchar * criteria_text [] = {
 	N_("Marked flag"), N_("Deleted flag"),
 	N_("Replied flag"), N_("Forwarded flag"),
 	N_("Score greater than"), N_("Score lower than"),
+	N_("Score equal to"),
 	N_("Execute")
 };
 
@@ -769,6 +771,8 @@ static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 		return CRITERIA_SCORE_GREATER;
 	case MATCHING_SCORE_LOWER:
 		return CRITERIA_SCORE_LOWER;
+	case MATCHING_SCORE_EQUAL:
+		return CRITERIA_SCORE_EQUAL;
 	case MATCHING_NOT_EXECUTE:
 	case MATCHING_EXECUTE:
 		return CRITERIA_EXECUTE;
@@ -819,6 +823,8 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 		return MATCHING_SCORE_GREATER;
 	case CRITERIA_SCORE_LOWER:
 		return MATCHING_SCORE_LOWER;
+	case CRITERIA_SCORE_EQUAL:
+		return MATCHING_SCORE_EQUAL;
 	case CRITERIA_HEADER:
 		return MATCHING_HEADER;
 	case CRITERIA_HEADERS_PART:
@@ -988,6 +994,7 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 	case CRITERIA_AGE_LOWER:
 	case CRITERIA_SCORE_GREATER:
 	case CRITERIA_SCORE_LOWER:
+	case CRITERIA_SCORE_EQUAL:
 		value_str = gtk_entry_get_text(GTK_ENTRY(matcher.value_entry));
 
 		if (*value_str == '\0') {
@@ -1195,6 +1202,7 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 	case MATCHING_AGE_LOWER:
 	case MATCHING_SCORE_GREATER:
 	case MATCHING_SCORE_LOWER:
+	case MATCHING_SCORE_EQUAL:
 		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), itos(prop->value));
 		break;
 
@@ -1321,6 +1329,7 @@ static void prefs_matcher_criteria_select(GtkList *list,
 	case CRITERIA_AGE_LOWER:
 	case CRITERIA_SCORE_GREATER:
 	case CRITERIA_SCORE_LOWER:
+	case CRITERIA_SCORE_EQUAL:
 		gtk_widget_set_sensitive(matcher.header_combo, FALSE);
 		gtk_widget_set_sensitive(matcher.header_label, FALSE);
 		gtk_widget_set_sensitive(matcher.value_label, TRUE);
