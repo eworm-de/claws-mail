@@ -1764,6 +1764,12 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 				     ? compose->mailinglist
 				     : msginfo->from ? msginfo->from : ""),
 				     COMPOSE_TO);
+
+	if (compose->replyto && to_all)
+		compose_entry_append
+			(compose, compose->replyto, COMPOSE_CC);
+
+
 	if (compose->account->protocol == A_NNTP) {
 		if (ignore_replyto)
 			compose_entry_append

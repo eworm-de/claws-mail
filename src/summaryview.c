@@ -3997,10 +3997,10 @@ void summary_reply(SummaryView *summaryview, ComposeMode mode)
 			      TRUE, TRUE);
 		break;
 	case COMPOSE_REPLY_TO_ALL_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, TRUE, FALSE);
+		compose_reply(msginfo, TRUE, TRUE, TRUE);
 		break;
 	case COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, TRUE, FALSE);
+		compose_reply(msginfo, FALSE, TRUE, TRUE);
 		break;
 	case COMPOSE_FORWARD:
 		if (prefs_common.forward_as_attachment) {
