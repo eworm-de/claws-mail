@@ -1,3 +1,16 @@
+2003-05-01
+
+	* src/codeconv.c: conv_get_code_conv_func(): convert to EUC-JP only
+	  if it is the current locale encoding when dest_charset_str is NULL.
+
+2003-05-01
+
+	* src/action.c: execute_actions(): fixed crash when no text widget
+	  is selected.
+	* src/action.c
+	  src/prefs_actions.c: added missing reference to Claws team in the
+	  copyright.
+
 2003-04-28
 
 	* src/session.c:

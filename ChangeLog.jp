@@ -1,3 +1,17 @@
+2003-05-01
+
+	* src/codeconv.c: conv_get_code_conv_func(): dest_charset_str が NULL
+	  のとき、現在の locale が EUC-JP の場合のみ EUC-JP に変換するように
+	  した。
+
+2003-05-01
+
+	* src/action.c: execute_actions(): テキストウィジェットが未選択の
+	  場合クラッシュするのを修正。
+	* src/action.c
+	  src/prefs_actions.c: 著作権表示に Claws チームの表示がなかったので
+	  追加。
+
 2003-04-28
 
 	* src/session.c:

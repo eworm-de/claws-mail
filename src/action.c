@@ -601,21 +601,21 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 			if (start == end) {
 				start = body_pos;
 				end = gtk_stext_get_length(GTK_STEXT(text));
-				msg_str = gtk_editable_get_chars(GTK_EDITABLE(text),
-							 start, end);
+				msg_str = gtk_editable_get_chars
+					(GTK_EDITABLE(text), start, end);
 			} else {
-				sel_str = gtk_editable_get_chars(GTK_EDITABLE(text),
-							 	 start, end);
-			msg_str = g_strdup(sel_str);
+				sel_str = gtk_editable_get_chars
+					(GTK_EDITABLE(text), start, end);
+				msg_str = g_strdup(sel_str);
 			}
-		}  else {
+		} else {
 			start = body_pos;
 			end = gtk_stext_get_length(GTK_STEXT(text));
 			msg_str = gtk_editable_get_chars(GTK_EDITABLE(text),
-						 start, end);
-		} 
+							 start, end);
+		}
 	}
-	
+
 	if (action_type & ACTION_USER_STR) {
 		if (!(user_str = get_user_string(action, ACTION_USER_STR))) {
 			g_free(msg_str);
