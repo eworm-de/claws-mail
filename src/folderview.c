@@ -156,6 +156,9 @@ static void folderview_new_mbox_folder_cb(FolderView *folderview,
 static void folderview_rename_folder_cb	(FolderView	*folderview,
 					 guint		 action,
 					 GtkWidget	*widget);
+static void folderview_rename_mbox_folder_cb(FolderView *folderview,
+					     guint action,
+					     GtkWidget *widget);
 static void folderview_delete_folder_cb	(FolderView	*folderview,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -205,7 +208,7 @@ static void folderview_drag_received_cb  (GtkWidget        *widget,
 static GtkItemFactoryEntry folderview_mbox_popup_entries[] =
 {
 	{N_("/Create _new folder..."),	NULL, folderview_new_mbox_folder_cb,    0, NULL},
-	{N_("/_Rename folder..."),	NULL, folderview_rename_folder_cb, 0, NULL},
+	{N_("/_Rename folder..."),	NULL, folderview_rename_mbox_folder_cb, 0, NULL},
 	{N_("/_Delete folder"),		NULL, folderview_delete_folder_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/Remove _mailbox"),	NULL, folderview_remove_mailbox_cb, 0, NULL},
@@ -1026,8 +1029,9 @@ void folderview_rename_folder(FolderView *folderview)
 	if (item->stype != F_NORMAL) return;
 
 	switch (item->folder->type) {
-	case F_MH:
 	case F_MBOX:
+		folderview_rename_mbox_folder_cb(folderview, 0, NULL);
+	case F_MH:
 	case F_MAILDIR:
 		folderview_rename_folder_cb(folderview, 0, NULL);
 		break;
@@ -1475,6 +1479,61 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 		g_free(new_folder);
 		return;
 	}
+
+	if (folderview_find_by_name
+		(ctree, GTK_CTREE_ROW(folderview->selected)->parent,
+		 new_folder)) {
+		alertpanel_error(_("The folder `%s' already exists."),
+				 new_folder);
+		g_free(new_folder);
+		return;
+	}
+
+	if (item->folder->rename_folder(item->folder, item, new_folder) < 0) {
+		g_free(new_folder);
+		return;
+	}
+	g_free(new_folder);
+
+	gtk_clist_freeze(GTK_CLIST(ctree));
+
+	folderview_update_node(folderview, folderview->selected);
+	folderview_sort_folders(folderview,
+				GTK_CTREE_ROW(folderview->selected)->parent,
+				item->folder);
+	if (folderview->opened == folderview->selected) {
+		if (!GTK_CTREE_ROW(folderview->opened)->children)
+			gtk_ctree_expand(ctree, folderview->opened);
+		summary_show(folderview->summaryview, item, FALSE);
+	}
+
+	gtk_clist_thaw(GTK_CLIST(ctree));
+
+	folder_write_list();
+}
+
+static void folderview_rename_mbox_folder_cb(FolderView *folderview,
+					     guint action,
+					     GtkWidget *widget)
+{
+	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	FolderItem *item;
+	gchar *new_folder;
+	gchar *message;
+
+	if (!folderview->selected) return;
+
+	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(item->path != NULL);
+	g_return_if_fail(item->folder != NULL);
+
+	message = g_strdup_printf(_("Input new name for `%s':"),
+				  g_basename(item->path));
+	new_folder = input_dialog(_("Rename folder"), message,
+				  g_basename(item->path));
+	g_free(message);
+	if (!new_folder) return;
 
 	if (folderview_find_by_name
 		(ctree, GTK_CTREE_ROW(folderview->selected)->parent,

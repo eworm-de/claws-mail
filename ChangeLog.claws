@@ -36,6 +36,9 @@
 	* src/prefs_filtering.c
 		removed some warnings
 
+	* src/prefs_matcher.c
+		default boolean operation is AND
+
 	* src/procheader.c
 		handling flags for mbox format
 		handling of "From " header
@@ -47,6 +50,8 @@
 
 	* src/summaryview.c
 		handling flags for mbox format
+		disable the MSG_DELETED flags when messages
+		are deleted in mbox format
 
 	* src/textview.c
 		"From " headers display fixed.

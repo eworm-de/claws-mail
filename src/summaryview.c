@@ -2505,6 +2505,11 @@ static void summary_execute_delete(SummaryView *summaryview)
 
 	if (!summaryview->mlist) return;
 
+	for(cur = summaryview->mlist ; cur != NULL ; cur = cur->next) {
+		MsgInfo * msginfo = cur->data;
+		MSG_UNSET_FLAGS(msginfo->flags, MSG_DELETED);
+	}
+
 	folder_item_move_msgs_with_dest(trash, summaryview->mlist);
 
 	for (cur = summaryview->mlist; cur != NULL; cur = cur->next)

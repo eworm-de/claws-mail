@@ -624,7 +624,7 @@ static void prefs_matcher_set_dialog(MatcherList * matchers)
 {
 	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
 	GSList * cur;
-	gboolean bool_op = 0;
+	gboolean bool_op = 1;
 
 	gtk_clist_freeze(clist);
 	gtk_clist_clear(clist);
