@@ -782,6 +782,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	guint displayed_msgnum = 0;
 	GSList *cur;
         GSList *not_killed;
+	gboolean quicksearch_changed = FALSE;
 
 	if (summary_is_locked(summaryview)) return FALSE;
 
@@ -792,6 +793,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	 && !quicksearch_is_running(summaryview->quicksearch)) {
 		quicksearch_set(summaryview->quicksearch, prefs_common.summary_quicksearch_type, "");
 	}
+
+	if (quicksearch_is_running(summaryview->quicksearch))
+		quicksearch_changed = TRUE;
 
 	/* STATUSBAR_POP(summaryview->mainwin); */
 
@@ -906,7 +910,16 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			else
 				procmsg_msginfo_free(msginfo);
 		}
-
+		
+		if (quicksearch_changed) {
+			/* only scan subfolders when quicksearch changed,
+			 * not when search is the same and folder changed */
+			quicksearch_reset_cur_folder_item(summaryview->quicksearch);
+			quicksearch_search_subfolders(summaryview->quicksearch, 
+					      summaryview->folderview,
+					      summaryview->folder_item);
+		}
+		
 		g_slist_free(mlist);
 		mlist = not_killed;
 	}

@@ -107,5 +107,7 @@ void folderview_reflect_prefs_pixmap_theme	(FolderView *folderview);
 
 void folderview_register_popup		(FolderViewPopup	*fpopup);
 void folderview_unregister_popup	(FolderViewPopup	*fpopup);
+void folderview_update_search_icon	(FolderItem 		*item, 	
+					 gboolean 		 matches);
 
 #endif /* __FOLDERVIEW_H__ */

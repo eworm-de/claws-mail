@@ -34,6 +34,8 @@
 #include "matcher.h"
 #include "matcher_parser.h"
 #include "quicksearch.h"
+#include "folderview.h"
+#include "folder.h"
 
 struct _QuickSearch
 {
@@ -50,9 +52,12 @@ struct _QuickSearch
 	QuickSearchExecuteCallback	 callback;
 	gpointer			 callback_data;
 	gboolean			 running;
+	FolderItem			*root_folder_item
 };
 
 void quicksearch_set_running(QuickSearch *quicksearch, gboolean run);
+static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active);
+static void quicksearch_reset_folder_items(QuickSearch *quicksearch, FolderItem *folder_item);
 
 static void prepare_matcher(QuickSearch *quicksearch)
 {
@@ -64,7 +69,7 @@ static void prepare_matcher(QuickSearch *quicksearch)
 	}
 
 	if (search_string == NULL || search_string[0] == '\0') {
-		quicksearch->active = FALSE;
+		quicksearch_set_active(quicksearch, FALSE);
 		return;
 	}
 
@@ -77,7 +82,7 @@ static void prepare_matcher(QuickSearch *quicksearch)
 			g_free(newstr);
 		} else {
 			quicksearch->matcher_list = NULL;
-			quicksearch->active = FALSE;
+			quicksearch_set_active(quicksearch, FALSE);
 
 			return;
 		}
@@ -87,7 +92,7 @@ static void prepare_matcher(QuickSearch *quicksearch)
 		quicksearch->search_string = g_strdup(search_string);
 	}
 
-	quicksearch->active = TRUE;
+	quicksearch_set_active(quicksearch, TRUE);
 }
 
 static gint searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
@@ -361,7 +366,7 @@ void quicksearch_show(QuickSearch *quicksearch)
 
 void quicksearch_hide(QuickSearch *quicksearch)
 {
-	quicksearch->active = FALSE;
+	quicksearch_set_active(quicksearch, FALSE);
 	gtk_widget_hide(quicksearch->hbox_search);
 }
 
@@ -385,6 +390,14 @@ void quicksearch_set(QuickSearch *quicksearch, QuickSearchType type,
 gboolean quicksearch_is_active(QuickSearch *quicksearch)
 {
 	return quicksearch->active;
+}
+
+static void quicksearch_set_active(QuickSearch *quicksearch, gboolean active)
+{
+	quicksearch->active = active;
+	if (!active) {
+		quicksearch_reset_cur_folder_item(quicksearch);
+	}
 }
 
 void quicksearch_set_execute_callback(QuickSearch *quicksearch,
@@ -419,10 +432,12 @@ gboolean quicksearch_match(QuickSearch *quicksearch, MsgInfo *msginfo)
 		break;
 	}
 
-	if (prefs_common.summary_quicksearch_type != QUICK_SEARCH_EXTENDED && quicksearch->search_string &&
+	if (prefs_common.summary_quicksearch_type != QUICK_SEARCH_EXTENDED && 
+	    quicksearch->search_string &&
             searched_header && strcasestr(searched_header, quicksearch->search_string) != NULL)
 		return TRUE;
-	else if ((quicksearch->matcher_list != NULL) && matcherlist_match(quicksearch->matcher_list, msginfo))
+	else if ((quicksearch->matcher_list != NULL) && 
+	         matcherlist_match(quicksearch->matcher_list, msginfo))
 		return TRUE;
 
 	return FALSE;
@@ -616,3 +631,69 @@ gboolean quicksearch_is_running(QuickSearch *quicksearch)
 	return quicksearch->running;
 }
 
+
+static gboolean quicksearch_match_subfolder(QuickSearch *quicksearch, 
+				 FolderItem *src)
+{
+	GSList *msglist = folder_item_get_msg_list(src);
+	GSList *cur;
+	gboolean result = FALSE;
+	
+	for (cur = msglist; cur != NULL; cur = cur->next) {
+		MsgInfo *msg = (MsgInfo *)cur->data;
+		if (quicksearch_match(quicksearch, msg)) {
+			procmsg_msginfo_free(msg);
+			result = TRUE;
+			break;
+		}
+		procmsg_msginfo_free(msg);
+	}
+
+	g_slist_free(msglist);
+	return result;
+}
+
+void quicksearch_search_subfolders(QuickSearch *quicksearch, 
+				   FolderView *folderview,
+				   FolderItem *folder_item)
+{
+	FolderItem *cur = NULL;
+	GNode *node = folder_item->node->children;
+	
+	for (; node != NULL; node = node->next) {
+		cur = FOLDER_ITEM(node->data);
+		if (quicksearch_match_subfolder(quicksearch, cur)) {
+			folderview_update_search_icon(cur, TRUE);
+		} else {
+			folderview_update_search_icon(cur, FALSE);
+		}
+		if (cur->node->children)
+			quicksearch_search_subfolders(quicksearch,
+						      folderview,
+						      cur);
+	}
+	quicksearch->root_folder_item = folder_item;
+}
+
+static void quicksearch_reset_folder_items(QuickSearch *quicksearch,
+				    FolderItem *folder_item)
+{
+	FolderItem *cur = NULL;
+	GNode *node = folder_item->node->children;
+	
+	for (; node != NULL; node = node->next) {
+		cur = FOLDER_ITEM(node->data);
+		folderview_update_search_icon(cur, FALSE);
+		if (cur->node->children)
+			quicksearch_reset_folder_items(quicksearch,
+						       cur);
+	}
+}
+
+void quicksearch_reset_cur_folder_item(QuickSearch *quicksearch)
+{
+	if (quicksearch->root_folder_item)
+		quicksearch_reset_folder_items(quicksearch, quicksearch->root_folder_item);
+	
+	quicksearch->root_folder_item = NULL;
+}

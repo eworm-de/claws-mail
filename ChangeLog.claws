@@ -1,3 +1,14 @@
+2005-01-21 [colin]	1.0.0cvs4
+
+	* src/folder.h
+	* src/folderview.c
+	* src/folderview.h
+	* src/summaryview.c
+	* src/gtk/quicksearch.c
+	* src/gtk/quicksearch.h
+		Make quicksearch recursive - results materialized
+		by search icons in the folderview.
+
 2005-01-20 [holger]	1.0.0cvs3
 
 	* src/addrindex.c

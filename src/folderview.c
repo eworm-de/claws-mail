@@ -992,6 +992,9 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	FolderItem *item;
 	GdkPixmap *xpm, *openxpm;
 	GdkBitmap *mask, *openmask;
+	static GdkPixmap *searchicon;
+	static GdkBitmap *searchmask;
+
 	gchar *name;
 	gchar *str;
 	gboolean add_unread_mark;
@@ -1073,6 +1076,15 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		}
 	}
 	name = folder_item_get_name(item);
+
+	if (item->search_match) {
+		if (!searchicon) {
+			stock_pixmap_gdk(folderview->ctree, STOCK_PIXMAP_QUICKSEARCH,
+			 &searchicon, &searchmask);
+		}
+		xpm = openxpm = searchicon;
+		mask = openmask = searchmask;
+	}
 
 	if (!GTK_CTREE_ROW(node)->expanded &&
 	    folderview_have_unread_children(folderview, node))
@@ -1202,6 +1214,27 @@ void folderview_update_item(FolderItem *item, gboolean update_summary)
 	}
 }
 #endif
+
+void folderview_update_search_icon(FolderItem *item, gboolean matches)
+{
+	GList *list;
+	FolderView *folderview;
+	GtkCTree *ctree;
+	GtkCTreeNode *node;
+
+	g_return_if_fail(item != NULL);
+
+	for (list = folderview_list; list != NULL; list = list->next) {
+		folderview = (FolderView *)list->data;
+		ctree = GTK_CTREE(folderview->ctree);
+
+		node = gtk_ctree_find_by_row_data(ctree, NULL, item);
+		if (node) {
+			item->search_match = matches;
+			folderview_update_node(folderview, node);
+		}
+	}
+}
 
 gboolean folderview_update_item_claws(gpointer source, gpointer data)
 {
