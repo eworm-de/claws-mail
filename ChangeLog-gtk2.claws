@@ -1,3 +1,8 @@
+2004-07-28 [paul]	0.9.12cvs37.7
+
+	* src/mainwindow.c
+		complete the replacement of deprecated gtk_progress_*
+
 2004-07-28 [paul]	0.9.12cvs37.6
 
 	* src/action.c

@@ -3091,10 +3091,12 @@ gboolean mainwindow_progressindicator_hook(gpointer source, gpointer userdata)
 	switch (data->cmd) {
 	case PROGRESS_COMMAND_START:
 	case PROGRESS_COMMAND_STOP:
-/*		gtk_progress_set_percentage(GTK_PROGRESS(mainwin->progressbar), 0.0);
-		break; */
+		gtk_progress_bar_set_fraction
+			(GTK_PROGRESS_BAR(mainwin->progressbar), 0.0);
+		break;
 	case PROGRESS_COMMAND_SET_PERCENTAGE:
-/*		gtk_progress_set_percentage(GTK_PROGRESS(mainwin->progressbar), data->value); */
+		gtk_progress_bar_set_fraction
+			(GTK_PROGRESS_BAR(mainwin->progressbar), data->value);
 		break;		
 	}
 	while (gtk_events_pending()) gtk_main_iteration ();
