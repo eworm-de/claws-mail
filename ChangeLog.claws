@@ -1,3 +1,8 @@
+2004-07-08 [colin]	0.9.12cvs18
+
+	* src/common/smtp.h
+		Fix guint vs gint bug
+
 2004-07-08 [colin]	0.9.12cvs17
 
 	* src/common/smtp.c
