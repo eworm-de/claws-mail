@@ -1,3 +1,10 @@
+2002-12-07 [christoph]	0.8.6claws69
+
+	* src/procmsg.[ch]
+	* src/summaryview.c
+		implement msginfo update callback using sylpheed's new
+		hook system. Invoke hooks from procmsg_msginfo_[un]set_flags.
+
 2002-12-06 [christoph]	0.8.6claws68
 
 	* src/editgroup.c

@@ -85,6 +85,7 @@
 #include "news.h"
 #include "matcher.h"
 #include "matcher_parser.h"
+#include "hooks.h"
 
 #define SUMMARY_COL_MARK_WIDTH		10
 #define SUMMARY_COL_UNREAD_WIDTH	13
@@ -379,7 +380,7 @@ static void news_flag_crosspost		(MsgInfo *msginfo);
 static void tog_searchbar_cb		(GtkWidget	*w,
 					 gpointer	 data);
 
-static void summary_update_msg		(MsgInfo *info, gpointer data);
+static void summary_update_msg		(gpointer source, gpointer data);
 
 GtkTargetEntry summary_drag_types[1] =
 {
@@ -612,7 +613,7 @@ SummaryView *summary_create(void)
 	summaryview->search_type = search_type;
 	summaryview->search_string = search_string;
 	summaryview->msginfo_update_callback_id =
-		msginfo_update_callback_register(summary_update_msg, (gpointer) summaryview);
+		hooks_register_hook(MSGINFO_UPDATE_HOOKLIST, summary_update_msg, (gpointer) summaryview);
 
 	/* CLAWS: need this to get the SummaryView * from
 	 * the CList */
@@ -5407,10 +5408,15 @@ void summary_save_prefs_to_folderitem(SummaryView *summaryview, FolderItem *item
 	item->threaded = summaryview->threaded;
 }
 
-static void summary_update_msg(MsgInfo *msginfo, gpointer data) {
-	GtkCTreeNode *node;
+static void summary_update_msg(gpointer source, gpointer data) {
+	MsgInfoUpdate *msginfo_update = (MsgInfoUpdate *) source;
 	SummaryView *summaryview = (SummaryView *)data;
-	node = gtk_ctree_find_by_row_data(GTK_CTREE(summaryview->ctree), NULL, msginfo);
+	GtkCTreeNode *node;
+
+	g_return_if_fail(msginfo_update != NULL);
+	g_return_if_fail(summaryview != NULL);
+
+	node = gtk_ctree_find_by_row_data(GTK_CTREE(summaryview->ctree), NULL, msginfo_update->msginfo);
 	
 	if (node) 
 		summary_set_row_marks(summaryview, node);

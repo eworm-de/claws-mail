@@ -40,6 +40,7 @@
 #include "alertpanel.h"
 #include "news.h"
 #include "imap.h"
+#include "hooks.h"
 
 typedef struct _FlagInfo	FlagInfo;
 
@@ -1417,7 +1418,6 @@ gint procmsg_send_message_queue(const gchar *file)
 				procmsg_msginfo_unset_flags(msginfo, MSG_FORWARDED, 0);
 				procmsg_msginfo_set_flags(msginfo, MSG_REPLIED, 0);
 
-				msginfo_update_item(msginfo);
 				procmsg_msginfo_free(msginfo);
 			}
 		}
@@ -1441,6 +1441,7 @@ msginfo->folder->folder->change_flags(msginfo->folder->folder, \
 void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmpFlags tmp_flags)
 {
 	FolderItem *item;
+	MsgInfoUpdate msginfo_update;
 
 	g_return_if_fail(msginfo != NULL);
 	item = msginfo->folder;
@@ -1501,6 +1502,9 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 	msginfo->flags.perm_flags |= perm_flags;
 	msginfo->flags.tmp_flags |= tmp_flags;
 
+	msginfo_update.msginfo = msginfo;
+	hooks_invoke(MSGINFO_UPDATE_HOOKLIST, &msginfo_update);
+
 	CHANGE_FLAGS(msginfo);
 	procmsg_msginfo_write_flags(msginfo);
 }
@@ -1508,6 +1512,7 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmpFlags tmp_flags)
 {
 	FolderItem *item;
+	MsgInfoUpdate msginfo_update;
 
 	g_return_if_fail(msginfo != NULL);
 	item = msginfo->folder;
@@ -1567,6 +1572,9 @@ void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgT
 
 	msginfo->flags.perm_flags &= ~perm_flags;
 	msginfo->flags.tmp_flags &= ~tmp_flags;
+
+	msginfo_update.msginfo = msginfo;
+	hooks_invoke(MSGINFO_UPDATE_HOOKLIST, &msginfo_update);
 
 	CHANGE_FLAGS(msginfo);
 	procmsg_msginfo_write_flags(msginfo);
@@ -1651,71 +1659,4 @@ static void procmsg_update_unread_children (MsgInfo *info, gboolean newly_marked
 		}
 		procmsg_msginfo_free(tmp);
 	}
-}
-
-/*
- * callback handling
- */
-GSList *msginfo_update_callbacks_list = NULL;
-gint	msginfo_update_callbacks_nextid = 0;
-
-struct MsgInfoUpdateCallback
-{
-	gint			id;
-	MsgInfoUpdateFunc	func;
-	gpointer		data;
-};
-
-gint msginfo_update_callback_register(MsgInfoUpdateFunc func, gpointer data)
-{
-	struct MsgInfoUpdateCallback *callback;
-
-	g_return_val_if_fail(func != NULL, -1);
-
-	msginfo_update_callbacks_nextid++;
-
-	callback = g_new0(struct MsgInfoUpdateCallback, 1);
-	callback->id = msginfo_update_callbacks_nextid;
-	callback->func = func;
-	callback->data = data;
-
-	msginfo_update_callbacks_list =
-		g_slist_append(msginfo_update_callbacks_list, callback);
-
-	return msginfo_update_callbacks_nextid;
-}
-
-void msginfo_update_callback_unregister(gint id)
-{
-	GSList *list, *next;
-
-	for (list = msginfo_update_callbacks_list; list != NULL; list = next) {
-    		struct MsgInfoUpdateCallback *callback;
-
-		next = list->next;
-
-		callback = list->data;
-		if (callback->id == id) {
-			msginfo_update_callbacks_list =
-				g_slist_remove(msginfo_update_callbacks_list, callback);
-			g_free(callback);
-		}
-	}
-}
-
-static void msginfo_update_callback_execute(MsgInfo *info)
-{
-	GSList *list;
-
-	for (list = msginfo_update_callbacks_list; list != NULL; list = list->next) {
-    		struct MsgInfoUpdateCallback *callback;
-
-		callback = list->data;
-		callback->func(info, callback->data);
-	}
-}
-
-void msginfo_update_item(MsgInfo *info)
-{
-	msginfo_update_callback_execute(info);
 }
