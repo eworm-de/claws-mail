@@ -239,6 +239,7 @@ gint send_message_queue(const gchar *file)
 		log_warning("Error occurred while %s\n", s); \
 		sock_close(smtp_sock); \
 		smtp_sock = NULL; \
+		send_progress_dialog_destroy(dialog); \
 		return -1; \
 	} \
 }
@@ -251,6 +252,7 @@ gint send_message_queue(const gchar *file)
 			log_warning("Error occurred while sending QUIT\n"); \
 		sock_close(smtp_sock); \
 		smtp_sock = NULL; \
+		send_progress_dialog_destroy(dialog); \
 		return -1; \
 	} \
 }

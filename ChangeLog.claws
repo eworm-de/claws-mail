@@ -8,6 +8,10 @@
 	appropriately.
 	(toolbar_reply_to_author_cb): handle the new button.
 
+	* src/send.c (SEND_EXIT_IF_ERROR, SEND_EXIT_IF_NOTOK): call
+	send_progress_dialog_destroy() on failure (fixes hang on SMTP
+	failure).
+
 2001-05-19 [sergey]
 
 	* src/compose.h (ComposeReplyMode): new modes
