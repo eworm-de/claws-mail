@@ -1,3 +1,10 @@
+2003-03-25 [paul]	0.8.11claws44
+
+	* sync with 0.8.11cvs11
+		see ChangeLog 2003-03-24 and 2003-03-25
+		
+	Note: Selective Download is broken.
+		
 2003-03-22 [christoph]	0.8.11claws43
 
 	* src/folder.c

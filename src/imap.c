@@ -555,7 +555,7 @@ Session *imap_session_new(const PrefsAccount *account)
 	log_message("IMAP connection is %s-authenticated\n",
 		    (is_preauth) ? "pre" : "un");
 
-	session = g_new(IMAPSession, 1);
+	session = g_new0(IMAPSession, 1);
 	session_init(SESSION(session));
 	SESSION(session)->type             = SESSION_IMAP;
 	SESSION(session)->server           = g_strdup(account->recv_server);
@@ -2777,7 +2777,6 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 		strretchomp(buf);
 		if (sock_puts(SESSION(session)->sock, buf) < 0) {
 			fclose(fp);
-			sock_close(SESSION(session)->sock);
 			return -1;
 		}
 	}
@@ -2785,7 +2784,6 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 	if (ferror(fp)) {
 		FILE_OP_ERROR(file, "fgets");
 		fclose(fp);
-		sock_close(SESSION(session)->sock);
 		return -1;
 	}
 

@@ -431,6 +431,10 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 		return -1;
 	}
 
+	/* ignore all multiline responses except for EHLO */
+	if (cont && smtp_session->state != SMTP_EHLO)
+		return 1;
+
 	switch (smtp_session->state) {
 	case SMTP_READY:
 	case SMTP_CONNECTED:

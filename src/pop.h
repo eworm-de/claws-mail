@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,43 +27,39 @@
 #include <glib.h>
 #include <time.h>
 
-#include "socket.h"
+#include "session.h"
 #include "prefs_account.h"
 
 typedef struct _Pop3MsgInfo	Pop3MsgInfo;
-typedef struct _Pop3State	Pop3State;
+typedef struct _Pop3Session	Pop3Session;
+
+#define POP3_SESSION(obj)	((Pop3Session *)obj)
 
 typedef enum {
-	POP3_GREETING_RECV,
+	POP3_READY,
+	POP3_GREETING,
 #if USE_OPENSSL
-	POP3_STLS_SEND,
-	POP3_STLS_RECV,
+	POP3_STLS,
 #endif
-	POP3_GETAUTH_USER_SEND,
-	POP3_GETAUTH_USER_RECV,
-	POP3_GETAUTH_PASS_SEND,
-	POP3_GETAUTH_PASS_RECV,
-	POP3_GETAUTH_APOP_SEND,
-	POP3_GETAUTH_APOP_RECV,
-	POP3_GETRANGE_STAT_SEND,
-	POP3_GETRANGE_STAT_RECV,
-	POP3_GETRANGE_LAST_SEND,
-	POP3_GETRANGE_LAST_RECV,
-	POP3_GETRANGE_UIDL_SEND,
+	POP3_GETAUTH_USER,
+	POP3_GETAUTH_PASS,
+	POP3_GETAUTH_APOP,
+	POP3_GETRANGE_STAT,
+	POP3_GETRANGE_LAST,
+	POP3_GETRANGE_UIDL,
 	POP3_GETRANGE_UIDL_RECV,
-	POP3_GETSIZE_LIST_SEND,
+	POP3_GETSIZE_LIST,
 	POP3_GETSIZE_LIST_RECV,
-	POP3_TOP_SEND,                   
-	POP3_TOP_RECV,                    
-	POP3_RETR_SEND,
+	POP3_RETR,
+	POP3_TOP,                   
 	POP3_RETR_RECV,
-	POP3_DELETE_SEND,
-	POP3_DELETE_RECV,
-	POP3_LOGOUT_SEND,
-	POP3_LOGOUT_RECV,
+	POP3_RETR_EOM,
+	POP3_DELETE,
+	POP3_LOGOUT,
+	POP3_ERROR,
 
-	N_POP3_PHASE
-} Pop3Phase;
+	N_POP3_STATE
+} Pop3State;
 
 typedef enum {
 	RECV_TIME_NONE     = 0,
@@ -80,19 +76,19 @@ struct _Pop3MsgInfo
 	guint deleted  : 1;
 };
 
-struct _Pop3State
+struct _Pop3Session
 {
-	PrefsAccount *ac_prefs;
+	Session session;
 
+	Pop3State state;
 	gchar *prev_folder;
 
-	SockInfo *sockinfo;
+	PrefsAccount *ac_prefs;
 
 	gchar *greeting;
 	gchar *user;
 	gchar *pass;
 	gint count;
-	gint new;
 	gint total_bytes;
 	gint cur_msg;
 	gint cur_total_num;
@@ -103,8 +99,8 @@ struct _Pop3State
 
 	GHashTable *uidl_table;
 
+	gboolean new_msg_exist;
 	gboolean uidl_is_valid;
-	gboolean cancelled;
 
 	time_t current_time;
 
@@ -138,37 +134,10 @@ struct _Pop3State
 #define		PS_RETAINED	26	/* message retained (internal use) */
 #define		PS_TRUNCATED	27	/* headers incomplete (internal use) */
 
-gint pop3_greeting_recv		(SockInfo *sock, gpointer data);
-gint pop3_getauth_user_send	(SockInfo *sock, gpointer data);
-gint pop3_getauth_user_recv	(SockInfo *sock, gpointer data);
-gint pop3_getauth_pass_send	(SockInfo *sock, gpointer data);
-gint pop3_getauth_pass_recv	(SockInfo *sock, gpointer data);
-gint pop3_getauth_apop_send	(SockInfo *sock, gpointer data);
-gint pop3_getauth_apop_recv	(SockInfo *sock, gpointer data);
-#if USE_OPENSSL
-gint pop3_stls_send		(SockInfo *sock, gpointer data);
-gint pop3_stls_recv		(SockInfo *sock, gpointer data);
-#endif
-gint pop3_getrange_stat_send	(SockInfo *sock, gpointer data);
-gint pop3_getrange_stat_recv	(SockInfo *sock, gpointer data);
-gint pop3_getrange_last_send	(SockInfo *sock, gpointer data);
-gint pop3_getrange_last_recv	(SockInfo *sock, gpointer data);
-gint pop3_getrange_uidl_send	(SockInfo *sock, gpointer data);
-gint pop3_getrange_uidl_recv	(SockInfo *sock, gpointer data);
-gint pop3_getsize_list_send	(SockInfo *sock, gpointer data);
-gint pop3_getsize_list_recv	(SockInfo *sock, gpointer data);
-gint pop3_top_send              (SockInfo *sock, gpointer data);
-gint pop3_top_recv              (SockInfo *sock, gpointer data);
-gint pop3_retr_send		(SockInfo *sock, gpointer data);
-gint pop3_retr_recv		(SockInfo *sock, gpointer data);
-gint pop3_delete_send		(SockInfo *sock, gpointer data);
-gint pop3_delete_recv		(SockInfo *sock, gpointer data);
-gint pop3_logout_send		(SockInfo *sock, gpointer data);
-gint pop3_logout_recv		(SockInfo *sock, gpointer data);
+#define		PS_CONTINUE	128
 
-Pop3State *pop3_state_new	(PrefsAccount	*account);
-void pop3_state_destroy		(Pop3State	*state);
+Session *pop3_session_new	(PrefsAccount	*account);
 GHashTable *pop3_get_uidl_table	(PrefsAccount	*account);
-gint pop3_write_uidl_list	(Pop3State	*state);
+gint pop3_write_uidl_list	(Pop3Session	*session);
 
 #endif /* __POP_H__ */

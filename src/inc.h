@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +30,8 @@
 #include "mainwindow.h"
 #include "progressdialog.h"
 #include "prefs_account.h"
+#include "session.h"
 #include "pop.h"
-#include "automaton.h"
-#include "socket.h"
 
 #define MAIL_FILTERING_HOOKLIST "mail_filtering_hooklist"
 
@@ -66,8 +65,7 @@ struct _IncProgressDialog
 
 struct _IncSession
 {
-	Pop3State *pop3_state;
-	Automaton *atm;
+	Session *session;
 	IncState inc_state;
 
 	gpointer data;
@@ -87,10 +85,9 @@ void inc_all_account_mail	(MainWindow	*mainwin,
 void inc_selective_download     (MainWindow	*mainwin, 
 				 PrefsAccount 	*acc,
 				 gint         	 session);
-void inc_progress_update	(Pop3State	*state,
-				 Pop3Phase	 phase);
+void inc_progress_update	(Pop3Session	*session);
 gint inc_drop_message		(const gchar	*file,
-				 Pop3State	*state);
+				 Pop3Session	*session);
 
 void inc_pop_before_smtp	(PrefsAccount 	*acc);
 

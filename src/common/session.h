@@ -162,6 +162,9 @@ gint session_send_msg	(Session	*session,
 gint session_send_data	(Session	*session,
 			 const guchar	*data,
 			 guint		 size);
+gint session_recv_data	(Session	*session,
+			 guint		 size,
+			 gboolean	 unescape_dot);
 
 #if USE_OPENSSL
 gint session_start_tls	(Session	*session);
