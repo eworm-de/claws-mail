@@ -492,6 +492,12 @@ gboolean matcherprop_match(MatcherProp *prop,
 	case MATCHCRITERIA_SIZE_SMALLER:
 		/* FIXME: info->size is an off_t */
 		return info->size <  (off_t) prop->value;
+	case MATCHCRITERIA_PARTIAL:
+		/* FIXME: info->size is an off_t */
+		return (info->total_size != 0 && info->size != (off_t)info->total_size);
+	case MATCHCRITERIA_NOT_PARTIAL:
+		/* FIXME: info->size is an off_t */
+		return (info->total_size == 0 || info->size == (off_t)info->total_size);
 	case MATCHCRITERIA_NEWSGROUPS:
 		return matcherprop_string_match(prop, info->newsgroups);
 	case MATCHCRITERIA_NOT_NEWSGROUPS:
@@ -603,10 +609,6 @@ static gboolean matcherprop_match_one_header(MatcherProp *matcher,
 	case MATCHCRITERIA_NOT_MESSAGE:
 	case MATCHCRITERIA_NOT_HEADERS_PART:
 		return !matcherprop_string_match(matcher, buf);
-	case MATCHCRITERIA_PARTIAL:
-		return matcherprop_string_match(matcher, buf);
-	case MATCHCRITERIA_NOT_PARTIAL:
-		return !matcherprop_string_match(matcher, buf);
 	}
 	return FALSE;
 }
@@ -627,8 +629,6 @@ static gboolean matcherprop_criteria_headers(const MatcherProp *matcher)
 	case MATCHCRITERIA_NOT_HEADER:
 	case MATCHCRITERIA_HEADERS_PART:
 	case MATCHCRITERIA_NOT_HEADERS_PART:
-	case MATCHCRITERIA_PARTIAL:
-	case MATCHCRITERIA_NOT_PARTIAL:
 		return TRUE;
 	default:
 		return FALSE;
@@ -963,6 +963,8 @@ gboolean matcherlist_match(MatcherList *matchers, MsgInfo *info)
 		case MATCHCRITERIA_SIZE_EQUAL:
 		case MATCHCRITERIA_TEST:
 		case MATCHCRITERIA_NOT_TEST:
+		case MATCHCRITERIA_PARTIAL:
+		case MATCHCRITERIA_NOT_PARTIAL:
 			if (matcherprop_match(matcher, info)) {
 				if (!matchers->bool_and) {
 					return TRUE;
@@ -1102,6 +1104,8 @@ gchar *matcherprop_to_string(MatcherProp *matcher)
 	case MATCHCRITERIA_NOT_FORWARDED:
 	case MATCHCRITERIA_LOCKED:
 	case MATCHCRITERIA_NOT_LOCKED:
+	case MATCHCRITERIA_PARTIAL:
+	case MATCHCRITERIA_NOT_PARTIAL:
 	case MATCHCRITERIA_IGNORE_THREAD:
 	case MATCHCRITERIA_NOT_IGNORE_THREAD:
 		return g_strdup(criteria_str);

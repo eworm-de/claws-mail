@@ -158,7 +158,8 @@ static const gchar *criteria_text [] = {
 	N_("Test"),
 	N_("Size greater than"), 
 	N_("Size smaller than"),
-	N_("Size exactly")
+	N_("Size exactly"),
+	N_("Partially downloaded")
 };
 
 /*!

@@ -1,3 +1,14 @@
+2004-12-08 [colin]	0.9.13cvs7.1
+
+	* src/matcher_parser_parse.y
+	* src/msgcache.c
+	* src/prefs_matcher.c
+	* src/procheader.c
+	* src/matcher.c
+	* src/common/defs.h
+	* po/sr.po
+		Sync with HEAD
+
 2004-12-08 [colin]	0.9.13cvs6.1
 
 	* src/quote_fmt_parse.y
