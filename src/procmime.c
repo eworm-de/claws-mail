@@ -195,7 +195,8 @@ MimeInfo *procmime_scan_message(MsgInfo *msginfo)
 	filename = procmsg_get_message_file(msginfo);
 	if(!filename)
 		return NULL;
-	if (msginfo->folder->stype != F_QUEUE)
+	if (msginfo->folder->stype != F_QUEUE && 
+	    msginfo->folder->stype != F_DRAFT)
 		mimeinfo = procmime_scan_file(filename);
 	else
 		mimeinfo = procmime_scan_queue_file(filename);
