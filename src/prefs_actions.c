@@ -180,10 +180,10 @@ static gchar *parse_action_cmd		(gchar		*action,
 					 MsgInfo	*msginfo,
 					 GtkCTree	*ctree,
 					 MimeView	*mimeview);
-static GString *parse_append_filename	(GString	*cmd,
+static gboolean parse_append_filename	(GString	**cmd,
 					 MsgInfo	*msginfo);
 
-static GString *parse_append_msgpart	(GString	*cmd,
+static gboolean parse_append_msgpart	(GString	**cmd,
 					 MsgInfo	*msginfo,
 					 MimeView	*mimeview);
 
@@ -596,7 +596,7 @@ static guint get_action_type(gchar *action)
 static gchar *parse_action_cmd(gchar *action, MsgInfo *msginfo,
 			       GtkCTree *ctree, MimeView *mimeview)
 {
-	GString *cmd, *tmpcmd;
+	GString *cmd;
 	gchar *p;
 	GList *cur;
 	MsgInfo *msg;
@@ -612,7 +612,10 @@ static gchar *parse_action_cmd(gchar *action, MsgInfo *msginfo,
 		if (p[0] == '%' && p[1]) {
 			switch (p[1]) {
 			case 'f':
-				cmd = parse_append_filename(cmd, msginfo);
+				if (!parse_append_filename(&cmd, msginfo)) {
+					g_string_free(cmd, TRUE);
+					return NULL;
+				}
 				p++;
 				break;
 			case 'F':
@@ -620,18 +623,18 @@ static gchar *parse_action_cmd(gchar *action, MsgInfo *msginfo,
 				     cur != NULL; cur = cur->next) {
 					msg = gtk_ctree_node_get_row_data(ctree,
 					      GTK_CTREE_NODE(cur->data));
-					cmd = parse_append_filename(cmd, msg);
+					if (!parse_append_filename(&cmd, msg)) {
+						g_string_free(cmd, TRUE);
+						return NULL;
+					}
 					if (cur->next)
 						cmd = g_string_append_c(cmd, ' ');
 				}
 				p++;
 				break;
 			case 'p':
-				tmpcmd = parse_append_msgpart
-					(cmd, msginfo, mimeview);
-				if (tmpcmd)
-					cmd = tmpcmd;
-				else {
+				if (!parse_append_msgpart(&cmd, msginfo,
+							  mimeview)) {
 					g_string_free(cmd, TRUE);
 					return NULL;
 				}
@@ -657,23 +660,27 @@ static gchar *parse_action_cmd(gchar *action, MsgInfo *msginfo,
 	return p;
 }
 
-static GString *parse_append_filename(GString *cmd, MsgInfo *msginfo)
+static gboolean parse_append_filename(GString **cmd, MsgInfo *msginfo)
 {
 	gchar *filename;
 
-	g_return_val_if_fail(msginfo, cmd);
+	g_return_val_if_fail(msginfo, FALSE);
 
 	filename = procmsg_get_message_file(msginfo);
 
 	if (filename) {
-		cmd = g_string_append(cmd, filename);
+		*cmd = g_string_append(*cmd, filename);
 		g_free(filename);
-	} 
+	} else {
+		alertpanel_error(_("Could not get message file %d"),
+				msginfo->msgnum);
+		return FALSE;
+	}
 
-	return cmd;
+	return TRUE;
 }
 
-static GString *parse_append_msgpart(GString *cmd, MsgInfo *msginfo,
+static gboolean parse_append_msgpart(GString **cmd, MsgInfo *msginfo,
 				     MimeView *mimeview)
 {
 	gchar    *filename;
@@ -687,12 +694,12 @@ static GString *parse_append_msgpart(GString *cmd, MsgInfo *msginfo,
 		if ((fp = procmsg_open_message_decrypted(msginfo, &partinfo))
 		    == NULL) {
 			alertpanel_error(_("Could not get message file."));
-			return NULL;
+			return FALSE;
 		}
 #else
 		if ((fp = procmsg_open_message(msginfo)) == NULL) {
 			alertpanel_error(_("Could not get message file."));
-			return NULL;
+			return FALSE;
 		}
 		partinfo = procmime_scan_mime_header(fp);
 #endif
@@ -700,22 +707,22 @@ static GString *parse_append_msgpart(GString *cmd, MsgInfo *msginfo,
 		if (!partinfo) {
 			procmime_mimeinfo_free(partinfo);
 			alertpanel_error(_("Could not get message part."));
-			return NULL;
+			return FALSE;
 		}
 		filename = procmsg_get_message_file(msginfo);
 	} else {
 		if (!mimeview->opened) {
 			alertpanel_error(_("No message part selected."));
-			return NULL;
+			return FALSE;
 		}
 		if (!mimeview->file) {
 			alertpanel_error(_("No message file selected."));
-			return NULL;
+			return FALSE;
 		}
 		partinfo = gtk_ctree_node_get_row_data
 				(GTK_CTREE(mimeview->ctree),
 				 mimeview->opened);
-		g_return_val_if_fail(partinfo != NULL, cmd);
+		g_return_val_if_fail(partinfo != NULL, FALSE);
 		filename = mimeview->file;
 	}
 	partname = procmime_get_tmp_file_name(partinfo);
@@ -730,14 +737,14 @@ static GString *parse_append_msgpart(GString *cmd, MsgInfo *msginfo,
 	if (ret < 0) {
 		alertpanel_error(_("Can't get part of multipart message"));
 		g_free(partname);
-		return NULL;
+		return FALSE;
 	}
 
-	cmd = g_string_append(cmd,partname);
+	*cmd = g_string_append(*cmd, partname);
 
 	g_free(partname);
 
-	return cmd;
+	return TRUE;
 }
 
 static void prefs_actions_set_dialog(void)
@@ -1128,13 +1135,13 @@ static void mainwin_actions_execute_cb(MainWindow *mainwin, guint action_nb,
 			text = messageview->textview->text;
 		break;
 	case MVIEW_MIME:
-		if (messageview->mimeview &&
-		    messageview->mimeview->type == MIMEVIEW_TEXT &&
-		    messageview->mimeview->textview &&
-		    messageview->mimeview->textview->text) {
-			text = messageview->mimeview->textview->text;
+		if (messageview->mimeview) {
 			mimeview = messageview->mimeview;
-		}
+			if (messageview->mimeview->type == MIMEVIEW_TEXT &&
+					messageview->mimeview->textview &&
+					messageview->mimeview->textview->text)
+				text = messageview->mimeview->textview->text;
+		} 
 		break;
 	}
 

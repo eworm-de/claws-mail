@@ -27,7 +27,6 @@ src/exphtmldlg.c
 src/export.c
 src/exporthtml.c
 src/filesel.c
-src/filter.c
 src/folder.c
 src/foldersel.c
 src/folderview.c
@@ -70,7 +69,6 @@ src/prefs_actions.c
 src/prefs_common.c
 src/prefs_customheader.c
 src/prefs_display_header.c
-src/prefs_filter.c
 src/prefs_filtering.c
 src/prefs_folder_item.c
 src/prefs_matcher.c

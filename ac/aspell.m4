@@ -1,4 +1,5 @@
 dnl Autoconf macros for libaspell
+dnl $Id$
 
 # Configure paths for ASPELL
 # Shamelessly stolen from the one of GPGME by Werner Koch 
@@ -35,6 +36,7 @@ dnl
      if test x$aspell_libs = x ; then
         aspell_libs=$aspell_prefix/lib
      fi
+     aspell_path=$aspell_prefix/lib/aspell
   fi
   if test x$aspell_includes = x ; then
      aspell_includes=/usr/local/include
@@ -42,26 +44,34 @@ dnl
   if test x$aspell_libs = x ; then
      aspell_libs=/usr/local/lib
   fi
-
-  AC_PATH_PROG(ASPELL, aspell, no)
-  min_aspell_version=ifelse([$1], ,.50,$1)
-  AC_MSG_CHECKING(for GNU/aspell - version >= $min_aspell_version)
-  no_aspell=""
-  if test "$ASPELL" = "no" ; then
-     echo "*** The aspell executable could not be found"
-     echo "*** If aspell was installed in PREFIX, make sure PREFIX/bin is in"
-     echo "*** your path, or set the ASPELL environment variable to the"
-     echo "*** full path to aspell or configure with --with-aspell-prefix=PREFIX."
-     ASPELL_CFLAGS=""
-     ASPELL_LIBS=""
-     ASPELL_PATH=""
-     no_aspell=yes
-     ifelse([$3], , :, [$3])
-  else
+  if test x$aspell_path = x ; then
+     aspell_path=/usr/local/lib/aspell
+  fi
+  if test "x$enable_aspelltest" != "xyes" ; then
+     echo "*** Disabling GNU/aspell tests upon user request" 
      ASPELL_CFLAGS="-I$aspell_includes"
      ASPELL_LIBS="-L$aspell_libs -laspell"
-     aspell_version=`$ASPELL version|sed -e "s/\(@(#) International Ispell Version 3.1.20 (but really Aspell \)\(.*\))/\2/"`
-     if test "x$enable_aspelltest" = "xyes" ; then
+     AC_DEFINE_UNQUOTED(ASPELL_PATH, "${aspell_path}/", Define ASPELL's default directory)
+     ifelse([$2], , :, [$2])
+  else   
+     AC_PATH_PROG(ASPELL, aspell, no)
+     min_aspell_version=ifelse([$1], ,.50,$1)
+     AC_MSG_CHECKING(for GNU/aspell - version >= $min_aspell_version)
+     no_aspell=""
+     if test "$ASPELL" = "no" ; then
+        echo "*** The aspell executable could not be found"
+        echo "*** If aspell was installed in PREFIX, make sure PREFIX/bin is in"
+        echo "*** your path, or set the ASPELL environment variable to the"
+        echo "*** full path to aspell or configure with --with-aspell-prefix=PREFIX."
+        ASPELL_CFLAGS=""
+        ASPELL_LIBS=""
+        ASPELL_PATH=""
+        no_aspell=yes
+        ifelse([$3], , :, [$3])
+     else
+        ASPELL_CFLAGS="-I$aspell_includes"
+        ASPELL_LIBS="-L$aspell_libs -laspell"
+        aspell_version=`$ASPELL version|sed -e "s/\(@(#) International Ispell Version 3.1.20 (but really Aspell \)\(.*\))/\2/"`
         rm -f conf.aspelltest
         AC_TRY_RUN([
 #include <stdio.h>

@@ -64,7 +64,6 @@
 #include "sourcewindow.h"
 #include "prefs_common.h"
 #include "prefs_summary_column.h"
-#include "prefs_filter.h"
 #include "prefs_filtering.h"
 #include "account.h"
 #include "compose.h"
@@ -75,7 +74,6 @@
 #include "alertpanel.h"
 #include "inputdialog.h"
 #include "statusbar.h"
-#include "filter.h"
 #include "folder.h"
 #include "colorlabel.h"
 #include "inc.h"
@@ -3905,7 +3903,7 @@ void summary_collapse_threads(SummaryView *summaryview)
 
 void summary_filter(SummaryView *summaryview)
 {
-	if (!prefs_common.fltlist && !global_processing) {
+	if (!global_processing) {
 		alertpanel_error(_("No filter rules defined."));
 		return;
 	}
@@ -3965,17 +3963,7 @@ static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
 	gchar *file;
 	FolderItem *dest;
 
-	if (global_processing == NULL) {
-		/* old filtering */
-		file = procmsg_get_message_file(msginfo);
-		dest = filter_get_dest_folder(prefs_common.fltlist, file);
-		g_free(file);
-
-		if (dest && strcmp2(dest->path, FILTER_NOT_RECEIVE) != 0 &&
-		    summaryview->folder_item != dest)
-			summary_move_row_to(summaryview, node, dest);
-	} else 
-		filter_message_by_msginfo(global_processing, msginfo);
+	filter_message_by_msginfo(global_processing, msginfo);
 }
 
 void summary_filter_open(SummaryView *summaryview, PrefsFilterType type)
@@ -4023,14 +4011,8 @@ void summary_filter_open(SummaryView *summaryview, PrefsFilterType type)
 					      summaryview->selected);
 	if (!msginfo) return;
 
-	if (global_processing) {
-		header_offset = 1;
-		hentry_offset = 5;
-	}
-	else {
-		header_offset = 0;
-		hentry_offset = 0;
-	}
+	header_offset = 1;
+	hentry_offset = 5;
 
 	switch (type) {
 	case FILTER_BY_NONE:
@@ -4094,10 +4076,7 @@ void summary_filter_open(SummaryView *summaryview, PrefsFilterType type)
 	 * and have set entries. Otherwise we're hosed.  
 	 */
 
-	if (global_processing)
-		prefs_filtering_open(NULL, header, key);
-	else
-		prefs_filter_open(header, key);
+	prefs_filtering_open(NULL, header, key);
 }
 
 void summary_reply(SummaryView *summaryview, ComposeMode mode)

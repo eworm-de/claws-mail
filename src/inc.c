@@ -67,7 +67,6 @@
 #include "progressdialog.h"
 #include "inputdialog.h"
 #include "alertpanel.h"
-#include "filter.h"
 #include "automaton.h"
 #include "folder.h"
 #include "filtering.h"
@@ -1000,21 +999,7 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 	}
 
 	/* CLAWS: claws uses a global .processing folder for the filtering. */
-	if (global_processing == NULL) {
-		if (state->ac_prefs->filter_on_recv) {
-			dropfolder =
-				filter_get_dest_folder(prefs_common.fltlist, file);
-			if (!dropfolder) dropfolder = inbox;
-			else if (!strcmp(dropfolder->path, FILTER_NOT_RECEIVE)) {
-				debug_print("a message won't be received\n");
-				unlink(file);
-				return 1;
-			}
-		} else
-			dropfolder = inbox;
-	} else {
-		dropfolder = folder_get_default_processing();
-	}
+	dropfolder = folder_get_default_processing();
 
 	/* add msg file to drop folder */
 	if ((msgnum = folder_item_add_msg(dropfolder, file, TRUE)) < 0) {

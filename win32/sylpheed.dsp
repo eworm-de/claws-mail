@@ -232,10 +232,6 @@ SOURCE=..\src\filesel.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\filter.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\filtering.c
 # End Source File
 # Begin Source File
@@ -449,10 +445,6 @@ SOURCE=..\src\prefs_customheader.c
 # Begin Source File
 
 SOURCE=..\src\prefs_display_header.c
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\prefs_filter.c
 # End Source File
 # Begin Source File
 
@@ -776,10 +768,6 @@ SOURCE=..\src\filesel.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\filter.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\folder.h
 # End Source File
 # Begin Source File
@@ -957,10 +945,6 @@ SOURCE=..\src\prefs_customheader.h
 # Begin Source File
 
 SOURCE=..\src\prefs_display_header.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\prefs_filter.h
 # End Source File
 # Begin Source File
 

@@ -76,7 +76,6 @@ CLEAN :
 	-@erase "$(INTDIR)\export.obj"
 	-@erase "$(INTDIR)\exporthtml.obj"
 	-@erase "$(INTDIR)\filesel.obj"
-	-@erase "$(INTDIR)\filter.obj"
 	-@erase "$(INTDIR)\filtering.obj"
 	-@erase "$(INTDIR)\folder.obj"
 	-@erase "$(INTDIR)\foldersel.obj"
@@ -131,7 +130,6 @@ CLEAN :
 	-@erase "$(INTDIR)\prefs_common.obj"
 	-@erase "$(INTDIR)\prefs_customheader.obj"
 	-@erase "$(INTDIR)\prefs_display_header.obj"
-	-@erase "$(INTDIR)\prefs_filter.obj"
 	-@erase "$(INTDIR)\prefs_filtering.obj"
 	-@erase "$(INTDIR)\prefs_folder_item.obj"
 	-@erase "$(INTDIR)\prefs_matcher.obj"
@@ -231,7 +229,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\export.obj" \
 	"$(INTDIR)\exporthtml.obj" \
 	"$(INTDIR)\filesel.obj" \
-	"$(INTDIR)\filter.obj" \
 	"$(INTDIR)\filtering.obj" \
 	"$(INTDIR)\folder.obj" \
 	"$(INTDIR)\foldersel.obj" \
@@ -256,6 +253,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\jpilot.obj" \
 	"$(INTDIR)\ldif.obj" \
 	"$(INTDIR)\logwindow.obj" \
+	"$(INTDIR)\main.obj" \
 	"$(INTDIR)\mainwindow.obj" \
 	"$(INTDIR)\manage_window.obj" \
 	"$(INTDIR)\manual.obj" \
@@ -285,7 +283,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\prefs_common.obj" \
 	"$(INTDIR)\prefs_customheader.obj" \
 	"$(INTDIR)\prefs_display_header.obj" \
-	"$(INTDIR)\prefs_filter.obj" \
 	"$(INTDIR)\prefs_filtering.obj" \
 	"$(INTDIR)\prefs_folder_item.obj" \
 	"$(INTDIR)\prefs_matcher.obj" \
@@ -345,8 +342,7 @@ LINK32_OBJS= \
 	"..\..\regex\regex_d.lib" \
 	"..\..\fnmatch\fnmatch_d.lib" \
 	"..\..\..\lib\libeay32.lib" \
-	"..\..\..\lib\ssleay32.lib" \
-	"$(INTDIR)\main.obj"
+	"..\..\..\lib\ssleay32.lib"
 
 "$(OUTDIR)\sylpheed.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -435,8 +431,6 @@ CLEAN :
 	-@erase "$(INTDIR)\exporthtml.sbr"
 	-@erase "$(INTDIR)\filesel.obj"
 	-@erase "$(INTDIR)\filesel.sbr"
-	-@erase "$(INTDIR)\filter.obj"
-	-@erase "$(INTDIR)\filter.sbr"
 	-@erase "$(INTDIR)\filtering.obj"
 	-@erase "$(INTDIR)\filtering.sbr"
 	-@erase "$(INTDIR)\folder.obj"
@@ -545,8 +539,6 @@ CLEAN :
 	-@erase "$(INTDIR)\prefs_customheader.sbr"
 	-@erase "$(INTDIR)\prefs_display_header.obj"
 	-@erase "$(INTDIR)\prefs_display_header.sbr"
-	-@erase "$(INTDIR)\prefs_filter.obj"
-	-@erase "$(INTDIR)\prefs_filter.sbr"
 	-@erase "$(INTDIR)\prefs_filtering.obj"
 	-@erase "$(INTDIR)\prefs_filtering.sbr"
 	-@erase "$(INTDIR)\prefs_folder_item.obj"
@@ -693,7 +685,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\export.sbr" \
 	"$(INTDIR)\exporthtml.sbr" \
 	"$(INTDIR)\filesel.sbr" \
-	"$(INTDIR)\filter.sbr" \
 	"$(INTDIR)\filtering.sbr" \
 	"$(INTDIR)\folder.sbr" \
 	"$(INTDIR)\foldersel.sbr" \
@@ -718,6 +709,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\jpilot.sbr" \
 	"$(INTDIR)\ldif.sbr" \
 	"$(INTDIR)\logwindow.sbr" \
+	"$(INTDIR)\main.sbr" \
 	"$(INTDIR)\mainwindow.sbr" \
 	"$(INTDIR)\manage_window.sbr" \
 	"$(INTDIR)\manual.sbr" \
@@ -747,7 +739,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\prefs_common.sbr" \
 	"$(INTDIR)\prefs_customheader.sbr" \
 	"$(INTDIR)\prefs_display_header.sbr" \
-	"$(INTDIR)\prefs_filter.sbr" \
 	"$(INTDIR)\prefs_filtering.sbr" \
 	"$(INTDIR)\prefs_folder_item.sbr" \
 	"$(INTDIR)\prefs_matcher.sbr" \
@@ -794,8 +785,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\w32_aspell_init.sbr" \
 	"$(INTDIR)\w32_mailcap.sbr" \
 	"$(INTDIR)\xml.sbr" \
-	"$(INTDIR)\xmlprops.sbr" \
-	"$(INTDIR)\main.sbr"
+	"$(INTDIR)\xmlprops.sbr"
 
 "$(OUTDIR)\sylpheed_debug.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -840,7 +830,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\export.obj" \
 	"$(INTDIR)\exporthtml.obj" \
 	"$(INTDIR)\filesel.obj" \
-	"$(INTDIR)\filter.obj" \
 	"$(INTDIR)\filtering.obj" \
 	"$(INTDIR)\folder.obj" \
 	"$(INTDIR)\foldersel.obj" \
@@ -865,6 +854,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\jpilot.obj" \
 	"$(INTDIR)\ldif.obj" \
 	"$(INTDIR)\logwindow.obj" \
+	"$(INTDIR)\main.obj" \
 	"$(INTDIR)\mainwindow.obj" \
 	"$(INTDIR)\manage_window.obj" \
 	"$(INTDIR)\manual.obj" \
@@ -894,7 +884,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\prefs_common.obj" \
 	"$(INTDIR)\prefs_customheader.obj" \
 	"$(INTDIR)\prefs_display_header.obj" \
-	"$(INTDIR)\prefs_filter.obj" \
 	"$(INTDIR)\prefs_filtering.obj" \
 	"$(INTDIR)\prefs_folder_item.obj" \
 	"$(INTDIR)\prefs_matcher.obj" \
@@ -954,8 +943,7 @@ LINK32_OBJS= \
 	"..\..\regex\regex_d.lib" \
 	"..\..\fnmatch\fnmatch_d.lib" \
 	"..\..\..\lib\libeay32.lib" \
-	"..\..\..\lib\ssleay32.lib" \
-	"$(INTDIR)\main.obj"
+	"..\..\..\lib\ssleay32.lib"
 
 "$(OUTDIR)\sylpheed_d.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -1630,24 +1618,6 @@ SOURCE=..\src\filesel.c
 
 
 "$(INTDIR)\filesel.obj"	"$(INTDIR)\filesel.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
-
-SOURCE=..\src\filter.c
-
-!IF  "$(CFG)" == "sylpheed - Win32 Release"
-
-
-"$(INTDIR)\filter.obj" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
-
-
-"$(INTDIR)\filter.obj"	"$(INTDIR)\filter.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -2620,24 +2590,6 @@ SOURCE=..\src\prefs_display_header.c
 
 
 "$(INTDIR)\prefs_display_header.obj"	"$(INTDIR)\prefs_display_header.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
-
-SOURCE=..\src\prefs_filter.c
-
-!IF  "$(CFG)" == "sylpheed - Win32 Release"
-
-
-"$(INTDIR)\prefs_filter.obj" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
-
-
-"$(INTDIR)\prefs_filter.obj"	"$(INTDIR)\prefs_filter.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

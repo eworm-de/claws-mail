@@ -44,7 +44,6 @@
 #include "mbox.h"
 #include "procmsg.h"
 #include "folder.h"
-#include "filter.h"
 #include "prefs_common.h"
 #include "prefs_account.h"
 #include "account.h"
@@ -211,18 +210,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox)
 			return -1;
 		}
 
-		if (global_processing == NULL) {
-			/* old filtering */
-			dropfolder = filter_get_dest_folder
-				(prefs_common.fltlist, tmp_file);
-			if (!dropfolder ||
-			    !strcmp(dropfolder->path, FILTER_NOT_RECEIVE))
-				dropfolder = dest;
-		} else {
-			/* CLAWS: new filtering */
-			dropfolder = folder_get_default_processing();
-		}
-
+		dropfolder = folder_get_default_processing();
 			
 		if ((msgnum = folder_item_add_msg(dropfolder, tmp_file, TRUE)) < 0) {
 			fclose(mbox_fp);
@@ -231,11 +219,8 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox)
 			return -1;
 		}
 
-		if (global_processing) {
-			/* CLAWS: new filtering */
-			filter_message(global_processing, dest,
-				       msgnum);
-		}
+		filter_message(global_processing, dest,
+			       msgnum);
 
 		msgs++;
 	} while (from_line[0] != '\0');

@@ -169,7 +169,6 @@ OBJECTS= \
 	export.o \
 	exporthtml.o \
 	filesel.o \
-	filter.o \
 	filtering.o \
 	folder.o \
 	foldersel.o \
@@ -225,7 +224,6 @@ OBJECTS= \
 	prefs_common.o \
 	prefs_customheader.o \
 	prefs_display_header.o \
-	prefs_filter.o \
 	prefs_filtering.o \
 	prefs_folder_item.o \
 	prefs_matcher.o \
@@ -320,7 +318,6 @@ exphtmldlg.o: 	exphtmldlg.c exphtmldlg.h
 export.o: 	export.c export.h
 exporthtml.o: 	exporthtml.c exporthtml.h
 filesel.o: 	filesel.c filesel.h
-filter.o: 	filter.c filter.h
 filtering.o: 	filtering.c filtering.h
 folder.o: 	folder.c folder.h
 foldersel.o: 	foldersel.c foldersel.h
@@ -373,7 +370,6 @@ prefs_actions.o: 	prefs_actions.c prefs_actions.h
 prefs_common.o: 	prefs_common.c prefs_common.h
 prefs_customheader.o: 	prefs_customheader.c prefs_customheader.h
 prefs_display_header.o: 	prefs_display_header.c prefs_display_header.h
-prefs_filter.o: 	prefs_filter.c prefs_filter.h
 prefs_filtering.o: 	prefs_filtering.c prefs_filtering.h
 prefs_folder_item.o: 	prefs_folder_item.c prefs_folder_item.h
 prefs_matcher.o: 	prefs_matcher.c prefs_matcher.h

@@ -62,7 +62,6 @@
 #include "folderview.h"
 #include "summaryview.h"
 #include "prefs_common.h"
-#include "prefs_filter.h"
 #include "prefs_account.h"
 #include "prefs_actions.h"
 #include "scoring.h"
@@ -377,8 +376,6 @@ int main(int argc, char *argv[])
 	
 
 	prefs_common_save_config();
-	prefs_filter_read_config();
-	prefs_filter_write_config();
 	prefs_actions_read_config();
 	prefs_actions_write_config();
 	prefs_display_header_read_config();
@@ -663,7 +660,6 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 	main_window_get_size(mainwin);
 	main_window_get_position(mainwin);
 	prefs_common_save_config();
-	prefs_filter_write_config();
 	account_save_config_all();
 	addressbook_export_to_file();
 

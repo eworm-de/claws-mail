@@ -983,13 +983,13 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 			 gboolean as_attach, const gchar *body)
 {
 	Compose *compose;
-	/*	PrefsAccount *account; */
 	GtkSText *text;
 
 	g_return_val_if_fail(msginfo != NULL, NULL);
 	g_return_val_if_fail(msginfo->folder != NULL, NULL);
 
-	account = msginfo->folder->folder->account;
+	if (!account) 
+		account = msginfo->folder->folder->account;
 	if (!account && msginfo->to && prefs_common.forward_account_autosel) {
 		gchar *to;
 		Xstrdup_a(to, msginfo->to, return NULL);

@@ -25,6 +25,10 @@ NULL=
 NULL=nul
 !ENDIF 
 
+CPP=cl.exe
+MTL=midl.exe
+RSC=rc.exe
+
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 
 OUTDIR=.\Release
@@ -72,7 +76,6 @@ CLEAN :
 	-@erase "$(INTDIR)\export.obj"
 	-@erase "$(INTDIR)\exporthtml.obj"
 	-@erase "$(INTDIR)\filesel.obj"
-	-@erase "$(INTDIR)\filter.obj"
 	-@erase "$(INTDIR)\filtering.obj"
 	-@erase "$(INTDIR)\folder.obj"
 	-@erase "$(INTDIR)\foldersel.obj"
@@ -127,7 +130,6 @@ CLEAN :
 	-@erase "$(INTDIR)\prefs_common.obj"
 	-@erase "$(INTDIR)\prefs_customheader.obj"
 	-@erase "$(INTDIR)\prefs_display_header.obj"
-	-@erase "$(INTDIR)\prefs_filter.obj"
 	-@erase "$(INTDIR)\prefs_filtering.obj"
 	-@erase "$(INTDIR)\prefs_folder_item.obj"
 	-@erase "$(INTDIR)\prefs_matcher.obj"
@@ -182,42 +184,8 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /Fp"$(INTDIR)\sylpheed.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-MTL=midl.exe
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
-RSC=rc.exe
 RSC_PROJ=/l 0x411 /fo"$(INTDIR)\sylpheed.res" /d "NDEBUG" 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\sylpheed.bsc" 
@@ -261,7 +229,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\export.obj" \
 	"$(INTDIR)\exporthtml.obj" \
 	"$(INTDIR)\filesel.obj" \
-	"$(INTDIR)\filter.obj" \
 	"$(INTDIR)\filtering.obj" \
 	"$(INTDIR)\folder.obj" \
 	"$(INTDIR)\foldersel.obj" \
@@ -316,7 +283,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\prefs_common.obj" \
 	"$(INTDIR)\prefs_customheader.obj" \
 	"$(INTDIR)\prefs_display_header.obj" \
-	"$(INTDIR)\prefs_filter.obj" \
 	"$(INTDIR)\prefs_filtering.obj" \
 	"$(INTDIR)\prefs_folder_item.obj" \
 	"$(INTDIR)\prefs_matcher.obj" \
@@ -465,8 +431,6 @@ CLEAN :
 	-@erase "$(INTDIR)\exporthtml.sbr"
 	-@erase "$(INTDIR)\filesel.obj"
 	-@erase "$(INTDIR)\filesel.sbr"
-	-@erase "$(INTDIR)\filter.obj"
-	-@erase "$(INTDIR)\filter.sbr"
 	-@erase "$(INTDIR)\filtering.obj"
 	-@erase "$(INTDIR)\filtering.sbr"
 	-@erase "$(INTDIR)\folder.obj"
@@ -575,8 +539,6 @@ CLEAN :
 	-@erase "$(INTDIR)\prefs_customheader.sbr"
 	-@erase "$(INTDIR)\prefs_display_header.obj"
 	-@erase "$(INTDIR)\prefs_display_header.sbr"
-	-@erase "$(INTDIR)\prefs_filter.obj"
-	-@erase "$(INTDIR)\prefs_filter.sbr"
 	-@erase "$(INTDIR)\prefs_filtering.obj"
 	-@erase "$(INTDIR)\prefs_filtering.sbr"
 	-@erase "$(INTDIR)\prefs_folder_item.obj"
@@ -682,42 +644,8 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP=cl.exe
 CPP_PROJ=/nologo /MLd /W3 /Gm /GX /ZI /Od /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /I "\dev\proj\aspell\interfaces\cc" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\sylpheed.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-MTL=midl.exe
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
-RSC=rc.exe
 RSC_PROJ=/l 0x411 /fo"$(INTDIR)\sylpheed.res" /d "_DEBUG" 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\sylpheed.bsc" 
@@ -757,7 +685,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\export.sbr" \
 	"$(INTDIR)\exporthtml.sbr" \
 	"$(INTDIR)\filesel.sbr" \
-	"$(INTDIR)\filter.sbr" \
 	"$(INTDIR)\filtering.sbr" \
 	"$(INTDIR)\folder.sbr" \
 	"$(INTDIR)\foldersel.sbr" \
@@ -812,7 +739,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\prefs_common.sbr" \
 	"$(INTDIR)\prefs_customheader.sbr" \
 	"$(INTDIR)\prefs_display_header.sbr" \
-	"$(INTDIR)\prefs_filter.sbr" \
 	"$(INTDIR)\prefs_filtering.sbr" \
 	"$(INTDIR)\prefs_folder_item.sbr" \
 	"$(INTDIR)\prefs_matcher.sbr" \
@@ -904,7 +830,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\export.obj" \
 	"$(INTDIR)\exporthtml.obj" \
 	"$(INTDIR)\filesel.obj" \
-	"$(INTDIR)\filter.obj" \
 	"$(INTDIR)\filtering.obj" \
 	"$(INTDIR)\folder.obj" \
 	"$(INTDIR)\foldersel.obj" \
@@ -959,7 +884,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\prefs_common.obj" \
 	"$(INTDIR)\prefs_customheader.obj" \
 	"$(INTDIR)\prefs_display_header.obj" \
-	"$(INTDIR)\prefs_filter.obj" \
 	"$(INTDIR)\prefs_filtering.obj" \
 	"$(INTDIR)\prefs_folder_item.obj" \
 	"$(INTDIR)\prefs_matcher.obj" \
@@ -1027,6 +951,36 @@ LINK32_OBJS= \
 <<
 
 !ENDIF 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -1664,24 +1618,6 @@ SOURCE=..\src\filesel.c
 
 
 "$(INTDIR)\filesel.obj"	"$(INTDIR)\filesel.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
-
-SOURCE=..\src\filter.c
-
-!IF  "$(CFG)" == "sylpheed - Win32 Release"
-
-
-"$(INTDIR)\filter.obj" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
-
-
-"$(INTDIR)\filter.obj"	"$(INTDIR)\filter.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -2654,24 +2590,6 @@ SOURCE=..\src\prefs_display_header.c
 
 
 "$(INTDIR)\prefs_display_header.obj"	"$(INTDIR)\prefs_display_header.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
-
-SOURCE=..\src\prefs_filter.c
-
-!IF  "$(CFG)" == "sylpheed - Win32 Release"
-
-
-"$(INTDIR)\prefs_filter.obj" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
-
-
-"$(INTDIR)\prefs_filter.obj"	"$(INTDIR)\prefs_filter.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

@@ -60,7 +60,6 @@
 #include "import.h"
 #include "export.h"
 #include "prefs_common.h"
-#include "prefs_filter.h"
 #include "prefs_actions.h"
 #include "prefs_filtering.h"
 #include "prefs_scoring.h"

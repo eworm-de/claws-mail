@@ -1,3 +1,30 @@
+2002-10-28
+
+	* src/codeconv.c: conv_euctojis(): 不正なコードが出現したら無限
+	  ループに陥るバグを修正。
+
+2002-10-25
+
+	* src/codeconv.c: conv_codeset_strdup()
+	  src/html.[ch]: html_read_line(): 変換失敗の警告を出さないように
+	  した。
+	  enum HTMLState に HTML_CONV_FAILED を追加。
+
+2002-10-24
+
+	* フォルダ毎の自動指定アドレスを実装(まだ作業中)。
+	* src/compose.[ch]: compose_new(): 引数に FolderItem を追加し、
+	  (mailto が空であれば)それからエントリを設定。
+	  compose_entry_append(): 必要であればメニューを有効にするようにした。
+	  compose_entries_set_from_item(): 新規。
+	* src/folder.[ch]: auto_to, use_auto_to_on_reply, auto_cc, auto_bcc,
+	  auto_replyto を FolderItem に追加し、 apply_sub を ac_apply_sub
+	  に名称変更。
+	  folder_build_tree(), folder_read_folder_func(),
+	  folder_write_list_recursive(): 上記メンバを追加。
+	* src/prefs_folder_item.[ch]: 自動指定アドレスを追加。
+	* src/pop.[ch]: Pop3State::prev_folder を削除。
+
 2002-10-11
 
 	* src/compose.c: ファイルマネージャからファイルを「移動」することで

@@ -187,6 +187,7 @@ static gboolean mbox_file_lock_file(gchar * base)
 			g_warning(_("can't create %s\n"), lockfile);
 			unlink(lockfile);
 			g_free(lockfile);
+			g_free(locklink);
 			return -1;
 		}
 		if (retry == 0)
@@ -197,7 +198,8 @@ static gboolean mbox_file_lock_file(gchar * base)
 	}
 	unlink(lockfile);
 	g_free(lockfile);
-
+	g_free(locklink);
+	
 	return TRUE;
 }
 
@@ -549,7 +551,7 @@ static mailfile * mailfile_init_from_file(FILE * f, gchar * filename)
 	mf->count = msgnum;
 
 	mailfile_error = MAILFILE_ERROR_NO_ERROR;
-
+	
 	return mf;
 }
 
@@ -1957,6 +1959,7 @@ void mbox_change_flags(Folder * folder, FolderItem * item, MsgInfo * info)
 	msg->flags = info->flags;
 
 	cache->modification = TRUE;
+		
 }
 
 
@@ -2020,6 +2023,7 @@ static gboolean mbox_rewrite(gchar * mbox)
 		fclose(new_fp);
 		mbox_unlock_file(mbox_fp, mbox);
 		fclose(mbox_fp);
+		g_free(new);
 		return -1;
 	}
 
@@ -2045,6 +2049,8 @@ static gboolean mbox_rewrite(gchar * mbox)
 
 	mbox_cache_synchronize(mbox, FALSE);
 
+	g_free(new);
+	
 	return result;
 }
 
@@ -2116,6 +2122,7 @@ static gboolean mbox_purge_deleted(gchar * mbox)
 		fclose(new_fp);
 		mbox_unlock_file(mbox_fp, mbox);
 		fclose(mbox_fp);
+		g_free(new);
 		return -1;
 	}
 
@@ -2135,7 +2142,7 @@ static gboolean mbox_purge_deleted(gchar * mbox)
 	debug_print("%i messages written - %s\n", count, mbox);
 
 	mbox_cache_synchronize(mbox, FALSE);
-
+	g_free(new);
 	return result;
 }
 
