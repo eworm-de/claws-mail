@@ -1,3 +1,17 @@
+2004-04-26 [christoph]	0.9.10claws52
+
+	* src/gtk/about.c
+	* src/gtk/colorsel.c
+	* src/gtk/description_window.c
+	* src/gtk/filesel.c
+	* src/gtk/gtkaspell.c
+	* src/gtk/inputdialog.c
+	* src/gtk/pluginwindow.c
+	* src/gtk/progressdialog.c
+		o remove gtk_window_set_position(..., GTK_WIN_POS_CENTER) because
+		  it does not work correctly with xinerama
+		o lock incorporation while the plugin window is open
+
 2004-04-23 [paul]	0.9.10claws51
 
 	* po/POTFILES.in

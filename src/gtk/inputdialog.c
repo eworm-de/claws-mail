@@ -169,7 +169,6 @@ static void input_dialog_create(void)
 	gtk_widget_set_usize(dialog, INPUT_DIALOG_WIDTH, -1);
 	gtk_container_set_border_width
 		(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), 5);
-	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 	gtk_signal_connect(GTK_OBJECT(dialog), "delete_event",
 			   GTK_SIGNAL_FUNC(delete_event), NULL);
 	gtk_signal_connect(GTK_OBJECT(dialog), "key_press_event",

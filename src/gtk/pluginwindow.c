@@ -46,6 +46,7 @@ static void close_cb(GtkButton *button, PluginWindow *pluginwindow)
 	gtk_widget_destroy(pluginwindow->window);
 	g_free(pluginwindow);
 	plugin_save_list();
+	inc_unlock();
 }
 
 static void set_plugin_list(PluginWindow *pluginwindow)
@@ -144,12 +145,10 @@ void pluginwindow_create()
 	GtkWidget *unload_btn;
 	GtkWidget *close_btn;
 
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	window = gtk_window_new(GTK_WINDOW_DIALOG);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_default_size(GTK_WINDOW(window), 480, 300);
 	gtk_window_set_title(GTK_WINDOW(window), _("Plugins"));
-	gtk_window_set_position(GTK_WINDOW(window),
-				GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 
 	vbox1 = gtk_vbox_new(FALSE, 4);
@@ -251,5 +250,6 @@ void pluginwindow_create()
 
 	set_plugin_list(pluginwindow);
 
+	inc_lock();
 	gtk_widget_show(window);
 }

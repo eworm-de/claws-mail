@@ -194,7 +194,6 @@ GList *filesel_select_multiple_files(const gchar *title, const gchar *file)
 static void filesel_create(const gchar *title, gboolean multiple_files)
 {
 	filesel = gtk_file_selection_new(title);
-	gtk_window_set_position(GTK_WINDOW(filesel), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(filesel), TRUE);
 	gtk_window_set_wmclass
 		(GTK_WINDOW(filesel), "file_selection", "Sylpheed");
