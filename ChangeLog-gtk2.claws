@@ -1,3 +1,8 @@
+2004-11-19 [colin]	0.9.12cvs158.3
+
+	* src/textview.c
+		Add a context menu on links (open, copy)
+
 2004-11-18 [paul]	0.9.12cvs158.2
 
 	* src/addrgather.c

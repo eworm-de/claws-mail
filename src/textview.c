@@ -51,6 +51,7 @@
 #include "account.h"
 #include "mimeview.h"
 #include "alertpanel.h"
+#include "menu.h"
 
 struct _RemoteURI
 {
@@ -185,12 +186,19 @@ static gboolean textview_uri_security_check	(TextView	*textview,
 						 RemoteURI	*uri);
 static void textview_uri_list_remove_all	(GSList		*uri_list);
 
+static void open_uri_cb				(TextView 	*textview,
+						 guint		 action,
+						 void		*data);
+static void copy_uri_cb				(TextView 	*textview,
+						 guint		 action,
+						 void		*data);
 
-static void populate_popup(GtkTextView *textview, GtkMenu *menu,
-			   gpointer *dummy)
+static GtkItemFactoryEntry textview_popup_entries[] = 
 {
-	gtk_menu_detach(menu);
-}
+	{N_("/_Open link"),		NULL, open_uri_cb, 0, NULL},
+	{N_("/_Copy link location"),	NULL, copy_uri_cb, 0, NULL},
+};
+
 
 TextView *textview_create(void)
 {
@@ -200,6 +208,9 @@ TextView *textview_create(void)
 	GtkWidget *text;
 	GtkTextBuffer *buffer;
 	GtkClipboard *clipboard;
+	GtkItemFactory *popupfactory;
+	GtkWidget *popupmenu;
+	gint n_entries;
 	PangoFontDescription *font_desc = NULL;
 
 	debug_print("Creating text view...\n");
@@ -219,9 +230,6 @@ TextView *textview_create(void)
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), FALSE);
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD_CHAR);
 	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(text), FALSE);
-	g_signal_connect(G_OBJECT(text), "populate-popup",
-		 G_CALLBACK(populate_popup), NULL);
-
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	clipboard = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
@@ -266,6 +274,12 @@ TextView *textview_create(void)
 
 	gtk_widget_show(vbox);
 
+	n_entries = sizeof(textview_popup_entries) /
+		sizeof(textview_popup_entries[0]);
+	popupmenu = menu_create_items(textview_popup_entries, n_entries,
+				      "<UriPopupMenu>", &popupfactory,
+				      textview);
+
 	textview->vbox             = vbox;
 	textview->scrolledwin      = scrolledwin;
 	textview->text             = text;
@@ -273,6 +287,8 @@ TextView *textview_create(void)
 	textview->body_pos         = 0;
 	textview->show_all_headers = FALSE;
 	textview->last_buttonpress = GDK_NOTHING;
+	textview->popup_menu	   = popupmenu;
+	textview->popup_factory	   = popupfactory;
 
 	return textview;
 }
@@ -2074,9 +2090,18 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 			}
 			return TRUE;
 		} else {
-			if (textview_uri_security_check(textview, uri) == TRUE) 
-				open_uri(uri->uri,
-					 prefs_common.uri_cmd);
+			if (bevent->button == 1 &&
+			    textview_uri_security_check(textview, uri) == TRUE) 
+					open_uri(uri->uri,
+						 prefs_common.uri_cmd);
+			else if (bevent->button == 3) {
+				g_object_set_data(
+					G_OBJECT(textview->popup_menu),
+					"menu_button", uri);
+				gtk_menu_popup(GTK_MENU(textview->popup_menu), 
+					       NULL, NULL, NULL, NULL, 
+					       bevent->button, bevent->time);
+			}
 			return TRUE;
 		}
 	}
@@ -2157,4 +2182,30 @@ static void textview_uri_list_remove_all(GSList *uri_list)
 	}
 
 	g_slist_free(uri_list);
+}
+
+static void open_uri_cb (TextView *textview, guint action, void *data)
+{
+	RemoteURI *uri = g_object_get_data(G_OBJECT(textview->popup_menu),
+					   "menu_button");
+	if (uri == NULL)
+		return;
+
+	if (textview_uri_security_check(textview, uri) == TRUE) 
+		open_uri(uri->uri,
+			 prefs_common.uri_cmd);
+	g_object_set_data(G_OBJECT(textview->popup_menu), "menu_button",
+			  NULL);
+}
+
+static void copy_uri_cb	(TextView *textview, guint action, void *data)
+{
+	RemoteURI *uri = g_object_get_data(G_OBJECT(textview->popup_menu),
+					   "menu_button");
+	if (uri == NULL)
+		return;
+
+	gtk_clipboard_set_text(gtk_clipboard_get(GDK_NONE), uri->uri, -1);
+	g_object_set_data(G_OBJECT(textview->popup_menu), "menu_button",
+			  NULL);
 }
