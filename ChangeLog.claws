@@ -2,7 +2,7 @@
 
 	* src/filtering.c
 		Remove wrong use of compose struct after
-		compose_send(). Spotted by Holger Berndt.
+		compose_send(). Spotted by Alfons and Holger Berndt.
 
 2005-02-10 [paul]	1.0.1cvs4
 
