@@ -1,3 +1,11 @@
+2004-06-30 [darko]	0.9.12cvs5
+
+	* src/common/utils.c
+		remove expand_search_string()
+	* src/gtk/quicksearch.c
+		remove no longer needed for loop (thanks Christoph)
+		add expand_search_string()
+
 2004-06-30 [darko]	0.9.12cvs4
 
 	* src/common/utils.c

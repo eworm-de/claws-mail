@@ -43,5 +43,6 @@ void quicksearch_set_execute_callback(QuickSearch *quicksearch,
 				      QuickSearchExecuteCallback callback,
 				      gpointer data);
 gboolean quicksearch_match(QuickSearch *quicksearch, MsgInfo *msginfo);
+gchar *expand_search_string(const gchar *str);
 
 #endif /* QUICKSEARCH_H */
