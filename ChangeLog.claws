@@ -1,3 +1,7 @@
+2001-05-08 [alfons]
+
+	* src/gtkstext.c: trace logs added 
+
 2001-05-08 [sergey]
 
 	* src/prefs_common.[ch]: added option to enable/disable GnuPG

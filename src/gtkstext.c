@@ -4314,6 +4314,19 @@ typedef struct {
 	LineParams   lp;
 } fdrf; 
 
+#if defined(AHX_DEBUG)
+static void print_line(GtkSText *text, guint start, guint end)
+{
+	gchar *buf = alloca(2048), *walk = buf;
+
+	memset(buf, 0, 2048);
+	for (; start <= end; start++) {
+		*walk++ = GTK_STEXT_INDEX(text, start);
+	}		
+	XDEBUG( ("%s", buf) );	
+}
+#endif
+
 static gint forward_display_row_fetcher(GtkSText *text,
 										LineParams *lp,
 										fdrf       *data)
@@ -4323,6 +4336,7 @@ static gint forward_display_row_fetcher(GtkSText *text,
 				__FILE__, __LINE__, data->start, data->end, lp->start.index, lp->end.index) );
 		data->lp = *lp;
 		data->completed = TRUE;
+		print_line(text, lp->start.index, lp->end.index);
 		return TRUE;
 	}
 	else if (range_intersect(data->start, data->end, lp->start.index, lp->end.index)) {
