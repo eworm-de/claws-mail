@@ -1,3 +1,8 @@
+2004-11-29 [colin]	0.9.12cvs174
+
+	* src/pop.c
+		Fix format string
+
 2004-11-26 [colin]	0.9.12cvs173
 
 	* src/common/smtp.c

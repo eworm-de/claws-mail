@@ -156,3 +156,4 @@
 ( cvs diff -u -r 1.12 -r 1.13 src/plugins/pgpmime/pgpmime.c; ) > 0.9.12cvs171.patchset
 ( cvs diff -u -r 1.13 -r 1.14 src/plugins/pgpmime/pgpmime.c; ) > 0.9.12cvs172.patchset
 ( cvs diff -u -r 1.18 -r 1.19 src/common/smtp.c; cvs diff -u -r 1.8 -r 1.9 src/common/smtp.h; ) > 0.9.12cvs173.patchset
+( cvs diff -u -r 1.70 -r 1.71 src/pop.c; ) > 0.9.12cvs174.patchset
