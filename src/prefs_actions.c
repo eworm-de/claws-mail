@@ -34,6 +34,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include <unistd.h>
 
 #include "intl.h"
 #include "prefs.h"
@@ -49,6 +50,7 @@
 #include "procmsg.h"
 #include "gtkstext.h"
 
+#define WAIT_LAP 10000
 						
 typedef enum {
 ACTION_NONE 		= 1 << 0,
@@ -81,10 +83,11 @@ struct _Children {
 	GtkWidget 	*input_entry;
 	GtkWidget 	*input_hbox;
 	GtkWidget 	*abort_btn;
+	GtkWidget 	*hide_btn;
 	GtkWidget       *scrolledwin;
 
 	gchar 		*action;
-	gint 		 timer;
+	guint		 timer;
 	GSList 		*list;
 	gint		 nb;
 	gint		 open_in;
@@ -93,15 +96,18 @@ struct _Children {
 
 typedef struct _ChildInfo ChildInfo;
 struct _ChildInfo {
+	Children	*children;
 	gchar 		*cmd;
 	guint  		 type;
 	pid_t 		 pid;
 	gint 		 chld_in;
 	gint		 chld_out;
 	gint		 chld_err;
+	gint		 chld_status;
 	gint		 tag_in;
 	gint		 tag_out;
 	gint		 tag_err;
+	gint		 tag_status;
 	gint		 new_out;
 	GString		*output;
 	GtkWidget	*text;
@@ -159,7 +165,8 @@ static GString *parse_append_filename	(GString *cmd,
 
 ChildInfo *fork_child			(gchar *cmd,
 		      			 gint action_type,
-		      			 GtkWidget *text);
+		      			 GtkWidget *text,
+					 Children *children);
 
 static gint wait_for_children		(gpointer data);
 
@@ -178,6 +185,9 @@ static void catch_output		(gpointer data,
 					 gint source,
 					 GdkInputCondition cond);
 static void catch_input			(gpointer data, 
+					 gint source,
+					 GdkInputCondition cond);
+static void catch_status		(gpointer data,
 					 gint source,
 					 GdkInputCondition cond);
 
@@ -605,9 +615,10 @@ static GString *parse_append_filename(GString *cmd, MsgInfo *msginfo)
 
 	filename = procmsg_get_message_file(msginfo);
 
-	cmd = g_string_append(cmd, filename);
-
-	g_free(filename);
+	if (filename) {
+		cmd = g_string_append(cmd, filename);
+		g_free(filename);
+	} 
 
 	return cmd;
 }
@@ -1066,10 +1077,12 @@ static gboolean execute_actions(gchar *action,
 			}
 			cmd = parse_action_cmd(action, msginfo, ctree);
 			if (!cmd) {
-				is_ok  = FALSE; /* ERR: command incorrect */
+				debug_print(_("Action command error\n"));
+				is_ok  = FALSE; /* ERR: incorrect command */
 				break;
 			}
-			if ((child_info = fork_child(cmd, action_type, text))) {
+			if ((child_info = fork_child(cmd, action_type, text,
+						     children))) {
 				children_list = g_slist_append(children_list,
 							       child_info);
 				children->open_in = (selection_len == 1) ? 
@@ -1082,7 +1095,8 @@ static gboolean execute_actions(gchar *action,
 	} else {
 		cmd = parse_action_cmd(action, NULL, ctree);
 		if (cmd) {
-			if ((child_info = fork_child(cmd, action_type, text))) {
+			if ((child_info = fork_child(cmd, action_type, text,
+						     children))) {
 				children_list = g_slist_append(children_list,
 							       child_info);
 				children->open_in = action_type &
@@ -1091,7 +1105,7 @@ static gboolean execute_actions(gchar *action,
 			}
 			g_free(cmd);
 		} else
-			is_ok  = FALSE;         /* ERR: command incorrect */
+			is_ok  = FALSE;         /* ERR: incorrect command */
 	}
 
 	if (!children_list) {
@@ -1101,27 +1115,41 @@ static gboolean execute_actions(gchar *action,
 			gtk_widget_set_sensitive(window, TRUE);
 		}
 	} else {
+		GSList *cur;
+		
 		children->action  = g_strdup(action);
 		children->window  = window;
-		children->timer   = 10;
 		children->dialog  = NULL;
 		children->list    = children_list;
 		children->nb	  = g_slist_length(children_list);
 
-		gtk_timeout_add(1000, wait_for_children, children);
+		for (cur = children_list; cur; cur = cur->next) {
+			child_info = (ChildInfo *) cur->data;
+			child_info->tag_status = 
+				gdk_input_add(child_info->chld_status,
+					      GDK_INPUT_READ,
+					      catch_status, child_info);
+		}
+		children->timer = children->open_in ? 0 :
+				  gtk_timeout_add(WAIT_LAP, wait_for_children,
+						  children);
 	}
+	if (children->open_in)
+		create_io_dialog(children);
+
 	return is_ok ;
 }
 
 ChildInfo *fork_child(gchar *cmd,
 		      gint action_type,
-		      GtkWidget *text)
+		      GtkWidget *text,
+		      Children *children)
 {
-	gint chld_in[2], chld_out[2], chld_err[2];
+	gint chld_in[2], chld_out[2], chld_err[2], chld_status[2];
 	gchar **cmdline;
 	gint start, end, is_selection;
 	gchar *selection;
-	pid_t pid;
+	pid_t pid_c, pid_gc;
 	ChildInfo *child_info;
 
 	if (action_type & ACTION_ASYNC) {
@@ -1129,44 +1157,71 @@ ChildInfo *fork_child(gchar *cmd,
 		return NULL; /* Asynchronous command */
 	}
 
-	if (pipe(chld_in) || pipe(chld_out) || pipe(chld_err)) {
+	if (pipe(chld_in) || pipe(chld_out) || pipe(chld_err) ||
+	    pipe(chld_status)) {
 		alertpanel_error(_("Command could not started. Pipe creation"
 				   " failed.\n%s"), g_strerror(errno));
 		return NULL; /* Pipe error */
 	}
+	
+	debug_print(_("Forking child and granchild.\n"));
 
-	pid = fork();
-	if (pid == (pid_t) 0) {/* Child */
+	pid_c = fork();
+	if (pid_c == (pid_t) 0) {/* Child */
 		if (setpgid(0, 0))
 			perror("setpgid");
-		
-		if (action_type & 
-		    (ACTION_PIPE_IN | ACTION_OPEN_IN | ACTION_HIDE_IN)) {
-			close(fileno(stdin));
-			dup  (chld_in[0]);
-		}
-		close(chld_in[0]);
-		close(chld_in[1]);
-
-		close(fileno(stdout));
-		dup  (chld_out[1]);
-		close(chld_out[0]);
-		close(chld_out[1]);
-
-		close(fileno(stderr));
-		dup  (chld_err[1]);
-		close(chld_err[0]);
-		close(chld_err[1]);
 
 		close(ConnectionNumber(gdk_display));
 
-		cmdline = strsplit_with_quote(cmd, " ", 1024);
+		pid_gc = fork();
 
-		execvp(cmdline[0], cmdline);
-		g_strfreev(cmdline);
+		if (pid_gc == 0) {
+			if (setpgid(0, getppid()))
+				perror("setpgid");
+			if (action_type & 
+			   (ACTION_PIPE_IN | ACTION_OPEN_IN | ACTION_HIDE_IN)) {
+			close(fileno(stdin));
+			dup  (chld_in[0]);
+			}
+			close(chld_in[0]);
+			close(chld_in[1]);
 
-		_exit(1);
-	} else if (pid < (pid_t) 0) {/* Fork error */
+			close(fileno(stdout));
+			dup  (chld_out[1]);
+			close(chld_out[0]);
+			close(chld_out[1]);
+
+			close(fileno(stderr));
+			dup  (chld_err[1]);
+			close(chld_err[0]);
+			close(chld_err[1]);
+
+			cmdline = strsplit_with_quote(cmd, " ", 1024);
+
+			execvp(cmdline[0], cmdline);
+			g_strfreev(cmdline);
+
+			_exit(1);
+		} else if (pid_gc < (pid_t) 0) {/* Fork erro */
+			write(chld_status[1], "1\n", 2);
+			_exit(1);
+		} else {/* Child */
+			close(chld_in[0]);
+			close(chld_in[1]);
+			close(chld_out[0]);
+			close(chld_out[1]);
+			close(chld_err[0]);
+			close(chld_err[1]);
+
+			close(chld_status[0]);
+			debug_print(_("Child: Waiting for grandchild\n"));
+			waitpid(pid_gc, NULL, 0);
+			debug_print(_("Child: grandchild ended\n"));
+			write(chld_status[1], "0\n", 2);
+			close(chld_status[1]);
+			_exit(0);
+		}
+	} else if (pid_c < (pid_t) 0) {/* Fork error */
 		alertpanel_error(_("Could not fork to execute the following "
 				   "command:\n%s\n%s"), 
 				 cmd, g_strerror(errno));
@@ -1179,10 +1234,13 @@ ChildInfo *fork_child(gchar *cmd,
 		close(chld_in[1]);
 	close(chld_out[1]);
 	close(chld_err[1]);
+	close(chld_status[1]);
 
 	child_info = g_new0(ChildInfo, 1);
+
+	child_info->children = children;
 	
-	child_info->pid      = pid;
+	child_info->pid      = pid_c;
 	child_info->cmd      = g_strdup(cmd);
 	child_info->type     = action_type;
 	child_info->new_out  = FALSE;
@@ -1192,6 +1250,7 @@ ChildInfo *fork_child(gchar *cmd,
 			       ? chld_in [1] : -1;
 	child_info->chld_out = chld_out[0];
 	child_info->chld_err = chld_err[0];
+	child_info->chld_status = chld_status[0];
 	child_info->tag_in   = -1;
 	child_info->tag_out  = gdk_input_add(chld_out[0], GDK_INPUT_READ,
 					     catch_output, child_info);
@@ -1253,8 +1312,9 @@ static void kill_children_cb(GtkWidget *widget, gpointer data)
 
 	for (cur = children->list; cur; cur = cur->next) {
 		child_info = (ChildInfo *)(cur->data);
-		if (child_info->pid) 
-			kill(child_info->pid, SIGTERM);
+		debug_print(_("Killing child group id %d\n"), child_info->pid);
+		if (child_info->pid && (kill(-child_info->pid, SIGTERM) < 0))
+				perror("kill");
 	}
 }
 
@@ -1264,41 +1324,35 @@ static gint wait_for_children(gpointer data)
 	Children *children = (Children *) data;
 	ChildInfo *child_info;
 	GSList *cur;
-	gint nb = 0;
-	pid_t pid, wpid;
+	gint nb = children->nb;
 
+	children->nb = 0;
 		
 	cur = children->list;
 	new_output = FALSE;
 	while (cur) {
 		child_info = (ChildInfo *) cur->data;
-		pid  = child_info->pid;
-		if (pid) {
-			wpid = waitpid(pid, NULL, WNOHANG);
-			if (wpid == pid) {
-				childinfo_close_pipes(child_info);
-				child_info->pid = 0;
-				children->nb--;
-				nb++;
-			}
-		}
+		if (child_info->pid)
+			children->nb++;
 		new_output |= child_info->new_out;
 		cur = cur->next;
 	}
 
-	if (children->timer)
-		children->timer--;
-
-	if (!children->dialog && (new_output || children->timer == 0 || children->open_in))
+	if (!children->dialog && 
+	    (new_output || children->timer))
 		create_io_dialog(children);
-
+	
+	if (children->timer) {
+		gtk_timeout_remove(children->timer);
+		children->timer = 0;
+	}
 	children->output |= new_output;
 
-	if (new_output || (children->dialog && nb))
+	if (new_output || (children->dialog && (nb != children->nb)))
 		update_io_dialog(children);
 
 	if (children->nb)
-		return TRUE;
+		return FALSE;
 
 	if (!children->dialog) {
 		gtk_widget_set_sensitive(children->window, TRUE);
@@ -1331,9 +1385,7 @@ static void hide_io_dialog_cb(GtkWidget *w, gpointer data)
 
 	Children *children = (Children *) data;
 
-	if (children->nb)
-		gtk_widget_hide(children->dialog);
-	else {
+	if (!children->nb) {
 		gtk_widget_set_sensitive(children->window, TRUE);
 		gtk_signal_disconnect_by_data(GTK_OBJECT(children->dialog),
 					      children);
@@ -1353,6 +1405,7 @@ static void childinfo_close_pipes(ChildInfo *child_info)
 		close(child_info->chld_in);
 	close(child_info->chld_out);
 	close(child_info->chld_err);
+	close(child_info->chld_status);
 }
 
 static void free_children(Children *children)
@@ -1360,6 +1413,8 @@ static void free_children(Children *children)
 	GSList *cur;
 	ChildInfo *child_info;
 
+	debug_print(_("Freeing children data %x\n"), (guint) children);
+				
 	g_free(children->action);
 	for (cur = children->list; cur;) {
 		child_info = (ChildInfo *) cur->data;
@@ -1369,17 +1424,20 @@ static void free_children(Children *children)
 		g_free(child_info);
 		cur = children->list;
 	}
+	g_free(children);
 }	
 
 static void update_io_dialog(Children *children)
 {
 	GSList *cur;
 
+	debug_print(_("Updating actions input/output dialog.\n"));
+
 	if (!children->nb) {
 		gtk_widget_set_sensitive(children->abort_btn, FALSE);
+		gtk_widget_set_sensitive(children->hide_btn, TRUE);
 		if (children->input_hbox)
 			gtk_widget_set_sensitive(children->input_hbox, FALSE);
-			
 	}
 
 	if (children->output) {
@@ -1427,6 +1485,8 @@ static void create_io_dialog(Children *children)
 	GtkWidget *abort_button;
 	GtkWidget *hide_button;
 	
+	debug_print(_("Creating actions dialog\n"));
+
 	dialog = gtk_dialog_new();
 	label = gtk_label_new(children->action);
 	gtk_misc_set_padding(GTK_MISC(label), 8, 8);
@@ -1477,6 +1537,7 @@ static void create_io_dialog(Children *children)
 
 		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), 
 				input_hbox, FALSE, FALSE, 8);
+		gtk_widget_grab_focus(entry);
 	}
 
 	hbox = gtk_hbox_new(TRUE, 0);
@@ -1493,7 +1554,10 @@ static void create_io_dialog(Children *children)
 			GTK_SIGNAL_FUNC(hide_io_dialog_cb), children);
 	gtk_box_pack_start(GTK_BOX(hbox), hide_button, TRUE, TRUE, 8);
 	gtk_widget_show(hide_button);
-	
+
+	if (children->nb)
+		gtk_widget_set_sensitive(hide_button, FALSE);
+
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), 
 			  hbox);
 
@@ -1503,10 +1567,29 @@ static void create_io_dialog(Children *children)
 	children->input_hbox  = children->open_in ? input_hbox : NULL;
 	children->input_entry = children->open_in ? entry : NULL;
 	children->abort_btn   = abort_button;
+	children->hide_btn    = hide_button;
 
 	gtk_widget_show(dialog);
 }
 
+static void catch_status(gpointer data, gint source, GdkInputCondition cond)
+{
+	ChildInfo *child_info = (ChildInfo *) data;
+	gchar buf;
+	gint c;
+
+	gdk_input_remove(child_info->tag_status);
+
+	c = read(source, &buf, 1);
+	debug_print(_("Child returned %c\n"), buf);
+
+	waitpid(-child_info->pid, NULL, 0);
+	childinfo_close_pipes(child_info);
+	child_info->pid = 0;
+	
+	wait_for_children(child_info->children);
+}
+	
 static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 {
 	Children *children = (Children *) data;
@@ -1514,6 +1597,7 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 	gchar *input;
 	gint c;
 
+	debug_print(_("Sending input to grand child.\n"));
 	if (!(cond && GDK_INPUT_WRITE))
 		return;
 	
@@ -1530,6 +1614,7 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 
 	gtk_entry_set_text(GTK_ENTRY(children->input_entry), "");
 	gtk_widget_set_sensitive(children->input_hbox, TRUE);
+	debug_print(_("Input to grand child sent.\n"));
 }
 
 static void catch_output(gpointer data, gint source, GdkInputCondition cond)
@@ -1538,6 +1623,7 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 	gint c, i;
 	gchar buf[PREFSBUFSIZE];
 
+	debug_print(_("Catching grand child's output.\n"));
 	if (child_info->type & ACTION_PIPE_OUT
 	    && source == child_info->chld_out) {
 		gboolean is_selection = FALSE;

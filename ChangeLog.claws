@@ -1,3 +1,14 @@
+2002-02-17 [melvin]	0.7.1claws12
+
+	* src/prefs_actions.c
+		Replaced children wait loop with double fork technique.
+		Now, input/output window updated at each new output.
+		free_children(): Fixed a memory leak.
+		Made input/output window non closable if running children
+		still exist.
+		Added missing <unistd.h> include.
+		Added some --debug outputs.
+
 2002-02-17 [melvin]	0.7.1claws11
 
 	* src/summaryview.c
