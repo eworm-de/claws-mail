@@ -1496,7 +1496,6 @@ gboolean textview_search_string(TextView *textview, const gchar *str,
 {
 	GtkSText *text = GTK_STEXT(textview->text);
 	gint pos;
-	wchar_t *wcs;
 	gint len;
 
 	g_return_val_if_fail(str != NULL, FALSE);

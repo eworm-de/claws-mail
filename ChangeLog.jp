@@ -1,3 +1,15 @@
+2003-04-15
+
+	* src/procmsg.c: procmsg_get_filter_keyword(): ヘッダの改行を除去し、
+	  List-Id ヘッダから ID を抽出するようにした。
+	* src/utils.[ch]: extract_one_parenthesis_with_skip_quote(): 削除。
+	  extract_list_id_str(): List-Id ヘッダから ID 文字列を抽出。
+
+2003-04-15
+
+	* src/prefs_actions.c: claws ブランチからマージ。いくつかのバグ修正
+	  と機能追加。
+
 2003-04-14
 
 	* src/compose.c: compose_parse_header(): 再編集時に不要な改行が含ま

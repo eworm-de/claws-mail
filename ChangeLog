@@ -1,3 +1,15 @@
+2003-04-15
+
+	* src/procmsg.c: procmsg_get_filter_keyword(): unfold headers and
+	  extract ID from List-Id header.
+	* src/utils.[ch]: extract_one_parenthesis_with_skip_quote(): removed.
+	  extract_list_id_str(): extract ID string from List-Id header.
+
+2003-04-15
+
+	* src/prefs_actions.c: merged from the claws branch. Fixes several
+	  bugs and adds some features.
+
 2003-04-14
 
 	* src/compose.c: compose_parse_header(): fixed a bug that unnecessary

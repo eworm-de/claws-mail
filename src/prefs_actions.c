@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ typedef enum
 	ACTION_ASYNC 		= 1 << 5,
 	ACTION_USER_IN		= 1 << 6,
 	ACTION_USER_HIDDEN_IN	= 1 << 7,
-	ACTION_INSERT   	= 1 << 8,
+	ACTION_INSERT		= 1 << 8,
 	ACTION_USER_STR		= 1 << 9,
 	ACTION_USER_HIDDEN_STR	= 1 << 10,
 	ACTION_SELECTION_STR	= 1 << 11,
@@ -123,7 +123,8 @@ struct _ChildInfo
 	GdkFont		*msgfont;
 };
 
-struct _UserStringDialog {
+struct _UserStringDialog
+{
 	GtkWidget	*dialog;
 	GtkWidget	*entry;
 	gchar		*user_str;
@@ -174,18 +175,18 @@ static void compose_actions_execute_cb	(Compose	*compose,
 static void mainwin_actions_execute_cb 	(MainWindow	*mainwin,
 					 guint		 action_nb,
 					 GtkWidget 	*widget);
-static void msgview_actions_execute_cb	(MessageView 	*msgview, 
+static void msgview_actions_execute_cb	(MessageView	*msgview,
 					 guint		 action_nb,
-				       	 GtkWidget 	*widget);
+					 GtkWidget	*widget);
 static void message_actions_execute	(MessageView	*msgview,
 					 guint		 action_nb,
-				    	 GtkCTree	*ctree);
+					 GtkCTree	*ctree);
 static guint get_action_type		(gchar		*action);
 
 static gboolean execute_actions		(gchar		*action, 
 					 GtkCTree	*ctree, 
 					 GtkWidget	*text,
-					 GdkFont 	*msgfont,
+					 GdkFont	*msgfont,
 					 gint		 body_pos,
 					 MimeView	*mimeview);
 
@@ -193,9 +194,9 @@ static gchar *parse_action_cmd		(gchar		*action,
 					 MsgInfo	*msginfo,
 					 GtkCTree	*ctree,
 					 MimeView	*mimeview,
-					 const gchar 	*user_str,
-					 const gchar 	*user_hidden_str,
-					 const gchar 	*sel_str);
+					 const gchar	*user_str,
+					 const gchar	*user_hidden_str,
+					 const gchar	*sel_str);
 static gboolean parse_append_filename	(GString	**cmd,
 					 MsgInfo	*msginfo);
 
@@ -206,8 +207,8 @@ static gboolean parse_append_msgpart	(GString	**cmd,
 ChildInfo *fork_child			(gchar		*cmd,
 					 gint		 action_type,
 					 GtkWidget	*text,
-					 GdkFont 	*msgfont,
-					 gint            body_pos,
+					 GdkFont	*msgfont,
+					 gint		 body_pos,
 					 Children	*children);
 
 static gint wait_for_children		(gpointer	 data);
@@ -224,6 +225,7 @@ static void hide_io_dialog_cb		(GtkWidget	*widget,
 static gint io_dialog_key_pressed_cb	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
+
 static void catch_output		(gpointer		 data,
 					 gint			 source,
 					 GdkInputCondition	 cond);
@@ -235,27 +237,22 @@ static void catch_status		(gpointer		 data,
 					 GdkInputCondition	 cond);
 
 static gboolean user_string_dialog_delete_cb
-					(GtkWidget		*widget,
-					 GdkEvent 		*event,
-					 gpointer 		 data);
+					(GtkWidget	*widget,
+					 GdkEvent	*event,
+					 gpointer	 data);
 static void user_string_dialog_destroy_cb
-					(GtkWidget		*widget,
-					 gpointer		 data);
-
-
+					(GtkWidget	*widget,
+					 gpointer	 data);
 static void user_string_dialog_activate_cb
-					(GtkWidget		*widget,
-					 gpointer		 data);
+					(GtkWidget	*widget,
+					 gpointer	 data);
 
-static gchar *get_user_string		(const gchar		*action,
-					 ActionType		 type);
+static gchar *get_user_string		(const gchar	*action,
+					 ActionType	 type);
+
 
 void prefs_actions_open(MainWindow *mainwin)
 {
-#if 0
-	if (prefs_rc_is_readonly(ACTIONS_RC))
-		return;
-#endif
 	inc_lock();
 
 	if (!actions.window)
@@ -385,7 +382,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_signal_connect(GTK_OBJECT(reg_btn), "clicked",
 			   GTK_SIGNAL_FUNC(prefs_actions_register_cb), NULL);
 
-	subst_btn = gtk_button_new_with_label(_("  Replace  "));
+	subst_btn = gtk_button_new_with_label(_(" Replace "));
 	gtk_widget_show(subst_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), subst_btn, FALSE, TRUE, 0);
 	gtk_signal_connect(GTK_OBJECT(subst_btn), "clicked",
@@ -597,7 +594,7 @@ static guint get_action_type(gchar *action)
 
 static gchar *parse_action_cmd(gchar *action, MsgInfo *msginfo,
 			       GtkCTree *ctree, MimeView *mimeview,
-			       const gchar *user_str, 
+			       const gchar *user_str,
 			       const gchar *user_hidden_str,
 			       const gchar *sel_str)
 {
@@ -636,7 +633,6 @@ static gchar *parse_action_cmd(gchar *action, MsgInfo *msginfo,
 					if (cur->next)
 						cmd = g_string_append_c(cmd, ' ');
 				}
-
 				p++;
 				break;
 			case 'p':
@@ -652,7 +648,6 @@ static gchar *parse_action_cmd(gchar *action, MsgInfo *msginfo,
 					cmd = g_string_append(cmd, sel_str);
 				p++;
 				break;
-
 			case 'u':
 				if (user_str)
 					cmd = g_string_append(cmd, user_str);
@@ -664,7 +659,6 @@ static gchar *parse_action_cmd(gchar *action, MsgInfo *msginfo,
 							      user_hidden_str);
 				p++;
 				break;
-
 			default:
 				cmd = g_string_append_c(cmd, p[0]);
 				cmd = g_string_append_c(cmd, p[1]);
@@ -698,7 +692,7 @@ static gboolean parse_append_filename(GString **cmd, MsgInfo *msginfo)
 		g_free(filename);
 	} else {
 		alertpanel_error(_("Could not get message file %d"),
-				msginfo->msgnum);
+				 msginfo->msgnum);
 		return FALSE;
 	}
 
@@ -1148,19 +1142,18 @@ static void msgview_actions_execute_cb(MessageView *msgview, guint action_nb,
 				       GtkWidget *widget)
 {
 	message_actions_execute(msgview, action_nb, NULL);
-	
 }
 
 static void message_actions_execute(MessageView *msgview, guint action_nb,
 				    GtkCTree *ctree)
 {
-	TextView    *textview = NULL;
-	gchar 	    *buf,
-		    *action;
-	MimeView    *mimeview = NULL;
-	GdkFont	    *msgfont  = NULL;
-	guint        body_pos = 0;
-	GtkWidget   *text     = NULL;
+	TextView *textview = NULL;
+	MimeView *mimeview = NULL;
+	gchar *buf;
+	gchar *action;
+	GtkWidget *text = NULL;
+	GdkFont *msgfont = NULL;
+	guint body_pos = 0;
 
 	g_return_if_fail(action_nb < g_slist_length(prefs_common.actions_list));
 
@@ -1184,7 +1177,7 @@ static void message_actions_execute(MessageView *msgview, guint action_nb,
 			    msgview->mimeview->textview &&
 			    msgview->mimeview->textview->text)
 				textview = msgview->mimeview->textview;
-		} 
+		}
 		break;
 	}
 
@@ -1193,16 +1186,13 @@ static void message_actions_execute(MessageView *msgview, guint action_nb,
 		msgfont  = textview->msgfont;
 		body_pos = textview->body_pos;
 	}
-	
+
 	execute_actions(action, ctree, text, msgfont, body_pos, mimeview);
 }
 
-static gboolean execute_actions(gchar 	  *action, 
-				GtkCTree  *ctree,
-				GtkWidget *text, 
-				GdkFont   *msgfont,
-				gint 	   body_pos,
-				MimeView  *mimeview)
+static gboolean execute_actions(gchar *action, GtkCTree *ctree,
+				GtkWidget *text, GdkFont *msgfont,
+				gint body_pos, MimeView *mimeview)
 {
 	GList *cur, *selection = NULL;
 	GSList *children_list = NULL;
@@ -1239,7 +1229,7 @@ static gboolean execute_actions(gchar 	  *action,
 		if (!text)
 			return FALSE; /* ERR: pipe and no displayed text */
 	}
-	
+
 	if (action_type & ACTION_SELECTION_STR) {
 		if (!text)
 			return FALSE; /* ERR: selection string but no text */
@@ -1256,21 +1246,19 @@ static gboolean execute_actions(gchar 	  *action,
 				}
 			}
 			sel_str = gtk_editable_get_chars(GTK_EDITABLE(text),
-					start, end);
+							 start, end);
 		}
-			
 	}
-	
 
 	if (action_type & (ACTION_USER_STR))
 		if (!(user_str = get_user_string(action, ACTION_USER_STR)))
 			return FALSE;
-				
+
 	if (action_type & (ACTION_USER_HIDDEN_STR))
-		if (!(user_hidden_str = get_user_string(action,
-						  ACTION_USER_HIDDEN_STR)))
+		if (!(user_hidden_str =
+			get_user_string(action, ACTION_USER_HIDDEN_STR)))
 			return FALSE;
-		
+
 	children = g_new0(Children, 1);
 
 	if (action_type & ACTION_SINGLE) {
@@ -1282,7 +1270,7 @@ static gboolean execute_actions(gchar 	  *action,
 				break;
 			}
 			cmd = parse_action_cmd(action, msginfo, ctree,
-					       mimeview, user_str, 
+					       mimeview, user_str,
 					       user_hidden_str, sel_str);
 			if (!cmd) {
 				debug_print("Action command error\n");
@@ -1319,10 +1307,8 @@ static gboolean execute_actions(gchar 	  *action,
 			is_ok  = FALSE;         /* ERR: incorrect command */
 	}
 
-	if (user_str)
-		g_free(user_str);
-	if (user_hidden_str)
-		g_free(user_hidden_str);
+	g_free(user_str);
+	g_free(user_hidden_str);
 
 	if (!children_list) {
 		 /* If not waiting for children, return */
@@ -1434,7 +1420,7 @@ ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 				write(chld_status[1], "1\n", 2);
 			perror("fork");
 			_exit(1);
-		} else {/* Child */
+		} else { /* Child */
 			if (sync) {
 				close(chld_in[0]);
 				close(chld_in[1]);
@@ -1624,13 +1610,12 @@ static void hide_io_dialog_cb(GtkWidget *w, gpointer data)
 	}
 }
 
-static gint io_dialog_key_pressed_cb(GtkWidget	*widget,
-				     GdkEventKey	*event,
-				     gpointer	 data)
+static gint io_dialog_key_pressed_cb(GtkWidget *widget, GdkEventKey *event,
+				     gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		hide_io_dialog_cb(widget, data);
-	return TRUE;	
+	return TRUE;
 }
 
 static void childinfo_close_pipes(ChildInfo *child_info)
@@ -1678,9 +1663,9 @@ static void update_io_dialog(Children *children)
 		if (children->input_hbox)
 			gtk_widget_set_sensitive(children->input_hbox, FALSE);
 		gtk_widget_grab_focus(children->close_btn);
-		gtk_signal_connect(GTK_OBJECT(children->dialog), 
+		gtk_signal_connect(GTK_OBJECT(children->dialog),
 				   "key_press_event",
-			   	   GTK_SIGNAL_FUNC(io_dialog_key_pressed_cb),
+				   GTK_SIGNAL_FUNC(io_dialog_key_pressed_cb),
 				   children);
 	}
 
@@ -1853,12 +1838,11 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 				       0, -1);
 	len = strlen(input);
 	count = 0;
-	
+
 	do {
 		c = write(child_info->chld_in, input + count, len - count);
 		if (c >= 0)
 			count += c;
-
 	} while (c >= 0 && count < len);
 
 	if (c >= 0)
@@ -1914,9 +1898,8 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 	wait_for_children(child_info->children);
 }
 
-static gboolean user_string_dialog_delete_cb(GtkWidget	*widget,
-					     GdkEvent	*event,
-					     gpointer 	 data)
+static gboolean user_string_dialog_delete_cb(GtkWidget *widget,
+					     GdkEvent *event, gpointer data)
 {
 	return FALSE;
 }
@@ -1929,66 +1912,66 @@ static void user_string_dialog_destroy_cb(GtkWidget *widget, gpointer data)
 static void user_string_dialog_activate_cb(GtkWidget *widget, gpointer data)
 {
 	UserStringDialog *user_dialog = (UserStringDialog *) data;
-	if (user_dialog->user_str)
-		g_free(user_dialog->user_str);
+
+	g_free(user_dialog->user_str);
 	user_dialog->user_str =
 		gtk_editable_get_chars(GTK_EDITABLE(user_dialog->entry), 0, -1);
 	gtk_widget_destroy(user_dialog->dialog);
 }
 
-static gchar *get_user_string(const gchar *action, ActionType type )
+static gchar *get_user_string(const gchar *action, ActionType type)
 {
-	GtkWidget	*dialog;
-	GtkWidget	*label;
-	GtkWidget	*entry;
-	GtkWidget	*ok_button;
-	GtkWidget	*cancel_button;
-	gchar		*label_text;
+	GtkWidget *dialog;
+	GtkWidget *label;
+	GtkWidget *entry;
+	GtkWidget *ok_button;
+	GtkWidget *cancel_button;
+	gchar *label_text;
 	UserStringDialog user_dialog;
-	
+
 	dialog = gtk_dialog_new();
 	gtk_window_set_policy(GTK_WINDOW(dialog), FALSE, FALSE, FALSE);
-	gtk_container_set_border_width(
-			GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), 8);
-	gtk_container_set_border_width(
-			GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), 5);
+	gtk_container_set_border_width
+		(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), 8);
+	gtk_container_set_border_width
+		(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), 5);
 	gtk_window_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 
 	switch (type) {
-		case ACTION_USER_HIDDEN_STR:
-			gtk_window_set_title(GTK_WINDOW(dialog),
-					_("Action's user hidden argument"));
-			label_text = g_strdup_printf(_("Enter the '%%h' " 
-						"argument for the following "
-						"action:\n%s"), action);
-			break;
-		case ACTION_USER_STR:
-			gtk_window_set_title(GTK_WINDOW(dialog),
-					_("Action's user argument"));
-			label_text = g_strdup_printf(_("Enter the '%%u' " 
-						"argument for the following "
-						"action:\n%s"), action);
-			break;
-		default:
-			label_text = NULL;
-			debug_print("Unsupported action type %d", type);
+	case ACTION_USER_HIDDEN_STR:
+		gtk_window_set_title(GTK_WINDOW(dialog),
+				     _("Action's hidden user argument"));
+		label_text = g_strdup_printf(_("Enter the '%%h' "
+					     "argument for the following "
+					     "action:\n%s"), action);
+		break;
+	case ACTION_USER_STR:
+		gtk_window_set_title(GTK_WINDOW(dialog),
+				     _("Action's user argument"));
+		label_text = g_strdup_printf(_("Enter the '%%u' "
+					     "argument for the following "
+					     "action:\n%s"), action);
+		break;
+	default:
+		label_text = NULL;
+		debug_print("Unsupported action type %d", type);
 	}
 
 	label = gtk_label_new(label_text);
 	g_free(label_text);
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label,
 			   TRUE, TRUE, 0);
-	
+
 	entry = gtk_entry_new();
-	gtk_entry_set_visibility(GTK_ENTRY(entry), 
+	gtk_entry_set_visibility(GTK_ENTRY(entry),
 				 type != ACTION_USER_HIDDEN_STR);
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), entry,
 			   TRUE, TRUE, 0);
 
-	ok_button     = gtk_button_new_with_label(_("OK"));
+	ok_button = gtk_button_new_with_label(_("OK"));
 	gtk_box_pack_end(GTK_BOX(GTK_DIALOG(dialog)->action_area),
 			 ok_button, TRUE, TRUE, 0);
-				
+
 	cancel_button = gtk_button_new_with_label(_("Cancel"));
 	gtk_box_pack_end(GTK_BOX(GTK_DIALOG(dialog)->action_area),
 			 cancel_button, TRUE, TRUE, 0);
@@ -2006,17 +1989,15 @@ static gchar *get_user_string(const gchar *action, ActionType type )
 	gtk_signal_connect(GTK_OBJECT(entry), "activate",
 			   GTK_SIGNAL_FUNC(user_string_dialog_activate_cb),
 			   &user_dialog);
-	gtk_signal_connect(GTK_OBJECT(ok_button),     "clicked",
+	gtk_signal_connect(GTK_OBJECT(ok_button), "clicked",
 			   GTK_SIGNAL_FUNC(user_string_dialog_activate_cb),
 			   &user_dialog);
 	gtk_signal_connect_object(GTK_OBJECT(cancel_button), "clicked",
-			   GTK_SIGNAL_FUNC(gtk_widget_destroy),
-			   GTK_OBJECT(dialog));
-	
+				  GTK_SIGNAL_FUNC(gtk_widget_destroy),
+				  GTK_OBJECT(dialog));
+
 	gtk_widget_grab_focus(entry);
-
 	gtk_widget_show_all(dialog);
-
 	gtk_main();
 
 	return user_dialog.user_str;

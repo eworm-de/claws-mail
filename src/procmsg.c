@@ -457,11 +457,11 @@ gboolean procmsg_msg_exist(MsgInfo *msginfo)
 void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 				PrefsFilterType type)
 {
-	static HeaderEntry hentry[] = {{"X-BeenThere:",    NULL, FALSE},
-				       {"X-ML-Name:",      NULL, FALSE},
-				       {"X-List:",         NULL, FALSE},
-				       {"X-Mailing-list:", NULL, FALSE},
-				       {"List-Id:",        NULL, FALSE},
+	static HeaderEntry hentry[] = {{"X-BeenThere:",    NULL, TRUE},
+				       {"X-ML-Name:",      NULL, TRUE},
+				       {"X-List:",         NULL, TRUE},
+				       {"X-Mailing-list:", NULL, TRUE},
+				       {"List-Id:",        NULL, TRUE},
 				       {NULL,              NULL, FALSE}};
 
 	enum
@@ -510,6 +510,7 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 		} else if (hentry[H_LIST_ID].body != NULL) {
 			*header = g_strdup("header \"List-Id\"");
 			*key = hentry[H_LIST_ID].body;
+			extract_list_id_str(*key);
 			hentry[H_LIST_ID].body = NULL;
 		} else if (msginfo->subject) {
 			*header = g_strdup("subject");
