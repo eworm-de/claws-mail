@@ -1,7 +1,7 @@
 2001-09-19 [melvin]
 
 	* src/about.c
-		added pspell to compiled-in features
+		added pspell to compiled-in features list
 
 2001-09-18 [melvin]
 
