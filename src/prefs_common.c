@@ -800,7 +800,7 @@ static PrefParam param[] = {
 	
 	/* Other */
 #ifdef WIN32
-	{"uri_open_command", "netscape -remote \"openURL(%s,raise)\"",
+	{"uri_open_command", "\'\"?p\\netscape\\communicator\\program\\netscape\"\' -remote \"openURL(%s,raise)\"",
 	 &prefs_common.uri_cmd, P_STRING,
 	 &other.uri_entry, prefs_set_data_from_entry, prefs_set_entry},
 	{"print_command", "notepad /p \"%s\"", &prefs_common.print_cmd, P_STRING,
@@ -2929,11 +2929,11 @@ static void prefs_other_create(void)
 			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtkut_combo_set_items (GTK_COMBO (uri_combo),
 #ifdef WIN32
-			       "netscape -remote \"openURL(%s,raise)\"",
-			       "netscape \"%s\"",
-			       "c:\\program files\\internet explorer\\iexplore \"%s\"",
-			       "c:\\program files\\mozilla\\mozilla.exe \"%s\"",
-			       "c:\\program files\\k-meleon\\k-meleon.exe \"%s\"",
+			       "\'\"?p\\internet explorer\\iexplore\"\' \"%s\"",
+			       "\'\"?p\\netscape\\communicator\\program\\netscape\"\' -remote \"openURL(%s,raise)\"",
+			       "\'\"?p\\netscape\\communicator\\program\\netscape\"\' \"%s\"",
+			       "\'\"?p\\mozilla\\mozilla.exe\"\' \"%s\"",
+			       "\'\"?p\\k-meleon\\k-meleon.exe\"\' \"%s\"",
 #else
 			       "netscape -remote 'openURL(%s,raise)'",
 			       "netscape '%s'",

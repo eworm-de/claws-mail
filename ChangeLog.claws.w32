@@ -1,3 +1,15 @@
+2002-06-29 [thorsten]	0.7.8claws32-1
+
+	* src/compose.c
+	* src/utils.[ch]
+	* src/prefs_common.c
+		add: placeholders for system directories
+			?p : program files (e.g. "C:\Program files")
+			?w : windows dir (e.g. "C:\Windows")
+			?s : system dir (e.g. "C:\Windows\system")
+			?t : temp dir (e.g. "C:\TEMP")
+			?? : question mark
+
 2002-06-26 [thorsten]	0.7.8claws19-2
 
 	* ChangeLog.claws.w32 added

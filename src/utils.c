@@ -2142,15 +2142,28 @@ gint execute_async(gchar *const argv[])
 {
 #ifdef WIN32
 	gchar *fullname;
-	fullname = g_strdup(argv[0]);
-	strcpy(argv[0],g_path_get_basename (argv[0]));
-	if (spawnvp(P_NOWAIT, fullname, argv) < 0) {
+	gchar **parsed_argv;
+	gchar *cmd,*parsed_cmd;
+	gint n;
+
+	cmd = g_strjoinv(" ",argv);
+	parsed_cmd = w32_parse_path(cmd);
+	parsed_argv = strsplit_with_quote(parsed_cmd, " ", -1);
+	
+	fullname = g_strdup(parsed_argv[0]);
+	strcpy(parsed_argv[0],g_path_get_basename (parsed_argv[0]));
+	if (spawnvp(P_NOWAIT, fullname, parsed_argv) < 0) {
 		gchar *p_fullname = g_strdup_printf(_("Cannot execute\n%s"),fullname);
 		locale_to_utf8(&p_fullname);
 		g_warning(p_fullname);
 		g_free(p_fullname);
 		return -1;
 	}
+
+	for(n=0;parsed_argv[n];n++)
+		g_free(parsed_argv[n]);
+	g_free(cmd);
+	g_free(parsed_cmd);
 	g_free(fullname);
 #else
 	pid_t pid;
@@ -2188,6 +2201,14 @@ gint execute_sync(gchar *const argv[])
 {
 #ifdef WIN32
 	gchar *fullname;
+	gchar **parsed_argv;
+	gchar *cmd,*parsed_cmd;
+	gint n;
+
+	cmd = g_strjoinv(" ",argv);
+	parsed_cmd= w32_parse_path(cmd);
+	parsed_argv = strsplit_with_quote(parsed_cmd, " ", -1);
+	
 	fullname = g_strdup(argv[0]);
 	strcpy(argv[0],g_path_get_basename (argv[0]));
 	if (spawnvp(P_WAIT, fullname, argv) < 0) {
@@ -2197,6 +2218,11 @@ gint execute_sync(gchar *const argv[])
 		g_free(p_fullname);
 		return -1;
 	}
+
+	for(n=0;parsed_argv[n];n++)
+		g_free(parsed_argv[n]);
+	g_free(cmd);
+	g_free(parsed_cmd);
 	g_free(fullname);
 #else
 	pid_t pid;
@@ -2748,6 +2774,76 @@ gboolean subject_is_reply(const gchar *subject)
 }
 
 #ifdef WIN32
+/* -------------------------------------------------------------------------
+ * w32_parse_path - substitute placesholders with directory names
+ *   ?p : program files (e.g. "C:\Program files")
+ *   ?w : windows dir (e.g. "C:\Windows")
+ *   ?s : system dir (e.g. "C:\Windows\system")
+ *   ?t : temp dir (e.g. "C:\TEMP")
+ *   ?? : question mark
+ */
+
+#define BUFSIZE 4096
+#define REPLACE_PATHNAME(directory) \
+	cur++; \
+	sprintf(&dest[dest_idx],"%s",directory); \
+	dest_idx += strlen(directory);
+
+gchar *w32_parse_path(gchar* const src)
+{
+	gchar *cur;
+	gchar dest[BUFSIZE] = {0};
+	gint  dest_idx = 0;
+
+	gchar *winprg = g_malloc0(BUFSIZE);
+	gchar *windir = g_malloc0(BUFSIZE);
+	gchar *winsys = g_malloc0(BUFSIZE);
+	gchar *wintmp = g_malloc0(BUFSIZE);
+
+	ExpandEnvironmentStrings("%ProgramFiles%",winprg,BUFSIZE);
+	ExpandEnvironmentStrings("%TEMP%",wintmp,BUFSIZE);
+	GetWindowsDirectory(windir,BUFSIZE);
+	GetSystemDirectory(wintmp,BUFSIZE);
+
+	for (cur=src;cur[0];cur++) {
+		if (cur[0] == '?')
+			switch (cur[1]) {
+				case '?' : 
+					cur++;
+					dest[dest_idx++] = cur[0];
+					continue;
+				case 'p' : 
+					REPLACE_PATHNAME( winprg );
+					continue;
+				case 's' : 
+					REPLACE_PATHNAME( winsys );
+					continue;
+				case 't' : 
+					REPLACE_PATHNAME( wintmp );
+					continue;
+				case 'w' : 
+					REPLACE_PATHNAME( windir );
+					continue;
+				case NULL :
+					continue;
+			}
+		else
+			dest[dest_idx++] = cur[0];
+	}
+
+	g_free(winprg);
+	g_free(windir);
+	g_free(winsys);
+	g_free(wintmp);
+
+	return g_strdup(dest);
+}
+
+#undef REPLACE_PATH
+#undef BUFSIZE
+
+/* ------------------------------------------------------------------------- */
+
 gchar *get_installed_dir(void)
 {
 	static gchar *installed_dir;

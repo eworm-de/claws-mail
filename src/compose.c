@@ -5998,12 +5998,14 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 		g_snprintf(buf, sizeof(buf), def_cmd, file);
 	}
 
-	cmdline = strsplit_with_quote(buf, " ", 1024);
 #ifdef WIN32
 /*XXX:tm ed7 */
 	{
-		gchar *fullname;
+		gchar *fullname,*parsed_buf;
 		int hEditor;
+
+		parsed_buf = w32_parse_path(buf);
+		cmdline = strsplit_with_quote(parsed_buf, " ", 1024);
 		fullname = g_strdup(cmdline[0]);
 		strcpy(cmdline[0],g_path_get_basename (cmdline[0]));
 		if ((hEditor=spawnvp(P_NOWAIT, fullname, cmdline)) < 0) {
@@ -6022,8 +6024,10 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 		gtk_timeout_add( 50, ext_editor_timeout_cb, compose );
 
 		g_free(fullname);
+		g_free(parsed_buf);
 	}
 #else
+	cmdline = strsplit_with_quote(buf, " ", 1024);
 	execvp(cmdline[0], cmdline);
 #endif
 	perror("execvp");

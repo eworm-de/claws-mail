@@ -367,6 +367,7 @@ void log_warning	(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
 void log_error		(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
 
 #ifdef WIN32
+gchar *w32_parse_path(gchar *const);
 gchar *get_installed_dir(void);
 void translate_strs(gchar *str, gchar *str_src, gchar *str_dst);
 int calc_child(const gchar *path);
