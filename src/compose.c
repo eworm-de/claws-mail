@@ -4112,7 +4112,7 @@ static gchar *compose_get_header(Compose *compose)
 	compose_add_headerfield_from_headerlist(compose, header, "Bcc", ", ");
 
 	/* Subject */
-	str = (gpointer)gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
+	str = gtk_editable_get_chars(GTK_EDITABLE(compose->subject_entry), 0, -1);
 	if (*str != '\0' && !IS_IN_CUSTOM_HEADER("Subject")) {
 		gchar *tmpstr;
 
@@ -4129,6 +4129,7 @@ static gchar *compose_get_header(Compose *compose)
 		}
 		g_free(tmpstr);
 	}
+	g_free(str);
 
 	/* Message-ID */
 	if (compose->account->gen_msgid) {

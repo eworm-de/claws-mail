@@ -708,13 +708,15 @@ static void prefs_filtering_condition_define(void)
 	gchar * cond_str;
 	MatcherList * matchers = NULL;
 
-	cond_str = (gpointer)gtk_entry_get_text(GTK_ENTRY(filtering.cond_entry));
+	cond_str = gtk_editable_get_chars(GTK_EDITABLE(filtering.cond_entry), 0, -1);
 
 	if (*cond_str != '\0') {
 		matchers = matcher_parser_get_cond(cond_str);
 		if (matchers == NULL)
 			alertpanel_error(_("Condition string is not valid."));
 	}
+	
+	g_free(cond_str);
 
 	prefs_matcher_open(matchers, prefs_filtering_condition_define_done);
 
@@ -742,13 +744,15 @@ static void prefs_filtering_action_define(void)
 	gchar * action_str;
 	GSList * action_list = NULL;
 
-	action_str = (gpointer)gtk_entry_get_text(GTK_ENTRY(filtering.action_entry));
+	action_str = gtk_editable_get_chars(GTK_EDITABLE(filtering.action_entry), 0, -1);
 
 	if (*action_str != '\0') {
 		action_list = matcher_parser_get_action_list(action_str);
 		if (action_list == NULL)
 			alertpanel_error(_("Action string is not valid."));
 	}
+	
+	g_free(action_str);
 
 	prefs_filtering_action_open(action_list,
             prefs_filtering_action_define_done);
@@ -768,39 +772,43 @@ static void prefs_filtering_action_define(void)
 static FilteringProp * prefs_filtering_dialog_to_filtering(gboolean alert)
 {
 	MatcherList * cond;
-	gchar * cond_str;
-	gchar * action_str;
-	FilteringProp * prop;
+	gchar * cond_str = NULL;
+	gchar * action_str = NULL;
+	FilteringProp * prop = NULL;
 	GSList * action_list;
 
-	cond_str = (gpointer)gtk_entry_get_text(GTK_ENTRY(filtering.cond_entry));
+	cond_str = gtk_editable_get_chars(GTK_EDITABLE(filtering.cond_entry), 0, -1);
 	if (*cond_str == '\0') {
 		if(alert == TRUE) alertpanel_error(_("Condition string is empty."));
-		return NULL;
+		goto fail;
 	}
-
-	action_str = (gpointer)gtk_entry_get_text(GTK_ENTRY(filtering.action_entry));
+	
+	action_str = gtk_editable_get_chars(GTK_EDITABLE(filtering.action_entry), 0, -1);
 	if (*action_str == '\0') {
 		if(alert == TRUE) alertpanel_error(_("Action string is empty."));
-		return NULL;
+		goto fail;
 	}
 
-	cond = (gpointer)matcher_parser_get_cond(cond_str);
+	cond = matcher_parser_get_cond(cond_str);
 
 	if (cond == NULL) {
 		if(alert == TRUE) alertpanel_error(_("Condition string is not valid."));
-		return NULL;
+		goto fail;
 	}
         
-        action_list = (gpointer)matcher_parser_get_action_list(action_str);
+        action_list = matcher_parser_get_action_list(action_str);
+	
 
 	if (action_list == NULL) {
 		if(alert == TRUE) alertpanel_error(_("Action string is not valid."));
-		return NULL;
+		goto fail;
 	}
 
 	prop = filteringprop_new(cond, action_list);
 
+fail:
+	g_free(cond_str);
+	g_free(action_str);
 	return prop;
 }
 

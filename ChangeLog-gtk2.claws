@@ -1,3 +1,11 @@
+2004-11-15 [colin]	0.9.12cvs146.12
+
+	* src/compose.c
+	* src/prefs_filtering.c
+	* src/prefs_filtering_action.c
+	* src/prefs_toolbar.c
+		Fix some const-correctness
+
 2004-11-15 [colin]	0.9.12cvs146.11
 
 	* src/summaryview.c

@@ -737,10 +737,10 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 	gint action_type;
 	gint list_id;
 	gint account_id;
-	gchar * destination;
+	gchar * destination = NULL;
 	gint labelcolor = 0;
         FilteringAction * action;
-        gchar * score_str;
+        gchar * score_str = NULL;
         gint score;
         
 	action_id = get_sel_from_list(GTK_LIST(filtering_action.action_type_list));
@@ -754,24 +754,24 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 	case ACTION_MOVE:
 	case ACTION_COPY:
 	case ACTION_EXECUTE:
-		destination = (gpointer)gtk_entry_get_text(
-				GTK_ENTRY(filtering_action.dest_entry));
+		destination = gtk_editable_get_chars(GTK_EDITABLE(filtering_action.dest_entry), 0, -1);
 		if (*destination == '\0') {
 			if (alert)
                                 alertpanel_error(action_id == ACTION_EXECUTE 
 						 ? _("Command line not set")
 						 : _("Destination is not set."));
+			g_free(destination);
 			return NULL;
 		}
 		break;
 	case ACTION_FORWARD:
 	case ACTION_FORWARD_AS_ATTACHMENT:
 	case ACTION_REDIRECT:
-		destination = (gpointer)gtk_entry_get_text(
-				GTK_ENTRY(filtering_action.dest_entry));
+		destination = gtk_editable_get_chars(GTK_EDITABLE(filtering_action.dest_entry), 0, -1);
 		if (*destination == '\0') {
 			if (alert)
                                 alertpanel_error(_("Recipient is not set."));
+			g_free(destination);
 			return NULL;
 		}
 		break;
@@ -782,10 +782,11 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 		break;
         case ACTION_CHANGE_SCORE:
         case ACTION_SET_SCORE:
-		score_str = (gpointer)gtk_entry_get_text(GTK_ENTRY(filtering_action.dest_entry));
+		score_str = gtk_editable_get_chars(GTK_EDITABLE(filtering_action.dest_entry), 0, -1);
 		if (*score_str == '\0') {
 			if (alert)
                                 alertpanel_error(_("Score is not set"));
+			g_free(score_str);
 			return NULL;
 		}
                 score = strtol(score_str, NULL, 10);
@@ -805,8 +806,10 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 	
 	action = filteringaction_new(action_type, account_id,
             destination, labelcolor, score);
-
-        return action;
+	
+	g_free(destination);
+	g_free(score_str);
+	return action;
 }
 
 /*!
