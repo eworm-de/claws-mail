@@ -1148,7 +1148,7 @@ void summary_select_next_unread(SummaryView *summaryview)
  				val = G_ALERTDEFAULT;
  				break;
  			case NEXTUNREADMSGDIALOG_ASSUME_NO:
- 				val = !G_ALERTDEFAULT;
+ 				val = G_ALERTOTHER;
  				break;
  			default:
  				debug_print(

@@ -1,3 +1,10 @@
+2002-02-14 [carsten]	0.7.1claws4
+	* src/summaryview.c
+		fixed a bug for "Go to next unread message": there was
+		an endless loop if NEXTUNREADMSGDIALOG_ASSUME_NO was set
+		in the prefs, because of doing "Search again" instead
+		"No"
+
 2002-02-14 [carsten]	0.7.1claws3
 	* src/stock_pixmap.c
 		removed 2 more mem leaks; following memprof,
