@@ -40,6 +40,10 @@
 # Change Log
 #
 # 2004-01-05
+#	- added matcher and action for OpenOffice Writer documents
+#	  (requires ooo2txt)
+#
+# 2004-01-05
 #	- changed page width parameter for antiword
 #	- fixed matcher for 'diffs'
 #	- added a matcher and action for bzip2 - bzip2 files
@@ -98,6 +102,7 @@ case "$1" in
 	*.diff)	TYPE=TEXT	;;
 	*.txt)	TYPE=TEXT	;;
 	*.rtf)	TYPE=RTF	;;
+	*.sxw)	TYPE=OOWRITER	;;
 esac
 
 if [ "$TYPE" == "" ]	
@@ -154,6 +159,13 @@ case $TYPE in
 			exit 1 
 		};
 		antiword -w 72 "$1" 				;;
+
+	OOWRITER) which ooo2txt > /dev/null 2>&1 ||
+		{
+			echo "Program 'ooo2txt' for converting OpenOffice Writer files not files not found" >&2
+			exit 1
+		};
+		ooo2txt "$1"					;;
 
 	*)	echo "Unsupported file type \"$FILETYPE\", cannot display.";;
 esac
