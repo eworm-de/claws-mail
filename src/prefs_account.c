@@ -1532,7 +1532,7 @@ static void prefs_account_privacy_create(void)
 	PACK_CHECK_BUTTON (vbox2, default_sign_chkbtn,
 			   _("Sign message by default"));
 			    
-	PACK_FRAME (vbox1, frame_mode, _("Mode"));
+	PACK_FRAME (vbox1, frame_mode, _("Default mode"));
 	
 	vbox_mode = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox_mode);
