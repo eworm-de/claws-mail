@@ -1,3 +1,10 @@
+2002-12-27 [christoph]	0.8.8claws11
+
+	* src/compose.c
+		MENUITEM_ADD casts the 4th argument from integer to pointer
+		so it probably should not be a pointer, this means we
+		should use account id for it and not the account's pointer
+
 2002-12-27 [paul]	0.8.8claws10
 
 	* src/mainwindow.c

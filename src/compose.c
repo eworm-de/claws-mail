@@ -5042,7 +5042,7 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 		else
 			name = g_strdup_printf("%s: %s",
 					       ac->account_name, ac->address);
-		MENUITEM_ADD(menu, menuitem, name, ac);
+		MENUITEM_ADD(menu, menuitem, name, ac->account_id);
 		g_free(name);
 		gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
 				   GTK_SIGNAL_FUNC(account_activated),
@@ -5955,7 +5955,8 @@ static void account_activated(GtkMenuItem *menuitem, gpointer data)
 
 	PrefsAccount *ac;
 
-	ac = (PrefsAccount *)gtk_object_get_user_data(GTK_OBJECT(menuitem));
+	ac = account_find_from_id(
+		GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(menuitem))));
 	g_return_if_fail(ac != NULL);
 
 	if (ac != compose->account)
