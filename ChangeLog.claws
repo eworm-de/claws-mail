@@ -1,3 +1,14 @@
+2003-02-25 [christoph]	0.8.10claws53
+
+	* src/Makefile.am
+	* src/colorlabel.[ch]		** REMOVE **
+	* src/gtk/Makefile.am
+	* src/gtk/colorlabel.[ch]	** NEW **
+		move colorlabel files to gtk directory
+
+	* src/esmtp.[ch]		** REMOVE **
+		has been merged into smtp.[ch] in 0.7.5
+
 2003-02-25 [christoph]	0.8.10claws52
 
 	* src/Makefile.am

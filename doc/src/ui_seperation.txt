@@ -46,3 +46,5 @@ stringtable.[ch]	common/stringtable.[ch]	ok
 gtkutils.[ch]		gtk/gtkutils.[ch]	ok
 
 about.[ch]		gtk/about.[ch]		ok
+
+colorlabel.[ch]		gtk/colorlabel.[ch]	ok
