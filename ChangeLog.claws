@@ -1,3 +1,9 @@
+2003-08-15 [paul]	0.9.4claws22
+
+	* src/common/defs.h
+	  src/crash.c
+	  	update and define claws bugzilla location
+
 2003-08-15 [paul]	0.9.4claws21
 
 	* po/ru.po

@@ -70,6 +70,7 @@
 #define SYLDOC_MANUAL_HTML_INDEX "manual/manual.html"
 #define SYLDOC_FAQ_HTML_INDEX	"faq/faq.html"
 #define CLAWS_FAQ_URI		"http://sylpheed-claws.sourceforge.net/phpwiki/index.php"
+#define CLAWS_BUGZILLA_URI	"http://www.thewildbeast.co.uk/sylpheed-claws/bugzilla/enter_bug.cgi"
 #define FOLDER_LIST		"folderlist.xml"
 #define CACHE_FILE		".sylpheed_cache"
 #define MARK_FILE		".sylpheed_mark"
