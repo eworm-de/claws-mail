@@ -1,3 +1,12 @@
+2001-12-12 [paul]	0.6.5claws79
+
+	* src/folderview.c
+		fix sensitivity of 'Search folder...', broken in
+		0.6.5claws75
+
+	* src/mainwindow.c
+		fix dodgy English
+
 2001-12-11 [carsten]	0.6.5claws78
 	* src/filtering.c
 		fixed two typos returning a wrong FALSE/TRUE
