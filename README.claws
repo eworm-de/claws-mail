@@ -181,6 +181,9 @@ are hardly noticable, but deserve mentioning:
   c. Usage
   --------
 
+  NOTE: if you upgraded from 0.7.0claws, please reselect your default
+  dictionary in the preferences.
+
   After successful compiling, you need to tell sylpheed where your
   dictionaries reside.  First run 'pspell-config pkgdatadir' on the
   shell to get their path.
@@ -194,16 +197,41 @@ are hardly noticable, but deserve mentioning:
 
   When composing, misspelled words are highlighted.  Click on any
   highlighted word with the right mouse button to get a list of
-  suggestions.  You can also accept the highlighted word to the
-  session dictionary (equivalent to an 'ignore' option of other spell
-  checker), or you can add it to you personal dictionary.
+  suggestions.  The first entry of the menu just displays the unknown
+  word.  Selecting "Accept in this session" (or hitting MOD1-Space, 
+  where MOD1 is usually the ALT key), will ignore this word and accept
+  it in this message.  Selecting the next entry "Add to dictionary", which
+  is bound to MOD1-Enter combination will add the unknown word to the
+  dictionary to learn it.  The next entries are the suggested words. 
+  The first 15 suggestions can be accessed typing one of the first letters
+  of latin alphabet (if this does not suit your language, please send
+  a mail to melvin.hadasht@free.fr).  If you are using an aspell 
+  dictionary, you can use its 'learn from mistake' feature, by pressing
+  the MOD1 key and selecting the suggestion (with the keyboard or with
+  the mouse).  See pspell manual §4.7.1 for an explanation of this 
+  feature. 
 
   If you click with the right mouse button everywhere else, or if you
   shift-right-click even on a misspelled word, you get the
   configuration  menu.  'Check all' highlights all misspelled words.
   With this menu, you can also change the dictionary while editing.
-  You can change the suggestion mode and toggle the learn from
-  misktakes 'feature' (useful only with aspell).
+  FInally, you can change the suggestion mode misktakes 'feature' 
+  (useful only with aspell).
+
+  Spell checking can also be done using keyboard shortcuts.  In the
+  "Edit" menu of the compose window, there are two menus "Check backwards
+  misspelled word" and "Forward to next misspelled word".  Add to them 
+  appropriate keyboard shortcuts.  "Check backwards misspelled word" 
+  checks backwards from cursor position for the first misspelled word.
+  If it finds one, it displays the suggestions lists which can be handled
+  with the keyboard as described before. When the suggestion menu is 
+  closed, the cursor returns to its original position to be able to 
+  continue editing.  The "Forward to next misspelled word" do the same 
+  thing in the other direction but moves the cursor at the end of the
+  misspelled word.  This way, you can spell check easily a whole message
+  starting from its beginning and using the "Forward to next misspelled
+  word" keyboard short cut.
+  
 
   d. Known problems
   -----------------

@@ -1,3 +1,13 @@
+2002-01-16 [melvin]	0.7.0claws5
+
+	* README.claws
+	* src/compose.c
+	* src/gtkspell.[ch]
+	* src/main.c
+		Heavily modified spell checker code to work around
+		ispell bug, to add keyboard shortcuts and for future
+		enhancements. See README.claws for usage information.
+
 2002-01-15 [alfons]	0.7.0claws4
 	
 	* src/summaryview.c

@@ -430,6 +430,12 @@ static void compose_show_first_last_header (Compose *compose, gboolean show_firs
 
 static void compose_ctl_enter_send_shortcut_cb(GtkWidget *w, Compose *compose);
 
+static void compose_check_backwards(Compose *compose);
+
+static void compose_check_forwards_go(Compose *compose);
+
+
+
 static GtkItemFactoryEntry compose_popup_entries[] =
 {
 	{N_("/_Add..."),	NULL, compose_attach_cb, 0, NULL},
@@ -456,6 +462,11 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Edit/_Paste"),		"<control>V", compose_paste_cb,  0, NULL},
 	{N_("/_Edit/Select _all"),	"<control>A", compose_allsel_cb, 0, NULL},
 	{N_("/_Edit/---"),		NULL, NULL, 0, "<Separator>"},
+#if USE_PSPELL
+	{N_("/_Edit/Check backwards misspelled word"),	"<control>;", compose_check_backwards , 0, NULL},
+	{N_("/_Edit/Forward to next misspelled word"),	"<control>!", compose_check_forwards_go, 0, NULL},
+	{N_("/_Edit/---"),		NULL, NULL, 0, "<Separator>"},
+#endif
 	{N_("/_Edit/_Wrap current paragraph"),
 					"<alt>L", compose_wrap_line, 0, NULL},
 	{N_("/_Edit/Wrap all long _lines"),
@@ -4365,19 +4376,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	gtk_signal_connect(GTK_OBJECT(text), "drag_data_received",
 			   GTK_SIGNAL_FUNC(compose_insert_drag_received_cb),
 			   compose);
-#if USE_PSPELL
-        if (prefs_common.enable_pspell) {
-		gtkpspell = gtkpspell_new_with_config(gtkpspellconfig,
-						      prefs_common.pspell_path,
-						      prefs_common.dictionary,
-						      prefs_common.pspell_sugmode,
-						      conv_get_current_charset_str());
-		if (gtkpspell == NULL)
-			prefs_common.enable_pspell = FALSE;
-		else
-			gtkpspell_attach(gtkpspell, GTK_STEXT(text));
-        }
-#endif
 	gtk_widget_show_all(vbox);
 
 	/* pane between attach clist and text */
@@ -4552,6 +4550,24 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	compose->bounce_filename = NULL;
 	compose->undostruct = undostruct;
+#if USE_PSPELL
+	menu_set_sensitive(ifactory, "/Edit/Check backwards misspelled word", FALSE);
+	menu_set_sensitive(ifactory, "/Edit/Forward to next misspelled word", FALSE);
+        if (prefs_common.enable_pspell) {
+		gtkpspell = gtkpspell_new((const gchar*)prefs_common.dictionary,
+					  conv_get_current_charset_str(),
+					  GTK_STEXT(text));
+		if (!gtkpspell) {
+			alertpanel_error(_("Spell checker could not be started.\n%s"), gtkpspellcheckers->error_message);
+			gtkpspell_checkers_reset();
+		} else {
+
+			gtkpspell_set_sug_mode(gtkpspell, prefs_common.pspell_sugmode);
+			menu_set_sensitive(ifactory, "/Edit/Check backwards misspelled word", TRUE);
+			menu_set_sensitive(ifactory, "/Edit/Forward to next misspelled word", TRUE);
+			}
+        }
+#endif
 
 	compose_set_title(compose);
 
@@ -5956,8 +5972,7 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 #if USE_PSPELL
         if (compose->gtkpspell) {
-	        gtkpspell_detach(compose->gtkpspell);
-		compose->gtkpspell = gtkpspell_delete(compose->gtkpspell);
+	        gtkpspell_delete(compose->gtkpspell);
         }
 #endif
 	gtk_widget_destroy(compose->window);
@@ -6441,4 +6456,30 @@ static void compose_ctl_enter_send_shortcut_cb(GtkWidget *w, Compose *compose)
 	if (accel->accelerator_key == GDK_Return && 
 	    accel->accelerator_mods == GDK_CONTROL_MASK)
 		compose_send_cb(compose, 0, NULL);
-}	
+}
+
+#if USE_PSPELL
+static void compose_check_backwards(Compose *compose)
+{
+	if (compose->gtkpspell)	
+		gtkpspell_check_backwards(compose->gtkpspell);
+	else {
+		GtkItemFactory *ifactory;
+		ifactory = gtk_item_factory_from_widget(compose->popupmenu);
+		menu_set_sensitive(ifactory, "/Edit/Check backwards misspelled word", FALSE);
+		menu_set_sensitive(ifactory, "/Edit/Forward to next misspelled word", FALSE);
+	}
+}
+
+static void compose_check_forwards_go(Compose *compose)
+{
+	if (compose->gtkpspell)	
+		gtkpspell_check_forwards_go(compose->gtkpspell);
+	else {
+		GtkItemFactory *ifactory;
+		ifactory = gtk_item_factory_from_widget(compose->popupmenu);
+		menu_set_sensitive(ifactory, "/Edit/Check backwards misspelled word", FALSE);
+		menu_set_sensitive(ifactory, "/Edit/Forward to next misspelled word", FALSE);
+	}
+}
+#endif

@@ -249,6 +249,11 @@ int main(int argc, char *argv[])
 	gpgme_register_idle(idle_function_for_gpgme);
 #endif
 
+#if USE_PSPELL
+	gtkpspellcheckers = gtkpspell_checkers_new();
+#endif
+	
+
 	prefs_common_save_config();
 	prefs_filter_read_config();
 	prefs_filter_write_config();
@@ -309,7 +314,7 @@ int main(int argc, char *argv[])
 	gtk_main();
 
 #if USE_PSPELL       
-	gtkpspell_finished(gtkpspellconfig);
+	gtkpspell_checkers_delete();
 #endif
 
 	return 0;
@@ -529,7 +534,7 @@ static void lock_socket_input_cb(gpointer data,
 static void open_compose_new_with_recipient(const gchar *address)
 {
 	gchar *addr = NULL;
-
+			
 	if (address) {
 		Xstrdup_a(addr, address, return);
 		g_strstrip(addr);
