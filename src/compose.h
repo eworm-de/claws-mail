@@ -168,6 +168,8 @@ struct _Compose
 
 	gboolean modified;
 
+	gboolean sending;
+	
 	gboolean return_receipt;
 	gboolean paste_as_quotation;
 

@@ -995,7 +995,8 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 				filter_get_dest_folder(prefs_common.fltlist, file);
 			if (!dropfolder) dropfolder = inbox;
 			else if (!strcmp(dropfolder->path, FILTER_NOT_RECEIVE)) {
-				g_warning(_("a message won't be received\n"));
+				debug_print("a message won't be received\n");
+				unlink(file);
 				return 1;
 			}
 		} else

@@ -128,8 +128,8 @@ static gint prefs_toolbar_key_pressed            (GtkWidget *widget,
 void prefs_toolbar(Toolbar source)
 {
 	gchar *win_titles[2];
-	win_titles[TOOLBAR_MAIN]    = _("set Main toolbar items");
-	win_titles[TOOLBAR_COMPOSE] = _("set Compose toolbar items");  
+	win_titles[TOOLBAR_MAIN]    = _("Main Toolbar Configuration");
+	win_titles[TOOLBAR_COMPOSE] = _("Compose Toolbar Configuration");  
 
 	toolbar.source = source;
 

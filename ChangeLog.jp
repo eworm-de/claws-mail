@@ -1,3 +1,19 @@
+2002-09-24
+
+	* src/addr_compl.c:
+	  replace_address_in_edit(): newtext が NULL かどうかをチェック。
+	  completion_window_button_press(): メモリリークを修正。
+	* src/pop.c: LOOKUP_NEXT_MSG(): recv_time が RECV_TIME_KEEP である
+	  メッセージを期限切れにしないようにした。
+	  pop3_getrange_uidl_recv(): ac_prefs->getall がセットされている
+	  ときのみ get_all フラグをセット。
+	  pop3_retr_recv(): フィルタで受信されなかったメッセージを削除
+	  しないようにし、その場合 recv_time を RECV_TIME_KEEP に設定する
+	  ようにした。
+	* src/pop.h: enum RecvTime を追加。
+	* src/inc.c: inc_drop_message(): フィルタで受信されない場合一時
+	  メッセージファイルを unlink するようにした。
+
 2002-09-20
 
 	* src/mainwindow.c: 「編集/スレッドを選択」メニューを追加。

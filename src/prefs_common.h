@@ -39,6 +39,12 @@ typedef enum {
 	RECV_DIALOG_NEVER
 } RecvDialogMode;
 
+typedef enum {
+	SEND_DIALOG_ALWAYS,
+	/* SEND_DIALOG_ACTIVE would be irrelevant */
+	SEND_DIALOG_NEVER
+} SendDialogMode;
+
 typedef enum
 {
 	NEXTUNREADMSGDIALOG_ALWAYS,
@@ -227,6 +233,7 @@ struct _PrefsCommon
 	gboolean open_inbox_on_inc;
 	gboolean immediate_exec;
 	RecvDialogMode recv_dialog_mode;
+	SendDialogMode send_dialog_mode;
 	gboolean close_recv_dialog;
 	gboolean no_recv_err_panel;
 	NextUnreadMsgDialogShow next_unread_msg_dialog;

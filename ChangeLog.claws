@@ -1,3 +1,73 @@
+2002-09-25 [paul]	0.8.3claws22
+
+	* sync with 0.8.3cvs5
+		see ChangeLog 2002-09-24
+
+2002-09-24 [alfons]	0.8.3claws21
+
+	patch by Satoshi Nagayasu: allows appending / saving multiple 
+	selected files (closes "[ 612279 ] save multiple mesg(s) in 
+	'Save as ...'")
+
+	* AUTHORS
+		add Satoshi Nagayasu
+	* src/summaryview.c
+		summary_save_as(): allow saving selected files to
+		one file
+		summary_set_menu_sensitive: enable "Save As..." when
+		multiple files are selected
+	* src/utils.[ch]
+		append_file(): new function
+
+2002-09-24 [colin]	0.8.3claws20
+
+	* src/procmime.c
+		Fix segfault when mimeinfo doesn't have a 
+		content_type. 
+
+2002-09-24 [colin]	0.8.3claws19
+
+	* src/prefs_common.[ch]
+		Add a preference to display send dialog or not
+	* src/send.c
+		Display send dialog according to preference
+
+2002-09-24 [colin]	0.8.3claws18
+
+	* src/compose.[ch]
+		Disable user actions when sending
+
+2002-09-24 [colin]	0.8.3claws17
+
+	* src/procmime.c
+		Do not display name or filename for attachments
+		with an application/pgp-signature type
+		(security flaw, see bug 537413)
+
+2002-09-23 [colin]	0.8.3claws16
+
+	* src/editaddress.c
+		Initialize entry_email, entry_alias and 
+		entry_remarks to first email address of the list
+
+2002-09-23 [colin]	0.83claws15
+
+	* src/compose.c
+		Drop pgp-signature when reediting a signed queued
+		message
+
+2002-09-23 [melvin]	0.8.3claws14
+
+	* po/fr.po
+		Updated French translation
+
+2002-09-23 [melvin]	0.8.3claws13
+
+	* src/mainwindow.c
+		Made custom toolbar menu labels more consistent
+	* src/prefs_toolbar.c
+		Made custom toolbar window title more consistent
+
 2002-09-22 [colin]	0.8.3claws12
 
 	* src/inc.c

@@ -1202,7 +1202,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	else
 		menu_set_sensitive(ifactory, "/Re-edit", FALSE);
 
-	menu_set_sensitive(ifactory, "/Save as...", sens);
+	menu_set_sensitive(ifactory, "/Save as...", TRUE);
 	menu_set_sensitive(ifactory, "/Print...",   TRUE);
 
 	menu_set_sensitive(ifactory, "/Select all", TRUE);
@@ -3355,6 +3355,8 @@ void summary_save_as(SummaryView *summaryview)
 	gchar *filename = NULL;
 	gchar *src, *dest;
 
+	AlertValue aval;
+
 	if (!summaryview->selected) return;
 	msginfo = gtk_ctree_node_get_row_data(ctree, summaryview->selected);
 	if (!msginfo) return;
@@ -3366,20 +3368,41 @@ void summary_save_as(SummaryView *summaryview)
 	dest = filesel_select_file(_("Save as"), filename);
 	if (!dest) return;
 	if (is_file_exist(dest)) {
-		AlertValue aval;
-
-		aval = alertpanel(_("Overwrite"),
-				  _("Overwrite existing file?"),
-				  _("OK"), _("Cancel"), NULL);
-		if (G_ALERTDEFAULT != aval) return;
+		aval = alertpanel(_("Append or Overwrite"),
+				  _("Append or overwrite existing file?"),
+				  _("Append"), _("Overwrite"), _("Cancel"));
+		if (aval!=0 && aval!=1) return;
 	}
 
 	src = procmsg_get_message_file(msginfo);
-	if (copy_file(src, dest, TRUE) < 0) {
-		alertpanel_error(_("Can't save the file `%s'."),
-				 g_basename(dest));
+	if ( aval==0 ) { /* append */
+		if (append_file(src, dest, TRUE) < 0) 
+			alertpanel_error(_("Can't save the file `%s'."),
+					 g_basename(dest));
+	} else { /* overwrite */
+		if (copy_file(src, dest, TRUE) < 0)
+			alertpanel_error(_("Can't save the file `%s'."),
+					 g_basename(dest));
 	}
 	g_free(src);
+
+	
+	/*
+	 * If two or more msgs are selected,
+	 * append them to the output file.
+	 */
+	if (GTK_CLIST(ctree)->selection->next) {
+		GList *item;
+		for (item = GTK_CLIST(ctree)->selection->next; item != NULL; item=item->next) {
+			msginfo = gtk_ctree_node_get_row_data(ctree, (GtkCTreeNode*)item->data);
+			if (!msginfo) break;
+			src = procmsg_get_message_file(msginfo);
+			if (append_file(src, dest, TRUE) < 0)
+				alertpanel_error(_("Can't save the file `%s'."),
+						 g_basename(dest));
+		}
+		g_free(src);
+	}
 }
 
 void summary_print(SummaryView *summaryview)
