@@ -6869,7 +6869,5 @@ msgstr ""
 
 #: src/toolbar.c:2030
 msgid "Message already removed from folder."
-msgstr ""
+msgstr "Съобщението вече е премахнато от папката."
 
-#~ msgid "Apply"
-#~ msgstr "Приложи"
