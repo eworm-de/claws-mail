@@ -806,7 +806,8 @@ gint folder_item_rename(FolderItem *item, gchar *newname)
 		FolderItemUpdateData hookdata;
 
 		hookdata.item = item;
-		hookdata.update_flags = FOLDER_TREE_CHANGED;
+		hookdata.update_flags = F_ITEM_UPDATE_NAME;
+		hookdata.msg = NULL;
 		hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &hookdata);
 	}
 

@@ -1,3 +1,10 @@
+2004-06-19 [christoph]	0.9.11cvs14
+
+	* src/folder.c
+		fix FolderItem name update
+
+	(Closes Bug 511 Folder-Renaming not reflected immediately)
+
 2004-06-17 [paul]	0.9.11cvs13
 	
 	* sync with main 0.9.12 release

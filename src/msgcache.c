@@ -402,15 +402,14 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 		cache->memusage += procmsg_msginfo_memusage(msginfo);
 	}
 	fclose(fp);
+	g_hash_table_thaw(cache->msgnum_table);
 
 	if(error) {
-		g_hash_table_thaw(cache->msgnum_table);
 		msgcache_destroy(cache);
 		return NULL;
 	}
 
 	cache->last_access = time(NULL);
-	g_hash_table_thaw(cache->msgnum_table);
 
 	debug_print("done. (%d items read)\n", g_hash_table_size(cache->msgnum_table));
 	debug_print("Cache size: %d messages, %d byte\n", g_hash_table_size(cache->msgnum_table), cache->memusage);
