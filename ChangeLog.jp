@@ -1,3 +1,16 @@
+2001-05-17
+
+	* src/main.c: lock_socket_input_cb(): fd_read() を fd_gets() に
+	  変更。 --compose オプションでゴミを発生していた。
+	* src/socket.[ch]: fd_gets() を public にした。
+
+2001-05-16
+
+	* src/gtkutils.[ch]: gtkut_ctree_node_next(): 新規。
+	* src/folderview.c: folderview_find_next_unread(): 新規。
+	  folderview_select_next_unread(): 隠れたフォルダも見付けられる
+	  ように修正。
+
 2001-05-15
 
 	* src/compose.c: compose_write_headers(): SPAM に使用される可能性

@@ -442,7 +442,7 @@ static void lock_socket_input_cb(gpointer data,
 	gchar buf[BUFFSIZE];
 
 	sock = fd_accept(source);
-	fd_read(sock, buf, sizeof(buf));
+	fd_gets(sock, buf, sizeof(buf));
 	fd_close(sock);
 
 	if (!strncmp(buf, "popup", 5)){

@@ -428,7 +428,7 @@ gint fd_write(gint fd, const gchar *buf, gint len)
 	return wrlen;
 }
 
-static gint fd_gets(gint fd, gchar *buf, gint len)
+gint fd_gets(gint fd, gchar *buf, gint len)
 {
 	gchar *newline, *bp = buf;
 	gint n;

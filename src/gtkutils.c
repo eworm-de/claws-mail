@@ -168,6 +168,26 @@ gint gtkut_ctree_get_nth_from_node(GtkCTree *ctree, GtkCTreeNode *node)
 	return g_list_position(GTK_CLIST(ctree)->row_list, (GList *)node);
 }
 
+/* get the next node, including the invisible one */
+GtkCTreeNode *gtkut_ctree_node_next(GtkCTree *ctree, GtkCTreeNode *node)
+{
+	GtkCTreeNode *parent;
+
+	if (GTK_CTREE_ROW(node)->children)
+		return GTK_CTREE_ROW(node)->children;
+
+	if (GTK_CTREE_ROW(node)->sibling)
+		return GTK_CTREE_ROW(node)->sibling;
+
+	for (parent = GTK_CTREE_ROW(node)->parent; parent != NULL;
+	     parent = GTK_CTREE_ROW(parent)->parent) {
+		if (GTK_CTREE_ROW(parent)->sibling)
+			return GTK_CTREE_ROW(parent)->sibling;
+	}
+
+	return NULL;
+}
+
 void gtkut_ctree_set_focus_row(GtkCTree *ctree, GtkCTreeNode *node)
 {
 	gtkut_clist_set_focus_row(GTK_CLIST(ctree),

@@ -94,6 +94,7 @@ gint fd_accept		(gint sock);
 
 gint fd_read		(gint sock, gchar *buf, gint len);
 gint fd_write		(gint sock, const gchar *buf, gint len);
+gint fd_gets		(gint sock, gchar *buf, gint len);
 gint fd_close		(gint sock);
 
 #endif /* __SOCKET_H__ */

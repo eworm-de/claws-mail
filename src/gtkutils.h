@@ -75,6 +75,8 @@ void gtkut_ctree_node_move_if_on_the_edge
 					 GtkCTreeNode	*node);
 gint gtkut_ctree_get_nth_from_node	(GtkCTree	*ctree,
 					 GtkCTreeNode	*node);
+GtkCTreeNode *gtkut_ctree_node_next	(GtkCTree	*ctree,
+					 GtkCTreeNode	*node);
 void gtkut_ctree_set_focus_row		(GtkCTree	*ctree,
 					 GtkCTreeNode	*node);
 void gtkut_clist_set_focus_row		(GtkCList	*clist,

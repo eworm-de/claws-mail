@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -259,7 +259,6 @@ FolderView *folderview_create(void)
 	gtk_widget_set_usize(scrolledwin,
 			     prefs_common.folderview_width,
 			     prefs_common.folderview_height);
-	//		     COL_FOLDER_WIDTH + COL_NUM_WIDTH - 3, -1);
 
 	ctree = gtk_ctree_new_with_titles(N_FOLDER_COLS, COL_FOLDER, titles);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), ctree);
@@ -282,7 +281,7 @@ FolderView *folderview_create(void)
 	gtk_ctree_set_expander_style(GTK_CTREE(ctree),
 				     GTK_CTREE_EXPANDER_SQUARE);
 	gtk_ctree_set_indent(GTK_CTREE(ctree), CTREE_INDENT);
-	//gtk_clist_set_reorderable(GTK_CLIST(ctree), TRUE);
+	
 	/* don't let title buttons take key focus */
 	for (i = 0; i < N_FOLDER_COLS; i++)
 		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(ctree)->column[i].button,
@@ -450,36 +449,42 @@ void folderview_unselect(FolderView *folderview)
 	folderview->selected = folderview->opened = NULL;
 }
 
+static GtkCTreeNode *folderview_find_next_unread(GtkCTree *ctree,
+						 GtkCTreeNode *node)
+{
+	FolderItem *item;
+
+	if (node)
+		node = gtkut_ctree_node_next(ctree, node);
+	else
+		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+
+	for (; node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
+		item = gtk_ctree_node_get_row_data(ctree, node);
+		if (item && item->unread > 0 && item->stype != F_TRASH)
+			return node;
+	}
+
+	return NULL;
+}
+
 void folderview_select_next_unread(FolderView *folderview)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
-	GtkCTreeNode *node;
-	FolderItem *item;
+	GtkCTreeNode *node = NULL;
 
-	if (folderview->opened)
-		node = GTK_CTREE_NODE_NEXT(folderview->opened);
-	else
-		node = gtk_ctree_node_nth(ctree, 1);
-
-	for (; node != NULL; node = GTK_CTREE_NODE_NEXT(node)) {
-		item = gtk_ctree_node_get_row_data(ctree, node);
-		if (item && (item->unread > 0 || item->new > 0) &&
-		    item->stype != F_TRASH) {
-			folderview_select_node(folderview, node);
-			return;
-		}
+	if ((node = folderview_find_next_unread(ctree, folderview->opened))
+	    != NULL) {
+		folderview_select_node(folderview, node);
+		return;
 	}
-	if (!folderview->opened) return;
+
+	if (!folderview->opened ||
+	    folderview->opened == GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list))
+		return;
 	/* search again from the first node */
-	for (node = gtk_ctree_node_nth(ctree, 1); node != NULL;
-	     node = GTK_CTREE_NODE_NEXT(node)) {
-		item = gtk_ctree_node_get_row_data(ctree, node);
-		if (item && (item->unread > 0 || item->new > 0) &&
-		    item->stype != F_TRASH) {
-			folderview_select_node(folderview, node);
-			return;
-		}
-	}
+	if ((node = folderview_find_next_unread(ctree, NULL)) != NULL)
+		folderview_select_node(folderview, node);
 }
 
 void folderview_update_msg_num(FolderView *folderview, GtkCTreeNode *row,
@@ -785,7 +790,6 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 					      add_unread_mark ? "+" : "");
 		else
 			str = g_strdup_printf("%s (+)", name);
-		str = g_strdup_printf("%s (%d)", name, item->unread);
 		gtk_ctree_set_node_info(ctree, node, str, FOLDER_SPACING,
 					xpm, mask, openxpm, openmask,
 					FALSE, GTK_CTREE_ROW(node)->expanded);

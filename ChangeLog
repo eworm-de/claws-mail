@@ -1,3 +1,16 @@
+2001-05-17
+
+	* src/main.c: lock_socket_input_cb(): changed fd_read() to fd_gets().
+	  It caused garbages in --compose option.
+	* src/socket.[ch]: made fd_gets() public.
+
+2001-05-16
+
+	* src/gtkutils.[ch]: gtkut_ctree_node_next(): new.
+	* src/folderview.c: folderview_find_next_unread(): new.
+	  folderview_select_next_unread(): modified so that it can find
+	  the hidden folder.
+
 2001-05-15
 
 	* src/compose.c: compose_write_headers(): excluded also From, To,
