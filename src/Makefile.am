@@ -77,7 +77,6 @@ sylpheed_SOURCES = \
 	grouplistdialog.c grouplistdialog.h \
 	about.c about.h \
 	setup.c setup.h \
-	gtkutils.c gtkutils.h \
 	codeconv.c codeconv.h \
 	unmime.c unmime.h \
 	ssl_manager.c ssl_manager.h \

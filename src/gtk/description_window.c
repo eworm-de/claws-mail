@@ -28,7 +28,7 @@
 #include "intl.h"
 #include "manage_window.h"
 #include "description_window.h"
-#include "../gtkutils.h"
+#include "gtkutils.h"
 
 static void description_create			(DescriptionWindow *dwindow);
 static void description_window_key_pressed	(GtkWidget *widget,
