@@ -747,8 +747,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Configuration/_Edit accounts..."),
 						NULL, account_edit_open, 0, NULL},
 	{N_("/_Configuration/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Configuration/_Common preferences..."),
-						NULL, prefs_common_open_cb, 0, NULL},
+	{N_("/_Configuration/_Preferences..."),
+						NULL, prefs_open_cb, 0, NULL},
 	{N_("/_Configuration/Pre-processing..."),
 						NULL, prefs_pre_processing_open_cb, 0, NULL},
 	{N_("/_Configuration/Post-processing..."),
@@ -757,7 +757,6 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, prefs_filtering_open_cb, 0, NULL},
 	{N_("/_Configuration/_Templates..."),	NULL, prefs_template_open_cb, 0, NULL},
 	{N_("/_Configuration/_Actions..."),	NULL, prefs_actions_open_cb, 0, NULL},
-	{N_("/_Configuration/_Other Preferences..."),  NULL, prefs_open_cb, 0, NULL},
 	{N_("/_Configuration/Plugins..."),  	NULL, plugins_open_cb, 0, NULL},
 
 	{N_("/_Help"),				NULL, NULL, 0, "<Branch>"},
@@ -2905,7 +2904,7 @@ static void create_processing_cb(MainWindow *mainwin, guint action,
 static void prefs_common_open_cb(MainWindow *mainwin, guint action,
 				 GtkWidget *widget)
 {
-	prefs_common_open();
+	/* prefs_common_open(); */
 }
 
 static void prefs_pre_processing_open_cb(MainWindow *mainwin, guint action,

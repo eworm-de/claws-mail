@@ -139,3 +139,4 @@
 ( cvs diff -u -r 1.11 -r 1.12 src/privacy.c; ) > 0.9.12cvs154.patchset
 ( cvs diff -u -r 1.455 -r 1.456 src/compose.c; cvs diff -u -r 1.173 -r 1.174 src/procmsg.c; cvs diff -u -r 1.55 -r 1.56 src/toolbar.c; ) > 0.9.12cvs155.patchset
 ( cvs diff -u -r 1.120 -r 1.121 src/prefs_account.c; cvs diff -u -r 1.55 -r 1.56 src/prefs_account.h; cvs diff -u -r 1.174 -r 1.175 src/procmsg.c; ) > 0.9.12cvs156.patchset
+( cvs diff -u -r 1.313 -r 1.314 src/mainwindow.c; cvs diff -u -r 1.230 -r 1.231 src/prefs_common.c; ) > 0.9.12cvs157.patchset
