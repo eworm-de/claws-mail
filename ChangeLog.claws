@@ -1,10 +1,24 @@
-2001-11-18 [hoa]	0.6.4claws21
+2001-11-04 [hoa]	0.6.4claws22
+
+	* src/grouplistdialog.c
+		change the names of the nodes in the tree
+
+	* src/compose.c
+		enhanced mailto syntax as described in
+		http://developer.netscape.com/viewsource/husted_mailto/mailto.html
+		(thanks to Jonathan Ware <jonathan_ware@gmx.co.uk>)
+
+	* src/utils.c
+		encode and decode URI (useful when opening URL into
+		netscape).
+
+2001-11-03 [hoa]	0.6.4claws21
 
 	* src/grouplistdialog.c
 		a new newsgroups list selection dialog box
 		with a CTree instead of a CList
 
-2001-11-18 [hoa]	0.6.4claws20
+2001-11-03 [hoa]	0.6.4claws20
 
 	* src/folderview.c
 		enable property and scoring options when right

@@ -306,6 +306,17 @@ static gchar * get_parent_name(gchar * name)
 	return g_strndup(name, p - name);
 }
 
+static gchar * get_node_name(gchar * name)
+{
+	gchar * p;
+
+	p = (gchar *) strrchr(name, '.');
+	if (p == NULL)
+		return name;
+
+	return p + 1;
+}
+
 static GtkCTreeNode * create_parent(GtkCTree * groups_tree, gchar * name)
 {
 	gchar * cols[3];
@@ -319,7 +330,7 @@ static GtkCTreeNode * create_parent(GtkCTree * groups_tree, gchar * name)
 	if (hash_news_get_branch_node(name) != NULL)
 		return;
 
-	cols[0] = name;
+	cols[0] = get_node_name(name);
 	cols[1] = "";
 	cols[2] = "";
 	
@@ -357,7 +368,7 @@ static GtkCTreeNode * create_branch(GtkCTree * groups_tree, gchar * name,
 		count = 0;
 	snprintf(count_str, 10, "%i", count);
 	
-	cols[0] = info->name;
+	cols[0] = get_node_name(info->name);
 	cols[1] = count_str;
 	if (info->type == 'y')
 		cols[2] = "";

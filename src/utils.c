@@ -1815,25 +1815,140 @@ gint execute_command_line(const gchar *cmdline, gboolean async)
 	return ret;
 }
 
+static gint is_unchanged_uri_char(char c)
+{
+  switch (c) {
+    case '(':
+    case ')':
+    case ',':
+      return 0;
+    default:
+      return 1;
+    }
+}
+
+void encode_uri(gchar * encoded_uri, gint bufsize, const gchar * uri)
+{
+	int i;
+	int k;
+
+	k = 0;
+	for(i = 0; i < strlen(uri) ; i++) {
+		if (is_unchanged_uri_char(uri[i])) {
+			if (k + 2 >= bufsize)
+				break;
+			encoded_uri[k++] = uri[i];
+		}
+		else {
+			char * hexa = "0123456789ABCDEF";
+			
+			if (k + 4 >= bufsize)
+				break;
+			encoded_uri[k++] = '%';
+			encoded_uri[k++] = hexa[uri[i] / 16];
+			encoded_uri[k++] = hexa[uri[i] % 16];
+		}
+	}
+	encoded_uri[k] = 0;
+}
+
+/* Converts two-digit hexadecimal to decimal.  Used for unescaping escaped 
+ * characters
+ */
+static gint axtoi(const gchar *hexstr)
+{
+	gint Hi, Lo, Result;
+       
+	Hi = hexstr[0];
+	if ('0' <= Hi && Hi <= '9') {
+		Hi -= '0';
+	} else
+		if ('a' <= Hi && Hi <= 'f') {
+			Hi -=('a'-10);
+		} else
+			if ('A' <= Hi && Hi <= 'F') {
+				Hi -= ('A'-10);
+			}
+
+	Lo = hexstr[1];
+	if ('0' <= Lo && Lo <='9') {
+		Lo -= '0';
+	} else
+		if ('a' <= Lo && Lo <= 'f') {
+			Lo -= ('a'-10);
+		} else
+			if ('A' <= Lo && Lo <= 'F') {
+				Lo -= ('A'-10);
+			}
+	Result = Lo + (16 * Hi);
+	return (Result);
+}
+
+
+/* Decodes URL-Encoded strings (i.e. strings in which spaces are replaced by
+ * plusses, and escape characters are used)
+ */
+
+void decode_uri(gchar * decoded_uri, const gchar * encoded_uri)
+{
+	const gchar * encoded;
+	gchar * decoded;
+
+	//	strcpy(decoded_uri, encoded_uri);
+	//	subst_char(decoded_uri, '+', ' ');
+	
+	encoded = encoded_uri;
+	decoded = decoded_uri;
+
+	while (* encoded) {
+		if (* encoded == '%') {
+			encoded ++;
+			if (isxdigit(encoded[0])
+			    && isxdigit(encoded[1])) {
+				* decoded = (gchar) axtoi(encoded);
+				decoded ++;
+				encoded += 2;
+			}
+		}
+		else if (* encoded == '+') {
+			* decoded = ' ';
+			decoded ++;
+			encoded ++;
+		}
+		else {
+			* decoded = * encoded;
+			decoded ++;
+			encoded ++;
+		}
+	}
+
+	* decoded = '\0';
+}
+
+
 gint open_uri(const gchar *uri, const gchar *cmdline)
 {
 	static gchar *default_cmdline = "netscape -remote openURL(%s,raise)";
 	gchar buf[BUFFSIZE];
 	gchar *p;
-
+	gchar encoded_uri[BUFFSIZE];
+	
 	g_return_val_if_fail(uri != NULL, -1);
 
+	/* an option to choose whether to use encode_uri or not ? */
+	encode_uri(encoded_uri, BUFFSIZE, uri);
+	
 	if (cmdline &&
 	    (p = strchr(cmdline, '%')) && *(p + 1) == 's' &&
 	    !strchr(p + 2, '%'))
-		g_snprintf(buf, sizeof(buf), cmdline, uri);
+		g_snprintf(buf, sizeof(buf), cmdline, encoded_uri);
 	else {
 		if (cmdline)
 			g_warning(_("Open URI command line is invalid: `%s'"),
 				  cmdline);
-		g_snprintf(buf, sizeof(buf), default_cmdline, uri);
+		g_snprintf(buf, sizeof(buf), default_cmdline, encoded_uri);
 	}
-
+	
 	execute_command_line(buf, TRUE);
 
 	return 0;

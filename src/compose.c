@@ -494,6 +494,86 @@ Compose * compose_new_with_folderitem(PrefsAccount *account, FolderItem *item)
 	return compose_generic_new(account, NULL, item);
 }
 
+static void set_compose_entries(Compose * compose, const gchar * mailto)
+{
+	gchar * subject = NULL;
+	gchar * to = NULL;
+	gchar * cc = NULL;
+	gchar * bcc = NULL;
+	gchar * body = NULL;
+	gchar * p;
+	gchar * tmp_mailto;
+	gchar * cur;
+	
+	Xstrdup_a(tmp_mailto, mailto, return);
+
+	cur = tmp_mailto;
+
+	p = strchr(cur, '?');
+	if (p != NULL) {
+		* p = 0;
+		cur = p + 1;
+	}
+	to = tmp_mailto;
+
+	while (p) {
+		char *field, *value;
+		
+		field = cur;
+
+		p = strchr(cur, '=');
+		if (p == NULL)
+			break;
+		* p = 0;
+		cur = p + 1;
+
+		value = cur;
+
+		p = strchr(cur, '&');
+		if (p != NULL) {
+			* p = 0;
+			cur = p + 1;
+		}
+
+		if (value) {
+			if (g_strcasecmp(field, "subject")==0) {
+				Xstrdup_a(subject, value, );
+				if (subject != NULL)
+					decode_uri(subject, value);
+			}
+			else if (g_strcasecmp(field, "cc")==0)
+				cc = value;
+			else if (g_strcasecmp(field, "bcc")==0)
+				bcc = value;
+			else if (g_strcasecmp(field, "body")==0) {
+				Xstrdup_a(body, value, );
+				if (body != NULL)
+					decode_uri(body, value);
+			}
+		}
+	}			
+
+	if (to) {
+		compose_entry_append(compose, to, COMPOSE_TO);
+		/*
+		gtk_widget_grab_focus(compose->text);
+		*/
+	}
+
+	if (subject)
+		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), subject);
+	if (cc)
+		compose_entry_append(compose, cc, COMPOSE_CC);
+	if (bcc)
+		compose_entry_append(compose, bcc, COMPOSE_BCC);
+	if (body) {
+		gtk_text_insert(GTK_TEXT(compose->text),
+				NULL, NULL, NULL, body, -1);
+		gtk_text_insert(GTK_TEXT(compose->text),
+				NULL, NULL, NULL, "\n", 1);
+	}
+}	
+
 Compose * compose_generic_new(PrefsAccount *account, const gchar *to, FolderItem *item)
 {
 	Compose *compose;
@@ -501,7 +581,7 @@ Compose * compose_generic_new(PrefsAccount *account, const gchar *to, FolderItem
 	if (item && item->prefs && item->prefs->enable_default_account)
 		account = account_find_from_id(item->prefs->default_account);
 
-	if (!account) account = cur_account;
+ 	if (!account) account = cur_account;
 	g_return_val_if_fail(account != NULL, NULL);
 
 	compose = compose_create(account, COMPOSE_NEW);
@@ -514,7 +594,8 @@ Compose * compose_generic_new(PrefsAccount *account, const gchar *to, FolderItem
 
 	if (account->protocol != A_NNTP) {
 		if (to) {
-			compose_entry_append(compose, to, COMPOSE_TO);
+			set_compose_entries(compose, to);
+
 		} else if(item && item->prefs->enable_default_to) {
 			compose_entry_append(compose, item->prefs->default_to, COMPOSE_TO);
 		}
@@ -1664,11 +1745,23 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 				     : msginfo->from ? msginfo->from : ""),
 				     COMPOSE_TO);
 	if (compose->account->protocol == A_NNTP)
+		if (ignore_replyto)
+			compose_entry_append(compose,
+					     msginfo->from ? msginfo->from : "",
+					     COMPOSE_TO);
+		else
+			compose_entry_append(compose,
+					     compose->followup_to ? compose->followup_to
+					     : compose->newsgroups ? compose->newsgroups
+					     : "",
+					     COMPOSE_NEWSGROUPS);
+	/*
 		compose_entry_append(compose,
 				     compose->followup_to ? compose->followup_to
 				     : compose->newsgroups ? compose->newsgroups
 				     : "",
 				     COMPOSE_NEWSGROUPS);
+	*/
 
 	if (msginfo->subject && *msginfo->subject) {
 		gchar *buf, *buf2, *p;
