@@ -933,16 +933,12 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	summary_clear_list(summaryview);
 	summary_set_column_titles(summaryview);
-	if (!is_refresh)
-		messageview_clear(summaryview->messageview);
 
 	buf = NULL;
 	if (!item || !item->path || !item->parent || item->no_select) {
 		g_free(buf);
 		debug_print("empty folder\n\n");
 		summary_set_hide_read_msgs_menu(summaryview, FALSE);
-		if (is_refresh)
-			messageview_clear(summaryview->messageview);
 		summary_clear_all(summaryview);
 		summaryview->folder_item = item;
 		gtk_clist_thaw(GTK_CLIST(ctree));
@@ -951,6 +947,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		return TRUE;
 	}
 	g_free(buf);
+
+	if (!is_refresh)
+		messageview_clear(summaryview->messageview);
 
 	summaryview->folder_item = item;
 	item->opened = TRUE;
@@ -1211,6 +1210,7 @@ void summary_clear_list(SummaryView *summaryview)
 
 void summary_clear_all(SummaryView *summaryview)
 {
+	messageview_clear(summaryview->messageview);
 	summary_clear_list(summaryview);
 	summary_set_menu_sensitive(summaryview);
 	toolbar_main_set_sensitive(summaryview->mainwin);
