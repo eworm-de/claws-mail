@@ -629,22 +629,13 @@ static gint news_get_article_cmd(NNTPSession *session, const gchar *cmd,
 
 static gint news_remove_msg(Folder *folder, FolderItem *item, gint num)
 {
-	MsgInfo * msginfo;
-	gchar * filename;
-	MsgFlags msgflags = { 0, 0 };
+	gchar * dir;
 	gint r;
 
-	filename = folder_item_fetch_msg(item, num);
-	if (filename == NULL)
-		return -1;
-
-	msginfo = procheader_parse_file(filename, msgflags, FALSE, FALSE);
-	if (msginfo == NULL)
-		return -1;
-
-	r = news_cancel_article(folder, msginfo);
-
-	procmsg_msginfo_free(msginfo);
+	dir = folder_item_get_path(item);
+	printf("removing %d in %s\n",num,dir);
+	r = remove_numbered_files(dir, num, num);
+	g_free(dir);
 
 	return r;
 }
