@@ -1270,7 +1270,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Get from all accounts", M_UNLOCKED},
 		{"/Message/Reply"                , M_SINGLE_TARGET_EXIST},
 		{"/Message/Reply to sender"      , M_SINGLE_TARGET_EXIST},
-                {"/Message/Folllow-up and reply to", M_SINGLE_TARGET_EXIST},
+                {"/Message/Follow-up and reply to", M_SINGLE_TARGET_EXIST},
 		{"/Message/Reply to all"         , M_SINGLE_TARGET_EXIST},
 		{"/Message/Forward"              , M_SINGLE_TARGET_EXIST},
 		{"/Message/Forward as attachment", M_SINGLE_TARGET_EXIST},

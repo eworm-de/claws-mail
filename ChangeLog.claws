@@ -5,6 +5,13 @@
 		(not working for user entered filename, but
 		 for default name and selected filename from
 		 file list)
+	* src/mainwindow.c
+		fixed wrong spelling "Folllow-up"
+	* src/mbox_folder.c
+	* src/procmsg.c
+	* src/summaryview.c
+		fixed new/unread message count with ignored
+		threads
 
 2001-08-24 [paul]
 

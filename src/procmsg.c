@@ -401,10 +401,8 @@ static void mark_sum_func(gpointer key, gpointer value, gpointer data)
 	MsgFlags *flags = value;
 	struct MarkSum *marksum = data;
 
-	/*if (MSG_IS_NEW(*flags) && !MSG_IS_IGNORE_THREAD(*flags)) (*marksum->new)++;*/
-        if (MSG_IS_NEW(*flags)) (*marksum->new)++;
-	/*if (MSG_IS_UNREAD(*flags) && !MSG_IS_IGNORE_THREAD(*flags)) (*marksum->unread)++;*/
-	if (MSG_IS_UNREAD(*flags)) (*marksum->unread)++;
+	if (MSG_IS_NEW(*flags) && !MSG_IS_IGNORE_THREAD(*flags)) (*marksum->new)++;
+	if (MSG_IS_UNREAD(*flags) && !MSG_IS_IGNORE_THREAD(*flags)) (*marksum->unread)++;
 	(*marksum->total)++;
 }
 

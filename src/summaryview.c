@@ -1910,8 +1910,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 			}
 			if(parent) {
 				parentinfo = gtk_ctree_node_get_row_data(ctree, parent);
-				if(parentinfo && MSG_IS_IGNORE_THREAD(parentinfo->flags)) {
-
+				if(!MSG_IS_IGNORE_THREAD(msginfo->flags) && parentinfo && MSG_IS_IGNORE_THREAD(parentinfo->flags)) {
 					if (MSG_IS_NEW(msginfo->flags))
 						summaryview->newmsgs--;
 					if (MSG_IS_UNREAD(msginfo->flags))
@@ -4137,7 +4136,7 @@ static void summary_ignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpoin
 	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
 
 	CHANGE_FLAGS(msginfo);
-		
+
 	summary_set_row_marks(summaryview, row);
 	debug_print(_("Message %d is marked as ignore thread\n"),
 	    msginfo->msgnum);
