@@ -1,6 +1,11 @@
+2002-03-14 [paul]	0.7.4claws5
+
+	* src/folderview.c
+		remove unnecessary curly brackets
+
 2002-03-14 [paul]	0.7.4claws4
 
-	* src/folderview
+	* src/folderview.c
 	  src/prefs_filtering.[ch]
 		add filter rename on folder rename and filter
 		delete on folder delete. Patch submitted by
