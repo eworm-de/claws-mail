@@ -1,3 +1,9 @@
+2003-02-22 [thorsten]	0.8.10claws43-2
+
+	* src/common/utils.c
+		fix: GetShortPathName to ease quoting in external commands
+		Thanks to Munesato Nakada
+
 2003-02-22 [thorsten]	0.8.10claws43-1
 
 	* src/mimeview.diff

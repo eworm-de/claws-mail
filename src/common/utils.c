@@ -2768,8 +2768,14 @@ gint execute_async(gchar *const argv[])
 
 	parsed_argv[0]=g_strdup_printf("\"%s\"",fullname);
 
-	for (n=1; argv[n]; n++)
-		parsed_argv[n]=g_strdup(argv[n]);
+	for (n=0; argv[n]; n++) {
+		gchar buf[BUFSIZ];
+		if (n) parsed_argv[n]=g_strdup(argv[n]);
+		if (GetShortPathName(argv[n], buf, sizeof(buf))){
+			g_free(argv[n]);
+			argv[n] = g_strdup(buf);
+		}
+	}
 
 	if (spawnvp(P_NOWAIT, fullname, parsed_argv) < 0) {
 		gchar *p_fullname = g_strdup_printf(_("Cannot execute\n%s"),fullname);
@@ -2828,8 +2834,14 @@ gint execute_sync(gchar *const argv[])
 
 	parsed_argv[0]=g_strdup_printf("\"%s\"",fullname);
 
-	for (n=1; argv[n]; n++)
-		parsed_argv[n]=g_strdup(argv[n]);
+	for (n=0; argv[n]; n++) {
+		gchar buf[BUFSIZ];
+		if (n) parsed_argv[n]=g_strdup(argv[n]);
+		if (GetShortPathName(argv[n], buf, sizeof(buf))){
+			g_free(argv[n]);
+			argv[n] = g_strdup(buf);
+		}
+	}
 
 	if (spawnvp(P_WAIT, fullname, parsed_argv) < 0) {
 		gchar *p_fullname = g_strdup_printf(_("Cannot execute\n%s"),fullname);
