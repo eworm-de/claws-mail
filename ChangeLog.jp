@@ -1,3 +1,29 @@
+2002-12-20
+
+	* src/codeconv.c: conv_encode_header(): 改行時の余分な空白の修正。
+	* src/compose.c: compose_convert_header(): 改行するために常に
+	  文字列を conv_encode_header() に渡すようにした。
+
+2002-12-20
+
+	* src/textview.c: textview_make_clickable_parts(): 誤った email
+	  アドレスのパースを修正。
+
+2002-12-19
+
+	* src/defs.h: DEFAULT_BROWSER_CMD を追加。
+	* src/mimeview.c: mimeview_view_file()
+	  src/prefs_common.c: prefs_other_create()
+	  src/utils.c: open_uri(): デフォルトの web ブラウザを mozilla に
+	  変更し、 'netscape -remote' 中の 'remote' コマンド(非公開)を
+	  'new-window' に変更。
+
+2002-12-19
+
+	* src/compose.c: compose_send_control_enter(): メッセージ/送信
+	  がアクセラレータキーを持っていない場合に Ctrl-Enter を押すと
+	  クラッシュする問題を修正(Sergey Vlasov さん thanks)。
+
 2002-12-18
 
 	* src/mainwindow.c:

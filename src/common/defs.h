@@ -74,6 +74,11 @@
 /* #define DEFAULT_INC_PATH	"/usr/bin/imget" */
 /* #define DEFAULT_INC_PROGRAM	"imget" */
 #define DEFAULT_SENDMAIL_CMD	"/usr/sbin/sendmail -t"
+#ifdef WIN32
+#define DEFAULT_BROWSER_CMD	"?p\\mozilla.org\\Mozilla\\mozilla.exe  -remote openURL "%s"
+#else
+#define DEFAULT_BROWSER_CMD	"mozilla -remote 'openURL(%s, new-window)'"
+#endif
 
 #ifdef _PATH_MAILDIR
 #  define DEFAULT_SPOOL_PATH	_PATH_MAILDIR

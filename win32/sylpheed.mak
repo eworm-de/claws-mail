@@ -1825,7 +1825,7 @@ SOURCE=..\src\gtk\gtksctree.c
 
 !ENDIF 
 
-SOURCE=..\src\gtkshruler.c
+SOURCE=..\src\gtk\gtkshruler.c
 
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 
@@ -2203,7 +2203,7 @@ SOURCE=..\src\mainwindow.c
 
 !ENDIF 
 
-SOURCE=..\src\manage_window.c
+SOURCE=..\src\gtk\manage_window.c
 
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 

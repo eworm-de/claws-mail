@@ -1,3 +1,35 @@
+2002-12-20 [christoph]	0.8.6claws121
+
+	* src/common/utils.c
+	* src/summaryview.c
+		reimplement expand_search_string using GString to
+		prevent crashs caused by miscalculated string
+		lengths reported by Paul
+
+2002-12-20 [christoph]	0.8.6claws120
+
+	* src/summaryview.c
+		don't use "changed" to check if op_count has to be changed as it
+		is also set when the message has unread children
+		(closes bug [ 653221 ] crash while deleting duplicates)
+
+2002-12-20 [paul]	0.8.6claws119
+
+	* sync with 0.8.6cvs27
+		see ChangeLog 2002-12-20
+
+2002-12-20 [paul]	0.8.6claws118
+
+	* sync with 0.8.6cvs26
+		see ChangeLog 2002-12-19 and 2002-12-20
+
+2002-12-19 [alfons]	0.8.6claws117
+
+	* src/textview.c
+		fix incorrect parsing of email addresses, submitted by 
+		Luke Plant (thanks!). Closes bug "[ 565480 ] duplicate 
+		name display if it contains @".
+
 2002-12-18 [paul]	0.8.6claws116
 
 	* sync with 0.8.6cvs23

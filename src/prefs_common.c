@@ -849,19 +849,16 @@ static PrefParam param[] = {
 	 &Xinterface.entry_pixmap_theme,	prefs_set_data_from_entry, prefs_set_entry},
 	
 	/* Other */
-#ifdef WIN32
-	{"uri_open_command", "\"?p\\netscape\\communicator\\program\\netscape\" -remote \"openURL(%s,raise)\"",
+	{"uri_open_command", DEFAULT_BROWSER_CMD,
 	 &prefs_common.uri_cmd, P_STRING,
 	 &other.uri_entry, prefs_set_data_from_entry, prefs_set_entry},
+#ifdef WIN32
 	{"print_command", "notepad /p \"%s\"", &prefs_common.print_cmd, P_STRING,
 	 &other.printcmd_entry, prefs_set_data_from_entry, prefs_set_entry},
 	{"ext_editor_command", "notepad \"%s\"",
 	 &prefs_common.ext_editor_cmd, P_STRING,
 	 &other.exteditor_entry, prefs_set_data_from_entry, prefs_set_entry},
 #else
-	{"uri_open_command", "netscape -remote 'openURL(%s,raise)'",
-	 &prefs_common.uri_cmd, P_STRING,
-	 &other.uri_entry, prefs_set_data_from_entry, prefs_set_entry},
 	{"print_command", "lpr %s", &prefs_common.print_cmd, P_STRING,
 	 &other.printcmd_entry, prefs_set_data_from_entry, prefs_set_entry},
 	{"ext_editor_command", "gedit %s",
@@ -3303,23 +3300,24 @@ static void prefs_other_create(void)
 	gtk_table_attach (GTK_TABLE (ext_table), uri_combo, 1, 2, 0, 1,
 			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtkut_combo_set_items (GTK_COMBO (uri_combo),
+			       DEFAULT_BROWSER_CMD,
 #ifdef WIN32
 			       "\"?p\\internet explorer\\iexplore\" \"%s\"",
 			       "\"?p\\netscape\\communicator\\program\\netscape\" -remote \"openURL(%s,raise)\"",
 			       "\"?p\\netscape\\communicator\\program\\netscape\" \"%s\"",
-			       "\"?p\\mozilla\\mozilla.exe\" \"%s\"",
 			       "\"?p\\k-meleon\\k-meleon.exe\" \"%s\"",
 #else
+			       "galeon --new-tab '%s'",
 			       "galeon '%s'",
 			       "mozilla -remote 'openurl(%s,new-window)'",
-			       "netscape -remote 'openURL(%s,raise)'",
+			       "netscape -remote 'openURL(%s, new-window)'",
 			       "netscape '%s'",
-#endif
-			       "gnome-moz-remote --raise --newwin '%s'",
+			       "gnome-moz-remote --newwin '%s'",
 			       "kfmclient openURL '%s'",
 			       "opera -newwindow '%s'",
 			       "kterm -e w3m '%s'",
 			       "kterm -e lynx '%s'",
+#endif
 			       NULL);
 	uri_entry = GTK_COMBO (uri_combo)->entry;
 

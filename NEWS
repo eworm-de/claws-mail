@@ -1,5 +1,21 @@
 Changes of Sylpheed
 
+* 0.8.7
+
+    * The extended regular expression has been supported on filtering.
+    * The option to resize images to fit the size of view has been added.
+    * The previous account is now restored on reediting draft messages.
+    * The routine of MIME header encoding has been rewritten completely,
+      and Q-encoding for single-byte locales has been also implemented.
+    * Strings beginning with "www." are now treated as URI.
+    * The default WWW browser has been changed to Mozilla.
+    * The common preferences dialog has been reorganized a bit.
+    * The remote command operation can be executed without X now.
+    * Code cleanups for the implementation of SMTP has been made.
+    * Autotools and libtool have been updated.
+    * A fix for font loading problem has been made.
+    * Other minor bugfixes have been made.
+
 * 0.8.6
 
     * Per-folder account setting has been implemented.

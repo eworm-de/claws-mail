@@ -2883,11 +2883,6 @@ void decode_uri(gchar *decoded_uri, const gchar *encoded_uri)
 
 gint open_uri(const gchar *uri, const gchar *cmdline)
 {
-#ifdef WIN32
-	static gchar *default_cmdline = "netscape -remote openURL(%s,raise)";
-#else
-	static gchar *default_cmdline = "netscape -remote openURL(\"%s\",raise)";
-#endif
 	gchar buf[BUFFSIZE];
 	gchar *p;
 	gchar encoded_uri[BUFFSIZE];
@@ -2921,11 +2916,7 @@ gint open_uri(const gchar *uri, const gchar *cmdline)
 		if (cmdline)
 			g_warning("Open URI command line is invalid: `%s'",
 				  cmdline);
-#ifdef WIN32
-		g_snprintf(buf, sizeof(buf), default_cmdline, enc_encoded_uri);
-#else
-		g_snprintf(buf, sizeof(buf), default_cmdline, encoded_uri);
-#endif
+		g_snprintf(buf, sizeof(buf), DEFAULT_BROWSER_CMD, encoded_uri);
 	}
 	
 	execute_command_line(buf, TRUE);
@@ -3198,10 +3189,11 @@ FILE *get_tmpfile_in_dir(const gchar *dir, gchar **filename)
 /* allow Mutt-like patterns in quick search */
 gchar *expand_search_string(const gchar *search_string)
 {
-	int i, len, new_len = 0;
+	int i = 0;
 	gchar term_char, save_char;
 	gchar *cmd_start, *cmd_end;
-	gchar *new_str = NULL;
+	GString *matcherstr;
+	gchar *returnstr = NULL;
 	gchar *copy_str;
 	gboolean casesens, dontmatch;
 	/* list of allowed pattern abbreviations */
@@ -3269,6 +3261,7 @@ gchar *expand_search_string(const gchar *search_string)
 	if (cmds[i].command)
 		return copy_str;
 
+	matcherstr = g_string_sized_new(16);
 	cmd_start = cmd_end = copy_str;
 	while (cmd_end && *cmd_end) {
 		/* skip all white spaces */
@@ -3304,26 +3297,15 @@ gchar *expand_search_string(const gchar *search_string)
 			if (!strcmp(cmd_start, cmds[i].abbreviated)) {
 				/* restore character */
 				*cmd_end = save_char;
-				len = strlen(cmds[i].command) + 1;
-				if (dontmatch)
-					len++;
-				if (casesens)
-					len++;
 
 				/* copy command */
-				if (new_str) {
-					new_len += 1;
-					new_str = g_realloc(new_str, new_len);
-					strcat(new_str, " ");
+				if (matcherstr->len > 0) {
+					g_string_append(matcherstr, " ");
 				}
-				new_len += (len + 1);
-				new_str = g_realloc(new_str, new_len);
-				if (new_len == len + 1)
-					*new_str = '\0';
 				if (dontmatch)
-					strcat(new_str, "~");
-				strcat(new_str, cmds[i].command);
-				strcat(new_str, " ");
+					g_string_append(matcherstr, "~");
+				g_string_append(matcherstr, cmds[i].command);
+				g_string_append(matcherstr, " ");
 
 				/* stop if no params required */
 				if (cmds[i].numparams == 0)
@@ -3352,33 +3334,23 @@ gchar *expand_search_string(const gchar *search_string)
 				save_char = *cmd_end;
 				*cmd_end = '\0';
 
-				new_len += strlen(cmd_start);
-
-				/* do we need to add regexpcase ? */
-				if (cmds[i].qualifier)
-					new_len += 10; /* "regexpcase " */
-
-				if (term_char != '"')
-					new_len += 2;
-				new_str = g_realloc(new_str, new_len);
-
 				if (cmds[i].qualifier) {
 					if (casesens)
-						strcat(new_str, "regexp ");
+						g_string_append(matcherstr, "regexp ");
 					else
-						strcat(new_str, "regexpcase ");
+						g_string_append(matcherstr, "regexpcase ");
 				}
 
 				/* do we need to add quotes ? */
 				if (cmds[i].quotes && term_char != '"')
-					strcat(new_str, "\"");
+					g_string_append(matcherstr, "\"");
 
 				/* copy actual parameter */
-				strcat(new_str, cmd_start);
+				g_string_append(matcherstr, cmd_start);
 
 				/* do we need to add quotes ? */
 				if (cmds[i].quotes && term_char != '"')
-					strcat(new_str, "\"");
+					g_string_append(matcherstr, "\"");
 
 				/* restore original character */
 				*cmd_end = save_char;
@@ -3394,7 +3366,9 @@ gchar *expand_search_string(const gchar *search_string)
 	}
 
 	g_free(copy_str);
-	return new_str;
+	returnstr = matcherstr->str;
+	g_string_free(matcherstr, FALSE);
+	return returnstr;
 }
 
 #ifdef WIN32

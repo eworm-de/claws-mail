@@ -1,3 +1,30 @@
+2002-12-20
+
+	* src/codeconv.c: conv_encode_header(): fix for redundant space on
+	  line-breaking.
+	* src/compose.c: compose_convert_header(): always pass string to
+	  conv_encode_header() for line-breaking.
+
+2002-12-20
+
+	* src/textview.c: textview_make_clickable_parts(): fixed incorrect
+	  parsing of email addresses.
+
+2002-12-19
+
+	* src/defs.h: added DEFAULT_BROWSER_CMD.
+	* src/mimeview.c: mimeview_view_file()
+	  src/prefs_common.c: prefs_other_create()
+	  src/utils.c: open_uri(): changed the default web browser to
+	  mozilla, and changed 'raise' command (which is undocumented)
+	  to 'new-window' in 'netscape -remote'.
+
+2002-12-19
+
+	* src/compose.c: compose_send_control_enter(): fixed crash on
+	  Ctrl-Enter when Message/Send has no accelerator key (thanks to
+	  Sergey Vlasov).
+
 2002-12-18
 
 	* src/mainwindow.c:
