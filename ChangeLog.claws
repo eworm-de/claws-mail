@@ -1,3 +1,8 @@
+2004-01-26 [paul]	0.9.8claws53
+
+	* sync with 0.9.8cvs7
+		see ChangeLog 2004-01-23
+
 2004-01-25 [alfons]	0.9.8claws52
 
 	* src/compose.c
