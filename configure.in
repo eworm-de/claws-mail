@@ -326,6 +326,7 @@ src/Makefile
 manual/Makefile
 manual/en/Makefile
 manual/ja/Makefile
+tools/Makefile
 ])
 
 dnl Output the configuration summary
