@@ -5902,9 +5902,9 @@ gtk_stext_update_text    (GtkEditable       *editable,
   GdkRectangle area;
   gint width;
   gint height;
-  
+
   /* Just ignore it if we haven't been size-allocated and realized yet */
-  if (text->line_start_cache == NULL) 
+  if (cache == NULL) 
     return;
 
   if (end_pos < 0)
