@@ -1,3 +1,8 @@
+2001-11-16 [paul]	0.6.5claws16
+
+	* sync with sylpheed 0.6.5cvs7
+        	see ChangeLog entries 2001-11-15 and 2001-11-16
+
 2001-11-15 [hoa]	0.6.5claws15
 
 	* src/compose.c

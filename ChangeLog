@@ -1,3 +1,24 @@
+2001-11-16
+
+	* src/compose.c: modified so that it sends message when any of
+	  To:, Cc:, Bcc:, or Newsgroups: fields have valid recipient.
+	  compose_check_for_valid_recipient(): new.
+
+2001-11-15
+
+	* src/news.[ch]: news_session_get(): update the last access time
+	  correctly.
+	  news_group_list_free(): new.
+	* src/grouplistdialog.c: free resources correctly.
+
+2001-11-15
+
+	* src/folderview.c
+	  src/grouplistdialog.[ch]: more merging of new newsgroup
+	  subscription dialog.
+	* src/news.[ch]: renamed news_remove_group_list() to
+	  news_remove_group_list_cache().
+
 2001-11-14
 
 	* src/defs.h: added MAX_ENTRY_LENGTH definition.

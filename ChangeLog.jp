@@ -1,3 +1,24 @@
+2001-11-16
+
+	* src/compose.c: To:, Cc:, Bcc:, Newsgroups: のどれかが有効な
+	  宛先を持っていればメッセージを送信するように修正。
+	  compose_check_for_valid_recipient(): 新規。
+
+2001-11-15
+
+	* src/news.c: news_session_get(): 最終アクセス時間を正しく更新する
+	  ようにした。
+	  news_group_list_free(): 新規。
+	* src/grouplistdialog.c: リソースを正しく解放するようにした。
+
+2001-11-15
+
+	* src/folderview.c
+	  src/grouplistdialog.[ch]: 新ニュースグループ購読ダイアログの
+	  さらなるマージ。
+	* src/news.[ch]: news_remove_group_list() を
+	  news_remove_group_list_cache() に名称変更。
+
 2001-11-14
 
 	* src/defs.h: MAX_ENTRY_LENGTH の定義を追加。

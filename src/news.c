@@ -81,8 +81,6 @@ static GSList *news_delete_old_articles	 (GSList	*alist,
 					  gint		 first);
 static void news_delete_all_articles	 (FolderItem	*item);
 
-static void news_group_list_free(GSList * list);
-
 
 static Session *news_session_new(const gchar *server, gushort port,
 				 const gchar *userid, const gchar *passwd)
@@ -112,7 +110,6 @@ static Session *news_session_new(const gchar *server, gushort port,
 	SESSION(session)->last_access_time = time(NULL);
 	SESSION(session)->data             = NULL;
 	session->group = NULL;
-	session->group_list = NULL;
 
 	return SESSION(session);
 }
@@ -122,9 +119,6 @@ void news_session_destroy(NNTPSession *session)
 	nntp_close(session->nntp_sock);
 	session->nntp_sock = NULL;
 	SESSION(session)->sock = NULL;
-
-	news_group_list_free(session->group_list);
-	session->group_list = NULL;
 
 	g_free(session->group);
 }
@@ -171,40 +165,38 @@ static Session *news_session_new_for_folder(Folder *folder)
 
 NNTPSession *news_session_get(Folder *folder)
 {
-	NNTPSession *session;
+	RemoteFolder *rfolder = REMOTE_FOLDER(folder);
 
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(folder->type == F_NEWS, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
 
-	if (!REMOTE_FOLDER(folder)->session) {
-		REMOTE_FOLDER(folder)->session =
-			news_session_new_for_folder(folder);
+	if (!rfolder->session) {
+		rfolder->session = news_session_new_for_folder(folder);
 		statusbar_pop_all();
-		return NNTP_SESSION(REMOTE_FOLDER(folder)->session);
+		return NNTP_SESSION(rfolder->session);
 	}
 
-	session = NNTP_SESSION(REMOTE_FOLDER(folder)->session);
-
-	if (time(NULL) - SESSION(session)->last_access_time < SESSION_TIMEOUT) {
-		SESSION(session)->last_access_time = time(NULL);
+	if (time(NULL) - rfolder->session->last_access_time < SESSION_TIMEOUT) {
+		rfolder->session->last_access_time = time(NULL);
 		statusbar_pop_all();
-		return session;
+		return NNTP_SESSION(rfolder->session);
 	}
 
-	if (nntp_mode(session->nntp_sock, FALSE) != NN_SUCCESS) {
+	if (nntp_mode(NNTP_SESSION(rfolder->session)->nntp_sock, FALSE)
+	    != NN_SUCCESS) {
 		log_warning(_("NNTP connection to %s:%d has been"
 			      " disconnected. Reconnecting...\n"),
 			    folder->account->nntp_server,
 			    folder->account->set_nntpport ?
 			    folder->account->nntpport : NNTP_PORT);
-		session_destroy(REMOTE_FOLDER(folder)->session);
-		REMOTE_FOLDER(folder)->session =
-			news_session_new_for_folder(folder);
+		session_destroy(rfolder->session);
+		rfolder->session = news_session_new_for_folder(folder);
 	}
 
+	rfolder->session->last_access_time = time(NULL);
 	statusbar_pop_all();
-	return NNTP_SESSION(REMOTE_FOLDER(folder)->session);
+	return NNTP_SESSION(rfolder->session);
 }
 
 GSList *news_get_article_list(Folder *folder, FolderItem *item,
@@ -303,39 +295,30 @@ void news_scan_group(Folder *folder, FolderItem *item)
 {
 }
 
-static struct NNTPGroupInfo * group_info_new(gchar * name,
-					     gint first, gint last,
-					     gchar type)
+static NewsGroupInfo *news_group_info_new(const gchar *name,
+					  gint first, gint last, gchar type)
 {
-	struct NNTPGroupInfo * info;
+	NewsGroupInfo *ginfo;
 
-	info = g_new(struct NNTPGroupInfo, 1);
-	if (info == NULL)
-		return NULL;
-	info->name = g_strdup(name);
-	info->first = first;
-	info->last = last;
-	info->type = type;
+	ginfo = g_new(NewsGroupInfo, 1);
+	ginfo->name = g_strdup(name);
+	ginfo->first = first;
+	ginfo->last = last;
+	ginfo->type = type;
 
-	return info;
+	return ginfo;
 }
 
-static void group_info_free(struct NNTPGroupInfo * info)
+static void news_group_info_free(NewsGroupInfo *ginfo)
 {
-  g_free(info->name);
-  g_free(info);
+	g_free(ginfo->name);
+	g_free(ginfo);
 }
 
-static void news_group_list_free(GSList * list)
+static gint news_group_info_compare(NewsGroupInfo *ginfo1,
+				    NewsGroupInfo *ginfo2)
 {
-  g_slist_foreach(list, (GFunc) group_info_free, NULL);
-  g_slist_free(list);
-}
-
-gint news_group_info_compare(struct NNTPGroupInfo * info1,
-			     struct NNTPGroupInfo * info2)
-{
-  return g_strcasecmp(info1->name, info2->name);
+	return g_strcasecmp(ginfo1->name, ginfo2->name);
 }
 
 GSList *news_get_group_list(Folder *folder)
@@ -345,7 +328,6 @@ GSList *news_get_group_list(Folder *folder)
 	GSList *list = NULL;
 	GSList *last = NULL;
 	gchar buf[NNTPBUFSIZE];
-	NNTPSession *session;
 
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(folder->type == F_NEWS, NULL);
@@ -356,18 +338,15 @@ GSList *news_get_group_list(Folder *folder)
 	filename = g_strconcat(path, G_DIR_SEPARATOR_S, NEWSGROUP_LIST, NULL);
 	g_free(path);
 
-	session = news_session_get(folder);
-	if (!session) {
-		g_free(filename);
-		return NULL;
-	}
-
-	if (session->group_list) {
-		g_free(filename);
-		return session->group_list;
-	}
-
 	if ((fp = fopen(filename, "r")) == NULL) {
+		NNTPSession *session;
+
+		session = news_session_get(folder);
+		if (!session) {
+			g_free(filename);
+			return NULL;
+		}
+
 		if (nntp_list(session->nntp_sock) != NN_SUCCESS) {
 			g_free(filename);
 			statusbar_pop_all();
@@ -388,48 +367,28 @@ GSList *news_get_group_list(Folder *folder)
 	}
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		gchar * p;
-		gchar * cur;
-		gchar * name;
-		gint last_article;
-		gint first_article;
+		gchar *p = buf;
+		gchar *name;
+		gint last_num;
+		gint first_num;
 		gchar type;
-		struct NNTPGroupInfo * info;
+		NewsGroupInfo *ginfo;
 
-		cur = buf;
-		p = strchr(cur, ' ');
-		if (p == NULL)
+		p = strchr(p, ' ');
+		if (!p) continue;
+		*p = '\0';
+		p++;
+		name = buf;
+
+		if (sscanf(p, "%d %d %c", &last_num, &first_num, &type) < 3)
 			continue;
-		* p = 0;
 
-		name = cur;
-		
-		cur = p + 1;
-		p = strchr(cur, ' ');
-		if (p == NULL)
-			continue;
-		* p = 0;
-		last_article = atoi(cur);
-
-		cur = p + 1;
-		p = strchr(cur, ' ');
-		if (p == NULL)
-			continue;
-		* p = 0;
-		first_article = atoi(cur);
-
-		cur = p + 1;
-		type = * cur;
-
-		info = group_info_new(name, first_article,
-				      last_article, type);
-		if (info == NULL)
-			continue;
+		ginfo = news_group_info_new(name, first_num, last_num, type);
 
 		if (!last)
-			last = list = g_slist_append(NULL, info);
+			last = list = g_slist_append(NULL, ginfo);
 		else {
-			last = g_slist_append(last, info);
+			last = g_slist_append(last, ginfo);
 			last = last->next;
 		}
 	}
@@ -437,29 +396,30 @@ GSList *news_get_group_list(Folder *folder)
 	fclose(fp);
 	g_free(filename);
 
-	list = g_slist_sort(list, (GCompareFunc) news_group_info_compare);
-
-	session->group_list = list;
+	list = g_slist_sort(list, (GCompareFunc)news_group_info_compare);
 
 	statusbar_pop_all();
 
 	return list;
 }
 
-void news_cancel_group_list_cache(Folder *folder)
+void news_group_list_free(GSList *group_list)
+{
+	GSList *cur;
+
+	if (!group_list) return;
+
+	for (cur = group_list; cur != NULL; cur = cur->next)
+		news_group_info_free((NewsGroupInfo *)cur->data);
+	g_slist_free(group_list);
+}
+
+void news_remove_group_list_cache(Folder *folder)
 {
 	gchar *path, *filename;
-	NNTPSession *session;
 
 	g_return_if_fail(folder != NULL);
 	g_return_if_fail(folder->type == F_NEWS);
-
-	session = news_session_get(folder);
-	if (!session)
-		return;
-
-	news_group_list_free(session->group_list);
-	session->group_list = NULL;
 
 	path = folder_item_get_path(FOLDER_ITEM(folder->node->data));
 	filename = g_strconcat(path, G_DIR_SEPARATOR_S, NEWSGROUP_LIST, NULL);

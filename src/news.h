@@ -27,6 +27,7 @@
 #include "nntp.h"
 
 typedef struct _NNTPSession	NNTPSession;
+typedef struct _NewsGroupInfo	NewsGroupInfo;
 
 #define NNTP_SESSION(obj)	((NNTPSession *)obj)
 
@@ -36,17 +37,15 @@ struct _NNTPSession
 
 	NNTPSockInfo *nntp_sock;
 	gchar *group;
-	
-	GSList * group_list;
 };
 
-struct NNTPGroupInfo {
-	gint first;
-	gint last;
-	gchar * name;
+struct _NewsGroupInfo
+{
+	gchar *name;
+	gchar first;
+	gchar last;
 	gchar type;
 };
-
 
 void news_session_destroy		(NNTPSession	*session);
 NNTPSession *news_session_get		(Folder		*folder);
@@ -62,12 +61,10 @@ void news_scan_group			(Folder		*folder,
 					 FolderItem	*item);
 
 GSList *news_get_group_list		(Folder		*folder);
-void news_cancel_group_list_cache	(Folder		*folder);
+void news_group_list_free		(GSList		*group_list);
+void news_remove_group_list_cache	(Folder		*folder);
 
 gint news_post				(Folder		*folder,
 					 const gchar	*file);
-
-gint news_group_info_compare(struct NNTPGroupInfo * info1,
-			     struct NNTPGroupInfo * info2);
 
 #endif /* __NEWS_H__ */
