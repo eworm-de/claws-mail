@@ -587,7 +587,7 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 			return FALSE; /* ERR: selection string but no text */
 	}
 
-	if (GTK_EDITABLE(text)->has_selection) {
+	if (text) {
 		start = GTK_EDITABLE(text)->selection_start_pos;
 		end   = GTK_EDITABLE(text)->selection_end_pos;
 		if (start > end) {
