@@ -132,6 +132,7 @@ static AddressInterface *addrindex_create_interface( gint type, gchar *name, gch
 	iface->getListFolder = NULL;
 	iface->getListPerson = NULL;
 	iface->getAllPersons = NULL;
+	iface->getAllGroups  = NULL;
 	iface->getName       = NULL;
 	iface->listSource = NULL;
 	return iface;
@@ -1854,6 +1855,22 @@ GList *addrindex_ds_get_all_persons( AddressDataSource *ds ) {
 	if( iface == NULL ) return retVal;
 	if( iface->getAllPersons ) {
 		retVal = ( iface->getAllPersons ) ( ds->rawDataSource );
+	}
+	return retVal;
+}
+
+/*
+ * Return list of all groups for specified data source.
+ */
+GList *addrindex_ds_get_all_groups( AddressDataSource *ds ) {
+	GList *retVal = NULL;
+	AddressInterface *iface;
+
+	if( ds == NULL ) return retVal;
+	iface = ds->interface;
+	if( iface == NULL ) return retVal;
+	if( iface->getAllGroups ) {
+		retVal = ( iface->getAllGroups ) ( ds->rawDataSource );
 	}
 	return retVal;
 }

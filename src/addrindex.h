@@ -77,6 +77,7 @@ struct _AddressInterface {
 	GList *(*getListFolder)( void * );
 	GList *(*getListPerson)( void * );
 	GList *(*getAllPersons)( void * );
+	GList *(*getAllGroups)( void * );
 	gchar *(*getName) ( void * );
 	void (*setAccessFlag)( void *, void * );
 };
@@ -89,37 +90,38 @@ struct _AddressDataSource {
 	gpointer rawDataSource;
 };
 
-AddressIndex *addrindex_create_index();
-void addrindex_set_file_path( AddressIndex *addrIndex, const gchar *value );
-void addrindex_set_file_name( AddressIndex *addrIndex, const gchar *value );
-void addrindex_set_dirty( AddressIndex *addrIndex, const gboolean value );
-GList *addrindex_get_interface_list( AddressIndex *addrIndex );
-void addrindex_free_index( AddressIndex *addrIndex );
-void addrindex_print_index( AddressIndex *addrIndex, FILE *stream );
+AddressIndex *addrindex_create_index	();
+void addrindex_set_file_path		( AddressIndex *addrIndex, const gchar *value );
+void addrindex_set_file_name		( AddressIndex *addrIndex, const gchar *value );
+void addrindex_set_dirty		( AddressIndex *addrIndex, const gboolean value );
+GList *addrindex_get_interface_list	( AddressIndex *addrIndex );
+void addrindex_free_index		( AddressIndex *addrIndex );
+void addrindex_print_index		( AddressIndex *addrIndex, FILE *stream );
 
-AddressInterface *addrindex_get_interface( AddressIndex *addrIndex, AddressIfType ifType );
-AddressDataSource *addrindex_index_add_datasource( AddressIndex *addrIndex, AddressIfType ifType, gpointer dataSource );
-AddressDataSource *addrindex_index_remove_datasource( AddressIndex *addrIndex, AddressDataSource *dataSource );
-void addrindex_free_datasource( AddressIndex *addrIndex, AddressDataSource *ds );
+AddressInterface *addrindex_get_interface		( AddressIndex *addrIndex, AddressIfType ifType );
+AddressDataSource *addrindex_index_add_datasource	( AddressIndex *addrIndex, AddressIfType ifType, gpointer dataSource );
+AddressDataSource *addrindex_index_remove_datasource	( AddressIndex *addrIndex, AddressDataSource *dataSource );
+void addrindex_free_datasource		( AddressIndex *addrIndex, AddressDataSource *ds );
 
-gint addrindex_read_data( AddressIndex *addrIndex );
-gint addrindex_write_to( AddressIndex *addrIndex, const gchar *newFile );
-gint addrindex_save_data( AddressIndex *addrIndex );
-gint addrindex_create_new_books( AddressIndex *addrIndex );
-gint addrindex_save_all_books( AddressIndex *addrIndex );
+gint addrindex_read_data		( AddressIndex *addrIndex );
+gint addrindex_write_to			( AddressIndex *addrIndex, const gchar *newFile );
+gint addrindex_save_data		( AddressIndex *addrIndex );
+gint addrindex_create_new_books		( AddressIndex *addrIndex );
+gint addrindex_save_all_books		( AddressIndex *addrIndex );
 
-gboolean addrindex_ds_get_modify_flag( AddressDataSource *ds );
-gboolean addrindex_ds_get_access_flag( AddressDataSource *ds );
-gboolean addrindex_ds_get_read_flag( AddressDataSource *ds );
-gint addrindex_ds_get_status_code( AddressDataSource *ds );
-gint addrindex_ds_read_data( AddressDataSource *ds );
+gboolean addrindex_ds_get_modify_flag	( AddressDataSource *ds );
+gboolean addrindex_ds_get_access_flag	( AddressDataSource *ds );
+gboolean addrindex_ds_get_read_flag	( AddressDataSource *ds );
+gint addrindex_ds_get_status_code	( AddressDataSource *ds );
+gint addrindex_ds_read_data		( AddressDataSource *ds );
 ItemFolder *addrindex_ds_get_root_folder( AddressDataSource *ds );
-GList *addrindex_ds_get_list_folder( AddressDataSource *ds );
-GList *addrindex_ds_get_list_person( AddressDataSource *ds );
-gchar *addrindex_ds_get_name( AddressDataSource *ds );
-void addrindex_ds_set_access_flag( AddressDataSource *ds, gboolean *value );
-gboolean addrindex_ds_get_readonly( AddressDataSource *ds );
-GList *addrindex_ds_get_all_persons( AddressDataSource *ds );
+GList *addrindex_ds_get_list_folder	( AddressDataSource *ds );
+GList *addrindex_ds_get_list_person	( AddressDataSource *ds );
+gchar *addrindex_ds_get_name		( AddressDataSource *ds );
+void addrindex_ds_set_access_flag	( AddressDataSource *ds, gboolean *value );
+gboolean addrindex_ds_get_readonly	( AddressDataSource *ds );
+GList *addrindex_ds_get_all_persons	( AddressDataSource *ds );
+GList *addrindex_ds_get_all_groups	( AddressDataSource *ds );
 
 #endif /* __ADDRINDEX_H__ */
 

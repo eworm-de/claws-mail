@@ -1020,7 +1020,7 @@ ItemFolder *addrcache_find_root_folder( ItemFolder *folder ) {
 }
 
 /*
-* Get all person visitor function.
+* Get all persons visitor function.
 */
 static void addrcache_get_all_persons_vis( gpointer key, gpointer value, gpointer data ) {
 	AddrItemObject *obj = ( AddrItemObject * ) value;
@@ -1044,6 +1044,36 @@ GList *addrcache_get_all_persons( AddressCache *cache ) {
 
 	cache->tempList = NULL;
 	g_hash_table_foreach( cache->itemHash, addrcache_get_all_persons_vis, cache );
+	list = cache->tempList;
+	cache->tempList = NULL;
+	return list;
+}
+
+/*
+* Get all groups visitor function.
+*/
+static void addrcache_get_all_groups_vis( gpointer key, gpointer value, gpointer data ) {
+	AddrItemObject *obj = ( AddrItemObject * ) value;
+
+	if( ADDRITEM_TYPE(obj) == ITEMTYPE_GROUP ) {
+		AddressCache *cache = data;
+		cache->tempList = g_list_append( cache->tempList, obj );
+	}
+}
+
+/*
+* Return link list of all groups in address cache.  Note that the list contains
+* references to items. Do *NOT* attempt to use the addrcache_free_xxx() functions...
+* this will destroy the address cache data!
+* Return: List of items, or NULL if none.
+*/
+GList *addrcache_get_all_groups( AddressCache *cache ) {
+	GList *list = NULL;
+
+	g_return_val_if_fail( cache != NULL, NULL );
+
+	cache->tempList = NULL;
+	g_hash_table_foreach( cache->itemHash, addrcache_get_all_groups_vis, cache );
 	list = cache->tempList;
 	cache->tempList = NULL;
 	return list;
