@@ -15,3 +15,4 @@
 ( cvs diff -u -r 1.7 -r 1.8 src/gtk/quicksearch.c; cvs diff -u -r 1.429 -r 1.430 src/compose.c; cvs diff -u -r 1.6 -r 1.7 src/customheader.c; cvs diff -u -r 1.119 -r 1.120 src/messageview.c; cvs diff -u -r 1.115 -r 1.116 src/news.c; cvs diff -u -r 1.113 -r 1.114 src/prefs_account.c; cvs diff -u -r 1.17 -r 1.18 src/prefs_display_header.c; cvs diff -u -r 1.57 -r 1.58 src/procheader.c; ) > 0.9.12cvs26.patchset
 ( cvs diff -u -r 1.120 -r 1.121 src/mimeview.c; ) > 0.9.12cvs27.patchset
 ( cvs diff -u -r 1.121 -r 1.123 src/mimeview.c; ) > 0.9.12cvs28.patchset
+( cvs diff -u -r 1.105 -r 1.106 src/folder.h; cvs diff -u -r 1.242 -r 1.243 src/folderview.c; cvs diff -u -r 1.438 -r 1.439 src/summaryview.c; ) > 0.9.12cvs29.patchset

@@ -114,6 +114,7 @@ typedef enum
 	F_ITEM_UPDATE_ADDMSG = 1 << 2,
 	F_ITEM_UPDATE_REMOVEMSG = 1 << 3,
 	F_ITEM_UPDATE_NAME = 1 << 4,
+	F_ITEM_UPDATE_ICON = 1 << 5
 } FolderItemUpdateFlags;
 
 typedef void (*FolderUIFunc)		(Folder		*folder,

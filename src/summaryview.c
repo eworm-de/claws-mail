@@ -4375,8 +4375,14 @@ static gint summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 static void quicksearch_execute_cb(QuickSearch *quicksearch, gpointer data)
 {
 	SummaryView *summaryview = data;
+	FolderItemUpdateData source;
 
 	summary_show(summaryview, summaryview->folder_item);
+		    
+	source.item = summaryview->folder_item;
+	source.update_flags = F_ITEM_UPDATE_ICON;
+	hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &source);				
+
 }
 
 static void tog_searchbar_cb(GtkWidget *w, gpointer data)
