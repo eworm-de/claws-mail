@@ -1,14 +1,19 @@
-2003-02-27 [thorsten]	0.8.10claws108-1
+2003-03-13 [thorsten]	0.8.11claws10-1
+
+	* src/headerview.c
+		fix: all strings in headerview contained "from" field
+
+2003-03-12 [thorsten]	0.8.10claws108-1
 
 	* win32/utils/sylpheed-setup.iss.in
 		fix: version number in install script
 
-2003-02-27 [thorsten]	0.8.10claws99-1
+2003-03-08 [thorsten]	0.8.10claws99-1
 
 	* src/prefs_actions.c
 		fix: action output not displayed in output window
 
-2003-02-27 [thorsten]	0.8.10claws95-1
+2003-03-07 [thorsten]	0.8.10claws95-1
 
 	* src/codeconv.c
 		fix: use iconv rather than conv_latintodisp (fix euro symbol)

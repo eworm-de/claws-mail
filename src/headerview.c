@@ -191,7 +191,7 @@ void headerview_show(HeaderView *headerview, MsgInfo *msginfo)
 		Xstrdup_a(str, msginfo->to, return);
 		conv_unreadable_locale(str);
 #ifdef WIN32
-		Xlocale_to_utf8_a(str, msginfo->from, return);
+		Xlocale_to_utf8_a(str, msginfo->to, return);
 #endif
 		gtk_label_set_text(GTK_LABEL(headerview->to_body_label), str);
 		gtk_widget_show(headerview->to_header_label);
@@ -201,7 +201,7 @@ void headerview_show(HeaderView *headerview, MsgInfo *msginfo)
 		Xstrdup_a(str, msginfo->newsgroups, return);
 		conv_unreadable_locale(str);
 #ifdef WIN32
-		Xlocale_to_utf8_a(str, msginfo->from, return);
+		Xlocale_to_utf8_a(str, msginfo->newsgroups, return);
 #endif
 		gtk_label_set_text(GTK_LABEL(headerview->ng_body_label), str);
 		gtk_widget_show(headerview->ng_header_label);
@@ -211,7 +211,7 @@ void headerview_show(HeaderView *headerview, MsgInfo *msginfo)
 		Xstrdup_a(str, msginfo->subject, return);
 		conv_unreadable_locale(str);
 #ifdef WIN32
-		Xlocale_to_utf8_a(str, msginfo->from, return);
+		Xlocale_to_utf8_a(str, msginfo->subject, return);
 #endif
 	} else
 		str = NULL;
