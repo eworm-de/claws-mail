@@ -1,3 +1,9 @@
+2002-08-06 [oliver]	0.8.1claws28
+
+	* src/toolbar.c
+	* src/prefs_toolbar.c
+		fixed empty toolbar issue
+
 2002-08-06 [oliver]	0.8.1claws27
 
 	* Custom Toolbar Final 

@@ -368,8 +368,6 @@ void toolbar_save_config_file ()
 			g_warning(_("failed to write toolbar configuration to file\n"));
 	} else
 		g_warning(_("failed to open toolbar configuration file for writing\n"));
-	
-	toolbar_clear_list();
 }
 
 void toolbar_clear_list()

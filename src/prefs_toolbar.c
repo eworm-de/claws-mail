@@ -290,6 +290,7 @@ static void prefs_toolbar_save(void)
 	}
 	
 	toolbar_save_config_file ();
+	toolbar_clear_list ();
 	
 	main_window_reflect_prefs_all_real(TRUE);
 }
