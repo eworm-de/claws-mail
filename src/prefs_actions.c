@@ -1205,14 +1205,15 @@ static gboolean execute_actions(gchar *action, GtkWidget *window,
 
 		for (cur = children_list; cur; cur = cur->next) {
 			child_info = (ChildInfo *) cur->data;
-			child_info->tag_status = 
-				gdk_input_add(child_info->chld_status,
-					      GDK_INPUT_READ,
-					      catch_status, child_info);
+			if (child_info) 
+				child_info->tag_status = 
+					gdk_input_add(child_info->chld_status,
+						      GDK_INPUT_READ,
+						      catch_status, child_info);
 		}
+		
+		create_io_dialog(children);
 	}
-
-	create_io_dialog(children);
 
 	return is_ok;
 }
@@ -1414,11 +1415,15 @@ static void kill_children_cb(GtkWidget *widget, gpointer data)
 	Children *children = (Children *) data;
 	ChildInfo *child_info;
 
+	g_return_if_fail(data);
+
 	for (cur = children->list; cur; cur = cur->next) {
-		child_info = (ChildInfo *)(cur->data);
-		debug_print(_("Killing child group id %d\n"), child_info->pid);
-		if (child_info->pid && kill(-child_info->pid, SIGTERM) < 0)
-			perror("kill");
+		child_info = (ChildInfo *) (cur->data);
+		if (child_info) {
+			debug_print(_("Killing child group id %d\n"), child_info->pid);
+			if (child_info->pid && kill(-child_info->pid, SIGTERM) < 0)
+				perror("kill");
+		}				
 	}
 }
 
@@ -1436,9 +1441,11 @@ static gint wait_for_children(gpointer data)
 	new_output = FALSE;
 	while (cur) {
 		child_info = (ChildInfo *)cur->data;
-		if (child_info->pid)
-			children->nb++;
-		new_output |= child_info->new_out;
+		if (child_info) {
+			if (child_info->pid)
+				children->nb++;
+			new_output |= child_info->new_out;
+		}			
 		cur = cur->next;
 	}
 
@@ -1481,6 +1488,8 @@ static void hide_io_dialog_cb(GtkWidget *w, gpointer data)
 
 	Children *children = (Children *)data;
 
+	g_return_if_fail(children);
+
 	if (!children->nb) {
 		gtk_signal_disconnect_by_data(GTK_OBJECT(children->dialog),
 					      children);
@@ -1513,11 +1522,15 @@ static void free_children(Children *children)
 	g_free(children->action);
 	for (cur = children->list; cur;) {
 		child_info = (ChildInfo *)cur->data;
-		g_free(child_info->cmd);
-		g_string_free(child_info->output, TRUE);
-		children->list = g_slist_remove(children->list, child_info);
-		g_free(child_info);
-		cur = children->list;
+		if (child_info) {
+			g_free(child_info->cmd);
+			g_string_free(child_info->output, TRUE);
+			children->list = g_slist_remove(children->list, child_info);
+			g_free(child_info);
+			cur = children->list;
+		} else {
+			break; /* ??? */
+		}
 	}
 	g_free(children);
 }
@@ -1547,21 +1560,23 @@ static void update_io_dialog(Children *children)
 					gtk_text_get_length(GTK_TEXT(text)));
 		for (cur = children->list; cur; cur = cur->next) {
 			child_info = (ChildInfo *)cur->data;
-			if (child_info->pid)
-				caption = g_strdup_printf
-					(_("--- Running: %s\n"),
-					 child_info->cmd);
-			else
-				caption = g_strdup_printf
-					(_("--- Ended: %s\n"),
-					 child_info->cmd);
+			if (child_info) {
+				if (child_info->pid)
+					caption = g_strdup_printf
+						(_("--- Running: %s\n"),
+						 child_info->cmd);
+				else
+					caption = g_strdup_printf
+						(_("--- Ended: %s\n"),
+						 child_info->cmd);
 
-			gtk_text_insert(GTK_TEXT(text), NULL, NULL, NULL,
-					caption, -1);
-			gtk_text_insert(GTK_TEXT(text), NULL, NULL, NULL,
-					child_info->output->str, -1);
-			g_free(caption);
-			child_info->new_out = FALSE;
+				gtk_text_insert(GTK_TEXT(text), NULL, NULL, NULL,
+						caption, -1);
+				gtk_text_insert(GTK_TEXT(text), NULL, NULL, NULL,
+						child_info->output->str, -1);
+				g_free(caption);
+				child_info->new_out = FALSE;
+			}	
 		}
 		gtk_text_thaw(GTK_TEXT(text));
 	}
