@@ -60,6 +60,8 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	debug_print("Creating notice view...\n");
 	noticeview = g_new0(NoticeView, 1);
 
+	noticeview->window = mainwin->window;
+	
 	vbox = gtk_vbox_new(FALSE, 4);
 	gtk_widget_show(vbox);
 	hsep = gtk_hseparator_new();
@@ -69,7 +71,7 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	gtk_widget_show(hbox);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
 
-	icon = stock_pixmap_widget(mainwin->window, STOCK_PIXMAP_NOTICE_WARN); 
+	icon = stock_pixmap_widget(noticeview->window, STOCK_PIXMAP_NOTICE_WARN); 
 #if 0
 	/* also possible... */
 	icon = gtk_pixmap_new(NULL, NULL);
@@ -157,4 +159,15 @@ static void noticeview_button_pressed(GtkButton *button, NoticeView *noticeview)
 	if (noticeview->press) {
 		noticeview->press(noticeview, noticeview->user_data);
 	}
+}
+
+void noticeview_set_icon(NoticeView *noticeview, StockPixmap icon)
+{
+	GdkPixmap *pixmap;
+	GdkBitmap *bitmap;
+	
+	if (stock_pixmap_gdk(noticeview->window, icon, &pixmap, &bitmap) < 0)
+		return;
+	
+	gtk_pixmap_set(noticeview->icon, pixmap, bitmap);
 }

@@ -1,3 +1,9 @@
+2003-10-17 [christoph]  0.9.6claws33
+
+	* src/mimeview.c
+	* src/noticeview.[ch]
+		change noticeview icon to indicate signature status
+
 2003-10-17 [christoph]  0.9.6claws32
 
 	* src/Makefile.am

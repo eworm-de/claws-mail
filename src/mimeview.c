@@ -623,24 +623,32 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo)
 	if (privacy_mimeinfo_is_signed(mimeinfo)) {
 		gchar *text = NULL, *button_text = NULL;
 		GtkSignalFunc func = NULL;
-
+		StockPixmap icon;
+		
 		switch (privacy_mimeinfo_get_sig_status(mimeinfo)) {
 		case SIGNATURE_UNCHECKED:
 			text = _("This part of the message has been signed");
 			button_text = _("Check");
 			func = check_signature_cb;
+			icon = STOCK_PIXMAP_MIME_GPG_SIGNED;
 			break;
 		case SIGNATURE_OK:
+			text = _("Signature is ok");
+			icon = STOCK_PIXMAP_MIME_GPG_PASSED;
+			break;
 		case SIGNATURE_WARN:
 			text = _("Signature is ok");
+			icon = STOCK_PIXMAP_NOTICE_WARN;
 			break;
 		case SIGNATURE_INVALID:
 			text = _("The signature of this part is invalid");
+			icon = STOCK_PIXMAP_MIME_GPG_FAILED;
 			break;
 		case SIGNATURE_CHECK_FAILED:
 			text = _("Checking the signature failed");
 			button_text = _("Check again");
 			func = check_signature_cb;
+			icon = STOCK_PIXMAP_MIME_GPG_UNKNOWN;
 		default:
 			break;
 		}
@@ -650,6 +658,7 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo)
 			mimeview->siginfoview,
 			func,
 			(gpointer) mimeview);
+		noticeview_set_icon(mimeview->siginfoview, icon);
 		noticeview_show(mimeview->siginfoview);
 	} else {
 		noticeview_hide(mimeview->siginfoview);
