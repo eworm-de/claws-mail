@@ -1,3 +1,24 @@
+2003-11-04 [luke]	0.9.6claws67
+        * src/mimeview.c
+                o  fixed bug 4 "focus lost on messages with attachments"
+                o  fixed 'Save all' attachments for new mime changes
+                o  right clicking on icons consistent with right clicking on
+                   mime tree
+                  - fixes a bug where wrong part is saved when you
+                    choose 'Save as' from popup menu
+                  - fixes bug 308 "No way to "save all" attachments"
+                o  fixed a compiler warning.
+
+        * src/textview.c
+                o  removed flickering in mime tree when using "n" and "p"
+                   shortcuts
+                o  fixed bug where selecting the textview and pressing e.g.
+		   'y' causes sylpheed to respond twice.
+
+        * src/summaryview.c
+                removed hard coding of * and ! shortcuts (which only served
+                to cause problems if you tried to redefine the shortcuts)
+
 2003-11-04 [luke]	0.9.6claws66
         * src/plugins/image_viewer/viewer.c
 	* src/plugins/image_viewer/viewerprefs.c
