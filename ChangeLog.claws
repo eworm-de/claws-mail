@@ -1,9 +1,19 @@
+2003-02-20 [christoph]	0.8.10claws35
+
+	* src/imap.c
+		IMAP UID fetch speedup using SEARCH
+
+	Patch submitted by Simon 'corecode' Schubert <corecode@corecode.ath.cx>
+
+	* src/imap.c
+		fix problem with UIDs in IMAP UID cache that no longer existed
+
 2003-02-20 [christoph]	0.8.10claws34
 
 	* src/imap.c
 	* src/procheader.c
 	* src/procheader.h
-		IMAP header fetch speedup
+		IMAP header fetch speedup (fetch only headers cached in MsgInfo)
 
 	Patch submitted by Simon 'corecode' Schubert <corecode@corecode.ath.cx>
 

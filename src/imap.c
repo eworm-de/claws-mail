@@ -3415,10 +3415,13 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 {
 	IMAPFolderItem *item = (IMAPFolderItem *)_item;
 	IMAPSession *session;
-	gint ok, i, lastuid_old, nummsgs = 0, exists, resent, unseen, uid_val;
+	gint ok, lastuid_old, nummsgs = 0, exists, resent, unseen, uid_val;
+	gint msgnum;
 	GPtrArray *argbuf;
 	gchar *cmdbuf = NULL;
 	gchar *dir;
+	gchar *uidlist;
+	gchar **p, **list;
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(item != NULL, -1);
@@ -3438,11 +3441,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 		return 0;
 
 	argbuf = g_ptr_array_new();
-	if(item->lastuid) {
-		cmdbuf = g_strdup_printf("UID FETCH %d:* (UID)", (item->lastuid + 1));
-	} else {
-		cmdbuf = g_strdup("UID SEARCH ALL");
-	}
+	cmdbuf = g_strdup_printf("UID SEARCH UID %d:*", item->lastuid + 1);
 	imap_cmd_gen_send(SESSION(session)->sock, cmdbuf);
 	g_free(cmdbuf);
 	ok = imap_cmd_ok(SESSION(session)->sock, argbuf);
@@ -3455,35 +3454,33 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 	lastuid_old = item->lastuid;
 	*msgnum_list = g_slist_copy(item->uid_list);
 	debug_print("Got %d uids from cache\n", g_slist_length(item->uid_list));
-	for(i = 0; i < argbuf->len; i++) {
-		int ret, msgidx, msgnum;
 
-		if (!strncmp(g_ptr_array_index(argbuf, i), "SEARCH ", 7)) {
-			gchar **p, **list = g_strsplit(g_ptr_array_index(argbuf, i) + 7, " ", 0);
+	if ((uidlist = search_array_str(argbuf, "SEARCH ")) != NULL) {
+		list = g_strsplit(uidlist + 7, " ", 0);
+		for (p = list; *p != NULL; ++p) {
+			if (sscanf(*p, "%d", &msgnum) == 1 && msgnum > lastuid_old) {
+				*msgnum_list = g_slist_prepend(*msgnum_list, GINT_TO_POINTER(msgnum));
+				item->uid_list = g_slist_prepend(item->uid_list, GINT_TO_POINTER(msgnum));
+				nummsgs++;
 
-			for (p = list; *p != NULL; ++p)
-				if (sscanf(*p, "%d", &msgnum) == 1 && msgnum > lastuid_old) {
-					*msgnum_list = g_slist_prepend(*msgnum_list, GINT_TO_POINTER(msgnum));
-					item->uid_list = g_slist_prepend(item->uid_list, GINT_TO_POINTER(msgnum));
-					nummsgs++;
-		
-					if(msgnum > item->lastuid)
-						item->lastuid = msgnum;
-				}
-
-			g_strfreev(list);
-				
-		} else if((ret = sscanf(g_ptr_array_index(argbuf, i),
-				"%d FETCH (UID %d)", &msgidx, &msgnum)) == 2 &&
-				msgnum > lastuid_old) {
-			*msgnum_list = g_slist_prepend(*msgnum_list, GINT_TO_POINTER(msgnum));
-			item->uid_list = g_slist_prepend(item->uid_list, GINT_TO_POINTER(msgnum));
-			nummsgs++;
-
-			if(msgnum > item->lastuid)
-				item->lastuid = msgnum;
+				if(msgnum > item->lastuid)
+					item->lastuid = msgnum;
+			}	
 		}
-		
+		g_strfreev(list);
+	}
+
+	if (g_slist_length(item->uid_list) != exists) {
+		/* Cache contains more messages then folder, we have cached
+                   an old UID of a message that was removed */
+		debug_print("Freeing imap uid cache");
+		item->lastuid = 0;
+		g_slist_free(item->uid_list);
+		item->uid_list = NULL;
+
+		g_slist_free(*msgnum_list);
+
+		return imap_get_num_list(folder, _item, msgnum_list);
 	}
 
 	dir = folder_item_get_path((FolderItem *)item);
