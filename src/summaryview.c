@@ -571,6 +571,9 @@ SummaryView *summary_create(void)
 			   summaryview);
 
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(search_type_opt), search_type);
+	
+	gtk_option_menu_set_history(GTK_OPTION_MENU(search_type_opt), prefs_common.summary_quicksearch_type);
+	
 	gtk_widget_show(search_type);
 	
 	search_string = gtk_entry_new();
@@ -4674,6 +4677,10 @@ static void summary_searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 static void summary_searchtype_changed(GtkMenuItem *widget, gpointer data)
 {
 	SummaryView *sw = (SummaryView *)data;
+	prefs_common.summary_quicksearch_type = GPOINTER_TO_INT(gtk_object_get_user_data(
+				   GTK_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
+				   GTK_MENU(sw->search_type))))));
+
 	if (gtk_entry_get_text(GTK_ENTRY(sw->search_string)))
 	 	summary_show(sw, sw->folder_item);
 }

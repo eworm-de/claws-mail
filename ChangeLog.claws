@@ -1,3 +1,10 @@
+2002-12-11 [colin]       0.8.6claws99
+
+	* src/prefs_common.[ch]
+		Add summary_quicksearch_type
+	* src/summaryview.c
+		Save last used quicksearch type
+
 2002-12-11 [jens]       0.8.6claws98
 	* src/prefs_filtering.c
 	* src/prefs_matcher.c
