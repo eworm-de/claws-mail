@@ -1,11 +1,9 @@
-src/about.c
 src/account.c
 src/addressadd.c
 src/addressbook.c
 src/addrgather.c
 src/addrindex.c
 src/alertpanel.c
-src/colorlabel.c
 src/common/intl.h
 src/common/md5.c
 src/common/nntp.c
@@ -28,6 +26,8 @@ src/folder.c
 src/foldersel.c
 src/folderview.c
 src/grouplistdialog.c
+src/gtk/about.c
+src/gtk/colorlabel.c
 src/gtk/gtkutils.c
 src/gtk/pluginwindow.c
 src/gtk/prefswindow.c
