@@ -11,6 +11,7 @@
 		0 to tell the folder system it was appened but the UID is
 		unknown. Folder system now get's the UID by scaning the folder
 		and searching the cache for the Message-ID
+		(closes bug #29 Messages queued, but not sent)
 
 2001-01-25 [paul]	0.8.9claws1
 
@@ -117,6 +118,7 @@
 
 	* src/procmsg.c
 		fix infinite loop in procmsg_find_children
+		(closes bug #25 sylpheed crashes on delete.)
 
 	Patch submitted by Ivan F. Martinez <ivanfm@users.sourceforge.net>
 
@@ -709,6 +711,7 @@
 
 	* src/procmsg.c
 		update save folder after adding the sent message
+		(closes bug #6 Folder View doesn't refresh for "Sent"-messages)
 
 2003-01-02 [christoph]	0.8.8claws42
 
