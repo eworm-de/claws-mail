@@ -30,3 +30,4 @@
 ( cvs diff -u -r 1.2.2.19 -r 1.2.2.20 src/action.c; ) > 1.0.0cvs23.2.patchset
 ( cvs diff -u -r 1.2.2.20 -r 1.2.2.21 src/action.c; cvs diff -u -r 1.1.2.50 -r 1.1.2.51 src/common/utils.c; cvs diff -u -r 1.1.2.29 -r 1.1.2.30 src/common/utils.h; ) > 1.0.0cvs23.3.patchset
 ( cvs diff -u -r 1.1.2.51 -r 1.1.2.52 src/common/utils.c; cvs diff -u -r 1.1.2.30 -r 1.1.2.31 src/common/utils.h; ) > 1.0.0cvs23.4.patchset
+( cvs diff -u -r 1.892.2.250 -r 1.892.2.251 ChangeLog.claws; cvs diff -u -r 1.159.2.13 -r 1.159.2.14 PATCHSETS; cvs diff -u -r 1.13.2.122 -r 1.13.2.123 configure.ac; cvs diff -u -r 1.198.2.145 -r 1.198.2.146 src/compose.c; cvs diff -u -r 1.36.2.54 -r 1.36.2.55 src/messageview.c; cvs diff -u -r 1.2.2.1 -r 1.2.2.2 src/partial_download.c; cvs diff -u -r 1.5.2.10 -r 1.5.2.11 src/common/plugin.c; ) > 1.0.0cvs28.1.patchset

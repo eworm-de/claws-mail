@@ -1,3 +1,14 @@
+2005-02-05 [thorsten]	1.0.0cvs28.1
+
+	* ChangeLog.claws
+	* PATCHSETS
+	* configure.ac
+	* src/compose.c
+	* src/messageview.c
+	* src/partial_download.c
+	* src/common/plugin.c
+		sync 1.0.0cvs28
+
 2005-01-30 [thorsten]	1.0.0cvs23.4
 
 	* src/common/utils.c

@@ -1370,7 +1370,7 @@ static void reply_cb(gpointer data, guint action, GtkWidget *widget)
 
 	msginfo_list = g_slist_append(msginfo_list, messageview->msginfo);
 	compose_reply_from_messageview(messageview, msginfo_list, action);
-	g_list_free(msginfo_list);
+	g_slist_free(msginfo_list);
 }
 
 static void reedit_cb(gpointer data, guint action, GtkWidget *widget)

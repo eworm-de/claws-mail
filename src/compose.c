@@ -1395,7 +1395,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 
 	gtk_widget_grab_focus(compose->header_last->entry);
 
-	filename = procmsg_get_message_file(msginfo);
+	filename = procmsg_get_message_file_path(msginfo);
 	if (filename == NULL)
 		return NULL;
 
@@ -1447,10 +1447,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	menu_set_sensitive(ifactory, "/Message/Attach file", FALSE);
 	menu_set_sensitive(ifactory, "/Message/Insert signature", FALSE);
 	menu_set_sensitive(ifactory, "/Edit", FALSE);
-	menu_set_sensitive(ifactory, "/Options/Sign", FALSE);
-	menu_set_sensitive(ifactory, "/Options/Encrypt", FALSE);
-	menu_set_sensitive(ifactory, "/Options/Priority", FALSE);
-	menu_set_sensitive(ifactory, "/Options/Request Return Receipt", FALSE);
+	menu_set_sensitive(ifactory, "/Options", FALSE);
 	menu_set_sensitive(ifactory, "/Tools/Show ruler", FALSE);
 	menu_set_sensitive(ifactory, "/Tools/Actions", FALSE);
 	
@@ -3165,11 +3162,11 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 
 #endif
 
-	if (account->default_sign)
+	if (account->default_sign && compose->mode != COMPOSE_REDIRECT)
 		menu_set_active(ifactory, "/Options/Sign", TRUE);
 	else
 		menu_set_active(ifactory, "/Options/Sign", FALSE);
-	if (account->default_encrypt)
+	if (account->default_encrypt && compose->mode != COMPOSE_REDIRECT)
 		menu_set_active(ifactory, "/Options/Encrypt", TRUE);
 	else
 		menu_set_active(ifactory, "/Options/Encrypt", FALSE);
@@ -7335,7 +7332,8 @@ void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list,
 {
 	gchar *body;
 	GSList *new_msglist = NULL;
-	
+	MsgInfo *tmp_msginfo = NULL;
+
 	g_return_if_fail(msgview != NULL);
 
 	g_return_if_fail(msginfo_list != NULL);
@@ -7347,7 +7345,7 @@ void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list,
  		if (mimeinfo != NULL && mimeinfo->type == MIMETYPE_MESSAGE && 
  		    !g_strcasecmp(mimeinfo->subtype, "rfc822")) {
  	    		
- 			MsgInfo *tmp_msginfo = procmsg_msginfo_new_from_mimeinfo(
+ 			tmp_msginfo = procmsg_msginfo_new_from_mimeinfo(
  						orig_msginfo, mimeinfo);
  			if (tmp_msginfo != NULL) {
  				new_msglist = g_slist_append(NULL, tmp_msginfo);
@@ -7359,6 +7357,7 @@ void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list,
 
 	if (new_msglist) {
 		compose_reply_mode((ComposeMode)action, new_msglist, body);
+		procmsg_msginfo_free(tmp_msginfo);
 		g_slist_free(new_msglist);
 	} else
 		compose_reply_mode((ComposeMode)action, msginfo_list, body);

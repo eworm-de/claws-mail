@@ -1,3 +1,31 @@
+2005-02-05 [paul]	1.0.0cvs28
+
+	* src/compose.c
+		fix Bug 682 'redirect is broken'
+
+
+2005-02-05 [thorsten]	1.0.0cvs27
+
+	* src/partial_download.c
+		fix buf overflow
+
+2005-02-03 [colin]	1.0.0cvs26
+
+	* src/common/plugin.c
+		Don't load GTK2 plugins at all. This solves
+		the plugins problem when switching between
+		GTK1 and GTK2 version.
+
+2005-02-02 [colin]	1.0.0cvs25
+
+	* src/messageview.c
+		Fix dangerous typo
+
+2005-01-31 [colin]	1.0.0cvs24
+
+	* src/compose.c
+		Fix MsgInfo reference leak
+
 2005-01-28 [colin]	1.0.0cvs23
 
 	* src/folderview.c
