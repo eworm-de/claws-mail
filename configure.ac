@@ -461,15 +461,6 @@ if test x"$ac_cv_enable_spamassassin_plugin" = xyes; then
 fi
 AM_CONDITIONAL(BUILD_SPAMASSASSIN_PLUGIN, test x"$ac_cv_enable_spamassassin_plugin" = xyes)
 
-dnl --- PGP/MIME ---
-AC_ARG_ENABLE(pgpmime-plugin,
-	[  --disable-pgpmime-plugin           Do not build PGP/MIME plugin],
-	[ac_cv_enable_pgpmime_plugin=$enableval], [ac_cv_enable_pgpmime_plugin=yes])
-if test x"$ac_cv_enable_gpgme" = xyes -a x"$ac_cv_enable_pgpmime_plugin" = xyes; then
-	PLUGINS="pgpmime $PLUGINS"
-fi
-AM_CONDITIONAL(BUILD_PGPMIME_PLUGIN, test x"$ac_cv_enable_pgpmime_plugin" = xyes)
-
 dnl --- MathML Viewer ---
 AC_ARG_ENABLE(mathml-viewer-plugin,
 	[  --disable-mathml-viewer-plugin    Do not build MathML-Viewer plugin],
@@ -579,7 +570,6 @@ src/plugins/image_viewer/Makefile
 src/plugins/trayicon/Makefile
 src/plugins/trayicon/libeggtrayicon/Makefile
 src/plugins/clamav/Makefile
-src/plugins/pgpmime/Makefile
 doc/Makefile
 doc/faq/Makefile
 doc/faq/de/Makefile
