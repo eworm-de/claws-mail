@@ -199,6 +199,8 @@ static void compose_reedit_set_entry		(Compose	*compose,
 static void compose_insert_sig			(Compose	*compose);
 static void compose_insert_file			(Compose	*compose,
 						 const gchar	*file);
+static void compose_insert_command_output	(Compose	*compose,
+						 const gchar	*cmdline);
 static void compose_attach_append		(Compose	*compose,
 						 const gchar	*file,
 						 const gchar	*type,
@@ -1787,59 +1789,28 @@ static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 #undef SET_ENTRY
 #undef SET_ADDRESS
 
-static void compose_exec_sig(Compose *compose, gchar *sigfile)
-{
-	FILE  *sigprg;
-	gchar  *buf;
-	size_t buf_len = 128;
- 
-	if (strlen(sigfile) < 2)
-	  return;
- 
-	sigprg = popen(sigfile+1, "r");
-	if (sigprg) {
-
-		buf = g_malloc(buf_len);
-
-		if (!buf) {
-			gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL, \
-			"Unable to insert signature (malloc failed)\n", -1);
-
-			pclose(sigprg);
-			return;
-		}
-
-		while (!feof(sigprg)) {
-			bzero(buf, buf_len);
-			fread(buf, buf_len-1, 1, sigprg);
-			gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL, buf, -1);
-		}
-
-		g_free(buf);
-		pclose(sigprg);
-	}
-	else
-	{
-		gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL, \
-		"Can't exec file: ", -1);
-		gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL, \
-		sigfile+1, -1);
-	}
-}
-
 static void compose_insert_sig(Compose *compose)
 {
-	gchar *sigfile;
+	static gchar *default_sigfile;
+	gchar *sigfile = NULL;
 
-	if (compose->account && compose->account->sig_path)
-		sigfile = g_strdup(compose->account->sig_path);
-	else
-		sigfile = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
-				      DEFAULT_SIGNATURE, NULL);
+	g_return_if_fail(compose->account != NULL);
 
-	if (!is_file_or_fifo_exist(sigfile) && sigfile[0] != '|') {
-		g_free(sigfile);
-		return;
+	if (compose->account->sig_type == SIG_FILE) {
+		if (compose->account->sig_path)
+			sigfile = compose->account->sig_path;
+		else {
+			if (!default_sigfile)
+				default_sigfile = g_strconcat
+					(get_home_dir(), G_DIR_SEPARATOR_S,
+					 DEFAULT_SIGNATURE, NULL);
+			sigfile = default_sigfile;
+		}
+
+		if (!is_file_or_fifo_exist(sigfile)) {
+			g_warning("can't open signature file: %s\n", sigfile);
+			return;
+		}
 	}
 
 	gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL, "\n\n", 2);
@@ -1850,11 +1821,12 @@ static void compose_insert_sig(Compose *compose)
 				"\n", 1);
 	}
 
-	if (sigfile[0] == '|')
-		compose_exec_sig(compose, sigfile);
-	else
+	if (compose->account->sig_type == SIG_COMMAND) {
+		if (compose->account->sig_path)
+			compose_insert_command_output
+				(compose, compose->account->sig_path);
+	} else
 		compose_insert_file(compose, sigfile);
-	g_free(sigfile);
 }
 
 static void compose_insert_file(Compose *compose, const gchar *file)
@@ -1888,6 +1860,38 @@ static void compose_insert_file(Compose *compose, const gchar *file)
 	gtk_stext_thaw(text);
 
 	fclose(fp);
+}
+
+static void compose_insert_command_output(Compose *compose,
+					  const gchar *cmdline)
+{
+	GtkSText *text = GTK_STEXT(compose->text);
+	gchar buf[BUFFSIZE];
+	gint len;
+	FILE *fp;
+
+	g_return_if_fail(cmdline != NULL);
+
+	if ((fp = popen(cmdline, "r")) == NULL) {
+		FILE_OP_ERROR(cmdline, "popen");
+		return;
+	}
+
+	gtk_stext_freeze(text);
+
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		strcrchomp(buf);
+		len = strlen(buf);
+		if (len > 0 && buf[len - 1] != '\n') {
+			while (--len >= 0)
+				if (buf[len] == '\r') buf[len] = '\n';
+		}
+		gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
+	}
+
+	gtk_stext_thaw(text);
+
+	pclose(fp);
 }
 
 static void compose_attach_append(Compose *compose, const gchar *file,
