@@ -147,22 +147,24 @@ INCLUDES= \
 	-I$(SRCDIR) \
 	-I$(SRCDIR)/common \
 	-I$(SRCDIR)/gtk \
-	-I$(LIBJCONVDIR) \
 	-I$(INCLUDEDIR) \
 	-I$(GLIBDIR) \
 	-I$(GTKDIR) \
 	-I$(GDKDIR) \
 	-I$(GLIBLIBINCDIR) \
 	-I$(GTKLIBINCDIR) \
+	-I$(W32LIBDIR)/src \
+
+APP_INCLUDES= \
 	-I$(FNMATCHDIR)/src/posix \
 	-I$(GPGMEDIR)/gpgme \
 	-I$(LIBCOMPFACEDIR)/src \
 	-I$(OPENSSLDIR)/src \
 	-I$(REGEXDIR)/src \
-	-I$(W32LIBDIR)/src \
 	-I$(LIBJCONVDIR)
 
-CFLAGS=$(FLAGS) $(DEFINES) $(INCLUDES)
+CFLAGS=$(FLAGS) $(DEFINES) $(INCLUDES) $(APP_INCLUDES)
+PLUGIN_CFLAGS=$(FLAGS) $(DEFINES) $(INCLUDES)
 
 LIBS= \
 	$(LIBDIR)/glib-2.0.lib \
@@ -342,15 +344,13 @@ translation: $(MOFILES)
 
 ### plugins
 
-PLGDEFINES=-DHAVE_CONFIG_H -D_FINDDATA_T_DEFINED
-PLGINCLUDE=-I. -I../src/common -I../../../include/glib-2.0 -I../../../lib/glib-2.0/include -I../../w32lib/src
-
 ### spamassassin
 
 spamassassin.o:	spamassassin.c spamassassin.h
 libspamc.o:	libspamc.c libspamc.h
 #utils.o:	utils.c utils.h
 libspamc_utils.o:	libspamc_utils.c $(SRCDIR)/plugins/spamassassin/utils.h
+	$(CC) $(PLUGIN_CFLAGS) -c -o $@ $<
 libspamc_utils.c: libspamc_utils.h
 	cp $(SRCDIR)/plugins/spamassassin/utils.c $@
 libspamc_utils.h:
@@ -372,7 +372,7 @@ spamassassin.dll: libspamc_utils.c $(spamassassin_OBJECTS)
 	#-rm $@.def $@.base $@.exp $@.lib junk.tmp
 	#$(CC) -shared $? $(APPNAME).dll -lwsock32 /dev/lib/libglib-2.0.dll.a -o $@
 spamassassin_clean:
-	-rm $(spamassassin_OBJECTS) libspamc_utils.c libspamc_utils.o
+	-rm $(spamassassin_OBJECTS) libspamc_utils.c libspamc_utils.h libspamc_utils.o
 
 ### spamassassin (gui)
 
@@ -384,9 +384,9 @@ spamassassin_gtk_OBJECTS = \
 
 spamassassin_gtk.dll: $(spamassassin_gtk_OBJECTS)
 	dlltool -D $@ -z $@.def --export-all-symbols --exclude-symbols WinMain@16 $(spamassassin_gtk_OBJECTS)
-	$(CC) -mdll $(CFLAGS) -o junk.tmp -Wl,--base-file,$@.base $(spamassassin_gtk_OBJECTS) $(spamassassin_gtk_LIBS)
+	$(CC) -mdll $(PLUGIN_CFLAGS) -o junk.tmp -Wl,--base-file,$@.base $(spamassassin_gtk_OBJECTS) $(spamassassin_gtk_LIBS)
 	dlltool --dllname $@ --base-file $@.base --output-exp $@.exp --def $@.def
-	$(CC) -mdll $(CFLAGS) -o $@ $(spamassassin_gtk_OBJECTS) -Wl,$@.exp $(spamassassin_gtk_LIBS)
+	$(CC) -mdll $(PLUGIN_CFLAGS) -o $@ $(spamassassin_gtk_OBJECTS) -Wl,$@.exp $(spamassassin_gtk_LIBS)
 	-rm $@.base $@.exp $@.lib junk.tmp
 	#$(CC) -shared $? $(APPNAME).dll spamassassin.dll $(LIBDIR)/intl.lib /dev/lib/libglib-2.0.dll.a /dev/lib/libgtk.dll.a -o $@
 spamassassin_gtk_clean:
@@ -402,9 +402,9 @@ demo_OBJECTS = \
 
 demo.dll:	$(demo_OBJECTS)
 	dlltool -D $@ -z $@.def --export-all-symbols --exclude-symbols WinMain@16 $(demo_OBJECTS)
-	$(CC) -mdll $(CFLAGS) -o junk.tmp -Wl,--base-file,$@.base $(demo_OBJECTS) $(demo_LIBS)
+	$(CC) -mdll $(PLUGIN_CFLAGS) -o junk.tmp -Wl,--base-file,$@.base $(demo_OBJECTS) $(demo_LIBS)
 	dlltool --dllname $@ --base-file $@.base --output-exp $@.exp --def $@.def
-	$(CC) -mdll $(CFLAGS) -o $@ $(demo_OBJECTS) -Wl,$@.exp $(demo_LIBS)
+	$(CC) -mdll $(PLUGIN_CFLAGS) -o $@ $(demo_OBJECTS) -Wl,$@.exp $(demo_LIBS)
 	-rm $@.base $@.exp $@.lib junk.tmp
 	#$(CC) -shared demo.o $(APPNAME).dll /dev/lib/libglib-2.0.dll.a -o $@
 demo_clean:

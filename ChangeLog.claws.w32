@@ -1,3 +1,10 @@
+2003-02-18 [thorsten]	0.8.10claws18-1
+
+	* win32/Makefile
+	  win32/spamassassin[_d].dsp
+	  win32/spamassassin_gtk[_d].dsp
+	  	fix: spamassassin plugin included gpgme's io.h
+
 2003-02-09 [thorsten]	0.8.9claws50-1
 
 	* src/news.c
