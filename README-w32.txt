@@ -30,21 +30,21 @@ All packages (except MS IPv6 package) are mirrored at the Sylpheed-Claws
 homepage. Please refer to the link section below.
 
 * Sylpheed sourcecode:
-    sylpheed-sources            (075claws17_snapshot_020511.zip or cvs checkout)
+    sylpheed-sources            (sylpheed-0.9.4claws-w32-src.tar.bz2 or cvs checkout)
 * Gtk+ libraries:
-    glib-dev                    (glib-dev-2.0.0-20020310.zip)
-    gtk+-dev                    (gtk+-dev-1.3.0-20020310.zip)
-    libiconv-dev                (libiconv-dev-1.7.zip)
-    libintl                     (libintl-0.10.40-20020101.zip)
+    glib-dev                    (glib-dev-2.2.2.zip)
+    gtk+-dev                    (gtk+-dev-1.3.0-20030115.zip)
+    libiconv                    (libiconv-1.9.1.bin.woe32.zip)
+    gettext                     (gettext-runtime-0.12.1.bin.woe32.zip)
     gtk missing headers         (gtk+-1.3.0-20030115-win32-includes.zip)
 * Support libraries:
     libjconv                    (libjconv-2.8.1.tar.gz)
-    fnmatch                     (fnmatch-dev-20020306.lzh)
-    libcompface                 (libcompface-dev-20020306.lzh)
-    regex                       (regex-dev-20020306.lzh)
-    w32lib                      (w32lib-dev-20020921.zip)
+    fnmatch                     (fnmatch-dev-2003.8.25.0.zip)
+    libcompface                 (libcompface-dev-1.4.0.0.zip)
+    regex                       (regex-dev-0.12.0.0.zip)
+    w32lib                      (w32lib-dev-2003.8.25.0.zip)
     gpgme                       (gpgme-dev-20020921.zip)
-    openssl                     (claws_w32_ssl_dev_020415.zip)
+    openssl                     (claws_w32_ssl_dev_030904.zip)
     libcrypt                    (crypt-2.2.5-lib.zip)
     pthreads                    (pthreads-2002-11-04.exe)
 * unix build tools (diff,patch,msgfmt,grep,sed,bison,flex,cvs)
@@ -55,7 +55,7 @@ homepage. Please refer to the link section below.
 --------------------------
 
   1. Create \dev.
-  2. Extract glib-dev, gtk+-dev, libiconv-dev, libintl, libcrypt,
+  2. Extract glib-dev, gtk+-dev, libiconv, gettext, libcrypt,
      pthreads directly into \dev (this creates \dev\lib, \dev\include, etc.).
   3. Extract or checkout the sources into \dev\lib\proj\sylpheed-claws.
   4. Extract fnmatch, libcompface, regex, w32lib to \dev\proj
