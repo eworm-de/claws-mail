@@ -11,9 +11,10 @@ Please note, that these ports are in a very early development state:
  !        PLEASE USE THESE PROGRAMS ONLY FOR TESTING OR DEVELOPMENT          !
  !            IF YOU USE THESE PROGRAMS, BE SURE TO MAKE BACKUPS             !
 
-The main part of porting Sylpheed to Windows was done by Munesato Nakada
+The first port of Sylpheed for Win32 was done by Werner Koch <wk@gnupg.org>
+(author of GnuPG). Later Sylpheed versions are maintained by by Munesato Nakada
 <munesato@post.co.jp>. This english installation help and the Sylpheed-Claws
-port are derived from his work by Thorsten Maerz <torte@netztorte.de>.
+port are derived from their work by Thorsten Maerz <info@netztorte.de>
 
 
 1. Sylpheed-Claws Win32 branch:
