@@ -299,8 +299,8 @@ do_final(MD5_CONTEXT *hd)
 
 	p = hd->buf;
 #ifdef BIG_ENDIAN_HOST
-#define X(a) do { *p++ = hd->##a      ; *p++ = hd->##a >> 8;      \
-		  *p++ = hd->##a >> 16; *p++ = hd->##a >> 24; } while(0)
+#define X(a) do { *p++ = hd->a      ; *p++ = hd->a >> 8;      \
+		  *p++ = hd->a >> 16; *p++ = hd->a >> 24; } while(0)
 #else /* little endian */
 	/*#define X(a) do { *(u32*)p = hd->##a ; p += 4; } while(0)*/
 	/* Unixware's cpp doesn't like the above construct so we do it his way:

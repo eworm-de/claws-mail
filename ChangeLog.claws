@@ -1,3 +1,9 @@
+2003-02-17 [paul]       0.8.10claws18
+
+        * src/common/md5.c
+		fixed a compile problem with gcc 3.3
+		works on 2.95.3 too (testet on PPC as it is big endian)
+
 2003-02-17 [paul]	0.8.10claws17
 
 	* sync with 0.8.10cvs13
