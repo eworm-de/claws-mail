@@ -1,3 +1,8 @@
+2002-11-01 [paul]	0.8.5claws66
+
+	* tools/filter_conv.pl
+		fix bug where user-defined headers were ignored
+
 2002-11-01 [paul]	0.8.5claws65
 
 	* src/logwindow.c
