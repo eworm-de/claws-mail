@@ -1908,6 +1908,9 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 				if (event->button == 1 && textview->last_buttonpress != GDK_2BUTTON_PRESS) {
 #endif
 					if (textview->messageview->mainwin) {
+#ifdef WIN32
+						gchar *p_uri=g_locale_to_utf8(uri->uri, -1, NULL, NULL, NULL);
+#endif
 						if (textview->show_url_msgid) {
 						  	gtk_timeout_remove(textview->show_url_timeout_tag);
 							gtk_statusbar_remove(GTK_STATUSBAR(
@@ -1919,9 +1922,16 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 						textview->show_url_msgid = gtk_statusbar_push(
 								GTK_STATUSBAR(textview->messageview->mainwin->statusbar),
 								textview->messageview->mainwin->folderview_cid,
+#ifdef WIN32
+								p_uri);
+#else
 								uri->uri);
+#endif
 						textview->show_url_timeout_tag = gtk_timeout_add( 4000, show_url_timeout_cb, textview );
 						gtkut_widget_wait_for_draw(textview->messageview->mainwin->hbox_stat);
+#ifdef WIN32
+						g_free(p_uri);
+#endif
 					}
 				} else
 				if (!g_strncasecmp(uri->uri, "mailto:", 7)) {
@@ -1940,6 +1950,10 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 						extract_address(fromaddress);
 						g_message("adding from textview %s <%s>", fromname, fromaddress);
 						/* Add to address book - Match */
+#ifdef WIN32
+						locale_to_utf8(&fromname);
+						locale_to_utf8(&fromaddress);
+#endif
 						addressbook_add_contact( fromname, fromaddress, NULL );
 						
 						g_free(fromaddress);

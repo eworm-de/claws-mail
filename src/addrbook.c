@@ -978,7 +978,7 @@ static void addrbook_write_attr(FILE *fp, gchar *name, gchar *value)
 		gchar *p_value;
 		p_value = g_strdup(value);
 		locale_from_utf8(&p_value);
-		xml_file_put_escape_str(fp, value);
+		xml_file_put_escape_str(fp, p_value);
 		g_free(p_value);
 	}
 #else

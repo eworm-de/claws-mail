@@ -1,3 +1,13 @@
+2003-04-13 [thorsten]	0.8.11claws85-1
+
+	* src/addrbook.c
+	  src/addressbook.c
+		fix: locale chars in addressbook
+	* src/compose.c
+	  src/summaryview.c
+	  src/textview.c
+		fix: locale chars in email adresses
+
 2003-04-12 [thorsten]	0.8.11claws73-1
 
 	* src/common/session.c

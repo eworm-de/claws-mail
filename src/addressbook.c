@@ -1143,6 +1143,9 @@ static void addressbook_to_clicked(GtkButton *button, gpointer data)
 
 	/* Nothing selected, but maybe there is something in text entry */
 	addr = gtk_entry_get_text( GTK_ENTRY( addrbook.entry) );
+#ifdef WIN32
+	locale_from_utf8(&addr);
+#endif
 	if ( addr ) {
 		compose_entry_append(
 			compose, addr, (ComposeEntryType)data );
@@ -1158,6 +1161,9 @@ static void addressbook_to_clicked(GtkButton *button, gpointer data)
 		if( aio->type == ADDR_ITEM_PERSON ||
 		    aio->type == ADDR_ITEM_EMAIL ) {
 			addr = addressbook_format_address( aio );
+#ifdef WIN32
+			locale_from_utf8(&addr);
+#endif
 			compose_entry_append(
 				compose, addr, (ComposeEntryType) data );
 			g_free( addr );
@@ -1170,6 +1176,9 @@ static void addressbook_to_clicked(GtkButton *button, gpointer data)
 
 				addr = addressbook_format_address(
 						( AddrItemObject * ) email );
+#ifdef WIN32
+				locale_from_utf8(&addr);
+#endif
 				compose_entry_append(
 					compose, addr, (ComposeEntryType) data );
 				g_free( addr );

@@ -4157,8 +4157,18 @@ static gint compose_write_headers_from_headerlist(Compose *compose,
 		headerentryname = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(headerentry->combo)->entry));
 
 		if (!g_strcasecmp(trans_hdr, headerentryname)) {
+#ifdef WIN32
+			gchar *p_str = g_locale_from_utf8(
+				gtk_entry_get_text(GTK_ENTRY(headerentry->entry)),
+				-1, NULL, NULL, NULL);
+
+			Xstrdup_a(str, p_str, return -1);
+			g_free(p_str);
+#else
 			str = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
 			Xstrdup_a(str, str, return -1);
+#endif
+
 			g_strstrip(str);
 			if (str[0] != '\0') {
 				compose_convert_header
@@ -4539,6 +4549,9 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		headerentry = ((ComposeHeaderEntry *)list->data);
 		
 		tmp = g_strdup(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(headerentry->combo)->entry)));
+#ifdef WIN32
+		locale_from_utf8(&tmp);
+#endif
 		if (!strstr(tmp, ":")) {
 			headername_wcolon = g_strconcat(tmp, ":", NULL);
 			headername = g_strdup(tmp);
@@ -4549,16 +4562,31 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		g_free(tmp);
 		
 		headervalue = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
+#ifdef WIN32
+		headervalue = g_strdup(headervalue);
+		locale_from_utf8(&headervalue);
+#endif
 		string = std_headers;
 		while (*string != NULL) {
 			headername_trans = prefs_common.trans_hdr ? gettext(*string) : *string;
+#ifdef WIN32
+			headername_trans = g_strdup(headername_trans);
+			if (prefs_common.trans_hdr)
+				locale_from_utf8(&headername_trans);
+#endif
 			if (!strcmp(headername_trans,headername_wcolon))
 				standard_header = TRUE;
 			string++;
+#ifdef WIN32
+			g_free(headername_trans);
+#endif
 		}
 		if (!standard_header && !IS_IN_CUSTOM_HEADER(headername))
 			fprintf(fp, "%s %s\n", headername_wcolon, headervalue);
 				
+#ifdef WIN32
+		g_free(headervalue);
+#endif
 		g_free(headername);
 		g_free(headername_wcolon);
 		

@@ -2422,7 +2422,17 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 			if (account_find_from_address(addr)) {
 				g_free(to);
 				to = g_strconcat("-->", msginfo->to, NULL);
+#ifdef WIN32
+				{
+					gchar *p_to;
+					p_to = g_strdup(to);
+					locale_to_utf8(&p_to);
+					text[col_pos[S_COL_FROM]] = p_to;
+					/* g_free(p_to); */
+				}
+#else
 				text[col_pos[S_COL_FROM]] = to;
+#endif
 			}
 		}
 	}
@@ -2437,7 +2447,17 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 		if (from) {
 			g_free(to);
 			to = from;
+#ifdef WIN32
+				{
+					gchar *p_to;
+					p_to = g_strdup(to);
+					locale_to_utf8(&p_to);
+					text[col_pos[S_COL_FROM]] = p_to;
+					/* g_free(p_to); */
+				}
+#else
 			text[col_pos[S_COL_FROM]] = to;
+#endif
 		}			
 	}
 
