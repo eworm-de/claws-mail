@@ -1,5 +1,6 @@
 src/about.c
 src/account.c
+src/addressadd.c
 src/addressbook.c
 src/addr_compl.c
 src/alertpanel.c
@@ -8,6 +9,9 @@ src/base64.c
 src/codeconv.c
 src/colorlabel.c
 src/compose.c
+src/editaddress.c
+src/editbook.c
+src/editgroup.c
 src/editjpilot.c
 src/editldap.c
 src/editldap_basedn.c
