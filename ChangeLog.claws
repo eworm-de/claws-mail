@@ -1,3 +1,8 @@
+2002-07-20 [alfons]	0.7.8claws82
+	
+	* src/matcher.c
+		const-correctness
+
 2002-07-20 [thorsten]	0.7.8claws81
 
 	* src/matcher.c
