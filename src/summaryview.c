@@ -4427,9 +4427,6 @@ void summary_pass_key_press_event(SummaryView *summaryview, GdkEventKey *event)
 #define BREAK_ON_MODIFIER_KEY() \
 	if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) != 0) break
 
-#define RETURN_IF_LOCKED() \
-	if (summaryview->mainwin->lock_count) return TRUE
-
 static gint summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				SummaryView *summaryview)
 {
@@ -4499,7 +4496,6 @@ static gint summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		summary_mark_as_unread(summaryview);
 		break;
 	case GDK_Delete:
-		RETURN_IF_LOCKED();
 		BREAK_ON_MODIFIER_KEY();
 		summary_delete(summaryview);
 		break;

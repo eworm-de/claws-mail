@@ -1,3 +1,8 @@
+2003-09-11
+
+	* src/summaryview.c: summary_key_pressed(): メインウィンドウがロック
+	  されていても delete キーを無視しないようにした。
+
 2003-09-10
 
 	* src/action.c: action 終了のコードを改良(RH9 で action 終了時に

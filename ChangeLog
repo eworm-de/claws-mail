@@ -1,3 +1,8 @@
+2003-09-11
+
+	* src/summaryview.c: summary_key_pressed(): don't ignore delete key
+	  even if the main window is locked.
+
 2003-09-10
 
 	* src/action.c: improved synchronous action exit code (fixes long
