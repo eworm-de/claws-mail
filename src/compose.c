@@ -3163,10 +3163,6 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 			fprintf(fp, "From: %s\n", compose->account->address);
 	}
 	
-	slist_free_strings(compose->to_list);
-	g_slist_free(compose->to_list);
-	compose->to_list = NULL;
-
 	/* To */
 	compose_write_headers_from_headerlist(compose, fp, "To");
 #if 0 /* NEW COMPOSE GUI */
@@ -3188,9 +3184,6 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		}
 	}
 #endif
-	slist_free_strings(compose->newsgroup_list);
-	g_slist_free(compose->newsgroup_list);
-	compose->newsgroup_list = NULL;
 
 	/* Newsgroups */
 	compose_write_headers_from_headerlist(compose, fp, "Newsgroups");
@@ -3251,12 +3244,6 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		}
 	}
 #endif
-	/* something is needed to check if the mail
-	   will be sent to anybody ... */
-	/* 
-	if (!is_draft && !compose->to_list && !compose->newsgroup_list)
-		return -1;
-	*/
 
 	/* Subject */
 	str = gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
