@@ -1390,7 +1390,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	ifactory = gtk_item_factory_from_widget(compose->popupmenu);
 	menu_set_sensitive(ifactory, "/Add...", FALSE);
 	menu_set_sensitive(ifactory, "/Remove", FALSE);
-	menu_set_sensitive(ifactory, "/Property...", FALSE);
+	menu_set_sensitive(ifactory, "/Properties...", FALSE);
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 	menu_set_sensitive(ifactory, "/Message/Save", FALSE);

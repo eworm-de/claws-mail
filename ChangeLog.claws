@@ -1,3 +1,9 @@
+2005-01-25 [paul]	1.0.0cvs14
+
+	* src/compose.c
+		compose_redirect(): fix sensitivity of attachment 
+		"Properties..." button
+
 2005-01-24 [colin]	1.0.0cvs13
 
 	* src/summaryview.c
