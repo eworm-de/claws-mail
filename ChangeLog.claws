@@ -1,3 +1,8 @@
+2003-05-17 [paul]	0.8.11claws159
+
+	* src/plugins/clamav/clamav_plugin.c
+		remove unnecessary debug_print
+
 2003-05-16 [thorsten]	0.8.11claws158
 
 	* src/plugins/demo.c

@@ -81,7 +81,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
 	int ret, no;
 	unsigned long int size;
-	long double kb;
 	char *virname;
 	struct cl_node *root = NULL;
 	struct cl_limits limits;
@@ -154,9 +153,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	    				debug_print("Error: %s\n", cl_perror(ret));
     			}
 
-    			kb = size * (CL_COUNT_PRECISION / 1024);
-    			debug_print("Data scanned: %2.2Lf Kb\n", kb);
-    
 			unlink(outfile);
 
 			if (is_infected) break;
@@ -165,7 +161,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	}
 
 	if (is_infected) {
-		debug_print("message part(s) infected with %s\n", virname);
 		if (config.clamav_recv_infected) {
 			FolderItem *clamav_save_folder;
 
