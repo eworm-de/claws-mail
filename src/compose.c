@@ -2405,8 +2405,93 @@ static void compose_wrap_line_all(Compose *compose)
 
 	gtk_stext_thaw(text);
 }
+<<<<<<< compose.c
 
+#if 0
+static void compose_wrap_line_all(Compose *compose)
+{
+	GtkText *text = GTK_STEXT(compose->text);
+	guint text_len;
+	guint line_pos = 0, cur_pos = 0;
+	gint line_len = 0, cur_len = 0;
+	gint ch_len;
+	gchar cbuf[MB_LEN_MAX];
+
+	gtk_stext_freeze(text);
+
+	text_len = gtk_stext_get_length(text);
+
+	for (; cur_pos < text_len; cur_pos++) {
+		if (text->use_wchar)
+			ch_len = wctomb
+				(cbuf, (wchar_t)GTK_STEXT_INDEX(text, cur_pos));
+		else {
+			cbuf[0] = GTK_STEXT_INDEX(text, cur_pos);
+			ch_len = 1;
+		}
+
+		if (ch_len == 1 && *cbuf == '\n') {
+			line_pos = cur_pos + 1;
+			line_len = cur_len = 0;
+			continue;
+		}
+
+		if (ch_len < 0) {
+			cbuf[0] = '\0';
+			ch_len = 1;
+		}
+=======
+>>>>>>> 1.110
+
+<<<<<<< compose.c
+		if (ch_len == 1 && isspace(*cbuf)) {
+			line_pos = cur_pos + 1;
+			line_len = cur_len + ch_len;
+		}
+=======
 #undef GET_CHAR
+>>>>>>> 1.110
+
+		if (cur_len + ch_len > prefs_common.linewrap_len &&
+		    line_len > 0) {
+			gint tlen;
+
+			if (text->use_wchar)
+				tlen = wctomb(cbuf, (wchar_t)GTK_STEXT_INDEX(text, line_pos - 1));
+			else {
+				cbuf[0] = GTK_STEXT_INDEX(text, line_pos - 1);
+				tlen = 1;
+			}
+			if (tlen == 1 && isspace(*cbuf)) {
+				gtk_stext_set_point(text, line_pos);
+				gtk_stext_backward_delete(text, 1);
+				text_len--;
+				cur_pos--;
+				line_pos--;
+				cur_len--;
+				line_len--;
+			}
+
+			gtk_stext_set_point(text, line_pos);
+			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
+			text_len++;
+			cur_pos++;
+			line_pos++;
+			cur_len = cur_len - line_len + ch_len;
+			line_len = 0;
+			continue;
+		}
+
+		if (ch_len > 1) {
+			line_pos = cur_pos + 1;
+			line_len = cur_len + ch_len;
+		}
+		cur_len += ch_len;
+	}
+
+	gtk_stext_thaw(text);
+}
+#endif
 
 static void compose_set_title(Compose *compose)
 {
@@ -2753,8 +2838,26 @@ static gint compose_bounce_write_to_file(Compose *compose, const gchar *file)
 		    || (g_strncasecmp(buf, "Delivered-To:",
 				      strlen("Delivered-To:")) == 0))
 			continue;
+
 		if (fputs(buf, fdest) == -1)
 			goto error;
+
+		if (g_strncasecmp(buf, "From:", strlen("From:")) == 0) {
+			fputs(" (by way of ", fdest);
+			if (compose->account->name
+			    && *compose->account->name) {
+				compose_convert_header
+					(buf, sizeof(buf),
+					 compose->account->name,
+					 strlen("From: "));
+				fprintf(fdest, "%s <%s>",
+					buf, compose->account->address);
+			} else
+				fprintf(fdest, "%s",
+					compose->account->address);
+			fputs(")", fdest);
+		}
+
 		if (fputs("\n", fdest) == -1)
 			goto error;
 	}

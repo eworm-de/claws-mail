@@ -1,3 +1,13 @@
+2001-11-30 [hoa]	0.6.5claws45
+
+	* src/compose.c
+		slightly change bounce function to add
+		information about the user that bounced the mail
+		in the From header line.
+
+	* src/folderview.c
+		permit the use of processing in outbox folder.
+
 2001-11-29 [paul]	0.6.5claws44
 
 	* src/mainwindow.[ch]
