@@ -452,9 +452,11 @@ SummaryView *summary_create(void)
 	GtkWidget *scrolledwin;
 	GtkWidget *ctree;
 	GtkWidget *hbox;
+	GtkWidget *hbox_l;
 	GtkWidget *statlabel_folder;
 	GtkWidget *statlabel_select;
 	GtkWidget *statlabel_msgs;
+	GtkWidget *hbox_spc;
 	GtkWidget *toggle_view_btn;
 	GtkWidget *toggle_view_arrow;
 	GtkWidget *popupmenu;
@@ -487,10 +489,13 @@ SummaryView *summary_create(void)
 	hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
+	hbox_l = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), hbox_l, TRUE, TRUE, 0);
+
 	statlabel_folder = gtk_label_new("");
-	gtk_box_pack_start(GTK_BOX(hbox), statlabel_folder, FALSE, FALSE, 2);
+	gtk_box_pack_start(GTK_BOX(hbox_l), statlabel_folder, FALSE, FALSE, 2);
 	statlabel_select = gtk_label_new("");
-	gtk_box_pack_start(GTK_BOX(hbox), statlabel_select, FALSE, FALSE, 16);
+	gtk_box_pack_start(GTK_BOX(hbox_l), statlabel_select, FALSE, FALSE, 12);
 
 	/* toggle view buttons */
 	toggle_view_btn = gtk_button_new();
@@ -504,6 +509,9 @@ SummaryView *summary_create(void)
 	statlabel_msgs = gtk_label_new("");
 	gtk_box_pack_end(GTK_BOX(hbox), statlabel_msgs, FALSE, FALSE, 4);
 
+	hbox_spc = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_end(GTK_BOX(hbox), hbox_spc, FALSE, FALSE, 6);
+
 	/* create popup menu */
 	n_entries = sizeof(summary_popup_entries) /
 		sizeof(summary_popup_entries[0]);
@@ -515,6 +523,7 @@ SummaryView *summary_create(void)
 	summaryview->scrolledwin = scrolledwin;
 	summaryview->ctree = ctree;
 	summaryview->hbox = hbox;
+	summaryview->hbox_l = hbox_l;
 	summaryview->statlabel_folder = statlabel_folder;
 	summaryview->statlabel_select = statlabel_select;
 	summaryview->statlabel_msgs = statlabel_msgs;
@@ -594,9 +603,9 @@ void summary_init(SummaryView *summaryview)
 	gtk_widget_set_style(summaryview->statlabel_select, style);
 	gtk_widget_set_style(summaryview->statlabel_msgs, style);
 
-	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_DIR_OPEN);
-	gtk_box_pack_start(GTK_BOX(summaryview->hbox), pixmap, FALSE, FALSE, 4);
-	gtk_box_reorder_child(GTK_BOX(summaryview->hbox), pixmap, 0);
+	pixmap = stock_pixmap_widget(summaryview->hbox_l, STOCK_PIXMAP_DIR_OPEN);
+	gtk_box_pack_start(GTK_BOX(summaryview->hbox_l), pixmap, FALSE, FALSE, 4);
+	gtk_box_reorder_child(GTK_BOX(summaryview->hbox_l), pixmap, 0);
 	gtk_widget_show(pixmap);
 	summaryview->folder_pixmap = pixmap;
 
