@@ -1,3 +1,11 @@
+2003-02-06 [christoph]	0.8.9claws45
+
+	* src/mbox.c
+		freeze folder updates while importing mbox files
+		(closes bug 43 importing mbox took hours)
+		
+	Patch submitted by Johannes Jordan <fopref@lanrules.de>
+
 2003-02-06 [thorsten]	0.8.9claws44
 
 	* po/de.po
