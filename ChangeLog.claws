@@ -1,3 +1,8 @@
+2003-12-18 [melvin]	0.9.7claws50
+
+	* po/fr.po
+		Updated French translation
+
 2003-12-17 [christoph]	0.9.7claws49
 
 	* src/procheader.c
