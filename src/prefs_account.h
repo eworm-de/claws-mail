@@ -45,8 +45,6 @@ typedef enum {
 } RecvProtocol;
 
 typedef enum {
-	/* just login (pop before smtp) */
-	STYPE_POP_BEFORE_SMTP,
 	/* login and retrieve messages, as before */
 	STYPE_NORMAL,
 	/* send TOP to server and retrieve all available Headers */
@@ -57,6 +55,8 @@ typedef enum {
 	STYPE_DELETE, 
 	/* download + remove Mail from Server */
 	STYPE_DOWNLOAD,
+	/* just login (pop before smtp) */
+	STYPE_POP_BEFORE_SMTP,
 } Pop3SessionType;
 
 #if USE_GPGME
@@ -128,6 +128,8 @@ struct _PrefsAccount
 	gchar *tmp_smtp_pass;
 
 	gboolean pop_before_smtp;
+	gint pop_before_smtp_timeout;
+	time_t last_pop_login_time;
 
 	GSList *customhdr_list;
 

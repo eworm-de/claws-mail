@@ -366,7 +366,8 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 	gtk_clist_append(clist, (gchar **)text);
 
 	if (ac_prefs->pop_before_smtp
-	    && (ac_prefs->protocol == A_APOP || ac_prefs->protocol == A_POP3)) {
+	    && (ac_prefs->protocol == A_APOP || ac_prefs->protocol == A_POP3)
+	    && (time(NULL) - ac_prefs->last_pop_login_time) > (60 * ac_prefs->pop_before_smtp_timeout)) {
 		g_snprintf(buf, sizeof(buf), _("Doing POP before SMTP..."));
 		log_message("%s\n", buf);
 		progress_dialog_set_label(dialog->dialog, buf);

@@ -111,6 +111,7 @@ static struct Send {
 	GtkWidget *smtp_uid_entry;
 	GtkWidget *smtp_pass_entry;
 	GtkWidget *pop_bfr_smtp_chkbtn;
+	GtkWidget *pop_bfr_smtp_tm_entry;
 } p_send;
 
 static struct Compose {
@@ -340,6 +341,10 @@ static PrefParam param[] = {
 	 &p_send.pop_bfr_smtp_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
+	{"pop_before_smtp_timeout", "5", &tmp_ac_prefs.pop_before_smtp_timeout, P_INT,
+	 &p_send.pop_bfr_smtp_tm_entry,
+	 prefs_set_data_from_entry, prefs_set_entry},
+
 	/* Compose */
 	{"signature_path", "~/"DEFAULT_SIGNATURE, &tmp_ac_prefs.sig_path, P_STRING,
 	 &compose.sigpath_entry,
@@ -512,6 +517,10 @@ static void prefs_account_advanced_create	(void);
 
 static void prefs_account_select_folder_cb	(GtkWidget	*widget,
 						 gpointer	 data);
+
+static void pop_bfr_smtp_tm_set_sens		(GtkWidget	*widget,
+						 gpointer	 data);
+
 static void prefs_account_edit_custom_header	(void);
 
 static gint prefs_account_deleted		(GtkWidget	*widget,
@@ -683,6 +692,8 @@ PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs)
 		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
 	}
 
+	pop_bfr_smtp_tm_set_sens (NULL, NULL);
+	
 	gtk_widget_show(dialog.window);
 	gtk_main();
 	gtk_widget_hide(dialog.window);
@@ -1234,6 +1245,7 @@ static void prefs_account_send_create(void)
 	GtkWidget *smtp_pass_entry;
 	GtkWidget *vbox_spc;
 	GtkWidget *pop_bfr_smtp_chkbtn;
+	GtkWidget *pop_bfr_smtp_tm_entry;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1360,7 +1372,35 @@ static void prefs_account_send_create(void)
 
 	PACK_CHECK_BUTTON (vbox3, pop_bfr_smtp_chkbtn,
 		_("Authenticate with POP3 before sending"));
+	
+	gtk_signal_connect (GTK_OBJECT (pop_bfr_smtp_chkbtn), "clicked",
+			    GTK_SIGNAL_FUNC (pop_bfr_smtp_tm_set_sens),
+			    NULL);
 
+	hbox = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox3), hbox, FALSE, FALSE, 0);
+
+	hbox_spc = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox_spc);
+	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
+	gtk_widget_set_usize (hbox_spc, 12, -1);
+
+	label = gtk_label_new(_("POP authentication timeout: "));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
+	pop_bfr_smtp_tm_entry = gtk_entry_new ();
+	gtk_widget_show (pop_bfr_smtp_tm_entry);
+	gtk_widget_set_usize (pop_bfr_smtp_tm_entry, 30, -1);
+	gtk_box_pack_start (GTK_BOX (hbox), pop_bfr_smtp_tm_entry, FALSE, FALSE, 0);
+
+	label = gtk_label_new(_("minutes"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
+
+	
 	p_send.date_chkbtn      = date_chkbtn;
 	p_send.msgid_chkbtn     = msgid_chkbtn;
 	p_send.customhdr_chkbtn = customhdr_chkbtn;
@@ -1370,6 +1410,7 @@ static void prefs_account_send_create(void)
 	p_send.smtp_uid_entry         = smtp_uid_entry;
 	p_send.smtp_pass_entry        = smtp_pass_entry;
 	p_send.pop_bfr_smtp_chkbtn    = pop_bfr_smtp_chkbtn;
+	p_send.pop_bfr_smtp_tm_entry  = pop_bfr_smtp_tm_entry;
 }
 
 static void prefs_account_compose_create(void)
@@ -2051,6 +2092,12 @@ static void prefs_account_cancel(void)
 	gtk_main_quit();
 }
 
+static void pop_bfr_smtp_tm_set_sens(GtkWidget *widget, gpointer data)
+{
+	gtk_widget_set_sensitive(p_send.pop_bfr_smtp_tm_entry, 
+				 gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_chkbtn)));
+}
+
 static void prefs_account_select_folder_cb(GtkWidget *widget, gpointer data)
 {
 	FolderItem *item;
@@ -2276,6 +2323,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_toggle_button_set_active
 			(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_chkbtn), FALSE);
 		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_chkbtn, FALSE);
+		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_tm_entry, FALSE);
 		
 		if (!tmp_ac_prefs.account_name) {
 			gtk_toggle_button_set_active
@@ -2344,6 +2392,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_toggle_button_set_active
 			(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_chkbtn), FALSE);
 		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_chkbtn, FALSE);
+		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_tm_entry, FALSE);
 
 		if (!tmp_ac_prefs.account_name) {
 			gtk_toggle_button_set_active
@@ -2414,7 +2463,8 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_toggle_button_set_active
 			(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_chkbtn), FALSE);
 		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_chkbtn, FALSE);
-		
+		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_tm_entry, FALSE);
+
 		if (!tmp_ac_prefs.account_name) {
 			gtk_toggle_button_set_active
 				(GTK_TOGGLE_BUTTON(receive.recvatgetall_chkbtn),
@@ -2483,6 +2533,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 
 		/* update pop_before_smtp sensitivity */
 		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_chkbtn, TRUE);
+		pop_bfr_smtp_tm_set_sens(NULL, NULL);
 		
 		if (!tmp_ac_prefs.account_name) {
 			gtk_toggle_button_set_active

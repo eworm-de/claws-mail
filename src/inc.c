@@ -198,7 +198,7 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 			if (new_msgs < 0)
 				new_msgs = 0;
 		}
-
+		cur_account->session = STYPE_NORMAL;
 		new_msgs += inc_account_mail(cur_account, mainwin);
 	}
 
@@ -708,6 +708,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	debug_print("getting new messages of account %s...\n",
 		    pop3_state->ac_prefs->account_name);
 
+	pop3_state->ac_prefs->last_pop_login_time = time(NULL);
 	atm = automaton_create(N_POP3_PHASE);
 
 	session->atm = atm;
