@@ -2674,6 +2674,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		}	
 		inc_unlock();		
 		gtk_widget_set_sensitive(folderview->ctree, TRUE);
+		statusbar_pop_all();
 	}
 }
 
