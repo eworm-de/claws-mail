@@ -3291,10 +3291,35 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 	return nummsgs;
 }
 
+static MsgInfo *imap_parse_msg(const gchar *file, FolderItem *item)
+{
+	MsgInfo *msginfo;
+	MsgFlags flags;
+
+	flags.perm_flags = MSG_NEW|MSG_UNREAD;
+	flags.tmp_flags = 0;
+
+	g_return_val_if_fail(item != NULL, NULL);
+	g_return_val_if_fail(file != NULL, NULL);
+
+	if (item->stype == F_QUEUE) {
+		MSG_SET_TMP_FLAGS(flags, MSG_QUEUED);
+	} else if (item->stype == F_DRAFT) {
+		MSG_SET_TMP_FLAGS(flags, MSG_DRAFT);
+	}
+
+	msginfo = procheader_parse_file(file, flags, FALSE, FALSE);
+	if (!msginfo) return NULL;
+
+	msginfo->folder = item;
+
+	return msginfo;
+}
+
+
 MsgInfo *imap_get_msginfo(Folder *folder, FolderItem *item, gint uid)
 {
 	IMAPSession *session;
-	GSList *list;
 	MsgInfo *msginfo = NULL;
 
 	g_return_val_if_fail(folder != NULL, NULL);
@@ -3303,13 +3328,27 @@ MsgInfo *imap_get_msginfo(Folder *folder, FolderItem *item, gint uid)
 	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, NULL);
 
-	list = imap_get_uncached_messages(session, item, uid, uid);
-	if (list) {
-		msginfo = (MsgInfo *)list->data;
-		list->data = NULL;
-	}
-	procmsg_msg_list_free(list);
+	if (!(item->stype == F_QUEUE || item->stype == F_DRAFT)) {
+		GSList *list;
 
+		list = imap_get_uncached_messages(session, item, uid, uid);
+		if (list) {
+			msginfo = (MsgInfo *)list->data;
+			list->data = NULL;
+		}
+		procmsg_msg_list_free(list);
+	} else {
+		gchar *file;
+
+		file = imap_fetch_msg(folder, item, uid);
+		if (file != NULL) {
+			msginfo = imap_parse_msg(file, item);
+			if (msginfo != NULL)
+				msginfo->msgnum = uid;
+			g_free(file);
+		}
+	}
+	
 	return msginfo;
 }
 
