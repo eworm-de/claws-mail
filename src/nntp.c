@@ -29,6 +29,7 @@
 #include "nntp.h"
 #include "socket.h"
 #include "utils.h"
+#include "log.h"
 #if USE_SSL
 #  include "ssl.h"
 #endif

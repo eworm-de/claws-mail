@@ -27,9 +27,8 @@
 #include <ctype.h>
 
 #include "intl.h"
-#include "main.h"
-#include "template.h"
 #include "utils.h"
+#include "template.h"
 
 static GSList *template_list;
 

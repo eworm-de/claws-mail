@@ -38,7 +38,6 @@ sylpheed_SOURCES = \
 	account.c account.h \
 	displayheader.c displayheader.h \
 	customheader.c customheader.h \
-	template.c template.h \
 	addressbook.c addressbook.h \
 	addr_compl.c addr_compl.h \
 	addressitem.h \

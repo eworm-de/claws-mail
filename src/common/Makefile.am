@@ -7,6 +7,7 @@ libsylpheedcommon_la_SOURCES = \
 	md5.c md5.h \
 	socket.c socket.h \
 	ssl.c ssl.h \
+	template.c template.h \
 	utils.c utils.h \
 	uuencode.c uuencode.h
 
