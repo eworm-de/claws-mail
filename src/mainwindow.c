@@ -1724,7 +1724,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Tools/Harvest addresses"	    , M_UNLOCKED},
 		{"/Tools/Filter messages"           , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Tools/Create filter rule"        , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
-		{"/Tools/Actions"                   , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+		{"/Tools/Actions"                   , M_TARGET_EXIST|M_UNLOCKED},
 		{"/Tools/Execute"                   , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Tools/Delete duplicated messages", M_MSG_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 

@@ -1,5 +1,13 @@
 2002-07-05
 
+	* src/prefs_actions.c: コーディングスタイルに準拠。
+	  UI のデザインを修正。
+	* src/mainwindow.c: main_window_set_menu_sensitive(): 複数の
+	  メッセージが選択されているときアクションメニューを有効に
+	  するようにした。
+
+2002-07-05
+
 	* src/prefs_actions.[ch]: claws から「アクション」機能をマージ。
 	  update_actions_menu(): メニュー削除を簡略化。
 	* src/mainwindow.c: 「アクション」メニューをツールと設定に追加。
