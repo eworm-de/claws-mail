@@ -1,3 +1,12 @@
+2005-02-16 [colin]	1.0.1cvs11.3
+
+	* src/summaryview.c
+		Fix collapsed thread not highlighting when new
+		messages in it (Bug 568) Patch by Stephan Sachse.
+		Fix messed up selection when reaching bounds (Bug 632)
+	* src/prefs_themes.c
+		Fix theme installing (Bug 684)
+
 2005-02-16 [colin]	1.0.1cvs11.2
 
 	* src/messageview.c

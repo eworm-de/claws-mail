@@ -956,8 +956,10 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	g_slist_free(mlist);
 
-	if (summaryview->sort_key != SORT_BY_NONE)
+	if (summaryview->sort_key != SORT_BY_NONE) {
 		summary_sort(summaryview, summaryview->sort_key, summaryview->sort_type);
+		summary_thread_init(summaryview);
+	}
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
 
@@ -4423,10 +4425,9 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				if (gtk_ctree_node_is_visible(GTK_CTREE(ctree), next) != GTK_VISIBILITY_FULL)
 					gtk_ctree_node_moveto(GTK_CTREE(ctree), next, 0, 0, 0);
 				summaryview->selected = next;
-				return TRUE;
 			}
 		}
-		break;
+		return TRUE;
 	case GDK_Home:
 	case GDK_End:
 		if ((node = summaryview->selected) != NULL) {
@@ -4443,10 +4444,9 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				if (gtk_ctree_node_is_visible(GTK_CTREE(ctree), next) != GTK_VISIBILITY_FULL)
 					gtk_ctree_node_moveto(GTK_CTREE(ctree), next, 0, 0, 0);
 				summaryview->selected = next;
-				return TRUE;
 			}
 		}
-		break;
+		return TRUE;
 	default:
 		break;
 	}

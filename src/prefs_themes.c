@@ -471,6 +471,11 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 	if (filename == NULL) 
 		return;
 	
+	if (filename[strlen(filename) - 1] != G_DIR_SEPARATOR)
+		filename = g_strconcat(filename, G_DIR_SEPARATOR_S, NULL);
+	else
+		filename = g_strdup(filename);
+
 	cinfo = g_new0(CopyInfo, 1);
 	source = g_path_get_dirname(filename);
 	themename = g_path_get_basename(source);
@@ -538,6 +543,7 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 		alertpanel_error(_("File %s failed\nwhile installing theme."), cinfo->status);
 end_inst:
 	if (cinfo->dest != NULL) g_free(cinfo->dest);
+	g_free(filename);
 	g_free(source);
 	g_free(themeinfo);
 	g_free(cinfo);
