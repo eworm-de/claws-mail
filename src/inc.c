@@ -583,6 +583,9 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		case INC_EOF:
 			SET_PIXMAP_AND_TEXT(errorxpm, errorxpmmask, _("Error"));
 			break;
+		case INC_TIMEOUT:
+			SET_PIXMAP_AND_TEXT(errorxpm, errorxpmmask, _("Timeout"));
+			break;
 		case INC_CANCEL:
 			SET_PIXMAP_AND_TEXT(okxpm, okxpmmask, _("Cancelled"));
 			break;
@@ -621,8 +624,6 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			procmsg_msginfo_free(msginfo);
 		}
 		g_slist_free(msglist);
-
-		statusbar_pop_all();
 
 		new_msgs += pop3_session->cur_total_num;
 
@@ -736,6 +737,9 @@ static IncState inc_pop3_session_do(IncSession *session)
 	progress_dialog_set_label(inc_dialog->dialog, buf);
 	g_free(buf);
 
+	session_set_timeout(SESSION(pop3_session),
+			    prefs_common.io_timeout_secs * 1000);
+
 	if (session_connect(SESSION(pop3_session), server, port) < 0) {
 		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
 			    server, port);
@@ -757,20 +761,26 @@ static IncState inc_pop3_session_do(IncSession *session)
 	       session->inc_state != INC_CANCEL)
 		gtk_main_iteration();
 
-	statusbar_pop_all();
-
 	if (session->inc_state == INC_SUCCESS) {
 		switch (pop3_session->error_val) {
 		case PS_SUCCESS:
-			if (SESSION(pop3_session)->state == SESSION_ERROR) {
+			switch (SESSION(pop3_session)->state) {
+			case SESSION_ERROR:
 				if (pop3_session->state == POP3_READY)
 					session->inc_state = INC_CONNECT_ERROR;
 				else
 					session->inc_state = INC_ERROR;
-			} else if (SESSION(pop3_session)->state == SESSION_EOF)
+				break;
+			case SESSION_EOF:
 				session->inc_state = INC_EOF;
-			else
+				break;
+			case SESSION_TIMEOUT:
+				session->inc_state = INC_TIMEOUT;
+				break;
+			default:
 				session->inc_state = INC_SUCCESS;
+				break;
+			}
 			break;
 		case PS_AUTHFAIL:
 			session->inc_state = INC_AUTH_FAILED;
@@ -789,6 +799,9 @@ static IncState inc_pop3_session_do(IncSession *session)
 			break;
 		}
 	}
+
+	session_disconnect(SESSION(pop3_session));
+	statusbar_pop_all();
 
 	return session->inc_state;
 }
@@ -1107,6 +1120,12 @@ static void inc_put_error(IncState istate, const gchar *msg)
 				(_("Authentication failed:\n%s"), msg);
 		else
 			err_msg = g_strdup(log_msg);
+		break;
+	case INC_TIMEOUT:
+		log_msg = _("Session timed out.");
+		if (prefs_common.no_recv_err_panel)
+			break;
+		err_msg = g_strdup(log_msg);
 		break;
 	default:
 		break;

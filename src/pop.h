@@ -87,12 +87,6 @@ typedef enum {
 
 	/* leave space for more codes */
 
-	PS_UNDEFINED	= 23,	/* something I hadn't thought of */
-	PS_TRANSIENT	= 24,	/* transient failure (internal use) */
-	PS_REFUSED	= 25,	/* mail refused (internal use) */
-	PS_RETAINED	= 26,	/* message retained (internal use) */
-	PS_TRUNCATED	= 27,	/* headers incomplete (internal use) */
-
 	PS_CONTINUE	= 128	/* more responses may follow */
 } Pop3ErrorValue;
 

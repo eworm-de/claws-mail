@@ -266,7 +266,7 @@ static NNTPSession *news_session_get(Folder *folder)
 		return NNTP_SESSION(rfolder->session);
 	}
 
-	if (time(NULL) - rfolder->session->last_access_time < SESSION_TIMEOUT) {
+	if (time(NULL) - rfolder->session->last_access_time < SESSION_TIMEOUT_INTERVAL) {
 		rfolder->session->last_access_time = time(NULL);
 		return NNTP_SESSION(rfolder->session);
 	}

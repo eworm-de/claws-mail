@@ -1,3 +1,10 @@
+2004-06-08
+
+	* src/inc.[ch]
+	  src/send_message.c
+	  src/session.[ch]: セッションのタイムアウトを実装。
+	* src/pop.h: Pop3ErrorValue から未使用の値を削除。
+
 2004-06-07
 
 	* src/inc.c: inc_all_account_mail(): コードの整理。

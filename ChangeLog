@@ -1,3 +1,10 @@
+2004-06-08
+
+	* src/inc.[ch]
+	  src/send_message.c
+	  src/session.[ch]: implemented session timeout.
+	* src/pop.h: removed unused values from Pop3ErrorValue.
+
 2004-06-07
 
 	* src/inc.c: inc_all_account_mail(): code cleanup.

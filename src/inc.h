@@ -48,6 +48,7 @@ typedef enum
 	INC_IO_ERROR,
 	INC_SOCKET_ERROR,
 	INC_EOF,
+	INC_TIMEOUT,
 	INC_CANCEL
 } IncState;
 
