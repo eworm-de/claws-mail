@@ -165,7 +165,7 @@ static void create_trayicon()
         image = gtk_pixmap_new(nomail_pixmap, nomail_bitmap);
         gtk_packer_add_defaults(GTK_PACKER(packer), GTK_WIDGET(image), GTK_SIDE_TOP, GTK_ANCHOR_CENTER, GTK_PACK_EXPAND);
 #else
-        image = gtk_image_new_from_pixmap(nomail_pixmap, nomail_bitmap);
+        image = gtk_pixmap_new(nomail_pixmap, nomail_bitmap);
         gtk_container_add(GTK_CONTAINER(eventbox), image);
 #endif
 
@@ -222,12 +222,12 @@ void plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	return _("Trayicon");
+	return gettext("Trayicon");
 }
 
 const gchar *plugin_desc(void)
 {
-	return _("This plugin places a mailbox icon in the system tray that "
+	return gettext("This plugin places a mailbox icon in the system tray that "
 	         "indicates if you have new or unread mail.\n"
 	         "\n"
 	         "The mailbox is empty if you have no unread mail, otherwise "
