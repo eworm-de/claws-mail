@@ -1,3 +1,8 @@
+2003-09-09 [christoph]	0.9.4claws75
+
+	* src/folder.c
+		free item->prefs in folder_item_destroy
+
 2003-09-09 [alfons]	0.9.4claws74
 
 	* src/folderview.c

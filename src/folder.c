@@ -303,6 +303,8 @@ void folder_item_destroy(FolderItem *item)
 
 	if (item->cache)
 		folder_item_free_cache(item);
+	if (item->prefs)
+		folder_item_prefs_free(item->prefs);
 	g_free(item->name);
 	g_free(item->path);
 
@@ -498,13 +500,14 @@ FolderItem *folder_create_folder(FolderItem *parent, const gchar *name)
 	FolderUpdateData hookdata;
 
 	new_item = parent->folder->klass->create_folder(parent->folder, parent, name);
-	if (new_item)
+	if (new_item) {
 		new_item->cache = msgcache_new();
 
-	hookdata.folder = new_item->folder;
-	hookdata.update_flags = FOLDER_TREE_CHANGED | FOLDER_NEW_FOLDERITEM;
-	hookdata.item = new_item;
-	hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
+		hookdata.folder = new_item->folder;
+		hookdata.update_flags = FOLDER_TREE_CHANGED | FOLDER_NEW_FOLDERITEM;
+		hookdata.item = new_item;
+		hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
+	}
 
 	return new_item;
 }
