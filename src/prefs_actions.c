@@ -116,6 +116,9 @@ struct _ChildInfo
 	gint		 chld_out;
 	gint		 chld_err;
 	gint		 chld_status;
+#ifdef WIN32
+	gint		 chld_status_tx;
+#endif
 	gint		 tag_in;
 	gint		 tag_out;
 	gint		 tag_err;
@@ -1318,10 +1321,6 @@ ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 		ch_out = g_io_channel_unix_new(chld_out[0]);
 		ch_err = g_io_channel_unix_new(chld_err[0]);
 		/* g_io_channel_win32_set_debug(chan,TRUE); */
-		/* XXX:tm status */
-		write(chld_status[1], "0\n", 2);
-		close(chld_status[1]);
-
 		for (n=0; child_argv[n]; n++) g_free(child_argv[n]);
 		g_free(child_argv);
 	} else {
@@ -1446,7 +1445,6 @@ ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 		close(chld_in[1]);
 	close(chld_out[1]);
 	close(chld_err[1]);
-	close(chld_status[1]);
 
 	child_info = g_new0(ChildInfo, 1);
 
@@ -1466,6 +1464,7 @@ ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 	child_info->chld_status = chld_status[0];
 	child_info->tag_in      = -1;
 #ifdef WIN32
+	child_info->chld_status_tx = chld_status[1];
 	child_info->tag_out     = g_io_add_watch(g_io_channel_unix_new( chld_out[0] ),
 						 G_IO_IN | G_IO_PRI | G_IO_ERR | G_IO_HUP,
 						 catch_output, child_info);
@@ -1830,7 +1829,7 @@ static void catch_status(gpointer data, gint source, GdkInputCondition cond)
 
 #ifdef WIN32
 	g_io_channel_read(channel, &buf, 1, &c);
-	if (c == 0) return TRUE ;
+	if (c != 0) return TRUE ;
 #else
 	gdk_input_remove(child_info->tag_status);
 	c = read(source, &buf, 1);
@@ -1975,6 +1974,8 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 				close(child_info->chld_status);
 		}
 #endif
+		write(child_info->chld_status_tx, "0\n", 2);
+		close(child_info->chld_status_tx);
 		close(source);
 		return FALSE;
 	} else {
