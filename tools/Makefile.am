@@ -3,6 +3,7 @@ EXTRA_TOOLS = \
 	filter_conv.pl \
 	gif2xface.pl \
 	gpg-sign \
+	kmail2sylpheed.pl \
 	ldif-to-xml.py \
 	newscache_clean.pl \
 	sylpheed-switcher \
