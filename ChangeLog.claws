@@ -1,3 +1,8 @@
+2002-04-23 [paul]	0.7.4claws94
+
+	* sync with 0.7.5cvs3
+		bug fixes: see ChangeLog entry 2002-04-23
+
 2002-04-22 [darko]	0.7.4claws93
 
 	* src/compose.c

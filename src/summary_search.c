@@ -232,6 +232,9 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 	wchar_t *(* WCSFindFunc) (const wchar_t *haystack,
 				  const wchar_t *needle);
 
+	if (summary_is_locked(summaryview)) return;
+	summary_lock(summaryview);
+
 	case_sens = gtk_toggle_button_get_active
 		(GTK_TOGGLE_BUTTON(case_checkbtn));
 	backward = gtk_toggle_button_get_active
@@ -267,7 +270,10 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 		else
 			node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 
-		if (!node) return;
+		if (!node) {
+			summary_unlock(summaryview);
+			return;
+		}
 	} else {
 		if (backward)
 			node = GTK_CTREE_NODE_PREV(summaryview->selected);
@@ -370,6 +376,8 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 
 	if (*body_str)
 		main_window_cursor_normal(summaryview->mainwin);
+
+	summary_unlock(summaryview);
 }
 
 static void summary_search_clear(GtkButton *button, gpointer data)

@@ -1,3 +1,11 @@
+2002-04-23
+
+	* src/imap.c: imap_create_folder(): don't add prefix for root INBOX
+	  folder.
+	* src/folderview.c: folderview_select()
+	  src/summary_search.c: summary_search_execute(): lock summary view
+	  while searching (thanks to Martin Schaaf).
+
 2002-04-21
 
 	* version 0.7.5

@@ -1259,7 +1259,9 @@ FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	session = imap_session_get(folder);
 	if (!session) return NULL;
 
-	if (parent->path)
+	if (!parent->parent && strcmp(name, "INBOX") == 0)
+		dirpath = g_strdup(name);
+	else if (parent->path)
 		dirpath = g_strconcat(parent->path, "/", name, NULL);
 	else if ((p = strchr(name, '/')) != NULL && *(p + 1) != '\0')
 		dirpath = g_strdup(name);
