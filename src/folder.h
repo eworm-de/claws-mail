@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -196,15 +196,16 @@ struct _FolderClass
 						 FolderItem	*item);
 	gint	 	(*get_num_list)		(Folder		*folder,
 						 FolderItem	*item,
-						 GSList	       **list);
+						 GSList	       **list,
+						 gboolean	*old_uids_valid);
 	void     	(*update_mark)		(Folder		*folder,
 						 FolderItem	*item);
 	void    	(*finished_copy)        (Folder 	*folder,
 						 FolderItem 	*item);
 	void    	(*finished_remove)      (Folder 	*folder,
-						 FolderItem * item);
-	gboolean	(*check_msgnum_validity)(Folder 	*folder,
-						 FolderItem * item);
+						 FolderItem 	*item);
+	gboolean	(*scan_required)	(Folder 	*folder,
+						 FolderItem 	*item);
 
 	/* Message functions */
 	MsgInfo 	*(*get_msginfo)		(Folder		*folder,
@@ -300,6 +301,8 @@ struct _FolderItem
 	FolderSortKey sort_key;
 	FolderSortType sort_type;
 
+	GNode *node;
+
 	FolderItem *parent;
 
 	Folder *folder;
@@ -360,13 +363,14 @@ void        folder_destroy		(Folder		*folder);
 void        folder_local_folder_destroy	(LocalFolder	*lfolder);
 void        folder_remote_folder_destroy(RemoteFolder	*rfolder);
 
-FolderItem *folder_item_new	(Folder		*folder,
-				 const gchar	*name,
-				 const gchar	*path);
-void        folder_item_append	(FolderItem	*parent,
-				 FolderItem	*item);
-void        folder_item_remove	(FolderItem	*item);
-void        folder_item_destroy	(FolderItem	*item);
+FolderItem *folder_item_new		(Folder		*folder,
+				 	 const gchar	*name,
+				 	 const gchar	*path);
+void        folder_item_append		(FolderItem	*parent,
+				 	 FolderItem	*item);
+void        folder_item_remove		(FolderItem	*item);
+void        folder_item_remove_children	(FolderItem	*item);
+void        folder_item_destroy		(FolderItem	*item);
 
 void        folder_set_ui_func	(Folder		*folder,
 				 FolderUIFunc	 func,

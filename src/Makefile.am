@@ -5,10 +5,10 @@ bin_PROGRAMS = sylpheed
 sylpheed_SOURCES = \
 	account.c \
 	action.c \
+	addr_compl.c \
 	addrbook.c \
 	addrcache.c \
 	addrclip.c \
-	addr_compl.c \
 	addressadd.c \
 	addressbook.c \
 	addrgather.c \
@@ -26,8 +26,8 @@ sylpheed_SOURCES = \
 	editbook.c \
 	editgroup.c \
 	editjpilot.c \
-	editldap_basedn.c \
 	editldap.c \
+	editldap_basedn.c \
 	editvcard.c \
 	enriched.c \
 	exphtmldlg.c \
@@ -95,8 +95,9 @@ sylpheed_SOURCES = \
 	procmime.c \
 	procmsg.c \
 	progressdialog.c \
+	quote_fmt.c \
 	quote_fmt_lex.l \
-	quote_fmt_parse.y quote_fmt.c \
+	quote_fmt_parse.y \
 	recv.c \
 	rfc2015.c \
 	scoring.c \
@@ -123,10 +124,10 @@ sylpheedinclude_HEADERS = \
 	account.h \
 	action.h \
 	adbookbase.h \
+	addr_compl.h \
 	addrbook.h \
 	addrcache.h \
 	addrclip.h \
-	addr_compl.h \
 	addressadd.h \
 	addressbook.h \
 	addressitem.h \
@@ -146,8 +147,8 @@ sylpheedinclude_HEADERS = \
 	editbook.h \
 	editgroup.h \
 	editjpilot.h \
-	editldap_basedn.h \
 	editldap.h \
+	editldap_basedn.h \
 	editvcard.h \
 	enriched.h \
 	exphtmldlg.h \
@@ -179,12 +180,11 @@ sylpheedinclude_HEADERS = \
 	mainwindow.h \
 	manual.h \
 	matcher.h \
-	matcher_parser_lex.h \
-	matcher_parser_parse.y \
 	matcher_parser.h \
+	matcher_parser_lex.h \
 	matcher_parser_parse.h \
-	mbox_folder.h \
 	mbox.h \
+	mbox_folder.h \
 	message_search.h \
 	messageview.h \
 	mh.h \
@@ -215,8 +215,9 @@ sylpheedinclude_HEADERS = \
 	procmime.h \
 	procmsg.h \
 	progressdialog.h \
-	quote_fmt_lex.l quote_fmt_lex.h \
-	quote_fmt_parse.y quote_fmt.h \
+	quote_fmt.h \
+	quote_fmt_lex.h \
+	quote_fmt_parse.h \
 	recv.h \
 	rfc2015.h \
 	scoring.h \
@@ -238,15 +239,10 @@ sylpheedinclude_HEADERS = \
 	vcard.h
 
 BUILT_SOURCES = \
-	quote_fmt_lex.c \
-	quote_fmt_parse.c \
-	quote_fmt_parse.h \
-	matcher_parser_lex.c \
-	matcher_parser_parse.c \
-	matcher_parser_parse.h
+	matcher_parser_parse.h \
+	quote_fmt_parse.h
 
 EXTRA_DIST = \
-	quote_fmt_parse.h \
 	pixmaps/address_book.xpm \
 	pixmaps/address.xpm \
 	pixmaps/book.xpm \

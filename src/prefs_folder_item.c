@@ -43,6 +43,12 @@
 #include "folder_item_prefs.h"
 #include "gtk/colorsel.h"
 
+#define ASSIGN_STRING(string, value) \
+	{ \
+		g_free(string); \
+		string = (value); \
+	}
+
 struct FolderItemGeneralPage
 {
 	PrefsPage page;
@@ -204,13 +210,10 @@ void prefs_folder_item_general_save_func(PrefsPage *_page)
 
 	g_return_if_fail(prefs != NULL);
 
-	old_simplify_val = prefs->enable_simplify_subject;
-	old_simplify_str = prefs->simplify_subject_regexp;
-
 	prefs->enable_simplify_subject =
 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_simplify_subject));
-	prefs->simplify_subject_regexp = 
-	    gtk_editable_get_chars(GTK_EDITABLE(page->entry_simplify_subject), 0, -1);
+	ASSIGN_STRING(prefs->simplify_subject_regexp,
+	    gtk_editable_get_chars(GTK_EDITABLE(page->entry_simplify_subject), 0, -1));
 	
 /*
 	if (page->item == page->folderview->summaryview->folder_item &&
@@ -222,8 +225,6 @@ void prefs_folder_item_general_save_func(PrefsPage *_page)
 		folderview_select(page->folderview, page->item);
 	}
 */
-	if (old_simplify_str) g_free(old_simplify_str);
-
 	prefs->enable_folder_chmod = 
 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_folder_chmod));
 	buf = gtk_editable_get_chars(GTK_EDITABLE(page->entry_folder_chmod), 0, -1);
@@ -359,8 +360,6 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * _page,
 		index++;			
 	}
 
-	page->item->prefs->default_account = item->prefs->default_account;
-
 	optmenu = GTK_OPTION_MENU(optmenu_default_account);
  	gtk_option_menu_set_menu(optmenu, optmenu_default_account_menu);
 
@@ -418,15 +417,13 @@ void prefs_folder_item_compose_save_func(PrefsPage *_page)
 
 	prefs->enable_default_to = 
 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_default_to));
-	g_free(prefs->default_to);
-	prefs->default_to = 
-	    gtk_editable_get_chars(GTK_EDITABLE(page->entry_default_to), 0, -1);
+	ASSIGN_STRING(prefs->default_to,
+	    gtk_editable_get_chars(GTK_EDITABLE(page->entry_default_to), 0, -1));
 
 	prefs->enable_default_reply_to = 
 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_default_reply_to));
-	g_free(prefs->default_reply_to);
-	prefs->default_reply_to = 
-	    gtk_editable_get_chars(GTK_EDITABLE(page->entry_default_reply_to), 0, -1);
+	ASSIGN_STRING(prefs->default_reply_to,
+	    gtk_editable_get_chars(GTK_EDITABLE(page->entry_default_reply_to), 0, -1));
 
 	prefs->enable_default_account = 
  	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_enable_default_account));

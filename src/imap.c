@@ -412,14 +412,15 @@ static gboolean imap_rename_folder_func		(GNode		*node,
 						 gpointer	 data);
 static gint imap_get_num_list			(Folder 	*folder,
 						 FolderItem 	*item,
-						 GSList	       **list);
+						 GSList	       **list,
+						 gboolean	*old_uids_valid);
 static GSList *imap_get_msginfos		(Folder		*folder,
 						 FolderItem	*item,
 						 GSList		*msgnum_list);
 static MsgInfo *imap_get_msginfo 		(Folder 	*folder,
 						 FolderItem 	*item,
 						 gint 		 num);
-static gboolean imap_check_msgnum_validity	(Folder 	*folder,
+static gboolean imap_scan_required		(Folder 	*folder,
 						 FolderItem 	*item);
 static void imap_change_flags			(Folder 	*folder,
 						 FolderItem 	*item,
@@ -453,7 +454,7 @@ FolderClass imap_class =
 	NULL,
 	NULL,
 	NULL,
-	imap_check_msgnum_validity,
+	imap_scan_required,
 
 	/* Message functions */
 	imap_get_msginfo,
@@ -1177,7 +1178,7 @@ gint imap_close(Folder *folder, FolderItem *item)
 
 void imap_scan_tree(Folder *folder)
 {
-	FolderItem *item;
+	FolderItem *item = NULL;
 	IMAPSession *session;
 	gchar *root_folder = NULL;
 
@@ -1190,7 +1191,7 @@ void imap_scan_tree(Folder *folder)
 			folder_tree_destroy(folder);
 			item = folder_item_new(folder, folder->name, NULL);
 			item->folder = folder;
-			folder->node = g_node_new(item);
+			folder->node = item->node = g_node_new(item);
 		}
 		return;
 	}
@@ -1201,13 +1202,17 @@ void imap_scan_tree(Folder *folder)
 		debug_print("IMAP root directory: %s\n", root_folder);
 	}
 
-	item = folder_item_new(folder, folder->name, root_folder);
-	item->folder = folder;
-	item->no_select = TRUE;
-	folder->node = g_node_new(item);
+	if (folder->node)
+		item = FOLDER_ITEM(folder->node->data);
+	if (!item || ((item->path || root_folder) &&
+		      strcmp2(item->path, root_folder) != 0)) {
+		folder_tree_destroy(folder);
+		item = folder_item_new(folder, folder->name, root_folder);
+		item->folder = folder;
+		folder->node = item->node = g_node_new(item);
+	}
 
-	imap_scan_tree_recursive(session, item);
-
+	imap_scan_tree_recursive(session, FOLDER_ITEM(folder->node->data));
 	imap_create_missing_folders(folder);
 }
 
@@ -1217,6 +1222,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 	IMAPFolder *imapfolder;
 	FolderItem *new_item;
 	GSList *item_list, *cur;
+	GNode *node;
 	gchar *real_path;
 	gchar *wildcard_path;
 	gchar separator;
@@ -1226,13 +1232,13 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 	g_return_val_if_fail(item->folder != NULL, -1);
 	g_return_val_if_fail(item->no_sub == FALSE, -1);
 
-	folder = FOLDER(item->folder);
+	folder = item->folder;
 	imapfolder = IMAP_FOLDER(folder);
 
 	separator = imap_get_path_separator(imapfolder, item->path);
 
-	if (item->folder->ui_func)
-		item->folder->ui_func(folder, item, folder->ui_func_data);
+	if (folder->ui_func)
+		folder->ui_func(folder, item, folder->ui_func_data);
 
 	if (item->path) {
 		wildcard[0] = separator;
@@ -1256,16 +1262,59 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 	item_list = imap_parse_list(imapfolder, session, real_path, NULL);
 	g_free(real_path);
 
-	for (cur = item_list; cur != NULL; cur = cur->next) {
-		new_item = cur->data;
-		if (!strcmp(new_item->path, "INBOX")) {
-			if (!folder->inbox) {
-				new_item->stype = F_INBOX;
-				item->folder->inbox = new_item;
-			} else {
-				folder_item_destroy(new_item);
-				continue;
+	node = item->node->children;
+	while (node != NULL) {
+		FolderItem *old_item = FOLDER_ITEM(node->data);
+		GNode *next = node->next;
+
+		new_item = NULL;
+		for (cur = item_list; cur != NULL; cur = cur->next) {
+			FolderItem *cur_item = FOLDER_ITEM(cur->data);
+			if (!strcmp2(old_item->path, cur_item->path)) {
+				new_item = cur_item;
+				break;
 			}
+		}
+		if (!new_item) {
+			debug_print("folder '%s' not found. removing...\n",
+				    old_item->path);
+			folder_item_remove(old_item);
+		} else {
+			old_item->no_sub = new_item->no_sub;
+			old_item->no_select = new_item->no_select;
+			if (old_item->no_sub == TRUE && node->children) {
+				debug_print("folder '%s' doesn't have "
+					    "subfolders. removing...\n",
+					    old_item->path);
+				folder_item_remove_children(old_item);
+			}
+		}
+
+		node = next;
+	}
+
+	for (cur = item_list; cur != NULL; cur = cur->next) {
+		FolderItem *cur_item = FOLDER_ITEM(cur->data);
+		new_item = NULL;
+		for (node = item->node->children; node != NULL;
+		     node = node->next) {
+			if (!strcmp2(FOLDER_ITEM(node->data)->path,
+				     cur_item->path)) {
+				new_item = FOLDER_ITEM(node->data);
+				folder_item_destroy(cur_item);
+				cur_item = NULL;
+				break;
+			}
+		}
+		if (!new_item) {
+			new_item = cur_item;
+			debug_print("new folder '%s' found.\n", new_item->path);
+			folder_item_append(item, new_item);
+		}
+
+		if (!strcmp(new_item->path, "INBOX")) {
+			new_item->stype = F_INBOX;
+			folder->inbox = new_item;
 		} else if (!item->parent || item->stype == F_INBOX) {
 			gchar *base;
 
@@ -1296,10 +1345,12 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 				folder->trash = new_item;
 			}
 		}
-		folder_item_append(item, new_item);
+
 		if (new_item->no_sub == FALSE)
 			imap_scan_tree_recursive(session, new_item);
 	}
+
+	g_slist_free(item_list);
 
 	return IMAP_SUCCESS;
 }
@@ -1391,7 +1442,7 @@ static GSList *imap_parse_list(IMAPFolder *folder, IMAPSession *session,
 
 		item_list = g_slist_append(item_list, new_item);
 
-		debug_print("folder %s has been added.\n", loc_path);
+		debug_print("folder '%s' found.\n", loc_path);
 		g_free(loc_path);
 		g_free(loc_name);
 	}
@@ -1626,7 +1677,6 @@ gint imap_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 	gchar *newpath;
 	gchar *real_oldpath;
 	gchar *real_newpath;
-	GNode *node;
 	gchar *paths[2];
 	gchar *old_cache_dir;
 	gchar *new_cache_dir;
@@ -1702,11 +1752,9 @@ gint imap_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 
 	old_cache_dir = folder_item_get_path(item);
 
-	node = g_node_find(item->folder->node, G_PRE_ORDER, G_TRAVERSE_ALL,
-			   item);
 	paths[0] = g_strdup(item->path);
 	paths[1] = newpath;
-	g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
+	g_node_traverse(item->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
 			imap_rename_folder_func, paths);
 
 #ifdef WIN32
@@ -2475,6 +2523,9 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 	gchar *str;
 
 	*messages = *recent = *uid_next = *uid_validity = *unseen = 0;
+
+	if (path == NULL)
+		return -1;
 
 	argbuf = g_ptr_array_new();
 
@@ -3663,11 +3714,11 @@ static gint get_list_of_uids(Folder *folder, IMAPFolderItem *item, GSList **msgn
 	return nummsgs;
 }
 
-gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
+gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, gboolean *old_uids_valid)
 {
 	IMAPFolderItem *item = (IMAPFolderItem *)_item;
 	IMAPSession *session;
-	gint ok, nummsgs = 0, exists, recent, unseen, uid_val, uid_next;
+	gint ok, nummsgs = 0, exists, recent, uid_val, uid_next, unseen;
 	GSList *uidlist;
 	gchar *dir;
 	gboolean selected_folder;
@@ -3688,12 +3739,32 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 		if (ok != IMAP_SUCCESS)
 			return -1;
 		exists = session->exists;
+
+		*old_uids_valid = TRUE;
 	} else {
 		ok = imap_status(session, IMAP_FOLDER(folder), item->item.path,
 				 &exists, &recent, &uid_next, &uid_val, &unseen);
 		if (ok != IMAP_SUCCESS)
 			return -1;
+
+		if(item->item.mtime == uid_val)
+			*old_uids_valid = TRUE;
+		else {
+			*old_uids_valid = FALSE;
+
+			debug_print("Freeing imap uid cache\n");
+			item->lastuid = 0;
+			g_slist_free(item->uid_list);
+			item->uid_list = NULL;
+		
+    			item->item.mtime = uid_val;
+
+			imap_delete_all_cached_messages((FolderItem *)item);
+		}
 	}
+
+	if (!selected_folder)
+		item->uid_next = uid_next;
 
 	/* If old uid_next matches new uid_next we can be sure no message
 	   was added to the folder */
@@ -3716,8 +3787,6 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 			item->uid_list = NULL;
 		}
 	}
-	if (!selected_folder)
-		item->uid_next = uid_next;
 
 	if (exists == 0) {
 		*msgnum_list = NULL;
@@ -3860,37 +3929,43 @@ MsgInfo *imap_get_msginfo(Folder *folder, FolderItem *item, gint uid)
 	return msginfo;
 }
 
-gboolean imap_check_msgnum_validity(Folder *folder, FolderItem *_item)
+gboolean imap_scan_required(Folder *folder, FolderItem *_item)
 {
 	IMAPSession *session;
 	IMAPFolderItem *item = (IMAPFolderItem *)_item;
 	gint ok, exists = 0, recent = 0, unseen = 0;
-	guint32 uid_next, uid_validity = 0;
+	guint32 uid_next, uid_val = 0;
+	gboolean selected_folder;
 	
 	g_return_val_if_fail(folder != NULL, FALSE);
 	g_return_val_if_fail(item != NULL, FALSE);
 	g_return_val_if_fail(item->item.folder != NULL, FALSE);
 	g_return_val_if_fail(FOLDER_CLASS(item->item.folder) == &imap_class, FALSE);
 
+	if (item->item.path == NULL)
+		return FALSE;
+
 	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, FALSE);
 
-	ok = imap_status(session, IMAP_FOLDER(folder), item->item.path,
-			 &exists, &recent, &uid_next, &uid_validity, &unseen);
-	if (ok != IMAP_SUCCESS)
-		return FALSE;
+	selected_folder = (session->mbox != NULL) &&
+			  (!strcmp(session->mbox, item->item.path));
+	if (selected_folder) {
+		ok = imap_cmd_noop(session);
+		if (ok != IMAP_SUCCESS)
+			return FALSE;
 
-	if(item->item.mtime == uid_validity)
-		return TRUE;
+		if (session->folder_content_changed)
+			return TRUE;
+	} else {
+		ok = imap_status(session, IMAP_FOLDER(folder), item->item.path,
+				 &exists, &recent, &uid_next, &uid_val, &unseen);
+		if (ok != IMAP_SUCCESS)
+			return FALSE;
 
-	debug_print("Freeing imap uid cache\n");
-	item->lastuid = 0;
-	g_slist_free(item->uid_list);
-	item->uid_list = NULL;
-		
-	item->item.mtime = uid_validity;
-
-	imap_delete_all_cached_messages((FolderItem *)item);
+		if ((uid_next != item->uid_next) || (exists < item->item.total_msgs))
+			return TRUE;
+	}
 
 	return FALSE;
 }

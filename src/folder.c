@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -110,7 +110,7 @@ Folder *folder_new(FolderClass *klass, const gchar *name, const gchar *path)
 	/* Create root folder item */
 	item = folder_item_new(folder, name, NULL);
 	item->folder = folder;
-	folder->node = g_node_new(item);
+	folder->node = item->node = g_node_new(item);
 	folder->data = NULL;
 
 	return folder;
@@ -233,6 +233,7 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 	item->threaded  = TRUE;
 	item->ret_rcpt  = FALSE;
 	item->opened    = FALSE;
+	item->node = NULL;
 	item->parent = NULL;
 	item->folder = NULL;
 	item->account = NULL;
@@ -250,19 +251,22 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 
 void folder_item_append(FolderItem *parent, FolderItem *item)
 {
-	GNode *node;
-
 	g_return_if_fail(parent != NULL);
 	g_return_if_fail(parent->folder != NULL);
+	g_return_if_fail(parent->node != NULL);
 	g_return_if_fail(item != NULL);
-
-	node = parent->folder->node;
-	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, parent);
-	g_return_if_fail(node != NULL);
 
 	item->parent = parent;
 	item->folder = parent->folder;
-	g_node_append_data(node, item);
+	item->node = g_node_append_data(parent->node, item);
+}
+
+static gboolean folder_item_remove_func(GNode *node, gpointer data)
+{
+	FolderItem *item = FOLDER_ITEM(node->data);
+
+	folder_item_destroy(item);
+	return FALSE;
 }
 
 void folder_item_remove(FolderItem *item)
@@ -271,22 +275,53 @@ void folder_item_remove(FolderItem *item)
 
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
+	g_return_if_fail(item->node != NULL);
 
-	node = item->folder->node;
-	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
-	g_return_if_fail(node != NULL);
+	node = item->node;
 
-	/* TODO: free all FolderItem's first */
 	if (item->folder->node == node)
 		item->folder->node = NULL;
+
+	g_node_traverse(node, G_POST_ORDER, G_TRAVERSE_ALL, -1,
+			folder_item_remove_func, NULL);
 	g_node_destroy(node);
+}
+
+void folder_item_remove_children(FolderItem *item)
+{
+	GNode *node, *next;
+
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(item->folder != NULL);
+	g_return_if_fail(item->node != NULL);
+
+	node = item->node->children;
+	while (node != NULL) {
+		next = node->next;
+		folder_item_remove(FOLDER_ITEM(node->data));
+		node = next;
+	}
 }
 
 void folder_item_destroy(FolderItem *item)
 {
+	Folder *folder;
+
 	g_return_if_fail(item != NULL);
 
-	debug_print("Destroying folder item %s\n", item->path);
+	folder = item->folder;
+	if (folder) {
+		if (folder->inbox == item)
+			folder->inbox = NULL;
+		else if (folder->outbox == item)
+			folder->outbox = NULL;
+		else if (folder->draft == item)
+			folder->draft = NULL;
+		else if (folder->queue == item)
+			folder->queue = NULL;
+		else if (folder->trash == item)
+			folder->trash = NULL;
+	}
 
 	if (item->cache)
 		folder_item_free_cache(item);
@@ -334,21 +369,12 @@ gboolean folder_tree_destroy_func(GNode *node, gpointer data) {
 void folder_tree_destroy(Folder *folder)
 {
 	g_return_if_fail(folder != NULL);
-	g_return_if_fail(folder->node != NULL);
 	
 	prefs_scoring_clear_folder(folder);
 	prefs_filtering_clear_folder(folder);
 
-	g_node_traverse(folder->node, G_POST_ORDER, G_TRAVERSE_ALL, -1, folder_tree_destroy_func, NULL);
 	if (folder->node)
-		g_node_destroy(folder->node);
-
-	folder->inbox = NULL;
-	folder->outbox = NULL;
-	folder->draft = NULL;
-	folder->queue = NULL;
-	folder->trash = NULL;
-	folder->node = NULL;
+		folder_item_remove(FOLDER_ITEM(folder->node->data));
 }
 
 void folder_add(Folder *folder)
@@ -1065,7 +1091,7 @@ static gint folder_sort_folder_list(gconstpointer a, gconstpointer b)
 
 gint folder_item_open(FolderItem *item)
 {
-	if(((FOLDER_TYPE(item->folder) == F_IMAP) && !item->no_select) || (FOLDER_TYPE(item->folder) == F_NEWS)) {
+	if((item->folder->klass->scan_required != NULL) && (item->folder->klass->scan_required(item->folder, item))) {
 		folder_item_scan_full(item, TRUE);
 	}
 
@@ -1129,7 +1155,7 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	GSList *newmsg_list = NULL;
 	guint newcnt = 0, unreadcnt = 0, totalcnt = 0, unreadmarkedcnt = 0;
 	guint cache_max_num, folder_max_num, cache_cur_num, folder_cur_num;
-	gboolean update_flags = 0;
+	gboolean update_flags = 0, old_uids_valid = FALSE;
     
 	g_return_val_if_fail(item != NULL, -1);
 	if (item->path == NULL) return -1;
@@ -1142,13 +1168,12 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	debug_print("Scanning folder %s for cache changes.\n", item->path);
 
 	/* Get list of messages for folder and cache */
-	if (folder->klass->get_num_list(item->folder, item, &folder_list) < 0) {
+	if (folder->klass->get_num_list(item->folder, item, &folder_list, &old_uids_valid) < 0) {
 		debug_print("Error fetching list of message numbers\n");
 		return(-1);
 	}
 
-	if (!folder->klass->check_msgnum_validity || 
-	    folder->klass->check_msgnum_validity(folder, item)) {
+	if (old_uids_valid) {
 		if (!item->cache)
 			folder_item_read_cache(item);
 		cache_list = msgcache_get_msg_list(item->cache);
@@ -2547,6 +2572,7 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	item->ret_rcpt  = ret_rcpt;
 	item->sort_key  = sort_key;
 	item->sort_type = sort_type;
+	item->node = node;
 	item->parent = FOLDER_ITEM(node->parent->data);
 	item->folder = folder;
 	switch (stype) {
@@ -2570,6 +2596,7 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 static gboolean folder_read_folder_func(GNode *node, gpointer data)
 {
 	Folder *folder;
+	FolderItem *item;
 	XMLNode *xmlnode;
 	GList *list;
 	FolderClass *class = NULL;
@@ -2620,16 +2647,18 @@ static gboolean folder_read_folder_func(GNode *node, gpointer data)
 	folder->account = account;
 	if (account != NULL)
 		account->folder = REMOTE_FOLDER(folder);
-	node->data = folder->node->data;
+	item = FOLDER_ITEM(folder->node->data);
+	node->data = item;
+	item->node = node;
 	g_node_destroy(folder->node);
 	folder->node = node;
 	folder_add(folder);
-	FOLDER_ITEM(node->data)->collapsed = collapsed;
-	FOLDER_ITEM(node->data)->thread_collapsed = thread_collapsed;
-	FOLDER_ITEM(node->data)->threaded  = threaded;
-	FOLDER_ITEM(node->data)->account   = account;
-	FOLDER_ITEM(node->data)->apply_sub = apply_sub;
-	FOLDER_ITEM(node->data)->ret_rcpt  = ret_rcpt;
+	item->collapsed = collapsed;
+	item->thread_collapsed = thread_collapsed;
+	item->threaded  = threaded;
+	item->account   = account;
+	item->apply_sub = apply_sub;
+	item->ret_rcpt  = ret_rcpt;
 
 	g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
 			folder_build_tree, folder);

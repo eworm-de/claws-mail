@@ -540,7 +540,8 @@ void folderview_init(FolderView *folderview)
 	GtkWidget *label_unread;
 	GtkWidget *hbox_new;
 	GtkWidget *hbox_unread;
-
+	
+	gtk_widget_realize(ctree);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_CLOSE, &inboxxpm, &inboxxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_CLOSE_HRM, &inboxhrmxpm, &inboxhrmxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_OPEN, &inboxopenxpm, &inboxopenxpmmask);
@@ -1318,6 +1319,16 @@ static void folderview_expand_func(GtkCTree *ctree, GtkCTreeNode *node,
 				sibling = GTK_CTREE_ROW(prev)->sibling; \
 			else \
 				sibling = GTK_CTREE_ROW(parent)->children; \
+			while (sibling) { \
+				FolderItem *tmp; \
+ \
+				tmp = gtk_ctree_node_get_row_data \
+					(ctree, sibling); \
+				if (tmp->stype != F_NORMAL) \
+					sibling = GTK_CTREE_ROW(sibling)->sibling; \
+				else \
+					break; \
+			} \
 			if (node != sibling) \
 				gtk_ctree_move(ctree, node, parent, sibling); \
 		} \

@@ -101,13 +101,16 @@ static gchar *news_parse_xhdr		 (const gchar	*xhdr_str,
 					  MsgInfo	*msginfo);
 gint news_get_num_list		 	 (Folder 	*folder, 
 					  FolderItem 	*item,
-					  GSList       **list);
+					  GSList       **list,
+					  gboolean	*old_uids_valid);
 MsgInfo *news_get_msginfo		 (Folder 	*folder, 
 					  FolderItem 	*item,
 					  gint 		 num);
 GSList *news_get_msginfos		 (Folder 	*folder,
 					  FolderItem 	*item,
 					  GSList 	*msgnum_list);
+gboolean news_scan_required		 (Folder 	*folder,
+					  FolderItem 	*item);
 
 gint news_post_stream			 (Folder 	*folder, 
 					  FILE 		*fp);
@@ -139,7 +142,7 @@ FolderClass news_class =
 	NULL,
 	NULL,
 	NULL,
-	NULL,
+	news_scan_required,
 
 	/* Message functions */
 	news_get_msginfo,
@@ -768,7 +771,7 @@ gchar *news_item_get_path(Folder *folder, FolderItem *item)
 	return path;
 }
 
-gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_list)
+gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_list, gboolean *old_uids_valid)
 {
 	NNTPSession *session;
 	gint i, ok, num, first, last, nummsgs = 0;
@@ -780,6 +783,8 @@ gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_list)
 
 	session = news_session_get(folder);
 	g_return_val_if_fail(session != NULL, -1);
+
+	*old_uids_valid = TRUE;
 
 	ok = news_select_group(session, item->path, &num, &first, &last);
 	if (ok != NN_SUCCESS) {
@@ -1048,4 +1053,9 @@ GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 	progressindicator_stop(PROGRESS_TYPE_NETWORK);
 
 	return msginfo_list;
+}
+
+gboolean news_scan_required(Folder *folder, FolderItem *item)
+{
+	return TRUE;
 }

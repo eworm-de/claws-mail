@@ -72,7 +72,7 @@ static gboolean mh_is_msg_changed(Folder * folder,
 				  FolderItem * item, MsgInfo * msginfo);
 
 static gint mh_get_num_list(Folder * folder,
-			    FolderItem * item, GSList ** list);
+			    FolderItem * item, GSList ** list, gboolean *old_uids_valid);
 static void mh_scan_tree(Folder * folder);
 
 static gint mh_create_tree(Folder * folder);
@@ -86,6 +86,7 @@ static gint mh_remove_folder(Folder * folder, FolderItem * item);
 static gchar *mh_get_new_msg_filename(FolderItem * dest);
 
 static MsgInfo *mh_parse_msg(const gchar * file, FolderItem * item);
+static void	mh_remove_missing_folder_items	(Folder		*folder);
 static void mh_scan_tree_recursive(FolderItem * item);
 
 static gboolean mh_rename_folder_func(GNode * node, gpointer data);
@@ -198,7 +199,7 @@ void mh_get_last_num(Folder *folder, FolderItem *item)
 	item->last_num = max;
 }
 
-gint mh_get_num_list(Folder *folder, FolderItem *item, GSList **list)
+gint mh_get_num_list(Folder *folder, FolderItem *item, GSList **list, gboolean *old_uids_valid)
 {
 
 	gchar *path;
@@ -210,6 +211,8 @@ gint mh_get_num_list(Folder *folder, FolderItem *item, GSList **list)
 	g_return_val_if_fail(item != NULL, -1);
 
 	debug_print("mh_get_last_num(): Scanning %s ...\n", item->path);
+
+	*old_uids_valid = TRUE;
 
 	path = folder_item_get_path(item);
 	g_return_val_if_fail(path != NULL, -1);
@@ -484,19 +487,20 @@ void mh_scan_tree(Folder *folder)
 
 	g_return_if_fail(folder != NULL);
 
+	if (!folder->node) {
 #ifdef WIN32
-	{
-		gchar *p_name;
-		p_name = g_strdup(folder->name);
-		locale_from_utf8(&p_name);
-		item = folder_item_new(folder, p_name, NULL);
-		g_free(p_name);
-	}
+	  	gchar *name_utf8 = g_locale_from_utf8(folder->name, -1, NULL, NULL, NULL);
+		item = folder_item_new(folder, name_utf8, NULL);
 #else
-	item = folder_item_new(folder, folder->name, NULL);
+		item = folder_item_new(folder, folder->name, NULL);
 #endif
-	item->folder = folder;
-	folder->node = g_node_new(item);
+		item->folder = folder;
+		folder->node = item->node = g_node_new(item);
+#ifdef WIN32
+	  	g_free(name_utf8);
+#endif
+	} else
+		item = FOLDER_ITEM(folder->node->data);
 
 	rootpath = folder_item_get_path(item);
 	if (change_dir(rootpath) < 0) {
@@ -506,6 +510,7 @@ void mh_scan_tree(Folder *folder)
 	g_free(rootpath);
 
 	mh_create_tree(folder);
+	mh_remove_missing_folder_items(folder);
 	mh_scan_tree_recursive(item);
 }
 
@@ -635,7 +640,6 @@ gint mh_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 	gchar *oldpath;
 	gchar *dirname;
 	gchar *newpath;
-	GNode *node;
 	gchar *paths[2];
 
 	g_return_val_if_fail(folder != NULL, -1);
@@ -681,11 +685,9 @@ gint mh_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 	item->name = g_strdup(name);
 #endif
 
-	node = g_node_find(item->folder->node, G_PRE_ORDER, G_TRAVERSE_ALL,
-			   item);
 	paths[0] = g_strdup(item->path);
 	paths[1] = newpath;
-	g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
+	g_node_traverse(item->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
 			mh_rename_folder_func, paths);
 
 	g_free(paths[0]);
@@ -775,8 +777,41 @@ static gboolean mh_is_maildir(const gchar *path)
 }
 #endif
 
+static gboolean mh_remove_missing_folder_items_func(GNode *node, gpointer data)
+{
+	FolderItem *item;
+	gchar *path;
+
+	g_return_val_if_fail(node->data != NULL, FALSE);
+
+	if (G_NODE_IS_ROOT(node))
+		return FALSE;
+
+	item = FOLDER_ITEM(node->data);
+
+	path = folder_item_get_path(item);
+	if (!is_dir_exist(path)) {
+		debug_print("folder '%s' not found. removing...\n", path);
+		folder_item_remove(item);
+	}
+	g_free(path);
+
+	return FALSE;
+}
+
+static void mh_remove_missing_folder_items(Folder *folder)
+{
+	g_return_if_fail(folder != NULL);
+
+	debug_print("searching missing folders...\n");
+
+	g_node_traverse(folder->node, G_POST_ORDER, G_TRAVERSE_ALL, -1,
+			mh_remove_missing_folder_items_func, folder);
+}
+
 static void mh_scan_tree_recursive(FolderItem *item)
 {
+	Folder *folder;
 	DIR *dp;
 	struct dirent *d;
 	struct stat s;
@@ -785,6 +820,8 @@ static void mh_scan_tree_recursive(FolderItem *item)
 
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
+
+	folder = item->folder;
 
 	dp = opendir(item->path ? item->path : ".");
 	if (!dp) {
@@ -795,9 +832,8 @@ static void mh_scan_tree_recursive(FolderItem *item)
 	debug_print("scanning %s ...\n",
 		    item->path ? item->path
 		    : LOCAL_FOLDER(item->folder)->rootpath);
-	if (item->folder->ui_func)
-		item->folder->ui_func(item->folder, item,
-				      item->folder->ui_func_data);
+	if (folder->ui_func)
+		folder->ui_func(folder, item, folder->ui_func_data);
 
 	while ((d = readdir(dp)) != NULL) {
 		if (d->d_name[0] == '.') continue;
@@ -815,7 +851,8 @@ static void mh_scan_tree_recursive(FolderItem *item)
 		}
 
 		if (S_ISDIR(s.st_mode)) {
-			FolderItem *new_item;
+			FolderItem *new_item = NULL;
+			GNode *node;
 
 #if 0
 			if (mh_is_maildir(entry)) {
@@ -824,26 +861,44 @@ static void mh_scan_tree_recursive(FolderItem *item)
 			}
 #endif
 
-			new_item = folder_item_new(item->folder, d->d_name, entry);
-			folder_item_append(item, new_item);
-			if (!item->path) {
-				if (!strcmp(d->d_name, INBOX_DIR)) {
-					new_item->stype = F_INBOX;
-					item->folder->inbox = new_item;
-				} else if (!strcmp(d->d_name, OUTBOX_DIR)) {
-					new_item->stype = F_OUTBOX;
-					item->folder->outbox = new_item;
-				} else if (!strcmp(d->d_name, DRAFT_DIR)) {
-					new_item->stype = F_DRAFT;
-					item->folder->draft = new_item;
-				} else if (!strcmp(d->d_name, QUEUE_DIR)) {
-					new_item->stype = F_QUEUE;
-					item->folder->queue = new_item;
-				} else if (!strcmp(d->d_name, TRASH_DIR)) {
-					new_item->stype = F_TRASH;
-					item->folder->trash = new_item;
+			node = item->node;
+			for (node = node->children; node != NULL; node = node->next) {
+				FolderItem *cur_item = FOLDER_ITEM(node->data);
+				if (!strcmp2(cur_item->path, entry)) {
+					new_item = cur_item;
+					break;
 				}
 			}
+			if (!new_item) {
+				debug_print("new folder '%s' found.\n", entry);
+				new_item = folder_item_new(folder, d->d_name, entry);
+				folder_item_append(item, new_item);
+			}
+
+			if (!item->path) {
+				if (!folder->inbox &&
+				    !strcmp(d->d_name, INBOX_DIR)) {
+					new_item->stype = F_INBOX;
+					folder->inbox = new_item;
+				} else if (!folder->outbox &&
+					   !strcmp(d->d_name, OUTBOX_DIR)) {
+					new_item->stype = F_OUTBOX;
+					folder->outbox = new_item;
+				} else if (!folder->draft &&
+					   !strcmp(d->d_name, DRAFT_DIR)) {
+					new_item->stype = F_DRAFT;
+					folder->draft = new_item;
+				} else if (!folder->queue &&
+					   !strcmp(d->d_name, QUEUE_DIR)) {
+					new_item->stype = F_QUEUE;
+					folder->queue = new_item;
+				} else if (!folder->trash &&
+					   !strcmp(d->d_name, TRASH_DIR)) {
+					new_item->stype = F_TRASH;
+					folder->trash = new_item;
+				}
+			}
+
 			mh_scan_tree_recursive(new_item);
 		} else if (to_number(d->d_name) != -1) n_msg++;
 

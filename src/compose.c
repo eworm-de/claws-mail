@@ -5420,7 +5420,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 					"/Spelling/Spelling Configuration");
 				gtkaspell_populate_submenu(gtkaspell, menuitem);
 				menu_set_sensitive(ifactory, "/Spelling", TRUE);
-				}
+			}
         	}
 	}
 #endif

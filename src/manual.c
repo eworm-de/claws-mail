@@ -47,7 +47,7 @@ static gchar *get_language()
 #ifdef WIN32
 	language = g_strdup(gtk_set_locale());
 #else
-	language = g_strdup(setlocale(LC_ALL, NULL));
+	language = g_strdup(setlocale(LC_MESSAGES, NULL));
 #endif
 	if((c = strchr(language, ',')) != NULL)
 		*c = '\0';

@@ -88,6 +88,9 @@ GtkWidget*	gtkaspell_dictionary_option_menu_new	(const gchar *aspell_path);
 
 gchar*		gtkaspell_get_dictionary_menu_active_item
 							(GtkWidget *menu);
+gint		gtkaspell_set_dictionary_menu_active_item
+							(GtkWidget *menu, 
+							 const gchar *dictionary);
 
 GtkWidget*	gtkaspell_sugmode_option_menu_new	(gint sugmode);
 

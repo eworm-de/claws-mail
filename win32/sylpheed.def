@@ -727,6 +727,7 @@ EXPORTS
 	folder_item_read_cache 
 	folder_item_remove 
 	folder_item_remove_all_msg 
+	folder_item_remove_children 
 	folder_item_remove_msg 
 	folder_item_remove_msgs 
 	folder_item_restore_persist_prefs 
@@ -879,7 +880,6 @@ EXPORTS
 	gtk_stext_thaw 
 	gtk_vscrollbutton_get_type 
 	gtk_vscrollbutton_new 
-	gtk_vscrollbutton_reset 
 	gtkaspell_check_all 
 	gtkaspell_check_backwards 
 	gtkaspell_check_forwards_go 
@@ -898,6 +898,7 @@ EXPORTS
 	gtkaspell_highlight_all 
 	gtkaspell_new 
 	gtkaspell_populate_submenu 
+	gtkaspell_set_dictionary_menu_active_item 
 	gtkaspell_set_sug_mode 
 	gtkaspell_sugmode_option_menu_new 
 	gtkaspell_sugmode_option_menu_set 
@@ -1230,6 +1231,7 @@ EXPORTS
 	news_post 
 	news_post_stream 
 	news_remove_group_list_cache 
+	news_scan_required 
 	news_session_get 
 	newsgroup_list_append 
 	nntp_article 
