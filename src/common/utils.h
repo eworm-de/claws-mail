@@ -413,24 +413,6 @@ void subject_table_insert(GHashTable *subject_table, gchar * subject,
 void subject_table_remove(GHashTable *subject_table, gchar * subject);
 gint subject_get_prefix_length (const gchar *subject);
 
-/* The following macros have the same preconditions as the cleanless
- * functions above, but work with clean subjects (subject lines already
- * corrected for the reply prefixes */
-#define subject_table_lookup_clean(t, s) \
-	g_hash_table_lookup((t), (s) ? (s) : "")
-	
-#define subject_table_insert_clean(t, s, d) \
-	do { \
-		if ((s) != NULL && (*(s)) != 0) \
-			g_hash_table_insert((t), (s), (d)); \
-	} while (0)	
-
-#define subject_table_remove_clean(t, s) \
-	do { \
-		if ((s) != NULL) \
-			g_hash_table_remove((t), (s)); \
-	} while (0)			
-
 /* quoting recognition */
 const gchar * line_has_quote_char	(const gchar *str,
 					 const gchar *quote_chars);

@@ -1,3 +1,13 @@
+2003-08-14 [christoph]	0.9.4claws19
+
+	* src/procmsg.c
+	* src/common/utils.h
+		add possibility to check all nodes with the same subject for
+		subject threading, not only the oldest node. Should not break
+		threads anymore if the oldest node is thread_by_subject_max_age
+		days older then parent, because it can now find a child of
+		oldest node as new parent.
+
 2003-08-11 [christoph]	0.9.4claws18
 
 	* src/plugins/spamassassin/spamassassin.c

@@ -152,20 +152,94 @@ static gboolean procmsg_ignore_node(GNode *node, gpointer data)
   later than its child.)
 */  
 
+static void subject_relation_insert(GRelation *relation, GNode *node)
+{
+	gchar *subject;
+	MsgInfo *msginfo;
+
+	g_return_if_fail(relation != NULL);
+	g_return_if_fail(node != NULL);
+	msginfo = (MsgInfo *) node->data;
+	g_return_if_fail(msginfo != NULL);
+
+	subject = msginfo->subject;
+	if (subject == NULL)
+		return;
+	subject += subject_get_prefix_length(subject);
+
+	g_relation_insert(relation, subject, node);
+}
+
+static GNode *subject_relation_lookup(GRelation *relation, MsgInfo *msginfo)
+{
+	gchar *subject;
+	GTuples *tuples;
+	GNode *node = NULL;
+    
+	g_return_val_if_fail(relation != NULL, NULL);
+
+	subject = msginfo->subject;
+	if (subject == NULL)
+		return NULL;
+	subject += subject_get_prefix_length(subject);
+	
+	tuples = g_relation_select(relation, subject, 0);
+	if (tuples == NULL)
+		return NULL;
+
+	if (tuples->len > 0) {
+		int i;
+		GNode *relation_node;
+		MsgInfo *relation_msginfo, *best_msginfo;
+		gboolean match;
+
+		/* check all nodes with the same subject to find the best parent */
+		for (i = 0; i < tuples->len; i++) {
+			relation_node = (GNode *) g_tuples_index(tuples, i, 1);
+			relation_msginfo = (MsgInfo *) relation_node->data;
+			match = FALSE;
+
+			/* best node should be the oldest in the found nodes */
+			/* parent node must not be older then msginfo */
+			if (best_msginfo->date_t < relation_msginfo->date_t &&
+			    relation_msginfo->date_t < msginfo->date_t)
+				match = TRUE;
+
+			/* parent node must not be more then thread_by_subject_max_age
+			   days older then msginfo */
+			if (abs(difftime(msginfo->date_t, relation_msginfo->date_t)) >
+                            prefs_common.thread_by_subject_max_age * 3600 * 24)
+				match = FALSE;
+
+			/* can add new tests for all matching
+			   nodes found by subject */
+
+			if (match) {
+				node = relation_node;
+				best_msginfo = relation_msginfo;
+			}
+		}	    
+	}
+
+	g_tuples_destroy(tuples);
+	return node;
+}
+
 /* return the reversed thread tree */
 GNode *procmsg_get_thread_tree(GSList *mlist)
 {
 	GNode *root, *parent, *node, *next, *last;
 	GNode *prev; /* CLAWS */
 	GHashTable *msgid_table;
-	GHashTable *subject_table;
+	GRelation *subject_relation;
 	MsgInfo *msginfo;
 	const gchar *msgid;
 	const gchar *subject;
 
 	root = g_node_new(NULL);
 	msgid_table = g_hash_table_new(g_str_hash, g_str_equal);
-	subject_table = g_hash_table_new(g_str_hash, g_str_equal);
+	subject_relation = g_relation_new(2);
+	g_relation_index(subject_relation, 0, g_str_hash, g_str_equal);
 
 	for (; mlist != NULL; mlist = mlist->next) {
 		msginfo = (MsgInfo *)mlist->data;
@@ -175,39 +249,17 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 			parent = g_hash_table_lookup(msgid_table, msginfo->inreplyto);
 			if (parent == NULL) {
 				parent = root;
-			} else {
-				if (MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-					procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
-					procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
-				}
 			}
 		}
 		node = g_node_insert_data_before
 			(parent, parent == root ? parent->children : NULL,
 			 msginfo);
-		if ((msgid = msginfo->msgid) &&
-		    g_hash_table_lookup(msgid_table, msgid) == NULL)
+		if ((msgid = msginfo->msgid) && g_hash_table_lookup(msgid_table, msgid) == NULL)
 			g_hash_table_insert(msgid_table, (gchar *)msgid, node);
 
-		/* CLAWS: add subject to table (without prefix) */
+		/* CLAWS: add subject to relation (without prefix) */
 		if (prefs_common.thread_by_subject) {
-			GNode *found_subject = NULL;
-			
-			subject  = msginfo->subject;
-			subject += subject_get_prefix_length(subject);
-			found_subject = subject_table_lookup_clean
-					(subject_table, (gchar *) subject);
-									   
-			if (found_subject == NULL) 
-				subject_table_insert_clean(subject_table, (gchar *) subject,
-						           node);
-			else if ( ((MsgInfo*)(found_subject->data))->date_t > 
-                                  ((MsgInfo*)(node->data))->date_t )  {
-				/* replace if msg in table is older than current one 
-				   TODO: should create a list of messages with same subject */
-				subject_table_remove_clean(subject_table, (gchar *) subject);
-				subject_table_insert_clean(subject_table, (gchar *) subject, node);
-			}
+			subject_relation_insert(subject_relation, node);
 		}
 	}
 
@@ -226,9 +278,6 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 				g_node_unlink(node);
 				g_node_insert_before
 					(parent, parent->children, node);
-				/* CLAWS: ignore thread */
-				if (MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-					g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, procmsg_ignore_node, NULL);
 			}				
 		}
 		last = (next == NULL) ? prev : node;
@@ -239,11 +288,10 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 		for (node = last; node && node != NULL;) {
 			next = node->prev;
 			msginfo = (MsgInfo *) node->data;
-			subject = msginfo->subject + subject_get_prefix_length(msginfo->subject);
 			
 			/* may not parentize if parent was delivered after childs */
 			if (subject != msginfo->subject)
-				parent = subject_table_lookup_clean(subject_table, (gchar *) subject);
+				parent = subject_relation_lookup(subject_relation, msginfo);
 			else
 				parent = NULL; 
 			
@@ -254,31 +302,18 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 					parent = NULL;
 				if (parent == node)
 					parent = NULL;
-				/* make new thread parent if too old compared to previous one; probably
-				   breaks ignoring threads for subject threading. not accurate because
-				   the tree isn't sorted by date. */
-				if (parent && abs(difftime(msginfo->date_t, ((MsgInfo *)parent->data)->date_t)) >
-						prefs_common.thread_by_subject_max_age * 3600 * 24) {
-					subject_table_remove_clean(subject_table, (gchar *) subject);
-					subject_table_insert_clean(subject_table, (gchar *) subject, node);
-					parent = NULL;
-				}
 			}
 			
 			if (parent) {
 				g_node_unlink(node);
 				g_node_append(parent, node);
-				/* CLAWS: ignore thread */
-				if (MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-					g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, procmsg_ignore_node, NULL);
-				}
 			}
 
 			node = next;
 		}	
 	}
 	
-	g_hash_table_destroy(subject_table);
+	g_relation_destroy(subject_relation);
 	g_hash_table_destroy(msgid_table);
 
 	return root;
