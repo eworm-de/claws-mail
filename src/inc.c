@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -130,9 +130,9 @@ static gint inc_autocheck_func			(gpointer	 data);
 static void inc_finished(MainWindow *mainwin, gboolean new_messages)
 {
 	FolderItem *item;
-	
+
 	if (prefs_common.scan_all_after_inc)
-		folderview_update_all_node();
+		folderview_check_new(NULL);
 
 	if (!new_messages && !prefs_common.scan_all_after_inc) return;
 
@@ -191,6 +191,11 @@ static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 	IncSession *session;
 	gchar *text[3];
 
+	if (account->protocol == A_IMAP4 || account->protocol == A_NNTP) {
+		folderview_check_new(FOLDER(account->folder));
+		return 1;
+	}
+
 	session = inc_session_new(account);
 	if (!session) return 0;
 
@@ -230,7 +235,16 @@ void inc_all_account_mail(MainWindow *mainwin)
 		return;
 	}
 
+	/* check IMAP4 folders */
 	for (; list != NULL; list = list->next) {
+		PrefsAccount *account = list->data;
+		if ((account->protocol == A_IMAP4 ||
+		     account->protocol == A_NNTP) && account->recv_at_getall)
+			folderview_check_new(FOLDER(account->folder));
+	}
+
+	/* check POP3 accounts */
+	for (list = account_get_list(); list != NULL; list = list->next) {
 		IncSession *session;
 		PrefsAccount *account = list->data;
 

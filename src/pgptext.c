@@ -223,7 +223,7 @@ int pgptext_is_encrypted (MimeInfo *mimeinfo, MsgInfo *msginfo)
 		return 0;
 	
 	if ((fp = procmsg_open_message(msginfo)) == NULL) return;
-	mimeinfo = procmime_scan_mime_header(fp, MIME_TEXT);
+	mimeinfo = procmime_scan_mime_header(fp);
 	fclose(fp);
 	if (!mimeinfo) return;
 

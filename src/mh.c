@@ -740,9 +740,9 @@ void mh_scan_folder(Folder *folder, FolderItem *item)
 	if (n_msg == 0)
 		item->new = item->unread = item->total = 0;
 	else {
-		gint new, unread, total;
+		gint new, unread, total, min, max;
 
-		procmsg_get_mark_sum(".", &new, &unread, &total);
+		procmsg_get_mark_sum(".", &new, &unread, &total, &min, &max, 0);
 		if (n_msg > total) {
 			new += n_msg - total;
 			unread += n_msg - total;
@@ -1169,9 +1169,10 @@ static void mh_scan_tree_recursive(FolderItem *item, GHashTable *pptable)
 	closedir(dp);
 
 	if (item->path) {
-		gint new, unread, total;
+		gint new, unread, total, min, max;
 
-		procmsg_get_mark_sum(item->path, &new, &unread, &total);
+		procmsg_get_mark_sum(item->path, &new, &unread, &total,
+				     &min, &max, 0);
 		if (n_msg > total) {
 			new += n_msg - total;
 			unread += n_msg - total;

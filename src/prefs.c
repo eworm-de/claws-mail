@@ -102,6 +102,7 @@ void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 		if (buf[name_len] != '=')
 			continue;
 		value = buf + name_len + 1;
+		/* debug_print("%s = %s\n", param[i].name, value); */
 
 		switch (param[i].type) {
 		case P_STRING:

@@ -566,6 +566,55 @@ void prefs_filter_write_config(void)
 	}
 }
 
+void prefs_filter_rename_path(const gchar *old_path, const gchar *new_path)
+{
+	GSList *cur;
+	gchar *base;
+	gchar *dest_path;
+	gint oldpathlen;
+
+	for (cur = prefs_common.fltlist; cur != NULL; cur = cur->next) {
+		Filter *flt = (Filter *)cur->data;
+
+		oldpathlen = strlen(old_path);
+		if (!strncmp(old_path, (gchar *)flt->dest, oldpathlen)) {
+			base = (gchar *)flt->dest + oldpathlen;
+			while (*base == G_DIR_SEPARATOR) base++;
+			if (*base == '\0')
+				dest_path = g_strdup(new_path);
+			else
+				dest_path = g_strconcat(new_path,
+							G_DIR_SEPARATOR_S,
+							base, NULL);
+			g_free(flt->dest);
+			flt->dest = dest_path;
+		}
+	}
+
+	prefs_filter_write_config();
+}
+
+void prefs_filter_delete_path(const gchar *path)
+{
+	GSList *cur;
+	GSList *next;
+	gint len;
+
+	for (cur = prefs_common.fltlist; cur != NULL; cur = next) {
+		Filter *flt = (Filter *)cur->data;
+		next = cur->next;
+
+		len = strlen(path);
+		if (!strncmp(path, flt->dest, len)) {
+			filter_free(flt);
+			prefs_common.fltlist =
+				g_slist_remove(prefs_common.fltlist, flt);
+		}
+	}
+
+	prefs_filter_write_config();
+}
+
 static void prefs_filter_set_dialog(const gchar *header, const gchar *key)
 {
 	GtkCList *clist = GTK_CLIST(filter.cond_clist);

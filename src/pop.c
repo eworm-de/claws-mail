@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,31 @@
 #include "utils.h"
 #include "inc.h"
 #include "recv.h"
+
+#define LOOKUP_NEXT_MSG() \
+	for (;;) { \
+		gint size = state->sizes[state->cur_msg]; \
+ \
+		if (size == 0 || \
+		    (state->ac_prefs->enable_size_limit && \
+		     state->ac_prefs->size_limit > 0 && \
+		     size > state->ac_prefs->size_limit * 1024)) { \
+			log_print(_("Skipping message %d\n"), state->cur_msg); \
+			if (size > 0) { \
+				state->cur_total_bytes += size; \
+				state->cur_total_num++; \
+				if (state->new_id_list) { \
+					state->id_list = g_slist_append(state->id_list, state->new_id_list->data); \
+					state->new_id_list = g_slist_remove(state->new_id_list, state->new_id_list->data); \
+				} \
+			} \
+			if (state->cur_msg == state->count) \
+				return POP3_LOGOUT_SEND; \
+			else \
+				state->cur_msg++; \
+		} else \
+			break; \
+	}
 
 static gint pop3_ok(SockInfo *sock, gchar *argbuf);
 static void pop3_gen_send(SockInfo *sock, const gchar *format, ...);
@@ -316,13 +341,7 @@ gint pop3_getsize_list_recv(SockInfo *sock, gpointer data)
 			state->cur_total_bytes += size;
 	}
 
-	while (state->sizes[state->cur_msg] == 0) {
-		if (state->cur_msg == state->count)
-			return POP3_LOGOUT_SEND;
-		else
-			state->cur_msg++;
-	}
-
+	LOOKUP_NEXT_MSG();
 	return POP3_RETR_SEND;
 }
 
@@ -370,12 +389,7 @@ gint pop3_retr_recv(SockInfo *sock, gpointer data)
 
 		if (state->cur_msg < state->count) {
 			state->cur_msg++;
-			while (state->sizes[state->cur_msg] == 0) {
-				if (state->cur_msg == state->count)
-					return POP3_LOGOUT_SEND;
-				else
-					state->cur_msg++;
-			}
+			LOOKUP_NEXT_MSG();
 			return POP3_RETR_SEND;
 		} else
 			return POP3_LOGOUT_SEND;
@@ -404,12 +418,7 @@ gint pop3_delete_recv(SockInfo *sock, gpointer data)
 	if ((ok = pop3_ok(sock, NULL)) == PS_SUCCESS) {
 		if (state->cur_msg < state->count) {
 			state->cur_msg++;
-			while (state->sizes[state->cur_msg] == 0) {
-				if (state->cur_msg == state->count)
-					return POP3_LOGOUT_SEND;
-				else
-					state->cur_msg++;
-			}
+			LOOKUP_NEXT_MSG();
 			return POP3_RETR_SEND;
 		} else
 			return POP3_LOGOUT_SEND;

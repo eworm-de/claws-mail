@@ -54,6 +54,7 @@
 #include "gtkutils.h"
 #include "prefs_common.h"
 #include "prefs_account.h"
+#include "prefs_filter.h"
 #include "account.h"
 #include "folder.h"
 #include "inc.h"
@@ -785,7 +786,7 @@ static GtkWidget *label_window_create(const gchar *str)
 	return window;
 }
 
-void folderview_update_tree(Folder *folder)
+void folderview_rescan_tree(Folder *folder)
 {
 	GtkWidget *window;
 
@@ -807,7 +808,7 @@ void folderview_update_tree(Folder *folder)
 	inc_unlock();
 }
 
-void folderview_update_all(void)
+void folderview_rescan_all(void)
 {
 	GList *list;
 	GtkWidget *window;
@@ -831,7 +832,7 @@ void folderview_update_all(void)
 	inc_unlock();
 }
 
-void folderview_update_all_node(void)
+void folderview_check_new(Folder *folder)
 {
 	GList *list;
 	FolderItem *item;
@@ -850,9 +851,10 @@ void folderview_update_all_node(void)
 		for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 		     node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 			item = gtk_ctree_node_get_row_data(ctree, node);
-			if (!item || !FOLDER_IS_LOCAL(item->folder) ||
-			    !item->path)
-				continue;
+			if (!item || !item->path || !item->folder) continue;
+			if (folder && folder != item->folder) continue;
+			if (!folder && !FOLDER_IS_LOCAL(item->folder)) continue;
+
 			folderview_scan_tree_func(item->folder, item, NULL);
 			folder_item_scan(item);
 			folderview_update_node(folderview, node);
@@ -1700,9 +1702,9 @@ static void folderview_update_tree_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item->folder != NULL);
 
 	if (action == 0)
-		folderview_update_all_node();
+		folderview_check_new(item->folder);
 	else
-		folderview_update_tree(item->folder);
+		folderview_rescan_tree(item->folder);
 }
 
 static void folderview_new_folder_cb(FolderView *folderview, guint action,
@@ -1826,6 +1828,8 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 	FolderItem *item;
 	gchar *new_folder;
 	gchar *message;
+	gchar *old_path;
+	gchar *new_path;
 
 	if (!folderview->selected) return;
 
@@ -1857,11 +1861,25 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 		return;
 	}
 
+	Xstrdup_a(old_path, item->path, {g_free(new_folder); return;});
+
 	if (item->folder->rename_folder(item->folder, item, new_folder) < 0) {
 		g_free(new_folder);
 		return;
 	}
+
+	if (strchr(item->path, G_DIR_SEPARATOR) != NULL) {
+		gchar *dirname;
+		dirname = g_dirname(item->path);
+		new_path = g_strconcat(dirname, G_DIR_SEPARATOR_S, new_folder, NULL);
+		g_free(dirname);
+	} else
+		new_path = g_strdup(new_folder);
+
 	g_free(new_folder);
+
+	prefs_filter_rename_path(old_path, new_path);
+	g_free(new_path);
 
 	gtk_clist_freeze(GTK_CLIST(ctree));
 
@@ -1942,6 +1960,7 @@ static void folderview_delete_folder_cb(FolderView *folderview, guint action,
 	FolderItem *item;
 	gchar *message;
 	AlertValue avalue;
+	gchar *old_path;
 
 	if (!folderview->selected) return;
 
@@ -1959,11 +1978,15 @@ static void folderview_delete_folder_cb(FolderView *folderview, guint action,
 	g_free(message);
 	if (avalue != G_ALERTDEFAULT) return;
 
+	Xstrdup_a(old_path, item->path, return);
+
 	if (item->folder->remove_folder(item->folder, item) < 0) {
 		alertpanel_error(_("Can't remove the folder `%s'."),
 				 item->path);
 		return;
 	}
+
+	prefs_filter_delete_path(old_path);
 
 	if (folderview->opened == folderview->selected ||
 	    gtk_ctree_is_ancestor(ctree,

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,10 @@
 #ifndef __PROCMSG_H__
 #define __PROCMSG_H__
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include <glib.h>
 #include <stdio.h>
 #include <time.h>
@@ -30,6 +34,7 @@ typedef struct _MsgInfo		MsgInfo;
 typedef struct _MsgFlags	MsgFlags;
 
 #include "folder.h"
+#include "procmime.h"
 
 typedef enum
 {
@@ -214,7 +219,10 @@ void	procmsg_write_flags		(MsgInfo	*msginfo,
 void	procmsg_get_mark_sum		(const gchar	*folder,
 					 gint		*new,
 					 gint		*unread,
-					 gint		*total);
+					 gint		*total,
+					 gint		*min,
+					 gint		*max,
+					 gint		 first);
 FILE   *procmsg_open_mark_file		(const gchar	*folder,
 					 gboolean	 append);
 
@@ -226,6 +234,10 @@ void	procmsg_copy_messages		(GSList		*mlist);
 gchar  *procmsg_get_message_file_path	(MsgInfo	*msginfo);
 gchar  *procmsg_get_message_file	(MsgInfo	*msginfo);
 FILE   *procmsg_open_message		(MsgInfo	*msginfo);
+#if USE_GPGME
+FILE   *procmsg_open_message_decrypted	(MsgInfo	*msginfo,
+					 MimeInfo      **mimeinfo);
+#endif
 gboolean procmsg_msg_exist		(MsgInfo	*msginfo);
 
 void	procmsg_empty_trash		(void);

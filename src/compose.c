@@ -188,11 +188,10 @@ static void compose_insert_file			(Compose	*compose,
 						 const gchar	*file);
 static void compose_attach_append		(Compose	*compose,
 						 const gchar	*file,
-						 ContentType	 cnttype);
-static void compose_attach_append_with_type(Compose *compose,
-					    const gchar *file,
-					    const gchar *type,
-					    ContentType cnttype);
+						 const gchar	*type,
+						 const gchar	*content_type);
+static void compose_attach_parts		(Compose	*compose,
+						 MsgInfo	*msginfo);
 static void compose_wrap_line			(Compose	*compose);
 static void compose_wrap_line_all		(Compose	*compose);
 static void compose_set_title			(Compose	*compose);
@@ -435,9 +434,6 @@ static void replyto_activated		(GtkWidget	*widget,
 static void followupto_activated	(GtkWidget	*widget,
 					 Compose	*compose);
 #endif
-
-static void compose_attach_parts	(Compose	*compose,
-					 MsgInfo	*msginfo);
 
 static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				  gboolean to_all,
@@ -996,167 +992,6 @@ static gchar *mime_extract_file(gchar *source, MimeInfo *partinfo)
 	return filename;
 }
 
-static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
-{
-	FILE *fp;
-	gchar *file;
-	MimeInfo *mimeinfo;
-	MsgInfo *tmpmsginfo;
-	gchar *p;
-	gchar *boundary;
-	gint boundary_len = 0;
-	gchar buf[BUFFSIZE];
-	glong fpos, prev_fpos;
-	gint npart;
-	gchar *source;
-	gchar *filename;
-
-	g_return_if_fail(msginfo != NULL);
-	
-#if USE_GPGME
-	for (;;) {
-		if ((fp = procmsg_open_message(msginfo)) == NULL) return;
-		mimeinfo = procmime_scan_mime_header(fp, MIME_TEXT);
-		if (!mimeinfo) break;
-
-		if (!MSG_IS_ENCRYPTED(msginfo->flags) &&
-		    rfc2015_is_encrypted(mimeinfo)) {
-			MSG_SET_TMP_FLAGS(msginfo->flags, MSG_ENCRYPTED);
-		}
-		if (MSG_IS_ENCRYPTED(msginfo->flags) &&
-		    !msginfo->plaintext_file  &&
-		    !msginfo->decryption_failed) {
-			rfc2015_decrypt_message(msginfo, mimeinfo, fp);
-			if (msginfo->plaintext_file &&
-			    !msginfo->decryption_failed) {
-				fclose(fp);
-				continue;
-			}
-		}
-		
-		break;
-	}
-#else /* !USE_GPGME */
-	if ((fp = procmsg_open_message(msginfo)) == NULL) return;
-	mimeinfo = procmime_scan_mime_header(fp, MIME_TEXT);
-#endif /* USE_GPGME */
-
-	fclose(fp);
-	if (!mimeinfo) return;
-	if (mimeinfo->mime_type == MIME_TEXT)
-		return;
-
-	if ((fp = procmsg_open_message(msginfo)) == NULL) return;
-
-	g_return_if_fail(mimeinfo != NULL);
-	g_return_if_fail(mimeinfo->mime_type != MIME_TEXT);
-
-	if (mimeinfo->mime_type == MIME_MULTIPART) {
-		g_return_if_fail(mimeinfo->boundary != NULL);
-		g_return_if_fail(mimeinfo->sub == NULL);
-	}
-	g_return_if_fail(fp != NULL);
-
-	boundary = mimeinfo->boundary;
-
-	if (boundary) {
-		boundary_len = strlen(boundary);
-
-		/* look for first boundary */
-		while ((p = fgets(buf, sizeof(buf), fp)) != NULL)
-			if (IS_BOUNDARY(buf, boundary, boundary_len)) break;
-		if (!p) {
-			fclose(fp);
-			return;
-		}
-	}
-
-	if ((fpos = ftell(fp)) < 0) {
-		perror("ftell");
-		fclose(fp);
-		return;
-	}
-
-	for (npart = 0;; npart++) {
-		MimeInfo *partinfo;
-		gboolean eom = FALSE;
-
-		prev_fpos = fpos;
-
-		partinfo = procmime_scan_mime_header(fp, MIME_TEXT);
-		if (!partinfo) break;
-
-		if (npart != 0)
-			procmime_mimeinfo_insert(mimeinfo, partinfo);
-		else
-			procmime_mimeinfo_free(partinfo);
-
-		/* look for next boundary */
-		buf[0] = '\0';
-		while ((p = fgets(buf, sizeof(buf), fp)) != NULL) {
-			if (IS_BOUNDARY(buf, boundary, boundary_len)) {
-				if (buf[2 + boundary_len]     == '-' &&
-				    buf[2 + boundary_len + 1] == '-')
-					eom = TRUE;
-				break;
-			}
-		}
-		if (p == NULL)
-			eom = TRUE;	/* broken MIME message */
-		fpos = ftell(fp);
-
-		partinfo->size = fpos - prev_fpos - strlen(buf);
-
-		if (eom) break;
-	}
-
-	source = procmsg_get_message_file_path(msginfo);
-
-	g_return_if_fail(mimeinfo != NULL);
-
-	if (!mimeinfo->main && mimeinfo->parent)
-		{
-			filename = mime_extract_file(source, mimeinfo);
-
-			compose_attach_append_with_type(compose, filename,
-							mimeinfo->content_type,
-							mimeinfo->mime_type);
-
-			g_free(filename);
-		}
-
-	if (mimeinfo->sub && mimeinfo->sub->children)
-		{
-			filename = mime_extract_file(source, mimeinfo->sub);
-
-			compose_attach_append_with_type(compose, filename,
-							mimeinfo->content_type,
-							mimeinfo->sub->mime_type);
-
-			g_free(filename);
-		}
-
-	if (mimeinfo->children) {
-		MimeInfo *child;
-
-		child = mimeinfo->children;
-		while (child) {
-			filename = mime_extract_file(source, child);
-
-			compose_attach_append_with_type(compose, filename,
-							child->content_type,
-							child->mime_type);
-
-			g_free(filename);
-
-			child = child->next;
-		}
-	}
-
-	fclose(fp);
-
-	procmime_mimeinfo_free_all(mimeinfo);
-}
 
 
 #define INSERT_FW_HEADER(var, hdr) \
@@ -1218,31 +1053,33 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	text = GTK_STEXT(compose->text);
 	gtk_stext_freeze(text);
 
-	if (as_attach) {
-		gchar *msgfile;
 
-		msgfile = procmsg_get_message_file_path(msginfo);
-		if (!is_file_exist(msgfile))
-			g_warning(_("%s: file not exist\n"), msgfile);
-		else
-			compose_attach_append(compose, msgfile,
-					      MIME_MESSAGE_RFC822);
+		if (as_attach) {
+			gchar *msgfile;
 
-		g_free(msgfile);
-	} else {
-		gchar *qmark;
-		gchar *quote_str;
+			msgfile = procmsg_get_message_file_path(msginfo);
+			if (!is_file_exist(msgfile))
+				g_warning(_("%s: file not exist\n"), msgfile);
+			else
+				compose_attach_append(compose, msgfile, msgfile,
+						      "message/rfc822");
 
-		if (prefs_common.fw_quotemark && *prefs_common.fw_quotemark)
-			qmark = prefs_common.fw_quotemark;
-		else
-			qmark = "> ";
+			g_free(msgfile);
+		} else {
+			gchar *qmark;
+			gchar *quote_str;
 
-		quote_str = compose_quote_fmt(compose, msginfo,
-					      prefs_common.fw_quotefmt, qmark,
-					      body);
-		compose_attach_parts(compose, msginfo);
-	}
+			if (prefs_common.fw_quotemark &&
+			    *prefs_common.fw_quotemark)
+				qmark = prefs_common.fw_quotemark;
+			else
+				qmark = "> ";
+
+			quote_str = compose_quote_fmt(compose, msginfo,
+						      prefs_common.fw_quotefmt,
+						      qmark, body);
+			compose_attach_parts(compose, msginfo);
+		}
 
 	if (prefs_common.auto_sig)
 		compose_insert_sig(compose);
@@ -1309,8 +1146,8 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 		if (!is_file_exist(msgfile))
 			g_warning(_("%s: file not exist\n"), msgfile);
 		else
-			compose_attach_append(compose, msgfile,
-				MIME_MESSAGE_RFC822);
+			compose_attach_append(compose, msgfile, msgfile,
+				"message/rfc822");
 		g_free(msgfile);
 	}
 
@@ -2022,78 +1859,13 @@ static void compose_insert_file(Compose *compose, const gchar *file)
 	fclose(fp);
 }
 
-static void compose_attach_info(Compose * compose, AttachInfo * ainfo,
-				ContentType cnttype)
-{
-	gchar *text[N_ATTACH_COLS];
-	gint row;
-
-	text[COL_MIMETYPE] = ainfo->content_type;
-	text[COL_SIZE] = to_human_readable(ainfo->size);
-	text[COL_NAME] = ainfo->name;
-
-	row = gtk_clist_append(GTK_CLIST(compose->attach_clist), text);
-	gtk_clist_set_row_data(GTK_CLIST(compose->attach_clist), row, ainfo);
-
-	if (cnttype != MIME_MESSAGE_RFC822)
-		compose_changed_cb(NULL, compose);
-}
-
-static void compose_attach_append_with_type(Compose *compose,
-					    const gchar *file,
-					    const gchar *type,
-					    ContentType cnttype)
-{
-	AttachInfo *ainfo;
-	off_t size;
-
-	if (!is_file_exist(file)) {
-		g_warning(_("File %s doesn't exist\n"), file);
-		return;
-	}
-	if ((size = get_file_size(file)) < 0) {
-		g_warning(_("Can't get file size of %s\n"), file);
-		return;
-	}
-	if (size == 0) {
-		alertpanel_notice(_("File %s is empty\n"), file);
-		return;
-	}
-#if 0 /* NEW COMPOSE GUI */
-	if (!compose->use_attach) {
-		GtkItemFactory *ifactory;
-		GtkWidget *menuitem;
-
-		ifactory = gtk_item_factory_from_widget(compose->menubar);
-		menuitem = gtk_item_factory_get_item(ifactory,
-						     "/Message/Attach");
-		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
-					       TRUE);
-	}
-#endif
-	ainfo = g_new0(AttachInfo, 1);
-	ainfo->file = g_strdup(file);
-
-	if (cnttype == MIME_MESSAGE_RFC822) {
-		ainfo->encoding = ENC_7BIT;
-		ainfo->name = g_strdup_printf(_("Message: %s"),
-					      g_basename(file));
-	} else {
-		ainfo->encoding = ENC_BASE64;
-		ainfo->name = g_strdup(g_basename(file));
-	}
-
-	ainfo->content_type = g_strdup(type);
-	ainfo->size = size;
-
-	compose_attach_info(compose, ainfo, cnttype);
-}
-
 static void compose_attach_append(Compose *compose, const gchar *file,
-				  ContentType cnttype)
+				  const gchar *filename,
+				  const gchar *content_type)
 {
 	AttachInfo *ainfo;
 	gchar *text[N_ATTACH_COLS];
+	FILE *fp;
 	off_t size;
 	gint row;
 
@@ -2106,9 +1878,15 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 		return;
 	}
 	if (size == 0) {
-		alertpanel_notice(_("File %s is empty\n"), file);
+		alertpanel_notice(_("File %s is empty."), file);
 		return;
 	}
+	if ((fp = fopen(file, "r")) == NULL) {
+		alertpanel_error(_("Can't read %s."), file);
+		return;
+	}
+	fclose(fp);
+
 #if 0 /* NEW COMPOSE GUI */
 	if (!compose->use_attach) {
 		GtkItemFactory *ifactory;
@@ -2124,23 +1902,90 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 	ainfo = g_new0(AttachInfo, 1);
 	ainfo->file = g_strdup(file);
 
-	if (cnttype == MIME_MESSAGE_RFC822) {
-		ainfo->content_type = g_strdup("message/rfc822");
-		ainfo->encoding = ENC_7BIT;
-		ainfo->name = g_strdup_printf(_("Message: %s"),
-					      g_basename(file));
+	if (content_type) {
+		ainfo->content_type = g_strdup(content_type);
+		if (!strcasecmp(content_type, "message/rfc822")) {
+			ainfo->encoding = ENC_7BIT;
+			ainfo->name = g_strdup_printf
+				(_("Message: %s"),
+				 g_basename(filename ? filename : file));
+		} else {
+			ainfo->encoding = ENC_BASE64;
+			ainfo->name = g_strdup
+				(g_basename(filename ? filename : file));
+		}
 	} else {
 		ainfo->content_type = procmime_get_mime_type(file);
 		if (!ainfo->content_type)
 			ainfo->content_type =
 				g_strdup("application/octet-stream");
 		ainfo->encoding = ENC_BASE64;
-		ainfo->name = g_strdup(g_basename(file));
+		ainfo->name = g_strdup(g_basename(filename ? filename : file));	
 	}
 	ainfo->size = size;
 
-	compose_attach_info(compose, ainfo, cnttype);
+	text[COL_MIMETYPE] = ainfo->content_type;
+	text[COL_SIZE] = to_human_readable(size);
+	text[COL_NAME] = ainfo->name;
+
+	row = gtk_clist_append(GTK_CLIST(compose->attach_clist), text);
+	gtk_clist_set_row_data(GTK_CLIST(compose->attach_clist), row, ainfo);
 }
+
+#define IS_FIRST_PART_TEXT(info) \
+	((info->mime_type == MIME_TEXT || info->mime_type == MIME_TEXT_HTML || \
+	  info->mime_type == MIME_TEXT_ENRICHED) || \
+	 (info->mime_type == MIME_MULTIPART && info->content_type && \
+	  !strcasecmp(info->content_type, "multipart/alternative") && \
+	  (info->children && \
+	   (info->children->mime_type == MIME_TEXT || \
+	    info->children->mime_type == MIME_TEXT_HTML || \
+	    info->children->mime_type == MIME_TEXT_ENRICHED))))
+
+static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
+{
+	MimeInfo *mimeinfo;
+	MimeInfo *child;
+	gchar *infile;
+	gchar *outfile;
+
+	mimeinfo = procmime_scan_message(msginfo);
+	if (!mimeinfo) return;
+
+	/* skip first text (presumably message body) */
+	child = mimeinfo->children;
+	if (!child || IS_FIRST_PART_TEXT(mimeinfo)) {
+		procmime_mimeinfo_free_all(mimeinfo);
+		return;
+	}
+	if (IS_FIRST_PART_TEXT(child))
+		child = child->next;
+
+	infile = procmsg_get_message_file_path(msginfo);
+
+	while (child != NULL) {
+		if (child->children || child->mime_type == MIME_MULTIPART) {
+			child = procmime_mimeinfo_next(child);
+			continue;
+		}
+
+		outfile = procmime_get_tmp_file_name(child);
+		if (procmime_get_part(outfile, infile, child) < 0)
+			g_warning(_("Can't get the part of multipart message."));
+		else
+			compose_attach_append
+				(compose, outfile,
+				 child->filename ? child->filename : child->name,
+				 child->content_type);
+
+		child = child->next;
+	}
+
+	g_free(infile);
+	procmime_mimeinfo_free_all(mimeinfo);
+}
+
+#undef IS_FIRST_PART_TEXT
 
 #define GET_CHAR(pos, buf, len)						     \
 {									     \
@@ -6076,7 +5921,8 @@ static void compose_attach_cb(gpointer data, guint action, GtkWidget *widget)
 
 		for ( tmp = file_list; tmp; tmp = tmp->next) {
 			gchar *file = (gchar *) tmp->data;
-			compose_attach_append(compose, file, MIME_UNKNOWN);
+			compose_attach_append(compose, file, file, NULL);
+			compose_changed_cb(NULL, compose);
 			g_free(file);
 		}
 		g_list_free(file_list);
@@ -6499,8 +6345,10 @@ static void compose_attach_drag_received_cb (GtkWidget		*widget,
 
 	list = uri_list_extract_filenames((const gchar *)data->data);
 	for (tmp = list; tmp != NULL; tmp = tmp->next)
-		compose_attach_append(compose, (const gchar *)tmp->data,
-				      MIME_UNKNOWN);
+		compose_attach_append
+			(compose, (const gchar *)tmp->data,
+			 (const gchar *)tmp->data, NULL);
+	if (list) compose_changed_cb(NULL, compose);
 	list_free_strings(list);
 	g_list_free(list);
 }

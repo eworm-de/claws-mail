@@ -103,12 +103,12 @@ void menu_set_sensitive(GtkItemFactory *ifactory, const gchar *path,
 	gtk_widget_set_sensitive(widget, sensitive);
 }
 
-void menu_set_insensitive_all(GtkMenuShell *menu_shell)
+void menu_set_sensitive_all(GtkMenuShell *menu_shell, gboolean sensitive)
 {
 	GList *cur;
 
 	for (cur = menu_shell->children; cur != NULL; cur = cur->next)
-		gtk_widget_set_sensitive(GTK_WIDGET(cur->data), FALSE);
+		gtk_widget_set_sensitive(GTK_WIDGET(cur->data), sensitive);
 }
 
 void menu_set_toggle(GtkItemFactory *ifactory, const gchar *path,

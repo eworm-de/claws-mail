@@ -149,8 +149,7 @@ void procmime_scan_content_description	(MimeInfo	*mimeinfo,
 					 const gchar	*content_description);
 void procmime_scan_subject              (MimeInfo       *mimeinfo,
 			                 const gchar    *subject);
-MimeInfo *procmime_scan_mime_header	(FILE		*fp,
-					 ContentType    default_type);
+MimeInfo *procmime_scan_mime_header	(FILE		*fp);
 
 FILE *procmime_decode_content		(FILE		*outfp,
 					 FILE		*infp,

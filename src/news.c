@@ -71,7 +71,10 @@ static gint news_get_header		 (NNTPSession	*session,
 					  gchar		*filename);
 
 static gint news_select_group		 (NNTPSession	*session,
-					  const gchar	*group);
+					  const gchar	*group,
+					  gint		*num,
+					  gint		*first,
+					  gint		*last);
 static GSList *news_get_uncached_articles(NNTPSession	*session,
 					  FolderItem	*item,
 					  gint		 cache_last,
@@ -294,7 +297,7 @@ gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 		return NULL;
 	}
 
-	ok = news_select_group(session, item->path);
+	ok = news_select_group(session, item->path, NULL, NULL, NULL);
 	statusbar_pop_all();
 	if (ok != NN_SUCCESS) {
 		g_warning(_("can't select group %s\n"), item->path);
@@ -317,6 +320,51 @@ gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 
 void news_scan_group(Folder *folder, FolderItem *item)
 {
+	NNTPSession *session;
+	gint num = 0, first = 0, last = 0;
+	gint new = 0, unread = 0, total = 0;
+	gint min = 0, max = 0;
+	gchar *path;
+	gint ok;
+
+	g_return_if_fail(folder != NULL);
+	g_return_if_fail(item != NULL);
+
+	session = news_session_get(folder);
+	if (!session) return;
+
+	ok = news_select_group(session, item->path, &num, &first, &last);
+	if (ok != NN_SUCCESS) {
+		log_warning(_("can't set group: %s\n"), item->path);
+		return;
+	}
+
+	if (num == 0) {
+		item->new = item->unread = item->total = item->last_num = 0;
+		return;
+	}
+
+	path = folder_item_get_path(item);
+	if (path && is_dir_exist(path)) {
+		procmsg_get_mark_sum(path, &new, &unread, &total, &min, &max,
+				     first);
+	}
+	g_free(path);
+
+	if (first < min) {
+		new = unread = total = num;
+	} else if (max < first) {
+		new = unread = total = num;
+	} else if (last > max) {
+		new += last - max;
+		unread += last - max;
+		if (new > num) new = num;
+		if (unread > num) unread = num;
+	}
+	item->new = new;
+	item->unread = unread;
+	item->total = num;
+	item->last_num = last;
 }
 
 static NewsGroupInfo *news_group_info_new(const gchar *name,
@@ -526,24 +574,33 @@ static gint news_get_header(NNTPSession *session, gint num, gchar *filename)
  * news_select_group:
  * @session: Active NNTP session.
  * @group: Newsgroup name.
+ * @num: Estimated number of articles.
+ * @first: First article number.
+ * @last: Last article number.
  *
  * Select newsgroup @group with the GROUP command if it is not already
- * selected in @session.
+ * selected in @session, or article numbers need to be returned.
  *
  * Return value: NNTP result code.
  **/
-static gint news_select_group(NNTPSession *session, const gchar *group)
+static gint news_select_group(NNTPSession *session, const gchar *group,
+			      gint *num, gint *first, gint *last)
 {
 	gint ok;
-	gint num, first, last;
+	gint num_, first_, last_;
 
-	if (session->group && g_strcasecmp(session->group, group) == 0)
-		return NN_SUCCESS;
+	if (!num || !first || !last) {
+		if (session->group && g_strcasecmp(session->group, group) == 0)
+			return NN_SUCCESS;
+		num = &num_;
+		first = &first_;
+		last = &last_;
+	}
 
 	g_free(session->group);
 	session->group = NULL;
 
-	ok = nntp_group(session->nntp_sock, group, &num, &first, &last);
+	ok = nntp_group(session->nntp_sock, group, num, first, last);
 	if (ok == NN_SUCCESS)
 		session->group = g_strdup(group);
 
@@ -569,16 +626,11 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 	g_return_val_if_fail(item->folder != NULL, NULL);
 	g_return_val_if_fail(item->folder->type == F_NEWS, NULL);
 
-	g_free(session->group);
-	session->group = NULL;
-
-	ok = nntp_group(session->nntp_sock, item->path,
-			&num, &first, &last);
+	ok = news_select_group(session, item->path, &num, &first, &last);
 	if (ok != NN_SUCCESS) {
 		log_warning(_("can't set group: %s\n"), item->path);
 		return NULL;
 	}
-	session->group = g_strdup(item->path);
 
 	/* calculate getting overview range */
 	if (first > last) {

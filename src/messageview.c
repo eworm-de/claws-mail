@@ -374,54 +374,11 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	g_return_if_fail(msginfo != NULL);
 
 #if USE_GPGME
-	for (;;) {
-		if ((fp = procmsg_open_message(msginfo)) == NULL) return;
-		mimeinfo = procmime_scan_mime_header(fp, MIME_TEXT);
-		if (!mimeinfo) break;
-
-		if (!MSG_IS_ENCRYPTED(msginfo->flags) &&
-		    rfc2015_is_encrypted(mimeinfo)) {
-			MSG_SET_TMP_FLAGS(msginfo->flags, MSG_ENCRYPTED);
-		}
-		if (!MSG_IS_ENCRYPTED(msginfo->flags) &&
-		    pgptext_is_encrypted(mimeinfo, msginfo)) {
-			MSG_SET_TMP_FLAGS(msginfo->flags, MSG_ENCRYPTED);
-			/* To avoid trouble with the rfc2015 stuff we go for encryption 
-			 * right here. */
-			if (MSG_IS_ENCRYPTED(msginfo->flags) &&
-			    !msginfo->plaintext_file  &&
-			    !msginfo->decryption_failed) {
-				/* This is an encrypted message but it has not yet
-				 * been decrypted and there was no unsuccessful
-				 * decryption attempt */
-				pgptext_decrypt_message(msginfo, mimeinfo, fp);
-				if (msginfo->plaintext_file &&
-				    !msginfo->decryption_failed) {
-					fclose(fp);
-					continue;
-				}
-			}
-		}
-		
-		if (MSG_IS_ENCRYPTED(msginfo->flags) &&
-		    !msginfo->plaintext_file  &&
-		    !msginfo->decryption_failed) {
-			/* This is an encrypted message but it has not yet
-			 * been decrypted and there was no unsuccessful
-			 * decryption attempt */
-			rfc2015_decrypt_message(msginfo, mimeinfo, fp);
-			if (msginfo->plaintext_file &&
-			    !msginfo->decryption_failed) {
-				fclose(fp);
-				continue;
-			}
-		}
-
-		break;
-	}
+	if ((fp = procmsg_open_message_decrypted(msginfo, &mimeinfo)) == NULL)
+		return;
 #else /* !USE_GPGME */
 	if ((fp = procmsg_open_message(msginfo)) == NULL) return;
-	mimeinfo = procmime_scan_mime_header(fp, MIME_TEXT);
+	mimeinfo = procmime_scan_mime_header(fp);
 #endif /* USE_GPGME */
 	fclose(fp);
 	if (!mimeinfo) return;

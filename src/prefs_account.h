@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -96,15 +96,17 @@ struct _PrefsAccount
 	gboolean rmmail;
 	gboolean getall;
 	gboolean recv_at_getall;
+	gboolean enable_size_limit;
+	gint size_limit;
 	gboolean filter_on_recv;
 	gchar *inbox;
 
 	gchar *imap_dir;
 
 	/* Send */
-	gboolean  add_date;
-	gboolean  gen_msgid;
-	gboolean  add_customhdr;
+	gboolean add_date;
+	gboolean gen_msgid;
+	gboolean add_customhdr;
 	gboolean use_smtp_auth;
 	gchar	 *smtp_userid;
 	gchar	 *smtp_passwd;

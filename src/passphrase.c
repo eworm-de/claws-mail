@@ -40,6 +40,7 @@
 
 #include "intl.h"
 #include "passphrase.h"
+#include "manage_window.h"
 
 
 static int grab_all = 0;
@@ -84,12 +85,18 @@ gpgmegtk_passphrase_mbox (const gchar *desc)
                        GTK_SIGNAL_FUNC(passphrase_deleted), NULL);
     gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
                        GTK_SIGNAL_FUNC(passphrase_key_pressed), NULL);
+    gtk_signal_connect(GTK_OBJECT(window), "focus_in_event",
+                       GTK_SIGNAL_FUNC(manage_window_focus_in), NULL);
+    gtk_signal_connect(GTK_OBJECT(window), "focus_out_event",
+                       GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
+    manage_window_set_transient(GTK_WINDOW(window));
 
     vbox = gtk_vbox_new(FALSE, 8);
     gtk_container_add(GTK_CONTAINER(window), vbox);
 
     if (desc) {
-        GtkWidget *label = create_description (desc);
+        GtkWidget *label;
+        label = create_description (desc);
         gtk_box_pack_start (GTK_BOX(vbox), label, TRUE, TRUE, 0);
     }
 
@@ -169,6 +176,8 @@ gpgmegtk_passphrase_mbox (const gchar *desc)
         gdk_flush();
     }
 
+    manage_window_focus_out(window, NULL, NULL);
+
     if (pass_ack) {
         the_passphrase = gtk_entry_get_text(GTK_ENTRY(pass_entry));
         if (the_passphrase) /* Hmmm: Do we really need this? */
@@ -224,7 +233,7 @@ linelen (const gchar *s)
 static GtkWidget *
 create_description (const gchar *desc)
 {
-    const gchar *cmd=NULL, *uid=NULL, *info=NULL;
+    const gchar *cmd = NULL, *uid = NULL, *info = NULL;
     gchar *buf;
     GtkWidget *label;
 

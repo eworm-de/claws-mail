@@ -1,3 +1,100 @@
+2002-02-21
+
+	* src/prefs_account.[ch]: 受信サイズ制限のオプションを追加。
+	* src/pop.c: 制限サイズより大きいメッセージをスキップ。
+	  LOOKUP_NEXT_MSG(): 新規マクロ。
+	* src/compose.c: compose_attach_append(): ファイルが読み込み可能
+	  かどうかをチェック。
+
+2002-02-21
+
+	* src/rfc2015.c: dump_mimeinfo() と dump_part() をコメントアウト。
+	  g_message() を debug_print() と g_warning() に変更。
+	  rfc2015_decrypt_message(): 復号化に失敗したあるいはキャンセルした
+	  場合にメッセージパートを複製していたバグを修正。コードの整理。
+	* src/passphrase.c: ダイアログを transient にした。
+	* src/prefs.c: prefs_config_parse_one_line(): debug_print() を削除。
+
+2002-02-20
+
+	* src/messageview.c
+	  src/procmsg.[ch]: GPGME が有効な場合マルチパートメッセージの
+	  解析に失敗するバグを修正。
+	* src/rfc2015.c: 使用されていない copy_gpgmedata_to_temp() を
+	  コメントアウト。
+	* src/prefs_account.c: prefs_account_privacy_create(): 縦方向の
+	  間隔を修正。
+
+2002-02-19
+
+	* src/menu.[ch]: menu_set_sensitive_all(): 新規。
+	  menu_set_insensitive_all(): menu_set_sensitive_all() のラッパー
+	  にした。
+	* src/prefs_account.c:
+	  prefs_account_open()
+	  prefs_account_protocol_set_optmenu(): アカウント作成後プロトコル
+	  のタイプを変更不可にした。
+	* src/compose.c: compose_attach_parts(): MIME ツリーをトラバース
+	  してネストされたマルチパート MIME メッセージから全ての添付された
+	  ファイルを展開するようにした。
+
+2002-02-19
+
+	* src/procmsg.[ch]: procmsg_get_mark_sum(): 最小/最大の番号を得る
+	  引数と先頭の番号の制限を指定する引数を追加。
+	* src/folderview.c
+	  src/inc.c: ニュースフォルダのメッセージチェックを有効にした。
+	* src/news.c: news_scan_group(): 実装。新着/未読メッセージ数を
+	  GROUP コマンドの応答とマークデータから推測。
+	  news_select_group(): 合計/最初/最後の番号を返すようにした。
+	* src/prefs_account.c: prefs_account_receive_create(): 「全受信」
+	  チェックボタンのテキストを修正。
+
+2002-02-18
+
+	* src/account.c: 「全受信」チェックボックスを IMAP4 と NNTP で
+	  利用可能にした。
+	* src/inc.c: folderview_check_new() の引数を修正。
+	* src/prefs_account.c: "「全受信」でこのアカウントの新着メールを
+	  チェックする" チェックボックスの修正。
+
+2002-02-18
+
+	* src/folderview.[ch]:
+	  folderview_rescan_tree(), folderview_rescan_all():
+	  folderview_update_tree() と folderview_update_all() を名称変更。
+	  folderview_update_all_node(): 削除。
+	  folderview_check_new(): 新規。引数が NULL の場合、全てのローカル
+	  フォルダをチェックする。引数が指定されていれば、その(ローカルと
+	  リモート)フォルダをチェックする。
+	* src/inc.c:
+	  inc_account_mail()
+	  inc_all_account_mail(): IMAP4 アカウントもチェックするようにした。
+
+2002-02-18
+
+	* src/folderview.c:
+	  folderview_rename_folder_cb()
+	  folderview_delete_folder_cb(): フォルダを改名/削除したときに
+	  フィルタルールを修正。
+	* src/prefs_filter.[ch]:
+	  prefs_filter_rename_path(): 新規。フィルタリスト中の振り分け先
+	  のパスを改名する。
+	  prefs_filter_delete_path(): 新規。振り分け先のパスがマッチすれば
+	  フィルタルールを削除する。
+	* 上記について Neill Miller さん thanks。
+
+2002-02-17
+
+	* src/compose.c: 転送または再編集時に添付ファイルを受け継ぐように
+	  した(claws ブランチのコードを書き直した)。
+	  compose_attach_parts(): 新規。与えられたメッセージ中のファイル
+	  を展開して添付する。
+	  compose_attach_append(): 引数の型を変更。
+	* src/messageview.c: messageview_show(): GPG 復号のコードを
+	  procmsg.c に移動。
+	* src/procmsg.[ch]: procmsg_open_message_decrypted(): 新規。
+
 2002-02-16
 
 	* version 0.7.2

@@ -1,3 +1,102 @@
+2002-02-21
+
+	* src/prefs_account.[ch]: added receive size limit option.
+	* src/pop.c: skip messages larger than the limit size.
+	  LOOKUP_NEXT_MSG(): new macro.
+	* src/compose.c: compose_attach_append(): check whether the file
+	  is readable.
+
+2002-02-21
+
+	* src/rfc2015.c: commented out dump_mimeinfo() and dump_part().
+	  changed g_message()'s to debug_print() and g_warning().
+	  rfc2015_decrypt_message(): fixed a bug that duplicated message
+	  parts when decryption was failed/cancelled. And made some code
+	  cleanup.
+	* src/passphrase.c: made the dialog transient.
+	* src/prefs.c: prefs_config_parse_one_line(): removed debug_print().
+
+2002-02-20
+
+	* src/messageview.c
+	  src/procmsg.[ch]: fixed a bug that failed to parse multipart
+	  messages if GPGME was enabled.
+	* src/rfc2015.c: commented out copy_gpgmedata_to_temp() which
+	  is not used.
+	* src/prefs_account.c: prefs_account_privacy_create(): modified
+	  the vertical spacing.
+
+2002-02-19
+
+	* src/menu.[ch]: menu_set_sensitive_all(): new.
+	  menu_set_insensitive_all(): made it a wrapper for
+	  menu_set_sensitive_all().
+	* src/prefs_account.c:
+	  prefs_account_open()
+	  prefs_account_protocol_set_optmenu(): made the protocol type
+	  unchangeable after creating an account.
+	* src/compose.c: compose_attach_parts(): traverse MIME tree to
+	  extract all attathed files from nested multipart MIME message.
+
+2002-02-19
+
+	* src/procmsg.[ch]: procmsg_get_mark_sum(): added arguments to
+	  obtain minimum/maximum number, and to specify first number
+	  limit.
+	* src/folderview.c
+	  src/inc.c: enabled new message checking on news folder.
+	* src/news.c: news_scan_group(): implemented. Guess new/unread
+	  message number from the response of GROUP command and the mark
+	  data.
+	  news_select_group(): return the total/first/last number.
+	* src/prefs_account.c: prefs_account_receive_create(): modified
+	  the text of the 'Get all' check button.
+
+2002-02-18
+
+	* src/account.c: made 'Get all' checkbox available for IMAP4 and
+	  NNTP accounts.
+	* src/inc.c: corrected the argument of folderview_check_new().
+	* src/prefs_account.c: modification for the "`Get all' checks for
+	  new mail on this account" checkbox.
+
+2002-02-18
+
+	* src/folderview.[ch]:
+	  folderview_rescan_tree(), folderview_rescan_all(): renamed from
+	  folderview_update_tree() and folderview_update_all().
+	  folderview_update_all_node(): removed.
+	  folderview_check_new(): new. If the argument is NULL, it checks
+	  all local folders. If the arguments is specified, it checks
+	  the (local and remote) folder.
+	* src/inc.c:
+	  inc_account_mail()
+	  inc_all_account_mail(): check also IMAP4 account.
+
+2002-02-18
+
+	* src/folderview.c:
+	  folderview_rename_folder_cb()
+	  folderview_delete_folder_cb(): modify the filter rules when folder
+	  is renamed/deleted.
+	* src/prefs_filter.[ch]:
+	  prefs_filter_rename_path(): new. It renames the destination paths
+	  in the filter list.
+	  prefs_filter_delete_path(): new. It deletes the filter rules if
+	  the destination paths matched.
+	* thanks to Neill Miller for above.
+
+2002-02-17
+
+	* src/compose.c: inherit attached files when forwarding or reediting
+	  (rewrote the code in claws branch).
+	  compose_attach_parts(): new. It extracts and attaches the files
+	  in the given message.
+	  compose_attach_append(): chnaged the types of arguments.
+	* src/messageview.c: messageview_show(): moved the GPG decryption
+	  code to procmsg.c.
+	* src/procmsg.[ch]: procmsg_open_message_decrypted(): new.
+
 2002-02-16
 
 	* version 0.7.2

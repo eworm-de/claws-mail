@@ -1,3 +1,9 @@
+2002-02-21 [paul]	0.7.2claws3
+
+	* sync with sylpheed 0.7.2cvs11
+		see ChangeLog entries 2002-02-17, 2002-02-18, 2002-02-19,
+		2002-02-20 and 2002-02-21
+
 2002-02-20 [melvin]	0.7.2claws2
 
 	* src/prefs_actions.c

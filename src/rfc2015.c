@@ -69,6 +69,7 @@ struct passphrase_cb_info_s {
 
 static char *create_boundary (void);
 
+#if 0
 static void dump_mimeinfo (const char *text, MimeInfo *x)
 {
     debug_print ("MimeInfo[%s] %p  level=%d\n",
@@ -108,6 +109,7 @@ static void dump_part ( MimeInfo *mimeinfo, FILE *fp )
         debug_print ("dump_part: read error\n");
     debug_print ("--- end dump_part ----\n");
 }
+#endif
 
 void
 rfc2015_disable_all (void)
@@ -346,14 +348,14 @@ passphrase_cb (void *opaque, const char *desc, void *r_hd)
     }
 
     gpgmegtk_set_passphrase_grab (prefs_common.passphrase_grab);
-    debug_print ("requesting passphrase for `%s': ", desc );
+    debug_print ("%% requesting passphrase for `%s': ", desc );
     pass = gpgmegtk_passphrase_mbox (desc);
     if (!pass) {
-        debug_print ("cancel passphrase entry\n");
+        debug_print ("%% cancel passphrase entry");
         gpgme_cancel (ctx);
     }
     else
-        debug_print ("sending passphrase\n");
+        debug_print ("%% sending passphrase");
 
     return pass;
 }
@@ -362,6 +364,7 @@ passphrase_cb (void *opaque, const char *desc, void *r_hd)
  * Copy a gpgme data object to a temporary file and
  * return this filename 
  */
+#if 0
 static char *
 copy_gpgmedata_to_temp (GpgmeData data, guint *length)
 {
@@ -397,6 +400,7 @@ copy_gpgmedata_to_temp (GpgmeData data, guint *length)
 
     return tmp;
 }
+#endif
 
 static GpgmeData
 pgp_decrypt (MimeInfo *partinfo, FILE *fp)
@@ -443,7 +447,7 @@ leave:
         plain = NULL;
     }
     else
-        debug_print ("decryption succeeded\n");
+        debug_print ("** decryption succeeded");
 
     gpgme_release (ctx);
     return plain;
@@ -459,7 +463,7 @@ MimeInfo * rfc2015_find_signature (MimeInfo *mimeinfo)
     if (g_strcasecmp (mimeinfo->content_type, "multipart/signed"))
         return NULL;
 
-    debug_print ("multipart/signed encountered\n");
+    debug_print ("** multipart/signed encountered");
 
     /* check that we have at least 2 parts of the correct type */
     for (partinfo = mimeinfo->children;
@@ -547,12 +551,18 @@ headerp(char *p, char **names)
 }
 
 
+#define DECRYPTION_ABORT() \
+{ \
+    procmime_mimeinfo_free_all(tmpinfo); \
+    msginfo->decryption_failed = 1; \
+    return; \
+}
+
 void rfc2015_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
 {
     static int id;
-    MimeInfo *partinfo;
-    int n, found;
-    int ver_okay=0;
+    MimeInfo *tmpinfo, *partinfo;
+    int ver_ok = 0;
     char *fname;
     GpgmeData plain;
     FILE *dstfp;
@@ -560,61 +570,60 @@ void rfc2015_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
     char buf[BUFFSIZE];
     GpgmeError err;
 
+    g_return_if_fail (msginfo != NULL);
+    g_return_if_fail (mimeinfo != NULL);
+    g_return_if_fail (fp != NULL);
     g_return_if_fail (mimeinfo->mime_type == MIME_MULTIPART);
 
-    debug_print ("multipart/encrypted encountered\n");
+    debug_print ("** decrypting multipart/encrypted message");
 
     /* skip headers */
     if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0)
         perror("fseek");
-    while (fgets(buf, sizeof(buf), fp) != NULL)
-        if (buf[0] == '\r' || buf[0] == '\n') break;
-    
-    procmime_scan_multipart_message(mimeinfo, fp);
+    tmpinfo = procmime_scan_mime_header(fp);
+    if (!tmpinfo || tmpinfo->mime_type != MIME_MULTIPART) {
+        DECRYPTION_ABORT();
+    }
+
+    procmime_scan_multipart_message(tmpinfo, fp);
 
     /* check that we have the 2 parts */
-    n = found = 0;
-    for (partinfo = mimeinfo->children; partinfo; partinfo = partinfo->next) {
-        if (++n == 1 && !g_strcasecmp (partinfo->content_type,
-				       "application/pgp-encrypted")) {
-            /* Fixme: check that the version is 1 */
-            ver_okay = 1;
-        }
-        else if (n == 2 && !g_strcasecmp (partinfo->content_type,
-					  "application/octet-stream")) {
-            if (partinfo->next)
-                debug_print ("oops: pgp_encrypted with more than 2 parts\n");
-            break;
-        }
+    partinfo = tmpinfo->children;
+    if (!partinfo || !partinfo->next) {
+        DECRYPTION_ABORT();
+    }
+    if (!g_strcasecmp (partinfo->content_type, "application/pgp-encrypted")) {
+        /* Fixme: check that the version is 1 */
+        ver_ok = 1;
+    }
+    partinfo = partinfo->next;
+    if (ver_ok &&
+        !g_strcasecmp (partinfo->content_type, "application/octet-stream")) {
+        if (partinfo->next)
+            g_warning ("oops: pgp_encrypted with more than 2 parts");
+    }
+    else {
+        DECRYPTION_ABORT();
     }
 
-    if (!ver_okay || !partinfo) {
-        msginfo->decryption_failed = 1;
-        /* fixme: remove the stuff, that the above procmime_scan_multiparts() 
-         * has appended to mimeino */
-        return;
-    }
-
-    debug_print ("yep, it is pgp encrypted\n");
+    debug_print ("** yep, it is pgp encrypted");
 
     plain = pgp_decrypt (partinfo, fp);
     if (!plain) {
-        msginfo->decryption_failed = 1;
-        return;
+        DECRYPTION_ABORT();
     }
-    
+
     fname = g_strdup_printf("%s%cplaintext.%08x",
 			    get_mime_tmp_dir(), G_DIR_SEPARATOR, ++id);
 
     if ((dstfp = fopen(fname, "w")) == NULL) {
         FILE_OP_ERROR(fname, "fopen");
         g_free(fname);
-        msginfo->decryption_failed = 1;
-        return;
+        DECRYPTION_ABORT();
     }
 
     /* write the orginal header to the new file */
-    if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0)
+    if (fseek(fp, tmpinfo->fpos, SEEK_SET) < 0)
         perror("fseek");
 
     while (fgets(buf, sizeof(buf), fp)) {
@@ -638,13 +647,16 @@ void rfc2015_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
     }
 
     fclose (dstfp);
+    procmime_mimeinfo_free_all(tmpinfo);
 
     msginfo->plaintext_file = fname;
     msginfo->decryption_failed = 0;
 }
 
+#undef DECRYPTION_ABORT
 
-/* 
+
+/*
  * plain contains an entire mime object.
  * Encrypt it and return an GpgmeData object with the encrypted version of
  * the file or NULL in case of error.
@@ -670,7 +682,7 @@ pgp_encrypt ( GpgmeData plain, GpgmeRecipients rset )
         cipher = NULL;
     }
     else {
-        debug_print ("encryption succeeded\n");
+        debug_print ("** encryption succeeded");
     }
 
     gpgme_release (ctx);
@@ -796,7 +808,7 @@ rfc2015_encrypt (const char *file, GSList *recp_list, gboolean ascii_armored)
 
     /* write them to the temp data and add the rest of the message */
     for (i = 0; !err && i < clineidx; i++) {
-        debug_print ("%s:%d: cline=`%s'\n", __FILE__ ,__LINE__, clines[i]);
+        debug_print ("%% %s:%d: cline=`%s'", __FILE__ ,__LINE__, clines[i]);
         err = gpgme_data_write (plain, clines[i], strlen (clines[i]));
     }
     if (!err)

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,9 @@
 					 GINT_TO_POINTER(data)); \
 }
 
+#define menu_set_insensitive_all(menu_shell) \
+	menu_set_sensitive_all(menu_shell, FALSE);
+
 GtkWidget *menubar_create	(GtkWidget		*window,
 				 GtkItemFactoryEntry	*entries,
 				 guint			 n_entries,
@@ -54,7 +57,9 @@ GtkWidget *popupmenu_create(GtkWidget *window,
 void menu_set_sensitive		(GtkItemFactory		*ifactory,
 				 const gchar		*path,
 				 gboolean		 sensitive);
-void menu_set_insensitive_all	(GtkMenuShell		*menu_shell);
+void menu_set_sensitive_all	(GtkMenuShell		*menu_shell,
+				 gboolean		 sensitive);
+
 void menu_set_toggle		(GtkItemFactory 	*ifactory,
 				 const gchar 		*path,
 				 gboolean 		 active);

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -570,7 +570,7 @@ static void account_edit_prefs(void)
 	    ac_prefs->folder && strcmp(ac_name, ac_prefs->account_name) != 0) {
 		folder_set_name(FOLDER(ac_prefs->folder),
 				ac_prefs->account_name);
-		folderview_update_all();
+		folderview_rescan_all();
 	}
 
 	account_clist_set();
@@ -615,7 +615,7 @@ static void account_delete(void)
 	ac_prefs = gtk_clist_get_row_data(clist, row);
 	if (ac_prefs->folder) {
 		folder_destroy(FOLDER(ac_prefs->folder));
-		folderview_update_all();
+		folderview_rescan_all();
 	}
 	account_destroy(ac_prefs);
 	account_clist_set();
@@ -710,7 +710,8 @@ static void account_selected(GtkCList *clist, gint row, gint column,
 		PrefsAccount *ac;
 
 		ac = gtk_clist_get_row_data(clist, row);
-		if (ac->protocol == A_POP3 || ac->protocol == A_APOP) {
+		if (ac->protocol == A_POP3 || ac->protocol == A_APOP ||
+		    ac->protocol == A_IMAP4 || ac->protocol == A_NNTP) {
 			ac->recv_at_getall ^= TRUE;
 			account_clist_set_row(ac, row);
 		}
@@ -774,8 +775,10 @@ static gint account_clist_set_row(PrefsAccount *ac_prefs, gint row)
 		gtk_clist_set_text(clist, row, COL_SERVER, text[COL_SERVER]);
 	}
 
-	has_getallbox = (ac_prefs->protocol == A_POP3 ||
-			 ac_prefs->protocol == A_APOP);
+	has_getallbox = (ac_prefs->protocol == A_POP3  ||
+			 ac_prefs->protocol == A_APOP  ||
+			 ac_prefs->protocol == A_IMAP4 ||
+			 ac_prefs->protocol == A_NNTP);
 	getall = has_getallbox && ac_prefs->recv_at_getall;
 
 	if (ac_prefs->is_default)

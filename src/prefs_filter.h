@@ -34,4 +34,8 @@ void prefs_filter_write_config	(void);
 void prefs_filter_open		(const gchar	*header,
 				 const gchar	*key);
 
+void prefs_filter_rename_path	(const gchar	*old_path,
+				 const gchar	*new_path);
+void prefs_filter_delete_path	(const gchar	*path);
+
 #endif /* __PREFS_FILTER_H__ */
