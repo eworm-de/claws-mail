@@ -298,3 +298,4 @@
 ( cvs diff -u -r 1.654.2.330 -r 1.654.2.331 configure.ac; cvs diff -u -r 1.5.2.9 -r 1.5.2.10 src/gtk/pluginwindow.c; ) > 0.9.13cvs23.1.patchset
 ( cvs diff -u -r 1.204.2.26 -r 1.204.2.27 src/prefs_common.c; ) > 0.9.13cvs23.2.patchset
 ( cvs diff -u -r 1.49.2.28 -r 1.49.2.29 src/procmime.c; ) > 0.9.13cvs24.1.patchset
+( cvs diff -u -r 1.60.2.7 -r 1.60.2.8 src/prefs_actions.c; ) > 0.9.13cvs24.2.patchset

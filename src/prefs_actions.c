@@ -534,14 +534,26 @@ static void prefs_actions_register_cb(GtkWidget *w, gpointer data)
 
 static void prefs_actions_substitute_cb(GtkWidget *w, gpointer data)
 {
-	GtkTreeIter sel;
+	GtkTreeIter isel, inew;
+	GtkTreePath *path_sel, *path_new;
+	GtkTreeSelection *selection = gtk_tree_view_get_selection
+					(GTK_TREE_VIEW(actions.actions_list_view));
+	GtkTreeModel *model;					
 
-	if (!gtk_tree_selection_get_selected(gtk_tree_view_get_selection
-				(GTK_TREE_VIEW(actions.actions_list_view)),
-				NULL, &sel))
+	if (!gtk_tree_selection_get_selected(selection, &model, &isel))
+		return;
+	if (!gtk_tree_model_get_iter_first(model, &inew))
 		return;
 
-	prefs_actions_clist_set_row(&sel);
+	path_sel = gtk_tree_model_get_path(model, &isel);
+	path_new = gtk_tree_model_get_path(model, &inew);
+
+	if (path_sel && path_new 
+	&&  gtk_tree_path_compare(path_sel, path_new) != 0)
+		prefs_actions_clist_set_row(&isel);
+
+	gtk_tree_path_free(path_sel);
+	gtk_tree_path_free(path_new);
 }
 
 static void prefs_actions_delete_cb(GtkWidget *w, gpointer data)
@@ -775,10 +787,6 @@ static void prefs_actions_list_view_insert_action(GtkWidget *list_view,
 		gtk_tree_model_get(GTK_TREE_MODEL(list_store), row_iter,
 				   PREFS_ACTIONS_DATA, &old_action,
 				   -1);
-		
-		/* NOTE: we assume we never change the first entry,
-		 * which is "(New)" */
-		g_assert(strcmp(_("New"), old_action) != 0);
 		
 		g_free(old_action);				
 		gtk_list_store_set(list_store, row_iter,
