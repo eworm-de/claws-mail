@@ -1,3 +1,8 @@
+2001-07-29
+
+	* src/prefs_common.c: date_format_select_row(): fixed a bug that
+	  caused segfault when selecting the list with key.
+
 2001-07-28
 
 	* src/mainwindow.c: main_window_popup(): deiconize the window

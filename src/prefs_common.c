@@ -2021,15 +2021,15 @@ static void date_format_select_row(GtkWidget *date_format_list, gint row,
 	gchar *new_format;
 	GtkWidget *datefmt_sample;
 
+	/* only on double click */
+	if (!event ||event->type != GDK_2BUTTON_PRESS) return;
+
 	datefmt_sample = GTK_WIDGET(gtk_object_get_data
 				    (GTK_OBJECT(date_format), "datefmt_sample"));
 
 	g_return_if_fail(date_format_list != NULL);
 	g_return_if_fail(date_format != NULL);
 	g_return_if_fail(datefmt_sample != NULL);
-
-	/* only on double click */
-	if (event->type != GDK_2BUTTON_PRESS) return;
 
 	/* get format from clist */
 	gtk_clist_get_text(GTK_CLIST(date_format_list), row, 0, &format);
@@ -2115,12 +2115,12 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	gtk_widget_show(scrolledwindow1);
 	gtk_box_pack_start(GTK_BOX(vbox1), scrolledwindow1, TRUE, TRUE, 0);
 
-	titles[0] = _("Date format");
-	titles[1] = _("Date format description");
+	titles[0] = _("Specifier");
+	titles[1] = _("Description");
 	datefmt_clist = gtk_clist_new_with_titles(2, titles);
 	gtk_widget_show(datefmt_clist);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow1), datefmt_clist);
-	gtk_clist_set_column_width(GTK_CLIST(datefmt_clist), 0, 80);
+/*	gtk_clist_set_column_width(GTK_CLIST(datefmt_clist), 0, 80);   */
 	gtk_clist_set_selection_mode(GTK_CLIST(datefmt_clist),
 				     GTK_SELECTION_BROWSE);
 
@@ -2172,7 +2172,6 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
 				&cancel_btn, _("Cancel"), NULL, NULL);
 	gtk_widget_grab_default(ok_btn);
-	gtk_widget_grab_focus(ok_btn);
 	gtk_widget_show(confirm_area);
 
 	gtk_box_pack_start(GTK_BOX(vbox1), confirm_area, FALSE, FALSE, 0);
@@ -2198,15 +2197,17 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 			   GTK_SIGNAL_FUNC(date_format_entry_on_change),
 			   label3);
 
+	gtk_signal_connect(GTK_OBJECT(datefmt_clist), "select_row",
+			   GTK_SIGNAL_FUNC(date_format_select_row),
+			   datefmt_win);
+
 	gtk_window_set_position(GTK_WINDOW(datefmt_win), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(datefmt_win), TRUE);
 
 	gtk_widget_show(datefmt_win);
 	manage_window_set_transient(GTK_WINDOW(datefmt_win));
 
-	gtk_signal_connect(GTK_OBJECT(datefmt_clist), "select_row",
-			   GTK_SIGNAL_FUNC(date_format_select_row),
-			   datefmt_win);
+	gtk_widget_grab_focus(ok_btn);
 
 	return datefmt_win;
 }
