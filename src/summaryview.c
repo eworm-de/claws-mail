@@ -1820,6 +1820,9 @@ gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *gnode,
 static GtkCTreeNode * subject_table_lookup(GHashTable *subject_table,
 					   gchar * subject)
 {
+	if (subject == NULL)
+		subject = "";
+
 	if (g_strncasecmp(subject, "Re: ", 4) == 0)
 		return g_hash_table_lookup(subject_table, subject + 4);
 	else
@@ -1829,10 +1832,24 @@ static GtkCTreeNode * subject_table_lookup(GHashTable *subject_table,
 static void subject_table_insert(GHashTable *subject_table, gchar * subject,
 				 GtkCTreeNode * node)
 {
+	if (subject == NULL)
+		subject = "";
+
 	if (g_strncasecmp(subject, "Re: ", 4) == 0)
 		g_hash_table_insert(subject_table, subject + 4, node);
 	else
 		g_hash_table_insert(subject_table, subject, node);
+}
+
+static void subject_table_remove(GHashTable *subject_table, gchar * subject)
+{
+	if (subject == NULL)
+		subject = "";
+
+	if (g_strncasecmp(subject, "Re: ", 4) == 0)
+		g_hash_table_remove(subject_table, subject + 4);
+	else
+		g_hash_table_remove(subject_table, subject);
 }
 
 static void summary_set_ctree_from_list(SummaryView *summaryview,
@@ -1909,6 +1926,10 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 			if (msginfo->msgid)
 				g_hash_table_insert(msgid_table,
 						    msginfo->msgid, node);
+
+			subject_table_insert(subject_table,
+					     msginfo->subject,
+					     node);
 		}
 		mlist = g_slist_reverse(mlist);
 	}
@@ -3231,13 +3252,6 @@ static void summary_execute_delete_func(GtkCTree *ctree, GtkCTreeNode *node,
 						msginfo->msgid))
 			g_hash_table_remove(summaryview->msgid_table,
 					    msginfo->msgid);
-
-		if (msginfo->subject && 
-		    node == subject_table_lookup(summaryview->subject_table, 
-						msginfo->subject)) {
-			gchar *s = msginfo->subject + (g_strncasecmp(msginfo->subject, "Re: ", 4) == 0 ? 4 : 0);
-			g_hash_table_remove(summaryview->subject_table, s);
-		}			
 	}
 }
 
@@ -3267,24 +3281,25 @@ void summary_thread_build(SummaryView *summaryview)
 
 		msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
 
+		parent = NULL;
+
 		/* alfons - claws seems to prefer subject threading before
 		 * inreplyto threading. we should look more deeply in this,
 		 * because inreplyto should have precedence... */
 		if (msginfo && msginfo->inreplyto) {
 			parent = g_hash_table_lookup(summaryview->msgid_table,
 						     msginfo->inreplyto);
-			if (parent && parent != node) {
-				gtk_ctree_move(ctree, node, parent, NULL);
-				gtk_ctree_expand(ctree, node);
-			}
 		}
-		else if (msginfo && msginfo->subject) {
-			parent = g_hash_table_lookup
-					(summaryview->subject_table, msginfo->subject);
-			if (parent && parent != node) {
-				gtk_ctree_move(ctree, node, parent, NULL);
-				gtk_ctree_expand(ctree, node);
-			}
+
+		if (parent == NULL) {
+			parent = subject_table_lookup
+				(summaryview->subject_table,
+				 msginfo->subject);
+		}
+
+		if (parent && parent != node) {
+			gtk_ctree_move(ctree, node, parent, NULL);
+			gtk_ctree_expand(ctree, node);
 		}
 
 		node = next;

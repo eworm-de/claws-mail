@@ -496,23 +496,50 @@ FILE *procmsg_open_mark_file(const gchar *folder, gboolean append)
 	return fp;
 }
 
+static GNode * subject_table_lookup(GHashTable * subject_table,
+				    gchar * subject)
+{
+	if (subject == NULL)
+		subject = "";
+
+	if (g_strncasecmp(subject, "Re: ", 4) == 0)
+		return g_hash_table_lookup(subject_table, subject + 4);
+	else
+		return g_hash_table_lookup(subject_table, subject);
+}
+
+static void subject_table_insert(GHashTable * subject_table, gchar * subject,
+				 GNode * node)
+{
+	if (subject == NULL)
+		subject = "";
+
+	if (g_strncasecmp(subject, "Re: ", 4) == 0)
+		g_hash_table_insert(subject_table, subject + 4, node);
+	else
+		g_hash_table_insert(subject_table, subject, node);
+}
+
 /* return the reversed thread tree */
 GNode *procmsg_get_thread_tree(GSList *mlist)
 {
 	GNode *root, *parent, *node, *next;
-	GHashTable *table;
+	GHashTable *msgid_table;
+	GHashTable *subject_table;
 	MsgInfo *msginfo;
 	const gchar *msgid;
+	const gchar *subject;
 
 	root = g_node_new(NULL);
-	table = g_hash_table_new(g_str_hash, g_str_equal);
+	msgid_table = g_hash_table_new(g_str_hash, g_str_equal);
+	subject_table = g_hash_table_new(g_str_hash, g_str_equal);
 
 	for (; mlist != NULL; mlist = mlist->next) {
 		msginfo = (MsgInfo *)mlist->data;
 		parent = root;
 
 		if (msginfo->inreplyto) {
-			parent = g_hash_table_lookup(table, msginfo->inreplyto);
+			parent = g_hash_table_lookup(msgid_table, msginfo->inreplyto);
 			if (parent == NULL) {
 				parent = root;
 			} else {
@@ -525,29 +552,41 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 			(parent, parent == root ? parent->children : NULL,
 			 msginfo);
 		if ((msgid = msginfo->msgid) &&
-		    g_hash_table_lookup(table, msgid) == NULL)
-			g_hash_table_insert(table, (gchar *)msgid, node);
+		    g_hash_table_lookup(msgid_table, msgid) == NULL)
+			g_hash_table_insert(msgid_table, (gchar *)msgid, node);
+
+		subject = msginfo->subject;
+		if (subject_table_lookup(subject_table,
+					 (gchar *) subject) == NULL)
+			subject_table_insert(subject_table, (gchar *)subject,
+					     node);
 	}
 
 	/* complete the unfinished threads */
 	for (node = root->children; node != NULL; ) {
 		next = node->next;
 		msginfo = (MsgInfo *)node->data;
-		if (msginfo->inreplyto) {
-			parent = g_hash_table_lookup(table, msginfo->inreplyto);
-			if (parent && parent != node) {
-				g_node_unlink(node);
-				g_node_insert_before
-					(parent, parent->children, node);
-				if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags)) {
-					MSG_SET_PERM_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
-				}
+		parent = NULL;
+
+		if (msginfo->inreplyto)
+			parent = g_hash_table_lookup(msgid_table, msginfo->inreplyto);
+		if (parent == NULL)
+			parent = subject_table_lookup(subject_table, msginfo->subject);
+
+		
+		if (parent && parent != node) {
+			g_node_unlink(node);
+			g_node_insert_before
+				(parent, parent->children, node);
+			if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags)) {
+				MSG_SET_PERM_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
 			}
 		}
 		node = next;
 	}
 
-	g_hash_table_destroy(table);
+	g_hash_table_destroy(subject_table);
+	g_hash_table_destroy(msgid_table);
 
 	return root;
 }

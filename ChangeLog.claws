@@ -1,3 +1,9 @@
+2001-11-06 [hoa]	0.6.4claws27
+	
+	* src/procmsg.c
+	* src/summaryview.c
+		threading by subject
+
 2001-11-05 [alfons]	0.6.4claws26
 	
 	* README.claws
