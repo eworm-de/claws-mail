@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=11
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws109
+EXTRA_VERSION=claws110
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -373,7 +373,7 @@ if test x"$ac_cv_enable_spamassassin_plugin" = xyes; then
 fi
 
 AC_ARG_ENABLE(mathml-viewer-plugin,
-	[  --enable-mathml-viewer-plugin    Build MarhML-Viewer plugin [default=no]],
+	[  --enable-mathml-viewer-plugin    Build MathML-Viewer plugin [default=no]],
 	[ac_cv_enable_mathml_viewer_plugin=$enableval], [ac_cv_enable_mathml_viewer_plugin=no])
 AM_CONDITIONAL(BUILD_MATHML_VIEWER_PLUGIN, test x"$ac_cv_enable_mathml_viewer_plugin" = xyes)
 if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then

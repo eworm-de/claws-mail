@@ -299,7 +299,8 @@ static gint session_close(Session *session)
 
 	if (session->child_pid) {
 		g_print("$$$ %s: closing child\n", session->child_pid == 0 ? "child" : "parent");
-		kill(session->child_pid, SIGTERM);
+		if (session->state != SESSION_DISCONNECTED)
+			kill(session->child_pid, SIGTERM);
 		waitpid(session->child_pid, NULL, 0);
 		session->child_pid = 0;
 	}

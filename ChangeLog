@@ -1,9 +1,25 @@
+2003-04-25
+
+	* src/session.c: session_close(): kill child process only if
+	  state is not SESSION_DISCONNECTED.
+	* src/send_message.c: send_cancel_button_cb()
+	  src/inc.c: inc_cancel(): don't set Session::state to
+	  SESSION_DISCONNECTED.
+	* src/prefs.[ch]: modified the names of prefs_write_*().
+	* src/address.[ch]: removed.
+
+2003-04-24
+
+	* src/compose.c: compose_template_apply(): overwrite recipients.
+
 2003-04-23
 
 	* src/procheader.c: procheader_date_parse(): removed debug print.
 	* src/session.c: changed every g_print to debug_print.
 	  session_child_input(): removed unrequired session_close() (it'll
 	  be closed anyway after returning FALSE).
+	* src/send_message.c: send_message_smtp(): changed g_print to
+	  debug_print.
 
 2003-04-23
 

@@ -1,9 +1,25 @@
+2003-04-25
+
+	* src/session.c: session_close(): state が SESSION_DISCONNECTED で
+	  ない場合のみ子プロセスを kill するようにした。
+	* src/send_message.c: send_cancel_button_cb()
+	  src/inc.c: inc_cancel(): Session::state を SESSION_DISCONNECTED に
+	  セットしないようにした。
+	* src/prefs.[ch]: prefs_write_*() の名前を変更。
+	* src/address.[ch]: 削除。
+
+2003-04-24
+
+	* src/compose.c: compose_template_apply(): 宛先を上書きするようにした。
+
 2003-04-23
 
 	* src/procheader.c: procheader_date_parse(): デバッグ用 print を削除。
 	* src/session.c: 各 g_print を debug_print に変更。
 	  session_child_input(): 不要な session_close() を削除(FALSE を
 	  返した後結局 close される)。
+	* src/send_message.c: send_message_smtp(): g_print を debug_print
+	  に変更。
 
 2003-04-23
 

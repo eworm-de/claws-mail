@@ -1,3 +1,11 @@
+2003-04-25 [paul]	0.8.11claws110
+
+	* sync with 0.8.11cvs35
+		see ChangeLog 2003-04-24 and 2003-04-25
+		
+	* src/gtk/pluginwindow.c
+		correct another strange float value
+
 2003-04-24 [christoph]	0.8.11claws109
 
 	* src/folder.c

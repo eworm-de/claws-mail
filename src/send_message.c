@@ -398,10 +398,11 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 		return -1;
 	}
 
-	g_print("parent: begin event loop\n");
+	debug_print("send_message_smtp(): begin event loop\n");
 
 	while (session->state != SESSION_DISCONNECTED &&
-	       session->state != SESSION_ERROR)
+	       session->state != SESSION_ERROR &&
+	       dialog->cancelled == FALSE)
 		gtk_main_iteration();
 
 	if (SMTP_SESSION(session)->error_val == SM_AUTHFAIL) {
@@ -547,8 +548,6 @@ static void send_progress_dialog_destroy(SendProgressDialog *dialog)
 static void send_cancel_button_cb(GtkWidget *widget, gpointer data)
 {
 	SendProgressDialog *dialog = (SendProgressDialog *)data;
-	Session *session = dialog->session;
 
-	session->state = SESSION_DISCONNECTED;
 	dialog->cancelled = TRUE;
 }
