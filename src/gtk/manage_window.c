@@ -22,7 +22,7 @@
 #include <gtk/gtkwindow.h>
 
 #include "manage_window.h"
-#include "utils.h"
+/* #include "utils.h" */
 
 GtkWidget *focus_window;
 

@@ -74,7 +74,6 @@ sylpheed_SOURCES = \
 	statusbar.c statusbar.h \
 	logwindow.c logwindow.h \
 	sourcewindow.c sourcewindow.h \
-	manage_window.c manage_window.h \
 	undo.c undo.h \
 	alertpanel.c alertpanel.h \
 	inputdialog.c inputdialog.h \
