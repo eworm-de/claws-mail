@@ -1509,6 +1509,8 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 				folder_processing = TRUE;
 			else if (item->stype == F_OUTBOX)
 				folder_processing = TRUE;
+			if (0 == item->total_msgs)
+				search_folder = FALSE;
 		} else if (FOLDER_TYPE(folder) == F_NEWS) {
 			if (folder_item_parent(item) != NULL)
 				delete_folder = folder_scoring = folder_processing = TRUE;
