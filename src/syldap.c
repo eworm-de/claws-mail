@@ -640,7 +640,8 @@ static gint syldap_display_search_results(SyldapServer *ldapServer)
 	gtk_idle_remove(ldapServer->idleId);
 	ldapServer->callBack(ldapServer);
 	/* FIXME:  match should know whether to free this SyldapServer stuff.  */
-	g_free(ldapServer->thread); 
+	g_free(ldapServer->thread);
+	ldapServer->thread = NULL;
 	return TRUE;
 }
 
@@ -711,7 +712,7 @@ gint syldap_read_data_th( SyldapServer *ldapServer ) {
 	ldapServer->busyFlag = FALSE;
 	syldap_check_search( ldapServer );
 	if( ldapServer->retVal == MGU_SUCCESS ) {
-		debug_print("Staring LDAP read thread\n");
+//		debug_print("Staring LDAP read thread\n");
 
 		ldapServer->busyFlag = TRUE;
 		ldapServer->thread = g_new0(pthread_t, 1);
