@@ -1,3 +1,8 @@
+2005-01-20 [colin]	1.0.0cvs3.2
+
+	* src/ssl_manager.c
+		Port SSL certificate window to GTK2.
+
 2005-01-20 [paul]	1.0.0cvs3.1
 
 	* ChangeLog.claws

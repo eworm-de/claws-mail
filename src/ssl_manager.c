@@ -36,6 +36,14 @@
 #include "alertpanel.h"
 #include "sslcertwindow.h"
 
+enum {
+	SSL_MANAGER_HOST,
+	SSL_MANAGER_PORT,
+	SSL_MANAGER_CERT,
+	N_SSL_MANAGER_COLUMNS
+};
+
+
 static struct SSLManager
 {
 	GtkWidget *window;
@@ -51,6 +59,10 @@ static void ssl_manager_view_cb		(GtkWidget *widget, gpointer data);
 static void ssl_manager_delete_cb	(GtkWidget *widget, gpointer data);
 static void ssl_manager_ok_cb		(GtkWidget *widget, gpointer data);
 static void ssl_manager_load_certs	(void);
+static void ssl_manager_double_clicked(GtkTreeView		*list_view,
+				   	GtkTreePath		*path,
+				   	GtkTreeViewColumn	*column,
+				   	gpointer		 data);
 
 void ssl_manager_open(MainWindow *mainwin)
 {
@@ -66,6 +78,63 @@ void ssl_manager_open(MainWindow *mainwin)
 
 }
 
+static GtkListStore* ssl_manager_create_data_store(void)
+{
+	return gtk_list_store_new(N_SSL_MANAGER_COLUMNS,
+				  G_TYPE_STRING,
+				  G_TYPE_STRING,
+  				  G_TYPE_POINTER,
+				  -1);
+}
+
+static void ssl_manager_create_list_view_columns(GtkWidget *list_view)
+{
+	GtkTreeViewColumn *column;
+	GtkCellRenderer *renderer;
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes
+		(_("Server"),
+		 renderer,
+		 "text", SSL_MANAGER_HOST,
+		 NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes
+		(_("Port"),
+		 renderer,
+		 "text", SSL_MANAGER_PORT,
+		 NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
+}
+
+static GtkWidget *ssl_manager_list_view_create	(void)
+{
+	GtkTreeView *list_view;
+	GtkTreeSelection *selector;
+	GtkTreeModel *model;
+
+	model = GTK_TREE_MODEL(ssl_manager_create_data_store());
+	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(model));
+	g_object_unref(model);	
+	
+	gtk_tree_view_set_rules_hint(list_view, TRUE);
+	
+	selector = gtk_tree_view_get_selection(list_view);
+	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
+
+	g_signal_connect(G_OBJECT(list_view), "row_activated",
+	                 G_CALLBACK(ssl_manager_double_clicked),
+			 list_view);
+
+	/* create the columns */
+	ssl_manager_create_list_view_columns(GTK_WIDGET(list_view));
+
+	return GTK_WIDGET(list_view);
+
+}
+
 void ssl_manager_create(void) 
 {
 	GtkWidget *window;
@@ -75,47 +144,40 @@ void ssl_manager_create(void)
 	GtkWidget *view_btn;
 	GtkWidget *delete_btn;
 	GtkWidget *ok_btn;
-	gchar *titles[2];
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW(window),
 			      _("Saved SSL Certificates"));
+
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 	gtk_window_set_resizable(GTK_WINDOW (window), TRUE);
 	g_signal_connect(G_OBJECT(window), "delete_event",
 			 G_CALLBACK(ssl_manager_ok_cb), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT (window);
+
+	hbox1 = gtk_hbox_new(FALSE, 6);
+	vbox1 = gtk_vbox_new(FALSE, 0);
+	delete_btn = gtk_button_new_from_stock(GTK_STOCK_DELETE);
 	
-	hbox1 = gtk_hbox_new(FALSE,2);
-	vbox1 = gtk_vbox_new(FALSE,0);
-	delete_btn = gtk_button_new_with_label(_("Delete"));
 	g_signal_connect(G_OBJECT(delete_btn), "clicked",
 			 G_CALLBACK(ssl_manager_delete_cb), NULL);
-	view_btn = gtk_button_new_with_label(_("View"));
+
+	view_btn = gtk_button_new_from_stock(GTK_STOCK_PROPERTIES);
 	g_signal_connect(G_OBJECT(view_btn), "clicked",
 			 G_CALLBACK(ssl_manager_view_cb), NULL);
-	ok_btn = gtk_button_new_with_label(_("OK"));
+
+	ok_btn = gtk_button_new_from_stock(GTK_STOCK_OK);
 	g_signal_connect(G_OBJECT(ok_btn), "clicked",
 			 G_CALLBACK(ssl_manager_ok_cb), NULL);
-	gtk_widget_set_usize(ok_btn, 80, -1);
-	gtk_widget_set_usize(delete_btn, 80, -1);
-	gtk_widget_set_usize(view_btn, 80, -1);
 
-	titles[0] = _("Server");
-	titles[1] = _("Port");
-	certlist = gtk_sctree_new_with_titles(2, 3, titles);
-	gtk_clist_column_titles_show(GTK_CLIST(certlist));
-	gtk_clist_set_column_width(GTK_CLIST(certlist), 0, 220);
-	gtk_clist_set_selection_mode(GTK_CLIST(certlist), GTK_SELECTION_SINGLE);
-	gtk_widget_set_usize(certlist, 300, 200);
-	g_signal_connect(G_OBJECT(certlist), "open_row",
-			 G_CALLBACK(ssl_manager_view_cb), NULL);
+	certlist = ssl_manager_list_view_create();
+	
 	gtk_box_pack_start(GTK_BOX(hbox1), certlist, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox1), vbox1, TRUE, TRUE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox1), view_btn, FALSE, FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox1), delete_btn, FALSE, FALSE, 0);
-	gtk_box_pack_end(GTK_BOX(vbox1), ok_btn, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox1), view_btn, FALSE, FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(vbox1), delete_btn, FALSE, FALSE, 4);
+	gtk_box_pack_end(GTK_BOX(vbox1), ok_btn, FALSE, FALSE, 4);
 	
 	gtk_widget_show(certlist);
 	gtk_widget_show(hbox1);
@@ -176,17 +238,59 @@ static char *get_port(char *str)
 	return ret;
 	
 }
+
+static void ssl_manager_list_view_insert_cert(GtkWidget *list_view,
+						  GtkTreeIter *row_iter,
+						  gchar *host, 
+						  gchar *port,
+						  SSLCertificate *cert) 
+{
+	GtkTreeIter iter;
+	GtkListStore *list_store = GTK_LIST_STORE(gtk_tree_view_get_model
+					(GTK_TREE_VIEW(list_view)));
+
+	if (row_iter == NULL) {
+		/* append new */
+		gtk_list_store_append(list_store, &iter);
+		gtk_list_store_set(list_store, &iter,
+				   SSL_MANAGER_HOST, g_strdup(host),
+				   SSL_MANAGER_PORT, g_strdup(port),
+				   SSL_MANAGER_CERT, cert,
+				   -1);
+	} else {
+		/* change existing */
+		gchar *old_host, *old_port;
+
+		gtk_tree_model_get(GTK_TREE_MODEL(list_store), row_iter,
+				   SSL_MANAGER_HOST, &old_host,
+				   SSL_MANAGER_PORT, &old_port,
+				   -1);
+		
+		g_free(old_host);				
+		g_free(old_port);				
+		gtk_list_store_set(list_store, row_iter,
+				   SSL_MANAGER_HOST, g_strdup(host),
+				   SSL_MANAGER_PORT, g_strdup(port),
+				   SSL_MANAGER_CERT, cert,
+				   -1);
+	}
+}
+
 static void ssl_manager_load_certs (void) 
 {
 	DIR *dir;
 	struct dirent *d;
 	gchar *path;
 	int row = 0;
+	GtkListStore *store;
+
+	store = GTK_LIST_STORE(gtk_tree_view_get_model
+				(GTK_TREE_VIEW(manager.certlist)));
+
+	gtk_list_store_clear(store);
 
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
 			  "certs", G_DIR_SEPARATOR_S, NULL);
-
-	gtk_clist_clear(GTK_CLIST(manager.certlist));
 
 	if((dir = opendir(path)) == NULL) {
 		perror("opendir");
@@ -194,7 +298,7 @@ static void ssl_manager_load_certs (void)
 	}
 	
 	while ((d = readdir(dir)) != NULL) {
-		gchar *server, *port, *text[2];
+		gchar *server, *port;
 		SSLCertificate *cert;
 
 		if(!strstr(d->d_name, ".cert")) 
@@ -203,15 +307,14 @@ static void ssl_manager_load_certs (void)
 		server = get_server(d->d_name);
 		port = get_port(d->d_name);
 		
-		text[0] = g_strdup(server);
-		text[1] = g_strdup(port);
-		gtk_clist_append(GTK_CLIST(manager.certlist), text);
+		
 		cert = ssl_certificate_find_lookup(server, atoi(port), FALSE);
-		gtk_clist_set_row_data(GTK_CLIST(manager.certlist), row, cert);
+		
+		ssl_manager_list_view_insert_cert(manager.certlist, NULL, 
+						  server, port, cert);
+		
 		g_free(server);
 		g_free(port);
-		g_free(text[0]);
-		g_free(text[1]);
 		row++;
 	}
 	closedir(dir);
@@ -228,44 +331,56 @@ static void ssl_manager_ok_cb(GtkWidget *widget,
 {
 	ssl_manager_close();
 }
-static void ssl_manager_view_cb(GtkWidget *widget, 
-			      gpointer data) 
+
+static void ssl_manager_double_clicked(GtkTreeView		*list_view,
+				   	GtkTreePath		*path,
+				   	GtkTreeViewColumn	*column,
+				   	gpointer		 data)
 {
 	SSLCertificate *cert;
-	GList *rowlist;
-	
-	rowlist = GTK_CLIST(manager.certlist)->selection;
-	if (!rowlist) 
+	gchar *cmd;
+	GtkTreeIter iter;
+	gboolean is_valid;
+	GtkTreeModel *model = gtk_tree_view_get_model(list_view);
+
+	if (!gtk_tree_model_get_iter(model, &iter, path))
 		return;
-	
-	cert = gtk_ctree_node_get_row_data
-			(GTK_CTREE(manager.certlist),
-			 GTK_CTREE_NODE(rowlist->data));
-	
+
+	gtk_tree_model_get(model, &iter, 
+			   SSL_MANAGER_CERT, &cert,
+			   -1);
+
 	if (!cert)
 		return;
 
 	sslcertwindow_show_cert(cert);
-	
-	
+
+	return;
 }
+
+
+
 static void ssl_manager_delete_cb(GtkWidget *widget, 
 			      gpointer data) 
 {
 	SSLCertificate *cert;
 	GList *rowlist;
 	int val;
-	
-	rowlist = GTK_CLIST(manager.certlist)->selection;
-	if (!rowlist) 
+	GtkTreeIter sel;
+	GtkTreeModel *model;
+	gchar *action;
+
+	if (!gtk_tree_selection_get_selected(gtk_tree_view_get_selection
+				(GTK_TREE_VIEW(manager.certlist)),
+				&model, &sel))
 		return;
 	
-	cert = gtk_ctree_node_get_row_data
-			(GTK_CTREE(manager.certlist),
-			 GTK_CTREE_NODE(rowlist->data));
-	
+	gtk_tree_model_get(model, &sel,
+			   SSL_MANAGER_CERT, &cert,
+			   -1);
 	if (!cert)
 		return;
+
 	val = alertpanel(_("Delete certificate"), 
 			     _("Do you really want to delete this certificate?"),
 			     _("Yes"), _("+No"), NULL);
@@ -274,6 +389,30 @@ static void ssl_manager_delete_cb(GtkWidget *widget,
 	
 	ssl_certificate_delete_from_disk(cert);
 	ssl_certificate_destroy(cert);
-	gtk_ctree_remove_node(GTK_CTREE(manager.certlist), GTK_CTREE_NODE(rowlist->data));
+	gtk_list_store_remove(GTK_LIST_STORE(model), &sel);
+}
+
+static void ssl_manager_view_cb(GtkWidget *widget, 
+			        gpointer data) 
+{
+	SSLCertificate *cert;
+	GList *rowlist;
+	int val;
+	GtkTreeIter sel;
+	GtkTreeModel *model;
+	gchar *action;
+
+	if (!gtk_tree_selection_get_selected(gtk_tree_view_get_selection
+				(GTK_TREE_VIEW(manager.certlist)),
+				&model, &sel))
+		return;
+	
+	gtk_tree_model_get(model, &sel,
+			   SSL_MANAGER_CERT, &cert,
+			   -1);
+	if (!cert)
+		return;
+
+	sslcertwindow_show_cert(cert);
 }
 #endif
