@@ -2,10 +2,10 @@
 
 	* src/folder.[ch]
 	  src/summaryview.[ch]
-	  	re-implement per folder message threading
+	  	implement per-folder collapsed/expanded threads setting
 		
 	* src/prefs_common.c
-		remove global message threading option
+		remove global collapsed/expanded threads option
 
 2003-01-25 [christoph]	0.8.9claws2
 
