@@ -780,6 +780,9 @@ void messageview_destroy(MessageView *messageview)
 
 void messageview_delete(MessageView *msgview)
 {
+#if 1
+	g_warning("Use summary_delete()\n");
+#else
 	MsgInfo *msginfo = (MsgInfo *) msgview->msginfo;
 	FolderItem *trash = NULL;
 	PrefsAccount *ac = NULL;
@@ -809,6 +812,7 @@ void messageview_delete(MessageView *msgview)
 		procmsg_msginfo_set_flags(msginfo, MSG_DELETED, 0);
 		/* NOTE: does not update to next message in summaryview */
 	}
+#endif	
 }
 
 /* 

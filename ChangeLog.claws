@@ -1,3 +1,13 @@
+2004-03-19 [alfons]	0.9.10claws19
+
+	better next/previous/delete/focus navigation with separate 
+	message view 
+	
+	* src/toolbar.c
+		call summaryview_delete() instead of messageview_delete()
+	* src/messageview.c
+		disable messageview_delete()
+
 2004-03-18 [paul]	0.9.10claws18
 
 	* sync with 0.9.10cvs6

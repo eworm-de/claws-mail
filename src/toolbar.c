@@ -896,8 +896,11 @@ static void toolbar_delete_cb(GtkWidget *widget, gpointer data)
 	
 	switch (toolbar_item->type) {
 	case TOOLBAR_MSGVIEW:
-		msgview = (MessageView*)toolbar_item->parent;
-		messageview_delete(msgview);
+		if (msgview = (MessageView*)toolbar_item->parent) {
+			mainwin = msgview->mainwin;
+			if (msgview->msginfo && mainwin)
+				summary_delete(mainwin->summaryview);
+		}				
         	break;
         case TOOLBAR_MAIN:
 		mainwin = (MainWindow*)toolbar_item->parent;
