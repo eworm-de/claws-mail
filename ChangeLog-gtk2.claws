@@ -1,3 +1,23 @@
+2004-12-03 [paul]	0.9.12cvs180.1
+
+	* ChangeLog
+	* ChangeLog.claws
+	* ChangeLog.jp
+	* configure.ac
+	* src/Makefile.am
+	* src/pop.c
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/pixmaps/continue.xpm
+	* src/pixmaps/dir_close.xpm
+	* src/pixmaps/dir_open.xpm
+	* src/pixmaps/drafts_close.xpm
+	* src/pixmaps/drafts_open.xpm
+	* src/pixmaps/folder.xpm **REMOVED**
+	* src/pixmaps/group.xpm
+	* src/pixmaps/unread.xpm
+		sync with HEAD
+
 2004-12-02 [colin]	0.9.12cvs179.1
 
 	* src/compose.c

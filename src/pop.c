@@ -674,7 +674,8 @@ static gint pop3_write_msg_to_file(const gchar *file, const gchar *data,
 	 * ^data              ^prev            ^cur             data+len-1^ */
 
 	prev = data;
-	while ((cur = memchr(prev, '\r', len - (prev - data))) != NULL) {
+	while ((cur = (gchar *)my_memmem(prev, len - (prev - data), "\r\n", 2))
+	       != NULL) {
 		if ((cur > prev && fwrite(prev, cur - prev, 1, fp) < 1) ||
 		    fputc('\n', fp) == EOF) {
 			FILE_OP_ERROR(file, "fwrite");

@@ -309,6 +309,29 @@ gchar *strcasestr(const gchar *haystack, const gchar *needle)
 	return NULL;
 }
 
+gpointer my_memmem(gconstpointer haystack, size_t haystacklen,
+		   gconstpointer needle, size_t needlelen)
+{
+	const gchar *haystack_ = (const gchar *)haystack;
+	const gchar *needle_ = (const gchar *)needle;
+	const gchar *haystack_cur = (const gchar *)haystack;
+
+	if (needlelen == 1)
+		return memchr(haystack_, *needle_, haystacklen);
+
+	while ((haystack_cur = memchr(haystack_cur, *needle_, haystacklen))
+	       != NULL) {
+		if (haystacklen - (haystack_cur - haystack_) < needlelen)
+			break;
+		if (memcmp(haystack_cur + 1, needle_ + 1, needlelen - 1) == 0)
+			return (gpointer)haystack_cur;
+		else
+			haystack_cur++;
+	}
+
+	return NULL;
+}
+
 /* Copy no more than N characters of SRC to DEST, with NULL terminating.  */
 gchar *strncpy2(gchar *dest, const gchar *src, size_t n)
 {
@@ -3555,8 +3578,6 @@ gchar *generate_msgid(gchar *buf, gint len)
 		   lt->tm_mday, lt->tm_hour,
 		   lt->tm_min, lt->tm_sec,
 		   (guint) rand(), addr);
-
-	debug_print("generated Message-ID: %s\n", buf);
 
 	g_free(addr);
 	return buf;

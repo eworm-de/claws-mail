@@ -1,3 +1,147 @@
+2004-12-03 [paul]
+
+	* src/pixmaps/dir_close.xpm
+	* src/pixmaps/dir_open.xpm
+	* src/pixmaps/drafts_close.xpm
+	* src/pixmaps/drafts_open.xpm
+	* src/pixmaps/group.xpm
+	* src/pixmaps/unread.xpm
+		update icons (sync with main (adjust hue))	
+
+2004-12-02 [paul]	0.9.12cvs180
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/Makefile.am
+	* src/pop.c
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/pixmaps/folder.xpm **REMOVED**
+		sync with main
+		fixes bug 644 'extra CRs in subject line break filtering' 
+
+2004-12-02 [colin]	0.9.12cvs179
+
+	* src/compose.c
+		Prevent duplicate edition of queued
+		and drafted mails
+
+2004-12-02 [colin]	0.9.12cvs178
+
+	* src/compose.c
+		Fix quote linewrapping ignoring pref
+		Patch by Alfons
+
+2004-11-30 [colin]	0.9.12cvs177
+
+	* src/gtk/prefswindow.c
+	* src/gtk/pluginwindow.c
+		Add shortcut keys to prefs window
+		and plugin window. Patch by Fabien Vantard.
+
+2004-11-29 [colin]	0.9.12cvs176
+
+	* src/folderview.c
+		Fix disappearing separators in folderview's popup
+
+2004-11-29 [colin]	0.9.12cvs175
+
+	* src/procmime.c
+		Another format bug
+
+2004-11-29 [colin]	0.9.12cvs174
+
+	* src/pop.c
+		Fix format string
+
+2004-11-26 [colin]	0.9.12cvs173
+
+	* src/common/smtp.c
+	* src/common/smtp.h
+		Use ESMTP for all servers advertising it
+		Add SIZE= parameter to MAIL command for 
+		ESMTP servers
+
+2004-11-24 [colin]	0.9.12cvs172
+
+	* src/plugins/pgpmime/pgpmime.c
+		Forgot one :(
+
+2004-11-24 [colin]	0.9.12cvs171
+
+	* src/plugins/pgpmime/pgpmime.c
+		Fix numerous GpgmeGtk leaks
+
+2004-11-24 [colin]	0.9.12cvs170
+
+	* src/plugins/pgpmime/pgpmime.c
+		Fix numerous GpgmeCtx leaks
+
+2004-11-24 [colin]	0.9.12cvs169
+
+	* src/plugins/pgpmime/plugin.c
+		Update requirements
+	* src/plugins/trayicon/Makefile.am
+	* src/plugins/trayicon/newmarkedmail.xpm
+	* src/plugins/trayicon/trayicon.c
+	* src/plugins/trayicon/unreadmarkedmail.xpm
+		Add new icons when there are unread marked mails
+		answers
+
+2004-11-23 [thorsten]	0.9.12cvs168
+
+	* src/plugins/pgpmime/plugin.c
+		typo: plugin_init instead of plugin_done
+
+2004-11-23 [thorsten]	0.9.12cvs167
+
+	* commitHelper
+		o add me
+	* src/partial_download.c
+	* src/partial_download.h
+		o fix path for includes
+
+2004-11-23 [colin]	0.9.12cvs166
+
+	* src/procmime.c
+		Uh, changed API.
+
+2004-11-23 [colin]	0.9.12cvs165
+
+	* src/procmime.c
+		Fix mime headers wrapping
+
+2004-11-23 [christoph]	0.9.12cvs164
+
+	* src/common/Makefile.am
+	* src/common/partial_download.[ch]
+	* src/Makefile.am
+	* src/partial_download.[ch]
+	* src/folderview.c
+		move to src because it depends on src stuff
+
+	* src/codeconv.c
+	* src/common/base64.h
+		move B64LEN macro to base64.h
+
+	* src/compose.c
+	* src/privacy.[ch]
+		add PrefsAccount to sign-function parameters
+
+	* src/main.c
+	* src/prefs_account.[ch]
+	* src/gtk/prefswindow.[ch]
+		o use new prefswindow for account prefs
+		o add possibility to add new pages to account prefs
+
+	* src/plugins/pgpmime/prefs_gpg.[ch]
+	* src/plugins/pgpmime/prefs_gpg.glade
+		add account prefs for GPG
+
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/sgpgme.[ch]
+		create signers list based on the GPG account prefs
+
 2004-11-23 [colin]	0.9.12cvs163
 
 	* src/main.c

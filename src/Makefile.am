@@ -279,7 +279,6 @@ EXTRA_DIST = \
 	pixmaps/drafts_open.xpm \
 	pixmaps/error.xpm \
 	pixmaps/exec.xpm \
-	pixmaps/folder.xpm \
 	pixmaps/forwarded.xpm \
 	pixmaps/gpg_signed.xpm \
 	pixmaps/group.xpm \
