@@ -223,6 +223,10 @@ static void delete_cb			(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
 
+static void cancel_cb                   (MainWindow     *mainwin,
+					 guint           action,
+					 GtkWidget      *widget);
+
 static void mark_cb			(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -610,6 +614,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/M_ove..."),		"<control>O", move_to_cb, 0, NULL},
 	{N_("/_Message/_Copy..."),		"<shift><control>O", copy_to_cb, 0, NULL},
 	{N_("/_Message/_Delete"),		"<control>D", delete_cb,  0, NULL},
+	{N_("/_Message/Cancel a news message"), "", cancel_cb,  0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/_Mark"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Message/_Mark/_Mark"),		"<shift>asterisk", mark_cb, 0, NULL},
@@ -657,8 +662,10 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, prefs_common_open_cb, 0, NULL},
 	{N_("/_Configuration/C_ustom toolbar..."),
 						NULL, prefs_toolbar_cb, 0, NULL},
+#if 0
 	{N_("/_Configuration/_Filter setting..."),
 						NULL, prefs_filter_open_cb, 0, NULL},
+#endif
 	{N_("/_Configuration/_Scoring..."),
 						NULL, prefs_scoring_open_cb, 0, NULL},
 	{N_("/_Configuration/_Filtering..."),
@@ -1435,6 +1442,8 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 	if (mainwin->summaryview->folder_item &&
 	    mainwin->summaryview->folder_item->folder->type == F_NEWS)
 		state |= M_NEWS;
+	else
+		state |= M_NOT_NEWS;
 	if (selection == SUMMARY_SELECTED_SINGLE &&
 	    (item &&
 	     (item->stype == F_OUTBOX || item->stype == F_DRAFT ||
@@ -1519,7 +1528,8 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Re-edit"		  , M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
 		{"/Message/Move..."		  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 		{"/Message/Copy..."		  , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Message/Delete" 		  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
+		{"/Message/Delete" 		  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
+		{"/Message/Cancel a news message" , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NEWS},
 		{"/Message/Mark"   		  , M_TARGET_EXIST},
 
 		{"/Tools/Selective download..."	    , M_HAVE_ACCOUNT|M_UNLOCKED},
@@ -2333,6 +2343,11 @@ static void copy_to_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 static void delete_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	summary_delete(mainwin->summaryview);
+}
+
+static void cancel_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+{
+	summary_cancel(mainwin->summaryview);
 }
 
 static void open_msg_cb(MainWindow *mainwin, guint action, GtkWidget *widget)

@@ -47,7 +47,8 @@ typedef enum
 	M_NEWS                = 1 << 11,
 	M_HAVE_NEWS_ACCOUNT   = 1 << 12,
 	M_HIDE_READ_MSG	      = 1 << 13,
-	M_DELAY_EXEC	      = 1 << 14
+	M_DELAY_EXEC	      = 1 << 14,
+	M_NOT_NEWS	      = 1 << 15,
 } SensitiveCond;
 
 typedef enum

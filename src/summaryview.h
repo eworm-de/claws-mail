@@ -210,6 +210,8 @@ void summary_sort		  (SummaryView		*summaryview,
 void summary_delete		  (SummaryView		*summaryview);
 void summary_delete_duplicated	  (SummaryView		*summaryview);
 
+void summary_cancel               (SummaryView          *summaryview);
+
 gboolean summary_execute	  (SummaryView		*summaryview);
 
 void summary_attract_by_subject	  (SummaryView		*summaryview);

@@ -1,3 +1,10 @@
+2002-08-27 [hoa]	0.8.1claws123
+
+	* src/mainwindow.[ch]
+	* src/summaryview.[ch]
+		removed the "filter setting" menu option.
+		add a "cancel a news message" menu option.
+
 2002-08-26 [martin]	0.8.1claws122
 
 	* ChangeLog.claws
@@ -272,7 +279,7 @@
 		o add "Set default" button
 		o align label and text + combo widgets
 
-2002-08-20 [hoa]	0.8.1claws84
+2002-08-20 [hoa]	0.8.1claws83bis
 
 	* src/imap.c
 		fixed a bug in imap_fetch_msginfo() in case there is no
