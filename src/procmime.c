@@ -756,8 +756,6 @@ void renderer_read_config(void)
 		if (cr == NULL)
 			continue;
 
-		printf("%s %s\n", cr->content_type, cr->renderer);
-
 		renderer_list = g_list_append(renderer_list, cr);
 	}
 

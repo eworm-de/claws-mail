@@ -222,7 +222,7 @@ static PrefParam param[] = {
 	{"use_mail_command", "FALSE", &tmp_ac_prefs.use_mail_command, P_BOOL,
 	 &basic.mailcmd_chkbtn, prefs_set_data_from_toggle, prefs_set_toggle},
 
-	{"mail_command", "/usr/sbin/sendmail", &tmp_ac_prefs.mail_command, P_STRING,
+	{"mail_command", "/usr/sbin/sendmail -t", &tmp_ac_prefs.mail_command, P_STRING,
 	 &basic.mailcmd_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"use_nntp_auth", "FALSE", &tmp_ac_prefs.use_nntp_auth, P_BOOL,

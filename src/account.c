@@ -708,7 +708,8 @@ static void account_selected(GtkCList *clist, gint row, gint column,
 
 		ac = gtk_clist_get_row_data(clist, row);
 		if (ac->protocol == A_POP3 || ac->protocol == A_APOP ||
-		    ac->protocol == A_IMAP4 || ac->protocol == A_NNTP) {
+		    ac->protocol == A_IMAP4 || ac->protocol == A_NNTP ||
+		    ac->protocol == A_LOCAL) {
 			ac->recv_at_getall ^= TRUE;
 			account_clist_set_row(ac, row);
 		}
@@ -775,7 +776,8 @@ static gint account_clist_set_row(PrefsAccount *ac_prefs, gint row)
 	has_getallbox = (ac_prefs->protocol == A_POP3  ||
 			 ac_prefs->protocol == A_APOP  ||
 			 ac_prefs->protocol == A_IMAP4 ||
-			 ac_prefs->protocol == A_NNTP);
+			 ac_prefs->protocol == A_NNTP ||
+			 ac_prefs->protocol == A_LOCAL);
 	getall = has_getallbox && ac_prefs->recv_at_getall;
 
 	if (ac_prefs->is_default)

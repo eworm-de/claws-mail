@@ -1,4 +1,19 @@
-2002-03-10 [paul]
+2002-03-10 [hoa]	0.7.3claws5
+
+	* src/account.c
+	* src/inc.c
+	* src/prefs_account.c
+	* src/procmsg.c
+	* src/send.[ch]
+		fixed the local account.
+		you have to change the default "/usr/sbin/sendmail"
+		to "/usr/sbin/sendmail -t" in the preferences of
+		the local account.
+
+	* src/procmime.c
+		removed some debug display for renderer
+
+2002-03-10 [paul]	0.7.3claws4
 
 	* faq/en/sylpheed-faq-1.html
 	  faq/en/sylpheed-faq-2.html

@@ -32,7 +32,9 @@
 gint send_message		(const gchar	*file,
 				 PrefsAccount	*ac_prefs,
 				 GSList		*to_list);
+#if 0
 gint send_message_queue		(const gchar	*file);
+#endif
 gint send_message_local		(const gchar *command,
 				 FILE *fp);
 gint send_message_smtp		(PrefsAccount *ac_prefs,

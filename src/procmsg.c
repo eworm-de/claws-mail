@@ -1114,6 +1114,9 @@ gint procmsg_send_message_queue(const gchar *file)
 		if(!from) {
 			g_warning(_("Queued message header is broken.\n"));
 			mailval = -1;
+		} else if (mailac && mailac->use_mail_command &&
+			   mailac->mail_command && (* mailac->mail_command)) {
+			mailval = send_message_local(mailac->mail_command, fp);
 		} else if (prefs_common.use_extsend && prefs_common.extsend_cmd) {
 			mailval = send_message_local(prefs_common.extsend_cmd, fp);
 		} else {
