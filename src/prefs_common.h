@@ -216,6 +216,7 @@ struct _PrefsCommon
 	gboolean sep_folder;
 	gboolean sep_msg;
 	gboolean emulate_emacs;
+	gboolean show_msg_with_cursor_key;
 	gboolean open_unread_on_enter;
 	gboolean open_inbox_on_inc;
 	gboolean immediate_exec;

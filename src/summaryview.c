@@ -4675,7 +4675,9 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		break;
 	}
 
-	if (summaryview->display_msg) {
+	if (summaryview->display_msg ||
+	    (prefs_common.show_msg_with_cursor_key &&
+	     messageview_is_visible(summaryview->messageview))) {
 		summary_display_msg(summaryview, row);
 		summaryview->display_msg = FALSE;
 	} else {
