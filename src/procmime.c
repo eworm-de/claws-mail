@@ -56,6 +56,7 @@ MimeInfo *procmime_mimeinfo_new(void)
 	mimeinfo = g_new0(MimeInfo, 1);
 	mimeinfo->type     	= MIMETYPE_UNKNOWN;
 	mimeinfo->encoding_type = ENC_UNKNOWN;
+	mimeinfo->disposition	= DISPOSITIONTYPE_UNKNOWN;
 
 	mimeinfo->parameters = g_hash_table_new(g_str_hash, g_str_equal);
 	mimeinfo->node       = g_node_new(mimeinfo);
@@ -75,8 +76,6 @@ static gboolean free_func(GNode *node, gpointer data)
 {
 	MimeInfo *mimeinfo = (MimeInfo *) node->data;
 
-	g_free(mimeinfo->encoding);
-	g_free(mimeinfo->name);
 	if(mimeinfo->tmpfile)
 		unlink(mimeinfo->filename);
 	g_free(mimeinfo->filename);
@@ -677,8 +676,14 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 	if ((mimeinfo->type == MIMETYPE_TEXT) && !g_strcasecmp(mimeinfo->subtype, "html"))
 		base = "mimetmp.html";
 	else {
-		base = mimeinfo->name ? mimeinfo->name : "mimetmp";
-		base = g_basename(base);
+		const gchar *basetmp;
+
+		basetmp = procmime_mimeinfo_get_parameter(mimeinfo, "filename");
+		if (basetmp == NULL)
+			basetmp = procmime_mimeinfo_get_parameter(mimeinfo, "name");
+		if (basetmp == NULL)
+			basetmp = "mimetmp";
+		base = g_basename(basetmp);
 		if (*base == '\0') base = "mimetmp";
 		Xstrdup_a(base, base, return NULL);
 		subst_for_filename(base);
@@ -1139,7 +1144,7 @@ static void procmime_parse_content_disposition(const gchar *content_disposition,
 	else if (!g_strcasecmp(str, "attachment"))
 		mimeinfo->disposition = DISPOSITIONTYPE_ATTACHMENT;
 	else
-		mimeinfo->disposition = DISPOSITIONTYPE_UNKNOWN;
+		mimeinfo->disposition = DISPOSITIONTYPE_ATTACHMENT;
 	
 	add_to_mimeinfo_parameters(&content_disp_parts[1], mimeinfo);
 	g_strfreev(content_disp_parts);
@@ -1207,7 +1212,7 @@ void procmime_parse_mimepart(MimeInfo *parent,
 	if (content_disposition != NULL) 
 		procmime_parse_content_disposition(content_disposition, mimeinfo);
 	else
-		mimeinfo->disposition = DISPOSITIONTYPE_INLINE;
+		mimeinfo->disposition = DISPOSITIONTYPE_UNKNOWN;
 
 	/* Call parser for mime type */
 	switch (mimeinfo->type) {

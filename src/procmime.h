@@ -97,10 +97,6 @@ struct _MimeType
 
 struct _MimeInfo
 {
-	gchar *encoding;
-
-	gchar *name;
-
 	/* Internal data */
 	gchar *filename;
 	gboolean tmpfile;

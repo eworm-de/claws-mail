@@ -1,3 +1,14 @@
+2003-11-29 [christoph]	0.9.7claws7
+
+	* src/procmime.[ch]
+	* src/mimeview.c
+		o unknown disposition types should be handled as
+		  attachment (RFC2183)
+		o missing headers should not default to inline
+		  (would make "Save All" useless when disposition header
+		   is not set by the sending mailer)
+		o remove old MimeInfo data and cleanup
+
 2003-11-29 [luke]	0.9.7claws6
 
         * src/procmime.[ch]

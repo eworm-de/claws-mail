@@ -399,11 +399,10 @@ static const gchar *get_part_name(MimeInfo *partinfo)
 	const gchar *name;
 
 	name = procmime_mimeinfo_get_parameter(partinfo, "filename");
-	if (name == NULL) {
+	if (name == NULL)
 		name = procmime_mimeinfo_get_parameter(partinfo, "name");
-		if (name == NULL)
-			name = "";
-	}
+	if (name == NULL)
+		name = "";
 
 	return name;
 }
@@ -434,9 +433,9 @@ static GtkCTreeNode *mimeview_append_part(MimeView *mimeview,
 	str[COL_MIMETYPE] = content_type;
 	str[COL_SIZE] = to_human_readable(partinfo->length);
 	if (prefs_common.attach_desc)
-		str[COL_NAME] = get_part_description(partinfo);
+		str[COL_NAME] = (gchar *) get_part_description(partinfo);
 	else
-		str[COL_NAME] = get_part_name(partinfo);
+		str[COL_NAME] = (gchar *) get_part_name(partinfo);
 
 	node = gtk_ctree_insert_node(ctree, parent, NULL, str, 0,
 				     NULL, NULL, NULL, NULL,
@@ -762,7 +761,7 @@ static void mimeview_start_drag(GtkWidget *widget, gint button,
 	g_return_if_fail(mimeview != NULL);
 
 	partinfo = mimeview_get_selected_part(mimeview);
-	if (partinfo->filename == NULL && partinfo->name == NULL) return;
+	if (partinfo->disposition == DISPOSITIONTYPE_INLINE) return;
 
 	context = gtk_drag_begin(widget, mimeview->target_list,
 				 GDK_ACTION_COPY, button, event);
@@ -933,10 +932,8 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 
 	partinfo = mimeview_get_selected_part(mimeview);
 	if (!partinfo) return;
-	if (!partinfo->filename && !partinfo->name) return;
 
-	filename = partinfo->filename ? partinfo->filename : partinfo->name;
-	filename = g_basename(filename);
+	filename = g_basename(get_part_name(partinfo));
 	if (*filename == '\0') return;
 
 	filename = g_strconcat(get_mime_tmp_dir(), G_DIR_SEPARATOR_S,
@@ -993,7 +990,7 @@ static void mimeview_save_all(MimeView *mimeview)
 	while (attachment != NULL) {
 		if (attachment->type != MIMETYPE_MESSAGE &&
 		    attachment->type != MIMETYPE_MULTIPART &&
-		    attachment->disposition == DISPOSITIONTYPE_ATTACHMENT) {
+		    attachment->disposition != DISPOSITIONTYPE_INLINE) {
 			static guint subst_cnt = 1;
 			gchar *attachdir;
 			gchar *attachname = g_strdup(get_part_name(attachment));
