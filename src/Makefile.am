@@ -347,6 +347,8 @@ sylpheed_LDADD = \
 	$(GPGME_LIBS) \
 	$(LDAP_LIBS) \
 	$(OPENSSL_LIBS) \
+	$(COMPFACE_LIBS) \
+	$(JPILOT_LIBS) \
 	$(LIBICONV)
 
 AM_CPPFLAGS = \

@@ -1,3 +1,14 @@
+2003-10-30 [christoph]	0.9.6claws61
+
+	* configure.ac
+	* ac/openssl.m4
+	* ac/spamassassin.m4
+	* src/Makefile.am
+		use extra variables for all libraries to make sure plugins
+		are only linked with libraries they really need. $LIBS is always
+		added to the linking parameters, but we only what the libraries
+		listed in the Makefile
+
 2003-10-29 [paul]	0.9.6claws60
 
 	* src/mimeview.c
