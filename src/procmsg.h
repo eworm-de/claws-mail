@@ -90,13 +90,14 @@ typedef enum
 	MSG_ENCRYPTED   = 1 << 18,
 	MSG_IMAP	= 1 << 19,
 	MSG_NEWS	= 1 << 20,
+	MSG_SIGNED	= 1 << 21,
 
 	MSG_MIME	= 1 << 29,
 
 	MSG_CACHED	= 1 << 31
 } MsgTmpFlags;
 
-#define MSG_CACHED_FLAG_MASK	(MSG_MIME | MSG_ENCRYPTED)
+#define MSG_CACHED_FLAG_MASK	(MSG_MIME | MSG_ENCRYPTED | MSG_SIGNED)
 
 #define MSG_SET_FLAGS(msg, flags)	{ (msg) |= (flags); }
 #define MSG_UNSET_FLAGS(msg, flags)	{ (msg) &= ~(flags); }
@@ -122,12 +123,16 @@ typedef enum
 #define MSG_SET_COLORLABEL_VALUE(msg, val) \
 	MSG_SET_PERM_FLAGS(msg, ((((guint)(val)) & 7) << MSG_CLABEL_SBIT))
 
+#define MSG_COLORLABEL_TO_FLAGS(val) ((((guint)(val)) & 7) << MSG_CLABEL_SBIT)
+#define MSG_COLORLABEL_FROM_FLAGS(val) (val >> MSG_CLABEL_SBIT)
+
 #define MSG_IS_MOVE(msg)		(((msg).tmp_flags & MSG_MOVE) != 0)
 #define MSG_IS_COPY(msg)		(((msg).tmp_flags & MSG_COPY) != 0)
 
 #define MSG_IS_QUEUED(msg)		(((msg).tmp_flags & MSG_QUEUED) != 0)
 #define MSG_IS_DRAFT(msg)		(((msg).tmp_flags & MSG_DRAFT) != 0)
 #define MSG_IS_ENCRYPTED(msg)		(((msg).tmp_flags & MSG_ENCRYPTED) != 0)
+#define MSG_IS_SIGNED(msg)		(((msg).tmp_flags & MSG_SIGNED) != 0)
 #define MSG_IS_IMAP(msg)		(((msg).tmp_flags & MSG_IMAP) != 0)
 #define MSG_IS_NEWS(msg)		(((msg).tmp_flags & MSG_NEWS) != 0)
 #define MSG_IS_MIME(msg)		(((msg).tmp_flags & MSG_MIME) != 0)
@@ -164,6 +169,8 @@ struct _MsgFlags
 
 struct _MsgInfo
 {
+	guint refcnt;
+
 	guint  msgnum;
 	off_t  size;
 	time_t mtime;
@@ -255,11 +262,23 @@ gint	procmsg_save_to_outbox		(FolderItem	*outbox,
 void	procmsg_print_message		(MsgInfo	*msginfo,
 					 const gchar	*cmdline);
 
+MsgInfo *procmsg_msginfo_new		();
+MsgInfo *procmsg_msginfo_new_ref	(MsgInfo 	*msginfo);
 MsgInfo *procmsg_msginfo_copy		(MsgInfo	*msginfo);
 void	 procmsg_msginfo_free		(MsgInfo	*msginfo);
+guint	 procmsg_msginfo_memusage	(MsgInfo	*msginfo);
 
 gint procmsg_cmp_msgnum_for_sort	(gconstpointer	 a,
 					 gconstpointer	 b);
 gint procmsg_send_message_queue		(const gchar *file);
+
+void procmsg_msginfo_set_flags		(MsgInfo *msginfo,
+					 MsgPermFlags perm_flags,
+					  MsgTmpFlags tmp_flags);
+void procmsg_msginfo_unset_flags	(MsgInfo *msginfo,
+					 MsgPermFlags perm_flags,
+					  MsgTmpFlags tmp_flags);
+
+void procmsg_msginfo_write_flags	(MsgInfo *msginfo);
 
 #endif /* __PROCMSG_H__ */

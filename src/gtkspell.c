@@ -1900,6 +1900,18 @@ static void populate_submenu(GtkPspell *gtkpspell, GtkWidget *menu)
 	item = gtk_menu_item_new();
         gtk_widget_show(item);
         gtk_menu_append(GTK_MENU(menu), item);
+		
+      	item = gtk_check_menu_item_new_with_label(_("Fast Mode"));
+	if (ispell || gtkpspell->gtkpspeller->sug_mode == PSPELL_FASTMODE)
+		gtk_widget_set_sensitive(GTK_WIDGET(item),FALSE);
+	if (!ispell && gtkpspell->gtkpspeller->sug_mode == PSPELL_FASTMODE)
+		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item),TRUE);
+	else
+		gtk_signal_connect(GTK_OBJECT(item), "activate",
+				   GTK_SIGNAL_FUNC(set_sug_mode_cb),
+				   gtkpspell);
+	gtk_widget_show(item);
+	gtk_menu_append(GTK_MENU(menu), item);
 
 	if (gtkpspell->use_alternate && gtkpspell->alternate_speller) {
 		dictname = g_strdup_printf(_("Use alternate (%s)"), 

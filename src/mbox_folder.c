@@ -50,6 +50,10 @@ static gboolean mbox_purge_deleted(gchar * mbox);
 static gchar * mbox_get_new_path(FolderItem * parent, gchar * name);
 static gchar * mbox_get_folderitem_name(gchar * name);
 
+MsgInfo *mbox_fetch_msginfo(Folder *folder, FolderItem *item, gint num);
+GSList *mbox_get_num_list(Folder *folder, FolderItem *item);
+gboolean mbox_check_msgnum_validity(Folder *folder, FolderItem *item);
+
 Folder *mbox_folder_new(const gchar *name, const gchar *path)
 {
 	Folder *folder;
@@ -71,17 +75,25 @@ static void mbox_folder_init(Folder *folder, const gchar *name, const gchar *pat
 
 	folder->type = F_MBOX;
 
+/*
 	folder->get_msg_list        = mbox_get_msg_list;
+*/
 	folder->fetch_msg           = mbox_fetch_msg;
+	folder->fetch_msginfo	    = mbox_fetch_msginfo;
 	folder->add_msg             = mbox_add_msg;
 	folder->copy_msg            = mbox_copy_msg;
 	folder->remove_msg          = mbox_remove_msg;
 	folder->remove_all_msg      = mbox_remove_all_msg;
+/*
 	folder->scan                = mbox_scan_folder;
+*/
+	folder->get_num_list	    = mbox_get_num_list;
 	folder->create_tree         = mbox_create_tree;
 	folder->create_folder       = mbox_create_folder;
 	folder->rename_folder       = mbox_rename_folder;
 	folder->remove_folder       = mbox_remove_folder;
+	folder->check_msgnum_validity
+				    = mbox_check_msgnum_validity;
 }
 
 static gchar * mbox_folder_create_parent(const gchar * path)
@@ -1362,7 +1374,6 @@ gchar *mbox_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	gchar *filename;
 	
 	g_return_val_if_fail(item != NULL, NULL);
-	g_return_val_if_fail(num > 0 && num <= item->last_num, NULL);
 
 	path = folder_item_get_path(item);
 	if (!is_dir_exist(path))
@@ -1517,7 +1528,7 @@ gint mbox_remove_msg(Folder *folder, FolderItem *item, gint num)
 	msg = mbox_cache_get_msg(mbox_path, num);
 
 	g_free(mbox_path);
-	
+
 	if (msg != NULL)
 		MSG_SET_PERM_FLAGS(msg->flags, MSG_REALLY_DELETED);
 
@@ -2057,7 +2068,7 @@ static gboolean mbox_purge_deleted(gchar * mbox)
 
 	for(l = msg_list ; l != NULL ; l = g_list_next(l)) {
 		struct _message * msg = (struct _message *) l->data;
-		if (MSG_IS_INVALID(msg->flags) && MSG_IS_REALLY_DELETED(msg->flags)) {
+		if (!MSG_IS_INVALID(msg->flags) && MSG_IS_REALLY_DELETED(msg->flags)) {
 			modification = TRUE;
 			break;
 		}
@@ -2268,5 +2279,121 @@ gint mbox_remove_folder(Folder *folder, FolderItem *item)
 
 	folder_item_remove(item);
 	return 0;
+}
+
+GSList *mbox_get_num_list(Folder *folder, FolderItem *item)
+{
+	GSList *mlist;
+	GList * l;
+	FILE * fp;
+	gchar * mbox_path;
+
+	mlist = NULL;
+
+	mbox_path = mbox_folder_get_path(item);
+
+	if (mbox_path == NULL)
+		return NULL;
+
+	mbox_purge_deleted(mbox_path);
+
+	fp = fopen(mbox_path, "rb");
+	
+	if (fp == NULL) {
+		g_free(mbox_path);
+		return NULL;
+	}
+
+	mbox_lockread_file(fp, mbox_path);
+
+	mbox_cache_synchronize_from_file(fp, mbox_path, TRUE);
+
+	item->last_num = mbox_cache_get_count(mbox_path);
+
+	for(l = mbox_cache_get_msg_list(mbox_path) ; l != NULL ;
+	    l = g_list_next(l)) {
+		struct _message * msg;
+
+		msg = (struct _message *) l->data;
+
+		if (MSG_IS_INVALID(msg->flags) || !MSG_IS_REALLY_DELETED(msg->flags)) {
+			mlist = g_slist_append(mlist, GINT_TO_POINTER(msg->msgnum));
+		} else {
+			MSG_SET_PERM_FLAGS(msg->flags, MSG_REALLY_DELETED);
+		}
+	}
+
+	mbox_unlock_file(fp, mbox_path);
+
+	g_free(mbox_path);
+
+	fclose(fp);
+
+	return mlist;
+}
+
+MsgInfo *mbox_fetch_msginfo(Folder *folder, FolderItem *item, gint num)
+{
+	gchar *mbox_path;
+	struct _message *msg;
+	FILE *src;
+	MsgInfo *msginfo;
+	
+	g_return_val_if_fail(folder != NULL, NULL);
+	g_return_val_if_fail(item != NULL, NULL);
+
+	mbox_path = mbox_folder_get_path(item);
+
+	g_return_val_if_fail(mbox_path != NULL, NULL);
+	
+	src = fopen(mbox_path, "rb");
+	if (src == NULL) {
+		g_free(mbox_path);
+		return NULL;
+	}
+	mbox_lockread_file(src, mbox_path);
+	mbox_cache_synchronize_from_file(src, mbox_path, TRUE);
+
+	msg = mbox_cache_get_msg(mbox_path, num);
+	if (msg == NULL) {
+		mbox_unlock_file(src, mbox_path);
+		fclose(src);
+		g_free(mbox_path);
+		return NULL;
+	}
+	
+	fseek(src, msg->header, SEEK_SET);
+	msginfo = mbox_parse_msg(src, msg, item);
+
+	mbox_unlock_file(src, mbox_path);
+	fclose(src);
+	g_free(mbox_path);
+
+	return msginfo;
+}
+
+gboolean mbox_check_msgnum_validity(Folder *folder, FolderItem *item)
+{
+	mboxcache * old_cache;
+	gboolean scan_new = TRUE;
+	struct stat s;
+	gchar *filename;
+
+	filename = mbox_folder_get_path(item);
+	
+	old_cache = mbox_cache_get_mbox(filename);
+
+	if (old_cache != NULL) {
+		if (stat(filename, &s) < 0) {
+			FILE_OP_ERROR(filename, "stat");
+		} else if (old_cache->mtime == s.st_mtime) {
+			debug_print("Folder is not modified.\n");
+			scan_new = FALSE;
+		}
+	}
+
+	g_free(filename);
+	
+	return !scan_new;
 }
 

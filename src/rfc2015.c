@@ -497,6 +497,26 @@ int rfc2015_is_encrypted (MimeInfo *mimeinfo)
     return 1;
 }
 
+gboolean rfc2015_msg_is_encrypted (gchar *file)
+{
+	FILE *fp;
+	MimeInfo *mimeinfo;
+	int ret;
+
+	if ((fp = fopen(file, "rb")) == NULL)
+		return FALSE;
+
+	mimeinfo = procmime_scan_mime_header(fp);
+	if(!mimeinfo) {
+		fclose(fp);
+		return FALSE;
+	}
+
+	ret = rfc2015_is_encrypted(mimeinfo);
+	procmime_mimeinfo_free_all(mimeinfo);
+	return ret != 0 ? TRUE : FALSE;
+}
+
 static int
 name_cmp(const char *a, const char *b)
 {

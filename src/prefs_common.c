@@ -848,6 +848,11 @@ static PrefParam param[] = {
 	 &other.loglength_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
+	{"cache_max_mem_usage", "4096", &prefs_common.cache_max_mem_usage, P_INT,
+	 NULL, NULL, NULL},
+	{"cache_min_keep_time", "15", &prefs_common.cache_min_keep_time, P_INT,
+	 NULL, NULL, NULL},
+
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 

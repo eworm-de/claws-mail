@@ -6,6 +6,7 @@ EXTRA_DIST = \
 	README.jp \
 	ChangeLog.claws \
 	README.claws \
+	README.README \
 	TODO.jp \
 	sylpheed.desktop \
 	sylpheed.spec \

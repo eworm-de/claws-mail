@@ -274,6 +274,11 @@ static gchar *imap_locale_to_modified_utf7	(const gchar	*from);
 
 static gboolean imap_rename_folder_func		(GNode		*node,
 						 gpointer	 data);
+GSList *imap_get_num_list			(Folder 	*folder,
+						 FolderItem 	*item);
+MsgInfo *imap_fetch_msginfo 			(Folder 	*folder,
+						 FolderItem 	*item,
+						 gint 		 num);
 
 
 Folder *imap_folder_new(const gchar *name, const gchar *path)
@@ -298,7 +303,9 @@ static void imap_folder_init(Folder *folder, const gchar *name,
 
 	folder->type = F_IMAP;
 
+/*
 	folder->get_msg_list        = imap_get_msg_list;
+*/
 	folder->fetch_msg           = imap_fetch_msg;
 	folder->add_msg             = imap_add_msg;
 	folder->move_msg            = imap_move_msg;
@@ -308,12 +315,17 @@ static void imap_folder_init(Folder *folder, const gchar *name,
 	folder->remove_msg          = imap_remove_msg;
 	folder->remove_all_msg      = imap_remove_all_msg;
 	folder->is_msg_changed      = imap_is_msg_changed;
+/*
 	folder->scan                = imap_scan_folder;
+*/
 	folder->scan_tree           = imap_scan_tree;
 	folder->create_tree         = imap_create_tree;
 	folder->create_folder       = imap_create_folder;
 	folder->rename_folder       = imap_rename_folder;
 	folder->remove_folder       = imap_remove_folder;
+
+	folder->get_num_list	    = imap_get_num_list;
+	folder->fetch_msginfo	    = imap_fetch_msginfo;
 }
 
 static IMAPSession *imap_session_get(Folder *folder)
@@ -674,6 +686,8 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 {
 	gchar *destdir;
 	IMAPSession *session;
+	gint messages, recent, unseen;
+	guint32 uid_next, uid_validity;
 	gint ok;
 
 	g_return_val_if_fail(folder != NULL, -1);
@@ -686,6 +700,14 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 
 	if (msginfo->folder == dest) {
 		g_warning(_("the src folder is identical to the dest.\n"));
+		return -1;
+	}
+
+	ok = imap_status(session, IMAP_FOLDER(folder), dest->path,
+			 &messages, &recent, &uid_next, &uid_validity, &unseen);
+	statusbar_pop_all();
+	if (ok != IMAP_SUCCESS) {
+		g_warning(_("can't copy message\n"));
 		return -1;
 	}
 
@@ -712,7 +734,7 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 	statusbar_pop_all();
 
 	if (ok == IMAP_SUCCESS)
-		return 0;
+		return uid_next;
 	else
 		return -1;
 }
@@ -794,9 +816,12 @@ gint imap_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	ret = imap_add_msg(folder, dest, srcfile, FALSE);
 	g_free(srcfile);
 
-	if (ret != -1)
-		ret = folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
-
+	if (ret != -1) {
+		if(folder_item_remove_msg(msginfo->folder, msginfo->msgnum)) {
+			ret = -1;
+		}
+	}
+		
 	return ret;
 }
 
@@ -3015,4 +3040,96 @@ static gboolean imap_rename_folder_func(GNode *node, gpointer data)
 	item->path = new_itempath;
 
 	return FALSE;
+}
+
+GSList *imap_get_num_list(Folder *folder, FolderItem *item)
+{
+	IMAPSession *session;
+	GSList *msgnum_list = NULL;
+	gint i;
+	gint ok, exists = 0, recent = 0, unseen = 0;
+	guint32 uid_validity = 0;
+	guint32 uid = 0;
+	
+	g_return_val_if_fail(folder != NULL, NULL);
+	g_return_val_if_fail(item != NULL, NULL);
+	g_return_val_if_fail(item->path != NULL, NULL);
+	g_return_val_if_fail(folder->type == F_IMAP, NULL);
+	g_return_val_if_fail(folder->account != NULL, NULL);
+
+	session = imap_session_get(folder);
+	g_return_val_if_fail(session != NULL, NULL);
+
+	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
+			 &exists, &recent, &unseen, &uid_validity);
+	if (ok != IMAP_SUCCESS)
+		return NULL;
+
+	for(i = 1; i <= exists; i++) {
+		ok = imap_get_uid(session, i, &uid);
+		if (ok != IMAP_SUCCESS)
+			return msgnum_list;
+		msgnum_list = g_slist_prepend(msgnum_list, GINT_TO_POINTER(uid));
+	}
+	
+	return msgnum_list;
+}
+
+MsgInfo *imap_fetch_msginfo (Folder *folder, FolderItem *item, gint num)
+{
+	gchar *tmp;
+	IMAPSession *session;
+	GString *str;
+	MsgInfo *msginfo;
+	gint ok, exists = 0, recent = 0, unseen = 0;
+	guint32 uid_validity = 0;
+	guint32 uid = 0;
+	
+	g_return_val_if_fail(folder != NULL, NULL);
+	g_return_val_if_fail(item != NULL, NULL);
+	g_return_val_if_fail(item->folder != NULL, NULL);
+	g_return_val_if_fail(item->folder->type == F_IMAP, NULL);
+
+	session = imap_session_get(folder);
+	g_return_val_if_fail(session != NULL, NULL);
+
+	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
+			 &exists, &recent, &unseen, &uid_validity);
+	if (ok != IMAP_SUCCESS)
+		return NULL;
+	
+	if (imap_cmd_envelope(SESSION(session)->sock, num, num)
+	    != IMAP_SUCCESS) {
+		log_warning(_("can't get envelope\n"));
+		return NULL;
+	}
+
+	str = g_string_new(NULL);
+
+	if ((tmp = sock_getline(SESSION(session)->sock)) == NULL) {
+		log_warning(_("error occurred while getting envelope.\n"));
+		g_string_free(str, TRUE);
+		return NULL;
+	}
+	strretchomp(tmp);
+	log_print("IMAP4< %s\n", tmp);
+	g_string_assign(str, tmp);
+	g_free(tmp);
+
+	msginfo = imap_parse_envelope(SESSION(session)->sock, item, str);
+	if (!msginfo) {
+		log_warning(_("can't parse envelope: %s\n"), str->str);
+	}
+
+	tmp = NULL;
+	do {
+		g_free(tmp);
+		tmp = sock_getline(SESSION(session)->sock);
+	} while (!(tmp == NULL || tmp[0] != '*' || tmp[1] != ' '));
+	
+	msginfo->folder = item;
+
+	g_string_free(str, TRUE);
+	
+	return msginfo;
 }

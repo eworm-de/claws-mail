@@ -226,7 +226,7 @@ GSList *procmsg_read_cache(FolderItem *item, gboolean scan_file)
 	}
 
 	while (fread(&num, sizeof(num), 1, fp) == 1) {
-		msginfo = g_new0(MsgInfo, 1);
+		msginfo = procmsg_msginfo_new();
 		msginfo->msgnum = num;
 		READ_CACHE_DATA_INT(msginfo->size, fp);
 		READ_CACHE_DATA_INT(msginfo->mtime, fp);
@@ -479,6 +479,7 @@ static void mark_sum_func(gpointer key, gpointer value, gpointer data)
 	g_free(flags);
 }
 
+#if 0 /* NEW CACHE DOES NOT ALLOW ACCESS TO THE MARK FILE */
 void procmsg_get_mark_sum(const gchar *folder,
 			  gint *new, gint *unread, gint *total,
 			  gint *min, gint *max,
@@ -504,6 +505,7 @@ void procmsg_get_mark_sum(const gchar *folder,
 	debug_print("mark->new = %d, mark->unread = %d, mark->total = %d\n",
 		    *(marksum.new), *(marksum.unread), *(marksum.total));
 }
+#endif
 
 static GHashTable *procmsg_read_mark_file(const gchar *folder)
 {
@@ -523,8 +525,12 @@ static GHashTable *procmsg_read_mark_file(const gchar *folder)
 
 		flags = g_new0(MsgFlags, 1);
 		flags->perm_flags = perm_flags;
-
-		g_hash_table_insert(mark_table, GUINT_TO_POINTER(num), flags);
+    
+		if(!MSG_IS_REALLY_DELETED(*flags)) {
+			g_hash_table_insert(mark_table, GUINT_TO_POINTER(num), flags);
+		} else {
+			g_hash_table_remove(mark_table, GUINT_TO_POINTER(num));
+		}
 	}
 
 	fclose(fp);
@@ -583,6 +589,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 	MsgInfo *msginfo;
 	const gchar *msgid;
 	const gchar *subject;
+	GNode *found_subject;
 
 	root = g_node_new(NULL);
 	msgid_table = g_hash_table_new(g_str_hash, g_str_equal);
@@ -598,7 +605,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 				parent = root;
 			} else {
 				if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags)) {
-					MSG_SET_PERM_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
+					procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 				}
 			}
 		}
@@ -610,10 +617,20 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 			g_hash_table_insert(msgid_table, (gchar *)msgid, node);
 
 		subject = msginfo->subject;
-		if (subject_table_lookup(subject_table,
-					 (gchar *) subject) == NULL)
-			subject_table_insert(subject_table, (gchar *)subject,
+		found_subject = subject_table_lookup(subject_table,
+						     (gchar *) subject);
+		if (found_subject == NULL)
+			subject_table_insert(subject_table, (gchar *) subject,
 					     node);
+		else {
+			/* replace if msg in table is older than current one 
+			 * can add here more stuff.  */
+			if ( ((MsgInfo*)(found_subject->data))->date_t >
+			     ((MsgInfo*)(node->data))->date_t )  {
+				subject_table_remove(subject_table, (gchar *) subject);
+				subject_table_insert(subject_table, (gchar *) subject, node);
+			}	
+		}
 	}
 
 	/* complete the unfinished threads */
@@ -629,7 +646,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 				(parent, parent->children, node);
 			/* CLAWS: ignore thread */
 			if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags)) {
-				MSG_SET_PERM_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
+				procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 			}
 		}
 		node = next;
@@ -660,7 +677,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 				g_node_append(parent, node);
 				/* CLAWS: ignore thread */
 				if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags)) {
-					MSG_SET_PERM_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
+					procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 				}
 			}
 		}					
@@ -681,10 +698,6 @@ void procmsg_move_messages(GSList *mlist)
 	GHashTable *hash;
 
 	if (!mlist) return;
-
-	hash = procmsg_to_folder_hash_table_create(mlist);
-	folder_item_scan_foreach(hash);
-	g_hash_table_destroy(hash);
 
 	for (cur = mlist; cur != NULL; cur = cur->next) {
 		msginfo = (MsgInfo *)cur->data;
@@ -717,9 +730,14 @@ void procmsg_copy_messages(GSList *mlist)
 
 	if (!mlist) return;
 
+	/* 
+	
+	Horrible: Scanning 2 times for every copy!
+
 	hash = procmsg_to_folder_hash_table_create(mlist);
 	folder_item_scan_foreach(hash);
 	g_hash_table_destroy(hash);
+	*/
 
 	for (cur = mlist; cur != NULL; cur = cur->next) {
 		msginfo = (MsgInfo *)cur->data;
@@ -885,22 +903,26 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 {
 	gint i;
 	gint ret = 0;
+	GSList *list, *elem;
 
 	if (!queue)
 		queue = folder_get_default_queue();
 	g_return_val_if_fail(queue != NULL, -1);
 
 	folder_item_scan(queue);
-	if (queue->last_num < 0) return -1;
-	else if (queue->last_num == 0) return 0;
+	list = folder_item_get_msg_list(queue);
 
-	for (i = 1; i <= queue->last_num; i++) {
+
+	for(elem = list; elem != NULL; elem = elem->next) {
 		gchar *file;
+		MsgInfo *msginfo;
+		
+		msginfo = (MsgInfo *)(elem->data);
 
-		file = folder_item_fetch_msg(queue, i);
+		file = folder_item_fetch_msg(queue, msginfo->msgnum);
 		if (file) {
 			if (procmsg_send_message_queue(file) < 0) {
-				g_warning(_("Sending queued message %d failed.\n"), i);
+				g_warning(_("Sending queued message %d failed.\n"), msginfo->msgnum);
 				ret = -1;
 			} else {
 			/* CLAWS: 
@@ -913,11 +935,14 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 						(queue->folder->outbox,
 						 file, TRUE);
 */
-				folder_item_remove_msg(queue, i);
+				folder_item_remove_msg(queue, msginfo->msgnum);
 			}
 			g_free(file);
 		}
+		procmsg_msginfo_free(msginfo);
 	}
+
+	folderview_update_item(queue, FALSE);
 
 	return ret;
 }
@@ -928,6 +953,7 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 	gint num;
 	FILE *fp;
 	MsgFlags flag = {0, 0};
+	MsgInfo *msginfo;
 
 	debug_print(_("saving sent message...\n"));
 
@@ -961,17 +987,20 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 		Xstrdup_a(file, tmp, return -1);
 	}
 
-	folder_item_scan(outbox);
 	if ((num = folder_item_add_msg(outbox, file, FALSE)) < 0) {
 		g_warning(_("can't save message\n"));
+		if(is_queued) {
+			unlink(file);
+		}
 		return -1;
 	}
+	msginfo = folder_item_fetch_msginfo(outbox, num);
+	procmsg_msginfo_unset_flags(msginfo, ~0, ~0);
+	procmsg_msginfo_free(msginfo);
 
 	if(is_queued) {
 		unlink(file);
 	}
-
-	procmsg_add_flags(outbox, num, flag);
 
 	return 0;
 }
@@ -1038,6 +1067,23 @@ void procmsg_print_message(MsgInfo *msginfo, const gchar *cmdline)
 	system(buf);
 }
 
+MsgInfo *procmsg_msginfo_new_ref(MsgInfo *msginfo)
+{
+	msginfo->refcnt++;
+	
+	return msginfo;
+}
+
+MsgInfo *procmsg_msginfo_new()
+{
+	MsgInfo *newmsginfo;
+
+	newmsginfo = g_new0(MsgInfo, 1);
+	newmsginfo->refcnt = 1;
+	
+	return newmsginfo;
+}
+
 MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 {
 	MsgInfo *newmsginfo;
@@ -1045,6 +1091,8 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 	if (msginfo == NULL) return NULL;
 
 	newmsginfo = g_new0(MsgInfo, 1);
+
+	newmsginfo->refcnt = 1;
 
 #define MEMBCOPY(mmb)	newmsginfo->mmb = msginfo->mmb
 #define MEMBDUP(mmb)	newmsginfo->mmb = msginfo->mmb ? \
@@ -1086,6 +1134,10 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 {
 	if (msginfo == NULL) return;
 
+	msginfo->refcnt--;
+	if(msginfo->refcnt > 0)
+		return;
+
 	g_free(msginfo->fromspace);
 	g_free(msginfo->references);
 	g_free(msginfo->returnreceiptto);
@@ -1105,6 +1157,43 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 	g_free(msginfo->xref);
 
 	g_free(msginfo);
+}
+
+guint procmsg_msginfo_memusage(MsgInfo *msginfo)
+{
+	guint memusage = 0;
+	
+	memusage += sizeof(MsgInfo);
+	if(msginfo->fromname)
+		memusage += strlen(msginfo->fromname);
+	if(msginfo->date)
+		memusage += strlen(msginfo->date);
+	if(msginfo->from)
+		memusage += strlen(msginfo->from);
+	if(msginfo->to)
+		memusage += strlen(msginfo->to);
+	if(msginfo->cc)
+		memusage += strlen(msginfo->cc);
+	if(msginfo->newsgroups)
+		memusage += strlen(msginfo->newsgroups);
+	if(msginfo->subject)
+		memusage += strlen(msginfo->subject);
+	if(msginfo->msgid)
+		memusage += strlen(msginfo->msgid);
+	if(msginfo->inreplyto)
+		memusage += strlen(msginfo->inreplyto);
+	if(msginfo->xface)
+		memusage += strlen(msginfo->xface);
+	if(msginfo->dispositionnotificationto)
+		memusage += strlen(msginfo->dispositionnotificationto);
+	if(msginfo->returnreceiptto)
+		memusage += strlen(msginfo->returnreceiptto);
+	if(msginfo->references)
+		memusage += strlen(msginfo->references);
+	if(msginfo->fromspace)
+		memusage += strlen(msginfo->fromspace);
+
+	return memusage;
 }
 
 static gint procmsg_cmp_msgnum(gconstpointer a, gconstpointer b)
@@ -1329,4 +1418,123 @@ gint procmsg_send_message_queue(const gchar *file)
 	}
 
 	return (newsval != 0 ? newsval : mailval);
+}
+
+#define CHANGE_FLAGS(msginfo) \
+{ \
+if (msginfo->folder->folder->change_flags != NULL) \
+msginfo->folder->folder->change_flags(msginfo->folder->folder, \
+				      msginfo->folder, \
+				      msginfo); \
+}
+
+void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmpFlags tmp_flags)
+{
+	gboolean changed = FALSE;
+	FolderItem *item = msginfo->folder;
+
+	debug_print(_("Setting flags for message %d in folder %s\n"), msginfo->msgnum, item->path);
+
+	/* if new flag is set */
+	if((perm_flags & MSG_NEW) && !MSG_IS_NEW(msginfo->flags) &&
+	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
+		item->new++;
+		changed = TRUE;
+	}
+
+	/* if unread flag is set */
+	if((perm_flags & MSG_UNREAD) && !MSG_IS_UNREAD(msginfo->flags) &&
+	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
+		item->unread++;
+		changed = TRUE;
+	}
+
+	/* if ignore thread flag is set */
+	if((perm_flags & MSG_IGNORE_THREAD) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
+		if(MSG_IS_NEW(msginfo->flags) || (perm_flags & MSG_NEW)) {
+			item->new--;
+			changed = TRUE;
+		}
+		if(MSG_IS_UNREAD(msginfo->flags) || (perm_flags & MSG_UNREAD)) {
+			item->unread--;
+			changed = TRUE;
+		}
+	}
+
+	if (MSG_IS_IMAP(msginfo->flags))
+		imap_msg_set_perm_flags(msginfo, perm_flags);
+
+	msginfo->flags.perm_flags |= perm_flags;
+	msginfo->flags.tmp_flags |= tmp_flags;
+
+	if(changed) {
+		folderview_update_item(item, FALSE);
+	}
+	CHANGE_FLAGS(msginfo);
+	procmsg_msginfo_write_flags(msginfo);
+}
+
+void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmpFlags tmp_flags)
+{
+	gboolean changed = FALSE;
+	FolderItem *item = msginfo->folder;
+	
+	debug_print(_("Unsetting flags for message %d in folder %s\n"), msginfo->msgnum, item->path);
+
+	/* if new flag is unset */
+	if((perm_flags & MSG_NEW) && MSG_IS_NEW(msginfo->flags) &&
+	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
+		item->new--;
+		changed = TRUE;
+	}
+
+	/* if unread flag is unset */
+	if((perm_flags & MSG_UNREAD) && MSG_IS_UNREAD(msginfo->flags) &&
+	   !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
+		item->unread--;
+		changed = TRUE;
+	}
+
+	/* if ignore thread flag is unset */
+	if((perm_flags & MSG_IGNORE_THREAD) && MSG_IS_IGNORE_THREAD(msginfo->flags)) {
+		if(MSG_IS_NEW(msginfo->flags) && !(perm_flags & MSG_NEW)) {
+			item->new++;
+			changed = TRUE;
+		}
+		if(MSG_IS_UNREAD(msginfo->flags) && !(perm_flags & MSG_UNREAD)) {
+			item->unread++;
+			changed = TRUE;
+		}
+	}
+
+	if (MSG_IS_IMAP(msginfo->flags))
+		imap_msg_unset_perm_flags(msginfo, perm_flags);
+
+	msginfo->flags.perm_flags &= ~perm_flags;
+	msginfo->flags.tmp_flags &= ~tmp_flags;
+
+	if(changed) {
+		folderview_update_item(item, FALSE);
+	}
+	CHANGE_FLAGS(msginfo);
+	procmsg_msginfo_write_flags(msginfo);
+}
+
+void procmsg_msginfo_write_flags(MsgInfo *msginfo)
+{
+	gchar *destdir;
+	FILE *fp;
+
+	destdir = folder_item_get_path(msginfo->folder);
+	if (!is_dir_exist(destdir))
+		make_dir_hier(destdir);
+
+	if ((fp = procmsg_open_mark_file(destdir, TRUE))) {
+		procmsg_write_flags(msginfo, fp);
+		fclose(fp);
+	} else {
+		g_warning(_("Can't open mark file.\n"));
+	}
+	
+	g_free(destdir);
 }

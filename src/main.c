@@ -477,6 +477,14 @@ static gint get_queued_message_num(void)
 	return queue->total;
 }
 
+static void save_all_caches(FolderItem *item, gpointer data)
+{
+	if(!item->cache)
+		return;
+		
+	folder_item_write_cache(item);
+}
+
 void app_will_exit(GtkWidget *widget, gpointer data)
 {
 	MainWindow *mainwin = data;
@@ -510,6 +518,7 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 	/* save all state before exiting */
 	folder_write_list();
 	summary_write_cache(mainwin->summaryview);
+	folder_func_to_all_folders(save_all_caches, NULL);
 
 	main_window_get_size(mainwin);
 	main_window_get_position(mainwin);

@@ -1,3 +1,54 @@
+2002-07-01 [christoph]	0.7.8claws41
+
+	* src/summaryview.c
+		fix "goto next/prev unread message" with
+		ignored threads
+
+2002-07-01 [paul]	0.7.8claws40
+
+	* po/es.po
+		updated by Ricardo Mones Lastra
+
+2002-06-30 [match]	0.7.8claws39
+
+	* src/jpilot.c
+		applied variation of leonerd's patch (566661) to
+		allow multiple email addresses per JPilot entry.
+		addresses may be separated by space, comma, pipe,
+		semi-colon, new-line.
+
+2002-06-30 [alfons]	0.7.8claws38
+
+	* src/procmsg.c
+		simple fix for putting older nodes before
+		newer nodes when threading by subject
+
+2002-06-30 [christoph]	0.7.8claws37
+
+	* src/folder.c
+	* src/folderview.c
+	* src/mh.c
+	* src/news.c
+	* src/procmsg.c
+		fix broken folder tree rescaning
+		and don't use procmsg_get_mark_sum
+		anymore
+
+2002-06-30 [christoph]	0.7.8claws36
+
+	* merge new cache branch
+	* src/imap.c
+		fix new cache imap copy bug
+	* src/folder.c
+		improved folder_item_scan
+		it should now always set the correct
+		new, unread and total message counts
+
+2002-06-29 [paul]	0.7.8claws35
+
+	* configure.in
+		correct syntax error
+
 2002-06-29 [paul]	0.7.8claws34
 
 	* configure.in

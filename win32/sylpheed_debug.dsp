@@ -393,6 +393,10 @@ SOURCE=..\src\mimeview.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\msgcache.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\mutt.c
 # End Source File
 # Begin Source File
@@ -886,6 +890,10 @@ SOURCE=..\src\mh.h
 # Begin Source File
 
 SOURCE=..\src\mimeview.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\msgcache.h
 # End Source File
 # Begin Source File
 

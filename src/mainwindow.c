@@ -1447,7 +1447,6 @@ void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 	for (list = folder_get_list(); list != NULL; list = list->next) {
 		folder = list->data;
 		if (folder && folder->trash && folder->trash->total != 0) {
-			folder_item_scan(folder->trash);
 			folderview_update_item(folder->trash, TRUE);
 		}
 	}
@@ -3128,6 +3127,7 @@ static void update_summary_cb(MainWindow *mainwin, guint action,
 					    folderview->opened);
 	if (!fitem) return;
 
+	folder_item_scan(fitem);
 	summary_show(mainwin->summaryview, fitem, TRUE);
 }
 
