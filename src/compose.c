@@ -2246,6 +2246,12 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 			ainfo->encoding = ENC_BASE64;
 		ainfo->name = g_strdup(g_basename(filename ? filename : file));	
 	}
+
+	if (!strcmp(ainfo->content_type, "unknown")) {
+		g_free(ainfo->content_type);
+		ainfo->content_type = g_strdup("application/octet-stream");
+	}
+
 	ainfo->size = size;
 
 	text[COL_MIMETYPE] = ainfo->content_type;
@@ -3939,6 +3945,12 @@ static void compose_add_attachments(Compose *compose, MimeInfo *parent)
 		mimepart->length = statbuf.st_size;
 
     		type = g_strdup(ainfo->content_type);
+
+		if (!strchr(type, '/')) {
+			g_free(type);
+			type = g_strdup("application/octet-stream");
+		}
+
     		subtype = strchr(type, '/') + 1;
 	        *(subtype - 1) = '\0';
     		mimepart->type = procmime_get_media_type(type);

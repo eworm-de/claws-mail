@@ -1,3 +1,14 @@
+2004-10-21 [colin]	0.9.12cvs131
+
+	* src/compose.c
+		Replace "unknown" attachments by "application/octet-stream"
+		Be a bit more defensive when using strchr
+
+2004-10-20 [paul]
+
+	* po/ru.po
+		updated by Pavlo Bohmat
+
 2004-10-19 [christoph]	0.9.12cvs130
 
 	* src/compose.c

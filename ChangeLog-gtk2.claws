@@ -1,3 +1,9 @@
+2004-10-21 [colin]	0.9.12cvs131.1
+
+	* ChangeLog.claws
+	* src/compose.c
+		Sync with HEAD
+
 2004-10-21 [paul]	0.9.12cvs130.2
 
 	* src/prefs_folder_item.c
