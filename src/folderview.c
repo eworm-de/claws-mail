@@ -2645,10 +2645,14 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		buf = g_strdup_printf(_("Moving %s to %s..."), src_item->name, item->name);
 		STATUSBAR_PUSH(folderview->mainwin, buf);
 		g_free(buf);
-		main_window_cursor_wait(folderview->mainwin);
+		summary_clear_all(folderview->summaryview);
+		folderview->opened = NULL;
+		folderview->selected = NULL;
 		gtk_widget_set_sensitive(folderview->ctree, FALSE);
 		inc_lock();
+		main_window_cursor_wait(folderview->mainwin);
 		if ((new_item = folder_item_move_to(src_item, item)) != NULL) {
+			main_window_cursor_normal(folderview->mainwin);
 			gtk_drag_finish(drag_context, TRUE, TRUE, time);
 		
 			if (src_node)
@@ -2658,20 +2662,16 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 
 			folderview_create_folder_node_recursive(folderview, new_item);
 			folder_update_item(src_parent, TRUE);
-			folder_update_item_recursive(new_item, TRUE);
+			folder_update_item_recursive(new_item, TRUE); 
 			folderview_sort_folders(folderview, 
 				gtk_ctree_find_by_row_data(GTK_CTREE(widget), 
 					NULL, new_item->parent), new_item->folder);
-			STATUSBAR_PUSH(folderview->mainwin, _("Done."));
-			main_window_cursor_normal(folderview->mainwin);
-			summary_clear_all(folderview->summaryview);
-			folderview->opened = NULL;
-			folderview->selected = NULL;
+			statusbar_pop_all();
 			folderview_select(folderview, new_item);
 		} else {
-			gtk_drag_finish(drag_context, FALSE, FALSE, time);
-			STATUSBAR_PUSH(folderview->mainwin, _("Done."));
 			main_window_cursor_normal(folderview->mainwin);
+			gtk_drag_finish(drag_context, FALSE, FALSE, time);
+			statusbar_pop_all();
 		}	
 		inc_unlock();		
 		gtk_widget_set_sensitive(folderview->ctree, TRUE);

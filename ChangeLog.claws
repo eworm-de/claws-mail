@@ -1,4 +1,10 @@
-2002-11-09 [christoph}	0.8.5claws111
+2002-11-09 [colin]	0.8.5claws112
+
+	* src/folderview.c
+		Fix hangs after folder dnd, happening after 
+		claws109.
+
+2002-11-09 [christoph]	0.8.5claws111
 
 	* src/folderview.c
 		just changed order of calls (reverse order of
