@@ -1,3 +1,9 @@
+2002-12-06 [melvin]	0.8.6claws66
+
+	* src/prefs_actions.c
+		Added the trailing ">" syntax to insert command's output
+		without replacing old text (in contrast to trailing "|").
+
 2002-12-05 [colin]	0.8.6claws65
 	
 	* src/common/utils.c
