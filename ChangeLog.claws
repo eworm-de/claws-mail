@@ -1,3 +1,12 @@
+2002-11-08 [colin] 	0.8.5claws100
+	
+	* src/matcher.c
+		Don't copy the compiled regexp (will be reevaluated)
+	* src/folderview.c
+		Lock folderview while moving
+	* src/folder.c
+		Provide info on what's happening to the user
+
 2002-11-08 [colin]	0.8.5claws99
 
 	* src/folderview.c

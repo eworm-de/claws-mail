@@ -50,6 +50,7 @@
 #include "scoring.h"
 #include "prefs_folder_item.h"
 #include "procheader.h"
+#include "statusbar.h"
 
 static GList *folder_list = NULL;
 
@@ -1444,7 +1445,7 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 	FolderItem *new_item;
 	FolderItem *next_item;
 	GNode *srcnode;
-	
+	int cnt = 0;
 	mlist = folder_item_get_msg_list(src);
 
 	/* move messages */
@@ -1455,14 +1456,21 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 		return NULL;
 	}
 	
+	statusbar_print_all(_("Moving %s to %s..."), src->name, new_item->path);
+
 	if (new_item->folder == NULL)
 		new_item->folder = dest->folder;
 
 	/* move messages */
 	for (cur = mlist ; cur != NULL ; cur = cur->next) {
 		MsgInfo * msginfo;
+		cnt++;
 		msginfo = (MsgInfo *) cur->data;
 		folder_item_move_msg(new_item, msginfo);
+		if (cnt%500)
+			statusbar_print_all(_("Moving %s to %s (%d%%)..."), src->name, 
+					new_item->path,
+					100*cnt/g_slist_length(mlist));
 	}
 	
 	/*copy prefs*/

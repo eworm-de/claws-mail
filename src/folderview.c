@@ -2694,6 +2694,8 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		STATUSBAR_PUSH(folderview->mainwin, buf);
 		g_free(buf);
 		main_window_cursor_wait(folderview->mainwin);
+		gtk_widget_set_sensitive(folderview->ctree, FALSE);
+		inc_lock();
 		if ((new_item = folder_item_move_to(src_item, item)) != NULL) {
 			gtk_drag_finish(drag_context, TRUE, TRUE, time);
 		
@@ -2718,7 +2720,9 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 			gtk_drag_finish(drag_context, FALSE, FALSE, time);
 			STATUSBAR_PUSH(folderview->mainwin, _("Done."));
 			main_window_cursor_normal(folderview->mainwin);
-		}			
+		}	
+		inc_unlock();		
+		gtk_widget_set_sensitive(folderview->ctree, TRUE);
 	}
 }
 

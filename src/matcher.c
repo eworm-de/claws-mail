@@ -259,10 +259,8 @@ MatcherProp *matcherprop_copy(MatcherProp *src)
 	else
 		prop->expr = NULL;
 	prop->matchtype   = src->matchtype;
-	if (src->preg != NULL)
-		memcpy(prop->preg, src->preg, sizeof(regex_t));
-	else 
-		prop->preg = NULL;
+	
+	prop->preg = NULL; /* will be re-evaluated */
 	prop->value       = src->value;
 	prop->error       = src->error;	
 	return prop;		
