@@ -1,3 +1,11 @@
+2005-01-24 [paul]	1.0.0cvs12.1
+
+	* configure.ac
+	* src/messageview.c
+	* src/mh.c
+	* src/common/utils.c
+		sync with HEAD
+
 2005-01-24 [colin]	1.0.0cvs11.1
 
 	* src/procheader.c
