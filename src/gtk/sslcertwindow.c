@@ -30,9 +30,12 @@
 #include "../common/ssl_certificate.h"
 #include "../common/utils.h"
 #include "../alertpanel.h"
+#include "../common/hooks.h"
 
 static void toggle_cert_cb(GtkWidget	*widget,
 			 gpointer	 data);
+gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert);
+gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCertificate *new_cert);
 
 GtkWidget *cert_presenter(SSLCertificate *cert)
 {

@@ -345,7 +345,6 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 	known_cert = ssl_certificate_find (host, port);
 
 	if (known_cert == NULL) {
-		gboolean val;
 		gchar *err_msg, *cur_cert_str, *sig_status;
 		
 		sig_status = ssl_certificate_check_signer(x509_cert);
@@ -400,7 +399,6 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 		}
 	}
 	else if (!ssl_certificate_compare (current_cert, known_cert)) {
-		gboolean val;
 		gchar *err_msg, *known_cert_str, *cur_cert_str;
 		
 		known_cert_str = ssl_certificate_to_string(known_cert);
