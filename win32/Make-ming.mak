@@ -20,10 +20,10 @@
 ################################################################################
 
 # DEBUGVERSION: set to 1 to include debugging symbols
-DEBUGVERSION=0
+DEBUGVERSION=1
 
 # GCCVERSION: set to 3 if using gcc3.x (-fnative-struct | -mms-bitfields)
-GCCVERSION=3
+GCCVERSION=2
 
 # CYGWIN: set to 1 if building from cygwin shell (-mno-cygwin)
 CYGWIN=0
@@ -347,8 +347,8 @@ $(VERSION_H): $(CONFIGURE_IN) $(VERSION_H_IN)
 
 %_parse.c %_parse.h: $(SRCDIR)/%_parse.y
 	$(YACC) -d $(SRCDIR)/$(*F)_parse.y
-	$(SED) -e "s/$(SRCDIR_ESC)//;s/$(Y_TAB_C_ESC)/$(*F)_parse.c/" $(Y_TAB_C) > $(SRCDIR)/$(*F)_parse.c
-	$(SED) -e "s/$(SRCDIR_ESC)//;s/$(Y_TAB_H_ESC)/$(*F)_parse.h/" $(Y_TAB_H) > $(SRCDIR)/$(*F)_parse.h
+	$(SED) -e "s/$(Y_TAB_C_ESC)/$(*F)_parse.c/" $(Y_TAB_C) > $(SRCDIR)/$(*F)_parse.c
+	$(SED) -e "s/$(Y_TAB_H_ESC)/$(*F)_parse.h/" $(Y_TAB_H) > $(SRCDIR)/$(*F)_parse.h
 # hack: prevent autogeneration
 %_lex.l %_parse.y:
 	@echo dummy:$@

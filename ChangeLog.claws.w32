@@ -1,6 +1,12 @@
+2002-11-03 [thorsten]	0.8.5claws69-1
+
+	* win32/Make-ming.mak
+	  win32/utils/mk_bison.bat
+		fix: path to parsed sources in debuginfo
+
 2002-11-03 [thorsten]	0.8.5claws66-7
 
-	* src/Make-ming.mak
+	* win32/Make-ming.mak
 		add: create version.h, bison files, translations (no need for batchfiles)
 
 2002-11-02 [thorsten]	0.8.5claws66-6
@@ -39,7 +45,7 @@
 2002-11-01 [thorsten]	0.8.5claws64-1
 
 	* win32/utils/mk_translation.bat
-	  win32/utils/utf8conv/*	** REMOVED **
+	  win32/utils/utf8conv/		*** REMOVED **
 	  	fix: use iconv to convert .po files to utf-8
 
 2002-10-24 [thorsten]	0.8.5claws47-1
