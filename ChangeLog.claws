@@ -1,3 +1,8 @@
+2002-11-11 [colin]	0.8.5claws122
+
+	* src/ssl.c
+		Fix a typo
+
 2002-11-11 [colin]	0.8.5claws121
 
 	* src/ssl_certificate.[ch] ** NEW FILES **

@@ -139,7 +139,6 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 		ret = ssl_certificate_check (server_cert, sockinfo->hostname, issuer, subject, md);
 		X509_free(server_cert);
 	}
-	if (!ret)
 
 	if (issuer)
 		free(issuer);
