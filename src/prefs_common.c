@@ -140,6 +140,7 @@ static struct Interface {
 	GtkWidget *checkbtn_confonexit;
 	GtkWidget *checkbtn_cleanonexit;
 	GtkWidget *checkbtn_askonclean;
+	GtkWidget *checkbtn_warnqueued;
 	GtkWidget *checkbtn_addaddrbyclick;
 } interface;
 
@@ -467,6 +468,9 @@ static PrefParam param[] = {
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"ask_on_cleaning", "TRUE", &prefs_common.ask_on_clean, P_BOOL,
 	 &interface.checkbtn_askonclean,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"warn_queued_on_exit", "TRUE", &prefs_common.warn_queued_on_exit,
+	 P_BOOL, &interface.checkbtn_warnqueued,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	/* Other */
@@ -1431,6 +1435,7 @@ static void prefs_interface_create(void)
 	GtkWidget *checkbtn_confonexit;
 	GtkWidget *checkbtn_cleanonexit;
 	GtkWidget *checkbtn_askonclean;
+	GtkWidget *checkbtn_warnqueued;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1497,6 +1502,9 @@ static void prefs_interface_create(void)
 			   _("Ask before emptying"));
 	SET_TOGGLE_SENSITIVITY (checkbtn_cleanonexit, checkbtn_askonclean);
 
+	PACK_CHECK_BUTTON (vbox_exit, checkbtn_warnqueued,
+			   _("Warn if there are queued messages on exit"));
+
 	interface.checkbtn_emacs          = checkbtn_emacs;
 	interface.checkbtn_openunread     = checkbtn_openunread;
 	interface.checkbtn_openinbox      = checkbtn_openinbox;
@@ -1505,6 +1513,7 @@ static void prefs_interface_create(void)
 	interface.checkbtn_confonexit     = checkbtn_confonexit;
 	interface.checkbtn_cleanonexit    = checkbtn_cleanonexit;
 	interface.checkbtn_askonclean     = checkbtn_askonclean;
+	interface.checkbtn_warnqueued     = checkbtn_warnqueued;
 }
 
 static void prefs_other_create(void)

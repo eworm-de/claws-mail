@@ -1,5 +1,16 @@
 2001-04-21
 
+	* added option to warn about queued messages on exit [sergey]:
+
+	  * src/compose.c: compose_queue(): call folder_item_scan()
+	    and folderview_update_item() after queueing.
+	  * src/folderview.c: folderview_update_node(): draw the queue
+	    folder in bold font if there are queued messages.
+	  * src/mainwindow.c: queued_messages(): new function.
+	    app_exit_cb(): display warning if there are queued messages
+	    if warn_queued_on_exit is set.
+	  * prefs_common.[ch]: add warn_queued_on_exit option.
+
 	* enhanced GnuPG key selection support [sergey]:
 
 	  * src/select-keys.c: updated to newer version from Win32

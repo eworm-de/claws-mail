@@ -1780,6 +1780,9 @@ static gint compose_queue(Compose *compose, const gchar *file)
 	}
 	g_free(queue_path);
 
+	folder_item_scan(queue);
+	folderview_update_item(queue, TRUE);
+
 	return 0;
 }
 

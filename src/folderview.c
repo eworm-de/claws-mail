@@ -672,14 +672,24 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	style = gtk_style_copy(prev_style);
 
 	if (style) {
-		/* if unread messages exist, print with bold font */
-		if (item->unread > 0 && boldfont)
+		gboolean use_bold, use_color;
+
+		if (item->stype == F_QUEUE) {
+			/* highlight queue folder if there are any messages */
+			use_bold = use_color = (item->total > 0);
+		} else {
+			/* if unread messages exist, print with bold font */
+			use_bold = (item->unread > 0);
+			/* if new messages exist, print with colored letter */
+			use_color = (item->new > 0);
+		}
+
+		if (use_bold && boldfont)
 			style->font = boldfont;
 		else
 			style->font = ctree_style->font;
 
-		/* if new messages exist, print with colored letter */
-		if (item->new > 0) {
+		if (use_color) {
 			style->fg[GTK_STATE_NORMAL]   = folderview->color_new;
 			style->fg[GTK_STATE_SELECTED] = folderview->color_new;
 		} else {
