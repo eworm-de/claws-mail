@@ -11,6 +11,7 @@ EXTRA_TOOLS = \
 	sylpheed-switcher \
 	sylprint.pl \
 	sylprint.rc \
+	tb2sylpheed \
         update-po \
 	uudec
 
