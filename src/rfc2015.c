@@ -44,7 +44,6 @@
 #include "prefs_common.h"
 #include "passphrase.h"
 #include "select-keys.h"
-#include "sigstatus.h"
 #include "rfc2015.h"
 #include "alertpanel.h"
 

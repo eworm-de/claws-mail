@@ -1,3 +1,11 @@
+2003-11-26 [christoph]	0.9.6claws97
+
+	* src/Makefile.am
+	* src/prefs_common.c
+	* src/rfc2015.c
+	* src/sigstatus.[ch]		** REMOVE **
+		remove signature result popup option and window
+
 2003-11-26 [paul]	0.9.6claws96
 
 	* po/es.po

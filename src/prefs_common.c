@@ -165,7 +165,6 @@ static struct Message {
 #if USE_GPGME
 static struct Privacy {
 	GtkWidget *checkbtn_auto_check_signatures;
-	GtkWidget *checkbtn_gpg_signature_popup;
 	GtkWidget *checkbtn_store_passphrase;
 	GtkWidget *spinbtn_store_passphrase;
 	GtkObject *spinbtn_store_passphrase_adj;
@@ -666,10 +665,6 @@ static PrefParam param[] = {
 	{"auto_check_signatures", "TRUE",
 	 &prefs_common.auto_check_signatures, P_BOOL,
 	 &privacy.checkbtn_auto_check_signatures,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"gpg_signature_popup", "FALSE",
-	 &prefs_common.gpg_signature_popup, P_BOOL,
-	 &privacy.checkbtn_gpg_signature_popup,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"store_passphrase", "FALSE", &prefs_common.store_passphrase, P_BOOL,
 	 &privacy.checkbtn_store_passphrase,
@@ -2031,7 +2026,6 @@ static void prefs_privacy_create(void)
 	GtkWidget *hbox_spc;
 	GtkWidget *label;
 	GtkWidget *checkbtn_auto_check_signatures;
-	GtkWidget *checkbtn_gpg_signature_popup;
 	GtkWidget *checkbtn_store_passphrase;
 	GtkObject *spinbtn_store_passphrase_adj;
 	GtkWidget *spinbtn_store_passphrase;
@@ -2050,9 +2044,6 @@ static void prefs_privacy_create(void)
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_auto_check_signatures,
 			   _("Automatically check signatures"));
-
-	PACK_CHECK_BUTTON (vbox2, checkbtn_gpg_signature_popup,
-			   _("Show signature check result in a popup window"));
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_store_passphrase,
 			   _("Store passphrase in memory temporarily"));
@@ -2119,8 +2110,6 @@ static void prefs_privacy_create(void)
 
 	privacy.checkbtn_auto_check_signatures
 					     = checkbtn_auto_check_signatures;
-	privacy.checkbtn_gpg_signature_popup
-					     = checkbtn_gpg_signature_popup;
 	privacy.checkbtn_store_passphrase    = checkbtn_store_passphrase;
 	privacy.spinbtn_store_passphrase     = spinbtn_store_passphrase;
 	privacy.spinbtn_store_passphrase_adj = spinbtn_store_passphrase_adj;
