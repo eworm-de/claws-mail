@@ -166,12 +166,17 @@ void plugin_load_all(const gchar *type)
 
 	plugin_types = g_slist_append(plugin_types, g_strdup(type));
 
-	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);	
-#if defined(WIN32) && defined(_DEBUG)
+#ifdef WIN32
+	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_WIN_RC, NULL);	
+# ifdef _DEBUG
 	block = g_strconcat("DebugPlugins_", type, NULL);
-#else
+# else
 	block = g_strconcat("Plugins_", type, NULL);
-#endif
+# endif /* _DEBUG */
+#else
+	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);	
+	block = g_strconcat("Plugins_", type, NULL);
+#endif /* WIN32 */
 	if ((pfile = prefs_read_open(rcpath)) == NULL ||
 	    (prefs_set_block_label(pfile, block) < 0)) {
 		g_free(rcpath);

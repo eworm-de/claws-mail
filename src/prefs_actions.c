@@ -308,7 +308,11 @@ void prefs_actions_read_config(void)
 
 	debug_print("Reading actions configurations...\n");
 
+#ifdef WIN32
+	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ACTIONS_WIN_RC, NULL);
+#else
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ACTIONS_RC, NULL);
+#endif
 	if ((fp = fopen(rcpath, "rb")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(rcpath, "fopen");
 		g_free(rcpath);
@@ -343,7 +347,11 @@ void prefs_actions_write_config(void)
 
 	debug_print("Writing actions configuration...\n");
 
+#ifdef WIN32
+	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ACTIONS_WIN_RC, NULL);
+#else
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ACTIONS_RC, NULL);
+#endif
 	if ((pfile= prefs_write_open(rcpath)) == NULL) {
 		g_warning("failed to write configuration to file\n");
 		g_free(rcpath);
