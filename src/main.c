@@ -261,6 +261,7 @@ int main(int argc, char *argv[])
 	prefs_display_header_write_config();
 	/* prefs_filtering_read_config(); */
 	addressbook_read_file();
+	renderer_read_config();
 
 	gtkut_widget_init();
 

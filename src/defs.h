@@ -52,6 +52,7 @@
 #define FILTERING_RC		"filteringrc"
 #define MATCHER_RC		"matcherrc"
 #define MENU_RC			"menurc"
+#define RENDERER_RC		"rendererrc"
 #define COMMAND_HISTORY		"command_history"
 #define TEMPLATE_DIR		"templates"
 #define NEWSGROUP_LIST		".newsgroup_list"

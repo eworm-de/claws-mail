@@ -180,4 +180,7 @@ GList *procmime_get_mime_type_list	(void);
 EncodingType procmime_get_encoding_for_charset	(const gchar	*charset);
 const gchar *procmime_get_encoding_str		(EncodingType	 encoding);
 
+void renderer_read_config(void);
+void renderer_write_config(void);
+
 #endif /* __PROCMIME_H__ */

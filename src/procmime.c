@@ -45,6 +45,8 @@
 #  include "rfc2015.h"
 #endif
 
+#include "prefs.h"
+
 static GHashTable *procmime_get_mime_type_table	(void);
 
 MimeInfo *procmime_mimeinfo_new(void)
@@ -708,6 +710,103 @@ gint procmime_get_part(const gchar *outfile, const gchar *infile,
 	return 0;
 }
 
+struct ContentRenderer {
+	char * content_type;
+	char * renderer;
+};
+
+static GList * renderer_list = NULL;
+
+static struct ContentRenderer *
+content_renderer_new(char * content_type, char * renderer)
+{
+	struct ContentRenderer * cr;
+
+	cr = g_new(struct ContentRenderer, 1);
+	if (cr == NULL)
+		return NULL;
+
+	cr->content_type = g_strdup(content_type);
+	cr->renderer = g_strdup(renderer);
+
+	return cr;
+}
+
+static void content_renderer_free(struct ContentRenderer * cr)
+{
+	g_free(cr->content_type);
+	g_free(cr->renderer);
+	g_free(cr);
+}
+
+void renderer_read_config(void)
+{
+	gchar buf[BUFFSIZE];
+	FILE * f;
+	gchar * rcpath;
+
+	g_list_foreach(renderer_list, (GFunc) content_renderer_free, NULL);
+	renderer_list = NULL;
+
+	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, RENDERER_RC, NULL);
+	f = fopen(rcpath, "r");
+	g_free(rcpath);
+	
+	if (f == NULL)
+		return;
+
+	while (fgets(buf, BUFFSIZE, f)) {
+		char * p;
+		struct ContentRenderer * cr;
+
+		strretchomp(buf);
+		p = strchr(buf, ' ');
+		if (p == NULL)
+			continue;
+		* p = 0;
+
+		cr = content_renderer_new(buf, p + 1);
+		if (cr == NULL)
+			continue;
+
+		printf("%s %s\n", cr->content_type, cr->renderer);
+
+		renderer_list = g_list_append(renderer_list, cr);
+	}
+
+	fclose(f);
+}
+
+void renderer_write_config(void)
+{
+	int i;
+	gchar * rcpath;
+	PrefFile *pfile;
+	GList * cur;
+
+	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, RENDERER_RC, NULL);
+	
+	if ((pfile = prefs_write_open(rcpath)) == NULL) {
+		g_warning(_("failed to write configuration to file\n"));
+		g_free(rcpath);
+		return;
+	}
+
+	g_free(rcpath);
+
+	for(cur = renderer_list ; cur != NULL ; cur = cur->next) {
+		struct ContentRenderer * renderer;
+		renderer = cur->data;
+		fprintf(pfile->fp, "%s %s\n", renderer->content_type,
+			renderer->renderer);
+	}
+
+	if (prefs_write_close(pfile) < 0) {
+		g_warning(_("failed to write configuration to file\n"));
+		return;
+	}
+}
+
 FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 {
 	FILE *tmpfp, *outfp;
@@ -715,6 +814,9 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 	gboolean conv_fail = FALSE;
 	gchar buf[BUFFSIZE];
 	gchar *str;
+	int i;
+	struct ContentRenderer * renderer;
+	GList * cur;
 
 	g_return_val_if_fail(mimeinfo != NULL, NULL);
 	g_return_val_if_fail(infp != NULL, NULL);
@@ -743,7 +845,39 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 	src_codeset = prefs_common.force_charset
 		? prefs_common.force_charset : mimeinfo->charset;
 
-	if (mimeinfo->mime_type == MIME_TEXT) {
+	renderer = NULL;
+
+	for(cur = renderer_list ; cur != NULL ; cur = cur->next) {
+		struct ContentRenderer * cr;
+		cr = cur->data;
+		if (g_strcasecmp(cr->content_type,
+				 mimeinfo->content_type) == 0) {
+			renderer = cr;
+			break;
+		}
+	}
+
+	if (renderer != NULL) {
+		FILE * p;
+		int oldout;
+		
+		oldout = dup(1);
+		
+		dup2(fileno(outfp), 1);
+		
+		p = popen(renderer->renderer, "w");
+		if (p != NULL) {
+			size_t count;
+			
+			while ((count =
+				fread(buf, sizeof(char), sizeof(buf),
+				      tmpfp)) > 0)
+				fwrite(buf, sizeof(char), count, p);
+			pclose(p);
+		}
+		
+		dup2(oldout, 1);
+	} else if (mimeinfo->mime_type == MIME_TEXT) {
 		while (fgets(buf, sizeof(buf), tmpfp) != NULL) {
 			str = conv_codeset_strdup(buf, src_codeset, NULL);
 			if (str) {

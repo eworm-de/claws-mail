@@ -1,3 +1,18 @@
+2002-01-28 [hoa]	0.7.0claws35
+
+	* src/defs.h
+		added rendererrc
+
+	* src/main.c
+		read the renderer config
+
+	* src/procmime.[ch]
+		use the renderer config to convert mime attachments
+
+	* src/textview.c
+		don't use textview_show_html/ertf,
+		use get_text_content instead
+
 2002-01-27 [alfons]	0.7.0claws34
 	
 	* src/news.c
