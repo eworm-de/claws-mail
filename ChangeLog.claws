@@ -1,3 +1,12 @@
+2003-08-15 [christoph]	0.9.4claws23
+
+	* src/news.c
+		o check number of messages and don't return a 0 message
+		  when no messages are available
+		o don't parse xref header anymore
+
+	(closes Bug 203 I'm not getting any news)
+
 2003-08-15 [paul]	0.9.4claws22
 
 	* src/common/defs.h
