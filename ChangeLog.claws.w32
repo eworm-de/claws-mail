@@ -1,3 +1,16 @@
+2004-11-29 [thorsten]	0.9.12cvs173.1
+
+	* PATCHSETS.w32
+		add: separate file to prevent conflicts
+	* commitHelper
+	* configure.ac
+	* win32/Makefile
+	* win32/version.rc.in.in
+	* win32/utils/mk_version.bat
+	* win32/utils/mk_versionrc.bat
+		add: use commitHelper / EXTRA_WIN32_VERSION
+
+
 2004-11-26 [thorsten]	0.9.12claws168-1
 
 	* src/compose.c

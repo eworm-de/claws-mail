@@ -17,7 +17,7 @@ BEGIN
         BEGIN
             VALUE "FileDescription", "@FILEDESCRIPTION@\0"
             VALUE "FileVersion", "@FILE_MAJOR_VERSION@.@FILE_MINOR_VERSION@.@FILE_MICRO_VERSION@.@FILE_EXTRA_VERSION@\0"
-            VALUE "ProductVersion", "@MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@.@EXTRA_VERSION@\0"
+            VALUE "ProductVersion", "@VERSION@\0"
             VALUE "LegalCopyright", "GPL / © 1999-2003 Hiroyuki Yamamoto & The Sylpheed Claws Team\0"
             VALUE "CompanyName", "GNU / Free Software Foundation\0"
             VALUE "ProductName", "Sylpheed-Claws\0"

@@ -1,27 +1,29 @@
 #!/bin/bash
-if [ "$1" == "--syncgtk2" ]; then
+if [ "$1" == "--sync" ]; then
 	shift
 	echo -n "sync with EXTRA_VERSION ? [xx] "
 	read newmicro
-	cat configure.ac | sed "s/^EXTRA_VERSION=.*/EXTRA_VERSION=$newmicro/" > configure.ac.new \
-		&& mv configure.ac.new configure.ac ;	
-	cat configure.ac | sed "s/^EXTRA_GTK2_VERSION=.*/EXTRA_GTK2_VERSION=.0/" > configure.ac.new \
+	if [ -n "$newmicro" ]; then
+		cat configure.ac | sed "s/^EXTRA_VERSION=.*/EXTRA_VERSION=$newmicro/" > configure.ac.new \
+			&& mv configure.ac.new configure.ac ;	
+	fi;
+	cat configure.ac | sed "s/^EXTRA_WIN32_VERSION=.*/EXTRA_WIN32_VERSION=.0/" > configure.ac.new \
 		&& mv configure.ac.new configure.ac ;	
 fi;
 args=`echo $@`
 
 head -n 16 configure.ac | grep VERSION= > /tmp/commitTool.tmp
 source /tmp/commitTool.tmp
-if [ -z "$EXTRA_GTK2_VERSION" ]; then
+if [ -z "$EXTRA_WIN32_VERSION" ]; then
 	EXTRA_VERSION=`echo $EXTRA_VERSION | awk -F'.' '{for (i=1;i<NF;i++){printf $i"."};printf $NF+1}'`
 	nextsversion="${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}cvs${EXTRA_VERSION}"
 	nextextra="$EXTRA_VERSION"
 	nextextratype="head"
 else
-	EXTRA_GTK2_VERSION=`echo $EXTRA_GTK2_VERSION | awk -F'.' '{for (i=1;i<NF;i++){printf $i"."};printf $NF+1}'`
-	nextsversion="${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}cvs${EXTRA_VERSION}${EXTRA_GTK2_VERSION}"
-	nextextra="$EXTRA_GTK2_VERSION"
-	nextextratype="gtk2"
+	EXTRA_WIN32_VERSION=`echo $EXTRA_WIN32_VERSION | awk -F'.' '{for (i=1;i<NF;i++){printf $i"."};printf $NF+1}'`
+	nextsversion="${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}cvs${EXTRA_VERSION}${EXTRA_WIN32_VERSION}"
+	nextextra="$EXTRA_WIN32_VERSION"
+	nextextratype="win32"
 fi
 rm /tmp/commitTool.tmp
 
@@ -92,8 +94,8 @@ echo >> /tmp/logentry
 cat /tmp/logentry
 
 echo "--8<----------"
-if [ -f ChangeLog-gtk2.claws ]; then
-	chlog="ChangeLog-gtk2.claws"
+if [ -f ChangeLog.claws.w32 ]; then
+	chlog="ChangeLog.claws.w32"
 elif [ -f ChangeLog.claws ]; then
 	chlog="ChangeLog.claws"
 else
@@ -111,18 +113,18 @@ if [ "$ans" == "y" ]; then
 		cat configure.ac | sed "s/^EXTRA_VERSION=.*/EXTRA_VERSION=$nextextra/" > configure.ac.new \
 		&& mv configure.ac.new configure.ac ;
 	else
-		cat configure.ac | sed "s/^EXTRA_GTK2_VERSION=.*/EXTRA_GTK2_VERSION=$nextextra/" > configure.ac.new \
+		cat configure.ac | sed "s/^EXTRA_WIN32_VERSION=.*/EXTRA_WIN32_VERSION=$nextextra/" > configure.ac.new \
 		&& mv configure.ac.new configure.ac ;
 	fi;
 	
-	echo "$patchset" >> PATCHSETS
+	echo "$patchset" >> PATCHSETS.w32
 
 	if [ "$args" != "" ]; then
-		echo commiting $@ PATCHSETS $chlog configure.ac
-		cvs commit -m "`cat /tmp/logentry`" $@ PATCHSETS $chlog configure.ac
+		echo commiting $@ PATCHSETS.w32 $chlog configure.ac
+		cvs commit -F /tmp/logentry $@ PATCHSETS.w32 $chlog configure.ac
 	else
 		echo commiting recursively
-		cvs commit -m "`cat /tmp/logentry` "
+		cvs commit -F /tmp/logentry
 	fi;
 	rm -f /tmp/logentry
 fi
