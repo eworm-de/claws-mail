@@ -1,5 +1,12 @@
 Changes of Sylpheed
 
+* 0.9.7
+
+    * The vulnerability in SMTP response handling, which is exploitable by
+      a malicious SMTP server, has been fixed.
+    * The structure of folder system has been sorted out.
+    * The checking of the existence of IMAP root directory has been modified.
+
 * 0.9.6
 
     * A crash bug when deleting currently opened folder has been fixed.

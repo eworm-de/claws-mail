@@ -1,3 +1,8 @@
+2003-10-15 [paul]	0.9.6claws28
+
+	* sync with 0.9.7 release
+		see ChangeLog 2003-10-15
+
 2003-10-14 [christoph]	0.9.6claws27
 
 	* src/plugins/clamav/clamav_plugin.c

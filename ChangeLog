@@ -1,3 +1,12 @@
+2003-10-15
+
+	* version 0.9.7
+
+2003-10-15
+
+	* src/imap.c: imap_scan_tree(): check the existence of root directory
+	  with LIST instead of STATUS.
+
 2003-10-07
 
 	* src/send_message.c: fixed format string bug (exploitable by
