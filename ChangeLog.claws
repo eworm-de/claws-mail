@@ -1,5 +1,14 @@
+2002-02-13 [melvin]	0.7.0claws74
+
+	* src/prefs_folder_item.c
+		Added missing "config.h" include
+	* po/fr.po
+		Updated French translation for folder propriety.
+
 2002-02-13 [jens]	0.7.0claws73
 
+	* po/POTFILES.in
+		Added missing src/prefs_folder_item.c [log added by melvin]
 	* po/de.po
 		Updated German translation.
 

@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed\n"
-"POT-Creation-Date: 2002-02-13 00:54+0100\n"
+"POT-Creation-Date: 2002-02-13 16:32+0100\n"
 "PO-Revision-Date: 2001-11-12 10:19+0100\n"
 "Last-Translator: Melvin Hadasht <melvin.hadasht@free.fr>\n"
 "Language-Team: Melvin Hadasht <melvin.hadasht@free.fr>\n"
@@ -102,7 +102,8 @@ msgstr ""
 #: src/passphrase.c:119 src/prefs.c:474 src/prefs_common.c:2938
 #: src/prefs_common.c:3094 src/prefs_common.c:3412 src/prefs_common.c:3555
 #: src/prefs_customheader.c:157 src/prefs_display_header.c:194
-#: src/prefs_filter.c:203 src/prefs_filtering.c:329 src/prefs_matcher.c:300
+#: src/prefs_filter.c:203 src/prefs_filtering.c:329
+#: src/prefs_folder_item.c:443 src/prefs_matcher.c:300
 #: src/prefs_matcher.c:1468 src/prefs_scoring.c:196 src/prefs_actions.c:249
 #: src/prefs_summary_column.c:313 src/prefs_template.c:258 src/sigstatus.c:134
 #: src/summaryview.c:3297
@@ -262,10 +263,11 @@ msgstr "Choisissez un dossier"
 #: src/passphrase.c:123 src/prefs.c:475 src/prefs_common.c:2939
 #: src/prefs_common.c:3556 src/prefs_customheader.c:158
 #: src/prefs_display_header.c:195 src/prefs_filter.c:204
-#: src/prefs_filtering.c:330 src/prefs_matcher.c:301 src/prefs_scoring.c:197
-#: src/prefs_actions.c:250 src/prefs_summary_column.c:314
-#: src/prefs_template.c:259 src/progressdialog.c:77 src/select-keys.c:326
-#: src/summaryview.c:710 src/summaryview.c:3297
+#: src/prefs_filtering.c:330 src/prefs_folder_item.c:444
+#: src/prefs_matcher.c:301 src/prefs_scoring.c:197 src/prefs_actions.c:250
+#: src/prefs_summary_column.c:314 src/prefs_template.c:259
+#: src/progressdialog.c:77 src/select-keys.c:326 src/summaryview.c:710
+#: src/summaryview.c:3297
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -3276,7 +3278,7 @@ msgstr "Création de la fenêtre principale...\n"
 msgid "MainWindow: color allocation %d failed\n"
 msgstr "Fenêtre principale : allocation de la couleur %d échouée\n"
 
-#: src/mainwindow.c:1135 src/mainwindow.c:1152
+#: src/mainwindow.c:1135 src/mainwindow.c:1152 src/prefs_folder_item.c:419
 msgid "Untitled"
 msgstr "Sans titre"
 
@@ -5314,6 +5316,42 @@ msgstr "Chaîne recherchée invalide."
 #: src/prefs_filtering.c:759 src/prefs_scoring.c:557 src/prefs_scoring.c:602
 msgid "Score is not set."
 msgstr "Score non défini"
+
+#: src/prefs_folder_item.c:290
+msgid "Folder Property"
+msgstr "Propriétés du dossier"
+
+#: src/prefs_folder_item.c:310
+msgid "Folder Property for "
+msgstr "Propriétés du dossier "
+
+#: src/prefs_folder_item.c:319
+msgid "Request Return Receipt"
+msgstr "Demander un accusé de réception"
+
+#: src/prefs_folder_item.c:331
+msgid "Save copy of outgoing messages to this folder instead of outbox"
+msgstr "Garder la copie des messages envoyés dans ce dossier"
+
+#. Default To
+#: src/prefs_folder_item.c:341
+msgid "Default To: "
+msgstr "Destinataire par défaut : "
+
+#. Simplify Subject
+#: src/prefs_folder_item.c:358
+msgid "Simplify Subject RegExp: "
+msgstr "Enlever la RegExp suivante du sujet : "
+
+#. Folder chmod
+#: src/prefs_folder_item.c:376
+msgid "Folder chmod: "
+msgstr "Permissions chmod du dossier : "
+
+#. Default account
+#: src/prefs_folder_item.c:400
+msgid "Default account: "
+msgstr "Compte par défaut : "
 
 #: src/prefs_matcher.c:120
 msgid "or"
