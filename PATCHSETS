@@ -23,3 +23,4 @@
 ( cvs diff -u -r 1.1.2.7 -r 1.1.2.8 src/gtk/quicksearch.c; ) > 0.9.12cvs18.7.patchset
 ( cvs diff -u -r 1.56.2.14 -r 1.56.2.15 src/pop.c; ) > 0.9.12cvs18.8.patchset
 ( cvs diff -u -r 1.1.2.8 -r 1.1.2.9 src/gtk/quicksearch.c; ) > 0.9.12cvs18.9.patchset
+( cvs diff -u -r 1.17.2.3 -r 1.17.2.4 src/send_message.c; ) > 0.9.12cvs18.10.patchset

@@ -307,8 +307,7 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 
 	if (ac_prefs->use_smtp_auth) {
 		smtp_session->forced_auth_type = ac_prefs->smtp_auth_type;
-
-		if (ac_prefs->smtp_userid) {
+		if (ac_prefs->smtp_userid && strlen(ac_prefs->smtp_userid)) {
 			smtp_session->user = g_strdup(ac_prefs->smtp_userid);
 			if (ac_prefs->smtp_passwd)
 				smtp_session->pass =
