@@ -17,8 +17,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __MIMEVIEW_H__
-#define __MIMEVIEW_H__
+#ifndef MIMEVIEW_H
+#define MIMEVIEW_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
 
 #include <glib.h>
 #include <gdk/gdk.h>
@@ -101,5 +105,9 @@ void mimeview_pass_key_press_event	(MimeView	*mimeview,
 
 void mimeview_register_viewer_factory	(MimeViewerFactory *factory);
 void mimeview_unregister_viewer_factory	(MimeViewerFactory *factory);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __MIMEVIEW_H__ */

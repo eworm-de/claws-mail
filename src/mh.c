@@ -127,7 +127,7 @@ Folder *mh_folder_new(const gchar *name, const gchar *path)
 	Folder *folder;
 
 	folder = (Folder *)g_new0(MHFolder, 1);
-	folder->class = &mh_class;
+	folder->klass = &mh_class;
 	mh_folder_init(folder, name, path);
 
 	return folder;

@@ -20,6 +20,10 @@
 #ifndef __PROCMIME_H__
 #define __PROCMIME_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
@@ -129,8 +133,8 @@ void procmime_mimeinfo_free_all		(MimeInfo	*mimeinfo);
 
 MimeInfo *procmime_mimeinfo_insert	(MimeInfo	*parent,
 					 MimeInfo	*mimeinfo);
-void procmime_mimeinfo_replace		(MimeInfo	*old,
-					 MimeInfo	*new);
+void procmime_mimeinfo_replace		(MimeInfo	*old_mimeinfo,
+					 MimeInfo	*new_mimeinfo);
 
 MimeInfo *procmime_mimeinfo_next	(MimeInfo	*mimeinfo);
 
@@ -183,5 +187,9 @@ const gchar *procmime_get_encoding_str		(EncodingType	 encoding);
 
 void renderer_read_config(void);
 void renderer_write_config(void);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* __PROCMIME_H__ */

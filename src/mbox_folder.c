@@ -117,7 +117,7 @@ Folder *mbox_folder_new(const gchar *name, const gchar *path)
 	Folder *folder;
 
 	folder = (Folder *)g_new0(MBOXFolder, 1);
-	folder->class = &mbox_class;
+	folder->klass = &mbox_class;
 	mbox_folder_init(folder, name, path);
 
 	return folder;
@@ -1647,9 +1647,9 @@ void mbox_scan_folder(Folder *folder, FolderItem *item)
 	cached = mbox_cache_get_mbox(mbox_path);
 
 	if (cached == NULL) {
-		item->new = 0;
-		item->unread = 0;
-		item->total = 0;
+		item->new_msgs = 0;
+		item->unread_msgs = 0;
+		item->total_msgs = 0;
 		item->last_num = 0;
 	        g_free(mbox_path);
 		return;
@@ -1658,7 +1658,7 @@ void mbox_scan_folder(Folder *folder, FolderItem *item)
 	n_msg = mbox_cache_get_count(mbox_path);
 
 	if (n_msg == 0) {
-		item->new = item->unread = item->total = 0;
+		item->new_msgs = item->unread_msgs = item->total_msgs = 0;
 	}
 	else {
 		gint new = 0;
@@ -1676,13 +1676,13 @@ void mbox_scan_folder(Folder *folder, FolderItem *item)
 				unread ++;
 		}
 		
-		item->new = new;
-		item->unread = unread;
-		item->total = total;
+		item->new_msgs = new;
+		item->unread_msgs = unread;
+		item->total_msgs = total;
 	}
 
 	debug_print("Last number in dir %s = %d\n", mbox_path,
-		    item->total);
+		    item->total_msgs);
 	item->last_num = n_msg;
 	g_free(mbox_path);
 }

@@ -89,21 +89,21 @@ GSList *folder_get_class_list()
 	return classlist;
 }
 
-void folder_register_class(FolderClass *class)
+void folder_register_class(FolderClass *klass)
 {
-	debug_print("registering folder class %s\n", class->idstr);
-	classlist = g_slist_append(classlist, class);
+	debug_print("registering folder class %s\n", klass->idstr);
+	classlist = g_slist_append(classlist, klass);
 }
 
-Folder *folder_new(FolderClass *class, const gchar *name, const gchar *path)
+Folder *folder_new(FolderClass *klass, const gchar *name, const gchar *path)
 {
 	Folder *folder = NULL;
 	FolderItem *item;
 
-	g_return_val_if_fail(class != NULL, NULL);
+	g_return_val_if_fail(klass != NULL, NULL);
 
 	name = name ? name : path;
-	folder = class->new(name, path);
+	folder = klass->new_folder(name, path);
 
 	/* Create root folder item */
 	item = folder_item_new(folder, name, NULL);
@@ -146,7 +146,7 @@ void folder_remote_folder_init(Folder *folder, const gchar *name,
 void folder_destroy(Folder *folder)
 {
 	g_return_if_fail(folder != NULL);
-	g_return_if_fail(folder->class->destroy != NULL);
+	g_return_if_fail(folder->klass->destroy_folder != NULL);
 
 	folder_list = g_list_remove(folder_list, folder);
 
@@ -154,7 +154,7 @@ void folder_destroy(Folder *folder)
 	g_free(folder->name);
 	g_free(folder);
 
-	folder->class->destroy(folder);
+	folder->klass->destroy_folder(folder);
 }
 
 void folder_local_folder_destroy(LocalFolder *lfolder)
@@ -176,8 +176,8 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 {
 	FolderItem *item = NULL;
 
-	if (folder->class->item_new) {
-		item = folder->class->item_new(folder);
+	if (folder->klass->item_new) {
+		item = folder->klass->item_new(folder);
 	} else {
 		item = g_new0(FolderItem, 1);
 	}
@@ -188,10 +188,10 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 	item->name = g_strdup(name);
 	item->path = g_strdup(path);
 	item->mtime = 0;
-	item->new = 0;
-	item->unread = 0;
-	item->unreadmarked = 0;
-	item->total = 0;
+	item->new_msgs = 0;
+	item->unread_msgs = 0;
+	item->unreadmarked_msgs = 0;
+	item->total_msgs = 0;
 	item->last_num = -1;
 	item->cache = NULL;
 	item->no_sub = FALSE;
@@ -259,8 +259,8 @@ void folder_item_destroy(FolderItem *item)
 	g_free(item->path);
 
 	if (item->folder != NULL) {
-		if(item->folder->class->item_destroy) {
-			item->folder->class->item_destroy(item->folder, item);
+		if(item->folder->klass->item_destroy) {
+			item->folder->klass->item_destroy(item->folder, item);
 		} else {
 			g_free(item);
 		}
@@ -418,13 +418,13 @@ void folder_scan_tree(Folder *folder)
 {
 	GHashTable *pptable;
 	
-	if (!folder->class->scan_tree)
+	if (!folder->klass->scan_tree)
 		return;
 	
 	pptable = folder_persist_prefs_new(folder);
 	folder_tree_destroy(folder);
 
-	folder->class->scan_tree(folder);
+	folder->klass->scan_tree(folder);
 
 	g_node_traverse(folder->node, G_POST_ORDER, G_TRAVERSE_ALL, -1, folder_scan_tree_func, pptable);
 	folder_persist_prefs_free(pptable);
@@ -438,7 +438,7 @@ FolderItem *folder_create_folder(FolderItem *parent, const gchar *name)
 {
 	FolderItem *new_item;
 
-	new_item = parent->folder->class->create_folder(parent->folder, parent, name);
+	new_item = parent->folder->klass->create_folder(parent->folder, parent, name);
 	if (new_item)
 		new_item->cache = msgcache_new();
 
@@ -447,10 +447,10 @@ FolderItem *folder_create_folder(FolderItem *parent, const gchar *name)
 
 struct TotalMsgCount
 {
-	guint new;
-	guint unread;
-	guint unreadmarked;
-	guint total;
+	guint new_msgs;
+	guint unread_msgs;
+	guint unreadmarked_msgs;
+	guint total_msgs;
 };
 
 struct FuncToAllFoldersData
@@ -497,26 +497,26 @@ static void folder_count_total_msgs_func(FolderItem *item, gpointer data)
 {
 	struct TotalMsgCount *count = (struct TotalMsgCount *)data;
 
-	count->new += item->new;
-	count->unread += item->unread;
-	count->unreadmarked += item->unreadmarked;
-	count->total += item->total;
+	count->new_msgs += item->new_msgs;
+	count->unread_msgs += item->unread_msgs;
+	count->unreadmarked_msgs += item->unreadmarked_msgs;
+	count->total_msgs += item->total_msgs;
 }
 
-void folder_count_total_msgs(guint *new, guint *unread, guint *unreadmarked, guint *total)
+void folder_count_total_msgs(guint *new_msgs, guint *unread_msgs, guint *unreadmarked_msgs, guint *total_msgs)
 {
 	struct TotalMsgCount count;
 
-	count.new = count.unread = count.unreadmarked = count.total = 0;
+	count.new_msgs = count.unread_msgs = count.unreadmarked_msgs = count.total_msgs = 0;
 
 	debug_print("Counting total number of messages...\n");
 
 	folder_func_to_all_folders(folder_count_total_msgs_func, &count);
 
-	*new = count.new;
-	*unread = count.unread;
-	*unreadmarked = count.unreadmarked;
-	*total = count.total;
+	*new_msgs = count.new_msgs;
+	*unread_msgs = count.unread_msgs;
+	*unreadmarked_msgs = count.unreadmarked_msgs;
+	*total_msgs = count.total_msgs;
 }
 
 Folder *folder_find_from_path(const gchar *path)
@@ -534,14 +534,14 @@ Folder *folder_find_from_path(const gchar *path)
 	return NULL;
 }
 
-Folder *folder_find_from_name(const gchar *name, FolderClass *class)
+Folder *folder_find_from_name(const gchar *name, FolderClass *klass)
 {
 	GList *list;
 	Folder *folder;
 
 	for (list = folder_list; list != NULL; list = list->next) {
 		folder = list->data;
-		if (folder->class == class && strcmp2(name, folder->name) == 0)
+		if (folder->klass == klass && strcmp2(name, folder->name) == 0)
 			return folder;
 	}
 
@@ -597,7 +597,7 @@ gchar *folder_get_identifier(Folder *folder)
 
 	g_return_val_if_fail(folder != NULL, NULL);
 
-	type_str = folder->class->idstr;
+	type_str = folder->klass->idstr;
 	return g_strconcat("#", type_str, "/", folder->name, NULL);
 }
 
@@ -704,7 +704,7 @@ gchar *folder_item_get_name(FolderItem *item)
 		 * the folder knows the ui string and how to abbrev
 		*/
 		if (!item->parent) {
-			name = g_strconcat(item->name, " (", item->folder->class->uistr, ")", NULL);
+			name = g_strconcat(item->name, " (", item->folder->klass->uistr, ")", NULL);
 		} else {
 			if (FOLDER_CLASS(item->folder) == news_get_class() &&
 			    item->path && !strcmp2(item->name, item->path))
@@ -804,7 +804,7 @@ void folder_set_missing_folders(void)
 		    folder->queue && folder->trash)
 			continue;
 
-		if (folder->class->create_tree(folder) < 0) {
+		if (folder->klass->create_tree(folder) < 0) {
 			g_warning("%s: can't create the folder tree.\n",
 				  LOCAL_FOLDER(folder)->rootpath);
 			continue;
@@ -990,7 +990,7 @@ void folder_item_close(FolderItem *item)
 	
 	g_return_if_fail(item != NULL);
 
-	if (item->new) {
+	if (item->new_msgs) {
 		mlist = folder_item_get_msg_list(item);
 		for (cur = mlist ; cur != NULL ; cur = cur->next) {
 			MsgInfo * msginfo;
@@ -1025,18 +1025,18 @@ gint folder_item_scan(FolderItem *item)
 	folder = item->folder;
 
 	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(folder->class->get_num_list != NULL, -1);
+	g_return_val_if_fail(folder->klass->get_num_list != NULL, -1);
 
 	debug_print("Scanning folder %s for cache changes.\n", item->path);
 
 	/* Get list of messages for folder and cache */
-	if (folder->class->get_num_list(item->folder, item, &folder_list) < 0) {
+	if (folder->klass->get_num_list(item->folder, item, &folder_list) < 0) {
 		debug_print("Error fetching list of message numbers\n");
 		return(-1);
 	}
 
-	if (!folder->class->check_msgnum_validity || 
-	    folder->class->check_msgnum_validity(folder, item)) {
+	if (!folder->klass->check_msgnum_validity || 
+	    folder->klass->check_msgnum_validity(folder, item)) {
 		if (!item->cache)
 			folder_item_read_cache(item);
 		cache_list = msgcache_get_msg_list(item->cache);
@@ -1149,7 +1149,7 @@ gint folder_item_scan(FolderItem *item)
 			MsgInfo *msginfo;
 
 			msginfo = msgcache_get_msg(item->cache, folder_cur_num);
-			if (folder->class->is_msg_changed && folder->class->is_msg_changed(folder, item, msginfo)) {
+			if (folder->klass->is_msg_changed && folder->klass->is_msg_changed(folder, item, msginfo)) {
 				msgcache_remove_msg(item->cache, msginfo->msgnum);
 				new_list = g_slist_prepend(new_list, GINT_TO_POINTER(msginfo->msgnum));
 				procmsg_msginfo_free(msginfo);
@@ -1183,9 +1183,9 @@ gint folder_item_scan(FolderItem *item)
 	g_slist_free(folder_list);
 
 	if (new_list != NULL) {
-		if (folder->class->get_msginfos) {
-			newmsg_list = folder->class->get_msginfos(folder, item, new_list);
-		} else if (folder->class->get_msginfo) {
+		if (folder->klass->get_msginfos) {
+			newmsg_list = folder->klass->get_msginfos(folder, item, new_list);
+		} else if (folder->klass->get_msginfo) {
 			GSList *elem;
 	
 			for (elem = new_list; elem != NULL; elem = g_slist_next(elem)) {
@@ -1193,7 +1193,7 @@ gint folder_item_scan(FolderItem *item)
 				guint num;
 
 				num = GPOINTER_TO_INT(elem->data);
-				msginfo = folder->class->get_msginfo(folder, item, num);
+				msginfo = folder->klass->get_msginfo(folder, item, num);
 				if (msginfo != NULL) {
 					newmsg_list = g_slist_prepend(newmsg_list, msginfo);
 					debug_print("Added newly found message %d to cache.\n", num);
@@ -1242,10 +1242,10 @@ gint folder_item_scan(FolderItem *item)
 	}
 	g_slist_free(exists_list);
 
-	item->new = newcnt;
-	item->unread = unreadcnt;
-	item->total = totalcnt;
-	item->unreadmarked = unreadmarkedcnt;
+	item->new_msgs = newcnt;
+	item->unread_msgs = unreadcnt;
+	item->total_msgs = totalcnt;
+	item->unreadmarked_msgs = unreadmarkedcnt;
 
 	update_flags |= F_ITEM_UPDATE_MSGCNT;
 
@@ -1408,8 +1408,8 @@ MsgInfo *folder_item_get_msginfo(FolderItem *item, gint num)
 	if ((msginfo = msgcache_get_msg(item->cache, num)) != NULL)
 		return msginfo;
 	
-	g_return_val_if_fail(folder->class->get_msginfo, NULL);
-	if ((msginfo = folder->class->get_msginfo(folder, item, num)) != NULL) {
+	g_return_val_if_fail(folder->klass->get_msginfo, NULL);
+	if ((msginfo = folder->klass->get_msginfo(folder, item, num)) != NULL) {
 		msgcache_add_msg(item->cache, msginfo);
 		return msginfo;
 	}
@@ -1454,9 +1454,9 @@ gchar *folder_item_fetch_msg(FolderItem *item, gint num)
 
 	folder = item->folder;
 
-	g_return_val_if_fail(folder->class->fetch_msg != NULL, NULL);
+	g_return_val_if_fail(folder->klass->fetch_msg != NULL, NULL);
 
-	return folder->class->fetch_msg(folder, item, num);
+	return folder->klass->fetch_msg(folder, item, num);
 }
 
 static gint folder_item_get_msg_num_by_file(FolderItem *dest, const gchar *file)
@@ -1539,12 +1539,12 @@ static void add_msginfo_to_cache(FolderItem *item, MsgInfo *newmsginfo, MsgInfo 
 {
 	/* update folder stats */
 	if (MSG_IS_NEW(newmsginfo->flags))
-		item->new++;
+		item->new_msgs++;
 	if (MSG_IS_UNREAD(newmsginfo->flags))
-		item->unread++;
+		item->unread_msgs++;
 	if (MSG_IS_UNREAD(newmsginfo->flags) && procmsg_msg_has_marked_parent(newmsginfo))
-		item->unreadmarked++;
-	item->total++;
+		item->unreadmarked_msgs++;
+	item->total_msgs++;
 
 	copy_msginfo_flags(flagsource, newmsginfo);
 
@@ -1557,12 +1557,12 @@ static void remove_msginfo_from_cache(FolderItem *item, MsgInfo *msginfo)
 	    folder_item_read_cache(item);
 
 	if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-		msginfo->folder->new--;
+		msginfo->folder->new_msgs--;
 	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-		msginfo->folder->unread--;
+		msginfo->folder->unread_msgs--;
 	if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
-		msginfo->folder->unreadmarked--;
-	msginfo->folder->total--;			
+		msginfo->folder->unreadmarked_msgs--;
+	msginfo->folder->total_msgs--;
 
 	msgcache_remove_msg(item->cache, msginfo->msgnum);
 	folder_item_update(msginfo->folder, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
@@ -1580,15 +1580,15 @@ gint folder_item_add_msg(FolderItem *dest, const gchar *file,
 
 	folder = dest->folder;
 
-	g_return_val_if_fail(folder->class->add_msg != NULL, -1);
+	g_return_val_if_fail(folder->klass->add_msg != NULL, -1);
 
 	if (!dest->cache)
 		folder_item_read_cache(dest);
 
-	num = folder->class->add_msg(folder, dest, file, FALSE);
+	num = folder->klass->add_msg(folder, dest, file, FALSE);
 
         if (num > 0) {
-    		msginfo = folder->class->get_msginfo(folder, dest, num);
+    		msginfo = folder->klass->get_msginfo(folder, dest, num);
 
 		if (msginfo != NULL) {
 			add_msginfo_to_cache(dest, msginfo, NULL);
@@ -1682,7 +1682,7 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 	new_id = folder_item_get_identifier(new_item);
 	debug_print("updating rules : %s => %s\n", old_id, new_id);
 	
-	src->folder->class->remove_folder(src->folder, src);
+	src->folder->klass->remove_folder(src->folder, src);
 	folder_write_list();
 
 	if (old_id != NULL && new_id != NULL)
@@ -1806,8 +1806,8 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 
 	folder = dest->folder;
 
-	g_return_val_if_fail(folder->class->copy_msg != NULL, -1);
-	g_return_val_if_fail(folder->class->remove_msg != NULL, -1);
+	g_return_val_if_fail(folder->klass->copy_msg != NULL, -1);
+	g_return_val_if_fail(folder->klass->remove_msg != NULL, -1);
 
 	/* 
 	 * Copy messages to destination folder and 
@@ -1820,7 +1820,7 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 		if (!item && msginfo->folder != NULL)
 			item = msginfo->folder;
 
-		num = folder->class->copy_msg(folder, dest, msginfo);
+		num = folder->klass->copy_msg(folder, dest, msginfo);
 		newmsgnums = g_slist_append(newmsgnums, GINT_TO_POINTER(num));
 	}
 
@@ -1860,8 +1860,8 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 				continue;
 
 			if (!folderscan && 
-			    ((newmsginfo = folder->class->get_msginfo(folder, dest, num)) != NULL)) {
-				newmsginfo = folder->class->get_msginfo(folder, dest, num);
+			    ((newmsginfo = folder->klass->get_msginfo(folder, dest, num)) != NULL)) {
+				newmsginfo = folder->klass->get_msginfo(folder, dest, num);
 				add_msginfo_to_cache(dest, newmsginfo, msginfo);
 				procmsg_msginfo_free(newmsginfo);
 			} else if ((newmsginfo = msgcache_get_msg(dest->cache, num)) != NULL) {
@@ -1884,7 +1884,7 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 		l2 = g_slist_next(l2);
 		
 		if (num >= 0) {
-			item->folder->class->remove_msg(item->folder,
+			item->folder->klass->remove_msg(item->folder,
 					    	        msginfo->folder,
 						        msginfo->msgnum);
 			remove_msginfo_from_cache(item, msginfo);
@@ -1892,8 +1892,8 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 	}
 
 
-	if (folder->class->finished_copy)
-		folder->class->finished_copy(folder, dest);
+	if (folder->klass->finished_copy)
+		folder->klass->finished_copy(folder, dest);
 
 	g_slist_free(newmsgnums);
 	return lastnum;
@@ -1963,7 +1963,7 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 
 	folder = dest->folder;
  
-	g_return_val_if_fail(folder->class->copy_msg != NULL, -1);
+	g_return_val_if_fail(folder->klass->copy_msg != NULL, -1);
 
 	/* 
 	 * Copy messages to destination folder and 
@@ -1972,7 +1972,7 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 	for (l = msglist ; l != NULL ; l = g_slist_next(l)) {
 		MsgInfo * msginfo = (MsgInfo *) l->data;
 
-		num = folder->class->copy_msg(folder, dest, msginfo);
+		num = folder->klass->copy_msg(folder, dest, msginfo);
 		newmsgnums = g_slist_append(newmsgnums, GINT_TO_POINTER(num));
 	}
 
@@ -2012,8 +2012,8 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 				continue;
 
 			if (!folderscan && 
-			    ((newmsginfo = folder->class->get_msginfo(folder, dest, num)) != NULL)) {
-				newmsginfo = folder->class->get_msginfo(folder, dest, num);
+			    ((newmsginfo = folder->klass->get_msginfo(folder, dest, num)) != NULL)) {
+				newmsginfo = folder->klass->get_msginfo(folder, dest, num);
 				add_msginfo_to_cache(dest, newmsginfo, msginfo);
 				procmsg_msginfo_free(newmsginfo);
 			} else if ((newmsginfo = msgcache_get_msg(dest->cache, num)) != NULL) {
@@ -2023,8 +2023,8 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 		}
 	}
 	
-	if (folder->class->finished_copy)
-		folder->class->finished_copy(folder, dest);
+	if (folder->klass->finished_copy)
+		folder->klass->finished_copy(folder, dest);
 
 	g_slist_free(newmsgnums);
 	return lastnum;
@@ -2041,7 +2041,7 @@ gint folder_item_remove_msg(FolderItem *item, gint num)
 	folder = item->folder;
 	if (!item->cache) folder_item_read_cache(item);
 
-	ret = folder->class->remove_msg(folder, item, num);
+	ret = folder->klass->remove_msg(folder, item, num);
 
 	msginfo = msgcache_get_msg(item->cache, num);
 	if (msginfo != NULL) {
@@ -2085,21 +2085,21 @@ gint folder_item_remove_all_msg(FolderItem *item)
 
 	folder = item->folder;
 
-	g_return_val_if_fail(folder->class->remove_all_msg != NULL, -1);
+	g_return_val_if_fail(folder->klass->remove_all_msg != NULL, -1);
 
-	result = folder->class->remove_all_msg(folder, item);
+	result = folder->klass->remove_all_msg(folder, item);
 
 	if (result == 0) {
-		if (folder->class->finished_remove)
-			folder->class->finished_remove(folder, item);
+		if (folder->klass->finished_remove)
+			folder->klass->finished_remove(folder, item);
 
 		folder_item_free_cache(item);
 		item->cache = msgcache_new();
 
-		item->new = 0;
-		item->unread = 0;
-		item->unreadmarked = 0;
-		item->total = 0;
+		item->new_msgs = 0;
+		item->unread_msgs = 0;
+		item->unreadmarked_msgs = 0;
+		item->total_msgs = 0;
 		folder_item_update(item, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
 	}
 
@@ -2111,8 +2111,8 @@ void folder_item_change_msg_flags(FolderItem *item, MsgInfo *msginfo, MsgPermFla
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(msginfo != NULL);
 	
-	if (item->folder->class->change_flags != NULL) {
-		item->folder->class->change_flags(item->folder, item, msginfo, newflags);
+	if (item->folder->klass->change_flags != NULL) {
+		item->folder->klass->change_flags(item->folder, item, msginfo, newflags);
 	} else {
 		msginfo->flags.perm_flags = newflags;
 	}
@@ -2126,9 +2126,9 @@ gboolean folder_item_is_msg_changed(FolderItem *item, MsgInfo *msginfo)
 
 	folder = item->folder;
 
-	g_return_val_if_fail(folder->class->is_msg_changed != NULL, -1);
+	g_return_val_if_fail(folder->klass->is_msg_changed != NULL, -1);
 
-	return folder->class->is_msg_changed(folder, item, msginfo);
+	return folder->klass->is_msg_changed(folder, item, msginfo);
 }
 
 gchar *folder_item_get_cache_file(FolderItem *item)
@@ -2284,10 +2284,10 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	item = folder_item_new(folder, name, path);
 	item->stype = stype;
 	item->mtime = mtime;
-	item->new = new;
-	item->unread = unread;
-	item->unreadmarked = unreadmarked;
-	item->total = total;
+	item->new_msgs = new;
+	item->unread_msgs = unread;
+	item->unreadmarked_msgs = unreadmarked;
+	item->total_msgs = total;
 	item->no_sub = no_sub;
 	item->no_select = no_select;
 	item->collapsed = collapsed;
@@ -2428,7 +2428,7 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 	if (depth == 1) {
 		Folder *folder = item->folder;
 
-		fprintf(fp, "<folder type=\"%s\"", folder->class->idstr);
+		fprintf(fp, "<folder type=\"%s\"", folder->klass->idstr);
 		if (folder->name)
 			PUT_ESCAPE_STR(fp, "name", folder->name);
 		if (FOLDER_TYPE(folder) == F_MH || FOLDER_TYPE(folder) == F_MBOX)
@@ -2485,7 +2485,7 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 
 		fprintf(fp,
 			" mtime=\"%lu\" new=\"%d\" unread=\"%d\" unreadmarked=\"%d\" total=\"%d\"",
-			item->mtime, item->new, item->unread, item->unreadmarked, item->total);
+			item->mtime, item->new_msgs, item->unread_msgs, item->unreadmarked_msgs, item->total_msgs);
 
 		if (item->account)
 			fprintf(fp, " account_id=\"%d\"",
@@ -2612,7 +2612,7 @@ static void folder_create_processing_folder(void)
 
 	if (!is_dir_exist(tmpname)) {
 		debug_print("*TMP* creating %s\n", tmpname);
-		processing_folder_item = processing_folder->class->create_folder(processing_folder,
+		processing_folder_item = processing_folder->klass->create_folder(processing_folder,
 								   	         processing_folder->node->data,
 										 PROCESSING_FOLDER_ITEM);
 	} else {

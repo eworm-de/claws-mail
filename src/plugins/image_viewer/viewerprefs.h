@@ -32,7 +32,7 @@ struct _ImageViewerPrefs
 
 extern ImageViewerPrefs imageviewerprefs;
 
-void prefs_init();
-void prefs_done();
+void image_viewer_prefs_init();
+void image_viewer_prefs_done();
 
 #endif

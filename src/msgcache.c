@@ -445,15 +445,15 @@ MsgInfo *msgcache_get_msg_by_id(MsgCache *cache, const gchar *msgid)
 
 static void msgcache_get_msg_list_func(gpointer key, gpointer value, gpointer user_data)
 {
-	GSList **listptr = user_data;
+	MsgInfoList **listptr = user_data;
 	MsgInfo *msginfo = value;
 
 	*listptr = g_slist_prepend(*listptr, procmsg_msginfo_new_ref(msginfo));
 }
 
-GSList *msgcache_get_msg_list(MsgCache *cache)
+MsgInfoList *msgcache_get_msg_list(MsgCache *cache)
 {
-	GSList *msg_list = NULL;
+	MsgInfoList *msg_list = NULL;
 
 	g_return_val_if_fail(cache != NULL, NULL);
 

@@ -150,7 +150,7 @@ static void imageviewer_save_func(PrefsPage * _page)
 
 static struct ImageViewerPage imageviewer_page;
 
-void prefs_init()
+void image_viewer_prefs_init()
 {
 	prefs_set_default(param);
 	prefs_read_config(param, PREFS_BLOCK_NAME, COMMON_RC);
@@ -163,7 +163,7 @@ void prefs_init()
 	prefs_gtk_register_page((PrefsPage *) &imageviewer_page);
 }
 
-void prefs_done()
+void image_viewer_prefs_done()
 {
 	prefs_gtk_unregister_page((PrefsPage *) &imageviewer_page);
 }

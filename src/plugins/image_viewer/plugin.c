@@ -24,15 +24,15 @@
 
 gint plugin_init(gchar **error)
 {
-	prefs_init();
-	viewer_init();
+	image_viewer_prefs_init();
+	image_viewer_init();
 	return 0;	
 }
 
 void plugin_done()
 {
-	viewer_done();
-	prefs_done();
+	image_viewer_done();
+	image_viewer_prefs_done();
 }
 
 const gchar *plugin_name()

@@ -1,3 +1,32 @@
+2003-04-05 [christoph]	0.8.11claws72
+
+	* src/account.c
+	* src/folder.[ch]
+	* src/folderview.c
+	* src/imap.c
+	* src/inc.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/mbox_folder.c
+	* src/mh.c
+	* src/mimeview.h
+	* src/msgcache.[ch]
+	* src/news.c
+	* src/procmime.h
+	* src/procmsg.[ch]
+	* src/setup.c
+	* src/gtk/gtkutils.c
+		o rename structure field names class and new to klass and
+		  new_msgs, to allow including files in C++
+		o add 'extern "C"' block to some header files
+		o add MsgInfoList and MsgNumberList as alias for GSList for
+		  developers to know what type of list is expected
+
+	* src/plugins/image_viewer/plugin.c
+	* src/plugins/image_viewer/viewer.[ch]
+	* src/plugins/image_viewer/viewerprefs.[ch]
+		rename function names to prevent conflicts
+
 2003-04-05 [paul]	0.8.11claws71
 
 	* sync with 0.8.11cvs18

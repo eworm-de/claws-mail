@@ -34,6 +34,9 @@ typedef struct _MsgInfo		MsgInfo;
 typedef struct _MsgFlags	MsgFlags;
 typedef struct _MsgInfoUpdate 	MsgInfoUpdate;
 
+typedef GSList MsgInfoList;
+typedef GSList MsgNumberList;
+
 typedef enum
 {
 	MSG_NEW		= 1 << 0,
@@ -208,9 +211,9 @@ GSList *procmsg_read_cache		(FolderItem	*item,
 gint	procmsg_get_last_num_in_msg_list(GSList		*mlist);
 void	procmsg_msg_list_free		(GSList		*mlist);
 void	procmsg_get_mark_sum		(const gchar	*folder,
-					 gint		*new,
-					 gint		*unread,
-					 gint		*total,
+					 gint		*new_msgs,
+					 gint		*unread_msgs,
+					 gint		*total_msgs,
 					 gint		*min,
 					 gint		*max,
 					 gint		 first);

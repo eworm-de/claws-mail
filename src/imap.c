@@ -369,7 +369,7 @@ Folder *imap_folder_new(const gchar *name, const gchar *path)
 	Folder *folder;
 
 	folder = (Folder *)g_new0(IMAPFolder, 1);
-	folder->class = &imap_class;
+	folder->klass = &imap_class;
 	imap_folder_init(folder, name, path);
 
 	return folder;
@@ -907,9 +907,9 @@ gint imap_scan_folder(Folder *folder, FolderItem *item)
 			 &messages, &recent, &uid_next, &uid_validity, &unseen);
 	if (ok != IMAP_SUCCESS) return -1;
 
-	item->new = unseen > 0 ? recent : 0;
-	item->unread = unseen;
-	item->total = messages;
+	item->new_msgs = unseen > 0 ? recent : 0;
+	item->unread_msgs = unseen;
+	item->total_msgs = messages;
 	item->last_num = (messages > 0 && uid_next > 0) ? uid_next - 1 : 0;
 	/* item->mtime = uid_validity; */
 
@@ -3347,7 +3347,7 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 	gint ok = IMAP_SUCCESS;
 
 	g_return_if_fail(folder != NULL);
-	g_return_if_fail(folder->class == &imap_class);
+	g_return_if_fail(folder->klass == &imap_class);
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder == folder);
 	g_return_if_fail(msginfo != NULL);

@@ -159,7 +159,7 @@ Folder *news_folder_new(const gchar *name, const gchar *path)
 	Folder *folder;
 
 	folder = (Folder *)g_new0(NewsFolder, 1);
-	folder->class = &news_class;
+	folder->klass = &news_class;
 	news_folder_init(folder, name, path);
 
 	return folder;
@@ -347,7 +347,7 @@ gint news_scan_group(Folder *folder, FolderItem *item)
 	}
 
 	if (num == 0) {
-		item->new = item->unread = item->total = item->last_num = 0;
+		item->new_msgs = item->unread_msgs = item->total_msgs = item->last_num = 0;
 		return 0;
 	}
 

@@ -1350,7 +1350,7 @@ void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 
 	for (has_trash = 0, list = folder_get_list(); list != NULL; list = list->next) {
 		folder = FOLDER(list->data);
-		if (folder && folder->trash && folder->trash->total > 0)
+		if (folder && folder->trash && folder->trash->total_msgs > 0)
 			has_trash++;
 	}
 
@@ -1392,7 +1392,7 @@ void main_window_add_mailbox(MainWindow *mainwin)
 			    path);
 	g_free(path);
 
-	if (folder->class->create_tree(folder) < 0) {
+	if (folder->klass->create_tree(folder) < 0) {
 		alertpanel_error(_("Creation of the mailbox failed.\n"
 				   "Maybe some files already exist, or you don't have the permission to write there."));
 		folder_destroy(folder);
@@ -1429,7 +1429,7 @@ void main_window_add_mbox(MainWindow *mainwin)
 			    g_basename(path), path);
 	g_free(path);
 
-	if (folder->class->create_tree(folder) < 0) {
+	if (folder->klass->create_tree(folder) < 0) {
 		alertpanel_error(_("Creation of the mailbox failed."));
 		folder_destroy(folder);
 		return;
@@ -1486,7 +1486,7 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 	if (selection == SUMMARY_SELECTED_SINGLE)
 		state |= M_SINGLE_TARGET_EXIST;
 	if (mainwin->summaryview->folder_item &&
-	    mainwin->summaryview->folder_item->folder->class->type == F_NEWS)
+	    mainwin->summaryview->folder_item->folder->klass->type == F_NEWS)
 		state |= M_NEWS;
 	else
 		state |= M_NOT_NEWS;

@@ -26,7 +26,7 @@
 
 #include "mimeview.h"
 
-void viewer_init();
-void viewer_done();
+void image_viewer_init();
+void image_viewer_done();
 
 #endif

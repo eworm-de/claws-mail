@@ -705,7 +705,7 @@ static GtkCTreeNode *folderview_find_next_unread(GtkCTree *ctree,
 
 	for (; node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 		item = gtk_ctree_node_get_row_data(ctree, node);
-		if (item && item->unread > 0 && item->stype != F_TRASH)
+		if (item && item->unread_msgs > 0 && item->stype != F_TRASH)
 			return node;
 	}
 
@@ -750,19 +750,6 @@ void folderview_update_msg_num(FolderView *folderview, GtkCTreeNode *row)
 	new = atoi(new_str);
 	unread = atoi(unread_str);
 	total = atoi(total_str);
-
-	/* CLAWS: don't know why but this always seems to be true
-	 * when deleting messages. Somewhere claws does a folder
-	 * scan which sets all new, unread & total to the correct
-	 * values. It then enters this function, but leaves it
-	 * because new, unread and total are the same... */
-#ifndef CLAWS	 
-	if (prev_row     == row    &&
-	    item->new    == new    &&
-	    item->unread == unread &&
-	    item->total  == total)
-		return;
-#endif		
 
 	prev_row = row;
 
@@ -832,7 +819,7 @@ void folderview_rescan_tree(Folder *folder)
 
 	g_return_if_fail(folder != NULL);
 
-	if (!folder->class->scan_tree) return;
+	if (!folder->klass->scan_tree) return;
 
 	inc_lock();
 	window = label_window_create(_("Rebuilding folder tree..."));
@@ -917,13 +904,13 @@ gint folderview_check_new(Folder *folder)
 			if (!folder && !FOLDER_IS_LOCAL(item->folder)) continue;
 
 			folderview_scan_tree_func(item->folder, item, NULL);
-			former_new = item->new;
+			former_new = item->new_msgs;
 			if (folder_item_scan(item) < 0) {
 				if (folder && !FOLDER_IS_LOCAL(folder))
 					break;
 			}
 			folderview_update_node(folderview, node);
-			new_msgs += item->new;
+			new_msgs += item->new_msgs;
 			former_new_msgs += former_new;
 		}
 
@@ -978,8 +965,8 @@ static gboolean folderview_search_new_recursive(GtkCTree *ctree,
 	if (node) {
 		item = gtk_ctree_node_get_row_data(ctree, node);
 		if (item) {
-			if (item->new > 0 ||
-			    (item->stype == F_QUEUE && item->total > 0))
+			if (item->new_msgs > 0 ||
+			    (item->stype == F_QUEUE && item->total_msgs > 0))
 				return TRUE;
 		}
 		node = GTK_CTREE_ROW(node)->children;
@@ -1024,8 +1011,8 @@ static gboolean folderview_search_unread_recursive(GtkCTree *ctree,
 	if (node) {
 		item = gtk_ctree_node_get_row_data(ctree, node);
 		if (item) {
-			if (item->unread > 0 ||
-			    (item->stype == F_QUEUE && item->total > 0))
+			if (item->unread_msgs > 0 ||
+			    (item->stype == F_QUEUE && item->total_msgs > 0))
 				return TRUE;
 		}
 		node = GTK_CTREE_ROW(node)->children;
@@ -1158,21 +1145,21 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	else
 		add_unread_mark = FALSE;
 
-	if (item->stype == F_QUEUE && item->total > 0 &&
+	if (item->stype == F_QUEUE && item->total_msgs > 0 &&
 	    prefs_common.display_folder_unread) {
-		str = g_strdup_printf("%s (%d%s)", name, item->total,
+		str = g_strdup_printf("%s (%d%s)", name, item->total_msgs,
 				      add_unread_mark ? "+" : "");
 		gtk_ctree_set_node_info(ctree, node, str, FOLDER_SPACING,
 					xpm, mask, openxpm, openmask,
 					FALSE, GTK_CTREE_ROW(node)->expanded);
 		g_free(str);
-	} else if ((item->unread > 0 || add_unread_mark) &&
+	} else if ((item->unread_msgs > 0 || add_unread_mark) &&
 		 prefs_common.display_folder_unread) {
 
-		if (item->unread > 0)
-			str = g_strdup_printf("%s (%d%s%s)", name, item->unread,
+		if (item->unread_msgs > 0)
+			str = g_strdup_printf("%s (%d%s%s)", name, item->unread_msgs,
 					      add_unread_mark ? "+" : "", 
-				              item->unreadmarked > 0 ? "!":"");
+				              item->unreadmarked_msgs > 0 ? "!":"");
 		else
 			str = g_strdup_printf("%s (+)", name);
 		gtk_ctree_set_node_info(ctree, node, str, FOLDER_SPACING,
@@ -1181,7 +1168,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		g_free(str);
 	} else {
 		str = g_strdup_printf("%s%s", name, 
-			              item->unreadmarked > 0 ? " (!)":"");
+			              item->unreadmarked_msgs > 0 ? " (!)":"");
 	
 		gtk_ctree_set_node_info(ctree, node, str, FOLDER_SPACING,
 					xpm, mask, openxpm, openmask,
@@ -1195,9 +1182,9 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		gtk_ctree_node_set_text(ctree, node, COL_UNREAD, "-");
 		gtk_ctree_node_set_text(ctree, node, COL_TOTAL,  "-");
 	} else {
-		gtk_ctree_node_set_text(ctree, node, COL_NEW,    itos(item->new));
-		gtk_ctree_node_set_text(ctree, node, COL_UNREAD, itos(item->unread));
-		gtk_ctree_node_set_text(ctree, node, COL_TOTAL,  itos(item->total));
+		gtk_ctree_node_set_text(ctree, node, COL_NEW,    itos(item->new_msgs));
+		gtk_ctree_node_set_text(ctree, node, COL_UNREAD, itos(item->unread_msgs));
+		gtk_ctree_node_set_text(ctree, node, COL_TOTAL,  itos(item->total_msgs));
 	}
 
 	if (item->stype == F_OUTBOX || item->stype == F_DRAFT ||
@@ -1205,13 +1192,13 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		use_bold = use_color = FALSE;
 	} else if (item->stype == F_QUEUE) {
 		/* highlight queue folder if there are any messages */
-		use_bold = use_color = (item->total > 0);
+		use_bold = use_color = (item->total_msgs > 0);
 	} else {
 		/* if unread messages exist, print with bold font */
-		use_bold = (item->unread > 0) || add_unread_mark;
+		use_bold = (item->unread_msgs > 0) || add_unread_mark;
 		/* if new messages exist, print with colored letter */
 		use_color =
-			(item->new > 0) ||
+			(item->new_msgs > 0) ||
 			(add_unread_mark &&
 			 folderview_have_new_children(folderview, node));	
 	}
@@ -1526,7 +1513,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 			if (item->parent != NULL)
 				delete_folder = folder_scoring = folder_processing = TRUE;
 		}
-		if (item->unread < 1) 
+		if (item->unread_msgs < 1) 
 			mark_all_read = FALSE;
 	}
 
@@ -2020,7 +2007,7 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 	Xstrdup_a(old_path, item->path, {g_free(new_folder); return;});
 	old_id = folder_item_get_identifier(item);
 
-	if (item->folder->class->rename_folder(item->folder, item, new_folder) < 0) {
+	if (item->folder->klass->rename_folder(item->folder, item, new_folder) < 0) {
 		g_free(old_id);
 		g_free(new_folder);
 		return;
@@ -2087,7 +2074,7 @@ static void folderview_rename_mbox_folder_cb(FolderView *folderview,
 		return;
 	}
 
-	if (item->folder->class->rename_folder(item->folder, item, new_folder) < 0) {
+	if (item->folder->klass->rename_folder(item->folder, item, new_folder) < 0) {
 		g_free(new_folder);
 		return;
 	}
@@ -2141,7 +2128,7 @@ static void folderview_delete_folder_cb(FolderView *folderview, guint action,
 	Xstrdup_a(old_path, item->path, return);
 	old_id = folder_item_get_identifier(item);
 
-	if (item->folder->class->remove_folder(item->folder, item) < 0) {
+	if (item->folder->klass->remove_folder(item->folder, item) < 0) {
 		alertpanel_error(_("Can't remove the folder `%s'."), name);
 		if (folderview->opened == folderview->selected)
 			summary_show(folderview->summaryview,
