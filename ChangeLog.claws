@@ -1,3 +1,10 @@
+2002-02-12 [sergey]	0.7.0claws67
+
+	* src/imap.c
+		Fixed problem with copying messages to IMAP folders when the
+		server uses something other than '/' as a namespace separator
+		(cyrus-imapd uses '.').
+
 2002-02-12 [jens]	0.7.0claws66
 
 	* po/de.po

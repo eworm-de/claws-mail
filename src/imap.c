@@ -588,6 +588,7 @@ gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint uid)
 gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 		  gboolean remove_source)
 {
+	gchar *destdir;
 	IMAPSession *session;
 	gint ok;
 
@@ -599,7 +600,10 @@ gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 	if (!session)
 		return -1;
 
-	ok = imap_cmd_append(SESSION(session)->sock, dest->path, file);
+	destdir = imap_get_real_path(IMAP_FOLDER(folder), dest->path);
+	ok = imap_cmd_append(SESSION(session)->sock, destdir, file);
+	g_free (destdir);
+
 	if (ok != IMAP_SUCCESS) {
 		g_warning(_("can't append message %s\n"), file);
 		return -1;
