@@ -505,7 +505,7 @@ gint ssl_gets(SSL *ssl, gchar *buf, gint len)
 	}
 
 	*buf2 = '\0';
-	return n;
+	return count;
 }
 #endif
 

@@ -498,8 +498,10 @@ static void inc_start(IncProgressDialog *inc_dialog)
 		num++;
 	}
 
-	if (error_num)
-		alertpanel_error(_("Some errors occured while getting mail."));
+	if(!prefs_common.noerrorpanel) {
+		if (error_num)
+			alertpanel_error(_("Some errors occured while getting mail."));
+	}
 
 	while (inc_dialog->queue_list != NULL) {
 		session = inc_dialog->queue_list->data;

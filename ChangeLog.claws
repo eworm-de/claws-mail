@@ -1,3 +1,22 @@
+2001-08-05 [christoph]
+
+	* configure.in
+		debian autoconf needs version check to find
+		correct autoconf version. if the file is
+		named configure.in 2.13 is used, which does
+		not work with this configure.in script.
+		other solution would be to rename the script
+		to configure.ac as suggested in the autoconf
+		manual.
+
+	* src/inc.c
+		disable final error popup if popups are
+		diabled in config
+
+	* src/socket.c
+		bugfix in ssl_gets
+		fixes IMAP over SSL problem
+
 2001-08-03 [paul]
 
 	* configure.in
