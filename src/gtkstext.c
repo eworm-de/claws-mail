@@ -495,31 +495,31 @@ static GtkWidgetClass *parent_class = NULL;
 
 static const GtkTextFunction control_keys[26] =
 {
-  (GtkTextFunction)gtk_stext_move_beginning_of_line,    /* a */
-  (GtkTextFunction)gtk_stext_move_backward_character,   /* b */
+  NULL,/*(GtkTextFunction)gtk_stext_move_beginning_of_line,    /* a */
+  NULL,/*(GtkTextFunction)gtk_stext_move_backward_character,   /* b */
   NULL,						      /* c */
 /*  (GtkTextFunction)gtk_editable_copy_clipboard,        /* c */
-  (GtkTextFunction)gtk_stext_delete_forward_character,  /* d */
-  (GtkTextFunction)gtk_stext_move_end_of_line,          /* e */
-  (GtkTextFunction)gtk_stext_move_forward_character,    /* f */
+  NULL,/*(GtkTextFunction)gtk_stext_delete_forward_character,  /* d */
+  NULL,/*(GtkTextFunction)gtk_stext_move_end_of_line,          /* e */
+  NULL,/*(GtkTextFunction)gtk_stext_move_forward_character,    /* f */
   NULL,                                                /* g */
-  (GtkTextFunction)gtk_stext_delete_backward_character, /* h */
+  NULL,/*(GtkTextFunction)gtk_stext_delete_backward_character, /* h */
   NULL,                                                /* i */
   NULL,                                                /* j */
-  (GtkTextFunction)gtk_stext_delete_to_line_end,        /* k */
+  NULL,/*(GtkTextFunction)gtk_stext_delete_to_line_end,        /* k */
   NULL,                                                /* l */
   NULL,                                                /* m */
-  (GtkTextFunction)gtk_stext_move_next_line,            /* n */
+  NULL,/*(GtkTextFunction)gtk_stext_move_next_line,            /* n */
   NULL,                                                /* o */
-  (GtkTextFunction)gtk_stext_move_previous_line,        /* p */
+  NULL,/*(GtkTextFunction)gtk_stext_move_previous_line,        /* p */
   NULL,                                                /* q */
   NULL,                                                /* r */
   NULL,                                                /* s */
   NULL,                                                /* t */
-  (GtkTextFunction)gtk_stext_delete_line,               /* u */
+  NULL,/*(GtkTextFunction)gtk_stext_delete_line,               /* u */
   NULL,						      /* v */
 /*  (GtkTextFunction)gtk_editable_paste_clipboard,       /* v */
-  (GtkTextFunction)gtk_stext_delete_backward_word,      /* w */
+  NULL,/*(GtkTextFunction)gtk_stext_delete_backward_word,      /* w */
   NULL,						     /* x */
 /*  (GtkTextFunction)gtk_editable_cut_clipboard,         /* x */
   NULL,                                                /* y */
@@ -529,11 +529,11 @@ static const GtkTextFunction control_keys[26] =
 static const GtkTextFunction alt_keys[26] =
 {
   NULL,                                                /* a */
-  (GtkTextFunction)gtk_stext_move_backward_word,        /* b */
+  NULL,/*(GtkTextFunction)gtk_stext_move_backward_word,        /* b */
   NULL,                                                /* c */
-  (GtkTextFunction)gtk_stext_delete_forward_word,       /* d */
+  NULL,/*(GtkTextFunction)gtk_stext_delete_forward_word,       /* d */
   NULL,                                           /* e */
-  (GtkTextFunction)gtk_stext_move_forward_word,         /* f */
+  NULL,/*(GtkTextFunction)gtk_stext_move_forward_word,         /* f */
   NULL,                                           /* g */
   NULL,                                           /* h */
   NULL,                                           /* i */

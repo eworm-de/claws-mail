@@ -1,3 +1,13 @@
+2002-01-16 [carsten]	0.7.0claws9
+	* src/gtkstext.c
+		removed the <control> and <alt> shortcuts because they're
+		not needed and interefered with the "normal" shortcuts
+	* src/mainwindow.c
+	* src/summaryview.c
+		removed most of the hardcoded shortcuts and assigned
+		them to menu entries making them easy customizable by
+		that
+
 2002-01-16 |melvin]	0.7.0claws8
 
 	* src/gtkspell.c

@@ -4216,52 +4216,6 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	if (!event) return;
 
 	switch (event->keyval) {
-	case GDK_g:		/* Go */
-	case GDK_G:
-		RETURN_IF_LOCKED();
-		BREAK_ON_MODIFIER_KEY();
-		KEY_PRESS_EVENT_STOP();
-		to_folder = foldersel_folder_sel(NULL, NULL);
-		if (to_folder) {
-			debug_print(_("Go to %s\n"), to_folder->path);
-			folderview_select(summaryview->folderview, to_folder);
-		}
-		return;
-	case GDK_w:		/* Write new message */
-		BREAK_ON_MODIFIER_KEY();
-		if (summaryview->folder_item) {
-			PrefsAccount *ac;
-			ac = summaryview->folder_item->folder->account;
-			if (ac && ac->protocol == A_NNTP)
-				compose_new_with_recipient
-					(ac, summaryview->folder_item->path);
-			else
-				compose_new_with_folderitem(ac, summaryview->folder_item);
-		} else
-			compose_new(NULL);
-		return;
-	case GDK_D:		/* Empty trash */
-		RETURN_IF_LOCKED();
-		BREAK_ON_MODIFIER_KEY();
-		KEY_PRESS_EVENT_STOP();
-		main_window_empty_trash(summaryview->mainwin, TRUE);
-		return;
-	case GDK_Q:		/* Quit */
-		RETURN_IF_LOCKED();
-		BREAK_ON_MODIFIER_KEY();
-
-		if (prefs_common.confirm_on_exit) {
-			if (alertpanel(_("Exit"), _("Exit this program?"),
-				       _("OK"), _("Cancel"), NULL)
-				       == G_ALERTDEFAULT) {
-				manage_window_focus_in
-					(summaryview->mainwin->window,
-					 NULL, NULL);
-				app_will_exit(NULL, summaryview->mainwin);
-			}
-		}
-		return;
-	case GDK_Left:		/* Move focus */
 	case GDK_Escape:
 		gtk_widget_grab_focus(summaryview->folderview->ctree);
 		return;
@@ -4288,19 +4242,6 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 					  FALSE))
 			summary_select_next_unread(summaryview);
 		break;
-	case GDK_n:		/* Next */
-	case GDK_N:
-		BREAK_ON_MODIFIER_KEY();
-		summary_step(summaryview, GTK_SCROLL_STEP_FORWARD);
-		break;
-	case GDK_BackSpace:	/* Page up */
-		textview_scroll_page(summaryview->messageview->textview, TRUE);
-		break;
-	case GDK_p:		/* Prev */
-	case GDK_P:
-		BREAK_ON_MODIFIER_KEY();
-		summary_step(summaryview, GTK_SCROLL_STEP_BACKWARD);
-		break;
 	case GDK_v:		/* Toggle summary mode / message mode */
 	case GDK_V:
 		BREAK_ON_MODIFIER_KEY();
@@ -4320,61 +4261,10 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		textview_scroll_one_line(summaryview->messageview->textview,
 					 (event->state & GDK_MOD1_MASK) != 0);
 		break;
-	case GDK_asterisk:	/* Mark */
-		summary_mark(summaryview);
-		break;
-	case GDK_exclam:	/* Mark as unread */
-		summary_mark_as_unread(summaryview);
-		break;
-	case GDK_d:		/* Delete */
 	case GDK_Delete:
 		RETURN_IF_LOCKED();
 		BREAK_ON_MODIFIER_KEY();
 		summary_delete(summaryview);
-		break;
-	case GDK_u:		/* Unmark */
-	case GDK_U:
-		BREAK_ON_MODIFIER_KEY();
-		summary_unmark(summaryview);
-		break;
-	case GDK_o:		/* Move */
-		RETURN_IF_LOCKED();
-		BREAK_ON_MODIFIER_KEY();
-		summary_move_to(summaryview);
-		break;
-	case GDK_O:		/* Copy */
-		RETURN_IF_LOCKED();
-		BREAK_ON_MODIFIER_KEY();
-		summary_copy_to(summaryview);
-		break;
-	case GDK_x:		/* Execute */
-	case GDK_X:
-		RETURN_IF_LOCKED();
-		BREAK_ON_MODIFIER_KEY();
-		KEY_PRESS_EVENT_STOP();
-		summary_execute(summaryview);
-		break;
-	case GDK_a:		/* Reply to the message */
-		BREAK_ON_MODIFIER_KEY();
-		summary_reply_cb(summaryview,
-				 COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE, NULL);
-		break;
-	case GDK_A:		/* Reply to the message with quotation */
-		BREAK_ON_MODIFIER_KEY();
-		summary_reply_cb(summaryview,
-				 COMPOSE_REPLY_TO_ALL_WITH_QUOTE, NULL);
-		break;
-	case GDK_f:		/* Forward the message */
-		BREAK_ON_MODIFIER_KEY();
-		summary_reply_cb(summaryview, COMPOSE_FORWARD, NULL);
-		break;
-	case GDK_F:
-		BREAK_ON_MODIFIER_KEY();
-		summary_reply_cb(summaryview, COMPOSE_FORWARD_AS_ATTACH, NULL);
-		break;
-	case GDK_y:		/* Save the message */
-		BREAK_ON_MODIFIER_KEY();
-		summary_save_as(summaryview);
 		break;
 	default:
 		break;

@@ -430,13 +430,12 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_File/_Folder/_Delete folder"),	NULL, delete_folder_cb, 0, NULL},
 	{N_("/_File/_Import mbox file..."),	NULL, import_mbox_cb, 0, NULL},
 	{N_("/_File/_Export to mbox file..."),	NULL, export_mbox_cb, 0, NULL},
-	{N_("/_File/Empty _trash"),		NULL, empty_trash_cb, 0, NULL},
+	{N_("/_File/Empty _trash"),		"<shift>D", empty_trash_cb, 0, NULL},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_File/_Save as..."),		NULL, save_as_cb, 0, NULL},
-	{N_("/_File/_Print..."),		"<alt>P", print_cb, 0, NULL},
+	{N_("/_File/_Save as..."),		"y", save_as_cb, 0, NULL},
+	{N_("/_File/_Print..."),		"<control>P", print_cb, 0, NULL},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
-	/* {N_("/_File/_Close"),		"<alt>W", app_exit_cb, 0, NULL}, */
-	{N_("/_File/E_xit"),			"<alt>Q", app_exit_cb, 0, NULL},
+	{N_("/_File/E_xit"),			"<control>Q", app_exit_cb, 0, NULL},
 
 	{N_("/_Edit"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_Edit/_Copy"),			"<control>C", copy_cb, 0, NULL},
@@ -444,7 +443,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Edit/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Edit/_Find in current message..."),
 						"<control>F", search_cb, 0, NULL},
-	{N_("/_Edit/_Search folder..."),	"<control>S", search_cb, 1, NULL},
+	{N_("/_Edit/_Search folder..."),	"<shift><control>F", search_cb, 1, NULL},
 
 	{N_("/_View"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/_Folder tree"),		NULL, NULL, SEPARATE_ACTION + SEPARATE_FOLDER,  "<ToggleItem>"},
@@ -455,9 +454,6 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/_Toolbar/_Text"),		NULL, toggle_toolbar_cb, TOOLBAR_TEXT, "/View/Toolbar/Icon and text"},
 	{N_("/_View/_Toolbar/_None"),		NULL, toggle_toolbar_cb, TOOLBAR_NONE, "/View/Toolbar/Icon and text"},
 	{N_("/_View/Status _bar"),		NULL, toggle_statusbar_cb, 0, "<ToggleItem>"},
-/*	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/Separate f_older tree"),	NULL, NULL, SEPARATE_ACTION + SEPARATE_FOLDER, "<ToggleItem>"},
-	{N_("/_View/Separate m_essage view"),	NULL, NULL, SEPARATE_ACTION + SEPARATE_MESSAGE, "<ToggleItem>"},*/
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Sort"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/_Sort/Sort by _number"),	NULL, sort_summary_cb, SORT_BY_NUMBER, NULL},
@@ -560,13 +556,13 @@ static GtkItemFactoryEntry mainwin_entries[] =
 
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Go to"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/_Go to/_Prev message"),	NULL, prev_cb, 0, NULL},
-	{N_("/_View/_Go to/_Next message"),	NULL, next_cb, 0, NULL},
+	{N_("/_View/_Go to/_Prev message"),	"p", prev_cb, 0, NULL},
+	{N_("/_View/_Go to/_Next message"),	"n", next_cb, 0, NULL},
 	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Go to/P_rev unread message"),
-						NULL, prev_unread_cb, 0, NULL},
+						"<shift>P", prev_unread_cb, 0, NULL},
 	{N_("/_View/_Go to/N_ext unread message"),
-						NULL, next_unread_cb, 0, NULL},
+						"<shift>N", next_unread_cb, 0, NULL},
 	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Go to/Prev _marked message"),
 						NULL, prev_marked_cb, 0, NULL},
@@ -584,53 +580,53 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/_View source"),		"<control>U", view_source_cb, 0, NULL},
 	{N_("/_View/Show all _header"),		"<control>H", header_window_show_cb, 0, NULL},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/_Update"),			"<alt>U", update_summary_cb,  0, NULL},
+	{N_("/_View/_Update"),			"<control><alt>U", update_summary_cb,  0, NULL},
 
 	{N_("/_Message"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Message/Get new ma_il"),	"<alt>I",	inc_mail_cb, 0, NULL},
+	{N_("/_Message/Get new ma_il"),	"<control><alt>I",	inc_mail_cb, 0, NULL},
 	{N_("/_Message/Get from _all accounts"),
-						"<shift><alt>I", inc_all_account_mail_cb, 0, NULL},
+						"<shift><control>I", inc_all_account_mail_cb, 0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Send queued messa_ges"),
 						NULL, send_queue_cb, 0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/Compose a_n email message"),	"<alt>N", compose_mail_cb, 0, NULL},
+	{N_("/_Message/Compose a_n email message"),	"w", compose_mail_cb, 0, NULL},
 	{N_("/_Message/Compose a news message"),	NULL,	compose_news_cb, 0, NULL},
-	{N_("/_Message/_Reply"),		"<alt>R", 	reply_cb, COMPOSE_REPLY, NULL},
+	{N_("/_Message/_Reply"),		"<control>R", 	reply_cb, COMPOSE_REPLY, NULL},
 	{N_("/_Message/Repl_y to sender"),	"<control><alt>R", reply_cb, COMPOSE_REPLY_TO_SENDER, NULL},
 	{N_("/_Message/Follow-up and reply to"), NULL, reply_cb, COMPOSE_FOLLOWUP_AND_REPLY_TO, NULL},
-	{N_("/_Message/Reply to a_ll"),		"<shift><alt>R", reply_cb, COMPOSE_REPLY_TO_ALL, NULL},
-	{N_("/_Message/_Forward"),		"<shift><alt>F", reply_cb, COMPOSE_FORWARD, NULL},
+	{N_("/_Message/Reply to a_ll"),		"<control><shift>R", reply_cb, COMPOSE_REPLY_TO_ALL, NULL},
+	{N_("/_Message/_Forward"),		"<control><alt>F", reply_cb, COMPOSE_FORWARD, NULL},
 	{N_("/_Message/Bounce"),		NULL, reply_cb, COMPOSE_BOUNCE, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Re-_edit"),		NULL, reedit_cb, 0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/M_ove..."),		"<alt>O", move_to_cb, 0, NULL},
-	{N_("/_Message/_Copy..."),		NULL, copy_to_cb, 0, NULL},
-	{N_("/_Message/_Delete"),		"<alt>D", delete_cb,  0, NULL},
+	{N_("/_Message/M_ove..."),		"o", move_to_cb, 0, NULL},
+	{N_("/_Message/_Copy..."),		"<shift>O", copy_to_cb, 0, NULL},
+	{N_("/_Message/_Delete"),		"d", delete_cb,  0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Delete du_plicated messages"),
 						NULL, delete_duplicated_cb,   0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/_Mark"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Message/_Mark/_Mark"),		NULL, mark_cb,   0, NULL},
-	{N_("/_Message/_Mark/_Unmark"),		NULL, unmark_cb, 0, NULL},
+	{N_("/_Message/_Mark/_Mark"),		"<shift>asterisk", mark_cb,   0, NULL},
+	{N_("/_Message/_Mark/_Unmark"),		"u", unmark_cb, 0, NULL},
 	{N_("/_Message/_Mark/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_Mark/Mark as unr_ead"),	NULL, mark_as_unread_cb, 0, NULL},
+	{N_("/_Message/_Mark/Mark as unr_ead"),	"<shift>exclam", mark_as_unread_cb, 0, NULL},
 	{N_("/_Message/_Mark/Mark as rea_d"),
 						NULL, mark_as_read_cb, 0, NULL},
 	{N_("/_Message/_Mark/Mark all _read"),	NULL, mark_all_read_cb, 0, NULL},
 
 	{N_("/_Tool"),				NULL, NULL, 0, "<Branch>"},
-	{N_("/_Tool/_Address book"),		"<alt>A", addressbook_open_cb, 0, NULL},
+	{N_("/_Tool/_Address book"),		"<control><alt>A", addressbook_open_cb, 0, NULL},
 	{N_("/_Tool/Add sender to address boo_k"),
 						NULL, add_address_cb, 0, NULL},
 	{N_("/_Tool/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tool/_Filter messages"),		NULL, filter_cb, 0, NULL},
 	{N_("/_Tool/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Tool/E_xecute"),			"<alt>X", execute_summary_cb, 0, NULL},
+	{N_("/_Tool/E_xecute"),			"x", execute_summary_cb, 0, NULL},
 	{N_("/_Tool/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Tool/_Log window"),		"<alt>L", log_window_show_cb, 0, NULL},
+	{N_("/_Tool/_Log window"),		"<control>L", log_window_show_cb, 0, NULL},
 
 	{N_("/_Configuration"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Configuration/_Common preferences..."),
@@ -666,8 +662,8 @@ static GtkItemFactoryEntry reply_popup_entries[] =
 };
 static GtkItemFactoryEntry replyall_popup_entries[] =
 {
-	{N_("/Reply to all with _quote"), NULL, reply_cb, COMPOSE_REPLY_TO_ALL_WITH_QUOTE, NULL},
-	{N_("/_Reply to all without quote"), NULL, reply_cb, COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE, NULL}
+	{N_("/Reply to all with _quote"), "<shift>A", reply_cb, COMPOSE_REPLY_TO_ALL_WITH_QUOTE, NULL},
+	{N_("/_Reply to all without quote"), "a", reply_cb, COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE, NULL}
 };
 static GtkItemFactoryEntry replysender_popup_entries[] =
 {
@@ -676,8 +672,8 @@ static GtkItemFactoryEntry replysender_popup_entries[] =
 };
 static GtkItemFactoryEntry fwd_popup_entries[] =
 {
-	{N_("/_Forward message (inline style)"), NULL, reply_cb, COMPOSE_FORWARD_INLINE, NULL},
-	{N_("/Forward message as _attachment"), NULL, reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL}
+	{N_("/_Forward message (inline style)"), "f", reply_cb, COMPOSE_FORWARD_INLINE, NULL},
+	{N_("/Forward message as _attachment"), "<shift>F", reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL}
 };
 
 
