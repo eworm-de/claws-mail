@@ -162,7 +162,7 @@ static void grouplist_dialog_create(void)
 	gint i;
 
 	dialog = gtk_dialog_new();
-	gtk_window_set_policy(GTK_WINDOW(dialog), FALSE, TRUE, FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(dialog), TRUE);
 	gtk_widget_set_size_request(dialog,
 				    GROUPLIST_DIALOG_WIDTH, GROUPLIST_DIALOG_HEIGHT);
 	gtk_container_set_border_width

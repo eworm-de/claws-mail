@@ -5132,7 +5132,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose->account = account;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	gtk_widget_set_size_request(window, -1, prefs_common.compose_height);
 	gtk_window_set_wmclass(GTK_WINDOW(window), "compose window", "Sylpheed");
 

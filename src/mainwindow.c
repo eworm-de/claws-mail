@@ -810,7 +810,7 @@ MainWindow *main_window_create(SeparateType type)
 	/* main window */
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), PROG_VERSION);
-	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	gtk_window_set_wmclass(GTK_WINDOW(window), "main_window", "Sylpheed");
 
 	if (!geometry.min_height) {
@@ -1960,8 +1960,7 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 				     _("Sylpheed - Folder View"));
 		gtk_window_set_wmclass(GTK_WINDOW(folderwin),
 				       "folder_view", "Sylpheed");
-		gtk_window_set_policy(GTK_WINDOW(folderwin),
-				      TRUE, TRUE, FALSE);
+		gtk_window_set_resizable(GTK_WINDOW(folderwin), TRUE);
 		gtk_window_move(GTK_WINDOW(folderwin), prefs_common.folderwin_x,
 				prefs_common.folderwin_y);
 		gtk_container_set_border_width(GTK_CONTAINER(folderwin),
@@ -1981,8 +1980,7 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 				     _("Sylpheed - Message View"));
 		gtk_window_set_wmclass(GTK_WINDOW(messagewin),
 				       "message_view", "Sylpheed");
-		gtk_window_set_policy(GTK_WINDOW(messagewin),
-				      TRUE, TRUE, FALSE);
+		gtk_window_set_resizable(GTK_WINDOW(messagewin), TRUE);
 		gtk_window_move(GTK_WINDOW(messagewin), 
 				prefs_common.main_msgwin_x,
 				prefs_common.main_msgwin_y);

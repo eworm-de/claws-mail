@@ -749,7 +749,7 @@ static GtkWidget *label_window_create(const gchar *str)
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_title(GTK_WINDOW(window), str);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
-	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
+	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
 	manage_window_set_transient(GTK_WINDOW(window));
 
 	label = gtk_label_new(str);

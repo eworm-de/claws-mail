@@ -708,7 +708,7 @@ static void addrcompl_resize_window( CompletionWindow *cw ) {
 
 	/* Adjust window height to available screen space */
 	if( ( y + r.height ) > gdk_screen_height() ) {
-		gtk_window_set_policy( GTK_WINDOW( cw->window ), TRUE, FALSE, FALSE );
+		gtk_window_set_resizable(GTK_WINDOW(cw->window), FALSE);
 		gtk_widget_set_size_request( cw->window, width, gdk_screen_height() - y );
 	} else
 		gtk_widget_set_size_request(cw->window, width, r.height);
