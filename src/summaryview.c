@@ -1313,6 +1313,8 @@ guint summary_get_current_msgnum(SummaryView *summaryview)
 	if (!summaryview->selected)
 		return 0;
 	msginfo = gtk_ctree_node_get_row_data(ctree, summaryview->selected);
+	if (!msginfo)
+		return 0;
 	return msginfo->msgnum;
 }
 
