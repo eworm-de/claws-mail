@@ -83,7 +83,8 @@ sylpheed_SOURCES = \
 	prefs_folder_item.c prefs_folder_item.h \
 	matcher.c matcher.h \
 	prefs_matcher.c prefs_matcher.h \
-	prefs_scoring.c prefs_scoring.h
+	prefs_scoring.c prefs_scoring.h \
+	filtering.c filtering.h
 
 EXTRA_DIST = \
 	pixmaps/clip.xpm \

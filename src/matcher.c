@@ -14,7 +14,7 @@ struct _MatchParser {
 
 typedef struct _MatchParser MatchParser;
 
-MatchParser matchparser_tab[] = {
+static MatchParser matchparser_tab[] = {
 	/* msginfo flags */
 	{MATCHING_ALL, "all"},
 	{MATCHING_UNREAD, "unread"},
@@ -76,12 +76,28 @@ MatchParser matchparser_tab[] = {
 	{MATCHING_ACTION_COPY, "copy"},
 	{MATCHING_ACTION_DELETE, "delete"},
 	{MATCHING_ACTION_MARK, "mark"},
+	{MATCHING_ACTION_UNMARK, "unmark"},
 	{MATCHING_ACTION_MARK_AS_READ, "mark_as_read"},
+	{MATCHING_ACTION_MARK_AS_UNREAD, "mark_as_unread"},
 	{MATCHING_ACTION_FORWARD, "forward"},
 	{MATCHING_ACTION_FORWARD_AS_ATTACHEMENT, "forward_as_attachement"},
 	{MATCHING_ACTION_FORWARD_NEWS, "forward_news"},
 	{MATCHING_ACTION_FORWARD_NEWS_AS_ATTACHEMENT, "forward_news_as_attachement"}
 };
+
+gchar * get_matchparser_tab_str(gint id)
+{
+	gint i;
+
+	for(i = 0 ; i < (int) (sizeof(matchparser_tab) / sizeof(MatchParser)) ;
+	    i++) {
+		if (matchparser_tab[i].id == id)
+			return matchparser_tab[i].str;
+	}
+	return NULL;
+}
+
+
 
 /*
   syntax for matcher
@@ -724,9 +740,15 @@ static gboolean matcherprop_criteria_headers(MatcherProp * matcher)
  */
 
 static gboolean matcherlist_match_one_header(MatcherList * matchers,
-					     gchar * buf, gboolean result)
+					     gchar * buf)
 {
 	GSList * l;
+	gboolean result;
+
+	if (matchers->bool_and)
+		result = TRUE;
+	else
+		result = FALSE;
 	
 	for(l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
 		MatcherProp * matcher = (MatcherProp *) l->data;
@@ -751,22 +773,15 @@ static gboolean matcherlist_match_one_header(MatcherList * matchers,
   returns TRUE if one of the headers matchs the MatcherList criteria
  */
 
-static gboolean matcherlist_match_headers(MatcherList * matchers, FILE * fp,
-					  gboolean result)
+static gboolean matcherlist_match_headers(MatcherList * matchers, FILE * fp)
 {
 	gchar buf[BUFFSIZE];
 
-	while (procheader_get_one_field(buf, sizeof(buf), fp, NULL) != -1) {
-		if (matcherlist_match_one_header(matchers, buf, result)) {
-			if (!matchers->bool_and)
-				return TRUE;
-		}
-		else {
-			if (matchers->bool_and)
-				return FALSE;
-		}
-	}
-	return result;
+	while (procheader_get_one_field(buf, sizeof(buf), fp, NULL) != -1)
+		if (matcherlist_match_one_header(matchers, buf))
+			return TRUE;
+
+	return FALSE;
 }
 
 /*
@@ -810,10 +825,15 @@ static gboolean matcherprop_match_line(MatcherProp * matcher, gchar * line)
   returns TRUE if the string matchs the MatcherList criteria
  */
 
-static gboolean matcherlist_match_line(MatcherList * matchers, gchar * line,
-				       gboolean result)
+static gboolean matcherlist_match_line(MatcherList * matchers, gchar * line)
 {
 	GSList * l;
+	gboolean result;
+
+	if (matchers->bool_and)
+		result = TRUE;
+	else
+		result = FALSE;
 
 	for(l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
 		MatcherProp * matcher = (MatcherProp *) l->data;
@@ -837,22 +857,15 @@ static gboolean matcherlist_match_line(MatcherList * matchers, gchar * line,
   returns TRUE if one line of the body matchs the MatcherList criteria
  */
 
-static gboolean matcherlist_match_body(MatcherList * matchers, FILE * fp,
-				       gboolean result)
+static gboolean matcherlist_match_body(MatcherList * matchers, FILE * fp)
 {
 	gchar buf[BUFFSIZE];
 
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		if (matcherlist_match_line(matchers, buf, result)) {
-			if (!matchers->bool_and)
-				return TRUE;
-		}
-		else {
-			if (matchers->bool_and)
-				return FALSE;
-		}
-	}
-	return result;
+	while (fgets(buf, sizeof(buf), fp) != NULL)
+		if (matcherlist_match_line(matchers, buf))
+			return TRUE;
+
+	return FALSE;
 }
 
 gboolean matcherlist_match_file(MatcherList * matchers, MsgInfo * info,
@@ -889,11 +902,11 @@ gboolean matcherlist_match_file(MatcherList * matchers, MsgInfo * info,
 		g_free(file);
 		return result;
 	}
-	
+
 	/* read the headers */
 
 	if (read_headers) {
-		if (matcherlist_match_headers(matchers, fp, result)) {
+		if (matcherlist_match_headers(matchers, fp)) {
 			if (!matchers->bool_and)
 				result = TRUE;
 		}
@@ -905,10 +918,10 @@ gboolean matcherlist_match_file(MatcherList * matchers, MsgInfo * info,
 	else {
 		matcherlist_skip_headers(fp);
 	}
-	
+
 	/* read the body */
 	if (read_body) {
-		if (matcherlist_match_body(matchers, fp, result)) {
+		if (matcherlist_match_body(matchers, fp)) {
 			if (!matchers->bool_and)
 				result = TRUE;
 		}
@@ -953,16 +966,51 @@ gboolean matcherlist_match(MatcherList * matchers, MsgInfo * info)
 	for(l = matchers->matchers ; l != NULL ; l = g_slist_next(l)) {
 		MatcherProp * matcher = (MatcherProp *) l->data;
 
-		if (matcherprop_match(matcher, info)) {
-			if (!matchers->bool_and) {
-				result = TRUE;
-				break;
+		switch(matcher->criteria) {
+		case MATCHING_ALL:
+		case MATCHING_UNREAD:
+		case MATCHING_NOT_UNREAD:
+		case MATCHING_NEW:
+		case MATCHING_NOT_NEW:
+		case MATCHING_MARKED:
+		case MATCHING_NOT_MARKED:
+		case MATCHING_DELETED:
+		case MATCHING_NOT_DELETED:
+		case MATCHING_REPLIED:
+		case MATCHING_NOT_REPLIED:
+		case MATCHING_FORWARDED:
+		case MATCHING_NOT_FORWARDED:
+		case MATCHING_SUBJECT:
+		case MATCHING_NOT_SUBJECT:
+		case MATCHING_FROM:
+		case MATCHING_NOT_FROM:
+		case MATCHING_TO:
+		case MATCHING_NOT_TO:
+		case MATCHING_CC:
+		case MATCHING_NOT_CC:
+		case MATCHING_TO_OR_CC:
+		case MATCHING_NOT_TO_AND_NOT_CC:
+		case MATCHING_AGE_GREATER:
+		case MATCHING_AGE_LOWER:
+		case MATCHING_NEWSGROUPS:
+		case MATCHING_NOT_NEWSGROUPS:
+		case MATCHING_INREPLYTO:
+		case MATCHING_NOT_INREPLYTO:
+		case MATCHING_REFERENCES:
+		case MATCHING_NOT_REFERENCES:
+		case MATCHING_SCORE_GREATER:
+		case MATCHING_SCORE_LOWER:
+			if (matcherprop_match(matcher, info)) {
+				if (!matchers->bool_and) {
+					result = TRUE;
+					break;
+				}
 			}
-		}
-		else {
-			if (matchers->bool_and) {
-				result = FALSE;
-				break;
+			else {
+				if (matchers->bool_and) {
+					result = FALSE;
+					break;
+				}
 			}
 		}
 	}

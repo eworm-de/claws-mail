@@ -231,6 +231,7 @@ int main(int argc, char *argv[])
 	prefs_display_header_read_config();
 	prefs_display_header_write_config();
 	prefs_scoring_read_config();
+	prefs_filtering_read_config();
 
 	gtkut_widget_init();
 

@@ -628,7 +628,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 			return FALSE;
 	} else
 #endif
-		summary_write_cache(summaryview);
+		if (!is_refresh)
+			summary_write_cache(summaryview);
 
 	gtk_clist_freeze(GTK_CLIST(ctree));
 
@@ -1456,8 +1457,8 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 					gchar * s;
 					parentinfo->threadscore =
 						cur_msginfo->threadscore;
-					s = itos(parentinfo->threadscore);
 #if 0
+					s = itos(parentinfo->threadscore);
 					gtk_ctree_node_set_text(ctree, cur_parent, S_COL_SCORE, s);
 #endif
 				}

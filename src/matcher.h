@@ -64,6 +64,8 @@ enum {
 	MATCHING_ACTION_DELETE,
 	MATCHING_ACTION_MARK,
 	MATCHING_ACTION_MARK_AS_READ,
+	MATCHING_ACTION_UNMARK,
+	MATCHING_ACTION_MARK_AS_UNREAD,
 	MATCHING_ACTION_FORWARD,
 	MATCHING_ACTION_FORWARD_AS_ATTACHEMENT,
 	MATCHING_ACTION_FORWARD_NEWS,
@@ -94,6 +96,7 @@ struct _MatcherList {
 
 typedef struct _MatcherList MatcherList;
 
+gchar * get_matchparser_tab_str(gint id);
 MatcherProp * matcherprop_new(gint criteria, gchar * header,
 			      gint matchtype, gchar * expr,
 			      int age);

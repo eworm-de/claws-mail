@@ -41,6 +41,7 @@
 #include "prefs_account.h"
 #include "account.h"
 #include "utils.h"
+#include "filtering.h"
 
 #define MSGBUFSIZE	8192
 
@@ -103,6 +104,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, GHashTable *folder_table)
 		gint empty_line;
 		gint val;
 		gboolean is_next_msg = FALSE;
+		gint msgnum;
 
 		if ((tmp_fp = fopen(tmp_file, "w")) == NULL) {
 			FILE_OP_ERROR(tmp_file, "fopen");
@@ -198,25 +200,40 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, GHashTable *folder_table)
 		}
 
 		if (folder_table) {
-			dropfolder = filter_get_dest_folder
-				(prefs_common.fltlist, tmp_file);
-			if (!dropfolder ||
-			    !strcmp(dropfolder->path, FILTER_NOT_RECEIVE))
+			if (prefs_filtering == NULL) {
+				/* old filtering */
+				dropfolder = filter_get_dest_folder
+					(prefs_common.fltlist, tmp_file);
+				if (!dropfolder ||
+				    !strcmp(dropfolder->path, FILTER_NOT_RECEIVE))
+					dropfolder = dest;
+				val = GPOINTER_TO_INT(g_hash_table_lookup
+						      (folder_table, dropfolder));
+				if (val == 0) {
+					folder_item_scan(dropfolder);
+					g_hash_table_insert(folder_table, dropfolder,
+							    GINT_TO_POINTER(1));
+				}
+			}
+			else {
+				/* new filtering */
 				dropfolder = dest;
-			val = GPOINTER_TO_INT(g_hash_table_lookup
-					      (folder_table, dropfolder));
-			if (val == 0) {
-				folder_item_scan(dropfolder);
-				g_hash_table_insert(folder_table, dropfolder,
-						    GINT_TO_POINTER(1));
 			}
 		} else
 			dropfolder = dest;
 
-		if (folder_item_add_msg(dropfolder, tmp_file) < 0) {
+		if (msgnum =folder_item_add_msg(dropfolder, tmp_file) < 0) {
 			fclose(mbox_fp);
 			unlink(tmp_file);
 			return -1;
+		}
+		
+		if (prefs_filtering != NULL) {
+			/* new filtering */
+			if (folder_table) {
+				filter_message(prefs_filtering, dropfolder,
+					       msgnum, folder_table);
+			}
 		}
 
 		msgs++;

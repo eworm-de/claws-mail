@@ -60,6 +60,7 @@
 #include "filter.h"
 #include "automaton.h"
 #include "folder.h"
+#include "filtering.h"
 
 #include "pixmaps/continue.xpm"
 #include "pixmaps/complete.xpm"
@@ -771,6 +772,7 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 	FolderItem *inbox;
 	FolderItem *dropfolder;
 	gint val;
+	gint msgnum;
 
 	if (state->ac_prefs->inbox) {
 		inbox = folder_find_item_from_path(state->ac_prefs->inbox);
@@ -783,16 +785,24 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 		return -1;
 	}
 
-	if (state->ac_prefs->filter_on_recv) {
-		dropfolder =
-			filter_get_dest_folder(prefs_common.fltlist, file);
-		if (!dropfolder) dropfolder = inbox;
-		else if (!strcmp(dropfolder->path, FILTER_NOT_RECEIVE)) {
-			g_warning(_("a message won't be received\n"));
-			return 1;
-		}
-	} else
+
+	if (prefs_filtering == NULL) {
+		/* old filtering */
+		if (state->ac_prefs->filter_on_recv) {
+			dropfolder =
+				filter_get_dest_folder(prefs_common.fltlist, file);
+			if (!dropfolder) dropfolder = inbox;
+			else if (!strcmp(dropfolder->path, FILTER_NOT_RECEIVE)) {
+				g_warning(_("a message won't be received\n"));
+				return 1;
+			}
+		} else
+			dropfolder = inbox;
+	}
+	else {
+		/* new filtering */
 		dropfolder = inbox;
+	}
 
 	val = GPOINTER_TO_INT(g_hash_table_lookup
 			      (state->folder_table, dropfolder));
@@ -802,12 +812,21 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 				    GINT_TO_POINTER(1));
 	}
 
-	if (folder_item_add_msg(dropfolder, file) < 0) {
+	if ((msgnum = folder_item_add_msg(dropfolder, file)) < 0) {
 		unlink(file);
 		return -1;
 	}
 
 	unlink(file);
+
+	if (prefs_filtering != NULL) {
+		/* new filtering */
+		if (state->ac_prefs->filter_on_recv) {
+			filter_message(prefs_filtering, dropfolder, msgnum,
+				       state->folder_table);
+		}
+	}
+
 	return 0;
 }
 

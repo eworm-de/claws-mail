@@ -166,6 +166,11 @@ gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msginfo != NULL, -1);
 
+	if (!msginfo->folder) {
+		g_warning(_("the folder of the message is not defined\n"));
+		return -1;
+	}
+
 	if (msginfo->folder == dest) {
 		g_warning(_("the src folder is identical to the dest.\n"));
 		return -1;
@@ -330,6 +335,11 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msginfo != NULL, -1);
+
+	if (!msginfo->folder) {
+		g_warning(_("the folder of the message is not defined\n"));
+		return -1;
+	}
 
 	if (msginfo->folder == dest) {
 		g_warning(_("the src folder is identical to the dest.\n"));
