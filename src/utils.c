@@ -1148,6 +1148,34 @@ gchar *get_abbrev_newsgroup_name(const gchar *group)
 	return abbrev_group;
 }
 
+gchar *trim_string(const gchar *str, gint len)
+{
+	const gchar *p = str;
+	gint mb_len;
+	gchar *new_str;
+	gint new_len = 0;
+
+	if (!str) return NULL;
+	if (strlen(str) <= len)
+		return g_strdup(str);
+
+	while (*p != '\0') {
+		mb_len = mblen(p, MB_LEN_MAX);
+		if (mb_len == 0)
+			break;
+		else if (mb_len < 0)
+			return g_strdup(str);
+		else if (new_len + mb_len > len)
+			break;
+		else
+			new_len += mb_len;
+		p += mb_len;
+	}
+
+	Xstrndup_a(new_str, str, new_len, return g_strdup(str));
+	return g_strconcat(new_str, "...", NULL);
+}
+
 GList *uri_list_extract_filenames(const gchar *uri_list)
 {
 	GList *result = NULL;
