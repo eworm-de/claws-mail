@@ -1140,13 +1140,14 @@ gint procmsg_send_message_queue(const gchar *file)
 		else
 			tokens = g_strsplit(fwdmessageid, "\x7f", 0);
 		item = folder_find_item_from_identifier(tokens[0]);
-		if (item != NULL) {
+
+		/* check if queued message has valid folder and message id */
+		if (item != NULL && tokens[2] != NULL) {
 			MsgInfo *msginfo;
 			
 			msginfo = folder_item_get_msginfo(item, atoi(tokens[1]));
-			
-			/*!< note that if the message has no msgid (maybe it was invalid), 
-			* we also refuse to do something with the reply to flag */
+		
+			/* check if referring message exists and has a message id */
 			if ((msginfo != NULL) && 
 			    (msginfo->msgid != NULL) &&
 			    (strcmp(msginfo->msgid, tokens[2]) != 0)) {
