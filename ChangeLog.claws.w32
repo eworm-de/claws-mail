@@ -1,3 +1,9 @@
+2003-02-23 [thorsten]	0.8.10claws43-4
+
+	* src/matcher.c
+	  src/prefs_filtering.c
+	  	fix: utf8 conv. foldernames for filtering/matcher
+
 2003-02-22 [thorsten]	0.8.10claws43-3
 
 	* src/export.c

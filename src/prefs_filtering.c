@@ -647,6 +647,12 @@ static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data)
 
 	g_return_val_if_fail(old_path != NULL, FALSE);
 	g_return_val_if_fail(new_path != NULL, FALSE);
+#ifdef WIN32
+	old_path = g_strdup(old_path);
+	new_path = g_strdup(new_path);
+	locale_from_utf8(&old_path);
+	locale_from_utf8(&new_path);
+#endif
 
 	oldpathlen = strlen(old_path);
 	old_path_with_sep = g_strconcat(old_path,G_DIR_SEPARATOR_S,NULL);
@@ -712,6 +718,10 @@ static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data)
 			}
 		}
 	}
+#ifdef WIN32
+	g_free(old_path);
+	g_free(new_path);
+#endif
 	g_free(old_path_with_sep);
 	prefs_matcher_write_config();
 
@@ -821,6 +831,9 @@ static void prefs_filtering_set_dialog(const gchar *header, const gchar *key)
 
 		cond_str[0] = filteringprop_to_string(prop);
 		subst_char(cond_str[0], '\t', ':');
+#ifdef WIN32
+		locale_to_utf8(&cond_str[0]);
+#endif
 		row = gtk_clist_append(clist, cond_str);
 		gtk_clist_set_row_data(clist, row, prop);
 
@@ -869,6 +882,10 @@ static void prefs_filtering_set_list(void)
 
 	while (gtk_clist_get_text(GTK_CLIST(filtering.cond_clist),
 				  row, 0, &filtering_str)) {
+#ifdef WIN32
+		filtering_str = g_strdup(filtering_str);
+		locale_from_utf8(&filtering_str);
+#endif
 		if (strcmp(filtering_str, _("(New)")) != 0) {
 			/* tmp = filtering_str; */
 			prop = matcher_parser_get_filtering(filtering_str);
@@ -877,6 +894,9 @@ static void prefs_filtering_set_list(void)
 					g_slist_append(prefs_filtering, prop);
 		}
 		row++;
+#ifdef WIN32
+		g_free(filtering_str);
+#endif
 	}
 
 	if (cur_item == NULL)
@@ -900,6 +920,9 @@ static gint prefs_filtering_clist_set_row(gint row, FilteringProp * prop)
 	if (str == NULL) {
 		return -1;
 	}
+#ifdef WIN32
+	locale_to_utf8(&str);
+#endif
 	cond_str[0] = str;
 
 	if (row < 0)
@@ -999,6 +1022,12 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(gboolean alert)
 		break;
 	}
 	
+#ifdef WIN32
+	if (destination) {
+		destination = g_strdup(destination);
+		locale_from_utf8(&destination);
+	}
+#endif
 	action = filteringaction_new(action_type, account_id, destination, labelcolor);
 
 	cond = matcher_parser_get_cond(cond_str);
@@ -1010,6 +1039,9 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(gboolean alert)
 	}
 
 	prop = filteringprop_new(cond, action);
+#ifdef WIN32
+	if (destination) g_free(destination);
+#endif
 
 	return prop;
 }
@@ -1482,7 +1514,14 @@ static void prefs_filtering_ok(void)
 		str = filteringprop_to_string(prop);
 		while (gtk_clist_get_text(GTK_CLIST(filtering.cond_clist),
 					  row, 0, &filtering_str)) {
+#ifdef WIN32
+			filtering_str = g_strdup(filtering_str);
+			locale_from_utf8(&filtering_str);
+#endif
 			if (strcmp(filtering_str, str) == 0) break;
+#ifdef WIN32
+			g_free(filtering_str);
+#endif
 			row++;
 		}
 		if (strcmp(filtering_str, str) != 0) {
@@ -1494,6 +1533,9 @@ static void prefs_filtering_ok(void)
 				return;
                         }
 		}
+#ifdef WIN32
+		g_free(filtering_str);
+#endif
 		g_free(str);
 	}
 	prefs_filtering_set_list();

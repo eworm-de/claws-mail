@@ -1485,6 +1485,9 @@ static gboolean prefs_matcher_write_func(GNode *node, gpointer data)
 		prefs_filtering = global_processing;
 	}
 
+#ifdef WIN32
+	locale_from_utf8(&id);
+#endif
 	if (prefs_filtering != NULL || prefs_scoring != NULL) {
 		fprintf(fp, "[%s]\n", id);
 
