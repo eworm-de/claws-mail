@@ -1444,7 +1444,7 @@ void main_window_set_toolbar_sensitive(MainWindow *mainwin)
 	struct {
 		GtkWidget *widget;
 		SensitiveCond cond;
-	} entry[10];
+	} entry[11];
 
 	entry[0].widget  = mainwin->get_btn;
 	entry[0].cond    = M_HAVE_ACCOUNT|M_UNLOCKED;
@@ -1456,20 +1456,22 @@ void main_window_set_toolbar_sensitive(MainWindow *mainwin)
 	entry[3].cond    = M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST;
 	entry[4].widget  = mainwin->replyall_btn;
 	entry[4].cond    = M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST;
-	entry[5].widget  = mainwin->fwd_btn;
-	entry[5].cond    = M_HAVE_ACCOUNT|M_TARGET_EXIST;
+	entry[5].widget  = mainwin->replysender_btn;
+	entry[5]cond    = M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST;
+	entry[6].widget  = mainwin->fwd_btn;
+	entry[6].cond    = M_HAVE_ACCOUNT|M_TARGET_EXIST;
 /*	entry[6].widget  = mainwin->prefs_btn;
 	entry[6].cond    = M_UNLOCKED;
 	entry[7].widget  = mainwin->account_btn;
 	entry[7].cond    = M_UNLOCKED; */
-	entry[6].widget  = mainwin->next_btn;
-	entry[6].cond    = M_MSG_EXIST;
-	entry[7].widget  = mainwin->delete_btn;
-	entry[7].cond    = M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED;
-	entry[8].widget = mainwin->exec_btn;
-	entry[8].cond   = M_MSG_EXIST|M_EXEC|M_UNLOCKED;
-	entry[9].widget = NULL;
-	entry[9].cond   = 0;
+	entry[7].widget  = mainwin->next_btn;
+	entry[7].cond    = M_MSG_EXIST;
+	entry[8].widget  = mainwin->delete_btn;
+	entry[8].cond    = M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED;
+	entry[9].widget = mainwin->exec_btn;
+	entry[9].cond   = M_MSG_EXIST|M_EXEC|M_UNLOCKED;
+	entry[10].widget = NULL;
+	entry[10].cond   = 0;
 
 	state = main_window_get_current_state(mainwin);
 
