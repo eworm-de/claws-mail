@@ -1326,7 +1326,7 @@ static void folderview_sort_folders(FolderView *folderview, GtkCTreeNode *root,
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	GtkCTreeNode *prev = NULL;
 
-	gtk_ctree_sort_recursive(ctree, root);
+	gtk_sctree_sort_recursive(ctree, root);
 
 	if (GTK_CTREE_ROW(root)->parent) return;
 

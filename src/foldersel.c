@@ -348,7 +348,7 @@ static void foldersel_set_tree(Folder *cur_folder, FolderSelectionType type)
 					      folder->node,
 					      foldersel_gnode_func,
 					      NULL);
-		gtk_ctree_sort_recursive(GTK_CTREE(ctree), node);
+		gtk_sctree_sort_recursive(GTK_CTREE(ctree), node);
 		SET_SPECIAL_FOLDER(folder->inbox);
 		SET_SPECIAL_FOLDER(folder->outbox);
 		SET_SPECIAL_FOLDER(folder->draft);
