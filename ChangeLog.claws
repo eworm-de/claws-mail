@@ -1,3 +1,8 @@
+2003-08-14 [christoph]	0.9.4claws20
+
+	* src/procmsg.c
+		fix search for oldest node in subject threading
+
 2003-08-14 [christoph]	0.9.4claws19
 
 	* src/procmsg.c

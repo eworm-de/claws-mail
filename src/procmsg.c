@@ -190,7 +190,7 @@ static GNode *subject_relation_lookup(GRelation *relation, MsgInfo *msginfo)
 	if (tuples->len > 0) {
 		int i;
 		GNode *relation_node;
-		MsgInfo *relation_msginfo, *best_msginfo;
+		MsgInfo *relation_msginfo = NULL, *best_msginfo = NULL;
 		gboolean match;
 
 		/* check all nodes with the same subject to find the best parent */
@@ -201,8 +201,9 @@ static GNode *subject_relation_lookup(GRelation *relation, MsgInfo *msginfo)
 
 			/* best node should be the oldest in the found nodes */
 			/* parent node must not be older then msginfo */
-			if (best_msginfo->date_t < relation_msginfo->date_t &&
-			    relation_msginfo->date_t < msginfo->date_t)
+			if ((relation_msginfo->date_t < msginfo->date_t) &&
+			    ((best_msginfo == NULL) ||
+			     (best_msginfo->date_t > relation_msginfo->date_t)))
 				match = TRUE;
 
 			/* parent node must not be more then thread_by_subject_max_age
