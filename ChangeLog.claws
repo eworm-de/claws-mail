@@ -1,3 +1,10 @@
+2002-07-19 [melvin]	0.7.8claws80
+
+	* src/gtkspell.c
+		Removed a duplicate menu entry (fast mode) introduced during
+		the new cache merge
+		Added a menu separator between 'Use alternate' and 'Fast mode'
+
 2002-07-19 [paul]	0.7.8claws79
 
 	* tools/Makefile.am
