@@ -1,3 +1,13 @@
+2002-08-10 [paul]	0.8.1claws47
+
+	* src/main.c
+		don't write Processing progress to status bar
+		patch submitted by Alexander Evseev
+
+	* src/prefs_toolbar.c
+		re-position and resize window
+		make window assume correct size on first call
+
 2002-08-10 [paul]	0.8.1claws46
 
 	* src/mainwindow.c
