@@ -1,3 +1,10 @@
+2005-02-15 [colin]	1.0.1cvs8
+
+	* src/mimeview.c
+	* src/common/utils.c
+		Sanitize substitution for saved filenames:
+		only \ / * and \r \n \t are bad. 
+
 2005-02-15 [colin]	1.0.1cvs7
 
 	* src/compose.c

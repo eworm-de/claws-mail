@@ -984,12 +984,12 @@ gchar *mimeview_get_filename_for_part(MimeInfo *partinfo,
 	filename = g_strdup(get_part_name(partinfo));
 	if (!filename || !*filename)
 		filename = g_strdup_printf("noname.%d", number);
-	subst_for_shellsafe_filename(filename);
+
+	subst_for_filename(filename);
 
 	fullname = g_strconcat
 		(basedir, G_DIR_SEPARATOR_S, (filename[0] == G_DIR_SEPARATOR)
 		 ? &filename[1] : filename, NULL);
-	subst_chars(fullname, "/\\", G_DIR_SEPARATOR);
 
 	g_free(filename);
 	return fullname;
@@ -1107,7 +1107,7 @@ static void mimeview_save_as(MimeView *mimeview)
 	gchar *filepath = NULL;
 	gchar *filedir = NULL;
 	MimeInfo *partinfo;
-	const gchar *partname = NULL;
+	gchar *partname = NULL;
 
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
@@ -1122,15 +1122,20 @@ static void mimeview_save_as(MimeView *mimeview)
 	}			 
 	g_return_if_fail(partinfo != NULL);
 	
-	if ((partname = get_part_name(partinfo)) == NULL) {
+	if (get_part_name(partinfo) == NULL) {
 		return;
 	}
+
+	partname = g_strdup(get_part_name(partinfo));
+	subst_for_filename(partname);
 
 	if (prefs_common.attach_save_dir)
 		filepath = g_strconcat(prefs_common.attach_save_dir,
 				       G_DIR_SEPARATOR_S, partname, NULL);
 	else
 		filepath = g_strdup(partname);
+
+	g_free(partname);
 
 	filename = filesel_select_file(_("Save as"), filepath);
 	if (!filename) {
