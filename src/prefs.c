@@ -520,7 +520,11 @@ void prefs_dialog_create(PrefsDialog *dialog)
 	gtk_box_pack_start (GTK_BOX (vbox), notebook, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (notebook), 2);
 	/* GTK_WIDGET_UNSET_FLAGS (notebook, GTK_CAN_FOCUS); */
+#ifdef WIN32 /* accelerator tab not displayed in Gtk-1/Win */
+	gtk_notebook_set_scrollable (GTK_NOTEBOOK(notebook), FALSE);
+#else
 	gtk_notebook_set_scrollable (GTK_NOTEBOOK (notebook), TRUE);
+#endif /* WIN32 */
 	
 	gtk_notebook_popup_enable (GTK_NOTEBOOK (notebook));
 	
