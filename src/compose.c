@@ -2692,7 +2692,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 			STEXT_FREEZE();
 			gtk_stext_set_point(text, line_pos);
 			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
-			/* gtk_stext_compact_buffer(text); */
+			gtk_stext_compact_buffer(text);
 			tlen++;
 			line_pos++;
 			/* for loop will increase it */
