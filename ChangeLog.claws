@@ -1,3 +1,16 @@
+2003-08-22 [christoph]	0.9.4claws34
+
+	* src/prefs_folder_item.c
+		use macro to assign strings that always frees the old string
+
+	* src/gtk/gtkaspell.[ch]
+		add gtkaspell_set_dictionary_menu_active_item() to set active
+		item in dictionary option menu
+
+	* src/prefs_spelling.c
+		use gtkaspell_set_dictionary_menu_active_item() to select
+		dictionary
+
 2003-08-21 [christoph]	0.9.4claws33
 
 	* src/folder.[ch]

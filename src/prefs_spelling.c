@@ -133,8 +133,6 @@ static void prefs_spelling_colorsel(GtkWidget *widget,
 void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer data)
 {
 	SpellingPage *prefs_spelling = (SpellingPage *) _page;
-	GList *cur;
-	gint n;
 
 	/* START GLADE CODE */
 	GtkWidget *table;
@@ -287,20 +285,7 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu_dictionary),
 				 gtkaspell_dictionary_option_menu_new(prefs_common.aspell_path));
-	n = 0;
-	for (cur = GTK_MENU_SHELL(gtk_option_menu_get_menu(GTK_OPTION_MENU(optmenu_dictionary)))->children;
-	     cur != NULL; cur = cur->next) {
-		GtkWidget *menuitem;
-		gchar *dict_name;
-
-		menuitem = GTK_WIDGET(cur->data);
-		dict_name = gtk_object_get_data(GTK_OBJECT(menuitem), 
-						"dict_name");
-		if (!strcmp2(dict_name, prefs_common.dictionary)) {
-			gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu_dictionary), n);
-		}
-		n++;
-	}
+	gtkaspell_set_dictionary_menu_active_item(optmenu_dictionary, prefs_common.dictionary);
 
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu_sugmode),
 				 gtkaspell_sugmode_option_menu_new(prefs_common.aspell_sugmode));

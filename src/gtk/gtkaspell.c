@@ -44,6 +44,8 @@
 #include <time.h>
 #include <dirent.h>
 
+#include <glib.h>
+
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 #include <gtk/gtkoptionmenu.h>
@@ -1630,6 +1632,35 @@ gchar *gtkaspell_get_dictionary_menu_active_item(GtkWidget *menu)
 
         return label;
   
+}
+
+gint gtkaspell_set_dictionary_menu_active_item(GtkWidget *menu, const gchar *dictionary)
+{
+	GList *cur;
+	gint n;
+
+	g_return_val_if_fail(menu != NULL, 0);
+	g_return_val_if_fail(dictionary != NULL, 0);
+	g_return_val_if_fail(GTK_IS_OPTION_MENU(menu), 0);
+
+	n = 0;
+	for (cur = GTK_MENU_SHELL(gtk_option_menu_get_menu(GTK_OPTION_MENU(menu)))->children;
+	     cur != NULL; cur = cur->next) {
+		GtkWidget *menuitem;
+		gchar *dict_name;
+
+		menuitem = GTK_WIDGET(cur->data);
+		dict_name = gtk_object_get_data(GTK_OBJECT(menuitem), 
+						"dict_name");
+		if ((dict_name != NULL) && !strcmp2(dict_name, dictionary)) {
+			gtk_option_menu_set_history(GTK_OPTION_MENU(menu), n);
+
+			return 1;
+		}
+		n++;
+	}
+
+	return 0;
 }
 
 GtkWidget *gtkaspell_sugmode_option_menu_new(gint sugmode)
