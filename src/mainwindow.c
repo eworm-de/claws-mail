@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1612,7 +1612,8 @@ void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 	if (confirm) {
 		if (alertpanel(_("Empty trash"),
 			       _("Empty all messages in trash?"),
-			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
+			       GTK_STOCK_YES, GTK_STOCK_NO, NULL)
+		    != G_ALERTDEFAULT)
 			return;
 		manage_window_focus_in(mainwin->window, NULL, NULL);
 	}
@@ -2403,7 +2404,8 @@ static void app_exit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	if (prefs_common.confirm_on_exit) {
 		if (alertpanel(_("Exit"), _("Exit this program?"),
-			       _("OK"), _("Cancel"), NULL) != G_ALERTDEFAULT)
+			       GTK_STOCK_OK, GTK_STOCK_CANCEL, NULL)
+		    != G_ALERTDEFAULT)
 			return;
 		manage_window_focus_in(mainwin->window, NULL, NULL);
 	}

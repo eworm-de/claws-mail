@@ -482,8 +482,6 @@ static void subject_activated		(GtkWidget	*widget,
 					 Compose	*compose);
 #endif
 
-static void text_activated		(GtkWidget	*widget,
-					 Compose	*compose);
 static void text_inserted		(GtkTextBuffer	*buffer,
 					 GtkTextIter	*iter,
 					 const gchar	*text,
@@ -512,7 +510,6 @@ static void compose_check_backwards	   (Compose *compose);
 static void compose_check_forwards_go	   (Compose *compose);
 #endif
 
-static gboolean compose_send_control_enter	(Compose	*compose);
 static gint compose_defer_auto_save_draft	(Compose	*compose);
 static PrefsAccount *compose_guess_forward_account_from_msginfo	(MsgInfo *msginfo);
 
@@ -3321,7 +3318,7 @@ static gboolean compose_check_entries(Compose *compose, gboolean check_subject)
 
 		aval = alertpanel(_("Send"),
 				  _("Subject is empty. Send it anyway?"),
-				  _("Yes"), _("No"), NULL);
+				  GTK_STOCK_YES, GTK_STOCK_NO, NULL);
 		if (aval != G_ALERTDEFAULT)
 			return FALSE;
 	}
@@ -4467,8 +4464,6 @@ static void compose_create_header_entry(Compose *compose)
     	g_signal_connect(G_OBJECT(entry), "changed", 
 			 G_CALLBACK(compose_headerentry_changed_cb), 
 			 headerentry);
-    	g_signal_connect(G_OBJECT(entry), "activate", 
-			 G_CALLBACK(text_activated), compose);
 	g_signal_connect(G_OBJECT(entry), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_before_cb), compose);
 	g_signal_connect_after(G_OBJECT(entry), "grab_focus",
@@ -4933,8 +4928,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	subject_entry = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(subject), subject_entry, TRUE, TRUE, 2);
-    	g_signal_connect(G_OBJECT(subject_entry), "activate", 
-			 G_CALLBACK(text_activated), compose);
 	g_signal_connect(G_OBJECT(subject_entry), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_before_cb), compose);
 	g_signal_connect_after(G_OBJECT(subject_entry), "grab_focus",
@@ -4954,13 +4947,14 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	ruler = gtk_shruler_new();
 	gtk_ruler_set_range(GTK_RULER(ruler), 0.0, 100.0, 1.0, 100.0);
 	gtk_box_pack_start(GTK_BOX(ruler_hbox), ruler, TRUE, TRUE,
-			   BORDER_WIDTH + 1);
-	gtk_widget_set_size_request(ruler_hbox, 1, -1);
+			   BORDER_WIDTH);
 
 	/* text widget */
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
+					    GTK_SHADOW_IN);
 	gtk_box_pack_start(GTK_BOX(edit_vbox), scrolledwin, TRUE, TRUE, 0);
 	gtk_widget_set_size_request(scrolledwin, prefs_common.compose_width, -1);
 
@@ -4980,7 +4974,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 			 G_CALLBACK(compose_changed_cb), compose);
 	g_signal_connect(G_OBJECT(text), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
-	g_signal_connect(G_OBJECT(buffer), "insert-text",
+	g_signal_connect(G_OBJECT(buffer), "insert_text",
 			 G_CALLBACK(text_inserted), compose);
 
 	/* drag and drop */
@@ -5901,8 +5895,8 @@ static void compose_attach_property_create(gboolean *cancelled)
 	SET_LABEL_AND_ENTRY(_("Path"),      path_entry,     2);
 	SET_LABEL_AND_ENTRY(_("File name"), filename_entry, 3);
 
-	gtkut_button_set_create_stock(&hbbox, &ok_btn, GTK_STOCK_OK,
-				      &cancel_btn, GTK_STOCK_CANCEL, 
+	gtkut_stock_button_set_create(&hbbox, &ok_btn, GTK_STOCK_OK,
+				      &cancel_btn, GTK_STOCK_CANCEL,
 				      NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
@@ -6619,7 +6613,7 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 	if (compose->modified) {
 		val = alertpanel(_("Discard message"),
 				 _("This message has been modified. discard it?"),
-				 _("Discard"), _("to Draft"), _("Cancel"));
+				 _("Discard"), _("to Draft"), GTK_STOCK_CANCEL);
 
 		switch (val) {
 		case G_ALERTDEFAULT:
@@ -6657,7 +6651,7 @@ static void compose_template_activate_cb(GtkWidget *widget, gpointer data)
 	msg = g_strdup_printf(_("Do you want to apply the template `%s' ?"),
 			      tmpl->name);
 	val = alertpanel(_("Apply template"), msg,
-			 _("Replace"), _("Insert"), _("Cancel"));
+			 _("Replace"), _("Insert"), GTK_STOCK_CANCEL);
 	g_free(msg);
 
 	if (val == G_ALERTDEFAULT)
@@ -7417,11 +7411,6 @@ static void compose_show_first_last_header(Compose *compose, gboolean show_first
 	gtk_adjustment_set_value(vadj, (show_first ? vadj->lower : vadj->upper));
 }
 
-static void text_activated(GtkWidget *widget, Compose *compose)
-{
-	compose_send_control_enter(compose);
-}
-
 static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 			  const gchar *text, gint len, Compose *compose)
 {
@@ -7471,45 +7460,6 @@ static gint compose_defer_auto_save_draft(Compose *compose)
 {
 	compose->draft_timeout_tag = -1;
 	compose_draft_cb((gpointer)compose, COMPOSE_AUTO_SAVE, NULL);
-	return FALSE;
-}
-
-static gboolean compose_send_control_enter(Compose *compose)
-{
-	GdkEvent *ev;
-	GdkEventKey *kev;
-	GtkItemFactory *ifactory;
-	GtkAccelKey *accel;
-	GtkWidget *send_menu;
-	GSList *list;
-	GdkModifierType ignored_mods =
-		(GDK_LOCK_MASK | GDK_MOD2_MASK | GDK_MOD3_MASK |
-		 GDK_MOD4_MASK | GDK_MOD5_MASK);
-
-	ev = gtk_get_current_event();
-	if (ev->type != GDK_KEY_PRESS) return FALSE;
-
-	kev = (GdkEventKey *)ev;
-	if (!(kev->keyval == GDK_Return && (kev->state & GDK_CONTROL_MASK)))
-		return FALSE;
-
-	if (compose->exteditor_tag != -1)
-		return FALSE;
-
-	ifactory = gtk_item_factory_from_widget(compose->menubar);
-	send_menu = gtk_item_factory_get_widget(ifactory, "/Message/Send");
-	list = gtk_accel_groups_from_object(G_OBJECT(send_menu));
-	if (!list)
-		return FALSE;
-
-	accel = (GtkAccelKey *)list->data;
-	if (accel && accel->accel_key == kev->keyval &&
-	    (accel->accel_mods & ~ignored_mods) ==
-	    (kev->state & ~ignored_mods)) {
-		compose_send_cb(compose, 0, NULL);
-		return TRUE;
-	}
-
 	return FALSE;
 }
 

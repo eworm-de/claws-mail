@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -219,10 +219,10 @@ static void summary_search_create(SummaryView *summaryview)
 	g_signal_connect(G_OBJECT(all_checkbtn), "clicked",
 			 G_CALLBACK(all_clicked), summaryview);
 
-	gtkut_button_set_create_stock(&confirm_area,
+	gtkut_stock_button_set_create(&confirm_area,
 				      &search_btn, GTK_STOCK_FIND,
-				      &clear_btn,  GTK_STOCK_CLEAR,
-				      &close_btn,  GTK_STOCK_CLOSE);
+				      &clear_btn, GTK_STOCK_CLEAR,
+				      &close_btn, GTK_STOCK_CLOSE);
 	gtk_widget_show (confirm_area);
 	gtk_box_pack_start (GTK_BOX (vbox1), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(search_btn);
@@ -328,7 +328,7 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 				str = _("End of list reached; continue from beginning?");
 
 			val = alertpanel(_("Search finished"), str,
-					 _("Yes"), _("No"), NULL);
+					 GTK_STOCK_YES, GTK_STOCK_NO, NULL);
 			if (G_ALERTDEFAULT == val) {
 				if (backward)
 					node = GTK_CTREE_NODE

@@ -1023,8 +1023,8 @@ static gboolean mimeview_write_part(const gchar *filename,
 		
 		res = g_strdup_printf(_("Overwrite existing file '%s'?"),
 				      filename);
-		aval = alertpanel(_("Overwrite"), res, _("OK"), 
-				  _("Cancel"), NULL);
+		aval = alertpanel(_("Overwrite"), res, GTK_STOCK_OK, 
+				  GTK_STOCK_CANCEL, NULL);
 		g_free(res);					  
 		if (G_ALERTDEFAULT != aval) return FALSE;
 	}

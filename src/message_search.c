@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -130,10 +130,10 @@ static void message_search_create(MessageView *messageview)
 	gtk_box_pack_start (GTK_BOX (checkbtn_hbox), backward_checkbtn,
 			    FALSE, FALSE, 0);
 
-	gtkut_button_set_create_stock(&confirm_area,
+	gtkut_stock_button_set_create(&confirm_area,
 				      &search_btn, GTK_STOCK_FIND,
-				      &clear_btn,  GTK_STOCK_CLEAR,
-				      &close_btn,  GTK_STOCK_CLOSE);
+				      &clear_btn, GTK_STOCK_CLEAR,
+				      &close_btn, GTK_STOCK_CLOSE);
 	gtk_widget_show (confirm_area);
 	gtk_box_pack_start (GTK_BOX (vbox1), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(search_btn);
@@ -197,7 +197,7 @@ static void message_search_execute(GtkButton *button, gpointer data)
 				"continue from beginning?");
 
 		val = alertpanel(_("Search finished"), str,
-				 _("Yes"), _("No"), NULL);
+				 GTK_STOCK_YES, GTK_STOCK_NO, NULL);
 		if (G_ALERTDEFAULT == val) {
 			manage_window_focus_in(window, NULL, NULL);
 			messageview_set_position(messageview,

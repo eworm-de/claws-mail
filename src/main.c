@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -729,7 +729,8 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 	if (prefs_common.warn_queued_on_exit && get_queued_message_num() > 0) {
 		if (alertpanel(_("Queued messages"),
 			       _("Some unsent messages are queued. Exit now?"),
-			       _("OK"), _("Cancel"), NULL) != G_ALERTDEFAULT)
+			       GTK_STOCK_OK, GTK_STOCK_CANCEL, NULL)
+		    != G_ALERTDEFAULT)
 			return;
 		manage_window_focus_in(mainwin->window, NULL, NULL);
 	}

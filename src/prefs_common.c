@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -149,7 +149,6 @@ static struct Message {
 	GtkWidget *chkbtn_disphdr;
 	GtkWidget *spinbtn_linespc;
 	GtkObject *spinbtn_linespc_adj;
-	GtkWidget *chkbtn_headspc;
 
 	GtkWidget *chkbtn_smoothscroll;
 	GtkWidget *spinbtn_scrollstep;
@@ -599,9 +598,6 @@ static PrefParam param[] = {
 	{"line_space", "2", &prefs_common.line_space, P_INT,
 	 &message.spinbtn_linespc,
 	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
-	{"enable_head_space", "FALSE", &prefs_common.head_space, P_BOOL,
-	 &message.chkbtn_headspc,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"enable_smooth_scroll", "FALSE",
 	 &prefs_common.enable_smooth_scroll, P_BOOL,
@@ -1749,7 +1745,6 @@ static void prefs_message_create(void)
 	GtkWidget *label_linespc;
 	GtkObject *spinbtn_linespc_adj;
 	GtkWidget *spinbtn_linespc;
-	GtkWidget *chkbtn_headspc;
 
 	GtkWidget *frame_scr;
 	GtkWidget *vbox_scr;
@@ -1827,8 +1822,6 @@ static void prefs_message_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox_linespc), label_linespc,
 			    FALSE, FALSE, 0);
 
-	PACK_CHECK_BUTTON(hbox1, chkbtn_headspc, _("Indent text"));
-
 	PACK_FRAME(vbox1, frame_scr, _("Scroll"));
 
 	vbox_scr = gtk_vbox_new (FALSE, 0);
@@ -1879,7 +1872,6 @@ static void prefs_message_create(void)
 	message.chkbtn_disphdrpane = chkbtn_disphdrpane;
 	message.chkbtn_disphdr     = chkbtn_disphdr;
 	message.spinbtn_linespc    = spinbtn_linespc;
-	message.chkbtn_headspc     = chkbtn_headspc;
 
 	message.chkbtn_smoothscroll    = chkbtn_smoothscroll;
 	message.spinbtn_scrollstep     = spinbtn_scrollstep;
@@ -2458,12 +2450,12 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	gtk_label_set_justify(GTK_LABEL(label3), GTK_JUSTIFY_LEFT);
 	gtk_misc_set_alignment(GTK_MISC(label3), 0, 0.5);
 
-	gtkut_button_set_create_stock(&confirm_area, &ok_btn, GTK_STOCK_OK,
-				      &cancel_btn, GTK_STOCK_CANCEL, NULL, NULL);
-	gtk_widget_grab_default(ok_btn);
-	gtk_widget_show(confirm_area);
+	gtkut_stock_button_set_create(&confirm_area, &ok_btn, GTK_STOCK_OK,
+				&cancel_btn, GTK_STOCK_CANCEL, NULL, NULL);
 
 	gtk_box_pack_start(GTK_BOX(vbox1), confirm_area, FALSE, FALSE, 0);
+	gtk_widget_show(confirm_area);
+	gtk_widget_grab_default(ok_btn);
 
 	/* set the current format */
 	gtk_entry_set_text(GTK_ENTRY(datefmt_entry), prefs_common.date_format);
@@ -2553,8 +2545,9 @@ static void prefs_keybind_select(void)
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
-	gtkut_button_set_create_stock (&confirm_area, &ok_btn, GTK_STOCK_OK,
-				       &cancel_btn, GTK_STOCK_CANCEL, NULL, NULL);
+	gtkut_stock_button_set_create (&confirm_area, &ok_btn, GTK_STOCK_OK,
+				       &cancel_btn, GTK_STOCK_CANCEL,
+				       NULL, NULL);
 	gtk_box_pack_end (GTK_BOX (hbox1), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default (ok_btn);
 

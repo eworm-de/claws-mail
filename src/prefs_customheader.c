@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -168,8 +168,9 @@ static void prefs_custom_header_create(void)
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (window), vbox);
 
-	gtkut_button_set_create_stock(&confirm_area, &ok_btn, GTK_STOCK_OK,
-				      &cancel_btn, GTK_STOCK_CANCEL, NULL, NULL);
+	gtkut_stock_button_set_create(&confirm_area, &ok_btn, GTK_STOCK_OK,
+				      &cancel_btn, GTK_STOCK_CANCEL,
+				      NULL, NULL);
 	gtk_widget_show (confirm_area);
 	gtk_box_pack_end (GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default (ok_btn);
@@ -545,7 +546,7 @@ static void prefs_custom_header_delete_cb(void)
 
 	if (alertpanel(_("Delete header"),
 		       _("Do you really want to delete this header?"),
-		       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
+		       GTK_STOCK_YES, GTK_STOCK_NO, NULL) != G_ALERTDEFAULT)
 		return;
 
 	gtk_tree_model_get(model, &sel,

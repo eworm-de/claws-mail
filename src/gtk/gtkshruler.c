@@ -1,6 +1,6 @@
 /* GtkSHRuler
  *
- *  Copyright (C) 2000-2004 Alfons Hoogervorst & The Sylpheed Claws Team
+ *  Copyright (C) 2000-2005 Alfons Hoogervorst & The Sylpheed Claws Team
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -156,18 +156,17 @@ gtk_shruler_draw_ticks(GtkRuler *ruler)
 		       height + ythickness);
 #endif
 
-	/* assume ruler->max_size has the char width */    
+	/* assume ruler->max_size has the char width */
 	/* i is increment of char_width,  pos is label number
-	 * y position is based on height of widget itself
-	 */
+	 * y position is based on height of widget itself */
 	for ( i = 0, pos = 0; i < widget->allocation.width - xthickness; i += ruler->max_size, pos++ ) {	
-		int length = height / 4;
+		gint length = height / 8;
 	
-		if ( pos % 10 == 0 ) length = ( 3 * height / 4 );
-		else if (pos % 5 == 0 ) length = ( height / 2 );
+		if ( pos % 10 == 0 ) length = ( 2 * height / 3 );
+		else if ( pos % 5 == 0 ) length = ( height / 3 );
 		
 		gdk_draw_line(ruler->backing_store, gc,
-			      i, height, 
+			      i, height + ythickness,
 			      i, height - length);			
 		
 		if ( pos % 10 == 0 ) {
@@ -176,16 +175,15 @@ gtk_shruler_draw_ticks(GtkRuler *ruler)
 
 			/* draw label */
 			g_snprintf(buf, sizeof buf, "%d", pos);
-			
+
 			layout = gtk_widget_create_pango_layout
-					(GTK_WIDGET(ruler), buf);
-			
+				(GTK_WIDGET(ruler), buf);
+
 			gdk_draw_layout(ruler->backing_store, gc, i + 2,
-					(height / 12),
-					layout);
-			
+					0, layout);
+
 			g_object_unref(layout);
-	    }
+		}
 	}
 }
 

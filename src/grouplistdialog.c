@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,8 +38,8 @@
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkhbbox.h>
+#include <gtk/gtkstock.h>
 #include <string.h>
-#include <fnmatch.h>
 
 #include "intl.h"
 #include "grouplistdialog.h"
@@ -164,7 +164,8 @@ static void grouplist_dialog_create(void)
 	dialog = gtk_dialog_new();
 	gtk_window_set_resizable(GTK_WINDOW(dialog), TRUE);
 	gtk_widget_set_size_request(dialog,
-				    GROUPLIST_DIALOG_WIDTH, GROUPLIST_DIALOG_HEIGHT);
+				    GROUPLIST_DIALOG_WIDTH,
+				    GROUPLIST_DIALOG_HEIGHT);
 	gtk_container_set_border_width
 		(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), 5);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
@@ -233,10 +234,10 @@ static void grouplist_dialog_create(void)
 	status_label = gtk_label_new("");
 	gtk_box_pack_start(GTK_BOX(hbox), status_label, FALSE, FALSE, 0);
 
-	gtkut_button_set_create(&confirm_area,
-				&ok_button,      _("OK"),
-				&cancel_button,  _("Cancel"),
-				&refresh_button, _("Refresh"));
+	gtkut_stock_button_set_create(&confirm_area,
+				      &ok_button, GTK_STOCK_OK,
+				      &cancel_button, GTK_STOCK_CANCEL,
+				      &refresh_button, GTK_STOCK_REFRESH);
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area),
 			  confirm_area);
 	gtk_widget_grab_default(ok_button);
@@ -308,7 +309,7 @@ static GtkCTreeNode *grouplist_create_parent(const gchar *name,
 	node = gtk_ctree_insert_node(GTK_CTREE(ctree), parent, node,
 				     cols, 0, NULL, NULL, NULL, NULL,
 				     FALSE, FALSE);
-	if (parent && fnmatch(pattern, parent_name, 0) != 0)
+	if (parent && g_pattern_match_simple(pattern, parent_name) == FALSE)
 		gtk_ctree_expand(GTK_CTREE(ctree), parent);
 	gtk_ctree_node_set_selectable(GTK_CTREE(ctree), node, FALSE);
 
@@ -360,7 +361,8 @@ static GtkCTreeNode *grouplist_create_branch(NewsGroupInfo *ginfo,
 		node = gtk_ctree_insert_node(GTK_CTREE(ctree), parent, node,
 					     cols, 0, NULL, NULL, NULL, NULL,
 					     TRUE, FALSE);
-		if (parent && fnmatch(pattern, parent_name, 0) != 0)
+		if (parent &&
+		    g_pattern_match_simple(pattern, parent_name) == FALSE)
 			gtk_ctree_expand(GTK_CTREE(ctree), parent);
 	}
 	gtk_ctree_node_set_selectable(GTK_CTREE(ctree), node, TRUE);
@@ -389,6 +391,7 @@ static void grouplist_dialog_set_list(const gchar *pattern, gboolean refresh)
 {
 	GSList *cur;
 	GtkCTreeNode *node;
+	GPatternSpec *pspec;
 
 	if (locked) return;
 	locked = TRUE;
@@ -417,21 +420,23 @@ static void grouplist_dialog_set_list(const gchar *pattern, gboolean refresh)
 
 	gtk_clist_freeze(GTK_CLIST(ctree));
 
+	pspec = g_pattern_spec_new(pattern);
 
 	for (cur = group_list; cur != NULL ; cur = cur->next) {
 		NewsGroupInfo *ginfo = (NewsGroupInfo *)cur->data;
 
-		if (fnmatch(pattern, ginfo->name, 0) == 0) {
+		if (g_pattern_match_string(pspec, ginfo->name)) {
 			node = grouplist_create_branch(ginfo, pattern);
 			if (g_slist_find_custom(subscribed, ginfo->name,
-						(GCompareFunc)g_ascii_strcasecmp)
-						!= NULL) {
+						(GCompareFunc)g_strcasecmp)
+			    != NULL)
 				gtk_ctree_select(GTK_CTREE(ctree), node);
-			}
 		}
 	}
 	for (cur = subscribed; cur; cur = g_slist_next(cur))
 		grouplist_expand_upwards(GTK_CTREE(ctree), (gchar *)cur->data);
+
+	g_pattern_spec_free(pspec);
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
 

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -219,9 +219,10 @@ TextView *textview_create(void)
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_widget_set_size_request(scrolledwin, prefs_common.mainview_width, -1);
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
 					    GTK_SHADOW_IN);
+	gtk_widget_set_size_request
+		(scrolledwin, prefs_common.mainview_width, -1);
 
 	/* create GtkSText widgets for single-byte and multi-byte character */
 	text = gtk_text_view_new();
@@ -230,6 +231,8 @@ TextView *textview_create(void)
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), FALSE);
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD_CHAR);
 	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(text), FALSE);
+	gtk_text_view_set_left_margin(GTK_TEXT_VIEW(text), 6);
+	gtk_text_view_set_right_margin(GTK_TEXT_VIEW(text), 6);
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 	clipboard = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
@@ -337,11 +340,9 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 
 void textview_init(TextView *textview)
 {
-	gtkut_widget_disable_theme_engine(textview->text);
 	textview_update_message_colors();
 	textview_set_all_headers(textview, FALSE);
 	textview_set_font(textview, NULL);
-
 	textview_create_tags(GTK_TEXT_VIEW(textview->text), textview);
 }
 
@@ -1121,22 +1122,19 @@ static void textview_make_clickable_parts(TextView *textview,
 							       last->ep);
 			uri->start = gtk_text_iter_get_offset(&iter);
 			gtk_text_buffer_insert_with_tags_by_name
-				(buffer, &iter,
-				 last->bp, last->ep - last->bp,
-				 uri_tag, NULL);
+				(buffer, &iter, last->bp, last->ep - last->bp,
+				 uri_tag, fg_tag, NULL);
 			uri->end = gtk_text_iter_get_offset(&iter);
 			textview->uri_list =
 				g_slist_append(textview->uri_list, uri);
 		}
 
 		if (*normal_text)
-			gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
-								 normal_text, -1,
-								 fg_tag, NULL);
+			gtk_text_buffer_insert_with_tags_by_name
+				(buffer, &iter, normal_text, -1, fg_tag, NULL);
 	} else {
-		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
-							 linebuf, -1,
-							 fg_tag, NULL);
+		gtk_text_buffer_insert_with_tags_by_name
+			(buffer, &iter, linebuf, -1, fg_tag, NULL);
 	}
 }
 
@@ -1164,7 +1162,7 @@ static void textview_write_line(TextView *textview, const gchar *str,
 	}
 
 	strcrchomp(buf);
-	if (prefs_common.conv_mb_alnum) conv_mb_alnum(buf);
+	//if (prefs_common.conv_mb_alnum) conv_mb_alnum(buf);
 	fg_color = NULL;
 
 	/* change color of quotation
@@ -1253,8 +1251,8 @@ void textview_write_link(TextView *textview, const gchar *str,
 	r_uri = g_new(RemoteURI, 1);
 	r_uri->uri = g_strdup(uri);
 	r_uri->start = gtk_text_iter_get_offset(&iter);
-	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, bufp, -1,
-						 "link", NULL);
+	gtk_text_buffer_insert_with_tags_by_name
+		(buffer, &iter, bufp, -1, "link", NULL);
 	r_uri->end = gtk_text_iter_get_offset(&iter);
 	textview->uri_list = g_slist_append(textview->uri_list, r_uri);
 }
@@ -1304,11 +1302,6 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 					     prefs_common.line_space / 2);
 	gtk_text_view_set_pixels_below_lines(GTK_TEXT_VIEW(textview->text),
 					     prefs_common.line_space / 2);
-	if (prefs_common.head_space) {
-		gtk_text_view_set_left_margin(GTK_TEXT_VIEW(textview->text), 6);
-	} else {
-		gtk_text_view_set_left_margin(GTK_TEXT_VIEW(textview->text), 0);
-	}
 }
 
 void textview_set_text(TextView *textview, const gchar *text)
@@ -1606,19 +1599,15 @@ void textview_scroll_one_line(TextView *textview, gboolean up)
 	if (!up) {
 		upper = vadj->upper - vadj->page_size;
 		if (vadj->value < upper) {
-			vadj->value +=
-				vadj->step_increment * 4;
-			vadj->value =
-				MIN(vadj->value, upper);
+			vadj->value += vadj->step_increment;
+			vadj->value = MIN(vadj->value, upper);
 			g_signal_emit_by_name(G_OBJECT(vadj),
 					      "value_changed", 0);
 		}
 	} else {
 		if (vadj->value > 0.0) {
-			vadj->value -=
-				vadj->step_increment * 4;
-			vadj->value =
-				MAX(vadj->value, 0.0);
+			vadj->value -= vadj->step_increment;
+			vadj->value = MAX(vadj->value, 0.0);
 			g_signal_emit_by_name(G_OBJECT(vadj),
 					      "value_changed", 0);
 		}
@@ -1702,8 +1691,7 @@ static void textview_smooth_scroll_one_line(TextView *textview, gboolean up)
 		upper = vadj->upper - vadj->page_size;
 		if (vadj->value < upper) {
 			old_value = vadj->value;
-			last_value = vadj->value +
-				vadj->step_increment * 4;
+			last_value = vadj->value + vadj->step_increment;
 			last_value = MIN(last_value, upper);
 
 			textview_smooth_scroll_do(textview, old_value,
@@ -1713,8 +1701,7 @@ static void textview_smooth_scroll_one_line(TextView *textview, gboolean up)
 	} else {
 		if (vadj->value > 0.0) {
 			old_value = vadj->value;
-			last_value = vadj->value -
-				vadj->step_increment * 4;
+			last_value = vadj->value - vadj->step_increment;
 			last_value = MAX(last_value, 0.0);
 
 			textview_smooth_scroll_do(textview, old_value,
@@ -2158,8 +2145,9 @@ static gboolean textview_uri_security_check(TextView *textview, RemoteURI *uri)
 					"the apparent URL (%s).\n"
 					"Open it anyway?"),
 				      uri->uri, visible_str);
-		aval = alertpanel_with_type(_("Warning"), msg, _("Yes"), _("No"), NULL,
-					    NULL, ALERT_WARNING);
+		aval = alertpanel_with_type(_("Warning"), msg,
+					    GTK_STOCK_YES, GTK_STOCK_NO,
+					    NULL, NULL, ALERT_WARNING);
 		g_free(msg);
 		if (aval == G_ALERTDEFAULT)
 			retval = TRUE;

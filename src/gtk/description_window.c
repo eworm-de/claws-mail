@@ -117,7 +117,7 @@ static void description_create(DescriptionWindow * dwindow)
 		line++;
 	}
 
-	gtkut_button_set_create_stock(&hbbox, &ok_btn, GTK_STOCK_OK,
+	gtkut_stock_button_set_create(&hbbox, &ok_btn, GTK_STOCK_OK,
 				      NULL, NULL, NULL, NULL);
 	gtk_widget_show(hbbox);
 

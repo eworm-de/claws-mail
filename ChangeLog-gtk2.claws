@@ -1,3 +1,57 @@
+2005-01-29 [paul]	1.0.0cvs23.2
+
+	* src/account.c
+	* src/action.c
+	* src/addressadd.c
+	* src/addressbook.c
+	* src/alertpanel.c
+	* src/compose.c
+	* src/editaddress.c
+	* src/editbook.c
+	* src/editgroup.c
+	* src/editjpilot.c
+	* src/editldap.c
+	* src/editldap_basedn.c
+	* src/editvcard.c
+	* src/export.c
+	* src/foldersel.c
+	* src/grouplistdialog.c
+	* src/import.c
+	* src/importldif.c
+	* src/inc.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/message_search.c
+	* src/messageview.c
+	* src/mimeview.c
+	* src/prefs_actions.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_customheader.c
+	* src/prefs_display_header.c
+	* src/prefs_filtering.c
+	* src/prefs_filtering_action.c
+	* src/prefs_gtk.c
+	* src/prefs_matcher.c
+	* src/prefs_summary_column.c
+	* src/prefs_template.c
+	* src/sourcewindow.c
+	* src/summary_search.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/gtk/about.c
+	* src/gtk/description_window.c
+	* src/gtk/gtkshruler.c
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+	* src/gtk/inputdialog.c
+	* src/gtk/logwindow.c
+	* src/gtk/prefswindow.c
+	* src/gtk/progressdialog.c
+	* src/gtk/progressdialog.h
+		first part of initial sync with main-gtk2
+		(more to follow)
+
 2005-01-28 [colin]	1.0.0cvs23.1
 
 	* src/folderview.c

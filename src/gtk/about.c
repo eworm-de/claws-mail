@@ -192,11 +192,15 @@ static void about_create(void)
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
+					    GTK_SHADOW_IN);
 	gtk_box_pack_start(GTK_BOX(vbox), scrolledwin, TRUE, TRUE, 0);
 
 	text = gtk_text_view_new();
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), FALSE);
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD);
+	gtk_text_view_set_left_margin(GTK_TEXT_VIEW(text), 6);
+	gtk_text_view_set_right_margin(GTK_TEXT_VIEW(text), 6);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
 
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
@@ -220,7 +224,7 @@ static void about_create(void)
 		  "Foundation, Inc., 59 Temple Place - Suite 330, Boston, "
 		  "MA 02111-1307, USA."), -1);
 
-	gtkut_button_set_create_stock(&confirm_area, &ok_button, GTK_STOCK_OK,
+	gtkut_stock_button_set_create(&confirm_area, &ok_button, GTK_STOCK_OK,
 				      NULL, NULL, NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_button);
@@ -228,6 +232,7 @@ static void about_create(void)
 		(G_OBJECT(ok_button), "clicked",
 		 g_cclosure_new_swap(G_CALLBACK(gtk_widget_hide_on_delete),
 				     window, NULL), FALSE);
+
 	gtk_widget_show_all(window);
 }
 

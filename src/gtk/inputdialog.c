@@ -199,8 +199,8 @@ static void input_dialog_create(void)
 	g_signal_connect(G_OBJECT(GTK_COMBO(combo)->entry), "activate",
 			 G_CALLBACK(combo_activated), NULL);
 
-	gtkut_button_set_create_stock(&confirm_area,
-				      &ok_button,     GTK_STOCK_OK,
+	gtkut_stock_button_set_create(&confirm_area,
+				      &ok_button, GTK_STOCK_OK,
 				      &cancel_button, GTK_STOCK_CANCEL,
 				      NULL, NULL);
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area),

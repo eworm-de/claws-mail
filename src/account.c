@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -715,7 +715,7 @@ static void account_edit_create(void)
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbbox), GTK_BUTTONBOX_END);
 	gtk_box_set_spacing(GTK_BOX(hbbox), 5);
 
-	gtkut_button_set_create_stock(&hbbox, &close_btn, GTK_STOCK_CLOSE,
+	gtkut_stock_button_set_create(&hbbox, &close_btn, GTK_STOCK_CLOSE,
 				      NULL, NULL, NULL, NULL);
 	gtk_widget_show(hbbox);
 

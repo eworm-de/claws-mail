@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -110,7 +110,7 @@ void gtkut_button_set_create(GtkWidget **bbox,
 	}
 }
 
-void gtkut_button_set_create_stock(GtkWidget **bbox,
+void gtkut_stock_button_set_create(GtkWidget **bbox,
 				   GtkWidget **button1, const gchar *label1,
 				   GtkWidget **button2, const gchar *label2,
 				   GtkWidget **button3, const gchar *label3)
@@ -149,7 +149,8 @@ static void combo_button_size_request(GtkWidget *widget,
 	ComboButton *combo = (ComboButton *)data;
 
 	if (combo->arrow->allocation.height != requisition->height)
-		gtk_widget_set_usize(combo->arrow, -1, requisition->height);
+		gtk_widget_set_size_request(combo->arrow,
+					    -1, requisition->height);
 }
 
 static void combo_button_enter(GtkWidget *widget, gpointer data)
@@ -214,6 +215,7 @@ ComboButton *gtkut_combo_button_create(GtkWidget *button,
 
 	combo->arrow = gtk_button_new();
 	arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
+	gtk_widget_set_size_request(arrow, 7, -1);
 	gtk_container_add(GTK_CONTAINER(combo->arrow), arrow);
 	GTK_WIDGET_UNSET_FLAGS(combo->arrow, GTK_CAN_FOCUS);
 	gtk_widget_show_all(combo->arrow);

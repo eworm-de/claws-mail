@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto & The Sylpheed Claws Team
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto & The Sylpheed Claws Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1101,18 +1101,18 @@ static void update_io_dialog(Children *children)
 
 	if (children->output) {
 		GtkWidget *text = children->text;
-		gchar *caption;
-		ChildInfo *child_info;
 		GtkTextBuffer *textbuf;
 		GtkTextIter iter, start_iter, end_iter;
+		gchar *caption;
+		ChildInfo *child_info;
 
 		gtk_widget_show(children->scrolledwin);
 		textbuf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
 		gtk_text_buffer_get_start_iter(textbuf, &start_iter);
 		gtk_text_buffer_get_end_iter(textbuf, &end_iter);
 		gtk_text_buffer_delete(textbuf, &start_iter, &end_iter);
-		gtk_text_buffer_get_start_iter(textbuf, &start_iter);
-		iter = start_iter;
+		gtk_text_buffer_get_start_iter(textbuf, &iter);
+
 		for (cur = children->list; cur; cur = cur->next) {
 			child_info = (ChildInfo *)cur->data;
 			if (child_info->pid)
@@ -1124,8 +1124,7 @@ static void update_io_dialog(Children *children)
 					(_("--- Ended: %s\n"),
 					 child_info->cmd);
 
-			gtk_text_buffer_insert(textbuf, &iter,
-					       caption, -1);
+			gtk_text_buffer_insert(textbuf, &iter, caption, -1);
 			gtk_text_buffer_insert(textbuf, &iter,
 					       child_info->output->str, -1);
 			g_free(caption);
@@ -1233,7 +1232,7 @@ static void create_io_dialog(Children *children)
 		gtk_widget_show(progress_bar);
 	}
 
-	gtkut_button_set_create_stock(&hbox, &abort_button, GTK_STOCK_STOP,
+	gtkut_stock_button_set_create(&hbox, &abort_button, GTK_STOCK_STOP,
 				      &close_button, GTK_STOCK_CLOSE, NULL, NULL);
 	g_signal_connect(G_OBJECT(abort_button), "clicked",
 			 G_CALLBACK(kill_children_cb), children);
@@ -1324,62 +1323,66 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 {
 	ChildInfo *child_info = (ChildInfo *)data;
-	gint c, i;
+	gint c;
 	gchar buf[BUFFSIZE];
 
 	debug_print("Catching grand child's output.\n");
 	if (child_info->children->action_type &
 	    (ACTION_PIPE_OUT | ACTION_INSERT)
 	    && source == child_info->chld_out) {
- 		GtkTextView *text = GTK_TEXT_VIEW(child_info->children->msg_text);
- 		GtkTextBuffer *textbuf = gtk_text_view_get_buffer(text);
- 		GtkTextIter iter1, iter2;
- 		GtkTextMark *mark;
- 
- 		mark = gtk_text_buffer_get_insert(textbuf);
- 		gtk_text_buffer_get_iter_at_mark(textbuf, &iter1, mark);
- 		gtk_text_buffer_get_iter_at_mark(textbuf, &iter2, mark);
+		GtkTextView *text =
+			GTK_TEXT_VIEW(child_info->children->msg_text);
+		GtkTextBuffer *textbuf = gtk_text_view_get_buffer(text);
+		GtkTextIter iter1, iter2;
+		GtkTextMark *mark;
+
+		mark = gtk_text_buffer_get_insert(textbuf);
+		gtk_text_buffer_get_iter_at_mark(textbuf, &iter1, mark);
+		gtk_text_buffer_get_iter_at_mark(textbuf, &iter2, mark);
 
 		while (TRUE) {
+			gsize bytes_read = 0, bytes_written = 0;
+			gchar *ret_str;
+
 			c = read(source, buf, sizeof(buf) - 1);
 			if (c == 0)
 				break;
-			else {
-				gssize by_read = 0, by_written = 0;
-				gchar *ret_str = g_locale_to_utf8(buf, c, &by_read,
-								  &by_written, NULL);
-								  
-				if (ret_str && by_written) {
-					gtk_text_buffer_insert(textbuf, &iter2, 
-							       ret_str, by_written);
-					g_free(ret_str);
-				} else
-					gtk_text_buffer_insert(textbuf, &iter2, buf, c);
-			}				
+
+			ret_str = g_locale_to_utf8
+				(buf, c, &bytes_read, &bytes_written, NULL);
+			if (ret_str && bytes_written > 0) {
+				gtk_text_buffer_insert
+					(textbuf, &iter2, ret_str,
+					 bytes_written);
+				g_free(ret_str);
+			} else
+				gtk_text_buffer_insert(textbuf, &iter2, buf, c);
 		}
- 		if (child_info->children->is_selection) {
- 			gtk_text_buffer_place_cursor(textbuf, &iter1);
- 			gtk_text_buffer_move_mark_by_name
- 				(textbuf, "selection_bound", &iter2);
+
+		if (child_info->children->is_selection) {
+			gtk_text_buffer_place_cursor(textbuf, &iter1);
+			gtk_text_buffer_move_mark_by_name
+				(textbuf, "selection_bound", &iter2);
 		}
 	} else {
 		c = read(source, buf, sizeof(buf) - 1);
 		
 		if (c > 0) {
-			gssize by_read = 0, by_written = 0;
-			gchar *ret_str = g_locale_to_utf8(buf, c, &by_read,
-							  &by_written, NULL);
-							  
-			if (ret_str && by_written) {
-				g_string_append_len(child_info->output,
-						    ret_str, by_written);
-				g_free(ret_str);						    
+			gsize bytes_read = 0, bytes_written = 0;
+			gchar *ret_str;
+
+			ret_str = g_locale_to_utf8
+				(buf, c, &bytes_read, &bytes_written, NULL);
+			if (ret_str && bytes_written > 0) {
+				g_string_append_len
+					(child_info->output, ret_str,
+					 bytes_written);
+				g_free(ret_str);
 			} else
 				g_string_append_len(child_info->output, buf, c);
-		}
-		
-		if (c > 0)
+
 			child_info->new_out = TRUE;
+		}
 	}
 	if (c == 0) {
 		if (source == child_info->chld_out) {
