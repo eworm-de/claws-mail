@@ -1,3 +1,9 @@
+2005-03-21 [holger]	1.9.6cvs7
+
+	* src/plugins/spamassassin/spamassassin.c
+		Sync with HEAD
+		(unregister hook on failed plugin init)
+
 2005-03-20 [colin]	1.9.6cvs6
 
 	* src/common/plugin.c
