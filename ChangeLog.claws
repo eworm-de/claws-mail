@@ -1,3 +1,11 @@
+2003-05-18 [christoph]	0.8.11claws163
+
+	* src/mimeview.[ch]
+	* src/plugins/dillo_viewer/dillo_viewer.c
+	* src/plugins/image_viewer/viewer.c
+	* src/plugins/mathml_viewer/mathml_viewer.c
+		let a viewer to have a list of Content-Types
+
 2003-05-18 [paul]	0.8.11claws162
 
 	* src/prefs_filtering.c
