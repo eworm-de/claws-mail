@@ -25,12 +25,12 @@
 #endif
 
 #include <glib.h>
-#include "gtkstext.h"
 
 #include <string.h> /* for strlen */
 #include <stdlib.h> /* for mbstowcs */
 
 #include "undo.h"
+#include "gtkstext.h"
 #include "utils.h"
 #include "prefs_common.h"
 
@@ -78,7 +78,7 @@ void undo_undo			(UndoMain	*undostruct);
 void undo_redo			(UndoMain	*undostruct);
 
 
-UndoMain *undo_init (GtkWidget *text) 
+UndoMain *undo_init(GtkWidget *text) 
 {
 	UndoMain *undostruct;
 	

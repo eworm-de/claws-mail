@@ -42,6 +42,9 @@ struct _TextView
 	GtkWidget *text_sb;
 	GtkWidget *text_mb;
 
+	GtkWidget *popup_menu;
+	GtkItemFactory *popup_factory;
+
 	gboolean text_is_mb;
 
 	GSList *uri_list;

@@ -288,8 +288,8 @@ void gtkut_container_remove(GtkContainer *container, GtkWidget *widget)
 	gtk_container_remove(container, widget);
 }
 
-gboolean gtkut_text_match_string(GtkSText *text, gint pos, wchar_t *wcs,
-				 gint len, gboolean case_sens)
+gboolean gtkut_stext_match_string(GtkSText *text, gint pos, wchar_t *wcs,
+				  gint len, gboolean case_sens)
 {
 	gint match_count = 0;
 
@@ -310,8 +310,8 @@ gboolean gtkut_text_match_string(GtkSText *text, gint pos, wchar_t *wcs,
 		return FALSE;
 }
 
-guint gtkut_text_str_compare_n(GtkSText *text, guint pos1, guint pos2,
-			       guint len, guint text_len)
+guint gtkut_stext_str_compare_n(GtkSText *text, guint pos1, guint pos2,
+				guint len, guint text_len)
 {
 	guint i;
 	GdkWChar ch1, ch2;
@@ -326,8 +326,8 @@ guint gtkut_text_str_compare_n(GtkSText *text, guint pos1, guint pos2,
 	return i;
 }
 
-guint gtkut_text_str_compare(GtkSText *text, guint start_pos, guint text_len,
-			     const gchar *str)
+guint gtkut_stext_str_compare(GtkSText *text, guint start_pos, guint text_len,
+			      const gchar *str)
 {
 	wchar_t *wcs;
 	guint len;
@@ -342,20 +342,20 @@ guint gtkut_text_str_compare(GtkSText *text, guint start_pos, guint text_len,
 	if (len > text_len - start_pos)
 		result = FALSE;
 	else
-		result = gtkut_text_match_string(text, start_pos, wcs, len,
-						 TRUE);
+		result = gtkut_stext_match_string(text, start_pos, wcs, len,
+						  TRUE);
 
 	g_free(wcs);
 
 	return result ? len : 0;
 }
 
-gboolean gtkut_text_is_uri_string(GtkSText *text,
-				  guint start_pos, guint text_len)
+gboolean gtkut_stext_is_uri_string(GtkSText *text,
+				   guint start_pos, guint text_len)
 {
-	if (gtkut_text_str_compare(text, start_pos, text_len, "http://") ||
-	    gtkut_text_str_compare(text, start_pos, text_len, "ftp://")  ||
-	    gtkut_text_str_compare(text, start_pos, text_len, "https://"))
+	if (gtkut_stext_str_compare(text, start_pos, text_len, "http://") ||
+	    gtkut_stext_str_compare(text, start_pos, text_len, "ftp://")  ||
+	    gtkut_stext_str_compare(text, start_pos, text_len, "https://"))
 		return TRUE;
 
 	return FALSE;

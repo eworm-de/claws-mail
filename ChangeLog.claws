@@ -1,3 +1,8 @@
+2001-01-05 [alfons]	0.6.6claws38
+
+	* sync with sylpheed 0.6.6cvs10-17
+		(last stuff marked as LAST_STABLE)
+
 2002-01-04 [melvin]	0.6.6claws37
 
 	* src/account.c

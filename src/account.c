@@ -99,6 +99,9 @@ static void account_selected		(GtkCList	*clist,
 					 gint		 column,
 					 GdkEvent	*event,
 					 gpointer	 data);
+static void account_row_moved		(GtkCList	*clist,
+					 gint		 source_row,
+					 gint		 dest_row);
 static void account_key_pressed		(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
@@ -475,6 +478,8 @@ static void account_edit_create(void)
 
 	gtk_signal_connect (GTK_OBJECT (clist), "select_row",
 			    GTK_SIGNAL_FUNC (account_selected), NULL);
+	gtk_signal_connect (GTK_OBJECT (clist), "row_move",
+			    GTK_SIGNAL_FUNC (account_row_moved), NULL);
 
 	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
@@ -639,10 +644,8 @@ static void account_up(void)
 	if (!clist->selection) return;
 
 	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row > 0) {
+	if (row > 0)
 		gtk_clist_row_move(clist, row, row - 1);
-		account_list_set();
-	}
 }
 
 static void account_down(void)
@@ -653,10 +656,8 @@ static void account_down(void)
 	if (!clist->selection) return;
 
 	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row < clist->rows - 1) {
+	if (row < clist->rows - 1)
 		gtk_clist_row_move(clist, row, row + 1);
-		account_list_set();
-	}
 }
 
 static void account_set_default(void)
@@ -717,6 +718,15 @@ static void account_selected(GtkCList *clist, gint row, gint column,
 			ac->recv_at_getall ^= TRUE;
 			account_clist_set_row(ac, row);
 		}
+	}
+}
+
+static void account_row_moved(GtkCList *clist, gint source_row, gint dest_row)
+{
+	account_list_set();
+	if (gtk_clist_row_is_visible(clist, dest_row) != GTK_VISIBILITY_FULL) {
+		gtk_clist_moveto(clist, dest_row, -1,
+				 source_row < dest_row ? 1.0 : 0.0, 0.0);
 	}
 }
 
@@ -792,19 +802,15 @@ static void account_clist_set(void)
 {
 	GtkCList *clist = GTK_CLIST(edit_account.clist);
 	GList *cur;
-	gint prev_row;
+	gint row = -1, prev_row = -1;
 
 	if (clist->selection)
 		prev_row = GPOINTER_TO_INT(clist->selection->data);
-	else
-		prev_row = -1;
 
 	gtk_clist_freeze(clist);
 	gtk_clist_clear(clist);
 
 	for (cur = account_list; cur != NULL; cur = cur->next) {
-		gint row;
-
 		row = account_clist_set_row((PrefsAccount *)cur->data, -1);
 		if ((PrefsAccount *)cur->data == cur_account) {
 			gtk_clist_select_row(clist, row, -1);
@@ -813,10 +819,14 @@ static void account_clist_set(void)
 	}
 
 	if (prev_row >= 0) {
-		gtk_clist_select_row(clist, prev_row, -1);
-		gtkut_clist_set_focus_row(clist, prev_row);
-		gtk_clist_moveto(clist, prev_row, 0, 0.5, 0);
+		row = prev_row;
+		gtk_clist_select_row(clist, row, -1);
+		gtkut_clist_set_focus_row(clist, row);
 	}
+
+	if (row >= 0 &&
+	    gtk_clist_row_is_visible(clist, row) != GTK_VISIBILITY_FULL)
+		gtk_clist_moveto(clist, row, -1, 0.5, 0);
 
 	gtk_clist_thaw(clist);
 }

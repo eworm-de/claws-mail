@@ -1733,6 +1733,7 @@ static MsgInfo *imap_parse_envelope(SockInfo *sock, GString *line_str)
 			cur_pos = imap_parse_address(sock, cur_pos + 1,
 						     &tmp_from, &tmp_fromname,
 						     line_str);
+			g_return_val_if_fail(cur_pos != NULL, NULL);
 			Xstrdup_a(from, tmp_from,
 				  {g_free(tmp_from); g_free(tmp_fromname);
 				   return NULL;});
@@ -1747,6 +1748,7 @@ static MsgInfo *imap_parse_envelope(SockInfo *sock, GString *line_str)
 	g_return_val_if_fail(*cur_pos == ' ', NULL); \
 	cur_pos = imap_parse_address(sock, cur_pos + 1, NULL, NULL, \
 				     line_str); \
+	g_return_val_if_fail(cur_pos != NULL, NULL); \
 }
 
 			/* skip sender and reply-to */
@@ -1756,6 +1758,7 @@ static MsgInfo *imap_parse_envelope(SockInfo *sock, GString *line_str)
 			g_return_val_if_fail(*cur_pos == ' ', NULL);
 			cur_pos = imap_parse_address(sock, cur_pos + 1,
 						     &tmp_to, NULL, line_str);
+			g_return_val_if_fail(cur_pos != NULL, NULL);
 			Xstrdup_a(to, tmp_to, {g_free(tmp_to); return NULL;});
 			g_free(tmp_to);
 
@@ -1768,6 +1771,7 @@ static MsgInfo *imap_parse_envelope(SockInfo *sock, GString *line_str)
 			g_return_val_if_fail(*cur_pos == ' ', NULL);
 			cur_pos = imap_parse_atom
 				(sock, cur_pos, buf, sizeof(buf), line_str);
+			g_return_val_if_fail(cur_pos != NULL, NULL);
 			if (buf[0] != '\0') {
 				eliminate_parenthesis(buf, '(', ')');
 				extract_parenthesis(buf, '<', '>');
@@ -1778,6 +1782,7 @@ static MsgInfo *imap_parse_envelope(SockInfo *sock, GString *line_str)
 			g_return_val_if_fail(*cur_pos == ' ', NULL);
 			cur_pos = imap_parse_atom
 				(sock, cur_pos, buf, sizeof(buf), line_str);
+			g_return_val_if_fail(cur_pos != NULL, NULL);
 			if (buf[0] != '\0') {
 				extract_parenthesis(buf, '<', '>');
 				remove_space(buf);

@@ -435,14 +435,15 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_File/_Save as..."),		NULL, save_as_cb, 0, NULL},
 	{N_("/_File/_Print..."),		"<alt>P", print_cb, 0, NULL},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
-/*	{N_("/_File/_Close"),			"<alt>W", app_exit_cb, 0, NULL},*/
+	/* {N_("/_File/_Close"),		"<alt>W", app_exit_cb, 0, NULL}, */
 	{N_("/_File/E_xit"),			"<alt>Q", app_exit_cb, 0, NULL},
 
 	{N_("/_Edit"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_Edit/_Copy"),			"<control>C", copy_cb, 0, NULL},
 	{N_("/_Edit/Select _all"),		"<control>A", allsel_cb, 0, NULL},
 	{N_("/_Edit/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Edit/_Find in current message"),	"<control>F", search_cb, 0, NULL},
+	{N_("/_Edit/_Find in current message..."),
+						"<control>F", search_cb, 0, NULL},
 	{N_("/_Edit/_Search folder..."),	"<control>S", search_cb, 1, NULL},
 
 	{N_("/_View"),				NULL, NULL, 0, "<Branch>"},
@@ -452,18 +453,61 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/_Toolbar/Icon _and text"),	NULL, toggle_toolbar_cb, TOOLBAR_BOTH, "<RadioItem>"},
 	{N_("/_View/_Toolbar/_Icon"),		NULL, toggle_toolbar_cb, TOOLBAR_ICON, "/View/Toolbar/Icon and text"},
 	{N_("/_View/_Toolbar/_Text"),		NULL, toggle_toolbar_cb, TOOLBAR_TEXT, "/View/Toolbar/Icon and text"},
-	{N_("/_View/_Toolbar/_None"),	        NULL, toggle_toolbar_cb, TOOLBAR_NONE, "/View/Toolbar/Icon and text"},
-	{N_("/_View/_Status bar"),		NULL, toggle_statusbar_cb, 0, "<ToggleItem>"},
+	{N_("/_View/_Toolbar/_None"),		NULL, toggle_toolbar_cb, TOOLBAR_NONE, "/View/Toolbar/Icon and text"},
+	{N_("/_View/Status _bar"),		NULL, toggle_statusbar_cb, 0, "<ToggleItem>"},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/Separate f_older tree"),	NULL, NULL, SEPARATE_ACTION + SEPARATE_FOLDER, "<ToggleItem>"},
 	{N_("/_View/Separate m_essage view"),	NULL, NULL, SEPARATE_ACTION + SEPARATE_MESSAGE, "<ToggleItem>"},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/View _source"),		"<control>U", view_source_cb, 0, NULL},
-	{N_("/_View/Show all _header"),		"<control>H", header_window_show_cb, 0, NULL},
+	{N_("/_View/_Sort"),			NULL, NULL, 0, "<Branch>"},
+	{N_("/_View/_Sort/Sort by _number"),	NULL, sort_summary_cb, SORT_BY_NUMBER, NULL},
+	{N_("/_View/_Sort/Sort by s_ize"),	NULL, sort_summary_cb, SORT_BY_SIZE, NULL},
+	{N_("/_View/_Sort/Sort by _date"),	NULL, sort_summary_cb, SORT_BY_DATE, NULL},
+	{N_("/_View/_Sort/Sort by _from"),	NULL, sort_summary_cb, SORT_BY_FROM, NULL},
+	{N_("/_View/_Sort/Sort by _subject"),NULL, sort_summary_cb, SORT_BY_SUBJECT, NULL},
+	{N_("/_View/_Sort/Sort by _color label"),
+						NULL, sort_summary_cb, SORT_BY_LABEL, NULL},
+	{N_("/_View/_Sort/Sort by _mark"),	NULL, sort_summary_cb, SORT_BY_MARK, NULL},
+	{N_("/_View/_Sort/Sort by _unread"),	NULL, sort_summary_cb, SORT_BY_UNREAD, NULL},
+	{N_("/_View/_Sort/Sort by a_ttachment"),
+						NULL, sort_summary_cb, SORT_BY_MIME, NULL},
+	{N_("/_View/_Sort/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/_Sort/_Attract by subject"),
+						NULL, attract_by_subject_cb, 0, NULL},
+	{N_("/_View/Th_read view"),		"<control>T",	     thread_cb, 0, NULL},
+	{N_("/_View/U_nthread view"),		"<shift><control>T", thread_cb, 1, NULL},
+	{N_("/_View/Set display _item..."),	NULL, set_display_item_cb, 0, NULL},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Code set"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/_Code set/_Auto detect"),
 	 NULL, set_charset_cb, C_AUTO, "<RadioItem>"},
+	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/_Go to"),		NULL, NULL, 0, "<Branch>"},
+	{N_("/_View/_Go to/_Prev message"),	NULL, prev_cb, 0, NULL},
+	{N_("/_View/_Go to/_Next message"),	NULL, next_cb, 0, NULL},
+	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/_Go to/P_rev unread message"),
+						NULL, prev_unread_cb, 0, NULL},
+	{N_("/_View/_Go to/N_ext unread message"),
+						NULL, next_unread_cb, 0, NULL},
+	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/_Go to/Prev _marked message"),
+						NULL, prev_marked_cb, 0, NULL},
+	{N_("/_View/_Go to/Next m_arked message"),
+						NULL, next_marked_cb, 0, NULL},
+	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/_Go to/Prev _labeled message"),
+						NULL, prev_labeled_cb, 0, NULL},
+	{N_("/_View/_Go to/Next la_beled message"),
+						NULL, next_labeled_cb, 0, NULL},
+	{N_("/_View/_Go to/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/_Go to/Other _folder..."),	"<alt>G", goto_folder_cb, 0, NULL},
+	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/Open in new _window"),	"<shift><control>N", open_msg_cb, 0, NULL},
+	{N_("/_View/_View source"),		"<control>U", view_source_cb, 0, NULL},
+	{N_("/_View/Show all _header"),		"<control>H", header_window_show_cb, 0, NULL},
+	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/_Update"),			"<alt>U", update_summary_cb,  0, NULL},
 
 #define CODESET_SEPARATOR \
 	{N_("/_View/_Code set/---"),		NULL, NULL, 0, "<Separator>"}
@@ -541,7 +585,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 #undef CODESET_ACTION
 
 	{N_("/_Message"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Message/Get new ma_il"),	        "<alt>I",	inc_mail_cb, 0, NULL},
+	{N_("/_Message/Get new ma_il"),	"<alt>I",	inc_mail_cb, 0, NULL},
 	{N_("/_Message/Get from _all accounts"),
 						"<shift><alt>I", inc_all_account_mail_cb, 0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
@@ -563,6 +607,9 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/_Copy..."),		NULL, copy_to_cb, 0, NULL},
 	{N_("/_Message/_Delete"),		"<alt>D", delete_cb,  0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Message/Delete du_plicated messages"),
+						NULL, delete_duplicated_cb,   0, NULL},
+	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/_Mark"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Message/_Mark/_Mark"),		NULL, mark_cb,   0, NULL},
 	{N_("/_Message/_Mark/_Unmark"),		NULL, unmark_cb, 0, NULL},
@@ -570,59 +617,17 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/_Mark/Mark as unr_ead"),	NULL, mark_as_unread_cb, 0, NULL},
 	{N_("/_Message/_Mark/Mark as rea_d"),
 						NULL, mark_as_read_cb, 0, NULL},
-	{N_("/_Message/_Mark/Mark all read"),	NULL, mark_all_read_cb, 0, NULL},                                                
-	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/Open in new _window"),	"<shift><control>N", open_msg_cb, 0, NULL},
-
-	{N_("/_Summary"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Summary/_Hide read messages"), 	NULL, hide_read_messages, 0, "<ToggleItem>"},
-	{N_("/_Summary/_Delete duplicated messages"),
-						NULL, delete_duplicated_cb,   0, NULL},
-	{N_("/_Summary/_Filter messages"),	NULL, filter_cb, 0, NULL},
-	{N_("/_Summary/E_xecute"),		"<alt>X", execute_summary_cb, 0, NULL},
-	{N_("/_Summary/_Update"),		"<alt>U", update_summary_cb,  0, NULL},
-	{N_("/_Summary/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Summary/Go _to"),		NULL, NULL, 0, "<Branch>"},
-	{N_("/_Summary/Go _to/_Prev message"),	NULL, prev_cb, 0, NULL},
-	{N_("/_Summary/Go _to/_Next message"),	NULL, next_cb, 0, NULL},
-	{N_("/_Summary/Go _to/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Summary/Go _to/P_rev unread message"),
-						NULL, prev_unread_cb, 0, NULL},
-	{N_("/_Summary/Go _to/N_ext unread message"),
-						NULL, next_unread_cb, 0, NULL},
-	{N_("/_Summary/Go _to/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Summary/Go _to/Prev _marked message"),
-						NULL, prev_marked_cb, 0, NULL},
-	{N_("/_Summary/Go _to/Next m_arked message"),
-						NULL, next_marked_cb, 0, NULL},
-	{N_("/_Summary/Go _to/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Summary/Go _to/Prev _labeled message"),
-						NULL, prev_labeled_cb, 0, NULL},
-	{N_("/_Summary/Go _to/Next la_beled message"),
-						NULL, next_labeled_cb, 0, NULL},
-	{N_("/_Summary/_Go to other folder..."),"<alt>G", goto_folder_cb, 0, NULL},
-	{N_("/_Summary/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Summary/_Sort"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Summary/_Sort/Sort by _number"),	NULL, sort_summary_cb, SORT_BY_NUMBER, NULL},
-	{N_("/_Summary/_Sort/Sort by s_ize"),	NULL, sort_summary_cb, SORT_BY_SIZE, NULL},
-	{N_("/_Summary/_Sort/Sort by _date"),	NULL, sort_summary_cb, SORT_BY_DATE, NULL},
-	{N_("/_Summary/_Sort/Sort by _from"),	NULL, sort_summary_cb, SORT_BY_FROM, NULL},
-	{N_("/_Summary/_Sort/Sort by _subject"),NULL, sort_summary_cb, SORT_BY_SUBJECT, NULL},
-	{N_("/_Summary/_Sort/Sort by _color label"),
-						NULL, sort_summary_cb, SORT_BY_LABEL, NULL},
-	{N_("/_Summary/_Sort/Sort by _mark"),	NULL, sort_summary_cb, SORT_BY_MARK, NULL},
-	{N_("/_Summary/_Sort/Sort by _unread"),	NULL, sort_summary_cb, SORT_BY_UNREAD, NULL},
-	{N_("/_Summary/_Sort/Sort by a_ttachment"),
-						NULL, sort_summary_cb, SORT_BY_MIME, NULL},
-	{N_("/_Summary/_Sort/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Summary/_Sort/_Attract by subject"),
-						NULL, attract_by_subject_cb, 0, NULL},
-	{N_("/_Summary/_Thread view"),		"<control>T",	     thread_cb, 0, NULL},
-	{N_("/_Summary/Unt_hread view"),	"<shift><control>T", thread_cb, 1, NULL},
-	{N_("/_Summary/Set display _item..."),	NULL, set_display_item_cb, 0, NULL},
+	{N_("/_Message/_Mark/Mark all _read"),	NULL, mark_all_read_cb, 0, NULL},
 
 	{N_("/_Tool"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tool/_Address book"),		"<alt>A", addressbook_open_cb, 0, NULL},
+	{N_("/_Tool/Add sender to address boo_k"),
+						NULL, add_address_cb, 0, NULL},
+	{N_("/_Tool/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Tool/_Filter messages"),		NULL, filter_cb, 0, NULL},
+	{N_("/_Tool/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Tool/E_xecute"),			"<alt>X", execute_summary_cb, 0, NULL},
+	{N_("/_Tool/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tool/_Log window"),		"<alt>L", log_window_show_cb, 0, NULL},
 
 	{N_("/_Configuration"),			NULL, NULL, 0, "<Branch>"},
@@ -645,7 +650,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Configuration/C_hange current account"),
 						NULL, NULL, 0, "<Branch>"},
 
-	{N_("/_Help"),				NULL, NULL, 0, "<LastBranch>"},
+	{N_("/_Help"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_Help/_Manual"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Help/_Manual/_English"),		NULL, manual_open_cb, MANUAL_LANG_EN, NULL},
 	{N_("/_Help/_Manual/_Japanese"),	NULL, manual_open_cb, MANUAL_LANG_JA, NULL},
@@ -930,13 +935,10 @@ MainWindow *main_window_create(SeparateType type)
 					   GUINT_TO_POINTER(SEPARATE_MESSAGE));
 
 
-	menu_set_sensitive(ifactory, "/Summary/Thread view",
+	menu_set_sensitive(ifactory, "/View/Thread view",
 			   prefs_common.enable_thread ? FALSE : TRUE);
-	menu_set_sensitive(ifactory, "/Summary/Unthread view",
+	menu_set_sensitive(ifactory, "/View/Unthread view",
 			   prefs_common.enable_thread ? TRUE : FALSE);
-	
-	/*main_window_set_thread_option(mainwin);*/
-
 
 	/* set account selection menu */
 	ac_menu = gtk_item_factory_get_widget
@@ -953,7 +955,6 @@ MainWindow *main_window_create(SeparateType type)
 				 prefs_common.mainwin_y);
 	gtk_widget_set_usize(window, prefs_common.mainwin_width,
 			     prefs_common.mainwin_height);
-			     
 	gtk_widget_show(mainwin->window);
 
 	/* initialize views */
@@ -962,7 +963,6 @@ MainWindow *main_window_create(SeparateType type)
 	messageview_init(messageview);
 	header_window_init(mainwin->headerwin);
 	log_window_init(mainwin->logwin);
-
 
 	mainwin->lock_count = 0;
 	mainwin->cursor_count = 0;
@@ -1440,15 +1440,26 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/File/Empty trash"           , M_UNLOCKED},
 		{"/File/Save as...", M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 		{"/File/Print..."  , M_TARGET_EXIST|M_UNLOCKED},
-/*		{"/File/Close", M_UNLOCKED},*/
+		/* {"/File/Close", M_UNLOCKED}, */
 		{"/File/Exit" , M_UNLOCKED},
 
-		{"/View/Show all header"      , M_SINGLE_TARGET_EXIST},
-		{"/View/View source"          , M_SINGLE_TARGET_EXIST},
+		{"/View/Sort"                      , M_MSG_EXIST},
+		{"/View/Thread view"               , M_UNTHREADED},
+		{"/View/Unthread view"             , M_THREADED},
+		{"/View/Go to"                     , M_MSG_EXIST},
+		{"/View/Go to/Prev message"        , M_MSG_EXIST},
+		{"/View/Go to/Next message"        , M_MSG_EXIST},
+		{"/View/Go to/Next unread message" , M_MSG_EXIST},
+		{"/View/Go to/Prev marked message" , M_MSG_EXIST},
+		{"/View/Go to/Next marked message" , M_MSG_EXIST},
+		{"/View/Go to/Prev labeled message", M_MSG_EXIST},
+		{"/View/Go to/Next labeled message", M_MSG_EXIST},
+		{"/View/Open in new window"        , M_SINGLE_TARGET_EXIST},
+		{"/View/Show all header"           , M_SINGLE_TARGET_EXIST},
+		{"/View/View source"               , M_SINGLE_TARGET_EXIST},
 
 		{"/Message/Get new mail"          , M_HAVE_ACCOUNT|M_UNLOCKED},
 		{"/Message/Get from all accounts" , M_HAVE_ACCOUNT|M_UNLOCKED},
-/*		{"/Message/Compose new message"   , M_HAVE_ACCOUNT}, */
 		{"/Message/Compose a news message", M_HAVE_NEWS_ACCOUNT},
 		{"/Message/Reply"                 , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{"/Message/Reply to sender"       , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
@@ -1456,33 +1467,22 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Follow-up and reply to", M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST|M_NEWS},
 		{"/Message/Forward"               , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
         	{"/Message/Bounce"		  , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Message/Open in new window"    , M_SINGLE_TARGET_EXIST},
 		{"/Message/Re-edit", M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
 		{"/Message/Move...", M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Message/Copy...", M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Message/Delete" , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Message/Mark"   , M_TARGET_EXIST},
+		{"/Message/Delete duplicated messages", M_MSG_EXIST|M_EXEC|M_UNLOCKED},
 
-		{"/Summary/Delete duplicated messages", M_MSG_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Summary/Filter messages"           , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Summary/Execute"                   , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Summary/Go to"                     , M_MSG_EXIST},
-		{"/Summary/Go to/Prev message"        , M_MSG_EXIST},
-		{"/Summary/Go to/Next message"        , M_MSG_EXIST},
-		{"/Summary/Go to/Next unread message" , M_MSG_EXIST},
-		{"/Summary/Go to/Prev marked message" , M_MSG_EXIST},
-		{"/Summary/Go to/Next marked message" , M_MSG_EXIST},
-		{"/Summary/Go to/Prev labeled message", M_MSG_EXIST},
-		{"/Summary/Go to/Next labeled message", M_MSG_EXIST},
-		{"/Summary/Sort"                      , M_MSG_EXIST},
-		{"/Summary/Thread view"               ,	M_UNTHREADED},
-		{"/Summary/Unthread view"             , M_THREADED},
+		{"/Tool/Add sender to address book", M_SINGLE_TARGET_EXIST},
+		{"/Tool/Filter messages"           , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Tool/Execute"                   , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
 
 		{"/Configuration", M_UNLOCKED},
 
 		{NULL, 0}
 	};
-	
+
 	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
 	state = main_window_get_current_state(mainwin);
 
@@ -1559,8 +1559,10 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 	/* create separated window(s) if needed */
 	if (type & SEPARATE_FOLDER) {
 		folderwin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-		gtk_window_set_title(GTK_WINDOW(folderwin), _("Sylpheed - folder view"));
-		gtk_window_set_wmclass(GTK_WINDOW(folderwin), "separate folderview", "Sylpheed");
+		gtk_window_set_title(GTK_WINDOW(folderwin),
+				     _("Sylpheed - Folder View"));
+		gtk_window_set_wmclass(GTK_WINDOW(folderwin),
+				       "folder_view", "Sylpheed");
 		gtk_window_set_policy(GTK_WINDOW(folderwin),
 				      TRUE, TRUE, FALSE);
 		gtk_widget_set_usize(folderwin, -1,
@@ -1573,8 +1575,10 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 	}
 	if (type & SEPARATE_MESSAGE) {
 		messagewin = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-		gtk_window_set_title(GTK_WINDOW(messagewin), _("Sylpheed - message view"));
-		gtk_window_set_wmclass(GTK_WINDOW(messagewin), "separate messageview", "Sylpheed");
+		gtk_window_set_title(GTK_WINDOW(messagewin),
+				     _("Sylpheed - Message View"));
+		gtk_window_set_wmclass(GTK_WINDOW(messagewin),
+				       "message_view", "Sylpheed");
 		gtk_window_set_policy(GTK_WINDOW(messagewin),
 				      TRUE, TRUE, FALSE);
 		gtk_widget_set_usize
@@ -2698,13 +2702,13 @@ static void thread_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 	if (0 == action) {
 		summary_thread_build(mainwin->summaryview);
 		mainwin->summaryview->folder_item->threaded = TRUE;
-		menu_set_sensitive(ifactory, "/Summary/Thread view",   FALSE);
-		menu_set_sensitive(ifactory, "/Summary/Unthread view", TRUE);
+		menu_set_sensitive(ifactory, "/View/Thread view",   FALSE);
+		menu_set_sensitive(ifactory, "/View/Unthread view", TRUE);
 	} else {
 		summary_unthread(mainwin->summaryview);
 		mainwin->summaryview->folder_item->threaded = FALSE;
-		menu_set_sensitive(ifactory, "/Summary/Thread view",   TRUE);
-		menu_set_sensitive(ifactory, "/Summary/Unthread view", FALSE);
+		menu_set_sensitive(ifactory, "/View/Thread view",   TRUE);
+		menu_set_sensitive(ifactory, "/View/Unthread view", FALSE);
 	}
 }
 

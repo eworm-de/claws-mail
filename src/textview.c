@@ -28,7 +28,6 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtktext.h>
 #include <gtk/gtksignal.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -41,6 +40,7 @@
 #include "procheader.h"
 #include "prefs_common.h"
 #include "codeconv.h"
+#include "gtkstext.h"
 #include "utils.h"
 #include "gtkutils.h"
 #include "procmime.h"
@@ -160,15 +160,15 @@ TextView *textview_create(void)
 	gtk_widget_set_usize(scrolledwin_sb, prefs_common.mainview_width, -1);
 	gtk_widget_set_usize(scrolledwin_mb, prefs_common.mainview_width, -1);
 
-	/* create GtkText widgets for single-byte and multi-byte character */
-	text_sb = gtk_text_new(NULL, NULL);
-	text_mb = gtk_text_new(NULL, NULL);
-	GTK_TEXT(text_sb)->default_tab_width = 8;
-	GTK_TEXT(text_mb)->default_tab_width = 8;
+	/* create GtkSText widgets for single-byte and multi-byte character */
+	text_sb = gtk_stext_new(NULL, NULL);
+	text_mb = gtk_stext_new(NULL, NULL);
+	GTK_STEXT(text_sb)->default_tab_width = 8;
+	GTK_STEXT(text_mb)->default_tab_width = 8;
 	gtk_widget_show(text_sb);
 	gtk_widget_show(text_mb);
-	gtk_text_set_word_wrap(GTK_TEXT(text_sb), TRUE);
-	gtk_text_set_word_wrap(GTK_TEXT(text_mb), TRUE);
+	gtk_stext_set_word_wrap(GTK_STEXT(text_sb), TRUE);
+	gtk_stext_set_word_wrap(GTK_STEXT(text_mb), TRUE);
 	gtk_widget_ensure_style(text_sb);
 	gtk_widget_ensure_style(text_mb);
 	if (text_sb->style && text_sb->style->font->type == GDK_FONT_FONTSET) {
@@ -278,7 +278,7 @@ void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 
 void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 {
-	GtkText *text;
+	GtkSText *text;
 	gchar buf[BUFFSIZE];
 	const gchar *boundary = NULL;
 	gint boundary_len = 0;
@@ -361,8 +361,8 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	conv = conv_code_converter_new(charset);
 
 	textview_clear(textview);
-	text = GTK_TEXT(textview->text);
-	gtk_text_freeze(text);
+	text = GTK_STEXT(textview->text);
+	gtk_stext_freeze(text);
 
 	textview->body_pos = 0;
 	textview->cur_pos  = 0;
@@ -386,23 +386,23 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 
 	conv_code_converter_destroy(conv);
 
-	gtk_text_thaw(text);
+	gtk_stext_thaw(text);
 }
 
 #define TEXT_INSERT(str) \
-	gtk_text_insert(text, textview->msgfont, NULL, NULL, str, -1)
+	gtk_stext_insert(text, textview->msgfont, NULL, NULL, str, -1)
 
 void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 {
-	GtkText *text;
+	GtkSText *text;
 
 	if (!partinfo) return;
 
 	textview_set_font(textview, NULL);
-	text = GTK_TEXT(textview->text);
+	text = GTK_STEXT(textview->text);
 	textview_clear(textview);
 
-	gtk_text_freeze(text);
+	gtk_stext_freeze(text);
 
 	TEXT_INSERT(_("To save this part, pop up the context menu with "));
 	TEXT_INSERT(_("right click and select `Save as...', "));
@@ -416,21 +416,21 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	TEXT_INSERT(_("or double-click, or click the center button, "));
 	TEXT_INSERT(_("or press `l' key."));
 
-	gtk_text_thaw(text);
+	gtk_stext_thaw(text);
 }
 
 #if USE_GPGME
 void textview_show_signature_part(TextView *textview, MimeInfo *partinfo)
 {
-	GtkText *text;
+	GtkSText *text;
 
 	if (!partinfo) return;
 
 	textview_set_font(textview, NULL);
-	text = GTK_TEXT(textview->text);
+	text = GTK_STEXT(textview->text);
 	textview_clear(textview);
 
-	gtk_text_freeze(text);
+	gtk_stext_freeze(text);
 
 	if (partinfo->sigstatus_full == NULL) {
 		TEXT_INSERT(_("This signature has not been checked yet.\n"));
@@ -440,7 +440,7 @@ void textview_show_signature_part(TextView *textview, MimeInfo *partinfo)
 		TEXT_INSERT(partinfo->sigstatus_full);
 	}
 
-	gtk_text_thaw(text);
+	gtk_stext_thaw(text);
 }
 #endif /* USE_GPGME */
 
@@ -696,7 +696,7 @@ static gchar *make_email_string(const gchar *bp, const gchar *ep)
 		last->next = NULL; \
 	} else { \
 		g_warning("alloc error scanning URIs\n"); \
-		gtk_text_insert(text, textview->msgfont, fg_color, NULL, \
+		gtk_stext_insert(text, textview->msgfont, fg_color, NULL, \
 				linebuf, -1); \
 		return; \
 	}
@@ -743,7 +743,7 @@ static void textview_make_clickable_parts(TextView *textview,
 		struct txtpos	*next;		/* next */
 	} head = {NULL, NULL, 0,  NULL}, *last = &head;
 
-	GtkText *text = GTK_TEXT(textview->text);
+	GtkSText *text = GTK_STEXT(textview->text);
 
 	/* parse for clickable parts, and build a list of begin and end positions  */
 	for (walk = linebuf, n = 0;;) {
@@ -787,25 +787,25 @@ static void textview_make_clickable_parts(TextView *textview,
 
 			uri = g_new(RemoteURI, 1);
 			if (last->bp - normal_text > 0)
-				gtk_text_insert(text, font,
+				gtk_stext_insert(text, font,
 						fg_color, NULL,
 						normal_text,
 						last->bp - normal_text);
-			uri->uri = parser[last->pti].build_uri(last->bp, 
+			uri->uri = parser[last->pti].build_uri(last->bp,
 							       last->ep);
-			uri->start = gtk_text_get_point(text);
-			gtk_text_insert(text, font, uri_color,
+			uri->start = gtk_stext_get_point(text);
+			gtk_stext_insert(text, font, uri_color,
 					NULL, last->bp, last->ep - last->bp);
-			uri->end = gtk_text_get_point(text);
+			uri->end = gtk_stext_get_point(text);
 			textview->uri_list =
 				g_slist_append(textview->uri_list, uri);
 		}
 
 		if (*normal_text)
-			gtk_text_insert(text, font, fg_color,
+			gtk_stext_insert(text, font, fg_color,
 					NULL, normal_text, -1);
 	} else
-		gtk_text_insert(text, font, fg_color, NULL, linebuf, -1);
+		gtk_stext_insert(text, font, fg_color, NULL, linebuf, -1);
 }
 
 #undef ADD_TXT_POS
@@ -816,7 +816,7 @@ static void textview_write_link(TextView *textview, const gchar *url,
 {
     GdkColor *link_color = NULL;
     RemoteURI* uri;
-    GtkText *text = GTK_TEXT(textview->text);
+    GtkSText *text = GTK_STEXT(textview->text);
     gchar buf[BUFFSIZE];
 
     /* this part is taken from textview_write_line. Right now the only place
@@ -824,7 +824,7 @@ static void textview_write_link(TextView *textview, const gchar *url,
     if (!conv)
 	    strncpy2(buf, str, sizeof(buf));
     else if (conv_convert(conv, buf, sizeof(buf), str) < 0) {
-       	    gtk_text_insert(text, textview->msgfont,
+       	    gtk_stext_insert(text, textview->msgfont,
 		            prefs_common.enable_color
 		            ? &error_color : NULL, NULL,
 		            "*** Warning: code conversion failed ***\n",
@@ -838,17 +838,17 @@ static void textview_write_link(TextView *textview, const gchar *url,
     }
     uri = g_new(RemoteURI, 1);
     uri->uri = g_strdup(url);
-    uri->start = gtk_text_get_point(text);
-    gtk_text_insert(text, textview->msgfont, link_color, NULL, buf,
+    uri->start = gtk_stext_get_point(text);
+    gtk_stext_insert(text, textview->msgfont, link_color, NULL, buf,
 	            strlen(buf));
-    uri->end = gtk_text_get_point(text);
+    uri->end = gtk_stext_get_point(text);
     textview->uri_list = g_slist_append(textview->uri_list, uri);
 }
 
 static void textview_write_line(TextView *textview, const gchar *str,
 				CodeConverter *conv)
 {
-	GtkText *text = GTK_TEXT(textview->text);
+	GtkSText *text = GTK_STEXT(textview->text);
 	gchar buf[BUFFSIZE];
 	GdkColor *fg_color;
 	gint quotelevel = -1;
@@ -856,7 +856,7 @@ static void textview_write_line(TextView *textview, const gchar *str,
 	if (!conv)
 		strncpy2(buf, str, sizeof(buf));
 	else if (conv_convert(conv, buf, sizeof(buf), str) < 0) {
-		gtk_text_insert(text, textview->msgfont,
+		gtk_stext_insert(text, textview->msgfont,
 				prefs_common.enable_color
 				? &error_color : NULL, NULL,
 				"*** Warning: code conversion failed ***\n",
@@ -891,7 +891,7 @@ static void textview_write_line(TextView *textview, const gchar *str,
 		fg_color = &quote_colors[quotelevel];
 
 	if (prefs_common.head_space && spacingfont && buf[0] != '\n')
-		gtk_text_insert(text, spacingfont, NULL, NULL, " ", 1);
+		gtk_stext_insert(text, spacingfont, NULL, NULL, " ", 1);
 
 	if (prefs_common.enable_color)
 		textview_make_clickable_parts(textview, textview->msgfont,
@@ -903,12 +903,12 @@ static void textview_write_line(TextView *textview, const gchar *str,
 
 void textview_clear(TextView *textview)
 {
-	GtkText *text = GTK_TEXT(textview->text);
+	GtkSText *text = GTK_STEXT(textview->text);
 
-	gtk_text_freeze(text);
-	gtk_text_set_point(text, 0);
-	gtk_text_forward_delete(text, gtk_text_get_length(text));
-	gtk_text_thaw(text);
+	gtk_stext_freeze(text);
+	gtk_stext_set_point(text, 0);
+	gtk_stext_forward_delete(text, gtk_stext_get_length(text));
+	gtk_stext_thaw(text);
 
 	textview_uri_list_remove_all(textview->uri_list);
 	textview->uri_list = NULL;
@@ -939,7 +939,7 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 {
 	gboolean use_fontset = TRUE;
 
-	/* In multi-byte mode, GtkText can't display 8bit characters
+	/* In multi-byte mode, GtkSText can't display 8bit characters
 	   correctly, so it must be single-byte mode. */
 	if (MB_CUR_MAX > 1) {
 		if (codeset) {
@@ -1037,7 +1037,7 @@ void textview_set_position(TextView *textview, gint pos)
 {
 	if (pos < 0) {
 		textview->cur_pos =
-			gtk_text_get_length(GTK_TEXT(textview->text));
+			gtk_stext_get_length(GTK_STEXT(textview->text));
 	} else {
 		textview->cur_pos = pos;
 	}
@@ -1098,22 +1098,22 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 
 static void textview_show_header(TextView *textview, GPtrArray *headers)
 {
-	GtkText *text = GTK_TEXT(textview->text);
+	GtkSText *text = GTK_STEXT(textview->text);
 	Header *header;
 	gint i;
 
 	g_return_if_fail(headers != NULL);
 
-	gtk_text_freeze(text);
+	gtk_stext_freeze(text);
 
 	for (i = 0; i < headers->len; i++) {
 		header = g_ptr_array_index(headers, i);
 		g_return_if_fail(header->name != NULL);
 
-		gtk_text_insert(text, textview->boldfont, NULL, NULL,
+		gtk_stext_insert(text, textview->boldfont, NULL, NULL,
 				header->name, -1);
 		if (header->name[strlen(header->name) - 1] != ' ')
-			gtk_text_insert(text, textview->boldfont,
+			gtk_stext_insert(text, textview->boldfont,
 					NULL, NULL, " ", 1);
 
 		if (procheader_headername_equal(header->name, "Subject") ||
@@ -1127,7 +1127,7 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 		     procheader_headername_equal(header->name,
 						 "X-Newsreader")) &&
 		    strstr(header->body, "Sylpheed") != NULL)
-			gtk_text_insert(text, NULL, &emphasis_color, NULL,
+			gtk_stext_insert(text, NULL, &emphasis_color, NULL,
 					header->body, -1);
 		else if (prefs_common.enable_color) {
 			textview_make_clickable_parts(textview,
@@ -1138,18 +1138,18 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 						      NULL, NULL, NULL,
 						      header->body);
 		}
-		gtk_text_insert(text, textview->msgfont, NULL, NULL, "\n", 1);
+		gtk_stext_insert(text, textview->msgfont, NULL, NULL, "\n", 1);
 	}
 
-	gtk_text_insert(text, textview->msgfont, NULL, NULL, "\n", 1);
-	gtk_text_thaw(text);
-	textview->body_pos = gtk_text_get_length(text);
+	gtk_stext_insert(text, textview->msgfont, NULL, NULL, "\n", 1);
+	gtk_stext_thaw(text);
+	textview->body_pos = gtk_stext_get_length(text);
 }
 
 gboolean textview_search_string(TextView *textview, const gchar *str,
 				gboolean case_sens)
 {
-	GtkText *text = GTK_TEXT(textview->text);
+	GtkSText *text = GTK_STEXT(textview->text);
 	gint pos;
 	wchar_t *wcs;
 	gint len;
@@ -1164,7 +1164,7 @@ gboolean textview_search_string(TextView *textview, const gchar *str,
 	pos = textview->cur_pos;
 	if (pos < textview->body_pos)
 		pos = textview->body_pos;
-	text_len = gtk_text_get_length(text);
+	text_len = gtk_stext_get_length(text);
 	if (text_len - pos < len) {
 		g_free(wcs);
 		return FALSE;
@@ -1172,7 +1172,7 @@ gboolean textview_search_string(TextView *textview, const gchar *str,
 
 	for (; pos < text_len; pos++) {
 		if (text_len - pos < len) break;
-		if (gtkut_text_match_string(GTK_TEXT(text), pos, wcs, len, case_sens)
+		if (gtkut_stext_match_string(text, pos, wcs, len, case_sens)
 		    == TRUE) {
 			gtk_editable_set_position(GTK_EDITABLE(text),
 						  pos + len);
@@ -1192,7 +1192,7 @@ gboolean textview_search_string(TextView *textview, const gchar *str,
 gboolean textview_search_string_backward(TextView *textview, const gchar *str,
 					 gboolean case_sens)
 {
-	GtkText *text = GTK_TEXT(textview->text);
+	GtkSText *text = GTK_STEXT(textview->text);
 	gint pos;
 	wchar_t *wcs;
 	gint len;
@@ -1205,7 +1205,7 @@ gboolean textview_search_string_backward(TextView *textview, const gchar *str,
 	g_return_val_if_fail(wcs != NULL, FALSE);
 	len = wcslen(wcs);
 	pos = textview->cur_pos;
-	text_len = gtk_text_get_length(text);
+	text_len = gtk_stext_get_length(text);
 	if (text_len - textview->body_pos < len) {
 		g_free(wcs);
 		return FALSE;
@@ -1214,7 +1214,7 @@ gboolean textview_search_string_backward(TextView *textview, const gchar *str,
 		pos = text_len - len;
 
 	for (; pos >= textview->body_pos; pos--) {
-		if (gtkut_text_match_string(GTK_TEXT(text), pos, wcs, len, case_sens)
+		if (gtkut_stext_match_string(text, pos, wcs, len, case_sens)
 		    == TRUE) {
 			gtk_editable_set_position(GTK_EDITABLE(text), pos);
 			gtk_editable_select_region(GTK_EDITABLE(text),
@@ -1232,7 +1232,7 @@ gboolean textview_search_string_backward(TextView *textview, const gchar *str,
 
 void textview_scroll_one_line(TextView *textview, gboolean up)
 {
-	GtkText *text = GTK_TEXT(textview->text);
+	GtkSText *text = GTK_STEXT(textview->text);
 	gfloat upper;
 
 	if (prefs_common.enable_smooth_scroll) {
@@ -1264,7 +1264,7 @@ void textview_scroll_one_line(TextView *textview, gboolean up)
 
 gboolean textview_scroll_page(TextView *textview, gboolean up)
 {
-	GtkText *text = GTK_TEXT(textview->text);
+	GtkSText *text = GTK_STEXT(textview->text);
 	gfloat upper;
 	gfloat page_incr;
 
@@ -1302,7 +1302,7 @@ static void textview_smooth_scroll_do(TextView *textview,
 				      gfloat old_value, gfloat last_value,
 				      gint step)
 {
-	GtkText *text = GTK_TEXT(textview->text);
+	GtkSText *text = GTK_STEXT(textview->text);
 	gint change_value;
 	gboolean up;
 	gint i;
@@ -1331,7 +1331,7 @@ static void textview_smooth_scroll_do(TextView *textview,
 
 static void textview_smooth_scroll_one_line(TextView *textview, gboolean up)
 {
-	GtkText *text = GTK_TEXT(textview->text);
+	GtkSText *text = GTK_STEXT(textview->text);
 	gfloat upper;
 	gfloat old_value;
 	gfloat last_value;
@@ -1364,7 +1364,7 @@ static void textview_smooth_scroll_one_line(TextView *textview, gboolean up)
 
 static gboolean textview_smooth_scroll_page(TextView *textview, gboolean up)
 {
-	GtkText *text = GTK_TEXT(textview->text);
+	GtkSText *text = GTK_STEXT(textview->text);
 	gfloat upper;
 	gfloat page_incr;
 	gfloat old_value;

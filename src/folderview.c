@@ -248,7 +248,8 @@ static GtkItemFactoryEntry folderview_mail_popup_entries[] =
 	{N_("/_Rename folder..."),	NULL, folderview_rename_folder_cb, 0, NULL},
 	{N_("/_Delete folder"),		NULL, folderview_delete_folder_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Update folder tree"),	NULL, folderview_update_tree_cb, 0, NULL},
+	{N_("/_Check for new messages"),
+					NULL, folderview_update_tree_cb, 0, NULL},
 	{N_("/R_escan folder tree"),	NULL, folderview_update_tree_cb, 1, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/Remove _mailbox"),	NULL, folderview_remove_mailbox_cb, 0, NULL},
@@ -265,7 +266,8 @@ static GtkItemFactoryEntry folderview_imap_popup_entries[] =
 	{N_("/_Rename folder..."),	NULL, NULL, 0, NULL},
 	{N_("/_Delete folder"),		NULL, folderview_rm_imap_folder_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Update folder tree"),	NULL, folderview_update_tree_cb, 0, NULL},
+	{N_("/_Check for new messages"),
+					NULL, folderview_update_tree_cb, 0, NULL},
 	{N_("/R_escan folder tree"),	NULL, folderview_update_tree_cb, 1, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/Remove _IMAP4 account"),	NULL, folderview_rm_imap_server_cb, 0, NULL},
@@ -1354,7 +1356,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		SET_SENS(mail_factory, "/Create new folder...", new_folder);
 		SET_SENS(mail_factory, "/Rename folder...", rename_folder);
 		SET_SENS(mail_factory, "/Delete folder", delete_folder);
-		SET_SENS(mail_factory, "/Update folder tree", update_tree);
+		SET_SENS(mail_factory, "/Check for new messages", update_tree);
 		SET_SENS(mail_factory, "/Rescan folder tree", rescan_tree);
 		SET_SENS(mail_factory, "/Remove mailbox", remove_tree);
 		SET_SENS(mail_factory, "/Property...", folder_property);
@@ -1367,7 +1369,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		SET_SENS(imap_factory, "/Create new folder...", new_folder);
 		SET_SENS(imap_factory, "/Rename folder...", rename_folder);
 		SET_SENS(imap_factory, "/Delete folder", delete_folder);
-		SET_SENS(imap_factory, "/Update folder tree", update_tree);
+		SET_SENS(imap_factory, "/Check for new messages", update_tree);
 		SET_SENS(imap_factory, "/Rescan folder tree", rescan_tree);
 		SET_SENS(imap_factory, "/Remove IMAP4 account", remove_tree);
 		SET_SENS(imap_factory, "/Processing...", folder_processing);
@@ -1378,6 +1380,9 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		menu_set_insensitive_all(GTK_MENU_SHELL(popup));
 		SET_SENS(news_factory, "/Subscribe to newsgroup...", new_folder);
 		SET_SENS(news_factory, "/Remove newsgroup", delete_folder);
+#if 0
+		SET_SENS(news_factory, "/Check for new messages", update_tree);
+#endif
 		SET_SENS(news_factory, "/Remove news account", remove_tree);
 		SET_SENS(news_factory, "/Search folder...", search_folder);
 		SET_SENS(news_factory, "/Processing...", folder_processing);

@@ -24,10 +24,6 @@
  * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
-/*
- * Modified by the Sylpheed Team and others 2001.
- */
-
 #ifndef __GTK_STEXT_H__
 #define __GTK_STEXT_H__
 
@@ -52,13 +48,11 @@ typedef struct _GtkSPropertyMark   GtkSPropertyMark;
 typedef struct _GtkSText           GtkSText;
 typedef struct _GtkSTextClass      GtkSTextClass;
 
-typedef enum  _GtkSTextCursorType GtkSTextCursorType;
-
-enum _GtkSTextCursorType 
+typedef enum
 {
-	STEXT_CURSOR_LINE,
-	STEXT_CURSOR_BLOCK
-};
+  GTK_STEXT_CURSOR_LINE,
+  GTK_STEXT_CURSOR_BLOCK
+} GtkSTextCursorType;
 
 struct _GtkSPropertyMark
 {
@@ -151,13 +145,13 @@ struct _GtkSText
 
 			     /* CURSOR */
 
-  gint            cursor_pos_x;       /* Position of cursor. */
-  gint            cursor_pos_y;       /* Baseline of line cursor is drawn on. */
+  gint             cursor_pos_x;       /* Position of cursor. */
+  gint             cursor_pos_y;       /* Baseline of line cursor is drawn on. */
   GtkSPropertyMark cursor_mark;        /* Where it is in the buffer. */
-  GdkWChar        cursor_char;        /* Character to redraw. */
-  gchar           cursor_char_offset; /* Distance from baseline of the font. */
-  gint            cursor_virtual_x;   /* Where it would be if it could be. */
-  gint            cursor_drawn_level; /* How many people have undrawn. */
+  GdkWChar         cursor_char;        /* Character to redraw. */
+  gchar            cursor_char_offset; /* Distance from baseline of the font. */
+  gint             cursor_virtual_x;   /* Where it would be if it could be. */
+  gint             cursor_drawn_level; /* How many people have undrawn. */
 
 			  /* Current Line */
 
@@ -177,14 +171,15 @@ struct _GtkSText
   GdkGC *bg_gc;			/* gc for drawing background pixmap */
 
   /* SYLPHEED:
-   * properties added for different cursor 
+   * properties added for different cursor
    */
-   gboolean cursor_visible;					/* whether cursor is visible */
-   gboolean cursor_timer_on;				/* blinking enabled */
-   guint	cursor_off_ms, cursor_on_ms;	/* cursor off / on time */
-   gboolean cursor_state_on;				/* state */
-   guint32  cursor_timer_id;				/* blinking timer */
-   guint32	cursor_idle_time_timer_id;		/* timer id */
+   gboolean cursor_visible;		/* whether cursor is visible */
+   gboolean cursor_timer_on;		/* blinking enabled */
+   guint cursor_off_ms;			/* cursor off time */
+   guint cursor_on_ms;			/* cursor on time */
+   gboolean cursor_state_on;		/* state */
+   guint32 cursor_timer_id;		/* blinking timer */
+   guint32 cursor_idle_time_timer_id;	/* timer id */
 
    GtkSTextCursorType cursor_type;
 
@@ -211,43 +206,45 @@ struct _GtkSTextClass
 
 GtkType    gtk_stext_get_type        (void);
 GtkWidget* gtk_stext_new             (GtkAdjustment *hadj,
-				     GtkAdjustment *vadj);
-void       gtk_stext_set_editable    (GtkSText       *text,
-				     gboolean       editable);
-void       gtk_stext_set_word_wrap   (GtkSText       *text,
-				     gint           word_wrap);
-void       gtk_stext_set_line_wrap   (GtkSText       *text,
-				     gint           line_wrap);
-void       gtk_stext_set_adjustments (GtkSText       *text,
-				     GtkAdjustment *hadj,
-				     GtkAdjustment *vadj);
-void       gtk_stext_set_point       (GtkSText       *text,
-				     guint          index);
-guint      gtk_stext_get_point       (GtkSText       *text);
-guint      gtk_stext_get_length      (GtkSText       *text);
-void       gtk_stext_freeze          (GtkSText       *text);
-void       gtk_stext_thaw            (GtkSText       *text);
-void       gtk_stext_insert          (GtkSText       *text,
-				     GdkFont       *font,
-				     GdkColor      *fore,
-				     GdkColor      *back,
-				     const char    *chars,
-				     gint           length);
-gint       gtk_stext_backward_delete (GtkSText       *text,
-				     guint          nchars);
-gint       gtk_stext_forward_delete  (GtkSText       *text,
-				     guint          nchars);
+				      GtkAdjustment *vadj);
+void       gtk_stext_set_editable    (GtkSText      *text,
+				      gboolean       editable);
+void       gtk_stext_set_word_wrap   (GtkSText      *text,
+				      gint           word_wrap);
+void       gtk_stext_set_line_wrap   (GtkSText      *text,
+				      gint           line_wrap);
+void       gtk_stext_set_adjustments (GtkSText      *text,
+				      GtkAdjustment *hadj,
+				      GtkAdjustment *vadj);
+void       gtk_stext_set_point       (GtkSText      *text,
+				      guint          index);
+guint      gtk_stext_get_point       (GtkSText      *text);
+guint      gtk_stext_get_length      (GtkSText      *text);
+void       gtk_stext_freeze          (GtkSText      *text);
+void       gtk_stext_thaw            (GtkSText      *text);
+void       gtk_stext_insert          (GtkSText      *text,
+				      GdkFont       *font,
+				      GdkColor      *fore,
+				      GdkColor      *back,
+				      const char    *chars,
+				      gint           length);
+gint       gtk_stext_backward_delete (GtkSText      *text,
+				      guint          nchars);
+gint       gtk_stext_forward_delete  (GtkSText      *text,
+				      guint          nchars);
 
 /* SYLPHEED
  */
-void	   gtk_stext_set_blink		(GtkSText *text, gboolean blinking_on);
+void       gtk_stext_set_blink       (GtkSText           *text,
+				      gboolean            blinking_on);
+void       gtk_stext_set_cursor_type (GtkSText           *text,
+				      GtkSTextCursorType  cursor_type);
 void       gtk_stext_compact_buffer	(GtkSText *text);
 
 /* Set the rmargin for the stext. if rmargin is 0, then reset to old 
  * behaviour */
 void	   gtk_stext_set_wrap_rmargin (GtkSText *text, gint rmargin);
 
-void	   gtk_stext_set_cursor_type  (GtkSText *text, GtkSTextCursorType cursor_type);
 
 #define GTK_STEXT_INDEX(t, index)	(((t)->use_wchar) \
 	? ((index) < (t)->gap_position ? (t)->text.wc[index] : \

@@ -95,7 +95,7 @@ static void summary_search_create(SummaryView *summaryview)
 	GtkWidget *confirm_area;
 
 	window = gtk_window_new (GTK_WINDOW_DIALOG);
-	gtk_window_set_title (GTK_WINDOW (window), _("Search folder"));
+	gtk_window_set_title (GTK_WINDOW (window), _("Search messages"));
 	gtk_widget_set_usize (window, 450, -1);
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, TRUE);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);

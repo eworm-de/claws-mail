@@ -105,21 +105,21 @@ void gtkut_combo_set_items		(GtkCombo	*combo,
 void gtkut_container_remove		(GtkContainer	*container,
 					 GtkWidget	*widget);
 
-gboolean gtkut_text_match_string	(GtkSText	*text,
+gboolean gtkut_stext_match_string	(GtkSText	*text,
 					 gint		 pos,
 					 wchar_t	*wcs,
 					 gint		 len,
 					 gboolean	 case_sens);
-guint gtkut_text_str_compare_n		(GtkSText	*text,
+guint gtkut_stext_str_compare_n		(GtkSText	*text,
 					 guint		 pos1,
 					 guint		 pos2,
 					 guint		 len,
 					 guint		 text_len);
-guint gtkut_text_str_compare		(GtkSText	*text,
+guint gtkut_stext_str_compare		(GtkSText	*text,
 					 guint		 start_pos,
 					 guint		 text_len,
 					 const gchar	*str);
-gboolean gtkut_text_is_uri_string	(GtkSText	*text,
+gboolean gtkut_stext_is_uri_string	(GtkSText	*text,
 					 guint		 start_pos,
 					 guint		 text_len);
 

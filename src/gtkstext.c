@@ -431,7 +431,7 @@ static void gtk_stext_set_position  (GtkEditable       *editable,
 /* SYLPHEED:
  * cursor timer
  */
-static void gtk_stext_enable_blink	 (GtkSText *text);
+static void gtk_stext_enable_blink  (GtkSText *text);
 static void gtk_stext_disable_blink (GtkSText *text);
 
 /* #define DEBUG_GTK_STEXT */
@@ -787,15 +787,15 @@ gtk_stext_init (GtkSText *text)
   /* SYLPHEED:
    * timer for blinking cursor
    */
-  text->cursor_visible			  = FALSE;		/* don't know whether gtktext stores this somewhere */ 
-  text->cursor_timer_on			  = TRUE;
-  text->cursor_off_ms			  = 500;
-  text->cursor_on_ms			  = 500;
-  text->cursor_timer_id			  = 0;
+  text->cursor_visible = FALSE;		/* don't know whether gtktext stores this somewhere */
+  text->cursor_timer_on = TRUE;
+  text->cursor_off_ms = 500;
+  text->cursor_on_ms = 500;
+  text->cursor_timer_id = 0;
   text->cursor_idle_time_timer_id = 0;
-  text->wrap_rmargin			  = 0;
-  text->cursor_type				  = STEXT_CURSOR_LINE; 
-  text->persist_column			  = 0;
+  text->wrap_rmargin = 0;
+  text->cursor_type = GTK_STEXT_CURSOR_LINE; 
+  text->persist_column = 0;
   
   init_properties (text);
   
@@ -1328,10 +1328,10 @@ gtk_stext_destroy (GtkObject *object)
     }
 
   /* SYLPHEED:
-   * cursor timer 
+   * cursor timer
    */
-  gtk_stext_disable_blink(text);   
-  
+  gtk_stext_disable_blink (text);
+
   GTK_OBJECT_CLASS(parent_class)->destroy (object);
 }
 
@@ -2157,9 +2157,7 @@ gtk_stext_key_press (GtkWidget   *widget,
 	  break;
 	case GDK_Page_Up:   scroll_int (text, -text->vadj->page_increment); break;
 	case GDK_Page_Down: scroll_int (text, +text->vadj->page_increment); break;
-	case GDK_Up:        
-		scroll_int (text, -KEY_SCROLL_PIXELS); 
-		break;
+	case GDK_Up:        scroll_int (text, -KEY_SCROLL_PIXELS); break;
 	case GDK_Down:      scroll_int (text, +KEY_SCROLL_PIXELS); break;
 	case GDK_Return:
 	  if (event->state & GDK_CONTROL_MASK)
@@ -2194,15 +2192,17 @@ gtk_stext_key_press (GtkWidget   *widget,
 	    }
 	  
 	  extend_start = (text->point.index == editable->selection_start_pos);
-	  gtk_stext_disable_blink(text);
+	  /* SYLPHEED: cursor */
+	  gtk_stext_disable_blink (text);
+	}
+      else
+	{
+	  gtk_stext_enable_blink (text);
 	}
 
 	/* SYLPHEED:
 	 * cursor
 	 */
-	if (!extend_selection)  
-		gtk_stext_enable_blink(text);
-		
 	if (event->keyval != GDK_Up && event->keyval != GDK_Down) {
 		reset_persist_col_pos(text);
 	}
@@ -2310,19 +2310,15 @@ gtk_stext_key_press (GtkWidget   *widget,
 	    }
 	  break;
 	case GDK_Delete:
-		{
-			if (event->state & GDK_CONTROL_MASK) {
-				gtk_stext_delete_forward_word (text);
-			}	
-			else if (event->state & GDK_SHIFT_MASK)
-			{
-				extend_selection = FALSE;
-				gtk_editable_cut_clipboard (editable);
-			}
-			else {
-				gtk_stext_delete_forward_character (text);
-			}	
-		}		
+	  if (event->state & GDK_CONTROL_MASK)
+	    gtk_stext_delete_forward_word (text);
+	  else if (event->state & GDK_SHIFT_MASK)
+	    {
+	      extend_selection = FALSE;
+	      gtk_editable_cut_clipboard (editable);
+	    }
+	  else
+	    gtk_stext_delete_forward_character (text);
 	  break;
 	case GDK_Tab:
 	  position = text->point.index;
@@ -2436,8 +2432,9 @@ gtk_stext_focus_in (GtkWidget     *widget,
 #endif
   
   draw_cursor (GTK_STEXT(widget), TRUE);
+  /* SYLPHEED: cursor */
   GTK_STEXT(widget)->cursor_visible = TRUE;
-  gtk_stext_enable_blink(GTK_STEXT(widget));
+  gtk_stext_enable_blink (GTK_STEXT(widget));
   
   return FALSE;
 }
@@ -4662,9 +4659,8 @@ static void
 gtk_stext_kill_word (GtkEditable *editable,
 		    gint         direction)
 {
-  if (editable->selection_start_pos != editable->selection_end_pos) {
+  if (editable->selection_start_pos != editable->selection_end_pos)
     gtk_editable_delete_selection (editable);
-  }	
   else
     {
       gint old_pos = editable->current_pos;
@@ -5221,7 +5217,7 @@ find_line_params (GtkSText* text,
 		      if (lp.end.index == lp.start.index)
 			{
 		          /* SYLPHEED: don't wrap URLs */
-                          if (gtkut_text_is_uri_string(text, lp.end.index,
+                          if (gtkut_stext_is_uri_string(text, lp.end.index,
                                         gtk_stext_get_length(text)))
                             {
 			      lp.end = saved_mark;
@@ -5466,7 +5462,7 @@ draw_line (GtkSText* text,
 	        pixel_width = gdk_text_width_wc (gc_values.font,
 						 buffer.wc, len);
 	      else
-	      pixel_width = gdk_text_width (gc_values.font,
+		pixel_width = gdk_text_width (gc_values.font,
 					      buffer.ch, len);
 	    }
 	  else
@@ -5622,50 +5618,54 @@ undraw_cursor (GtkSText* text, gint absolute)
       GTK_WIDGET_DRAWABLE (text) && text->line_start_cache)
     {
       GdkFont* font;
-	  gint pixel_width, pixel_height;
-	  GdkGC *gc;
+      gint pixel_width;
+      gint pixel_height;
       
       g_assert(text->cursor_mark.property);
 
-	  gc = gdk_gc_new(text->text_area);
-	  g_assert(gc);
-	  gdk_gc_copy(gc, text->gc);
-
       font = MARK_CURRENT_FONT(text, &text->cursor_mark);
 
-	  /* SYLPHEED:
-	   * changed the cursor to a real block (TM)
-	   */
-	  if (text->cursor_type == STEXT_CURSOR_BLOCK) { 
-		  if (text->use_wchar)
-			pixel_width = gdk_char_width_wc(font, text->cursor_char);		
-		  else
-			pixel_width = gdk_char_width(font, text->cursor_char);
-		  pixel_width -= 1;
-		  pixel_height = LINE_HEIGHT(CACHE_DATA(text->current_line));
+      /* SYLPHEED:
+       * changed the cursor to a real block (TM)
+       */
+      if (text->cursor_type == GTK_STEXT_CURSOR_BLOCK)
+	{
+	  if (text->cursor_char)
+	    {
+	      if (text->use_wchar)
+		pixel_width = gdk_char_width_wc (font, text->cursor_char);
+	      else
+		pixel_width = gdk_char_width (font, (guchar)text->cursor_char);
+	    }
+	  else
+	    {
+		pixel_width = gdk_char_width (font, 'W');
+	    }
 
-		  draw_bg_rect (text, &text->cursor_mark,
-						text->cursor_pos_x,
-						text->cursor_pos_y - (pixel_height + 1),
-						pixel_width + 1, 
-						pixel_height + 1,
-						FALSE);
-	 }	
-	 else {
-	      draw_bg_rect (text, &text->cursor_mark,
-		              	text->cursor_pos_x - 1,
-					    text->cursor_pos_y - text->cursor_char_offset - font->ascent,
-						2, font->descent + font->ascent + 1, FALSE);
-											  
-	 }
-      
+	  pixel_height = LINE_HEIGHT(CACHE_DATA(text->current_line));
+
+	  draw_bg_rect (text, &text->cursor_mark,
+			text->cursor_pos_x,
+			text->cursor_pos_y - (pixel_height + 1),
+			pixel_width,
+			pixel_height + 1,
+			FALSE);
+	}
+      else
+	{
+	  draw_bg_rect (text, &text->cursor_mark, 
+			text->cursor_pos_x,
+			text->cursor_pos_y - text->cursor_char_offset - font->ascent,
+			2, font->descent + font->ascent + 1, FALSE);
+	}
+
       if (text->cursor_char)
 	{
 	  if (font->type == GDK_FONT_FONT)
 	    gdk_gc_set_font (text->gc, font);
-
+	  
 	  gdk_gc_set_foreground (text->gc, MARK_CURRENT_FORE (text, &text->cursor_mark));
-
+	  
           if (text->use_wchar)
 	    gdk_draw_text_wc (text->text_area, font,
 			      text->gc,
@@ -5684,9 +5684,6 @@ undraw_cursor (GtkSText* text, gint absolute)
 			     1);         
 	    }
 	}
-
-	gdk_gc_copy(text->gc, gc);
-	gdk_gc_unref(gc);
     }
 }
 
@@ -5718,7 +5715,6 @@ static void
 draw_cursor (GtkSText* text, gint absolute)
 {
   GtkEditable *editable = (GtkEditable *)text;
-  gint pixel_width, pixel_height;
   
   TDEBUG (("in draw_cursor\n"));
   
@@ -5731,46 +5727,51 @@ draw_cursor (GtkSText* text, gint absolute)
       GTK_WIDGET_DRAWABLE (text) && text->line_start_cache)
     {
       GdkFont* font;
-	  GdkGC*	  gc;
+      gint pixel_width;
+      gint pixel_height;
       
       g_assert (text->cursor_mark.property);
 
-	  gc = gdk_gc_new(text->text_area);
-	  g_assert (gc);
-	  gdk_gc_copy(gc, text->gc);
-	  font = MARK_CURRENT_FONT (text, &text->cursor_mark);
-	  if (text->cursor_type == STEXT_CURSOR_BLOCK) {
-		  /* SYLPHEED:
-		   * changed the cursor to a real block (TM)
-		   */
-		  if (text->use_wchar) {
-			pixel_width = gdk_char_width_wc(font, text->cursor_char);		
-		  }
-		  else {
-			pixel_width = gdk_char_width(font, text->cursor_char);
-		  }
-		  pixel_width -= 1;
+      font = MARK_CURRENT_FONT (text, &text->cursor_mark);
 
-		  pixel_height = LINE_HEIGHT(CACHE_DATA(text->current_line));
-		  gdk_gc_set_foreground (text->gc, &GTK_WIDGET (text)->style->text[GTK_STATE_NORMAL]);
-		  gdk_gc_set_function(text->gc, GDK_INVERT);
-		  gdk_draw_rectangle(text->text_area, text->gc, TRUE, 
-							 text->cursor_pos_x, 
-							 text->cursor_pos_y - pixel_height,
-							 pixel_width, 
-							 pixel_height);
-	  }
-	  else {
-		gdk_gc_set_line_attributes(text->gc, 2, GDK_LINE_SOLID, GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
-		gdk_gc_set_foreground(text->gc, &GTK_WIDGET (text)->style->text[GTK_STATE_NORMAL]);
-	    gdk_draw_line(text->text_area, text->gc, text->cursor_pos_x,
-		              text->cursor_pos_y + font->descent - text->cursor_char_offset,
-					  text->cursor_pos_x,
-					  text->cursor_pos_y - text->cursor_char_offset - font->ascent );
-												   
-	  }
-	  gdk_gc_copy(text->gc, gc);						
-	  gdk_gc_unref(gc);
+      /* SYLPHEED:
+       * change the cursor to a real block (TM)
+       */
+      if (text->cursor_type == GTK_STEXT_CURSOR_BLOCK)
+	{
+	  if (text->cursor_char)
+	    {
+	      if (text->use_wchar)
+		pixel_width = gdk_char_width_wc (font, text->cursor_char);
+	      else
+		pixel_width = gdk_char_width (font, (guchar)text->cursor_char);
+	    }
+	  else
+	    {
+		pixel_width = gdk_char_width (font, 'W');
+	    }
+
+	  pixel_height = LINE_HEIGHT(CACHE_DATA(text->current_line));
+
+	  gdk_gc_set_foreground (text->gc, &GTK_WIDGET (text)->style->text[GTK_STATE_NORMAL]);
+	  gdk_gc_set_function (text->gc, GDK_INVERT);
+	  gdk_draw_rectangle (text->text_area, text->gc, TRUE,
+			      text->cursor_pos_x,
+			      text->cursor_pos_y - pixel_height,
+			      pixel_width,
+			      pixel_height);
+	  gdk_gc_set_function (text->gc, GDK_COPY);
+	}
+      else
+	{
+	  gdk_gc_set_line_attributes(text->gc, 2, GDK_LINE_SOLID, GDK_CAP_NOT_LAST, GDK_JOIN_MITER);
+	  gdk_gc_set_foreground (text->gc, &GTK_WIDGET (text)->style->text[GTK_STATE_NORMAL]);
+
+	  gdk_draw_line (text->text_area, text->gc, text->cursor_pos_x + 1,
+			 text->cursor_pos_y + font->descent - text->cursor_char_offset,
+			 text->cursor_pos_x + 1,
+			 text->cursor_pos_y - text->cursor_char_offset - font->ascent);
+	}
     }
 }
 
@@ -6021,82 +6022,109 @@ gtk_stext_set_selection  (GtkEditable   *editable,
  * cursor timer
  */
 
-static gint stext_blink_timer_proc(GtkSText *text)
+static gint
+stext_blink_timer_proc (GtkSText *text)
 {
-	if (text->cursor_state_on) {
-		text->cursor_state_on = FALSE;
-		undraw_cursor(text, TRUE);
-		/* kill this timer... */
-		gtk_timeout_remove(text->cursor_timer_id);
-		text->cursor_timer_id = gtk_timeout_add(text->cursor_off_ms, (GtkFunction) stext_blink_timer_proc, (gpointer) text); 
-	}
-	else {
-		text->cursor_state_on = TRUE;
-		draw_cursor(text, TRUE);
-		/* kill this timer... */
-		gtk_timeout_remove(text->cursor_timer_id);
-		text->cursor_timer_id = gtk_timeout_add(text->cursor_on_ms, (GtkFunction) stext_blink_timer_proc, (gpointer) text);
-	}
-	return TRUE;
+  if (text->cursor_state_on)
+    {
+      text->cursor_state_on = FALSE;
+      undraw_cursor (text, TRUE);
+      /* kill this timer... */
+      gtk_timeout_remove (text->cursor_timer_id);
+      text->cursor_timer_id = gtk_timeout_add (text->cursor_off_ms,
+					       (GtkFunction) stext_blink_timer_proc,
+					       (gpointer) text);
+    }
+  else
+    {
+      text->cursor_state_on = TRUE;
+      draw_cursor (text, TRUE);
+      /* kill this timer... */
+      gtk_timeout_remove (text->cursor_timer_id);
+      text->cursor_timer_id = gtk_timeout_add (text->cursor_on_ms,
+					       (GtkFunction) stext_blink_timer_proc,
+					       (gpointer) text);
+    }
+
+  return TRUE;
 }
 
-static gint stext_idle_timer_proc(GtkSText *text) 
+static gint
+stext_idle_timer_proc (GtkSText *text)
 {
-	/* make sure the cursor timer is off */
-	if (text->cursor_timer_id) {
-		gtk_timeout_remove(text->cursor_timer_id);
-		text->cursor_timer_id = 0;
-	}
-	/* assuming it's always on when calling this function ... */
-	text->cursor_state_on = TRUE;
-	text->cursor_timer_id = gtk_timeout_add(text->cursor_on_ms, (GtkFunction) stext_blink_timer_proc, (gpointer) text); 
-	/* make sure we kill the timer (could perhaps make this function return FALSE (not documented in
-	 * the current docs). should check the source. */
-	gtk_idle_remove( text->cursor_idle_time_timer_id ); 
-	text->cursor_idle_time_timer_id = 0;
-	return TRUE;
+  /* make sure the cursor timer is off */
+  if (text->cursor_timer_id)
+    {
+      gtk_timeout_remove (text->cursor_timer_id);
+      text->cursor_timer_id = 0;
+    }
+
+  /* assuming it's always on when calling this function ... */
+  text->cursor_state_on = TRUE;
+  text->cursor_timer_id = gtk_timeout_add (text->cursor_on_ms,
+					   (GtkFunction) stext_blink_timer_proc,
+					   (gpointer) text);
+  /* make sure we kill the timer (could perhaps make this function return
+     FALSE (not documented in the current docs). should check the source. */
+  gtk_idle_remove (text->cursor_idle_time_timer_id);
+  text->cursor_idle_time_timer_id = 0;
+
+  return TRUE;
 }
 
-static void gtk_stext_enable_blink	 (GtkSText *text)
+static void
+gtk_stext_enable_blink (GtkSText *text)
 {
-	if (text->cursor_timer_on) { 
-		gtk_stext_disable_blink(text);
-		text->cursor_idle_time_timer_id = gtk_idle_add((GtkFunction) stext_idle_timer_proc, (gpointer) text);
-	}
+  if (text->cursor_timer_on)
+    {
+      gtk_stext_disable_blink (text);
+      text->cursor_idle_time_timer_id = gtk_idle_add ((GtkFunction) stext_idle_timer_proc,
+						      (gpointer) text);
+    }
 }
 
-static void gtk_stext_disable_blink (GtkSText *text)
+static void
+gtk_stext_disable_blink (GtkSText *text)
 {
-	if (text->cursor_timer_on) {
-		if (text->cursor_idle_time_timer_id) {
-			gtk_idle_remove( text->cursor_idle_time_timer_id );
-			text->cursor_idle_time_timer_id = 0;
-		}
-		if (text->cursor_timer_id) {
-			gtk_timeout_remove( text->cursor_timer_id );
-			text->cursor_timer_id = 0;
-		}
-		draw_cursor(text, TRUE);
-	}		
+  if (text->cursor_timer_on)
+    {
+      if (text->cursor_idle_time_timer_id)
+	{
+	  gtk_idle_remove (text->cursor_idle_time_timer_id);
+	  text->cursor_idle_time_timer_id = 0;
+	}
+      if (text->cursor_timer_id)
+	{
+	  gtk_timeout_remove (text->cursor_timer_id);
+	  text->cursor_timer_id = 0;
+	}
+      draw_cursor(text, TRUE);
+    }
 }
 
-void gtk_stext_set_blink(GtkSText *text, gboolean blinkin_on)
+void
+gtk_stext_set_blink (GtkSText *text, gboolean blinking_on)
 {
-	if (text->cursor_timer_on != blinkin_on) {
-		if (text->cursor_timer_on) {
-			/* text widget already created? */
-			if (text->cursor_visible) {
-				gtk_stext_disable_blink(text);
-			}				
-			text->cursor_timer_on = FALSE;
-		}
-		else {
-			if (text->cursor_visible) {
-				gtk_stext_enable_blink(text);
-			}
-			text->cursor_timer_on = TRUE;
-		}
+  if (text->cursor_timer_on != blinking_on)
+    {
+      if (text->cursor_timer_on)
+	{
+	  /* text widget already created? */
+	  if (text->cursor_visible)
+	    {
+	      gtk_stext_disable_blink (text);
+	    }
+	    text->cursor_timer_on = FALSE;
 	}
+      else
+	{
+	  if (text->cursor_visible)
+	    {
+	      gtk_stext_enable_blink (text);
+	    }
+	    text->cursor_timer_on = TRUE;
+	}
+    }
 }
 
 

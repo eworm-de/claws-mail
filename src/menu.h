@@ -23,6 +23,7 @@
 #include <glib.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkitemfactory.h>
+#include <gtk/gtkmenu.h>
 #include <gtk/gtkmenushell.h>
 
 #define MENUITEM_ADD(menu, menuitem, label, data) \

@@ -678,7 +678,7 @@ static void imp_ldif_page_finish( gint pageNum, gchar *pageLbl ) {
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 
-	labelBook = gtk_label_new(_(""));
+	labelBook = gtk_label_new("");
 	gtk_table_attach(GTK_TABLE(table), labelBook, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(labelBook), 0, 0.5);
 
@@ -688,7 +688,7 @@ static void imp_ldif_page_finish( gint pageNum, gchar *pageLbl ) {
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 
-	labelFile = gtk_label_new(_(""));
+	labelFile = gtk_label_new("");
 	gtk_table_attach(GTK_TABLE(table), labelFile, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(labelFile), 0, 0.5);
 
@@ -698,7 +698,7 @@ static void imp_ldif_page_finish( gint pageNum, gchar *pageLbl ) {
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 1, 0.5);
 
-	labelRecs = gtk_label_new(_(""));
+	labelRecs = gtk_label_new("");
 	gtk_table_attach(GTK_TABLE(table), labelRecs, 1, 2, top, (top + 1), GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(labelRecs), 0, 0.5);
 

@@ -53,6 +53,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
 /* #include <sys/utsname.h> */
@@ -66,13 +68,11 @@
 #  include <wctype.h>
 #endif
 
-
-#include "gtkstext.h"
-
 #include "intl.h"
 #include "main.h"
 #include "mainwindow.h"
 #include "compose.h"
+#include "gtkstext.h"
 #include "addressbook.h"
 #include "folderview.h"
 #include "procmsg.h"
@@ -447,21 +447,34 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Close"),			"<alt>W", compose_close_cb, 0, NULL},
 
-	{N_("/_Edit"),		   NULL, NULL, 0, "<Branch>"},
-	{N_("/_Edit/_Undo"),	   "<control>Z", compose_undo_cb, 0, NULL},
-	{N_("/_Edit/_Redo"),	   "<control>Y", compose_redo_cb, 0, NULL},
-	{N_("/_Edit/---"),	   NULL, NULL, 0, "<Separator>"},
-	{N_("/_Edit/Cu_t"),	   "<control>X", compose_cut_cb,    0, NULL},
-	{N_("/_Edit/_Copy"),	   "<control>C", compose_copy_cb,   0, NULL},
-	{N_("/_Edit/_Paste"),	   "<control>V", compose_paste_cb,  0, NULL},
-	{N_("/_Edit/Select _all"), "<control>A", compose_allsel_cb, 0, NULL},
-	{N_("/_Edit/---"),	   NULL, NULL, 0, "<Separator>"},
-	{N_("/_Edit/_Wrap current paragraph"), "<alt>L", compose_wrap_line, 0, NULL},
+	{N_("/_Edit"),			NULL, NULL, 0, "<Branch>"},
+	{N_("/_Edit/_Undo"),		"<control>Z", compose_undo_cb, 0, NULL},
+	{N_("/_Edit/_Redo"),		"<control>Y", compose_redo_cb, 0, NULL},
+	{N_("/_Edit/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_Edit/Cu_t"),		"<control>X", compose_cut_cb,    0, NULL},
+	{N_("/_Edit/_Copy"),		"<control>C", compose_copy_cb,   0, NULL},
+	{N_("/_Edit/_Paste"),		"<control>V", compose_paste_cb,  0, NULL},
+	{N_("/_Edit/Select _all"),	"<control>A", compose_allsel_cb, 0, NULL},
+	{N_("/_Edit/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_Edit/_Wrap current paragraph"),
+					"<alt>L", compose_wrap_line, 0, NULL},
 	{N_("/_Edit/Wrap all long _lines"),
-			"<shift><alt>L", compose_wrap_line_all, 0, NULL},
+					"<shift><alt>L", compose_wrap_line_all, 0, NULL},
 	{N_("/_Edit/Edit with e_xternal editor"),
-			"<alt>X", compose_ext_editor_cb, 0, NULL},
-
+					"<alt>X", compose_ext_editor_cb, 0, NULL},
+#if 0 /* NEW COMPOSE GUI */
+	{N_("/_View"),			NULL, NULL, 0, "<Branch>"},
+	{N_("/_View/_To"),		NULL, compose_toggle_to_cb     , 0, "<ToggleItem>"},
+	{N_("/_View/_Cc"),		NULL, compose_toggle_cc_cb     , 0, "<ToggleItem>"},
+	{N_("/_View/_Bcc"),		NULL, compose_toggle_bcc_cb    , 0, "<ToggleItem>"},
+	{N_("/_View/_Reply to"),	NULL, compose_toggle_replyto_cb, 0, "<ToggleItem>"},
+	{N_("/_View/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/_Followup to"),	NULL, compose_toggle_followupto_cb, 0, "<ToggleItem>"},
+	{N_("/_View/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/R_uler"),		NULL, compose_toggle_ruler_cb, 0, "<ToggleItem>"},
+	{N_("/_View/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/_Attachment"),	NULL, compose_toggle_attach_cb, 0, "<ToggleItem>"},
+#endif
 	{N_("/_Message"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Message/_Send"),		"<control>Return",
 					compose_send_cb, 0, NULL},
@@ -469,6 +482,8 @@ static GtkItemFactoryEntry compose_entries[] =
 					compose_send_later_cb,  0, NULL},
 	{N_("/_Message/Save to _draft folder"),
 					"<alt>D", compose_draft_cb, 0, NULL},
+	{N_("/_Message/Save and _keep editing"),
+					"<control>S", compose_draft_cb, 1, NULL},
 #if 0 /* NEW COMPOSE GUI */
 	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/_To"),		NULL, compose_toggle_to_cb     , 0, "<ToggleItem>"},
@@ -491,7 +506,7 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Tool/Show _ruler"),	NULL, compose_toggle_ruler_cb, 0, "<ToggleItem>"},
 	{N_("/_Tool/_Address book"),	"<alt>A", compose_address_cb , 0, NULL},
 	{N_("/_Tool/_Template"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_Help"),			NULL, NULL, 0, "<LastBranch>"},
+	{N_("/_Help"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Help/_About"),		NULL, about_show, 0, NULL}
 };
 
@@ -1706,7 +1721,7 @@ static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 		GtkWidget *menuitem;
 
 		ifactory = gtk_item_factory_from_widget(compose->menubar);
-		menuitem = gtk_item_factory_get_item(ifactory, "/Message/Bcc");
+		menuitem = gtk_item_factory_get_item(ifactory, "/View/Bcc");
 		gtk_check_menu_item_set_active
 			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 	}
@@ -1716,7 +1731,7 @@ static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 
 		ifactory = gtk_item_factory_from_widget(compose->menubar);
 		menuitem = gtk_item_factory_get_item
-			(ifactory, "/Message/Reply to");
+			(ifactory, "/View/Reply to");
 		gtk_check_menu_item_set_active
 			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 	}
@@ -1829,8 +1844,7 @@ static void compose_insert_file(Compose *compose, const gchar *file)
 			while (--len >= 0)
 				if (buf[len] == '\r') buf[len] = '\n';
 		}
-
- 		gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
+		gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
 	}
 
 	gtk_stext_thaw(text);
@@ -1932,7 +1946,7 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 
 		ifactory = gtk_item_factory_from_widget(compose->menubar);
 		menuitem = gtk_item_factory_get_item(ifactory,
-						     "/Message/Attach");
+						     "/View/Attachment");
 		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 					       TRUE);
 	}
@@ -1961,7 +1975,7 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 #define GET_CHAR(pos, buf, len)						     \
 {									     \
 	if (text->use_wchar)						     \
-		len = wctomb(buf, (wchar_t)GTK_STEXT_INDEX(text, (pos)));     \
+		len = wctomb(buf, (wchar_t)GTK_STEXT_INDEX(text, (pos)));    \
 	else {								     \
 		buf[0] = GTK_STEXT_INDEX(text, (pos));			     \
 		len = 1;						     \
@@ -1979,7 +1993,6 @@ static void compose_wrap_line(Compose *compose)
 	gint p_start, p_end;
 	gint line_pos, cur_pos;
 	gint line_len, cur_len;
-
 
 	gtk_stext_freeze(text);
 
@@ -2215,7 +2228,7 @@ static void compose_wrap_line_all(Compose *compose)
 		/* mark position of new line - needed for quotation wrap */
 		if (is_new_line) {
 			if (linewrap_quote) {
-				qlen = gtkut_text_str_compare
+				qlen = gtkut_stext_str_compare
 					(text, cur_pos, tlen, qfmt);
 				if (qlen)
 					i_len = get_indent_length
@@ -2264,7 +2277,7 @@ static void compose_wrap_line_all(Compose *compose)
 			/* if it's just quotation + newline skip it */
 			if (i_len && (cur_pos + 1 < tlen)) {
 				/* check if text at new line matches indent */
-				ilen =  gtkut_text_str_compare_n
+				ilen =  gtkut_stext_str_compare_n
 					(text, cur_pos + 1, p_pos, i_len, tlen);
 				if (cur_pos + ilen < tlen) {
 					GET_CHAR(cur_pos + ilen + 1, cb, clen);
@@ -2294,16 +2307,16 @@ static void compose_wrap_line_all(Compose *compose)
 				/* if text starts with quote fmt or with
 				   indent string, delete them */
 				if (i_len) {
-					ilen =  gtkut_text_str_compare_n
+					ilen =  gtkut_stext_str_compare_n
 						(text, cur_pos, p_pos, i_len,
 						 tlen);
 					if (ilen) {
-						gtk_stext_forward_delete(text,
-									 ilen);
+						gtk_stext_forward_delete
+							(text, ilen);
 						tlen -= ilen;
 					}
 				} else if (qlen) {
-					if (gtkut_text_str_compare
+					if (gtkut_stext_str_compare
 					    (text, cur_pos, tlen, qfmt)) {
 						gtk_stext_forward_delete
 							(text, qlen);
@@ -2318,7 +2331,7 @@ static void compose_wrap_line_all(Compose *compose)
 				    ((clen > 1) || isalnum(cb[0]))) {
 					gtk_stext_insert(text, NULL, NULL,
 							NULL, " ", 1);
-					/* gtk_text_compact_buffer(text); */
+					/* gtk_stext_compact_buffer(text); */
 					tlen++;
 				}
 
@@ -2366,8 +2379,8 @@ static void compose_wrap_line_all(Compose *compose)
 			dump_text(text, line_pos, tlen, 1);
 #endif
 			/* force wrapping if it is one long word but not URL */
-			if (p_pos + i_len == line_pos)
-                        	if (!gtkut_text_is_uri_string
+			if (line_pos - p_pos <= i_len)
+                        	if (!gtkut_stext_is_uri_string
 				    (text, line_pos, tlen))
 					line_pos = cur_pos - 1;
 #ifdef WRAP_DEBUG
@@ -2379,7 +2392,7 @@ static void compose_wrap_line_all(Compose *compose)
 			/* if next character is space delete it */
                         if (clen == 1 && isspace(*cbuf)) {
 				if (p_pos + i_len != line_pos ||
-                            	    !gtkut_text_is_uri_string
+                            	    !gtkut_stext_is_uri_string
 					(text, line_pos, tlen)) {
 					gtk_stext_set_point(text, line_pos);
 					gtk_stext_backward_delete(text, 1);
@@ -2393,7 +2406,7 @@ static void compose_wrap_line_all(Compose *compose)
 
 			/* if it is URL at beginning of line don't wrap */
 			if (p_pos + i_len == line_pos &&
-			    gtkut_text_is_uri_string(text, line_pos, tlen)) {
+			    gtkut_stext_is_uri_string(text, line_pos, tlen)) {
 #ifdef WRAP_DEBUG
 				printf("found URL at ");
 				dump_text(text, line_pos, tlen, 1);
@@ -2423,7 +2436,7 @@ static void compose_wrap_line_all(Compose *compose)
 			/* should we insert quotation ? */
 			if (linewrap_quote && qlen) {
 				/* only if line is not already quoted  */
-				if (!gtkut_text_str_compare
+				if (!gtkut_stext_str_compare
 					(text, line_pos, tlen, qfmt)) {
 					guint ins_len;
 
@@ -2454,6 +2467,7 @@ static void compose_wrap_line_all(Compose *compose)
 
 	gtk_stext_thaw(text);
 }
+
 #undef GET_CHAR
 
 static void compose_set_title(Compose *compose)
@@ -3734,7 +3748,6 @@ static void compose_generate_msgid(Compose *compose, gchar *buf, gint len)
 	g_free(addr);
 }
 
-
 static void compose_add_entry_field(GtkWidget *table, GtkWidget **hbox,
 				    GtkWidget **entry, gint *count,
 				    const gchar *label_str,
@@ -4247,7 +4260,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	gtk_stext_set_editable(GTK_STEXT(text), TRUE);
 
 	if (prefs_common.block_cursor) {
-		GTK_STEXT(text)->cursor_type = STEXT_CURSOR_BLOCK;
+		GTK_STEXT(text)->cursor_type = GTK_STEXT_CURSOR_BLOCK;
 	}
 	
 	if (prefs_common.smart_wrapping) {	
@@ -4307,7 +4320,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	style = gtk_widget_get_style(text);
 
-	/* workaround for the slow down of GtkText when using Pixmap theme */
+	/* workaround for the slow down of GtkSText when using Pixmap theme */
 	if (style->engine) {
 		GtkThemeEngine *engine;
 
@@ -4360,6 +4373,17 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	tmpl_menu = gtk_item_factory_get_item(ifactory, "/Tool/Template");
 #if 0 /* NEW COMPOSE GUI */
+	gtk_widget_hide(bcc_hbox);
+	gtk_widget_hide(bcc_entry);
+	gtk_widget_hide(reply_hbox);
+	gtk_widget_hide(reply_entry);
+	gtk_widget_hide(followup_hbox);
+	gtk_widget_hide(followup_entry);
+	gtk_widget_hide(ruler_hbox);
+	gtk_table_set_row_spacing(GTK_TABLE(table), 4, 0);
+	gtk_table_set_row_spacing(GTK_TABLE(table), 5, 0);
+	gtk_table_set_row_spacing(GTK_TABLE(table), 6, 0);
+
 	if (account->protocol == A_NNTP) {
 		gtk_widget_hide(to_hbox);
 		gtk_widget_hide(to_entry);
@@ -4371,8 +4395,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 		gtk_widget_hide(newsgroups_hbox);
 		gtk_widget_hide(newsgroups_entry);
 		gtk_table_set_row_spacing(GTK_TABLE(table), 2, 0);
-
-		menu_set_sensitive(ifactory, "/Message/Followup to", FALSE);
+		menu_set_sensitive(ifactory, "/View/Followup to", FALSE);
 	}
 #endif
 
@@ -4473,11 +4496,11 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 #if 0 /* NEW COMPOSE GUI */
 	if (account->protocol != A_NNTP) {
-		menuitem = gtk_item_factory_get_item(ifactory, "/Message/To");
+		menuitem = gtk_item_factory_get_item(ifactory, "/View/To");
 		gtk_check_menu_item_set_active
 			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 		gtk_widget_set_sensitive(menuitem, FALSE);
-		menuitem = gtk_item_factory_get_item(ifactory, "/Message/Cc");
+		menuitem = gtk_item_factory_get_item(ifactory, "/View/Cc");
 		gtk_check_menu_item_set_active
 			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 		gtk_widget_set_sensitive(menuitem, FALSE);
@@ -4488,7 +4511,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 #if 0 /* NEW COMPOSE GUI */
 		compose->use_cc = TRUE;
 		gtk_entry_set_text(GTK_ENTRY(cc_entry), account->auto_cc);
-		menuitem = gtk_item_factory_get_item(ifactory, "/Message/Cc");
+		menuitem = gtk_item_factory_get_item(ifactory, "/View/Cc");
 		gtk_check_menu_item_set_active
 			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 #endif
@@ -4496,8 +4519,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	if (account->set_autobcc) {
 		compose_entry_append(compose, account->auto_bcc, COMPOSE_BCC);
 #if 0 /* NEW COMPOSE GUI */
-		compose->use_bcc = TRUE;
-		menuitem = gtk_item_factory_get_item(ifactory, "/Message/Bcc");
+		menuitem = gtk_item_factory_get_item(ifactory, "/View/Bcc");
 		gtk_check_menu_item_set_active
 			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 		if (account->auto_bcc && mode != COMPOSE_REEDIT)
@@ -4510,7 +4532,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 #if 0 /* NEW COMPOSE GUI */
 		compose->use_replyto = TRUE;
 		menuitem = gtk_item_factory_get_item(ifactory,
-						     "/Message/Reply to");
+						     "/View/Reply to");
 		gtk_check_menu_item_set_active
 			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 		gtk_entry_set_text(GTK_ENTRY(reply_entry),
@@ -4524,9 +4546,11 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry), prefs_common.trans_hdr ? _("Newsgroups:") : "Newsgroups:");
 	}
 
-	menuitem = gtk_item_factory_get_item(ifactory, "/Tool/Show ruler");
+#if 0 /* NEW COMPOSE GUI */
+	menuitem = gtk_item_factory_get_item(ifactory, "/View/Ruler");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 				       prefs_common.show_ruler);
+#endif				       
 
 #if USE_GPGME
 	menuitem = gtk_item_factory_get_item(ifactory, "/Message/Sign");
@@ -4571,23 +4595,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	select_account(compose, account);
 
 	return compose;
-}
-
-#include "pixmaps/stock_mail_send.xpm"
-#include "pixmaps/stock_mail_send_queue.xpm"
-#include "pixmaps/stock_mail.xpm"
-#include "pixmaps/stock_paste.xpm"
-#include "pixmaps/stock_mail_attach.xpm"
-#include "pixmaps/stock_mail_compose.xpm"
-#include "pixmaps/linewrap.xpm"
-#include "pixmaps/tb_address_book.xpm"
-
-#define CREATE_TOOLBAR_ICON(xpm_d) \
-{ \
-	icon = gdk_pixmap_create_from_xpm_d(container->window, &mask, \
-					    &container->style->white, \
-					    xpm_d); \
-	icon_wid = gtk_pixmap_new(icon, mask); \
 }
 
 static void compose_toolbar_create(Compose *compose, GtkWidget *container)
@@ -4789,7 +4796,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl)
 	if (!tmpl || !tmpl->value) return;
 
 	gtk_stext_freeze(GTK_STEXT(compose->text));
-        
+
 	if (tmpl->subject && *tmpl->subject != '\0')
 		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry),
 				   tmpl->subject);
@@ -4946,7 +4953,7 @@ static void compose_attach_property(Compose *compose)
 		GtkWidget *menuitem;
 
 		cancelled = FALSE;
-                gtk_main();
+		gtk_main();
 
 		if (cancelled == TRUE) {
 			gtk_widget_hide(attach_prop.window);
@@ -5714,6 +5721,7 @@ static void compose_send_cb(gpointer data, guint action, GtkWidget *widget)
 	gint val;
 
 	val = compose_send(compose);
+
 	if (val == 0) gtk_widget_destroy(compose->window);
 }
 
@@ -5732,24 +5740,34 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	Compose *compose = (Compose *)data;
 	FolderItem *draft;
 	gchar *tmp;
+	gint msgnum;
+	static gboolean lock = FALSE;
+
+	if (lock) return;
 
 	draft = folder_get_default_draft();
+	g_return_if_fail(draft != NULL);
 
-        tmp = g_strdup_printf("%s%cdraft.%d", g_get_tmp_dir(),
+	lock = TRUE;
+
+	tmp = g_strdup_printf("%s%cdraft.%d", g_get_tmp_dir(),
 			      G_DIR_SEPARATOR, (gint)compose);
 
 	if (compose_write_to_file(compose, tmp, TRUE) < 0) {
 		g_free(tmp);
+		lock = FALSE;
 		return;
 	}
 
 	folder_item_scan(draft);
-	if (folder_item_add_msg(draft, tmp, TRUE) < 0) {
+	if ((msgnum = folder_item_add_msg(draft, tmp, TRUE)) <= 0) {
 		unlink(tmp);
 		g_free(tmp);
+		lock = FALSE;
 		return;
 	}
 	g_free(tmp);
+	draft->mtime = 0;	/* force updating */
 
 	if (compose->mode == COMPOSE_REEDIT) {
 		compose_remove_reedit_target(compose);
@@ -5762,7 +5780,33 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	folder_item_scan(draft);
 	folderview_update_item(draft, TRUE);
 
-	gtk_widget_destroy(compose->window);
+	lock = FALSE;
+
+	/* 0: quit editing  1: keep editing */
+	if (action == 0)
+		gtk_widget_destroy(compose->window);
+	else {
+		struct stat s;
+		gchar *path;
+
+		path = folder_item_fetch_msg(draft, msgnum);
+		g_return_if_fail(path != NULL);
+		if (stat(path, &s) < 0) {
+			FILE_OP_ERROR(path, "stat");
+			g_free(path);
+			lock = FALSE;
+			return;
+		}
+		g_free(path);
+
+		procmsg_msginfo_free(compose->targetinfo);
+		compose->targetinfo = g_new0(MsgInfo, 1);
+		compose->targetinfo->msgnum = msgnum;
+		compose->targetinfo->size = s.st_size;
+		compose->targetinfo->mtime = s.st_mtime;
+		compose->targetinfo->folder = draft;
+		compose->mode = COMPOSE_REEDIT;
+	}
 }
 
 static void compose_attach_cb(gpointer data, guint action, GtkWidget *widget)
