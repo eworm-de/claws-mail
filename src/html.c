@@ -550,8 +550,11 @@ static HTMLState html_parse_tag(HTMLParser *parser)
 		        /* look for href */
 		        if (!strcmp(href_token, "href")) {
 			        /* the next token is the url, between double
-				 * quotes */
+					 * quotes */
 			        char* url = strtok(NULL, "\"");
+					if (url && url[0] == '\'')
+					  url = strtok(url,"\'");
+
 				if (!url) break;
 				html_append_str(parser, url, strlen(url));
 				html_append_char(parser, ' ');
