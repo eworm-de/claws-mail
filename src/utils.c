@@ -3461,7 +3461,7 @@ void w32_debug_message_write_to_file(char *filename, gchar *message){
 
 	fp = fopen(filename, "ab");
 	if (fp){
-		fprintf(fp, message);
+		fwrite(message, strlen(message), 1, fp);
 		fclose(fp);
 	}
 }

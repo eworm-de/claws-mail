@@ -501,38 +501,6 @@ static GMemChunk  *text_property_chunk = NULL;
 static GtkWidgetClass *parent_class = NULL;
 
 
-#ifdef WIN32
-static const GtkTextFunction control_keys[26] =
-{
-  NULL,                                                /* a */
-  NULL,                                                /* b */
-  (GtkTextFunction)gtk_editable_copy_clipboard,        /* c */
-  NULL,                                                /* d */
-  NULL,                                                /* e */
-  NULL,                                                /* f */
-  NULL,                                                /* g */
-  NULL,                                                /* h */
-  NULL,                                                /* i */
-  NULL,                                                /* j */
-  NULL,                                                /* k */
-  NULL,                                                /* l */
-  NULL,                                                /* m */
-  NULL,                                                /* n */
-  NULL,                                                /* o */
-  NULL,                                                /* p */
-  NULL,                                                /* q */
-  NULL,                                                /* r */
-  NULL,                                                /* s */
-  NULL,                                                /* t */
-  (GtkTextFunction)gtk_stext_delete_line,              /* u */
-  (GtkTextFunction)gtk_editable_paste_clipboard,       /* v */
-  NULL,                                                /* w */
-  (GtkTextFunction)gtk_editable_cut_clipboard,         /* x */
-  NULL,                                                /* y */
-  NULL,                                                /* z */
-};
-#endif
-
 #if 0
 static const GtkTextFunction control_keys[26] =
 {
@@ -2412,25 +2380,6 @@ gtk_stext_key_press (GtkWidget   *widget,
 	  
 	default:
 	  return_val = FALSE;
-
-#ifdef WIN32
-	  /* ... (T^T) */
-	  if (event->state & GDK_CONTROL_MASK)
-	    {
-	      if ((key >= 'A') && (key <= 'Z'))
-		key -= 'A' - 'a';
-	      
-	      if ((key >= 'a') && (key <= 'z') && control_keys[(int) (key - 'a')])
-		{
-		  gtk_stext_freeze(text);
-		  (* control_keys[(int) (key - 'a')]) (editable, event->time);
-		  gtk_stext_thaw(text);
-		  return_val = TRUE;
-		}
-	      
-	      break;
-	    }
-#endif
 
 #if 0
 	  if (event->state & GDK_CONTROL_MASK)

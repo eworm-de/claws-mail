@@ -1,3 +1,10 @@
+2002-10-14 [thorsten]	0.8.5claws30-2
+
+	* src/gtkstext.c
+		fix: ctrl-u while spellchecking crashed
+	* src/utils.c
+		fix: crash when writing "%n" to debug.log
+
 2002-10-13 [thorsten]	0.8.5claws30-1
 
 	* src/gtkaspell.c
