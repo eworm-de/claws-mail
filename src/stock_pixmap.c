@@ -107,6 +107,7 @@
 #include "pixmaps/mime_gpg_failed.xpm"
 #include "pixmaps/mime_gpg_unknown.xpm"
 #include "pixmaps/mime_gpg_expired.xpm"                  
+#include "pixmaps/address_search.xpm"
 
 typedef struct _StockPixmapData	StockPixmapData;
 
@@ -125,6 +126,7 @@ static StockPixmapData pixmaps[] =
 {
 	{address_xpm			, NULL, NULL, "address", "  "},
 	{address_book_xpm		, NULL, NULL, "address_book", "  "},
+	{address_search_xpm		, NULL, NULL, "address_search", "  "},
 	{book_xpm				, NULL, NULL, "book", "  "},
 	{category_xpm			, NULL, NULL, "category", "  "},
 	{checkbox_off_xpm		, NULL, NULL, "checkbox_off", "  "},
