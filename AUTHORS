@@ -6,6 +6,7 @@ main-branch (http://sylpheed.good-day.net)
 claws-branch (http://sylpheed-claws.sourceforge.net)
 
 	Hoa viet Dinh		<dinh@enseirb.fr>
+        Christoph Hohmann       <reboot@gmx.ch>
 	Alfons Hoogervorst	<alfons@proteus.demon.nl>
 	Darko Koruga		<darko.koruga@hermes.si>
 	Paul Mangan		<claws@thewildbeast.co.uk>
@@ -63,3 +64,4 @@ contributors (beside the above; based on Changelog)
 	shigeri
 	Tajiri
 	Wakai
+        Rodrigo Dias Arruda Senra

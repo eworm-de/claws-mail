@@ -1,0 +1,30 @@
+
+* filter_conv.pl
+
+  WHAT IT DOES
+
+  This perl script provides easy conversion of your filtering rules
+  form sylpheed's old filter system to the new filtering system used
+  in sylpheed-claws. It reads 'filterrc' and outputs 'filteringrc'.
+
+  HOW TO USE IT
+
+  Move 'filter_conv.pl' to the ~/.sylpheed directory.
+  From the ~/.sylpheed directory, issue the command:
+
+        perl filter_conv.pl
+
+  That's it, the new filtering system is now implemented with your
+  previous rules applied.
+
+-----------------------------------------------------------------------
+
+* ldif-to-xml.py
+
+  WHAT IT DOES
+
+  This python script converts the netscape ldif format address book to
+  the sylpheed xml format.
+
+
+

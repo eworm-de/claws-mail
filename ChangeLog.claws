@@ -1,3 +1,14 @@
+2001-06-22 [paul]
+
+        Added tools directory and files.
+
+        * tools/filter_conv.pl
+                converts old filter system to new filtering system
+        * tools/ldif-to-xml.py
+                converts netscape addressbook to sylpheed addressbook
+        * tools/README
+                descriptions/instructions for above two files
+
 2001-06-23 [christoph]
 
 	* src/inc.c
