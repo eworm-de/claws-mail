@@ -1,3 +1,14 @@
+2003-10-23 [christoph]	0.9.6claws47
+
+	* src/noticeview.c
+		don't always display button when noticeview is made visible
+
+	* src/mimeview.c
+	* src/pgpmime.c
+	* src/privacy.[ch]
+	* src/sgpgme.[ch]
+		get signature information from crypto system
+
 2003-10-22 [paul]	0.9.6claws46
 
 	* po/es.po

@@ -78,6 +78,67 @@ SignatureStatus sgpgme_sigstat_gpgme_to_privacy(GpgmeSigStat status)
 	return SIGNATURE_CHECK_FAILED;
 }
 
+static const gchar *get_validity_str(unsigned long validity)
+{
+	switch (validity) {
+	case GPGME_VALIDITY_UNKNOWN:
+		return _("Unknown");
+	case GPGME_VALIDITY_UNDEFINED:
+		return _("Undefined");
+	case GPGME_VALIDITY_NEVER:
+		return _("Never");
+	case GPGME_VALIDITY_MARGINAL:
+		return _("Marginal");
+	case GPGME_VALIDITY_FULL:
+		return _("Full");
+	case GPGME_VALIDITY_ULTIMATE:
+		return _("Ultimate");
+	default:
+		return _("Error");
+	}
+}
+
+gchar *sgpgme_sigstat_info_short(GpgmeCtx ctx, GpgmeSigStat status)
+{
+	GpgmeKey key;
+
+	switch (status) {
+	case GPGME_SIG_STAT_GOOD:
+	{
+		unsigned long validity = 0, val, i;	
+	
+		if (gpgme_get_sig_key(ctx, 0, &key) != GPGME_No_Error)
+			return g_strdup(_("Error"));
+		
+		i = 0;
+		while ((val = gpgme_key_get_ulong_attr(key, GPGME_ATTR_VALIDITY, NULL, i++)) > 0)
+			if (val > validity)
+				validity = val;
+		
+		return g_strdup_printf(_("Valid signature by %s (Trust: %s)"),
+			gpgme_key_get_string_attr(key, GPGME_ATTR_USERID, NULL, 0),
+			get_validity_str(validity));
+	}
+	case GPGME_SIG_STAT_GOOD_EXP:
+		return g_strdup(_("The signature of this part has expired"));
+	case GPGME_SIG_STAT_GOOD_EXPKEY:
+		return g_strdup(_("The key that was used to sign this part has expired"));
+	case GPGME_SIG_STAT_DIFF:
+		return g_strdup(_("Not all signatures are valid"));
+	case GPGME_SIG_STAT_BAD:
+		return g_strdup(_("This signature is invalid"));
+	case GPGME_SIG_STAT_NOKEY:
+		return g_strdup(_("You have no key to verify this signature"));
+	case GPGME_SIG_STAT_NOSIG:
+		return g_strdup(_("Bo signature found"));
+	case GPGME_SIG_STAT_ERROR:
+		return g_strdup(_("An error occured"));
+	case GPGME_SIG_STAT_NONE:
+		return g_strdup(_("The signature of this part has not been checked"));
+	}
+	return g_strdup(_("Error"));
+}
+
 void sgpgme_init()
 {
 	if (gpgme_engine_check_version(GPGME_PROTOCOL_OpenPGP) != 

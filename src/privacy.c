@@ -19,6 +19,7 @@
 
 #include <glib.h>
 
+#include "intl.h"
 #include "privacy.h"
 #include "procmime.h"
 
@@ -101,6 +102,25 @@ SignatureStatus privacy_mimeinfo_get_sig_status(MimeInfo *mimeinfo)
 		return SIGNATURE_UNCHECKED;
 	
 	return system->get_sig_status(mimeinfo);
+}
+
+gchar *privacy_mimeinfo_sig_info_short(MimeInfo *mimeinfo)
+{
+	PrivacySystem *system;
+
+	g_return_val_if_fail(mimeinfo != NULL, NULL);
+
+	if (mimeinfo->privacy == NULL)
+		privacy_mimeinfo_is_signed(mimeinfo);
+	
+	if (mimeinfo->privacy == NULL)
+		return g_strdup(_("No signature found"));
+	
+	system = mimeinfo->privacy->system;
+	if (system->get_sig_info_short == NULL)
+		return g_strdup(_("No information available"));
+	
+	return system->get_sig_info_short(mimeinfo);
 }
 
 gboolean privacy_mimeinfo_is_encrypted(MimeInfo *mimeinfo)

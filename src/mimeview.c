@@ -627,32 +627,29 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo)
 		
 		switch (privacy_mimeinfo_get_sig_status(mimeinfo)) {
 		case SIGNATURE_UNCHECKED:
-			text = _("This part of the message has been signed");
 			button_text = _("Check");
 			func = check_signature_cb;
 			icon = STOCK_PIXMAP_PRIVACY_SIGNED;
 			break;
 		case SIGNATURE_OK:
-			text = _("Signature is valid");
 			icon = STOCK_PIXMAP_PRIVACY_PASSED;
 			break;
 		case SIGNATURE_WARN:
-			text = _("Signature is ok");
 			icon = STOCK_PIXMAP_PRIVACY_WARN;
 			break;
 		case SIGNATURE_INVALID:
-			text = _("The signature of this part is invalid");
 			icon = STOCK_PIXMAP_PRIVACY_FAILED;
 			break;
 		case SIGNATURE_CHECK_FAILED:
-			text = _("Signature check failed");
 			button_text = _("Check again");
 			func = check_signature_cb;
 			icon = STOCK_PIXMAP_PRIVACY_UNKNOWN;
 		default:
 			break;
 		}
+		text = privacy_mimeinfo_sig_info_short(mimeinfo);
 		noticeview_set_text(mimeview->siginfoview, text);
+		g_free(text);
 		noticeview_set_button_text(mimeview->siginfoview, button_text);
 		noticeview_set_button_press_callback(
 			mimeview->siginfoview,

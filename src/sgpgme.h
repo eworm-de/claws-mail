@@ -27,9 +27,12 @@
 void sgpgme_init(void);
 void sgpgme_done(void);
 
-GpgmeSigStat sgpgme_verify_signature(GpgmeCtx ctx,
-				     GpgmeData sig,
-				     GpgmeData plain);
-SignatureStatus sgpgme_sigstat_gpgme_to_privacy(GpgmeSigStat status);
+GpgmeSigStat sgpgme_verify_signature	(GpgmeCtx ctx,
+				    	 GpgmeData sig,
+				    	 GpgmeData plain);
+SignatureStatus sgpgme_sigstat_gpgme_to_privacy
+					(GpgmeSigStat status);
+gchar *sgpgme_sigstat_info_short	(GpgmeCtx ctx,
+					 GpgmeSigStat status);
 
 #endif /* SGPGME_H */

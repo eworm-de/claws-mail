@@ -186,6 +186,15 @@ static SignatureStatus pgpmime_get_sig_status(MimeInfo *mimeinfo)
 	return sgpgme_sigstat_gpgme_to_privacy(data->sigstatus);
 }
 
+static gchar *pgpmime_get_sig_info_short(MimeInfo *mimeinfo)
+{
+	PrivacyDataPGP *data = (PrivacyDataPGP *) mimeinfo->privacy;
+	
+	g_return_val_if_fail(data != NULL, g_strdup("Error"));
+
+	return sgpgme_sigstat_info_short(data->ctx, data->sigstatus);
+}
+
 static PrivacySystem pgpmime_system = {
 	"PGP/Mime",			/* name */
 
@@ -194,7 +203,7 @@ static PrivacySystem pgpmime_system = {
 	pgpmime_is_signed,		/* is_signed(MimeInfo *) */
 	pgpmime_check_signature,	/* check_signature(MimeInfo *) */
 	pgpmime_get_sig_status,		/* get_sig_status(MimeInfo *) */
-	NULL,				/* get_sig_info_short(MimeInfo *) */
+	pgpmime_get_sig_info_short,	/* get_sig_info_short(MimeInfo *) */
 	NULL,				/* get_sig_info_full(MimeInfo *) */
 
 	/* NOT YET */

@@ -115,7 +115,7 @@ gboolean noticeview_is_visible(NoticeView *noticeview)
 void noticeview_show(NoticeView *noticeview)
 {
 	if (!noticeview->visible) {
-		gtk_widget_show_all(GTK_WIDGET_PTR(noticeview));
+		gtk_widget_show(GTK_WIDGET_PTR(noticeview));
 		noticeview->visible = TRUE;
 	}	
 }

@@ -43,6 +43,7 @@ void privacy_free_privacydata			(PrivacyData *);
 gboolean privacy_mimeinfo_is_signed		(MimeInfo *);
 gint privacy_mimeinfo_check_signature		(MimeInfo *);
 SignatureStatus privacy_mimeinfo_get_sig_status	(MimeInfo *);
+gchar *privacy_mimeinfo_sig_info_short		(MimeInfo *);
 
 #if 0 /* NOT YET */
 gboolean privacy_mimeinfo_is_encrypted		(MimeInfo *);
@@ -57,8 +58,8 @@ struct _PrivacySystem {
 	gboolean	 (*is_signed)		(MimeInfo *);
 	gint		 (*check_signature)	(MimeInfo *);
 	SignatureStatus	 (*get_sig_status)	(MimeInfo *);
-	const gchar	*(*get_sig_info_short)	(MimeInfo *);
-	const gchar	*(*get_sig_info_full)	(MimeInfo *);
+	gchar		*(*get_sig_info_short)	(MimeInfo *);
+	gchar		*(*get_sig_info_full)	(MimeInfo *);
 
 	/* NOT YET */
 	gboolean	 (*is_encrypted)	(MimeInfo *);
