@@ -60,8 +60,21 @@ static GList *filesel_create(const gchar *title, const gchar *path, gboolean mul
 
 	gtk_file_chooser_set_select_multiple (GTK_FILE_CHOOSER(chooser), multiple_files);
 
-	if (path)
-		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(chooser), path);
+	if (path) {
+		char *filename = NULL;
+		char *realpath = strdup(path);
+		if ((filename = strrchr(path,'/')) != NULL) {
+			filename+=sizeof(char);
+			*(strrchr(realpath, '/')+sizeof(char)) = '\0';
+		} else {
+			filename = (char *) path;
+			free(realpath); 
+			realpath = strdup(get_home_dir());
+		}
+		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(chooser), realpath);
+		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(chooser), filename);
+		free(realpath);
+	}
 
 	if (gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_OK) 
 		slist = gtk_file_chooser_get_filenames (GTK_FILE_CHOOSER (chooser));
