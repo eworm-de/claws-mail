@@ -1,3 +1,9 @@
+2004-07-29 [colin]	0.9.12cvs39.1
+
+	* src/messageview.c
+		sync with head
+		(inform user when partial mail is deleted on server)
+
 2004-07-29 [colin]	0.9.12cvs38.1
 
 	* src/messageview.c
