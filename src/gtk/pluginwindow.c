@@ -177,7 +177,7 @@ void pluginwindow_create()
 	gtk_widget_show(label12);
 	gtk_clist_set_column_widget(GTK_CLIST(plugin_list), 0, label12);
 	gtk_label_set_justify(GTK_LABEL(label12), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment(GTK_MISC(label12), 7.45058e-09, 0.5);
+	gtk_misc_set_alignment(GTK_MISC(label12), 0, 0.5);
 
 	vbox2 = gtk_vbox_new(FALSE, 0);
 	gtk_widget_show(vbox2);
