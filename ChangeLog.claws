@@ -1,3 +1,8 @@
+2001-12-15 [alfons]
+	
+	* po/nl.po
+		update dutch translation
+
 2001-12-14 [carsten]	0.6.5claws91
 	* src/summaryview.c
 		fixed bug #473785; also after changing the column order
