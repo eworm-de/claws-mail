@@ -1786,27 +1786,6 @@ static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 #endif
 	compose_show_first_last_header(compose, TRUE);
 
-#if 0 /* NEW COMPOSE GUI */
-	if (compose->bcc) {
-		GtkItemFactory *ifactory;
-		GtkWidget *menuitem;
-
-		ifactory = gtk_item_factory_from_widget(compose->menubar);
-		menuitem = gtk_item_factory_get_item(ifactory, "/View/Bcc");
-		gtk_check_menu_item_set_active
-			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
-	}
-	if (compose->replyto) {
-		GtkItemFactory *ifactory;
-		GtkWidget *menuitem;
-
-		ifactory = gtk_item_factory_from_widget(compose->menubar);
-		menuitem = gtk_item_factory_get_item
-			(ifactory, "/View/Reply to");
-		gtk_check_menu_item_set_active
-			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
-	}
-#endif
 }
 
 #undef SET_ENTRY
@@ -2729,30 +2708,23 @@ static void compose_select_account(Compose *compose, PrefsAccount *account)
 		gtk_widget_set_sensitive(menuitem, FALSE);
 	}
 
-	if (account->set_autocc && account->auto_cc &&
-	    compose->mode != COMPOSE_REEDIT) {
-		gtk_entry_set_text
-			(GTK_ENTRY(compose->cc_entry), account->auto_cc);
-		menuitem = gtk_item_factory_get_item(ifactory, "/View/Cc");
-		gtk_check_menu_item_set_active
-			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
+	if (account->set_autocc) {
+		compose_entry_show(compose, COMPOSE_ENTRY_CC);
+		if (account->auto_cc && compose->mode != COMPOSE_REEDIT)
+			compose_entry_set(compose, account->auto_cc,
+					  COMPOSE_ENTRY_CC);
 	}
 	if (account->set_autobcc) {
-		menuitem = gtk_item_factory_get_item(ifactory, "/View/Bcc");
-		gtk_check_menu_item_set_active
-			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
+		compose_entry_show(compose, COMPOSE_ENTRY_BCC);
 		if (account->auto_bcc && compose->mode != COMPOSE_REEDIT)
-			gtk_entry_set_text(GTK_ENTRY(compose->bcc_entry),
-					   account->auto_bcc);
+			compose_entry_set(compose, account->auto_bcc,
+					  COMPOSE_ENTRY_BCC);
 	}
 	if (account->set_autoreplyto) {
-		menuitem = gtk_item_factory_get_item(ifactory,
-						     "/View/Reply to");
-		gtk_check_menu_item_set_active
-			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
+		compose_entry_show(compose, COMPOSE_ENTRY_REPLY_TO);
 		if (account->auto_replyto && compose->mode != COMPOSE_REEDIT)
-			gtk_entry_set_text(GTK_ENTRY(compose->reply_entry),
-					   account->auto_replyto);
+			compose_entry_set(compose, account->auto_replyto,
+					  COMPOSE_ENTRY_REPLY_TO);
 	}
 
 	menuitem = gtk_item_factory_get_item(ifactory, "/View/Ruler");

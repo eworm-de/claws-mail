@@ -1,3 +1,38 @@
+2002-11-26
+
+	* src/quote_fmt_parse.y: fixed a parse error (thanks to Andreas Hinz).
+
+2002-11-26
+
+	* src/account.[ch]:
+	  account_find_from_message_file()
+	  account_find_from_msginfo(): new. They find an account from the
+	  headers like 'From:', 'X-Sylpheed-Account-Id:', and 'AID:' in the
+	  specified message.
+	* src/compose.c:
+	  compose_reedit(): restore messages' previous account on composition.
+	  compose_write_headers(): add 'X-Sylpheed-Account-Id:' header
+	  on draft mode.
+
+2002-11-26
+
+	* src/compose.c: cleaned up the code using compose_entry_set()
+	  (don't use gtk_entry_set_text() directly).
+
+2002-11-25
+
+	* src/imap.c: imap_parse_namespace(): fixed a memory leak.
+
+2002-11-22
+
+	* updated autotools and libtool to the latest version.
+	* configure.in: added AC_PREREQ(2.50).
+
+2002-11-22
+
+	* src/textview.c: textview_set_font(): fix for message display in
+	  UTF-8 locales (thanks to Sergey Vlasov).
+
 2002-11-21
 
 	* src/imageview.[ch]: imageview_show_image(): resize images to fit

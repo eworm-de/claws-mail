@@ -1,3 +1,38 @@
+2002-11-26
+
+	* src/quote_fmt_parse.y: パースエラーを修正(Andreas Hinz さん thanks)。
+
+2002-11-26
+
+	* src/account.[ch]:
+	  account_find_from_message_file()
+	  account_find_from_msginfo(): 新規。指定したメッセージの 'From:'、
+	  'X-Sylpheed-Account-Id:'、'AID:' のようなヘッダからアカウントを
+	  検索する。
+	* src/compose.c:
+	  compose_reedit(): メッセージの以前の作成時のアカウントを復元。
+	  compose_write_headers(): 草稿モードの場合 'X-Sylpheed-Account-Id:'
+	  ヘッダを追加。
+
+2002-11-26
+
+	* src/compose.c: compose_entry_set() を使ってコードを整理
+	  (gtk_entry_set_text() を直接使用しない)。
+
+2002-11-25
+
+	* src/imap.c: imap_parse_namespace(): メモリリークを修正。
+
+2002-11-22
+
+	* autotools と libtool を最新版に更新。
+	* configure.in: AC_PREREQ(2.50) を追加。
+
+2002-11-22
+
+	* src/textview.c: textview_set_font(): UTF-8 locale でのメッセージ
+	  表示の修正(Sergey Vlasov さん thanks)。
+
 2002-11-21
 
 	* src/imageview.[ch]: imageview_show_image(): 指定されればウィンドウ

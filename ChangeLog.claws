@@ -1,3 +1,18 @@
+2002-11-26 [paul]	0.8.6claws12
+
+	* sync with 0.8.6cvs11
+	  src/quote_fmt_parse.y	 
+	  	no sync needed
+	  src/account.[ch]	 
+	  	not sync'ed
+	  src/compose.c
+	  	compose_write_headers(): add 'X-Sylpheed-Account-Id:' header
+	  	on draft mode.
+	  	compose_reedit(): add check for 'X-Sylpheed-Account-Id:' 
+		header
+		
+	see ChangeLog 2002-11-25 and 2002-11-26
+
 2002-11-26 [colin]	0.8.6claws11
 
 	* src/folderview.c
