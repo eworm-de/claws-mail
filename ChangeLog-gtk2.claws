@@ -1,3 +1,13 @@
+2004-08-09 [paul]	0.9.12cvs55.2
+
+	* autogen.sh
+	* po/poconv.sh
+		remove unneeded script
+
+	* configure.ac
+		add forgotten USE_LDAP_TLS (sync with HEAD)
+
+
 2004-08-09 [colin]	0.9.12cvs55.1
 
 	* src/main.c

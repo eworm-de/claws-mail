@@ -1,9 +1,5 @@
 #!/bin/sh
 
-cd po
-/bin/sh poconv.sh
-cd ..
-
 autopoint --force \
   && aclocal -I m4 \
   && libtoolize --force --copy \
