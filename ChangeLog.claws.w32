@@ -1,3 +1,8 @@
+2003-03-17 [thorsten]	0.8.11claws23-1
+
+	* src/folderview.c
+		fix: crash when selecting toplevel folder
+
 2003-03-16 [thorsten]	0.8.11claws11-2
 
 	* src/folder.c

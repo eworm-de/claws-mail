@@ -1747,9 +1747,9 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	/* Open Folder */
 #ifdef WIN32
 	{
-		gchar *p_path=g_locale_to_utf8(item->path, -1, NULL, NULL, NULL);
-	    	buf = g_strdup_printf(_("Opening Folder %s..."), p_path ? 
-						p_path : "(null)");
+		gchar *p_path=g_locale_to_utf8(item->path ?
+			item->path : "(null)", -1, NULL, NULL, NULL);
+	    	buf = g_strdup_printf(_("Opening Folder %s..."), p_path);
 		g_free(p_path);
 	}
 #else
