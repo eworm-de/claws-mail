@@ -1,3 +1,11 @@
+2003-07-29 [alfons]	0.9.3claws76
+
+	* src/common/utils.[ch]
+		add generate_msgid()
+	* src/messageview.c
+		save ack'ed RRR; fixes #205, "return receipt is not saved in
+		sent folder".
+
 2003-07-29 [alfons]	0.9.3claws75
 
 	* src/messageview.c
