@@ -1,3 +1,9 @@
+2002-11-06 [paul]	0.8.5claws79
+
+	* src/compose.[ch]
+		allow 'on-the-fly' changing of the type of encryption 
+		and/or signing used (mime/ascii) via the compose window
+
 2002-11-06 [paul]	0.8.5claws78
 
 	* sync with 0.8.5cvs19
