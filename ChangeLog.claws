@@ -1,3 +1,9 @@
+2002-04-22 [darko]	0.7.4claws93
+
+	* src/compose.c
+		fix previous check-in which changed code after
+		merge from main
+
 2002-04-22 [paul]	0.7.4claws92
 
 	* faq/de/*
