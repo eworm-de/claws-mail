@@ -17,9 +17,9 @@ EXTRA_DIST = \
 	autogen.sh 
 
 if SYLPHEED_GNOME
-pixmapdir=$(gnomedir)/share/pixmaps
+pixmapdir=$(gnomedatadir)/pixmaps
 pixmap_DATA=sylpheed.png
-gnomapdir=$(gnomedir)/share/gnome/apps/Internet
+gnomapdir=$(gnomedatadir)/gnome/apps/Internet
 gnomap_DATA=sylpheed.desktop
 else
 pixmapdir=

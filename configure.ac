@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=10
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws46
+EXTRA_VERSION=claws53
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -27,10 +27,12 @@ AC_SUBST(VERSION)
 dnl GNOME installed?
 AC_PATH_PROG(GNOME_CONFIG, gnome-config, no)
 if test "$GNOME_CONFIG" != no; then
-	gnomedir="`gnome-config --prefix`"
-	AC_SUBST(gnomedir)
+	gnomedatadir="`gnome-config --datadir`"
+	gnomeprefix="`gnome-config --prefix`"
+	gnomedatadir="${prefix}/${gnomedatadir#${gnomeprefix}}"
+	AC_SUBST(gnomedatadir)
 fi
-AM_CONDITIONAL(SYLPHEED_GNOME, test -d "$gnomedir")
+AM_CONDITIONAL(SYLPHEED_GNOME, test -n "$gnomedatadir")
 
 dnl Claws version
 AC_DEFINE(CLAWS, 1, Compiling Claws branch of sylpheed)

@@ -14,7 +14,6 @@ sylpheed_SOURCES = \
 	mimeview.c mimeview.h \
 	summary_search.c summary_search.h \
 	message_search.c message_search.h \
-	colorlabel.c colorlabel.h \
 	folder.c folder.h \
 	procmsg.c procmsg.h \
 	procheader.c procheader.h \
@@ -73,7 +72,6 @@ sylpheed_SOURCES = \
 	inputdialog.c inputdialog.h \
 	progressdialog.c progressdialog.h \
 	grouplistdialog.c grouplistdialog.h \
-	about.c about.h \
 	setup.c setup.h \
 	codeconv.c codeconv.h \
 	unmime.c unmime.h \

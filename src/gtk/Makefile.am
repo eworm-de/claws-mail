@@ -1,7 +1,9 @@
 noinst_LTLIBRARIES = libsylpheedgtk.la
 
 libsylpheedgtk_la_SOURCES = \
-	description_window.h description_window.c \
+	about.c about.h \
+	colorlabel.c colorlabel.h \
+	description_window.c description_window.h \
 	gtkutils.c gtkutils.h \
 	gtkshruler.c gtkshruler.h \
 	gtksctree.c gtksctree.h \

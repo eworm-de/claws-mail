@@ -92,7 +92,7 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=..\src\about.c
+SOURCE=..\src\gtk\about.c
 # End Source File
 # Begin Source File
 
@@ -160,7 +160,7 @@ SOURCE=..\src\codeconv.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\colorlabel.c
+SOURCE=..\src\gtk\colorlabel.c
 # End Source File
 # Begin Source File
 
@@ -700,7 +700,7 @@ SOURCE=..\src\common\xmlprops.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=..\src\about.h
+SOURCE=..\src\gtk\about.h
 # End Source File
 # Begin Source File
 
@@ -756,7 +756,7 @@ SOURCE=..\src\codeconv.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\colorlabel.h
+SOURCE=..\src\gtk\colorlabel.h
 # End Source File
 # Begin Source File
 

@@ -25,7 +25,9 @@
 #include "defs.h"
 
 #include <glib.h>
+#ifndef WIN32
 #include <gdk/gdkx.h>
+#endif
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkpixmap.h>
 #include <gtk/gtkmenu.h>
@@ -327,5 +329,4 @@ guint colorlabel_get_color_menu_active_item(GtkWidget *menu)
 		(gtk_object_get_data(GTK_OBJECT(menuitem), "color"));
 	return color;
 }
-
 
