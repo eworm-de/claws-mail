@@ -1552,7 +1552,7 @@ void main_window_progress_set(MainWindow *mainwin, gint cur, gint total)
 void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 {
 	GList *list;
-	guint has_trash;
+	guint has_trash = 0;
 	Folder *folder;
 
 	for (has_trash = 0, list = folder_get_list(); list != NULL; list = list->next) {

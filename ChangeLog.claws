@@ -1,3 +1,8 @@
+2004-09-28 [colin]	0.9.12cvs109
+
+	* src/mainwindow.c
+		Fix uninialized var
+
 2004-09-28 [colin]	0.9.12cvs108
 
 	* src/addressbook.c
