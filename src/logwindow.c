@@ -208,10 +208,9 @@ void log_window_clear(GtkWidget *text)
 				break;
 		} while (lf == NULL);
 				
-		gtk_text_freeze (GTK_TEXT (text));
-		
 		/* erase the text */
 		gtk_text_set_point (GTK_TEXT (text), 0);
+		gtk_text_freeze (GTK_TEXT (text));
 		if (!gtk_text_forward_delete (GTK_TEXT (text), point + 1))
 		        debug_print (_("Error clearing log\n"));
 		gtk_text_thaw (GTK_TEXT (text));

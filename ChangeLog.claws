@@ -1,3 +1,10 @@
+2002-09-29 [alfons]	0.8.3claws33
+
+	* src/logwindow.c
+		log_window_clear(): only bracket gtk_text_forward_delete() 
+		with gtk_text_freeze() / gtk_text_thaw() (see if this
+		works around GTK text bug)
+
 2002-09-29 [paul]	0.8.3claws32
 
 	* po/bg.po
