@@ -100,6 +100,7 @@ static void mimeview_drag_data_get      (GtkWidget	  *widget,
 					 MimeView	  *mimeview);
 
 static void mimeview_display_as_text	(MimeView	*mimeview);
+static void mimeview_show_image		(MimeView	*mimeview);
 static void mimeview_save_as		(MimeView	*mimeview);
 static void mimeview_launch		(MimeView	*mimeview);
 static void mimeview_open_with		(MimeView	*mimeview);
@@ -115,6 +116,7 @@ static GtkItemFactoryEntry mimeview_popup_entries[] =
 	{N_("/_Open"),		  NULL, mimeview_launch,	  0, NULL},
 	{N_("/Open _with..."),	  NULL, mimeview_open_with,	  0, NULL},
 	{N_("/_Display as text"), NULL, mimeview_display_as_text, 0, NULL},
+	{N_("/_Display image"),   NULL, mimeview_show_image,      0, NULL},
 	{N_("/_Save as..."),	  NULL, mimeview_save_as,	  0, NULL}
 #if USE_GPGME
         ,
@@ -544,7 +546,10 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 		break;
 #if (HAVE_GDK_PIXBUF || HAVE_GDK_IMLIB)
 	case MIME_IMAGE:
-		mimeview_show_image_part(mimeview, partinfo);
+		if (prefs_common.display_img)
+			mimeview_show_image_part(mimeview, partinfo);
+		else
+			textview_show_mime_part(mimeview->textview, partinfo);
 		break;
 #endif
 	default:
@@ -623,6 +628,12 @@ static gint mimeview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 		else
 			menu_set_sensitive(mimeview->popupfactory,
 					   "/Open", TRUE);
+
+#if (HAVE_GDK_PIXBUF || HAVE_GDK_IMLIB)
+		if (partinfo && (partinfo->mime_type == MIME_IMAGE))
+			menu_set_sensitive(mimeview->popupfactory,
+					   "/Display image", TRUE);
+#endif					   
 #if USE_GPGME
 		menu_set_sensitive(mimeview->popupfactory,
 				   "/Check signature",
@@ -708,6 +719,11 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();
 		mimeview_display_as_text(mimeview);
+		return TRUE;	
+	case GDK_i:
+		BREAK_ON_MODIFIER_KEY();
+		KEY_PRESS_EVENT_STOP();
+		mimeview_show_image(mimeview);
 		return TRUE;
 	case GDK_l:
 		BREAK_ON_MODIFIER_KEY();
@@ -770,6 +786,17 @@ static void mimeview_display_as_text(MimeView *mimeview)
 	partinfo = gtk_ctree_node_get_row_data
 		(GTK_CTREE(mimeview->ctree), mimeview->opened);
 	mimeview_show_message_part(mimeview, partinfo);
+}
+
+static void mimeview_show_image(MimeView *mimeview)
+{
+	MimeInfo *partinfo;
+
+	if (!mimeview->opened) return;
+
+	partinfo = gtk_ctree_node_get_row_data
+		(GTK_CTREE(mimeview->ctree), mimeview->opened);
+	mimeview_show_image_part(mimeview, partinfo);
 }
 
 static void mimeview_save_as(MimeView *mimeview)

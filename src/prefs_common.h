@@ -111,6 +111,7 @@ struct _PrefsCommon
 	gchar *boldfont;
 	gchar *smallfont;
 	gboolean display_folder_unread;
+	gboolean display_img;
 	ToolbarStyle toolbar_style;
 	gboolean show_statusbar;
 	gboolean trans_hdr;

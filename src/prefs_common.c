@@ -162,6 +162,7 @@ static struct Display {
 	GtkWidget *entry_boldfont;
 
 	GtkWidget *chkbtn_folder_unread;
+	GtkWidget *chkbtn_display_img;
 
 	GtkWidget *chkbtn_transhdr;
 
@@ -461,6 +462,11 @@ static PrefParam param[] = {
 	{"display_folder_unread_num", "TRUE",
 	 &prefs_common.display_folder_unread, P_BOOL,
 	 &display.chkbtn_folder_unread,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"display_img", "TRUE",
+	 &prefs_common.display_img, P_BOOL,
+	 &display.chkbtn_display_img,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"translate_header", "TRUE", &prefs_common.trans_hdr, P_BOOL,
@@ -2006,6 +2012,7 @@ static void prefs_display_create(void)
 	GtkWidget *entry_textfont;
 	GtkWidget *button_textfont;
 	GtkWidget *chkbtn_folder_unread;
+	GtkWidget *chkbtn_display_img;
 	GtkWidget *chkbtn_transhdr;
 	GtkWidget *frame_summary;
 	GtkWidget *vbox2;
@@ -2124,6 +2131,9 @@ static void prefs_display_create(void)
 	PACK_CHECK_BUTTON (vbox2, chkbtn_folder_unread,
 			   _("Display unread number next to folder name"));
 
+	PACK_CHECK_BUTTON (vbox2, chkbtn_display_img,
+			   _("Automatically display images"));
+
 	/* ---- Summary ---- */
 
 	PACK_FRAME(vbox1, frame_summary, _("Summary View"));
@@ -2186,6 +2196,7 @@ static void prefs_display_create(void)
 	display.button_textfont	= button_textfont;
 
 	display.chkbtn_folder_unread = chkbtn_folder_unread;
+	display.chkbtn_display_img   = chkbtn_display_img;
 	display.chkbtn_transhdr   = chkbtn_transhdr;
 
 	display.chkbtn_swapfrom      = chkbtn_swapfrom;
