@@ -90,6 +90,7 @@ typedef enum
 	SORT_BY_MARK,
 	SORT_BY_UNREAD,
 	SORT_BY_MIME,
+	SORT_BY_TO,
 	SORT_BY_LOCKED
 } FolderSortKey;
 

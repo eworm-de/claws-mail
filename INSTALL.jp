@@ -10,16 +10,15 @@
 
 Linux
 
-o Debian GNU/Linux unstable (sid) (glibc 2.2.x)
-o Debian GNU/Linux testing (woody) (glibc 2.2.x)
+o Debian GNU/Linux unstable (sid) (glibc 2.3.x)
+o Debian GNU/Linux 3.0 (woody) (glibc 2.2.5)
 o Debian GNU/Linux 2.2 (potato) (glibc 2.1.3)
 o Kondara MNU/Linux (glibc 2.1.x)
 o Kondara MNU/Linux 1.2
 o Kondara MNU/Linux 2.0
 o Vine Linux 1.1 (glibc 2.0.x + libwcsmbs)
 o Vine Linux 2.0 (glibc 2.1.x) (Intel, PPC)
-o Vine Linux 2.1
-o Vine Linux 2.1.5
+o Vine Linux 2.1 / 2.1.5 / 2.5 / 2.6
 o Laser5 Linux 6.0 / 6.2 / 6.4 (glibc 2.1.x)
 o TurboLinux 4.0 (glibc 2.0.7 + libwcsmbs)
 o TurboLinux 6.0 (glibc 2.1.2)
@@ -40,9 +39,9 @@ o Linux for PPC Japanese Edition 3.0 (glibc 2.1.x)
 o LinuxPPC Q4 2000 (glibc 2.1.x)
 o Linux MLD4
 o Linux MLD5
-o Plamo Linux 2.0 / 2.1 / 2.2.x / 3.0-alpha
-o Slackware 7.0 / 7.1 / 8.0
-o Linux Mandrake 7.0 / 7.1 / 7.2 / 8.0 / 8.1
+o Plamo Linux 2.0 / 2.1 / 2.2.x / 3.0
+o Slackware 7.0 / 7.1 / 8.0 / 8.1
+o Linux Mandrake 7.0 / 7.1 / 7.2 / 8.0 / 8.1 / 9.0
 o SuSE Linux 6.3 (glibc 2.1.2)
 o SuSE Linux 6.4
 o SuSE Linux 7.0 / 7.1 / 7.2 / 7.3
@@ -75,7 +74,7 @@ o BSD/OS 4.0.1
 その他商用 Unix
 
 o Solaris 2.5 / 2.5.1 / 2.6
-o Solaris 7 / 8
+o Solaris 7 / 8 / 9
 o IRIX 6.3 / 6.4 / 6.5 6.5.8m
 o HP-UX 10.20 / 11.0 / 11i
 o Tru64 Unix 5.0 (OSF1 V5.0)
@@ -119,7 +118,7 @@ Sylpheed は標準で US-ASCII, ISO-8859-1, EUC-JP に対応しています。
 
   http://ghost.math.sci.hokudai.ac.jp/misc/libjconv/
 
-GnuPG (PGP)対応を有効にしたい場合は、 GPGME 0.3.5 以降と GnuPG 1.0.7 以降が
+GnuPG (PGP)対応を有効にしたい場合は、 GPGME 0.3.10 以降と GnuPG 1.0.7 以降が
 必要です。以下の場所から取得できます:
 
   ftp://ftp.gnupg.org/pub/gcrypt/alpha/gpgme/

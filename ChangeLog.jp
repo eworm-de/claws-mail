@@ -1,3 +1,32 @@
+2002-12-25
+
+	* version 0.8.8
+
+2002-12-25
+
+	* src/codeconv.c: conv_encode_header(): 無効な文字が現われると無限
+	  ループに陥るバグを修正。
+
+2002-12-25
+
+	* src/procmsg.[ch]: procmsg_sort_msg_list(): 新規。メッセージリスト
+	  をソートする。
+	* src/summaryview.c: summary_show(): summary_sort() を削除
+	  (folder_item_get_msg_list() 内部で行われるため)。これにより
+	  サマリ表示の速度を向上。
+	  マクロを使ってサマリのソート関数を整理。
+	* src/mh.c
+	  src/imap.c
+	  src/news.c
+	  src/folder.[ch]: folder_item_get_msg_list(): FolderItem::sort_key
+	  がセットされていればあらかじめソートしたリストを返すようにした。
+	  FolderSortKey enum に SORT_BY_TO を追加。
+	* src/mainwindow.c: 「表示/ソート/宛先順」を追加。
+
+2002-12-20
+
+	* version 0.8.7
+
 2002-12-20
 
 	* src/codeconv.c: conv_encode_header(): 改行時の余分な空白の修正。

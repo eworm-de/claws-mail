@@ -1095,6 +1095,8 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 	}
 
 	cur_encoding = conv_get_current_charset_str();
+	if (!strcmp(cur_encoding, "US-ASCII"))
+		cur_encoding = "ISO-8859-1";
 	out_encoding = conv_get_outgoing_charset_str();
 	if (!strcmp(out_encoding, "US-ASCII"))
 		out_encoding = "ISO-8859-1";
@@ -1144,15 +1146,22 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 				if (isspace(*p) && !is_next_nonascii(p + 1))
 					break;
 
-				mb_len = mblen(p, MB_CUR_MAX);
-				if (mb_len < 0) {
-					g_warning("invalid multibyte character encountered\n");
-					break;
-				}
+				if (MB_CUR_MAX > 1) {
+					mb_len = mblen(p, MB_CUR_MAX);
+					if (mb_len < 0) {
+						g_warning("conv_encode_header(): invalid multibyte character encountered\n");
+						mb_len = 1;
+					}
+				} else
+					mb_len = 1;
 
 				Xstrndup_a(part_str, srcp, cur_len + mb_len, );
 				out_str = conv_codeset_strdup
 					(part_str, cur_encoding, out_encoding);
+				if (!out_str) {
+					g_warning("conv_encode_header(): code conversion failed\n");
+					out_str = g_strdup(out_str);
+				}
 				out_str_len = strlen(out_str);
 
 				if (use_base64)
@@ -1179,6 +1188,10 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 				Xstrndup_a(part_str, srcp, cur_len, );
 				out_str = conv_codeset_strdup
 					(part_str, cur_encoding, out_encoding);
+				if (!out_str) {
+					g_warning("conv_encode_header(): code conversion failed\n");
+					out_str = g_strdup(out_str);
+				}
 				out_str_len = strlen(out_str);
 
 				if (use_base64)

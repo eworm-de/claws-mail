@@ -1037,7 +1037,7 @@ static GSList *mh_get_uncached_msgs(GHashTable *msg_table, FolderItem *item)
 		return NULL;
 	}
 
-	debug_print("\tSearching uncached messages... ");
+	debug_print("Searching uncached messages...\n");
 
 	if (msg_table) {
 		while ((d = readdir(dp)) != NULL) {
@@ -1098,7 +1098,7 @@ static GSList *mh_get_uncached_msgs(GHashTable *msg_table, FolderItem *item)
 
 	/* sort new messages in numerical order */
 	if (newlist) {
-		debug_print("\tSorting uncached messages in numerical order... ");
+		debug_print("Sorting uncached messages in numerical order...\n");
 		newlist = g_slist_sort
 			(newlist, (GCompareFunc)procmsg_cmp_msgnum_for_sort);
 		debug_print("done.\n");

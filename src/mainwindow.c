@@ -452,6 +452,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/_Sort/by s_ize"),		NULL, sort_summary_cb, SORT_BY_SIZE, "/View/Sort/by number"},
 	{N_("/_View/_Sort/by _date"),		NULL, sort_summary_cb, SORT_BY_DATE, "/View/Sort/by number"},
 	{N_("/_View/_Sort/by _from"),		NULL, sort_summary_cb, SORT_BY_FROM, "/View/Sort/by number"},
+	{N_("/_View/_Sort/by _recipient"),	NULL, sort_summary_cb, SORT_BY_TO, "/View/Sort/by number"},
 	{N_("/_View/_Sort/by _subject"),	NULL, sort_summary_cb, SORT_BY_SUBJECT, "/View/Sort/by number"},
 	{N_("/_View/_Sort/by _color label"),
 						NULL, sort_summary_cb, SORT_BY_LABEL, "/View/Sort/by number"},
@@ -1599,6 +1600,8 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		menu_path = "/View/Sort/by date"; break;
 	case SORT_BY_FROM:
 		menu_path = "/View/Sort/by from"; break;
+	case SORT_BY_TO:
+		menu_path = "/View/Sort/by recipient"; break;
 	case SORT_BY_SUBJECT:
 		menu_path = "/View/Sort/by subject"; break;
 	case SORT_BY_LABEL:
