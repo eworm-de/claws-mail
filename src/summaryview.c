@@ -466,7 +466,6 @@ SummaryView *summary_create(void)
 	GtkWidget *search_type_opt;
 	GtkWidget *search_type;
 	GtkWidget *search_string;
-	GtkWidget *search_pixmap;
 	GtkWidget *menuitem;
 	GtkWidget *toggle_search;
 	GtkTooltips *search_tip;
@@ -481,17 +480,14 @@ SummaryView *summary_create(void)
 	/* create status label */
 	hbox = gtk_hbox_new(FALSE, 0);
 	
-	search_pixmap = stock_pixmap_widget(hbox, STOCK_PIXMAP_QUICKSEARCH);
-
 	search_tip = gtk_tooltips_new();
 	toggle_search = gtk_toggle_button_new();
-	gtk_container_add (GTK_CONTAINER(toggle_search), search_pixmap);
+
 	gtk_tooltips_set_tip(GTK_TOOLTIPS(search_tip),
 			     toggle_search,
 			     _("Toggle quick-search bar"), NULL);
 	
 	gtk_box_pack_start(GTK_BOX(hbox), toggle_search, FALSE, FALSE, 2);	
-
 
 	hbox_l = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), hbox_l, TRUE, TRUE, 0);
@@ -679,6 +675,10 @@ void summary_init(SummaryView *summaryview)
 	gtk_widget_show(pixmap);
 	summaryview->folder_pixmap = pixmap;
 
+	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_QUICKSEARCH);
+	gtk_container_add (GTK_CONTAINER(summaryview->toggle_search), pixmap);
+	gtk_widget_show(pixmap);
+	
 	/* Init summaryview prefs */
 	summaryview->sort_key = SORT_BY_NONE;
 	summaryview->sort_type = SORT_ASCENDING;
