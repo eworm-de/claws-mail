@@ -1,3 +1,44 @@
+2005-03-11 [paul]	1.0.3cvs1
+
+	* po/ru.po
+		updated by Pavlo Bohmat
+
+2005-03-10 [paul]	1.0.3
+
+	* po/de.po
+	* po/es.po
+	* po/fr.po
+	* po/it.po
+	* po/pt_BR.po
+	* po/sk.po
+	* po/sr.po
+	* po/zh_CN.po
+		updated by Thomas Gilgin, Ricardo Mones Lastra, Fabien
+		Vantard, Andrea Spadaccini, Frederico Goncalves Guimaraes,
+		Andrej Kacian, Aleksandar Urosevic, Ralgh Young
+
+	1.0.3 released
+
+2005-03-04 [colin]	1.0.1cvs22
+
+	* src/common/smtp.c
+	* src/common/smtp.h
+		Don't use SIZE parameter in MAIL FROM: if
+		server doesn't support it. Patch by 
+		Eugen Freiter <eugen_f@users.sf.net>
+
+2005-03-04 [paul]	1.0.1cvs21
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/addrharvest.c
+	* src/codeconv.c
+	* src/codeconv.h
+	* src/compose.c
+	* src/procmime.c
+		sync with main 1.0.3
+		see ChangeLog 2005-02-28, 2005-03-02, and 2005-03-04
+
 2005-02-27 [paul]	1.0.1cvs20
 
 	* src/messageview.c

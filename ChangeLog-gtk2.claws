@@ -1,3 +1,19 @@
+2005-03-11 [paul]	1.0.3cvs1.1
+
+	* ChangeLog
+	* ChangeLog.claws
+	* configure.ac
+	* po/de.po
+	* po/es.po
+	* po/fr.po
+	* po/it.po
+	* po/pt_BR.po
+	* po/ru.po
+	* po/sk.po
+	* po/sr.po
+	* po/zh_CN.po
+		sync with HEAD
+
 2005-03-04 [colin]	1.0.1cvs22.2
 
 	* src/compose.c
