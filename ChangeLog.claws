@@ -1,3 +1,11 @@
+2001-10-15 [melvin] 0.6.3claws18
+
+	* README.claws
+		added summary and detailed installation instructions
+		for spell checker
+	* po/fr.po
+		Updated, corrected and completed french translation
+
 2001-10-15 [hoa] 0.6.3claws17
 	* src/grouplistdialog.c
 		we can choose the newsgroups to display with wildcards
