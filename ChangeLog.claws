@@ -1,3 +1,14 @@
+2002-12-08 [colin]	0.8.6claws80
+	
+	* src/gtk/sslcertwindow.c
+		Cleaner popups when asking
+	* src/ssl_certificate.c
+	* src/prefs_common.[ch]
+		remove ssl certificate pref
+		put back needed include
+	* src/undo.c
+		put back needed include
+
 2002-12-08 [christoph]	0.8.6claws79
 
 	* src/folderview.c

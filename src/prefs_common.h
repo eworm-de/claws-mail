@@ -255,8 +255,10 @@ struct _PrefsCommon
 	gboolean clean_on_exit;
 	gboolean ask_on_clean;
 	gboolean warn_queued_on_exit;
+#if 0
 #ifdef USE_OPENSSL
 	gboolean ssl_ask_unknown_valid;
+#endif
 #endif
 	/* Memory cache*/
 	gint cache_max_mem_usage;

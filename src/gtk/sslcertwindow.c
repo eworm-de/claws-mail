@@ -31,6 +31,9 @@
 #include "../common/utils.h"
 #include "../alertpanel.h"
 
+static void toggle_cert_cb(GtkWidget	*widget,
+			 gpointer	 data);
+
 GtkWidget *cert_presenter(SSLCertificate *cert)
 {
 	GtkWidget *vbox = NULL;
@@ -42,7 +45,7 @@ GtkWidget *cert_presenter(SSLCertificate *cert)
 	GtkTable *signer_table = NULL;
 	GtkTable *status_table = NULL;
 	GtkWidget *label = NULL;
-	char *ret, buf[100];
+	char buf[100];
 	char *issuer_commonname, *issuer_location, *issuer_organization;
 	char *subject_commonname, *subject_location, *subject_organization;
 	char *fingerprint, *sig_status;
@@ -206,14 +209,57 @@ void sslcertwindow_show_cert(SSLCertificate *cert)
 	g_free(buf);
 }
 
+static void toggle_cert_cb(GtkWidget	*widget,
+			 gpointer	 data)
+{
+	GtkWidget *cert_widget = GTK_WIDGET(data);
+	GtkWidget *box = widget->parent;
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget))) {
+		if(cert_widget->parent == NULL) {
+			gtk_box_pack_start(GTK_BOX(box), cert_widget, TRUE, TRUE, 0);
+			gtk_widget_show(cert_widget);
+		} else
+			gtk_widget_show(cert_widget);
+	} else
+		gtk_widget_hide(cert_widget);
+}
+
 gboolean sslcertwindow_ask_new_cert(SSLCertificate *cert)
 {
-	GtkWidget *cert_widget = cert_presenter(cert);
-	gchar *buf;
+	gchar *buf, *sig_status;
 	AlertValue val;
-	buf = g_strdup_printf(_("Do you want to accept SSL certificate for %s?"), cert->host);
-	val = alertpanel_with_widget(_("Unknown SSL Certificate"), buf, _("Accept and save"), _("Cancel connection"), NULL, cert_widget);
+	GtkWidget *vbox;
+	GtkWidget *label;
+	GtkWidget *button;
+	GtkWidget *cert_widget;
+	
+	vbox = gtk_vbox_new(FALSE, 5);
+	buf = g_strdup_printf(_("Certificate for %s is unknown. Do you want to accept it?"), cert->host);
+	label = gtk_label_new(buf);
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
 	g_free(buf);
+	
+	sig_status = ssl_certificate_check_signer(cert->x509_cert);
+
+	if (sig_status==NULL)
+		sig_status = g_strdup(_("correct"));
+
+	buf = g_strdup_printf(_("Signature status: %s"), sig_status);
+	label = gtk_label_new(buf);
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 0);
+	g_free(buf);
+	g_free(sig_status);
+	
+	button = gtk_toggle_button_new_with_label(_("View certificate"));
+	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
+	cert_widget = cert_presenter(cert);
+	gtk_signal_connect(GTK_OBJECT(button), "toggled",
+			   GTK_SIGNAL_FUNC(toggle_cert_cb), cert_widget);
+
+	val = alertpanel_with_widget(_("Unknown SSL Certificate"), NULL, _("Accept and save"), _("Cancel connection"), NULL, vbox);
+	
 	return (val == G_ALERTDEFAULT);
 }
 
@@ -222,8 +268,10 @@ gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCertificate
 	GtkWidget *old_cert_widget = cert_presenter(old_cert);
 	GtkWidget *new_cert_widget = cert_presenter(new_cert);
 	GtkWidget *vbox;
+	gchar *buf, *sig_status;
+	GtkWidget *vbox2;
 	GtkWidget *label;
-	gchar *buf;
+	GtkWidget *button;
 	AlertValue val;
 	
 	vbox = gtk_vbox_new(FALSE, 5);
@@ -238,9 +286,32 @@ gboolean sslcertwindow_ask_changed_cert(SSLCertificate *old_cert, SSLCertificate
 	gtk_box_pack_end(GTK_BOX(vbox), label, TRUE, TRUE, 0);
 	gtk_widget_show_all(vbox);
 	
-	buf = g_strdup_printf(_("Do you want to accept new SSL certificate for %s?"), new_cert->host);
-	val = alertpanel_with_widget(_("Changed SSL Certificate"), buf, _("Accept and save"), _("Cancel connection"), NULL, vbox);
+	vbox2 = gtk_vbox_new(FALSE, 5);
+	buf = g_strdup_printf(_("Certificate for %s has changed. Do you want to accept it?"), new_cert->host);
+	label = gtk_label_new(buf);
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_box_pack_start(GTK_BOX(vbox2), label, TRUE, TRUE, 0);
 	g_free(buf);
+	
+	sig_status = ssl_certificate_check_signer(new_cert->x509_cert);
+
+	if (sig_status==NULL)
+		sig_status = g_strdup(_("correct"));
+
+	buf = g_strdup_printf(_("Signature status: %s"), sig_status);
+	label = gtk_label_new(buf);
+	gtk_misc_set_alignment (GTK_MISC (label), 0, 0.5);
+	gtk_box_pack_start(GTK_BOX(vbox2), label, TRUE, TRUE, 0);
+	g_free(buf);
+	g_free(sig_status);
+	
+	button = gtk_toggle_button_new_with_label(_("View certificates"));
+	gtk_box_pack_start(GTK_BOX(vbox2), button, FALSE, FALSE, 0);
+	gtk_signal_connect(GTK_OBJECT(button), "toggled",
+			   GTK_SIGNAL_FUNC(toggle_cert_cb), vbox);
+
+	val = alertpanel_with_widget(_("Changed SSL Certificate"), NULL, _("Accept and save"), _("Cancel connection"), NULL, vbox2);
+	
 	return (val == G_ALERTDEFAULT);
 }
 #endif

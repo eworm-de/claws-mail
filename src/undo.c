@@ -25,6 +25,7 @@
 #endif
 
 #include <glib.h>
+#include "gtkstext.h"
 
 #include <string.h> /* for strlen */
 #include <stdlib.h> /* for mbstowcs */

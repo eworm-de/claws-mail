@@ -29,8 +29,8 @@
 #include "sslcertwindow.h"
 #include "utils.h"
 #include "intl.h"
-#include "prefs_common.h"
 #include "log.h"
+#include "socket.h"
 
 static SSLCertificate *ssl_certificate_new_lookup(X509 *x509_cert, gchar *host, gushort port, gboolean lookup);
 
@@ -349,6 +349,7 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 		
 		sig_status = ssl_certificate_check_signer(x509_cert);
 
+#if 0 /* disabled pref for now */
 		if (sig_status == NULL && !prefs_common.ssl_ask_unknown_valid) {
 			/* trust and accept silently if hostnames match */
 			char *buf; /* don't free buf ! */
@@ -361,7 +362,7 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 					return TRUE;		
 				}
 		}
-
+#endif
 		g_free(sig_status);
 
 		cur_cert_str = ssl_certificate_to_string(current_cert);
@@ -371,6 +372,7 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 					  cur_cert_str);
 		g_free (cur_cert_str);
 
+#if 0 /* disabled for now */
 		if (prefs_common.no_recv_err_panel) {
 			log_error(_("%s\n\nMail won't be retrieved on this account until you save the certificate.\n(Uncheck the \"%s\" preference).\n"),
 					err_msg,
@@ -378,7 +380,7 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 			g_free(err_msg);
 			return FALSE;
 		}
-		
+#endif
 		/* FIXME: replace this with a hook, then uncomment the check in ssl.c */ 
 		val = sslcertwindow_ask_new_cert(current_cert);
 		g_free(err_msg);
@@ -405,6 +407,7 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 		g_free (cur_cert_str);
 		g_free (known_cert_str);
 
+#if 0
 		if (prefs_common.no_recv_err_panel) {
 			log_error(_("%s\n\nMail won't be retrieved on this account until you save the certificate.\n(Uncheck the \"%s\" preference).\n"),
 					err_msg,
@@ -412,7 +415,8 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 			g_free(err_msg);
 			return FALSE;
 		}
-
+#endif
+		
 		/* FIXME: replace this with a hook, then uncomment the check in ssl.c */ 
 		val = sslcertwindow_ask_changed_cert(known_cert, current_cert);
 		g_free(err_msg);
