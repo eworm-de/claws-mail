@@ -798,11 +798,17 @@ static gint mimeview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 	return TRUE;
 }
 
+/* from gdkevents.c */
+#define DOUBLE_CLICK_TIME 250
+
 static void part_button_pressed(MimeView *mimeview, GdkEventButton *event, 
 				MimeInfo *partinfo)
 {
+	static MimeInfo *lastinfo;
+	static guint32 lasttime;
+
 	if (event->button == 2 ||
-	    (event->button == 1 && event->type == GDK_2BUTTON_PRESS)) {
+	    (event->button == 1 && (event->time - lasttime) < DOUBLE_CLICK_TIME)) {
 		/* call external program for image, audio or html */
 		mimeview_launch(mimeview);
 	} else if (event->button == 3) {
@@ -831,6 +837,9 @@ static void part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 			       NULL, NULL, NULL, NULL,
 			       event->button, event->time);
 	}
+
+	lastinfo = partinfo;
+	lasttime = event->time;
 }
 
 
