@@ -1,3 +1,9 @@
+2003-04-17
+
+	* src/codeconv.[ch]: conv_encode_header(): don't include '(' and ')'
+	  in encoded strings if addr_field is TRUE.
+	* src/compose.c: compose_convert_header(): added a flag 'addr_field'.
+
 2003-04-16
 
 	* src/prefs_actions.[ch]: separated action execution routine into

@@ -431,7 +431,7 @@ static void notification_convert_header(gchar *dest, gint len,
 		dest[len - 1] = '\0';
 		return;
 	} else
-		conv_encode_header(dest, len, src, header_len);
+		conv_encode_header(dest, len, src, header_len, FALSE);
 }
 
 static gint disposition_notification_queue(PrefsAccount * account,

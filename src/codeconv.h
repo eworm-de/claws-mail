@@ -222,7 +222,8 @@ void conv_unmime_header			(gchar		*outbuf,
 void conv_encode_header			(gchar		*dest,
 					 gint		 len,
 					 const gchar	*src,
-					 gint		 header_len);
+					 gint		 header_len,
+					 gboolean	 addr_field);
 
 
 #endif /* __CODECONV_H__ */

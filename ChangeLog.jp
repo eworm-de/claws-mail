@@ -1,3 +1,10 @@
+2003-04-17
+
+	* src/codeconv.[ch]: conv_encode_header(): addr_field が TRUE の
+	  場合はエンコード文字列に '(' と ')' を含めないようにした。
+	* src/compose.c: compose_convert_header(): フラグ 'addr_field' を
+	  追加。
+
 2003-04-16
 
 	* src/prefs_actions.[ch]: アクション実行ルーチンを action.[ch] に

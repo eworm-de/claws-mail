@@ -1438,7 +1438,7 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 }
 
 void conv_encode_header(gchar *dest, gint len, const gchar *src,
-			gint header_len)
+			gint header_len, gboolean addr_field)
 {
 	const gchar *cur_encoding;
 	const gchar *out_encoding;
@@ -1494,6 +1494,13 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 			continue;
 		}
 
+		/* don't include parentheses in encoded strings */
+		if (addr_field && (*srcp == '(' || *srcp == ')')) {
+			LBREAK_IF_REQUIRED(left < 2, FALSE);
+			*destp++ = *srcp++;
+			left--;
+		}
+
 		while (1) {
 			gint mb_len = 0;
 			gint cur_len = 0;
@@ -1508,6 +1515,10 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 
 			while (*p != '\0') {
 				if (isspace(*p) && !is_next_nonascii(p + 1))
+					break;
+				/* don't include parentheses in encoded
+				   strings */
+				if (addr_field && (*p == '(' || *p == ')'))
 					break;
 
 				if (MB_CUR_MAX > 1) {
