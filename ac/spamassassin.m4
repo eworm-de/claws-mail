@@ -22,8 +22,8 @@ fi
 dnl ----------------------------------------------------------------------
 
 AC_CHECK_LIB(socket, socket)
-AC_CHECK_LIB(ssl, SSL_CTX_free)
 AC_CHECK_LIB(crypto, CRYPTO_lock)
+AC_CHECK_LIB(ssl, SSL_CTX_free,,,-lcrypto)
 AC_CHECK_LIB(inet, connect)
 AC_CHECK_LIB(nsl, t_accept)
 AC_CHECK_LIB(dl, dlopen)

@@ -14,18 +14,26 @@
 #include <netdb.h>
 #include <stdio.h>
 
-#define EX_ISSPAM       1
-#define EX_NOTSPAM      0
-#define EX_TOOBIG     866
+#define EX_NOTSPAM		  0
+#define EX_ISSPAM		  1
+#define EX_TOOBIG		866
 
 /* Aug 14, 2002 bj: Bitflags instead of lots of bool parameters */
 #define SPAMC_MODE_MASK      1
 #define SPAMC_RAW_MODE       0
 #define SPAMC_BSMTP_MODE     1
 
-#define SPAMC_USE_SSL	     1<<27
-#define SPAMC_SAFE_FALLBACK  1<<28
-#define SPAMC_CHECK_ONLY     1<<29
+#define SPAMC_USE_SSL	     (1<<27)
+#define SPAMC_SAFE_FALLBACK  (1<<28)
+#define SPAMC_CHECK_ONLY     (1<<29)
+
+/* Jan 30, 2003 ym: added reporting options */
+#define SPAMC_REPORT         (1<<26)
+#define SPAMC_REPORT_IFSPAM  (1<<25)
+
+/* Feb  1 2003 jm: might as well fix bug 191 as well */
+#define SPAMC_SYMBOLS        (1<<24)
+
 
 /* Aug 14, 2002 bj: A struct for storing a message-in-progress */
 typedef enum {
@@ -35,6 +43,8 @@ typedef enum {
     MESSAGE_BSMTP,
     MAX_MESSAGE_TYPE
 } message_type_t;
+
+struct libspamc_private_message;
 
 struct message {
     /* Set before passing the struct on! */
@@ -47,15 +57,18 @@ struct message {
     char *pre; int pre_len;   /* Pre-message data (e.g. SMTP commands) */
     char *msg; int msg_len;   /* The message */
     char *post; int post_len; /* Post-message data (e.g. SMTP commands) */
+    int content_length;
 
     /* Filled in by filter_message */
     int is_spam;              /* EX_ISSPAM if the message is spam, EX_NOTSPAM
-                                 if not, EX_TOOBIG if a filtered message is
-                                 returned in out below. */
+                                 if not */
     float score, threshold;   /* score and threshold */
     char *out; int out_len;   /* Output from spamd. Either the filtered
                                  message, or the check-only response. Or else,
                                  a pointer to msg above. */
+
+    /* these members added in SpamAssassin version 2.60: */
+    struct libspamc_private_message *priv;
 };
 
 /* Aug 14, 2002 bj: New interface functions */

@@ -1,3 +1,10 @@
+2003-04-17 [christoph]	0.8.11claws98
+
+	* ac/spamassassin.m4
+	* src/plugins/spamassassin/libspamc.[ch]
+	* src/plugins/spamassassin/utils.[ch]
+		sync libspamc with SpamAssassin project
+
 2003-04-17 [christoph]	0.8.11claws97
 
 	* src/common/socket.h

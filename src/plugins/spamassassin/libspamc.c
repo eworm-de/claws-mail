@@ -21,13 +21,6 @@
 #include <netinet/tcp.h>
 #include <arpa/inet.h>
 
-#ifdef SPAMC_SSL
-#include <openssl/crypto.h>
-#include <openssl/pem.h>
-#include <openssl/ssl.h>
-#include <openssl/err.h>
-#endif
-
 #ifdef HAVE_SYSEXITS_H
 #include <sysexits.h>
 #endif
@@ -75,7 +68,8 @@ extern char *optarg;
 #define EX__MAX 200 
 #endif
 
-static const int DO_CONNECT_DEBUG_SYSLOGS = 0;
+#undef DO_CONNECT_DEBUG_SYSLOGS
+/* or #define DO_CONNECT_DEBUG_SYSLOGS 1 */
 
 static const int ESC_PASSTHROUGHRAW = EX__MAX+666;
 
@@ -90,7 +84,15 @@ static const int EXPANSION_ALLOWANCE = 16384;
  */
 
 /* Set the protocol version that this spamc speaks */
-static const char *PROTOCOL_VERSION="SPAMC/1.2";
+static const char *PROTOCOL_VERSION="SPAMC/1.3";
+
+/* "private" part of struct message.
+ * we use this instead of the struct message directly, so that we
+ * can add new members without affecting the ABI.
+ */
+struct libspamc_private_message {
+  int flags;	/* copied from "flags" arg to message_read() */
+};
 
 int libspamc_timeout = 0;
 
@@ -109,7 +111,9 @@ try_to_connect (const struct sockaddr *argaddr, struct hostent *hent,
   struct sockaddr_in addrbuf, *addr;
   struct in_addr inaddrlist[256];
 
-  int i; char dbgbuf[2048]; int dbgbuflen = 0;		// DBG
+#ifdef DO_CONNECT_DEBUG_SYSLOGS
+  int dbgiter; char dbgbuf[2048]; int dbgbuflen = 0;
+#endif
 
   /* NOTE: do not call syslog() (unless you are about to return) before
    * we take a copy of the h_addr_list.
@@ -129,6 +133,8 @@ try_to_connect (const struct sockaddr *argaddr, struct hostent *hent,
     memset (inaddrlist, 0, sizeof(inaddrlist));
 
     for (hostnum=0; hent->h_addr_list[hostnum] != 0; hostnum++) {
+
+#ifdef DO_CONNECT_DEBUG_SYSLOGS
       dbgbuflen += snprintf (dbgbuf+dbgbuflen, 2047-dbgbuflen,
 	          "[%d %lx: %d.%d.%d.%d]",
 		  hostnum, hent->h_addr_list[hostnum],
@@ -136,6 +142,7 @@ try_to_connect (const struct sockaddr *argaddr, struct hostent *hent,
 		  hent->h_addr_list[hostnum][1],
 		  hent->h_addr_list[hostnum][2],
 		  hent->h_addr_list[hostnum][3]);
+#endif
 
       if (hostnum > 255) {
 	syslog (LOG_ERR, "too many address in hostent (%d), ignoring others",
@@ -149,34 +156,38 @@ try_to_connect (const struct sockaddr *argaddr, struct hostent *hent,
 	return EX_SOFTWARE;
       }
 
+#ifdef DO_CONNECT_DEBUG_SYSLOGS
       dbgbuflen += snprintf (dbgbuf+dbgbuflen, 2047-dbgbuflen,
 		  "[%d: %d.%d.%d.%d] ", sizeof (struct in_addr),
 		  hent->h_addr_list[hostnum][0],
 		  hent->h_addr_list[hostnum][1],
 		  hent->h_addr_list[hostnum][2],
 		  hent->h_addr_list[hostnum][3]);
+#endif
 
       memcpy ((void *) &(inaddrlist[hostnum]),
 		(void *) hent->h_addr_list[hostnum],
 		sizeof (struct in_addr));
     }
 
-    if (DO_CONNECT_DEBUG_SYSLOGS) {
+#ifdef DO_CONNECT_DEBUG_SYSLOGS
       syslog (LOG_DEBUG, "dbg: %d %s", hostnum, dbgbuf); dbgbuflen = 0;
-    }
+#endif
   }
 
 
-  if (DO_CONNECT_DEBUG_SYSLOGS) {
-    for (i = 0; i < hostnum; i++) {
-      syslog (LOG_DEBUG, "dbg: host addr %d/%d = %lx at %lx",
-		  i, hostnum, inaddrlist[i].s_addr, &(inaddrlist[i]));
+#ifdef DO_CONNECT_DEBUG_SYSLOGS
+    for (dbgiter = 0; dbgiter < hostnum; dbgiter++) {
+      syslog (LOG_DEBUG, "dbg: host addr %d/%d = %lx at %lx", dbgiter, hostnum,
+		  inaddrlist[dbgiter].s_addr, &(inaddrlist[dbgiter]));
     }
-  }
+#endif
 
   hent = NULL; /* cannot use hent after this point, syslog() may overwrite it */
 
-  if (DO_CONNECT_DEBUG_SYSLOGS) { syslog (LOG_DEBUG, "dbg: socket"); }
+#ifdef DO_CONNECT_DEBUG_SYSLOGS
+  syslog (LOG_DEBUG, "dbg: socket");
+#endif
 
   if(-1 == (mysock = socket(PF_INET,SOCK_STREAM,0)))
   {
@@ -198,8 +209,6 @@ try_to_connect (const struct sockaddr *argaddr, struct hostent *hent,
       return EX_SOFTWARE;
     }
   }
-  
-  if (DO_CONNECT_DEBUG_SYSLOGS) { syslog (LOG_DEBUG, "dbg: setsockopt"); }
 
 #ifdef USE_TCP_NODELAY
   /* TODO: should this be up above the connect()? */
@@ -223,14 +232,17 @@ try_to_connect (const struct sockaddr *argaddr, struct hostent *hent,
 #endif
 
   for (numloops=0; numloops < MAX_CONNECT_RETRIES; numloops++) {
-    if (DO_CONNECT_DEBUG_SYSLOGS) {
+  
+#ifdef DO_CONNECT_DEBUG_SYSLOGS
       syslog (LOG_DEBUG, "dbg: connect() to spamd %d", numloops);
-    }
+#endif
+
     if (argaddr != NULL) {
       addr = (struct sockaddr_in *) argaddr;     /* use the one provided */
-      if (DO_CONNECT_DEBUG_SYSLOGS) {
+  
+#ifdef DO_CONNECT_DEBUG_SYSLOGS
 	syslog (LOG_DEBUG, "dbg: using argaddr");
-      }
+#endif
 
     } else {
       /* cycle through the addrs in hent */
@@ -244,29 +256,32 @@ try_to_connect (const struct sockaddr *argaddr, struct hostent *hent,
 	return EX_SOFTWARE;
       }
 
-      if (DO_CONNECT_DEBUG_SYSLOGS) {
+#ifdef DO_CONNECT_DEBUG_SYSLOGS
 	syslog (LOG_DEBUG, "dbg: cpy addr %d/%d at %lx",
 		numloops%hostnum, hostnum, &(inaddrlist[numloops % hostnum]));
-      }
+#endif
 
       memcpy (&addrbuf.sin_addr, &(inaddrlist[numloops % hostnum]),
                         sizeof(addrbuf.sin_addr));
       addr = &addrbuf;
 
-      if (DO_CONNECT_DEBUG_SYSLOGS) {
+#ifdef DO_CONNECT_DEBUG_SYSLOGS
 	syslog (LOG_DEBUG, "dbg: conn addr %d/%d = %lx",
 	    numloops%hostnum, hostnum, addrbuf.sin_addr.s_addr);
-      }
+#endif
 
     }
 
+#ifdef DO_CONNECT_DEBUG_SYSLOGS
     syslog (LOG_DEBUG, "dbg: connect() to spamd at %s",
 		inet_ntoa(((struct sockaddr_in *)addr)->sin_addr));
+#endif
     status = connect(mysock,(const struct sockaddr *) addr, sizeof(*addr));
-    if (DO_CONNECT_DEBUG_SYSLOGS) {
+
+#ifdef DO_CONNECT_DEBUG_SYSLOGS
       syslog (LOG_DEBUG, "dbg: connect() to spamd at %s done",
 	  inet_ntoa(((struct sockaddr_in *)addr)->sin_addr));
-    }
+#endif
 
     if (status < 0)
     {
@@ -323,9 +338,11 @@ static void clear_message(struct message *m){
     m->is_spam=EX_TOOBIG;
     m->score=0.0; m->threshold=0.0;
     m->out=NULL; m->out_len=0;
+    m->content_length=-1;
 }
 
-static int message_read_raw(int fd, struct message *m){
+static int
+message_read_raw(int fd, struct message *m){
     clear_message(m);
     if((m->raw=malloc(m->max_len+1))==NULL) return EX_OSERR;
     m->raw_len=full_read(fd, (unsigned char *) m->raw, m->max_len+1, m->max_len+1);
@@ -407,6 +424,14 @@ static int message_read_bsmtp(int fd, struct message *m){
 int message_read(int fd, int flags, struct message *m){
     libspamc_timeout = 0;
 
+    /* create the "private" part of the struct message */
+    m->priv = malloc (sizeof (struct libspamc_private_message));
+    if (m->priv == NULL) {
+        syslog(LOG_ERR, "message_read: malloc failed");
+        return EX_OSERR;
+    }
+    m->priv->flags = flags;
+
     switch(flags&SPAMC_MODE_MASK){
       case SPAMC_RAW_MODE:
         return message_read_raw(fd, m);
@@ -426,10 +451,17 @@ long message_write(int fd, struct message *m){
     off_t jlimit;
     char buffer[1024];
 
-    if(m->is_spam==EX_ISSPAM || m->is_spam==EX_NOTSPAM){
-        return full_write(fd, (unsigned char *) m->out, m->out_len);
+    if (m->priv->flags&SPAMC_CHECK_ONLY) {
+	if(m->is_spam==EX_ISSPAM || m->is_spam==EX_NOTSPAM){
+	    return full_write(fd, (unsigned char *) m->out, m->out_len);
+
+	} else {
+	    syslog(LOG_ERR, "oops! SPAMC_CHECK_ONLY is_spam: %d\n", m->is_spam);
+	    return -1;
+	}
     }
 
+    /* else we're not in CHECK_ONLY mode */
     switch(m->type){
       case MESSAGE_NONE:
         syslog(LOG_ERR, "Cannot write this message, it's MESSAGE_NONE!\n");
@@ -483,38 +515,123 @@ void message_dump(int in_fd, int out_fd, struct message *m){
     }
 }
 
+static int
+_spamc_read_full_line (struct message *m, int flags, SSL *ssl, int sock,
+		char *buf, int *lenp, int bufsiz)
+{
+    int failureval;
+    int bytesread = 0;
+    int len;
+
+    /* Now, read from spamd */
+    for(len=0; len<bufsiz-1; len++) {
+	if(flags&SPAMC_USE_SSL) {
+	  bytesread = ssl_timeout_read (ssl, buf+len, 1);
+	} else {
+	  bytesread = fd_timeout_read (sock, buf+len, 1);
+	}
+
+        if(buf[len]=='\n') {
+            buf[len]='\0';
+	    if (len > 0 && buf[len-1] == '\r') {
+		len--;
+		buf[len]='\0';
+	    }
+	    *lenp = len;
+	    return EX_OK;
+	}
+
+        if(bytesread<=0){
+	    failureval = EX_IOERR; goto failure;
+        }
+    }
+
+    syslog(LOG_ERR, "spamd responded with line of %d bytes, dying", len);
+    failureval = EX_TOOBIG;
+
+failure:
+    return failureval;
+}
+
+static int
+_handle_spamd_header (struct message *m, int flags, char *buf, int len)
+{
+    char is_spam[6];
+
+    /* Feb 12 2003 jm: actually, I think sccanf is working fine here ;)
+     * let's stick with it for this parser.
+     */
+    if (sscanf(buf, "Spam: %5s ; %f / %f", is_spam, &m->score, &m->threshold) == 3)
+    {
+	/* Format is "Spam: x; y / x" */
+       /* Feb 14 2004 ym: apparently, it is really easy to screw up with sscanf() parsing */
+	m->is_spam=strcasecmp("true", is_spam) == 0 ? EX_ISSPAM: EX_NOTSPAM;
+
+	if(flags&SPAMC_CHECK_ONLY) {
+	    m->out_len=snprintf (m->out, m->max_len+EXPANSION_ALLOWANCE,
+			"%.1f/%.1f\n", m->score, m->threshold);
+	}
+	return EX_OK;
+
+    } else if(sscanf(buf, "Content-length: %d", &m->content_length) == 1) {
+	if (m->content_length < 0) {
+	    syslog(LOG_ERR, "spamd responded with bad Content-length '%s'", buf);
+	    return EX_PROTOCOL;
+	}
+	return EX_OK;
+    }
+
+    syslog(LOG_ERR, "spamd responded with bad header '%s'", buf);
+    return EX_PROTOCOL;
+}
+
 static int _message_filter(const struct sockaddr *addr,
                 const struct hostent *hent, int hent_port, char *username,
                 int flags, struct message *m)
 {
-    char buf[8192], is_spam[6];
+    char buf[8192];
     int bufsiz = (sizeof(buf) / sizeof(*buf)) - 4; /* bit of breathing room */
-    int len, expected_len, i, header_read=0;
+    int len, i;
     int sock;
     float version;
     int response;
     int failureval;
-#ifdef SPAMC_SSL
     SSL_CTX* ctx;
     SSL* ssl;
     SSL_METHOD *meth;
 
-    if(flags&SPAMC_USE_SSL){	
+    if (flags&SPAMC_USE_SSL) {
+#ifdef SPAMC_SSL
       SSLeay_add_ssl_algorithms();
       meth = SSLv2_client_method();
       SSL_load_error_strings();
       ctx = SSL_CTX_new(meth);
-    }    
+#else
+      (void) ssl; (void) meth; (void) ctx;	/* avoid "unused" warnings */
+      syslog(LOG_ERR, "spamc not built with SSL support");
+      return EX_SOFTWARE;
 #endif
+    }    
 
     m->is_spam=EX_TOOBIG;
     if((m->out=malloc(m->max_len+EXPANSION_ALLOWANCE+1))==NULL){
-        return EX_OSERR;
+        failureval = EX_OSERR; goto failure;
     }
     m->out_len=0;
 
+
     /* Build spamd protocol header */
-    len=snprintf(buf, bufsiz, "%s %s\r\n", (flags&SPAMC_CHECK_ONLY)?"CHECK":"PROCESS", PROTOCOL_VERSION);
+    if(flags & SPAMC_CHECK_ONLY) 
+      len=snprintf(buf, bufsiz, "CHECK %s\r\n", PROTOCOL_VERSION);
+    else if(flags & SPAMC_REPORT_IFSPAM)
+      len=snprintf(buf, bufsiz, "REPORT_IFSPAM %s\r\n", PROTOCOL_VERSION);
+    else if(flags & SPAMC_REPORT) 
+      len=snprintf(buf, bufsiz, "REPORT %s\r\n", PROTOCOL_VERSION);
+    else if(flags & SPAMC_SYMBOLS) 
+      len=snprintf(buf, bufsiz, "SYMBOLS %s\r\n", PROTOCOL_VERSION);
+    else
+      len=snprintf(buf, bufsiz, "PROCESS %s\r\n", PROTOCOL_VERSION);
+
     if(len<0 || len >= bufsiz){ free(m->out); m->out=m->msg; m->out_len=m->msg_len; return EX_OSERR; }
     if(username!=NULL){
         len+=i=snprintf(buf+len, bufsiz-len, "User: %s\r\n", username);
@@ -554,126 +671,70 @@ static int _message_filter(const struct sockaddr *addr,
       shutdown(sock, SHUT_WR);
     }
 
-    /* Now, read from spamd */
-    for(len=0; len<bufsiz; len++) {
-	if(flags&SPAMC_USE_SSL) {
-#ifdef SPAMC_SSL
-	  i=timeout_read(SSL_read, ssl, buf+len, 1);
-#endif
-	} else {
-	  i=timeout_read(read, sock, buf+len, 1);
-	}
+    /* ok, now read and parse it.  SPAMD/1.2 line first... */
+    failureval = _spamc_read_full_line (m, flags, ssl, sock, buf, &len, bufsiz);
+    if (failureval != EX_OK) { goto failure; }
 
-        if(i<0){
-	    failureval = EX_IOERR; goto failure;
-        }
-        if(i==0){
-            /* Read to end of message! Must be a version <1.0 server */
-            if(len<100){
-                /* Nope, communication error */
-		failureval = EX_IOERR; goto failure;
-            }
-            break;
-        }
-        if(buf[len]=='\n'){
-            buf[len]='\0';
-            if(sscanf(buf, "SPAMD/%f %d %*s", &version, &response)!=2){
-                syslog(LOG_ERR, "spamd responded with bad string '%s'", buf);
-		failureval = EX_PROTOCOL; goto failure;
-            }
-            header_read=-1;
-            break;
-        }
-    }
-    if(!header_read){
-        /* No header, so it must be a version <1.0 server */
-        memcpy(m->out, buf, len);
-        m->out_len=len;
-    } else {
-        /* Handle different versioned headers */
-        if(version-1.0>0.01){
-            for(len=0; len<bufsiz; len++){
-#ifdef SPAMC_SSL
-	      if(flags&SPAMC_USE_SSL){
-		i=timeout_read(SSL_read, ssl, buf+len, 1);
-	      } else{
-#endif
-		i=timeout_read(read, sock, buf+len, 1);
-#ifdef SPAMC_SSL
-	      }
-#endif
-                if(i<=0){
-		    failureval = (i<0)?EX_IOERR:EX_PROTOCOL; goto failure;
-                }
-                if(buf[len]=='\n'){
-                    buf[len]='\0';
-                    if(flags&SPAMC_CHECK_ONLY){
-                        /* Check only mode, better be "Spam: x; y / x" */
-                        i=sscanf(buf, "Spam: %5s ; %f / %f", is_spam, &m->score, &m->threshold);
-                        
-                        if(i!=3){
-                            free(m->out); m->out=m->msg; m->out_len=m->msg_len;
-                            return EX_PROTOCOL;
-                        }
-                        m->out_len=snprintf(m->out, m->max_len+EXPANSION_ALLOWANCE, "%.1f/%.1f\n", m->score, m->threshold);
-                        m->is_spam=strcasecmp("true", is_spam)?EX_NOTSPAM:EX_ISSPAM;
-                        close(sock);
-                        return EX_OK;
-                    } else {
-                        /* Not check-only, better be Content-length */
-                        if(sscanf(buf, "Content-length: %d", &expected_len)!=1){
-			    failureval = EX_PROTOCOL;
-			    goto failure;
-                        }
-                    }
-
-                    /* Should be end of headers now */
-		    if(flags&SPAMC_USE_SSL){
-#ifdef SPAMC_SSL
-		      i=timeout_read(SSL_read,ssl, buf, 2);
-#endif
-		    } else{
-		      i=full_read (sock, (unsigned char *) buf, 2, 2);
-		    }
-
-                    if(i!=2 || buf[0]!='\r' || buf[1]!='\n'){
-                        /* Nope, bail. */
-			failureval = EX_PROTOCOL; goto failure;
-                    }
-
-                    break;
-                }
-            }
-        }
-    }
-
-    if(flags&SPAMC_CHECK_ONLY){
-        /* We should have gotten headers back... Damnit. */
+    if(sscanf(buf, "SPAMD/%f %d %*s", &version, &response)!=2) {
+	syslog(LOG_ERR, "spamd responded with bad string '%s'", buf);
 	failureval = EX_PROTOCOL; goto failure;
     }
 
-    if(flags&SPAMC_USE_SSL){
-#ifdef SPAMC_SSL
-      len=timeout_read(SSL_read,ssl, m->out+m->out_len,
-		 m->max_len+EXPANSION_ALLOWANCE+1-m->out_len);
-#endif
-    } else{
-      len=full_read(sock, (unsigned char *) m->out+m->out_len,
-		 m->max_len+EXPANSION_ALLOWANCE+1-m->out_len,
-		 m->max_len+EXPANSION_ALLOWANCE+1-m->out_len);
+    m->score = 0;
+    m->threshold = 0;
+    m->is_spam = EX_TOOBIG;
+    while (1) {
+	failureval = _spamc_read_full_line (m, flags, ssl, sock, buf, &len, bufsiz);
+	if (failureval != EX_OK) { goto failure; }
+
+	if (len == 0 && buf[0] == '\0') {
+	    break;	/* end of headers */
+	}
+
+	if (_handle_spamd_header(m, flags, buf, len) < 0) {
+	    failureval = EX_PROTOCOL; goto failure;
+	}
     }
 
-    if(len+m->out_len>m->max_len+EXPANSION_ALLOWANCE){
-	failureval = EX_TOOBIG; goto failure;
-    }
-    m->out_len+=len;
+    len = 0;		/* overwrite those headers */
 
-    shutdown(sock, SHUT_RD);
-    close(sock);
+    if (flags&SPAMC_CHECK_ONLY) {
+	close(sock);
+	if (m->is_spam == EX_TOOBIG) {
+	      /* We should have gotten headers back... Damnit. */
+	      failureval = EX_PROTOCOL; goto failure;
+	}
+	return EX_OK;
+    }
+    else {
+	if (m->content_length < 0) {
+	    /* should have got a length too. */
+	    failureval = EX_PROTOCOL; goto failure;
+	}
+
+	if (flags&SPAMC_USE_SSL) {
+	  len = ssl_timeout_read (ssl, m->out+m->out_len,
+		     m->max_len+EXPANSION_ALLOWANCE+1-m->out_len);
+	} else{
+	  len = full_read (sock, (unsigned char *) m->out+m->out_len,
+		     m->max_len+EXPANSION_ALLOWANCE+1-m->out_len,
+		     m->max_len+EXPANSION_ALLOWANCE+1-m->out_len);
+	}
+
+
+	if(len+m->out_len>m->max_len+EXPANSION_ALLOWANCE){
+	    failureval = EX_TOOBIG; goto failure;
+	}
+	m->out_len+=len;
+
+	shutdown(sock, SHUT_RD);
+	close(sock);
+    }
     libspamc_timeout = 0;
 
-    if(m->out_len!=expected_len){
-        syslog(LOG_ERR, "failed sanity check, %d bytes claimed, %d bytes seen", expected_len, m->out_len);
+    if(m->out_len!=m->content_length) {
+        syslog(LOG_ERR, "failed sanity check, %d bytes claimed, %d bytes seen",
+				m->content_length, m->out_len);
 	failureval = EX_PROTOCOL; goto failure;
     }
 
@@ -684,12 +745,12 @@ failure:
     close(sock);
     libspamc_timeout = 0;
 
+    if(flags&SPAMC_USE_SSL) {
 #ifdef SPAMC_SSL
-    if(flags&SPAMC_USE_SSL){
       SSL_free(ssl);
       SSL_CTX_free(ctx);
-    }
 #endif
+    }
     return failureval;
 }
 
@@ -760,6 +821,7 @@ FAIL:
 void message_cleanup(struct message *m) {
    if (m->out != NULL && m->out != m->raw) free(m->out);
    if (m->raw != NULL) free(m->raw);
+   if (m->priv != NULL) free(m->priv);
    clear_message(m);
 }
 
@@ -802,4 +864,3 @@ int message_filter(const struct sockaddr *addr, char *username, int flags,
 int message_filter_with_failover (const struct hostent *hent, int port,
                 char *username, int flags, struct message *m)
 { return _message_filter (NULL, hent, port, username, flags, m); }
-
