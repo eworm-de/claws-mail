@@ -1,3 +1,9 @@
+2003-10-21 [christoph]	0.9.6claws41
+
+	* src/procmime.c
+		decode multipart and rfc822 mime parts to allow further
+		parsing when required
+
 2003-10-21 [christoph]	0.9.6claws40
 
 	* src/procmime.[ch]
