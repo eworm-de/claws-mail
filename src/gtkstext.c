@@ -4260,7 +4260,12 @@ static void move_cursor_to_display_row_up(GtkSText *text)
 	bdrf		  data = { 0 };
 	int			  new_index;
 	int		      col;
-	GtkSPropertyMark  mark = find_this_line_start_mark(text, text->cursor_mark.index, &text->cursor_mark);
+	GtkSPropertyMark  mark;
+	
+	/* make sure the back display lines are in the cache */
+	fetch_lines_backward(text);
+	
+	mark = find_this_line_start_mark(text, text->cursor_mark.index, &text->cursor_mark);
 
 	/* top of buffer */
 	if (mark.index == 0) {
@@ -4319,11 +4324,15 @@ static gint forward_display_row_fetcher(GtkSText *text,
 										fdrf       *data)
 {
 	if (data->found) {
+		XDEBUG( ("%s(%d) - FW RETURNS. search (%d, %d),  current (%d, %d)",
+				__FILE__, __LINE__, data->start, data->end, lp->start.index, lp->end.index) );
 		data->lp = *lp;
 		data->completed = TRUE;
 		return TRUE;
 	}
 	else if (range_intersect(data->start, data->end, lp->start.index, lp->end.index)) {
+		XDEBUG( ("%s(%d) - FW FOUND IT. search (%d, %d),  current (%d, %d)",
+				__FILE__, __LINE__, data->start, data->end, lp->start.index, lp->end.index) );
 		data->found = TRUE;
 		return FALSE;
 	}
@@ -4337,18 +4346,22 @@ static void move_cursor_to_display_row_down	(GtkSText *text)
 	LineParams		lp;
 	int				new_index;
 	int				col;
-	GtkSPropertyMark  mark = find_this_line_start_mark(text, text->cursor_mark.index, &text->cursor_mark);
+	GtkSPropertyMark  mark;
 	fdrf			data = { FALSE, FALSE };
 
+	fetch_lines_forward(text, 1);
+	mark = find_this_line_start_mark(text, text->cursor_mark.index, &text->cursor_mark);
 	lp  = CACHE_DATA(text->current_line);
 	col = (text->cursor_mark.index - lp.start.index);
 
 	data.start = lp.start.index;
 	data.end   = lp.end.index;
 
-	/* find the next DISPLAY line */ 
+	/* find the next DISPLAY line */
+	XDEBUG( ("%s(%d) - FW iterating", __FILE__, __LINE__) ) ;
 	line_params_iterate(text, &mark, NULL, FALSE, &data, 
 						(LineIteratorFunction)forward_display_row_fetcher);	
+	XDEBUG( ("%s(%d) - FW done iterating", __FILE__, __LINE__) );						
 	
 	if (data.completed) {
 		if (col < text->persist_column) col = text->persist_column; 
