@@ -2894,8 +2894,6 @@ void folder_item_apply_processing(FolderItem *item)
 	g_return_if_fail(item != NULL);
 	
 	processing_list = item->prefs->processing;
-	if (processing_list == NULL)
-		return;
 
 	folder_item_update_freeze();
 
