@@ -1,3 +1,10 @@
+2001-11-07 [alfons]	0.6.5.claws3
+	
+	* src/utils.c
+	* src/procmsg.c
+		do what I mean and correct threading by subject so it really
+		ignores attracting lines without "Re: "
+
 2001-11-07 [alfons]	0.6.5.claws2
 
 	* src/procmsg.c

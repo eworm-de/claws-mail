@@ -2320,5 +2320,5 @@ gboolean subject_is_reply(const gchar *subject)
 	 * advanced Re: detection like "Re[4]", "ANTW:" or
 	 * Re: Re: Re: Re: Re: Re: Re: Re:" stuff. */
 	if (subject == NULL) return FALSE;
-	else return 0 == g_strcasecmp(subject, "Re: ");
+	else return 0 == g_strncasecmp(subject, "Re: ", 4);
 }

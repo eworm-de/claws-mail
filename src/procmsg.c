@@ -425,6 +425,8 @@ void procmsg_get_mark_sum(const gchar *folder,
 		g_hash_table_foreach(mark_table, mark_sum_func, &marksum);
 		g_hash_table_destroy(mark_table);
 	}
+	debug_print("mark->new = %d, mark->unread = %d, mark->total = %d\n",
+		    *(marksum.new), *(marksum.unread), *(marksum.total));
 }
 
 static GHashTable *procmsg_read_mark_file(const gchar *folder)
@@ -546,7 +548,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 
 		if (msginfo->inreplyto)
 			parent = g_hash_table_lookup(msgid_table, msginfo->inreplyto);
-		if (parent == NULL && !subject_is_reply(msginfo->subject))
+		if (parent == NULL && subject_is_reply(msginfo->subject))
 			parent = subject_table_lookup(subject_table, msginfo->subject);
 		
 		if (parent && parent != node) {
