@@ -100,20 +100,17 @@ static const gchar *get_validity_str(unsigned long validity)
 
 gchar *sgpgme_sigstat_info_short(GpgmeCtx ctx, GpgmeSigStat status)
 {
-	GpgmeKey key;
-
 	switch (status) {
 	case GPGME_SIG_STAT_GOOD:
 	{
-		unsigned long validity = 0, val, i;	
+		GpgmeKey key;
+		unsigned long validity = 0;
 	
-		if (gpgme_get_sig_key(ctx, 0, &key) != GPGME_No_Error)
-			return g_strdup(_("Error"));
-		
-		i = 0;
-		while ((val = gpgme_key_get_ulong_attr(key, GPGME_ATTR_VALIDITY, NULL, i++)) > 0)
-			if (val > validity)
-				validity = val;
+        	if (gpgme_get_sig_key(ctx, 0, &key) != GPGME_No_Error)
+                	return g_strdup(_("Error"));
+
+		validity = gpgme_get_sig_ulong_attr(ctx, 0,
+			GPGME_ATTR_VALIDITY, 0);
 		
 		return g_strdup_printf(_("Valid signature by %s (Trust: %s)"),
 			gpgme_key_get_string_attr(key, GPGME_ATTR_USERID, NULL, 0),

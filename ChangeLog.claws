@@ -1,3 +1,8 @@
+2003-10-24 [paul]	0.9.6claws50
+
+	* src/sgpgme.c
+		change fetching of signature key's trust
+
 2003-10-24 [paul]	0.9.6claws49
 
 	* po/sk.po
