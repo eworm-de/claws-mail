@@ -1,3 +1,9 @@
+2004-07-12 [colin]	0.9.11cvs17.25
+
+	* src/folder.c
+	* src/folder.h
+		Remove unused function added by me in 0.9.11cvs17.10
+
 2004-07-11 [colin]	0.9.11cvs17.24
 
 	* src/inc.c

@@ -1055,41 +1055,6 @@ FolderItem *folder_find_item_from_path(const gchar *path)
 	return d[1];
 }
 
-static gboolean folder_item_find_phys_func(GNode *node, gpointer data)
-{
-	FolderItem *item = node->data;
-	gpointer *d = data;
-	const gchar *path = d[0];
-	const gchar *physpath = g_strdup_printf("%s%s%s%s%s", 
-					get_home_dir(), G_DIR_SEPARATOR_S,
-					LOCAL_FOLDER(item->folder)->rootpath,
-					G_DIR_SEPARATOR_S, item->path);
-
-	if (path_cmp(path, physpath) != 0) {
-		g_free(physpath);
-		return FALSE;
-	} 
-	g_free(physpath);
-	d[1] = item;
-
-	return TRUE;
-}
-
-FolderItem *folder_find_item_from_phys_path(const gchar *path)
-{
-	Folder *folder;
-	gpointer d[2];
-
-	folder = folder_get_default_folder();
-	g_return_val_if_fail(folder != NULL, NULL);
-
-	d[0] = (gpointer)path;
-	d[1] = NULL;
-	g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
-			folder_item_find_phys_func, d);
-	return d[1];
-}
-
 FolderItem *folder_find_child_item_by_name(FolderItem *item, const gchar *name)
 {
 	GNode *node;
