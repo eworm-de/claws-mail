@@ -60,6 +60,8 @@
 #include "utils.h"
 #include "../pop.h"
 #include "../folder.h"
+#include "../procheader.h"
+#include "../msgcache.h"
 
 int partial_msg_in_uidl_list(MsgInfo *msginfo)
 {
