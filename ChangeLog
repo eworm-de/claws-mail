@@ -1,3 +1,21 @@
+2002-03-03
+
+	* src/mimeview.c: mimeview_create(): set the initial notebook page
+	  to 0.
+	* src/folderview.c: folderview_selected(): scroll the view if the
+	  selected row is hidden.
+	* src/prefs_filter.c: prefs_filter_register_cb(): scroll the view
+	  and select the added row.
+	* src/summaryview.c: fix threading for null message ids.
+
+2002-03-02
+
+	* src/textview.c: textview_show_message(): follow message/rfc822
+	  parts.
+	  textview_add_part(): add a caption before the attached text files.
+	  textview_show_header(): don't add the newline.
+	* src/messageview.c: enabled message search also in MIME mode.
+
 2002-03-01
 
 	* src/messageview.c: messageview_show(): set header state of

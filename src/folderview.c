@@ -1605,8 +1605,12 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	if (!opened) {
 		gtkut_ctree_set_focus_row(ctree, folderview->opened);
 		gtk_ctree_select(ctree, folderview->opened);
-	} else
+	} else {
 		folderview->opened = row;
+		if (gtk_ctree_node_is_visible(ctree, row)
+		    != GTK_VISIBILITY_FULL)
+			gtk_ctree_node_moveto(ctree, row, -1, 0.5, 0);
+	}
 
 	folderview->open_folder = FALSE;
 	can_select = TRUE;

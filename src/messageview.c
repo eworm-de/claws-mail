@@ -528,36 +528,13 @@ void messageview_select_all(MessageView *messageview)
 
 void messageview_set_position(MessageView *messageview, gint pos)
 {
-	switch (messageview->type) {
-	case MVIEW_TEXT:
-		textview_set_position(messageview->textview, pos);
-		break;
-	case MVIEW_MIME:
-		if (messageview->mimeview->type == MIMEVIEW_TEXT)
-			textview_set_position(messageview->mimeview->textview, pos);
-		break;
-	default:
-		break;
-	}
+	textview_set_position(messageview->textview, pos);
 }
 
 gboolean messageview_search_string(MessageView *messageview, const gchar *str,
 				   gboolean case_sens)
 {
-	switch (messageview->type) {
-	case MVIEW_TEXT:
-		return textview_search_string(messageview->textview,
-					str, case_sens);
-	case MVIEW_MIME:
-		if (messageview->mimeview->type == MIMEVIEW_TEXT)
-			return textview_search_string(messageview->mimeview->textview,
-						str, case_sens);
-		else
-			return FALSE;
-	default:
-		return FALSE;
-	}
-		
+	return textview_search_string(messageview->textview, str, case_sens);
 	return FALSE;
 }
 
@@ -565,22 +542,9 @@ gboolean messageview_search_string_backward(MessageView *messageview,
 					    const gchar *str,
 					    gboolean case_sens)
 {
-	switch (messageview->type) {
-	case MVIEW_TEXT:
-		return textview_search_string_backward(messageview->textview,
-					str, case_sens);
-	case MVIEW_MIME:
-		if (messageview->mimeview->type == MIMEVIEW_TEXT)
-			return textview_search_string_backward(messageview->mimeview->textview,
-						str, case_sens);
-		else
-			return FALSE;
-	default:
-		return FALSE;
-	}
-		
+	return textview_search_string_backward(messageview->textview,
+					       str, case_sens);
 	return FALSE;
-
 }
 
 GtkWidget *messageview_get_text_widget(MessageView *messageview)

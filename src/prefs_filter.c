@@ -766,7 +766,14 @@ static void prefs_filter_select_dest_cb(void)
 
 static void prefs_filter_register_cb(void)
 {
-	prefs_filter_clist_set_row(-1);
+	GtkCList *clist = GTK_CLIST(filter.cond_clist);
+	gint row;
+
+	row = prefs_filter_clist_set_row(-1);
+	if (gtk_clist_row_is_visible(clist, row) != GTK_VISIBILITY_FULL)
+		gtk_clist_moveto(clist, row, -1, 0.5, 0);
+	gtk_clist_select_row(clist, row, -1);
+	gtkut_clist_set_focus_row(clist, row);
 }
 
 static void prefs_filter_substitute_cb(void)

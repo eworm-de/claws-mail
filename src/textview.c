@@ -293,6 +293,7 @@ void textview_update_message_colors(void)
 void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 			   const gchar *file)
 {
+	GtkSText *text = GTK_STEXT(textview->text);
 	FILE *fp;
 	const gchar *charset = NULL;
 	GPtrArray *headers = NULL;
@@ -311,11 +312,14 @@ void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 	textview->body_pos = 0;
 	textview->cur_pos  = 0;
 
+	gtk_stext_freeze(text);
+
 	if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0) perror("fseek");
 	headers = textview_scan_header(textview, fp);
 	if (headers) {
 		textview_show_header(textview, headers);
 		procheader_header_array_destroy(headers);
+		textview->body_pos = gtk_stext_get_length(text);
 	}
 
 	while (mimeinfo != NULL) {
@@ -324,18 +328,18 @@ void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 		    !strcasecmp(mimeinfo->parent->content_type,
 				"multipart/alternative"))
 			mimeinfo = mimeinfo->parent->next;
-		else if (mimeinfo->sub)
-			mimeinfo = mimeinfo->next;
 		else
 			mimeinfo = procmime_mimeinfo_next(mimeinfo);
 	}
+
+	gtk_stext_thaw(text);
 
 	fclose(fp);
 }
 
 void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 {
-	GtkSText *text;
+	GtkSText *text = GTK_STEXT(textview->text);
 	gchar buf[BUFFSIZE];
 	const gchar *boundary = NULL;
 	gint boundary_len = 0;
@@ -346,16 +350,8 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	g_return_if_fail(mimeinfo != NULL);
 	g_return_if_fail(fp != NULL);
 
-	if (mimeinfo->mime_type == MIME_MULTIPART) {
-		if (mimeinfo->sub) {
-			mimeinfo = mimeinfo->sub;
-			if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0) {
-				perror("fseek");
-				return;
-			}
-		} else
-			return;
-	}
+	if (mimeinfo->mime_type == MIME_MULTIPART) return;
+
 	if (mimeinfo->parent && mimeinfo->parent->boundary) {
 		boundary = mimeinfo->parent->boundary;
 		boundary_len = strlen(boundary);
@@ -417,7 +413,6 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	textview_set_font(textview, charset);
 
 	textview_clear(textview);
-	text = GTK_STEXT(textview->text);
 	gtk_stext_freeze(text);
 
 	textview->body_pos = 0;
@@ -425,7 +420,9 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 
 	if (headers) {
 		textview_show_header(textview, headers);
+		gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
 		procheader_header_array_destroy(headers);
+		textview->body_pos = gtk_stext_get_length(text);
 	}
 
 	conv = conv_code_converter_new(charset);
@@ -437,7 +434,7 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 
 static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 {
-	GtkSText *text;
+	GtkSText *text = GTK_STEXT(textview->text);
 	gchar buf[BUFFSIZE];
 	const gchar *boundary = NULL;
 	gint boundary_len = 0;
@@ -448,21 +445,13 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	g_return_if_fail(mimeinfo != NULL);
 	g_return_if_fail(fp != NULL);
 
+	if (mimeinfo->mime_type == MIME_MULTIPART) return;
+
 	if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0) {
 		perror("fseek");
 		return;
 	}
 
-	if (mimeinfo->mime_type == MIME_MULTIPART) {
-		if (mimeinfo->sub) {
-			mimeinfo = mimeinfo->sub;
-			if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0) {
-				perror("fseek");
-				return;
-			}
-		} else
-			return;
-	}
 	if (mimeinfo->parent && mimeinfo->parent->boundary) {
 		boundary = mimeinfo->parent->boundary;
 		boundary_len = strlen(boundary);
@@ -471,45 +460,42 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	while (fgets(buf, sizeof(buf), fp) != NULL)
 		if (buf[0] == '\r' || buf[0] == '\n') break;
 
-	/* display attached RFC822 single text message */
-	if (mimeinfo->parent && mimeinfo->mime_type == MIME_MESSAGE_RFC822) {
-		if (headers) procheader_header_array_destroy(headers);
-		if (!mimeinfo->sub || mimeinfo->sub->children) return;
+	if (mimeinfo->mime_type == MIME_MESSAGE_RFC822) {
 		headers = textview_scan_header(textview, fp);
-		mimeinfo = mimeinfo->sub;
-	} else if (!mimeinfo->parent &&
-		   mimeinfo->mime_type == MIME_MESSAGE_RFC822) {
-		if (headers) procheader_header_array_destroy(headers);
-		if (!mimeinfo->sub) return;
-		headers = textview_scan_header(textview, fp);
-		mimeinfo = mimeinfo->sub;
+		if (headers) {
+			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
+			textview_show_header(textview, headers);
+			procheader_header_array_destroy(headers);
+		}
+		return;
 	}
 
-	if (prefs_common.force_charset)
-		charset = prefs_common.force_charset;
-	else if (mimeinfo->charset)
-		charset = mimeinfo->charset;
-
-	text = GTK_STEXT(textview->text);
 	gtk_stext_freeze(text);
 
-	if (headers) {
-		textview_show_header(textview, headers);
-		procheader_header_array_destroy(headers);
-	}
+	if (mimeinfo->filename || mimeinfo->name)
+		g_snprintf(buf, sizeof(buf), "\n[%s  %s (%d bytes)]\n",
+			   mimeinfo->filename ? mimeinfo->filename :
+			   mimeinfo->name,
+			   mimeinfo->content_type, mimeinfo->size);
+	else
+		g_snprintf(buf, sizeof(buf), "\n[%s (%d bytes)]\n",
+			   mimeinfo->content_type, mimeinfo->size);
 
 	if (mimeinfo->mime_type != MIME_TEXT &&
 	    mimeinfo->mime_type != MIME_TEXT_HTML &&
 	    mimeinfo->mime_type != MIME_TEXT_ENRICHED) {
-		if (mimeinfo->filename)
-			g_snprintf(buf, sizeof(buf), "\n[%s  %s (%d bytes)]\n",
-				   mimeinfo->content_type, mimeinfo->filename,
-				   mimeinfo->size);
-		else
-			g_snprintf(buf, sizeof(buf), "\n[%s (%d bytes)]\n",
-				   mimeinfo->content_type, mimeinfo->size);
 		gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
 	} else {
+		if (!mimeinfo->main &&
+		    mimeinfo->parent &&
+		    mimeinfo->parent->children != mimeinfo)
+			gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
+		else
+			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
+		if (prefs_common.force_charset)
+			charset = prefs_common.force_charset;
+		else if (mimeinfo->charset)
+			charset = mimeinfo->charset;
 		conv = conv_code_converter_new(charset);
 		textview_write_body(textview, mimeinfo, fp, conv);
 		conv_code_converter_destroy(conv);
@@ -1319,9 +1305,7 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 		gtk_stext_insert(text, textview->msgfont, NULL, NULL, "\n", 1);
 	}
 
-	gtk_stext_insert(text, textview->msgfont, NULL, NULL, "\n", 1);
 	gtk_stext_thaw(text);
-	textview->body_pos = gtk_stext_get_length(text);
 }
 
 gboolean textview_search_string(TextView *textview, const gchar *str,

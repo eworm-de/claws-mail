@@ -1,3 +1,8 @@
+2002-03-03 [paul]	0.7.2claws27
+
+	* sync with sylpheed 0.7.2cvs24
+		see ChangeLog entries 2002-03-02 and 2002-03-03
+
 2002-03-02 [melvin]	0.7.2claws26
 
 	* src/inc.[ch]

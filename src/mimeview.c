@@ -198,6 +198,8 @@ MimeView *mimeview_create(void)
 
 	gtk_widget_show_all(notebook);
 
+	gtk_notebook_set_page(GTK_NOTEBOOK(notebook), 0);
+
 	n_entries = sizeof(mimeview_popup_entries) /
 		sizeof(mimeview_popup_entries[0]);
 	popupmenu = menu_create_items(mimeview_popup_entries, n_entries,

@@ -1,3 +1,22 @@
+2002-03-03
+
+	* src/mimeview.c: mimeview_create(): 最初のノートブックページを 0
+	  にした。
+	* src/folderview.c: folderview_selected(): 選択行が隠れていたら
+	  ビューをスクロールさせるようにした。
+	* src/prefs_filter.c: prefs_filter_register_cb(): ビューをスクロール
+	  させ、追加された行を選択するようにした。
+	* src/summaryview.c: 空のメッセージ ID のスレッド化を修正。
+
+2002-03-02
+
+	* src/textview.c: textview_show_message(): message/rfc822 のパートを
+	  辿るようにした。
+	  textview_add_part(): 添付テキストファイルの前に見出しを付けるよう
+	  にした。
+	  textview_show_header(): 改行を付加しないようにした。
+	* src/messageview.c: MIME モードでもメッセージ検索ができるようにした。
+
 2002-03-01
 
 	* src/messageview.c: messageview_show(): MimeView の TextView の
