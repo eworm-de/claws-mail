@@ -1,9 +1,15 @@
+2003-11-21 [christoph]	0.9.6claws85
+
+	* src/mimeview.c
+		fix content-type guessing by name parameter when finding
+		the correct viewer
+
 2003-11-21 [alfons]	0.9.6claws84
 
 	* src/main.c
 		no mail incorporation allowed with --offline param.
 		fixes bug #374, "--offline ignored"
-		
+
 2003-11-20 [christoph]	0.9.6claws83
 
 	* src/mimeinfo.c

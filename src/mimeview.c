@@ -528,9 +528,12 @@ static MimeViewer *get_viewer_for_mimeinfo(MimeView *mimeview, MimeInfo *partinf
 	MimeViewer *viewer = NULL;
 
 	if ((partinfo->type == MIMETYPE_APPLICATION) &&
-            (!g_strcasecmp(partinfo->subtype, "octet-stream")) &&
-	    (partinfo->name != NULL)) {
-		content_type = procmime_get_mime_type(partinfo->name);
+            (!g_strcasecmp(partinfo->subtype, "octet-stream"))) {
+		const gchar *filename;
+
+		filename = procmime_mimeinfo_get_parameter(partinfo, "name");
+		if (filename != NULL)
+			content_type = procmime_get_mime_type(filename);
 	} else {
 		content_type = g_strdup_printf("%s/%s", procmime_get_type_str(partinfo->type), partinfo->subtype);
 	}
