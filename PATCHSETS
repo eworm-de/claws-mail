@@ -97,3 +97,4 @@
 ( cvs diff -u -r 1.309 -r 1.310 src/mainwindow.c; cvs diff -u -r 1.247 -r 1.248 src/folderview.c; ) > 0.9.12cvs112.patchset
 ( cvs diff -u -r 1.24 -r 1.25 src/quote_fmt_parse.y; ) > 0.9.12cvs113.patchset
 ( cvs diff -u -r 1.441 -r 1.442 src/compose.c; ) > 0.9.12cvs114.patchset
+( cvs diff -u -r 1.36 -r 1.37 src/stock_pixmap.c; cvs diff -u -r 1.25 -r 1.26 src/stock_pixmap.h; cvs diff -u -r 1.248 -r 1.249 src/folderview.c; cvs diff -u -r 1.186 -r 1.187 src/Makefile.am; cvs diff -u -r 0 -r 1 src/pixmaps/read.xpm; ) > 0.9.12cvs115.patchset
