@@ -1,3 +1,8 @@
+2004-09-02 [colin]	0.9.12cvs90
+
+	* src/account.c
+		Fix bug 582 (broken auto account selection)
+
 2004-09-02 [colin]	0.9.12cvs89
 
 	* src/addrindex.c
