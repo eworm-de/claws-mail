@@ -771,6 +771,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 {
 	Compose *compose;
 	GtkSText *text;
+	gboolean grab_focus_on_last = TRUE;
 
 	if (item && item->prefs && item->prefs->enable_default_account)
 		account = account_find_from_id(item->prefs->default_account);
@@ -801,6 +802,8 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 
 		} else if(item && item->prefs->enable_default_to) {
 			compose_entry_append(compose, item->prefs->default_to, COMPOSE_TO);
+			compose_entry_select(compose, item->prefs->default_to);
+			grab_focus_on_last = FALSE;
 		}
 		if (item && item->ret_rcpt) {
 			GtkItemFactory *ifactory;
@@ -824,8 +827,10 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 		gtk_entry_set_text(GTK_ENTRY(compose->savemsg_entry), folderidentifier);
 		g_free(folderidentifier);
 	}
-
-	gtk_widget_grab_focus(compose->header_last->entry);
+	
+	/* Grab focus on last header only if no default_to was set */
+	if(grab_focus_on_last)
+		gtk_widget_grab_focus(compose->header_last->entry);
 
 	if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
@@ -1417,6 +1422,20 @@ void compose_entry_append(Compose *compose, const gchar *address,
 #else
 	compose_add_header_entry(compose, header, (gchar *)address);
 #endif
+}
+
+void compose_entry_select (Compose *compose, const gchar *mailto)
+{
+	GSList *header_list;
+		
+	for (header_list = compose->header_list; header_list != NULL; header_list = header_list->next) {
+		GtkEntry * entry = GTK_ENTRY(((ComposeHeaderEntry *)header_list->data)->entry);
+
+		if (gtk_entry_get_text(entry) && !g_strcasecmp(gtk_entry_get_text(entry), mailto)) {
+			gtk_entry_select_region(entry, 0, -1);
+			gtk_widget_grab_focus(GTK_WIDGET(entry));
+		}
+	}
 }
 
 static void compose_entries_set(Compose *compose, const gchar *mailto)

@@ -1,3 +1,23 @@
+2002-06-23 [paul]	0.7.8claws18
+
+	* src/messageview.c
+		fix bug introduced in last commit:
+		removed too much code in last commit - put back what's
+		needed
+
+2002-06-23 [paul]	0.7.8claws17
+
+	* src/messageview.[ch]
+		remove code committed in error from locally patched
+		source
+
+2002-06-23 [colin]	0.7.8claws16
+
+	* src/compose.[ch]
+		add compose_entry_select(), used to select the default_to
+		email address - hopefully avoiding people sending mails to
+		wrong recipients.
+
 2002-06-22 [alfons]	0.7.8claws15
 
 	* AUTHORS
