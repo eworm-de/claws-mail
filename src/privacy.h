@@ -50,6 +50,9 @@ gboolean privacy_mimeinfo_is_encrypted		(MimeInfo *);
 gint privacy_mimeinfo_decrypt			(MimeInfo *);
 
 struct _PrivacySystem {
+	/** Identifier for the PrivacySystem that can use in config files */
+	gchar		 *id;
+	/** Human readable name for the PrivacySystem for the user interface */
 	gchar		 *name;
 
 	void		 (*free_privacydata)	(PrivacyData *);

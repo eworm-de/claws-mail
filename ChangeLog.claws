@@ -1,3 +1,13 @@
+2003-12-13 [christoph]	0.9.7claws40
+
+	* src/main.c
+		readd exit(0) to clean_quit() because otherwise sylpheed
+		does not always terminate
+
+	* src/pgpmime.c
+	* src/privacy.h
+		add an identifier-string for PrivacySystems
+
 2003-12-12 [paul]
 
 	* doc/man/sylpheed.1
@@ -38,6 +48,8 @@
 	* src/main.[ch]
 		make sure the clean_exit() funtion is not called again by the
 		signal handler while it is already running
+
+	(closes Bug 366 lost all folders -> spoiling folderlist.xml file)
 
 	* src/summaryview.c
 		fix wrong assertion

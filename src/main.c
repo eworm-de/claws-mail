@@ -575,6 +575,7 @@ gboolean clean_quit(gpointer data)
 	} else {
 		app_will_exit(NULL, static_mainwindow);
 	}
+	exit(0);
 
 	return FALSE;
 }
