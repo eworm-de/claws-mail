@@ -1,4 +1,10 @@
-2002-03-15 [paul]	0.7.4claws7
+2002-03-15 [paul]	0.7.4claws9
+
+	* tools/filter_conv.pl
+		exit if there are no filter rules to convert
+		rename filterrc to filterrc.old after completion
+
+2002-03-15 [paul]	0.7.4claws8
 
 	* sync with sylpheed 0.7.4cvs3
 		see ChangeLog entry 2002-03-14
