@@ -1,3 +1,8 @@
+2003-12-19 [christoph]	0.9.8claws2
+
+	* src/folder.c
+		don't write all FolderItem XML attributes for the root node
+
 2003-12-19 [melvin]	0.9.8claws1
 
 	* src/messageview.c

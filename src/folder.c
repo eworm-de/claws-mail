@@ -145,6 +145,10 @@ void folder_destroy(Folder *folder)
 void folder_set_xml(Folder *folder, XMLTag *tag)
 {
 	GList *cur;
+	FolderItem *rootitem = NULL;
+
+	if ((folder->node != NULL) && (folder->node->data != NULL))
+		rootitem = (FolderItem *) folder->node->data;
 
 	for (cur = tag->attr; cur != NULL; cur = g_list_next(cur)) {
 		XMLAttr *attr = (XMLAttr *) cur->data;
@@ -154,6 +158,11 @@ void folder_set_xml(Folder *folder, XMLTag *tag)
 			if (folder->name != NULL)
 				g_free(folder->name);
 			folder->name = g_strdup(attr->value);
+			if (rootitem != NULL) {
+				if (rootitem->name != NULL)
+					g_free(rootitem->name);
+				rootitem->name = g_strdup(attr->value);
+			}
 		} else if (!strcmp(attr->name, "account_id")) {
 			PrefsAccount *account;
 
@@ -164,6 +173,9 @@ void folder_set_xml(Folder *folder, XMLTag *tag)
 				folder->account = account;
 				account->folder = folder;
 			}
+		} else if (!strcmp(attr->name, "collapsed")) {
+			if (rootitem != NULL)
+				rootitem->collapsed = *attr->value == '1' ? TRUE : FALSE;
 		}
 	}
 }
@@ -179,6 +191,11 @@ XMLTag *folder_get_xml(Folder *folder)
 		xml_tag_add_attr(tag, "name", g_strdup(folder->name));
 	if (folder->account)
 		xml_tag_add_attr(tag, "account_id", g_strdup_printf("%d", folder->account->account_id));
+	if (folder->node && folder->node->data) {
+		FolderItem *rootitem = (FolderItem *) folder->node->data;
+
+		xml_tag_add_attr(tag, "collapsed", g_strdup(rootitem->collapsed ? "1" : "0"));
+	}
 
 	return tag;
 }
@@ -2524,11 +2541,6 @@ static gboolean folder_read_folder_func(GNode *node, gpointer data)
 	else
 		folder_set_xml(folder, xmlnode->tag);
 
-	if (folder->klass->item_set_xml != NULL)
-		folder->klass->item_set_xml(folder, item, xmlnode->tag);
-	else
-		folder_item_set_xml(folder, item, xmlnode->tag);
-
 	folder_add(folder);
 	g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
 			folder_build_tree, folder);
@@ -2554,14 +2566,6 @@ static gchar *folder_get_list_path(void)
 	fputs("\"", fp);				\
 }
 
-gint xml_attr_cmp_name(gconstpointer _a, gconstpointer _b)
-{
-	XMLAttr *a = (XMLAttr *) _a;
-	XMLAttr *b = (XMLAttr *) _b;
-
-	return g_str_equal(a->name, b->name) ? 0 : 1;
-}
-
 static void folder_write_list_recursive(GNode *node, gpointer data)
 {
 	FILE *fp = (FILE *)data;
@@ -2580,28 +2584,12 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 	for (i = 0; i < depth; i++)
 		fputs("    ", fp);
 	if (depth == 1) {
-		XMLTag *folderitem_tag;
-		GList *cur;
-
 		if (item->folder->klass->get_xml != NULL)
 			tag = item->folder->klass->get_xml(item->folder);
 		else
 			tag = folder_get_xml(item->folder);
 
-		if (item->folder->klass->item_get_xml != NULL)
-			folderitem_tag = item->folder->klass->item_get_xml(item->folder, item);
-		else
-			folderitem_tag = folder_item_get_xml(item->folder, item);
 		xml_tag_add_attr(tag, "type", g_strdup(item->folder->klass->idstr));
-
-		for (cur = folderitem_tag->attr; cur != NULL; cur = g_list_next(cur)) {
-			XMLAttr *attr = (XMLAttr *) cur->data;
-
-			if (g_list_find_custom(tag->attr, attr, xml_attr_cmp_name) == NULL)
-				tag->attr = g_list_append(tag->attr, xml_copy_attr(attr));
-		}
-		xml_free_tag(folderitem_tag);
-
 	} else {
 
 		if (item->folder->klass->item_get_xml != NULL)
