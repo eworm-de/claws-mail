@@ -3,7 +3,7 @@
 	* src/folder.c
 		fixed a bug about the .processing folder name while filtering
 
-2001-12-07 [alfons]	0.6.5claws63
+2001-12-08 [alfons]	0.6.5claws63
 
 	* src/folderview.c 
 		work around problem of not correctly updating folder stats
