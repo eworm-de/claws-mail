@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2002 Match Grun
+ * Copyright (C) 2001-2003 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -147,8 +147,9 @@ typedef struct {
 	unsigned char attrib;
 } PC3RecordHeader;
 
-/*
+/**
 * Create new pilot file object.
+* \return Initialized JPilot file object.
 */
 JPilotFile *jpilot_create() {
 	JPilotFile *pilotFile;
@@ -167,9 +168,11 @@ JPilotFile *jpilot_create() {
 	return pilotFile;
 }
 
-/*
-* Create new pilot file object for specified file.
-*/
+/**
+ * Create new pilot file object for specified file.
+ * \param path Path to JPilot address book.
+ * \return Initialized JPilot file object.
+ */
 JPilotFile *jpilot_create_path( const gchar *path ) {
 	JPilotFile *pilotFile;
 	pilotFile = jpilot_create();
@@ -209,17 +212,19 @@ gchar *jpilot_get_name( JPilotFile *pilotFile ) {
 }
 
 /*
-* Test whether file was read.
-* Return: TRUE if file was read.
-*/
+ * Test whether file was read.
+ * \param pilotFile  JPilot control data.
+ * \return <i>TRUE</i> if file was read.
+ */
 gboolean jpilot_get_read_flag( JPilotFile *pilotFile ) {
 	g_return_val_if_fail( pilotFile != NULL, FALSE );
 	return pilotFile->addressCache->dataRead;
 }
 
-/*
-* Free up custom label list.
-*/
+/**
+ * Free up custom label list.
+ * \param pilotFile  JPilot control data.
+ */
 void jpilot_clear_custom_labels( JPilotFile *pilotFile ) {
 	GList *node;
 
@@ -242,10 +247,11 @@ void jpilot_clear_custom_labels( JPilotFile *pilotFile ) {
 	addrcache_refresh( pilotFile->addressCache );
 }
 
-/*
-* Append a custom label, representing an E-Mail address field to the
-* custom label list.
-*/
+/**
+ * Append a custom label, representing an E-Mail address field to the
+ * custom label list.
+ * \param pilotFile  JPilot control data.
+ */
 void jpilot_add_custom_label( JPilotFile *pilotFile, const gchar *labelName ) {
 	g_return_if_fail( pilotFile != NULL );
 
@@ -263,10 +269,11 @@ void jpilot_add_custom_label( JPilotFile *pilotFile, const gchar *labelName ) {
 	}
 }
 
-/*
-* Get list of custom labels.
-* Return: List of labels. Must use g_free() when done.
-*/
+/**
+ * Get list of custom labels.
+ * \param pilotFile  JPilot control data.
+ * \return List of labels. Must use g_free() when done.
+ */
 GList *jpilot_get_custom_labels( JPilotFile *pilotFile ) {
 	GList *retVal = NULL;
 	GList *node;
@@ -281,10 +288,11 @@ GList *jpilot_get_custom_labels( JPilotFile *pilotFile ) {
 	return retVal;
 }
 
-/*
-* Return filespec of PC3 file corresponding to JPilot PDB file.
-* Note: Filespec should be g_free() when done.
-*/
+/**
+ * Return filespec of PC3 file corresponding to JPilot PDB file.
+ * \param pilotFile  JPilot control data.
+ * \return File specification; should be g_free() when done.
+ */
 static gchar *jpilot_get_pc3_file( JPilotFile *pilotFile ) {
 	gchar *fileSpec, *r;
 	gint i, len, pos;
@@ -313,10 +321,11 @@ static gchar *jpilot_get_pc3_file( JPilotFile *pilotFile ) {
 	return NULL;
 }
 
-/*
-* Save PC3 file time to cache.
-* return: TRUE if time marked.
-*/
+/**
+ * Save PC3 file time to cache.
+ * \param pilotFile  JPilot control data.
+ * \return <i>TRUE</i> if time marked.
+ */
 static gboolean jpilot_mark_files( JPilotFile *pilotFile ) {
 	gboolean retVal = FALSE;
 	struct stat filestat;
@@ -339,11 +348,12 @@ static gboolean jpilot_mark_files( JPilotFile *pilotFile ) {
 	return retVal;
 }
 
-/*
-* Check whether JPilot PDB or PC3 file has changed by comparing
-* with cached data.
-* return: TRUE if file has changed.
-*/
+/**
+ * Check whether JPilot PDB or PC3 file has changed by comparing
+ * with cached data.
+ * \param pilotFile  JPilot control data.
+ * \return <i>TRUE</i> if file has changed.
+ */
 static gboolean jpilot_check_files( JPilotFile *pilotFile ) {
 	gboolean retVal = TRUE;
 	struct stat filestat;
@@ -383,9 +393,10 @@ gboolean jpilot_get_accessed( JPilotFile *pilotFile ) {
 	return pilotFile->addressCache->accessFlag;
 }
 
-/*
-* Free up pilot file object by releasing internal memory.
-*/
+/**
+ * Free up pilot file object by releasing internal memory.
+ * \param pilotFile  JPilot control data.
+ */
 void jpilot_free( JPilotFile *pilotFile ) {
 	g_return_if_fail( pilotFile != NULL );
 
@@ -756,34 +767,41 @@ static int read_header(FILE *pc_in, PC3RecordHeader *header) {
 	return 1;
 }
 
-/* Read next record from PC3 file. Based on JPilot's
- * pc_read_next_rec (libplugin.c) */
+/**
+ * Read next record from PC3 file. Based on JPilot function
+ * <code>pc_read_next_rec()</code> (libplugin.c)
+ *
+ * \param in File handle.
+ * \param br Record buffer.
+ * \return Status/error code. <code>MGU_SUCCESS</code> if data read
+ *         successfully.
+ */
 static gint jpilot_read_next_pc( FILE *in, buf_rec *br ) {
 	PC3RecordHeader header;
 	int rec_len, num;
 	char *record;
 
-	if(feof(in)) {
+	if( feof( in ) ) {
 		return MGU_EOF;
 	}
-	num = read_header(in, &header);
-	if (num < 1) {
-		if (ferror(in)) {
+	num = read_header( in, &header );
+	if( num < 1 ) {
+		if( ferror( in ) ) {
 			return MGU_ERROR_READ;
 		}
-		if (feof(in)) {
+		if( feof( in ) ) {
 			return MGU_EOF;
 		}
 	}
 	rec_len = header.rec_len;
-	record = malloc(rec_len);
-	if (!record) {
+	record = malloc( rec_len );
+	if( ! record ) {
 		return MGU_OO_MEMORY;
 	}
-	num = fread(record, rec_len, 1, in);
-	if (num != 1) {
-		if (ferror(in)) {
-			free(record);
+	num = fread( record, rec_len, 1, in );
+	if( num != 1 ) {
+		if( ferror( in ) ) {
+			free( record );
 			return MGU_ERROR_READ;
 		}
 	}
@@ -796,9 +814,14 @@ static gint jpilot_read_next_pc( FILE *in, buf_rec *br ) {
 	return MGU_SUCCESS;
 }
 
-/*
- * Read address file into a linked list. Based on JPilot's
- * jp_read_DB_files (from libplugin.c)
+/**
+ * Read address file into a linked list. Based on JPilot function
+ * <code>jp_read_DB_files()</code> (from libplugin.c)
+ *
+ * \param pilotFile  JPilot control data.
+ * \param records Pointer to linked list of records read.
+ * \return Status/error code. <code>MGU_SUCCESS</code> if data read
+ *         successfully.
  */
 static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 	FILE *in, *pc_in;
@@ -826,59 +849,65 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 	}
 
 	in = fopen( pilotFile->path, "rb" );
-	if (!in) {
+	if( ! in ) {
 		return MGU_OPEN_FILE;
 	}
 
 	/* Read the database header */
-	num = fread(&rdbh, sizeof(RawDBHeader), 1, in);
-	if (num != 1) {
-		if (ferror(in)) {
-			fclose(in);
+	num = fread( &rdbh, sizeof( RawDBHeader ), 1, in );
+	if( num != 1 ) {
+		if( ferror( in ) ) {
+			fclose( in );
 			return MGU_ERROR_READ;
 		}
-		if (feof(in)) {
-			fclose(in);
+		if( feof( in ) ) {
+			fclose( in );
 			return MGU_EOF;
 		}
 	}
-	raw_header_to_header(&rdbh, &dbh);
+	raw_header_to_header( &rdbh, &dbh );
 
 	/* Read each record entry header */
 	num_records = dbh.number_of_records;
 	out_of_order = 0;
 	prev_offset = 0;
 
-	for (i = 1; i < num_records + 1; i++) {
-		num = fread(&rh, sizeof(record_header), 1, in);
-		if (num != 1) {
-			if (ferror(in)) {
+	for( i = 1; i < num_records + 1; i++ ) {
+		num = fread( &rh, sizeof( record_header ), 1, in );
+		if( num != 1 ) {
+			if( ferror( in ) ) {
 				break;
 			}
-			if (feof(in)) {
-				fclose(in);
+			if( feof( in ) ) {
+				fclose( in );
 				return MGU_EOF;
 			}
 		}
 
-		offset = ((rh.Offset[0]*256+rh.Offset[1])*256+rh.Offset[2])*256+rh.Offset[3];
-		if (offset < prev_offset) {
+		offset =
+			( ( rh.Offset[0] * 256 + rh.Offset[1] ) * 256
+			+ rh.Offset[2] ) * 256
+			+ rh.Offset[3];
+		if( offset < prev_offset ) {
 			out_of_order = 1;
 		}
 		prev_offset = offset;
-		temp_mem_rh = (mem_rec_header *)malloc(sizeof(mem_rec_header));
-		if (!temp_mem_rh) {
+		temp_mem_rh = ( mem_rec_header * ) malloc( sizeof( mem_rec_header ) );
+		if( ! temp_mem_rh ) {
 			break;
 		}
 		temp_mem_rh->next = NULL;
 		temp_mem_rh->rec_num = i;
 		temp_mem_rh->offset = offset;
 		temp_mem_rh->attrib = rh.attrib;
-		temp_mem_rh->unique_id = (rh.unique_ID[0]*256+rh.unique_ID[1])*256+rh.unique_ID[2];
-		if (mem_rh == NULL) {
+		temp_mem_rh->unique_id =
+			( rh.unique_ID[0] * 256 + rh.unique_ID[1] ) * 256
+			+ rh.unique_ID[2];
+		if( mem_rh == NULL ) {
 			mem_rh = temp_mem_rh;
 			last_mem_rh = temp_mem_rh;
-		} else {
+		}
+		else {
 			last_mem_rh->next = temp_mem_rh;
 			last_mem_rh = temp_mem_rh;
 		}
@@ -886,45 +915,50 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 
 	temp_mem_rh = mem_rh;
 
-	if (num_records) {
-		if (out_of_order) {
-			find_next_offset(mem_rh, 0, &next_offset, &attrib, &unique_id);
-		} else {
-			if (mem_rh) {
+	if( num_records ) {
+		if( out_of_order ) {
+			find_next_offset(
+				mem_rh, 0, &next_offset, &attrib, &unique_id );
+		}
+		else {
+			if( mem_rh ) {
 				next_offset = mem_rh->offset;
 				attrib = mem_rh->attrib;
 				unique_id = mem_rh->unique_id;
 			}
 		}
-		fseek(in, next_offset, SEEK_SET);
-		while(!feof(in)) {
-			fpos = ftell(in);
-			if (out_of_order) {
-				find_next_offset(mem_rh, fpos, &next_offset, &attrib, &unique_id);
+		fseek( in, next_offset, SEEK_SET );
+		while( ! feof( in ) ) {
+			fpos = ftell( in );
+			if( out_of_order ) {
+				find_next_offset(
+					mem_rh, fpos, &next_offset, &attrib,
+					&unique_id );
 			} else {
 				next_offset = 0xFFFFFF;
-				if (temp_mem_rh) {
+				if( temp_mem_rh ) {
 					attrib = temp_mem_rh->attrib;
 					unique_id = temp_mem_rh->unique_id;
-					if (temp_mem_rh->next) {
+					if ( temp_mem_rh->next ) {
 						temp_mem_rh = temp_mem_rh->next;
 						next_offset = temp_mem_rh->offset;
 					}
 				}
 			}
 			rec_size = next_offset - fpos;
-			buf = malloc(rec_size);
-			if (!buf) break;
-			num = fread(buf, rec_size, 1, in);
-			if ((num != 1)) {
-				if (ferror(in)) {
-					free(buf);
+			buf = malloc( rec_size );
+			if( ! buf ) break;
+			num = fread( buf, rec_size, 1, in );
+			if( ( num != 1 ) ) {
+				if( ferror( in ) ) {
+					free( buf );
 					break;
 				}
 			}
 
-			temp_br = malloc(sizeof(buf_rec));
-			if (!temp_br) {
+			temp_br = malloc( sizeof( buf_rec ) );
+			if( ! temp_br ) {
+				free( buf );
 				break;
 			}
 			temp_br->rt = PALM_REC;
@@ -933,13 +967,13 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 			temp_br->buf = buf;
 			temp_br->size = rec_size;
 
-			*records = g_list_append(*records, temp_br);
+			*records = g_list_append( *records, temp_br );
 
 			recs_returned++;
 		}
 	}
-	fclose(in);
-	free_mem_rec_header(&mem_rh);
+	fclose( in );
+	free_mem_rec_header( &mem_rh );
 
 	/* Read the PC3 file, if present */
 	pcFile = jpilot_get_pc3_file( pilotFile );
@@ -952,47 +986,65 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 	}
 
 	while( ! feof( pc_in ) ) {
-		temp_br = malloc(sizeof(buf_rec));
-		if (!temp_br) {
+		gboolean linked;
+
+		temp_br = malloc( sizeof( buf_rec ) );
+		if( ! temp_br ) {
 			break;
 		}
 		r = jpilot_read_next_pc( pc_in, temp_br );
-		if ( r != MGU_SUCCESS ) {
-			free(temp_br);
+		if( r != MGU_SUCCESS ) {
+			free( temp_br->buf );
+			free( temp_br );
 			break;
 		}
-		if ((temp_br->rt!=DELETED_PC_REC)
-			&&(temp_br->rt!=DELETED_PALM_REC)
-			&&(temp_br->rt!=MODIFIED_PALM_REC)
-			&&(temp_br->rt!=DELETED_DELETED_PALM_REC)) {
-				*records = g_list_append(*records, temp_br);
-				recs_returned++;
+
+		linked = FALSE;
+		if( ( temp_br->rt != DELETED_PC_REC )
+		 && ( temp_br->rt != DELETED_PALM_REC )
+		 && ( temp_br->rt != MODIFIED_PALM_REC )
+		 && ( temp_br->rt != DELETED_DELETED_PALM_REC ) )
+		{
+			*records = g_list_append( *records, temp_br );
+			recs_returned++;
+			linked = TRUE;
 		}
-		if ((temp_br->rt==DELETED_PALM_REC) || (temp_br->rt==MODIFIED_PALM_REC)) {
-			temp_list=*records;
-			if (*records) {
-				while(temp_list->next) {
+
+		if( ( temp_br->rt == DELETED_PALM_REC )
+		 || ( temp_br->rt == MODIFIED_PALM_REC ) )
+		{
+			temp_list = *records;
+			if( *records ) {
+				while( temp_list->next ) {
 					temp_list=temp_list->next;
 				}
 			}
-			for (; temp_list; temp_list=temp_list->prev) {
-				if (((buf_rec *)temp_list->data)->unique_id == temp_br->unique_id) {
-					((buf_rec *)temp_list->data)->rt = temp_br->rt;
+			for( ; temp_list; temp_list=temp_list->prev ) {
+				if( ( ( buf_rec * )temp_list->data )->unique_id ==
+				    temp_br->unique_id ) {
+					( ( buf_rec * )temp_list->data )->rt =
+						temp_br->rt;
 				}
 			}
 		}
+
+		if( ! linked ) {
+			free( temp_br->buf );
+			free( temp_br );
+		}
 	}
-	fclose(pc_in);
+	fclose( pc_in );
 
 	return MGU_SUCCESS;
 }
 
-/*
+/**
  * Parse buffer containing multiple e-mail addresses into a linked list of
  * addresses. Separator characters are " ,;|" and control characters. Address
  * is only extracted if it contains an "at" (@) character.
- * Enter: buf Buffer
- * Return: List of strings.
+ * 
+ * \param buf Buffer to process.
+ * \return List of strings.
  */
 static GList *jpilot_parse_email( gchar *buf ) {
 	GList *list;
@@ -1041,11 +1093,12 @@ static GList *jpilot_parse_email( gchar *buf ) {
 #define FULLNAME_BUFSIZE	256
 #define EMAIL_BUFSIZE		256
 
-/*
+/**
  * Process a single label entry field, parsing multiple e-mail address entries.
- * Enter: pilotFile  JPilot control data.
- *        labelEntry Label entry data.
- *        person     Person.
+ *
+ * \param pilotFile  JPilot control data.
+ * \param labelEntry Label entry data.
+ * \param person     Person.
  */
 static void jpilot_parse_label( JPilotFile *pilotFile, gchar *labelEntry, ItemPerson *person ) {
 	gchar buffer[ EMAIL_BUFSIZE ];
@@ -1068,10 +1121,15 @@ static void jpilot_parse_label( JPilotFile *pilotFile, gchar *labelEntry, ItemPe
 	}
 }
 	
-/*
+/**
  * Unpack address, building new data inside cache.
+ * \param pilotFile  JPilot control data.
+ * \param buf        Record buffer.
+ * \param folderInd  Array of (category) folders to load.
  */
-static void jpilot_load_address( JPilotFile *pilotFile, buf_rec *buf, ItemFolder *folderInd[] ) {
+static void jpilot_load_address(
+		JPilotFile *pilotFile, buf_rec *buf, ItemFolder *folderInd[] )
+{
 	struct Address addr;
 	gchar **addrEnt;
 	gint num, k;
@@ -1155,21 +1213,29 @@ static void jpilot_load_address( JPilotFile *pilotFile, buf_rec *buf, ItemFolder
 		if( person->listEMail ) {
 			if( cat_id > -1 && cat_id < JPILOT_NUM_CATEG ) {
 				/* Add to specified category */
-				addrcache_folder_add_person
-					( pilotFile->addressCache, folderInd[cat_id], person );
-			} else {
-				/* Add to root folder */
-				addrcache_add_person( pilotFile->addressCache, person );
+				addrcache_folder_add_person(
+					pilotFile->addressCache,
+					folderInd[cat_id], person );
 			}
-		} else {
+			else {
+				/* Add to root folder */
+				addrcache_add_person(
+					pilotFile->addressCache, person );
+			}
+		}
+		else {
 			addritem_free_item_person( person );
 			person = NULL;
 		}
 	}
+
+	/* Free up pointer allocated inside address */
+	free_Address( & addr );
 }
 
-/*
+/**
  * Free up address list.
+ * \param records List of records to free.
  */
 static void jpilot_free_addrlist( GList *records ) {
 	GList *node;
@@ -1178,6 +1244,7 @@ static void jpilot_free_addrlist( GList *records ) {
 	node = records;
 	while( node ) {
 		br = node->data;
+		free( br->buf );
 		free( br );
 		node->data = NULL;
 		node = g_list_next( node );
@@ -1187,58 +1254,12 @@ static void jpilot_free_addrlist( GList *records ) {
 	g_list_free( records );
 }
 
-/*
- * Read address file into address cache.
+/**
+ * Read metadata from file.
+ * \param pilotFile  JPilot control data.
+ * \return Status/error code. <code>MGU_SUCCESS</code> if data read
+ *         successfully.
  */
-static gint jpilot_read_file( JPilotFile *pilotFile ) {
-	gint retVal, i;
-	GList *records = NULL;
-	GList *node;
-	buf_rec *br;
-	ItemFolder *folderInd[ JPILOT_NUM_CATEG ];
-
-	retVal = jpilot_read_db_files( pilotFile, &records );
-	if( retVal != MGU_SUCCESS ) {
-		jpilot_free_addrlist( records );
-		return retVal;
-	}
-
-	/* Build array of pointers to categories */
-	i = 0;
-	node = addrcache_get_list_folder( pilotFile->addressCache );
-	while( node ) {
-		if( i < JPILOT_NUM_CATEG ) {
-			folderInd[i] = node->data;
-		}
-		node = g_list_next( node );
-		i++;
-	}
-
-	/* Load all addresses, free up old stuff as we go */
-	node = records;
-	while( node ) {
-		br = node->data;
-		if( ( br->rt != DELETED_PC_REC ) &&
-		    ( br->rt != DELETED_PALM_REC ) &&
-		    ( br->rt != MODIFIED_PALM_REC ) &&
-		    ( br->rt != DELETED_DELETED_PALM_REC ) ) {
-			jpilot_load_address( pilotFile, br, folderInd );
-		}
-		free( br );
-		node->data = NULL;
-		node = g_list_next( node );
-	}
-
-	/* Free up list */
-	g_list_free( records );
-
-	return retVal;
-}
-
-
-/*
-* Read metadata from file.
-*/
 static gint jpilot_read_metadata( JPilotFile *pilotFile ) {
 	gint retVal;
 	unsigned int rec_size;
@@ -1271,10 +1292,11 @@ static gint jpilot_read_metadata( JPilotFile *pilotFile ) {
 	return pilotFile->retVal;
 }
 
-/*
-* Setup labels and indexes from metadata.
-* Return: TRUE is setup successfully.
-*/
+/**
+ * Setup labels and indexes from metadata.
+ * \param pilotFile  JPilot control data.
+ * \return <i>TRUE</i> is setup successfully.
+ */
 static gboolean jpilot_setup_labels( JPilotFile *pilotFile ) {
 	gboolean retVal = FALSE;
 	struct AddressAppInfo *ai;
@@ -1304,7 +1326,8 @@ static gboolean jpilot_setup_labels( JPilotFile *pilotFile ) {
 					break;
 				}
 			}
-			pilotFile->labelInd = g_list_append( pilotFile->labelInd, GINT_TO_POINTER(ind) );
+			pilotFile->labelInd = g_list_append(
+				pilotFile->labelInd, GINT_TO_POINTER(ind) );
 			node = g_list_next( node );
 		}
 		retVal = TRUE;
@@ -1312,9 +1335,12 @@ static gboolean jpilot_setup_labels( JPilotFile *pilotFile ) {
 	return retVal;
 }
 
-/*
-* Load list with character strings of label names.
-*/
+/**
+ * Load list with character strings of label names.
+ * \param pilotFile  JPilot control data.
+ * \param labelList List of label names to load.
+ * \return List of label names loaded.
+ */
 GList *jpilot_load_label( JPilotFile *pilotFile, GList *labelList ) {
 	int i;
 
@@ -1325,21 +1351,25 @@ GList *jpilot_load_label( JPilotFile *pilotFile, GList *labelList ) {
 		for( i = 0; i < JPILOT_NUM_LABELS; i++ ) {
 			gchar *labelName = ai->labels[i];
 			if( labelName ) {
-				labelList = g_list_append( labelList, g_strdup( labelName ) );
+				labelList = g_list_append(
+					labelList, g_strdup( labelName ) );
 			}
 			else {
-				labelList = g_list_append( labelList, g_strdup( "" ) );
+				labelList = g_list_append(
+					labelList, g_strdup( "" ) );
 			}
 		}
 	}
 	return labelList;
 }
 
-/*
-* Return category name for specified category ID.
-* Enter:  Category ID.
-* Return: Name, or empty string if not invalid ID. Name should be g_free() when done.
-*/
+/**
+ * Return category name for specified category ID.
+ * \param pilotFile  JPilot control data.
+ * \param catID      Category ID.
+ * \return Category name, or empty string if not invalid ID. Name should be
+ *         <code>g_free()</code> when done.
+ */
 gchar *jpilot_get_category_name( JPilotFile *pilotFile, gint catID ) {
 	gchar *catName = NULL;
 
@@ -1358,9 +1388,12 @@ gchar *jpilot_get_category_name( JPilotFile *pilotFile, gint catID ) {
 	return catName;
 }
 
-/*
-* Load list with character strings of phone label names.
-*/
+/**
+ * Load list with character strings of phone label names.
+ * \param pilotFile  JPilot control data.
+ * \param labelList List of label names to load.
+ * \return List of label names loaded.
+ */
 GList *jpilot_load_phone_label( JPilotFile *pilotFile, GList *labelList ) {
 	gint i;
 
@@ -1371,21 +1404,25 @@ GList *jpilot_load_phone_label( JPilotFile *pilotFile, GList *labelList ) {
 		for( i = 0; i < JPILOT_NUM_PHONELABELS; i++ ) {
 			gchar	*labelName = ai->phoneLabels[i];
 			if( labelName ) {
-				labelList = g_list_append( labelList, g_strdup( labelName ) );
+				labelList = g_list_append(
+					labelList, g_strdup( labelName ) );
 			}
 			else {
-				labelList = g_list_append( labelList, g_strdup( "" ) );
+				labelList = g_list_append(
+					labelList, g_strdup( "" ) );
 			}
 		}
 	}
 	return labelList;
 }
 
-/*
-* Load list with character strings of label names. Only none blank names
-* are loaded.
-* Return: list of labels. Should by g_free()'d when done.
-*/
+/**
+ * Load list with character strings of custom label names. Only none blank
+ * names are loaded.
+ * \param pilotFile  JPilot control data.
+ * \param labelList List of label names to load.
+ * \return List of label names loaded. Should be freed when done.
+ */
 GList *jpilot_load_custom_label( JPilotFile *pilotFile, GList *labelList ) {
 	gint i;
 
@@ -1399,7 +1436,8 @@ GList *jpilot_load_custom_label( JPilotFile *pilotFile, GList *labelList ) {
 				g_strchomp( labelName );
 				g_strchug( labelName );
 				if( *labelName != '\0' ) {
-					labelList = g_list_append( labelList, g_strdup( labelName ) );
+					labelList = g_list_append( labelList,
+						g_strdup( labelName ) );
 				}
 			}
 		}
@@ -1407,9 +1445,11 @@ GList *jpilot_load_custom_label( JPilotFile *pilotFile, GList *labelList ) {
 	return labelList;
 }
 
-/*
-* Load list with character strings of category names.
-*/
+/**
+ * Load list with character strings of category names.
+ * \param pilotFile  JPilot control data.
+ * \return List of label names loaded. Should be freed when done.
+ */
 GList *jpilot_get_category_list( JPilotFile *pilotFile ) {
 	GList *catList = NULL;
 	gint i;
@@ -1422,19 +1462,22 @@ GList *jpilot_get_category_list( JPilotFile *pilotFile ) {
 		for( i = 0; i < JPILOT_NUM_CATEG; i++ ) {
 			gchar *catName = cat->name[i];
 			if( catName ) {
-				catList = g_list_append( catList, g_strdup( catName ) );
+				catList = g_list_append(
+					catList, g_strdup( catName ) );
 			}
 			else {
-				catList = g_list_append( catList, g_strdup( "" ) );
+				catList = g_list_append(
+					catList, g_strdup( "" ) );
 			}
 		}
 	}
 	return catList;
 }
 
-/*
-* Build folder for each category.
-*/
+/**
+ * Build folder in address book for each category.
+ * \param pilotFile  JPilot control data.
+ */
 static void jpilot_build_category_list( JPilotFile *pilotFile ) {
 	struct AddressAppInfo *ai = & pilotFile->addrInfo;
 	struct CategoryAppInfo *cat = &	ai->category;
@@ -1448,9 +1491,10 @@ static void jpilot_build_category_list( JPilotFile *pilotFile ) {
 	}
 }
 
-/*
-* Remove empty folders (categories).
-*/
+/**
+ * Remove empty (category) folders.
+ * \param pilotFile  JPilot control data.
+ */
 static void jpilot_remove_empty( JPilotFile *pilotFile ) {
 	GList *listFolder;
 	GList *remList;
@@ -1486,12 +1530,73 @@ static void jpilot_remove_empty( JPilotFile *pilotFile ) {
 	g_list_free( remList );
 }
 
-/*
-* ============================================================================================
-* Read file into list. Main entry point
-* Return: TRUE if file read successfully.
-* ============================================================================================
-*/
+/**
+ * Read address file into address cache.
+ * \param pilotFile  JPilot control data.
+ * \return Error/status code. <code>MGU_SUCCESS</code> if data read
+ *         successfully.
+ */
+static gint jpilot_read_file( JPilotFile *pilotFile ) {
+	gint retVal, i;
+	GList *records = NULL;
+	GList *node;
+	buf_rec *br;
+	ItemFolder *folderInd[ JPILOT_NUM_CATEG ];
+
+	/* Read list of records from JPilot files */
+	retVal = jpilot_read_db_files( pilotFile, &records );
+	if( retVal != MGU_SUCCESS ) {
+		jpilot_free_addrlist( records );
+		return retVal;
+	}
+
+	/* Setup labels and category folders */
+	jpilot_setup_labels( pilotFile );
+	jpilot_build_category_list( pilotFile );
+
+	/* Build array of pointers to categories */
+	i = 0;
+	node = addrcache_get_list_folder( pilotFile->addressCache );
+	while( node ) {
+		if( i < JPILOT_NUM_CATEG ) {
+			folderInd[i] = node->data;
+		}
+		node = g_list_next( node );
+		i++;
+	}
+
+	/* Load all addresses, free up old stuff as we go */
+	node = records;
+	while( node ) {
+		br = node->data;
+		if( ( br->rt != DELETED_PC_REC ) &&
+		    ( br->rt != DELETED_PALM_REC ) &&
+		    ( br->rt != MODIFIED_PALM_REC ) &&
+		    ( br->rt != DELETED_DELETED_PALM_REC ) ) {
+			jpilot_load_address( pilotFile, br, folderInd );
+		}
+		free( br->buf );
+		free( br );
+		node->data = NULL;
+		node = g_list_next( node );
+	}
+
+	/* Free up list */
+	g_list_free( records );
+
+	/* Remove empty category folders */
+	jpilot_remove_empty( pilotFile );
+	jpilot_mark_files( pilotFile );
+
+	return retVal;
+}
+
+/**
+ * Read file into list. Main entry point
+ * \param pilotFile  JPilot control data.
+ * \return Error/status code. <code>MGU_SUCCESS</code> if data read
+ *         successfully.
+ */
 gint jpilot_read_data( JPilotFile *pilotFile ) {
 	g_return_val_if_fail( pilotFile != NULL, -1 );
 
@@ -1501,12 +1606,8 @@ gint jpilot_read_data( JPilotFile *pilotFile ) {
 		addrcache_clear( pilotFile->addressCache );
 		jpilot_read_metadata( pilotFile );
 		if( pilotFile->retVal == MGU_SUCCESS ) {
-			jpilot_setup_labels( pilotFile );
-			jpilot_build_category_list( pilotFile );
 			pilotFile->retVal = jpilot_read_file( pilotFile );
 			if( pilotFile->retVal == MGU_SUCCESS ) {
-				jpilot_remove_empty( pilotFile );
-				jpilot_mark_files( pilotFile );
 				pilotFile->addressCache->modified = FALSE;
 				pilotFile->addressCache->dataRead = TRUE;
 			}
@@ -1515,39 +1616,54 @@ gint jpilot_read_data( JPilotFile *pilotFile ) {
 	return pilotFile->retVal;
 }
 
-/*
-* Return link list of persons.
-*/
+/**
+ * Return linked list of persons. This is a list of references to ItemPerson
+ * objects. Do <b>NOT</b> attempt to use the <code>addrbook_free_xxx()</code>
+ * functions... this will destroy the addressbook data!
+ *
+ * \param  pilotFile  JPilot control data.
+ * \return List of persons.
+ */
 GList *jpilot_get_list_person( JPilotFile *pilotFile ) {
 	g_return_val_if_fail( pilotFile != NULL, NULL );
 	return addrcache_get_list_person( pilotFile->addressCache );
 }
 
-/*
-* Return link list of folders. This is always NULL since there are
-* no folders in GnomeCard.
-* Return: NULL.
-*/
+/**
+ * Return linked list of folders. This is a list of references to non-empty
+ * category folders. Do <b>NOT</b> attempt to use the
+ * <code>addrbook_free_xxx()</code> functions... this will destroy the
+ * addressbook data!
+ *
+ * \param  pilotFile  JPilot control data.
+ * \return List of ItemFolder objects. This should not be freed.
+ */
 GList *jpilot_get_list_folder( JPilotFile *pilotFile ) {
 	g_return_val_if_fail( pilotFile != NULL, NULL );
 	return addrcache_get_list_folder( pilotFile->addressCache );
 }
 
-/*
-* Return link list of all persons. Note that the list contains references
-* to items. Do *NOT* attempt to use the addrbook_free_xxx() functions...
-* this will destroy the addressbook data!
-* Return: List of items, or NULL if none.
-*/
+/**
+ * Return linked list of all persons. Note that the list contains references
+ * to items. Do <b>NOT</b> attempt to use the <code>addrbook_free_xxx()</code>
+ * functions... this will destroy the addressbook data!
+ *
+ * \param pilotFile  JPilot control data.
+ * \return List of items, or NULL if none.
+ */
 GList *jpilot_get_all_persons( JPilotFile *pilotFile ) {
 	g_return_val_if_fail( pilotFile != NULL, NULL );
 	return addrcache_get_all_persons( pilotFile->addressCache );
 }
 
-/*
-* Check label list for specified label.
+/**
+ * Check label list for specified label name.
+ * \param ai Address info to check.
+ * \param lblCheck Label name to check.
+ * \return Index of label in address structure. <code>-1</code> if NULL/empty
+ *         label name, <code>-2</code> if label not found.
 */
-gint jpilot_check_label( struct AddressAppInfo *ai, gchar *lblCheck ) {
+static gint jpilot_check_label( struct AddressAppInfo *ai, gchar *lblCheck ) {
 	gint i;
 	gchar *lblName;
 
@@ -1564,10 +1680,11 @@ gint jpilot_check_label( struct AddressAppInfo *ai, gchar *lblCheck ) {
 	return -2;
 }
 
-/*
-* Validate that all parameters specified.
-* Return: TRUE if data is good.
-*/
+/**
+ * Validate that all parameters specified.
+ * \param pilotFile  JPilot control data.
+ * \return <i>TRUE</i> if data is good.
+ */
 gboolean jpilot_validate( JPilotFile *pilotFile ) {
 	gboolean retVal;
 	gchar *name;
@@ -1593,11 +1710,12 @@ gboolean jpilot_validate( JPilotFile *pilotFile ) {
 
 #define WORK_BUFLEN 1024
 
-/*
-* Attempt to find a valid JPilot file.
-* Return: Filename, or home directory if not found, or empty string if
-* no home. Filename should be g_free() when done.
-*/
+/**
+ * Attempt to find a valid JPilot file.
+ * \param pilotFile  JPilot control data.
+ * \return Filename, or home directory if not found, or empty string if
+ *         no home. Filename should be <code>g_free()</code> when done.
+ */
 gchar *jpilot_find_pilotdb( void ) {
 	gchar *homedir;
 	gchar str[ WORK_BUFLEN ];
@@ -1630,10 +1748,11 @@ gchar *jpilot_find_pilotdb( void ) {
 	return g_strdup( str );
 }
 
-/*
-* Attempt to read file, testing for valid JPilot format.
-* Return: TRUE if file appears to be valid format.
-*/
+/**
+ * Attempt to read file, testing for valid JPilot format.
+ * \param fileSpec File specification to read.
+ * \return <i>TRUE<i> if file appears to be valid format.
+ */
 gint jpilot_test_read_file( const gchar *fileSpec ) {
 	JPilotFile *pilotFile;
 	gint retVal;
@@ -1650,10 +1769,12 @@ gint jpilot_test_read_file( const gchar *fileSpec ) {
 	return retVal;
 }
 
-/*
-* Check whether label is in custom labels.
-* Return: TRUE if found.
-*/
+/**
+ * Check whether label is in list of custom labels.
+ * \param pilotFile JPilot control data.
+ * \param labelName to test.
+ * \return <i>TRUE</i> if found.
+ */
 gboolean jpilot_test_custom_label( JPilotFile *pilotFile, const gchar *labelName ) {
 	gboolean retVal;
 	GList *node;
@@ -1674,10 +1795,10 @@ gboolean jpilot_test_custom_label( JPilotFile *pilotFile, const gchar *labelName
 	return retVal;
 }
 
-/*
-* Test whether pilot link library installed.
-* Return: TRUE if library available.
-*/
+/**
+ * Test whether pilot link library installed.
+ * \return <i>TRUE</i> if library available.
+ */
 gboolean jpilot_test_pilot_lib( void ) {
 	return TRUE;
 }
