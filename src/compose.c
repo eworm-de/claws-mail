@@ -3557,6 +3557,9 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 		    compose->use_signing && !compose->gnupg_mode &&
 		    encoding == ENC_8BIT)
 			encoding = ENC_BASE64;
+		
+		if (compose->use_encryption && compose->gnupg_mode)
+			encoding = ENC_8BIT; /* this will be encrypted to a 7bit string */
 #endif
 
 		src_codeset = conv_get_current_charset_str();

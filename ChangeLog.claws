@@ -1,3 +1,10 @@
+2004-08-21 [colin]	0.9.12cvs70
+
+	* src/compose.c
+		When using inline encryption, don't use QP or Base64:
+		the mail will be encrypted to a 7bit string.
+		Fixes bug 197
+
 2004-08-21 [colin]	0.9.12cvs69
 
 	* src/compose.c
