@@ -23,8 +23,6 @@
 
 #include "defs.h"
 
-#include <features.h>
-
 #include <glib.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkrc.h>

@@ -451,7 +451,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo)
 	if (!getenv("GPG_AGENT_INFO")) {
     		info.c = ctx;
     		gpgme_set_passphrase_cb (ctx, gpgmegtk_passphrase_cb, &info);
-	    }
+	}
 
 	if (gpgme_op_sign(ctx, gpgtext, gpgsig, GPGME_SIG_MODE_DETACH) != GPGME_No_Error)
 		return FALSE;

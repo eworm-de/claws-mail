@@ -1,3 +1,8 @@
+2004-10-26 [christoph]	0.9.12cvs134
+
+	* src/procmime.c
+		better check if parameters have to be in quoted string
+
 2004-10-22 [paul]	0.9.12cvs133
 
 	* src/compose.c

@@ -1516,18 +1516,70 @@ MimeInfo *procmime_scan_queue_file(const gchar *filename)
 	return mimeinfo;
 }
 
+typedef enum {
+    ENC_AS_TOKEN,
+    ENC_AS_QUOTED_STRING,
+    ENC_AS_ENCODED_WORD,
+} EncodeAs;
+
 static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 {
 	gchar *param = key;
-	gchar *val = value;
+	gchar *val = value, *valpos;
 	FILE *fp = user_data;
+	EncodeAs encas = ENC_AS_TOKEN;
 
-	/* FIXME: better encoding of parameters */
 	fprintf(fp, "; %s=", param);
-	if (strchr(val, ' ') != NULL)
-		fprintf(fp, "\"%s\"", val);
-	else
+
+	for (valpos = val; *valpos != 0; valpos++) {
+		if (!IS_ASCII(*valpos)) {
+			encas = ENC_AS_ENCODED_WORD;
+			break;
+		}
+	    
+		/* CTLs */
+		if (((*valpos >= 0) && (*valpos < 037)) || (*valpos == 0177)) {
+			encas = ENC_AS_QUOTED_STRING;
+			continue;
+		}
+
+		/* tspecials + SPACE */
+		switch (*valpos) {
+		case ' ':
+		case '(': 
+		case ')':
+		case '<':
+		case '>':
+		case '@':
+        	case ',':
+		case ';':
+		case ':':
+		case '\\':
+		case '"':
+        	case '/':
+		case '[':
+		case ']':
+		case '?':
+		case '=':
+			encas = ENC_AS_QUOTED_STRING;
+			continue;
+		}
+	}
+
+	switch (encas) {
+	case ENC_AS_TOKEN:
 		fprintf(fp, "%s", val);
+		break;
+
+	case ENC_AS_QUOTED_STRING:
+		fprintf(fp, "\"%s\"", val);
+		break;
+
+	case ENC_AS_ENCODED_WORD:
+		/* FIXME: not yet handled */
+		fprintf(fp, "%s", val);
+		break;
+	}
 }
 
 void procmime_write_mime_header(MimeInfo *mimeinfo, FILE *fp)
