@@ -151,9 +151,12 @@ static MimeViewer *dillo_viewer_create(void)
 	return (MimeViewer *) viewer;
 }
 
+static gchar *content_types[] = 
+	{"text/html", NULL};
+
 static MimeViewerFactory dillo_viewer_factory =
 {
-	"text/html",
+	content_types,	
 	0,
 
 	dillo_viewer_create

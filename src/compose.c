@@ -2026,7 +2026,11 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 		else
 			tmp = g_strdup(compose->sig_str);
 
-		pos = gtkut_stext_find(text, 0, tmp, TRUE);
+		if (tmp[0] == '\0')
+			pos = -1;
+		else
+			pos = gtkut_stext_find(text, 0, tmp, TRUE);
+
 		if (pos != -1) {
 			len = get_mbs_len(tmp);
 			if (len >= 0) {
@@ -2053,6 +2057,8 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 
 	g_free(compose->sig_str);
 	compose->sig_str = compose_get_signature_str(compose);
+	if (!compose->sig_str)
+		compose->sig_str = g_strdup("");
 
 	gtk_stext_insert(text, NULL, NULL, NULL, compose->sig_str, -1);
 
@@ -2098,6 +2104,8 @@ static gchar *compose_get_signature_str(Compose *compose)
 		gchar *tmp;
 
 		tmp = file_read_to_str(sig_file);
+		if (!tmp)
+			return NULL;
 		sig_str = normalize_newlines(tmp);
 		g_free(tmp);
 	}

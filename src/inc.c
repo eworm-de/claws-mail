@@ -693,6 +693,8 @@ static IncState inc_pop3_session_do(IncSession *session)
 	debug_print("getting new messages of account %s...\n",
 		    pop3_session->ac_prefs->account_name);
 #endif
+		    
+	pop3_session->ac_prefs->last_pop_login_time = time(NULL);
 
 	buf = g_strdup_printf(_("%s: Retrieving new messages"),
 			      pop3_session->ac_prefs->recv_server);

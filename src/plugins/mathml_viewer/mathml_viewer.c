@@ -124,9 +124,12 @@ static MimeViewer *mathml_viewer_create(void)
 	return (MimeViewer *) viewer;
 }
 
+static gchar *content_types[] =
+	{"text/mathml", NULL};
+
 static MimeViewerFactory mathml_viewer_factory =
 {
-	"text/mathml",
+	content_types,
 	0,
 	
 	mathml_viewer_create,

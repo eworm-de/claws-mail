@@ -397,9 +397,12 @@ MimeViewer *image_viewer_create(void)
 	return (MimeViewer *) imageviewer;
 }
 
+static gchar *content_types[] =
+	{"image/*", NULL};
+
 MimeViewerFactory image_viewer_factory =
 {
-	"image/*",
+	content_types,
 	0,
 	
 	image_viewer_create,

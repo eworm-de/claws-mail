@@ -506,11 +506,18 @@ static MimeViewer *get_viewer_for_content_type(MimeView *mimeview, const gchar *
 	
 	for (cur = mimeviewer_factories; cur != NULL; cur = g_slist_next(cur)) {
 		MimeViewerFactory *curfactory = cur->data;
+		gint i = 0;
 
-		if(!fnmatch(curfactory->content_type, content_type, 0)) {
-			factory = curfactory;
-			break;
+		while (curfactory->content_types[i] != NULL) {
+			debug_print("%s\n", curfactory->content_types[i]);
+			if(!fnmatch(curfactory->content_types[i], content_type, 0)) {
+				factory = curfactory;
+				break;
+			}
+			i++;
 		}
+		if (factory != NULL)
+			break;
 	}
 	if (factory == NULL)
 		return NULL;
