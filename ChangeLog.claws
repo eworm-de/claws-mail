@@ -148,6 +148,7 @@
 		add Sergey's smtpcred.patch
 		adds separate username/password setting for SMTP Auth
 		needed by some servers
+		(closes feature request #471659)
 
 2001-10-13 [paul]	0.6.3claws13
 
