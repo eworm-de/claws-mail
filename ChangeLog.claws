@@ -1,3 +1,9 @@
+2004-08-21 [colin]	0.9.12cvs71
+
+	* src/summaryview.c
+		Fix bug 494 (Messages are always opened in summary 
+		view when right clicked.)
+
 2004-08-21 [colin]	0.9.12cvs70
 
 	* src/compose.c
