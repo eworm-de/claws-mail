@@ -12,6 +12,7 @@
 #   TRANSLATION		- translate .po files using msgfmt
 # FLAGS :
 #   DEBUG=1		- build debug-enabled version
+#   ALL=1		- dont check timestamp (build all targets)
 # EXAMPLE :
 #   nmake DEBUG=1 sylpheed
 
@@ -24,10 +25,16 @@ CFG=sylpheed - Win32 Debug
 MAK=sylpheed_debug.mak
 !ENDIF
 
+!IF "$(ALL)" == ""
+ALLFLAG=
+!ELSE
+ALLFLAG=/A
+!ENDIF
+
 ALL : VERSION BISON TRANSLATION SYLPHEED
 	
 SYLPHEED :
-	nmake -f $(MAK)
+	nmake -f $(MAK) $(ALLFLAG)
 
 CLEAN :
 	nmake -f $(MAK) clean

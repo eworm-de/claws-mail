@@ -1,3 +1,11 @@
+2002-05-23
+
+	* src/textview.c: textview_show_message(), textview_show_part():
+	  fixed a bug that GtkSText *text pointed the incorrect object.
+	  textview_add_part(): freeze GtkSText while adding RFC822 headers.
+	  textview_show_part(): fixed a bug that couldn't display single
+	  part MIME message as text.
+
 2002-05-22
 
 	* src/compose.c: compose_redirect_write_to_file(): correct the target
