@@ -65,6 +65,7 @@ struct _Children
 	GtkWidget	*scrolledwin;
 
 	gchar		*action;
+	ActionType	 action_type;
 	GSList		*list;
 	gint		 nb;
 	gint		 open_in;
@@ -78,7 +79,6 @@ struct _ChildInfo
 {
 	Children	*children;
 	gchar		*cmd;
-	guint		 type;
 	pid_t		 pid;
 	gint		 chld_in;
 	gint		 chld_out;
@@ -132,7 +132,6 @@ static gboolean parse_append_msgpart	(GString	*cmd,
 					 MimeInfo	*partinfo);
 
 static ChildInfo *fork_child		(gchar		*cmd,
-					 gint		 action_type,
 					 const gchar	*msg_str,
 					 Children	*children);
 
@@ -454,7 +453,7 @@ static void compose_actions_execute_cb(Compose *compose, guint action_nb,
 				       GtkWidget *widget)
 {
 	gchar *buf, *action;
-	guint action_type;
+	ActionType action_type;
 
 	g_return_if_fail(action_nb < g_slist_length(prefs_common.actions_list));
 
@@ -539,7 +538,7 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 	gint msg_list_len;
 	Children *children;
 	ChildInfo *child_info;
-	gint action_type;
+	ActionType action_type;
 	MsgInfo *msginfo;
 	gchar *cmd;
 	guint start = 0, end = 0;
@@ -628,8 +627,10 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 
 	children = g_new0(Children, 1);
 
-	children->msg_text = text;
-	children->msgfont = msgfont;
+	children->action      = g_strdup(action);
+	children->action_type = action_type;
+	children->msg_text    = text;
+	children->msgfont     = msgfont;
 
 	if ((action_type & (ACTION_USER_IN | ACTION_USER_HIDDEN_IN)) &&
 	    ((action_type & ACTION_SINGLE) == 0 || msg_list_len == 1))
@@ -652,8 +653,7 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 				is_ok  = FALSE; /* ERR: incorrect command */
 				break;
 			}
-			if ((child_info = fork_child(cmd, action_type, msg_str,
-						     children))) {
+			if ((child_info = fork_child(cmd, msg_str, children))) {
 				children_list = g_slist_append(children_list,
 							       child_info);
 			}
@@ -663,8 +663,7 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 		cmd = parse_action_cmd(action, NULL, msg_list, partinfo,
 				       user_str, user_hidden_str, sel_str);
 		if (cmd) {
-			if ((child_info = fork_child(cmd, action_type, msg_str,
-						     children))) {
+			if ((child_info = fork_child(cmd, msg_str, children))) {
 				children_list = g_slist_append(children_list,
 							       child_info);
 			}
@@ -680,14 +679,12 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 
 	if (!children_list) {
 		 /* If not waiting for children, return */
-		g_free(children);
+		free_children(children);
 	} else {
 		GSList *cur;
 
-		children->action  = g_strdup(action);
-		children->dialog  = NULL;
-		children->list    = children_list;
-		children->nb	  = g_slist_length(children_list);
+		children->list	      = children_list;
+		children->nb	      = g_slist_length(children_list);
 
 		for (cur = children_list; cur; cur = cur->next) {
 			child_info = (ChildInfo *) cur->data;
@@ -703,8 +700,8 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 	return is_ok;
 }
 
-static ChildInfo *fork_child(gchar *cmd, gint action_type,
-			     const gchar *msg_str, Children *children)
+static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
+			     Children *children)
 {
 	gint chld_in[2], chld_out[2], chld_err[2], chld_status[2];
 	gchar *cmdline[4];
@@ -712,7 +709,7 @@ static ChildInfo *fork_child(gchar *cmd, gint action_type,
 	ChildInfo *child_info;
 	gint sync;
 
-	sync = !(action_type & ACTION_ASYNC);
+	sync = !(children->action_type & ACTION_ASYNC);
 
 	chld_in[0] = chld_in[1] = chld_out[0] = chld_out[1] = chld_err[0]
 		= chld_err[1] = chld_status[0] = chld_status[1] = -1;
@@ -752,7 +749,7 @@ static ChildInfo *fork_child(gchar *cmd, gint action_type,
 				perror("setpgid");
 
 			if (sync) {
-				if (action_type &
+				if (children->action_type &
 				    (ACTION_PIPE_IN |
 				     ACTION_USER_IN |
 				     ACTION_USER_HIDDEN_IN)) {
@@ -819,7 +816,7 @@ static ChildInfo *fork_child(gchar *cmd, gint action_type,
 	}
 
 	close(chld_in[0]);
-	if (!(action_type &
+	if (!(children->action_type &
 	      (ACTION_PIPE_IN | ACTION_USER_IN | ACTION_USER_HIDDEN_IN)))
 		close(chld_in[1]);
 	close(chld_out[1]);
@@ -832,11 +829,10 @@ static ChildInfo *fork_child(gchar *cmd, gint action_type,
 
 	child_info->pid         = pid;
 	child_info->cmd         = g_strdup(cmd);
-	child_info->type        = action_type;
 	child_info->new_out     = FALSE;
 	child_info->output      = g_string_new(NULL);
 	child_info->chld_in     =
-		(action_type &
+		(children->action_type &
 		 (ACTION_PIPE_IN | ACTION_USER_IN | ACTION_USER_HIDDEN_IN))
 			? chld_in [1] : -1;
 	child_info->chld_out    = chld_out[0];
@@ -848,12 +844,14 @@ static ChildInfo *fork_child(gchar *cmd, gint action_type,
 	child_info->tag_err     = gdk_input_add(chld_err[0], GDK_INPUT_READ,
 						catch_output, child_info);
 
-	if (!(action_type & (ACTION_PIPE_IN | ACTION_PIPE_OUT | ACTION_INSERT)))
+	if (!(children->action_type &
+	      (ACTION_PIPE_IN | ACTION_PIPE_OUT | ACTION_INSERT)))
 		return child_info;
 
-	if ((action_type & ACTION_PIPE_IN) && msg_str) {
+	if ((children->action_type & ACTION_PIPE_IN) && msg_str) {
 		write(chld_in[1], msg_str, strlen(msg_str));
-		if (!(action_type & (ACTION_USER_IN | ACTION_USER_HIDDEN_IN)))
+		if (!(children->action_type &
+		      (ACTION_USER_IN | ACTION_USER_HIDDEN_IN)))
 			close(chld_in[1]);
 		child_info->chld_in = -1; /* No more input */
 	}
@@ -965,19 +963,17 @@ static void childinfo_close_pipes(ChildInfo *child_info)
 
 static void free_children(Children *children)
 {
-	GSList *cur;
 	ChildInfo *child_info;
 
 	debug_print("Freeing children data %p\n", children);
 
 	g_free(children->action);
-	for (cur = children->list; cur;) {
-		child_info = (ChildInfo *)cur->data;
+	while (children->list != NULL) {
+		child_info = (ChildInfo *)children->list->data;
 		g_free(child_info->cmd);
 		g_string_free(child_info->output, TRUE);
 		children->list = g_slist_remove(children->list, child_info);
 		g_free(child_info);
-		cur = children->list;
 	}
 	g_free(children);
 }
@@ -1094,7 +1090,7 @@ static void create_io_dialog(Children *children)
 		gtk_signal_connect(GTK_OBJECT(entry), "activate",
 				   GTK_SIGNAL_FUNC(send_input), children);
 		gtk_box_pack_start(GTK_BOX(input_hbox), entry, TRUE, TRUE, 0);
-		if (children->open_in & ACTION_USER_HIDDEN_IN)
+		if (children->action_type & ACTION_USER_HIDDEN_IN)
 			gtk_entry_set_visibility(GTK_ENTRY(entry), FALSE);
 		gtk_widget_show(entry);
 
@@ -1195,7 +1191,8 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 	gchar buf[BUFFSIZE];
 
 	debug_print("Catching grand child's output.\n");
-	if (child_info->type & (ACTION_PIPE_OUT | ACTION_INSERT)
+	if (child_info->children->action_type &
+	    (ACTION_PIPE_OUT | ACTION_INSERT)
 	    && source == child_info->chld_out) {
 		gboolean is_selection = FALSE;
 		GtkWidget *text = child_info->children->msg_text;

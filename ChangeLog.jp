@@ -1,3 +1,9 @@
+2003-05-26
+
+	* src/action.c: create_io_dialog() でユーザ文字列を隠していなかった
+	  バグを修正(Markus Amersdorfer さん thanks)。
+	  ChildInfo::type を削除し、 Children::action_type を追加。
+
 2003-05-23
 
 	* src/inc.c: inc_start(): 受信前に全てのパスワードを訊くようにした。
