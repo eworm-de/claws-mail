@@ -116,6 +116,8 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHACTION_DELETE, "delete"},
 	{MATCHACTION_MARK, "mark"},
 	{MATCHACTION_UNMARK, "unmark"},
+	{MATCHACTION_LOCK, "lock"},
+	{MATCHACTION_UNLOCK, "unlock"},
 	{MATCHACTION_MARK_AS_READ, "mark_as_read"},
 	{MATCHACTION_MARK_AS_UNREAD, "mark_as_unread"},
 	{MATCHACTION_FORWARD, "forward"},

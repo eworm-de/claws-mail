@@ -187,13 +187,20 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 	case MATCHACTION_UNMARK:
 		procmsg_msginfo_unset_flags(info, MSG_MARKED, 0);
 		return TRUE;
+
+	case MATCHACTION_LOCK:
+		procmsg_msginfo_set_flags(info, MSG_LOCKED, 0);
+		return TRUE;
+
+	case MATCHACTION_UNLOCK:
+		procmsg_msginfo_unset_flags(info, MSG_LOCKED, 0);	
+		return TRUE;
 		
 	case MATCHACTION_MARK_AS_READ:
 		procmsg_msginfo_unset_flags(info, MSG_UNREAD | MSG_NEW, 0);
 		return TRUE;
 
 	case MATCHACTION_MARK_AS_UNREAD:
-		debug_print("*** setting unread flags\n");
 		procmsg_msginfo_set_flags(info, MSG_UNREAD | MSG_NEW, 0);
 		return TRUE;
 	
@@ -311,8 +318,10 @@ static gboolean filtering_is_final_action(FilteringProp *filtering)
 	case MATCHACTION_EXECUTE:
 	case MATCHACTION_COPY:
 	case MATCHACTION_MARK:
-	case MATCHACTION_MARK_AS_READ:
 	case MATCHACTION_UNMARK:
+	case MATCHACTION_LOCK:
+	case MATCHACTION_UNLOCK:
+	case MATCHACTION_MARK_AS_READ:
 	case MATCHACTION_MARK_AS_UNREAD:
 	case MATCHACTION_FORWARD:
 	case MATCHACTION_FORWARD_AS_ATTACHMENT:
@@ -374,6 +383,8 @@ gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *act
 	case MATCHACTION_DELETE:
 	case MATCHACTION_MARK:
 	case MATCHACTION_UNMARK:
+	case MATCHACTION_LOCK:
+	case MATCHACTION_UNLOCK:
 	case MATCHACTION_MARK_AS_READ:
 	case MATCHACTION_MARK_AS_UNREAD:
 		g_snprintf(dest, destlen, "%s", command_str);

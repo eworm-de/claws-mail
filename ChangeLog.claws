@@ -1,3 +1,20 @@
+
+2003-07-12 [alfons]	0.9.3claws1
+
+	* src/matcher.[ch]
+	* src/matcher_parser_parse.y
+	* src/prefs_filtering.c
+	* src/filtering.c
+		add "Lock" filter action to lock messages;
+
+	* src/filtering.c	
+		remove debug_print()	
+	* src/prefs_filtering.c
+		re-organize matcher part 9: 
+		make action text entries easily extendible;
+		merge widget selection for ACTION_MARK, ACTION_UNMARK, ACTION_LOCK,
+		ACTION_UNLOCK, ACTION_MARK_AS_READ, ACTION_MARK_AS_UNREAD
+
 2003-07-12 [paul]
 
 	* tools/README
