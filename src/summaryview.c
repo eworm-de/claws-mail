@@ -3522,6 +3522,10 @@ static void summary_execute_move_func(GtkCTree *ctree, GtkCTreeNode *node,
 	msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
 
 	if (msginfo && MSG_IS_MOVE(msginfo->flags) && msginfo->to_folder) {
+		if (!prefs_common.immediate_exec &&
+		    msginfo->to_folder->op_count > 0)
+                	msginfo->to_folder->op_count--;
+
 		g_hash_table_insert(summaryview->folder_table,
 				    msginfo->to_folder, GINT_TO_POINTER(1));
 
@@ -3570,6 +3574,10 @@ static void summary_execute_copy_func(GtkCTree *ctree, GtkCTreeNode *node,
 	msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
 
 	if (msginfo && MSG_IS_COPY(msginfo->flags) && msginfo->to_folder) {
+		if (!prefs_common.immediate_exec &&
+		    msginfo->to_folder->op_count > 0)
+                	msginfo->to_folder->op_count--;
+
 		g_hash_table_insert(summaryview->folder_table,
 				    msginfo->to_folder, GINT_TO_POINTER(1));
 
