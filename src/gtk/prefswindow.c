@@ -218,7 +218,7 @@ void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data)
 	prefswindow->data = data;
 	prefswindow->prefs_pages = g_slist_copy(prefs_pages);
 
-	prefswindow->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	prefswindow->window = gtk_window_new(GTK_WINDOW_DIALOG);
 	gtk_window_set_title(GTK_WINDOW(prefswindow->window), title);
 	gtk_window_set_default_size(GTK_WINDOW(prefswindow->window), 600, 340);
 	gtk_window_position (GTK_WINDOW(prefswindow->window), GTK_WIN_POS_CENTER);

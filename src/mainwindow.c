@@ -89,6 +89,7 @@
 #include "localfolder.h"
 #include "filtering.h"
 #include "folderutils.h"
+#include "foldersort.h"
 
 #define AC_LABEL_WIDTH	240
 
@@ -150,6 +151,9 @@ static void update_folderview_cb (MainWindow	*mainwin,
 static void add_mailbox_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+static void foldersort_cb	 (MainWindow 	*mainwin,
+				  guint		 action,
+                        	  GtkWidget 	*widget);
 static void import_mbox_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -430,6 +434,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_File"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Add mailbox"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Add mailbox/MH..."),	NULL, add_mailbox_cb, 0, NULL},
+	{N_("/_File/Change folder order"),	NULL, foldersort_cb,  0, NULL},
 	{N_("/_File/_Import mbox file..."),	NULL, import_mbox_cb, 0, NULL},
 	{N_("/_File/_Export to mbox file..."),	NULL, export_mbox_cb, 0, NULL},
 	{N_("/_File/Empty _trash"),		"<shift>D", empty_trash_cb, 0, NULL},
@@ -1691,6 +1696,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/File/Add mailbox"                          , M_UNLOCKED},
 
                 {"/File/Add mailbox/MH..."   		      , M_UNLOCKED},
+		{"/File/Change folder order"	      	      , M_UNLOCKED},
 		{"/File/Export to mbox file..."               , M_UNLOCKED},
 		{"/File/Empty trash"                          , M_UNLOCKED},
 		{"/File/Work offline"	       		      , M_UNLOCKED},
@@ -2302,6 +2308,12 @@ static void update_folderview_cb(MainWindow *mainwin, guint action,
 {
 	summary_show(mainwin->summaryview, NULL);
 	folderview_check_new_all();
+}
+
+static void foldersort_cb(MainWindow *mainwin, guint action,
+                           GtkWidget *widget)
+{
+	foldersort_open();
 }
 
 static void import_mbox_cb(MainWindow *mainwin, guint action,

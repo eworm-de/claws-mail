@@ -165,7 +165,7 @@ static void subscribe_newsgroup_cb(FolderView *folderview, guint action, GtkWidg
 		folder_item_append(rootitem, newitem);
 
 		hookdata.folder = newitem->folder;
-		hookdata.update_flags = FOLDER_TREE_CHANGED | FOLDER_NEW_FOLDERITEM;
+		hookdata.update_flags = FOLDER_TREE_CHANGED | FOLDER_ADD_FOLDERITEM;
 		hookdata.item = newitem;
 		hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
 	}

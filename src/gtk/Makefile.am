@@ -8,6 +8,7 @@ libsylpheedgtk_la_SOURCES = \
 	colorsel.c \
 	description_window.c \
 	filesel.c \
+	foldersort.c \
 	gtkaspell.c \
 	gtksctree.c \
 	gtkshruler.c \
@@ -30,6 +31,7 @@ sylpheedgtkinclude_HEADERS = \
 	colorsel.h \
 	description_window.h \
 	filesel.h \
+	foldersort.h \
 	gtkaspell.h \
 	gtksctree.h \
 	gtkshruler.h \

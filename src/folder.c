@@ -166,6 +166,7 @@ void folder_init(Folder *folder, const gchar *name)
 
 	/* Init folder data */
 	folder->account = NULL;
+	folder->sort = 0;
 	folder->inbox = NULL;
 	folder->outbox = NULL;
 	folder->draft = NULL;
@@ -175,17 +176,10 @@ void folder_init(Folder *folder, const gchar *name)
 
 void folder_destroy(Folder *folder)
 {
-	FolderUpdateData hookdata;
-
 	g_return_if_fail(folder != NULL);
 	g_return_if_fail(folder->klass->destroy_folder != NULL);
 
-	folder_list = g_list_remove(folder_list, folder);
-
-	hookdata.folder = folder;
-	hookdata.update_flags = FOLDER_DESTROY_FOLDER;
-	hookdata.item = NULL;
-	hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
+	folder_remove(folder);
 
 	folder_tree_destroy(folder);
 
@@ -229,6 +223,8 @@ void folder_set_xml(Folder *folder, XMLTag *tag)
 		} else if (!strcmp(attr->name, "collapsed")) {
 			if (rootitem != NULL)
 				rootitem->collapsed = *attr->value == '1' ? TRUE : FALSE;
+		} else if (!strcmp(attr->name, "sort")) {
+			folder->sort = atoi(attr->value);
 		}
 	}
 }
@@ -248,6 +244,7 @@ XMLTag *folder_get_xml(Folder *folder)
 
 		xml_tag_add_attr(tag, "collapsed", g_strdup(rootitem->collapsed ? "1" : "0"));
 	}
+	xml_tag_add_attr(tag, "sort", g_strdup_printf("%d", folder->sort));
 
 	return tag;
 }
@@ -571,6 +568,17 @@ void folder_set_name(Folder *folder, const gchar *name)
 	}
 }
 
+void folder_set_sort(Folder *folder, guint sort)
+{
+	g_return_if_fail(folder != NULL);
+
+	if (folder->sort != sort) {
+		folder_remove(folder);
+		folder->sort = sort;
+		folder_add(folder);
+	}
+}
+
 gboolean folder_tree_destroy_func(GNode *node, gpointer data) {
 	FolderItem *item = (FolderItem *) node->data;
 
@@ -607,27 +615,28 @@ void folder_add(Folder *folder)
 
 	for (i = 0, cur = folder_list; cur != NULL; cur = cur->next, i++) {
 		cur_folder = FOLDER(cur->data);
-		if (FOLDER_TYPE(folder) == F_MH) {
-			if (FOLDER_TYPE(cur_folder) != F_MH) break;
-		} else if (FOLDER_TYPE(folder) == F_MBOX) {
-			if (FOLDER_TYPE(cur_folder) != F_MH &&
-			    FOLDER_TYPE(cur_folder) != F_MBOX) break;
-		} else if (FOLDER_TYPE(folder) == F_IMAP) {
-			if (FOLDER_TYPE(cur_folder) != F_MH &&
-			    FOLDER_TYPE(cur_folder) != F_MBOX &&
-			    FOLDER_TYPE(cur_folder) != F_IMAP) break;
-		} else if (FOLDER_TYPE(folder) == F_NEWS) {
-			if (FOLDER_TYPE(cur_folder) != F_MH &&
-			    FOLDER_TYPE(cur_folder) != F_MBOX &&
-			    FOLDER_TYPE(cur_folder) != F_IMAP &&
-			    FOLDER_TYPE(cur_folder) != F_NEWS) break;
-		}
+		if (cur_folder->sort < folder->sort)
+			break;
 	}
 
 	folder_list = g_list_insert(folder_list, folder, i);
 
 	hookdata.folder = folder;
-	hookdata.update_flags = FOLDER_NEW_FOLDER;
+	hookdata.update_flags = FOLDER_ADD_FOLDER;
+	hookdata.item = NULL;
+	hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
+}
+
+void folder_remove(Folder *folder)
+{
+	FolderUpdateData hookdata;
+
+	g_return_if_fail(folder != NULL);
+
+	folder_list = g_list_remove(folder_list, folder);
+
+	hookdata.folder = folder;
+	hookdata.update_flags = FOLDER_REMOVE_FOLDER;
 	hookdata.item = NULL;
 	hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
 }
@@ -774,7 +783,7 @@ FolderItem *folder_create_folder(FolderItem *parent, const gchar *name)
 		new_item->cache = msgcache_new();
 
 		hookdata.folder = new_item->folder;
-		hookdata.update_flags = FOLDER_TREE_CHANGED | FOLDER_NEW_FOLDERITEM;
+		hookdata.update_flags = FOLDER_TREE_CHANGED | FOLDER_ADD_FOLDERITEM;
 		hookdata.item = new_item;
 		hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
 	}
@@ -1157,23 +1166,23 @@ gchar *folder_item_get_name(FolderItem *item)
 
 	switch (item->stype) {
 	case F_INBOX:
-		name = g_strdup(!strcmp2(item->name, INBOX_DIR) ? _("Inbox") :
+		name = g_strdup(!g_strcasecmp(item->name, INBOX_DIR) ? _("Inbox") :
 				item->name);
 		break;
 	case F_OUTBOX:
-		name = g_strdup(!strcmp2(item->name, OUTBOX_DIR) ? _("Sent") :
+		name = g_strdup(!g_strcasecmp(item->name, OUTBOX_DIR) ? _("Sent") :
 				item->name);
 		break;
 	case F_QUEUE:
-		name = g_strdup(!strcmp2(item->name, QUEUE_DIR) ? _("Queue") :
+		name = g_strdup(!g_strcasecmp(item->name, QUEUE_DIR) ? _("Queue") :
 				item->name);
 		break;
 	case F_TRASH:
-		name = g_strdup(!strcmp2(item->name, TRASH_DIR) ? _("Trash") :
+		name = g_strdup(!g_strcasecmp(item->name, TRASH_DIR) ? _("Trash") :
 				item->name);
 		break;
 	case F_DRAFT:
-		name = g_strdup(!strcmp2(item->name, DRAFT_DIR) ? _("Drafts") :
+		name = g_strdup(!g_strcasecmp(item->name, DRAFT_DIR) ? _("Drafts") :
 				item->name);
 		break;
 	default:

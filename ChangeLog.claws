@@ -1,3 +1,22 @@
+2004-05-06 [christoph]	0.9.10claws55
+
+	* src/gtk/prefswindow.c
+		change window type to DIALOG
+
+	* src/folder.[ch]
+	* src/folderview.c
+	* src/news_gtk.c
+		o add folder_remove()
+		o change FolderUpdate hook flag names (NEW -> ADD, DESTROY -> REMOVE)
+		o add new "sort" field to Folder, no longer sort folders by type
+		  higher sort values will be first in the folder list, new folders get 0
+		  and will be added to the end
+
+	* src/mainwindow.c
+	* src/gtk/Makefile.am
+	* src/gtk/foldersort.(c|h|glade)			** NEW **
+		add dialog to allow users to change the folder order
+
 2004-05-04 [paul]	0.9.10claws54
 
 	* src/inc.c

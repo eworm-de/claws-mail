@@ -1891,7 +1891,7 @@ gboolean folderview_update_folder(gpointer source, gpointer userdata)
 	ctree = folderview->ctree;
 	g_return_val_if_fail(ctree != NULL, FALSE);
 
-	if (hookdata->update_flags & FOLDER_NEW_FOLDERITEM)
+	if (hookdata->update_flags & FOLDER_ADD_FOLDERITEM)
 		folderview_create_folder_node(folderview, hookdata->item);
 	else if (hookdata->update_flags & FOLDER_REMOVE_FOLDERITEM) {
 		GtkCTreeNode *node;
@@ -1899,7 +1899,7 @@ gboolean folderview_update_folder(gpointer source, gpointer userdata)
 		node = gtk_ctree_find_by_row_data(GTK_CTREE(ctree), NULL, hookdata->item);
 		if (node != NULL)
 			gtk_ctree_remove_node(GTK_CTREE(ctree), node);
-	} else if (hookdata->update_flags & (FOLDER_TREE_CHANGED | FOLDER_NEW_FOLDER | FOLDER_DESTROY_FOLDER))
+	} else if (hookdata->update_flags & (FOLDER_TREE_CHANGED | FOLDER_ADD_FOLDER | FOLDER_REMOVE_FOLDER))
 		folderview_set(folderview);
 
 	return FALSE;

@@ -100,10 +100,10 @@ typedef enum
 
 typedef enum
 {
-	FOLDER_NEW_FOLDER 		= 1 << 0,
-	FOLDER_DESTROY_FOLDER 		= 1 << 1,
+	FOLDER_ADD_FOLDER 		= 1 << 0,
+	FOLDER_REMOVE_FOLDER 		= 1 << 1,
 	FOLDER_TREE_CHANGED 		= 1 << 2,
-	FOLDER_NEW_FOLDERITEM 		= 1 << 3,
+	FOLDER_ADD_FOLDERITEM 		= 1 << 3,
 	FOLDER_REMOVE_FOLDERITEM 	= 1 << 4,
 } FolderUpdateFlags;
 
@@ -137,6 +137,7 @@ struct _Folder
 
 	gchar *name;
 	PrefsAccount *account;
+	guint sort;
 
 	FolderItem *inbox;
 	FolderItem *outbox;
@@ -667,9 +668,12 @@ void        folder_set_ui_func	(Folder		*folder,
 				 gpointer	 data);
 void        folder_set_name	(Folder		*folder,
 				 const gchar	*name);
+void	    folder_set_sort	(Folder		*folder,
+				 guint		 sort);
 void        folder_tree_destroy	(Folder		*folder);
 
 void   folder_add		(Folder		*folder);
+void   folder_remove		(Folder 	*folder);
 
 GList *folder_get_list		(void);
 gint   folder_read_list		(void);
