@@ -1096,7 +1096,7 @@ static gint inc_spool_account(PrefsAccount *account)
 		inbox = folder_get_default_inbox();
 
 	if (is_file_exist(account->local_mbox))
-		mbox = g_strconcat(account->local_mbox, NULL);
+		mbox = g_strdup(account->local_mbox);
 	else 
 		mbox = g_strconcat(account->local_mbox,
 			   	   G_DIR_SEPARATOR_S, logname, NULL);
