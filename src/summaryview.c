@@ -3256,8 +3256,6 @@ void summary_copy_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 	folder_item_update_thaw();
 	gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 
-	summary_step(summaryview, GTK_SCROLL_STEP_FORWARD);
-
 	if (prefs_common.immediate_exec)
 		summary_execute(summaryview);
 	else {

@@ -1,3 +1,10 @@
+2005-03-18 [colin]	1.0.3cvs2.6
+
+	* src/summaryview.c
+		Remove call to summary_step in summary_copy_selected_to
+		Can't see its purpose, and this causes bug when copying
+		a message if the next one is unread: it reads it.
+
 2005-03-18 [paul]	1.0.3cvs2.5
 
 	* src/foldersel.c
