@@ -6445,7 +6445,7 @@ static void compose_insert_file_cb(gpointer data, guint action,
 			ComposeInsertResult res;
 
 			res = compose_insert_file(compose, file);
-			shortfile = basename(filedup);
+			shortfile = g_basename(filedup);
 			if (res == COMPOSE_INSERT_READ_ERROR) {
 				alertpanel_error(_("File '%s' could not be read."), shortfile);
 			} else if (res == COMPOSE_INSERT_INVALID_CHARACTER) {
