@@ -5,6 +5,7 @@
 	* src/mainwindow.c
 	* src/prefs_common.[ch]
 		Added user definable notification on new mail arrival.
+		Removed unused variables in spell checker prefs code.
 
 2002-03-02 [melvin]	0.7.2claws25
 
