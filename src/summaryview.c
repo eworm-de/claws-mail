@@ -353,18 +353,22 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 
 static struct 
 {
-	GdkColor	color;
-	gchar	       *label;
+	GdkColor  	 color;
+	gchar	        *label;
+	
+	GdkPixmap	*xpm;
+	GdkBitmap	*xbm;
+	GtkPixmap	*pixmap;
 }
 label_colors[] = 
 {
-	{ { 0, 0xffff, (0x99 << 8), 0x0 },		N_("Orange")   },
-	{ { 0, 0xffff, 0, 0 },				N_("Red")      },
-	{ { 0, 0xffff, (0x66 << 8), 0xffff },		N_("Pink")     },
-	{ { 0, 0x0, (0xcc << 8), 0xffff },		N_("Sky blue") },
-	{ { 0, 0x0, 0x0, 0xffff },			N_("Blue")     },
-	{ { 0, 0x0, 0x99 << 8, 0x0 },			N_("Green")    },
-	{ { 0, 0x66 << 8, 0x33 << 8, 0x33 << 8 },	N_("Brown")    }
+	{ { 0, 0xffff, (0x99 << 8), 0x0 },		N_("Orange"),   NULL, NULL, NULL },
+	{ { 0, 0xffff, 0, 0 },				N_("Red"),      NULL, NULL, NULL },
+	{ { 0, 0xffff, (0x66 << 8), 0xffff },		N_("Pink"),     NULL, NULL, NULL },
+	{ { 0, 0x0, (0xcc << 8), 0xffff },		N_("Sky blue"), NULL, NULL, NULL },
+	{ { 0, 0x0, 0x0, 0xffff },			N_("Blue"),     NULL, NULL, NULL },
+	{ { 0, 0x0, 0x99 << 8, 0x0 },			N_("Green"),    NULL, NULL, NULL },
+	{ { 0, 0x66 << 8, 0x33 << 8, 0x33 << 8 },	N_("Brown"),    NULL, NULL, NULL }
 };
 
 #define LABEL_COLORS_ELEMS (sizeof label_colors / sizeof label_colors[0])
@@ -436,6 +440,61 @@ void summary_set_label(SummaryView *summaryview, guint labelcolor, GtkWidget *wi
 		summary_set_label_color(ctree, GTK_CTREE_NODE(cur->data), labelcolor);
 }
 
+/* summary_create_label_pixmaps() - creates label pixmaps. perhaps a little 
+ * bit contrived. */
+static gboolean summary_create_label_pixmaps(SummaryView *summaryview)
+{
+	const char *FMT = "+      c #%2.2X%2.2X%2.2X";
+	char buf[40];
+	char * dummy_xpm[] = {
+		"16 16 3 1",
+		"       c None",
+		".      c #000000",
+		"+      c #000000",
+		"................",
+		".++++++++++++++.",
+		".++++++++++++++.",
+		".++++++++++++++.",
+		".++++++++++++++.",
+		".++++++++++++++.",
+		".++++++++++++++.",
+		".++++++++++++++.",
+		".++++++++++++++.",
+		".++++++++++++++.",
+		".++++++++++++++.",
+		".++++++++++++++.",
+		".++++++++++++++.",
+		".++++++++++++++.",
+		".++++++++++++++.",
+		"................"
+	};
+
+	gint n;
+
+	for (n = 0; n < LABEL_COLORS_ELEMS; n++) {
+		GdkBitmap *xpmmask;
+		GdkPixmap *xpm;
+		GtkPixmap *pixmap;
+
+		/* put correct color in xpm data */
+		sprintf(buf, FMT, label_colors[n].color.red >> 8,
+			label_colors[n].color.green >> 8, 
+			label_colors[n].color.blue >> 8);
+		g_print("%s\n", buf);			
+		dummy_xpm[3] = buf;				
+
+		/* create pixmaps */
+		xpm = gdk_pixmap_create_from_xpm_d(GTK_WIDGET(summaryview->scrolledwin)->window, &xpmmask, NULL, 
+						   (gchar **) &dummy_xpm);
+		pixmap = GTK_PIXMAP(gtk_pixmap_new(xpm, xpmmask)); 
+
+		/* store it somewhere */
+		label_colors[n].xpm = xpm;
+		label_colors[n].xbm = xpmmask;
+		label_colors[n].pixmap = pixmap;
+	}
+}
+
 static void summary_create_label_menu(SummaryView *summaryview)
 {
 	const gint LABEL_MENU_POS = 5;
@@ -443,6 +502,8 @@ static void summary_create_label_menu(SummaryView *summaryview)
 	GtkWidget *label_menu;
 	GtkWidget *item;
 	gint       i;
+
+	summary_create_label_pixmaps(summaryview);
 	
 	label_menu_item = gtk_menu_item_new_with_label(_("Label"));
 	gtk_menu_insert(GTK_MENU(summaryview->popupmenu), label_menu_item, LABEL_MENU_POS);
@@ -467,15 +528,40 @@ static void summary_create_label_menu(SummaryView *summaryview)
 	gtk_menu_append(GTK_MENU(label_menu), item);
 	gtk_widget_show(item);
 
+	/* create pixmap/label menu items */
 	for (i = 0; i < LABEL_COLORS_ELEMS; i++) {
-		item = gtk_menu_item_new_with_label(label_colors[i].label);
+		GtkWidget *label, *hbox, *align, *pixmap;
+		item = gtk_menu_item_new();
+		
+		label = gtk_label_new(label_colors[i].label);
+		gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
+		gtk_widget_show(label);
+		hbox = gtk_hbox_new(FALSE, 0);
+		gtk_widget_show(hbox);
+		gtk_container_add(GTK_CONTAINER(item), hbox);
+
+		align = gtk_alignment_new(0.5, 0.5, 0.0, 0.0);
+		gtk_widget_show(align);
+		gtk_container_set_border_width (GTK_CONTAINER(align), 1);
+
+		pixmap = GTK_WIDGET(label_colors[i].pixmap);
+		
+		gtk_container_add (GTK_CONTAINER (align), pixmap);
+                gtk_widget_set_usize (align, 16, 16);
+		gtk_widget_show(pixmap);
+
+		gtk_box_pack_start(GTK_BOX (hbox), align, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 4);
+
 		gtk_menu_append(GTK_MENU(label_menu), item);
 		gtk_signal_connect(GTK_OBJECT(item), "activate", 
 				   GTK_SIGNAL_FUNC(label_menu_item_activate_cb),
 				   GUINT_TO_POINTER(i + 1));
 		gtk_object_set_data(GTK_OBJECT(item), "view", summaryview);
 		gtk_widget_show(item);
+
 	}
+	
 	gtk_widget_show(label_menu);
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(label_menu_item), label_menu);
 	summaryview->label_menu = label_menu;	
@@ -676,7 +762,7 @@ SummaryView *summary_create(void)
 	summaryview->sort_mode = SORT_BY_NONE;
 	summaryview->sort_type = GTK_SORT_ASCENDING;
 
-	summary_create_label_menu(summaryview);
+//	summary_create_label_menu(summaryview);
 
 	summary_change_display_item(summaryview);
 
@@ -727,6 +813,8 @@ void summary_init(SummaryView *summaryview)
 
 	summary_clear_list(summaryview);
 	summary_set_menu_sensitive(summaryview);
+	summary_create_label_menu(summaryview);
+
 }
 
 GtkCTreeNode * summary_find_next_important_score(SummaryView *summaryview,
