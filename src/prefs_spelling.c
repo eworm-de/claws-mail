@@ -25,6 +25,8 @@
 #  include "config.h"
 #endif
 
+#if USE_ASPELL
+
 #include "defs.h"
 
 #include <stdio.h>
@@ -390,3 +392,5 @@ void prefs_spelling_done(void)
 	prefs_gtk_unregister_page((PrefsPage *) prefs_spelling);
 	g_free(prefs_spelling);
 }
+
+#endif /* USE_ASPELL */

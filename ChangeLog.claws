@@ -1,3 +1,8 @@
+2003-08-09 [alfons]	0.9.4claws15
+
+	* src/prefs_spelling.c
+		no spell checking UI if not requested
+
 2003-08-09 [alfons]	0.9.4claws14
 
 	* src/gtk/prefswindow.c
