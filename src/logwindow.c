@@ -213,7 +213,7 @@ void log_window_clear(GtkWidget *text)
 		/* erase the text */
 		gtk_text_set_point (GTK_TEXT (text), 0);
 		if (!gtk_text_forward_delete (GTK_TEXT (text), point + 1))
-		        debug_print (_("Error clearing log\n"));
+		        debug_print("Error clearing log\n");
 		gtk_text_thaw (GTK_TEXT (text));
 		gtk_text_set_point (GTK_TEXT (text),
 				    gtk_text_get_length (GTK_TEXT (text)));

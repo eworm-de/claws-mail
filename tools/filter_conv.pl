@@ -25,7 +25,6 @@ chdir($ENV{ HOME } . "/.sylpheed") or die("You don't appear to have Sylpheed ins
 ###############################################################################
 
 my $normal_headers = qr/^(?:Subject|From|To|Cc)$/;
-my $extra_headers = qr/^(?:Reply-To|Sender|List-Id|X-ML-Name|X-List|X-Sequence|X-Mailer)$/;
 
 my @new_filters = ("[global]\n");
 
@@ -119,7 +118,7 @@ open(FILTERRC, "<filterrc") or die("Can't find your old filter rules ('filterrc'
       if ($header_one =~ m/$normal_headers/) {
         $new_filter .= $predicate_one . lc($header_one) . qq( $match_type_one "$value_one");
       }
-      elsif ($header_one =~ m/$extra_headers/) {
+      else {
         $new_filter .= $predicate_one . qq(header "$header_one" $match_type_one "$value_one");
       }
 
@@ -127,7 +126,7 @@ open(FILTERRC, "<filterrc") or die("Can't find your old filter rules ('filterrc'
         if ($header_two =~ m/$normal_headers/) {
           $new_filter .= qq( $op ) . $predicate_two . lc($header_two) . qq( $match_type_two "$value_two");
         }
-        elsif ($header_two =~ m/$extra_headers/) {
+        else {
           $new_filter .= qq( $op ) . $predicate_two . qq(header "$header_two" $match_type_two "$value_two");
         }
       }
