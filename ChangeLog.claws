@@ -1,3 +1,10 @@
+2001-09-25 [melvin]
+
+	* 0.6.2claws5
+
+	* src/gtkspell.c
+		fixed bug for "US-ASCII" introduced by the encoding code
+
 2001-09-25 [paul]
 
 	* 0.6.2claws4
