@@ -1,13 +1,13 @@
 # Spanish translation of Sylpheed Claws.
 # Copyright (C) 2000 Free Software Foundation, Inc.
-# Ricardo Mones Lastra <mones@aic.uniovi.es>, 2000-2004.
+# Ricardo Mones Lastra <mones@aic.uniovi.es>, 2000-2005.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed-claws\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-12-05 11:16+0100\n"
-"PO-Revision-Date: 2004-12-05 11:16+0100\n"
+"POT-Creation-Date: 2005-01-16 14:09+0100\n"
+"PO-Revision-Date: 2005-01-16 19:56+0100\n"
 "Last-Translator: Ricardo Mones Lastra <mones@aic.uniovi.es>\n"
 "Language-Team: Ricardo Mones Lastra <mones@aic.uniovi.es>\n"
 "MIME-Version: 1.0\n"
@@ -35,7 +35,7 @@ msgstr ""
 "en la columna `G' para habilitar la descarga mediante `Recibir todo'."
 
 #: src/account.c:599 src/addressadd.c:182 src/addressbook.c:675
-#: src/compose.c:4376 src/compose.c:4546 src/editaddress.c:774
+#: src/compose.c:4388 src/compose.c:4558 src/editaddress.c:774
 #: src/editaddress.c:823 src/editbook.c:174 src/editgroup.c:257
 #: src/editjpilot.c:295 src/editldap.c:400 src/editvcard.c:210
 #: src/importmutt.c:261 src/importpine.c:261 src/mimeview.c:198
@@ -55,7 +55,7 @@ msgstr "Servidor"
 #: src/editaddress.c:856 src/prefs_actions.c:221 src/prefs_customheader.c:234
 #: src/prefs_display_header.c:275 src/prefs_display_header.c:330
 #: src/prefs_filtering_action.c:449 src/prefs_filtering.c:280
-#: src/prefs_matcher.c:559 src/prefs_template.c:216 src/prefs_toolbar.c:769
+#: src/prefs_matcher.c:560 src/prefs_template.c:216 src/prefs_toolbar.c:769
 msgid "Add"
 msgstr "Añadir"
 
@@ -73,14 +73,14 @@ msgstr " Clonar "
 
 #: src/account.c:654 src/prefs_actions.c:284 src/prefs_customheader.c:289
 #: src/prefs_display_header.c:294 src/prefs_filtering_action.c:503
-#: src/prefs_filtering.c:342 src/prefs_matcher.c:641
+#: src/prefs_filtering.c:342 src/prefs_matcher.c:642
 #: src/prefs_summary_column.c:289 src/prefs_toolbar.c:830
 msgid "Down"
 msgstr "Abajo"
 
 #: src/account.c:660 src/prefs_actions.c:278 src/prefs_customheader.c:283
 #: src/prefs_display_header.c:288 src/prefs_filtering_action.c:497
-#: src/prefs_filtering.c:336 src/prefs_matcher.c:635
+#: src/prefs_filtering.c:336 src/prefs_matcher.c:636
 #: src/prefs_summary_column.c:285 src/prefs_toolbar.c:826
 msgid "Up"
 msgstr "Arriba"
@@ -89,10 +89,10 @@ msgstr "Arriba"
 msgid " Set as default account "
 msgstr " Establecer como cuenta por omisión "
 
-#: src/account.c:680 src/action.c:1212 src/addressbook.c:1068
+#: src/account.c:680 src/action.c:1224 src/addressbook.c:1068
 #: src/addressbook.c:3231 src/addressbook.c:3236 src/addressbook.c:3275
 #: src/browseldap.c:307 src/crash.c:242 src/exphtmldlg.c:196
-#: src/expldifdlg.c:203 src/gtk/pluginwindow.c:259 src/inc.c:715
+#: src/expldifdlg.c:203 src/gtk/pluginwindow.c:262 src/inc.c:715
 #: src/message_search.c:135 src/summary_search.c:224
 msgid "Close"
 msgstr "Cerrar"
@@ -115,17 +115,17 @@ msgid "Do you really want to delete this account?"
 msgstr "¿Realmente quiere borrar esta cuenta?"
 
 #: src/account.c:901 src/addressbook.c:1091 src/addressbook.c:2359
-#: src/addressbook.c:2387 src/compose.c:2289 src/compose.c:3103
-#: src/compose.c:3433 src/compose.c:5725 src/compose.c:6044
+#: src/addressbook.c:2387 src/compose.c:2289 src/compose.c:3111
+#: src/compose.c:3441 src/compose.c:5737 src/compose.c:6056
 #: src/exphtmldlg.c:185 src/expldifdlg.c:192 src/expldifdlg.c:250
-#: src/folderview.c:1702 src/imap_gtk.c:253 src/imap_gtk.c:300
-#: src/imap_gtk.c:363 src/inc.c:182 src/inc.c:287 src/inc.c:313
+#: src/folderview.c:1702 src/imap_gtk.c:266 src/imap_gtk.c:313
+#: src/imap_gtk.c:376 src/inc.c:182 src/inc.c:287 src/inc.c:313
 #: src/mainwindow.c:1591 src/message_search.c:197 src/mh_gtk.c:170
-#: src/mh_gtk.c:311 src/news_gtk.c:204 src/news_gtk.c:242 src/news_gtk.c:297
+#: src/mh_gtk.c:311 src/news_gtk.c:206 src/news_gtk.c:255 src/news_gtk.c:310
 #: src/prefs_actions.c:525 src/prefs_customheader.c:547
 #: src/prefs_filtering.c:853 src/prefs_filtering.c:1001
-#: src/prefs_matcher.c:1680 src/prefs_template.c:544 src/prefs_themes.c:426
-#: src/prefs_themes.c:475 src/prefs_themes.c:482 src/ssl_manager.c:271
+#: src/prefs_matcher.c:1682 src/prefs_template.c:544 src/prefs_themes.c:422
+#: src/prefs_themes.c:471 src/prefs_themes.c:478 src/ssl_manager.c:271
 #: src/summary_search.c:328 src/summaryview.c:814 src/summaryview.c:1261
 #: src/summaryview.c:1312 src/summaryview.c:1355 src/summaryview.c:1379
 #: src/summaryview.c:1411 src/summaryview.c:1436 src/summaryview.c:1461
@@ -134,26 +134,26 @@ msgstr "¿Realmente quiere borrar esta cuenta?"
 msgid "Yes"
 msgstr "Si"
 
-#: src/account.c:901 src/compose.c:3433 src/compose.c:5725 src/imap_gtk.c:253
-#: src/imap_gtk.c:300 src/mh_gtk.c:170 src/mh_gtk.c:311 src/news_gtk.c:204
-#: src/news_gtk.c:242 src/ssl_manager.c:271
+#: src/account.c:901 src/compose.c:3441 src/compose.c:5737 src/imap_gtk.c:266
+#: src/imap_gtk.c:313 src/mh_gtk.c:170 src/mh_gtk.c:311 src/news_gtk.c:206
+#: src/news_gtk.c:255 src/ssl_manager.c:271
 msgid "+No"
 msgstr "+No"
 
-#: src/action.c:346
+#: src/action.c:345
 #, c-format
 msgid "Could not get message file %d"
 msgstr "No se pudo obtener el fichero del mensaje %d"
 
-#: src/action.c:365
+#: src/action.c:376
 msgid "Could not get message part."
 msgstr "No se pudo obtener la parte del mensaje."
 
-#: src/action.c:382
+#: src/action.c:393
 msgid "Can't get part of multipart message"
 msgstr "No se puede obtener la parte del mensaje multipartes"
 
-#: src/action.c:495
+#: src/action.c:506
 #, c-format
 msgid ""
 "The selected action cannot be used in the compose window\n"
@@ -162,7 +162,7 @@ msgstr ""
 "La acción seleccionada no se puede usar en la ventana de composición\n"
 "porque contiene %%f, %%F, %%as o %%p."
 
-#: src/action.c:783
+#: src/action.c:794
 #, c-format
 msgid ""
 "Command could not be started. Pipe creation failed.\n"
@@ -171,7 +171,7 @@ msgstr ""
 "No se pudo iniciar la orden. Falló la creación de la tubería.\n"
 "%s"
 
-#: src/action.c:868
+#: src/action.c:880
 #, c-format
 msgid ""
 "Could not fork to execute the following command:\n"
@@ -182,33 +182,33 @@ msgstr ""
 "%s\n"
 "%s"
 
-#: src/action.c:1095
+#: src/action.c:1107
 #, c-format
 msgid "--- Running: %s\n"
 msgstr "--- Ejecutando: %s\n"
 
-#: src/action.c:1099
+#: src/action.c:1111
 #, c-format
 msgid "--- Ended: %s\n"
 msgstr "--- Finalizado: %s\n"
 
-#: src/action.c:1135
+#: src/action.c:1147
 msgid "Action's input/output"
 msgstr "Entrada/salida de la acción"
 
-#: src/action.c:1181
+#: src/action.c:1193
 msgid " Send "
 msgstr " Enviar "
 
-#: src/action.c:1201
+#: src/action.c:1213
 msgid "Completed %v/%u"
 msgstr "Completado %v/%u"
 
-#: src/action.c:1211
+#: src/action.c:1223
 msgid "Abort"
 msgstr "Abortar"
 
-#: src/action.c:1360
+#: src/action.c:1372
 #, c-format
 msgid ""
 "Enter the argument for the following action:\n"
@@ -219,11 +219,11 @@ msgstr ""
 "(`%%h' será sustituido con el argumento)\n"
 "  %s"
 
-#: src/action.c:1365
+#: src/action.c:1377
 msgid "Action's hidden user argument"
 msgstr "Argumento de usuario oculto para la acción"
 
-#: src/action.c:1369
+#: src/action.c:1381
 #, c-format
 msgid ""
 "Enter the argument for the following action:\n"
@@ -234,7 +234,7 @@ msgstr ""
 "(`%%u' será sustituido con el argumento)\n"
 "  %s"
 
-#: src/action.c:1374
+#: src/action.c:1386
 msgid "Action's user argument"
 msgstr "Argumento de usuario para la acción"
 
@@ -257,42 +257,42 @@ msgid "Select Address Book Folder"
 msgstr "Seleccionar carpeta de la agenda"
 
 #: src/addressadd.c:240 src/addrgather.c:506 src/alertpanel.c:203
-#: src/alertpanel.c:339 src/compose.c:5547 src/editaddress.c:513
+#: src/alertpanel.c:339 src/compose.c:5559 src/editaddress.c:513
 #: src/editbook.c:204 src/editgroup.c:369 src/editjpilot.c:344
 #: src/editldap_basedn.c:212 src/editldap.c:342 src/editvcard.c:239
 #: src/export.c:188 src/foldersel.c:199 src/grouplistdialog.c:244
 #: src/gtk/about.c:224 src/gtk/description_window.c:120
 #: src/gtk/gtkaspell.c:1425 src/gtk/gtkaspell.c:2378 src/gtk/inputdialog.c:202
-#: src/gtk/prefswindow.c:346 src/gtk/sslcertwindow.c:230 src/import.c:190
-#: src/importmutt.c:287 src/importpine.c:287 src/main.c:719
-#: src/mainwindow.c:2367 src/messageview.c:974 src/mimeview.c:1019
+#: src/gtk/prefswindow.c:356 src/gtk/sslcertwindow.c:230 src/import.c:190
+#: src/importmutt.c:287 src/importpine.c:287 src/main.c:721
+#: src/mainwindow.c:2373 src/messageview.c:974 src/mimeview.c:1019
 #: src/plugins/pgpmime/passphrase.c:131 src/plugins/trayicon/trayicon.c:334
 #: src/prefs_actions.c:161 src/prefs_common.c:2406 src/prefs_common.c:2505
 #: src/prefs_customheader.c:157 src/prefs_display_header.c:194
 #: src/prefs_filtering_action.c:278 src/prefs_filtering.c:199
-#: src/prefs_gtk.c:451 src/prefs_matcher.c:372 src/prefs_summary_column.c:313
+#: src/prefs_gtk.c:451 src/prefs_matcher.c:373 src/prefs_summary_column.c:313
 #: src/prefs_template.c:263 src/ssl_manager.c:98
 msgid "OK"
 msgstr "Aceptar"
 
 #: src/addressadd.c:241 src/addressbook.c:2375 src/addrgather.c:507
-#: src/compose.c:5548 src/compose.c:6277 src/compose.c:6315
+#: src/compose.c:5560 src/compose.c:6289 src/compose.c:6327
 #: src/editaddress.c:514 src/editbook.c:205 src/editgroup.c:370
 #: src/editjpilot.c:345 src/editldap_basedn.c:213 src/editldap.c:343
 #: src/editvcard.c:240 src/exphtmldlg.c:725 src/expldifdlg.c:746
 #: src/export.c:189 src/foldersel.c:200 src/grouplistdialog.c:245
 #: src/gtk/foldersort.c:176 src/gtk/gtkaspell.c:1434 src/gtk/inputdialog.c:203
-#: src/gtk/prefswindow.c:347 src/gtk/progressdialog.c:76 src/import.c:191
+#: src/gtk/prefswindow.c:357 src/gtk/progressdialog.c:76 src/import.c:191
 #: src/importldif.c:1034 src/importmutt.c:288 src/importpine.c:288
-#: src/main.c:719 src/mainwindow.c:2367 src/messageview.c:974
+#: src/main.c:721 src/mainwindow.c:2373 src/messageview.c:974
 #: src/mimeview.c:1020 src/plugins/pgpmime/passphrase.c:135
 #: src/plugins/pgpmime/select-keys.c:332 src/plugins/trayicon/trayicon.c:334
 #: src/prefs_actions.c:162 src/prefs_common.c:2407 src/prefs_common.c:2506
 #: src/prefs_customheader.c:158 src/prefs_display_header.c:195
 #: src/prefs_filtering_action.c:279 src/prefs_filtering.c:200
-#: src/prefs_gtk.c:452 src/prefs_matcher.c:373 src/prefs_summary_column.c:314
-#: src/prefs_template.c:264 src/prefs_themes.c:426 src/prefs_themes.c:475
-#: src/prefs_themes.c:482 src/summaryview.c:814 src/summaryview.c:3315
+#: src/prefs_gtk.c:452 src/prefs_matcher.c:374 src/prefs_summary_column.c:314
+#: src/prefs_template.c:264 src/prefs_themes.c:422 src/prefs_themes.c:471
+#: src/prefs_themes.c:478 src/summaryview.c:814 src/summaryview.c:3315
 msgid "Cancel"
 msgstr "Cancelar"
 
@@ -440,9 +440,9 @@ msgstr "/_Borrar"
 
 #: src/addressbook.c:445 src/addressbook.c:449 src/addressbook.c:459
 #: src/addressbook.c:463 src/addressbook.c:467 src/compose.c:520
-#: src/imap_gtk.c:56 src/imap_gtk.c:58 src/imap_gtk.c:61 src/imap_gtk.c:63
-#: src/mh_gtk.c:54 src/mh_gtk.c:57 src/mh_gtk.c:59 src/news_gtk.c:51
-#: src/news_gtk.c:53 src/news_gtk.c:55 src/news_gtk.c:57
+#: src/imap_gtk.c:57 src/imap_gtk.c:59 src/imap_gtk.c:62 src/imap_gtk.c:65
+#: src/mh_gtk.c:54 src/mh_gtk.c:57 src/mh_gtk.c:59 src/news_gtk.c:52
+#: src/news_gtk.c:54 src/news_gtk.c:56 src/news_gtk.c:59
 #: src/plugins/trayicon/trayicon.c:88 src/plugins/trayicon/trayicon.c:91
 #: src/summaryview.c:397 src/summaryview.c:400 src/summaryview.c:405
 #: src/summaryview.c:419 src/summaryview.c:421 src/summaryview.c:442
@@ -486,8 +486,8 @@ msgid "/_Browse Entry"
 msgstr "/_Ver entrada"
 
 #: src/addressbook.c:484 src/crash.c:441 src/crash.c:460 src/importldif.c:118
-#: src/plugins/pgpmime/sgpgme.c:97 src/prefs_themes.c:627
-#: src/prefs_themes.c:659 src/prefs_themes.c:660
+#: src/plugins/pgpmime/sgpgme.c:97 src/prefs_themes.c:623
+#: src/prefs_themes.c:655 src/prefs_themes.c:656
 msgid "Unknown"
 msgstr "Desconocido"
 
@@ -589,7 +589,7 @@ msgstr "Nombre:"
 #: src/prefs_actions.c:234 src/prefs_display_header.c:281
 #: src/prefs_display_header.c:337 src/prefs_filtering_action.c:135
 #: src/prefs_filtering_action.c:462 src/prefs_filtering.c:293
-#: src/prefs_matcher.c:572 src/prefs_template.c:229 src/prefs_toolbar.c:781
+#: src/prefs_matcher.c:573 src/prefs_template.c:229 src/prefs_toolbar.c:781
 #: src/ssl_manager.c:92 src/toolbar.c:383 src/toolbar.c:476
 msgid "Delete"
 msgstr "Borrar"
@@ -598,13 +598,13 @@ msgstr "Borrar"
 msgid "Lookup"
 msgstr "Buscar"
 
-#: src/addressbook.c:847 src/compose.c:1472 src/compose.c:3209
-#: src/compose.c:4190 src/compose.c:4865 src/headerview.c:53
+#: src/addressbook.c:847 src/compose.c:1472 src/compose.c:3217
+#: src/compose.c:4202 src/compose.c:4877 src/headerview.c:53
 #: src/prefs_template.c:173 src/summary_search.c:176
 msgid "To:"
 msgstr "Para:"
 
-#: src/addressbook.c:851 src/compose.c:1456 src/compose.c:3208
+#: src/addressbook.c:851 src/compose.c:1456 src/compose.c:3216
 #: src/prefs_template.c:175
 msgid "Cc:"
 msgstr "Cc:"
@@ -626,14 +626,14 @@ msgid "Really delete the address(es)?"
 msgstr "¿Borrar realmente la(s) dirección(es)?"
 
 #: src/addressbook.c:1091 src/addressbook.c:2359 src/addressbook.c:2387
-#: src/compose.c:2289 src/compose.c:3103 src/compose.c:6044
+#: src/compose.c:2289 src/compose.c:3111 src/compose.c:6056
 #: src/exphtmldlg.c:185 src/expldifdlg.c:192 src/expldifdlg.c:250
-#: src/folderview.c:1702 src/imap_gtk.c:363 src/inc.c:182 src/inc.c:287
+#: src/folderview.c:1702 src/imap_gtk.c:376 src/inc.c:182 src/inc.c:287
 #: src/inc.c:313 src/mainwindow.c:1591 src/message_search.c:197
-#: src/news_gtk.c:297 src/prefs_actions.c:525 src/prefs_customheader.c:547
+#: src/news_gtk.c:310 src/prefs_actions.c:525 src/prefs_customheader.c:547
 #: src/prefs_filtering.c:853 src/prefs_filtering.c:1001
-#: src/prefs_matcher.c:1680 src/prefs_template.c:544 src/prefs_themes.c:426
-#: src/prefs_themes.c:475 src/prefs_themes.c:482 src/summary_search.c:328
+#: src/prefs_matcher.c:1682 src/prefs_template.c:544 src/prefs_themes.c:422
+#: src/prefs_themes.c:471 src/prefs_themes.c:478 src/summary_search.c:328
 #: src/summaryview.c:814 src/summaryview.c:1261 src/summaryview.c:1312
 #: src/summaryview.c:1355 src/summaryview.c:1379 src/summaryview.c:1411
 #: src/summaryview.c:1436 src/summaryview.c:1461 src/summaryview.c:1486
@@ -767,7 +767,7 @@ msgid "Group"
 msgstr "Grupo"
 
 #: src/addressbook.c:4003 src/exporthtml.c:913 src/folderview.c:326
-#: src/prefs_account.c:2217
+#: src/prefs_account.c:2218
 msgid "Folder"
 msgstr "Carpeta"
 
@@ -876,11 +876,11 @@ msgstr "Dirección común"
 msgid "Personal address"
 msgstr "Dirección personal"
 
-#: src/alertpanel.c:155 src/compose.c:5725
+#: src/alertpanel.c:155 src/compose.c:5737
 msgid "Notice"
 msgstr "Notificación"
 
-#: src/alertpanel.c:181 src/alertpanel.c:203 src/compose.c:3433 src/inc.c:601
+#: src/alertpanel.c:181 src/alertpanel.c:203 src/compose.c:3441 src/inc.c:601
 #: src/plugins/pgpmime/sgpgme.c:109 src/plugins/pgpmime/sgpgme.c:122
 #: src/plugins/pgpmime/sgpgme.c:148
 msgid "Error"
@@ -940,28 +940,28 @@ msgstr "Ha habido un error enviando la orden\n"
 msgid "Failed to allocate memory for Plugin"
 msgstr "Falló la petición de memoria para el Módulo"
 
-#: src/common/smtp.c:165
+#: src/common/smtp.c:170
 msgid "SMTP AUTH not available\n"
 msgstr "SMTP AUTH no esta disponible\n"
 
-#: src/common/smtp.c:434 src/common/smtp.c:483
+#: src/common/smtp.c:493 src/common/smtp.c:543
 msgid "bad SMTP response\n"
 msgstr "respuesta SMTP incorrecta\n"
 
-#: src/common/smtp.c:454 src/common/smtp.c:472 src/common/smtp.c:582
+#: src/common/smtp.c:514 src/common/smtp.c:532 src/common/smtp.c:643
 msgid "error occurred on SMTP session\n"
 msgstr "hubo un error en la sesión SMTP\n"
 
-#: src/common/smtp.c:463 src/pop.c:817
+#: src/common/smtp.c:523 src/pop.c:828
 msgid "error occurred on authentication\n"
 msgstr "hubo un error en la autentificación\n"
 
-#: src/common/smtp.c:517
+#: src/common/smtp.c:577
 #, c-format
 msgid "Message is too big (Maximum size is %s)\n"
 msgstr "El mensaje es demasiado grande (Máximo %s)\n"
 
-#: src/common/smtp.c:542 src/pop.c:810
+#: src/common/smtp.c:602 src/pop.c:821
 msgid "can't start TLS session\n"
 msgstr "no se puede iniciar la sesión TLS\n"
 
@@ -1331,7 +1331,7 @@ msgstr "/_Herramientas/Accio_nes"
 msgid "Reply-To:"
 msgstr "Responder a:"
 
-#: src/compose.c:1465 src/compose.c:4187 src/compose.c:4867
+#: src/compose.c:1465 src/compose.c:4199 src/compose.c:4879
 #: src/headerview.c:54
 msgid "Newsgroups:"
 msgstr "Grupos de noticias:"
@@ -1375,21 +1375,21 @@ msgstr ""
 "No se puede reeditar un mensaje encriptado. \n"
 "¿Descartar la parte encriptada?"
 
-#: src/compose.c:2933
+#: src/compose.c:2941
 msgid " [Edited]"
 msgstr " [Editado]"
 
-#: src/compose.c:2935
+#: src/compose.c:2943
 #, c-format
 msgid "%s - Compose message%s"
 msgstr "%s - Componer mensaje%s"
 
-#: src/compose.c:2938
+#: src/compose.c:2946
 #, c-format
 msgid "Compose message%s"
 msgstr "Componer mensaje%s"
 
-#: src/compose.c:2962
+#: src/compose.c:2970
 msgid ""
 "Account for sending mail is not specified.\n"
 "Please select a mail account before sending."
@@ -1397,24 +1397,24 @@ msgstr ""
 "No especificó ninguna cuenta para enviar.\n"
 "Seleccione alguna cuenta antes de enviar."
 
-#: src/compose.c:3093
+#: src/compose.c:3101
 msgid "Recipient is not specified."
 msgstr "No se especificó el destinatario."
 
-#: src/compose.c:3101 src/messageview.c:544 src/prefs_account.c:935
+#: src/compose.c:3109 src/messageview.c:544 src/prefs_account.c:935
 #: src/prefs_common.c:928 src/toolbar.c:375 src/toolbar.c:422
 msgid "Send"
 msgstr "Enviar"
 
-#: src/compose.c:3102
+#: src/compose.c:3110
 msgid "Subject is empty. Send it anyway?"
 msgstr "El asunto esta vacío. ¿Enviar de todas formas?"
 
-#: src/compose.c:3127
+#: src/compose.c:3135
 msgid "Could not queue message for sending"
 msgstr "No se pudo encolar el mensaje para enviar"
 
-#: src/compose.c:3140 src/compose.c:3169
+#: src/compose.c:3148 src/compose.c:3177
 msgid ""
 "The message was queued but could not be sent.\n"
 "Use \"Send queued messages\" from the main window to retry."
@@ -1422,7 +1422,7 @@ msgstr ""
 "El mensaje está en la cola pero no pudo ser enviado.\n"
 "Utilize \"Enviar mensaje(s) en cola\" en la ventana principal para enviarlo"
 
-#: src/compose.c:3429
+#: src/compose.c:3437
 #, c-format
 msgid ""
 "Can't convert the character encoding of the message from\n"
@@ -1433,61 +1433,61 @@ msgstr ""
 "de %s a %s.\n"
 "¿Enviarlo de todas formas?"
 
-#: src/compose.c:3605
+#: src/compose.c:3617
 msgid "No account for sending mails available!"
 msgstr "No hay ninguna cuenta disponible para enviar correos!"
 
-#: src/compose.c:3615
+#: src/compose.c:3627
 msgid "No account for posting news available!"
 msgstr "No hay ninguna cuenta disponible para enviar noticias!"
 
-#: src/compose.c:4270 src/headerview.c:52 src/summary_search.c:169
+#: src/compose.c:4282 src/headerview.c:52 src/summary_search.c:169
 msgid "From:"
 msgstr "Desde:"
 
-#: src/compose.c:4374 src/compose.c:4544 src/compose.c:5486
+#: src/compose.c:4386 src/compose.c:4556 src/compose.c:5498
 msgid "MIME type"
 msgstr "Tipo MIME"
 
-#: src/compose.c:4375 src/compose.c:4545 src/mimeview.c:197
+#: src/compose.c:4387 src/compose.c:4557 src/mimeview.c:197
 #: src/plugins/pgpmime/select-keys.c:299 src/prefs_summary_column.c:73
 #: src/summaryview.c:457
 msgid "Size"
 msgstr "Tamaño"
 
-#: src/compose.c:4439
+#: src/compose.c:4451
 msgid "Save Message to "
-msgstr "Salvar mensaje en "
+msgstr "Guardar mensaje en "
 
-#: src/compose.c:4459 src/prefs_filtering_action.c:420
+#: src/compose.c:4471 src/prefs_filtering_action.c:420
 msgid "Select ..."
 msgstr "Seleccionar ..."
 
-#: src/compose.c:4596 src/prefs_account.c:1526 src/prefs_customheader.c:188
+#: src/compose.c:4608 src/prefs_account.c:1526 src/prefs_customheader.c:188
 #: src/prefs_matcher.c:148
 msgid "Header"
 msgstr "Cabecera"
 
-#: src/compose.c:4598
+#: src/compose.c:4610
 msgid "Attachments"
 msgstr "Adjuntos"
 
-#: src/compose.c:4600
+#: src/compose.c:4612
 msgid "Others"
 msgstr "Otros"
 
-#: src/compose.c:4615 src/headerview.c:55 src/prefs_template.c:177
+#: src/compose.c:4627 src/headerview.c:55 src/prefs_template.c:177
 #: src/summary_search.c:183
 msgid "Subject:"
 msgstr "Asunto:"
 
-#: src/compose.c:4816 src/exphtmldlg.c:503 src/gtk/colorlabel.c:284
+#: src/compose.c:4828 src/exphtmldlg.c:503 src/gtk/colorlabel.c:283
 #: src/gtk/gtkaspell.c:1499 src/gtk/gtkaspell.c:2173 src/prefs_account.c:581
 #: src/summaryview.c:4116
 msgid "None"
 msgstr "Ninguno"
 
-#: src/compose.c:4825
+#: src/compose.c:4837
 #, c-format
 msgid ""
 "Spell checker could not be started.\n"
@@ -1496,31 +1496,31 @@ msgstr ""
 "No se pudo iniciar el corrector ortográfico.\n"
 "%s"
 
-#: src/compose.c:5381
+#: src/compose.c:5393
 msgid "Invalid MIME type."
 msgstr "Tipo MIME inválido."
 
-#: src/compose.c:5399
+#: src/compose.c:5411
 msgid "File doesn't exist or is empty."
 msgstr "El fichero no existe o está vacío."
 
-#: src/compose.c:5468
+#: src/compose.c:5480
 msgid "Properties"
 msgstr "Propiedades"
 
-#: src/compose.c:5513
+#: src/compose.c:5525
 msgid "Encoding"
 msgstr "Codificación"
 
-#: src/compose.c:5544
+#: src/compose.c:5556
 msgid "Path"
 msgstr "Ruta"
 
-#: src/compose.c:5545 src/prefs_toolbar.c:808
+#: src/compose.c:5557 src/prefs_toolbar.c:808
 msgid "File name"
 msgstr "Nombre de fichero"
 
-#: src/compose.c:5722
+#: src/compose.c:5734
 #, c-format
 msgid ""
 "The external editor is still working.\n"
@@ -1531,26 +1531,26 @@ msgstr ""
 "¿Desea terminar el proceso?\n"
 "Id. de proceso: %d"
 
-#: src/compose.c:6042 src/inc.c:180 src/inc.c:285 src/inc.c:311
+#: src/compose.c:6054 src/inc.c:180 src/inc.c:285 src/inc.c:311
 #: src/toolbar.c:1866
 msgid "Offline warning"
 msgstr "Notificación conexión"
 
-#: src/compose.c:6043 src/inc.c:181 src/inc.c:286 src/inc.c:312
+#: src/compose.c:6055 src/inc.c:181 src/inc.c:286 src/inc.c:312
 #: src/toolbar.c:1867
 msgid "You're working offline. Override?"
 msgstr "Está trabajando sin conexión ¿Ignorar?"
 
-#: src/compose.c:6193 src/compose.c:6214
+#: src/compose.c:6205 src/compose.c:6226
 msgid "Select file"
 msgstr "Seleccionar fichero"
 
-#: src/compose.c:6228
+#: src/compose.c:6240
 #, c-format
 msgid "File '%s' could not be read."
 msgstr "No se pudo leer el fichero '%s'."
 
-#: src/compose.c:6230
+#: src/compose.c:6242
 #, c-format
 msgid ""
 "File '%s' contained invalid characters\n"
@@ -1559,36 +1559,36 @@ msgstr ""
 "El fichero '%s' contenía caracteres inválidos para\n"
 "la codificación actual, la inserción puede ser incorrecta."
 
-#: src/compose.c:6275
+#: src/compose.c:6287
 msgid "Discard message"
 msgstr "Descartar mensaje"
 
-#: src/compose.c:6276
+#: src/compose.c:6288
 msgid "This message has been modified. discard it?"
 msgstr "Este mensaje se ha modificado. ¿Desea descartarlo?"
 
-#: src/compose.c:6277
+#: src/compose.c:6289
 msgid "Discard"
 msgstr "Descartar"
 
-#: src/compose.c:6277
+#: src/compose.c:6289
 msgid "to Draft"
 msgstr "a Borrador"
 
-#: src/compose.c:6312
+#: src/compose.c:6324
 #, c-format
 msgid "Do you want to apply the template `%s' ?"
 msgstr "¿Quiere aplicar la plantilla `%s'?"
 
-#: src/compose.c:6314
+#: src/compose.c:6326
 msgid "Apply template"
 msgstr "Aplicar plantilla"
 
-#: src/compose.c:6315
+#: src/compose.c:6327
 msgid "Replace"
 msgstr "Reemplazar"
 
-#: src/compose.c:6315 src/toolbar.c:426
+#: src/compose.c:6327 src/toolbar.c:426
 msgid "Insert"
 msgstr "Insertar"
 
@@ -1616,7 +1616,7 @@ msgstr "Traza de depuración"
 
 #: src/crash.c:247
 msgid "Save..."
-msgstr "Salvar..."
+msgstr "Guardar..."
 
 #: src/crash.c:252
 msgid "Create bug report"
@@ -1691,7 +1691,7 @@ msgid "Clear"
 msgstr "Limpiar"
 
 #: src/editaddress.c:775 src/editaddress.c:832 src/prefs_customheader.c:205
-#: src/prefs_matcher.c:457
+#: src/prefs_matcher.c:458
 msgid "Value"
 msgstr "Valor"
 
@@ -1724,7 +1724,7 @@ msgid " Check File "
 msgstr " Comprobar fichero "
 
 #: src/editbook.c:186 src/editjpilot.c:307 src/editvcard.c:222
-#: src/importmutt.c:270 src/importpine.c:270 src/prefs_account.c:1743
+#: src/importmutt.c:270 src/importpine.c:270 src/prefs_account.c:1744
 msgid "File"
 msgstr "Fichero"
 
@@ -1780,7 +1780,7 @@ msgstr "Editar carpeta"
 msgid "Input the new name of folder:"
 msgstr "Nombre de la nueva carpeta:"
 
-#: src/editgroup.c:506 src/imap_gtk.c:124 src/mh_gtk.c:118
+#: src/editgroup.c:506 src/imap_gtk.c:126 src/mh_gtk.c:118
 msgid "New folder"
 msgstr "Nueva carpeta"
 
@@ -1802,7 +1802,7 @@ msgstr "Editar entrada JPilot"
 
 #: src/editjpilot.c:314 src/editldap.c:481 src/editvcard.c:229
 #: src/exphtmldlg.c:444 src/expldifdlg.c:456 src/importldif.c:721
-#: src/importmutt.c:277 src/importpine.c:277 src/prefs_account.c:2245
+#: src/importmutt.c:277 src/importpine.c:277 src/prefs_account.c:2246
 #: src/prefs_spelling.c:244
 msgid " ... "
 msgstr " ... "
@@ -2493,12 +2493,12 @@ msgstr "Nº"
 msgid "Setting folder info..."
 msgstr "Estableciendo información de carpeta..."
 
-#: src/folderview.c:750 src/mainwindow.c:3005 src/setup.c:80
+#: src/folderview.c:750 src/mainwindow.c:3011 src/setup.c:80
 #, c-format
 msgid "Scanning folder %s%c%s ..."
 msgstr "Revisando carpeta %s%c%s ..."
 
-#: src/folderview.c:754 src/mainwindow.c:3010 src/setup.c:85
+#: src/folderview.c:754 src/mainwindow.c:3016 src/setup.c:85
 #, c-format
 msgid "Scanning folder %s ..."
 msgstr "Revisando carpeta %s ..."
@@ -2528,28 +2528,28 @@ msgstr "Vaciar papelera"
 msgid "Empty all messages in trash?"
 msgstr "¿Vaciar todos los mensajes de la papelera?"
 
-#: src/folderview.c:1777
+#: src/folderview.c:1776
 #, c-format
 msgid "Moving %s to %s..."
 msgstr "Moviendo %s a %s..."
 
-#: src/folderview.c:1806
+#: src/folderview.c:1805
 msgid "Source and destination are the same."
 msgstr "El destino y el origen son la misma."
 
-#: src/folderview.c:1809
+#: src/folderview.c:1808
 msgid "Can't move a folder to one of its children."
 msgstr "No se puede mover la carpeta a una de sus subcarpetas."
 
-#: src/folderview.c:1812
+#: src/folderview.c:1811
 msgid "Folder moving cannot be done between different mailboxes."
 msgstr "No se pueden mover carpetas entre buzones distintos."
 
-#: src/folderview.c:1815
+#: src/folderview.c:1814
 msgid "Move failed!"
 msgstr "¡Mover falló!"
 
-#: src/folderview.c:1850 src/summaryview.c:3919
+#: src/folderview.c:1849 src/summaryview.c:3919
 msgid "Processing configuration"
 msgstr "Configuración de procesamiento"
 
@@ -2829,31 +2829,31 @@ msgstr "Introduzca contraseña"
 msgid "Protocol log"
 msgstr "Traza del protocolo"
 
-#: src/gtk/pluginwindow.c:121
+#: src/gtk/pluginwindow.c:122
 msgid "Select Plugin to load"
 msgstr "Seleccionar módulo a cargar"
 
-#: src/gtk/pluginwindow.c:185 src/gtk/pluginwindow.c:211
+#: src/gtk/pluginwindow.c:188 src/gtk/pluginwindow.c:214
 msgid "Plugins"
 msgstr "Módulos"
 
-#: src/gtk/pluginwindow.c:225 src/prefs_common.c:2353
+#: src/gtk/pluginwindow.c:228 src/prefs_common.c:2353
 msgid "Description"
 msgstr "Descripción"
 
-#: src/gtk/pluginwindow.c:249
+#: src/gtk/pluginwindow.c:252
 msgid "Load Plugin"
 msgstr "Cargar módulo"
 
-#: src/gtk/pluginwindow.c:254
+#: src/gtk/pluginwindow.c:257
 msgid "Unload Plugin"
 msgstr "Descargar módulo"
 
-#: src/gtk/prefswindow.c:233
+#: src/gtk/prefswindow.c:243
 msgid "Page Index"
 msgstr "Página índice"
 
-#: src/gtk/prefswindow.c:348 src/prefs_gtk.c:453
+#: src/gtk/prefswindow.c:358 src/prefs_gtk.c:453
 msgid "Apply"
 msgstr "Aplicar"
 
@@ -3031,20 +3031,20 @@ msgstr "se admite cualquier expresión de filtrado"
 msgid "Extended Search symbols"
 msgstr "Símbolos de búsqueda extendida"
 
-#: src/gtk/quicksearch.c:258 src/prefs_filtering_action.c:1113
-#: src/prefs_matcher.c:144 src/prefs_matcher.c:1724
+#: src/gtk/quicksearch.c:258 src/prefs_filtering_action.c:1114
+#: src/prefs_matcher.c:144 src/prefs_matcher.c:1726
 #: src/prefs_summary_column.c:70 src/quote_fmt.c:47 src/summaryview.c:454
 msgid "Subject"
 msgstr "Asunto"
 
-#: src/gtk/quicksearch.c:262 src/prefs_filtering_action.c:1114
-#: src/prefs_matcher.c:145 src/prefs_matcher.c:1725
+#: src/gtk/quicksearch.c:262 src/prefs_filtering_action.c:1115
+#: src/prefs_matcher.c:145 src/prefs_matcher.c:1727
 #: src/prefs_summary_column.c:71 src/quote_fmt.c:42 src/summaryview.c:455
 msgid "From"
 msgstr "Desde"
 
-#: src/gtk/quicksearch.c:266 src/prefs_filtering_action.c:1115
-#: src/prefs_matcher.c:145 src/prefs_matcher.c:1726 src/quote_fmt.c:48
+#: src/gtk/quicksearch.c:266 src/prefs_filtering_action.c:1116
+#: src/prefs_matcher.c:145 src/prefs_matcher.c:1728 src/quote_fmt.c:48
 msgid "To"
 msgstr "Para"
 
@@ -3066,7 +3066,7 @@ msgid "Signer"
 msgstr "Firmante"
 
 #: src/gtk/sslcertwindow.c:127 src/gtk/sslcertwindow.c:148
-#: src/prefs_themes.c:853
+#: src/prefs_themes.c:849
 msgid "Name: "
 msgstr "Nombre: "
 
@@ -3298,39 +3298,43 @@ msgstr "error durante la orden IMAP: CLOSE\n"
 msgid "iconv cannot convert UTF-7 to %s\n"
 msgstr "iconv no puede convertir UTF-7 a %s\n"
 
-#: src/imap_gtk.c:52 src/mh_gtk.c:50
+#: src/imap_gtk.c:53 src/mh_gtk.c:50
 msgid "/Create _new folder..."
 msgstr "/Crear _nueva carpeta..."
 
-#: src/imap_gtk.c:53 src/mh_gtk.c:51
+#: src/imap_gtk.c:54 src/mh_gtk.c:51
 msgid "/_Rename folder..."
 msgstr "/_Renombrar carpeta..."
 
-#: src/imap_gtk.c:54 src/mh_gtk.c:52
+#: src/imap_gtk.c:55 src/mh_gtk.c:52
 msgid "/M_ove folder..."
 msgstr "/M_over carpeta..."
 
-#: src/imap_gtk.c:55 src/mh_gtk.c:53
+#: src/imap_gtk.c:56 src/mh_gtk.c:53
 msgid "/_Delete folder"
 msgstr "/_Borrar carpeta"
 
-#: src/imap_gtk.c:57
+#: src/imap_gtk.c:58
 msgid "/Down_load messages"
 msgstr "/Descargar mensajes"
 
-#: src/imap_gtk.c:59 src/mh_gtk.c:55 src/news_gtk.c:54
+#: src/imap_gtk.c:60 src/mh_gtk.c:55 src/news_gtk.c:55
 msgid "/_Check for new messages"
 msgstr "/_Compropar si hay mensajes nuevos"
 
-#: src/imap_gtk.c:60 src/mh_gtk.c:56
+#: src/imap_gtk.c:61 src/mh_gtk.c:56
 msgid "/R_ebuild folder tree"
 msgstr "/R_econstruir árbol de carpetas"
 
-#: src/imap_gtk.c:62
+#: src/imap_gtk.c:63
+msgid "/IMAP4 _account settings"
+msgstr "/Configuración cuent_a IMAP4"
+
+#: src/imap_gtk.c:64
 msgid "/Remove _IMAP4 account"
 msgstr "/Eliminar cuenta _IMAP4"
 
-#: src/imap_gtk.c:125
+#: src/imap_gtk.c:127
 msgid ""
 "Input the name of new folder:\n"
 "(if you want to create a folder to store subfolders,\n"
@@ -3340,35 +3344,35 @@ msgstr ""
 "(si quiere crear una carpeta para almacenar subcarpetas,\n"
 " añada `/' al final del nombre)"
 
-#: src/imap_gtk.c:128 src/mh_gtk.c:120
+#: src/imap_gtk.c:130 src/mh_gtk.c:120
 msgid "NewFolder"
 msgstr "NuevaCarpeta"
 
-#: src/imap_gtk.c:134 src/mh_gtk.c:126 src/mh_gtk.c:225
+#: src/imap_gtk.c:136 src/mh_gtk.c:126 src/mh_gtk.c:225
 #, c-format
 msgid "`%c' can't be included in folder name."
 msgstr "No se puede usar `%c' en el nombre de la carpeta."
 
-#: src/imap_gtk.c:144 src/imap_gtk.c:191 src/mh_gtk.c:136 src/mh_gtk.c:232
+#: src/imap_gtk.c:146 src/imap_gtk.c:193 src/mh_gtk.c:136 src/mh_gtk.c:232
 #, c-format
 msgid "The folder `%s' already exists."
 msgstr "La carpeta `%s' ya existe."
 
-#: src/imap_gtk.c:150 src/mh_gtk.c:142
+#: src/imap_gtk.c:152 src/mh_gtk.c:142
 #, c-format
 msgid "Can't create the folder `%s'."
 msgstr "No se puede crear la carpeta `%s'."
 
-#: src/imap_gtk.c:173 src/mh_gtk.c:216
+#: src/imap_gtk.c:175 src/mh_gtk.c:216
 #, c-format
 msgid "Input new name for `%s':"
 msgstr "Introduzca el nuevo nombre para `%s':"
 
-#: src/imap_gtk.c:174 src/mh_gtk.c:217
+#: src/imap_gtk.c:176 src/mh_gtk.c:217
 msgid "Rename folder"
 msgstr "Renombrar carpeta"
 
-#: src/imap_gtk.c:201 src/mh_gtk.c:242
+#: src/imap_gtk.c:203 src/mh_gtk.c:242
 msgid ""
 "The folder could not be renamed.\n"
 "The new folder name is not allowed."
@@ -3376,16 +3380,16 @@ msgstr ""
 "No se pudo renombrar la carpeta.\n"
 "El nuevo nombre no está permitido."
 
-#: src/imap_gtk.c:251
+#: src/imap_gtk.c:264
 #, c-format
 msgid "Really delete IMAP4 account `%s'?"
 msgstr "¿Borrar realmente la cuenta IMAP `%s'?"
 
-#: src/imap_gtk.c:252
+#: src/imap_gtk.c:265
 msgid "Delete IMAP4 account"
 msgstr "Borrar cuenta IMAP4"
 
-#: src/imap_gtk.c:297 src/mh_gtk.c:167
+#: src/imap_gtk.c:310 src/mh_gtk.c:167
 #, c-format
 msgid ""
 "All folder(s) and message(s) under `%s' will be deleted.\n"
@@ -3394,24 +3398,24 @@ msgstr ""
 "Se borrarán todas las carpetas y mensajes bajo `%s'.\n"
 "¿Quiere realmente eliminarlos?"
 
-#: src/imap_gtk.c:299 src/mh_gtk.c:169
+#: src/imap_gtk.c:312 src/mh_gtk.c:169
 msgid "Delete folder"
 msgstr "Borrar carpeta"
 
-#: src/imap_gtk.c:317 src/mh_gtk.c:187
+#: src/imap_gtk.c:330 src/mh_gtk.c:187
 #, c-format
 msgid "Can't remove the folder `%s'."
 msgstr "No se puede eliminar la carpeta `%s'."
 
-#: src/imap_gtk.c:361 src/news_gtk.c:295
+#: src/imap_gtk.c:374 src/news_gtk.c:308
 msgid "Offline"
 msgstr "Desconectado"
 
-#: src/imap_gtk.c:362 src/news_gtk.c:296
+#: src/imap_gtk.c:375 src/news_gtk.c:309
 msgid "You are offline. Go online?"
 msgstr "Esta desconectado. ¿Conectar?"
 
-#: src/imap_gtk.c:379 src/news_gtk.c:313
+#: src/imap_gtk.c:392 src/news_gtk.c:326
 #, c-format
 msgid "Error occurred while downloading messages in `%s'."
 msgstr "Hubo algún error al descargar los mensajes en `%s'."
@@ -3813,16 +3817,16 @@ msgstr ""
 msgid "g_thread is not supported by glib.\n"
 msgstr "g_thread no está soportado por glib.\n"
 
-#: src/main.c:582
+#: src/main.c:584
 #, c-format
 msgid "Usage: %s [OPTION]...\n"
 msgstr "Uso: %s [OPCIÓN]...\n"
 
-#: src/main.c:585
+#: src/main.c:587
 msgid "  --compose [address]    open composition window"
 msgstr "  --compose [dirección]  abre la ventana de edición"
 
-#: src/main.c:586
+#: src/main.c:588
 msgid ""
 "  --attach file1 [file2]...\n"
 "                         open composition window with specified files\n"
@@ -3832,23 +3836,23 @@ msgstr ""
 "                         abre la ventana de composición con los ficheros\n"
 "                         especificados como adjuntos"
 
-#: src/main.c:589
+#: src/main.c:591
 msgid "  --receive              receive new messages"
 msgstr "  --receive              recive los mensajes nuevos"
 
-#: src/main.c:590
+#: src/main.c:592
 msgid "  --receive-all          receive new messages of all accounts"
 msgstr "  --receive-all          recibe nuevos para todas las cuentas"
 
-#: src/main.c:591
+#: src/main.c:593
 msgid "  --send                 send all queued messages"
 msgstr "  --send                 enviar todos los mensajes en la cola"
 
-#: src/main.c:592
+#: src/main.c:594
 msgid "  --status [folder]...   show the total number of messages"
 msgstr "  --status [carpeta]...  muestra el número total de mensajes"
 
-#: src/main.c:593
+#: src/main.c:595
 msgid ""
 "  --status-full [folder]...\n"
 "                         show the status of each folder"
@@ -3856,68 +3860,68 @@ msgstr ""
 "  --status-full [carpeta]...\n"
 "                         muestra el estado de cada carpeta"
 
-#: src/main.c:595
+#: src/main.c:597
 msgid "  --online               switch to online mode"
 msgstr "  --online               cambiar a modo de trabajo con conexión"
 
-#: src/main.c:596
+#: src/main.c:598
 msgid "  --offline              switch to offline mode"
 msgstr "  --offline               cambiar a modo de trabajo sin conexión"
 
-#: src/main.c:597
+#: src/main.c:599
 msgid "  --debug                debug mode"
 msgstr "  --debug                modo de depuración"
 
-#: src/main.c:598
+#: src/main.c:600
 msgid "  --help                 display this help and exit"
 msgstr "  --help                 presenta esta ayuda y finaliza"
 
-#: src/main.c:599
+#: src/main.c:601
 msgid "  --version              output version information and exit"
 msgstr "  --version              da la información de la versión y finaliza"
 
-#: src/main.c:600
+#: src/main.c:602
 msgid "  --config-dir           output configuration directory"
 msgstr "  --config-dir           muestra el directorio del configuración"
 
-#: src/main.c:637 src/summaryview.c:5044
+#: src/main.c:639 src/summaryview.c:5044
 #, c-format
 msgid "Processing (%s)..."
 msgstr "Procesando (%s)..."
 
-#: src/main.c:640
+#: src/main.c:642
 msgid "top level folder"
 msgstr "carpeta superior"
 
-#: src/main.c:701
+#: src/main.c:703
 msgid "Really quit?"
 msgstr "¿Salir realmente?"
 
-#: src/main.c:702
+#: src/main.c:704
 msgid "Composing message exists."
 msgstr "Existen mensajes en composición."
 
-#: src/main.c:703
+#: src/main.c:705
 msgid "Draft them"
 msgstr "A borrador"
 
-#: src/main.c:703
+#: src/main.c:705
 msgid "Discard them"
 msgstr "Descartarlos"
 
-#: src/main.c:703
+#: src/main.c:705
 msgid "Don't quit"
 msgstr "No salir"
 
-#: src/main.c:717
+#: src/main.c:719
 msgid "Queued messages"
 msgstr "Mensajes en cola"
 
-#: src/main.c:718
+#: src/main.c:720
 msgid "Some unsent messages are queued. Exit now?"
 msgstr "Hay mensajes sin enviar en la cola. ¿Salir ahora?"
 
-#: src/main.c:963 src/toolbar.c:1877
+#: src/main.c:965 src/toolbar.c:1877
 msgid "Some errors occurred while sending queued messages."
 msgstr "Ocurrieron algunos errores enviando los mensajes en la cola."
 
@@ -3947,7 +3951,7 @@ msgstr "/_Fichero/Vaciar _todas las papeleras"
 
 #: src/mainwindow.c:450 src/messageview.c:155
 msgid "/_File/_Save as..."
-msgstr "/_Fichero/_Salvar como..."
+msgstr "/_Fichero/_Guardar como..."
 
 #: src/mainwindow.c:451 src/messageview.c:156
 msgid "/_File/_Print..."
@@ -4676,37 +4680,37 @@ msgstr "Sylpheed - Árbol de carpetas"
 msgid "Sylpheed - Message View"
 msgstr "Sylpheed - Vista de mensaje"
 
-#: src/mainwindow.c:2366 src/plugins/trayicon/trayicon.c:333
+#: src/mainwindow.c:2372 src/plugins/trayicon/trayicon.c:333
 msgid "Exit"
 msgstr "Salir"
 
-#: src/mainwindow.c:2366 src/plugins/trayicon/trayicon.c:333
+#: src/mainwindow.c:2372 src/plugins/trayicon/trayicon.c:333
 msgid "Exit this program?"
 msgstr "¿Salir del programa?"
 
-#: src/mainwindow.c:2735
+#: src/mainwindow.c:2741
 msgid "Deleting duplicated messages..."
 msgstr "Borrando mensajes duplicados..."
 
-#: src/mainwindow.c:2769
+#: src/mainwindow.c:2775
 #, c-format
 msgid "Deleted %d duplicate message(s) in %d folders.\n"
 msgstr "Borrando %d mensaje(s) repetido(s) en %d carpetas.\n"
 
-#: src/mainwindow.c:2914 src/summaryview.c:3915
+#: src/mainwindow.c:2920 src/summaryview.c:3915
 msgid "Processing rules to apply before folder rules"
 msgstr "Reglas de procesamiento a aplicar antes de las de las carpetas"
 
-#: src/mainwindow.c:2922
+#: src/mainwindow.c:2928
 msgid "Processing rules to apply after folder rules"
 msgstr "Reglas de procesamiento a aplicar después de las de las carpetas"
 
-#: src/mainwindow.c:2930 src/summaryview.c:3924
+#: src/mainwindow.c:2936 src/summaryview.c:3924
 msgid "Filtering configuration"
 msgstr "Configuración de filtrado"
 
-#: src/matcher.c:1231 src/matcher.c:1232 src/matcher.c:1233 src/matcher.c:1234
 #: src/matcher.c:1235 src/matcher.c:1236 src/matcher.c:1237 src/matcher.c:1238
+#: src/matcher.c:1239 src/matcher.c:1240 src/matcher.c:1241 src/matcher.c:1242
 msgid "(none)"
 msgstr "(ninguna)"
 
@@ -4718,7 +4722,7 @@ msgstr "Buscar en el mensaje actual"
 msgid "Find text:"
 msgstr "Buscar texto:"
 
-#: src/message_search.c:121 src/prefs_matcher.c:541 src/summary_search.c:202
+#: src/message_search.c:121 src/prefs_matcher.c:542 src/summary_search.c:202
 msgid "Case sensitive"
 msgstr "Mayús./minús."
 
@@ -4964,11 +4968,11 @@ msgstr "/_Ver como texto"
 
 #: src/mimeview.c:156
 msgid "/_Save as..."
-msgstr "/_Salvar como..."
+msgstr "/_Guardar como..."
 
 #: src/mimeview.c:157
 msgid "/Save _all..."
-msgstr "/S_alvar todo..."
+msgstr "/Guardar _todo..."
 
 #: src/mimeview.c:196
 msgid "MIME Type"
@@ -5092,37 +5096,41 @@ msgstr "hubo un error obteniendo xhdr.\n"
 msgid "getting xover %d - %d in %s...\n"
 msgstr "obteniendo xover %d - %d en %s...\n"
 
-#: src/news_gtk.c:49
+#: src/news_gtk.c:50
 msgid "/_Subscribe to newsgroup..."
 msgstr "/_Suscribirse a un grupo de noticias..."
 
-#: src/news_gtk.c:50
+#: src/news_gtk.c:51
 msgid "/_Unsubscribe newsgroup"
 msgstr "/Des_uscribir"
 
-#: src/news_gtk.c:52
+#: src/news_gtk.c:53
 msgid "/Down_load"
 msgstr "/Des_cargar"
 
-#: src/news_gtk.c:56
+#: src/news_gtk.c:57
+msgid "/News _account settings"
+msgstr "/Configuración cuent_a de noticias"
+
+#: src/news_gtk.c:58
 msgid "/Remove _news account"
 msgstr "/Eliminar cuenta de _noticias"
 
-#: src/news_gtk.c:202
+#: src/news_gtk.c:204
 #, c-format
 msgid "Really unsubscribe newsgroup `%s'?"
 msgstr "¿Desuscribirse realmente del grupo `%s'?"
 
-#: src/news_gtk.c:203
+#: src/news_gtk.c:205
 msgid "Unsubscribe newsgroup"
 msgstr "Desuscribir grupo de noticias"
 
-#: src/news_gtk.c:240
+#: src/news_gtk.c:253
 #, c-format
 msgid "Really delete news account `%s'?"
 msgstr "¿Borrar realmente la cuenta de noticias `%s'?"
 
-#: src/news_gtk.c:241
+#: src/news_gtk.c:254
 msgid "Delete news account"
 msgstr "Borrar cuenta de noticias"
 
@@ -5777,33 +5785,33 @@ msgstr "Error del protocolo POP3\n"
 msgid "invalid UIDL response: %s\n"
 msgstr "respuesta UIDL inválida: %s\n"
 
-#: src/pop.c:754
+#: src/pop.c:765
 #, c-format
 msgid "POP3: Deleting expired message %d\n"
 msgstr "POP3: Borrando mensaje expirado %d\n"
 
-#: src/pop.c:769
+#: src/pop.c:780
 #, c-format
 msgid "POP3: Skipping message %d (%d bytes)\n"
 msgstr "POP3: Saltándose mensaje %d (%d bytes)\n"
 
-#: src/pop.c:801
+#: src/pop.c:812
 msgid "mailbox is locked\n"
 msgstr "el buzón está bloqueado\n"
 
-#: src/pop.c:804
+#: src/pop.c:815
 msgid "Session timeout\n"
 msgstr "Excedido el tiempo límite de la sesión\n"
 
-#: src/pop.c:823
+#: src/pop.c:834
 msgid "command not supported\n"
 msgstr "orden no soportada\n"
 
-#: src/pop.c:828
+#: src/pop.c:839
 msgid "error occurred on POP3 session\n"
 msgstr "hubo un error en la sesión POP3\n"
 
-#: src/pop.c:1021
+#: src/pop.c:1033
 msgid "TOP command unsupported\n"
 msgstr "orden TOP no soportada\n"
 
@@ -5866,11 +5874,11 @@ msgstr "Organización"
 msgid "Server information"
 msgstr "Información del servidor"
 
-#: src/prefs_account.c:1103 src/prefs_account.c:1309 src/prefs_account.c:1940
+#: src/prefs_account.c:1103 src/prefs_account.c:1309 src/prefs_account.c:1941
 msgid "POP3"
 msgstr "POP3"
 
-#: src/prefs_account.c:1105 src/prefs_account.c:1441 src/prefs_account.c:1957
+#: src/prefs_account.c:1105 src/prefs_account.c:1441 src/prefs_account.c:1958
 msgid "IMAP4"
 msgstr "IMAP4"
 
@@ -5918,11 +5926,11 @@ msgstr "Usar mandato para correo en vez de servidor SMTP"
 msgid "command to send mails"
 msgstr "orden para enviar los correos"
 
-#: src/prefs_account.c:1226 src/prefs_account.c:1605
+#: src/prefs_account.c:1226 src/prefs_account.c:1606
 msgid "User ID"
 msgstr "Usuario"
 
-#: src/prefs_account.c:1232 src/prefs_account.c:1614
+#: src/prefs_account.c:1232 src/prefs_account.c:1615
 msgid "Password"
 msgstr "Contraseña"
 
@@ -6014,7 +6022,7 @@ msgstr "Autentificación"
 msgid "SMTP Authentication (SMTP AUTH)"
 msgstr "Autentificación SMTP (SMTP AUTH)"
 
-#: src/prefs_account.c:1636
+#: src/prefs_account.c:1637
 msgid ""
 "If you leave these entries empty, the same\n"
 "user ID and password as receiving will be used."
@@ -6022,192 +6030,192 @@ msgstr ""
 "Si dejas estos campos vacíos, se utilizará el mismo\n"
 "ID de usuario y contraseña usados para la recepción."
 
-#: src/prefs_account.c:1645
+#: src/prefs_account.c:1646
 msgid "Authenticate with POP3 before sending"
 msgstr "Autentificación con POP3 antes de enviar"
 
-#: src/prefs_account.c:1660
+#: src/prefs_account.c:1661
 msgid "POP authentication timeout: "
 msgstr "Tiempo límite para autentificación POP: "
 
-#: src/prefs_account.c:1669
+#: src/prefs_account.c:1670
 msgid "minutes"
 msgstr "minutos"
 
-#: src/prefs_account.c:1716 src/prefs_account.c:1761 src/toolbar.c:428
+#: src/prefs_account.c:1717 src/prefs_account.c:1762 src/toolbar.c:428
 msgid "Signature"
 msgstr "Firma"
 
-#: src/prefs_account.c:1724
+#: src/prefs_account.c:1725
 msgid "Insert signature automatically"
 msgstr "Insertar firma automáticamente"
 
-#: src/prefs_account.c:1729
+#: src/prefs_account.c:1730
 msgid "Signature separator"
 msgstr "Separador de firma"
 
-#: src/prefs_account.c:1751
+#: src/prefs_account.c:1752
 msgid "Command output"
 msgstr "Salida de la orden"
 
-#: src/prefs_account.c:1769
+#: src/prefs_account.c:1770
 msgid "Automatically set the following addresses"
 msgstr "Establecer las siguientes direcciones automáticamente"
 
-#: src/prefs_account.c:1778 src/prefs_filtering_action.c:1116
-#: src/prefs_matcher.c:145 src/prefs_matcher.c:1727 src/quote_fmt.c:49
+#: src/prefs_account.c:1779 src/prefs_filtering_action.c:1117
+#: src/prefs_matcher.c:145 src/prefs_matcher.c:1729 src/quote_fmt.c:49
 msgid "Cc"
 msgstr "Cc"
 
-#: src/prefs_account.c:1791
+#: src/prefs_account.c:1792
 msgid "Bcc"
 msgstr "Bcc"
 
-#: src/prefs_account.c:1804
+#: src/prefs_account.c:1805
 msgid "Reply-To"
 msgstr "Responder a"
 
-#: src/prefs_account.c:1854
+#: src/prefs_account.c:1855
 msgid "Default privacy system"
 msgstr "Sistema de privacidad por omisión"
 
-#: src/prefs_account.c:1863
+#: src/prefs_account.c:1864
 msgid "Encrypt message by default"
 msgstr "Encriptar el mensaje por omisión"
 
-#: src/prefs_account.c:1865
+#: src/prefs_account.c:1866
 msgid "Sign message by default"
 msgstr "Firmar el mensaje por omisión"
 
-#: src/prefs_account.c:1867
+#: src/prefs_account.c:1868
 msgid "Save sent encrypted messages as clear text"
 msgstr "Guardar los mensajes encriptados como texto claro"
 
-#: src/prefs_account.c:1948 src/prefs_account.c:1965 src/prefs_account.c:1981
+#: src/prefs_account.c:1949 src/prefs_account.c:1966 src/prefs_account.c:1982
 msgid "Don't use SSL"
 msgstr "No usar SSL"
 
-#: src/prefs_account.c:1951
+#: src/prefs_account.c:1952
 msgid "Use SSL for POP3 connection"
 msgstr "Usar SSL para la conexión POP3"
 
-#: src/prefs_account.c:1954 src/prefs_account.c:1971 src/prefs_account.c:2005
+#: src/prefs_account.c:1955 src/prefs_account.c:1972 src/prefs_account.c:2006
 msgid "Use STARTTLS command to start SSL session"
 msgstr "Usar la orden STARTTLS para abrir la sesión SSL"
 
-#: src/prefs_account.c:1968
+#: src/prefs_account.c:1969
 msgid "Use SSL for IMAP4 connection"
 msgstr "Usar SSL para la conexión IMAP4"
 
-#: src/prefs_account.c:1974
+#: src/prefs_account.c:1975
 msgid "NNTP"
 msgstr "NNTP"
 
-#: src/prefs_account.c:1989
+#: src/prefs_account.c:1990
 msgid "Use SSL for NNTP connection"
 msgstr "Usar SSL para la conexión NNTP"
 
-#: src/prefs_account.c:1991
+#: src/prefs_account.c:1992
 msgid "Send (SMTP)"
 msgstr "Enviar (SMTP)"
 
-#: src/prefs_account.c:1999
+#: src/prefs_account.c:2000
 msgid "Don't use SSL (but, if necessary, use STARTTLS)"
 msgstr "No usar SSL (pero usar STARTTLS si es necesario)"
 
-#: src/prefs_account.c:2002
+#: src/prefs_account.c:2003
 msgid "Use SSL for SMTP connection"
 msgstr "Usar SSL para la conexión SMTP"
 
-#: src/prefs_account.c:2013
+#: src/prefs_account.c:2014
 msgid "Use non-blocking SSL"
 msgstr "Usar SSL no-bloqueante"
 
-#: src/prefs_account.c:2025
+#: src/prefs_account.c:2026
 msgid "(Turn this off if you have SSL connection problems)"
 msgstr "(Desactive esto si tiene problemas de conexión con SSL)"
 
-#: src/prefs_account.c:2149
+#: src/prefs_account.c:2150
 msgid "Specify SMTP port"
 msgstr "Puerto SMTP"
 
-#: src/prefs_account.c:2155
+#: src/prefs_account.c:2156
 msgid "Specify POP3 port"
 msgstr "Puerto POP3"
 
-#: src/prefs_account.c:2161
+#: src/prefs_account.c:2162
 msgid "Specify IMAP4 port"
 msgstr "Puerto IMAP4"
 
-#: src/prefs_account.c:2167
+#: src/prefs_account.c:2168
 msgid "Specify NNTP port"
 msgstr "Puerto NNTP"
 
-#: src/prefs_account.c:2172
+#: src/prefs_account.c:2173
 msgid "Specify domain name"
 msgstr "Nombre del dominio"
 
-#: src/prefs_account.c:2182
+#: src/prefs_account.c:2183
 msgid "Use command to communicate with server"
 msgstr "Usar orden para comunicarse con el servidor"
 
-#: src/prefs_account.c:2190
+#: src/prefs_account.c:2191
 msgid "Mark cross-posted messages as read and color:"
 msgstr "Marcar los mensajes cruzados como leídos y de color:"
 
-#: src/prefs_account.c:2204
+#: src/prefs_account.c:2205
 msgid "IMAP server directory"
 msgstr "Directorio del servidor IMAP4"
 
-#: src/prefs_account.c:2258
+#: src/prefs_account.c:2259
 msgid "Put sent messages in"
 msgstr "Poner mensajes enviados en"
 
-#: src/prefs_account.c:2260
+#: src/prefs_account.c:2261
 msgid "Put draft messages in"
 msgstr "Poner borradores de mensajes en"
 
-#: src/prefs_account.c:2262
+#: src/prefs_account.c:2263
 msgid "Put deleted messages in"
 msgstr "Poner mensajes borrados en"
 
-#: src/prefs_account.c:2326
+#: src/prefs_account.c:2327
 msgid "Account name is not entered."
 msgstr "No se especificó el nombre de la cuenta."
 
-#: src/prefs_account.c:2330
+#: src/prefs_account.c:2331
 msgid "Mail address is not entered."
 msgstr "No se especificó la dirección de correo."
 
-#: src/prefs_account.c:2337
+#: src/prefs_account.c:2338
 msgid "SMTP server is not entered."
 msgstr "No se especificó el servidor SMTP."
 
-#: src/prefs_account.c:2342
+#: src/prefs_account.c:2343
 msgid "User ID is not entered."
 msgstr "No se especificó el usuario."
 
-#: src/prefs_account.c:2347
+#: src/prefs_account.c:2348
 msgid "POP3 server is not entered."
 msgstr "No se especificó el servidor POP3."
 
-#: src/prefs_account.c:2352
+#: src/prefs_account.c:2353
 msgid "IMAP4 server is not entered."
 msgstr "No se especificó el servidor IMAP4."
 
-#: src/prefs_account.c:2357
+#: src/prefs_account.c:2358
 msgid "NNTP server is not entered."
 msgstr "No se especificó el servidor NNTP."
 
-#: src/prefs_account.c:2363
+#: src/prefs_account.c:2364
 msgid "local mailbox filename is not entered."
 msgstr "no se especificó el nombre de fichero del buzón local."
 
-#: src/prefs_account.c:2369
+#: src/prefs_account.c:2370
 msgid "mail command is not entered."
 msgstr "no se especificó el mandato de correo."
 
-#: src/prefs_account.c:2606
+#: src/prefs_account.c:2607
 #, c-format
 msgid "Unsupported (%s)"
 msgstr "No soportado (%s)"
@@ -6238,8 +6246,8 @@ msgstr "Acciones actuales"
 
 #: src/prefs_actions.c:382 src/prefs_filtering_action.c:546
 #: src/prefs_filtering_action.c:619 src/prefs_filtering.c:593
-#: src/prefs_filtering.c:653 src/prefs_filtering.c:672 src/prefs_matcher.c:689
-#: src/prefs_matcher.c:779 src/prefs_template.c:309
+#: src/prefs_filtering.c:653 src/prefs_filtering.c:672 src/prefs_matcher.c:690
+#: src/prefs_matcher.c:780 src/prefs_template.c:309
 msgid "(New)"
 msgstr "(Nueva)"
 
@@ -6364,7 +6372,7 @@ msgstr "para la parte seleccionada del texto"
 msgid "apply filtering actions between {} to selected messages"
 msgstr "aplicar acciones de filtrado entre {} a los mensajes seleccionados"
 
-#: src/prefs_actions.c:684 src/prefs_filtering_action.c:1131
+#: src/prefs_actions.c:684 src/prefs_filtering_action.c:1132
 #: src/quote_fmt.c:76
 msgid "Description of symbols"
 msgstr "Descripción de símbolos"
@@ -6377,7 +6385,7 @@ msgstr "Comunes"
 msgid "Quote"
 msgstr "Citar"
 
-#: src/prefs_common.c:934 src/prefs_fonts.c:290 src/prefs_themes.c:329
+#: src/prefs_common.c:934 src/prefs_fonts.c:290 src/prefs_themes.c:325
 msgid "Display"
 msgstr "Ver"
 
@@ -6951,7 +6959,7 @@ msgid "Current custom headers"
 msgstr "Cabeceras de usuario actuales"
 
 #: src/prefs_customheader.c:483 src/prefs_display_header.c:530
-#: src/prefs_matcher.c:1186
+#: src/prefs_matcher.c:1187
 msgid "Header name is not set."
 msgstr "No se estableció el nombre de cabecera"
 
@@ -6971,7 +6979,7 @@ msgstr "¿Quiere borrar realmente esta cabecera?"
 msgid "Displayed header configuration"
 msgstr "Configuración de cabeceras mostradas"
 
-#: src/prefs_display_header.c:225 src/prefs_matcher.c:436
+#: src/prefs_display_header.c:225 src/prefs_matcher.c:437
 msgid "Header name"
 msgstr "Cabecera"
 
@@ -7105,12 +7113,12 @@ msgstr "Destinatario"
 msgid "Score"
 msgstr "Puntos"
 
-#: src/prefs_filtering_action.c:427 src/prefs_matcher.c:469
+#: src/prefs_filtering_action.c:427 src/prefs_matcher.c:470
 msgid "Info ..."
 msgstr "Información ..."
 
 #: src/prefs_filtering_action.c:455 src/prefs_filtering.c:286
-#: src/prefs_matcher.c:565 src/prefs_template.c:222 src/prefs_toolbar.c:775
+#: src/prefs_matcher.c:566 src/prefs_template.c:222 src/prefs_toolbar.c:775
 msgid "  Replace  "
 msgstr " Sustituir "
 
@@ -7138,43 +7146,43 @@ msgstr "Destinatario no establecido."
 msgid "Score is not set"
 msgstr "Puntuación no establecida"
 
-#: src/prefs_filtering_action.c:1075
+#: src/prefs_filtering_action.c:1076
 msgid "No action was defined."
 msgstr "No se definió ninguna acción."
 
-#: src/prefs_filtering_action.c:1117 src/prefs_matcher.c:1728
+#: src/prefs_filtering_action.c:1118 src/prefs_matcher.c:1730
 #: src/prefs_summary_column.c:72 src/quote_fmt.c:41 src/summaryview.c:456
 msgid "Date"
 msgstr "Fecha"
 
-#: src/prefs_filtering_action.c:1118 src/prefs_matcher.c:1729
+#: src/prefs_filtering_action.c:1119 src/prefs_matcher.c:1731
 #: src/quote_fmt.c:52
 msgid "Message-ID"
 msgstr "ID-Mensaje"
 
-#: src/prefs_filtering_action.c:1119 src/prefs_matcher.c:146
-#: src/prefs_matcher.c:1730 src/quote_fmt.c:50
+#: src/prefs_filtering_action.c:1120 src/prefs_matcher.c:146
+#: src/prefs_matcher.c:1732 src/quote_fmt.c:50
 msgid "Newsgroups"
 msgstr "Grupos de noticias"
 
-#: src/prefs_filtering_action.c:1120 src/prefs_matcher.c:146
-#: src/prefs_matcher.c:1731 src/quote_fmt.c:51
+#: src/prefs_filtering_action.c:1121 src/prefs_matcher.c:146
+#: src/prefs_matcher.c:1733 src/quote_fmt.c:51
 msgid "References"
 msgstr "Referencias"
 
-#: src/prefs_filtering_action.c:1121 src/prefs_matcher.c:1732
+#: src/prefs_filtering_action.c:1122 src/prefs_matcher.c:1734
 msgid "Filename - should not be modified"
 msgstr "Nombre de fichero - no debe ser modificado"
 
-#: src/prefs_filtering_action.c:1122 src/prefs_matcher.c:1733
+#: src/prefs_filtering_action.c:1123 src/prefs_matcher.c:1735
 msgid "new line"
 msgstr "línea nueva"
 
-#: src/prefs_filtering_action.c:1123 src/prefs_matcher.c:1734
+#: src/prefs_filtering_action.c:1124 src/prefs_matcher.c:1736
 msgid "escape character for quotes"
 msgstr "carácter de escape para citas"
 
-#: src/prefs_filtering_action.c:1124 src/prefs_matcher.c:1735
+#: src/prefs_filtering_action.c:1125 src/prefs_matcher.c:1737
 msgid "quote character"
 msgstr "carácter de cita"
 
@@ -7226,7 +7234,7 @@ msgstr "Borrar regla"
 msgid "Do you really want to delete this rule?"
 msgstr "¿Quiere borrar realmente esta regla?"
 
-#: src/prefs_filtering.c:999 src/prefs_matcher.c:1678
+#: src/prefs_filtering.c:999 src/prefs_matcher.c:1680
 msgid "Entry not saved"
 msgstr "Entrada no guardada"
 
@@ -7423,59 +7431,63 @@ msgstr "Tamaño menor que"
 msgid "Size exactly"
 msgstr "Tamaño exacto"
 
-#: src/prefs_matcher.c:178
+#: src/prefs_matcher.c:162
+msgid "Partially downloaded"
+msgstr "Parcialmente descargado"
+
+#: src/prefs_matcher.c:179
 msgid "or"
 msgstr "o"
 
-#: src/prefs_matcher.c:178
+#: src/prefs_matcher.c:179
 msgid "and"
 msgstr "y"
 
-#: src/prefs_matcher.c:195
+#: src/prefs_matcher.c:196
 msgid "contains"
 msgstr "contiene"
 
-#: src/prefs_matcher.c:195
+#: src/prefs_matcher.c:196
 msgid "does not contain"
 msgstr "no contiene"
 
-#: src/prefs_matcher.c:212
+#: src/prefs_matcher.c:213
 msgid "yes"
 msgstr "si"
 
-#: src/prefs_matcher.c:212
+#: src/prefs_matcher.c:213
 msgid "no"
 msgstr "no"
 
-#: src/prefs_matcher.c:379
+#: src/prefs_matcher.c:380
 msgid "Condition configuration"
 msgstr "Configuración de condición"
 
-#: src/prefs_matcher.c:404
+#: src/prefs_matcher.c:405
 msgid "Match type"
 msgstr "Tipo de coincidencia"
 
-#: src/prefs_matcher.c:491
+#: src/prefs_matcher.c:492
 msgid "Predicate"
 msgstr "Predicado"
 
-#: src/prefs_matcher.c:542
+#: src/prefs_matcher.c:543
 msgid "Use regexp"
 msgstr "Usar exp.reg."
 
-#: src/prefs_matcher.c:580
+#: src/prefs_matcher.c:581
 msgid "Boolean Op"
 msgstr "Op. lógico"
 
-#: src/prefs_matcher.c:619
+#: src/prefs_matcher.c:620
 msgid "Current condition rules"
 msgstr "Reglas de condición actuales"
 
-#: src/prefs_matcher.c:1166
+#: src/prefs_matcher.c:1167
 msgid "Value is not set."
 msgstr "Valor no establecido."
 
-#: src/prefs_matcher.c:1679
+#: src/prefs_matcher.c:1681
 msgid ""
 "The entry was not saved\n"
 "Have you really finished?"
@@ -7483,23 +7495,23 @@ msgstr ""
 "La entrada no fue guardada\n"
 "¿Ha terminado realmente?"
 
-#: src/prefs_matcher.c:1719
+#: src/prefs_matcher.c:1721
 msgid "'Test' allows you to test a message or message element"
 msgstr "'Probar' permite comprobar un mensaje o elemento del mensaje"
 
-#: src/prefs_matcher.c:1720
+#: src/prefs_matcher.c:1722
 msgid "using an external program or script. The program will"
 msgstr "utilizando un script o programa externo. El programa"
 
-#: src/prefs_matcher.c:1721
+#: src/prefs_matcher.c:1723
 msgid "return either 0 or 1"
 msgstr "retornará 0 o 1"
 
-#: src/prefs_matcher.c:1722
+#: src/prefs_matcher.c:1724
 msgid "The following symbols can be used:"
 msgstr "Se pueden usar los siguientes símbolos:"
 
-#: src/prefs_matcher.c:1742
+#: src/prefs_matcher.c:1744
 msgid "Match Type: 'Test'"
 msgstr "Tipo de coincidencia: 'Probar'"
 
@@ -7675,33 +7687,33 @@ msgstr "Borrar plantilla"
 msgid "Do you really want to delete this template?"
 msgstr "¿Quiere borrar realmente esta plantilla?"
 
-#: src/prefs_themes.c:312 src/prefs_themes.c:649
+#: src/prefs_themes.c:308 src/prefs_themes.c:645
 msgid "Default internal theme"
 msgstr "Tema interno por omisión"
 
-#: src/prefs_themes.c:330
+#: src/prefs_themes.c:326
 msgid "Themes"
 msgstr "Temas"
 
-#: src/prefs_themes.c:414
+#: src/prefs_themes.c:410
 msgid "Only root can remove system themes"
 msgstr "Sólo el usuario root puede eliminar temas globales"
 
-#: src/prefs_themes.c:417
+#: src/prefs_themes.c:413
 #, c-format
 msgid "Remove system theme '%s'"
 msgstr "Eliminar tema global '%s'"
 
-#: src/prefs_themes.c:421
+#: src/prefs_themes.c:417
 #, c-format
 msgid "Remove theme '%s'"
 msgstr "Eliminar tema '%s'"
 
-#: src/prefs_themes.c:425
+#: src/prefs_themes.c:421
 msgid "Are you sure you want to remove this theme?"
 msgstr "¿Está seguro de que quiere borrar este tema?"
 
-#: src/prefs_themes.c:434
+#: src/prefs_themes.c:430
 #, c-format
 msgid ""
 "File %s failed\n"
@@ -7710,24 +7722,24 @@ msgstr ""
 "Error en el fichero %s\n"
 "al eliminar el tema."
 
-#: src/prefs_themes.c:438
+#: src/prefs_themes.c:434
 msgid "Removing theme directory failed."
 msgstr "Falló la eliminación del directorio del tema."
 
-#: src/prefs_themes.c:441
+#: src/prefs_themes.c:437
 msgid "Theme removed succesfully"
 msgstr "Tema eliminado con éxito"
 
-#: src/prefs_themes.c:461
+#: src/prefs_themes.c:457
 msgid "Select theme folder"
 msgstr "Seleccionar carpeta del tema"
 
-#: src/prefs_themes.c:471
+#: src/prefs_themes.c:467
 #, c-format
 msgid "Install theme '%s'"
 msgstr "Instalar tema '%s'"
 
-#: src/prefs_themes.c:474
+#: src/prefs_themes.c:470
 msgid ""
 "This folder doesn't seem to be a theme folder.\n"
 "Install anyway?"
@@ -7735,11 +7747,11 @@ msgstr ""
 "Esta carpeta no parece una carpeta de un tema.\n"
 "¿Instalar de todas maneras?"
 
-#: src/prefs_themes.c:481
+#: src/prefs_themes.c:477
 msgid "Do you want to install theme for all users?"
 msgstr "¿Quiere instalar el tema para todos los usuarios?"
 
-#: src/prefs_themes.c:502
+#: src/prefs_themes.c:498
 msgid ""
 "A theme with the same name is\n"
 "already installed in this location"
@@ -7747,19 +7759,19 @@ msgstr ""
 "Ya hay un tema con el mismo nombre\n"
 "instalado en ésta ubicación"
 
-#: src/prefs_themes.c:506
+#: src/prefs_themes.c:502
 msgid "Couldn't create destination directory"
 msgstr "No pude crear el directorio de destino"
 
-#: src/prefs_themes.c:519
+#: src/prefs_themes.c:515
 msgid "Theme installed succesfully"
 msgstr "Tema instalado con éxito"
 
-#: src/prefs_themes.c:526
+#: src/prefs_themes.c:522
 msgid "Failed installing theme"
 msgstr "Error al instalar el tema"
 
-#: src/prefs_themes.c:529
+#: src/prefs_themes.c:525
 #, c-format
 msgid ""
 "File %s failed\n"
@@ -7768,74 +7780,74 @@ msgstr ""
 "Error en el fichero %s\n"
 "al instalar el tema."
 
-#: src/prefs_themes.c:612
+#: src/prefs_themes.c:608
 #, c-format
 msgid "%d themes available (%d user, %d system, 1 internal)"
 msgstr "Disponibles %d temas (%d de usuario, %d globales, 1 interno)"
 
-#: src/prefs_themes.c:650
+#: src/prefs_themes.c:646
 msgid "The Sylpheed Claws Team"
 msgstr "The Sylpheed Claws Team"
 
-#: src/prefs_themes.c:652
+#: src/prefs_themes.c:648
 #, c-format
 msgid "Internal theme has %d icons"
 msgstr "El tema interno tiene %d iconos"
 
-#: src/prefs_themes.c:658
+#: src/prefs_themes.c:654
 msgid "No info file available for this theme"
 msgstr "No hay fichero de información para este tema"
 
-#: src/prefs_themes.c:676
+#: src/prefs_themes.c:672
 msgid "Error: can't get theme status"
 msgstr "Error: no se puede obtener el estado del tema"
 
-#: src/prefs_themes.c:700
+#: src/prefs_themes.c:696
 #, c-format
 msgid "%d files (%d icons), size: %s"
 msgstr "%d ficheros (%d iconos), tamaño: %s"
 
-#: src/prefs_themes.c:790
+#: src/prefs_themes.c:786
 msgid "Selector"
 msgstr "Selector"
 
-#: src/prefs_themes.c:810
+#: src/prefs_themes.c:806
 msgid "Install new..."
 msgstr "Instalar nuevo..."
 
-#: src/prefs_themes.c:815
+#: src/prefs_themes.c:811
 msgid "Get more..."
 msgstr "Más temas..."
 
-#: src/prefs_themes.c:847
+#: src/prefs_themes.c:843
 msgid "Information"
 msgstr "Información"
 
-#: src/prefs_themes.c:861
+#: src/prefs_themes.c:857
 msgid "Author: "
 msgstr "Autor: "
 
-#: src/prefs_themes.c:869
+#: src/prefs_themes.c:865
 msgid "URL:"
 msgstr "URL:"
 
-#: src/prefs_themes.c:897
+#: src/prefs_themes.c:893
 msgid "Status:"
 msgstr "Estado:"
 
-#: src/prefs_themes.c:911
+#: src/prefs_themes.c:907
 msgid "Preview"
 msgstr "Apariencia"
 
-#: src/prefs_themes.c:952
+#: src/prefs_themes.c:948
 msgid "Actions"
 msgstr "Acciones"
 
-#: src/prefs_themes.c:962
+#: src/prefs_themes.c:958
 msgid "Use this"
 msgstr "Usar este"
 
-#: src/prefs_themes.c:967
+#: src/prefs_themes.c:963
 msgid "Remove"
 msgstr "Eliminar"
 
@@ -8770,4 +8782,3 @@ msgstr "Recortar todo"
 #: src/toolbar.c:1352
 msgid "News"
 msgstr "Noticias"
-
