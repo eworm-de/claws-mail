@@ -36,10 +36,12 @@
 #include "pixmaps/deleted.xpm"
 #include "pixmaps/dir-close.xpm"
 #include "pixmaps/dir-open.xpm"
+#include "pixmaps/dir-open-hrm.xpm"
 #include "pixmaps/error.xpm"
 #include "pixmaps/forwarded.xpm"
 #include "pixmaps/group.xpm"
 #include "pixmaps/inbox.xpm"
+#include "pixmaps/inbox-hrm.xpm"
 #include "pixmaps/interface.xpm"
 #include "pixmaps/jpilot.xpm"
 #include "pixmaps/key.xpm"
@@ -49,6 +51,7 @@
 #include "pixmaps/locked.xpm"
 #include "pixmaps/new.xpm"
 #include "pixmaps/outbox.xpm"
+#include "pixmaps/outbox-hrm.xpm"
 #include "pixmaps/replied.xpm"
 #include "pixmaps/stock_close.xpm"
 #include "pixmaps/stock_down_arrow.xpm"
@@ -71,6 +74,7 @@
 #include "pixmaps/sylpheed-logo.xpm"
 #include "pixmaps/tb_address_book.xpm"
 #include "pixmaps/trash.xpm"
+#include "pixmaps/trash-hrm.xpm"
 #include "pixmaps/unread.xpm"
 #include "pixmaps/vcard.xpm"
 #include "pixmaps/ignorethread.xpm"
@@ -98,10 +102,12 @@ static StockPixmapData pixmaps[] =
 	{deleted_xpm			, NULL, NULL},
 	{dir_close_xpm			, NULL, NULL},
 	{dir_open_xpm			, NULL, NULL},
+	{dir_open_hrm_xpm		, NULL, NULL},
 	{error_xpm			, NULL, NULL},
 	{forwarded_xpm			, NULL, NULL},
 	{group_xpm			, NULL, NULL},
 	{inbox_xpm			, NULL, NULL},
+	{inbox_hrm_xpm			, NULL, NULL},
 	{interface_xpm			, NULL, NULL},
 	{jpilot_xpm			, NULL, NULL},
 	{key_xpm			, NULL, NULL},
@@ -111,6 +117,7 @@ static StockPixmapData pixmaps[] =
 	{locked_xpm			, NULL, NULL},
 	{new_xpm			, NULL, NULL},
 	{outbox_xpm			, NULL, NULL},
+	{outbox_hrm_xpm			, NULL, NULL},
 	{replied_xpm			, NULL, NULL},
 	{stock_close_xpm		, NULL, NULL},
 	{stock_down_arrow_xpm		, NULL, NULL},
@@ -133,6 +140,7 @@ static StockPixmapData pixmaps[] =
 	{sylpheed_logo_xpm		, NULL, NULL},
 	{tb_address_book_xpm		, NULL, NULL},
 	{trash_xpm			, NULL, NULL},
+	{trash_hrm_xpm			, NULL, NULL},
 	{unread_xpm			, NULL, NULL},
 	{vcard_xpm			, NULL, NULL},
 	{ignorethread_xpm		, NULL, NULL},

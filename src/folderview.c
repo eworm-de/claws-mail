@@ -454,6 +454,16 @@ void folderview_init(FolderView *folderview)
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DIR_OPEN,
 			 &folderopenxpm, &folderopenxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_TRASH, &trashxpm, &trashxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX_HRM, 
+			 &inboxhrmxpm, &inboxhrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_OUTBOX_HRM, 
+			 &outboxhrmxpm, &outboxhrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DIR_OPEN_HRM, 
+			 &folderopenhrmxpm, &folderopenhrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_TRASH_HRM, 
+			 &trashhrmxpm, &trashhrmxpmmask);
+
+
 
 	if (!normalfont)
 		normalfont = gdk_fontset_load(NORMAL_FONT);

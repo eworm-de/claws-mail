@@ -1,3 +1,21 @@
+2002-01-04 [melvin]	0.6.6claws37
+
+	* src/account.c
+		Made account selection code use strcasestr again instead of
+		g_strcasecmp (fixes bug where reediting queued messages
+		did not select proper account reported by T. Link).
+	
+	* src/folderview.c
+		Fix bug where folder icons are not shown when 'hide read messages'
+		is on.
+	
+	* src/stock_pixmaps.[ch]
+		Added folder icons for 'hide read messages'.
+	
+	* src/compose.c
+		Fixed bug where 'Enter' in a header entry will send the message 
+		if 'CTL-Enter' was chosen as a shorcut for sendind. 
+
 2002-01-03 [melvin]	0.6.6claws36
 	
 	* src/prefs.[ch]
@@ -33,8 +51,7 @@
 					folder B -not being viewed- updated the 
 					summaryview of folder A with data of
 					folder B). (Hope this is clear... )
-				 
-		
+
 2001-12-31 [alfons]	0.6.6claws34
 	
 	* src/ldif.c

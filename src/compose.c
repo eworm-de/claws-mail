@@ -6313,12 +6313,17 @@ static void compose_ctl_enter_send_shortcut_cb(GtkWidget *w, Compose *compose)
 	GtkAccelEntry  *accel;
 	GtkWidget      *send_button;
 	GSList *list;
+	GdkEvent *e= gtk_get_current_event();
 	
+	if (e->type != GDK_KEY_PRESS || 
+	    !( ((GdkEventKey *)e)->state & GDK_CONTROL_MASK) )
+		return;
+
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 	send_button = gtk_item_factory_get_widget(ifactory, "/Message/Send");
 	list = gtk_accel_group_entries_from_object(GTK_OBJECT(send_button));
 	accel = (GtkAccelEntry *) list->data;
-	if (accel->accelerator_key == GDK_Return && accel->accelerator_mods == GDK_CONTROL_MASK)
+	if (accel->accelerator_key == GDK_Return && 
+	    accel->accelerator_mods == GDK_CONTROL_MASK)
 		compose_send_cb(compose, 0, NULL);
-	
 }	
