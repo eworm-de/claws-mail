@@ -835,36 +835,36 @@ static void mimeview_save_all(MimeView *mimeview)
 	/* for each attachment, extract it in the selected dir. */
 	while(attachment != NULL)
 	{
-		if(attachment->filename) {
-			gchar *attachdir;
-			gchar *attachname = g_strdup(attachment->filename);
+		static guint attach_no = 1;
+		gchar *attachdir;
+		gchar *attachname = (attachment->filename)
+			? g_strdup(attachment->filename)
+			: g_strdup_printf("noname.%d",attach_no++);
 
-			subst_chars(attachname, "/\\", G_DIR_SEPARATOR);
-			subst_chars(attachname, ":?*&|<>\t\r\n", '_');
-			g_snprintf(buf, sizeof(buf), "%s%s",
-				   dirname,
-				   (attachname[0] == G_DIR_SEPARATOR)
-				   ? &attachname[1]
-				   : attachname);
-			attachdir = g_dirname(buf);
-			make_dir_hier(attachdir);
-			g_free(attachdir);
-			g_free(attachname);
+		subst_chars(attachname, "/\\", G_DIR_SEPARATOR);
+		subst_chars(attachname, ":?*&|<>\t\r\n", '_');
+		g_snprintf(buf, sizeof(buf), "%s%s",
+			   dirname,
+			   (attachname[0] == G_DIR_SEPARATOR)
+			   ? &attachname[1]
+			   : attachname);
+		attachdir = g_dirname(buf);
+		make_dir_hier(attachdir);
+		g_free(attachdir);
+		g_free(attachname);
 
-			if (is_file_exist(buf)) {
-				AlertValue aval;
+		if (is_file_exist(buf)) {
+			AlertValue aval;
 
-				aval = alertpanel(_("Overwrite"),
-						  _("Overwrite existing file?"),
-						  _("OK"), _("Cancel"), NULL);
-				if (G_ALERTDEFAULT != aval) return;
-			}
-			if (procmime_get_part(buf, mimeview->file, attachment) < 0)
-				alertpanel_error(_("Can't save the part of multipart message."));
+			aval = alertpanel(_("Overwrite"),
+					  _("Overwrite existing file?"),
+					  _("OK"), _("Cancel"), NULL);
+			if (G_ALERTDEFAULT != aval) return;
 		}
+		if (procmime_get_part(buf, mimeview->file, attachment) < 0)
+			alertpanel_error(_("Can't save the part of multipart message."));
 		attachment = attachment->next;
 	}
-	g_free(dirname);
 }
 
 static void mimeview_display_as_text(MimeView *mimeview)
@@ -913,8 +913,8 @@ static void mimeview_save_as(MimeView *mimeview)
 	{
 		gchar *p_defname = g_strdup(defname);
 		locale_to_utf8(&p_defname);
-	filename = filesel_select_file(_("Save as"), p_defname);
-		/*g_free(p_defname); */
+		filename = filesel_select_file(_("Save as"), p_defname);
+		g_free(p_defname); 
 	}
 #else
 	filename = filesel_select_file(_("Save as"), defname);
