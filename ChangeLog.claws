@@ -1,3 +1,16 @@
+2001-09-18 [melvin]
+
+	* switched to pspell and dropped ispell
+	* ac/pspell.m4
+		new file. autoconf macro for pspell
+	* ac/Makefile.am 
+	* configure.in acconfig.h
+		added pspell support
+	* src/Makefile.am
+	* src/main.c src/compose.[ch] src/gtkspell.[ch]
+	* src/prefs_common.[ch] 
+		added pspell support
+
 2001-09-18 [christoph]
 
 	* src/addr_compl.c
