@@ -426,7 +426,9 @@ void compose_headerentry_key_press_event_cb(GtkWidget	       *entry,
 					    GdkEventKey        *event,
 					    ComposeHeaderEntry *headerentry);
 
-static void compose_show_first_last_header(Compose *compose, gboolean show_first);
+static void compose_show_first_last_header (Compose *compose, gboolean show_first);
+
+static void compose_ctl_enter_send_shortcut_cb(GtkWidget *w, Compose *compose);
 
 static GtkItemFactoryEntry compose_popup_entries[] =
 {
@@ -3808,6 +3810,7 @@ static void compose_create_header_entry(Compose *compose)
 
         gtk_signal_connect(GTK_OBJECT(entry), "key-press-event", GTK_SIGNAL_FUNC(compose_headerentry_key_press_event_cb), headerentry);
     	gtk_signal_connect(GTK_OBJECT(entry), "changed", GTK_SIGNAL_FUNC(compose_headerentry_changed_cb), headerentry);
+    	gtk_signal_connect(GTK_OBJECT(entry), "activate", GTK_SIGNAL_FUNC(compose_ctl_enter_send_shortcut_cb), compose);
 
 	address_completion_register_entry(GTK_ENTRY(entry));
 
@@ -4207,6 +4210,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	subject_entry = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(subject), subject_entry, TRUE, TRUE, 2);
+    	gtk_signal_connect(GTK_OBJECT(subject_entry), "activate", GTK_SIGNAL_FUNC(compose_ctl_enter_send_shortcut_cb), compose);
 	gtk_widget_show(subject_entry);
 	compose->subject_entry = subject_entry;
 	gtk_container_add(GTK_CONTAINER(subject_frame), subject);
@@ -4257,6 +4261,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 			   GTK_SIGNAL_FUNC(compose_changed_cb), compose);
 	gtk_signal_connect(GTK_OBJECT(text), "grab_focus",
 			   GTK_SIGNAL_FUNC(compose_grab_focus_cb), compose);
+	gtk_signal_connect(GTK_OBJECT(text), "activate",
+			   GTK_SIGNAL_FUNC(compose_ctl_enter_send_shortcut_cb), compose);
 	gtk_signal_connect_after(GTK_OBJECT(text), "button_press_event",
 				 GTK_SIGNAL_FUNC(compose_button_press_cb),
 				 edit_vbox);
@@ -4280,7 +4286,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 		gtkpspell = gtkpspell_new_with_config(gtkpspellconfig,
 						      prefs_common.pspell_path,
 						      prefs_common.dictionary,
-						      PSPELL_FASTMODE,
+						      prefs_common.pspell_sugmode,
 						      conv_get_current_charset_str());
 		if (gtkpspell == NULL)
 			prefs_common.enable_pspell = FALSE;
@@ -6300,3 +6306,19 @@ static void compose_show_first_last_header(Compose *compose, gboolean show_first
 	vadj = gtk_viewport_get_vadjustment(GTK_VIEWPORT(compose->header_table->parent));
 	gtk_adjustment_set_value(vadj, (show_first ? vadj->lower : vadj->upper));
 }
+
+static void compose_ctl_enter_send_shortcut_cb(GtkWidget *w, Compose *compose)
+{
+	GtkItemFactory *ifactory;
+	GtkAccelEntry  *accel;
+	GtkWidget      *send_button;
+	GSList *list;
+	
+	ifactory = gtk_item_factory_from_widget(compose->menubar);
+	send_button = gtk_item_factory_get_widget(ifactory, "/Message/Send");
+	list = gtk_accel_group_entries_from_object(GTK_OBJECT(send_button));
+	accel = (GtkAccelEntry *) list->data;
+	if (accel->accelerator_key == GDK_Return && accel->accelerator_mods == GDK_CONTROL_MASK)
+		compose_send_cb(compose, 0, NULL);
+	
+}	

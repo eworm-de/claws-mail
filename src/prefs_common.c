@@ -130,6 +130,7 @@ static struct Spelling {
 	GtkWidget *entry_pspell_path;
 	GtkWidget *btn_pspell_path;
 	GtkWidget *optmenu_dictionary;
+	GtkWidget *optmenu_sugmode;
 } spelling;
 #endif
 
@@ -243,8 +244,10 @@ static void prefs_nextunreadmsgdialog_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_nextunreadmsgdialog_set_optmenu(PrefParam *pparam);
 
 #if USE_PSPELL
-static void prefs_dictionary_set_data_from_optmenu(PrefParam *param);
-static void prefs_dictionary_set_optmenu(PrefParam *pparam);
+static void prefs_dictionary_set_data_from_optmenu	(PrefParam *param);
+static void prefs_dictionary_set_optmenu		(PrefParam *pparam);
+static void prefs_speller_sugmode_set_data_from_optmenu	(PrefParam *pparam);
+static void prefs_speller_sugmode_set_optmenu 		(PrefParam *pparam);
 #endif
 
 
@@ -356,6 +359,9 @@ static PrefParam param[] = {
 	{"dictionary",  "", &prefs_common.dictionary,
 	 P_STRING, &spelling.optmenu_dictionary, 
 	 prefs_dictionary_set_data_from_optmenu, prefs_dictionary_set_optmenu },
+	{"pspell_sugmode",  "1", &prefs_common.pspell_sugmode,
+	 P_INT, &spelling.optmenu_sugmode, 
+	 prefs_speller_sugmode_set_data_from_optmenu, prefs_speller_sugmode_set_optmenu },
 	{"misspelled_color", "16711680", &prefs_common.misspelled_col, P_INT,
 	 NULL, NULL, NULL},
 #endif
@@ -1300,6 +1306,34 @@ static void prefs_dictionary_set_optmenu(PrefParam *pparam)
 	prefs_dictionary_set_data_from_optmenu(pparam);
 }
 
+static void prefs_speller_sugmode_set_data_from_optmenu(PrefParam *param)
+{
+	gint sugmode;
+	g_return_if_fail(param);
+	g_return_if_fail(param->data);
+	g_return_if_fail(param->widget);
+	g_return_if_fail(*(param->widget));
+
+	sugmode = gtkpspell_get_sugmode_from_option_menu
+		(GTK_OPTION_MENU(*(param->widget)));
+	*((gint *) param->data) = sugmode;
+}
+
+static void prefs_speller_sugmode_set_optmenu(PrefParam *pparam)
+{
+	GtkOptionMenu *optmenu = GTK_OPTION_MENU(*pparam->widget);
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+	gint sugmode;
+
+	g_return_if_fail(optmenu != NULL);
+	g_return_if_fail(pparam->data != NULL);
+
+	sugmode = *(gint *) pparam->data;
+	gtkpspell_sugmode_option_menu_set(optmenu, sugmode);
+}
+	
+	
 static void prefs_spelling_checkbtn_enable_pspell_toggle_cb
 	(GtkWidget *widget,
 	 gpointer data)
@@ -1307,9 +1341,12 @@ static void prefs_spelling_checkbtn_enable_pspell_toggle_cb
 	gboolean toggled;
 
 	toggled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
-	gtk_widget_set_sensitive(spelling.entry_pspell_path, toggled);
-	gtk_widget_set_sensitive(spelling.optmenu_dictionary, toggled);
-	gtk_widget_set_sensitive(spelling.btn_pspell_path, toggled);
+
+	gtk_widget_set_sensitive(spelling.entry_pspell_path,   toggled);
+	gtk_widget_set_sensitive(spelling.optmenu_dictionary,  toggled);
+	gtk_widget_set_sensitive(spelling.optmenu_sugmode,     toggled);
+	gtk_widget_set_sensitive(spelling.btn_pspell_path,     toggled);
+	gtk_widget_set_sensitive(color_buttons.misspelled_btn, toggled);
 }
 
 static void prefs_spelling_btn_pspell_path_clicked_cb(GtkWidget *widget,
@@ -1360,6 +1397,8 @@ static void prefs_spelling_create()
 	GtkWidget *spell_table;
 	GtkWidget *label_dictionary;
 	GtkWidget *optmenu_dictionary;
+	GtkWidget *sugmode_label;
+	GtkWidget *sugmode_optmenu;
 	GtkWidget *color_label;
 	GtkWidget *hbox_col;
 	GtkWidget *col_align;
@@ -1384,7 +1423,7 @@ static void prefs_spelling_create()
 			   GTK_SIGNAL_FUNC(prefs_spelling_checkbtn_enable_pspell_toggle_cb),
 			   NULL);
 
-	spell_table = gtk_table_new(3, 3, FALSE);
+	spell_table = gtk_table_new(4, 3, FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (spell_table), 0);
 	gtk_table_set_row_spacings(GTK_TABLE(spell_table), 8);
 	gtk_table_set_col_spacings(GTK_TABLE(spell_table), 8);
@@ -1409,7 +1448,7 @@ static void prefs_spelling_create()
 	
 	gtk_widget_set_sensitive(entry_pspell_path, prefs_common.enable_pspell);
 
-	btn_pspell_path = gtk_button_new_with_label(_("..."));
+	btn_pspell_path = gtk_button_new_with_label(" ... ");
 	gtk_widget_show(btn_pspell_path);
 	gtk_box_pack_start(GTK_BOX(hbox_pspell_path), btn_pspell_path, FALSE, FALSE, 0);
 	gtk_widget_set_sensitive(btn_pspell_path, prefs_common.enable_pspell);
@@ -1432,16 +1471,31 @@ static void prefs_spelling_create()
 			  GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
 	gtk_widget_set_sensitive(optmenu_dictionary, prefs_common.enable_pspell);
 
+	/* Suggestion mode */
+	sugmode_label = gtk_label_new(_("Default suggestion mode"));
+	gtk_misc_set_alignment(GTK_MISC(sugmode_label), 1.0, 0.5);
+	gtk_widget_show(sugmode_label);
+	gtk_table_attach(GTK_TABLE (spell_table), sugmode_label, 0, 1, 2, 3,
+			 GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
+
+	sugmode_optmenu = gtk_option_menu_new();
+	gtk_widget_show(sugmode_optmenu);
+	gtk_option_menu_set_menu(GTK_OPTION_MENU(sugmode_optmenu),
+			    gtkpspell_sugmode_option_menu_new(prefs_common.pspell_sugmode));
+	gtk_table_attach(GTK_TABLE(spell_table), sugmode_optmenu, 1, 2, 2, 3,
+			 GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
+	gtk_widget_set_sensitive(sugmode_optmenu, prefs_common.enable_pspell);
+
 	/* Color */
 	color_label = gtk_label_new(_("Misspelled word color:"));
 	gtk_misc_set_alignment(GTK_MISC(color_label), 1.0, 0.5);
-	gtk_table_attach (GTK_TABLE (spell_table), color_label, 0, 1, 2, 3,
+	gtk_table_attach (GTK_TABLE (spell_table), color_label, 0, 1, 3, 4,
 			  GTK_FILL, GTK_SHRINK, 0, 0);
 	gtk_widget_show(color_label);
 	
 	col_align = gtk_alignment_new(0.0, 0.5, 0, 0);
 	gtk_widget_show(col_align);
-	gtk_table_attach (GTK_TABLE (spell_table), col_align, 1, 2, 2, 3,
+	gtk_table_attach (GTK_TABLE (spell_table), col_align, 1, 2, 3, 4,
 			  GTK_FILL, GTK_SHRINK, 0, 0);
 
 	color_buttons.misspelled_btn = gtk_button_new_with_label ("");
@@ -1458,6 +1512,7 @@ static void prefs_spelling_create()
 	spelling.entry_pspell_path      = entry_pspell_path;
 	spelling.btn_pspell_path	= btn_pspell_path;
 	spelling.optmenu_dictionary     = optmenu_dictionary;
+	spelling.optmenu_sugmode        = sugmode_optmenu;
 }
 
 #endif
@@ -1846,7 +1901,7 @@ static void prefs_display_create(void)
 	gtk_table_attach (GTK_TABLE (table1), entry_textfont, 1, 2, 0, 1,
 			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
 
-	button_textfont = gtk_button_new_with_label ("... ");
+	button_textfont = gtk_button_new_with_label (" ... ");
 
 	gtk_widget_show (button_textfont);
 	gtk_table_attach (GTK_TABLE (table1), button_textfont, 2, 3, 0, 1,
@@ -1959,7 +2014,7 @@ static void prefs_display_create(void)
 	gtk_widget_show (entry_datefmt);
 	gtk_box_pack_start (GTK_BOX (hbox1), entry_datefmt, TRUE, TRUE, 0);
 
-	button_datefmt = gtk_button_new_with_label ("... ");
+	button_datefmt = gtk_button_new_with_label (" ... ");
 
 	gtk_widget_show (button_datefmt);
 	gtk_box_pack_start (GTK_BOX (hbox1), button_datefmt, FALSE, FALSE, 0);

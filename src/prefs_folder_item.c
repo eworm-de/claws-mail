@@ -541,10 +541,11 @@ void prefs_folder_item_ok_cb(GtkWidget *widget,
 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->checkbtn_simplify_subject));
 	prefs->simplify_subject_regexp = 
 	    gtk_editable_get_chars(GTK_EDITABLE(dialog->entry_simplify_subject), 0, -1);
-
-	if (prefs->enable_simplify_subject != old_simplify_val ||  
-	    0 != strcmp2(prefs->simplify_subject_regexp, old_simplify_str)) 
-		summary_show(dialog->folderview->summaryview, dialog->item, TRUE);
+	
+	if (dialog->item == dialog->folderview->summaryview->folder_item &&
+	    (prefs->enable_simplify_subject != old_simplify_val ||  
+	    0 != strcmp2(prefs->simplify_subject_regexp, old_simplify_str))) 
+		summary_show(dialog->folderview->summaryview, dialog->item, FALSE);
 		
 	if (old_simplify_str) g_free(old_simplify_str);
 

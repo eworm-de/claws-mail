@@ -95,6 +95,7 @@ struct _PrefsCommon
 	gchar *pspell_path;
 	gchar *dictionary;
 	gint misspelled_col;
+	gint pspell_sugmode;
 #endif
         
 	/* Display */

@@ -77,6 +77,8 @@ static void menu_change_dict		(GtkWidget *w, GtkPspell *gtkpspell);
 static void entry_insert_cb		(GtkXText *gtktext, gchar *newtext, 
 					 guint len, guint *ppos, 
 					 GtkPspell *gtkpspell);
+static void entry_delete_cb		(GtkXText *gtktext, gint start, gint end, 
+					 GtkPspell *gtkpspell);
 static gint compare_dict		(Dictionary *a, Dictionary *b);
 guchar *convert_to_pspell_encoding 	(const guchar *encoding);
 
@@ -177,7 +179,7 @@ GtkPspell *gtkpspell_new_with_config(GtkPspellConfig *gtkpspellconfig,
 	gtkpspell->gtktext         = NULL;
   
 	gtkpspell->config	   = pspell_config_clone(gtkpspellconfig);
-	gtkpspell->mode		   = PSPELL_FASTMODE;
+	gtkpspell->mode		   = mode;
 	gtkpspell->learn	   = TRUE;
 	
 	if (!set_path_and_dict(gtkpspell, gtkpspell->config, path, dict)) {
@@ -698,16 +700,10 @@ static void change_color(GtkPspell * gtkpspell,
 	gtk_xtext_freeze(gtktext);
 	newtext = gtk_editable_get_chars(GTK_EDITABLE(gtktext), start, end);
 	if (newtext) {
-		gtk_signal_handler_block_by_func(GTK_OBJECT(gtktext),
-						 GTK_SIGNAL_FUNC(entry_insert_cb), 
-						 gtkpspell);
 		gtk_xtext_set_point(gtktext, start);
 		gtk_xtext_forward_delete(gtktext, end - start);
 
 		gtk_xtext_insert(gtktext, NULL, color, NULL, newtext, end - start);
-		gtk_signal_handler_unblock_by_func(GTK_OBJECT(gtktext),
-						   GTK_SIGNAL_FUNC(entry_insert_cb), 
-						   gtkpspell);
 		g_free(newtext);
 	}
 	gtk_xtext_thaw(gtktext);
@@ -855,9 +851,22 @@ static void replace_word(GtkWidget *w, GtkPspell *gtkpspell)
 	oldlen = end - start;
 
 	gtk_xtext_set_point(GTK_XTEXT(gtktext), end);
-	gtk_xtext_backward_delete(GTK_XTEXT(gtktext), end - start);
-	gtk_xtext_insert(GTK_XTEXT(gtktext), NULL, NULL, NULL, newword, strlen(newword));
+	gtk_signal_handler_block_by_func(GTK_OBJECT(gtktext),
+			GTK_SIGNAL_FUNC(entry_insert_cb), 
+			gtkpspell);
+	gtk_signal_handler_block_by_func(GTK_OBJECT(gtktext),
+			GTK_SIGNAL_FUNC(entry_delete_cb), 
+			gtkpspell);
+	gtk_xtext_set_point(gtktext, start);
+	gtk_signal_emit_by_name(GTK_OBJECT(gtktext), "delete-text", start, end);
+	gtk_signal_emit_by_name(GTK_OBJECT(gtktext), "insert-text", newword, strlen(newword), &start);
     
+	gtk_signal_handler_unblock_by_func(GTK_OBJECT(gtktext),
+			GTK_SIGNAL_FUNC(entry_insert_cb), 
+			gtkpspell);
+	gtk_signal_handler_unblock_by_func(GTK_OBJECT(gtktext),
+			GTK_SIGNAL_FUNC(entry_delete_cb), 
+			gtkpspell);
 	if (end-start > 0 && gtkpspell->learn) { 
 		/* Just be sure the buffer ends somewhere... */
 		buf[end-start] = 0; 
@@ -1412,6 +1421,59 @@ gchar *gtkpspell_get_dictionary_menu_active_item(GtkWidget *menu)
   
 }
 
+GtkWidget *gtkpspell_sugmode_option_menu_new(gint sugmode)
+{
+	GtkWidget *menu;
+	GtkWidget *item;
+
+
+	menu = gtk_menu_new();
+	gtk_widget_show(menu);
+
+	item = gtk_menu_item_new_with_label(_("Fast Mode"));
+        gtk_widget_show(item);
+	gtk_menu_append(GTK_MENU(menu), item);
+	gtk_object_set_data(GTK_OBJECT(item), "sugmode", GINT_TO_POINTER(PSPELL_FASTMODE));
+
+	item = gtk_menu_item_new_with_label(_("Normal Mode"));
+        gtk_widget_show(item);
+	gtk_menu_append(GTK_MENU(menu), item);
+	gtk_object_set_data(GTK_OBJECT(item), "sugmode", GINT_TO_POINTER(PSPELL_NORMALMODE));
+	
+	item = gtk_menu_item_new_with_label(_("Bad Spellers Mode"));
+        gtk_widget_show(item);
+	gtk_menu_append(GTK_MENU(menu), item);
+	gtk_object_set_data(GTK_OBJECT(item), "sugmode", GINT_TO_POINTER(PSPELL_BADSPELLERMODE));
+
+	return menu;
+}
+	
+void gtkpspell_sugmode_option_menu_set(GtkOptionMenu *optmenu, gint sugmode)
+{
+	g_return_if_fail(GTK_IS_OPTION_MENU(optmenu));
+
+	g_return_if_fail(sugmode == PSPELL_FASTMODE ||
+			 sugmode == PSPELL_NORMALMODE ||
+			 sugmode == PSPELL_BADSPELLERMODE);
+
+	gtk_option_menu_set_history(GTK_OPTION_MENU(optmenu), sugmode - 1);
+}
+
+gint gtkpspell_get_sugmode_from_option_menu(GtkOptionMenu *optmenu)
+{
+	gint sugmode;
+	GtkWidget *item;
+	
+	g_return_val_if_fail(GTK_IS_OPTION_MENU(optmenu), -1);
+
+	item = gtk_menu_get_active(GTK_MENU(gtk_option_menu_get_menu(optmenu)));
+	
+	sugmode = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(item), "sugmode"));
+
+	return sugmode;
+	
+}
+		
 /* convert_to_pspell_encoding () - converts ISO-8859-* strings to iso8859-* 
  * as needed by pspell. Returns an allocated string.
  */

@@ -49,6 +49,8 @@
 #define __gtkpspell_h__
 
 #include "gtkxtext.h"
+
+#include <gtk/gtkoptionmenu.h>
 #include <pspell/pspell.h>
 
 #define PSPELL_FASTMODE       1
@@ -80,47 +82,56 @@ typedef struct _GtkPspell
 
 typedef PspellConfig GtkPspellConfig;
 
-/* Create a new gtkspell instance to manage one text widget */
-
-/* These one create and delete a pspell config */
+/* These ones create and delete a pspell config */
 GtkPspellConfig *gtkpspell_init();
-void gtkpspell_finished(GtkPspellConfig * gtkpspellconfig);
+void gtkpspell_finished				(GtkPspellConfig *gtkpspellconfig);
 
 /* These ones create and delete a manager*/
-GtkPspell *gtkpspell_new(GtkPspellConfig * config);
+GtkPspell *gtkpspell_new			(GtkPspellConfig *config);
 
-GtkPspell *gtkpspell_new_with_config(GtkPspellConfig *gtkpspellconfig, 
-                                     guchar *path, 
-                                     guchar *dict, 
-                                     guint mode, 
-                                     const guchar *encoding);
-GtkPspell *gtkpspell_delete(GtkPspell *gtkpspell);
+GtkPspell *gtkpspell_new_with_config		(GtkPspellConfig *gtkpspellconfig, 
+						 guchar *path, 
+						 guchar *dict, 
+						 guint mode, 
+						 const guchar *encoding);
+GtkPspell *gtkpspell_delete			(GtkPspell *gtkpspell);
 
-int gtkpspell_set_path_and_dict(GtkPspell *gtkpspell, guchar * path,
-                                guchar * dict);
-guchar *gtkpspell_get_dict(GtkPspell *gtkpspell);
+int gtkpspell_set_path_and_dict			(GtkPspell *gtkpspell, 
+						 guchar * path,
+                                		 guchar * dict);
+guchar *gtkpspell_get_dict			(GtkPspell *gtkpspell);
 
-guchar *gtkpspell_get_path(GtkPspell *gtkpspell);
+guchar *gtkpspell_get_path			(GtkPspell *gtkpspell);
 
 /* This sets suggestion mode "fast" "normal" "bad-spellers" */
 /* and resets the dict & path (which should be set first)  */
 /* return 0 on failure and -1 on success */
-int gtkpspell_set_sug_mode(GtkPspell * gtkpspell, gchar * themode);
+int gtkpspell_set_sug_mode                      (GtkPspell * gtkpspell, 
+						 gchar * themode);
 
-void gtkpspell_attach(GtkPspell *gtkpspell, GtkXText *text_ccc);
+void gtkpspell_attach                           (GtkPspell *gtkpspell, 
+						 GtkXText *text_ccc);
 
-void gtkpspell_detach(GtkPspell *gtkpspell);
+void gtkpspell_detach                           (GtkPspell *gtkpspell);
 
-void gtkpspell_check_all(GtkPspell *gtkpspell);
+void gtkpspell_check_all                        (GtkPspell *gtkpspell);
 
-void gtkpspell_uncheck_all(GtkPspell *gtkpspell);
+void gtkpspell_uncheck_all                      (GtkPspell *gtkpspell);
 
-GSList *gtkpspell_get_dictionary_list(const char *pspell_path);
+GSList *gtkpspell_get_dictionary_list           (const char *pspell_path);
 
-void gtkpspell_free_dictionary_list(GSList *list);
+void gtkpspell_free_dictionary_list             (GSList *list);
 
-GtkWidget *gtkpspell_dictionary_option_menu_new(const gchar *pspell_path);
+GtkWidget *gtkpspell_dictionary_option_menu_new (const gchar *pspell_path);
+
 gchar *gtkpspell_get_dictionary_menu_active_item(GtkWidget *menu);
+
+GtkWidget *gtkpspell_sugmode_option_menu_new    (gint sugmode);
+
+void gtkpspell_sugmode_option_menu_set	        (GtkOptionMenu *optmenu, 
+						 gint sugmode);
+
+gint gtkpspell_get_sugmode_from_option_menu	(GtkOptionMenu *optmenu);
 
 extern GtkPspellConfig * gtkpspellconfig;
 

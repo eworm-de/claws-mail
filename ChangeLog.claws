@@ -1,3 +1,33 @@
+2002-01-02 [melvin]	0.6.6claws35
+
+	* src/gtkspell.[ch]
+		Made spelling code compatible with undo/redo feature.
+		Added creation of suggestion mode menu for the general
+			preferences.
+	
+	* src/prefs_common.[ch]
+		Added option menu for the speller's suggestion mode.
+		Added missing spaces in "..." buttons and made a "..."
+			button non translatable!
+	
+	* src/compose.c
+		Made speller use the default suggestion mode.
+		Hack to make it possible to choose 'CTRL-Enter' as a
+			shortcut for sending (and only for sending).
+
+	* src/prefs_folder_item.c
+		Changing subject simplification does not update cache 
+			anymore (because it is unnecessary).
+		Fixed bug where changing subject simplification updated the 
+			summaryview even when the viewed folder is not the
+			folder which properties are being changed. (E.g. 
+					viewing folder A and changing
+					the subject simplification of 
+					folder B -not being viewed- updated the 
+					summaryview of folder A with data of
+					folder B). (Hope this is clear... )
+				 
+		
 2001-12-31 [alfons]	0.6.6claws34
 	
 	* src/ldif.c
