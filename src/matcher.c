@@ -694,6 +694,8 @@ static gboolean matcherprop_match_one_header(MatcherProp * matcher,
 	case MATCHING_HEADER:
 	case MATCHING_NOT_HEADER:
 		header = procheader_parse_header(buf);
+		if (!header)
+			return FALSE;
 		if (procheader_headername_equal(header->name,
 						matcher->header)) {
 			if (matcher->criteria == MATCHING_HEADER)
