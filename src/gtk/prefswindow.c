@@ -207,7 +207,7 @@ gint compare_func(GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
 }
 
 static gboolean prefswindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
-				    gpointer data)
+				    	PrefsWindow *data)
 {
 	GtkWidget *focused_child;
 	
