@@ -1087,15 +1087,9 @@ void main_window_reflect_prefs_all(void)
 		mainwin->toolbar = NULL;
 		main_window_toolbar_create(mainwin, mainwin->handlebox);
 		set_toolbar_style(mainwin);
+		activate_compose_button(mainwin, prefs_common.toolbar_style, mainwin->compose_btn_type);
 		folderview_reflect_prefs_pixmap_theme(mainwin->folderview);
 		summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
-
-		if (prefs_common.immediate_exec)
-			gtk_widget_hide(mainwin->exec_btn);
-		else
-			gtk_widget_show(mainwin->exec_btn);
-
-		activate_compose_button(mainwin, prefs_common.toolbar_style, mainwin->compose_btn_type);
 
 		summary_redisplay_msg(mainwin->summaryview);
 		headerview_set_visibility(mainwin->messageview->headerview,
@@ -3017,6 +3011,11 @@ static void set_toolbar_style(MainWindow *mainwin)
 	if (prefs_common.toolbar_style != TOOLBAR_NONE) {
 		gtk_widget_show(mainwin->handlebox);
 		gtk_widget_queue_resize(mainwin->handlebox);
+
+		if (prefs_common.immediate_exec)
+			gtk_widget_hide(mainwin->exec_btn);
+		else
+			gtk_widget_show(mainwin->exec_btn);
 	}
 }
 

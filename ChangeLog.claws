@@ -1,3 +1,10 @@
+2002-02-12 [paul]	0.7.0claws70
+
+	* src/mainwindow.c
+		cosmetic, relating to pixmap themes: on toolbar make 
+		updating of 'Exec' and 'Compose news/Compose email'
+		icons faster.
+
 2002-02-12 [carsten]	0.7.0claws69
 	* src/folderview.c
 	  src/mainwindow.[ch]
