@@ -1674,7 +1674,6 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 	GtkWidget *vbox_body = mainwin->vbox_body;
 	GtkItemFactory *ifactory = mainwin->menu_factory;
 	GtkWidget *menuitem;
-	GtkWidget *vbox;
 	GtkItemFactory *msgview_ifactory;
 
 	debug_print("Setting widgets...");
