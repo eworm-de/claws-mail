@@ -27,7 +27,7 @@
 #include <glib.h>
 #include <time.h>
 
-#include "../procmsg.h"
+#include "procmsg.h"
 
 typedef enum {
 	POP3_PARTIAL_DLOAD_UNKN	= 0,

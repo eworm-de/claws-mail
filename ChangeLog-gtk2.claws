@@ -1,3 +1,10 @@
+2004-11-23 [colin]	0.9.12cvs168.1
+
+	* src/partial_download.c
+	* src/partial_download.h
+	* src/plugins/pgpmime/plugin.c
+		Sync with HEAD
+
 2004-11-23 [colin]	0.9.12cvs166.1
 
 	* src/Makefile.am
