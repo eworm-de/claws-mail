@@ -117,7 +117,7 @@
 #include "pixmaps/mime_message.xpm"                  
 #include "pixmaps/address_search.xpm"
 #include "pixmaps/check_spelling.xpm"
-#include "pixmaps/dir-noselect.xpm"
+#include "pixmaps/dir_noselect.xpm"
 
 typedef struct _StockPixmapData	StockPixmapData;
 
