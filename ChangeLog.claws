@@ -1,3 +1,10 @@
+2003-12-03 [alfons]	0.9.7claws13
+
+	* src/alertpanel.h
+	* src/setup.c
+	* src/plugins/image_viewe/plugin.c
+		compile again, we need stddef.h for size_t
+
 2003-12-03 [paul]	0.9.7claws12
 
 	* src/account.c

@@ -21,6 +21,8 @@
 #  include "config.h"
 #endif
 
+#include <stddef.h>
+
 #include "intl.h"
 
 #include "common/sylpheed.h"
