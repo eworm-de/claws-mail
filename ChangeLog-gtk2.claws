@@ -1,11 +1,15 @@
-2004-07-24 [colin]	0.9.12cvs33.14
+2004-07-24 [colin]	0.9.12cvs33.15
 
 	* src/gtk/gtkaspell.c
 		Don't change cursor position in insert-text
 		callback
+	(Fixes 539 Word wrapping on input transposes letters)
+
+2004-07-24 [colin]	0.9.12cvs33.14
+
+	* src/gtk/gtkaspell.c
 		Reencode non-ascii chars to dictionary's
 		encoding
-	(Fixes 539 Word wrapping on input transposes letters)
 	(Fixes 544 Spell check broken non english locale)
 
 2004-07-24 [colin]	0.9.12cvs33.13

@@ -488,8 +488,6 @@ static void entry_insert_cb(GtkTextBuffer *textbuf,
 	if (!gtkaspell->check_while_typing)
 		return;
 	
-	pos = gtk_text_iter_get_offset(iter);
-
 	if (iswordsep(newtext[0])) {
 		/* did we just end a word? */
 		if (pos >= 2)
@@ -506,10 +504,7 @@ static void entry_insert_cb(GtkTextBuffer *textbuf,
 		    !iswordsep(get_text_index_whar(gtkaspell, pos))) {
 			check_at(gtkaspell, pos - 1);
 		}
-}
-
-	gtk_text_buffer_get_iter_at_offset(textbuf, iter, pos);
-	gtk_text_buffer_place_cursor(textbuf, iter);
+	}
 }
 
 static void entry_delete_cb(GtkTextBuffer *textbuf,
