@@ -88,3 +88,4 @@ src/common/ssl.c
 src/common/ssl_certificate.c
 src/common/template.c
 src/common/utils.c
+src/gtk/sslcertwindow.c
