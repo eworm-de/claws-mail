@@ -1,3 +1,8 @@
+2004-11-29 [colin]	0.9.12cvs175.1
+
+	* src/procmime.c
+		Sync with head (another format fix)
+
 2004-11-29 [colin]	0.9.12cvs174.1
 
 	* src/pop.c
