@@ -49,10 +49,8 @@ struct _PrefsFolderItem {
 	gchar *default_to;
 	gboolean enable_folder_chmod;
 	gint folder_chmod;
-/*WWP_BEGIN*/
 	gboolean enable_default_account;
 	gint default_account;
-/*WWP_END*/
 };
 
 typedef struct _PrefsFolderItem PrefsFolderItem;
