@@ -1,3 +1,10 @@
+2002-07-21 [alfons]	0.7.8claws83
+	
+	* src/summaryview.c
+		sort message list when selecting unthread messages
+		(closes "[ 501593 ] switching threaded view doesn't sort"
+		reported by Simon Schubert)
+
 2002-07-20 [alfons]	0.7.8claws82
 	
 	* src/matcher.c
