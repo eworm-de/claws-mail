@@ -1,3 +1,9 @@
+2001-05-01 [alfons]
+
+	0.4.66claws1
+	
+	* sync with 0.4.65
+
 2001-05-01 [sergey]
 
 	* src/prefs_account.c (Basic, prefs_account_basic_create): new

@@ -5,10 +5,10 @@ PACKAGE=sylpheed
 dnl version number
 MAJOR_VERSION=0
 MINOR_VERSION=4
-MICRO_VERSION=65
-INTERFACE_AGE=65
-BINARY_AGE=65
-EXTRA_VERSION=claws7
+MICRO_VERSION=66
+INTERFACE_AGE=66
+BINARY_AGE=66
+EXTRA_VERSION=claws1
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl
@@ -188,7 +188,7 @@ AC_STRUCT_TM
 dnl AC_CHECK_TYPE(wint_t, unsigned int) does not work because wint_t
 dnl may be defined only in wchar.h (this happens with gcc-2.96).
 dnl So we need to use this extended macro.
-sv_CHECK_TYPE(wint_t, unsigned int,
+SYLPHEED_CHECK_TYPE(wint_t, unsigned int,
 [
 #if HAVE_WCHAR_H
 #include <wchar.h>

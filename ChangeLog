@@ -1,3 +1,21 @@
+2001-05-01
+
+	* version 0.4.65
+
+	* src/folder.c: folder_init(): added the method imap_remove_folder.
+	* src/folderview.c: folderview_rm_imap_folder_cb(): made it
+	  actually remove folder from IMAP4 server.
+	* src/imap.[ch]: imap_create_folder(): made it actually create
+	  folder on IMAP4 server.
+	  imap_remove_folder(): added.
+	  imap_create(), imap_delete(): added.
+	* src/summaryview.c: summary_execute_delete(): don't check trash
+	  if folder type is not F_MH.
+	* thanks to Ishihara for the above changes.
+	* configure.in
+	  ac/check-type.m4: better wint_t typedef detection (renamed
+	  sv_CHECK_TYPE to SYLPHEED_CHECK_TYPE).
+
 2001-04-30
 
 	* src/recv.c: recv_bytes_write(): fixed another bug that caused

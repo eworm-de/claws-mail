@@ -1,3 +1,21 @@
+2001-05-01
+
+	* version 0.4.65
+
+	* src/folder.c: folder_init(): メソッド imap_remove_folder を追加。
+	* src/folderview.c: folderview_rm_imap_folder_cb(): 実際に IMAP4
+	  サーバからフォルダを削除するようにした。
+	* src/imap.[ch]: imap_create_folder(): 実際に IMAP4 サーバにフォルダ
+	  を作成するようにした。
+	  imap_remove_folder(): 追加。
+	  imap_create(), imap_delete(): 追加。
+	* src/summaryview.c: summary_execute_delete(): フォルダタイプが
+	  F_MH でなければ trash をチェックしないようにした。
+	* 上記の変更に関して石原さんに感謝。
+	* configure.in
+	  ac/check-type.m4: wint_t の typedef 検出を改良(sv_CHECK_TYPE を
+	  SYLPHEED_CHECK_TYPE に改名)。
+
 2001-04-30
 
 	* src/recv.c: recv_bytes_write(): 無限ループとバッファオーバーラン
