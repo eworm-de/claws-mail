@@ -1,3 +1,10 @@
+2004-09-03 [colin]	0.9.12cvs93
+
+	* src/summaryview.c
+		Next/Prev unread message should start
+		from next/prev node (especially if 
+		mark_as_read_delay != 0)
+
 2004-09-03 [colin]	0.9.12cvs92
 
 	* src/prefs_common.c

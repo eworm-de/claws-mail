@@ -1238,7 +1238,7 @@ void summary_select_prev_unread(SummaryView *summaryview)
 	GtkCTreeNode *node;
 
 	node = summary_find_prev_flagged_msg
-		(summaryview, summaryview->selected, MSG_UNREAD, FALSE);
+		(summaryview, summaryview->selected, MSG_UNREAD, TRUE);
 
 	if (!node) {
 		AlertValue val = 0;
@@ -1277,7 +1277,7 @@ void summary_select_next_unread(SummaryView *summaryview)
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 
 	node = summary_find_next_flagged_msg
-		(summaryview, node, MSG_UNREAD, FALSE);
+		(summaryview, node, MSG_UNREAD, TRUE);
 	
 	if (node)
 		summary_select_node(summaryview, node, TRUE, FALSE);
