@@ -1,3 +1,9 @@
+2003-03-06 [paul]	0.8.10claws90
+
+	* src/Makefile.am
+		remove reference to gtkxtext.h as its no longer in
+		the repository
+
 2003-03-06 [paul]	0.8.10claws89
 
 	* sync with 0.8.10cvs25
