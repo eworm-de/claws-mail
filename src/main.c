@@ -53,6 +53,7 @@
 #include "prefs_actions.h"
 #include "prefs_ext_prog.h"
 #include "prefs_fonts.h"
+#include "prefs_msg_colors.h"
 #include "prefs_spelling.h"
 #include "prefs_themes.h"
 #include "prefs_wrapping.h"
@@ -261,6 +262,7 @@ int main(int argc, char *argv[])
 	prefs_fonts_init();
 	prefs_ext_prog_init();
 	prefs_wrapping_init();
+	prefs_msg_colors_init();
 #ifdef USE_ASPELL
 	gtkaspell_checkers_init();
 	prefs_spelling_init();
@@ -439,6 +441,7 @@ static void exit_sylpheed(MainWindow *mainwin)
 	prefs_fonts_done();
 	prefs_ext_prog_done();
 	prefs_wrapping_done();
+	prefs_msg_colors_done();
 #ifdef USE_ASPELL       
 	prefs_spelling_done();
 	gtkaspell_checkers_quit();

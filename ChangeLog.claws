@@ -1,3 +1,13 @@
+2004-06-30 [paul]	0.9.12cvs2
+
+	* po/POTFILES.in
+	  src/Makefile.am
+	  src/main.c
+	  src/prefs_common.c
+	  src/prefs_msg_colors.[ch]	** NEW FILES **
+	  	move message colouring options to
+		'/Other Preferences/Message View/Colors'
+
 2004-06-30 [paul]	0.9.12cvs1
 
 	* po/POTFILES.in
