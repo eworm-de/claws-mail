@@ -1,3 +1,26 @@
+2002-02-11
+
+	* version 0.7.1
+
+2002-02-11
+
+	* src/compose.[ch]
+	  src/gtkutils.[ch]
+	  src/prefs_template.c
+	  src/quote_fmt.h
+	  src/quote_fmt_parse.y
+	  src/summaryview.c
+	  src/utils.[ch]: メッセージテキストの部分が選択されていれば、
+	  メッセージ本文全体の代わりにそれを引用文として使うようにした
+	  (Darko Koruga さん thanks)。
+	  src/utils.[ch]: str_open_as_stream(): 新規。与えられた文字列
+	  に対して一時的なストリームを返す。
+	* src/main.c: "--send" コマンドラインオプションを追加。
+	* src/compose.c: compose_reply_set_entry(): Reply-To と to_all が
+	  両方指定されていれば From のアドレスを Cc に追加。
+	* Makefile.am: .tar.bz2 パッケージ中の RPM spec ファイルの Source:
+	  行を修正。
+
 2002-02-07
 
 	* src/procmsg.c: procmsg_open_message(): キャッシュが存在しない

@@ -248,6 +248,25 @@ void gtkut_combo_set_items(GtkCombo *combo, const gchar *str1, ...)
 	g_list_free(combo_items);
 }
 
+gchar *gtkut_editable_get_selection(GtkEditable *editable)
+{
+	guint start_pos, end_pos;
+
+	g_return_if_fail(editable != NULL);
+
+	if (!editable->has_selection) return NULL;
+
+	if (editable->selection_start_pos < editable->selection_end_pos) {
+		start_pos = editable->selection_start_pos;
+		end_pos = editable->selection_end_pos;
+	} else {
+		start_pos = editable->selection_end_pos;
+		end_pos = editable->selection_start_pos;
+	}
+
+	return gtk_editable_get_chars(editable, start_pos, end_pos);
+}
+
 /*
  * Walk through the widget tree and disclaim the selection from all currently
  * realized GtkEditable widgets.
@@ -484,26 +503,4 @@ void gtkut_widget_set_composer_icon(GtkWidget *widget)
 		PIXMAP_CREATE(widget, xpm, bmp, stock_mail_compose_xpm);
 	}
 	gdk_window_set_icon(widget->window, NULL, xpm, bmp);	
-}
-
-gchar *gtkut_get_selection(GtkWidget *widget)
-{
-	gchar *seltext = NULL;
-	guint start_pos, end_pos;
-	GtkEditable *editable = (GtkEditable *) widget;
-
-	if (editable->has_selection) {
-		if (editable->selection_start_pos < editable->selection_end_pos) {
-			start_pos = editable->selection_start_pos;
-			end_pos = editable->selection_end_pos;
-		}
-		else {
-			start_pos = editable->selection_end_pos;
-			end_pos = editable->selection_start_pos;
-		}
-
-		seltext = gtk_editable_get_chars(editable, start_pos, end_pos);
-	}
-
-	return seltext;
 }

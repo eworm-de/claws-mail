@@ -1,3 +1,26 @@
+2002-02-11
+
+	* version 0.7.1
+
+2002-02-11
+
+	* src/compose.[ch]
+	  src/gtkutils.[ch]
+	  src/prefs_template.c
+	  src/quote_fmt.h
+	  src/quote_fmt_parse.y
+	  src/summaryview.c
+	  src/utils.[ch]: if the part of the message text is selected, use
+	  it for quoted text instead of the entire message body (thanks to
+	  Darko Koruga).
+	  src/utils.[ch]: str_open_as_stream(): new. It returns an
+	  temporary stream for the given string.
+	* src/main.c: added "--send" command line option.
+	* src/compose.c: compose_reply_set_entry(): add From address to
+	  Cc if Reply-To and to_all are both specified.
+	* Makefile.am: correct the Source: line in the RPM spec file in
+	  .tar.bz2 package.
+
 2002-02-07
 
 	* src/procmsg.c: procmsg_open_message(): fetch message if the cache

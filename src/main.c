@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,6 +65,7 @@
 #include "import.h"
 #include "manage_window.h"
 #include "alertpanel.h"
+#include "statusbar.h"
 #include "addressbook.h"
 #include "compose.h"
 #include "folder.h"
@@ -110,6 +111,8 @@ static void lock_socket_input_cb	(gpointer	   data,
 static gchar *get_socket_name		(void);
 
 static void open_compose_new_with_recipient	(const gchar	*address);
+
+static void send_queue			(void);
 
 #if 0
 /* for gettext */
@@ -302,6 +305,9 @@ int main(int argc, char *argv[])
 
 	inc_autocheck_timer_init(mainwin);
 
+	/* ignore SIGPIPE signal for preventing sudden death of program */
+	signal(SIGPIPE, SIG_IGN);
+
 	if (cmd.receive_all || prefs_common.chk_on_startup)
 		inc_all_account_mail(mainwin);
 	else if (cmd.receive)
@@ -311,14 +317,8 @@ int main(int argc, char *argv[])
 
 	if (cmd.compose)
 		open_compose_new_with_recipient(cmd.compose_mailto);
-
-	if (cmd.send) {
-		if (procmsg_send_queue() < 0)
-			alertpanel_error(_("Some errors occurred while sending queued messages."));
-	}
-	
-	/* ignore SIGPIPE signal for preventing sudden death of program */
-	signal(SIGPIPE, SIG_IGN);
+	if (cmd.send)
+		send_queue();
 
 	gtk_main();
 
@@ -352,13 +352,13 @@ static void parse_cmd_opt(int argc, char *argv[])
 					cmd.compose_mailto = p;
 				i++;
 			}
+		} else if (!strncmp(argv[i], "--send", 6)) {
+			cmd.send = TRUE;
 		} else if (!strncmp(argv[i], "--version", 9)) {
 			puts("Sylpheed version " VERSION);
 			exit(0);
 		} else if (!strncmp(argv[i], "--status", 8)) {
 			cmd.status = TRUE;
-		} else if (!strncmp(argv[i], "--send", 6)) {
-			cmd.send = TRUE;
 		} else if (!strncmp(argv[i], "--help", 6)) {
 			g_print(_("Usage: %s [OPTION]...\n"),
 				g_basename(argv[0]));
@@ -366,7 +366,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 			puts(_("  --compose [address]    open composition window"));
 			puts(_("  --receive              receive new messages"));
 			puts(_("  --receive-all          receive new messages of all accounts"));
-			puts(_("  --send		 send all queued messages"));
+			puts(_("  --send                 send all queued messages"));
 			puts(_("  --status               show the total number of messages"));
 			puts(_("  --debug                debug mode"));
 			puts(_("  --help                 display this help and exit"));
@@ -488,13 +488,6 @@ static gint prohibit_duplicate_launch(void)
 		fd_write(uxsock, "receive_all\n", 12);
 	else if (cmd.receive)
 		fd_write(uxsock, "receive\n", 8);
-	else if (cmd.send) {
-		gchar buf[BUFFSIZE];
-
-		fd_write(uxsock, "send\n", 5);
-		fd_gets(uxsock, buf, sizeof(buf));
-		fputs(buf, stdout);
-	}
 	else if (cmd.compose) {
 		gchar *compose_str;
 
@@ -505,6 +498,8 @@ static gint prohibit_duplicate_launch(void)
 
 		fd_write(uxsock, compose_str, strlen(compose_str));
 		g_free(compose_str);
+	} else if (cmd.send) {
+		fd_write(uxsock, "send\n", 5);
 	} else if (cmd.status) {
 		gchar buf[BUFFSIZE];
 
@@ -537,23 +532,10 @@ static void lock_socket_input_cb(gpointer data,
 	} else if (!strncmp(buf, "receive", 7)){
 		main_window_popup(mainwin);
 		inc_mail(mainwin);
-	} else if (!strncmp(buf, "send", 4)) {
-		gint queued = get_queued_message_num();
-
-		if (queued > 0) {
-			if (procmsg_send_queue() < 0)
-				g_snprintf(buf, sizeof(buf),
-					"%s\n", /* avoids adding another translatable */
-					_("Some errors occurred while sending queued messages."));
-			else 	/* queue sent ok */
-				g_snprintf(buf, sizeof(buf), _("\%d queued message(s) sent\n"), queued);
-		} 
-		else {
-			g_snprintf(buf, sizeof(buf), "%s\n", _("No queued messages found."));
-		}
-		fd_write(sock, buf, strlen(buf));
 	} else if (!strncmp(buf, "compose", 7)) {
 		open_compose_new_with_recipient(buf + strlen("compose") + 1);
+	} else if (!strncmp(buf, "send", 4)) {
+		send_queue();
 	} else if (!strncmp(buf, "status", 6)) {
 		guint new, unread, total;
 
@@ -568,7 +550,7 @@ static void lock_socket_input_cb(gpointer data,
 static void open_compose_new_with_recipient(const gchar *address)
 {
 	gchar *addr = NULL;
-			
+
 	if (address) {
 		Xstrdup_a(addr, address, return);
 		g_strstrip(addr);
@@ -578,4 +560,24 @@ static void open_compose_new_with_recipient(const gchar *address)
 		compose_new_with_recipient(NULL, addr);
 	else
 		compose_new(NULL);
+}
+
+static void send_queue(void)
+{
+	GList *list;
+
+	if (procmsg_send_queue() < 0)
+		alertpanel_error(_("Some errors occurred while sending queued messages."));
+
+	statusbar_pop_all();
+
+	for (list = folder_get_list(); list != NULL; list = list->next) {
+		Folder *folder;
+
+		folder = list->data;
+		if (folder->queue) {
+			folder_item_scan(folder->queue);
+			folderview_update_item(folder->queue, TRUE);
+		}
+	}
 }

@@ -23,14 +23,14 @@ int yylex(void);
 
 static MsgInfo *msginfo = NULL;
 static gboolean *visible = NULL;
-static gchar *seltext = NULL;
 static gint maxsize = 0;
 static gint stacksize = 0;
 
 static gchar *buffer = NULL;
 static gint bufmax = 0;
 static gint bufsize = 0;
-static gchar *quote_str = NULL;
+static const gchar *quote_str = NULL;
+static const gchar *body = NULL;
 static gint error = 0;
 
 static void add_visibility(gboolean val)
@@ -51,7 +51,7 @@ static void remove_visibility(void)
 	stacksize--;
 }
 
-static void add_buffer(gchar *s)
+static void add_buffer(const gchar *s)
 {
 	gint len;
 
@@ -94,12 +94,12 @@ gchar *quote_fmt_get_buffer(void)
 		add_buffer(tmp); \
 	}
 
-void quote_fmt_init(MsgInfo *info, gchar *my_quote_str,
-		    const gchar *selectiontext)
+void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
+		    const gchar *my_body)
 {
 	quote_str = my_quote_str;
+	body = my_body;
 	msginfo = info;
-	seltext = (gchar *) selectiontext;
 	stacksize = 0;
 	add_visibility(TRUE);
 	if (buffer != NULL)
@@ -264,15 +264,16 @@ special:
 	}
 	| SHOW_MESSAGE
 	{
-		if (seltext) {
-			INSERT(seltext);
-		}
-		else if (msginfo->folder) {
+		if (msginfo->folder) {
 			gchar buf[BUFFSIZE];
 			FILE *fp;
 
-			if ((fp = procmime_get_first_text_content(msginfo))
-			    == NULL)
+			if (body)
+				fp = str_open_as_stream(body);
+			else
+				fp = procmime_get_first_text_content(msginfo);
+
+			if (fp == NULL)
 				g_warning(_("Can't get text part\n"));
 			else {
 				while (fgets(buf, sizeof(buf), fp) != NULL) {
@@ -285,51 +286,36 @@ special:
 	}
 	| SHOW_QUOTED_MESSAGE
 	{
-		gchar *tmp_file = NULL;
-
-		if (seltext)
-			tmp_file = write_buffer_to_file(seltext,
-							strlen(seltext));
-
-		if (msginfo->folder || tmp_file) {
-			gchar buf[BUFFSIZE];
-			FILE *fp;
-
-			if (tmp_file)
-				fp = fopen(tmp_file, "r");
-			else
-				fp = procmime_get_first_text_content(msginfo);
-
-			if (fp == NULL)
-				g_warning(_("Can't get text part\n"));
-			else {
-				while (fgets(buf, sizeof(buf), fp) != NULL) {
-					strcrchomp(buf);
-					if (quote_str)
-						INSERT(quote_str);
-					INSERT(buf);
-				}
-				fclose(fp);
-			}
-		}
-
-		if (tmp_file)
-			unlink(tmp_file);
-	}
-	| SHOW_MESSAGE_NO_SIGNATURE
-	{
-		gchar *tmp_file = NULL;
-
-		if (seltext)
-			tmp_file = write_buffer_to_file(seltext,
-							strlen(seltext));
-
 		if (msginfo->folder) {
 			gchar buf[BUFFSIZE];
 			FILE *fp;
 
-			if (tmp_file)
-				fp = fopen(tmp_file, "r");
+			if (body)
+				fp = str_open_as_stream(body);
+			else
+				fp = procmime_get_first_text_content(msginfo);
+
+			if (fp == NULL)
+				g_warning(_("Can't get text part\n"));
+			else {
+				while (fgets(buf, sizeof(buf), fp) != NULL) {
+					strcrchomp(buf);
+					if (quote_str)
+						INSERT(quote_str);
+					INSERT(buf);
+				}
+				fclose(fp);
+			}
+		}
+	}
+	| SHOW_MESSAGE_NO_SIGNATURE
+	{
+		if (msginfo->folder) {
+			gchar buf[BUFFSIZE];
+			FILE *fp;
+
+			if (body)
+				fp = str_open_as_stream(body);
 			else
 				fp = procmime_get_first_text_content(msginfo);
 
@@ -345,24 +331,15 @@ special:
 				fclose(fp);
 			}
 		}
-
-		if (tmp_file)
-			unlink(tmp_file);
 	}
 	| SHOW_QUOTED_MESSAGE_NO_SIGNATURE
 	{
-		gchar *tmp_file = NULL;
-
-		if (seltext)
-			tmp_file = write_buffer_to_file(seltext,
-							strlen(seltext));
-
-		if (msginfo->folder || tmp_file) {
+		if (msginfo->folder) {
 			gchar buf[BUFFSIZE];
 			FILE *fp;
 
-			if (tmp_file)
-				fp = fopen(tmp_file, "r");
+			if (body)
+				fp = str_open_as_stream(body);
 			else
 				fp = procmime_get_first_text_content(msginfo);
 
@@ -380,9 +357,6 @@ special:
 				fclose(fp);
 			}
 		}
-
-		if (tmp_file)
-			unlink(tmp_file);
 	}
 	| SHOW_BACKSLASH
 	{

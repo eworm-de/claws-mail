@@ -1842,20 +1842,28 @@ FILE *my_tmpfile(void)
 	return tmpfile();
 }
 
-gchar *write_buffer_to_file(const gchar *buf, guint bufsize)
+FILE *str_open_as_stream(const gchar *str)
 {
 	FILE *fp;
-	gchar *tmp_file = NULL;
+	size_t len;
 
-	tmp_file = get_tmp_file();
-	fp = fopen(tmp_file, "w");
-	if (fp) {
-		fwrite(buf, 1, bufsize, fp);
-		fclose(fp);
+	g_return_val_if_fail(str != NULL, NULL);
+
+	fp = my_tmpfile();
+	if (!fp) {
+		FILE_OP_ERROR("str_open_as_stream", "my_tmpfile");
+		return NULL;
 	}
-	else tmp_file = NULL;
 
-	return tmp_file;
+	len = strlen(str);
+	if (fwrite(str, len, 1, fp) != 1) {
+		FILE_OP_ERROR("str_open_as_stream", "fwrite");
+		fclose(fp);
+		return NULL;
+	}
+
+	rewind(fp);
+	return fp;
 }
 
 gint execute_async(gchar *const argv[])

@@ -102,6 +102,8 @@ void gtkut_clist_set_focus_row		(GtkCList	*clist,
 void gtkut_combo_set_items		(GtkCombo	*combo,
 					 const gchar	*str1, ...);
 
+gchar *gtkut_editable_get_selection	(GtkEditable	*editable);
+
 void gtkut_container_remove		(GtkContainer	*container,
 					 GtkWidget	*widget);
 
@@ -133,6 +135,4 @@ void gtkut_widget_init			(void);
 
 void gtkut_widget_set_app_icon		(GtkWidget	*widget);
 void gtkut_widget_set_composer_icon	(GtkWidget	*widget);
-
-gchar *gtkut_get_selection		(GtkWidget	*widget);
 #endif /* __GTKUTILS_H__ */

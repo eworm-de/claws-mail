@@ -173,7 +173,7 @@ static gchar *compose_quote_fmt			(Compose	*compose,
 						 MsgInfo	*msginfo,
 						 const gchar	*fmt,
 						 const gchar	*qmark,
-						 const gchar	*seltext);
+						 const gchar	*body);
 
 static void compose_reply_set_entry		(Compose	*compose,
 						 MsgInfo	*msginfo,
@@ -443,7 +443,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				  gboolean to_all,
 				  gboolean ignore_replyto,
 				  gboolean followup_and_reply_to,
-				  const gchar *seltext);
+				  const gchar *body);
 
 void compose_headerentry_changed_cb	   (GtkWidget	       *entry,
 					    ComposeHeaderEntry *headerentry);
@@ -799,26 +799,26 @@ Compose *compose_new_followup_and_replyto(PrefsAccount *account,
 */
 
 void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
-		   gboolean ignore_replyto, const gchar *seltext)
+		   gboolean ignore_replyto, const gchar *body)
 {
 	compose_generic_reply(msginfo, quote, to_all, ignore_replyto, FALSE,
-			      seltext);
+			      body);
 }
 
 void compose_followup_and_reply_to(MsgInfo *msginfo, gboolean quote,
 				   gboolean to_all,
 				   gboolean ignore_replyto,
-				   const gchar *seltext)
+				   const gchar *body)
 {
 	compose_generic_reply(msginfo, quote, to_all, ignore_replyto, TRUE,
-			      seltext);
+			      body);
 }
 
 static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				  gboolean to_all,
 				  gboolean ignore_replyto,
 				  gboolean followup_and_reply_to,
-				  const gchar *seltext)
+				  const gchar *body)
 {
 	Compose *compose;
 	PrefsAccount *account;
@@ -925,7 +925,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
 		quote_str = compose_quote_fmt(compose, msginfo,
 					      prefs_common.quotefmt,
-					      qmark, seltext);
+					      qmark, body);
 	}
 
 	if (prefs_common.auto_sig)
@@ -1166,7 +1166,7 @@ if (msginfo->var && *msginfo->var) { \
 }
 
 Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
-			 gboolean as_attach, const gchar *seltext)
+			 gboolean as_attach, const gchar *body)
 {
 	Compose *compose;
 	/*	PrefsAccount *account; */
@@ -1239,7 +1239,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
 		quote_str = compose_quote_fmt(compose, msginfo,
 					      prefs_common.fw_quotefmt, qmark,
-					      seltext);
+					      body);
 		compose_attach_parts(compose, msginfo);
 	}
 
@@ -1710,7 +1710,7 @@ static gchar *compose_parse_references(const gchar *ref, const gchar *msgid)
 
 static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 				const gchar *fmt, const gchar *qmark,
-				const gchar *seltext)
+				const gchar *body)
 {
 	GtkSText *text = GTK_STEXT(compose->text);
 	gchar *quote_str = NULL;
@@ -1731,7 +1731,7 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	}
 
 	if (fmt && *fmt != '\0') {
-		quote_fmt_init(msginfo, quote_str, seltext);
+		quote_fmt_init(msginfo, quote_str, body);
 		quote_fmt_scan_string(fmt);
 		quote_fmt_parse();
 
@@ -1764,9 +1764,10 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 				    gboolean to_all, gboolean ignore_replyto,
 				    gboolean followup_and_reply_to)
 {
-	GSList *cc_list;
+	GSList *cc_list = NULL;
 	GSList *cur;
-	gchar *from;
+	gchar *from = NULL;
+	gchar *replyto = NULL;
 	GHashTable *to_table;
 
 	g_return_if_fail(compose->account != NULL);
@@ -1780,11 +1781,6 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 				     ? compose->mailinglist
 				     : msginfo->from ? msginfo->from : ""),
 				     COMPOSE_TO);
-
-	if (compose->replyto && to_all)
-		compose_entry_append
-			(compose, compose->replyto, COMPOSE_CC);
-
 
 	if (compose->account->protocol == A_NNTP) {
 		if (ignore_replyto)
@@ -1819,15 +1815,30 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 
 	if (!to_all || compose->account->protocol == A_NNTP) return;
 
-	from = g_strdup(compose->replyto ? compose->replyto :
-			msginfo->from ? msginfo->from : "");
-	extract_address(from);
+	if (compose->replyto) {
+		Xstrdup_a(replyto, compose->replyto, return);
+		extract_address(replyto);
+	}
+	if (msginfo->from) {
+		Xstrdup_a(from, msginfo->from, return);
+		extract_address(from);
+	}
 
-	cc_list = address_list_append(NULL, msginfo->to);
+	if (compose->mailinglist && from) {
+		cc_list = address_list_append(cc_list, from);
+	}
+
+	if (replyto && from)
+		cc_list = address_list_append(cc_list, from);
+
+	if (!compose->mailinglist)
+		cc_list = address_list_append(cc_list, msginfo->to);
+
 	cc_list = address_list_append(cc_list, compose->cc);
 
 	to_table = g_hash_table_new(g_str_hash, g_str_equal);
-	g_hash_table_insert(to_table, from, GINT_TO_POINTER(1));
+	if (replyto)
+		g_hash_table_insert(to_table, replyto, GINT_TO_POINTER(1));
 	if (compose->account)
 		g_hash_table_insert(to_table, compose->account->address,
 				    GINT_TO_POINTER(1));
@@ -1844,7 +1855,6 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 		cur = next;
 	}
 	g_hash_table_destroy(to_table);
-	g_free(from);
 
 	if (cc_list) {
 		for (cur = cc_list; cur != NULL; cur = cur->next)
