@@ -1,3 +1,8 @@
+2003-01-05 [christoph]	0.8.8claws46
+
+	* src/imap.c
+		fix crash when no imap connection could be established
+
 2003-01-05 [paul]	0.8.8claws45
 
 	* src/mainwindow.c
