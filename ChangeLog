@@ -1,3 +1,14 @@
+2001-05-18
+
+	* src/gtkutils.[ch]: moved folderview_find_collapsed_parent() to
+	  gtkut_ctree_find_collapsed_parent().
+	* src/folderview.c: folderview_select_node(): automatically expand
+	  the parent folders when selected.
+	* configure.in: made the version number to 0.4.99 (0.5pre)
+	* src/main.c: main(): moved parse_cmd_opt() before gtk_init()
+	  so that X is not necessary for --help and --version.
+	  parse_cmd_opt(): changed g_get_prgname() to g_basename(argv[0]).
+
 2001-05-17
 
 	* src/main.c: lock_socket_input_cb(): changed fd_read() to fd_gets().

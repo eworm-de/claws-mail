@@ -327,7 +327,7 @@ FolderView *folderview_create(void)
 				 GTK_SIGNAL_FUNC(folderview_tree_collapsed),
 				 folderview);
 
-    gtk_signal_connect(GTK_OBJECT(ctree), "resize_column",
+        gtk_signal_connect(GTK_OBJECT(ctree), "resize_column",
 			   GTK_SIGNAL_FUNC(folderview_col_resized),
 			   folderview);
 
@@ -438,6 +438,10 @@ static void folderview_select_node(FolderView *folderview, GtkCTreeNode *node)
 		gtk_widget_grab_focus(folderview->summaryview->ctree);
 	else
 		gtk_widget_grab_focus(folderview->ctree);
+
+	while ((node = gtkut_ctree_find_collapsed_parent(ctree, node))
+	       != NULL)
+		gtk_ctree_expand(ctree, node);
 }
 
 void folderview_unselect(FolderView *folderview)
@@ -691,18 +695,6 @@ static gboolean folderview_have_unread_children(FolderView *folderview,
 	return FALSE;
 }
 
-static GtkCTreeNode *folderview_find_collapsed_parent(FolderView *folderview,
-						      GtkCTreeNode *node)
-{
-	if (!node) return NULL;
-
-	while ((node = GTK_CTREE_ROW(node)->parent) != NULL) {
-		if (!GTK_CTREE_ROW(node)->expanded)
-			return node;
-	}
-
-	return NULL;
-}
 
 static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 {
@@ -852,7 +844,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	if (use_bold) {
 		GtkCTreeNode *parent;
 
-		parent = folderview_find_collapsed_parent(folderview, node);
+		parent = gtkut_ctree_find_collapsed_parent(ctree, node);
 		if (parent)
 			folderview_update_node(folderview, parent);
 	}

@@ -1,3 +1,14 @@
+2001-05-18
+
+	* src/gtkutils.[ch]: folderview_find_collapsed_parent() を
+	  gtkut_ctree_find_collapsed_parent() に移動。
+	* src/folderview.c: folderview_select_node(): 選択されたときに
+	  親フォルダを自動的に展開するようにした。
+	* configure.in: バージョン番号を 0.4.99 (0.5pre) にした。
+	* src/main.c: main(): --help と --version に X が不要になるように
+	  parse_cmd_opt() を gtk_init() の前に移動。
+	  parse_cmd_opt(): g_get_prgname() を g_basename(argv[0]) に変更。
+
 2001-05-17
 
 	* src/main.c: lock_socket_input_cb(): fd_read() を fd_gets() に
