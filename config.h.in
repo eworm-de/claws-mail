@@ -31,6 +31,9 @@
 /* Define to `int' if <sys/types.h> doesn't define.  */
 #undef pid_t
 
+/* Define if you need to in order for stat and other things to work.  */
+#undef _POSIX_SOURCE
+
 /* Define to `unsigned' if <sys/types.h> doesn't define.  */
 #undef size_t
 
@@ -49,8 +52,16 @@
 /* Define if your <sys/time.h> declares struct tm.  */
 #undef TM_IN_SYS_TIME
 
+#undef ENABLE_NLS
+#undef HAVE_CATGETS
+#undef HAVE_GETTEXT
+#undef HAVE_LC_MESSAGES
+#undef HAVE_STPCPY
+
 #undef HAVE_GDK_PIXBUF
 #undef HAVE_GDK_IMLIB
+
+#undef USE_GTKGDK_XIM
 
 /* Whether to use multithread or not  */
 #undef USE_THREADS
@@ -82,12 +93,6 @@
 /* Define if you have the fchmod function.  */
 #undef HAVE_FCHMOD
 
-/* Define if you have the feof_unlocked function.  */
-#undef HAVE_FEOF_UNLOCKED
-
-/* Define if you have the fgets_unlocked function.  */
-#undef HAVE_FGETS_UNLOCKED
-
 /* Define if you have the flock function.  */
 #undef HAVE_FLOCK
 
@@ -114,9 +119,6 @@
 
 /* Define if you have the lockf function.  */
 #undef HAVE_LOCKF
-
-/* Define if you have the mempcpy function.  */
-#undef HAVE_MEMPCPY
 
 /* Define if you have the mkdir function.  */
 #undef HAVE_MKDIR
@@ -159,9 +161,6 @@
 
 /* Define if you have the towlower function.  */
 #undef HAVE_TOWLOWER
-
-/* Define if you have the tsearch function.  */
-#undef HAVE_TSEARCH
 
 /* Define if you have the uname function.  */
 #undef HAVE_UNAME
@@ -208,12 +207,6 @@
 /* Define if you have the <paths.h> header file.  */
 #undef HAVE_PATHS_H
 
-/* Define if you have the <stddef.h> header file.  */
-#undef HAVE_STDDEF_H
-
-/* Define if you have the <stdlib.h> header file.  */
-#undef HAVE_STDLIB_H
-
 /* Define if you have the <string.h> header file.  */
 #undef HAVE_STRING_H
 
@@ -241,28 +234,11 @@
 /* Define if you have the compface library (-lcompface).  */
 #undef HAVE_LIBCOMPFACE
 
+/* Define if you have the i library (-li).  */
+#undef HAVE_LIBI
+
 /* Define if you have the jconv library (-ljconv).  */
 #undef HAVE_LIBJCONV
 
 /* Define if you have the xpg4 library (-lxpg4).  */
 #undef HAVE_LIBXPG4
-
-/* Define if you have the iconv() function. */
-#undef HAVE_ICONV
-
-/* Define as const if the declaration of iconv() needs const. */
-#undef ICONV_CONST
-
-/* Define if you have <langinfo.h> and nl_langinfo(CODESET). */
-#undef HAVE_LANGINFO_CODESET
-
-/* Define if your <locale.h> file defines LC_MESSAGES. */
-#undef HAVE_LC_MESSAGES
-
-/* Define to 1 if translation of program messages to the user's native language
-   is requested. */
-#undef ENABLE_NLS
-
-/* Define if the GNU gettext() function is already present or preinstalled. */
-#undef HAVE_GETTEXT
-

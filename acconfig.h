@@ -7,6 +7,8 @@
 #undef HAVE_GDK_PIXBUF
 #undef HAVE_GDK_IMLIB
 
+#undef USE_GTKGDK_XIM
+
 /* Whether to use multithread or not  */
 #undef USE_THREADS
 

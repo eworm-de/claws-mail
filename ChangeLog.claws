@@ -1,3 +1,8 @@
+2001-04-25
+
+	* acconfig.h: added USE_GTKGDK_XIM definition for autoheader.
+	  [hiroyuki]
+
 2001-04-24
 	* modified gtkstext.c : buggy cursor navigation fixed, 
 	  and font descent also taken in account when drawing
