@@ -990,6 +990,7 @@ static void mimeview_save_all(MimeView *mimeview)
 		alertpanel_error(_("`%s' is not a directory."),
 				 dirname);
 		g_free (dirname);
+		dirname = NULL;
 		return;
 	}
 	
