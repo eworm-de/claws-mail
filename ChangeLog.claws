@@ -1,3 +1,19 @@
+2002-05-12 [alfons]	0.7.5claws18
+
+	* src/quote_fmt_lex.l
+	* src/quote_fmt_parse.y
+		allow quote / reply date & time format to be set using
+		%D{format}. format is a format string you'd pass to
+		strftime() (see man strftime, or the Display tab |
+		Date format setting).
+
+		Currently %D converts the date to local time. 
+
+2002-05-11 [paul]	0.7.5claws17
+
+	* sync with 0.7.5cvs19 (except src/prefs_folder_item.c)
+		see ChangeLog 2002-05-10 and 2002-05-11
+
 2002-05-11 [paul]	0.7.5claws17
 
 	* sync with 0.7.5cvs19 (except src/prefs_folder_item.c)
