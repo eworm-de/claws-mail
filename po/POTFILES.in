@@ -5,6 +5,8 @@ src/addrcache.c
 src/addrclip.c
 src/addressadd.c
 src/addressbook.c
+src/addrgather.c
+src/addrharvest.c
 src/addrindex.c
 src/addritem.c
 src/addrselect.c

@@ -1,3 +1,12 @@
+2002-03-15 [match]	0.7.4claws12
+
+	* src/addrharvest.[ch]
+	* src/addrgather.[ch]
+	* src/addressbook.[ch]
+	* src/mainwindow.c
+		included address harvester feature. still some
+		issues with address parsing that I will fix.
+
 2002-03-15 [match]	0.7.4claws11
 
 	* src/addrbook.[ch]
