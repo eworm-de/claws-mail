@@ -785,13 +785,15 @@ gchar *conv_iconv_strdup(const gchar *inbuf,
 	outbuf_p = outbuf;
 	out_left = out_size;
 
-	while ((n_conv = iconv(cd, (gchar **)&inbuf_p, &in_left,
+	while ((n_conv = iconv(cd, (ICONV_CONST gchar **)&inbuf_p, &in_left,
 			       &outbuf_p, &out_left)) < 0) {
 		if (EILSEQ == errno) {
-			*outbuf_p = '\0';
+			g_free(outbuf);
+			outbuf = NULL;
 			break;
 		} else if (EINVAL == errno) {
-			*outbuf_p = '\0';
+			g_free(outbuf);
+			outbuf = NULL;
 			break;
 		} else if (E2BIG == errno) {
 			out_size *= 2;
@@ -806,6 +808,11 @@ gchar *conv_iconv_strdup(const gchar *inbuf,
 			*outbuf_p = '\0';
 			break;
 		}
+	}
+
+	if (outbuf) {
+		iconv(cd, NULL, NULL, &outbuf_p, &out_left);
+		outbuf = g_realloc(outbuf, strlen(outbuf) + 1);
 	}
 
 	iconv_close(cd);
