@@ -2330,12 +2330,7 @@ void summary_step(SummaryView *summaryview, GtkScrollType type)
 
 	gtk_signal_emit_by_name(GTK_OBJECT(ctree), "scroll_vertical",
 				type, 0.0);
-	gtk_clist_select_row(GTK_CLIST(ctree), 
-			     gtkut_ctree_get_nth_from_node(
-					GTK_CTREE(ctree),
-					summaryview->selected),
-			     5);
-
+	
 	if (summaryview->msg_is_toggled_on)
 		summary_display_msg(summaryview, summaryview->selected, FALSE);
 }
