@@ -1,3 +1,9 @@
+2003-04-20 [paul]
+
+	* tools/README
+	  tools/outlook2sylpheed.pl
+	  	updated and improved by Ricardo Mones Lastra
+
 2003-04-18 [oliver]	0.8.11claws102
 
 	* src/inc.c 

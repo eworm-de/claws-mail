@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-#  * Copyright 2002 Ricardo Mones Lastra <mones@aic.uniovi.es>
+#  * Copyright 2002-2003 Ricardo Mones Lastra <mones@aic.uniovi.es>
 #  *
 #  * This file is free software; you can redistribute it and/or modify it
 #  * under the terms of the GNU General Public License as published by
@@ -24,12 +24,23 @@
 # 	kmail2sylpheed.pl by Paul Mangan <claws@thewildbeast.co.uk>
 #
 # See README file for details and usage.
-#  
+#
 
-# parse required parameter
-die "Required filename missing\nSyntax: $0 fullpathname\n" unless (defined($ARGV[0]));
-$outl_file = $ARGV[0];
+$nboffields = 28;       # change this only if you did read README
 
+# parse parameters
+$do_csv = 0;
+die "Error: required filename missing\n" unless (defined($ARGV[0]));
+$_=$ARGV[0];
+if (/--csv/) {
+	die "Error: required filename missing\n" unless (defined($ARGV[1]));
+	$do_csv = 1;
+	$outl_file = $ARGV[1];
+}
+else {
+	$outl_file = $ARGV[0];
+}
+# some init
 $sylconf = ".sylpheed";
 $indexname = "$sylconf/addrbook--index.xml";
 
@@ -37,7 +48,7 @@ $indexname = "$sylconf/addrbook--index.xml";
 $time = time;
 
 chdir;
-opendir(SYLPHEED, $sylconf) || die("can't open $sylconf directory\n");
+opendir(SYLPHEED, $sylconf) || die("Error: can't open $sylconf directory\n");
 	push(@cached,(readdir(SYLPHEED)));
 closedir(SYLPHEED);
 
@@ -54,33 +65,134 @@ $last_one =~ s/.xml$//;
 $last_one++;
 $new_book = "/addrbook-"."$last_one".".xml";
 
+# some subs
+# warning: output file is global
+sub write_header {
+	print NEWB "<?xml version=\"1.0\" encoding=\"US-ASCII\" ?>\n";
+	print NEWB "<address-book name=\"Outlook Address Book\" >\n"; 
+}
+
+sub write_footer {
+	print NEWB "</address-book>\n";
+}
+
+sub write_person_h {
+	my($fn, $ln, $nn, $cn) = @_;
+	# one of them must be given
+	if (($fn eq "") and ($ln eq "") and ($nn eq "") and ($cn eq "")) { 
+		$cn = "No name provided";
+		# but return may break XML structure	
+	}
+	print NEWB "  <person uid=\"", $time++, "\" first-name=\"", $fn, "\" ";
+	print NEWB "last-name=\"", $ln, "\" nick-name=\"", $nn, "\" cn=\"", $cn, "\" >\n";
+}
+
+sub write_person_f {
+	print NEWB "  </person>\n";
+}
+
+sub write_addrlist_h {
+	print NEWB "    <address-list>\n";
+}
+
+sub write_addrlist_f {
+	print NEWB "    </address-list>\n";
+}
+
+sub write_address {
+	my($al, $em, $re) = @_;
+	if ($em eq "") {
+		$em = "No e-mail address"; 
+		# email is a must -> no address breaks sylpheed display
+		# (sylpheed says file is ok but no name is shown) 
+		# maybe this is a bug on sylpheed?
+	}
+	print NEWB "      <address uid=\"", $time++, "\" ";
+	print NEWB "alias=\"", $al, "\" email=\"", $em, "\" remarks=\"", $re, "\" />\n";
+}
+
+sub write_attrlist_h {
+	print NEWB "    <attribute-list>\n";
+}
+
+sub write_attrlist_f {
+	print NEWB "    </attribute-list>\n";
+}
+
+sub write_attribute {
+	my($aname, $aval) = @_;
+	if (($aname eq "") or ($aval eq "")) { return; } # both are must
+	print NEWB "      <attribute uid=\"", $time++, "\" ";
+	print NEWB "name=\"", $aname, "\" >", $aval, "</attribute>\n";
+}
+
+sub process_text {
+	write_header();
+	$count = 0;
+	while (<OUTL>) {
+		chomp;
+		if (/\s+[0-9]+\s+(.+)/) { $_ = $1; } 
+		else { $count += 2 and die "Error: wrong format at line $count \n"; }
+		@field = split(/;/); # first is name, second mail addr
+		write_person_h("","","",$field[0]);
+		write_addrlist_h();
+		$field[1] =~ s/\r//; # beware, dangerous chars inside ;)
+		write_address("",$field[1],"");
+		write_addrlist_f();
+		write_person_f();
+		++$count;
+	}
+	write_footer();
+}
+
+sub process_csv {
+	write_header();
+	$count = 0;
+	while (<OUTL>) {
+		chomp;
+		# do something useful: quote XML chars
+		s/\&/&amp;/g;
+		s/\</&lt;/g;
+		s/\>/&gt;/g;
+		s/\'/&apos;/g;
+		s/\"/&quot;/g;
+		@field = split(/,/);
+		if ($#field != $nboffields) { $count += 2 and die "Error: wrong format at line $count \n"; }
+		# First Name, Last Name, Nickname, Name
+		write_person_h($field[0],$field[1],$field[4],$field[3]);
+		write_addrlist_h();
+		write_address("",$field[5],$field[$nboffields - 1]);
+		write_addrlist_f();
+		write_attrlist_h(); # the remaining values as attributes 
+		foreach $a (2, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27) {
+			# add only filled fields (should be trimmed?)
+			if (defined($field[$a]) && $field[$a] ne "") {
+				write_attribute($headerline[$a],$field[$a]);
+			}
+		}
+		write_attrlist_f();
+		write_person_f();
+		++$count;
+	}
+	write_footer();
+}
+
 # ok, was enough, do some more bit bashing now
 open(OUTL, $outl_file) 
-	or die "can't open $outl_file for reading\n";
-open(NEWB, '>', "$sylconf/$new_book") 
-	or die "can't open $new_book for writting\n";
-
-$_ = <OUTL>; # skip first line
-$count = 0;
-# header
-print NEWB "<?xml version=\"1.0\" encoding=\"US-ASCII\" ?>\n";
-print NEWB "<address-book name=\"Outlook Address Book\" >\n"; 
-while (<OUTL>) {
-	chomp;
-	if (/\s+[0-9]+\s+(.+)/) { $_ = $1; } 
-	else { $count += 2 and die "wrong format at line $count \n"; }
-	@field = split(';',$_); # first is name, second mail addr
-	print NEWB "<person uid=\"", $time, "\" first-name=\"\"";
-	print NEWB "last-name=\"\" nick-name=\"\" cn=\"", $field[0];
-	print NEWB "\" >\n<address-list>\n";
-	++$time;
-	$field[1] =~ s/\r//; # beware, dangerous chars inside ;)
-	print NEWB "<address uid=\"", $time, "\" alias=\"\" email=\"", $field[1];
-	print NEWB "\" /> \n</address-list>\n</person>\n";
-	++$time;
-	++$count;
+	or die "Error: can't open $outl_file for reading\n";
+# 1st line: file format checking (csv) or discarding (default)
+$_ = <OUTL>;
+chomp;
+if ($do_csv) {
+	@headerline = split(/,/);
+	# check before creating output file
+	die "Error: unknown csv file format\n" 
+		unless ($#headerline == $nboffields);
 }
-print NEWB "</address-book>\n";
+open(NEWB, '>', "$sylconf/$new_book") 
+	or die "Error: can't open $sylconf/$new_book for writting\n";
+if ($do_csv) { process_csv(); }
+else { process_text(); }
 
 close NEWB;
 close OUTL;
@@ -88,7 +200,7 @@ close OUTL;
 # update index (more Paul's code :)
 
 open(INDX, $indexname) 
-	or die "can't open $indexname for reading\n";
+	or die "Error: can't open $indexname for reading\n";
 @index_file = <INDX>;
 close INDX;
 
@@ -99,7 +211,7 @@ foreach $index_line (@index_file) {
 	}
 }
 open (INDX, '>', $indexname)
-	or die "can't open $indexname for writting\n";
+	or die "Error: can't open $indexname for writting\n";
 print INDX "$new_index";
 close INDX;
 
