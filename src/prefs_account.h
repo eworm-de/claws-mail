@@ -66,7 +66,6 @@ struct _PrefsAccount
 
 	/* Server info */
 	RecvProtocol protocol;
-	gchar *inbox;
 	gchar *recv_server;
 	gchar *smtp_server;
 	gchar *nntp_server;
@@ -85,7 +84,6 @@ struct _PrefsAccount
 	SSLSMTPType ssl_smtp;
 #endif /* USE_SSL */
 
-
 	/* Temporarily preserved password */
 	gchar *tmp_pass;
 	gchar *tmp_smtp_passwd;
@@ -95,6 +93,7 @@ struct _PrefsAccount
 	gboolean getall;
 	gboolean recv_at_getall;
 	gboolean filter_on_recv;
+	gchar *inbox;
 
 	gchar *imap_dir;
 
@@ -102,12 +101,6 @@ struct _PrefsAccount
 	gboolean  add_date;
 	gboolean  gen_msgid;
 	gboolean  add_customhdr;
-	gboolean  set_autocc;
-	gchar    *auto_cc;
-	gboolean  set_autobcc;
-	gchar    *auto_bcc;
-	gboolean  set_autoreplyto;
-	gchar    *auto_replyto;
 	gboolean use_smtp_auth;
 	gchar	 *smtp_userid;
 	gchar	 *smtp_passwd;
@@ -117,6 +110,12 @@ struct _PrefsAccount
 
 	/* Compose */
 	gchar *sig_path;
+	gboolean  set_autocc;
+	gchar    *auto_cc;
+	gboolean  set_autobcc;
+	gchar    *auto_bcc;
+	gboolean  set_autoreplyto;
+	gchar    *auto_replyto;
 
 #if USE_GPGME
 	/* Privacy */

@@ -1,3 +1,8 @@
+2001-10-30 [paul]	0.6.4claws16
+
+		* sync with sylpheed 0.6.4cvs6
+			see ChangeLog entries 2001-10-26 to 2001-10-30
+
 2001-10-29 [paul]	0.6.4claws15
 
 	* src/html.c, src/textview.c

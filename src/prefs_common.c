@@ -891,7 +891,7 @@ static void prefs_receive_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY (checkbtn_incext, hbox);
 
-	label_incext = gtk_label_new (_("Program path"));
+	label_incext = gtk_label_new (_("Command"));
 	gtk_widget_show (label_incext);
 	gtk_box_pack_start (GTK_BOX (hbox), label_incext, FALSE, FALSE, 0);
 
@@ -1037,6 +1037,7 @@ static void prefs_send_create(void)
 	GtkWidget *optmenu_menu;
 	GtkWidget *menuitem;
 	GtkWidget *checkbtn_returnreceipt;
+	GtkWidget *label_charset_desc;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1058,7 +1059,7 @@ static void prefs_send_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox_extsend), hbox1, FALSE, FALSE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_extsend, hbox1);
 
-	label_extsend = gtk_label_new (_("Program path"));
+	label_extsend = gtk_label_new (_("Command"));
 	gtk_widget_show (label_extsend);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_extsend, FALSE, FALSE, 0);
 
@@ -1093,7 +1094,7 @@ static void prefs_send_create(void)
 
 	optmenu = gtk_option_menu_new ();
 	gtk_widget_show (optmenu);
-	gtk_box_pack_start(GTK_BOX (hbox1), optmenu, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox1), optmenu, FALSE, FALSE, 0);
 
 	optmenu_menu = gtk_menu_new ();
 
@@ -1135,6 +1136,18 @@ static void prefs_send_create(void)
 	SET_MENUITEM(_("Korean (EUC-KR)"),		 CS_EUC_KR);
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu), optmenu_menu);
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
+
+	label_charset_desc = gtk_label_new
+		(_("If `Automatic' is selected, the optimal encoding\n"
+		   "for the current locale will be used."));
+	gtk_widget_show (label_charset_desc);
+	gtk_box_pack_start (GTK_BOX (hbox1), label_charset_desc,
+			    FALSE, FALSE, 0);
+	gtk_label_set_justify(GTK_LABEL (label_charset_desc), GTK_JUSTIFY_LEFT);
 
 	send.checkbtn_extsend = checkbtn_extsend;
 	send.entry_extsend    = entry_extsend;
@@ -2133,7 +2146,9 @@ static void prefs_interface_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox3), hbox1, FALSE, FALSE, 0);
 
 	label = gtk_label_new
-		(_("(Messages will be marked until execution if this is turned off)"));
+		(_("(Messages will be marked until execution\n"
+		   " if this is turned off)"));
+	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 8);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 

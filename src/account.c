@@ -83,8 +83,6 @@ static void account_down		(void);
 
 static void account_set_default		(void);
 
-static void account_set_recv_at_get_all	(void);
-
 static void account_edit_close		(void);
 static gint account_delete_event	(GtkWidget	*widget,
 					 GdkEventAny	*event,
@@ -274,9 +272,6 @@ void account_add(void)
 	if (ac_prefs->is_default)
 		account_set_as_default(ac_prefs);
 
-	if (ac_prefs->recv_at_getall)
-		account_set_as_recv_at_get_all(ac_prefs);
-
 	account_clist_set();
 
 	if (ac_prefs->protocol == A_IMAP4 || ac_prefs->protocol == A_NNTP) {
@@ -326,24 +321,6 @@ PrefsAccount *account_get_default(void)
 
 	return NULL;
 }
-
-void account_set_as_recv_at_get_all(PrefsAccount *ac_prefs)
-{
-	PrefsAccount *ap;
-	GList *cur;
-
-	for (cur = account_list; cur != NULL; cur = cur->next) {
- 		ap = (PrefsAccount *)cur->data;
- 		if (ap->account_name == ac_prefs->account_name) {
-			if (ap->recv_at_getall == 0)
-				ap->recv_at_getall = 1;
-			else
-				ap->recv_at_getall = 0;
-		}
-        }
-
-}
-
 
 void account_set_missing_folder(void)
 {
@@ -396,6 +373,7 @@ static void account_edit_create(void)
 {
 	GtkWidget *window;
 	GtkWidget *vbox;
+	GtkWidget *label;
 	GtkWidget *hbox;
 	GtkWidget *scrolledwin;
 	GtkWidget *clist;
@@ -410,8 +388,6 @@ static void account_edit_create(void)
 	GtkWidget *down_btn;
 
 	GtkWidget *default_btn;
-
-        GtkWidget *recvatgetall_btn;
 
 	GtkWidget *hbbox;
 	GtkWidget *close_btn;
@@ -433,9 +409,20 @@ static void account_edit_create(void)
 			    GTK_SIGNAL_FUNC (manage_window_focus_out), NULL);
 	gtk_widget_realize(window);
 
-	vbox = gtk_vbox_new (FALSE, 12);
+	vbox = gtk_vbox_new (FALSE, 10);
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (window), vbox);
+
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+
+	label = gtk_label_new
+		(_("New messages will be checked in this order. Click in the 'G' column\n"
+		   "to enable message retrieval by `Get all' for that account."));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 4);
+	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 
 	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);
@@ -520,13 +507,7 @@ static void account_edit_create(void)
 	gtk_signal_connect (GTK_OBJECT(default_btn), "clicked",
 			    GTK_SIGNAL_FUNC (account_set_default), NULL);
 
-	recvatgetall_btn = gtk_button_new_with_label (_(" Enable/Disable 'Receive at Get all' "));
-	gtk_widget_show (recvatgetall_btn);
-	gtk_box_pack_start (GTK_BOX (vbox2), recvatgetall_btn, TRUE, FALSE, 0);
-	gtk_signal_connect (GTK_OBJECT(recvatgetall_btn), "clicked",
-			    GTK_SIGNAL_FUNC (account_set_recv_at_get_all), NULL);
-
-        gtkut_button_set_create(&hbbox, &close_btn, _("Close"),
+	gtkut_button_set_create(&hbbox, &close_btn, _("Close"),
 				NULL, NULL, NULL, NULL);
 	gtk_widget_show(hbbox);
 	gtk_box_pack_end (GTK_BOX (hbox), hbbox, FALSE, FALSE, 0);
@@ -672,23 +653,6 @@ static void account_set_default(void)
 	main_window_reflect_prefs_all();
 }
 
-static void account_set_recv_at_get_all(void)
-{
-	GtkCList *clist = GTK_CLIST(edit_account.clist);
-	gint row;
-	PrefsAccount *ac_prefs;
-
-	if (!clist->selection) return;
-
-	row = GPOINTER_TO_INT(clist->selection->data);
-	ac_prefs = gtk_clist_get_row_data(clist, row);
-
-  	if ((ac_prefs->protocol != A_POP3) && (ac_prefs->protocol != A_APOP)) return;
-	
-	account_set_as_recv_at_get_all(ac_prefs);
-	account_clist_set();
-}
-
 static void account_edit_close(void)
 {
 	account_list_set();
@@ -720,6 +684,16 @@ static void account_selected(GtkCList *clist, gint row, gint column,
 {
 	if (event && event->type == GDK_2BUTTON_PRESS)
 		account_edit_prefs();
+
+	if (column == COL_GETALL) {
+		PrefsAccount *ac;
+
+		ac = gtk_clist_get_row_data(clist, row);
+		if (ac->protocol == A_POP3 || ac->protocol == A_APOP) {
+			ac->recv_at_getall ^= TRUE;
+			account_clist_set_row(ac, row);
+		}
+	}
 }
 
 static void account_key_pressed(GtkWidget *widget, GdkEventKey *event,

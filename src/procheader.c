@@ -584,6 +584,7 @@ MsgInfo *procheader_file_parse(FILE * fp, MsgFlags flags,
 			msginfo->msgid = g_strdup(hp);
 			break;
 		case H_REFERENCES:
+		case H_IN_REPLY_TO:
 			if (!reference) {
 				msginfo->references = g_strdup(hp);
 				eliminate_parenthesis(hp, '(', ')');
@@ -594,15 +595,6 @@ MsgInfo *procheader_file_parse(FILE * fp, MsgFlags flags,
 					if (*p != '\0')
 						reference = g_strdup(p);
 				}
-			}
-			break;
-		case H_IN_REPLY_TO:
-			if (!reference) {
-				eliminate_parenthesis(hp, '(', ')');
-				extract_parenthesis(hp, '<', '>');
-				remove_space(hp);
-				if (*hp != '\0')
-					reference = g_strdup(hp);
 			}
 			break;
 		case H_CONTENT_TYPE:

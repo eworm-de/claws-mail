@@ -1,9 +1,45 @@
+2001-10-30
+
+	* src/procheader.c: procheader_parse(): In-Reply-To: ヘッダの
+	  複数のメッセージ ID を正しくパースしていなかったバグを修正
+	  (梶原さん thanks)。
+
+2001-10-29
+
+	* src/account.c: アカウント一覧の 'G' カラムのクリックによる
+	  「全受信」設定を可能にし、簡単な説明を加えた。
+	* src/prefs_common.c: prefs_send_create(): 送信コードセットの
+	  説明を追加。
+
+2001-10-28
+
+	* src/prefs_account.[ch]: 受信箱のエントリを受信タブに移動し、
+	  選択ボタンと簡単な説明を追加。
+	* src/Makefile.am: CPPFLAGS に SYSCONFDIR を追加。
+	* src/procmime.c:                                                      
+	  procmime_get_mime_type_table()                                       
+	  procmime_get_mime_type_list(): $(SYSCONFDIR)/mime.types
+	  (見つからない場合は /etc/mime.types) と
+	  $(HOME)/.sylpheed/mime.types を読み込むように修正。
+
+2001-10-27
+
+	* src/prefs_account.c: アドレス自動指定を作成タブに移動。
+	  prefs_account_create(): 正しいウィンドウサイズを得るために
+	  gtk_widget_show_all() を削除。
+	* src/prefs_common.c: 「プログラムのパス」を「コマンド」に変更。
+
 2001-10-26
 
 	* src/textview.c: textview_set_font(): EUC-JP locale でロシア語
 	  の文字集合に対応。
 	* src/summaryview.c: summary_delete(): (多分)削除時のクラッシュ
 	  バグを修正。
+	* prefs_account.c
+	  prefs_common.c
+	  prefs_summary_column.c: 英語を少し改良。
+	* src/main.c: get_queued_message_num(): 送信待ちフォルダが見付から
+	  ない場合に警告を出力しないようにした。
 
 2001-10-21
 

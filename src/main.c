@@ -352,7 +352,7 @@ static gint get_queued_message_num(void)
 	FolderItem *queue;
 
 	queue = folder_get_default_queue();
-	g_return_val_if_fail(queue != NULL, -1);
+	if (!queue) return -1;
 
 	folder_item_scan(queue);
 	return queue->total;

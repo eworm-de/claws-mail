@@ -40,6 +40,7 @@
 #include "account.h"
 #include "mainwindow.h"
 #include "manage_window.h"
+#include "foldersel.h"
 #include "inc.h"
 #include "menu.h"
 #include "gtkutils.h"
@@ -63,8 +64,6 @@ static struct Basic {
 	GtkWidget *serv_frame;
 	GtkWidget *serv_table;
 	GtkWidget *protocol_optmenu;
-	GtkWidget *inbox_label;
-	GtkWidget *inbox_entry;
 	GtkWidget *recvserv_label;
 	GtkWidget *smtpserv_label;
 	GtkWidget *nntpserv_label;
@@ -89,6 +88,9 @@ static struct Receive {
 	GtkWidget *getall_chkbtn;
 	GtkWidget *recvatgetall_chkbtn;
 	GtkWidget *filter_on_recv_chkbtn;
+	GtkWidget *inbox_label;
+	GtkWidget *inbox_entry;
+	GtkWidget *inbox_btn;
 
 	GtkWidget *imap_frame;
 	GtkWidget *imapdir_entry;
@@ -100,13 +102,6 @@ static struct Send {
 
 	GtkWidget *customhdr_chkbtn;
 
-	GtkWidget *autocc_chkbtn;
-	GtkWidget *autocc_entry;
-	GtkWidget *autobcc_chkbtn;
-	GtkWidget *autobcc_entry;
-	GtkWidget *autoreplyto_chkbtn;
-	GtkWidget *autoreplyto_entry;
-
 	GtkWidget *smtp_auth_chkbtn;
 	GtkWidget *smtp_userid_entry;
 	GtkWidget *smtp_passwd_entry;
@@ -115,6 +110,13 @@ static struct Send {
 
 static struct Compose {
 	GtkWidget *sigpath_entry;
+        
+	GtkWidget *autocc_chkbtn;
+	GtkWidget *autocc_entry;
+	GtkWidget *autobcc_chkbtn;
+	GtkWidget *autobcc_entry;
+	GtkWidget *autoreplyto_chkbtn;
+	GtkWidget *autoreplyto_entry;
 } compose;
 
 #if USE_GPGME
@@ -222,7 +224,7 @@ static PrefParam param[] = {
 	 &basic.pass_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"inbox", "inbox", &tmp_ac_prefs.inbox, P_STRING,
-	 &basic.inbox_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &receive.inbox_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	/* Receive */
 	{"remove_mail", "TRUE", &tmp_ac_prefs.rmmail, P_BOOL,
@@ -257,30 +259,6 @@ static PrefParam param[] = {
 	 &send.customhdr_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
-	{"set_autocc", "FALSE", &tmp_ac_prefs.set_autocc, P_BOOL,
-	 &send.autocc_chkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-
-	{"auto_cc", NULL, &tmp_ac_prefs.auto_cc, P_STRING,
-	 &send.autocc_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
-
-	{"set_autobcc", "FALSE", &tmp_ac_prefs.set_autobcc, P_BOOL,
-	 &send.autobcc_chkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-
-	{"auto_bcc", NULL, &tmp_ac_prefs.auto_bcc, P_STRING,
-	 &send.autobcc_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
-
-	{"set_autoreplyto", "FALSE", &tmp_ac_prefs.set_autoreplyto, P_BOOL,
-	 &send.autoreplyto_chkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-
-	{"auto_replyto", NULL, &tmp_ac_prefs.auto_replyto, P_STRING,
-	 &send.autoreplyto_entry,
-	 prefs_set_data_from_entry, prefs_set_entry},
-
 	{"use_smtp_auth", "FALSE", &tmp_ac_prefs.use_smtp_auth, P_BOOL,
 	 &send.smtp_auth_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -298,6 +276,31 @@ static PrefParam param[] = {
 	/* Compose */
 	{"signature_path", "~/"DEFAULT_SIGNATURE, &tmp_ac_prefs.sig_path, P_STRING,
 	 &compose.sigpath_entry,
+	 prefs_set_data_from_entry, prefs_set_entry},
+
+	{"set_autocc", "FALSE", &tmp_ac_prefs.set_autocc, P_BOOL,
+	 &compose.autocc_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"auto_cc", NULL, &tmp_ac_prefs.auto_cc, P_STRING,
+	 &compose.autocc_entry,
+	 prefs_set_data_from_entry, prefs_set_entry},
+
+	{"set_autobcc", "FALSE", &tmp_ac_prefs.set_autobcc, P_BOOL,
+	 &compose.autobcc_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"auto_bcc", NULL, &tmp_ac_prefs.auto_bcc, P_STRING,
+	 &compose.autobcc_entry,
+	 prefs_set_data_from_entry, prefs_set_entry},
+
+	{"set_autoreplyto", "FALSE", &tmp_ac_prefs.set_autoreplyto, P_BOOL,
+	 &compose.autoreplyto_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"auto_replyto", NULL, &tmp_ac_prefs.auto_replyto, P_STRING,
+	 &compose.autoreplyto_entry,
+
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 #if USE_GPGME
@@ -380,6 +383,7 @@ static void prefs_account_ssl_create		(void);
 #endif /* USE_SSL */
 static void prefs_account_advanced_create	(void);
 
+static void prefs_account_select_inbox_cb	(void);
 static void prefs_account_edit_custom_header	(void);
 
 static gint prefs_account_deleted		(GtkWidget	*widget,
@@ -602,7 +606,6 @@ static void prefs_account_create(void)
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Advanced"), page++);
 
 	prefs_account_fix_size();
-	gtk_widget_show(dialog.window);
 }
 
 /**
@@ -651,8 +654,6 @@ static void prefs_account_basic_create(void)
 	GtkWidget *optmenu;
 	GtkWidget *optmenu_menu;
 	GtkWidget *menuitem;
-	GtkWidget *inbox_label;
-	GtkWidget *inbox_entry;
 	GtkWidget *serv_table;
 	GtkWidget *recvserv_label;
 	GtkWidget *smtpserv_label;
@@ -771,15 +772,6 @@ static void prefs_account_basic_create(void)
 	SET_ACTIVATE (menuitem);
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu), optmenu_menu);
-
-	inbox_label = gtk_label_new (_("Inbox"));
-	gtk_widget_show (inbox_label);
-	gtk_box_pack_start (GTK_BOX (hbox), inbox_label, FALSE, FALSE, 0);
-
-	inbox_entry = gtk_entry_new ();
-	gtk_widget_show (inbox_entry);
-	gtk_widget_set_usize (inbox_entry, DEFAULT_ENTRY_WIDTH, -1);
-	gtk_box_pack_start (GTK_BOX (hbox), inbox_entry, TRUE, TRUE, 0);
 
 	serv_table = gtk_table_new (6, 4, FALSE);
 	gtk_widget_show (serv_table);
@@ -909,8 +901,6 @@ static void prefs_account_basic_create(void)
 	basic.serv_frame       = serv_frame;
 	basic.serv_table       = serv_table;
 	basic.protocol_optmenu = optmenu;
-	basic.inbox_label      = inbox_label;
-	basic.inbox_entry      = inbox_entry;
 	basic.recvserv_label   = recvserv_label;
 	basic.recvserv_entry   = recvserv_entry;
 	basic.smtpserv_label   = smtpserv_label;
@@ -938,8 +928,13 @@ static void prefs_account_receive_create(void)
 	GtkWidget *getall_chkbtn;
 	GtkWidget *recvatgetall_chkbtn;
 	GtkWidget *filter_on_recv_chkbtn;
-	GtkWidget *frame2;
+	GtkWidget *vbox3;
 	GtkWidget *hbox1;
+	GtkWidget *inbox_label;
+	GtkWidget *inbox_entry;
+	GtkWidget *inbox_btn;
+	GtkWidget *label;
+	GtkWidget *frame2;
 	GtkWidget *imapdir_label;
 	GtkWidget *imapdir_entry;
 
@@ -965,6 +960,40 @@ static void prefs_account_receive_create(void)
 	PACK_CHECK_BUTTON (vbox2, filter_on_recv_chkbtn,
 			   _("Filter messages on receiving"));
 
+	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
+
+	inbox_label = gtk_label_new (_("Default inbox"));
+	gtk_widget_show (inbox_label);
+	gtk_box_pack_start (GTK_BOX (hbox1), inbox_label, FALSE, FALSE, 0);
+
+	inbox_entry = gtk_entry_new ();
+	gtk_widget_show (inbox_entry);
+	gtk_widget_set_usize (inbox_entry, DEFAULT_ENTRY_WIDTH, -1);
+	gtk_box_pack_start (GTK_BOX (hbox1), inbox_entry, TRUE, TRUE, 0);
+
+	inbox_btn = gtk_button_new_with_label (_(" Select... "));
+	gtk_widget_show (inbox_btn);
+	gtk_box_pack_start (GTK_BOX (hbox1), inbox_btn, FALSE, FALSE, 0);
+	gtk_signal_connect (GTK_OBJECT (inbox_btn), "clicked",
+			    GTK_SIGNAL_FUNC (prefs_account_select_inbox_cb),
+			    NULL);
+
+	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
+
+	label = gtk_label_new
+		(_("(Unfiltered messages will be stored in this folder)"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
+	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+
 	PACK_FRAME (vbox1, frame2, _("IMAP4"));
 
 	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
@@ -989,6 +1018,9 @@ static void prefs_account_receive_create(void)
 	receive.getall_chkbtn         = getall_chkbtn;
 	receive.recvatgetall_chkbtn   = recvatgetall_chkbtn;
 	receive.filter_on_recv_chkbtn = filter_on_recv_chkbtn;
+	receive.inbox_label           = inbox_label;
+	receive.inbox_entry           = inbox_entry;
+	receive.inbox_btn             = inbox_btn;
 
 	receive.imap_frame    = frame2;
 	receive.imapdir_entry = imapdir_entry;
@@ -1004,14 +1036,6 @@ static void prefs_account_send_create(void)
 	GtkWidget *hbox;
 	GtkWidget *customhdr_chkbtn;
 	GtkWidget *customhdr_edit_btn;
-	GtkWidget *frame2;
-	GtkWidget *table;
-	GtkWidget *autocc_chkbtn;
-	GtkWidget *autocc_entry;
-	GtkWidget *autobcc_chkbtn;
-	GtkWidget *autobcc_entry;
-	GtkWidget *autoreplyto_chkbtn;
-	GtkWidget *autoreplyto_entry;
 	GtkWidget *frame3;
 	GtkWidget *vbox3;
 	GtkWidget *smtp_auth_chkbtn;
@@ -1055,11 +1079,97 @@ static void prefs_account_send_create(void)
 
 	SET_TOGGLE_SENSITIVITY (customhdr_chkbtn, customhdr_edit_btn);
 
-	PACK_FRAME (vbox1, frame2, _("Automatically set following addresses"));
+	PACK_FRAME (vbox1, frame3, _("Authentication"));
+
+	vbox3 = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox3);
+	gtk_container_add (GTK_CONTAINER (frame3), vbox3);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox3), 8);
+
+	PACK_CHECK_BUTTON (vbox3, smtp_auth_chkbtn,
+		_("SMTP Authentication (SMTP AUTH)"));
+	label = gtk_label_new ("");
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (smtp_auth_hbox), label, FALSE, FALSE, 0);
+	gtk_widget_set_usize (label, 16, -1);
+
+	uid_label = gtk_label_new (_("User ID"));
+	gtk_widget_show (uid_label);
+	gtk_box_pack_start (GTK_BOX (smtp_auth_hbox), uid_label,
+			    FALSE, FALSE, 0);
+	gtk_misc_set_alignment (GTK_MISC (uid_label), 1, 0.5);
+	SET_TOGGLE_SENSITIVITY (smtp_auth_chkbtn, uid_label);
+
+	smtp_userid_entry = gtk_entry_new ();
+	gtk_widget_show (smtp_userid_entry);
+	gtk_widget_set_usize (smtp_userid_entry, DEFAULT_ENTRY_WIDTH, -1);
+	gtk_box_pack_start (GTK_BOX (smtp_auth_hbox), smtp_userid_entry,
+			    TRUE, TRUE, 0);
+	SET_TOGGLE_SENSITIVITY (smtp_auth_chkbtn, smtp_userid_entry);
+
+	pass_label = gtk_label_new (_("Password"));
+	gtk_widget_show (pass_label);
+	gtk_box_pack_start (GTK_BOX (smtp_auth_hbox), pass_label,
+			    FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY (smtp_auth_chkbtn, pass_label);
+
+	smtp_passwd_entry = gtk_entry_new ();
+	gtk_widget_show (smtp_passwd_entry);
+	gtk_widget_set_usize (smtp_passwd_entry, DEFAULT_ENTRY_WIDTH, -1);
+	gtk_box_pack_start (GTK_BOX (smtp_auth_hbox), smtp_passwd_entry,
+			    TRUE, TRUE, 0);
+	gtk_entry_set_visibility (GTK_ENTRY (smtp_passwd_entry), FALSE);
+	SET_TOGGLE_SENSITIVITY (smtp_auth_chkbtn, smtp_passwd_entry);
+
+	PACK_CHECK_BUTTON (vbox3, pop_bfr_smtp_chkbtn,
+		_("Authenticate with POP3 before sending"));
+	gtk_widget_set_sensitive(pop_bfr_smtp_chkbtn, FALSE);
+
+	send.date_chkbtn      = date_chkbtn;
+	send.msgid_chkbtn     = msgid_chkbtn;
+	send.customhdr_chkbtn = customhdr_chkbtn;
+
+	send.smtp_auth_chkbtn    = smtp_auth_chkbtn;
+	send.pop_bfr_smtp_chkbtn = pop_bfr_smtp_chkbtn;
+}
+
+static void prefs_account_compose_create(void)
+{
+	GtkWidget *vbox1;
+	GtkWidget *hbox;
+	GtkWidget *label;
+	GtkWidget *sigpath_entry;
+	GtkWidget *frame;
+	GtkWidget *table;
+	GtkWidget *autocc_chkbtn;
+	GtkWidget *autocc_entry;
+	GtkWidget *autobcc_chkbtn;
+	GtkWidget *autobcc_entry;
+	GtkWidget *autoreplyto_chkbtn;
+	GtkWidget *autoreplyto_entry;
+
+	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox1);
+	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
+
+	hbox = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox, FALSE, FALSE, 0);
+
+	label = gtk_label_new (_("Signature file"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
+	sigpath_entry = gtk_entry_new ();
+	gtk_widget_show (sigpath_entry);
+	gtk_box_pack_start (GTK_BOX (hbox), sigpath_entry, TRUE, TRUE, 0);
+
+	PACK_FRAME (vbox1, frame, _("Automatically set the following addresses"));
 
 	table =  gtk_table_new (3, 2, FALSE);
 	gtk_widget_show (table);
-	gtk_container_add (GTK_CONTAINER (frame2), table);
+	gtk_container_add (GTK_CONTAINER (frame), table);
 	gtk_container_set_border_width (GTK_CONTAINER (table), 8);
 	gtk_table_set_row_spacings (GTK_TABLE (table), VSPACING_NARROW_2);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 8);
@@ -1103,99 +1213,14 @@ static void prefs_account_send_create(void)
 
 	SET_TOGGLE_SENSITIVITY (autoreplyto_chkbtn, autoreplyto_entry);
 
-	PACK_FRAME (vbox1, frame3, _("Authentication"));
-
-	vbox3 = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vbox3);
-	gtk_container_add (GTK_CONTAINER (frame3), vbox3);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox3), 8);
-
-	PACK_CHECK_BUTTON (vbox3, smtp_auth_chkbtn,
-		_("SMTP Authentication (SMTP AUTH)"));
-
-	smtp_auth_hbox = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (smtp_auth_hbox);
-	gtk_box_pack_start (GTK_BOX (vbox3), smtp_auth_hbox, FALSE, FALSE, 0);
-
-	label = gtk_label_new ("");
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (smtp_auth_hbox), label, FALSE, FALSE, 0);
-	gtk_widget_set_usize (label, 16, -1);
-
-	uid_label = gtk_label_new (_("User ID"));
-	gtk_widget_show (uid_label);
-	gtk_box_pack_start (GTK_BOX (smtp_auth_hbox), uid_label,
-			    FALSE, FALSE, 0);
-	gtk_misc_set_alignment (GTK_MISC (uid_label), 1, 0.5);
-	SET_TOGGLE_SENSITIVITY (smtp_auth_chkbtn, uid_label);
-
-	smtp_userid_entry = gtk_entry_new ();
-	gtk_widget_show (smtp_userid_entry);
-	gtk_widget_set_usize (smtp_userid_entry, DEFAULT_ENTRY_WIDTH, -1);
-	gtk_box_pack_start (GTK_BOX (smtp_auth_hbox), smtp_userid_entry,
-			    TRUE, TRUE, 0);
-	SET_TOGGLE_SENSITIVITY (smtp_auth_chkbtn, smtp_userid_entry);
-
-	pass_label = gtk_label_new (_("Password"));
-	gtk_widget_show (pass_label);
-	gtk_box_pack_start (GTK_BOX (smtp_auth_hbox), pass_label,
-			    FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY (smtp_auth_chkbtn, pass_label);
-
-	smtp_passwd_entry = gtk_entry_new ();
-	gtk_widget_show (smtp_passwd_entry);
-	gtk_widget_set_usize (smtp_passwd_entry, DEFAULT_ENTRY_WIDTH, -1);
-	gtk_box_pack_start (GTK_BOX (smtp_auth_hbox), smtp_passwd_entry,
-			    TRUE, TRUE, 0);
-	gtk_entry_set_visibility (GTK_ENTRY (smtp_passwd_entry), FALSE);
-	SET_TOGGLE_SENSITIVITY (smtp_auth_chkbtn, smtp_passwd_entry);
-
-	PACK_CHECK_BUTTON (vbox3, pop_bfr_smtp_chkbtn,
-		_("Authenticate with POP3 before sending"));
-	gtk_widget_set_sensitive(pop_bfr_smtp_chkbtn, FALSE);
-
-	send.date_chkbtn      = date_chkbtn;
-	send.msgid_chkbtn     = msgid_chkbtn;
-	send.customhdr_chkbtn = customhdr_chkbtn;
-
-	send.autocc_chkbtn      = autocc_chkbtn;
-	send.autocc_entry       = autocc_entry;
-	send.autobcc_chkbtn     = autobcc_chkbtn;
-	send.autobcc_entry      = autobcc_entry;
-	send.autoreplyto_chkbtn = autoreplyto_chkbtn;
-	send.autoreplyto_entry  = autoreplyto_entry;
-
-	send.smtp_auth_chkbtn    = smtp_auth_chkbtn;
-	send.smtp_userid_entry	 = smtp_userid_entry;
-	send.smtp_passwd_entry	 = smtp_passwd_entry;
-	send.pop_bfr_smtp_chkbtn = pop_bfr_smtp_chkbtn;
-}
-
-static void prefs_account_compose_create(void)
-{
-	GtkWidget *vbox1;
-	GtkWidget *hbox;
-	GtkWidget *label;
-	GtkWidget *sigpath_entry;
-
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
-	gtk_widget_show (vbox1);
-	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
-
-	hbox = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox, FALSE, FALSE, 0);
-
-	label = gtk_label_new (_("Signature file"));
-	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-
-	sigpath_entry = gtk_entry_new ();
-	gtk_widget_show (sigpath_entry);
-	gtk_box_pack_start (GTK_BOX (hbox), sigpath_entry, TRUE, TRUE, 0);
-
 	compose.sigpath_entry = sigpath_entry;
+
+	compose.autocc_chkbtn      = autocc_chkbtn;
+	compose.autocc_entry       = autocc_entry;
+	compose.autobcc_chkbtn     = autobcc_chkbtn;
+	compose.autobcc_entry      = autobcc_entry;
+	compose.autoreplyto_chkbtn = autoreplyto_chkbtn;
+	compose.autoreplyto_entry  = autoreplyto_entry;
 }
 
 #if USE_GPGME
@@ -1528,6 +1553,15 @@ static void prefs_account_cancel(void)
 	gtk_main_quit();
 }
 
+static void prefs_account_select_inbox_cb(void)
+{
+	FolderItem *item;
+
+	item = foldersel_folder_sel(NULL, NULL);
+	if (item)
+		gtk_entry_set_text(GTK_ENTRY(receive.inbox_entry), item->path);
+}
+
 static void prefs_account_edit_custom_header(void)
 {
 	prefs_custom_header_open(&tmp_ac_prefs);
@@ -1635,8 +1669,6 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 
 	switch(protocol) {
 	case A_NNTP:
-		gtk_widget_set_sensitive(basic.inbox_label, FALSE);
-		gtk_widget_set_sensitive(basic.inbox_entry, FALSE);
 		gtk_widget_show(basic.nntpserv_label);
 		gtk_widget_show(basic.nntpserv_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
@@ -1692,8 +1724,6 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_show(advanced.nntpport_hbox);
 		break;
 	case A_LOCAL:
-		gtk_widget_set_sensitive(basic.inbox_label, TRUE);
-		gtk_widget_set_sensitive(basic.inbox_entry, TRUE);
 		gtk_widget_hide(basic.nntpserv_label);
 		gtk_widget_hide(basic.nntpserv_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
@@ -1748,8 +1778,6 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_hide(advanced.nntpport_hbox);
 		break;
 	case A_IMAP4:
-		gtk_widget_set_sensitive(basic.inbox_label, FALSE);
-		gtk_widget_set_sensitive(basic.inbox_entry, FALSE);
 		gtk_widget_hide(basic.nntpserv_label);
 		gtk_widget_hide(basic.nntpserv_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
@@ -1807,8 +1835,6 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		break;
 	case A_POP3:
 	default:
-		gtk_widget_set_sensitive(basic.inbox_label, TRUE);
-		gtk_widget_set_sensitive(basic.inbox_entry, TRUE);
 		gtk_widget_hide(basic.nntpserv_label);
 		gtk_widget_hide(basic.nntpserv_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),

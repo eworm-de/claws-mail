@@ -1,9 +1,46 @@
+2001-10-30
+
+	* src/procheader.c: procheader_parse(): fixed a bug that didn't
+	  parse multiple message-id in In-Reply-To: header correctly
+	  (thanks to KAJIWARA).
+
+2001-10-29
+
+	* src/account.c: enabled 'Get all' setting by clicking the 'G'
+	  column of account list, and added some description.
+	* src/prefs_common.c: prefs_send_create(): added a description
+	  for outgoing codeset.
+
+2001-10-28
+
+	* src/prefs_account.[ch]: moved inbox entry to the receive tab,
+	  and added select button and short description.
+	* src/Makefile.am: added SYSCONFDIR to CPPFLAGS.
+	* src/procmime.c:
+	  procmime_get_mime_type_table()
+	  procmime_get_mime_type_list(): modified so that
+	  $(SYSCONFDIR)/mime.types (or /etc/mime.types if not found) and
+	  $(HOME)/.sylpheed/mime.types are read.
+
+2001-10-27
+
+	* src/prefs_account.c: moved the address auto-setting to the compose
+	  tab.
+	  prefs_account_create(): removed gtk_widget_show_all() for proper
+	  window size.
+	* src/prefs_common.c: changed "Program path" to "Command".
+
 2001-10-26
 
 	* src/textview.c: textview_set_font(): support Russian charset
 	  on EUC-JP locale.
 	* src/summaryview.c: summary_delete(): (hopefully) fixed the crash
 	  bug on deleting.
+	* prefs_account.c
+	  prefs_common.c
+	  prefs_summary_column.c: minor improvements to the English.
+	* src/main.c: get_queued_message_num(): don't output the warning
+	  when queueing folder is not found.
 
 2001-10-21
 

@@ -3770,7 +3770,7 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	gtk_ctree_set_expander_style(GTK_CTREE(ctree),
 				     GTK_CTREE_EXPANDER_TRIANGLE);
 #endif
-	gtk_ctree_set_indent(GTK_CTREE(ctree), 18);
+	gtk_ctree_set_indent(GTK_CTREE(ctree), 16);
 	gtk_object_set_user_data(GTK_OBJECT(ctree), summaryview);
 
 	for (pos = 0; pos < N_SUMMARY_COLS; pos++) {
