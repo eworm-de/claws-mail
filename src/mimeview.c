@@ -267,7 +267,7 @@ static void set_unchecked_signature(MimeInfo *mimeinfo)
 
 	g_free(sig_partinfo->sigstatus);
 	sig_partinfo->sigstatus =
-		g_strdup(_("Select \"Check signature\" to check"));
+		g_strdup(_("Right-click here to check"));
 
 	g_free(sig_partinfo->sigstatus_full);
 	sig_partinfo->sigstatus_full = NULL;
