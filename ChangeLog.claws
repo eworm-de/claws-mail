@@ -1,3 +1,11 @@
+2003-09-09 [alfons]	0.9.4claws74
+
+	* src/folderview.c
+		o proper check for root node sorting
+		o remove unnecessary gtk_ctree_remove_node 
+
+	(should fix bug #300, "crash while moving folder")	
+
 2003-09-08 [christoph]	0.9.4claws73
 
 	* src/folderview.c
