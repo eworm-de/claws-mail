@@ -127,6 +127,7 @@
 
 	* src/procmsg.c
 		fix infinite loop in procmsg_find_children
+		 (closes bug #25 sylpheed crashes on delete.)
 
 	Patch submitted by Ivan F. Martinez <ivanfm@users.sourceforge.net>
 
@@ -719,6 +720,7 @@
 
 	* src/procmsg.c
 		update save folder after adding the sent message
+		 (closes bug #6 Folder View doesn't refresh for "Sent"-messages)
 
 2003-01-02 [christoph]	0.8.8claws42
 
