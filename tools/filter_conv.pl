@@ -18,7 +18,7 @@
 #  *
 
 chdir;
-chdir '.sylpheed-claws.bakup-test' || die("You don't appear to have Sylpheed installed\n");
+chdir '.sylpheed' || die("You don't appear to have Sylpheed installed\n");
 
 open(FOLDERLIST, "<folderlist.xml") || die("Can't find folderlist.xml\n");
 @folderlist = <FOLDERLIST>;
