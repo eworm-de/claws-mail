@@ -1739,7 +1739,7 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 	Children *children = (Children *)data;
 	ChildInfo *child_info = (ChildInfo *)children->list->data;
 	gchar *input;
-	gint c;
+	gint c, count, len;
 
 	debug_print("Sending input to grand child.\n");
 	if (!(cond && GDK_INPUT_WRITE))
@@ -1750,14 +1750,25 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 
 	input = gtk_editable_get_chars(GTK_EDITABLE(children->input_entry),
 				       0, -1);
-	c = write(child_info->chld_in, input, strlen(input));
+	len = strlen(input);
+	count = 0;
+	
+	do {
+		c = write(child_info->chld_in, input + count, len - count);
+		if (c >= 0)
+			count += c;
+
+	} while (c >= 0 && count < len);
+
+	if (c >= 0)
+		write(child_info->chld_in, "\n", 2);
 
 	g_free(input);
 
-	write(child_info->chld_in, "\n", 2);
-
 	gtk_entry_set_text(GTK_ENTRY(children->input_entry), "");
 	gtk_widget_set_sensitive(children->input_hbox, TRUE);
+	close(child_info->chld_in);
+	child_info->chld_in = -1;
 	debug_print("Input to grand child sent.\n");
 }
 

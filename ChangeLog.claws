@@ -1,3 +1,9 @@
+2003-02-24 [melvin] 0.8.10claws48
+
+	* src/prefs_actions.c
+		Make sure all user's input is sent to the action and then
+		close the socket..
+
 2003-02-23 [alfons]
 
 	* src/summaryview.c
