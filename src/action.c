@@ -1189,7 +1189,10 @@ static void update_io_dialog(Children *children)
 		GtkWidget *text = children->text;
 		gchar *caption;
 		ChildInfo *child_info;
+		GdkFont *font;
 
+		font = gtk_object_get_data(GTK_OBJECT(children->dialog), 
+					   "s_txtfont");
 		gtk_widget_show(children->scrolledwin);
 		gtk_text_freeze(GTK_TEXT(text));
 		gtk_text_set_point(GTK_TEXT(text), 0);
@@ -1206,9 +1209,9 @@ static void update_io_dialog(Children *children)
 					(_("--- Ended: %s\n"),
 					 child_info->cmd);
 
-			gtk_text_insert(GTK_TEXT(text), NULL, NULL, NULL,
+			gtk_text_insert(GTK_TEXT(text), font, NULL, NULL,
 					caption, -1);
-			gtk_text_insert(GTK_TEXT(text), NULL, NULL, NULL,
+			gtk_text_insert(GTK_TEXT(text), font, NULL, NULL,
 					child_info->output->str, -1);
 			g_free(caption);
 			child_info->new_out = FALSE;
@@ -1231,6 +1234,7 @@ static void create_io_dialog(Children *children)
 	GtkWidget *progress_bar = NULL;
 	GtkWidget *abort_button;
 	GtkWidget *close_button;
+	GdkFont   *output_font;
 
 	debug_print("Creating action IO dialog\n");
 
@@ -1310,7 +1314,7 @@ static void create_io_dialog(Children *children)
 				children->initial_nb -children->nb,
 				0.0, children->initial_nb);
 
-		gtk_box_pack_start(GTK_BOX(vbox), progress_bar, TRUE, TRUE, 0);
+		gtk_box_pack_start(GTK_BOX(vbox), progress_bar, FALSE, FALSE, 0);
 		gtk_widget_show(progress_bar);
 	}
 
@@ -1336,6 +1340,10 @@ static void create_io_dialog(Children *children)
 	children->abort_btn    = abort_button;
 	children->close_btn    = close_button;
 
+	output_font = gtkut_font_load_from_fontset(prefs_common.textfont);
+	gtk_object_set_data_full(GTK_OBJECT(dialog), "s_txtfont",
+				 output_font, 
+				 (GtkDestroyNotify)gdk_font_unref); 
 	gtk_widget_show(dialog);
 }
 

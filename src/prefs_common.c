@@ -70,10 +70,6 @@ static struct Receive {
 	GtkWidget *entry_incext;
 	GtkWidget *button_incext;
 
-	GtkWidget *checkbtn_local;
-	GtkWidget *checkbtn_filter_on_inc;
-	GtkWidget *entry_spool;
-
 	GtkWidget *checkbtn_autochk;
 	GtkWidget *spinbtn_autochk;
 	GtkObject *spinbtn_autochk_adj;
@@ -92,10 +88,6 @@ static struct Receive {
 } receive;
 
 static struct Send {
-	GtkWidget *checkbtn_extsend;
-	GtkWidget *entry_extsend;
-	GtkWidget *button_extsend;
-
 	GtkWidget *checkbtn_savemsg;
 	GtkWidget *checkbtn_queuemsg;
 	GtkWidget *optmenu_senddialog;
@@ -316,12 +308,6 @@ static PrefParam param[] = {
 	 prefs_set_data_from_toggle, prefs_set_toggle},
  
 	/* Send */
-	{"use_ext_sendmail", "FALSE", &prefs_common.use_extsend, P_BOOL,
-	 &p_send.checkbtn_extsend,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"ext_sendmail_cmd", DEFAULT_SENDMAIL_CMD,
-	 &prefs_common.extsend_cmd, P_STRING,
-	 &p_send.entry_extsend, prefs_set_data_from_entry, prefs_set_entry},
 	{"save_message", "TRUE", &prefs_common.savemsg, P_BOOL,
 	 &p_send.checkbtn_savemsg,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -1104,12 +1090,6 @@ static void prefs_receive_create(void)
 	GtkWidget *entry_incext;
 	/* GtkWidget *button_incext; */
 
-	GtkWidget *frame_spool;
-	GtkWidget *checkbtn_local;
-	GtkWidget *checkbtn_filter_on_inc;
-	GtkWidget *label_spool;
-	GtkWidget *entry_spool;
-
 	GtkWidget *hbox_autochk;
 	GtkWidget *checkbtn_autochk;
 	GtkWidget *label_autochk1;
@@ -1305,13 +1285,7 @@ static void prefs_send_create(void)
 {
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
-	GtkWidget *frame_extsend;
-	GtkWidget *vbox_extsend;
-	GtkWidget *checkbtn_extsend;
 	GtkWidget *hbox1;
-	GtkWidget *label_extsend;
-	GtkWidget *entry_extsend;
-	/* GtkWidget *button_extsend; */
 	GtkWidget *checkbtn_savemsg;
 	GtkWidget *checkbtn_queuemsg;
 	GtkWidget *label_outcharset;
@@ -1332,35 +1306,6 @@ static void prefs_send_create(void)
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	PACK_FRAME(vbox1, frame_extsend, _("External program"));
-
-	vbox_extsend = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox_extsend);
-	gtk_container_add (GTK_CONTAINER (frame_extsend), vbox_extsend);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_extsend), 8);
-
-	PACK_CHECK_BUTTON (vbox_extsend, checkbtn_extsend,
-			   _("Use external program for sending"));
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox_extsend), hbox1, FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(checkbtn_extsend, hbox1);
-
-	label_extsend = gtk_label_new (_("Command"));
-	gtk_widget_show (label_extsend);
-	gtk_box_pack_start (GTK_BOX (hbox1), label_extsend, FALSE, FALSE, 0);
-
-	entry_extsend = gtk_entry_new ();
-	gtk_widget_show (entry_extsend);
-	gtk_box_pack_start (GTK_BOX (hbox1), entry_extsend, TRUE, TRUE, 0);
-
-#if 0
-	button_extsend = gtk_button_new_with_label ("... ");
-	gtk_widget_show (button_extsend);
-	gtk_box_pack_start (GTK_BOX (hbox1), button_extsend, FALSE, FALSE, 0);
-#endif
-
 	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
@@ -1371,7 +1316,6 @@ static void prefs_send_create(void)
 			   _("Queue messages that fail to send"));
 
 	hbox_senddialog = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox_senddialog, FALSE, FALSE, 0);
 
 	label_senddialog = gtk_label_new (_("Show send dialog"));
@@ -1496,10 +1440,6 @@ static void prefs_send_create(void)
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
-
-	p_send.checkbtn_extsend = checkbtn_extsend;
-	p_send.entry_extsend    = entry_extsend;
-	/* p_send.button_extsend   = button_extsend; */
 
 	p_send.checkbtn_savemsg  = checkbtn_savemsg;
 	p_send.checkbtn_queuemsg = checkbtn_queuemsg;

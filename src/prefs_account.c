@@ -1028,7 +1028,7 @@ static void prefs_account_basic_create(void)
 			  GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment (GTK_MISC (recvserv_label), 1, 0.5);
 
-	localmbox_label = gtk_label_new (_("Local mailbox directory"));
+	localmbox_label = gtk_label_new (_("Local mailbox"));
 	gtk_widget_show (localmbox_label);
 	gtk_table_attach (GTK_TABLE (serv_table), localmbox_label, 0, 1, 3, 4,
 			  GTK_FILL, 0, 0, 0);

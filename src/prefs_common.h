@@ -76,8 +76,6 @@ struct _PrefsCommon
 	gboolean no_recv_err_panel;
 
 	/* Send */
-	gboolean use_extsend;
-	gchar *extsend_cmd;
 	gboolean savemsg;
 	gboolean queue_msg;
 	SendDialogMode send_dialog_mode;

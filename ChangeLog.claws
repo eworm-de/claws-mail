@@ -1,3 +1,32 @@
+2003-09-29 [paul]	0.9.5claws36
+
+	* src/inc.c
+	  src/prefs_account.c
+	  	allow 'local_mbox' value to point to either a directory 
+		(/var/mail -  default, new) or a file (/var/mail/username
+		- original)
+
+2003-09-28 [paul]	0.9.5claws35
+
+	* src/rfc2015.c
+		on signature check, where key exists, print the
+		Key ID
+
+2003-09-27 [alfons]	0.9.5claws34
+
+	* src/action.c
+		o make progress bar not fill/expand when resizing dialog
+		o use default fixed text font for actions output
+
+2003-09-27 [paul]	0.9.5claws33
+
+	* src/prefs_common.[ch]
+	  src/procmsg.c
+	  src/send_message.c
+	  	remove External Program settings from Common Prefs/Send
+		as they are now unnecessary due to Local account settings.
+		plus a little tidying-up after 0.9.5claws31
+
 2003-09-27 [paul]	0.9.5claws32
 
 	* src/prefs_account.c
@@ -107,7 +136,10 @@
 
 2003-09-17 [hoa]	0.9.5claws18
 	
-	* changed the keyword used for command execution in condition
+	* src/matcher.[ch]
+	  src/matcher_parser_parse.y
+	  src/prefs_matcher.c
+		changed the keyword used for command execution in condition
 		keyword is changed from "execute" to "test"
 		so that it is not the same as the one used for action.
 		This will fix a bug when using filtering dialog.
@@ -207,8 +239,6 @@
 	* src/rfc2015.c
 	  src/common/utils.h
 		more sync'ing from 0.9.5cvs2
-
-	fixes bug 197 'Header lines encrypted by GPG'
 
 2003-09-11 [christoph]	0.9.5claws4
 
