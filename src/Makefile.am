@@ -71,7 +71,8 @@ sylpheed_SOURCES = \
 	select-keys.c select-keys.h \
 	manual.c manual.h \
 	addr_compl.c addr_compl.h \
-	export.c export.h
+	export.c export.h \
+	grouplist_dialog.c grouplist_dialog.h
 
 EXTRA_DIST = \
 	pixmaps/clip.xpm \

@@ -1474,8 +1474,7 @@ static void folderview_new_news_group_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item->folder->type == F_NEWS);
 	g_return_if_fail(item->folder->account != NULL);
 
-	new_group = input_dialog(_("Subscribe newsgroup"),
-				 _("Input subscribing newsgroup:"), NULL);
+	new_group = grouplist_dialog(item);
 	if (!new_group) return;
 
 	if (GTK_CTREE_ROW(folderview->selected)->parent != NULL)

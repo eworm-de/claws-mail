@@ -28,6 +28,7 @@
 #include <dirent.h>
 #include <unistd.h>
 
+#include "defs.h"
 #include "intl.h"
 #include "news.h"
 #include "nntp.h"
@@ -481,4 +482,80 @@ static void news_delete_all_article(FolderItem *item)
 	g_free(dir);
 
 	debug_print(_("done.\n"));
+}
+
+GSList * news_get_group_list(FolderItem *item)
+{
+	gchar *path, *filename;
+	gint ok;
+	NNTPSession *session;
+	GSList * group_list = NULL;
+	FILE * f;
+	gchar buf[NNTPBUFSIZE];
+	int len;
+
+	if (item == NULL)
+	  return NULL;
+
+	path = folder_item_get_path(item);
+
+	if (!is_dir_exist(path))
+		make_dir_hier(path);
+
+	filename = g_strconcat(path, G_DIR_SEPARATOR_S, GROUPLIST_FILE, NULL);
+	g_free(path);
+
+	session = news_session_get(item->folder);
+
+	if (session == NULL)
+	  return NULL;
+
+	if (is_file_exist(filename)) {
+		debug_print(_("group list has been already cached.\n"));
+	}
+	else
+	  {
+	    ok = nntp_list(SESSION(session)->sock);
+	    if (ok != NN_SUCCESS)
+	      return NULL;
+	    
+	    if (recv_write_to_file(SESSION(session)->sock, filename)
+		< 0) {
+	      log_warning(_("can't retrieve group list\n"));
+	      return NULL;
+	    }
+	  }
+
+	f = fopen(filename, "r");
+	while (fgets(buf, NNTPBUFSIZE, f))
+	  {
+	    char * s;
+
+	    len = 0;
+	    while ((buf[len] != 0) && (buf[len] != ' '))
+	      len++;
+	    buf[len] = 0;
+	    s = g_strdup(buf);
+
+	    group_list = g_slist_append(group_list, s);
+	  }
+	fclose(f);
+	g_free(filename);
+
+	group_list = g_slist_sort(group_list, (GCompareFunc) g_strcasecmp);
+
+	return group_list;
+}
+
+void news_reset_group_list(FolderItem *item)
+{
+	gchar *path, *filename;
+
+	debug_print(_("\tDeleting cached group list... "));
+	path = folder_item_get_path(item);
+	filename = g_strconcat(path, G_DIR_SEPARATOR_S, GROUPLIST_FILE, NULL);
+	g_free(path);
+	if (remove(filename) != 0)
+	  log_warning(_("can't delete cached group list %s\n"), filename);
+	g_free(filename);
 }

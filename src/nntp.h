@@ -45,5 +45,6 @@ gint nntp_newgroups(gint sock);
 gint nntp_newnews(gint sock);
 gint nntp_mode(gint sock, gboolean stream);
 gint nntp_ok(gint sock, gchar *argbuf);
+gint nntp_list(gint sock);
 
 #endif /* __NNTP_H__ */

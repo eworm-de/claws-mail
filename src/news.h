@@ -55,4 +55,7 @@ void news_scan_group			(Folder		*folder,
 gint news_post				(Folder		*folder,
 					 const gchar	*file);
 
+GSList * news_get_group_list(FolderItem *item);
+void news_reset_group_list();
+
 #endif /* __NEWS_H__ */

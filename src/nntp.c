@@ -259,3 +259,22 @@ static gint nntp_gen_recv(gint sock, gchar *buf, gint size)
 
 	return NN_SUCCESS;
 }
+
+gint nntp_list(gint sock)
+{
+	GList * result = NULL;
+
+	gint ok;
+	gint resp;
+	gchar buf[NNTPBUFSIZE];
+
+	nntp_gen_send(sock, "LIST");
+
+	if ((ok = nntp_ok(sock, buf)) != NN_SUCCESS)
+		return NN_ERROR;
+
+	if (verbose)
+		log_print("NNTP< %s\n", buf);
+
+	return NN_SUCCESS;
+}
