@@ -1,3 +1,13 @@
+2004-01-01 [christoph]	0.9.8claws16
+
+	* src/common/xml.[ch]
+		o add xml_new_tag() to manage usage counts of strings correctly
+		o correct xml_copy_tree() function name
+
+	* src/folder.c
+	* src/main.c
+		allow registering and unregistering of FolderClasses anytime
+
 2003-12-31 [christoph]	0.9.8claws15
 
 	* src/folder.[ch]

@@ -377,6 +377,17 @@ gboolean xml_compare_tag(XMLFile *file, const gchar *name)
 		return FALSE;
 }
 
+XMLTag *xml_new_tag(const gchar	*tag)
+{
+	XMLTag *new_tag;
+
+	new_tag = g_new(XMLTag, 1);
+	new_tag->tag = XML_STRING_ADD(tag);
+	new_tag->attr = NULL;
+
+	return new_tag;
+}
+
 XMLTag *xml_copy_tag(XMLTag *tag)
 {
 	XMLTag *new_tag;
@@ -620,7 +631,7 @@ static gpointer copy_node_func(gpointer nodedata, gpointer data)
 	return newxmlnode;
 }
 
-GNode *xml_tree_copy(GNode *node)
+GNode *xml_copy_tree(GNode *node)
 {
 	return g_node_map(node, copy_node_func, NULL);
 }

@@ -81,6 +81,7 @@ void xml_truncate_buf		(XMLFile	*file);
 gboolean  xml_compare_tag	(XMLFile	*file,
 				 const gchar	*name);
 
+XMLTag	*xml_new_tag		(const gchar	*tag);
 XMLTag  *xml_copy_tag		(XMLTag		*tag);
 XMLAttr *xml_copy_attr		(XMLAttr	*attr);
 

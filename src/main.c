@@ -369,7 +369,7 @@ static void save_all_caches(FolderItem *item, gpointer data)
 static void exit_sylpheed(MainWindow *mainwin)
 {
 	gchar *filename;
-	GList *list;
+	GList *list, *cur;
 
 	debug_print("shutting down\n");
 
@@ -390,11 +390,6 @@ static void exit_sylpheed(MainWindow *mainwin)
 	/* save all state before exiting */
 	folder_write_list();
 	folder_func_to_all_folders(save_all_caches, NULL);
-	for (list = folder_get_list(); list != NULL; list = g_list_next(list)) {
-		Folder *folder = FOLDER(list->data);
-
-		folder_tree_destroy(folder);
-	}
 
 	main_window_get_size(mainwin);
 	main_window_get_position(mainwin);
