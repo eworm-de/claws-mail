@@ -472,6 +472,8 @@ static void messageview_change_view_type(MessageView *messageview,
 	if (messageview->type == type) return;
 
 	if (type == MVIEW_MIME) {
+		if (textview->text) 
+			gtk_editable_claim_selection(GTK_EDITABLE(textview->text), FALSE, NULL);
 		gtk_container_remove
 			(GTK_CONTAINER(GTK_WIDGET_PTR(messageview)),
 			 GTK_WIDGET_PTR(textview));
@@ -481,6 +483,8 @@ static void messageview_change_view_type(MessageView *messageview,
 				  GTK_WIDGET_PTR(textview));
 		mimeview->type = MIMEVIEW_TEXT;
 	} else if (type == MVIEW_TEXT) {
+		if (mimeview->textview->text) 
+			gtk_editable_claim_selection(GTK_EDITABLE(mimeview->textview->text), FALSE, NULL);
 		gtk_container_remove
 			(GTK_CONTAINER(GTK_WIDGET_PTR(messageview)),
 			 GTK_WIDGET_PTR(mimeview));
