@@ -1,3 +1,10 @@
+2002-12-13 [colin]	0.8.6claws104
+
+	* src/summaryview.c
+		Better handling of quicksearch show/hide
+		(basically the button stays under the mouse 
+		 when toggled)
+
 2002-12-13 [paul]	0.8.6claws103
 
 	* sync with 0.8.6cvs17
