@@ -25,8 +25,8 @@ unix tools (bison, sed, ...). Repeat this step after each "cvs update".
 
 2. Get following packages:
 --------------------------
-All packages are mirrored at the Sylpheed-Claws homepage. Please refer
-to the link section below.
+All packages (except MS IPv6 package) are mirrored at the Sylpheed-Claws
+homepage. Please refer to the link section below.
 
 * Sylpheed sourcecode:
     sylpheed-sources            (075claws17_snapshot_020511.zip or cvs checkout)
@@ -35,6 +35,7 @@ to the link section below.
     gtk+-dev                    (gtk+-dev-1.3.0-20020310.zip)
     libiconv-dev                (libiconv-dev-1.7.zip)
     libintl                     (libintl-0.10.40-20020101.zip)
+    gtk missing headers         (gtk+-1.3.0-20030115-win32-includes.zip)
 * Support libraries:
     libjconv                    (libjconv-2.8.1.tar.gz)
     fnmatch                     (fnmatch-dev-20020306.lzh)
@@ -43,8 +44,8 @@ to the link section below.
     w32lib                      (w32lib-dev-20020921.zip)
     gpgme                       (gpgme-dev-20020921.zip)
     openssl                     (claws_w32_ssl_dev_020415.zip)
-    libcrypt			(crypt-2.2.5-lib.zip)
-    pthreads			(pthreads-2002-11-04.exe)
+    libcrypt                    (crypt-2.2.5-lib.zip)
+    pthreads                    (pthreads-2002-11-04.exe)
 * unix build tools (diff,patch,msgfmt,grep,sed,bison,flex,cvs)
     unix-tools                  (unix-tools.zip)
 
@@ -59,6 +60,9 @@ to the link section below.
   4. Extract fnmatch, libcompface, regex, w32lib to \dev\proj
      (creates \dev\proj\fnmatch, etc.).
   5. Extract libjconv to \dev\proj\sylpheed.
+  6. Install the "IPv6 Technology Preview" and copy the headers from its "inc"
+     directory into \dev\include. To disable IPv6, uncomment "#define INET6 1"
+     in win32\config.h.
 
 
 4. The resulting directory tree:
@@ -71,6 +75,7 @@ to the link section below.
   |   +---glib-2.0
   |   +---gtk
   |   \---gdk
+  |       \---win32        (missing gtk-1.3 headers)
   +---lib
   |   +---glib-2.0
   |   +---pkgconfig
@@ -100,6 +105,7 @@ to the link section below.
           \---win32        (MSVC project files for sylpheed-claws)
               +---patches  (generated.diff, external bugfixes, etc.)
               +---apps     (optional: unix build utilities)
+
 
 5. Building:
 ------------
@@ -155,3 +161,6 @@ Gtk+ / Win32 homepage :
 by Tor Lillqvist (tml) <tml@iki.fi>
 http://www.gimp.org/~tml/gimp/win32
 
+IPv6 Technology Preview:
+by Microsoft (http://www.microsoft.com)
+http://msdn.microsoft.com/downloads/sdks/platform/tpipv6/start.asp
