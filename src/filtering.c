@@ -322,17 +322,13 @@ static gboolean filtering_is_final_action(FilteringProp *filtering)
 	}
 }
 
-static void filter_msginfo(GSList * filtering_list, FolderItem *inbox,
-			   MsgInfo * info)
+static gboolean filter_msginfo(GSList * filtering_list, MsgInfo * info)
 {
 	GSList	*l;
 	gboolean final;
 	gboolean applied;
 	
-	if (info == NULL) {
-		g_warning("msginfo is not set");
-		return;
-	}
+	g_return_val_if_fail(info != NULL, TRUE);
 	
 	for (l = filtering_list, final = FALSE, applied = FALSE; l != NULL; l = g_slist_next(l)) {
 		FilteringProp * filtering = (FilteringProp *) l->data;
@@ -347,87 +343,15 @@ static void filter_msginfo(GSList * filtering_list, FolderItem *inbox,
 	/* put in inbox if a final rule could not be applied, or
 	 * the last rule was not a final one. */
 	if ((final && !applied) || !final) {
-		if (inbox != info->folder) {
-			if (folder_item_move_msg(inbox, info) == -1) {
-				debug_print("*** Could not drop message in inbox; check .processing\n");
-				return;
-			}	
-		}	
+		return FALSE;
 	}
+
+	return TRUE;
 }
 
-/*!
- *\brief	filters a message based on its message info data
- *
- *\param	flist filter and actions list
- *\param	info message
- */
-void filter_message_by_msginfo_with_inbox(GSList *flist, MsgInfo *info, FolderItem *def_inbox)
+gboolean filter_message_by_msginfo(GSList *flist, MsgInfo *info)
 {
-	FolderItem *inbox;
-
-	if ((def_inbox == NULL)) {
-		debug_print("using default inbox as final destination!\n");
-		inbox = folder_get_default_inbox();
-	} else
-		inbox = def_inbox;
-
-	/*
-	 * message is already in a folder. the filtering code will
-	 * handle duplicate moves and copies.
-	 */
-	filter_msginfo(flist, inbox, info);
-}
-
-void filter_message_by_msginfo(GSList *flist, MsgInfo *info)
-{
-	filter_message_by_msginfo_with_inbox(flist, info, info->folder);
-}
-
-/*!
- *\brief	filters a message waiting to be processed in the
- *		.processing folder. 
- *
-  *\param	filtering_list list of filters and actions
-  *\param	inbox default inbox when no filter could be applied
-  *\param	msgnum message number in processing folder
-  *		changed after the call to this function
-  */
-void filter_message(GSList *filtering_list, FolderItem *inbox,
-		    gint msgnum)
-{
-	MsgInfo *msginfo;
-	gchar *filename;
-	MsgFlags  msgflags = { 0, 0 };
-	FolderItem *item = folder_get_default_processing();
-
-	if (item == NULL) {
-		g_warning("folderitem not set");
-		return;
-	}
-
-	filename = folder_item_fetch_msg(item, msgnum);
-
-	if (filename == NULL) {
-		g_warning("filename is not set");
-		return;
-	}
-
-	msginfo = procheader_parse_file(filename, msgflags, TRUE, FALSE);
-	
-	g_free(filename);
-
-	if (msginfo == NULL) {
-		g_warning("could not get info for %s", filename);
-		return;
-	}
-
-	msginfo->folder = item;
-	msginfo->msgnum = msgnum;
-
-	filter_msginfo(filtering_list, inbox, msginfo);
-
-	procmsg_msginfo_free(msginfo);
+	return filter_msginfo(flist, info);
 }
 
 gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *action)

@@ -582,20 +582,9 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 		/* process messages */
 		for(msglist_element = msglist; msglist_element != NULL; msglist_element = msglist_element->next) {
-			MailFilteringData mail_filtering_data;
 			msginfo = (MsgInfo *) msglist_element->data;
-			
-			mail_filtering_data.msginfo = msginfo;
-			
-			if (!hooks_invoke(MAIL_FILTERING_HOOKLIST, &mail_filtering_data)) {
-				/* filter if enabled in prefs or move to inbox if not */
-				if(global_processing && pop3_session->ac_prefs->filter_on_recv) {
-					filter_message_by_msginfo_with_inbox(global_processing, msginfo,
-									     inbox);
-				} else {
-					folder_item_move_msg(inbox, msginfo);
-				}
-			}
+			if (!pop3_session->ac_prefs->filter_on_recv || !procmsg_msginfo_filter(msginfo))
+				folder_item_move_msg(inbox, msginfo);
 			procmsg_msginfo_free(msginfo);
 		}
 		g_slist_free(msglist);

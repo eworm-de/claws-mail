@@ -1,3 +1,11 @@
+2003-04-07 [christoph]	0.8.11claws76
+
+	* src/filtering.[ch]
+	* src/inc.[ch]
+	* src/mbox.c
+	* src/procmsg.[ch]
+		add procmsg_msginfo_filter() to execute filtering actions
+
 2003-04-06 [christoph]	0.8.11claws75
 
 	* src/imap.c

@@ -30,9 +30,10 @@
 #include <sys/types.h>
 #include <string.h>
 
-typedef struct _MsgInfo		MsgInfo;
-typedef struct _MsgFlags	MsgFlags;
-typedef struct _MsgInfoUpdate 	MsgInfoUpdate;
+typedef struct _MsgInfo			MsgInfo;
+typedef struct _MsgFlags		MsgFlags;
+typedef struct _MsgInfoUpdate 		MsgInfoUpdate;
+typedef struct _MailFilteringData	MailFilteringData;
 
 typedef GSList MsgInfoList;
 typedef GSList MsgNumberList;
@@ -145,6 +146,7 @@ typedef enum
 #define MSG_IS_RETRCPT_PENDING(msg)	(((msg).perm_flags & MSG_RETRCPT_PENDING) != 0)
 
 #define MSGINFO_UPDATE_HOOKLIST "msginfo_update"
+#define MAIL_FILTERING_HOOKLIST "mail_filtering_hooklist"
 
 #include "folder.h"
 #include "procmime.h"
@@ -198,6 +200,11 @@ struct _MsgInfo
 };
 
 struct _MsgInfoUpdate {
+	MsgInfo	*msginfo;
+};
+
+struct _MailFilteringData
+{
 	MsgInfo	*msginfo;
 };
 
@@ -269,4 +276,5 @@ void procmsg_update_unread_children	(MsgInfo 	*info,
 					 gboolean 	 newly_marked);
 void procmsg_msginfo_set_to_folder	(MsgInfo 	*msginfo,
 					 FolderItem 	*to_folder);
+gboolean procmsg_msginfo_filter		(MsgInfo	*msginfo);
 #endif /* __PROCMSG_H__ */

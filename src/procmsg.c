@@ -41,6 +41,7 @@
 #include "news.h"
 #include "hooks.h"
 #include "msgcache.h"
+#include "filtering.h"
 
 typedef struct _FlagInfo	FlagInfo;
 
@@ -1330,4 +1331,27 @@ void procmsg_msginfo_set_to_folder(MsgInfo *msginfo, FolderItem *to_folder)
 		to_folder->op_count++;
 		folder_item_update(msginfo->to_folder, F_ITEM_UPDATE_MSGCNT);
 	}
+}
+
+/**
+ * Apply filtering actions to the msginfo
+ *
+ * \param msginfo The MsgInfo describing the message that should be filtered
+ * \return TRUE if the message was moved and MsgInfo is now invalid,
+ *         FALSE otherwise
+ */
+gboolean procmsg_msginfo_filter(MsgInfo *msginfo)
+{
+	MailFilteringData mail_filtering_data;
+			
+	mail_filtering_data.msginfo = msginfo;			
+	if (hooks_invoke(MAIL_FILTERING_HOOKLIST, &mail_filtering_data))
+		return TRUE;
+
+	/* filter if enabled in prefs or move to inbox if not */
+	if((global_processing != NULL) &&
+	   filter_message_by_msginfo(global_processing, msginfo))
+		return TRUE;
+
+	return FALSE;
 }

@@ -62,6 +62,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox)
 	gchar buf[MSGBUFSIZE], from_line[MSGBUFSIZE];
 	gchar *tmp_file;
 	gint msgs = 0;
+	MsgInfo *msginfo;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(mbox != NULL, -1);
@@ -212,8 +213,11 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox)
 			return -1;
 		}
 
-		filter_message(global_processing, dest,
-			       msgnum);
+		
+		msginfo = folder_item_get_msginfo(dropfolder, msgnum);
+		if (!procmsg_msginfo_filter(msginfo))
+			folder_item_move_msg(dropfolder, msginfo);
+		procmsg_msginfo_free(msginfo);
 
 		msgs++;
 	} while (from_line[0] != '\0');

@@ -32,7 +32,6 @@
 #include "plugin.h"
 #include "common/utils.h"
 #include "hooks.h"
-#include "inc.h"
 #include "procmsg.h"
 #include "folder.h"
 #include "prefs.h"
