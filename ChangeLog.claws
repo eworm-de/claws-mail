@@ -1,3 +1,8 @@
+2002-11-12 [melvin]	0.8.5claws132
+
+	* src/compose.c
+		Added a check for a NULL prefs_common.dictionary
+
 2002-11-12 [colin]	0.8.5claws131
 
 	* src/ssl_certificate.[ch]

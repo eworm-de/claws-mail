@@ -4935,7 +4935,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 #if USE_ASPELL
 	
 	menu_set_sensitive(ifactory, "/Spelling", FALSE);
-        if (prefs_common.enable_aspell && 
+        if (prefs_common.enable_aspell && prefs_common.dictionary &&
 	    strcmp(prefs_common.dictionary, _("None"))) {
 		gtkaspell = gtkaspell_new((const gchar*)prefs_common.dictionary,
 					  conv_get_current_charset_str(),
