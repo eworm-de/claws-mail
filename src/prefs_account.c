@@ -1704,8 +1704,9 @@ static void prefs_account_privacy_create(void)
 	gtk_widget_show (gnupg_mime_radiobtn);
 	gtk_box_pack_start (GTK_BOX (vbox_mode), gnupg_mime_radiobtn,
 			    FALSE, FALSE, 0);
-	gtk_object_set_user_data (GTK_OBJECT (gnupg_mime_radiobtn),
-				  GINT_TO_POINTER (GNUPG_MODE_DETACH));
+	g_object_set_data (G_OBJECT (gnupg_mime_radiobtn), 
+			   MENU_VAL_ID,
+			   GINT_TO_POINTER (GNUPG_MODE_DETACH));
 
 	gnupg_inline_radiobtn = gtk_radio_button_new_with_label_from_widget
 		(GTK_RADIO_BUTTON (gnupg_mime_radiobtn),
@@ -1713,10 +1714,12 @@ static void prefs_account_privacy_create(void)
 	gtk_widget_show (gnupg_inline_radiobtn);
 	gtk_box_pack_start (GTK_BOX (vbox_mode), gnupg_inline_radiobtn,
 			    FALSE, FALSE, 0);
-	gtk_object_set_user_data (GTK_OBJECT (gnupg_inline_radiobtn),
-				  GINT_TO_POINTER (GNUPG_MODE_INLINE));
+	g_object_set_data(G_OBJECT (gnupg_inline_radiobtn), 
+			  MENU_VAL_ID,
+			  GINT_TO_POINTER (GNUPG_MODE_INLINE));
 	g_signal_connect (G_OBJECT (gnupg_inline_radiobtn), "clicked",
-			  prefs_account_gnupg_inline_warning, NULL);
+			  G_CALLBACK(prefs_account_gnupg_inline_warning), 
+			  NULL);
 
 
 	PACK_FRAME (vbox1, frame1, _("Sign key"));

@@ -122,3 +122,4 @@
 ( cvs diff -u -r 1.14.2.9 -r 1.14.2.10 src/plugins/trayicon/trayicon.c; ) > 0.9.12cvs60.3.patchset
 ( cvs diff -u -r 1.9.2.5 -r 1.9.2.6 src/common/ssl.c; cvs diff -u -r 1.1.2.1 -r 1.1.2.3 src/plugins/pgpmime/plugin.c; ) > 0.9.12cvs65.1.patchset
 ( cvs diff -u -r 1.65.2.10 -r 1.65.2.11 src/codeconv.c; ) > 0.9.12cvs66.1.patchset
+( cvs diff -u -r 1.105.2.7 -r 1.105.2.8 src/prefs_account.c; ) > 0.9.12cvs66.2.patchset
