@@ -6,3 +6,6 @@ Makefile.in
 tags
 *.swp
 TAGS
+quote_fmt_lex.c
+quote_fmt_parse.c
+quote_fmt_parse.h
