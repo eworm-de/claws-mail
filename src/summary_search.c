@@ -355,8 +355,10 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 				gtk_ctree_select(ctree, node);
 			else {
 				if (summaryview->msg_is_toggled_on) {
+					summary_unlock(summaryview);
 					summary_select_node
 						(summaryview, node, TRUE, TRUE);
+					summary_lock(summaryview);
 					if (body_matched) {
 						messageview_search_string
 							(summaryview->messageview,

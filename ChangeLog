@@ -1,3 +1,8 @@
+2002-05-07
+
+	* src/summary_search.c: summary_search_execute(): unlock while
+	  selecting summary row (thanks to Martin Schaaf).
+
 2002-05-02
 
 	* src/compose.c: compose_write_headers(): quote self address name
@@ -7,6 +12,7 @@
 	* src/compose.c: compose_queue(): check if queue folder exists.
 	* src/imap.c: QUOTE_IF_REQUIRED(): quote also other IMAP special
 	  characters.
+	  imap_open(): removed an unrequired argument.
 
 2002-04-25
 
