@@ -20,7 +20,8 @@
 		better handling of missing directories
 
 	* src/summaryview.c
-		reedit is enabled is outbox
+		reedit is enabled in outbox
+		reedit is enabled in queue
 
 2001-05-17 [hoa]
 

@@ -845,7 +845,8 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	menu_set_sensitive(ifactory, "/View source", sens);
 	menu_set_sensitive(ifactory, "/Show all header", sens);
 	if ((summaryview->folder_item->stype == F_DRAFT) ||
-	    (summaryview->folder_item->stype == F_OUTBOX))
+	    (summaryview->folder_item->stype == F_OUTBOX) ||
+	    (summaryview->folder_item->stype == F_QUEUE))
 		menu_set_sensitive(ifactory, "/Reedit", sens);
 
 	menu_set_sensitive(ifactory, "/Save as...", sens);
@@ -1756,7 +1757,9 @@ void summary_reedit(SummaryView *summaryview)
 
 	if (!summaryview->selected) return;
 	if (!summaryview->folder_item ||
-	    summaryview->folder_item->stype != F_DRAFT) return;
+	    (summaryview->folder_item->stype != F_DRAFT &&
+	     summaryview->folder_item->stype != F_OUTBOX &&
+	     summaryview->folder_item->stype != F_QUEUE)) return;
 
 	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
 					      summaryview->selected);
