@@ -1,3 +1,8 @@
+2004-12-06 [christoph]
+
+	* configure.ac
+		move GPGME check to PGP/MIME plugin checks
+
 2004-12-06 [colin]	0.9.12cvs187
 
 	* src/compose.c

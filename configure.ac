@@ -443,20 +443,6 @@ else
 	AC_MSG_RESULT(no)
 fi
 
-dnl GPGME is used to support OpenPGP 
-AC_ARG_ENABLE(gpgme,
-	[  --enable-gpgme          Enable GnuPG support using GPGME [default=no]],
-	[ac_cv_enable_gpgme=$enableval], [ac_cv_enable_gpgme=no])
-AC_MSG_CHECKING([whether to use GPGME])
-if test $ac_cv_enable_gpgme = yes; then
-	AC_MSG_RESULT(yes)
-	AM_PATH_GPGME(0.3.10, AC_DEFINE(USE_GPGME, 1, Define if you use GPGME to support OpenPGP.),
-		      [use_gpgme=no
-		       ac_cv_enable_gpgme=no])
-else
-	AC_MSG_RESULT(no)
-fi
-
 dnl #######################################################################
 dnl # Check for startup notification
 dnl #######################################################################
@@ -508,9 +494,8 @@ AC_ARG_ENABLE(pgpmime-plugin,
 	[  --disable-pgpmime-plugin           Do not build PGP/MIME plugin],
 	[ac_cv_enable_pgpmime_plugin=$enableval], [ac_cv_enable_pgpmime_plugin=yes])
 if test x"$ac_cv_enable_pgpmime_plugin" = xyes; then
-	if test x"$ac_cv_enable_gpgme" != xyes; then
-		ac_cv_enable_pgpmime_plugin=no
-	fi
+	AM_PATH_GPGME(0.3.10, AC_DEFINE(USE_GPGME, 1, Define if you use GPGME to support OpenPGP.),
+		      [ac_cv_enable_pgpmime_plugin=no])
 
 	if test x"$ac_cv_enable_pgpmime_plugin" = xyes; then
 		PLUGINS="pgpmime $PLUGINS"
@@ -651,7 +636,6 @@ dnl Output the configuration summary
 echo ""
 echo "$PACKAGE $VERSION"
 echo ""
-echo "GnuPG         : $ac_cv_enable_gpgme"
 echo "JPilot        : $ac_cv_enable_jpilot"
 echo "LDAP          : $ac_cv_enable_ldap"
 echo "OpenSSL       : $ac_cv_enable_openssl"
