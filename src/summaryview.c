@@ -153,6 +153,12 @@ static void summary_set_menu_sensitive	(SummaryView		*summaryview);
 static guint summary_get_msgnum		(SummaryView		*summaryview,
 					 GtkCTreeNode		*node);
 
+static GtkCTreeNode *summary_find_prev_msg
+					(SummaryView		*summaryview,
+					 GtkCTreeNode		*current_node);
+static GtkCTreeNode *summary_find_next_msg
+					(SummaryView		*summaryview,
+					 GtkCTreeNode		*current_node);
 static GtkCTreeNode *summary_find_prev_unread_msg
 					(SummaryView		*summaryview,
 					 GtkCTreeNode		*current_node);
@@ -1368,6 +1374,46 @@ static guint summary_get_msgnum(SummaryView *summaryview, GtkCTreeNode *node)
 		return 0;
 	msginfo = gtk_ctree_node_get_row_data(ctree, node);
 	return msginfo->msgnum;
+}
+
+static GtkCTreeNode *summary_find_prev_msg(SummaryView *summaryview,
+					   GtkCTreeNode *current_node)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GtkCTreeNode *node;
+	MsgInfo *msginfo;
+
+	if (current_node)
+		node = current_node;
+	else
+		node = gtk_ctree_node_nth(ctree, GTK_CLIST(ctree)->rows - 1);
+
+	for (; node != NULL; node = GTK_CTREE_NODE_PREV(node)) {
+		msginfo = gtk_ctree_node_get_row_data(ctree, node);
+		if (!MSG_IS_DELETED(msginfo->flags)) break;
+	}
+
+	return node;
+}
+
+static GtkCTreeNode *summary_find_next_msg(SummaryView *summaryview,
+					   GtkCTreeNode *current_node)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GtkCTreeNode *node;
+	MsgInfo *msginfo;
+
+	if (current_node)
+		node = current_node;
+	else
+		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+
+	for (; node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
+		msginfo = gtk_ctree_node_get_row_data(ctree, node);
+		if (!MSG_IS_DELETED(msginfo->flags)) break;
+	}
+
+	return node;
 }
 
 static GtkCTreeNode *summary_find_prev_unread_msg(SummaryView *summaryview,
@@ -2698,7 +2744,8 @@ void summary_delete(SummaryView *summaryview)
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	FolderItem *item = summaryview->folder_item;
 	GList *cur;
-	GtkCTreeNode *dsp_last, *sel_last = NULL;
+	GtkCTreeNode *sel_last = NULL;
+	GtkCTreeNode *node;
 
 	if (!item || item->folder->type == F_NEWS) return;
 
@@ -2714,20 +2761,24 @@ void summary_delete(SummaryView *summaryview)
 		if (aval != G_ALERTDEFAULT) return;
 	}
 
-	/* next code sets current row focus right. if the last selection
-	 * is also the last displayed row, we need to scroll backwards. 
-	 * exception: if the last displayed row has children,
-	 * we don't scroll back. */
-	dsp_last = gtk_ctree_node_nth(ctree, GTK_CLIST(ctree)->rows - 1);
+	/* next code sets current row focus right. We need to find a row
+	 * that is not deleted. */
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next) {
 		sel_last = GTK_CTREE_NODE(cur->data);
 		summary_delete_row(summaryview, sel_last);
 	}
 
-	if (dsp_last == sel_last && !GTK_CTREE_ROW(sel_last)->children)
-		summary_step(summaryview, GTK_SCROLL_STEP_BACKWARD);
-	else 	
+	node = summary_find_next_msg(summaryview, sel_last);
+	if (!node)
+		node = summary_find_prev_msg(summaryview, sel_last);
+	if (node == gtkut_ctree_node_next(ctree, sel_last))
 		summary_step(summaryview, GTK_SCROLL_STEP_FORWARD);
+	else if (node == GTK_CTREE_NODE_PREV(sel_last))
+		summary_step(summaryview, GTK_SCROLL_STEP_BACKWARD);
+	else
+		summary_select_node
+			(summaryview, node,
+			 summaryview->msg_is_toggled_on);
 
 	if (prefs_common.immediate_exec || item->stype == F_TRASH)
 		summary_execute(summaryview);

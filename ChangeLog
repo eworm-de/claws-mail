@@ -2,6 +2,10 @@
 
 	* src/utils.c: to_human_readable(): made a bit of optimization.
 	* src/summaryview.c: summary_delete(): fixed a focus problem.
+	  summary_find_{prev,next}_msg(): new. They find previous/next
+	  message that is not deleted.
+	* src/prefs_filter.c: scroll CList automatically if moved row
+	  becomes not fully visible.
 
 2001-10-09
 

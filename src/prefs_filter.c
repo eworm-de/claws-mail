@@ -99,6 +99,9 @@ static void prefs_filter_select		(GtkCList	*clist,
 					 gint		 row,
 					 gint		 column,
 					 GdkEvent	*event);
+static void prefs_filter_row_move	(GtkCList	*clist,
+					 gint		 source_row,
+					 gint		 dest_row);
 
 static void prefs_filter_dest_radio_button_toggled	(void);
 static void prefs_filter_notrecv_radio_button_toggled	(void);
@@ -434,6 +437,8 @@ static void prefs_filter_create(void)
 				GTK_CAN_FOCUS);
 	gtk_signal_connect (GTK_OBJECT (cond_clist), "select_row",
 			    GTK_SIGNAL_FUNC (prefs_filter_select), NULL);
+	gtk_signal_connect (GTK_OBJECT (cond_clist), "row_move",
+			    GTK_SIGNAL_FUNC (prefs_filter_row_move), NULL);
 
 	btn_vbox = gtk_vbox_new (FALSE, 8);
 	gtk_widget_show (btn_vbox);
@@ -745,13 +750,8 @@ static void prefs_filter_up(void)
 	if (!clist->selection) return;
 
 	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row > 1) {
+	if (row > 1)
 		gtk_clist_row_move(clist, row, row - 1);
-		if(gtk_clist_row_is_visible(clist, row - 1) != GTK_VISIBILITY_FULL) {
-			gtk_clist_moveto(clist, row - 1, 0, 0, 0);
-		} 
-		prefs_filter_set_list();
-	}
 }
 
 static void prefs_filter_down(void)
@@ -762,13 +762,8 @@ static void prefs_filter_down(void)
 	if (!clist->selection) return;
 
 	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row > 0 && row < clist->rows - 1) {
+	if (row > 0 && row < clist->rows - 1)
 		gtk_clist_row_move(clist, row, row + 1);
-		if(gtk_clist_row_is_visible(clist, row + 1) != GTK_VISIBILITY_FULL) {
-			gtk_clist_moveto(clist, row + 1, 0, 1, 0);
-		} 
-		prefs_filter_set_list();
-	}
 }
 
 #define ENTRY_SET_TEXT(entry, str) \
@@ -808,6 +803,16 @@ static void prefs_filter_select(GtkCList *clist, gint row, gint column,
 	else
 		gtk_toggle_button_set_active
 			(GTK_TOGGLE_BUTTON(filter.dest_radiobtn), TRUE);
+}
+
+static void prefs_filter_row_move(GtkCList *clist, gint source_row,
+				  gint dest_row)
+{
+	prefs_filter_set_list();
+	if (gtk_clist_row_is_visible(clist, dest_row) != GTK_VISIBILITY_FULL) {
+		gtk_clist_moveto(clist, dest_row, -1,
+				 source_row < dest_row ? 1.0 : 0.0, 0.0);
+	}
 }
 
 static void prefs_filter_dest_radio_button_toggled(void)

@@ -2,6 +2,10 @@
 
 	* src/utils.c: to_human_readable(): 少し最適化。
 	* src/summaryview.c: summary_delete(): フォーカスの問題を修正。
+	  summary_find_{prev,next}_msg(): 新規。前/次の削除されていない
+	  メッセージを検索する。
+	* src/prefs_filter.c: 移動した行が完全に表示されなくなった場合は
+	  自動的に CList をスクロールさせるようにした。
 
 2001-10-09
 
