@@ -1,3 +1,11 @@
+2002-11-22 [christoph]	0.8.5claws179
+
+	* src/compose.c
+	* src/inc.c
+	* src/prefs_filtering.c
+	* src/summaryview.c
+		more warning fixes
+
 2002-11-22 [alfons]	0.8.5claws178
 
 	* src/summaryview.c

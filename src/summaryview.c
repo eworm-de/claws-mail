@@ -3287,7 +3287,7 @@ void summary_save_as(SummaryView *summaryview)
 	gchar *filename = NULL;
 	gchar *src, *dest;
 
-	AlertValue aval;
+	AlertValue aval = 0;
 
 	if (!summaryview->selected) return;
 	msginfo = gtk_ctree_node_get_row_data(ctree, summaryview->selected);
@@ -3303,7 +3303,8 @@ void summary_save_as(SummaryView *summaryview)
 		aval = alertpanel(_("Append or Overwrite"),
 				  _("Append or overwrite existing file?"),
 				  _("Append"), _("Overwrite"), _("Cancel"));
-		if (aval!=0 && aval!=1) return;
+		if (aval != 0 && aval != 1)
+			return;
 	}
 
 	src = procmsg_get_message_file(msginfo);

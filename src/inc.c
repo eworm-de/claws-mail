@@ -238,7 +238,7 @@ static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 	IncProgressDialog *inc_dialog;
 	IncSession *session;
 	gchar *text[3];
-	FolderItem *item;
+	FolderItem *item = NULL;
 	
 	if(mainwin && mainwin->summaryview)
 		item = mainwin->summaryview->folder_item;

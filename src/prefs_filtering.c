@@ -638,12 +638,12 @@ static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data)
 	gint prefixlen;
 	gint oldpathlen;
 	FolderItem *item;
-	
-	g_return_val_if_fail(old_path != NULL, FALSE);
-	g_return_val_if_fail(new_path != NULL, FALSE);
 
 	old_path = ((gchar **)data)[0];
 	new_path = ((gchar **)data)[1];
+
+	g_return_val_if_fail(old_path != NULL, FALSE);
+	g_return_val_if_fail(new_path != NULL, FALSE);
 
 	oldpathlen = strlen(old_path);
 	old_path_with_sep = g_strconcat(old_path,G_DIR_SEPARATOR_S,NULL);
