@@ -415,7 +415,7 @@ static void activate_gnupg_mode 	(Compose *compose,
 #endif
 static void compose_toggle_return_receipt_cb(gpointer data, guint action,
 					     GtkWidget *widget);
-static void compose_toggle_new_thread_cb(gpointer data, guint action,
+static void compose_toggle_remove_refs_cb(gpointer data, guint action,
 					     GtkWidget *widget);
 static void compose_set_priority_cb	(gpointer 	 data,
 					 guint 		 action,
@@ -659,7 +659,7 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Message/Priority/_Lowest"),  NULL, compose_set_priority_cb, PRIORITY_LOWEST, "/Message/Priority/Highest"},
 	{N_("/_Message/---"),		NULL,		NULL,	0, "<Separator>"},
 	{N_("/_Message/_Request Return Receipt"),	NULL, compose_toggle_return_receipt_cb, 0, "<ToggleItem>"},
-	{N_("/_Message/_Remove references"),	NULL, compose_toggle_new_thread_cb, 0, "<ToggleItem>"},
+	{N_("/_Message/Remo_ve references"),	NULL, compose_toggle_remove_refs_cb, 0, "<ToggleItem>"},
 	{N_("/_Tools"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/Show _ruler"),	NULL, compose_toggle_ruler_cb, 0, "<ToggleItem>"},
 	{N_("/_Tools/_Address book"),	"<shift><control>A", compose_address_cb , 0, NULL},
@@ -931,6 +931,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 
 	menu_set_toggle(ifactory, "/Message/Remove references", FALSE);
+	menu_set_sensitive(ifactory, "/Message/Remove references", TRUE);
 
 	compose->replyinfo = procmsg_msginfo_get_full_info(msginfo);
 	if (!compose->replyinfo)
@@ -4979,6 +4980,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	ifactory = gtk_item_factory_from_widget(menubar);
 	menu_set_sensitive(ifactory, "/Edit/Undo", FALSE);
 	menu_set_sensitive(ifactory, "/Edit/Redo", FALSE);
+	menu_set_sensitive(ifactory, "/Message/Remove references", FALSE);
 
 	tmpl_menu = gtk_item_factory_get_item(ifactory, "/Tools/Template");
 #if 0 /* NEW COMPOSE GUI */
@@ -6873,7 +6875,7 @@ static void compose_toggle_return_receipt_cb(gpointer data, guint action,
 		compose->return_receipt = FALSE;
 }
 
-static void compose_toggle_new_thread_cb(gpointer data, guint action,
+static void compose_toggle_remove_refs_cb(gpointer data, guint action,
 					     GtkWidget *widget)
 {
 	Compose *compose = (Compose *)data;

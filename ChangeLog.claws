@@ -1,3 +1,10 @@
+2003-06-25 [leandro]	0.9.0claws60
+
+	* src/compose.c
+		o cleanups
+		o gray out "Message/Remove references" menu item if not
+		  replying to a message
+
 2003-06-24 [leandro]	0.9.0claws59
 
 	* src/compose.[ch]
