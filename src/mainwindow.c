@@ -83,6 +83,7 @@
 #include "version.h"
 #include "selective_download.h"
 #include "ssl_manager.h"
+#include "sslcertwindow.h"
 
 #define AC_LABEL_WIDTH	240
 
@@ -464,7 +465,7 @@ static void prefs_scoring_open_cb 	(MainWindow	*mainwin,
 static void prefs_filtering_open_cb 	(MainWindow	*mainwin,
 				  	 guint		 action,
 				  	 GtkWidget	*widget);
-#ifdef USE_SSL
+#ifdef USE_OPENSSL
 static void ssl_manager_open_cb 	(MainWindow	*mainwin,
 				  	 guint		 action,
 				  	 GtkWidget	*widget);
@@ -762,7 +763,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, delete_duplicated_cb,   0, NULL},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/E_xecute"),		"X", execute_summary_cb, 0, NULL},
-#ifdef USE_SSL
+#ifdef USE_OPENSSL
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/SSL certi_ficates..."),	
 						NULL, ssl_manager_open_cb, 0, NULL},
@@ -1033,7 +1034,7 @@ MainWindow *main_window_create(SeparateType type)
 	gdk_colormap_alloc_colors(colormap, color, 4, FALSE, TRUE, success);
 	for (i = 0; i < 4; i++) {
 		if (success[i] == FALSE)
-			g_warning(_("MainWindow: color allocation %d failed\n"), i);
+			g_warning("MainWindow: color allocation %d failed\n", i);
 	}
 
 	debug_print("done.\n");
@@ -1103,7 +1104,9 @@ MainWindow *main_window_create(SeparateType type)
 	summary_init(summaryview);
 	messageview_init(messageview);
 	log_window_init(mainwin->logwin);
-
+#ifdef USE_OPENSSL
+	sslcertwindow_register_hook();
+#endif
 	mainwin->lock_count = 0;
 	mainwin->menu_lock_count = 0;
 	mainwin->cursor_count = 0;
@@ -3044,7 +3047,6 @@ void send_queue_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 			if (procmsg_send_queue
 				(folder->queue, prefs_common.savemsg) < 0)
 				alertpanel_error(_("Some errors occurred while sending queued messages."));
-			statusbar_pop_all();
 			folder_item_scan(folder->queue);
 			folder_update_item(folder->queue, TRUE);
 		}
@@ -3447,7 +3449,7 @@ static void prefs_actions_open_cb(MainWindow *mainwin, guint action,
 {
 	prefs_actions_open(mainwin);
 }
-#ifdef USE_SSL
+#ifdef USE_OPENSSL
 static void ssl_manager_open_cb(MainWindow *mainwin, guint action,
 				  GtkWidget *widget)
 {

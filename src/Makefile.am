@@ -38,7 +38,6 @@ sylpheed_SOURCES = \
 	account.c account.h \
 	displayheader.c displayheader.h \
 	customheader.c customheader.h \
-	template.c template.h \
 	addressbook.c addressbook.h \
 	addr_compl.c addr_compl.h \
 	addressitem.h \
@@ -88,11 +87,8 @@ sylpheed_SOURCES = \
 	gtkutils.c gtkutils.h \
 	codeconv.c codeconv.h \
 	unmime.c unmime.h \
-	ssl_certificate.c ssl_certificate.h \
 	ssl_manager.c ssl_manager.h \
 	automaton.c automaton.h \
-	session.c session.h \
-	smtp.c smtp.h \
 	pop.c pop.h \
 	mh.c mh.h \
 	mbox.c mbox.h \
@@ -101,7 +97,6 @@ sylpheed_SOURCES = \
 	inc.c inc.h \
 	import.c import.h \
 	export.c export.h \
-	nntp.c nntp.h \
 	news.c news.h \
 	imap.c imap.h \
 	xml.c xml.h \
@@ -223,6 +218,7 @@ INCLUDES = \
 	$(GDK_IMLIB_CFLAGS) \
 	$(GDK_PIXBUF_CFLAGS) \
 	$(GPGME_CFLAGS) \
+	$(OPENSSL_CFLAGS) \
 	-I$(includedir)
 
 sylpheed_LDADD = \
@@ -233,7 +229,8 @@ sylpheed_LDADD = \
 	$(GDK_IMLIB_LIBS) \
 	$(GDK_PIXBUF_LIBS) \
 	$(GPGME_LIBS) \
-	$(LDAP_LIBS)
+	$(LDAP_LIBS) \
+	$(OPENSSL_LIBS)
 
 CPPFLAGS = \
 	-DLOCALEDIR=\""$(localedir)"\" \

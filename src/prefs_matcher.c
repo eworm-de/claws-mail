@@ -1384,11 +1384,40 @@ static void prefs_matcher_cancel(void)
 static void prefs_matcher_ok(void)
 {
 	MatcherList * matchers;
+	MatcherProp * matcherprop;
+	AlertValue val;
+	gint criteria;
+	gint value_criteria;
+	gchar * matcher_str;
+	gchar * str;
+	gint row = 1;
 
 	matchers = prefs_matcher_get_list();
-	gtk_widget_hide(matcher.window);
-	inc_unlock();
+
 	if (matchers != NULL) {
+		matcherprop = prefs_matcher_dialog_to_matcher();
+		if (matcherprop != NULL) {
+			str = matcherprop_to_string(matcherprop);
+			if(strcmp(str, "all") != 0) {
+				while (gtk_clist_get_text(GTK_CLIST(matcher.cond_clist),
+						  row, 0, &matcher_str)) {
+					if (strcmp(matcher_str, str) == 0) break;
+					row++;
+				}
+				if (strcmp(matcher_str, str) != 0) {
+		                        val = alertpanel(_("Entry not registered"),
+        		                         _("The entry was not registered\nAre you really finish?"),
+                		                 _("Yes"), _("No"), NULL);
+	                        	if (G_ALERTDEFAULT != val) {
+	        	                        g_free(str);
+        	        	                return;
+	        	                }
+				}
+			}
+		}
+                g_free(str);
+		gtk_widget_hide(matcher.window);
+		inc_unlock();
 		if (matchers_callback != NULL)
 			matchers_callback(matchers);
 		matcherlist_free(matchers);

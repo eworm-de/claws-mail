@@ -20,7 +20,7 @@
 #  include "config.h"
 #endif
 
-#ifdef USE_SSL
+#ifdef USE_OPENSSL
 #include <gtk/gtkwidget.h>
 #include <glib.h>
 #include <sys/types.h>
@@ -36,6 +36,7 @@
 #include "intl.h"
 #include "gtksctree.h"
 #include "alertpanel.h"
+#include "sslcertwindow.h"
 
 static struct SSLManager
 {
@@ -234,8 +235,6 @@ static void ssl_manager_view_cb(GtkWidget *widget,
 {
 	SSLCertificate *cert;
 	GList *rowlist;
-	gchar *cert_str;
-	gchar *str;
 	
 	rowlist = GTK_CLIST(manager.certlist)->selection;
 	if (!rowlist) 
@@ -248,13 +247,7 @@ static void ssl_manager_view_cb(GtkWidget *widget,
 	if (!cert)
 		return;
 
-	cert_str = ssl_certificate_to_string(cert);
-	str = g_strconcat(_("SSL certificate for "),cert->host, ":\n\n", cert_str, NULL);
-	alertpanel(_("SSL Certificate"),
-		str,
-		_("OK"), NULL, NULL);
-	g_free(str);
-	g_free(cert_str);
+	sslcertwindow_show_cert(cert);
 	
 	
 }

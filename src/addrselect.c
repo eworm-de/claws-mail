@@ -24,7 +24,6 @@
 #include <stdio.h>
 #include <glib.h>
 
-#include "addritem.h"
 #include "addrselect.h"
 #include "addressitem.h"
 #include "mgutils.h"

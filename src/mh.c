@@ -414,7 +414,7 @@ gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 
 	if (link(file, destfile) < 0) {
 		if (copy_file(file, destfile, TRUE) < 0) {
-			g_warning(_("can't copy message %s to %s\n"),
+			g_warning("can't copy message %s to %s\n",
 				  file, destfile);
 			g_free(destfile);
 			return -1;
@@ -442,7 +442,7 @@ static gint mh_do_move(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	g_return_val_if_fail(msginfo != NULL, -1);
 
 	if (msginfo->folder == dest) {
-		g_warning(_("the src folder is identical to the dest.\n"));
+		g_warning("the src folder is identical to the dest.\n");
 		return -1;
 	}
 
@@ -510,7 +510,7 @@ gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
  
  		destdir = folder_item_get_path(dest);
  		if ((fp = procmsg_open_mark_file(destdir, TRUE)) == NULL)
- 			g_warning(_("Can't open mark file.\n"));
+ 			g_warning("Can't open mark file.\n");
  		else {
  			SET_DEST_MSG_FLAGS(fp, dest, msginfo);
  			fclose(fp);
@@ -546,7 +546,7 @@ static gint mh_do_move_msgs_with_dest(Folder *folder, FolderItem *dest,
 		msginfo = (MsgInfo *)cur->data;
 
 		if (msginfo->folder == dest) {
-			g_warning(_("the src folder is identical to the dest.\n"));
+			g_warning("the src folder is identical to the dest.\n");
 			continue;
 		}
 		debug_print("Moving message %s%c%d to %s ...\n",
@@ -601,7 +601,7 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	g_return_val_if_fail(msginfo != NULL, -1);
 
 	if (msginfo->folder == dest) {
-		g_warning(_("the src folder is identical to the dest.\n"));
+		g_warning("the src folder is identical to the dest.\n");
 		return -1;
 	}
 
@@ -725,7 +725,7 @@ gint mh_copy_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 		msginfo = (MsgInfo *)cur->data;
 
 		if (msginfo->folder == dest) {
-			g_warning(_("the src folder is identical to the dest.\n"));
+			g_warning("the src folder is identical to the dest.\n");
 			continue;
 		}
 		debug_print("Copying message %s%c%d to %s ...\n",
@@ -897,8 +897,8 @@ void mh_scan_tree(Folder *folder)
 { \
 	if (!is_dir_exist(dir)) { \
 		if (is_file_exist(dir)) { \
-			g_warning(_("File `%s' already exists.\n" \
-				    "Can't create folder."), dir); \
+			g_warning("File `%s' already exists.\n" \
+				    "Can't create folder.", dir); \
 			return -1; \
 		} \
 		if (make_dir(dir) < 0) \

@@ -1,3 +1,13 @@
+2002-12-05
+
+	* src/send.c: send_message_local(): escape line that only have one
+	  dot character (postfix's sendmail command will stop there).
+
+2002-12-05
+
+	* src/send.c: send_message_local(): don't escape first-dot line
+	  (thanks to Sergey Vlasov).
+
 2002-12-03
 
 	* autogen.sh: added 'libtoolize --force --copy' to override the

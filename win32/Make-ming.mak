@@ -105,8 +105,8 @@ FLAGS=$(DEBUGFLAG) $(BITFIELD) $(NOCYGWIN) $(OPTIMIZATION)
 ### version
 
 CONFIGURE_IN=$(ROOTDIR)/configure.in
-VERSION_H_IN=$(SRCDIR)/version.h.in
-VERSION_H=$(SRCDIR)/version.h
+VERSION_H_IN=$(SRCDIR)/common/version.h.in
+VERSION_H=$(SRCDIR)/common/version.h
 
 PACKAGE=$(shell grep ^PACKAGE= $(CONFIGURE_IN)|sed -e "s/.*=//" -)
 MAJOR_VERSION=$(shell grep ^MAJOR_VERSION= $(CONFIGURE_IN)|sed -e "s/.*=//" -)
@@ -299,6 +299,7 @@ OBJECTS= \
 	ssl.o \
 	ssl_certificate.o \
 	ssl_manager.o \
+	sslcertwindow.o \
 	statusbar.o \
 	stock_pixmap.o \
 	string_match.o \
@@ -306,6 +307,7 @@ OBJECTS= \
 	summary_search.o \
 	summaryview.o \
 	syldap.o \
+	sylpheed.o \
 	template.o \
 	textview.o \
 	toolbar.o \
@@ -481,6 +483,7 @@ sourcewindow.o: 	sourcewindow.c sourcewindow.h
 ssl.o: 	ssl.c ssl.h
 ssl_certificate.o: 	ssl_certificate.c ssl_certificate.h
 ssl_manager.o:	ssl_manager.c ssl_manager.h
+sslcertwindow.o:	sslcertwindow.c sslcertwindow.h
 statusbar.o: 	statusbar.c statusbar.h
 stock_pixmap.o: 	stock_pixmap.c stock_pixmap.h
 string_match.o:	string_match.c string_match.h 
@@ -488,6 +491,7 @@ stringtable.o: 	stringtable.c stringtable.h
 summary_search.o: 	summary_search.c summary_search.h
 summaryview.o: 	summaryview.c summaryview.h
 syldap.o: 	syldap.c syldap.h
+sylpheed.o:	sylpheed.c sylpheed.h
 template.o: 	template.c template.h
 textview.o: 	textview.c textview.h
 toolbar.o: 	toolbar.c toolbar.h

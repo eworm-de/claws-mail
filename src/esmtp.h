@@ -27,7 +27,7 @@
 #include <glib.h>
 
 #include "socket.h"
-#if USE_SSL
+#if USE_OPENSSL
 #  include "ssl.h"
 #endif
 

@@ -766,8 +766,10 @@ static void account_up(void)
 	if (!clist->selection) return;
 
 	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row > 0)
+	if (row > 0) {
 		gtk_clist_row_move(clist, row, row - 1);
+		account_list_set();
+	}
 }
 
 static void account_down(void)
@@ -778,8 +780,11 @@ static void account_down(void)
 	if (!clist->selection) return;
 
 	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row < clist->rows - 1)
+	if (row < clist->rows - 1) {
 		gtk_clist_row_move(clist, row, row + 1);
+		account_list_set();
+	}
+
 }
 
 static void account_set_default(void)
@@ -872,7 +877,7 @@ static gint account_clist_set_row(PrefsAccount *ac_prefs, gint row)
 	text[COL_DEFAULT] = "";
 	text[COL_GETALL]  = "";
 	text[COL_NAME]    = ac_prefs->account_name;
-#if USE_SSL
+#if USE_OPENSSL
 	text[COL_PROTOCOL] = ac_prefs->protocol == A_POP3 ?
 			     (ac_prefs->ssl_pop == SSL_TUNNEL ?
 			      "POP3 (SSL)" :

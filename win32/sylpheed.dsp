@@ -412,7 +412,7 @@ SOURCE=..\src\news.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\nntp.c
+SOURCE=..\src\common\nntp.c
 # End Source File
 # Begin Source File
 
@@ -536,7 +536,7 @@ SOURCE=..\src\send.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\session.c
+SOURCE=..\src\common\session.c
 # End Source File
 # Begin Source File
 
@@ -552,7 +552,7 @@ SOURCE="..\src\simple-gettext.c"
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\smtp.c
+SOURCE=..\src\common\smtp.c
 # End Source File
 # Begin Source File
 
@@ -568,11 +568,15 @@ SOURCE=..\src\common\ssl.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\ssl_certificate.c
+SOURCE=..\src\common\ssl_certificate.c
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\ssl_manager.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\gtk\sslcertwindow.c
 # End Source File
 # Begin Source File
 
@@ -604,11 +608,15 @@ SOURCE=..\src\syldap.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\common\sylpheed.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\sylpheed.rc
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\template.c
+SOURCE=..\src\common\template.c
 # End Source File
 # Begin Source File
 
@@ -856,7 +864,7 @@ SOURCE=..\src\inputdialog.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\intl.h
+SOURCE=..\src\common\intl.h
 # End Source File
 # Begin Source File
 
@@ -936,7 +944,7 @@ SOURCE=..\src\news.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\nntp.h
+SOURCE=..\src\common\nntp.h
 # End Source File
 # Begin Source File
 
@@ -1032,7 +1040,7 @@ SOURCE=..\src\send.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\session.h
+SOURCE=..\src\common\session.h
 # End Source File
 # Begin Source File
 
@@ -1044,7 +1052,7 @@ SOURCE=..\src\sigstatus.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\smtp.h
+SOURCE=..\src\common\smtp.h
 # End Source File
 # Begin Source File
 
@@ -1060,11 +1068,15 @@ SOURCE=..\src\common\ssl.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\ssl_certificate.h
+SOURCE=..\src\common\ssl_certificate.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\ssl_manager.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\gtk\sslcertwindow.h
 # End Source File
 # Begin Source File
 
@@ -1092,7 +1104,11 @@ SOURCE=..\src\syldap.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\template.h
+SOURCE=..\src\common\sylpheed.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\common\template.h
 # End Source File
 # Begin Source File
 

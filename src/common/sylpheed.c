@@ -38,11 +38,21 @@ static gboolean sylpheed_initialized = FALSE;
 
 gboolean sylpheed_init(int *argc, char ***argv)
 {
+#ifdef WIN32
+	gchar *locale_dir;
+#endif
 	if (sylpheed_initialized)
 		return TRUE;
 
 	setlocale(LC_ALL, "");
+#ifdef WIN32
+	locale_dir = g_strconcat(get_installed_dir(), G_DIR_SEPARATOR_S,
+				LOCALEDIR, NULL);
+	bindtextdomain(PACKAGE, locale_dir);
+	g_free(locale_dir);
+#else
 	bindtextdomain(PACKAGE, LOCALEDIR);
+#endif
 	textdomain(PACKAGE);
 
 	/* backup if old rc file exists */

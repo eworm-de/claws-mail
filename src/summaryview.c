@@ -88,6 +88,7 @@
 #include "news.h"
 #include "matcher.h"
 #include "matcher_parser.h"
+#include "hooks.h"
 
 #define SUMMARY_COL_MARK_WIDTH		10
 #define SUMMARY_COL_UNREAD_WIDTH	13
@@ -382,7 +383,7 @@ static void news_flag_crosspost		(MsgInfo *msginfo);
 static void tog_searchbar_cb		(GtkWidget	*w,
 					 gpointer	 data);
 
-static void summary_update_msg		(MsgInfo *info, gpointer data);
+static gboolean summary_update_msg	(gpointer source, gpointer data);
 
 GtkTargetEntry summary_drag_types[1] =
 {
@@ -615,7 +616,7 @@ SummaryView *summary_create(void)
 	summaryview->search_type = search_type;
 	summaryview->search_string = search_string;
 	summaryview->msginfo_update_callback_id =
-		msginfo_update_callback_register(summary_update_msg, (gpointer) summaryview);
+		hooks_register_hook(MSGINFO_UPDATE_HOOKLIST, summary_update_msg, (gpointer) summaryview);
 
 	/* CLAWS: need this to get the SummaryView * from
 	 * the CList */
@@ -949,8 +950,17 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		gchar *searched_header = NULL;
 		MatcherList * tmp_list = NULL;
 		
-		if (search_type == S_SEARCH_EXTENDED)
-			tmp_list = matcher_parser_get_cond(search_string);
+		if (search_type == S_SEARCH_EXTENDED) {
+			char *newstr;
+
+			newstr = expand_search_string(search_string);
+			if (newstr) {
+				tmp_list = matcher_parser_get_cond(newstr);
+				g_free(newstr);
+			}
+			else
+				tmp_list = NULL;
+		}
 
 		not_killed = NULL;
 		for (cur = mlist ; cur != NULL ; cur = g_slist_next(cur)) {
@@ -4312,8 +4322,6 @@ void summary_set_colorlabel_color(GtkCTree *ctree, GtkCTreeNode *node,
 	gint color_index;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, node);
-	procmsg_msginfo_unset_flags(msginfo, MSG_CLABEL_FLAG_MASK, 0);
-	procmsg_msginfo_set_flags(msginfo, MSG_COLORLABEL_TO_FLAGS(labelcolor), 0);
 
 	color_index = labelcolor == 0 ? -1 : (gint)labelcolor - 1;
 	ctree_style = gtk_widget_get_style(GTK_WIDGET(ctree));
@@ -4343,16 +4351,26 @@ void summary_set_colorlabel_color(GtkCTree *ctree, GtkCTreeNode *node,
 	gtk_ctree_node_set_row_style(ctree, node, style);
 }
 
+static void summary_set_row_colorlable(SummaryView *summaryview, GtkCTreeNode *row, guint labelcolor)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	MsgInfo *msginfo;
+
+	msginfo = gtk_ctree_node_get_row_data(ctree, row);
+
+	procmsg_msginfo_unset_flags(msginfo, MSG_CLABEL_FLAG_MASK, 0);
+	procmsg_msginfo_set_flags(msginfo, MSG_COLORLABEL_TO_FLAGS(labelcolor), 0);
+}
+
 void summary_set_colorlabel(SummaryView *summaryview, guint labelcolor,
 			    GtkWidget *widget)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-	GtkCList *clist = GTK_CLIST(summaryview->ctree);
 	GList *cur;
 
-	for (cur = clist->selection; cur != NULL; cur = cur->next)
-		summary_set_colorlabel_color(ctree, GTK_CTREE_NODE(cur->data),
-					     labelcolor);
+	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
+		summary_set_row_colorlable(summaryview,
+					   GTK_CTREE_NODE(cur->data), labelcolor);
 }
 
 static void summary_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_item,
@@ -5500,13 +5518,20 @@ void summary_save_prefs_to_folderitem(SummaryView *summaryview, FolderItem *item
 	item->threaded = summaryview->threaded;
 }
 
-static void summary_update_msg(MsgInfo *msginfo, gpointer data) {
-	GtkCTreeNode *node;
+static gboolean summary_update_msg(gpointer source, gpointer data) {
+	MsgInfoUpdate *msginfo_update = (MsgInfoUpdate *) source;
 	SummaryView *summaryview = (SummaryView *)data;
-	node = gtk_ctree_find_by_row_data(GTK_CTREE(summaryview->ctree), NULL, msginfo);
+	GtkCTreeNode *node;
+
+	g_return_val_if_fail(msginfo_update != NULL, TRUE);
+	g_return_val_if_fail(summaryview != NULL, FALSE);
+
+	node = gtk_ctree_find_by_row_data(GTK_CTREE(summaryview->ctree), NULL, msginfo_update->msginfo);
 	
 	if (node) 
 		summary_set_row_marks(summaryview, node);
+
+	return FALSE;
 }
 
 /*

@@ -114,7 +114,7 @@ gint recv_write(SockInfo *sock, FILE *fp)
 
 	for (;;) {
 		if (sock_gets(sock, buf, sizeof(buf)) < 0) {
-			g_warning(_("error occurred while retrieving data.\n"));
+			g_warning("error occurred while retrieving data.\n");
 			return -2;
 		}
 
@@ -173,7 +173,7 @@ gint recv_write(SockInfo *sock, FILE *fp)
 
 		if (fp && fputs(buf, fp) == EOF) {
 			perror("fputs");
-			g_warning(_("Can't write to file.\n"));
+			g_warning("Can't write to file.\n");
 			fp = NULL;
 		}
 	}
@@ -212,7 +212,7 @@ gint recv_bytes_write(SockInfo *sock, glong size, FILE *fp)
 		if (fwrite(prev, sizeof(gchar), cur - prev, fp) == EOF ||
 		    fwrite("\n", sizeof(gchar), 1, fp) == EOF) {
 			perror("fwrite");
-			g_warning(_("Can't write to file.\n"));
+			g_warning("Can't write to file.\n");
 			g_free(buf);
 			return -1;
 		}
@@ -228,7 +228,7 @@ gint recv_bytes_write(SockInfo *sock, glong size, FILE *fp)
 	if (prev - buf < size && fwrite(buf, sizeof(gchar),
 					size - (prev - buf), fp) == EOF) {
 		perror("fwrite");
-		g_warning(_("Can't write to file.\n"));
+		g_warning("Can't write to file.\n");
 		g_free(buf);
 		return -1;
 	}

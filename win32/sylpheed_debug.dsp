@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386 /out:"Release/sylpheed.exe"
+# ADD LINK32 wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386 /out:"Release/sylpheed.exe"
 
 !ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
 
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /MD /Gm /GX /ZI /Od /I "..\src" /I "..\src\common" /I "..\src\gtk" /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /I "\dev\proj\aspell\interfaces\cc" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MD /W3 /Gm /GX /ZI /Od /I "..\src" /I "..\src\common" /I "..\src\gtk" /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /I "\dev\proj\aspell\interfaces\cc" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x411 /d "_DEBUG"
@@ -79,7 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib  wsock32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib wsock32.lib /nologo /subsystem:console /debug /machine:I386 /out:"Debug/sylpheed_d.exe" /pdbtype:sept
 
 !ENDIF 
 
@@ -412,7 +412,7 @@ SOURCE=..\src\news.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\nntp.c
+SOURCE=..\src\common\nntp.c
 # End Source File
 # Begin Source File
 
@@ -536,7 +536,7 @@ SOURCE=..\src\send.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\session.c
+SOURCE=..\src\common\session.c
 # End Source File
 # Begin Source File
 
@@ -552,7 +552,7 @@ SOURCE="..\src\simple-gettext.c"
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\smtp.c
+SOURCE=..\src\common\smtp.c
 # End Source File
 # Begin Source File
 
@@ -568,11 +568,15 @@ SOURCE=..\src\common\ssl.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\ssl_certificate.c
+SOURCE=..\src\common\ssl_certificate.c
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\ssl_manager.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\gtk\sslcertwindow.c
 # End Source File
 # Begin Source File
 
@@ -604,11 +608,15 @@ SOURCE=..\src\syldap.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\common\sylpheed.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\sylpheed.rc
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\template.c
+SOURCE=..\src\common\template.c
 # End Source File
 # Begin Source File
 
@@ -856,7 +864,7 @@ SOURCE=..\src\inputdialog.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\intl.h
+SOURCE=..\src\common\intl.h
 # End Source File
 # Begin Source File
 
@@ -936,7 +944,7 @@ SOURCE=..\src\news.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\nntp.h
+SOURCE=..\src\common\nntp.h
 # End Source File
 # Begin Source File
 
@@ -1032,7 +1040,7 @@ SOURCE=..\src\send.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\session.h
+SOURCE=..\src\common\session.h
 # End Source File
 # Begin Source File
 
@@ -1044,7 +1052,7 @@ SOURCE=..\src\sigstatus.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\smtp.h
+SOURCE=..\src\common\smtp.h
 # End Source File
 # Begin Source File
 
@@ -1060,11 +1068,15 @@ SOURCE=..\src\common\ssl.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\ssl_certificate.h
+SOURCE=..\src\common\ssl_certificate.h
 # End Source File
 # Begin Source File
 
 SOURCE=..\src\ssl_manager.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\gtk\sslcertwindow.h
 # End Source File
 # Begin Source File
 
@@ -1092,7 +1104,11 @@ SOURCE=..\src\syldap.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\template.h
+SOURCE=..\src\common\sylpheed.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\common\template.h
 # End Source File
 # Begin Source File
 

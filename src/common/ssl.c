@@ -21,7 +21,7 @@
 #  include "config.h"
 #endif
 
-#if USE_SSL
+#if USE_OPENSSL
 
 #include "defs.h"
 
@@ -31,13 +31,14 @@
 #include "utils.h"
 #include "ssl.h"
 #include "log.h"
-/* #include "ssl_certificate.h" */
+#include "ssl_certificate.h"
 
 static SSL_CTX *ssl_ctx;
 
 void ssl_init(void)
 {
 	SSL_METHOD *meth;
+	FILE *cert_test;
 
 	/* Global system initialization*/
 	SSL_library_init();
@@ -49,6 +50,16 @@ void ssl_init(void)
 
 	/* Set default certificate paths */
 	SSL_CTX_set_default_verify_paths(ssl_ctx);
+	
+	/* this problem seems quite common */
+	cert_test = fopen (X509_get_default_cert_file(), "r");
+	if (cert_test != NULL)
+		fclose(cert_test);
+	else {
+		printf("ssl_init: warning, can't open %s\n", X509_get_default_cert_file());
+		printf("ssl_init: it means that certificates' signatures won't appear as Correct,\n");
+		printf("ssl_init: even if they should. Check your openssl install.\n");
+	}
 #if (OPENSSL_VERSION_NUMBER < 0x0090600fL)
 	SSL_CTX_set_verify_depth(ctx,1);
 #endif
@@ -109,17 +120,12 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 		return FALSE;
 	}
 
-/*	FIXME
-
-	gui independant certificate check and callback for
-	gui for user accepted certificates
-	
 	if (!ssl_certificate_check(server_cert, sockinfo->hostname, sockinfo->port)) {
 		X509_free(server_cert);
 		SSL_free(ssl);
 		return FALSE;
 	}
-*/
+
 	X509_free(server_cert);
 	sockinfo->ssl = ssl;
 
@@ -133,4 +139,4 @@ void ssl_done_socket(SockInfo *sockinfo)
 	}
 }
 
-#endif /* USE_SSL */
+#endif /* USE_OPENSSL */

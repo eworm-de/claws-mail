@@ -36,7 +36,11 @@ typedef struct _SMTPSession	SMTPSession;
 
 #define SMTP_SESSION(obj)	((SMTPSession *)obj)
 
+#ifdef WIN32
+#define MSGBUFSIZE		8191
+#else
 #define MSGBUFSIZE		8192
+#endif
 
 #define	SM_OK			0
 #define	SM_ERROR		128

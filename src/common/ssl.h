@@ -24,7 +24,7 @@
 #  include "config.h"
 #endif
 
-#if USE_SSL
+#if USE_OPENSSL
 
 #include <glib.h>
 #include <openssl/crypto.h>
@@ -54,6 +54,6 @@ gboolean ssl_init_socket_with_method	(SockInfo	*sockinfo,
 					 SSLMethod	 method);
 void ssl_done_socket			(SockInfo	*sockinfo);
 
-#endif /* USE_SSL */
+#endif /* USE_OPENSSL */
 
 #endif /* __SSL_H__ */

@@ -55,7 +55,7 @@
 #define FPUTS_TO_TMP_ABORT_IF_FAIL(s) \
 { \
 	if (fputs(s, tmp_fp) == EOF) { \
-		g_warning(_("can't write to temporary file\n")); \
+		g_warning("can't write to temporary file\n"); \
 		fclose(tmp_fp); \
 		fclose(mbox_fp); \
 		unlink(tmp_file); \
@@ -84,21 +84,21 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox)
 	/* ignore empty lines on the head */
 	do {
 		if (fgets(buf, sizeof(buf), mbox_fp) == NULL) {
-			g_warning(_("can't read mbox file.\n"));
+			g_warning("can't read mbox file.\n");
 			fclose(mbox_fp);
 			return -1;
 		}
 	} while (buf[0] == '\n' || buf[0] == '\r');
 
 	if (strncmp(buf, "From ", 5) != 0) {
-		g_warning(_("invalid mbox format: %s\n"), mbox);
+		g_warning("invalid mbox format: %s\n", mbox);
 		fclose(mbox_fp);
 		return -1;
 	}
 
 	strcpy(from_line, buf);
 	if (fgets(buf, sizeof(buf), mbox_fp) == NULL) {
-		g_warning(_("malformed mbox: %s\n"), mbox);
+		g_warning("malformed mbox: %s\n", mbox);
 		fclose(mbox_fp);
 		return -1;
 	}
@@ -114,7 +114,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox)
 
 		if ((tmp_fp = fopen(tmp_file, "wb")) == NULL) {
 			FILE_OP_ERROR(tmp_file, "fopen");
-			g_warning(_("can't open temporary file\n"));
+			g_warning("can't open temporary file\n");
 			fclose(mbox_fp);
 			g_free(tmp_file);
 			return -1;
@@ -167,7 +167,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox)
 					is_next_msg = TRUE;
 					break;
 				} else {
-					g_warning(_("unescaped From found:\n%s"),
+					g_warning("unescaped From found:\n%s",
 						  from_line);
 					break;
 				}
@@ -202,7 +202,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox)
 
 		if (fclose(tmp_fp) == EOF) {
 			FILE_OP_ERROR(tmp_file, "fclose");
-			g_warning(_("can't write to temporary file\n"));
+			g_warning("can't write to temporary file\n");
 			fclose(mbox_fp);
 			unlink(tmp_file);
 			g_free(tmp_file);
@@ -243,8 +243,8 @@ gint lock_mbox(const gchar *base, LockType type)
 		lockfile = g_strdup_printf("%s.%d", base, getpid());
 		if ((lockfp = fopen(lockfile, "wb")) == NULL) {
 			FILE_OP_ERROR(lockfile, "fopen");
-			g_warning(_("can't create lock file %s\n"), lockfile);
-			g_warning(_("use 'flock' instead of 'file' if possible.\n"));
+			g_warning("can't create lock file %s\n", lockfile);
+			g_warning("use 'flock' instead of 'file' if possible.\n");
 			g_free(lockfile);
 			return -1;
 		}
@@ -256,14 +256,14 @@ gint lock_mbox(const gchar *base, LockType type)
 		while (link(lockfile, locklink) < 0) {
 			FILE_OP_ERROR(lockfile, "link");
 			if (retry >= 5) {
-				g_warning(_("can't create %s\n"), lockfile);
+				g_warning("can't create %s\n", lockfile);
 				unlink(lockfile);
 				g_free(lockfile);
 				return -1;
 			}
 			if (retry == 0)
-				g_warning(_("mailbox is owned by another"
-					    " process, waiting...\n"));
+				g_warning("mailbox is owned by another"
+					    " process, waiting...\n");
 			retry++;
 			sleep(5);
 		}
@@ -291,14 +291,14 @@ gint lock_mbox(const gchar *base, LockType type)
 		{
 #endif
 #endif /* HAVE_FLOCK */
-			g_warning(_("can't lock %s\n"), base);
+			g_warning("can't lock %s\n", base);
 			if (close(lockfd) < 0)
 				perror("close");
 			return -1;
 		}
 		retval = lockfd;
 	} else {
-		g_warning(_("invalid lock type\n"));
+		g_warning("invalid lock type\n");
 		return -1;
 	}
 
@@ -331,7 +331,7 @@ gint unlock_mbox(const gchar *base, gint fd, LockType type)
 		{
 #endif
 #endif /* HAVE_FLOCK */
-			g_warning(_("can't unlock %s\n"), base);
+			g_warning("can't unlock %s\n", base);
 			if (close(fd) < 0)
 				perror("close");
 			return -1;
@@ -345,7 +345,7 @@ gint unlock_mbox(const gchar *base, gint fd, LockType type)
 		return 0;
 	}
 
-	g_warning(_("invalid lock type\n"));
+	g_warning("invalid lock type\n");
 	return -1;
 }
 
@@ -362,7 +362,7 @@ void empty_mbox(const gchar *mbox)
 		FILE_OP_ERROR(mbox, "truncate");
 		if ((fp = fopen(mbox, "wb")) == NULL) {
 			FILE_OP_ERROR(mbox, "fopen");
-			g_warning(_("can't truncate mailbox to zero.\n"));
+			g_warning("can't truncate mailbox to zero.\n");
 			return;
 		}
 		fclose(fp);

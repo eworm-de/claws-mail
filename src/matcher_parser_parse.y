@@ -161,7 +161,7 @@ void matcher_parsererror(char * str)
 		matchers_list = NULL;
 	}
 	cond = NULL;
-	g_warning(_("scoring / filtering parsing: %i: %s\n"),
+	g_warning("scoring / filtering parsing: %i: %s\n",
 		  matcher_parserlineno, str);
 	error = 1;
 }

@@ -415,8 +415,8 @@ static const gchar *get_compiled_in_features(void)
 #if USE_GPGME
 		   " GPGME"
 #endif
-#if USE_SSL
-		   " SSL"
+#if USE_OPENSSL
+		   " OpenSSL"
 #endif
 #if USE_LDAP
 		   " LDAP"

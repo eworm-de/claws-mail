@@ -69,7 +69,8 @@ typedef enum
 	ACTION_ASYNC 	= 1 << 5,
 	ACTION_OPEN_IN	= 1 << 6,
 	ACTION_HIDE_IN	= 1 << 7,
-	ACTION_ERROR 	= 1 << 8,
+	ACTION_INSERT   = 1 << 8,
+	ACTION_ERROR 	= 1 << 9,
 } ActionType;
 
 static struct Actions
@@ -361,6 +362,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 		   "   * to send user provided hidden text to command\n"
 		   " End with:\n"
 		   "   | to replace message body or selection with command output\n"
+		   "   > to insert command's output without replacing old text\n"
 		   "   & to run command asynchronously\n"
 		   " Use %f for message file name\n"
 		   "   %F for the list of the file names of selected messages\n"
@@ -520,7 +522,7 @@ void prefs_actions_write_config(void)
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ACTIONS_RC, NULL);
 	if ((pfile= prefs_write_open(rcpath)) == NULL) {
-		g_warning(_("failed to write configuration to file\n"));
+		g_warning("failed to write configuration to file\n");
 		g_free(rcpath);
 		return;
 	}
@@ -539,7 +541,7 @@ void prefs_actions_write_config(void)
 	g_free(rcpath);
 
 	if (prefs_write_close(pfile) < 0) {
-		g_warning(_("failed to write configuration to file\n"));
+		g_warning("failed to write configuration to file\n");
 		return;
 	}
 }
@@ -587,6 +589,9 @@ static guint get_action_type(gchar *action)
 		} else if (p[0] == '|') {
 			if (p[1] == 0x00)
 				action_type |= ACTION_PIPE_OUT;
+		} else if (p[0] == '>') {
+			if (p[1] == 0x00)
+				action_type |= ACTION_INSERT;
 		} else if (p[0] == '&') {
 			if (p[1] == 0x00)
 				action_type |= ACTION_ASYNC;
@@ -614,7 +619,8 @@ static gchar *parse_action_cmd(gchar *action, MsgInfo *msginfo,
 
 	cmd = g_string_sized_new(strlen(action));
 
-	while (p[0] && !(p[0] == '|' && !p[1]) && p[0] != '&') {
+	while (p[0] &&
+	       !((p[0] == '|' || p[0] == '>' || p[0] == '&') && !p[1])) {
 		if (p[0] == '%' && p[1]) {
 			switch (p[1]) {
 			case 'f':
@@ -1188,7 +1194,7 @@ static gboolean execute_actions(gchar *action, GtkWidget *window,
 		selection_len = g_list_length(selection);
 	}
 
-	if (action_type & (ACTION_PIPE_OUT | ACTION_PIPE_IN)) {
+	if (action_type & (ACTION_PIPE_OUT | ACTION_PIPE_IN | ACTION_INSERT)) {
 		if (ctree && selection_len > 1)
 			return FALSE; /* ERR: pipe + multiple selection */
 		if (!text)
@@ -1477,7 +1483,7 @@ ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 	child_info->tag_err     = gdk_input_add(chld_err[0], GDK_INPUT_READ,
 						catch_output, child_info);
 #endif
-	if (!(action_type & (ACTION_PIPE_IN | ACTION_PIPE_OUT)))
+	if (!(action_type & (ACTION_PIPE_IN | ACTION_PIPE_OUT | ACTION_INSERT)))
 		return child_info;
 
 	child_info->text        = text;
@@ -1889,7 +1895,7 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 #endif
 
 	debug_print("Catching grand child's output.\n");
-	if (child_info->type & ACTION_PIPE_OUT
+	if (child_info->type & (ACTION_PIPE_OUT | ACTION_INSERT)
 	    && source == child_info->chld_out) {
 		gboolean is_selection = FALSE;
 		GtkWidget *text = child_info->text;

@@ -12,6 +12,5 @@ quote_fmt_parse.h
 matcher_parser_lex.c
 matcher_parser_parse.c
 matcher_parser_parse.h
-version.h
 ylwrap
 config.h

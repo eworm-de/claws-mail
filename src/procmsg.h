@@ -209,6 +209,14 @@ struct _MsgInfo
 	guint decryption_failed : 1;
 };
 
+#define MSGINFO_UPDATE_HOOKLIST "msginfo_update"
+
+typedef struct _MsgInfoUpdate MsgInfoUpdate;
+
+struct _MsgInfoUpdate {
+	MsgInfo	*msginfo;
+};
+
 GHashTable *procmsg_msg_hash_table_create	(GSList		*mlist);
 void procmsg_msg_hash_table_append		(GHashTable	*msg_table,
 						 GSList		*mlist);
@@ -279,14 +287,6 @@ void procmsg_msginfo_set_flags		(MsgInfo *msginfo,
 void procmsg_msginfo_unset_flags	(MsgInfo *msginfo,
 					 MsgPermFlags perm_flags,
 					  MsgTmpFlags tmp_flags);
-
-/* callback system for updates */
-typedef void (*MsgInfoUpdateFunc)	(MsgInfo	*info,
-					 gpointer	 data);
-gint msginfo_update_callback_register(MsgInfoUpdateFunc func, gpointer data);
-void msginfo_update_callback_unregister(gint id);
-
-void msginfo_update_item		(MsgInfo	*info);
 gint procmsg_remove_special_headers	(const gchar 	*in, 
 					 const gchar 	*out);
 

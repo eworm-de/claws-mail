@@ -34,7 +34,6 @@
 #endif /* HAVE_GDK_PIXBUF */
 
 #include "intl.h"
-#include "mainwindow.h"
 #include "prefs_common.h"
 #include "procmime.h"
 #include "imageview.h"
@@ -90,7 +89,7 @@ void imageview_show_image(ImageView *imageview, MimeInfo *mimeinfo,
 	pixbuf = gdk_pixbuf_new_from_file(file);
 
 	if (!pixbuf) {
-		g_warning(_("Can't load the image."));	
+		g_warning("Can't load the image.");	
 		return;
 	}
 
@@ -150,7 +149,7 @@ void imageview_show_image(ImageView *imageview, MimeInfo *mimeinfo,
 	im = gdk_imlib_load_image((gchar *)file);
 
 	if (!im) {
-		g_warning(_("Can't load the image."));	
+		g_warning("Can't load the image.");	
 		return;
 	}
 

@@ -38,7 +38,7 @@
 #define ASPELL_LIB "c:/aspell/bin/aspell-15.dll"
 
 /* Define if you use OpenSSL to support SSL */
-#define USE_SSL 1
+#define USE_OPENSSL 1
 
 /* Define if you want JPilot support in addressbook.  */
 #undef USE_JPILOT

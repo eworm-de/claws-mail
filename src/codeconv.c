@@ -41,10 +41,10 @@
 
 #include "intl.h"
 #include "codeconv.h"
-#include "unmime.h"
 #include "base64.h"
 #include "utils.h"
 #include "prefs_common.h"
+#include "unmime.h"
 #ifdef WIN32
 #include "defs.h"
 #endif

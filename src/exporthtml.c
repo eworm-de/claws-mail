@@ -36,9 +36,6 @@
 #include "mgutils.h"
 #include "utils.h"
 #include "exporthtml.h"
-#include "addritem.h"
-#include "addrcache.h"
-#include "addrbook.h"
 #include "xmlprops.h"
 
 #define DFL_DIR_SYLPHEED_OUT  "sylpheed-out"

@@ -73,8 +73,6 @@ static struct _GroupEdit_dlg {
 	GtkCList *clist_avail;
 
 	GHashTable *hashEMail;
-	gint rowIndGroup;
-	gint rowIndAvail;
 
 } groupeditdlg;
 
@@ -168,13 +166,6 @@ static void edit_group_load_clist( GtkCList *clist, GList *listEMail ) {
 	}
 }
 
-static void edit_group_group_selected( GtkCList *clist, gint row, gint column, GdkEvent *event, gpointer data ) {
-	groupeditdlg.rowIndGroup = row;
-}
-
-static void edit_group_avail_selected( GtkCList *clist, gint row, gint column, GdkEvent *event, gpointer data ) {
-	groupeditdlg.rowIndAvail = row;
-}
 
 static gint edit_group_move_email( GtkCList *clist_from, GtkCList *clist_to, gint row ) {
 	ItemEMail *email = gtk_clist_get_row_data( clist_from, row );
@@ -188,13 +179,25 @@ static gint edit_group_move_email( GtkCList *clist_from, GtkCList *clist_to, gin
 }
 
 static void edit_group_to_group( GtkWidget *widget, gpointer data ) {
-	groupeditdlg.rowIndGroup = edit_group_move_email( groupeditdlg.clist_avail,
-					groupeditdlg.clist_group, groupeditdlg.rowIndAvail );
+	GList *selected = GTK_CLIST(groupeditdlg.clist_avail)->selection;
+	/* Clear the selected rows on destination clist */
+	gtk_clist_unselect_all(groupeditdlg.clist_group);
+	while (selected) {
+		edit_group_move_email( groupeditdlg.clist_avail,
+					groupeditdlg.clist_group, GPOINTER_TO_UINT(selected->data) );
+		/* cannot use g_list_next as the selection list will have changed */
+		selected = GTK_CLIST(groupeditdlg.clist_avail)->selection;
+	}
 }
 
 static void edit_group_to_avail( GtkWidget *widget, gpointer data ) {
-	groupeditdlg.rowIndAvail = edit_group_move_email( groupeditdlg.clist_group,
-					groupeditdlg.clist_avail, groupeditdlg.rowIndGroup );
+	GList *selected = GTK_CLIST(groupeditdlg.clist_group)->selection;
+	gtk_clist_unselect_all(groupeditdlg.clist_avail);
+	while (selected) {
+		edit_group_move_email( groupeditdlg.clist_group,
+					groupeditdlg.clist_avail, GPOINTER_TO_UINT(selected->data) );
+		selected = GTK_CLIST(groupeditdlg.clist_group)->selection;
+	}
 }
 
 static void edit_group_list_group_button( GtkCList *clist, GdkEventButton *event, gpointer data ) {
@@ -321,7 +324,7 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 
 	clist_group = gtk_clist_new_with_titles( GROUP_N_COLS, titles );
 	gtk_container_add( GTK_CONTAINER(clist_swin), clist_group );
-	gtk_clist_set_selection_mode( GTK_CLIST(clist_group), GTK_SELECTION_BROWSE );
+	gtk_clist_set_selection_mode( GTK_CLIST(clist_group), GTK_SELECTION_EXTENDED );
 	gtk_clist_set_column_width( GTK_CLIST(clist_group), GROUP_COL_NAME, GROUP_COL_WIDTH_NAME );
 	gtk_clist_set_column_width( GTK_CLIST(clist_group), GROUP_COL_EMAIL, GROUP_COL_WIDTH_EMAIL );
 	gtk_clist_set_compare_func( GTK_CLIST(clist_group), edit_group_list_compare_func );
@@ -350,7 +353,7 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 
 	clist_avail = gtk_clist_new_with_titles( GROUP_N_COLS, titles );
 	gtk_container_add( GTK_CONTAINER(clist_swin), clist_avail );
-	gtk_clist_set_selection_mode( GTK_CLIST(clist_avail), GTK_SELECTION_BROWSE );
+	gtk_clist_set_selection_mode( GTK_CLIST(clist_avail), GTK_SELECTION_EXTENDED );
 	gtk_clist_set_column_width( GTK_CLIST(clist_avail), GROUP_COL_NAME, GROUP_COL_WIDTH_NAME );
 	gtk_clist_set_column_width( GTK_CLIST(clist_avail), GROUP_COL_EMAIL, GROUP_COL_WIDTH_EMAIL );
 	gtk_clist_set_compare_func( GTK_CLIST(clist_avail), edit_group_list_compare_func );
@@ -379,10 +382,6 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	gtk_widget_show_all(vbox);
 
 	/* Event handlers */
-	gtk_signal_connect( GTK_OBJECT(clist_group), "select_row",
-			GTK_SIGNAL_FUNC( edit_group_group_selected), NULL );
-	gtk_signal_connect( GTK_OBJECT(clist_avail), "select_row",
-			GTK_SIGNAL_FUNC( edit_group_avail_selected), NULL );
 	gtk_signal_connect( GTK_OBJECT(buttonGroup), "clicked",
 			GTK_SIGNAL_FUNC( edit_group_to_group ), NULL );
 	gtk_signal_connect( GTK_OBJECT(buttonAvail), "clicked",
@@ -443,8 +442,6 @@ ItemGroup *addressbook_edit_group( AddressBookFile *abf, ItemFolder *parent, Ite
 	manage_window_set_transient(GTK_WINDOW(groupeditdlg.window));
 
 	/* Clear all fields */
-	groupeditdlg.rowIndGroup = -1;
-	groupeditdlg.rowIndAvail = -1;
 	edit_group_status_show( "" );
 	gtk_clist_clear( GTK_CLIST(groupeditdlg.clist_group) );
 	gtk_clist_clear( GTK_CLIST(groupeditdlg.clist_avail) );

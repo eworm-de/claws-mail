@@ -19,6 +19,7 @@ Summary:
    * spell checking (with installation instructions)
    * new cache
    * selective download, delete messages on server
+   * extended search in quick search
 4. How to contribute
 5. How to request features
 6. Installing Claws from CVS
@@ -470,6 +471,67 @@ mention it.
 	 	- select "Dillo: dillo %p&" from drop down list
 		- choose an icon and click ok
 	
+* quick search
+---------------------------------
+    This feature allows one to define criteria that messages have
+    to match in order to be displayed in the summary view pane.
+    Search types titled From, Subject and To are self explanatory.
+    Search type extended allows one to use Sylpheed's powerful
+    filtering engine to select messages. Examples:
+    from regexpcase "foo"
+    subject regexp "Bug" & to regexp "sylpheed-claws"
+
+    Additionally, it is possible to use simpler yet equally
+    powerfull patterns for message selections. Mutt users will
+    immediately recognize most of the available patterns:
+
+    Pattern  Parameter  Selects
+    ----------------------------------------------------
+    a                   all messages
+    ag       #          messages whose age is greater than #
+    al       #          messages whose age is lower than #
+    b        S          messages which contain S in the message body
+    B        S          messages which contain S in the whole message
+    c        S          messages carbon-copied to S
+    C        S          message is either to: or cc: to S
+    D                   deleted messages
+    e        S          messages which contain S in the Sender field
+    E        S          true if execute "S" succeeds
+    f        S          messages originating from user S
+    F                   forwarded messages
+    h        S          messages which contain header S
+    i        S          messages which contain S in Message-Id header
+    I        S          messages which contain S in inreplyto header
+    n        S          messages which are in newsgroup S
+    N                   new messages
+    O                   old messages
+    r                   messages which have been replied to
+    R                   read messages
+    s        S          messages which contain S in subject
+    se       #          messages whose score is equal to #
+    sg       #          messages whose score is greater than #
+    sl       #          messages whose score is lower than #
+    Se       #          messages whose size is equal to #
+    Sg       #          messages whose size is greater than #
+    Ss       #          messages whose size is smaller than #
+    t        S          messages which have been sent to S
+    T                   marked marked
+    U                   unread messages
+    x        S          messages which contain S in References header
+    y        S          messages which contain S in X-Label header
+
+    # means number
+    S means regexp string
+
+    It is possible to use logical operators AND (&), OR (|) and
+    NOT (! or ~). Case sensitive search is achieved with %.
+    Examples:
+    T                  marked messages
+    U                  unread messages
+    f "john beavis"    messages from john beavis
+    %f "John Beavis"   messages from John Beavis (case sensitive)
+    ~s foo             messages which do not have foo in the subject
+    f foo & s bar      messages from foo that do not have bar in thesubject
 
 
 4. How to contribute

@@ -34,6 +34,7 @@ void statusbar_print		(GtkStatusbar	*statusbar,
 void statusbar_print_all	(const gchar	*format, ...)
 				 G_GNUC_PRINTF(1, 2);
 void statusbar_pop_all		(void);
+void statusbar_verbosity_set	(gboolean	 verbose);
 
 #define STATUSBAR_PUSH(mainwin, str) \
 { \

@@ -8,12 +8,24 @@ base64.[ch]		common/base64.[ch]	ok
 uuencode.[ch]		common/uuencode.[ch]	ok
 
 utils.[ch]		common/utils.[ch]	ok
-			common/log.[ch]		FIXME
+			common/log.[ch]		ok
 
 socket.[ch]		common/socket.[ch]	ok
 
-ssl.[ch]		common/ssl.[ch]		FIXME
+ssl.[ch]		common/ssl.[ch]		ok
 
 intl.h			common/intl.h		ok
 
 defs.h			common/defs.h		ok
+
+md5.[ch]		common/md5.[ch]		ok
+
+gtksctree.[ch]		gtk/gtksctree.[ch]	ok
+
+template.[ch]		common/template.[ch]	ok
+
+nntp.[ch]		common/nntp.[ch]	ok
+
+session.[ch]		common/session.[ch]	ok
+
+smtp.[ch]		common/smtp.[ch]	ok

@@ -47,7 +47,6 @@
 #include "procmsg.h"
 #include "procheader.h"
 #include "folder.h"
-#include "statusbar.h"
 #include "prefs_account.h"
 #include "codeconv.h"
 #include "utils.h"
@@ -55,7 +54,7 @@
 #include "log.h"
 
 #define IMAP4_PORT	143
-#if USE_SSL
+#if USE_OPENSSL
 #define IMAPS_PORT	993
 #endif
 
@@ -127,7 +126,7 @@ static GSList *imap_delete_cached_messages	(GSList		*mlist,
 						 guint32	 last_uid);
 static void imap_delete_all_cached_messages	(FolderItem	*item);
 
-#if USE_SSL
+#if USE_OPENSSL
 static SockInfo *imap_open		(const gchar	*server,
 					 gushort	 port,
 					 SSLType	 ssl_type);
@@ -136,7 +135,7 @@ static SockInfo *imap_open		(const gchar	*server,
 					 gushort	 port);
 #endif
 
-#if USE_SSL
+#if USE_OPENSSL
 static SockInfo *imap_open_tunnel(const gchar *server,
 				  const gchar *tunnelcmd,
 				  SSLType ssl_type);
@@ -145,7 +144,7 @@ static SockInfo *imap_open_tunnel(const gchar *server,
 				  const gchar *tunnelcmd);
 #endif
 
-#if USE_SSL
+#if USE_OPENSSL
 static SockInfo *imap_init_sock(SockInfo *sock, SSLType	 ssl_type);
 #else
 static SockInfo *imap_init_sock(SockInfo *sock);
@@ -354,8 +353,6 @@ static void imap_folder_init(Folder *folder, const gchar *name,
 
 	folder->get_num_list	      = imap_get_num_list;
 	folder->get_msginfo	      = imap_get_msginfo;
-	
-	((IMAPFolder *)folder)->selected_folder = NULL;
 }
 
 static FolderItem *imap_folder_item_new(Folder *folder)
@@ -408,7 +405,7 @@ static IMAPSession *imap_session_get(Folder *folder)
 	g_return_val_if_fail(folder->type == F_IMAP, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
 
-#if USE_SSL
+#if USE_OPENSSL
 	port = folder->account->set_imapport ? folder->account->imapport
 		: folder->account->ssl_imap == SSL_TUNNEL
 		? IMAPS_PORT : IMAP4_PORT;
@@ -421,14 +418,18 @@ static IMAPSession *imap_session_get(Folder *folder)
 		rfolder->session =
 			imap_session_new(folder->account);
 		if (rfolder->session) {
-			imap_parse_namespace(IMAP_SESSION(rfolder->session),
-					     IMAP_FOLDER(folder));
-			rfolder->session->last_access_time = time(NULL);
-			g_free(((IMAPFolder *)folder)->selected_folder);
-			((IMAPFolder *)folder)->selected_folder = NULL;
-			imap_reset_uid_lists(folder);
+			if (!IMAP_SESSION(rfolder->session)->authenticated)
+				imap_session_authenticate(IMAP_SESSION(rfolder->session), folder->account);
+			if (IMAP_SESSION(rfolder->session)->authenticated) {
+				imap_parse_namespace(IMAP_SESSION(rfolder->session),
+						     IMAP_FOLDER(folder));
+				rfolder->session->last_access_time = time(NULL);
+				imap_reset_uid_lists(folder);
+			} else {
+				session_destroy(rfolder->session);
+				rfolder->session = NULL;
+			}
 		}
-		statusbar_pop_all();
 		return IMAP_SESSION(rfolder->session);
 	}
 
@@ -442,7 +443,6 @@ static IMAPSession *imap_session_get(Folder *folder)
 	 * successfully sent. -- mbp */
 	if (time(NULL) - rfolder->session->last_access_time < SESSION_TIMEOUT) {
 		rfolder->session->last_access_time = time(NULL);
-		statusbar_pop_all();
 		return IMAP_SESSION(rfolder->session);
 	}
 
@@ -454,17 +454,22 @@ static IMAPSession *imap_session_get(Folder *folder)
 		rfolder->session =
 			imap_session_new(folder->account);
 		if (rfolder->session) {
-			imap_parse_namespace(IMAP_SESSION(rfolder->session),
-					     IMAP_FOLDER(folder));
-			g_free(((IMAPFolder *)folder)->selected_folder);
-			((IMAPFolder *)folder)->selected_folder = NULL;
-			imap_reset_uid_lists(folder);
+			if (!IMAP_SESSION(rfolder->session)->authenticated)
+				imap_session_authenticate(IMAP_SESSION(rfolder->session), folder->account);
+			if (IMAP_SESSION(rfolder->session)->authenticated) {
+				imap_parse_namespace(IMAP_SESSION(rfolder->session),
+						     IMAP_FOLDER(folder));
+				rfolder->session->last_access_time = time(NULL);
+				imap_reset_uid_lists(folder);
+			} else {
+				session_destroy(rfolder->session);
+				rfolder->session = NULL;
+			}
 		}
 	}
 
 	if (rfolder->session)
 		rfolder->session->last_access_time = time(NULL);
-	statusbar_pop_all();
 	return IMAP_SESSION(rfolder->session);
 }
 
@@ -473,10 +478,9 @@ Session *imap_session_new(const PrefsAccount *account)
 	IMAPSession *session;
 	SockInfo *imap_sock;
 	gushort port;
-	gchar *pass;
 	gboolean is_preauth;
 
-#ifdef USE_SSL
+#ifdef USE_OPENSSL
 	/* FIXME: IMAP over SSL only... */ 
 	SSLType ssl_type;
 
@@ -490,7 +494,7 @@ Session *imap_session_new(const PrefsAccount *account)
 
 	if (account->set_tunnelcmd) {
 		log_message(_("creating tunneled IMAP4 connection\n"));
-#if USE_SSL
+#if USE_OPENSSL
 		if ((imap_sock = imap_open_tunnel(account->recv_server, 
 						  account->tunnelcmd,
 						  ssl_type)) == NULL)
@@ -505,7 +509,7 @@ Session *imap_session_new(const PrefsAccount *account)
 		log_message(_("creating IMAP4 connection to %s:%d ...\n"),
 			    account->recv_server, port);
 		
-#if USE_SSL
+#if USE_OPENSSL
 		if ((imap_sock = imap_open(account->recv_server, port,
 					   ssl_type)) == NULL)
 #else
@@ -518,26 +522,6 @@ Session *imap_session_new(const PrefsAccount *account)
 	imap_greeting(imap_sock, &is_preauth);
 	log_message("IMAP connection is %s-authenticated\n",
 		    (is_preauth) ? "pre" : "un");
-	if (!is_preauth) {
-		g_return_val_if_fail(account->userid != NULL, NULL);
-
-		pass = account->passwd;
-		if (!pass) {
-			gchar *tmp_pass;
-			tmp_pass = input_dialog_query_password(account->recv_server, account->userid);
-			if (!tmp_pass)
-				return NULL;
-			Xstrdup_a(pass, tmp_pass, {g_free(tmp_pass); return NULL;});
-			g_free(tmp_pass);
-		}
-
-		if (imap_cmd_login(imap_sock, account->userid, pass) != IMAP_SUCCESS) {
-			imap_cmd_logout(imap_sock);
-			sock_close(imap_sock);
-			return NULL;
-		}
-	}
-
 	session = g_new(IMAPSession, 1);
 
 	SESSION(session)->type             = SESSION_IMAP;
@@ -551,10 +535,36 @@ Session *imap_session_new(const PrefsAccount *account)
 	SESSION(session)->destroy          = imap_session_destroy;
 
 	session->mbox = NULL;
+	session->authenticated = is_preauth;
 
 	session_list = g_list_append(session_list, session);
 
 	return SESSION(session);
+}
+
+void imap_session_authenticate(IMAPSession *session, const PrefsAccount *account)
+{
+	gchar *pass;
+
+	g_return_if_fail(account->userid != NULL);
+
+	pass = account->passwd;
+	if (!pass) {
+		gchar *tmp_pass;
+		tmp_pass = input_dialog_query_password(account->recv_server, account->userid);
+		if (!tmp_pass)
+			return;
+		Xstrdup_a(pass, tmp_pass, {g_free(tmp_pass); return;});
+		g_free(tmp_pass);
+	}
+
+	if (imap_cmd_login(SESSION(session)->sock, account->userid, pass) != IMAP_SUCCESS) {
+		imap_cmd_logout(SESSION(session)->sock);
+		sock_close(SESSION(session)->sock);
+		return;
+	}
+
+	session->authenticated = TRUE;
 }
 
 void imap_session_destroy(Session *session)
@@ -598,7 +608,6 @@ GSList *imap_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 		mlist = procmsg_read_cache(item, FALSE);
 		item->last_num = procmsg_get_last_num_in_msg_list(mlist);
 		procmsg_set_flags(mlist, item);
-		statusbar_pop_all();
 		return mlist;
 	}
 
@@ -615,7 +624,6 @@ GSList *imap_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 			last_uid = first_uid;
 	} else {
 		imap_delete_all_cached_messages(item);
-		statusbar_pop_all();
 		return NULL;
 	}
 
@@ -667,7 +675,6 @@ GSList *imap_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 	item->last_num = last_uid;
 
 catch:
-	statusbar_pop_all();
 	return mlist;
 }
 
@@ -701,9 +708,8 @@ gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint uid)
 
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
 			 NULL, NULL, NULL, NULL);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
-		g_warning(_("can't select mailbox %s\n"), item->path);
+		g_warning("can't select mailbox %s\n", item->path);
 		g_free(filename);
 		return NULL;
 	}
@@ -711,10 +717,8 @@ gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint uid)
 	debug_print("getting message %d...\n", uid);
 	ok = imap_cmd_fetch(SESSION(session)->sock, (guint32)uid, filename);
 
-	statusbar_pop_all();
-
 	if (ok != IMAP_SUCCESS) {
-		g_warning(_("can't fetch message %d\n"), uid);
+		g_warning("can't fetch message %d\n", uid);
 		g_free(filename);
 		return NULL;
 	}
@@ -740,9 +744,8 @@ gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 
 	ok = imap_status(session, IMAP_FOLDER(folder), dest->path,
 			 &messages, &recent, &uid_next, &uid_validity, &unseen);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
-		g_warning(_("can't append message %s\n"), file);
+		g_warning("can't append message %s\n", file);
 		return -1;
 	}
 
@@ -751,7 +754,7 @@ gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 	g_free(destdir);
 
 	if (ok != IMAP_SUCCESS) {
-		g_warning(_("can't append message %s\n"), file);
+		g_warning("can't append message %s\n", file);
 		return -1;
 	}
 
@@ -768,7 +771,7 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 {
 	gchar *destdir;
 	IMAPSession *session;
-	gint messages, recent, unseen, exists;
+	gint messages, recent, unseen;
 	guint32 uid_next, uid_validity;
 	gint ok;
     
@@ -781,31 +784,26 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 	if (!session) return -1;
 
 	if (msginfo->folder == dest) {
-		g_warning(_("the src folder is identical to the dest.\n"));
+		g_warning("the src folder is identical to the dest.\n");
 		return -1;
 	}
 
 	ok = imap_status(session, IMAP_FOLDER(folder), dest->path,
 			 &messages, &recent, &uid_next, &uid_validity, &unseen);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
-		g_warning(_("can't copy message\n"));
+		g_warning("can't copy message\n");
 		return -1;
 	}
 
 	destdir = imap_get_real_path(IMAP_FOLDER(folder), dest->path);
 
-    /* ensure source folder selected */
-    if (strcmp(((IMAPFolder *)folder)->selected_folder, 
-                    msginfo->folder->path) != 0) {
-	    ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
-			     &exists, &recent, &unseen, &uid_validity);
-	    statusbar_pop_all();
-	    if (ok != IMAP_SUCCESS)
-		    return -1;
-    }
+	/* ensure source folder selected */
+	ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
+			 NULL, NULL, NULL, NULL);
+	if (ok != IMAP_SUCCESS)
+	        return -1;
         
-    if (remove_source)
+	if (remove_source)
 		debug_print("Moving message %s%c%d to %s ...\n",
 			    msginfo->folder->path, G_DIR_SEPARATOR,
 			    msginfo->msgnum, destdir);
@@ -823,7 +821,6 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 	}
 
 	g_free(destdir);
-	statusbar_pop_all();
 
 	if (ok == IMAP_SUCCESS)
 		return uid_next;
@@ -840,8 +837,6 @@ static gint imap_do_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
 	MsgInfo *msginfo;
 	IMAPSession *session;
 	gint ok = IMAP_SUCCESS;
-	gint exists, recent, unseen;
-	guint32 uid_validity;
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(dest != NULL, -1);
@@ -856,20 +851,13 @@ static gint imap_do_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
 		msginfo = (MsgInfo *)cur->data;
 
 		if (msginfo->folder == dest) {
-			g_warning(_("the src folder is identical to the dest.\n"));
+			g_warning("the src folder is identical to the dest.\n");
 			continue;
 		}
 
-        /* ensure source folder selected */
-        if (strcmp(((IMAPFolder *)folder)->selected_folder, 
-                        msginfo->folder->path) != 0) {
-	        ok = imap_select(session, IMAP_FOLDER(folder), 
-                    msginfo->folder->path, &exists, &recent, &unseen, 
-                    &uid_validity);
-	        statusbar_pop_all();
-	        if (ok != IMAP_SUCCESS)
-		        return -1;
-        }
+    		/* ensure source folder selected */
+    		ok = imap_select(session, IMAP_FOLDER(folder), 
+        		         msginfo->folder->path, NULL, NULL, NULL, NULL);
         
 		if (remove_source)
 			debug_print("Moving message %s%c%d to %s ...\n",
@@ -894,7 +882,6 @@ static gint imap_do_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
 		ok = imap_cmd_expunge(SESSION(session)->sock);
 
 	g_free(destdir);
-	statusbar_pop_all();
 
 	if (ok == IMAP_SUCCESS)
 		return 0;
@@ -1004,8 +991,6 @@ gint imap_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
 
 gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 {
-	gint exists, recent, unseen;
-	guint32 uid_validity;
 	gint ok;
 	IMAPSession *session;
 	gchar *dir;
@@ -1018,22 +1003,19 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 	if (!session) return -1;
 
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
-			 &exists, &recent, &unseen, &uid_validity);
-	statusbar_pop_all();
+			 NULL, NULL, NULL, NULL);
 	if (ok != IMAP_SUCCESS)
 		return ok;
 
 	ok = imap_set_message_flags
 		(IMAP_SESSION(REMOTE_FOLDER(folder)->session),
 		 (guint32)uid, (guint32)uid, IMAP_FLAG_DELETED, TRUE);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't set deleted flags: %d\n"), uid);
 		return ok;
 	}
 
 	ok = imap_cmd_expunge(SESSION(session)->sock);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't expunge\n"));
 		return ok;
@@ -1049,8 +1031,6 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 
 gint imap_remove_msgs(Folder *folder, FolderItem *item, GSList *msglist)
 {
-	gint exists, recent, unseen;
-	guint32 uid_validity;
 	gint ok;
 	IMAPSession *session;
 	gchar *dir;
@@ -1067,8 +1047,7 @@ gint imap_remove_msgs(Folder *folder, FolderItem *item, GSList *msglist)
 	if (!session) return -1;
 
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
-			 &exists, &recent, &unseen, &uid_validity);
-	statusbar_pop_all();
+			 NULL, NULL, NULL, NULL);
 	if (ok != IMAP_SUCCESS)
 		return ok;
 
@@ -1078,7 +1057,6 @@ gint imap_remove_msgs(Folder *folder, FolderItem *item, GSList *msglist)
 		ok = imap_set_message_flags
 			(IMAP_SESSION(REMOTE_FOLDER(folder)->session),
 			 uid, uid, IMAP_FLAG_DELETED, TRUE);
-		statusbar_pop_all();
 		if (ok != IMAP_SUCCESS) {
 			log_warning(_("can't set deleted flags: %d\n"), uid);
 			return ok;
@@ -1086,7 +1064,6 @@ gint imap_remove_msgs(Folder *folder, FolderItem *item, GSList *msglist)
 	}
 
 	ok = imap_cmd_expunge(SESSION(session)->sock);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't expunge\n"));
 		return ok;
@@ -1107,8 +1084,8 @@ gint imap_remove_msgs(Folder *folder, FolderItem *item, GSList *msglist)
 
 gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 {
-	gint exists, recent, unseen;
-	guint32 uid_validity;
+        gint exists, recent, unseen;
+        guint32 uid_validity;
 	gint ok;
 	IMAPSession *session;
 	gchar *dir;
@@ -1121,7 +1098,6 @@ gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
 			 &exists, &recent, &unseen, &uid_validity);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS)
 		return ok;
 	if (exists == 0)
@@ -1130,14 +1106,12 @@ gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 	imap_cmd_gen_send(SESSION(session)->sock,
 			  "STORE 1:%d +FLAGS (\\Deleted)", exists);
 	ok = imap_cmd_ok(SESSION(session)->sock, NULL);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't set deleted flags: 1:%d\n"), exists);
 		return ok;
 	}
 
 	ok = imap_cmd_expunge(SESSION(session)->sock);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't expunge\n"));
 		return ok;
@@ -1172,7 +1146,6 @@ gint imap_scan_folder(Folder *folder, FolderItem *item)
 
 	ok = imap_status(session, IMAP_FOLDER(folder), item->path,
 			 &messages, &recent, &uid_next, &uid_validity, &unseen);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) return -1;
 
 	item->new = unseen > 0 ? recent : 0;
@@ -1405,7 +1378,6 @@ static GSList *imap_parse_list(Folder *folder, IMAPSession *session, const gchar
 	}
 
 	g_string_free(str, TRUE);
-	statusbar_pop_all();
 
 	return item_list;
 }
@@ -1463,12 +1435,12 @@ static FolderItem *imap_create_special_folder(Folder *folder,
 	new_item = imap_create_folder(folder, item, name);
 
 	if (!new_item) {
-		g_warning(_("Can't create '%s'\n"), name);
+		g_warning("Can't create '%s'\n", name);
 		if (!folder->inbox) return NULL;
 
 		new_item = imap_create_folder(folder, folder->inbox, name);
 		if (!new_item)
-			g_warning(_("Can't create '%s' under INBOX\n"), name);
+			g_warning("Can't create '%s' under INBOX\n", name);
 		else
 			new_item->stype = stype;
 	} else
@@ -1529,7 +1501,6 @@ FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 		argbuf = g_ptr_array_new();
 		ok = imap_cmd_list(SESSION(session)->sock, NULL, imap_path,
 				   argbuf);
-		statusbar_pop_all();
 		if (ok != IMAP_SUCCESS) {
 			log_warning(_("can't create mailbox: LIST failed\n"));
 			g_free(imap_path);
@@ -1550,7 +1521,6 @@ FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 
 		if (!exist) {
 			ok = imap_cmd_create(SESSION(session)->sock, imap_path);
-			statusbar_pop_all();
 			if (ok != IMAP_SUCCESS) {
 				log_warning(_("can't create mailbox\n"));
 				g_free(imap_path);
@@ -1603,7 +1573,6 @@ gint imap_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 	session->mbox = NULL;
 	ok = imap_cmd_examine(SESSION(session)->sock, "INBOX",
 			      &exists, &recent, &unseen, &uid_validity);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
 		g_free(real_oldpath);
 		return -1;
@@ -1621,7 +1590,6 @@ gint imap_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 	imap_path_separator_subst(real_newpath, separator);
 
 	ok = imap_cmd_rename(SESSION(session)->sock, real_oldpath, real_newpath);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't rename mailbox: %s to %s\n"),
 			    real_oldpath, real_newpath);
@@ -1680,14 +1648,12 @@ gint imap_remove_folder(Folder *folder, FolderItem *item)
 
 	ok = imap_cmd_examine(SESSION(session)->sock, "INBOX",
 			      &exists, &recent, &unseen, &uid_validity);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
 		g_free(path);
 		return -1;
 	}
 
 	ok = imap_cmd_delete(SESSION(session)->sock, path);
-	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't delete mailbox\n"));
 		g_free(path);
@@ -1831,7 +1797,7 @@ static void imap_delete_all_cached_messages(FolderItem *item)
 	debug_print("done.\n");
 }
 
-#if USE_SSL
+#if USE_OPENSSL
 static SockInfo *imap_open_tunnel(const gchar *server,
 			   const gchar *tunnelcmd,
 			   SSLType ssl_type)
@@ -1846,7 +1812,7 @@ static SockInfo *imap_open_tunnel(const gchar *server,
 		log_warning(_("Can't establish IMAP4 session with: %s\n"),
 			    server);
 		return NULL;
-#if USE_SSL
+#if USE_OPENSSL
 	return imap_init_sock(sock, ssl_type);
 #else
 	return imap_init_sock(sock);
@@ -1854,7 +1820,7 @@ static SockInfo *imap_open_tunnel(const gchar *server,
 }
 
 
-#if USE_SSL
+#if USE_OPENSSL
 static SockInfo *imap_open(const gchar *server, gushort port,
 			   SSLType ssl_type)
 #else
@@ -1869,7 +1835,7 @@ static SockInfo *imap_open(const gchar *server, gushort port)
 		return NULL;
 	}
 
-#if USE_SSL
+#if USE_OPENSSL
 	if (ssl_type == SSL_TUNNEL && !ssl_init_socket(sock)) {
 		log_warning(_("Can't establish IMAP4 session with: %s:%d\n"),
 			    server, port);
@@ -1882,14 +1848,14 @@ static SockInfo *imap_open(const gchar *server, gushort port)
 #endif
 }
 
-#if USE_SSL
+#if USE_OPENSSL
 static SockInfo *imap_init_sock(SockInfo *sock, SSLType ssl_type)
 #else
 static SockInfo *imap_init_sock(SockInfo *sock)
 #endif
 {
 	imap_cmd_count = 0;
-#if USE_SSL
+#if USE_OPENSSL
 	if (ssl_type == SSL_STARTTLS) {
 		gint ok;
 
@@ -2416,9 +2382,6 @@ static gint imap_select(IMAPSession *session, IMAPFolder *folder,
 		session->mbox = g_strdup(path);
 	g_free(real_path);
 
-	g_free(folder->selected_folder);
-	folder->selected_folder = g_strdup(path);
-	
 	return ok;
 }
 
@@ -3074,7 +3037,7 @@ static gchar *imap_modified_utf7_to_locale(const gchar *mutf7_str)
 	if (cd == (iconv_t)-1) {
 		cd = iconv_open(conv_get_current_charset_str(), "UTF-7");
 		if (cd == (iconv_t)-1) {
-			g_warning(_("iconv cannot convert UTF-7 to %s\n"),
+			g_warning("iconv cannot convert UTF-7 to %s\n",
 				  conv_get_current_charset_str());
 			iconv_ok = FALSE;
 			return g_strdup(mutf7_str);
@@ -3111,7 +3074,7 @@ static gchar *imap_modified_utf7_to_locale(const gchar *mutf7_str)
 	to_p = to_str = g_malloc(to_len + 1);
 
 	if (iconv(cd, &norm_utf7_p, &norm_utf7_len, &to_p, &to_len) == -1) {
-		g_warning(_("iconv cannot convert UTF-7 to %s\n"),
+		g_warning("iconv cannot convert UTF-7 to %s\n",
 			  conv_get_current_charset_str());
 		g_string_free(norm_utf7, TRUE);
 		g_free(to_str);
@@ -3145,7 +3108,7 @@ static gchar *imap_locale_to_modified_utf7(const gchar *from)
 	if (cd == (iconv_t)-1) {
 		cd = iconv_open("UTF-7", conv_get_current_charset_str());
 		if (cd == (iconv_t)-1) {
-			g_warning(_("iconv cannot convert %s to UTF-7\n"),
+			g_warning("iconv cannot convert %s to UTF-7\n",
 				  conv_get_current_charset_str());
 			iconv_ok = FALSE;
 			return g_strdup(from);
@@ -3178,7 +3141,7 @@ static gchar *imap_locale_to_modified_utf7(const gchar *from)
 			from_len -= mblen;
 			if (iconv(cd, &from_tmp, &mblen,
 				  &norm_utf7_p, &norm_utf7_len) == -1) {
-				g_warning(_("iconv cannot convert %s to UTF-7\n"),
+				g_warning("iconv cannot convert %s to UTF-7\n",
 					  conv_get_current_charset_str());
 				return g_strdup(from);
 			}
@@ -3256,13 +3219,11 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 {
 	IMAPFolderItem *item = (IMAPFolderItem *)_item;
 	IMAPSession *session;
-	gint i, lastuid_old, nummsgs = 0;
-	gint ok, exists = 0, recent = 0, unseen = 0;
-	guint32 uid_validity = 0;
+	gint ok, i, lastuid_old, nummsgs = 0;
 	GPtrArray *argbuf;
 	gchar *cmdbuf = NULL;
 	gchar *dir;
-	
+
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(item != NULL, -1);
 	g_return_val_if_fail(item->item.path != NULL, -1);
@@ -3273,7 +3234,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 	g_return_val_if_fail(session != NULL, -1);
 
 	ok = imap_select(session, IMAP_FOLDER(folder), item->item.path,
-			 &exists, &recent, &unseen, &uid_validity);
+			 NULL, NULL, NULL, NULL);
 	if (ok != IMAP_SUCCESS)
 		return -1;
 

@@ -587,8 +587,6 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			}
 		}
 
-		statusbar_pop_all();
-
 		/* CLAWS: perform filtering actions on dropped message */
 		/* CLAWS: get default inbox (perhaps per account) */
 		if (pop3_state->ac_prefs->inbox) {
@@ -703,7 +701,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	gchar *buf;
 	static AtmHandler handlers[] = {
 		pop3_greeting_recv      ,
-#if USE_SSL
+#if USE_OPENSSL
 		pop3_stls_send          , pop3_stls_recv,
 #endif
 		pop3_getauth_user_send  , pop3_getauth_user_recv,
@@ -756,7 +754,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	atm->num = POP3_GREETING_RECV;
 
 	server = pop3_state->ac_prefs->recv_server;
-#if USE_SSL
+#if USE_OPENSSL
 	port = pop3_state->ac_prefs->set_popport ?
 		pop3_state->ac_prefs->popport :
 		pop3_state->ac_prefs->ssl_pop == SSL_TUNNEL ? 995 : 110;
@@ -770,7 +768,6 @@ static IncState inc_pop3_session_do(IncSession *session)
 	progress_dialog_set_label(inc_dialog->dialog, buf);
 	g_free(buf);
 	GTK_EVENTS_FLUSH();
-	statusbar_pop_all();
 
 	if ((sockinfo = sock_connect(server, port)) == NULL) {
 		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
@@ -790,7 +787,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 		return INC_CONNECT_ERROR;
 	}
 
-#if USE_SSL
+#if USE_OPENSSL
 	if (pop3_state->ac_prefs->ssl_pop == SSL_TUNNEL &&
 	    !ssl_init_socket(sockinfo)) {
 		pop3_automaton_terminate(sockinfo, atm);
@@ -805,7 +802,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	pop3_state->sockinfo = sockinfo;
 	atm->help_sock = sockinfo;
 
-	log_verbosity_set(TRUE);
+	statusbar_verbosity_set(TRUE);
 	/* oha: this messes up inc_progress update:
 	   disabling this would avoid the label "Retrieve Header"
 	   being overwritten by "Retrieve Message"
@@ -825,7 +822,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	if (!atm->terminated)
 		pop3_automaton_terminate(sockinfo, atm);
 
-	log_verbosity_set(FALSE);
+	statusbar_verbosity_set(FALSE);
 	/* oha: see above */
 	recv_set_ui_func(NULL, NULL);
 

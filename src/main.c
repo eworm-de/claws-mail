@@ -47,15 +47,12 @@
 #include <sys/types.h>
 #include <signal.h>
 
-#if HAVE_LOCALE_H
-#  include <locale.h>
-#endif
-
 #if USE_GPGME
 #  include <gpgme.h>
 #  include "passphrase.h"
 #endif
 
+#include "sylpheed.h"
 #include "intl.h"
 #include "main.h"
 #include "mainwindow.h"
@@ -84,7 +81,7 @@
 #if USE_GPGME
 #  include "rfc2015.h"
 #endif
-#if USE_SSL
+#if USE_OPENSSL
 #  include "ssl.h"
 #endif
 
@@ -96,7 +93,9 @@
 
 gchar *prog_version;
 gchar *startup_dir;
+#ifdef CRASH_DIALOG
 gchar *argv0;
+#endif
 
 static gint lock_socket = -1;
 static gint lock_socket_tag = 0;
@@ -185,7 +184,6 @@ int main(int argc, char *argv[])
 	MainWindow *mainwin;
 	FolderView *folderview;
 #ifdef WIN32
-	gchar *locale_dir;
 	guint log_hid,gtklog_hid, gdklog_hid;
 #endif
 
@@ -212,21 +210,27 @@ int main(int argc, char *argv[])
 		w32_log_handler, NULL);
 #endif
 
-	setlocale(LC_ALL, "");
-#ifdef WIN32
-	locale_dir = g_strconcat(get_installed_dir(), G_DIR_SEPARATOR_S,
-				LOCALEDIR, NULL);
-	bindtextdomain(PACKAGE, locale_dir);
-#else
-	bindtextdomain(PACKAGE, LOCALEDIR);
-#endif
-	textdomain(PACKAGE);
+	if(!sylpheed_init(&argc, &argv)) {
+		return 0;
+	}
 
 	prog_version = PROG_VERSION;
 	startup_dir = g_get_current_dir();
+#ifdef CRASH_DIALOG
 	argv0 = g_strdup(argv[0]);
+#endif
 
 	parse_cmd_opt(argc, argv);
+
+#ifdef CRASH_DIALOG
+	if (cmd.crash) {
+		gtk_set_locale();
+		gtk_init(&argc, &argv);
+		crash_main(cmd.crash_params);
+		return 0;
+	}
+	crash_install_handlers();
+#endif
 
 #ifdef WIN32
 	{ /* Initialize WinSock Library. */
@@ -250,14 +254,6 @@ int main(int argc, char *argv[])
 	gtk_set_locale();
 	gtk_init(&argc, &argv);
 
-#ifdef CRASH_DIALOG
-	if (cmd.crash) {
-		crash_main(cmd.crash_params);
-		return 0;
-	}
-	crash_install_handlers();
-#endif
-
 #if USE_THREADS || USE_LDAP
 	g_thread_init(NULL);
 	if (!g_thread_supported())
@@ -270,10 +266,7 @@ int main(int argc, char *argv[])
 	gtk_widget_push_colormap(gdk_imlib_get_colormap());
 #endif
 
-#if USE_SSL
-	ssl_init();
-#endif
-
+#ifdef WIN32
 #if HAVE_LIBJCONV
 	{
 		gchar *conf;
@@ -285,8 +278,7 @@ int main(int argc, char *argv[])
 		g_free(conf);
 	}
 #endif
-
-	srandom((gint)time(NULL));
+#endif
 
 	/* parse gtkrc files */
 	userrc = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S, ".gtkrc",
@@ -309,11 +301,6 @@ int main(int argc, char *argv[])
 
 	CHDIR_RETURN_VAL_IF_FAIL(get_home_dir(), 1);
 
-	/* backup if old rc file exists */
-	if (is_file_exist(RC_DIR)) {
-		if (Xrename(RC_DIR, RC_DIR ".bak") < 0)
-			FILE_OP_ERROR(RC_DIR, "rename");
-	}
 	MAKE_DIR_IF_NOT_EXIST(RC_DIR);
 	MAKE_DIR_IF_NOT_EXIST(get_imap_cache_dir());
 	MAKE_DIR_IF_NOT_EXIST(get_news_cache_dir());
@@ -321,11 +308,6 @@ int main(int argc, char *argv[])
 	MAKE_DIR_IF_NOT_EXIST(get_tmp_dir());
 	MAKE_DIR_IF_NOT_EXIST(RC_DIR G_DIR_SEPARATOR_S "uidl");
 
-	if (is_file_exist(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log")) {
-		if (Xrename(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log",
-			   RC_DIR G_DIR_SEPARATOR_S "sylpheed.log.bak") < 0)
-			FILE_OP_ERROR("sylpheed.log", "rename");
-	}
 	set_log_file(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log");
 
 #ifdef WIN32
@@ -715,7 +697,7 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 #endif
 		unlink(get_crashfile_name());
 
-#if USE_SSL
+#if USE_OPENSSL
 	ssl_done();
 #endif
 
@@ -973,7 +955,6 @@ static void send_queue(void)
 			if (procmsg_send_queue
 				(folder->queue, prefs_common.savemsg) < 0)
 				alertpanel_error(_("Some errors occurred while sending queued messages."));
-			statusbar_pop_all();
 			folder_item_scan(folder->queue);
 			if (prefs_common.savemsg && folder->outbox) {
 				folder_update_item(folder->outbox, TRUE);

@@ -48,7 +48,6 @@
 #include <stdio.h>
 #include <glib.h>
 
-#include "addritem.h"
 #include "addrcache.h"
 #include "addrbook.h"
 #include "addrselect.h"

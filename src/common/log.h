@@ -27,6 +27,7 @@
 #include <glib.h>
 
 #define LOG_APPEND_TEXT_HOOKLIST "log_append_text"
+#define LOG_TIME_LEN 11
 
 typedef enum
 {

@@ -35,7 +35,7 @@ typedef struct _Pop3State	Pop3State;
 
 typedef enum {
 	POP3_GREETING_RECV,
-#if USE_SSL
+#if USE_OPENSSL
 	POP3_STLS_SEND,
 	POP3_STLS_RECV,
 #endif
@@ -145,7 +145,7 @@ gint pop3_getauth_pass_send	(SockInfo *sock, gpointer data);
 gint pop3_getauth_pass_recv	(SockInfo *sock, gpointer data);
 gint pop3_getauth_apop_send	(SockInfo *sock, gpointer data);
 gint pop3_getauth_apop_recv	(SockInfo *sock, gpointer data);
-#if USE_SSL
+#if USE_OPENSSL
 gint pop3_stls_send		(SockInfo *sock, gpointer data);
 gint pop3_stls_recv		(SockInfo *sock, gpointer data);
 #endif

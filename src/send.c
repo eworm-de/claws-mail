@@ -175,7 +175,7 @@ gint send_message_queue(const gchar *file)
 	}
 
 	if (((!ac || (ac && ac->protocol != A_NNTP)) && !to_list) || !from) {
-		g_warning(_("Queued message header is broken.\n"));
+		g_warning("Queued message header is broken.\n");
 		val = -1;
 	} else if (prefs_common.use_extsend && prefs_common.extsend_cmd) {
 		val = send_message_local(prefs_common.extsend_cmd, fp);
@@ -200,8 +200,8 @@ gint send_message_queue(const gchar *file)
 		} else {
 			ac = account_find_from_smtp_server(from, server);
 			if (!ac) {
-				g_warning(_("Account not found. "
-					    "Using current account...\n"));
+				g_warning("Account not found. "
+					    "Using current account...\n");
 				ac = cur_account;
 				if (ac && ac->protocol != A_NNTP)
 					mailac = ac;
@@ -215,7 +215,7 @@ gint send_message_queue(const gchar *file)
 			else {
 				PrefsAccount tmp_ac;
 
-				g_warning(_("Account not found.\n"));
+				g_warning("Account not found.\n");
 
 				memset(&tmp_ac, 0, sizeof(PrefsAccount));
 				tmp_ac.address = from;
@@ -254,12 +254,14 @@ gint send_message_local(const gchar *command, FILE *fp)
 
 	pipefp = popen(command, "w");
 	if (!pipefp) {
-		g_warning(_("Can't execute external command: %s\n"), command);
+		g_warning("Can't execute external command: %s\n", command);
 		return -1;
 	}
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		strretchomp(buf);
+		if (buf[0] == '.' && buf[1] == '\0')
+			fputc('.', pipefp);
 		fputs(buf, pipefp);
 		fputc('\n', pipefp);
 	}
@@ -277,7 +279,7 @@ gint send_message_local(const gchar *command, FILE *fp)
 #ifndef WIN32
 	sigprocmask(SIG_SETMASK, &osig, NULL);
 	if (r != 0) {
-		g_warning(_("external command `%s' failed with code `%i'\n"), command, r);
+		g_warning("external command `%s' failed with code `%i'\n", command, r);
 		return -1;
 	}
 #endif
@@ -357,7 +359,7 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 	size = get_left_file_size(fp);
 	if (size < 0) return -1;
 
-#if USE_SSL
+#if USE_OPENSSL
 	port = ac_prefs->set_smtpport ? ac_prefs->smtpport :
 		ac_prefs->ssl_smtp == SSL_TUNNEL ? SSMTP_PORT : SMTP_PORT;
 #else
@@ -405,7 +407,7 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 	    && (ac_prefs->protocol == A_APOP || ac_prefs->protocol == A_POP3)
 	    && (time(NULL) - ac_prefs->last_pop_login_time) > (60 * ac_prefs->pop_before_smtp_timeout)) {
 		g_snprintf(buf, sizeof(buf), _("Doing POP before SMTP..."));
-		statusbar_puts_all(buf);
+		log_message(buf);
 		progress_dialog_set_label(dialog->dialog, buf);
 		gtk_clist_set_text(clist, 0, 2, _("POP before SMTP"));
 		GTK_EVENTS_FLUSH();
@@ -416,7 +418,7 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 	session->data = dialog;
 	session->ui_func = (SessionUIFunc)send_progress_dialog_update;
 
-#if USE_SSL
+#if USE_OPENSSL
 	SEND_EXIT_IF_NOTOK
 		(smtp_connect(SMTP_SESSION(session), ac_prefs->smtp_server,
 			      port, domain, user, pass, ac_prefs->ssl_smtp),
@@ -451,13 +453,11 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 		 "sending data");
 
 	progress_dialog_set_label(dialog->dialog, _("Quitting..."));
-	statusbar_puts_all(_("Quitting..."));
+	log_message(_("Quitting..."));
 	GTK_EVENTS_FLUSH();
 
 	SEND_EXIT_IF_NOTOK(smtp_eom(SMTP_SESSION(session)), "terminating data");
 	SEND_EXIT_IF_NOTOK(smtp_quit(SMTP_SESSION(session)), "sending QUIT");
-
-	statusbar_pop_all();
 
 	session_destroy(session);
 	send_progress_dialog_destroy(dialog);
@@ -489,7 +489,6 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 			   _("Sending message (%d / %d bytes)"), \
 			   bytes, size); \
 		progress_dialog_set_label(dialog->dialog, str); \
-		statusbar_puts_all(str); \
 		progress_dialog_set_percentage \
 			(dialog->dialog, (gfloat)bytes / (gfloat)size); \
 		GTK_EVENTS_FLUSH(); \

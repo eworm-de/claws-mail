@@ -22,7 +22,6 @@
 #include <string.h>
 
 #include "esmtp.h"
-#include "smtp.h"
 #include "socket.h"
 #include "utils.h"
 #include "md5.h"

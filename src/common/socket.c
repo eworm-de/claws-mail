@@ -49,7 +49,7 @@
 #include "socket.h"
 #include "utils.h"
 #include "log.h"
-#if USE_SSL
+#if USE_OPENSSL
 #  include "ssl.h"
 #endif
 
@@ -539,7 +539,7 @@ gint sock_read(SockInfo *sock, gchar *buf, gint len)
 {
 	g_return_val_if_fail(sock != NULL, -1);
 
-#if USE_SSL
+#if USE_OPENSSL
 	if (sock->ssl)
 		return ssl_read(sock->ssl, buf, len);
 #endif
@@ -558,7 +558,7 @@ gint fd_read(gint fd, gchar *buf, gint len)
 #endif
 }
 
-#if USE_SSL
+#if USE_OPENSSL
 gint ssl_read(SSL *ssl, gchar *buf, gint len)
 {
 	return SSL_read(ssl, buf, len);
@@ -569,7 +569,7 @@ gint sock_write(SockInfo *sock, const gchar *buf, gint len)
 {
 	g_return_val_if_fail(sock != NULL, -1);
 
-#if USE_SSL
+#if USE_OPENSSL
 	if (sock->ssl)
 		return ssl_write(sock->ssl, buf, len);
 #endif
@@ -601,7 +601,7 @@ gint fd_write(gint fd, const gchar *buf, gint len)
 	return wrlen;
 }
 
-#if USE_SSL
+#if USE_OPENSSL
 gint ssl_write(SSL *ssl, const gchar *buf, gint len)
 {
 	gint n, wrlen = 0;
@@ -673,7 +673,7 @@ Single-byte send() and recv().
 	return bp - buf;
 }
 
-#if USE_SSL
+#if USE_OPENSSL
 gint ssl_gets(SSL *ssl, gchar *buf, gint len)
 {
 	gchar *newline, *bp = buf;
@@ -701,7 +701,7 @@ gint sock_gets(SockInfo *sock, gchar *buf, gint len)
 {
 	g_return_val_if_fail(sock != NULL, -1);
 
-#if USE_SSL
+#if USE_OPENSSL
 	if (sock->ssl)
 		return ssl_gets(sock->ssl, buf, len);
 #endif
@@ -741,7 +741,7 @@ gchar *fd_getline(gint fd)
 	return str;
 }
 
-#if USE_SSL
+#if USE_OPENSSL
 gchar *ssl_getline(SSL *ssl)
 {
 	gchar buf[BUFFSIZE];
@@ -769,7 +769,7 @@ gchar *sock_getline(SockInfo *sock)
 {
 	g_return_val_if_fail(sock != NULL, NULL);
 
-#if USE_SSL
+#if USE_OPENSSL
 	if (sock->ssl)
 		return ssl_getline(sock->ssl);
 #endif
@@ -793,7 +793,7 @@ gint sock_peek(SockInfo *sock)
 
 	g_return_val_if_fail(sock != NULL, -1);
 
-#if USE_SSL
+#if USE_OPENSSL
 	if (sock->ssl) {
 		if ((n = SSL_peek(sock->ssl, &ch, 1)) < 0)
 			return -1;
@@ -814,7 +814,7 @@ gint sock_close(SockInfo *sock)
 	if (!sock)
 		return 0;
 
-#if USE_SSL
+#if USE_OPENSSL
 	if (sock->ssl)
 		ssl_done_socket(sock);
 #endif

@@ -27,7 +27,7 @@
 #include <glib.h>
 #include <time.h>
 
-#if USE_SSL
+#if USE_OPENSSL
 #  include "ssl.h"
 #endif
 #include "folder.h"
@@ -48,8 +48,6 @@ struct _IMAPFolder
 {
 	RemoteFolder rfolder;
 
-	gchar *selected_folder;
-	
 	/* list of IMAPNameSpace */
 	GList *ns_personal;
 	GList *ns_others;
@@ -62,6 +60,7 @@ struct _IMAPSession
 
 	gchar *mbox;
 	time_t last_access_time;
+	gboolean authenticated;
 };
 
 struct _IMAPNameSpace
@@ -104,6 +103,8 @@ Folder	*imap_folder_new		(const gchar	*name,
 void	 imap_folder_destroy		(Folder		*folder);
 
 Session *imap_session_new		(const PrefsAccount *account);
+void imap_session_authenticate		(IMAPSession 	    *session,
+					 const PrefsAccount *account);
 void imap_session_destroy		(Session	*session);
 void imap_session_destroy_all		(void);
 

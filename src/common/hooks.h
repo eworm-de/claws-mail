@@ -20,8 +20,8 @@
 #ifndef HOOKS_H
 #define HOOKS_H
 
-typedef void (*SylpheedHookFunction)	(gpointer source,
-					 gpointer userdata);
+typedef gboolean (*SylpheedHookFunction)	(gpointer source,
+						 gpointer userdata);
 
 gint hooks_register_hook	(gchar			*hooklist_name,
 				 SylpheedHookFunction	 hook_func,

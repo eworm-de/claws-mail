@@ -421,6 +421,9 @@ const gchar * line_has_quote_char	(const gchar *str,
 const gchar * line_has_quote_char_last	(const gchar *str,
 					 const gchar *quote_chars);
 
+/* used in extended search */
+gchar * expand_search_string	(const gchar *str);
+#ifdef WIN32
 /* timer needed for socket(gdk_input) */
 gint mswin_helper_timeout_tag;
 void start_mswin_helper(void);
@@ -431,5 +434,6 @@ wchar_t  *gtkwcs2winwcs(wchar_t *gtkwcs);
 
 #undef isspace
 #define isspace iswspace
+#endif
 
 #endif /* __UTILS_H__ */

@@ -1053,7 +1053,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
 			msgfile = procmsg_get_message_file_path(msginfo);
 			if (!is_file_exist(msgfile))
-				g_warning(_("%s: file not exist\n"), msgfile);
+				g_warning("%s: file not exist\n", msgfile);
 			else
 				compose_attach_append(compose, msgfile, msgfile,
 						      "message/rfc822");
@@ -1154,7 +1154,7 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 	for (msginfo = msginfo_list; msginfo != NULL; msginfo = msginfo->next) {
 		msgfile = procmsg_get_message_file_path((MsgInfo *)msginfo->data);
 		if (!is_file_exist(msgfile))
-			g_warning(_("%s: file not exist\n"), msgfile);
+			g_warning("%s: file not exist\n", msgfile);
 		else
 			compose_attach_append(compose, msgfile, msgfile,
 				"message/rfc822");
@@ -1255,7 +1255,7 @@ void compose_reedit(MsgInfo *msginfo)
 	gtk_stext_freeze(text);
 
 	if ((fp = procmime_get_first_text_content(msginfo)) == NULL)
-		g_warning(_("Can't get text part\n"));
+		g_warning("Can't get text part\n");
 	else {
 		while (fgets(buf, sizeof(buf), fp) != NULL) {
 			strcrchomp(buf);
@@ -2075,11 +2075,11 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 	gint row;
 
 	if (!is_file_exist(file)) {
-		g_warning(_("File %s doesn't exist\n"), file);
+		g_warning("File %s doesn't exist\n", file);
 		return;
 	}
 	if ((size = get_file_size(file)) < 0) {
-		g_warning(_("Can't get file size of %s\n"), file);
+		g_warning("Can't get file size of %s\n", file);
 		return;
 	}
 	if (size == 0) {
@@ -2201,7 +2201,7 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 		}
 		outfile = procmime_get_tmp_file_name(child);
 		if (procmime_get_part(outfile, infile, child) < 0)
-			g_warning(_("Can't get the part of multipart message."));
+			g_warning("Can't get the part of multipart message.");
 		else if (compose->mode != COMPOSE_REEDIT || strcmp(child->content_type, "application/pgp-signature"))
 			compose_attach_append
 				(compose, outfile,
@@ -3055,7 +3055,7 @@ gint compose_send(Compose *compose)
 	}
 
 	if (!compose->to_list && !compose->newsgroup_list) {
-		g_warning(_("can't get recipient list."));
+		g_warning("can't get recipient list.");
 		unlink(tmp);
 		lock = FALSE;
 		return -1;
@@ -3087,7 +3087,6 @@ gint compose_send(Compose *compose)
 		ac = compose->account;
 
 		ok = send_message(tmp, ac, compose->to_list);
-		statusbar_pop_all();
 	}
 
 	if (ok == 0 && compose->newsgroup_list) {
@@ -3269,7 +3268,7 @@ static gint compose_redirect_write_to_file(Compose *compose, const gchar *file)
 	/* chmod for security */
 	if (change_file_mode_rw(fdest, file) < 0) {
 		FILE_OP_ERROR(file, "chmod");
-		g_warning(_("can't change file mode\n"));
+		g_warning("can't change file mode\n");
 	}
 
 	while (procheader_get_unfolded_line(buf, sizeof(buf), fp)) {
@@ -3422,7 +3421,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	/* chmod for security */
 	if (change_file_mode_rw(fp, file) < 0) {
 		FILE_OP_ERROR(file, "chmod");
-		g_warning(_("can't change file mode\n"));
+		g_warning("can't change file mode\n");
 	}
 
 	/* get all composed text */
@@ -3528,7 +3527,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	/* write headers */
 	if (compose_write_headers
 		(compose, fp, out_codeset, encoding, is_draft) < 0) {
-		g_warning(_("can't write headers\n"));
+		g_warning("can't write headers\n");
 		fclose(fp);
 		/* unlink(file); */
 		g_free(buf);
@@ -3629,7 +3628,7 @@ static gint compose_write_body_to_file(Compose *compose, const gchar *file)
 	/* chmod for security */
 	if (change_file_mode_rw(fp, file) < 0) {
 		FILE_OP_ERROR(file, "chmod");
-		g_warning(_("can't change file mode\n"));
+		g_warning("can't change file mode\n");
 	}
 #ifdef WIN32
 	chars = g_strdup( gtk_editable_get_chars(GTK_EDITABLE(compose->text), 0, -1) );
@@ -3672,7 +3671,7 @@ static gint compose_remove_reedit_target(Compose *compose)
 	if (procmsg_msg_exist(msginfo) &&
 	    (item->stype == F_DRAFT || item->stype == F_QUEUE)) {
 		if (folder_item_remove_msg(item, msginfo->msgnum) < 0) {
-			g_warning(_("can't remove the old message\n"));
+			g_warning("can't remove the old message\n");
 			return -1;
 		}
 	}
@@ -3719,7 +3718,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	}
 
 	if (!compose->to_list && !compose->newsgroup_list) {
-	        g_warning(_("can't get recipient list."));
+	        g_warning("can't get recipient list.");
 	        lock = FALSE;
                 return -1;
         }
@@ -3787,7 +3786,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	}
 	if (change_file_mode_rw(fp, tmp) < 0) {
 		FILE_OP_ERROR(tmp, "chmod");
-		g_warning(_("can't change file mode\n"));
+		g_warning("can't change file mode\n");
 	}
 
 	/* queueing variables */
@@ -3879,14 +3878,14 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 
 	queue = account_get_special_folder(compose->account, F_QUEUE);
 	if (!queue) {
-		g_warning(_("can't find queue folder\n"));
+		g_warning("can't find queue folder\n");
 		unlink(tmp);
 		g_free(tmp);
 		return -1;
 	}
 	folder_item_scan(queue);
 	if ((num = folder_item_add_msg(queue, tmp, TRUE)) < 0) {
-		g_warning(_("can't queue the message\n"));
+		g_warning("can't queue the message\n");
 		unlink(tmp);
 		g_free(tmp);
 		return -1;
@@ -3929,7 +3928,7 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 		gchar inbuf[B64_LINE_SIZE], outbuf[B64_BUFFSIZE];
 
 		if ((attach_fp = fopen(ainfo->file, "rb")) == NULL) {
-			g_warning(_("Can't open file %s\n"), ainfo->file);
+			g_warning("Can't open file %s\n", ainfo->file);
 			continue;
 		}
 
@@ -6275,7 +6274,7 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 		g_snprintf(buf, sizeof(buf), prefs_common.ext_editor_cmd, file);
 	} else {
 		if (prefs_common.ext_editor_cmd)
-			g_warning(_("External editor command line is invalid: `%s'\n"),
+			g_warning("External editor command line is invalid: `%s'\n",
 				  prefs_common.ext_editor_cmd);
 		g_snprintf(buf, sizeof(buf), def_cmd, file);
 	}
@@ -6364,8 +6363,8 @@ static gboolean compose_ext_editor_kill(Compose *compose)
 			if (kill(pgid, SIGTERM) < 0) perror("kill");
 			waitpid(compose->exteditor_pid, NULL, 0);
 
-			g_warning(_("Terminated process group id: %d"), -pgid);
-			g_warning(_("Temporary file: %s"),
+			g_warning("Terminated process group id: %d", -pgid);
+			g_warning("Temporary file: %s",
 				  compose->exteditor_file);
 
 			compose_set_ext_editor_sensitive(compose, TRUE);
@@ -6429,13 +6428,13 @@ static void compose_input_cb(gpointer data, gint source,
 		if (unlink(compose->exteditor_file) < 0)
 			FILE_OP_ERROR(compose->exteditor_file, "unlink");
 	} else if (buf[0] == '1') {	/* failed */
-		g_warning(_("Couldn't exec external editor\n"));
+		g_warning("Couldn't exec external editor\n");
 		if (unlink(compose->exteditor_file) < 0)
 			FILE_OP_ERROR(compose->exteditor_file, "unlink");
 	} else if (buf[0] == '2') {
-		g_warning(_("Couldn't write to file\n"));
+		g_warning("Couldn't write to file\n");
 	} else if (buf[0] == '3') {
-		g_warning(_("Pipe read failed\n"));
+		g_warning("Pipe read failed\n");
 	}
 
 	close(source);

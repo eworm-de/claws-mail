@@ -138,7 +138,7 @@ static struct Privacy {
 } privacy;
 #endif /* USE_GPGME */
 
-#if USE_SSL
+#if USE_OPENSSL
 static struct SSLPrefs {
 	GtkWidget *pop_frame;
 	GtkWidget *pop_nossl_radiobtn;
@@ -159,7 +159,7 @@ static struct SSLPrefs {
 	GtkWidget *smtp_ssltunnel_radiobtn;
 	GtkWidget *smtp_starttls_radiobtn;
 } ssl;
-#endif /* USE_SSL */
+#endif /* USE_OPENSSL */
 
 static struct Advanced {
 	GtkWidget *smtpport_chkbtn;
@@ -201,10 +201,10 @@ static void prefs_account_smtp_auth_type_set_data_from_optmenu
 							(PrefParam *pparam);
 static void prefs_account_smtp_auth_type_set_optmenu	(PrefParam *pparam);
 
-#if USE_GPGME || USE_SSL
+#if USE_GPGME || USE_OPENSSL
 static void prefs_account_enum_set_data_from_radiobtn	(PrefParam *pparam);
 static void prefs_account_enum_set_radiobtn		(PrefParam *pparam);
-#endif /* USE_GPGME || USE_SSL */
+#endif /* USE_GPGME || USE_OPENSSL */
 
 #if USE_GPGME
 static void prefs_account_gnupg_inline_warning		(GtkWidget *widget);
@@ -395,7 +395,7 @@ static PrefParam param[] = {
 	 prefs_set_data_from_entry, prefs_set_entry},
 #endif /* USE_GPGME */
 
-#if USE_SSL
+#if USE_OPENSSL
 	/* SSL */
 	{"ssl_pop", "0", &tmp_ac_prefs.ssl_pop, P_ENUM,
 	 &ssl.pop_nossl_radiobtn,
@@ -413,7 +413,7 @@ static PrefParam param[] = {
 	 &ssl.smtp_nossl_radiobtn,
 	 prefs_account_enum_set_data_from_radiobtn,
 	 prefs_account_enum_set_radiobtn},
-#endif /* USE_SSL */
+#endif /* USE_OPENSSL */
 
 	/* Advanced */
 	{"set_smtpport", "FALSE", &tmp_ac_prefs.set_smtpport, P_BOOL,
@@ -510,9 +510,9 @@ static void prefs_account_compose_create	(void);
 #if USE_GPGME
 static void prefs_account_privacy_create	(void);
 #endif /* USE_GPGME */
-#if USE_SSL
+#if USE_OPENSSL
 static void prefs_account_ssl_create		(void);
-#endif /* USE_SSL */
+#endif /* USE_OPENSSL */
 static void prefs_account_advanced_create	(void);
 
 static void prefs_account_select_folder_cb	(GtkWidget	*widget,
@@ -583,7 +583,7 @@ void prefs_account_save_config_all(GList *account_list)
 		if (fprintf(pfile->fp, "[Account: %d]\n",
 			    tmp_ac_prefs.account_id) <= 0 ||
 		    prefs_write_param(param, pfile->fp) < 0) {
-			g_warning(_("failed to write configuration to file\n"));
+			g_warning("failed to write configuration to file\n");
 			prefs_write_close_revert(pfile);
 			return;
 		}
@@ -597,7 +597,7 @@ void prefs_account_save_config_all(GList *account_list)
 	}
 
 	if (prefs_write_close(pfile) < 0)
-		g_warning(_("failed to write configuration to file\n"));
+		g_warning("failed to write configuration to file\n");
 }
 
 void prefs_account_free(PrefsAccount *ac_prefs)
@@ -740,10 +740,10 @@ static void prefs_account_create(void)
 	prefs_account_privacy_create();
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Privacy"), page++);
 #endif /* USE_GPGME */
-#if USE_SSL
+#if USE_OPENSSL
 	prefs_account_ssl_create();
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("SSL"), page++);
-#endif /* USE_SSL */
+#endif /* USE_OPENSSL */
 	prefs_account_advanced_create();
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Advanced"), page++);
 
@@ -1625,7 +1625,7 @@ static void prefs_account_privacy_create(void)
 }
 #endif /* USE_GPGME */
 
-#if USE_SSL
+#if USE_OPENSSL
 
 #define CREATE_RADIO_BUTTON(box, btn, btn_p, label, data)		\
 {									\
@@ -1774,7 +1774,7 @@ static void prefs_account_ssl_create(void)
 
 #undef CREATE_RADIO_BUTTONS
 #undef CREATE_RADIO_BUTTON
-#endif /* USE_SSL */
+#endif /* USE_OPENSSL */
 
 static void crosspost_color_toggled(void)
 {
@@ -2139,7 +2139,7 @@ static void prefs_account_edit_custom_header(void)
 	prefs_custom_header_open(&tmp_ac_prefs);
 }
 
-#if USE_GPGME || USE_SSL
+#if USE_GPGME || USE_OPENSSL
 static void prefs_account_enum_set_data_from_radiobtn(PrefParam *pparam)
 {
 	GtkRadioButton *radiobtn;
@@ -2178,7 +2178,7 @@ static void prefs_account_enum_set_radiobtn(PrefParam *pparam)
 	}
 }
 
-#endif /* USE_GPGME || USE_SSL */
+#endif /* USE_GPGME || USE_OPENSSL */
 
 #if USE_GPGME
 static void prefs_account_gnupg_inline_warning(GtkWidget *widget)
@@ -2352,7 +2352,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 				 FALSE);
 		}
 
-#if USE_SSL
+#if USE_OPENSSL
 		gtk_widget_hide(ssl.pop_frame);
 		gtk_widget_hide(ssl.imap_frame);
 		gtk_widget_show(ssl.nntp_frame);
@@ -2421,7 +2421,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 				 TRUE);
 		}
 
-#if USE_SSL
+#if USE_OPENSSL
 		gtk_widget_hide(ssl.pop_frame);
 		gtk_widget_hide(ssl.imap_frame);
 		gtk_widget_hide(ssl.nntp_frame);
@@ -2492,7 +2492,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 				 FALSE);
 		}
 
-#if USE_SSL
+#if USE_OPENSSL
 		gtk_widget_hide(ssl.pop_frame);
 		gtk_widget_show(ssl.imap_frame);
 		gtk_widget_hide(ssl.nntp_frame);
@@ -2562,7 +2562,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 				 TRUE);
 		}
 
-#if USE_SSL
+#if USE_OPENSSL
 		gtk_widget_show(ssl.pop_frame);
 		gtk_widget_hide(ssl.imap_frame);
 		gtk_widget_hide(ssl.nntp_frame);

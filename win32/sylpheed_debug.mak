@@ -25,10 +25,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-MTL=midl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 
 OUTDIR=.\Release
@@ -162,6 +158,7 @@ CLEAN :
 	-@erase "$(INTDIR)\ssl.obj"
 	-@erase "$(INTDIR)\ssl_certificate.obj"
 	-@erase "$(INTDIR)\ssl_manager.obj"
+	-@erase "$(INTDIR)\sslcertwindow.obj"
 	-@erase "$(INTDIR)\statusbar.obj"
 	-@erase "$(INTDIR)\stock_pixmap.obj"
 	-@erase "$(INTDIR)\string_match.obj"
@@ -169,6 +166,7 @@ CLEAN :
 	-@erase "$(INTDIR)\summary_search.obj"
 	-@erase "$(INTDIR)\summaryview.obj"
 	-@erase "$(INTDIR)\syldap.obj"
+	-@erase "$(INTDIR)\sylpheed.obj"
 	-@erase "$(INTDIR)\sylpheed.res"
 	-@erase "$(INTDIR)\template.obj"
 	-@erase "$(INTDIR)\textview.obj"
@@ -188,15 +186,49 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /ML /GX /O2 /I "..\src" /I "..\src\common" /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /Fp"$(INTDIR)\sylpheed_debug.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+MTL=midl.exe
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
+RSC=rc.exe
 RSC_PROJ=/l 0x411 /fo"$(INTDIR)\sylpheed.res" /d "NDEBUG" 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\sylpheed_debug.bsc" 
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /incremental:no /pdb:"$(OUTDIR)\sylpheed.pdb" /machine:I386 /out:"$(OUTDIR)\sylpheed.exe" 
+LINK32_FLAGS=wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"$(OUTDIR)\sylpheed.pdb" /machine:I386 /out:"$(OUTDIR)\sylpheed.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\about.obj" \
 	"$(INTDIR)\account.obj" \
@@ -239,6 +271,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\folderview.obj" \
 	"$(INTDIR)\grouplistdialog.obj" \
 	"$(INTDIR)\gtkaspell.obj" \
+	"$(INTDIR)\gtksctree.obj" \
 	"$(INTDIR)\gtkshruler.obj" \
 	"$(INTDIR)\gtkstext.obj" \
 	"$(INTDIR)\gtkutils.obj" \
@@ -267,6 +300,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\matcher_parser_parse.obj" \
 	"$(INTDIR)\mbox.obj" \
 	"$(INTDIR)\mbox_folder.obj" \
+	"$(INTDIR)\md5.obj" \
 	"$(INTDIR)\menu.obj" \
 	"$(INTDIR)\message_search.obj" \
 	"$(INTDIR)\messageview.obj" \
@@ -317,6 +351,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\ssl.obj" \
 	"$(INTDIR)\ssl_certificate.obj" \
 	"$(INTDIR)\ssl_manager.obj" \
+	"$(INTDIR)\sslcertwindow.obj" \
 	"$(INTDIR)\statusbar.obj" \
 	"$(INTDIR)\stock_pixmap.obj" \
 	"$(INTDIR)\string_match.obj" \
@@ -324,6 +359,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\summary_search.obj" \
 	"$(INTDIR)\summaryview.obj" \
 	"$(INTDIR)\syldap.obj" \
+	"$(INTDIR)\sylpheed.obj" \
 	"$(INTDIR)\template.obj" \
 	"$(INTDIR)\textview.obj" \
 	"$(INTDIR)\toolbar.obj" \
@@ -348,9 +384,7 @@ LINK32_OBJS= \
 	"..\..\regex\regex_d.lib" \
 	"..\..\fnmatch\fnmatch_d.lib" \
 	"..\..\..\lib\libeay32.lib" \
-	"..\..\..\lib\ssleay32.lib" \
-	"$(INTDIR)\gtksctree.obj" \
-	"$(INTDIR)\md5.obj"
+	"..\..\..\lib\ssleay32.lib"
 
 "$(OUTDIR)\sylpheed.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -611,6 +645,8 @@ CLEAN :
 	-@erase "$(INTDIR)\ssl_certificate.sbr"
 	-@erase "$(INTDIR)\ssl_manager.obj"
 	-@erase "$(INTDIR)\ssl_manager.sbr"
+	-@erase "$(INTDIR)\sslcertwindow.obj"
+	-@erase "$(INTDIR)\sslcertwindow.sbr"
 	-@erase "$(INTDIR)\statusbar.obj"
 	-@erase "$(INTDIR)\statusbar.sbr"
 	-@erase "$(INTDIR)\stock_pixmap.obj"
@@ -625,7 +661,9 @@ CLEAN :
 	-@erase "$(INTDIR)\summaryview.sbr"
 	-@erase "$(INTDIR)\syldap.obj"
 	-@erase "$(INTDIR)\syldap.sbr"
+	-@erase "$(INTDIR)\sylpheed.obj"
 	-@erase "$(INTDIR)\sylpheed.res"
+	-@erase "$(INTDIR)\sylpheed.sbr"
 	-@erase "$(INTDIR)\template.obj"
 	-@erase "$(INTDIR)\template.sbr"
 	-@erase "$(INTDIR)\textview.obj"
@@ -660,8 +698,42 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MD /Gm /GX /ZI /Od /I "..\src" /I "..\src\common" /I "..\src\gtk" /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /I "\dev\proj\aspell\interfaces\cc" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\sylpheed_debug.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+CPP=cl.exe
+CPP_PROJ=/nologo /MD /W3 /Gm /GX /ZI /Od /I "..\src" /I "..\src\common" /I "..\src\gtk" /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /I "\dev\proj\aspell\interfaces\cc" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\sylpheed_debug.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+MTL=midl.exe
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
+RSC=rc.exe
 RSC_PROJ=/l 0x411 /fo"$(INTDIR)\sylpheed.res" /d "_DEBUG" 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\sylpheed_debug.bsc" 
@@ -707,6 +779,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\folderview.sbr" \
 	"$(INTDIR)\grouplistdialog.sbr" \
 	"$(INTDIR)\gtkaspell.sbr" \
+	"$(INTDIR)\gtksctree.sbr" \
 	"$(INTDIR)\gtkshruler.sbr" \
 	"$(INTDIR)\gtkstext.sbr" \
 	"$(INTDIR)\gtkutils.sbr" \
@@ -735,6 +808,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\matcher_parser_parse.sbr" \
 	"$(INTDIR)\mbox.sbr" \
 	"$(INTDIR)\mbox_folder.sbr" \
+	"$(INTDIR)\md5.sbr" \
 	"$(INTDIR)\menu.sbr" \
 	"$(INTDIR)\message_search.sbr" \
 	"$(INTDIR)\messageview.sbr" \
@@ -785,6 +859,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\ssl.sbr" \
 	"$(INTDIR)\ssl_certificate.sbr" \
 	"$(INTDIR)\ssl_manager.sbr" \
+	"$(INTDIR)\sslcertwindow.sbr" \
 	"$(INTDIR)\statusbar.sbr" \
 	"$(INTDIR)\stock_pixmap.sbr" \
 	"$(INTDIR)\string_match.sbr" \
@@ -792,6 +867,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\summary_search.sbr" \
 	"$(INTDIR)\summaryview.sbr" \
 	"$(INTDIR)\syldap.sbr" \
+	"$(INTDIR)\sylpheed.sbr" \
 	"$(INTDIR)\template.sbr" \
 	"$(INTDIR)\textview.sbr" \
 	"$(INTDIR)\toolbar.sbr" \
@@ -803,9 +879,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\w32_aspell_init.sbr" \
 	"$(INTDIR)\w32_mailcap.sbr" \
 	"$(INTDIR)\xml.sbr" \
-	"$(INTDIR)\xmlprops.sbr" \
-	"$(INTDIR)\gtksctree.sbr" \
-	"$(INTDIR)\md5.sbr"
+	"$(INTDIR)\xmlprops.sbr"
 
 "$(OUTDIR)\sylpheed_debug.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -813,7 +887,7 @@ BSC32_SBRS= \
 <<
 
 LINK32=link.exe
-LINK32_FLAGS=wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\sylpheed_d.pdb" /debug /machine:I386 /nodefaultlib:"libc.lib" /nodefaultlib:"libcd.lib" /nodefaultlib:"libcmt.lib" /nodefaultlib:"libcmtd.lib" /out:"$(OUTDIR)\sylpheed_d.exe" /pdbtype:sept 
+LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib wsock32.lib /nologo /subsystem:console /incremental:yes /pdb:"$(OUTDIR)\sylpheed_d.pdb" /debug /machine:I386 /out:"$(OUTDIR)\sylpheed_d.exe" /pdbtype:sept 
 LINK32_OBJS= \
 	"$(INTDIR)\about.obj" \
 	"$(INTDIR)\account.obj" \
@@ -856,6 +930,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\folderview.obj" \
 	"$(INTDIR)\grouplistdialog.obj" \
 	"$(INTDIR)\gtkaspell.obj" \
+	"$(INTDIR)\gtksctree.obj" \
 	"$(INTDIR)\gtkshruler.obj" \
 	"$(INTDIR)\gtkstext.obj" \
 	"$(INTDIR)\gtkutils.obj" \
@@ -884,6 +959,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\matcher_parser_parse.obj" \
 	"$(INTDIR)\mbox.obj" \
 	"$(INTDIR)\mbox_folder.obj" \
+	"$(INTDIR)\md5.obj" \
 	"$(INTDIR)\menu.obj" \
 	"$(INTDIR)\message_search.obj" \
 	"$(INTDIR)\messageview.obj" \
@@ -934,6 +1010,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\ssl.obj" \
 	"$(INTDIR)\ssl_certificate.obj" \
 	"$(INTDIR)\ssl_manager.obj" \
+	"$(INTDIR)\sslcertwindow.obj" \
 	"$(INTDIR)\statusbar.obj" \
 	"$(INTDIR)\stock_pixmap.obj" \
 	"$(INTDIR)\string_match.obj" \
@@ -941,6 +1018,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\summary_search.obj" \
 	"$(INTDIR)\summaryview.obj" \
 	"$(INTDIR)\syldap.obj" \
+	"$(INTDIR)\sylpheed.obj" \
 	"$(INTDIR)\template.obj" \
 	"$(INTDIR)\textview.obj" \
 	"$(INTDIR)\toolbar.obj" \
@@ -965,9 +1043,7 @@ LINK32_OBJS= \
 	"..\..\regex\regex_d.lib" \
 	"..\..\fnmatch\fnmatch_d.lib" \
 	"..\..\..\lib\libeay32.lib" \
-	"..\..\..\lib\ssleay32.lib" \
-	"$(INTDIR)\gtksctree.obj" \
-	"$(INTDIR)\md5.obj"
+	"..\..\..\lib\ssleay32.lib"
 
 "$(OUTDIR)\sylpheed_d.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -975,36 +1051,6 @@ LINK32_OBJS= \
 <<
 
 !ENDIF 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -2457,7 +2503,7 @@ SOURCE=..\src\news.c
 
 !ENDIF 
 
-SOURCE=..\src\nntp.c
+SOURCE=..\src\common\nntp.c
 
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 
@@ -3015,7 +3061,7 @@ SOURCE=..\src\send.c
 
 !ENDIF 
 
-SOURCE=..\src\session.c
+SOURCE=..\src\common\session.c
 
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 
@@ -3087,7 +3133,7 @@ SOURCE="..\src\simple-gettext.c"
 
 !ENDIF 
 
-SOURCE=..\src\smtp.c
+SOURCE=..\src\common\smtp.c
 
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 
@@ -3159,7 +3205,7 @@ SOURCE=..\src\common\ssl.c
 
 !ENDIF 
 
-SOURCE=..\src\ssl_certificate.c
+SOURCE=..\src\common\ssl_certificate.c
 
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 
@@ -3190,6 +3236,24 @@ SOURCE=..\src\ssl_manager.c
 
 
 "$(INTDIR)\ssl_manager.obj"	"$(INTDIR)\ssl_manager.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=..\src\gtk\sslcertwindow.c
+
+!IF  "$(CFG)" == "sylpheed - Win32 Release"
+
+
+"$(INTDIR)\sslcertwindow.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
+
+
+"$(INTDIR)\sslcertwindow.obj"	"$(INTDIR)\sslcertwindow.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -3321,13 +3385,31 @@ SOURCE=..\src\syldap.c
 
 !ENDIF 
 
+SOURCE=..\src\common\sylpheed.c
+
+!IF  "$(CFG)" == "sylpheed - Win32 Release"
+
+
+"$(INTDIR)\sylpheed.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
+
+
+"$(INTDIR)\sylpheed.obj"	"$(INTDIR)\sylpheed.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
 SOURCE=.\sylpheed.rc
 
 "$(INTDIR)\sylpheed.res" : $(SOURCE) "$(INTDIR)"
 	$(RSC) $(RSC_PROJ) $(SOURCE)
 
 
-SOURCE=..\src\template.c
+SOURCE=..\src\common\template.c
 
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 

@@ -23,7 +23,6 @@
 #include <ctype.h>
 
 #include "enriched.h"
-#include "codeconv.h"
 #include "utils.h"
 
 #define ERTFBUFSIZE	8192

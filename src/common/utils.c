@@ -2144,7 +2144,7 @@ gint copy_file(const gchar *src, const gchar *dest)
 		while (len > 0) {
 			n_write = write(dest_fd, bufp, len);
 			if (n_write <= 0) {
-				g_warning(_("writing to %s failed.\n"), dest);
+				g_warning("writing to %s failed.\n", dest);
 				close(dest_fd);
 				close(src_fd);
 				unlink(dest);
@@ -2164,7 +2164,7 @@ gint copy_file(const gchar *src, const gchar *dest)
 	close(dest_fd);
 
 	if (n_read < 0 || get_file_size(src) != get_file_size(dest)) {
-		g_warning(_("File copy from %s to %s failed.\n"), src, dest);
+		g_warning("File copy from %s to %s failed.\n", src, dest);
 		unlink(dest);
 		if (dest_bak) {
 			if (Xrename(dest_bak, dest) < 0)
@@ -2205,14 +2205,14 @@ gint append_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 
 	if (change_file_mode_rw(dest_fp, dest) < 0) {
 		FILE_OP_ERROR(dest, "chmod");
-		g_warning(_("can't change file mode\n"));
+		g_warning("can't change file mode\n");
 	}
 
 	while ((n_read = fread(buf, sizeof(gchar), sizeof(buf), src_fp)) > 0) {
 		if (n_read < sizeof(buf) && ferror(src_fp))
 			break;
 		if (fwrite(buf, n_read, 1, dest_fp) < 1) {
-			g_warning(_("writing to %s failed.\n"), dest);
+			g_warning("writing to %s failed.\n", dest);
 			fclose(dest_fp);
 			fclose(src_fp);
 			unlink(dest);
@@ -2273,14 +2273,14 @@ gint copy_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 
 	if (change_file_mode_rw(dest_fp, dest) < 0) {
 		FILE_OP_ERROR(dest, "chmod");
-		g_warning(_("can't change file mode\n"));
+		g_warning("can't change file mode\n");
 	}
 
 	while ((n_read = fread(buf, sizeof(gchar), sizeof(buf), src_fp)) > 0) {
 		if (n_read < sizeof(buf) && ferror(src_fp))
 			break;
 		if (fwrite(buf, n_read, 1, dest_fp) < 1) {
-			g_warning(_("writing to %s failed.\n"), dest);
+			g_warning("writing to %s failed.\n", dest);
 			fclose(dest_fp);
 			fclose(src_fp);
 			unlink(dest);
@@ -2372,7 +2372,7 @@ gint copy_file_part(FILE *fp, off_t offset, size_t length, const gchar *dest)
 		if (n_read < to_read && ferror(fp))
 			break;
 		if (fwrite(buf, n_read, 1, dest_fp) < 1) {
-			g_warning(_("writing to %s failed.\n"), dest);
+			g_warning("writing to %s failed.\n", dest);
 			fclose(dest_fp);
 			unlink(dest);
 			return -1;
@@ -2942,7 +2942,7 @@ gint open_uri(const gchar *uri, const gchar *cmdline)
 #endif
 	else {
 		if (cmdline)
-			g_warning(_("Open URI command line is invalid: `%s'"),
+			g_warning("Open URI command line is invalid: `%s'",
 				  cmdline);
 #ifdef WIN32
 		g_snprintf(buf, sizeof(buf), default_cmdline, enc_encoded_uri);
@@ -3218,6 +3218,208 @@ FILE *get_tmpfile_in_dir(const gchar *dir, gchar **filename)
 	return fdopen(fd, "w+");
 }
 
+/* allow Mutt-like patterns in quick search */
+gchar *expand_search_string(const gchar *search_string)
+{
+	int i, len, new_len = 0;
+	gchar term_char, save_char;
+	gchar *cmd_start, *cmd_end;
+	gchar *new_str = NULL;
+	gchar *copy_str;
+	gboolean casesens, dontmatch;
+	/* list of allowed pattern abbreviations */
+	struct {
+		gchar		*abbreviated;	/* abbreviation */
+		gchar		*command;	/* actual matcher command */ 
+		gint		numparams;	/* number of params for cmd */
+		gboolean	qualifier;	/* do we append regexpcase */
+		gboolean	quotes;		/* do we need quotes */
+	}
+	cmds[] = {
+		{ "a",	"all",				0,	FALSE,	FALSE },
+		{ "ag",	"age_greater",			1,	FALSE,	FALSE },
+		{ "al",	"age_lower",			1,	FALSE,	FALSE },
+		{ "b",	"body_part",			1,	TRUE,	TRUE  },
+		{ "B",	"message",			1,	TRUE,	TRUE  },
+		{ "c",	"cc",				1,	TRUE,	TRUE  },
+		{ "C",	"to_or_cc",			1,	TRUE,	TRUE  },
+		{ "D",	"deleted",			0,	FALSE,	FALSE },
+		{ "e",	"header \"Sender\"",		1,	TRUE,	TRUE  },
+		{ "E",	"execute",			1,	FALSE,	TRUE  },
+		{ "f",	"from",				1,	TRUE,	TRUE  },
+		{ "F",	"forwarded",			0,	FALSE,	FALSE },
+		{ "h",	"headers_part",			1,	TRUE,	TRUE  },
+		{ "i",	"header \"Message-Id\"",	1,	TRUE,	TRUE  },
+		{ "I",	"inreplyto",			1,	TRUE,	TRUE  },
+		{ "n",	"newsgroups",			1,	TRUE,	TRUE  },
+		{ "N",	"new",				0,	FALSE,	FALSE },
+		{ "O",	"~new",				0,	FALSE,	FALSE },
+		{ "r",	"replied",			0,	FALSE,	FALSE },
+		{ "R",	"~unread",			0,	FALSE,	FALSE },
+		{ "s",	"subject",			1,	TRUE,	TRUE  },
+		{ "se",	"score_equal",			1,	FALSE,	FALSE },
+		{ "sg",	"score_greater",		1,	FALSE,	FALSE },
+		{ "sl",	"score_lower",			1,	FALSE,	FALSE },
+		{ "Se",	"size_equal",			1,	FALSE,	FALSE },
+		{ "Sg",	"size_greater",			1,	FALSE,	FALSE },
+		{ "Ss",	"size_smaller",			1,	FALSE,	FALSE },
+		{ "t",	"to",				1,	TRUE,	TRUE  },
+		{ "T",	"marked",			0,	FALSE,	FALSE },
+		{ "U",	"unread",			0,	FALSE,	FALSE },
+		{ "x",	"header \"References\"",	1,	TRUE,	TRUE  },
+		{ "y",	"header \"X-Label\"",		1,	TRUE,	TRUE  },
+		{ "&",	"&",				0,	FALSE,	FALSE },
+		{ "|",	"|",				0,	FALSE,	FALSE },
+		{ NULL,	NULL,				0,	FALSE,	FALSE }
+	};
+
+	if (search_string == NULL)
+		return NULL;
+
+	copy_str = g_strdup(search_string);
+
+	/* if it's a full command don't process it so users
+	   can still do something like from regexpcase "foo" */
+	for (i = 0; cmds[i].command; i++) {
+		const gchar *tmp_search_string = search_string;
+		cmd_start = cmds[i].command;
+		/* allow logical NOT */
+		if (*tmp_search_string == '~')
+			tmp_search_string++;
+		if (!strncmp(tmp_search_string, cmd_start, strlen(cmd_start)))
+			break;
+	}
+	if (cmds[i].command)
+		return copy_str;
+
+	cmd_start = cmd_end = copy_str;
+	while (cmd_end && *cmd_end) {
+		/* skip all white spaces */
+		while (*cmd_end && isspace(*cmd_end))
+			cmd_end++;
+
+		/* extract a command */
+		while (*cmd_end && !isspace(*cmd_end))
+			cmd_end++;
+
+		/* save character */
+		save_char = *cmd_end;
+		*cmd_end = '\0';
+
+		dontmatch = FALSE;
+		casesens = FALSE;
+
+		/* ~ and ! mean logical NOT */
+		if (*cmd_start == '~' || *cmd_start == '!')
+		{
+			dontmatch = TRUE;
+			cmd_start++;
+		}
+		/* % means case sensitive match */
+		if (*cmd_start == '%')
+		{
+			casesens = TRUE;
+			cmd_start++;
+		}
+
+		/* find matching abbreviation */
+		for (i = 0; cmds[i].command; i++) {
+			if (!strcmp(cmd_start, cmds[i].abbreviated)) {
+				/* restore character */
+				*cmd_end = save_char;
+				len = strlen(cmds[i].command) + 1;
+				if (dontmatch)
+					len++;
+				if (casesens)
+					len++;
+
+				/* copy command */
+				if (new_str) {
+					new_len += 1;
+					new_str = g_realloc(new_str, new_len);
+					strcat(new_str, " ");
+				}
+				new_len += (len + 1);
+				new_str = g_realloc(new_str, new_len);
+				if (new_len == len + 1)
+					*new_str = '\0';
+				if (dontmatch)
+					strcat(new_str, "~");
+				strcat(new_str, cmds[i].command);
+				strcat(new_str, " ");
+
+				/* stop if no params required */
+				if (cmds[i].numparams == 0)
+					break;
+
+				/* extract a parameter, allow quotes */
+				cmd_end++;
+				cmd_start = cmd_end;
+				if (*cmd_start == '"') {
+					term_char = '"';
+					cmd_end++;
+				}
+				else
+					term_char = ' ';
+
+				/* extract actual parameter */
+				while ((*cmd_end) && (*cmd_end != term_char))
+					cmd_end++;
+
+				if (*cmd_end && (*cmd_end != term_char))
+					break;
+
+				if (*cmd_end == '"')
+					cmd_end++;
+
+				save_char = *cmd_end;
+				*cmd_end = '\0';
+
+				new_len += strlen(cmd_start);
+
+				/* do we need to add regexpcase ? */
+				if (cmds[i].qualifier)
+					new_len += 10; /* "regexpcase " */
+
+				if (term_char != '"')
+					new_len += 2;
+				new_str = g_realloc(new_str, new_len);
+
+				if (cmds[i].qualifier) {
+					if (casesens)
+						strcat(new_str, "regexp ");
+					else
+						strcat(new_str, "regexpcase ");
+				}
+
+				/* do we need to add quotes ? */
+				if (cmds[i].quotes && term_char != '"')
+					strcat(new_str, "\"");
+
+				/* copy actual parameter */
+				strcat(new_str, cmd_start);
+
+				/* do we need to add quotes ? */
+				if (cmds[i].quotes && term_char != '"')
+					strcat(new_str, "\"");
+
+				/* restore original character */
+				*cmd_end = save_char;
+
+				break;
+			}
+		}
+
+		if (*cmd_end) {
+			cmd_end++;
+			cmd_start = cmd_end;
+		}
+	}
+
+	g_free(copy_str);
+	return new_str;
+}
+
 #ifdef WIN32
 /* -------------------------------------------------------------------------
  * w32_parse_path - substitute placesholders with directory names
@@ -3456,3 +3658,4 @@ wchar_t  *gtkwcs2winwcs(wchar_t *gtkwcs) {
 /*----------------------------------------------------------------------*/
 
 #endif
+

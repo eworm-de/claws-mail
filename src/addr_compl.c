@@ -40,11 +40,9 @@
 #  include <wctype.h>
 #endif
 
-#include "xml.h"
+#include "addressbook.h"
 #include "addr_compl.h"
 #include "utils.h"
-#include "addressbook.h"
-#include "main.h"
 
 /* How it works:
  *

@@ -51,6 +51,7 @@
 #include "procheader.h"
 #include "statusbar.h"
 #include "hooks.h"
+#include "log.h"
 
 /* Dependecies to be removed ?! */
 #include "prefs_common.h"
@@ -1627,20 +1628,20 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 		new_item->folder = dest->folder;
 
 	/* move messages */
+	statusbar_verbosity_set(TRUE);
 	for (cur = mlist ; cur != NULL ; cur = cur->next) {
 		MsgInfo * msginfo;
 		cnt++;
 		if (cnt%500)
-			statusbar_print_all(_("Moving %s to %s (%d%%)..."), src->name, 
+			log_message(_("Moving %s to %s (%d%%)...\n"), src->name, 
 					new_item->path,
 					100*cnt/g_slist_length(mlist));
 		msginfo = (MsgInfo *) cur->data;
 		folder_item_move_msg(new_item, msginfo);
-		if (cnt%500)
-			statusbar_pop_all();
 
 		procmsg_msginfo_free(msginfo);
 	}
+	statusbar_verbosity_set(FALSE);
 	
 	/*copy prefs*/
 	prefs_folder_item_copy_prefs(src, new_item);

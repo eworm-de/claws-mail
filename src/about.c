@@ -41,11 +41,11 @@
 
 #include "intl.h"
 #include "about.h"
-#include "gtkutils.h"
 #include "stock_pixmap.h"
 #include "prefs_common.h"
 #include "utils.h"
 #include "version.h"
+#include "gtkutils.h"
 
 static GtkWidget *window;
 
@@ -145,7 +145,7 @@ static void about_create(void)
 #if USE_GPGME
 		   " GnuPG"
 #endif
-#if USE_SSL
+#if USE_OPENSSL
 		   " OpenSSL"
 #endif
 #if USE_LDAP
