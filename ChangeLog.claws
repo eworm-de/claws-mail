@@ -1,3 +1,14 @@
+2003-08-19 [paul]	0.9.4claws31
+
+	* src/common/defs.h
+		add the missing '/' to SYLDOC_MANUAL_HTML_INDEX and
+		SYLDOC_FAQ_HTML_INDEX.
+	* src/manual.c
+		use LC_MESSAGES instead of LC_ALL to find the current
+		language
+
+	  fixes Bug #281 'in src/manual.c URL for manuals and FAQ wrong'.
+
 2003-08-19 [paul]	0.9.4claws30
 
 	* po/bg.po

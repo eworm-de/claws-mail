@@ -44,7 +44,7 @@ static gchar *get_language()
 	gchar *language;
 	gchar *c;
 
-	language = g_strdup(setlocale(LC_ALL, NULL));
+	language = g_strdup(setlocale(LC_MESSAGES, NULL));
 	if((c = strchr(language, ',')) != NULL)
 		*c = '\0';
 	if((c = strchr(language, '_')) != NULL)
