@@ -128,6 +128,8 @@ static GdkPixmap *keyxpm;
 static GdkBitmap *keyxpmmask;
 static GdkPixmap *clipkeyxpm;
 static GdkBitmap *clipkeyxpmmask;
+static GdkPixmap *gpgsignedxpm;
+static GdkBitmap *gpgsignedxpmmask;
 
 static void summary_free_msginfo_func	(GtkCTree		*ctree,
 					 GtkCTreeNode		*node,
@@ -741,6 +743,8 @@ void summary_init(SummaryView *summaryview)
 			 &clipkeyxpm, &clipkeyxpmmask);
 	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_KEY,
 			 &keyxpm, &keyxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_GPG_SIGNED,
+			 &gpgsignedxpm, &gpgsignedxpmmask);
 
 	if (!small_style) {
 		small_style = gtk_style_copy
@@ -2728,7 +2732,10 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_LOCKED], NULL);
 	}
 
-	if (MSG_IS_MIME(flags) && MSG_IS_ENCRYPTED(flags)) {
+	if (MSG_IS_SIGNED(flags)) {
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
+					  gpgsignedxpm, gpgsignedxpmmask);
+	} else if (MSG_IS_MIME(flags) && MSG_IS_ENCRYPTED(flags)) {
 		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
 					  clipkeyxpm, clipkeyxpmmask);
 	} else if (MSG_IS_ENCRYPTED(flags)) {
@@ -5322,6 +5329,7 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_IGNORETHREAD, &ignorethreadxpm, &ignorethreadxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_CLIP_KEY, &clipkeyxpm, &clipkeyxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_KEY, &keyxpm, &keyxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_GPG_SIGNED, &gpgsignedxpm, &gpgsignedxpmmask);
 
 	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_DIR_OPEN);
 	gtk_box_pack_start(GTK_BOX(summaryview->hbox), pixmap, FALSE, FALSE, 4);

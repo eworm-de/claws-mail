@@ -1,3 +1,12 @@
+2003-01-31 [paul]	0.8.9claws29
+
+	* src/pixmaps/gpg_signed.xpm	** NEW FILE **
+	  src/procheader.c
+	  src/stock_pixmap.[ch]
+	  src/summaryview.c
+	  	indicate GnuPG signed messages by displaying an icon
+		in the Attachment column.
+
 2003-01-31 [paul]	0.8.9claws28
 
 	* sync with 0.8.9cvs4
