@@ -2993,7 +2993,7 @@ static void set_display_item_cb(MainWindow *mainwin, guint action,
 static void sort_summary_cb(MainWindow *mainwin, guint action,
 			    GtkWidget *widget)
 {
-	summary_sort(mainwin->summaryview, (SummarySortType)action);
+	summary_sort(mainwin->summaryview, (FolderSortKey)action);
 }
 
 static void attract_by_subject_cb(MainWindow *mainwin, guint action,

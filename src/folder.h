@@ -73,6 +73,28 @@ typedef enum
 	F_TRASH
 } SpecialFolderItemType;
 
+typedef enum
+{
+	SORT_BY_NONE,
+	SORT_BY_NUMBER,
+	SORT_BY_SIZE,
+	SORT_BY_DATE,
+	SORT_BY_FROM,
+	SORT_BY_SUBJECT,
+	SORT_BY_SCORE,
+	SORT_BY_LABEL,
+	SORT_BY_MARK,
+	SORT_BY_UNREAD,
+	SORT_BY_MIME,
+	SORT_BY_LOCKED
+} FolderSortKey;
+
+typedef enum
+{
+	SORT_ASCENDING,
+	SORT_DESCENDING
+} FolderSortType;
+
 typedef void (*FolderUIFunc)		(Folder		*folder,
 					 FolderItem	*item,
 					 gpointer	 data);
@@ -202,6 +224,9 @@ struct _FolderItem
 
 	gint op_count;
 	guint opened    : 1; /* opened by summary view */
+
+	FolderSortKey sort_key;
+	FolderSortType sort_type;
 
 	FolderItem *parent;
 

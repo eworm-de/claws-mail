@@ -57,22 +57,6 @@ typedef enum
 
 typedef enum
 {
-	SORT_BY_NONE,
-	SORT_BY_NUMBER,
-	SORT_BY_SIZE,
-	SORT_BY_DATE,
-	SORT_BY_FROM,
-	SORT_BY_SUBJECT,
-	SORT_BY_SCORE,
-	SORT_BY_LOCKED,
-	SORT_BY_LABEL,
-	SORT_BY_MARK,
-	SORT_BY_UNREAD,
-	SORT_BY_MIME
-} SummarySortType;
-
-typedef enum
-{
 	SUMMARY_NONE,
 	SUMMARY_SELECTED_NONE,
 	SUMMARY_SELECTED_SINGLE,
@@ -158,11 +142,6 @@ private:
 	GSList *mlist;
 	/* table for updating folder tree */
 	GHashTable *folder_table;
-
-	/* current sorting state */
-	SummarySortType sort_mode;
-	GtkSortType sort_type;
-
 };
 
 SummaryView	*summary_create(void);
@@ -205,7 +184,7 @@ void summary_filter_open	  (SummaryView		*summaryview,
 				   PrefsFilterType	 type);
 
 void summary_sort		  (SummaryView		*summaryview,
-				   SummarySortType	 type);
+				   FolderSortKey	 sort_key);
 
 void summary_delete		  (SummaryView		*summaryview);
 void summary_delete_duplicated	  (SummaryView		*summaryview);
