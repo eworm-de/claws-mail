@@ -1,3 +1,12 @@
+2004-12-17 [martin]	0.9.13cvs17.2
+
+	* src/action.c
+		convert actions input to locale
+	* src/inc.c
+		convert notification command to locale
+	* src/plugins/pgpmime/select-keys.c
+		convert attributes to utf8
+
 2004-12-14 [colin]	0.9.13cvs17.1
 
 	* ChangeLog

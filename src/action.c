@@ -770,10 +770,11 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 			     Children *children)
 {
 	gint chld_in[2], chld_out[2], chld_err[2], chld_status[2];
-	gchar *cmdline[4];
+	gchar *cmdline[4], *ret_str;
 	pid_t pid, gch_pid;
 	ChildInfo *child_info;
 	gint sync;
+	gssize by_written = 0, by_read = 0;
 
 	sync = !(children->action_type & ACTION_ASYNC);
 
@@ -841,7 +842,14 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 
 			cmdline[0] = "sh";
 			cmdline[1] = "-c";
-			cmdline[2] = cmd;
+			ret_str = g_locale_from_utf8(cmd, strlen(cmd),
+						     &by_read, &by_written,
+						     NULL);
+			if (ret_str && by_written) {
+				cmdline[2] = ret_str;
+				g_free(ret_str);
+			} else
+				cmdline[2] = cmd;
 			cmdline[3] = NULL;
 			execvp("/bin/sh", cmdline);
 
@@ -918,7 +926,13 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 		return child_info;
 
 	if ((children->action_type & ACTION_PIPE_IN) && msg_str) {
-		write(chld_in[1], msg_str, strlen(msg_str));
+		ret_str = g_locale_from_utf8(msg_str, strlen(msg_str),
+					     &by_read, &by_written, NULL);
+		if (ret_str && by_written) {
+			write(chld_in[1], ret_str, strlen(ret_str));
+			g_free(ret_str);
+		} else
+			write(chld_in[1], msg_str, strlen(msg_str));
 		if (!(children->action_type &
 		      (ACTION_USER_IN | ACTION_USER_HIDDEN_IN)))
 			close(chld_in[1]);
@@ -1270,8 +1284,9 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 {
 	Children *children = (Children *)data;
 	ChildInfo *child_info = (ChildInfo *)children->list->data;
-	gchar *input;
+	gchar *input, *ret_str;
 	gint c, count, len;
+	gssize by_read = 0, by_written = 0;
 
 	debug_print("Sending input to grand child.\n");
 	if (!(cond && GDK_INPUT_WRITE))
@@ -1282,6 +1297,13 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 
 	input = gtk_editable_get_chars(GTK_EDITABLE(children->input_entry),
 				       0, -1);
+	ret_str = g_locale_from_utf8(input, strlen(input), &by_read,
+				     &by_written, NULL);
+	if (ret_str && by_written) {
+		g_free(input);
+		input = ret_str;
+	}
+
 	len = strlen(input);
 	count = 0;
 

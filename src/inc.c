@@ -1328,7 +1328,8 @@ static gpointer autocheck_data = NULL;
 static void inc_notify_cmd(gint new_msgs, gboolean notify)
 {
 
-	gchar *buf, *numpos;
+	gchar *buf, *numpos, *ret_str;
+	gssize by_read = 0, by_written = 0;
 
 	if (!(new_msgs && notify && prefs_common.newmail_notify_cmd &&
 	    *prefs_common.newmail_notify_cmd))
@@ -1343,6 +1344,12 @@ static void inc_notify_cmd(gint new_msgs, gboolean notify)
 		buf = buf2;
 	}
 
+	ret_str = g_locale_from_utf8(buf, strlen(buf), &by_read, &by_written,
+				     NULL);
+	if (ret_str && by_written) {
+		g_free(buf);
+		buf = ret_str;
+	}
 	debug_print("executing new mail notification command: %s\n", buf);
 	execute_command_line(buf, TRUE);
 
