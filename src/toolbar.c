@@ -264,17 +264,21 @@ gboolean toolbar_is_duplicate(gint action, ToolbarType source)
 	return FALSE;
 }
 
+/* depending on toolbar type this function 
+   returns a list of available toolbar events being 
+   displayed by prefs_toolbar
+*/
 GList *toolbar_get_action_items(ToolbarType source)
 {
 	GList *items = NULL;
 	gint i = 0;
 	
 	if (source == TOOLBAR_MAIN) {
-		gint main_items[13] = { A_RECEIVE_ALL,   A_RECEIVE_CUR,   A_SEND_QUEUED,
+		gint main_items[14] = { A_RECEIVE_ALL,   A_RECEIVE_CUR,   A_SEND_QUEUED,
 					A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER,  
 					A_REPLY_ALL,     A_REPLY_ML,      A_FORWARD,       
 					A_DELETE,        A_EXECUTE,       A_GOTO_NEXT,      
-					A_SYL_ACTIONS };
+					A_ADDRBOOK, 	 A_SYL_ACTIONS };
 
 		for (i = 0; i < sizeof(main_items)/sizeof(main_items[0]); i++) 
 			items = g_list_append(items, gettext(toolbar_text[main_items[i]].descr));
@@ -289,9 +293,10 @@ GList *toolbar_get_action_items(ToolbarType source)
 			items = g_list_append(items, gettext(toolbar_text[comp_items[i]].descr));
 	}
 	else if (source == TOOLBAR_MSGVIEW) {
-		gint msgv_items[8] = { A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER,
-				       A_REPLY_ALL,     A_REPLY_ML,      A_FORWARD,
-				       A_DELETE,        A_GOTO_NEXT };	
+		gint msgv_items[10] = { A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER,
+				        A_REPLY_ALL,     A_REPLY_ML,      A_FORWARD,
+				        A_DELETE,        A_GOTO_NEXT,	  A_ADDRBOOK,
+					A_SYL_ACTIONS };	
 
 		for (i = 0; i < sizeof(msgv_items)/sizeof(msgv_items[0]); i++) 
 			items = g_list_append(items, gettext(toolbar_text[msgv_items[i]].descr));
@@ -1261,11 +1266,15 @@ static void toolbar_addrbook_cb(GtkWidget *widget, gpointer data)
 	g_return_if_fail(toolbar_item != NULL);
 
 	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+	case TOOLBAR_MSGVIEW:
+		compose = NULL;
+		break;
 	case TOOLBAR_COMPOSE:
 		compose = (Compose *)toolbar_item->parent;
 		break;
 	default:
-		compose = NULL;
+		return;
 	}
 	addressbook_open(compose);
 }
@@ -1388,25 +1397,29 @@ static void toolbar_actions_execute_cb(GtkWidget *widget, gpointer data)
 	GSList *action_list;
 	MainWindow *mainwin;
 	Compose *compose;
+	MessageView *msgview;
+	gpointer parent = toolbar_item->parent;
 
 	g_return_if_fail(toolbar_item != NULL);
 
 	switch (toolbar_item->type) {
 	case TOOLBAR_MAIN:
-		mainwin = (MainWindow*)toolbar_item->parent;
+		mainwin = (MainWindow*)parent;
 		action_list = mainwin->toolbar->action_list;
 		break;
 	case TOOLBAR_COMPOSE:
-		compose = (Compose*)toolbar_item->parent;
+		compose = (Compose*)parent;
 		action_list = compose->toolbar->action_list;
 		break;
-		/* case TOOLBAR_MSGVIEW: not supported yet */
+	case TOOLBAR_MSGVIEW:
+		msgview = (MessageView*)parent;
+		action_list = msgview->toolbar->action_list;
+		break;
 	default:
 		debug_print("toolbar event not supported\n");
 		return;
 	}
-
-	toolbar_action_execute(widget, action_list, toolbar_item->parent, toolbar_item->type);
+	toolbar_action_execute(widget, action_list, parent, toolbar_item->type);	
 }
 
 static MainWindow *get_mainwin(gpointer data)

@@ -1,3 +1,10 @@
+2002-12-26 [oliver]	0.8.8claws5
+	
+	* src/toolbar.c 
+		enable Addressbook for Main and Messageview
+	* src/prefs_actions.c
+		enable actions in Messageview
+
 2002-12-26 [christoph]	0.8.8claws4
 
 	* src/common/plugin.c
