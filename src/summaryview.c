@@ -3097,6 +3097,8 @@ void summary_delete_duplicated(SummaryView *summaryview)
 	STATUSBAR_PUSH(summaryview->mainwin,
 		       _("Deleting duplicated messages..."));
 
+	folder_item_update_freeze();
+	
 	gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree), NULL,
 				GTK_CTREE_FUNC(summary_delete_duplicated_func),
 				summaryview);
@@ -3105,6 +3107,8 @@ void summary_delete_duplicated(SummaryView *summaryview)
 		summary_execute(summaryview);
 	else
 		summary_status_show(summaryview);
+
+	folder_item_update_thaw();
 
 	debug_print("done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
