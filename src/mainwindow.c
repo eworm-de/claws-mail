@@ -2799,6 +2799,11 @@ static gboolean mainwindow_focus_in_event(GtkWidget *widget, GdkEventFocus *focu
 	g_return_val_if_fail(data, FALSE);
 	summary = ((MainWindow *)data)->summaryview;
 	g_return_val_if_fail(summary, FALSE);
+
+	if (GTK_CLIST(summary->ctree)->selection && 
+	    g_list_length(GTK_CLIST(summary->ctree)->selection) > 1)
+		return FALSE;
+
 	if (summary->selected != summary->displayed)
 		summary_select_node(summary, summary->displayed, FALSE, TRUE);
 	return FALSE;

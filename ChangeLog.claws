@@ -1,3 +1,10 @@
+2003-04-14 [alfons]	0.9.5claws11
+
+	* src/mainwindow.c
+		fix regression caused by fix for invalid bug #7
+		(should fix #246, "Multiple selections are deselected when 
+		moving from search window to main window")
+		
 2003-09-14 [alfons]	0.9.5claws10
 	
 	* src/actions.[ch]
