@@ -1,3 +1,8 @@
+2004-07-12 [colin]	0.9.12cvs18.2
+
+	* src/gtk/quicksearch.c
+		Fix missing status update in quicksearch
+
 2004-07-12 [colin]	0.9.11cvs17.25
 
 	* src/folder.c
