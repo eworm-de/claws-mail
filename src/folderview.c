@@ -2754,10 +2754,6 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 	} else {
 		/* comes from folderview */
 		char *source;
-		char *buf;
-		gint status;
-		GtkCTreeNode *src_node;
-		FolderItem *new_item, *src_parent;
 		
 		source = data->data + 17;
 		if (gtk_clist_get_selection_info

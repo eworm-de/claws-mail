@@ -45,12 +45,10 @@
 #include "intl.h"
 #include "utils.h"
 #include "socket.h"
-#include "statusbar.h"
-#include "logwindow.h"
 
 #define BUFFSIZE	8192
 
-extern gboolean debug_mode;
+static gboolean debug_mode = FALSE;
 
 static void hash_free_strings_func(gpointer key, gpointer value, gpointer data);
 
@@ -2946,32 +2944,14 @@ void get_rfc822_date(gchar *buf, gint len)
 		   day, dd, mon, yyyy, hh, mm, ss, tzoffset(&t));
 }
 
-static FILE *log_fp = NULL;
-
-void set_log_file(const gchar *filename)
+void debug_set_mode(gboolean mode)
 {
-	if (log_fp) return;
-	log_fp = fopen(filename, "wb");
-	if (!log_fp)
-		FILE_OP_ERROR(filename, "fopen");
+	debug_mode = mode;
 }
 
-void close_log_file(void)
+gboolean debug_get_mode()
 {
-	if (log_fp) {
-		fclose(log_fp);
-		log_fp = NULL;
-	}
-}
-
-static guint log_verbosity_count = 0;
-
-void log_verbosity_set(gboolean verbose)
-{
-	if (verbose)
-		log_verbosity_count++;
-	else if (log_verbosity_count > 0)
-		log_verbosity_count--;
+	return debug_mode;
 }
 
 void debug_print_real(const gchar *format, ...)
@@ -2987,102 +2967,6 @@ void debug_print_real(const gchar *format, ...)
 
 	fputs(buf, stdout);
 }
-
-#define TIME_LEN	11
-
-void log_print(const gchar *format, ...)
-{
-	va_list args;
-	gchar buf[BUFFSIZE + TIME_LEN];
-	time_t t;
-
-	time(&t);
-	strftime(buf, TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
-
-	va_start(args, format);
-	g_vsnprintf(buf + TIME_LEN, BUFFSIZE, format, args);
-	va_end(args);
-
-	if (debug_mode) fputs(buf, stdout);
-	log_window_append(buf, LOG_NORMAL);
-	if (log_fp) {
-		fputs(buf, log_fp);
-		fflush(log_fp);
-	}
-	if (log_verbosity_count)
-		statusbar_puts_all(buf + TIME_LEN);
-}
-
-void log_message(const gchar *format, ...)
-{
-	va_list args;
-	gchar buf[BUFFSIZE + TIME_LEN];
-	time_t t;
-
-	time(&t);
-	strftime(buf, TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
-
-	va_start(args, format);
-	g_vsnprintf(buf + TIME_LEN, BUFFSIZE, format, args);
-	va_end(args);
-
-	if (debug_mode) g_message("%s", buf + TIME_LEN);
-	log_window_append(buf + TIME_LEN, LOG_MSG);
-	if (log_fp) {
-		fwrite(buf, TIME_LEN, 1, log_fp);
-		fputs("* message: ", log_fp);
-		fputs(buf + TIME_LEN, log_fp);
-		fflush(log_fp);
-	}
-	statusbar_puts_all(buf + TIME_LEN);
-}
-
-void log_warning(const gchar *format, ...)
-{
-	va_list args;
-	gchar buf[BUFFSIZE + TIME_LEN];
-	time_t t;
-
-	time(&t);
-	strftime(buf, TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
-
-	va_start(args, format);
-	g_vsnprintf(buf + TIME_LEN, BUFFSIZE, format, args);
-	va_end(args);
-
-	g_warning("%s", buf);
-	log_window_append(buf + TIME_LEN, LOG_WARN);
-	if (log_fp) {
-		fwrite(buf, TIME_LEN, 1, log_fp);
-		fputs("** warning: ", log_fp);
-		fputs(buf + TIME_LEN, log_fp);
-		fflush(log_fp);
-	}
-}
-
-void log_error(const gchar *format, ...)
-{
-	va_list args;
-	gchar buf[BUFFSIZE + TIME_LEN];
-	time_t t;
-
-	time(&t);
-	strftime(buf, TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
-
-	va_start(args, format);
-	g_vsnprintf(buf + TIME_LEN, BUFFSIZE, format, args);
-	va_end(args);
-
-	g_warning("%s", buf);
-	log_window_append(buf + TIME_LEN, LOG_ERROR);
-	if (log_fp) {
-		fwrite(buf, TIME_LEN, 1, log_fp);
-		fputs("*** error: ", log_fp);
-		fputs(buf + TIME_LEN, log_fp);
-		fflush(log_fp);
-	}
-}
-
 
 void * subject_table_lookup(GHashTable *subject_table, gchar * subject)
 {

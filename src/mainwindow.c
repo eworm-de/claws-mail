@@ -246,9 +246,6 @@ static void toolbar_reply_to_sender_cb	(GtkWidget	*widget,
 static void toolbar_forward_cb	        (GtkWidget	*widget,
 				         gpointer	 data);
 
-static void toolbar_delete_cb	        (GtkWidget	*widget,
-					 gpointer	 data);
-
 static void toolbar_exec_cb	        (GtkWidget	*widget,
 					 gpointer	 data);
 
@@ -2377,14 +2374,6 @@ static void toolbar_forward_cb(GtkWidget	*widget,
 		reply_cb(mainwin, COMPOSE_FORWARD_AS_ATTACH, NULL);
 	else
 		reply_cb(mainwin, COMPOSE_FORWARD, NULL);
-}
-
-static void toolbar_delete_cb(GtkWidget	  *widget,
-			      gpointer	   data)
-{
-	MainWindow *mainwin = (MainWindow *)data;
-
-	summary_delete(mainwin->summaryview);
 }
 
 static void toolbar_exec_cb(GtkWidget	*widget,

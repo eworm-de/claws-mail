@@ -25,7 +25,6 @@
 #endif
 
 #include <glib.h>
-#include <gdk/gdk.h> /* ugly, just needed for the GdkInputCondition et al. */
 #include <netdb.h>
 
 typedef struct _SockInfo	SockInfo;
@@ -79,9 +78,9 @@ gint sock_puts		(SockInfo *sock, const gchar *buf);
 gint sock_close		(SockInfo *sock);
 
 /* wrapper functions */
-gint sock_gdk_input_add	  (SockInfo		*sock,
-			   GdkInputCondition	 condition,
-			   GdkInputFunction	 function,
+gint sock_input_add	  (SockInfo		*sock,
+			   GIOCondition		 condition,
+			   GIOFunc	 	 function,
 			   gpointer		 data);
 
 /* Functions to directly work on FD.  They are needed for pipes */

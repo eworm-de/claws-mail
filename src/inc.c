@@ -65,6 +65,7 @@
 #include "folder.h"
 #include "filtering.h"
 #include "selective_download.h"
+#include "log.h"
 
 static GList *inc_dialog_list = NULL;
 
@@ -727,10 +728,10 @@ static IncState inc_pop3_session_do(IncSession *session)
 
 	for (i = POP3_GREETING_RECV; i < N_POP3_PHASE; i++)
 		atm->state[i].handler = handlers[i];
-	atm->state[POP3_GREETING_RECV].condition = GDK_INPUT_READ;
+	atm->state[POP3_GREETING_RECV].condition = (G_IO_IN | G_IO_HUP | G_IO_ERR);
 	for (i = POP3_GREETING_RECV + 1; i < N_POP3_PHASE; ) {
-		atm->state[i++].condition = GDK_INPUT_WRITE;
-		atm->state[i++].condition = GDK_INPUT_READ;
+		atm->state[i++].condition = (G_IO_OUT | G_IO_ERR);
+		atm->state[i++].condition = (G_IO_IN | G_IO_HUP | G_IO_ERR);
 	}
 
 	atm->terminate = (AtmHandler)pop3_automaton_terminate;
@@ -798,9 +799,9 @@ static IncState inc_pop3_session_do(IncSession *session)
 	*/
 	recv_set_ui_func(inc_pop3_recv_func, session);
 
-	atm->tag = sock_gdk_input_add(sockinfo,
-				      atm->state[atm->num].condition,
-				      automaton_input_cb, atm);
+	atm->tag = sock_input_add(sockinfo,
+			          atm->state[atm->num].condition,
+				  automaton_input_cb, atm);
 
 	while (!atm->terminated && !atm->cancelled)
 		gtk_main_iteration();

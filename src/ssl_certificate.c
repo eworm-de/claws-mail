@@ -31,6 +31,7 @@
 #include "intl.h"
 #include "prefs_common.h"
 #include "socket.h"
+#include "log.h"
 
 static char *ssl_certificate_check_signer (X509 *cert); 
 static SSLCertificate *ssl_certificate_new_lookup(X509 *x509_cert, gchar *host, gushort port, gboolean lookup);

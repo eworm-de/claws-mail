@@ -26,7 +26,7 @@
 #include <ctype.h>
 
 #include "codeconv.h"
-#include "common/base64.h"
+#include "base64.h"
 
 #define ENCODED_WORD_BEGIN	"=?"
 #define ENCODED_WORD_END	"?="

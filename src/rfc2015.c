@@ -36,8 +36,8 @@
 #include "intl.h"
 #include "procmime.h"
 #include "procheader.h"
-#include "common/base64.h"
-#include "common/uuencode.h"
+#include "base64.h"
+#include "uuencode.h"
 #include "unmime.h"
 #include "codeconv.h"
 #include "utils.h"
@@ -223,7 +223,6 @@ sig_status_for_key(GString *str, GpgmeCtx ctx, GpgmeSigStat status,
 {
 	gint idx = 0;
 	const char *uid;
-	unsigned long exp_time;
 
 	uid = gpgme_key_get_string_attr (key, GPGME_ATTR_USERID, NULL, idx);
 	if (uid == NULL) {

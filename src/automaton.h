@@ -34,7 +34,7 @@ typedef void	(*AtmUIFunc)	(gpointer	 data,
 
 struct _AtmState
 {
-	GdkInputCondition condition;
+	GIOCondition     condition;
 	gint (*handler)	(SockInfo	*source,
 			 gpointer	 data);
 };
@@ -62,8 +62,8 @@ struct _Automaton
 
 Automaton *automaton_create	(gint			 num);
 void automaton_destroy		(Automaton		*atm);
-void automaton_input_cb		(gpointer		 data,
-				 gint			 dummy_source,
-				 GdkInputCondition	 condition);
+gboolean automaton_input_cb	(GIOChannel		*channel,
+				 GIOCondition		 condition,
+				 gpointer		 data);
 
 #endif /* __AUTOMATON_H__ */

@@ -86,13 +86,10 @@ sylpheed_SOURCES = \
 	grouplistdialog.c grouplistdialog.h \
 	about.c about.h \
 	setup.c setup.h \
-	utils.c utils.h \
 	gtkutils.c gtkutils.h \
 	codeconv.c codeconv.h \
 	unmime.c unmime.h \
 	md5.c md5.h \
-	socket.c socket.h \
-	ssl.c ssl.h \
 	ssl_certificate.c ssl_certificate.h \
 	ssl_manager.c ssl_manager.h \
 	automaton.c automaton.h \
@@ -219,6 +216,7 @@ EXTRA_DIST = \
 	pixmaps/quicksearch.xpm
 
 INCLUDES = \
+	-Icommon \
 	-DG_LOG_DOMAIN=\"Sylpheed\" \
 	-I$(top_srcdir)/intl \
         $(ASPELL_CFLAGS)    \

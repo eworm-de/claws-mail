@@ -43,6 +43,7 @@
 
 #include "socket.h"
 #include "utils.h"
+#include "log.h"
 #if USE_SSL
 #  include "ssl.h"
 #endif
@@ -709,14 +710,21 @@ gint fd_close(gint fd)
 	return close(fd);
 }
 
-gint sock_gdk_input_add(SockInfo *sock,
-			GdkInputCondition condition,
-			GdkInputFunction function,
-			gpointer data)
+gint sock_input_add(SockInfo *sock,
+		    GIOCondition condition,
+		    GIOFunc function,
+		    gpointer data)
 {
+	GIOChannel *channel;
+	guint result;
+
 	g_return_val_if_fail(sock != NULL, -1);
 
+	channel = g_io_channel_unix_new(sock->sock);
 	/* :WK: We have to change some things here becuse most likey
 	   function() does take SockInfo * and not an gint */
-	return gdk_input_add(sock->sock, condition, function, data);
+	result = g_io_add_watch(channel, condition, function, data);
+	g_io_channel_unref(channel);
+
+	return result;
 }

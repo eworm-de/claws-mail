@@ -1590,8 +1590,8 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_item)
 {
 	FolderItem *tmp = dest->parent;
-	char * src_identifier, * dst_identifier, * new_identifier;
-	char * phys_srcpath, * phys_dstpath;
+	gchar * src_identifier, * dst_identifier;
+	gchar * phys_srcpath, * phys_dstpath;
 	GNode *src_node;
 	
 	while (tmp) {

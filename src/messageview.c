@@ -90,9 +90,6 @@ static void messageview_close_cb	(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
 
-static void set_toolbar_style(MessageView *messageview);
-
-
 MessageView *messageview_create(MainWindow *mainwin)
 {
 	MessageView *messageview;
@@ -832,7 +829,6 @@ static void messageview_toolbar_create(MessageView   *messageview,
 	ToolbarSylpheedActions *action_item;
 	GSList *cur;
 	GSList *toolbar_list;
-	GList *elem;
  	toolbar_tips = gtk_tooltips_new();
 	
 	toolbar_read_config_file(TOOLBAR_MSGVIEW);

@@ -48,6 +48,7 @@
 #include "codeconv.h"
 #include "utils.h"
 #include "inputdialog.h"
+#include "log.h"
 
 #define IMAP4_PORT	143
 #if USE_SSL

@@ -2632,10 +2632,7 @@ static void prefs_interface_create(void)
 
 	GtkWidget *button_keybind;
 
- 	GtkWidget *hbox2;
  	GtkWidget *optmenu_nextunreadmsgdialog;
- 	GtkWidget *optmenu_nextunreadmsgdialog_menu;
- 	GtkWidget *nextunreadmsgdialog_menuitem;
 
 	GtkWidget *frame_pixmap_theme;
 	GtkWidget *vbox_pixmap_theme;

@@ -29,8 +29,9 @@
 #include "smtp.h"
 #include "socket.h"
 #include "md5.h"
-#include "common/base64.h"
+#include "base64.h"
 #include "utils.h"
+#include "log.h"
 
 static gint verbose = 1;
 

@@ -135,6 +135,9 @@
 	perror(func); \
 }
 
+/* debug functions */
+void debug_set_mode		(gboolean mode);
+gboolean debug_get_mode		();
 #define debug_print \
 	debug_print_real(__FILE__ ":%d:", __LINE__), \
 	debug_print_real
@@ -382,15 +385,8 @@ gchar *tzoffset			(time_t		*now);
 void get_rfc822_date		(gchar		*buf,
 				 gint		 len);
 
-/* logging */
-void set_log_file	(const gchar *filename);
-void close_log_file	(void);
-void log_verbosity_set	(gboolean verbose);
+/* debugging */
 void debug_print_real	(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
-void log_print		(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
-void log_message	(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
-void log_warning	(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
-void log_error		(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
 
 /* subject threading */
 void * subject_table_lookup(GHashTable *subject_table, gchar * subject);

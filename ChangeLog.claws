@@ -1,3 +1,73 @@
+2002-11-30 [christoph]	0.8.6claws49
+
+	* doc-src/ui_seperation.txt	** NEW **
+		information for ui seperation
+
+	* src/Makefile.am
+		remove files that were moved to common
+		include common directory by default for the header files
+
+	* src/inc.c
+	* src/common/socket.c
+	* src/automaton.[ch]
+		implement automaton using g_io_*-functions instead of
+		gdk_input_add to make it ui independent
+
+	* src/codeconv.c
+	* src/compose.c
+	* src/ldif.c
+	* src/pgptext.c
+	* src/procmime.c
+	* src/rfc2015.c
+	* src/smtp.c
+	* src/unmime.c
+		remove common/ prefix because directory is now in
+		include path
+
+	* src/compose.c
+	* src/folder.c
+	* src/folderview.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/prefs_common.c
+	* src/procmsg.c
+	* src/rfc2015.c
+		fix warnings
+
+	* src/imap.c
+	* src/inc.c
+	* src/news.c
+	* src/pop.c
+	* src/send.c
+	* src/smtp.c
+	* src/ssl_certificate.c
+		add log.h header file for logging functions
+
+	* src/main.c
+	* src/common/utils.c
+	* src/summaryview.c
+	* src/xml.c
+		o move debug_mode to commno/utils.c
+		o add functions to set and get debug_mode
+
+	* src/defs.h			** REMOVE **
+	* src/intl.h			** REMOVE **
+	* src/socket.[ch]		** REMOVE **
+	* src/ssl.[ch]			** REMOVE **
+	* src/utils.[ch]		** REMOVE **
+		replaced by new files in src/common/
+	
+	* src/common/Makefile.am
+		add new files in src/common/
+
+	* src/common/defs.h		** NEW **
+	* src/common/intl.h		** NEW **
+	* src/common/log.[ch]		** NEW **
+	* src/common/socket.[ch]	** NEW **
+	* src/common/ssl.[ch]		** NEW **
+	* src/common/utils.[ch]		** NEW **
+		replacement for files in src/
+
 2002-11-30 [colin]	0.8.6claws48
 
 	* src/folderview.c

@@ -73,6 +73,7 @@
 #include "setup.h"
 #include "utils.h"
 #include "gtkutils.h"
+#include "log.h"
 
 #if USE_GPGME
 #  include "rfc2015.h"
@@ -88,7 +89,6 @@
 gchar *prog_version;
 gchar *startup_dir;
 gchar *argv0;
-gboolean debug_mode = FALSE;
 
 static gint lock_socket = -1;
 static gint lock_socket_tag = 0;
@@ -383,7 +383,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 
 	for (i = 1; i < argc; i++) {
 		if (!strncmp(argv[i], "--debug", 7))
-			debug_mode = TRUE;
+			debug_set_mode(TRUE);
 		else if (!strncmp(argv[i], "--receive-all", 13))
 			cmd.receive_all = TRUE;
 		else if (!strncmp(argv[i], "--receive", 9))

@@ -91,7 +91,7 @@
 #include "procmime.h"
 #include "statusbar.h"
 #include "about.h"
-#include "common/base64.h"
+#include "base64.h"
 #include "codeconv.h"
 #include "utils.h"
 #include "gtkutils.h"
@@ -5073,7 +5073,6 @@ static void compose_toolbar_create(Compose   *compose,
 	ToolbarSylpheedActions *action_item;
 	GSList *cur;
 	GSList *toolbar_list;
-	GList *elem;
  	toolbar_tips = gtk_tooltips_new();
 	
 	toolbar_read_config_file(TOOLBAR_COMPOSE);
