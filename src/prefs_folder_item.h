@@ -23,56 +23,15 @@
 #include <glib.h>
 #include <sys/types.h>
 
-typedef struct _PrefsFolderItem PrefsFolderItem;
-
 #include "folder.h"
 #include "folderview.h"
-
-struct _PrefsFolderItem {
-	gchar * directory;
-
-	gboolean sort_by_number;
-	gboolean sort_by_size;
-	gboolean sort_by_date;
-	gboolean sort_by_from;
-	gboolean sort_by_subject;
-	gboolean sort_by_score;
-
-	gboolean sort_descending;
-
-	gboolean enable_thread;
-
-	gint kill_score;
-	gint important_score;
-
-	GSList * scoring;
-	GSList * processing;
-
-	gboolean request_return_receipt;
-	gboolean enable_default_to;
-	gchar *default_to;
-	gboolean enable_default_reply_to;
-	gchar *default_reply_to;
-	gboolean enable_simplify_subject;
-	gchar *simplify_subject_regexp;
-	gboolean enable_folder_chmod;
-	gint folder_chmod;
-	gboolean enable_default_account;
-	gint default_account;
-	gboolean save_copy_to_folder;
-	guint color;
-};
+#include "folder_item_prefs.h"
+#include "prefswindow.h"
 
 void prefs_folder_item_create(FolderView *folderview, FolderItem *item); 
 
-void prefs_folder_item_read_config(FolderItem * item);
-void prefs_folder_item_save_config(FolderItem * item);
-void prefs_folder_item_set_config(FolderItem * item,
-				  int sort_type, gint sort_mode);
-PrefsFolderItem * prefs_folder_item_new(void);
-void prefs_folder_item_free(PrefsFolderItem * prefs);
-gint prefs_folder_item_get_sort_type(FolderItem * item);
-gint prefs_folder_item_get_sort_mode(FolderItem * item);
-void prefs_folder_item_copy_prefs(FolderItem * src, FolderItem * dest);
+void prefs_folder_item_open		(FolderItem 	*item);
+void prefs_folder_item_register_page	(PrefsPage 	*page);
+void prefs_folder_item_unregister_page	(PrefsPage 	*page);
 
 #endif /* PREFS_FOLDER_ITEM_H */

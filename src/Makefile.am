@@ -114,7 +114,8 @@ sylpheed_SOURCES = \
 	noticeview.h noticeview.c \
 	toolbar.c toolbar.h \
 	prefs_toolbar.c prefs_toolbar.h \
-	crash.c crash.h
+	crash.c crash.h \
+	folder_item_prefs.c folder_item_prefs.h
 
 BUILT_SOURCES = \
 	quote_fmt_lex.c \

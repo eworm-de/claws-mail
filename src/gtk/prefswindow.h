@@ -40,6 +40,8 @@ struct _PrefsPage
 	PrefsSavePageFunc	 save_page;
 };
 
-void prefswindow_open			();
+void prefswindow_open			(const gchar *title, 
+					 GSList *prefs_pages,
+					 gpointer data);
 
 #endif

@@ -345,7 +345,7 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	gchar *srcfile;
 	gchar *destfile;
 	gint filemode = 0;
-	PrefsFolderItem *prefs;
+	FolderItemPrefs *prefs;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msginfo != NULL, -1);

@@ -742,7 +742,7 @@ static void prefs_scoring_ok(void)
 			prefs_scoring_set_list();
 			prefs_matcher_write_config();
 			if (cur_item != NULL)
-				prefs_folder_item_save_config(cur_item);
+				folder_item_prefs_save_config(cur_item);
 			gtk_widget_hide(scoring.window);
 			inc_unlock();
 			return;
@@ -769,7 +769,7 @@ static void prefs_scoring_ok(void)
 	prefs_scoring_set_list();
 	prefs_matcher_write_config();
 	if (cur_item != NULL)
-		prefs_folder_item_save_config(cur_item);
+		folder_item_prefs_save_config(cur_item);
 	gtk_widget_hide(scoring.window);
 	inc_unlock();
 }

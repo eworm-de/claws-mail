@@ -75,7 +75,7 @@
 #include "addressbook.h"
 #include "addr_compl.h"
 #include "scoring.h"
-#include "prefs_folder_item.h"
+#include "folder_item_prefs.h"
 #include "filtering.h"
 #include "string_match.h"
 #include "toolbar.h"
@@ -4989,7 +4989,7 @@ static gint summary_cmp_by_subject(GtkCList *clist,			 \
  static gint summary_cmp_by_simplified_subject
 	(GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
 {
-	const PrefsFolderItem *prefs;
+	const FolderItemPrefs *prefs;
 	const gchar *str1, *str2;
 	const GtkCListRow *r1 = (const GtkCListRow *) ptr1;
 	const GtkCListRow *r2 = (const GtkCListRow *) ptr2;

@@ -132,7 +132,7 @@ typedef void (*FolderDestroyNotify)	(Folder		*folder,
 typedef void (*FolderItemFunc)		(FolderItem	*item,
 					 gpointer	 data);
 
-#include "prefs_folder_item.h"
+#include "folder_item_prefs.h"
 
 #include "prefs_account.h"
 #include "session.h"
@@ -302,7 +302,7 @@ struct _FolderItem
 
 	gpointer data;
 
-	PrefsFolderItem * prefs;
+	FolderItemPrefs * prefs;
 };
 
 typedef struct {

@@ -772,7 +772,7 @@ static GSList *prefs_pages = NULL;
 
 void prefs_gtk_open(void)
 {
-	prefswindow_open(prefs_pages, NULL);
+	prefswindow_open(_("Preferences"), prefs_pages, NULL);
 }
 
 void prefs_gtk_register_page(PrefsPage *page)

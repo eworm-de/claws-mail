@@ -64,7 +64,6 @@
 #include "prefs_filtering.h"
 #include "prefs_scoring.h"
 #include "prefs_account.h"
-#include "prefs_folder_item.h"
 #include "prefs_summary_column.h"
 #include "prefs_template.h"
 #include "action.h"

@@ -45,15 +45,14 @@
 #include "account.h"
 #include "filtering.h"
 #include "scoring.h"
-#include "prefs_folder_item.h"
 #include "procheader.h"
 #include "hooks.h"
 #include "log.h"
+#include "folder_item_prefs.h"
 
 /* Dependecies to be removed ?! */
 #include "prefs_common.h"
 #include "prefs_account.h"
-#include "prefs_folder_item.h"
 
 static GList *folder_list = NULL;
 
@@ -210,7 +209,7 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 	item->mark_queue = NULL;
 	item->data = NULL;
 
-	item->prefs = prefs_folder_item_new();
+	item->prefs = folder_item_prefs_new();
 
 	return item;
 }
@@ -1451,7 +1450,7 @@ void folder_item_read_cache(FolderItem *item)
 void folder_item_write_cache(FolderItem *item)
 {
 	gchar *cache_file, *mark_file;
-	PrefsFolderItem *prefs;
+	FolderItemPrefs *prefs;
 	gint filemode = 0;
 	gchar *id;
 	
@@ -1741,7 +1740,7 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 	folder_item_move_msgs_with_dest(new_item, mlist);
 	
 	/*copy prefs*/
-	prefs_folder_item_copy_prefs(src, new_item);
+	folder_item_prefs_copy_prefs(src, new_item);
 	new_item->collapsed = src->collapsed;
 	new_item->thread_collapsed = src->thread_collapsed;
 	new_item->threaded  = src->threaded;
@@ -2394,7 +2393,7 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	}
 	item->account = account;
 	item->apply_sub = apply_sub;
-	prefs_folder_item_read_config(item);
+	folder_item_prefs_read_config(item);
 
 	node->data = item;
 	xml_free_node(xmlnode);
@@ -2721,7 +2720,7 @@ FolderItem *folder_get_default_processing(void)
 
 /* folder_persist_prefs_new() - return hash table with persistent
  * settings (and folder name as key). 
- * (note that in claws other options are in the PREFS_FOLDER_ITEM_RC
+ * (note that in claws other options are in the folder_item_prefs_RC
  * file, so those don't need to be included in PersistPref yet) 
  */
 GHashTable *folder_persist_prefs_new(Folder *folder)
@@ -2760,7 +2759,7 @@ void folder_item_restore_persist_prefs(FolderItem *item, GHashTable *pptable)
 	/* CLAWS: since not all folder properties have been migrated to 
 	 * folderlist.xml, we need to call the old stuff first before
 	 * setting things that apply both to Main and Claws. */
-	prefs_folder_item_read_config(item); 
+	folder_item_prefs_read_config(item); 
 	 
 	item->collapsed = pp->collapsed;
 	item->thread_collapsed = pp->thread_collapsed;

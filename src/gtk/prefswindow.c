@@ -41,11 +41,13 @@ struct _PrefsWindow
 	GtkWidget *pagelabel;
 	GtkWidget *labelframe;
 	GtkWidget *frame;
-	GtkWidget *page_widget;
+	GtkWidget *notebook;
 	GtkWidget *confirm_area;
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
 	GtkWidget *apply_btn;
+
+	GtkWidget *empty_page;
 
 	gpointer   data;
 	GSList	  *prefs_pages;
@@ -56,27 +58,22 @@ static gboolean ctree_select_row(GtkCTree *ctree, GList *node, gint column, gpoi
 	PrefsPage *page;
 	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
 	gchar *labeltext;
+	gint pagenum;
 
 	page = (PrefsPage *) gtk_ctree_node_get_row_data(GTK_CTREE(ctree), GTK_CTREE_NODE(node));
 
-	if (prefswindow->page_widget != NULL)
-		gtk_container_remove(GTK_CONTAINER(prefswindow->table2), prefswindow->page_widget);
-
 	if (page == NULL) {
-		GtkWidget *widget;
-		
-		widget = gtk_label_new("");
-
 		gtk_label_set_text(GTK_LABEL(prefswindow->pagelabel), "");
-		gtk_table_attach(GTK_TABLE(prefswindow->table2), widget, 0, 1, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 0, 0);
-		prefswindow->page_widget = widget;
+		pagenum = gtk_notebook_page_num(GTK_NOTEBOOK(prefswindow->notebook),
+						prefswindow->empty_page);
+		gtk_notebook_set_page(GTK_NOTEBOOK(prefswindow->notebook), pagenum);
 		return FALSE;
 	}
 
 	if (!page->page_open) {
 		page->create_widget(page, GTK_WINDOW(prefswindow->window), prefswindow->data);
-		gtk_widget_ref(page->widget);
 		gtk_widget_show_all(page->widget);
+		gtk_container_add(GTK_CONTAINER(prefswindow->notebook), page->widget);
 		page->page_open = TRUE;
 	}
 
@@ -87,8 +84,9 @@ static gboolean ctree_select_row(GtkCTree *ctree, GList *node, gint column, gpoi
 		labeltext = labeltext + 1;
 	gtk_label_set_text(GTK_LABEL(prefswindow->pagelabel), labeltext);
 
-	prefswindow->page_widget = page->widget;
-	gtk_table_attach(GTK_TABLE(prefswindow->table2), prefswindow->page_widget, 0, 1, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 8, 8);
+	pagenum = gtk_notebook_page_num(GTK_NOTEBOOK(prefswindow->notebook),
+					page->widget);
+	gtk_notebook_set_page(GTK_NOTEBOOK(prefswindow->notebook), pagenum);
 
 	return FALSE;
 }
@@ -114,7 +112,6 @@ static void close_all_pages(GSList *prefs_pages)
 		PrefsPage *page = (PrefsPage *) cur->data;
 
 		if (page->page_open) {
-			gtk_widget_unref(page->widget);
 			page->destroy_widget(page);
 			page->page_open = FALSE;
 		}
@@ -133,8 +130,8 @@ static void ok_button_released(GtkButton *button, gpointer user_data)
 	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
 
 	save_all_pages(prefswindow->prefs_pages);
-	gtk_widget_destroy(prefswindow->window);
 	close_all_pages(prefswindow->prefs_pages);
+	gtk_widget_destroy(prefswindow->window);
 	g_slist_free(prefswindow->prefs_pages);
 	g_free(prefswindow);
 }
@@ -143,8 +140,8 @@ static void close_prefs_window(PrefsWindow *prefswindow)
 {
 	debug_print("prefs window closed\n");
 
-	gtk_widget_destroy(prefswindow->window);
 	close_all_pages(prefswindow->prefs_pages);
+	gtk_widget_destroy(prefswindow->window);
 	g_slist_free(prefswindow->prefs_pages);
 	g_free(prefswindow);
 }
@@ -184,7 +181,7 @@ static gboolean find_child_by_name(GtkCTree *ctree, GtkCTreeNode *node, struct n
 	return FALSE;
 }
 
-void prefswindow_open(GSList *prefs_pages, gpointer data)
+void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data)
 {
 	static gchar *titles [1];
 	GSList *cur;
@@ -199,7 +196,7 @@ void prefswindow_open(GSList *prefs_pages, gpointer data)
 	prefswindow->prefs_pages = g_slist_copy(prefs_pages);
 
 	prefswindow->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(prefswindow->window), _("Preferences"));
+	gtk_window_set_title(GTK_WINDOW(prefswindow->window), title);
 	gtk_window_set_default_size(GTK_WINDOW(prefswindow->window), 600, 340);
 	gtk_window_position (GTK_WINDOW(prefswindow->window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal (GTK_WINDOW (prefswindow->window), TRUE);
@@ -232,8 +229,14 @@ void prefswindow_open(GSList *prefs_pages, gpointer data)
 	gtk_misc_set_alignment(GTK_MISC(prefswindow->pagelabel), 0, 0.0);
 	gtk_container_add(GTK_CONTAINER(prefswindow->labelframe), prefswindow->pagelabel);
 
-	prefswindow->page_widget = gtk_label_new("");
-	gtk_table_attach(GTK_TABLE(prefswindow->table2), prefswindow->page_widget, 0, 1, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 8, 8);
+	prefswindow->notebook = gtk_notebook_new();
+	gtk_notebook_set_scrollable(GTK_NOTEBOOK(prefswindow->notebook), TRUE);
+	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(prefswindow->notebook), FALSE);
+	gtk_notebook_set_show_border(GTK_NOTEBOOK(prefswindow->notebook), FALSE);
+	gtk_table_attach(GTK_TABLE(prefswindow->table2), prefswindow->notebook, 0, 1, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND, 8, 8);
+
+	prefswindow->empty_page = gtk_label_new("");
+	gtk_container_add(GTK_CONTAINER(prefswindow->notebook), prefswindow->empty_page);
 
 	/* actually we should create a tree here */
 	for (cur = prefs_pages; cur != NULL; cur = g_slist_next(cur)) {
