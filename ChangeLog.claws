@@ -1,3 +1,10 @@
+2002-11-08 [paul]	0.8.5claws93
+
+	* src/prefs_account.c
+	  tools/README
+	  tools/kmail2sylpheed_v2.pl
+	  	correct some typos
+
 2002-11-08 [paul]	0.8.5claws92
 
 	* src/compose.c

@@ -21,7 +21,7 @@
 ## script purpose : convert an exported Kmail addressbook csv file 
 ## into a Sylpheed addressbook
 
-## tested with Kmail 1.47 and KAddressBook 3.1beta1
+## tested with Kmail 1.4.7 and KAddressBook 3.1beta1
 
 use Getopt::Long;
 

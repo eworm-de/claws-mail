@@ -380,7 +380,7 @@ static PrefParam param[] = {
 	{"default_sign", "FALSE", &tmp_ac_prefs.default_sign, P_BOOL,
 	 &privacy.default_sign_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"default_gnupg_mode", "FALSE", &tmp_ac_prefs.default_gnupg_mode, P_ENUM,
+	{"default_gnupg_mode", NULL, &tmp_ac_prefs.default_gnupg_mode, P_ENUM,
 	 &privacy.gnupg_mime_radiobtn,
 	 prefs_account_enum_set_data_from_radiobtn,
 	 prefs_account_enum_set_radiobtn},
