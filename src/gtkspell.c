@@ -1096,6 +1096,7 @@ static void add_word_to_session(GtkWidget *w, GtkPspell *gtkpspell)
 
 	check_at(gtkpspell, gtkpspell->start_pos);
 
+	gtk_stext_thaw(gtkpspell->gtktext);
 	gtk_menu_shell_deactivate(GTK_MENU_SHELL(w->parent));
 }
 
@@ -1112,6 +1113,7 @@ static void add_word_to_personal(GtkWidget *w, GtkPspell *gtkpspell)
     
 	check_at(gtkpspell, gtkpspell->start_pos);
 
+	gtk_stext_thaw(gtkpspell->gtktext);
 	gtk_menu_shell_deactivate(GTK_MENU_SHELL(w->parent));
 }
 
@@ -1693,13 +1695,12 @@ static gboolean deactivate_menu_cb(GtkWidget *w, gpointer *data)
 	GtkSText *gtktext;
 	gtktext = gtkpspell->gtktext;
 
-	gtk_stext_thaw(gtktext);
 	gtk_stext_freeze(gtktext);
 	gtk_editable_set_position(GTK_EDITABLE(gtktext),gtkpspell->orig_pos);
 	gtk_stext_set_point(gtktext, gtkpspell->orig_pos);
 	gtk_stext_thaw(gtktext);
 
-	return TRUE;
+	return FALSE;
 }
 
 /* change_dict_cb() - Menu callback : change dict */

@@ -1,3 +1,9 @@
+2002-01-16 |melvin]	0.7.0claws8
+
+	* src/gtkspell.c
+		fixed bug where using the mouse and when the compose
+		window is not on top may result in a crash.
+
 2002-01-16 [melvin]	0.7.0claws7
 
 	* src/compose.c
