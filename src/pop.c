@@ -873,7 +873,7 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 			pop3_stls_send(pop3_session);
 		else
 #endif
-		if (pop3_session->ac_prefs->protocol == A_APOP)
+		if (pop3_session->ac_prefs->use_apop_auth)
 			pop3_getauth_apop_send(pop3_session);
 		else
 			pop3_getauth_user_send(pop3_session);
@@ -882,7 +882,7 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 	case POP3_STLS:
 		if (pop3_stls_recv(pop3_session) != PS_SUCCESS)
 			return -1;
-		if (pop3_session->ac_prefs->protocol == A_APOP)
+		if (pop3_session->ac_prefs->use_apop_auth)
 			pop3_getauth_apop_send(pop3_session);
 		else
 			pop3_getauth_user_send(pop3_session);

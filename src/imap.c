@@ -333,7 +333,9 @@ static gint imap_cmd_login	(IMAPSession	*session,
 				 const gchar	*pass);
 static gint imap_cmd_logout	(IMAPSession	*session);
 static gint imap_cmd_noop	(IMAPSession	*session);
+#if USE_OPENSSL
 static gint imap_cmd_starttls	(IMAPSession	*session);
+#endif
 static gint imap_cmd_namespace	(IMAPSession	*session,
 				 gchar	       **ns_str);
 static gint imap_cmd_list	(IMAPSession	*session,
@@ -2662,11 +2664,13 @@ static gint imap_cmd_noop(IMAPSession *session)
 	return imap_cmd_ok(session, NULL);
 }
 
+#if USE_OPENSSL
 static gint imap_cmd_starttls(IMAPSession *session)
 {
 	imap_gen_send(session, "STARTTLS");
 	return imap_cmd_ok(session, NULL);
 }
+#endif
 
 #define THROW(err) { ok = err; goto catch; }
 

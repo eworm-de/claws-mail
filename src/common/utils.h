@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -174,6 +174,18 @@ gint str_case_equal		(gconstpointer	 v,
 guint str_case_hash		(gconstpointer	 key);
 
 void ptr_array_free_strings	(GPtrArray	*array);
+
+typedef gboolean (*StrFindFunc) (const gchar	*haystack,
+				 const gchar	*needle);
+
+gboolean str_find		(const gchar	*haystack,
+				 const gchar	*needle);
+gboolean str_case_find		(const gchar	*haystack,
+				 const gchar	*needle);
+gboolean str_find_equal		(const gchar	*haystack,
+				 const gchar	*needle);
+gboolean str_case_find_equal	(const gchar	*haystack,
+				 const gchar	*needle);
 
 /* number-string conversion */
 gint to_number			(const gchar *nstr);

@@ -89,6 +89,7 @@ static struct Basic {
 
 static struct Receive {
 	GtkWidget *pop3_frame;
+	GtkWidget *use_apop_chkbtn;
 	GtkWidget *rmmail_chkbtn;
 	GtkWidget *leave_time_entry;
 	GtkWidget *getall_chkbtn;
@@ -282,6 +283,10 @@ static PrefParam param[] = {
 	 &receive.inbox_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	/* Receive */
+	{"use_apop_auth", "FALSE", &tmp_ac_prefs.use_apop_auth, P_BOOL,
+	 &receive.use_apop_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
 	{"remove_mail", "TRUE", &tmp_ac_prefs.rmmail, P_BOOL,
 	 &receive.rmmail_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -573,6 +578,12 @@ void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 	id = atoi(p);
 	if (id < 0) g_warning("wrong account id: %d\n", id);
 	ac_prefs->account_id = id;
+
+	if (ac_prefs->protocol == A_APOP) {
+		debug_print("converting protocol A_APOP to new prefs.\n");
+		ac_prefs->protocol = A_POP3;
+		ac_prefs->use_apop_auth = TRUE;
+	}
 
 	prefs_custom_header_read_config(ac_prefs);
 }
@@ -940,9 +951,7 @@ static void prefs_account_basic_create(void)
 
 	optmenu_menu = gtk_menu_new ();
 
-	MENUITEM_ADD (optmenu_menu, menuitem, _("POP3 (normal)"),  A_POP3);
-	SET_ACTIVATE (menuitem);
-	MENUITEM_ADD (optmenu_menu, menuitem, _("POP3 (APOP auth)"),  A_APOP);
+	MENUITEM_ADD (optmenu_menu, menuitem, _("POP3"),  A_POP3);
 	SET_ACTIVATE (menuitem);
 	MENUITEM_ADD (optmenu_menu, menuitem, _("IMAP4"), A_IMAP4);
 	SET_ACTIVATE (menuitem);
@@ -1116,6 +1125,7 @@ static void prefs_account_receive_create(void)
 	GtkWidget *vbox1;
 	GtkWidget *frame1;
 	GtkWidget *vbox2;
+	GtkWidget *use_apop_chkbtn;
 	GtkWidget *rmmail_chkbtn;
 	GtkWidget *hbox_spc;
 	GtkWidget *leave_time_label;
@@ -1153,6 +1163,9 @@ static void prefs_account_receive_create(void)
 	gtk_widget_show (vbox2);
 	gtk_container_add (GTK_CONTAINER (frame1), vbox2);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
+
+	PACK_CHECK_BUTTON (vbox2, use_apop_chkbtn,
+			   _("Use secure authentication (APOP)"));
 
 	PACK_CHECK_BUTTON (vbox2, rmmail_chkbtn,
 			   _("Remove messages on server when received"));
@@ -1310,6 +1323,7 @@ static void prefs_account_receive_create(void)
 		(vbox1, recvatgetall_chkbtn,
 		 _("`Get all' checks for new messages on this account"));
 
+	receive.use_apop_chkbtn       = use_apop_chkbtn;
 	receive.pop3_frame               = frame1;
 	receive.rmmail_chkbtn            = rmmail_chkbtn;
 	receive.leave_time_entry         = leave_time_entry;
@@ -2164,19 +2178,18 @@ static gint prefs_account_apply(void)
 		return -1;
 	}
 	if (((protocol == A_POP3) || 
-	     (protocol == A_APOP) || 
 	     (protocol == A_LOCAL && !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(basic.mailcmd_chkbtn))) || 
 	     (protocol == A_NONE)) &&
            *gtk_entry_get_text(GTK_ENTRY(basic.smtpserv_entry)) == '\0') {
 		alertpanel_error(_("SMTP server is not entered."));
 		return -1;
 	}
-	if ((protocol == A_POP3 || protocol == A_APOP || protocol == A_IMAP4) &&
+	if ((protocol == A_POP3 || protocol == A_IMAP4) &&
 	    *gtk_entry_get_text(GTK_ENTRY(basic.uid_entry)) == '\0') {
 		alertpanel_error(_("User ID is not entered."));
 		return -1;
 	}
-	if ((protocol == A_POP3 || protocol == A_APOP) &&
+	if (protocol == A_POP3 &&
 	    *gtk_entry_get_text(GTK_ENTRY(basic.recvserv_entry)) == '\0') {
 		alertpanel_error(_("POP3 server is not entered."));
 		return -1;
@@ -2295,43 +2308,19 @@ static void prefs_account_protocol_set_optmenu(PrefParam *pparam)
 	GtkOptionMenu *optmenu = GTK_OPTION_MENU(*pparam->widget);
 	GtkWidget *menu;
 	GtkWidget *menuitem;
-	GList *children;
-	gint list_order[] = {
-		0,  /* A_POP3  */
-		1,  /* A_APOP  */
-		-1, /* A_RPOP  */
-		2,  /* A_IMAP4 */
-		3,  /* A_NNTP  */
-		4,  /* A_LOCAL */
-		5,  /* A_NONE  */
-	};
+	gint index;
 
 	protocol = *((RecvProtocol *)pparam->data);
-	if (protocol < 0 || protocol > A_NONE) return;
-	if (list_order[protocol] < 0) return;
-	gtk_option_menu_set_history(optmenu, list_order[protocol]);
+	index = menu_find_option_menu_index
+		(optmenu, GINT_TO_POINTER(protocol), NULL);
+	if (index < 0) return;
+	gtk_option_menu_set_history(optmenu, index);
 
 	menu = gtk_option_menu_get_menu(optmenu);
 	menu_set_insensitive_all(GTK_MENU_SHELL(menu));
 
-#define SET_NTH_SENSITIVE(proto) \
-{ \
-	menuitem = g_list_nth_data(children, list_order[proto]); \
-	if (menuitem) \
-		gtk_widget_set_sensitive(menuitem, TRUE); \
-}
-
-	children = GTK_MENU_SHELL(menu)->children;
-	SET_NTH_SENSITIVE(protocol);
-	if (protocol == A_POP3) {
-		SET_NTH_SENSITIVE(A_APOP);
-	} else if (protocol == A_APOP) {
-		SET_NTH_SENSITIVE(A_POP3);
-	}
-
-#undef SET_NTH_SENSITIVE
-
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	gtk_widget_set_sensitive(menuitem, TRUE);
 	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
 }
 

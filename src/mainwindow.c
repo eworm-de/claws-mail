@@ -439,9 +439,12 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_File"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Add mailbox"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Add mailbox/MH..."),	NULL, add_mailbox_cb, 0, NULL},
+	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/Change folder order"),	NULL, foldersort_cb,  0, NULL},
+	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Import mbox file..."),	NULL, import_mbox_cb, 0, NULL},
 	{N_("/_File/_Export to mbox file..."),	NULL, export_mbox_cb, 0, NULL},
+	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/Empty all _Trash folders"),	"<shift>D", empty_trash_cb, 0, NULL},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Save as..."),		"<control>S", save_as_cb, 0, NULL},
@@ -1591,7 +1594,7 @@ void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 		manage_window_focus_in(mainwin->window, NULL, NULL);
 	}
 
-	procmsg_empty_trash();
+	procmsg_empty_all_trash();
 
 	if (mainwin->summaryview->folder_item &&
 	    mainwin->summaryview->folder_item->stype == F_TRASH)
@@ -2727,7 +2730,7 @@ static void delete_duplicated_cb(MainWindow *mainwin, guint action,
 {
 	FolderItem *item;
 
-	item = folderview_get_selected(mainwin->folderview);
+	item = folderview_get_selected_item(mainwin->folderview);
 	if (item) {
 		main_window_cursor_wait(mainwin);
 		STATUSBAR_PUSH(mainwin, _("Deleting duplicated messages..."));

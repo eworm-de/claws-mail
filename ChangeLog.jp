@@ -1,3 +1,173 @@
+2004-11-11
+
+	* src/statusbar.c: statusbar_create(): 自動的に伸長しないように
+	  ウィジェットの幅を1に指定。
+	* src/utils.[ch]: trim_string_before(): 指定した長さを超える先頭の
+	  文字を切り詰め、 "..." を追加。
+	* src/folderview.c
+	  src/summaryview.c: trim_string_before() を使ってフォルダ名を表示
+	  するようにした。
+
+2004-11-10
+
+	* src/defs.h
+	  src/prefs_common.c: mozilla-firefox をデフォルトのブラウザにした。
+
+2004-11-09
+
+	* src/summaryview.c: summary_key_pressed()
+	  src/textview.c: textview_key_pressed(): Shift または Alt とスペース
+	  キーが押された場合バックスクロールするようにした。 Shift と Enter
+	  キーが押された場合もバックスクロールするようにした。
+
+2004-11-09
+
+	* src/foldersel.c: foldersel_new_folder(): 新規に作成されたフォルダを
+	  選択するようにした。
+
+2004-11-08
+
+	* version 1.0.0beta2
+
+2004-11-08
+
+	* src/account.c
+	  src/imap.c
+	  src/inc.c
+	  src/pop.c
+	  src/prefs_account.[ch]: RecvProtocol::A_APOP を廃止し、 APOP の
+	  オプションを追加。
+	  prefs_account_protocol_set_optmenu(): リファクタリング。
+
+2004-11-07
+
+	* src/folderview.c: folderview_empty_trash_cb(): 未使用の変数を削除。
+
+2004-11-05
+
+	* src/summary_search.c: ワイドキャラクタ文字列の代わりに C 文字列
+	  を使用。 AND/OR マッチができるようにした。
+
+2004-11-05
+
+	* src/folderview.[ch]
+	  src/mainwindow.c: 選択フォルダに応じてファイル/フォルダ と
+	  ファイル/メールボックス のメニューのセンシティビティを変更する
+	  ようにした。
+	  「ファイル/フォルダ/新規フォルダを作成」からニュースグループの
+	  購読が行えるようにした。
+
+2004-11-04
+
+	* src/folderview.[ch]
+	  src/mainwindow.c: フォルダ/メールボックスのメニューを再構成。
+	  メインメニューで「メールボックスを削除」、「新着メッセージを
+	  チェック」、「フォルダツリーを再構築」を有効にした。
+	  フォルダのコンテキストメニューから「メールボックスを削除」を
+	  削除。
+
+2004-11-04
+
+	* src/folderview.c
+	  src/mainwindow.c
+	  src/procmsg.[ch]: フォルダのコンテキストメニューに「ごみ箱を
+	  空にする」を追加。
+
+2004-11-01
+
+	* src/filter.[ch]
+	  src/summaryview.c: immediate_execution が off の場合は即座に移動
+	  または削除しないようにした。
+
+2004-10-29
+
+	* version 1.0.0beta1
+
+2004-10-29
+
+	* gettext-0.14.1 に更新。
+
+2004-10-28
+
+	* src/compose.c: メニューを再構成。
+	* src/mh.c: デバッグ用の g_print() を削除。
+
+2004-10-27
+
+	* src/compose.c
+	  src/prefs_template.c
+	  src/template.[ch]: テンプレートのパラメータに Cc: を追加。
+
+2004-10-26
+
+	* src/prefs_filter_edit.c: 既存のルールの編集中の条件メニュー切替え
+	  の問題を修正。
+
+2004-10-25
+
+	* src/filter.c: filter_action_exec(): ローカルフィルタリング時
+	  FolderItem のカウンタを更新するようにした(フォルダビューの
+	  メッセージカウントがおかしくなるのを修正)。
+
+2004-10-25
+
+	* src/mbox.c: proc_mbox(): folder_table が NULL かどうかをチェック
+	  (警告を修正)。
+
+2004-10-21
+
+	* src/pixmaps/stock_add_16.xpm
+	  src/pixmaps/stock_remove_16.xpm: gtk-2.4 のストックアイコンから変換。
+	* src/prefs_filter_edit.c: 追加/削除ボタンにアイコンを使用。
+	* src/stock_pixmap.[ch]: 追加/削除のアイコンを追加。
+
+2004-10-21
+
+	* src/pixmaps/stock_dialog_error_48.xpm
+	  src/pixmaps/stock_dialog_info_48.xpm
+	  src/pixmaps/stock_dialog_question_48.xpm
+	  src/pixmaps/stock_dialog_warning_48.xpm: gtk-2.4 のストックアイコン
+	  からダイアログアイコンを変換。
+	* src/alertpanel.[ch]: 警告ダイアログにアイコンを追加。
+	  alertpanel_message(): AlertType を追加。
+	* src/stock_pixmaps.[ch]: ダイアログアイコンを追加。
+
+2004-10-08
+
+	* src/procmsg.c: 冗長なデバッグ出力を削除。
+
+2004-10-07
+
+	* version 0.9.99
+
+2004-10-07
+
+	* src/procmsg.c: procmsg_send_queue()
+	  src/send_message.c: send_queue_info_free(): 不正なキューメッセージ
+	  を送信しようとしたときに segmentation fault になるバグを修正。
+
+2004-10-06
+
+	* src/mainwindow.c: ファイルメニューにセパレータを追加。
+	* src/prefs_filter_edit.c: いくつかのデバッグ出力を削除。
+
+2004-10-05
+
+	* src/inputdialog.c: input_dialog_open(): 入力ダイアログが開いている
+	  間はメールの自動チェックを開始しないようにした。
+
+2004-10-04
+
+	* src/mh.c: mh_remove_all_msg()
+	  src/procmsg.c: procmsg_empty_trash(): ごみ箱を空にした後メッセージ
+	  数のカウントがおかしくなるのを修正。
+
+2004-10-01
+
+	* src/prefs_filter.c: 自動作成されたルールを追加できないバグを修正。
+	* src/prefs_filter_edit.c: prefs_filter_edit_dialog_to_rule(): ルール
+	  名が存在するかどうかをチェック。
+
 2004-09-30
 
 	* src/filter.c: filter_apply_msginfo(): FilterRule::enabled == FALSE

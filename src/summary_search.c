@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtktable.h>
+#include <gtk/gtkoptionmenu.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkhbox.h>
@@ -46,12 +47,14 @@
 #include "summaryview.h"
 #include "messageview.h"
 #include "mainwindow.h"
+#include "menu.h"
 #include "utils.h"
 #include "gtkutils.h"
 #include "manage_window.h"
 #include "alertpanel.h"
 
 static GtkWidget *window;
+static GtkWidget *bool_optmenu;
 static GtkWidget *from_entry;
 static GtkWidget *to_entry;
 static GtkWidget *subject_entry;
@@ -89,6 +92,9 @@ void summary_search(SummaryView *summaryview)
 static void summary_search_create(SummaryView *summaryview)
 {
 	GtkWidget *vbox1;
+	GtkWidget *bool_hbox;
+	GtkWidget *bool_menu;
+	GtkWidget *menuitem;
 	GtkWidget *table1;
 	GtkWidget *from_label;
 	GtkWidget *to_label;
@@ -111,6 +117,19 @@ static void summary_search_create(SummaryView *summaryview)
 	vbox1 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (window), vbox1);
+
+	bool_hbox = gtk_hbox_new(FALSE, 4);
+	gtk_widget_show(bool_hbox);
+	gtk_box_pack_start(GTK_BOX(vbox1), bool_hbox, FALSE, FALSE, 0);
+
+	bool_optmenu = gtk_option_menu_new();
+	gtk_widget_show(bool_optmenu);
+	gtk_box_pack_start(GTK_BOX(bool_hbox), bool_optmenu, FALSE, FALSE, 0);
+
+	bool_menu = gtk_menu_new();
+	MENUITEM_ADD(bool_menu, menuitem, _("Match any of the following"), 0);
+	MENUITEM_ADD(bool_menu, menuitem, _("Match all of the following"), 1);
+	gtk_option_menu_set_menu(GTK_OPTION_MENU(bool_optmenu), bool_menu);
 
 	table1 = gtk_table_new (4, 3, FALSE);
 	gtk_widget_show (table1);
@@ -199,12 +218,6 @@ static void summary_search_create(SummaryView *summaryview)
 	gtk_signal_connect(GTK_OBJECT(all_checkbtn), "clicked",
 			   GTK_SIGNAL_FUNC(all_clicked), summaryview);
 
-	and_checkbtn =
-		gtk_check_button_new_with_label (_("AND search"));
-	gtk_widget_show (and_checkbtn);
-	gtk_box_pack_start (GTK_BOX (checkbtn_hbox), and_checkbtn,
-			    FALSE, FALSE, 0);
-
 	gtkut_button_set_create(&confirm_area,
 				&search_btn, _("Search"),
 				&clear_btn,  _("Clear"),
@@ -230,50 +243,38 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCTreeNode *node;
 	MsgInfo *msginfo;
+	gboolean bool_and;
 	gboolean case_sens;
 	gboolean backward;
 	gboolean search_all;
-	gboolean search_and;
 	gboolean all_searched = FALSE;
-	gboolean all_matched = FALSE;
-	gboolean from_matched;
-	gboolean   to_matched;
-	gboolean subj_matched;
+	gboolean matched;
 	gboolean body_matched;
-	gchar *body_str;
-	wchar_t *wcs_hs, *fromwcs, *towcs, *subjwcs;
-	wchar_t *(* WCSFindFunc) (const wchar_t *haystack,
-				  const wchar_t *needle);
+	gchar *from_str, *to_str, *subject_str, *body_str;
+	StrFindFunc str_find_func;
 
 	if (summary_is_locked(summaryview)) return;
 	summary_lock(summaryview);
 
+	bool_and = GPOINTER_TO_INT
+		(menu_get_option_menu_active_user_data
+			(GTK_OPTION_MENU(bool_optmenu)));
 	case_sens = gtk_toggle_button_get_active
 		(GTK_TOGGLE_BUTTON(case_checkbtn));
 	backward = gtk_toggle_button_get_active
 		(GTK_TOGGLE_BUTTON(backward_checkbtn));
 	search_all = gtk_toggle_button_get_active
 		(GTK_TOGGLE_BUTTON(all_checkbtn));
-	search_and = gtk_toggle_button_get_active
-		(GTK_TOGGLE_BUTTON(and_checkbtn));
-	
-	if (case_sens)
-#if HAVE_WCSSTR
-		WCSFindFunc = wcsstr;
-#else
-#if HAVE_WCSWCS
-		WCSFindFunc = wcswcs;
-#else
-		WCSFindFunc = wcscasestr;
-#endif
-#endif /* HAVE_WCSSTR */
-	else
-		WCSFindFunc = wcscasestr;
 
-	fromwcs = (wchar_t *)GTK_ENTRY(from_entry)->text;
-	towcs   = (wchar_t *)GTK_ENTRY(to_entry)->text;
-	subjwcs = (wchar_t *)GTK_ENTRY(subject_entry)->text;
-	body_str = gtk_entry_get_text(GTK_ENTRY(body_entry));
+	if (case_sens)
+		str_find_func = str_find;
+	else
+		str_find_func = str_case_find;
+
+	from_str    = gtk_entry_get_text(GTK_ENTRY(from_entry));
+	to_str      = gtk_entry_get_text(GTK_ENTRY(to_entry));
+	subject_str = gtk_entry_get_text(GTK_ENTRY(subject_entry));
+	body_str    = gtk_entry_get_text(GTK_ENTRY(body_entry));
 
 	if (search_all) {
 		gtk_clist_freeze(GTK_CLIST(ctree));
@@ -340,44 +341,61 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 				break;
 		}
 
-		from_matched = to_matched = subj_matched = body_matched = FALSE;
-		all_matched = search_and;
-		
+
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
+		body_matched = FALSE;
 
-		if (*fromwcs && msginfo->from) {
-			wcs_hs = strdup_mbstowcs(msginfo->from);
-			if (wcs_hs && WCSFindFunc(wcs_hs, fromwcs) != NULL)
-				from_matched = TRUE;
-			else
-				all_matched = FALSE;
-			g_free(wcs_hs);
-		}
-		if (*towcs && msginfo->to) {
-			wcs_hs = strdup_mbstowcs(msginfo->to);
-			if (wcs_hs && WCSFindFunc(wcs_hs, towcs) != NULL)
-				to_matched = TRUE;
-			else
-				all_matched = FALSE;
-			g_free(wcs_hs);
-		}
-		if (*subjwcs && msginfo->subject) {
-			wcs_hs = strdup_mbstowcs(msginfo->subject);
-			if (wcs_hs && WCSFindFunc(wcs_hs, subjwcs) != NULL)
-				subj_matched = TRUE;
-			else
-				all_matched = FALSE;
-			g_free(wcs_hs);
-		}
-		if (*body_str) {
-			if (procmime_find_string(msginfo, body_str, case_sens))
-				body_matched = TRUE;
-			else
-				all_matched = FALSE;
+		if (bool_and) {
+			matched = TRUE;
+			if (*from_str) {
+				if (!msginfo->from ||
+				    !str_find_func(msginfo->from, from_str))
+					matched = FALSE;
+			}
+			if (matched && *to_str) {
+				if (!msginfo->to ||
+				    !str_find_func(msginfo->to, to_str))
+					matched = FALSE;
+			}
+			if (matched && *subject_str) {
+				if (!msginfo->subject ||
+				    !str_find_func(msginfo->subject, subject_str))
+					matched = FALSE;
+			}
+			if (matched && *body_str) {
+				if (procmime_find_string(msginfo, body_str,
+							 str_find_func))
+					body_matched = TRUE;
+				else
+					matched = FALSE;
+			}
+			if (matched && !*from_str && !*to_str &&
+			    !*subject_str && !*body_str)
+				matched = FALSE;
+		} else {
+			matched = FALSE;
+			if (*from_str && msginfo->from) {
+				if (str_find_func(msginfo->from, from_str))
+					matched = TRUE;
+			}
+			if (!matched && *to_str && msginfo->to) {
+				if (str_find_func(msginfo->to, to_str))
+					matched = TRUE;
+			}
+			if (!matched && *subject_str && msginfo->subject) {
+				if (str_find_func(msginfo->subject, subject_str))
+					matched = TRUE;
+			}
+			if (!matched && *body_str) {
+				if (procmime_find_string(msginfo, body_str,
+							 str_find_func)) {
+					matched = TRUE;
+					body_matched = TRUE;
+				}
+			}
 		}
 
-		if ((from_matched || to_matched || subj_matched || body_matched)
-		    && (!search_and || all_matched)) {
+		if (matched) {
 			if (search_all)
 				gtk_ctree_select(ctree, node);
 			else {

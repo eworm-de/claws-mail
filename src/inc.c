@@ -458,7 +458,7 @@ static IncSession *inc_session_new(PrefsAccount *account)
 
 	g_return_val_if_fail(account != NULL, NULL);
 
-	if (account->protocol != A_POP3 && account->protocol != A_APOP)
+	if (account->protocol != A_POP3)
 		return NULL;
 	if (!account->recv_server || !account->userid)
 		return NULL;

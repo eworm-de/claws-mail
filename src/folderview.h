@@ -72,13 +72,17 @@ struct _FolderViewPopup
 void folderview_initialize		(void);
 FolderView *folderview_create		(void);
 void folderview_init			(FolderView	*folderview);
+
 void folderview_set			(FolderView	*folderview);
 void folderview_set_all			(void);
+
 void folderview_select			(FolderView	*folderview,
 					 FolderItem	*item);
 void folderview_unselect		(FolderView	*folderview);
-FolderItem *folderview_get_selected	(FolderView 	*folderview);
 void folderview_select_next_unread	(FolderView	*folderview);
+
+FolderItem *folderview_get_selected_item(FolderView	*folderview);
+
 void folderview_update_msg_num		(FolderView	*folderview,
 					 GtkCTreeNode	*row);
 

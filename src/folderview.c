@@ -579,7 +579,7 @@ static void mark_all_read_cb(FolderView *folderview, guint action,
 {
 	FolderItem *item;
 
-	item = folderview_get_selected(folderview);
+	item = folderview_get_selected_item(folderview);
 	if (item == NULL)
 		return;
 
@@ -649,6 +649,14 @@ void folderview_select_next_unread(FolderView *folderview)
 	/* search again from the first node */
 	if ((node = folderview_find_next_unread(ctree, NULL)) != NULL)
 		folderview_select_node(folderview, node);
+}
+
+FolderItem *folderview_get_selected_item(FolderView *folderview)
+{
+	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+
+	if (!folderview->selected) return NULL;
+	return gtk_ctree_node_get_row_data(ctree, folderview->selected);
 }
 
 void folderview_update_msg_num(FolderView *folderview, GtkCTreeNode *row)
@@ -2134,12 +2142,6 @@ static void folderview_drag_end_cb(GtkWidget	    *widget,
 	drag_state_stop(folderview);
 	g_slist_free(folderview->nodes_to_recollapse);
 	folderview->nodes_to_recollapse = NULL;
-}
-
-FolderItem *folderview_get_selected(FolderView *folderview)
-{
-	return (FolderItem *) gtk_ctree_node_get_row_data(
-		GTK_CTREE(folderview->ctree), folderview->selected);
 }
 
 void folderview_register_popup(FolderViewPopup *fpopup)

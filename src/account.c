@@ -1002,9 +1002,8 @@ static void account_selected(GtkCList *clist, gint row, gint column,
 		PrefsAccount *ac;
 
 		ac = gtk_clist_get_row_data(clist, row);
-		if (ac->protocol == A_POP3 || ac->protocol == A_APOP ||
-		    ac->protocol == A_IMAP4 || ac->protocol == A_NNTP ||
-		    ac->protocol == A_LOCAL) {
+		if (ac->protocol == A_POP3 || ac->protocol == A_IMAP4 ||
+		    ac->protocol == A_NNTP || ac->protocol == A_LOCAL) {
 			ac->recv_at_getall ^= TRUE;
 			account_clist_set_row(ac, row);
 		}
@@ -1042,11 +1041,6 @@ static gint account_clist_set_row(PrefsAccount *ac_prefs, gint row)
 			      "POP3 (SSL)" :
 			      ac_prefs->ssl_pop == SSL_STARTTLS ?
 			      "POP3 (TLS)" : "POP3") :
-			     ac_prefs->protocol == A_APOP ?
-			     (ac_prefs->ssl_pop == SSL_TUNNEL ?
-			      "POP3 (APOP, SSL)" :
-			      ac_prefs->ssl_pop == SSL_STARTTLS ?
-			      "POP3 (APOP, TLS)" : "POP3 (APOP)") :
 			     ac_prefs->protocol == A_IMAP4 ?
 			     (ac_prefs->ssl_imap == SSL_TUNNEL ?
 			      "IMAP4 (SSL)" :
@@ -1058,7 +1052,6 @@ static gint account_clist_set_row(PrefsAccount *ac_prefs, gint row)
 			     "";
 #else
 	text[COL_PROTOCOL] = ac_prefs->protocol == A_POP3  ? "POP3" :
-			     ac_prefs->protocol == A_APOP  ? "POP3 (APOP)" :
 			     ac_prefs->protocol == A_IMAP4 ? "IMAP4" :
 			     ac_prefs->protocol == A_LOCAL ? "Local" :
 			     ac_prefs->protocol == A_NNTP  ? "NNTP" : "";
@@ -1077,7 +1070,6 @@ static gint account_clist_set_row(PrefsAccount *ac_prefs, gint row)
 	}
 
 	has_getallbox = (ac_prefs->protocol == A_POP3  ||
-			 ac_prefs->protocol == A_APOP  ||
 			 ac_prefs->protocol == A_IMAP4 ||
 			 ac_prefs->protocol == A_NNTP ||
 			 ac_prefs->protocol == A_LOCAL);

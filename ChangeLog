@@ -1,3 +1,171 @@
+2004-11-11
+
+	* src/statusbar.c: statusbar_create(): set the width of widget to 1
+	  not to expand automatically.
+	* src/utils.[ch]: trim_string_before(): trim beginning characters
+	  longer than the specified length and add "...".
+	* src/folderview.c
+	  src/summaryview.c: use trim_string_before() to display folder name.
+
+2004-11-10
+
+	* src/defs.h
+	  src/prefs_common.c: made mozilla-firefox as default browser.
+
+2004-11-09
+
+	* src/summaryview.c: summary_key_pressed()
+	  src/textview.c: textview_key_pressed(): back scroll when Shift or
+	  Alt and Space key is pressed. Also back scroll when Shift and Enter
+	  key is pressed.
+
+2004-11-09
+
+	* src/foldersel.c: foldersel_new_folder(): select newly created
+	  folder.
+
+2004-11-08
+
+	* version 1.0.0beta2
+
+2004-11-08
+
+	* src/account.c
+	  src/imap.c
+	  src/inc.c
+	  src/pop.c
+	  src/prefs_account.[ch]: obsoleted RecvProtocol::A_APOP and made an
+	  option for APOP.
+	  prefs_account_protocol_set_optmenu(): refactored.
+
+2004-11-07
+
+	* src/folderview.c: folderview_empty_trash_cb(): removed unused
+	  variables.
+
+2004-11-05
+
+	* src/summary_search.c: use C string instead of wide character string.
+	  Enabled AND/OR matching.
+
+2004-11-05
+
+	* src/folderview.[ch]
+	  src/mainwindow.c: change menu sensitivity of File/Folder and
+	  File/Mailbox according to selected folder.
+	  Enabled newsgroups subscription from 'File/Folder/Create new folder'.
+
+2004-11-04
+
+	* src/folderview.[ch]
+	  src/mainwindow.c: reorganized folder/mailbox menus.
+	  Enabled 'Remove mailbox', 'Check for new messages' and
+	  'Rebuild folder tree' on main menu.
+	  Removed 'Remove mailbox' from the folder context menu.
+
+2004-11-04
+
+	* src/folderview.c
+	  src/mainwindow.c
+	  src/procmsg.[ch]: added 'Empty trash' to the folder context menu.
+
+2004-11-01
+
+	* src/filter.[ch]
+	  src/summaryview.c: don't move/delete immediately when
+	  immediate_execution is off.
+
+2004-10-29
+
+	* version 1.0.0beta1
+
+2004-10-29
+
+	* upgraded to gettext-0.14.1.
+
+2004-10-28
+
+	* src/compose.c: reorganized the menu.
+	* src/mh.c: removed g_print() for debug.
+
+2004-10-27
+
+	* src/compose.c
+	  src/prefs_template.c
+	  src/template.[ch]: added Cc: to template parameter.
+
+2004-10-26
+
+	* src/prefs_filter_edit.c: fixed condition menu switching problem
+	  on editing existing rules.
+
+2004-10-25
+
+	* src/filter.c: filter_action_exec(): update counters of FolderItem
+	  on local filtering (fixes wrong folderview message count).
+
+2004-10-25
+
+	* src/mbox.c: proc_mbox(): check if folder_table is NULL (fix
+	  warnings).
+
+2004-10-21
+
+	* src/pixmaps/stock_add_16.xpm
+	  src/pixmaps/stock_remove_16.xpm: converted from stock icons in
+	  gtk-2.4.
+	* src/prefs_filter_edit.c: use icons for add/remove button.
+	* src/stock_pixmap.[ch]: added add/remove icons.
+
+2004-10-21
+
+	* src/pixmaps/stock_dialog_error_48.xpm
+	  src/pixmaps/stock_dialog_info_48.xpm
+	  src/pixmaps/stock_dialog_question_48.xpm
+	  src/pixmaps/stock_dialog_warning_48.xpm: converted dialog icons from
+	  stock icons in gtk-2.4.
+	* src/alertpanel.[ch]: added icons to the alert dialog.
+	  alertpanel_message(): Added AlertType.
+	* src/stock_pixmaps.[ch]: added dialog icons.
+
+
+2004-10-08
+
+	* src/procmsg.c: removed verbose debug prints.
+
+2004-10-07
+
+	* version 0.9.99
+
+2004-10-07
+
+	* src/procmsg.c: procmsg_send_queue()
+	  src/send_message.c: send_queue_info_free(): fixed segmentation fault
+	  when trying to send an invalid queued message.
+
+2004-10-06
+
+	* src/mainwindow.c: added separators to the File menu.
+	* src/prefs_filter_edit.c: removed some debug prints.
+
+2004-10-05
+
+	* src/inputdialog.c: input_dialog_open(): don't start auto-checking
+	  mail while opening the input dialog.
+
+2004-10-04
+
+	* src/mh.c: mh_remove_all_msg()
+	  src/procmsg.c: procmsg_empty_trash(): fixed wrong message count
+	  after emptying trash.
+
+2004-10-01
+
+	* src/prefs_filter.c: fixed a bug that didn't add an auto-created
+	  rule.
+	* src/prefs_filter_edit.c: prefs_filter_edit_dialog_to_rule(): check
+	  if rule name exists.
+
 2004-09-30
 
 	* src/filter.c: filter_apply_msginfo(): don't apply filter if
