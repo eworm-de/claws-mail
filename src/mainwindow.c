@@ -279,6 +279,10 @@ static void view_source_cb		(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
 
+static void show_all_header_cb		(MainWindow	*mainwin,
+					 guint		 action,
+					 GtkWidget	*widget);
+
 static void reedit_cb			(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -598,7 +602,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/Open in new _window"),	"<control><alt>N", open_msg_cb, 0, NULL},
 	{N_("/_View/_View source"),		"<control>U", view_source_cb, 0, NULL},
-	{N_("/_View/Show all _header"),		"<control>H", header_window_show_cb, 0, NULL},
+	{N_("/_View/Show all _header"),		"<control>H", show_all_header_cb, 0, NULL},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Update"),			"<control><alt>U", update_summary_cb,  0, NULL},
 
@@ -610,7 +614,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/Send queued messa_ges"),
 						NULL, send_queue_cb, 0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/Compose a_n email message"),	"<shift><control>N", compose_mail_cb, 0, NULL},
+	{N_("/_Message/Compose a_n email message"),	"<control>M", compose_mail_cb, 0, NULL},
 	{N_("/_Message/Compose a news message"),	NULL,	compose_news_cb, 0, NULL},
 	{N_("/_Message/_Reply"),		"<control>R", 	reply_cb, COMPOSE_REPLY, NULL},
 	{N_("/_Message/Repl_y to sender"),	"<control><alt>R", reply_cb, COMPOSE_REPLY_TO_SENDER, NULL},
@@ -1070,7 +1074,7 @@ void main_window_reflect_prefs_all(void)
 		else
 			gtk_widget_show(mainwin->exec_btn);
 
-		summary_redisplay_msg(mainwin->summaryview);
+		summary_redisplay_msg(mainwin->summaryview, FALSE);
 		headerview_set_visibility(mainwin->messageview->headerview,
 					  prefs_common.display_header_pane);
 	}
@@ -2607,6 +2611,12 @@ static void view_source_cb(MainWindow *mainwin, guint action,
 	summary_view_source(mainwin->summaryview);
 }
 
+static void show_all_header_cb(MainWindow *mainwin, guint action,
+			       GtkWidget *widget)
+{
+	summary_redisplay_msg(mainwin->summaryview, TRUE);
+}
+
 static void reedit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	summary_reedit(mainwin->summaryview);
@@ -2655,7 +2665,7 @@ static void set_charset_cb(MainWindow *mainwin, guint action,
 	g_free(prefs_common.force_charset);
 	prefs_common.force_charset = str ? g_strdup(str) : NULL;
 
-	summary_redisplay_msg(mainwin->summaryview);
+	summary_redisplay_msg(mainwin->summaryview, FALSE);
 
 	debug_print(_("forced charset: %s\n"), str ? str : "Auto-Detect");
 }

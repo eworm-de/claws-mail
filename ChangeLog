@@ -1,3 +1,31 @@
+2002-02-04
+
+	* src/mainwindow.c
+	  src/messageview.[ch]
+	  src/summaryview.[ch]
+	  src/textview.[ch]: show all headers in the message view, and don't
+	  use the header window anymore.
+	* src/mainwindow.c
+	  src/prefs_common.c: changed the default shortcut of 'compose new
+	  message'.
+
+2002-02-03
+
+	* src/prefs_common.c: prefs_other_create(): modified the design
+	  of the external command settings.
+	  prefs_keybind_apply_clicked(): made the Mew / Wanderlust keybind
+	  preset closer to the original.
+	  Added Mutt keybind preset.
+	  Also change the compose keybinds.
+	* src/compose.c: modified some menu shortcuts.
+	* src/codeconv.c: modified the locale_table for Thai encoding.
+
+2002-02-01
+
+	* src/Makefile.am: added $(GPGME_CFLAGS) to INCLUDES.
+	* src/prefs_common.c: prefs_interface_create(): modified the
+	  description for menu shortcut.
+
 2002-01-31
 
 	* src/gtkutils.[ch]: added gtk_stext_clear().

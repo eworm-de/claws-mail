@@ -1,3 +1,31 @@
+2002-02-04
+
+	* src/mainwindow.c
+	  src/messageview.[ch]
+	  src/summaryview.[ch]
+	  src/textview.[ch]: 全ヘッダをメッセージビューに表示し、ヘッダ
+	  ウィンドウはもう使用しないようにした。
+	* src/mainwindow.c
+	  src/prefs_common.c: 「新規メッセージを作成」のデフォルトの
+	  ショートカットを変更。
+
+2002-02-03
+
+	* src/prefs_common.c: prefs_other_create(): 外部コマンドの設定の
+	  デザインを修正。
+	  prefs_keybind_apply_clicked(): Mew / Wanderlust キーバインド
+	  プリセットをよりオリジナルに近づけた。
+	  Mutt キーバインドプリセットを追加。
+	  メッセージ作成のキーバインドも変更。
+	* src/compose.c: いくつかのメニューショートカットを変更。
+	* src/codeconv.c: タイ語のエンコーディング用に locale_table を修正。
+
+2002-02-01
+
+	* src/Makefile.am: $(GPGME_CFLAGS) を INCLUDES に追加。
+	* src/prefs_common.c: prefs_interface_create(): メニューショート
+	  カットの説明を修正。
+
 2002-01-31
 
 	* src/gtkutils.[ch]: gtk_stext_clear() を追加。

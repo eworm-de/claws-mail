@@ -1,3 +1,8 @@
+2002-02-04 [paul]	0.7.0claws46
+
+	* sync with sylpheed 0.7.0cvs30
+		see ChangeLog entries 2002-02-03 and 2002-02-04
+
 2002-02-03 [melvin]	0.7.0claws45
 
 	* src/gtkspell.[ch]

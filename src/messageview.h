@@ -58,7 +58,8 @@ MessageView *messageview_create			(void);
 MessageView *messageview_create_with_new_window	(void);
 void messageview_init				(MessageView	*messageview);
 void messageview_show				(MessageView	*messageview,
-						 MsgInfo	*msginfo);
+						 MsgInfo	*msginfo,
+						 gboolean	 all_headers);
 void messageview_clear				(MessageView	*messageview);
 void messageview_destroy			(MessageView	*messageview);
 void messageview_quote_color_set		(void);

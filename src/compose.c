@@ -543,7 +543,7 @@ static GtkItemFactoryEntry compose_entries[] =
 					COMPOSE_CALL_GTK_STEXT_DELETE_BACKWARD_WORD,
 					NULL},
 	{N_("/_Edit/A_dvanced/Delete a word forward"),
-					"<alt>D",
+					NULL, /* "<alt>D", */
 					compose_gtk_stext_action_cb,
 					COMPOSE_CALL_GTK_STEXT_DELETE_FORWARD_WORD,
 					NULL},
@@ -563,7 +563,7 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Edit/Wrap all long _lines"),
 					"<control><alt>L", compose_wrap_line_all, 0, NULL},
 	{N_("/_Edit/Edit with e_xternal editor"),
-					"<control>X", compose_ext_editor_cb, 0, NULL},
+					"<shift><control>X", compose_ext_editor_cb, 0, NULL},
 #if USE_PSPELL
 	{N_("/_Spelling"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Spelling/_Check all or check selection"),
@@ -594,10 +594,11 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Message"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Message/_Send"),		"<control>Return",
 					compose_send_cb, 0, NULL},
-	{N_("/_Message/Send _later"),	"<shift><alt>S",
+	{N_("/_Message/Send _later"),	"<shift><control>S",
 					compose_send_later_cb,  0, NULL},
+	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Save to _draft folder"),
-					"<alt>D", compose_draft_cb, 0, NULL},
+					"<shift><control>D", compose_draft_cb, 0, NULL},
 	{N_("/_Message/Save and _keep editing"),
 					"<control>S", compose_draft_cb, 1, NULL},
 #if 0 /* NEW COMPOSE GUI */
@@ -620,7 +621,7 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Message/_Request Return Receipt"),	NULL, compose_toggle_return_receipt_cb, 0, "<ToggleItem>"},
 	{N_("/_Tool"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tool/Show _ruler"),	NULL, compose_toggle_ruler_cb, 0, "<ToggleItem>"},
-	{N_("/_Tool/_Address book"),	"<control><alt>A", compose_address_cb , 0, NULL},
+	{N_("/_Tool/_Address book"),	"<shift><control>A", compose_address_cb , 0, NULL},
 	{N_("/_Tool/_Template"),	NULL, NULL, 0, "<Branch>"},
 	{N_("/_Help"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Help/_About"),		NULL, about_show, 0, NULL}

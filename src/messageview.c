@@ -363,7 +363,8 @@ static gint disposition_notification_send(MsgInfo * msginfo)
 	return ok;
 }
 
-void messageview_show(MessageView *messageview, MsgInfo *msginfo)
+void messageview_show(MessageView *messageview, MsgInfo *msginfo,
+		      gboolean all_headers)
 {
 	FILE *fp;
 	gchar *file;
@@ -454,6 +455,8 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo)
 
 	headerview_show(messageview->headerview, tmpmsginfo);
 	procmsg_msginfo_free(tmpmsginfo);
+
+	textview_set_all_headers(messageview->textview, all_headers);
 
 	if (mimeinfo->mime_type != MIME_TEXT) {
 		messageview_change_view_type(messageview, MVIEW_MIME);

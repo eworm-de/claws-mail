@@ -528,7 +528,10 @@ static const struct {
 	{"el_GR"	, C_ISO_8859_7},
 	{"iw_IL"	, C_ISO_8859_8},
 	{"tr_TR"	, C_ISO_8859_9},
-	{"th_TH"	, C_ISO_8859_11},
+
+	{"th_TH"	, C_TIS_620},
+	/* {"th_TH"	, C_WINDOWS_874}, */
+	/* {"th_TH"	, C_ISO_8859_11}, */
 
 	{"lt_LT.iso88594"	, C_ISO_8859_4},
 	{"lt_LT.ISO8859-4"	, C_ISO_8859_4},

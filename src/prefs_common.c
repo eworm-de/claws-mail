@@ -2511,7 +2511,8 @@ PACK_FRAME(vbox1, keybind_frame, _("Shortcut key"));
 	gtk_box_pack_start (GTK_BOX (hbox1), keybind_combo, TRUE, TRUE, 0);
 	gtkut_combo_set_items (GTK_COMBO (keybind_combo),
 			       _("Default"),
-			       _("Mew / Wanderlust"),
+			       "Mew / Wanderlust",
+			       "Mutt",
 			       _("Old Sylpheed"),
 			       NULL);
 	gtk_entry_set_editable (GTK_ENTRY (GTK_COMBO (keybind_combo)->entry),
@@ -2537,18 +2538,17 @@ PACK_FRAME(vbox1, keybind_frame, _("Shortcut key"));
 static void prefs_other_create(void)
 {
 	GtkWidget *vbox1;
+	GtkWidget *ext_frame;
+	GtkWidget *ext_table;
 	GtkWidget *hbox1;
 
-	GtkWidget *uri_frame;
 	GtkWidget *uri_label;
 	GtkWidget *uri_combo;
 	GtkWidget *uri_entry;
 
-	GtkWidget *print_frame;
 	GtkWidget *printcmd_label;
 	GtkWidget *printcmd_entry;
 
-	GtkWidget *exteditor_frame;
 	GtkWidget *exteditor_label;
 	GtkWidget *exteditor_combo;
 	GtkWidget *exteditor_entry;
@@ -2565,21 +2565,26 @@ static void prefs_other_create(void)
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	PACK_FRAME(vbox1, uri_frame,
-		   _("External Web browser (%s will be replaced with URI)"));
+	PACK_FRAME(vbox1, ext_frame,
+		   _("External commands (%s will be replaced with file name / URI)"));
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_container_add (GTK_CONTAINER (uri_frame), hbox1);
-	gtk_container_set_border_width (GTK_CONTAINER (hbox1), 8);
+	ext_table = gtk_table_new (3, 2, FALSE);
+	gtk_widget_show (ext_table);
+	gtk_container_add (GTK_CONTAINER (ext_frame), ext_table);
+	gtk_container_set_border_width (GTK_CONTAINER (ext_table), 8);
+	gtk_table_set_row_spacings (GTK_TABLE (ext_table), VSPACING_NARROW);
+	gtk_table_set_col_spacings (GTK_TABLE (ext_table), 8);
 
-	uri_label = gtk_label_new (_("Command"));
+	uri_label = gtk_label_new (_("Web browser"));
 	gtk_widget_show(uri_label);
-	gtk_box_pack_start (GTK_BOX (hbox1), uri_label, FALSE, TRUE, 0);
+	gtk_table_attach (GTK_TABLE (ext_table), uri_label, 0, 1, 0, 1,
+			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gtk_misc_set_alignment (GTK_MISC (uri_label), 1, 0.5);
 
 	uri_combo = gtk_combo_new ();
 	gtk_widget_show (uri_combo);
-	gtk_box_pack_start (GTK_BOX (hbox1), uri_combo, TRUE, TRUE, 0);
+	gtk_table_attach (GTK_TABLE (ext_table), uri_combo, 1, 2, 0, 1,
+			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtkut_combo_set_items (GTK_COMBO (uri_combo),
 			       "netscape -remote 'openURL(%s,raise)'",
 			       "netscape '%s'",
@@ -2587,40 +2592,29 @@ static void prefs_other_create(void)
 			       "kterm -e w3m '%s'",
 			       "kterm -e lynx '%s'",
 			       NULL);
-
 	uri_entry = GTK_COMBO (uri_combo)->entry;
 
-	PACK_FRAME(vbox1, print_frame,
-		   _("Printing (%s will be replaced with file name)"));
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_container_add (GTK_CONTAINER (print_frame), hbox1);
-	gtk_container_set_border_width (GTK_CONTAINER (hbox1), 8);
-
-	printcmd_label = gtk_label_new (_("Command"));
+	printcmd_label = gtk_label_new (_("Print"));
 	gtk_widget_show (printcmd_label);
-	gtk_box_pack_start (GTK_BOX (hbox1), printcmd_label, FALSE, FALSE, 0);
+	gtk_table_attach (GTK_TABLE (ext_table), printcmd_label, 0, 1, 1, 2,
+			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gtk_misc_set_alignment (GTK_MISC (printcmd_label), 1, 0.5);
 
 	printcmd_entry = gtk_entry_new ();
 	gtk_widget_show (printcmd_entry);
-	gtk_box_pack_start (GTK_BOX (hbox1), printcmd_entry, TRUE, TRUE, 0);
+	gtk_table_attach (GTK_TABLE (ext_table), printcmd_entry, 1, 2, 1, 2,
+			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
-	PACK_FRAME(vbox1, exteditor_frame,
-		   _("External editor (%s will be replaced with file name)"));
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_container_add (GTK_CONTAINER (exteditor_frame), hbox1);
-	gtk_container_set_border_width (GTK_CONTAINER (hbox1), 8);
-
-	exteditor_label = gtk_label_new (_("Command"));
+	exteditor_label = gtk_label_new (_("Editor"));
 	gtk_widget_show (exteditor_label);
-	gtk_box_pack_start (GTK_BOX (hbox1), exteditor_label, FALSE, FALSE, 0);
+	gtk_table_attach (GTK_TABLE (ext_table), exteditor_label, 0, 1, 2, 3,
+			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gtk_misc_set_alignment (GTK_MISC (exteditor_label), 1, 0.5);
 
 	exteditor_combo = gtk_combo_new ();
 	gtk_widget_show (exteditor_combo);
-	gtk_box_pack_start (GTK_BOX (hbox1), exteditor_combo, TRUE, TRUE, 0);
+	gtk_table_attach (GTK_TABLE (ext_table), exteditor_combo, 1, 2, 2, 3,
+			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtkut_combo_set_items (GTK_COMBO (exteditor_combo),
 			       "gedit %s",
 			       "kedit %s",
@@ -3495,9 +3489,9 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 
 		"(menu-path \"<Main>/Message/Get new mail\" \"<control>I\")\n"
 		"(menu-path \"<Main>/Message/Get from all accounts\" \"<shift><control>I\")\n"
-		"(menu-path \"<Main>/Message/Compose an email message\" \"<shift><control>N\")\n"
+		"(menu-path \"<Main>/Message/Compose an email message\" \"<control>M\")\n"
 		"(menu-path \"<Main>/Message/Reply\" \"<control>R\")\n"
-		"(menu-path \"<Main>/Message/Reply to sender\" \"<control><alt>R\")\n"
+		"(menu-path \"<Main>/Message/Reply to sender\" \"\")\n"
 		"(menu-path \"<Main>/Message/Reply to all\" \"<shift><control>R\")\n"
 		"(menu-path \"<Main>/Message/Forward\" \"<control><alt>F\")\n"
 		/* "(menu-path \"<Main>/Message/Forward as attachment\" \"\")\n" */
@@ -3507,15 +3501,24 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/Message/Mark/Mark\" \"<shift>asterisk\")\n"
 		"(menu-path \"<Main>/Message/Mark/Unmark\" \"U\")\n"
 		"(menu-path \"<Main>/Message/Mark/Mark as unread\" \"<shift>exclam\")\n"
+		"(menu-path \"<Main>/Message/Mark/Mark as read\" \"\")\n"
 
 		"(menu-path \"<Main>/Tool/Address book\" \"<shift><control>A\")\n"
 		"(menu-path \"<Main>/Tool/Execute\" \"X\")\n"
-		"(menu-path \"<Main>/Tool/Log window\" \"<control>L\")";
+		"(menu-path \"<Main>/Tool/Log window\" \"<control>L\")\n"
+
+		"(menu-path \"<Compose>/File/Close\" \"<control>W\")\n"
+		"(menu-path \"<Compose>/Edit/Select all\" \"<control>A\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Move a word backward\" \"\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Move a word forward\" \"\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Move to beginning of line\" \"\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Delete a word backward\" \"\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Delete a word forward\" \"\")";
 
 	static gchar *mew_wl_menurc =
 		"(menu-path \"<Main>/File/Empty trash\" \"<shift>D\")\n"
 		"(menu-path \"<Main>/File/Save as...\" \"Y\")\n"
-		"(menu-path \"<Main>/File/Print...\" \"\")\n"
+		"(menu-path \"<Main>/File/Print...\" \"<shift>numbersign\")\n"
 		"(menu-path \"<Main>/File/Exit\" \"<shift>Q\")\n"
 
 		"(menu-path \"<Main>/Edit/Copy\" \"<control>C\")\n"
@@ -3525,7 +3528,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 
 		"(menu-path \"<Main>/View/Expand Summary View\" \"\")\n"
 		"(menu-path \"<Main>/View/Expand Message View\" \"\")\n"
-		"(menu-path \"<Main>/View/Thread view\" \"<control>T\")\n"
+		"(menu-path \"<Main>/View/Thread view\" \"<shift>T\")\n"
 		"(menu-path \"<Main>/View/Unthread view\" \"<shift><control>T\")\n"
 		"(menu-path \"<Main>/View/Go to/Prev message\" \"P\")\n"
 		"(menu-path \"<Main>/View/Go to/Next message\" \"N\")\n"
@@ -3534,8 +3537,8 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/View/Go to/Other folder...\" \"G\")\n"
 		"(menu-path \"<Main>/View/Open in new window\" \"<control><alt>N\")\n"
 		"(menu-path \"<Main>/View/View source\" \"<control>U\")\n"
-		"(menu-path \"<Main>/View/Show all header\" \"<control>H\")\n"
-		"(menu-path \"<Main>/View/Update\" \"<control><alt>U\")\n"
+		"(menu-path \"<Main>/View/Show all header\" \"<shift>H\")\n"
+		"(menu-path \"<Main>/View/Update\" \"<shift>S\")\n"
 
 		"(menu-path \"<Main>/Message/Get new mail\" \"<control>I\")\n"
 		"(menu-path \"<Main>/Message/Get from all accounts\" \"<shift><control>I\")\n"
@@ -3551,10 +3554,71 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/Message/Mark/Mark\" \"<shift>asterisk\")\n"
 		"(menu-path \"<Main>/Message/Mark/Unmark\" \"U\")\n"
 		"(menu-path \"<Main>/Message/Mark/Mark as unread\" \"<shift>exclam\")\n"
+		"(menu-path \"<Main>/Message/Mark/Mark as read\" \"<shift>R\")\n"
 
 		"(menu-path \"<Main>/Tool/Address book\" \"<shift><control>A\")\n"
 		"(menu-path \"<Main>/Tool/Execute\" \"X\")\n"
-		"(menu-path \"<Main>/Tool/Log window\" \"<control>L\")";
+		"(menu-path \"<Main>/Tool/Log window\" \"<control>L\")\n"
+
+		"(menu-path \"<Compose>/File/Close\" \"<alt>W\")\n"
+		"(menu-path \"<Compose>/Edit/Select all\" \"\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Move a word backward\" \"<alt>B\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Move a word forward\" \"<alt>F\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Move to beginning of line\" \"<control>A\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Delete a word backward\" \"<control>W\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Delete a word forward\" \"<alt>D\")";
+
+	static gchar *mutt_menurc =
+		"(menu-path \"<Main>/File/Empty trash\" \"\")\n"
+		"(menu-path \"<Main>/File/Save as...\" \"S\")\n"
+		"(menu-path \"<Main>/File/Print...\" \"P\")\n"
+		"(menu-path \"<Main>/File/Exit\" \"Q\")\n"
+
+		"(menu-path \"<Main>/Edit/Copy\" \"<control>C\")\n"
+		"(menu-path \"<Main>/Edit/Select all\" \"<control>A\")\n"
+		"(menu-path \"<Main>/Edit/Find in current message...\" \"<control>F\")\n"
+		"(menu-path \"<Main>/Edit/Search messages...\" \"slash\")\n"
+
+		"(menu-path \"<Main>/View/Toggle summary view\" \"V\")\n"
+		"(menu-path \"<Main>/View/Thread view\" \"<control>T\")\n"
+		"(menu-path \"<Main>/View/Unthread view\" \"<shift><control>T\")\n"
+		"(menu-path \"<Main>/View/Go to/Prev message\" \"\")\n"
+		"(menu-path \"<Main>/View/Go to/Next message\" \"\")\n"
+		"(menu-path \"<Main>/View/Go to/Prev unread message\" \"\")\n"
+		"(menu-path \"<Main>/View/Go to/Next unread message\" \"\")\n"
+		"(menu-path \"<Main>/View/Go to/Other folder...\" \"C\")\n"
+		"(menu-path \"<Main>/View/Open in new window\" \"<control><alt>N\")\n"
+		"(menu-path \"<Main>/View/View source\" \"<control>U\")\n"
+		"(menu-path \"<Main>/View/Show all header\" \"<control>H\")\n"
+		"(menu-path \"<Main>/View/Update\" \"<control><alt>U\")\n"
+
+		"(menu-path \"<Main>/Message/Get new mail\" \"<control>I\")\n"
+		"(menu-path \"<Main>/Message/Get from all accounts\" \"<shift><control>I\")\n"
+		"(menu-path \"<Main>/Message/Compose new message\" \"M\")\n"
+		"(menu-path \"<Main>/Message/Reply\" \"R\")\n"
+		"(menu-path \"<Main>/Message/Reply to all\" \"G\")\n"
+		"(menu-path \"<Main>/Message/Reply to sender\" \"\")\n"
+		"(menu-path \"<Main>/Message/Forward\" \"F\")\n"
+		"(menu-path \"<Main>/Message/Forward as attachment\" \"\")\n"
+		"(menu-path \"<Main>/Message/Move...\" \"<control>O\")\n"
+		"(menu-path \"<Main>/Message/Copy...\" \"<shift>C\")\n"
+		"(menu-path \"<Main>/Message/Delete\" \"D\")\n"
+		"(menu-path \"<Main>/Message/Mark/Mark\" \"<shift>F\")\n"
+		"(menu-path \"<Main>/Message/Mark/Unmark\" \"U\")\n"
+		"(menu-path \"<Main>/Message/Mark/Mark as unread\" \"<shift>N\")\n"
+		"(menu-path \"<Main>/Message/Mark/Mark as read\" \"\")\n"
+
+		"(menu-path \"<Main>/Tool/Address book\" \"<shift><control>A\")\n"
+		"(menu-path \"<Main>/Tool/Execute\" \"X\")\n"
+		"(menu-path \"<Main>/Tool/Log window\" \"<control>L\")\n"
+
+		"(menu-path \"<Compose>/File/Close\" \"<alt>W\")\n"
+		"(menu-path \"<Compose>/Edit/Select all\" \"\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Move a word backward\" \"<alt>B\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Move a word forward\" \"<alt>F\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Move to beginning of line\" \"<control>A\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Delete a word backward\" \"<control>W\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Delete a word forward\" \"<alt>D\")";
 
 	static gchar *old_sylpheed_menurc =
 		"(menu-path \"<Main>/File/Empty trash\" \"\")\n"
@@ -3595,10 +3659,19 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/Message/Mark/Mark\" \"<shift>asterisk\")\n"
 		"(menu-path \"<Main>/Message/Mark/Unmark\" \"U\")\n"
 		"(menu-path \"<Main>/Message/Mark/Mark as unread\" \"<shift>exclam\")\n"
+		"(menu-path \"<Main>/Message/Mark/Mark as read\" \"\")\n"
 
 		"(menu-path \"<Main>/Tool/Address book\" \"<alt>A\")\n"
 		"(menu-path \"<Main>/Tool/Execute\" \"<alt>X\")\n"
-		"(menu-path \"<Main>/Tool/Log window\" \"<alt>L\")";
+		"(menu-path \"<Main>/Tool/Log window\" \"<alt>L\")\n"
+
+		"(menu-path \"<Compose>/File/Close\" \"<alt>W\")\n"
+		"(menu-path \"<Compose>/Edit/Select all\" \"\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Move a word backward\" \"<alt>B\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Move a word forward\" \"<alt>F\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Move to beginning of line\" \"<control>A\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Delete a word backward\" \"<control>W\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Delete a word forward\" \"<alt>D\")";
 
 	static gchar *empty_menurc =
 		"(menu-path \"<Main>/File/Empty trash\" \"\")\n"
@@ -3639,17 +3712,28 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/Message/Mark/Mark\" \"\")\n"
 		"(menu-path \"<Main>/Message/Mark/Unmark\" \"\")\n"
 		"(menu-path \"<Main>/Message/Mark/Mark as unread\" \"\")\n"
+		"(menu-path \"<Main>/Message/Mark/Mark as read\" \"\")\n"
 
 		"(menu-path \"<Main>/Tool/Address book\" \"\")\n"
 		"(menu-path \"<Main>/Tool/Execute\" \"\")\n"
-		"(menu-path \"<Main>/Tool/Log window\" \"\")";
+		"(menu-path \"<Main>/Tool/Log window\" \"\")\n"
+
+		"(menu-path \"<Compose>/File/Close\" \"\")\n"
+		"(menu-path \"<Compose>/Edit/Select all\" \"\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Move a word backward\" \"\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Move a word forward\" \"\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Move to beginning of line\" \"\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Delete a word backward\" \"\")\n"
+		"(menu-path \"<Compose>/Edit/Advanced/Delete a word forward\" \"\")";
 
 	text = gtk_entry_get_text(entry);
 
 	if (!strcmp(text, _("Default")))
 		rc_str = default_menurc;
-	else if (!strcmp(text, _("Mew / Wanderlust")))
+	else if (!strcmp(text, "Mew / Wanderlust"))
 		rc_str = mew_wl_menurc;
+	else if (!strcmp(text, "Mutt"))
+		rc_str = mutt_menurc;
 	else if (!strcmp(text, _("Old Sylpheed")))
 		rc_str = old_sylpheed_menurc;
 	else

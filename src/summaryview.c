@@ -195,9 +195,11 @@ static void summary_set_header		(SummaryView		*summaryview,
 					 gchar			*text[],
 					 MsgInfo		*msginfo);
 static void summary_display_msg		(SummaryView		*summaryview,
+					 GtkCTreeNode		*row);
+static void summary_display_msg_full	(SummaryView		*summaryview,
 					 GtkCTreeNode		*row,
-					 gboolean		 new_window);
-
+					 gboolean		 new_window,
+					 gboolean		 all_headers);
 static void summary_set_row_marks	(SummaryView		*summaryview,
 					 GtkCTreeNode		*row);
 static void summaryview_subject_filter_init (PrefsFolderItem    *prefs);
@@ -1123,7 +1125,7 @@ void summary_select_prev_unread(SummaryView *summaryview)
 		gtk_sctree_select(GTK_SCTREE(ctree), node);
 		if (summaryview->displayed == node)
 			summaryview->displayed = NULL;
-		summary_display_msg(summaryview, node, FALSE);
+		summary_display_msg(summaryview, node);
 	}
 }
 
@@ -1173,7 +1175,7 @@ void summary_select_next_unread(SummaryView *summaryview)
 		gtk_sctree_select(GTK_SCTREE(ctree), node);
 		if (summaryview->displayed == node)
 			summaryview->displayed = NULL;
-		summary_display_msg(summaryview, node, FALSE);
+		summary_display_msg(summaryview, node);
 	}
 }
 
@@ -1203,7 +1205,7 @@ void summary_select_prev_marked(SummaryView *summaryview)
 		gtk_sctree_select(GTK_SCTREE(ctree), node);
 		if (summaryview->displayed == node)
 			summaryview->displayed = NULL;
-		summary_display_msg(summaryview, node, FALSE);
+		summary_display_msg(summaryview, node);
 	}
 }
 
@@ -1233,7 +1235,7 @@ void summary_select_next_marked(SummaryView *summaryview)
 		gtk_sctree_select(GTK_SCTREE(ctree), node);
 		if (summaryview->displayed == node)
 			summaryview->displayed = NULL;
-		summary_display_msg(summaryview, node, FALSE);
+		summary_display_msg(summaryview, node);
 	}
 }
 
@@ -1263,7 +1265,7 @@ void summary_select_prev_labeled(SummaryView *summaryview)
 		gtk_sctree_select(GTK_SCTREE(ctree), node);
 		if (summaryview->displayed == node)
 			summaryview->displayed = NULL;
-		summary_display_msg(summaryview, node, FALSE);
+		summary_display_msg(summaryview, node);
 	}
 }
 
@@ -1293,7 +1295,7 @@ void summary_select_next_labeled(SummaryView *summaryview)
 		gtk_sctree_select(GTK_SCTREE(ctree), node);
 		if (summaryview->displayed == node)
 			summaryview->displayed = NULL;
-		summary_display_msg(summaryview, node, FALSE);
+		summary_display_msg(summaryview, node);
 	}
 }
 
@@ -2289,8 +2291,14 @@ msginfo->folder->folder->change_flags(msginfo->folder->folder, \
 				      msginfo); \
 }
 
-static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
-				gboolean new_window)
+static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row)
+{
+	summary_display_msg_full(summaryview, row, FALSE, FALSE);
+}
+
+static void summary_display_msg_full(SummaryView *summaryview,
+				     GtkCTreeNode *row,
+				     gboolean new_window, gboolean all_headers)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
@@ -2335,7 +2343,7 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 		MessageView *msgview;
 
 		msgview = messageview_create_with_new_window();
-		messageview_show(msgview, msginfo);
+		messageview_show(msgview, msginfo, all_headers);
 	} else {
 		MessageView *msgview;
 
@@ -2344,7 +2352,7 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 		summaryview->displayed = row;
 		if (!summaryview->msg_is_toggled_on)
 			summary_toggle_view(summaryview);
-		messageview_show(msgview, msginfo);
+		messageview_show(msgview, msginfo, all_headers);
 		if (msgview->type == MVIEW_TEXT ||
 		    (msgview->type == MVIEW_MIME &&
 		     GTK_CLIST(msgview->mimeview->ctree)->row_list == NULL))
@@ -2362,20 +2370,22 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 		summary_status_show(summaryview);
 	}
 
+#if 0
 	if (GTK_WIDGET_VISIBLE(summaryview->headerwin->window))
 		header_window_show(summaryview->headerwin, msginfo);
+#endif
 
 	summary_unlock(summaryview);
 }
 
-void summary_redisplay_msg(SummaryView *summaryview)
+void summary_redisplay_msg(SummaryView *summaryview, gboolean all_headers)
 {
 	GtkCTreeNode *node;
 
 	if (summaryview->displayed) {
 		node = summaryview->displayed;
 		summaryview->displayed = NULL;
-		summary_display_msg(summaryview, node, FALSE);
+		summary_display_msg_full(summaryview, node, FALSE, all_headers);
 	}
 }
 
@@ -2383,7 +2393,8 @@ void summary_open_msg(SummaryView *summaryview)
 {
 	if (!summaryview->selected) return;
 
-	summary_display_msg(summaryview, summaryview->selected, TRUE);
+	summary_display_msg_full(summaryview, summaryview->selected,
+				 TRUE, FALSE);
 }
 
 void summary_view_source(SummaryView * summaryview)
@@ -2430,9 +2441,9 @@ void summary_step(SummaryView *summaryview, GtkScrollType type)
 
 	gtk_signal_emit_by_name(GTK_OBJECT(ctree), "scroll_vertical",
 				type, 0.0);
-	
+
 	if (summaryview->msg_is_toggled_on)
-		summary_display_msg(summaryview, summaryview->selected, FALSE);
+		summary_display_msg(summaryview, summaryview->selected);
 }
 
 static void summary_toggle_view(SummaryView *summaryview)
@@ -4378,7 +4389,7 @@ void summary_set_column_order(SummaryView *summaryview)
 	if (!summaryview->displayed)
 		messageview_clear(summaryview->messageview);
 	else
-		summary_redisplay_msg(summaryview);
+		summary_redisplay_msg(summaryview, TRUE);
 }
 
 
@@ -4390,7 +4401,7 @@ static void summary_toggle_view_cb(GtkWidget *button,
 	SummaryView *summaryview = (SummaryView *) data;
 	
 	if (!summaryview->msg_is_toggled_on && summaryview->selected)
-		summary_display_msg(summaryview, summaryview->selected, FALSE);
+		summary_display_msg(summaryview, summaryview->selected);
 	else
 		summary_toggle_view(summaryview);
 }
@@ -4459,7 +4470,7 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_space:		/* Page down or go to the next */
 		if (summaryview->displayed != summaryview->selected) {
 			summary_display_msg(summaryview,
-					    summaryview->selected, FALSE);
+					    summaryview->selected);
 			break;
 		}
 		if (!textview_scroll_page(summaryview->messageview->textview,
@@ -4472,7 +4483,7 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_Return:	/* Scroll up/down one line */
 		if (summaryview->displayed != summaryview->selected) {
 			summary_display_msg(summaryview,
-					    summaryview->selected, FALSE);
+					    summaryview->selected);
 			break;
 		}
 		textview_scroll_one_line(summaryview->messageview->textview,
@@ -4566,7 +4577,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	}
 
 	if (summaryview->display_msg)
-		summary_display_msg(summaryview, row, FALSE);
+		summary_display_msg(summaryview, row);
 
 	summaryview->display_msg = FALSE;
 }
@@ -4594,7 +4605,7 @@ static void summary_execute_cb(SummaryView *summaryview, guint action,
 static void summary_show_all_header_cb(SummaryView *summaryview,
 				       guint action, GtkWidget *widget)
 {
-	header_window_show_cb(summaryview->mainwin, action, widget);
+	summary_redisplay_msg(summaryview, TRUE);
 }
 
 static void summary_add_address_cb(SummaryView *summaryview,

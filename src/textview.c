@@ -227,17 +227,18 @@ TextView *textview_create(void)
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), scrolledwin_sb, TRUE, TRUE, 0);
 
-	textview->vbox           = vbox;
-	textview->scrolledwin    = scrolledwin_sb;
-	textview->scrolledwin_sb = scrolledwin_sb;
-	textview->scrolledwin_mb = scrolledwin_mb;
-	textview->text           = text_sb;
-	textview->text_sb        = text_sb;
-	textview->text_mb        = text_mb;
-	textview->text_is_mb     = FALSE;
-	textview->uri_list       = NULL;
-	textview->body_pos       = 0;
-	textview->cur_pos        = 0;
+	textview->vbox             = vbox;
+	textview->scrolledwin      = scrolledwin_sb;
+	textview->scrolledwin_sb   = scrolledwin_sb;
+	textview->scrolledwin_mb   = scrolledwin_mb;
+	textview->text             = text_sb;
+	textview->text_sb          = text_sb;
+	textview->text_mb          = text_mb;
+	textview->text_is_mb       = FALSE;
+	textview->uri_list         = NULL;
+	textview->body_pos         = 0;
+	textview->cur_pos          = 0;
+	textview->show_all_headers = FALSE;
 	textview->last_buttonpress = GDK_NOTHING;
 
 	return textview;
@@ -248,6 +249,7 @@ void textview_init(TextView *textview)
 	gtkut_widget_disable_theme_engine(textview->text_sb);
 	gtkut_widget_disable_theme_engine(textview->text_mb);
 	textview_update_message_colors();
+	textview_set_all_headers(textview, FALSE);
 	textview_set_font(textview, NULL);
 }
 
@@ -955,6 +957,11 @@ void textview_destroy(TextView *textview)
 	g_free(textview);
 }
 
+void textview_set_all_headers(TextView *textview, gboolean all_headers)
+{
+	textview->show_all_headers = all_headers;
+}
+
 void textview_set_font(TextView *textview, const gchar *codeset)
 {
 	gboolean use_fontset = TRUE;
@@ -1072,6 +1079,9 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 	gint i;
 
 	g_return_val_if_fail(fp != NULL, NULL);
+
+	if (textview->show_all_headers)
+		return procheader_get_header_array_asis(fp);
 
 	if (!prefs_common.display_header) {
 		while (fgets(buf, sizeof(buf), fp) != NULL)
