@@ -5,6 +5,9 @@
 		replying to a message. Finally prevent all those confirmation 
 		messages being sent to the list itself.
 
+	* src/summaryview.c
+		remove unused summary_set_menu_sensitive() entry
+
 2001-12-13 [paul]	0.6.5claws82
 
 	* src/folderview.c
