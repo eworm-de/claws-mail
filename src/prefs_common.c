@@ -174,7 +174,6 @@ static struct Display {
 
 	GtkWidget *chkbtn_swapfrom;
 	GtkWidget *chkbtn_useaddrbook;
-	GtkWidget *chkbtn_expand_thread;
 	GtkWidget *entry_datefmt;
 } display;
 
@@ -518,9 +517,6 @@ static PrefParam param[] = {
 	{"date_format", "%y/%m/%d(%a) %H:%M", &prefs_common.date_format,
 	 P_STRING, &display.entry_datefmt,
 	 prefs_set_data_from_entry, prefs_set_entry},
-	{"expand_thread", "TRUE", &prefs_common.expand_thread, P_BOOL,
-	 &display.chkbtn_expand_thread,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"enable_hscrollbar", "TRUE", &prefs_common.enable_hscrollbar, P_BOOL,
 	 NULL, NULL, NULL},
@@ -2173,7 +2169,6 @@ static void prefs_display_create(void)
 	GtkWidget *vbox2;
 	GtkWidget *chkbtn_swapfrom;
 	GtkWidget *chkbtn_useaddrbook;
-	GtkWidget *chkbtn_expand_thread;
 	GtkWidget *vbox3;
 	GtkWidget *label_datefmt;
 	GtkWidget *button_datefmt;
@@ -2324,8 +2319,6 @@ static void prefs_display_create(void)
 	PACK_CHECK_BUTTON
 		(vbox2, chkbtn_useaddrbook,
 		 _("Display sender using address book"));
-	PACK_CHECK_BUTTON
-		(vbox2, chkbtn_expand_thread, _("Expand threads"));
 
 	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
 
@@ -2371,7 +2364,6 @@ static void prefs_display_create(void)
 	display.spinbtn_ng_abbrev_len_adj = spinbtn_ng_abbrev_len_adj;
 
 	display.chkbtn_swapfrom      = chkbtn_swapfrom;
-	display.chkbtn_expand_thread = chkbtn_expand_thread;
 	display.chkbtn_useaddrbook   = chkbtn_useaddrbook;
 	display.entry_datefmt        = entry_datefmt;
 }

@@ -1,4 +1,13 @@
-2001-01-25 [christoph]	0.8.9claws2
+2003-01-25 [paul]	0.8.9claws3
+
+	* src/folder.[ch]
+	  src/summaryview.[ch]
+	  	re-implement per folder message threading
+		
+	* src/prefs_common.c
+		remove global message threading option
+
+2003-01-25 [christoph]	0.8.9claws2
 
 	* po/POTFILES.in
 		add pluginwindow and prefswindow
@@ -11,9 +20,8 @@
 		0 to tell the folder system it was appened but the UID is
 		unknown. Folder system now get's the UID by scaning the folder
 		and searching the cache for the Message-ID
-		(closes bug #29 Messages queued, but not sent)
 
-2001-01-25 [paul]	0.8.9claws1
+2003-01-25 [paul]	0.8.9claws1
 
 	* codeconv.c
 		conv_encode_header():  fix bug when long headers with 8-bit
@@ -28,7 +36,7 @@
 		 toggled on or off.
 		 Patch by Luke Plant.
 
-2001-01-24 [paul]	0.8.9claws
+2003-01-24 [paul]	0.8.9claws
 
 	* sylpheed-0.8.9claws released
 	
@@ -118,7 +126,6 @@
 
 	* src/procmsg.c
 		fix infinite loop in procmsg_find_children
-		(closes bug #25 sylpheed crashes on delete.)
 
 	Patch submitted by Ivan F. Martinez <ivanfm@users.sourceforge.net>
 
@@ -711,7 +718,6 @@
 
 	* src/procmsg.c
 		update save folder after adding the sent message
-		(closes bug #6 Folder View doesn't refresh for "Sent"-messages)
 
 2003-01-02 [christoph]	0.8.8claws42
 

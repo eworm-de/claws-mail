@@ -261,6 +261,7 @@ struct _FolderItem
 	guint no_sub         : 1; /* no child allowed?    */
 	guint no_select      : 1; /* not selectable?      */
 	guint collapsed      : 1; /* collapsed item       */
+	guint thread_collapsed      : 1; /* collapsed item       */
 	guint threaded       : 1; /* threaded folder view */
 	guint hide_read_msgs : 1; /* hide read messages   */
 	guint ret_rcpt       : 1; /* return receipt       */
@@ -291,6 +292,7 @@ typedef struct {
 	FolderSortKey	sort_key;
 	FolderSortType	sort_type;
 	guint		collapsed	: 1;
+	guint		thread_collapsed	: 1;
 	guint		threaded	: 1;
 	guint		hide_read_msgs	: 1; /* CLAWS */
 	guint		ret_rcpt	: 1; /* CLAWS */

@@ -140,6 +140,7 @@ struct _SummaryView
 	FolderSortKey sort_key;
 	FolderSortType sort_type;
 	guint threaded;
+	guint thread_collapsed;
 
 	/* Extra data for summaryview */
 	regex_t *simplify_subject_preg;

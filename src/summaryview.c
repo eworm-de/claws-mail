@@ -3695,7 +3695,7 @@ void summary_thread_build(SummaryView *summaryview)
 
 	while (node) {
 		next = GTK_CTREE_NODE_NEXT(node);
-		if (prefs_common.expand_thread)
+		if (!summaryview->folder_item->thread_collapsed)
 			gtk_ctree_expand(ctree, node);
 		if (prefs_common.bold_unread &&
 		    GTK_CTREE_ROW(node)->children)
@@ -3724,7 +3724,7 @@ static void summary_thread_init(SummaryView *summaryview)
 	GtkCTreeNode *node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 	GtkCTreeNode *next;
 
-	if (prefs_common.expand_thread) {
+	if (!summaryview->folder_item->thread_collapsed) {
 		while (node) {
 			next = GTK_CTREE_ROW(node)->sibling;
 			if (GTK_CTREE_ROW(node)->children)
@@ -3857,6 +3857,8 @@ void summary_expand_threads(SummaryView *summaryview)
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
 
+	summaryview->thread_collapsed = FALSE;
+
 	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
 }
 
@@ -3874,6 +3876,8 @@ void summary_collapse_threads(SummaryView *summaryview)
 	}
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
+	
+	summaryview->thread_collapsed = TRUE;
 
 	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
 }
@@ -5362,6 +5366,7 @@ void summary_set_prefs_from_folderitem(SummaryView *summaryview, FolderItem *ite
 
 	/* Threading */
 	summaryview->threaded = item->threaded;
+	summaryview->thread_collapsed = item->thread_collapsed;
 
 	/* Scoring */
 	if (global_scoring || item->prefs->scoring) {
@@ -5381,6 +5386,7 @@ void summary_save_prefs_to_folderitem(SummaryView *summaryview, FolderItem *item
 
 	/* Threading */
 	item->threaded = summaryview->threaded;
+	item->thread_collapsed = summaryview->thread_collapsed;
 }
 
 static gboolean summary_update_msg(gpointer source, gpointer data) 
