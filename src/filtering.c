@@ -881,7 +881,6 @@ static gboolean filter_incoming_perform_actions(FolderItem *default_folder,
 
 		case MATCHING_ACTION_COLOR:
 			MSG_SET_LABEL_VALUE(markflags, ma_tail->action->labelcolor);
-			debug_print("*** label color %d\n", ma_tail->action->labelcolor);
 			break;
 
 		/* UNCONTINUABLE */
@@ -1036,7 +1035,6 @@ static gboolean filter_incoming_perform_actions(FolderItem *default_folder,
 
 	/* may need to copy it to inbox too */
 	if (copy_to_inbox_too) {
-		gint color;
 		debug_print("*** performing inbox copy\n");
 		msgnum = folder_item_add_msg(default_folder, filename, TRUE);
 		if (msgnum < 0) {
@@ -1045,8 +1043,6 @@ static gboolean filter_incoming_perform_actions(FolderItem *default_folder,
 			return FALSE;				    
 		}
 		flags = msginfo->flags.perm_flags | markflags.perm_flags;
-		color = (flags >> 7) & 7; 
-		debug_print("*** marking label color %d\n", color);
 		add_mark(default_folder, msgnum, flags);
 	}
 	else {
@@ -1238,7 +1234,7 @@ void prefs_filtering_write_config(void)
 
 		prop = (FilteringProp *) cur->data;
 		filtering_str = filteringprop_to_string(prop);
-		debug_print("*** WRITING %s\n", filtering_str);
+		
 		if (fputs(filtering_str, pfile->fp) == EOF ||
 		    fputc('\n', pfile->fp) == EOF) {
 			FILE_OP_ERROR(rcpath, "fputs || fputc");
