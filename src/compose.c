@@ -1500,6 +1500,11 @@ void compose_toolbar_cb(gint action, gpointer data)
 	case A_ADDRBOOK:
 		compose_address_cb(compose, 0, NULL);
 		break;
+#ifdef USE_ASPELL
+	case A_CHECK_SPELLING:
+		compose_check_all(compose);
+		break;
+#endif
 	default:
 		break;
 	}
