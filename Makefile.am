@@ -1,4 +1,4 @@
-SUBDIRS = ac po src tools config doc
+SUBDIRS = m4 po src tools config intl doc
 
 EXTRA_DIST = \
 	ChangeLog.claws \

@@ -4,7 +4,8 @@ cd po
 /bin/sh poconv.sh
 cd ..
 
-aclocal -I ac \
+autopoint --force \
+  && aclocal -I m4 \
   && libtoolize --force --copy \
   && autoheader \
   && automake --add-missing --foreign --copy \

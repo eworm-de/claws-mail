@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=9
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=0
+EXTRA_VERSION=1
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}claws
 else
@@ -126,10 +126,8 @@ AM_ICONV
 
 dnl for gettext
 ALL_LINGUAS="bg cs de el en_GB es fr hr hu it ja ko nl pl pt_BR ru sk sr sv zh_CN zh_TW.Big5"
-GETTEXT_PACKAGE=sylpheed
-AC_SUBST(GETTEXT_PACKAGE)
-AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Define text domain.])
-AM_GLIB_GNU_GETTEXT
+AM_GNU_GETTEXT([use-libtool])
+AM_GNU_GETTEXT_VERSION(0.12.1)
 dnl AC_CHECK_FUNC(gettext, AC_CHECK_LIB(intl, gettext))
 localedir='${prefix}/${DATADIRNAME}/locale'
 AC_SUBST(localedir)
@@ -481,7 +479,7 @@ AC_ARG_ENABLE(mathml-viewer-plugin,
 	[  --disable-mathml-viewer-plugin    Do not build MathML-Viewer plugin],
 	[ac_cv_enable_mathml_viewer_plugin=$enableval], [ac_cv_enable_mathml_viewer_plugin=yes])
 if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
-	PKG_CHECK_MODULES(GTK_MATH_VIEW, gtkmathview >= 0.4.2 gtkmathview < 0.5, :, ac_cv_enable_mathml_viewer_plugin=no)
+	PKG_CHECK_MODULES(GTK_MATH_VIEW, gtkmathview >= 0.5, :, ac_cv_enable_mathml_viewer_plugin=no)
 
 	if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
 		AC_SUBST(GTK_MATH_VIEW_CFLAGS)
@@ -562,7 +560,8 @@ dnl ****************************
 AC_OUTPUT([
 Makefile
 sylpheed.spec
-ac/Makefile
+intl/Makefile
+m4/Makefile
 po/Makefile.in
 src/common/version.h
 src/Makefile
