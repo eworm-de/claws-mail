@@ -750,6 +750,24 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Help/_About"),			NULL, about_show, 0, NULL}
 };
 
+static gboolean main_window_accel_activate (GtkAccelGroup *accelgroup,
+                                            GObject *arg1,
+                                            guint value,
+                                            GdkModifierType mod,
+                                            gpointer user_data) 
+{
+	MainWindow *mainwin = (MainWindow *)user_data;
+
+	if (mainwin->summaryview &&
+	    mainwin->summaryview->quicksearch &&
+	    quicksearch_has_focus(mainwin->summaryview->quicksearch) &&
+	    (mod == 0 || mod == GDK_SHIFT_MASK)) {
+		quicksearch_pass_key(mainwin->summaryview->quicksearch, value, mod);
+		return TRUE;
+	}
+	return FALSE;
+}
+
 MainWindow *main_window_create(SeparateType type)
 {
 	MainWindow *mainwin;
@@ -1029,10 +1047,14 @@ MainWindow *main_window_create(SeparateType type)
 	main_window_update_actions_menu(mainwin);
 
 	/* attach accel groups to main window */
-#define	ADD_MENU_ACCEL_GROUP_TO_WINDOW(menu,win)	\
-	gtk_window_add_accel_group			\
-		(GTK_WINDOW(win), 			\
-		 gtk_item_factory_from_widget(menu)->accel_group)		 
+#define	ADD_MENU_ACCEL_GROUP_TO_WINDOW(menu,win)			\
+	gtk_window_add_accel_group					\
+		(GTK_WINDOW(win), 					\
+		 gtk_item_factory_from_widget(menu)->accel_group); 	\
+	g_signal_connect(G_OBJECT(gtk_item_factory_from_widget(menu)->accel_group), \
+			"accel_activate", 				\
+		       	G_CALLBACK(main_window_accel_activate), mainwin);
+			 
 	
 	ADD_MENU_ACCEL_GROUP_TO_WINDOW(summaryview->popupmenu, mainwin->window);
 	
@@ -3004,14 +3026,18 @@ gboolean mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
 {
 	MainWindow *mainwin = (MainWindow*) data;
 	
-	if (!mainwin || !event) return;
-		
+	if (!mainwin || !event) 
+		return FALSE;
+
+	if (quicksearch_has_focus(mainwin->summaryview->quicksearch))
+		return FALSE;
+
 	switch (event->keyval) {
 	case GDK_Q:             /* Quit */
 		BREAK_ON_MODIFIER_KEY();
 
 		app_exit_cb(mainwin, 0, NULL);
-		return;
+		return FALSE;
 	case GDK_space:
 		if (mainwin->folderview && mainwin->summaryview
 		    && !mainwin->summaryview->displayed) {

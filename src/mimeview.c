@@ -868,6 +868,11 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	if (!event) return FALSE;
 	if (!mimeview->opened) return FALSE;
 
+	summaryview = mimeview->messageview->mainwin->summaryview;
+	
+	if (summaryview && quicksearch_has_focus(summaryview->quicksearch))
+		return FALSE;
+		
 	switch (event->keyval) {
 	case GDK_space:
 		if (textview_scroll_page(mimeview->textview, FALSE))
@@ -928,7 +933,7 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	}
 
 	if (!mimeview->messageview->mainwin) return FALSE;
-	summaryview = mimeview->messageview->mainwin->summaryview;
+
 	summary_pass_key_press_event(summaryview, event);
 	return TRUE;
 }

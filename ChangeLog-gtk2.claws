@@ -1,3 +1,15 @@
+2004-07-17 [colin]	0.9.12cvs30.2
+
+	* src/folderview.c
+	* src/mainwindow.c
+	* src/mimeview.c
+	* src/summaryview.c
+	* src/gtk/quicksearch.c
+	* src/gtk/quicksearch.h
+		Block key events handlers *and* accels while
+		quicksearch is focused
+	(Fixes Bug 534 quick-search bar not accepting certain letters)
+
 2004-07-17 [colin]	0.9.12cvs30.1
 
 	* src/folder.h

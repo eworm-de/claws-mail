@@ -48,6 +48,7 @@ struct _QuickSearch
 	QuickSearchExecuteCallback	 callback;
 	gpointer			 callback_data;
 	gboolean			 running;
+	gboolean			 has_focus;
 };
 
 static void quicksearch_set_running(QuickSearch *quicksearch, gboolean run);
@@ -101,6 +102,18 @@ static void update_extended_button (QuickSearch *quicksearch)
 		gtk_widget_hide(btn);
 	}
 	
+}
+
+static gboolean searchbar_focus_evt(GtkWidget *widget, GdkEventFocus *event,
+			      	  QuickSearch *quicksearch)
+{
+	quicksearch->has_focus = (event && event->in);
+	return FALSE;
+}
+
+gboolean quicksearch_has_focus(QuickSearch *quicksearch)
+{
+	return quicksearch->has_focus;
 }
 
 static gboolean searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
@@ -229,21 +242,6 @@ static gboolean clear_search_cb(GtkMenuItem *widget, gpointer data)
 	return TRUE;
 };
 
-/*
-static void summary_searchbar_focus_evt(GtkWidget *widget, GdkEventFocus *event,
-					SummaryView *summaryview)
-{
-	if (event != NULL && event->in)
-		gtk_signal_handler_block_by_func(GTK_OBJECT(summaryview->mainwin->window), 
-						 GTK_SIGNAL_FUNC(mainwindow_key_pressed),
-                                         	 summaryview->mainwin);
-	else
-		gtk_signal_handler_unblock_by_func(GTK_OBJECT(summaryview->mainwin->window), 
-						   GTK_SIGNAL_FUNC(mainwindow_key_pressed),
-                                         	   summaryview->mainwin);
-}
-*/
-
 QuickSearch *quicksearch_new()
 {
 	QuickSearch *quicksearch;
@@ -336,17 +334,17 @@ QuickSearch *quicksearch_new()
 			   G_CALLBACK(searchbar_pressed),
 			   quicksearch);
 
-	/*
-	gtk_signal_connect(GTK_OBJECT(GTK_COMBO(search_string_entry)->entry), 
+	
+	g_signal_connect(GTK_OBJECT(GTK_COMBO(search_string_entry)->entry), 
 			   "focus_in_event",
 			   GTK_SIGNAL_FUNC(searchbar_focus_evt),
 			   quicksearch);
 
-	gtk_signal_connect(GTK_OBJECT(GTK_COMBO(search_string_entry)->entry), 
+	g_signal_connect(GTK_OBJECT(GTK_COMBO(search_string_entry)->entry), 
 			   "focus_out_event",
 			   GTK_SIGNAL_FUNC(searchbar_focus_evt),
 			   quicksearch);
-	*/
+	
 
 	quicksearch->hbox_search = hbox_search;
 	quicksearch->search_type = search_type;
@@ -631,3 +629,30 @@ gboolean quicksearch_is_running(QuickSearch *quicksearch)
 	return quicksearch->running;
 }
 
+void quicksearch_pass_key(QuickSearch *quicksearch, guint val, GdkModifierType mod)
+{
+	GtkEntry *entry = GTK_ENTRY(GTK_COMBO(quicksearch->search_string_entry)->entry);
+	gint curpos = gtk_editable_get_position(GTK_EDITABLE(entry));
+	char *str = g_strdup(gtk_entry_get_text(entry));
+	char *begin = str;
+	char *end = NULL;
+	char *new = NULL;
+	
+	if (mod == GDK_SHIFT_MASK)
+		val = toupper(val);
+	
+	if (curpos < strlen(str)-1) {
+		end = g_strdup(str+curpos);
+		*(str+curpos) = '\0';
+		new = g_strdup_printf("%s%c%s", begin, val, end);
+		gtk_entry_set_text(entry, new);
+		g_free(end);
+	} else {
+		new = g_strdup_printf("%s%c", begin, val);
+		gtk_entry_set_text(entry, new);
+	}
+	g_free(str);
+	g_free(new);
+	gtk_editable_set_position(GTK_EDITABLE(entry), curpos+1);
+	
+}

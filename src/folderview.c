@@ -1430,6 +1430,9 @@ static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 {
 	if (!event) return FALSE;
 
+	if (quicksearch_has_focus(folderview->summaryview->quicksearch))
+		return FALSE;
+
 	switch (event->keyval) {
 	case GDK_Return:
 		if (folderview->selected) {

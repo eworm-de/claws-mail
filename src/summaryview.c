@@ -4333,6 +4333,9 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	if (summary_is_locked(summaryview)) return TRUE;
 	if (!event) return TRUE;
 
+	if (quicksearch_has_focus(summaryview->quicksearch))
+		return FALSE;
+
 	switch (event->keyval) {
 	case GDK_Left:		/* Move focus */
 		adj = gtk_scrolled_window_get_hadjustment
