@@ -5695,6 +5695,10 @@ static void toolbar_address_cb(GtkWidget *widget, gpointer data)
 
 static void select_account(Compose * compose, PrefsAccount * ac)
 {
+#if USE_GPGME
+	GtkItemFactory *ifactory;
+	GtkWidget *menuitem;
+#endif /* USE_GPGME */
 	compose->account = ac;
 	compose_set_title(compose);
 
@@ -5769,6 +5773,39 @@ static void select_account(Compose * compose, PrefsAccount * ac)
 		}
 		gtk_widget_queue_resize(compose->table_vbox);
 #endif
+#if USE_GPGME
+		if (ac->default_sign) {
+			ifactory = gtk_item_factory_from_widget(compose->menubar);
+			menu_set_sensitive(ifactory,
+					   "/Message/Sign", TRUE);
+			menuitem = gtk_item_factory_get_item(ifactory, "/Message/Sign");
+			gtk_check_menu_item_set_active
+				(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
+		} else {
+			ifactory = gtk_item_factory_from_widget(compose->menubar);
+			menu_set_sensitive(ifactory,
+					   "/Message/Sign", TRUE);
+			menuitem = gtk_item_factory_get_item(ifactory, "/Message/Sign");
+			gtk_check_menu_item_set_active
+				(GTK_CHECK_MENU_ITEM(menuitem), FALSE);
+		}
+		if (ac->default_encrypt) {
+			ifactory = gtk_item_factory_from_widget(compose->menubar);
+			menu_set_sensitive(ifactory,
+					   "/Message/Encrypt", TRUE);
+			menuitem = gtk_item_factory_get_item(ifactory, "/Message/Encrypt");
+			gtk_check_menu_item_set_active
+				(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
+		} else {
+			ifactory = gtk_item_factory_from_widget(compose->menubar);
+			menu_set_sensitive(ifactory,
+					   "/Message/Encrypt", TRUE);
+			menuitem = gtk_item_factory_get_item(ifactory, "/Message/Encrypt");
+			gtk_check_menu_item_set_active
+				(GTK_CHECK_MENU_ITEM(menuitem), FALSE);
+		}
+#endif /* USE_GPGME */
+
 }
 
 static void account_activated(GtkMenuItem *menuitem, gpointer data)
