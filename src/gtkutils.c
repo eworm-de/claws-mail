@@ -248,17 +248,17 @@ void gtkut_combo_set_items(GtkCombo *combo, const gchar *str1, ...)
 	g_list_free(combo_items);
 }
 
-gboolean gtkut_text_match_string(GtkText *text, gint pos, wchar_t *wcs,
+gboolean gtkut_text_match_string(GtkSText *text, gint pos, wchar_t *wcs,
 				 gint len, gboolean case_sens)
 {
 	gint match_count = 0;
 
 	for (; match_count < len; pos++, match_count++) {
 		if (case_sens) {
-			if (GTK_TEXT_INDEX(text, pos) != wcs[match_count])
+			if (GTK_STEXT_INDEX(text, pos) != wcs[match_count])
 				break;
 		} else {
-			if (towlower(GTK_TEXT_INDEX(text, pos)) !=
+			if (towlower(GTK_STEXT_INDEX(text, pos)) !=
 			    towlower(wcs[match_count]))
 				break;
 		}
@@ -270,15 +270,15 @@ gboolean gtkut_text_match_string(GtkText *text, gint pos, wchar_t *wcs,
 		return FALSE;
 }
 
-guint gtkut_text_str_compare_n(GtkText *text, guint pos1, guint pos2,
+guint gtkut_text_str_compare_n(GtkSText *text, guint pos1, guint pos2,
 			       guint len, guint text_len)
 {
 	guint i;
 	GdkWChar ch1, ch2;
 
 	for (i = 0; i < len && pos1 + i < text_len && pos2 + i < text_len; i++) {
-		ch1 = GTK_TEXT_INDEX(text, pos1 + i);
-		ch2 = GTK_TEXT_INDEX(text, pos2 + i);
+		ch1 = GTK_STEXT_INDEX(text, pos1 + i);
+		ch2 = GTK_STEXT_INDEX(text, pos2 + i);
 		if (ch1 != ch2)
 			break;
 	}
@@ -286,7 +286,7 @@ guint gtkut_text_str_compare_n(GtkText *text, guint pos1, guint pos2,
 	return i;
 }
 
-guint gtkut_text_str_compare(GtkText *text, guint start_pos, guint text_len,
+guint gtkut_text_str_compare(GtkSText *text, guint start_pos, guint text_len,
 			     const gchar *str)
 {
 	wchar_t *wcs;
@@ -310,7 +310,7 @@ guint gtkut_text_str_compare(GtkText *text, guint start_pos, guint text_len,
 	return result ? len : 0;
 }
 
-gboolean gtkut_text_is_uri_string(GtkText *text,
+gboolean gtkut_text_is_uri_string(GtkSText *text,
 				  guint start_pos, guint text_len)
 {
 	if (gtkut_text_str_compare(text, start_pos, text_len, "http://") ||

@@ -1,3 +1,10 @@
+2001-11-23 [darko]	0.6.5claws28
+
+	* src/compose.c
+		wrapping on send improvements
+		fix for GtkSText after last sync with main branch
+		GTK_TEXT -> GTK_STEXT
+
 2001-11-23 [paul]	0.6.5claws27
 
 	* sync with sylpheed 0.6.5cvs14

@@ -1053,6 +1053,10 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
 	if (prefs_common.auto_sig)
 		compose_insert_sig(compose);
+
+	if (prefs_common.linewrap_quote)
+		compose_wrap_line_all(compose);
+
 	gtk_editable_set_position(GTK_EDITABLE(compose->text), 0);
 	gtk_stext_set_point(GTK_STEXT(compose->text), 0);
 
@@ -1119,6 +1123,10 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 
 	if (prefs_common.auto_sig)
 		compose_insert_sig(compose);
+
+	if (prefs_common.linewrap_quote)
+		compose_wrap_line_all(compose);
+
 	gtk_editable_set_position(GTK_EDITABLE(compose->text), 0);
 	gtk_stext_set_point(GTK_STEXT(compose->text), 0);
 
@@ -2206,7 +2214,8 @@ static void compose_wrap_line_all(Compose *compose)
 			gchar cb[MB_CUR_MAX];
 
 #ifdef WRAP_DEBUG
-			printf("found CR at %d\n", cur_pos);
+			printf("found CR at %d next line is ", cur_pos);
+			dump_text(text, cur_pos + 1, tlen, 1);
 #endif
 			/* if it's just quotation + newline skip it */
 			if (i_len && (cur_pos + 1 < tlen)) {
@@ -2226,13 +2235,26 @@ static void compose_wrap_line_all(Compose *compose)
 						do_delete = 0;
 				}
 			}
+			/* if it's just newline skip it */
+			else if (do_delete && (cur_pos + 1 < tlen)) {
+				if (text->use_wchar)
+					clen = wctomb(cb, (wchar_t)GTK_STEXT_INDEX(text, cur_pos + 1));
+				else {
+					cb[0] = GTK_STEXT_INDEX(text,
+								cur_pos + 1);
+					clen = 1;
+				}
+				/* no need to join the lines */
+				if ((clen == 1) && (cb[0] == '\n'))
+					do_delete = 0;
+			}
 
 #ifdef WRAP_DEBUG
 			printf("qlen=%d l_len=%d wrap_len=%d do_del=%d\n",
 				qlen, line_len, linewrap_len, do_delete);
 #endif
 			/* should we delete to perform smart wrapping */
-			if (qlen && line_len < linewrap_len && do_delete) {
+			if (line_len < linewrap_len && do_delete) {
 				/* get rid of newline */
 				gtk_stext_set_point(text, cur_pos);
 				gtk_stext_forward_delete(text, 1);
@@ -2363,13 +2385,18 @@ static void compose_wrap_line_all(Compose *compose)
 			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
 			/* gtk_stext_compact_buffer(text); */
 			tlen++;
-			cur_pos++;
 			line_pos++;
-			cur_len = cur_len - line_len + ch_len;
+			/* for loop will increase it */
+			cur_pos = line_pos - 1;
+			/* start over with current line */
+			is_new_line = 1;
 			line_len = 0;
+			cur_len = 0;
+			do_delete = 1;
 #ifdef WRAP_DEBUG
 			printf("after CR insert ");
 			dump_text(text, line_pos, tlen, 1);
+			dump_text(text, cur_pos, tlen, 1);
 #endif
 
 			/* should we insert quotation ? */
@@ -2387,14 +2414,6 @@ static void compose_wrap_line_all(Compose *compose)
 						/* gtk_stext_compact_buffer(text); */
 						tlen += ins_len;
 					}
-
-					/* for loop will increase it */
-					cur_pos = line_pos - 1;
-					cur_len = 0;
-					line_len = 0;
-					/* start over with current line */
-					is_new_line = 1;
-					do_delete = 1;
 #ifdef WRAP_DEBUG
 					printf("after quote insert ");
 					dump_text(text, line_pos, tlen, 1);

@@ -30,7 +30,7 @@
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkctree.h>
 #include <gtk/gtkcombo.h>
-#include <gtk/gtktext.h>
+#include "gtkstext.h"
 #include <stdlib.h>
 #if HAVE_WCHAR_H
 #  include <wchar.h>
@@ -100,21 +100,21 @@ void gtkut_clist_set_focus_row		(GtkCList	*clist,
 void gtkut_combo_set_items		(GtkCombo	*combo,
 					 const gchar	*str1, ...);
 
-gboolean gtkut_text_match_string	(GtkText	*text,
+gboolean gtkut_text_match_string	(GtkSText	*text,
 					 gint		 pos,
 					 wchar_t	*wcs,
 					 gint		 len,
 					 gboolean	 case_sens);
-guint gtkut_text_str_compare_n		(GtkText	*text,
+guint gtkut_text_str_compare_n		(GtkSText	*text,
 					 guint		 pos1,
 					 guint		 pos2,
 					 guint		 len,
 					 guint		 text_len);
-guint gtkut_text_str_compare		(GtkText	*text,
+guint gtkut_text_str_compare		(GtkSText	*text,
 					 guint		 start_pos,
 					 guint		 text_len,
 					 const gchar	*str);
-gboolean gtkut_text_is_uri_string	(GtkText	*text,
+gboolean gtkut_text_is_uri_string	(GtkSText	*text,
 					 guint		 start_pos,
 					 guint		 text_len);
 
