@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -143,7 +143,7 @@ static gchar *compose_quote_parse_fmt		(Compose	*compose,
 static void compose_reply_set_entry		(Compose	*compose,
 						 MsgInfo	*msginfo,
 						 gboolean	 to_all,
-						 gboolean	 to_author);
+						 gboolean	 to_sender);
 static void compose_reedit_set_entry		(Compose	*compose,
 						 MsgInfo	*msginfo);
 static void compose_insert_sig			(Compose	*compose);
@@ -482,7 +482,7 @@ msginfo->folder->folder->change_flags(msginfo->folder->folder, \
 }
 
 void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
-		   gboolean to_author)
+		   gboolean ignore_replyto)
 {
 	Compose *compose;
 	PrefsAccount *account;
@@ -496,7 +496,7 @@ void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
 	if (!account) account = cur_account;
 	g_return_if_fail(account != NULL);
 
-	if (to_author && account->protocol == A_NNTP) {
+	if (ignore_replyto && account->protocol == A_NNTP) {
 		reply_account =
 			account_find_mail_from_address(account->address);
 		if (!reply_account)
@@ -515,7 +515,7 @@ void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
 	compose->mode = COMPOSE_REPLY;
 
 	if (compose_parse_header(compose, msginfo) < 0) return;
-	compose_reply_set_entry(compose, msginfo, to_all, to_author);
+	compose_reply_set_entry(compose, msginfo, to_all, ignore_replyto);
 
 	text = GTK_STEXT(compose->text);
 	gtk_stext_freeze(text);
@@ -1333,7 +1333,7 @@ static gchar *compose_quote_parse_fmt(Compose *compose, MsgInfo *msginfo,
 */
 
 static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
-				    gboolean to_all, gboolean to_author)
+				    gboolean to_all, gboolean ignore_replyto)
 {
 	GSList *cc_list;
 	GSList *cur;
@@ -1345,7 +1345,7 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 
 	if (compose->account->protocol != A_NNTP)
 		gtk_entry_set_text(GTK_ENTRY(compose->to_entry),
-				   ( (compose->replyto && !to_author) 
+				   ( (compose->replyto && !ignore_replyto) 
 				     ? compose->replyto
 				     : msginfo->from ? msginfo->from : ""));
 	if (compose->account->protocol == A_NNTP)

@@ -116,7 +116,7 @@ static void toolbar_reply_cb		(GtkWidget	*widget,
 					 gpointer	 data);
 static void toolbar_reply_to_all_cb	(GtkWidget	*widget,
 					 gpointer	 data);
-static void toolbar_reply_to_author_cb	(GtkWidget	*widget,
+static void toolbar_reply_to_sender_cb	(GtkWidget	*widget,
 					 gpointer	 data);
 static void toolbar_forward_cb		(GtkWidget	*widget,
 					 gpointer	 data);
@@ -474,9 +474,9 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Compose _new message"),	"<alt>N",	compose_cb, 0, NULL},
 	{N_("/_Message/_Reply"),		"<alt>R", 	reply_cb, COMPOSE_REPLY, NULL},
+	{N_("/_Message/Repl_y to sender"),	"<control><alt>R", reply_cb, COMPOSE_REPLY_TO_SENDER, NULL},
 	{N_("/_Message/Reply to a_ll"),		"<shift><alt>R", reply_cb, COMPOSE_REPLY_TO_ALL, NULL},
-	{N_("/_Message/Reply to author"),	NULL, reply_cb, COMPOSE_REPLY_TO_AUTHOR, NULL},
-	{N_("/_Message/_Forward"),		"<control>F",	reply_cb, COMPOSE_FORWARD, NULL},
+	{N_("/_Message/_Forward"),		"<control>F", reply_cb, COMPOSE_FORWARD, NULL},
 	{N_("/_Message/Forward as an a_ttachment"),
 						"<shift><control>F", reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
@@ -493,7 +493,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Open in new _window"),	"<shift><control>N", open_msg_cb, 0, NULL},
 	{N_("/_Message/View _source"),		"<control>U", view_source_cb, 0, NULL},
-	{N_("/_Message/Show all _header"),	"<control>H",	header_window_show_cb,	0, NULL},
+	{N_("/_Message/Show all _header"),	"<control>H", header_window_show_cb, 0, NULL},
 	{N_("/_Message/Re_edit"),		NULL, reedit_cb, 0, NULL},
 
 	{N_("/_Summary"),			NULL, NULL, 0, "<Branch>"},
@@ -1114,7 +1114,7 @@ void main_window_set_toolbar_sensitive(MainWindow *mainwin, gboolean sensitive)
 {
 	gtk_widget_set_sensitive(mainwin->reply_btn,       sensitive);
 	gtk_widget_set_sensitive(mainwin->replyall_btn,    sensitive);
-	gtk_widget_set_sensitive(mainwin->replyauthor_btn, sensitive);
+	gtk_widget_set_sensitive(mainwin->replysender_btn, sensitive);
 	gtk_widget_set_sensitive(mainwin->fwd_btn,         sensitive);
 	gtk_widget_set_sensitive(mainwin->exec_btn,        sensitive);
 	gtk_widget_set_sensitive(mainwin->next_btn,        sensitive);
@@ -1146,8 +1146,8 @@ void main_window_set_menu_sensitive(MainWindow *mainwin, gint selection)
 
 	menu_set_sensitive(ifactory, "/File/Save as...", sens);
 	menu_set_sensitive(ifactory, "/Message/Reply", sens);
+	menu_set_sensitive(ifactory, "/Message/Reply to sender", sens);
 	menu_set_sensitive(ifactory, "/Message/Reply to all", sens);
-	menu_set_sensitive(ifactory, "/Message/Reply to author", sens);
 	menu_set_sensitive(ifactory, "/Message/Forward", sens);
 	menu_set_sensitive(ifactory, "/Message/Forward as an attachment", sens);
 	menu_set_sensitive(ifactory, "/Message/Open in new window", sens);
@@ -1427,7 +1427,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	GtkWidget *compose_btn;
 	GtkWidget *reply_btn;
 	GtkWidget *replyall_btn;
-	GtkWidget *replyauthor_btn;
+	GtkWidget *replysender_btn;
 	GtkWidget *fwd_btn;
 	GtkWidget *send_btn;
 	/*
@@ -1499,12 +1499,12 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 					       toolbar_reply_to_all_cb,
 					       mainwin);
 	CREATE_TOOLBAR_ICON(stock_mail_reply_to_author_xpm);
-	replyauthor_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
-						  _("Reply author"),
-						  _("Reply to author"),
-						  "Reply to author",
+	replysender_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
+						  _("Reply sender"),
+						  _("Reply to sender"),
+						  "Reply to sender",
 						  icon_wid,
-						  toolbar_reply_to_author_cb,
+						  toolbar_reply_to_sender_cb,
 						  mainwin);
 	CREATE_TOOLBAR_ICON(stock_mail_forward_xpm);
 	fwd_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
@@ -1574,7 +1574,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	mainwin->compose_btn     = compose_btn;
 	mainwin->reply_btn       = reply_btn;
 	mainwin->replyall_btn    = replyall_btn;
-	mainwin->replyauthor_btn = replyauthor_btn;
+	mainwin->replysender_btn = replysender_btn;
 	mainwin->fwd_btn         = fwd_btn;
 	mainwin->send_btn        = send_btn;
 	/*
@@ -1638,12 +1638,12 @@ static void toolbar_reply_to_all_cb	(GtkWidget	*widget,
 	reply_cb(mainwin, COMPOSE_REPLY_TO_ALL, NULL);
 }
 
-static void toolbar_reply_to_author_cb	(GtkWidget	*widget,
+static void toolbar_reply_to_sender_cb	(GtkWidget	*widget,
 					 gpointer	 data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
 
-	reply_cb(mainwin, COMPOSE_REPLY_TO_AUTHOR, NULL);
+	reply_cb(mainwin, COMPOSE_REPLY_TO_SENDER, NULL);
 }
 
 static void toolbar_forward_cb	(GtkWidget	*widget,
@@ -1967,13 +1967,13 @@ static void reply_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 		compose_reply(msginfo, prefs_common.reply_with_quote,
 			      FALSE, FALSE);
 		break;
+	case COMPOSE_REPLY_TO_SENDER:
+		compose_reply(msginfo, prefs_common.reply_with_quote,
+			      FALSE, TRUE);
+		break;
 	case COMPOSE_REPLY_TO_ALL:
 		compose_reply(msginfo, prefs_common.reply_with_quote,
 			      TRUE, FALSE);
-		break;
-	case COMPOSE_REPLY_TO_AUTHOR:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      FALSE, TRUE);
 		break;
 	case COMPOSE_FORWARD:
 		compose_forward(NULL, msginfo, FALSE);
@@ -1982,8 +1982,7 @@ static void reply_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 		compose_forward(NULL, msginfo, TRUE);
 		break;
 	default:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      FALSE, FALSE);
+		g_warning("reply_cb(): invalid action type: %d\n", action);
 	}
 
 	summary_set_marks_selected(mainwin->summaryview);

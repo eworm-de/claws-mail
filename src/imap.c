@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,18 +40,20 @@
 #include "codeconv.h"
 #include "utils.h"
 
+#define IMAP4_PORT	143
+
 static GList *session_list = NULL;
 
 static gint imap_cmd_count = 0;
 
-static GSList *imap_get_uncached_messages(IMAPSession	*session,
-					  FolderItem	*item,
-					  gint		first,
-					  gint		last);
-static GSList *imap_delete_messages	 (GSList	*mlist,
-					  gint		first,
-					  gint		last);
-static void imap_delete_all_messages	 (FolderItem	*item);
+static GSList *imap_get_uncached_messages	(IMAPSession	*session,
+						 FolderItem	*item,
+						 gint		 first,
+						 gint		 last);
+static GSList *imap_delete_cached_messages	(GSList		*mlist,
+						 gint		 first,
+						 gint		 last);
+static void imap_delete_all_cached_messages	(FolderItem	*item);
 
 static SockInfo *imap_open	(const gchar	*server,
 				 gushort	 port,
@@ -137,20 +139,22 @@ static IMAPSession *imap_session_connect_if_not(Folder *folder)
 
 	if (!rfolder->session) {
 		rfolder->session =
-			imap_session_new(folder->account->recv_server, 143,
+			imap_session_new(folder->account->recv_server,
+					 IMAP4_PORT,
 					 folder->account->userid,
 					 folder->account->passwd);
-	} else {
-		if (imap_noop(rfolder->session->sock) != IMAP_SUCCESS) {
-			log_warning(_("IMAP4 connection to %s:%d has been"
-				      " disconnected. Reconnecting...\n"),
-				    folder->account->recv_server, 143);
-			session_destroy(rfolder->session);
-			rfolder->session =
-				imap_session_new(folder->account->recv_server,
-						 143, folder->account->userid,
-						 folder->account->passwd);
-		}
+		return IMAP_SESSION(rfolder->session);
+	}
+
+	if (imap_noop(rfolder->session->sock) != IMAP_SUCCESS) {
+		log_warning(_("IMAP4 connection to %s:%d has been"
+			      " disconnected. Reconnecting...\n"),
+			    folder->account->recv_server, IMAP4_PORT);
+		session_destroy(rfolder->session);
+		rfolder->session =
+			imap_session_new(folder->account->recv_server,
+					 IMAP4_PORT, folder->account->userid,
+					 folder->account->passwd);
 	}
 
 	return IMAP_SESSION(rfolder->session);
@@ -214,6 +218,8 @@ GSList *imap_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 {
 	GSList *mlist = NULL;
 	IMAPSession *session;
+	gint ok, exists = 0, recent = 0, unseen = 0, begin = 1;
+	gulong uid = 0, last_uid;
 
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
@@ -226,64 +232,65 @@ GSList *imap_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 		mlist = procmsg_read_cache(item, FALSE);
 		item->last_num = procmsg_get_last_num_in_cache(mlist);
 		procmsg_set_flags(mlist, item);
-	} else {
-		gint ok, exists = 0, recent = 0, unseen = 0, begin = 1;
-		gulong uid = 0, last_uid = item->mtime;
+		statusbar_pop_all();
 
-		ok = imap_select(SESSION(session)->sock, item->path,
-					&exists, &recent, &unseen, &uid);
-		if (ok != IMAP_SUCCESS) {
-			log_warning(_("can't select folder: %s\n"), item->path);
-			return NULL;
-		}
-
-		if (use_cache) {
-			gint cache_last;
-
-			mlist = procmsg_read_cache(item, FALSE);
-			procmsg_set_flags(mlist, item);
-			cache_last = procmsg_get_last_num_in_cache(mlist);
-
-			/* calculating the range of envelope to get */
-			if (exists < cache_last) {
-				/* some messages are deleted (get all) */
-				begin = 1;
-			} else if (exists == cache_last) {
-				if (last_uid != 0 && last_uid != uid) {
-					/* some recent but deleted (get all) */
-					begin = 1;
-				} else {
-					/* mailbox unchanged (get none)*/
-					begin = -1;
-				}
-			} else {
-				if (exists == cache_last + recent) {
-					/* some recent */
-					begin = cache_last + 1;
-				} else {
-					/* some recent but deleted (get all) */
-					begin = 1;
-				}
-			}
-
-			item->mtime = uid;
-		}
-
-		if (1 < begin && begin <= exists) {
-			GSList *newlist;
-
-			newlist = imap_get_uncached_messages
-				(session, item, begin, exists);
-			imap_delete_messages(mlist, begin, INT_MAX);
-			mlist = g_slist_concat(mlist, newlist);
-		} else if (begin == 1) {
-			mlist = imap_get_uncached_messages 
-					(session, item, 1, exists);
-			imap_delete_all_messages(item);
-		}
-
-		item->last_num = exists;
+		return mlist;
 	}
+
+	last_uid = item->mtime;
+
+	ok = imap_select(SESSION(session)->sock, item->path,
+			 &exists, &recent, &unseen, &uid);
+	if (ok != IMAP_SUCCESS) {
+		log_warning(_("can't select folder: %s\n"), item->path);
+		return NULL;
+	}
+
+	if (use_cache) {
+		gint cache_last;
+
+		mlist = procmsg_read_cache(item, FALSE);
+		procmsg_set_flags(mlist, item);
+		cache_last = procmsg_get_last_num_in_cache(mlist);
+
+		/* calculating the range of envelope to get */
+		if (exists < cache_last) {
+			/* some messages are deleted (get all) */
+			begin = 1;
+		} else if (exists == cache_last) {
+			if (last_uid != 0 && last_uid != uid) {
+				/* some recent but deleted (get all) */
+				begin = 1;
+			} else {
+				/* mailbox unchanged (get none)*/
+				begin = -1;
+			}
+		} else {
+			if (exists == cache_last + recent) {
+				/* some recent */
+				begin = cache_last + 1;
+			} else {
+				/* some recent but deleted (get all) */
+				begin = 1;
+			}
+		}
+
+		item->mtime = uid;
+	}
+
+	if (1 < begin && begin <= exists) {
+		GSList *newlist;
+
+		newlist = imap_get_uncached_messages
+			(session, item, begin, exists);
+		imap_delete_cached_messages(mlist, begin, INT_MAX);
+		mlist = g_slist_concat(mlist, newlist);
+	} else if (begin == 1) {
+		mlist = imap_get_uncached_messages(session, item, 1, exists);
+		imap_delete_all_cached_messages(item);
+	}
+
+	item->last_num = exists;
 
 	statusbar_pop_all();
 
@@ -595,7 +602,8 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 	return newlist;
 }
 
-static GSList *imap_delete_messages(GSList *mlist, gint first, gint last)
+static GSList *imap_delete_cached_messages(GSList *mlist,
+					   gint first, gint last)
 {
 	GSList *cur, *next;
 	MsgInfo *msginfo;
@@ -605,9 +613,8 @@ static GSList *imap_delete_messages(GSList *mlist, gint first, gint last)
 		next = cur->next;
 
 		msginfo = (MsgInfo *)cur->data;
-		if ((msginfo) && 
-		    (first <= msginfo->msgnum ) &&
-		    (msginfo->msgnum <= last)) {
+		if (msginfo != NULL && first <= msginfo->msgnum &&
+		    msginfo->msgnum <= last) {
 			debug_print(_("deleting message %d...\n"),
 				    msginfo->msgnum);
 
@@ -625,45 +632,22 @@ static GSList *imap_delete_messages(GSList *mlist, gint first, gint last)
 	return mlist;
 }
 
-static void imap_delete_all_messages(FolderItem *item)
+static void imap_delete_all_cached_messages(FolderItem *item)
 {
-	DIR *dp;
-	struct dirent *d;
 	gchar *dir;
-	gchar *file;
 
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 	g_return_if_fail(item->folder->type == F_IMAP);
 
-	dir = folder_item_get_path(item);
-	if ((dp = opendir(dir)) == NULL) {
-		FILE_OP_ERROR(dir, "opendir");
-		g_free(dir);
-		return;
-	}
-
 	debug_print(_("\tDeleting all cached messages... "));
 
-	while ((d = readdir(dp)) != NULL) {
-		if (to_number(d->d_name) < 0) continue;
-
-		file = g_strconcat(dir, G_DIR_SEPARATOR_S, d->d_name, NULL);
-
-		if (is_file_exist(file)) {
-			if (unlink(file) < 0)
-				FILE_OP_ERROR(file, "unlink");
-		}
-
-		g_free(file);
-	}
-
-	closedir(dp);
+	dir = folder_item_get_path(item);
+	remove_all_numbered_files(dir);
 	g_free(dir);
 
 	debug_print(_("done.\n"));
 }
-
 
 static SockInfo *imap_open(const gchar *server, gushort port, gchar *buf)
 {

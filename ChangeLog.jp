@@ -1,3 +1,18 @@
+2001-06-06
+
+	* src/imap.c: imap_delete_messages() と imap_delete_all_messages()
+	  を imap_delete_cached_messages() と
+	  imap_delete_all_cached_messages() に名称変更。コードの整理。
+	* src/utils.[ch]: 関数 remove_all_numbered_files() を追加。
+	* src/mh.c: mh_remove_all_msg()
+	  src/imap.c: imap_delete_all_cached_messages():
+	  remove_all_numbered_files() を使用するようにした。
+	* src/mainwindow.c
+	  src/summaryview.c
+	  src/compose.[ch]: 「差出人に返信」を追加。
+	  compose_reply()
+	  compose_reply_set_entry(): 引数に `ignore_replyto' を追加。
+
 2001-06-05
 
 	* src/folderview.c: folderview_selected()

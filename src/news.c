@@ -47,6 +47,8 @@
 #include "inputdialog.h"
 #include "alertpanel.h"
 
+#define NNTP_PORT	119
+
 static Session *news_session_new	 (const gchar	*server,
 					  gushort	 port,
 					  const gchar	*userid,
@@ -147,7 +149,7 @@ static Session *news_session_new_for_folder(Folder *folder)
 			passwd = news_query_password(ac->nntp_server, userid);
 	}
 
-	session = news_session_new(ac->nntp_server, 119, userid, passwd);
+	session = news_session_new(ac->nntp_server, NNTP_PORT, userid, passwd);
 	g_free(passwd);
 
 	return session;
@@ -164,16 +166,18 @@ NNTPSession *news_session_get(Folder *folder)
 	if (!REMOTE_FOLDER(folder)->session) {
 		REMOTE_FOLDER(folder)->session =
 			news_session_new_for_folder(folder);
-	} else {
-		session = NNTP_SESSION(REMOTE_FOLDER(folder)->session);
-		if (nntp_mode(session->nntp_sock, FALSE) != NN_SUCCESS) {
-			log_warning(_("NNTP connection to %s:%d has been"
-				      " disconnected. Reconnecting...\n"),
-				    folder->account->nntp_server, 119);
-			session_destroy(REMOTE_FOLDER(folder)->session);
-			REMOTE_FOLDER(folder)->session =
-				news_session_new_for_folder(folder);
-		}
+		return NNTP_SESSION(REMOTE_FOLDER(folder)->session);
+	}
+
+	session = NNTP_SESSION(REMOTE_FOLDER(folder)->session);
+
+	if (nntp_mode(session->nntp_sock, FALSE) != NN_SUCCESS) {
+		log_warning(_("NNTP connection to %s:%d has been"
+			      " disconnected. Reconnecting...\n"),
+			    folder->account->nntp_server, NNTP_PORT);
+		session_destroy(REMOTE_FOLDER(folder)->session);
+		REMOTE_FOLDER(folder)->session =
+			news_session_new_for_folder(folder);
 	}
 
 	return NNTP_SESSION(REMOTE_FOLDER(folder)->session);

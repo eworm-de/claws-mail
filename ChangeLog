@@ -1,3 +1,18 @@
+2001-06-06
+
+	* src/imap.c: renamed imap_delete_messages() and
+	  imap_delete_all_messages() to imap_delete_cached_messages() and
+	  imap_delete_all_cached_messages(). Some code cleanups.
+	* src/utils.[ch]: added a function remove_all_numbered_files().
+	* src/mh.c: mh_remove_all_msg()
+	  src/imap.c: imap_delete_all_cached_messages():
+	  use remove_all_numbered_files().
+	* src/mainwindow.c
+	  src/summaryview.c
+	  src/compose.[ch]: added `Reply to sender'.
+	  compose_reply()
+	  compose_reply_set_entry(): added an argument `ignore_replyto'.
+
 2001-06-05
 
 	* src/folderview.c: folderview_selected()

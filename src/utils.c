@@ -1336,6 +1336,44 @@ gint remove_all_files(const gchar *dir)
 	return 0;
 }
 
+gint remove_all_numbered_files(const gchar *dir)
+{
+	DIR *dp;
+	struct dirent *d;
+	gchar *prev_dir;
+
+	prev_dir = g_get_current_dir();
+
+	if (chdir(dir) < 0) {
+		FILE_OP_ERROR(dir, "chdir");
+		return -1;
+	}
+
+	if ((dp = opendir(".")) == NULL) {
+		FILE_OP_ERROR(dir, "opendir");
+		return -1;
+	}
+
+	while ((d = readdir(dp)) != NULL) {
+		if (to_number(d->d_name) < 0) continue;
+
+		if (unlink(d->d_name) < 0)
+			FILE_OP_ERROR(d->d_name, "unlink");
+	}
+
+	closedir(dp);
+
+	if (chdir(prev_dir) < 0) {
+		FILE_OP_ERROR(prev_dir, "chdir");
+		g_free(prev_dir);
+		return -1;
+	}
+
+	g_free(prev_dir);
+
+	return 0;
+}
+
 gint remove_dir_recursive(const gchar *dir)
 {
 	struct stat s;

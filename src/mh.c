@@ -122,7 +122,6 @@ gchar *mh_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	path = folder_item_get_path(item);
 	file = g_strconcat(path, G_DIR_SEPARATOR_S, itos(num), NULL);
 	g_free(path);
-
 	if (!is_file_exist(file)) {
 		g_free(file);
 		return NULL;
@@ -597,32 +596,16 @@ gint mh_remove_msg(Folder *folder, FolderItem *item, gint num)
 gint mh_remove_all_msg(Folder *folder, FolderItem *item)
 {
 	gchar *path;
-	DIR *dp;
-	struct dirent *d;
+	gint val;
 
 	g_return_val_if_fail(item != NULL, -1);
 
 	path = folder_item_get_path(item);
 	g_return_val_if_fail(path != NULL, -1);
-	if (change_dir(path) < 0) {
-		g_free(path);
-		return -1;
-	}
+	val = remove_all_numbered_files(path);
 	g_free(path);
 
-	if ((dp = opendir(".")) == NULL) {
-		FILE_OP_ERROR(item->path, "opendir");
-		return -1;
-	}
-
-	while ((d = readdir(dp)) != NULL) {
-		if (to_number(d->d_name) < 0) continue;
-		if (unlink(d->d_name) < 0)
-			FILE_OP_ERROR(d->d_name, "unlink");
-	}
-
-	closedir(dp);
-	return 0;
+	return val;
 }
 
 gboolean mh_is_msg_changed(Folder *folder, FolderItem *item, MsgInfo *msginfo)

@@ -319,8 +319,8 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 					NULL, summary_mark_as_read, 0, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_Reply"),			NULL, summary_reply_cb,	COMPOSE_REPLY, NULL},
+	{N_("/Repl_y to sender"),	NULL, summary_reply_cb,	COMPOSE_REPLY_TO_SENDER, NULL},
 	{N_("/Reply to a_ll"),		NULL, summary_reply_cb,	COMPOSE_REPLY_TO_ALL, NULL},
-	{N_("/Reply to author"),	NULL, summary_reply_cb,	COMPOSE_REPLY_TO_AUTHOR, NULL},
 	{N_("/_Forward"),		NULL, summary_reply_cb, COMPOSE_FORWARD, NULL},
 	{N_("/Forward as an a_ttachment"),
 					NULL, summary_reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
@@ -928,8 +928,8 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 
 	sens = (selection == SUMMARY_SELECTED_MULTIPLE) ? FALSE : TRUE;
 	menu_set_sensitive(ifactory, "/Reply",			  sens);
+	menu_set_sensitive(ifactory, "/Reply to sender",	  sens);
 	menu_set_sensitive(ifactory, "/Reply to all",		  sens);
-	menu_set_sensitive(ifactory, "/Reply to author",	  sens);
 	menu_set_sensitive(ifactory, "/Forward",		  sens);
 	menu_set_sensitive(ifactory, "/Forward as an attachment", sens);
 
@@ -3203,6 +3203,16 @@ static void summary_reply_cb(SummaryView *summaryview, guint action,
 	case COMPOSE_REPLY_WITHOUT_QUOTE:
 		compose_reply(msginfo, FALSE, FALSE, FALSE);
 		break;
+	case COMPOSE_REPLY_TO_SENDER:
+		compose_reply(msginfo, prefs_common.reply_with_quote,
+			      FALSE, TRUE);
+		break;
+	case COMPOSE_REPLY_TO_SENDER_WITH_QUOTE:
+		compose_reply(msginfo, TRUE, FALSE, TRUE);
+		break;
+	case COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE:
+		compose_reply(msginfo, FALSE, FALSE, TRUE);
+		break;
 	case COMPOSE_REPLY_TO_ALL:
 		compose_reply(msginfo, prefs_common.reply_with_quote,
 			      TRUE, FALSE);
@@ -3213,16 +3223,6 @@ static void summary_reply_cb(SummaryView *summaryview, guint action,
 	case COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE:
 		compose_reply(msginfo, FALSE, TRUE, FALSE);
 		break;
-	case COMPOSE_REPLY_TO_AUTHOR:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      FALSE, TRUE);
-		break;
-	case COMPOSE_REPLY_TO_AUTHOR_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, FALSE, TRUE);
-		break;
-	case COMPOSE_REPLY_TO_AUTHOR_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, FALSE, TRUE);
-		break;
 	case COMPOSE_FORWARD:
 		compose_forward(NULL, msginfo, FALSE);
 		break;
@@ -3230,8 +3230,7 @@ static void summary_reply_cb(SummaryView *summaryview, guint action,
 		compose_forward(NULL, msginfo, TRUE);
 		break;
 	default:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      FALSE, FALSE);
+		g_warning("summary_reply_cb(): invalid action: %d\n", action);
 	}
 
 	summary_set_marks_selected(summaryview);

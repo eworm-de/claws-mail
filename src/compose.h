@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,12 +51,12 @@ typedef enum
 	COMPOSE_REPLY,
 	COMPOSE_REPLY_WITH_QUOTE,
 	COMPOSE_REPLY_WITHOUT_QUOTE,
+	COMPOSE_REPLY_TO_SENDER,
+	COMPOSE_REPLY_TO_SENDER_WITH_QUOTE,
+	COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE,
 	COMPOSE_REPLY_TO_ALL,
 	COMPOSE_REPLY_TO_ALL_WITH_QUOTE,
 	COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE,
-	COMPOSE_REPLY_TO_AUTHOR,
-	COMPOSE_REPLY_TO_AUTHOR_WITH_QUOTE,
-	COMPOSE_REPLY_TO_AUTHOR_WITHOUT_QUOTE,
 	COMPOSE_FORWARD,
 	COMPOSE_FORWARD_AS_ATTACH,
 	COMPOSE_NEW,
@@ -176,7 +176,7 @@ Compose * compose_new_with_recipient	(PrefsAccount	*account,
 void compose_reply		(MsgInfo	*msginfo,
 				 gboolean	 quote,
 				 gboolean	 to_all,
-				 gboolean	 to_author);
+				 gboolean	 ignore_replyto);
 Compose * compose_forward	(PrefsAccount *account,
 				 MsgInfo	*msginfo,
 				 gboolean	 as_attach);
