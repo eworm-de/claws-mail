@@ -101,11 +101,11 @@ typedef AspellConfig GtkAspellConfig;
 
 extern GtkAspellCheckers *gtkaspellcheckers;
 
-GtkAspellCheckers*	gtkaspell_checkers_new		();
+GtkAspellCheckers*	gtkaspell_checkers_new		(void);
 
-GtkAspellCheckers*	gtkaspell_checkers_delete	();
+GtkAspellCheckers*	gtkaspell_checkers_delete	(void);
 
-void 			gtkaspell_checkers_reset_error	();
+void 			gtkaspell_checkers_reset_error	(void);
 
 GtkAspell*		gtkaspell_new			(const gchar *dictionary, 
 							 const gchar *encoding,

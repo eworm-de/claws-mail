@@ -34,6 +34,6 @@ struct _MHFolder
 	LocalFolder lfolder;
 };
 
-FolderClass *mh_get_class	();
+FolderClass *mh_get_class	(void);
 
 #endif /* __MH_H__ */

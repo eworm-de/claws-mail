@@ -17,14 +17,19 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include <unistd.h>
 
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <gtkmathview/gtkmathview.h>
 
-#include "common/plugin.h"
-#include "common/utils.h"
+#include "plugin.h"
+#include "utils.h"
+#include "intl.h"
 #include "mimeview.h"
 
 typedef struct _MathMLViewer MathMLViewer;
@@ -140,13 +145,13 @@ void plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	return "MathML Viewer";
+	return _("MathML Viewer");
 }
 
 const gchar *plugin_desc(void)
 {
-	return "This plugin uses the GtkMathView widget to render "
-	       "MathML attachments (Content-Type: text/mathml)";
+	return _("This plugin uses the GtkMathView widget to render "
+	         "MathML attachments (Content-Type: text/mathml)");
 }
 
 const gchar *plugin_type(void)

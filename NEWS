@@ -1,5 +1,32 @@
 Changes of Sylpheed
 
+* 0.9.0
+
+    * The multi-process network I/O has been implemented for POP3 and SMTP.
+    * The Action feature has been improved.
+    * The automatic signature replacement on account change has been
+      implemented.
+    * Hyperlinks of HTML messages are now correctly handled.
+    * The separated message view now has a menubar.
+    * Original messages' headers are now included as the preset keywords
+      on automatic filter creation.
+    * The verbose error messages are now displayed on POP3 and SMTP.
+    * The lines of the log window is now restricted to reduce the memory
+      usage.
+    * The Shift_JIS locale has been supported.
+    * The internal MIME structure has been cleaned up.
+    * Address names which have special characters are now correctly quoted.
+    * Slovak message catalog has been added.
+    * The header corruption bug on reediting has been fixed.
+    * The bug of UTF-7 encoding conversion has been fixed.
+    * A workaround for unknown timezones has been made.
+    * A workaround for wrapping problem on UTF-8 locale has been made.
+    * More workaround for crashes by illegal characters has been made.
+    * The crash bug in IMAP4 parser has been fixed.
+    * The crash bug of the composition window has been fixed.
+    * The colormap / visual problem on Solaris has been fixed.
+    * Other bugfixes have been made.
+
 * 0.8.11
 
     * The folder option to remove parentheses and brackets at the beginning

@@ -473,12 +473,6 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 
 	if (mimeinfo->mime_type == MIME_MULTIPART) return;
 
-	if (!mimeinfo->parent &&
-	    mimeinfo->mime_type != MIME_TEXT &&
-	    mimeinfo->mime_type != MIME_TEXT_HTML &&
-	    mimeinfo->mime_type != MIME_TEXT_ENRICHED)
-		return;
-
 	if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0) {
 		perror("fseek");
 		return;
@@ -1533,7 +1527,7 @@ gboolean textview_search_string(TextView *textview, const gchar *str,
 #ifdef WIN32
 	locale_from_utf8(&p_str);
 #endif
-	len = get_wcs_len(str);
+	len = get_mbs_len(str);
 	g_return_val_if_fail(len >= 0, FALSE);
 
 	pos = textview->cur_pos;

@@ -153,7 +153,7 @@ FolderClass news_class =
 	NULL,
 };
 
-FolderClass *news_get_class()
+FolderClass *news_get_class(void)
 {
 	return &news_class;
 }

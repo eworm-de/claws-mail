@@ -30,7 +30,6 @@
 #include "intl.h"
 #include "utils.h"
 #include "ssl.h"
-#include "log.h"
 #include "ssl_certificate.h"
 
 static SSL_CTX *ssl_ctx;
@@ -78,10 +77,6 @@ gboolean ssl_init_socket(SockInfo *sockinfo)
 	return ssl_init_socket_with_method(sockinfo, SSL_METHOD_SSLv23);
 }
 
-#ifdef WIN32 /* XXX:tm Why does writing to log window hang here? */
-# define log_printf debug_print
-# define log_warning debug_print
-#endif
 gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 {
 	X509 *server_cert;
@@ -89,7 +84,7 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 
 	ssl = SSL_new(ssl_ctx);
 	if (ssl == NULL) {
-		log_warning(_("Error creating ssl context\n"));
+		g_warning(_("Error creating ssl context\n"));
 		return FALSE;
 	}
 
@@ -108,14 +103,16 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 
 	SSL_set_fd(ssl, sockinfo->sock);
 	if (SSL_connect(ssl) == -1) {
-		log_warning(_("SSL connect failed (%s)\n"),
+		g_warning(_("SSL connect failed (%s)\n"),
 			    ERR_error_string(ERR_get_error(), NULL));
 		SSL_free(ssl);
 		return FALSE;
 	}
 
 	/* Get the cipher */
-	log_print(_("SSL connection using %s\n"), SSL_get_cipher(ssl));
+
+	debug_print(_("SSL connection using %s\n"),
+		    SSL_get_cipher(ssl));
 
 	/* Get server's certificate (note: beware of dynamic allocation) */
 	if ((server_cert = SSL_get_peer_certificate(ssl)) == NULL) {
@@ -137,10 +134,6 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 
 	return TRUE;
 }
-#ifdef WIN32
-# undef log_printf
-# undef log_warning
-#endif
 
 void ssl_done_socket(SockInfo *sockinfo)
 {

@@ -180,7 +180,6 @@ struct _Compose
 	gboolean sending;
 	
 	gboolean return_receipt;
-	gboolean paste_as_quotation;
 
 	GSList *to_list;
 	GSList *newsgroup_list;

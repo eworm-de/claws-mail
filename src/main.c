@@ -27,10 +27,6 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtkrc.h>
 
-#if HAVE_GDK_IMLIB
-#  include <gdk_imlib.h>
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -252,16 +248,14 @@ int main(int argc, char *argv[])
 	gtk_set_locale();
 	gtk_init(&argc, &argv);
 
+	gdk_rgb_init();
+	gtk_widget_set_default_colormap(gdk_rgb_get_cmap());
+	gtk_widget_set_default_visual(gdk_rgb_get_visual());
+
 #if USE_THREADS || USE_LDAP
 	g_thread_init(NULL);
 	if (!g_thread_supported())
 		g_error(_("g_thread is not supported by glib.\n"));
-#endif
-
-#if HAVE_GDK_IMLIB
-	gdk_imlib_init();
-	gtk_widget_push_visual(gdk_imlib_get_visual());
-	gtk_widget_push_colormap(gdk_imlib_get_colormap());
 #endif
 
 #ifdef WIN32

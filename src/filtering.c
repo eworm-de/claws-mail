@@ -442,7 +442,7 @@ static gboolean prefs_filtering_free_func(GNode *node, gpointer data)
 	return FALSE;
 }
 
-void prefs_filtering_clear()
+void prefs_filtering_clear(void)
 {
 	GList * cur;
 

@@ -101,9 +101,9 @@ static void imageviewer_create_widget_func(PrefsPage * _page,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 	/* --------------------------------------------------------- */
-	gtk_widget_set_sensitive(GTK_WIDGET(autoload), FALSE);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(resize), imageviewerprefs.resize_img);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(autoload), imageviewerprefs.display_img);
 
 	page->autoload = autoload;
 	page->resize = resize;

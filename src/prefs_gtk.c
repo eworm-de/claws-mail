@@ -816,7 +816,7 @@ void prefs_set_spinbtn(PrefParam *pparam)
 
 static GSList *prefs_pages = NULL;
 
-void prefs_gtk_open()
+void prefs_gtk_open(void)
 {
 	prefswindow_open(prefs_pages, NULL);
 }

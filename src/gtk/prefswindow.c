@@ -25,6 +25,7 @@
 #include <gtk/gtk.h>
 
 #include "intl.h"
+#include "utils.h"
 #include "prefswindow.h"
 #include "gtkutils.h"
 
@@ -138,14 +139,29 @@ static void ok_button_released(GtkButton *button, gpointer user_data)
 	g_free(prefswindow);
 }
 
-static void cancel_button_released(GtkButton *button, gpointer user_data)
+static void close_prefs_window(PrefsWindow *prefswindow)
 {
-	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
+	debug_print("prefs window closed\n");
 
 	gtk_widget_destroy(prefswindow->window);
 	close_all_pages(prefswindow->prefs_pages);
 	g_slist_free(prefswindow->prefs_pages);
 	g_free(prefswindow);
+}
+
+static void cancel_button_released(GtkButton *button, gpointer user_data)
+{
+	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
+
+	close_prefs_window(prefswindow);
+}
+
+static gboolean window_closed(GtkWidget *widget, GdkEvent *event, gpointer user_data)
+{
+	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
+
+	close_prefs_window(prefswindow);
+	return FALSE;
 }
 
 struct name_search
@@ -266,6 +282,7 @@ void prefswindow_open(GSList *prefs_pages, gpointer data)
 	gtk_signal_connect(GTK_OBJECT(prefswindow->ok_btn), "released", GTK_SIGNAL_FUNC(ok_button_released), prefswindow);
 	gtk_signal_connect(GTK_OBJECT(prefswindow->cancel_btn), "released", GTK_SIGNAL_FUNC(cancel_button_released), prefswindow);
 	gtk_signal_connect(GTK_OBJECT(prefswindow->apply_btn), "released", GTK_SIGNAL_FUNC(apply_button_released), prefswindow);
+	gtk_signal_connect(GTK_OBJECT(prefswindow->window), "delete_event", GTK_SIGNAL_FUNC(window_closed), prefswindow);
 
 	gtk_widget_show_all(prefswindow->window);
 }

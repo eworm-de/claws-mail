@@ -310,7 +310,7 @@ struct _FolderItemUpdateData
 	FolderItemUpdateFlags	 update_flags;
 };
 
-void	    folder_system_init		();
+void	    folder_system_init		(void);
 void	    folder_register_class	(FolderClass	*klass);
 Folder     *folder_new			(FolderClass	*type,
 					 const gchar	*name,
@@ -424,7 +424,7 @@ const PersistPrefs *folder_get_persist_prefs
 					(GHashTable *pptable, const char *name);
 
 void folder_item_restore_persist_prefs	(FolderItem *item, GHashTable *pptable);
-void folder_clean_cache_memory		();
+void folder_clean_cache_memory		(void);
 void folder_item_write_cache		(FolderItem *item);
 void folder_item_set_default_flags	(FolderItem *dest, MsgFlags *flags);
 
@@ -434,7 +434,7 @@ void folder_item_update			(FolderItem *item,
 					 FolderItemUpdateFlags update_flags);
 void folder_item_update_recursive	(FolderItem *item,
 					 FolderItemUpdateFlags update_flags);
-void folder_item_update_freeze		();
-void folder_item_update_thaw		();
+void folder_item_update_freeze		(void);
+void folder_item_update_thaw		(void);
 
 #endif /* __FOLDER_H__ */

@@ -33,7 +33,7 @@
 #include <gtk/gtk.h>
 
 #include "intl.h"
-#include "common/utils.h"
+#include "utils.h"
 #include "prefs.h"
 #include "prefs_gtk.h"
 #include "prefswindow.h"
@@ -100,19 +100,19 @@ static void create_dillo_prefs_page(PrefsPage *page,
         gtk_widget_show(vbox);
         
         local_checkbox = gtk_check_button_new_with_label
-				("Don't Follow Links in Mails");
+				(_("Don't Follow Links in Mails"));
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(local_checkbox),
                                      dillo_prefs.local);
         gtk_box_pack_start(GTK_BOX(vbox), local_checkbox, FALSE, FALSE, 0);
         gtk_widget_show(local_checkbox);
         
-	label = gtk_label_new("(You can still allow following links\n"
-			      "by reloading the page)");
+	label = gtk_label_new(_("(You can still allow following links\n"
+			      "by reloading the page)"));
         gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
         gtk_widget_show(label);
 
         full_checkbox = gtk_check_button_new_with_label
-				("Full Window Mode (Hide Controls)");
+				(_("Full Window Mode (Hide Controls)"));
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(full_checkbox),
                                       dillo_prefs.full);
         gtk_box_pack_start(GTK_BOX(vbox), full_checkbox, FALSE, FALSE, 0);

@@ -1,3 +1,169 @@
+2003-05-16 [paul]	0.8.11claws157
+
+	* po/POTFILES.in
+		remove non-existant entries
+	
+	* src/plugins/clamav/clamav_plugin.c
+	  src/plugins/clamav/clamav_plugin_gtk.c
+	  src/plugins/dillo_viewer/dillo_prefs.c
+	  src/plugins/dillo_viewer/dillo_viewer.c
+	  	gettextise
+
+2003-05-16 [christoph]	0.8.11claws156
+
+	* po/POTFILES.in
+		include plugin .c files for translation until I
+		find a better solution to have plugins have their
+		own textdomain
+	* src/plugins/demo/demo.c
+	* src/plugins/image_viewer/plugin.c
+	* src/plugins/mathml_viewer/mathml_viewer.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+	* src/plugins/trayicon/trayicon.c
+		add gettext macros for plugin name and description
+
+2003-05-16 [paul]
+
+	* sync with 0.9.0
+
+2003-05-16 [paul]	0.8.11claws155
+
+	* sync with lastest 0.9.0pre1
+		see ChangeLog 2003-05-16
+
+2003-05-15 [paul]	0.8.11claws154
+
+	* sync with latest 0.9.0pre1
+		see ChangeLog 2003-05-14 and 2003-05-15
+
+2003-05-14 [christoph]	0.8.11claws153
+
+	* src/plugins/image_viewer/viewer.c
+	* src/plugins/image_viewer/viewer.glade		** NEW **
+	* src/plugins/image_viewer/viewerprefs.c
+		make it possible to disable the autoload function in the
+		imageviewer again
+
+2003-05-14 [christoph]	0.8.11claws152
+
+	* src/folder.c
+		fix folder update after adding a message
+
+2003-05-13 [alfons]	0.8.11claws151
+
+	* src/common/session.c
+		remove debug traces
+		
+	* src/addrcache.[ch]
+	* src/filtering.[ch]
+	* src/folder.[c]
+	* src/gtkaspell.[ch]
+	* src/imap.[ch]
+	* src/mbox_folder.[ch]
+	* src/mh.[ch]
+	* src/mimeview.h
+	* src/msgcache.[ch]
+	* src/news.[ch]
+	* src/passphrase.[ch]
+	* src/prefs_common.[ch]
+	* src/prefs_gtk.[ch]
+	* src/procmsg.c
+	* src/scoring.[ch]
+		be pedantic; (in prototypes () implies (int))
+
+2003-05-13 [alfons]	0.8.11claws150
+
+	* src/prefs_toolbar.[ch]
+	* src/summaryview.[ch]
+	* src/toolbar.[ch]
+		change misleading text in toolbar prefs;
+		add toolbar action for ignore thread (toggles ignore thread flag);
+		clean up a little bit;
+
+2003-05-12 [paul]
+
+	* tools/convert_mbox.pl
+		bug fixed by Fred Marton
+
+2003-05-12 [paul]
+
+	* sync with 0.9.0pre1
+
+2003-05-09 [paul]	0.8.11claws149
+
+	* sync with 0.8.11cvs43
+		see ChangeLog 2003-05-09
+
+2003-05-08 [christoph]	0.8.11claws148
+
+	* src/imap.[ch]
+		o use CAPABILIY as first command and check for PREAUTH
+		  information in the response to it
+		o rewrite all imap_cmd_* functions to use an IMAPSession
+		  instead of a SockInfo as parameter
+		o do STARTTLS after fetching and checking the server
+		  capabilities
+
+2003-05-08 [paul]	0.8.11claws147
+
+	* tools/Makefile.am
+	  tools/README
+	  tools/convert_mbox.pl		** NEW FILE **
+	  	add mbox conversion script. Submitted by 
+		Fred Marton <Fred.Marton@uni-bayreuth.de>
+
+2003-05-07 [christoph]
+
+	* doc-src/glade.txt
+	* src/gtk/pluginwindow.glade
+	* src/plugins/image_viewer/viewerprefs.glade
+	* src/plugins/spamassassin/spamassassin_gtk.glade
+		add glade files for user interfaces and a description how
+		to use glade to create the sylpheed code
+
+2003-05-07 [paul]	0.8.11claws146
+
+	* sync with 0.8.11cvs41
+		see ChangeLog 2003-05-07
+
+2003-05-06 [christoph]	0.8.11claws145
+
+	* src/main.c
+	* src/plugins/image_viewer/viewer.c
+		fix usage of imlib in imageviewer plugin
+
+	* src/gtk/prefswindow.c
+		handle window close event correctly
+
+2003-05-06 [paul]	0.8.11claws144
+
+	* src/common/ssl.c
+		fix typo introduced in sync
+
+2003-05-06 [paul]	0.8.11claws143
+
+	* sync with 0.8.11cvs39
+		see ChangeLog 2003-05-06
+
+2003-05-06 [paul]	0.8.11claws142
+
+	* AUTHORS
+	  po/cs.po
+		updated Czech translation, submitted by 
+		Radek Vybiral <Radek.Vybiral@vsb.cz>
+		
+	* src/plugins/clamav/clamav_plugin_gtk.c
+		clean up
+
+2003-05-03 [alfons]	0.8.11claws141
+
+	* src/compose.[ch]
+		make paste as quotation work even when the call to 
+		text_inserted() was deferred (fixes bug #140 "Paste 
+		as quotation does not work when using "external" 
+		clipboard")
+
 2003-05-03 [thorsten]	0.8.11claws140
 
 	* src/addrquery.h

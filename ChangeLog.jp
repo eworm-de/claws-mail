@@ -1,3 +1,80 @@
+2003-05-16
+
+	* version 0.9.0
+
+2003-05-16
+
+	* src/session.c: session_recv_msg(): デバッグ出力を削除。
+
+2003-05-15
+
+	* src/imap.c:
+	  imap_parse_atom()
+	  imap_get_header()
+	  imap_cmd_fetch(): サーバが返すデータサイズをチェック(BugTraq で
+	  発見された脆弱性を修正)。
+
+2003-05-14
+
+	* src/addr_compl.c: get_complete_address()
+	  src/addressbook.c: addressbook_format_address()
+	  src/compose.c: QUOTE_IF_REQUIRED(): 名前が atext (RFC 2822, 3.2.4.
+	  Atom) で定義されていない文字を含んでいる場合は引用符で括るように
+	  した。
+	* src/main.c: main(): Solaris におけるカラーの問題を解決するために
+	  colormap と visual をセット(Markus Schwarzenberg さん thanks)。
+
+2003-05-12
+
+	* version 0.9.0pre1
+
+2003-05-12
+
+	* src/prefs_account.c: POP before SMTP オプションを一時的に削除。
+
+2003-05-09
+
+	* src/prefs_common.[ch]: 「サマリでカーソルキーを押したとき
+	  メッセージを開く」の説明を変更。
+	* src/summaryview.c: summary_show(): always_show_msg が TRUE の場合
+	  メッセージを開くようにした。
+
+2003-05-09
+
+	* src/logwindow.[ch]: メモリ消費量を削減するため、ログメッセージの
+	  最大行数を制限するようにした。
+
+2003-05-07
+
+	* src/compose.c: compose_insert_sig(): 署名文字列に不正なシーケンス
+	  が含まれるときのクラッシュを修正。
+	* src/utils.[ch]: 正確さのため get_wcs_len() を get_mbs_len() に変更。
+
+2003-05-07
+
+	* MIME 構造の大きなリファクタリング。
+	* src/procmime.c: procmime_scan_message(): gpgme が有効のときは
+	  メッセージを復号化するようにした。 content-type が multipart/*
+	  または message/rfc822 の場合のみマルチパートツリーを作成。
+	  procmime_scan_multipart_message(): message/rfc822 パートの走査
+	  を修正。
+	* src/action.c: parse_append_msgpart()
+	  src/messageview.c: messageview_show()
+	  src/mimeview.c: mimeview_show_message(): procmsg_open_message() と
+	  procmime_scan_mime_header() の代わりに procmime_scan_message()
+	  を使用。
+	  mimeview_set_multipart_tree(): 新しい MIME 構造に対応。
+	* src/textview.c: textview_show_part(): 不要なチェックを削除。
+	* src/procmsg.c: procmsg_open_message_decrypted(): 復号化に失敗した
+	  場合のファイルポインタを修正。
+
+2003-05-06
+
+	* src/ssl.c: ssl_init_socket_with_method(): log_warning() を
+	  g_warning() で、 log_print() を debug_print() で置き換えた。
+	* src/pop.[ch]: エラーコード PS_NOTSUPPORTED を追加し、 UIDL が
+	  サポートされていなければ LAST で再試行するようにした。
+
 2003-05-01
 
 	* src/codeconv.c: conv_get_code_conv_func(): dest_charset_str が NULL
@@ -7,7 +84,7 @@
 2003-05-01
 
 	* src/action.c: execute_actions(): テキストウィジェットが未選択の
-	  場合クラッシュするのを修正。
+	  場合クラッシュするのを修正(Paul さんと Melvin さん thanks)。
 	* src/action.c
 	  src/prefs_actions.c: 著作権表示に Claws チームの表示がなかったので
 	  追加。

@@ -49,7 +49,7 @@ struct _AddressCache {
 };
 
 /* Function prototypes */
-AddressCache *addrcache_create();
+AddressCache *addrcache_create		( void );
 ItemFolder *addrcache_get_root_folder	( AddressCache *cache );
 GList *addrcache_get_list_folder	( AddressCache *cache );
 GList *addrcache_get_list_person	( AddressCache *cache );

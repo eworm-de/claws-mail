@@ -333,7 +333,7 @@ gpgmegtk_passphrase_cb (void *opaque, const char *desc, void **r_hd)
     return pass;
 }
 
-void gpgmegtk_free_passphrase()
+void gpgmegtk_free_passphrase(void)
 {
     (void)free_passphrase(NULL); /* could be inline */
 }

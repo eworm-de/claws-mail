@@ -231,8 +231,8 @@ static void summary_execute_delete_func	(GtkCTree		*ctree,
 					 gpointer		 data);
 
 static void summary_thread_init		(SummaryView		*summaryview);
-static void summary_ignore_thread	(SummaryView  		*summaryview);
-static void summary_unignore_thread	(SummaryView 		*summaryview);
+static void summary_ignore_thread	(SummaryView		*summaryview);
+static void summary_unignore_thread     (SummaryView            *summaryview);
 
 static void summary_unthread_for_exec		(SummaryView	*summaryview);
 static void summary_unthread_for_exec_func	(GtkCTree	*ctree,
@@ -1167,7 +1167,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 				 item->sort_type == SORT_DESCENDING
 				 ? 0 : GTK_CLIST(ctree)->rows - 1);
 		}
-		if (prefs_common.open_unread_on_enter) {
+		if (prefs_common.open_unread_on_enter ||
+		    prefs_common.always_show_msg) {
 			summary_unlock(summaryview);
 			summary_select_node(summaryview, node, TRUE, TRUE);
 			summary_lock(summaryview);
@@ -4780,7 +4781,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	}
 
 	if (summaryview->display_msg ||
-	    (prefs_common.show_msg_with_cursor_key &&
+	    (prefs_common.always_show_msg &&
 	     messageview_is_visible(summaryview->messageview))) {
 		summaryview->display_msg = FALSE;
 		if (summaryview->displayed != row) {
@@ -5193,9 +5194,10 @@ static void summary_ignore_thread(SummaryView *summaryview)
 
 	folder_item_update_freeze();
 
-	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next) {
-		gtk_ctree_pre_recursive(ctree, GTK_CTREE_NODE(cur->data), GTK_CTREE_FUNC(summary_ignore_thread_func), summaryview);
-	}
+	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
+		gtk_ctree_pre_recursive(ctree, GTK_CTREE_NODE(cur->data), 
+					GTK_CTREE_FUNC(summary_ignore_thread_func), 
+					summaryview);
 
 	folder_item_update_thaw();
 
@@ -5230,13 +5232,44 @@ static void summary_unignore_thread(SummaryView *summaryview)
 
 	folder_item_update_freeze();
 
-	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next) {
-		gtk_ctree_pre_recursive(ctree, GTK_CTREE_NODE(cur->data), GTK_CTREE_FUNC(summary_unignore_thread_func), summaryview);
-	}
+	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
+		gtk_ctree_pre_recursive(ctree, GTK_CTREE_NODE(cur->data), 
+					GTK_CTREE_FUNC(summary_unignore_thread_func), 
+					summaryview);
 
 	folder_item_update_thaw();
 
 	summary_status_show(summaryview);
+}
+
+static void summary_check_ignore_thread_func
+		(GtkCTree *ctree, GtkCTreeNode *row, gpointer data)
+{
+	MsgInfo *msginfo;
+	gint *found_ignore = (gint *) data;
+
+	if (*found_ignore) return;
+	else {
+		msginfo = gtk_ctree_node_get_row_data(ctree, row);
+		*found_ignore = MSG_IS_IGNORE_THREAD(msginfo->flags);
+	}		
+}
+
+void summary_toggle_ignore_thread(SummaryView *summaryview)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GList *cur;
+	gint found_ignore = 0;
+
+	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
+		gtk_ctree_pre_recursive(ctree, GTK_CTREE_NODE(cur->data),
+					GTK_CTREE_FUNC(summary_check_ignore_thread_func),
+					&found_ignore);
+
+	if (found_ignore) 
+		summary_unignore_thread(summaryview);
+	else 
+		summary_ignore_thread(summaryview);
 }
 
 #if 0 /* OLD PROCESSING */

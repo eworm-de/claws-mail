@@ -676,21 +676,13 @@ GList *messageview_get_window_list(void)
 void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		      gboolean all_headers)
 {
-	FILE *fp;
 	gchar *file;
 	MimeInfo *mimeinfo;
 
 	g_return_if_fail(msginfo != NULL);
 
-#if USE_GPGME
-	if ((fp = procmsg_open_message_decrypted(msginfo, &mimeinfo)) == NULL)
-		return;
-#else /* !USE_GPGME */
-	if ((fp = procmsg_open_message(msginfo)) == NULL) return;
-	mimeinfo = procmime_scan_mime_header(fp);
-#endif /* USE_GPGME */
-	fclose(fp);
-	if (!mimeinfo) return;
+	mimeinfo = procmime_scan_message(msginfo);
+	g_return_if_fail(mimeinfo != NULL);
 
 	file = procmsg_get_message_file_path(msginfo);
 	if (!file) {

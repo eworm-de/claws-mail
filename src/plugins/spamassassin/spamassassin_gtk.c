@@ -299,23 +299,23 @@ void plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	return "SpamAssassin GTK";
+	return _("SpamAssassin GTK");
 }
 
 const gchar *plugin_desc(void)
 {
-	return "This plugin provides a Preferences page for the SpamAssassin "
-	       "plugin.\n"
-	       "\n"
-	       "You will find the options in the Other Preferences window "
-	       "under Filtering/SpamAssassin.\n"
-	       "\n"
-	       "With this plugin you can enable the filtering, change the "
-	       "SpamAssassin server host and port, set the maximum size of "
-	       "messages to be checked, (if the message is larger it will "
-	       "not be checked), configure whether spam mail should be received "
-	       "(default: Yes) and select the folder where spam mail will be "
-	       "saved.\n";
+	return _("This plugin provides a Preferences page for the SpamAssassin "
+	         "plugin.\n"
+	         "\n"
+	         "You will find the options in the Other Preferences window "
+	         "under Filtering/SpamAssassin.\n"
+	         "\n"
+	         "With this plugin you can enable the filtering, change the "
+	         "SpamAssassin server host and port, set the maximum size of "
+	         "messages to be checked, (if the message is larger it will "
+	         "not be checked), configure whether spam mail should be received "
+	         "(default: Yes) and select the folder where spam mail will be "
+	         "saved.\n");
 }
 
 const gchar *plugin_type(void)

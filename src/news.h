@@ -45,7 +45,7 @@ struct _NewsGroupInfo
 	gchar type;
 };
 
-FolderClass *news_get_class		();
+FolderClass *news_get_class		(void);
 gint news_post				(Folder		* folder,
 					 const gchar	* file);
 

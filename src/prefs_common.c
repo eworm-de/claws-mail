@@ -215,7 +215,7 @@ static struct Privacy {
 
 static struct Interface {
 	/* GtkWidget *checkbtn_emacs; */
-	GtkWidget *checkbtn_show_msg_with_cursor;
+	GtkWidget *checkbtn_always_show_msg;
 	GtkWidget *checkbtn_openunread;
 	GtkWidget *checkbtn_mark_as_read_on_newwin;
 	GtkWidget *checkbtn_openinbox;
@@ -791,9 +791,9 @@ static PrefParam param[] = {
 
 	/* {"emulate_emacs", "FALSE", &prefs_common.emulate_emacs, P_BOOL,
 	 NULL, NULL, NULL}, */
-	{"show_message_with_cursor_key", "FALSE",
-	 &prefs_common.show_msg_with_cursor_key,
-	 P_BOOL, &Xinterface.checkbtn_show_msg_with_cursor,
+	{"always_show_message_when_selected", "FALSE",
+	 &prefs_common.always_show_msg,
+	 P_BOOL, &Xinterface.checkbtn_always_show_msg,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"open_unread_on_enter", "FALSE", &prefs_common.open_unread_on_enter,
 	 P_BOOL, &Xinterface.checkbtn_openunread,
@@ -867,10 +867,10 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"important_score", "1", &prefs_common.important_score, P_INT,
 	 NULL, NULL, NULL},
-        {"clip_log", "FALSE", &prefs_common.cliplog, P_BOOL,
+        {"clip_log", "TRUE", &prefs_common.cliplog, P_BOOL,
 	 &other.checkbtn_cliplog,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"log_length", "1000", &prefs_common.loglength, P_INT,
+	{"log_length", "500", &prefs_common.loglength, P_INT,
 	 &other.loglength_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
@@ -969,7 +969,8 @@ static void prefs_common_ok		(void);
 static void prefs_common_apply		(void);
 static void prefs_common_cancel		(void);
 
-void prefs_common_init() {
+void prefs_common_init(void) 
+{
 	prefs_common.disphdr_list = NULL;
 }
 
@@ -2753,7 +2754,7 @@ static void prefs_interface_create(void)
 	GtkWidget *vbox2;
 	GtkWidget *vbox3;
 	/* GtkWidget *checkbtn_emacs; */
-	GtkWidget *checkbtn_show_msg_with_cursor;
+	GtkWidget *checkbtn_always_show_msg;
 	GtkWidget *checkbtn_openunread;
 	GtkWidget *checkbtn_mark_as_read_on_newwin;
 	GtkWidget *checkbtn_openinbox;
@@ -2790,7 +2791,7 @@ static void prefs_interface_create(void)
 			       GTK_JUSTIFY_LEFT);   */
 
 	PACK_CHECK_BUTTON
-		(vbox2, checkbtn_show_msg_with_cursor,
+		(vbox2, checkbtn_always_show_msg,
 		 _("Always open messages in summary when selected"));
 
 	PACK_CHECK_BUTTON
@@ -2874,8 +2875,7 @@ static void prefs_interface_create(void)
 	stock_pixmap_themes_list_free(avail_pixmap_themes);
 
 	/* interface.checkbtn_emacs          = checkbtn_emacs; */
-	Xinterface.checkbtn_show_msg_with_cursor
-					      = checkbtn_show_msg_with_cursor;
+	Xinterface.checkbtn_always_show_msg    = checkbtn_always_show_msg;
 	Xinterface.checkbtn_openunread         = checkbtn_openunread;
 	Xinterface.checkbtn_mark_as_read_on_newwin
 					      = checkbtn_mark_as_read_on_newwin;

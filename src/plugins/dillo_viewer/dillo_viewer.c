@@ -17,14 +17,19 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include <unistd.h>
 
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 
-#include "common/plugin.h"
-#include "common/utils.h"
+#include "intl.h"
+#include "plugin.h"
+#include "utils.h"
 #include "mimeview.h"
 
 #include "dillo_prefs.h"
@@ -172,13 +177,13 @@ void plugin_done(void)
 
 const gchar *plugin_name(void)
 {
-	return "Dillo HTML Viewer";
+	return _("Dillo HTML Viewer");
 }
 
 const gchar *plugin_desc(void)
 {
-	return "This plugin renders HTML mail using the Dillo "
-		"web browser.";
+	return _("This plugin renders HTML mail using the Dillo "
+		"web browser.");
 }
 
 const gchar *plugin_type(void)

@@ -170,7 +170,7 @@ void prefs_set_toggle		(PrefParam	*pparam);
 void prefs_set_data_from_spinbtn(PrefParam	*pparam);
 void prefs_set_spinbtn		(PrefParam	*pparam);
 
-void prefs_gtk_open		();
+void prefs_gtk_open		(void);
 void prefs_gtk_register_page	(PrefsPage 	*page);
 void prefs_gtk_unregister_page	(PrefsPage 	*page);
 

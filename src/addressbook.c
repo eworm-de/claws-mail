@@ -1116,7 +1116,7 @@ gchar *addressbook_format_address( AddrItemObject * aio ) {
 	}
 	if( address ) {
 		if( name && name[0] != '\0' ) {
-			if( strchr_with_skip_quote( name, '"', ',' ) )
+			if( name[0] != '"' && strpbrk( name, ",.[]<>" ) != NULL )
 				buf = g_strdup_printf( "\"%s\" <%s>", name, address );
 			else
 				buf = g_strdup_printf( "%s <%s>", name, address );

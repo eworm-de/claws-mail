@@ -203,6 +203,7 @@ void summary_unthread		  (SummaryView		*summaryview);
 
 void summary_expand_threads	  (SummaryView		*summaryview);
 void summary_collapse_threads	  (SummaryView		*summaryview);
+void summary_toggle_ignore_thread (SummaryView		*summaryview);
 
 void summary_filter		  (SummaryView		*summaryview);
 void summary_filter_open	  (SummaryView		*summaryview,

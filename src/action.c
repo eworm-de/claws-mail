@@ -366,23 +366,8 @@ static gboolean parse_append_msgpart(GString *cmd, MsgInfo *msginfo,
 	gint ret;
 
 	if (!partinfo) {
-		FILE *fp;
-#if USE_GPGME
-		if ((fp = procmsg_open_message_decrypted(msginfo, &partinfo))
-		    == NULL) {
-			alertpanel_error(_("Could not get message file."));
-			return FALSE;
-		}
-#else
-		if ((fp = procmsg_open_message(msginfo)) == NULL) {
-			alertpanel_error(_("Could not get message file."));
-			return FALSE;
-		}
-		partinfo = procmime_scan_mime_header(fp);
-#endif
-		fclose(fp);
+		partinfo = procmime_scan_message(msginfo);
 		if (!partinfo) {
-			procmime_mimeinfo_free_all(partinfo);
 			alertpanel_error(_("Could not get message part."));
 			return FALSE;
 		}

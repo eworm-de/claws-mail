@@ -33,7 +33,7 @@ void prefs_scoring_write_config(void);
 void prefs_scoring_read_config(void);
 gchar * scoringprop_to_string(ScoringProp * prop);
 
-void prefs_scoring_clear();
+void prefs_scoring_clear(void);
 void prefs_scoring_free(GSList * prefs_scoring);
 
 #endif

@@ -40,7 +40,7 @@ struct _MBOXFolder
 	LocalFolder lfolder;
 };
 
-FolderClass *mbox_get_class	();
+FolderClass *mbox_get_class	(void);
 gchar * mbox_get_virtual_path(FolderItem * item);
 
 #endif

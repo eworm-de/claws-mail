@@ -2028,9 +2028,14 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 
 		pos = gtkut_stext_find(text, 0, tmp, TRUE);
 		if (pos != -1) {
-			gtk_stext_set_point(text, pos);
-			len = get_wcs_len(tmp);
-			gtk_stext_forward_delete(text, len);
+			len = get_mbs_len(tmp);
+			if (len >= 0) {
+				gtk_stext_set_point(text, pos);
+				gtk_stext_forward_delete(text, len);
+			} else {
+				len = gtk_stext_get_length(text);
+				gtk_stext_set_point(text, len);
+			}
 		} else {
 			len = gtk_stext_get_length(text);
 			gtk_stext_set_point(text, len);
@@ -4100,8 +4105,7 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 
 #define QUOTE_IF_REQUIRED(out, str)			\
 {							\
-	if (*str != '"' && (strchr(str, ',')		\
-			|| strchr(str, '.'))) {		\
+	if (*str != '"' && strpbrk(str, ",.[]<>")) {	\
 		gchar *__tmp;				\
 		gint len;				\
 							\
@@ -5333,7 +5337,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose->modified = FALSE;
 
 	compose->return_receipt = FALSE;
-	compose->paste_as_quotation = FALSE;
 
 	compose->to_list        = NULL;
 	compose->newsgroup_list = NULL;
@@ -6898,10 +6901,18 @@ static void compose_paste_as_quote_cb(Compose *compose)
 {
 	if (compose->focused_editable &&
 	    GTK_WIDGET_HAS_FOCUS(compose->focused_editable)) {
-		compose->paste_as_quotation = TRUE;
+		/* let text_insert() (called directly or at a later time
+		 * after the gtk_editable_paste_clipboard) know that 
+		 * text is to be inserted as a quotation. implemented
+		 * by using a simple refcount... */
+		gint paste_as_quotation = GPOINTER_TO_INT(gtk_object_get_data(
+						GTK_OBJECT(compose->focused_editable),
+						"paste_as_quotation"));
+		gtk_object_set_data(GTK_OBJECT(compose->focused_editable),
+				    "paste_as_quotation",
+				    GINT_TO_POINTER(paste_as_quotation + 1));
 		gtk_editable_paste_clipboard
 			(GTK_EDITABLE(compose->focused_editable));
-		compose->paste_as_quotation = FALSE;
 	}
 }
 
@@ -7393,11 +7404,13 @@ static void text_inserted(GtkWidget *widget, const gchar *text,
 			  gint length, gint *position, Compose *compose)
 {
 	GtkEditable *editable = GTK_EDITABLE(widget);
+	gint paste_as_quotation = GPOINTER_TO_INT(gtk_object_get_data
+				(GTK_OBJECT(widget), "paste_as_quotation"));
 
 	gtk_signal_handler_block_by_func(GTK_OBJECT(widget),
 					 GTK_SIGNAL_FUNC(text_inserted),
 					 compose);
-	if (compose->paste_as_quotation) {
+	if (paste_as_quotation) {
 		gchar *new_text;
 		gchar *qmark;
 		gint pos;
@@ -7413,6 +7426,8 @@ static void text_inserted(GtkWidget *widget, const gchar *text,
 		gtk_editable_set_position(editable, pos);
 		*position = pos;
 		g_free(new_text);
+		gtk_object_set_data(GTK_OBJECT(widget), "paste_as_quotation",
+				    GINT_TO_POINTER(paste_as_quotation - 1));
 	} else
 		gtk_editable_insert_text(editable, text, length, position);
 

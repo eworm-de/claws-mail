@@ -245,7 +245,7 @@ struct _PrefsCommon
 	gboolean sep_folder;
 	gboolean sep_msg;
 	gboolean emulate_emacs;
-	gboolean show_msg_with_cursor_key;
+	gboolean always_show_msg;
 	gboolean open_unread_on_enter;
 	gboolean mark_as_read_on_new_window;
 	gboolean open_inbox_on_inc;
@@ -286,10 +286,7 @@ struct _PrefsCommon
 
 extern PrefsCommon prefs_common;
 
-#ifdef WIN32
-void prefs_common_init_config	(void);
-#endif
-void prefs_common_init		();
+void prefs_common_init		(void);
 void prefs_common_read_config	(void);
 void prefs_common_save_config	(void);
 void prefs_common_open		(void);
