@@ -42,7 +42,24 @@
 #include "filtering.h"
 #include "folder_item_prefs.h"
 
-struct FolderItemSettingsPage
+struct FolderItemGeneralPage
+{
+	PrefsPage page;
+
+	FolderItem *item;
+
+	GtkWidget *table;
+	GtkWidget *checkbtn_simplify_subject;
+	GtkWidget *entry_simplify_subject;
+	GtkWidget *checkbtn_folder_chmod;
+	GtkWidget *entry_folder_chmod;
+	GtkWidget *folder_color;
+	GtkWidget *folder_color_btn;
+
+	GtkWidget *color_dialog;
+};
+
+struct FolderItemComposePage
 {
 	PrefsPage page;
 
@@ -56,16 +73,8 @@ struct FolderItemSettingsPage
 	GtkWidget *entry_default_to;
 	GtkWidget *checkbtn_default_reply_to;
 	GtkWidget *entry_default_reply_to;
-	GtkWidget *checkbtn_simplify_subject;
-	GtkWidget *entry_simplify_subject;
-	GtkWidget *checkbtn_folder_chmod;
-	GtkWidget *entry_folder_chmod;
 	GtkWidget *checkbtn_enable_default_account;
 	GtkWidget *optmenu_default_account;
-	GtkWidget *folder_color;
-	GtkWidget *folder_color_btn;
-
-	GtkWidget *color_dialog;
 };
 
 
@@ -82,36 +91,23 @@ static void folder_color_set_dialog_key_pressed(GtkWidget *widget,
 #define SAFE_STRING(str) \
 	(str) ? (str) : ""
 
-void prefs_folder_item_settings_create_widget_func(PrefsPage * _page,
+void prefs_folder_item_general_create_widget_func(PrefsPage * _page,
 						   GtkWindow * window,
                                 		   gpointer data)
 {
-	struct FolderItemSettingsPage *page = (struct FolderItemSettingsPage *) _page;
+	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) _page;
 	FolderItem *item = (FolderItem *) data;
 	guint rowcount;
 
 	GtkWidget *table;
+	GtkWidget *hbox;
 	
-	GtkWidget *checkbtn_request_return_receipt;
-	GtkWidget *checkbtn_save_copy_to_folder;
-	GtkWidget *checkbtn_default_to;
-	GtkWidget *entry_default_to;
-	GtkWidget *checkbtn_default_reply_to;
-	GtkWidget *entry_default_reply_to;
 	GtkWidget *checkbtn_simplify_subject;
 	GtkWidget *entry_simplify_subject;
 	GtkWidget *checkbtn_folder_chmod;
 	GtkWidget *entry_folder_chmod;
-	GtkWidget *checkbtn_enable_default_account;
-	GtkWidget *optmenu_default_account;
-	GtkWidget *optmenu_default_account_menu;
-	GtkWidget *optmenu_default_account_menuitem;
 	GtkWidget *folder_color;
 	GtkWidget *folder_color_btn;
-	GList *cur_ac;
-	GList *account_list;
-	PrefsAccount *ac_prefs;
-	GtkOptionMenu *optmenu;
 	GtkWidget *menu;
 	GtkWidget *menuitem;
 	gint account_index, index;
@@ -119,67 +115,10 @@ void prefs_folder_item_settings_create_widget_func(PrefsPage * _page,
 	page->item	   = item;
 
 	/* Table */
-	table = gtk_table_new(8, 2, FALSE);
+	table = gtk_table_new(3, 2, FALSE);
 	gtk_widget_show(table);
-	gtk_table_set_row_spacings(GTK_TABLE(table), VSPACING_NARROW);
+	gtk_table_set_row_spacings(GTK_TABLE(table), -1);
 	rowcount = 0;
-
-	/* Request Return Receipt */
-	checkbtn_request_return_receipt = gtk_check_button_new_with_label
-		(_("Request Return Receipt"));
-	gtk_widget_show(checkbtn_request_return_receipt);
-	gtk_table_attach(GTK_TABLE(table), checkbtn_request_return_receipt, 
-			 0, 2, rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, 
-			 GTK_SHRINK, 0, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_request_return_receipt),
-				     item->ret_rcpt ? TRUE : FALSE);
-
-	rowcount++;
-
-	/* Save Copy to Folder */
-	checkbtn_save_copy_to_folder = gtk_check_button_new_with_label
-		(_("Save copy of outgoing messages to this folder instead of Sent"));
-	gtk_widget_show(checkbtn_save_copy_to_folder);
-	gtk_table_attach(GTK_TABLE(table), checkbtn_save_copy_to_folder, 0, 2, 
-			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_save_copy_to_folder),
-				     item->prefs->save_copy_to_folder ? TRUE : FALSE);
-
-	rowcount++;
-
-	/* Default To */
-	checkbtn_default_to = gtk_check_button_new_with_label(_("Default To: "));
-	gtk_widget_show(checkbtn_default_to);
-	gtk_table_attach(GTK_TABLE(table), checkbtn_default_to, 0, 1, 
-			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_to), 
-				     item->prefs->enable_default_to);
-
-	entry_default_to = gtk_entry_new();
-	gtk_widget_show(entry_default_to);
-	gtk_table_attach_defaults(GTK_TABLE(table), entry_default_to, 1, 2, rowcount, rowcount + 1);
-	SET_TOGGLE_SENSITIVITY(checkbtn_default_to, entry_default_to);
-	gtk_entry_set_text(GTK_ENTRY(entry_default_to), SAFE_STRING(item->prefs->default_to));
-	address_completion_register_entry(GTK_ENTRY(entry_default_to));
-
-	rowcount++;
-
-	/* Default address to reply to */
-	checkbtn_default_reply_to = gtk_check_button_new_with_label(_("Send replies to: "));
-	gtk_widget_show(checkbtn_default_reply_to);
-	gtk_table_attach(GTK_TABLE(table), checkbtn_default_reply_to, 0, 1, 
-			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_reply_to), 
-				     item->prefs->enable_default_reply_to);
-
-	entry_default_reply_to = gtk_entry_new();
-	gtk_widget_show(entry_default_reply_to);
-	gtk_table_attach_defaults(GTK_TABLE(table), entry_default_reply_to, 1, 2, rowcount, rowcount + 1);
-	SET_TOGGLE_SENSITIVITY(checkbtn_default_reply_to, entry_default_reply_to);
-	gtk_entry_set_text(GTK_ENTRY(entry_default_reply_to), SAFE_STRING(item->prefs->default_reply_to));
-	address_completion_register_entry(GTK_ENTRY(entry_default_reply_to));
-
-	rowcount++;
 
 	/* Simplify Subject */
 	checkbtn_simplify_subject = gtk_check_button_new_with_label(_("Simplify Subject RegExp: "));
@@ -221,6 +160,188 @@ void prefs_folder_item_settings_create_widget_func(PrefsPage * _page,
 		g_free(buf);
 	}
 	
+	rowcount++;
+
+	/* Folder color */
+	folder_color = gtk_label_new(_("Folder color: "));
+	gtk_misc_set_alignment(GTK_MISC(folder_color), 0, 0.5);
+	gtk_widget_show(folder_color);
+	gtk_table_attach_defaults(GTK_TABLE(table), folder_color, 0, 1, 
+			 rowcount, rowcount + 1);
+
+	hbox = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox);
+	gtk_table_attach_defaults(GTK_TABLE(table), hbox, 1, 2, 
+				  rowcount, rowcount + 1);
+
+	folder_color_btn = gtk_button_new_with_label("");
+	gtk_widget_show (hbox);
+	gtk_widget_set_usize(folder_color_btn, 36, 26);
+  	gtk_box_pack_start (GTK_BOX (hbox), folder_color_btn, FALSE, FALSE, 0);
+
+	page->item->prefs->color = item->prefs->color;
+
+	gtk_signal_connect(GTK_OBJECT(folder_color_btn), "clicked",
+			   GTK_SIGNAL_FUNC(folder_color_set_dialog),
+			   page);
+
+	set_button_color(item->prefs->color, folder_color_btn);
+
+	rowcount++;
+
+	page->table = table;
+	page->checkbtn_simplify_subject = checkbtn_simplify_subject;
+	page->entry_simplify_subject = entry_simplify_subject;
+	page->checkbtn_folder_chmod = checkbtn_folder_chmod;
+	page->entry_folder_chmod = entry_folder_chmod;
+	page->folder_color = folder_color;
+	page->folder_color_btn = folder_color_btn;
+
+	page->page.widget = table;
+}
+
+void prefs_folder_item_general_destroy_widget_func(PrefsPage *_page) 
+{
+	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) _page;
+}
+
+void prefs_folder_item_general_save_func(PrefsPage *_page) 
+{
+	gchar *buf;
+	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) _page;
+	FolderItemPrefs *prefs = page->item->prefs;
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+	gboolean   old_simplify_val;
+	gchar     *old_simplify_str;
+
+	g_return_if_fail(prefs != NULL);
+
+	old_simplify_val = prefs->enable_simplify_subject;
+	old_simplify_str = prefs->simplify_subject_regexp;
+
+	prefs->enable_simplify_subject =
+	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_simplify_subject));
+	prefs->simplify_subject_regexp = 
+	    gtk_editable_get_chars(GTK_EDITABLE(page->entry_simplify_subject), 0, -1);
+	
+/*
+	if (page->item == page->folderview->summaryview->folder_item &&
+	    (prefs->enable_simplify_subject != old_simplify_val ||  
+	    0 != strcmp2(prefs->simplify_subject_regexp, old_simplify_str))) {
+		summary_clear_all(page->folderview->summaryview);
+		page->folderview->opened = NULL;
+		page->folderview->selected = NULL;
+		folderview_select(page->folderview, page->item);
+	}
+*/
+	if (old_simplify_str) g_free(old_simplify_str);
+
+	prefs->enable_folder_chmod = 
+	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_folder_chmod));
+	buf = gtk_editable_get_chars(GTK_EDITABLE(page->entry_folder_chmod), 0, -1);
+	prefs->folder_chmod = prefs_folder_item_chmod_mode(buf);
+	g_free(buf);
+
+	prefs->color = page->item->prefs->color;
+	/* update folder view */
+	if (prefs->color > 0)
+		folder_item_update(page->item, F_ITEM_UPDATE_MSGCNT);
+
+	folder_item_prefs_save_config(page->item);
+}
+
+void prefs_folder_item_compose_create_widget_func(PrefsPage * _page,
+						   GtkWindow * window,
+                                		   gpointer data)
+{
+	struct FolderItemComposePage *page = (struct FolderItemComposePage *) _page;
+	FolderItem *item = (FolderItem *) data;
+	guint rowcount;
+
+	GtkWidget *table;
+	
+	GtkWidget *checkbtn_request_return_receipt;
+	GtkWidget *checkbtn_save_copy_to_folder;
+	GtkWidget *checkbtn_default_to;
+	GtkWidget *entry_default_to;
+	GtkWidget *checkbtn_default_reply_to;
+	GtkWidget *entry_default_reply_to;
+	GtkWidget *checkbtn_enable_default_account;
+	GtkWidget *optmenu_default_account;
+	GtkWidget *optmenu_default_account_menu;
+	GtkWidget *optmenu_default_account_menuitem;
+	GList *cur_ac;
+	GList *account_list;
+	PrefsAccount *ac_prefs;
+	GtkOptionMenu *optmenu;
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+	gint account_index, index;
+
+	page->item	   = item;
+
+	/* Table */
+	table = gtk_table_new(5, 2, FALSE);
+	gtk_widget_show(table);
+	gtk_table_set_row_spacings(GTK_TABLE(table), -1);
+	rowcount = 0;
+
+	/* Request Return Receipt */
+	checkbtn_request_return_receipt = gtk_check_button_new_with_label
+		(_("Request Return Receipt"));
+	gtk_widget_show(checkbtn_request_return_receipt);
+	gtk_table_attach(GTK_TABLE(table), checkbtn_request_return_receipt, 
+			 0, 2, rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, 
+			 GTK_FILL, 0, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_request_return_receipt),
+				     item->ret_rcpt ? TRUE : FALSE);
+
+	rowcount++;
+
+	/* Save Copy to Folder */
+	checkbtn_save_copy_to_folder = gtk_check_button_new_with_label
+		(_("Save copy of outgoing messages to this folder instead of Sent"));
+	gtk_widget_show(checkbtn_save_copy_to_folder);
+	gtk_table_attach(GTK_TABLE(table), checkbtn_save_copy_to_folder, 0, 2, 
+			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_save_copy_to_folder),
+				     item->prefs->save_copy_to_folder ? TRUE : FALSE);
+
+	rowcount++;
+
+	/* Default To */
+	checkbtn_default_to = gtk_check_button_new_with_label(_("Default To: "));
+	gtk_widget_show(checkbtn_default_to);
+	gtk_table_attach(GTK_TABLE(table), checkbtn_default_to, 0, 1, 
+			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_to), 
+				     item->prefs->enable_default_to);
+
+	entry_default_to = gtk_entry_new();
+	gtk_widget_show(entry_default_to);
+	gtk_table_attach_defaults(GTK_TABLE(table), entry_default_to, 1, 2, rowcount, rowcount + 1);
+	SET_TOGGLE_SENSITIVITY(checkbtn_default_to, entry_default_to);
+	gtk_entry_set_text(GTK_ENTRY(entry_default_to), SAFE_STRING(item->prefs->default_to));
+	address_completion_register_entry(GTK_ENTRY(entry_default_to));
+
+	rowcount++;
+
+	/* Default address to reply to */
+	checkbtn_default_reply_to = gtk_check_button_new_with_label(_("Send replies to: "));
+	gtk_widget_show(checkbtn_default_reply_to);
+	gtk_table_attach(GTK_TABLE(table), checkbtn_default_reply_to, 0, 1, 
+			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_reply_to), 
+				     item->prefs->enable_default_reply_to);
+
+	entry_default_reply_to = gtk_entry_new();
+	gtk_widget_show(entry_default_reply_to);
+	gtk_table_attach_defaults(GTK_TABLE(table), entry_default_reply_to, 1, 2, rowcount, rowcount + 1);
+	SET_TOGGLE_SENSITIVITY(checkbtn_default_reply_to, entry_default_reply_to);
+	gtk_entry_set_text(GTK_ENTRY(entry_default_reply_to), SAFE_STRING(item->prefs->default_reply_to));
+	address_completion_register_entry(GTK_ENTRY(entry_default_reply_to));
+
 	rowcount++;
 
 	/* Default account */
@@ -266,31 +387,6 @@ void prefs_folder_item_settings_create_widget_func(PrefsPage * _page,
 
 	rowcount++;
 
-	/* Folder color */
-	folder_color = gtk_label_new(_("Folder color: "));
-	gtk_misc_set_alignment(GTK_MISC(folder_color), 0, 0.5);
-	gtk_widget_show(folder_color);
-	gtk_table_attach_defaults(GTK_TABLE(table), folder_color, 0, 1, 
-			 rowcount, rowcount + 1);
-
-	folder_color_btn = gtk_button_new_with_label("");
-	gtk_widget_set_usize(folder_color_btn, 36, 26);
-	gtk_container_set_border_width(GTK_CONTAINER(folder_color_btn), 2);
-	gtk_widget_show(folder_color_btn);
-	gtk_table_attach(GTK_TABLE(table), folder_color_btn,
-			 1, 2, rowcount, rowcount + 1,
-			 GTK_SHRINK, 0, 0, 0);
-
-	page->item->prefs->color = item->prefs->color;
-
-	gtk_signal_connect(GTK_OBJECT(folder_color_btn), "clicked",
-			   GTK_SIGNAL_FUNC(folder_color_set_dialog),
-			   page);
-
-	set_button_color(item->prefs->color, folder_color_btn);
-
-	rowcount++;
-
 	page->window = GTK_WIDGET(window);
 	page->table = table;
 	page->checkbtn_request_return_receipt = checkbtn_request_return_receipt;
@@ -299,43 +395,32 @@ void prefs_folder_item_settings_create_widget_func(PrefsPage * _page,
 	page->entry_default_to = entry_default_to;
 	page->checkbtn_default_reply_to = checkbtn_default_reply_to;
 	page->entry_default_reply_to = entry_default_reply_to;
-	page->checkbtn_simplify_subject = checkbtn_simplify_subject;
-	page->entry_simplify_subject = entry_simplify_subject;
-	page->checkbtn_folder_chmod = checkbtn_folder_chmod;
-	page->entry_folder_chmod = entry_folder_chmod;
 	page->checkbtn_enable_default_account = checkbtn_enable_default_account;
 	page->optmenu_default_account = optmenu_default_account;
-	page->folder_color = folder_color;
-	page->folder_color_btn = folder_color_btn;
 
 	address_completion_start(page->window);
 
 	page->page.widget = table;
 }
 
-void prefs_folder_item_settings_destroy_widget_func(PrefsPage *_page) 
+void prefs_folder_item_compose_destroy_widget_func(PrefsPage *_page) 
 {
-	struct FolderItemSettingsPage *page = (struct FolderItemSettingsPage *) _page;
+	struct FolderItemComposePage *page = (struct FolderItemComposePage *) _page;
 
 	address_completion_unregister_entry(GTK_ENTRY(page->entry_default_to));
 	address_completion_unregister_entry(GTK_ENTRY(page->entry_default_reply_to));
 	address_completion_end(page->window);
 }
 
-void prefs_folder_item_settings_save_func(PrefsPage *_page) 
+void prefs_folder_item_compose_save_func(PrefsPage *_page) 
 {
 	gchar *buf;
-	struct FolderItemSettingsPage *page = (struct FolderItemSettingsPage *) _page;
+	struct FolderItemComposePage *page = (struct FolderItemComposePage *) _page;
 	FolderItemPrefs *prefs = page->item->prefs;
 	GtkWidget *menu;
 	GtkWidget *menuitem;
-	gboolean   old_simplify_val;
-	gchar     *old_simplify_str;
 
 	g_return_if_fail(prefs != NULL);
-
-	old_simplify_val = prefs->enable_simplify_subject;
-	old_simplify_str = prefs->simplify_subject_regexp;
 
 	prefs->request_return_receipt = 
 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_request_return_receipt));
@@ -357,39 +442,11 @@ void prefs_folder_item_settings_save_func(PrefsPage *_page)
 	prefs->default_reply_to = 
 	    gtk_editable_get_chars(GTK_EDITABLE(page->entry_default_reply_to), 0, -1);
 
-	prefs->enable_simplify_subject =
-	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_simplify_subject));
-	prefs->simplify_subject_regexp = 
-	    gtk_editable_get_chars(GTK_EDITABLE(page->entry_simplify_subject), 0, -1);
-	
-/*
-	if (page->item == page->folderview->summaryview->folder_item &&
-	    (prefs->enable_simplify_subject != old_simplify_val ||  
-	    0 != strcmp2(prefs->simplify_subject_regexp, old_simplify_str))) {
-		summary_clear_all(page->folderview->summaryview);
-		page->folderview->opened = NULL;
-		page->folderview->selected = NULL;
-		folderview_select(page->folderview, page->item);
-	}
-*/
-	if (old_simplify_str) g_free(old_simplify_str);
-
-	prefs->enable_folder_chmod = 
-	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_folder_chmod));
-	buf = gtk_editable_get_chars(GTK_EDITABLE(page->entry_folder_chmod), 0, -1);
-	prefs->folder_chmod = prefs_folder_item_chmod_mode(buf);
-	g_free(buf);
-
- 	prefs->enable_default_account = 
+	prefs->enable_default_account = 
  	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_enable_default_account));
  	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_default_account));
  	menuitem = gtk_menu_get_active(GTK_MENU(menu));
  	prefs->default_account = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
-
-	prefs->color = page->item->prefs->color;
-	/* update folder view */
-	if (prefs->color > 0)
-		folder_item_update(page->item, F_ITEM_UPDATE_MSGCNT);
 
 	folder_item_prefs_save_config(page->item);
 }
@@ -423,7 +480,7 @@ static void set_button_color(guint rgbvalue, GtkWidget *button)
 
 static void folder_color_set_dialog(GtkWidget *widget, gpointer data)
 {
-	struct FolderItemSettingsPage *page = (struct FolderItemSettingsPage *) data;
+	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) data;
 	GtkColorSelectionDialog *dialog;
 	gdouble color[4] = {0.0, 0.0, 0.0, 0.0};
 	guint rgbcolor;
@@ -455,7 +512,7 @@ static void folder_color_set_dialog(GtkWidget *widget, gpointer data)
 
 static void folder_color_set_dialog_ok(GtkWidget *widget, gpointer data)
 {
-	struct FolderItemSettingsPage *page = (struct FolderItemSettingsPage *) data;
+	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) data;
 	GtkColorSelection *colorsel = (GtkColorSelection *)
 				((GtkColorSelectionDialog *) page->color_dialog)->colorsel;
 	gdouble color[4];
@@ -476,7 +533,7 @@ static void folder_color_set_dialog_ok(GtkWidget *widget, gpointer data)
 
 static void folder_color_set_dialog_cancel(GtkWidget *widget, gpointer data)
 {
-	struct FolderItemSettingsPage *page = (struct FolderItemSettingsPage *) data;
+	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) data;
 	gtk_widget_destroy(page->color_dialog);
 }
 
@@ -484,20 +541,32 @@ static void folder_color_set_dialog_key_pressed(GtkWidget *widget,
 						GdkEventKey *event,
 						gpointer data)
 {
-	struct FolderItemSettingsPage *page = (struct FolderItemSettingsPage *) data;
+	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) data;
 	gtk_widget_destroy(page->color_dialog);
 }
 
-struct FolderItemSettingsPage folder_item_settings_page;
+struct FolderItemGeneralPage folder_item_general_page;
 
-static void register_settings_page()
+static void register_general_page()
 {
-        folder_item_settings_page.page.path = "Settings";
-        folder_item_settings_page.page.create_widget = prefs_folder_item_settings_create_widget_func;
-        folder_item_settings_page.page.destroy_widget = prefs_folder_item_settings_destroy_widget_func;
-        folder_item_settings_page.page.save_page = prefs_folder_item_settings_save_func;
+        folder_item_general_page.page.path = _("General");
+        folder_item_general_page.page.create_widget = prefs_folder_item_general_create_widget_func;
+        folder_item_general_page.page.destroy_widget = prefs_folder_item_general_destroy_widget_func;
+        folder_item_general_page.page.save_page = prefs_folder_item_general_save_func;
         
-	prefs_folder_item_register_page((PrefsPage *) &folder_item_settings_page);
+	prefs_folder_item_register_page((PrefsPage *) &folder_item_general_page);
+}
+
+struct FolderItemComposePage folder_item_compose_page;
+
+static void register_compose_page()
+{
+        folder_item_compose_page.page.path = _("Compose");
+        folder_item_compose_page.page.create_widget = prefs_folder_item_compose_create_widget_func;
+        folder_item_compose_page.page.destroy_widget = prefs_folder_item_compose_destroy_widget_func;
+        folder_item_compose_page.page.save_page = prefs_folder_item_compose_save_func;
+        
+	prefs_folder_item_register_page((PrefsPage *) &folder_item_compose_page);
 }
 
 static GSList *prefs_pages = NULL;
@@ -505,7 +574,8 @@ static GSList *prefs_pages = NULL;
 void prefs_folder_item_open(FolderItem *item)
 {
 	if (prefs_pages == NULL) {
-		register_settings_page();
+		register_general_page();
+		register_compose_page();
 	}
 
 	prefswindow_open(_("Settings for folder"), prefs_pages, item);

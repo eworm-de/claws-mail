@@ -1,3 +1,8 @@
+2003-07-29 [paul]	0.9.3claws73
+
+	* src/prefs_folder_item.c
+		split the prefs into 2 separate pages
+
 2003-07-29 [paul]	0.9.3claws72
 
 	* src/compose.c
