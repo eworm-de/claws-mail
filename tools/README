@@ -109,4 +109,81 @@
 
 -----------------------------------------------------------------------
 
+* newscache_clean.pl
+
+  WHAT IT DOES AND WHY IT DOES IT
+
+  This perl script cleans up in '$HOME/.sylpheed/newscache'. Currently
+  the newscache becomes littered with old directories and files - when
+  you subscribe to a newsgroup a sub-directory gets created for it in
+  ~/.sylpheed/newscache/[nntpserver], should you unsubscribe from the 
+  group the sub-directory does not get deleted. Until this is done 
+  internally this script will take care of some tidying up.
+  
+  This script removes directory trees of nntp servers that you no longer
+  have an account for. Where an account exists it removes directories
+  and files of those groups to which you are no longer subscribed.
+
+  HOW TO USE IT
+
+  Issue the following command from the 'tools' directory:
+  
+  	perl newscache_clean.pl
+        
+  This script uses the File::Path module, if you don't already have it
+  installed, you can find it at the CPAN search site <http://search.cpan.org>
+
+  Any questions, comments or problems, contact Paul <claws@thewildbeast.co.uk>
+
+-----------------------------------------------------------------------
+
+* sylpheed-switcher
+
+  WHAT IT DOES
+  
+  This perl script is for users who like to move between the main
+  sylpheed branch and the claws branch. Because of some differences
+  between the stored options it is better IMO to use two separate
+  '.sylpheed' directory trees. Doing that manually could prove to
+  be tiresome, and so I've written this script to automate the task.
+
+  The first time you run this script you enter the full paths,
+  including the executable itself, to both the main version of
+  sylpheed and the claws version. This information is then stored
+  in a file in your $HOME directory called '.sylpheed-switcher'
+
+  During this initial set-up, your '~/.sylpheed' directory
+  is copied to '~/.sylpheed-main' and '~/.sylpheed-claws'.
+  
+  When you run sylpheed via this script, your '~/.sylpheed' directory
+  is deleted and replaced with a symbolic link to either ~/.sylpheed-main'
+  or '~/sylpheed-claws', depending on the option you choose.
+  (On subsequent usage the symbolic link is deleted and replaced with
+  a new symbolic link).
+
+  HOW TO USE IT
+  
+  Initial set-up
+  Enter the full paths to the executable, including the executable itself,
+  example:
+  
+ 	./sylpheed-switcher --claws-path=/usr/local/bin/sylpheed --main-path=
+        /usr/bin/sylpheed
+        
+  After the initial set-up, use the following:
+  
+  	./sylpheed-switcher --claws	(to run sylpheed-claws)
+        ./sylpheed-switcher --main	(to run sylpheed main)
+        
+  Additionally you can append --debug to run in debug mode.
+  Use --help for more info.  	
+ 
+  This script uses the File::Path and Getopt::Long modules, if you don't already 
+  have them installed, you can find them at the CPAN search site 
+  <http://search.cpan.org>
+
+  Any questions, comments or problems, contact Paul <claws@thewildbeast.co.uk>
+
+-----------------------------------------------------------------------
+
 

@@ -1,3 +1,15 @@
+2001-12-07 [paul]
+
+	* tools/newscache_clean.pl	** NEW FILE **
+        	perl script to do some tidying up in the newscache directory 
+                
+	* tools/sylpheed-switcher	** NEW FILE **
+        	perl script to enable easy switching between main and claws
+                
+	* tools/README
+        	added descriptions of the two new perl scripts     	
+
+
 2001-12-07 [melvin]	0.6.5claws58
 
 	* src/messageview.c
