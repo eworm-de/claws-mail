@@ -252,3 +252,4 @@
 ( cvs diff -u -r 1.382.2.69 -r 1.382.2.70 src/compose.c; ) > 0.9.12cvs158.4.patchset
 ( cvs diff -u -r 1.3.2.12 -r 1.3.2.13 src/prefs_themes.c; ) > 0.9.12cvs158.5.patchset
 ( cvs diff -u -r 1.382.2.70 -r 1.382.2.71 src/compose.c; ) > 0.9.12cvs158.6.patchset
+( cvs diff -u -r 1.382.2.71 -r 1.382.2.72 src/compose.c; ) > 0.9.12cvs158.7.patchset

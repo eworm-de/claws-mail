@@ -377,9 +377,9 @@ static void compose_allsel_cb		(Compose	*compose);
 static void compose_advanced_action_cb	(Compose		   *compose,
 					 ComposeCallAdvancedAction  action);
 
-static gboolean compose_grab_focus_cb	(GtkWidget	*widget,
+static void compose_grab_focus_cb	(GtkWidget	*widget,
 					 Compose	*compose);
-static gboolean compose_grab_focus_before_cb	(GtkWidget	*widget,
+static void compose_grab_focus_before_cb(GtkWidget	*widget,
 					 Compose	*compose);
 
 static void compose_changed_cb		(GtkTextBuffer	*textbuf,
@@ -6910,7 +6910,7 @@ static void compose_advanced_action_cb(Compose *compose,
 
 static gchar *cliptext = NULL;
 
-static gboolean compose_grab_focus_before_cb(GtkWidget *widget, Compose *compose)
+static void compose_grab_focus_before_cb(GtkWidget *widget, Compose *compose)
 {
 	gchar *str = NULL;
 	GtkClipboard *clip = gtk_clipboard_get(gdk_atom_intern("PRIMARY", FALSE));
@@ -6918,11 +6918,9 @@ static gboolean compose_grab_focus_before_cb(GtkWidget *widget, Compose *compose
 		g_free(cliptext);
 	if (gtk_clipboard_wait_is_text_available(clip))
 		cliptext = gtk_clipboard_wait_for_text(clip);
-	
-	return FALSE;
 }
 
-static gboolean compose_grab_focus_cb(GtkWidget *widget, Compose *compose)
+static void compose_grab_focus_cb(GtkWidget *widget, Compose *compose)
 {
 	gchar *str = NULL;
 	GtkClipboard *clip = gtk_clipboard_get(gdk_atom_intern("PRIMARY", FALSE));
@@ -6938,8 +6936,6 @@ static gboolean compose_grab_focus_cb(GtkWidget *widget, Compose *compose)
 
 	if (GTK_IS_EDITABLE(widget) || GTK_IS_TEXT_VIEW(widget))
 		compose->focused_editable = widget;
-	
-	return TRUE;
 }
 
 static void compose_changed_cb(GtkTextBuffer *textbuf, Compose *compose)
