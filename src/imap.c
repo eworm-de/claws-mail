@@ -350,8 +350,6 @@ static void imap_folder_init(Folder *folder, const gchar *name,
 
 	folder->get_num_list	      = imap_get_num_list;
 	folder->get_msginfo	      = imap_get_msginfo;
-	
-	((IMAPFolder *)folder)->selected_folder = NULL;
 }
 
 static FolderItem *imap_folder_item_new(Folder *folder)
@@ -420,8 +418,6 @@ static IMAPSession *imap_session_get(Folder *folder)
 			imap_parse_namespace(IMAP_SESSION(rfolder->session),
 					     IMAP_FOLDER(folder));
 			rfolder->session->last_access_time = time(NULL);
-			g_free(((IMAPFolder *)folder)->selected_folder);
-			((IMAPFolder *)folder)->selected_folder = NULL;
 			imap_reset_uid_lists(folder);
 		}
 		statusbar_pop_all();
@@ -452,8 +448,6 @@ static IMAPSession *imap_session_get(Folder *folder)
 		if (rfolder->session) {
 			imap_parse_namespace(IMAP_SESSION(rfolder->session),
 					     IMAP_FOLDER(folder));
-			g_free(((IMAPFolder *)folder)->selected_folder);
-			((IMAPFolder *)folder)->selected_folder = NULL;
 			imap_reset_uid_lists(folder);
 		}
 	}
@@ -764,7 +758,7 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 {
 	gchar *destdir;
 	IMAPSession *session;
-	gint messages, recent, unseen, exists;
+	gint messages, recent, unseen;
 	guint32 uid_next, uid_validity;
 	gint ok;
     
@@ -791,17 +785,14 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 
 	destdir = imap_get_real_path(IMAP_FOLDER(folder), dest->path);
 
-    /* ensure source folder selected */
-    if (strcmp(((IMAPFolder *)folder)->selected_folder, 
-                    msginfo->folder->path) != 0) {
-	    ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
-			     &exists, &recent, &unseen, &uid_validity);
-	    statusbar_pop_all();
-	    if (ok != IMAP_SUCCESS)
-		    return -1;
-    }
+	/* ensure source folder selected */
+	ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
+			 NULL, NULL, NULL, NULL);
+	statusbar_pop_all();
+	if (ok != IMAP_SUCCESS)
+	        return -1;
         
-    if (remove_source)
+	if (remove_source)
 		debug_print("Moving message %s%c%d to %s ...\n",
 			    msginfo->folder->path, G_DIR_SEPARATOR,
 			    msginfo->msgnum, destdir);
@@ -836,8 +827,6 @@ static gint imap_do_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
 	MsgInfo *msginfo;
 	IMAPSession *session;
 	gint ok = IMAP_SUCCESS;
-	gint exists, recent, unseen;
-	guint32 uid_validity;
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(dest != NULL, -1);
@@ -856,16 +845,10 @@ static gint imap_do_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
 			continue;
 		}
 
-        /* ensure source folder selected */
-        if (strcmp(((IMAPFolder *)folder)->selected_folder, 
-                        msginfo->folder->path) != 0) {
-	        ok = imap_select(session, IMAP_FOLDER(folder), 
-                    msginfo->folder->path, &exists, &recent, &unseen, 
-                    &uid_validity);
+    		/* ensure source folder selected */
+    		ok = imap_select(session, IMAP_FOLDER(folder), 
+        		         msginfo->folder->path, NULL, NULL, NULL, NULL);
 	        statusbar_pop_all();
-	        if (ok != IMAP_SUCCESS)
-		        return -1;
-        }
         
 		if (remove_source)
 			debug_print("Moving message %s%c%d to %s ...\n",
@@ -1000,8 +983,6 @@ gint imap_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
 
 gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 {
-	gint exists, recent, unseen;
-	guint32 uid_validity;
 	gint ok;
 	IMAPSession *session;
 	gchar *dir;
@@ -1014,7 +995,7 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 	if (!session) return -1;
 
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
-			 &exists, &recent, &unseen, &uid_validity);
+			 NULL, NULL, NULL, NULL);
 	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS)
 		return ok;
@@ -1045,8 +1026,6 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 
 gint imap_remove_msgs(Folder *folder, FolderItem *item, GSList *msglist)
 {
-	gint exists, recent, unseen;
-	guint32 uid_validity;
 	gint ok;
 	IMAPSession *session;
 	gchar *dir;
@@ -1063,7 +1042,7 @@ gint imap_remove_msgs(Folder *folder, FolderItem *item, GSList *msglist)
 	if (!session) return -1;
 
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
-			 &exists, &recent, &unseen, &uid_validity);
+			 NULL, NULL, NULL, NULL);
 	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS)
 		return ok;
@@ -1103,8 +1082,8 @@ gint imap_remove_msgs(Folder *folder, FolderItem *item, GSList *msglist)
 
 gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 {
-	gint exists, recent, unseen;
-	guint32 uid_validity;
+        gint exists, recent, unseen;
+        guint32 uid_validity;
 	gint ok;
 	IMAPSession *session;
 	gchar *dir;
@@ -2390,9 +2369,6 @@ static gint imap_select(IMAPSession *session, IMAPFolder *folder,
 		session->mbox = g_strdup(path);
 	g_free(real_path);
 
-	g_free(folder->selected_folder);
-	folder->selected_folder = g_strdup(path);
-	
 	return ok;
 }
 
@@ -3230,13 +3206,11 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 {
 	IMAPFolderItem *item = (IMAPFolderItem *)_item;
 	IMAPSession *session;
-	gint i, lastuid_old, nummsgs = 0;
-	gint ok, exists = 0, recent = 0, unseen = 0;
-	guint32 uid_validity = 0;
+	gint ok, i, lastuid_old, nummsgs = 0;
 	GPtrArray *argbuf;
 	gchar *cmdbuf = NULL;
 	gchar *dir;
-	
+
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(item != NULL, -1);
 	g_return_val_if_fail(item->item.path != NULL, -1);
@@ -3247,7 +3221,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 	g_return_val_if_fail(session != NULL, -1);
 
 	ok = imap_select(session, IMAP_FOLDER(folder), item->item.path,
-			 &exists, &recent, &unseen, &uid_validity);
+			 NULL, NULL, NULL, NULL);
 	if (ok != IMAP_SUCCESS)
 		return -1;
 

@@ -1,3 +1,13 @@
+2002-12-04 [christoph]	0.8.6claws59
+
+	* src/imap.[ch]
+		use already existing method to prevent unneeded IMAP
+		folder selects. Set imap_select parameters to NULL
+		in some functions if the values are not required.
+
+	* src/xml.h
+		remove no longer required include
+
 2002-12-04 [paul]	0.8.6claws58
 
 	* po/es.po
