@@ -117,6 +117,7 @@ struct _PrefsCommon
 	gint ng_abbrev_len;
 	ToolbarStyle toolbar_style;
 	gboolean show_statusbar;
+	gboolean show_searchbar;
 	gboolean trans_hdr;
 	gboolean enable_thread;
 	gboolean enable_hscrollbar;

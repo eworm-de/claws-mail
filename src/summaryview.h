@@ -71,6 +71,13 @@ typedef enum
 	TARGET_DUMMY
 } TargetInfo;
 
+typedef enum
+{
+	S_SEARCH_SUBJECT,
+	S_SEARCH_FROM,
+	S_SEARCH_TO
+} SummarySearchType;
+
 extern GtkTargetEntry summary_drag_types[1];
 
 struct _SummaryColumnState
@@ -86,6 +93,7 @@ struct _SummaryView
 	GtkWidget *ctree;
 	GtkWidget *hbox;
 	GtkWidget *hbox_l;
+	GtkWidget *hbox_search;
 	GtkWidget *folder_pixmap;
 	GtkWidget *statlabel_folder;
 	GtkWidget *statlabel_select;
@@ -94,6 +102,9 @@ struct _SummaryView
 	GtkWidget *toggle_arrow;
 	GtkWidget *popupmenu;
 	GtkWidget *colorlabel_menu;
+	GtkWidget *search_type_opt;
+	GtkWidget *search_type;
+	GtkWidget *search_string;
 
 	GtkItemFactory *popupfactory;
 

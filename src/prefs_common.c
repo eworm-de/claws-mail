@@ -505,6 +505,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"show_statusbar", "TRUE", &prefs_common.show_statusbar, P_BOOL,
 	 NULL, NULL, NULL},
+	{"show_searchbar", "TRUE", &prefs_common.show_searchbar, P_BOOL,
+	 NULL, NULL, NULL},
 
 	{"folderview_vscrollbar_policy", "0",
 	 &prefs_common.folderview_vscrollbar_policy, P_ENUM,

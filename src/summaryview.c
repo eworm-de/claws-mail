@@ -261,6 +261,12 @@ static void summary_button_released	(GtkWidget		*ctree,
 static void summary_key_pressed		(GtkWidget		*ctree,
 					 GdkEventKey		*event,
 					 SummaryView		*summaryview);
+static void summary_searchbar_pressed	(GtkWidget		*ctree,
+					 GdkEventKey		*event,
+					 SummaryView		*summaryview);
+static void summary_searchtype_changed	(GtkWidget		*ctree,
+					 GdkEventAny		*event,
+					 SummaryView		*summaryview);
 static void summary_open_row		(GtkSCTree		*sctree,
 					 SummaryView		*summaryview);
 static void summary_tree_expanded	(GtkCTree		*ctree,
@@ -446,6 +452,7 @@ SummaryView *summary_create(void)
 	GtkWidget *ctree;
 	GtkWidget *hbox;
 	GtkWidget *hbox_l;
+	GtkWidget *hbox_search;
 	GtkWidget *statlabel_folder;
 	GtkWidget *statlabel_select;
 	GtkWidget *statlabel_msgs;
@@ -453,34 +460,20 @@ SummaryView *summary_create(void)
 	GtkWidget *toggle_eventbox;
 	GtkWidget *toggle_arrow;
 	GtkWidget *popupmenu;
+	GtkWidget *search_type_opt;
+	GtkWidget *search_type;
+	GtkWidget *search_string;
+	GtkWidget *menuitem;
 	GtkItemFactory *popupfactory;
 	gint n_entries;
 
 	debug_print("Creating summary view...\n");
 	summaryview = g_new0(SummaryView, 1);
 
-	vbox = gtk_vbox_new(FALSE, 2);
-
-	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
-				       GTK_POLICY_AUTOMATIC,
-				       GTK_POLICY_ALWAYS);
-	gtk_box_pack_start(GTK_BOX(vbox), scrolledwin, TRUE, TRUE, 0);
-	gtk_widget_set_usize(vbox,
-			     prefs_common.summaryview_width,
-			     prefs_common.summaryview_height);
-
-	ctree = summary_ctree_create(summaryview);
-
-	gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolledwin),
-					    GTK_CLIST(ctree)->hadjustment);
-	gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolledwin),
-					    GTK_CLIST(ctree)->vadjustment);
-	gtk_container_add(GTK_CONTAINER(scrolledwin), ctree);
-
+	vbox = gtk_vbox_new(FALSE, 3);
+	
 	/* create status label */
 	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_end(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
 	hbox_l = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), hbox_l, TRUE, TRUE, 0);
@@ -505,6 +498,62 @@ SummaryView *summary_create(void)
 	hbox_spc = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_end(GTK_BOX(hbox), hbox_spc, FALSE, FALSE, 6);
 
+	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
+				       GTK_POLICY_AUTOMATIC,
+				       GTK_POLICY_ALWAYS);
+	gtk_box_pack_start(GTK_BOX(vbox), scrolledwin, TRUE, TRUE, 0);
+	gtk_widget_set_usize(vbox,
+			     prefs_common.summaryview_width,
+			     prefs_common.summaryview_height);
+
+	ctree = summary_ctree_create(summaryview);
+
+	gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolledwin),
+					    GTK_CLIST(ctree)->hadjustment);
+	gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolledwin),
+					    GTK_CLIST(ctree)->vadjustment);
+	gtk_container_add(GTK_CONTAINER(scrolledwin), ctree);
+
+	/* status label */
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+
+	/* quick search */
+	hbox_search = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox_search, FALSE, FALSE, 0);
+
+	search_type_opt = gtk_option_menu_new();
+	gtk_widget_show(search_type_opt);
+	gtk_box_pack_start(GTK_BOX(hbox_search), search_type_opt, FALSE, FALSE, 0);
+
+	search_type = gtk_menu_new();
+	MENUITEM_ADD (search_type, menuitem, _("Subject"), S_SEARCH_SUBJECT);
+	gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
+			   GTK_SIGNAL_FUNC(summary_searchtype_changed),
+			   summaryview);
+	MENUITEM_ADD (search_type, menuitem, _("From"), S_SEARCH_FROM);
+	gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
+			   GTK_SIGNAL_FUNC(summary_searchtype_changed),
+			   summaryview);
+	MENUITEM_ADD (search_type, menuitem, _("To"), S_SEARCH_TO);
+	gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
+			   GTK_SIGNAL_FUNC(summary_searchtype_changed),
+			   summaryview);
+
+	gtk_option_menu_set_menu(GTK_OPTION_MENU(search_type_opt), search_type);
+	gtk_widget_show(search_type);
+	
+	search_string = gtk_entry_new();
+	
+	gtk_box_pack_start(GTK_BOX(hbox_search), search_string, FALSE, FALSE, 2);
+	
+	gtk_widget_show(search_string);
+	gtk_widget_show(hbox_search);
+
+	gtk_signal_connect(GTK_OBJECT(search_string), "key_press_event",
+			   GTK_SIGNAL_FUNC(summary_searchbar_pressed),
+			   summaryview);
+
 	/* create popup menu */
 	n_entries = sizeof(summary_popup_entries) /
 		sizeof(summary_popup_entries[0]);
@@ -517,6 +566,7 @@ SummaryView *summary_create(void)
 	summaryview->ctree = ctree;
 	summaryview->hbox = hbox;
 	summaryview->hbox_l = hbox_l;
+	summaryview->hbox_search = hbox_search;
 	summaryview->statlabel_folder = statlabel_folder;
 	summaryview->statlabel_select = statlabel_select;
 	summaryview->statlabel_msgs = statlabel_msgs;
@@ -525,6 +575,9 @@ SummaryView *summary_create(void)
 	summaryview->popupmenu = popupmenu;
 	summaryview->popupfactory = popupfactory;
 	summaryview->lock_count = 0;
+	summaryview->search_type_opt = search_type_opt;
+	summaryview->search_type = search_type;
+	summaryview->search_string = search_string;
 
 	/* CLAWS: need this to get the SummaryView * from
 	 * the CList */
@@ -691,6 +744,11 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	inc_lock();
 	summary_lock(summaryview);
 
+	if (item != summaryview->folder_item) {
+		/* changing folder, reset search */
+		gtk_entry_set_text(GTK_ENTRY(summaryview->search_string), "");
+	}
+	
 	STATUSBAR_POP(summaryview->mainwin);
 
 	is_refresh = (!prefs_common.open_inbox_on_inc &&
@@ -806,6 +864,44 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		summary_set_hide_read_msgs_menu(summaryview, FALSE);
 	}
 
+	if (strlen(gtk_entry_get_text(GTK_ENTRY(summaryview->search_string))) > 0) {
+		GSList *not_killed;
+		gint search_type = GPOINTER_TO_INT(gtk_object_get_user_data(
+				   GTK_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
+				   GTK_MENU(summaryview->search_type))))));
+		gchar *search_string = g_strdup(gtk_entry_get_text(
+				       GTK_ENTRY(summaryview->search_string)));
+		gchar *searched_header = NULL;
+		
+		not_killed = NULL;
+		for(cur = mlist ; cur != NULL ; cur = g_slist_next(cur)) {
+			MsgInfo * msginfo = (MsgInfo *) cur->data;
+			switch (search_type) {
+				case S_SEARCH_SUBJECT:
+					searched_header = g_strdup(msginfo->subject);
+					break;
+				case S_SEARCH_FROM:
+					searched_header = g_strdup(msginfo->from);
+					break;
+				case S_SEARCH_TO:
+					searched_header = g_strdup(msginfo->to);
+					break;
+				default:
+					printf("bug in search_type (=%d)\n",search_type);
+			}
+			
+			if (searched_header != NULL
+			    && strstr(searched_header, search_string) != NULL)
+				not_killed = g_slist_append(not_killed, msginfo);
+			else
+				procmsg_msginfo_free(msginfo);
+		}
+		g_slist_free(mlist);
+		g_free(search_string);
+		g_free(searched_header);
+		mlist = not_killed;
+	}
+	
 	if ((global_scoring || item->prefs->scoring)) {
 		GSList *not_killed;
 		gint kill_score;
@@ -4356,6 +4452,20 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	default:
 		break;
 	}
+}
+
+static void summary_searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
+				SummaryView *summaryview)
+{
+	if (event != NULL && event->keyval == GDK_Return)
+	 	summary_show(summaryview, summaryview->folder_item);
+}
+
+static void summary_searchtype_changed(GtkWidget *widget, GdkEventAny *event,
+				SummaryView *summaryview)
+{
+	if (strlen(gtk_entry_get_text(GTK_ENTRY(summaryview->search_string))) > 0)
+	 	summary_show(summaryview, summaryview->folder_item);
 }
 
 static void summary_open_row(GtkSCTree *sctree, SummaryView *summaryview)
