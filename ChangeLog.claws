@@ -1,3 +1,10 @@
+2003-01-06 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.8claws59
+
+	* src/prefs_actions.c
+		use new description window for syntax help
+	* src/gtk/description_window.c
+		fix display of descriptions with column count != 2
+
 2003-01-06 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.8claws58
 
 	* src/quote_fmt.c

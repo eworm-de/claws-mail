@@ -55,6 +55,8 @@ static void description_create(DescriptionWindow * dwindow)
 	GtkWidget *scrolledwin;
 	int i;
 	int sz;
+	int line;
+	int j;
 
 	dwindow->window = gtk_window_new(GTK_WINDOW_DIALOG);
 	gtk_widget_set_usize(dwindow->window,400,450);
@@ -82,6 +84,7 @@ static void description_create(DescriptionWindow * dwindow)
 
 	gtk_table_set_col_spacings(GTK_TABLE(table), 10);
 
+	line = 0;
 	for(i = 0; dwindow->symbol_table[i] != NULL; i = i + dwindow->columns) {
 		if(dwindow->symbol_table[i][0] != '\0') {
 			GtkWidget *label;
@@ -89,26 +92,28 @@ static void description_create(DescriptionWindow * dwindow)
 			label = gtk_label_new(dwindow->symbol_table[i]);
 			gtk_misc_set_alignment (GTK_MISC(label), 0, 0);
 			gtk_table_attach(GTK_TABLE(table), label,
-					 0, 1, i, i+1,
+					 0, 1, line, line+1,
 					 GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL,
 					 0, 0);
-					 
-			label = gtk_label_new(gettext(dwindow->symbol_table[i+1]));
-			gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
-			gtk_misc_set_alignment (GTK_MISC(label), 0, 0);
-			gtk_table_attach(GTK_TABLE(table), label,
-					 1, 2, i, i+1,
-					 GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL,
-					 0, 0);
+			for (j = 1; j < dwindow->columns; j++) {
+				label = gtk_label_new(gettext(dwindow->symbol_table[i+j]));
+				gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
+				gtk_misc_set_alignment (GTK_MISC(label), 0, 0);
+				gtk_table_attach(GTK_TABLE(table), label,
+						 j, j+1, line, line+1,
+						 GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL,
+						 0, 0);
+			}
 		} else {
 			GtkWidget *separator;
 			
 			separator = gtk_hseparator_new();
 			gtk_table_attach(GTK_TABLE(table), separator,
-					 0, 2, i, i+1,
+					 0, 2, line, line+1,
 					 GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL,
 					 0, 4);
 		}
+		line++;
 	}
 
 	gtkut_button_set_create(&hbbox, &ok_btn, _("OK"),
