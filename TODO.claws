@@ -13,8 +13,6 @@
 	o with the new cache / mark system done by Christoph, it's
 	  about time to make the cache files endian neutral (bribe
 	  Hiro to accept the new system too)
-	o fix processing, summaryview still uses old list of
-	  messages with messages deleted or moved by processing
 
 [thorsten]
 	
