@@ -1,3 +1,12 @@
+2003-07-28 [alfons]	0.9.3claws69
+
+	* src/procmsg.[ch]
+	* src/messageview.c
+	* src/procheader.c
+		rewrite return receipt request work a little bit (the former 
+		implementation presumably depended too much on the UI setting
+		flags). (we're losing the old pending flag.) 
+
 2003-07-28 [christoph]	0.9.3claws68
 
 	* src/folder.c

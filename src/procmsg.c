@@ -730,7 +730,7 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 			    gboolean is_queued)
 {
 	gint num;
-	MsgInfo *msginfo;
+	MsgInfo *msginfo, *tmp_msginfo;
 
 	debug_print("saving sent message...\n");
 
@@ -762,10 +762,17 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 		}
 		return -1;
 	}
-	msginfo = folder_item_get_msginfo(outbox, num);
+	msginfo = folder_item_get_msginfo(outbox, num);		/* refcnt++ */
+	tmp_msginfo = procmsg_msginfo_get_full_info(msginfo);	/* refcnt++ */ 
 	if (msginfo != NULL) {
-	    procmsg_msginfo_unset_flags(msginfo, ~0, 0);
-	    procmsg_msginfo_free(msginfo);
+		procmsg_msginfo_unset_flags(msginfo, ~0, 0);
+		procmsg_msginfo_free(msginfo);			/* refcnt-- */
+		/* tmp_msginfo == msginfo */
+		if (tmp_msginfo && (msginfo->dispositionnotificationto || 
+		    msginfo->returnreceiptto)) {
+			procmsg_msginfo_set_flags(msginfo, MSG_RETRCPT_SENT, 0); 
+			procmsg_msginfo_free(msginfo);		/* refcnt-- */
+		}	
 	}
 	folder_item_update(outbox, TRUE);
 

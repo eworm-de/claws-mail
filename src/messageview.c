@@ -710,7 +710,9 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		procmime_mimeinfo_free_all(mimeinfo);
 	}
 
-	if (MSG_IS_RETRCPT_PENDING(messageview->msginfo->flags))
+	if ((messageview->msginfo->dispositionnotificationto || 
+	     messageview->msginfo->returnreceiptto) &&
+	    !MSG_IS_RETRCPT_SENT(messageview->msginfo->flags))
 		return_receipt_show(messageview->noticeview, messageview->msginfo);
 	else 
 		noticeview_hide(messageview->noticeview);
@@ -1076,7 +1078,7 @@ static void return_receipt_send_clicked(NoticeView *noticeview, MsgInfo *msginfo
 	tmpmsginfo->msgnum = msginfo->msgnum;
 
 	if (disposition_notification_send(tmpmsginfo) >= 0) {
-		procmsg_msginfo_unset_flags(msginfo, MSG_RETRCPT_PENDING, 0);
+		procmsg_msginfo_set_flags(msginfo, MSG_RETRCPT_SENT, 0);
 		noticeview_hide(noticeview);
 	}		
 

@@ -71,7 +71,8 @@ typedef GSList MsgNumberList;
 
 #define MSG_IGNORE_THREAD	(1U << 10)   /* ignore threads */
 #define MSG_LOCKED		(1U << 11)   /* msg is locked  */
-#define MSG_RETRCPT_PENDING	(1U << 12)   /* return receipt pending */
+#define MSG_RETRCPT_SENT	(1U << 12)   /* new one */ 
+					 	
 /* RESERVED */
 #define	MSG_RESERVED_CLAWS	(1U << 30)   /* for sylpheed-claws */
 #define	MSG_RESERVED		(1U << 31)
@@ -138,6 +139,7 @@ typedef guint32 MsgTmpFlags;
 #define MSG_IS_REALLY_DELETED(msg)	(((msg).perm_flags & MSG_REALLY_DELETED) != 0)
 #define MSG_IS_IGNORE_THREAD(msg)	(((msg).perm_flags & MSG_IGNORE_THREAD) != 0)
 #define MSG_IS_RETRCPT_PENDING(msg)	(((msg).perm_flags & MSG_RETRCPT_PENDING) != 0)
+#define MSG_IS_RETRCPT_SENT(msg)	(((msg).perm_flags & MSG_RETRCPT_SENT) != 0)
 
 #define MSGINFO_UPDATE_HOOKLIST "msginfo_update"
 #define MAIL_FILTERING_HOOKLIST "mail_filtering_hooklist"

@@ -665,12 +665,10 @@ MsgInfo *procheader_parse_stream(FILE *fp, MsgFlags flags, gboolean full,
 		case H_DISPOSITION_NOTIFICATION_TO:
 			if (msginfo->dispositionnotificationto) break;
 			msginfo->dispositionnotificationto = g_strdup(hp);
-			MSG_SET_PERM_FLAGS(msginfo->flags, MSG_RETRCPT_PENDING);	
 			break;
 		case H_RETURN_RECEIPT_TO:
 			if (msginfo->returnreceiptto) break;
 			msginfo->returnreceiptto = g_strdup(hp);
-			MSG_SET_PERM_FLAGS(msginfo->flags, MSG_RETRCPT_PENDING);	
 			break;
 #ifdef ALLOW_HEADER_HINT			
 		case H_STATUS:
