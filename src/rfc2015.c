@@ -486,7 +486,7 @@ gboolean rfc2015_msg_is_encrypted (gchar *file)
 	MimeInfo *mimeinfo;
 	int ret;
 
-	if ((fp = fopen(file, "r")) == NULL)
+	if ((fp = fopen(file, "rb")) == NULL)
 		return FALSE;
 
 	mimeinfo = procmime_scan_mime_header(fp);

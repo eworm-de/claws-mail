@@ -1,3 +1,10 @@
+2002-07-02 [thorsten]	0.7.8claws44
+
+	* src/jpilot.c
+	* src/msgcache.c
+	* src/rfc2015.c
+		use binary mode for file access
+
 2002-07-02 [christoph]	0.7.8claws43
 
 	* major code cleanup (part 1)

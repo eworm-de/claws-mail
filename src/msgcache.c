@@ -194,7 +194,7 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 	g_return_val_if_fail(cache_file != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
 
-	if ((fp = fopen(cache_file, "r")) == NULL) {
+	if ((fp = fopen(cache_file, "rb")) == NULL) {
 		debug_print(_("\tNo cache file\n"));
 		return NULL;
 	}
@@ -269,7 +269,7 @@ void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
 	gint ver;
 	guint num;
 
-	if ((fp = fopen(mark_file, "r")) == NULL) {
+	if ((fp = fopen(mark_file, "rb")) == NULL) {
 		debug_print(_("Mark file not found.\n"));
 		return;
 	} else if (fread(&ver, sizeof(ver), 1, fp) != 1 || MARK_VERSION != ver) {
@@ -369,7 +369,7 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *c
 
 	debug_print(_("\tWriting message cache to %s and %s...\n"), cache_file, mark_file);
 
-	if ((fp = fopen(cache_file, "w")) == NULL) {
+	if ((fp = fopen(cache_file, "wb")) == NULL) {
 		FILE_OP_ERROR(cache_file, "fopen");
 		return -1;
 	}
@@ -380,7 +380,7 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *c
 	WRITE_CACHE_DATA_INT(ver, fp);	
 	write_fps.cache_fp = fp;
 
-	if ((fp = fopen(mark_file, "w")) == NULL) {
+	if ((fp = fopen(mark_file, "wb")) == NULL) {
 		FILE_OP_ERROR(mark_file, "fopen");
 		fclose(write_fps.cache_fp);
 		return -1;
