@@ -90,7 +90,11 @@
 
 gchar *prog_version;
 gchar *startup_dir;
+#ifdef _DEBUG   /* WIN32 */
 gboolean debug_mode = TRUE ;
+#else
+gboolean debug_mode = FALSE ;
+#endif
 
 static gint lock_socket = -1;
 static gint lock_socket_tag = 0;
@@ -157,12 +161,22 @@ int main(int argc, char *argv[])
 	FolderView *folderview;
 #ifdef WIN32
 	gchar *locale_dir;
-	guint log_hid;
+	guint log_hid,gtklog_hid, gdklog_hid;
 #endif
 
 #ifdef WIN32
 	log_hid = g_log_set_handler(NULL, 
-		G_LOG_LEVEL_WARNING |
+		G_LOG_LEVEL_MASK |
+		G_LOG_FLAG_FATAL |
+		G_LOG_FLAG_RECURSION, 
+		w32_log_handler, NULL);
+	gtklog_hid = g_log_set_handler("Gtk", 
+		G_LOG_LEVEL_MASK |
+		G_LOG_FLAG_FATAL |
+		G_LOG_FLAG_RECURSION, 
+		w32_log_handler, NULL);
+	gdklog_hid = g_log_set_handler("Gdk", 
+		G_LOG_LEVEL_MASK |
 		G_LOG_FLAG_FATAL |
 		G_LOG_FLAG_RECURSION, 
 		w32_log_handler, NULL);
@@ -393,6 +407,8 @@ int main(int argc, char *argv[])
 #ifdef WIN32
 	stop_mswin_helper();
 	g_log_remove_handler(NULL, log_hid);
+	g_log_remove_handler(NULL, gtklog_hid);
+	g_log_remove_handler(NULL, gdklog_hid);
 
 	// De-Initialize WinSock Library.
 	WSACleanup();
