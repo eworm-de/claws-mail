@@ -3,7 +3,7 @@
 	* src/matcher_parser_parse.y
 	* src/gtk/colorlabel.c
 		allow setting color label to 0 in filtering/processing rules
-		(should fix bug 336, "Can't create a filter condition "colorlabel 0"") 
+		(should fix bug 368, "Can't create a filter condition "colorlabel 0"") 
 
 2003-10-26 [alfons]	0.9.6claws54
 
