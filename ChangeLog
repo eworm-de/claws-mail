@@ -1,3 +1,52 @@
+2004-09-30
+
+	* src/filter.c: filter_apply_msginfo(): don't apply filter if
+	  FilterRule::enabled == FALSE.
+	* src/prefs_filter.c: implemented Enabled column.
+	* src/account.c: account_selected(): modified the behavior of
+	  double-click.
+
+2004-09-30
+
+	* src/colorlabel.c: modified the menu label size. Removed "None" from
+	  color menu.
+	* src/filter.[ch]
+	  src/prefs_filter_edit.c: implemented color label action.
+	* src/summaryview.c: summary_filter_func(): update summary flags
+	  when flag action is performed.
+
+2004-09-29
+
+	* src/prefs_filter_edit.c: added color label.
+	* src/colorlabel.c: modified the menu label size and border.
+
+2004-09-28
+
+	* src/filter.[ch]
+	  src/prefs_filter_edit.c: improved error handling when creating a
+	  rule.
+
+2004-09-28
+
+	* src/prefs_common.c: adjusted the default size of views.
+
+2004-09-27
+
+	* src/filter.c
+	  src/prefs_filter_edit.c: implemented size/age condition.
+	* src/menu.[ch]: menu_get_option_menu_active_user_data(): new.
+
+2004-09-22
+
+	* src/prefs_filter_edit.c: select previous item when editing header
+	  finished.
+
+2004-09-22
+
+	* src/prefs_filter.[ch]
+	  src/prefs_filter_edit.c
+	  src/procheader.[ch]: implemented user-defined header dialog.
+
 2004-09-17
 
 	* src/filter.c:

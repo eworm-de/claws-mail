@@ -998,8 +998,10 @@ static gint account_delete_event(GtkWidget *widget, GdkEventAny *event,
 static void account_selected(GtkCList *clist, gint row, gint column,
 			     GdkEvent *event, gpointer data)
 {
-	if (event && event->type == GDK_2BUTTON_PRESS)
+	if (event && event->type == GDK_2BUTTON_PRESS) {
 		account_edit_prefs();
+		return;
+	}
 
 	if (column == COL_GETALL) {
 		PrefsAccount *ac;

@@ -1,3 +1,94 @@
+2004-10-01 [paul]	0.9.12cvs116
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/account.c
+	* src/prefs_common.c
+	* src/gtk/colorlabel.c
+		sync with main 0.9.12cvs17
+
+2004-09-30 [colin]	0.9.12cvs115
+
+	* src/stock_pixmap.c
+	* src/stock_pixmap.h
+	* src/folderview.c
+	* src/Makefile.am
+	* src/pixmaps/read.xpm
+		Add icon for total # column
+
+2004-09-29 [colin]	0.9.12cvs114
+
+	* src/compose.c
+		Don't close compose until message is sent if 
+		Show Send Dialog is Always
+
+2004-09-29 [paul]	0.9.12cvs113
+
+	* src/quote_fmt_parse.y
+		In the quotation templates recognise sender's first and last 
+		names (%F %L) when the name is in the format "Duck, Donald".
+		Patch submitted by Thomas Gilgin, <thomas_gilgin@users.sourceforge.net>
+
+
+2004-09-28 [colin]	0.9.12cvs112
+
+	* src/mainwindow.c
+		Put back mnemonic
+	* src/folderview.c
+		Fix Empty trash being visible-invisible-visible...
+
+2004-09-28 [colin]	0.9.12cvs111
+
+	* src/mainwindow.c
+		Relabel Empty all Trash folders
+
+2004-09-28 [colin]	0.9.12cvs110
+
+	* src/folderview.c
+		Add contextual Empty trash menu
+	* src/mainwindow.c
+		Revert cvs109 which was useless
+
+2004-09-28 [colin]	0.9.12cvs109
+
+	* src/mainwindow.c
+		Fix uninialized var
+
+2004-09-28 [colin]	0.9.12cvs108
+
+	* src/addressbook.c
+		Fix triple-click
+
+2004-09-28 [colin]	0.9.12cvs107
+
+	* src/addressbook.c
+		Fix double-click on entries
+
+2004-09-28 [colin]	0.9.12cvs106
+
+	* src/inc.c
+		Reintroduce folder_item update freeze on incorporation
+
+2004-09-27 [christoph]	0.9.12cvs105
+
+	* src/folderview.c
+		right-align new and unread column
+
+2004-09-27 [paul]
+
+	* 0.9.12b released
+
+2004-09-27 [paul]	0.9.12cvs104
+
+	* src/main.c
+		revert 0.9.12cvs101, it causes another segfault
+
+2004-09-23 [christoph]	0.9.12cvs103
+
+	* src/plugins/spamassassin/libspamc.[ch]
+	* src/plugins/spamassassin/utils.[ch]
+		update libspamc to SpamAssassin 3.0.0
+
 2004-09-17 [paul]	0.9.12cvs102
 
 	* ChangeLog

@@ -1,3 +1,12 @@
+2004-10-01 [paul]	0.9.12cvs116.1
+
+	* ChangeLog.claws
+	* configure.ac
+	* src/account.c
+	* src/prefs_common.c
+	* src/gtk/colorlabel.c
+		sync with HEAD
+
 2004-09-30 [colin]	0.9.12cvs115.1
 
 	* src/stock_pixmap.c
