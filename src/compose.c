@@ -154,6 +154,19 @@ typedef enum
 	COMPOSE_INSERT_NO_FILE
 } ComposeInsertResult;
 
+typedef enum
+{
+	COMPOSE_QUIT_EDITING,
+	COMPOSE_KEEP_EDITING,
+	COMPOSE_AUTO_SAVE
+} ComposeDraftAction;
+
+typedef enum
+{
+	COMPOSE_WRITE_FOR_SEND,
+	COMPOSE_WRITE_FOR_STORE
+} ComposeWriteType;
+
 #define B64_LINE_SIZE		57
 #define B64_BUFFSIZE		77
 
@@ -229,7 +242,8 @@ static gboolean compose_check_for_valid_recipient
 static gboolean compose_check_entries		(Compose	*compose,
 						 gboolean 	check_subject);
 static gint compose_write_to_file		(Compose	*compose,
-						 FILE		*fp);
+						 FILE		*fp,
+						 gint 		 action);
 static gint compose_write_body_to_file		(Compose	*compose,
 						 const gchar	*file);
 static gint compose_remove_reedit_target	(Compose	*compose);
@@ -511,7 +525,7 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Message/Insert si_gnature"),	"<control>G", compose_insert_sig_cb,  0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/_Save"),
-						"<control>S", compose_draft_cb, 1, NULL},
+						"<control>S", compose_draft_cb, COMPOSE_KEEP_EDITING, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/_Close"),			"<control>W", compose_close_cb, 0, NULL},
 
@@ -1497,7 +1511,7 @@ void compose_toolbar_cb(gint action, gpointer data)
 		compose_send_later_cb(compose, 0, NULL);
 		break;
 	case A_DRAFT:
-		compose_draft_cb(compose, 0, NULL);
+		compose_draft_cb(compose, COMPOSE_QUIT_EDITING, NULL);
 		break;
 	case A_INSERT:
 		compose_insert_file_cb(compose, 0, NULL);
@@ -3491,7 +3505,7 @@ error:
 	return -1;
 }
 
-static gint compose_write_to_file(Compose *compose, FILE *fp)
+static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 {
 	GtkTextBuffer *buffer;
 	GtkTextIter start, end;
@@ -3544,26 +3558,32 @@ static gint compose_write_to_file(Compose *compose, FILE *fp)
 		debug_print("src encoding = %s, out encoding = %s, transfer encoding = %s\n",
 			    src_codeset, out_codeset, procmime_get_encoding_str(encoding));
 
-		buf = conv_codeset_strdup(chars, src_codeset, out_codeset);
-		if (!buf) {
-			AlertValue aval;
-			gchar *msg;
+		if (action == COMPOSE_WRITE_FOR_SEND) {
+			buf = conv_codeset_strdup(chars, src_codeset, out_codeset);
+			if (!buf) {
+				AlertValue aval;
+				gchar *msg;
 
-			msg = g_strdup_printf(_("Can't convert the character encoding of the message from\n"
-						"%s to %s.\n"
-						"Send it anyway?"), src_codeset, out_codeset);
-			aval = alertpanel_with_type
-				(_("Error"), msg, _("Yes"), _("+No"), NULL, NULL, ALERT_ERROR);
-			g_free(msg);
+				msg = g_strdup_printf(_("Can't convert the character encoding of the message from\n"
+							"%s to %s.\n"
+							"Send it anyway?"), src_codeset, out_codeset);
+				aval = alertpanel_with_type
+					(_("Error"), msg, _("Yes"), _("+No"), NULL, NULL, ALERT_ERROR);
+				g_free(msg);
 
-			if (aval != G_ALERTDEFAULT) {
-				g_free(chars);
-				return -1;
-			} else {
-				buf = chars;
-				out_codeset = src_codeset;
-				chars = NULL;
+				if (aval != G_ALERTDEFAULT) {
+					g_free(chars);
+					return -1;
+				} else {
+					buf = chars;
+					out_codeset = src_codeset;
+					chars = NULL;
+				}
 			}
+		} else {
+			buf = chars;
+			out_codeset = src_codeset;
+			chars = NULL;
 		}
 	}
 	g_free(chars);
@@ -3856,7 +3876,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 			return -1;
 		}
 	} else {
-		if (compose_write_to_file(compose, fp) < 0) {
+		if (compose_write_to_file(compose, fp, COMPOSE_WRITE_FOR_SEND) < 0) {
 			lock = FALSE;
 			fclose(fp);
 			unlink(tmp);
@@ -6216,7 +6236,7 @@ static void compose_send_later_cb(gpointer data, guint action,
 
 void compose_draft (gpointer data) 
 {
-	compose_draft_cb(data, 0, NULL);	
+	compose_draft_cb(data, COMPOSE_QUIT_EDITING, NULL);	
 }
 
 static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
@@ -6265,7 +6285,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	fprintf(fp, "X-Sylpheed-Gnupg-Mode:%s\n", compose->privacy_system);
 	fprintf(fp, "\n");
 
-	if (compose_write_to_file(compose, fp) < 0) {
+	if (compose_write_to_file(compose, fp, COMPOSE_WRITE_FOR_STORE) < 0) {
 		fclose(fp);
 		unlink(tmp);
 		g_free(tmp);
@@ -6303,8 +6323,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	
 	lock = FALSE;
 
-	/* 0: quit editing  1: keep editing  2: keep editing (autosave) */
-	if (action == 0)
+	if (action == COMPOSE_QUIT_EDITING)
 		gtk_widget_destroy(compose->window);
 	else {
 		struct stat s;
@@ -6328,7 +6347,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		compose->targetinfo->folder = draft;
 		compose->mode = COMPOSE_REEDIT;
 		
-		if (action == 2) {
+		if (action == COMPOSE_AUTO_SAVE) {
 			compose->autosaved_draft = compose->targetinfo;
 		}
 	}
@@ -6433,7 +6452,7 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 				compose_remove_draft(compose);			
 			break;
 		case G_ALERTALTERNATE:
-			compose_draft_cb(data, 0, NULL);
+			compose_draft_cb(data, COMPOSE_QUIT_EDITING, NULL);
 			return;
 		default:
 			return;
@@ -7224,7 +7243,7 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 static gint compose_defer_auto_save_draft(Compose *compose)
 {
 	compose->draft_timeout_tag = -1;
-	compose_draft_cb((gpointer)compose, 2, NULL);
+	compose_draft_cb((gpointer)compose, COMPOSE_AUTO_SAVE, NULL);
 	return FALSE;
 }
 

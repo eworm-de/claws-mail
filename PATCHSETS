@@ -198,3 +198,4 @@
 ( cvs diff -u -r 0 -r 1 src/plugins/pgpmime/prefs_gpg.c; cvs diff -u -r 0 -r 1 src/plugins/pgpmime/prefs_gpg.h; ) > 0.9.12cvs124.2.patchset
 ( cvs diff -u -r 1.382.2.49 -r 1.382.2.50 src/compose.c; ) > 0.9.12cvs124.3.patchset
 ( cvs diff -u -r 1.53.2.6 -r 1.53.2.7 po/POTFILES.in; ) > 0.9.12cvs125.1.patchset
+( cvs diff -u -r 1.382.2.50 -r 1.382.2.51 src/compose.c; ) > 0.9.12cvs126.1.patchset
