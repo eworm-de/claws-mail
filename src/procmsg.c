@@ -754,8 +754,10 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 
 	MEMBDUP(xface);
 	MEMBDUP(dispositionnotificationto);
+	MEMBDUP(returnreceiptto);
 
 	MEMBCOPY(score);
+	MEMBCOPY(threadscore);
 
 	return newmsginfo;
 }
@@ -764,6 +766,7 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 {
 	if (msginfo == NULL) return;
 
+	g_free(msginfo->returnreceiptto);
 	g_free(msginfo->dispositionnotificationto);
 	g_free(msginfo->xface);
 

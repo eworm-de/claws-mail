@@ -1,3 +1,31 @@
+2001-05-12 [hoa]
+
+	* src/defs.h
+		prepared some things for new filtering
+	* src/matcher.[ch]
+		added some matching properties
+		inreplyto need to be enhanced
+		prepared some things for new filtering
+	* src/messageview.c
+		added Return-Receipt-To handling
+	* src/prefs_folder_item.c
+		changed default value to TRUE
+	* src/prefs_matcher.c
+		added some matching properties
+	* src/prefs_scoring.[ch]
+		the scoring dialog is finished
+	* src/procheader.c
+		added Return-Receipt-To handling
+		Reference need to be added
+	* src/procmsg.[ch]
+		added Return-Receipt-To handling
+		added threadscore to get a better score sorting when
+		threads are enabled
+	* src/summaryview.c
+		suppressed a bug when we sort the list
+		when no folder is opened.
+		better score sorting when threads are enabled
+
 2001-05-12 [alfons]
 
 	* reverted previous patch because of potential errors 

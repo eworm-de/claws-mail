@@ -123,8 +123,10 @@ struct _MsgInfo
 	gchar *xface;
 
 	gchar *dispositionnotificationto;
+	gchar *returnreceiptto;
 
-	int score;
+	gint score;
+	gint threadscore;
 
 	/* used only for encrypted messages */
 	gchar *plaintext_file;

@@ -84,19 +84,20 @@ enum {
 	CRITERIA_CC = 4,
 	CRITERIA_TO_OR_CC = 5,
 	CRITERIA_NEWSGROUPS = 6,
-	CRITERIA_AGE_GREATER = 7,
-	CRITERIA_AGE_LOWER = 8,
-	CRITERIA_HEADER = 9,
-	CRITERIA_HEADERS_PART = 10,
-	CRITERIA_BODY_PART = 11,
-	CRITERIA_MESSAGE = 12,
+	CRITERIA_INREPLYTO = 7,
+	CRITERIA_AGE_GREATER = 8,
+	CRITERIA_AGE_LOWER = 9,
+	CRITERIA_HEADER = 10,
+	CRITERIA_HEADERS_PART = 11,
+	CRITERIA_BODY_PART = 12,
+	CRITERIA_MESSAGE = 13,
 
-	CRITERIA_UNREAD = 13,
-	CRITERIA_NEW = 14,
-	CRITERIA_MARKED = 15,
-	CRITERIA_DELETED = 16,
-	CRITERIA_REPLIED = 17,
-	CRITERIA_FORWARDED = 18
+	CRITERIA_UNREAD = 14,
+	CRITERIA_NEW = 15,
+	CRITERIA_MARKED = 16,
+	CRITERIA_DELETED = 17,
+	CRITERIA_REPLIED = 18,
+	CRITERIA_FORWARDED = 19
 };
 
 enum {
@@ -129,7 +130,7 @@ gchar * predicate_flag_text [] = {
 gchar * criteria_text [] = {
 	"All messages", "Subject",
 	"From", "To", "Cc", "To or Cc",
-	"Newsgroups",
+	"Newsgroups", "In reply to"
 	"Age greater than", "Age lower than",
 	"Header", "Headers part",
 	"Body part", "Whole message",
@@ -699,6 +700,8 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 		return MATCHING_TO_OR_CC;
 	case CRITERIA_NEWSGROUPS:
 		return MATCHING_NEWSGROUPS;
+	case CRITERIA_INREPLYTO:
+		return MATCHING_INREPLYTO;
 	case CRITERIA_AGE_GREATER:
 		return MATCHING_AGE_GREATER;
 	case CRITERIA_AGE_LOWER:
@@ -743,6 +746,8 @@ static gint prefs_matcher_not_criteria(gint matcher_criteria)
 		return MATCHING_NOT_TO_AND_NOT_CC;
 	case MATCHING_NEWSGROUPS:
 		return MATCHING_NOT_NEWSGROUPS;
+	case MATCHING_INREPLYTO:
+		return MATCHING_NOT_INREPLYTO;
 	case MATCHING_HEADER:
 		return MATCHING_NOT_HEADER;
 	case MATCHING_HEADERS_PART:
@@ -797,6 +802,7 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 	case CRITERIA_CC:
 	case CRITERIA_TO_OR_CC:
 	case CRITERIA_NEWSGROUPS:
+	case CRITERIA_INREPLYTO:
 	case CRITERIA_HEADERS_PART:
 	case CRITERIA_BODY_PART:
 	case CRITERIA_MESSAGE:
@@ -841,6 +847,7 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 	case CRITERIA_CC:
 	case CRITERIA_TO_OR_CC:
 	case CRITERIA_NEWSGROUPS:
+	case CRITERIA_INREPLYTO:
 	case CRITERIA_HEADERS_PART:
 	case CRITERIA_BODY_PART:
 	case CRITERIA_MESSAGE:
@@ -1070,6 +1077,13 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 				     CRITERIA_NEWSGROUPS);
 		break;
 
+	case MATCHING_NOT_INREPLYTO:
+		negative_cond = TRUE;
+	case MATCHING_INREPLYTO:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_INREPLYTO);
+		break;
+
 	case MATCHING_NOT_TO_AND_NOT_CC:
 		negative_cond = TRUE;
 	case MATCHING_TO_OR_CC:
@@ -1126,6 +1140,7 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 	case MATCHING_NOT_CC:
 	case MATCHING_NOT_TO_AND_NOT_CC:
 	case MATCHING_NOT_NEWSGROUPS:
+	case MATCHING_NOT_INREPLYTO:
 	case MATCHING_NOT_HEADERS_PART:
 	case MATCHING_NOT_BODY_PART:
 	case MATCHING_NOT_MESSAGE:
@@ -1135,6 +1150,7 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 	case MATCHING_CC:
 	case MATCHING_TO_OR_CC:
 	case MATCHING_NEWSGROUPS:
+	case MATCHING_INREPLYTO:
 	case MATCHING_HEADERS_PART:
 	case MATCHING_BODY_PART:
 	case MATCHING_MESSAGE:
@@ -1229,6 +1245,7 @@ static void prefs_matcher_criteria_select(GtkList *list,
 	case CRITERIA_CC:
 	case CRITERIA_TO_OR_CC:
 	case CRITERIA_NEWSGROUPS:
+	case CRITERIA_INREPLYTO:
 	case CRITERIA_HEADERS_PART:
 	case CRITERIA_BODY_PART:
 	case CRITERIA_MESSAGE:

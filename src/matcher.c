@@ -45,6 +45,8 @@ MatchParser matchparser_tab[] = {
 	{MATCHING_AGE_LOWER, "age_lower"},
 	{MATCHING_NEWSGROUPS, "newsgroups"},
 	{MATCHING_NOT_NEWSGROUPS, "~newsgroups"},
+	{MATCHING_INREPLYTO, "inreplyto"},
+	{MATCHING_NOT_INREPLYTO, "~inreplyto"},
 
 	/* content have to be read */
 	{MATCHING_HEADER, "header"},
@@ -64,6 +66,15 @@ MatchParser matchparser_tab[] = {
 
 	/* actions */
 	{MATCHING_SCORE, "score"},
+
+	/* actions */
+	{MATCHING_ACTION_MOVE, "move"},
+	{MATCHING_ACTION_COPY, "copy"},
+	{MATCHING_ACTION_DELETE, "delete"},
+	{MATCHING_ACTION_MARK, "mark"},
+	{MATCHING_ACTION_MARK_AS_READ, "mark_as_read"},
+	{MATCHING_ACTION_FORWARD, "forward"},
+	{MATCHING_ACTION_FORWARD_AS_ATTACHEMENT, "forward_as_attachement"}
 };
 
 /*
@@ -146,6 +157,8 @@ MatcherProp * matcherprop_parse(gchar ** str)
 	case MATCHING_NOT_TO_AND_NOT_CC:
 	case MATCHING_NEWSGROUPS:
 	case MATCHING_NOT_NEWSGROUPS:
+	case MATCHING_INREPLYTO:
+	case MATCHING_NOT_INREPLYTO:
 	case MATCHING_MESSAGE:
 	case MATCHING_NOT_MESSAGE:
 	case MATCHING_HEADERS_PART:
@@ -426,8 +439,8 @@ static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 		return FALSE;
 
 	switch(prop->matchtype) {
-	case MATCHING_REGEXP:
 	case MATCHING_REGEXPCASE:
+	case MATCHING_REGEXP:
 		if (!prop->preg && (prop->error == 0)) {
 			prop->preg = g_new0(regex_t, 1);
 			if (regcomp(prop->preg, prop->expr,
@@ -529,6 +542,10 @@ gboolean matcherprop_match(MatcherProp * prop, MsgInfo * info)
 		return matcherprop_string_match(prop, info->newsgroups);
 	case MATCHING_NOT_NEWSGROUPS:
 		return !matcherprop_string_match(prop, info->newsgroups);
+	case MATCHING_INREPLYTO:
+		return matcherprop_string_match(prop, info->inreplyto);
+	case MATCHING_NOT_INREPLYTO:
+		return !matcherprop_string_match(prop, info->inreplyto);
 	case MATCHING_HEADER:
 	default:
 		return 0;

@@ -72,7 +72,7 @@ static struct Scoring {
 /* widget creating functions */
 static void prefs_scoring_create		(void);
 
-static void prefs_scoring_set_dialog	(void);
+static void prefs_scoring_set_dialog	(ScoringProp * prop);
 static void prefs_scoring_set_list	(void);
 
 /* callback functions */
@@ -98,6 +98,8 @@ static void prefs_scoring_ok		(void);
 
 static void prefs_scoring_condition_define	(void);
 static gint prefs_scoring_clist_set_row(gint row, ScoringProp * prop);
+static void prefs_scoring_select_set_dialog(ScoringProp * prop);
+static void prefs_scoring_reset_dialog(void);
 
 void prefs_scoring_open(void)
 {
@@ -110,7 +112,23 @@ void prefs_scoring_open(void)
 	manage_window_set_transient(GTK_WINDOW(scoring.window));
 	gtk_widget_grab_focus(scoring.ok_btn);
 
-	prefs_scoring_set_dialog();
+	prefs_scoring_set_dialog(NULL);
+
+	gtk_widget_show(scoring.window);
+}
+
+void prefs_scoring_open_with_scoring(ScoringProp * prop)
+{
+	inc_autocheck_timer_remove();
+
+	if (!scoring.window) {
+		prefs_scoring_create();
+	}
+
+	manage_window_set_transient(GTK_WINDOW(scoring.window));
+	gtk_widget_grab_focus(scoring.ok_btn);
+
+	prefs_scoring_set_dialog(prop);
 
 	gtk_widget_show(scoring.window);
 }
@@ -309,10 +327,15 @@ static void prefs_scoring_create(void)
 	scoring.cond_clist   = cond_clist;
 }
 
-static void prefs_scoring_set_dialog(void)
+static void prefs_scoring_set_dialog(ScoringProp * cond)
 {
 	GtkCList *clist = GTK_CLIST(scoring.cond_clist);
 	GSList *cur;
+
+	if (cond == NULL)
+		prefs_scoring_reset_dialog();
+	else
+		prefs_scoring_select_set_dialog(cond);
 
 	gtk_clist_freeze(clist);
 	gtk_clist_clear(clist);
@@ -325,6 +348,12 @@ static void prefs_scoring_set_dialog(void)
 	}
 
 	gtk_clist_thaw(clist);
+}
+
+static void prefs_scoring_reset_dialog(void)
+{
+	gtk_entry_set_text(GTK_ENTRY(scoring.cond_entry), "");
+	gtk_entry_set_text(GTK_ENTRY(scoring.score_entry), "");
 }
 
 static void prefs_scoring_set_list(void)
@@ -543,23 +572,12 @@ static void prefs_scoring_down(void)
 	}
 }
 
-static void prefs_scoring_select(GtkCList *clist, gint row, gint column,
-				GdkEvent *event)
+static void prefs_scoring_select_set_dialog(ScoringProp * prop)
 {
-	ScoringProp * prop;
-	gchar * tmp;
-
 	gchar * matcher_str;
-	gchar * scoring_str;
 	gchar * score_str;
 
-        if (!gtk_clist_get_text(GTK_CLIST(scoring.cond_clist),
-				row, 0, &scoring_str))
-		return;
-	
-	tmp = scoring_str;
-	prop = scoringprop_parse(&tmp);
-	if (tmp == NULL)
+	if (prop == NULL)
 		return;
 
 	matcher_str = matcherlist_to_string(prop->matchers);
@@ -574,6 +592,27 @@ static void prefs_scoring_select(GtkCList *clist, gint row, gint column,
 	gtk_entry_set_text(GTK_ENTRY(scoring.score_entry), score_str);
 
 	g_free(matcher_str);
+}
+
+static void prefs_scoring_select(GtkCList *clist, gint row, gint column,
+				GdkEvent *event)
+{
+	ScoringProp * prop;
+	gchar * tmp;
+
+	gchar * scoring_str;
+
+        if (!gtk_clist_get_text(GTK_CLIST(scoring.cond_clist),
+				row, 0, &scoring_str))
+		return;
+	
+	tmp = scoring_str;
+	prop = scoringprop_parse(&tmp);
+	if (tmp == NULL)
+		return;
+
+	prefs_scoring_select_set_dialog(prop);
+
 	scoringprop_free(prop);
 }
 

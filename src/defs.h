@@ -50,6 +50,7 @@
 #define DISPLAY_HEADER_RC	"dispheaderrc"
 #define FOLDERITEM_RC           "folderitemrc"
 #define SCORING_RC              "scoringrc"
+#define FILTERING_RC		"filteringrc"
 #define MENU_RC			"menurc"
 #define ADDRESS_BOOK		"addressbook.xml"
 #define MANUAL_HTML_INDEX	"sylpheed.html"

@@ -21,7 +21,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"sort_descending", "FALSE", &tmp_prefs.sort_descending, P_BOOL,
 	 NULL, NULL, NULL},
-	{"enable_thread", "FALSE", &tmp_prefs.enable_thread, P_BOOL,
+	{"enable_thread", "TRUE", &tmp_prefs.enable_thread, P_BOOL,
 	 NULL, NULL, NULL},
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };

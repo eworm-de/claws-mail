@@ -1324,6 +1324,9 @@ void summary_sort(SummaryView *summaryview, SummarySortType type)
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
 	GtkCListCompareFunc cmp_func;
 
+	if (!summaryview->folder_item)
+		return;
+
 	switch (type) {
 	case SORT_BY_NUMBER:
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_num;
@@ -1385,9 +1388,13 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
+	MsgInfo *parentinfo;
+	MsgInfo *cur_msginfo;
 	GtkCTreeNode *node, *parent;
 	gchar *text[N_SUMMARY_COLS];
 	GHashTable *msgid_table;
+	GSList * cur;
+	GtkCTreeNode *cur_parent;
 
 	if (!mlist) return;
 
@@ -1403,18 +1410,24 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	
 	main_window_set_thread_option(summaryview->mainwin);
 
+	for (cur = mlist ; cur != NULL; cur = cur->next) {
+		msginfo = (MsgInfo *)cur->data;
+		msginfo->threadscore = msginfo->score;
+	}
+
 	/*	if (prefs_common.enable_thread) { */
 	if (summaryview->folder_item->prefs->enable_thread) {
 		for (; mlist != NULL; mlist = mlist->next) {
 			msginfo = (MsgInfo *)mlist->data;
 			parent = NULL;
 
-			summary_set_header(text, msginfo);
-
 			/* search parent node for threading */
-			if (msginfo->inreplyto && *msginfo->inreplyto)
+			if (msginfo->inreplyto && *msginfo->inreplyto) {
 				parent = g_hash_table_lookup
 					(msgid_table, msginfo->inreplyto);
+			}
+
+			summary_set_header(text, msginfo);
 
 			node = gtk_ctree_insert_node
 				(ctree, parent, NULL, text, 2,
@@ -1429,6 +1442,33 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 			    == NULL)
 				g_hash_table_insert(msgid_table,
 						    msginfo->msgid, node);
+
+			cur_parent = parent;
+			cur_msginfo = msginfo;
+			while (cur_parent != NULL) {
+				parentinfo = gtk_ctree_node_get_row_data(ctree, cur_parent);
+
+				if (!parentinfo)
+					break;
+				
+				if (parentinfo->threadscore <
+				    cur_msginfo->threadscore) {
+					gchar * s;
+					parentinfo->threadscore =
+						cur_msginfo->threadscore;
+					s = itos(parentinfo->threadscore);
+#if 0
+					gtk_ctree_node_set_text(ctree, cur_parent, S_COL_SCORE, s);
+#endif
+				}
+				else break;
+				
+				cur_msginfo = parentinfo;
+				if (cur_msginfo->inreplyto &&
+				    *cur_msginfo->inreplyto) {
+					cur_parent = g_hash_table_lookup(msgid_table, cur_msginfo->inreplyto);
+				}
+			}
 		}
 
 		/* complete the thread */
@@ -1557,7 +1597,11 @@ static void summary_set_header(gchar *text[], MsgInfo *msginfo)
 	text[S_COL_MIME] = NULL;
 	text[S_COL_NUMBER] = itos_buf(col_number, msginfo->msgnum);
 	text[S_COL_SIZE]   = to_human_readable(msginfo->size);
+#if 0
+	text[S_COL_SCORE]  = itos_buf(col_score, msginfo->threadscore);
+#else
 	text[S_COL_SCORE]  = itos_buf(col_score, msginfo->score);
+#endif
 
 	if (msginfo->date_t) {
 		procheader_date_get_localtime(date_modified,
@@ -1633,17 +1677,6 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 	}
 	g_free(filename);
 
-	if (MSG_IS_NEW(msginfo->flags))
-		summaryview->newmsgs--;
-	if (MSG_IS_UNREAD(msginfo->flags))
-		summaryview->unread--;
-	if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
-		MSG_UNSET_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
-		summary_set_row_marks(summaryview, row);
-		gtk_clist_thaw(GTK_CLIST(ctree));
-		summary_status_show(summaryview);
-	}
-
 	if (new_window) {
 		MessageView *msgview;
 
@@ -1664,6 +1697,17 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 			gtk_widget_grab_focus(summaryview->ctree);
 		GTK_EVENTS_FLUSH();
 		gtkut_ctree_node_move_if_on_the_edge(ctree, row);
+	}
+
+	if (MSG_IS_NEW(msginfo->flags))
+		summaryview->newmsgs--;
+	if (MSG_IS_UNREAD(msginfo->flags))
+		summaryview->unread--;
+	if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
+		MSG_UNSET_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
+		summary_set_row_marks(summaryview, row);
+		gtk_clist_thaw(GTK_CLIST(ctree));
+		summary_status_show(summaryview);
 	}
 
 	if (GTK_WIDGET_VISIBLE(summaryview->headerwin->window))
@@ -3227,7 +3271,7 @@ static gint summary_cmp_by_score(GtkCList *clist,
 
 	/* if score are equal, sort by date */
 
-	diff = msginfo1->score - msginfo2->score;
+	diff = msginfo1->threadscore - msginfo2->threadscore;
 	if (diff != 0)
 		return diff;
 	else

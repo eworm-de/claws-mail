@@ -175,6 +175,10 @@ static gint dispotition_notification_send(MsgInfo * msginfo)
 	GSList * to_list;
 	gint ok;
 
+	if ((!msginfo->returnreceiptto) && 
+	    (!msginfo->dispositionnotificationto))
+		return -1;
+
 	/* write to temporary file */
 	g_snprintf(tmp, sizeof(tmp), "%s%ctmpmsg%d",
 		   get_rc_dir(), G_DIR_SEPARATOR, (gint)msginfo);
@@ -204,7 +208,10 @@ static gint dispotition_notification_send(MsgInfo * msginfo)
 		fprintf(fp, "From: %s\n", cur_account->address);
 
 	/* To */
-	fprintf(fp, "To: %s\n", msginfo->dispositionnotificationto);
+	if (msginfo->dispositionnotificationto)
+		fprintf(fp, "To: %s\n", msginfo->dispositionnotificationto);
+	else
+		fprintf(fp, "To: %s\n", msginfo->returnreceiptto);
 
 	/* Subject */
 	notification_convert_header(buf, sizeof(buf), msginfo->subject,
@@ -273,7 +280,8 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo)
 	tmpmsginfo = procheader_parse(file, msginfo->flags, TRUE);
 
 	if (prefs_common.return_receipt
-	    && tmpmsginfo->dispositionnotificationto
+	    && (tmpmsginfo->dispositionnotificationto
+		|| tmpmsginfo->returnreceiptto)
 	    && (MSG_IS_UNREAD(msginfo->flags))) {
 		gint ok;
 		
