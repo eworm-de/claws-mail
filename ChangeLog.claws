@@ -1,3 +1,23 @@
+2001-07-16 [alfons]
+
+	0.5.1claws3
+
+	* src/filtering.[ch]
+		remove invalid updating of mark files for 
+		filter actions MATCHING_ACTION_MOVE and 
+		MATCHING_ACTION_DELETE; this should fix the
+		folder update bug
+		
+	* src/procmsg.c
+		revert Christoph's stab at fixing the folder 
+		update bug
+
+	* po/POTFILES.in
+		add missing files with translatable strings
+
+	* src/summaryview.c
+		remove debug print
+
 2001-07-15 [alfons]
 
 	* src/addr_compl.[ch], src/prefs_filtering.c

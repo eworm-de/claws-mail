@@ -1,3 +1,51 @@
+/*
+ * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto & The Sylpheed Claws Team
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ */
+
+/* (alfons) - Just a quick note of how this filtering module works on 
+ * new (arriving) messages.
+ * 
+ * 1) as an initialization step, code in inc.c and mbox.c set up the 
+ *    drop folder to the inbox (see inc.c and mbox.c).
+ *
+ * 2) the message is actually being copied to the drop folder using
+ *    folder_item_add_msg(dropfolder, file, TRUE). this function
+ *    eventually calls mh->add_msg(). however, the important thing
+ *    about this function is, is that the folder is not yet updated
+ *    to reflect the copy. i don't know about the validity of this
+ *    assumption, however, the filtering code assumes this and
+ *    updates the marks itself.
+ *
+ * 3) technically there's nothing wrong with the matcher (the 
+ *    piece of code which matches search strings). there's
+ *    one gotcha in procmsg.c:procmsg_get_message_file(): it
+ *    only reads a message file based on a MsgInfo. for design
+ *    reasons the filtering system should read directly from
+ *    a file (based on the file's name).
+ *
+ * 4) after the matcher sorts out any matches, it looks at the
+ *    action. this part again pushes the folder system design
+ *    to its limits. based on the assumption in 2), the matcher
+ *    knows the message has not been added to the folder system yet.
+ *    it can happily update mark files, and in fact it does.
+ * 
+ */ 
+
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
@@ -152,6 +200,10 @@ void filteringprop_free(FilteringProp * prop)
 	g_free(prop);
 }
 
+/* filteringaction_update_mark() - updates a mark for a message. note that
+ * the message should not have been moved or copied. remember that the
+ * procmsg_open_mark_file(PATH, TRUE) actually _appends_ a new record.
+ */
 static gboolean filteringaction_update_mark(MsgInfo * info)
 {
 	gchar * dest_path;
@@ -361,8 +413,13 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		if (folder_item_move_msg(dest_folder, info) == -1)
 			return FALSE;
 
+		/* WRONG: can not update the mark, because the message has 
+		 * been moved. info pertains to original location. 
+		 * folder_item_move_msg() already updated the mark for the
+		 * destination folder.
 		info->flags = 0;
 		filteringaction_update_mark(info);
+		 */
 		
 		if (folder_table) {
 			val = GPOINTER_TO_INT(g_hash_table_lookup
@@ -386,8 +443,13 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 	case MATCHING_ACTION_COPY:
 		dest_folder =
 			folder_find_item_from_identifier(action->destination);
+
 		if (!dest_folder)
 			return FALSE;
+
+		/* NOTE: the following call *will* update the mark file for
+		 * the destination folder. but the original message will
+		 * still be there in the inbox. */
 
 		if (folder_item_copy_msg(dest_folder, info) == -1)
 			return FALSE;
@@ -408,8 +470,12 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		if (folder_item_remove_msg(info->folder, info->msgnum) == -1)
 			return FALSE;
 
+		/* WRONG: can not update the mark. this would actually add
+		 * a bogus record to the mark file for the message's original 
+		 * folder. 
 		info->flags = 0;
 		filteringaction_update_mark(info);
+		 */
 
 		return TRUE;
 
@@ -502,12 +568,17 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 	}
 }
 
-/*
-  filteringprop_apply
-  runs the action on one MsgInfo if it matches the criterium
-  return value : return TRUE if the action doesn't allow more actions
-*/
-
+/* filteringprop_apply() - runs the action on one MsgInfo if it matches the 
+ * criterium. certain actions can be followed by other actions. in this
+ * case the function returns FALSE. if an action can not be followed
+ * by others, the function returns TRUE.
+ *
+ * remember that this is because of the fact that msg flags are always
+ * _appended_ to mark files. currently sylpheed does not insert messages 
+ * at a certain index. 
+ * now, after having performed a certain action, the MsgInfo is still
+ * valid for the message. in *this* case the function returns FALSE.
+ */
 static gboolean filteringprop_apply(FilteringProp * filtering, MsgInfo * info,
 				    GHashTable *folder_table)
 {
@@ -535,7 +606,7 @@ static gboolean filteringprop_apply(FilteringProp * filtering, MsgInfo * info,
 		switch(filtering->action->type) {
 		case MATCHING_ACTION_MOVE:
 		case MATCHING_ACTION_DELETE:
-			return TRUE;
+			return TRUE; /* MsgInfo invalid for message */
 		case MATCHING_EXECUTE:
 		case MATCHING_ACTION_COPY:
 		case MATCHING_ACTION_MARK:
@@ -544,7 +615,7 @@ static gboolean filteringprop_apply(FilteringProp * filtering, MsgInfo * info,
 		case MATCHING_ACTION_MARK_AS_UNREAD:
 		case MATCHING_ACTION_FORWARD:
 		case MATCHING_ACTION_FORWARD_AS_ATTACHMENT:
-			return FALSE;
+			return FALSE; /* MsgInfo still valid for message */
 		default:
 			return FALSE;
 		}
