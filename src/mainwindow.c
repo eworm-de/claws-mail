@@ -2692,6 +2692,7 @@ static void sort_summary_cb(MainWindow *mainwin, guint action,
 		summary_sort(mainwin->summaryview, (FolderSortKey)action,
 			     GTK_CHECK_MENU_ITEM(menuitem)->active
 			     ? SORT_ASCENDING : SORT_DESCENDING);
+		item->sort_key = action;
 	}
 }
 

@@ -70,3 +70,4 @@
 ( cvs diff -u -r 1.9.2.3 -r 1.9.2.4 src/gtk/gtkaspell.c; ) > 0.9.12cvs33.14.patchset
 ( cvs diff -u -r 1.9.2.4 -r 1.9.2.5 src/gtk/gtkaspell.c; ) > 0.9.12cvs33.15.patchset
 ( cvs diff -u -r 1.382.2.32 -r 1.382.2.33 src/compose.c; ) > 0.9.12cvs33.16.patchset
+( cvs diff -u -r 1.274.2.11 -r 1.274.2.12 src/mainwindow.c; ) > 0.9.12cvs33.17.patchset
