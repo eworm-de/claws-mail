@@ -254,7 +254,7 @@ static void summary_colorlabel_menu_create(SummaryView	*summaryview);
 static GtkWidget *summary_ctree_create	(SummaryView	*summaryview);
 
 /* callback functions */
-static void summary_toggle_pressed	(GtkWidget		*eventbox,
+static gint summary_toggle_pressed	(GtkWidget		*eventbox,
 					 GdkEventButton		*event,
 					 SummaryView		*summaryview);
 static void summary_button_pressed	(GtkWidget		*ctree,
@@ -4411,12 +4411,12 @@ void summary_set_column_order(SummaryView *summaryview)
 
 /* callback functions */
 
-static void summary_toggle_pressed(GtkWidget *eventbox, GdkEventButton *event,
+static gint summary_toggle_pressed(GtkWidget *eventbox, GdkEventButton *event,
 				   SummaryView *summaryview)
 {
-	if (!event) return;
-
-	summary_toggle_view(summaryview);
+	if (event)  
+		summary_toggle_view(summaryview);
+	return TRUE;
 }
 
 static void summary_button_pressed(GtkWidget *ctree, GdkEventButton *event,

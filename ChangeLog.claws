@@ -1,3 +1,9 @@
+2003-07-13 [alfons]	0.9.3claws4
+
+	* src/summaryview.c
+		correct summary_toggle_pressed() signature and make sure
+		signal is not passed on
+
 2003-07-13 [alfons]	0.9.3claws3
 
 	* src/summaryview.c
