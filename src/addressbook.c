@@ -1425,6 +1425,8 @@ static void addressbook_list_menu_setup( void ) {
 	menu_set_sensitive( addrbook.menu_factory, "/Address/Delete", canDelete );
 
 	gtk_widget_set_sensitive( addrbook.del_btn, canDelete );
+       
+        addrbook.listSelected = NULL;
 }
 
 static void addressbook_list_selected(GtkCList *clist, gint row, gint column,

@@ -1,3 +1,11 @@
+2003-02-27 [paul]	0.8.10claws54
+
+	* src/addressbook.c
+		fix bug where the address book crashes with 
+		multiple lookups.
+		Patch [687729] submitted by David Frager 
+		<dbfrager@users.sourceforge.net>
+
 2003-02-25 [christoph]	0.8.10claws53
 
 	* src/Makefile.am
