@@ -1,3 +1,9 @@
+2002-09-11 [christoph]	0.8.2claws40
+
+	* src/filtering.c
+		use procmsg flag functions in filtering or processing
+		will cause incorrect folder message counts
+
 2002-09-11 [colin]	0.8.2claws39
 
 	* src/compose.c
