@@ -1262,7 +1262,7 @@ void folderview_update_item(FolderItem *item, gboolean update_summary)
 	}
 }
 
-static folderview_update_item_recursive (FolderItem *item, gboolean update_summary)
+static void folderview_update_item_recursive (FolderItem *item, gboolean update_summary)
 {
 	GNode *node = item->folder->node;	
 	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
