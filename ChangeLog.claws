@@ -1,3 +1,8 @@
+2002-11-08 [colin]	0.8.5claws95
+
+	*src/folder.c
+		Added forgotten prefs to save when moving folders
+
 2002-11-08 [colin]	0.8.5claws94
 
 	* src/folder.c

@@ -1467,6 +1467,12 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 	
 	/*copy prefs*/
 	prefs_folder_item_copy_prefs(src, new_item);
+	new_item->collapsed = src->collapsed;
+	new_item->threaded  = src->threaded;
+	new_item->ret_rcpt  = src->ret_rcpt;
+	new_item->hide_read_msgs = src->hide_read_msgs;
+	new_item->sort_key  = src->sort_key;
+	new_item->sort_type = src->sort_type;
 
 	/* recurse */
 	srcnode = src->folder->node;	
