@@ -1,3 +1,8 @@
+2002-03-26 [hoa]	0.7.4claws47
+
+	* src/prefs_folder_item.c
+		really fixed the bug #516442 with folder rescan.
+
 2002-03-26 [paul]	0.7.4claws46
 
 	* sync with 0.7.4cvs19

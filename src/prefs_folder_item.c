@@ -117,6 +117,8 @@ void prefs_folder_item_read_config(FolderItem * item)
 
 	id = folder_item_get_identifier(item);
 
+	tmp_prefs.scoring = NULL;
+	tmp_prefs.processing = NULL;
 	prefs_read_config(param, id, FOLDERITEM_RC);
 	g_free(id);
 
@@ -204,6 +206,9 @@ PrefsFolderItem * prefs_folder_item_new(void)
 	tmp_prefs.enable_default_account = FALSE;
 	tmp_prefs.default_account = 0;
 	tmp_prefs.save_copy_to_folder = FALSE;
+
+	tmp_prefs.scoring = NULL;
+	tmp_prefs.processing = NULL;
 
 	* prefs = tmp_prefs;
 	
