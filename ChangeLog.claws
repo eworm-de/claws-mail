@@ -1,5 +1,8 @@
 2001-05-08 [alfons]
 
+	0.4.66claws
+
+	* sync with sylpheed 0.4.66
 	* src/gtkstext.c: trace logs added 
 
 2001-05-08 [sergey]

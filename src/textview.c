@@ -838,11 +838,11 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 	   correctly, so it must be single-byte mode. */
 	if (MB_CUR_MAX > 1) {
 		if (codeset) {
-			if (!strncasecmp(codeset, "ISO-8859-", 9) ||
-			    !strncasecmp(codeset, "KOI8-", 5)     ||
-			    !strncasecmp(codeset, "CP", 2)        ||
-			    !strncasecmp(codeset, "WINDOWS-", 8)  ||
-			    !strcasecmp(codeset, "BALTIC"))
+			if (!g_strncasecmp(codeset, "ISO-8859-", 9) ||
+			    !g_strncasecmp(codeset, "KOI8-", 5)     ||
+			    !g_strncasecmp(codeset, "CP", 2)        ||
+			    !g_strncasecmp(codeset, "WINDOWS-", 8)  ||
+			    !g_strcasecmp(codeset, "BALTIC"))
 				use_fontset = FALSE;
 		}
 	} else
@@ -958,7 +958,7 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 		for (i = 0; i < headers->len; i++) {
 			header = g_ptr_array_index(headers, i);
 
-			if (!strcasecmp(header->name, dp->name)) {
+			if (!g_strcasecmp(header->name, dp->name)) {
 				if (dp->hidden)
 					procheader_header_free(header);
 				else
@@ -999,10 +999,10 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 				header->name, -1);
 		gtk_text_insert(text, textview->boldfont, NULL, NULL, ":", 2);
 
-		if (!strcasecmp(header->name, "Subject") ||
-		    !strcasecmp(header->name, "From")    ||
-		    !strcasecmp(header->name, "To")      ||
-		    !strcasecmp(header->name, "Cc"))
+		if (!g_strcasecmp(header->name, "Subject") ||
+		    !g_strcasecmp(header->name, "From")    ||
+		    !g_strcasecmp(header->name, "To")      ||
+		    !g_strcasecmp(header->name, "Cc"))
 			unfold_line(header->body);
 
 		if (prefs_common.enable_color &&
@@ -1259,7 +1259,7 @@ static void textview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 
 			if (current_pos >= uri->start &&
 			    current_pos <  uri->end) {
-				if (!strncasecmp(uri->uri, "mailto:", 7)) {
+				if (!g_strncasecmp(uri->uri, "mailto:", 7)) {
 					compose_new_with_recipient
 						(NULL, uri->uri + 7);
 				}						

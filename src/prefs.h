@@ -93,6 +93,13 @@ struct _PrefsDialog
 	gtk_box_pack_start(GTK_BOX(box), chkbtn, FALSE, TRUE, 0); \
 }
 
+#define PACK_END_CHECK_BUTTON(box, chkbtn, label) \
+{ \
+	chkbtn = gtk_check_button_new_with_label(label); \
+	gtk_widget_show(chkbtn); \
+	gtk_box_pack_end(GTK_BOX(box), chkbtn, FALSE, TRUE, 0); \
+}
+
 #define PACK_FRAME(box, frame, label) \
 { \
 	frame = gtk_frame_new(label); \

@@ -1,6 +1,16 @@
 2001-05-08
 
+	* version 0.4.66
+
 	* src/select-keys.c: delete_event_cb(): 終端から `;' を取り除いた。
+	* src/recv.c: recv_write(): 間隔を10msec にした。
+	* src/prefs_display_header.c: ダイアログのレイアウトを修正し、
+	  「他のヘッダを表示」がチェックされていないときは表示しないヘッダ
+	  のリストを insensitive にした。
+	* src/textview.c: strcasecmp() and strncasecmp() をそれぞれ対応する
+	  glib の関数に変更。
+	* src/inc.c: get_spool(): ホームディレクトリの中に一時ファイルを
+	  作成するようにした。
 
 2001-05-07
 

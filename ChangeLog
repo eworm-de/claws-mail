@@ -1,6 +1,16 @@
 2001-05-08
 
+	* version 0.4.66
+
 	* src/select-keys.c: delete_event_cb(): removed `;' from its end.
+	* src/recv.c: recv_write(): changed the interval to 10msec.
+	* src/prefs_display_header.c: modified the layout of the dialog,
+	  and made the hidden headers list insensitive when `Show other
+	  headers' is not checked.
+	* src/textview.c: changed strcasecmp() and strncasecmp() to
+	  the corresponding glib functions.
+	* src/inc.c: get_spool(): make a temporary file in the home
+	  directory.
 
 2001-05-07
 

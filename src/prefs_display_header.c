@@ -120,11 +120,11 @@ static gchar *defaults[] =
 
 static void prefs_display_header_set_default(void)
 {
-	int i;
+	gint i;
+	DisplayHeaderProp *dp;
 
 	for(i = 0; i < sizeof(defaults) / sizeof(defaults[0]); i++) {
-		DisplayHeaderProp *dp =
-			display_header_prop_read_str(defaults[i]);
+		dp = display_header_prop_read_str(defaults[i]);
 		prefs_common.disphdr_list =
 			g_slist_append(prefs_common.disphdr_list, dp);
 	}
@@ -148,6 +148,7 @@ static void prefs_display_header_create(void)
 {
 	GtkWidget *window;
 	GtkWidget *vbox;
+	GtkWidget *btn_hbox;
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
 	GtkWidget *confirm_area;
@@ -165,6 +166,8 @@ static void prefs_display_header_create(void)
 	GtkWidget *down_btn;
 
 	GtkWidget *clist_hbox;
+	GtkWidget *clist_hbox1;
+	GtkWidget *clist_hbox2;
 	GtkWidget *clist_scrolledwin;
 	GtkWidget *headers_clist;
 	GtkWidget *hidden_headers_clist;
@@ -185,10 +188,14 @@ static void prefs_display_header_create(void)
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (window), vbox);
 
+	btn_hbox = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (btn_hbox);
+	gtk_box_pack_end (GTK_BOX (vbox), btn_hbox, FALSE, FALSE, 0);
+
 	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
 				&cancel_btn, _("Cancel"), NULL, NULL);
 	gtk_widget_show (confirm_area);
-	gtk_box_pack_end (GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX(btn_hbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default (ok_btn);
 
 	gtk_window_set_title (GTK_WINDOW(window),
@@ -233,15 +240,18 @@ static void prefs_display_header_create(void)
 
 	clist_hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (clist_hbox);
-	gtk_box_pack_start (GTK_BOX (vbox1), clist_hbox,
-			    TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox1), clist_hbox, TRUE, TRUE, 0);
 
 	/* display headers list */
+
+	clist_hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (clist_hbox1);
+	gtk_box_pack_start (GTK_BOX (clist_hbox), clist_hbox1, TRUE, TRUE, 0);
 
 	clist_scrolledwin = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_set_usize (clist_scrolledwin, 200, 210);
 	gtk_widget_show (clist_scrolledwin);
-	gtk_box_pack_start (GTK_BOX (clist_hbox), clist_scrolledwin,
+	gtk_box_pack_start (GTK_BOX (clist_hbox1), clist_scrolledwin,
 			    TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (clist_scrolledwin),
 					GTK_POLICY_AUTOMATIC,
@@ -260,7 +270,7 @@ static void prefs_display_header_create(void)
 
 	btn_vbox = gtk_vbox_new (FALSE, 8);
 	gtk_widget_show (btn_vbox);
-	gtk_box_pack_start (GTK_BOX (clist_hbox), btn_vbox, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (clist_hbox1), btn_vbox, FALSE, FALSE, 0);
 
 	reg_btn = gtk_button_new_with_label (_("Add"));
 	gtk_widget_show (reg_btn);
@@ -289,10 +299,14 @@ static void prefs_display_header_create(void)
 
 	/* hidden headers list */
 
+	clist_hbox2 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (clist_hbox2);
+	gtk_box_pack_start (GTK_BOX (clist_hbox), clist_hbox2, TRUE, TRUE, 0);
+
 	clist_scrolledwin = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_set_usize (clist_scrolledwin, 200, 210);
 	gtk_widget_show (clist_scrolledwin);
-	gtk_box_pack_start (GTK_BOX (clist_hbox), clist_scrolledwin,
+	gtk_box_pack_start (GTK_BOX (clist_hbox2), clist_scrolledwin,
 			    TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (clist_scrolledwin),
 					GTK_POLICY_AUTOMATIC,
@@ -311,7 +325,7 @@ static void prefs_display_header_create(void)
 
 	btn_vbox = gtk_vbox_new (FALSE, 8);
 	gtk_widget_show (btn_vbox);
-	gtk_box_pack_start (GTK_BOX (clist_hbox), btn_vbox, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (clist_hbox2), btn_vbox, FALSE, FALSE, 0);
 
 	reg_btn = gtk_button_new_with_label (_("Add"));
 	gtk_widget_show (reg_btn);
@@ -327,8 +341,9 @@ static void prefs_display_header_create(void)
 			    GTK_SIGNAL_FUNC (prefs_display_header_delete_cb),
 			    (void *) hidden_headers_clist);
 
-	PACK_CHECK_BUTTON (vbox1, checkbtn_other_headers,
+	PACK_CHECK_BUTTON (btn_hbox, checkbtn_other_headers,
 			   _("Show other headers"));
+	SET_TOGGLE_SENSITIVITY (checkbtn_other_headers, clist_hbox2);
 
 	gtk_widget_show_all(window);
 
