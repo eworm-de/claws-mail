@@ -1,7 +1,14 @@
-2002-11-18 [paul]	0.8.5claws165
+2002-11-18 [paul]	0.8.5claws166
 
 	* po/ru.po
 		updated by Ruslan N. Balkin <baron@dartel.ru>
+
+2002-11-18 [colin]	0.8.5claws165
+
+	* src/main.c
+	  src/defs.h
+		Remove old filtering stuff
+
 
 2002-11-17 [oliver]	0.8.5claws164
 
