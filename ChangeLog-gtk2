@@ -48,7 +48,6 @@
 	* src/textview.c
 		variable names messed up
 
->>>>>>> 1.1.2.19
 2004-01-17 Colin Leroy <colin@colino.net>
 	* src/addr_compl.c
 		Fix completion address too thin
