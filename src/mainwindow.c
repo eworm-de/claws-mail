@@ -394,6 +394,9 @@ static void copy_cb		 (MainWindow	*mainwin,
 static void allsel_cb		 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+static void selthread_cb	 (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
 
 static void create_filter_cb	 (MainWindow	*mainwin,
 				  guint		 action,
@@ -474,6 +477,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Edit"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_Edit/_Copy"),			"<control>C", copy_cb, 0, NULL},
 	{N_("/_Edit/Select _all"),		"<control>A", allsel_cb, 0, NULL},
+	{N_("/_Edit/Select thread"),		"<control>Z", selthread_cb, 0, NULL},
 	{N_("/_Edit/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Edit/_Find in current message..."),
 						"<control>F", search_cb, 0, NULL},
@@ -1535,6 +1539,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/File/Exit" , M_UNLOCKED},
 
 		{"/Edit/Actions"		   , M_MSG_EXIST},
+		{"/Edit/Select thread"		   , M_SINGLE_TARGET_EXIST},
 		{"/View/Sort"                      , M_MSG_EXIST},
 		{"/View/Thread view"               , M_EXEC},
 		{"/View/Hide read messages"	   , M_HIDE_READ_MSG},
@@ -2867,6 +2872,12 @@ static void allsel_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 	else if (mainwin->summaryview->msg_is_toggled_on &&
 		 GTK_WIDGET_HAS_FOCUS(mainwin->messageview->textview->text))
 		messageview_select_all(mainwin->messageview);
+}
+
+static void selthread_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+{
+	if (mainwin->summaryview->msg_is_toggled_on)
+		summary_select_thread(mainwin->summaryview);
 }
 
 static void create_filter_cb(MainWindow *mainwin, guint action,

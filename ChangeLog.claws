@@ -1,3 +1,12 @@
+2002-02-28 [paul]	0.7.2claws21
+
+	* src/mainwindow.c
+	  src/summaryview.[ch]
+		add ability to 'Select thread'
+		combines Melvin's "Select thread's head" patch (#510907)
+		with Colin Leroy's <colin@colino.net> "Select whole thread" 
+		patch (#518514) 
+
 2002-02-28 [paul]	0.7.2claws20
 
 	* src/mimeview.c
@@ -40,7 +49,7 @@
 		  not displayed
 
 	* src/mainwindow.c
-		"View/Folder Tree" becomes "View/Separate Folder View"
+		"View/Folder Tree" becomes "View/Separate Folder Tree"
 		"View/Message View" becomes "View/Separate Message View"
 		because its less ambiguous.
 
