@@ -1,3 +1,9 @@
+2005-01-17 [thorsten]	0.9.13cvs35.3
+
+	* src/crash.c
+	* src/gtk/pluginwindow.c
+		return value of filesel should not be free()d
+
 2005-01-17 [thorsten]	0.9.13cvs35.2
 
 	* src/pop.c

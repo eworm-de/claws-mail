@@ -301,7 +301,6 @@ static void crash_save_crash_log(GtkButton *button, const gchar *text)
 	if (NULL != (filename = filesel_select_file(_("Save crash information"), buf))
 	&&  *filename)
 		str_write_to_file(text, filename);
-	g_free(filename);	
 }
 
 /*!
