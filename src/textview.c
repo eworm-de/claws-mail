@@ -299,8 +299,13 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 			glong fpos;
 			MimeInfo *parent = mimeinfo->parent;
 
-			while (parent->parent)
+			while (parent->parent) {
+				if (parent->main &&
+				    parent->main->mime_type ==
+					MIME_MESSAGE_RFC822)
+					break;
 				parent = parent->parent;
+			}
 
 			if ((fpos = ftell(fp)) < 0)
 				perror("ftell");
@@ -312,6 +317,7 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 					perror("fseek");
 			}
 		}
+		/* skip MIME part headers */
 		while (fgets(buf, sizeof(buf), fp) != NULL)
 			if (buf[0] == '\r' || buf[0] == '\n') break;
 	}
