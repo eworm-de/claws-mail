@@ -4280,6 +4280,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
         GtkPspell * gtkpspell = NULL;
 #endif
 
+	static GdkGeometry geometry;
+
 	g_return_val_if_fail(account != NULL, NULL);
 
 	debug_print(_("Creating compose window...\n"));
@@ -4296,6 +4298,14 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, FALSE);
 	gtk_widget_set_usize(window, -1, prefs_common.compose_height);
 	gtk_window_set_wmclass(GTK_WINDOW(window), "compose window", "Sylpheed");
+
+	if (!geometry.max_width) {
+		geometry.max_width = gdk_screen_width();
+		geometry.max_height = gdk_screen_height();
+	}
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL,
+				      &geometry, GDK_HINT_MAX_SIZE);
+
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
 			   GTK_SIGNAL_FUNC(compose_delete_cb), compose);
 	gtk_signal_connect(GTK_OBJECT(window), "destroy",

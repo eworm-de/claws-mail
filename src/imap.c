@@ -1143,7 +1143,8 @@ static GSList *imap_parse_list(IMAPSession *session, const gchar *real_path)
 		new_item = folder_item_new(loc_name, loc_path);
 		if (strcasestr(flags, "\\Noinferiors") != NULL)
 			new_item->no_sub = TRUE;
-		if (strcasestr(flags, "\\Noselect") != NULL)
+		if (strcmp(buf, "INBOX") != 0 &&
+		    strcasestr(flags, "\\Noselect") != NULL)
 			new_item->no_select = TRUE;
 
 		item_list = g_slist_append(item_list, new_item);
@@ -1483,6 +1484,10 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 		if (tmp[0] != '*' || tmp[1] != ' ') {
 			g_free(tmp);
 			break;
+		}
+		if (strstr(tmp, "FETCH") == NULL) {
+			g_free(tmp);
+			continue;
 		}
 		g_string_assign(str, tmp);
 		g_free(tmp);
@@ -2495,12 +2500,15 @@ static gint imap_cmd_fetch(SockInfo *sock, guint32 uid, const gchar *filename)
 
 	imap_cmd_gen_send(sock, "UID FETCH %d BODY[]", uid);
 
-	if (sock_gets(sock, buf, sizeof(buf)) < 0)
-		return IMAP_ERROR;
-	strretchomp(buf);
-	if (buf[0] != '*' || buf[1] != ' ')
-		return IMAP_ERROR;
-	log_print("IMAP4< %s\n", buf);
+	while ((ok = imap_cmd_gen_recv(sock, buf, sizeof(buf)))
+	       == IMAP_SUCCESS) {
+		if (buf[0] != '*' || buf[1] != ' ')
+			return IMAP_ERROR;
+		if (strstr(buf, "FETCH") != NULL)
+			break;
+	}
+	if (ok != IMAP_SUCCESS)
+		return ok;
 
 	cur_pos = strchr(buf, '{');
 	g_return_val_if_fail(cur_pos != NULL, IMAP_ERROR);

@@ -1,6 +1,15 @@
 2002-04-11
 
-	* COPYING: 再ライセンス("NO-VIRUS CLAUSE" の削除と OpenSSL に対する
+	* src/compose.c: compose_create(): ジオメトリヒントを設定して
+	  ウィンドウの最大サイズを制限するようにした。
+	* src/imap.c: imap_parse_list(): INBOX を \Noselect としてマーク
+	  しないようにした。
+	  imap_get_uncached_messages()
+	  imap_cmd_fetch(): FETCH を含まない応答を無視するようにした。
+
+2002-04-11
+
+	* COPYING: ライセンス変更("NO-VIRUS CLAUSE" の削除と OpenSSL に対する
 	  条項の追加)。
 
 2002-04-09

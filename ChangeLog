@@ -1,5 +1,13 @@
 2002-04-11
 
+	* src/compose.c: compose_create(): set geometry hints to restrict
+	  the maximum size of window.
+	* src/imap.c: imap_parse_list(): don't mark INBOX as \Noselect.
+	  imap_get_uncached_messages()
+	  imap_cmd_fetch(): ignore responses which don't include FETCH.
+
+2002-04-11
+
 	* COPYING: re-licensed (removal of "NO-VIRUS CLAUSE" and addition of
 	  the clause for OpenSSL).
 
