@@ -1,3 +1,8 @@
+2004-02-17 [alfons]	0.9.9claws18
+	
+	* src/summaryview.c
+		MSG_IS_NEWS() is not stored at all, and is bogus
+
 2004-02-17 [martin]	0.9.9claws17
 
 	* src/prefs_themes.c

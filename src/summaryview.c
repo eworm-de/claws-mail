@@ -2394,8 +2394,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 
 	text[col_pos[S_COL_FROM]] = msginfo->fromname ? msginfo->fromname :
 		_("(No From)");
-	if (prefs_common.swap_from && msginfo->from && msginfo->to &&
-	    !MSG_IS_NEWS(msginfo->flags)) {
+	if (prefs_common.swap_from && msginfo->from && msginfo->to) {
 		gchar *addr = NULL;
 
 		Xstrdup_a(addr, msginfo->from, return);
