@@ -1,3 +1,9 @@
+2004-10-13 [colin]	0.9.12cvs125
+
+	* po/POTFILES.in
+		Update POTFILES.in to reflect the source
+		place changes
+
 2004-10-08 [christoph]	0.9.12cvs124
 
 	* m4/spamassassin.m4

@@ -64,7 +64,6 @@ src/mh_gtk.c
 src/mimeview.c
 src/news.c
 src/news_gtk.c
-src/passphrase.c
 src/plugins/clamav/clamav_plugin.c
 src/plugins/clamav/clamav_plugin_gtk.c
 src/plugins/demo/demo.c
@@ -76,6 +75,8 @@ src/plugins/image_viewer/viewerprefs.c
 src/plugins/mathml_viewer/mathml_viewer.c
 src/plugins/pgpmime/plugin.c
 src/plugins/pgpmime/sgpgme.c
+src/plugins/pgpmime/passphrase.c
+src/plugins/pgpmime/select-keys.c
 src/plugins/spamassassin/spamassassin.c
 src/plugins/spamassassin/spamassassin_gtk.c
 src/plugins/trayicon/trayicon.c
@@ -102,7 +103,6 @@ src/prefs_wrapping.c
 src/privacy.c
 src/procmsg.c
 src/quote_fmt.c
-src/select-keys.c
 src/send_message.c
 src/setup.c
 src/sourcewindow.c
