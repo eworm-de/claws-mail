@@ -44,11 +44,11 @@ static ClamAvConfig config;
 static PrefParam param[] = {
 	{"clamav_enable", "FALSE", &config.clamav_enable, P_BOOL,
 	 NULL, NULL, NULL},
-	{"clamav_enable_archive", "FALSE", &config.clamav_archive_enable, P_BOOL,
+	{"clamav_enable_arc", "FALSE", &config.clamav_enable_arc, P_BOOL,
 	 NULL, NULL, NULL},
 	{"clamav_max_size", "1", &config.clamav_max_size, P_USHORT,
 	 NULL, NULL, NULL},
-	{"clamav_receive_infected", "TRUE", &config.clamav_receive_infected, P_BOOL,
+	{"clamav_recv_infected", "TRUE", &config.clamav_recv_infected, P_BOOL,
 	 NULL, NULL, NULL},
 	{"clamav_save_folder", NULL, &config.clamav_save_folder, P_STRING,
 	 NULL, NULL, NULL},
@@ -88,8 +88,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	if (!config.clamav_enable)
 		return FALSE;
 
-	debug_print("Scanning message %d for viruses\n", msginfo->msgnum);
-
 	fp = procmsg_open_message(msginfo);
 	if (fp == NULL) {
 		debug_print("failed to open message file");
@@ -103,6 +101,8 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		procmime_mimeinfo_free_all(mimeinfo);
 		return FALSE;
 	}
+
+	debug_print("Scanning message %d for viruses\n", msginfo->msgnum);
 
 	if (IS_FIRST_PART_TEXT(child))
 		child = child->next;
@@ -120,10 +120,10 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
     	cl_buildtrie(root);
 
     	limits.maxfiles = 1000; /* max files */
-    	limits.maxfilesize = config.clamav_max_size * 1048576; /* maximal archived file size == 10 Mb */
-    	limits.maxreclevel = 8; /* maximal recursion level */
+    	limits.maxfilesize = config.clamav_max_size * 1048576; /* maximum archived file size */
+    	limits.maxreclevel = 8; /* maximum recursion level */
 
-	if (config.clamav_archive_enable)
+	if (config.clamav_enable_arc)
 		scan_archive = TRUE;
 
 	while (child != NULL) {
@@ -165,7 +165,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
 	if (is_infected) {
 		debug_print("message part(s) infected with %s\n", virname);
-		if (config.clamav_receive_infected) {
+		if (config.clamav_recv_infected) {
 			FolderItem *clamav_save_folder;
 
 			if ((!config.clamav_save_folder) ||
@@ -249,16 +249,15 @@ const gchar *plugin_name()
 
 const gchar *plugin_desc()
 {
-	return "This plugin checks all message attachments that are received "
-	       "from a POP account for viruses using Clam AntiVirus. You will "
-	       "need to have ClamAv installed.\n"
+	return "This plugin uses Clam AntiVirus to scan all message attachments "
+	       "that are received from a POP account.\n"
 	       "\n"
 	       "When a message attachment is found to contain a virus it can be "
-	       "deleted or saved in a special folder.\n"
+	       "deleted or saved in a specially designated folder.\n"
 	       "\n"
-	       "This plugin only contains the actual function for filtering "
+	       "This plugin only contains the actual function for scanning "
 	       "and deleting or moving the message. You probably want to load "
-	       "a User Interface plugin too, otherwise you will have to "
+	       "the Gtk+ User Interface plugin too, otherwise you will have to "
 	       "manually write the plugin configuration.\n";
 }
 
