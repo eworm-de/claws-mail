@@ -104,6 +104,10 @@ SOURCE=.\spamassassin.def
 # End Source File
 # Begin Source File
 
+SOURCE=.\spamassassin_version.rc
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\plugins\spamassassin\utils.c
 # End Source File
 # End Group

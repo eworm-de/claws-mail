@@ -359,23 +359,8 @@ void procmime_scan_content_type(MimeInfo *mimeinfo, const gchar *content_type)
 #endif
 	    strchr(content_type, '\033')) {
 		gint len;
-/*
-#ifdef WIN32
- 				len = strlen(content_type) * 2;
- 				buf = g_malloc(len);
-#else
-*/
 		len = strlen(content_type) * 2 + 1;
 		Xalloca(buf, len, return);
-/*
-#endif
-#ifdef WIN32
-
-				conv_euctojis(buf, len, content_type);
-				// g_free(value);
-				content_type = g_strdup(buf);
-#endif
-*/
 		conv_jistoeuc(buf, len, content_type);
 	} else
 		Xstrdup_a(buf, content_type, return);
@@ -436,12 +421,6 @@ void procmime_scan_content_type(MimeInfo *mimeinfo, const gchar *content_type)
 				value = g_strdup(tmp);
 #endif
 				conv_unmime_header(tmp, len, value, NULL);
-				g_free(mimeinfo->filename);
-#if 0
-#ifdef WIN32 /* // MARK!!!! */
-				locale_from_utf8(&tmp);
-#endif
-#endif
 				g_free(mimeinfo->name);
 				/*pgp signatures should NOT have a name */
 				if (mimeinfo->content_type 
@@ -939,11 +918,7 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 			str = conv_codeset_strdup(buf, src_codeset, NULL);
 			if (str) {
 				fputs(str, outfp);
-#ifdef WIN32
-/* XXX:tm	conv_codeset_strdup crash */
-#else
 				g_free(str);
-#endif
 			} else {
 				conv_fail = TRUE;
 				fputs(buf, outfp);
@@ -1169,8 +1144,6 @@ ContentType procmime_scan_mime_type(const gchar *mime_type)
 		type = MIME_TEXT;
 	else if (!strncasecmp(mime_type, "application/octet-stream", 24))
 		type = MIME_APPLICATION_OCTET_STREAM;
-	else if (!strncasecmp(mime_type, "application/pgp", 24))
-		type = MIME_APPLICATION_PGP;
 	else if (!strncasecmp(mime_type, "application/", 12))
 		type = MIME_APPLICATION;
 	else if (!strncasecmp(mime_type, "multipart/", 10))

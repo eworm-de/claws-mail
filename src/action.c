@@ -756,7 +756,7 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 	ChildInfo *child_info;
 	gint sync;
 #ifdef WIN32
-	gchar **child_argv;
+	gchar **child_argv, **tmp_argv;
 	GError *error=NULL;
 	GIOChannel *ch_in, *ch_out, *ch_err;
 	gint n;
@@ -770,7 +770,13 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 #ifdef WIN32
 	pid = 0;
 	pipe(chld_status);
-	child_argv = g_strsplit(cmd, " ", 1024);
+	child_argv = strsplit_with_quote(cmd, " ", 1024);
+	// strip enclosing quotes (argv[0] is already unquoted)
+	for (tmp_argv=child_argv+1; *tmp_argv; tmp_argv++) {
+		gint len=strlen(*tmp_argv);
+		memmove(*tmp_argv, *(tmp_argv)+1, len-1);
+		*(*(tmp_argv)+len-2) = '\0';
+	}
 	if (g_spawn_async_with_pipes((const gchar *)NULL,
 				     child_argv,
 				     (gchar**)NULL,

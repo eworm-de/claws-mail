@@ -1,2 +1,4 @@
+#include "version.rc"
+
 IDR_SYLPHEED		ICON "sylpheed.ico"
 

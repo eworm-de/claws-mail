@@ -77,6 +77,7 @@ ifeq ($(GCCVERSION),3)
 else
 	# gcc-2.x: -fnative-struct
 	BITFIELD=-fnative-struct
+	INTLFIX=-D_INTL_REDIRECT_INLINE
 endif
 
 ifeq ($(CYGWIN),1)
@@ -99,7 +100,7 @@ RM=rm
 ###
 
 VPATH=$(SRCDIR):$(SRCDIR)/common:$(SRCDIR)/gtk:$(PODIR):$(LIBJCONVDIR):$(SRCDIR)/plugins/demo:$(SRCDIR)/plugins/spamassassin
-DEFINES=-DHAVE_CONFIG_H -DHAVE_BYTE_TYPEDEF $(DEBUGDEF)
+DEFINES=-DHAVE_CONFIG_H -DHAVE_BYTE_TYPEDEF $(INTLFIX) $(DEBUGDEF)
 EXTRALIBS=-lws2_32
 RESOURCE=appicon
 
@@ -358,13 +359,26 @@ OBJECTS= \
 
 ### targets
 
-all: version bisonfiles compile translation msvcdefs
+all: version_rc version bisonfiles compile translation msvcdefs
 
 compile: $(APPNAME).dll $(APPNAME).exe $(PLUGINS)
 version: $(VERSION_H)
 bisonfiles: $(QUOTE_FMT_TARGETS) $(MATCHER_PARSER_TARGETS)
 translation: $(MOFILES)
+version_rc: version.rc demo_version.rc spamassassin_version.rc
 
+### version resource files
+
+version.rc.in: version.rc.in.in $(CONFIGURE_AC)
+	$(SED) -e "s/@MAJOR_VERSION@/$(MAJOR_VERSION)/;s/@MINOR_VERSION@/$(MINOR_VERSION)/;s/@MICRO_VERSION@/$(MICRO_VERSION)/;s/@EXTRA_VERSION@/$(EXTRA_VERSION)/;" $< > $@
+version.rc: version.rc.in
+	$(SED) -e "s/@FILEDESCRIPTION@/Sylpheed-Claws/;s/@FILE_MAJOR_VERSION@/$(MAJOR_VERSION)/;s/@FILE_MINOR_VERSION@/$(MINOR_VERSION)/;s/@FILE_MICRO_VERSION@/$(MICRO_VERSION)/;s/@FILE_EXTRA_VERSION@/$(EXTRA_VERSION)/"  $< > $@
+demo_version.rc: version.rc.in
+	$(SED) -e "s/@FILEDESCRIPTION@/Demo-Plugin/;s/@FILE_MAJOR_VERSION@/$(MAJOR_VERSION)/;s/@FILE_MINOR_VERSION@/$(MINOR_VERSION)/;s/@FILE_MICRO_VERSION@/$(MICRO_VERSION)/;s/@FILE_EXTRA_VERSION@/$(EXTRA_VERSION)/"  $< > $@
+spamassassin_version.rc: version.rc.in
+	$(SED) -e "s/@FILEDESCRIPTION@/SpamAssassin-Plugin/;s/@FILE_MAJOR_VERSION@/$(MAJOR_VERSION)/;s/@FILE_MINOR_VERSION@/$(MINOR_VERSION)/;s/@FILE_MICRO_VERSION@/$(MICRO_VERSION)/;s/@FILE_EXTRA_VERSION@/$(EXTRA_VERSION)/"  $< > $@
+
+version.res: version.rc
 ### plugins
 
 ### spamassassin
@@ -378,13 +392,16 @@ libspamc_utils.c: libspamc_utils.h
 	cp $(SRCDIR)/plugins/spamassassin/utils.c $@
 libspamc_utils.h:
 	cp $(SRCDIR)/plugins/spamassassin/utils.h $@
+spamassassin_version.rc.o:	spamassassin_version.rc
+	$(RESCOMP) -i $< -o $@
 
 #spamassassin_LIBS = $(APPNAME).dll -lwsock32 $(EXTRALIBS) $(LIBS)
 spamassassin_LIBS =  $(APPNAME).dll -lws2_32 $(windir)/system32/ws2_32.dll $(LIBS)  
 spamassassin_OBJECTS = \
 	spamassassin.o \
 	libspamc.o \
-	libspamc_utils.o
+	libspamc_utils.o \
+	spamassassin_version.rc.o
 
 spamassassin.dll: libspamc_utils.c $(spamassassin_OBJECTS)
 	dlltool -D $@ -z $@.def --export-all-symbols --exclude-symbols WinMain@16 $(spamassassin_OBJECTS)
@@ -403,7 +420,8 @@ spamassassin_gtk.o:	spamassassin_gtk.c spamassassin.h
 
 spamassassin_gtk_LIBS = $(APPNAME).dll spamassassin.dll $(EXTRALIBS) $(LIBS)
 spamassassin_gtk_OBJECTS = \
-	spamassassin_gtk.o
+	spamassassin_gtk.o \
+	spamassassin_version.rc.o
 
 spamassassin_gtk.dll: $(spamassassin_gtk_OBJECTS)
 	dlltool -D $@ -z $@.def --export-all-symbols --exclude-symbols WinMain@16 $(spamassassin_gtk_OBJECTS)
@@ -418,10 +436,13 @@ spamassassin_gtk_clean:
 ### demo plugin
 
 demo.o:	demo.c
+demo_version.rc.o:	demo_version.rc
+	$(RESCOMP) -i $< -o $@
 
 demo_LIBS = $(APPNAME).dll $(EXTRALIBS) $(LIBS)
 demo_OBJECTS = \
-	demo.o
+	demo.o \
+	demo_version.rc.o
 
 demo.dll:	$(demo_OBJECTS)
 	dlltool -D $@ -z $@.def --export-all-symbols --exclude-symbols WinMain@16 $(demo_OBJECTS)
@@ -446,6 +467,8 @@ $(APPNAME).dll.exp:
 	dlltool --dllname $(APPNAME).dll --base-file $(APPNAME).dll.base --output-exp $@ --def $(APPNAME).dll.def
 $(APPNAME).dll.lib:
 	dlltool -D main.dll -d main.def -l $@
+version.rc.o:	version.rc
+	$(RESCOMP) -i $< -o $@
 
 ### sylpheed.exe (loader)
 
@@ -456,8 +479,8 @@ loader_OBJECTS=	w32_loader.o
 $(APPNAME).exe: $(loader_OBJECTS) $(RESOURCE).o
 	$(CC) $(NOCONSOLE) $(FLAGS) -L. -l$(APPNAME) $? $(EXTRALIBS) $(LIBS) -o $@
 
-$(RESOURCE).o: $(RESOURCE).rc
-	$(RESCOMP) $< $@
+$(RESOURCE).o: $(RESOURCE).rc version.rc
+	$(RESCOMP) -i $< -o $@
 
 ### version number
 

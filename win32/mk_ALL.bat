@@ -3,6 +3,7 @@ set PATH=apps;utils\apps;%PATH%
 
 :generated
 cd utils
+call mk_versionrc.bat
 call mk_version.bat
 call mk_passcrypt.bat
 call mk_bison.bat

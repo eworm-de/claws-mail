@@ -1382,6 +1382,9 @@ static void create_filter_cb(gpointer data, guint action, GtkWidget *widget)
 
 	procmsg_get_filter_keyword(messageview->msginfo, &header, &key,
 				   (PrefsFilterType)action);
+#ifdef WIN32
+	locale_to_utf8(&key);
+#endif
 	prefs_filtering_open(NULL, header, key);
 
 	g_free(header);

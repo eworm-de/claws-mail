@@ -98,6 +98,10 @@ SOURCE=..\src\plugins\demo\demo.c
 
 SOURCE=.\demo.def
 # End Source File
+# Begin Source File
+
+SOURCE=.\demo_version.rc
+# End Source File
 # End Group
 # Begin Group "Header-Dateien"
 

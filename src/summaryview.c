@@ -4121,6 +4121,9 @@ void summary_filter_open(SummaryView *summaryview, PrefsFilterType type)
 	if (!msginfo) return;
 
 	procmsg_get_filter_keyword(msginfo, &header, &key, type);
+#ifdef WIN32
+	locale_to_utf8(&key);
+#endif
 	prefs_filtering_open(NULL, header, key);
 
 	g_free(header);

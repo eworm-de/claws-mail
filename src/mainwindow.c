@@ -835,6 +835,9 @@ MainWindow *main_window_create(SeparateType type)
 
 	progressbar = gtk_progress_bar_new();
 	gtk_widget_set_usize(progressbar, 120, 1);
+#ifdef WIN32
+	gtk_progress_set_text_alignment(GTK_PROGRESS(progressbar), 0.5, 0.0);
+#endif
 	gtk_box_pack_start(GTK_BOX(hbox_stat), progressbar, FALSE, FALSE, 0);
 
 	online_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_WORK_ONLINE);
