@@ -1,3 +1,9 @@
+2001-10-29 [darko]
+
+	* src/compose.c
+		fix infinite loop when long URL is quoted
+		(closes bug #475122.
+
 2001-10-28 [match]
 
 	* src/mutt.[ch] src/importmutt.[ch] src/mgutils.[ch] src/addressbook.c src/Makefile.am

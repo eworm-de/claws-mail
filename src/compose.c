@@ -2399,10 +2399,10 @@ static void compose_wrap_line_all(Compose *compose)
 		if (cur_len + ch_len > linewrap_len) {
 			gint tlen;
 
-			if (line_len == 0) {
+			if (line_len == 0 || line_pos != prev_line_pos) {
 				/* don't wrap URLs */
 				if (is_url_string(text, line_pos, text_len))
-					continue;
+					goto dontwrapurl;
 				line_len = cur_pos - line_pos;
 				line_pos = cur_pos;
 			}
@@ -2457,6 +2457,7 @@ static void compose_wrap_line_all(Compose *compose)
 			continue;
 		}
 
+dontwrapurl:
 		if (ch_len > 1) {
 			line_pos = cur_pos + 1;
 			line_len = cur_len + ch_len;
