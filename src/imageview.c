@@ -39,10 +39,6 @@
 #include "imageview.h"
 #include "utils.h"
 
-static void get_resized_size(gint w, gint h, gint aw, gint ah,
-			     gint *sw, gint *sh);
-
-
 ImageView *imageview_create(void)
 {
 	ImageView *imageview;
@@ -102,7 +98,7 @@ void imageview_show_image(ImageView *imageview, MimeInfo *mimeinfo,
 		if (avail_width > 8) avail_width -= 8;
 		if (avail_height > 8) avail_height -= 8;
 
-		get_resized_size(gdk_pixbuf_get_width(pixbuf),
+		imageview_get_resized_size(gdk_pixbuf_get_width(pixbuf),
 				 gdk_pixbuf_get_height(pixbuf),
 				 avail_width, avail_height,
 				 &new_width, &new_height);
@@ -162,7 +158,7 @@ void imageview_show_image(ImageView *imageview, MimeInfo *mimeinfo,
 		if (avail_width > 8) avail_width -= 8;
 		if (avail_height > 8) avail_height -= 8;
 
-		get_resized_size(im->rgb_width, im->rgb_height,
+		imageview_get_resized_size(im->rgb_width, im->rgb_height,
 				 avail_width, avail_height,
 				 &new_width, &new_height);
 	} else {
@@ -218,7 +214,7 @@ void imageview_destroy(ImageView *imageview)
 	g_free(imageview);
 }
 
-static void get_resized_size(gint w, gint h, gint aw, gint ah,
+void imageview_get_resized_size(gint w, gint h, gint aw, gint ah,
 			     gint *sw, gint *sh)
 {
 	gfloat wratio = 1.0;

@@ -990,6 +990,11 @@ void prefs_common_init_config(void)
 }
 #endif
 
+PrefsCommon *prefs_common_get(void)
+{
+	return &prefs_common;
+}
+
 void prefs_common_read_config(void)
 {
 	FILE *fp;

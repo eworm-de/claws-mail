@@ -151,6 +151,16 @@ EXPORTS
 	addrcache_set_name 
 	addrcache_set_read_flag 
 	addrcache_use_index 
+	addrcindex_add_email 
+	addrcindex_add_entry 
+	addrcindex_add_person 
+	addrcindex_clear 
+	addrcindex_create 
+	addrcindex_free 
+	addrcindex_invalidate 
+	addrcindex_print 
+	addrcindex_search 
+	addrcindex_validate 
 	addrclip_add 
 	addrclip_add_item 
 	addrclip_clear 
@@ -904,6 +914,7 @@ EXPORTS
 	imageview_clear 
 	imageview_create 
 	imageview_destroy 
+	imageview_get_resized_size 
 	imageview_init 
 	imageview_show_image 
 	imap_add_msg 
@@ -1337,6 +1348,7 @@ EXPORTS
 	prefs_actions_write_config 
 	prefs_button_toggled 
 	prefs_common 
+	prefs_common_get 
 	prefs_common_init 
 	prefs_common_init_config 
 	prefs_common_open 
