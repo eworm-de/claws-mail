@@ -1777,6 +1777,11 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		mainwin->win.sep_folder.vpaned    = vpaned;
 
 		gtk_widget_show_all(folderwin);
+		
+		/* CLAWS: previous "gtk_widget_show_all" makes noticeview
+		 * lose track of its visibility state */
+		if (!noticeview_is_visible(mainwin->messageview->noticeview)) 
+			gtk_widget_hide(GTK_WIDGET_PTR(mainwin->messageview->noticeview));
 		break;
 	case SEPARATE_MESSAGE:
 		hpaned = gtk_hpaned_new();

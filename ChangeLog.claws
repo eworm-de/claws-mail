@@ -1,3 +1,9 @@
+2002-08-19 [alfons]	0.8.1claws79
+
+	* src/mainwindow.c
+		hide notice view when selecting seperate folder
+		view (reported by Urke MMI)
+
 2002-08-19 [christoph]	0.8.1claws78
 
 	* src/folderview.c
