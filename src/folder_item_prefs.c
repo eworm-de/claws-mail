@@ -91,7 +91,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"folder_color", "", &tmp_prefs.color, P_INT,
 	 NULL, NULL, NULL},
-	{"enable_processing", "TRUE", &tmp_prefs.enable_processing, P_BOOL,
+	{"enable_processing", "FALSE", &tmp_prefs.enable_processing, P_BOOL,
 	 NULL, NULL, NULL},
 	{"newmailcheck", "TRUE", &tmp_prefs.newmailcheck, P_BOOL,
 	 NULL, NULL, NULL},
