@@ -51,6 +51,12 @@
 #include "matcher_parser.h"
 #include "colorlabel.h"
 
+enum {
+	PFA_ACTION,
+	PFA_VALID_ACTION,
+	N_PFA_COLUMNS
+};
+
 
 static void prefs_filtering_action_create(void);
 static void prefs_filtering_action_delete_cb(void);
@@ -68,23 +74,33 @@ static void prefs_filtering_action_type_selection_changed(GtkList *list,
 static void prefs_filtering_action_type_select(GtkList *list,
     GtkWidget *widget, gpointer user_data);
 static void prefs_filtering_action_select_dest(void);
-static void prefs_filtering_action_select(GtkCList *clist,
-    gint row, gint column, GdkEvent *event);
 static void prefs_filtering_action_up(void);
 static void prefs_filtering_action_down(void);
 static void prefs_filtering_action_set_dialog(GSList *action_list);
 static GSList *prefs_filtering_action_get_list(void);
 
+static GtkListStore* prefs_filtering_action_create_data_store	(void);
+static void prefs_filtering_action_list_view_insert_action	(GtkWidget   *list_view,
+								 GtkTreeIter *row,
+								 const gchar *action,
+								 gboolean     is_valid);
+static GtkWidget *prefs_filtering_action_list_view_create	(void);
+static void prefs_filtering_action_create_list_view_columns	(GtkTreeView *list_view);
+static gboolean prefs_filtering_actions_selected		(GtkTreeSelection *selector,
+								 GtkTreeModel *model, 
+								 GtkTreePath *path,
+								 gboolean currently_selected,
+								 gpointer data);
 
 /*!
  *\brief	UI data for matcher dialog
  */
-static struct FilteringAction {
+static struct FilteringAction_ {
 	GtkWidget *window;
 
 	GtkWidget *ok_btn;
 
-	GtkWidget *action_clist;
+	GtkWidget *action_list_view;
 	GtkWidget *action_type_list;
 	GtkWidget *action_combo;
 	GtkWidget *account_label;
@@ -247,7 +263,7 @@ static void prefs_filtering_action_create(void)
 
 	GtkWidget *action_hbox;
 	GtkWidget *action_scrolledwin;
-	GtkWidget *action_clist;
+	GtkWidget *action_list_view;
 
 	GtkWidget *btn_vbox;
 	GtkWidget *up_btn;
@@ -260,7 +276,6 @@ static void prefs_filtering_action_create(void)
 	GList *combo_items;
 	gint i;
 
-	gchar *title[1];
         GList * accounts;
 
 	debug_print("Creating matcher configuration window...\n");
@@ -275,8 +290,8 @@ static void prefs_filtering_action_create(void)
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
-	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
-				&cancel_btn, _("Cancel"), NULL, NULL);
+	gtkut_button_set_create_stock(&confirm_area, &ok_btn, GTK_STOCK_OK,
+				      &cancel_btn, GTK_STOCK_CANCEL, NULL, NULL);
 	gtk_widget_show(confirm_area);
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
@@ -446,7 +461,7 @@ static void prefs_filtering_action_create(void)
 	gtk_widget_show(btn_hbox);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
-	reg_btn = gtk_button_new_with_label(_("Add"));
+	reg_btn = gtk_button_new_from_stock(GTK_STOCK_ADD);
 	gtk_widget_show(reg_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), reg_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(reg_btn), "clicked",
@@ -459,7 +474,7 @@ static void prefs_filtering_action_create(void)
 			 G_CALLBACK(prefs_filtering_action_substitute_cb),
 			 NULL);
 
-	del_btn = gtk_button_new_with_label(_("Delete"));
+	del_btn = gtk_button_new_from_stock(GTK_STOCK_REMOVE);
 	gtk_widget_show(del_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), del_btn, FALSE, TRUE, 0);
 	g_signal_connect(G_OBJECT(del_btn), "clicked",
@@ -478,29 +493,21 @@ static void prefs_filtering_action_create(void)
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	title[0] = _("Current action list");
-	action_clist = gtk_clist_new_with_titles(1, title);
-	gtk_widget_show(action_clist);
-	gtk_container_add(GTK_CONTAINER(action_scrolledwin), action_clist);
-	gtk_clist_set_column_width(GTK_CLIST(action_clist), 0, 80);
-	gtk_clist_set_selection_mode(GTK_CLIST(action_clist),
-				     GTK_SELECTION_BROWSE);
-	GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(action_clist)->column[0].button,
-			       GTK_CAN_FOCUS);
-	g_signal_connect(G_OBJECT(action_clist), "select_row",
-			 G_CALLBACK(prefs_filtering_action_select), NULL);
+	action_list_view = prefs_filtering_action_list_view_create();
+	gtk_widget_show(action_list_view);
+	gtk_container_add(GTK_CONTAINER(action_scrolledwin), action_list_view);
 
 	btn_vbox = gtk_vbox_new(FALSE, 8);
 	gtk_widget_show(btn_vbox);
 	gtk_box_pack_start(GTK_BOX(action_hbox), btn_vbox, FALSE, FALSE, 0);
 
-	up_btn = gtk_button_new_with_label(_("Up"));
+	up_btn = gtk_button_new_from_stock(GTK_STOCK_GO_UP);
 	gtk_widget_show(up_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), up_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(up_btn), "clicked",
 			 G_CALLBACK(prefs_filtering_action_up), NULL);
 
-	down_btn = gtk_button_new_with_label(_("Down"));
+	down_btn = gtk_button_new_from_stock(GTK_STOCK_GO_DOWN);
 	gtk_widget_show(down_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(down_btn), "clicked",
@@ -524,7 +531,7 @@ static void prefs_filtering_action_create(void)
 	filtering_action.color_optmenu = color_optmenu;
 	filtering_action.score_label = score_label;
 	filtering_action.ok_btn = ok_btn;
-	filtering_action.action_clist = action_clist;
+	filtering_action.action_list_view = action_list_view;
 }
 
 /*!
@@ -533,40 +540,24 @@ static void prefs_filtering_action_create(void)
  *\param	row Index of row to set
  *\param	prop Condition to set
  *
- *\return	gint Row index \a prop has been added
  */
-static gint prefs_filtering_action_clist_set_row(gint row, FilteringAction *action)
+static void prefs_filtering_action_list_view_set_row(GtkTreeIter *row, 
+						     FilteringAction *action)
 {
-	GtkCList *clist = GTK_CLIST(filtering_action.action_clist);
-	gchar *action_tab_str[1];
-	gchar *action_str;
         gchar buf[256];
 
-	if (action == NULL) {
-		action_tab_str[0] = _("(New)");
-		return gtk_clist_append(clist, action_tab_str);
-	}
+	if (row == NULL && action == NULL) {
+		prefs_filtering_action_list_view_insert_action
+			(filtering_action.action_list_view,
+			 NULL, _("New"), FALSE);
+		return;
+	}			 
 
         filteringaction_to_string(buf, sizeof buf, action);
-	action_str = g_strdup(buf);
-        
-	action_tab_str[0] = action_str;
-	if (row < 0)
-		row = gtk_clist_append(clist, action_tab_str);
-	else
-		gtk_clist_set_text(clist, row, 0, action_tab_str[0]);
-	g_free(action_str);
 
-	return row;
-}
-
-/*!
- *\brief	Update scrollbar
- */
-static void prefs_filtering_action_update_hscrollbar(void)
-{
-	gint optwidth = gtk_clist_optimal_column_width(GTK_CLIST(filtering_action.action_clist), 0);
-	gtk_clist_set_column_width(GTK_CLIST(filtering_action.action_clist), 0, optwidth);
+	prefs_filtering_action_list_view_insert_action
+			(filtering_action.action_list_view,
+			 row, buf, TRUE);
 }
 
 /*!
@@ -576,26 +567,23 @@ static void prefs_filtering_action_update_hscrollbar(void)
  */
 static void prefs_filtering_action_set_dialog(GSList *action_list)
 {
-	GtkCList *clist = GTK_CLIST(filtering_action.action_clist);
+	GtkTreeView *list_view = GTK_TREE_VIEW
+					(filtering_action.action_list_view);
 	GSList *cur;
 
-	gtk_clist_freeze(clist);
-	gtk_clist_clear(clist);
+	gtk_list_store_clear(GTK_LIST_STORE(gtk_tree_view_get_model
+			(GTK_TREE_VIEW(filtering_action.action_list_view))));
 
-	prefs_filtering_action_clist_set_row(-1, NULL);
+	prefs_filtering_action_list_view_set_row(NULL, NULL);
 	if (action_list != NULL) {
 		for (cur = action_list; cur != NULL;
 		     cur = g_slist_next(cur)) {
 			FilteringAction *action;
 			action = (FilteringAction *) cur->data;
-			prefs_filtering_action_clist_set_row(-1, action);
+			prefs_filtering_action_list_view_set_row(NULL, action);
 		}
 	}
 	
-	prefs_filtering_action_update_hscrollbar();
-
-	gtk_clist_thaw(clist);
-
         prefs_filtering_action_reset_dialog();
 }
 
@@ -608,25 +596,39 @@ static void prefs_filtering_action_set_dialog(GSList *action_list)
 static GSList *prefs_filtering_action_get_list(void)
 {
 	gchar *action_str;
+	gboolean is_valid;
 	gint row = 1;
 	GSList *action_list;
+	GtkTreeView *list_view = GTK_TREE_VIEW(filtering_action.action_list_view);
+	GtkTreeModel *model = gtk_tree_view_get_model(list_view);
+	GtkTreeIter iter;
 
 	action_list = NULL;
 
-	while (gtk_clist_get_text(GTK_CLIST(filtering_action.action_clist),
-				  row, 0, &action_str)) {
+	while (gtk_tree_model_iter_nth_child(model, &iter, NULL, row)) {
 
-		if (strcmp(action_str, _("(New)")) != 0) {
+		gtk_tree_model_get(model, &iter, 
+			           PFA_ACTION, &action_str,
+				   PFA_VALID_ACTION, &is_valid,
+				   -1);
+
+		if (is_valid) {				   
                         GSList * tmp_action_list;
 			tmp_action_list = matcher_parser_get_action_list(action_str);
 			
-			if (tmp_action_list == NULL)
+			if (tmp_action_list == NULL) {
+				g_free(action_str);
 				break;
+			}				
 
 			action_list = g_slist_concat(action_list,
                             tmp_action_list);
 		}
+
+		g_free(action_str);
+		action_str = NULL;
 		row ++;
+		
 	}
 
 	return action_list;
@@ -823,17 +825,17 @@ static void prefs_filtering_action_register_cb(void)
 	if (action == NULL)
 		return;
 
-	prefs_filtering_action_clist_set_row(-1, action);
+	prefs_filtering_action_list_view_set_row(NULL, action);
 
 	filteringaction_free(action);
-	/* presumably gtk_list_select_item(), called by 
+	/* GTK 1 NOTE:
+	 * (presumably gtk_list_select_item(), called by 
 	 * prefs_filtering_action_reset_dialog() activates 
 	 * what seems to be a bug. this causes any other 
-	 * list items to be unselectable */
-	/* prefs_filtering_action_reset_dialog(); */
+	 * list items to be unselectable)
+	 * prefs_filtering_action_reset_dialog(); */
 	gtk_list_select_item(GTK_LIST(filtering_action.account_list), 0);
 	gtk_entry_set_text(GTK_ENTRY(filtering_action.dest_entry), "");
-	prefs_filtering_action_update_hscrollbar();
 }
 
 /*!
@@ -841,26 +843,30 @@ static void prefs_filtering_action_register_cb(void)
  */
 static void prefs_filtering_action_substitute_cb(void)
 {
-	GtkCList *clist = GTK_CLIST(filtering_action.action_clist);
-	gint row;
+	GtkTreeView *list_view = GTK_TREE_VIEW
+			(filtering_action.action_list_view);
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(list_view);
+	GtkTreeModel *model;
+	gboolean is_valid;
+	GtkTreeIter row;
 	FilteringAction *action;
 
-	if (!clist->selection) return;
-	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row == 0)
+	if (!gtk_tree_selection_get_selected(selection, &model, &row))
 		return;
-	
+
+	gtk_tree_model_get(model, &row, PFA_VALID_ACTION, &is_valid, -1);
+	if (!is_valid)
+		return;
+
 	action = prefs_filtering_action_dialog_to_action(TRUE);
 	if (action == NULL)
 		return;
 
-	prefs_filtering_action_clist_set_row(row, action);
+	prefs_filtering_action_list_view_set_row(&row, action);
 
 	filteringaction_free(action);
 
 	prefs_filtering_action_reset_dialog();
-	
-	prefs_filtering_action_update_hscrollbar();
 }
 
 /*!
@@ -868,19 +874,24 @@ static void prefs_filtering_action_substitute_cb(void)
  */
 static void prefs_filtering_action_delete_cb(void)
 {
-	GtkCList *clist = GTK_CLIST(filtering_action.action_clist);
-	gint row;
+	GtkTreeView *list_view = GTK_TREE_VIEW
+			(filtering_action.action_list_view);
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(list_view);
+	GtkTreeModel *model;
+	gboolean is_valid;
+	GtkTreeIter row;
+	FilteringAction *action;
 
-	if (!clist->selection) return;
-	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row == 0)
+	if (!gtk_tree_selection_get_selected(selection, &model, &row))
 		return;
 
-	gtk_clist_remove(clist, row);
+	gtk_tree_model_get(model, &row, PFA_VALID_ACTION, &is_valid, -1);
+	if (!is_valid)
+		return;
+
+	gtk_list_store_remove(GTK_LIST_STORE(model), &row);		
 
 	prefs_filtering_action_reset_dialog();
-
-	prefs_filtering_action_update_hscrollbar();
 }
 
 /*!
@@ -888,17 +899,42 @@ static void prefs_filtering_action_delete_cb(void)
  */
 static void prefs_filtering_action_up(void)
 {
-	GtkCList *clist = GTK_CLIST(filtering_action.action_clist);
-	gint row;
+	GtkTreePath *prev, *sel, *try;
+	GtkTreeIter isel;
+	GtkListStore *store;
+	GtkTreeIter iprev;
+	
+	if (!gtk_tree_selection_get_selected
+		(gtk_tree_view_get_selection
+			(GTK_TREE_VIEW(filtering_action.action_list_view)),
+		 (GtkTreeModel **) &store,	
+		 &isel))
+		return;
 
-	if (!clist->selection) return;
-
-	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row > 1) {
-		gtk_clist_row_move(clist, row, row - 1);
-		if (gtk_clist_row_is_visible(clist, row - 1) != GTK_VISIBILITY_FULL)
-			gtk_clist_moveto(clist, row - 1, 0, 0, 0);
+	sel = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &isel);
+	if (!sel)
+		return;
+	
+	/* no move if we're at row 0 or 1, looks phony, but other
+	 * solutions are more convoluted... */
+	try = gtk_tree_path_copy(sel);
+	if (!gtk_tree_path_prev(try) || !gtk_tree_path_prev(try)) {
+		gtk_tree_path_free(try);
+		gtk_tree_path_free(sel);
+		return;
 	}
+	gtk_tree_path_free(try);
+
+	prev = gtk_tree_path_copy(sel);		
+	if (gtk_tree_path_prev(prev)) {
+		gtk_tree_model_get_iter(GTK_TREE_MODEL(store),
+					&iprev, prev);
+		gtk_list_store_swap(store, &iprev, &isel);
+		/* XXX: GTK2 select row?? */
+	}
+
+	gtk_tree_path_free(sel);
+	gtk_tree_path_free(prev);
 }
 
 /*!
@@ -906,140 +942,29 @@ static void prefs_filtering_action_up(void)
  */
 static void prefs_filtering_action_down(void)
 {
-	GtkCList *clist = GTK_CLIST(filtering_action.action_clist);
-	gint row;
-
-	if (!clist->selection) return;
-
-	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row >= 1 && row < clist->rows - 1) {
-		gtk_clist_row_move(clist, row, row + 1);
-		if (gtk_clist_row_is_visible(clist, row + 1) != GTK_VISIBILITY_FULL)
-			gtk_clist_moveto(clist, row + 1, 0, 1, 0);
-	}
-}
-
-/*!
- *\brief	Signal handler for select row.
- *
- *\param	clist List widget
- *\param	row Selected row
- *\param	column Selected column
- *\param	event Event information
- */
-static void prefs_filtering_action_select(GtkCList *clist,
-    gint row, gint column, GdkEvent *event)
-{
-	gchar *action_str;
-	FilteringAction *action;
-        GSList * action_list;
-	gint list_id;
-
-	if (!gtk_clist_get_text(GTK_CLIST(filtering_action.action_clist),
-				row, 0, &action_str))
+	GtkListStore *store;
+	GtkTreeIter next, sel;
+	GtkTreePath *try;
+	
+	if (!gtk_tree_selection_get_selected
+		(gtk_tree_view_get_selection
+			(GTK_TREE_VIEW(filtering_action.action_list_view)),
+		 (GtkTreeModel **) &store,
+		 &sel))
 		return;
 
-	if (row == 0) {
-		prefs_filtering_action_reset_dialog();
+	try = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &sel);
+	if (!try) 
 		return;
+	
+	/* move when not at row 0 ... */
+	if (gtk_tree_path_prev(try)) {
+		next = sel;
+		if (gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &next))
+			gtk_list_store_swap(store, &next, &sel);
 	}
-
-	action_list = matcher_parser_get_action_list(action_str);
-	if (action_list == NULL)
-		return;
-
-        action = action_list->data;
-        g_slist_free(action_list);
-
-	if (action->destination)
-		gtk_entry_set_text(GTK_ENTRY(filtering_action.dest_entry), action->destination);
-	else
-		gtk_entry_set_text(GTK_ENTRY(filtering_action.dest_entry), "");
-
-	switch(action->type) {
-	case MATCHACTION_MOVE:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
-				     ACTION_MOVE);
-		break;
-	case MATCHACTION_COPY:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
-				     ACTION_COPY);
-		break;
-	case MATCHACTION_DELETE:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
-				     ACTION_DELETE);
-		break;
-	case MATCHACTION_MARK:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
-				     ACTION_MARK);
-		break;
-	case MATCHACTION_UNMARK:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
-				     ACTION_UNMARK);
-		break;
-	case MATCHACTION_LOCK:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
-				     ACTION_LOCK);
-		break;
-	case MATCHACTION_UNLOCK:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
-				     ACTION_UNLOCK);
-		break;
-	case MATCHACTION_MARK_AS_READ:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
-				     ACTION_MARK_AS_READ);
-		break;
-	case MATCHACTION_MARK_AS_UNREAD:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
-				     ACTION_MARK_AS_UNREAD);
-		break;
-	case MATCHACTION_FORWARD:
-		list_id = get_list_id_from_account_id(action->account_id);
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
-				     ACTION_FORWARD);
-		gtk_list_select_item(GTK_LIST(filtering_action.account_list),
-				     list_id);
-		break;
-	case MATCHACTION_FORWARD_AS_ATTACHMENT:
-		list_id = get_list_id_from_account_id(action->account_id);
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
-				     ACTION_FORWARD_AS_ATTACHMENT);
-		gtk_list_select_item(GTK_LIST(filtering_action.account_list),
-				     list_id);
-		break;
-	case MATCHACTION_REDIRECT:
-		list_id = get_list_id_from_account_id(action->account_id);
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
-				     ACTION_REDIRECT);
-		gtk_list_select_item(GTK_LIST(filtering_action.account_list),
-				     list_id);
-		break;
-	case MATCHACTION_EXECUTE:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
-				     ACTION_EXECUTE);
-		break;
-	case MATCHACTION_COLOR:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
-				     ACTION_COLOR);
-		gtk_option_menu_set_history(GTK_OPTION_MENU(filtering_action.color_optmenu), action->labelcolor);     
-		break;
-	case MATCHACTION_CHANGE_SCORE:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
-				     ACTION_CHANGE_SCORE);
-		break;
-	case MATCHACTION_SET_SCORE:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
-				     ACTION_SET_SCORE);
-		break;
-	case MATCHACTION_STOP:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
-				     ACTION_STOP);
-		break;
-	case MATCHACTION_HIDE:
-		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
-				     ACTION_HIDE);
-		break;
-	}
+		
+	gtk_tree_path_free(try);
 }
 
 /*!
@@ -1138,8 +1063,6 @@ static DescriptionWindow exec_desc_win = {
         N_("Description of symbols"),
         exec_desc_strings
 };
-
-
 
 /*!
  *\brief	Show Execute action's info
@@ -1377,3 +1300,208 @@ static void prefs_filtering_action_reset_dialog(void)
 	gtk_list_select_item(GTK_LIST(filtering_action.account_list), 0);
 	gtk_entry_set_text(GTK_ENTRY(filtering_action.dest_entry), "");
 }
+
+static GtkListStore* prefs_filtering_action_create_data_store(void)
+{
+	return gtk_list_store_new(N_PFA_COLUMNS,
+				  G_TYPE_STRING,
+				  G_TYPE_BOOLEAN,
+				  -1);
+}
+
+static void prefs_filtering_action_list_view_insert_action(GtkWidget   *list_view,
+							   GtkTreeIter *row,
+							   const gchar *action,
+							   gboolean	is_valid)
+{
+	GtkListStore *store = GTK_LIST_STORE(gtk_tree_view_get_model
+					(GTK_TREE_VIEW(list_view)));
+	gint result = -1;
+	GtkTreeIter iter;
+	
+	
+	/* see if row exists, if not append */
+	if (row == NULL)
+		gtk_list_store_append(store, &iter);
+	else
+		iter = *row;
+
+	gtk_list_store_set(store, &iter,
+			   PFA_ACTION, action,
+			   PFA_VALID_ACTION, is_valid,
+			   -1);
+}
+
+static GtkWidget *prefs_filtering_action_list_view_create(void)
+{
+	GtkTreeView *list_view;
+	GtkTreeModel *model;
+	GtkTreeSelection *selector;
+
+	model = GTK_TREE_MODEL(prefs_filtering_action_create_data_store());
+	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(model));
+	g_object_unref(model);	
+	
+	gtk_tree_view_set_rules_hint(list_view, TRUE);
+
+	selector = gtk_tree_view_get_selection(list_view);
+	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
+	gtk_tree_selection_set_select_function
+		(selector, prefs_filtering_actions_selected, NULL, NULL);
+	
+	/* create the columns */
+	prefs_filtering_action_create_list_view_columns(list_view);
+
+	return GTK_WIDGET(list_view);
+}
+
+static void prefs_filtering_action_create_list_view_columns(GtkTreeView *list_view)
+{
+	GtkTreeViewColumn *column;
+	GtkCellRenderer *renderer;
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes
+		(_("Current action list"),
+		 renderer,
+		 "text", PFA_ACTION,
+		 NULL);
+	gtk_tree_view_append_column(list_view, column);		
+}
+
+static gboolean prefs_filtering_actions_selected
+			(GtkTreeSelection *selector,
+			 GtkTreeModel *model, 
+			 GtkTreePath *path,
+			 gboolean currently_selected,
+			 gpointer data)
+{
+	gchar *action_str;
+	FilteringAction *action;
+        GSList * action_list;
+	gint list_id;
+	GtkTreeIter iter;
+	gboolean is_valid;
+
+	if (currently_selected)
+		return TRUE;
+
+	if (!gtk_tree_model_get_iter(model, &iter, path))
+		return TRUE;
+
+	gtk_tree_model_get(model, &iter, 
+			   PFA_VALID_ACTION,  &is_valid,
+			   -1);
+
+	if (!is_valid) {
+		prefs_filtering_action_reset_dialog();
+		return TRUE;
+	}
+
+	gtk_tree_model_get(model, &iter, 
+			   PFA_ACTION, &action_str,
+			   -1);
+
+	action_list = matcher_parser_get_action_list(action_str);
+	g_free(action_str);
+
+	if (action_list == NULL)
+		return TRUE;
+
+        action = action_list->data;
+        g_slist_free(action_list);
+
+	if (action->destination)
+		gtk_entry_set_text(GTK_ENTRY(filtering_action.dest_entry), action->destination);
+	else
+		gtk_entry_set_text(GTK_ENTRY(filtering_action.dest_entry), "");
+
+	switch(action->type) {
+	case MATCHACTION_MOVE:
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_MOVE);
+		break;
+	case MATCHACTION_COPY:
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_COPY);
+		break;
+	case MATCHACTION_DELETE:
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_DELETE);
+		break;
+	case MATCHACTION_MARK:
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_MARK);
+		break;
+	case MATCHACTION_UNMARK:
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_UNMARK);
+		break;
+	case MATCHACTION_LOCK:
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_LOCK);
+		break;
+	case MATCHACTION_UNLOCK:
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_UNLOCK);
+		break;
+	case MATCHACTION_MARK_AS_READ:
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_MARK_AS_READ);
+		break;
+	case MATCHACTION_MARK_AS_UNREAD:
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_MARK_AS_UNREAD);
+		break;
+	case MATCHACTION_FORWARD:
+		list_id = get_list_id_from_account_id(action->account_id);
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_FORWARD);
+		gtk_list_select_item(GTK_LIST(filtering_action.account_list),
+				     list_id);
+		break;
+	case MATCHACTION_FORWARD_AS_ATTACHMENT:
+		list_id = get_list_id_from_account_id(action->account_id);
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_FORWARD_AS_ATTACHMENT);
+		gtk_list_select_item(GTK_LIST(filtering_action.account_list),
+				     list_id);
+		break;
+	case MATCHACTION_REDIRECT:
+		list_id = get_list_id_from_account_id(action->account_id);
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_REDIRECT);
+		gtk_list_select_item(GTK_LIST(filtering_action.account_list),
+				     list_id);
+		break;
+	case MATCHACTION_EXECUTE:
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_EXECUTE);
+		break;
+	case MATCHACTION_COLOR:
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_COLOR);
+		gtk_option_menu_set_history(GTK_OPTION_MENU(filtering_action.color_optmenu), action->labelcolor);     
+		break;
+	case MATCHACTION_CHANGE_SCORE:
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_CHANGE_SCORE);
+		break;
+	case MATCHACTION_SET_SCORE:
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_SET_SCORE);
+		break;
+	case MATCHACTION_STOP:
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_STOP);
+		break;
+	case MATCHACTION_HIDE:
+		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
+				     ACTION_HIDE);
+		break;
+	}
+
+	filteringaction_free(action); /* XXX: memleak */
+	return TRUE;
+}
+

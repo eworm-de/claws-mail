@@ -1,3 +1,9 @@
+2005-01-08 [colin]	0.9.13cvs29.2
+
+	* src/prefs_filtering_action.c
+	* src/prefs_filtering.c
+		2 more gtk2 patches by Alfons
+
 2005-01-07 [paul]	0.9.13cvs29.1
 
 	* ChangeLog
