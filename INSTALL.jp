@@ -129,7 +129,7 @@ configure スクリプトのオプション
 
   --disable-compface  compface (X-Face)対応を無効にする
   --disable-jconv     libjconv 対応を無効にする
-  --enable-ssl        SSL 対応 (要 OpenSSL)
+  --enable-openssl    SSL 対応 (要 OpenSSL)
   --enable-ipv6       IPv6 対応
   --enable-gpgme      GnuPG 対応 (要 GPGME と GnuPG)
   --enable-ldap       LDAP 対応

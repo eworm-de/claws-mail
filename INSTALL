@@ -129,7 +129,7 @@ Options for configure script
 
   --disable-compface  disable compface (X-Face) support
   --disable-jconv     disable libjconv support
-  --enable-ssl        SSL support (requires OpenSSL)
+  --enable-openssl    SSL support (requires OpenSSL)
   --enable-ipv6       IPv6 support
   --enable-gpgme      GnuPG support (requires GPGME and GnuPG)
   --enable-ldap       LDAP support
