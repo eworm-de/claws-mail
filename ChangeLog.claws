@@ -1,3 +1,12 @@
+2003-09-06 [christoph]	0.9.4claws67
+
+	* src/folder.c
+	* src/folderview.c
+		invoke notification hook for folder tree changes after append
+		and remove folder
+
+	(closes Bug 294 Crash while moving folder with many subdirectories)
+
 2003-09-06 [christoph]	0.9.4claws66
 
 	* src/folder.c
