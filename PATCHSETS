@@ -74,3 +74,4 @@
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/prefs_msg_colors.c; ) > 0.9.12cvs33.18.patchset
 ( cvs diff -u -r 1.2.4.2 -r 1.2.4.3 src/browseldap.c; cvs diff -u -r 1.2.2.1 -r 1.2.2.2 src/ldapctrl.c; cvs diff -u -r 1.1.4.1 -r 1.1.4.2 src/ldapctrl.h; cvs diff -u -r 1.2.2.1 -r 1.2.2.2 src/ldapserver.h; ) > 0.9.12cvs33.19.patchset
 ( cvs diff -u -r 1.9.2.5 -r 1.9.2.6 src/gtk/gtkaspell.c; ) > 0.9.12cvs33.20.patchset
+( cvs diff -u -r 1.382.2.33 -r 1.382.2.34 src/compose.c; cvs diff -u -r 1.9.2.6 -r 1.9.2.7 src/gtk/gtkaspell.c; cvs diff -u -r 1.5.2.1 -r 1.5.2.2 src/gtk/gtkaspell.h; ) > 0.9.12cvs33.21.patchset

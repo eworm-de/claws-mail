@@ -58,7 +58,8 @@ GtkAspell*	gtkaspell_new			(const gchar *dictionary_path,
 						 gint  misspelled_color,
 						 gboolean check_while_typing,  
 						 gboolean use_alternate,  
-						 GtkTextView *gtktext);
+						 GtkTextView *gtktext,
+						 GtkWindow *parent_win);
 
 void 		gtkaspell_delete		(GtkAspell *gtkaspell); 
 

@@ -128,6 +128,7 @@ struct _GtkAspell
 	GtkWidget	*popup_config_menu;
 	GtkWidget	*sug_menu;
 	GtkWidget	*replace_entry;
+	GtkWidget 	*parent_window;
 
 	gint		 default_sug_mode;
 	gint		 max_sug;
@@ -373,7 +374,8 @@ GtkAspell *gtkaspell_new(const gchar *dictionary_path,
 			 gint  misspelled_color,
 			 gboolean check_while_typing,
 			 gboolean use_alternate,
-			 GtkTextView *gtktext)
+			 GtkTextView *gtktext,
+			 GtkWindow *parent_win)
 {
 	Dictionary 	*dict;
 	GtkAspell 	*gtkaspell;
@@ -416,7 +418,8 @@ GtkAspell *gtkaspell_new(const gchar *dictionary_path,
 	gtkaspell->max_sug	      = -1;
 	gtkaspell->suggestions_list   = NULL;
 	gtkaspell->use_alternate      = use_alternate;
-
+	gtkaspell->parent_window      = GTK_WIDGET(parent_win);
+	
 	allocate_color(gtkaspell, misspelled_color);
 
 	g_signal_connect_after(G_OBJECT(buffer), "insert-text",
@@ -1221,7 +1224,7 @@ static void replace_with_supplied_word_cb(GtkWidget *w, GtkAspell *gtkaspell)
 		replace_real_word(gtkaspell, newword);
 
 		if ((e->type == GDK_KEY_PRESS &&
-		    ((GdkEventKey *) e)->state & GDK_MOD1_MASK)) {
+		    ((GdkEventKey *) e)->state & GDK_CONTROL_MASK)) {
 			aspell_speller_store_replacement(
 					gtkaspell->gtkaspeller->checker,
 					 gtkaspell->theword, -1,
@@ -1247,9 +1250,9 @@ static void replace_word_cb(GtkWidget *w, gpointer data)
 	replace_real_word(gtkaspell, newword);
 
 	if ((e->type == GDK_KEY_PRESS && 
-	    ((GdkEventKey *) e)->state & GDK_MOD1_MASK) ||
+	    ((GdkEventKey *) e)->state & GDK_CONTROL_MASK) ||
 	    (e->type == GDK_BUTTON_RELEASE && 
-	     ((GdkEventButton *) e)->state & GDK_MOD1_MASK)) {
+	     ((GdkEventButton *) e)->state & GDK_CONTROL_MASK)) {
 		aspell_speller_store_replacement(
 				gtkaspell->gtkaspeller->checker,
 						 gtkaspell->theword, -1, 
@@ -1454,7 +1457,7 @@ static void replace_with_create_dialog_cb(GtkWidget *w, gpointer data)
 
 	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox, TRUE, 
 			   TRUE, 0);
-	label = gtk_label_new(_("Holding down MOD1 key while pressing "
+	label = gtk_label_new(_("Holding down Control key while pressing "
 				"Enter\nwill learn from mistake.\n"));
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 	gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.0);
@@ -1791,6 +1794,17 @@ static void popup_menu(GtkAspell *gtkaspell, GdkEventButton *eb)
 		       eb->button, GDK_CURRENT_TIME);
 }
 
+static gboolean aspell_key_pressed(GtkWidget *widget,
+				   GdkEventKey *event,
+				   GtkAspell *gtkaspell)
+{
+	if (event && isascii(event->keyval)) {
+		gtk_accel_groups_activate(gtkaspell->parent_window, 
+				event->keyval, event->state);
+	}
+	return FALSE;
+}
+
 /* make_sug_menu() - Add menus to accept this word for this session 
  * and to add it to personal dictionary 
  */
@@ -1836,7 +1850,7 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 			 G_CALLBACK(add_word_to_session_cb), 
 			 gtkaspell);
 	gtk_widget_add_accelerator(item, "activate", accel, GDK_space,
-				   GDK_MOD1_MASK,
+				   GDK_CONTROL_MASK,
 				   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
 
 	item = gtk_menu_item_new_with_label(_("Add to personal dictionary"));
@@ -1846,7 +1860,7 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 			 G_CALLBACK(add_word_to_personal_cb), 
 			 gtkaspell);
 	gtk_widget_add_accelerator(item, "activate", accel, GDK_Return,
-				   GDK_MOD1_MASK,
+				   GDK_CONTROL_MASK,
 				   GTK_ACCEL_LOCKED | GTK_ACCEL_VISIBLE);
 
         item = gtk_menu_item_new_with_label(_("Replace with..."));
@@ -1917,7 +1931,7 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 				gtk_widget_add_accelerator(item, "activate", 
 							   accel,
 							   GDK_A + count, 
-							   GDK_MOD1_MASK,
+							   GDK_CONTROL_MASK,
 							   GTK_ACCEL_LOCKED);
 				}
 
@@ -1926,14 +1940,12 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 		} while ((l = l->next) != NULL);
 	}
 
-#ifndef _MSC_VER
-#warning GTK2 set accelerators for speller popup
-#endif
-/* XXX:GTK2 */
-#if 0
-	gtk_accel_group_attach(accel, G_OBJECT(menu));
-	gtk_accel_group_unref(accel);
-#endif
+	gtk_window_add_accel_group
+		(GTK_WINDOW(gtkaspell->parent_window),
+		 accel);
+	g_signal_connect(G_OBJECT(menu),
+			"key_press_event",
+		       	G_CALLBACK(aspell_key_pressed), gtkaspell);
 	
 	return GTK_MENU(menu);
 }

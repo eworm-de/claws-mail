@@ -1,3 +1,10 @@
+2004-07-24 [colin]	0.9.12cvs33.21
+
+	* src/compose.c
+	* src/gtk/gtkaspell.c
+	* src/gtk/gtkaspell.h
+		Fix speller accelerators (require hack)
+
 2004-07-24 [colin]	0.9.12cvs33.20
 
 	* src/gtk/gtkaspell.c
