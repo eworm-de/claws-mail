@@ -93,3 +93,4 @@
 ( cvs diff -u -r 1.94.2.26 -r 1.94.2.27 src/messageview.c; ) > 0.9.12cvs38.1.patchset
 ( cvs diff -u -r 1.94.2.27 -r 1.94.2.28 src/messageview.c; ) > 0.9.12cvs39.1.patchset
 ( cvs diff -u -r 1.17.2.7 -r 1.17.2.8 src/alertpanel.c; ) > 0.9.12cvs39.2.patchset
+( cvs diff -u -r 1.43.2.8 -r 1.43.2.9 src/prefs_matcher.c; ) > 0.9.12cvs39.3.patchset

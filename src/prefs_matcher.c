@@ -1659,7 +1659,7 @@ static void prefs_matcher_ok(void)
 	MatcherList *matchers;
 	MatcherProp *matcherprop;
 	AlertValue val;
-	gchar *matcher_str;
+	gchar *matcher_str = NULL;
 	gchar *str;
 	gint row = 1;
 
@@ -1672,11 +1672,11 @@ static void prefs_matcher_ok(void)
 			if(strcmp(str, "all") != 0) {
 				while (gtk_clist_get_text(GTK_CLIST(matcher.cond_clist),
 						  row, 0, &matcher_str)) {
-					if (strcmp(matcher_str, str) == 0) break;
+					if (matcher_str && strcmp(matcher_str, str) == 0) break;
 					row++;
 				}
 
-				if (strcmp(matcher_str, str) != 0) {
+				if (!matcher_str || strcmp(matcher_str, str) != 0) {
 	                        	val = alertpanel(_("Entry not saved"),
        		                        	 _("The entry was not saved\nHave you really finished?"),
                		                	 _("Yes"), _("No"), NULL);

@@ -1,3 +1,8 @@
+2004-07-29 [colin]	0.9.12cvs39.3
+
+	* src/prefs_matcher.c
+		Fix segfault
+
 2004-07-29 [colin]	0.9.12cvs39.2
 
 	* src/alertpanel.c
