@@ -274,7 +274,8 @@ static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 		if (!prop->preg && (prop->error == 0)) {
 			prop->preg = g_new0(regex_t, 1);
 			/* if regexp then don't use the escaped string */
-			if (regcomp(prop->preg, prop->expr,
+                        printf("%s\n", prop->expr);
+			if (regcomp(prop->preg, prop->unesc_expr,
 				    REG_NOSUB | REG_EXTENDED
 				    | ((prop->matchtype == MATCHTYPE_REGEXPCASE)
 				    ? REG_ICASE : 0)) != 0) {
