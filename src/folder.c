@@ -267,9 +267,12 @@ void folder_item_destroy(FolderItem *item)
 {
 	g_return_if_fail(item != NULL);
 
+	debug_print(_("Destroying folder item %s\n"), item->path);
+	
+	if(item->cache)
+		folder_item_free_cache(item);
 	g_free(item->name);
 	g_free(item->path);
-	msgcache_destroy(item->cache);
 	g_free(item);
 }
 
@@ -295,9 +298,17 @@ void folder_set_name(Folder *folder, const gchar *name)
 	}
 }
 
+gboolean folder_tree_destroy_func(GNode *node, gpointer data) {
+	FolderItem *item = (FolderItem *) node->data;
+
+	folder_item_destroy(item);
+	return FALSE;
+}
+
 void folder_tree_destroy(Folder *folder)
 {
 	/* TODO: destroy all FolderItem before */
+	g_node_traverse(folder->node, G_POST_ORDER, G_TRAVERSE_ALL, -1, folder_tree_destroy_func, NULL);
 	g_node_destroy(folder->node);
 
 	folder->inbox = NULL;

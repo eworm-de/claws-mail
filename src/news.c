@@ -396,6 +396,7 @@ gint news_scan_group(Folder *folder, FolderItem *item)
 		return 0;
 	}
 
+/*
 	path = folder_item_get_path(item);
 	if (path && is_dir_exist(path)) {
 		procmsg_get_mark_sum(path, &new, &unread, &total, &min, &max,
@@ -428,7 +429,7 @@ gint news_scan_group(Folder *folder, FolderItem *item)
 	item->unread = unread;
 	item->total = num;
 	item->last_num = last;
-
+*/
 	return 0;
 }
 

@@ -812,6 +812,8 @@ void folderview_rescan_tree(Folder *folder)
 	folder_write_list();
 	folderview_set_all();
 
+	folderview_check_new(folder);
+	
 	gtk_widget_destroy(window);
 	inc_unlock();
 }
@@ -828,7 +830,6 @@ void folderview_rescan_all(void)
 	for (; list != NULL; list = list->next) {
 		Folder *folder = list->data;
 
-		if (!folder->scan_tree) continue;
 		folder_set_ui_func(folder, folderview_scan_tree_func, NULL);
 		folder->scan_tree(folder);
 		folder_set_ui_func(folder, NULL, NULL);
@@ -836,6 +837,14 @@ void folderview_rescan_all(void)
 
 	folder_write_list();
 	folderview_set_all();
+
+	list = folder_get_list();
+	for (; list != NULL; list = list->next) {
+		Folder *folder = list->data;
+
+		folderview_check_new(folder);
+	}
+
 	gtk_widget_destroy(window);
 	inc_unlock();
 }

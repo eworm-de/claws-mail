@@ -1,3 +1,14 @@
+2002-06-30 [christoph]	0.7.8claws37
+
+	* src/folder.c
+	* src/folderview.c
+	* src/mh.c
+	* src/news.c
+	* src/procmsg.c
+	    fix broken folder tree rescaning
+	    and don't use procmsg_get_mark_sum
+	    anymore
+
 2002-06-30 [christoph]	0.7.8claws36
 
 	* merge new cache branch

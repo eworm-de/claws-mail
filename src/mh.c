@@ -1270,6 +1270,7 @@ static void mh_scan_tree_recursive(FolderItem *item, GHashTable *pptable)
 
 	closedir(dp);
 
+/*
 	if (item->path) {
 		gint new, unread, total, min, max;
 
@@ -1283,6 +1284,7 @@ static void mh_scan_tree_recursive(FolderItem *item, GHashTable *pptable)
 		item->unread = unread;
 		item->total = n_msg;
 	}
+*/
 }
 
 static gboolean mh_rename_folder_func(GNode *node, gpointer data)

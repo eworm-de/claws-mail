@@ -479,6 +479,7 @@ static void mark_sum_func(gpointer key, gpointer value, gpointer data)
 	g_free(flags);
 }
 
+#if 0 /* NEW CACHE DOES NOT ALLOW ACCESS TO THE MARK FILE */
 void procmsg_get_mark_sum(const gchar *folder,
 			  gint *new, gint *unread, gint *total,
 			  gint *min, gint *max,
@@ -504,6 +505,7 @@ void procmsg_get_mark_sum(const gchar *folder,
 	debug_print("mark->new = %d, mark->unread = %d, mark->total = %d\n",
 		    *(marksum.new), *(marksum.unread), *(marksum.total));
 }
+#endif
 
 static GHashTable *procmsg_read_mark_file(const gchar *folder)
 {
