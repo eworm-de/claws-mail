@@ -1,3 +1,15 @@
+2001-07-28
+
+	* src/mainwindow.c: main_window_popup(): deiconize the window
+	  when popup (thanks to Henrik Carlqvist).
+	* src/procmime.c: procmime_scan_mime_type(): new.
+	  procmime_scan_content_type(): use procmime_scan_mime_type().
+	  procmime_scan_mime_header(): scan the extension of attached files
+	  and add the correct MIME type if the Content-Type is
+	  "application/octet-stream" (thanks to Don Quijote).
+	* src/compose.c: compose_toolbar_create(): added a new "Send later"
+	  icon (thanks to Leandro Pereira).
+
 2001-07-27
 
 	* src/prefs_common.c: date_format_create(): modified the layout of

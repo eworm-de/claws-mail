@@ -1214,6 +1214,7 @@ void main_window_popup(MainWindow *mainwin)
 	y %= sy; if (y < 0) y += sy;
 	gdk_window_move(mainwin->window->window, x, y);
 	gdk_window_raise(mainwin->window->window);
+	gdk_window_show(mainwin->window->window);
 
 	debug_print("window position: x = %d, y = %d\n", x, y);
 

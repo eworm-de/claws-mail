@@ -134,6 +134,7 @@ FILE *procmime_get_text_part		(MsgInfo	*msginfo);
 
 gchar *procmime_get_tmp_file_name	(MimeInfo	*mimeinfo);
 
+ContentType procmime_scan_mime_type	(const gchar	*mime_type);
 gchar *procmime_get_mime_type		(const gchar	*filename);
 
 GList *procmime_get_mime_type_list	(void);

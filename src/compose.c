@@ -3277,12 +3277,12 @@ static Compose *compose_create(PrefsAccount *account)
 }
 
 #include "pixmaps/stock_mail_send.xpm"
+#include "pixmaps/stock_mail_send_queue.xpm"
 #include "pixmaps/stock_mail.xpm"
 #include "pixmaps/stock_paste.xpm"
 #include "pixmaps/stock_mail_attach.xpm"
 #include "pixmaps/stock_mail_compose.xpm"
 #include "pixmaps/linewrap.xpm"
-/*#include "pixmaps/tb_mail_queue_send.xpm"*/
 #include "pixmaps/tb_address_book.xpm"
 
 #define CREATE_TOOLBAR_ICON(xpm_d) \
@@ -3324,7 +3324,7 @@ static void compose_toolbar_create(Compose *compose, GtkWidget *container)
 					   "Send",
 					   icon_wid, toolbar_send_cb, compose);
 
-	CREATE_TOOLBAR_ICON(stock_mail_send_xpm);
+	CREATE_TOOLBAR_ICON(stock_mail_send_queue_xpm);
 	/* CREATE_TOOLBAR_ICON(tb_mail_queue_send_xpm); */
 	sendl_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					   _("Send later"),

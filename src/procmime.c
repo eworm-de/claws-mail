@@ -319,28 +319,7 @@ void procmime_scan_content_type(MimeInfo *mimeinfo, const gchar *content_type)
 	if ((delim = strchr(buf, ';'))) *delim = '\0';
 	mimeinfo->content_type = cnttype = g_strdup(g_strstrip(buf));
 
-	if (!strncasecmp(cnttype, "text/html", 9))
-		mimeinfo->mime_type = MIME_TEXT_HTML;
-	else if (!strncasecmp(cnttype, "text/", 5))
-		mimeinfo->mime_type = MIME_TEXT;
-	else if (!strncasecmp(cnttype, "message/rfc822", 14))
-		mimeinfo->mime_type = MIME_MESSAGE_RFC822;
-	else if (!strncasecmp(cnttype, "message/", 8))
-		mimeinfo->mime_type = MIME_TEXT;
-	else if (!strncasecmp(cnttype, "application/octet-stream", 24))
-		mimeinfo->mime_type = MIME_APPLICATION_OCTET_STREAM;
-	else if (!strncasecmp(cnttype, "application/", 12))
-		mimeinfo->mime_type = MIME_APPLICATION;
-	else if (!strncasecmp(cnttype, "multipart/", 10))
-		mimeinfo->mime_type = MIME_MULTIPART;
-	else if (!strncasecmp(cnttype, "image/", 6))
-		mimeinfo->mime_type = MIME_IMAGE;
-	else if (!strncasecmp(cnttype, "audio/", 6))
-		mimeinfo->mime_type = MIME_AUDIO;
-	else if (!strcasecmp(cnttype, "text"))
-		mimeinfo->mime_type = MIME_TEXT;
-	else
-		mimeinfo->mime_type = MIME_UNKNOWN;
+	mimeinfo->mime_type = procmime_scan_mime_type(cnttype);
 
 	if (!delim) return;
 	p = delim + 1;
@@ -487,15 +466,18 @@ MimeInfo *procmime_scan_mime_header(FILE *fp)
 		} else if (H_CONTENT_TYPE == hnum) {
 			procmime_scan_content_type
 				(mimeinfo, buf + strlen(hp->name));
-			if(mimeinfo->name && (mimeinfo->mime_type==MIME_APPLICATION_OCTET_STREAM)) {
-				const gchar *p;
-				p=procmime_get_mime_type(mimeinfo->name);
-				if(p) procmime_scan_content_type(mimeinfo,p);
-			}
 		} else if (H_CONTENT_DISPOSITION == hnum) {
 			procmime_scan_content_disposition
 				(mimeinfo, buf + strlen(hp->name));
 		}
+	}
+
+	if (mimeinfo->mime_type == MIME_APPLICATION_OCTET_STREAM &&
+	    mimeinfo->name) {
+		const gchar *type;
+		type = procmime_get_mime_type(mimeinfo->name);
+		if (type)
+			mimeinfo->mime_type = procmime_scan_mime_type(type);
 	}
 
 	if (!mimeinfo->content_type)
@@ -733,6 +715,36 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 			       f_prefix, base, NULL);
 
 	return filename;
+}
+
+ContentType procmime_scan_mime_type(const gchar *mime_type)
+{
+	ContentType type;
+
+	if (!strncasecmp(mime_type, "text/html", 9))
+		type = MIME_TEXT_HTML;
+	else if (!strncasecmp(mime_type, "text/", 5))
+		type = MIME_TEXT;
+	else if (!strncasecmp(mime_type, "message/rfc822", 14))
+		type = MIME_MESSAGE_RFC822;
+	else if (!strncasecmp(mime_type, "message/", 8))
+		type = MIME_TEXT;
+	else if (!strncasecmp(mime_type, "application/octet-stream", 24))
+		type = MIME_APPLICATION_OCTET_STREAM;
+	else if (!strncasecmp(mime_type, "application/", 12))
+		type = MIME_APPLICATION;
+	else if (!strncasecmp(mime_type, "multipart/", 10))
+		type = MIME_MULTIPART;
+	else if (!strncasecmp(mime_type, "image/", 6))
+		type = MIME_IMAGE;
+	else if (!strncasecmp(mime_type, "audio/", 6))
+		type = MIME_AUDIO;
+	else if (!strcasecmp(mime_type, "text"))
+		type = MIME_TEXT;
+	else
+		type = MIME_UNKNOWN;
+
+	return type;
 }
 
 static GList *mime_type_list = NULL;
