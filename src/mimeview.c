@@ -25,6 +25,7 @@
 
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>
+#include <gtk/gtknotebook.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkctree.h>
 #include <gtk/gtkvbox.h>
@@ -130,10 +131,12 @@ MimeView *mimeview_create(void)
 {
 	MimeView *mimeview;
 
+	GtkWidget *notebook;
+	GtkWidget *vbox;
 	GtkWidget *paned;
 	GtkWidget *scrolledwin;
 	GtkWidget *ctree;
-	GtkWidget *vbox;
+	GtkWidget *mime_vbox;
 	GtkWidget *popupmenu;
 	GtkItemFactory *popupfactory;
 	gchar *titles[N_MIMEVIEW_COLS];
@@ -146,6 +149,14 @@ MimeView *mimeview_create(void)
 	titles[COL_MIMETYPE] = _("MIME Type");
 	titles[COL_SIZE]     = _("Size");
 	titles[COL_NAME]     = _("Name");
+
+	notebook = gtk_notebook_new();
+	gtk_notebook_set_scrollable(GTK_NOTEBOOK(notebook), TRUE);
+
+	vbox = gtk_vbox_new(FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(notebook), vbox);
+	gtk_notebook_set_tab_label_text(GTK_NOTEBOOK(notebook), vbox,
+					_("Text"));
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
@@ -176,24 +187,31 @@ MimeView *mimeview_create(void)
 	gtk_signal_connect(GTK_OBJECT(ctree), "drag_data_get",
 			   GTK_SIGNAL_FUNC(mimeview_drag_data_get), mimeview);
     
-	vbox = gtk_vbox_new(FALSE, 0);
+	mime_vbox = gtk_vbox_new(FALSE, 0);
 
 	paned = gtk_vpaned_new();
 	gtk_paned_add1(GTK_PANED(paned), scrolledwin);
-	gtk_paned_add2(GTK_PANED(paned), vbox);
-	gtk_widget_show_all(paned);
+	gtk_paned_add2(GTK_PANED(paned), mime_vbox);
+	gtk_container_add(GTK_CONTAINER(notebook), paned);
+	gtk_notebook_set_tab_label_text(GTK_NOTEBOOK(notebook), paned,
+					_("Attachments"));
+
+	gtk_widget_show_all(notebook);
 
 	n_entries = sizeof(mimeview_popup_entries) /
 		sizeof(mimeview_popup_entries[0]);
 	popupmenu = menu_create_items(mimeview_popup_entries, n_entries,
 				      "<MimeView>", &popupfactory, mimeview);
 
-	mimeview->paned       = paned;
-	mimeview->scrolledwin = scrolledwin;
-	mimeview->ctree       = ctree;
-	mimeview->vbox        = vbox;
-	mimeview->popupmenu   = popupmenu;
+	mimeview->notebook     = notebook;
+	mimeview->vbox         = vbox;
+	mimeview->paned        = paned;
+	mimeview->scrolledwin  = scrolledwin;
+	mimeview->ctree        = ctree;
+	mimeview->mime_vbox    = mime_vbox;
+	mimeview->popupmenu    = popupmenu;
 	mimeview->popupfactory = popupfactory;
+	mimeview->type         = -1;
 
 	return mimeview;
 }
@@ -263,6 +281,7 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 	FILE *fp;
 
 	mimeview_clear(mimeview);
+	textview_clear(mimeview->messageview->textview);
 
 	g_return_if_fail(file != NULL);
 	g_return_if_fail(mimeinfo != NULL);
@@ -278,7 +297,7 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 	/* skip MIME part headers */
 	if (mimeinfo->mime_type == MIME_MULTIPART) {
 		if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0)
-		perror("fseek");
+			perror("fseek");
 		while (fgets(buf, sizeof(buf), fp) != NULL)
 			if (buf[0] == '\r' || buf[0] == '\n') break;
 	}
@@ -290,7 +309,6 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 	else
 		set_unchecked_signature(mimeinfo);
 #endif
-	fclose(fp);
 
 	gtk_signal_handler_block_by_func(GTK_OBJECT(ctree), mimeview_selected,
 					 mimeview);
@@ -308,9 +326,18 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 		partinfo = gtk_ctree_node_get_row_data(ctree, node);
 		if (partinfo &&
 		    (partinfo->mime_type == MIME_TEXT ||
-		     partinfo->mime_type == MIME_TEXT_HTML))
+		     partinfo->mime_type == MIME_TEXT_HTML)) {
+			if (fseek(fp, partinfo->fpos, SEEK_SET) < 0)
+				perror("fseek");
+			else
+				textview_show_part
+					(mimeview->messageview->textview,
+					 partinfo, fp);
 			break;
+		}
 	}
+	fclose(fp);
+
 	if (!node)
 		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 
@@ -448,20 +475,24 @@ static void mimeview_change_view_type(MimeView *mimeview, MimeViewType type)
 {
 	TextView  *textview  = mimeview->textview;
 	ImageView *imageview = mimeview->imageview;
+	GList *children;
 
 	if (mimeview->type == type) return;
 
+	children = gtk_container_children(GTK_CONTAINER(mimeview->mime_vbox));
+	if (children) {
+		gtkut_container_remove(GTK_CONTAINER(mimeview->mime_vbox),
+				       GTK_WIDGET(children->data));
+		g_list_free(children);
+	}
+
 	switch (type) {
 	case MIMEVIEW_IMAGE:
-		gtkut_container_remove(GTK_CONTAINER(mimeview->vbox),
-		  		       GTK_WIDGET_PTR(textview));
-		gtk_container_add(GTK_CONTAINER(mimeview->vbox),
+		gtk_container_add(GTK_CONTAINER(mimeview->mime_vbox),
 				  GTK_WIDGET_PTR(imageview));
 		break;
 	case MIMEVIEW_TEXT:
-		gtkut_container_remove(GTK_CONTAINER(mimeview->vbox),
-		  		       GTK_WIDGET_PTR(imageview));
-		gtk_container_add(GTK_CONTAINER(mimeview->vbox),
+		gtk_container_add(GTK_CONTAINER(mimeview->mime_vbox),
 				  GTK_WIDGET_PTR(textview));
 		break;
 	default:
@@ -486,6 +517,8 @@ static void mimeview_clear(MimeView *mimeview)
 
 	g_free(mimeview->file);
 	mimeview->file = NULL;
+
+	/* gtk_notebook_set_page(GTK_NOTEBOOK(mimeview->notebook), 0); */
 }
 
 static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
@@ -534,8 +567,8 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 	}
 }
 
-static void mimeview_start_drag (GtkWidget *widget, gint button,
-				 GdkEvent *event, MimeView *mimeview)
+static void mimeview_start_drag(GtkWidget *widget, gint button,
+				GdkEvent *event, MimeView *mimeview)
 {
 	GtkTargetList *list;
 	GdkDragContext *context;

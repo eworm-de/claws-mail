@@ -40,13 +40,15 @@ typedef enum
 
 struct _MimeView
 {
+	GtkWidget *notebook;
+	GtkWidget *vbox;
+
 	GtkWidget *paned;
-
-	MimeViewType type;
-
 	GtkWidget *scrolledwin;
 	GtkWidget *ctree;
-	GtkWidget *vbox;
+	GtkWidget *mime_vbox;
+
+	MimeViewType type;
 
 	GtkWidget *popupmenu;
 	GtkItemFactory *popupfactory;

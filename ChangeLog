@@ -1,3 +1,28 @@
+2002-02-24
+
+	* src/messageview.c
+	  src/mimeview.[ch]
+	  src/summaryview.c: implemented the new notebook tab interface for
+	  MIME message.
+	* src/textview.[ch]: fixed line space related glitches.
+
+2002-02-23
+
+	* src/prefs_filter.c:
+	  prefs_filter_rename_path()
+	  prefs_filter_delete_path(): fixed a crash when flt->dest was NULL.
+
+2002-02-23
+
+	* src/recv.[ch]: cancel data receiving if RecvUIFunc returns FALSE.
+	* src/pop.c: pop3_retr_recv(): fixed false 'No space' when cancelled
+	  while getting data.
+	* src/inc.c: inc_pop3_recv_func(): abort data receiving when
+	  cancelled, and fixed potential crash bug.
+	* src/grouplistdialog.c: enabled cancelling of data receiving.
+	* src/news.c: news_get_group_list(): destroy current session if
+	  retrieving failed.
+
 2002-02-22
 
 	* src/manage_window.[ch]: fixed a bug that caused crash when

@@ -99,6 +99,12 @@ static GdkColor error_color = {
 	(gushort)0
 };
 
+static GdkFont *text_sb_font;
+static GdkFont *text_mb_font;
+static gint text_sb_font_orig_ascent;
+static gint text_sb_font_orig_descent;
+static gint text_mb_font_orig_ascent;
+static gint text_mb_font_orig_descent;
 static GdkFont *spacingfont;
 
 static void textview_show_ertf		(TextView	*textview,
@@ -226,6 +232,8 @@ TextView *textview_create(void)
 
 	vbox = gtk_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), scrolledwin_sb, TRUE, TRUE, 0);
+
+	gtk_widget_show(vbox);
 
 	textview->vbox             = vbox;
 	textview->scrolledwin      = scrolledwin_sb;
@@ -946,11 +954,8 @@ void textview_destroy(TextView *textview)
 	if (!textview->scrolledwin_mb->parent)
 		gtk_widget_destroy(textview->scrolledwin_mb);
 
-	if (textview->msgfont) {
-		textview->msgfont->ascent = textview->prev_ascent;
-		textview->msgfont->descent = textview->prev_descent;
+	if (textview->msgfont)
 		gdk_font_unref(textview->msgfont);
-	}
 	if (textview->boldfont)
 		gdk_font_unref(textview->boldfont);
 
@@ -1007,39 +1012,57 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 	}
 
 	if (prefs_common.textfont) {
-		if (textview->msgfont) {
-			textview->msgfont->ascent = textview->prev_ascent;
-			textview->msgfont->descent = textview->prev_descent;
-			gdk_font_unref(textview->msgfont);
-			textview->msgfont = NULL;
-		}
-		if (use_fontset)
-			textview->msgfont =
-				gdk_fontset_load(prefs_common.textfont);
-		else {
+		GdkFont *font;
+
+		if (use_fontset) {
+			if (text_mb_font) {
+				text_mb_font->ascent = text_mb_font_orig_ascent;
+				text_mb_font->descent = text_mb_font_orig_descent;
+			}
+			font = gdk_fontset_load(prefs_common.textfont);
+			if (font && text_mb_font != font) {
+				if (text_mb_font)
+					gdk_font_unref(text_mb_font);
+				text_mb_font = font;
+				text_mb_font_orig_ascent = font->ascent;
+				text_mb_font_orig_descent = font->descent;
+			}
+		} else {
+			if (text_sb_font) {
+				text_sb_font->ascent = text_sb_font_orig_ascent;
+				text_sb_font->descent = text_sb_font_orig_descent;
+			}
 			if (MB_CUR_MAX > 1) {
-				FONT_LOAD(textview->msgfont,
-					  "-*-courier-medium-r-normal--14-*-*-*-*-*-iso8859-1");
+				FONT_LOAD(font, "-*-courier-medium-r-normal--14-*-*-*-*-*-iso8859-1");
 			} else {
-				FONT_LOAD(textview->msgfont,
-					  prefs_common.textfont);
+				FONT_LOAD(font, prefs_common.textfont);
+			}
+			if (font && text_sb_font != font) {
+				if (text_sb_font)
+					gdk_font_unref(text_sb_font);
+				text_sb_font = font;
+				text_sb_font_orig_ascent = font->ascent;
+				text_sb_font_orig_descent = font->descent;
 			}
 		}
 
-		if (textview->msgfont) {
+		if (font) {
 			gint ascent, descent;
 
-			textview->prev_ascent = textview->msgfont->ascent;
-			textview->prev_descent = textview->msgfont->descent;
 			descent = prefs_common.line_space / 2;
 			ascent  = prefs_common.line_space - descent;
-			textview->msgfont->ascent  += ascent;
-			textview->msgfont->descent += descent;
+			font->ascent  += ascent;
+			font->descent += descent;
+
+			if (textview->msgfont)
+				gdk_font_unref(textview->msgfont);
+			textview->msgfont = font;
+			gdk_font_ref(font);
 		}
 	}
 
-	if (!textview->boldfont)
-		FONT_LOAD(textview->boldfont, BOLD_FONT);
+	if (!textview->boldfont && prefs_common.boldfont)
+		FONT_LOAD(textview->boldfont, prefs_common.boldfont);
 	if (!spacingfont)
 		spacingfont = gdk_font_load("-*-*-medium-r-normal--6-*");
 }

@@ -2329,7 +2329,9 @@ static void summary_display_msg_full(SummaryView *summaryview,
 		messageview_show(msgview, msginfo, all_headers);
 		if (msgview->type == MVIEW_TEXT ||
 		    (msgview->type == MVIEW_MIME &&
-		     GTK_CLIST(msgview->mimeview->ctree)->row_list == NULL))
+		     (GTK_CLIST(msgview->mimeview->ctree)->row_list == NULL ||
+		      gtk_notebook_get_current_page
+			(GTK_NOTEBOOK(msgview->mimeview->notebook)) == 0)))
 			gtk_widget_grab_focus(summaryview->ctree);
 		GTK_EVENTS_FLUSH();
 		gtkut_ctree_node_move_if_on_the_edge(ctree, row);

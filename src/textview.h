@@ -53,8 +53,6 @@ struct _TextView
 
 	GdkFont *msgfont;
 	GdkFont *boldfont;
-	gint prev_ascent;
-	gint prev_descent;
 
 	gboolean show_all_headers;
 
