@@ -3631,7 +3631,6 @@ void summary_thread_build(SummaryView *summaryview)
 
 		if (parent && parent != node) {
 			gtk_ctree_move(ctree, node, parent, NULL);
-			gtk_ctree_expand(ctree, node);
 		}
 
 		node = next;
@@ -3641,8 +3640,6 @@ void summary_thread_build(SummaryView *summaryview)
 
 	while (node) {
 		next = GTK_CTREE_NODE_NEXT(node);
-		if (!summaryview->thread_collapsed)
-			gtk_ctree_expand(ctree, node);
 		if (prefs_common.bold_unread &&
 		    GTK_CTREE_ROW(node)->children)
 			summary_set_row_marks(summaryview, node);

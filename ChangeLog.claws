@@ -1,3 +1,9 @@
+2004-10-04 [colin]	0.9.12cvs121
+
+	* src/summaryview.c
+		Fix bug #605 (collapsed threads re-expand when moving or
+		deleting mails)
+
 2004-10-03 [colin]	0.9.12cvs120
 
 	* src/summaryview.c
