@@ -117,6 +117,20 @@ static void save_all_pages(GSList *prefs_pages)
 	}
 }
 
+static gboolean query_can_close_all_pages(GSList *prefs_pages)
+{
+	GSList *cur;
+
+	for (cur = prefs_pages; cur != NULL; cur = g_slist_next(cur)) {
+		PrefsPage *page = (PrefsPage *) cur->data;
+
+		if (page->can_close)
+			if (!page->can_close(page))
+				return FALSE;
+	}
+	return TRUE;
+}
+
 static void close_all_pages(GSList *prefs_pages)
 {
 	GSList *cur;
@@ -154,8 +168,10 @@ static void ok_button_released(GtkButton *button, gpointer user_data)
 {
 	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
 
-	save_all_pages(prefswindow->prefs_pages);
-	close_prefs_window(prefswindow);
+	if (query_can_close_all_pages(prefswindow->prefs_pages)) {
+		save_all_pages(prefswindow->prefs_pages);
+		close_prefs_window(prefswindow);
+	}		
 }
 
 static void cancel_button_released(GtkButton *button, gpointer user_data)

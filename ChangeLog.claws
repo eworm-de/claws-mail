@@ -1,3 +1,12 @@
+2005-02-25 [paul]	1.0.1cvs19
+
+	* src/prefs_account.c
+	* src/prefs_folder_item.c
+	* src/gtk/prefswindow.c
+	* src/gtk/prefswindow.h
+		fix bug 698 'Clicking OK without username 'crashes'
+		account edit window'. Patch by Alfons
+
 2005-02-24 [colin]	1.0.1cvs18
 
 	* src/messageview.c
