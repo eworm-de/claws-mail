@@ -118,11 +118,20 @@ static SockInfo *imap_open		(const gchar	*server,
 					 gushort	 port);
 #endif
 
+#if USE_SSL
 static SockInfo *imap_open_tunnel(const gchar *server,
 				  const gchar *tunnelcmd,
 				  SSLType ssl_type);
+#else
+static SockInfo *imap_open_tunnel(const gchar *server,
+				  const gchar *tunnelcmd);
+#endif
 
-static SockInfo *imap_init_sock(SockInfo *sock, SSLType ssl_type);
+#if USE_SSL
+static SockInfo *imap_init_sock(SockInfo *sock, SSLType	 ssl_type);
+#else
+static SockInfo *imap_init_sock(SockInfo *sock);
+#endif
 
 static gint imap_set_message_flags	(IMAPSession	*session,
 					 guint32	 first_uid,
@@ -396,9 +405,14 @@ Session *imap_session_new(const PrefsAccount *account)
 
 	if (account->set_tunnelcmd) {
 		log_message(_("creating tunneled IMAP4 connection\n"));
+#if USE_SSL
 		if ((imap_sock = imap_open_tunnel(account->recv_server, 
 						  account->tunnelcmd,
 						  ssl_type)) == NULL)
+#else
+		if ((imap_sock = imap_open_tunnel(account->recv_server, 
+						  account->tunnelcmd)) == NULL)
+#endif
 			return NULL;
 	} else {
 		g_return_val_if_fail(account->recv_server != NULL, NULL);
@@ -1590,10 +1604,14 @@ static void imap_delete_all_cached_messages(FolderItem *item)
 	debug_print(_("done.\n"));
 }
 
-
+#if USE_SSL
 static SockInfo *imap_open_tunnel(const gchar *server,
 			   const gchar *tunnelcmd,
 			   SSLType ssl_type)
+#else
+static SockInfo *imap_open_tunnel(const gchar *server,
+			   const gchar *tunnelcmd)
+#endif
 {
 	SockInfo *sock;
 
@@ -1601,8 +1619,11 @@ static SockInfo *imap_open_tunnel(const gchar *server,
 		log_warning(_("Can't establish IMAP4 session with: %s\n"),
 			    server);
 		return NULL;
-
+#if USE_SSL
 	return imap_init_sock(sock, ssl_type);
+#else
+	return imap_init_sock(sock);
+#endif
 }
 
 
@@ -1628,13 +1649,17 @@ static SockInfo *imap_open(const gchar *server, gushort port)
 		sock_close(sock);
 		return NULL;
 	}
-#endif
-
 	return imap_init_sock(sock, ssl_type);
+#else
+	return imap_init_sock(sock);
+#endif
 }
 
-
+#if USE_SSL
 static SockInfo *imap_init_sock(SockInfo *sock, SSLType ssl_type)
+#else
+static SockInfo *imap_init_sock(SockInfo *sock)
+#endif
 {
 	imap_cmd_count = 0;
 #if USE_SSL
