@@ -33,7 +33,8 @@ gchar   *mh_fetch_msg		(Folder		*folder,
 				 gint		 num);
 gint     mh_add_msg		(Folder		*folder,
 				 FolderItem	*dest,
-				 const gchar	*file);
+				 const gchar	*file,
+				 gboolean	 remove_source);
 gint     mh_move_msg		(Folder		*folder,
 				 FolderItem	*dest,
 				 MsgInfo	*msginfo);

@@ -489,7 +489,8 @@ gchar *folder_item_fetch_msg(FolderItem *item, gint num)
 	return folder->fetch_msg(folder, item, num);
 }
 
-gint folder_item_add_msg(FolderItem *dest, const gchar *file)
+gint folder_item_add_msg(FolderItem *dest, const gchar *file,
+			 gboolean remove_source)
 {
 	Folder *folder;
 	gint num;
@@ -501,7 +502,7 @@ gint folder_item_add_msg(FolderItem *dest, const gchar *file)
 	folder = dest->folder;
 	if (dest->last_num < 0) folder->scan(folder, dest);
 
-	num = folder->add_msg(folder, dest, file);
+	num = folder->add_msg(folder, dest, file, remove_source);
 	if (num > 0) dest->last_num = num;
 
 	return num;

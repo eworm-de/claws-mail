@@ -1,3 +1,26 @@
+2001-05-15
+
+	* src/compose.c: compose_write_headers(): excluded also From, To,
+	  Sender because they could be used for SPAM.
+	* src/folderview.c: add '+' mark to the collapsed folder that have
+	  some unread folders.
+	  folderview_search_new_recursive(),
+	  folderview_have_new_children(),
+	  folderview_search_unread_recursive(),
+	  folderview_have_unread_children(),
+	  folderview_find_collapsed_parent(): new.
+	  folderview_update_node(): display the number of queued messages.
+
+2001-05-14
+
+	* src/folder.[ch]
+	  src/mh.[ch]: modified *_add_msg() to use link(). Added the
+	  argument to switch whether to remove the source file or not.
+	* src/compose.c
+	  src/inc.c
+	  src/mbox.c: modified the argument of folder_item_add_msg() and
+	  removed some unlink()'s.
+
 2001-05-13
 
 	* src/prefs_customheader.[ch]: renamed prefs_headers_* to
@@ -12,6 +35,9 @@
 	  header list.
 	* src/compose.c: compose_write_headers(): modified the order of
 	  headers, and made it encode the custom headers.
+	* src/prefs_customheader.c: prefs_custom_header_delete_cb()
+	  src/prefs_filter.c: prefs_filter_delete_cb(): treat closing the
+	  alert panel by ESC as "No".
 
 2001-05-13
 

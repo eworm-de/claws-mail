@@ -108,7 +108,8 @@ struct _Folder
 					 gint		 num);
 	gint     (*add_msg)		(Folder		*folder,
 					 FolderItem	*dest,
-					 const gchar	*file);
+					 const gchar	*file,
+					 gboolean	 remove_source);
 	gint     (*move_msg)		(Folder		*folder,
 					 FolderItem	*dest,
 					 MsgInfo	*msginfo);
@@ -257,7 +258,8 @@ void   folder_item_scan_foreach		(GHashTable	*table);
 gchar *folder_item_fetch_msg		(FolderItem	*item,
 					 gint		 num);
 gint   folder_item_add_msg		(FolderItem	*dest,
-					 const gchar	*file);
+					 const gchar	*file,
+					 gboolean	 remove_source);
 gint   folder_item_move_msg		(FolderItem	*dest,
 					 MsgInfo	*msginfo);
 gint   folder_item_move_msgs_with_dest	(FolderItem	*dest,

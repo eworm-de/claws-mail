@@ -1485,7 +1485,7 @@ static gint compose_send(Compose *compose)
 				(_("Can't save the message to outbox."));
 	}
 
-	if (unlink(tmp) < 0) FILE_OP_ERROR(tmp, "unlink");
+	unlink(tmp);
 	lock = FALSE;
 	return ok;
 }
@@ -1665,7 +1665,7 @@ static gint compose_save_to_outbox(Compose *compose, const gchar *file)
 
 	outbox = folder_get_default_outbox();
 	folder_item_scan(outbox);
-	if ((num = folder_item_add_msg(outbox, file)) < 0) {
+	if ((num = folder_item_add_msg(outbox, file, FALSE)) < 0) {
 		g_warning(_("can't save message\n"));
 		return -1;
 	}
@@ -1769,13 +1769,12 @@ static gint compose_queue(Compose *compose, const gchar *file)
 
 	queue = folder_get_default_queue();
 	folder_item_scan(queue);
-	if ((num = folder_item_add_msg(queue, tmp)) < 0) {
+	if ((num = folder_item_add_msg(queue, tmp, TRUE)) < 0) {
 		g_warning(_("can't queue the message\n"));
 		unlink(tmp);
 		g_free(tmp);
 		return -1;
 	}
-	unlink(tmp);
 	g_free(tmp);
 
 	queue_path = folder_item_get_path(queue);
@@ -2080,6 +2079,9 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 			CustomHeader *chdr = (CustomHeader *)cur->data;
 
 			if (strcasecmp(chdr->name, "Date")         != 0 &&
+			    strcasecmp(chdr->name, "From")         != 0 &&
+			    strcasecmp(chdr->name, "To")           != 0 &&
+			    strcasecmp(chdr->name, "Sender")       != 0 &&
 			    strcasecmp(chdr->name, "Message-Id")   != 0 &&
 			    strcasecmp(chdr->name, "In-Reply-To")  != 0 &&
 			    strcasecmp(chdr->name, "References")   != 0 &&
@@ -3657,13 +3659,12 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		return;
 	}
 
-	if (folder_item_add_msg(draft, tmp) < 0) {
+	if (folder_item_add_msg(draft, tmp, TRUE) < 0) {
 		unlink(tmp);
 		g_free(tmp);
 		return;
 	}
 
-	unlink(tmp);
 	g_free(tmp);
 
 	//folderview_scan_folder_a(DRAFT_DIR, TRUE);

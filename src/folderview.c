@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2000 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,6 +133,12 @@ static void folderview_key_pressed	(GtkWidget	*widget,
 static void folderview_selected		(GtkCTree	*ctree,
 					 GtkCTreeNode	*row,
 					 gint		 column,
+					 FolderView	*folderview);
+static void folderview_tree_expanded	(GtkCTree	*ctree,
+					 GtkCTreeNode	*node,
+					 FolderView	*folderview);
+static void folderview_tree_collapsed	(GtkCTree	*ctree,
+					 GtkCTreeNode	*node,
 					 FolderView	*folderview);
 static void folderview_popup_close	(GtkMenuShell	*menu_shell,
 					 FolderView	*folderview);
@@ -313,7 +319,16 @@ FolderView *folderview_create(void)
 			   folderview);
 	gtk_signal_connect(GTK_OBJECT(ctree), "tree_select_row",
 			   GTK_SIGNAL_FUNC(folderview_selected), folderview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "resize_column",
+
+
+	gtk_signal_connect_after(GTK_OBJECT(ctree), "tree_expand",
+				 GTK_SIGNAL_FUNC(folderview_tree_expanded),
+				 folderview);
+	gtk_signal_connect_after(GTK_OBJECT(ctree), "tree_collapse",
+				 GTK_SIGNAL_FUNC(folderview_tree_collapsed),
+				 folderview);
+
+    gtk_signal_connect(GTK_OBJECT(ctree), "resize_column",
 			   GTK_SIGNAL_FUNC(folderview_col_resized),
 			   folderview);
 
@@ -579,6 +594,111 @@ void folderview_update_all(void)
 	gtk_widget_destroy(window);
 }
 
+static gboolean folderview_search_new_recursive(GtkCTree *ctree,
+						GtkCTreeNode *node)
+{
+	FolderItem *item;
+
+	if (node) {
+		item = gtk_ctree_node_get_row_data(ctree, node);
+		if (item) {
+			if (item->new > 0 ||
+			    (item->stype == F_QUEUE && item->total > 0))
+				return TRUE;
+		}
+		node = GTK_CTREE_ROW(node)->children;
+	} else
+		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+
+	while (node) {
+		if (folderview_search_new_recursive(ctree, node) == TRUE)
+			return TRUE;
+		node = GTK_CTREE_ROW(node)->sibling;
+	}
+
+	return FALSE;
+}
+
+static gboolean folderview_have_new_children(FolderView *folderview,
+					     GtkCTreeNode *node)
+{
+	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+
+	if (!node)
+		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+	if (!node)
+		return FALSE;
+
+	node = GTK_CTREE_ROW(node)->children;
+
+	while (node) {
+		if (folderview_search_new_recursive(ctree, node) == TRUE)
+			return TRUE;
+		node = GTK_CTREE_ROW(node)->sibling;
+	}
+
+	return FALSE;
+}
+
+static gboolean folderview_search_unread_recursive(GtkCTree *ctree,
+						   GtkCTreeNode *node)
+{
+	FolderItem *item;
+
+	if (node) {
+		item = gtk_ctree_node_get_row_data(ctree, node);
+		if (item) {
+			if (item->unread > 0 ||
+			    (item->stype == F_QUEUE && item->total > 0))
+				return TRUE;
+		}
+		node = GTK_CTREE_ROW(node)->children;
+	} else
+		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+
+	while (node) {
+		if (folderview_search_unread_recursive(ctree, node) == TRUE)
+			return TRUE;
+		node = GTK_CTREE_ROW(node)->sibling;
+	}
+
+	return FALSE;
+}
+
+static gboolean folderview_have_unread_children(FolderView *folderview,
+						GtkCTreeNode *node)
+{
+	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+
+	if (!node)
+		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+	if (!node)
+		return FALSE;
+
+	node = GTK_CTREE_ROW(node)->children;
+
+	while (node) {
+		if (folderview_search_unread_recursive(ctree, node) == TRUE)
+			return TRUE;
+		node = GTK_CTREE_ROW(node)->sibling;
+	}
+
+	return FALSE;
+}
+
+static GtkCTreeNode *folderview_find_collapsed_parent(FolderView *folderview,
+						      GtkCTreeNode *node)
+{
+	if (!node) return NULL;
+
+	while ((node = GTK_CTREE_ROW(node)->parent) != NULL) {
+		if (!GTK_CTREE_ROW(node)->expanded)
+			return node;
+	}
+
+	return NULL;
+}
+
 static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
@@ -587,6 +707,9 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	GdkPixmap *xpm, *openxpm;
 	GdkBitmap *mask, *openmask;
 	gchar *name;
+	gchar *str;
+	gboolean add_unread_mark;
+	gboolean use_bold, use_color;
 
 	item = gtk_ctree_node_get_row_data(ctree, node);
 	g_return_if_fail(item != NULL);
@@ -639,9 +762,29 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		} else
 			name = g_strdup(item->name);
 	}
-	if (item->unread > 0 && prefs_common.display_folder_unread) {
-		gchar *str;
 
+	if (!GTK_CTREE_ROW(node)->expanded &&
+	    folderview_have_unread_children(folderview, node))
+		add_unread_mark = TRUE;
+	else
+		add_unread_mark = FALSE;
+
+	if (item->stype == F_QUEUE && item->total > 0 &&
+	    prefs_common.display_folder_unread) {
+		str = g_strdup_printf("%s (%d%s)", name, item->total,
+				      add_unread_mark ? "+" : "");
+		gtk_ctree_set_node_info(ctree, node, str, FOLDER_SPACING,
+					xpm, mask, openxpm, openmask,
+					FALSE, GTK_CTREE_ROW(node)->expanded);
+		g_free(str);
+	} else if ((item->unread > 0 || add_unread_mark) &&
+		 prefs_common.display_folder_unread) {
+
+		if (item->unread > 0)
+			str = g_strdup_printf("%s (%d%s)", name, item->unread,
+					      add_unread_mark ? "+" : "");
+		else
+			str = g_strdup_printf("%s (+)", name);
 		str = g_strdup_printf("%s (%d)", name, item->unread);
 		gtk_ctree_set_node_info(ctree, node, str, FOLDER_SPACING,
 					xpm, mask, openxpm, openmask,
@@ -657,7 +800,6 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		gtk_ctree_node_set_text(ctree, node, COL_NEW,    "-");
 		gtk_ctree_node_set_text(ctree, node, COL_UNREAD, "-");
 		gtk_ctree_node_set_text(ctree, node, COL_TOTAL,  "-");
-		return;
 	} else {
 		gtk_ctree_node_set_text(ctree, node, COL_NEW,    itos(item->new));
 		gtk_ctree_node_set_text(ctree, node, COL_UNREAD, itos(item->unread));
@@ -671,36 +813,44 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	if (!prev_style)
 		prev_style = ctree_style;
 	style = gtk_style_copy(prev_style);
+	if (!style) return;
 
-	if (style) {
-		gboolean use_bold, use_color;
+	if (item->stype == F_QUEUE) {
+		/* highlight queue folder if there are any messages */
+		use_bold = use_color = (item->total > 0);
+	} else {
+		/* if unread messages exist, print with bold font */
+		use_bold = (item->unread > 0) || add_unread_mark;
+		/* if new messages exist, print with colored letter */
+		use_color =
+			(item->new > 0) ||
+			(add_unread_mark &&
+			 folderview_have_new_children(folderview, node));
+	}
 
-		if (item->stype == F_QUEUE) {
-			/* highlight queue folder if there are any messages */
-			use_bold = use_color = (item->total > 0);
-		} else {
-			/* if unread messages exist, print with bold font */
-			use_bold = (item->unread > 0);
-			/* if new messages exist, print with colored letter */
-			use_color = (item->new > 0);
-		}
+	if (use_bold && boldfont)
+		style->font = boldfont;
+	else
+		style->font = ctree_style->font;
 
-		if (use_bold && boldfont)
-			style->font = boldfont;
-		else
-			style->font = ctree_style->font;
+	if (use_color) {
+		style->fg[GTK_STATE_NORMAL]   = folderview->color_new;
+		style->fg[GTK_STATE_SELECTED] = folderview->color_new;
+	} else {
+		style->fg[GTK_STATE_NORMAL] =
+			ctree_style->fg[GTK_STATE_NORMAL];
+		style->fg[GTK_STATE_SELECTED] =
+			ctree_style->fg[GTK_STATE_SELECTED];
+	}
 
-		if (use_color) {
-			style->fg[GTK_STATE_NORMAL]   = folderview->color_new;
-			style->fg[GTK_STATE_SELECTED] = folderview->color_new;
-		} else {
-			style->fg[GTK_STATE_NORMAL] =
-				ctree_style->fg[GTK_STATE_NORMAL];
-			style->fg[GTK_STATE_SELECTED] =
-				ctree_style->fg[GTK_STATE_SELECTED];
-		}
+	gtk_ctree_node_set_row_style(ctree, node, style);
 
-		gtk_ctree_node_set_row_style(ctree, node, style);
+	if (use_bold) {
+		GtkCTreeNode *parent;
+
+		parent = folderview_find_collapsed_parent(folderview, node);
+		if (parent)
+			folderview_update_node(folderview, parent);
 	}
 }
 
@@ -1078,6 +1228,18 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	summary_show(folderview->summaryview, item, FALSE);
 
 	can_select = TRUE;
+}
+
+static void folderview_tree_expanded(GtkCTree *ctree, GtkCTreeNode *node,
+				     FolderView *folderview)
+{
+	folderview_update_node(folderview, node);
+}
+
+static void folderview_tree_collapsed(GtkCTree *ctree, GtkCTreeNode *node,
+				      FolderView *folderview)
+{
+	folderview_update_node(folderview, node);
 }
 
 static void folderview_popup_close(GtkMenuShell *menu_shell,

@@ -1,3 +1,27 @@
+2001-05-15
+
+	* src/compose.c: compose_write_headers(): SPAM に使用される可能性
+	  があるので、 From, To, Sender も除外するようにした。
+	* src/folderview.c: 未読フォルダがある折り畳まれたフォルダに '+'
+	  マークを付けるようにした。
+	  folderview_search_new_recursive(),
+	  folderview_have_new_children(),
+	  folderview_search_unread_recursive(),
+	  folderview_have_unread_children(),
+	  folderview_find_collapsed_parent(): 新規。
+	  folderview_update_node(): キューされたメッセージの数を表示する
+	  ようにした。
+
+2001-05-14
+
+	* src/folder.[ch]
+	  src/mh.[ch]: *_add_msg() を link() を使用するように修正。
+	  元のファイルを削除するかどうかを切替える引数を追加。
+	* src/compose.c
+	  src/inc.c
+	  src/mbox.c: folder_item_add_msg() の引数を修正し、いくつかの
+	  unlink() を削除。
+
 2001-05-13
 
 	* src/prefs_customheader.[ch]: prefs_headers_* を
@@ -12,6 +36,9 @@
 	  した。
 	* src/compose.c: compose_write_headers(): ヘッダの順序を修正し、
 	  カスタムヘッダをエンコードするようにした。
+	* src/prefs_customheader.c: prefs_custom_header_delete_cb()
+	  src/prefs_filter.c: prefs_filter_delete_cb(): ESC で警告パネル
+	  を閉じるのを「いいえ」として扱うようにした。
 
 2001-05-13
 

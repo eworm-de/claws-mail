@@ -26,6 +26,8 @@
 #include <glib.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <unistd.h>
+#include <string.h>
 #include <errno.h>
 
 #undef MEASURE_TIME
@@ -128,7 +130,8 @@ gchar *mh_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	return file;
 }
 
-gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file)
+gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
+		gboolean remove_source)
 {
 	gchar *destpath;
 	gchar *destfile;
@@ -145,10 +148,25 @@ gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file)
 	g_return_val_if_fail(destpath != NULL, -1);
 	destfile = g_strdup_printf("%s%c%d", destpath, G_DIR_SEPARATOR,
 				   dest->last_num + 1);
-	if (copy_file(file, destfile) < 0) {
-		g_warning(_("can't copy message %s to %s\n"), file, destfile);
-		g_free(destfile);
-		return -1;
+
+	if (link(file, destfile) < 0) {
+		if (EXDEV == errno) {
+			if (copy_file(file, destfile) < 0) {
+				g_warning(_("can't copy message %s to %s\n"),
+					  file, destfile);
+				g_free(destfile);
+				return -1;
+			}
+		} else {
+			FILE_OP_ERROR(file, "link");
+			g_free(destfile);
+			return -1;
+		}
+	}
+
+	if (remove_source) {
+		if (unlink(file) < 0)
+			FILE_OP_ERROR(file, "unlink");
 	}
 
 	g_free(destfile);
@@ -165,11 +183,6 @@ gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msginfo != NULL, -1);
-
-	if (!msginfo->folder) {
-		g_warning(_("the folder of the message is not defined\n"));
-		return -1;
-	}
 
 	if (msginfo->folder == dest) {
 		g_warning(_("the src folder is identical to the dest.\n"));
@@ -335,11 +348,6 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msginfo != NULL, -1);
-
-	if (!msginfo->folder) {
-		g_warning(_("the folder of the message is not defined\n"));
-		return -1;
-	}
 
 	if (msginfo->folder == dest) {
 		g_warning(_("the src folder is identical to the dest.\n"));

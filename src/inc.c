@@ -812,12 +812,10 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 				    GINT_TO_POINTER(1));
 	}
 
-	if ((msgnum = folder_item_add_msg(dropfolder, file)) < 0) {
+	if ((msgnum = folder_item_add_msg(dropfolder, file, TRUE)) < 0) {
 		unlink(file);
 		return -1;
 	}
-
-	unlink(file);
 
 	if (prefs_filtering != NULL) {
 		/* new filtering */
