@@ -2078,30 +2078,15 @@ gint move_file(const gchar *src, const gchar *dest)
 /* convert line endings into CRLF. If the last line doesn't end with
  * linebreak, add it.
  */
-gint canonicalize_file(const gchar *src, const gchar *dest)
+gint canonicalize_file(FILE *src_fp, FILE *dest_fp)
 {
-	FILE *src_fp, *dest_fp;
 	gchar buf[BUFFSIZE];
 	gint len;
 	gboolean err = FALSE;
 	gboolean last_linebreak = FALSE;
 
-	if ((src_fp = fopen(src, "rb")) == NULL) {
-		FILE_OP_ERROR(src, "fopen");
-		return -1;
-	}
-
-	if ((dest_fp = fopen(dest, "wb")) == NULL) {
-		FILE_OP_ERROR(dest, "fopen");
-		fclose(src_fp);
-		return -1;
-	}
-
-	if (change_file_mode_rw(dest_fp, dest) < 0) {
-		FILE_OP_ERROR(dest, "chmod");
-		g_warning("can't change file mode\n");
-	}
-
+	rewind(src_fp);
+	rewind(dest_fp);
 	while (fgets(buf, sizeof(buf), src_fp) != NULL) {
 		gint r = 0;
 
@@ -2125,10 +2110,8 @@ gint canonicalize_file(const gchar *src, const gchar *dest)
 		}
 
 		if (r == EOF) {
-			g_warning("writing to %s failed.\n", dest);
-			fclose(dest_fp);
-			fclose(src_fp);
-			unlink(dest);
+			g_warning("writing to destination file failed.\n");
+
 			return -1;
 		}
 	}
@@ -2138,18 +2121,7 @@ gint canonicalize_file(const gchar *src, const gchar *dest)
 			err = TRUE;
 	}
 
-	if (ferror(src_fp)) {
-		FILE_OP_ERROR(src, "fread");
-		err = TRUE;
-	}
-	fclose(src_fp);
-	if (fclose(dest_fp) == EOF) {
-		FILE_OP_ERROR(dest, "fclose");
-		err = TRUE;
-	}
-
 	if (err) {
-		unlink(dest);
 		return -1;
 	}
 
@@ -2158,20 +2130,36 @@ gint canonicalize_file(const gchar *src, const gchar *dest)
 
 gint canonicalize_file_replace(const gchar *file)
 {
-	gchar *tmp_file;
+	gchar *tmp_file, *dirname;
+	FILE *src, *dest;
 
-	tmp_file = get_tmp_file();
+	src = fopen(file, "r");
 
-	if (canonicalize_file(file, tmp_file) < 0)
+	dirname = g_dirname(file);
+	dest = get_tmpfile_in_dir(dirname, &tmp_file);
+
+	debug_print("Writing canonicalized file to %s\n", tmp_file);
+
+	if (canonicalize_file(src, dest) < 0) {
+		fclose(dest);
+		fclose(src);
+
+		g_free(tmp_file);
 		return -1;
+	}
+	fclose(dest);
+	fclose(src);
 
 	unlink(file);
 	if (rename(tmp_file, file) < 0) {
 		FILE_OP_ERROR(file, "rename");
 		unlink(tmp_file);
+
+		g_free(tmp_file);
 		return -1;
 	}
 
+	g_free(tmp_file);
 	return 0;
 }
 
@@ -2784,4 +2772,14 @@ gboolean subject_is_reply(const gchar *subject)
 	 * Re: Re: Re: Re: Re: Re: Re: Re:" stuff. */
 	if (subject == NULL) return FALSE;
 	else return 0 == g_strncasecmp(subject, "Re: ", 4);
+}
+
+FILE *get_tmpfile_in_dir(const gchar *dir, gchar **filename)
+{
+	int fd;
+	
+	*filename = g_strdup_printf("%s%csylpheed.XXXXXX", dir, G_DIR_SEPARATOR);
+	fd = mkstemp(*filename);
+
+	return fdopen(fd, "w+");
 }
