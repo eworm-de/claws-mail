@@ -1,3 +1,17 @@
+2004-12-13 [thorsten]	0.9.13cvs15.1
+
+	* ChangeLog.claws
+	* PATCHSETS
+	* configure.ac
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/prefs_themes.c
+	* src/quote_fmt_parse.y
+	* src/gtk/pluginwindow.c
+	* src/gtk/prefswindow.c
+	* src/plugins/spamassassin/libspamc.c
+		sync 0.9.13cvs15
+
 2004-12-13 [thorsten]	0.9.13cvs10.2
 
 	* src/common/utils.c

@@ -150,6 +150,251 @@ static int isseparator(int ch)
 {
 	return isspace(ch) || ch == '.' || ch == '-';
 }
+
+static void quote_fmt_show_date(const MsgInfo *msginfo, const gchar *format)
+{
+	char  result[100];
+	char *rptr;
+	char  zone[6];
+	struct tm lt;
+	const char *fptr;
+	const char *zptr;
+
+	if (!msginfo->date)
+		return;
+	
+	/* 
+	 * ALF - GNU C's strftime() has a nice format specifier 
+	 * for time zone offset (%z). Non-standard however, so 
+	 * emulate it.
+	 */
+
+#define RLEFT (sizeof result) - (rptr - result)	
+#define STR_SIZE(x) (sizeof (x) - 1)
+
+	zone[0] = 0;
+
+	if (procheader_date_parse_to_tm(msginfo->date, &lt, zone)) {
+		/*
+		 * break up format string in tiny bits delimited by valid %z's and 
+		 * feed it to strftime(). don't forget that '%%z' mean literal '%z'.
+		 */
+		for (rptr = result, fptr = format; fptr && *fptr && rptr < &result[sizeof result - 1];) {
+			int	    perc;
+			const char *p;
+			char	   *tmp;
+			
+			if (NULL != (zptr = strstr(fptr, "%z"))) {
+				/*
+				 * count nr. of prepended percent chars
+				 */
+				for (perc = 0, p = zptr; p && p >= format && *p == '%'; p--, perc++)
+					;
+				/*
+				 * feed to strftime()
+				 */
+				tmp = g_strndup(fptr, zptr - fptr + (perc % 2 ? 0 : STR_SIZE("%z")));
+				if (tmp) {
+					rptr += strftime(rptr, RLEFT, tmp, &lt);
+					g_free(tmp);
+				}
+				/*
+				 * append time zone offset
+				 */
+				if (zone[0] && perc % 2) 
+					rptr += g_snprintf(rptr, RLEFT, "%s", zone);
+				fptr = zptr + STR_SIZE("%z");
+			} else {
+				rptr += strftime(rptr, RLEFT, fptr, &lt);
+				fptr  = NULL;
+			}
+		}
+		
+		INSERT(result);
+	}
+#undef STR_SIZE			
+#undef RLEFT			
+}		
+
+static void quote_fmt_show_first_name(const MsgInfo *msginfo)
+{
+	guchar *p;
+	gchar *str;
+
+	if (!msginfo->fromname)
+		return;	
+	
+	p = strchr(msginfo->fromname, ',');
+	if (p != NULL) {
+		/* fromname is like "Duck, Donald" */
+		p++;
+		while (*p && isspace(*p)) p++;
+		str = alloca(strlen(p) + 1);
+		if (str != NULL) {
+			strcpy(str, p);
+			INSERT(str);
+		}
+	} else {
+		/* fromname is like "Donald Duck" */
+		str = alloca(strlen(msginfo->fromname) + 1);
+		if (str != NULL) {
+			strcpy(str, msginfo->fromname);
+			p = str;
+			while (*p && !isspace(*p)) p++;
+			*p = '\0';
+			INSERT(str);
+		}
+	}
+}
+
+static void quote_fmt_show_last_name(const MsgInfo *msginfo)
+{
+	gchar *p;
+	gchar *str;
+
+	/* This probably won't work together very well with Middle
+           names and the like - thth */
+	if (!msginfo->fromname) 
+		return;
+
+	str = alloca(strlen(msginfo->fromname) + 1);
+	if (str != NULL) {
+		strcpy(str, msginfo->fromname);
+		p = strchr(str, ',');
+		if (p != NULL) {
+			/* fromname is like "Duck, Donald" */
+			*p = '\0';
+			INSERT(str);
+		} else {
+			/* fromname is like "Donald Duck" */
+			p = str;
+			while (*p && !isspace(*p)) p++;
+			if (*p) {
+			    /* We found a space. Get first 
+			     none-space char and insert
+			     rest of string from there. */
+			    while (*p && isspace(*p)) p++;
+			    if (*p) {
+				INSERT(p);
+			    } else {
+				/* If there is no none-space 
+				 char, just insert whole 
+				 fromname. */
+				INSERT(str);
+			    }
+			} else {
+			    /* If there is no space, just 
+			     insert whole fromname. */
+			    INSERT(str);
+			}
+		}
+	}
+}
+
+static void quote_fmt_show_sender_initial(const MsgInfo *msginfo)
+{
+#define MAX_SENDER_INITIAL 20
+	gchar tmp[MAX_SENDER_INITIAL];
+	guchar *p;
+	gchar *cur;
+	gint len = 0;
+
+	if (!msginfo->fromname) 
+		return;
+
+	p = msginfo->fromname;
+	cur = tmp;
+	while (*p) {
+		if (*p && isalnum(*p)) {
+			*cur = toupper(*p);
+				cur++;
+			len++;
+			if (len >= MAX_SENDER_INITIAL - 1)
+				break;
+		} else
+			break;
+		while (*p && !isseparator(*p)) p++;
+		while (*p && isseparator(*p)) p++;
+	}
+	*cur = '\0';
+	INSERT(tmp);
+}
+
+static void quote_fmt_show_msg(MsgInfo *msginfo, const gchar *body,
+			       gboolean quoted, gboolean signature,
+			       const gchar *quote_str)
+{
+	gchar buf[BUFFSIZE];
+	FILE *fp;
+
+	if (!(msginfo->folder || body))
+		return;
+
+	if (body)
+		fp = str_open_as_stream(body);
+	else
+		fp = procmime_get_first_text_content(msginfo);
+
+	if (fp == NULL)
+		g_warning("Can't get text part\n");
+	else {
+		while (fgets(buf, sizeof(buf), fp) != NULL) {
+			strcrchomp(buf);
+			
+			if (!signature && strncmp(buf, "-- \n", 4) == 0)
+				break;
+		
+			if (quoted && quote_str)
+				INSERT(quote_str);
+			
+			INSERT(buf);
+		}
+		fclose(fp);
+	}
+}
+
+static void quote_fmt_insert_file(const gchar *filename)
+{
+	FILE *file;
+	char buffer[256];
+	
+	if ((file = fopen(filename, "rb")) != NULL) {
+		while (fgets(buffer, sizeof(buffer), file)) {
+			INSERT(buffer);
+		}
+		fclose(file);
+	}
+
+}
+
+static void quote_fmt_insert_program_output(const gchar *progname)
+{
+	FILE *file;
+	char buffer[256];
+
+#ifdef WIN32
+	gint retval;
+	gchar *tmp = get_tmp_file();
+	gchar *cmd = g_strdup_printf("%s > %s",progname, tmp);
+
+	retval = system(cmd);
+	if (!retval && (file = fopen(tmp, "r")))
+#else
+	if ((file = popen(progname, "r")) != NULL)
+#endif			/* bison ignores #ifdef'd "{" - cant follow k&r style */
+	{
+		while (fgets(buffer, sizeof(buffer), file)) {
+			INSERT(buffer);
+		}
+		fclose(file);
+	}
+#ifdef WIN32
+	unlink(tmp);
+	g_free(tmp);
+	g_free(cmd);
+#endif
+}
+
 %}
 
 %union {
@@ -228,65 +473,7 @@ special:
 	}
 	| SHOW_DATE_EXPR OPARENT string CPARENT
 	{
-		/* 
-		 * ALF - GNU C's strftime() has a nice format specifier 
-		 * for time zone offset (%z). Non-standard however, so 
-		 * emulate it.
-		 */
-		if (msginfo->date) {
-			char  result[100];
-			char *rptr;
-			char  zone[6];
-			struct tm lt;
-			const char *fptr;
-			const char *zptr;
-
-#define RLEFT (sizeof result) - (rptr - result)	
-#define STR_SIZE(x) (sizeof (x) - 1)
-
-			zone[0] = 0;
-
-			if (procheader_date_parse_to_tm(msginfo->date, &lt, zone)) {
-				/*
-				 * break up format string in tiny bits delimited by valid %z's and 
-				 * feed it to strftime(). don't forget that '%%z' mean literal '%z'.
-				 */
-				for (rptr = result, fptr = $3; fptr && *fptr && rptr < &result[sizeof result - 1];) {
-					int	    perc;
-					const char *p;
-					char	   *tmp;
-					
-					if (NULL != (zptr = strstr(fptr, "%z"))) {
-						/*
-						 * count nr. of prepended percent chars
-						 */
-						for (perc = 0, p = zptr; p && p >= $3 && *p == '%'; p--, perc++)
-							;
-						/*
-						 * feed to strftime()
-						 */
-						tmp = g_strndup(fptr, zptr - fptr + (perc % 2 ? 0 : STR_SIZE("%z")));
-						if (tmp) {
-							rptr += strftime(rptr, RLEFT, tmp, &lt);
-							g_free(tmp);
-						}
-						/*
-						 * append time zone offset
-						 */
-						if (zone[0] && perc % 2) 
-							rptr += g_snprintf(rptr, RLEFT, "%s", zone);
-						fptr = zptr + STR_SIZE("%z");
-					} else {
-						rptr += strftime(rptr, RLEFT, fptr, &lt);
-						fptr  = NULL;
-					}
-				}
-				
-				INSERT(result);
-			}
-#undef STR_SIZE			
-#undef RLEFT			
-		}
+		quote_fmt_show_date(msginfo, $3);
 	}
 	| SHOW_DATE
 	{
@@ -305,101 +492,15 @@ special:
 	}
 	| SHOW_FIRST_NAME
 	{
-		if (msginfo->fromname) {
-			guchar *p;
-			gchar *str;
-
-			p = strchr(msginfo->fromname, ',');
-			if (p != NULL) {
-				/* fromname is like "Duck, Donald" */
-				p++;
-				while (*p && isspace(*p)) p++;
-				str = alloca(strlen(p) + 1);
-				if (str != NULL) {
-					strcpy(str, p);
-					INSERT(str);
-				}
-			} else {
-				/* fromname is like "Donald Duck" */
-				str = alloca(strlen(msginfo->fromname) + 1);
-				if (str != NULL) {
-					strcpy(str, msginfo->fromname);
-					p = str;
-					while (*p && !isspace(*p)) p++;
-					*p = '\0';
-					INSERT(str);
-				}
-			}
-		}
+		quote_fmt_show_first_name(msginfo);
 	}
 	| SHOW_LAST_NAME
         {
-                /* This probably won't work together very well with Middle
-                 names and the like - thth */
-		if (msginfo->fromname) {
-			gchar *p;
-			gchar *str;
-
-			str = alloca(strlen(msginfo->fromname) + 1);
-			if (str != NULL) {
-				strcpy(str, msginfo->fromname);
-				p = strchr(str, ',');
-				if (p != NULL) {
-					/* fromname is like "Duck, Donald" */
-					*p = '\0';
-					INSERT(str);
-				} else {
-					/* fromname is like "Donald Duck" */
-					p = str;
-					while (*p && !isspace(*p)) p++;
-					if (*p) {
-					    /* We found a space. Get first 
-					     none-space char and insert
-					     rest of string from there. */
-					    while (*p && isspace(*p)) p++;
-					    if (*p) {
-						INSERT(p);
-					    } else {
-						/* If there is no none-space 
-						 char, just insert whole 
-						 fromname. */
-						INSERT(str);
-					    }
-					} else {
-					    /* If there is no space, just 
-					     insert whole fromname. */
-					    INSERT(str);
-					}
-				}
-			}
-		}
+		quote_fmt_show_last_name(msginfo);
 	}
 	| SHOW_SENDER_INITIAL
 	{
-#define MAX_SENDER_INITIAL 20
-		if (msginfo->fromname) {
-			gchar tmp[MAX_SENDER_INITIAL];
-			guchar *p;
-			gchar *cur;
-			gint len = 0;
-
-			p = msginfo->fromname;
-			cur = tmp;
-			while (*p) {
-				if (*p && isalnum(*p)) {
-					*cur = toupper(*p);
-						cur++;
-					len++;
-					if (len >= MAX_SENDER_INITIAL - 1)
-						break;
-				} else
-					break;
-				while (*p && !isseparator(*p)) p++;
-				while (*p && isseparator(*p)) p++;
-			}
-			*cur = '\0';
-			INSERT(tmp);
-		}
+		quote_fmt_show_sender_initial(msginfo);
 	}
 	| SHOW_SUBJECT
 	{
@@ -432,99 +533,19 @@ special:
 	}
 	| SHOW_MESSAGE
 	{
-		if (msginfo->folder || body) {
-			gchar buf[BUFFSIZE];
-			FILE *fp;
-
-			if (body)
-				fp = str_open_as_stream(body);
-			else
-				fp = procmime_get_first_text_content(msginfo);
-
-			if (fp == NULL)
-				g_warning("Can't get text part\n");
-			else {
-				while (fgets(buf, sizeof(buf), fp) != NULL) {
-					strcrchomp(buf);
-					INSERT(buf);
-				}
-				fclose(fp);
-			}
-		}
+		quote_fmt_show_msg(msginfo, body, FALSE, TRUE, quote_str);
 	}
 	| SHOW_QUOTED_MESSAGE
 	{
-		if (msginfo->folder || body) {
-			gchar buf[BUFFSIZE];
-			FILE *fp;
-
-			if (body)
-				fp = str_open_as_stream(body);
-			else
-				fp = procmime_get_first_text_content(msginfo);
-
-			if (fp == NULL)
-				g_warning("Can't get text part\n");
-			else {
-				while (fgets(buf, sizeof(buf), fp) != NULL) {
-					strcrchomp(buf);
-					if (quote_str)
-						INSERT(quote_str);
-					INSERT(buf);
-				}
-				fclose(fp);
-			}
-		}
+		quote_fmt_show_msg(msginfo, body, TRUE, TRUE, quote_str);
 	}
 	| SHOW_MESSAGE_NO_SIGNATURE
 	{
-		if (msginfo->folder || body) {
-			gchar buf[BUFFSIZE];
-			FILE *fp;
-
-			if (body)
-				fp = str_open_as_stream(body);
-			else
-				fp = procmime_get_first_text_content(msginfo);
-
-			if (fp == NULL)
-				g_warning("Can't get text part\n");
-			else {
-				while (fgets(buf, sizeof(buf), fp) != NULL) {
-					strcrchomp(buf);
-					if (strncmp(buf, "-- \n", 4) == 0)
-						break;
-					INSERT(buf);
-				}
-				fclose(fp);
-			}
-		}
+		quote_fmt_show_msg(msginfo, body, FALSE, FALSE, quote_str);
 	}
 	| SHOW_QUOTED_MESSAGE_NO_SIGNATURE
 	{
-		if (msginfo->folder || body) {
-			gchar buf[BUFFSIZE];
-			FILE *fp;
-
-			if (body)
-				fp = str_open_as_stream(body);
-			else
-				fp = procmime_get_first_text_content(msginfo);
-
-			if (fp == NULL)
-				g_warning("Can't get text part\n");
-			else {
-				while (fgets(buf, sizeof(buf), fp) != NULL) {
-					strcrchomp(buf);
-					if (strncmp(buf, "-- \n", 4) == 0)
-						break;
-					if (quote_str)
-						INSERT(quote_str);
-					INSERT(buf);
-				}
-				fclose(fp);
-			}
-		}
+		quote_fmt_show_msg(msginfo, body, TRUE, FALSE, quote_str);
 	}
 	| SHOW_BACKSLASH
 	{
@@ -636,43 +657,9 @@ query:
 insert:
 	INSERT_FILE OPARENT string CPARENT
 	{
-		{
-			FILE *file;
-			char buffer[256];
-			
-			if(file = fopen($3, "rb")) {
-				while(fgets(buffer, sizeof(buffer), file)) {
-					INSERT(buffer);
-				}
-				fclose(file);
-			}
-		}
+		quote_fmt_insert_file($3);
 	}
 	| INSERT_PROGRAMOUTPUT OPARENT string CPARENT
 	{
-		{
-			FILE *file;
-			char buffer[256];
-#ifdef WIN32
-			gint retval;
-			gchar *tmp = get_tmp_file();
-			gchar *cmd = g_strdup_printf("%s > %s",$3,tmp);
-			
-			retval = system(cmd);
-			if(!retval && (file = fopen(tmp, "r")))
-#else
-			if(file = popen($3, "r"))
-#endif			/* bison ignores #ifdef'd "{" - cant follow k&r style */
-			{
-				while(fgets(buffer, sizeof(buffer), file)) {
-					INSERT(buffer);
-				}
-				fclose(file);
-			}
-#ifdef WIN32
-			unlink(tmp);
-			g_free(tmp);
-			g_free(cmd);
-#endif
-		}
+		quote_fmt_insert_program_output($3);
 	};
