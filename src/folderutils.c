@@ -35,13 +35,12 @@ gint folderutils_delete_duplicates(FolderItem *item,
 	
 	debug_print("Deleting duplicated messages...\n");
 
-	folder_item_update_freeze();
-
 	msglist = folder_item_get_msg_list(item);
 	if (msglist == NULL)
 		return 0;
 	table = g_hash_table_new(g_str_hash, g_str_equal);
 
+	folder_item_update_freeze();
 	for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
 		MsgInfo *msginfo = (MsgInfo *) cur->data;
 		MsgInfo *msginfo_dup = NULL;
