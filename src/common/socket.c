@@ -1063,7 +1063,7 @@ gint fd_read(gint fd, gchar *buf, gint len)
 #if USE_OPENSSL
 gint ssl_read(SSL *ssl, gchar *buf, gint len)
 {
-	gint ret;
+	gint err, ret;
 
 	if (SSL_pending(ssl) == 0) {
 		if (fd_check_io(SSL_get_rfd(ssl), G_IO_IN) < 0)
@@ -1072,14 +1072,19 @@ gint ssl_read(SSL *ssl, gchar *buf, gint len)
 
 	ret = SSL_read(ssl, buf, len);
 
-	switch (SSL_get_error(ssl, ret)) {
+	switch ((err = SSL_get_error(ssl, ret))) {
 	case SSL_ERROR_NONE:
 		return ret;
 	case SSL_ERROR_WANT_READ:
 	case SSL_ERROR_WANT_WRITE:
 		errno = EAGAIN;
 		return -1;
+	case SSL_ERROR_ZERO_RETURN:
+		return 0;
 	default:
+		g_warning("SSL_read() returned error %d, ret = %d\n", err, ret);
+		if (ret == 0)
+			return 0;
 		return -1;
 	}
 }
@@ -1358,7 +1363,7 @@ gint sock_puts(SockInfo *sock, const gchar *buf)
 #if USE_OPENSSL
 gint ssl_peek(SSL *ssl, gchar *buf, gint len)
 {
-	gint ret;
+	gint err, ret;
 
 	if (SSL_pending(ssl) == 0) {
 		if (fd_check_io(SSL_get_rfd(ssl), G_IO_IN) < 0)
@@ -1367,14 +1372,19 @@ gint ssl_peek(SSL *ssl, gchar *buf, gint len)
 
 	ret = SSL_peek(ssl, buf, len);
 
-	switch (SSL_get_error(ssl, ret)) {
+	switch ((err = SSL_get_error(ssl, ret))) {
 	case SSL_ERROR_NONE:
 		return ret;
 	case SSL_ERROR_WANT_READ:
 	case SSL_ERROR_WANT_WRITE:
 		errno = EAGAIN;
 		return -1;
+	case SSL_ERROR_ZERO_RETURN:
+		return 0;
 	default:
+		g_warning("SSL_peek() returned error %d, ret = %d\n", err, ret);
+		if (ret == 0)
+			return 0;
 		return -1;
 	}
 }

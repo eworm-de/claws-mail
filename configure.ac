@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=6
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=26
+EXTRA_VERSION=27
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=
 
@@ -124,7 +124,7 @@ AM_CONDITIONAL(OS_WIN32, test x"$os_win32" = x"yes")
 
 case "$target" in
 *-darwin*)
-	CFLAGS="$CFLAGS -traditional-cpp -fno-common"
+	CFLAGS="$CFLAGS -no-cpp-precomp -fno-common"
 	;;
 esac
   
