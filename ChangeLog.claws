@@ -1,3 +1,15 @@
+2002-05-21 [melvin]	0.7.6claws10
+
+	* src/folderview.c
+		Added missing filtering and scoring headers
+		Fixed bad function call that showed garbage 
+		in Folder->Processing
+
+2002-05-21 [paul]	0.7.6claws9
+
+	* tools/Makefile.am
+		make all tools executable, (patch by Alfons).
+
 2002-05-20 [alfons]	0.7.6claws8
 
 	* src/procheader.c

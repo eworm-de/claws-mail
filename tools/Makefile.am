@@ -1,6 +1,4 @@
-EXTRA_DIST = \
-	README \
-	README.sylprint \
+EXTRA_TOOLS = \
 	eud2gc.py \
 	filter_conv.pl \
 	gif2xface.pl \
@@ -11,3 +9,13 @@ EXTRA_DIST = \
 	sylprint.pl \
 	sylprint.rc \
 	uudec
+
+EXTRA_DIST = \
+	README \
+	README.sylprint \
+	$(EXTRA_TOOLS)
+
+MAKE_EXE = chmod u+x $(EXTRA_TOOLS)
+
+all-local:
+	$(MAKE_EXE)
