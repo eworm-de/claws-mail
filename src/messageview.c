@@ -440,7 +440,7 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo)
 	if (prefs_common.return_receipt
 	    && (tmpmsginfo->dispositionnotificationto
 		|| tmpmsginfo->returnreceiptto)
-	    && (MSG_IS_UNREAD(msginfo->flags))) {
+	    && (MSG_IS_RETRCPT_PENDING(msginfo->flags))) {
 		gint ok;
 		
 		if (alertpanel(_("Return Receipt"), _("Send return receipt ?"),
@@ -448,6 +448,8 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo)
 			ok = disposition_notification_send(tmpmsginfo);
 			if (ok < 0)
 				alertpanel_error(_("Error occurred while sending notification."));
+			else
+				MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_RETRCPT_PENDING);	
 		}
 	}
 

@@ -1,3 +1,13 @@
+2002-01-27 [alfons]	0.7.0claws32
+
+	* src/procmsg.h
+	* src/procheader.c
+	* src/messageview.c
+		fix return receipt / disposition notification again. this
+		stuff seems to break on _every_ major summary UI change, so
+		it's now implemented using a flag which is saved in the
+		marks cache
+		
 2002-01-26 [alfons]	0.7.0claws31
 
 	* src/import.c

@@ -66,6 +66,7 @@ typedef enum
 
 	MSG_IGNORE_THREAD   = 1 << 10,   /* ignore threads */
 	MSG_LOCKED	    = 1 << 11,   /* msg is locked  */
+	MSG_RETRCPT_PENDING = 1 << 12,	 /* return receipt pending */
 
 	/* RESERVED */
 	MSG_RESERVED_CLAWS  = 1 << 30,	/* for sylpheed-claws */
@@ -130,6 +131,7 @@ typedef enum
 /* Claws related flags */
 #define MSG_IS_REALLY_DELETED(msg)	(((msg).perm_flags & MSG_REALLY_DELETED) != 0)
 #define MSG_IS_IGNORE_THREAD(msg)	(((msg).perm_flags & MSG_IGNORE_THREAD) != 0)
+#define MSG_IS_RETRCPT_PENDING(msg)	(((msg).perm_flags & MSG_RETRCPT_PENDING) != 0)
 
 
 #define WRITE_CACHE_DATA_INT(n, fp) \
