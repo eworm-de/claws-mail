@@ -1,3 +1,9 @@
+2003-01-19 [alfons]	0.8.8claws122
+		
+	* src/mimeview.c
+		mimeview_save_as(): we might as well show the file name for
+		the single case "Save As" too
+
 2003-01-19 [alfons]	0.8.8claws121
 
 	* src/crash.c

@@ -874,6 +874,7 @@ static void mimeview_save_as(MimeView *mimeview)
 	gchar *filename;
 	gchar *defname = NULL;
 	MimeInfo *partinfo;
+	gchar *res;
 
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
@@ -893,10 +894,11 @@ static void mimeview_save_as(MimeView *mimeview)
 	if (!filename) return;
 	if (is_file_exist(filename)) {
 		AlertValue aval;
-
-		aval = alertpanel(_("Overwrite"),
-				  _("Overwrite existing file?"),
-				  _("OK"), _("Cancel"), NULL);
+		res = g_strdup_printf(_("Overwrite existing file '%s'?"),
+				      filename);
+		aval = alertpanel(_("Overwrite"), res, _("OK"), 
+				  _("Cancel"), NULL);
+		g_free(res);					  
 		if (G_ALERTDEFAULT != aval) return;
 	}
 
