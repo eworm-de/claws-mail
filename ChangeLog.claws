@@ -1,3 +1,8 @@
+2004-04-02 [luke]
+	* tools/textviewer.sh
+		better filename extension matching plus some support for
+		MS Excel, MS Powerpoint and HTML
+
 2004-03-29 [christoph]	0.9.10claws36
 
 	* src/folder.h
