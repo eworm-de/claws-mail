@@ -1,3 +1,10 @@
+2002-12-04 [christoph]	0.8.6claws60
+
+	* src/imap.[ch]
+		put imap authentication code into a new function and
+		remove it from imap_session_new that will allow to
+		send other commands before authentication
+
 2002-12-04 [christoph]	0.8.6claws59
 
 	* src/imap.[ch]

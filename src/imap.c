@@ -415,10 +415,17 @@ static IMAPSession *imap_session_get(Folder *folder)
 		rfolder->session =
 			imap_session_new(folder->account);
 		if (rfolder->session) {
-			imap_parse_namespace(IMAP_SESSION(rfolder->session),
-					     IMAP_FOLDER(folder));
-			rfolder->session->last_access_time = time(NULL);
-			imap_reset_uid_lists(folder);
+			if (!IMAP_SESSION(rfolder->session)->authenticated)
+				imap_session_authenticate(IMAP_SESSION(rfolder->session), folder->account);
+			if (IMAP_SESSION(rfolder->session)->authenticated) {
+				imap_parse_namespace(IMAP_SESSION(rfolder->session),
+						     IMAP_FOLDER(folder));
+				rfolder->session->last_access_time = time(NULL);
+				imap_reset_uid_lists(folder);
+			} else {
+				session_destroy(rfolder->session);
+				rfolder->session = NULL;
+			}
 		}
 		statusbar_pop_all();
 		return IMAP_SESSION(rfolder->session);
@@ -446,9 +453,17 @@ static IMAPSession *imap_session_get(Folder *folder)
 		rfolder->session =
 			imap_session_new(folder->account);
 		if (rfolder->session) {
-			imap_parse_namespace(IMAP_SESSION(rfolder->session),
-					     IMAP_FOLDER(folder));
-			imap_reset_uid_lists(folder);
+			if (!IMAP_SESSION(rfolder->session)->authenticated)
+				imap_session_authenticate(IMAP_SESSION(rfolder->session), folder->account);
+			if (IMAP_SESSION(rfolder->session)->authenticated) {
+				imap_parse_namespace(IMAP_SESSION(rfolder->session),
+						     IMAP_FOLDER(folder));
+				rfolder->session->last_access_time = time(NULL);
+				imap_reset_uid_lists(folder);
+			} else {
+				session_destroy(rfolder->session);
+				rfolder->session = NULL;
+			}
 		}
 	}
 
@@ -463,7 +478,6 @@ Session *imap_session_new(const PrefsAccount *account)
 	IMAPSession *session;
 	SockInfo *imap_sock;
 	gushort port;
-	gchar *pass;
 	gboolean is_preauth;
 
 #ifdef USE_SSL
@@ -508,26 +522,6 @@ Session *imap_session_new(const PrefsAccount *account)
 	imap_greeting(imap_sock, &is_preauth);
 	log_message("IMAP connection is %s-authenticated\n",
 		    (is_preauth) ? "pre" : "un");
-	if (!is_preauth) {
-		g_return_val_if_fail(account->userid != NULL, NULL);
-
-		pass = account->passwd;
-		if (!pass) {
-			gchar *tmp_pass;
-			tmp_pass = input_dialog_query_password(account->recv_server, account->userid);
-			if (!tmp_pass)
-				return NULL;
-			Xstrdup_a(pass, tmp_pass, {g_free(tmp_pass); return NULL;});
-			g_free(tmp_pass);
-		}
-
-		if (imap_cmd_login(imap_sock, account->userid, pass) != IMAP_SUCCESS) {
-			imap_cmd_logout(imap_sock);
-			sock_close(imap_sock);
-			return NULL;
-		}
-	}
-
 	session = g_new(IMAPSession, 1);
 
 	SESSION(session)->type             = SESSION_IMAP;
@@ -541,10 +535,36 @@ Session *imap_session_new(const PrefsAccount *account)
 	SESSION(session)->destroy          = imap_session_destroy;
 
 	session->mbox = NULL;
+	session->authenticated = is_preauth;
 
 	session_list = g_list_append(session_list, session);
 
 	return SESSION(session);
+}
+
+void imap_session_authenticate(IMAPSession *session, const PrefsAccount *account)
+{
+	gchar *pass;
+
+	g_return_if_fail(account->userid != NULL);
+
+	pass = account->passwd;
+	if (!pass) {
+		gchar *tmp_pass;
+		tmp_pass = input_dialog_query_password(account->recv_server, account->userid);
+		if (!tmp_pass)
+			return;
+		Xstrdup_a(pass, tmp_pass, {g_free(tmp_pass); return;});
+		g_free(tmp_pass);
+	}
+
+	if (imap_cmd_login(SESSION(session)->sock, account->userid, pass) != IMAP_SUCCESS) {
+		imap_cmd_logout(SESSION(session)->sock);
+		sock_close(SESSION(session)->sock);
+		return;
+	}
+
+	session->authenticated = TRUE;
 }
 
 void imap_session_destroy(Session *session)

@@ -60,6 +60,7 @@ struct _IMAPSession
 
 	gchar *mbox;
 	time_t last_access_time;
+	gboolean authenticated;
 };
 
 struct _IMAPNameSpace
@@ -98,6 +99,8 @@ Folder	*imap_folder_new		(const gchar	*name,
 void	 imap_folder_destroy		(Folder		*folder);
 
 Session *imap_session_new		(const PrefsAccount *account);
+void imap_session_authenticate		(IMAPSession 	    *session,
+					 const PrefsAccount *account);
 void imap_session_destroy		(Session	*session);
 void imap_session_destroy_all		(void);
 
