@@ -29,6 +29,7 @@ struct _FilteringAction {
 	gint	type;
 	gint	account_id;
 	gchar  *destination;
+	gchar  *unesc_destination;	/* for exec cmd line */
 	gint	labelcolor;
 };
 

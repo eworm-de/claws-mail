@@ -88,16 +88,24 @@ FilteringAction * filteringaction_new(int type, int account_id,
 
 	action->type = type;
 	action->account_id = account_id;
-	if (destination)
-		action->destination = g_strdup(destination);
+	if (destination) {
+		action->destination	  = g_strdup(destination);
+		action->unesc_destination = matcher_unescape_str(g_strdup(destination));
+	} else {
+		action->destination       = NULL;
+		action->unesc_destination = NULL;
+	}
 	action->labelcolor = labelcolor;	
 	return action;
 }
 
 void filteringaction_free(FilteringAction * action)
 {
+	g_return_if_fail(action);
 	if (action->destination)
 		g_free(action->destination);
+	if (action->unesc_destination)
+		g_free(action->unesc_destination);
 	g_free(action);
 }
 
@@ -152,6 +160,7 @@ static gboolean filteringaction_update_mark(MsgInfo * info)
 	return FALSE;
 }
 
+#if 0
 static gchar * filteringaction_execute_command(gchar * cmd, MsgInfo * info)
 {
 	gchar * s = cmd;
@@ -299,6 +308,7 @@ static gchar * filteringaction_execute_command(gchar * cmd, MsgInfo * info)
 	}
 	return processed_cmd;
 }
+#endif
 
 /*
   fitleringaction_apply
@@ -448,7 +458,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		return FALSE;
 
 	case MATCHACTION_EXECUTE:
-		cmd = matching_build_command(action->destination, info);
+		cmd = matching_build_command(action->unesc_destination, info);
 		if (cmd == NULL)
 			return FALSE;
 		else {

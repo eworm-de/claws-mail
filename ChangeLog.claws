@@ -1,3 +1,38 @@
+2001-12-12 [alfons]	0.6.5claws81
+
+	0.6.5claws80 was tagged as LAST_STABLE
+
+	* src/filtering.[ch]
+	* src/matcher.[ch]
+	* src/matcher_parser_lex.c
+		fix the filtering; my last attempt to get it right, 
+		if it does not work, it's Hoa's turn. ;-)
+
+		for my honourable peers:
+		
+		the code now makes a clear distinction between
+		rules as they are displayed (probably escaped),
+		and as they are executed (probably unescaped). the
+		parser does *NOT* do any unescaping, this is
+		the task of the matcher.c (which breaks up a
+		rule into condition) and the filtering.c (which
+		breaks up the rule's action). to make this
+		run happily we provide an unescaped copy of
+		crucial strings to the MatcherProp and 
+		FilteringAction structures. note that the only
+		exception to this is any REGEXP string. those
+		are directly passed to regcomp() and regexp()
+		(who have much more powerful unescape functions).
+		
+		for everyone else:
+	
+		you can escape tab (\t), carriage return (\r),
+		linefeed (\n), form feed (\f), quote (\"), 
+		single quote (\'), bell (\b) in all the entry
+		lines in the scoring & filtering dialogs.
+		as an added bonus this should not affect
+		existing filtering rules.
+
 2001-12-12 [carsten]	0.6.5claws80
 
 	* src/summaryview.c

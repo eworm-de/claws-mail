@@ -111,8 +111,9 @@ gchar * get_matchparser_tab_str(gint id)
 	return NULL;
 }
 
-
-
+/* matcher_unescape_str() - assumes that unescaping frees up room
+ * in the string, so it returns the unescaped string in the 
+ * source */
 gchar *matcher_unescape_str(gchar *str)
 {
 	gchar *tmp = alloca(strlen(str) + 1);
@@ -127,14 +128,23 @@ gchar *matcher_unescape_str(gchar *str)
 		else {
 			src++;
 			if (*src == '\\')
-				*dst++ = '\\';
-			else if (*src == 'n')
+				*dst++ = '\\';				/* insert backslash */
+			else if (*src == 'n')				/* insert control characters */
 				*dst++ = '\n';
 			else if (*src == 'r') 
 				*dst++ = '\r';
-			else if (*src == '\'' || *src == '\"')
+			else if (*src == 't') 
+				*dst++ = '\t';
+			else if (*src == 'r') 
+				*dst++ = '\r';
+			else if (*src == 'b')
+				*dst++ = '\b';
+			else if (*src == 'f')
+				*dst++ = '\f';
+			else if (*src == '\'' || *src == '\"')		/* insert \' or \" */
 				*dst++ = *src;
 			else {
+				/* FIXME: should perhaps escape character... */
 				src--;
 				*dst++ = *src;
 			}				
@@ -155,14 +165,22 @@ MatcherProp * matcherprop_new(gint criteria, gchar * header,
 
  	prop = g_new0(MatcherProp, 1);
 	prop->criteria = criteria;
-	if (header != NULL)
-		prop->header = g_strdup(header);
-	else
-		prop->header = NULL;
-	if (expr != NULL)
-		prop->expr = g_strdup(expr);
-	else
-		prop->expr = NULL;
+	if (header != NULL) {
+		prop->header	   = g_strdup(header);
+		prop->unesc_header = matcher_unescape_str(g_strdup(header)); 
+	}	
+	else {
+		prop->header       = NULL;
+		prop->unesc_header = NULL;
+	}	
+	if (expr != NULL) {
+		prop->expr	 = g_strdup(expr);
+		prop->unesc_expr = matcher_unescape_str(g_strdup(expr));
+	}	
+	else {
+		prop->expr	 = NULL;
+		prop->unesc_expr = NULL;
+	}	
 	prop->matchtype = matchtype;
 	prop->preg = NULL;
 	prop->value = value;
@@ -173,7 +191,14 @@ MatcherProp * matcherprop_new(gint criteria, gchar * header,
 
 void matcherprop_free(MatcherProp * prop)
 {
-	g_free(prop->expr);
+	if (prop->expr) 
+		g_free(prop->expr);
+	if (prop->unesc_expr) 
+		g_free(prop->unesc_expr);
+	if (prop->header)
+		g_free(prop->header);
+	if (prop->unesc_header) 
+		g_free(prop->unesc_header);
 	if (prop->preg != NULL) {
 		regfree(prop->preg);
 		g_free(prop->preg);
@@ -200,6 +225,7 @@ static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 	case MATCHTYPE_REGEXP:
 		if (!prop->preg && (prop->error == 0)) {
 			prop->preg = g_new0(regex_t, 1);
+			/* if regexp then don't use the escaped string */
 			if (regcomp(prop->preg, prop->expr,
 				    REG_NOSUB | REG_EXTENDED
 				    | ((prop->matchtype == MATCHTYPE_REGEXPCASE)
@@ -217,11 +243,12 @@ static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 			return FALSE;
 
 	case MATCHTYPE_MATCH:
-		return (strstr(str, prop->expr) != NULL);
+		return (strstr(str, prop->unesc_expr) != NULL);
 
+	/* FIXME: put upper in unesc_str */
 	case MATCHTYPE_MATCHCASE:
-		str2 = alloca(strlen(prop->expr) + 1);
-		strcpy(str2, prop->expr);
+		str2 = alloca(strlen(prop->unesc_expr) + 1);
+		strcpy(str2, prop->unesc_expr);
 		g_strup(str2);
 		str1 = alloca(strlen(str) + 1);
 		strcpy(str1, str);
@@ -242,7 +269,7 @@ gboolean matcherprop_match_execute(MatcherProp * prop, MsgInfo * info)
 	if (file == NULL)
 		return FALSE;
 
-	cmd = matching_build_command(prop->expr, info);
+	cmd = matching_build_command(prop->unesc_expr, info);
 	if (cmd == NULL)
 		return FALSE;
 
@@ -791,52 +818,16 @@ gchar * matcherprop_to_string(MatcherProp * matcher)
 	case MATCHTYPE_MATCHCASE:
 	case MATCHTYPE_REGEXP:
 	case MATCHTYPE_REGEXPCASE:
-		count = 0;
-		for(p = matcher->expr; *p != 0 ; p++)
-			if (*p == '\"') count ++;
-		
-		expr_str = g_new(char, strlen(matcher->expr) + count + 1);
-
-		for(p = matcher->expr, out = expr_str ; *p != 0 ; p++, out++) {
-			if (*p == '\"') {
-				*out = '\\'; out++;
-				*out = '\"';
-			}
-			else
-				*out = *p;
-		}
-		* out = '\0';
-
 		if (matcher->header)
 			matcher_str =
 				g_strdup_printf("%s \"%s\" %s \"%s\"",
 					   criteria_str, matcher->header,
-					   matchtype_str, expr_str);
+					   matchtype_str, matcher->expr);
 		else
 			matcher_str =
 				g_strdup_printf("%s %s \"%s\"", criteria_str,
-						matchtype_str, expr_str);
-		
-		g_free(expr_str);
-		
-		break;
-
-		/*
-	case MATCHTYPE_REGEXP:
-	case MATCHTYPE_REGEXPCASE:
-
-		if (matcher->header)
-			matcher_str =
-				g_strdup_printf("%s \"%s\" %s /%s/",
-						criteria_str, matcher->header,
 						matchtype_str, matcher->expr);
-		else
-			matcher_str =
-				g_strdup_printf("%s %s /%s/", criteria_str,
-						matchtype_str, matcher->expr);
-
 		break;
-		*/
 	}
 
 	return matcher_str;
@@ -873,7 +864,7 @@ gchar * matcherlist_to_string(MatcherList * matchers)
 	return result;
 }
 
-
+/* matching_build_command() - preferably cmd should be unescaped */
 gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 {
 	gchar * s = cmd;
@@ -881,8 +872,6 @@ gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 	gchar * processed_cmd;
 	gchar * p;
 	gint size;
-
-	matcher_unescape_str(cmd);
 
 	size = strlen(cmd) + 1;
 	while (*s != '\0') {

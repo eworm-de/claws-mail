@@ -11,7 +11,9 @@ struct _MatcherProp {
 	int matchtype;
 	int criteria;
 	gchar * header;
+	gchar * unesc_header;		/* cache unescaped header... */
 	gchar * expr;
+	gchar * unesc_expr;		/* cache unescaped expression... */
 	int value;
 	regex_t * preg;
 	int error;

@@ -92,27 +92,32 @@ static void add_char(char ch)
 		BEGIN(string);
 		string_buf_ptr = string_buf;
 		}
-<string>\\n  	add_char('\n');
-<string>\\t  	add_char('\t');
-<string>\\r  	add_char('\r');
-<string>\\b  	add_char('\b');
-<string>\\f  	add_char('\f');
-<string>\\. 	add_char(yytext[1]);
+		/* alfons - OK, the new attempt is to just swallow 
+		 * *EVERYTHING* and make sure everything is escaped
+		 * when actually performing things. */
+<string>\\\"	{
+		/* take care of escaped \" because this means the
+		 * quote char should be skipped */
+		add_char('\\');
+		add_char('\"');
+		}
 <string>\"	{
+		/* get out of the state: string ends. */
 		BEGIN(0);
 		*string_buf_ptr = '\0';
 		yylval.str = string_buf;
 		return MATCHER_STRING;
 		}
+		/* put everything else in the output. */
 <string>.	{
-add_char(yytext[0]);
-}
+		add_char(yytext[0]);
+		}
 \[[^\[\]]*\]	{
-			BEGIN(0);
-			yylval.str = yytext + 1;
-			yytext[strlen(yytext) - 1] = '\0';
-			return MATCHER_SECTION;
-			}
+		BEGIN(0);
+		yylval.str = yytext + 1;
+		yytext[strlen(yytext) - 1] = '\0';
+		return MATCHER_SECTION;
+		}
 [-+]?[0-9]+	{
 		yylval.str = yytext;
 		return MATCHER_INTEGER;
