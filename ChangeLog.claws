@@ -1,3 +1,14 @@
+2002-05-02 [hiro]	0.7.5claws4
+
+	* src/compose.c
+		compose_queue_sub():
+		check if queue folder exists (closes #550397).
+		removed directory creation since it should be handled
+		transparently.
+	* src/imap.c
+		imap_add_msg(): return UID for appended message
+		(closes #548842).
+
 2002-04-30 [paul]	0.7.5claws3
 
 	* src/summaryview.c

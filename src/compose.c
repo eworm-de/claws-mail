@@ -3225,7 +3225,7 @@ static gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item)
 static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item, gboolean check_subject)
 {
 	FolderItem *queue;
-	gchar *tmp, *tmp2, *queue_path;
+	gchar *tmp, *tmp2;
 	FILE *fp, *src_fp;
 	GSList *cur;
 	gchar buf[BUFFSIZE];
@@ -3399,15 +3399,17 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	}
 
 	queue = account_get_special_folder(compose->account, F_QUEUE);
+	if (!queue) {
+		g_warning(_("can't find queue folder\n"));
+		unlink(tmp);
+		g_free(tmp);
+		return -1;
+	}
 	folder_item_scan(queue);
-	queue_path = folder_item_get_path(queue);
-	if (!is_dir_exist(queue_path))
-		make_dir_hier(queue_path);
 	if ((num = folder_item_add_msg(queue, tmp, TRUE)) < 0) {
 		g_warning(_("can't queue the message\n"));
 		unlink(tmp);
 		g_free(tmp);
-		g_free(queue_path);
 		return -1;
 	}
 	unlink(tmp);
