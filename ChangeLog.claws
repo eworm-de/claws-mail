@@ -1,3 +1,12 @@
+2003-11-02 [match]	0.9.6claws65
+
+	* src/browseldap.h
+		fix if not building LDAP support.
+	* src/addrindex.c
+	* src/ldapquery.[ch]
+	* src/editldap.h
+		include support for contains query. feature req 529354.
+
 2003-11-02 [alfons]	0.9.6claws64
 
 	* src/browseldap.c

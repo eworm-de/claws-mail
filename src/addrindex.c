@@ -94,9 +94,16 @@
 #define ATTAG_LDAP_TIMEOUT    "timeout"
 #define ATTAG_LDAP_MAX_AGE    "max-age"
 #define ATTAG_LDAP_DYN_SEARCH "dyn-search"
+#define ATTAG_LDAP_MATCH_OPT  "match-opt"
 
 #define ELTAG_LDAP_ATTR_SRCH  "attribute"
 #define ATTAG_LDAP_ATTR_NAME  "name"
+
+/* Attribute values */
+#define ATVAL_BOOLEAN_YES         "yes"
+#define ATVAL_BOOLEAN_NO          "no"
+#define ATVAL_LDAP_MATCH_BEGIN    "begin-with"
+#define ATVAL_LDAP_MATCH_CONTAINS "contains"
 
 /* New attributes */
 #define ATTAG_LDAP_DEFAULT    "default"
@@ -1329,6 +1336,11 @@ static void addrindex_parse_ldap_attrlist( XMLFile *file, LdapControl *ctl ) {
 
 }
 
+/**
+ * Parse LDAP control data from XML file.
+ * \param  file Index file.
+ * \return Initialized data soruce object.
+ */
 static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 	AddressDataSource *ds;
 	LdapServer *server;
@@ -1336,10 +1348,13 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 	GList *attr;
 	gchar *serverName = NULL;
 	gchar *criteria = NULL;
-	gboolean bSearch = FALSE;
-	gboolean cvtFlag = TRUE;
+	gboolean bDynSearch;
+	gint iMatch;
 
 	/* printf( "addrindex_parse_ldap\n" ); */
+	/* Set up some defaults */
+	bDynSearch = FALSE;
+	iMatch = LDAPCTL_MATCH_BEGINWITH;
 
 	ds = addrindex_create_datasource( ADDR_IF_LDAP );
 	ctl = ldapctl_create();
@@ -1382,10 +1397,15 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 			ldapctl_set_max_query_age( ctl, ivalue );
 		}
 		else if( strcmp( name, ATTAG_LDAP_DYN_SEARCH ) == 0 ) {
-			bSearch = FALSE;
-			cvtFlag = FALSE;
-			if( strcmp( value, "yes" ) == 0 ) {
-				bSearch = TRUE;
+			bDynSearch = FALSE;
+			if( strcmp( value, ATVAL_BOOLEAN_YES ) == 0 ) {
+				bDynSearch = TRUE;
+			}
+		}
+		else if( strcmp( name, ATTAG_LDAP_MATCH_OPT ) == 0 ) {
+			iMatch = LDAPCTL_MATCH_BEGINWITH;
+			if( strcmp( value, ATVAL_LDAP_MATCH_CONTAINS ) == 0 ) {
+				iMatch = LDAPCTL_MATCH_CONTAINS;
 			}
 		}
 		attr = g_list_next( attr );
@@ -1393,7 +1413,8 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 
 	server = ldapsvr_create_noctl();
 	ldapsvr_set_name( server, serverName );
-	ldapsvr_set_search_flag( server, bSearch );
+	ldapsvr_set_search_flag( server, bDynSearch );
+	ldapctl_set_matching_option( ctl, iMatch );
 	g_free( serverName );
 	ldapsvr_set_control( server, ctl );
 	ds->rawDataSource = server;
@@ -1409,13 +1430,6 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 			ldapctl_parse_ldap_search( ctl, criteria );
 		}
 		g_free( criteria );
-	}
-	/*
-	 * If no search flag was found, then we are converting from old format
-	 * server data to new format.
-	 */
-	if( cvtFlag ) {
-		ldapsvr_set_search_flag( server, TRUE );
 	}
 	/* ldapsvr_print_data( server, stdout ); */
 
@@ -1453,7 +1467,12 @@ static void addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
 	addrindex_write_attr( fp, ATTAG_LDAP_MAX_AGE, value );
 
 	addrindex_write_attr( fp, ATTAG_LDAP_DYN_SEARCH,
-			server->searchFlag ? "yes" : "no" );
+			server->searchFlag ?
+			ATVAL_BOOLEAN_YES : ATVAL_BOOLEAN_NO );
+
+	addrindex_write_attr( fp, ATTAG_LDAP_MATCH_OPT,
+		( ctl->matchingOption == LDAPCTL_MATCH_CONTAINS ) ?
+		ATVAL_LDAP_MATCH_CONTAINS : ATVAL_LDAP_MATCH_BEGIN );
 
 	fputs(" >\n", fp);
 

@@ -24,8 +24,12 @@
 #ifndef __BROWSE_LDAP_H__
 #define __BROWSE_LDAP_H__
 
+#ifdef USE_LDAP
+
 #include "addrindex.h"
 
 gboolean browseldap_entry( AddressDataSource *ds, const gchar *dn );
+
+#endif /* USE_LDAP */
 
 #endif /* __BROWSE_LDAP_H__ */

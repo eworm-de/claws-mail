@@ -710,7 +710,11 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 	gint rc;
 
 	/* Initialize connection */
+	printf( "===ldapqry_connect===\n" );
+	ldapqry_print( qry, stdout );
 	ctl = qry->control;
+	ldapctl_print( ctl, stdout );
+	printf( "======\n" );
 	ldapqry_touch( qry );
 	qry->startTime = qry->touchTime;
 	qry->elapsedTime = -1;
