@@ -1,3 +1,8 @@
+2003-06-08 [colin]	0.9.0claws22
+
+	* src/plugins/spamassassin/spamassassin.c
+		fix prefs types
+
 2003-06-07 [christoph]	0.9.0claws21
 
 	* src/Makefile.am
