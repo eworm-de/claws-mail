@@ -344,7 +344,6 @@ void menu_connect_identical_items(void)
 		{"<Main>/Message/Copy...",			"<SummaryView>/Copy..."},
 		{"<Main>/Message/Delete",			"<SummaryView>/Delete"},
 		{"<Main>/Message/Cancel a news message",	"<SummaryView>/Cancel a news message"},
-		{"<Main>/Tools/Execute",			"<SummaryView>/Execute"},
 		{"<Main>/Message/Mark/Mark",			"<SummaryView>/Mark/Mark"},
 		{"<Main>/Message/Mark/Unmark",			"<SummaryView>/Mark/Unmark"},
 		{"<Main>/Message/Mark/Mark as unread",		"<SummaryView>/Mark/Mark as unread"},
@@ -358,10 +357,6 @@ void menu_connect_identical_items(void)
 		{"<Main>/View/Open in new window",		"<SummaryView>/View/Open in new window"},
 		{"<Main>/View/Message source",			"<SummaryView>/View/Source"},
 		{"<Main>/View/Show all headers",		"<SummaryView>/View/All header"},
-		{"<Main>/File/Save as...",			"<SummaryView>/Save as..."},
-		{"<Main>/File/Print...",			"<SummaryView>/Print..."},
-		{"<Main>/Edit/Select all",			"<SummaryView>/Select all"},
-		{"<Main>/Edit/Select thread",			"<SummaryView>/Select thread"}		 
 	};
 
 	const gint numpairs = sizeof pairs / sizeof pairs[0];

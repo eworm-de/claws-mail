@@ -285,9 +285,6 @@ static void summary_col_resized		(GtkCList		*clist,
 static void summary_reply_cb		(SummaryView		*summaryview,
 					 guint			 action,
 					 GtkWidget		*widget);
-static void summary_execute_cb		(SummaryView		*summaryview,
-					 guint			 action,
-					 GtkWidget		*widget);
 static void summary_show_all_header_cb	(SummaryView		*summaryview,
 					 guint			 action,
 					 GtkWidget		*widget);
@@ -407,13 +404,10 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/_Forward"),		"<control><alt>F", summary_reply_cb, COMPOSE_FORWARD, NULL},
 	{N_("/Redirect"),	        NULL, summary_reply_cb, COMPOSE_REDIRECT, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
-	{N_("/Re-_edit"),		NULL, summary_reedit,   0, NULL},
-	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/M_ove..."),		"<control>O", summary_move_to,	0, NULL},
 	{N_("/_Copy..."),		"<shift><control>O", summary_copy_to,	0, NULL},
 	{N_("/_Delete"),		"<control>D", summary_delete,	0, NULL},
 	{N_("/Cancel a news message"),	NULL, summary_cancel,	0, NULL},
-	{N_("/E_xecute"),		"X", summary_execute_cb,	0, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_Mark"),			NULL, NULL,		0, "<Branch>"},
 	{N_("/_Mark/_Mark"),		"<shift>asterisk", summary_mark,	0, NULL},
@@ -428,6 +422,8 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/_Mark/Unlock"),		NULL, summary_msgs_unlock, 0, NULL},
 	{N_("/Color la_bel"),		NULL, NULL, 		0, NULL},
 
+	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
+	{N_("/Re-_edit"),		NULL, summary_reedit,   0, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/Add sender to address boo_k"),
 					NULL, summary_add_address_cb, 0, NULL},
@@ -455,12 +451,6 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 					"<control><alt>N", summary_open_msg,	0, NULL},
 	{N_("/_View/_Source"),		"<control>U", summary_view_source, 0, NULL},
 	{N_("/_View/All _header"),	"<control>H", summary_show_all_header_cb, 0, "<ToggleItem>"},
-	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
-	{N_("/_Save as..."),		"<control>S", summary_save_as,	0, NULL},
-	{N_("/_Print..."),		NULL, summary_print,	0, NULL},
-	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
-	{N_("/Select _all"),		"<control>A", summary_select_all, 0, NULL},
-	{N_("/Select t_hread"),		NULL, summary_select_thread, 0, NULL}
 };  /* see also list in menu_connect_identical_items() in menu.c if this changes */
 
 static const gchar *const col_label[N_SUMMARY_COLS] = {
@@ -1362,7 +1352,6 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 		{"/Copy..."			, M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Delete"			, M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
 		{"/Cancel a news message"	, M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NEWS},
-		{"/Execute"			, M_DELAY_EXEC},
 
 		{"/Mark"			, M_TARGET_EXIST},
 		{"/Mark/Mark"   		, M_TARGET_EXIST},
@@ -1382,13 +1371,13 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 		{"/View/Open in new window"     , M_SINGLE_TARGET_EXIST},
 		{"/View/Source"			, M_SINGLE_TARGET_EXIST},
 		{"/View/All header"		, M_SINGLE_TARGET_EXIST},
-
+#if 0
 		{"/Save as..."			, M_TARGET_EXIST|M_UNLOCKED},
 		{"/Print..."			, M_TARGET_EXIST|M_UNLOCKED},
 
 		{"/Select thread"		, M_SINGLE_TARGET_EXIST},
 		{"/Select all"			, M_TARGET_EXIST},
-
+#endif
 		{NULL, 0}
 	};
 
@@ -4750,12 +4739,6 @@ static void summary_reply_cb(SummaryView *summaryview, guint action,
 	compose_reply_mode((ComposeMode)action, msginfo_list, body);
 	g_free(body);
 	g_slist_free(msginfo_list);
-}
-
-static void summary_execute_cb(SummaryView *summaryview, guint action,
-			       GtkWidget *widget)
-{
-	summary_execute(summaryview);
 }
 
 static void summary_show_all_header_cb(SummaryView *summaryview,

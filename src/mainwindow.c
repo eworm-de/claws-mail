@@ -217,10 +217,6 @@ static void show_all_header_cb		(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
 
-static void reedit_cb			(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
-
 static void move_to_cb			(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -251,6 +247,11 @@ static void mark_as_read_cb		(MainWindow	*mainwin,
 static void mark_all_read_cb		(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
+
+static void reedit_cb			(MainWindow	*mainwin,
+					 guint		 action,
+					 GtkWidget	*widget);
+
 static void add_address_cb		(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -644,8 +645,6 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/_Forward"),		"<control><alt>F", main_window_reply_cb, COMPOSE_FORWARD, NULL},
 	{N_("/_Message/Redirect"),		NULL, main_window_reply_cb, COMPOSE_REDIRECT, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/Re-_edit"),		NULL, reedit_cb, 0, NULL},
-	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/M_ove..."),		"<control>O", move_to_cb, 0, NULL},
 	{N_("/_Message/_Copy..."),		"<shift><control>O", copy_to_cb, 0, NULL},
 	{N_("/_Message/_Delete"),		"<control>D", delete_cb,  0, NULL},
@@ -659,6 +658,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/_Mark/Mark as rea_d"),
 						NULL, mark_as_read_cb, 0, NULL},
 	{N_("/_Message/_Mark/Mark all _read"),	NULL, mark_all_read_cb, 0, NULL},
+	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Message/Re-_edit"),		NULL, reedit_cb, 0, NULL},
 
 	{N_("/_Tools"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/_Address book..."),	"<shift><control>A", addressbook_open_cb, 0, NULL},
@@ -1738,12 +1739,12 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Follow-up and reply to", M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST|M_NEWS},
 		{"/Message/Forward"               , M_HAVE_ACCOUNT|M_TARGET_EXIST},
         	{"/Message/Redirect"		  , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Message/Re-edit"		  , M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
 		{"/Message/Move..."		  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 		{"/Message/Copy..."		  , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Message/Delete" 		  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
 		{"/Message/Cancel a news message" , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NEWS},
 		{"/Message/Mark"   		  , M_TARGET_EXIST},
+		{"/Message/Re-edit"              , M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
 
 		{"/Tools/Add sender to address book"   , M_SINGLE_TARGET_EXIST},
 		{"/Tools/Harvest addresses"	       , M_UNLOCKED},
@@ -2563,11 +2564,6 @@ static void show_all_header_cb(MainWindow *mainwin, guint action,
 				     GTK_CHECK_MENU_ITEM(widget)->active);
 }
 
-static void reedit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
-{
-	summary_reedit(mainwin->summaryview);
-}
-
 static void mark_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	summary_mark(mainwin->summaryview);
@@ -2594,6 +2590,11 @@ static void mark_all_read_cb(MainWindow *mainwin, guint action,
 			     GtkWidget *widget)
 {
 	summary_mark_all_read(mainwin->summaryview);
+}
+
+static void reedit_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+{
+	summary_reedit(mainwin->summaryview);
 }
 
 static void add_address_cb(MainWindow *mainwin, guint action,

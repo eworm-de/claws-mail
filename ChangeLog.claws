@@ -1,3 +1,8 @@
+2004-05-19 [paul]	0.9.10claws64
+
+	* sync with 0.9.10cvs13
+		see ChangeLog 2004-05-18
+
 2004-05-17 [christoph]	0.9.10claws63
 
 	* src/folder.c

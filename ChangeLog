@@ -1,3 +1,9 @@
+2004-05-18
+
+	* src/summaryview.c: cleaned up the context menu.
+	* src/mainwindow.c: changed the position of '/Message/Re-edit'
+	  menuitem.
+
 2004-05-12
 
 	* src/procmsg.[ch]: fixed the type of integer value in cache data
