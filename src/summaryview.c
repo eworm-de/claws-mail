@@ -2244,6 +2244,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	text[col_pos[S_COL_LOCKED]] = NULL;
 	text[col_pos[S_COL_NUMBER]] = itos(msginfo->msgnum);
 	text[col_pos[S_COL_SIZE]]   = to_human_readable(msginfo->size);
+	text[col_pos[S_COL_SCORE]]  = itos_buf(col_score, msginfo->score);
 
 	if (msginfo->date_t) {
 		procheader_date_get_localtime(date_modified,
