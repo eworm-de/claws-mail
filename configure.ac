@@ -206,8 +206,8 @@ AM_PATH_GLIB(1.2.6,,
 
 dnl check for IPv6 option
 AC_ARG_ENABLE(ipv6,
-	[  --enable-ipv6           Enable IPv6 support [default=no]],
-	[ac_cv_enable_ipv6=$enableval], [ac_cv_enable_ipv6=no])
+	[  --disable-ipv6           Disable IPv6 support],
+	[ac_cv_enable_ipv6=$enableval], [ac_cv_enable_ipv6=yes])
 
 dnl automated checks for IPv6 support.
 AC_MSG_CHECKING([whether to use IPv6])

@@ -344,6 +344,9 @@ static void select_thread_cb	 (MainWindow	*mainwin,
 static void create_filter_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+static void create_processing_cb (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
 
 static void prefs_common_open_cb	(MainWindow	*mainwin,
 					 guint		 action,
@@ -670,6 +673,15 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, create_filter_cb, FILTER_BY_TO, NULL},
 	{N_("/_Tools/_Create filter rule/by _Subject"),
 						NULL, create_filter_cb, FILTER_BY_SUBJECT, NULL},
+	{N_("/_Tools/_Create processing rule"),	NULL, NULL, 0, "<Branch>"},
+	{N_("/_Tools/_Create processing rule/_Automatically"),
+						NULL, create_processing_cb, FILTER_BY_AUTO, NULL},
+	{N_("/_Tools/_Create processing rule/by _From"),
+						NULL, create_processing_cb, FILTER_BY_FROM, NULL},
+	{N_("/_Tools/_Create processing rule/by _To"),
+						NULL, create_processing_cb, FILTER_BY_TO, NULL},
+	{N_("/_Tools/_Create processing rule/by _Subject"),
+						NULL, create_processing_cb, FILTER_BY_SUBJECT, NULL},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/Actio_ns"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
@@ -2682,7 +2694,13 @@ static void select_thread_cb(MainWindow *mainwin, guint action,
 static void create_filter_cb(MainWindow *mainwin, guint action,
 			     GtkWidget *widget)
 {
-	summary_filter_open(mainwin->summaryview, (PrefsFilterType)action);
+	summary_filter_open(mainwin->summaryview, (PrefsFilterType)action, 0);
+}
+
+static void create_processing_cb(MainWindow *mainwin, guint action,
+			     GtkWidget *widget)
+{
+	summary_filter_open(mainwin->summaryview, (PrefsFilterType)action, 1);
 }
 
 static void prefs_common_open_cb(MainWindow *mainwin, guint action,

@@ -302,6 +302,9 @@ static void summary_add_address_cb	(SummaryView		*summaryview,
 static void summary_create_filter_cb	(SummaryView		*summaryview,
 					 guint			 action,
 					 GtkWidget		*widget);
+static void summary_create_processing_cb(SummaryView		*summaryview,
+					 guint			 action,
+					 GtkWidget		*widget);
 
 static void summary_mark_clicked	(GtkWidget		*button,
 					 SummaryView		*summaryview);
@@ -441,6 +444,15 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 					NULL, summary_create_filter_cb, FILTER_BY_TO, NULL},
 	{N_("/Create f_ilter rule/by _Subject"),
 					NULL, summary_create_filter_cb, FILTER_BY_SUBJECT, NULL},
+	{N_("/Create processing rule"),	NULL, NULL,		0, "<Branch>"},
+	{N_("/Create processing rule/_Automatically"),
+					NULL, summary_create_processing_cb, FILTER_BY_AUTO, NULL},
+	{N_("/Create processing rule/by _From"),
+					NULL, summary_create_processing_cb, FILTER_BY_FROM, NULL},
+	{N_("/Create processing rule/by _To"),
+					NULL, summary_create_processing_cb, FILTER_BY_TO, NULL},
+	{N_("/Create processing rule/by _Subject"),
+					NULL, summary_create_processing_cb, FILTER_BY_SUBJECT, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_View"),			NULL, NULL,		0, "<Branch>"},
 	{N_("/_View/Open in new _window"),
@@ -1339,6 +1351,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 
 		{"/Add sender to address book"	, M_SINGLE_TARGET_EXIST},
 		{"/Create filter rule"		, M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+		{"/Create processing rule"	, M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 
 		{"/View"			, M_SINGLE_TARGET_EXIST},
 		{"/View/Open in new window"     , M_SINGLE_TARGET_EXIST},
@@ -4019,11 +4032,38 @@ static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
 	filter_message_by_msginfo(filtering_rules, msginfo);
 }
 
-void summary_filter_open(SummaryView *summaryview, PrefsFilterType type)
+void summary_msginfo_filter_open(FolderItem * item, MsgInfo *msginfo,
+				 PrefsFilterType type, gint processing_rule)
 {
-	MsgInfo *msginfo;
 	gchar *header = NULL;
 	gchar *key = NULL;
+
+	procmsg_get_filter_keyword(msginfo, &header, &key, type);
+	
+	if (processing_rule) {
+		if (item == NULL)
+			prefs_filtering_open(&pre_global_processing,
+					     _("Processing rules to apply before folder rules"),
+					     header, key);
+		else
+			prefs_filtering_open(&item->prefs->processing,
+					     _("Processing configuration"),
+					     header, key);
+	}
+	else {
+		prefs_filtering_open(&filtering_rules,
+				     _("Filtering configuration"),
+				       header, key);
+	}
+	
+	g_free(header);
+	g_free(key);
+}
+
+void summary_filter_open(SummaryView *summaryview, PrefsFilterType type,
+			 gint processing_rule)
+{
+	MsgInfo *msginfo;
 	FolderItem * item;
 	
 	if (!summaryview->selected) return;
@@ -4031,21 +4071,9 @@ void summary_filter_open(SummaryView *summaryview, PrefsFilterType type)
 	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
 					      summaryview->selected);
 	if (!msginfo) return;
-
-	procmsg_get_filter_keyword(msginfo, &header, &key, type);
 	
 	item = summaryview->folder_item;
-	if (item == NULL)
-		prefs_filtering_open(&pre_global_processing,
-				     _("Processing rules to apply before folder rules"),
-				     header, key);
-	else
-		prefs_filtering_open(&item->prefs->processing,
-				     _("Processing configuration"),
-				     header, key);
-
-	g_free(header);
-	g_free(key);
+	summary_msginfo_filter_open(item, msginfo, type, processing_rule);
 }
 
 /* color label */
@@ -4742,7 +4770,13 @@ static void summary_add_address_cb(SummaryView *summaryview,
 static void summary_create_filter_cb(SummaryView *summaryview,
 				     guint action, GtkWidget *widget)
 {
-	summary_filter_open(summaryview, (PrefsFilterType)action);
+	summary_filter_open(summaryview, (PrefsFilterType)action, 0);
+}
+
+static void summary_create_processing_cb(SummaryView *summaryview,
+					 guint action, GtkWidget *widget)
+{
+	summary_filter_open(summaryview, (PrefsFilterType)action, 1);
 }
 
 static void summary_sort_by_column_click(SummaryView *summaryview,

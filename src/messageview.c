@@ -127,6 +127,9 @@ static void add_address_cb		(gpointer	 data,
 static void create_filter_cb		(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
+static void create_processing_cb	(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
 
 static void about_cb			(gpointer	 data,
 					 guint		 action,
@@ -270,6 +273,14 @@ static GtkItemFactoryEntry msgview_entries[] =
 					NULL, create_filter_cb, FILTER_BY_TO, NULL},
 	{N_("/_Tools/_Create filter rule/by _Subject"),
 					NULL, create_filter_cb, FILTER_BY_SUBJECT, NULL},
+	{N_("/_Tools/Create processing rule/_Automatically"),
+					NULL, create_processing_cb, FILTER_BY_AUTO, NULL},
+	{N_("/_Tools/Create processing rule/by _From"),
+					NULL, create_processing_cb, FILTER_BY_FROM, NULL},
+	{N_("/_Tools/Create processing rule/by _To"),
+					NULL, create_processing_cb, FILTER_BY_TO, NULL},
+	{N_("/_Tools/Create processing rule/by _Subject"),
+					NULL, create_processing_cb, FILTER_BY_SUBJECT, NULL},
 	{N_("/_Tools/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/Actio_ns"),	NULL, NULL, 0, "<Branch>"},
 
@@ -1307,27 +1318,26 @@ static void add_address_cb(gpointer data, guint action, GtkWidget *widget)
 static void create_filter_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	MessageView *messageview = (MessageView *)data;
-	gchar *header = NULL;
-	gchar *key = NULL;
 	FolderItem * item;
 	
 	if (!messageview->msginfo) return;
-
-	procmsg_get_filter_keyword(messageview->msginfo, &header, &key,
-				   (PrefsFilterType)action);
 	
 	item = messageview->msginfo->folder;
-	if (item == NULL)
-		prefs_filtering_open(&pre_global_processing,
-				     _("Processing rules to apply before folder rules"),
-				     header, key);
-	else
-		prefs_filtering_open(&item->prefs->processing,
-				     _("Processing configuration"),
-				     header, key);
+	summary_msginfo_filter_open(item,  messageview->msginfo,
+				    (PrefsFilterType)action, 0);
+}
 
-	g_free(header);
-	g_free(key);
+static void create_processing_cb(gpointer data, guint action,
+				 GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	FolderItem * item;
+	
+	if (!messageview->msginfo) return;
+	
+	item = messageview->msginfo->folder;
+	summary_msginfo_filter_open(item,  messageview->msginfo,
+				    (PrefsFilterType)action, 1);
 }
 
 static void about_cb(gpointer data, guint action, GtkWidget *widget)

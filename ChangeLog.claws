@@ -1,3 +1,11 @@
+2003-12-16 [hoa]	0.9.7claws45
+
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/summaryview.[ch]
+	        Create filter rules using a message is fixed.
+	        We can now create processing rules using a message.
+
 2003-12-15 [alfons]	0.9.7claws44
 
 	* src/procheader.c
