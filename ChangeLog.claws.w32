@@ -1,3 +1,8 @@
+2002-11-02 [thorsten]	0.8.5claws66-2
+
+	* win32/Make-ming.mak
+		fix: dont link against MSVC debug libs (gdb exceptions)
+
 2002-11-01 [thorsten]	0.8.5claws66-1
 
 	* src/mainwindow.c

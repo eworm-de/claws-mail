@@ -107,21 +107,6 @@ INCLUDES= \
 
 CFLAGS=$(FLAGS) $(DEFINES) $(INCLUDES)
 
-ifeq ($(DEBUGVERSION),1)
-SUPPORTLIBS= \
-	$(FNMATCHDIR)/fnmatch_d.lib \
-	$(GPGMEDIR)/gpgme_d.lib \
-	$(LIBCOMPFACEDIR)/libcompface_d.lib \
-	$(REGEXDIR)/regex_d.lib \
-	$(W32LIBDIR)/w32lib_d.lib
-else
-SUPPORTLIBS= \
-	$(FNMATCHDIR)/fnmatch.lib \
-	$(GPGMEDIR)/gpgme.lib \
-	$(LIBCOMPFACEDIR)/libcompface.lib \
-	$(REGEXDIR)/regex.lib \
-	$(W32LIBDIR)/w32lib.lib
-endif
 LIBS= \
 	$(LIBDIR)/glib-2.0.lib \
 	$(LIBDIR)/gdk.lib \
@@ -131,7 +116,11 @@ LIBS= \
 	$(LIBDIR)/libeay32.lib \
 	$(LIBDIR)/ssleay32.lib \
 	$(LIBDIR)/RSAglue.lib \
-	$(SUPPORTLIBS)
+	$(FNMATCHDIR)/fnmatch.lib \
+	$(GPGMEDIR)/gpgme.lib \
+	$(LIBCOMPFACEDIR)/libcompface.lib \
+	$(REGEXDIR)/regex.lib \
+	$(W32LIBDIR)/w32lib.lib
 
 OBJECTS= \
 	about.o \
