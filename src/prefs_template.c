@@ -37,6 +37,7 @@
 #include "manage_window.h"
 #include "prefs_common.h"
 #include "compose.h"
+#include "addr_compl.h"
 #include "quote_fmt.h"
 
 static struct Templates {
@@ -150,7 +151,6 @@ static void prefs_template_window_create(void)
 	hbox1 = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(hbox1);
 	gtk_box_pack_start(GTK_BOX(vbox1), hbox1, FALSE, FALSE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 2);
 
 	label1 = gtk_label_new(_("Template name"));
 	gtk_widget_show(label1);
@@ -168,6 +168,7 @@ static void prefs_template_window_create(void)
 	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
 
 	ADD_ENTRY(entry_to, _("To:"), 0);
+	address_completion_register_entry(GTK_ENTRY(entry_to));
 	ADD_ENTRY(entry_subject, _("Subject:"), 1);
 
 #undef ADD_ENTRY
@@ -274,6 +275,8 @@ static void prefs_template_window_create(void)
 			   GTK_SIGNAL_FUNC(prefs_template_ok_cb), NULL);
 	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
 			    GTK_SIGNAL_FUNC(prefs_template_cancel_cb), NULL);
+
+	address_completion_start(window);
 
 	templates.window = window;
 	templates.ok_btn = ok_btn;

@@ -1,3 +1,8 @@
+2001-12-06 [paul]	0.6.5claws54
+
+	* sync with sylpheed 0.6.5cvs22
+        	see ChangeLog entry 2001-12-06
+
 2001-12-05 [alfons]	0.6.5claws53
 
 	* src/inc.c

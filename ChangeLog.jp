@@ -1,3 +1,8 @@
+2001-12-06
+
+	* src/prefs_template.c: prefs_template_window_create(): To:
+	  エントリでアドレス補完に対応。
+
 2001-12-04
 
 	* src/folder.c:
