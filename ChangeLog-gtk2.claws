@@ -1,3 +1,14 @@
+2004-07-09 [colin]	0.9.11cvs17.20
+
+	* src/messageview.c
+		Fix bug with delete state
+	* src/pop.c
+	* src/pop.h
+		Fix buffer leak (fread doesn't 
+		terminate buffers with \0)
+		Refactoring (remove magic 
+		numbers)
+
 2004-07-09 [colin]	0.9.11cvs17.19
 
 	* src/pop.c

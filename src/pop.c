@@ -353,7 +353,8 @@ static gint pop3_retr_recv(Pop3Session *session, const gchar *data, guint len)
 	}
 	g_free(mail_receive_data.data);
 
-	if (session->msg[session->cur_msg].partial_recv == 2) {
+	if (session->msg[session->cur_msg].partial_recv 
+	    == POP3_PARTIAL_DLOAD_DELE) {
 		gchar *old_file = pop3_get_filename_for_partial_mail(
 				session, session->msg[session->cur_msg].uidl);
 		if (old_file != NULL) {
@@ -596,7 +597,7 @@ void pop3_get_uidl_table(PrefsAccount *ac_prefs, Pop3Session *session)
 		if (strlen(tmp) == 1)
 			partial_recv = atoi(tmp);
 		else
-			partial_recv = 2;
+			partial_recv = POP3_PARTIAL_DLOAD_DELE;
 
 		g_hash_table_insert(partial_recv_table, g_strdup(uidl),
 				    GINT_TO_POINTER(partial_recv));
@@ -718,8 +719,6 @@ static gchar *pop3_get_filename_for_partial_mail(Pop3Session *session,
 	return result;
 }
 
-#define DOWNLOAD_MAIL 1
-#define DELETE_MAIL 2
 static int pop3_uidl_mark_mail(const gchar *server, const gchar *login, 
 			  const gchar *muidl, const gchar *filename, 
 			  int download)
@@ -784,7 +783,8 @@ static int pop3_uidl_mark_mail(const gchar *server, const gchar *login,
 		} else {
 			fprintf(fpnew, "%s\t%ld\t%s\n", 
 				uidl, recv_time, 
-				download==DOWNLOAD_MAIL?filename:"0");
+				download == POP3_PARTIAL_DLOAD_DLOAD
+					 ? filename : "0");
 		}
 	}
 	fclose(fpnew);
@@ -808,6 +808,7 @@ static int pop3_uidl_mark_mail(const gchar *server, const gchar *login,
 	}
 	
 	while ((len = fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
+		buf[len]='\0';
 		if (start) {
 			start = FALSE;
 			fprintf(fpnew, "SC-Marked-For-Download: %d\n", 
@@ -836,14 +837,14 @@ int pop3_mark_for_delete(const gchar *server, const gchar *login,
 			 const gchar *muidl, const gchar *filename)
 {
 	return pop3_uidl_mark_mail(server, login, muidl, filename, 
-		DELETE_MAIL);
+		POP3_PARTIAL_DLOAD_DELE);
 }
 
 int pop3_mark_for_download(const gchar *server, const gchar *login, 
 			 const gchar *muidl, const gchar *filename)
 {
 	return pop3_uidl_mark_mail(server, login, muidl, filename, 
-		DOWNLOAD_MAIL);
+		POP3_PARTIAL_DLOAD_DLOAD);
 }
 
 gint pop3_write_uidl_list(Pop3Session *session)
@@ -976,7 +977,7 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
 		if (ac->rmmail &&
 		    msg->recv_time != RECV_TIME_NONE &&
 		    msg->recv_time != RECV_TIME_KEEP &&
-		    msg->partial_recv == 0 &&
+		    msg->partial_recv == POP3_PARTIAL_DLOAD_UNKN &&
 		    session->current_time - msg->recv_time >=
 		    ac->msg_leave_time * 24 * 60 * 60) {
 			log_message
@@ -990,9 +991,9 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
 			if (!msg->received && msg->partial_recv != 2) {
 				pop3_top_send(session, ac->size_limit);
 				return POP3_TOP;
-			} else if (msg->partial_recv == 2) {
+			} else if (msg->partial_recv == POP3_PARTIAL_DLOAD_DELE)
 				break;
-			}
+
 			log_message
 				(_("POP3: Skipping message %d (%d bytes)\n"),
 				   session->cur_msg, size);

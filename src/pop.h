@@ -98,6 +98,12 @@ typedef enum {
 	RECV_TIME_KEEP     = 2
 } RecvTime;
 
+typedef enum {
+	POP3_PARTIAL_DLOAD_UNKN	= 0,
+	POP3_PARTIAL_DLOAD_DLOAD= 1,
+	POP3_PARTIAL_DLOAD_DELE = 2
+} PartialDownloadAction;
+
 struct _Pop3MsgInfo
 {
 	gint size;

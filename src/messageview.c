@@ -1073,7 +1073,7 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 				   msginfo->partial_recv))
 		return;
 	switch (msginfo->planned_download) {
-	case 0: /* unknown yet */
+	case POP3_PARTIAL_DLOAD_UNKN:
 		text = g_strdup_printf(_("This message has been partially "
 				"retrieved;\nit is %s."),
 				to_human_readable(
@@ -1083,7 +1083,7 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 		button1_cb = partial_recv_dload_clicked;
 		button2_cb = partial_recv_del_clicked;
 		break;
-	case 1:
+	case POP3_PARTIAL_DLOAD_DLOAD:
 		text = g_strdup_printf(_("This message has been partially "
 				"retrieved and is planned for "
 				"download;\nit is %s."),
@@ -1092,7 +1092,7 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 		button1 = _("Mark for deletion");
 		button1_cb = partial_recv_del_clicked;
 		break;
-	case -1:
+	case POP3_PARTIAL_DLOAD_DELE:
 		text = g_strdup_printf(_("This message has been partially "
 				"retrieved and is planned for "
 				"deletion;\nit is %s."),
@@ -1141,7 +1141,7 @@ static void partial_recv_dload_clicked(NoticeView *noticeview,
 	if (pop3_mark_for_download(tmpmsginfo->account_server, 
 				   tmpmsginfo->account_login, 
 			   	   tmpmsginfo->partial_recv, file) == 0) {
-		msginfo->planned_download = 1;
+		msginfo->planned_download = POP3_PARTIAL_DLOAD_DLOAD;
 		partial_recv_show(noticeview, msginfo);
 	}
 
@@ -1168,7 +1168,7 @@ static void partial_recv_del_clicked(NoticeView *noticeview,
 	if (pop3_mark_for_delete(tmpmsginfo->account_server, 
 				   tmpmsginfo->account_login, 
 			   	   tmpmsginfo->partial_recv, file) == 0) {
-		msginfo->planned_download = -1;
+		msginfo->planned_download = POP3_PARTIAL_DLOAD_DELE;
 		partial_recv_show(noticeview, msginfo);
 	}
 
