@@ -1,3 +1,8 @@
+2004-11-24 [colin]	0.9.12cvs172
+
+	* src/plugins/pgpmime/pgpmime.c
+		Forgot one :(
+
 2004-11-24 [colin]	0.9.12cvs171
 
 	* src/plugins/pgpmime/pgpmime.c
