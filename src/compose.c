@@ -6923,7 +6923,8 @@ void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list,
 				    guint action)
 {
 	gchar *body;
-
+	GSList *new_msglist = NULL;
+	
 	g_return_if_fail(msgview != NULL);
 
 	g_return_if_fail(msginfo_list != NULL);
@@ -6938,14 +6939,19 @@ void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list,
  			MsgInfo *tmp_msginfo = procmsg_msginfo_new_from_mimeinfo(
  						orig_msginfo, mimeinfo);
  			if (tmp_msginfo != NULL) {
- 				g_slist_free(msginfo_list);
- 				msginfo_list = g_slist_append(NULL, tmp_msginfo);
+ 				new_msglist = g_slist_append(NULL, tmp_msginfo);
  			} 
  		}
  	}
 
 	body = messageview_get_selection(msgview);
-	compose_reply_mode((ComposeMode)action, msginfo_list, body);
+
+	if (new_msglist) {
+		compose_reply_mode((ComposeMode)action, new_msglist, body);
+		g_slist_free(new_msglist);
+	} else
+		compose_reply_mode((ComposeMode)action, msginfo_list, body);
+
 	g_free(body);
 }
 

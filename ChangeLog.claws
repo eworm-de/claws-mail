@@ -1,3 +1,8 @@
+2005-01-27 [colin]	1.0.0cvs18
+
+	* src/compose.c
+		Uhm, better not touch the original msginfo_list.
+
 2005-01-27 [colin]	1.0.0cvs17
 
 	* src/procmsg.c
