@@ -3507,6 +3507,8 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 			return -1;
 
 	procmime_write_mimeinfo(mimemsg, fp);
+	
+	procmime_mimeinfo_free_all(mimemsg);
 
 	return 0;
 }
