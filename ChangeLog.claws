@@ -1,3 +1,8 @@
+2004-02-26 [alfons]	0.9.9claws30
+
+	* src/procmime.c
+		clean up (2)
+
 2004-02-26 [alfons]	0.9.9claws29
 
 	* src/procmime.c
