@@ -1,7 +1,7 @@
 Installation
 ============
 
-This program requires GTK+ 1.2.x to be compiled.
+This program requires GTK+ 2.4.0 or higher to be compiled.
 
 Build it
 ========
