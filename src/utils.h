@@ -343,6 +343,9 @@ gint change_file_mode_rw	(FILE		*fp,
 				 const gchar	*file);
 FILE *my_tmpfile		(void);
 FILE *str_open_as_stream	(const gchar	*str);
+gint str_write_to_file		(const gchar	*str,
+				 const gchar	*file);
+gchar *file_read_to_str		(const gchar	*file);
 
 /* process execution */
 gint execute_async		(gchar *const	 argv[]);

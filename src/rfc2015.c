@@ -480,7 +480,7 @@ int rfc2015_is_encrypted (MimeInfo *mimeinfo)
     return 1;
 }
 
-gboolean rfc2015_msg_is_encrypted (gchar *file)
+gboolean rfc2015_msg_is_encrypted (const gchar *file)
 {
 	FILE *fp;
 	MimeInfo *mimeinfo;
@@ -934,7 +934,8 @@ failure:
  * r_siginfo returns an XML object with information about the signature.
  */
 static GpgmeData
-pgp_sign (GpgmeData plain, GSList *key_list, char **r_siginfo)
+pgp_sign (GpgmeData plain, GSList *key_list, gboolean clearsign,
+	  char **r_siginfo)
 {
     GSList *p;
     GpgmeCtx ctx = NULL;
@@ -970,7 +971,9 @@ pgp_sign (GpgmeData plain, GSList *key_list, char **r_siginfo)
 
     if (err)
 	goto leave;
-    err = gpgme_op_sign (ctx, plain, sig, GPGME_SIG_MODE_DETACH);
+    err = gpgme_op_sign
+	(ctx, plain, sig,
+	 clearsign ? GPGME_SIG_MODE_CLEAR : GPGME_SIG_MODE_DETACH);
     if (!err)
         *r_siginfo = gpgme_get_op_info (ctx, 0);
 
@@ -1138,7 +1141,7 @@ rfc2015_sign (const char *file, GSList *key_list)
         goto failure;
     }
 
-    sigdata = pgp_sign (plain, key_list, &siginfo); 
+    sigdata = pgp_sign (plain, key_list, FALSE, &siginfo); 
     if (siginfo) {
 	micalg = extract_micalg (siginfo);
 	free (siginfo);
@@ -1251,6 +1254,93 @@ failure:
     g_free (boundary);
     g_free (micalg);
     return -1; /* error */
+}
+
+
+/*
+ * Sign the file with clear text and replace its content with the signed one.
+ */
+gint
+rfc2015_clearsign (const gchar *file, GSList *key_list)
+{
+    FILE *fp;
+    gchar buf[BUFFSIZE];
+    GpgmeError err;
+    GpgmeData text = NULL;
+    GpgmeData sigdata = NULL;
+    size_t nread;
+    gchar *siginfo;
+
+    if ((fp = fopen(file, "rb")) == NULL) {
+	FILE_OP_ERROR(file, "fopen");
+	goto failure;
+    }
+
+    err = gpgme_data_new(&text);
+    if (err) {
+	debug_print("gpgme_data_new failed: %s\n", gpgme_strerror(err));
+	goto failure;
+    }
+
+    while (!err && fgets(buf, sizeof(buf), fp)) {
+	err = gpgme_data_write(text, buf, strlen(buf));
+    }
+    if (ferror(fp)) {
+	FILE_OP_ERROR(file, "fgets");
+	goto failure;
+    }
+    if (err) {
+	debug_print("gpgme_data_write failed: %s\n", gpgme_strerror(err));
+	goto failure;
+    }
+
+    sigdata = pgp_sign(text, key_list, TRUE, &siginfo);
+    if (siginfo) {
+	g_free(siginfo);
+    }
+    if (!sigdata)
+	goto failure;
+
+    if (fclose(fp) == EOF) {
+	FILE_OP_ERROR(file, "fclose");
+	fp = NULL;
+	goto failure;
+    }
+    if ((fp = fopen(file, "wb")) == NULL) {
+	FILE_OP_ERROR(file, "fopen");
+	goto failure;
+    }
+
+    err = gpgme_data_rewind(sigdata);
+    if (err) {
+	debug_print("gpgme_data_rewind on sigdata failed: %s\n",
+		    gpgme_strerror(err));
+	goto failure;
+    }
+
+    while (!(err = gpgme_data_read(sigdata, buf, sizeof(buf), &nread))) {
+	fwrite(buf, nread, 1, fp);
+    }
+    if (err != GPGME_EOF) {
+	debug_print("gpgme_data_read failed: %s\n", gpgme_strerror(err));
+	goto failure;
+    }
+
+    if (fclose(fp) == EOF) {
+	FILE_OP_ERROR(file, "fclose");
+	fp = NULL;
+	goto failure;
+    }
+    gpgme_data_release(text);
+    gpgme_data_release(sigdata);
+    return 0;
+
+failure:
+    if (fp)
+	fclose(fp);
+    gpgme_data_release(text);
+    gpgme_data_release(sigdata);
+    return -1;
 }
 
 

@@ -143,6 +143,7 @@ struct _PrefsAccount
 	gboolean default_encrypt;
 	gboolean default_sign;
 	gboolean ascii_armored;
+	gboolean clearsign;
 	SignKeyType sign_key;
 	gchar *sign_key_id;
 #endif /* USE_GPGME */

@@ -1470,11 +1470,11 @@ gchar *get_tmp_dir(void)
 
 gchar *get_tmp_file(void)
 {
-	static gchar *tmp_file = NULL;
+	gchar *tmp_file;
+	static guint32 id = 0;
 
-	if (!tmp_file)
-		tmp_file = g_strconcat(get_tmp_dir(), G_DIR_SEPARATOR_S,
-				       "tmpfile", NULL);
+	tmp_file = g_strdup_printf("%s%ctmpfile.%08x",
+				   get_tmp_dir(), G_DIR_SEPARATOR, id++);
 
 	return tmp_file;
 }
@@ -2176,15 +2176,19 @@ gint canonicalize_file_replace(const gchar *file)
 
 	tmp_file = get_tmp_file();
 
-	if (canonicalize_file(file, tmp_file) < 0)
+	if (canonicalize_file(file, tmp_file) < 0) {
+		g_free(tmp_file);
 		return -1;
+	}
 
 	if (move_file(tmp_file, file, TRUE) < 0) {
 		g_warning("can't replace %s .\n", file);
 		unlink(tmp_file);
+		g_free(tmp_file);
 		return -1;
 	}
 
+	g_free(tmp_file);
 	return 0;
 }
 
@@ -2261,6 +2265,81 @@ FILE *str_open_as_stream(const gchar *str)
 
 	rewind(fp);
 	return fp;
+}
+
+gint str_write_to_file(const gchar *str, const gchar *file)
+{
+	FILE *fp;
+	size_t len;
+
+	g_return_val_if_fail(str != NULL, -1);
+	g_return_val_if_fail(file != NULL, -1);
+
+	if ((fp = fopen(file, "wb")) == NULL) {
+		FILE_OP_ERROR(file, "fopen");
+		return -1;
+	}
+
+	len = strlen(str);
+	if (len == 0) {
+		fclose(fp);
+		return 0;
+	}
+
+	if (fwrite(str, len, 1, fp) != 1) {
+		FILE_OP_ERROR(file, "fwrite");
+		fclose(fp);
+		unlink(file);
+		return -1;
+	}
+
+	if (fclose(fp) == EOF) {
+		FILE_OP_ERROR(file, "fclose");
+		unlink(file);
+		return -1;
+	}
+
+	return 0;
+}
+
+gchar *file_read_to_str(const gchar *file)
+{
+	GByteArray *array;
+	FILE *fp;
+	gchar buf[BUFSIZ];
+	gint n_read;
+	gchar *str;
+
+	g_return_val_if_fail(file != NULL, NULL);
+
+	if ((fp = fopen(file, "rb")) == NULL) {
+		FILE_OP_ERROR(file, "fopen");
+		return NULL;
+	}
+
+	array = g_byte_array_new();
+
+	while ((n_read = fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
+		if (n_read < sizeof(buf) && ferror(fp))
+			break;
+		g_byte_array_append(array, buf, n_read);
+	}
+
+	if (ferror(fp)) {
+		FILE_OP_ERROR(file, "fread");
+		fclose(fp);
+		g_byte_array_free(array, TRUE);
+		return NULL;
+	}
+
+	fclose(fp);
+
+	buf[0] = '\0';
+	g_byte_array_append(array, buf, 1);
+	str = (gchar *)array->data;
+	g_byte_array_free(array, FALSE);
+
+	return str;
 }
 
 gint execute_async(gchar *const argv[])

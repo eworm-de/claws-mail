@@ -2743,8 +2743,8 @@ gint compose_send(Compose *compose)
 	}
 
 	/* write to temporary file */
-	g_snprintf(tmp, sizeof(tmp), "%s%ctmpmsg%d",
-		   get_rc_dir(), G_DIR_SEPARATOR, (gint)compose);
+	g_snprintf(tmp, sizeof(tmp), "%s%ctmpmsg.%08x",
+		   get_tmp_dir(), G_DIR_SEPARATOR, (gint)compose);
 
 	if (prefs_common.linewrap_at_send)
 		compose_wrap_line_all(compose);
@@ -3075,6 +3075,36 @@ static gint compose_create_signers_list(Compose *compose, GSList **pkey_list)
 	*pkey_list = key_list;
 	return 0;
 }
+
+/* clearsign message body text */
+static gint compose_clearsign_text(Compose *compose, gchar **text)
+{
+	GSList *key_list;
+	gchar *tmp_file;
+
+	tmp_file = get_tmp_file();
+	if (str_write_to_file(*text, tmp_file) < 0) {
+		g_free(tmp_file);
+		return -1;
+	}
+
+	if (canonicalize_file_replace(tmp_file) < 0 ||
+	    compose_create_signers_list(compose, &key_list) < 0 ||
+	    rfc2015_clearsign(tmp_file, key_list) < 0) {
+		unlink(tmp_file);
+		g_free(tmp_file);
+		return -1;
+	}
+
+	g_free(*text);
+	*text = file_read_to_str(tmp_file);
+	unlink(tmp_file);
+	g_free(tmp_file);
+	if (*text == NULL)
+		return -1;
+
+	return 0;
+}
 #endif /* USE_GPGME */
 
 static gint compose_write_to_file(Compose *compose, const gchar *file,
@@ -3144,6 +3174,18 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	}
 	g_free(chars);
 
+#if USE_GPGME
+	if (!is_draft && compose->use_signing && compose->account->clearsign) {
+		if (compose_clearsign_text(compose, &buf) < 0) {
+			g_warning("clearsign failed\n");
+			fclose(fp);
+			unlink(file);
+			g_free(buf);
+			return -1;
+		}
+	}
+#endif
+
 	/* write headers */
 	if (compose_write_headers
 		(compose, fp, out_codeset, encoding, is_draft) < 0) {
@@ -3205,14 +3247,15 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	if (is_draft)
 		return 0;
 
-	if (compose->use_signing || compose->use_encryption) {
+	if ((compose->use_signing && !compose->account->clearsign) ||
+	    compose->use_encryption) {
 		if (canonicalize_file_replace(file) < 0) {
 			unlink(file);
 			return -1;
 		}
 	}
 
-	if (compose->use_signing) {
+	if (compose->use_signing && !compose->account->clearsign) {
 		GSList *key_list;
 
 		if (compose_create_signers_list(compose, &key_list) < 0 ||

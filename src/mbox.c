@@ -52,6 +52,7 @@
 		fclose(tmp_fp); \
 		fclose(mbox_fp); \
 		unlink(tmp_file); \
+		g_free(tmp_file); \
 		return -1; \
 	} \
 }
@@ -111,6 +112,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, GHashTable *folder_table)
 			FILE_OP_ERROR(tmp_file, "fopen");
 			g_warning(_("can't open temporary file\n"));
 			fclose(mbox_fp);
+			g_free(tmp_file);
 			return -1;
 		}
 		if (change_file_mode_rw(tmp_fp, tmp_file) < 0)
@@ -199,6 +201,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, GHashTable *folder_table)
 			g_warning(_("can't write to temporary file\n"));
 			fclose(mbox_fp);
 			unlink(tmp_file);
+			g_free(tmp_file);
 			return -1;
 		}
 
@@ -228,6 +231,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, GHashTable *folder_table)
 		if ((msgnum = folder_item_add_msg(dropfolder, tmp_file, TRUE)) < 0) {
 			fclose(mbox_fp);
 			unlink(tmp_file);
+			g_free(tmp_file);
 			return -1;
 		}
 
@@ -242,6 +246,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, GHashTable *folder_table)
 		msgs++;
 	} while (from_line[0] != '\0');
 
+	g_free(tmp_file);
 	fclose(mbox_fp);
 	debug_print(_("%d messages found.\n"), msgs);
 

@@ -220,8 +220,8 @@ select_row (GtkSCTree *sctree, gint row, gint col, guint state)
 	g_return_if_fail (GTK_IS_SCTREE (sctree));
     
 	range = ((state & GDK_SHIFT_MASK) != 0) &&
-	        (GTK_CLIST(sctree)->selection_mode != GTK_SELECTION_SINGLE) &&
-	        (GTK_CLIST(sctree)->selection_mode != GTK_SELECTION_BROWSE);
+		(GTK_CLIST(sctree)->selection_mode != GTK_SELECTION_SINGLE) &&
+		(GTK_CLIST(sctree)->selection_mode != GTK_SELECTION_BROWSE);
 	additive = ((state & GDK_CONTROL_MASK) != 0) &&
 		   (GTK_CLIST(sctree)->selection_mode != GTK_SELECTION_SINGLE) &&
 		   (GTK_CLIST(sctree)->selection_mode != GTK_SELECTION_BROWSE);
