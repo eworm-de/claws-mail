@@ -227,6 +227,7 @@ static Session *news_session_new_for_folder(Folder *folder)
 	const gchar *userid = NULL;
 	gchar *passwd = NULL;
 	gushort port;
+	gchar buf[NNTPBUFSIZE];
 
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
@@ -250,6 +251,8 @@ static Session *news_session_new_for_folder(Folder *folder)
 	port = ac->set_nntpport ? ac->nntpport : NNTP_PORT;
 	session = news_session_new(ac->nntp_server, port, userid, passwd);
 #endif
+	if (ac->use_nntp_auth && ac->use_nntp_auth_onconnect)
+		nntp_forceauth(NNTP_SESSION(session)->nntp_sock, buf, userid, passwd);
 
 	g_free(passwd);
 

@@ -87,6 +87,7 @@ struct _PrefsAccount
 	gchar *smtp_server;
 	gchar *nntp_server;
 	gboolean use_nntp_auth;
+	gboolean use_nntp_auth_onconnect;
 	gchar *userid;
 	gchar *passwd;
 

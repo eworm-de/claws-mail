@@ -70,6 +70,12 @@ NNTPSockInfo *nntp_open_auth	(const gchar	*server,
 				 const gchar	*passwd);
 #endif
 void nntp_close			(NNTPSockInfo	*sock);
+
+void nntp_forceauth		(NNTPSockInfo 	*sock,
+				 gchar *buf, 
+				 const gchar    *userid, 
+				 const gchar    *passwd);
+
 gint nntp_group			(NNTPSockInfo	*sock,
 				 const gchar	*group,
 				 gint		*num,

@@ -74,6 +74,7 @@ static struct Basic {
 	GtkWidget *smtpserv_entry;
 	GtkWidget *nntpserv_entry;
 	GtkWidget *nntpauth_chkbtn;
+	GtkWidget *nntpauth_onconnect_chkbtn;
 	GtkWidget *localmbox_entry;
 	GtkWidget *mailcmd_chkbtn;
 	GtkWidget *mailcmd_entry;
@@ -103,9 +104,7 @@ static struct Receive {
 static struct Send {
 	GtkWidget *date_chkbtn;
 	GtkWidget *msgid_chkbtn;
-
 	GtkWidget *customhdr_chkbtn;
-
 	GtkWidget *smtp_auth_chkbtn;
 	GtkWidget *smtp_auth_type_optmenu;
 	GtkWidget *smtp_uid_entry;
@@ -116,7 +115,6 @@ static struct Send {
 
 static struct Compose {
 	GtkWidget *sigpath_entry;
-
 	GtkWidget *autocc_chkbtn;
 	GtkWidget *autocc_entry;
 	GtkWidget *autobcc_chkbtn;
@@ -261,6 +259,10 @@ static PrefParam param[] = {
 
 	{"use_nntp_auth", "FALSE", &tmp_ac_prefs.use_nntp_auth, P_BOOL,
 	 &basic.nntpauth_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	
+	{"use_nntp_auth_onconnect", "FALSE", &tmp_ac_prefs.use_nntp_auth_onconnect, P_BOOL,
+	 &basic.nntpauth_onconnect_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"user_id", "ENV_USER", &tmp_ac_prefs.userid, P_STRING,
@@ -804,6 +806,7 @@ static void prefs_account_basic_create(void)
 	GtkWidget *smtpserv_entry;
 	GtkWidget *nntpserv_entry;
 	GtkWidget *nntpauth_chkbtn;
+	GtkWidget *nntpauth_onconnect_chkbtn;
 	GtkWidget *localmbox_entry;
 	GtkWidget *mailcmd_chkbtn;
 	GtkWidget *mailcmd_entry;
@@ -930,7 +933,15 @@ static void prefs_account_basic_create(void)
 	nntpauth_chkbtn = gtk_check_button_new_with_label
 		(_("This server requires authentication"));
 	gtk_widget_show (nntpauth_chkbtn);
-	gtk_table_attach (GTK_TABLE (serv_table), nntpauth_chkbtn, 0, 4, 1, 2,
+	
+	gtk_table_attach (GTK_TABLE (serv_table), nntpauth_chkbtn, 0, 2, 1, 2,
+			  GTK_FILL, 0, 0, 0);
+
+	nntpauth_onconnect_chkbtn = gtk_check_button_new_with_label
+		(_("Authenticate on connect"));
+	gtk_widget_show (nntpauth_onconnect_chkbtn);
+
+	gtk_table_attach (GTK_TABLE (serv_table), nntpauth_onconnect_chkbtn, 2, 4, 1, 2,
 			  GTK_FILL, 0, 0, 0);
 
 	recvserv_entry = gtk_entry_new ();
@@ -1030,6 +1041,7 @@ static void prefs_account_basic_create(void)
 	SET_TOGGLE_SENSITIVITY (nntpauth_chkbtn, pass_label);
 	SET_TOGGLE_SENSITIVITY (nntpauth_chkbtn, uid_entry);
 	SET_TOGGLE_SENSITIVITY (nntpauth_chkbtn, pass_entry);
+	SET_TOGGLE_SENSITIVITY (nntpauth_chkbtn, nntpauth_onconnect_chkbtn);
 
 	basic.acname_entry   = acname_entry;
 	basic.default_chkbtn = default_chkbtn;
@@ -1048,6 +1060,7 @@ static void prefs_account_basic_create(void)
 	basic.nntpserv_label   = nntpserv_label;
 	basic.nntpserv_entry   = nntpserv_entry;
 	basic.nntpauth_chkbtn  = nntpauth_chkbtn;
+	basic.nntpauth_onconnect_chkbtn  = nntpauth_onconnect_chkbtn;
 	basic.localmbox_label   = localmbox_label;
 	basic.localmbox_entry   = localmbox_entry;
 	basic.mailcmd_chkbtn   = mailcmd_chkbtn;
@@ -2297,8 +2310,13 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_show(basic.nntpserv_entry);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   0, VSPACING_NARROW);
+
 		gtk_widget_set_sensitive(basic.nntpauth_chkbtn, TRUE);
 		gtk_widget_show(basic.nntpauth_chkbtn);
+
+		gtk_widget_set_sensitive(basic.nntpauth_onconnect_chkbtn, TRUE);
+		gtk_widget_show(basic.nntpauth_onconnect_chkbtn);
+
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   1, VSPACING_NARROW);
 		gtk_widget_hide(basic.recvserv_label);
@@ -2333,6 +2351,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
 
 		/* update userid/passwd sensitive state */
+
 		prefs_account_nntpauth_toggled
 			(GTK_TOGGLE_BUTTON(basic.nntpauth_chkbtn), NULL);
 		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
@@ -2370,6 +2389,9 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 					   0, 0);
 		gtk_widget_set_sensitive(basic.nntpauth_chkbtn, FALSE);
 		gtk_widget_hide(basic.nntpauth_chkbtn);
+
+		gtk_widget_set_sensitive(basic.nntpauth_onconnect_chkbtn, FALSE);
+		gtk_widget_hide(basic.nntpauth_onconnect_chkbtn);
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   1, 0);
 		gtk_widget_hide(basic.recvserv_label);
@@ -2439,6 +2461,10 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 					   0, 0);
 		gtk_widget_set_sensitive(basic.nntpauth_chkbtn, FALSE);
 		gtk_widget_hide(basic.nntpauth_chkbtn);
+
+		gtk_widget_set_sensitive(basic.nntpauth_onconnect_chkbtn, FALSE);
+		gtk_widget_hide(basic.nntpauth_onconnect_chkbtn);
+
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   1, 0);
 		gtk_widget_set_sensitive(basic.recvserv_label, TRUE);
@@ -2511,6 +2537,10 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 					   0, 0);
 		gtk_widget_set_sensitive(basic.nntpauth_chkbtn, FALSE);
 		gtk_widget_hide(basic.nntpauth_chkbtn);
+
+		gtk_widget_set_sensitive(basic.nntpauth_onconnect_chkbtn, FALSE);
+		gtk_widget_hide(basic.nntpauth_onconnect_chkbtn);
+
   		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
 					   1, 0);
 		gtk_widget_set_sensitive(basic.recvserv_label, TRUE);
@@ -2590,6 +2620,7 @@ static void prefs_account_nntpauth_toggled(GtkToggleButton *button,
 	gtk_widget_set_sensitive(basic.pass_label, auth);
 	gtk_widget_set_sensitive(basic.uid_entry,  auth);
 	gtk_widget_set_sensitive(basic.pass_entry, auth);
+	gtk_widget_set_sensitive(basic.nntpauth_onconnect_chkbtn, auth);
 }
 
 static void prefs_account_mailcmd_toggled(GtkToggleButton *button,
