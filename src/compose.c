@@ -7344,11 +7344,8 @@ static void text_inserted(GtkWidget *widget, const gchar *text,
 
 	
 	if (prefs_common.autosave && 
-	    gtk_stext_get_length(GTK_STEXT(widget)) % prefs_common.autosave_length == 0) {
-	    	gtk_stext_freeze(GTK_STEXT(text));
+	    gtk_stext_get_length(GTK_STEXT(widget)) % prefs_common.autosave_length == 0)
 		compose_draft_cb((gpointer)compose, 2, NULL);
-		gtk_stext_thaw(GTK_STEXT(text));		
-	}
 }
 
 static gboolean compose_send_control_enter(Compose *compose)

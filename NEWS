@@ -5,9 +5,12 @@ Changes of Sylpheed
     * The folder option to remove parentheses and brackets at the beginning
       of subject has been added.
     * The option to use command output for signature has been added.
-    * The backward search in summary now also looks for collapsed nodes.
+    * The summary search now also looks for collapsed nodes.
     * The size of the source window is now remembered.
     * Euro locales (ISO-8859-15) have been supported.
+    * Many locales and encodings which were not supported before have been
+      added.
+    * Galician translation has been added.
     * Support for Latin locales (ISO-8859) has been fixed.
     * UTF-8 locale support has been fixed.
     * The folding problem of headers has been fixed.

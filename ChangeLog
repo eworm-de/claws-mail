@@ -1,3 +1,11 @@
+2003-03-07
+
+	* version 0.8.11
+
+2003-03-07
+
+	* src/defs.h: added -i option to the default sendmail command.
+
 2003-03-06
 
 	* src/codeconv.[ch]: added missing character encodings and locales.

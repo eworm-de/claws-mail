@@ -1,3 +1,30 @@
+2003-03-07 [paul]	0.8.10claws99
+
+	* po/es.po
+		updated Spanish translation, submitted by
+		Ricardo Mones Lastra
+
+2003-03-07 [christoph]	0.8.10claws98
+
+	* src/send.c
+		fix in 0.8.10claws94 was wrong
+		local delivery does not require escaping, remove escaping
+		code to make signatures of mails with "." lines valid
+		
+		NOTE: requires that sendmail is executed with "-i" option,
+		      what is the default now, but has to be changed in all
+		      exsiting accounts)
+
+2003-03-07 [paul]	0.8.10claws97
+
+	* sync with 0.8.11 release
+		see ChangeLog 2003-03-07
+
+2003-03-06 [paul]	0.8.10claws96
+
+	* src/compose.c
+		revert commit 0.8.10claws92
+
 2003-03-06 [paul]	0.8.10claws95
 
 	* src/folderview.c
