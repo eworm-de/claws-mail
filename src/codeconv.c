@@ -231,6 +231,10 @@ void conv_euctojis(gchar *outbuf, gint outlen, const gchar *inbuf)
 					}
 				}
 			}
+		} else {
+			K_OUT();
+			*out++ = SUBST_CHAR;
+			in++;
 		}
 	}
 
@@ -626,9 +630,11 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 	    == 0)
 		return buf;
 	else {
+#if 0
 		g_warning("code conversion from %s to %s failed\n",
 			  codesets && codesets[0] ? codesets[0] : "(unknown)",
 			  dest_codeset);
+#endif /* 0 */
 		return NULL;
 	}
 #else /* !HAVE_LIBJCONV */

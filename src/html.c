@@ -451,15 +451,13 @@ static HTMLState html_read_line(HTMLParser *parser)
 	}
 
 	if (conv_convert(parser->conv, buf2, sizeof(buf2), buf) < 0) {
-		g_warning("html_read_line(): code conversion failed\n");
-
 		index = parser->bufp - parser->buf->str;
 
 		g_string_append(parser->buf, buf);
 
 		parser->bufp = parser->buf->str + index;
 
-		return HTML_ERR;
+		return HTML_CONV_FAILED;
 	}
 
 	index = parser->bufp - parser->buf->str;

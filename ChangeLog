@@ -1,3 +1,30 @@
+2002-10-28
+
+	* src/codeconv.c: conv_euctojis(): fixed a bug which will cause
+	  infinite loop if a invalid code appeared.
+
+2002-10-25
+
+	* src/codeconv.c: conv_codeset_strdup()
+	  src/html.[ch]: html_read_line(): don't output conversion failure
+	  warnings.
+	  Added HTML_CONV_FAILED to the enum HTMLState.
+
+2002-10-24
+
+	* implemented per-folder auto-set address (still in progress).
+	* src/compose.[ch]: compose_new(): added FolderItem to its arguments,
+	  and set entries from it (if mailto is empty).
+	  compose_entry_append(): activate menu if required.
+	  compose_entries_set_from_item(): new.
+	* src/folder.[ch]: added auto_to, use_auto_to_on_reply, auto_cc,
+	  auto_bcc, and auto_replyto to FolderItem, and renamed apply_sub to
+	  ac_apply_sub.
+	  folder_build_tree(), folder_read_folder_func(),
+	  folder_write_list_recursive(): added the above members.
+	* src/prefs_folder_item.[ch]: added auto-set addresses.
+	* src/pop.[ch]: removed Pop3State::prev_folder.
+
 2002-10-11
 
 	* src/compose.c: allow dropping files by also "moving" files from a

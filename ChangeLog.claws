@@ -1,3 +1,10 @@
+2002-10-28 [paul]	0.8.5claws57
+
+	* sync with 0.8.5cvs15
+		see ChangeLog 2002-10-28 and 2002-10-25
+		
+	Note: ChangeLog entry 2002-10-24 is not sync'ed.
+
 2002-10-27 [oliver]	0.8.5claws56
 
 	* src/pop.c
