@@ -1,3 +1,17 @@
+2004-05-25 [paul]	0.9.10claws70
+
+	* AUTHORS
+	  tools/Makefile.am
+	  tools/README
+	  tools/nautilus2sylpheed.sh		** NEW FILE **
+		add script to enable sending files from
+		nautilus.
+		Submitted by Reza Pakdel <hrpakdel@cpsc.ucalgary.ca>
+		
+	* tools/launch_firebird			** REMOVED **
+		removed as the standard "firefox '%s'" now functions
+		correctly
+
 2004-05-23 [paul]	0.9.10claws69
 
 	* src/compose.c
