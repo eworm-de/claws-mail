@@ -242,7 +242,7 @@ gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 	nb = sock_is_nonblocking_mode(sock);
 	if (nb && (sock_set_nonblocking_mode(sock, FALSE) < 0)) return -1;
 
-	while (sock_read(sock, buf, sizeof(buf)) >= 0) {
+	while (sock_gets(sock, buf, sizeof(buf)) >= 0) {
 		gint num;
 
 		if (buf[0] == '.') break;
@@ -293,7 +293,7 @@ gint pop3_getsize_list_recv(SockInfo *sock, gpointer data)
 	nb = sock_is_nonblocking_mode(sock);
 	if (nb && (sock_set_nonblocking_mode(sock, FALSE) < 0)) return -1;
 
-	while (sock_read(sock, buf, sizeof(buf)) >= 0) {
+	while (sock_gets(sock, buf, sizeof(buf)) >= 0) {
 		gint num, size;
 
 		if (buf[0] == '.') break;
@@ -479,7 +479,7 @@ static gint pop3_gen_recv(SockInfo *sock, gchar *buf, gint size)
 
 	if (nb && (sock_set_nonblocking_mode(sock, FALSE) < 0))
 		return PS_SOCKET;
-	if (sock_read(sock, buf, size) < 0) {
+	if (sock_gets(sock, buf, size) < 0) {
 		return PS_SOCKET;
 	} else {
 		strretchomp(buf);

@@ -164,7 +164,7 @@ Session *imap_session_new(const gchar *server, gushort port,
 	log_message(_("creating IMAP4 connection to %s:%d ...\n"),
 		    server, port);
 
-	if ((imap_sock = imap_open(server, port, buf)) < 0)
+	if ((imap_sock = imap_open(server, port, buf)) == NULL)
 		return NULL;
 	if (imap_auth(imap_sock, user, pass) != IMAP_SUCCESS) {
 		imap_logout(imap_sock);
@@ -524,7 +524,7 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 	}
 
 	for (;;) {
-		if (sock_read(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
+		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
 			log_warning(_("error occurred while getting envelope.\n"));
 			return newlist;
 		}
@@ -751,7 +751,7 @@ static gint imap_get_message(SockInfo *sock, gint num, const gchar *filename)
 
 	imap_gen_send(sock, "FETCH %d BODY[]", num);
 
-	if (sock_read(sock, buf, sizeof(buf)) < 0)
+	if (sock_gets(sock, buf, sizeof(buf)) < 0)
 		return IMAP_ERROR;
 	strretchomp(buf);
 	if (buf[0] != '*' || buf[1] != ' ')
@@ -820,7 +820,7 @@ static gchar *imap_parse_atom(SockInfo *sock, gchar *src, gchar *dest,
 
 		g_return_val_if_fail(orig_buf != NULL, cur_pos);
 
-		if (sock_read(sock, orig_buf, IMAPBUFSIZE) < 0)
+		if (sock_gets(sock, orig_buf, IMAPBUFSIZE) < 0)
 			return cur_pos;
 		strretchomp(orig_buf);
 		log_print("IMAP4< %s\n", orig_buf);
@@ -1221,7 +1221,7 @@ static void imap_gen_send(SockInfo *sock, const gchar *format, ...)
 
 static gint imap_gen_recv(SockInfo *sock, gchar *buf, gint size)
 {
-	if (sock_read(sock, buf, size) == -1)
+	if (sock_gets(sock, buf, size) == -1)
 		return IMAP_SOCKET;
 
 	strretchomp(buf);

@@ -106,7 +106,7 @@ gint recv_write(SockInfo *sock, FILE *fp)
 	if (nb) sock_set_nonblocking_mode(sock, FALSE);
 
 	for (;;) {
-		if (sock_read(sock, buf, sizeof(buf)) < 0) {
+		if (sock_gets(sock, buf, sizeof(buf)) < 0) {
 			g_warning(_("error occurred while retrieving data.\n"));
 			if (nb) sock_set_nonblocking_mode(sock, TRUE);
 			return -1;
@@ -157,10 +157,9 @@ gint recv_bytes_write(SockInfo *sock, glong size, FILE *fp)
 	Xalloca(buf, size, return -1);
 
 	do {
-		size_t read_count;
+		gint read_count;
 
-		/* FIXME: put this into socket.c :WK: */
-		read_count = fd_read(sock->sock, buf + count, size - count);
+		read_count = sock_read(sock, buf + count, size - count);
 		if (read_count < 0) {
 			if (nb) sock_set_nonblocking_mode(sock, TRUE);
 			return -1;
@@ -168,19 +167,27 @@ gint recv_bytes_write(SockInfo *sock, glong size, FILE *fp)
 		count += read_count;
 	} while (count < size);
 
+	/* +------------------+----------------+--------------------------+ *
+	 * ^buf               ^prev            ^cur             buf+size-1^ */
+
 	prev = buf;
-	while ((cur = memchr(prev, '\r', size)) != NULL) {
-		if (cur - buf + 1 < size && *(cur + 1) == '\n') {
-			if (fwrite(prev, sizeof(gchar), cur - prev, fp) == EOF ||
-			    fwrite("\n", sizeof(gchar), 1, fp) == EOF) {
-				perror("fwrite");
-				g_warning(_("Can't write to file.\n"));
-				if (nb) sock_set_nonblocking_mode(sock, TRUE);
-				return -1;
-			}
-			prev = cur + 2;
-			if (prev - buf >= size) break;
+	while ((cur = memchr(prev, '\r', size - (prev - buf))) != NULL) {
+		if (cur == buf + size - 1) break;
+
+		if (fwrite(prev, sizeof(gchar), cur - prev, fp) == EOF ||
+		    fwrite("\n", sizeof(gchar), 1, fp) == EOF) {
+			perror("fwrite");
+			g_warning(_("Can't write to file.\n"));
+			if (nb) sock_set_nonblocking_mode(sock, TRUE);
+			return -1;
 		}
+
+		if (*(cur + 1) == '\n')
+			prev = cur + 2;
+		else
+			prev = cur + 1;
+
+		if (prev - buf >= size) break;
 	}
 
 	if (prev - buf < size && fwrite(buf, sizeof(gchar),

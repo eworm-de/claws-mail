@@ -1,3 +1,25 @@
+2001-04-30
+
+	* src/recv.c: recv_bytes_write(): fixed another bug that caused
+	  infinite loop and buffer overrun.
+
+2001-04-30
+
+	* src/socket.[ch]: renamed sock_read() and fd_read() to
+	  sock_gets() and fd_gets() for preventing confusion.
+	  Added sock_read() and fd_read() which is the wrapper of read().
+	* src/recv.c: recv_bytes_write(): fixed a bug that caused infinite
+	  loop. Use sock_read() instead of fd_read().
+	* src/esmtp.c
+	  src/imap.c
+	  src/news.c
+	  src/nntp.c
+	  src/pop.c
+	  src/recv.c
+	  src/smtp.c: use sock_gets() instead of sock_read().
+	* src/imap.c: imap_session_new(): fixed the error detection
+	  of imap_open().
+
 2001-04-28
 
 	* src/inc.c: made it displays current read bytes to the dialog.

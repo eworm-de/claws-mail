@@ -163,7 +163,7 @@ static gboolean is_nonblocking_mode(gint fd)
 
 gboolean sock_is_nonblocking_mode(SockInfo *sock)
 {
-	g_assert(sock);
+	g_return_val_if_fail(sock != NULL, FALSE);
 
 	return is_nonblocking_mode(sock->sock);
 }
@@ -391,6 +391,18 @@ gint sock_printf(SockInfo *sock, const gchar *format, ...)
 	return sock_write(sock, buf, strlen(buf));
 }
 
+gint sock_read(SockInfo *sock, gchar *buf, gint len)
+{
+	g_return_val_if_fail(sock != NULL, -1);
+
+	return fd_read(sock->sock, buf, len);
+}
+
+gint fd_read(gint fd, gchar *buf, gint len)
+{
+	return read(fd, buf, len);
+}
+
 gint sock_write(SockInfo *sock, const gchar *buf, gint len)
 {
 	g_return_val_if_fail(sock != NULL, -1);
@@ -414,14 +426,7 @@ gint fd_write(gint fd, const gchar *buf, gint len)
 	return wrlen;
 }
 
-gint sock_read(SockInfo *sock, gchar *buf, gint len)
-{
-	g_return_val_if_fail(sock != NULL, -1);
-
-	return fd_read(sock->sock, buf, len);
-}
-
-gint fd_read(gint fd, gchar *buf, gint len)
+gint fd_gets(gint fd, gchar *buf, gint len)
 {
 	gchar *newline, *bp = buf;
 	gint n;
@@ -442,6 +447,14 @@ gint fd_read(gint fd, gchar *buf, gint len)
 	*bp = '\0';
 	return bp - buf;
 }
+
+gint sock_gets(SockInfo *sock, gchar *buf, gint len)
+{
+	g_return_val_if_fail(sock != NULL, -1);
+
+	return fd_gets(sock->sock, buf, len);
+}
+		
 
 gint sock_puts(SockInfo *sock, const gchar *buf)
 {

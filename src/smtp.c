@@ -135,7 +135,7 @@ gint smtp_eom(SockInfo *sock)
 
 gint smtp_ok(SockInfo *sock)
 {
-	while ((sock_read(sock, smtp_response, sizeof(smtp_response) - 1))
+	while ((sock_gets(sock, smtp_response, sizeof(smtp_response) - 1))
 	       != 1) {
 		if (strlen(smtp_response) < 4)
 			return SM_ERROR;

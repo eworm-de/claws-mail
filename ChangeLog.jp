@@ -1,3 +1,25 @@
+2001-04-30
+
+	* src/recv.c: recv_bytes_write(): 無限ループとバッファオーバーラン
+	  を起こすもう一つのバグを修正。
+
+2001-04-30
+
+	* src/socket.[ch]: 混乱を避けるため、 sock_read() と fd_read() を
+	  sock_gets() と fd_read() に名称変更。 read() のラッパーである
+	  sock_read() と fd_read() を追加。
+	* src/recv.c: recv_bytes_write(): 無限ループを起こすバグを修正。
+	  fd_read() の代わりに sock_read() を使用するようにした。
+	* src/esmtp.c
+	  src/imap.c
+	  src/news.c
+	  src/nntp.c
+	  src/pop.c
+	  src/recv.c
+	  src/smtp.c: sock_read() の代わりに sock_gets() を使用するように
+	  した。
+	* src/imap.c: imap_session_new(): imap_open() のエラー検出を修正。
+
 2001-04-28
 
 	* src/inc.c: ダイアログに現在の読み込んだバイト数を表示するように

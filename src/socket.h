@@ -74,8 +74,9 @@ SockInfo *sock_connect_with_thread	(const gchar *hostname, gushort port);
 
 gint sock_printf	(SockInfo *sock, const gchar *format, ...)
 			 G_GNUC_PRINTF(2, 3);
+gint sock_read		(SockInfo *sock, gchar *buf, gint len);			 
 gint sock_write		(SockInfo *sock, const gchar *buf, gint len);
-gint sock_read		(SockInfo *sock, gchar *buf, gint len);
+gint sock_gets		(SockInfo *sock, gchar *buf, gint len);
 gint sock_puts		(SockInfo *sock, const gchar *buf);
 gint sock_close		(SockInfo *sock);
 
