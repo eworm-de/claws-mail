@@ -519,15 +519,12 @@ gint subject_compare_for_sort(const gchar *s1, const gchar *s2)
 	gchar *str1, *str2;
 
 	if (!s1 || !s2) return -1;
-	if (!*s1 || !*s2) return -1;
 
 	Xstrdup_a(str1, s1, return -1);
 	Xstrdup_a(str2, s2, return -1);
 
 	trim_subject_for_sort(str1);
 	trim_subject_for_sort(str2);
-
-	if (!*str1 || !*str2) return -1;
 
 	return strcasecmp(str1, str2);
 }

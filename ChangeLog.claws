@@ -1,3 +1,11 @@
+2003-03-12 [paul]	0.8.10claws110
+
+	a sync from 0.8.11cvs4 before the release
+
+	* src/common/utils.c
+		subject_compare_for_sort(): allow null strings (fixes
+	  	summary sorting).
+
 2003-03-11 [paul]	0.8.10claws109
 
 	* po/es.po
