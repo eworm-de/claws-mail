@@ -2,6 +2,8 @@
 
 	* sync with 0.9.7cvs6
 		see ChangeLog 2003-12-04
+		fixes bug 171 'Wrong message decoing: koi8-r and 
+		iso8859-5 looks same. Can't read many emails.'
 
 2003-12-04 [paul]	0.9.7claws18
 
