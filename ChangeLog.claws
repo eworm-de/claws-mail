@@ -1,3 +1,18 @@
+2002-09-15 [colin]	0.8.2claws48
+
+	* src/inc.[ch]
+		add inc_pop_before_smtp()
+		allow MainWindow to be undefined in 
+		inc_account_mail() and inc_start()
+	* src/pop.c
+	  src/prefs_account.h
+		add STYPE_POP_BEFORE_SMTP session type
+	* src/prefs_account.c
+		activated pop before smtp option
+	* src/send.c
+		do pop before smtp if the relevant option 
+		is set
+
 2002-09-15 [paul]	0.8.2claws47
 
 	* sync with 0.8.3

@@ -45,6 +45,8 @@ typedef enum {
 } RecvProtocol;
 
 typedef enum {
+	/* just login (pop before smtp) */
+	STYPE_POP_BEFORE_SMTP,
 	/* login and retrieve messages, as before */
 	STYPE_NORMAL,
 	/* send TOP to server and retrieve all available Headers */

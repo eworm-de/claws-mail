@@ -1360,7 +1360,6 @@ static void prefs_account_send_create(void)
 
 	PACK_CHECK_BUTTON (vbox3, pop_bfr_smtp_chkbtn,
 		_("Authenticate with POP3 before sending"));
-	gtk_widget_set_sensitive(pop_bfr_smtp_chkbtn, FALSE);
 
 	p_send.date_chkbtn      = date_chkbtn;
 	p_send.msgid_chkbtn     = msgid_chkbtn;
