@@ -535,7 +535,6 @@ void prefs_set_dialog_to_default(PrefParam *param)
 void prefs_set_data_from_entry(PrefParam *pparam)
 {
 	gchar **str, *entry_str;
-	GdkColor color;
 
 	g_return_if_fail(*pparam->widget != NULL);
 

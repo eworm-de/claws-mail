@@ -1,3 +1,8 @@
+2003-02-21 [alfons]	0.8.10claws40
+
+	* src/prefs_gtk.c
+		remove unused var
+
 2003-02-21 [colin]	0.8.10claws39
 
 	* src/send.c
