@@ -1,0 +1,89 @@
+
+What is Sylpheed Claws?
+----------------------
+
+Sylpheed Claws is a bleeding edge branch of Sylpheed, a light weight mail 
+user agent for UNIX. Features in this branch may (or may not) end up in 
+Sylpheed. 
+
+Hiroyuki's ChangeLog is also included in the claws-branch distribution, 
+so it should be easy to spot which features were merged with Sylpheed
+(and which features were not).
+
+For brevity Sylpheed Claws is referred to as Claws, and Sylpheed as either
+Sylpheed or Main.
+
+
+Switching to Claws
+------------------
+
+From the user perspective Claws is just a fancy Sylpheed, so it uses the
+same sylpheed setting files located in ~/.sylpheed.
+
+It's always a good idea to back up all files in ~/.sylpheed in case
+you want to switch back to Sylpheed. (You don't have to backup the
+directories.)
+
+There are some things that frequently come up when switching to Claws:
+
+
+* When replying, the original sender's text is not quoted anymore.
+
+  Claws has a different quote format handler. Add either %Q or %q to the
+  quote format text. Also click the button "Description of symbols"
+  for more quotation symbols.
+
+
+* Why does the advanced filtering system not work?
+
+  Claws will only use the new filtering system when you cleared the Sylpheed
+  filter rules list. 
+
+
+* What happened to the compose email and compose news buttons? 
+
+  There's a composite button for both composing mail and news. You can toggle
+  between composing mail and news by clicking on the button with the triangle.
+
+
+* And to the Preferences and Execute buttons?
+
+  Sorry, they're not there.
+
+
+
+Things Claws does different
+---------------------------
+
+Claws does a lot of things different. Here a quick run-down of things that
+are hardly noticable, but deserve mentioning:
+
+* auto address replacement in summary view
+  This matches a plain email address with a person in the address book. This
+  feature is enabled in Common Preferences | Tab Display | SummaryView Group |
+  Display sender using addressbook
+
+* manual selection of MIME types for attachments
+  You can change the MIME type of an attachment by right-clicking in the
+  attachment list, selecting Property in the menu. The MIME type list
+  is a combo box with the known MIME types.
+
+* sharing mail folders   
+  You can also share or use shared mail folders. Right-click a folder and
+  select Property. Change the Folder chmod setting.
+
+* default reply-to address for folders
+  Most people filter mailing list mails to separate folders. Claws allows
+  you to associate a folder with a mailing list. Right-click a folder, 
+  select Property and change the Default To setting.
+
+  (NOTE: this is also a shoot-yourself-in-the-foot-setting! If you want
+   to send a private mail, don't have a folder selected with this setting
+   set.)
+
+* threading mode per folder
+  Folders can have their own threading and sorting mode. Just select a 
+  folder, and set their threading and sorting mode.
+
+There are a lot more options. If you find one, don't hesitate to mention
+it.
