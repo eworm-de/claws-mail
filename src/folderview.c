@@ -875,7 +875,8 @@ void folderview_rescan_all(void)
 #endif
 
 /** folderview_check_new()
- *  Count the number of new messages since last check. 
+ *  Scan and update the folder and return the 
+ *  count the number of new messages since last check. 
  *  \param folder the folder to check for new messages
  *  \return the number of new messages since last check
  */

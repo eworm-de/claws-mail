@@ -1,3 +1,8 @@
+2003-01-14 [melvin]	0.8.8claws98
+
+	* src/folderview.c
+		folderview_check_new(): More precise function description
+
 2003-01-14 [melvin]	0.8.8claws97
 
 	* src/folderview.c
