@@ -1,3 +1,8 @@
+2003-11-27 [thorsten]	0.9.7claws3
+
+	* src/mimeview.c
+		fix crash if 'save_all' failed twice
+
 2003-11-27 [paul]	0.9.7claws2
 
 	* po/POTFILES.in
