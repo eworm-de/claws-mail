@@ -91,7 +91,7 @@ GtkPspell *gtkpspell_new_with_config(GtkPspellConfig *gtkpspellconfig,
                                      guchar *path, 
                                      guchar *dict, 
                                      guint mode, 
-                                     guchar *encoding);
+                                     const guchar *encoding);
 GtkPspell *gtkpspell_delete(GtkPspell *gtkpspell);
 
 int gtkpspell_set_path_and_dict(GtkPspell *gtkpspell, guchar * path,

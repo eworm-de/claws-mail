@@ -3581,7 +3581,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 		gtkpspell = gtkpspell_new_with_config(gtkpspellconfig,
 						      prefs_common.pspell_path,
 						      prefs_common.dictionary,
-						      PSPELL_FASTMODE,NULL);
+						      PSPELL_FASTMODE,
+						      conv_get_current_charset_str());
 		if (gtkpspell == NULL)
 			prefs_common.enable_pspell = FALSE;
 		else

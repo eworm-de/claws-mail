@@ -79,6 +79,7 @@ static void entry_insert_cb		(GtkXText *gtktext, gchar *newtext,
 					 guint len, guint *ppos, 
 					 GtkPspell *gtkpspell);
 static gint compare_dict		(Dictionary *a, Dictionary *b);
+guchar *convert_to_pspell_encoding 	(const guchar *encoding);
 
 
 /* gtkspellconfig - only one config per session */
@@ -158,7 +159,7 @@ GtkPspell * gtkpspell_new(GtkPspellConfig *gtkpspellconfig)
  */
 GtkPspell *gtkpspell_new_with_config(GtkPspellConfig *gtkpspellconfig, 
                                      guchar *path, guchar *dict, 
-                                     guint mode, guchar *encoding)
+                                     guint mode, const guchar *encoding)
 {
 	GtkPspell *gtkpspell;
 
@@ -187,8 +188,18 @@ GtkPspell *gtkpspell_new_with_config(GtkPspellConfig *gtkpspellconfig,
 		return gtkpspell;
 	}
 	
-	if (encoding)
-		pspell_config_replace(gtkpspell->config,"encoding",encoding);
+	if (encoding) {
+		char *pspell_encoding;
+		pspell_encoding = convert_to_pspell_encoding (encoding);
+		debug_print(_("Pspell encoding: %s\n"), pspell_encoding);
+		pspell_config_replace(gtkpspell->config, "encoding", (const char *)pspell_encoding);
+		if (pspell_config_error_number(gtkpspell->config) !=0 ) {
+			debug_print(_("Pspell encoding: %s\n"), pspell_config_error_message(gtkpspell->config));
+			debug_print(_("Pspell encoding: setting error. Switching to iso8859-1 (sorry)\n"));
+			pspell_config_replace(gtkpspell->config, "encoding", "iso8859-1");
+		}
+		g_free(pspell_encoding);
+	}
 
 	gtkpspell->possible_err = new_pspell_manager(gtkpspell->config);
 	gtkpspell->checker      = NULL;
@@ -1381,4 +1392,24 @@ gchar *gtkpspell_get_dictionary_menu_active_item(GtkWidget *menu)
         return g_strdup(result);
   
 }
+
+/* convert_to_pspell_encoding () - converts ISO-8859-* strings to iso8859-* 
+ * as needed by pspell. Returns an allocated string.
+ */
+
+guchar *convert_to_pspell_encoding (const guchar *encoding)
+{
+	guchar * pspell_encoding;
+	/* Beware, strstr2 returns 0 if string is found -1 if not */
+	if (!strstr2(encoding, "ISO-8859-")) {
+		pspell_encoding = g_strdup_printf("iso8859%s", encoding+8);
+	}
+	else
+		pspell_encoding = g_strdup(encoding);
+	return pspell_encoding;
+	
+}
+
+		
+		
 #endif
