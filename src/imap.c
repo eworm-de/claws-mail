@@ -449,52 +449,46 @@ static gchar *imap_folder_get_path		(Folder		*folder);
 static gchar *imap_item_get_path		(Folder		*folder,
 						 FolderItem	*item);
 
-static FolderClass imap_class =
-{
-	F_IMAP,
-	"imap",
-	"IMAP4",
-
-	/* Folder functions */
-	imap_folder_new,
-	imap_folder_destroy,
-	NULL,
-	NULL,
-	imap_scan_tree,
-	imap_create_tree,
-
-	/* FolderItem functions */
-	imap_folder_item_new,
-	imap_folder_item_destroy,
-	NULL,
-	NULL,
-	imap_item_get_path,
-	imap_create_folder,
-	imap_rename_folder,
-	imap_remove_folder,
-	imap_close,
-	imap_get_num_list,
-	NULL,
-	NULL,
-	NULL,
-	imap_scan_required,
-
-	/* Message functions */
-	imap_get_msginfo,
-	imap_get_msginfos,
-	imap_fetch_msg,
-	imap_add_msg,
-	imap_add_msgs,
-	imap_copy_msg,
-	imap_copy_msgs,
-	imap_remove_msg,
-	imap_remove_all_msg,
-	imap_is_msg_changed,
-	imap_change_flags,
-};
+static FolderClass imap_class;
 
 FolderClass *imap_get_class(void)
 {
+	if (imap_class.idstr == NULL) {
+		imap_class.type = F_IMAP;
+		imap_class.idstr = "imap";
+		imap_class.uistr = "IMAP4";
+
+		/* Folder functions */
+		imap_class.new_folder = imap_folder_new;
+		imap_class.destroy_folder = imap_folder_destroy;
+		imap_class.scan_tree = imap_scan_tree;
+		imap_class.create_tree = imap_create_tree;
+
+		/* FolderItem functions */
+		imap_class.item_new = imap_folder_item_new;
+		imap_class.item_destroy = imap_folder_item_destroy;
+		imap_class.item_get_path = imap_item_get_path;
+		imap_class.create_folder = imap_create_folder;
+		imap_class.rename_folder = imap_rename_folder;
+		imap_class.remove_folder = imap_remove_folder;
+		imap_class.close = imap_close;
+		imap_class.get_num_list = imap_get_num_list;
+		imap_class.scan_required = imap_scan_required;
+
+		/* Message functions */
+		imap_class.get_msginfo = imap_get_msginfo;
+		imap_class.get_msginfos = imap_get_msginfos;
+		imap_class.fetch_msg = imap_fetch_msg;
+		imap_class.add_msg = imap_add_msg;
+		imap_class.add_msgs = imap_add_msgs;
+		imap_class.copy_msg = imap_copy_msg;
+		imap_class.copy_msgs = imap_copy_msgs;
+		imap_class.remove_msg = imap_remove_msg;
+		imap_class.remove_all_msg = imap_remove_all_msg;
+		imap_class.is_msg_changed = imap_is_msg_changed;
+		imap_class.change_flags = imap_change_flags;
+	}
+	
 	return &imap_class;
 }
 

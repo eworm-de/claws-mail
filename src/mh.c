@@ -111,52 +111,41 @@ static gboolean mh_rename_folder_func		(GNode		*node,
 static gchar   *mh_item_get_path		(Folder *folder, 
 						 FolderItem *item);
 
-static FolderClass mh_class =
-{
-	F_MH,
-	"mh",
-	"MH",
-
-	/* Folder functions */
-	mh_folder_new,
-	mh_folder_destroy,
-	folder_local_set_xml,
-	folder_local_get_xml,
-	mh_scan_tree,
-	mh_create_tree,
-
-	/* FolderItem functions */
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	mh_item_get_path,
-	mh_create_folder,
-	mh_rename_folder,
-	mh_remove_folder,
-	NULL,
-	mh_get_num_list,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	
-	/* Message functions */
-	mh_get_msginfo,
-	NULL,
-	mh_fetch_msg,
-	mh_add_msg,
-	mh_add_msgs,
-	mh_copy_msg,
-	NULL,
-	mh_remove_msg,
-	mh_remove_all_msg,
-	mh_is_msg_changed,
-	NULL,
-};
+static FolderClass mh_class;
 
 FolderClass *mh_get_class(void)
 {
+	if (mh_class.idstr == NULL) {
+		mh_class.type = F_MH;
+		mh_class.idstr = "mh";
+		mh_class.uistr = "MH";
+		
+		/* Folder functions */
+		mh_class.new_folder = mh_folder_new;
+		mh_class.destroy_folder = mh_folder_destroy;
+		mh_class.set_xml = folder_local_set_xml;
+		mh_class.get_xml = folder_local_get_xml;
+		mh_class.scan_tree = mh_scan_tree;
+		mh_class.create_tree = mh_create_tree;
+
+		/* FolderItem functions */
+		mh_class.item_get_path = mh_item_get_path;
+		mh_class.create_folder = mh_create_folder;
+		mh_class.rename_folder = mh_rename_folder;
+		mh_class.remove_folder = mh_remove_folder;
+		mh_class.get_num_list = mh_get_num_list;
+		
+		/* Message functions */
+		mh_class.get_msginfo = mh_get_msginfo;
+		mh_class.fetch_msg = mh_fetch_msg;
+		mh_class.add_msg = mh_add_msg;
+		mh_class.add_msgs = mh_add_msgs;
+		mh_class.copy_msg = mh_copy_msg;
+		mh_class.remove_msg = mh_remove_msg;
+		mh_class.remove_all_msg = mh_remove_all_msg;
+		mh_class.is_msg_changed = mh_is_msg_changed;
+	}
+
 	return &mh_class;
 }
 

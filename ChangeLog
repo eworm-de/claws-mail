@@ -1,3 +1,30 @@
+2004-02-29
+
+	* version 0.9.10
+
+2004-02-26
+
+	* src/prefs_common.c: made the default of "inc_local" FALSE.
+
+2004-02-26
+
+	* src/account.c
+	  src/folderview.c: toggle online mode when checking IMAP4 accounts.
+	  Pop status bar after that.
+	* src/inc.c: code cleanup.
+	* src/mainwindow.[ch]: added main_window_get() and
+	  main_window_toggle_online_if_offline().
+	* src/prefs_common.c: prefs_common_read_config(): fixed a bug that made
+	  it offline mode on first execution.
+
+2004-02-25
+
+	* src/imageview.c: enabled automatic resize on window resize.
+	  restrict the minimum size to 16 pixels to prevent crash.
+	  imageview_init(): don't cache images when using imlib.
+	  imageview_show_image(): fixed memory leak.
+	* src/mimeview.c: mimeview_init(): call imageview_init().
+
 2004-02-24
 
 	* src/codeconv.[ch]: added ISO-2022-JP-3 encoding.

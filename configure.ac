@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=9
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=35
+EXTRA_VERSION=40
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}claws
 else
@@ -349,16 +349,27 @@ if test "$ac_cv_enable_ldap" = yes; then
 			     [ ac_cv_enable_ldap=yes ],
 			     [ ac_cv_enable_ldap=no ],
 			     $LDAP_LIBS)
+
+		AC_CHECK_LIB(ldap, ldap_start_tls_s,
+	     		     [ ac_cv_have_tls=yes ],
+	     		     [ ac_cv_have_tls=no ])
+
 	fi
 
 	AC_MSG_CHECKING([whether ldap library is available])
 	AC_MSG_RESULT($ac_cv_enable_ldap)
+
+	AC_MSG_CHECKING([whether TLS library is available])
+	AC_MSG_RESULT($ac_cv_have_tls)
 
 	if test "$ac_cv_enable_ldap" = yes; then
 		CFLAGS="$CFLAGS `$GLIB_CONFIG --cflags gthread`"
 		LDAP_LIBS="$LDAP_LIBS -lldap `$GLIB_CONFIG --libs gthread`"
 		AC_DEFINE(USE_LDAP, 1, Define if you want LDAP support in addressbook.)
 		AC_SUBST(LDAP_LIBS)
+		if test "$ac_cv_have_tls" = yes; then
+			AC_DEFINE(USE_LDAP_TLS, 1, Define if you want LDAP TLS support in addressbook.)
+		fi
 	fi
 else
 	AC_MSG_RESULT(no)

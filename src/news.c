@@ -134,52 +134,30 @@ static gchar *news_folder_get_path	 (Folder	*folder);
 gchar *news_item_get_path		 (Folder	*folder,
 					  FolderItem	*item);
 
-static FolderClass news_class =
-{
-	F_NEWS,
-	"news",
-	"News",
-
-	/* Folder functions */
-	news_folder_new,
-	news_folder_destroy,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-
-	/* FolderItem functions */
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	news_item_get_path,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	news_get_num_list,
-	NULL,
-	NULL,
-	NULL,
-	news_scan_required,
-
-	/* Message functions */
-	news_get_msginfo,
-	news_get_msginfos,
-	news_fetch_msg,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-};
+static FolderClass news_class;
 
 FolderClass *news_get_class(void)
 {
+	if (news_class.idstr == NULL) {
+		news_class.type = F_NEWS;
+		news_class.idstr = "news";
+		news_class.uistr = "News";
+
+		/* Folder functions */
+		news_class.new_folder = news_folder_new;
+		news_class.destroy_folder = news_folder_destroy;
+
+		/* FolderItem functions */
+		news_class.item_get_path = news_item_get_path;
+		news_class.get_num_list = news_get_num_list;
+		news_class.scan_required = news_scan_required;
+
+		/* Message functions */
+		news_class.get_msginfo = news_get_msginfo;
+		news_class.get_msginfos = news_get_msginfos;
+		news_class.fetch_msg = news_fetch_msg;
+	};
+
 	return &news_class;
 }
 

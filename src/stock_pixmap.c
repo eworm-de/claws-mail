@@ -275,7 +275,7 @@ gint stock_pixmap_gdk(GtkWidget *window, StockPixmap icon,
 			} else {
 				/* even the path does not exist (deleted between two sessions), so
 				set the preferences to the internal theme */
-				prefs_common.pixmap_theme_path = DEFAULT_PIXMAP_THEME;
+				prefs_common.pixmap_theme_path = g_strdup(DEFAULT_PIXMAP_THEME);
 			}
 		}
 		pix_d->pixmap = pix;

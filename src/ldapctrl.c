@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003 Match Grun
+ * Copyright (C) 2003-2004 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,8 @@ LdapControl *ldapctl_create( void ) {
 	ctl->timeOut = LDAPCTL_DFL_TIMEOUT;
 	ctl->maxQueryAge = LDAPCTL_DFL_QUERY_AGE;
 	ctl->matchingOption = LDAPCTL_MATCH_BEGINWITH;
+	ctl->version = 0;
+	ctl->enableTLS = FALSE;
 
 	/* Mutex to protect control block */
 	ctl->mutexCtl = g_malloc0( sizeof( pthread_mutex_t ) );
@@ -185,6 +187,15 @@ void ldapctl_set_matching_option( LdapControl* ctl, const gint value ) {
 }
 
 /**
+ * Specify TLS option.
+ * \param ctl   Control object to process.
+ * \param value <i>TRUE</i> to enable TLS.
+ */
+void ldapctl_set_tls( LdapControl* ctl, const gboolean value ) {
+	ctl->enableTLS = value;
+}
+
+/**
  * Specify search criteria list to be used.
  * \param ctl   Control data object.
  * \param value Linked list of LDAP attribute names to use for search.
@@ -282,6 +293,8 @@ void ldapctl_clear( LdapControl *ctl ) {
 	ctl->timeOut = 0;
 	ctl->maxQueryAge = 0;
 	ctl->matchingOption = LDAPCTL_MATCH_BEGINWITH;
+	ctl->version = 0;
+	ctl->enableTLS = FALSE;
 }
 
 /**
@@ -323,6 +336,8 @@ void ldapctl_default_values( LdapControl *ctl ) {
 	ctl->timeOut = LDAPCTL_DFL_TIMEOUT;
 	ctl->maxQueryAge = LDAPCTL_DFL_QUERY_AGE;
 	ctl->matchingOption = LDAPCTL_MATCH_BEGINWITH;
+	ctl->version = 0;
+	ctl->enableTLS = FALSE;
 
 	ldapctl_default_attributes( ctl );
 }
@@ -350,6 +365,8 @@ void ldapctl_print( const LdapControl *ctl, FILE *stream ) {
 	fprintf( stream, "  timeout: %d\n",   ctl->timeOut );
 	fprintf( stream, "  max age: %d\n",   ctl->maxQueryAge );
 	fprintf( stream, "match opt: %d\n",   ctl->matchingOption );
+	fprintf( stream, "  version: %d\n",   ctl->version );
+	fprintf( stream, "      TLS: %s\n",   ctl->enableTLS ? "yes" : "no" );
 	fprintf( stream, "crit list:\n" );
 	if( ctl->listCriteria ) {
 		mgu_print_dlist( ctl->listCriteria, stream );
@@ -403,6 +420,8 @@ void ldapctl_copy( const LdapControl *ctlFrom, LdapControl *ctlTo ) {
 	ctlTo->timeOut = ctlFrom->timeOut;
 	ctlTo->maxQueryAge = ctlFrom->maxQueryAge;
 	ctlTo->matchingOption = ctlFrom->matchingOption;
+	ctlTo->version = ctlFrom->version;
+	ctlTo->enableTLS = ctlFrom->enableTLS;
 
 	/* Unlock */
 	pthread_mutex_unlock( ctlTo->mutexCtl );

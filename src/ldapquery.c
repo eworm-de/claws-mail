@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003 Match Grun
+ * Copyright (C) 2003-2004 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -694,6 +694,7 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 	LdapControl *ctl;
 	LDAP *ld;
 	gint rc;
+	gint version;
 
 	/* Initialize connection */
 	/* printf( "===ldapqry_connect===\n" ); */
@@ -718,6 +719,29 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 	/*
 	printf( "connected to LDAP host %s on port %d\n", ctl->hostName, ctl->port );
 	*/
+
+#ifdef USE_LDAP_TLS
+	/* Handle TLS */
+	version = LDAP_VERSION3;
+	rc = ldap_set_option( ld, LDAP_OPT_PROTOCOL_VERSION, &version );
+	if( rc == LDAP_OPT_SUCCESS ) {
+		ctl->version = LDAP_VERSION3;
+	}
+
+	if( ctl->version == LDAP_VERSION3 ) {
+		if( ctl->enableTLS ) {
+			ADDRQUERY_RETVAL(qry) = LDAPRC_TLS;
+			rc = ldap_start_tls_s( ld, NULL, NULL );
+			/*
+			printf( "rc=%d\n", rc );
+			printf( "LDAP Status: set_option: %s\n", ldap_err2string( rc ) );
+			*/
+			if( rc != LDAP_SUCCESS ) {
+				return ADDRQUERY_RETVAL(qry);
+			}
+		}
+	}
+#endif
 
 	/* Bind to the server, if required */
 	ADDRQUERY_RETVAL(qry) = LDAPRC_BIND;

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2003 Match Grun
+ * Copyright (C) 2003-2004 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@
 #define LDAPRC_CRITERIA   -6
 #define LDAPRC_NOENTRIES  -7
 #define LDAPRC_STOP_FLAG  -8
+#define LDAPRC_TLS        -9
 
 typedef struct _LdapServer LdapServer;
 struct _LdapServer {

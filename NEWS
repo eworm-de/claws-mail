@@ -2,9 +2,13 @@ Changes of Sylpheed
 
 * 0.9.10
 
-    * A new folder can be created in the folder selection dialog now.
+    * A new folder can be created on the folder selection dialog now.
     * The folder view is now updated progressively when receiving.
     * Statasbar has been added to the message view window.
+    * The built-in image viewer has been improved, and its memory leaks
+      have been fixed.
+    * Ukrainian translation has been added.
+    * Other bugfixes have been made.
 
 * 0.9.9
 

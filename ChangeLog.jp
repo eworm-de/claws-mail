@@ -1,3 +1,30 @@
+2004-02-29
+
+	* version 0.9.10
+
+2004-02-26
+
+	* src/prefs_common.c: "inc_local" のデフォルトを FALSE にした。
+
+2004-02-26
+
+	* src/account.c
+	  src/folderview.c: IMAP4 アカウントをチェックするときはオンラインモードに
+	  切り替えるようにした。その後ステータスバーを pop するようにした。
+	* src/inc.c: コードの整理。
+	* src/mainwindow.[ch]: main_window_get() と
+	  main_window_toggle_online_if_offline() を追加。
+	* src/prefs_common.c: prefs_common_read_config(): 初回起動時にオフライン
+	  モードにしてしまっていたバグを修正。
+
+2004-02-25
+
+	* src/imageview.c: ウィンドウのリサイズ時に自動リサイズするようにした。
+	  クラッシュを防ぐために最小サイズを16ピクセルに制限。
+	  imageview_init(): imlib 使用時は画像をキャッシュしないようにした。
+	  imageview_show_image(): メモリリークを修正。
+	* src/mimeview.c: mimeview_init(): imageview_init() を呼ぶようにした。
+
 2004-02-24
 
 	* src/codeconv.[ch]: ISO-2022-JP-3 エンコーディングを追加。
