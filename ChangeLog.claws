@@ -13,6 +13,9 @@
 	  src/prefs_filtering.c
 	  src/summaryview.[ch]
 	  	remove main's 'filter' code
+		
+	README.claws
+	 	update to reflect removal of main's filter
 
 2002-10-31 [paul]	0.8.5claws60
 

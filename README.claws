@@ -58,14 +58,13 @@ Sylpheed or Main.
   There are some things that frequently come up when switching to Claws:
 
 
-  * Why does the advanced filtering system not work?
+  * What happened to my filter rules? 
 
-    Claws uses the new filtering system as soon as you define a new rule for it.
-    Your old Sylpheed filter rules will not be used. In subdirectory tools/ of
-    the distribution there is a Perl script called filter_conv.pl which converts
-    old filter rules to the claws filtering system.
-  
-
+    Claws uses a new filtering system. Your old Sylpheed filter rules will not 
+    be used. In subdirectory tools/ of the distribution there is a Perl script 
+    called filter_conv.pl which converts old filter rules to the claws 
+    filtering system, see tools/README for details.
+ 
   * What happened to the compose email and compose news buttons? 
 
     There's a composite button for both composing mail and news. You can toggle
