@@ -1,3 +1,9 @@
+2003-02-28 [paul]	0.8.10claws62
+
+	* po/Makefile.in.in
+		add the --check option
+		Patch submitted by Ricardo Mones Lastra
+
 2003-02-28 [paul]	0.8.10claws61
 
 	* src/prefs_account.c
