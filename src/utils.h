@@ -261,6 +261,9 @@ gboolean is_dir_exist		(const gchar	*dir);
 gint change_dir			(const gchar	*dir);
 gint make_dir_hier		(const gchar	*dir);
 gint remove_all_files		(const gchar	*dir);
+gint remove_numbered_files	(const gchar	*dir,
+				 gint		 first,
+				 gint		 last);
 gint remove_all_numbered_files	(const gchar	*dir);
 gint remove_dir_recursive	(const gchar	*dir);
 gint copy_file			(const gchar	*src,

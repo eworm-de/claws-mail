@@ -1218,7 +1218,8 @@ static void folderview_button_released(GtkWidget *ctree, GdkEventButton *event,
 {
 	if (!event) return;
 
-	if (event->button == 1 && folderview->opened != NULL) {
+	if (event->button == 1 && folderview->open_folder == FALSE &&
+	    folderview->opened != NULL) {
 		gtk_ctree_select(GTK_CTREE(ctree), folderview->opened);
 		gtkut_ctree_set_focus_row(GTK_CTREE(ctree),
 					  folderview->opened);
@@ -1277,7 +1278,6 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	}
 
 	if (!folderview->open_folder) return;
-	folderview->open_folder = FALSE;
 
 	item = gtk_ctree_node_get_row_data(ctree, row);
 	if (!item) return;
@@ -1308,6 +1308,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	} else
 		folderview->opened = row;
 
+	folderview->open_folder = FALSE;
 	can_select = TRUE;
 }
 

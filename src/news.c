@@ -75,9 +75,10 @@ static GSList *news_get_uncached_articles(NNTPSession	*session,
 static MsgInfo *news_parse_xover	 (const gchar	*xover_str);
 static gchar *news_parse_xhdr		 (const gchar	*xhdr_str,
 					  MsgInfo	*msginfo);
-static GSList *news_delete_old_article	 (GSList	*alist,
+static GSList *news_delete_old_articles	 (GSList	*alist,
+					  FolderItem	*item,
 					  gint		 first);
-static void news_delete_all_article	 (FolderItem	*item);
+static void news_delete_all_articles	 (FolderItem	*item);
 
 
 static Session *news_session_new(const gchar *server, gushort port,
@@ -208,7 +209,7 @@ GSList *news_get_article_list(Folder *folder, FolderItem *item,
 		cache_last = procmsg_get_last_num_in_cache(alist);
 		newlist = news_get_uncached_articles
 			(session, item, cache_last, &first, &last);
-		alist = news_delete_old_article(alist, first);
+		alist = news_delete_old_articles(alist, item, first);
 
 		alist = g_slist_concat(alist, newlist);
 		item->last_num = last;
@@ -217,7 +218,7 @@ GSList *news_get_article_list(Folder *folder, FolderItem *item,
 
 		alist = news_get_uncached_articles
 			(session, item, 0, NULL, &last);
-		news_delete_all_article(item);
+		news_delete_all_articles(item);
 		item->last_num = last;
 	}
 
@@ -601,26 +602,30 @@ static gchar *news_parse_xhdr(const gchar *xhdr_str, MsgInfo *msginfo)
 		return g_strdup(p);
 }
 
-static GSList *news_delete_old_article(GSList *alist, gint first)
+static GSList *news_delete_old_articles(GSList *alist, FolderItem *item,
+					gint first)
 {
 	GSList *cur, *next;
 	MsgInfo *msginfo;
-	gchar *cache_file;
+	gchar *dir;
+
+	g_return_val_if_fail(item != NULL, alist);
+	g_return_val_if_fail(item->folder != NULL, alist);
+	g_return_val_if_fail(item->folder->type == F_NEWS, alist);
 
 	if (first < 2) return alist;
+
+	debug_print(_("Deleting cached articles 1 - %d ... "), first - 1);
+
+	dir = folder_item_get_path(item);
+	remove_numbered_files(dir, 1, first - 1);
+	g_free(dir);
 
 	for (cur = alist; cur != NULL; ) {
 		next = cur->next;
 
 		msginfo = (MsgInfo *)cur->data;
 		if (msginfo && msginfo->msgnum < first) {
-			debug_print(_("deleting article %d...\n"),
-				    msginfo->msgnum);
-
-			cache_file = procmsg_get_message_file_path(msginfo);
-			if (is_file_exist(cache_file)) unlink(cache_file);
-			g_free(cache_file);
-
 			procmsg_msginfo_free(msginfo);
 			alist = g_slist_remove(alist, msginfo);
 		}
@@ -631,39 +636,20 @@ static GSList *news_delete_old_article(GSList *alist, gint first)
 	return alist;
 }
 
-static void news_delete_all_article(FolderItem *item)
+static void news_delete_all_articles(FolderItem *item)
 {
-	DIR *dp;
-	struct dirent *d;
 	gchar *dir;
-	gchar *file;
+
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(item->folder != NULL);
+	g_return_if_fail(item->folder->type == F_NEWS);
+
+	debug_print(_("\tDeleting all cached articles... "));
 
 	dir = folder_item_get_path(item);
 	if (!is_dir_exist(dir))
 		make_dir_hier(dir);
-
-	if ((dp = opendir(dir)) == NULL) {
-		FILE_OP_ERROR(dir, "opendir");
-		g_free(dir);
-		return;
-	}
-
-	debug_print(_("\tDeleting all cached articles... "));
-
-	while ((d = readdir(dp)) != NULL) {
-		if (to_number(d->d_name) < 0) continue;
-
-		file = g_strconcat(dir, G_DIR_SEPARATOR_S, d->d_name, NULL);
-
-		if (is_file_exist(file)) {
-			if (unlink(file) < 0)
-				FILE_OP_ERROR(file, "unlink");
-		}
-
-		g_free(file);
-	}
-
-	closedir(dp);
+	remove_all_numbered_files(dir);
 	g_free(dir);
 
 	debug_print(_("done.\n"));

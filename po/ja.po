@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed\n"
-"POT-Creation-Date: 2001-06-18 01:42+0900\n"
+"POT-Creation-Date: 2001-06-19 00:29+0900\n"
 "PO-Revision-Date: 1999-10-12\n"
 "Last-Translator: Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -88,13 +88,13 @@ msgstr ""
 "Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: src/about.c:233 src/addressbook.c:1293 src/alertpanel.c:232
-#: src/compose.c:1468 src/compose.c:3124 src/export.c:185 src/foldersel.c:176
+#: src/compose.c:1476 src/compose.c:3132 src/export.c:185 src/foldersel.c:176
 #: src/import.c:189 src/inputdialog.c:160 src/main.c:334 src/main.c:342
 #: src/mainwindow.c:1660 src/mimeview.c:716 src/passphrase.c:119
 #: src/prefs.c:467 src/prefs_common.c:1821 src/prefs_common.c:2065
 #: src/prefs_common.c:2181 src/prefs_customheader.c:162
 #: src/prefs_display_header.c:203 src/summaryview.c:2020
-#: src/summaryview.c:2531
+#: src/summaryview.c:2537
 msgid "OK"
 msgstr "OK"
 
@@ -128,7 +128,7 @@ msgid "Edit accounts"
 msgstr "アカウントの編集"
 
 #: src/account.c:394 src/addressbook.c:318 src/addressbook.c:1289
-#: src/compose.c:2236 src/mimeview.c:139 src/select-keys.c:301
+#: src/compose.c:2244 src/mimeview.c:139 src/select-keys.c:301
 msgid "Name"
 msgstr "名前"
 
@@ -180,7 +180,7 @@ msgid "Do you really want to delete this account?"
 msgstr "本当にこのアカウントを削除してもいいですか?"
 
 #: src/account.c:515 src/addressbook.c:579 src/addressbook.c:1224
-#: src/compose.c:3298 src/folderview.c:1447 src/folderview.c:1490
+#: src/compose.c:3306 src/folderview.c:1447 src/folderview.c:1490
 #: src/folderview.c:1589 src/folderview.c:1630 src/folderview.c:1729
 #: src/folderview.c:1762 src/mainwindow.c:950 src/prefs_customheader.c:543
 #: src/prefs_filter.c:721 src/summary_search.c:297 src/summaryview.c:575
@@ -188,7 +188,7 @@ msgstr "本当にこのアカウントを削除してもいいですか?"
 msgid "Yes"
 msgstr "はい"
 
-#: src/account.c:515 src/compose.c:3298 src/folderview.c:1447
+#: src/account.c:515 src/compose.c:3306 src/folderview.c:1447
 #: src/folderview.c:1490 src/folderview.c:1589 src/folderview.c:1630
 #: src/folderview.c:1729 src/folderview.c:1762
 msgid "+No"
@@ -272,7 +272,7 @@ msgstr "電子メール アドレス"
 msgid "Remarks"
 msgstr "備考"
 
-#: src/addressbook.c:325 src/compose.c:2796
+#: src/addressbook.c:325 src/compose.c:2804
 msgid "Address book"
 msgstr "アドレス帳"
 
@@ -378,18 +378,18 @@ msgstr "本当に `%s' を削除しますか?"
 msgid "Edit address"
 msgstr "アドレスの編集"
 
-#: src/addressbook.c:1290 src/compose.c:2795 src/select-keys.c:302
+#: src/addressbook.c:1290 src/compose.c:2803 src/select-keys.c:302
 msgid "Address"
 msgstr "アドレス"
 
-#: src/addressbook.c:1294 src/compose.c:1468 src/compose.c:3125
-#: src/compose.c:3695 src/export.c:186 src/foldersel.c:177 src/import.c:190
+#: src/addressbook.c:1294 src/compose.c:1476 src/compose.c:3133
+#: src/compose.c:3703 src/export.c:186 src/foldersel.c:177 src/import.c:190
 #: src/inputdialog.c:161 src/main.c:334 src/main.c:342 src/mainwindow.c:1660
 #: src/mimeview.c:716 src/passphrase.c:123 src/prefs.c:468
 #: src/prefs_common.c:2182 src/prefs_customheader.c:163
 #: src/prefs_display_header.c:204 src/progressdialog.c:75
 #: src/select-keys.c:326 src/summaryview.c:575 src/summaryview.c:2020
-#: src/summaryview.c:2531
+#: src/summaryview.c:2537
 msgid "Cancel"
 msgstr "キャンセル"
 
@@ -419,7 +419,7 @@ msgstr "アドレス帳をファイルに書き出しています..."
 msgid "failed to write addressbook data.\n"
 msgstr "アドレス帳のデータの書き込みに失敗しました。\n"
 
-#: src/alertpanel.c:119 src/compose.c:3298 src/main.c:332
+#: src/alertpanel.c:119 src/compose.c:3306 src/main.c:332
 msgid "Notice"
 msgstr "注意"
 
@@ -570,16 +570,16 @@ msgstr "/ツール(_T)/ルーラを表示(_R)"
 msgid "/_Tool/_Address book"
 msgstr "/ツール(_T)/アドレス帳(_A)"
 
-#: src/compose.c:489 src/compose.c:559 src/compose.c:619 src/procmsg.c:687
+#: src/compose.c:494 src/compose.c:564 src/compose.c:624 src/procmsg.c:687
 msgid "Can't get text part\n"
 msgstr "テキストパートを取得できません\n"
 
-#: src/compose.c:551
+#: src/compose.c:556
 #, c-format
 msgid "%s: file not exist\n"
 msgstr "%s: ファイルが存在しません\n"
 
-#: src/compose.c:563
+#: src/compose.c:568
 msgid ""
 "\n"
 "\n"
@@ -591,49 +591,49 @@ msgstr ""
 "Begin forwarded message:\n"
 "\n"
 
-#: src/compose.c:1232
+#: src/compose.c:1240
 #, c-format
 msgid "File %s doesn't exist\n"
 msgstr "ファイル %s は存在しません\n"
 
-#: src/compose.c:1236
+#: src/compose.c:1244
 #, c-format
 msgid "Can't get file size of %s\n"
 msgstr "ファイル %s のサイズを取得できません\n"
 
-#: src/compose.c:1240
+#: src/compose.c:1248
 #, c-format
 msgid "File %s is empty\n"
 msgstr "ファイル %s は空です\n"
 
-#: src/compose.c:1261
+#: src/compose.c:1269
 #, c-format
 msgid "Message: %s"
 msgstr "メッセージ: %s"
 
-#: src/compose.c:1367
+#: src/compose.c:1375
 msgid " [Edited]"
 msgstr " [更新]"
 
-#: src/compose.c:1369
+#: src/compose.c:1377
 #, c-format
 msgid "%s - Compose message%s"
 msgstr "%s - メッセージの作成%s"
 
-#: src/compose.c:1372
+#: src/compose.c:1380
 #, c-format
 msgid "Compose message%s"
 msgstr "メッセージの作成%s"
 
-#: src/compose.c:1394 src/compose.c:3588
+#: src/compose.c:1402 src/compose.c:3596
 msgid "Recipient is not specified."
 msgstr "宛先が指定されていません。"
 
-#: src/compose.c:1412
+#: src/compose.c:1420
 msgid "can't get recipient list."
 msgstr "送信先のリストを取得できません。"
 
-#: src/compose.c:1430
+#: src/compose.c:1438
 msgid ""
 "Account for sending mail is not specified.\n"
 "Please select a mail account before sending."
@@ -641,16 +641,16 @@ msgstr ""
 "メールを送信するためのアカウントが指定されていません。\n"
 "送信する前にメールアカウントを選択してください。"
 
-#: src/compose.c:1451
+#: src/compose.c:1459
 #, c-format
 msgid "Error occurred while posting the message to %s ."
 msgstr "メッセージを %s にポストする途中にエラーが発生しました。"
 
-#: src/compose.c:1465
+#: src/compose.c:1473
 msgid "Queueing"
 msgstr "送信待機"
 
-#: src/compose.c:1466
+#: src/compose.c:1474
 msgid ""
 "Error occurred while sending the message.\n"
 "Put this message into queue folder?"
@@ -658,172 +658,172 @@ msgstr ""
 "メッセージの送信中にエラーが発生しました。\n"
 "このメッセージを送信待ちフォルダに入れますか?"
 
-#: src/compose.c:1472 src/compose.c:3600
+#: src/compose.c:1480 src/compose.c:3608
 msgid "Can't queue the message."
 msgstr "メッセージを送信待機できません。"
 
-#: src/compose.c:1475
+#: src/compose.c:1483
 msgid "Error occurred while sending the message."
 msgstr "メッセージの送信中にエラーが発生しました。"
 
-#: src/compose.c:1482 src/compose.c:3607
+#: src/compose.c:1490 src/compose.c:3615
 msgid "Can't save the message to outbox."
 msgstr "メッセージを送信控に保存できません。"
 
-#: src/compose.c:1508 src/compose.c:1629 src/compose.c:1715 src/utils.c:1533
+#: src/compose.c:1516 src/compose.c:1637 src/compose.c:1723 src/utils.c:1533
 msgid "can't change file mode\n"
 msgstr "ファイルモードを変更できません\n"
 
-#: src/compose.c:1534
+#: src/compose.c:1542
 msgid "Can't convert the codeset of the message."
 msgstr "メッセージの文字コードセットを変換できません。"
 
-#: src/compose.c:1543
+#: src/compose.c:1551
 msgid "can't write headers\n"
 msgstr "ヘッダを書き込めません。\n"
 
-#: src/compose.c:1661
+#: src/compose.c:1669
 msgid "saving sent message...\n"
 msgstr "送信したメッセージを保存しています...\n"
 
-#: src/compose.c:1666
+#: src/compose.c:1674
 msgid "can't save message\n"
 msgstr "メッセージを保存できません\n"
 
-#: src/compose.c:1672 src/compose.c:1779
+#: src/compose.c:1680 src/compose.c:1787
 msgid "can't open mark file\n"
 msgstr "マークファイルを開けません\n"
 
-#: src/compose.c:1695
+#: src/compose.c:1703
 msgid "queueing message...\n"
 msgstr "メッセージを送信待ちに入れています...\n"
 
-#: src/compose.c:1770
+#: src/compose.c:1778
 msgid "can't queue the message\n"
 msgstr "メッセージを送信待機できません\n"
 
-#: src/compose.c:1808
+#: src/compose.c:1816
 #, c-format
 msgid "Can't open file %s\n"
 msgstr "ファイル %s を開けません\n"
 
-#: src/compose.c:2162
+#: src/compose.c:2170
 #, c-format
 msgid "generated Message-ID: %s\n"
 msgstr "生成されたメッセージID: %s\n"
 
-#: src/compose.c:2236 src/compose.c:3096
+#: src/compose.c:2244 src/compose.c:3104
 msgid "MIME type"
 msgstr "MIME タイプ"
 
-#: src/compose.c:2236 src/mimeview.c:139 src/prefs_common.c:2176
+#: src/compose.c:2244 src/mimeview.c:139 src/prefs_common.c:2176
 #: src/select-keys.c:299 src/summaryview.c:362
 msgid "Size"
 msgstr "サイズ"
 
-#: src/compose.c:2253
+#: src/compose.c:2261
 msgid "Creating compose window...\n"
 msgstr "メッセージ作成ウィンドウを作成中...\n"
 
-#: src/compose.c:2299 src/headerview.c:54 src/summary_search.c:145
+#: src/compose.c:2307 src/headerview.c:54 src/summary_search.c:145
 msgid "From:"
 msgstr "差出人:"
 
-#: src/compose.c:2722 src/mainwindow.c:1359 src/prefs_account.c:501
+#: src/compose.c:2730 src/mainwindow.c:1359 src/prefs_account.c:501
 #: src/prefs_common.c:636
 msgid "Send"
 msgstr "送信"
 
-#: src/compose.c:2723
+#: src/compose.c:2731
 msgid "Send message"
 msgstr "メッセージを送信"
 
-#: src/compose.c:2730
+#: src/compose.c:2738
 msgid "Send later"
 msgstr "後で送信"
 
-#: src/compose.c:2731
+#: src/compose.c:2739
 msgid "Put into queue folder and send later"
 msgstr "送信待ちフォルダに入れて後で送信"
 
-#: src/compose.c:2738 src/folderview.c:738
+#: src/compose.c:2746 src/folderview.c:738
 msgid "Draft"
 msgstr "草稿"
 
-#: src/compose.c:2739
+#: src/compose.c:2747
 msgid "Save to draft folder"
 msgstr "草稿フォルダに保存"
 
-#: src/compose.c:2748
+#: src/compose.c:2756
 msgid "Insert"
 msgstr "挿入"
 
-#: src/compose.c:2749
+#: src/compose.c:2757
 msgid "Insert file"
 msgstr "ファイルを挿入"
 
-#: src/compose.c:2756
+#: src/compose.c:2764
 msgid "Attach"
 msgstr "添付"
 
-#: src/compose.c:2757
+#: src/compose.c:2765
 msgid "Attach file"
 msgstr "ファイルを添付"
 
-#: src/compose.c:2766 src/prefs_common.c:1035
+#: src/compose.c:2774 src/prefs_common.c:1035
 msgid "Signature"
 msgstr "署名"
 
-#: src/compose.c:2767
+#: src/compose.c:2775
 msgid "Insert signature"
 msgstr "署名を挿入"
 
-#: src/compose.c:2775
+#: src/compose.c:2783
 msgid "Editor"
 msgstr "エディタ"
 
-#: src/compose.c:2776
+#: src/compose.c:2784
 msgid "Edit with external editor"
 msgstr "外部エディタで編集"
 
-#: src/compose.c:2784
+#: src/compose.c:2792
 msgid "Linewrap"
 msgstr "自動改行"
 
-#: src/compose.c:2785
+#: src/compose.c:2793
 msgid "Wrap long lines"
 msgstr "長い行を折り返す"
 
-#: src/compose.c:2992
+#: src/compose.c:3000
 msgid "Invalid MIME type."
 msgstr "無効な MIME タイプです。"
 
-#: src/compose.c:3010
+#: src/compose.c:3018
 msgid "File doesn't exist or is empty."
 msgstr "ファイルが存在しないかまたは空です。"
 
-#: src/compose.c:3078
+#: src/compose.c:3086
 msgid "Property"
 msgstr "プロパティ"
 
-#: src/compose.c:3098
+#: src/compose.c:3106
 msgid "Encoding"
 msgstr "エンコーディング"
 
-#: src/compose.c:3121
+#: src/compose.c:3129
 msgid "Path"
 msgstr "パス"
 
-#: src/compose.c:3122
+#: src/compose.c:3130
 msgid "File name"
 msgstr "ファイル名"
 
-#: src/compose.c:3269
+#: src/compose.c:3277
 #, c-format
 msgid "External editor command line is invalid: `%s'\n"
 msgstr "外部エディタのコマンドラインが無効です: `%s'\n"
 
-#: src/compose.c:3295
+#: src/compose.c:3303
 #, c-format
 msgid ""
 "The external editor is still working.\n"
@@ -834,54 +834,54 @@ msgstr ""
 "プロセスを強制終了しますか?\n"
 "プロセスグループID: %d"
 
-#: src/compose.c:3308
+#: src/compose.c:3316
 #, c-format
 msgid "Terminated process group id: %d"
 msgstr "終了したプロセスグループID: %d"
 
-#: src/compose.c:3309
+#: src/compose.c:3317
 #, c-format
 msgid "Temporary file: %s"
 msgstr "一時ファイル: %s"
 
-#: src/compose.c:3333
+#: src/compose.c:3341
 msgid "Compose: input from monitoring process\n"
 msgstr "Compose: 監視プロセスからの入力\n"
 
 #. failed
-#: src/compose.c:3366
+#: src/compose.c:3374
 msgid "Couldn't exec external editor\n"
 msgstr "外部エディタを実行できません\n"
 
-#: src/compose.c:3370
+#: src/compose.c:3378
 msgid "Couldn't write to file\n"
 msgstr "ファイルに書き込めません\n"
 
-#: src/compose.c:3372
+#: src/compose.c:3380
 msgid "Pipe read failed\n"
 msgstr "パイプの読み込みに失敗\n"
 
-#: src/compose.c:3629
+#: src/compose.c:3637
 msgid "can't remove the old draft message\n"
 msgstr "古い草稿メッセージを削除できません\n"
 
-#: src/compose.c:3657 src/compose.c:3669
+#: src/compose.c:3665 src/compose.c:3677
 msgid "Select file"
 msgstr "ファイルの選択"
 
-#: src/compose.c:3693
+#: src/compose.c:3701
 msgid "Discard message"
 msgstr "メッセージの破棄"
 
-#: src/compose.c:3694
+#: src/compose.c:3702
 msgid "This message has been modified. discard it?"
 msgstr "このメッセージは変更されています。破棄しますか?"
 
-#: src/compose.c:3695
+#: src/compose.c:3703
 msgid "Discard"
 msgstr "破棄"
 
-#: src/compose.c:3695
+#: src/compose.c:3703
 msgid "to Draft"
 msgstr "草稿へ"
 
@@ -974,12 +974,12 @@ msgstr "フォルダ情報を設定中...\n"
 msgid "Setting folder info..."
 msgstr "フォルダ情報を設定中..."
 
-#: src/folderview.c:539 src/mainwindow.c:2084 src/setup.c:81
+#: src/folderview.c:539 src/mainwindow.c:2092 src/setup.c:81
 #, c-format
 msgid "Scanning folder %s%c%s ..."
 msgstr "フォルダをスキャン中 (%s%c%s) ..."
 
-#: src/folderview.c:544 src/mainwindow.c:2089 src/setup.c:86
+#: src/folderview.c:544 src/mainwindow.c:2097 src/setup.c:86
 #, c-format
 msgid "Scanning folder %s ..."
 msgstr "フォルダをスキャン中 (%s)..."
@@ -1272,26 +1272,26 @@ msgstr "namespace を取得できません\n"
 msgid "can't select folder: %s\n"
 msgstr "フォルダ %s を選択できません\n"
 
-#: src/imap.c:1320
+#: src/imap.c:1324
 msgid "IMAP4 login failed.\n"
 msgstr "IMAP4のログインに失敗しました。\n"
 
-#: src/imap.c:1490
+#: src/imap.c:1510
 #, c-format
 msgid "can't append %s to %s\n"
 msgstr "%s を %s に追加できません\n"
 
-#: src/imap.c:1506
+#: src/imap.c:1530
 #, c-format
 msgid "can't copy %d to %s\n"
 msgstr "メッセージ %d を %s にコピーできません\n"
 
-#: src/imap.c:1530
+#: src/imap.c:1554
 #, c-format
 msgid "error while imap command: STORE %d:%d %s\n"
 msgstr "imap コマンド中のエラー: STORE %d:%d %s\n"
 
-#: src/imap.c:1544
+#: src/imap.c:1568
 msgid "error while imap command: EXPUNGE\n"
 msgstr "imap コマンド中のエラー: EXPUNGE\n"
 
@@ -2078,11 +2078,11 @@ msgstr "アカウント"
 msgid "Account setting"
 msgstr "アカウントの設定"
 
-#: src/mainwindow.c:1659 src/summaryview.c:2530
+#: src/mainwindow.c:1659 src/summaryview.c:2536
 msgid "Exit"
 msgstr "終了"
 
-#: src/mainwindow.c:1659 src/summaryview.c:2530
+#: src/mainwindow.c:1659 src/summaryview.c:2536
 msgid "Exit this program?"
 msgstr "このプログラムを終了しますか?"
 
@@ -2090,7 +2090,7 @@ msgstr "このプログラムを終了しますか?"
 msgid "Sending queued message failed."
 msgstr "送信待機中のメッセージの送信に失敗しました。"
 
-#: src/mainwindow.c:1916
+#: src/mainwindow.c:1924
 #, c-format
 msgid "forced charset: %s\n"
 msgstr "強制指定キャラクタセット: %s\n"
@@ -2581,11 +2581,11 @@ msgid "Remove messages on server when received"
 msgstr "受信時にサーバ上のメッセージを削除する"
 
 #: src/prefs_account.c:796
-msgid "Receive all messages on server"
+msgid "Download all messages on server"
 msgstr "サーバ上の全てのメッセージを受信する"
 
 #: src/prefs_account.c:799
-msgid "`Receive all' checks for new mail on this account"
+msgid "`Get all' checks for new mail on this account"
 msgstr "「全受信」でこのアカウントの新着メールをチェックする"
 
 #: src/prefs_account.c:801

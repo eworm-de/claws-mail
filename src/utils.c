@@ -1377,11 +1377,12 @@ gint remove_all_files(const gchar *dir)
 	return 0;
 }
 
-gint remove_all_numbered_files(const gchar *dir)
+gint remove_numbered_files(const gchar *dir, gint first, gint last)
 {
 	DIR *dp;
 	struct dirent *d;
 	gchar *prev_dir;
+	gint fileno;
 
 	prev_dir = g_get_current_dir();
 
@@ -1396,10 +1397,12 @@ gint remove_all_numbered_files(const gchar *dir)
 	}
 
 	while ((d = readdir(dp)) != NULL) {
-		if (to_number(d->d_name) < 0) continue;
-
-		if (unlink(d->d_name) < 0)
-			FILE_OP_ERROR(d->d_name, "unlink");
+		fileno = to_number(d->d_name);
+		if (fileno >= 0 && first <= fileno &&
+		    (last < 0 || fileno <= last)) {
+			if (unlink(d->d_name) < 0)
+				FILE_OP_ERROR(d->d_name, "unlink");
+		}
 	}
 
 	closedir(dp);
@@ -1413,6 +1416,11 @@ gint remove_all_numbered_files(const gchar *dir)
 	g_free(prev_dir);
 
 	return 0;
+}
+
+gint remove_all_numbered_files(const gchar *dir)
+{
+	return remove_numbered_files(dir, 0, -1);
 }
 
 gint remove_dir_recursive(const gchar *dir)

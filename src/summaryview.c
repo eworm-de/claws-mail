@@ -1067,11 +1067,16 @@ void summary_select_by_msgnum(SummaryView *summaryview, guint msgnum)
 	node = summary_find_msg_by_msgnum(summaryview, msgnum);
 
 	if (node) {
+		GTK_EVENTS_FLUSH();
+		gtk_ctree_node_moveto(ctree, node, -1, 0.5, 0);
+		gtk_widget_grab_focus(GTK_WIDGET(ctree));
 		gtk_sctree_unselect_all(GTK_SCTREE(ctree));
 		gtk_sctree_select(GTK_SCTREE(ctree), node);
-		if (summaryview->displayed == node)
-			summaryview->displayed = NULL;
-		summary_display_msg(summaryview, node, FALSE);
+		if (summaryview->msg_is_toggled_on) {
+			if (summaryview->displayed == node)
+				summaryview->displayed = NULL;
+			summary_display_msg(summaryview, node, FALSE);
+		}
 	}
 }
 
@@ -1766,7 +1771,7 @@ static void summary_set_header(gchar *text[], MsgInfo *msginfo)
 
 	text[S_COL_MARK]   = NULL;
 	text[S_COL_UNREAD] = NULL;
-	text[S_COL_MIME] = NULL;
+	text[S_COL_MIME]   = NULL;
 	text[S_COL_NUMBER] = itos_buf(col_number, msginfo->msgnum);
 	text[S_COL_SIZE]   = to_human_readable(msginfo->size);
 #if 0
@@ -2578,6 +2583,9 @@ void summary_execute(SummaryView *summaryview)
 	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
 
 	gtk_clist_thaw(clist);
+
+	if (summaryview->folder_item->folder->type == F_IMAP)
+		summary_show(summaryview, summaryview->folder_item, FALSE);
 }
 
 static void summary_execute_move(SummaryView *summaryview)
@@ -2985,6 +2993,13 @@ void summary_pass_key_press_event(SummaryView *summaryview, GdkEventKey *event)
 #define BREAK_ON_MODIFIER_KEY() \
 	if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) != 0) break
 
+#define KEY_PRESS_EVENT_STOP() \
+	if (gtk_signal_n_emissions_by_name \
+		(GTK_OBJECT(ctree), "key_press_event") > 0) { \
+		gtk_signal_emit_stop_by_name(GTK_OBJECT(ctree), \
+					     "key_press_event"); \
+	}
+
 static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				SummaryView *summaryview)
 {
@@ -2998,12 +3013,7 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_g:		/* Go */
 	case GDK_G:
 		BREAK_ON_MODIFIER_KEY();
-
-		if (gtk_signal_n_emissions_by_name
-			(GTK_OBJECT(ctree), "key_press_event") > 0)
-			gtk_signal_emit_stop_by_name(GTK_OBJECT(ctree),
-						     "key_press_event");
-
+		KEY_PRESS_EVENT_STOP();
 		to_folder = foldersel_folder_sel(NULL);
 		if (to_folder) {
 			debug_print(_("Go to %s\n"), to_folder->path);
@@ -3012,9 +3022,15 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		return;
 	case GDK_w:		/* Write new message */
 		BREAK_ON_MODIFIER_KEY();
-		if (summaryview->folder_item)
-			compose_new(summaryview->folder_item->folder->account);
-		else
+		if (summaryview->folder_item) {
+			PrefsAccount *ac;
+			ac = summaryview->folder_item->folder->account;
+			if (ac && ac->protocol == A_NNTP)
+				compose_new_with_recipient
+					(ac, summaryview->folder_item->path);
+			else
+				compose_new(ac);
+		} else
 			compose_new(NULL);
 		return;
 	case GDK_D:		/* Empty trash */
@@ -3124,6 +3140,7 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_x:		/* Execute */
 	case GDK_X:
 		BREAK_ON_MODIFIER_KEY();
+		KEY_PRESS_EVENT_STOP();
 		summary_execute(summaryview);
 		break;
 	case GDK_a:		/* Reply to the message */
@@ -3151,6 +3168,9 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	default:
 	}
 }
+
+#undef BREAK_ON_MODIFIER_KEY
+#undef KEY_PRESS_EVENT_STOP
 
 static void summary_open_row(GtkSCTree *sctree, SummaryView *summaryview)
 {

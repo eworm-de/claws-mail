@@ -2030,15 +2030,15 @@ static void compose_mail_cb(MainWindow *mainwin, guint action,
 static void compose_news_cb(MainWindow *mainwin, guint action,
 			    GtkWidget *widget)
 {
-	PrefsAccount * ac;
+	PrefsAccount * ac = NULL;
 	GList * list;
 	GList * cur;
 
 	if (mainwin->summaryview->folder_item) {
 		ac = mainwin->summaryview->folder_item->folder->account;
 		if (ac && ac->protocol == A_NNTP) {
-			FolderItem * item = mainwin->summaryview->folder_item;
-			compose_new_with_recipient(ac, item->path);
+			compose_new_with_recipient
+				(ac, mainwin->summaryview->folder_item->path);
 			return;
 		}
 	}

@@ -1,8 +1,41 @@
+2001-06-19
+
+	* src/imap.c: imap_cmd_login(), imap_cmd_select(), imap_cmd_status(),
+	  imap_cmd_create(), imap_cmd_delete(), imap_cmd_copy(): 文字列
+	  にスペースが入っていなければダブルクォーテーションで囲まない
+	  ようにした(古い Cyrus IMAP4 server への対処)。
+	  imap_create_folder(): セパレータ置換のバグ修正。
+	  imap_session_connect_if_not() を imap_session_get() に名称変更。
+	  imap_get_msg_list(): use_cache が off のときは全てのキャッシュ済
+	  メッセージを削除。
+	  imap_delete_cached_messages(): ディレクトリエントリを読んで指定
+	  した範囲のキャッシュ済ファイルを削除するようにした。
+	  imap_parse_one_address(): fromname が空の場合は差出人アドレスと
+	  同じにするようにした。
+	* src/utils.[ch]: remove_numbered_files(): 新規。範囲を指定可能。
+	* src/summaryview.c: summary_execute(): 現在のフォルダが IMAP4
+	  の場合サマリを更新するようにした。
+	  KEY_PRESS_EVENT_STOP(): 新規マクロ。
+	  summary_key_pressed(): summary_execute() を呼ぶときにシグナルの
+	  発行を止めるようにした。
+	  summary_select_by_msgnum(): msg_is_toggled_on が TRUE のときだけ
+	  メッセージを表示するようにした。現在のページを選択されたノード
+	  のところへ移動するようにした。
+	* src/news.c; news_delete_old_articles(): ディレクトリエントリを
+	  読んで指定した範囲のキャッシュ済ファイルを削除するようにした。
+	* src/folderview.c:
+	  folderview_selected(), folderview_button_released(): フォルダを
+	  正しく選択しなかったバグを修正。
+
 2001-06-18
 
 	* src/mainwindow.c
 	  src/summaryview.c
 	  src/prefs_common.c: 英語表現の改善(Paul Mangan さん thanks)。
+	* src/mainwindow.c: compose_cb()
+	  src/summaryview.c: summary_key_pressed()
+	  src/compose.c: compose_new_with_recipient(): 新規記事を作成する
+	  ときにニュースグループのエントリを自動的に埋めるようにした。
 
 2001-06-17
 

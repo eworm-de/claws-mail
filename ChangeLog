@@ -1,9 +1,43 @@
+2001-06-19
+
+	* src/imap.c: imap_cmd_login(), imap_cmd_select(), imap_cmd_status(),
+	  imap_cmd_create(), imap_cmd_delete(), imap_cmd_copy(): don't
+	  enclose with double quotation if string doesn't have space
+	  (workaround for old Cyrus IMAP4 server).
+	  imap_create_folder(): fixed a bug of separator substitution.
+	  renamed imap_session_connect_if_not() to imap_session_get().
+	  imap_get_msg_list(): delete all cached messages if use_cache
+	  is off.
+	  imap_delete_cached_messages(): remove cached files in between
+	  the specified range by reading directory entry.
+	  imap_parse_one_address(): set fromname same as the from address
+	  if it is empty.
+	* src/utils.[ch]: remove_numbered_files(): new. The range is
+	  specifiable.
+	* src/summaryview.c: summary_execute(): update summary if current
+	  folder is IMAP4.
+	  KEY_PRESS_EVENT_STOP(): new macro.
+	  summary_key_pressed(): stop signal emission when calling
+	  summary_execute().
+	  summary_select_by_msgnum(): show message only if
+	  msg_is_toggled_on is TRUE. Move current page to the selected
+	  node.
+	* src/news.c; news_delete_old_articles(): remove cached files in
+	  between the specified range by reading directory entry.
+	* src/folderview.c:
+	  folderview_selected(), folderview_button_released(): fixed a bug
+	  that didn't select folder correctly.
+
 2001-06-18
 
 	* src/mainwindow.c
 	  src/summaryview.c
 	  src/prefs_common.c: improvements to the English (thanks to Paul
 	  Mangan).
+	* src/mainwindow.c: compose_cb()
+	  src/summaryview.c: summary_key_pressed()
+	  src/compose.c: compose_new_with_recipient(): newsgroups entry
+	  is automatically filled when composing a new article.
 
 2001-06-17
 
