@@ -1,21 +1,22 @@
-2004-06-02 [paul]	0.9.8claws63
+2004-02-06 [paul]	0.9.8claws63
 
 	* po/es.po
 	  po/pl.po
 	  po/sk.po
-	  sr.po
-	  	update Spanish, Polish, Slovak, and Serbian translations.
-		submitted by Ricardo Mones Lastra, Emil Nowak, Andrej Kacian,
-		and Urke MMI
+	  po/sr.po
+	  po/zh_CN.po
+	  	update Spanish, Polish, Slovak, Serbian, and Simplified
+		Chinese translations.submitted by Ricardo Mones Lastra, 
+		Emil Nowak, Andrej Kacian, Urke MMI, and Hansom Young.
 
-2004-04-02 [alfons]	0.9.8claws62
+2004-02-04 [alfons]	0.9.8claws62
 
 	* src/compose.c
 		grab focus only when lbutton was pressed (bug #430 cont'd; 
 		don't have clue yet why the cursor pos is at the end of the
 		text.)
 
-2004-04-02 [alfons]	0.9.8claws61
+2004-02-04 [alfons]	0.9.8claws61
 
 	* src/compose.c
 		always grab focus when one of the header entries is clicked 
