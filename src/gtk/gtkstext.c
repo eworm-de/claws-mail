@@ -36,7 +36,7 @@
 
 #include <ctype.h>
 #include <string.h>
-
+#include <stdlib.h>
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdki18n.h>
 #include <gtk/gtkmain.h>
@@ -5227,11 +5227,17 @@ find_line_params (GtkSText* text,
 		      
 		      if (text->use_wchar)
 			{
+			  gchar mb[MB_LEN_MAX];
+
 			  while (!gdk_iswspace (GTK_STEXT_INDEX (text, lp.end.index)) &&
 				 (lp.end.index > lp.start.index))
 			    {
 			      decrement_mark (&lp.end);
 			      lp.displayable_chars -= 1;
+
+			      /* multibyte chars are always breakable */
+			      if (wctomb (mb, GTK_STEXT_INDEX (text, lp.end.index)) > 1)
+				break;
 			    }
 			}
 		      else

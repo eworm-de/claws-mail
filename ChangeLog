@@ -1,3 +1,8 @@
+2004-01-20
+
+	* src/gtkstext.c: find_line_params(): break lines between multibyte
+	  characters on word wrap mode.
+
 2004-01-05
 
 	* src/codeconv.c: conv_iconv_strdup(): fixed crashes on LP64

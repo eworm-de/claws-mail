@@ -1,9 +1,16 @@
+2004-01-20 [paul]	0.9.8clawws35
+
+	* sync with 0.9.8cvs3
+		see ChangeLog 2004-01-20
+
 2004-01-19 [keith]	0.9.8claws34
+
 	* src/folderview.c
 		don't show 'Search folder...' on popup menu
 		if folder has no mails in it
 
 2004-01-17 [keith]	0.9.8claws33
+
 	* src/compose.c
 	  src/prefs_common.c
 	  src/prefs_common.h
