@@ -1660,7 +1660,8 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	g_return_if_fail(msginfo != NULL);
 
 	if (compose->account->protocol != A_NNTP || followup_and_reply_to) {
-		if (!compose->replyto && to_ml && compose->ml_post)
+		if (!compose->replyto && to_ml && compose->ml_post
+		    && !(msginfo->folder && msginfo->folder->prefs->enable_default_reply_to))
 			compose_entry_append(compose,
 					   compose->ml_post,
 					   COMPOSE_TO);
