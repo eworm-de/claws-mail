@@ -1070,7 +1070,7 @@ static void mimeview_save_all(MimeView *mimeview)
 	while (partinfo != NULL) {
 		if (partinfo->type != MIMETYPE_MESSAGE &&
 		    partinfo->type != MIMETYPE_MULTIPART &&
-		    partinfo->disposition != DISPOSITIONTYPE_INLINE) {
+		    partinfo->disposition == DISPOSITIONTYPE_ATTACHMENT) {
 			gchar *filename = mimeview_get_filename_for_part
 				(partinfo, dirname, number++);
 
