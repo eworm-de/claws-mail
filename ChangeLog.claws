@@ -1,3 +1,29 @@
+2004-08-16 [colin]	0.9.12cvs65
+
+	* src/common/ssl.c
+		Fix version comparison
+
+2004-08-16 [colin]	0.9.12cvs64
+
+	* src/common/ssl.c
+		I meant 2.2.
+
+2004-08-16 [colin]	0.9.12cvs63
+
+	* src/common/ssl.c
+		People with glibc 2.1 have had problems with non-blocking
+		SSL_connect. Disable it for glibc < 2.2.
+
+2004-08-16 [colin]	0.9.12cvs62
+
+	* src/common/ssl.c
+		Fix format error
+
+2004-08-13 [colin]	0.9.12cvs61
+
+	* src/plugins/pgpmime/plugin.c
+		Add plugin's description
+
 2004-08-12 [christoph]	0.9.12cvs60
 
 	* src/folderutils.c
