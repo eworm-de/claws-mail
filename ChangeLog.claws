@@ -1,3 +1,8 @@
+2005-01-15 [paul]	0.9.13cvs35
+
+	* src/gtk/pluginwindow.c
+		fix 2 memleaks, patch by Alfons
+
 2005-01-15 [paul]	0.9.13cvs34
 
 	* ChangeLog
