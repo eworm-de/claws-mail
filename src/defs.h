@@ -40,7 +40,6 @@
 #define TRASH_DIR		"trash"
 #define RC_DIR			".sylpheed"
 #define NEWS_CACHE_DIR		"newscache"
-#define GROUPLIST_FILE		"grouplist"
 #define IMAP_CACHE_DIR		"imapcache"
 #define MBOX_CACHE_DIR		"mboxcache"
 #define MIME_TMP_DIR		"mimetmp"
@@ -53,6 +52,7 @@
 #define SCORING_RC              "scoringrc"
 #define FILTERING_RC		"filteringrc"
 #define MENU_RC			"menurc"
+#define NEWSGROUP_LIST		".newsgroup_list"
 #define ADDRESS_BOOK		"addressbook.xml"
 #define MANUAL_HTML_INDEX	"sylpheed.html"
 #define HOMEPAGE_URI		"http://sylpheed.good-day.net/"
@@ -90,6 +90,7 @@
 #define CTREE_INDENT			18
 #define FOLDER_SPACING			4
 #define COLOR_DIM			35000
+#define UI_REFRESH_INTERVAL		50000
 
 #define NORMAL_FONT prefs_common.normalfont
 #define BOLD_FONT   prefs_common.boldfont

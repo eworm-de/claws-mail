@@ -28,9 +28,10 @@ sylpheed_SOURCES = \
 	prefs_display_header.c prefs_display_header.h \
 	prefs_customheader.c prefs_customheader.h \
 	account.c account.h \
-	displayheader.c displayheader.h	\
+	displayheader.c displayheader.h \
 	customheader.c customheader.h \
 	addressbook.c addressbook.h \
+	addr_compl.c addr_compl.h \
 	filesel.c filesel.h \
 	foldersel.c foldersel.h \
 	statusbar.c statusbar.h \
@@ -41,6 +42,7 @@ sylpheed_SOURCES = \
 	alertpanel.c alertpanel.h \
 	inputdialog.c inputdialog.h \
 	progressdialog.c progressdialog.h \
+	grouplistdialog.c grouplistdialog.h \
 	about.c about.h \
 	setup.c setup.h \
 	utils.c utils.h \
@@ -76,9 +78,7 @@ sylpheed_SOURCES = \
 	sigstatus.c sigstatus.h \
 	simple-gettext.c \
 	manual.c manual.h \
-	addr_compl.c addr_compl.h \
 	gtkstext.c gtkstext.h \
-	grouplist_dialog.c grouplist_dialog.h \
 	scoring.c scoring.h \
 	prefs_folder_item.c prefs_folder_item.h \
 	matcher.c matcher.h \

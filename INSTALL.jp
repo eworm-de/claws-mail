@@ -3,12 +3,12 @@
 
 このプログラムをコンパイルするには GTK+ 1.2.6 以降が必要です。
 
-このプログラムは Debian GNU/Linux (woody) (Linux 2.2.x + glibc 2.2)
+このプログラムは Debian GNU/Linux (woody/sid) (Linux 2.4.x + glibc 2.2.x)
 上で開発されているため、他の環境ではうまく動作しない可能性があります。
 
 以下の環境で動作が確認されています:
 
-o Debian GNU/Linux (woody/sid) (glibc 2.2)
+o Debian GNU/Linux (woody/sid) (glibc 2.2.x)
 o Kondara MNU/Linux (glibc 2.1.x)
 o Vine Linux 1.1 (glibc 2.0.x + libwcsmbs)
 o Vine Linux 2.0 (glibc 2.1.x) (Intel, PPC)

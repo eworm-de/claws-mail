@@ -3,13 +3,13 @@ Installation
 
 This program requires GTK+ 1.2.6 or higher to be compiled.
 
-This program is developed on Debian GNU/Linux (woody)
-(Linux 2.2.x + glibc 2.2), so it is possible not to work correctly
+This program is developed on Debian GNU/Linux (woody/sid)
+(Linux 2.4.x + glibc 2.2), so it is possible not to work correctly
 on the other environment.
 
 It is confirmed to work on the following environments:
 
-o Debian GNU/Linux (woody/sid) (glibc 2.2)
+o Debian GNU/Linux (woody/sid) (glibc 2.2.x)
 o Kondara MNU/Linux (glibc 2.1.x)
 o Vine Linux 1.1 (glibc 2.0.x + libwcsmbs)
 o Vine Linux 2.0 (glibc 2.1.x) (Intel, PPC)

@@ -21,6 +21,8 @@
 #  include "config.h"
 #endif
 
+#include "defs.h"
+
 #include <glib.h>
 #include <stdio.h>
 #include <string.h>
@@ -31,8 +33,6 @@
 #include "recv.h"
 #include "socket.h"
 #include "utils.h"
-
-#define BUFFSIZE	8192
 
 static RecvUIFunc	recv_ui_func;
 static gpointer		recv_ui_func_data;
@@ -101,6 +101,7 @@ gint recv_write(SockInfo *sock, FILE *fp)
 {
 	gchar buf[BUFFSIZE];
 	gint len;
+	gint count = 0;
 	gint bytes = 0;
 	struct timeval tv_prev, tv_cur;
 
@@ -115,9 +116,11 @@ gint recv_write(SockInfo *sock, FILE *fp)
 		len = strlen(buf);
 		if (len > 1 && buf[0] == '.' && buf[1] == '\r') {
 			if (recv_ui_func)
-				recv_ui_func(sock, bytes, recv_ui_func_data);
+				recv_ui_func(sock, count, bytes,
+					     recv_ui_func_data);
 			break;
 		}
+		count++;
 		bytes += len;
 
 		if (recv_ui_func) {
@@ -125,8 +128,9 @@ gint recv_write(SockInfo *sock, FILE *fp)
 			/* if elapsed time from previous update is greater
 			   than 10msec, update UI */
 			if (tv_cur.tv_sec - tv_prev.tv_sec > 0 ||
-			    tv_cur.tv_usec - tv_prev.tv_usec > 10000) {
-				recv_ui_func(sock, bytes, recv_ui_func_data);
+			    tv_cur.tv_usec - tv_prev.tv_usec > UI_REFRESH_INTERVAL) {
+				recv_ui_func(sock, count, bytes,
+					     recv_ui_func_data);
 				gettimeofday(&tv_prev, NULL);
 			}
 		}

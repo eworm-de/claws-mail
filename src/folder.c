@@ -1228,7 +1228,7 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 		if (folder->account)
 			fprintf(fp, " account_id=\"%d\"",
 				folder->account->account_id);
-		if (item->collapsed)
+		if (item->collapsed && node->children)
 			fputs(" collapsed=\"1\"", fp);
 	} else {
 		fprintf(fp, "<folderitem type=\"%s\"",
@@ -1250,7 +1250,7 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 			fputs(" no_sub=\"1\"", fp);
 		if (item->no_select)
 			fputs(" no_select=\"1\"", fp);
-		if (item->collapsed)
+		if (item->collapsed && node->children)
 			fputs(" collapsed=\"1\"", fp);
 		fprintf(fp,
 			" mtime=\"%ld\" new=\"%d\" unread=\"%d\" total=\"%d\"",

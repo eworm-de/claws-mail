@@ -172,6 +172,7 @@ NNTPSession *news_session_get(Folder *folder)
 	if (!REMOTE_FOLDER(folder)->session) {
 		REMOTE_FOLDER(folder)->session =
 			news_session_new_for_folder(folder);
+		statusbar_pop_all();
 		return NNTP_SESSION(REMOTE_FOLDER(folder)->session);
 	}
 
@@ -188,6 +189,7 @@ NNTPSession *news_session_get(Folder *folder)
 			news_session_new_for_folder(folder);
 	}
 
+	statusbar_pop_all();
 	return NNTP_SESSION(REMOTE_FOLDER(folder)->session);
 }
 
@@ -239,6 +241,7 @@ GSList *news_get_article_list(Folder *folder, FolderItem *item,
 gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 {
 	gchar *path, *filename;
+	NNTPSession *session;
 	gint ok;
 
 	g_return_val_if_fail(folder != NULL, NULL);
@@ -256,13 +259,14 @@ gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 		return filename;
 	}
 
-	if (!REMOTE_FOLDER(folder)->session) {
+	session = news_session_get(folder);
+	if (!session) {
 		g_free(filename);
 		return NULL;
 	}
 
-	ok = news_select_group(NNTP_SESSION(REMOTE_FOLDER(folder)->session),
-			       item->path);
+	ok = news_select_group(session, item->path);
+	statusbar_pop_all();
 	if (ok != NN_SUCCESS) {
 		g_warning(_("can't select group %s\n"), item->path);
 		g_free(filename);
@@ -284,6 +288,89 @@ gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 
 void news_scan_group(Folder *folder, FolderItem *item)
 {
+}
+
+GSList *news_get_group_list(Folder *folder)
+{
+	gchar *path, *filename;
+	FILE *fp;
+	GSList *list = NULL;
+	GSList *last = NULL;
+	gchar buf[NNTPBUFSIZE];
+
+	g_return_val_if_fail(folder != NULL, NULL);
+	g_return_val_if_fail(folder->type == F_NEWS, NULL);
+
+	path = folder_item_get_path(FOLDER_ITEM(folder->node->data));
+	filename = g_strconcat(path, G_DIR_SEPARATOR_S, NEWSGROUP_LIST, NULL);
+	g_free(path);
+
+	if ((fp = fopen(filename, "r")) == NULL) {
+		NNTPSession *session;
+
+		session = news_session_get(folder);
+		if (!session) {
+			g_free(filename);
+			return NULL;
+		}
+
+		if (nntp_list(session->nntp_sock) != NN_SUCCESS) {
+			g_free(filename);
+			statusbar_pop_all();
+			return NULL;
+		}
+		statusbar_pop_all();
+		if (recv_write_to_file(SESSION(session)->sock, filename) < 0) {
+			log_warning(_("can't retrieve newsgroup list\n"));
+			g_free(filename);
+			return NULL;
+		}
+
+		if ((fp = fopen(filename, "r")) == NULL) {
+			FILE_OP_ERROR(filename, "fopen");
+			g_free(filename);
+			return NULL;
+		}
+	}
+
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		gchar *p = buf;
+		while (*p != '\0' && *p != ' ') p++;
+		*p = '\0';
+		if (!last)
+			last = list = g_slist_append(NULL, g_strdup(buf));
+		else {
+			last = g_slist_append(last, g_strdup(buf));
+			last = last->next;
+		}
+	}
+
+	fclose(fp);
+	g_free(filename);
+
+	list = g_slist_sort(list, (GCompareFunc)g_strcasecmp);
+
+	statusbar_pop_all();
+
+	return list;
+}
+
+void news_remove_group_list(Folder *folder)
+{
+	gchar *path, *filename;
+
+	g_return_if_fail(folder != NULL);
+	g_return_if_fail(folder->type == F_NEWS);
+
+	path = folder_item_get_path(FOLDER_ITEM(folder->node->data));
+	filename = g_strconcat(path, G_DIR_SEPARATOR_S, NEWSGROUP_LIST, NULL);
+	g_free(path);
+
+	if (is_file_exist(filename)) {
+		if (remove(filename) < 0)
+			FILE_OP_ERROR(filename, "remove");
+	}
+	g_free(filename);
 }
 
 gint news_post(Folder *folder, const gchar *file)
@@ -586,7 +673,6 @@ static MsgInfo *news_parse_xover(const gchar *xover_str)
 
 static gchar *news_parse_xhdr(const gchar *xhdr_str, MsgInfo *msginfo)
 {
-	gchar buf[NNTPBUFSIZE];
 	gchar *p;
 	gchar *tmp;
 	gint num;
@@ -660,93 +746,4 @@ static void news_delete_all_articles(FolderItem *item)
 	g_free(dir);
 
 	debug_print(_("done.\n"));
-}
-
-/*
-  news_get_group_list returns a strings list.
-  These strings are the names of the newsgroups of a server.
-  item is the FolderItem of the news server.
-  The names of the newsgroups are cached into a file so that
-  when the function is called again, there is no need to make
-  a request to the server.
- */
-
-GSList * news_get_group_list(FolderItem *item)
-{
-	gchar *path, *filename;
-	gint ok;
-	NNTPSession *session;
-	GSList * group_list = NULL;
-	FILE * f;
-	gchar buf[NNTPBUFSIZE];
-	int len;
-
-	if (item == NULL)
-	  return NULL;
-
-	path = folder_item_get_path(item);
-
-	if (!is_dir_exist(path))
-		make_dir_hier(path);
-
-	filename = g_strconcat(path, G_DIR_SEPARATOR_S, GROUPLIST_FILE, NULL);
-	g_free(path);
-
-	session = news_session_get(item->folder);
-
-	if (session == NULL)
-	  return NULL;
-
-	if (is_file_exist(filename)) {
-		debug_print(_("group list has been already cached.\n"));
-	}
-	else {
-	    ok = nntp_list(session->nntp_sock);
-	    if (ok != NN_SUCCESS)
-	      return NULL;
-	    
-	    if (recv_write_to_file(SESSION(session)->sock, filename) < 0) {
-	      log_warning(_("can't retrieve group list\n"));
-	      return NULL;
-	    }
-	}
-
-	f = fopen(filename, "r");
-	while (fgets(buf, NNTPBUFSIZE, f)) {
-	    char * s;
-
-	    len = 0;
-	    while ((buf[len] != 0) && (buf[len] != ' '))
-	      len++;
-	    buf[len] = 0;
-	    s = g_strdup(buf);
-
-	    group_list = g_slist_append(group_list, s);
-	}
-	fclose(f);
-	g_free(filename);
-
-	group_list = g_slist_sort(group_list, (GCompareFunc) g_strcasecmp);
-
-	return group_list;
-}
-
-/*
-  remove the cache file of the names of the newsgroups.
- */
-
-void news_reset_group_list(FolderItem *item)
-{
-	gchar *path, *filename;
-
-	debug_print(_("\tDeleting cached group list... "));
-	path = folder_item_get_path(item);
-	if (!is_dir_exist(path))
-		make_dir_hier(path);
-
-	filename = g_strconcat(path, G_DIR_SEPARATOR_S, GROUPLIST_FILE, NULL);
-	g_free(path);
-	if (remove(filename) != 0)
-	  log_warning(_("can't delete cached group list %s\n"), filename);
-	g_free(filename);
 }

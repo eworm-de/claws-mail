@@ -52,10 +52,10 @@ gchar *news_fetch_msg			(Folder		*folder,
 void news_scan_group			(Folder		*folder,
 					 FolderItem	*item);
 
+GSList *news_get_group_list		(Folder		*folder);
+void news_remove_group_list		(Folder		*folder);
+
 gint news_post				(Folder		*folder,
 					 const gchar	*file);
-
-GSList * news_get_group_list(FolderItem *item);
-void news_reset_group_list();
 
 #endif /* __NEWS_H__ */

@@ -339,7 +339,7 @@ static gint send_message_smtp(GSList *to_list, const gchar *from,
 
 		gettimeofday(&tv_cur, NULL);
 		if (tv_cur.tv_sec - tv_prev.tv_sec > 0 ||
-		    tv_cur.tv_usec - tv_prev.tv_usec > 10000) {
+		    tv_cur.tv_usec - tv_prev.tv_usec > UI_REFRESH_INTERVAL) {
 			g_snprintf(str, sizeof(str),
 				   _("Sending message (%d / %d bytes)"),
 				   bytes, size);

@@ -1,6 +1,6 @@
 	Sylpheed - GTK+ ベースの軽量で高速な電子メールクライアント
 
-   Copyright(C) 1999,2000 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>
+   Copyright(C) 1999-2001 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -42,10 +42,10 @@ What's Sylpheed
 
 SylpheedはGTK+を使用した、X Window System上で動作する
 
- * 軽快な動作
- * 美しく、洗練されたインタフェース
- * 容易な設定・直観的な操作
- * 豊富な機能
+  * 軽快な動作
+  * 美しく、洗練されたインタフェース
+  * 容易な設定・直観的な操作
+  * 豊富な機能
 
 を目指した電子メールクライアント(& ニュースリーダー)です。
 
@@ -64,6 +64,7 @@ SylpheedはGTK+を使用した、X Window System上で動作する
 	o キーボードのみによる操作が可能
 	o Mew/Wanderlust ライクなキーバインド (通常使われるキーの大部分は
 	  実装済)
+	o IMAP4rev1 対応
 	o マルチパート MIME
 	o 画像表示機能を内蔵
 	o X-Face 対応
@@ -81,14 +82,13 @@ SylpheedはGTK+を使用した、X Window System上で動作する
 	o IPv6 対応
 	o GnuPG 対応 (現在実装中)
 	o マルチスレッド対応 (実験的)
-	o mbox ファイルのインポート
+	o mbox ファイルのインポート / エクスポート
 	o ドラッグ & ドロップ (一部実装)
 	o 高速なスレッド表示
 	o 高速なメッセージ処理
 	o 低消費リソース
 	o 容易にカスタマイズできる設定
 	o automake + autoconf と gettext によるメッセージの国際化に対応
-	o IMAP4 対応 (現在実装中)
 
 Windows 上のメーラ、あるいは Mew や Wanderlust を使用したことのある人なら
 すぐに使い方は分かると思います。

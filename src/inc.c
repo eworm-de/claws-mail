@@ -99,6 +99,7 @@ static gint connection_check_cb		(Automaton	*atm);
 #endif
 
 static void inc_pop3_recv_func		(SockInfo	*sock,
+					 gint		 count,
 					 gint		 read_bytes,
 					 gpointer	 data);
 
@@ -664,7 +665,6 @@ static IncState inc_pop3_session_do(IncSession *session)
 		SSL_free(sockinfo->ssl);
 	}
 #endif
-
 	automaton_destroy(atm);
 
 	return pop3_state->inc_state;
@@ -788,7 +788,8 @@ static gint connection_check_cb(Automaton *atm)
 }
 #endif
 
-static void inc_pop3_recv_func(SockInfo *sock, gint read_bytes, gpointer data)
+static void inc_pop3_recv_func(SockInfo *sock, gint count, gint read_bytes,
+			       gpointer data)
 {
 	gchar buf[MSGBUFSIZE];
 	IncSession *session = (IncSession *)data;

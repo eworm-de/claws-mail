@@ -25,6 +25,7 @@
 #include "socket.h"
 
 typedef void (*RecvUIFunc)	(SockInfo	*sock,
+				 gint		 count,
 				 gint		 read_bytes,
 				 gpointer	 data);
 

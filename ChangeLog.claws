@@ -1,3 +1,9 @@
+2001-07-15 [alfons]
+
+	0.5.1claws2
+	
+	sync with Hiroyuki's 0.5.0cvs2-3
+
 2001-07-15 [christoph]
 
 	* src/procmsg.c

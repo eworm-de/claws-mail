@@ -1,3 +1,63 @@
+2001-07-15
+
+	* README
+	  README.jp
+	  INSTALL
+	  INSTALL.jp
+	  TODO
+	  TODO.jp: 更新。
+	* src/grouplistdialog.c: grouplist_dialog_set_list(): ニュース
+	  グループのリストを受信中に UI を更新するようにした。
+	  grouplist_dialog_create(): エントリウィジェットとステータスラベル
+	  を追加。
+	  grouplist_recv_func(): 新規。
+	  refresh_clicked(): 排他ロック変数を追加。
+	  clist_selected(): CList が選択されたらテキストエントリをセットする
+	  ようにした。 group_clist_select() から改名。
+	  entry_activated(): 新規。
+	  grouplist_clear(): grouplist_free() から改名。リストとエントリ
+	  ウィジェットもクリアするようにした。
+	* src/news.c: news_get_group_list(): リストの追加を高速化
+	  (g_slist_append() はリストのサイズが大きくなると非常に遅くなる)。
+	* src/defs.h: UI_REFRESH_INTERVAL の定義を追加。
+	  NEWSGROUP_LIST の定義を変更。
+	* src/recv.c: recv_write()
+	  src/send.c: send_message_smtp(): UI の更新間隔を UI_REFRESH_INTERVAL
+	  (50msec) に変更。
+	* src/account.c: account_add(): ニュースアカウントを追加したときに
+	  フォルダツリーを更新していなかったバグを修正。
+	* src/grouplistdialog.c: 排他ロック変数をグローバルにし、
+	  grouplist_dialog_set_list() でロックするようにした。
+
+2001-07-15
+
+	* src/grouplistdialog.c: ok_clicked(), cancel_clicked():
+	  gtk_main_level() が 1 ならメインループを抜けないようにした。
+	  grouplist_dialog_set_list(): リストの追加中に CList をフリーズ
+	  するようにした。
+	  grouplist_dialog(): リストを更新する前にダイアログを表示する
+	  ようにした。
+
+2001-07-14
+
+	* src/folder.c: folder_write_list_recursive(): ノードが子を持って
+	  いれば `collapsed' 属性を追加するようにした。
+	* src/grouplistdialog.[ch]: 新規。ニュースグループを一覧から選択
+	  可能。
+	* src/news.[ch]
+	  news_get_group_list(): 新規。ニュースグループのリストを返す。
+	  news_remove_group_list(): 新規。ニュースグループリストのキャッシュ
+	  を削除する。
+	* src/folderview.c: folderview_new_news_group_cb(): input_dialog()
+	  の代わりに grouplist_dialog() を呼ぶようにした。
+
+2001-07-12
+
+	* autogen.sh: 修正。
+	* src/folder.[ch]
+	  src/folderview.c: フォルダの開閉状態が保存されるようにした
+	  (Alfons さん thanks)。
+
 2001-07-06
 
 	* version 0.5.0

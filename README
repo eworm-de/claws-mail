@@ -1,6 +1,6 @@
 	Sylpheed - a GTK+ based, lightweight, and fast e-mail client
 
-   Copyright(C) 1999,2000 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>
+   Copyright(C) 1999-2001 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -25,10 +25,10 @@ What's Sylpheed
 Sylpheed is an e-mail client (and news reader) based on GTK+, running on
 X Window System, and aiming for
 
- * Quick response
- * Graceful, and sophisticated interface
- * Easy configuration, intuitive operation
- * Abundant features
+  * Quick response
+  * Graceful, and sophisticated interface
+  * Easy configuration, intuitive operation
+  * Abundant features
 
 The appearance and interface are similar to some popular e-mail clients for
 Windows, such as Outlook Express, Becky!, and Datula. The interface is also
@@ -47,6 +47,7 @@ Currently implemented features are:
 	o ability of keyboard-only operation
 	o Mew/Wanderlust-like key bind (most of normally used keys have been
 	  implemented)
+	o IMAP4rev1 support
 	o multipart MIME
 	o built-in image view
 	o X-Face support
@@ -64,7 +65,7 @@ Currently implemented features are:
 	o IPv6 support
 	o GnuPG support (currently implementing)
 	o multithread support (experimental)
-	o mbox importing
+	o mbox importing / exporting
 	o drag & drop (partially implemented)
 	o fast thread display
 	o high-speed message processing
@@ -72,7 +73,6 @@ Currently implemented features are:
 	o easily customizable configuration
 	o supports automake + autoconf, and internationalization of message
 	  by gettext
-	o IMAP4 support (currently implementing)
 
 You'll figure out the usage if you have used a mailer on Windows, or
 Mew or Wanderlust.

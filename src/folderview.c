@@ -43,6 +43,7 @@
 #include "folderview.h"
 #include "summaryview.h"
 #include "inputdialog.h"
+#include "grouplistdialog.h"
 #include "manage_window.h"
 #include "alertpanel.h"
 #include "menu.h"
@@ -53,7 +54,6 @@
 #include "prefs_account.h"
 #include "account.h"
 #include "folder.h"
-#include "grouplist_dialog.h"
 
 #include "pixmaps/inbox.xpm"
 #include "pixmaps/outbox.xpm"
@@ -1927,7 +1927,7 @@ static void folderview_new_news_group_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item->folder->type == F_NEWS);
 	g_return_if_fail(item->folder->account != NULL);
 
-	new_group = grouplist_dialog(item);
+	new_group = grouplist_dialog(item->folder);
 	if (!new_group) return;
 
 	if (GTK_CTREE_ROW(folderview->selected)->parent != NULL)

@@ -1,3 +1,59 @@
+2001-07-15
+
+	* README
+	  README.jp
+	  INSTALL
+	  INSTALL.jp
+	  TODO
+	  TODO.jp: updated.
+	* src/grouplistdialog.c: grouplist_dialog_set_list(): update UI
+	  while retrieving newsgroup list.
+	  grouplist_dialog_create(): added entry widget and status label.
+	  grouplist_recv_func(): new.
+	  refresh_clicked(): added exclusive lock variable.
+	  clist_selected(): set text entry when the CList is selected.
+	  renamed from group_clist_select().
+	  entry_activated(): new.
+	  grouplist_clear(): renamed from grouplist_free(). Also clears
+	  list and entry widget.
+	* src/news.c: news_get_group_list(): sped up the list appending
+	  (g_slist_append() becomes very slow if list size is large).
+	* src/defs.h: added UI_REFRESH_INTERVAL definition.
+	  Changed the definition of NEWSGROUP_LIST.
+	* src/recv.c: recv_write()
+	  src/send.c: send_message_smtp(): changed the UI refresh interval
+	  to UI_REFRESH_INTERVAL (50msec).
+	* src/account.c: account_add(): fixed a bug that didn't update
+	  folder tree when a news account was added.
+	* src/grouplistdialog.c: made exclusive lock variable global, and
+	  lock at grouplist_dialog_set_list().
+
+2001-07-15
+
+	* src/grouplistdialog.c: ok_clicked(), cancel_clicked(): don't
+	  quit main loop if gtk_main_level() is 1.
+	  grouplist_dialog_set_list(): freeze CList while appending the list.
+	  grouplist_dialog(): show dialog before updating the list.
+
+2001-07-14
+
+	* src/folder.c: folder_write_list_recursive(): add the attribute
+	  `collapsed' if a node have some children.
+	* src/grouplistdialog.[ch]: new. Newsgroups can be selected from
+	  the list.
+	* src/news.[ch]:
+	  news_get_group_list(): new. It returns newsgroup list.
+	  news_remove_group_list(): new. It removes newsgroup list cache.
+	* src/folderview.c: folderview_new_news_group_cb(): call
+	  grouplist_dialog() instead of input_dialog().
+
+2001-07-12
+
+	* autogen.sh: modified.
+	* src/folder.[ch]
+	  src/folderview.c: made expand/collapse state of folders persistent
+	  (thanks to Alfons).
+
 2001-07-06
 
 	* version 0.5.0
