@@ -1,3 +1,20 @@
+2004-07-16 [paul]	0.9.12cvs25
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/account.c
+	* src/account.h
+	* src/folder_item_prefs.c
+	* src/main.c
+	* src/pop.c
+	* src/pop.h
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_gtk.c
+	* src/prefs_gtk.h
+
 2004-07-15 [colin]	0.9.12cvs24
 
 	* src/folder.c
