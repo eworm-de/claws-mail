@@ -30,6 +30,7 @@
 #include "gtkutils.h"
 
 typedef struct _PrefsWindow PrefsWindow;
+typedef struct _PrefsTreeNode PrefsTreeNode;
 
 struct _PrefsWindow
 {
@@ -53,14 +54,24 @@ struct _PrefsWindow
 	GSList	  *prefs_pages;
 };
 
+struct _PrefsTreeNode
+{
+	PrefsPage *page;
+	gfloat     treeweight;
+};
+
 static gboolean ctree_select_row(GtkCTree *ctree, GList *node, gint column, gpointer user_data)
 {
+	PrefsTreeNode *prefsnode;
 	PrefsPage *page;
 	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
 	gchar *labeltext;
 	gint pagenum;
 
-	page = (PrefsPage *) gtk_ctree_node_get_row_data(GTK_CTREE(ctree), GTK_CTREE_NODE(node));
+	prefsnode = gtk_ctree_node_get_row_data(GTK_CTREE(ctree), GTK_CTREE_NODE(node));
+	page = prefsnode->page;
+
+	debug_print("%f\n", prefsnode->treeweight);
 
 	if (page == NULL) {
 		gtk_label_set_text(GTK_LABEL(prefswindow->pagelabel), "");
@@ -181,6 +192,19 @@ static gboolean find_child_by_name(GtkCTree *ctree, GtkCTreeNode *node, struct n
 	return FALSE;
 }
 
+gint compare_func(GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
+{
+	PrefsTreeNode *prefsnode1 = ((GtkCListRow *)ptr1)->data;;
+	PrefsTreeNode *prefsnode2 = ((GtkCListRow *)ptr2)->data;;
+
+	if (prefsnode1 == NULL || prefsnode2 == NULL)
+		return 0;
+
+	return prefsnode1->treeweight > prefsnode2->treeweight ? -1 : 
+	       prefsnode1->treeweight < prefsnode2->treeweight ?  1 : 
+							          0;
+}
+
 void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data)
 {
 	static gchar *titles [1];
@@ -245,6 +269,7 @@ void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data)
 		gchar *text[2], **split, *part;
 		int i;
 		struct name_search name_search;
+		PrefsTreeNode *prefsnode;
 
 		split = g_strsplit(page->path, "/", 0);
 		for (i = 0; split[i] != NULL; i++) {
@@ -259,10 +284,23 @@ void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data)
 			} else {
 				text[0] = part;
 				node = gtk_ctree_insert_node(GTK_CTREE(prefswindow->ctree), node, NULL, text, 0, NULL, NULL, NULL, NULL, FALSE, TRUE);
+
+				prefsnode = g_new0(PrefsTreeNode, 1);
+				prefsnode->treeweight = 0.0;
+				gtk_ctree_node_set_row_data_full(GTK_CTREE(prefswindow->ctree), node, prefsnode, g_free);
 			}
 		}
 		g_strfreev(split);
-		gtk_ctree_node_set_row_data(GTK_CTREE(prefswindow->ctree), node, page);
+
+		prefsnode = (PrefsTreeNode *) GTK_CTREE_ROW(node)->row.data;
+		prefsnode->page = page;
+
+		for (; node != NULL; node = GTK_CTREE_ROW(node)->parent) {
+			PrefsTreeNode *curnode = (PrefsTreeNode *) GTK_CTREE_ROW(node)->row.data;
+
+			if (page->weight > curnode->treeweight)
+				curnode->treeweight = page->weight;
+		}
 	}
 	gtk_signal_connect(GTK_OBJECT(prefswindow->ctree), "tree-select-row", GTK_SIGNAL_FUNC(ctree_select_row), prefswindow);
 
@@ -274,6 +312,8 @@ void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data)
 	gtk_clist_set_column_width(GTK_CLIST(prefswindow->ctree), 0, optsize);
 	gtk_clist_set_column_min_width(GTK_CLIST(prefswindow->ctree), 0, optsize);
 	gtk_clist_set_column_max_width(GTK_CLIST(prefswindow->ctree), 0, optsize);
+	gtk_clist_set_compare_func(GTK_CLIST(prefswindow->ctree), compare_func);
+	gtk_ctree_sort_recursive(GTK_CTREE(prefswindow->ctree), NULL);
 
 	gtkut_button_set_create(&prefswindow->confirm_area,
 				&prefswindow->ok_btn,		_("OK"),

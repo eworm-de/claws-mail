@@ -34,6 +34,7 @@ struct _PrefsPage
 	gchar 			*path;
 	gboolean		 page_open;
 	GtkWidget		*widget;
+	gfloat			 weight;
 
 	PrefsCreateWidgetFunc	 create_widget;
 	PrefsDestroyWidgetFunc	 destroy_widget;

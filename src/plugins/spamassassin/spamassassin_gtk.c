@@ -295,6 +295,7 @@ gint plugin_init(gchar **error)
 	spamassassin_page.page.create_widget = spamassassin_create_widget_func;
 	spamassassin_page.page.destroy_widget = spamassassin_destroy_widget_func;
 	spamassassin_page.page.save_page = spamassassin_save_func;
+	spamassassin_page.page.weight = 35.0;
 
 	prefs_gtk_register_page((PrefsPage *) &spamassassin_page);
 
