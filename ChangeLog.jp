@@ -1,3 +1,28 @@
+2003-02-04
+
+	* src/procmsg.h: WRITE_CACHE_DATA(): 速度を少し向上(Colin Leroy
+	  さん thanks)。
+	* src/mh.c: mh_get_msginfo(): NULL チェックを追加(Thorsten Maerz
+	  さん thanks)。
+
+2003-02-03
+
+	* src/textview.c: textview_write_line(): conv が NULL の場合は
+	  変換しないようにした。
+
+2003-02-03
+
+	* src/codeconv.[ch]:
+	  conv_guess_encoding() を conv_guess_ja_encoding() に変更。
+	  conv_localetodisp(): 新規。(仮定された)現在の locale 文字列から
+	  表示不可な文字を削除する。
+	  conv_codeset_strdup(): dest_code が NULL でかつ現在の locale
+	  エンコーディングが US-ASCII ならば ISO-8859-1 に変換するようにした。
+	  conv_get_code_conv_func(): 変換先文字コードに US-ASCII が指定され
+	  ていれば conv_ustodisp を返すようにした。
+	* src/textview.c: textview_write_line(): 変換に失敗した場合は
+	  strncpy2() の代わりに conv_localetodisp() を使用。
+
 2003-01-31
 
 	* src/codeconv.c: conv_iconv_strdup()

@@ -700,7 +700,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	Pop3State *pop3_state = session->pop3_state;
 	IncProgressDialog *inc_dialog = (IncProgressDialog *)session->data;
 	Automaton *atm;
-	SockInfo *sockinfo;
+	SockInfo *sockinfo = NULL;
 	gint i;
 	gchar *server;
 	gushort port;
@@ -772,13 +772,16 @@ static IncState inc_pop3_session_do(IncSession *session)
 	statusbar_verbosity_set(TRUE);
 	buf = g_strdup_printf(_("Connecting to POP3 server: %s ..."), server);
 	log_message("%s\n", buf);
-	statusbar_verbosity_set(FALSE);
 
 	progress_dialog_set_label(inc_dialog->dialog, buf);
 	g_free(buf);
 	GTK_EVENTS_FLUSH();
 
-	if ((sockinfo = sock_connect(server, port)) == NULL) {
+	sockinfo = sock_connect(server, port);
+
+	statusbar_verbosity_set(FALSE);
+
+	if (sockinfo == NULL) {
 		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
 			    server, port);
 		if(!prefs_common.no_recv_err_panel) {

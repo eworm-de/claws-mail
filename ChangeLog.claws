@@ -1,3 +1,24 @@
+2003-02-04 [colin]	0.8.9claws38
+
+	* src/inc.c
+		_really_ fix this Connecting... status
+
+2003-02-04 [paul]	0.8.9claws37
+
+	* sync with 0.8.10
+		see ChangeLog 2003-02-04
+
+2003-02-04 [paul]	0.8.9claws36
+
+	* sync with 0.8.9cvs6
+		see ChangeLog 2003-02-03
+
+2003-02-04 [paul]	0.8.9claws35
+
+	* po/pt_BR.po
+		updated by André Filipe de Assunção e Brito 
+		<bedecko@netsite.com.br>
+
 2003-02-03 [thorsten]	0.8.9claws34
 
 	* po/de.po

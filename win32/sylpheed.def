@@ -496,11 +496,12 @@ EXPORTS
 	conv_get_current_locale 
 	conv_get_outgoing_charset 
 	conv_get_outgoing_charset_str 
-	conv_guess_encoding 
+	conv_guess_ja_encoding 
 	conv_iconv_strdup 
 	conv_jistodisp 
 	conv_jistoeuc 
 	conv_latintodisp 
+	conv_localetodisp 
 	conv_mb_alnum 
 	conv_noconv 
 	conv_sjistodisp 
