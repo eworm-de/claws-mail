@@ -1167,7 +1167,7 @@ static void prefs_filtering_action_select(GtkList *list,
 		gtk_widget_hide(filtering.dest_btn);
 		gtk_widget_hide(filtering.dest_label);
 		gtk_widget_show(filtering.exec_label);
-		gtk_widget_set_sensitive(filtering.exec_btn, FALSE);
+		gtk_widget_set_sensitive(filtering.exec_btn, TRUE);
 		gtk_widget_show(filtering.exec_btn);
 		gtk_widget_hide(filtering.color_optmenu);
 		gtk_widget_hide(filtering.color_label);

@@ -2,6 +2,8 @@
 
 	* src/imap.c
 		clean up warnings "returning value for void function" 
+	* src/prefs_filtering.c
+		make info button for execute action sensitive
 
 2001-12-10 [paul]	0.6.5claws71
 
