@@ -70,6 +70,7 @@ void folderview_update_msg_num		(FolderView	*folderview,
 void folderview_rescan_tree		(Folder		*folder);
 void folderview_rescan_all		(void);
 void folderview_check_new		(Folder		*folder);
+void folderview_check_new_all		();
 
 void folderview_update_item		(FolderItem	*item,
 					 gboolean	 update_summary);

@@ -1841,8 +1841,7 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 							if (folder_item->prefs && folder_item->prefs->enable_default_account)
 								account = account_find_from_id(folder_item->prefs->default_account);
 						}
-						compose_new_with_recipient
-							(account, uri->uri + 7);
+						compose_new(account, uri->uri + 7, NULL);
 					}
 				} else {
 					open_uri(uri->uri,

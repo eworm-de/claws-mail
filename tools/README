@@ -188,6 +188,29 @@
 
 -----------------------------------------------------------------------
 
+* OOo2sylpheed.pl
+
+  WHAT IT DOES
+  
+  This perl script enables OpenOffice.org to send documents to sylpheed
+  as attachments.
+
+  HOW TO USE IT
+  
+  Start up OpenOffice.org.
+  Go to 'Tools/Options/OpenOffice.org/External Programs'
+  Enter the path to this script in the 'Program' box
+  or select it by clicking on the '...' button.
+
+  You can then use 'File/Send/Document as email' to launch sylpheed
+  (if not already launched) and open a new compose window with the
+  document attached.
+
+  Tested with OpenOffice.org version 1.0
+  Any questions, comments or problems, contact Paul <claws@thewildbeast.co.uk>
+
+-----------------------------------------------------------------------
+
 * sylpheed-switcher
 
   WHAT IT DOES

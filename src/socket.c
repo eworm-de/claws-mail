@@ -53,6 +53,12 @@
 #error USE_GIO is currently not supported
 #endif
 
+#ifdef WIN32 /* from Winsock2.h */
+# define SD_RECEIVE      0x00
+# define SD_SEND         0x01
+# define SD_BOTH         0x02
+#endif
+ 
 #define BUFFSIZE	8192
 
 static gint sock_connect_with_timeout	(gint			 sock,
@@ -751,6 +757,9 @@ gint sock_close(SockInfo *sock)
 	if (sock->ssl)
 		ssl_done_socket(sock);
 #endif
+#ifdef WIN32
+	shutdown(sock->sock,SD_SEND); /* complete transfer before close */
+#endif 
 	ret = fd_close(sock->sock); 
 	g_free(sock->hostname);
 	g_free(sock);

@@ -1,3 +1,22 @@
+2002-07-31
+
+	* src/prefs_actions.c: made the action's input/output dialog display
+	  without delay. Made the dialog modal instead of making window
+	  insensitive. Also cleaned up its UI.
+
+2002-07-29
+
+	* implemented --attach command line option.
+	* src/main.c:
+	  Cmd::attach_files: new member to store file paths.
+	  parse_cmd_opt(): added --attach option. --compose option is implied.
+	  prohibit_duplicate_launch()
+	  lock_socket_input_cb(): added "compose_attach" message.
+	* src/compose.c
+	  src/mainwindow.c
+	  src/textview.c: renamed compose_new_with_recipient() to
+	  compose_new(), and added an argument for attachment files.
+
 2002-07-29
 
 	* src/logwindow.c: freeze GtkText widget while hidden.

@@ -58,8 +58,6 @@
 #include "gtkstext.h"
 #include "mimeview.h"
 
-#define WAIT_LAP 10000
-
 typedef enum
 {
 	ACTION_NONE 	= 1 << 0,
@@ -96,11 +94,10 @@ struct _Children
 	GtkWidget	*input_entry;
 	GtkWidget	*input_hbox;
 	GtkWidget	*abort_btn;
-	GtkWidget	*hide_btn;
+	GtkWidget	*close_btn;
 	GtkWidget	*scrolledwin;
 
 	gchar		*action;
-	guint		 timer;
 	GSList		*list;
 	gint		 nb;
 	gint		 open_in;
@@ -202,7 +199,6 @@ static void free_children		(Children	*children);
 static void childinfo_close_pipes	(ChildInfo	*child_info);
 
 static void create_io_dialog		(Children	*children);
-
 static void update_io_dialog		(Children	*children);
 
 static void hide_io_dialog_cb		(GtkWidget	*widget,
@@ -1170,10 +1166,6 @@ static gboolean execute_actions(gchar *action, GtkWidget *window,
 			return FALSE; /* ERR: pipe and no displayed text */
 	}
 
-	if (!(action_type & ACTION_ASYNC) && window) {
-		gtk_widget_set_sensitive(window, FALSE);
-	}
-
 	children = g_new0(Children, 1);
 
 	if (action_type & ACTION_SINGLE) {
@@ -1221,11 +1213,8 @@ static gboolean execute_actions(gchar *action, GtkWidget *window,
 	if (!children_list) {
 		 /* If not waiting for children, return */
 		g_free(children);
-		if (!(action_type & ACTION_ASYNC) && window) {
-			gtk_widget_set_sensitive(window, TRUE);
-		}
 #ifdef WIN32
-			return is_ok;
+		return is_ok;
 #endif
 	} else {
 		GSList *cur;
@@ -1249,12 +1238,9 @@ static gboolean execute_actions(gchar *action, GtkWidget *window,
 					      catch_status, child_info);
 #endif
 		}
-		children->timer = children->open_in ? 0 :
-				  gtk_timeout_add(WAIT_LAP, wait_for_children,
-						  children);
 	}
-	if (children->open_in)
-		create_io_dialog(children);
+
+	create_io_dialog(children);
 
 	return is_ok;
 }
@@ -1546,14 +1532,6 @@ static gint wait_for_children(gpointer data)
 		cur = cur->next;
 	}
 
-	if (!children->dialog && 
-	    (new_output || children->timer))
-		create_io_dialog(children);
-
-	if (children->timer) {
-		gtk_timeout_remove(children->timer);
-		children->timer = 0;
-	}
 	children->output |= new_output;
 
 	if (new_output || (children->dialog && (nb != children->nb)))
@@ -1563,11 +1541,11 @@ static gint wait_for_children(gpointer data)
 		return FALSE;
 
 	if (!children->dialog) {
-		gtk_widget_set_sensitive(children->window, TRUE);
 		free_children(children);
 	} else if (!children->output) {
 		gtk_widget_destroy(children->dialog);
 	}
+
 	return FALSE;
 }
 
@@ -1600,7 +1578,6 @@ static void hide_io_dialog_cb(GtkWidget *w, gpointer data)
 	Children *children = (Children *)data;
 
 	if (!children->nb) {
-		gtk_widget_set_sensitive(children->window, TRUE);
 		gtk_signal_disconnect_by_data(GTK_OBJECT(children->dialog),
 					      children);
 		gtk_widget_destroy(children->dialog);
@@ -1655,8 +1632,7 @@ static void update_io_dialog(Children *children)
 
 	if (!children->nb) {
 		gtk_widget_set_sensitive(children->abort_btn, FALSE);
-		gtk_widget_set_sensitive(children->hide_btn, TRUE);
-		gtk_widget_set_sensitive(children->window, TRUE);
+		gtk_widget_set_sensitive(children->close_btn, TRUE);
 		if (children->input_hbox)
 			gtk_widget_set_sensitive(children->input_hbox, FALSE);
 	}
@@ -1696,6 +1672,7 @@ static void update_io_dialog(Children *children)
 static void create_io_dialog(Children *children)
 {
 	GtkWidget *dialog;
+	GtkWidget *vbox;
 	GtkWidget *entry = NULL;
 	GtkWidget *input_hbox = NULL;
 	GtkWidget *send_button;
@@ -1704,32 +1681,37 @@ static void create_io_dialog(Children *children)
 	GtkWidget *scrolledwin;
 	GtkWidget *hbox;
 	GtkWidget *abort_button;
-	GtkWidget *hide_button;
+	GtkWidget *close_button;
 
-	debug_print(_("Creating actions dialog\n"));
+	debug_print("Creating action IO dialog\n");
 
 	dialog = gtk_dialog_new();
-#ifdef WIN32
-	if (children->action)
-#endif
-	label = gtk_label_new(children->action);
-	gtk_misc_set_padding(GTK_MISC(label), 8, 8);
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE,
-			   FALSE, 0);
-
-	gtk_window_set_title(GTK_WINDOW(dialog), _("Actions' input/output"));
+	gtk_container_set_border_width
+		(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), 5);
+	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+	gtk_window_set_title(GTK_WINDOW(dialog), _("Action's input/output"));
+	gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
+	manage_window_set_transient(GTK_WINDOW(dialog));
 	gtk_signal_connect(GTK_OBJECT(dialog), "delete_event",
 			GTK_SIGNAL_FUNC(delete_io_dialog_cb), children);
 	gtk_signal_connect(GTK_OBJECT(dialog), "destroy",
 			GTK_SIGNAL_FUNC(hide_io_dialog_cb),
 			children);
 
+	vbox = gtk_vbox_new(FALSE, 8);
+	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), vbox);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 8);
+	gtk_widget_show(vbox);
+
+	label = gtk_label_new(children->action);
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+	gtk_widget_show(label);
+
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), scrolledwin, TRUE,
-			   TRUE, 0);
-	gtk_widget_set_usize(scrolledwin, 600, 200);
+	gtk_box_pack_start(GTK_BOX(vbox), scrolledwin, TRUE, TRUE, 0);
+	gtk_widget_set_usize(scrolledwin, 480, 200);
 	gtk_widget_hide(scrolledwin);
 
 	text = gtk_text_new(gtk_scrolled_window_get_hadjustment
@@ -1745,42 +1727,35 @@ static void create_io_dialog(Children *children)
 		gtk_widget_show(input_hbox);
 
 		entry = gtk_entry_new();
+		gtk_widget_set_usize(entry, 320, -1);
 		gtk_signal_connect(GTK_OBJECT(entry), "activate",
 				   GTK_SIGNAL_FUNC(send_input), children);
-		gtk_box_pack_start(GTK_BOX(input_hbox), entry, TRUE, TRUE, 8);
+		gtk_box_pack_start(GTK_BOX(input_hbox), entry, TRUE, TRUE, 0);
 		if (children->open_in & ACTION_HIDE_IN)
 			gtk_entry_set_visibility(GTK_ENTRY(entry), FALSE);
 		gtk_widget_show(entry);
 
-		send_button = gtk_button_new_with_label(_("Send"));
+		send_button = gtk_button_new_with_label(_(" Send "));
 		gtk_signal_connect(GTK_OBJECT(send_button), "clicked",
 				   GTK_SIGNAL_FUNC(send_input), children);
 		gtk_box_pack_start(GTK_BOX(input_hbox), send_button, FALSE,
-				   FALSE, 8);
+				   FALSE, 0);
 		gtk_widget_show(send_button);
 
-		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox),
-				input_hbox, FALSE, FALSE, 8);
+		gtk_box_pack_start(GTK_BOX(vbox), input_hbox, FALSE, FALSE, 0);
 		gtk_widget_grab_focus(entry);
 	}
 
-	hbox = gtk_hbox_new(TRUE, 0);
-	gtk_widget_show(hbox);
-
-	abort_button = gtk_button_new_with_label(_("Abort actions"));
+	gtkut_button_set_create(&hbox, &abort_button, _("Abort"),
+				&close_button, _("Close"), NULL, NULL);
 	gtk_signal_connect(GTK_OBJECT(abort_button), "clicked",
 			GTK_SIGNAL_FUNC(kill_children_cb), children);
-	gtk_box_pack_start(GTK_BOX(hbox), abort_button, TRUE, TRUE, 8);
-	gtk_widget_show(abort_button);
-
-	hide_button = gtk_button_new_with_label(_("Close window"));
-	gtk_signal_connect(GTK_OBJECT(hide_button), "clicked",
+	gtk_signal_connect(GTK_OBJECT(close_button), "clicked",
 			GTK_SIGNAL_FUNC(hide_io_dialog_cb), children);
-	gtk_box_pack_start(GTK_BOX(hbox), hide_button, TRUE, TRUE, 8);
-	gtk_widget_show(hide_button);
+	gtk_widget_show(hbox);
 
 	if (children->nb)
-		gtk_widget_set_sensitive(hide_button, FALSE);
+		gtk_widget_set_sensitive(close_button, FALSE);
 
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), hbox);
 
@@ -1790,7 +1765,7 @@ static void create_io_dialog(Children *children)
 	children->input_hbox  = children->open_in ? input_hbox : NULL;
 	children->input_entry = children->open_in ? entry : NULL;
 	children->abort_btn   = abort_button;
-	children->hide_btn    = hide_button;
+	children->close_btn   = close_button;
 
 	gtk_widget_show(dialog);
 }

@@ -84,21 +84,23 @@ o support of many code sets, including UTF\-8 (Unicode) (when using libjconv)
 This list is not complete.
 .SH "OPTIONS"
 .LP 
-\fBsylpheed \-\-compose\fR ["mailto:\fI%t\fR?subject=\fI%s\fR&cc=\fI%c\fR&body=\fI%b\fR"]
+\fB \-\-compose\fR [address]
 .br 
-\fBsylpheed \-\-receive\fR
+\fB \-\-attach file1 [file2]...\fR
 .br 
-\fBsylpheed \-\-receive\-all\fR
+\fB \-\-receive\fR
 .br 
-\fBsylpheed \-\-send\fR
+\fB \-\-receive\-all\fR
 .br 
-\fBsylpheed \-\-status\fR
+\fB \-\-send\fR
 .br 
-\fBsylpheed \-\-debug\fR
+\fB \-\-status\fR
 .br 
-\fBsylpheed \-\-help\fR
+\fB \-\-debug\fR
 .br 
-\fBsylpheed \-\-version\fR
+\fB \-\-help\fR
+.br 
+\fB \-\-version\fR
 .SH "FILES"
 .LP 
 .TP 
@@ -154,35 +156,40 @@ To run this program the standard way type:
 .LP 
 sylpheed
 .LP 
-Alternatively you can run it as:
+Alternatively you can run it with the following options:
 .TP 
-\fBsylpheed \-\-debug\fR
+\fB\-\-debug\fR
 for debug mode
 .TP 
-\fBsylpheed \-\-compose\fR 
+\fB\-\-compose [address]\fR 
 to open a Compose window
 .TP 
-\fBsylpheed \-\-compose\fR "mailto:\fI%t\fR?subject=\fI%s\fR&cc=\fI%c\fR&body=\fI%b\fR"
-this syntax can be used in web\-browsers and CLI to open pre\-populated Compose window
+\fB\-\-attach file1 [file2]...\fR
+open composition window with specified files attached
 .TP 
-\fBsylpheed \-\-receive\fR
+\fB\-\-compose\fR "mailto:\fI%t\fR?subject=\fI%s\fR&cc=\fI%c\fR&body=\fI%b\fR"
+this syntax can be used in web\-browsers and CLI to open a pre\-populated Compose window
+.TP 
+\fB\-\-receive\fR
 receive new messages
 .TP 
-\fBsylpheed \-\-receive\-all\fR
+\fB\-\-receive\-all\fR
 receive new messages from all accounts
 .TP 
-\fBsylpheed \-\-send\fR
+\fB\-\-send\fR
+.br 
 send all queued messages
 .TP 
-\fBsylpheed \-\-status\fR
+\fB\-\-status\fR
 show the total number of messages
 .br 
 [new][unread][total]
 .TP 
-\fBsylpheed \-\-help\fR
+\fB\-\-help\fR
+.br 
 display the help message and exit
 .TP 
-\fBsylpheed \-\-version\fR
+\fB\-\-version\fR
 display version number and exit
 .SH "INSTALLATION"
 .LP 
@@ -226,6 +233,8 @@ Alfons Hoogervorst	<alfons@proteus.demon.nl>
 Darko Koruga		<darko.koruga@hermes.si>
 .br 
 Colin Leroy		<colin@colino.net>
+.br 
+Thorsten Maerz		<torte@netztorte.de>
 .br 
 Paul Mangan		<claws@thewildbeast.co.uk>
 .br 

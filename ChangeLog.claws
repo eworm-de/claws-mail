@@ -1,3 +1,65 @@
+2002-07-31 [alfons]	0.8.1claws5
+
+	* src/main.c
+		check folder item and its path for NULL on
+		initial processing
+
+2002-07-31 [christoph]	0.8.1claws4
+
+	* src/folder.c
+		check if folder_item_get_msginfo in
+		folder_item_remove_msg returned NULL
+	* src/imap.c
+		better clear the uid cache in the
+		uid validity check function and delete
+		cached messages
+
+2002-07-31 [paul]	0.8.1claws3
+
+	* man/sylpheed.1
+		add the '--attach' option and a few other
+		minor changes
+
+2002-07-31 [paul]	0.8.1claws2
+
+	* sync with 0.8.1cvs5
+		see ChangeLog 2002-07-31
+
+2002-07-31 [christoph]	0.8.1claws1
+
+	* src/folderview.[ch]
+	* src/mainwindow.c
+		replace "Rescan all folders..." with
+		"Check all folders for new messages..."
+
+2002-07-30 [paul]	0.8.1claws
+
+	* version 0.8.1claws released
+
+2002-07-30 [paul]	0.8.0claws29
+
+	* tools/OOo2sylpheed.pl	** NEW FILE **
+	  tools/README
+		add script to enable sending documents as
+		attachments from OpenOffice.org
+
+2002-07-30 [melvin]	0.8.0claws28
+
+	* src/prefs_actions.c
+		Made the actions' input/output dialog display
+		without delay.
+
+2002-07-30 [christoph]	0.8.0claws27
+
+	* src/procmsg.c
+		check if folder_item_get_msginfo in
+		procmsg_save_to_outbox returned NULL
+
+2002-07-30 [paul]	0.8.0claws26
+
+	* sync with 0.8.1cvs4
+		see ChangeLog 2002-07-29
+
 2002-07-29 [thorsten]	0.8.0claws25
 
 	* README.claws

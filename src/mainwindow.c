@@ -470,7 +470,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_File"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Add mailbox..."),		NULL, add_mailbox_cb, 0, NULL},
 	{N_("/_File/_Add mbox mailbox..."),     NULL, add_mbox_cb, 0, NULL},
-	{N_("/_File/_Rescan folder tree"),	NULL, update_folderview_cb, 0, NULL},
+	{N_("/_File/_Check for new mails in all folders"),
+						NULL, update_folderview_cb, 0, NULL},
 	{N_("/_File/_Folder"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Folder/Create _new folder..."),
 						NULL, new_folder_cb, 0, NULL},
@@ -2557,7 +2558,7 @@ static void update_folderview_cb(MainWindow *mainwin, guint action,
 				 GtkWidget *widget)
 {
 	summary_show(mainwin->summaryview, NULL);
-	folderview_rescan_all();
+	folderview_check_new_all();
 }
 
 static void new_folder_cb(MainWindow *mainwin, guint action,
@@ -2865,8 +2866,9 @@ static void compose_news_cb(MainWindow *mainwin, guint action,
 	if (mainwin->summaryview->folder_item) {
 		ac = mainwin->summaryview->folder_item->folder->account;
 		if (ac && ac->protocol == A_NNTP) {
-			compose_new_with_recipient
-				(ac, mainwin->summaryview->folder_item->path);
+			compose_new(ac,
+				    mainwin->summaryview->folder_item->path,
+				    NULL);
 			return;
 		}
 	}
@@ -2875,7 +2877,7 @@ static void compose_news_cb(MainWindow *mainwin, guint action,
 	for(cur = list ; cur != NULL ; cur = g_list_next(cur)) {
 		ac = (PrefsAccount *) cur->data;
 		if (ac->protocol == A_NNTP) {
-			compose_new(ac);
+			compose_new(ac, NULL, NULL);
 			return;
 		}
 	}

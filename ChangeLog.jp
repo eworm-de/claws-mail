@@ -1,3 +1,23 @@
+2002-07-31
+
+	* src/prefs_actions.c: アクションの入出力ダイアログを遅延させずに
+	  表示するようにした。ウィンドウをインセンシティヴにする代わりに
+	  ダイアログをモーダルにした。 UI を整理。
+
+2002-07-29
+
+	* --attach コマンドラインオプションを実装。
+	* src/main.c:
+	  Cmd::attach_files: ファイルパスを保存する新規メンバ。
+	  parse_cmd_opt(): --attach オプションを追加。 --compose オプション
+	  が暗黙に指定される。
+	  prohibit_duplicate_launch()
+	  lock_socket_input_cb(): "compose_attach" メッセージを追加。
+	* src/compose.c
+	  src/mainwindow.c
+	  src/textview.c: compose_new_with_recipient() を compose_new() に
+	  名称変更し、添付ファイルのための引数を追加。
+
 2002-07-29
 
 	* src/logwindow.c: 隠しているときは GtkText ウィジェットをフリーズ。
