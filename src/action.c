@@ -48,7 +48,6 @@
 #include "compose.h"
 #include "procmsg.h"
 #include "gtkstext.h"
-#include "mimeview.h"
 #include "textview.h"
 
 typedef struct _Children		Children;
@@ -70,6 +69,9 @@ struct _Children
 	gint		 nb;
 	gint		 open_in;
 	gboolean	 output;
+
+	GtkWidget	*msg_text;
+	GdkFont		*msgfont;
 };
 
 struct _ChildInfo
@@ -87,9 +89,8 @@ struct _ChildInfo
 	gint		 tag_err;
 	gint		 tag_status;
 	gint		 new_out;
+
 	GString		*output;
-	GtkWidget	*text;
-	GdkFont		*msgfont;
 };
 
 static void action_update_menu		(GtkItemFactory	*ifactory,
@@ -107,19 +108,19 @@ static void msgview_actions_execute_cb	(MessageView	*msgview,
 					 GtkWidget	*widget);
 static void message_actions_execute	(MessageView	*msgview,
 					 guint		 action_nb,
-					 GtkCTree	*ctree);
+					 GSList		*msg_list);
 
 static gboolean execute_actions		(gchar		*action, 
-					 GtkCTree	*ctree, 
+					 GSList		*msg_list, 
 					 GtkWidget	*text,
 					 GdkFont	*msgfont,
 					 gint		 body_pos,
-					 MimeView	*mimeview);
+					 MimeInfo	*partinfo);
 
 static gchar *parse_action_cmd		(gchar		*action,
 					 MsgInfo	*msginfo,
-					 GtkCTree	*ctree,
-					 MimeView	*mimeview,
+					 GSList		*msg_list,
+					 MimeInfo	*partinfo,
 					 const gchar	*user_str,
 					 const gchar	*user_hidden_str,
 					 const gchar	*sel_str);
@@ -128,13 +129,11 @@ static gboolean parse_append_filename	(GString	*cmd,
 
 static gboolean parse_append_msgpart	(GString	*cmd,
 					 MsgInfo	*msginfo,
-					 MimeView	*mimeview);
+					 MimeInfo	*partinfo);
 
 static ChildInfo *fork_child		(gchar		*cmd,
 					 gint		 action_type,
-					 GtkWidget	*text,
-					 GdkFont	*msgfont,
-					 gint		 body_pos,
+					 const gchar	*msg_str,
 					 Children	*children);
 
 static gint wait_for_children		(Children	*children);
@@ -232,15 +231,14 @@ ActionType action_get_type(const gchar *action_str)
 }
 
 static gchar *parse_action_cmd(gchar *action, MsgInfo *msginfo,
-			       GtkCTree *ctree, MimeView *mimeview,
+			       GSList *msg_list, MimeInfo *partinfo,
 			       const gchar *user_str,
 			       const gchar *user_hidden_str,
 			       const gchar *sel_str)
 {
 	GString *cmd;
 	gchar *p;
-	GList *cur;
-	MsgInfo *msg;
+	GSList *cur;
 	
 	p = action;
 	
@@ -261,10 +259,10 @@ static gchar *parse_action_cmd(gchar *action, MsgInfo *msginfo,
 				p++;
 				break;
 			case 'F':
-				for (cur = GTK_CLIST(ctree)->selection;
-				     cur != NULL; cur = cur->next) {
-					msg = gtk_ctree_node_get_row_data(ctree,
-					      GTK_CTREE_NODE(cur->data));
+				for (cur = msg_list; cur != NULL;
+				     cur = cur->next) {
+					MsgInfo *msg = (MsgInfo *)cur->data;
+
 					if (!parse_append_filename(cmd, msg)) {
 						g_string_free(cmd, TRUE);
 						return NULL;
@@ -276,7 +274,7 @@ static gchar *parse_action_cmd(gchar *action, MsgInfo *msginfo,
 				break;
 			case 'p':
 				if (!parse_append_msgpart(cmd, msginfo,
-							  mimeview)) {
+							  partinfo)) {
 					g_string_free(cmd, TRUE);
 					return NULL;
 				}
@@ -338,15 +336,15 @@ static gboolean parse_append_filename(GString *cmd, MsgInfo *msginfo)
 }
 
 static gboolean parse_append_msgpart(GString *cmd, MsgInfo *msginfo,
-				     MimeView *mimeview)
+				     MimeInfo *partinfo)
 {
-	gchar    *filename;
-	gchar    *partname;
-	MimeInfo *partinfo;
-	gint      ret;
-	FILE     *fp;
+	gboolean single_part = FALSE;
+	gchar *filename;
+	gchar *part_filename;
+	gint ret;
 
-	if (!mimeview) {
+	if (!partinfo) {
+		FILE *fp;
 #if USE_GPGME
 		if ((fp = procmsg_open_message_decrypted(msginfo, &partinfo))
 		    == NULL) {
@@ -366,40 +364,28 @@ static gboolean parse_append_msgpart(GString *cmd, MsgInfo *msginfo,
 			alertpanel_error(_("Could not get message part."));
 			return FALSE;
 		}
-		filename = procmsg_get_message_file(msginfo);
-	} else {
-		if (!mimeview->opened) {
-			alertpanel_error(_("No message part selected."));
-			return FALSE;
-		}
-		if (!mimeview->file) {
-			alertpanel_error(_("No message file selected."));
-			return FALSE;
-		}
-		partinfo = gtk_ctree_node_get_row_data
-				(GTK_CTREE(mimeview->ctree),
-				 mimeview->opened);
-		g_return_val_if_fail(partinfo != NULL, FALSE);
-		filename = mimeview->file;
+
+		single_part = TRUE;
 	}
-	partname = procmime_get_tmp_file_name(partinfo);
 
-	ret = procmime_get_part(partname, filename, partinfo); 
+	filename = procmsg_get_message_file_path(msginfo);
+	part_filename = procmime_get_tmp_file_name(partinfo);
 
-	if (!mimeview) {
+	ret = procmime_get_part(part_filename, filename, partinfo); 
+
+	if (single_part)
 		procmime_mimeinfo_free_all(partinfo);
-		g_free(filename);
-	}
+	g_free(filename);
 
 	if (ret < 0) {
 		alertpanel_error(_("Can't get part of multipart message"));
-		g_free(partname);
+		g_free(part_filename);
 		return FALSE;
 	}
 
-	g_string_append(cmd, partname);
+	g_string_append(cmd, part_filename);
 
-	g_free(partname);
+	g_free(part_filename);
 
 	return TRUE;
 }
@@ -421,6 +407,12 @@ void action_update_mainwin_menu(GtkItemFactory *ifactory, MainWindow *mainwin)
 {
 	action_update_menu(ifactory, "/Tools/Actions",
 			   mainwin_actions_execute_cb, mainwin);
+}
+
+void action_update_msgview_menu(GtkItemFactory *ifactory, MessageView *msgview)
+{
+	action_update_menu(ifactory, "/Tools/Actions",
+			   msgview_actions_execute_cb, msgview);
 }
 
 void action_update_compose_menu(GtkItemFactory *ifactory, Compose *compose)
@@ -503,21 +495,29 @@ static void compose_actions_execute_cb(Compose *compose, guint action_nb,
 static void mainwin_actions_execute_cb(MainWindow *mainwin, guint action_nb,
 				       GtkWidget *widget)
 {
-	message_actions_execute(mainwin->messageview, action_nb,
-				GTK_CTREE(mainwin->summaryview->ctree));
+	GSList *msg_list;
+
+	msg_list = summary_get_selected_msg_list(mainwin->summaryview);
+	message_actions_execute(mainwin->messageview, action_nb, msg_list);
+	g_slist_free(msg_list);
 }
 
 static void msgview_actions_execute_cb(MessageView *msgview, guint action_nb,
 				       GtkWidget *widget)
 {
-	message_actions_execute(msgview, action_nb, NULL);
+	GSList *msg_list = NULL;
+
+	if (msgview->msginfo)
+		msg_list = g_slist_append(msg_list, msgview->msginfo);
+	message_actions_execute(msgview, action_nb, msg_list);
+	g_slist_free(msg_list);
 }
 
 static void message_actions_execute(MessageView *msgview, guint action_nb,
-				    GtkCTree *ctree)
+				    GSList *msg_list)
 {
-	TextView *textview = NULL;
-	MimeView *mimeview = NULL;
+	TextView *textview;
+	MimeInfo *partinfo;
 	gchar *buf;
 	gchar *action;
 	GtkWidget *text = NULL;
@@ -534,45 +534,32 @@ static void message_actions_execute(MessageView *msgview, guint action_nb,
 	/* Point to the beginning of the command-line */
 	action += 2;
 
-	switch (msgview->type) {
-	case MVIEW_TEXT:
-		if (msgview->textview && msgview->textview->text)
-			textview = msgview->textview;
-		break;
-	case MVIEW_MIME:
-		if (msgview->mimeview) {
-			mimeview = msgview->mimeview;
-			if (msgview->mimeview->type == MIMEVIEW_TEXT &&
-			    msgview->mimeview->textview &&
-			    msgview->mimeview->textview->text)
-				textview = msgview->mimeview->textview;
-		}
-		break;
-	}
-
+	textview = messageview_get_current_textview(msgview);
 	if (textview) {
 		text     = textview->text;
 		msgfont  = textview->msgfont;
 		body_pos = textview->body_pos;
 	}
+	partinfo = messageview_get_selected_mime_part(msgview);
 
-	execute_actions(action, ctree, text, msgfont, body_pos, mimeview);
+	execute_actions(action, msg_list, text, msgfont, body_pos, partinfo);
 }
 
-static gboolean execute_actions(gchar *action, GtkCTree *ctree,
+static gboolean execute_actions(gchar *action, GSList *msg_list,
 				GtkWidget *text, GdkFont *msgfont,
-				gint body_pos, MimeView *mimeview)
+				gint body_pos, MimeInfo *partinfo)
 {
-	GList *cur, *selection = NULL;
 	GSList *children_list = NULL;
 	gint is_ok  = TRUE;
-	gint selection_len = 0;
+	gint msg_list_len;
 	Children *children;
 	ChildInfo *child_info;
 	gint action_type;
 	MsgInfo *msginfo;
 	gchar *cmd;
+	guint start = 0, end = 0;
 	gchar *sel_str = NULL;
+	gchar *msg_str = NULL;
 	gchar *user_str = NULL;
 	gchar *user_hidden_str = NULL;
 
@@ -583,17 +570,13 @@ static gboolean execute_actions(gchar *action, GtkCTree *ctree,
 	if (action_type == ACTION_ERROR)
 		return FALSE;         /* ERR: syntax error */
 
-	if (action_type & (ACTION_SINGLE | ACTION_MULTIPLE) && 
-	    !(ctree && GTK_CLIST(ctree)->selection))
+	if (action_type & (ACTION_SINGLE | ACTION_MULTIPLE) && !msg_list)
 		return FALSE;         /* ERR: file command without selection */
 
-	if (ctree) {
-		selection = GTK_CLIST(ctree)->selection;
-		selection_len = g_list_length(selection);
-	}
+	msg_list_len = g_slist_length(msg_list);
 
 	if (action_type & (ACTION_PIPE_OUT | ACTION_PIPE_IN | ACTION_INSERT)) {
-		if (ctree && selection_len > 1)
+		if (msg_list_len > 1)
 			return FALSE; /* ERR: pipe + multiple selection */
 		if (!text)
 			return FALSE; /* ERR: pipe and no displayed text */
@@ -602,80 +585,109 @@ static gboolean execute_actions(gchar *action, GtkCTree *ctree,
 	if (action_type & ACTION_SELECTION_STR) {
 		if (!text)
 			return FALSE; /* ERR: selection string but no text */
-		else {
-			guint start = 0, end = 0;
-			if (GTK_EDITABLE(text)->has_selection) {
-				start = GTK_EDITABLE(text)->selection_start_pos;
-				end   = GTK_EDITABLE(text)->selection_end_pos;
-				if (start > end) {
-					guint tmp;
-					tmp = start;
-					start = end;
-					end = tmp;
-				}
-			}
+	}
+
+	if (GTK_EDITABLE(text)->has_selection) {
+		start = GTK_EDITABLE(text)->selection_start_pos;
+		end   = GTK_EDITABLE(text)->selection_end_pos;
+		if (start > end) {
+			guint tmp;
+			tmp = start;
+			start = end;
+			end = tmp;
+		}
+
+		if (start == end) {
+			start = body_pos;
+			end = gtk_stext_get_length(GTK_STEXT(text));
+			msg_str = gtk_editable_get_chars(GTK_EDITABLE(text),
+							 start, end);
+		} else {
 			sel_str = gtk_editable_get_chars(GTK_EDITABLE(text),
 							 start, end);
+			msg_str = g_strdup(sel_str);
+		}
+	} else {
+		start = body_pos;
+		end = gtk_stext_get_length(GTK_STEXT(text));
+		msg_str = gtk_editable_get_chars(GTK_EDITABLE(text),
+						 start, end);
+	}
+
+	if (action_type & ACTION_USER_STR) {
+		if (!(user_str = get_user_string(action, ACTION_USER_STR))) {
+			g_free(msg_str);
+			g_free(sel_str);
+			return FALSE;
 		}
 	}
 
-	if (action_type & (ACTION_USER_STR))
-		if (!(user_str = get_user_string(action, ACTION_USER_STR)))
-			return FALSE;
-
-	if (action_type & (ACTION_USER_HIDDEN_STR))
+	if (action_type & ACTION_USER_HIDDEN_STR) {
 		if (!(user_hidden_str =
-			get_user_string(action, ACTION_USER_HIDDEN_STR)))
+			get_user_string(action, ACTION_USER_HIDDEN_STR))) {
+			g_free(msg_str);
+			g_free(sel_str);
+			g_free(user_str);
 			return FALSE;
+		}
+	}
+
+	if (action_type & ACTION_PIPE_OUT) {
+		gtk_stext_freeze(GTK_STEXT(text));
+		gtk_stext_set_point(GTK_STEXT(text), start);
+		gtk_stext_forward_delete(GTK_STEXT(text), end - start);
+		gtk_stext_thaw(GTK_STEXT(text));
+	}
 
 	children = g_new0(Children, 1);
 
+	children->msg_text = text;
+	children->msgfont = msgfont;
+
+	if ((action_type & (ACTION_USER_IN | ACTION_USER_HIDDEN_IN)) &&
+	    ((action_type & ACTION_SINGLE) == 0 || msg_list_len == 1))
+		children->open_in = 1;
+
 	if (action_type & ACTION_SINGLE) {
-		for (cur = selection; cur && is_ok == TRUE; cur = cur->next) {
-			msginfo = gtk_ctree_node_get_row_data(ctree,
-					GTK_CTREE_NODE(cur->data));
+		GSList *cur;
+
+		for (cur = msg_list; cur && is_ok == TRUE; cur = cur->next) {
+			msginfo = (MsgInfo *)cur->data;
 			if (!msginfo) {
 				is_ok  = FALSE; /* ERR: msginfo missing */
 				break;
 			}
-			cmd = parse_action_cmd(action, msginfo, ctree,
-					       mimeview, user_str,
+			cmd = parse_action_cmd(action, msginfo, msg_list,
+					       partinfo, user_str,
 					       user_hidden_str, sel_str);
 			if (!cmd) {
 				debug_print("Action command error\n");
 				is_ok  = FALSE; /* ERR: incorrect command */
 				break;
 			}
-			if ((child_info = fork_child(cmd, action_type, text,
-						     msgfont, body_pos,
+			if ((child_info = fork_child(cmd, action_type, msg_str,
 						     children))) {
 				children_list = g_slist_append(children_list,
 							       child_info);
-				children->open_in = (selection_len == 1) ?
-					            (action_type &
-						     (ACTION_USER_IN |
-						      ACTION_USER_HIDDEN_IN)) : 0;
 			}
 			g_free(cmd);
 		}
 	} else {
-		cmd = parse_action_cmd(action, NULL, ctree, mimeview, user_str,
-				       user_hidden_str, sel_str);
+		cmd = parse_action_cmd(action, NULL, msg_list, partinfo,
+				       user_str, user_hidden_str, sel_str);
 		if (cmd) {
-			if ((child_info = fork_child(cmd, action_type, text,
-						     msgfont, body_pos,
+			if ((child_info = fork_child(cmd, action_type, msg_str,
 						     children))) {
 				children_list = g_slist_append(children_list,
 							       child_info);
-				children->open_in = action_type &
-						    (ACTION_USER_IN |
-						     ACTION_USER_HIDDEN_IN);
 			}
 			g_free(cmd);
 		} else
 			is_ok  = FALSE;         /* ERR: incorrect command */
 	}
 
+	g_free(msg_str);
+	g_free(sel_str);
 	g_free(user_str);
 	g_free(user_hidden_str);
 
@@ -704,15 +716,11 @@ static gboolean execute_actions(gchar *action, GtkCTree *ctree,
 	return is_ok;
 }
 
-static ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
-			     GdkFont *msgfont, gint body_pos,
-			     Children *children)
+static ChildInfo *fork_child(gchar *cmd, gint action_type,
+			     const gchar *msg_str, Children *children)
 {
 	gint chld_in[2], chld_out[2], chld_err[2], chld_status[2];
 	gchar *cmdline[4];
-	guint start, end;
-	gint is_selection;
-	gchar *selection;
 	pid_t pid, gch_pid;
 	ChildInfo *child_info;
 	gint sync;
@@ -755,6 +763,7 @@ static ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 		if (gch_pid == 0) {
 			if (setpgid(0, getppid()))
 				perror("setpgid");
+
 			if (sync) {
 				if (action_type &
 				    (ACTION_PIPE_IN |
@@ -799,8 +808,7 @@ static ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 				close(chld_err[0]);
 				close(chld_err[1]);
 				close(chld_status[0]);
-			}
-			if (sync) {
+
 				debug_print("Child: Waiting for grandchild\n");
 				waitpid(gch_pid, NULL, 0);
 				debug_print("Child: grandchild ended\n");
@@ -824,7 +832,8 @@ static ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 	}
 
 	close(chld_in[0]);
-	if (!(action_type & (ACTION_PIPE_IN | ACTION_USER_IN | ACTION_USER_HIDDEN_IN)))
+	if (!(action_type &
+	      (ACTION_PIPE_IN | ACTION_USER_IN | ACTION_USER_HIDDEN_IN)))
 		close(chld_in[1]);
 	close(chld_out[1]);
 	close(chld_err[1]);
@@ -855,46 +864,12 @@ static ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 	if (!(action_type & (ACTION_PIPE_IN | ACTION_PIPE_OUT | ACTION_INSERT)))
 		return child_info;
 
-	child_info->text        = text;
-	child_info->msgfont     = msgfont;
-
-	start = body_pos;
-	end   = gtk_stext_get_length(GTK_STEXT(text));
-
-	if (GTK_EDITABLE(text)->has_selection) {
-		start = GTK_EDITABLE(text)->selection_start_pos;
-		end   = GTK_EDITABLE(text)->selection_end_pos;
-		if (start > end) {
-			guint tmp;
-			tmp = start;
-			start = end;
-			end = tmp;
-		}
-		is_selection = TRUE;
-		if (start == end) {
-			start = 0;
-			end = gtk_stext_get_length(GTK_STEXT(text));
-			is_selection = FALSE;
-		}
-	}
-
-	selection = gtk_editable_get_chars(GTK_EDITABLE(text), start, end);
-
-	if (action_type & ACTION_PIPE_IN) {
-		write(chld_in[1], selection, strlen(selection));
+	if ((action_type & ACTION_PIPE_IN) && msg_str) {
+		write(chld_in[1], msg_str, strlen(msg_str));
 		if (!(action_type & (ACTION_USER_IN | ACTION_USER_HIDDEN_IN)))
 			close(chld_in[1]);
 		child_info->chld_in = -1; /* No more input */
 	}
-	g_free(selection);
-
-	gtk_stext_freeze(GTK_STEXT(text));
-	if (action_type & ACTION_PIPE_OUT) {
-		gtk_stext_set_point(GTK_STEXT(text), start);
-		gtk_stext_forward_delete(GTK_STEXT(text), end - start);
-	}
-
-	gtk_stext_thaw(GTK_STEXT(text));
 
 	return child_info;
 }
@@ -1236,7 +1211,8 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 	if (child_info->type & (ACTION_PIPE_OUT | ACTION_INSERT)
 	    && source == child_info->chld_out) {
 		gboolean is_selection = FALSE;
-		GtkWidget *text = child_info->text;
+		GtkWidget *text = child_info->children->msg_text;
+
 		if (GTK_EDITABLE(text)->has_selection)
 			is_selection = TRUE;
 		gtk_stext_freeze(GTK_STEXT(text));
@@ -1244,7 +1220,8 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 			c = read(source, buf, sizeof(buf) - 1);
 			if (c == 0)
 				break;
-			gtk_stext_insert(GTK_STEXT(text), child_info->msgfont,
+			gtk_stext_insert(GTK_STEXT(text),
+					 child_info->children->msgfont,
 					 NULL, NULL, buf, c);
 		}
 		if (is_selection) {
@@ -1255,7 +1232,7 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 			GTK_EDITABLE(text)->selection_end_pos =
 					gtk_stext_get_point(GTK_STEXT(text));
 		}
-		gtk_stext_thaw(GTK_STEXT(child_info->text));
+		gtk_stext_thaw(GTK_STEXT(text));
 	} else {
 		c = read(source, buf, sizeof(buf) - 1);
 		for (i = 0; i < c; i++)
@@ -1264,17 +1241,6 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 			child_info->new_out = TRUE;
 	}
 	wait_for_children(child_info->children);
-}
-
-static gboolean user_string_dialog_delete_cb(GtkWidget *widget,
-					     GdkEvent *event, gpointer data)
-{
-	return FALSE;
-}
-
-static void user_string_dialog_destroy_cb(GtkWidget *widget, gpointer data)
-{
-	gtk_main_quit();
 }
 
 static gchar *get_user_string(const gchar *action, ActionType type)

@@ -109,6 +109,25 @@ void hash_free_value_mem(GHashTable *table)
 	g_hash_table_foreach(table, hash_free_value_mem_func, NULL);
 }
 
+gint str_case_equal(gconstpointer v, gconstpointer v2)
+{
+	return strcasecmp((const gchar *)v, (const gchar *)v2) == 0;
+}
+
+guint str_case_hash(gconstpointer key)
+{
+	const gchar *p = key;
+	guint h = *p;
+
+	if (h) {
+		h = tolower(h);
+		for (p += 1; *p != '\0'; p++)
+			h = (h << 5) - h + tolower(*p);
+	}
+
+	return h;
+}
+
 void ptr_array_free_strings(GPtrArray *array)
 {
 	gint i;

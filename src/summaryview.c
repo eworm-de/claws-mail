@@ -1249,6 +1249,26 @@ SummarySelection summary_get_selection_type(SummaryView *summaryview)
 	return selection;
 }
 
+GSList *summary_get_selected_msg_list(SummaryView *summaryview)
+{
+	GSList *mlist = NULL;
+	GList *row_list;
+	GList *cur;
+	MsgInfo *msginfo;
+
+	row_list = GTK_CLIST(summaryview->ctree)->selection;
+	for (cur = row_list; cur != NULL; cur = cur->next) {
+		msginfo = gtk_ctree_node_get_row_data
+			(GTK_CTREE(summaryview->ctree),
+			 GTK_CTREE_NODE(cur->data));
+		mlist = g_slist_prepend(mlist, msginfo);
+	}
+
+	mlist = g_slist_reverse(mlist);
+
+	return mlist;
+}
+
 static void summary_set_menu_sensitive(SummaryView *summaryview)
 {
 	GtkItemFactory *ifactory = summaryview->popupfactory;

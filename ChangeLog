@@ -1,3 +1,23 @@
+2003-04-22
+
+	* src/action.[ch]: refactored. Also fixed a bug on MIME mode, and
+	  some memory leaks on error.
+	  action_update_msgview_menu(): new.
+	* src/messageview.[ch]: added "Tools/Actions" menu. Keep window list.
+	  messageview_get_selected_mime_part(): returns MimeInfo of selected
+	  part when MessageView is in MIME mode.
+	* src/mimeview.[ch]: mimeview_get_selected_part(): returns MimeInfo
+	  of selected part.
+	* src/summaryview.[ch]: summary_get_selected_msg_list(): returns
+	  MsgInfo list of selected messages.
+
+2003-04-21
+
+	* src/prefs_filter.[ch]: include original message's headers as
+	  the preset keywords. Modified the sizes of the widgets.
+	* src/utils.[ch]: added str_case_equal() and str_case_hash() for
+	  case-insensitive hash.
+
 2003-04-18
 
 	* src/procmsg.c: procmsg_get_filter_keyword(): added X-Sequence to

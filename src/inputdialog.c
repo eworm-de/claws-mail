@@ -269,12 +269,12 @@ static void input_dialog_set(const gchar *title, const gchar *message,
 
 	gtk_window_set_title(GTK_WINDOW(dialog), title);
 	gtk_label_set_text(GTK_LABEL(msg_label), message);
-	if (default_string && *default_string)
+	if (default_string && *default_string) {
 		gtk_entry_set_text(GTK_ENTRY(entry_), default_string);
-	else
+		gtk_entry_set_position(GTK_ENTRY(entry_), 0);
+		gtk_entry_select_region(GTK_ENTRY(entry_), 0, -1);
+	} else
 		gtk_entry_set_text(GTK_ENTRY(entry_), "");
-	gtk_entry_set_position(GTK_ENTRY(entry_), 0);
-	gtk_entry_select_region(GTK_ENTRY(entry_), 0, -1);
 
 	gtk_widget_grab_focus(ok_button);
 	gtk_widget_grab_focus(entry_);

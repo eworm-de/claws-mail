@@ -152,6 +152,10 @@ void slist_free_strings		(GSList		*list);
 void hash_free_strings		(GHashTable	*table);
 void hash_free_value_mem	(GHashTable	*table);
 
+gint str_case_equal		(gconstpointer	 v,
+				 gconstpointer	 v2);
+guint str_case_hash		(gconstpointer	 key);
+
 void ptr_array_free_strings	(GPtrArray	*array);
 
 /* number-string conversion */

@@ -52,6 +52,7 @@
 #include "procheader.h"
 #include "procmime.h"
 #include "account.h"
+#include "action.h"
 #include "prefs_common.h"
 #include "prefs_account.h"
 #include "gtkutils.h"
@@ -61,6 +62,7 @@
 #include "pgptext.h"
 #include "stock_pixmap.h"
 
+static GList *messageview_list = NULL;
 
 static void messageview_change_view_type(MessageView	*messageview,
 					 MessageType	 type);
@@ -272,6 +274,8 @@ static GtkItemFactoryEntry msgview_entries[] =
 					NULL, create_filter_cb, FILTER_BY_TO, NULL},
 	{N_("/_Tools/_Create filter rule/by _Subject"),
 					NULL, create_filter_cb, FILTER_BY_SUBJECT, NULL},
+	{N_("/_Tools/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_Tools/Actio_ns"),	NULL, NULL, 0, "<Branch>"},
 
 	{N_("/_Help"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Help/_About"),		NULL, about_cb, 0, NULL}
@@ -339,6 +343,7 @@ void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
  	GtkWidget *handlebox;
 	GtkWidget *vbox;
 	GtkWidget *menubar;
+	GtkItemFactory *ifactory;
 	guint n_menu_entries;
 
 	vbox = gtk_vbox_new(FALSE, 0);
@@ -359,6 +364,9 @@ void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 
 	gtk_container_add(GTK_CONTAINER(vbox),
 			  GTK_WIDGET_PTR(msgview));
+
+	ifactory = gtk_item_factory_from_widget(menubar);
+	action_update_msgview_menu(ifactory, msgview);
 
 	msgview_list = g_list_append(msgview_list, msgview);
 }
@@ -661,6 +669,11 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	return ok;
 }
 
+GList *messageview_get_window_list(void)
+{
+	return messageview_list;
+}
+
 void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		      gboolean all_headers)
 {
@@ -775,6 +788,8 @@ void messageview_destroy(MessageView *messageview)
 	GtkWidget *mimeview  = GTK_WIDGET_PTR(messageview->mimeview);
 
 	debug_print("destroy messageview\n");
+	messageview_list = g_list_remove(messageview_list, messageview);
+
 	headerview_destroy(messageview->headerview);
 	textview_destroy(messageview->textview);
 	mimeview_destroy(messageview->mimeview);
@@ -900,6 +915,14 @@ TextView *messageview_get_current_textview(MessageView *messageview)
 	}
 
 	return text;
+}
+
+MimeInfo *messageview_get_selected_mime_part(MessageView *messageview)
+{
+	if (messageview->type == MVIEW_MIME)
+		return mimeview_get_selected_part(messageview->mimeview);
+
+	return NULL;
 }
 
 void messageview_copy_clipboard(MessageView *messageview)

@@ -1,3 +1,24 @@
+2003-04-22
+
+	* src/action.[ch]: リファクタリング。 また MIME モードにおけるバグ
+	  と、エラー時のメモリリークを修正。
+	  action_update_msgview_menu(): 新規。
+	* src/messageview.[ch]: "Tools/Actions" メニューを追加。ウィンドウ
+	  リストを保持。
+	  messageview_get_selected_mime_part(): MessageView が MIME モード
+	  のとき、選択されたパートの MimeInfo を返す。
+	* src/mimeview.[ch]: mimeview_get_selected_part(): 選択されたパート
+	  の MimeInfo を返す。
+	* src/summaryview.[ch]: summary_get_selected_msg_list(): 選択された
+	  メッセージの MsgInfo リストを返す。
+
+2003-04-21
+
+	* src/prefs_filter.[ch]: 元のメッセージのヘッダをセット済キーワード
+	  として含むようにした。ウィジェットのサイズを修正。
+	* src/utils.[ch]: 大小文字を区別しないハッシュ用に str_case_equal()
+	  と str_case_hash() を追加。
+
 2003-04-18
 
 	* src/procmsg.c: procmsg_get_filter_keyword(): 自動検出されるヘッダ

@@ -244,8 +244,7 @@ static gboolean mimeview_is_signed(MimeView *mimeview)
 
         debug_print("mimeview_is_signed: file\n" );
 
-	partinfo = gtk_ctree_node_get_row_data
-		(GTK_CTREE(mimeview->ctree), mimeview->opened);
+	partinfo = mimeview_get_selected_part(mimeview);
 	g_return_val_if_fail(partinfo != NULL, FALSE);
 
 	/* walk the tree and see whether there is a signature somewhere */
@@ -361,6 +360,16 @@ void mimeview_destroy(MimeView *mimeview)
 	g_free(mimeview);
 
 	mimeviews = g_slist_remove(mimeviews, mimeview);
+}
+
+MimeInfo *mimeview_get_selected_part(MimeView *mimeview)
+{
+	if (gtk_notebook_get_current_page
+		(GTK_NOTEBOOK(mimeview->notebook)) == 0)
+		return NULL;
+
+	return gtk_ctree_node_get_row_data
+		(GTK_CTREE(mimeview->ctree), mimeview->opened);
 }
 
 static void mimeview_set_multipart_tree(MimeView *mimeview,
@@ -655,11 +664,10 @@ static void mimeview_start_drag(GtkWidget *widget, gint button,
 	GtkTargetList *list;
 	GdkDragContext *context;
 	MimeInfo *partinfo;
-	GtkCTree *ctree;
 
 	g_return_if_fail(mimeview != NULL);
-	ctree = GTK_CTREE(mimeview->ctree);
-	partinfo = gtk_ctree_node_get_row_data(ctree, mimeview->opened);
+
+	partinfo = mimeview_get_selected_part(mimeview);
 	if (partinfo->filename == NULL && partinfo->name == NULL) return;
 
 	list = gtk_target_list_new(mimeview_mime_types, 1);
@@ -691,8 +699,7 @@ static gint mimeview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 		/* call external program for image, audio or html */
 		mimeview_launch(mimeview);
 	} else if (event->button == 3) {
-		partinfo = gtk_ctree_node_get_row_data
-			(GTK_CTREE(mimeview->ctree), mimeview->opened);
+		partinfo = mimeview_get_selected_part(mimeview);
 		if (partinfo && (partinfo->mime_type == MIME_TEXT ||
 				 partinfo->mime_type == MIME_TEXT_HTML ||
 				 partinfo->mime_type == MIME_TEXT_ENRICHED ||
@@ -826,8 +833,7 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
 
-	partinfo = gtk_ctree_node_get_row_data
-		(GTK_CTREE(mimeview->ctree), mimeview->opened);
+	partinfo = mimeview_get_selected_part(mimeview);
 	if (!partinfo) return;
 	if (!partinfo->filename && !partinfo->name) return;
 
@@ -861,8 +867,7 @@ static void mimeview_save_all(MimeView *mimeview)
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
 
-	partinfo = gtk_ctree_node_get_row_data
-		(GTK_CTREE(mimeview->ctree), mimeview->opened);
+	partinfo = mimeview_get_selected_part(mimeview);
 	g_return_if_fail(partinfo != NULL);
 
 	dirname = filesel_select_file(_("Save as"), defname);
@@ -913,8 +918,8 @@ static void mimeview_display_as_text(MimeView *mimeview)
 
 	if (!mimeview->opened) return;
 
-	partinfo = gtk_ctree_node_get_row_data
-		(GTK_CTREE(mimeview->ctree), mimeview->opened);
+	partinfo = mimeview_get_selected_part(mimeview);
+	g_return_if_fail(partinfo != NULL);
 	mimeview_show_message_part(mimeview, partinfo);
 }
 
@@ -928,8 +933,7 @@ static void mimeview_save_as(MimeView *mimeview)
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
 
-	partinfo = gtk_ctree_node_get_row_data
-		(GTK_CTREE(mimeview->ctree), mimeview->opened);
+	partinfo = mimeview_get_selected_part(mimeview);
 	g_return_if_fail(partinfo != NULL);
 
 	if (partinfo->filename)
@@ -964,8 +968,7 @@ static void mimeview_launch(MimeView *mimeview)
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
 
-	partinfo = gtk_ctree_node_get_row_data
-		(GTK_CTREE(mimeview->ctree), mimeview->opened);
+	partinfo = mimeview_get_selected_part(mimeview);
 	g_return_if_fail(partinfo != NULL);
 
 	filename = procmime_get_tmp_file_name(partinfo);
@@ -988,8 +991,7 @@ static void mimeview_open_with(MimeView *mimeview)
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
 
-	partinfo = gtk_ctree_node_get_row_data
-		(GTK_CTREE(mimeview->ctree), mimeview->opened);
+	partinfo = mimeview_get_selected_part(mimeview);
 	g_return_if_fail(partinfo != NULL);
 
 	filename = procmime_get_tmp_file_name(partinfo);
@@ -1100,8 +1102,7 @@ static void mimeview_update_signature_info(MimeView *mimeview)
 	if (!mimeview) return;
 	if (!mimeview->opened) return;
 
-	partinfo = gtk_ctree_node_get_row_data
-		(GTK_CTREE(mimeview->ctree), mimeview->opened);
+	partinfo = mimeview_get_selected_part(mimeview);
 	if (!partinfo) return;
 
 	if (g_strcasecmp(partinfo->content_type,
@@ -1119,8 +1120,7 @@ void mimeview_check_signature(MimeView *mimeview)
 	g_return_if_fail (mimeview_is_signed(mimeview));
 	g_return_if_fail (gpg_started);
 
-	mimeinfo = gtk_ctree_node_get_row_data
-		(GTK_CTREE(mimeview->ctree), mimeview->opened);
+	mimeinfo = mimeview_get_selected_part(mimeview);
 	g_return_if_fail(mimeinfo != NULL);
 	g_return_if_fail(mimeview->file != NULL);
 
