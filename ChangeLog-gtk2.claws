@@ -1,3 +1,10 @@
+2004-11-15 [colin]	0.9.12cvs146.11
+
+	* src/summaryview.c
+	* src/prefs_themes.c
+	* src/messageview.c
+		Fix some leaks
+
 2004-11-15 [colin]	0.9.12cvs146.10
 
 	* src/codeconv.c

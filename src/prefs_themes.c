@@ -410,21 +410,25 @@ static void prefs_themes_btn_remove_clicked_cb(GtkWidget *widget, gpointer data)
 	gchar      *theme_str;
 	gchar      *alert_title = NULL;
 	AlertValue  val = 0;
+	gchar      *tmp = NULL;
 
 	theme_str = tdata->displayed;
 	
+	tmp = g_path_get_basename(theme_str);
+
 	if (IS_SYSTEM_THEME(theme_str)) {
 		if (getuid() != 0) {
 			alertpanel_error(_("Only root can remove system themes"));
 			return;
 		}
-		alert_title = g_strdup_printf(_("Remove system theme '%s'"), 
-					      g_path_get_basename(theme_str));
+		alert_title = g_strdup_printf(_("Remove system theme '%s'"), tmp);
 	}
 	if (NULL == alert_title) {
-		alert_title = g_strdup_printf(_("Remove theme '%s'"), 
-					      g_path_get_basename(theme_str));
+		alert_title = g_strdup_printf(_("Remove theme '%s'"), tmp);
 	}
+
+	g_free(tmp);
+
 	val = alertpanel(alert_title,
 			 _("Are you sure you want to remove this theme?"),
 			 _("No"), _("Yes"), _("Cancel"));

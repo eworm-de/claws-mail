@@ -961,7 +961,7 @@ void messageview_save_as(MessageView *messageview)
 {
 	gchar *filename = NULL;
 	MsgInfo *msginfo;
-	gchar *src, *dest;
+	gchar *src, *dest, *tmp;
 
 	if (!messageview->msginfo) return;
 	msginfo = messageview->msginfo;
@@ -983,8 +983,9 @@ void messageview_save_as(MessageView *messageview)
 
 	src = procmsg_get_message_file(msginfo);
 	if (copy_file(src, dest, TRUE) < 0) {
-		alertpanel_error(_("Can't save the file `%s'."),
-				 g_path_get_basename(dest));
+		tmp =  g_path_get_basename(dest);
+		alertpanel_error(_("Can't save the file `%s'."), tmp);
+		g_free(tmp);
 	}
 	g_free(dest);
 	g_free(src);

@@ -3295,6 +3295,7 @@ void summary_save_as(SummaryView *summaryview)
 	MsgInfo *msginfo;
 	gchar *filename = NULL;
 	gchar *src, *dest;
+	gchar *tmp;
 
 	AlertValue aval = 0;
 
@@ -3331,14 +3332,14 @@ void summary_save_as(SummaryView *summaryview)
 	}
 
 	src = procmsg_get_message_file(msginfo);
+	tmp = g_path_get_basename(dest);
+
 	if ( aval==0 ) { /* append */
 		if (append_file(src, dest, TRUE) < 0) 
-			alertpanel_error(_("Can't save the file `%s'."),
-					 g_path_get_basename(dest));
+			alertpanel_error(_("Can't save the file `%s'."), tmp);
 	} else { /* overwrite */
 		if (copy_file(src, dest, TRUE) < 0)
-			alertpanel_error(_("Can't save the file `%s'."),
-					 g_path_get_basename(dest));
+			alertpanel_error(_("Can't save the file `%s'."), tmp);
 	}
 	g_free(src);
 	
@@ -3353,12 +3354,12 @@ void summary_save_as(SummaryView *summaryview)
 			if (!msginfo) break;
 			src = procmsg_get_message_file(msginfo);
 			if (append_file(src, dest, TRUE) < 0)
-				alertpanel_error(_("Can't save the file `%s'."),
-						 g_path_get_basename(dest));
+				alertpanel_error(_("Can't save the file `%s'."), tmp);
 		}
 		g_free(src);
 	}
 	g_free(dest);
+	g_free(tmp);
 }
 
 void summary_print(SummaryView *summaryview)
