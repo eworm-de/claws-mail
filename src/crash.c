@@ -86,7 +86,7 @@ static const gchar *DEBUG_SCRIPT = "bt\nkill\nq";
  */
 void crash_install_handlers(void)
 {
-#if HAVE_GDB
+#if CRASH_DIALOG 
 	sigset_t mask;
 
 	if (!is_crash_dialog_allowed()) return;
@@ -114,7 +114,7 @@ void crash_install_handlers(void)
 #endif
 
 	sigprocmask(SIG_UNBLOCK, &mask, 0);
-#endif /* HAVE_GDB */	
+#endif /* CRASH_DIALOG */	
 }
 
 /***/
@@ -124,7 +124,7 @@ void crash_install_handlers(void)
  */
 void crash_main(const char *arg) 
 {
-#if HAVE_GDB
+#if CRASH_DIALOG 
 	gchar *text;
 	gchar **tokens;
 	unsigned long pid;
@@ -151,7 +151,7 @@ void crash_main(const char *arg)
 	g_string_free(output, TRUE);
 	g_free(text);
 	g_strfreev(tokens);
-#endif /* HAVE_GDB */	
+#endif /* CRASH_DIALOG */	
 }
 
 /*!
