@@ -72,6 +72,7 @@ static gint mbox_get_num_list(Folder *folder, FolderItem *item,
 			      GSList **list, gboolean *old_uids_valid);
 static gboolean mbox_scan_required(Folder *folder, FolderItem *item);
 static gchar *mbox_folder_get_path(Folder *folder, FolderItem *item);
+static gchar *mbox_item_get_path(Folder *folder, FolderItem *item);
 
 FolderClass mbox_class =
 {
@@ -88,7 +89,7 @@ FolderClass mbox_class =
 	/* FolderItem functions */
 	NULL,
 	NULL,
-	mbox_folder_get_path,
+	mbox_item_get_path,
 	mbox_create_folder,
 	mbox_rename_folder,
 	mbox_remove_folder,
@@ -2204,3 +2205,16 @@ gboolean mbox_scan_required(Folder *folder, FolderItem *item)
 	return !scan_new;
 }
 
+static gchar *mbox_item_get_path(Folder *folder, FolderItem *item)
+{
+	gchar *itempath, *path;
+
+        itempath = mbox_get_virtual_path(item);	 
+        if (itempath == NULL)	 
+    		return NULL;	 
+        path = g_strconcat(get_mbox_cache_dir(),	 
+                           G_DIR_SEPARATOR_S, itempath, NULL);	 
+        g_free(itempath);
+
+	return path;
+}

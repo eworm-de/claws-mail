@@ -217,8 +217,6 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 
 void folder_item_append(FolderItem *parent, FolderItem *item)
 {
-	FolderUpdateData hookdata;
-
 	g_return_if_fail(parent != NULL);
 	g_return_if_fail(parent->folder != NULL);
 	g_return_if_fail(parent->node != NULL);
@@ -227,30 +225,24 @@ void folder_item_append(FolderItem *parent, FolderItem *item)
 	item->parent = parent;
 	item->folder = parent->folder;
 	item->node = g_node_append_data(parent->node, item);
-
-	hookdata.folder = item->folder;
-	hookdata.update_flags = FOLDER_TREE_CHANGED | FOLDER_NEW_FOLDERITEM;
-	hookdata.item = item;
-	hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
 }
 
 static gboolean folder_item_remove_func(GNode *node, gpointer data)
 {
 	FolderItem *item = FOLDER_ITEM(node->data);
 	FolderUpdateData hookdata;
-	Folder *folder = item->folder;
 
 	if (item->cache != NULL) {
 		msgcache_destroy(item->cache);
 		item->cache = NULL;
 	}
 
-	folder_item_destroy(item);
-
-	hookdata.folder = folder;
+	hookdata.folder = item->folder;
 	hookdata.update_flags = FOLDER_TREE_CHANGED | FOLDER_REMOVE_FOLDERITEM;
 	hookdata.item = item;
 	hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
+
+	folder_item_destroy(item);
 
 	return FALSE;
 }
@@ -503,10 +495,16 @@ void folder_scan_tree(Folder *folder)
 FolderItem *folder_create_folder(FolderItem *parent, const gchar *name)
 {
 	FolderItem *new_item;
+	FolderUpdateData hookdata;
 
 	new_item = parent->folder->klass->create_folder(parent->folder, parent, name);
 	if (new_item)
 		new_item->cache = msgcache_new();
+
+	hookdata.folder = new_item->folder;
+	hookdata.update_flags = FOLDER_TREE_CHANGED | FOLDER_NEW_FOLDERITEM;
+	hookdata.item = new_item;
+	hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
 
 	return new_item;
 }

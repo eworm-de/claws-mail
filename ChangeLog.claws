@@ -1,4 +1,14 @@
-2003-09-07 [christoph]	0.9.4claws71
+2003-09-08 [christoph]	0.9.4claws72
+
+	* src/folder.c
+	* src/folderview.c
+	* src/mainwindow.c
+		fix new folder notification
+
+	* src/mbox_folder.c
+		fix cache path
+
+2003-09-08 [christoph]	0.9.4claws71
 
 	* src/compose.c
 		replace '\n' and '\r' before removing trailing spaces

@@ -1852,6 +1852,8 @@ void folderview_create_folder_node(FolderView *folderview, FolderItem *item)
 	GtkCTreeNode *node, *parent_node;
 	
 	parent_node = gtk_ctree_find_by_row_data(ctree, NULL, item->parent);
+	if (parent_node == NULL)
+		return;
 
 	gtk_clist_freeze(GTK_CLIST(ctree));
 
