@@ -144,9 +144,9 @@ void folder_remote_folder_init(Folder *folder, const gchar *name,
 void folder_destroy(Folder *folder)
 {
 	g_return_if_fail(folder != NULL);
-	g_return_if_fail(folder->destroy != NULL);
-
-	folder->destroy(folder);
+	
+	if (folder->destroy)
+		folder->destroy(folder);
 
 	folder_list = g_list_remove(folder_list, folder);
 
