@@ -1,3 +1,10 @@
+2002-10-01 [sergey]	0.8.3claws40
+
+	* src/compose.c
+		Convert newlines in the message text to the canonical form
+		before base64 encoding (RFC2045 compliance, fixes some
+		interoperability issues with Evolution 1.0.3)
+
 2002-09-29 [colin]	0.8.3claws39
 
 	* src/summaryview.c
