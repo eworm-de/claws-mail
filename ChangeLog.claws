@@ -1,3 +1,9 @@
+2002-11-25 [colin]	0.8.6claws10
+
+	* src/folderview.[ch]
+		Variable renaming and cleaning (slist of nodes 
+		to be re-collapsed is stored in FolderView)
+
 2002-11-25 [paul]	0.8.6claws9
 
 	* src/prefs_common.[ch]
