@@ -1077,6 +1077,7 @@ gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 			case 'F': /* file */
 				strcpy(p, filename);
 				p += strlen(p);
+				g_free(filename);
 				break;
 			default:
 				*p = '%';
