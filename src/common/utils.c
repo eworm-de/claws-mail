@@ -1086,7 +1086,7 @@ void subst_for_filename(gchar *str)
 void subst_for_shellsafe_filename(gchar *str)
 {
 	subst_for_filename(str);
-	subst_chars(str, "|&;()<>'!{}[]",'_');
+	subst_chars(str, " \"'|&;()<>'!{}[]",'_');
 }
 
 gboolean is_header_line(const gchar *str)
