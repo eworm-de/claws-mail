@@ -1,3 +1,11 @@
+2002-12-03 [christoph]	0.8.6claws57
+
+	* src/Makefile.am
+	* src/gtksctree.[ch]		** REMOVE **
+	* src/gtk/Makefile.am
+	* src/gtk/gtksctree.[ch]	** NEW **
+		move gtksctree files to gtk directory
+
 2002-12-03 [christoph]	0.8.6claws56
 
 	* src/Makefile.am
