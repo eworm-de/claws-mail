@@ -1,3 +1,8 @@
+2003-12-06 [paul]	0.9.7claws28
+
+	* src/procheader.c
+		add Alfons' patch to trim line feeds
+
 2003-12-06 [paul]	0.9.7claws27
 
 	* partial sync with 0.9.7cvs8
