@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,41 +33,49 @@
 static gint verbose = 1;
 static gchar esmtp_response[MSGBUFSIZE];
 
+gint esmtp_ehlo(SockInfo *sock, const gchar *hostname)
+{
+	sock_printf(sock, "EHLO %s\r\n", hostname);
+	if (verbose)
+		log_print("ESMTP> EHLO %s\n", hostname);
+
+	return esmtp_ok(sock);
+}
+
+gint esmtp_starttls(SockInfo *sock)
+{
+	sock_printf(sock, "STARTTLS\r\n");
+	if (verbose)
+		log_print("ESMTP> STARTTLS\n");
+
+	return esmtp_ok(sock);
+}
+
 gint esmtp_auth_cram_md5(SockInfo *sock)
 {
-	gchar buf[MSGBUFSIZE];
-
-	g_snprintf(buf, sizeof(buf), "AUTH CRAM-MD5");
-	sock_printf(sock, "%s\r\n", buf);
-
+	sock_printf(sock, "AUTH CRAM-MD5\r\n");
 	if (verbose)
-		log_print("ESMTP> %s\n", buf);
+		log_print("ESMTP> AUTH CRAM-MD5\n");
 
 	return esmtp_ok(sock);
 }
 
 gint esmtp_auth_login(SockInfo *sock)
 {
-	gchar buf[MSGBUFSIZE];
-
-	g_snprintf(buf, sizeof(buf), "AUTH LOGIN");
-	sock_printf(sock, "%s\r\n", buf);
-
+	sock_printf(sock, "AUTH LOGIN\r\n");
 	if (verbose)
-		log_print("ESMTP> %s\n", buf);
+		log_print("ESMTP> AUTH LOGIN\n");
 
 	return esmtp_ok(sock);
 }
 
 gint esmtp_auth(SockInfo *sock, SMTPAuthType authtype,
-		const gchar *userid, const gchar *passwd,
-		gboolean use_smtp_auth)
+		const gchar *userid, const gchar *passwd)
 {
 	gchar buf[MSGBUFSIZE];
 	guchar hexdigest[33];
 	gchar *challenge, *response, *response64;
 	gint challengelen;
-	/* const gchar delimiters[]=" "; */
 	gchar *token;
 
 	switch (authtype) {

@@ -41,6 +41,9 @@
 #endif
 
 #include "socket.h"
+#if USE_SSL
+#  include "ssl.h"
+#endif
 
 #if USE_GIO
 #error USE_GIO is currently not supported
@@ -258,48 +261,6 @@ static gint sock_connect_by_getaddrinfo(const gchar *hostname, gushort	port)
 }
 #endif /* !INET6 */
 
-#if 0
-SockInfo *sock_connect_nb(const gchar *hostname, gushort port)
-{
-	gint sock;
-	gint ret;
-	SockInfo *sockinfo;
-
-#ifdef INET6
-	if ((sock = sock_connect_by_getaddrinfo(hostname, port)) < 0)
-		return NULL;
-	if (set_nonblocking_mode(sock, TRUE) < 0) return NULL;
-	ret = sock;
-#else
-	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-		perror("socket");
-		return NULL;
-	}
-
-	if (set_nonblocking_mode(sock, TRUE) < 0) return NULL;
-
-	ret = sock_connect_by_hostname(sock, hostname, port);
-
-	if (ret < 0 && errno != EINPROGRESS) {
-		if (errno != 0) perror("connect");
-		close(sock);
-		return NULL;
-	}
-#endif /* INET6 */
-
-	sockinfo = g_new0(SockInfo, 1);
-	sockinfo->sock = sock;
-	sockinfo->hostname = g_strdup(hostname);
-	sockinfo->port = port;
-	sockinfo->state = CONN_LOOKUPSUCCESS;
-
-	if (ret < 0 && errno == EINPROGRESS) return sockinfo;
-
-	sockinfo->state = CONN_ESTABLISHED;
-	return sockinfo;
-}
-#endif
-
 SockInfo *sock_connect(const gchar *hostname, gushort port)
 {
 	gint sock;
@@ -398,9 +359,8 @@ gint sock_read(SockInfo *sock, gchar *buf, gint len)
 	g_return_val_if_fail(sock != NULL, -1);
 
 #if USE_SSL
-	if(sock->ssl) {
+	if (sock->ssl)
 		return ssl_read(sock->ssl, buf, len);
-	}
 #endif
 	return fd_read(sock->sock, buf, len);
 }
@@ -410,7 +370,7 @@ gint fd_read(gint fd, gchar *buf, gint len)
 	return read(fd, buf, len);
 }
 
-#ifdef USE_SSL
+#if USE_SSL
 gint ssl_read(SSL *ssl, gchar *buf, gint len)
 {
 	return SSL_read(ssl, buf, len);
@@ -422,9 +382,8 @@ gint sock_write(SockInfo *sock, const gchar *buf, gint len)
 	g_return_val_if_fail(sock != NULL, -1);
 
 #if USE_SSL
-	if(sock->ssl) {
+	if (sock->ssl)
 		return ssl_write(sock->ssl, buf, len);
-	}
 #endif
 	return fd_write(sock->sock, buf, len);
 }
@@ -445,7 +404,7 @@ gint fd_write(gint fd, const gchar *buf, gint len)
 	return wrlen;
 }
 
-#ifdef USE_SSL
+#if USE_SSL
 gint ssl_write(SSL *ssl, const gchar *buf, gint len)
 {
 	gint n, wrlen = 0;
@@ -488,24 +447,23 @@ gint fd_gets(gint fd, gchar *buf, gint len)
 #if USE_SSL
 gint ssl_gets(SSL *ssl, gchar *buf, gint len)
 {
-	gchar *buf2 = buf;
+	gchar *bp = buf;
 	gboolean newline = FALSE;
-	gint n, count = 0;
+	gint n;
 
 	if (--len < 1)
 		return -1;
-	while(len > 0 && !newline) {
-		*buf2 = '\0';
-		if((n = SSL_read(ssl, buf2, 1)) < 0)
+	while (len > 0 && !newline) {
+		*bp = '\0';
+		if ((n = SSL_read(ssl, bp, 1)) < 0)
 			return -1;
-		if(*buf2 == '\n')
+		if (*bp == '\n')
 			newline = TRUE;
-		buf2 += n;
-		count += n;
+		bp += n;
 	}
 
-	*buf2 = '\0';
-	return count;
+	*bp = '\0';
+	return bp - buf;
 }
 #endif
 
@@ -514,9 +472,8 @@ gint sock_gets(SockInfo *sock, gchar *buf, gint len)
 	g_return_val_if_fail(sock != NULL, -1);
 
 #if USE_SSL
-	if(sock->ssl) {
+	if (sock->ssl)
 		return ssl_gets(sock->ssl, buf, len);
-	}
 #endif
 	return fd_gets(sock->sock, buf, len);
 }
@@ -572,9 +529,8 @@ gchar *sock_getline(SockInfo *sock)
 	g_return_val_if_fail(sock != NULL, NULL);
 
 #if USE_SSL
-	if(sock->ssl) {
+	if (sock->ssl)
 		return ssl_getline(sock->ssl);
-	}
 #endif
 	return fd_getline(sock->sock);
 }
@@ -609,6 +565,10 @@ gint sock_close(SockInfo *sock)
 	if (!sock)
 		return 0;
 
+#if USE_SSL
+	if (sock->ssl)
+		ssl_done_socket(sock);
+#endif
 	ret = fd_close(sock->sock); 
 	g_free(sock->hostname);
 	g_free(sock);

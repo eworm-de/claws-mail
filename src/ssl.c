@@ -23,63 +23,69 @@
 
 #if USE_SSL
 
+#include "defs.h"
+
+#include <glib.h>
+
 #include "intl.h"
 #include "utils.h"
 #include "ssl.h"
 
-SSL_CTX *ssl_ctx_SSLv23;
-SSL_CTX *ssl_ctx_TLSv1;
+static SSL_CTX *ssl_ctx_SSLv23;
+static SSL_CTX *ssl_ctx_TLSv1;
 
-void ssl_init() {
-    SSL_METHOD *meth;
-		
+void ssl_init(void)
+{
     SSL_library_init();
     SSL_load_error_strings();
-    
+
     ssl_ctx_SSLv23 = SSL_CTX_new(SSLv23_client_method());
-    if(ssl_ctx_SSLv23 == NULL) {
-    	debug_print(_("SSLv23 not available\n"));
+    if (ssl_ctx_SSLv23 == NULL) {
+	debug_print(_("SSLv23 not available\n"));
     } else {
 	debug_print(_("SSLv23 available\n"));
     }
 
     ssl_ctx_TLSv1 = SSL_CTX_new(TLSv1_client_method());
-    if(ssl_ctx_TLSv1 == NULL) {
-    	debug_print(_("TLSv1 not available\n"));
+    if (ssl_ctx_TLSv1 == NULL) {
+	debug_print(_("TLSv1 not available\n"));
     } else {
 	debug_print(_("TLSv1 available\n"));
     }
 }
 
-void ssl_done() {
-    if(ssl_ctx_SSLv23) {
-        SSL_CTX_free(ssl_ctx_SSLv23);
+void ssl_done(void)
+{
+    if (ssl_ctx_SSLv23) {
+	SSL_CTX_free(ssl_ctx_SSLv23);
     }
 
-    if(ssl_ctx_TLSv1) {
-        SSL_CTX_free(ssl_ctx_TLSv1);
+    if (ssl_ctx_TLSv1) {
+	SSL_CTX_free(ssl_ctx_TLSv1);
     }
 }
 
-gboolean ssl_init_socket(SockInfo *sockinfo) {
+gboolean ssl_init_socket(SockInfo *sockinfo)
+{
     return ssl_init_socket_with_method(sockinfo, SSL_METHOD_SSLv23);
 }
 
-gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSL_METHODs method) {
+gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
+{
     X509 *server_cert;
-    int ret;
+    gint ret;
 
-    switch(method) {
+    switch (method) {
 	case SSL_METHOD_SSLv23:
-	    if(!ssl_ctx_SSLv23) {
-    		log_warning(_("SSL method not available\n"));
+	    if (!ssl_ctx_SSLv23) {
+		log_warning(_("SSL method not available\n"));
 		return FALSE;
 	    }
 	    sockinfo->ssl = SSL_new(ssl_ctx_SSLv23);
 	    break;
 	case SSL_METHOD_TLSv1:
-	    if(!ssl_ctx_TLSv1) {
-    		log_warning(_("SSL method not available\n"));
+	    if (!ssl_ctx_TLSv1) {
+		log_warning(_("SSL method not available\n"));
 		return FALSE;
 	    }
 	    sockinfo->ssl = SSL_new(ssl_ctx_TLSv1);
@@ -89,17 +95,16 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSL_METHODs method) {
 	    return FALSE;
 	    break;
     }
-    
-    if(sockinfo->ssl == NULL) {
-	log_warning(_("Error creating ssl context\n"));
 
+    if (sockinfo->ssl == NULL) {
+	log_warning(_("Error creating ssl context\n"));
 	return FALSE;
     }
 
     SSL_set_fd(sockinfo->ssl, sockinfo->sock);
-    if((ret = SSL_connect(sockinfo->ssl)) == -1) {
-	log_warning(_("SSL connect failed (%s)\n"), ERR_error_string(ERR_get_error(), NULL));
-
+    if ((ret = SSL_connect(sockinfo->ssl)) == -1) {
+	log_warning(_("SSL connect failed (%s)\n"),
+		    ERR_error_string(ERR_get_error(), NULL));
 	return FALSE;
     }
 
@@ -109,29 +114,30 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSL_METHODs method) {
 
     /* Get server's certificate (note: beware of dynamic allocation) */
 
-    if((server_cert = SSL_get_peer_certificate(sockinfo->ssl)) != NULL) {
-	char *str;
-	
+    if ((server_cert = SSL_get_peer_certificate(sockinfo->ssl)) != NULL) {
+	gchar *str;
+
 	log_print(_("Server certificate:\n"));
 
-	if((str = X509_NAME_oneline(X509_get_subject_name (server_cert),0,0)) != NULL) {
+	if ((str = X509_NAME_oneline(X509_get_subject_name(server_cert), 0, 0)) != NULL) {
 		log_print(_("  Subject: %s\n"), str);
 		free(str);
 	}
-	
-	if((str = X509_NAME_oneline(X509_get_issuer_name  (server_cert),0,0)) != NULL) {
+
+	if ((str = X509_NAME_oneline(X509_get_issuer_name(server_cert), 0, 0)) != NULL) {
 		log_print(_("  Issuer: %s\n"), str);
 		free(str);
 	}
 
 	X509_free(server_cert);
     }
-    
+
     return TRUE;
 }
 
-void ssl_done_socket(SockInfo *sockinfo) {
-    if(sockinfo->ssl) {
+void ssl_done_socket(SockInfo *sockinfo)
+{
+    if (sockinfo->ssl) {
 	SSL_free(sockinfo->ssl);
     }
 }

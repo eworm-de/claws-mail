@@ -32,8 +32,6 @@ typedef struct {  /* Hmm, should be private */
     int  finalized;
 } MD5_CONTEXT;
 
-typedef MD5_CONTEXT MD5_CTX_syl;
-
 void md5_init(MD5_CONTEXT *ctx);
 void md5_update(MD5_CONTEXT *hd, const unsigned char *inbuf, size_t inlen);
 void md5_final(unsigned char *digest, MD5_CONTEXT *ctx);

@@ -1,3 +1,40 @@
+2001-08-27
+
+	* merged the color label feature from the claws branch (thanks to
+	  Satoshi Nagayasu and Alfons Hoogervoost).
+	* src/colorlabel.[ch]: new. Renamed from labelcolors.[ch].
+	  Renamed labelcolors_*() to colorlabel_*().
+	* src/summaryview.[ch]: added color label support.
+	* src/procmsg.h: added color label flags to the permanent flags.
+	* updated to gettext 0.10.39.
+
+2001-08-27
+
+	* src/account.c: account_clist_set_row(): fixed a bug that failed
+	  to compile if SSL was not enabled.
+
+2001-08-26
+
+	* merged the SSL support from the claws branch (thanks to Christoph
+	  Hohmann).
+	* src/ssl.[ch]: new.
+	* src/socket.[ch]: added ssl_read(), ssl_write(), ssl_gets(), and
+	  ssl_getline().
+	  sock_close(): call ssl_done_socket() if SSL is active.
+	* src/md5.[ch]: removed MD5_CTX typedef and use MD5_CONTEXT to
+	  prevent type confliction.
+	* src/prefs_account.[ch]: added SSL tab, and modified the expression.
+	* src/esmtp.[ch]: added esmtp_ehlo(), and esmtp_starttls().
+	  Removed SSL initialization and HELO from esmtp_starttls().
+	  esmtp_auth(): removed use_smtp_auth from its arguments.
+	* src/send.c: send_smtp_open(): added SSL support.
+	* src/smtp.c: smtp_helo(): call esmtp_ehlo() if esmtp is true.
+
+2001-08-25
+
+	* src/mimeview.c: mimeview_open_with(): braced '%s' with single
+	  quote.
+
 2001-08-24
 
 	* src/main.c: open new account dialog if no account is set.

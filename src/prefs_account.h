@@ -78,6 +78,14 @@ struct _PrefsAccount
 	gboolean use_mail_command;
 	gchar * mail_command;
 
+#if USE_SSL
+	/* SSL */
+	gboolean ssl_pop;
+	gboolean ssl_imap;
+	SSLSMTPType ssl_smtp;
+#endif /* USE_SSL */
+
+
 	/* Temporarily preserved password */
 	gchar *tmp_pass;
 
@@ -112,13 +120,6 @@ struct _PrefsAccount
 	SignKeyType sign_key;
 	gchar *sign_key_id;
 #endif /* USE_GPGME */
-
-#if USE_SSL
-	/* SSL Config */
-	gboolean  ssl_pop;
-	gboolean  ssl_imap;
-	SSLSMTPType  ssl_smtp;
-#endif /* USE_SSL */
 
 	/* Advanced */
 	gboolean  set_smtpport;

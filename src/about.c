@@ -147,6 +147,9 @@ static void about_create(void)
 #if USE_GPGME
 		   " GPGME"
 #endif
+#if USE_SSL
+		   " SSL"
+#endif
 #if USE_LDAP
 		   " LDAP"
 #endif

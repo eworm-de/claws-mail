@@ -880,7 +880,7 @@ static gboolean filter_incoming_perform_actions(FolderItem *default_folder,
 			break;
 
 		case MATCHING_ACTION_COLOR:
-			MSG_SET_LABEL_VALUE(markflags, ma_tail->action->labelcolor);
+			MSG_SET_COLORLABEL_VALUE(markflags, ma_tail->action->labelcolor);
 			break;
 
 		/* UNCONTINUABLE */

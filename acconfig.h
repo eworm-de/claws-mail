@@ -24,7 +24,7 @@
 /* Define if we use GPGME to support OpenPGP */
 #undef USE_GPGME
 
-/* Define if we use GPGME to support OpenPGP */
+/* Define if you use OpenSSL to support SSL */
 #undef USE_SSL
 
 /* Define to `unsigned int' if <stddef.h> or <wchar.h> doesn't define.  */
@@ -32,6 +32,7 @@
 
 /* Used to test for a u32 typedef */
 #undef HAVE_U32_TYPEDEF
+
 
 #undef PACKAGE
 #undef VERSION

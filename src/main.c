@@ -49,10 +49,6 @@
 #  include <gpgme.h>
 #endif
 
-#if USE_SSL
-#  include "ssl.h"
-#endif
-
 #include "intl.h"
 #include "main.h"
 #include "mainwindow.h"
@@ -78,6 +74,9 @@
 
 #if USE_GPGME
 #  include "rfc2015.h"
+#endif
+#if USE_SSL
+#  include "ssl.h"
 #endif
 
 gchar *prog_version;
@@ -160,6 +159,10 @@ int main(int argc, char *argv[])
 	gtk_widget_push_colormap(gdk_imlib_get_colormap());
 #endif
 
+#if USE_SSL
+	ssl_init();
+#endif
+
 	srandom((gint)time(NULL));
 
 	/* parse gtkrc files */
@@ -237,10 +240,6 @@ int main(int argc, char *argv[])
 	gpgme_register_idle(idle_function_for_gpgme);
 #endif
 
-#if USE_SSL
-	ssl_init();
-#endif
-
 	prefs_common_save_config();
 	prefs_filter_read_config();
 	prefs_filter_write_config();
@@ -293,10 +292,6 @@ int main(int argc, char *argv[])
 	signal(SIGPIPE, SIG_IGN);
 
 	gtk_main();
-
-#if USE_SSL
-	ssl_done();
-#endif
 
 	return 0;
 }
@@ -403,6 +398,10 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 	fd_close(lock_socket);
 	filename = get_socket_name();
 	unlink(filename);
+
+#if USE_SSL
+	ssl_done();
+#endif
 
 	gtk_main_quit();
 }

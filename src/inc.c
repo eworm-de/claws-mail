@@ -48,6 +48,7 @@
 #include "account.h"
 #include "procmsg.h"
 #include "socket.h"
+#include "ssl.h"
 #include "pop.h"
 #include "recv.h"
 #include "mbox.h"
@@ -431,7 +432,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 		inc_progress_dialog_clear(inc_dialog);
 
-		gtk_clist_moveto(clist, num, 0, 1.0, 0.0);
+		gtk_clist_moveto(clist, num, -1, 1.0, 0.0);
 
 		pop3_state->user = g_strdup(pop3_state->ac_prefs->userid);
 		if (pop3_state->ac_prefs->passwd)
@@ -561,7 +562,6 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 	return new_msgs;
 }
 
-
 static IncState inc_pop3_session_do(IncSession *session)
 {
 	Pop3State *pop3_state = session->pop3_state;
@@ -614,7 +614,8 @@ static IncState inc_pop3_session_do(IncSession *session)
 	server = pop3_state->ac_prefs->recv_server;
 #if USE_SSL
 	port = pop3_state->ac_prefs->set_popport ?
-		pop3_state->ac_prefs->popport : (pop3_state->ac_prefs->ssl_pop ? 995 : 110);
+		pop3_state->ac_prefs->popport :
+		pop3_state->ac_prefs->ssl_pop ? 995 : 110;
 #else
 	port = pop3_state->ac_prefs->set_popport ?
 		pop3_state->ac_prefs->popport : 110;
@@ -645,27 +646,21 @@ static IncState inc_pop3_session_do(IncSession *session)
 		}
 		pop3_automaton_terminate(NULL, atm);
 		automaton_destroy(atm);
-
 		return INC_CONNECT_ERROR;
 	}
+
+#if USE_SSL
+	if (pop3_state->ac_prefs->ssl_pop && !ssl_init_socket(sockinfo)) {
+		pop3_automaton_terminate(NULL, atm);
+		automaton_destroy(atm);
+		return INC_CONNECT_ERROR;
+	}
+#endif
 
 	/* :WK: Hmmm, with the later sock_gdk_input, we have 2 references
 	 * to the sock structure - implement a reference counter?? */
 	pop3_state->sockinfo = sockinfo;
 	atm->help_sock = sockinfo;
-
-#ifdef USE_SSL
-	if(pop3_state->ac_prefs->ssl_pop) {
-		if(!ssl_init_socket(sockinfo)) {
-			pop3_automaton_terminate(NULL, atm);
-			automaton_destroy(atm);
-			
-			return INC_CONNECT_ERROR;
-		}
-	} else {
-		sockinfo->ssl = NULL;
-	}
-#endif
 
 	log_verbosity_set(TRUE);
 	recv_set_ui_func(inc_pop3_recv_func, session);
@@ -685,13 +680,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	recv_set_ui_func(NULL, NULL);
 
 #if USE_THREADS
-/*
-	pthread_join(sockinfo->connect_thr, NULL);
-*/	
-#endif
-
-#if USE_SSL
-	ssl_done_socket(sockinfo);
+	//pthread_join(sockinfo->connect_thr, NULL);
 #endif
 	automaton_destroy(atm);
 
@@ -862,7 +851,7 @@ void inc_progress_update(Pop3State *state, Pop3Phase phase)
 	case POP3_GETAUTH_PASS_RECV:
 	case POP3_GETAUTH_APOP_SEND:
 	case POP3_GETAUTH_APOP_RECV:
-		progress_dialog_set_label(dialog, _("Authorizing..."));
+		progress_dialog_set_label(dialog, _("Authenticating..."));
 		break;
 	case POP3_GETRANGE_STAT_SEND:
 	case POP3_GETRANGE_STAT_RECV:

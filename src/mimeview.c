@@ -777,7 +777,7 @@ static void mimeview_open_with(MimeView *mimeview)
 			(_("Open with"),
 			 _("Enter the command line to open file:\n"
 			   "(`%s' will be replaced with file name)"),
-			 "gedit \"%s\"");
+			 "gedit '%s'");
 		if (cmd) {
 			mimeview_view_file(filename, partinfo, cmd);
 			g_free(cmd);

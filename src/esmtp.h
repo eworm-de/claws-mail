@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,16 @@
 #ifndef __ESMTP_H__
 #define __ESMTP_H__
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include <glib.h>
+
 #include "socket.h"
+#if USE_SSL
+#  include "ssl.h"
+#endif
 
 typedef enum
 {
@@ -30,11 +38,12 @@ typedef enum
 	SMTPAUTH_DIGEST_MD5 = 3
 } SMTPAuthType;
 
+gint esmtp_ehlo(SockInfo *sock, const gchar *hostname);
+gint esmtp_starttls(SockInfo *sock);
 gint esmtp_auth_login(SockInfo *sock);
 gint esmtp_auth_cram_md5(SockInfo *sock);
 gint esmtp_auth(SockInfo *sock, SMTPAuthType authtype,
-		const gchar *userid, const gchar *passwd,
-		gboolean use_smtp_auth);
+		const gchar *userid, const gchar *passwd);
 gint esmtp_ok(SockInfo *sock);
 
 #endif /* __ESMTP_H__ */

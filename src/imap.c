@@ -32,6 +32,7 @@
 #include "intl.h"
 #include "imap.h"
 #include "socket.h"
+#include "ssl.h"
 #include "recv.h"
 #include "procmsg.h"
 #include "procheader.h"
@@ -41,7 +42,6 @@
 #include "codeconv.h"
 #include "utils.h"
 #include "inputdialog.h"
-#include "ssl.h"
 
 #define IMAP4_PORT	143
 #if USE_SSL
@@ -82,15 +82,15 @@ static GSList *imap_delete_cached_messages	(GSList		*mlist,
 						 guint32	 last_uid);
 static void imap_delete_all_cached_messages	(FolderItem	*item);
 
-#if !USE_SSL
-static SockInfo *imap_open		(const gchar	*server,
-					 gushort	 port,
-					 gchar		*buf);
-#else
+#if USE_SSL
 static SockInfo *imap_open		(const gchar	*server,
 					 gushort	 port,
 					 gchar		*buf,
 					 gboolean	 use_ssl);
+#else
+static SockInfo *imap_open		(const gchar	*server,
+					 gushort	 port,
+					 gchar		*buf);
 #endif
 
 static gint imap_set_message_flags	(IMAPSession	*session,
@@ -230,25 +230,25 @@ static IMAPSession *imap_session_get(Folder *folder)
 	g_return_val_if_fail(folder->type == F_IMAP, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
 
-#if !USE_SSL
+#if USE_SSL
 	port = folder->account->set_imapport ? folder->account->imapport
-		: IMAP4_PORT;
+		: folder->account->ssl_imap ? IMAPS_PORT : IMAP4_PORT;
 #else
 	port = folder->account->set_imapport ? folder->account->imapport
-		: (folder->account->ssl_imap ? IMAPS_PORT : IMAP4_PORT);
+		: IMAP4_PORT;
 #endif
 
 	if (!rfolder->session) {
 		rfolder->session =
-#if !USE_SSL
-			imap_session_new(folder->account->recv_server, port,
-					 folder->account->userid,
-					 folder->account->passwd);
-#else
+#if USE_SSL
 			imap_session_new(folder->account->recv_server, port,
 					 folder->account->userid,
 					 folder->account->passwd,
 					 folder->account->ssl_imap);
+#else
+			imap_session_new(folder->account->recv_server, port,
+					 folder->account->userid,
+					 folder->account->passwd);
 #endif
 		if (rfolder->session)
 			imap_parse_namespace(IMAP_SESSION(rfolder->session),
@@ -263,15 +263,15 @@ static IMAPSession *imap_session_get(Folder *folder)
 			    folder->account->recv_server, port);
 		session_destroy(rfolder->session);
 		rfolder->session =
-#if !USE_SSL
-			imap_session_new(folder->account->recv_server, port,
-					 folder->account->userid,
-					 folder->account->passwd);
-#else
+#if USE_SSL
 			imap_session_new(folder->account->recv_server, port,
 					 folder->account->userid,
 					 folder->account->passwd,
 					 folder->account->ssl_imap);
+#else
+			imap_session_new(folder->account->recv_server, port,
+					 folder->account->userid,
+					 folder->account->passwd);
 #endif
 		if (rfolder->session)
 			imap_parse_namespace(IMAP_SESSION(rfolder->session),
@@ -295,13 +295,13 @@ static gchar *imap_query_password(const gchar *server, const gchar *user)
 	return pass;
 }
 
-#if !USE_SSL
-Session *imap_session_new(const gchar *server, gushort port,
-			  const gchar *user, const gchar *pass)
-#else
+#if USE_SSL
 Session *imap_session_new(const gchar *server, gushort port,
 			  const gchar *user, const gchar *pass,
 			  gboolean use_ssl)
+#else
+Session *imap_session_new(const gchar *server, gushort port,
+			  const gchar *user, const gchar *pass)
 #endif
 {
 	gchar buf[IMAPBUFSIZE];
@@ -323,10 +323,10 @@ Session *imap_session_new(const gchar *server, gushort port,
 	log_message(_("creating IMAP4 connection to %s:%d ...\n"),
 		    server, port);
 
-#if !USE_SSL
-	if ((imap_sock = imap_open(server, port, buf)) == NULL)
-#else
+#if USE_SSL
 	if ((imap_sock = imap_open(server, port, buf, use_ssl)) == NULL)
+#else
+	if ((imap_sock = imap_open(server, port, buf)) == NULL)
 #endif
 		return NULL;
 	if (imap_cmd_login(imap_sock, user, pass) != IMAP_SUCCESS) {
@@ -351,9 +351,6 @@ Session *imap_session_new(const gchar *server, gushort port,
 
 void imap_session_destroy(IMAPSession *session)
 {
-#if USE_SSL
-	ssl_done_socket(SESSION(session)->sock);
-#endif
 	sock_close(SESSION(session)->sock);
 	SESSION(session)->sock = NULL;
 
@@ -1279,10 +1276,11 @@ static void imap_delete_all_cached_messages(FolderItem *item)
 	debug_print(_("done.\n"));
 }
 
-#if !USE_SSL
-static SockInfo *imap_open(const gchar *server, gushort port, gchar *buf)
+#if USE_SSL
+static SockInfo *imap_open(const gchar *server, gushort port, gchar *buf,
+			   gboolean use_ssl)
 #else
-static SockInfo *imap_open(const gchar *server, gushort port, gchar *buf, gboolean use_ssl)
+static SockInfo *imap_open(const gchar *server, gushort port, gchar *buf)
 #endif
 {
 	SockInfo *sock;
@@ -1294,7 +1292,7 @@ static SockInfo *imap_open(const gchar *server, gushort port, gchar *buf, gboole
 	}
 
 #if USE_SSL
-	if(use_ssl && !ssl_init_socket(sock)) {
+	if (use_ssl && !ssl_init_socket(sock)) {
 		sock_close(sock);
 		return NULL;
 	}

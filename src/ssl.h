@@ -17,11 +17,16 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#if USE_SSL
-
 #ifndef __SSL_H__
 #define __SSL_H__
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
+#if USE_SSL
+
+#include <glib.h>
 #include <openssl/crypto.h>
 #include <openssl/x509.h>
 #include <openssl/pem.h>
@@ -33,14 +38,14 @@
 typedef enum {
     SSL_METHOD_SSLv23,
     SSL_METHOD_TLSv1
-} SSL_METHODs;
+} SSLMethod;
 
-void ssl_init();
-void ssl_done();
+void ssl_init(void);
+void ssl_done(void);
 gboolean ssl_init_socket(SockInfo *sockinfo);
-gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSL_METHODs method);
+gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method);
 void ssl_done_socket(SockInfo *sockinfo);
 
-#endif /* __SSL_H__ */
-
 #endif /* USE_SSL */
+
+#endif /* __SSL_H__ */

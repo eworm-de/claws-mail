@@ -1,3 +1,40 @@
+2001-08-27
+
+	* claws ブランチからカラーラベル機能をマージ(Satoshi Nagayasu さん
+	  と Alfons Hoogervoost さん thanks)。
+	* src/colorlabel.[ch]: 新規。labelcolors.[ch] から名称変更。
+	  labelcolors_*() を colorlabel_*() に改名。
+	* src/summaryview.[ch]: カラーラベルに対応。
+	* src/procmsg.h: 永続フラグにカラーラベルフラグを追加。
+	* gettext 0.10.39 に更新。
+
+2001-08-27
+
+	* src/account.c: account_clist_set_row(): SSL が有効になっていない
+	  場合にコンパイルに失敗するバグを修正。
+
+2001-08-26
+
+	* SSL 対応を claws ブランチからマージ(Christoph Hohmann さん thanks)。
+	* src/ssl.[ch]: 新規。
+	* src/socket.[ch]: ssl_read(), ssl_write(), ssl_gets(), そして
+	  ssl_getline() を追加。
+	  sock_close(): SSL が有効なら ssl_done_socket() を呼ぶようにした。
+	* src/md5.[ch]: 型の衝突を防ぐために MD5_CTX の typedef を削除し、
+	  MD5_CONTEXT を使用するようにした。
+	* src/prefs_account.[ch]: SSL タブを追加し、表現を変更。
+	* src/esmtp.[ch]: esmtp_ehlo() と esmtp_starttls() を追加。
+	  esmtp_starttls() から SSL 初期化と HELO を削除。
+	  esmtp_auth(): 引数から use_smtp_auth を削除。
+	* src/send.c: send_smtp_open(): SSL 対応を追加。
+	* src/smtp.c: smtp_helo(): esmtp が真なら esmtp_ehlo() を呼ぶように
+	  した。
+
+2001-08-25
+
+	* src/mimeview.c: mimeview_open_with(): '%s' をシングルクォートで
+	  囲った。
+
 2001-08-24
 
 	* src/main.c: アカウントが設定されていなければ新規アカウント

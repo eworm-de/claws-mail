@@ -94,7 +94,6 @@ gint sock_gdk_input_add	  (SockInfo		*sock,
 			   GdkInputFunction	 function,
 			   gpointer		 data);
 
-
 /* Functions to directly work on FD.  They are needed for pipes */
 gint fd_connect_unix	(const gchar *path);
 gint fd_open_unix	(const gchar *path);
@@ -105,5 +104,13 @@ gint fd_write		(gint sock, const gchar *buf, gint len);
 gint fd_gets		(gint sock, gchar *buf, gint len);
 gchar *fd_getline	(gint sock);
 gint fd_close		(gint sock);
+
+/* Functions for SSL */
+#if USE_SSL
+gint ssl_read(SSL *ssl, gchar *buf, gint len);
+gint ssl_write(SSL *ssl, const gchar *buf, gint len);
+gint ssl_gets(SSL *ssl, gchar *buf, gint len);
+gchar *ssl_getline(SSL *ssl);
+#endif
 
 #endif /* __SOCKET_H__ */

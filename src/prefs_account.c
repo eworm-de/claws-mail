@@ -126,9 +126,11 @@ static struct Privacy {
 
 #if USE_SSL
 static struct SSLPrefs {
+	GtkWidget *receive_frame;
 	GtkWidget *pop_chkbtn;
 	GtkWidget *imap_chkbtn;
 
+	GtkWidget *send_frame;
 	GtkWidget *smtp_nossl_radiobtn;
 	GtkWidget *smtp_ssltunnel_radiobtn;
 	GtkWidget *smtp_sslstarttls_radiobtn;
@@ -159,7 +161,7 @@ static void prefs_account_protocol_activated		(GtkMenuItem *menuitem);
 #if USE_GPGME || USE_SSL
 static void prefs_account_enum_set_data_from_radiobtn (PrefParam *pparam);
 static void prefs_account_enum_set_radiobtn		  (PrefParam *pparam);
-#endif /* USE_GPGME */
+#endif /* USE_GPGME || USE_SSL */
 
 static void prefs_account_nntpauth_toggled(GtkToggleButton *button,
 					   gpointer user_data);
@@ -302,19 +304,15 @@ static PrefParam param[] = {
 #endif /* USE_GPGME */
 
 #if USE_SSL
-	/* SSL Config */
-	{"ssl_smtp", "FALSE", &tmp_ac_prefs.ssl_smtp, P_ENUM,
+	/* SSL */
+	{"ssl_smtp", "0", &tmp_ac_prefs.ssl_smtp, P_ENUM,
 	 &ssl.smtp_nossl_radiobtn,
 	 prefs_account_enum_set_data_from_radiobtn,
 	 prefs_account_enum_set_radiobtn},
-
 	{"ssl_pop", "FALSE", &tmp_ac_prefs.ssl_pop, P_BOOL,
-	 &ssl.pop_chkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-
+	 &ssl.pop_chkbtn, prefs_set_data_from_toggle, prefs_set_toggle},
 	{"ssl_imap", "FALSE", &tmp_ac_prefs.ssl_imap, P_BOOL,
-	 &ssl.imap_chkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
+	 &ssl.imap_chkbtn, prefs_set_data_from_toggle, prefs_set_toggle},
 #endif /* USE_SSL */
 
 	/* Advanced */
@@ -596,7 +594,7 @@ static void prefs_account_create(void)
 #if USE_SSL
 	prefs_account_ssl_create();
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("SSL"), page++);
-#endif /* USE_GPGME */
+#endif /* USE_SSL */
 	prefs_account_advanced_create();
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Advanced"), page++);
 
@@ -1245,13 +1243,11 @@ static void prefs_account_ssl_create(void)
 	GtkWidget *smtp_ssltunnel_radiobtn;
 	GtkWidget *smtp_sslstarttls_radiobtn;
 
-	/* Vertial Box */
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), BOX_BORDER);
 
-	/* Receive Options */
 	PACK_FRAME (vbox1, receive_frame, _("Receive"));
 
 	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
@@ -1259,19 +1255,20 @@ static void prefs_account_ssl_create(void)
 	gtk_container_add (GTK_CONTAINER (receive_frame), vbox2);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
 
-	PACK_CHECK_BUTTON (vbox2, pop_chkbtn, _("Use SSL tunnel to connect to POP server"));
-	PACK_CHECK_BUTTON (vbox2, imap_chkbtn, _("Use SSL tunnel to connect to IMAP server"));
+	PACK_CHECK_BUTTON (vbox2, pop_chkbtn,
+			   _("Use SSL for POP3 connection"));
+	PACK_CHECK_BUTTON (vbox2, imap_chkbtn,
+			   _("Use SSL for IMAP4 connection"));
 
-	/* Send Options */
-	PACK_FRAME (vbox1, send_frame, _("Send"));
+	PACK_FRAME (vbox1, send_frame, _("Send (SMTP)"));
 
 	vbox3 = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox3);
 	gtk_container_add (GTK_CONTAINER (send_frame), vbox3);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox3), 8);
 
-	smtp_nossl_radiobtn = gtk_radio_button_new_with_label
-		(NULL, _("No SSL for SMTP"));
+	smtp_nossl_radiobtn =
+		gtk_radio_button_new_with_label(NULL, _("Don't use SSL"));
 	gtk_widget_show (smtp_nossl_radiobtn);
 	gtk_box_pack_start (GTK_BOX (vbox3), smtp_nossl_radiobtn,
 			    FALSE, FALSE, 0);
@@ -1280,7 +1277,7 @@ static void prefs_account_ssl_create(void)
 
 	smtp_ssltunnel_radiobtn = gtk_radio_button_new_with_label_from_widget
 		(GTK_RADIO_BUTTON (smtp_nossl_radiobtn),
-		 _("Use SSL tunnel to connect to SMTP server"));
+		 _("Use SSL for SMTP connection"));
 	gtk_widget_show (smtp_ssltunnel_radiobtn);
 	gtk_box_pack_start (GTK_BOX (vbox3), smtp_ssltunnel_radiobtn,
 			    FALSE, FALSE, 0);
@@ -1289,17 +1286,20 @@ static void prefs_account_ssl_create(void)
 
 	smtp_sslstarttls_radiobtn = gtk_radio_button_new_with_label_from_widget
 		(GTK_RADIO_BUTTON (smtp_nossl_radiobtn),
-		 _("Use STARTTLS command to start SMTP SSL session"));
+		 _("Use STARTTLS command to start SSL session"));
 	gtk_widget_show (smtp_sslstarttls_radiobtn);
 	gtk_box_pack_start (GTK_BOX (vbox3), smtp_sslstarttls_radiobtn,
 			    FALSE, FALSE, 0);
 	gtk_object_set_user_data (GTK_OBJECT (smtp_sslstarttls_radiobtn),
 				  GINT_TO_POINTER (SSL_SMTP_STARTTLS));
 
-	ssl.pop_chkbtn	= pop_chkbtn;
-	ssl.imap_chkbtn	= imap_chkbtn;
-	ssl.smtp_nossl_radiobtn = smtp_nossl_radiobtn;
-	ssl.smtp_ssltunnel_radiobtn = smtp_ssltunnel_radiobtn;
+	ssl.receive_frame = receive_frame;
+	ssl.pop_chkbtn    = pop_chkbtn;
+	ssl.imap_chkbtn   = imap_chkbtn;
+
+	ssl.send_frame                = send_frame;
+	ssl.smtp_nossl_radiobtn       = smtp_nossl_radiobtn;
+	ssl.smtp_ssltunnel_radiobtn   = smtp_ssltunnel_radiobtn;
 	ssl.smtp_sslstarttls_radiobtn = smtp_sslstarttls_radiobtn;
 }
 #endif /* USE_SSL */
@@ -1632,14 +1632,15 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 			(GTK_TOGGLE_BUTTON(basic.nntpauth_chkbtn), NULL);
 		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
 		gtk_widget_set_sensitive(receive.imap_frame, FALSE);
+#if USE_SSL
+		gtk_widget_set_sensitive(ssl.receive_frame, FALSE);
+		gtk_widget_set_sensitive(ssl.pop_chkbtn, FALSE);
+		gtk_widget_set_sensitive(ssl.imap_chkbtn, FALSE);
+		gtk_widget_set_sensitive(ssl.send_frame, FALSE);
+#endif
 		gtk_widget_hide(advanced.popport_hbox);
 		gtk_widget_hide(advanced.imapport_hbox);
 		gtk_widget_show(advanced.nntpport_hbox);
-
-#if USE_SSL
-		gtk_widget_set_sensitive(ssl.pop_chkbtn, FALSE);
-		gtk_widget_set_sensitive(ssl.imap_chkbtn, FALSE);
-#endif
 		break;
 	case A_LOCAL:
 		gtk_widget_set_sensitive(basic.inbox_label, TRUE);
@@ -1684,16 +1685,18 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
 		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
 		gtk_widget_set_sensitive(receive.imap_frame, FALSE);
-		gtk_widget_hide(advanced.popport_hbox);
-		gtk_widget_hide(advanced.imapport_hbox);
-		gtk_widget_hide(advanced.nntpport_hbox);
 		prefs_account_mailcmd_toggled
 			(GTK_TOGGLE_BUTTON(basic.mailcmd_chkbtn), NULL);
 
 #if USE_SSL
+		gtk_widget_set_sensitive(ssl.receive_frame, FALSE);
 		gtk_widget_set_sensitive(ssl.pop_chkbtn, FALSE);
 		gtk_widget_set_sensitive(ssl.imap_chkbtn, FALSE);
+		gtk_widget_set_sensitive(ssl.send_frame, TRUE);
 #endif
+		gtk_widget_hide(advanced.popport_hbox);
+		gtk_widget_hide(advanced.imapport_hbox);
+		gtk_widget_hide(advanced.nntpport_hbox);
 		break;
 	case A_IMAP4:
 		gtk_widget_set_sensitive(basic.inbox_label, FALSE);
@@ -1742,14 +1745,16 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(receive.imap_frame, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
+
+#if USE_SSL
+		gtk_widget_set_sensitive(ssl.receive_frame, TRUE);
+		gtk_widget_set_sensitive(ssl.pop_chkbtn, FALSE);
+		gtk_widget_set_sensitive(ssl.imap_chkbtn, TRUE);
+		gtk_widget_set_sensitive(ssl.send_frame, TRUE);
+#endif
 		gtk_widget_hide(advanced.popport_hbox);
 		gtk_widget_show(advanced.imapport_hbox);
 		gtk_widget_hide(advanced.nntpport_hbox);
-
-#if USE_SSL
-		gtk_widget_set_sensitive(ssl.pop_chkbtn, FALSE);
-		gtk_widget_set_sensitive(ssl.imap_chkbtn, TRUE);
-#endif
 		break;
 	case A_POP3:
 	default:
@@ -1799,14 +1804,16 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(receive.imap_frame, FALSE);
 		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
+
+#if USE_SSL
+		gtk_widget_set_sensitive(ssl.receive_frame, TRUE);
+		gtk_widget_set_sensitive(ssl.pop_chkbtn, TRUE);
+		gtk_widget_set_sensitive(ssl.imap_chkbtn, FALSE);
+		gtk_widget_set_sensitive(ssl.send_frame, TRUE);
+#endif
 		gtk_widget_show(advanced.popport_hbox);
 		gtk_widget_hide(advanced.imapport_hbox);
 		gtk_widget_hide(advanced.nntpport_hbox);
-
-#if USE_SSL
-		gtk_widget_set_sensitive(ssl.pop_chkbtn, TRUE);
-		gtk_widget_set_sensitive(ssl.imap_chkbtn, FALSE);
-#endif
 		break;
 	}
 

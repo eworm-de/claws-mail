@@ -474,8 +474,8 @@ static void prefs_filtering_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), dest_entry, TRUE, TRUE, 0);
 	
 	color_optmenu = gtk_option_menu_new();
-	gtk_option_menu_set_menu(GTK_OPTION_MENU(color_optmenu), 
-				 labelcolors_create_color_menu());
+	gtk_option_menu_set_menu(GTK_OPTION_MENU(color_optmenu),
+				 colorlabel_create_color_menu());
 //	gtk_widget_set_usize(color_optmenu, -1, -1);
 	gtk_box_pack_start(GTK_BOX(hbox1), color_optmenu, TRUE, TRUE, 0);
 
@@ -762,7 +762,7 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(void)
 		}
 		break;
 	case ACTION_COLOR:
-		labelcolor = labelcolors_get_color_menu_active_item(
+		labelcolor = colorlabel_get_color_menu_active_item(
 			gtk_option_menu_get_menu(GTK_OPTION_MENU(filtering.color_optmenu)));
 		destination = NULL;	
 		break;

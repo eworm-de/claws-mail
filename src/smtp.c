@@ -31,15 +31,11 @@
 static gint verbose = 1;
 static gchar smtp_response[MSGBUFSIZE];
 
-gint smtp_helo(SockInfo *sock, const char *hostname, gboolean use_smtp_auth)
+gint smtp_helo(SockInfo *sock, const gchar *hostname, gboolean esmtp)
 {
-	if (use_smtp_auth) {
-		sock_printf(sock, "EHLO %s\r\n", hostname);
-		if (verbose)
-			log_print("ESMTP> EHLO %s\n", hostname);
-
-		return esmtp_ok(sock);
-	} else {
+	if (esmtp)
+		return esmtp_ehlo(sock, hostname);
+	else {
 		sock_printf(sock, "HELO %s\r\n", hostname);
 		if (verbose)
 			log_print("SMTP> HELO %s\n", hostname);
@@ -66,7 +62,7 @@ gint smtp_from(SockInfo *sock, const gchar *from,
 		} else
 			authtype = SMTPAUTH_CRAM_MD5;
 
-		esmtp_auth(sock, authtype, userid, passwd, use_smtp_auth);
+		esmtp_auth(sock, authtype, userid, passwd);
 	}
 
 	if (strchr(from, '<'))
@@ -160,24 +156,3 @@ gint smtp_ok(SockInfo *sock)
 
 	return SM_UNRECOVERABLE;
 }
-
-#if USE_SSL
-gint smtp_starttls(SockInfo *sock, const char *hostname, gboolean use_smtp_auth)
-{
-	gint ret;
-
-	sock_printf(sock, "STARTTLS\r\n", hostname);
-	if (verbose)
-		log_print("SMTP> STARTTLS\n", hostname);
-
-	ret = smtp_ok(sock);
-	if(ret != SM_OK)
-		return ret;
-		
-	if(!ssl_init_socket_with_method(sock, SSL_METHOD_TLSv1)) {
-		return SM_ERROR;
-	}
-
-	return smtp_helo(sock, hostname, use_smtp_auth);
-}
-#endif

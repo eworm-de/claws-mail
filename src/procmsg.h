@@ -42,28 +42,27 @@ typedef enum
 	
 	MSG_REALLY_DELETED = 1 << 6,		/* mbox stuff */
 
-#define MSG_LABEL_SBIT (7)		/* start bit message label */
-#define MAKE_MSG_LABEL(h, m, l) (((h) << (MSG_LABEL_SBIT+2)) | \
-				((m) << (MSG_LABEL_SBIT+1)) | \
-				((l) << (MSG_LABEL_SBIT+0)))
-				
-	MSG_LABEL	= MAKE_MSG_LABEL(1, 1, 1),
-	MSG_LABEL_NONE  = MAKE_MSG_LABEL(0, 0, 0),
-	MSG_LABEL_1	= MAKE_MSG_LABEL(0, 0, 1),
-	MSG_LABEL_2	= MAKE_MSG_LABEL(0, 1, 0),
-	MSG_LABEL_3	= MAKE_MSG_LABEL(0, 1, 1),
-	MSG_LABEL_4	= MAKE_MSG_LABEL(1, 0, 0),
-	MSG_LABEL_5	= MAKE_MSG_LABEL(1, 0, 1),
-	MSG_LABEL_6	= MAKE_MSG_LABEL(1, 1, 0),
-	MSG_LABEL_7	= MAKE_MSG_LABEL(1, 1, 1),
+#define MSG_CLABEL_SBIT	(7)		/* start bit of color label */
+#define MAKE_MSG_CLABEL(h, m, l)	(((h) << (MSG_CLABEL_SBIT + 2)) | \
+					 ((m) << (MSG_CLABEL_SBIT + 1)) | \
+					 ((l) << (MSG_CLABEL_SBIT + 0)))
 
-#define MSG_LABEL_ORANGE   (MSG_LABEL_1)
-#define MSG_LABEL_RED      (MSG_LABEL_2)
-#define MSG_LABEL_PINK     (MSG_LABEL_3)
-#define MSG_LABEL_SKYBLUE  (MSG_LABEL_4)
-#define MSG_LABEL_BLUE     (MSG_LABEL_5)
-#define MSG_LABEL_GREEN    (MSG_LABEL_6)
-#define MSG_LABEL_BROWN    (MSG_LABEL_7)
+	MSG_CLABEL_NONE = MAKE_MSG_CLABEL(0, 0, 0),
+	MSG_CLABEL_1    = MAKE_MSG_CLABEL(0, 0, 1),
+	MSG_CLABEL_2    = MAKE_MSG_CLABEL(0, 1, 0),
+	MSG_CLABEL_3    = MAKE_MSG_CLABEL(0, 1, 1),
+	MSG_CLABEL_4    = MAKE_MSG_CLABEL(1, 0, 0),
+	MSG_CLABEL_5    = MAKE_MSG_CLABEL(1, 0, 1),
+	MSG_CLABEL_6    = MAKE_MSG_CLABEL(1, 1, 0),
+	MSG_CLABEL_7    = MAKE_MSG_CLABEL(1, 1, 1),
+
+#define MSG_CLABEL_ORANGE	MSG_CLABEL_1
+#define MSG_CLABEL_RED		MSG_CLABEL_2
+#define MSG_CLABEL_PINK		MSG_CLABEL_3
+#define MSG_CLABEL_SKYBLUE	MSG_CLABEL_4
+#define MSG_CLABEL_BLUE		MSG_CLABEL_5
+#define MSG_CLABEL_GREEN	MSG_CLABEL_6
+#define MSG_CLABEL_BROWN	MSG_CLABEL_7
 
 	MSG_IGNORE_THREAD   = 1 << 10,   /* ignore threads */
 
@@ -72,11 +71,13 @@ typedef enum
 	MSG_RESERVED_MAIN   = 1 << 31	/* for sylpheed-main  */
 } MsgPermFlags;
 
+#define MSG_CLABEL_FLAG_MASK	(MSG_CLABEL_7)
+
 typedef enum
 {
 	MSG_MOVE	= 1 << 0,
 	MSG_COPY	= 1 << 1,
-	
+
 	MSG_QUEUED	= 1 << 16,
 	MSG_DRAFT	= 1 << 17,
 	MSG_ENCRYPTED   = 1 << 18,
@@ -86,10 +87,11 @@ typedef enum
 	MSG_FILTERING   = 1 << 25,	/* claws: re/set by filtering */
 
 	MSG_MIME	= 1 << 29,
+
 	MSG_CACHED	= 1 << 31
 } MsgTmpFlags;
 
-#define MSG_CACHED_FLAG_MASK		(MSG_MIME)
+#define MSG_CACHED_FLAG_MASK	(MSG_MIME)
 
 #define MSG_SET_FLAGS(msg, flags)	{ (msg) |= (flags); }
 #define MSG_UNSET_FLAGS(msg, flags)	{ (msg) &= ~(flags); }
@@ -109,6 +111,11 @@ typedef enum
 #define MSG_IS_REPLIED(msg)		(((msg).perm_flags & MSG_REPLIED) != 0)
 #define MSG_IS_FORWARDED(msg)		(((msg).perm_flags & MSG_FORWARDED) != 0)
 
+#define MSG_GET_COLORLABEL(msg)		(((msg).perm_flags & MSG_CLABEL_FLAG_MASK))
+#define MSG_GET_COLORLABEL_VALUE(msg)	(MSG_GET_COLORLABEL(msg) >> MSG_CLABEL_SBIT)
+#define MSG_SET_COLORLABEL_VALUE(msg, val) \
+	MSG_SET_PERM_FLAGS(msg, ((((guint)(val)) & 7) << MSG_CLABEL_SBIT))
+
 #define MSG_IS_MOVE(msg)		(((msg).tmp_flags & MSG_MOVE) != 0)
 #define MSG_IS_COPY(msg)		(((msg).tmp_flags & MSG_COPY) != 0)
 
@@ -123,10 +130,6 @@ typedef enum
 /* Claws related flags */
 #define MSG_IS_REALLY_DELETED(msg)	(((msg).perm_flags & MSG_REALLY_DELETED) != 0)
 #define MSG_IS_IGNORE_THREAD(msg)	(((msg).perm_flags & MSG_IGNORE_THREAD) != 0)
-#define MSG_GET_LABEL(msg)		(((msg).perm_flags & MSG_LABEL))
-#define MSG_GET_LABEL_VALUE(msg)	(MSG_GET_LABEL(msg) >> MSG_LABEL_SBIT)
-/* 7 == nr. of colors excl. none */
-#define MSG_SET_LABEL_VALUE(msg, val)	MSG_SET_PERM_FLAGS(msg, ((((unsigned)(val)) & 7) << MSG_LABEL_SBIT))
 #define MSG_IS_FILTERING(msg)		(((msg).tmp_flags  & MSG_FILTERING) != 0)
 
 

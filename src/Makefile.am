@@ -13,6 +13,7 @@ sylpheed_SOURCES = \
 	imageview.c imageview.h \
 	mimeview.c mimeview.h \
 	summary_search.c summary_search.h \
+	colorlabel.c colorlabel.h \
 	folder.c folder.h \
 	procmsg.c procmsg.h \
 	procheader.c procheader.h \
@@ -54,6 +55,7 @@ sylpheed_SOURCES = \
 	md5.c md5.h \
 	rfc822.c rfc822.h \
 	socket.c socket.h \
+	ssl.c ssl.h \
 	automaton.c automaton.h \
 	session.c session.h \
 	smtp.c smtp.h \
@@ -98,8 +100,6 @@ sylpheed_SOURCES = \
 	editjpilot.c editjpilot.h \
 	editldap.c editldap.h \
 	editldap_basedn.c editldap_basedn.h \
-	labelcolors.c labelcolors.h \
-	ssl.c ssl.h \
 	gtkspell.c gtkspell.h gtkxtext.h \
 	template.c template.h \
 	prefs_templates.c prefs_templates.h \

@@ -92,8 +92,8 @@ struct _SummaryView
 	GtkWidget *toggle_eventbox;
 	GtkWidget *toggle_arrow;
 	GtkWidget *popupmenu;
-	GtkWidget *label_menu_item; /* label menu item */
-	GtkWidget *label_menu;	    /* label menu itself */
+	GtkWidget *colorlabel_menu;
+	GtkWidget *colorlabel_menu_item;
 
 	GtkItemFactory *popupfactory;
 
@@ -204,7 +204,12 @@ void summary_mark_as_unread	  (SummaryView		*summaryview);
 void summary_mark_as_read	  (SummaryView		*summaryview);
 void summary_select_all		  (SummaryView		*summaryview);
 void summary_unselect_all	  (SummaryView		*summaryview);
-void summary_set_label		  (SummaryView		*summaryview, guint labelcolor, GtkWidget *widget);
-void summary_set_label_color	  (GtkCTree *ctree, GtkCTreeNode *node, guint labelcolor);
+
+void summary_set_colorlabel	  (SummaryView		*summaryview,
+				   guint		 labelcolor,
+				   GtkWidget		*widget);
+void summary_set_colorlabel_color (GtkCTree		*ctree,
+				   GtkCTreeNode		*node,
+				   guint		 labelcolor);
 
 #endif /* __SUMMARY_H__ */
