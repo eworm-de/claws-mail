@@ -1,3 +1,13 @@
+2002-11-22 [paul]	0.8.5claws176
+
+	* src/textview.c
+		textview_set_font(): fix for message display in
+	  	UTF-8 locales (thanks to Sergey Vlasov).
+		
+	* AUTHORS
+		add new team members and contributors
+
+
 2002-11-21 [colin]	0.8.5claws175
 
 	* src/procmsg.[ch]
