@@ -77,7 +77,7 @@ void msgcache_add_msg(MsgCache *cache, MsgInfo *msginfo)
 	cache->memusage += procmsg_msginfo_memusage(msginfo);
 	cache->last_access = time(NULL);
 
-	debug_print(_("Cache size: %d messages, %d byte\n"), g_hash_table_size(cache->msgnum_table), cache->memusage);
+	debug_print("Cache size: %d messages, %d byte\n", g_hash_table_size(cache->msgnum_table), cache->memusage);
 }
 
 void msgcache_remove_msg(MsgCache *cache, guint msgnum)
@@ -98,7 +98,7 @@ void msgcache_remove_msg(MsgCache *cache, guint msgnum)
 	procmsg_msginfo_free(msginfo);
 	cache->last_access = time(NULL);
 
-	debug_print(_("Cache size: %d messages, %d byte\n"), g_hash_table_size(cache->msgnum_table), cache->memusage);
+	debug_print("Cache size: %d messages, %d byte\n", g_hash_table_size(cache->msgnum_table), cache->memusage);
 }
 
 void msgcache_update_msg(MsgCache *cache, MsgInfo *msginfo)
@@ -123,7 +123,7 @@ void msgcache_update_msg(MsgCache *cache, MsgInfo *msginfo)
 	cache->memusage += procmsg_msginfo_memusage(newmsginfo);
 	cache->last_access = time(NULL);
 	
-	debug_print(_("Cache size: %d messages, %d byte\n"), g_hash_table_size(cache->msgnum_table), cache->memusage);
+	debug_print("Cache size: %d messages, %d byte\n", g_hash_table_size(cache->msgnum_table), cache->memusage);
 
 	return;
 }
@@ -205,17 +205,17 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 	g_return_val_if_fail(item != NULL, NULL);
 
 	if ((fp = fopen(cache_file, "rb")) == NULL) {
-		debug_print(_("\tNo cache file\n"));
+		debug_print("\tNo cache file\n");
 		return NULL;
 	}
 	setvbuf(fp, file_buf, _IOFBF, sizeof(file_buf));
 
-	debug_print(_("\tReading message cache from %s...\n"), cache_file);
+	debug_print("\tReading message cache from %s...\n", cache_file);
 
 	/* compare cache version */
 	if (fread(&ver, sizeof(ver), 1, fp) != 1 ||
 	    CACHE_VERSION != ver) {
-		debug_print(_("Cache version is different. Discarding it.\n"));
+		debug_print("Cache version is different. Discarding it.\n");
 		fclose(fp);
 		return NULL;
 	}
@@ -267,8 +267,8 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 	cache->last_access = time(NULL);
 	g_hash_table_thaw(cache->msgnum_table);
 
-	debug_print(_("done. (%d items read)\n"), g_hash_table_size(cache->msgnum_table));
-	debug_print(_("Cache size: %d messages, %d byte\n"), g_hash_table_size(cache->msgnum_table), cache->memusage);
+	debug_print("done. (%d items read)\n", g_hash_table_size(cache->msgnum_table));
+	debug_print("Cache size: %d messages, %d byte\n", g_hash_table_size(cache->msgnum_table), cache->memusage);
 
 	return cache;
 }
@@ -282,13 +282,13 @@ void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
 	guint num;
 
 	if ((fp = fopen(mark_file, "rb")) == NULL) {
-		debug_print(_("Mark file not found.\n"));
+		debug_print("Mark file not found.\n");
 		return;
 	} else if (fread(&ver, sizeof(ver), 1, fp) != 1 || MARK_VERSION != ver) {
-		debug_print(_("Mark version is different (%d != %d). "
-			      "Discarding it.\n"), ver, MARK_VERSION);
+		debug_print("Mark version is different (%d != %d). "
+			      "Discarding it.\n", ver, MARK_VERSION);
 	} else {
-		debug_print(_("\tReading message marks from %s...\n"), mark_file);
+		debug_print("\tReading message marks from %s...\n", mark_file);
 
 		while (fread(&num, sizeof(num), 1, fp) == 1) {
 			if (fread(&perm_flags, sizeof(perm_flags), 1, fp) != 1) break;
@@ -379,7 +379,7 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *c
 	g_return_val_if_fail(mark_file != NULL, -1);
 	g_return_val_if_fail(cache != NULL, -1);
 
-	debug_print(_("\tWriting message cache to %s and %s...\n"), cache_file, mark_file);
+	debug_print("\tWriting message cache to %s and %s...\n", cache_file, mark_file);
 
 	if ((fp = fopen(cache_file, "wb")) == NULL) {
 		FILE_OP_ERROR(cache_file, "fopen");
@@ -409,7 +409,7 @@ gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *c
 
 	cache->last_access = time(NULL);
 
-	debug_print(_("done.\n"));
+	debug_print("done.\n");
 	return 0;
 }
 

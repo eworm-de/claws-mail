@@ -457,7 +457,7 @@ SummaryView *summary_create(void)
 	GtkItemFactory *popupfactory;
 	gint n_entries;
 
-	debug_print(_("Creating summary view...\n"));
+	debug_print("Creating summary view...\n");
 	summaryview = g_new0(SummaryView, 1);
 
 	vbox = gtk_vbox_new(FALSE, 2);
@@ -735,7 +735,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	     ((buf = folder_item_get_path(item)) == NULL ||
 	      change_dir(buf) < 0))) {
 		g_free(buf);
-		debug_print(_("empty folder\n\n"));
+		debug_print("empty folder\n\n");
 		summary_set_hide_read_msgs_menu(summaryview, FALSE);
 		if (is_refresh)
 			messageview_clear(summaryview->messageview);
@@ -1511,7 +1511,7 @@ void summary_attract_by_subject(SummaryView *summaryview)
 	MsgInfo *src_msginfo, *dst_msginfo;
 	GHashTable *subject_table;
 
-	debug_print(_("Attracting messages by subject..."));
+	debug_print("Attracting messages by subject...");
 	STATUSBAR_PUSH(summaryview->mainwin,
 		       _("Attracting messages by subject..."));
 
@@ -1557,7 +1557,7 @@ void summary_attract_by_subject(SummaryView *summaryview)
 
 	gtk_clist_thaw(clist);
 
-	debug_print(_("done.\n"));
+	debug_print("done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
 
 	main_window_cursor_normal(summaryview->mainwin);
@@ -1887,7 +1887,7 @@ void summary_sort(SummaryView *summaryview,
 		return;
 	}
 
-	debug_print(_("Sorting summary..."));
+	debug_print("Sorting summary...");
 	STATUSBAR_PUSH(summaryview->mainwin, _("Sorting summary..."));
 
 	main_window_cursor_wait(summaryview->mainwin);
@@ -1905,7 +1905,7 @@ void summary_sort(SummaryView *summaryview,
 
 	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
 
-	debug_print(_("done.\n"));
+	debug_print("done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
 
 	main_window_cursor_normal(summaryview->mainwin);
@@ -1960,7 +1960,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	
 	if (!mlist) return;
 
-	debug_print(_("\tSetting summary from message data..."));
+	debug_print("\tSetting summary from message data...");
 	STATUSBAR_PUSH(summaryview->mainwin,
 		       _("Setting summary from message data..."));
 	gdk_flush();
@@ -2043,7 +2043,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	if (prefs_common.use_addr_book)
 		end_address_completion();
 
-	debug_print(_("done.\n"));
+	debug_print("done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
 	if (debug_mode) {
 		debug_print("\tmsgid hash table size = %d\n",
@@ -2527,7 +2527,7 @@ static void summary_mark_row(SummaryView *summaryview, GtkCTreeNode *row)
 	procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, MSG_MOVE | MSG_COPY);
 	procmsg_msginfo_set_flags(msginfo, MSG_MARKED, 0);
 	summary_set_row_marks(summaryview, row);
-	debug_print(_("Message %s/%d is marked\n"), msginfo->folder->path, msginfo->msgnum);
+	debug_print("Message %s/%d is marked\n", msginfo->folder->path, msginfo->msgnum);
 }
 
 static void summary_lock_row(SummaryView *summaryview, GtkCTreeNode *row)
@@ -2557,7 +2557,7 @@ static void summary_lock_row(SummaryView *summaryview, GtkCTreeNode *row)
 	procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, MSG_MOVE | MSG_COPY);
 	procmsg_msginfo_set_flags(msginfo, MSG_LOCKED, 0);
 	summary_set_row_marks(summaryview, row);
-	debug_print(_("Message %d is locked\n"), msginfo->msgnum);
+	debug_print("Message %d is locked\n", msginfo->msgnum);
 }
 
 void summary_mark(SummaryView *summaryview)
@@ -2590,7 +2590,7 @@ static void summary_mark_row_as_read(SummaryView *summaryview,
 
 	procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
 	summary_set_row_marks(summaryview, row);
-	debug_print(_("Message %d is marked as read\n"),
+	debug_print("Message %d is marked as read\n",
 		msginfo->msgnum);
 }
 
@@ -2644,7 +2644,7 @@ static void summary_mark_row_as_unread(SummaryView *summaryview,
 
 	procmsg_msginfo_unset_flags(msginfo, MSG_REPLIED | MSG_FORWARDED, 0);
 	procmsg_msginfo_set_flags(msginfo, MSG_UNREAD, 0);
-	debug_print(_("Message %d is marked as unread\n"),
+	debug_print("Message %d is marked as unread\n",
 		msginfo->msgnum);
 
 	summary_set_row_marks(summaryview, row);
@@ -2748,7 +2748,7 @@ static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 	    summaryview->folder_item->stype != F_TRASH)
 		summary_set_row_marks(summaryview, row);
 
-	debug_print(_("Message %s/%d is set to delete\n"),
+	debug_print("Message %s/%d is set to delete\n",
 		    msginfo->folder->path, msginfo->msgnum);
 }
 
@@ -2813,7 +2813,7 @@ void summary_delete_duplicated(SummaryView *summaryview)
 	if (summaryview->folder_item->stype == F_TRASH) return;
 
 	main_window_cursor_wait(summaryview->mainwin);
-	debug_print(_("Deleting duplicated messages..."));
+	debug_print("Deleting duplicated messages...");
 	STATUSBAR_PUSH(summaryview->mainwin,
 		       _("Deleting duplicated messages..."));
 
@@ -2826,7 +2826,7 @@ void summary_delete_duplicated(SummaryView *summaryview)
 	else
 		summary_status_show(summaryview);
 
-	debug_print(_("done.\n"));
+	debug_print("done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
 	main_window_cursor_normal(summaryview->mainwin);
 }
@@ -2871,7 +2871,7 @@ static void summary_unmark_row(SummaryView *summaryview, GtkCTreeNode *row)
 	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, MSG_MOVE | MSG_COPY);
 	summary_set_row_marks(summaryview, row);
 
-	debug_print(_("Message %s/%d is unmarked\n"),
+	debug_print("Message %s/%d is unmarked\n",
 		    msginfo->folder->path, msginfo->msgnum);
 }
 
@@ -2928,7 +2928,7 @@ static void summary_move_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 		}
 	}
 
-	debug_print(_("Message %d is set to move to %s\n"),
+	debug_print("Message %d is set to move to %s\n",
 		    msginfo->msgnum, to_folder->path);
 }
 
@@ -3017,7 +3017,7 @@ static void summary_copy_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 		}
 	}
 
-	debug_print(_("Message %d is set to copy to %s\n"),
+	debug_print("Message %d is set to copy to %s\n",
 		    msginfo->msgnum, to_folder->path);
 }
 
@@ -3397,7 +3397,7 @@ void summary_thread_build(SummaryView *summaryview)
 
 	summary_lock(summaryview);
 
-	debug_print(_("Building threads..."));
+	debug_print("Building threads...");
 	STATUSBAR_PUSH(summaryview->mainwin, _("Building threads..."));
 	main_window_cursor_wait(summaryview->mainwin);
 
@@ -3451,7 +3451,7 @@ void summary_thread_build(SummaryView *summaryview)
 	gtk_signal_handler_unblock_by_func(GTK_OBJECT(ctree),
 					   summary_tree_expanded, summaryview);
 
-	debug_print(_("done.\n"));
+	debug_print("done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
 	main_window_cursor_normal(summaryview->mainwin);
 
@@ -3491,7 +3491,7 @@ void summary_unthread(SummaryView *summaryview)
 
 	summary_lock(summaryview);
 
-	debug_print(_("Unthreading..."));
+	debug_print("Unthreading...");
 	STATUSBAR_PUSH(summaryview->mainwin, _("Unthreading..."));
 	main_window_cursor_wait(summaryview->mainwin);
 	
@@ -3518,7 +3518,7 @@ void summary_unthread(SummaryView *summaryview)
 	gtk_signal_handler_unblock_by_func(GTK_OBJECT(ctree),
 					   summary_tree_collapsed, summaryview);
 
-	debug_print(_("done.\n"));
+	debug_print("done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
 	main_window_cursor_normal(summaryview->mainwin);
 
@@ -3532,7 +3532,7 @@ static void summary_unthread_for_exec(SummaryView *summaryview)
 
 	summary_lock(summaryview);
 
-	debug_print(_("Unthreading for execution..."));
+	debug_print("Unthreading for execution...");
 
 	gtk_clist_freeze(GTK_CLIST(ctree));
 
@@ -3543,7 +3543,7 @@ static void summary_unthread_for_exec(SummaryView *summaryview)
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
 
-	debug_print(_("done.\n"));
+	debug_print("done.\n");
 
 	summary_unlock(summaryview);
 }
@@ -3625,7 +3625,7 @@ void summary_filter(SummaryView *summaryview)
 
 	summary_lock(summaryview);
 
-	debug_print(_("filtering..."));
+	debug_print("filtering...");
 	STATUSBAR_PUSH(summaryview->mainwin, _("Filtering..."));
 	main_window_cursor_wait(summaryview->mainwin);
 
@@ -3661,7 +3661,7 @@ void summary_filter(SummaryView *summaryview)
 		summaryview->folder_table = NULL;
 	}
 
-	debug_print(_("done.\n"));
+	debug_print("done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
 	main_window_cursor_normal(summaryview->mainwin);
 
@@ -4764,10 +4764,10 @@ static void news_flag_crosspost(MsgInfo *msginfo)
 	if (mff->account->mark_crosspost_read && MSG_IS_NEWS(msginfo->flags)) {
 		line = g_string_sized_new(128);
 		g_string_sprintf(line, "%s:%d", msginfo->folder->path, msginfo->msgnum);
-		debug_print(_("nfcp: checking <%s>"), line->str);
+		debug_print("nfcp: checking <%s>", line->str);
 		if (mff->newsart && 
 		    g_hash_table_lookup_extended(mff->newsart, line->str, &key, &value)) {
-			debug_print(_(" <%s>"), (gchar *)value);
+			debug_print(" <%s>", (gchar *)value);
 			if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
 				procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
 				procmsg_msginfo_set_flags(msginfo, mff->account->crosspost_col, 0);
@@ -4776,7 +4776,7 @@ static void news_flag_crosspost(MsgInfo *msginfo)
 			g_free(key);
 		}
 		g_string_free(line, TRUE);
-		debug_print(_("\n"));
+		debug_print("\n");
 	}
 }
 
@@ -4811,7 +4811,7 @@ static void summary_select_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpoin
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 	gtk_ctree_select(GTK_CTREE(ctree), row);	
-	debug_print(_("Message %d selected\n"), msginfo->msgnum);
+	debug_print("Message %d selected\n", msginfo->msgnum);
 }
 
 /* select current thread */
@@ -4849,7 +4849,7 @@ static void summary_ignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpoin
 	procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 
 	summary_set_row_marks(summaryview, row);
-	debug_print(_("Message %d is marked as ignore thread\n"),
+	debug_print("Message %d is marked as ignore thread\n",
 	    msginfo->msgnum);
 }
 
@@ -4880,7 +4880,7 @@ static void summary_unignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpo
 	procmsg_msginfo_unset_flags(msginfo, MSG_IGNORE_THREAD, 0);
 
 	summary_set_row_marks(summaryview, row);
-	debug_print(_("Message %d is marked as unignore thread\n"),
+	debug_print("Message %d is marked as unignore thread\n",
 	    msginfo->msgnum);
 }
 

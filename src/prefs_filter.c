@@ -188,7 +188,7 @@ static void prefs_filter_create(void)
 
 	gchar *title[1];
 
-	debug_print(_("Creating filter setting window...\n"));
+	debug_print("Creating filter setting window...\n");
 
 	window = gtk_window_new (GTK_WINDOW_DIALOG);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
@@ -494,7 +494,7 @@ void prefs_filter_read_config(void)
 	gchar buf[PREFSBUFSIZE];
 	Filter *flt;
 
-	debug_print(_("Reading filter configuration...\n"));
+	debug_print("Reading filter configuration...\n");
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, FILTER_RC, NULL);
 	if ((fp = fopen(rcpath, "rb")) == NULL) {
@@ -530,7 +530,7 @@ void prefs_filter_write_config(void)
 	PrefFile *pfile;
 	GSList *cur;
 
-	debug_print(_("Writing filter configuration...\n"));
+	debug_print("Writing filter configuration...\n");
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, FILTER_RC, NULL);
 	if ((pfile = prefs_write_open(rcpath)) == NULL) {

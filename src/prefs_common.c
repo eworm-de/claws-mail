@@ -950,7 +950,7 @@ static void prefs_common_create(void)
 {
 	gint page = 0;
 
-	debug_print(_("Creating common preferences window...\n"));
+	debug_print("Creating common preferences window...\n");
 
 	prefs_dialog_create(&dialog);
 	gtk_window_set_title (GTK_WINDOW(dialog.window),

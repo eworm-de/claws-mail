@@ -187,7 +187,7 @@ void log_window_clear(GtkWidget *text)
 	guint point;
 	
 	length = gtk_text_get_length (GTK_TEXT (text));
-	debug_print(_("Log window length: %u\n"), length);
+	debug_print("Log window length: %u\n", length);
 	
 	if (length > prefs_common.loglength) {
 		gchar *lf;

@@ -325,7 +325,7 @@ static void prefs_filtering_create(void)
 
 	gchar *title[1];
 
-	debug_print(_("Creating filtering setting window...\n"));
+	debug_print("Creating filtering setting window...\n");
 
 	window = gtk_window_new (GTK_WINDOW_DIALOG);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);

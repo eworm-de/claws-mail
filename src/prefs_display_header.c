@@ -175,7 +175,7 @@ static void prefs_display_header_create(void)
 
 	gchar *title[1];
 
-	debug_print(_("Creating display header setting window...\n"));
+	debug_print("Creating display header setting window...\n");
 
 	window = gtk_window_new (GTK_WINDOW_DIALOG);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
@@ -367,7 +367,7 @@ void prefs_display_header_read_config(void)
 	gchar buf[PREFSBUFSIZE];
 	DisplayHeaderProp *dp;
 
-	debug_print(_("Reading configuration for displaying headers...\n"));
+	debug_print("Reading configuration for displaying headers...\n");
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			     DISPLAY_HEADER_RC, NULL);
@@ -405,7 +405,7 @@ void prefs_display_header_write_config(void)
 	PrefFile *pfile;
 	GSList *cur;
 
-	debug_print(_("Writing configuration for displaying headers...\n"));
+	debug_print("Writing configuration for displaying headers...\n");
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			     DISPLAY_HEADER_RC, NULL);

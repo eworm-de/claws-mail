@@ -620,7 +620,7 @@ PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs)
 	if (prefs_rc_is_readonly(ACCOUNT_RC))
 		return ac_prefs;
 
-	debug_print(_("Opening account preferences window...\n"));
+	debug_print("Opening account preferences window...\n");
 
 	inc_lock();
 
@@ -702,7 +702,7 @@ static void prefs_account_create(void)
 {
 	gint page = 0;
 
-	debug_print(_("Creating account preferences window...\n"));
+	debug_print("Creating account preferences window...\n");
 
 	/* create dialog */
 	prefs_dialog_create(&dialog);

@@ -73,7 +73,7 @@ SourceWindow *source_window_create(void)
 	GtkWidget *scrolledwin;
 	GtkWidget *text;
 
-	debug_print(_("Creating source window...\n"));
+	debug_print("Creating source window...\n");
 	sourcewin = g_new0(SourceWindow, 1);
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -138,7 +138,7 @@ void source_window_show_msg(SourceWindow *sourcewin, MsgInfo *msginfo)
 		return;
 	}
 
-	debug_print(_("Displaying the source of %s ...\n"), file);
+	debug_print("Displaying the source of %s ...\n", file);
 
 	title = g_strdup_printf(_("%s - Source"), file);
 	gtk_window_set_title(GTK_WINDOW(sourcewin->window), title);

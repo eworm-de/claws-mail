@@ -190,7 +190,7 @@ void mh_get_last_num(Folder *folder, FolderItem *item)
 	}
 	closedir(dp);
 
-	debug_print(_("Last number in dir %s = %d\n"), item->path, max);
+	debug_print("Last number in dir %s = %d\n", item->path, max);
 	item->last_num = max;
 }
 
@@ -458,7 +458,7 @@ static gint mh_do_move(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	destfile = mh_get_new_msg_filename(dest);
 	g_return_val_if_fail(destfile != NULL, -1);
 
-	debug_print(_("Moving message %s%c%d to %s ...\n"),
+	debug_print("Moving message %s%c%d to %s ...\n",
 		    msginfo->folder->path, G_DIR_SEPARATOR,
 		    msginfo->msgnum, dest->path);
 	srcfile = procmsg_get_message_file(msginfo);
@@ -555,7 +555,7 @@ static gint mh_do_move_msgs_with_dest(Folder *folder, FolderItem *dest,
 			g_warning(_("the src folder is identical to the dest.\n"));
 			continue;
 		}
-		debug_print(_("Moving message %s%c%d to %s ...\n"),
+		debug_print("Moving message %s%c%d to %s ...\n",
 			    msginfo->folder->path, G_DIR_SEPARATOR,
 			    msginfo->msgnum, dest->path);
 
@@ -623,7 +623,7 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	destfile = mh_get_new_msg_filename(dest);
 	g_return_val_if_fail(destfile != NULL, -1);
 
-	debug_print(_("Copying message %s%c%d to %s ...\n"),
+	debug_print("Copying message %s%c%d to %s ...\n",
 		    msginfo->folder->path, G_DIR_SEPARATOR,
 		    msginfo->msgnum, dest->path);
 
@@ -723,7 +723,7 @@ gint mh_copy_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 			g_warning(_("the src folder is identical to the dest.\n"));
 			continue;
 		}
-		debug_print(_("Copying message %s%c%d to %s ...\n"),
+		debug_print("Copying message %s%c%d to %s ...\n",
 			    msginfo->folder->path, G_DIR_SEPARATOR,
 			    msginfo->msgnum, dest->path);
 
@@ -850,7 +850,7 @@ gint mh_scan_folder(Folder *folder, FolderItem *item)
 		item->total = n_msg;
 	}
 */
-	debug_print(_("Last number in dir %s = %d\n"), item->path, max);
+	debug_print("Last number in dir %s = %d\n", item->path, max);
 	item->last_num = max;
 
 	return 0;
@@ -1050,7 +1050,7 @@ static GSList *mh_get_uncached_msgs(GHashTable *msg_table, FolderItem *item)
 		return NULL;
 	}
 
-	debug_print(_("\tSearching uncached messages... "));
+	debug_print("\tSearching uncached messages... ");
 
 	if (msg_table) {
 		while ((d = readdir(dp)) != NULL) {
@@ -1105,16 +1105,16 @@ static GSList *mh_get_uncached_msgs(GHashTable *msg_table, FolderItem *item)
 	closedir(dp);
 
 	if (n_newmsg)
-		debug_print(_("%d uncached message(s) found.\n"), n_newmsg);
+		debug_print("%d uncached message(s) found.\n", n_newmsg);
 	else
-		debug_print(_("done.\n"));
+		debug_print("done.\n");
 
 	/* sort new messages in numerical order */
 	if (newlist) {
-		debug_print(_("\tSorting uncached messages in numerical order... "));
+		debug_print("\tSorting uncached messages in numerical order... ");
 		newlist = g_slist_sort
 			(newlist, (GCompareFunc)procmsg_cmp_msgnum_for_sort);
-		debug_print(_("done.\n"));
+		debug_print("done.\n");
 	}
 
 	return newlist;

@@ -59,7 +59,7 @@ NoticeView *noticeview_create(void)
 	GtkWidget  *text;
 	GtkWidget  *widget;
 
-	debug_print(_("Creating notice view...\n"));
+	debug_print("Creating notice view...\n");
 	noticeview = g_new0(NoticeView, 1);
 
 	vbox = gtk_vbox_new(FALSE, 4);

@@ -84,7 +84,7 @@ HeaderView *headerview_create(void)
 	GtkWidget *subject_header_label;
 	GtkWidget *subject_body_label;
 
-	debug_print(_("Creating header view...\n"));
+	debug_print("Creating header view...\n");
 	headerview = g_new0(HeaderView, 1);
 
 	hbox = gtk_hbox_new(FALSE, 0);

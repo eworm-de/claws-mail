@@ -725,7 +725,7 @@ MainWindow *main_window_create(SeparateType type)
 
 	static GdkGeometry geometry;
 
-	debug_print(_("Creating main window...\n"));
+	debug_print("Creating main window...\n");
 	mainwin = g_new0(MainWindow, 1);
 
 	/* main window */
@@ -888,7 +888,7 @@ MainWindow *main_window_create(SeparateType type)
 			g_warning(_("MainWindow: color allocation %d failed\n"), i);
 	}
 
-	debug_print(_("done.\n"));
+	debug_print("done.\n");
 
 	messageview->visible = TRUE;
 
@@ -1133,7 +1133,7 @@ void main_window_separation_change(MainWindow *mainwin, SeparateType type)
 	GtkWidget *summary_wid = GTK_WIDGET_PTR(mainwin->summaryview);
 	GtkWidget *message_wid = GTK_WIDGET_PTR(mainwin->messageview);
 
-	debug_print(_("Changing window separation type from %d to %d\n"),
+	debug_print("Changing window separation type from %d to %d\n",
 		    mainwin->type, type);
 
 	if (mainwin->type == type) return;
@@ -1271,7 +1271,7 @@ void main_window_get_position(MainWindow *mainwin)
 	prefs_common.mainwin_x = x;
 	prefs_common.mainwin_y = y;
 
-	debug_print(_("window position: x = %d, y = %d\n"), x, y);
+	debug_print("window position: x = %d, y = %d\n", x, y);
 }
 
 void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
@@ -1666,7 +1666,7 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 	GtkItemFactory *ifactory = mainwin->menu_factory;
 	GtkWidget *menuitem;
 
-	debug_print(_("Setting widgets..."));
+	debug_print("Setting widgets...");
 
 	/* create separated window(s) if needed */
 	if (type & SEPARATE_FOLDER) {
@@ -1855,7 +1855,7 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 				       ((type & SEPARATE_MESSAGE) != 0));
 
-	debug_print(_("done.\n"));
+	debug_print("done.\n");
 }
 
 #if 0
@@ -2380,7 +2380,7 @@ static void set_charset_cb(MainWindow *mainwin, guint action,
 
 	summary_redisplay_msg(mainwin->summaryview);
 
-	debug_print(_("forced charset: %s\n"), str ? str : "Auto-Detect");
+	debug_print("forced charset: %s\n", str ? str : "Auto-Detect");
 }
 
 static void hide_read_messages (MainWindow *mainwin, guint action,

@@ -142,7 +142,7 @@ static void prefs_custom_header_create(void)
 
 	gchar *title[1];
 
-	debug_print(_("Creating custom header setting window...\n"));
+	debug_print("Creating custom header setting window...\n");
 
 	window = gtk_window_new (GTK_WINDOW_DIALOG);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
@@ -312,7 +312,7 @@ void prefs_custom_header_read_config(PrefsAccount *ac)
 	gchar buf[PREFSBUFSIZE];
 	CustomHeader *ch;
 
-	debug_print(_("Reading custom header configuration...\n"));
+	debug_print("Reading custom header configuration...\n");
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			     CUSTOM_HEADER_RC, NULL);
@@ -357,7 +357,7 @@ void prefs_custom_header_write_config(PrefsAccount *ac)
 
 	GSList *all_hdrs = NULL;
 
-	debug_print(_("Writing custom header configuration...\n"));
+	debug_print("Writing custom header configuration...\n");
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			     CUSTOM_HEADER_RC, NULL);

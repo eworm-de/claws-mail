@@ -253,11 +253,11 @@ SD_State sd_header_filter(MsgInfo *msginfo)
 
 		if ( matcherlist_match(prop->matchers, msginfo) ) {
 			if (prop->action->type == MATCHACTION_DELETE_ON_SERVER) {
-				debug_print(_("action matched\n"));
+				debug_print("action matched\n");
 				return SD_CHECKED;
 			}
 			else {
-				debug_print(_("action not matched\n"));
+				debug_print("action not matched\n");
 				return SD_UNCHECKED;
 			}
 		}

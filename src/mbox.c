@@ -68,7 +68,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, GHashTable *folder_table)
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(mbox != NULL, -1);
 
-	debug_print(_("Getting messages from %s into %s...\n"), mbox, dest->path);
+	debug_print("Getting messages from %s into %s...\n", mbox, dest->path);
 
 	if ((mbox_fp = fopen(mbox, "rb")) == NULL) {
 		FILE_OP_ERROR(mbox, "fopen");
@@ -248,7 +248,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, GHashTable *folder_table)
 
 	g_free(tmp_file);
 	fclose(mbox_fp);
-	debug_print(_("%d messages found.\n"), msgs);
+	debug_print("%d messages found.\n", msgs);
 
 	return msgs;
 }
@@ -405,7 +405,7 @@ gint export_to_mbox(FolderItem *src, const gchar *mbox)
 	g_return_val_if_fail(src->folder != NULL, -1);
 	g_return_val_if_fail(mbox != NULL, -1);
 
-	debug_print(_("Exporting messages from %s into %s...\n"),
+	debug_print("Exporting messages from %s into %s...\n",
 		    src->path, mbox);
 
 	if ((mbox_fp = fopen(mbox, "wb")) == NULL) {

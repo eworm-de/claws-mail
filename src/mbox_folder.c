@@ -842,7 +842,7 @@ static mboxcache * mbox_cache_read_mbox(gchar * filename)
 
 	mbox_cache_get_msginfo(filename, mf->msg_list);
 
-	debug_print(_("read mbox - %s\n"), filename);
+	debug_print("read mbox - %s\n", filename);
 
 	return cache;
 }
@@ -873,7 +873,7 @@ static mboxcache * mbox_cache_read_mbox_from_file(FILE * fp, gchar * filename)
 
 	mbox_cache_get_msginfo_from_file(fp, mf->msg_list);
 
-	debug_print(_("read mbox from file - %s\n"), filename);
+	debug_print("read mbox from file - %s\n", filename);
 
 	return cache;
 }
@@ -1775,7 +1775,7 @@ void mbox_scan_folder(Folder *folder, FolderItem *item)
 		item->total = total;
 	}
 
-	debug_print(_("Last number in dir %s = %d\n"), mbox_path,
+	debug_print("Last number in dir %s = %d\n", mbox_path,
 		    item->total);
 	item->last_num = n_msg;
 	g_free(mbox_path);
@@ -1968,11 +1968,11 @@ static gboolean mbox_rewrite(gchar * mbox)
 		return FALSE;
 
 	if (!cache->modification) {
-		debug_print(_("no modification - %s\n"), mbox);
+		debug_print("no modification - %s\n", mbox);
 		return FALSE;
 	}
 
-	debug_print(_("save modification - %s\n"), mbox);
+	debug_print("save modification - %s\n", mbox);
 
 	mbox_fp = fopen(mbox, "rb+");
 	mbox_lockwrite_file(mbox_fp, mbox);
@@ -2026,7 +2026,7 @@ static gboolean mbox_rewrite(gchar * mbox)
 
 	fclose(mbox_fp);
 
-	debug_print(_("%i messages written - %s\n"), count, mbox);
+	debug_print("%i messages written - %s\n", count, mbox);
 
 	cache = mbox_cache_get_mbox(mbox);
 
@@ -2062,11 +2062,11 @@ static gboolean mbox_purge_deleted(gchar * mbox)
 	}
 
 	if (!modification) {
-		debug_print(_("no deleted messages - %s\n"), mbox);
+		debug_print("no deleted messages - %s\n", mbox);
 		return FALSE;
 	}
 
-	debug_print(_("purge deleted messages - %s\n"), mbox);
+	debug_print("purge deleted messages - %s\n", mbox);
 
 	mbox_fp = fopen(mbox, "rb+");
 	mbox_lockwrite_file(mbox_fp, mbox);
@@ -2122,7 +2122,7 @@ static gboolean mbox_purge_deleted(gchar * mbox)
 
 	fclose(mbox_fp);
 
-	debug_print(_("%i messages written - %s\n"), count, mbox);
+	debug_print("%i messages written - %s\n", count, mbox);
 
 	mbox_cache_synchronize(mbox, FALSE);
 

@@ -2864,7 +2864,7 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
 	gchar *cc_hdr;
 	gchar *to_hdr;
 
-	debug_print(_("Writing redirect header\n"));
+	debug_print("Writing redirect header\n");
 
 	cc_hdr = prefs_common.trans_hdr ? _("Cc:") : "Cc:";
  	to_hdr = prefs_common.trans_hdr ? _("To:") : "To:";
@@ -3352,7 +3352,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
         static gboolean lock = FALSE;
 	PrefsAccount *mailac = NULL, *newsac = NULL;
 	
-	debug_print(_("queueing message...\n"));
+	debug_print("queueing message...\n");
 	g_return_val_if_fail(compose->account != NULL, -1);
         g_return_val_if_fail(compose->orig_account != NULL, -1);
 
@@ -3682,7 +3682,7 @@ static gint compose_write_headers_from_headerlist(Compose *compose,
 		return 0;
 	}
 
-	debug_print(_("Writing %s-header\n"), header);
+	debug_print("Writing %s-header\n", header);
 
 	header_w_colon = g_strconcat(header, ":", NULL);
 	trans_hdr = (prefs_common.trans_hdr ? gettext(header_w_colon) : header_w_colon);
@@ -3942,7 +3942,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		case PRIORITY_LOWEST: fprintf(fp, "Importance: low\n"
 						  "X-Priority: 5 (Lowest)\n");
 			break;
-		default: debug_print(_("compose: priority unknown : %d\n"),
+		default: debug_print("compose: priority unknown : %d\n",
 				     compose->priority);
 	}
 
@@ -4010,7 +4010,7 @@ static void compose_generate_msgid(Compose *compose, gchar *buf, gint len)
 		   lt->tm_min, lt->tm_sec,
 		   (guint)random(), addr);
 
-	debug_print(_("generated Message-ID: %s\n"), buf);
+	debug_print("generated Message-ID: %s\n", buf);
 
 	g_free(addr);
 }
@@ -4396,7 +4396,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	g_return_val_if_fail(account != NULL, NULL);
 
-	debug_print(_("Creating compose window...\n"));
+	debug_print("Creating compose window...\n");
 	compose = g_new0(Compose, 1);
 
 	titles[COL_MIMETYPE] = _("MIME type");
@@ -4723,7 +4723,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 			GtkWidget *menuitem;
 
 			if (!gtkpspell_set_sug_mode(gtkpspell, prefs_common.pspell_sugmode)) {
-				debug_print(_("Pspell: could not set suggestion mode %s\n"),
+				debug_print("Pspell: could not set suggestion mode %s\n",
 				    gtkpspellcheckers->error_message);
 				gtkpspell_checkers_reset_error();
 			}
@@ -5678,7 +5678,7 @@ static void compose_input_cb(gpointer data, gint source,
 	Compose *compose = (Compose *)data;
 	gint i = 0;
 
-	debug_print(_("Compose: input from monitoring process\n"));
+	debug_print("Compose: input from monitoring process\n");
 
 	gdk_input_remove(compose->exteditor_tag);
 

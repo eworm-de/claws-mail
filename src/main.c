@@ -468,7 +468,7 @@ static void initial_processing(FolderItem *item, gpointer data)
 	
 	folder_item_apply_processing(item);
 
-	debug_print(_("done.\n"));
+	debug_print("done.\n");
 	STATUSBAR_POP(mainwin);
 	main_window_cursor_normal(mainwin);
 }
@@ -571,7 +571,7 @@ static gint prohibit_duplicate_launch(void)
 
 	/* remote command mode */
 
-	debug_print(_("another Sylpheed is already running.\n"));
+	debug_print("another Sylpheed is already running.\n");
 
 	if (cmd.receive_all)
 		fd_write(uxsock, "receive_all\n", 12);

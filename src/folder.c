@@ -280,7 +280,7 @@ void folder_item_destroy(FolderItem *item)
 {
 	g_return_if_fail(item != NULL);
 
-	debug_print(_("Destroying folder item %s\n"), item->path);
+	debug_print("Destroying folder item %s\n", item->path);
 
 	if (item->folder != NULL) {
 		switch (item->folder->type) {
@@ -523,7 +523,7 @@ void folder_count_total_msgs(guint *new, guint *unread, guint *total)
 
 	count.new = count.unread = count.total = 0;
 
-	debug_print(_("Counting total number of messages...\n"));
+	debug_print("Counting total number of messages...\n");
 
 	folder_func_to_all_folders(folder_count_total_msgs_func, &count);
 
@@ -900,7 +900,7 @@ gint folder_item_scan(FolderItem *item)
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(folder->get_num_list != NULL, -1);
 
-	debug_print(_("Scanning folder %s for cache changes.\n"), item->path);
+	debug_print("Scanning folder %s for cache changes.\n", item->path);
 
 	/* Get list of messages for folder and cache */
 	if(!folder->check_msgnum_validity || 
@@ -971,13 +971,13 @@ gint folder_item_scan(FolderItem *item)
 			(num > cache_max)))
 		    ) {
 			new_list = g_slist_prepend(new_list, GINT_TO_POINTER(num));
-			debug_print(_("Remembered message %d for fetching\n"), num);
+			debug_print("Remembered message %d for fetching\n", num);
 		}
 		/* Remove message from cache if not in folder and in cache */
 		if(!(folderscaninfo[i] & IN_FOLDER) && 
 		    (folderscaninfo[i] & IN_CACHE)) {
 			msgcache_remove_msg(item->cache, i + min);
-			debug_print(_("Removed message %d from cache.\n"), num);
+			debug_print("Removed message %d from cache.\n", num);
 		}
 		/* Check if msginfo needs update if in cache and in folder */
 		if((folderscaninfo[i] & IN_FOLDER) && 
@@ -998,7 +998,7 @@ gint folder_item_scan(FolderItem *item)
 					unreadcnt++;
 				procmsg_msginfo_free(newmsginfo);
 
-				debug_print(_("Updated msginfo for message %d.\n"), num);
+				debug_print("Updated msginfo for message %d.\n", num);
 			} else {
 				if(MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 					newcnt++;
@@ -1044,7 +1044,7 @@ gint folder_item_scan(FolderItem *item)
 				    unreadcnt++;
 				totalcnt++;
 				procmsg_msginfo_free(msginfo);
-				debug_print(_("Added newly found message %d to cache.\n"), num);
+				debug_print("Added newly found message %d to cache.\n", num);
 			}
 		}
 		folderview_update_item(item, FALSE);
@@ -1104,7 +1104,7 @@ void folder_find_expired_caches(FolderItem *item, gpointer data)
 
 	difftime = (gint) (time(NULL) - msgcache_get_last_access_time(item->cache));
 	expiretime = prefs_common.cache_min_keep_time * 60;
-	debug_print(_("Cache unused time: %d (Expire time: %d)\n"), difftime, expiretime);
+	debug_print("Cache unused time: %d (Expire time: %d)\n", difftime, expiretime);
 	if(difftime > expiretime) {
 		*folder_item_list = g_slist_insert_sorted(*folder_item_list, item, folder_cache_time_compare_func);
 	}
@@ -1130,19 +1130,19 @@ void folder_clean_cache_memory()
 	gint memusage = 0;
 
 	folder_func_to_all_folders(folder_count_total_cache_memusage, &memusage);	
-	debug_print(_("Total cache memory usage: %d\n"), memusage);
+	debug_print("Total cache memory usage: %d\n", memusage);
 	
 	if(memusage > (prefs_common.cache_max_mem_usage * 1024)) {
 		GSList *folder_item_list = NULL, *listitem;
 		
-		debug_print(_("Trying to free cache memory\n"));
+		debug_print("Trying to free cache memory\n");
 
 		folder_func_to_all_folders(folder_find_expired_caches, &folder_item_list);	
 		listitem = folder_item_list;
 		while((listitem != NULL) && (memusage > (prefs_common.cache_max_mem_usage * 1024))) {
 			FolderItem *item = (FolderItem *)(listitem->data);
 
-			debug_print(_("Freeing cache memory for %s\n"), item->path);
+			debug_print("Freeing cache memory for %s\n", item->path);
 			memusage -= msgcache_get_memory_usage(item->cache);
 		        folder_item_free_cache(item);
 			listitem = listitem->next;
@@ -1182,7 +1182,7 @@ void folder_item_write_cache(FolderItem *item)
 		return;
 
 	id = folder_item_get_identifier(item);
-	debug_print(_("Save cache for folder %s\n"), id);
+	debug_print("Save cache for folder %s\n", id);
 	g_free(id);
 
 	cache_file = folder_item_get_cache_file(item);

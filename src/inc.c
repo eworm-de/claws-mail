@@ -684,7 +684,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 		pop3_logout_send        , pop3_logout_recv
 	};
 
-	debug_print(_("getting new messages of account %s...\n"),
+	debug_print("getting new messages of account %s...\n",
 		    pop3_state->ac_prefs->account_name);
 
 	atm = automaton_create(N_POP3_PHASE);
@@ -1156,7 +1156,7 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 	g_return_val_if_fail(mbox != NULL, -1);
 
 	if (!is_file_exist(mbox) || (size = get_file_size(mbox)) == 0) {
-		debug_print(_("no messages in local mailbox.\n"));
+		debug_print("no messages in local mailbox.\n");
 		return 0;
 	} else if (size < 0)
 		return -1;
@@ -1172,7 +1172,7 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 		return -1;
 	}
 
-	debug_print(_("Getting new messages from %s into %s...\n"),
+	debug_print("Getting new messages from %s into %s...\n",
 		    mbox, dest->path);
 
 	if (prefs_common.filter_on_inc)

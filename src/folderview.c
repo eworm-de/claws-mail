@@ -341,7 +341,7 @@ FolderView *folderview_create(void)
 	gint n_entries;
 	gint i;
 
-	debug_print(_("Creating folder view...\n"));
+	debug_print("Creating folder view...\n");
 	folderview = g_new0(FolderView, 1);
 
 	titles[COL_FOLDER] = _("Folder");
@@ -565,7 +565,7 @@ void folderview_set(FolderView *folderview)
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	MainWindow *mainwin = folderview->mainwin;
 
-	debug_print(_("Setting folder info...\n"));
+	debug_print("Setting folder info...\n");
 	STATUSBAR_PUSH(mainwin, _("Setting folder info..."));
 
 	main_window_cursor_wait(mainwin);
@@ -1647,7 +1647,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 			 COMPOSEBUTTON_NEWS : COMPOSEBUTTON_MAIL);
 
 	if (item->path)
-		debug_print(_("Folder %s is selected\n"), item->path);
+		debug_print("Folder %s is selected\n", item->path);
 
 	if (!GTK_CTREE_ROW(row)->children)
 		gtk_ctree_expand(ctree, row);
@@ -1679,7 +1679,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	
 		folder_item_apply_processing(item);
 
-		debug_print(_("done.\n"));
+		debug_print("done.\n");
 		STATUSBAR_POP(folderview->mainwin);
 		main_window_cursor_normal(folderview->mainwin);
 	}
