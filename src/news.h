@@ -36,6 +36,8 @@ struct _NNTPSession
 
 	NNTPSockInfo *nntp_sock;
 	gchar *group;
+	
+	GSList * group_list;
 };
 
 struct NNTPGroupInfo {
@@ -59,9 +61,8 @@ gchar *news_fetch_msg			(Folder		*folder,
 void news_scan_group			(Folder		*folder,
 					 FolderItem	*item);
 
-void news_group_list_free               (GSList * list);
 GSList *news_get_group_list		(Folder		*folder);
-void news_remove_group_list		(Folder		*folder);
+void news_cancel_group_list_cache	(Folder		*folder);
 
 gint news_post				(Folder		*folder,
 					 const gchar	*file);

@@ -262,15 +262,13 @@ static void grouplist_dialog_set_list(gchar * pattern)
 
 	grouplist_clear();
 
+	recv_set_ui_func(grouplist_recv_func, NULL);
+	group_list = news_get_group_list(news_folder);
+	recv_set_ui_func(NULL, NULL);
 	if (group_list == NULL) {
-	  recv_set_ui_func(grouplist_recv_func, NULL);
-	  group_list = news_get_group_list(news_folder);
-	  recv_set_ui_func(NULL, NULL);
-	  if (group_list == NULL) {
-	    alertpanel_error(_("Can't retrieve newsgroup list."));
-	    locked = FALSE;
-	    return;
-	  }
+		alertpanel_error(_("Can't retrieve newsgroup list."));
+		locked = FALSE;
+		return;
 	}
 
 	dont_unsubscribed = TRUE;
@@ -383,9 +381,7 @@ static void refresh_clicked(GtkWidget *widget, gpointer data)
  
 	if (locked) return;
 
-	news_group_list_free(group_list);
-	group_list = NULL;
-	news_remove_group_list(news_folder);
+	news_cancel_group_list_cache(news_folder);
 
 	str = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
 	grouplist_dialog_set_list(str);

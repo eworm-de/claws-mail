@@ -1,3 +1,13 @@
+2001-10-18 [hoa]        0.6.3claws29
+
+	* src/grouplistdialog.c
+		bugfix (another ?) to give the right
+		newsgroups list for each news server.
+
+	* src/news.c
+	* src/news.h
+		improve the newsgroups list cache
+
 2001-10-20 [paul]	0.6.3claws28
 
 	* sync with sylpheed 0.6.3cvs9
@@ -12,7 +22,7 @@
 
 2001-10-18 [hoa]        0.6.3claws27
 
-	* src/grouplistdialog.[c]
+	* src/grouplistdialog.c
 		bugfix when we refresh was clicked (bug 472701)
 
 2001-10-19 [christoph]	0.6.3claws26

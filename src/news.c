@@ -80,6 +80,8 @@ static GSList *news_delete_old_articles	 (GSList	*alist,
 					  gint		 first);
 static void news_delete_all_articles	 (FolderItem	*item);
 
+static void news_group_list_free(GSList * list);
+
 
 static Session *news_session_new(const gchar *server, gushort port,
 				 const gchar *userid, const gchar *passwd)
@@ -108,6 +110,7 @@ static Session *news_session_new(const gchar *server, gushort port,
 	SESSION(session)->phase     = SESSION_READY;
 	SESSION(session)->data      = NULL;
 	session->group = NULL;
+	session->group_list = NULL;
 
 	return SESSION(session);
 }
@@ -117,6 +120,9 @@ void news_session_destroy(NNTPSession *session)
 	nntp_close(session->nntp_sock);
 	session->nntp_sock = NULL;
 	SESSION(session)->sock = NULL;
+
+	news_group_list_free(session->group_list);
+	session->group_list = NULL;
 
 	g_free(session->group);
 }
@@ -312,7 +318,7 @@ static void group_info_free(struct NNTPGroupInfo * info)
   g_free(info);
 }
 
-void news_group_list_free(GSList * list)
+static void news_group_list_free(GSList * list)
 {
   g_slist_foreach(list, (GFunc) group_info_free, NULL);
   g_slist_free(list);
@@ -331,6 +337,7 @@ GSList *news_get_group_list(Folder *folder)
 	GSList *list = NULL;
 	GSList *last = NULL;
 	gchar buf[NNTPBUFSIZE];
+	NNTPSession *session;
 
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(folder->type == F_NEWS, NULL);
@@ -341,15 +348,18 @@ GSList *news_get_group_list(Folder *folder)
 	filename = g_strconcat(path, G_DIR_SEPARATOR_S, NEWSGROUP_LIST, NULL);
 	g_free(path);
 
+	session = news_session_get(folder);
+	if (!session) {
+		g_free(filename);
+		return NULL;
+	}
+
+	if (session->group_list) {
+		g_free(filename);
+		return session->group_list;
+	}
+
 	if ((fp = fopen(filename, "r")) == NULL) {
-		NNTPSession *session;
-
-		session = news_session_get(folder);
-		if (!session) {
-			g_free(filename);
-			return NULL;
-		}
-
 		if (nntp_list(session->nntp_sock) != NN_SUCCESS) {
 			g_free(filename);
 			statusbar_pop_all();
@@ -421,17 +431,27 @@ GSList *news_get_group_list(Folder *folder)
 
 	list = g_slist_sort(list, (GCompareFunc) news_group_info_compare);
 
+	session->group_list = list;
+
 	statusbar_pop_all();
 
 	return list;
 }
 
-void news_remove_group_list(Folder *folder)
+void news_cancel_group_list_cache(Folder *folder)
 {
 	gchar *path, *filename;
+	NNTPSession *session;
 
 	g_return_if_fail(folder != NULL);
 	g_return_if_fail(folder->type == F_NEWS);
+
+	session = news_session_get(folder);
+	if (!session)
+		return;
+
+	news_group_list_free(session->group_list);
+	session->group_list = NULL;
 
 	path = folder_item_get_path(FOLDER_ITEM(folder->node->data));
 	filename = g_strconcat(path, G_DIR_SEPARATOR_S, NEWSGROUP_LIST, NULL);
