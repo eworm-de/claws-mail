@@ -1,8 +1,13 @@
 #!/bin/sh
-head -15 configure.ac | grep VERSION > /tmp/commitTool.tmp
+head -16 configure.ac | grep VERSION= > /tmp/commitTool.tmp
 source /tmp/commitTool.tmp
-EXTRA_VERSION=`echo $EXTRA_VERSION | awk -F'.' '{for (i=1;i<NF;i++){printf $i"."};printf $NF+1}'`
-nextsversion="${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}cvs${EXTRA_VERSION}"
+if [ -z "$EXTRA_GTK2_VERSION" ]; then
+	EXTRA_VERSION=`echo $EXTRA_VERSION | awk -F'.' '{for (i=1;i<NF;i++){printf $i"."};printf $NF+1}'`
+	nextsversion="${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}cvs${EXTRA_VERSION}"
+else
+	EXTRA_GTK2_VERSION=`echo $EXTRA_GTK2_VERSION | awk -F'.' '{for (i=1;i<NF;i++){printf $i"."};printf $NF+1}'`
+	nextsversion="${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}cvs${EXTRA_VERSION}${EXTRA_GTK2_VERSION}"
+fi
 rm /tmp/commitTool.tmp
 
 IFS='
@@ -30,8 +35,6 @@ name=`whoami`
 #change if your login isn't your name
 if [ "$name" == "claws" ]; then
 	name="paul";
-elif [ "$name" == "reboot" ]; then
-	name="christoph";
 fi;
 log="`date +%Y-%m-%d` [$name]\t$nextsversion\n\n"
 for line in $files; do
@@ -52,8 +55,10 @@ echo -e -n $log
 echo "--8<----------"
 if [ -f ChangeLog-gtk2.claws ]; then
 	chlog="ChangeLog-gtk2.claws"
-else
+elif [ -f ChangeLog.claws ]; then
 	chlog="ChangeLog.claws"
+else
+	chlog="ChangeLog"
 fi
 echo -n "Is it ok (write to $chlog) [y/N]?"
 read ans
@@ -64,6 +69,9 @@ if [ "$ans" == "y" ]; then
 	rm $chlog.old
 	echo "$patchset" >> PATCHSETS
 	echo "editing $chlog configure.ac..."
+	if [ "$EDITOR" == "" ]; then
+		EDITOR=vi
+	fi;
 	$EDITOR $chlog configure.ac
 	echo running cvs commit $@ PATCHSETS $chlog configure.ac
 	cvs commit $@ PATCHSETS $chlog configure.ac
