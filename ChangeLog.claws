@@ -1,3 +1,8 @@
+2004-05-11 [paul]	0.9.10claws58
+
+	* sync with 0.9.10cvs11
+		see ChangeLog 2004-05-10 and 2004-05-11
+
 2004-05-09 [christoph]	0.9.10claws57
 
 	* src/folderview.c

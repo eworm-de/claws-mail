@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3147,8 +3147,8 @@ gint compose_send(Compose *compose)
 	}
 
 	/* write to temporary file */
-	g_snprintf(tmp, sizeof(tmp), "%s%ctmpmsg.%08x",
-		   get_tmp_dir(), G_DIR_SEPARATOR, (gint)compose);
+	g_snprintf(tmp, sizeof(tmp), "%s%ctmpmsg.%p",
+		   get_tmp_dir(), G_DIR_SEPARATOR, compose);
 
 	if (prefs_common.linewrap_at_send)
 		compose_wrap_line_all(compose);
@@ -3884,8 +3884,8 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	}
 
 	/* add queue header */
-	tmp = g_strdup_printf("%s%cqueue.%d", g_get_tmp_dir(),
-			      G_DIR_SEPARATOR, (gint)compose);
+	tmp = g_strdup_printf("%s%cqueue.%p", get_tmp_dir(),
+			      G_DIR_SEPARATOR, compose);
 	if ((fp = fopen(tmp, "wb")) == NULL) {
 		FILE_OP_ERROR(tmp, "fopen");
 		g_free(tmp);
@@ -5940,8 +5940,8 @@ static void compose_exec_ext_editor(Compose *compose)
 	pid_t pid;
 	gint pipe_fds[2];
 
-	tmp = g_strdup_printf("%s%ctmpmsg.%08x", get_tmp_dir(),
-			      G_DIR_SEPARATOR, (gint)compose);
+	tmp = g_strdup_printf("%s%ctmpmsg.%p", get_tmp_dir(),
+			      G_DIR_SEPARATOR, compose);
 
 	if (pipe(pipe_fds) < 0) {
 		perror("pipe");
@@ -6428,8 +6428,8 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 
 	lock = TRUE;
 
-	tmp = g_strdup_printf("%s%cdraft.%08x", get_tmp_dir(),
-			      G_DIR_SEPARATOR, (gint)compose);
+	tmp = g_strdup_printf("%s%cdraft.%p", get_tmp_dir(),
+			      G_DIR_SEPARATOR, compose);
 
 	if (compose_write_to_file(compose, tmp, TRUE) < 0) {
 		g_free(tmp);

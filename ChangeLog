@@ -1,3 +1,27 @@
+2004-05-11
+
+	* src/nntp.c: nntp_get_article(): ignore the protocol error of
+	  response for some broken news servers (thanks to Davide Scola).
+
+2004-05-11
+
+	* src/gtkutils.[ch]: added gtkut_editable_disable_im().
+	* src/passphrase.c: disable XIM on entering passphrase.
+
+2004-05-11
+
+	* src/compose.c
+	  src/folderview.c
+	  src/inc.c
+	  src/prefs_display_header.c
+	  src/procmsg.h: fixed for AMD64 (and other 64-bit platforms)
+	  (thanks to Hiroyuki Ikezoe).
+
+2004-05-10
+
+	* src/inc.[ch]: don't use gtk_timeout_add(), instead use
+	  gettimeofday() (to prevent infrequent lockup).
+
 2004-03-19
 
 	* src/defs.h

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -277,7 +277,7 @@ static void prefs_display_header_create(void)
 	gtk_box_pack_start (GTK_BOX (btn_vbox), reg_btn, FALSE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (reg_btn), "clicked",
 			    GTK_SIGNAL_FUNC (prefs_display_header_register_cb),
-			    FALSE);
+			    GINT_TO_POINTER(FALSE));
 	del_btn = gtk_button_new_with_label (_("Delete"));
 	gtk_widget_show (del_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), del_btn, FALSE, TRUE, 0);
@@ -333,13 +333,13 @@ static void prefs_display_header_create(void)
 	gtk_signal_connect (GTK_OBJECT (reg_btn), "clicked",
 			    GTK_SIGNAL_FUNC
 			    (prefs_display_header_register_cb),
-			    (void *) TRUE);
+			    GINT_TO_POINTER(TRUE));
 	del_btn = gtk_button_new_with_label (_("Delete"));
 	gtk_widget_show (del_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), del_btn, FALSE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (del_btn), "clicked",
 			    GTK_SIGNAL_FUNC (prefs_display_header_delete_cb),
-			    (void *) hidden_headers_clist);
+			    hidden_headers_clist);
 
 	PACK_CHECK_BUTTON (btn_hbox, checkbtn_other_headers,
 			   _("Show all unspecified headers"));
@@ -558,9 +558,7 @@ static gint prefs_display_header_clist_set_row(gboolean hidden)
 static void prefs_display_header_register_cb(GtkButton *btn,
 					     gpointer hidden_data)
 {
-	gboolean hidden = (gboolean)hidden_data;
-
-	prefs_display_header_clist_set_row(hidden);
+	prefs_display_header_clist_set_row(GPOINTER_TO_INT(hidden_data));
 }
 
 static void prefs_display_header_delete_cb(GtkButton *btn, gpointer clist_data)

@@ -228,7 +228,7 @@ gint msgcache_get_memory_usage(MsgCache *cache)
 
 #define WRITE_CACHE_DATA(data, fp) \
 { \
-	gint len; \
+	size_t len; \
 	if (data == NULL) \
 		len = 0; \
 	else \

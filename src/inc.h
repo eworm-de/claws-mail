@@ -26,6 +26,7 @@
 
 #include <glib.h>
 #include <time.h>
+#include <sys/time.h>
 
 #include "mainwindow.h"
 #include "progressdialog.h"
@@ -58,8 +59,8 @@ struct _IncProgressDialog
 
 	gboolean show_dialog;
 
-	guint progress_timer_id;
-	guint folder_timer_id;
+	struct timeval progress_tv;
+	struct timeval folder_tv;
 
 	GList *queue_list;	/* list of IncSession */
 	gint cur_row;
