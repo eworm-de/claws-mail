@@ -1,4 +1,9 @@
-2002-02-14 [carsten]	0.7.1.claws2
+2002-02-14 [carsten]	0.7.1claws3
+	* src/stock_pixmap.c
+		removed 2 more mem leaks; following memprof,
+		this code is "leak free" now :)
+
+2002-02-14 [carsten]	0.7.1claws2
 	* src/stock_pixmap.c
 		used opendir/readdir/closedir instead of scandir
 		-> code should work now on Solaris

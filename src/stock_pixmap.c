@@ -268,11 +268,12 @@ static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname)
 					*list = g_list_append(*list, fullentry);
 					break;
 				}
-				g_free(filetoexist);
 			}
+			g_free(filetoexist);
 			if (i == N_STOCK_PIXMAPS) 
 				g_free(fullentry);
-		}
+		} else 
+			g_free(fullentry);
 	}
 	closedir(dp);
 }
