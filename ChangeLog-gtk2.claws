@@ -1,3 +1,8 @@
+2004-07-31 [colin]	0.9.12cvs39.8
+
+	* src/exphtmldlg.c
+		Fix an alertpanel type
+
 2004-07-30 [colin]	0.9.12cvs39.7
 
 	* src/alertpanel.c
