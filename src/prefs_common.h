@@ -55,7 +55,7 @@ struct _PrefsCommon
 
 	/* Send */
 	gboolean use_extsend;
-	gchar *extsend_path;
+	gchar *extsend_cmd;
 	gboolean savemsg;
 	gboolean queue_msg;
 	gchar *outgoing_charset;

@@ -622,6 +622,8 @@ void mh_scan_folder(Folder *folder, FolderItem *item)
 
 	g_return_if_fail(item != NULL);
 
+	debug_print("mh_scan_folder(): Scanning %s ...\n", item->path);
+
 	path = folder_item_get_path(item);
 	g_return_if_fail(path != NULL);
 	if (change_dir(path) < 0) {

@@ -89,6 +89,9 @@ I recommend you to install gdk-pixbuf or gdk_imlib library before installing
 for built-in image view support, and libcompface for X-Face support.
 
 
+If you want to enable SSL support, append the option
+--enable-ssl after ./configure (you need OpenSSL).
+
 If you want to enable IPv6 support, append the option
 --enable-ipv6 after ./configure.
 
@@ -103,6 +106,8 @@ and append the option --enable-gpgme after ./configure.
 WARNING: the GnuPG support is still in the development stage, and it
          may not work correctly. I suggest never to use a real key.
          Please use sample keys.
+
+For other options, refer to ./configure --help .
 
 
 If the installation of Sylpheed failed, check all needed libraries are

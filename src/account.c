@@ -461,7 +461,7 @@ static void account_edit_create(void)
 	gtk_clist_set_column_width (GTK_CLIST(clist), COL_DEFAULT , 10);
 	gtk_clist_set_column_width (GTK_CLIST(clist), COL_GETALL  , 10);
 	gtk_clist_set_column_width (GTK_CLIST(clist), COL_NAME    , 100);
-	gtk_clist_set_column_width (GTK_CLIST(clist), COL_PROTOCOL, 70);
+	gtk_clist_set_column_width (GTK_CLIST(clist), COL_PROTOCOL, 100);
 	gtk_clist_set_column_width (GTK_CLIST(clist), COL_SERVER  , 100);
 	gtk_clist_set_selection_mode (GTK_CLIST(clist), GTK_SELECTION_BROWSE);
 

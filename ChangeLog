@@ -1,8 +1,38 @@
+2001-08-30
+
+	* version 0.6.0
+
+2001-08-30
+
+	* src/send.c: implemented sending with local sendmail command.
+	  send_message_local(): new. It executes command with popen()
+	  and send the contents of RFC822 message to the command.
+	* src/prefs_common.[ch]: enabled the external sending command option.
+	* src/defs.h: #define DEFAULT_SENDMAIL_CMD /usr/sbin/sendmail -t
+	* src/account.c: account_edit_create(): widened the protocol column.
+	* src/summaryview.c: summary_set_colorlabel_color(): cleanup of
+	  the code.
+
+2001-08-30
+
+	* src/folder.c: folder_item_remove_msg(): scan the folder again
+	  if the last message is removed.
+	* src/compose.c: compose_queue(), compose_draft_cb(): remove the
+	  old reedited message after adding the new message.
+
 2001-08-29
 
 	* src/compose.c: compose_queue(): added AID: to the queueing header.
 	* src/send.c: send_message_queue(): look for AID: header, and use
 	  the server specified in the account instead of SSV: header.
+	* src/summaryview.c
+	  src/compose.[ch]: queued messages can be reedited now.
+	  compose_remove_reedit_target(): new. It removes the old reedited
+	  message.
+	  compose_send(), compose_queue(), compose_draft_cb(): if reedit
+	  mode, remove the old message.
+	* src/procmsg.c: procmsg_msg_exist(): fixed a bug that output
+	  warning.
 
 2001-08-28
 

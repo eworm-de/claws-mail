@@ -171,6 +171,7 @@ static gint compose_write_body_to_file		(Compose	*compose,
 						 const gchar	*file);
 static gint compose_save_to_outbox		(Compose	*compose,
 						 const gchar	*file);
+static gint compose_remove_reedit_target	(Compose	*compose);
 static gint compose_queue			(Compose	*compose,
 						 const gchar	*file);
 static void compose_write_attach		(Compose	*compose,
@@ -1090,7 +1091,8 @@ void compose_reedit(MsgInfo *msginfo)
 	g_return_if_fail(account != NULL);
 
 	compose = compose_create(account);
-	compose->mode = COMPOSE_REEDIT_DRAFT;
+	compose->mode = COMPOSE_REEDIT;
+
 	compose->targetinfo = procmsg_msginfo_copy(msginfo);
 
 	if (compose_parse_header(compose, msginfo) < 0) return;
@@ -1186,7 +1188,7 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 		hentry[H_CC].body = NULL;
 	}
 	if (hentry[H_REFERENCES].body != NULL) {
-		if (compose->mode == COMPOSE_REEDIT_DRAFT)
+		if (compose->mode == COMPOSE_REEDIT)
 			compose->references = hentry[H_REFERENCES].body;
 		else {
 			compose->references = compose_parse_references
@@ -1196,7 +1198,7 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 		hentry[H_REFERENCES].body = NULL;
 	}
 	if (hentry[H_BCC].body != NULL) {
-		if (compose->mode == COMPOSE_REEDIT_DRAFT) {
+		if (compose->mode == COMPOSE_REEDIT) {
 			conv_unmime_header_overwrite(hentry[H_BCC].body);
 			compose->bcc = hentry[H_BCC].body;
 		} else
@@ -1213,9 +1215,9 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 		hentry[H_FOLLOWUP_TO].body = NULL;
 	}
 
-	if (compose->mode == COMPOSE_REEDIT_DRAFT && msginfo->inreplyto)
+	if (compose->mode == COMPOSE_REEDIT && msginfo->inreplyto)
 		compose->inreplyto = g_strdup(msginfo->inreplyto);
-	else if (compose->mode != COMPOSE_REEDIT_DRAFT &&
+	else if (compose->mode != COMPOSE_REEDIT &&
 		 msginfo->msgid && *msginfo->msgid) {
 		compose->inreplyto = g_strdup(msginfo->msgid);
 
@@ -2108,6 +2110,13 @@ gint compose_send(Compose *compose)
 			}
 		} else
 			alertpanel_error(_("Error occurred while sending the message."));
+	} else {
+		if (compose->mode == COMPOSE_REEDIT) {
+			compose_remove_reedit_target(compose);
+			if (compose->targetinfo)
+				folderview_update_item
+					(compose->targetinfo->folder, TRUE);
+		}
 	}
 
 	/* save message to outbox */
@@ -2323,6 +2332,29 @@ static gint compose_save_to_outbox(Compose *compose, const gchar *file)
 	return 0;
 }
 
+static gint compose_remove_reedit_target(Compose *compose)
+{
+	FolderItem *item;
+	MsgInfo *msginfo = compose->targetinfo;
+
+	g_return_val_if_fail(compose->mode == COMPOSE_REEDIT, -1);
+	if (!msginfo) return -1;
+
+	item = msginfo->folder;
+	g_return_val_if_fail(item != NULL, -1);
+
+	folder_item_scan(item);
+	if (procmsg_msg_exist(msginfo) &&
+	    (item->stype == F_DRAFT || item->stype == F_QUEUE)) {
+		if (folder_item_remove_msg(item, msginfo->msgnum) < 0) {
+			g_warning(_("can't remove the old message\n"));
+			return -1;
+		}
+	}
+
+	return 0;
+}
+
 static gint compose_queue(Compose *compose, const gchar *file)
 {
 	FolderItem *queue;
@@ -2407,6 +2439,7 @@ static gint compose_queue(Compose *compose, const gchar *file)
 	}
 
 	queue = folder_get_default_queue();
+
 	folder_item_scan(queue);
 	queue_path = folder_item_get_path(queue);
 	if (!is_dir_exist(queue_path))
@@ -2419,6 +2452,14 @@ static gint compose_queue(Compose *compose, const gchar *file)
 		return -1;
 	}
 	g_free(tmp);
+
+	if (compose->mode == COMPOSE_REEDIT) {
+		compose_remove_reedit_target(compose);
+		if (compose->targetinfo &&
+		    compose->targetinfo->folder != queue)
+			folderview_update_item
+				(compose->targetinfo->folder, TRUE);
+	}
 
 	if ((fp = procmsg_open_mark_file(queue_path, TRUE)) == NULL)
 		g_warning(_("can't open mark file\n"));
@@ -4424,15 +4465,8 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	gchar *tmp;
 
 	draft = folder_get_default_draft();
-	folder_item_scan(draft);
 
-	if (procmsg_msg_exist(compose->targetinfo) &&
-	    compose->targetinfo->folder == draft) {
-		if (folder_item_remove_msg(draft,
-					   compose->targetinfo->msgnum) < 0)
-			g_warning(_("can't remove the old draft message\n"));
-	}
-	tmp = g_strdup_printf("%s%cdraft.%d", g_get_tmp_dir(),
+        tmp = g_strdup_printf("%s%cdraft.%d", g_get_tmp_dir(),
 			      G_DIR_SEPARATOR, (gint)compose);
 
 	if (compose_write_to_file(compose, tmp, TRUE) < 0) {
@@ -4440,15 +4474,24 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		return;
 	}
 
+	folder_item_scan(draft);
 	if (folder_item_add_msg(draft, tmp, TRUE) < 0) {
 		unlink(tmp);
 		g_free(tmp);
 		return;
 	}
-
 	g_free(tmp);
 
-	/* folderview_scan_folder_a(DRAFT_DIR, TRUE); */
+	if (compose->mode == COMPOSE_REEDIT) {
+		compose_remove_reedit_target(compose);
+		if (compose->targetinfo &&
+		    compose->targetinfo->folder != draft)
+			folderview_update_item(compose->targetinfo->folder,
+					       TRUE);
+	}
+
+	folder_item_scan(draft);
+	folderview_update_item(draft, TRUE);
 
 	gtk_widget_destroy(compose->window);
 }

@@ -80,9 +80,9 @@ static struct Receive {
 } receive;
 
 static struct Send {
-	GtkWidget *checkbtn_sendext;
-	GtkWidget *entry_sendext;
-	GtkWidget *button_sendext;
+	GtkWidget *checkbtn_extsend;
+	GtkWidget *entry_extsend;
+	GtkWidget *button_extsend;
 
 	GtkWidget *checkbtn_savemsg;
 	GtkWidget *checkbtn_queuemsg;
@@ -265,11 +265,12 @@ static PrefParam param[] = {
 	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 
 	/* Send */
-	{"use_ext_send", "FALSE", &prefs_common.use_extsend, P_BOOL,
-	 &send.checkbtn_sendext,
+	{"use_ext_sendmail", "FALSE", &prefs_common.use_extsend, P_BOOL,
+	 &send.checkbtn_extsend,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"ext_send_path", NULL, &prefs_common.extsend_path, P_STRING,
-	 &send.entry_sendext, prefs_set_data_from_entry, prefs_set_entry},
+	{"ext_sendmail_cmd", DEFAULT_SENDMAIL_CMD,
+	 &prefs_common.extsend_cmd, P_STRING,
+	 &send.entry_extsend, prefs_set_data_from_entry, prefs_set_entry},
 	{"save_message", "TRUE", &prefs_common.savemsg, P_BOOL,
 	 &send.checkbtn_savemsg,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -813,7 +814,7 @@ static void prefs_receive_create(void)
 	GtkWidget *hbox;
 	GtkWidget *label_incext;
 	GtkWidget *entry_incext;
-	GtkWidget *button_incext;
+	/* GtkWidget *button_incext; */
 
 	GtkWidget *frame_spool;
 	GtkWidget *checkbtn_local;
@@ -865,12 +866,11 @@ static void prefs_receive_create(void)
 	entry_incext = gtk_entry_new ();
 	gtk_widget_show (entry_incext);
 	gtk_box_pack_start (GTK_BOX (hbox), entry_incext, TRUE, TRUE, 0);
-
+#if 0
 	button_incext = gtk_button_new_with_label ("... ");
-
 	gtk_widget_show (button_incext);
 	gtk_box_pack_start (GTK_BOX (hbox), button_incext, FALSE, FALSE, 0);
-
+#endif
 	PACK_FRAME(vbox1, frame_spool, _("Local spool"));
 
 	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
@@ -968,7 +968,7 @@ static void prefs_receive_create(void)
 
 	receive.checkbtn_incext = checkbtn_incext;
 	receive.entry_incext    = entry_incext;
-	receive.button_incext   = button_incext;
+	/* receive.button_incext   = button_incext; */
 
 	receive.checkbtn_local         = checkbtn_local;
 	receive.checkbtn_filter_on_inc = checkbtn_filter_on_inc;
@@ -991,13 +991,13 @@ static void prefs_send_create(void)
 {
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
-	GtkWidget *frame_sendext;
-	GtkWidget *vbox_sendext;
-	GtkWidget *checkbtn_sendext;
+	GtkWidget *frame_extsend;
+	GtkWidget *vbox_extsend;
+	GtkWidget *checkbtn_extsend;
 	GtkWidget *hbox1;
-	GtkWidget *label_sendext;
-	GtkWidget *entry_sendext;
-	GtkWidget *button_sendext;
+	GtkWidget *label_extsend;
+	GtkWidget *entry_extsend;
+	/* GtkWidget *button_extsend; */
 	GtkWidget *checkbtn_savemsg;
 	GtkWidget *checkbtn_queuemsg;
 	GtkWidget *label_outcharset;
@@ -1011,34 +1011,34 @@ static void prefs_send_create(void)
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	PACK_FRAME(vbox1, frame_sendext, _("External program"));
+	PACK_FRAME(vbox1, frame_extsend, _("External program"));
 
-	gtk_widget_set_sensitive(frame_sendext, FALSE);
+	vbox_extsend = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox_extsend);
+	gtk_container_add (GTK_CONTAINER (frame_extsend), vbox_extsend);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_extsend), 8);
 
-	vbox_sendext = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox_sendext);
-	gtk_container_add (GTK_CONTAINER (frame_sendext), vbox_sendext);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_sendext), 8);
-
-	PACK_CHECK_BUTTON (vbox_sendext, checkbtn_sendext,
+	PACK_CHECK_BUTTON (vbox_extsend, checkbtn_extsend,
 			   _("Use external program for sending"));
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox_sendext), hbox1, FALSE, FALSE, 0);
-	SET_TOGGLE_SENSITIVITY(checkbtn_sendext, hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox_extsend), hbox1, FALSE, FALSE, 0);
+	SET_TOGGLE_SENSITIVITY(checkbtn_extsend, hbox1);
 
-	label_sendext = gtk_label_new (_("Program path"));
-	gtk_widget_show (label_sendext);
-	gtk_box_pack_start (GTK_BOX (hbox1), label_sendext, FALSE, FALSE, 0);
+	label_extsend = gtk_label_new (_("Program path"));
+	gtk_widget_show (label_extsend);
+	gtk_box_pack_start (GTK_BOX (hbox1), label_extsend, FALSE, FALSE, 0);
 
-	entry_sendext = gtk_entry_new ();
-	gtk_widget_show (entry_sendext);
-	gtk_box_pack_start (GTK_BOX (hbox1), entry_sendext, TRUE, TRUE, 0);
+	entry_extsend = gtk_entry_new ();
+	gtk_widget_show (entry_extsend);
+	gtk_box_pack_start (GTK_BOX (hbox1), entry_extsend, TRUE, TRUE, 0);
 
-	button_sendext = gtk_button_new_with_label ("... ");
-	gtk_widget_show (button_sendext);
-	gtk_box_pack_start (GTK_BOX (hbox1), button_sendext, FALSE, FALSE, 0);
+#if 0
+	button_extsend = gtk_button_new_with_label ("... ");
+	gtk_widget_show (button_extsend);
+	gtk_box_pack_start (GTK_BOX (hbox1), button_extsend, FALSE, FALSE, 0);
+#endif
 
 	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox2);
@@ -1104,9 +1104,9 @@ static void prefs_send_create(void)
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu), optmenu_menu);
 
-	send.checkbtn_sendext = checkbtn_sendext;
-	send.entry_sendext    = entry_sendext;
-	send.button_sendext   = button_sendext;
+	send.checkbtn_extsend = checkbtn_extsend;
+	send.entry_extsend    = entry_extsend;
+	/* send.button_extsend   = button_extsend; */
 
 	send.checkbtn_savemsg  = checkbtn_savemsg;
 	send.checkbtn_queuemsg = checkbtn_queuemsg;

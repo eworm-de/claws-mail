@@ -3471,38 +3471,32 @@ void summary_set_colorlabel_color(GtkCTree *ctree, GtkCTreeNode *node,
 	MsgInfo *msginfo;
 	gint color_index;
 
-	color_index = labelcolor == 0 ? -1 : (gint)labelcolor - 1;
-	ctree_style = gtk_widget_get_style(GTK_WIDGET(ctree));
-	prev_style = gtk_ctree_node_get_row_style(ctree, node);
-	if (!prev_style)
-		prev_style = ctree_style;
-	style = gtk_style_copy(prev_style);
-
-	if (color_index < 0 || color_index >= N_COLOR_LABELS) {
-		color_index = 0;
-		color.red = ctree_style->fg[GTK_STATE_NORMAL].red;
-		color.green = ctree_style->fg[GTK_STATE_NORMAL].green;
-		color.blue = ctree_style->fg[GTK_STATE_NORMAL].blue;
-		style->fg[GTK_STATE_NORMAL] = color;
-
-		color.red = ctree_style->fg[GTK_STATE_SELECTED].red;
-		color.green = ctree_style->fg[GTK_STATE_SELECTED].green;
-		color.blue = ctree_style->fg[GTK_STATE_SELECTED].blue;
-		style->fg[GTK_STATE_SELECTED] = color;
-		gtk_ctree_node_set_row_style(ctree, node, style);
-	} else
-		color = colorlabel_get_color(color_index);
-
 	msginfo = gtk_ctree_node_get_row_data(ctree, node);
-
 	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_CLABEL_FLAG_MASK);
 	MSG_SET_COLORLABEL_VALUE(msginfo->flags, labelcolor);
 
-	if (style) {
+	color_index = labelcolor == 0 ? -1 : (gint)labelcolor - 1;
+	ctree_style = gtk_widget_get_style(GTK_WIDGET(ctree));
+	prev_style = gtk_ctree_node_get_row_style(ctree, node);
+
+	if (color_index < 0 || color_index >= N_COLOR_LABELS) {
+		if (!prev_style) return;
+		style = gtk_style_copy(prev_style);
+		color = ctree_style->fg[GTK_STATE_NORMAL];
+		style->fg[GTK_STATE_NORMAL] = color;
+		color = ctree_style->fg[GTK_STATE_SELECTED];
+		style->fg[GTK_STATE_SELECTED] = color;
+	} else {
+		if (prev_style)
+			style = gtk_style_copy(prev_style);
+		else
+			style = gtk_style_copy(ctree_style);
+		color = colorlabel_get_color(color_index);
 		style->fg[GTK_STATE_NORMAL] = color;
 		style->fg[GTK_STATE_SELECTED] = color;
-		gtk_ctree_node_set_row_style(ctree, node, style);
 	}
+
+	gtk_ctree_node_set_row_style(ctree, node, style);
 }
 
 void summary_set_colorlabel(SummaryView *summaryview, guint labelcolor,

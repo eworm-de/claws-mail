@@ -61,7 +61,7 @@ typedef enum
 	COMPOSE_FORWARD,
 	COMPOSE_FORWARD_AS_ATTACH,
 	COMPOSE_NEW,
-	COMPOSE_REEDIT_DRAFT
+	COMPOSE_REEDIT
 } ComposeReplyMode;
 
 struct _Compose

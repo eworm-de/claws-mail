@@ -1,8 +1,36 @@
+2001-08-30
+
+	* version 0.6.0
+
+2001-08-30
+
+	* src/send.c: ローカルの sendmail コマンドによる送信を実装。
+	  send_message_local(): 新規。コマンドを popen() で呼び出し、
+	  RFC822 メッセージの内容をコマンドに送信する。
+	* src/prefs_common.[ch]: 外部送信コマンドのオプションを有効にした。
+	* src/defs.h: #define DEFAULT_SENDMAIL_CMD /usr/sbin/sendmail -t
+	* src/account.c: account_edit_create(): プロトコル行を広げた。
+	* src/summaryview.c: summary_set_colorlabel_color(): コードの整理。
+
+2001-08-30
+
+	* src/folder.c: folder_item_remove_msg(): 最後のメッセージが削除
+	  されたらフォルダを再びスキャンするようにした。
+	* src/compose.c: compose_queue(), compose_draft_cb(): 新しいメッ
+	  セージを追加した後に再編集対象のメッセージを削除するようにした。
+
 2001-08-29
 
 	* src/compose.c: compose_queue(): キューイングヘッダに AID: を追加。
 	* src/send.c: send_message_queue(): AID: ヘッダを探し、 SSV: の
 	  代わりにアカウントで指定されたサーバを使用するようにした。
+	* src/summaryview.c
+	  src/compose.[ch]: 送信待ちメッセージを再編集可能にした。
+	  compose_remove_reedit_target(): 新規。古い再編集対象のメッセージ
+	  を削除する。
+	  compose_send(), compose_queue(), compose_draft_cb(): 再編集
+	  モードのときは、古いメッセージを削除するようにした。
+	* src/procmsg.c: procmsg_msg_exist(): 警告を出力するバグを修正。
 
 2001-08-28
 

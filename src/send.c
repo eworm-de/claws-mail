@@ -39,6 +39,7 @@
 #include "ssl.h"
 #include "smtp.h"
 #include "esmtp.h"
+#include "prefs_common.h"
 #include "prefs_account.h"
 #include "account.h"
 #include "compose.h"
@@ -63,6 +64,8 @@ struct _SendProgressDialog
 	gboolean cancelled;
 };
 
+static gint send_message_local	(const gchar *command, FILE *fp);
+
 #if USE_SSL
 static gint send_message_smtp	(GSList *to_list, const gchar *from,
 				 const gchar *server, gushort port,
@@ -86,9 +89,6 @@ static SendProgressDialog *send_progress_dialog_create(void);
 static void send_progress_dialog_destroy(SendProgressDialog *dialog);
 static void send_cancel(GtkWidget *widget, gpointer data);
 
-static gint send_message_with_command(GSList *to_list, gchar * mailcmd,
-				      FILE * fp);
-
 gint send_message(const gchar *file, PrefsAccount *ac_prefs, GSList *to_list)
 {
 	FILE *fp;
@@ -105,11 +105,12 @@ gint send_message(const gchar *file, PrefsAccount *ac_prefs, GSList *to_list)
 		return -1;
 	}
 
-	if (ac_prefs->protocol == A_LOCAL && ac_prefs->use_mail_command) {
-		val = send_message_with_command(to_list,
-						ac_prefs->mail_command,
-						fp);
-	} else {
+	if (prefs_common.use_extsend && prefs_common.extsend_cmd) {
+		val = send_message_local(prefs_common.extsend_cmd, fp);
+		fclose(fp);
+		return val;
+	}
+
 #if USE_SSL
 	port = ac_prefs->set_smtpport ? ac_prefs->smtpport :
 		ac_prefs->ssl_smtp == SSL_SMTP_TUNNEL ? SSMTP_PORT : SMTP_PORT;
@@ -130,7 +131,6 @@ gint send_message(const gchar *file, PrefsAccount *ac_prefs, GSList *to_list)
 				ac_prefs->userid, ac_prefs->passwd,
 				ac_prefs->use_smtp_auth, fp);
 #endif
-	}
 
 	fclose(fp);
 	return val;
@@ -143,49 +143,6 @@ enum
 	Q_RECIPIENTS = 2,
 	Q_ACCOUNT_ID = 3
 };
-
-static gint send_message_with_command(GSList *to_list, gchar * mailcmd,
-				      FILE * fp)
-{
-	FILE * p;
-	int len;
-	gchar * cmdline;
-	GSList *cur;
-	gchar buf[BUFFSIZE];
-
-	len = strlen(mailcmd);
-	for (cur = to_list; cur != NULL; cur = cur->next)
-		len += strlen((gchar *)cur->data) + 1;
-
-	cmdline = g_new(gchar, len + 1);
-	strcpy(cmdline, mailcmd);
-
-	for (cur = to_list; cur != NULL; cur = cur->next) {
-		cmdline = strncat(cmdline, " ", len);
-		cmdline = strncat(cmdline, (gchar *)cur->data, len);
-	}
-
-	log_message(_("Using command to send mail: %s ...\n"), cmdline);
-
-	p = popen(cmdline, "w");
-	if (p != NULL) {
-		while (fgets(buf, sizeof(buf), fp) != NULL) {
-			strretchomp(buf);
-
-			/* escape when a dot appears on the top */
-			if (buf[0] == '.')
-				fputs(".", p);
-
-			fputs(buf, p);
-			fputs("\n", p);
-		}
-		pclose(p);
-	}
-
-	log_message(_("Mail sent successfully ...\n"));
-
-	return 0;
-}
 
 gint send_message_queue(const gchar *file)
 {
@@ -234,6 +191,8 @@ gint send_message_queue(const gchar *file)
 	if (!to_list || !from) {
 		g_warning(_("Queued message header is broken.\n"));
 		val = -1;
+	} else if (prefs_common.use_extsend && prefs_common.extsend_cmd) {
+		val = send_message_local(prefs_common.extsend_cmd, fp);
 	} else {
 		gushort port;
 		gchar *domain;
@@ -287,6 +246,34 @@ gint send_message_queue(const gchar *file)
 	fclose(fp);
 
 	return val;
+}
+
+static gint send_message_local(const gchar *command, FILE *fp)
+{
+	FILE *pipefp;
+	gchar buf[BUFFSIZE];
+
+	g_return_val_if_fail(command != NULL, -1);
+	g_return_val_if_fail(fp != NULL, -1);
+
+	pipefp = popen(command, "w");
+	if (!pipefp) {
+		g_warning(_("Can't execute external command: %s\n"), command);
+		return -1;
+	}
+
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		strretchomp(buf);
+		/* escape when a dot appears on the top */
+		if (buf[0] == '.')
+			fputc('.', pipefp);
+		fputs(buf, pipefp);
+		fputc('\n', pipefp);
+	}
+
+	pclose(pipefp);
+
+	return 0;
 }
 
 #define EXIT_IF_CANCELLED() \

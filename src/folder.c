@@ -798,28 +798,18 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 gint folder_item_remove_msg(FolderItem *item, gint num)
 {
 	Folder *folder;
-	gint result;
+	gint ret;
 
 	g_return_val_if_fail(item != NULL, -1);
 
 	folder = item->folder;
-
-	g_return_val_if_fail(folder->scan != NULL, -1);
-	g_return_val_if_fail(folder->remove_msg != NULL, -1);
-
-	if (folder->finished_remove)
-		folder->finished_remove(folder, item);
-
-	result = folder->remove_msg(folder, item, num);
-
 	if (item->last_num < 0) folder->scan(folder, item);
 
-	if (result == 0){
-		if (folder->finished_remove)
-			folder->finished_remove(folder, item);
-	}
+	ret = folder->remove_msg(folder, item, num);
+	if (ret == 0 && num == item->last_num)
+		folder->scan(folder, item);
 
-	return result;
+	return ret;
 }
 
 gint folder_item_remove_all_msg(FolderItem *item)
