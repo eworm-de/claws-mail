@@ -126,4 +126,4 @@
 ( cvs diff -u -r 1.126 -r 1.127 src/textview.c; ) > 0.9.12cvs141.patchset
 ( cvs diff -u -r 1.127 -r 1.128 src/textview.c; ) > 0.9.12cvs142.patchset
 ( cvs diff -u -r 1.449 -r 1.450 src/summaryview.c; ) > 0.9.12cvs143.patchset
-( cvs diff -u -r 1.453 -r 1.454 src/compose.c; cvs diff -u -r 1.261 -r 1.262 src/folder.c; cvs diff -u -r 1.312 -r 1.313 src/mainwindow.c; cvs diff -u -r 1.116 -r 1.117 src/prefs_account.c; cvs diff -u -r 1.53 -r 1.54 src/prefs_account.h; cvs diff -u -r 1.8 -r 1.9 src/plugins/pgpmime/pgpmime.c; ) > 0.9.12cvs144.patchset
+( cvs diff -u -r 1.453 -r 1.454 src/compose.c; cvs diff -u -r 1.261 -r 1.262 src/folder.c; cvs diff -u -r 1.312 -r 1.313 src/mainwindow.c; cvs diff -u -r 1.116 -r 1.118 src/prefs_account.c; cvs diff -u -r 1.53 -r 1.54 src/prefs_account.h; cvs diff -u -r 1.8 -r 1.9 src/plugins/pgpmime/pgpmime.c; ) > 0.9.12cvs144.patchset

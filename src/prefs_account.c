@@ -2461,7 +2461,7 @@ static void prefs_account_set_optmenu_from_string(PrefParam *pparam)
 		gchar *name;
 		GtkWidget *menuitem;
 
-		name = g_strdup_printf(_("Unsuppored (%s)"), prefsid);
+		name = g_strdup_printf(_("Unsupported (%s)"), prefsid);
 		menuitem = gtk_menu_item_new_with_label(name);
 		gtk_widget_show(menuitem);
 		gtk_object_set_data_full(GTK_OBJECT(menuitem), "user_data", g_strdup(prefsid), g_free);
