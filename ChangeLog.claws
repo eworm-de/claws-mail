@@ -1,3 +1,7 @@
+2004-02-11 [luke]	0.9.9claws3
+	* src/mimeview.c
+		remove redundant check introduced in 0.9.9claws1
+
 2004-02-11 [luke]	0.9.9claws2
 	* src/mimeview.c
 		fix compilation of my previous commit without gpg enabled
