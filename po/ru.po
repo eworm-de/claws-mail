@@ -7,10 +7,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: sylpheed-claws-1.0.0cvs28.3\n"
+"Project-Id-Version: sylpheed-claws-1.0.1cvs22.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-02-08 12:13+0200\n"
-"PO-Revision-Date: 2005-02-08 15:30+0200\n"
+"PO-Revision-Date: 2005-03-10 15:30+0200\n"
 "Last-Translator: Pavlo & Olena Bohmat <bohm@ukr.net>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1029,7 +1029,7 @@ msgstr "/_Файл/Вставить по_дпись"
 
 #: src/compose.c:538
 msgid "/_Message/_Save"
-msgstr "/_Сообщение/_Отправить"
+msgstr "/_Сообщение/_Сохранить"
 
 #: src/compose.c:541
 msgid "/_Message/_Close"
@@ -5027,7 +5027,7 @@ msgstr "/Загр_узить"
 
 #: src/news_gtk.c:57
 msgid "/News _account settings"
-msgstr ""
+msgstr "/Настройки учётной записи новостей"
 
 #: src/news_gtk.c:58
 msgid "/Remove _news account"
@@ -8685,3 +8685,5 @@ msgstr "Перенести всё"
 msgid "News"
 msgstr "Новости"
 
+msgid "/_Add to addressbook"
+msgstr "/_Добавить в адресную книгу"

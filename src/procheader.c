@@ -434,20 +434,12 @@ Header * procheader_parse_header(gchar * buf)
 			header->name = g_strndup(buf, p - buf + 1);
 			p++;
 			while (*p == ' ' || *p == '\t') p++;
-#ifdef WIN32
-			{
-				gchar *hdr = g_strdup("X-Face");
-				if (strcasecmp(header->name, hdr))
-					conv_unmime_header(tmp, sizeof(tmp), p, NULL);
-				g_free(hdr);
-			}
-#else				
+                        *tmp = 0;
 			conv_unmime_header(tmp, sizeof(tmp), p, NULL);
-#endif
-			if(tmp == NULL) 
-				header->body = g_strdup(p);
-			else	
+                        if (*tmp)
 				header->body = g_strdup(tmp);
+                        else                                
+				header->body = g_strdup(p);
 			return header;
 		}
 	}

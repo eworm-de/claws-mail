@@ -1,3 +1,31 @@
+2005-03-24 [thorsten]	1.0.4cvs0.1
+
+	* AUTHORS
+	* ChangeLog
+	* ChangeLog.claws
+	* ChangeLog.jp
+	* PATCHSETS
+	* configure.ac
+	* po/ru.po
+	* src/codeconv.c
+	* src/compose.c
+	* src/procheader.c
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/textview.c
+	* src/unmime.c
+	* src/unmime.h
+	* src/common/plugin.c
+	* src/common/smtp.c
+	* src/gtk/about.c
+	* src/pixmaps/sylpheed_logo.xpm
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/trayicon/trayicon.c
+	* tools/Makefile.am
+	* tools/README
+	* tools/acroread2sylpheed.pl
+		sync 1.0.4
+
 2005-03-10 [thorsten]	1.0.3cvs0.1
 
 	* ChangeLog.claws

@@ -260,3 +260,11 @@
 ( cvs diff -u -r 1.135 -r 1.136 src/messageview.c; ) > 1.0.1cvs20.patchset
 ( cvs diff -u -r 1.458 -r 1.459 ChangeLog; cvs diff -u -r 1.453 -r 1.454 ChangeLog.jp; cvs diff -u -r 1.7 -r 1.8 src/addrharvest.c; cvs diff -u -r 1.74 -r 1.75 src/codeconv.c; cvs diff -u -r 1.16 -r 1.17 src/codeconv.h; cvs diff -u -r 1.479 -r 1.480 src/compose.c; cvs diff -u -r 1.105 -r 1.106 src/procmime.c; ) > 1.0.1cvs21.patchset
 ( cvs diff -u -r 1.20 -r 1.21 src/common/smtp.c; cvs diff -u -r 1.10 -r 1.11 src/common/smtp.h; ) > 1.0.1cvs22.patchset
+( cvs diff -u -r 1.22 -r 1.23 po/ru.po; ) > 1.0.3cvs1.patchset
+( cvs diff -u -r 1.18 -r 1.19 src/plugins/trayicon/trayicon.c; ) > 1.0.3cvs2.patchset
+( cvs diff -u -r 1.129 -r 1.130 AUTHORS; cvs diff -u -r 1.7 -r 1.8 src/gtk/about.c; cvs diff -u -r 1.1 -r 1.2 src/pixmaps/sylpheed_logo.xpm; ) > 1.0.3cvs3.patchset
+( cvs diff -u -r 1.458 -r 1.459 src/summaryview.c; cvs diff -u -r 1.75 -r 1.76 src/summaryview.h; ) > 1.0.3cvs4.patchset
+( cvs diff -u -r 1.480 -r 1.481 src/compose.c; ) > 1.0.3cvs5.patchset
+( cvs diff -u -r 1.15 -r 1.16 src/common/plugin.c; cvs diff -u -r 1.62 -r 1.63 src/procheader.c; ) > 1.0.3cvs6.patchset
+( cvs diff -u -r 1.24 -r 1.25 src/plugins/spamassassin/spamassassin.c; ) > 1.0.3cvs7.patchset
+( cvs diff -u -r 1.459 -r 1.460 ChangeLog; cvs diff -u -r 1.454 -r 1.455 ChangeLog.jp; cvs diff -u -r 1.75 -r 1.76 src/codeconv.c; cvs diff -u -r 1.130 -r 1.131 src/textview.c; cvs diff -u -r 1.9 -r 1.10 src/unmime.c; cvs diff -u -r 1.2 -r 1.3 src/unmime.h; cvs diff -u -r 1.21 -r 1.22 src/common/smtp.c; ) > 1.0.3cvs8.patchset

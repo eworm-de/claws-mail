@@ -334,6 +334,7 @@ gint plugin_init(gchar **error)
 
 	username = g_get_user_name();
 	if (username == NULL) {
+		hooks_unregister_hook(MAIL_FILTERING_HOOKLIST, hook_id);
 		*error = g_strdup("Failed to get username");
 		return -1;
 	}

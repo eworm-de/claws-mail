@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,13 +28,14 @@
 #include "codeconv.h"
 #include "base64.h"
 #include "quoted-printable.h"
+#include "utils.h"
 
 #define ENCODED_WORD_BEGIN	"=?"
 #define ENCODED_WORD_END	"?="
 
 /* Decodes headers based on RFC2045 and RFC2047. */
 
-void unmime_header(gchar *out, const gchar *str)
+void unmime_header(gchar *out, gint outlen, const gchar *str)
 {
 	const gchar *p = str;
 	gchar *outp = out;
@@ -50,28 +51,33 @@ void unmime_header(gchar *out, const gchar *str)
 
 		eword_begin_p = strstr(p, ENCODED_WORD_BEGIN);
 		if (!eword_begin_p) {
-			strcpy(outp, p);
+			strncpy2(outp, p, outlen);
 			return;
 		}
 		encoding_begin_p = strchr(eword_begin_p + 2, '?');
 		if (!encoding_begin_p) {
-			strcpy(outp, p);
+			strncpy2(outp, p, outlen);
 			return;
 		}
 		text_begin_p = strchr(encoding_begin_p + 1, '?');
 		if (!text_begin_p) {
-			strcpy(outp, p);
+			strncpy2(outp, p, outlen);
 			return;
 		}
 		eword_end_p = strstr(text_begin_p + 1, ENCODED_WORD_END);
 		if (!eword_end_p) {
-			strcpy(outp, p);
+			strncpy2(outp, p, outlen);
 			return;
 		}
 
 		if (p == str) {
+			if (eword_begin_p - p > outlen - 1) {
+				strncpy2(outp, p, outlen);
+				return;
+			}
 			memcpy(outp, p, eword_begin_p - p);
 			outp += eword_begin_p - p;
+			outlen -= eword_begin_p - p;
 			p = eword_begin_p;
 		} else {
 			/* ignore spaces between encoded words */
@@ -79,8 +85,13 @@ void unmime_header(gchar *out, const gchar *str)
 
 			for (sp = p; sp < eword_begin_p; sp++) {
 				if (!isspace(*(const guchar *)sp)) {
+					if (eword_begin_p - p > outlen - 1) {
+						strncpy2(outp, p, outlen);
+						return;
+					}
 					memcpy(outp, p, eword_begin_p - p);
 					outp += eword_begin_p - p;
+					outlen -= eword_begin_p - p;
 					p = eword_begin_p;
 					break;
 				}
@@ -106,8 +117,13 @@ void unmime_header(gchar *out, const gchar *str)
 				(decoded_text, text_begin_p + 1,
 				 eword_end_p - (text_begin_p + 1));
 		} else {
+			if (eword_end_p + 2 - p > outlen - 1) {
+				strncpy2(outp, p, outlen);
+				return;
+			}
 			memcpy(outp, p, eword_end_p + 2 - p);
 			outp += eword_end_p + 2 - p;
+			outlen -= eword_end_p + 2 - p;
 			p = eword_end_p + 2;
 			continue;
 		}
@@ -116,13 +132,25 @@ void unmime_header(gchar *out, const gchar *str)
 		conv_str = conv_codeset_strdup(decoded_text, charset, NULL);
 		if (conv_str) {
 			len = strlen(conv_str);
+			if (len > outlen - 1) {
+				strncpy2(outp, conv_str, outlen);
+				g_free(conv_str);
+				g_free(decoded_text);
+				return;
+			}
 			memcpy(outp, conv_str, len);
 			g_free(conv_str);
 		} else {
 			len = strlen(decoded_text);
+			if (len > outlen - 1) {
+				conv_localetodisp(outp, outlen, decoded_text);
+				g_free(decoded_text);
+				return;
+			}
 			conv_localetodisp(outp, len + 1, decoded_text);
 		}
 		outp += len;
+		outlen -= len;
 
 		g_free(decoded_text);
 
