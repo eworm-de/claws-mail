@@ -17,14 +17,18 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <unistd.h>
+#ifdef WIN32
+ #include <w32lib.h>
+ #include <process.h>
+#else
+ #include <unistd.h>
+#endif
 #include <fcntl.h>
 #include <glib.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
 
 #include "mbox_folder.h"
 #include "folder.h"
@@ -187,6 +191,8 @@ static gboolean mbox_file_lock_file(gchar * base)
 
 static gboolean mbox_fcntl_lockwrite_file(FILE * fp)
 {
+#ifdef WIN32
+#else
 	struct flock lck;
 
 	lck.l_type = F_WRLCK;
@@ -198,10 +204,13 @@ static gboolean mbox_fcntl_lockwrite_file(FILE * fp)
 		return FALSE;
 	else
 		return TRUE;
+#endif
 }
 
 static gboolean mbox_fcntl_lockread_file(FILE * fp)
 {
+#ifdef WIN32
+#else
 	struct flock lck;
 
 	lck.l_type = F_RDLCK;
@@ -213,10 +222,13 @@ static gboolean mbox_fcntl_lockread_file(FILE * fp)
 		return FALSE;
 	else
 		return TRUE;
+#endif
 }
 
 static gboolean mbox_fcntl_unlock_file(FILE * fp)
 {
+#ifdef WIN32
+#else
 	struct flock lck;
 
 	lck.l_type = F_UNLCK;
@@ -228,6 +240,7 @@ static gboolean mbox_fcntl_unlock_file(FILE * fp)
 		return FALSE;
 	else
 		return TRUE;
+#endif
 }
 
 static gboolean mbox_file_unlock_file(gchar * base)

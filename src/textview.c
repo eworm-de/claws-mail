@@ -51,6 +51,18 @@
 #include "displayheader.h"
 #include "account.h"
 
+#ifdef WIN32
+#define FONTSET_LOAD(font, s) \
+{ \
+	gchar *fontstr, *p; \
+ \
+	Xstrdup_a(fontstr, s, ); \
+	if ((p = strchr(fontstr, ',')) != NULL) *p = '\0'; \
+	font = gdk_fontset_load(fontstr); \
+	if (!font) \
+		g_warning("Couldn't load the font '%s'\n", fontstr); \
+}
+#else
 #define FONT_LOAD(font, s) \
 { \
 	gchar *fontstr, *p; \
@@ -61,6 +73,7 @@
 	if (!font) \
 		g_warning("Couldn't load the font '%s'\n", fontstr); \
 }
+#endif
 
 typedef struct _RemoteURI	RemoteURI;
 
@@ -192,7 +205,11 @@ TextView *textview_create(void)
 		GtkStyle *style;
 		GdkFont *font;
 
+#ifdef WIN32
+		FONTSET_LOAD(font, prefs_common.normalfont);
+#else
 		FONT_LOAD(font, prefs_common.normalfont);
+#endif
 		if (font) {
 			style = gtk_style_copy(text_sb->style);
 			gdk_font_unref(style->font);
@@ -1094,6 +1111,9 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 
 	/* In multi-byte mode, GtkSText can't display 8bit characters
 	   correctly, so it must be single-byte mode. */
+#ifdef WIN32
+	use_fontset = TRUE;
+#else
 	if (MB_CUR_MAX > 1) {
 		if (codeset) {
 			if (!g_strncasecmp(codeset, "ISO-8859-", 9) ||
@@ -1107,6 +1127,7 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 		}
 	} else
 		use_fontset = FALSE;
+#endif
 
 	if (textview->text_is_mb && !use_fontset) {
 		GtkWidget *parent;
@@ -1153,11 +1174,15 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 				text_sb_font->ascent = text_sb_font_orig_ascent;
 				text_sb_font->descent = text_sb_font_orig_descent;
 			}
+#ifdef WIN32
+			FONTSET_LOAD(font, prefs_common.textfont);
+#else
 			if (MB_CUR_MAX > 1) {
-				FONT_LOAD(font, "-*-courier-medium-r-normal--14-*-*-*-*-*-iso8859-1");
+				FONT_LOAD(font, "-*-courier-medium-r-normal--14-*-*-*-*-*-jisx0208.1983-0");
 			} else {
 				FONT_LOAD(font, prefs_common.textfont);
 			}
+#endif
 			if (font && text_sb_font != font) {
 				if (text_sb_font)
 					gdk_font_unref(text_sb_font);
@@ -1182,10 +1207,19 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 		}
 	}
 
+#ifdef WIN32
+	if (!textview->boldfont && prefs_common.boldfont)
+		FONTSET_LOAD(textview->boldfont, prefs_common.boldfont);
+	if (!spacingfont) {
+//		spacingfont = gdk_font_load(prefs_common.spacingfont);
+		FONTSET_LOAD(spacingfont, prefs_common.spacingfont);
+	}
+#else
 	if (!textview->boldfont && prefs_common.boldfont)
 		FONT_LOAD(textview->boldfont, prefs_common.boldfont);
 	if (!spacingfont)
 		spacingfont = gdk_font_load("-*-*-medium-r-normal--6-*");
+#endif
 }
 
 enum
@@ -1668,6 +1702,9 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 
 	if (event && 
 	    ((event->button == 1)
+#ifdef WIN32
+	     || event->state == GDK_SHIFT_MASK
+#endif
 	     || event->button == 2 || event->button == 3)) {
 		GSList *cur;
 
@@ -1684,8 +1721,14 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 			if (textview->cur_pos >= uri->start &&
 			    textview->cur_pos <  uri->end) {
 				/* single click: display url in statusbar */
+#ifdef oWIN32
+				if (event->button == 1 && textview->last_buttonpress != GDK_2BUTTON_PRESS) {
+					if (textview->messageview->mainwin
+						&& event->state != GDK_SHIFT_MASK) {
+#else
 				if (event->button == 1 && textview->last_buttonpress != GDK_2BUTTON_PRESS) {
 					if (textview->messageview->mainwin) {
+#endif
 						if (textview->show_url_msgid) {
 						  	gtk_timeout_remove(textview->show_url_timeout_tag);
 							gtk_statusbar_remove(GTK_STATUSBAR(
@@ -1703,7 +1746,12 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 					}
 				} else
 				if (!g_strncasecmp(uri->uri, "mailto:", 7)) {
+#ifdef WIN32
+					/* Gtk/Win swallows any doubleclick -> accept shift click instead */
+					if (event->button == 3 && (!event->state == GDK_SHIFT_MASK)) {
+#else
 					if (event->button == 3) {
+#endif
 						gchar *fromname, *fromaddress;
 						GdkEventButton tmpev;	
 						

@@ -255,9 +255,15 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 	else
 		WCSFindFunc = wcscasestr;
 
+#ifdef WIN32
+	fromwcs = gtkwcs2winwcs( GTK_ENTRY(from_entry)->text );
+	towcs   = gtkwcs2winwcs( GTK_ENTRY(to_entry)->text );
+	subjwcs = gtkwcs2winwcs( GTK_ENTRY(subject_entry)->text );
+#else
 	fromwcs = (wchar_t *)GTK_ENTRY(from_entry)->text;
 	towcs   = (wchar_t *)GTK_ENTRY(to_entry)->text;
 	subjwcs = (wchar_t *)GTK_ENTRY(subject_entry)->text;
+#endif
 	body_str = gtk_entry_get_text(GTK_ENTRY(body_entry));
 
 	if (search_all) {

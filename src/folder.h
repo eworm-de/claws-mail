@@ -210,6 +210,10 @@ struct _FolderItem
 	GSList *mark_queue;
 
 	gpointer data;
+ 
+ #ifdef WIN32
+ 	int n_child;
+ #endif
 
 	PrefsFolderItem * prefs;
 };

@@ -506,7 +506,14 @@ void messageview_set_font(MessageView *messageview)
 
 void messageview_copy_clipboard(MessageView *messageview)
 {
-	switch (messageview->type) {
+	gint displaytype = /* force MVIEV_TEXT on first page */
+		((messageview->type == MVIEW_MIME)
+		&& (gtk_notebook_get_current_page(GTK_NOTEBOOK(
+				messageview->mimeview->notebook)) > 0))
+		? MVIEW_MIME
+		: MVIEW_TEXT;
+
+	switch (displaytype) {
 	case MVIEW_TEXT:
 		gtk_editable_copy_clipboard(GTK_EDITABLE(messageview->textview->text));
 		break;
@@ -520,7 +527,14 @@ void messageview_copy_clipboard(MessageView *messageview)
 
 void messageview_select_all(MessageView *messageview)
 {
-	switch (messageview->type) {
+	gint displaytype = /* force MVIEV_TEXT on first page */
+		((messageview->type == MVIEW_MIME)
+		&& (gtk_notebook_get_current_page(GTK_NOTEBOOK(
+				messageview->mimeview->notebook)) > 0))
+		? MVIEW_MIME
+		: MVIEW_TEXT;
+
+	switch (displaytype) {
 	case MVIEW_TEXT:
 		gtk_editable_select_region(GTK_EDITABLE(messageview->textview->text), 0, -1);
 		break;

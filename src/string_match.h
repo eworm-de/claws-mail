@@ -23,6 +23,9 @@
 #define STRING_MATCH_H__
 
 #include <sys/types.h>
+#ifdef WIN32
+ #include <stdlib.h>
+#endif
 #include <regex.h>
 #include <glib.h>
 

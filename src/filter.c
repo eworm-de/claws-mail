@@ -23,7 +23,9 @@
 
 #include <glib.h>
 #include <string.h>
+#ifndef WIN32
 #include <strings.h>
+#endif
 #include <stdlib.h>
 #include <sys/types.h>
 #include <regex.h>

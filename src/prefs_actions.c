@@ -26,15 +26,22 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
-#include <gdk/gdkx.h>
+#ifndef WIN32
+ #include <gdk/gdkx.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include <sys/types.h>
-#include <sys/wait.h>
+#ifdef WIN32
+ #include <w32lib.h>
+ #include <fcntl.h>
+#else
+ #include <sys/wait.h>
+ #include <unistd.h>
+#endif
 #include <signal.h>
-#include <unistd.h>
 
 #include "intl.h"
 #include "prefs.h"
@@ -1243,6 +1250,11 @@ ChildInfo *fork_child(gchar *cmd,
 		      GtkWidget *text,
 		      Children *children)
 {
+#if 0 def WIN32
+//XXX:tm
+	return NULL;
+#else
+
 	gint chld_in[2], chld_out[2], chld_err[2], chld_status[2];
 	gchar **cmdline;
 	gint start, end, is_selection;
@@ -1255,7 +1267,7 @@ ChildInfo *fork_child(gchar *cmd,
 		return NULL; /* Asynchronous command */
 	}
 
-	if (pipe(chld_in) || pipe(chld_out) || pipe(chld_err) ||
+	if (_pipe(chld_in) || pipe(chld_out) || pipe(chld_err) ||
 	    pipe(chld_status)) {
 		alertpanel_error(_("Command could not started. Pipe creation"
 				   " failed.\n%s"), g_strerror(errno));
@@ -1264,12 +1276,63 @@ ChildInfo *fork_child(gchar *cmd,
 	
 	debug_print(_("Forking child and grandchild.\n"));
 
+#ifdef WIN32
+	{
+		SECURITY_ATTRIBUTES sa;
+		STARTUPINFO si;
+		PROCESS_INFORMATION pi;
+
+		HANDLE hIn, hOut, hErr ;
+		memset(&sa,0,sizeof(sa));
+		memset(&si,0,sizeof(si));
+		memset(&pi,0,sizeof(pi));
+
+		sa.bInheritHandle = TRUE ;
+		sa.lpSecurityDescriptor = NULL ;
+		sa.nLength = sizeof(sa);
+
+		hIn  = fdopen( chld_in[1],  "wb" );
+		hOut = fdopen( chld_out[0], "rb" );
+		hErr = fdopen( chld_err[0], "rb" );
+
+		si.hStdInput	= hIn;
+		si.hStdOutput	= hOut;
+		si.hStdError	= hErr;
+		si.dwFlags		= STARTF_USESTDHANDLES ;
+		si.cb			= sizeof(si);
+
+		cmdline = strsplit_with_quote(cmd, " ", 1024);
+
+		if (! CreateProcess(
+			NULL,		// pointer to name of executable module
+			cmd,		// pointer to command line string
+			&sa,		// process security attributes
+			&sa,		// thread security attributes
+			TRUE,		// handle inheritance flag
+			0,			// creation flags
+			NULL,		// pointer to new environment block
+			NULL,		// pointer to current directory name
+			&si,		// pointer to STARTUPINFO
+			&pi			// pointer to PROCESS_INFORMATION
+			))
+		{ perror("CreateProcess"); }
+
+			write(chld_status[1], "0\n", 2);
+			close(chld_status[1]);
+
+//		execvp(cmdline[0], cmdline);
+//		perror("execvp");
+		g_strfreev(cmdline);
+	}
+#else
 	pid_c = fork();
 	if (pid_c == (pid_t) 0) {/* Child */
 		if (setpgid(0, 0))
 			perror("setpgid");
-
+//#ifdef WIN32
+//#else
 		close(ConnectionNumber(gdk_display));
+//#endif
 
 		pid_gc = fork();
 
@@ -1327,6 +1390,7 @@ ChildInfo *fork_child(gchar *cmd,
 				 cmd, g_strerror(errno));
 		return NULL; 
 	}
+#endif
 	/* Parent */
 
 	close(chld_in[0]);
@@ -1402,6 +1466,7 @@ ChildInfo *fork_child(gchar *cmd,
 	gtk_stext_thaw(GTK_STEXT(text));
 	
 	return child_info;
+#endif
 }
 	
 static void kill_children_cb(GtkWidget *widget, gpointer data)

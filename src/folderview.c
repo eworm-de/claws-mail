@@ -543,9 +543,23 @@ void folderview_init(FolderView *folderview)
 
 
 	if (!normalfont)
+#ifdef WIN32
+		if (prefs_common.smallfont)
+			normalfont = gdk_fontset_load(prefs_common.normalfont);
+		else
+			normalfont = gdk_fontset_load(NORMAL_FONT);
+#else
 		normalfont = gdk_fontset_load(NORMAL_FONT);
+#endif
 	if (!boldfont)
+#ifdef WIN32
+	if (prefs_common.smallfont)
+		boldfont = gdk_fontset_load(prefs_common.boldfont);
+	else
 		boldfont = gdk_fontset_load(BOLD_FONT);
+#else
+		boldfont = gdk_fontset_load(BOLD_FONT);
+#endif
 
 	if (!bold_style) {
 		bold_style = gtk_style_copy(gtk_widget_get_style(ctree));
@@ -749,6 +763,25 @@ static void folderview_scan_tree_func(Folder *folder, FolderItem *item,
 		FolderView *folderview = (FolderView *)list->data;
 		MainWindow *mainwin = folderview->mainwin;
 		gchar *str;
+#ifdef WIN32
+		gchar *p_rootpath, *p_path;
+
+		p_rootpath = g_strdup(rootpath);
+		locale_to_utf8(&p_rootpath);
+
+		if (item->path) {
+			p_path = g_strdup(item->path);
+			locale_to_utf8(&p_path);
+			str = g_strdup_printf(_("Scanning folder %s%c%s ..."),
+					      p_rootpath, G_DIR_SEPARATOR,
+					      p_path);
+			g_free(p_path);
+		}
+		else
+			str = g_strdup_printf(_("Scanning folder %s ..."),
+					      p_rootpath);
+		g_free(p_rootpath);
+#else
 
 		if (item->path)
 			str = g_strdup_printf(_("Scanning folder %s%c%s ..."),
@@ -757,6 +790,7 @@ static void folderview_scan_tree_func(Folder *folder, FolderItem *item,
 		else
 			str = g_strdup_printf(_("Scanning folder %s ..."),
 					      rootpath);
+#endif
 
 		STATUSBAR_PUSH(mainwin, str);
 		STATUSBAR_POP(mainwin);
@@ -1883,6 +1917,11 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 	g_free(message);
 	if (!new_folder) return;
 
+#ifdef WIN32
+	new_folder = g_strdup(new_folder);
+	locale_from_utf8(&new_folder);
+#endif
+
 	if (strchr(new_folder, G_DIR_SEPARATOR) != NULL) {
 		alertpanel_error(_("`%c' can't be included in folder name."),
 				 G_DIR_SEPARATOR);
@@ -1960,13 +1999,31 @@ static void folderview_rename_mbox_folder_cb(FolderView *folderview,
 	g_return_if_fail(item->path != NULL);
 	g_return_if_fail(item->folder != NULL);
 
+ #ifdef WIN32
+ 	{
+ 		gchar *p_path;
+ 		p_path = g_strdup(item->path);
+ 		locale_to_utf8(&p_path);
+ 
+ 		message = g_strdup_printf(_("Input new name for `%s':"),
+ 					  g_basename(p_path));
+ 		new_folder = input_dialog(_("Rename folder"), message,
+ 					  g_basename(p_path));
+ 	}
+ #else
 	message = g_strdup_printf(_("Input new name for `%s':"),
 				  g_basename(item->path));
 	new_folder = input_dialog(_("Rename folder"), message,
 				  g_basename(item->path));
+ #endif
 	g_free(message);
 	if (!new_folder) return;
 
+ #ifdef WIN32
+ 	new_folder = g_strdup(new_folder);
+ 	locale_from_utf8(&new_folder);
+ #endif
+ 
 	if (folderview_find_by_name
 		(ctree, GTK_CTREE_ROW(folderview->selected)->parent,
 		 new_folder)) {
@@ -2017,6 +2074,10 @@ static void folderview_delete_folder_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item->folder != NULL);
 
 	name_ = trim_string(item->name, 32);
+#ifdef WIN32
+	locale_to_utf8(&name_);
+#endif
+
 	Xstrdup_a(name, name_, return);
 	g_free(name_);
 	message = g_strdup_printf

@@ -26,7 +26,11 @@
 #include <string.h>
 #include <stdarg.h>
 #include <ctype.h>
+#ifdef WIN32
+#include <w32lib.h>
+#else
 #include <unistd.h>
+#endif
 
 #include "intl.h"
 #include "pop.h"

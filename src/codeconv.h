@@ -101,7 +101,11 @@ struct _CodeConverter
 #define CS_ISO_2022_JP_2	"ISO-2022-JP-2"
 #define CS_EUC_JP		"EUC-JP"
 #define CS_EUCJP		"EUCJP"
+#ifdef WIN32
+#define CS_SHIFT_JIS		"SJIS"
+#else
 #define CS_SHIFT_JIS		"Shift_JIS"
+#endif
 #define CS_ISO_2022_KR		"ISO-2022-KR"
 #define CS_EUC_KR		"EUC-KR"
 #define CS_ISO_2022_CN		"ISO-2022-CN"
@@ -161,5 +165,11 @@ void conv_encode_header			(gchar		*dest,
 					 const gchar	*src,
 					 gint		 header_len);
 
+#ifdef WIN32
+void conv_X_any_to_disp(gchar *buf, gint len);
+
+void conv_X_locale_from_utf8(gchar *buf, gint buflen);
+void conv_X_locale_to_utf8(gchar *buf, gint buflen);
+#endif
 
 #endif /* __CODECONV_H__ */

@@ -210,56 +210,65 @@ void sd_clist_set()
 	gint index = 1;
 
 	gchar *path     = g_strconcat(get_header_cache_dir(), G_DIR_SEPARATOR_S, NULL);
-	gchar *filename = g_strdup_printf("%s%i", path, index);
+
+	GDir *headerdir = g_dir_open(path,0,NULL);
+	if (headerdir) {
+		G_CONST_RETURN gchar *direntry;
 	
-	while ( is_file_exist(filename) ) {
+		while ( direntry=g_dir_read_name(headerdir) ) {
+			if (sscanf(direntry,"%d",&index)) {
+				gchar *filename = g_strdup_printf("%s%i", path, index);
 
-		MsgInfo *msginfo  = sd_get_msginfo_from_file(filename);
-		HeaderItems *line = g_new0 (HeaderItems, 1);
-		gchar *row[4];
-		gint msgid;	
+			
+				MsgInfo *msginfo  = sd_get_msginfo_from_file(filename);
+				HeaderItems *line = g_new0 (HeaderItems, 1);
+				gchar *row[4];
+				gint msgid;	
+					
+				line->index = index;
+			
+				row[0] = "";
+				row[1] = line->from    = msginfo->from;
+				row[2] = line->subject = msginfo->subject;
+				row[3] = line->size    = to_human_readable(msginfo->size);
+					
+				gtk_clist_append (GTK_CLIST(selective.clist), row);
+			
+				msginfo->folder = folder_get_default_processing();
+			
+				/* move msg file to drop folder */
+				if ((msginfo->msgnum = folder_item_add_msg(msginfo->folder, 
+									   filename, TRUE)) < 0) {
+					unlink(filename);
+					return;
+				}
+				
+				if (sd_header_filter(msginfo)) {
+					line->state = CHECKED;
+					gtk_clist_set_pixmap (GTK_CLIST (selective.clist), index - 1, 0,
+							      checkboxonxpm, checkboxonxpmmask);
+				}
+				else {
+					line->state = UNCHECKED;
+					gtk_clist_set_pixmap (GTK_CLIST (selective.clist), index - 1, 0,
+							      checkboxoffxpm, checkboxoffxpmmask);
+				}
+				
+				folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
 		
-		line->index = index;
+				header_item_list = g_slist_append(header_item_list, line);
+				
 
-		row[0] = "";
-		row[1] = line->from    = msginfo->from;
-		row[2] = line->subject = msginfo->subject;
-		row[3] = line->size    = to_human_readable(msginfo->size);
-		
-		gtk_clist_append (GTK_CLIST(selective.clist), row);
-
-		msginfo->folder = folder_get_default_processing();
-
-		/* move msg file to drop folder */
-		if ((msginfo->msgnum = folder_item_add_msg(msginfo->folder, 
-							   filename, TRUE)) < 0) {
-			unlink(filename);
-			return;
+				g_free(filename);
+			}
 		}
+		g_dir_close (headerdir);
 		
-		if (sd_header_filter(msginfo)) {
-			line->state = CHECKED;
-			gtk_clist_set_pixmap (GTK_CLIST (selective.clist), index - 1, 0,
-					      checkboxonxpm, checkboxonxpmmask);
-		}
-		else {
-			line->state = UNCHECKED;
-			gtk_clist_set_pixmap (GTK_CLIST (selective.clist), index - 1, 0,
-					      checkboxoffxpm, checkboxoffxpmmask);
-		}
-		
-		folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
-
-		header_item_list = g_slist_append(header_item_list, line);
-		
-		index++;
-		filename = g_strdup_printf("%s%i", path, index);
-	}
+	} else { /* ? no headerdir */ }
 	
 	sd_toggle_btn_remove();
 
 	g_free(path);
-	g_free(filename);
 }
 
 

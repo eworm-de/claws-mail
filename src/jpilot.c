@@ -1564,7 +1564,7 @@ gchar *jpilot_find_pilotdb( void ) {
 	strcat( str, JPILOT_DBHOME_FILE );
 
 	/* Attempt to open */
-	if( ( fp = fopen( str, "r" ) ) != NULL ) {
+	if( ( fp = fopen( str, "rb" ) ) != NULL ) {
 		fclose( fp );
 	}
 	else {

@@ -1,0 +1,5 @@
+REGEDIT4
+
+[HKEY_CURRENT_USER\Software\GNU\GnuPG]
+"gpgProgram"="C:\\gnupg\\gpg.exe"
+

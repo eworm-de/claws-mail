@@ -22,7 +22,11 @@
 
 #include <glib.h>
 #include <stdio.h>
-#include <dirent.h>
+#ifdef WIN32
+ #include <w32lib.h>
+#else
+ #include <dirent.h>
+#endif
 #include <sys/stat.h>
 #include <ctype.h>
 

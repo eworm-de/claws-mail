@@ -108,7 +108,7 @@ static struct Send {
 	GtkWidget *smtp_uid_entry;
 	GtkWidget *smtp_pass_entry;
 	GtkWidget *pop_bfr_smtp_chkbtn;
-} send;
+} Xsend;
 
 static struct Compose {
 	GtkWidget *sigpath_entry;
@@ -282,28 +282,28 @@ static PrefParam param[] = {
 
 	/* Send */
 	{"add_date", "TRUE", &tmp_ac_prefs.add_date, P_BOOL,
-	 &send.date_chkbtn,
+	 &Xsend.date_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"generate_msgid", "TRUE", &tmp_ac_prefs.gen_msgid, P_BOOL,
-	 &send.msgid_chkbtn,
+	 &Xsend.msgid_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"add_custom_header", "FALSE", &tmp_ac_prefs.add_customhdr, P_BOOL,
-	 &send.customhdr_chkbtn,
+	 &Xsend.customhdr_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"use_smtp_auth", "FALSE", &tmp_ac_prefs.use_smtp_auth, P_BOOL,
-	 &send.smtp_auth_chkbtn,
+	 &Xsend.smtp_auth_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"smtp_user_id", NULL, &tmp_ac_prefs.smtp_userid, P_STRING,
-	 &send.smtp_uid_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &Xsend.smtp_uid_entry, prefs_set_data_from_entry, prefs_set_entry},
 	{"smtp_password", NULL, &tmp_ac_prefs.smtp_passwd, P_STRING,
-	 &send.smtp_pass_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &Xsend.smtp_pass_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"pop_before_smtp", "FALSE", &tmp_ac_prefs.pop_before_smtp, P_BOOL,
-	 &send.pop_bfr_smtp_chkbtn,
+	 &Xsend.pop_bfr_smtp_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	/* Compose */
@@ -1257,14 +1257,14 @@ static void prefs_account_send_create(void)
 		_("Authenticate with POP3 before sending"));
 	gtk_widget_set_sensitive(pop_bfr_smtp_chkbtn, FALSE);
 
-	send.date_chkbtn      = date_chkbtn;
-	send.msgid_chkbtn     = msgid_chkbtn;
-	send.customhdr_chkbtn = customhdr_chkbtn;
+	Xsend.date_chkbtn      = date_chkbtn;
+	Xsend.msgid_chkbtn     = msgid_chkbtn;
+	Xsend.customhdr_chkbtn = customhdr_chkbtn;
 
-	send.smtp_auth_chkbtn    = smtp_auth_chkbtn;
-	send.smtp_uid_entry      = smtp_uid_entry;
-	send.smtp_pass_entry     = smtp_pass_entry;
-	send.pop_bfr_smtp_chkbtn = pop_bfr_smtp_chkbtn;
+	Xsend.smtp_auth_chkbtn    = smtp_auth_chkbtn;
+	Xsend.smtp_uid_entry      = smtp_uid_entry;
+	Xsend.smtp_pass_entry     = smtp_pass_entry;
+	Xsend.pop_bfr_smtp_chkbtn = pop_bfr_smtp_chkbtn;
 }
 
 static void prefs_account_compose_create(void)

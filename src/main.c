@@ -35,9 +35,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <unistd.h>
+#ifdef WIN32
+ #include <sys/stat.h>
+ #include <w32lib.h>
+ #include "utils.h"
+#else
+ #include <unistd.h>
+#endif
 #include <time.h>
-#include <sys/stat.h>
 #include <sys/types.h>
 #include <signal.h>
 
@@ -85,7 +90,7 @@
 
 gchar *prog_version;
 gchar *startup_dir;
-gboolean debug_mode = FALSE;
+gboolean debug_mode = TRUE ;
 
 static gint lock_socket = -1;
 static gint lock_socket_tag = 0;
@@ -140,14 +145,41 @@ _("File `%s' already exists.\n"
 	} \
 }
 
+#ifdef WIN32
+int APIENTRY WinMain(HINSTANCE hInstance,
+		     HINSTANCE hPrevInstance,
+		     LPSTR     lpCmdLine,
+		     int       nCmdShow ) {
+	return main(__argc, __argv);
+}
+#endif
+
 int main(int argc, char *argv[])
 {
 	gchar *userrc;
 	MainWindow *mainwin;
 	FolderView *folderview;
+#ifdef WIN32
+	gchar *locale_dir;
+	guint log_hid;
+#endif
+
+#ifdef WIN32
+	log_hid = g_log_set_handler(NULL, 
+		G_LOG_LEVEL_WARNING |
+		G_LOG_FLAG_FATAL |
+		G_LOG_FLAG_RECURSION, 
+		w32_log_handler, NULL);
+#endif
 
 	setlocale(LC_ALL, "");
+#ifdef WIN32
+	locale_dir = g_strconcat(get_installed_dir(), G_DIR_SEPARATOR_S,
+				LOCALEDIR, NULL);
+	bindtextdomain(PACKAGE, locale_dir);
+#else
 	bindtextdomain(PACKAGE, LOCALEDIR);
+#endif
 	textdomain(PACKAGE);
 
 	parse_cmd_opt(argc, argv);
@@ -167,8 +199,31 @@ int main(int argc, char *argv[])
 	gtk_widget_push_colormap(gdk_imlib_get_colormap());
 #endif
 
+#ifdef WIN32
+	{ // Initialize WinSock Library.
+		WORD wVersionRequested = MAKEWORD(1, 1);
+		WSADATA	wsaData;
+		if (WSAStartup(wVersionRequested, &wsaData) != 0){
+			perror("WSAStartup");
+			return -1;
+		}
+	}
+#endif
+
 #if USE_SSL
 	ssl_init();
+#endif
+
+#if HAVE_LIBJCONV
+	{
+		gchar *conf;
+		conf = g_strconcat(get_installed_dir(), G_DIR_SEPARATOR_S,
+				   SYSCONFDIR, G_DIR_SEPARATOR_S,
+				   "libjconv", G_DIR_SEPARATOR_S,
+				   "default.conf", NULL);
+		jconv_info_init(conf);
+		g_free(conf);
+	}
 #endif
 
 	srandom((gint)time(NULL));
@@ -208,7 +263,7 @@ int main(int argc, char *argv[])
 
 	/* backup if old rc file exists */
 	if (is_file_exist(RC_DIR)) {
-		if (rename(RC_DIR, RC_DIR ".bak") < 0)
+		if (Xrename(RC_DIR, RC_DIR ".bak") < 0)
 			FILE_OP_ERROR(RC_DIR, "rename");
 	}
 	MAKE_DIR_IF_NOT_EXIST(RC_DIR);
@@ -217,7 +272,7 @@ int main(int argc, char *argv[])
 	MAKE_DIR_IF_NOT_EXIST(get_mime_tmp_dir());
 
 	if (is_file_exist(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log")) {
-		if (rename(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log",
+		if (Xrename(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log",
 			   RC_DIR G_DIR_SEPARATOR_S "sylpheed.log.bak") < 0)
 			FILE_OP_ERROR("sylpheed.log", "rename");
 	}
@@ -225,16 +280,24 @@ int main(int argc, char *argv[])
 
 	if (is_file_exist(RC_DIR G_DIR_SEPARATOR_S "assortrc") &&
 	    !is_file_exist(RC_DIR G_DIR_SEPARATOR_S "filterrc")) {
-		if (rename(RC_DIR G_DIR_SEPARATOR_S "assortrc",
+		if (Xrename(RC_DIR G_DIR_SEPARATOR_S "assortrc",
 			   RC_DIR G_DIR_SEPARATOR_S "filterrc") < 0)
 			FILE_OP_ERROR(RC_DIR G_DIR_SEPARATOR_S "assortrc",
 				      "rename");
 	}
 
+ #ifdef WIN32
+	//XXX:tm
+ 	prefs_common_init_config();
+	start_mswin_helper();
+
+ #endif
+ 
 	prefs_common_init();
 	prefs_common_read_config();
 
 #if USE_GPGME
+	prefs_common.gpg_started = FALSE;
 	if (gpgme_check_engine()) {  /* Also does some gpgme init */
 		rfc2015_disable_all();
 		debug_print("gpgme_engine_version:\n%s\n",
@@ -250,7 +313,8 @@ int main(int argc, char *argv[])
 			if (val & G_ALERTDISABLE)
 				prefs_common.gpg_warning = FALSE;
 		}
-	}
+	} else prefs_common.gpg_started = TRUE;
+
 	gpgme_register_idle(idle_function_for_gpgme);
 #endif
 
@@ -328,6 +392,14 @@ int main(int argc, char *argv[])
 
 #if USE_PSPELL       
 	gtkpspell_checkers_delete();
+#endif
+
+#ifdef WIN32
+	stop_mswin_helper();
+	g_log_remove_handler(NULL, log_hid);
+
+	// De-Initialize WinSock Library.
+	WSACleanup();
 #endif
 
 	return 0;
@@ -478,6 +550,16 @@ static gchar *get_socket_name(void)
 
 static gint prohibit_duplicate_launch(void)
 {
+#ifdef WIN32
+	SockInfo *lock_sock;
+	gchar *path;
+
+	path = NULL;
+	lock_sock = sock_connect("localhost", LOCK_PORT);
+	if (!lock_sock) {
+		return fd_open_lock_service(LOCK_PORT);
+	}
+#else
 	gint uxsock;
 	gchar *path;
 
@@ -487,15 +569,24 @@ static gint prohibit_duplicate_launch(void)
 		unlink(path);
 		return fd_open_unix(path);
 	}
+#endif
 
 	/* remote command mode */
 
 	debug_print(_("another Sylpheed is already running.\n"));
 
 	if (cmd.receive_all)
+#ifdef WIN32
+		sock_write(lock_sock, "receive_all\n", 12);
+#else
 		fd_write(uxsock, "receive_all\n", 12);
+#endif
 	else if (cmd.receive)
+#ifdef WIN32
+		sock_write(lock_sock, "receive\n", 8);
+#else
 		fd_write(uxsock, "receive\n", 8);
+#endif
 	else if (cmd.compose) {
 		gchar *compose_str;
 
@@ -504,20 +595,41 @@ static gint prohibit_duplicate_launch(void)
 		else
 			compose_str = g_strdup("compose\n");
 
+#ifdef WIN32
+		sock_write(lock_sock, compose_str, strlen(compose_str));
+#else
 		fd_write(uxsock, compose_str, strlen(compose_str));
+#endif
 		g_free(compose_str);
 	} else if (cmd.send) {
+#ifdef WIN32
+		sock_write(lock_sock, "send\n", 5);
+#else
 		fd_write(uxsock, "send\n", 5);
+#endif
 	} else if (cmd.status) {
 		gchar buf[BUFFSIZE];
 
+#ifdef WIN32
+		sock_write(lock_sock, "status\n", 7);
+		sock_gets(lock_sock, buf, sizeof(buf));
+#else
 		fd_write(uxsock, "status\n", 7);
 		fd_gets(uxsock, buf, sizeof(buf));
+#endif
 		fputs(buf, stdout);
 	} else
+#ifdef WIN32
+		sock_write(lock_sock, "popup\n", 6);
+#else
 		fd_write(uxsock, "popup\n", 6);
+#endif
 
+#ifdef WIN32
+	sock_close(lock_sock);
+#else
 	fd_close(uxsock);
+#endif
 	return -1;
 }
 

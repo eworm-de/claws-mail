@@ -25,6 +25,9 @@
 
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>
+#ifdef WIN32
+#include <w32lib.h>
+#endif
 
 #include "intl.h"
 #include "addressbook.h"

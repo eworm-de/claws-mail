@@ -25,10 +25,18 @@
 
 #include <glib.h>
 #include <stdio.h>
+#ifdef WIN32
+#include <w32lib.h>
+#else
 #include <unistd.h>
+#endif
 #include <string.h>
 #include <fcntl.h>
+#ifdef WIN32
+#include <process.h>
+#else
 #include <sys/file.h>
+#endif
 #include <ctype.h>
 #include <time.h>
 

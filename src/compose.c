@@ -55,11 +55,19 @@
 #include <ctype.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
+#ifdef WIN32
+# include <w32lib.h>
+# include <fcntl.h>
+# include <process.h>
+#else
+# include <unistd.h>
+#endif
 #include <time.h>
 /* #include <sys/utsname.h> */
 #include <stdlib.h>
+#ifndef WIN32
 #include <sys/wait.h>
+#endif
 #include <signal.h>
 #include <errno.h>
 
@@ -249,7 +257,11 @@ static void attach_property_key_pressed		(GtkWidget	*widget,
 						 gboolean	*cancelled);
 
 static void compose_exec_ext_editor		(Compose	   *compose);
+#ifdef WIN32
+static gint compose_exec_ext_editor_real	(const gchar	   *file, Compose *compose);
+#else
 static gint compose_exec_ext_editor_real	(const gchar	   *file);
+#endif
 static gboolean compose_ext_editor_kill		(Compose	   *compose);
 static void compose_input_cb			(gpointer	    data,
 						 gint		    source,
@@ -463,6 +475,10 @@ static void compose_check_backwards	   (Compose *compose);
 static void compose_check_forwards_go	   (Compose *compose);
 #endif
 
+#ifdef WIN32
+static gint ext_editor_timeout_cb(EditorThreadData data);
+#endif
+
 static gboolean compose_send_control_enter (Compose *compose);
 static void text_activated		   (GtkWidget	*widget,
 					    Compose	*compose);
@@ -662,10 +678,21 @@ Compose *compose_bounce(PrefsAccount *account, MsgInfo *msginfo)
 		return NULL;
 
 	c->bounce_filename = filename;
-
 	if (msginfo->subject)
+#ifdef WIN32
+	{
+		gchar *p_subject;
+		p_subject = g_strdup(msginfo->subject);
+		locale_to_utf8(&p_subject);
+
+		gtk_entry_set_text(GTK_ENTRY(c->subject_entry),
+				   p_subject);
+		g_free(p_subject);
+	}
+#else
 		gtk_entry_set_text(GTK_ENTRY(c->subject_entry),
 				   msginfo->subject);
+#endif
 	gtk_editable_set_editable(GTK_EDITABLE(c->subject_entry), FALSE);
 
 	compose_quote_fmt(c, msginfo, "%M", NULL, NULL);
@@ -1049,11 +1076,21 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	CHANGE_FLAGS(msginfo);
 
 	compose = compose_create(account, COMPOSE_FORWARD);
-
 	if (msginfo->subject && *msginfo->subject) {
+#ifdef WIN32
+		gchar *p_subject;
+		p_subject = g_strdup(msginfo->subject);
+		locale_to_utf8(&p_subject);
+
+		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), "Fw: ");
+		gtk_entry_append_text(GTK_ENTRY(compose->subject_entry),
+				      p_subject);
+		g_free(p_subject);
+#else
 		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), "Fw: ");
 		gtk_entry_append_text(GTK_ENTRY(compose->subject_entry),
 				      msginfo->subject);
+#endif
 	}
 
 	text = GTK_STEXT(compose->text);
@@ -1317,8 +1354,17 @@ void compose_entry_append(Compose *compose, const gchar *address,
 		break;
 	}
 	header = prefs_common.trans_hdr ? gettext(header) : header;
-
+#ifdef WIN32
+	{
+		gchar *p_address;
+		p_address = g_strdup( address );
+		locale_to_utf8(&p_address);
+		compose_add_header_entry(compose, header, (gchar *)p_address);
+		g_free(p_address);
+	}
+#else
 	compose_add_header_entry(compose, header, (gchar *)address);
+#endif
 }
 
 static void compose_entries_set(Compose *compose, const gchar *mailto)
@@ -1642,7 +1688,6 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 
 	if (msginfo->subject && *msginfo->subject) {
 		gchar *buf, *buf2, *p;
-
 		buf = g_strdup(msginfo->subject);
 		while (!strncasecmp(buf, "Re:", 3)) {
 			p = buf + 3;
@@ -1651,6 +1696,9 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 		}
 
 		buf2 = g_strdup_printf("Re: %s", buf);
+#ifdef WIN32
+		locale_to_utf8(&buf2);
+#endif
 		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), buf2);
 		g_free(buf2);
 		g_free(buf);
@@ -1660,12 +1708,32 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	if (!to_all || compose->account->protocol == A_NNTP) return;
 
 	if (compose->replyto) {
+#ifdef WIN32
+//XXX:tm needed ?
+		gchar *p_replyto;
+		p_replyto = g_strdup(compose->replyto);
+		locale_to_utf8(&p_replyto);
 		Xstrdup_a(replyto, compose->replyto, return);
 		extract_address(replyto);
+		g_free(p_replyto);
+#else
+		Xstrdup_a(replyto, compose->replyto, return);
+		extract_address(replyto);
+#endif
 	}
+
 	if (msginfo->from) {
+#ifdef WIN32
+		gchar *p_from;
+		p_from = g_strdup(msginfo->from);
+		locale_to_utf8(&p_from);
+		Xstrdup_a(from, msginfo->from, return);
+		extract_address(p_from);
+		g_free(p_from);
+#else
 		Xstrdup_a(from, msginfo->from, return);
 		extract_address(from);
+#endif
 	}
 
 	if (compose->mailinglist && from) {
@@ -1702,8 +1770,19 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 
 	if (cc_list) {
 		for (cur = cc_list; cur != NULL; cur = cur->next)
+#ifdef WIN32
+		{
+			gchar *p_data;
+			p_data = g_strdup(cur->data);
+			locale_to_utf8(&p_data);
+			compose_entry_append(compose, p_data,
+					     COMPOSE_CC);
+			g_free(p_data);
+		}
+#else
 			compose_entry_append(compose, (gchar *)cur->data,
 					     COMPOSE_CC);
+#endif
 		slist_free_strings(cc_list);
 		g_slist_free(cc_list);
 	}
@@ -1725,11 +1804,40 @@ static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 {
 	g_return_if_fail(msginfo != NULL);
 
+#ifdef WIN32 
+	{
+		gchar *p_subject, *p_to, *p_cc, *p_bcc, *p_replyto;
+		p_subject = g_strdup(msginfo->subject);
+		p_to = g_strdup(msginfo->to);
+		p_cc = g_strdup(compose->cc);
+		p_bcc = g_strdup(compose->bcc);
+		p_replyto = g_strdup(compose->replyto);
+
+		locale_to_utf8(&p_subject);
+		locale_to_utf8(&p_to);
+		locale_to_utf8(&p_cc);
+		locale_to_utf8(&p_bcc);
+		locale_to_utf8(&p_replyto);
+
+		SET_ENTRY(subject_entry, p_subject);
+		SET_ADDRESS(COMPOSE_TO, p_to);
+		SET_ADDRESS(COMPOSE_CC, p_cc);
+		SET_ADDRESS(COMPOSE_BCC, p_bcc);
+		SET_ADDRESS(COMPOSE_REPLYTO, p_replyto);
+
+		g_free(p_subject);
+		g_free(p_to);
+		g_free(p_cc);
+		g_free(p_bcc);
+		g_free(p_replyto);
+	}
+#else
 	SET_ENTRY(subject_entry, msginfo->subject);
 	SET_ADDRESS(COMPOSE_TO, msginfo->to);
 	SET_ADDRESS(COMPOSE_CC, compose->cc);
 	SET_ADDRESS(COMPOSE_BCC, compose->bcc);
 	SET_ADDRESS(COMPOSE_REPLYTO, compose->replyto);
+#endif
 
 	compose_show_first_last_header(compose, TRUE);
 
@@ -1785,7 +1893,11 @@ static void compose_exec_sig(Compose *compose, gchar *sigfile)
 		}
 
 		while (!feof(sigprg)) {
+#ifdef WIN32
+			memset(buf, 0, buf_len);
+#else
 			bzero(buf, buf_len);
+#endif
 			fread(buf, buf_len-1, 1, sigprg);
 			gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL, buf, -1);
 		}
@@ -1857,7 +1969,17 @@ static void compose_insert_file(Compose *compose, const gchar *file)
 			while (--len >= 0)
 				if (buf[len] == '\r') buf[len] = '\n';
 		}
+#ifdef noconvWIN32
+		{
+			gchar *p_buf;
+			p_buf = g_strdup(buf);
+			locale_to_utf8(&p_buf);
+			gtk_stext_insert(text, NULL, NULL, NULL, p_buf, -1);
+			g_free(p_buf);
+		}
+#else
 		gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
+#endif
 	}
 
 	gtk_stext_thaw(text);
@@ -1932,7 +2054,18 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 
 	text[COL_MIMETYPE] = ainfo->content_type;
 	text[COL_SIZE] = to_human_readable(size);
+#ifdef WIN32
+//XXX:075
+	{
+		gchar *p_name;
+		p_name = g_strdup(ainfo->name);
+		locale_to_utf8(&p_name);
+		text[COL_NAME] = g_strdup(p_name);
+		g_free(p_name);
+	}
+#else
 	text[COL_NAME] = ainfo->name;
+#endif
 
 	row = gtk_clist_append(GTK_CLIST(compose->attach_clist), text);
 	gtk_clist_set_row_data(GTK_CLIST(compose->attach_clist), row, ainfo);
@@ -2360,7 +2493,12 @@ static void compose_wrap_line_all(Compose *compose)
 		/* we have encountered line break */
 		if (ch_len == 1 && *cbuf == '\n') {
 			gint clen;
+#ifdef WIN32
+			gchar *cb;
+			cb = g_malloc(MB_CUR_MAX);
+#else
 			gchar cb[MB_CUR_MAX];
+#endif
 
 			/* should we join the next line */
 			if ((i_len != cur_len) && do_delete &&
@@ -2434,6 +2572,9 @@ static void compose_wrap_line_all(Compose *compose)
 			line_len = cur_len = 0;
 			do_delete = FALSE;
 			is_new_line = TRUE;
+#ifdef WIN32
+			g_free(cb);
+#endif
 			continue;
 		}
 
@@ -3035,6 +3176,13 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 
 	/* get all composed text */
 	chars = gtk_editable_get_chars(GTK_EDITABLE(compose->text), 0, -1);
+
+#ifdef WIN32
+	if (0 < strlen(chars))
+		chars = g_strdup(chars);
+	locale_from_utf8(&chars);
+#endif
+
 	len = strlen(chars);
 	if (is_ascii_str(chars)) {
 		buf = g_strdup(chars);
@@ -3123,7 +3271,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 		g_free(buf);
 		return -1;
 	}
-	g_free(buf);
+	// g_free(buf);
 
 	if (compose_use_attach(compose))
 		compose_write_attach(compose, fp);
@@ -3172,8 +3320,12 @@ static gint compose_write_body_to_file(Compose *compose, const gchar *file)
 		FILE_OP_ERROR(file, "chmod");
 		g_warning(_("can't change file mode\n"));
 	}
-
+#ifdef WIN32
+	chars = g_strdup( gtk_editable_get_chars(GTK_EDITABLE(compose->text), 0, -1) );
+	locale_from_utf8( &chars );
+#else
 	chars = gtk_editable_get_chars(GTK_EDITABLE(compose->text), 0, -1);
+#endif
 
 	/* write body */
 	len = strlen(chars);
@@ -3618,9 +3770,20 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	/* From */
 	if (!IS_IN_CUSTOM_HEADER("From")) {
 		if (compose->account->name && *compose->account->name) {
+ #ifdef WIN32
+ 		gchar *p_name;
+ 
+ 		p_name = g_strdup(compose->account->name);
+ 		locale_from_utf8(&p_name);
+ 		compose_convert_header
+ 			(buf, sizeof(buf), p_name,
+ 			 strlen("From: "));
+ 		g_free(p_name);
+ #else
 			compose_convert_header
 				(buf, sizeof(buf), compose->account->name,
 				 strlen("From: "));
+ #endif
 			QUOTE_IF_REQUIRED(name, buf);
 			fprintf(fp, "From: %s <%s>\n",
 				name, compose->account->address);
@@ -3633,7 +3796,14 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 #if 0 /* NEW COMPOSE GUI */
 	if (compose->use_to) {
 		str = gtk_entry_get_text(GTK_ENTRY(compose->to_entry));
+ #ifdef WIN32
+ 				str = g_strdup(str);
+ 				locale_from_utf8(&str);
+ #endif
 		PUT_RECIPIENT_HEADER("To", str);
+ #ifdef WIN32
+ 				g_free(str);
+ #endif
 	}
 #endif
 
@@ -3646,12 +3816,19 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		g_strstrip(str);
 		remove_space(str);
 		if (*str != '\0') {
+#ifdef WIN32
+			str = g_strdup(str);
+			locale_from_utf8(&str);
+#endif
 			compose->newsgroup_list =
 				newsgroup_list_append(compose->newsgroup_list,
 						      str);
 			compose_convert_header(buf, sizeof(buf), str,
 					       strlen("Newsgroups: "));
 			fprintf(fp, "Newsgroups: %s\n", buf);
+#ifdef WIN32
+			g_free(str);
+#endif
 		}
 	}
 #endif
@@ -3660,7 +3837,14 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 #if 0 /* NEW COMPOSE GUI */
 	if (compose->use_cc) {
 		str = gtk_entry_get_text(GTK_ENTRY(compose->cc_entry));
+#ifdef WIN32
+				str = g_strdup(str);
+				locale_from_utf8(&str);
+#endif
 		PUT_RECIPIENT_HEADER("Cc", str);
+#ifdef WIN32
+				g_free(str);
+#endif
 	}
 #endif
 	/* Bcc */
@@ -3668,7 +3852,14 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 #if 0 /* NEW COMPOSE GUI */
 	if (compose->use_bcc) {
 		str = gtk_entry_get_text(GTK_ENTRY(compose->bcc_entry));
+#ifdef WIN32
+				str = g_strdup(str);
+				locale_from_utf8(&str);
+#endif
 		PUT_RECIPIENT_HEADER("Bcc", str);
+#ifdef WIN32
+				g_free(str);
+#endif
 	}
 #endif
 
@@ -3678,9 +3869,16 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		Xstrdup_a(str, str, return -1);
 		g_strstrip(str);
 		if (*str != '\0') {
+#ifdef WIN32
+			str = g_strdup(str);
+			locale_from_utf8(&str);
+#endif
 			compose_convert_header(buf, sizeof(buf), str,
 					       strlen("Subject: "));
 			fprintf(fp, "Subject: %s\n", buf);
+#ifdef WIN32
+			g_free(str);
+#endif
 		}
 	}
 
@@ -3709,9 +3907,16 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 			g_strstrip(str);
 			remove_space(str);
 			if (*str != '\0') {
+#ifdef WIN32
+				str = g_strdup(str);
+				locale_from_utf8(&str);
+#endif
 				compose_convert_header(buf, sizeof(buf), str,
 						       strlen("Followup-To: "));
 				fprintf(fp, "Followup-To: %s\n", buf);
+#ifdef WIN32
+				g_free(str);
+#endif
 			}
 		}
 	}
@@ -3725,9 +3930,16 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 			Xstrdup_a(str, str, return -1);
 			g_strstrip(str);
 			if (*str != '\0') {
+#ifdef WIN32
+				str = g_strdup(str);
+				locale_from_utf8(&str);
+#endif
 				compose_convert_header(buf, sizeof(buf), str,
 						       strlen("Reply-To: "));
 				fprintf(fp, "Reply-To: %s\n", buf);
+#ifdef WIN32
+				g_free(str);
+#endif
 			}
 		}
 	}
@@ -3735,10 +3947,21 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	/* Organization */
 	if (compose->account->organization &&
 	    !IS_IN_CUSTOM_HEADER("Organization")) {
+#ifdef WIN32
+		gchar *p_org;
+		p_org = g_strdup(compose->account->organization);
+		locale_from_utf8(&p_org);
+		compose_convert_header(buf, sizeof(buf),
+				       p_org,
+				       strlen("Organization: "));
+		fprintf(fp, "Organization: %s\n", buf);
+		g_free(p_org);
+#else
 		compose_convert_header(buf, sizeof(buf),
 				       compose->account->organization,
 				       strlen("Organization: "));
 		fprintf(fp, "Organization: %s\n", buf);
+#endif
 	}
 
 	/* Program version and system info */
@@ -3777,11 +4000,23 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 			    strcasecmp(chdr->name, "Content-Type") != 0 &&
 			    strcasecmp(chdr->name, "Content-Transfer-Encoding")
 			    != 0) {
+#ifdef WIN32
+				gchar *p_value;
+				p_value = chdr->value ? g_strdup(chdr->value) : g_strdup("");
+				locale_from_utf8(&p_value);
+				compose_convert_header
+					(buf, sizeof(buf),
+					 p_value,
+					 strlen(chdr->name) + 2);
+				fprintf(fp, "%s: %s\n", chdr->name, buf);
+				g_free(p_value);
+#else
 				compose_convert_header
 					(buf, sizeof(buf),
 					 chdr->value ? chdr->value : "",
 					 strlen(chdr->name) + 2);
 				fprintf(fp, "%s: %s\n", chdr->name, buf);
+#endif
 			}
 		}
 	}
@@ -4468,7 +4703,11 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 			Xstrdup_a(fontstr, prefs_common.textfont, );
 			if (fontstr && (p = strchr(fontstr, ',')) != NULL)
 				*p = '\0';
+#ifdef WIN32
+			font = gdk_fontset_load(fontstr);
+#else
 			font = gdk_font_load(fontstr);
+#endif
 		} else
 			font = gdk_fontset_load(prefs_common.textfont);
 		if (font) {
@@ -4955,8 +5194,21 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 	gtk_stext_freeze(GTK_STEXT(compose->text));
 
 	if (tmpl->subject && *tmpl->subject != '\0')
+#ifdef WIN32
+///XXX:tm tmpl really locale ?
+	{
+		gchar *p_subject;
+		p_subject = g_strdup( tmpl->subject );
+		locale_to_utf8( &p_subject );
+
 		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry),
 				   tmpl->subject);
+		g_free(p_subject);
+	}
+#else
+		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry),
+				   tmpl->subject);
+#endif
 	if (tmpl->to && *tmpl->to != '\0')
 		compose_entry_append(compose, tmpl->to, COMPOSE_TO);
 
@@ -5371,6 +5623,11 @@ static void compose_exec_ext_editor(Compose *compose)
 	g_snprintf(tmp, sizeof(tmp), "%s%ctmpmsg.%08x",
 		   g_get_tmp_dir(), G_DIR_SEPARATOR, (gint)compose);
 
+#ifdef WIN32
+//XXX:tm ed1
+// instead of forking, create a gtk_timeout object for each external application
+	{
+#else
 	if (pipe(pipe_fds) < 0) {
 		perror("pipe");
 		return;
@@ -5384,6 +5641,7 @@ static void compose_exec_ext_editor(Compose *compose)
 	if (pid != 0) {
 		/* close the write side of the pipe */
 		close(pipe_fds[1]);
+#endif
 
 		compose->exteditor_file    = g_strdup(tmp);
 		compose->exteditor_pid     = pid;
@@ -5394,20 +5652,34 @@ static void compose_exec_ext_editor(Compose *compose)
 		compose->exteditor_tag =
 			gdk_input_add(pipe_fds[0], GDK_INPUT_READ,
 				      compose_input_cb, compose);
+#ifdef WIN32
+//XXX:tm ed2
+	}	{
+#else
 	} else {	/* process-monitoring process */
+#endif
+
 		pid_t pid_ed;
 
 		if (setpgid(0, 0))
 			perror("setpgid");
 
+#ifdef WIN32
+//XXX:tm ed3
+#else
 		/* close the read side of the pipe */
 		close(pipe_fds[0]);
+#endif
 
 		if (compose_write_body_to_file(compose, tmp) < 0) {
 			fd_write(pipe_fds[1], "2\n", 2);
 			_exit(1);
 		}
 
+#ifdef WIN32
+//XXX:tm ed4
+		pid_ed = compose_exec_ext_editor_real(tmp,compose);
+#else
 		pid_ed = compose_exec_ext_editor_real(tmp);
 		if (pid_ed < 0) {
 			fd_write(pipe_fds[1], "1\n", 2);
@@ -5420,11 +5692,53 @@ static void compose_exec_ext_editor(Compose *compose)
 		fd_write(pipe_fds[1], "0\n", 2);
 
 		close(pipe_fds[1]);
+#endif
+
+#ifdef WIN32
+//XXX:tm ed5
+#else
 		_exit(0);
+#endif
 	}
 }
 
+#ifdef WIN32
+static gint ext_editor_timeout_cb(EditorThreadData *data) {
+  HANDLE hProcess;         // specifies the process of interest
+  FILETIME lpCreationTime; // when the process was created
+  FILETIME lpExitTime;     // when the process exited
+  FILETIME lpKernelTime;   // time the process has spent in kernel mode
+  FILETIME lpUserTime;     // time the process has spent in user mode
+  gint result = TRUE;
+
+  if (GetProcessTimes(data->Handle,
+						&lpCreationTime,
+						&lpExitTime,
+						&lpKernelTime,
+						&lpUserTime)) {
+	  if (lpExitTime.dwHighDateTime || lpExitTime.dwLowDateTime) {
+			/* Process terminated */
+			gint source;
+			GdkInputCondition condition;
+			compose_input_cb( data->compose , source , condition );
+			g_free(data);
+			return(0); // stop timer
+	  }
+	  else {	/* Process still active */
+	  }
+  } else {
+	  /* Error GetProcessTimes */
+  }
+  return( result );
+}
+#endif
+
+#ifdef WIN32
+//XXX:tm ed6a
+static gint compose_exec_ext_editor_real(const gchar *file, Compose *compose)
+#else
 static gint compose_exec_ext_editor_real(const gchar *file)
+#endif
 {
 	static gchar *def_cmd = "emacs %s";
 	gchar buf[1024];
@@ -5434,6 +5748,9 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 
 	g_return_val_if_fail(file != NULL, -1);
 
+#ifdef WIN32
+//XXX:tm ed6
+#else
 	if ((pid = fork()) < 0) {
 		perror("fork");
 		return -1;
@@ -5445,7 +5762,7 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 
 	if (setpgid(0, getppid()))
 		perror("setpgid");
-
+#endif
 	if (prefs_common.ext_editor_cmd &&
 	    (p = strchr(prefs_common.ext_editor_cmd, '%')) &&
 	    *(p + 1) == 's' && !strchr(p + 2, '%')) {
@@ -5458,12 +5775,39 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 	}
 
 	cmdline = strsplit_with_quote(buf, " ", 1024);
-	execvp(cmdline[0], cmdline);
+#ifdef WIN32
+//XXX:tm ed7
+	{
+		gchar *fullname;
+		EditorThreadData *data;
+		int hEditor;
 
+		fullname = g_strdup(cmdline[0]);
+		strcpy(cmdline[0],g_path_get_basename (cmdline[0]));
+		if ((hEditor=spawnv(P_NOWAIT, fullname, cmdline)) < 0) {
+			perror("spawnv");
+			return -1;
+		}
+
+		data = g_malloc(sizeof(EditorThreadData));
+		data->compose = compose;
+		data->Handle = hEditor;
+		gtk_timeout_add( 50, ext_editor_timeout_cb, data );
+
+		g_free(fullname);
+	}
+#else
+	execvp(cmdline[0], cmdline);
+#endif
 	perror("execvp");
 	g_strfreev(cmdline);
 
+#ifdef WIN32
+//XXX:tm ed8
+	return(1);
+#else
 	_exit(1);
+#endif
 }
 
 static gboolean compose_ext_editor_kill(Compose *compose)
@@ -5520,6 +5864,12 @@ static void compose_input_cb(gpointer data, gint source,
 
 	gdk_input_remove(compose->exteditor_tag);
 
+#ifdef WIN32
+//XXX:tm ed9
+	buf[0]='0';
+	buf[1]='0';
+	buf[2]=0;
+#else
 	for (;;) {
 		if (read(source, &buf[i], 1) < 1) {
 			buf[0] = '3';
@@ -5535,6 +5885,7 @@ static void compose_input_cb(gpointer data, gint source,
 	}
 
 	waitpid(compose->exteditor_pid, NULL, 0);
+#endif 
 
 	if (buf[0] == '0') {		/* success */
 		GtkSText *text = GTK_STEXT(compose->text);
@@ -6100,6 +6451,10 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 			return;
 		}
 	}
+#ifdef WIN32
+//XXX:075
+	if (compose->window)
+#endif
 	gtk_widget_destroy(compose->window);
 }
 

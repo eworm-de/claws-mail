@@ -36,7 +36,11 @@
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkselection.h>
 #include <stdio.h>
+#ifdef WIN32
+#include <w32lib.h>
+#else
 #include <unistd.h>
+#endif
 
 #include "intl.h"
 #include "main.h"
@@ -306,7 +310,8 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 
 	procmime_scan_multipart_message(mimeinfo, fp);
 #if USE_GPGME
-	if (prefs_common.auto_check_signatures)
+	if ((prefs_common.auto_check_signatures)
+		&& (prefs_common.gpg_started))
 		rfc2015_check_signature(mimeinfo, fp);
 	else
 		set_unchecked_signature(mimeinfo);
@@ -841,6 +846,9 @@ static void mimeview_launch(MimeView *mimeview)
 {
 	MimeInfo *partinfo;
 	gchar *filename;
+#ifdef WIN32
+	gchar *open_cmd;
+#endif
 
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
@@ -851,11 +859,35 @@ static void mimeview_launch(MimeView *mimeview)
 
 	filename = procmime_get_tmp_file_name(partinfo);
 
+#ifdef WIN32
+	if (procmime_get_part(filename, mimeview->file, partinfo) < 0) {
+		alertpanel_error
+			(_("Can't save the part of multipart message."));
+		g_free(filename);
+		return;
+	}
+
+	open_cmd = g_malloc(MAX_PATH);
+	FindExecutable(filename, NULL, open_cmd);
+	if (!(open_cmd && *open_cmd)){
+		g_free(open_cmd);
+		open_cmd = NULL;
+	} else {
+		gchar *p = g_strdup(open_cmd);
+		open_cmd = g_strconcat("\"", p, "\"", " \"%s\"", NULL);
+		g_free(p);
+	}
+
+	mimeview_view_file(filename, partinfo, open_cmd);
+
+	g_free(open_cmd);
+#else
 	if (procmime_get_part(filename, mimeview->file, partinfo) < 0)
 		alertpanel_error
 			(_("Can't save the part of multipart message."));
 	else
 		mimeview_view_file(filename, partinfo, NULL);
+#endif
 
 	g_free(filename);
 }
@@ -865,6 +897,9 @@ static void mimeview_open_with(MimeView *mimeview)
 	MimeInfo *partinfo;
 	gchar *filename;
 	gchar *cmd;
+#ifdef WIN32
+	gchar *open_cmd;
+#endif
 
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
@@ -878,7 +913,11 @@ static void mimeview_open_with(MimeView *mimeview)
 	if (procmime_get_part(filename, mimeview->file, partinfo) < 0) {
 		alertpanel_error
 			(_("Can't save the part of multipart message."));
+#ifdef WIN32
+		// g_free(filename);
+#else
 		g_free(filename);
+#endif
 		return;
 	}
 
@@ -886,11 +925,28 @@ static void mimeview_open_with(MimeView *mimeview)
 		prefs_common.mime_open_cmd_history =
 			add_history(NULL, prefs_common.mime_open_cmd);
 
+#ifdef WIN32
+	open_cmd = g_malloc(MAX_PATH);
+	FindExecutable(filename, NULL, open_cmd);
+	if (!(open_cmd && *open_cmd)){
+		g_free(open_cmd);
+		open_cmd = prefs_common.mime_open_cmd;
+	} else {
+		gchar *p = g_strdup(open_cmd);
+		open_cmd = g_strconcat("\"", p, "\"", " \"%s\"", NULL);
+		g_free(p);
+	}
+#endif
+
 	cmd = input_dialog_combo
 		(_("Open with"),
 		 _("Enter the command line to open file:\n"
 		   "(`%s' will be replaced with file name)"),
+#ifdef WIN32
+		 open_cmd,
+#else
 		 prefs_common.mime_open_cmd,
+#endif
 		 prefs_common.mime_open_cmd_history,
 		 TRUE);
 	if (cmd) {
@@ -901,6 +957,9 @@ static void mimeview_open_with(MimeView *mimeview)
 			add_history(prefs_common.mime_open_cmd_history, cmd);
 	}
 
+#ifdef WIN32
+	g_free(open_cmd);
+#endif
 	g_free(filename);
 }
 
@@ -1023,7 +1082,10 @@ static void mimeview_check_signature(MimeView *mimeview)
 	}
 
 	procmime_scan_multipart_message(mimeinfo, fp);
-	rfc2015_check_signature(mimeinfo, fp);
+	if (prefs_common.gpg_started)
+		rfc2015_check_signature(mimeinfo, fp);
+	else
+		set_unchecked_signature(mimeinfo);
 	fclose(fp);
 
 	mimeview_update_names(mimeview);

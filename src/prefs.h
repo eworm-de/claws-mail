@@ -135,6 +135,9 @@ struct _PrefsDialog
 			   GTK_SIGNAL_FUNC(prefs_button_toggled), targetwid); \
 }
 
+#ifdef WIN32
+void prefs_init_config		(PrefParam	*param);
+#endif
 void prefs_read_config		(PrefParam	*param,
 				 const gchar	*label,
 				 const gchar	*rcfile);

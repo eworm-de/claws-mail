@@ -25,7 +25,9 @@
 #include "defs.h"
 
 #include <glib.h>
+#ifndef WIN32
 #include <gdk/gdkx.h>
+#endif
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkpixmap.h>
 #include <gtk/gtkmenu.h>
@@ -145,9 +147,13 @@ GtkPixmap *colorlabel_create_color_pixmap(GdkColor color)
 	sprintf(buf, FMT, color.red >> 8, color.green >> 8, color.blue >> 8);
 	dummy_xpm[3] = buf;				
 
+#ifdef WIN32
+#define GDK_ROOT_PARENT() NULL
+#endif
+
 	/* XXX: passing NULL as GdkWindow* seems to be possible */
 	xpm = gdk_pixmap_create_from_xpm_d
-		(GDK_ROOT_PARENT(), &xpmmask, NULL, (gchar **) &dummy_xpm);
+		(GDK_ROOT_PARENT(),&xpmmask, NULL, (gchar **) &dummy_xpm);
 	if (xpm == NULL)
 		debug_print("*** NO XPM\n");
 	pixmap = GTK_PIXMAP(gtk_pixmap_new(xpm, xpmmask)); 

@@ -23,6 +23,9 @@
 
 #include <stdio.h>
 #include <sys/stat.h>
+#ifdef WIN32
+#include <w32lib.h>
+#endif
 
 #include "mgutils.h"
 #include "addritem.h"
@@ -160,6 +163,7 @@ void addrcache_refresh( AddressCache *cache ) {
 */
 static gint addrcache_free_item_vis( gpointer key, gpointer value, gpointer data ) {
 	AddrItemObject *obj = ( AddrItemObject * ) value;
+//XXX:tm sometimes exception at close
 	if( ADDRITEM_TYPE(obj) == ITEMTYPE_PERSON ) {
 		/* Free person and their email */
 		addritem_free_item_person( ( ItemPerson * ) obj );

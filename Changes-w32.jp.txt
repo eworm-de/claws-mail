@@ -1,0 +1,283 @@
+//---
+// 20020423
+
+o ベースを 0.7.5 へ変更。
+
+o GnuPG に対応。(GPGME に対応)
+
+o Linux/Unix 固有のシグナル処理を使っているようなので、
+　DNS タイムアウト処理を無視。:-( 対応方法は、追って検討。
+
+o フォルダ名に日本語を使えるようにした。
+
+o メッセージツリーの中間部を移動、削除すると例外が発生する件を修正。
+
+o メッセージ編集で空のまま草稿・送信すると、例外が発生する件を修正。
+
+o 草稿->編集->草稿...を繰り返すと、エラーが出る件を修正。
+
+o アイコンを正式なものに変更。:-)
+
+o 幾つかのバグ修正
+
+
+//---
+// 20020401
+
+o 2重起動時の処理に対応。local の 12345 番ポートを使用します。
+
+o WinSock の初期化処理の場所を変更。
+
+o メッセージ作成時の画面乱れを修正。(バータリー修正)
+
+o 編集画面の乱れの件と関連して、CUT & PASTE のキーバインドを
+　自前でやるようにした。
+　- コメントアウトされてた部分を戻しちゃったんで、
+　　山本さんに怒られるかも。(-_-;;
+
+o フォント指定の規定値を変更。
+　- ついでに、gtkrc を bin に入れないようにしました。
+
+o 各国語用カタログを用意してみました。
+
+o バージョン情報に、ビルド情報を付加するようにしました。
+
+o 編集ミスをしてた部分の修正。
+
+
+//---
+// 20020325
+
+o 振り分け設定時にフォルダを選択しようとすると、フォルダリストが
+　壊れてしまう不具合を修正。
+
+o 日本語フォルダ名対応への布石。
+
+
+//---
+// 20020323
+
+o NetNews への投稿の際、UTF-8 で送信してしまう不具合を修正。
+
+o アドレス帳が化ける不具合を修正。
+
+o libjconv を使うように変更。ライブラリ化は今後対応予定。
+　- これにより、差出人名とサブジェクトの化けが修正されました。
+
+o glib-2.0 への追従。
+　- g_locale_to_utf8 / g_locale_from_utf8 を使うように変更。
+
+o 設定ファイルの読み込み/書き出し部分のバグを修正。
+　- 設定ファイルは SJIS で書かれていることを前提に。
+　- * linux からの移行時は、SJIS へコンバートする必要有り *
+
+o その他バグ修正。
+
+
+//---
+// 20020310
+
+o ベースを 0.7.4 へ変更。
+
+o 添付ファイルを「開く」、あるいは「アプリケーションから開く」で
+　処理する際に、拡張子に関連付けられたアプリケーションを実行、選択
+　できるように変更。
+
+o その他バグ修正。
+
+
+//---
+// 20020306
+
+o ベースを 0.7.3 へ変更。
+
+o 今までの変更点をまとめ、パッチを再作成。
+
+o NetNews へ対応。
+
+
+//---
+// 20020302
+
+o アイコンを追加。
+
+o src/codeconv.c:
+　- g_convert() で "SHIFT-JIS" を用いずに、"CP932" を
+　　使うように変更。
+　　　+-> UTF8 -> SHIFT-JIS 変換時に ￥(半角) が化ける為。
+
+o src/colorlabel.c:
+　- 警告減らし。pixmap を呼び出す箇所を無視するように変更。
+
+o src/compose.c:
+　- 外部エディタ呼び出しを無視。
+
+o src/config.h:
+　- compface を有効に。
+　- MANUALDIR/SYSCONFDIR/LOCALEDIR の prefix 部分を削除。
+　　　+-> インストール先ディレクトリの動的変更対応の為。
+
+o src/defs.h:
+　- フォント指定が * 完全に * 間違っていたのを修正。m(_ _)m
+
+o src/main.c:
+　- WinMain() を追加。ARG はてきと～。
+　　　+-> Win32 Console Application から Win32 Application へ。
+　- stdout/stderr 出力先をファイルに redirect。
+　　　+-> デバッグ出力はファイルに出たほうが良いよね...。:-)
+　- LOCALEDIR 動的変更対応。
+　- プログラム内に埋め込んである SJIS テキスト(prefs_common)を
+　　起動時に全て UTF8 に変換するように変更。
+
+o src/manual.c:
+　- MANUALDIR 動的変更対応。
+　- マニュアル URI のセパレータ文字列を統一。
+
+o src/mimeview.c:
+　- 添付ファイル名の UTF8 変換処理。
+
+o src/prefs.c:
+　- 埋め込み SJIS -> UTF8 変換対応。
+
+o src/prefs.h:
+　- 埋め込み SJIS -> UTF8 変換対応。
+
+o src/prefs_common.c:
+　- パラメータ埋め込み規定値 SJIS -> UTF8 変換対応。
+　- 設定ファイル読み込み/保存時の UTF8 <-> CP932 変換の追加。
+
+o src/prefs_common.h:
+　- パラメータ埋め込み規定値 SJIS -> UTF8 変換対応。
+
+o src/procmime.c:
+　- SYSCONFDIR 動的変更対応。
+
+o src/utils.c:
+　- get_home_dir() の規定値をインストール先に変更。
+　- インストール先をレジストリから取得するように。
+　- 外部プログラム起動を実装。
+　- URI 文字列のエスケープ処理を追加。(てきと～)
+　- 文字列の差し替えを行う関数を追加。
+　　　+-> URI のセパレータ文字列変換用。
+
+o src/utils.h:
+　- 幾つかの関数定義を追加。
+
+
+//---
+// 20020222
+
+o ベースを 0.7.2 へ変更。
+
+o src/folder.c:
+　- フォルダキャッシュの更新基準を子ファイルの個数に変更。
+　　　+-> DOS/WIN だと、ディレクトリの更新日付の扱いが違う為。
+
+o src/folder.h:
+　- フォルダキャッシュ更新基準の変更対応。
+
+o src/headerwindow.c:
+　- 不要な追加処理の削除。
+
+o src/imap.c:
+　- g_warning() -> Xg_warning() 対応。
+
+o src/mh.c:
+　- フォルダキャッシュ更新基準の変更対応。
+
+o src/utils.c:
+　- フォルダキャッシュ更新基準の変更対応。
+
+
+//---
+// 20020215
+
+o first release.
+
+o g_warning() -> Xg_warning() に変更。
+　　+-> 全てのメッセージを CP932 に変換して出力する為。
+
+o gettext() -> Xgettext() に変更。
+
+o gdk_font_load() -> gdk_fontset_load() に変更。
+
+o ファイルアクセスは全て binary-mode に変更。
+　　+-> 改行コード周りの問題を回避する為。
+
+o "interface" という変数/メンバ名を全て "Xinterface" に変更。
+　　+-> 予約語との衝突が発生する為。
+
+o "near" という変数を全て "Xnear" に変更。
+　　+-> 同上。
+
+o "send" という変数を全て "Xsend" に変更。
+　　+-> 同上。
+
+o src/codeconv.c:
+　- UTF8 <-> EUC/JIS/SJIS の変換用関数の追加。
+　- ANY -> SJIS の変換用関数の追加。
+　- ANY/JIS/SJIS/EUC -> DISP(SJIS) の変換用関数の追加。
+　- ロケール "Japanese_Japan.932" の追加。
+
+o src/colorlabel.c:
+　- xpm/pixmap 系の処理を無視。
+
+o src/compose.c:
+　- 幾つかの細かな修正。
+
+o src/config.h:
+　- サンプルを流用。
+　- get_home_dir() で処理されるように HAVE_DOSISH_SYSTEM(?) を定義。
+　- ディレクトリ構成の対応を定義。
+
+o src/defs.h:
+　- フォント指定を Windows 用に変更。
+　- WIDGET/MESSAGE/SPACING フォントを追加。
+
+o src/folder.c:
+　- UTF8 対応。
+
+o src/headerwindow.c:
+　- UTF8 対応。
+
+o src/main.c:
+　- UNIX ソケットを利用しないように変更。
+　- rename() の動作がちょいと違うようなので、Xrename() に変更。
+　　　+-> 先ファイルがあると、エラーになっちゃう。:-(
+
+o src/mh.c:
+　- キャッシュが動作不良なので、とりあえず無効に。
+　- フォルダ作成時に、UTF8 -> CP932 変換。
+　- mkdir() の引数の違いに対応。
+
+o src/prefs.c:
+　- rename() の動作がちょいと違うようなので、Xrename() に変更。
+　　　+-> 同上。
+
+o src/prefs_common.c:
+　- フォント設定の追加対応。
+
+o src/prefs_common.h:
+　- フォント設定の追加対応。
+
+o src/procheader.c:
+　- 表示するヘッダを UTF8 -> SJIS 変換。
+
+o src/quote_fmt_lex.c:
+　- _Win32 と WIN32 を同等に。
+
+o src/recv.c:
+　- 改行文字の処理をちょいと変更。
+
+o src/socket.c:
+　- UNIX ソケット関連を無視。
+　- blocking_mode 関連を無視。
+　- WinSock を使うようにした。
+　- write() -> send() に変更。
+　- read() -> recv() に変更。
+
+o src/summaryview.c:
+　- 何故か g_free() の一部で例外が出る。とりあえずコメントに。
+
+
+//---

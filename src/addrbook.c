@@ -24,7 +24,13 @@
 #include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef WIN32
+#include <w32lib.h>
+#include "defs.h"
+#include "utils.h"
+#else
 #include <dirent.h>
+#endif
 #include <sys/stat.h>
 #include <math.h>
 #include <setjmp.h>
@@ -340,6 +346,10 @@ static void addrbook_parse_address( AddressBookFile *book, XMLFile *file, ItemPe
 	while( attr ) {
 		name = ((XMLAttr *)attr->data)->name;
 		value = ((XMLAttr *)attr->data)->value;
+#ifdef WIN32
+		value = g_strdup(value);
+		locale_to_utf8(&value);
+#endif
 		if( ! email ) email = addritem_create_item_email();
 		if( strcmp( name, AB_ATTAG_UID ) == 0 ) {
 			ADDRITEM_ID(email) = g_strdup( value );
@@ -354,6 +364,9 @@ static void addrbook_parse_address( AddressBookFile *book, XMLFile *file, ItemPe
 			email->remarks = g_strdup( value );
 		}
 		attr = g_list_next( attr );
+#ifdef WIN32
+		g_free(value);
+#endif
 	}
 	if( email ) {
 		if( person ) {
@@ -400,6 +413,10 @@ static void addrbook_parse_attribute( XMLFile *file, ItemPerson *person ) {
 	while( attr ) {
 		name = ((XMLAttr *)attr->data)->name;
 		value = ((XMLAttr *)attr->data)->value;
+#ifdef WIN32
+		value = g_strdup(value);
+		locale_to_utf8(&value);
+#endif
 		if( ! uAttr ) uAttr = addritem_create_attribute();
 		if( strcmp( name, AB_ATTAG_UID ) == 0 ) {
 			addritem_attrib_set_id( uAttr, value );
@@ -408,6 +425,9 @@ static void addrbook_parse_attribute( XMLFile *file, ItemPerson *person ) {
 			addritem_attrib_set_name( uAttr, value );
 		}
 		attr = g_list_next( attr );
+#ifdef WIN32
+		g_free(value);
+#endif
 	}
 
 	element = xml_get_element( file );
@@ -457,6 +477,10 @@ static void addrbook_parse_person( AddressBookFile *book, XMLFile *file ) {
 	while( attr ) {
 		name = ((XMLAttr *)attr->data)->name;
 		value = ((XMLAttr *)attr->data)->value;
+#ifdef WIN32
+		value = g_strdup(value);
+		locale_to_utf8(&value);
+#endif
 		if( ! person ) person = addritem_create_item_person();
 		if( strcmp( name, AB_ATTAG_UID ) == 0 ) {
 			ADDRITEM_ID(person) = g_strdup( value );
@@ -474,6 +498,9 @@ static void addrbook_parse_person( AddressBookFile *book, XMLFile *file ) {
 			ADDRITEM_NAME(person) = g_strdup( value );
 		}
 		attr = g_list_next( attr );
+#ifdef WIN32
+		g_free(value);
+#endif
 	}
 	if( xml_parse_next_tag( file ) ) {	/* Consume closing tag */
 		longjmp( book->jumper, 1 );
@@ -505,6 +532,10 @@ static void addrbook_parse_member( AddressBookFile *book, XMLFile *file, ItemGro
 	while( attr ) {
 		name = ((XMLAttr *)attr->data)->name;
 		value = ((XMLAttr *)attr->data)->value;
+#ifdef WIN32
+		value = g_strdup(value);
+		locale_to_utf8(&value);
+#endif
 		if( strcmp( name, AB_ATTAG_PID ) == 0 ) {
 			pid = g_strdup( value );
 		}
@@ -512,6 +543,9 @@ static void addrbook_parse_member( AddressBookFile *book, XMLFile *file, ItemGro
 			eid = g_strdup( value );
 		}
 		attr = g_list_next( attr );
+#ifdef WIN32
+		g_free(value);
+#endif
 	}
 	/* email = addrcache_get_email( book->addressCache, pid, eid ); */
 	email = addrcache_get_email( book->addressCache, eid );
@@ -562,6 +596,10 @@ static void addrbook_parse_group( AddressBookFile *book, XMLFile *file ) {
 	while( attr ) {
 		name = ((XMLAttr *)attr->data)->name;
 		value = ((XMLAttr *)attr->data)->value;
+#ifdef WIN32
+		value = g_strdup(value);
+		locale_to_utf8(&value);
+#endif
 		if( ! group ) group = addritem_create_item_group();
 		if( strcmp( name, AB_ATTAG_UID ) == 0 ) {
 			ADDRITEM_ID(group) = g_strdup( value );
@@ -573,6 +611,9 @@ static void addrbook_parse_group( AddressBookFile *book, XMLFile *file ) {
 			group->remarks = g_strdup( value );
 		}
 		attr = g_list_next( attr );
+#ifdef WIN32
+		g_free(value);
+#endif
 	}
 	if( xml_parse_next_tag( file ) ) {	/* Consume closing tag */
 		longjmp( book->jumper, 1 );
@@ -597,10 +638,17 @@ static void addrbook_parse_folder_item( AddressBookFile *book, XMLFile *file, It
 	while( attr ) {
 		name = ((XMLAttr *)attr->data)->name;
 		value = ((XMLAttr *)attr->data)->value;
+#ifdef WIN32
+		value = g_strdup(value);
+		locale_to_utf8(&value);
+#endif
 		if( strcmp( name, AB_ATTAG_UID ) == 0 ) {
 			uid = g_strdup( value );
 		}
 		attr = g_list_next( attr );
+#ifdef WIN32
+		g_free(value);
+#endif
 	}
 	if( folder ) {
 		if( uid ) {
@@ -645,6 +693,10 @@ static void addrbook_parse_folder( AddressBookFile *book, XMLFile *file ) {
 	while( attr ) {
 		name = ((XMLAttr *)attr->data)->name;
 		value = ((XMLAttr *)attr->data)->value;
+#ifdef WIN32
+		value = g_strdup(value);
+		locale_to_utf8(&value);
+#endif
 		if( ! folder ) {
 			folder = addritem_create_item_folder();
 		}
@@ -658,6 +710,9 @@ static void addrbook_parse_folder( AddressBookFile *book, XMLFile *file ) {
 			folder->remarks = g_strdup( value );
 		}
 		attr = g_list_next( attr );
+#ifdef WIN32
+		g_free(value);
+#endif
 	}
 	if( xml_parse_next_tag( file ) ) {	/* Consume closing tag */
 		longjmp( book->jumper, 1 );
@@ -698,7 +753,14 @@ static gboolean addrbook_read_tree( AddressBookFile *book, XMLFile *file ) {
 		name = ((XMLAttr *)attr->data)->name;
 		value = ((XMLAttr *)attr->data)->value;
 		if( strcmp( name, AB_ATTAG_NAME ) == 0 ) {
+#ifdef WIN32
+			value = g_strdup(value);
+			locale_to_utf8(&value);
 			addrbook_set_name( book, value );
+			g_free(value);
+#else
+			addrbook_set_name( book, value );
+#endif
 		}
 		attr = g_list_next( attr );
 	}
@@ -901,7 +963,17 @@ static void addrbook_write_attr( FILE *fp, gchar *name, gchar *value ) {
 	fputs( " ", fp );
 	fputs( name, fp );
 	fputs( "=\"", fp );
+#ifdef WIN32
+	if (value && *value){
+		gchar *p_value;
+		p_value = g_strdup(value);
+		locale_from_utf8(&p_value);
+		xml_file_put_escape_str( fp, p_value );
+		g_free(p_value);
+	}
+#else
 	xml_file_put_escape_str( fp, value );
+#endif
 	fputs( "\"", fp );
 }
 

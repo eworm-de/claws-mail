@@ -1,0 +1,103 @@
+
+はじめに
+========
+
+この文書では、Sylpheed for Win32 の再作成方法を説明します。
+コンパイル方法やパッチの当て方等は、省略させていただいておりますので
+Web や文献等を参照してください。
+
+
+必要となるもの
+==============
+
+以下のものが必要となります。
+
+　o Sylpheed 0.7.5 のソースファイル
+　　　==> http://sylpheed.good-day.net/
+
+　o libjconv 2.8.1 のソースファイル
+　　　==> http://www.kondara.org/libjconv/
+
+　o glib/gtk for Win32 のランタイム、および開発ライブラリ
+　　　==> http://www.gimp.org/win32/
+
+　o Sylpheed for Win32 の開発用パッチ
+　　　==> http://www2.odn.ne.jp/munesato/sylpheed/
+
+　o 各関連ライブラリ
+　　　==> http://www2.odn.ne.jp/munesato/sylpheed/
+
+　o Microsoft VisualC++ 6.0
+
+
+想定している開発環境
+====================
+
+私(NAK)の開発環境を示します。
+
+　C:\dev
+　　　+-> include		ヘッダファイル群のインストール先
+      |
+　　　+-> lib			ライブラリファイル群インストール先
+      |
+　　　+-> proj			各ライブラリの作成場所
+　　　　　 +-> fnmatch
+　　　　　 |　  +-> src
+　　　　　 |
+　　　　　 +-> libcompface
+　　　　　 |　  +-> src
+　　　　　 |
+　　　　　 +-> libkcc
+　　　　　 |　  +-> libkcc	sylpheed-0.7.4 の libkcc ディレクトリ
+　　　　　 |
+　　　　　 +-> regex
+　　　　　 |　  +-> src
+　　　　　 |
+　　　　　 +-> sylpheed
+　　　　　 |　  +-> files
+　　　　　 |　  +-> libjconv	libjconv-2.8.1 の配布ファイル群
+　　　　　 |　  +-> src		sylpheed-0.7.4 の src ディレクトリ
+　　　　　 |
+　　　　　 +-> w32lib
+　　　　　　　  +-> src
+
+
+事前準備
+========
+
+glib/gtk for win32 のヘッダファイルを C:\dev\include へ、
+ライブラリファイルを C:\dev\lib へコピーします。
+
+その他のライブラリも同様にコピーします。
+
+
+コンパイル方法
+==============
+
+ライブラリ群のコンパイルは、各ディレクトリにある dsw ファイルを用い、
+VisualStudio 上より作成してください。
+なお、libkcc に関しては、同ディレクトリ内にある libkcc-w32.diff をあてる
+必要があります。
+
+libjconv、および sylpheed に関しては、それぞれ sylpheed ディレクトリ内に
+ある、libjconv.diff、sylpheed-0.7.4-w32_YYYYMMDD.diff をあてて、
+ライブラリ同様、VisualStudio 上でコンパイルしてください。
+
+
+注意事項
+========
+
+この文書の内容は、私(NAK)がおこなっているコンパイル作業の全てを含んでいます。
+ですが、「理解できない」とか、「コンパイルできない」とか言われても
+対処のしようが無いのが事実であり、質問のメールを戴いても困る部分でも
+あります。
+この文書の内容全ては * 無保証 * であって、私(NAK)は一切の責任から
+開放されていることを御承知置きください。
+# 言い換えると、質問に答える義務も無いということです。
+
+ですが、この文書には、コンパイルに必要な情報は全て含んでおります。
+わかる人には解るように書いておりますので、努力をお願いいたします。
+
+
+-- 
+中田 宗里 (NAK) <munesato@post.co.jp>

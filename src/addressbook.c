@@ -491,7 +491,7 @@ void addressbook_refresh(void)
 * sources.
 *
 * In the tradition of MVC architecture, the data stores have been separated from the
-* GUI components. The addrindex.c file provides the interface to all data stores.
+* GUI components. The addrindex.c file provides the Xinterface to all data stores.
 */
 static void addressbook_create(void)
 {
@@ -707,7 +707,7 @@ static void addressbook_create(void)
 			   GTK_SIGNAL_FUNC(addressbook_to_clicked),
 			   GINT_TO_POINTER(COMPOSE_BCC));
 
-	/* Build icons for interface */
+	/* Build icons for Xinterface */
 	stock_pixmap_gdk( window, STOCK_PIXMAP_INTERFACE,
 			  &interfacexpm, &interfacexpmmask );
 
@@ -716,11 +716,11 @@ static void addressbook_create(void)
 	addrbookctl_build_iflist();
 	addrbookctl_build_ifselect();
 
-	/* Add each interface into the tree as a root level folder */
+	/* Add each Xinterface into the tree as a root level folder */
 	nodeIf = _addressInterfaceList_;
 	while( nodeIf ) {
 		AdapterInterface *adapter = nodeIf->data;
-		AddressInterface *iface = adapter->interface;
+		AddressInterface *iface = adapter->Xinterface;
 		nodeIf = g_list_next(nodeIf);
 
 		if(iface->useInterface) {
@@ -886,7 +886,7 @@ static void addressbook_del_clicked(GtkButton *button, gpointer data)
 	if( ds == NULL ) return;
 
 	/* Test for read only */
-	iface = ds->interface;
+	iface = ds->Xinterface;
 	if( iface->readOnly ) {
 		alertpanel( _("Delete address(es)"),
 			_("This address data is readonly and cannot be deleted."),
@@ -1113,7 +1113,7 @@ static void addressbook_menuitem_set_sensitive( AddressObject *obj, GtkCTreeNode
 	if( obj == NULL ) return;
 	if( obj->type == ADDR_INTERFACE ) {
 		AdapterInterface *adapter = ADAPTER_INTERFACE(obj);
-		iface = adapter->interface;
+		iface = adapter->Xinterface;
 		if( iface ) {
 			if( iface->haveLibrary ) {
 				/* Enable appropriate File / New command */
@@ -1126,7 +1126,7 @@ static void addressbook_menuitem_set_sensitive( AddressObject *obj, GtkCTreeNode
 	else if( obj->type == ADDR_DATASOURCE ) {
 		AdapterDSource *ads = ADAPTER_DSOURCE(obj);
 		ds = ads->dataSource;
-		iface = ds->interface;
+		iface = ds->Xinterface;
 		if( ! iface->readOnly ) {
 			canAdd = canEdit = editAddress = TRUE;
 		}
@@ -1137,7 +1137,7 @@ static void addressbook_menuitem_set_sensitive( AddressObject *obj, GtkCTreeNode
 	else if( obj->type == ADDR_ITEM_FOLDER ) {
 		ds = addressbook_find_datasource( addrbook.treeSelected );
 		if( ds ) {
-			iface = ds->interface;
+			iface = ds->Xinterface;
 			if( iface->readOnly ) {
 				canEditTr = FALSE;
 			}
@@ -1149,7 +1149,7 @@ static void addressbook_menuitem_set_sensitive( AddressObject *obj, GtkCTreeNode
 	else if( obj->type == ADDR_ITEM_GROUP ) {
 		ds = addressbook_find_datasource( addrbook.treeSelected );
 		if( ds ) {
-			iface = ds->interface;
+			iface = ds->Xinterface;
 			if( ! iface->readOnly ) {
 				editAddress = TRUE;
 			}
@@ -1272,7 +1272,7 @@ static void addressbook_list_menu_setup( void ) {
 	if( pobj->type == ADDR_DATASOURCE ) {
 		ads = ADAPTER_DSOURCE(pobj);
 		ds = ads->dataSource;
-		iface = ds->interface;
+		iface = ds->Xinterface;
 		if( ! iface->readOnly ) {
 			menu_set_sensitive( addrbook.list_factory, "/New Address", TRUE );
 			menu_set_sensitive( addrbook.list_factory, "/New Folder", TRUE );
@@ -1285,7 +1285,7 @@ static void addressbook_list_menu_setup( void ) {
 	}
 	else if( pobj->type != ADDR_INTERFACE ) {
 		ds = addressbook_find_datasource( addrbook.treeSelected );
-		iface = ds->interface;
+		iface = ds->Xinterface;
 		if( ! iface->readOnly ) {
 			if( pobj->type == ADDR_ITEM_FOLDER || pobj->type == ADDR_ITEM_GROUP ) {
 				menu_set_sensitive( addrbook.list_factory, "/New Address", TRUE );
@@ -1739,7 +1739,7 @@ static void addressbook_tree_button_pressed(GtkWidget *ctree,
 	if (obj->type == ADDR_DATASOURCE) {
 		ads = ADAPTER_DSOURCE(obj);
 		ds = ads->dataSource;
-		iface = ds->interface;
+		iface = ds->Xinterface;
 		canEdit = TRUE;
 		if( iface->readOnly ) {
 			canTreePaste = FALSE;
@@ -1754,7 +1754,7 @@ static void addressbook_tree_button_pressed(GtkWidget *ctree,
 	}
 	else if (obj->type == ADDR_ITEM_FOLDER) {
 		ds = addressbook_find_datasource( addrbook.treeSelected );
-		iface = ds->interface;
+		iface = ds->Xinterface;
 		if( iface->readOnly ) {
 			canTreePaste = FALSE;
 		}
@@ -1770,7 +1770,7 @@ static void addressbook_tree_button_pressed(GtkWidget *ctree,
 	}
 	else if (obj->type == ADDR_ITEM_GROUP) {
 		ds = addressbook_find_datasource( addrbook.treeSelected );
-		iface = ds->interface;
+		iface = ds->Xinterface;
 		if( ! iface->readOnly ) {
 			canEdit = TRUE;
 			menu_set_sensitive( addrbook.tree_factory, "/New Address", TRUE );
@@ -1932,7 +1932,7 @@ static gchar *addressbook_edit_datasource( AddressObject *obj, GtkCTreeNode *nod
 
 	ds = addressbook_find_datasource( node );
 	if( ds == NULL ) return NULL;
-	iface = ds->interface;
+	iface = ds->Xinterface;
 	if( ! iface->haveLibrary ) return NULL;
 
 	/* Read data from data source */
@@ -2061,7 +2061,7 @@ static void addressbook_treenode_delete_cb(gpointer data, guint action,
 		if( ds == NULL ) return;
 
 		/* Only allow deletion from non-readOnly data sources */
-		iface = ds->interface;
+		iface = ds->Xinterface;
 		if( iface->readOnly ) return;
 	}
 
@@ -2544,7 +2544,7 @@ static void addressbook_node_load_datasource( GtkCTree *clist, AddressObject *ob
 
 	adapter = ADAPTER_INTERFACE(obj);
 	if( adapter == NULL ) return;
-	iface = adapter->interface;
+	iface = adapter->Xinterface;
 	atci = adapter->atci;
 	if( atci == NULL ) return;
 
@@ -2809,11 +2809,11 @@ static void addressbook_load_tree( void ) {
 	while( nodeIf ) {
 		adapter = nodeIf->data;
 		node = adapter->treeNode;
-		iface = adapter->interface;
+		iface = adapter->Xinterface;
 		atci = adapter->atci;
 		if( iface ) {
 			if( iface->useInterface ) {
-				/* Load data sources below interface node */
+				/* Load data sources below Xinterface node */
 				nodeDS = iface->listSource;
 				while( nodeDS ) {
 					ds = nodeDS->data;
@@ -3233,7 +3233,7 @@ static void addressbook_new_jpilot_cb( gpointer data, guint action, GtkWidget *w
 
 	adapter = addrbookctl_find_interface( ADDR_IF_JPILOT );
 	if( adapter == NULL ) return;
-	iface = adapter->interface;
+	iface = adapter->Xinterface;
 	if( ! iface->haveLibrary ) return;
 	ads = addressbook_edit_jpilot( _addressIndex_, NULL );
 	if( ads ) {
@@ -3255,7 +3255,7 @@ static void addressbook_new_ldap_cb( gpointer data, guint action, GtkWidget *wid
 
 	adapter = addrbookctl_find_interface( ADDR_IF_LDAP );
 	if( adapter == NULL ) return;
-	iface = adapter->interface;
+	iface = adapter->Xinterface;
 	if( ! iface->haveLibrary ) return;
 	ads = addressbook_edit_ldap( _addressIndex_, NULL );
 	if( ads ) {
@@ -3307,7 +3307,7 @@ static void ldapsearch_callback( SyldapServer *sls ) {
 
 			ds = ads->dataSource;
 			if( ds == NULL ) return;
-			iface = ds->interface;
+			iface = ds->Xinterface;
 			if( ! iface->haveLibrary ) return;
 			server = ds->rawDataSource;
 			if( server == sls ) {
@@ -3353,7 +3353,7 @@ static void addressbook_lup_clicked( GtkButton *button, gpointer data ) {
 
 			ds = ads->dataSource;
 			if( ds == NULL ) return;
-			iface = ds->interface;
+			iface = ds->Xinterface;
 			if( ! iface->haveLibrary ) return;
 			server = ds->rawDataSource;
 			if( server ) {
@@ -3414,7 +3414,7 @@ void addrbookctl_build_map( GtkWidget *window ) {
 	_addressBookTypeHash_ = g_hash_table_new( g_int_hash, g_int_equal );
 	_addressBookTypeList_ = NULL;
 
-	/* Interface */
+	/* Xinterface */
 	atci = g_new0( AddressTypeControlItem, 1 );
 	atci->objectType = ADDR_INTERFACE;
 	atci->interfaceType = ADDR_IF_NONE;
@@ -3585,7 +3585,7 @@ AddressTypeControlItem *addrbookctl_lookup( gint ot ) {
 }
 
 /*
-* Search for specified interface type.
+* Search for specified Xinterface type.
 */
 AddressTypeControlItem *addrbookctl_lookup_iface( AddressIfType ifType ) {
 	GList *node = _addressBookTypeList_;
@@ -3605,7 +3605,7 @@ static void addrbookctl_free_address( AddressObject *obj ) {
 
 static void addrbookctl_free_interface( AdapterInterface *adapter ) {
 	addrbookctl_free_address( ADDRESS_OBJECT(adapter) );
-	adapter->interface = NULL;
+	adapter->Xinterface = NULL;
 	adapter->interfaceType = ADDR_IF_NONE;
 	adapter->atci = NULL;
 	adapter->enabled = FALSE;
@@ -3634,7 +3634,7 @@ static void addrbookctl_free_group( AdapterGroup *adapter ) {
 }
 
 /*
- * Build GUI interface list.
+ * Build GUI Xinterface list.
  */
 void addrbookctl_build_iflist() {
 	AddressTypeControlItem *atci;
@@ -3651,16 +3651,16 @@ void addrbookctl_build_iflist() {
 	_addressInterfaceList_ = NULL;
 	list = addrindex_get_interface_list( _addressIndex_ );
 	while( list ) {
-		AddressInterface *interface = list->data;
-		atci = addrbookctl_lookup_iface( interface->type );
+		AddressInterface *Xinterface = list->data;
+		atci = addrbookctl_lookup_iface( Xinterface->type );
 		if( atci ) {
 			adapter = g_new0( AdapterInterface, 1 );
-			adapter->interfaceType = interface->type;
+			adapter->interfaceType = Xinterface->type;
 			adapter->atci = atci;
-			adapter->interface = interface;
+			adapter->Xinterface = Xinterface;
 			adapter->treeNode = NULL;
 			adapter->enabled = TRUE;
-			adapter->haveLibrary = interface->haveLibrary;
+			adapter->haveLibrary = Xinterface->haveLibrary;
 			ADDRESS_OBJECT(adapter)->type = ADDR_INTERFACE;
 			ADDRESS_OBJECT_NAME(adapter) = g_strdup( atci->displayName );
 			_addressInterfaceList_ = g_list_append( _addressInterfaceList_, adapter );
@@ -3680,8 +3680,8 @@ void addrbookctl_free_selection( GList *list ) {
 }
 
 /*
-* Find GUI interface type specified interface type.
-* Return: Interface item, or NULL if not found.
+* Find GUI Xinterface type specified Xinterface type.
+* Return: Xinterface item, or NULL if not found.
 */
 AdapterInterface *addrbookctl_find_interface( AddressIfType ifType ) {
 	GList *node = _addressInterfaceList_;
@@ -3694,7 +3694,7 @@ AdapterInterface *addrbookctl_find_interface( AddressIfType ifType ) {
 }
 
 /*
-* Build interface list selection.
+* Build Xinterface list selection.
 */
 void addrbookctl_build_ifselect() {
 	GList *newList = NULL;
@@ -3785,8 +3785,8 @@ gboolean addressbook_load_completion( gint (*callBackFunc) ( const gchar *, cons
 
 	nodeIf = addrindex_get_interface_list( _addressIndex_ );
 	while( nodeIf ) {
-		AddressInterface *interface = nodeIf->data;
-		nodeDS = interface->listSource;
+		AddressInterface *Xinterface = nodeIf->data;
+		nodeDS = Xinterface->listSource;
 		while( nodeDS ) {
 			ds = nodeDS->data;
 

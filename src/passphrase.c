@@ -17,17 +17,19 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>
+#  include "config.h"
 #endif
 
 #if USE_GPGME
 
 #include <string.h>
 #include <sys/types.h>
-#include <sys/mman.h>
+#ifndef WIN32
+ #include <sys/mman.h>
+ #include <gdk/gdkx.h>  /* GDK_DISPLAY() */
+#endif
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>
-#include <gdk/gdkx.h>  /* GDK_DISPLAY() */
 #include <gtk/gtkmain.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkwindow.h>
@@ -154,17 +156,23 @@ passphrase_mbox (const gchar *desc)
     gtk_widget_show_all(window);
 
     if (grab_all) {
+#ifndef WIN32
         XGrabServer(GDK_DISPLAY());
+#endif
         if ( gdk_pointer_grab ( window->window, TRUE, 0,
                                 NULL, NULL, GDK_CURRENT_TIME)) {
+#ifndef WIN32
             XUngrabServer ( GDK_DISPLAY() );
+#endif
             g_message ("OOPS: Could not grab mouse\n");
             gtk_widget_destroy (window);
             return NULL;
         }
         if ( gdk_keyboard_grab( window->window, FALSE, GDK_CURRENT_TIME )) {
             gdk_pointer_ungrab (GDK_CURRENT_TIME);
+#ifndef WIN32
             XUngrabServer ( GDK_DISPLAY() );
+#endif
             g_message ("OOPS: Could not grab keyboard\n");
             gtk_widget_destroy (window);
             return NULL;
@@ -174,7 +182,9 @@ passphrase_mbox (const gchar *desc)
     gtk_main();
 
     if (grab_all) {
+#ifndef WIN32
         XUngrabServer (GDK_DISPLAY());
+#endif
         gdk_pointer_ungrab (GDK_CURRENT_TIME);
         gdk_keyboard_ungrab (GDK_CURRENT_TIME);
         gdk_flush();
@@ -270,7 +280,10 @@ create_description (const gchar *desc)
 static int free_passphrase(gpointer _unused)
 {
     if (lastPass != NULL) {
+#ifndef WIN32
+//XXX:075 add
         munlock(lastPass, strlen(lastPass));
+#endif
         g_free(lastPass);
         lastPass = NULL; // necessary?
         g_message("%% passphrase removed");
@@ -305,8 +318,11 @@ gpgmegtk_passphrase_cb (void *opaque, const char *desc, void *r_hd)
     else {
         if (prefs_common.store_passphrase) {
             lastPass = g_strdup(pass);
+#ifndef WIN32
+//XXX:075 add
             if (mlock(lastPass, strlen(lastPass)) == -1)
                 g_message("%% locking passphrase failed");
+#endif
 
             if (prefs_common.store_passphrase_timeout > 0) {
                 gtk_timeout_add(prefs_common.store_passphrase_timeout*60*1000,

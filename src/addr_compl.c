@@ -439,7 +439,8 @@ gint invalidate_address_completion(void)
 		free_all();
 		init_all();
 		read_address_book();
-		g_completion_add_items(g_completion, g_completion_list);
+		if (g_completion_list)
+			g_completion_add_items(g_completion, g_completion_list);
 		clear_completion_cache();
 	}
 

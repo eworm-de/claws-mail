@@ -27,8 +27,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#ifdef WIN32
+#include <w32lib.h>
+#else
 #include <dirent.h>
 #include <unistd.h>
+#endif
 #include <ctype.h>
 #include <time.h>
 #if HAVE_LIBJCONV

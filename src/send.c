@@ -30,10 +30,12 @@
 #include <gtk/gtkclist.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/time.h>
+#ifdef WIN32
+#else
+ #include <sys/time.h>
+ #include <unistd.h>
+#endif
 #include <signal.h>
-#include <unistd.h>
-
 #include "intl.h"
 #include "send.h"
 #include "socket.h"
@@ -206,7 +208,9 @@ gint send_message_local(const gchar *command, FILE *fp)
 	FILE *pipefp;
 	gchar buf[BUFFSIZE];
 	int r;
+#ifndef WIN32
 	sigset_t osig, mask;
+#endif
 
 	g_return_val_if_fail(command != NULL, -1);
 	g_return_val_if_fail(fp != NULL, -1);
@@ -225,7 +229,7 @@ gint send_message_local(const gchar *command, FILE *fp)
 		fputs(buf, pipefp);
 		fputc('\n', pipefp);
 	}
-
+#ifndef WIN32
 	/* we need to block SIGCHLD, otherwise pspell's handler will wait()
 	 * the pipecommand away and pclose will return -1 because of its
 	 * failed wait4().
@@ -233,14 +237,16 @@ gint send_message_local(const gchar *command, FILE *fp)
 	sigemptyset(&mask);
 	sigaddset(&mask, SIGCHLD);
 	sigprocmask(SIG_BLOCK, &mask, &osig);
-	
+#endif	
 	r = pclose(pipefp);
 
+#ifndef WIN32
 	sigprocmask(SIG_SETMASK, &osig, NULL);
 	if (r != 0) {
 		g_warning(_("external command `%s' failed with code `%i'\n"), command, r);
 		return -1;
 	}
+#endif
 
 	return 0;
 }

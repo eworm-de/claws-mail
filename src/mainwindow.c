@@ -3002,8 +3002,11 @@ static void allsel_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	if (GTK_WIDGET_HAS_FOCUS(mainwin->summaryview->ctree))
 		summary_select_all(mainwin->summaryview);
-	else if (mainwin->summaryview->msg_is_toggled_on &&
-		 GTK_WIDGET_HAS_FOCUS(mainwin->messageview->textview->text))
+	else if (mainwin->summaryview->msg_is_toggled_on && (
+		 GTK_WIDGET_HAS_FOCUS(mainwin->messageview->textview->text) ||
+		 GTK_WIDGET_HAS_FOCUS(mainwin->messageview->mimeview->ctree) ||
+		 GTK_WIDGET_HAS_FOCUS(mainwin->messageview->mimeview->notebook) ||
+		 GTK_WIDGET_HAS_FOCUS(mainwin->messageview->mimeview->textview->text)))
 		messageview_select_all(mainwin->messageview);
 }
 

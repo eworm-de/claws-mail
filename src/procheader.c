@@ -291,7 +291,16 @@ GPtrArray *procheader_get_header_array_asis(FILE *fp)
 				header = g_new(Header, 1);
 				header->name = g_strndup(buf, p - buf);
 				p++;
++ #ifdef WIN32
++ 				{
++ 					gchar *hdr = g_strdup("X-Face");
++ 					if (strcasecmp(header->name, hdr))
++ 						conv_unmime_header(tmp, sizeof(tmp), p, NULL);
++ 					g_free(hdr);
++ 				}
++ #else
 				conv_unmime_header(tmp, sizeof(tmp), p, NULL);
++ #endif
 				header->body = g_strdup(tmp);
 
 				g_ptr_array_add(headers, header);
@@ -381,7 +390,17 @@ Header * procheader_parse_header(gchar * buf)
 			header->name = g_strndup(buf, p - buf + 1);
 			p++;
 			while (*p == ' ' || *p == '\t') p++;
+ #ifdef WIN32
+ //XXX:tm
+ 				{
+ 					gchar *hdr = g_strdup("X-Face");
+ 					if (strcasecmp(header->name, hdr))
+ 						conv_unmime_header(tmp, sizeof(tmp), p, NULL);
+ 					g_free(hdr);
+ 				}
+ #else				
 			conv_unmime_header(tmp, sizeof(tmp), p, NULL);
+ #endif
 			header->body = g_strdup(tmp);
 			return header;
 		}
@@ -613,6 +632,10 @@ MsgInfo *procheader_file_parse(FILE * fp, MsgFlags flags,
 				MSG_SET_TMP_FLAGS(msginfo->flags,
 						  MSG_ENCRYPTED);
 			}
+			else if (!strncasecmp(hp, "application/pgp", 15)) {
+				MSG_SET_TMP_FLAGS(msginfo->flags,
+						  MSG_ENCRYPTED);
+			}
 			else if (!strncasecmp(hp, "multipart", 9))
 				MSG_SET_TMP_FLAGS(msginfo->flags, MSG_MIME);
 			break;
@@ -783,6 +806,8 @@ time_t procheader_date_parse(gchar *dest, const gchar *src, gint len)
 	t.tm_isdst = -1;
 
 	timer = mktime(&t);
+	if (timer < 0) return 0 ;
+
 	timer += tzoffset_sec(&timer) - remote_tzoffset_sec(zone);
 
 	if (dest)

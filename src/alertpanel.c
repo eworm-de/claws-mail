@@ -30,6 +30,9 @@
 #include "utils.h"
 #include "gtkutils.h"
 #include "inc.h"
+#ifdef WIN32
+#include "defs.h"
+#endif
 
 #define TITLE_FONT	"-*-helvetica-medium-r-normal--17-*-*-*-*-*-*-*," \
 			"-*-*-medium-r-normal--16-*-*-*-*-*-*-*,*"
@@ -135,15 +138,44 @@ void alertpanel_warning(const gchar *format, ...)
 
 void alertpanel_error(const gchar *format, ...)
 {
+#if 0 //def WIN32
+/* strings already seem to be utf8... any conversion leads to errors:
+ * If no conversion is done, messages with german umlauts in args 
+ * are displayed correctly. So disabled again.
+*/
+	va_list args;
+	gchar *buf;
+	gint buflen;
+	gchar *p_format;
+
+	buflen = BUFFSIZE;
+	buf = g_malloc(buflen);
+
+	p_format = g_strdup(format);
+	locale_from_utf8(&p_format);
+
+	va_start(args, p_format);
+	g_vsnprintf(buf, buflen, p_format, args);
+	va_end(args);
+
+	locale_to_utf8(&buf);
+
+	strretchomp(buf);
+	alertpanel_message(_("Error"), buf);
+
+	g_free(buf);
+	g_free(p_format);
+#else
 	va_list args;
 	gchar buf[256];
 
 	va_start(args, format);
 	g_vsnprintf(buf, sizeof(buf), format, args);
 	va_end(args);
-	strretchomp(buf);
 
+	strretchomp(buf);
 	alertpanel_message(_("Error"), buf);
+#endif
 }
 
 static void alertpanel_show(void)

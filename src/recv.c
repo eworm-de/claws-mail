@@ -26,9 +26,12 @@
 #include <glib.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
-#include <sys/time.h>
-
+#ifdef WIN32
+ #include "w32lib.h"
+#else
+ #include <unistd.h>
+ #include <sys/time.h>
+#endif
 #include "intl.h"
 #include "recv.h"
 #include "socket.h"
@@ -137,11 +140,28 @@ gint recv_write(SockInfo *sock, FILE *fp)
 			}
 		}
 
+#ifdef WIN32
+		{
+			int i;
+
+			for (i = len - 1; 0 < i; i--){
+				if (!(buf[i] == '\r' || buf[i] == '\n')){
+					i++;
+					break;
+				}
+			}
+			if ( i < 0 ) i = 0;
+			buf[i]     = '\n';
+			buf[i + 1] = '\0';
+			len = strlen(buf);
+		}
+#else
 		if (len > 1 && buf[len - 1] == '\n' && buf[len - 2] == '\r') {
 			buf[len - 2] = '\n';
 			buf[len - 1] = '\0';
 			len--;
 		}
+#endif
 
 		if (buf[0] == '.' && buf[1] == '.')
 			memmove(buf, buf + 1, len--);

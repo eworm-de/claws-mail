@@ -286,7 +286,7 @@ void UnMimeHeaderConv(unsigned char *hdr, unsigned char *conv_r, int conv_len)
       if (newlen > conv_len) newlen = conv_len;
       strncpy(conv_r, newstr, newlen);
       conv_r[newlen] = '\0';
-      free(newstr);
+      // free(newstr); // MARK!!!!
     }
     else {
       strncpy(conv_r, hdr, conv_len);

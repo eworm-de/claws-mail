@@ -25,7 +25,9 @@
  * cases (I tried it but it is a lot of code).	wk 15.09.99
  */
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
 #ifdef USE_SIMPLE_GETTEXT
 #ifndef __MINGW32__
   #error This file can only be used with MinGW32

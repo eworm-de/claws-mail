@@ -247,4 +247,11 @@ gint compose_send			(Compose	  *compose);
 void compose_reflect_prefs_all			(void);
 void compose_reflect_prefs_pixmap_theme	(void);
 
+#ifdef WIN32
+typedef struct {
+	Compose* compose;
+	void * Handle;
+	} EditorThreadData ;
+#endif
+
 #endif /* __COMPOSE_H__ */

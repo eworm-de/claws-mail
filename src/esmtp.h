@@ -33,16 +33,16 @@
 
 typedef enum
 {
-	SMTPAUTH_LOGIN      = 1,
-	SMTPAUTH_CRAM_MD5   = 2,
-	SMTPAUTH_DIGEST_MD5 = 3
-} SMTPAuthType;
+	XSMTPAUTH_LOGIN      = 1,
+	XSMTPAUTH_CRAM_MD5   = 2,
+	XSMTPAUTH_DIGEST_MD5 = 3
+} XSMTPAuthType;
 
 gint esmtp_ehlo(SockInfo *sock, const gchar *hostname);
 gint esmtp_starttls(SockInfo *sock);
 gint esmtp_auth_login(SockInfo *sock);
 gint esmtp_auth_cram_md5(SockInfo *sock);
-gint esmtp_auth(SockInfo *sock, SMTPAuthType authtype,
+gint esmtp_auth(SockInfo *sock, XSMTPAuthType authtype,
 		const gchar *userid, const gchar *passwd);
 gint esmtp_ok(SockInfo *sock);
 gboolean smtp_auth_methods[4];

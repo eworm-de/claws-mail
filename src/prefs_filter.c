@@ -514,7 +514,18 @@ void prefs_filter_read_config(void)
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		g_strchomp(buf);
+#ifdef WIN32
+		{
+			gchar *p_buf;
+
+			p_buf = g_strdup(buf);
+			locale_to_utf8(&p_buf);
+			flt = filter_read_str(p_buf);
+			g_free(p_buf);
+		}
+#else
 		flt = filter_read_str(buf);
+#endif
 		if (flt) {
 			prefs_common.fltlist =
 				g_slist_append(prefs_common.fltlist, flt);
@@ -542,17 +553,32 @@ void prefs_filter_write_config(void)
 	for (cur = prefs_common.fltlist; cur != NULL; cur = cur->next) {
 		Filter *flt = (Filter *)cur->data;
 		gchar *fstr;
+#ifdef WIN32
+		gchar *p_fstr;
+#endif
 
 		fstr = filter_get_str(flt);
+#ifdef WIN32
+		p_fstr = g_strdup(fstr);
+		locale_from_utf8(&p_fstr);
+		if (fputs(p_fstr, pfile->fp) == EOF ||
+#else
 		if (fputs(fstr, pfile->fp) == EOF ||
+#endif
 		    fputc('\n', pfile->fp) == EOF) {
 			FILE_OP_ERROR(rcpath, "fputs || fputc");
 			prefs_write_close_revert(pfile);
 			g_free(rcpath);
 			g_free(fstr);
+#ifdef WIN32
+			g_free(p_fstr);
+#endif
 			return;
 		}
 		g_free(fstr);
+#ifdef WIN32
+		g_free(p_fstr);
+#endif
 	}
 
 	g_free(rcpath);

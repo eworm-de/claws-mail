@@ -24,9 +24,13 @@
 #include "defs.h"
 
 #include <glib.h>
-#include <dirent.h>
+#ifdef WIN32
+ #include <w32lib.h>
+#else
+ #include <dirent.h>
+ #include <unistd.h>
+#endif
 #include <sys/stat.h>
-#include <unistd.h>
 #include <string.h>
 #include <errno.h>
 
@@ -42,6 +46,9 @@
 #include "procmsg.h"
 #include "procheader.h"
 #include "utils.h"
+#ifdef WIN32
+#include "codeconv.h"
+#endif
 
 static void	mh_folder_init			(Folder		*folder,
 						 const gchar	*name,
@@ -115,6 +122,22 @@ GSList *mh_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 	g_return_val_if_fail(item != NULL, NULL);
 
 	path = folder_item_get_path(item);
+#ifdef WIN32
+	{
+		int n_child;
+
+		n_child = calc_child(path);
+		if (n_child < 0) {
+			FILE_OP_ERROR(path, "stat");
+		} else {
+			if (item->n_child == n_child) {
+				debug_print("Folder is not modified.\n");
+				scan_new = FALSE;
+			} else
+				item->n_child = n_child;
+		}
+	}
+#else
 	if (stat(path, &s) < 0) {
 		FILE_OP_ERROR(path, "stat");
 	} else {
@@ -127,6 +150,7 @@ GSList *mh_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 		} else
 			item->mtime = mtime;
 	}
+#endif
 	g_free(path);
 
 	if (use_cache && !scan_new) {
@@ -766,7 +790,17 @@ void mh_scan_tree(Folder *folder)
 	prefs_scoring_clear();
 	prefs_filtering_clear();
 	folder_tree_destroy(folder);
+#ifdef WIN32
+	{
+		gchar *p_name;
+		p_name = g_strdup(folder->name);
+		locale_from_utf8(&p_name);
+		item = folder_item_new((p_name), NULL);
+		g_free(p_name);
+	}
+#else
 	item = folder_item_new(folder->name, NULL);
+#endif
 	item->folder = folder;
 	folder->node = g_node_new(item);
 
@@ -884,7 +918,7 @@ gint mh_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 	newpath = g_strconcat(dirname, G_DIR_SEPARATOR_S, name, NULL);
 	g_free(dirname);
 
-	if (rename(oldpath, newpath) < 0) {
+	if (Xrename(oldpath, newpath) < 0) {
 		FILE_OP_ERROR(oldpath, "rename");
 		g_free(oldpath);
 		g_free(newpath);
@@ -902,7 +936,17 @@ gint mh_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 		newpath = g_strdup(name);
 
 	g_free(item->name);
+#ifdef WIN32
+	{
+		gchar *p_name;
+		p_name = g_strdup(name);
+		locale_to_utf8(&p_name);
+		item->name = g_strdup(p_name);
+		g_free(p_name);
+	}
+#else
 	item->name = g_strdup(name);
+#endif
 
 	node = g_node_find(item->folder->node, G_PRE_ORDER, G_TRAVERSE_ALL,
 			   item);

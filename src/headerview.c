@@ -134,7 +134,14 @@ HeaderView *headerview_create(void)
 void headerview_init(HeaderView *headerview)
 {
 	if (!boldfont)
+#ifdef WIN32
+	if (prefs_common.smallfont)
+		boldfont = gdk_fontset_load(prefs_common.boldfont);
+	else
 		boldfont = gdk_fontset_load(BOLD_FONT);
+#else
+		boldfont = gdk_fontset_load(BOLD_FONT);
+#endif
 
 #define SET_FONT_STYLE(wid) \
 { \
@@ -168,6 +175,11 @@ void headerview_init(HeaderView *headerview)
 
 void headerview_show(HeaderView *headerview, MsgInfo *msginfo)
 {
+#ifdef WIN32
+	gchar* p_subject;
+	p_subject = g_strdup( msginfo->subject );
+	locale_to_utf8( &p_subject ) ;
+#endif
 	headerview_clear(headerview);
 
 	gtk_label_set_text(GTK_LABEL(headerview->from_body_label),
@@ -185,11 +197,18 @@ void headerview_show(HeaderView *headerview, MsgInfo *msginfo)
 		gtk_widget_show(headerview->ng_body_label);
 	}
 	gtk_label_set_text(GTK_LABEL(headerview->subject_body_label),
-			   msginfo->subject ? msginfo->subject :
+#ifdef WIN32
+		p_subject ? p_subject :
+#else
+		msginfo->subject ? msginfo->subject :
+#endif
 			   _("(No Subject)"));
 
 #if HAVE_LIBCOMPFACE
 	headerview_show_xface(headerview, msginfo);
+#endif
+#ifdef WIN32
+	g_free( p_subject );
 #endif
 }
 

@@ -29,7 +29,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef WIN32
+#include <w32lib.h>
+#else
 #include <unistd.h>
+#endif
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
@@ -102,7 +106,7 @@ static struct Send {
 	GtkWidget *optmenu_charset;
 	
 	GtkWidget *checkbtn_returnreceipt;
-} send;
+} Xsend;
 
 static struct Compose {
 	GtkWidget *checkbtn_autosig;
@@ -162,6 +166,9 @@ static struct Display {
 	GtkWidget *entry_smallfont;
 	GtkWidget *entry_normalfont;
 	GtkWidget *entry_boldfont;
+#ifdef WIN32
+GtkWidget *entry_spacingfont;
+#endif
 
 	GtkWidget *chkbtn_folder_unread;
 	GtkWidget *chkbtn_display_img;
@@ -218,7 +225,7 @@ static struct Interface {
  	GtkWidget *optmenu_nextunreadmsgdialog;
 	GtkWidget *entry_pixmap_theme;
 	GtkWidget *combo_pixmap_theme;
-} interface;
+} Xinterface;
 
 static struct Other {
 	GtkWidget *uri_combo;
@@ -329,20 +336,20 @@ static PrefParam param[] = {
 
 	/* Send */
 	{"use_ext_sendmail", "FALSE", &prefs_common.use_extsend, P_BOOL,
-	 &send.checkbtn_extsend,
+	 &Xsend.checkbtn_extsend,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"ext_sendmail_cmd", DEFAULT_SENDMAIL_CMD,
 	 &prefs_common.extsend_cmd, P_STRING,
-	 &send.entry_extsend, prefs_set_data_from_entry, prefs_set_entry},
+	 &Xsend.entry_extsend, prefs_set_data_from_entry, prefs_set_entry},
 	{"save_message", "TRUE", &prefs_common.savemsg, P_BOOL,
-	 &send.checkbtn_savemsg,
+	 &Xsend.checkbtn_savemsg,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"queue_message", "FALSE", &prefs_common.queue_msg, P_BOOL,
-	 &send.checkbtn_queuemsg,
+	 &Xsend.checkbtn_queuemsg,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"outgoing_charset", CS_AUTO, &prefs_common.outgoing_charset, P_STRING,
-	 &send.optmenu_charset,
+	 &Xsend.optmenu_charset,
 	 prefs_common_charset_set_data_from_optmenu,
 	 prefs_common_charset_set_optmenu},
 
@@ -444,22 +451,58 @@ static PrefParam param[] = {
 	{"quote_chars", ">", &prefs_common.quote_chars, P_STRING,
 	 &quote.entry_quote_chars, prefs_set_data_from_entry, prefs_set_entry},
 
+/*
+   parameter name, default value, pointer to the prefs variable, data type,
+   pointer to the widget pointer,
+   pointer to the function for data setting,
+   pointer to the function for widget setting
+ */
 	/* Display */
+#ifdef WIN32
+	{"widget_font", NULL,
+	 &prefs_common.widgetfont, P_STRING,
+	 NULL, NULL, NULL},
+#else
 	{"widget_font", NULL, &prefs_common.widgetfont, P_STRING,
 	 NULL, NULL, NULL},
+#endif
+#ifdef WIN32
+	{"message_font", DEFAULT_MESSAGE_FONT,
+#else
 	{"message_font", "-misc-fixed-medium-r-normal--14-*-*-*-*-*-*-*",
+#endif
 	 &prefs_common.textfont, P_STRING,
 	 &display.entry_textfont,
 	 prefs_set_data_from_entry, prefs_set_entry},
+#ifdef WIN32
+	{"small_font",   SMALL_FONT,
+#else
 	{"small_font",   "-*-helvetica-medium-r-normal--10-*-*-*-*-*-*-*",
+#endif
 	 &prefs_common.smallfont,   P_STRING,
 	 &display.entry_smallfont,
 	 prefs_set_data_from_entry, prefs_set_entry},
+ #ifdef  WIN32
+	 //XXX:tm
+ 	{"spacing_font", DEFAULT_SPACING_FONT, 
+	 &prefs_common.spacingfont, P_STRING,
+	 NULL, NULL, NULL},
+// 	 &display.entry_spacingfont,
+//	 prefs_set_data_from_entry, prefs_set_entry},
+ #endif
+#ifdef WIN32
+	{"bold_font",    BOLD_FONT,
+#else
 	{"bold_font",    "-*-helvetica-bold-r-normal--12-*-*-*-*-*-*-*",
+#endif
 	 &prefs_common.boldfont,    P_STRING,
 	 &display.entry_boldfont,
 	 prefs_set_data_from_entry, prefs_set_entry},
+#ifdef WIN32
+	{"normal_font",  NORMAL_FONT,
+#else
 	{"normal_font",  "-*-helvetica-medium-r-normal--12-*-*-*-*-*-*-*",
+#endif
 	 &prefs_common.normalfont,  P_STRING,
 	 &display.entry_normalfont, 
 	 prefs_set_data_from_entry, prefs_set_entry},
@@ -716,29 +759,29 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL}, */
 
 	{"open_unread_on_enter", "FALSE", &prefs_common.open_unread_on_enter,
-	 P_BOOL, &interface.checkbtn_openunread,
+	 P_BOOL, &Xinterface.checkbtn_openunread,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"open_inbox_on_inc", "FALSE", &prefs_common.open_inbox_on_inc,
-	 P_BOOL, &interface.checkbtn_openinbox,
+	 P_BOOL, &Xinterface.checkbtn_openinbox,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"immediate_execution", "TRUE", &prefs_common.immediate_exec, P_BOOL,
-	 &interface.checkbtn_immedexec,
+	 &Xinterface.checkbtn_immedexec,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"receive_dialog_mode", "1", &prefs_common.recv_dialog_mode, P_ENUM,
-	 &interface.optmenu_recvdialog,
+	 &Xinterface.optmenu_recvdialog,
 	 prefs_common_recv_dialog_set_data_from_optmenu,
 	 prefs_common_recv_dialog_set_optmenu},
 	{"nextunreadmsg_dialog", NULL, &prefs_common.next_unread_msg_dialog, P_ENUM,
-	 &interface.optmenu_nextunreadmsgdialog,
+	 &Xinterface.optmenu_nextunreadmsgdialog,
 	 prefs_nextunreadmsgdialog_set_data_from_optmenu,
 	 prefs_nextunreadmsgdialog_set_optmenu},
 
 	{"add_address_by_click", "FALSE", &prefs_common.add_address_by_click,
-	 P_BOOL, &interface.checkbtn_addaddrbyclick,
+	 P_BOOL, &Xinterface.checkbtn_addaddrbyclick,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"pixmap_theme_path", DEFAULT_PIXMAP_THEME, 
 	 &prefs_common.pixmap_theme_path, P_STRING,
-	 &interface.entry_pixmap_theme,	prefs_set_data_from_entry, prefs_set_entry},
+	 &Xinterface.entry_pixmap_theme,	prefs_set_data_from_entry, prefs_set_entry},
 	
 	/* Other */
 	{"uri_open_command", "netscape -remote 'openURL(%s,raise)'",
@@ -754,7 +797,7 @@ static PrefParam param[] = {
 	 &other.checkbtn_confonexit,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"send_return_receipt", "TRUE", &prefs_common.return_receipt, P_BOOL,
-	 &send.checkbtn_returnreceipt,
+	 &Xsend.checkbtn_returnreceipt,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"clean_trash_on_exit", "FALSE", &prefs_common.clean_on_exit, P_BOOL,
 	 &other.checkbtn_cleanonexit,
@@ -861,6 +904,13 @@ void prefs_common_init() {
 	prefs_common.fltlist = NULL;
 	prefs_common.disphdr_list = NULL;
 }
+
+#ifdef WIN32
+void prefs_common_init_config(void)
+{
+	prefs_init_config(param);
+}
+#endif
 
 void prefs_common_read_config(void)
 {
@@ -1361,15 +1411,15 @@ static void prefs_send_create(void)
 			    FALSE, FALSE, 0);
 	gtk_label_set_justify(GTK_LABEL (label_charset_desc), GTK_JUSTIFY_LEFT);
 
-	send.checkbtn_extsend = checkbtn_extsend;
-	send.entry_extsend    = entry_extsend;
-	/* send.button_extsend   = button_extsend; */
+	Xsend.checkbtn_extsend = checkbtn_extsend;
+	Xsend.entry_extsend    = entry_extsend;
+	/* Xsend.button_extsend   = button_extsend; */
 
-	send.checkbtn_savemsg  = checkbtn_savemsg;
-	send.checkbtn_queuemsg = checkbtn_queuemsg;
-	send.checkbtn_returnreceipt = checkbtn_returnreceipt;
+	Xsend.checkbtn_savemsg  = checkbtn_savemsg;
+	Xsend.checkbtn_queuemsg = checkbtn_queuemsg;
+	Xsend.checkbtn_returnreceipt = checkbtn_returnreceipt;
 
-	send.optmenu_charset = optmenu;
+	Xsend.optmenu_charset = optmenu;
 }
 
 static void prefs_common_recv_dialog_newmail_notify_toggle_cb(GtkWidget *w, gpointer data)
@@ -2784,15 +2834,15 @@ static void prefs_interface_create(void)
 
 	stock_pixmap_themes_list_free(avail_pixmap_themes);
 
-	/* interface.checkbtn_emacs          = checkbtn_emacs; */
-	interface.checkbtn_openunread         = checkbtn_openunread;
-	interface.checkbtn_openinbox          = checkbtn_openinbox;
-	interface.checkbtn_immedexec          = checkbtn_immedexec;
-	interface.optmenu_recvdialog	      = optmenu_recvdialog;
-	interface.checkbtn_addaddrbyclick     = checkbtn_addaddrbyclick;
-	interface.optmenu_nextunreadmsgdialog = optmenu_nextunreadmsgdialog;
-	interface.combo_pixmap_theme		= combo_pixmap_theme;
- 	interface.entry_pixmap_theme		= entry_pixmap_theme;
+	/* Xinterface.checkbtn_emacs          = checkbtn_emacs; */
+	Xinterface.checkbtn_openunread         = checkbtn_openunread;
+	Xinterface.checkbtn_openinbox          = checkbtn_openinbox;
+	Xinterface.checkbtn_immedexec          = checkbtn_immedexec;
+	Xinterface.optmenu_recvdialog	      = optmenu_recvdialog;
+	Xinterface.checkbtn_addaddrbyclick     = checkbtn_addaddrbyclick;
+	Xinterface.optmenu_nextunreadmsgdialog = optmenu_nextunreadmsgdialog;
+	Xinterface.combo_pixmap_theme		= combo_pixmap_theme;
+ 	Xinterface.entry_pixmap_theme		= entry_pixmap_theme;
 }
 
 static void prefs_other_create(void)
@@ -4081,7 +4131,7 @@ static void prefs_common_apply(void)
 	gchar *entry_pixmap_theme_str;
 	gboolean update_pixmap_theme;
 	
-	entry_pixmap_theme_str = gtk_entry_get_text(GTK_ENTRY(interface.entry_pixmap_theme));
+	entry_pixmap_theme_str = gtk_entry_get_text(GTK_ENTRY(Xinterface.entry_pixmap_theme));
 	if (entry_pixmap_theme_str && 
 		(strcmp(prefs_common.pixmap_theme_path, entry_pixmap_theme_str) != 0) )
 		update_pixmap_theme = TRUE;

@@ -323,11 +323,26 @@ void procmime_scan_content_type(MimeInfo *mimeinfo, const gchar *content_type)
 	gchar *delim, *p, *cnttype;
 	gchar *buf;
 
+#ifdef WIN32
+	if ((conv_get_current_charset() == C_EUC_JP ||
+	     conv_get_current_charset() == C_SHIFT_JIS) &&
+#else
 	if (conv_get_current_charset() == C_EUC_JP &&
+#endif
 	    strchr(content_type, '\033')) {
 		gint len;
+// #ifdef WIN32
+// 				len = strlen(content_type) * 2;
+// 				buf = g_malloc(len);
+// #else
 		len = strlen(content_type) * 2 + 1;
 		Xalloca(buf, len, return);
+// #endif
+// #ifdef WIN32
+// 				conv_euctojis(buf, len, content_type);
+// 				// g_free(value);
+// 				content_type = g_strdup(buf);
+// #endif
 		conv_jistoeuc(buf, len, content_type);
 	} else
 		Xstrdup_a(buf, content_type, return);
@@ -374,10 +389,26 @@ void procmime_scan_content_type(MimeInfo *mimeinfo, const gchar *content_type)
 			else if (!strcasecmp(attr, "name")) {
 				gchar *tmp;
 				size_t len;
+ #ifdef WIN32
+ 				len = strlen(value) * 2;
+ 				tmp = g_malloc(len);
+ #else
 
 				len = strlen(value) + 1;
 				Xalloca(tmp, len, return);
+ #endif
+ #ifdef WIN32
+ 				conv_euctojis(tmp, len, value);
+ 				// g_free(value);
+ 				value = g_strdup(tmp);
+ #endif
 				conv_unmime_header(tmp, len, value, NULL);
+ 				g_free(mimeinfo->filename);
+ #if 0
+ #ifdef WIN32 // MARK!!!!
+ 				locale_from_utf8(&tmp);
+ #endif
+ #endif
 				g_free(mimeinfo->name);
 				mimeinfo->name = g_strdup(tmp);
 			} else if (!strcasecmp(attr, "boundary"))
@@ -398,7 +429,12 @@ void procmime_scan_content_disposition(MimeInfo *mimeinfo,
 	gchar *delim, *p, *dispos;
 	gchar *buf;
 
+#ifdef WIN32
+	if ((conv_get_current_charset() == C_EUC_JP ||
+	     conv_get_current_charset() == C_SHIFT_JIS) &&
+#else
 	if (conv_get_current_charset() == C_EUC_JP &&
+#endif
 	    strchr(content_disposition, '\033')) {
 		gint len;
 		len = strlen(content_disposition) * 2 + 1;
@@ -439,10 +475,25 @@ void procmime_scan_content_disposition(MimeInfo *mimeinfo,
 				gchar *tmp;
 				size_t len;
 
+#ifdef WIN32
+				len = strlen(value) * 2;
+				tmp = g_malloc(len);
+#else
 				len = strlen(value) + 1;
 				Xalloca(tmp, len, return);
+#endif
+#ifdef WIN32
+				conv_euctojis(tmp, len, value);
+				// g_free(value);
+				value = g_strdup(tmp);
+#endif
 				conv_unmime_header(tmp, len, value, NULL);
 				g_free(mimeinfo->filename);
+#if 0
+#ifdef WIN32 // MARK!!!!
+				locale_from_utf8(&tmp);
+#endif
+#endif
 				mimeinfo->filename = g_strdup(tmp);
 				break;
 			}
@@ -867,7 +918,11 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 			str = conv_codeset_strdup(buf, src_codeset, NULL);
 			if (str) {
 				fputs(str, outfp);
+#ifdef WIN32
+//XXX:tm ???
+#else
 				g_free(str);
+#endif
 			} else {
 				conv_fail = TRUE;
 				fputs(buf, outfp);
@@ -1035,12 +1090,36 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 	else {
 		base = mimeinfo->filename ? mimeinfo->filename
 			: mimeinfo->name ? mimeinfo->name : "mimetmp";
+#ifdef WIN32
+		{
+			gchar *p;
+			int len;
+
+			base = g_strdup(base);
+			locale_from_utf8(&base);
+
+			len = strlen(base) * 2;
+			p = g_malloc(len);
+			conv_anytoeuc(p, len, base);
+			g_free(base);
+			base = g_strdup(g_basename(p));
+			conv_anytosjis(p, len, base);
+			g_free(base);
+			base = g_strdup(p);
+			g_free(p);
+		}
+#else
 		base = g_basename(base);
+#endif
 		if (*base == '\0') base = "mimetmp";
 	}
 
 	filename = g_strconcat(get_mime_tmp_dir(), G_DIR_SEPARATOR_S,
 			       f_prefix, base, NULL);
+
+#ifdef WIN32
+	g_free(base);
+#endif
 
 	return filename;
 }
@@ -1061,6 +1140,8 @@ ContentType procmime_scan_mime_type(const gchar *mime_type)
 		type = MIME_TEXT;
 	else if (!strncasecmp(mime_type, "application/octet-stream", 24))
 		type = MIME_APPLICATION_OCTET_STREAM;
+	else if (!strncasecmp(mime_type, "application/pgp", 24))
+		type = MIME_APPLICATION_PGP;
 	else if (!strncasecmp(mime_type, "application/", 12))
 		type = MIME_APPLICATION;
 	else if (!strncasecmp(mime_type, "multipart/", 10))
@@ -1097,6 +1178,10 @@ gchar *procmime_get_mime_type(const gchar *filename)
 
 	Xstrdup_a(ext, p + 1, return NULL);
 	g_strdown(ext);
+
+#ifdef WIN32
+	if (mime_type_table) {
+#endif
 	mime_type = g_hash_table_lookup(mime_type_table, ext);
 	if (mime_type) {
 		gchar *str;
@@ -1106,7 +1191,13 @@ gchar *procmime_get_mime_type(const gchar *filename)
 		return str;
 	}
 
+#ifdef WIN32
+	}
+
+	return get_content_type_from_registry_with_ext( ext );
+#else
 	return NULL;
+#endif
 }
 
 static guint procmime_str_hash(gconstpointer gptr)
@@ -1176,12 +1267,23 @@ GList *procmime_get_mime_type_list(void)
 	gchar buf[BUFFSIZE];
 	gchar *p, *delim;
 	MimeType *mime_type;
+ 		gchar *mimetypes_filename;
 
 	if (mime_type_list) 
 		return mime_type_list;
 
+ #ifdef WIN32
+ 		mimetypes_filename = g_strconcat(get_installed_dir(), G_DIR_SEPARATOR_S,
+ 						SYSCONFDIR "/mime.types", NULL);
+ #endif
+ 
 	if ((fp = fopen("/etc/mime.types", "rb")) == NULL) {
+ #ifdef WIN32
+		if ((fp = fopen(mimetypes_filename, "rb")) == NULL) {
+	 		g_free(mimetypes_filename);
+ #else
 		if ((fp = fopen(SYSCONFDIR "/mime.types", "rb")) == NULL) {
+ #endif
 			FILE_OP_ERROR(SYSCONFDIR "/mime.types", "fopen");
 			return NULL;
 		}

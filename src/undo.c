@@ -521,6 +521,9 @@ void undo_insert_text_cb(GtkEditable *editable, gchar *new_text,
 	if (prefs_common.undolevels <= 0) return;
 
 	Xstrndup_a(text_to_insert, new_text, new_text_length, return);
+#ifdef WIN32
+	wlen = new_text_length;
+#else
 	if (MB_CUR_MAX > 1) {
 		wchar_t *wstr;
 
@@ -530,6 +533,7 @@ void undo_insert_text_cb(GtkEditable *editable, gchar *new_text,
 		if (wlen < 0) return;
 	} else
 		wlen = new_text_length;
+#endif
 
 	undo_add(text_to_insert, *position, *position + wlen,
 		 UNDO_ACTION_INSERT, undostruct);

@@ -378,7 +378,12 @@ HTMLParser *html_parser_new(FILE *fp, CodeConverter *conv)
 		  conv->charset == C_ISO_2022_JP_2 ||
 		  conv->charset == C_EUC_JP        ||
 		  conv->charset == C_SHIFT_JIS) &&
+#ifdef WIN32
+		 (conv_get_current_charset() == C_EUC_JP ||
+		  conv_get_current_charset() == C_SHIFT_JIS))
+#else
 		 conv_get_current_charset() == C_EUC_JP)
+#endif
 		parser->symbol_table = eucjp_symbol_table;
 	else
 		parser->symbol_table = default_symbol_table;
@@ -461,6 +466,10 @@ static HTMLState html_read_line(HTMLParser *parser)
 
 		return HTML_ERR;
 	}
+#ifdef xxxWIN32
+		g_free(p_buf);
+	}
+#endif
 
 	index = parser->bufp - parser->buf->str;
 

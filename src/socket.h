@@ -101,4 +101,8 @@ gint ssl_gets(SSL *ssl, gchar *buf, gint len);
 gchar *ssl_getline(SSL *ssl);
 #endif
 
+#ifdef WIN32
+gint fd_open_lock_service(const gushort port);
+#endif
+
 #endif /* __SOCKET_H__ */

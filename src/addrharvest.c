@@ -22,7 +22,9 @@
  */
 
 #include <sys/stat.h>
-#include <dirent.h>
+#ifndef WIN32
+ #include <dirent.h>
+#endif
 #include <glib.h>
 #include <string.h>
 

@@ -543,40 +543,62 @@ void rfc2015_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
     g_return_if_fail (msginfo != NULL);
     g_return_if_fail (mimeinfo != NULL);
     g_return_if_fail (fp != NULL);
-    g_return_if_fail (mimeinfo->mime_type == MIME_MULTIPART);
+    g_return_if_fail ((mimeinfo->mime_type == MIME_MULTIPART) || 
+                      (mimeinfo->mime_type == MIME_APPLICATION_PGP));
 
-    debug_print ("** decrypting multipart/encrypted message");
+    debug_print ("** decrypting multipart/encrypted or application/pgp message\n");
 
     /* skip headers */
     if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0)
         perror("fseek");
     tmpinfo = procmime_scan_mime_header(fp);
-    if (!tmpinfo || tmpinfo->mime_type != MIME_MULTIPART) {
+    if (!tmpinfo) {
         DECRYPTION_ABORT();
     }
 
     procmime_scan_multipart_message(tmpinfo, fp);
+   
+    switch (tmpinfo->mime_type) {
+    case MIME_APPLICATION_PGP:
+	/* Support for mutt-style application/pgp content */
 
-    /* check that we have the 2 parts */
-    partinfo = tmpinfo->children;
-    if (!partinfo || !partinfo->next) {
-        DECRYPTION_ABORT();
-    }
-    if (!g_strcasecmp (partinfo->content_type, "application/pgp-encrypted")) {
-        /* Fixme: check that the version is 1 */
+        /* check that we have the 1 part */
+        partinfo = tmpinfo->children;
+        
+	/* Fixme: check that the version is 1 */
         ver_ok = 1;
-    }
-    partinfo = partinfo->next;
-    if (ver_ok &&
-        !g_strcasecmp (partinfo->content_type, "application/octet-stream")) {
-        if (partinfo->next)
-            g_warning ("oops: pgp_encrypted with more than 2 parts");
-    }
-    else {
+        break;
+    case MIME_MULTIPART:
+    
+        /* check that we have the 2 parts */
+        partinfo = tmpinfo->children;
+        if (!partinfo || !partinfo->next) {
+            DECRYPTION_ABORT();
+        }
+        if (!g_strcasecmp (partinfo->content_type, "application/pgp-encrypted")) {
+            /* Fixme: check that the version is 1 */
+            ver_ok = 1;
+        }
+        partinfo = partinfo->next;
+        if (!g_strcasecmp (partinfo->content_type, "application/octet-stream")) 
+	{
+            if (partinfo->next)
+                g_warning ("oops: pgp_encrypted with more than 2 parts");
+        }
+        else {
+            DECRYPTION_ABORT();
+        }
+	break;
+    default:
         DECRYPTION_ABORT();
     }
-
-    debug_print ("** yep, it is pgp encrypted");
+   
+    if (!ver_ok) {
+	debug_print("incorrect version\n");
+        DECRYPTION_ABORT();
+    }
+    
+    debug_print ("** yep, it is pgp encrypted\n");
 
     plain = pgp_decrypt (partinfo, fp);
     if (!plain) {
@@ -1190,7 +1212,11 @@ create_boundary (void)
      */
     equal = -1;
     for(i = 0; i < sizeof(buf) - 1; i++) {
-	buf[i] = tbl[(lrand48() ^ pid) % (sizeof(tbl) - 1)]; /* fill with random */
+#ifdef WIN32
+      buf[i] = tbl[(rand() ^ pid) % (sizeof(tbl) - 1)]; /* fill with random */
+#else
+      buf[i] = tbl[(lrand48() ^ pid) % (sizeof(tbl) - 1)]; /* fill with random */
+#endif
 	if(buf[i] == '=' && equal == -1)
 	    equal = i;
     }

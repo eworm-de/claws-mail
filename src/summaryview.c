@@ -44,7 +44,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include <unistd.h>
+#ifdef WIN32
+#else
+ #include <unistd.h>
+#endif
 #include <sys/stat.h>
 #include <regex.h>
 
@@ -585,7 +588,14 @@ void summary_init(SummaryView *summaryview)
 		small_style = gtk_style_copy
 			(gtk_widget_get_style(summaryview->ctree));
 		if (!smallfont)
+#ifdef WIN32
+			if (prefs_common.smallfont)
+				smallfont = gdk_fontset_load(prefs_common.smallfont);
+			else
+				smallfont = gdk_fontset_load(SMALL_FONT);
+#else
 			smallfont = gdk_fontset_load(SMALL_FONT);
+#endif
 		small_style->font = smallfont;
 		small_marked_style = gtk_style_copy(small_style);
 		small_marked_style->fg[GTK_STATE_NORMAL] =
@@ -598,7 +608,14 @@ void summary_init(SummaryView *summaryview)
 		bold_style = gtk_style_copy
 			(gtk_widget_get_style(summaryview->ctree));
 		if (!boldfont)
+#ifdef WIN32
+			if (prefs_common.boldfont)
+				boldfont = gdk_fontset_load(prefs_common.boldfont);
+			else
+				boldfont = gdk_fontset_load(BOLD_FONT);
+#else
 			boldfont = gdk_fontset_load(BOLD_FONT);
+#endif
 		bold_style->font = boldfont;
 		bold_marked_style = gtk_style_copy(bold_style);
 		bold_marked_style->fg[GTK_STATE_NORMAL] =
@@ -792,7 +809,18 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 
 	gtk_signal_handler_block_by_data(GTK_OBJECT(ctree), summaryview);
 
+#ifdef WIN32
+	{
+		gchar *p_path;
+
+		p_path = g_strdup(item->path);
+		locale_to_utf8(&p_path);
+		buf = g_strdup_printf(_("Scanning folder (%s)..."), p_path);
+		g_free(p_path);
+	}
+#else
 	buf = g_strdup_printf(_("Scanning folder (%s)..."), item->path);
+#endif
 	debug_print("%s\n", buf);
 	STATUSBAR_PUSH(summaryview->mainwin, buf);
 	g_free(buf);
@@ -1761,7 +1789,9 @@ static void summary_status_show(SummaryView *summaryview)
 	g_free(str);
 	g_free(sel);
 	g_free(del);
+#ifndef WIN32 // Why this code invoke some exception...?
 	g_free(mv);
+#endif
 	g_free(cp);
 	g_free(itstr);
 
@@ -1772,10 +1802,22 @@ static void summary_status_show(SummaryView *summaryview)
 				      summaryview->messages,
 				      to_human_readable(summaryview->total_size));
 	} else {
+#ifdef WIN32
+		gchar *p;
+		p = g_strdup(_("%d new, %d unread, %d total"));
+		locale_from_utf8(&p);
+		str = g_strdup_printf(p,
+				      summaryview->newmsgs,
+				      summaryview->unread,
+				      summaryview->messages);
+		g_free(p);
+		locale_to_utf8(&str);
+#else
 		str = g_strdup_printf(_("%d new, %d unread, %d total"),
 				      summaryview->newmsgs,
 				      summaryview->unread,
 				      summaryview->messages);
+#endif
 	}
 	gtk_label_set(GTK_LABEL(summaryview->statlabel_msgs), str);
 	g_free(str);
@@ -2179,8 +2221,19 @@ gint summary_write_cache(SummaryView *summaryview)
 
 	g_free(markfile);
 
+#ifdef WIN32
+	{
+		gchar *p_path;
+		p_path = g_strdup(summaryview->folder_item->path);
+		locale_to_utf8(&p_path);
+		buf = g_strdup_printf(_("Writing summary cache (%s)..."),
+			      p_path);
+		g_free(p_path);
+	}
+#else
 	buf = g_strdup_printf(_("Writing summary cache (%s)..."),
 			      summaryview->folder_item->path);
+#endif
 	debug_print(buf);
 	STATUSBAR_PUSH(summaryview->mainwin, buf);
 	g_free(buf);
@@ -2271,14 +2324,35 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 		procheader_date_get_localtime(date_modified,
 					      sizeof(date_modified),
 					      msginfo->date_t);
+#ifdef WIN32
+		{
+			gchar *p_date;
+			p_date = g_strdup(date_modified);
+			locale_to_utf8(&p_date);
+			text[col_pos[S_COL_DATE]] = g_strdup(p_date);
+			g_free(p_date);
+		}
+#else
 		text[col_pos[S_COL_DATE]] = date_modified;
+#endif
 	} else if (msginfo->date)
 		text[col_pos[S_COL_DATE]] = msginfo->date;
 	else
 		text[col_pos[S_COL_DATE]] = _("(No Date)");
 
+#ifdef WIN32
+		{
+			gchar *p_fromname;
+			p_fromname = g_strdup(msginfo->fromname);
+			locale_to_utf8(&p_fromname);
+	text[col_pos[S_COL_FROM]] = msginfo->fromname ? p_fromname :
+		_("(No From)");
+//			g_free(p_fromname);
+		}
+#else
 	text[col_pos[S_COL_FROM]] = msginfo->fromname ? msginfo->fromname :
 		_("(No From)");
+#endif
 	if (prefs_common.swap_from && msginfo->from && msginfo->to &&
 	    !MSG_IS_NEWS(msginfo->flags)) {
 		gchar *addr = NULL;
@@ -2287,11 +2361,21 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 			Xstrdup_a(addr, msginfo->from, return);
 			extract_address(addr);
 
-		if (account_find_from_address(addr)) {
+		if (addr && account_find_from_address(addr)) {
 			addr = summary_complete_address(msginfo->to);
 			g_free(to);
 			to   = g_strconcat("-->", addr == NULL ? msginfo->to : addr, NULL);
+#ifdef WIN32
+			{
+				gchar *p_to;
+				p_to = g_strdup(to);
+				locale_to_utf8(&p_to);
+				text[col_pos[S_COL_FROM]] = p_to;
+//				g_free(p_to);
+			}
+#else
 			text[col_pos[S_COL_FROM]] = to;
+#endif
 			}
 		}
 	}
@@ -2322,8 +2406,18 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 			
 			_("(No Subject)");
 	else 
-		text[col_pos[S_COL_SUBJECT]] = msginfo->subject ? msginfo->subject :
+#ifdef WIN32
+		{
+			gchar *p_subject;
+			p_subject = g_strdup(msginfo->subject);
+			locale_to_utf8(&p_subject);
+			text[col_pos[S_COL_SUBJECT]] = p_subject ? p_subject :
 			_("(No Subject)");
+		}
+#else
+		text[col_pos[S_COL_SUBJECT]] = msginfo->subject ? msginfo->subject :
+		_("(No Subject)");
+#endif
 }
 
 #define CHANGE_FLAGS(msginfo) \

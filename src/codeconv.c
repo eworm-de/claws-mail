@@ -47,6 +47,9 @@
 #include "base64.h"
 #include "utils.h"
 #include "prefs_common.h"
+#ifdef WIN32
+#include "defs.h"
+#endif
 
 #define iskanji(c) \
 	(((c) & 0xff) >= 0xa1 && ((c) & 0xff) <= 0xfe)
@@ -99,9 +102,19 @@ void conv_euctojis(gchar *outbuf, gint outlen, const gchar *inbuf)
 		KCC_filter(outbuf, "JISBB", (gchar *)inbuf, "EUC", 0, 0, 0);
 }
 
+void conv_euctosjis(gchar *outbuf, gint outlen, const gchar *inbuf)
+{
+	KCC_filter(outbuf, "SJIS", (gchar *)inbuf, "EUC", 0, 0, 0);
+}
+
 void conv_sjistoeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	KCC_filter(outbuf, "EUC", (gchar *)inbuf, "SJIS", 0, 0, 0);
+}
+
+void conv_sjistojis(gchar *outbuf, gint outlen, const gchar *inbuf)
+{
+	KCC_filter(outbuf, "JISBB", (gchar *)inbuf, "SJIS", 0, 0, 0);
 }
 
 void conv_anytoeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
@@ -112,6 +125,11 @@ void conv_anytoeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 void conv_anytojis(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	KCC_filter(outbuf, "JISBB", (gchar *)inbuf, "AUTO", 0, 0, 0);
+}
+
+void conv_anytosjis(gchar *outbuf, gint outlen, const gchar *inbuf)
+{
+	KCC_filter(outbuf, "SJIS", (gchar *)inbuf, "AUTO", 0, 0, 0);
 }
 
 #define SUBST_CHAR	'_'
@@ -250,18 +268,27 @@ void conv_jistodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	conv_jistoeuc(outbuf, outlen, inbuf);
 	conv_unreadable_eucjp(outbuf);
+#ifdef WIN32
+	conv_X_any_to_disp(outbuf, outlen);
+#endif
 }
 
 void conv_sjistodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	conv_sjistoeuc(outbuf, outlen, inbuf);
 	conv_unreadable_eucjp(outbuf);
+#ifdef WIN32
+	conv_X_any_to_disp(outbuf, outlen);
+#endif
 }
 
 void conv_euctodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	strncpy2(outbuf, inbuf, outlen);
 	conv_unreadable_eucjp(outbuf);
+#ifdef WIN32
+	conv_X_any_to_disp(outbuf, outlen);
+#endif
 }
 
 void conv_ustodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
@@ -312,7 +339,7 @@ gint conv_convert(CodeConverter *conv, gchar *outbuf, gint outlen,
 		return -1;
 	else {
 		strncpy2(outbuf, str, outlen);
-		g_free(str);
+//XXX:tm		g_free(str);
 	}
 #else /* !HAVE_LIBJCONV */
 	conv->code_conv_func(outbuf, outlen, inbuf);
@@ -546,6 +573,10 @@ static const struct {
 	{"C"			, C_US_ASCII},
 	{"POSIX"		, C_US_ASCII},
 	{"ANSI_X3.4-1968"	, C_US_ASCII},
+
+#ifdef WIN32
+	{"Japanese_Japan.932"	, C_SHIFT_JIS},
+#endif
 };
 #endif /* !HAVE_LIBJCONV */
 
@@ -744,7 +775,11 @@ void conv_unmime_header_overwrite(gchar *str)
 	Xstrdup_a(buf, str, return);
 	outlen = strlen(str) + 1;
 	UnMimeHeaderConv(buf, str, outlen);
+#ifdef WIN32
+	if (cur_charset == C_EUC_JP || cur_charset == C_SHIFT_JIS) {
+#else
 	if (cur_charset == C_EUC_JP) {
+#endif
 		gchar *tmp;
 		gint len;
 
@@ -754,7 +789,11 @@ void conv_unmime_header_overwrite(gchar *str)
 		strncpy2(str, tmp, outlen);
 	}
 #else
+#ifdef WIN32
+	if (cur_charset == C_EUC_JP || cur_charset == C_SHIFT_JIS) {
+#else
 	if (cur_charset == C_EUC_JP) {
+#endif
 		gchar *tmp;
 		gint len;
 
@@ -785,7 +824,11 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 	UnMimeHeader(buf);
 	strncpy2(outbuf, buf, outlen);
 #endif
+#ifdef WIN32
+	if (cur_charset == C_EUC_JP || cur_charset == C_SHIFT_JIS) {
+#else
 	if (cur_charset == C_EUC_JP) {
+#endif
 		gint len;
 
 		len = strlen(outbuf) * 2 + 1;
@@ -904,7 +947,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 					     (*(wtmpp + 1) ? 0 : nspc) +
 					     (line_len > 1 ? 1 : 0))
 					    > MAX_LINELEN) {
-						g_free(raw_new);
+						// g_free(raw_new);
 						if (tlen == 0) {
 							*destp++ = '\n';
 							*destp++ = ' ';
@@ -920,7 +963,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 					    (*(wtmpp + 1) ? 0 : nspc) +
 					    (line_len > 1 ? 1 : 0))
 					   > MAX_LINELEN) {
-					g_free(raw_new);
+					// g_free(raw_new);
 					if (1 + tlen + mbl +
 					    (*(wtmpp + 1) ? 0 : nspc)
 					    >= MAX_LINELEN) {
@@ -938,7 +981,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 
 				tlen += mbl;
 
-				g_free(raw);
+				// g_free(raw);
 				raw = raw_new;
 				raw_len = raw_new_len;
 
@@ -980,7 +1023,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 			}
 
 			g_free(tmp);
-			g_free(raw);
+			// g_free(raw);
 			/* g_print("line_len = %d\n\n", line_len); */
 		} while (*wtmpp != (wchar_t)0);
 
@@ -1149,8 +1192,13 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 				gchar *tmp_jis;
 
 				tmp_jis = g_new(gchar, tlen + mb_seqlen + 1);
+#ifdef WIN32
+				conv_anytojis(tmp_jis,
+					      tlen + mb_seqlen + 1, tmp);
+#else
 				conv_euctojis(tmp_jis,
 					      tlen + mb_seqlen + 1, tmp);
+#endif
 				g_snprintf(destp, len - strlen(dest), "%s%s%s",
 					   mimehdr_init, mimehdr_charset,
 					   mimehdr_enctype);
@@ -1195,3 +1243,45 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 	/* g_print("dest = %s\n", dest); */
 }
 #endif /* HAVE_LIBJCONV */
+
+#ifdef WIN32
+void conv_X_any_to_disp(gchar *buf, gint len){
+	gchar *tmp;
+	gint p_len;
+
+	p_len = len * 2;
+	tmp = g_malloc(p_len);
+	conv_anytoeuc(tmp, p_len, buf);
+	conv_unreadable_eucjp(tmp);
+	{
+		gchar *p_tmp;
+		p_tmp = g_malloc(p_len);
+		conv_euctosjis(p_tmp, p_len, tmp);
+		conv_X_locale_to_utf8(p_tmp, p_len);
+		strncpy(buf, p_tmp, len);
+		g_free(p_tmp);
+	}
+	g_free(tmp);
+}
+
+void conv_X_locale_from_utf8(gchar *buf, gint buflen){
+	gchar *p;
+
+	if (buf){
+		p = g_locale_from_utf8(buf, strlen(buf), NULL, NULL, NULL);
+		if (p){
+			strncpy(buf, p, buflen);
+			g_free(p);
+		}
+	}
+}
+void conv_X_locale_to_utf8(gchar *buf, gint buflen){
+	gchar *p;
+
+	if (buf){
+		p = g_locale_to_utf8(buf, strlen(buf), NULL, NULL, NULL);
+		strncpy(buf, p, buflen);
+		g_free(p);
+	}
+}
+#endif

@@ -24,7 +24,11 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <string.h>
+#ifdef WIN32
+#include <w32lib.h>
+#else
 #include <dirent.h>
+#endif
 #include <sys/stat.h>
 
 #include "intl.h"

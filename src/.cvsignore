@@ -14,3 +14,4 @@ matcher_parser_parse.c
 matcher_parser_parse.h
 version.h
 ylwrap
+config.h

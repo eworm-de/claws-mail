@@ -31,7 +31,11 @@
 #include <gtk/gtkhbbox.h>
 #include <gtk/gtksignal.h>
 #include <stdio.h>
+#ifdef WIN32
+#include <w32lib.h>
+#else
 #include <unistd.h>
+#endif
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
@@ -127,7 +131,14 @@ FolderItem *foldersel_folder_sel(Folder *cur_folder,
 	gtk_clist_clear(GTK_CLIST(ctree));
 
 	if (!cancelled && folder_item && folder_item->path)
+#ifdef WIN32
+	{
+		locale_from_utf8(&folder_item->path);
 		return folder_item;
+	}
+#else
+		return folder_item;
+#endif
 	else
 		return NULL;
 }
@@ -248,7 +259,25 @@ static gboolean foldersel_gnode_func(GtkCTree *ctree, guint depth,
 		}
 	}
 
+#ifdef WIN32
+	{
+		FolderItem *p_item;
+		p_item = g_malloc(sizeof(FolderItem));
+		memcpy(p_item, item, sizeof(FolderItem));
+		if (p_item->path){
+			gchar *p_path;
+			p_path = g_strdup(p_item->path);
+			locale_to_utf8(&p_path);
+			// g_free(p_item->path);
+			p_item->path = g_strdup(p_path);
+			g_free(p_path);
+		}
+		gtk_ctree_node_set_row_data(ctree, cnode, p_item);
+		// g_free(p_item);
+	}
+#else
 	gtk_ctree_node_set_row_data(ctree, cnode, item);
+#endif
 	gtk_ctree_set_node_info(ctree, cnode, name,
 				FOLDER_SPACING,
 				folderxpm, folderxpmmask,

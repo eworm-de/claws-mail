@@ -64,25 +64,67 @@ static gboolean persist_prefs_free	(gpointer key, gpointer val, gpointer data);
 Folder *folder_new(FolderType type, const gchar *name, const gchar *path)
 {
 	Folder *folder = NULL;
+ #ifdef WIN32
+ 	gchar *Xname, *Xpath;
+ #endif
 
 	name = name ? name : path;
+ 
+ #ifdef WIN32
+ 	Xname = NULL;
+ 	if (name){
+ 		Xname = g_strdup(name);
+ 		locale_from_utf8(&Xname);
+ 	}
+ 
+ 	Xpath = NULL;
+ 	if (path){
+ 		Xpath = g_strdup(path);
+//XXX:075
+ 		// locale_from_utf8(&Xpath);
+ 	}
+ #endif
+ 
 	switch (type) {
 	case F_MBOX:
+ #ifdef WIN32
+ 		folder = mbox_folder_new(Xname, Xpath);
+ #else
 		folder = mbox_folder_new(name, path);
+ #endif
 		break;
 	case F_MH:
+ #ifdef WIN32
+ 		folder = mh_folder_new(Xname, Xpath);
+ #else
 		folder = mh_folder_new(name, path);
+ #endif
 		break;
 	case F_IMAP:
+ #ifdef WIN32
+ 		folder = imap_folder_new(Xname, Xpath);
+ #else
 		folder = imap_folder_new(name, path);
+ #endif
 		break;
 	case F_NEWS:
+ #ifdef WIN32
+ 		folder = news_folder_new(Xname, Xpath);
+ #else
 		folder = news_folder_new(name, path);
+ #endif
 		break;
 	default:
 		return NULL;
 	}
 
+ #ifdef WIN32
+ 	if (Xname)
+ 		g_free(Xname);
+ 	if (Xpath)
+ 		g_free(Xpath);
+ #endif
+ 
 	return folder;
 }
 
@@ -92,7 +134,17 @@ static void folder_init(Folder *folder, const gchar *name)
 
 	g_return_if_fail(folder != NULL);
 
+#ifdef WIN32
+	{
+		gchar *p_name;
+		p_name = g_strdup(name);
+		locale_to_utf8(&p_name);
+		folder_set_name(folder, p_name);
+		g_free(p_name);
+	}
+#else
 	folder_set_name(folder, name);
+#endif
 	folder->type = F_UNKNOWN;
 	folder->account = NULL;
 	folder->inbox = NULL;
@@ -181,12 +233,32 @@ Folder *maildir_folder_new(const gchar *name, const gchar *path)
 FolderItem *folder_item_new(const gchar *name, const gchar *path)
 {
 	FolderItem *item;
+#ifdef WIN32
+	gchar *Xname, *Xpath;
+
+	Xname = NULL;
+	Xpath = NULL;
+	if (name){
+		Xname = g_strdup(name);
+		locale_to_utf8(&Xname);
+	}
+	if (path){
+		Xpath = g_strdup(path);
+//XXX:075
+		// locale_to_utf8(&Xpath);
+	}
+#endif
 
 	item = g_new0(FolderItem, 1);
 
 	item->stype = F_NORMAL;
+#ifdef WIN32
+	item->name = Xname;
+	item->path = Xpath;
+#else
 	item->name = g_strdup(name);
 	item->path = g_strdup(path);
+#endif
 	item->account = NULL;
 	item->mtime = 0;
 	item->new = 0;
@@ -203,6 +275,9 @@ FolderItem *folder_item_new(const gchar *name, const gchar *path)
 	item->folder = NULL;
 	item->mark_queue = NULL;
 	item->data = NULL;
+#ifdef WIN32
+	item->n_child = calc_child(item->path);
+#endif
 
 	item->prefs = prefs_folder_item_new();
 
@@ -532,12 +607,22 @@ gchar *folder_item_get_identifier(FolderItem *item)
 {
 	gchar *id;
 	gchar *folder_id;
+#ifdef WIN32
+	gchar *p_path;
+#endif
 
 	g_return_val_if_fail(item != NULL, NULL);
 	g_return_val_if_fail(item->path != NULL, NULL);
 
 	folder_id = folder_get_identifier(item->folder);
+#ifdef WIN32
+	p_path = g_strdup(item->path);
+	locale_to_utf8(&p_path);
+	id = g_strconcat(folder_id, "/", p_path, NULL);
+	g_free(p_path);
+#else
 	id = g_strconcat(folder_id, "/", item->path, NULL);
+#endif
 	g_free(folder_id);
 
 	return id;
@@ -726,7 +811,11 @@ gchar *folder_item_get_path(FolderItem *item)
 
 	g_return_val_if_fail(folder_path != NULL, NULL);
 
+#ifdef WIN32
+	if (folder_path[0] == G_DIR_SEPARATOR || folder_path[1] == ':') {
+#else
 	if (folder_path[0] == G_DIR_SEPARATOR) {
+#endif
 		if (item->path)
 			path = g_strconcat(folder_path, G_DIR_SEPARATOR_S,
 					   item->path, NULL);
@@ -1326,7 +1415,6 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 					   "news", "unknown"};
 	static gchar *folder_item_stype_str[] = {"normal", "inbox", "outbox",
 						 "draft", "queue", "trash"};
-
 	g_return_if_fail(item != NULL);
 
 	depth = g_node_depth(node);
@@ -1338,13 +1426,33 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 		fprintf(fp, "<folder type=\"%s\"", folder_type_str[folder->type]);
 		if (folder->name) {
 			fputs(" name=\"", fp);
+ #ifdef WIN32
+ 			{
+ 				gchar *p_name;
+ 				p_name = g_strdup(folder->name);
+ 				locale_from_utf8(&p_name);
+ 				xml_file_put_escape_str(fp, p_name);
+ 				g_free(p_name);
+ 			}
+ #else
 			xml_file_put_escape_str(fp, folder->name);
+ #endif
 			fputs("\"", fp);
 		}
 		if ((folder->type == F_MH) || (folder->type == F_MBOX)) {
 			fputs(" path=\"", fp);
+ #ifdef WIN32
+ 			{
+ 				gchar *p_rootpath;
+ 				p_rootpath = g_strdup(LOCAL_FOLDER(folder)->rootpath);
+ 				locale_from_utf8(&p_rootpath);
+ 				xml_file_put_escape_str(fp, p_rootpath);
+ 				g_free(p_rootpath);
+ 			}
+ #else
 			xml_file_put_escape_str
 				(fp, LOCAL_FOLDER(folder)->rootpath);
+ #endif
 			fputs("\"", fp);
 		}
 		if (folder->account)
@@ -1359,12 +1467,32 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 			folder_item_stype_str[item->stype]);
 		if (item->name) {
 			fputs(" name=\"", fp);
+#ifdef WIN32
+			{
+				gchar *p_name;
+				p_name = g_strdup(item->name);
+				locale_from_utf8(&p_name);
+				xml_file_put_escape_str(fp, p_name);
+				g_free(p_name);
+			}
+#else
 			xml_file_put_escape_str(fp, item->name);
+#endif
 			fputs("\"", fp);
 		}
 		if (item->path) {
 			fputs(" path=\"", fp);
+#ifdef WIN32
+			{
+				gchar *p_path;
+				p_path = g_strdup(item->path);
+				locale_from_utf8(&p_path);
+				xml_file_put_escape_str(fp, p_path);
+				g_free(p_path);
+			}
+#else
 			xml_file_put_escape_str(fp, item->path);
+#endif
 			fputs("\"", fp);
 		}
 		if (item->account)

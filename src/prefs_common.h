@@ -112,6 +112,9 @@ struct _PrefsCommon
 	gchar *normalfont;
 	gchar *boldfont;
 	gchar *smallfont;
+#ifdef WIN32
+	gchar *spacingfont;
+#endif
 	gboolean display_folder_unread;
 	gboolean display_img;
 	gint ng_abbrev_len;
@@ -207,6 +210,7 @@ struct _PrefsCommon
 	gboolean passphrase_grab;
 	gchar *default_signkey;
 	gboolean gpg_warning;
+	gboolean gpg_started;
 #endif /* USE_GPGME */
 
 	/* Interface */
@@ -240,6 +244,9 @@ struct _PrefsCommon
 
 extern PrefsCommon prefs_common;
 
+ #ifdef WIN32
+ void prefs_common_init_config	(void);
+ #endif
 void prefs_common_init		();
 void prefs_common_read_config	(void);
 void prefs_common_save_config	(void);
