@@ -51,11 +51,6 @@
 #include "utils.h"
 #include "gtkutils.h"
 
-#define SMTP_PORT	25
-#if USE_SSL
-#define SSMTP_PORT	465
-#endif
-
 typedef struct _SendProgressDialog	SendProgressDialog;
 
 struct _SendProgressDialog
@@ -64,11 +59,6 @@ struct _SendProgressDialog
 	GList *queue_list;
 	gboolean cancelled;
 };
-
-static gint send_message_local	(const gchar *command, FILE *fp);
-
-static gint send_message_smtp	(PrefsAccount *ac_prefs, GSList *to_list,
-				 FILE *fp);
 
 #if USE_SSL
 static SockInfo *send_smtp_open	(const gchar *server, gushort port,
@@ -206,7 +196,7 @@ gint send_message_queue(const gchar *file)
 	return val;
 }
 
-static gint send_message_local(const gchar *command, FILE *fp)
+gint send_message_local(const gchar *command, FILE *fp)
 {
 	FILE *pipefp;
 	gchar buf[BUFFSIZE];
@@ -276,7 +266,7 @@ static gint send_message_local(const gchar *command, FILE *fp)
 	} \
 }
 
-static gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
+gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 			      FILE *fp)
 {
 	SockInfo *smtp_sock = NULL;

@@ -1,3 +1,21 @@
+2001-11-13 [christoph]	0.6.5claws9
+
+	* po/de.po
+		Changed two string with the same translation
+	* src/compose.c
+	* src/procmsg.[ch]
+	* src/send.[ch]
+		New mailsending process:
+		  - Always queue message before sending
+		    (message will be saved if sylpheed crashed or
+		     freezes while sending)
+		  - Allow queuing of newspostings
+		  - No copy in outbox before sending
+		  - No more redundant code for send and send_later
+	* src/summaryview.c
+		Applied wwp <subscript@free.fr>'s patch that fixes
+		marks for multiple forwarded messages (+compose.c)
+
 2001-11-12 [alfons]
 
 	* README.claws

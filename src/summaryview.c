@@ -2506,7 +2506,11 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 
 void summary_set_marks_selected(SummaryView *summaryview)
 {
-	summary_set_row_marks(summaryview, summaryview->selected);
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GList *cur;
+
+	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
+		summary_set_row_marks(summaryview, GTK_CTREE_NODE(cur->data));
 }
 
 static void summary_mark_row(SummaryView *summaryview, GtkCTreeNode *row)

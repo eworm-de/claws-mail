@@ -24,9 +24,19 @@
 
 #include "prefs_account.h"
 
+#define SMTP_PORT	25
+#if USE_SSL
+#define SSMTP_PORT	465
+#endif
+
 gint send_message		(const gchar	*file,
 				 PrefsAccount	*ac_prefs,
 				 GSList		*to_list);
 gint send_message_queue		(const gchar	*file);
+gint send_message_local		(const gchar *command,
+				 FILE *fp);
+gint send_message_smtp		(PrefsAccount *ac_prefs,
+				 GSList *to_list,
+				 FILE *fp);
 
 #endif /* __SEND_H__ */

@@ -175,7 +175,8 @@ static gint compose_save_to_outbox		(Compose	*compose,
 						 const gchar	*file);
 static gint compose_remove_reedit_target	(Compose	*compose);
 static gint compose_queue			(Compose	*compose,
-						 const gchar	*file);
+						 gint		*msgnum,
+						 FolderItem	**item);
 static void compose_write_attach		(Compose	*compose,
 						 FILE		*fp);
 static gint compose_write_headers		(Compose	*compose,
@@ -1116,6 +1117,12 @@ Compose * compose_forward_multiple(PrefsAccount * account,
 		*/
 	}
 	g_return_val_if_fail(account != NULL, NULL);
+
+	for (msginfo = msginfo_list; msginfo != NULL; msginfo = msginfo->next) {
+		MSG_UNSET_PERM_FLAGS(((MsgInfo *)msginfo->data)->flags, MSG_REPLIED);
+		MSG_SET_PERM_FLAGS(((MsgInfo *)msginfo->data)->flags, MSG_FORWARDED);
+		CHANGE_FLAGS(((MsgInfo *)msginfo->data));
+	}
 
 	compose = compose_create(account, COMPOSE_FORWARD);
 
@@ -2412,11 +2419,22 @@ compose_current_mail_account(void)
 }
 
 gboolean compose_check_for_valid_recipient(Compose *compose) {
-	gchar *recipient_headers[] = {"To:", "Newsgroups:", "Cc:", "Bcc:", NULL};
+	gchar *recipient_headers_mail[] = {"To:", "Cc:", "Bcc:", NULL};
+	gchar *recipient_headers_news[] = {"Newsgroups:", NULL};
 	gboolean recipient_found = FALSE;
 	GSList *list;
 	gchar **strptr;
 
+	/* free to and newsgroup list */
+        slist_free_strings(compose->to_list);
+	g_slist_free(compose->to_list);
+	compose->to_list = NULL;
+			
+	slist_free_strings(compose->newsgroup_list);
+        g_slist_free(compose->newsgroup_list);
+        compose->newsgroup_list = NULL;
+
+	/* search header entries for to and newsgroup entries */
 	for(list = compose->header_list; list; list = list->next) {
 		gchar *header;
 		gchar *entry;
@@ -2424,8 +2442,15 @@ gboolean compose_check_for_valid_recipient(Compose *compose) {
 		entry = gtk_editable_get_chars(GTK_EDITABLE(((compose_headerentry *)list->data)->entry), 0, -1);
 		g_strstrip(entry);
 		if(entry[0] != '\0') {
-			for(strptr = recipient_headers; *strptr != NULL; strptr++) {
+			for(strptr = recipient_headers_mail; *strptr != NULL; strptr++) {
 				if(!strcmp(header, (prefs_common.trans_hdr ? gettext(*strptr) : *strptr))) {
+					compose->to_list = address_list_append(compose->to_list, entry);
+					recipient_found = TRUE;
+				}
+			}
+			for(strptr = recipient_headers_news; *strptr != NULL; strptr++) {
+				if(!strcmp(header, (prefs_common.trans_hdr ? gettext(*strptr) : *strptr))) {
+					compose->newsgroup_list = newsgroup_list_append(compose->newsgroup_list, entry);
 					recipient_found = TRUE;
 				}
 			}
@@ -2435,6 +2460,28 @@ gboolean compose_check_for_valid_recipient(Compose *compose) {
 	return recipient_found;
 }
 
+gint compose_send(Compose *compose)
+{
+	gint msgnum;
+	FolderItem *folder;
+	gint val;
+
+	val = compose_queue(compose, &msgnum, &folder);
+	if (val) {
+		alertpanel_error(_("Could not queue message for sending"));
+		return;
+	}
+	
+	val = procmsg_send_message_queue(folder_item_fetch_msg(folder, msgnum));
+	if(!val) {
+		folder_item_remove_msg(folder, msgnum);
+		folderview_update_item(folder, TRUE);
+	}
+
+	return val;
+}
+
+#if 0 /* compose restructure */
 gint compose_send(Compose *compose)
 {
 	gchar tmp[MAXPATHLEN + 1];
@@ -2553,6 +2600,7 @@ gint compose_send(Compose *compose)
 	lock = FALSE;
 	return ok;
 }
+#endif
 
 static gboolean compose_use_attach(Compose *compose) {
     return(gtk_clist_get_row_data(GTK_CLIST(compose->attach_clist), 0) != NULL);
@@ -2568,7 +2616,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	const gchar *out_codeset;
 	EncodingType encoding;
 
-	if ((fp = fopen(file, "w")) == NULL) {
+	if ((fp = fopen(file, "a+")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return -1;
 	}
@@ -2788,36 +2836,76 @@ static gint compose_remove_reedit_target(Compose *compose)
 	return 0;
 }
 
-static gint compose_queue(Compose *compose, const gchar *file)
+static gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item)
 {
 	FolderItem *queue;
-	gchar *tmp, *queue_path;
+	gchar *tmpfilename, *queue_path;
 	FILE *fp, *src_fp;
 	GSList *cur;
 	gchar buf[BUFFSIZE];
 	gint num;
-
+        static gboolean lock = FALSE;
+	PrefsAccount *mailac = NULL, *newsac = NULL;
+	
 	debug_print(_("queueing message...\n"));
-	g_return_val_if_fail(compose->to_list != NULL, -1);
 	g_return_val_if_fail(compose->account != NULL, -1);
+        g_return_val_if_fail(compose->orig_account != NULL, -1);
 
-	tmp = g_strdup_printf("%s%cqueue.%d", g_get_tmp_dir(),
+        lock = TRUE;
+	
+        if(!compose_check_for_valid_recipient(compose)) {
+                alertpanel_error(_("Recipient is not specified."));
+                lock = FALSE;
+                return -1;
+        }
+									
+	if (!compose->to_list && !compose->newsgroup_list) {
+	        g_warning(_("can't get recipient list."));
+	        unlink(tmpfilename);
+	        lock = FALSE;
+                return -1;
+        }
+
+        if (prefs_common.linewrap_at_send)
+    		compose_wrap_line_all(compose);
+			
+	/* write to temporary file */
+	tmpfilename = g_strdup_printf("%s%cqueue.%d", g_get_tmp_dir(),
 			      G_DIR_SEPARATOR, (gint)compose);
-	if ((fp = fopen(tmp, "w")) == NULL) {
-		FILE_OP_ERROR(tmp, "fopen");
-		g_free(tmp);
+	if ((fp = fopen(tmpfilename, "w")) == NULL) {
+		FILE_OP_ERROR(tmpfilename, "fopen");
+		g_free(tmpfilename);
 		return -1;
 	}
-	if ((src_fp = fopen(file, "r")) == NULL) {
-		FILE_OP_ERROR(file, "fopen");
-		fclose(fp);
-		unlink(tmp);
-		g_free(tmp);
-		return -1;
-	}
-	if (change_file_mode_rw(fp, tmp) < 0) {
-		FILE_OP_ERROR(tmp, "chmod");
+	if (change_file_mode_rw(fp, tmpfilename) < 0) {
+		FILE_OP_ERROR(tmpfilename, "chmod");
 		g_warning(_("can't change file mode\n"));
+	}
+
+	if(compose->to_list) {
+    		if (compose->account->protocol != A_NNTP)
+            		mailac = compose->account;
+		else if (compose->orig_account->protocol != A_NNTP)
+	    		mailac = compose->orig_account;
+		else if (cur_account && cur_account->protocol != A_NNTP)
+	    		mailac = cur_account;
+		else if (!(mailac = compose_current_mail_account())) {
+			unlink(tmpfilename);
+			lock = FALSE;
+			alertpanel_error(_("No account for sending mails available!"));
+			return -1;
+		}
+	}
+
+	if(compose->newsgroup_list) {
+                if (compose->account->protocol == A_NNTP)
+                        newsac = compose->account;
+                else if(!(newsac = compose->orig_account) || (newsac->protocol != A_NNTP)) {
+			unlink(tmpfilename);
+			lock = FALSE;
+			alertpanel_error(_("No account for posting news available!"));
+			return -1;
+		}			
 	}
 
 	/* queueing variables */
@@ -2835,56 +2923,62 @@ static gint compose_queue(Compose *compose, const gchar *file)
 	fprintf(fp, "PT:0\n");
 	fprintf(fp, "S:%s\n", compose->account->address);
 	fprintf(fp, "RQ:\n");
-	if (compose->account->smtp_server)
-		fprintf(fp, "SSV:%s\n", compose->account->smtp_server);
+	if (mailac)
+		fprintf(fp, "SSV:%s\n", mailac->smtp_server);
 	else
 		fprintf(fp, "SSV:\n");
-	if (compose->account->nntp_server)
-		fprintf(fp, "NSV:%s\n", compose->account->nntp_server);
+	if (newsac)
+		fprintf(fp, "NSV:%s\n", newsac->nntp_server);
 	else
 		fprintf(fp, "NSV:\n");
 	fprintf(fp, "SSH:\n");
-	fprintf(fp, "R:<%s>", (gchar *)compose->to_list->data);
-	for (cur = compose->to_list->next; cur != NULL; cur = cur->next)
-		fprintf(fp, ",<%s>", (gchar *)cur->data);
-	fprintf(fp, "\n");
-	/* Sylpheed account ID */
-	fprintf(fp, "AID:%d\n", compose->account->account_id);
-	fprintf(fp, "\n");
-
-	while (fgets(buf, sizeof(buf), src_fp) != NULL) {
-		if (fputs(buf, fp) == EOF) {
-			FILE_OP_ERROR(tmp, "fputs");
-			fclose(fp);
-			fclose(src_fp);
-			unlink(tmp);
-			g_free(tmp);
-			return -1;
-		}
+	/* write recepient list */
+	fprintf(fp, "R:");
+	if(compose->to_list) {
+		fprintf(fp, "<%s>", (gchar *)compose->to_list->data);
+		for (cur = compose->to_list->next; cur != NULL; cur = cur->next)
+			fprintf(fp, ",<%s>", (gchar *)cur->data);
 	}
+	fprintf(fp, "\n");
+	/* write newsgroup list */
+	fprintf(fp, "NG:");
+	if(compose->newsgroup_list) {
+		fprintf(fp, "%s", (gchar *)compose->newsgroup_list->data);
+		for (cur = compose->newsgroup_list->next; cur != NULL; cur = cur->next)
+			fprintf(fp, ",%s", (gchar *)cur->data);
+	}
+	fprintf(fp, "\n");
+	/* Sylpheed account IDs */
+	if(mailac) {
+		fprintf(fp, "MAID:%d\n", mailac->account_id);
+	}
+	if(newsac) {
+		fprintf(fp, "NAID:%d\n", newsac->account_id);
+	}
+	fprintf(fp, "\n");
+	fclose(fp);
 
-	fclose(src_fp);
-	if (fclose(fp) == EOF) {
-		FILE_OP_ERROR(tmp, "fclose");
-		unlink(tmp);
-		g_free(tmp);
+        if (compose_write_to_file(compose, tmpfilename, FALSE) < 0) {
+		unlink(tmpfilename);
+    		lock = FALSE;
 		return -1;
 	}
-
+						
+	/* queue message */
 	queue = folder_get_default_queue();
 
 	folder_item_scan(queue);
 	queue_path = folder_item_get_path(queue);
 	if (!is_dir_exist(queue_path))
 		make_dir_hier(queue_path);
-	if ((num = folder_item_add_msg(queue, tmp, TRUE)) < 0) {
+	if ((num = folder_item_add_msg(queue, tmpfilename, TRUE)) < 0) {
 		g_warning(_("can't queue the message\n"));
-		unlink(tmp);
-		g_free(tmp);
+		unlink(tmpfilename);
+		g_free(tmpfilename);
 		g_free(queue_path);
 		return -1;
 	}
-	g_free(tmp);
+	g_free(tmpfilename);
 
 	if (compose->mode == COMPOSE_REEDIT) {
 		compose_remove_reedit_target(compose);
@@ -2909,6 +3003,11 @@ static gint compose_queue(Compose *compose, const gchar *file)
 
 	folder_item_scan(queue);
 	folderview_update_item(queue, TRUE);
+
+	if((msgnum != NULL) && (item != NULL)) {
+		*msgnum = num;
+		*item = queue;
+	}
 
 	return 0;
 }
@@ -2983,9 +3082,7 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 
 static gint compose_write_headers_from_headerlist(Compose *compose, 
 						  FILE *fp, 
-						  gchar *header,
-						  GSList *(*list_append_func) (GSList *list, const gchar *str),
-						  GSList **dest_list)
+						  gchar *header)
 {
 	gchar buf[BUFFSIZE];
 	gchar *str, *header_w_colon, *trans_hdr;
@@ -3010,8 +3107,6 @@ static gint compose_write_headers_from_headerlist(Compose *compose,
 			Xstrdup_a(str, str, return -1);
 			g_strstrip(str);
 			if(str[0] != '\0') {
-				if(list_append_func)
-					*dest_list = list_append_func(*dest_list, str);
 				compose_convert_header
 					(buf, sizeof(buf), str,
 					strlen(header) + 2);
@@ -3070,7 +3165,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	compose->to_list = NULL;
 
 	/* To */
-	compose_write_headers_from_headerlist(compose, fp, "To", address_list_append, &compose->to_list);
+	compose_write_headers_from_headerlist(compose, fp, "To");
 #if 0 /* NEW COMPOSE GUI */
 	if (compose->use_to) {
 		str = gtk_entry_get_text(GTK_ENTRY(compose->to_entry));
@@ -3095,7 +3190,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	compose->newsgroup_list = NULL;
 
 	/* Newsgroups */
-	compose_write_headers_from_headerlist(compose, fp, "Newsgroups", newsgroup_list_append, &compose->newsgroup_list);
+	compose_write_headers_from_headerlist(compose, fp, "Newsgroups");
 #if 0 /* NEW COMPOSE GUI */
 	str = gtk_entry_get_text(GTK_ENTRY(compose->newsgroups_entry));
 	if (*str != '\0') {
@@ -3115,7 +3210,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	}
 #endif
 	/* Cc */
-	compose_write_headers_from_headerlist(compose, fp, "Cc", address_list_append, &compose->to_list);
+	compose_write_headers_from_headerlist(compose, fp, "Cc");
 #if 0 /* NEW COMPOSE GUI */
 	if (compose->use_cc) {
 		str = gtk_entry_get_text(GTK_ENTRY(compose->cc_entry));
@@ -3136,7 +3231,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	}
 #endif
 	/* Bcc */
-	compose_write_headers_from_headerlist(compose, fp, "Bcc", address_list_append, &compose->to_list);
+	compose_write_headers_from_headerlist(compose, fp, "Bcc");
 #if 0 /* NEW COMPOSE GUI */
 	if (compose->use_bcc) {
 		str = gtk_entry_get_text(GTK_ENTRY(compose->bcc_entry));
@@ -3184,7 +3279,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		fprintf(fp, "References: %s\n", compose->references);
 
 	/* Followup-To */
-	compose_write_headers_from_headerlist(compose, fp, "Followup-To", NULL, NULL);
+	compose_write_headers_from_headerlist(compose, fp, "Followup-To");
 #if 0 /* NEW COMPOSE GUI */
 	if (compose->use_followupto && !IS_IN_CUSTOM_HEADER("Followup-To")) {
 		str = gtk_entry_get_text(GTK_ENTRY(compose->followup_entry));
@@ -3201,7 +3296,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	}
 #endif
 	/* Reply-To */
-	compose_write_headers_from_headerlist(compose, fp, "Reply-To", NULL, NULL);
+	compose_write_headers_from_headerlist(compose, fp, "Reply-To");
 #if 0 /* NEW COMPOSE GUI */
 	if (compose->use_replyto && !IS_IN_CUSTOM_HEADER("Reply-To")) {
 		str = gtk_entry_get_text(GTK_ENTRY(compose->reply_entry));
@@ -5131,7 +5226,6 @@ static void compose_send_cb(gpointer data, guint action, GtkWidget *widget)
 	gint val;
 
 	val = compose_send(compose);
-
 	if (val == 0) gtk_widget_destroy(compose->window);
 }
 
@@ -5139,37 +5233,10 @@ static void compose_send_later_cb(gpointer data, guint action,
 				  GtkWidget *widget)
 {
 	Compose *compose = (Compose *)data;
-	gchar tmp[22];
-	gboolean recipient_found;
-	GSList *list;
+	gint val;
 
-	if(!compose_check_for_valid_recipient(compose)) {
-		alertpanel_error(_("Recipient is not specified."));
-		return;
-	}
-
-	g_snprintf(tmp, 22, "%s%ctmpmsg%d",
-		   g_get_tmp_dir(), G_DIR_SEPARATOR, (gint)compose);
-
-	if (prefs_common.linewrap_at_send)
-		compose_wrap_line_all(compose);
-
-	if (compose_write_to_file(compose, tmp, FALSE) < 0 ||
-	    compose_queue(compose, tmp) < 0) {
-		alertpanel_error(_("Can't queue the message."));
-		return;
-	}
-
-	if (prefs_common.savemsg) {
-		if (compose_save_to_outbox(compose, tmp) < 0)
-			alertpanel_error
-				(_("Can't save the message to outbox."));
-	}
-
-	if (unlink(tmp) < 0)
-		FILE_OP_ERROR(tmp, "unlink");
-
-	gtk_widget_destroy(compose->window);
+	val = compose_queue(compose, NULL, NULL);
+	if (!val) gtk_widget_destroy(compose->window);
 }
 
 static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)

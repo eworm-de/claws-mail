@@ -1477,7 +1477,7 @@ msgstr "/_Benotung..."
 
 #: src/folderview.c:240 src/folderview.c:255
 msgid "/_Update folder tree"
-msgstr "/_Ablagebaum erneuern"
+msgstr "/_Ablagenordner auffrischen"
 
 #: src/folderview.c:241 src/folderview.c:256
 msgid "/Re_scan folder tree"

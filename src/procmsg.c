@@ -32,6 +32,8 @@
 #include "procmime.h"
 #include "statusbar.h"
 #include "folder.h"
+#include "prefs_common.h"
+#include "account.h"
 
 typedef struct _FlagInfo	FlagInfo;
 
@@ -765,7 +767,7 @@ gint procmsg_send_queue(void)
 
 		file = folder_item_fetch_msg(queue, i);
 		if (file) {
-			if (send_message_queue(file) < 0) {
+			if (procmsg_send_message_queue(file) < 0) {
 				g_warning(_("Sending queued message %d failed.\n"), i);
 				ret = -1;
 			} else
@@ -935,4 +937,195 @@ static gint procmsg_cmp_flag_msgnum(gconstpointer a, gconstpointer b)
 		return -1;
 
 	return finfo->msgnum - msgnum;
+}
+
+enum
+{
+	Q_SENDER          = 0,
+	Q_SMTPSERVER      = 1,
+	Q_RECIPIENTS      = 2,
+	Q_NEWSGROUPS      = 3,
+	Q_MAIL_ACCOUNT_ID = 4,
+	Q_NEWS_ACCOUNT_ID = 5
+};
+
+gint procmsg_send_message_queue(const gchar *file)
+{
+	static HeaderEntry qentry[] = {{"S:",    NULL, FALSE},
+				       {"SSV:",  NULL, FALSE},
+				       {"R:",    NULL, FALSE},
+				       {"NG:",   NULL, FALSE},
+				       {"MAID:", NULL, FALSE},
+				       {"NAID:", NULL, FALSE},
+				       {NULL,    NULL, FALSE}};
+	FILE *fp;
+	gint filepos;
+	gint mailval = 0, newsval = 0;
+	gchar *from = NULL;
+	gchar *smtpserver = NULL;
+	GSList *to_list = NULL;
+	GSList *newsgroup_list = NULL;
+	gchar buf[BUFFSIZE];
+	gint hnum;
+	PrefsAccount *mailac = NULL, *newsac = NULL;
+	gchar *tmp = NULL;
+
+	g_return_val_if_fail(file != NULL, -1);
+
+	if ((fp = fopen(file, "r")) == NULL) {
+		FILE_OP_ERROR(file, "fopen");
+		return -1;
+	}
+
+	while ((hnum = procheader_get_one_field(buf, sizeof(buf), fp, qentry))
+	       != -1) {
+		gchar *p = buf + strlen(qentry[hnum].name);
+
+		switch (hnum) {
+		case Q_SENDER:
+			if (!from) from = g_strdup(p);
+			break;
+		case Q_SMTPSERVER:
+			if (!smtpserver) smtpserver = g_strdup(p);
+			break;
+		case Q_RECIPIENTS:
+			to_list = address_list_append(to_list, p);
+			break;
+		case Q_NEWSGROUPS:
+			newsgroup_list = newsgroup_list_append(newsgroup_list, p);
+			break;
+		case Q_MAIL_ACCOUNT_ID:
+			mailac = account_find_from_id(atoi(p));
+			break;
+		case Q_NEWS_ACCOUNT_ID:
+			newsac = account_find_from_id(atoi(p));
+			break;
+		default:
+		}
+	}
+	filepos = ftell(fp);
+
+	if(newsgroup_list || prefs_common.savemsg) {
+		FILE *tmpfp;
+
+    		/* write to temporary file */
+    		tmp = g_strdup_printf("%s%ctmp%d", g_get_tmp_dir(),
+                    	    G_DIR_SEPARATOR, (gint)file);
+    		if ((tmpfp = fopen(tmp, "w")) == NULL) {
+            		FILE_OP_ERROR(tmp, "fopen");
+            		newsval = -1;
+    		}
+    		if (change_file_mode_rw(tmpfp, tmp) < 0) {
+            		FILE_OP_ERROR(tmp, "chmod");
+            		g_warning(_("can't change file mode\n"));
+    		}
+
+		while ((newsval == 0) && fgets(buf, sizeof(buf), fp) != NULL) {
+			if (fputs(buf, tmpfp) == EOF) {
+				FILE_OP_ERROR(tmp, "fputs");
+				newsval = -1;
+			}
+		}
+		fclose(tmpfp);
+	}
+
+	fseek(fp, filepos, SEEK_SET);
+	if (to_list) {
+		debug_print(_("Sending message by mail\n"));
+		if(!from) {
+			g_warning(_("Queued message header is broken.\n"));
+			mailval = -1;
+		} else if (prefs_common.use_extsend && prefs_common.extsend_cmd) {
+			mailval = send_message_local(prefs_common.extsend_cmd, fp);
+		} else {
+			if (!mailac) {
+				mailac = account_find_from_smtp_server(from, smtpserver);
+				if (!mailac) {
+					g_warning(_("Account not found. "
+						    "Using current account...\n"));
+					mailac = cur_account;
+				}
+			}
+
+			if (mailac)
+				mailval = send_message_smtp(mailac, to_list, fp);
+			else {
+				PrefsAccount tmp_ac;
+
+				g_warning(_("Account not found.\n"));
+
+				memset(&tmp_ac, 0, sizeof(PrefsAccount));
+				tmp_ac.address = from;
+				tmp_ac.smtp_server = smtpserver;
+				tmp_ac.smtpport = SMTP_PORT;
+				mailval = send_message_smtp(&tmp_ac, to_list, fp);
+			}
+		}
+	}
+
+	if(newsgroup_list) {
+		Folder *folder;
+
+		debug_print(_("Sending message by news\n"));
+
+		folder = FOLDER(newsac->folder);
+
+		if(newsval == 0) {
+            		newsval = news_post(folder, tmp);
+            		if (newsval < 0) {
+                    		alertpanel_error(_("Error occurred while posting the message to %s ."),
+                                         newsac->nntp_server);
+            		}
+		}
+
+	}
+
+	/* save message to outbox */
+	if (mailval == 0 && newsval == 0 && prefs_common.savemsg) {
+		FolderItem *outbox;
+		gchar *path;
+		gint num;
+		FILE *fp;
+
+		debug_print(_("saving sent message...\n"));
+
+		outbox = folder_get_default_outbox();
+		path = folder_item_get_path(outbox);
+		if (!is_dir_exist(path))
+			make_dir_hier(path);
+
+		folder_item_scan(outbox);
+		if ((num = folder_item_add_msg(outbox, tmp, FALSE)) < 0) {
+			g_warning(_("can't save message\n"));
+		}
+
+		if(num) {
+			if ((fp = procmsg_open_mark_file(path, TRUE)) == NULL)
+				g_warning(_("can't open mark file\n"));
+			else {
+				MsgInfo newmsginfo;
+
+				newmsginfo.msgnum = num;
+				newmsginfo.flags.perm_flags = 0;
+				newmsginfo.flags.tmp_flags = 0;
+				procmsg_write_flags(&newmsginfo, fp);
+				fclose(fp);
+			}
+		}
+		g_free(path);
+	}
+
+	slist_free_strings(to_list);
+	g_slist_free(to_list);
+	slist_free_strings(newsgroup_list);
+	g_slist_free(newsgroup_list);
+	g_free(from);
+	g_free(smtpserver);
+	fclose(fp);
+	if(tmp) {
+		unlink(tmp);
+		g_free(tmp);
+	}
+
+	return (newsval != 0 ? newsval : mailval);
 }
