@@ -104,5 +104,7 @@ gint stock_pixmap_gdk		(GtkWidget	 *window,
 				 GdkPixmap	**pixmap,
 				 GdkBitmap	**mask);
 
-void stock_pixmap_get_themes(GList **list);
+GList *stock_pixmap_themes_list_new	(void);
+void stock_pixmap_themes_list_free	(GList *list);
+
 #endif /* __STOCK_PIXMAP_H__ */

@@ -17,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "defs.h"
 #include <glib.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkpixmap.h>
@@ -25,8 +26,8 @@
 
 #include "stock_pixmap.h"
 #include "gtkutils.h"
+#include "utils.h"
 #include "prefs_common.h"
-#include "defs.h"
 
 #include "pixmaps/address.xpm"
 #include "pixmaps/book.xpm"
@@ -201,16 +202,17 @@ gint stock_pixmap_gdk(GtkWidget *window, StockPixmap icon,
 	
 		if (strcmp(prefs_common.pixmap_theme_path, DEFAULT_PIXMAP_THEME) != 0) {
 			if ( is_dir_exist(prefs_common.pixmap_theme_path) ) {
-				char *icon_file_name = g_strconcat(prefs_common.pixmap_theme_path,
-											 G_DIR_SEPARATOR_S,
-											 pix_d->file,
-											 ".xpm",
-											 NULL);
+				char *icon_file_name; 
 				
+				icon_file_name = g_strconcat(prefs_common.pixmap_theme_path,
+							     G_DIR_SEPARATOR_S,
+							     pix_d->file,
+							     ".xpm",
+							     NULL);
 				if (file_exist(icon_file_name, FALSE))
 					PIXMAP_CREATE_FROM_FILE(window, pix, pix_d->mask, icon_file_name);
-
-				if (pix) pix_d->icon_path = prefs_common.pixmap_theme_path;
+				if (pix) 
+					pix_d->icon_path = prefs_common.pixmap_theme_path;
 				g_free(icon_file_name);
 			} else {
 				/* even the path does not exist (deleted between two sessions), so
@@ -223,13 +225,16 @@ gint stock_pixmap_gdk(GtkWidget *window, StockPixmap icon,
 
 	if (!pix_d->pixmap) {
 		PIXMAP_CREATE(window, pix_d->pixmap, pix_d->mask, pix_d->data);
-		if (pix_d->pixmap) pix_d->icon_path = DEFAULT_PIXMAP_THEME;	
+		if (pix_d->pixmap) 
+			pix_d->icon_path = DEFAULT_PIXMAP_THEME;	
 	}
 
 	g_return_val_if_fail(pix_d->pixmap != NULL, -1);
 	
-	if (pixmap) *pixmap = pix_d->pixmap;
-	if (mask)   *mask   = pix_d->mask;
+	if (pixmap) 
+		*pixmap = pix_d->pixmap;
+	if (mask)   
+		*mask   = pix_d->mask;
 
 	return 0;
 }
@@ -239,41 +244,67 @@ static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname)
 	struct dirent **namelist;
 	int n;
 
-	n = scandir(dirname, &namelist, 0, alphasort);
-	if (n > 0) {
-		while(n--) {
-			gchar *entry = namelist[n]->d_name;
-			gchar *fullentry = g_strconcat(dirname, G_DIR_SEPARATOR_S, entry, NULL);
-			if ((strcmp(entry, ".") != 0) && (strcmp(entry, "..") != 0) && (is_dir_exist(fullentry))) {
-				gchar *filetoexist;
-				int i;
-				for ( i = 0; i < N_STOCK_PIXMAPS; i++) {
-					filetoexist = g_strconcat(fullentry, G_DIR_SEPARATOR_S, pixmaps[i].file, ".xpm", NULL);
-					if (file_exist(filetoexist, FALSE)) {
-						*list = g_list_append(*list, fullentry);
-						break;
-					}
-					g_free(filetoexist);
+	if ((n = scandir(dirname, &namelist, 0, alphasort)) <= 0)
+		return;
+
+	while (n--) {
+		gchar *entry;
+		gchar *fullentry;
+
+		entry     = namelist[n]->d_name;
+		fullentry = g_strconcat(dirname, G_DIR_SEPARATOR_S, entry, NULL);
+		
+		if (strcmp(entry, ".") != 0 && strcmp(entry, "..") != 0 && is_dir_exist(fullentry)) {
+			gchar *filetoexist;
+			int i;
+			
+			for (i = 0; i < N_STOCK_PIXMAPS; i++) {
+				filetoexist = g_strconcat(fullentry, G_DIR_SEPARATOR_S, pixmaps[i].file, ".xpm", NULL);
+				if (file_exist(filetoexist, FALSE)) {
+					*list = g_list_append(*list, fullentry);
+					break;
 				}
+				g_free(filetoexist);
 			}
-			g_free(namelist[n]);
+			if (i == N_STOCK_PIXMAPS) 
+				g_free(fullentry);
 		}
-		g_free(namelist);
+		g_free(namelist[n]);
 	}
+	g_free(namelist);
 }
 
-void stock_pixmap_get_themes(GList **list)
+GList *stock_pixmap_themes_list_new(void)
 {
-	gchar *defaulttheme = DEFAULT_PIXMAP_THEME;
-	gchar *userthemes = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
-				     RC_DIR, G_DIR_SEPARATOR_S, PIXMAP_THEME_DIR, NULL);
-	gchar *systemthemes = g_strconcat(PACKAGE_DATA_DIR, G_DIR_SEPARATOR_S,
-					 PIXMAP_THEME_DIR, NULL);
+	gchar *defaulttheme;
+	gchar *userthemes;
+	gchar *systemthemes;
+	GList *list = NULL;
 	
-	*list = g_list_append(*list, defaulttheme);
+	defaulttheme = g_strdup(DEFAULT_PIXMAP_THEME);
+	userthemes   = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
+				   RC_DIR, G_DIR_SEPARATOR_S, 
+				   PIXMAP_THEME_DIR, NULL);
+	systemthemes = g_strconcat(PACKAGE_DATA_DIR, G_DIR_SEPARATOR_S,
+				   PIXMAP_THEME_DIR, NULL);
+
+	list = g_list_append(list, defaulttheme);
 	
-	stock_pixmap_find_themes_in_dir(list, userthemes);
-	stock_pixmap_find_themes_in_dir(list, systemthemes);
+	stock_pixmap_find_themes_in_dir(&list, userthemes);
+	stock_pixmap_find_themes_in_dir(&list, systemthemes);
 	
 	g_free(userthemes);
+	g_free(systemthemes);
+	return list;
 }
+
+void stock_pixmap_themes_list_free(GList *list)
+{
+	GList *ptr;
+
+	for (ptr = g_list_first(list); ptr != NULL; ptr = g_list_next(ptr)) 
+		if (ptr->data)
+			g_free(ptr->data);
+	g_list_free(list);		
+}
+

@@ -2541,13 +2541,15 @@ static void prefs_interface_create(void)
  	gtk_container_add(GTK_CONTAINER(frame_pixmap_theme), vbox_pixmap_theme);
  	gtk_container_set_border_width(GTK_CONTAINER(vbox_pixmap_theme), 8);
  
- 	stock_pixmap_get_themes(&avail_pixmap_themes);
+	avail_pixmap_themes = stock_pixmap_themes_list_new(); 
  
  	combo_pixmap_theme = gtk_combo_new ();
  	gtk_widget_show (combo_pixmap_theme);
  	gtk_box_pack_start (GTK_BOX (vbox_pixmap_theme), combo_pixmap_theme, TRUE, TRUE, 0);
  	gtk_combo_set_popdown_strings(GTK_COMBO(combo_pixmap_theme), avail_pixmap_themes);
  	entry_pixmap_theme = GTK_COMBO (combo_pixmap_theme)->entry;
+
+	stock_pixmap_themes_list_free(avail_pixmap_themes);
 
 	/* interface.checkbtn_emacs          = checkbtn_emacs; */
 	interface.checkbtn_openunread         = checkbtn_openunread;
