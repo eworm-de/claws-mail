@@ -90,6 +90,8 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"folder_color", "", &tmp_prefs.color, P_INT,
 	 NULL, NULL, NULL},
+	{"enable processing at startup", "TRUE", &tmp_prefs.enable_processing, P_BOOL,
+	 NULL, NULL, NULL},
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
@@ -183,6 +185,7 @@ static FolderItemPrefs *folder_item_prefs_clear(FolderItemPrefs *prefs)
 	prefs->save_copy_to_folder = FALSE;
 	prefs->color = 0;
 
+        prefs->enable_processing = TRUE;
 	prefs->scoring = NULL;
 	prefs->processing = NULL;
 	return prefs;
@@ -241,6 +244,7 @@ void folder_item_prefs_copy_prefs(FolderItem * src, FolderItem * dest)
 	tmp_prefs.enable_thread			= src->prefs->enable_thread;
 	tmp_prefs.kill_score			= src->prefs->kill_score;
 	tmp_prefs.important_score		= src->prefs->important_score;
+        tmp_prefs.enable_processing             = src->prefs->enable_processing;
 
 	prefs_matcher_read_config();
 	for (tmp = src->prefs->scoring; tmp != NULL && tmp->data != NULL;) {

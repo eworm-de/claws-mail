@@ -439,6 +439,8 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	FolderItem *queue, *outbox;
 	gint num;
 	gchar *path;
+        gchar *addr;
+        gchar *addrp;
 
 	if ((!msginfo->returnreceiptto) && 
 	    (!msginfo->dispositionnotificationto)) 
@@ -518,8 +520,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		g_warning("can't change file mode\n");
 	}
 	
-	gchar *addr = g_strdup(to);
-	gchar *addrp;
+	addr = g_strdup(to);
 	
 	extract_address(addr);
 	addrp = addr;

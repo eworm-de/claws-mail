@@ -519,7 +519,8 @@ static void initial_processing(FolderItem *item, gpointer data)
 
 	main_window_cursor_wait(mainwin);
 	
-	folder_item_apply_processing(item);
+        if (item->prefs->enable_processing)
+                folder_item_apply_processing(item);
 
 	debug_print("done.\n");
 	STATUSBAR_POP(mainwin);

@@ -1,3 +1,16 @@
+2003-10-20 [hoa]  0.9.6claws34
+
+	* src/folder_item_prefs.[ch]
+	* src/prefs_folder_item.c
+	* src/main.c
+		Added a property per folder to choose whether we 
+		want to apply processing on it on startup or if we
+		prefer to wait the folder selection to apply it.
+	
+	* src/messageview.c
+		fixed C89 compatibility (for old compilers, for
+		example gcc 2.95.x).
+
 2003-10-17 [christoph]  0.9.6claws33
 
 	* src/mimeview.c
