@@ -1,3 +1,10 @@
+2005-01-03 [colin]	0.9.13cvs26
+
+	* src/main.c
+		Plugins should be loaded before --receive or --receive-all 
+		is processed. 
+		Patch by Felix Eckhofer <felix-ml@tribut.de>
+
 2005-01-03 [colin]	0.9.13cvs25
 
 	* src/pop.c
