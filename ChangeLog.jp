@@ -1,3 +1,19 @@
+2003-07-30
+
+	* src/folder.[ch]
+	  src/imap.[ch]
+	  src/mh.[ch]
+	  src/procmsg.c
+	  src/summaryview.c: *_msgs_with_dest() を *_msgs() に改名。
+
+2003-07-29
+
+	* src/imap.[ch]: プロトコル拡張を使用するために CAPABILITY を使用。
+	  imap_greeting(): 最初のサーバグリーティングを解析。 PREAUTH 応答
+	  にも対応。
+	  imap_add_msgs()
+	  imap_cmd_append(): UIDPLUS に対応していれば APPENDUID 応答を使用。
+
 2003-07-28
 
 	* src/imap.c: imap_get_flag_str(): バッファオーバーランを修正。

@@ -302,7 +302,7 @@ void procmsg_move_messages(GSList *mlist)
 		} else if (dest == msginfo->to_folder) {
 			movelist = g_slist_append(movelist, msginfo);
 		} else {
-			folder_item_move_msgs_with_dest(dest, movelist);
+			folder_item_move_msgs(dest, movelist);
 			g_slist_free(movelist);
 			movelist = NULL;
 			dest = msginfo->to_folder;
@@ -312,7 +312,7 @@ void procmsg_move_messages(GSList *mlist)
 	}
 
 	if (movelist) {
-		folder_item_move_msgs_with_dest(dest, movelist);
+		folder_item_move_msgs(dest, movelist);
 		g_slist_free(movelist);
 	}
 
@@ -337,7 +337,7 @@ void procmsg_copy_messages(GSList *mlist)
 		} else if (dest == msginfo->to_folder) {
 			copylist = g_slist_append(copylist, msginfo);
 		} else {
-			folder_item_copy_msgs_with_dest(dest, copylist);
+			folder_item_copy_msgs(dest, copylist);
 			g_slist_free(copylist);
 			copylist = NULL;
 			dest = msginfo->to_folder;
@@ -347,7 +347,7 @@ void procmsg_copy_messages(GSList *mlist)
 	}
 
 	if (copylist) {
-		folder_item_copy_msgs_with_dest(dest, copylist);
+		folder_item_copy_msgs(dest, copylist);
 		g_slist_free(copylist);
 	}
 

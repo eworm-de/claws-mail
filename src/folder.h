@@ -433,11 +433,11 @@ gint   folder_item_move_to		(FolderItem	*src,
 					 FolderItem    **new_item);
 gint   folder_item_move_msg		(FolderItem	*dest,
 					 MsgInfo	*msginfo);
-gint   folder_item_move_msgs_with_dest	(FolderItem	*dest,
+gint   folder_item_move_msgs		(FolderItem	*dest,
 					 GSList		*msglist);
 gint   folder_item_copy_msg		(FolderItem	*dest,
 					 MsgInfo	*msginfo);
-gint   folder_item_copy_msgs_with_dest	(FolderItem	*dest,
+gint   folder_item_copy_msgs		(FolderItem	*dest,
 					 GSList		*msglist);
 gint   folder_item_remove_msg		(FolderItem	*item,
 					 gint		 num);

@@ -3683,7 +3683,7 @@ static void summary_execute_delete(SummaryView *summaryview)
 		folder_item_remove_msgs(summaryview->folder_item,
 					summaryview->mlist);
 	else
-		folder_item_move_msgs_with_dest(trash, summaryview->mlist);
+		folder_item_move_msgs(trash, summaryview->mlist);
 
 	for (cur = summaryview->mlist; cur != NULL; cur = cur->next)
 		procmsg_msginfo_free((MsgInfo *)cur->data);
