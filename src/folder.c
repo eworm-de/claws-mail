@@ -2316,7 +2316,7 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 
 	/* move messages */
 	debug_print("Moving %s to %s\n", src->path, dest->path);
-	new_item = folder_create_folder(dest, g_basename(src->path));
+	new_item = folder_create_folder(dest, src->name);
 	if (new_item == NULL) {
 		printf("Can't create folder\n");
 		return NULL;
@@ -2328,7 +2328,8 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 	/* move messages */
 	log_message(_("Moving %s to %s...\n"), 
 			src->name, new_item->path);
-	folder_item_move_msgs(new_item, mlist);
+	if (mlist != NULL)
+		folder_item_move_msgs(new_item, mlist);
 	
 	/*copy prefs*/
 	folder_item_prefs_copy_prefs(src, new_item);
@@ -2357,8 +2358,10 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 	old_id = folder_item_get_identifier(src);
 	new_id = folder_item_get_identifier(new_item);
 	debug_print("updating rules : %s => %s\n", old_id, new_id);
-	
-	src->folder->klass->remove_folder(src->folder, src);
+
+	/* if src supports removing, otherwise only copy folder */
+	if (src->folder->klass->remove_folder != NULL)	
+		src->folder->klass->remove_folder(src->folder, src);
 	folder_write_list();
 
 	if (old_id != NULL && new_id != NULL)
