@@ -1,3 +1,10 @@
+2001-12-14 [darko]	0.6.5claws84
+
+	* src/compose.c
+		fix crash when wrapping long lines if linewrap quotation
+		is disabled and wrapper encounters a word spanning more
+		than one line
+
 2001-12-13 [paul]	0.6.5claws83
 
 	* src/compose.c

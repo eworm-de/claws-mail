@@ -2178,14 +2178,16 @@ static void compose_wrap_line_all(Compose *compose)
 
 	for (; cur_pos < tlen; cur_pos++) {
 		/* mark position of new line - needed for quotation wrap */
-		if (linewrap_quote && is_new_line) {
-			qlen = gtkut_text_str_compare
-				(text, cur_pos, tlen, qfmt);
+		if (is_new_line) {
+			if (linewrap_quote && is_new_line) {
+				qlen = gtkut_text_str_compare
+					(text, cur_pos, tlen, qfmt);
+				if (qlen)
+					i_len = get_indent_length(text, cur_pos, tlen);
+				else
+					i_len = 0;
+			}
 			is_new_line = FALSE;
-			if (qlen)
-				i_len = get_indent_length(text, cur_pos, tlen);
-			else
-				i_len = 0;
 			p_pos = cur_pos;
 #ifdef WRAP_DEBUG
 			printf("new line i_len=%d qlen=%d p_pos=", i_len, qlen);
