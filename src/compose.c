@@ -1765,7 +1765,7 @@ static void compose_exec_sig(Compose *compose, gchar *sigfile)
 	if (strlen(sigfile) < 2)
 	  return;
  
-	sigprg = popen(sigfile+1, "rb");
+	sigprg = popen(sigfile+1, "r");
 	if (sigprg) {
 
 		buf = g_malloc(buf_len);

@@ -1,3 +1,9 @@
+2002-03-16 [paul]	0.7.4claws13
+
+	* src/compose.c
+		fix 'dynamic' signatures, make it work again
+		broken during sync on 2002-03-14 (0.7.4claws2)
+
 2002-03-15 [match]	0.7.4claws12
 
 	* src/addrharvest.[ch]
