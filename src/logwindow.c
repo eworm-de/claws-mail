@@ -165,7 +165,6 @@ void log_window_clear(GtkWidget *text)
 {
         guint length;
 	guint point;
-	gchar *str;
 	
 	length = gtk_text_get_length (GTK_TEXT (text));
 	debug_print(_("Log window length: %u\n"), length);
@@ -177,13 +176,16 @@ void log_window_clear(GtkWidget *text)
        	        point = length - prefs_common.loglength;
 		
 		do {
-			str = gtk_editable_get_chars (GTK_EDITABLE (text),
-					point, point + LOG_AVG_LINE_LEN);
-			if ((lf = strchr(str, '\n')) != NULL)
-				point += lf - str;
-			else 
-				point += LOG_AVG_LINE_LEN;
-			g_free(str);
+			gchar *str;
+			if ((str = gtk_editable_get_chars (GTK_EDITABLE (text),
+					point, point + LOG_AVG_LINE_LEN))) {
+				if ((lf = strchr(str, '\n')) != NULL)
+					point += lf - str;
+				else 
+					point += strlen(str);
+				g_free(str);
+			} else
+				break;
 		} while (lf == NULL);
 				
 		gtk_text_freeze (GTK_TEXT (text));
