@@ -1,4 +1,10 @@
-2002-08-28 [mevlin]	0.8.2claws5
+2002-08-28 [colin]	0.8.2claws6
+	
+	* src/main.c
+		Ignore cache for queue folderitems
+		Fix bug #591676
+
+2002-08-28 [melvin]	0.8.2claws5
 
 	* README.claws
 		Fixed typos.
