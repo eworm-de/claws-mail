@@ -526,13 +526,8 @@ Compose * compose_generic_new(PrefsAccount *account, const gchar *to, FolderItem
 	if (account->protocol != A_NNTP) {
 		if (to) {
 			compose_entry_append(compose, to, COMPOSE_TO);
-			gtk_widget_grab_focus(compose->subject_entry);
-		} else {
-			if(item && item->prefs->enable_default_to) {
-				compose_entry_append(compose, item->prefs->default_to, COMPOSE_TO);
-			} else {
-				gtk_widget_grab_focus(compose->header_last->entry);
-			}
+		} else if(item && item->prefs->enable_default_to) {
+			compose_entry_append(compose, item->prefs->default_to, COMPOSE_TO);
 		}
 		if (item && item->ret_rcpt) {
 			GtkItemFactory *ifactory;
@@ -543,10 +538,9 @@ Compose * compose_generic_new(PrefsAccount *account, const gchar *to, FolderItem
 	} else {
 		if (to) {
 			compose_entry_append(compose, to, COMPOSE_NEWSGROUPS);
-			gtk_widget_grab_focus(compose->subject_entry);
-		} else
-			gtk_widget_grab_focus(compose->header_last->entry);
+		}
 	}
+	gtk_widget_grab_focus(compose->subject_entry);
 
 	if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
@@ -1045,6 +1039,7 @@ Compose *compose_forward(PrefsAccount * account, MsgInfo *msginfo,
 	else
 		gtk_widget_grab_focus(compose->newsgroups_entry);
 #endif
+	gtk_widget_grab_focus(compose->header_last->entry);
 
 	if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
@@ -4133,6 +4128,12 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 				   account->auto_replyto);
 #endif
 	}
+	if (account->protocol != A_NNTP) {
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry), _("To:"));
+	} else {
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry), _("Newsgroups:"));
+	}
+
 	menuitem = gtk_item_factory_get_item(ifactory, "/Tool/Show ruler");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 				       prefs_common.show_ruler);

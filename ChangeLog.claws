@@ -1,3 +1,10 @@
+2001-10-19 [christoph]	0.6.3claws26
+
+	* src/compose.c
+		last header entry should default to "To:" or
+		"Newsgroups:" and not copy the last entry line
+		in a new compose window (closes bug #472686)
+
 2001-10-19 [paul]	0.6.3claws25
 
 	* sync with Sylpheed 0.6.3cvs8
