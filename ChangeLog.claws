@@ -1,3 +1,20 @@
+2002-03-15 [match]	0.7.4claws11
+
+	* src/addrbook.[ch]
+	* src/addrcache.[ch]
+	* src/addressbook.[ch]
+	* src/addrindex.c
+	* src/editbook.c
+	* src/importldif.c
+	* src/importmutt.c
+	* src/jpilot.[ch]
+	* src/main.c
+	* src/syldap.[ch]
+	* src/vcard.[ch]
+		tidy up. fix memory leaks. moved attribs and methods
+		from individual interfaces to addrcache object. prep
+		for new stuff to come in.
+
 2002-03-15 [alfons]	0.7.4claws10
 
 	* src/matcher.[ch]
