@@ -3089,6 +3089,7 @@ static gint compose_write_headers_from_headerlist(Compose *compose,
 	gboolean first_address;
 	GSList *list;
 	compose_headerentry *headerentry;
+	gchar * headerentryname;
 
 	if (IS_IN_CUSTOM_HEADER(header)) {
 		return 0;
@@ -3102,7 +3103,9 @@ static gint compose_write_headers_from_headerlist(Compose *compose,
 	first_address = TRUE;
 	for(list = compose->header_list; list; list = list->next) {
     		headerentry = ((compose_headerentry *)list->data);
-		if(!strcmp(trans_hdr, gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(headerentry->combo)->entry)))) {
+		headerentryname = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(headerentry->combo)->entry));
+
+		if(!strcmp(trans_hdr, headerentryname)) {
 			str = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
 			Xstrdup_a(str, str, return -1);
 			g_strstrip(str);
@@ -3114,7 +3117,7 @@ static gint compose_write_headers_from_headerlist(Compose *compose,
 					fprintf(fp, "%s: ", header);
 					first_address = FALSE;
 				} else {
-					fprintf(fp, ", ");
+					fprintf(fp, ",");
 				}
 				fprintf(fp, "%s", buf);
 			}
@@ -3248,8 +3251,12 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		}
 	}
 #endif
+	/* something is needed to check if the mail
+	   will be sent to anybody ... */
+	/* 
 	if (!is_draft && !compose->to_list && !compose->newsgroup_list)
 		return -1;
+	*/
 
 	/* Subject */
 	str = gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));

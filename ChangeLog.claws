@@ -1,3 +1,9 @@
+2001-11-13 [hoa] 0.6.5claws10
+
+	* src/compose.c
+		some fixes when mail are sent or
+		for crossposts
+
 2001-11-13 [christoph]	0.6.5claws9
 
 	* po/de.po
