@@ -1,3 +1,8 @@
+2003-10-26 [alfons]	0.9.6claws54
+
+	* src/summary_search.c
+		fix misnomer and correct selecting initial search node  
+
 2003-10-26 [christoph]	0.9.6claws53
 
 	* src/pgpmime.c

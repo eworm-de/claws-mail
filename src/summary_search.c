@@ -229,7 +229,7 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 	MsgInfo *msginfo;
 	gboolean case_sens;
 	gboolean backward;
-	gboolean search_all;
+	gboolean select_all;
 	gboolean search_and;
 	gboolean all_searched = FALSE;
 	gboolean all_matched = FALSE;
@@ -249,7 +249,7 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 		(GTK_TOGGLE_BUTTON(case_checkbtn));
 	backward = gtk_toggle_button_get_active
 		(GTK_TOGGLE_BUTTON(backward_checkbtn));
-	search_all = gtk_toggle_button_get_active
+	select_all = gtk_toggle_button_get_active
 		(GTK_TOGGLE_BUTTON(all_checkbtn));
 	search_and = gtk_toggle_button_get_active
 		(GTK_TOGGLE_BUTTON(and_checkbtn));
@@ -272,11 +272,11 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 	subjwcs = (wchar_t *)GTK_ENTRY(subject_entry)->text;
 	body_str = gtk_entry_get_text(GTK_ENTRY(body_entry));
 
-	if (search_all) {
+	if (select_all) {
 		gtk_clist_freeze(GTK_CLIST(ctree));
 		gtk_clist_unselect_all(GTK_CLIST(ctree));
-		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
-	} else if (!summaryview->selected) {
+	}
+	if (!summaryview->selected) {
 		if (backward)
 			node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list_end);
 		else
@@ -303,7 +303,7 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 			gchar *str;
 			AlertValue val;
 
-			if (search_all) {
+			if (select_all) {
 				gtk_clist_thaw(GTK_CLIST(ctree));
 				break;
 			}
@@ -375,7 +375,7 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 
 		if ((from_matched || to_matched || subj_matched || body_matched)
 		    && (!search_and || all_matched)) {
-			if (search_all)
+			if (select_all)
 				gtk_ctree_select(ctree, node);
 			else {
 				if (messageview_is_visible
