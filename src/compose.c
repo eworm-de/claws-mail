@@ -201,7 +201,8 @@ static PrefsAccount *compose_current_mail_account(void);
 /* static gint compose_send			(Compose	*compose); */
 static gboolean compose_check_for_valid_recipient
 						(Compose	*compose);
-static gboolean compose_check_entries		(Compose	*compose);
+static gboolean compose_check_entries		(Compose	*compose,
+						 gboolean 	check_subject);
 static gint compose_write_to_file		(Compose	*compose,
 						 const gchar	*file,
 						 gboolean	 is_draft);
@@ -211,6 +212,10 @@ static gint compose_remove_reedit_target	(Compose	*compose);
 static gint compose_queue			(Compose	*compose,
 						 gint		*msgnum,
 						 FolderItem	**item);
+static gint compose_queue_sub			(Compose	*compose,
+						 gint		*msgnum,
+						 FolderItem	**item,
+						 gboolean	check_subject);
 static void compose_write_attach		(Compose	*compose,
 						 FILE		*fp);
 static gint compose_write_headers		(Compose	*compose,
@@ -2629,7 +2634,7 @@ gboolean compose_check_for_valid_recipient(Compose *compose) {
 	return recipient_found;
 }
 
-static gboolean compose_check_entries(Compose *compose)
+static gboolean compose_check_entries(Compose *compose, gboolean check_subject)
 {
 	gchar *str;
 
@@ -2639,7 +2644,7 @@ static gboolean compose_check_entries(Compose *compose)
 	}
 
 	str = gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
-	if (*str == '\0') {
+	if (*str == '\0' && check_subject == TRUE) {
 		AlertValue aval;
 
 		aval = alertpanel(_("Send"),
@@ -2658,7 +2663,7 @@ gint compose_send(Compose *compose)
 	FolderItem *folder;
 	gint val;
 
-	if (compose_check_entries(compose) == FALSE)
+	if (compose_check_entries(compose, TRUE) == FALSE)
 		return -1;
 
 	val = compose_queue(compose, &msgnum, &folder);
@@ -2689,7 +2694,7 @@ gint compose_send(Compose *compose)
 
 	lock = TRUE;
 
-	if (compose_check_entries(compose) == FALSE) {
+	if (compose_check_entries(compose, TRUE) == FALSE) {
 		lock = FALSE;
 		return 1;
 	}
@@ -3211,8 +3216,11 @@ static gint compose_remove_reedit_target(Compose *compose)
 	return 0;
 }
 
-
 static gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item)
+{
+	return compose_queue_sub (compose, msgnum, item, FALSE);
+}
+static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item, gboolean check_subject)
 {
 	FolderItem *queue;
 	gchar *tmp, *tmp2, *queue_path;
@@ -3230,7 +3238,7 @@ static gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item)
 
         lock = TRUE;
 	
-	if (compose_check_entries(compose) == FALSE) {
+	if (compose_check_entries(compose, check_subject) == FALSE) {
                 lock = FALSE;
                 return -1;
 	}
@@ -5939,7 +5947,7 @@ static void compose_send_later_cb(gpointer data, guint action,
 	Compose *compose = (Compose *)data;
 	gint val;
 
-	val = compose_queue(compose, NULL, NULL);
+	val = compose_queue_sub(compose, NULL, NULL, TRUE);
 	if (!val) gtk_widget_destroy(compose->window);
 }
 

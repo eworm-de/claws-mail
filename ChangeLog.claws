@@ -1,8 +1,14 @@
+2002-04-24 [colin]	0.7.4claws97
+	
+	* src/compose.c
+		Fixed double "subject is empty" question.
+
 2002-04-23 [colin]	0.7.4claws96
 	
 	* src/mimeview.c
 		Corrected issue when "automatically display images" was
 		not set : first image remained after selecting second.
+
 2002-04-23 [melvin]	0.7.4claws95
 
 	* src/prefs_actions.c
