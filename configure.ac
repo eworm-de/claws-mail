@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=9
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=18
+EXTRA_VERSION=19
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}claws
 else
@@ -523,7 +523,7 @@ AC_OUTPUT([
 Makefile
 sylpheed.spec
 intl/Makefile
-ac/Makefile
+m4/Makefile
 po/Makefile.in
 src/common/version.h
 src/Makefile

@@ -1,3 +1,42 @@
+2004-02-17 [paul]	0.9.9claws19
+
+	* ac/*				** REMOVED **
+	  ac/				** REMOVED **
+	  intl/Makefile.in		** REMOVED **
+	  m4/				** NEW **
+	  m4/missing			** NEW **
+	  m4/missing/gdk-pixbuf.m4	** NEW **
+	  m4/missing/gettext.m4		** NEW **
+	  m4/missing/gpgme.m4		** NEW **
+	  m4/missing/imlib.m4		** NEW **
+	  m4/.cvsignore			** NEW **
+	  m4/Makefile.am		** NEW **
+	  m4/README			** NEW **
+	  m4/aclocal-include.m4		** NEW **
+	  m4/aspell.m4			** NEW **
+	  m4/check-type.m4		** NEW **
+	  m4/gnupg-check-typedef.m4	** NEW **
+	  m4/openssl.m4			** NEW **
+	  m4/spamassassin.m4		** NEW **
+	  po/ChangeLog			** REMOVED **
+	  po/Makefile.in.in		** REMOVED **
+	  po/Rules-quot			** REMOVED **
+	  po/boldquot.sed		** REMOVED **
+	  po/en@boldquot.header		** REMOVED **
+	  po/en@quot.header		** REMOVED **
+	  po/insert-header.sin		** REMOVED **
+	  po/quot.sed			** REMOVED **
+	  po/remove-potcdate.sed	** REMOVED **
+	  po/remove-potcdate.sin	** REMOVED **
+	  po/stamp-po			** REMOVED **
+	  Makefile.am
+	  autogen.sh
+	  configure.ac
+		enable building with automake 1.8.x
+		add 'autopoint' to autogen.sh and remove all
+		auto-generated files, remove ac/ in favour of
+		m4/
+
 2004-02-17 [alfons]	0.9.9claws18
 	
 	* src/summaryview.c
