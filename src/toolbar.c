@@ -296,7 +296,7 @@ void toolbar_set_default_toolbar(void)
 		{ A_REPLY_SENDER,  STOCK_PIXMAP_MAIL_REPLY_TO_AUTHOR, _("Sender")  },
 		{ A_FORWARD,       STOCK_PIXMAP_MAIL_FORWARD,         _("Forward") },
 		{ A_SEPARATOR,     0,                                 ("")         },
-		{ A_DELETE,        STOCK_PIXMAP_DELETED,              _("Delete")  },
+		{ A_DELETE,        STOCK_PIXMAP_CLOSE,                _("Delete")  },
 		{ A_EXECUTE,       STOCK_PIXMAP_EXEC,                 _("Execute") },
 		{ A_GOTO_NEXT,     STOCK_PIXMAP_DOWN_ARROW,           _("Next")    },
 	};

@@ -1,3 +1,8 @@
+2002-08-10 [alfons]	0.8.1claws45
+
+	* src/toolbar.c
+		correct pixmap for delete action
+
 2002-08-10 [paul]	0.8.1claws44
 
 	* po/pt_BR.po
