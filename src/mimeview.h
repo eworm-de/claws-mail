@@ -20,19 +20,15 @@
 #ifndef MIMEVIEW_H
 #define MIMEVIEW_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+typedef struct _MimeView		MimeView;
+typedef struct _MimeViewerFactory 	MimeViewerFactory;
+typedef struct _MimeViewer 		MimeViewer;
 
 #include <glib.h>
 #include <gdk/gdk.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkctree.h>
 #include <gtk/gtktooltips.h>
-
-typedef struct _MimeView		MimeView;
-typedef struct _MimeViewerFactory 	MimeViewerFactory;
-typedef struct _MimeViewer 		MimeViewer;
 
 #include "textview.h"
 #include "messageview.h"
@@ -108,6 +104,11 @@ struct _MimeViewer
 	void		(*clear_viewer)		(MimeViewer *);
 	void		(*destroy_viewer)	(MimeViewer *);
 };
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 
 MimeView *mimeview_create	(MainWindow	*mainwin);
 void mimeview_init		(MimeView	*mimeview);

@@ -63,7 +63,7 @@ XMLTag *folder_local_get_xml(Folder *_folder)
 
 	tag = folder_get_xml(_folder);
 
-	xml_tag_add_attr(tag, "path", g_strdup(folder->rootpath));
+	xml_tag_add_attr(tag, xml_attr_new("path", folder->rootpath));
 
 	return tag;
 }

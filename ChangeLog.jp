@@ -1,3 +1,20 @@
+2004-08-04
+
+	* src/socket.c:
+	  ssl_read()
+	  ssl_peek(): データの読み込みの前に SSL をチェックするようにした
+	  (ソケットが破壊されたときのフリーズを修正)。
+	* src/session.[ch]: session_set_access_time(): 新規。
+	* src/imap.c
+	  src/news.c
+	  src/nntp.c: サーバの応答の受信に成功したときのみ last_access_time
+	  を更新するようにした。
+	* 上記について Cedric Pradalier さん thanks。
+
+2004-07-23
+
+	* src/xml.[ch]: コードの整理といくつかの関数の追加。
+
 2004-07-16
 
 	* src/pop.[ch]: pop3_getrange_uidl_recv(): 無効な UIDL のチェックを

@@ -236,18 +236,18 @@ XMLTag *folder_get_xml(Folder *folder)
 {
 	XMLTag *tag;
 
-	tag = xml_new_tag("folder");
+	tag = xml_tag_new("folder");
 
 	if (folder->name)
-		xml_tag_add_attr(tag, "name", g_strdup(folder->name));
+		xml_tag_add_attr(tag, xml_attr_new("name", folder->name));
 	if (folder->account)
-		xml_tag_add_attr(tag, "account_id", g_strdup_printf("%d", folder->account->account_id));
+		xml_tag_add_attr(tag, xml_attr_new_int("account_id", folder->account->account_id));
 	if (folder->node && folder->node->data) {
 		FolderItem *rootitem = (FolderItem *) folder->node->data;
 
-		xml_tag_add_attr(tag, "collapsed", g_strdup(rootitem->collapsed ? "1" : "0"));
+		xml_tag_add_attr(tag, xml_attr_new("collapsed", rootitem->collapsed ? "1" : "0"));
 	}
-	xml_tag_add_attr(tag, "sort", g_strdup_printf("%d", folder->sort));
+	xml_tag_add_attr(tag, xml_attr_new_int("sort", folder->sort));
 
 	return tag;
 }
@@ -511,40 +511,43 @@ XMLTag *folder_item_get_xml(Folder *folder, FolderItem *item)
 					"mark", "unread", "mime", "to", 
 					"locked"};
 	XMLTag *tag;
+	gchar *value;
 
-	tag = xml_new_tag("folderitem");
+	tag = xml_tag_new("folderitem");
 
-	xml_tag_add_attr(tag, "type", g_strdup(folder_item_stype_str[item->stype]));
+	xml_tag_add_attr(tag, xml_attr_new("type", folder_item_stype_str[item->stype]));
 	if (item->name)
-		xml_tag_add_attr(tag, "name", g_strdup(item->name));
+		xml_tag_add_attr(tag, xml_attr_new("name", item->name));
 	if (item->path)
-		xml_tag_add_attr(tag, "path", g_strdup(item->path));
+		xml_tag_add_attr(tag, xml_attr_new("path", item->path));
 	if (item->no_sub)
-		xml_tag_add_attr(tag, "no_sub", g_strdup("1"));
+		xml_tag_add_attr(tag, xml_attr_new("no_sub", "1"));
 	if (item->no_select)
-		xml_tag_add_attr(tag, "no_select", g_strdup("1"));
-	xml_tag_add_attr(tag, "collapsed", g_strdup(item->collapsed && item->node->children ? "1" : "0"));
-	xml_tag_add_attr(tag, "thread_collapsed", g_strdup(item->thread_collapsed ? "1" : "0"));
-	xml_tag_add_attr(tag, "threaded", g_strdup(item->threaded ? "1" : "0"));
-	xml_tag_add_attr(tag, "hidereadmsgs", g_strdup(item->hide_read_msgs ? "1" : "0"));
+		xml_tag_add_attr(tag, xml_attr_new("no_select", "1"));
+	xml_tag_add_attr(tag, xml_attr_new("collapsed", item->collapsed && item->node->children ? "1" : "0"));
+	xml_tag_add_attr(tag, xml_attr_new("thread_collapsed", item->thread_collapsed ? "1" : "0"));
+	xml_tag_add_attr(tag, xml_attr_new("threaded", item->threaded ? "1" : "0"));
+	xml_tag_add_attr(tag, xml_attr_new("hidereadmsgs", item->hide_read_msgs ? "1" : "0"));
 	if (item->ret_rcpt)
-		xml_tag_add_attr(tag, "reqretrcpt", g_strdup("1"));
+		xml_tag_add_attr(tag, xml_attr_new("reqretrcpt", "1"));
 
 	if (item->sort_key != SORT_BY_NONE) {
-		xml_tag_add_attr(tag, "sort_key", g_strdup(sort_key_str[item->sort_key]));
-		xml_tag_add_attr(tag, "sort_type", g_strdup(item->sort_type == SORT_ASCENDING ? "ascending" : "descending"));
+		xml_tag_add_attr(tag, xml_attr_new("sort_key", sort_key_str[item->sort_key]));
+		xml_tag_add_attr(tag, xml_attr_new("sort_type", item->sort_type == SORT_ASCENDING ? "ascending" : "descending"));
 	}
 
-	xml_tag_add_attr(tag, "mtime", g_strdup_printf("%ld", (unsigned long int) item->mtime));
-	xml_tag_add_attr(tag, "new", g_strdup_printf("%d", item->new_msgs));
-	xml_tag_add_attr(tag, "unread", g_strdup_printf("%d", item->unread_msgs));
-	xml_tag_add_attr(tag, "unreadmarked", g_strdup_printf("%d", item->unreadmarked_msgs));
-	xml_tag_add_attr(tag, "total", g_strdup_printf("%d", item->total_msgs));
+	value = g_strdup_printf("%ld", (unsigned long int) item->mtime);
+	xml_tag_add_attr(tag, xml_attr_new("mtime", value));
+	g_free(value);
+	xml_tag_add_attr(tag, xml_attr_new_int("new", item->new_msgs));
+	xml_tag_add_attr(tag, xml_attr_new_int("unread", item->unread_msgs));
+	xml_tag_add_attr(tag, xml_attr_new_int("unreadmarked", item->unreadmarked_msgs));
+	xml_tag_add_attr(tag, xml_attr_new_int("total", item->total_msgs));
 
 	if (item->account)
-		xml_tag_add_attr(tag, "account_id", g_strdup_printf("%d", item->account->account_id));
+		xml_tag_add_attr(tag, xml_attr_new_int("account_id", item->account->account_id));
 	if (item->apply_sub)
-		xml_tag_add_attr(tag, "apply_sub", g_strdup("1"));
+		xml_tag_add_attr(tag, xml_attr_new("apply_sub", "1"));
 
 	return tag;
 }
@@ -701,13 +704,10 @@ void folder_write_list(void)
 	path = folder_get_list_path();
 	if ((pfile = prefs_write_open(path)) == NULL) return;
 
-	fprintf(pfile->fp, "<?xml version=\"1.0\" encoding=\"%s\"?>\n",
-		conv_get_current_charset_str());
-	tag = xml_new_tag("folderlist");
+	xml_file_put_xml_decl(pfile->fp);
+	tag = xml_tag_new("folderlist");
 
-	xmlnode = g_new0(XMLNode, 1);
-	xmlnode->tag = tag;
-	xmlnode->element = NULL;
+	xmlnode = xml_node_new(tag, NULL);
 
 	rootnode = g_node_new(xmlnode);
 
@@ -1998,10 +1998,33 @@ void folder_item_read_cache(FolderItem *item)
 		mark_file = folder_item_get_mark_file(item);
 		item->cache = msgcache_read_cache(item, cache_file);
 		if (!item->cache) {
+			MsgInfoList *list, *cur;
+			guint newcnt = 0, unreadcnt = 0, unreadmarkedcnt = 0;
+			MsgInfo *msginfo;
+
 			item->cache = msgcache_new();
 			folder_item_scan_full(item, TRUE);
-		}
-		msgcache_read_mark(item->cache, mark_file);
+
+			msgcache_read_mark(item->cache, mark_file);
+
+			list = msgcache_get_msg_list(item->cache);
+			for (cur = list; cur != NULL; cur = g_slist_next(cur)) {
+				msginfo = cur->data;
+
+				if (MSG_IS_NEW(msginfo->flags))
+					newcnt++;
+				if (MSG_IS_UNREAD(msginfo->flags))
+					unreadcnt++;
+				if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
+					unreadmarkedcnt++;
+			}
+			item->new_msgs = newcnt;
+		        item->unread_msgs = unreadcnt;
+			item->unreadmarked_msgs = unreadmarkedcnt;
+			procmsg_msg_list_free(list);
+		} else
+			msgcache_read_mark(item->cache, mark_file);
+
 		g_free(cache_file);
 		g_free(mark_file);
 	} else {
@@ -2975,7 +2998,6 @@ static gchar *folder_get_list_path(void)
 static gpointer folder_item_to_xml(gpointer nodedata, gpointer data)
 {
 	FolderItem *item = (FolderItem *) nodedata;
-	XMLNode *xmlnode;
 	XMLTag *tag;
 
 	g_return_val_if_fail(item != NULL, NULL);
@@ -2985,11 +3007,7 @@ static gpointer folder_item_to_xml(gpointer nodedata, gpointer data)
 	else
 		tag = folder_item_get_xml(item->folder, item);
 
-	xmlnode = g_new0(XMLNode, 1);
-	xmlnode->tag = tag;
-	xmlnode->element = NULL;
-
-	return xmlnode;
+	return xml_node_new(tag, NULL);;
 }
 
 static GNode *folder_get_xml_node(Folder *folder)
@@ -3005,11 +3023,9 @@ static GNode *folder_get_xml_node(Folder *folder)
 	else
 		tag = folder_get_xml(folder);
 
-	xml_tag_add_attr(tag, "type", g_strdup(folder->klass->idstr));
+	xml_tag_add_attr(tag, xml_attr_new("type", folder->klass->idstr));
 
-	xmlnode = g_new0(XMLNode, 1);
-	xmlnode->tag = tag;
-	xmlnode->element = NULL;
+	xmlnode = xml_node_new(tag, NULL);
 
 	node = g_node_new(xmlnode);
 	if (folder->node->children) {

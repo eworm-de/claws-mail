@@ -322,9 +322,14 @@ static void prefs_themes_get_themes_and_names(ThemesData *tdata)
 
 void prefs_themes_init(void)
 {
-	ThemesData *tdata;
-	ThemesPage *page;
-	GList      *tpaths;
+	ThemesData   *tdata;
+	ThemesPage   *page;
+	GList        *tpaths;
+	static gchar *path[3];
+
+	path[0] = _("Display");
+	path[1] = _("Themes");
+	path[2] = NULL;
 
 	debug_print("Creating prefereces for themes...\n");
 	
@@ -335,7 +340,7 @@ void prefs_themes_init(void)
 	
 	page = g_new0(ThemesPage, 1);
 	
-	page->page.path = _("Display/Themes");
+	page->page.path = path;
 	page->page.create_widget = prefs_themes_create_widget;
 	page->page.destroy_widget = prefs_themes_destroy_widget;
 	page->page.save_page = prefs_themes_save;

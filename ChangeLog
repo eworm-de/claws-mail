@@ -1,3 +1,20 @@
+2004-08-04
+
+	* src/socket.c:
+	  ssl_read()
+	  ssl_peek(): check SSL before reading data (fixes freeze when
+	  socket is broken).
+	* src/session.[ch]: session_set_access_time(): new.
+	* src/imap.c
+	  src/news.c
+	  src/nntp.c: only update last_access_time when successfully
+	  receiving a server response.
+	* thanks to Cedric Pradalier for above.
+
+2004-07-23
+
+	* src/xml.[ch]: code cleanup and added some functions.
+
 2004-07-16
 
 	* src/pop.[ch]: pop3_getrange_uidl_recv(): relaxed invalid UIDL

@@ -267,8 +267,8 @@ static NNTPSession *news_session_get(Folder *folder)
 		return NNTP_SESSION(rfolder->session);
 	}
 
-	if (time(NULL) - rfolder->session->last_access_time < SESSION_TIMEOUT_INTERVAL) {
-		rfolder->session->last_access_time = time(NULL);
+	if (time(NULL) - rfolder->session->last_access_time <
+		SESSION_TIMEOUT_INTERVAL) {
 		return NNTP_SESSION(rfolder->session);
 	}
 
@@ -284,7 +284,8 @@ static NNTPSession *news_session_get(Folder *folder)
 	}
 
 	if (rfolder->session)
-		rfolder->session->last_access_time = time(NULL);
+		session_set_access_time(rfolder->session);
+
 	return NNTP_SESSION(rfolder->session);
 }
 
@@ -1048,6 +1049,8 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 
 		llast = llast->next;
 	}
+
+	session_set_access_time(SESSION(session));
 
 	return newlist;
 }

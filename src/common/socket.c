@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1037,6 +1037,11 @@ gint ssl_read(SSL *ssl, gchar *buf, gint len)
 {
 	gint ret;
 
+	if (SSL_pending(ssl) == 0) {
+		if (fd_check_io(SSL_get_rfd(ssl), G_IO_IN) < 0)
+			return -1;
+	}
+
 	ret = SSL_read(ssl, buf, len);
 
 	switch (SSL_get_error(ssl, ret)) {
@@ -1326,6 +1331,11 @@ gint sock_puts(SockInfo *sock, const gchar *buf)
 gint ssl_peek(SSL *ssl, gchar *buf, gint len)
 {
 	gint ret;
+
+	if (SSL_pending(ssl) == 0) {
+		if (fd_check_io(SSL_get_rfd(ssl), G_IO_IN) < 0)
+			return -1;
+	}
 
 	ret = SSL_peek(ssl, buf, len);
 

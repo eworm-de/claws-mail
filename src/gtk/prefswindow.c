@@ -66,7 +66,7 @@ static gboolean ctree_select_row(GtkCTree *ctree, GList *node, gint column, gpoi
 	PrefsPage *page;
 	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
 	gchar *labeltext;
-	gint pagenum;
+	gint pagenum, i;
 
 	prefsnode = gtk_ctree_node_get_row_data(GTK_CTREE(ctree), GTK_CTREE_NODE(node));
 	page = prefsnode->page;
@@ -87,11 +87,11 @@ static gboolean ctree_select_row(GtkCTree *ctree, GList *node, gint column, gpoi
 		page->page_open = TRUE;
 	}
 
-	labeltext = (gchar *) strrchr(page->path, '/');
-	if (labeltext == NULL)
-		labeltext = page->path;
-	else
-		labeltext = labeltext + 1;
+	i = 0;
+	while (page->path[i + 1] != 0)
+		i++;
+	labeltext = page->path[i];
+	
 	gtk_label_set_text(GTK_LABEL(prefswindow->pagelabel), labeltext);
 
 	pagenum = gtk_notebook_page_num(GTK_NOTEBOOK(prefswindow->notebook),
@@ -265,14 +265,13 @@ void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data)
 	for (cur = prefs_pages; cur != NULL; cur = g_slist_next(cur)) {
 		PrefsPage *page = (PrefsPage *)cur->data;
 		GtkCTreeNode *node = NULL;
-		gchar *text[2], **split, *part;
+		gchar *text[2], *part;
 		int i;
 		struct name_search name_search;
 		PrefsTreeNode *prefsnode;
 
-		split = g_strsplit(page->path, "/", 0);
-		for (i = 0; split[i] != NULL; i++) {
-			part = split[i];			
+		for (i = 0; page->path[i] != NULL; i++) {
+			part = page->path[i];
 			name_search.text = part;
 			name_search.node = NULL;
 
@@ -289,7 +288,6 @@ void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data)
 				gtk_ctree_node_set_row_data_full(GTK_CTREE(prefswindow->ctree), node, prefsnode, g_free);
 			}
 		}
-		g_strfreev(split);
 
 		prefsnode = (PrefsTreeNode *) GTK_CTREE_ROW(node)->row.data;
 		prefsnode->page = page;

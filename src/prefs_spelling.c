@@ -356,13 +356,19 @@ SpellingPage *prefs_spelling;
 void prefs_spelling_init(void)
 {
 	SpellingPage *page;
+	static gchar *path[3];
+
+	path[0] = _("Compose");
+	path[1] = _("Spell Checker");
+	path[2] = NULL;
 
 	page = g_new0(SpellingPage, 1);
-	page->page.path = _("Compose/Spell Checker");
+	page->page.path = path;
 	page->page.create_widget = prefs_spelling_create_widget;
 	page->page.destroy_widget = prefs_spelling_destroy_widget;
 	page->page.save_page = prefs_spelling_save;
 	page->page.weight = 50.0;
+
 	prefs_gtk_register_page((PrefsPage *) page);
 	prefs_spelling = page;
 }

@@ -60,7 +60,6 @@
 #include "utils.h"
 #include "gtkutils.h"
 #include "prefs_common.h"
-#include "rfc2015.h"
 #include "stock_pixmap.h"
 #include "gtk/gtkvscrollbutton.h"
 

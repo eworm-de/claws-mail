@@ -11,9 +11,9 @@ MINOR_VERSION=9
 MICRO_VERSION=12
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=40
+EXTRA_VERSION=46
 EXTRA_RELEASE=
-EXTRA_GTK2_VERSION=.2
+EXTRA_GTK2_VERSION=.1
 
 if test \( $EXTRA_VERSION -eq 0 \) -o \( "x$EXTRA_RELEASE" != "x" \); then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}${EXTRA_RELEASE}${EXTRA_GTK2_VERSION}
@@ -279,7 +279,15 @@ else
 fi
 
 dnl Check for OpenSSL
-AM_PATH_OPENSSL
+AC_ARG_ENABLE(openssl,
+	[  --enable-openssl    Attempt to use OpenSSL for SSL support.],
+	[ac_cv_enable_openssl=$enableval], [ac_cv_enable_openssl=yes])
+if test x"$ac_cv_enable_openssl" = xyes; then
+	PKG_CHECK_MODULES(OPENSSL, openssl >= 0.9.7, :, ac_cv_enable_openssl=no)
+	AC_DEFINE(USE_OPENSSL, 1, Define if you want OpenSSL support)
+fi
+AC_SUBST(OPENSSL_CFLAGS)
+AC_SUBST(OPENSSL_LIBS)
 
 dnl password encryption
 OLDLIBS=$LIBS
@@ -475,12 +483,12 @@ if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
 	PKG_CHECK_MODULES(GTK_MATH_VIEW, gtkmathview >= 0.5, :, ac_cv_enable_mathml_viewer_plugin=no)
 
 	if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
-		AC_SUBST(GTK_MATH_VIEW_CFLAGS)
-		AC_SUBST(GTK_MATH_VIEW_LIBS)
 
 		PLUGINS="mathml-viewer $PLUGINS"
 	fi
 fi
+AC_SUBST(GTK_MATH_VIEW_CFLAGS)
+AC_SUBST(GTK_MATH_VIEW_LIBS)
 AM_CONDITIONAL(BUILD_MATHML_VIEWER_PLUGIN, test x"$ac_cv_enable_mathml_viewer_plugin" = xyes)
 
 dnl --- Image Viewer ---
@@ -537,13 +545,13 @@ if test x"$ac_cv_enable_clamav_plugin" = xyes; then
 	AC_CHECK_HEADERS(clamav.h, :, ac_cv_enable_clamav_plugin=no)
 	if test x"$ac_cv_enable_clamav_plugin" = xyes; then
 		CLAMAV_LIBS="${clamav_lib}"
-		AC_SUBST(CLAMAV_LIBS)
 
 		PLUGINS="clamav $PLUGINS"
 	else
 		AC_MSG_NOTICE([clamav library not found, will not build clamav plugin])
 	fi
 fi
+AC_SUBST(CLAMAV_LIBS)
 AM_CONDITIONAL(BUILD_CLAMAV_PLUGIN, test x"$ac_cv_enable_clamav_plugin" = xyes)
 
 dnl ****************************

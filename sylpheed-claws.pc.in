@@ -9,5 +9,6 @@ plugindir=${pkglibdir}/plugins
 
 Name: Sylpheed-Claws
 Description: Sylpheed-Claws
-Version: @VERSION@
+Version: @MAJOR_VERSION@.@MINOR_VERSION@.@MICRO_VERSION@.@EXTRA_VERSION@
+
 Cflags: @ASPELL_CFLAGS@ @GPGME_CFLAGS@ @OPENSSL_CFLAGS@ -I${pkgincludedir} -I${pkgincludedir}/common -I${pkgincludedir}/gtk

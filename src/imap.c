@@ -685,9 +685,7 @@ static IMAPSession *imap_session_get(Folder *folder)
 	}
 
 	rfolder->session = SESSION(session);
-	if (session) {
-		session->last_access_time = time(NULL);
-	}
+	
 	return IMAP_SESSION(session);
 }
 
@@ -1902,6 +1900,8 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 		g_string_free(str, TRUE);
 	}
 	imap_seq_set_free(seq_list);
+	
+	session_set_access_time(SESSION(session));
 
 	return newlist;
 }
@@ -3261,6 +3261,8 @@ static gint imap_gen_recv(IMAPSession *session, gchar **ret)
 	strretchomp(*ret);
 
 	log_print("IMAP4< %s\n", *ret);
+	
+	session_set_access_time(SESSION(session));
 
 	return IMAP_SUCCESS;
 }

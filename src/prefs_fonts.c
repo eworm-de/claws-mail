@@ -284,9 +284,14 @@ FontsPage *prefs_fonts;
 void prefs_fonts_init(void)
 {
 	FontsPage *page;
+	static gchar *path[3];
+
+	path[0] = _("Display");
+	path[1] = _("Fonts");
+	path[2] = NULL;
 
 	page = g_new0(FontsPage, 1);
-	page->page.path = _("Display/Fonts");
+	page->page.path = path;
 	page->page.create_widget = prefs_fonts_create_widget;
 	page->page.destroy_widget = prefs_fonts_destroy_widget;
 	page->page.save_page = prefs_fonts_save;

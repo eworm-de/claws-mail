@@ -1,3 +1,82 @@
+2004-08-05 [christoph]	0.9.12cvs46
+
+	* src/msgcache.c
+	* src/common/defs.h
+		add charset to cache file and convert charset when reading the
+		cache if different from internal used charset
+
+2004-08-05 [christoph]	0.9.12cvs45
+
+	* src/messageview.c
+	* src/mimeview.[ch]
+	* src/procmime.h
+	* src/common/utils.h
+		cleanup (remove unused includes/reorganize)
+
+	* src/prefs_ext_prog.c
+	* src/prefs_folder_item.c
+	* src/prefs_fonts.c
+	* src/prefs_msg_colors.c
+	* src/prefs_spelling.c
+	* src/prefs_themes.c
+	* src/prefs_toolbar.c
+	* src/prefs_wrapping.c
+	* src/gtk/prefswindow.[ch]
+	* src/plugins/clamav/clamav_plugin_gtk.c
+	* src/plugins/dillo_viewer/dillo_prefs.c
+	* src/plugins/image_viewer/viewerprefs.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		change PrefsPage path into an array of strings and don't
+		split a single string into parts (better for translation)
+
+2004-08-05 [christoph]	0.9.12cvs44
+
+	* src/folder.c
+		fix FolderItem's message counts after rebuilding a cache
+
+2004-08-05 [paul]	0.9.12cvs43
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/imap.c
+	* src/news.c
+	* src/common/nntp.c
+	* src/common/session.c
+	* src/common/session.h
+	* src/common/socket.c
+		sync with main 0.9.12cvs2
+		see ChangeLog 2004-08-04
+
+2004-08-04 [christoph]	0.9.12cvs42
+
+	* configure.ac
+		add missing AC_DEFINE(USE_OPENSSL, ...)
+	* src/folder.c
+		use new xml_node_new() function
+
+2004-08-03 [christoph]	0.9.12cvs41
+
+	* src/folder.c
+	* src/localfolder.c
+	* src/common/xml.[ch]
+		sync with main 0.9.12cvs1
+		see ChangeLog 2004-07-23
+
+2004-08-03 [christoph]
+
+	* configure.ac
+	* m4/openssl.m4			** REMOVE **
+		use pkg-config to get OpenSSL CFLAGS and LIBS
+		(OpenSSL 0.9.7 is required now)
+
+2004-08-02 [paul]	0.9.12cvs40
+
+	* AUTHORS
+		update translation team section
+	* po/pt_BR.po
+		updated by Frederico Goncalves Guimaraes
+		<fggdebian@yahoo.com.br>
+
 2004-07-29 [colin]	0.9.12cvs39
 
 	* src/messageview.c

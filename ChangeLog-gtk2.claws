@@ -1,3 +1,44 @@
+2004-08-06 [colin]	0.9.12cvs46.1
+
+	* ChangeLog
+	* ChangeLog.claws
+	* ChangeLog.jp
+	* configure.ac
+	* sylpheed-claws.pc.in
+	* src/folder.c
+	* src/imap.c
+	* src/localfolder.c
+	* src/messageview.c
+	* src/mimeview.c
+	* src/mimeview.h
+	* src/msgcache.c
+	* src/news.c
+	* src/prefs_ext_prog.c
+	* src/prefs_folder_item.c
+	* src/prefs_fonts.c
+	* src/prefs_msg_colors.c
+	* src/prefs_spelling.c
+	* src/prefs_themes.c
+	* src/prefs_toolbar.c
+	* src/prefs_wrapping.c
+	* src/procmime.h
+	* src/common/defs.h
+	* src/common/nntp.c
+	* src/common/session.c
+	* src/common/session.h
+	* src/common/socket.c
+	* src/common/utils.h
+	* src/common/xml.c
+	* src/common/xml.h
+	* src/gtk/prefswindow.c
+	* src/gtk/prefswindow.h
+	* src/plugins/clamav/clamav_plugin_gtk.c
+	* src/plugins/dillo_viewer/dillo_prefs.c
+	* src/plugins/image_viewer/viewerprefs.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+	* m4/openssl.m4 *** REMOVED ***
+		Sync with HEAD 0.9.12cvs46
+
 2004-08-03 [paul]	0.9.12cvs40.2
 
 	* src/action.c

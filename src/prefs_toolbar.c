@@ -870,9 +870,14 @@ ToolbarPage *prefs_toolbar_messageview;
 void prefs_toolbar_init(void)
 {
 	ToolbarPage *page;
+	static gchar *mainpath[3], *messagepath[3], *composepath[3];
+
+	mainpath[0] = _("Customize Toolbars");
+	mainpath[1] = _("Main Window");
+	mainpath[2] = NULL;
 
 	page = g_new0(ToolbarPage, 1);
-	page->page.path = _("Customize Toolbars/Main Window");
+	page->page.path = mainpath;
 	page->page.create_widget = prefs_toolbar_create_widget;
 	page->page.destroy_widget = prefs_toolbar_destroy_widget;
 	page->page.save_page = prefs_toolbar_save;
@@ -880,8 +885,12 @@ void prefs_toolbar_init(void)
 	prefs_gtk_register_page((PrefsPage *) page);
 	prefs_toolbar_mainwindow = page;
 
+	messagepath[0] = _("Customize Toolbars");
+	messagepath[1] = _("Message Window");
+	messagepath[2] = NULL;
+
 	page = g_new0(ToolbarPage, 1);
-	page->page.path = _("Customize Toolbars/Message Window");
+	page->page.path = messagepath;
 	page->page.create_widget = prefs_toolbar_create_widget;
 	page->page.destroy_widget = prefs_toolbar_destroy_widget;
 	page->page.save_page = prefs_toolbar_save;
@@ -889,8 +898,12 @@ void prefs_toolbar_init(void)
 	prefs_gtk_register_page((PrefsPage *) page);
 	prefs_toolbar_messageview = page;
 
+	composepath[0] = _("Customize Toolbars");
+	composepath[1] = _("Compose Window");
+	composepath[2] = NULL;
+
 	page = g_new0(ToolbarPage, 1);
-	page->page.path = _("Customize Toolbars/Compose Window");
+	page->page.path = composepath;
 	page->page.create_widget = prefs_toolbar_create_widget;
 	page->page.destroy_widget = prefs_toolbar_destroy_widget;
 	page->page.save_page = prefs_toolbar_save;

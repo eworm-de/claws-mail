@@ -125,6 +125,8 @@ Session *nntp_session_new(const gchar *server, gushort port, gchar *buf,
 		}
 	}
 
+	session_set_access_time(SESSION(session));
+	
 	return SESSION(session);
 }
 
@@ -298,6 +300,8 @@ gint nntp_post(NNTPSession *session, FILE *fp)
 	if ((ok = nntp_ok(SESSION(session)->sock, buf)) != NN_SUCCESS)
 		return ok;
 
+	session_set_access_time(SESSION(session));
+
 	return NN_SUCCESS;
 }
 
@@ -439,6 +443,8 @@ static gint nntp_gen_command(NNTPSession *session, gchar *argbuf,
 		}
                 ok = nntp_ok(sock, NULL);
        }
-
+       
+	session_set_access_time(SESSION(session));
+	
 	return ok;
 }
