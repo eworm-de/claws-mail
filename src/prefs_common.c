@@ -504,7 +504,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"folderview_width", "179", &prefs_common.folderview_width, P_INT,
 	 NULL, NULL, NULL},
-	{"folderview_height", "600", &prefs_common.folderview_height, P_INT,
+	{"folderview_height", "450", &prefs_common.folderview_height, P_INT,
 	 NULL, NULL, NULL},
 	{"folderview_visible", "TRUE", &prefs_common.folderview_visible, P_BOOL,
 	 NULL, NULL, NULL},
@@ -520,7 +520,7 @@ static PrefParam param[] = {
 
 	{"summaryview_width", "600", &prefs_common.summaryview_width, P_INT,
 	 NULL, NULL, NULL},
-	{"summaryview_height", "173", &prefs_common.summaryview_height, P_INT,
+	{"summaryview_height", "157", &prefs_common.summaryview_height, P_INT,
 	 NULL, NULL, NULL},
 
 	{"main_messagewin_x", "256", &prefs_common.main_msgwin_x, P_INT,
@@ -529,7 +529,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"messageview_width", "600", &prefs_common.msgview_width, P_INT,
 	 NULL, NULL, NULL},
-	{"messageview_height", "540", &prefs_common.msgview_height, P_INT,
+	{"messageview_height", "300", &prefs_common.msgview_height, P_INT,
 	 NULL, NULL, NULL},
 	{"messageview_visible", "TRUE", &prefs_common.msgview_visible, P_BOOL,
 	 NULL, NULL, NULL},

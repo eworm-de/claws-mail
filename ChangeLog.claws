@@ -1,3 +1,12 @@
+2004-10-01 [paul]	0.9.12cvs116
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/account.c
+	* src/prefs_common.c
+	* src/gtk/colorlabel.c
+		sync with main 0.9.12cvs17
+
 2004-09-30 [colin]	0.9.12cvs115
 
 	* src/stock_pixmap.c

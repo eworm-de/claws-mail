@@ -1,3 +1,50 @@
+2004-09-30
+
+	* src/filter.c: filter_apply_msginfo(): FilterRule::enabled == FALSE
+	  の場合フィルタを適用しないようにした。
+	* src/prefs_filter.c: 「有効」カラムを実装。
+	* src/account.c: account_selected(): ダブルクリックの挙動を修正。
+
+2004-09-30
+
+	* src/colorlabel.c: メニューラベルサイズを調整。カラーメニューから
+	  「なし」を削除。
+	* src/filter.[ch]
+	  src/prefs_filter_edit.c: カラーラベルアクションを実装。
+	* src/summaryview.c: summary_filter_func(): フラグアクションが実行
+	  されたときにサマリのフラグを更新するようにした。
+
+2004-09-29
+
+	* src/prefs_filter_edit.c: カラーラベルを追加。
+	* src/colorlabel.c: メニューのラベルのサイズと輪郭線を修正。
+
+2004-09-28
+
+	* src/filter.[ch]
+	  src/prefs_filter_edit.c: ルール作成時のエラー処理を改良。
+
+2004-09-28
+
+	* src/prefs_common.c: ビューのデフォルトのサイズを調整。
+
+2004-09-27
+
+	* src/filter.c
+	  src/prefs_filter_edit.c: サイズ/経過日数条件を実装。
+	* src/menu.[ch]: menu_get_option_menu_active_user_data(): 新規。
+
+2004-09-22
+
+	* src/prefs_filter_edit.c: ヘッダの編集が完了したら以前の項目を
+	  選択するようにした。
+
+2004-09-22
+
+	* src/prefs_filter.[ch]
+	  src/prefs_filter_edit.c
+	  src/procheader.[ch]: ユーザ定義ヘッダのダイアログを実装。
+
 2004-09-17
 
 	* src/filter.c:
