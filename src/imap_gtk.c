@@ -42,6 +42,7 @@
 static void new_folder_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void rename_folder_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void move_folder_cb(FolderView *folderview, guint action, GtkWidget *widget);
+static void imap_settings_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void remove_server_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void delete_folder_cb(FolderView *folderview, guint action, GtkWidget *widget);
 static void update_tree_cb(FolderView *folderview, guint action, GtkWidget *widget);
@@ -59,6 +60,7 @@ static GtkItemFactoryEntry imap_popup_entries[] =
 	{N_("/_Check for new messages"), NULL, update_tree_cb,   0, NULL},
 	{N_("/R_ebuild folder tree"),	 NULL, update_tree_cb,   1, NULL},
 	{N_("/---"),			 NULL, NULL, 		 0, "<Separator>"},
+	{N_("/IMAP4 _account settings"), NULL, imap_settings_cb, 0, NULL},
 	{N_("/Remove _IMAP4 account"),	 NULL, remove_server_cb, 0, NULL},
 	{N_("/---"),			 NULL, NULL, 		 0, "<Separator>"},
 };
@@ -231,6 +233,17 @@ static void move_folder_cb(FolderView *folderview, guint action, GtkWidget *widg
 		return;
 	
 	folderview_move_folder(folderview, from_folder, to_folder);
+}
+
+static void imap_settings_cb(FolderView *folderview, guint action, GtkWidget *widget)
+{
+	FolderItem *item;
+
+	item = folderview_get_selected_item(folderview);
+	if (item == NULL)
+		return;
+
+	account_open(item->folder->account);
 }
 
 static void remove_server_cb(FolderView *folderview, guint action, GtkWidget *widget)

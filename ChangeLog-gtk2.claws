@@ -1,3 +1,10 @@
+2005-01-04 [colin]	0.9.13cvs27.1
+
+	* src/folderview.c
+	* src/imap_gtk.c
+	* src/news_gtk.c
+		Sync with HEAD
+
 2005-01-04 [colin]	0.9.13cvs25.9
 
 	* src/compose.c
