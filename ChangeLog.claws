@@ -1,3 +1,8 @@
+2002-11-10 [colin]	0.8.5claws116
+
+	* src/prefs_folder_item.c
+		Fix hanging after opening folder properties
+
 2002-11-10 [hoa]	0.8.5claws115
 
 	* src/matcher_parser_lex.l

@@ -593,9 +593,13 @@ void prefs_folder_item_ok_cb(GtkWidget *widget,
 	
 	if (dialog->item == dialog->folderview->summaryview->folder_item &&
 	    (prefs->enable_simplify_subject != old_simplify_val ||  
-	    0 != strcmp2(prefs->simplify_subject_regexp, old_simplify_str))) 
-		summary_show(dialog->folderview->summaryview, dialog->item);
-		
+	    0 != strcmp2(prefs->simplify_subject_regexp, old_simplify_str))) {
+		summary_clear_all(dialog->folderview->summaryview);
+		dialog->folderview->opened = NULL;
+		dialog->folderview->selected = NULL;
+		folderview_select(dialog->folderview, dialog->item);
+	}
+
 	if (old_simplify_str) g_free(old_simplify_str);
 
 	prefs->enable_folder_chmod = 
