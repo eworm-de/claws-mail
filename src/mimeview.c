@@ -36,7 +36,10 @@
 #include <gtk/gtkdnd.h>
 #include <gtk/gtkselection.h>
 #include <stdio.h>
-#ifdef HAVE_FNMATCH_H
+
+#ifndef HAVE_APACHE_FNMATCH
+/* kludge: apache's fnmatch clashes with <regex.h>, don't include
+ * fnmatch.h */
 #include <fnmatch.h>
 #endif
 

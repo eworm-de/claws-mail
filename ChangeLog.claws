@@ -1,3 +1,10 @@
+2003-06-07 [alfons]	0.9.0claws17
+
+	* configure.ac
+	* src/mimeview.c
+		detect apache mishap in which case don't include fnmatch.h
+		if regex.h is already included
+
 2003-06-06 [christoph]	0.9.0claws16
 
 	* configure.ac
