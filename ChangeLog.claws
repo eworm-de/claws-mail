@@ -1,3 +1,13 @@
+2002-11-29 [oliver]	0.8.6claws39
+	
+	* src/messageview.c
+		o update summaryview when switching between different
+		  messageviews		
+	* src/toolbar.c	 
+		o check if messageview holds already removed msg
+		  from summaryview
+		
+
 2002-11-29 [oliver]	0.8.6claws38
 
 	* src/toolbar.c 

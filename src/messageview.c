@@ -62,6 +62,9 @@ static void messageview_size_allocate_cb(GtkWidget	*widget,
 static void key_pressed			(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 MessageView	*messageview);
+static void focus_in			(GtkWidget 	*widget, 
+					 GdkEventFocus 	*event,
+					 gpointer 	 data);
 static void messageview_toolbar_create	(MessageView	*messageview,
 					 GtkWidget	*container);
 static void toolbar_messageview_buttons_cb  (GtkWidget      *widget, 
@@ -201,6 +204,8 @@ MessageView *messageview_create_with_new_window(MainWindow *mainwin)
 			   GTK_SIGNAL_FUNC(messageview_destroy_cb), msgview);
 	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
 			   GTK_SIGNAL_FUNC(key_pressed), msgview);
+	gtk_signal_connect(GTK_OBJECT(window), "focus_in_event",
+			   GTK_SIGNAL_FUNC(focus_in), msgview);
 
 	n_menu_entries = sizeof(messageview_entries) / sizeof(messageview_entries[0]);
 	menubar = menubar_create(window, messageview_entries,
@@ -700,6 +705,15 @@ static void key_pressed(GtkWidget *widget, GdkEventKey *event,
 {
 	if (event && event->keyval == GDK_Escape && messageview->window)
 		gtk_widget_destroy(messageview->window);
+}
+
+static void focus_in(GtkWidget *widget, GdkEventFocus *event,
+		     gpointer data)
+{
+	MessageView *msgview = (MessageView*)data;
+
+	summary_select_by_msgnum(msgview->mainwin->summaryview, 
+				 msgview->msginfo->msgnum);
 }
 
 void messageview_toggle_view_real(MessageView *messageview)

@@ -665,15 +665,28 @@ void common_toolbar_delete_cb(GtkWidget	  *widget,
 	switch (parent->type) {
 	case TOOLBAR_MSGVIEW:
 		msgview = (MessageView*)parent->data;
-		summary_delete(msgview->mainwin->summaryview);	
-		/* do we really want to close the widget ? 
-		   I`d rather have it staying open and moving to next msg 
-		   in summaryview ... - oha */
-		/* following code is already used somewhere else, perhaps wrap it in a function ? */
+		
+		/* make sure the selected msg in summaryview is 
+		   the one we are asked to delete
+		*/
 		if (msgview->mainwin->summaryview->selected) {
-			GtkCTree *ctree = GTK_CTREE(msgview->mainwin->summaryview->ctree);
-			MsgInfo * msginfo = gtk_ctree_node_get_row_data(ctree, 
-									msgview->mainwin->summaryview->selected);
+			SummaryView *summaryview = msgview->mainwin->summaryview;
+			GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+			MsgInfo *msginfo = gtk_ctree_node_get_row_data(ctree, 
+								       summaryview->selected);	
+			if (msginfo->msgnum != msgview->msginfo->msgnum) {
+				alertpanel_error(_("Message already removed from folder."));
+				return;
+			}
+		}
+		
+		summary_delete(msgview->mainwin->summaryview);	
+
+		if (msgview->mainwin->summaryview->selected) {
+			SummaryView *summaryview = msgview->mainwin->summaryview;
+			GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+			MsgInfo *msginfo = gtk_ctree_node_get_row_data(ctree, 
+								       summaryview->selected);
 			messageview_show(msgview, msginfo, 
 					 msgview->all_headers);
 		} else {
