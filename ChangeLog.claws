@@ -1,3 +1,8 @@
+2004-12-06 [colin]	0.9.12cvs187
+
+	* src/compose.c
+		X-Sylpheed-Gnupg-Mode -> X-Sylpheed-Privacy-System
+
 2004-12-06 [paul]	0.9.12cvs186
 
 	* INSTALL
