@@ -80,9 +80,11 @@ static void return_receipt_send_clicked (NoticeView	*noticeview,
                                          MsgInfo        *msginfo);
 static void partial_recv_show		(NoticeView     *noticeview, 
 				         MsgInfo        *msginfo);	
-static void partial_recv_dload_clicked (NoticeView	*noticeview, 
+static void partial_recv_dload_clicked 	(NoticeView	*noticeview, 
                                          MsgInfo        *msginfo);
-static void partial_recv_del_clicked (NoticeView	*noticeview, 
+static void partial_recv_del_clicked 	(NoticeView	*noticeview, 
+                                         MsgInfo        *msginfo);
+static void partial_recv_unmark_clicked (NoticeView	*noticeview, 
                                          MsgInfo        *msginfo);
 static void save_as_cb			(gpointer	 data,
 					 guint		 action,
@@ -1085,21 +1087,23 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 		break;
 	case POP3_PARTIAL_DLOAD_DLOAD:
 		text = g_strdup_printf(_("This message has been partially "
-				"retrieved and is planned for "
-				"download;\nit is %s."),
+				"retrieved;\nit is %s and will be downloaded."),
 				to_human_readable(
 					(off_t)(msginfo->total_size)));
-		button1 = _("Mark for deletion");
-		button1_cb = partial_recv_del_clicked;
+		button1 = _("Unmark");
+		button1_cb = partial_recv_unmark_clicked;
+		button2 = _("Mark for deletion");
+		button2_cb = partial_recv_del_clicked;
 		break;
 	case POP3_PARTIAL_DLOAD_DELE:
 		text = g_strdup_printf(_("This message has been partially "
-				"retrieved and is planned for "
-				"deletion;\nit is %s."),
+				"retrieved;\nit is %s. and will be deleted."),
 				to_human_readable(
 					(off_t)(msginfo->total_size)));
 		button1 = _("Mark for download");
 		button1_cb = partial_recv_dload_clicked;
+		button2 = _("Unmark");
+		button2_cb = partial_recv_unmark_clicked;
 		break;
 	default:
 		return;
@@ -1169,6 +1173,33 @@ static void partial_recv_del_clicked(NoticeView *noticeview,
 				   tmpmsginfo->account_login, 
 			   	   tmpmsginfo->partial_recv, file) == 0) {
 		msginfo->planned_download = POP3_PARTIAL_DLOAD_DELE;
+		partial_recv_show(noticeview, msginfo);
+	}
+
+	procmsg_msginfo_free(tmpmsginfo);
+	g_free(file);
+}
+
+static void partial_recv_unmark_clicked(NoticeView *noticeview, 
+				       MsgInfo *msginfo)
+{
+	MsgInfo *tmpmsginfo;
+	gchar *file;
+
+	file = procmsg_get_message_file_path(msginfo);
+	if (!file) {
+		g_warning("can't get message file path.\n");
+		return;
+	}
+
+	tmpmsginfo = procheader_parse_file(file, msginfo->flags, TRUE, TRUE);
+	tmpmsginfo->folder = msginfo->folder;
+	tmpmsginfo->msgnum = msginfo->msgnum;
+
+	if (pop3_unmark(tmpmsginfo->account_server, 
+			tmpmsginfo->account_login, 
+			tmpmsginfo->partial_recv, file) == 0) {
+		msginfo->planned_download = POP3_PARTIAL_DLOAD_UNKN;
 		partial_recv_show(noticeview, msginfo);
 	}
 

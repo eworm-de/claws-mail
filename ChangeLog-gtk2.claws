@@ -1,3 +1,12 @@
+2004-07-09 [colin]	0.9.11cvs17.21
+
+	* src/messageview.c
+	* src/pop.c
+	* src/pop.h
+		Allow user to change his mind
+		and postpone decision (by
+		unmarking the mail)
+
 2004-07-09 [colin]	0.9.11cvs17.20
 
 	* src/messageview.c

@@ -173,5 +173,9 @@ int pop3_mark_for_delete	(const gchar 	*server,
 				 const gchar 	*login, 
 				 const gchar 	*uidl, 
 				 const gchar 	*filename);
+int pop3_unmark			(const gchar 	*server, 
+				 const gchar 	*login, 
+				 const gchar 	*uidl, 
+				 const gchar 	*filename);
 
 #endif /* __POP_H__ */

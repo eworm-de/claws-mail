@@ -781,10 +781,13 @@ static int pop3_uidl_mark_mail(const gchar *server, const gchar *login,
 			fprintf(fpnew, "%s\t%ld\t%s\n", 
 				uidl, recv_time, partial_recv);
 		} else {
+			gchar *stat = "0";
+			if (download == POP3_PARTIAL_DLOAD_DLOAD)
+				stat = filename;
+			if (download == POP3_PARTIAL_DLOAD_UNKN)
+				stat = "1";
 			fprintf(fpnew, "%s\t%ld\t%s\n", 
-				uidl, recv_time, 
-				download == POP3_PARTIAL_DLOAD_DLOAD
-					 ? filename : "0");
+				uidl, recv_time, stat);
 		}
 	}
 	fclose(fpnew);
@@ -811,9 +814,10 @@ static int pop3_uidl_mark_mail(const gchar *server, const gchar *login,
 		buf[len]='\0';
 		if (start) {
 			start = FALSE;
-			fprintf(fpnew, "SC-Marked-For-Download: %d\n", 
-				download);
-			printf("buf '%s'\n", buf);
+			if (download != POP3_PARTIAL_DLOAD_UNKN)
+				fprintf(fpnew, "SC-Marked-For-Download: %d\n", 
+					download);
+			
 			if(strlen(buf) > strlen("SC-Marked-For-Download: x\n")
 			&& !strncmp(buf, "SC-Marked-For-Download:", 
 			            strlen("SC-Marked-For-Download:"))) {
@@ -841,10 +845,17 @@ int pop3_mark_for_delete(const gchar *server, const gchar *login,
 }
 
 int pop3_mark_for_download(const gchar *server, const gchar *login, 
-			 const gchar *muidl, const gchar *filename)
+			  const gchar *muidl, const gchar *filename)
 {
 	return pop3_uidl_mark_mail(server, login, muidl, filename, 
 		POP3_PARTIAL_DLOAD_DLOAD);
+}
+
+int pop3_unmark(const gchar *server, const gchar *login, 
+		const gchar *muidl, const gchar *filename)
+{
+	return pop3_uidl_mark_mail(server, login, muidl, filename, 
+		POP3_PARTIAL_DLOAD_UNKN);
 }
 
 gint pop3_write_uidl_list(Pop3Session *session)
