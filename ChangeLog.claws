@@ -1,3 +1,9 @@
+2002-09-12 [colin]	0.8.2claws42
+
+	* src/procmime.c
+		Fix bug #557009 (wrong headers for messages 
+		forwarded as attachments)
+
 2002-09-11 [colin]	0.8.2claws41
 	
 	* src/compose.c
