@@ -1,3 +1,9 @@
+2003-04-21 [alfons]	0.8.11claws105
+
+	* src/main.c
+		No access to GTK structures if we're a spawned child
+		(and clean up code a little bit...) Should fix #126.
+
 2003-04-21 [melvin]	0.8.11claws104
 
 	* src/plugins/dillo_viewer/README
