@@ -1,21 +1,11 @@
-2002-07-22 [paul]	0.7.8claws97
+2002-07-22 [paul]	0.7.8claws95
 
 	* po/it.po
 	  po/nl.po
-		updated translations by Alessandro Maestri and
-		Wilbert Berendsen respectively
-
-2002-07-22 [christoph]	0.7.8claws96
-
-	* src/mimeview.c
-		fix memory leak caused by wrong g_dirname usage
-
-2002-07-22 [christoph]	0.7.8claws95
-
-	* src/summaryview.c
-		update new and unread message counts for summaryview
-		summaryview does not get it from the folder anymore
-		and has to update the values itself
+	  po/pt_BR.po
+		updated translations by Alessandro Maestri,
+		Wilbert Berendsen and Fabio Jr. Beneditto
+		respectively
 
 2002-07-22 [melvin]	0.7.8claws94
 
