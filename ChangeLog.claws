@@ -1,3 +1,9 @@
+2005-01-28 [colin]	1.0.0cvs22
+
+	* src/folderview.c
+		Don't call partial_mark_for_delete() when 
+		it's useless
+
 2005-01-27 [colin]	1.0.0cvs21
 
 	* src/procmsg.c
