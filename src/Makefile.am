@@ -25,7 +25,9 @@ sylpheed_SOURCES = \
 	prefs_common.c prefs_common.h \
 	prefs_filter.c prefs_filter.h \
 	prefs_account.c prefs_account.h \
+	prefs_display_header.c prefs_display_header.h \
 	account.c account.h \
+	displayheader.c displayheader.h	\
 	addressbook.c addressbook.h \
 	filesel.c filesel.h \
 	foldersel.c foldersel.h \
@@ -77,8 +79,6 @@ sylpheed_SOURCES = \
 	grouplist_dialog.c grouplist_dialog.h \
 	customheader.c customheader.h \
 	prefs_headers.c prefs_headers.h \
-	headers_display.c headers_display.h \
-	prefs_display_headers.c prefs_display_headers.h \
 	scoring.c scoring.h \
 	prefs_folder_item.c prefs_folder_item.h \
 	matcher.c matcher.h

@@ -1,3 +1,76 @@
+2001-05-06
+
+	* src/prefs_display_header.c: merged some changes from claws branch:
+	  prefs_display_header_create(): allow reordering of headers by
+	  dragging.
+	  prefs_display_header_find_header(): new function.
+	  prefs_display_header_clist_set_row(): don't allow duplicates.
+	* src/prefs_account.c: prefs_account_receive_create(): changed
+	  the label of the check button.
+
+2001-05-05
+
+	* src/pop.c: pop3_getsize_list_recv(): if sscanf() failed, break
+	  immediately.
+	* src/inc.h: removed cur_msg_bytes from Pop3State.
+	* src/inc.c: pop3_recv_func()
+	  src/recv.[ch]: made the second arguments of RecvUIFunc current
+	  total read bytes.
+	  recv_write(): made it call UI func if elapsed time is greater
+	  than 0.1 sec.
+	* src/recv.c: recv_write(): changed the interval to 300 usec.
+	* src/textview.c: textview_show_header(): if header is Subject,
+	  unfold it.
+	* src/utils.[ch]: unfold_line(): new.
+	* src/procheader.[ch]: procheader_get_header_array(): new.
+	* src/prefs_display_header.c: updated defaults.
+
+2001-05-05
+
+	* some merge from the sylpheed-claws branch.
+	  It allows user to specify displayed headers in message view.
+	  (symbol names were also changed.)
+	* src/prefs_display_header.[ch]
+	  src/displayheader.[ch]: new.
+	* src/prefs_display_header.c:
+	  removed prefs_display_headers_other_headers_toggled().
+	  removed "(New)" row from the list.
+	* src/defs.h: added DISPLAY_HEADER_RC.
+	* src/prefs_common.c: prefs_message_create(): added a button for
+	  opening the display header setting dialog.
+	* src/prefs_common.h: added show_other_header and disphdr_list
+	  to PrefsCommon.
+	* src/procheader.[ch]: procheader_get_header_list_from_file(),
+	  procheader_get_header_array_asis(): new.
+	  procheader_get_header_list(): modified so that it takes FILE
+	  pointer for its argument.
+	  procheader_header_array_destroy(), procheader_header_free(): new.
+	* src/main.c: main(): made it call prefs_display_header_*_config().
+	* src/textview.c: textview_scan_header(): modified so that it
+	  sorts headers according to user setting.
+	  src/textview_show_header(): made it call
+	  textview_make_clickable_parts().
+	  textview_make_clickable_parts(): added GdkFont to its arguments,
+	  and removed GtkText from them.
+
+2001-05-04
+
+	* implemented auto-checking of new mail based on the patch from
+	  Pierric Descamps (thanks!).
+	* src/inc.c: added inc_autocheck_timer_init(),
+	  inc_autocheck_timer_set(), inc_autocheck_timer_remove(),
+	  inc_autocheck_func() for auto-checking of new mail.
+	* src/main.c: main(): call inc_autocheck_timer_init().
+	* src/prefs_common.c: prefs_receive_create(): activated the
+	  auto-checking UI. Added prefs_common_cancel(), and connected
+	  some signals to that.
+	* src/prefs_common.c
+	  src/prefs_account.c
+	  src/prefs_filter.c
+	  src/account.c: Disabled auto-checking while opening the dialog.
+	* src/headerview.c: headerview_show_xface(): fixed a bug that
+	  showed a warning when header pane was hidden.
+
 2001-05-03
 
 	* src/inc.c

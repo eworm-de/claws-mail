@@ -37,17 +37,18 @@
 #include "main.h"
 #include "prefs.h"
 #include "prefs_common.h"
+#include "prefs_display_header.h"
 #include "mainwindow.h"
 #include "summaryview.h"
 #include "messageview.h"
 #include "manage_window.h"
+#include "inc.h"
 #include "menu.h"
 #include "codeconv.h"
 #include "utils.h"
 #include "gtkutils.h"
 #include "alertpanel.h"
 #include "folder.h"
-#include "prefs_display_headers.h"
 
 PrefsCommon prefs_common;
 
@@ -425,6 +426,9 @@ static PrefParam param[] = {
 	 &message.chkbtn_halfpage,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
+	{"show_other_header", "FALSE", &prefs_common.show_other_header, P_BOOL,
+	 NULL, NULL, NULL},
+
 	/* MIME viewer */
 	{"mime_image_viewer", "display '%s'",
 	 &prefs_common.mime_image_viewer, P_STRING, NULL, NULL, NULL},
@@ -565,8 +569,9 @@ static void prefs_font_selection_ok		(GtkButton	*button);
 static void prefs_common_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
-static void prefs_common_ok		(GtkButton	*button);
-static void prefs_common_apply		(GtkButton	*button);
+static void prefs_common_ok		(void);
+static void prefs_common_apply		(void);
+static void prefs_common_cancel		(void);
 
 void prefs_common_read_config(void)
 {
@@ -580,6 +585,8 @@ void prefs_common_save_config(void)
 
 void prefs_common_open(void)
 {
+	inc_autocheck_timer_remove();
+
 	if (!dialog.window) {
 		prefs_common_create();
 	}
@@ -603,7 +610,7 @@ static void prefs_common_create(void)
 	gtk_window_set_title (GTK_WINDOW(dialog.window),
 			      _("Common Preferences"));
 	gtk_signal_connect (GTK_OBJECT(dialog.window), "delete_event",
-			    GTK_SIGNAL_FUNC(gtk_widget_hide_on_delete), NULL);
+			    GTK_SIGNAL_FUNC(prefs_common_cancel), NULL);
 	gtk_signal_connect (GTK_OBJECT(dialog.window), "key_press_event",
 			    GTK_SIGNAL_FUNC(prefs_common_key_pressed), NULL);
 	gtk_signal_connect (GTK_OBJECT(dialog.window), "focus_in_event",
@@ -615,7 +622,7 @@ static void prefs_common_create(void)
 	gtk_signal_connect (GTK_OBJECT(dialog.apply_btn), "clicked",
 			    GTK_SIGNAL_FUNC(prefs_common_apply), NULL);
 	gtk_signal_connect_object (GTK_OBJECT(dialog.cancel_btn), "clicked",
-				   GTK_SIGNAL_FUNC(gtk_widget_hide_on_delete),
+				   GTK_SIGNAL_FUNC(prefs_common_cancel),
 				   GTK_OBJECT(dialog.window));
 
 	/* create all widgets on notebook */
@@ -741,8 +748,6 @@ static void prefs_receive_create(void)
 	hbox_autochk = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox_autochk);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_autochk, FALSE, FALSE, 0);
-
-	gtk_widget_set_sensitive(hbox_autochk, FALSE);
 
 	PACK_CHECK_BUTTON (hbox_autochk, checkbtn_autochk,
 			   _("Auto-check new mail"));
@@ -1308,7 +1313,6 @@ static void prefs_display_create(void)
 	GtkWidget *hbox1;
 	GtkWidget *label_datefmt;
 	GtkWidget *button_dispitem;
-	GtkWidget *button_headers_display;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1393,19 +1397,6 @@ static void prefs_display_create(void)
 			    GTK_SIGNAL_FUNC (prefs_summary_display_item_set),
 			    NULL);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
-
-	button_headers_display = gtk_button_new_with_label
-		(_(" Set displaying of headers... "));
-	gtk_widget_show (button_headers_display);
-	gtk_box_pack_start (GTK_BOX (hbox1), button_headers_display, FALSE,
-			    TRUE, 0);
-	gtk_signal_connect (GTK_OBJECT (button_headers_display), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_display_headers_open),
-			    NULL);
-
 	display.entry_textfont	= entry_textfont;
 	display.button_textfont	= button_textfont;
 
@@ -1426,6 +1417,7 @@ static void prefs_message_create(void)
 	GtkWidget *chkbtn_mbalnum;
 	GtkWidget *chkbtn_disphdrpane;
 	GtkWidget *chkbtn_disphdr;
+	GtkWidget *button_edit_disphdr;	
 	GtkWidget *hbox_linespc;
 	GtkWidget *label_linespc;
 	GtkObject *spinbtn_linespc_adj;
@@ -1473,8 +1465,23 @@ static void prefs_message_create(void)
 		 _("Display 2-byte alphabet and numeric with 1-byte character"));
 	PACK_CHECK_BUTTON(vbox2, chkbtn_disphdrpane,
 			  _("Display header pane above message view"));
-	PACK_CHECK_BUTTON(vbox2, chkbtn_disphdr,
-			  _("Display short headers on message view"));
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
+
+	PACK_CHECK_BUTTON(hbox1, chkbtn_disphdr,
+		_("Display short headers on message view"));
+
+	button_edit_disphdr = gtk_button_new_with_label (_(" Edit... "));
+	gtk_widget_show (button_edit_disphdr);
+	gtk_box_pack_end (GTK_BOX (hbox1), button_edit_disphdr,
+				  FALSE, TRUE, 0);
+	gtk_signal_connect (GTK_OBJECT (button_edit_disphdr), "clicked",
+					    GTK_SIGNAL_FUNC (prefs_display_header_open),
+					    NULL);
+
+	SET_TOGGLE_SENSITIVITY(chkbtn_disphdr, button_edit_disphdr);
 
 	hbox1 = gtk_hbox_new (FALSE, 32);
 	gtk_widget_show (hbox1);
@@ -2466,20 +2473,28 @@ static void prefs_common_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				     gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
-		gtk_widget_hide(dialog.window);
+		prefs_common_cancel();	
 }
 
-static void prefs_common_ok(GtkButton *button)
+static void prefs_common_ok(void)
 {
-	prefs_common_apply(button);
+	prefs_common_apply();
 	gtk_widget_hide(dialog.window);
 	if (quote_desc_win && GTK_WIDGET_VISIBLE(quote_desc_win))
 		gtk_widget_hide(quote_desc_win);
+
+	inc_autocheck_timer_set();
 }
 
-static void prefs_common_apply(GtkButton *button)
+static void prefs_common_apply(void)
 {
 	prefs_set_data_from_dialog(param);
 	main_window_reflect_prefs_all();
 	prefs_common_save_config();
+}
+
+static void prefs_common_cancel(void)
+{
+	gtk_widget_hide(dialog.window);
+	inc_autocheck_timer_set();
 }

@@ -39,6 +39,7 @@
 #include "mainwindow.h"
 #include "foldersel.h"
 #include "manage_window.h"
+#include "inc.h"
 #include "filter.h"
 #include "utils.h"
 #include "gtkutils.h"
@@ -110,10 +111,12 @@ static void prefs_filter_notrecv_radio_button_toggled	(void);
 static void prefs_filter_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
-static void prefs_filter_close		(GtkButton	*button);
+static void prefs_filter_close		();
 
 void prefs_filter_open(void)
 {
+	inc_autocheck_timer_remove();
+
 	if (!filter.window) {
 		prefs_filter_create();
 	}
@@ -198,7 +201,7 @@ static void prefs_filter_create(void)
 	gtk_window_set_title (GTK_WINDOW(window),
 			      _("Filter setting"));
 	gtk_signal_connect (GTK_OBJECT(window), "delete_event",
-			    GTK_SIGNAL_FUNC(gtk_widget_hide_on_delete), NULL);
+			    GTK_SIGNAL_FUNC(prefs_filter_close), NULL);
 	gtk_signal_connect (GTK_OBJECT(window), "key_press_event",
 			    GTK_SIGNAL_FUNC(prefs_filter_key_pressed), NULL);
 	gtk_signal_connect (GTK_OBJECT(window), "focus_in_event",
@@ -804,11 +807,12 @@ static void prefs_filter_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				     gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
-		gtk_widget_hide(filter.window);
+		prefs_filter_close();
 }
 
-static void prefs_filter_close(GtkButton *button)
+static void prefs_filter_close(void)
 {
 	prefs_filter_write_config();
 	gtk_widget_hide(filter.window);
+	inc_autocheck_timer_set();	
 }

@@ -57,6 +57,7 @@
 #include "prefs_common.h"
 #include "prefs_filter.h"
 #include "prefs_account.h"
+#include "prefs_display_header.h"
 #include "account.h"
 #include "procmsg.h"
 #include "inc.h"
@@ -198,14 +199,6 @@ int main(int argc, char *argv[])
 
 	srandom((gint)time(NULL));
 
-	prefs_common_read_config();
-	prefs_common_save_config();
-	prefs_filter_read_config();
-	prefs_filter_write_config();
-	prefs_display_headers_read_config();
-	prefs_display_headers_write_config();
-	prefs_scoring_read_config();
-
 #if USE_GPGME
 	if (gpgme_check_engine()) {  /* Also does some gpgme init */
 		rfc2015_disable_all();
@@ -226,6 +219,14 @@ int main(int argc, char *argv[])
 	gpgme_register_idle(idle_function_for_gpgme);
 #endif
 
+	prefs_common_read_config();
+	prefs_common_save_config();
+	prefs_filter_read_config();
+	prefs_filter_write_config();
+	prefs_display_header_read_config();
+	prefs_display_header_write_config();
+	prefs_scoring_read_config();
+
 	gtkut_widget_init();
 
 	mainwin = main_window_create
@@ -245,9 +246,11 @@ int main(int argc, char *argv[])
 	account_set_missing_folder();
 	folderview_set(folderview);
 
-	if (cmd.receive_all)
+	inc_autocheck_timer_init(mainwin);
+
+	if (cmd.receive_all || prefs_common.chk_on_startup)
 		inc_all_account_mail(mainwin);
-	else if (prefs_common.chk_on_startup || cmd.receive)
+	else if (cmd.receive)
 		inc_mail(mainwin);
 	else
 		gtk_widget_grab_focus(folderview->ctree);

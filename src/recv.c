@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/time.h>
 
 #include "intl.h"
 #include "recv.h"
@@ -100,6 +101,10 @@ gint recv_write(SockInfo *sock, FILE *fp)
 {
 	gchar buf[BUFFSIZE];
 	gint len;
+	gint bytes = 0;
+	struct timeval tv_prev, tv_cur;
+
+	gettimeofday(&tv_prev, NULL);
 
 	for (;;) {
 		if (sock_gets(sock, buf, sizeof(buf)) < 0) {
@@ -108,10 +113,23 @@ gint recv_write(SockInfo *sock, FILE *fp)
 		}
 
 		len = strlen(buf);
-		if (len > 1 && buf[0] == '.' && buf[1] == '\r') break;
+		if (len > 1 && buf[0] == '.' && buf[1] == '\r') {
+			if (recv_ui_func)
+				recv_ui_func(sock, bytes, recv_ui_func_data);
+			break;
+		}
+		bytes += len;
 
-		if (recv_ui_func)
-			recv_ui_func(sock, len, recv_ui_func_data);
+		if (recv_ui_func) {
+			gettimeofday(&tv_cur, NULL);
+			/* if elapsed time from previous update is greater
+			   than 300 usec, update UI */
+			if (tv_cur.tv_sec - tv_prev.tv_sec > 0 ||
+			    tv_cur.tv_usec - tv_prev.tv_usec > 300) {
+				recv_ui_func(sock, bytes, recv_ui_func_data);
+				gettimeofday(&tv_prev, NULL);
+			}
+		}
 
 		if (len > 1 && buf[len - 1] == '\n' && buf[len - 2] == '\r') {
 			buf[len - 2] = '\n';

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,5 +102,8 @@ void inc_progress_update	(Pop3State	*state,
 				 Pop3Phase	 phase);
 gint inc_drop_message		(const gchar	*file,
 				 Pop3State	*state);
+void inc_autocheck_timer_init	(MainWindow	*mainwin);
+void inc_autocheck_timer_set	(void);
+void inc_autocheck_timer_remove	(void);
 
 #endif /* __INC_H__ */

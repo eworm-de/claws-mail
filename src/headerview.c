@@ -208,6 +208,7 @@ static void headerview_show_xface(HeaderView *headerview, MsgInfo *msginfo)
 		}
 		return;
 	}
+	if (!GTK_WIDGET_VISIBLE(headerview->hbox)) return;
 
 	strncpy(xface, msginfo->xface, sizeof(xface));
 

@@ -826,6 +826,24 @@ void remove_space(gchar *str)
 	}
 }
 
+void unfold_line(gchar *str)
+{
+	register gchar *p = str;
+	register gint spc;
+
+	while (*p) {
+		if (*p == '\n' || *p == '\r') {
+			*p++ = ' ';
+			spc = 0;
+			while (isspace(*(p + spc)))
+				spc++;
+			if (spc)
+				memmove(p, p + spc, strlen(p + spc) + 1);
+		} else
+			p++;
+	}
+}
+
 void subst_char(gchar *str, gchar orig, gchar subst)
 {
 	register gchar *p = str;

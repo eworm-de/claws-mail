@@ -1,3 +1,78 @@
+2001-05-06
+
+	* src/prefs_display_header.c: claws ブランチからいくつかの変更を
+	  マージ:
+	  prefs_display_header_create(): ドラッグによるヘッダの並び換えが
+	  できるようにした。
+	  prefs_display_header_find_header(): 新規関数。
+	  prefs_display_header_clist_set_row(): 重複を認めないようにした。
+	* src/prefs_account.c: prefs_account_receive_create(): チェック
+	  ボタンのラベルを変更。
+
+2001-05-05
+
+	* src/pop.c: pop3_getsize_list_recv(): sscanf() が失敗したら、
+	  すぐに break するようにした。
+	* src/inc.h: Pop3State から cur_msg_bytes を削除。
+	* src/inc.c: pop3_recv_func()
+	  src/recv.[ch]: RecvUIFunc の第二引数を現在の合計バイト数にした。
+	  recv_write(): 経過時間が0.1秒より大きければ UI 関数を呼ぶように
+	  した。
+	* src/recv.c: recv_write(): 間隔を300 usec にした。
+	* src/textview.c: textview_show_header(): ヘッダが Subject の場合、
+	  一行にするようにした。
+	* src/utils.[ch]: unfold_line(): 新規。
+	* src/procheader.[ch]: procheader_get_header_array(): 新規。
+	* src/prefs_display_header.c: デフォルトを更新。
+
+2001-05-05
+
+	* sylpheed-claws ブランチからいくつかマージ。
+	  メッセージビューに表示されるヘッダをユーザが指定できるようになった。
+	  (シンボル名は変更。)
+	* src/prefs_display_header.[ch]
+	  src/displayheader.[ch]: 新規。
+	* src/prefs_display_header.c:
+	  prefs_display_headers_other_headers_toggled() を削除。
+	  リストから "(新規)" 行を削除。
+	* src/defs.h: DISPLAY_HEADER_RC を追加。
+	* src/prefs_common.c: prefs_message_create(): 表示ヘッダの設定
+	  ダイアログを開くボタンを追加。
+	* src/prefs_common.h: PrefsCommon に show_other_header と
+	  disphdr_list を追加。
+	* src/procheader.[ch]: procheader_get_header_list_from_file(),
+	  procheader_get_header_array_asis(): 新規。
+	  procheader_get_header_list(): 引数に FILE ポインタをとるように
+	  修正。
+	  procheader_header_array_destroy(), procheader_header_free() 新規。
+	* src/main.c: main(): prefs_display_header_*_config() を呼ぶように
+	  した。
+	* src/textview.c: textview_scan_header(): ユーザの設定によって
+	  ヘッダを並び換えるように修正。
+	  src/textview_show_header(): textview_make_clickable_parts() を
+	  呼ぶようにした。
+	  textview_make_clickable_parts(): 引数に GdkFont をとるようにし、
+	  引数から GtkText を除いた。
+
+2001-05-04
+
+	* Pierric Descamps さんのパッチに基づいて新着メールの自動チェック
+	  を実装(thanks!)。
+	* src/inc.c: inc_autocheck_timer_init(), inc_autocheck_timer_set(),
+	  inc_autocheck_timer_remove(), inc_autocheck_func() を新着メール
+	  の自動チェックのために追加。
+	* src/main.c: main(): inc_autocheck_timer_init() を呼ぶようにした。
+	* src/prefs_common.c: prefs_receive_create(): 自動チェックの UI
+	  をアクティブにした。 prefs_common_cancel() を追加し、いくつかの
+	  シグナルをそれに接続。
+	* src/prefs_common.c
+	  src/prefs_account.c
+	  src/prefs_filter.c
+	  src/account.c: ダイアログを開いているときは自動チェックを無効に
+	  した。
+	* src/headerview.c: headerview_show_xface(): ヘッダペインを非表示
+	  にしている場合に警告が出ていたバグを修正。
+
 2001-05-03
 
 	* src/inc.c

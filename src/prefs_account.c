@@ -39,6 +39,7 @@
 #include "account.h"
 #include "mainwindow.h"
 #include "manage_window.h"
+#include "inc.h"
 #include "menu.h"
 #include "gtkutils.h"
 #include "utils.h"
@@ -424,6 +425,8 @@ PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs)
 
 	debug_print(_("Opening account preferences window...\n"));
 
+	inc_autocheck_timer_remove();
+
 	cancelled = FALSE;
 
 	if (!ac_prefs) {
@@ -477,6 +480,8 @@ PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs)
 	gtk_widget_show(dialog.window);
 	gtk_main();
 	gtk_widget_hide(dialog.window);
+
+	inc_autocheck_timer_set();
 
 	if (cancelled && new_account) {
 		g_free(ac_prefs);
@@ -881,8 +886,9 @@ static void prefs_account_receive_create(void)
 			   _("Remove messages on server when received"));
 	PACK_CHECK_BUTTON (vbox2, getall_chkbtn,
 			   _("Receive all messages on server"));
-	PACK_CHECK_BUTTON (vbox2, recvatgetall_chkbtn,
-			   _("Receive at getting from all accounts"));
+	PACK_CHECK_BUTTON
+			(vbox2, recvatgetall_chkbtn,
+					 _("`Receive all' checks for new mail on this account"));
 	PACK_CHECK_BUTTON (vbox2, filter_on_recv_chkbtn,
 			   _("Filter messages on receiving"));
 

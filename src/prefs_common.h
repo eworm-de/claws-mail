@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -143,6 +143,9 @@ struct _PrefsCommon
 	gboolean scroll_halfpage;
 
 	gchar *force_charset;
+
+	gboolean show_other_header;
+	GSList *disphdr_list;
 
 	/* MIME viewer */
 	gchar *mime_image_viewer;

@@ -219,6 +219,7 @@ GSList *newsgroup_list_append		(GSList		*group_list,
 					 const gchar	*str);
 void remove_return			(gchar		*str);
 void remove_space			(gchar		*str);
+void unfold_line			(gchar		*str);
 void subst_char				(gchar		*str,
 					 gchar		 orig,
 					 gchar		 subst);

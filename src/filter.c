@@ -42,7 +42,7 @@ FolderItem *filter_get_dest_folder(GSList *fltlist, const gchar *file)
 	g_return_val_if_fail(file != NULL, NULL);
 	if (!fltlist) return NULL;
 
-	hlist = procheader_get_header_list(file);
+	hlist = procheader_get_header_list_from_file(file);
 	if (!hlist) return NULL;
 
 	for (cur = fltlist; cur != NULL; cur = cur->next) {

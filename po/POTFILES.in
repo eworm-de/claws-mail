@@ -36,6 +36,7 @@ src/pop.c
 src/prefs.c
 src/prefs_account.c
 src/prefs_common.c
+src/prefs_display_header.c
 src/prefs_filter.c
 src/procheader.c
 src/procmime.c

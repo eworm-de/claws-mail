@@ -300,7 +300,7 @@ gint pop3_getsize_list_recv(SockInfo *sock, gpointer data)
 
 		if (buf[0] == '.') break;
 		if (sscanf(buf, "%d %d", &num, &size) != 2)
-			continue;
+			break;
 
 		if (num <= state->count)
 			state->sizes[num] = size;

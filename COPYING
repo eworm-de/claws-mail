@@ -1,12 +1,9 @@
-The code in this distribution is Copyright 1999,2000 by Hiroyuki Yamamoto.
+The code in this distribution is Copyright 1999-2001 by Hiroyuki Yamamoto.
 
 The portions applied from fetchmail is Copyright 1997 by Eric S. Raymond.
 Portions of those are also copyrighted by Carl Harris, 1993 and 1995.
 Copyright retained for the purpose of protecting free redistribution of
 source.
-
-The MD5 support is copyright by RSA Data Security, Inc.  See the header
-comment of the md5.c module for license terms.
 
 Kcc is copyright by Yasuhiro Tonooka (tonooka@msi.co.jp),
 and libkcc is copyright by takeshi@SoftAgency.co.jp.

@@ -50,8 +50,14 @@ gchar *procheader_get_unfolded_line	(gchar		*buf,
 					 gint		 len,
 					 FILE		*fp);
 
-GSList *procheader_get_header_list	(const gchar	*file);
-void procheader_header_list_destroy	(GSList		*hlist);
+GSList *procheader_get_header_list_from_file	(const gchar	*file);
+GSList *procheader_get_header_list		(FILE		*fp);
+GPtrArray *procheader_get_header_array		(FILE		*fp);
+GPtrArray *procheader_get_header_array_asis	(FILE		*fp);
+void procheader_header_list_destroy		(GSList		*hlist);
+void procheader_header_array_destroy		(GPtrArray	*harray);
+void procheader_header_free			(Header		*header);
+
 void procheader_get_header_fields	(FILE		*fp,
 					 HeaderEntry	 hentry[]);
 MsgInfo *procheader_parse		(const gchar	*file,

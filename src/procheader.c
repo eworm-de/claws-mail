@@ -36,13 +36,6 @@
 
 #define BUFFSIZE	8192
 
-/*
-  procheader_get_one_field
-  - reads fp and puts the header and the corresponding content into buf
-    if one of these is one of hentry table.
-  - if hentry is NULL, ignores no headers
- */
-
 gint procheader_get_one_field(gchar *buf, gint len, FILE *fp,
 			      HeaderEntry hentry[])
 {
@@ -192,6 +185,145 @@ gchar *procheader_get_unfolded_line(gchar *buf, gint len, FILE *fp)
 	return buf;
 }
 
+GSList *procheader_get_header_list_from_file(const gchar *file)
+{
+	FILE *fp;
+	GSList *hlist;
+
+	if ((fp = fopen(file, "r")) == NULL) {
+		FILE_OP_ERROR(file, "fopen");
+		return NULL;
+	}
+
+	hlist = procheader_get_header_list(fp);
+
+	fclose(fp);
+	return hlist;
+}
+
+GSList *procheader_get_header_list(FILE *fp)
+{
+	gchar buf[BUFFSIZE], tmp[BUFFSIZE];
+	gchar *p;
+	GSList *hlist = NULL;
+	Header *header;
+
+	g_return_val_if_fail(fp != NULL, NULL);
+
+	while (procheader_get_unfolded_line(buf, sizeof(buf), fp) != NULL) {
+		if (*buf == ':') continue;
+		for (p = buf; *p && *p != ' '; p++) {
+			if (*p == ':') {
+				header = g_new(Header, 1);
+				header->name = g_strndup(buf, p - buf);
+				p++;
+				while (*p == ' ' || *p == '\t') p++;
+				conv_unmime_header(tmp, sizeof(tmp), p, NULL);
+				header->body = g_strdup(tmp);
+
+				hlist = g_slist_append(hlist, header);
+				break;
+			}
+		}
+	}
+
+	return hlist;
+}
+
+GPtrArray *procheader_get_header_array(FILE *fp)
+{
+	gchar buf[BUFFSIZE], tmp[BUFFSIZE];
+	gchar *p;
+	GPtrArray *headers;
+	Header *header;
+
+	g_return_val_if_fail(fp != NULL, NULL);
+
+	headers = g_ptr_array_new();
+
+	while (procheader_get_unfolded_line(buf, sizeof(buf), fp) != NULL) {
+		if (*buf == ':') continue;
+		for (p = buf; *p && *p != ' '; p++) {
+			if (*p == ':') {
+				header = g_new(Header, 1);
+				header->name = g_strndup(buf, p - buf);
+				p++;
+				while (*p == ' ' || *p == '\t') p++;
+				conv_unmime_header(tmp, sizeof(tmp), p, NULL);
+				header->body = g_strdup(tmp);
+
+				g_ptr_array_add(headers, header);
+				break;
+			}
+		}
+	}
+
+	return headers;
+}
+
+GPtrArray *procheader_get_header_array_asis(FILE *fp)
+{
+	gchar buf[BUFFSIZE], tmp[BUFFSIZE];
+	gchar *p;
+	GPtrArray *headers;
+	Header *header;
+
+	g_return_val_if_fail(fp != NULL, NULL);
+
+	headers = g_ptr_array_new();
+
+	while (procheader_get_one_field(buf, sizeof(buf), fp, NULL) != -1) {
+		if (*buf == ':') continue;
+		for (p = buf; *p && *p != ' '; p++) {
+			if (*p == ':') {
+				header = g_new(Header, 1);
+				header->name = g_strndup(buf, p - buf);
+				p++;
+				conv_unmime_header(tmp, sizeof(tmp), p, NULL);
+				header->body = g_strdup(tmp);
+
+				g_ptr_array_add(headers, header);
+				break;
+			}
+		}
+	}
+
+	return headers;
+}
+
+void procheader_header_list_destroy(GSList *hlist)
+{
+	Header *header;
+
+	while (hlist != NULL) {
+		header = hlist->data;
+		procheader_header_free(header);
+		hlist = g_slist_remove(hlist, header);
+	}
+}
+
+void procheader_header_array_destroy(GPtrArray *harray)
+{
+	gint i;
+	Header *header;
+
+	for (i = 0; i < harray->len; i++) {
+		header = g_ptr_array_index(harray, i);
+		procheader_header_free(header);
+	}
+
+	g_ptr_array_free(harray, TRUE);
+}
+
+void procheader_header_free(Header *header)
+{
+	if (!header) return;
+
+	g_free(header->name);
+	g_free(header->body);
+	g_free(header);
+}
+
 /*
   tests whether two headers' names are equal
   remove the trailing ':' or ' ' before comparing
@@ -211,13 +343,6 @@ gboolean procheader_headername_equal(char * hdr1, char * hdr2)
 	if (len1 != len2)
 		return 0;
 	return (strncasecmp(hdr1, hdr2, len1) == 0);
-}
-
-void procheader_header_free(Header * header)
-{
-	g_free(header->name);
-	g_free(header->body);
-	g_free(header);
 }
 
 /*
@@ -248,41 +373,6 @@ Header * procheader_parse_header(gchar * buf)
 		}
 	}
 	return NULL;
-}
-
-GSList *procheader_get_header_list(const gchar *file)
-{
-	FILE *fp;
-	gchar buf[BUFFSIZE], tmp[BUFFSIZE];
-	gchar *p;
-	GSList *hlist = NULL;
-	Header *header;
-
-	if ((fp = fopen(file, "r")) == NULL) {
-		FILE_OP_ERROR(file, "fopen");
-		return NULL;
-	}
-
-	while (procheader_get_unfolded_line(buf, sizeof(buf), fp) != NULL) {
-		header = procheader_parse_header(buf);
-		if (header != NULL)
-			hlist = g_slist_append(hlist, header);
-	}
-
-	fclose(fp);
-	return hlist;
-}
-
-void procheader_header_list_destroy(GSList *hlist)
-{
-	Header *header;
-
-	while (hlist != NULL) {
-		header = hlist->data;
-
-		procheader_header_free(header);
-		hlist = g_slist_remove(hlist, header);
-	}
 }
 
 void procheader_get_header_fields(FILE *fp, HeaderEntry hentry[])

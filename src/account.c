@@ -39,6 +39,7 @@
 #include "prefs_account.h"
 #include "compose.h"
 #include "manage_window.h"
+#include "inc.h"
 #include "gtkutils.h"
 #include "utils.h"
 #include "alertpanel.h"
@@ -198,9 +199,12 @@ GList *account_get_list(void)
 
 void account_edit_open(void)
 {
+	inc_autocheck_timer_remove();
+	
 	if (compose_get_compose_list()) {
 		alertpanel_notice(_("Some composing windows are open.\n"
 				    "Please close all the composing windows before editing the accounts."));
+		inc_autocheck_timer_set();					
 		return;
 	}
 
@@ -223,6 +227,7 @@ void account_add(void)
 	PrefsAccount *ac_prefs;
 
 	ac_prefs = prefs_account_open(NULL);
+	inc_autocheck_timer_remove();
 
 	if (!ac_prefs) return;
 
@@ -473,6 +478,7 @@ static void account_edit_prefs(void)
 	Xstrdup_a(ac_name, ac_prefs->account_name, return);
 
 	prefs_account_open(ac_prefs);
+	inc_autocheck_timer_remove();
 
 	if (!prev_default && ac_prefs->is_default)
 		account_set_as_default(ac_prefs);
@@ -571,6 +577,8 @@ static void account_edit_close(void)
 	main_window_reflect_prefs_all();
 
 	gtk_widget_hide(edit_account.window);
+
+	inc_autocheck_timer_set();
 }
 
 static void account_key_pressed(GtkWidget *widget, GdkEventKey *event,

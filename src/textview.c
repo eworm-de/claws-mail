@@ -47,8 +47,7 @@
 #include "html.h"
 #include "compose.h"
 #include "addressbook.h"
-#include "headers_display.h"
-#include "prefs_display_headers.h"
+#include "displayheader.h"
 
 #define FONT_LOAD(font, s) \
 { \
@@ -331,16 +330,8 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	gtk_text_freeze(text);
 
 	if (headers) {
-		gint i;
-
 		textview_show_header(textview, headers);
-		for (i = 0; i < headers->len; i++) {
-			Header *header = g_ptr_array_index(headers, i);
-			g_free(header->body);
-			g_free(header->name);
-			g_free(header);
-		}
-		g_ptr_array_free(headers, TRUE);
+		procheader_header_array_destroy(headers);		
 	}
 
 	tmpfp = procmime_decode_content(NULL, fp, mimeinfo);
@@ -637,8 +628,8 @@ static gchar *make_email_string(const gchar *bp, const gchar *ep)
 	}
 
 /* textview_make_clickable_parts() - colorizes clickable parts */
-static void textview_make_clickable_parts(TextView *textview, GtkText *text,
-					  GdkFont  *textfont,
+static void textview_make_clickable_parts(TextView *textview,
+					  GdkFont  *font,
 					  GdkColor *fg_color,
 					  GdkColor *uri_color,
 					  const gchar *linebuf)
@@ -677,6 +668,8 @@ static void textview_make_clickable_parts(TextView *textview, GtkText *text,
 		gint		 pti;		/* index in parse table */
 		struct txtpos	*next;		/* next */
 	} head = {NULL, NULL, 0,  NULL}, *last = &head;
+
+	GtkText *text = GTK_TEXT(textview->text);
 
 	/* parse for clickable parts, and build a list of begin and end positions  */
 	for (walk = linebuf, n = 0;;) {
@@ -720,13 +713,14 @@ static void textview_make_clickable_parts(TextView *textview, GtkText *text,
 
 			uri = g_new(RemoteURI, 1);
 			if (last->bp - normal_text > 0)
-				gtk_text_insert(text, textfont,
+				gtk_text_insert(text, font,
 						fg_color, NULL,
 						normal_text,
 						last->bp - normal_text);
-			uri->uri = parser[last->pti].build_uri(last->bp, last->ep);
+			uri->uri = parser[last->pti].build_uri(last->bp, 
+						last->ep);
 			uri->start = gtk_text_get_point(text);
-			gtk_text_insert(text, textfont, uri_color,
+			gtk_text_insert(text, font, uri_color,
 					NULL, last->bp, last->ep - last->bp);
 			uri->end = gtk_text_get_point(text);
 			textview->uri_list =
@@ -734,11 +728,10 @@ static void textview_make_clickable_parts(TextView *textview, GtkText *text,
 		}
 
 		if (*normal_text)
-			gtk_text_insert(text, textfont, fg_color,
+			gtk_text_insert(text, font, fg_color,
 					NULL, normal_text, -1);
 	} else
-		gtk_text_insert(text, textfont, fg_color, NULL,
-				linebuf, -1);
+		gtk_text_insert(text, font, fg_color, NULL, linebuf, -1);
 }
 
 #undef ADD_TXT_POS
@@ -797,8 +790,7 @@ static void textview_write_line(TextView *textview, const gchar *str,
 		gtk_text_insert(text, spacingfont, NULL, NULL, " ", 1);
 
 	if (prefs_common.enable_color)
-		textview_make_clickable_parts(textview, text,
-						  textview->msgfont,
+		textview_make_clickable_parts(textview, textview->msgfont,
 					      fg_color, &uri_color, buf);
 	else
 		gtk_text_insert(text, textview->msgfont, fg_color, NULL,
@@ -940,29 +932,11 @@ enum
 
 static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 {
-	/*
-	static HeaderEntry hentry[] = {{"Date:",         NULL, FALSE},
-				       {"From:",         NULL, TRUE},
-				       {"To:",	         NULL, FALSE},
-				       {"Newsgroups:",   NULL, FALSE},
-				       {"Subject:",      NULL, TRUE},
-				       {"Cc:",	         NULL, FALSE},
-				       {"Reply-To:",     NULL, FALSE},
-				       {"Followup-To:",  NULL, FALSE},
-				       {"X-Mailer:",     NULL, TRUE},
-				       {"X-Newsreader:", NULL, TRUE},
-				       {"User-Agent:",   NULL, TRUE},
-				       {"Organization:", NULL, TRUE},
-				       {NULL,	         NULL, FALSE}};
-	*/
-	gchar buf[BUFFSIZE], tmp[BUFFSIZE];
-	gint hnum;
-	HeaderEntry *hp;
-	GPtrArray *headers;
-	GSList * l;
-
-	int i;
-	GPtrArray *sorted_headers;
+	gchar buf[BUFFSIZE];
+	GPtrArray *headers, *sorted_headers;
+	GSList *disphdr_list;
+	Header *header;
+	gint i;
 
 	g_return_val_if_fail(fp != NULL, NULL);
 
@@ -972,72 +946,38 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 		return NULL;
 	}
 
-	headers = g_ptr_array_new();
-
-	/*
-	while ((hnum = procheader_get_one_field(buf, sizeof(buf), fp, hentry))
-	       != -1) {
-		Header *header;
-
-		hp = hentry + hnum;
-
-		header = g_new(Header, 1);
-		header->name = g_strndup(buf, strlen(hp->name));
-		conv_unmime_header(tmp, sizeof(tmp), buf + strlen(hp->name),
-				   NULL);
-		header->body = g_strdup(tmp);
-
-		g_ptr_array_add(headers, header);
-	}
-	*/
-	//	while (procheader_get_unfolded_line(buf, sizeof(buf), fp) != NULL) {
-	while (procheader_get_one_field(buf, sizeof(buf), fp, NULL) != -1) {
-		gchar * p;
-		Header *header;
-
-		header = procheader_parse_header(buf);
-		if (header != NULL)
-			g_ptr_array_add(headers, header);
-	}
+	headers = procheader_get_header_array_asis(fp);
 
 	sorted_headers = g_ptr_array_new();
-	for(l = prefs_display_headers.headers_list ; l != NULL ;
-	    l = g_slist_next(l)) {
-		HeaderDisplayProp * dp = (HeaderDisplayProp *) l->data;
-		for(i = 0 ; i < headers->len ; i++) {
-			Header * header = g_ptr_array_index(headers, i);
-			if (procheader_headername_equal(header->name,
-							dp->name)) {
-				if (dp->hidden) {
-					g_ptr_array_remove_index(headers, i);
+
+	for (disphdr_list = prefs_common.disphdr_list; disphdr_list != NULL;
+	     disphdr_list = disphdr_list->next) {
+		DisplayHeaderProp *dp =
+			(DisplayHeaderProp *)disphdr_list->data;
+
+		for (i = 0; i < headers->len; i++) {
+			header = g_ptr_array_index(headers, i);
+
+			if (!strcasecmp(header->name, dp->name)) {
+				if (dp->hidden)
 					procheader_header_free(header);
-					i--;
-				}
-				else {
-					g_ptr_array_add(sorted_headers,
-							header);
-					g_ptr_array_remove_index(headers, i);
-					i--;
-				}
+				else
+					g_ptr_array_add(sorted_headers, header);
+
+				g_ptr_array_remove_index(headers, i);
+				i--;
 			}
 		}
 	}
 
-	if (prefs_display_headers.show_other_headers) {
-		while (headers->len != 0) {
-			Header * header = g_ptr_array_index(headers, 0);
+	if (prefs_common.show_other_header) {
+		for (i = 0; i < headers->len; i++) {
+			header = g_ptr_array_index(headers, i);
 			g_ptr_array_add(sorted_headers, header);
-			g_ptr_array_remove_index(headers, 0);
 		}
 	}
 
-	for(i = 0 ; i < headers->len ; i++) {
-		Header * header = g_ptr_array_index(headers, i);
-		procheader_header_free(header);
-	}
-
-	g_ptr_array_free(headers, FALSE);
-
+	g_ptr_array_free(headers, TRUE);
 	return sorted_headers;
 }
 
@@ -1057,27 +997,28 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 
 		gtk_text_insert(text, textview->boldfont, NULL, NULL,
 				header->name, -1);
-		gtk_text_insert(text, textview->boldfont, NULL, NULL,
-				" ", -1);
+		gtk_text_insert(text, textview->boldfont, NULL, NULL, ":", 2);
+
+		if (!strcasecmp(header->name, "Subject") ||
+		    !strcasecmp(header->name, "From")    ||
+		    !strcasecmp(header->name, "To")      ||
+		    !strcasecmp(header->name, "Cc"))
+			unfold_line(header->body);
+
 		if (prefs_common.enable_color &&
-		    (strncmp(header->name, "X-Mailer", 8) == 0 ||
-		     strncmp(header->name, "X-Newsreader", 12) == 0) &&
+		    (!strncmp(header->name, "X-Mailer", 8) ||
+		     !strncmp(header->name, "X-Newsreader", 12)) &&
 		    strstr(header->body, "Sylpheed") != NULL)
 			gtk_text_insert(text, NULL, &emphasis_color, NULL,
 					header->body, -1);
-		else {
-			if (prefs_common.enable_color) {
-				textview_make_clickable_parts(textview, text,
-											  NULL,
-											  NULL, 
-											  &uri_color, 
-											  header->body);
-			}											  
-			else {											  
-				gtk_text_insert(text, NULL, NULL, NULL,
-						header->body, -1);
-			}						
-		}					
+		else if (prefs_common.enable_color) {
+			textview_make_clickable_parts(textview,
+						      NULL, NULL, &uri_color,
+						      header->body);
+		} else {
+			gtk_text_insert(text, NULL, NULL, NULL,
+					header->body, -1);
+		}
 		gtk_text_insert(text, textview->msgfont, NULL, NULL, "\n", 1);
 	}
 

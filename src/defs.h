@@ -47,7 +47,7 @@
 #define ACCOUNT_RC		"accountrc"
 #define FILTER_RC		"filterrc"
 #define HEADERS_RC		"headersrc"
-#define HEADERS_DISPLAY_RC	"headersdisplayrc"
+#define DISPLAY_HEADER_RC	"dispheaderrc"
 #define FOLDERITEM_RC           "folderitemrc"
 #define SCORING_RC              "scoringrc"
 #define MENU_RC			"menurc"

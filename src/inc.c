@@ -98,7 +98,7 @@ static gint connection_check_cb		(Automaton	*atm);
 #endif
 
 static void inc_pop3_recv_func		(SockInfo	*sock,
-					 gint		 read_len,
+					 gint		 read_bytes,
 					 gpointer	 data);
 
 static void inc_put_error		(IncState	 istate);
@@ -111,6 +111,8 @@ static gint get_spool			(FolderItem	*dest,
 					 const gchar	*mbox);
 
 static void inc_all_spool(void);
+
+static gint inc_autocheck_func		(gpointer	 data);
 
 static void inc_finished(MainWindow *mainwin)
 {
@@ -131,6 +133,7 @@ static void inc_finished(MainWindow *mainwin)
 
 void inc_mail(MainWindow *mainwin)
 {
+	inc_autocheck_timer_remove();
 	summary_write_cache(mainwin->summaryview);
 
 	if (prefs_common.use_extinc && prefs_common.extinc_path) {
@@ -139,6 +142,7 @@ void inc_mail(MainWindow *mainwin)
 		/* external incorporating program */
 		if ((pid = fork()) < 0) {
 			perror("fork");
+			inc_autocheck_timer_set();			
 			return;
 		}
 
@@ -165,6 +169,7 @@ void inc_mail(MainWindow *mainwin)
 	}
 
 	inc_finished(mainwin);
+	inc_autocheck_timer_set();	
 }
 
 static void inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
@@ -194,12 +199,16 @@ void inc_all_account_mail(MainWindow *mainwin)
 	GList *list, *queue_list = NULL;
 	IncProgressDialog *inc_dialog;
 
+	inc_autocheck_timer_remove();
 	summary_write_cache(mainwin->summaryview);
 
 	if (prefs_common.inc_local) inc_spool();
 
 	list = account_get_list();
-	if (!list) return;
+	if (!list) {
+		inc_autocheck_timer_set();
+		return;
+	}		
 
 	for (; list != NULL; list = list->next) {
 		IncSession *session;
@@ -212,7 +221,10 @@ void inc_all_account_mail(MainWindow *mainwin)
 		}
 	}
 
-	if (!queue_list) return;
+	if (!queue_list) {
+		inc_autocheck_timer_set();
+		return;
+	}	
 
 	inc_dialog = inc_progress_dialog_create();
 	inc_dialog->queue_list = queue_list;
@@ -232,6 +244,7 @@ void inc_all_account_mail(MainWindow *mainwin)
 	inc_start(inc_dialog);
 
 	inc_finished(mainwin);
+	inc_autocheck_timer_set();
 }
 
 static IncProgressDialog *inc_progress_dialog_create(void)
@@ -668,7 +681,7 @@ static gint connection_check_cb(Automaton *atm)
 }
 #endif
 
-static void inc_pop3_recv_func(SockInfo *sock, gint read_len, gpointer data)
+static void inc_pop3_recv_func(SockInfo *sock, gint read_bytes, gpointer data)
 {
 	gchar buf[MSGBUFSIZE];
 	IncSession *session = (IncSession *)data;
@@ -677,8 +690,7 @@ static void inc_pop3_recv_func(SockInfo *sock, gint read_len, gpointer data)
 	ProgressDialog *dialog = inc_dialog->dialog;
 	gint cur_total;
 
-	state->cur_msg_bytes += read_len;
-	cur_total = state->cur_total_bytes + state->cur_msg_bytes;
+	cur_total = state->cur_total_bytes + read_bytes;
 	if (cur_total > state->total_bytes)
 		cur_total = state->total_bytes;
 
@@ -924,4 +936,42 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 	}
 
 	return msgs;
+}
+
+static guint autocheck_timer = 0;
+static gpointer autocheck_data = NULL;
+
+void inc_autocheck_timer_init(MainWindow *mainwin)
+{
+	autocheck_data = mainwin;
+	inc_autocheck_timer_set();
+}
+
+void inc_autocheck_timer_set(void)
+{
+	inc_autocheck_timer_remove();
+
+	if (prefs_common.autochk_newmail && autocheck_data) {
+		autocheck_timer = gtk_timeout_add
+			(prefs_common.autochk_itv * 60000,
+			 inc_autocheck_func,
+			 autocheck_data);
+	}
+}
+
+void inc_autocheck_timer_remove(void)
+{
+	if (autocheck_timer) {
+		gtk_timeout_remove(autocheck_timer);
+		autocheck_timer = 0;
+	}
+}
+
+static gint inc_autocheck_func(gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+
+	inc_all_account_mail(mainwin);
+
+	return FALSE;
 }
