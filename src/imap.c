@@ -3206,28 +3206,33 @@ MsgInfo *imap_fetch_msginfo(Folder *_folder, FolderItem *item, gint num)
 	g_string_assign(str, tmp);
 	g_free(tmp);
 
-	if (str->str[0] == '*') {
-		msginfo = imap_parse_envelope(SESSION(session)->sock,
-					      item, str);
-		if (!msginfo) {
-			log_warning(_("can't parse envelope: %s\n"), str->str);
-		}
-	}
-	else {
+	/* if the server did not return a envelope */
+	if (str->str[0] != '*') {
 		g_string_free(str, TRUE);
 		return NULL;
 	}
 
+	msginfo = imap_parse_envelope(SESSION(session)->sock,
+				      item, str);
+
+	/* Read all data on the socket until the server is read for a new command */
 	tmp = NULL;
 	do {
 		g_free(tmp);
 		tmp = sock_getline(SESSION(session)->sock);
 	} while (!(tmp == NULL || tmp[0] != '*' || tmp[1] != ' '));
+	g_free(tmp);
+
+	/* if message header could not be parsed */
+	if (!msginfo) {
+		log_warning(_("can't parse envelope: %s\n"), str->str);
+		return NULL;
+	}
+
+	g_string_free(str, TRUE);
 
 	msginfo->folder = item;
 
-	g_string_free(str, TRUE);
-	
 	return msginfo;
 }
 
