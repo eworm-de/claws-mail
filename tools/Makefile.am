@@ -21,7 +21,8 @@ EXTRA_TOOLS = \
 	sylprint.rc \
 	tb2sylpheed \
         update-po \
-	uudec
+	uudec \
+	vcard2xml.py
 
 EXTRA_DIST = \
 	README \

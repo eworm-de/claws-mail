@@ -1,3 +1,12 @@
+2003-09-23 [paul]	0.9.5claws26
+
+	* tools/Makefile.am
+	  tools/README
+	  tools/vcard2xml.py	** NEW FILE **
+	  	add a script that converts an evolution vcard to
+		sylpheed's xml format
+		submitted by Bogdan Sumanariu <bsumanariu@one5.ro>
+
 2003-09-22 [paul]	0.9.5claws25
 
 	* src/plugins/clamav/clamav_plugin.c
