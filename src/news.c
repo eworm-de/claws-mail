@@ -424,10 +424,6 @@ gint news_scan_group(Folder *folder, FolderItem *item)
 	else {
 		if (min < first)
 			min = first;
-		else if (first < min) {
-			num -= min - first;
-			first = min;
-		}
 
 		if (last < max)
 			max = last;

@@ -1661,6 +1661,10 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		textview_scroll_one_line(textview,
 					 (event->state & GDK_MOD1_MASK) != 0);
 		break;
+	case GDK_Delete:
+		if (summaryview)
+			summary_pass_key_press_event(summaryview, event);
+		break;
 	case GDK_n:
 	case GDK_N:
 	case GDK_p:
