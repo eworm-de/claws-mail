@@ -1262,6 +1262,7 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 	gchar *searchTerm;
 	gint cursor_pos;
 	GtkWidget *clist;
+	GtkWidget *parent;
 
 	g_return_val_if_fail(compWin != NULL, FALSE);
 
@@ -1279,6 +1280,7 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 		return FALSE;
 	}		
 
+#if 0	
 	/* also make tab / shift tab go to next previous completion entry. we're
 	 * changing the key value */
 	if (event->keyval == GDK_Tab || event->keyval == GDK_ISO_Left_Tab) {
@@ -1289,6 +1291,39 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 			event->state &= ~GDK_SHIFT_MASK;
 		completion_window_advance_selection(GTK_CLIST(clist), 
 			event->keyval == GDK_Down ? TRUE : FALSE);
+		return FALSE;
+	}
+#endif
+
+	/* make tab move to next field */
+	if( event->keyval == GDK_Tab ) {
+		/* Reference to parent */
+		parent = GTK_WIDGET(entry)->parent;
+
+		/* Discard the window */
+		clear_completion_cache();
+		addrcompl_destroy_window( _compWindow_ );
+
+		/* Move focus to next widget */
+		if( parent ) {
+			gtk_container_focus( GTK_CONTAINER(parent), GTK_DIR_TAB_FORWARD );
+		}
+		return FALSE;
+	}
+
+	/* make backtab move to previous field */
+	if( event->keyval == GDK_ISO_Left_Tab ) {
+		/* Reference to parent */
+		parent = GTK_WIDGET(entry)->parent;
+
+		/* Discard the window */
+		clear_completion_cache();
+		addrcompl_destroy_window( _compWindow_ );
+
+		/* Move focus to previous widget */
+		if( parent ) {
+			gtk_container_focus( GTK_CONTAINER(parent), GTK_DIR_TAB_BACKWARD );
+		}
 		return FALSE;
 	}
 

@@ -1,3 +1,9 @@
+2003-06-25 [match]	0.9.0claws62
+
+	* src/addr_compl.c
+		Fixed tab/backtab for dropped-down completion list to
+		move next/previous field. (close bug 147)
+
 2003-06-25 [christoph]	0.9.0claws61
 
 	* src/addr_compl.[ch]
