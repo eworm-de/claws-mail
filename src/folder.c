@@ -1704,6 +1704,13 @@ gint folder_item_remove_all_msg(FolderItem *item)
 	if (result == 0) {
 		if (folder->finished_remove)
 			folder->finished_remove(folder, item);
+
+		folder_item_free_cache(item);
+		item->cache = msgcache_new();
+
+		item->new = 0;
+		item->unread = 0;
+		item->total = 0;
 	}
 
 	return result;

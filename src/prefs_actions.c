@@ -60,19 +60,21 @@
 
 #define WAIT_LAP 10000
 						
-typedef enum {
-ACTION_NONE 		= 1 << 0,
-ACTION_PIPE_IN  	= 1 << 1,
-ACTION_PIPE_OUT 	= 1 << 2,
-ACTION_SINGLE	 	= 1 << 3,
-ACTION_MULTIPLE 	= 1 << 4,
-ACTION_ASYNC 		= 1 << 5,
-ACTION_OPEN_IN 		= 1 << 6,
-ACTION_HIDE_IN 		= 1 << 7,
-ACTION_ERROR 		= 1 << 8,
-} ActionsTypes;
+typedef enum
+{
+	ACTION_NONE 	= 1 << 0,
+	ACTION_PIPE_IN  = 1 << 1,
+	ACTION_PIPE_OUT = 1 << 2,
+	ACTION_SINGLE	= 1 << 3,
+	ACTION_MULTIPLE = 1 << 4,
+	ACTION_ASYNC 	= 1 << 5,
+	ACTION_OPEN_IN 	= 1 << 6,
+	ACTION_HIDE_IN 	= 1 << 7,
+	ACTION_ERROR 	= 1 << 8,
+} ActionType;
 
-static struct Actions {
+static struct Actions
+{
 	GtkWidget *window;
 
 	GtkWidget *ok_btn;
@@ -84,7 +86,10 @@ static struct Actions {
 } actions;
 
 typedef struct _Children Children;
-struct _Children {
+typedef struct _ChildInfo ChildInfo;
+
+struct _Children
+{
 	GtkWidget 	*window;
 	GtkWidget 	*dialog;
 	GtkWidget 	*text;
@@ -102,8 +107,8 @@ struct _Children {
 	gboolean	 output;
 };
 
-typedef struct _ChildInfo ChildInfo;
-struct _ChildInfo {
+struct _ChildInfo
+{
 	Children	*children;
 	gchar 		*cmd;
 	guint  		 type;
@@ -127,12 +132,18 @@ static void prefs_actions_set_dialog	(void);
 static gint prefs_actions_clist_set_row	(gint row);
 
 /* callback functions */
-static void prefs_actions_help_cb	(GtkWidget *w, gpointer data);
-static void prefs_actions_register_cb	(GtkWidget *w, gpointer data);
-static void prefs_actions_substitute_cb	(GtkWidget *w, gpointer data);
-static void prefs_actions_delete_cb	(GtkWidget *w, gpointer data);
-static void prefs_actions_up		(GtkWidget *w, gpointer data);
-static void prefs_actions_down		(GtkWidget *w, gpointer data);
+static void prefs_actions_help_cb	(GtkWidget	*w,
+					 gpointer	 data);
+static void prefs_actions_register_cb	(GtkWidget	*w,
+					 gpointer	 data);
+static void prefs_actions_substitute_cb	(GtkWidget	*w,
+					 gpointer	 data);
+static void prefs_actions_delete_cb	(GtkWidget	*w,
+					 gpointer	 data);
+static void prefs_actions_up		(GtkWidget	*w,
+					 gpointer	 data);
+static void prefs_actions_down		(GtkWidget	*w,
+					 gpointer	 data);
 static void prefs_actions_select	(GtkCList	*clist,
 					 gint		 row,
 					 gint		 column,
@@ -146,64 +157,66 @@ static gint prefs_actions_deleted	(GtkWidget	*widget,
 static void prefs_actions_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
-static void prefs_actions_cancel	(GtkWidget *w, gpointer data);
-static void prefs_actions_ok		(GtkWidget *w, gpointer data);
-static void update_actions_menu		(GtkItemFactory *ifactory,
-					 gchar *branch_path,
-					 gpointer callback,
-					 gpointer data);
+static void prefs_actions_cancel	(GtkWidget	*w,
+					 gpointer	 data);
+static void prefs_actions_ok		(GtkWidget	*w,
+					 gpointer	 data);
+static void update_actions_menu		(GtkItemFactory	*ifactory,
+					 gchar		*branch_path,
+					 gpointer	 callback,
+					 gpointer	 data);
 static void mainwin_actions_execute_cb 	(MainWindow	*mainwin,
 				 	 guint 	 	 action_nb,
 				 	 GtkWidget 	*widget);
 static void compose_actions_execute_cb	(Compose	*compose,
 					 guint		 action_nb,
 					 GtkWidget	*widget);
-static guint get_action_type		(gchar *action);
+static guint get_action_type		(gchar		*action);
 
-static gboolean execute_actions		(gchar     *action, 
-					 GtkWidget *window,
-					 GtkCTree  *ctree, 
-					 GtkWidget *text,
-					 MimeView  *mimeview);
+static gboolean execute_actions		(gchar		*action, 
+					 GtkWidget	*window,
+					 GtkCTree	*ctree, 
+					 GtkWidget	*text,
+					 MimeView	*mimeview);
 
-static gchar *parse_action_cmd		(gchar    *action,
-					 MsgInfo  *msginfo,
-					 GtkCTree *ctree,
-					 MimeView *mimeview);
-static GString *parse_append_filename	(GString *cmd,
-					 MsgInfo *msginfo);
+static gchar *parse_action_cmd		(gchar		*action,
+					 MsgInfo	*msginfo,
+					 GtkCTree	*ctree,
+					 MimeView	*mimeview);
+static GString *parse_append_filename	(GString	*cmd,
+					 MsgInfo	*msginfo);
 
-static GString *parse_append_msgpart	(GString *cmd, 
-					 MsgInfo *msginfo,
-					 MimeView *mimeview);
+static GString *parse_append_msgpart	(GString	*cmd,
+					 MsgInfo	*msginfo,
+					 MimeView	*mimeview);
 
-ChildInfo *fork_child			(gchar     *cmd,
-		      			 gint       action_type,
-		      			 GtkWidget *text,
-					 Children  *children);
+ChildInfo *fork_child			(gchar		*cmd,
+		      			 gint		 action_type,
+		      			 GtkWidget	*text,
+					 Children	*children);
 
-static gint wait_for_children		(gpointer data);
+static gint wait_for_children		(gpointer	 data);
 
-static void free_children		(Children *children);
+static void free_children		(Children	*children);
 
-static void childinfo_close_pipes	(ChildInfo *child_info);
+static void childinfo_close_pipes	(ChildInfo	*child_info);
 
-static void create_io_dialog		(Children *children);
+static void create_io_dialog		(Children	*children);
 
-static void update_io_dialog		(Children *children);
+static void update_io_dialog		(Children	*children);
 
-static void hide_io_dialog_cb		(GtkWidget *widget,
-					 gpointer data);
+static void hide_io_dialog_cb		(GtkWidget	*widget,
+					 gpointer	 data);
 
-static void catch_output		(gpointer data,
-					 gint source,
-					 GdkInputCondition cond);
-static void catch_input			(gpointer data, 
-					 gint source,
-					 GdkInputCondition cond);
-static void catch_status		(gpointer data,
-					 gint source,
-					 GdkInputCondition cond);
+static void catch_output		(gpointer		 data,
+					 gint			 source,
+					 GdkInputCondition	 cond);
+static void catch_input			(gpointer		 data, 
+					 gint			 source,
+					 GdkInputCondition	 cond);
+static void catch_status		(gpointer		 data,
+					 gint			 source,
+					 GdkInputCondition	 cond);
 
 void prefs_actions_open(MainWindow *mainwin)
 {
@@ -233,6 +246,8 @@ static void prefs_actions_create(MainWindow *mainwin)
 	GtkWidget *confirm_area;
 
 	GtkWidget *vbox1;
+
+	GtkWidget *entry_vbox;
 	GtkWidget *hbox;
 	GtkWidget *name_label;
 	GtkWidget *name_entry;
@@ -263,171 +278,168 @@ static void prefs_actions_create(MainWindow *mainwin)
 	debug_print(_("Creating actions setting window...\n"));
 
 	window = gtk_window_new (GTK_WINDOW_DIALOG);
-		
-	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
-	gtk_window_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
-	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, TRUE);
-	
-	vbox = gtk_vbox_new (FALSE, 6);
-	gtk_widget_show (vbox);
-	gtk_container_add (GTK_CONTAINER (window), vbox);
+
+	gtk_container_set_border_width(GTK_CONTAINER (window), 8);
+	gtk_window_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
+	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, TRUE);
+	gtk_window_set_default_size(GTK_WINDOW(window), 400, -1);
+
+	vbox = gtk_vbox_new(FALSE, 6);
+	gtk_widget_show(vbox);
+	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
 				&cancel_btn, _("Cancel"), NULL, NULL);
-	gtk_widget_show (confirm_area);
-	gtk_box_pack_end (GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
-	gtk_widget_grab_default (ok_btn);
-					 
-	gtk_window_set_title (GTK_WINDOW(window),
-			      _("Actions setting"));
-	gtk_signal_connect (GTK_OBJECT(window), "delete_event",
-			    GTK_SIGNAL_FUNC(prefs_actions_deleted), NULL);
-	gtk_signal_connect (GTK_OBJECT(window), "key_press_event",
-			    GTK_SIGNAL_FUNC(prefs_actions_key_pressed), NULL);
-	MANAGE_WINDOW_SIGNALS_CONNECT (window);
-	gtk_signal_connect (GTK_OBJECT(ok_btn), "clicked",
-			    GTK_SIGNAL_FUNC(prefs_actions_ok), mainwin);
-	gtk_signal_connect (GTK_OBJECT(cancel_btn), "clicked",
-			    GTK_SIGNAL_FUNC(prefs_actions_cancel), NULL);
+	gtk_widget_show(confirm_area);
+	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
+	gtk_widget_grab_default(ok_btn);
 
-	vbox1 = gtk_vbox_new (FALSE, VSPACING);
-	gtk_widget_show (vbox1);
-	gtk_box_pack_start (GTK_BOX (vbox), vbox1, TRUE, TRUE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
+	gtk_window_set_title(GTK_WINDOW(window), _("Actions setting"));
+	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
+			   GTK_SIGNAL_FUNC(prefs_actions_deleted), NULL);
+	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
+			   GTK_SIGNAL_FUNC(prefs_actions_key_pressed), NULL);
+	MANAGE_WINDOW_SIGNALS_CONNECT(window);
+	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
+			   GTK_SIGNAL_FUNC(prefs_actions_ok), mainwin);
+	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
+			   GTK_SIGNAL_FUNC(prefs_actions_cancel), NULL);
 
-	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_box_pack_start (GTK_BOX(vbox1), hbox, TRUE, TRUE, 0);
-	
-	name_label = gtk_label_new(_("Menu name: "));
-	gtk_widget_show(name_label);
-	gtk_box_pack_start (GTK_BOX (hbox), name_label, FALSE, FALSE, 0);
+	vbox1 = gtk_vbox_new(FALSE, 8);
+	gtk_widget_show(vbox1);
+	gtk_box_pack_start(GTK_BOX(vbox), vbox1, TRUE, TRUE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox1), 2);
+
+	entry_vbox = gtk_vbox_new(FALSE, 4);
+	gtk_box_pack_start(GTK_BOX(vbox1), entry_vbox, FALSE, FALSE, 0);
+
+	hbox = gtk_hbox_new(FALSE, 8);
+	gtk_box_pack_start(GTK_BOX(entry_vbox), hbox, FALSE, FALSE, 0);
+
+	name_label = gtk_label_new(_("Menu name:"));
+	gtk_box_pack_start(GTK_BOX(hbox), name_label, FALSE, FALSE, 0);
 
 	name_entry = gtk_entry_new();
-	gtk_widget_show(name_entry);
-	gtk_box_pack_start (GTK_BOX (hbox), name_entry, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), name_entry, TRUE, TRUE, 0);
 
-	gtk_widget_show_all(hbox);
+	hbox = gtk_hbox_new(FALSE, 8);
+	gtk_box_pack_start(GTK_BOX(entry_vbox), hbox, TRUE, TRUE, 0);
 
-	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_box_pack_start (GTK_BOX(vbox1), hbox, TRUE, TRUE, 0);
-		 
-	cmd_label = gtk_label_new(_("Command line: "));
-	gtk_box_pack_start (GTK_BOX (hbox), cmd_label, FALSE, FALSE, 0);
+	cmd_label = gtk_label_new(_("Command line:"));
+	gtk_box_pack_start(GTK_BOX(hbox), cmd_label, FALSE, FALSE, 0);
 
 	cmd_entry = gtk_entry_new();
-	gtk_box_pack_start (GTK_BOX (hbox), cmd_entry, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), cmd_entry, TRUE, TRUE, 0);
 
-	gtk_widget_show_all(hbox);
+	gtk_widget_show_all(entry_vbox);
 
 	help_vbox = gtk_vbox_new(FALSE, 8);
-	gtk_box_pack_start (GTK_BOX (vbox1), help_vbox, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox1), help_vbox, FALSE, FALSE, 0);
 
-	help_label = gtk_label_new (_("Menu name:\n"
-				      " Use / in menu name to make submenus.\n"
-				      "Command line:\n"
-				      " Begin with:\n   | to send message "
-				      "body or selection "
-				      "to command\n   > to send user provided"
-				      " text to command\n   * to send user "
-				      "provided hidden text to command\n"
-				      " End with:\n   | to replace "
-				      "message body or selection with command "
-				      "output\n   & to "
-				      "run command asynchronously\n Use %f "
-				      "for message file name\n   %F for the"
-				      " list of the file names of selected "
-				      "messages\n   %p for the selected message "
-				      "part."));
+	help_label = gtk_label_new
+		(_("Menu name:\n"
+		   " Use / in menu name to make submenus.\n"
+		   "Command line:\n"
+		   " Begin with:\n"
+		   "   | to send message body or selection to command\n"
+		   "   > to send user provided text to command\n"
+		   "   * to send user provided hidden text to command\n"
+		   " End with:\n"
+		   "   | to replace message body or selection with command output\n"
+		   "   & to run command asynchronously\n"
+		   " Use %f for message file name\n"
+		   "   %F for the list of the file names of selected messages\n"
+		   "   %p for the selected message part."));
 	gtk_misc_set_alignment(GTK_MISC(help_label), 0, 0.5);
-	gtk_label_set_justify (GTK_LABEL(help_label), GTK_JUSTIFY_LEFT);
-	gtk_widget_show (help_label);
-	gtk_box_pack_start (GTK_BOX (help_vbox), help_label, TRUE, TRUE, 0);
+	gtk_label_set_justify(GTK_LABEL(help_label), GTK_JUSTIFY_LEFT);
+	gtk_widget_show(help_label);
+	gtk_box_pack_start(GTK_BOX(help_vbox), help_label, FALSE, FALSE, 0);
 	gtk_widget_hide(help_vbox);
 
-		/* register / substitute / delete */
+	/* register / substitute / delete */
 
-	reg_hbox = gtk_hbox_new (FALSE, 4);
-	gtk_widget_show (reg_hbox);
-	gtk_box_pack_start (GTK_BOX (vbox1), reg_hbox, FALSE, FALSE, 0);
+	reg_hbox = gtk_hbox_new(FALSE, 4);
+	gtk_widget_show(reg_hbox);
+	gtk_box_pack_start(GTK_BOX(vbox1), reg_hbox, FALSE, FALSE, 0);
 
-	arrow = gtk_arrow_new (GTK_ARROW_DOWN, GTK_SHADOW_OUT);
-	gtk_widget_show (arrow);
-	gtk_box_pack_start (GTK_BOX (reg_hbox), arrow, FALSE, FALSE, 0);
-	gtk_widget_set_usize (arrow, -1, 16);
+	arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
+	gtk_widget_show(arrow);
+	gtk_box_pack_start(GTK_BOX(reg_hbox), arrow, FALSE, FALSE, 0);
+	gtk_widget_set_usize(arrow, -1, 16);
 
-	btn_hbox = gtk_hbox_new (FALSE, 4);
-	gtk_widget_show (btn_hbox);
-	gtk_box_pack_start (GTK_BOX (reg_hbox), btn_hbox, FALSE, FALSE, 0);
+	btn_hbox = gtk_hbox_new(TRUE, 4);
+	gtk_widget_show(btn_hbox);
+	gtk_box_pack_start(GTK_BOX(reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
-	reg_btn = gtk_button_new_with_label (_("Register"));
-	gtk_widget_show (reg_btn);
-	gtk_box_pack_start (GTK_BOX (btn_hbox), reg_btn, FALSE, TRUE, 0);
-	gtk_signal_connect (GTK_OBJECT (reg_btn), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_actions_register_cb), NULL);
+	reg_btn = gtk_button_new_with_label(_("Register"));
+	gtk_widget_show(reg_btn);
+	gtk_box_pack_start(GTK_BOX(btn_hbox), reg_btn, FALSE, TRUE, 0);
+	gtk_signal_connect(GTK_OBJECT(reg_btn), "clicked",
+			   GTK_SIGNAL_FUNC(prefs_actions_register_cb), NULL);
 
-	subst_btn = gtk_button_new_with_label (_(" Substitute "));
-	gtk_widget_show (subst_btn);
-	gtk_box_pack_start (GTK_BOX (btn_hbox), subst_btn, FALSE, TRUE, 0);
-	gtk_signal_connect (GTK_OBJECT (subst_btn), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_actions_substitute_cb),
-			    NULL);
+	subst_btn = gtk_button_new_with_label(_(" Substitute "));
+	gtk_widget_show(subst_btn);
+	gtk_box_pack_start(GTK_BOX(btn_hbox), subst_btn, FALSE, TRUE, 0);
+	gtk_signal_connect(GTK_OBJECT(subst_btn), "clicked",
+			   GTK_SIGNAL_FUNC(prefs_actions_substitute_cb),
+			   NULL);
 
-	del_btn = gtk_button_new_with_label (_("Delete"));
-	gtk_widget_show (del_btn);
-	gtk_box_pack_start (GTK_BOX (btn_hbox), del_btn, FALSE, TRUE, 0);
-	gtk_signal_connect (GTK_OBJECT (del_btn), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_actions_delete_cb), NULL);
+	del_btn = gtk_button_new_with_label(_("Delete"));
+	gtk_widget_show(del_btn);
+	gtk_box_pack_start(GTK_BOX(btn_hbox), del_btn, FALSE, TRUE, 0);
+	gtk_signal_connect(GTK_OBJECT(del_btn), "clicked",
+			   GTK_SIGNAL_FUNC(prefs_actions_delete_cb), NULL);
 
-	help_toggle = gtk_toggle_button_new_with_label (_("Help on syntax"));
-	gtk_widget_show (help_toggle);
-	gtk_box_pack_end (GTK_BOX (btn_hbox), help_toggle, FALSE, TRUE, 0);
-	gtk_signal_connect (GTK_OBJECT (help_toggle), "toggled",
-			    GTK_SIGNAL_FUNC (prefs_actions_help_cb), help_vbox);
+	help_toggle = gtk_toggle_button_new_with_label(_(" Syntax help "));
+	gtk_widget_show(help_toggle);
+	gtk_box_pack_end(GTK_BOX(reg_hbox), help_toggle, FALSE, FALSE, 0);
+	gtk_signal_connect(GTK_OBJECT(help_toggle), "toggled",
+			   GTK_SIGNAL_FUNC(prefs_actions_help_cb), help_vbox);
 
-	cond_hbox = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (cond_hbox);
-	gtk_box_pack_start (GTK_BOX (vbox1), cond_hbox, TRUE, TRUE, 0);
+	cond_hbox = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show(cond_hbox);
+	gtk_box_pack_start(GTK_BOX(vbox1), cond_hbox, TRUE, TRUE, 0);
 
-	cond_scrolledwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_show (cond_scrolledwin);
-	gtk_widget_set_usize (cond_scrolledwin, -1, 150);
-	gtk_box_pack_start (GTK_BOX (cond_hbox), cond_scrolledwin,
-			    TRUE, TRUE, 0);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (cond_scrolledwin),
-					GTK_POLICY_AUTOMATIC,
-					GTK_POLICY_AUTOMATIC);
+	cond_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_widget_show(cond_scrolledwin);
+	gtk_widget_set_usize(cond_scrolledwin, -1, 150);
+	gtk_box_pack_start(GTK_BOX(cond_hbox), cond_scrolledwin,
+			   TRUE, TRUE, 0);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW (cond_scrolledwin),
+				       GTK_POLICY_AUTOMATIC,
+				       GTK_POLICY_AUTOMATIC);
 
 	title[0] = _("Registered actions");
 	cond_clist = gtk_clist_new_with_titles(1, title);
-	gtk_widget_show (cond_clist);
-	gtk_container_add (GTK_CONTAINER (cond_scrolledwin), cond_clist);
-	gtk_clist_set_column_width (GTK_CLIST (cond_clist), 0, 80);
-	gtk_clist_set_selection_mode (GTK_CLIST (cond_clist),
-				      GTK_SELECTION_BROWSE);
-	GTK_WIDGET_UNSET_FLAGS (GTK_CLIST (cond_clist)->column[0].button,
-				GTK_CAN_FOCUS);
-	gtk_signal_connect (GTK_OBJECT (cond_clist), "select_row",
-			    GTK_SIGNAL_FUNC (prefs_actions_select), NULL);
-	gtk_signal_connect_after (GTK_OBJECT (cond_clist), "row_move",
-				  GTK_SIGNAL_FUNC (prefs_actions_row_move),
-				  NULL);
+	gtk_widget_show(cond_clist);
+	gtk_container_add(GTK_CONTAINER (cond_scrolledwin), cond_clist);
+	gtk_clist_set_column_width(GTK_CLIST (cond_clist), 0, 80);
+	gtk_clist_set_selection_mode(GTK_CLIST (cond_clist),
+				     GTK_SELECTION_BROWSE);
+	GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(cond_clist)->column[0].button,
+			       GTK_CAN_FOCUS);
+	gtk_signal_connect(GTK_OBJECT(cond_clist), "select_row",
+			   GTK_SIGNAL_FUNC(prefs_actions_select), NULL);
+	gtk_signal_connect_after(GTK_OBJECT(cond_clist), "row_move",
+				 GTK_SIGNAL_FUNC(prefs_actions_row_move),
+				 NULL);
 
-	btn_vbox = gtk_vbox_new (FALSE, 8);
-	gtk_widget_show (btn_vbox);
-	gtk_box_pack_start (GTK_BOX (cond_hbox), btn_vbox, FALSE, FALSE, 0);
+	btn_vbox = gtk_vbox_new(FALSE, 8);
+	gtk_widget_show(btn_vbox);
+	gtk_box_pack_start(GTK_BOX(cond_hbox), btn_vbox, FALSE, FALSE, 0);
 
-	up_btn = gtk_button_new_with_label (_("Up"));
-	gtk_widget_show (up_btn);
-	gtk_box_pack_start (GTK_BOX (btn_vbox), up_btn, FALSE, FALSE, 0);
-	gtk_signal_connect (GTK_OBJECT (up_btn), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_actions_up), NULL);
+	up_btn = gtk_button_new_with_label(_("Up"));
+	gtk_widget_show(up_btn);
+	gtk_box_pack_start(GTK_BOX(btn_vbox), up_btn, FALSE, FALSE, 0);
+	gtk_signal_connect(GTK_OBJECT(up_btn), "clicked",
+			   GTK_SIGNAL_FUNC(prefs_actions_up), NULL);
 
-	down_btn = gtk_button_new_with_label (_("Down"));
-	gtk_widget_show (down_btn);
-	gtk_box_pack_start (GTK_BOX (btn_vbox), down_btn, FALSE, FALSE, 0);
-	gtk_signal_connect (GTK_OBJECT (down_btn), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_actions_down), NULL);
+	down_btn = gtk_button_new_with_label(_("Down"));
+	gtk_widget_show(down_btn);
+	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, FALSE, 0);
+	gtk_signal_connect(GTK_OBJECT(down_btn), "clicked",
+			   GTK_SIGNAL_FUNC(prefs_actions_down), NULL);
 
 	gtk_widget_show(window);
 
@@ -465,11 +477,10 @@ void prefs_actions_read_config()
 	}
 	g_free(rcpath);
 
-	while (prefs_common.actionslst != NULL) {
-		act = (gchar *) prefs_common.actionslst->data;
-		prefs_common.actionslst = g_slist_remove(
-						prefs_common.actionslst,
-						act);
+	while (prefs_common.actions_list != NULL) {
+		act = (gchar *)prefs_common.actions_list->data;
+		prefs_common.actions_list =
+			g_slist_remove(prefs_common.actions_list, act);
 		g_free(act);
 	}
 	
@@ -478,9 +489,9 @@ void prefs_actions_read_config()
 		act = strstr(buf, ": ");
 		if (act && act[2] && 
 		    get_action_type(&act[2]) != ACTION_ERROR)
-			prefs_common.actionslst = g_slist_append(
-							prefs_common.actionslst,
-							g_strdup(buf));
+			prefs_common.actions_list =
+				g_slist_append(prefs_common.actions_list,
+					       g_strdup(buf));
 	}
 	fclose(fp);
 }
@@ -500,8 +511,8 @@ void prefs_actions_write_config()
 		return;
 	}
 
-	for (cur = prefs_common.actionslst; cur != NULL; cur = cur->next) {
-		gchar *act = (gchar *) cur->data;
+	for (cur = prefs_common.actions_list; cur != NULL; cur = cur->next) {
+		gchar *act = (gchar *)cur->data;
 		if (fputs(act, pfile->fp) == EOF ||
 		    fputc('\n', pfile->fp) == EOF) {
 			FILE_OP_ERROR(rcpath, "fputs || fputc");
@@ -546,14 +557,18 @@ static guint get_action_type(gchar *action)
 	while (*p && action_type != ACTION_ERROR) {
 		if (p[0] == '%') {
 			switch (p[1]) {
-				case 'f': action_type |= ACTION_SINGLE;
-					  break;
-				case 'F': action_type |= ACTION_MULTIPLE;
-					  break;
-				case 'p': action_type |= ACTION_SINGLE;
-					  break;
-				default:  action_type  = ACTION_ERROR;
-					  break;
+			case 'f':
+				action_type |= ACTION_SINGLE;
+				break;
+			case 'F':
+				action_type |= ACTION_MULTIPLE;
+				break;
+			case 'p':
+				action_type |= ACTION_SINGLE;
+				break;
+			default:
+				action_type = ACTION_ERROR;
+				break;
 			}
 		} else if (p[0] == '|') {
 			if (p[1] == 0x00)
@@ -562,7 +577,7 @@ static guint get_action_type(gchar *action)
 			if (p[1] == 0x00)
 				action_type |= ACTION_ASYNC;
 			else
-				action_type  = ACTION_ERROR;
+				action_type = ACTION_ERROR;
 		}
 		p++;
 	}
@@ -570,10 +585,8 @@ static guint get_action_type(gchar *action)
 	return action_type;
 }
 
-static gchar *parse_action_cmd		(gchar *action,
-					 MsgInfo *msginfo,
-					 GtkCTree *ctree,
-					 MimeView *mimeview)
+static gchar *parse_action_cmd(gchar *action, MsgInfo *msginfo,
+			       GtkCTree *ctree, MimeView *mimeview)
 {
 	GString *cmd, *tmpcmd;
 	gchar *p;
@@ -590,43 +603,43 @@ static gchar *parse_action_cmd		(gchar *action,
 	while (p[0] && !(p[0] == '|' && !p[1]) && p[0] != '&') {
 		if (p[0] == '%' && p[1]) {
 			switch (p[1]) {
-			   case 'f': cmd = parse_append_filename(cmd, msginfo);
-				     p++;	
-				     break;
-			   case 'F':
-				     for (cur =GTK_CLIST(ctree)->selection;
-				          cur; cur = cur->next) {
+			case 'f':
+				cmd = parse_append_filename(cmd, msginfo);
+				p++;	
+				break;
+			case 'F':
+				for (cur = GTK_CLIST(ctree)->selection;
+				     cur != NULL; cur = cur->next) {
 					msg = gtk_ctree_node_get_row_data(ctree,
 					      GTK_CTREE_NODE(cur->data));
 					cmd = parse_append_filename(cmd, msg);
 					if (cur->next)
 						cmd = g_string_append_c(cmd, ' ');
-				     }
-				     p++;
-				     break;
-			   case 'p':
-				     tmpcmd = parse_append_msgpart(cmd,
-						     		   msginfo, 
-						                   mimeview);
-				     if (tmpcmd)
-					     cmd = tmpcmd;
-				     else {
-					     g_string_free(cmd, TRUE);
-					     return NULL;
-				     }
-					     
-				     p++;
-				     break;
-			   default: cmd = g_string_append_c(cmd, p[0]);
-				    cmd = g_string_append_c(cmd, p[1]);
-				    p++;
+				}
+				p++;
+				break;
+			case 'p':
+				tmpcmd = parse_append_msgpart
+					(cmd, msginfo, mimeview);
+				if (tmpcmd)
+					cmd = tmpcmd;
+				else {
+					g_string_free(cmd, TRUE);
+					return NULL;
+				}
+				p++;
+				break;
+			default:
+				cmd = g_string_append_c(cmd, p[0]);
+				cmd = g_string_append_c(cmd, p[1]);
+				p++;
 			}
 		} else {
 			cmd = g_string_append_c(cmd, p[0]);
 		}
 		p++;
 	}
-	if (!cmd->len) {
+	if (cmd->len == 0) {
 		g_string_free(cmd, TRUE);
 		return NULL;
 	}
@@ -714,14 +727,13 @@ static GString *parse_append_msgpart(GString *cmd, MsgInfo *msginfo,
 	}
 
 	cmd = g_string_append(cmd,partname);
-	
+
 	g_free(partname);
-	
+
 	return cmd;
-	
 }
 
-static void prefs_actions_set_dialog	(void)
+static void prefs_actions_set_dialog(void)
 {
 	GtkCList *clist = GTK_CLIST(actions.actions_clist);
 	GSList *cur;
@@ -735,10 +747,10 @@ static void prefs_actions_set_dialog	(void)
 	row = gtk_clist_append(clist, action_str);
 	gtk_clist_set_row_data(clist, row, NULL);
 
-	for (cur = prefs_common.actionslst; cur != NULL; cur = cur->next) {
+	for (cur = prefs_common.actions_list; cur != NULL; cur = cur->next) {
 		gchar *action[1];
-		action[0] = (gchar *) cur->data;
 
+		action[0] = (gchar *)cur->data;
 		row = gtk_clist_append(clist, action);
 		gtk_clist_set_row_data(clist, row, action[0]);
 	}
@@ -750,14 +762,13 @@ static void prefs_actions_set_list(void)
 	gint row = 1;
 	gchar *action;
 	
-	g_slist_free(prefs_common.actionslst);
-	prefs_common.actionslst = NULL;
+	g_slist_free(prefs_common.actions_list);
+	prefs_common.actions_list = NULL;
 
-	while ( (action = (gchar *) gtk_clist_get_row_data(GTK_CLIST(
-						 actions.actions_clist), row))
-		!= NULL) {
-		prefs_common.actionslst = g_slist_append(prefs_common.actionslst,
-							 action);
+	while ((action = (gchar *)gtk_clist_get_row_data
+		(GTK_CLIST(actions.actions_clist), row)) != NULL) {
+		prefs_common.actions_list =
+			g_slist_append(prefs_common.actions_list, action);
 		row++;
 	}
 }
@@ -765,7 +776,8 @@ static void prefs_actions_set_list(void)
 
 #define GET_ENTRY(entry) \
 	entry_text = gtk_entry_get_text(GTK_ENTRY(entry))
-static gint prefs_actions_clist_set_row	(gint row)
+
+static gint prefs_actions_clist_set_row(gint row)
 {
 	GtkCList *clist = GTK_CLIST(actions.actions_clist);
 	gchar *entry_text;
@@ -842,12 +854,13 @@ static gint prefs_actions_clist_set_row	(gint row)
 }
 	
 /* callback functions */
-static void prefs_actions_register_cb	(GtkWidget *w, gpointer data)
+
+static void prefs_actions_register_cb(GtkWidget *w, gpointer data)
 {
 	prefs_actions_clist_set_row(-1);
 }
 
-static void prefs_actions_substitute_cb	(GtkWidget *w, gpointer data)
+static void prefs_actions_substitute_cb(GtkWidget *w, gpointer data)
 {
 	GtkCList *clist = GTK_CLIST(actions.actions_clist);
 	gchar *action;
@@ -864,7 +877,7 @@ static void prefs_actions_substitute_cb	(GtkWidget *w, gpointer data)
 	prefs_actions_clist_set_row(row);
 }
 
-static void prefs_actions_delete_cb	(GtkWidget *w, gpointer data)
+static void prefs_actions_delete_cb(GtkWidget *w, gpointer data)
 {
 	GtkCList *clist = GTK_CLIST(actions.actions_clist);
 	gchar *action;
@@ -882,10 +895,11 @@ static void prefs_actions_delete_cb	(GtkWidget *w, gpointer data)
 	action = gtk_clist_get_row_data(clist, row);
 	g_free(action);
 	gtk_clist_remove(clist, row);
-	prefs_common.actionslst = g_slist_remove(prefs_common.actionslst, action);
+	prefs_common.actions_list = g_slist_remove(prefs_common.actions_list,
+						   action);
 }
 
-static void prefs_actions_up		(GtkWidget *w, gpointer data)
+static void prefs_actions_up(GtkWidget *w, gpointer data)
 {
 	GtkCList *clist = GTK_CLIST(actions.actions_clist);
 	gint row;
@@ -897,7 +911,7 @@ static void prefs_actions_up		(GtkWidget *w, gpointer data)
 		gtk_clist_row_move(clist, row, row - 1);
 }
 
-static void prefs_actions_down		(GtkWidget *w, gpointer data)
+static void prefs_actions_down(GtkWidget *w, gpointer data)
 {
 	GtkCList *clist = GTK_CLIST(actions.actions_clist);
 	gint row;
@@ -911,10 +925,8 @@ static void prefs_actions_down		(GtkWidget *w, gpointer data)
 
 #define ENTRY_SET_TEXT(entry, str) \
 	gtk_entry_set_text(GTK_ENTRY(entry), str ? str : "")
-static void prefs_actions_select	(GtkCList	*clist,
-					 gint		 row,
-					 gint		 column,
-					 GdkEvent	*event)
+static void prefs_actions_select(GtkCList *clist, gint row, gint column,
+				 GdkEvent *event)
 {
 	gchar *action;
 	gchar *cmd;
@@ -940,9 +952,8 @@ static void prefs_actions_select	(GtkCList	*clist,
 	ENTRY_SET_TEXT(actions.name_entry, buf);
 }
 	
-static void prefs_actions_row_move	(GtkCList	*clist,
-					 gint		 source_row,
-					 gint		 dest_row)
+static void prefs_actions_row_move(GtkCList *clist,
+				   gint source_row, gint dest_row)
 {
 	prefs_actions_set_list();
 	if (gtk_clist_row_is_visible(clist, dest_row) != GTK_VISIBILITY_FULL) {
@@ -951,33 +962,31 @@ static void prefs_actions_row_move	(GtkCList	*clist,
 	}
 }
 
-static gint prefs_actions_deleted	(GtkWidget	*widget,
-					 GdkEventAny	*event,
-					 gpointer	*data)
+static gint prefs_actions_deleted(GtkWidget *widget, GdkEventAny *event,
+				  gpointer *data)
 {
 	prefs_actions_cancel(widget, data);
 	return TRUE;
 }
 
-static void prefs_actions_key_pressed	(GtkWidget	*widget,
-					 GdkEventKey	*event,
-					 gpointer	 data)
+static void prefs_actions_key_pressed(GtkWidget *widget, GdkEventKey *event,
+				      gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		prefs_actions_cancel(widget, data);
 }
 
-static void prefs_actions_cancel	(GtkWidget *w, gpointer data)
+static void prefs_actions_cancel(GtkWidget *w, gpointer data)
 {
 	prefs_actions_read_config();
 	gtk_widget_hide(actions.window);
 	inc_unlock();
 }
 
-static void prefs_actions_ok		(GtkWidget *widget, gpointer data)
+static void prefs_actions_ok(GtkWidget *widget, gpointer data)
 {
 	GtkItemFactory *ifactory;
-	MainWindow *mainwin = (MainWindow *) data;
+	MainWindow *mainwin = (MainWindow *)data;
 
 	prefs_actions_write_config();
 	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
@@ -1031,8 +1040,8 @@ static void update_actions_menu(GtkItemFactory *ifactory,
 	ifentry.callback        = callback;
 	ifentry.item_type       = NULL;
 
-	for (cur = prefs_common.actionslst; cur; cur = cur->next) {
-		action   = g_strdup((gchar *) cur->data);
+	for (cur = prefs_common.actions_list; cur; cur = cur->next) {
+		action   = g_strdup((gchar *)cur->data);
 		action_p = strstr(action, ": ");
 		if (action_p && action_p[2] &&
 		    get_action_type(&action_p[2]) != ACTION_ERROR) {
@@ -1056,23 +1065,21 @@ static void compose_actions_execute_cb	(Compose	*compose,
 	gchar *buf, *action;
 	guint action_type;	
 
-	g_return_if_fail(action_nb < g_slist_length(prefs_common.actionslst));
-	
-	buf = (gchar *) g_slist_nth_data(prefs_common.actionslst, action_nb);
-	
-	g_return_if_fail(buf);
-	g_return_if_fail(action = strstr(buf, ": "));
+	g_return_if_fail(action_nb < g_slist_length(prefs_common.actions_list));
+
+	buf = (gchar *)g_slist_nth_data(prefs_common.actions_list, action_nb);
+	g_return_if_fail(buf != NULL);
+	action = strstr(buf, ": ");
+	g_return_if_fail(action != NULL);
 
 	/* Point to the beginning of the command-line */
-	action++;
-	action++;
-	
+	action += 2;
+
 	action_type = get_action_type(action);
-	if (action_type & ACTION_MULTIPLE ||
-	    action_type & ACTION_SINGLE   ) {		
-		alertpanel_warning(_("The selected action cannot be used "
-				     "in the compose window because it "
-				     "contains %%f, %%F or %%p."));
+	if (action_type & (ACTION_SINGLE | ACTION_MULTIPLE)) {
+		alertpanel_warning
+			(_("The selected action cannot be used in the compose window\n"
+			   "because it contains %%f, %%F or %%p."));
 		return;
 	}
 
@@ -1089,32 +1096,30 @@ static void mainwin_actions_execute_cb 	(MainWindow	*mainwin,
 		    *action;
 	MimeView    *mimeview = NULL;
 
-	g_return_if_fail (action_nb < g_slist_length(prefs_common.actionslst));
+	g_return_if_fail(action_nb < g_slist_length(prefs_common.actions_list));
 
-	buf = (gchar *) g_slist_nth_data(prefs_common.actionslst, action_nb);
+	buf = (gchar *)g_slist_nth_data(prefs_common.actions_list, action_nb);
 	
 	g_return_if_fail(buf);
 	g_return_if_fail(action = strstr(buf, ": "));
 
 	/* Point to the beginning of the command-line */
-	action++;
-	action++;
+	action += 2;
 
 	switch (messageview->type) {
-		case MVIEW_TEXT:
-			if (messageview->textview && 
-			    messageview->textview->text)
-				text = messageview->textview->text;
-			break;
-		case MVIEW_MIME:
-			if (messageview->mimeview &&
-			    messageview->mimeview->type == MIMEVIEW_TEXT &&
-			    messageview->mimeview->textview &&
-			    messageview->mimeview->textview->text) {
-				text = messageview->mimeview->textview->text;
-				mimeview = messageview->mimeview;
-			}
-			break;
+	case MVIEW_TEXT:
+		if (messageview->textview && messageview->textview->text)
+			text = messageview->textview->text;
+		break;
+	case MVIEW_MIME:
+		if (messageview->mimeview &&
+		    messageview->mimeview->type == MIMEVIEW_TEXT &&
+		    messageview->mimeview->textview &&
+		    messageview->mimeview->textview->text) {
+			text = messageview->mimeview->textview->text;
+			mimeview = messageview->mimeview;
+		}
+		break;
 	}
 
 	execute_actions(action, mainwin->window,
@@ -1153,7 +1158,7 @@ static gboolean execute_actions(gchar     *action,
 		selection_len = g_list_length(selection);
 	}
 	
-	if ((action_type & (ACTION_PIPE_OUT | ACTION_PIPE_IN))) {
+	if (action_type & (ACTION_PIPE_OUT | ACTION_PIPE_IN)) {
 		if (ctree && selection_len > 1)
 			return FALSE; /* ERR: pipe + multiple selection */
 		if (!text)
@@ -1237,7 +1242,7 @@ static gboolean execute_actions(gchar     *action,
 	if (children->open_in)
 		create_io_dialog(children);
 
-	return is_ok ;
+	return is_ok;
 }
 
 ChildInfo *fork_child(gchar *cmd,
@@ -1261,12 +1266,12 @@ ChildInfo *fork_child(gchar *cmd,
 
 	chld_in[0] = chld_in[1] = chld_out[0] = chld_out[1] = chld_err[0]
 		= chld_err[1] = chld_status[0] = chld_status[1] = -1;
-	
-	if (sync)
-		if (pipe(chld_status) || pipe(chld_in) || pipe(chld_out)
-				|| pipe(chld_err)) {
-			alertpanel_error(_("Command could not started. "
-						"Pipe creation failed.\n%s"),
+
+	if (sync) {
+		if (pipe(chld_status) || pipe(chld_in) || pipe(chld_out) ||
+		    pipe(chld_err)) {
+			alertpanel_error(_("Command could not be started. "
+					   "Pipe creation failed.\n%s"),
 					g_strerror(errno));
 			/* Closing fd = -1 fails silently */
 			close(chld_in[0]);
@@ -1279,6 +1284,7 @@ ChildInfo *fork_child(gchar *cmd,
 			close(chld_status[1]);
 			return NULL; /* Pipe error */
 		}
+	}
 
 	debug_print(_("Forking child and grandchild.\n"));
 
@@ -1326,7 +1332,7 @@ ChildInfo *fork_child(gchar *cmd,
 	}
 #else
 	pid = fork();
-	if (pid == (pid_t) 0) {/* Child */
+	if (pid == 0) { /* Child */
 		if (setpgid(0, 0))
 			perror("setpgid");
 		close(ConnectionNumber(gdk_display));
@@ -1338,9 +1344,9 @@ ChildInfo *fork_child(gchar *cmd,
 				perror("setpgid");
 			if (sync) {
 				if (action_type & 
-						(ACTION_PIPE_IN | 
-						 ACTION_OPEN_IN | 
-						 ACTION_HIDE_IN)) {
+				    (ACTION_PIPE_IN | 
+				     ACTION_OPEN_IN | 
+				     ACTION_HIDE_IN)) {
 					close(fileno(stdin));
 					dup  (chld_in[0]);
 				}
@@ -1365,9 +1371,8 @@ ChildInfo *fork_child(gchar *cmd,
 			execvp("/bin/sh", cmdline);
 			
 			perror("execvp");
-
 			_exit(1);
-		} else if (gch_pid < (pid_t) 0) {/* Fork error */
+		} else if (gch_pid < (pid_t) 0) { /* Fork error */
 			if (sync)
 				write(chld_status[1], "1\n", 2);
 			perror("fork");
@@ -1392,13 +1397,14 @@ ChildInfo *fork_child(gchar *cmd,
 			}
 			_exit(0);
 		}
-	} else if (pid < (pid_t) 0) {/* Fork error */
+	} else if (pid < 0) { /* Fork error */
 		alertpanel_error(_("Could not fork to execute the following "
 				   "command:\n%s\n%s"), 
 				 cmd, g_strerror(errno));
 		return NULL; 
 	}
 #endif
+
 	/* Parent */
 
 	if (!sync) 
@@ -1413,29 +1419,30 @@ ChildInfo *fork_child(gchar *cmd,
 
 	child_info = g_new0(ChildInfo, 1);
 
-	child_info->children = children;
+	child_info->children    = children;
 	
-	child_info->pid      = pid;
-	child_info->cmd      = g_strdup(cmd);
-	child_info->type     = action_type;
-	child_info->new_out  = FALSE;
-	child_info->output   = g_string_sized_new(0);
-	child_info->chld_in  = (action_type & (ACTION_PIPE_IN | ACTION_OPEN_IN
-				| ACTION_HIDE_IN))
-			       ? chld_in [1] : -1;
-	child_info->chld_out = chld_out[0];
-	child_info->chld_err = chld_err[0];
+	child_info->pid         = pid;
+	child_info->cmd         = g_strdup(cmd);
+	child_info->type        = action_type;
+	child_info->new_out     = FALSE;
+	child_info->output      = g_string_sized_new(0);
+	child_info->chld_in     =
+		(action_type &
+		 (ACTION_PIPE_IN | ACTION_OPEN_IN | ACTION_HIDE_IN))
+			? chld_in [1] : -1;
+	child_info->chld_out    = chld_out[0];
+	child_info->chld_err    = chld_err[0];
 	child_info->chld_status = chld_status[0];
-	child_info->tag_in   = -1;
-	child_info->tag_out  = gdk_input_add(chld_out[0], GDK_INPUT_READ,
-					     catch_output, child_info);
-	child_info->tag_err  = gdk_input_add(chld_err[0], GDK_INPUT_READ,
-					     catch_output, child_info);
+	child_info->tag_in      = -1;
+	child_info->tag_out     = gdk_input_add(chld_out[0], GDK_INPUT_READ,
+						catch_output, child_info);
+	child_info->tag_err     = gdk_input_add(chld_err[0], GDK_INPUT_READ,
+						catch_output, child_info);
 
 	if (!(action_type & (ACTION_PIPE_IN | ACTION_PIPE_OUT)))
 		return child_info;
 
-	child_info->text     = text;
+	child_info->text        = text;
 
 	start = 0;
 	end   = gtk_stext_get_length(GTK_STEXT(text));
@@ -1458,7 +1465,6 @@ ChildInfo *fork_child(gchar *cmd,
 	}
 
 	selection = gtk_editable_get_chars(GTK_EDITABLE(text), start, end);
-
 
 	if (action_type & ACTION_PIPE_IN) {
 		write(chld_in[1], selection, strlen(selection));
@@ -1627,20 +1633,21 @@ static void update_io_dialog(Children *children)
 		gtk_text_set_point(GTK_TEXT(text), 0);
 		gtk_text_forward_delete(GTK_TEXT(text), 
 					gtk_text_get_length(GTK_TEXT(text)));
-		for (cur = children->list; cur; cur = cur->next)
-		{
+		for (cur = children->list; cur; cur = cur->next) {
 			child_info = (ChildInfo *) cur->data;
 			if (child_info->pid)
-				caption = g_strdup_printf(_("--- Running: %s\n")
-						    , child_info->cmd);
+				caption = g_strdup_printf
+					(_("--- Running: %s\n"),
+					 child_info->cmd);
 			else
-				caption = g_strdup_printf(_("--- Ended: %s\n")
-						    , child_info->cmd);
+				caption = g_strdup_printf
+					(_("--- Ended: %s\n"),
+					 child_info->cmd);
 			
 			gtk_text_insert(GTK_TEXT(text), NULL, NULL, NULL,
-					 caption, -1);
+					caption, -1);
 			gtk_text_insert(GTK_TEXT(text), NULL, NULL, NULL,
-					 child_info->output->str, -1);
+					child_info->output->str, -1);
 			g_free(caption);
 			child_info->new_out = FALSE;
 		}
@@ -1735,8 +1742,7 @@ static void create_io_dialog(Children *children)
 	if (children->nb)
 		gtk_widget_set_sensitive(hide_button, FALSE);
 
-	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), 
-			  hbox);
+	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), hbox);
 
 	children->dialog      = dialog;
 	children->scrolledwin = scrolledwin;
@@ -1781,8 +1787,8 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 	gdk_input_remove(child_info->tag_in);
 	child_info->tag_in = -1;
 
-	input = gtk_editable_get_chars(GTK_EDITABLE(children->input_entry), 0,
-				       -1);
+	input = gtk_editable_get_chars(GTK_EDITABLE(children->input_entry),
+				       0, -1);
 	c = write(child_info->chld_in, input, strlen(input));
 
 	g_free(input);
@@ -1809,7 +1815,7 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 			is_selection = TRUE;
 		gtk_stext_freeze(GTK_STEXT(text));
 		while (TRUE) {
-			c =read(source, buf, PREFSBUFSIZE - 1);
+			c = read(source, buf, PREFSBUFSIZE - 1);
 			if (c == 0)
 				break;
 			gtk_stext_insert(GTK_STEXT(text), NULL, NULL, NULL,
@@ -1827,11 +1833,9 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 	} else {
 		c = read(source, buf, PREFSBUFSIZE - 1);
 		for (i = 0; i < c; i++)
-			child_info->output = g_string_append_c(
-					child_info->output, buf[i]);
+			child_info->output = g_string_append_c
+				(child_info->output, buf[i]);
 		if (c > 0)
 			child_info->new_out = TRUE;
-			
-		
 	}
 }

@@ -1,5 +1,12 @@
 2002-07-05
 
+	* src/prefs_actions.c: comply with the coding style.
+	  Modified the UI design.
+	* src/mainwindow.c: main_window_set_menu_sensitive(): enable Actions
+	  menu when multiple messages are selected.
+
+2002-07-05
+
 	* src/prefs_actions.[ch]: merged the 'Actions' feature from claws.
 	  update_actions_menu(): simplified the menu deletion.
 	* src/mainwindow.c: added 'Actions' menu to Tools and Configuration.
