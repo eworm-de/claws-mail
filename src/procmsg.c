@@ -474,8 +474,6 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 	};
 
 	FILE *fp;
-	int header_offset;
-	int hentry_offset;
 
 	g_return_if_fail(msginfo != NULL);
 	g_return_if_fail(header != NULL);
@@ -483,9 +481,6 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 
 	*header = NULL;
 	*key = NULL;
-
-	header_offset = 1;
-	hentry_offset = 5;
 
 	switch (type) {
 	case FILTER_BY_NONE:

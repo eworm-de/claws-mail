@@ -1,3 +1,8 @@
+2003-04-08 [paul]	0.8.11claws78
+
+	* src/procmsg.h
+		clean up after last commit
+
 2003-04-08 [paul]	0.8.11claws77
 
 	* sync with 0.8.11cvs20
