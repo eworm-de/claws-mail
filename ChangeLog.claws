@@ -1,3 +1,13 @@
+2002-12-25 [alfons]	0.8.7claws9
+
+	* src/matcher.[ch]
+	* src/matcher_parser_lex.l
+	* src/matcher_parser_parse.y
+	* src/prefs_matcher.c
+		add locked flag to possible filtering / matcher 
+		conditions (also a good example what should be
+		done to add a simple boolean condition)
+
 2002-12-25 [christoph]	0.8.7claws8
 
 	* src/Makefile.am

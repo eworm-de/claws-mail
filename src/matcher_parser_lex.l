@@ -48,6 +48,8 @@ void matcher_parser_init(void)
 "~replied"	return MATCHER_NOT_REPLIED;
 "forwarded"	return MATCHER_FORWARDED;
 "~forwarded"	return MATCHER_NOT_FORWARDED;
+"locked"	return MATCHER_LOCKED;
+"~locked"	return MATCHER_NOT_LOCKED;
 "subject"	return MATCHER_SUBJECT;
 "~subject"	return MATCHER_NOT_SUBJECT;
 "from"		return MATCHER_FROM;
