@@ -92,6 +92,8 @@ struct _SummaryView
 	GtkWidget *toggle_eventbox;
 	GtkWidget *toggle_arrow;
 	GtkWidget *popupmenu;
+	GtkWidget *label_menu_item; /* label menu item */
+	GtkWidget *label_menu;	    /* label menu itself */
 
 	GtkItemFactory *popupfactory;
 

@@ -1,3 +1,14 @@
+2001-07-14 [alfons]
+
+	* src/summaryview.[ch]
+		* start rewrite label colouring	
+		* fix proper location "Add Sender To Addressbook" menu item
+
+2001-07-13
+
+	Release 0.5.0claws "Paul Will Be Back Soon, Promise!"
+	(actually this is 0.5.0claws4)
+
 2001-07-13 [alfons]
 
 	* po/pt_BR.po

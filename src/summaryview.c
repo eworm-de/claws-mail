@@ -329,17 +329,6 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/_Mark/Ignore thread"),	NULL, summary_ignore_thread, 0, NULL},
 	{N_("/_Mark/Unignore thread"),	NULL, summary_unignore_thread, 0, NULL},
 
-	{N_("/_Label"),                 NULL, NULL, 0, "<Branch>"},
-	{N_("/_Label/None"),            NULL, summary_set_label, MSG_LABEL_NONE, NULL},
-	{N_("/_Label/---"),             NULL, NULL,             0, "<Separator>"},
-	{N_("/_Label/Orange"),          NULL, summary_set_label, MSG_LABEL_ORANGE, NULL},
-	{N_("/_Label/Red"),             NULL, summary_set_label, MSG_LABEL_RED, NULL},
-	{N_("/_Label/Pink"),            NULL, summary_set_label, MSG_LABEL_PINK, NULL},
-	{N_("/_Label/SkyBlue"),         NULL, summary_set_label, MSG_LABEL_SKYBLUE, NULL},
-	{N_("/_Label/Blue"),            NULL, summary_set_label, MSG_LABEL_BLUE, NULL},
-	{N_("/_Label/Green"),           NULL, summary_set_label, MSG_LABEL_GREEN, NULL},
-	{N_("/_Label/Brown"),           NULL, summary_set_label, MSG_LABEL_BROWN, NULL},
-
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_Reply"),			NULL, summary_reply_cb,	COMPOSE_REPLY, NULL},
 	{N_("/Repl_y to sender"),	NULL, summary_reply_cb,	COMPOSE_REPLY_TO_SENDER, NULL},
@@ -360,93 +349,136 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/Select _all"),		NULL, summary_select_all, 0, NULL}
 };
 
+/* L A B E L   C O L O R   S T U F F */
+
+static struct 
+{
+	GdkColor	color;
+	gchar	       *label;
+}
+label_colors[] = 
+{
+	{ { 0, 0xffff, (0x99 << 8), 0x0 },		N_("Orange")   },
+	{ { 0, 0xffff, 0, 0 },				N_("Red")      },
+	{ { 0, 0xffff, (0x66 << 8), 0xffff },		N_("Pink")     },
+	{ { 0, 0x0, (0xcc << 8), 0xffff },		N_("Sky blue") },
+	{ { 0, 0x0, 0x0, 0xffff },			N_("Blue")     },
+	{ { 0, 0x0, 0x99 << 8, 0x0 },			N_("Green")    },
+	{ { 0, 0x66 << 8, 0x33 << 8, 0x33 << 8 },	N_("Brown")    }
+};
+
+#define LABEL_COLORS_ELEMS (sizeof label_colors / sizeof label_colors[0])
+
+static void label_menu_item_activate_cb(GtkWidget *widget, gpointer data)
+{
+	guint color = GPOINTER_TO_UINT(data);
+	SummaryView *view = gtk_object_get_data(GTK_OBJECT(widget), "view");
+
+	g_return_if_fail(view);
+	color <<= 7;
+	summary_set_label(view, color, NULL);
+}
+
+/* summary_set_label_color() - labelcolor parameter is the color *flag*
+ * for the messsage; not the color index */
 void summary_set_label_color(GtkCTree *ctree, GtkCTreeNode *node,
 			     guint labelcolor)
 {
-  GdkColor color;
-  GtkStyle *style, *prev_style, *ctree_style;
-  MsgInfo *msginfo;
-  
-  ctree_style = gtk_widget_get_style(GTK_WIDGET(ctree));
-  
-  prev_style = gtk_ctree_node_get_row_style(ctree, node);
-  
-  if (!prev_style)
-    prev_style = ctree_style;
-  
-  style = gtk_style_copy(prev_style);
-  
-  switch (labelcolor) {
-  case MSG_LABEL_ORANGE:
-    color.red = 0xffff;
-    color.green = (0x99<<8);
-    color.blue = 0x0;
-    break;
-  case MSG_LABEL_RED:
-    color.red = 0xffff;
-    color.green = color.blue = 0x0;
-    break;
-  case MSG_LABEL_PINK:
-    color.red = 0xffff;
-    color.green = (0x66<<8);
-    color.blue = 0xffff;
-    break;
-  case MSG_LABEL_SKYBLUE:
-    color.red = 0x0;
-    color.green = (0xcc<<8);
-    color.blue = 0xffff;
-    break;
-  case MSG_LABEL_BLUE:
-    color.red = 0x0;
-    color.green = 0x0;
-    color.blue = 0xffff;
-    break;
-  case MSG_LABEL_GREEN:
-    color.red = 0x0;
-    color.green = (0x99<<8);
-    color.blue = 0x0;
-    break;
-  case MSG_LABEL_BROWN:
-    color.red = (0x66<<8);
-    color.green = (0x33<<8);
-    color.blue = (0x33<<8);
-    break;
-  case MSG_LABEL_NONE:
-  default:
-    labelcolor = MSG_LABEL_NONE;
-    color.red = ctree_style->fg[GTK_STATE_NORMAL].red;
-    color.green = ctree_style->fg[GTK_STATE_NORMAL].green;
-    color.blue = ctree_style->fg[GTK_STATE_NORMAL].blue;
-    style->fg[GTK_STATE_NORMAL] = color;
+	GdkColor  color;
+	GtkStyle *style, *prev_style, *ctree_style;
+	MsgInfo  *msginfo;
+	gint      color_index = ((gint)(labelcolor >> 7)) - 1;
 
-    color.red = ctree_style->fg[GTK_STATE_SELECTED].red;
-    color.green = ctree_style->fg[GTK_STATE_SELECTED].green;
-    color.blue = ctree_style->fg[GTK_STATE_SELECTED].blue;
-    style->fg[GTK_STATE_SELECTED] = color;
-    gtk_ctree_node_set_row_style(ctree, node, style);
-    break;
-  }
+	ctree_style = gtk_widget_get_style(GTK_WIDGET(ctree));
 
-  msginfo = gtk_ctree_node_get_row_data(ctree, node);
+	prev_style = gtk_ctree_node_get_row_style(ctree, node);
 
-  MSG_UNSET_FLAGS(msginfo->flags, MSG_LABEL);
-  MSG_SET_FLAGS(msginfo->flags, labelcolor);
+	if (!prev_style)
+		prev_style = ctree_style;
 
-  if ( style ) {
-    style->fg[GTK_STATE_NORMAL] = color;
-    style->fg[GTK_STATE_SELECTED] = color;
-    gtk_ctree_node_set_row_style(ctree, node, style);
-  }
+	style = gtk_style_copy(prev_style);
+
+	if (color_index < 0 || color_index >= LABEL_COLORS_ELEMS) {
+		labelcolor = MSG_LABEL;
+		color.red = ctree_style->fg[GTK_STATE_NORMAL].red;
+		color.green = ctree_style->fg[GTK_STATE_NORMAL].green;
+		color.blue = ctree_style->fg[GTK_STATE_NORMAL].blue;
+		style->fg[GTK_STATE_NORMAL] = color;
+
+		color.red = ctree_style->fg[GTK_STATE_SELECTED].red;
+		color.green = ctree_style->fg[GTK_STATE_SELECTED].green;
+		color.blue = ctree_style->fg[GTK_STATE_SELECTED].blue;
+		style->fg[GTK_STATE_SELECTED] = color;
+		gtk_ctree_node_set_row_style(ctree, node, style);
+	}
+	else
+		color = label_colors[color_index].color;
+
+	msginfo = gtk_ctree_node_get_row_data(ctree, node);
+
+	MSG_UNSET_FLAGS(msginfo->flags, MSG_LABEL);
+	MSG_SET_FLAGS(msginfo->flags, labelcolor);
+
+	if ( style ) {
+		style->fg[GTK_STATE_NORMAL] = color;
+		style->fg[GTK_STATE_SELECTED] = color;
+		gtk_ctree_node_set_row_style(ctree, node, style);
+	}
 }
 
 void summary_set_label(SummaryView *summaryview, guint labelcolor, GtkWidget *widget)
 {
-  GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-  GtkCList *clist = GTK_CLIST(summaryview->ctree);
-  GList *cur;
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GtkCList *clist = GTK_CLIST(summaryview->ctree);
+	GList *cur;
   
-  for (cur = clist->selection; cur != NULL; cur = cur->next)
-    summary_set_label_color(ctree, GTK_CTREE_NODE(cur->data), labelcolor);
+	for (cur = clist->selection; cur != NULL; cur = cur->next)
+		summary_set_label_color(ctree, GTK_CTREE_NODE(cur->data), labelcolor);
+}
+
+static void summary_create_label_menu(SummaryView *summaryview)
+{
+	const gint LABEL_MENU_POS = 5;
+	GtkWidget *label_menu_item;
+	GtkWidget *label_menu;
+	GtkWidget *item;
+	gint       i;
+	
+	label_menu_item = gtk_menu_item_new_with_label(_("Label"));
+	gtk_menu_insert(GTK_MENU(summaryview->popupmenu), label_menu_item, LABEL_MENU_POS);
+	gtk_widget_show(label_menu_item);
+	summaryview->label_menu_item = label_menu_item;
+
+	label_menu = gtk_menu_new();
+
+	/* create sub items. for the menu item activation callback we pass the 
+	 * index of label_colors[] as data parameter. for the None color we pass
+	 * an invalid (high) value. also we attach a data pointer so we can
+	 * always get back the SummaryView pointer. */
+	item = gtk_menu_item_new_with_label(_("None"));
+	gtk_menu_append(GTK_MENU(label_menu), item);
+	gtk_signal_connect(GTK_OBJECT(item), "activate",  
+		GTK_SIGNAL_FUNC(label_menu_item_activate_cb),
+		GUINT_TO_POINTER(-1));
+	gtk_object_set_data(GTK_OBJECT(item), "view", summaryview);	
+	gtk_widget_show(item);
+	
+	item = gtk_menu_item_new();
+	gtk_menu_append(GTK_MENU(label_menu), item);
+	gtk_widget_show(item);
+
+	for (i = 0; i < LABEL_COLORS_ELEMS; i++) {
+		item = gtk_menu_item_new_with_label(label_colors[i].label);
+		gtk_menu_append(GTK_MENU(label_menu), item);
+		gtk_signal_connect(GTK_OBJECT(item), "activate", 
+				   GTK_SIGNAL_FUNC(label_menu_item_activate_cb),
+				   GUINT_TO_POINTER(i + 1));
+		gtk_object_set_data(GTK_OBJECT(item), "view", summaryview);
+		gtk_widget_show(item);
+	}
+	gtk_widget_show(label_menu);
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(label_menu_item), label_menu);
+	summaryview->label_menu = label_menu;	
 }
 
 SummaryView *summary_create(void)
@@ -643,6 +675,8 @@ SummaryView *summary_create(void)
 	summaryview->msg_is_toggled_on = TRUE;
 	summaryview->sort_mode = SORT_BY_NONE;
 	summaryview->sort_type = GTK_SORT_ASCENDING;
+
+	summary_create_label_menu(summaryview);
 
 	summary_change_display_item(summaryview);
 
@@ -1041,7 +1075,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 		menu_set_insensitive_all
 			(GTK_MENU_SHELL(summaryview->popupmenu));
 		return;
-	}
+	} 
 
 	if (summaryview->folder_item->folder->type != F_NEWS) {
 		if (summaryview->folder_item->stype != F_TRASH)
@@ -1049,6 +1083,8 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 		menu_set_sensitive(ifactory, "/Move...", TRUE);
 		menu_set_sensitive(ifactory, "/Copy...", TRUE);
 	}
+
+	gtk_widget_set_sensitive(summaryview->label_menu_item, TRUE);
 	menu_set_sensitive(ifactory, "/Execute", TRUE);
 
 	sens = (selection == SUMMARY_SELECTED_MULTIPLE) ? FALSE : TRUE;
@@ -1078,8 +1114,6 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	menu_set_sensitive(ifactory, "/Mark/Mark as read",   TRUE);
 	menu_set_sensitive(ifactory, "/Mark/Ignore thread",   TRUE);
 	menu_set_sensitive(ifactory, "/Mark/Unignore thread", TRUE);
-
-	menu_set_sensitive(ifactory, "/Label", TRUE);
 
 	menu_set_sensitive(ifactory, "/Select all", TRUE);
 
@@ -3508,15 +3542,16 @@ static void summary_add_sender_to_cb (SummaryView			*summaryview,
 					 guint			 action,
 					 GtkWidget		*widget_)
 {
-	GtkWidget		*submenu;						
-	GList			*groups, *tmp;
+	const gint	 ADD_SENDER_TO_ADDRESSBOOK_MENU_POS = 13;
+	GtkWidget	*submenu;						
+	GList		*groups, *tmp;
 	GtkMenuShell	*menushell;
-	GtkWidget		*menu;
-	GtkWidget		*menuitem;
-	GList			*child;
-	gboolean		found = FALSE;
-	MsgInfo			*msginfo;
-	gchar			*from_address;
+	GtkWidget	*menu;
+	GtkWidget	*menuitem;
+	GList		*child;
+	gboolean	found = FALSE;
+	MsgInfo	       *msginfo;
+	gchar	       *from_address;
 
 	menushell = GTK_MENU_SHELL(summaryview->popupmenu);
 	g_return_if_fail(menushell != NULL);
@@ -3537,7 +3572,7 @@ static void summary_add_sender_to_cb (SummaryView			*summaryview,
 	if (!found) {
 		submenu = gtk_menu_item_new_with_label(_("Add sender to address book"));
 		gtk_object_set_data(GTK_OBJECT(submenu), "contacts", (gpointer)1);
-		gtk_menu_insert(GTK_MENU(summaryview->popupmenu), submenu, 12);
+		gtk_menu_insert(GTK_MENU(summaryview->popupmenu), submenu, ADD_SENDER_TO_ADDRESSBOOK_MENU_POS);
 		gtk_widget_show(submenu);
 	}
 	else {
