@@ -1,3 +1,8 @@
+2004-08-20 [colin]	0.9.12cvs66
+
+	* src/codeconv.c
+		Fix bug 574 (empty cur_locale is not enough)
+
 2004-08-20 [paul]
 
         * src/plugins/pgpmime/plugin.c
