@@ -40,7 +40,6 @@
 #include "procheader.h"
 #include "folder.h"
 #include "session.h"
-#include "statusbar.h"
 #include "codeconv.h"
 #include "utils.h"
 #include "prefs_common.h"
