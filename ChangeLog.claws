@@ -1,3 +1,12 @@
+2004-11-18 [paul]	0.9.12cvs158
+
+	* src/compose.c
+	* src/messageview.c
+	* src/common/utils.c
+	* src/common/utils.h
+		use Message-ID format like that previously
+		used in compose_generate_msgid()
+
 2004-11-17 [christoph]	0.9.12cvs157
 
 	* src/mainwindow.c
