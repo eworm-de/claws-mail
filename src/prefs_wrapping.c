@@ -49,7 +49,6 @@ typedef struct _WrappingPage
 	GtkWidget *checkbtn_wrapquote;
 	GtkWidget *checkbtn_autowrap;
 	GtkWidget *checkbtn_wrapatsend;
-	GtkWidget *checkbtn_smart_wrapping;
 } WrappingPage;
 
 void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window, 
@@ -64,7 +63,6 @@ void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
 	GtkWidget *checkbtn_wrapquote;
 	GtkWidget *checkbtn_autowrap;
 	GtkWidget *checkbtn_wrapatsend;
-	GtkWidget *checkbtn_smart_wrapping;
 	GtkWidget *hbox1;
 
 	table = gtk_table_new(8, 3, FALSE);
@@ -91,13 +89,6 @@ void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 0, 0);
 
-  	checkbtn_smart_wrapping = 
-		gtk_check_button_new_with_label(_("Smart wrapping (EXPERIMENTAL)"));
-	gtk_widget_show (checkbtn_smart_wrapping);
-  	gtk_table_attach (GTK_TABLE (table), checkbtn_smart_wrapping, 0, 1, 4, 5,
-                    	  (GtkAttachOptions) (GTK_FILL),
-                    	  (GtkAttachOptions) (0), 0, 0);
-	
   	hbox1 = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox1);
   	gtk_table_attach (GTK_TABLE (table), hbox1, 0, 1, 5, 6,
@@ -124,8 +115,6 @@ void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
 				     prefs_common.linewrap_at_send);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_wrapquote),
 				     prefs_common.linewrap_quote);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_smart_wrapping),
-				     prefs_common.smart_wrapping);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(spinbtn_linewrap),
 				  prefs_common.linewrap_len);
 
@@ -134,7 +123,6 @@ void prefs_wrapping_create_widget(PrefsPage *_page, GtkWindow *window,
 	prefs_wrapping->checkbtn_wrapquote	= checkbtn_wrapquote;
 	prefs_wrapping->checkbtn_autowrap	= checkbtn_autowrap;
 	prefs_wrapping->checkbtn_wrapatsend	= checkbtn_wrapatsend;
-	prefs_wrapping->checkbtn_smart_wrapping	= checkbtn_smart_wrapping;
 
 	prefs_wrapping->page.widget = table;
 }
@@ -151,8 +139,6 @@ void prefs_wrapping_save(PrefsPage *_page)
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_autowrap));
 	prefs_common.linewrap_at_send = 
 		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_wrapatsend));
-	prefs_common.smart_wrapping = 
-		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_smart_wrapping));
 }
 
 static void prefs_wrapping_destroy_widget(PrefsPage *_page)

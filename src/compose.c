@@ -5229,10 +5229,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	clipboard = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
 	gtk_text_buffer_add_selection_clipboard(buffer, clipboard);
 	
-	if (prefs_common.smart_wrapping) {	
-		gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD);
-	}		
-
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
 
 	g_signal_connect_after(G_OBJECT(text), "size_allocate",

@@ -303,8 +303,6 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"linewrap_before_sending", "FALSE", &prefs_common.linewrap_at_send, P_BOOL, 
 	 NULL, NULL, NULL},
-        {"smart_wrapping", "TRUE", &prefs_common.smart_wrapping, P_BOOL, 
-	 NULL, NULL, NULL},
         {"autosave", "FALSE", &prefs_common.autosave,
 	 P_BOOL, &compose.checkbtn_autosave,
 	 prefs_set_data_from_toggle, prefs_set_toggle},

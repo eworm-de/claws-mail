@@ -1,3 +1,12 @@
+2004-07-18 [colin]	0.9.12cvs32.4
+
+	* src/compose.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_wrapping.c
+		Remove Smart Wrapping pref, which does
+		nothing on gtk2 branch
+
 2004-07-18 [colin]	0.9.12cvs32.3
 
 	* src/sourcewindow.c
