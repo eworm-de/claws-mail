@@ -51,16 +51,20 @@ static struct Matcher {
 
 	GtkWidget *close_btn;
 
-	GtkWidget *criteria_entry;
+	GtkWidget *predicate_combo;
+	GtkWidget *header_combo;
+
+	GtkWidget *criteria_list;
+	GtkWidget *predicate_list;
+	GtkWidget *bool_op_list;
+
 	GtkWidget *header_entry;
 	GtkWidget *header_label;
 	GtkWidget *value_entry;
 	GtkWidget *value_label;
 	GtkWidget *predicate_label;
-	GtkWidget *predicate_entry;
 	GtkWidget *case_chkbtn;
 	GtkWidget *regexp_chkbtn;
-	GtkWidget *bool_op_entry;
 
 	GtkWidget *cond_clist;
 } matcher;
@@ -84,7 +88,7 @@ enum {
 };
 
 gchar * bool_op_text [] = {
-	"and", "or"
+	"or", "and"
 };
 
 gchar * predicate_text [] = {
@@ -100,28 +104,21 @@ gchar * criteria_text [] = {
 	"Body part", "Whole message"
 };
 
-gint criteria_get_from_string(gchar * text)
+gint get_sel_from_list(GtkList * list)
 {
-	gint i;
-	
-	for(i = 0 ; i < (gint) (sizeof(criteria_text) / sizeof(gchar *)) ;
-	    i++) {
-		if (strcmp(_(criteria_text[i]), text) == 0)
-			return i;
-	}
-	return -1;
-}
+	gint row = 0;
+	void * sel;
+	GList * child;
 
-gint predicate_get_from_string(gchar * text)
-{
-	gint i;
-	
-	for(i = 0 ; i < (gint) (sizeof(predicate_text) / sizeof(gchar *)) ;
-	    i++) {
-		if (strcmp(_(predicate_text[i]), text) == 0)
-			return i;
+	sel = list->selection->data;
+	for(child = list->children ; child != NULL ;
+	    child = g_list_next(child)) {
+		if (child->data == sel)
+			return row;
+		row ++;
 	}
-	return -1;
+	
+	return row;
 }
 
 enum {
@@ -129,15 +126,7 @@ enum {
 	PREDICATE_DOES_NOT_CONTAIN = 1
 };
 
-/* static MatcherList * tmp_list; */
-/* static MatcherProp * tmp_matcher; */
-
-/*
-   parameter name, default value, pointer to the prefs variable, data type,
-   pointer to the widget pointer,
-   pointer to the function for data setting,
-   pointer to the function for widget setting
- */
+static MatcherList * tmp_matchers;
 
 #define VSPACING		12
 #define VSPACING_NARROW		4
@@ -164,17 +153,10 @@ static void prefs_matcher_substitute_cb	(void);
 static void prefs_matcher_delete_cb	(void);
 static void prefs_matcher_up		(void);
 static void prefs_matcher_down		(void);
-/*
-static void prefs_matcher_select		(GtkCList	*clist,
+static void prefs_matcher_select	(GtkCList	*clist,
 					 gint		 row,
 					 gint		 column,
 					 GdkEvent	*event);
-*/
-
-/*
-static void prefs_matcher_dest_radio_button_toggled	(void);
-static void prefs_matcher_notrecv_radio_button_toggled	(void);
-*/
 
 static void prefs_matcher_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
@@ -182,8 +164,10 @@ static void prefs_matcher_key_pressed	(GtkWidget	*widget,
 static void prefs_matcher_close		(void);
 static gint prefs_matcher_deleted(GtkWidget *widget, GdkEventAny *event,
 				  gpointer data);
-static void prefs_matcher_criteria_select(GtkEditable *editable,
+static void prefs_matcher_criteria_select(GtkList *list,
+					  GtkWidget *widget,
 					  gpointer user_data);
+static void prefs_matcher_set_list(void);
 
 void prefs_matcher_open(MatcherList * matchers)
 {
@@ -196,7 +180,7 @@ void prefs_matcher_open(MatcherList * matchers)
 	manage_window_set_transient(GTK_WINDOW(matcher.window));
 	gtk_widget_grab_focus(matcher.close_btn);
 
-	/*	tmp_matchers = matchers; */
+	tmp_matchers = matchers;
 	prefs_matcher_set_dialog();
 
 	gtk_widget_show(matcher.window);
@@ -220,15 +204,15 @@ static void prefs_matcher_create(void)
 	GtkWidget *header_entry;
 	GtkWidget *header_label;
 	GtkWidget *criteria_combo;
-	GtkWidget *criteria_entry;
+	GtkWidget *criteria_list;
 	GtkWidget *criteria_label;
 	GtkWidget *value_label;
 	GtkWidget *value_entry;
 	GtkWidget *predicate_combo;
-	GtkWidget *predicate_entry;
+	GtkWidget *predicate_list;
 	GtkWidget *predicate_label;
 	GtkWidget *bool_op_combo;
-	GtkWidget *bool_op_entry;
+	GtkWidget *bool_op_list;
 	GtkWidget *bool_op_label;
 
 	GtkWidget *regexp_chkbtn;
@@ -322,13 +306,13 @@ static void prefs_matcher_create(void)
 	gtk_widget_set_usize (criteria_combo, 120, -1);
 	gtk_table_attach (GTK_TABLE (table1), criteria_combo, 0, 1, 1, 2,
 			  0, 0, 0, 0);
-	criteria_entry = GTK_COMBO(criteria_combo)->entry;
-	gtk_signal_connect (GTK_OBJECT (criteria_entry), "changed",
+	criteria_list = GTK_COMBO(criteria_combo)->list;
+	gtk_signal_connect (GTK_OBJECT (criteria_list), "select-child",
 			    GTK_SIGNAL_FUNC (prefs_matcher_criteria_select),
 			    NULL);
 
-	criteria_entry = GTK_COMBO (criteria_combo)->entry;
-	gtk_entry_set_editable (GTK_ENTRY (criteria_entry), FALSE);
+	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(criteria_combo)->entry),
+			       FALSE);
 
 	/* header name */
 
@@ -384,8 +368,9 @@ static void prefs_matcher_create(void)
 	predicate_combo = gtk_combo_new ();
 	gtk_widget_show (predicate_combo);
 	gtk_widget_set_usize (predicate_combo, 120, -1);
-	predicate_entry = GTK_COMBO(predicate_combo)->entry;
-	gtk_entry_set_editable (GTK_ENTRY (predicate_entry), FALSE);
+	predicate_list = GTK_COMBO(predicate_combo)->list;
+	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(predicate_combo)->entry),
+			       FALSE);
 
 	combo_items = NULL;
 
@@ -444,12 +429,6 @@ static void prefs_matcher_create(void)
 
 	/* boolean operation */
 
-	/*
-	hbox1 = gtk_hbox_new (TRUE, 4);
-	gtk_widget_show (btn_hbox);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
-	*/
-
 	bool_op_label = gtk_label_new (_("Boolean Op"));
 	gtk_misc_set_alignment (GTK_MISC (value_label), 0, 0.5);
 	gtk_widget_show (bool_op_label);
@@ -459,8 +438,9 @@ static void prefs_matcher_create(void)
 	bool_op_combo = gtk_combo_new ();
 	gtk_widget_show (bool_op_combo);
 	gtk_widget_set_usize (bool_op_combo, 50, -1);
-	bool_op_entry = GTK_COMBO(bool_op_combo)->entry;
-	gtk_entry_set_editable (GTK_ENTRY (bool_op_entry), FALSE);
+	bool_op_list = GTK_COMBO(bool_op_combo)->list;
+	gtk_entry_set_editable(GTK_ENTRY(GTK_COMBO(bool_op_combo)->entry),
+			       FALSE);
 
 	combo_items = NULL;
 
@@ -497,10 +477,8 @@ static void prefs_matcher_create(void)
 				      GTK_SELECTION_BROWSE);
 	GTK_WIDGET_UNSET_FLAGS (GTK_CLIST (cond_clist)->column[0].button,
 				GTK_CAN_FOCUS);
-	/*
 	gtk_signal_connect (GTK_OBJECT (cond_clist), "select_row",
 			    GTK_SIGNAL_FUNC (prefs_matcher_select), NULL);
-	*/
 
 	btn_vbox = gtk_vbox_new (FALSE, 8);
 	gtk_widget_show (btn_vbox);
@@ -523,240 +501,121 @@ static void prefs_matcher_create(void)
 	matcher.window    = window;
 	matcher.close_btn = close_btn;
 
-	matcher.criteria_entry = criteria_entry;
+	matcher.criteria_list = criteria_list;
+	matcher.header_combo = header_combo;
 	matcher.header_entry = header_entry;
 	matcher.header_label = header_label;
 	matcher.value_entry = value_entry;
 	matcher.value_label = value_label;
 	matcher.predicate_label = predicate_label;
-	matcher.predicate_entry = predicate_entry;
+	matcher.predicate_list = predicate_list;
+	matcher.predicate_combo = predicate_combo;
 	matcher.case_chkbtn = case_chkbtn;
 	matcher.regexp_chkbtn = regexp_chkbtn;
+	matcher.bool_op_list = bool_op_list;
 
 	matcher.cond_clist   = cond_clist;
 }
 
-/*
-void prefs_matcher_read_config(void)
+static gint prefs_matcher_clist_set_row(gint row, MatcherProp * prop)
 {
-	gchar *rcpath;
-	FILE *fp;
-	gchar buf[PREFSBUFSIZE];
-	Matcher *flt;
+	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
+	gchar * cond_str[1];
+	gchar * matcher_str;
 
-	debug_print(_("Reading matcher configuration...\n"));
-
-	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, FILTER_RC, NULL);
-	if ((fp = fopen(rcpath, "r")) == NULL) {
-		if (ENOENT != errno) FILE_OP_ERROR(rcpath, "fopen");
-		g_free(rcpath);
-		return;
-	}
-	g_free(rcpath);
-*/
-
-	/* remove all previous matcher list */
-
-/*
-	while (prefs_common.fltlist != NULL) {
-		flt = (Matcher *)prefs_common.fltlist->data;
-		filter_free(flt);
-		prefs_common.fltlist = g_slist_remove(prefs_common.fltlist,
-						      flt);
+	if (prop == NULL) {
+		cond_str[0] = _("(New)");
+		return gtk_clist_append(clist, cond_str);
 	}
 
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		g_strchomp(buf);
-		flt = filter_read_str(buf);
-		if (flt) {
-			prefs_common.fltlist =
-				g_slist_append(prefs_common.fltlist, flt);
-		}
-	}
+	matcher_str = matcherprop_to_string(prop);
+	cond_str[0] = matcher_str;
+	if (row < 0)
+		row = gtk_clist_append(clist, cond_str);
+	else
+		gtk_clist_set_text(clist, row, 0, cond_str[0]);
+	g_free(matcher_str);
 
-	fclose(fp);
+	return row;
 }
 
-void prefs_filter_write_config(void)
+static void prefs_matcher_reset_condition(void)
 {
-	gchar *rcpath;
-	PrefFile *pfile;
-	GSList *cur;
-
-	debug_print(_("Writing filter configuration...\n"));
-
-	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, FILTER_RC, NULL);
-	if ((pfile = prefs_write_open(rcpath)) == NULL) {
-		g_warning(_("failed to write configuration to file\n"));
-		g_free(rcpath);
-		return;
-	}
-
-	for (cur = prefs_common.fltlist; cur != NULL; cur = cur->next) {
-		Filter *flt = (Filter *)cur->data;
-		gchar *fstr;
-
-		fstr = filter_get_str(flt);
-		if (fputs(fstr, pfile->fp) == EOF ||
-		    fputc('\n', pfile->fp) == EOF) {
-			FILE_OP_ERROR(rcpath, "fputs || fputc");
-			prefs_write_close_revert(pfile);
-			g_free(rcpath);
-			g_free(fstr);
-			return;
-		}
-		g_free(fstr);
-	}
-
-	g_free(rcpath);
-
-	if (prefs_write_close(pfile) < 0) {
-		g_warning(_("failed to write configuration to file\n"));
-		return;
-	}
+	gtk_list_select_item(GTK_LIST(matcher.criteria_list), 0);
+	gtk_list_select_item(GTK_LIST(matcher.predicate_list), 0);
+	gtk_entry_set_text(GTK_ENTRY(matcher.header_entry), "");
+	gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), "");
 }
-*/
 
-static void prefs_matcher_set_dialog(void)
+ static void prefs_matcher_set_dialog(void)
 {
-	/*
-	GtkCList *clist = GTK_CLIST(filter.cond_clist);
-	GSList *cur;
-	gchar *cond_str[1];
-	gint row;
+	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
+	GSList * cur;
+	gboolean bool_op = 0;
 
 	gtk_clist_freeze(clist);
 	gtk_clist_clear(clist);
 
-	cond_str[0] = _("(New)");
-	row = gtk_clist_append(clist, cond_str);
-	gtk_clist_set_row_data(clist, row, NULL);
+	prefs_matcher_clist_set_row(-1, NULL);
+	if (tmp_matchers != NULL) {
+		for (cur = tmp_matchers->matchers ; cur != NULL ;
+		     cur = g_slist_next(cur)) {
+			MatcherProp * prop;
+			prop = (MatcherProp *) cur->data;
+			prefs_matcher_clist_set_row(-1, prop);
+			matcherprop_free(prop);
+		}
 
-	for (cur = prefs_common.fltlist; cur != NULL; cur = cur->next) {
-		Filter *flt = (Filter *)cur->data;
-
-		cond_str[0] = filter_get_str(flt);
-		subst_char(cond_str[0], '\t', ':');
-		row = gtk_clist_append(clist, cond_str);
-		gtk_clist_set_row_data(clist, row, flt);
-
-		g_free(cond_str[0]);
+		bool_op = tmp_matchers->bool_and;
 	}
-
 	gtk_clist_thaw(clist);
-	*/
 
-	gtk_entry_set_text(GTK_ENTRY(matcher.criteria_entry),
-			   _(criteria_text[0]));
-	gtk_entry_set_text(GTK_ENTRY(matcher.predicate_entry),
-			   _(predicate_text[0]));
-	gtk_entry_set_text(GTK_ENTRY(matcher.header_entry), "");
+	gtk_list_select_item(GTK_LIST(matcher.bool_op_list), bool_op);
+
+	prefs_matcher_reset_condition();
 }
-/*
-static void prefs_filter_set_list(void)
+
+static void prefs_matcher_set_list(void)
 {
+	gchar * matcher_str;
+	MatcherProp * prop;
 	gint row = 1;
-	Filter *flt;
+	GSList * l;
+	gchar * tmp;
 
-	g_slist_free(prefs_common.fltlist);
-	prefs_common.fltlist = NULL;
+	if (tmp_matchers == NULL)
+		return;
 
-	while ((flt = gtk_clist_get_row_data(GTK_CLIST(filter.cond_clist),
-		row)) != NULL) {
-		prefs_common.fltlist = g_slist_append(prefs_common.fltlist,
-						      flt);
-		row++;
+	/* free old */
+
+	for(l = tmp_matchers->matchers ; l != NULL ; l = g_slist_next(l))
+		matcherprop_free((MatcherProp *) l->data);
+	g_slist_free(tmp_matchers->matchers);
+	tmp_matchers->matchers = NULL;
+
+	/* set new */
+
+	while (gtk_clist_get_text(GTK_CLIST(matcher.cond_clist),
+				  row, 0, &matcher_str)) {
+
+		if (strcmp(matcher_str, _("(New)")) != 0) {
+			tmp = matcher_str;
+			prop = matcherprop_parse(&tmp);
+			
+			if (tmp == NULL)
+				break;
+			
+			tmp_matchers->matchers =
+				g_slist_append(tmp_matchers->matchers, prop);
+		}
+		row ++;
 	}
+
+	tmp_matchers->bool_and = get_sel_from_list(GTK_LIST(matcher.bool_op_list));
+
 }
 
-#define GET_ENTRY(entry) \
-	entry_text = gtk_entry_get_text(GTK_ENTRY(entry))
-
-static gint prefs_filter_clist_set_row(gint row)
-{
-	GtkCList *clist = GTK_CLIST(filter.cond_clist);
-	Filter *flt;
-	gchar *entry_text;
-	gchar *cond_str[1];
-
-	g_return_val_if_fail(row != 0, -1);
-
-	if (GTK_WIDGET_IS_SENSITIVE(filter.dest_entry))
-		GET_ENTRY(filter.dest_entry);
-	else
-		entry_text = FILTER_NOT_RECEIVE;
-	if (entry_text[0] == '\0') {
-		alertpanel_error(_("Destination is not set."));
-		return -1;
-	}
-	GET_ENTRY(filter.hdr_entry1);
-	if (entry_text[0] == '\0') {
-		alertpanel_error(_("Header name is not set."));
-		return -1;
-	}
-
-	flt = g_new0(Filter, 1);
-
-	flt->name1 = g_strdup(entry_text);
-
-	GET_ENTRY(filter.key_entry1);
-	if (entry_text[0] != '\0')
-		flt->body1 = g_strdup(entry_text);
-
-	GET_ENTRY(filter.hdr_entry2);
-	if (entry_text[0] != '\0' && strcmp(entry_text, _("(none)")) != 0) {
-		flt->name2 = g_strdup(entry_text);
-
-		GET_ENTRY(filter.key_entry2);
-		if (entry_text[0] != '\0')
-			flt->body2 = g_strdup(entry_text);
-	}
-
-	GET_ENTRY(filter.pred_entry1);
-	if (!strcmp(entry_text, _("contains")))
-		flt->flag1 = FLT_CONTAIN;
-	GET_ENTRY(filter.pred_entry2);
-	if (!strcmp(entry_text, _("contains")))
-		flt->flag2 = FLT_CONTAIN;
-
-	GET_ENTRY(filter.op_entry);
-	if (!strcmp(entry_text, "and"))
-		flt->cond = FLT_AND;
-	else
-		flt->cond = FLT_OR;
-
-	if (GTK_WIDGET_IS_SENSITIVE(filter.dest_entry)) {
-		entry_text = gtk_entry_get_text(GTK_ENTRY(filter.dest_entry));
-		flt->dest = g_strdup(entry_text);
-		flt->action = FLT_MOVE;
-	} else
-		flt->action = FLT_NOTRECV;
-
-	cond_str[0] = filter_get_str(flt);
-	subst_char(cond_str[0], '\t', ':');
-
-	if (row < 0)
-		row = gtk_clist_append(clist, cond_str);
-	else {
-		Filter *tmpflt;
-
-		gtk_clist_set_text(clist, row, 0, cond_str[0]);
-		tmpflt = gtk_clist_get_row_data(clist, row);
-		if (tmpflt)
-			filter_free(tmpflt);
-	}
-
-	gtk_clist_set_row_data(clist, row, flt);
-
-	g_free(cond_str[0]);
-
-	prefs_filter_set_list();
-
-	return row;
-}
-*/
-
-static gint prefs_matcher_get_scoring_from_criteria(gint criteria_id)
+static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 {
 	switch (criteria_id) {
 	case CRITERIA_ALL:
@@ -818,7 +677,7 @@ static gint prefs_matcher_not_criteria(gint matcher_criteria)
 	}
 }
 
-static MatcherProp * prefs_match_dialog_to_matcher()
+static MatcherProp * prefs_matcher_dialog_to_matcher()
 {
 	MatcherProp * matcherprop;
 	gint criteria;
@@ -830,11 +689,13 @@ static MatcherProp * prefs_match_dialog_to_matcher()
 	gchar * header;
 	gchar * expr;
 	gint age;
+	gchar * age_str;
 
-	value_criteria = criteria_get_from_string(gtk_entry_get_text(GTK_ENTRY(matcher.criteria_entry)));
-	criteria = prefs_matcher_get_scoring_from_criteria(value_criteria);
+	value_criteria = get_sel_from_list(GTK_LIST(matcher.criteria_list));
 
-	value_pred =  predicate_get_from_string(gtk_entry_get_text(GTK_ENTRY(matcher.predicate_entry)));
+	criteria = prefs_matcher_get_matching_from_criteria(value_criteria);
+
+	value_pred = get_sel_from_list(GTK_LIST(matcher.predicate_list));
 
 	use_regexp = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn));
 	case_sensitive = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn));
@@ -873,16 +734,41 @@ static MatcherProp * prefs_match_dialog_to_matcher()
 	case CRITERIA_BODY_PART:
 	case CRITERIA_MESSAGE:
 		expr = gtk_entry_get_text(GTK_ENTRY(matcher.value_entry));
+
+		if (*expr == '\0') {
+		    alertpanel_error(_("Match string is not set."));
+		    return NULL;
+		}
+
 		break;
 
 	case CRITERIA_AGE_GREATER:
 	case CRITERIA_AGE_LOWER:
-		age = atoi(gtk_entry_get_text(GTK_ENTRY(matcher.value_entry)));
+		age_str = gtk_entry_get_text(GTK_ENTRY(matcher.value_entry));
+
+		if (*age_str == '\0') {
+		    alertpanel_error(_("Age is not set."));
+		    return NULL;
+		}
+
+		age = atoi(age_str);
+
 		break;
 
 	case CRITERIA_HEADER:
+
 		header = gtk_entry_get_text(GTK_ENTRY(matcher.header_entry));
 		expr = gtk_entry_get_text(GTK_ENTRY(matcher.value_entry));
+
+		if (*header == '\0') {
+		    alertpanel_error(_("Header name is not set."));
+		    return NULL;
+		}
+		if (*expr == '\0') {
+		    alertpanel_error(_("Match string is not set."));
+		    return NULL;
+		}
+
 		break;
 	}
 
@@ -893,164 +779,269 @@ static MatcherProp * prefs_match_dialog_to_matcher()
 
 static void prefs_matcher_register_cb(void)
 {
-	gchar * matcher_str;
 	MatcherProp * matcherprop;
-	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
-	gchar * cond_str[1];
-	gint row;
 	
-	matcherprop = prefs_match_dialog_to_matcher();
-	matcher_str = matcherprop_to_string(matcherprop);
+	matcherprop = prefs_matcher_dialog_to_matcher();
+	if (matcherprop == NULL)
+		return;
+
+	prefs_matcher_clist_set_row(-1, matcherprop);
+
 	matcherprop_free(matcherprop);
 
-	cond_str[0] = matcher_str;
-	row = gtk_clist_append(clist, cond_str);
-	g_free(matcher_str);
+	prefs_matcher_reset_condition();
 }
 
 static void prefs_matcher_substitute_cb(void)
 {
-	/*
-	GtkCList *clist = GTK_CLIST(filter.cond_clist);
-	Filter *flt;
+	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
 	gint row;
-
-	if (!clist->selection) return;
+	MatcherProp * matcherprop;
 
 	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row == 0) return;
+	if (row == 0)
+		return;
+	
+	matcherprop = prefs_matcher_dialog_to_matcher();
+	if (matcherprop == NULL)
+		return;
 
-	flt = gtk_clist_get_row_data(clist, row);
-	if (!flt) return;
+	prefs_matcher_clist_set_row(row, matcherprop);
 
-	prefs_filter_clist_set_row(row);
-	*/
+	matcherprop_free(matcherprop);
+
+	prefs_matcher_reset_condition();
 }
 
 static void prefs_matcher_delete_cb(void)
 {
-	/*
-	GtkCList *clist = GTK_CLIST(filter.cond_clist);
-	Filter *flt;
+	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
 	gint row;
 
 	if (!clist->selection) return;
 	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row == 0) return;
-
-	if (alertpanel(_("Delete rule"),
-		       _("Do you really want to delete this rule?"),
-		       _("Yes"), _("No"), NULL) == G_ALERTALTERNATE)
+	if (row == 0)
 		return;
 
-	flt = gtk_clist_get_row_data(clist, row);
-	filter_free(flt);
 	gtk_clist_remove(clist, row);
-	prefs_common.fltlist = g_slist_remove(prefs_common.fltlist, flt);
-	*/
 }
 
 static void prefs_matcher_up(void)
 {
-	/*
-	GtkCList *clist = GTK_CLIST(filter.cond_clist);
+	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
 	gint row;
 
 	if (!clist->selection) return;
 
 	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row > 1) {
+	if (row > 1)
 		gtk_clist_row_move(clist, row, row - 1);
-		prefs_filter_set_list();
-	}
-	*/
 }
 
 static void prefs_matcher_down(void)
 {
-	/*
-	GtkCList *clist = GTK_CLIST(filter.cond_clist);
+	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
 	gint row;
 
 	if (!clist->selection) return;
 
 	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row > 0 && row < clist->rows - 1) {
+	if (row >= 1 && row < clist->rows - 1)
 		gtk_clist_row_move(clist, row, row + 1);
-		prefs_filter_set_list();
+}
+
+static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
+				 GdkEvent *event)
+{
+	gchar * matcher_str;
+	gchar * tmp;
+	MatcherProp * prop;
+	gboolean negative_cond;
+
+	if (!gtk_clist_get_text(GTK_CLIST(matcher.cond_clist),
+				row, 0, &matcher_str))
+		return;
+
+	negative_cond = FALSE;
+
+	if (row == 0) {
+		prefs_matcher_reset_condition();
+		return;
 	}
-	*/
-}
 
-/*
-#define ENTRY_SET_TEXT(entry, str) \
-	gtk_entry_set_text(GTK_ENTRY(entry), str ? str : "")
+	tmp = matcher_str;
+	prop = matcherprop_parse(&tmp);
+	if (tmp == NULL)
+		return;
 
-static void prefs_filter_select(GtkCList *clist, gint row, gint column,
-				GdkEvent *event)
-{
-	Filter *flt;
-	Filter default_flt = {"Subject", NULL, _("(none)"), NULL,
-			      FLT_CONTAIN, FLT_CONTAIN, FLT_AND,
-			      NULL, FLT_MOVE};
+	switch(prop->criteria) {
+	case MATCHING_ALL:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_ALL);
+		break;
 
-	flt = gtk_clist_get_row_data(clist, row);
-	if (!flt)
-		flt = &default_flt;
+	case MATCHING_NOT_SUBJECT:
+		negative_cond = TRUE;
+	case MATCHING_SUBJECT:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_SUBJECT);
+		break;
 
-	ENTRY_SET_TEXT(filter.dest_entry, flt->dest);
-	ENTRY_SET_TEXT(filter.hdr_entry1, flt->name1);
-	ENTRY_SET_TEXT(filter.key_entry1, flt->body1);
-	ENTRY_SET_TEXT(filter.hdr_entry2,
-		       flt->name2 ? flt->name2 : _("(none)"));
-	ENTRY_SET_TEXT(filter.key_entry2, flt->body2);
+	case MATCHING_NOT_FROM:
+		negative_cond = TRUE;
+	case MATCHING_FROM:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_FROM);
+		break;
 
-	ENTRY_SET_TEXT(filter.pred_entry1,
-		       FLT_IS_CONTAIN(flt->flag1)
-		       ? _("contains") : _("not contain"));
-	ENTRY_SET_TEXT(filter.pred_entry2,
-		       FLT_IS_CONTAIN(flt->flag2)
-		       ? _("contains") : _("not contain"));
+	case MATCHING_NOT_TO:
+		negative_cond = TRUE;
+	case MATCHING_TO:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_TO);
+		break;
 
-	gtk_entry_set_text(GTK_ENTRY(filter.op_entry),
-			   flt->cond == FLT_OR ? "or" : "and");
-	if (flt->action == FLT_NOTRECV)
-		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON(filter.notrecv_radiobtn), TRUE);
+	case MATCHING_NOT_CC:
+		negative_cond = TRUE;
+	case MATCHING_CC:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_CC);
+		break;
+
+	case MATCHING_NOT_NEWSGROUPS:
+		negative_cond = TRUE;
+	case MATCHING_NEWSGROUPS:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_NEWSGROUPS);
+		break;
+
+	case MATCHING_NOT_TO_AND_NOT_CC:
+		negative_cond = TRUE;
+	case MATCHING_TO_OR_CC:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_TO_OR_CC);
+		break;
+
+	case MATCHING_NOT_BODY_PART:
+		negative_cond = TRUE;
+	case MATCHING_BODY_PART:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_BODY_PART);
+		break;
+
+	case MATCHING_NOT_MESSAGE:
+		negative_cond = TRUE;
+	case MATCHING_MESSAGE:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_MESSAGE);
+		break;
+
+	case MATCHING_NOT_HEADERS_PART:
+		negative_cond = TRUE;
+	case MATCHING_HEADERS_PART:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_HEADERS_PART);
+		break;
+
+	case MATCHING_NOT_HEADER:
+		negative_cond = TRUE;
+	case MATCHING_HEADER:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_HEADER);
+		break;
+
+	case MATCHING_AGE_GREATER:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_AGE_GREATER);
+		break;
+
+	case MATCHING_AGE_LOWER:
+		gtk_list_select_item(GTK_LIST(matcher.criteria_list),
+				     CRITERIA_AGE_LOWER);
+		break;
+	}
+	
+	switch(prop->criteria) {
+	case MATCHING_ALL:
+		break;
+
+	case MATCHING_NOT_SUBJECT:
+	case MATCHING_NOT_FROM:
+	case MATCHING_NOT_TO:
+	case MATCHING_NOT_CC:
+	case MATCHING_NOT_TO_AND_NOT_CC:
+	case MATCHING_NOT_NEWSGROUPS:
+	case MATCHING_NOT_HEADERS_PART:
+	case MATCHING_NOT_BODY_PART:
+	case MATCHING_NOT_MESSAGE:
+	case MATCHING_SUBJECT:
+	case MATCHING_FROM:
+	case MATCHING_TO:
+	case MATCHING_CC:
+	case MATCHING_TO_OR_CC:
+	case MATCHING_NEWSGROUPS:
+	case MATCHING_HEADERS_PART:
+	case MATCHING_BODY_PART:
+	case MATCHING_MESSAGE:
+		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), prop->expr);
+		break;
+
+	case MATCHING_AGE_GREATER:
+	case MATCHING_AGE_LOWER:
+		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), itos(prop->age));
+		break;
+
+	case MATCHING_NOT_HEADER:
+	case MATCHING_HEADER:
+		gtk_entry_set_text(GTK_ENTRY(matcher.header_entry), prop->header);
+		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), prop->expr);
+		break;
+	}
+
+	if (negative_cond)
+		gtk_list_select_item(GTK_LIST(matcher.predicate_list), 1);
 	else
-		gtk_toggle_button_set_active
-			(GTK_TOGGLE_BUTTON(filter.dest_radiobtn), TRUE);
+		gtk_list_select_item(GTK_LIST(matcher.predicate_list), 0);
+
+	switch(prop->matchtype) {
+	case MATCHING_MATCH:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn), FALSE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn), TRUE);
+		break;
+
+	case MATCHING_MATCHCASE:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn), FALSE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn), FALSE);
+		break;
+
+	case MATCHING_REGEXP:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn), TRUE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn), TRUE);
+		break;
+
+	case MATCHING_REGEXPCASE:
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn), TRUE);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn), FALSE);
+		break;
+	}
 }
 
-static void prefs_filter_dest_radio_button_toggled(void)
-{
-	gtk_widget_set_sensitive(filter.dest_entry, TRUE);
-	gtk_widget_set_sensitive(filter.destsel_btn, TRUE);
-}
-
-static void prefs_filter_notrecv_radio_button_toggled(void)
-{
-	gtk_widget_set_sensitive(filter.dest_entry, FALSE);
-	gtk_widget_set_sensitive(filter.destsel_btn, FALSE);
-}
-*/
-
-
-static void prefs_matcher_criteria_select(GtkEditable *editable,
+static void prefs_matcher_criteria_select(GtkList *list,
+					  GtkWidget *widget,
 					  gpointer user_data)
 {
 	gint value;
 
-	value = criteria_get_from_string(gtk_entry_get_text(GTK_ENTRY(matcher.criteria_entry)));
+	value = get_sel_from_list(GTK_LIST(matcher.criteria_list));
 
 	switch (value) {
 	case CRITERIA_ALL:
-		gtk_widget_set_sensitive(matcher.header_entry, FALSE);
+		gtk_widget_set_sensitive(matcher.header_combo, FALSE);
 		gtk_widget_set_sensitive(matcher.header_label, FALSE);
 		gtk_widget_set_sensitive(matcher.value_label, FALSE);
 		gtk_widget_set_sensitive(matcher.value_entry, FALSE);
 		gtk_widget_set_sensitive(matcher.predicate_label, FALSE);
-		gtk_widget_set_sensitive(matcher.predicate_entry, FALSE);
+		gtk_widget_set_sensitive(matcher.predicate_combo, FALSE);
 		gtk_widget_set_sensitive(matcher.case_chkbtn, FALSE);
 		gtk_widget_set_sensitive(matcher.regexp_chkbtn, FALSE);
 		break;
@@ -1064,35 +1055,35 @@ static void prefs_matcher_criteria_select(GtkEditable *editable,
 	case CRITERIA_HEADERS_PART:
 	case CRITERIA_BODY_PART:
 	case CRITERIA_MESSAGE:
-		gtk_widget_set_sensitive(matcher.header_entry, FALSE);
+		gtk_widget_set_sensitive(matcher.header_combo, FALSE);
 		gtk_widget_set_sensitive(matcher.header_label, FALSE);
 		gtk_widget_set_sensitive(matcher.value_label, TRUE);
 		gtk_widget_set_sensitive(matcher.value_entry, TRUE);
 		gtk_widget_set_sensitive(matcher.predicate_label, TRUE);
-		gtk_widget_set_sensitive(matcher.predicate_entry, TRUE);
+		gtk_widget_set_sensitive(matcher.predicate_combo, TRUE);
 		gtk_widget_set_sensitive(matcher.case_chkbtn, TRUE);
 		gtk_widget_set_sensitive(matcher.regexp_chkbtn, TRUE);
 		break;
 
 	case CRITERIA_AGE_GREATER:
 	case CRITERIA_AGE_LOWER:
-		gtk_widget_set_sensitive(matcher.header_entry, FALSE);
+		gtk_widget_set_sensitive(matcher.header_combo, FALSE);
 		gtk_widget_set_sensitive(matcher.header_label, FALSE);
 		gtk_widget_set_sensitive(matcher.value_label, TRUE);
 		gtk_widget_set_sensitive(matcher.value_entry, TRUE);
 		gtk_widget_set_sensitive(matcher.predicate_label, FALSE);
-		gtk_widget_set_sensitive(matcher.predicate_entry, FALSE);
+		gtk_widget_set_sensitive(matcher.predicate_combo, FALSE);
 		gtk_widget_set_sensitive(matcher.case_chkbtn, FALSE);
 		gtk_widget_set_sensitive(matcher.regexp_chkbtn, FALSE);
 		break;
 
 	case CRITERIA_HEADER:
-		gtk_widget_set_sensitive(matcher.header_entry, TRUE);
+		gtk_widget_set_sensitive(matcher.header_combo, TRUE);
 		gtk_widget_set_sensitive(matcher.header_label, TRUE);
 		gtk_widget_set_sensitive(matcher.value_label, TRUE);
 		gtk_widget_set_sensitive(matcher.value_entry, TRUE);
 		gtk_widget_set_sensitive(matcher.predicate_label, TRUE);
-		gtk_widget_set_sensitive(matcher.predicate_entry, TRUE);
+		gtk_widget_set_sensitive(matcher.predicate_combo, TRUE);
 		gtk_widget_set_sensitive(matcher.case_chkbtn, TRUE);
 		gtk_widget_set_sensitive(matcher.regexp_chkbtn, TRUE);
 		break;
@@ -1108,11 +1099,8 @@ static void prefs_matcher_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 static void prefs_matcher_close(void)
 {
-	/*	prefs_filter_write_config(); */
+	prefs_matcher_set_list();
 	gtk_widget_hide(matcher.window);
-	/*
-	inc_autocheck_timer_set();	
-	*/
 }
 
 static gint prefs_matcher_deleted(GtkWidget *widget, GdkEventAny *event,

@@ -1,3 +1,7 @@
+2001-05-08 [hoa]
+	* src/prefs_matcher.c
+		finished UI to define matching properties
+
 2001-05-08 [alfons]
 
 	* src/textview.c: 
