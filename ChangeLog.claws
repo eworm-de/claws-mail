@@ -1,3 +1,11 @@
+2001-01-24 [paul]	0.8.9claws
+
+	* sylpheed-0.8.9claws released
+	
+	* Makefile.am
+	  sylpheed.spec.in
+	  	remove reference to 'INSTALL.jp'
+
 2003-01-23 [paul]	0.8.8claws128
 
 	* po/es.po
