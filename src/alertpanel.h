@@ -60,5 +60,7 @@ void alertpanel_warning	(const gchar	*format,
 			 ...) G_GNUC_PRINTF(1, 2);
 void alertpanel_error	(const gchar	*format,
 			 ...) G_GNUC_PRINTF(1, 2);
+void alertpanel_error_log(const gchar	*format,
+			  ...) G_GNUC_PRINTF(1, 2);
 
 #endif /* __ALERTPANEL_H__ */

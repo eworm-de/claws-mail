@@ -58,6 +58,7 @@ struct _IMAPSession
 {
 	Session session;
 
+	gchar **capability;
 	gchar *mbox;
 	time_t last_access_time;
 	gboolean authenticated;

@@ -25,7 +25,7 @@
 
 typedef struct _PrefsPage PrefsPage;
 
-typedef void (*PrefsCreateWidgetFunc) (PrefsPage *, gpointer);
+typedef void (*PrefsCreateWidgetFunc) (PrefsPage *, GtkWindow *window, gpointer);
 typedef void (*PrefsDestroyWidgetFunc) (PrefsPage *);
 typedef void (*PrefsSavePageFunc) (PrefsPage *);
 typedef void (*PrefsDestroyPageFunc) (PrefsPage *);

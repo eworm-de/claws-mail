@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,10 +25,6 @@
 #endif
 
 #include <glib.h>
-
-#if HAVE_LIBJCONV
-#  include <jconv.h>
-#endif
 
 typedef struct _CodeConverter	CodeConverter;
 
@@ -71,9 +67,7 @@ typedef void (*CodeConvFunc) (gchar *outbuf, gint outlen, const gchar *inbuf);
 
 struct _CodeConverter
 {
-#if !HAVE_LIBJCONV
 	CodeConvFunc code_conv_func;
-#endif
 	gchar *charset_str;
 	CharSet charset;
 };
@@ -106,6 +100,9 @@ struct _CodeConverter
 #else
 #define CS_SHIFT_JIS		"Shift_JIS"
 #endif
+#define CS_SHIFT__JIS		"SHIFT-JIS"
+#define CS_SJIS			"SJIS"
+#define CS_X_SJIS		"X-SJIS"
 #define CS_ISO_2022_KR		"ISO-2022-KR"
 #define CS_EUC_KR		"EUC-KR"
 #define CS_ISO_2022_CN		"ISO-2022-CN"
@@ -142,11 +139,18 @@ gint conv_convert			(CodeConverter	*conv,
 					 gint		 outlen,
 					 const gchar	*inbuf);
 
-gchar *conv_codeset_strdup(const gchar *inbuf,
-			   const gchar *src_codeset,
-			   const gchar *dest_codeset);
+gchar *conv_codeset_strdup		(const gchar	*inbuf,
+					 const gchar	*src_code,
+					 const gchar	*dest_code);
 
-CodeConvFunc conv_get_code_conv_func(const gchar *charset);
+CodeConvFunc conv_get_code_conv_func	(const gchar	*src_charset_str,
+					 const gchar	*dest_charset_str);
+
+#if HAVE_ICONV
+gchar *conv_iconv_strdup		(const gchar	*inbuf,
+					 const gchar	*src_code,
+					 const gchar	*dest_code);
+#endif
 
 const gchar *conv_get_charset_str		(CharSet	 charset);
 CharSet conv_get_charset_from_str		(const gchar	*charset);

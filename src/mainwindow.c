@@ -67,7 +67,6 @@
 #include "prefs_folder_item.h"
 #include "prefs_summary_column.h"
 #include "prefs_template.h"
-#include "prefs_toolbar.h"
 #include "account.h"
 #include "addressbook.h"
 #include "logwindow.h"
@@ -190,10 +189,6 @@ static void log_window_show_cb	(MainWindow	*mainwin,
 static void sel_download_cb          (MainWindow *mainwin, 
 				 guint action,
 				 GtkWidget *widget);
-static void prefs_toolbar_cb        (MainWindow *mainwin, 
-				 guint action,
-				 GtkWidget *widget);
-
 
 static void inc_cancel_cb		(MainWindow	*mainwin,
 					 guint		 action,
@@ -524,7 +519,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/_Code set/7bit ascii (US-ASC_II)"),
 	 CODESET_ACTION(C_US_ASCII)},
 
-#if HAVE_LIBJCONV
+#if HAVE_ICONV
 	{N_("/_View/_Code set/Unicode (_UTF-8)"),
 	 CODESET_ACTION(C_UTF_8)},
 	CODESET_SEPARATOR,
@@ -534,7 +529,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/_Code set/Western European (ISO-8859-15)"),
 	 CODESET_ACTION(C_ISO_8859_15)},
 	CODESET_SEPARATOR,
-#if HAVE_LIBJCONV
+#if HAVE_ICONV
 	{N_("/_View/_Code set/Central European (ISO-8859-_2)"),
 	 CODESET_ACTION(C_ISO_8859_2)},
 	CODESET_SEPARATOR,
@@ -559,7 +554,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 #endif
 	{N_("/_View/_Code set/Japanese (ISO-2022-_JP)"),
 	 CODESET_ACTION(C_ISO_2022_JP)},
-#if HAVE_LIBJCONV
+#if HAVE_ICONV
 	{N_("/_View/_Code set/Japanese (ISO-2022-JP-2)"),
 	 CODESET_ACTION(C_ISO_2022_JP_2)},
 #endif
@@ -567,7 +562,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	 CODESET_ACTION(C_EUC_JP)},
 	{N_("/_View/_Code set/Japanese (_Shift__JIS)"),
 	 CODESET_ACTION(C_SHIFT_JIS)},
-#if HAVE_LIBJCONV
+#if HAVE_ICONV
 	CODESET_SEPARATOR,
 	{N_("/_View/_Code set/Simplified Chinese (_GB2312)"),
 	 CODESET_ACTION(C_GB2312)},
@@ -676,14 +671,6 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Configuration"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Configuration/_Common preferences..."),
 						NULL, prefs_common_open_cb, 0, NULL},
-	{N_("/_Configuration/C_ustomize toolbars"),
-						NULL, NULL, 0, "<Branch>"},
-	{N_("/_Configuration/C_ustomize toolbars/_Main window..."),
-						NULL, prefs_toolbar_cb, TOOLBAR_MAIN, NULL},
-	{N_("/_Configuration/C_ustomize toolbars/_Compose window..."),
-						NULL, prefs_toolbar_cb, TOOLBAR_COMPOSE, NULL},
-	{N_("/_Configuration/C_ustomize toolbars/M_essage view..."),
-						NULL, prefs_toolbar_cb, TOOLBAR_MSGVIEW, NULL},
 	{N_("/_Configuration/_Scoring..."),
 						NULL, prefs_scoring_open_cb, 0, NULL},
 	{N_("/_Configuration/_Filtering..."),
@@ -2242,12 +2229,6 @@ static void sel_download_cb(MainWindow *mainwin, guint action,
 	selective_download(mainwin);
 }
 
-static void prefs_toolbar_cb(MainWindow *mainwin, guint action,
-			     GtkWidget *widget)
-{
-	prefs_toolbar_open((ToolbarType)action);
-}
-
 static void inc_cancel_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
 	inc_cancel_all();
@@ -2711,6 +2692,19 @@ static void addr_harvest_msg_cb( MainWindow *mainwin,
 			    GtkWidget *widget )
 {
 	summary_harvest_address( mainwin->summaryview );
+}
+
+/*!
+ *\brief	get a MainWindow
+ *
+ *\return	MainWindow * The first mainwindow in the mainwin_list
+ */
+MainWindow *mainwindow_get_mainwindow(void)
+{
+	if (mainwin_list && mainwin_list->data)
+		return (MainWindow *)(mainwin_list->data);
+	else
+		return NULL;
 }
 
 /*

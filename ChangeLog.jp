@@ -1,3 +1,37 @@
+2003-01-13
+
+	* src/codeconv.[ch]: libjconv から iconv() へ移行。
+	  conv_iconv_strdup(): 新規。
+	* src/about.c
+	  src/imap.c
+	  src/mainwindow.c
+	  src/prefs_common.c: HAVE_LIBJCONV を HAVE_ICONV に置換。
+
+2003-01-10
+
+	* src/compose.c
+	  src/folderview.c
+	  src/prefs_folder_item.c: 英語の修正(property -> properties)。
+	* src/prefs_filter.c: エントリが保存されていなければ警告するように
+	  した。
+	  prefs_filter_dialog_to_filter(): 新規。
+
+2003-01-09
+
+	* src/codeconv.c: conv_encode_header(): 改行の後に生の文字列を出力
+	  してしまうバグを修正。
+	* INSTALL を更新。
+
+2003-01-08
+
+	* src/codeconv.[ch]: コードの整理と最適化。
+	  conv_code_converter_new()
+	  conv_convert(): libjconv 使用時に conv_get_code_conv_func() で
+	  得られる関数を使用するようにした。
+	  conv_codeset_strdup(): コードの整理。
+	  conv_get_code_conv_func(): 変換先文字コードの引数を追加し、一般化
+	  した。
+
 2003-01-06
 
 	* src/codeconv.c: LBREAK_IF_REQUIRED(): 文字が続く場合のみ改行する

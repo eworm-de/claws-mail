@@ -592,6 +592,8 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		folder_item_scan(processing);
 		msglist = folder_item_get_msg_list(processing);
 
+		folder_item_update_freeze();
+
 		/* process messages */
 		for(msglist_element = msglist; msglist_element != NULL; msglist_element = msglist_element->next) {
 			MailFilteringData mail_filtering_data;
@@ -611,6 +613,8 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			procmsg_msginfo_free(msginfo);
 		}
 		g_slist_free(msglist);
+
+		folder_item_update_thaw();
 
 
 		new_msgs += pop3_state->cur_total_num;
@@ -653,7 +657,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		if (inc_dialog->show_dialog)
 			manage_window_focus_in(inc_dialog->dialog->window,
 					       NULL, NULL);
-		alertpanel_error(_("Some errors occurred while getting mail."));
+		alertpanel_error_log(_("Some errors occurred while getting mail."));
 		if (inc_dialog->show_dialog)
 			manage_window_focus_out(inc_dialog->dialog->window,
 						NULL, NULL);

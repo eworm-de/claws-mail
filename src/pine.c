@@ -414,6 +414,8 @@ static void pine_parse_address( PineFile *pineFile, AddressCache *cache, Pine_Pa
 	gchar *name;
 	gint len;
 
+	g_return_if_fail( rec->address != NULL );
+
 	buf = rec->address;
 	while((atCh = strchr( buf, CHAR_AT )) != NULL) {
 		name = pine_parse_name( buf, atCh, &bp, &ep );
@@ -449,6 +451,8 @@ static ItemEMail *pine_insert_table(
 	ItemPerson *person;
 	ItemEMail *email;
 	gchar *key;
+
+	g_return_if_fail( address != NULL );
 
 	/* Test whether address already in hash table */
 	key = g_strdup( address );

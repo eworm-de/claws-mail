@@ -8,6 +8,8 @@ rfc2048.txt	MIME 4
 rfc2049.txt	MIME 5
 rfc2060.txt	IMAP4
 rfc2183.txt	The Content-Disposition Header Field
+rfc2342.txt	IMAP4 Namespace
+rfc2359.txt	IMAP4 UIDPLUS extension
 rfc2487.txt	SMTP Service Extension for Secure SMTP over TLS
 rfc2821.txt	SMTP
 rfc2822.txt	Internet Message Format

@@ -61,6 +61,11 @@ FilteringAction * filteringaction_new(int type, int account_id,
 
 	action = g_new0(FilteringAction, 1);
 
+	/* NOTE:
+	 * if type is MATCHACTION_CHANGE_SCORE, account_id = (-1, 0, 1) and
+	 * labelcolor = the score value change
+	 */
+
 	action->type = type;
 	action->account_id = account_id;
 	if (destination) {
@@ -264,6 +269,17 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 			system(cmd);
 			g_free(cmd);
 		}
+		return TRUE;
+
+	case MATCHACTION_CHANGE_SCORE:
+		/* NOTE:
+		 * action->account_id is 0 if just assignment, -1 if decrement
+		 * and 1 if increment by action->labelcolor 
+		 * action->labelcolor has the score value change
+		 */
+		info->score = action->account_id ==  1 ? info->score + action->labelcolor
+			    : action->account_id == -1 ? info->score - action->labelcolor
+			    : action->labelcolor; 
 		return TRUE;
 
 	default:

@@ -3372,6 +3372,27 @@ gchar *expand_search_string(const gchar *search_string)
 	return returnstr;
 }
 
+guint g_stricase_hash(gconstpointer gptr)
+{
+	guint hash_result = 0;
+	const char *str;
+
+	for (str = gptr; str && *str; str++) {
+		if (isupper(*str)) hash_result += (*str + ' ');
+		else hash_result += *str;
+	}
+
+	return hash_result;
+}
+
+gint g_stricase_equal(gconstpointer gptr1, gconstpointer gptr2)
+{
+	const char *str1 = gptr1;
+	const char *str2 = gptr2;
+
+	return !strcasecmp(str1, str2);
+}
+
 #ifdef WIN32
 /* -------------------------------------------------------------------------
  * w32_parse_path - substitute placesholders with directory names

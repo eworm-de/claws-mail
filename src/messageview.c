@@ -489,7 +489,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 					alertpanel_error(_("Can't queue the notification."));
 			}
 		} else
-			alertpanel_error(_("Error occurred while sending the notification."));
+			alertpanel_error_log(_("Error occurred while sending the notification."));
 	}
 
 	if (unlink(tmp) < 0) FILE_OP_ERROR(tmp, "unlink");

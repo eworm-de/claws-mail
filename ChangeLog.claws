@@ -1,4 +1,189 @@
-2003-01-08 [darko]
+2003-01-12 [alfons]	0.8.8claws89
+
+	* AUTHORS
+		add Christian Mertes
+	* src/common/utils.[ch]
+		g_stricase_hash(), g_stricase_equal(): functions for 
+		case insensitive hash tables
+	* src/textview.c
+		use top level domain names to validate email address, based
+		on a patch by Christian Mertes (thanks!), but changed 
+		implementation to use a hash table 
+
+2003-01-12 [paul]	0.8.8claws88
+
+	* po/bg.po
+		updated by George Danchev
+
+2003-01-12 [alfons]	0.8.8claws87
+
+	* src/summaryview.c
+		delete / execute performance: use new style folder update
+
+2003-01-12 [paul]	0.8.8claws86
+
+	* sync with 0.8.8cvs5
+		see ChangeLog 2002-01-13 (!)
+
+2003-01-12 [alfons]	0.8.8claws85
+
+	* src/filtering.c
+	* src/matcher_parser_parse.y
+		prepare change_score filtering action
+	* src/matcher.[ch]
+		give up const-correctness on functions that call non-const-correct functions;
+		several casts to gpointer in g_free();
+		add change_score;
+		
+2003-01-12 [christoph]	0.8.8claws84
+
+	* src/compose.c
+		fix 2 warnings
+
+	* src/gtk/prefswindow.[ch]
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		changed the call of the widget create function
+		for PrefsPages, because sometimes the widget
+		create function needs a widget that already has
+		been attached to a window (to create GDK pixmaps
+		for exmaple). So we simply pass the GtkWindow as
+		the second parameter now.
+
+	* src/main.c
+	* src/mainwindow.c
+	* src/prefs_toolbar.[ch]
+		rewrite Toolbar Preferences using the new
+		prefs window
+
+2003-01-11 [alfons]	0.8.8claws83
+
+	* src/addressadd.c
+		fix crash when adding sender to addressbook because status bar
+		isn't there (the status bar doesn't seem to be used though,
+		but I'll let Match decide what to do with it)
+
+2003-01-11 [colin]	0.8.8claws82
+
+	* src/main.c
+	  src/toolbar.c
+	  	Two useless changes reversed
+
+2003-01-11 [colin]	0.8.8claws81
+
+	* src/mainwindow.c
+	  src/mainwindow.h
+	  	Add mainwindow_get_mainwindow()
+	* src/alertpanel.c
+	  src/alertpanel.h
+	  	Add alertpanel_error_log() 
+	* src/compose.c
+	  src/inc.c
+	  src/messageview.c
+	  src/toolbar.c
+	  src/main.c
+	  src/procmsg.c
+	  	Network errors get a View Log button
+
+2003-01-10 [alfons]	0.8.8claws80
+
+	* src/prefs_toolbar.c
+	* src/toolbar.c
+		use the translatable string for "Separator" as file name for
+		separator toolbar items (probably make this uppercase?)
+	
+2003-01-10 [alfons]	0.8.8claws79
+
+	* src/prefs_toolbar.c
+		put right A_SEPARATOR description string in "displayed
+		toolbar items list" so manually added separators are
+		saved correctly (bug #10, "Adding a separator to the main 
+		toolbar fails, entry in xml file is wrong")
+
+2003-01-10 [christoph]	0.8.8claws78
+
+	* src/imap.c
+		o fix warnings
+		o use CAPABILITY to check if NAMESPACE is available
+
+2003-01-10 [christoph]	0.8.8claws77
+
+	* src/imap.[ch]
+		apply UIDPLUS IMAP extension support patch
+
+	Patch submitted by Simon 'corecode' Schubert
+
+2003-01-10 [paul]	0.8.8claws76
+
+	* src/folderview.c
+		a sync from main which fixes the news account folders'
+		Properties bug
+
+2003-01-10 [christoph]	0.8.8claws75
+
+	* src/folder.c
+		don't accept 0 as a valid uid returned by copy and move
+		functions. 0 means the message was copied or moved but the
+		new uid could not be fetched. It is not an error condition
+		for the copy or move operation.
+
+2003-01-10 [paul]	0.8.8claws74
+
+	* src/prefs_filtering.c
+		change English used in Alert when entry is not
+		saved.
+		
+	* sync with 0.8.8cvs4
+		see ChangeLog 2003-01-10
+
+2003-01-10 [darko]	0.8.8claws73
+
+	* src/pine.c
+		fix crash when importing address book entry
+		without a valid address
+
+2003-01-09 [alfons]	0.8.8claws72
+
+	* src/inc.c
+		filtering performance: use new style folder update
+
+2003-01-09 [christoph]	0.8.8claws71
+
+	* src/compose.c
+	* src/gtk/menu.[ch]
+		fix wrong selecting of mime encoding type, when
+		opening property dialog of attachments in the
+		compose window. 7bit was always selected and that
+		destoryed files with 8bit data.
+		(closes bug #9 Sylpheed-claws destroys attachments when
+		 changing MIME-types)
+
+2003-01-09 [paul]	0.8.8claws70
+
+	* sync with 0.8.8cvs3
+		see ChangeLog 2003-01-09
+
+2003-01-08 [alfons]	0.8.8claws69
+	
+	* src/addressadd.c
+		apply patch by Kim Schulz to fix build breakage
+		because of missing variable
+
+2003-01-08 [paul]	0.8.8claws68
+
+	* sync with 0.8.8cvs2
+		see ChangeLog 2002-01-08
+
+2003-01-08 [paul]	0.8.8claws67
+
+	* po/it.po
+		updated by Alessandro Maestri
+		
+	* src/addressadd.c
+		when using 'Add sender to addressbook' allow
+		name to be edited and remarks to be entered
+		Patch submitted by Luke Plant
+
+2003-01-08 [darko]	0.8.8claws66
 
 	* README.claws, src/summaryview.c
 	  	fix description for marked messages

@@ -1774,7 +1774,7 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 
 	num = folder->copy_msg(folder, dest, msginfo);
 	
-	if (num != -1) {
+	if (num > 0) {
 		MsgInfo *newmsginfo;
     
 		/* Add new msginfo to dest folder */
@@ -1888,7 +1888,7 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 
 		num = GPOINTER_TO_INT(l2->data);
 
-		if (num != -1) {
+		if (num > 0) {
 			MsgInfo *newmsginfo;
 
 			newmsginfo = folder->get_msginfo(folder, dest, num);
@@ -1930,7 +1930,7 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 
 		num = GPOINTER_TO_INT(l2->data);
 		
-		if (num != -1) {
+		if (num > 0) {
 			item->folder->remove_msg(item->folder,
 						 msginfo->folder,
 						 msginfo->msgnum);
@@ -1993,7 +1993,7 @@ gint folder_item_copy_msg(FolderItem *dest, MsgInfo *msginfo)
 	if (!dest->cache) folder_item_read_cache(dest);
 	
 	num = folder->copy_msg(folder, dest, msginfo);
-	if (num != -1) {
+	if (num > 0) {
 		MsgInfo *newmsginfo;
 
 		if (NULL != (newmsginfo = folder->get_msginfo(folder, dest, num))) {
@@ -2085,7 +2085,7 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 
 		num = GPOINTER_TO_INT(l2->data);
 
-		if (num != -1) {
+		if (num > 0) {
 			MsgInfo *newmsginfo;
 
 			newmsginfo = folder->get_msginfo(folder, dest, num);

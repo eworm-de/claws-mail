@@ -221,6 +221,7 @@ int matcher_parserwrap(void)
 %token MATCHER_LOCKED MATCHER_NOT_LOCKED
 %token MATCHER_COLORLABEL MATCHER_NOT_COLORLABEL
 %token MATCHER_IGNORE_THREAD MATCHER_NOT_IGNORE_THREAD
+%token MATCHER_CHANGE_SCORE
 
 %start file
 
@@ -943,6 +944,27 @@ MATCHER_EXECUTE MATCHER_STRING
 	gint action_type = 0;
 	action_type = MATCHACTION_DELETE_ON_SERVER;
 	action = filteringaction_new(action_type, 0, NULL, 0);
+}
+| MATCHER_CHANGE_SCORE MATCHER_STRING
+{
+	gint action_type = MATCHACTION_CHANGE_SCORE;
+	char *last_tok = NULL;
+	const gchar *first_tok;
+	long int chscore;
+	int change_type; /* -1 == decrement, 0 == assign, 1 == increment */	
+
+#define is_number(x) ( ((x) == '+') || ((x) == '-') || (isdigit((x))) ) 
+	/* find start */
+	for (first_tok = $2; *first_tok && !is_number(*first_tok); first_tok++)
+		;	     
+#undef is_number		
+	
+	chscore = strtol(first_tok, &last_tok, 10);
+	if (last_tok == first_tok || *last_tok == 0) 
+		chscore = 0;
+	change_type = *first_tok == '+' ? 1 : *first_tok == '-' ? -1 : 0;
+	action = filteringaction_new(MATCHACTION_CHANGE_SCORE, change_type,
+				     NULL, chscore);
 }
 ;
 

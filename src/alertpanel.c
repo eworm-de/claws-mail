@@ -25,11 +25,14 @@
 #include <gdk/gdkkeysyms.h>
 
 #include "intl.h"
+#include "mainwindow.h"
 #include "alertpanel.h"
 #include "manage_window.h"
 #include "utils.h"
 #include "gtkutils.h"
 #include "inc.h"
+#include "log.h"
+#include "logwindow.h"
 #ifdef WIN32
 #include "defs.h"
 #endif
@@ -196,6 +199,32 @@ void alertpanel_error(const gchar *format, ...)
 	strretchomp(buf);
 	alertpanel_message(_("Error"), buf);
 #endif
+}
+
+/*!
+ *\brief	display an error with a View Log button
+ *
+ */
+void alertpanel_error_log(const gchar *format, ...)
+{
+	va_list args;
+	int val;
+	MainWindow *mainwin;
+	gchar buf[256];
+
+	va_start(args, format);
+	g_vsnprintf(buf, sizeof(buf), format, args);
+	va_end(args);
+	strretchomp(buf);
+
+	mainwin = mainwindow_get_mainwindow();
+	
+	if (mainwin && mainwin->logwin) {
+		val = alertpanel(_("Error"), buf, _("OK"), _("View log"), NULL);
+		if (val == G_ALERTALTERNATE)
+			log_window_show(mainwin->logwin);
+	} else
+		alertpanel_error(buf);
 }
 
 static void alertpanel_show(void)

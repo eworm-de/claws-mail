@@ -435,4 +435,7 @@ wchar_t  *gtkwcs2winwcs(wchar_t *gtkwcs);
 #define isspace iswspace
 #endif
 
+guint g_stricase_hash	(gconstpointer gptr);
+gint g_stricase_equal	(gconstpointer gptr1, gconstpointer gptr2);
+
 #endif /* __UTILS_H__ */

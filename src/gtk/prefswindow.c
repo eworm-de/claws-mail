@@ -73,7 +73,7 @@ static gboolean ctree_select_row(GtkCTree *ctree, GList *node, gint column, gpoi
 	}
 
 	if (!page->page_open) {
-		page->create_widget(page, prefswindow->data);
+		page->create_widget(page, GTK_WINDOW(prefswindow->window), prefswindow->data);
 		gtk_widget_ref(page->widget);
 		gtk_widget_show_all(page->widget);
 		page->page_open = TRUE;
