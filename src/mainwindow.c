@@ -1513,8 +1513,6 @@ void main_window_add_mailbox(MainWindow *mainwin)
 	folder_set_ui_func(folder, scan_tree_func, mainwin);
 	folder_scan_tree(folder);
 	folder_set_ui_func(folder, NULL, NULL);
-
-	folderview_set(mainwin->folderview);
 }
 
 SensitiveCond main_window_get_current_state(MainWindow *mainwin)

@@ -1,3 +1,20 @@
+2003-12-23 [christoph]	0.9.8claws8
+
+	* src/folder.[ch]
+	* src/folderview.c
+	* src/mainwindow.c
+	* src/procmsg.c
+		o use callback for notifications about added and
+		  destroyed folders
+		o rewrite folderlist saving (new functions to create
+		  folder from XML tree, and XML tree from folder)
+
+	* src/common/xml.[ch]
+		add function to save XML trees
+
+	* src/prefs_filtering.c
+		code cleanup
+
 2003-12-22 [christoph]	0.9.8claws7
 
 	* src/prefs_account.[ch]

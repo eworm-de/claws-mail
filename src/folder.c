@@ -58,11 +58,9 @@ static GList *folder_list = NULL;
 void folder_init		(Folder		*folder,
 				 const gchar	*name);
 
-static gboolean folder_read_folder_func	(GNode		*node,
-					 gpointer	 data);
 static gchar *folder_get_list_path	(void);
-static void folder_write_list_recursive	(GNode		*node,
-					 gpointer	 data);
+static GNode *folder_get_xml_node	(Folder 	*folder);
+static Folder *folder_get_from_xml	(GNode 		*node);
 static void folder_update_op_count_rec	(GNode		*node);
 
 
@@ -129,10 +127,17 @@ void folder_init(Folder *folder, const gchar *name)
 
 void folder_destroy(Folder *folder)
 {
+	FolderUpdateData hookdata;
+
 	g_return_if_fail(folder != NULL);
 	g_return_if_fail(folder->klass->destroy_folder != NULL);
 
 	folder_list = g_list_remove(folder_list, folder);
+
+	hookdata.folder = folder;
+	hookdata.update_flags = FOLDER_DESTROY_FOLDER;
+	hookdata.item = NULL;
+	hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
 
 	folder_tree_destroy(folder);
 
@@ -140,6 +145,8 @@ void folder_destroy(Folder *folder)
 
 	g_free(folder->name);
 	g_free(folder);
+
+	folder_write_list();
 }
 
 void folder_set_xml(Folder *folder, XMLTag *tag)
@@ -542,6 +549,7 @@ void folder_add(Folder *folder)
 	Folder *cur_folder;
 	GList *cur;
 	gint i;
+	FolderUpdateData hookdata;
 
 	g_return_if_fail(folder != NULL);
 
@@ -564,6 +572,11 @@ void folder_add(Folder *folder)
 		}
 	}
 
+	hookdata.folder = folder;
+	hookdata.update_flags = FOLDER_NEW_FOLDER;
+	hookdata.item = NULL;
+	hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
+
 	folder_list = g_list_insert(folder_list, folder, i);
 }
 
@@ -574,7 +587,7 @@ GList *folder_get_list(void)
 
 gint folder_read_list(void)
 {
-	GNode *node;
+	GNode *node, *cur;
 	XMLNode *xmlnode;
 	gchar *path;
 
@@ -590,8 +603,15 @@ gint folder_read_list(void)
 		return -1;
 	}
 
-	g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, 2,
-			folder_read_folder_func, NULL);
+	cur = node->children;
+	while (cur != NULL) {
+		Folder *folder;
+
+		folder = folder_get_from_xml(cur);
+		if (folder != NULL)
+			folder_add(folder);
+		cur = cur->next;
+	}
 
 	xml_free_tree(node);
 	if (folder_list)
@@ -606,23 +626,40 @@ void folder_write_list(void)
 	Folder *folder;
 	gchar *path;
 	PrefFile *pfile;
+	GNode *rootnode;
+	XMLNode *xmlnode;
+	XMLTag *tag;
 
 	path = folder_get_list_path();
 	if ((pfile = prefs_write_open(path)) == NULL) return;
 
 	fprintf(pfile->fp, "<?xml version=\"1.0\" encoding=\"%s\"?>\n",
 		conv_get_current_charset_str());
-	fputs("\n<folderlist>\n", pfile->fp);
+	tag = g_new0(XMLTag, 1);
+	tag->tag = g_strdup("folderlist");
+	tag->attr = NULL;
+
+	xmlnode = g_new0(XMLNode, 1);
+	xmlnode->tag = tag;
+	xmlnode->element = NULL;
+
+	rootnode = g_node_new(xmlnode);
 
 	for (list = folder_list; list != NULL; list = list->next) {
+		GNode *node;
+
 		folder = list->data;
-		folder_write_list_recursive(folder->node, pfile->fp);
+		node = folder_get_xml_node(folder);
+		if (node != NULL)
+			g_node_append(rootnode, node);
 	}
 
-	fputs("</folderlist>\n", pfile->fp);
+	xml_write_node(rootnode, pfile->fp);
 
 	if (prefs_file_close(pfile) < 0)
 		g_warning("failed to write folder list.\n");
+
+	xml_free_tree(rootnode);
 }
 
 gboolean folder_scan_tree_func(GNode *node, gpointer data)
@@ -2462,19 +2499,21 @@ gchar *folder_item_get_mark_file(FolderItem *item)
 	return file;
 }
 
-static gboolean folder_build_tree(GNode *node, gpointer data)
+static void build_folder_items_recursive(GNode *node, GNode *parentnode)
 {
-	Folder *folder = FOLDER(data);
+	FolderItem *parentitem = (FolderItem *) parentnode->data;
+	Folder *folder = FOLDER(parentitem->folder);
 	FolderItem *item;
+	GNode *itemnode, *cur;
 	XMLNode *xmlnode;
 
-	g_return_val_if_fail(node->data != NULL, FALSE);
-	if (!node->parent) return FALSE;
-
+	g_return_if_fail(node != NULL);
 	xmlnode = node->data;
+	g_return_if_fail(xmlnode != NULL);
+
 	if (strcmp2(xmlnode->tag->tag, "folderitem") != 0) {
 		g_warning("tag name != \"folderitem\"\n");
-		return FALSE;
+		return;
 	}
 
 	item = folder_item_new(folder, "", "");
@@ -2482,9 +2521,13 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 		folder->klass->item_set_xml(folder, item, xmlnode->tag);
 	else
 		folder_item_set_xml(folder, item, xmlnode->tag);
-	item->node = node;
-	item->parent = FOLDER_ITEM(node->parent->data);
+
+	itemnode = g_node_new(item);
+	item->node = itemnode;
+	item->parent = parentitem;
 	item->folder = folder;
+	g_node_append(parentnode, itemnode);
+
 	switch (item->stype) {
 	case F_INBOX:  folder->inbox  = item; break;
 	case F_OUTBOX: folder->outbox = item; break;
@@ -2495,29 +2538,28 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	}
 	folder_item_prefs_read_config(item);
 
-	node->data = item;
-	xml_free_node(xmlnode);
-
-	return FALSE;
+	cur = node->children;
+	while (cur != NULL) {
+		build_folder_items_recursive(cur, itemnode);
+		cur = cur->next;
+	}	
 }
 
-static gboolean folder_read_folder_func(GNode *node, gpointer data)
+static Folder *folder_get_from_xml(GNode *node)
 {
 	Folder *folder;
-	FolderItem *item;
 	XMLNode *xmlnode;
 	GList *list;
 	FolderClass *klass = NULL;
+	GNode *cur;
 
-	if (g_node_depth(node) != 2) return FALSE;
-	g_return_val_if_fail(node->data != NULL, FALSE);
+	g_return_val_if_fail(node->data != NULL, NULL);
 
 	xmlnode = node->data;
 	if (strcmp2(xmlnode->tag->tag, "folder") != 0) {
 		g_warning("tag name != \"folder\"\n");
-		return TRUE;
+		return NULL;
 	}
-	g_node_unlink(node);
 	list = xmlnode->tag->attr;
 	for (; list != NULL; list = list->next) {
 		XMLAttr *attr = list->data;
@@ -2528,24 +2570,20 @@ static gboolean folder_read_folder_func(GNode *node, gpointer data)
 	}
 
 	folder = folder_new(klass, "", "");
-	g_return_val_if_fail(folder != NULL, FALSE);
+	g_return_val_if_fail(folder != NULL, NULL);
 
-	item = FOLDER_ITEM(folder->node->data);
-	
-	node->data = item;
-	item->node = node;
-	g_node_destroy(folder->node);
-	folder->node = node;
 	if (klass->set_xml)
 		klass->set_xml(folder, xmlnode->tag);
 	else
 		folder_set_xml(folder, xmlnode->tag);
 
-	folder_add(folder);
-	g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
-			folder_build_tree, folder);
-
-	return FALSE;
+	cur = node->children;
+	while (cur != NULL) {
+		build_folder_items_recursive(cur, folder->node);
+		cur = cur->next;
+	}
+	
+	return folder;
 }
 
 static gchar *folder_get_list_path(void)
@@ -2566,67 +2604,79 @@ static gchar *folder_get_list_path(void)
 	fputs("\"", fp);				\
 }
 
-static void folder_write_list_recursive(GNode *node, gpointer data)
+static void folder_get_xml_node_recursive(GNode *itemnode, GNode *xmlnode)
 {
-	FILE *fp = (FILE *)data;
-	FolderItem *item;
-	gint i, depth;
 	XMLTag *tag;
-	GList *cur;
+	XMLNode *newxmlnode;
+	GNode *node;
+	FolderItem *item;
 
-	g_return_if_fail(node != NULL);
-	g_return_if_fail(fp != NULL);
+	g_return_if_fail(itemnode != NULL);
+	g_return_if_fail(xmlnode != NULL);
 
-	item = FOLDER_ITEM(node->data);
+	item = (FolderItem *) itemnode->data;
 	g_return_if_fail(item != NULL);
 
-	depth = g_node_depth(node);
-	for (i = 0; i < depth; i++)
-		fputs("    ", fp);
-	if (depth == 1) {
-		if (item->folder->klass->get_xml != NULL)
-			tag = item->folder->klass->get_xml(item->folder);
-		else
-			tag = folder_get_xml(item->folder);
+	if (item->folder->klass->item_get_xml != NULL)
+		tag = item->folder->klass->item_get_xml(item->folder, item);
+	else
+		tag = folder_item_get_xml(item->folder, item);
 
-		xml_tag_add_attr(tag, "type", g_strdup(item->folder->klass->idstr));
-	} else {
+	newxmlnode = g_new0(XMLNode, 1);
+	newxmlnode->tag = tag;
+	newxmlnode->element = NULL;
 
-		if (item->folder->klass->item_get_xml != NULL)
-			tag = item->folder->klass->item_get_xml(item->folder, item);
-		else
-			tag = folder_item_get_xml(item->folder, item);
+	node = g_node_new(newxmlnode);
+	g_node_append(xmlnode, node);
 
-	}
-
-	fprintf(fp, "<%s", tag->tag);
-	for (cur = tag->attr; cur != NULL; cur = g_list_next(cur)) {
-		XMLAttr *attr = (XMLAttr *) cur->data;
-
-		fprintf(fp, " %s=\"", attr->name);
-		xml_file_put_escape_str(fp, attr->value);
-		fputs("\"", fp);
-	}
-
-	if (node->children) {
+	if (itemnode->children) {
 		GNode *child;
-		fputs(">\n", fp);
 
-		child = node->children;
+		child = itemnode->children;
 		while (child) {
 			GNode *cur;
 
 			cur = child;
 			child = cur->next;
-			folder_write_list_recursive(cur, data);
+			folder_get_xml_node_recursive(cur, node);
 		}
+	}
+}
 
-		for (i = 0; i < depth; i++)
-			fputs("    ", fp);
-		fprintf(fp, "</%s>\n", tag->tag);
-	} else
-		fputs(" />\n", fp);
-	xml_free_tag(tag);
+static GNode *folder_get_xml_node(Folder *folder)
+{
+	GNode *node;
+	XMLNode *xmlnode;
+	XMLTag *tag;
+
+	g_return_val_if_fail(folder != NULL, NULL);
+
+	if (folder->klass->get_xml != NULL)
+		tag = folder->klass->get_xml(folder);
+	else
+		tag = folder_get_xml(folder);
+
+	xml_tag_add_attr(tag, "type", g_strdup(folder->klass->idstr));
+
+	xmlnode = g_new0(XMLNode, 1);
+	xmlnode->tag = tag;
+	xmlnode->element = NULL;
+
+	node = g_node_new(xmlnode);
+	if (folder->node->children) {
+		GNode *child;
+
+		child = folder->node->children;
+		while (child) {
+			GNode *cur;
+
+			cur = child;
+			child = cur->next;
+			folder_get_xml_node_recursive(cur, node);
+		}
+	}
+
+	return node;
 }
 
 static void folder_update_op_count_rec(GNode *node)
@@ -2791,7 +2841,7 @@ void folder_item_restore_persist_prefs(FolderItem *item, GHashTable *pptable)
 	 * folderlist.xml, we need to call the old stuff first before
 	 * setting things that apply both to Main and Claws. */
 	folder_item_prefs_read_config(item); 
-	 
+
 	item->collapsed = pp->collapsed;
 	item->thread_collapsed = pp->thread_collapsed;
 	item->threaded  = pp->threaded;

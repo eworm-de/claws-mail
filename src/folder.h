@@ -98,9 +98,11 @@ typedef enum
 
 typedef enum
 {
-	FOLDER_TREE_CHANGED = 1 << 0,
-	FOLDER_NEW_FOLDERITEM = 1 << 1,
-	FOLDER_REMOVE_FOLDERITEM = 1 << 2,
+	FOLDER_NEW_FOLDER 		= 1 << 0,
+	FOLDER_DESTROY_FOLDER 		= 1 << 1,
+	FOLDER_TREE_CHANGED 		= 1 << 2,
+	FOLDER_NEW_FOLDERITEM 		= 1 << 3,
+	FOLDER_REMOVE_FOLDERITEM 	= 1 << 4,
 } FolderUpdateFlags;
 
 typedef enum

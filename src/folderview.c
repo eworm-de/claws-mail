@@ -2187,10 +2187,8 @@ static void folderview_remove_mailbox_cb(FolderView *folderview, guint action,
 
 	folderview_unselect(folderview);
 	summary_clear_all(folderview->summaryview);
-	gtk_ctree_remove_node(ctree, node);
 
 	folder_destroy(item->folder);
-	folder_write_list();
 }
 
 static void folderview_new_imap_folder_cb(FolderView *folderview, guint action,
@@ -2751,7 +2749,7 @@ gboolean folderview_update_folder(gpointer source, gpointer userdata)
 		node = gtk_ctree_find_by_row_data(GTK_CTREE(ctree), NULL, hookdata->item);
 		if (node != NULL)
 			gtk_ctree_remove_node(GTK_CTREE(ctree), node);
-	} else if (hookdata->update_flags & FOLDER_TREE_CHANGED)
+	} else if (hookdata->update_flags & (FOLDER_TREE_CHANGED | FOLDER_NEW_FOLDER | FOLDER_DESTROY_FOLDER))
 		folderview_set(folderview);
 
 	return FALSE;
