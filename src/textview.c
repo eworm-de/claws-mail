@@ -128,6 +128,18 @@ static gint text_mb_font_orig_ascent;
 static gint text_mb_font_orig_descent;
 static GdkFont *spacingfont;
 
+#define TEXTVIEW_STATUSBAR_PUSH(textview, str)					    \
+{									    \
+	gtk_statusbar_push(GTK_STATUSBAR(textview->messageview->statusbar), \
+			   textview->messageview->statusbar_cid, str);	    \
+}
+
+#define TEXTVIEW_STATUSBAR_POP(textview)						   \
+{									   \
+	gtk_statusbar_pop(GTK_STATUSBAR(textview->messageview->statusbar), \
+			  textview->messageview->statusbar_cid);	   \
+}
+
 static void textview_show_ertf		(TextView	*textview,
 					 FILE		*fp,
 					 CodeConverter	*conv);
@@ -416,6 +428,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	const gchar *charset = NULL;
 	GPtrArray *headers = NULL;
 	const gchar *name;
+	gchar *content_type;
 
 	g_return_if_fail(mimeinfo != NULL);
 
@@ -442,17 +455,18 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	gtk_stext_freeze(text);
 
 	name = procmime_mimeinfo_get_parameter(mimeinfo, "filename");
+	content_type = procmime_get_content_type_str(mimeinfo->type,
+						     mimeinfo->subtype);
 	if (name == NULL)
 		name = procmime_mimeinfo_get_parameter(mimeinfo, "name");
 	if (name != NULL)
-		g_snprintf(buf, sizeof(buf), "\n[%s  %s/%s (%d bytes)]\n",
-			   name,
-			   procmime_get_type_str(mimeinfo->type),
-			   mimeinfo->subtype, mimeinfo->length);
+		g_snprintf(buf, sizeof(buf), "\n[%s  %s (%d bytes)]\n",
+			   name, content_type, mimeinfo->length);
 	else
-		g_snprintf(buf, sizeof(buf), "\n[%s/%s (%d bytes)]\n",
-			   procmime_get_type_str(mimeinfo->type),
-			   mimeinfo->subtype, mimeinfo->length);
+		g_snprintf(buf, sizeof(buf), "\n[%s (%d bytes)]\n",
+			   content_type, mimeinfo->length);
+
+	g_free(content_type);			   
 
 	if (mimeinfo->type != MIMETYPE_TEXT) {
 		gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
@@ -1234,6 +1248,7 @@ void textview_clear(TextView *textview)
 	gtk_stext_forward_delete(text, gtk_stext_get_length(text));
 	gtk_stext_thaw(text);
 
+	TEXTVIEW_STATUSBAR_POP(textview);
 	textview_uri_list_remove_all(textview->uri_list);
 	textview->uri_list = NULL;
 
@@ -1855,13 +1870,8 @@ static gint show_url_timeout_cb(gpointer data)
 {
 	TextView *textview = (TextView *)data;
 	
-	if (textview->messageview->mainwin)
-	  	if (textview->show_url_msgid)
-			gtk_statusbar_remove(GTK_STATUSBAR(
-				textview->messageview->mainwin->statusbar),
-				textview->messageview->mainwin->folderview_cid,
-				textview->show_url_msgid);
-		return FALSE;
+	TEXTVIEW_STATUSBAR_POP(textview);
+	return FALSE;
 }
 
 static gint textview_button_pressed(GtkWidget *widget, GdkEventButton *event,
@@ -1908,19 +1918,11 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 				if (event->button == 1 && textview->last_buttonpress != GDK_2BUTTON_PRESS) {
 					if (textview->messageview->mainwin) {
 						if (textview->show_url_msgid) {
-						  	gtk_timeout_remove(textview->show_url_timeout_tag);
-							gtk_statusbar_remove(GTK_STATUSBAR(
-								textview->messageview->mainwin->statusbar),
-								textview->messageview->mainwin->folderview_cid,
-								textview->show_url_msgid);
+							TEXTVIEW_STATUSBAR_POP(textview);
 							textview->show_url_msgid = 0;
 						}
-						textview->show_url_msgid = gtk_statusbar_push(
-								GTK_STATUSBAR(textview->messageview->mainwin->statusbar),
-								textview->messageview->mainwin->folderview_cid,
-								trimmed_uri);
-						textview->show_url_timeout_tag = gtk_timeout_add( 4000, show_url_timeout_cb, textview );
-						gtkut_widget_wait_for_draw(textview->messageview->mainwin->hbox_stat);
+							TEXTVIEW_STATUSBAR_PUSH(textview, trimmed_uri);
+							textview->show_url_timeout_tag = gtk_timeout_add( 4000, show_url_timeout_cb, textview );
 					}
 				} else
 				if (!g_strncasecmp(uri->uri, "mailto:", 7)) {

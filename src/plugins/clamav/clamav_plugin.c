@@ -125,10 +125,11 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	if (config.clamav_enable_arc)
 		params.scan_archive = TRUE;
 
-    	if((ret = cl_loaddbdir(cl_retdbdir(), &params.root, &no))) {
+    	if ((ret = cl_loaddbdir(cl_retdbdir(), &params.root, &no))) {
 		debug_print("cl_loaddbdir: %s\n", cl_strerror(ret));
-		exit(2);
+		return FALSE;
     	}
+
     	debug_print("Database loaded (containing in total %d signatures)\n", no);
 
     	cl_buildtrie(params.root);

@@ -580,6 +580,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	 CODESET_ACTION(C_ISO_8859_5)},
 	{N_("/_View/_Code set/Cyrillic (KOI8-_R)"),
 	 CODESET_ACTION(C_KOI8_R)},
+	{N_("/_View/_Code set/Cyrillic (KOI8-U)"),
+	 CODESET_ACTION(C_KOI8_U)},
 	{N_("/_View/_Code set/Cyrillic (Windows-1251)"),
 	 CODESET_ACTION(C_WINDOWS_1251)},
 	CODESET_SEPARATOR,
@@ -936,22 +938,22 @@ MainWindow *main_window_create(SeparateType type)
 	summaryview->messageview = messageview;
 	summaryview->window      = window;
 
-	mainwin->vbox         = vbox;
-	mainwin->menubar      = menubar;
-	mainwin->menu_factory = ifactory;
-	mainwin->handlebox    = handlebox;
-	mainwin->vbox_body    = vbox_body;
-	mainwin->hbox_stat    = hbox_stat;
-	mainwin->statusbar    = statusbar;
-	mainwin->progressbar  = progressbar;
-	mainwin->statuslabel  = statuslabel;
-	mainwin->ac_button    = ac_button;
-	mainwin->ac_label     = ac_label;
-	
-	mainwin->online_switch     = online_switch;
+	messageview->statusbar   = statusbar;
+	mainwin->vbox           = vbox;
+	mainwin->menubar        = menubar;
+	mainwin->menu_factory   = ifactory;
+	mainwin->handlebox      = handlebox;
+	mainwin->vbox_body      = vbox_body;
+	mainwin->hbox_stat      = hbox_stat;
+	mainwin->statusbar      = statusbar;
+	mainwin->progressbar    = progressbar;
+	mainwin->statuslabel    = statuslabel;
+	mainwin->online_switch  = online_switch;
+	mainwin->online_pixmap  = online_pixmap;
+	mainwin->offline_pixmap = offline_pixmap;
+	mainwin->ac_button      = ac_button;
+	mainwin->ac_label       = ac_label;
 	mainwin->offline_switch    = offline_switch;
-	mainwin->online_pixmap	   = online_pixmap;
-	mainwin->offline_pixmap    = offline_pixmap;
 	
 	/* set context IDs for status bar */
 	mainwin->mainwin_cid = gtk_statusbar_get_context_id
@@ -962,6 +964,8 @@ MainWindow *main_window_create(SeparateType type)
 		(GTK_STATUSBAR(statusbar), "Summary View");
 	mainwin->messageview_cid = gtk_statusbar_get_context_id
 		(GTK_STATUSBAR(statusbar), "Message View");
+
+	messageview->statusbar_cid = mainwin->messageview_cid;
 
 	/* allocate colors for summary view and folder view */
 	summaryview->color_marked.red = summaryview->color_marked.green = 0;
@@ -2742,7 +2746,18 @@ static void attract_by_subject_cb(MainWindow *mainwin, guint action,
 static void delete_duplicated_cb(MainWindow *mainwin, guint action,
 				 GtkWidget *widget)
 {
-	summary_delete_duplicated(mainwin->summaryview);
+	FolderItem *item;
+
+	item = folderview_get_selected(mainwin->folderview);
+	if (item) {
+		main_window_cursor_wait(mainwin);
+		STATUSBAR_PUSH(mainwin, _("Deleting duplicated messages..."));
+
+		folderutils_delete_duplicates(item);
+
+		STATUSBAR_POP(mainwin);
+		main_window_cursor_normal(mainwin);
+	}
 }
 
 static void filter_cb(MainWindow *mainwin, guint action, GtkWidget *widget)

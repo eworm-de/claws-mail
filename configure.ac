@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=9
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=0
+EXTRA_VERSION=35
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}claws
 else
@@ -77,7 +77,7 @@ AM_PROG_LEX
 AC_PROG_YACC
 AC_PROG_LIBTOOL
 
-SYLPHEED_ACLOCAL_INCLUDE(ac)
+SYLPHEED_ACLOCAL_INCLUDE(m4)
 
 case "$target" in
 *-darwin*)
@@ -90,6 +90,7 @@ AM_ICONV
 dnl for gettext
 ALL_LINGUAS="bg cs de el en_GB es fr hr hu it ja ko nl pl pt_BR ru sk sr sv zh_CN zh_TW.Big5"
 AM_GNU_GETTEXT([use-libtool])
+AM_GNU_GETTEXT_VERSION(0.12.1)
 dnl AC_CHECK_FUNC(gettext, AC_CHECK_LIB(intl, gettext))
 localedir='${prefix}/${DATADIRNAME}/locale'
 AC_SUBST(localedir)
@@ -523,7 +524,7 @@ AC_OUTPUT([
 Makefile
 sylpheed.spec
 intl/Makefile
-ac/Makefile
+m4/Makefile
 po/Makefile.in
 src/common/version.h
 src/Makefile

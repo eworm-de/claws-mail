@@ -1,3 +1,85 @@
+2004-02-24
+
+	* src/codeconv.[ch]: ISO-2022-JP-3 エンコーディングを追加。
+
+2004-02-24
+
+	* src/codeconv.c
+	  src/mainwindow.c
+	  src/messageview.c: KOI8-U エンコーディングを追加。
+	* src/prefs_common.c: prefs_message_create(): 画像リサイズオプション
+	  の文字列を修正。
+
+2004-02-19
+
+	* src/addressbook.c: addressbook_list_selected(): 引数を修正。
+	* src/imageview.[ch]: 元の画像データを ImageView に保持し、
+	  リサイズの切り替えができるようにした。
+	* src/messageview.[ch]
+	  src/mimeview.[ch]: MessageView でなく MimeView で ImageView を
+	  扱うようにした。
+
+2004-02-16
+
+	* src/imap.c
+	  src/news.c
+	  src/summaryview.c: imap.c と news.c から statusbar_pop_all() を
+	  除去(summaryview.c 内で実行)。
+
+2004-02-12
+
+	* src/inc.[ch]
+	  src/pop.[ch]: inc_drop_message() を Pop3Session の仮想関数にし、
+	  pop3.c の inc.h への依存を除去。
+
+2004-02-12
+
+	* src/mainwindow.c
+	  src/messageview.[ch]
+	  src/textview.c: 新規ウィンドウのメッセージビューにステータスバーを
+	  追加。
+
+2004-02-10
+
+	* src/inc.[ch]: 逐次更新にハッシュテーブルを使用。
+	  更新間隔を2秒に変更。
+	* src/folder.[ch]
+	  src/mh.c
+	  src/procmsg.c
+	  src/summaryview.c: フォルダのメッセージ数の集計を補正するために
+	  FolderItem::unmarked_num を追加。
+
+2004-02-09
+
+	* src/inc.[ch]: フォルダビューを逐次更新するようにした。
+	* src/foldersel.c: 選択項目の完全な ID を表示。
+
+2004-02-06
+
+	* src/folderview.[ch]: コードの整理。
+	  folderview_append_item(): 新規。フォルダをフォルダビューに追加する。
+	* src/foldersel.c: foldersel_new_folder(): folderview_append_item()
+	  を使用。
+
+2004-02-06
+
+	* src/foldersel.c: 「新規フォルダを作成」機能を実装。
+	* src/folder.[ch]: folder_find_child_item_by_name(): 新規。
+	* src/utils.h: AUTORELEASE_STR(): malloc 文字列を自動開放(alloca)
+	  文字列に変換。
+
+2004-02-05
+
+	* src/folderview.c: folderview_new_imap_folder_cb() を
+	  folderview_new_folder_cb() にまとめた。
+
+2004-02-04
+
+	* src/compose.c: compose_write_to_file(): 無駄な strlen() を除去
+	  (Alfons さん thanks)。
+	* src/textview.c: textview_button_pressed(): アドレスをクリックした
+	  とき正しいアカウントを選択するようにした。
+
 2004-01-29
 
 	* version 0.9.9

@@ -78,7 +78,8 @@ struct _Toolbar {
 	GtkWidget *attach_btn;
 	GtkWidget *sig_btn;
 	GtkWidget *exteditor_btn;
-	GtkWidget *linewrap_btn;
+	GtkWidget *linewrap_current_btn;
+	GtkWidget *linewrap_all_btn;
 	GtkWidget *addrbook_btn;
 #ifdef USE_ASPELL
 	GtkWidget *spellcheck_btn;
@@ -158,7 +159,8 @@ enum {
 	A_ATTACH,
 	A_SIG,
 	A_EXTEDITOR,
-	A_LINEWRAP,
+	A_LINEWRAP_CURRENT,
+	A_LINEWRAP_ALL,
 	A_ADDRBOOK,
 #ifdef USE_ASPELL
 	A_CHECK_SPELLING,

@@ -183,7 +183,8 @@ static GList *compose_list = NULL;
 Compose *compose_generic_new			(PrefsAccount	*account,
 						 const gchar	*to,
 						 FolderItem	*item,
-						 GPtrArray 	*attach_files);
+						 GPtrArray 	*attach_files,
+						 GList          *listAddress );
 
 static Compose *compose_create			(PrefsAccount	*account,
 						 ComposeMode	 mode);
@@ -315,6 +316,9 @@ static gint calc_cursor_xpos	(GtkSText	*text,
 static void compose_create_header_entry	(Compose *compose);
 static void compose_add_header_entry	(Compose *compose, gchar *header, gchar *text);
 static void compose_update_priority_menu_item(Compose * compose);
+
+static void compose_add_field_list	( Compose *compose,
+					  GList *listAddress );
 
 /* callback functions */
 
@@ -710,21 +714,25 @@ static GtkTargetEntry compose_mime_types[] =
 Compose *compose_new(PrefsAccount *account, const gchar *mailto,
 		     GPtrArray *attach_files)
 {
-	return compose_generic_new(account, mailto, NULL, attach_files);
+	return compose_generic_new(account, mailto, NULL, attach_files, NULL);
 }
 
 Compose *compose_new_with_folderitem(PrefsAccount *account, FolderItem *item)
 {
-	return compose_generic_new(account, NULL, item, NULL);
+	return compose_generic_new(account, NULL, item, NULL, NULL);
+}
+
+Compose *compose_new_with_list( PrefsAccount *account, GList *listAddress )
+{
+	return compose_generic_new( account, NULL, NULL, NULL, listAddress );
 }
 
 Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderItem *item,
-			     GPtrArray *attach_files)
+			     GPtrArray *attach_files, GList *listAddress )
 {
 	Compose *compose;
 	GtkSText *text;
 	GtkItemFactory *ifactory;
-	gboolean grab_focus_on_last = TRUE;
 
 	if (item && item->prefs && item->prefs->enable_default_account)
 		account = account_find_from_id(item->prefs->default_account);
@@ -761,8 +769,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 
 		} else if (item && item->prefs->enable_default_to) {
 			compose_entry_append(compose, item->prefs->default_to, COMPOSE_TO);
-			compose_entry_select(compose, item->prefs->default_to);
-			grab_focus_on_last = FALSE;
+			compose_entry_mark_default_to(compose, item->prefs->default_to);
 		}
 		if (item && item->ret_rcpt) {
 			menu_set_toggle(ifactory, "/Message/Request Return Receipt", TRUE);
@@ -777,6 +784,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 		 */
 		menu_set_sensitive(ifactory, "/Message/Request Return Receipt", FALSE); 
 	}
+	compose_add_field_list( compose, listAddress );
 
 	if (attach_files) {
 		gint i;
@@ -800,9 +808,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 		g_free(folderidentifier);
 	}
 	
-	/* Grab focus on last header only if no default_to was set */
-	if (grab_focus_on_last)
-		gtk_widget_grab_focus(compose->header_last->entry);
+	gtk_widget_grab_focus(compose->header_last->entry);
 
 	if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
@@ -1034,13 +1040,20 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	if (account->auto_sig)
 		compose_insert_sig(compose, FALSE);
 
-	if (quote && prefs_common.linewrap_quote)
-		compose_wrap_line_all(compose);
-
-	gtk_editable_set_position(GTK_EDITABLE(text), 0);
-	gtk_stext_set_point(text, 0);
-
+	/* Must thaw here, otherwise the GtkSTextEdit will become confused 
+	 * when positioning cursor */
 	gtk_stext_thaw(text);
+
+	gtk_editable_set_position
+		(GTK_EDITABLE(text), quote_fmt_get_cursor_pos());
+	gtk_stext_set_point(text, quote_fmt_get_cursor_pos());
+
+	if (quote && prefs_common.linewrap_quote) {
+		gtk_stext_freeze(text);
+		compose_wrap_line_all(compose);
+		gtk_stext_thaw(text);
+	}
+
 	gtk_widget_grab_focus(compose->text);
 
 	if (prefs_common.auto_exteditor)
@@ -1436,7 +1449,8 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	gtk_widget_set_sensitive(compose->toolbar->attach_btn, FALSE);
 	gtk_widget_set_sensitive(compose->toolbar->sig_btn, FALSE);
 	gtk_widget_set_sensitive(compose->toolbar->exteditor_btn, FALSE);
-	gtk_widget_set_sensitive(compose->toolbar->linewrap_btn, FALSE);
+	gtk_widget_set_sensitive(compose->toolbar->linewrap_current_btn, FALSE);
+	gtk_widget_set_sensitive(compose->toolbar->linewrap_all_btn, FALSE);
 
         return compose;
 }
@@ -1511,16 +1525,32 @@ void compose_entry_append(Compose *compose, const gchar *address,
 #endif
 }
 
-void compose_entry_select (Compose *compose, const gchar *mailto)
+void compose_entry_mark_default_to(Compose *compose, const gchar *mailto)
 {
-	GSList *header_list;
+	static GtkStyle *bold_style = NULL;
+	static GdkColor bold_color;
+	static GdkFont *bold_font = NULL;
+	GSList *h_list;
+	GtkEntry *entry;
 		
-	for (header_list = compose->header_list; header_list != NULL; header_list = header_list->next) {
-		GtkEntry * entry = GTK_ENTRY(((ComposeHeaderEntry *)header_list->data)->entry);
-
-		if (gtk_entry_get_text(entry) && !g_strcasecmp(gtk_entry_get_text(entry), mailto)) {
-			gtk_entry_select_region(entry, 0, -1);
-			gtk_widget_grab_focus(GTK_WIDGET(entry));
+	for (h_list = compose->header_list; h_list != NULL; h_list = h_list->next) {
+		entry = GTK_ENTRY(((ComposeHeaderEntry *)h_list->data)->entry);
+		if (gtk_entry_get_text(entry) && 
+		    !g_strcasecmp(gtk_entry_get_text(entry), mailto)) {
+			gtk_widget_ensure_style(GTK_WIDGET(entry));
+			if (!bold_style) {
+				gtkut_convert_int_to_gdk_color
+					(prefs_common.color_new, &bold_color);
+				bold_style = gtk_style_copy(gtk_widget_get_style
+					(GTK_WIDGET(entry)));
+				if (!bold_font)
+					bold_font = gtkut_font_load
+						(prefs_common.boldfont);
+				if (bold_font)
+					bold_style->font = bold_font;
+				bold_style->fg[GTK_STATE_NORMAL] = bold_color;
+			}
+			gtk_widget_set_style(GTK_WIDGET(entry), bold_style);
 		}
 	}
 }
@@ -1554,7 +1584,10 @@ void compose_toolbar_cb(gint action, gpointer data)
 	case A_EXTEDITOR:
 		compose_ext_editor_cb(compose, 0, NULL);
 		break;
-	case A_LINEWRAP:
+	case A_LINEWRAP_CURRENT:
+		compose_wrap_line(compose);
+		break;
+	case A_LINEWRAP_ALL:
 		compose_wrap_line_all(compose);
 		break;
 	case A_ADDRBOOK:
@@ -2399,7 +2432,7 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 		else {
 			gchar *content_type;
 
-			content_type = g_strdup_printf("%s/%s", procmime_get_type_str(child->type), child->subtype);
+			content_type = procmime_get_content_type_str(child->type, child->subtype);
 			partname = procmime_mimeinfo_get_parameter(child, "name");
 			if (partname == NULL)
 				partname = "";
@@ -3661,14 +3694,11 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 
 	/* get all composed text */
 	chars = gtk_editable_get_chars(GTK_EDITABLE(compose->text), 0, -1);
-
 #ifdef WIN32
 	if (0 < strlen(chars))
 		chars = g_strdup(chars);
 	locale_from_utf8(&chars);
 #endif
-
-	len = strlen(chars);
 	if (is_ascii_str(chars)) {
 		buf = chars;
 		chars = NULL;
@@ -5480,6 +5510,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose->exteditor_pid     = -1;
 	compose->exteditor_readdes = -1;
 	compose->exteditor_tag     = -1;
+	compose->draft_timeout_tag = -1;
 
 #if USE_ASPELL
 	menu_set_sensitive(ifactory, "/Spelling", FALSE);
@@ -6557,7 +6588,8 @@ static void compose_set_ext_editor_sensitive(Compose *compose,
 	gtk_widget_set_sensitive(compose->toolbar->insert_btn,    sensitive);
 	gtk_widget_set_sensitive(compose->toolbar->sig_btn,       sensitive);
 	gtk_widget_set_sensitive(compose->toolbar->exteditor_btn, sensitive);
-	gtk_widget_set_sensitive(compose->toolbar->linewrap_btn,  sensitive);
+	gtk_widget_set_sensitive(compose->toolbar->linewrap_current_btn,  sensitive);
+	gtk_widget_set_sensitive(compose->toolbar->linewrap_all_btn,  sensitive);
 }
 
 /**
@@ -6768,6 +6800,11 @@ static void compose_send_cb(gpointer data, guint action, GtkWidget *widget)
 			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
 			return;
 	
+	if (compose->draft_timeout_tag != -1) { /* CLAWS: disable draft timeout */
+		gtk_timeout_remove(compose->draft_timeout_tag);
+		compose->draft_timeout_tag = -1;
+	}
+
 	compose_allow_user_actions (compose, FALSE);
 	compose->sending = TRUE;
 	val = compose_send(compose);
@@ -7635,11 +7672,13 @@ static void text_inserted(GtkWidget *widget, const gchar *text,
 
 	if (prefs_common.autosave && 
 	    gtk_stext_get_length(GTK_STEXT(widget)) % prefs_common.autosave_length == 0)
-		gtk_timeout_add(500, (GtkFunction) compose_defer_auto_save_draft, compose);
+		compose->draft_timeout_tag = gtk_timeout_add
+			(500, (GtkFunction) compose_defer_auto_save_draft, compose);
 }
 
 static gint compose_defer_auto_save_draft(Compose *compose)
 {
+	compose->draft_timeout_tag = -1;
 	compose_draft_cb((gpointer)compose, 2, NULL);
 	return FALSE;
 }
@@ -7720,4 +7759,24 @@ static void compose_check_forwards_go(Compose *compose)
 	}
 }
 #endif
+
+/**
+ * Add entry field for each address in list.
+ * \param compose     E-Mail composition object.
+ * \param listAddress List of (formatted) E-Mail addresses.
+ */
+static void compose_add_field_list( Compose *compose, GList *listAddress ) {
+	GList *node;
+	gchar *addr;
+	node = listAddress;
+	while( node ) {
+		addr = ( gchar * ) node->data;
+		compose_entry_append( compose, addr, COMPOSE_TO );
+		node = g_list_next( node );
+	}
+}
+
+/*
+ * End of Source.
+ */
 

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,6 @@
 #include "md5.h"
 #include "prefs_account.h"
 #include "utils.h"
-#include "inc.h"
 #include "recv.h"
 
 #include "log.h"
@@ -349,7 +348,7 @@ static gint pop3_retr_recv(Pop3Session *session, const gchar *data, guint len)
 	g_free(mail_receive_data.data);
 
 	/* drop_ok: 0: success 1: don't receive -1: error */
-	drop_ok = inc_drop_message(file, session);
+	drop_ok = session->drop_message(session, file);
 	g_free(file);
 	if (drop_ok < 0) {
 		session->error_val = PS_IOERR;

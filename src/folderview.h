@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,13 +78,21 @@ void folderview_set_all			(void);
 void folderview_select			(FolderView	*folderview,
 					 FolderItem	*item);
 void folderview_unselect		(FolderView	*folderview);
+FolderItem *folderview_get_selected	(FolderView 	*folderview);
 void folderview_select_next_unread	(FolderView	*folderview);
 void folderview_update_msg_num		(FolderView	*folderview,
 					 GtkCTreeNode	*row);
+
+void folderview_append_item		(FolderItem	*item);
+
 void folderview_rescan_tree		(Folder		*folder);
 void folderview_rescan_all		(void);
 gint folderview_check_new		(Folder		*folder);
 void folderview_check_new_all		(void);
+
+void folderview_update_item_foreach	(GHashTable	*table,
+					 gboolean	 update_summary);
+void folderview_update_all_updated	(gboolean	 update_summary);
 
 void folderview_new_folder		(FolderView	*folderview);
 void folderview_rename_folder		(FolderView	*folderview);

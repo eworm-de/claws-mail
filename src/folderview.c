@@ -143,15 +143,9 @@ static void folderview_append_folder	 (FolderView	*folderview,
 static void folderview_update_node	 (FolderView	*folderview,
 					  GtkCTreeNode	*node);
 
-static GtkCTreeNode *folderview_find_by_name	(GtkCTree	*ctree,
-						 GtkCTreeNode	*node,
-						 const gchar	*name);
-
 static gint folderview_clist_compare	(GtkCList	*clist,
 					 gconstpointer	 ptr1,
 					 gconstpointer	 ptr2);
-static gint folderview_compare_name	(gconstpointer	 a,
-					 gconstpointer	 b);
 
 /* callback functions */
 static void folderview_button_pressed	(GtkWidget	*ctree,
@@ -214,9 +208,6 @@ static void folderview_remove_mailbox_cb(FolderView	*folderview,
 					 guint		 action,
 					 GtkWidget	*widget);
 
-static void folderview_new_imap_folder_cb(FolderView	*folderview,
-					  guint		 action,
-					  GtkWidget	*widget);
 static void folderview_rm_imap_server_cb (FolderView	*folderview,
 					  guint		 action,
 					  GtkWidget	*widget);
@@ -273,9 +264,8 @@ void folderview_create_folder_node       (FolderView       *folderview,
 					  FolderItem       *item);
 gboolean folderview_update_folder	 (gpointer 	    source,
 					  gpointer 	    userdata);
-gboolean folderview_update_item		 (gpointer 	    source,
+gboolean folderview_update_item_claws	 (gpointer 	    source,
 					  gpointer	    data);
-
 static void folderview_processing_cb(FolderView *folderview, guint action,
 				     GtkWidget *widget);
 static void folderview_move_to(FolderView *folderview, FolderItem *from_folder,
@@ -321,10 +311,10 @@ static GtkItemFactoryEntry folderview_imap_popup_entries[] =
 {
 	{N_("/Mark all _read"),		NULL, mark_all_read_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/Create _new folder..."),	NULL, folderview_new_imap_folder_cb, 0, NULL},
-	{N_("/_Rename folder..."),	NULL, folderview_rename_folder_cb,   0, NULL},
+	{N_("/Create _new folder..."),	NULL, folderview_new_folder_cb,    0, NULL},
+	{N_("/_Rename folder..."),	NULL, folderview_rename_folder_cb, 0, NULL},
 	{N_("/M_ove folder..."),	NULL, folderview_move_to_cb, 0, NULL},
-	{N_("/_Delete folder"),		NULL, folderview_delete_folder_cb,   0, NULL},
+	{N_("/_Delete folder"),		NULL, folderview_delete_folder_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/Down_load"),		NULL, folderview_download_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
@@ -537,7 +527,7 @@ FolderView *folderview_create(void)
 	folderview->folder_update_callback_id =
 		hooks_register_hook(FOLDER_UPDATE_HOOKLIST, folderview_update_folder, (gpointer) folderview);
 	folderview->folder_item_update_callback_id =
-		hooks_register_hook(FOLDER_ITEM_UPDATE_HOOKLIST, folderview_update_item, (gpointer) folderview);
+		hooks_register_hook(FOLDER_ITEM_UPDATE_HOOKLIST, folderview_update_item_claws, (gpointer) folderview);
 
 	gtk_widget_show_all(scrolledwin);
 
@@ -772,6 +762,48 @@ void folderview_update_msg_num(FolderView *folderview, GtkCTreeNode *row)
 	prev_row = row;
 
 	folderview_update_node(folderview, row);
+}
+
+void folderview_append_item(FolderItem *item)
+{
+	GList *list;
+
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(item->folder != NULL);
+	if (folder_item_parent(item)) return;
+
+	for (list = folderview_list; list != NULL; list = list->next) {
+		FolderView *folderview = (FolderView *)list->data;
+		GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+		GtkCTreeNode *node, *child;
+
+		node = gtk_ctree_find_by_row_data(ctree, NULL, 
+						  folder_item_parent(item));
+		if (node) {
+			child = gtk_ctree_find_by_row_data(ctree, node, item);
+			if (!child) {
+				gchar *text[N_FOLDER_COLS] =
+					{NULL, "0", "0", "0"};
+
+				gtk_clist_freeze(GTK_CLIST(ctree));
+
+				text[COL_FOLDER] = item->name;
+				child = gtk_ctree_insert_node
+					(ctree, node, NULL, text,
+					 FOLDER_SPACING,
+					 folderxpm, folderxpmmask,
+					 folderopenxpm, folderopenxpmmask,
+					 FALSE, FALSE);
+				gtk_ctree_node_set_row_data(ctree, child, item);
+				gtk_ctree_expand(ctree, node);
+				folderview_update_node(folderview, child);
+				folderview_sort_folders(folderview, node,
+							item->folder);
+
+				gtk_clist_thaw(GTK_CLIST(ctree));
+			}
+		}
+	}
 }
 
 static void folderview_set_folders(FolderView *folderview)
@@ -1242,7 +1274,32 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		folderview_update_node(folderview, node);
 }
 
-gboolean folderview_update_item(gpointer source, gpointer data)
+#if !CLAWS /* keep it here for syncs */
+void folderview_update_item(FolderItem *item, gboolean update_summary)
+{
+	GList *list;
+	FolderView *folderview;
+	GtkCTree *ctree;
+	GtkCTreeNode *node;
+
+	g_return_if_fail(item != NULL);
+
+	for (list = folderview_list; list != NULL; list = list->next) {
+		folderview = (FolderView *)list->data;
+		ctree = GTK_CTREE(folderview->ctree);
+
+		node = gtk_ctree_find_by_row_data(ctree, NULL, item);
+		if (node) {
+			folderview_update_node(folderview, node);
+			if (update_summary && folderview->opened == node)
+				summary_show(folderview->summaryview,
+					     item, FALSE);
+		}
+	}
+}
+#endif
+
+gboolean folderview_update_item_claws(gpointer source, gpointer data)
 {
 	FolderItemUpdateData *update_info = (FolderItemUpdateData *)source;
 	FolderView *folderview = (FolderView *)data;
@@ -1264,6 +1321,26 @@ gboolean folderview_update_item(gpointer source, gpointer data)
 	}
 	
 	return FALSE;
+}
+
+static void folderview_update_item_foreach_func(gpointer key, gpointer val,
+						gpointer data)
+{
+	/* CLAWS: share this joy with other hook functions ... */
+	folder_item_update((FolderItem *)key, 
+			   (FolderItemUpdateFlags)GPOINTER_TO_INT(data));
+}
+
+void folderview_update_item_foreach(GHashTable *table, gboolean update_summary)
+{
+	GList *list;
+	FolderItemUpdateFlags flags;
+	
+	flags = update_summary ?  F_ITEM_UPDATE_CONTENT | F_ITEM_UPDATE_MSGCNT
+		: 0;
+	for (list = folderview_list; list != NULL; list = list->next)
+		g_hash_table_foreach(table, folderview_update_item_foreach_func, 
+				     GINT_TO_POINTER(flags));
 }
 
 static gboolean folderview_gnode_func(GtkCTree *ctree, guint depth,
@@ -1373,17 +1450,10 @@ void folderview_new_folder(FolderView *folderview)
 	g_return_if_fail(item->folder != NULL);
 
 	switch (FOLDER_TYPE(item->folder)) {
-#if 0
-	case F_MBOX:
-		folderview_new_mbox_folder_cb(folderview, 0, NULL);
-		break;
-#endif
 	case F_MH:
 	case F_MAILDIR:
-		folderview_new_folder_cb(folderview, 0, NULL);
-		break;
 	case F_IMAP:
-		folderview_new_imap_folder_cb(folderview, 0, NULL);
+		folderview_new_folder_cb(folderview, 0, NULL);
 		break;
 	case F_NEWS:
 	default:
@@ -1828,29 +1898,6 @@ static void folderview_col_resized(GtkCList *clist, gint column, gint width,
 	}
 }
 
-static GtkCTreeNode *folderview_find_by_name(GtkCTree *ctree,
-					     GtkCTreeNode *node,
-					     const gchar *name)
-{
-	FolderItem *item;
-
-	if (!node)
-		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
-	if (!node)
-		return NULL;
-
-	node = GTK_CTREE_ROW(node)->children;
-
-	while (node) {
-		item = gtk_ctree_node_get_row_data(ctree, node);
-		if (!folderview_compare_name(item, name))
-			return node;
-		node = GTK_CTREE_ROW(node)->sibling;
-	}
-
-	return NULL;
-}
-
 static void folderview_download_func(Folder *folder, FolderItem *item,
 				     gpointer data)
 {
@@ -1987,88 +2034,62 @@ static void folderview_new_folder_cb(FolderView *folderview, guint action,
 	FolderItem *item;
 	FolderItem *new_item;
 	gchar *new_folder;
-	gchar *name, *name_;
+	gchar *name;
+	gchar *p;
 
 	if (!folderview->selected) return;
 
 	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
+	if (FOLDER_TYPE(item->folder) == F_IMAP)
+		g_return_if_fail(item->folder->account != NULL);
 
-	new_folder = input_dialog(_("New folder"),
-				  _("Input the name of new folder:"),
-				  _("NewFolder"));
+	if (FOLDER_TYPE(item->folder) == F_IMAP) {
+		new_folder = input_dialog
+			(_("New folder"),
+			 _("Input the name of new folder:\n"
+			   "(if you want to create a folder to store subfolders,\n"
+			   " append `/' at the end of the name)"),
+			 _("NewFolder"));
+	} else {
+		new_folder = input_dialog(_("New folder"),
+					  _("Input the name of new folder:"),
+					  _("NewFolder"));
+	}
 	if (!new_folder) return;
+	AUTORELEASE_STR(new_folder, {g_free(new_folder); return;});
 
 #ifdef WIN32
 	locale_from_utf8(&new_folder);
 #endif
-	if (FOLDER_TYPE(item->folder) != F_MBOX) {
-		if (strchr(new_folder, G_DIR_SEPARATOR) != NULL) {
-			alertpanel_error(_("`%c' can't be included in folder name."),
-					 G_DIR_SEPARATOR);
-			g_free(new_folder);
-			return;
-		}
+	p = strchr(new_folder, G_DIR_SEPARATOR);
+	if ((p && FOLDER_TYPE(item->folder) != F_MBOX) ||
+	    (p && FOLDER_TYPE(item->folder) != F_IMAP) ||
+	    (p && FOLDER_TYPE(item->folder) == F_IMAP && *(p + 1) != '\0')) {
+		alertpanel_error(_("`%c' can't be included in folder name."),
+				 G_DIR_SEPARATOR);
+		return;
 	}
 
-	name_ = trim_string(new_folder, 32);
-	Xstrdup_a(name, name_, {g_free(new_folder); return;});
-	g_free(name_);
+	name = trim_string(new_folder, 32);
+	AUTORELEASE_STR(name, {g_free(name); return;});
 
 	/* find whether the directory already exists */
-	if (folderview_find_by_name(ctree, folderview->selected, new_folder)) {
+	if (folder_find_child_item_by_name(item, new_folder)) {
 		alertpanel_error(_("The folder `%s' already exists."), name);
-		g_free(new_folder);
 		return;
 	}
 
 	new_item = folder_create_folder(item, new_folder);
 	if (!new_item) {
 		alertpanel_error(_("Can't create the folder `%s'."), name);
-		g_free(new_folder);
-		return;
-	} 
-	g_free(new_folder);
-
-	folder_write_list();
-}
-
-#if 0
-static void folderview_new_mbox_folder_cb(FolderView *folderview, guint action,
-					  GtkWidget *widget)
-{
-	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
-	FolderItem *item;
-	FolderItem *new_item;
-	gchar *new_folder;
-
-	if (!folderview->selected) return;
-
-	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->folder != NULL);
-
-	new_folder = input_dialog(_("New folder"),
-				  _("Input the name of new folder:"),
-				  _("NewFolder"));
-	if (!new_folder) return;
-
-	/* find whether the directory already exists */
-	if (folderview_find_by_name(ctree, folderview->selected, new_folder)) {
-		alertpanel_error(_("The folder `%s' already exists."),
-				 new_folder);
-		g_free(new_folder);
 		return;
 	}
 
-	new_item = folder_create_folder(item, new_folder);
-	g_free(new_folder);
-	if (!new_item) return;
-
+	folderview_append_item(new_item);
 	folder_write_list();
 }
-#endif
 
 static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 					GtkWidget *widget)
@@ -2076,7 +2097,7 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	FolderItem *item;
 	gchar *new_folder;
-	gchar *name, *name_;
+	gchar *name;
 	gchar *message;
 	gchar *old_path;
 	gchar *old_id;
@@ -2092,9 +2113,7 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item->path != NULL);
 	g_return_if_fail(item->folder != NULL);
 
-	name_ = trim_string(item->name, 32);
-	Xstrdup_a(name, name_, return);
-	g_free(name_);
+	name = trim_string(item->name, 32);
 #ifdef WIN32
 	p_path = g_strdup(item->path);
 	subst_char(p_path, '/', G_DIR_SEPARATOR);
@@ -2109,7 +2128,9 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 				  g_basename(item->path));
 #endif
 	g_free(message);
+	g_free(name);
 	if (!new_folder) return;
+	AUTORELEASE_STR(new_folder, {g_free(new_folder); return;});
 
 #ifdef WIN32
 	locale_from_utf8(&new_folder);
@@ -2118,17 +2139,13 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 	if (strchr(new_folder, G_DIR_SEPARATOR) != NULL) {
 		alertpanel_error(_("`%c' can't be included in folder name."),
 				 G_DIR_SEPARATOR);
-		g_free(new_folder);
 		return;
 	}
 
-	if (folderview_find_by_name
-		(ctree, GTK_CTREE_ROW(folderview->selected)->parent,
-		 new_folder)) {
+	if (folder_find_child_item_by_name(folder_item_parent(item), new_folder)) {
 		name = trim_string(new_folder, 32);
 		alertpanel_error(_("The folder `%s' already exists."), name);
 		g_free(name);
-		g_free(new_folder);
 		return;
 	}
 
@@ -2137,12 +2154,8 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 
 	if (item->folder->klass->rename_folder(item->folder, item, new_folder) < 0) {
 		g_free(old_id);
-		g_free(new_folder);
 		return;
 	}
-#ifndef WIN32 /* why ? g_free(new_folder) frees item->path...  */
-	g_free(new_folder);
-#endif
 
 	/* if (FOLDER_TYPE(item->folder) == F_MH)
 		prefs_filtering_rename_path(old_path, item->path); */
@@ -2168,91 +2181,17 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 	}
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
-
+	
+	folder_item_prefs_save_config(item);
 	folder_write_list();
 }
-
-#if 0
-static void folderview_rename_mbox_folder_cb(FolderView *folderview,
-					     guint action,
-					     GtkWidget *widget)
-{
-	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
-	FolderItem *item;
-	gchar *new_folder;
-	gchar *message;
-
-	if (!folderview->selected) return;
-
-	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->path != NULL);
-	g_return_if_fail(item->folder != NULL);
-
-#ifdef WIN32
-	{
-		gchar *p_path;
-		p_path = g_strdup(item->path);
-		locale_to_utf8(&p_path);
-
-		message = g_strdup_printf(_("Input new name for `%s':"),
-					  g_basename(p_path));
-		new_folder = input_dialog(_("Rename folder"), message,
-					  g_basename(p_path));
-	}
-#else
-	message = g_strdup_printf(_("Input new name for `%s':"),
-				  g_basename(item->path));
-	new_folder = input_dialog(_("Rename folder"), message,
-				  g_basename(item->path));
-#endif
-	g_free(message);
-	if (!new_folder) return;
-
-#ifdef WIN32
-	new_folder = g_strdup(new_folder);
-	locale_from_utf8(&new_folder);
-#endif
-
-	if (folderview_find_by_name
-		(ctree, GTK_CTREE_ROW(folderview->selected)->parent,
-		 new_folder)) {
-		alertpanel_error(_("The folder `%s' already exists."),
-				 new_folder);
-		g_free(new_folder);
-		return;
-	}
-
-	if (item->folder->klass->rename_folder(item->folder, item, new_folder) < 0) {
-		g_free(new_folder);
-		return;
-	}
-	g_free(new_folder);
-
-	gtk_clist_freeze(GTK_CLIST(ctree));
-
-	folderview_update_node(folderview, folderview->selected);
-	folderview_sort_folders(folderview,
-				GTK_CTREE_ROW(folderview->selected)->parent,
-				item->folder);
-	if (folderview->opened == folderview->selected) {
-		if (!GTK_CTREE_ROW(folderview->opened)->children)
-			gtk_ctree_expand(ctree, folderview->opened);
-		summary_show(folderview->summaryview, item);
-	}
-
-	gtk_clist_thaw(GTK_CLIST(ctree));
-
-	folder_write_list();
-}
-#endif
 
 static void folderview_delete_folder_cb(FolderView *folderview, guint action,
 					GtkWidget *widget)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	FolderItem *item;
-	gchar *message, *name, *name_;
+	gchar *message, *name;
 	AlertValue avalue;
 	gchar *old_path;
 	gchar *old_id;
@@ -2264,10 +2203,8 @@ static void folderview_delete_folder_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item->path != NULL);
 	g_return_if_fail(item->folder != NULL);
 
-	name_ = trim_string(item->name, 32);
-
-	Xstrdup_a(name, name_, return);
-	g_free(name_);
+	name = trim_string(item->name, 32);
+	AUTORELEASE_STR(name, {g_free(name); return;});
 	message = g_strdup_printf
 		(_("All folder(s) and message(s) under `%s' will be deleted.\n"
 		   "Do you really want to delete?"), name);
@@ -2309,7 +2246,7 @@ static void folderview_remove_mailbox_cb(FolderView *folderview, guint action,
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	GtkCTreeNode *node;
 	FolderItem *item;
-	gchar *name, *name_;
+	gchar *name;
 	gchar *message;
 	AlertValue avalue;
 
@@ -2320,15 +2257,14 @@ static void folderview_remove_mailbox_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item->folder != NULL);
 	if (folder_item_parent(item)) return;
 
-	name_ = trim_string(item->folder->name, 32);
-	Xstrdup_a(name, name_, return);
-	g_free(name_);
+	name = trim_string(item->folder->name, 32);
 	message = g_strdup_printf
 		(_("Really remove the mailbox `%s' ?\n"
 		   "(The messages are NOT deleted from the disk)"), name);
 	avalue = alertpanel(_("Remove mailbox"), message,
 			    _("Yes"), _("+No"), NULL);
 	g_free(message);
+	g_free(name);
 	if (avalue != G_ALERTDEFAULT) return;
 
 	folderview_unselect(folderview);
@@ -2337,69 +2273,13 @@ static void folderview_remove_mailbox_cb(FolderView *folderview, guint action,
 	folder_destroy(item->folder);
 }
 
-static void folderview_new_imap_folder_cb(FolderView *folderview, guint action,
-					  GtkWidget *widget)
-{
-	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
-	FolderItem *item;
-	FolderItem *new_item;
-	gchar *new_folder;
-	gchar *name, *name_;
-	gchar *p;
-
-	if (!folderview->selected) return;
-
-	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->folder != NULL);
-	g_return_if_fail(FOLDER_TYPE(item->folder) == F_IMAP);
-	g_return_if_fail(item->folder->account != NULL);
-
-	new_folder = input_dialog
-		(_("New folder"),
-		 _("Input the name of new folder:\n"
-		   "(if you want to create a folder to store subfolders,\n"
-		   " append `/' at the end of the name)"),
-		 _("NewFolder"));
-	if (!new_folder) return;
-
-	if ((p = strchr(new_folder, G_DIR_SEPARATOR)) != NULL &&
-	    *(p + 1) != '\0') {
-		alertpanel_error(_("`%c' can't be included in folder name."),
-				 G_DIR_SEPARATOR);
-		g_free(new_folder);
-		return;
-	}
-
-	name_ = trim_string(new_folder, 32);
-	Xstrdup_a(name, name_, return);
-	g_free(name_);
-
-	/* find whether the directory already exists */
-	if (folderview_find_by_name(ctree, folderview->selected, new_folder)) {
-		alertpanel_error(_("The folder `%s' already exists."), name);
-		g_free(new_folder);
-		return;
-	}
-
-	new_item = folder_create_folder(item, new_folder);
-	if (!new_item) {
-		alertpanel_error(_("Can't create the folder `%s'."), name);
-		g_free(new_folder);
-		return;
-	}
-	g_free(new_folder);
-
-	folder_write_list();
-}
-
 static void folderview_rm_imap_server_cb(FolderView *folderview, guint action,
 					 GtkWidget *widget)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	FolderItem *item;
 	PrefsAccount *account;
-	gchar *name, *name_;
+	gchar *name;
 	gchar *message;
 	AlertValue avalue;
 
@@ -2411,13 +2291,12 @@ static void folderview_rm_imap_server_cb(FolderView *folderview, guint action,
 	g_return_if_fail(FOLDER_TYPE(item->folder) == F_IMAP);
 	g_return_if_fail(item->folder->account != NULL);
 
-	name_ = trim_string(item->folder->name, 32);
-	Xstrdup_a(name, name_, return);
-	g_free(name_);
+	name = trim_string(item->folder->name, 32);
 	message = g_strdup_printf(_("Really delete IMAP4 account `%s'?"), name);
 	avalue = alertpanel(_("Delete IMAP4 account"), message,
 			    _("Yes"), _("+No"), NULL);
 	g_free(message);
+	g_free(name);
 
 	if (avalue != G_ALERTDEFAULT) return;
 
@@ -2442,7 +2321,6 @@ static void folderview_new_news_group_cb(FolderView *folderview, guint action,
 					 GtkWidget *widget)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
-	gchar *text[N_FOLDER_COLS] = {NULL, "0", "0", "0"};
 	GtkCTreeNode *servernode, *node;
 	Folder *folder;
 	FolderItem *item;
@@ -2504,23 +2382,14 @@ static void folderview_new_news_group_cb(FolderView *folderview, guint action,
 	for (cur = new_subscr; cur != NULL; cur = cur->next) {
 		gchar *name = (gchar *)cur->data;
 
-		if (folderview_find_by_name(ctree, servernode, name) != NULL)
+		if (folder_find_child_item_by_name(rootitem, name) != NULL)
 			continue;
-
-		text[COL_FOLDER] = name;
-		node = gtk_ctree_insert_node(ctree, servernode, NULL, text,
-					     FOLDER_SPACING,
-					     folderxpm, folderxpmmask,
-					     folderopenxpm, folderopenxpmmask,
-					     FALSE, FALSE);
-		gtk_ctree_expand(ctree, servernode);
 
 		newitem = folder_item_new(folder, name, name);
 		folder_item_append(rootitem, newitem);
-		gtk_ctree_node_set_row_data(ctree, node, newitem);
+		folderview_append_item(newitem);
 	}
 
-	folderview_sort_folders(folderview, servernode, folder);
 	gtk_clist_thaw(GTK_CLIST(ctree));
 
 	slist_free_strings(new_subscr);
@@ -2534,7 +2403,7 @@ static void folderview_rm_news_group_cb(FolderView *folderview, guint action,
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	FolderItem *item;
-	gchar *name, *name_;
+	gchar *name;
 	gchar *message;
 	AlertValue avalue;
 
@@ -2546,13 +2415,12 @@ static void folderview_rm_news_group_cb(FolderView *folderview, guint action,
 	g_return_if_fail(FOLDER_TYPE(item->folder) == F_NEWS);
 	g_return_if_fail(item->folder->account != NULL);
 
-	name_ = trim_string(item->path, 32);
-	Xstrdup_a(name, name_, return);
-	g_free(name_);
+	name = trim_string(item->path, 32);
 	message = g_strdup_printf(_("Really delete newsgroup `%s'?"), name);
 	avalue = alertpanel(_("Delete newsgroup"), message,
 			    _("Yes"), _("+No"), NULL);
 	g_free(message);
+	g_free(name);
 	if (avalue != G_ALERTDEFAULT) return;
 
 	if (folderview->opened == folderview->selected) {
@@ -2572,7 +2440,7 @@ static void folderview_rm_news_server_cb(FolderView *folderview, guint action,
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	FolderItem *item;
 	PrefsAccount *account;
-	gchar *name, *name_;
+	gchar *name;
 	gchar *message;
 	AlertValue avalue;
 
@@ -2584,13 +2452,12 @@ static void folderview_rm_news_server_cb(FolderView *folderview, guint action,
 	g_return_if_fail(FOLDER_TYPE(item->folder) == F_NEWS);
 	g_return_if_fail(item->folder->account != NULL);
 
-	name_ = trim_string(item->folder->name, 32);
-	Xstrdup_a(name, name_, return);
-	g_free(name_);
+	name = trim_string(item->folder->name, 32);
 	message = g_strdup_printf(_("Really delete news account `%s'?"), name);
 	avalue = alertpanel(_("Delete news account"), message,
 			    _("Yes"), _("+No"), NULL);
 	g_free(message);
+	g_free(name);
 
 	if (avalue != G_ALERTDEFAULT) return;
 
@@ -2742,15 +2609,6 @@ static gint folderview_clist_compare(GtkCList *clist,
 		return -1;
 
 	return g_strcasecmp(item1->name, item2->name);
-}
-
-static gint folderview_compare_name(gconstpointer a, gconstpointer b)
-{
-	const FolderItem *item = a;
-	const gchar *name = b;
-
-	if (!item->path) return -1;
-	return strcmp2(g_basename(item->path), name);
 }
 
 static void folderview_processing_cb(FolderView *folderview, guint action,
@@ -3071,4 +2929,9 @@ static void folderview_drag_end_cb(GtkWidget	    *widget,
 	drag_state_stop(folderview);
 	g_slist_free(folderview->nodes_to_recollapse);
 	folderview->nodes_to_recollapse = NULL;
+}
+
+FolderItem *folderview_get_selected(FolderView *folderview)
+{
+	return (FolderItem *) gtk_ctree_node_get_row_data(folderview->ctree, folderview->opened);
 }

@@ -1073,6 +1073,20 @@ FolderItem *folder_find_item_from_path(const gchar *path)
 	return d[1];
 }
 
+FolderItem *folder_find_child_item_by_name(FolderItem *item, const gchar *name)
+{
+	GNode *node;
+	FolderItem *child;
+
+	for (node = item->node->children; node != NULL; node = node->next) {
+		child = FOLDER_ITEM(node->data);
+		if (strcmp2(g_basename(child->path), name) == 0)
+			return child;
+	}
+
+	return NULL;
+}
+
 FolderClass *folder_get_class_from_string(const gchar *str)
 {
 	GSList *classlist;
@@ -1405,22 +1419,19 @@ static gint folder_sort_folder_list(gconstpointer a, gconstpointer b)
 
 gint folder_item_open(FolderItem *item)
 {
+	gchar *buf;
 	if((item->folder->klass->scan_required != NULL) && (item->folder->klass->scan_required(item->folder, item))) {
 		folder_item_scan_full(item, TRUE);
 	}
 
 	/* Processing */
-	if(item->prefs->processing != NULL) {
-		gchar *buf;
-		
-		buf = g_strdup_printf(_("Processing (%s)...\n"), item->path);
-		debug_print("%s\n", buf);
-		g_free(buf);
+	buf = g_strdup_printf(_("Processing (%s)...\n"), item->path);
+	debug_print("%s\n", buf);
+	g_free(buf);
 	
-		folder_item_apply_processing(item);
+	folder_item_apply_processing(item);
 
-		debug_print("done.\n");
-	}
+	debug_print("done.\n");
 
 	return 0;
 }

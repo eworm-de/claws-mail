@@ -49,6 +49,7 @@ static int firsttime = 1;
 	}	
 %}
 
+<S_NORMAL>"%X" /* cursor pos */ return SET_CURSOR_POS;
 <S_NORMAL>"%c" /* cc */ return SHOW_CC;
 <S_NORMAL>"%d" /* date */ return SHOW_DATE;
 <S_NORMAL>"%D" /* date */ { BEGIN S_DATE; return SHOW_DATE_EXPR; }

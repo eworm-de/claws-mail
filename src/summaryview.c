@@ -203,11 +203,6 @@ static void summary_copy_row_to		(SummaryView		*summaryview,
 					 GtkCTreeNode		*row,
 					 FolderItem		*to_folder);
 
-static void summary_delete_duplicated_func
-					(GtkCTree		*ctree,
-					 GtkCTreeNode		*node,
-					 SummaryView		*summaryview);
-
 static void summary_execute_move	(SummaryView		*summaryview);
 static void summary_execute_move_func	(GtkCTree		*ctree,
 					 GtkCTreeNode		*node,
@@ -2458,8 +2453,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	text[col_pos[S_COL_FROM]] = msginfo->fromname ? msginfo->fromname :
 		_("(No From)");
 #endif
-	if (prefs_common.swap_from && msginfo->from && msginfo->to &&
-	    !MSG_IS_NEWS(msginfo->flags)) {
+	if (prefs_common.swap_from && msginfo->from && msginfo->to) {
 		gchar *addr = NULL;
 
 		Xstrdup_a(addr, msginfo->from, return);
@@ -3234,18 +3228,6 @@ void summary_delete(SummaryView *summaryview)
 	} else
 		summary_status_show(summaryview);
 		
-	main_window_cursor_normal(summaryview->mainwin);
-}
-
-void summary_delete_duplicated(SummaryView *summaryview)
-{
-	main_window_cursor_wait(summaryview->mainwin);
-	STATUSBAR_PUSH(summaryview->mainwin,
-		       _("Deleting duplicated messages..."));
-
-	folderutils_delete_duplicates(summaryview->folder_item);
-
-	STATUSBAR_POP(summaryview->mainwin);
 	main_window_cursor_normal(summaryview->mainwin);
 }
 

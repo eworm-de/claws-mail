@@ -52,6 +52,8 @@ static const gchar *quote_str = NULL;
 static const gchar *body = NULL;
 static gint error = 0;
 
+static gint cursor_pos  = 0;
+
 static void add_visibility(gboolean val)
 {
 	stacksize++;
@@ -101,6 +103,11 @@ gchar *quote_fmt_get_buffer(void)
 		return buffer;
 }
 
+gint quote_fmt_get_cursor_pos(void)
+{
+	return cursor_pos;	
+}
+
 #define INSERT(buf) \
 	if (stacksize != 0 && visible[stacksize - 1]) \
 		add_buffer(buf)
@@ -125,6 +132,7 @@ void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
 		*buffer = 0;
 	bufsize = 0;
 	error = 0;
+	cursor_pos = 0;
 }
 
 void quote_fmterror(char *str)
@@ -163,6 +171,7 @@ static int isseparator(int ch)
 %token OPARENT CPARENT
 %token CHARACTER
 %token SHOW_DATE_EXPR
+%token SET_CURSOR_POS
 
 %start quote_fmt
 
@@ -514,6 +523,10 @@ special:
 	| SHOW_CPARENT
 	{
 		INSERT("}");
+	}
+	| SET_CURSOR_POS
+	{
+		cursor_pos = bufsize;
 	};
 
 query:

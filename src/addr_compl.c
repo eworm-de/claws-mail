@@ -1,7 +1,7 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
  *
- * Copyright (C) 2000-2004 by Alfons Hoogervorst & The Sylpheed Claws Team. 
+ * Copyright (c) 2000-2004 by Alfons Hoogervorst <alfons@proteus.demon.nl>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -197,7 +197,9 @@ static gint add_address(const gchar *name, const gchar *address, const gchar *al
 
 	add_address1(name, ae);
 	add_address1(address, ae);
-	add_address1(alias, ae);
+	if( alias != NULL ) {
+		add_address1(alias, ae);
+	}
 
 	return 0;
 }
@@ -1138,7 +1140,6 @@ static void address_completion_create_completion_window( GtkEntry *entry_ )
 	gtk_widget_size_request( clist, &r );
 	gtk_widget_set_usize( window, width, r.height );
 	gtk_widget_show_all( window );
-	gtk_widget_size_request( clist, &r );
 
 	/* Setup handlers */
 	gtk_signal_connect(GTK_OBJECT(clist), "select_row",

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,8 @@
 #include "foldersel.h"
 #include "alertpanel.h"
 #include "manage_window.h"
+#include "folderview.h"
+#include "inputdialog.h"
 #include "folder.h"
 
 static GdkPixmap *folderxpm;
@@ -62,8 +64,10 @@ static GtkWidget *ctree;
 static GtkWidget *entry;
 static GtkWidget *ok_button;
 static GtkWidget *cancel_button;
+static GtkWidget *new_button;
 
 static FolderItem *folder_item;
+static FolderItem *selected_item;
 
 static gboolean cancelled;
 static gboolean finished;
@@ -83,6 +87,8 @@ static void foldersel_ok	(GtkButton	*button,
 				 gpointer	 data);
 static void foldersel_cancel	(GtkButton	*button,
 				 gpointer	 data);
+static void foldersel_new_folder(GtkButton	*button,
+				 gpointer	 data);
 static void foldersel_activated	(void);
 static gint delete_event	(GtkWidget	*widget,
 				 GdkEventAny	*event,
@@ -100,6 +106,8 @@ FolderItem *foldersel_folder_sel(Folder *cur_folder,
 				 const gchar *default_folder)
 {
 	GtkCTreeNode *node;
+
+	selected_item = NULL;
 
 	if (!window) {
 		foldersel_create();
@@ -136,16 +144,14 @@ FolderItem *foldersel_folder_sel(Folder *cur_folder,
 	gtk_entry_set_text(GTK_ENTRY(entry), "");
 	gtk_clist_clear(GTK_CLIST(ctree));
 
-	if (!cancelled && folder_item && folder_item->path)
+	if (!cancelled &&
+	    selected_item && selected_item->path) {
+		folder_item = selected_item;
 #ifdef WIN32
-	{
 		locale_from_utf8(&folder_item->path);
-		return folder_item;
-	}
-#else
-		return folder_item;
 #endif
-	else
+		return folder_item;
+	} else
 		return NULL;
 }
 
@@ -157,11 +163,10 @@ static void foldersel_create(void)
 
 	window = gtk_window_new(GTK_WINDOW_DIALOG);
 	gtk_window_set_title(GTK_WINDOW(window), _("Select folder"));
-	gtk_widget_set_usize(window, 300, 400);
-	gtk_container_set_border_width(GTK_CONTAINER(window), BORDER_WIDTH);
+	gtk_container_set_border_width(GTK_CONTAINER(window), 4);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
-	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, TRUE);
+	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, FALSE);
 	gtk_window_set_wmclass
 		(GTK_WINDOW(window), "folder_selection", "Sylpheed");
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
@@ -174,6 +179,7 @@ static void foldersel_create(void)
 	gtk_container_add(GTK_CONTAINER(window), vbox);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_widget_set_usize(scrolledwin, 300, 360);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 	gtk_box_pack_start(GTK_BOX(vbox), scrolledwin, TRUE, TRUE, 0);
@@ -196,6 +202,7 @@ static void foldersel_create(void)
 			   GTK_SIGNAL_FUNC(foldersel_selected), NULL);
 
 	entry = gtk_entry_new();
+	gtk_entry_set_editable(GTK_ENTRY(entry), FALSE);
 	gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
 	gtk_signal_connect(GTK_OBJECT(entry), "activate",
 			   GTK_SIGNAL_FUNC(foldersel_activated), NULL);
@@ -203,7 +210,7 @@ static void foldersel_create(void)
 	gtkut_button_set_create(&confirm_area,
 				&ok_button,	_("OK"),
 				&cancel_button,	_("Cancel"),
-				NULL, NULL);
+				&new_button,    _("New folder"));
 
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_button);
@@ -212,6 +219,8 @@ static void foldersel_create(void)
 			   GTK_SIGNAL_FUNC(foldersel_ok), NULL);
 	gtk_signal_connect(GTK_OBJECT(cancel_button), "clicked",
 			   GTK_SIGNAL_FUNC(foldersel_cancel), NULL);
+	gtk_signal_connect(GTK_OBJECT(new_button), "clicked",
+			   GTK_SIGNAL_FUNC(foldersel_new_folder), NULL);
 
 	gtk_widget_show_all(window);
 }
@@ -318,20 +327,16 @@ static void foldersel_set_tree(Folder *cur_folder, FolderSelectionType type)
 static void foldersel_selected(GtkCList *clist, gint row, gint column,
 			       GdkEvent *event, gpointer data)
 {
-	FolderItem *item;
 	GdkEventButton *ev = (GdkEventButton *)event;
 
-	item = gtk_clist_get_row_data(clist, row);
-#ifdef WIN32
-	if (item) {
-		gchar *p_path = g_strdup(item->path ? item->path : "");
-		locale_to_utf8(&p_path);
-		gtk_entry_set_text(GTK_ENTRY(entry),p_path);
-	}
-#else
-	if (item) gtk_entry_set_text(GTK_ENTRY(entry),
-				     item->path ? item->path : "");
-#endif
+	selected_item = gtk_clist_get_row_data(clist, row);
+	if (selected_item && selected_item->path) {
+		gchar *id;
+		id = folder_item_get_identifier(selected_item);
+		gtk_entry_set_text(GTK_ENTRY(entry), id);
+		g_free(id);
+	} else
+		gtk_entry_set_text(GTK_ENTRY(entry), "");
 
 	if (ev && GDK_2BUTTON_PRESS == ev->type)
 		gtk_button_clicked(GTK_BUTTON(ok_button));
@@ -339,13 +344,6 @@ static void foldersel_selected(GtkCList *clist, gint row, gint column,
 
 static void foldersel_ok(GtkButton *button, gpointer data)
 {
-	GList *list;
-
-	list = GTK_CLIST(ctree)->selection;
-	if (list)
-		folder_item = gtk_ctree_node_get_row_data
-			(GTK_CTREE(ctree), GTK_CTREE_NODE(list->data));
-
 	finished = TRUE;
 }
 
@@ -353,6 +351,66 @@ static void foldersel_cancel(GtkButton *button, gpointer data)
 {
 	cancelled = TRUE;
 	finished = TRUE;
+}
+
+static void foldersel_new_folder(GtkButton *button, gpointer data)
+{
+	FolderItem *new_item;
+	gchar *new_folder;
+	gchar *disp_name;
+	gchar *p;
+	gchar *text[1] = {NULL};
+	GtkCTreeNode *selected_node;
+	GtkCTreeNode *node;
+
+	if (!selected_item || FOLDER_TYPE(selected_item->folder) == F_NEWS)
+		return;
+	selected_node = gtk_ctree_find_by_row_data(GTK_CTREE(ctree), NULL,
+						   selected_item);
+	if (!selected_node) return;
+
+	new_folder = input_dialog(_("New folder"),
+				  _("Input the name of new folder:"),
+				  _("NewFolder"));
+	if (!new_folder) return;
+	AUTORELEASE_STR(new_folder, {g_free(new_folder); return;});
+
+	p = strchr(new_folder, G_DIR_SEPARATOR);
+	if ((p && FOLDER_TYPE(selected_item->folder) != F_MBOX) ||
+	    (p && FOLDER_TYPE(selected_item->folder) != F_IMAP) ||
+	    (p && FOLDER_TYPE(selected_item->folder) == F_IMAP &&
+	     *(p + 1) != '\0')) {
+		alertpanel_error(_("`%c' can't be included in folder name."),
+				G_DIR_SEPARATOR);
+		return;
+	}
+
+	disp_name = trim_string(new_folder, 32);
+	AUTORELEASE_STR(disp_name, {g_free(new_folder); return;});
+
+	/* find whether the directory already exists */
+	if (folder_find_child_item_by_name(selected_item, new_folder)) {
+		alertpanel_error(_("The folder `%s' already exists."),
+				 disp_name);
+		return;
+	}
+
+	new_item = folder_create_folder(selected_item, new_folder);
+	if (!new_item) {
+		alertpanel_error(_("Can't create the folder `%s'."), disp_name);
+		return;
+	}
+
+	text[0] = new_item->name;
+	node = gtk_ctree_insert_node(GTK_CTREE(ctree), selected_node,
+				     NULL, text, FOLDER_SPACING,
+				     folderxpm, folderxpmmask,
+				     folderopenxpm, folderopenxpmmask,
+				     FALSE, FALSE);
+	gtk_ctree_expand(GTK_CTREE(ctree), selected_node);
+	gtk_ctree_node_set_row_data(GTK_CTREE(ctree), node, new_item);
+	gtk_ctree_sort_recursive(GTK_CTREE(ctree), selected_node);
+	folderview_append_item(new_item);
 }
 
 static void foldersel_activated(void)

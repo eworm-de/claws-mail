@@ -136,6 +136,14 @@
 	ptr = __tmp; \
 }
 
+#define AUTORELEASE_STR(str, iffail) \
+{ \
+	gchar *__str; \
+	Xstrdup_a(__str, str, iffail); \
+	g_free(str); \
+	str = __str; \
+}
+
 #ifdef WIN32
 #define Xlocale_to_utf8_a(ptr, str, iffail) \
 { \

@@ -1,3 +1,289 @@
+2004-02-27 [alfons]	0.9.9claws35
+
+	* src/compose.[ch]
+		Explicitly remove draft timeout to fix nasty race between 
+		compose_send_cb() (which destroys the compose window) and 
+		compose_defer_auto_save_draft() (which expects compose 
+		window to exist). Should fix Keith's and Fred Marton's
+		bug report (#128, "crash after complaining about character
+		set conversion")
+
+2004-02-27 [luke]	0.9.9claws34
+	
+	* src/folder.c
+		Do folder_item_apply_processing() even if no processing
+		rules for the folder exist (so global processing is applied)
+
+2004-02-26 [thorsten]	0.9.9claws33
+
+	* src/mimeview.c
+		Remove misleading static declaration
+
+2004-02-26 [alfons]	0.9.9claws32
+
+	* src/procmime.[ch]
+	  src/compose.c
+	  src/mimeview.c
+	  src/textview.c
+		use/add procmime_get_content_type_str() as a safe wrapper
+		for returning a Content-Type type string; should fix 
+		bug #444, 0.9.7..0.9.9 crashes with "Content-Type: type= 
+		 - attachments."
+
+2004-02-26 [thorsten]	0.9.9claws31
+
+	* src/mimeview.c
+		Restructure save_as/save_all
+
+2004-02-26 [alfons]	0.9.9claws30
+
+	* src/procmime.c
+		clean up (2)
+
+2004-02-26 [alfons]	0.9.9claws29
+
+	* src/procmime.c
+		clean up (1)
+
+2004-02-24 [luke]
+
+	* tools/textviewer.sh
+		tweaks from Johann Koenig, recognition of shell
+		scripts in particular
+
+2004-02-24 [paul]	0.9.9claws28
+
+	* sync with 0.9.9cvs13
+		see ChangeLog 2004-02-24
+
+2004-02-23 [paul]	0.9.9claws27
+
+	* src/inc.c
+		one alertpanel on pop3 authentication error will suffice
+		
+	* src/prefs_fonts.c
+		remove unnecessary printf
+
+2004-02-22 [alfons]	0.9.9claws26
+
+	* src/messageview.c
+		put back a lost check
+
+2004-02-21 [alfons]	0.9.9claws25
+
+	* src/folderview.c
+		don't forget to save folder properties after renaming folder
+
+2004-02-20 [paul]	0.9.9.claws24
+
+	* src/addressbook.c
+	  	sync with 0.9.9cvs11, see ChangeLog 2004-02-19
+		
+	* src/inc.c
+		complete sync with 0.9.9cvs9's 'update folderview
+		progressively'
+		
+	* configure.ac
+		require gettext >= 0.12.1
+
+2004-02-17 [match]	0.9.9claws23
+
+	* src/compose.c
+		keep the peace - change style.
+
+2004-02-17 [alfons]	0.9.9claws22
+
+	* src/filtering.c
+		make MATCHACTION_STOP cancel filtering / processing;
+		clean up and document it to make it a little bit more clear;
+
+2004-02-17 [alfons]	0.9.9claws21
+
+	%X marks the cursor spot for reply quote format
+
+	* src/quote_fmt_lex.l 
+	  src/quote_fmt.c
+		add %X token
+		
+	* src/quote_fmt.h
+	  src/quote_fmt_parse.y
+		handle %X token
+		
+	* src/compose.c
+		handle %X token for replies only (for now)
+
+2004-02-17 [paul]	0.9.9claws20
+
+	* po/sk.po
+		updated by Andrej Kacian
+		
+	* src/news.c
+		remove unneeded include
+		
+	* src/prefs_fonts.c
+		be a little more user-friendly with the labels
+		
+	* configure.ac
+		a change forgotten in the last commit: 
+		SYLPHEED_ACLOCAL_INCLUDE(m4)
+
+2004-02-17 [paul]	0.9.9claws19
+
+	* ac/*				** REMOVED **
+	  ac/				** REMOVED **
+	  intl/Makefile.in		** REMOVED **
+	  m4/				** NEW **
+	  m4/missing			** NEW **
+	  m4/missing/gdk-pixbuf.m4	** NEW **
+	  m4/missing/gettext.m4		** NEW **
+	  m4/missing/gpgme.m4		** NEW **
+	  m4/missing/imlib.m4		** NEW **
+	  m4/.cvsignore			** NEW **
+	  m4/Makefile.am		** NEW **
+	  m4/README			** NEW **
+	  m4/aclocal-include.m4		** NEW **
+	  m4/aspell.m4			** NEW **
+	  m4/check-type.m4		** NEW **
+	  m4/gnupg-check-typedef.m4	** NEW **
+	  m4/openssl.m4			** NEW **
+	  m4/spamassassin.m4		** NEW **
+	  po/ChangeLog			** REMOVED **
+	  po/Makefile.in.in		** REMOVED **
+	  po/Rules-quot			** REMOVED **
+	  po/boldquot.sed		** REMOVED **
+	  po/en@boldquot.header		** REMOVED **
+	  po/en@quot.header		** REMOVED **
+	  po/insert-header.sin		** REMOVED **
+	  po/quot.sed			** REMOVED **
+	  po/remove-potcdate.sed	** REMOVED **
+	  po/remove-potcdate.sin	** REMOVED **
+	  po/stamp-po			** REMOVED **
+	  Makefile.am
+	  autogen.sh
+	  configure.ac
+		enable building with automake 1.8.x
+		add 'autopoint' to autogen.sh and remove all
+		auto-generated files, remove ac/ in favour of
+		m4/
+
+2004-02-17 [alfons]	0.9.9claws18
+	
+	* src/summaryview.c
+		MSG_IS_NEWS() is not stored at all, and is bogus
+
+2004-02-17 [martin]	0.9.9claws17
+
+	* src/prefs_themes.c
+		fix crash when installing wrong theme and output an
+		error message
+
+2003-02-15 [christoph]	0.9.9claws16
+
+	* src/compose.c
+	* src/stock_pixmap.[ch]
+	* src/toolbar.[ch]
+	* src/pixmaps/linewrapcurrent.xpm		** NEW **
+		add "Wrap current paragraph" to compose toolbar
+
+2003-02-15 [alfons]	0.9.9claws15
+
+	* src/folderview.c
+		refine previous commit to make sure other hook functions
+		get their grab of the pie too
+
+2003-02-15 [alfons]	0.9.9claws14
+
+	* src/folderview.c
+		fix sync breakage so we don't pass invalid pointer types
+
+2003-02-15 [match]	0.9.9claws13
+
+	* src/ldapquery.[ch]
+	* src/ldapserver.h
+	* src/addrindex.[ch]
+		tweak threading calls.
+	* src/addr_compl.[ch]
+		add alias into completion list.
+	* src/addressbook.c
+		fix ldap browse.
+		improve context menu behavior.
+		change menu sequence.
+		add send mail from addressbook.
+	* src/addrselect.[ch]
+	* src/compose.[ch]
+		add send mail from addressbook.
+
+2003-02-15 [christoph]	0.9.9claws12
+
+	* src/folderutils.c
+		skip deleting when duplist is empty
+
+	* src/folderview.[ch]
+	* src/mainwindow.c
+	* src/summaryview.[ch]
+		call folderutils_delete_duplicates() from mainwindow code
+
+2003-02-15 [alfons]	0.9.9claws11
+	
+	* src/common/utils.c
+		add prefix for italian ms o(e) 
+
+2003-02-14 [paul]	0.9.9claws10
+
+	* src/foldersel.c
+		fix updating of the folder view when creating a
+		new folder
+
+2003-02-13 [paul]	0.9.9claws9
+
+	* src/plugins/clamav/clamav_plugin.c
+		remove GUI code
+
+2003-02-13 [paul]	0.9.9claws8
+
+	* sync with 0.9.9cvs9
+		see ChangeLog 2004-02-09, 2004-02-10, 2004-02-12
+
+2003-02-13 [alfons]	0.9.9claws7
+
+	* src/common/utils.c
+		fix wrong type of argument for ctype functions (pass unsigned
+		char instead of signed char)
+
+2004-02-12 [alfons]	0.9.9claws6
+
+	* src/compose.[ch]
+		don't select text in header entry when composing to a 
+		default address, but rather give the header entry a
+		different color / style (same as the folder new color)
+
+2004-02-12 [alfons]	0.9.9claws5
+
+	* src/plugins/clamav/clamav_plugin.c
+		don't exit(2) on libclamav init error - show a warning.
+		(tested by damaging a clamav database file.)
+
+2004-02-12 [paul]	0.9.9claws4
+
+	* sync with 0.9.9cvs4
+		see ChangeLog 2004-02-04, 2004-02-05, and 2004-02-06
+
+2004-02-11 [luke]	0.9.9claws3
+
+	* src/mimeview.c
+		remove redundant check introduced in 0.9.9claws1
+
+2004-02-11 [luke]	0.9.9claws2
+
+	* src/mimeview.c
+		fix compilation of my previous commit without gpg enabled
+
+2004-02-10 [luke]	0.9.9claws1
+
+	* src/mimeview.c
+		add borders to icons to indicate the privacy status for
+		the message part (unknown/bad/good)
+
 2004-02-06 [paul]	0.9.9claws
 
 	0.9.9claws released
@@ -129,7 +415,7 @@
 
 2004-01-25 [paul]	0.9.8claws48
 
-	src/prefs_ext_prog.c
+	* src/prefs_ext_prog.c
 		apply Alfons' patch to check for NULL pointers
 		fixes bug #424
 

@@ -288,7 +288,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		return TRUE;
 
 	case MATCHACTION_STOP:
-                return TRUE;
+                return FALSE;
 
 	case MATCHACTION_HIDE:
                 info->hidden = TRUE;
@@ -322,6 +322,17 @@ static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *inf
 	return matcherlist_match(filtering->matchers, info);
 }
 
+/*!
+ *\brief	Apply a rule on message.
+ *
+ *\param	filtering List of filtering rules.
+ *\param	info Message to apply rules on.
+ *\param	final Variable returning TRUE or FALSE if one of the
+ *		encountered actions was final. 
+ *		See also \ref filtering_is_final_action.
+ *
+ *\return	gboolean TRUE to continue applying rules.
+ */
 static gboolean filtering_apply_rule(FilteringProp *filtering, MsgInfo *info,
     gboolean * final)
 {
@@ -336,7 +347,7 @@ static gboolean filtering_apply_rule(FilteringProp *filtering, MsgInfo *info,
                 action = tmp->data;
                 
                 if (FALSE == (result = filteringaction_apply(action, info))) {
-                        g_warning("action %s could not be applied", 
+                        g_warning("No further processing after rule %s\n",
                             filteringaction_to_string(buf, sizeof buf, action));
                 }
                 
@@ -348,6 +359,14 @@ static gboolean filtering_apply_rule(FilteringProp *filtering, MsgInfo *info,
 	return result;
 }
 
+/*!
+ *\brief	Check if an action is "final", i.e. should break further
+ *		processing.
+ *
+ *\param	filtering_action Action to check.
+ *
+ *\return	gboolean TRUE if \a filtering_action is final.	
+ */
 static gboolean filtering_is_final_action(FilteringAction *filtering_action)
 {
 	switch(filtering_action->type) {
@@ -364,15 +383,15 @@ static gboolean filter_msginfo(GSList * filtering_list, MsgInfo * info)
 {
 	GSList	*l;
 	gboolean final;
-	gboolean applied;
+	gboolean apply_next;
 	
 	g_return_val_if_fail(info != NULL, TRUE);
 	
-	for (l = filtering_list, final = FALSE, applied = FALSE; l != NULL; l = g_slist_next(l)) {
+	for (l = filtering_list, final = FALSE, apply_next = FALSE; l != NULL; l = g_slist_next(l)) {
 		FilteringProp * filtering = (FilteringProp *) l->data;
 
 		if (filtering_match_condition(filtering, info)) {
-			applied = filtering_apply_rule(filtering, info, &final);
+			apply_next = filtering_apply_rule(filtering, info, &final);
                         if (final)
                                 break;
 		}		
@@ -380,13 +399,26 @@ static gboolean filter_msginfo(GSList * filtering_list, MsgInfo * info)
 
 	/* put in inbox if a final rule could not be applied, or
 	 * the last rule was not a final one. */
-	if ((final && !applied) || !final) {
+	if ((final && !apply_next) || !final) {
 		return FALSE;
 	}
 
 	return TRUE;
 }
 
+/*!
+ *\brief	Filter a message against a list of rules.
+ *
+ *\param	flist List of filter rules.
+ *\param	info Message.
+ *
+ *\return	gboolean TRUE if filter rules handled the message.
+ *
+ *\note		Returning FALSE means the message was not handled,
+ *		and that the calling code should do the default
+ *		processing. E.g. \ref inc.c::inc_start moves the 
+ *		message to the inbox. 	
+ */
 gboolean filter_message_by_msginfo(GSList *flist, MsgInfo *info)
 {
 	return filter_msginfo(flist, info);
