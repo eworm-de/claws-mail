@@ -1,3 +1,11 @@
+2003-02-14
+
+	* src/quote_fmt_parse.y: gettext 翻訳可能な文字列を削除。
+	* src/unmime.c: unmime_header(): コード変換に失敗したときは壊れた
+	  文字を削除。
+	* src/codeconv.c: conv_encode_header(): 75 文字以上の長い単語が
+	  入力されるとヘッダを壊していたバグを修正。
+
 2003-02-13
 
 	* src/codeconv.c: isprintableeuckanji(): 1バイト目で 0xf4 を超える

@@ -27,7 +27,6 @@
 #include "procmsg.h"
 #include "procmime.h"
 #include "utils.h"
-#include "intl.h"
 #include "procheader.h"
 
 #include "quote_fmt.h"
