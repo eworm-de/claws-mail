@@ -466,10 +466,10 @@ gboolean matcherprop_match(MatcherProp * prop, MsgInfo * info)
 		|| matcherprop_string_match(prop, info->cc));
 	case SCORING_AGE_SUP:
 		t = time(NULL);
-		return (t - info->date_t) > prop->age;
+		return ((t - info->date_t) / (60 * 60 * 24)) >= prop->age;
 	case SCORING_AGE_INF:
 		t = time(NULL);
-		return (t - info->date_t) < prop->age;
+		return ((t - info->date_t) / (60 * 60 * 24)) <= prop->age;
 	case SCORING_NEWSGROUPS:
 		return matcherprop_string_match(prop, info->newsgroups);
 	case SCORING_NOT_NEWSGROUPS:

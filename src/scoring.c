@@ -166,7 +166,7 @@ void prefs_scoring_read_config(void)
 
  		g_strchomp(buf);
 
-		if (*buf != '#') {
+		if ((*buf != '#') && (*buf != '\0')) {
 			tmp = buf;
 			scoring = scoringprop_parse(&tmp);
 			if (tmp != NULL) {
