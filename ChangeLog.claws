@@ -1,6 +1,13 @@
 2002-04-05 [paul]	0.7.4claws65
 
 	* tools/filter_conv.pl
+		attempt to make the script all-encompassing and
+		be able to convert any main 'filter' rule thrown
+		at it
+
+2002-04-05 [paul]	0.7.4claws65
+
+	* tools/filter_conv.pl
 		allow for collapsed folder trees
 
 2002-04-05 [paul]	0.7.4claws64
