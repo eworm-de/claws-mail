@@ -1,3 +1,14 @@
+2004-10-02 [colin]	0.9.12cvs119
+
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/prefs_common.h
+	* src/procmime.c
+	* src/procmime.h
+	* src/textview.c
+		Clean up forced charset feature
+		Add forced decode
+
 2004-10-01 [colin]	0.9.12cvs118
 
 	* src/mimeview.c

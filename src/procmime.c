@@ -73,6 +73,23 @@ static gboolean procmime_mimeinfo_parameters_destroy(gpointer key, gpointer valu
 	return TRUE;
 }
 
+static gchar *forced_charset = NULL;
+
+void procmime_force_charset(const gchar *str)
+{
+	g_free(forced_charset);
+	forced_charset = NULL;
+	if (str)
+		forced_charset = g_strdup(str);
+}
+
+static EncodingType forced_encoding = 0;
+
+void procmime_force_encoding(EncodingType encoding)
+{
+	forced_encoding = encoding;
+}
+
 static gboolean free_func(GNode *node, gpointer data)
 {
 	MimeInfo *mimeinfo = (MimeInfo *) node->data;
@@ -231,9 +248,15 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	FILE *outfp, *infp;
 	struct stat statbuf;
 
+	EncodingType encoding = forced_encoding 
+				? forced_encoding
+				: mimeinfo->encoding_type;
+		   
 	g_return_val_if_fail(mimeinfo != NULL, FALSE);
 
-	if (mimeinfo->encoding_type == ENC_BINARY)
+	if (encoding == ENC_BINARY || 
+	    encoding == ENC_7BIT ||
+	    encoding == ENC_8BIT)
 		return TRUE;
 
 	infp = fopen(mimeinfo->filename, "rb");
@@ -252,13 +275,13 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 
 	readend = mimeinfo->offset + mimeinfo->length;
 
-	if (mimeinfo->encoding_type == ENC_QUOTED_PRINTABLE) {
+	if (encoding == ENC_QUOTED_PRINTABLE) {
 		while ((ftell(infp) < readend) && (fgets(buf, sizeof(buf), infp) != NULL)) {
 			gint len;
 			len = qp_decode_line(buf);
 			fwrite(buf, len, 1, outfp);
 		}
-	} else if (mimeinfo->encoding_type == ENC_BASE64) {
+	} else if (encoding == ENC_BASE64) {
 		gchar outbuf[BUFFSIZE];
 		gint len;
 		Base64Decoder *decoder;
@@ -273,7 +296,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 			fwrite(outbuf, sizeof(gchar), len, outfp);
 		}
 		base64_decoder_free(decoder);
-	} else if (mimeinfo->encoding_type == ENC_X_UUENCODE) {
+	} else if (encoding == ENC_X_UUENCODE) {
 		gchar outbuf[BUFFSIZE];
 		gint len;
 		gboolean flag = FALSE;
@@ -490,9 +513,9 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 		return NULL;
 	}
 
-	src_codeset = prefs_common.force_charset
-		? prefs_common.force_charset : 
-		procmime_mimeinfo_get_parameter(mimeinfo, "charset");
+	src_codeset = forced_charset
+		      ? forced_charset : 
+		      procmime_mimeinfo_get_parameter(mimeinfo, "charset");
 
 	renderer = NULL;
 
@@ -987,10 +1010,7 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 	FILE *fp;
 	gint mime_major, mime_minor;
 
-	if (mimeinfo->encoding_type != ENC_BINARY && 
-	   mimeinfo->encoding_type != ENC_7BIT && 
-	   mimeinfo->encoding_type != ENC_8BIT)
-		procmime_decode_content(mimeinfo);
+	procmime_decode_content(mimeinfo);
 
 	fp = fopen(mimeinfo->filename, "rb");
 	if (fp == NULL) {
@@ -1059,10 +1079,7 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 		return;
 	boundary_len = strlen(boundary);
 
-	if (mimeinfo->encoding_type != ENC_BINARY && 
-	    mimeinfo->encoding_type != ENC_7BIT && 
-	    mimeinfo->encoding_type != ENC_8BIT)
-		procmime_decode_content(mimeinfo);
+	procmime_decode_content(mimeinfo);
 
 	fp = fopen(mimeinfo->filename, "rb");
 	if (fp == NULL) {

@@ -127,8 +127,7 @@ static void textview_add_part		(TextView	*textview,
 static void textview_add_parts		(TextView	*textview,
 					 MimeInfo	*mimeinfo);
 static void textview_write_body		(TextView	*textview,
-					 MimeInfo	*mimeinfo,
-					 const gchar	*charset);
+					 MimeInfo	*mimeinfo);
 static void textview_show_html		(TextView	*textview,
 					 FILE		*fp,
 					 CodeConverter	*conv);
@@ -311,21 +310,12 @@ void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 {
 	GtkSText *text;
 	FILE *fp;
-	const gchar *charset = NULL;
 
 	if ((fp = fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return;
 	}
 
-	if (textview->messageview->forced_charset)
-		charset = textview->messageview->forced_charset;
-	else if (prefs_common.force_charset)
-		charset = prefs_common.force_charset;
-	else
-		charset = procmime_mimeinfo_get_parameter(mimeinfo, "charset");
-
-	textview_set_font(textview, charset);
 	textview_clear(textview);
 
 	text = GTK_STEXT(textview->text);
@@ -351,7 +341,6 @@ void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 {
 	GtkSText *text;
-	const gchar *charset = NULL;
 
 	g_return_if_fail(mimeinfo != NULL);
 	g_return_if_fail(fp != NULL);
@@ -368,14 +357,6 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 /*
 	headers = textview_scan_header(textview, fp);
 */
-	if (textview->messageview->forced_charset)
-		charset = textview->messageview->forced_charset;
-	else if (prefs_common.force_charset)
-		charset = prefs_common.force_charset;
-	else
-		charset = procmime_mimeinfo_get_parameter(mimeinfo, "charset");
-
-	textview_set_font(textview, charset);
 
 	text = GTK_STEXT(textview->text);
 
@@ -394,7 +375,7 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	if (mimeinfo->type == MIMETYPE_MULTIPART)
 		textview_add_parts(textview, mimeinfo);
 	else
-		textview_write_body(textview, mimeinfo, charset);
+		textview_write_body(textview, mimeinfo);
 
 	gtk_stext_thaw(text);
 }
@@ -403,7 +384,6 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 {
 	GtkSText *text = GTK_STEXT(textview->text);
 	gchar buf[BUFFSIZE];
-	const gchar *charset = NULL;
 	GPtrArray *headers = NULL;
 	const gchar *name;
 	gchar *content_type;
@@ -451,39 +431,12 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 	} else if (mimeinfo->disposition != DISPOSITIONTYPE_ATTACHMENT) {
 		if (prefs_common.display_header && (gtk_stext_get_length(text) > 0))
 			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
-		if (textview->messageview->forced_charset)
-			charset = textview->messageview->forced_charset;
-		else if (prefs_common.force_charset)
-			charset = prefs_common.force_charset;
-		else
-			charset = procmime_mimeinfo_get_parameter(mimeinfo, "charset");
 
-		textview_write_body(textview, mimeinfo, charset);
+		textview_write_body(textview, mimeinfo);
 	}
 
 	gtk_stext_thaw(text);
 }
-
-#if 0
-static gboolean add_parts_func(GNode *node, gpointer data)
-{
-	MimeInfo *mimeinfo = (MimeInfo *) node->data;
-	TextView *textview = (TextView *) data;
-
-	g_return_val_if_fail(mimeinfo != NULL, FALSE);
-
-	textview_add_part(textview, mimeinfo);
-
-	return FALSE;
-}
-
-static void textview_add_parts(TextView *textview, MimeInfo *mimeinfo)
-{
-	g_return_if_fail(mimeinfo != NULL);
-
-	g_node_traverse(mimeinfo->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, add_parts_func, textview);
-}
-#endif
 
 static void recursive_add_parts(TextView *textview, GNode *node)
 {
@@ -597,21 +550,25 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 
 #undef TEXT_INSERT
 
-static void textview_write_body(TextView *textview, MimeInfo *mimeinfo,
-				const gchar *charset)
+static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 {
 	FILE *tmpfp;
 	gchar buf[BUFFSIZE];
 	CodeConverter *conv;
+	const gchar *charset;
+	
+	if (textview->messageview->forced_charset)
+		charset = textview->messageview->forced_charset;
+	else
+		charset = procmime_mimeinfo_get_parameter(mimeinfo, "charset");
+
+	textview_set_font(textview, charset);
 
 	conv = conv_code_converter_new(charset);
 
 	textview->is_in_signature = FALSE;
 
-	if(mimeinfo->encoding_type != ENC_BINARY && 
-	   mimeinfo->encoding_type != ENC_7BIT && 
-	   mimeinfo->encoding_type != ENC_8BIT)
-		procmime_decode_content(mimeinfo);
+	procmime_decode_content(mimeinfo);
 
 	if (!g_strcasecmp(mimeinfo->subtype, "html")) {
 		gchar *filename;
