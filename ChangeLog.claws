@@ -1,3 +1,9 @@
+2002-06-25 [paul]	0.7.8claws25
+
+	* Makefile.am
+		add '$(AMTAR)' to 'release' section to allow for
+		new and older autotools
+
 2002-06-25 [paul]	0.7.8claws24
 
 	* src/summaryview.c
