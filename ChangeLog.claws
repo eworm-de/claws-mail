@@ -1,3 +1,16 @@
+2004-05-31 [paul]	0.9.10claws72
+
+	* po/es.po
+	  po/it.po
+	  po/ja.po
+	  po/pl.po
+	  po/sk.po
+	  po/sr.po
+	  po/zh_CN.po
+	  	update translations, submitted by Ricardo Mones Lastra,
+		Andrea Spadaccini, Rui Hirokawa, Emil, Andrej Kacian,
+		Urke MMI, and Hansom Young
+
 2004-05-25 [luke]	0.9.10claws71
 
 	* AUTHORS
