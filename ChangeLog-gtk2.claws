@@ -1,3 +1,14 @@
+2004-07-03 [colin]	0.9.11cvs17.7
+
+	Removed FIXME_GTK2 warnings
+	* src/gtk/gtkutils.c
+		useless #warnings
+	* src/gtk/menu.c
+		useless #warnings (no need to mess with menu rc)
+	* src/gtk/menu.h
+		unused functions
+	
+
 2004-07-03 [colin]	0.9.11cvs17.6
 
 	Removed FIXME_GTK2 warnings

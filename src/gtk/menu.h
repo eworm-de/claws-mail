@@ -60,11 +60,6 @@ GtkWidget *popupmenu_create	(GtkWidget *window,
 				 gpointer data);
 gchar *menu_translate		(const gchar *path, gpointer data);
 
-GString *menu_factory_get_rc	(const gchar		*path);
-void menu_factory_clear_rc	(const gchar		*rc_str);
-void menu_factory_copy_rc	(const gchar		*src_path,
-				 const gchar		*dest_path);
-
 void menu_set_sensitive		(GtkItemFactory		*ifactory,
 				 const gchar		*path,
 				 gboolean		 sensitive);

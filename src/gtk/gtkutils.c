@@ -29,8 +29,6 @@
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkctree.h>
 #include <gtk/gtkcombo.h>
-#warning FIXME_GTK2
-/* #include <gtk/gtkthemes.h> */
 #include <gtk/gtkbindings.h>
 #include <gtk/gtkitemfactory.h>
 #include <stdlib.h>
@@ -650,8 +648,6 @@ void gtkut_set_widget_bgcolor_rgb(GtkWidget *widget, guint rgbvalue)
 	gtk_widget_set_style(widget, newstyle);
 }
   
-#warning FIXME_GTK2
-#if 1 /* FIXME_GTK2 */
 gboolean gtkut_text_buffer_match_string(GtkTextBuffer *textbuf, gint pos, gunichar *wcs,
 					gint len, gboolean case_sens)
 {
@@ -799,4 +795,3 @@ gchar *gtkut_text_view_get_selection(GtkTextView *textview)
 	else
 		return NULL;
 }
-#endif /* FIXME_GTK2 */
