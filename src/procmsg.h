@@ -43,9 +43,9 @@ typedef enum
 	MSG_REALLY_DELETED = 1 << 6,		/* mbox stuff */
 
 #define MSG_LABEL_SBIT (7)		/* start bit message label */
-#define MAKE_MSG_LABEL(h, m, l) ((h) << (MSG_LABEL_SBIT+2)) | \
+#define MAKE_MSG_LABEL(h, m, l) (((h) << (MSG_LABEL_SBIT+2)) | \
 				((m) << (MSG_LABEL_SBIT+1)) | \
-				((l) << (MSG_LABEL_SBIT+0))
+				((l) << (MSG_LABEL_SBIT+0)))
 				
 	MSG_LABEL	= MAKE_MSG_LABEL(1, 1, 1),
 	MSG_LABEL_NONE  = MAKE_MSG_LABEL(0, 0, 0),
@@ -126,7 +126,7 @@ typedef enum
 #define MSG_GET_LABEL(msg)		(((msg).perm_flags & MSG_LABEL))
 #define MSG_GET_LABEL_VALUE(msg)	(MSG_GET_LABEL(msg) >> MSG_LABEL_SBIT)
 /* 7 == nr. of colors excl. none */
-#define MSG_SET_LABEL_VALUE(msg, val)	MSG_SET_PERM_FLAGS(msg, ((((int)(val)) & 7) << MSG_LABEL_SBIT))
+#define MSG_SET_LABEL_VALUE(msg, val)	MSG_SET_PERM_FLAGS(msg, ((((unsigned)(val)) & 7) << MSG_LABEL_SBIT))
 #define MSG_IS_FILTERING(msg)		(((msg).tmp_flags  & MSG_FILTERING) != 0)
 
 

@@ -1,3 +1,39 @@
+2001-07-21 [alfons]
+
+	0.5.0claws7
+
+	* configure.in
+		change version
+
+	* src/inc.c, src/summaryview.[ch]
+		prevent update of mark file when filtering has done, by
+		using a variable; this affects two functions:
+			inc.c::inc_finished()
+			summaryview.c::summary_show()
+
+2001-07-20 [alfons]
+
+	* src/filtering.[ch], src/prefs_filtering.c, 
+	  src/matcher.[ch]
+		add filtering action for label coloring	
+
+	* po/POTFILES.in
+		add labelcolors.c
+
+	* added src/labelcolors.c
+	* added src/labelcolors.h
+	* src/Makefile.am, src/summaryview.c
+		rearrange label coloring code
+
+	* src/procmsg.h
+		add more parentheses so label colouring works correctly
+
+	* src/filtering.c
+		don't really delete message, but move it to Trash
+
+	* src/prefs_matcher.c
+		add quote options to info dialog
+
 2001-07-20 [christoph]
 
 	* src/Makefile.am

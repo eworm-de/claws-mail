@@ -98,6 +98,7 @@ sylpheed_SOURCES = \
 	editjpilot.c editjpilot.h \
 	editldap.c editldap.h \
 	editldap_basedn.c editldap_basedn.h \
+	labelcolors.c labelcolors.h \
 	ssl.c ssl.h
 
 EXTRA_DIST = \

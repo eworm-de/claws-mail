@@ -470,8 +470,10 @@ void folderview_select(FolderView *folderview, FolderItem *item)
 
 	if (!item) return;
 
+	debug_print("*** select enter\n");
 	node = gtk_ctree_find_by_row_data(ctree, NULL, item);
 	if (node) folderview_select_node(folderview, node);
+	debug_print("*** select leave\n");
 }
 
 static void folderview_select_node(FolderView *folderview, GtkCTreeNode *node)
@@ -1319,6 +1321,8 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 
 	folderview->selected = row;
 
+	debug_print("*** selected enter\n");
+
 	if (folderview->opened == row) {
 		folderview->open_folder = FALSE;
 		return;
@@ -1353,6 +1357,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 			gdk_pointer_ungrab(GDK_CURRENT_TIME);
 	}
 
+	debug_print("*** summary_show %s\n", item->name);
 	opened = summary_show(folderview->summaryview, item, FALSE);
 
 	if (!opened) {
@@ -1363,6 +1368,9 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 
 	folderview->open_folder = FALSE;
 	can_select = TRUE;
+
+
+	debug_print("*** selected leave\n");
 }
 
 static void folderview_tree_expanded(GtkCTree *ctree, GtkCTreeNode *node,

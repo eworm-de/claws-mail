@@ -26,6 +26,7 @@ src/imap.c
 src/import.c
 src/inc.c
 src/inputdialog.c
+src/labelcolors.c
 src/logwindow.c
 src/main.c
 src/mainwindow.c

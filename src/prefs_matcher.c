@@ -1424,6 +1424,9 @@ static void prefs_matcher_exec_info_create(void)
 		 "%n:\n"
 		 "%r:\n"
 		 "%F:\n"
+		 "\\n:\n"
+		 "\\:\n"
+		 "\\\":\n"
 		 "%%:");
 
 	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
@@ -1440,6 +1443,9 @@ static void prefs_matcher_exec_info_create(void)
 		   "Newsgroups\n"
 		   "References\n"
 		   "Filename - should not be modified\n"
+		   "new line\n"
+		   "escape character for quotes\n"
+		   "quote character\n"
 		   "%"));
 
 	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);

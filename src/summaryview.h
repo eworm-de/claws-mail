@@ -144,14 +144,21 @@ private:
 	/* current sorting state */
 	SummarySortType sort_mode;
 	GtkSortType sort_type;
+
+	/* tell filtering happened recently */
+	gboolean filtering_happened;
+
 };
 
 SummaryView	*summary_create(void);
 
 void summary_init		  (SummaryView		*summaryview);
+
 gboolean summary_show		  (SummaryView		*summaryview,
 				   FolderItem		*fitem,
 				   gboolean		 update_cache);
+
+				   
 void summary_clear_list		  (SummaryView		*summaryview);
 void summary_clear_all		  (SummaryView		*summaryview);
 

@@ -53,7 +53,8 @@
 GSList * prefs_filtering = NULL;
 
 FilteringAction * filteringaction_new(int type, int account_id,
-				      gchar * destination)
+				      gchar * destination,
+				      gint labelcolor)
 {
 	FilteringAction * action;
 
@@ -63,7 +64,7 @@ FilteringAction * filteringaction_new(int type, int account_id,
 	action->account_id = account_id;
 	if (destination)
 		action->destination = g_strdup(destination);
-
+	action->labelcolor = labelcolor;	
 	return action;
 }
 
@@ -81,6 +82,7 @@ FilteringAction * filteringaction_parse(gchar ** str)
 	gchar * destination = NULL;
 	gint account_id = 0;
 	gint key;
+	gint labelcolor = 0;
 
 	tmp = * str;
 
@@ -121,6 +123,14 @@ FilteringAction * filteringaction_parse(gchar ** str)
 		}
 
 		break;
+	case MATCHING_ACTION_COLOR:
+		labelcolor = matcher_parse_number(&tmp);
+		if (tmp == NULL) {
+			*str = NULL;
+			return NULL;
+		}
+
+		break;
 	default:
 		* str = NULL;
 		return NULL;
@@ -128,7 +138,7 @@ FilteringAction * filteringaction_parse(gchar ** str)
 
 	* str = tmp;
 
-	action = filteringaction_new(key, account_id, destination);
+	action = filteringaction_new(key, account_id, destination, labelcolor);
 
 	return action;
 }
@@ -869,6 +879,11 @@ static gboolean filter_incoming_perform_actions(FolderItem *default_folder,
 			MSG_SET_PERM_FLAGS(markflags, MSG_UNREAD);
 			break;
 
+		case MATCHING_ACTION_COLOR:
+			MSG_SET_LABEL_VALUE(markflags, ma_tail->action->labelcolor);
+			debug_print("*** label color %d\n", ma_tail->action->labelcolor);
+			break;
+
 		/* UNCONTINUABLE */
 		case MATCHING_ACTION_FORWARD:
 		case MATCHING_ACTION_FORWARD_AS_ATTACHMENT:
@@ -982,8 +997,18 @@ static gboolean filter_incoming_perform_actions(FolderItem *default_folder,
 		else if (MATCHING_ACTION_DELETE == ACTION) {
 			debug_print("*** performing delete\n");
 			copy_to_inbox_too = FALSE;
-			if (unlink(filename) < 0)
-				debug_print(_("Rule failed: could not delete message\n"));
+
+			/* drop to Trash */
+			dest_folder = folder_get_default_trash();
+			msgnum = folder_item_add_msg(dest_folder, filename, FALSE);
+			if (msgnum < 0) {
+				debug_print(_("Rule failed: could not move to trash"));
+				copy_to_inbox_too = TRUE;	    
+			}
+			else {
+				flags = msginfo->flags.perm_flags | markflags.perm_flags;
+				add_mark(dest_folder, msgnum, flags);
+			}
 			break;				
 		}
 		else if (MATCHING_ACTION_MOVE == ACTION) {
@@ -1011,6 +1036,7 @@ static gboolean filter_incoming_perform_actions(FolderItem *default_folder,
 
 	/* may need to copy it to inbox too */
 	if (copy_to_inbox_too) {
+		gint color;
 		debug_print("*** performing inbox copy\n");
 		msgnum = folder_item_add_msg(default_folder, filename, TRUE);
 		if (msgnum < 0) {
@@ -1019,6 +1045,8 @@ static gboolean filter_incoming_perform_actions(FolderItem *default_folder,
 			return FALSE;				    
 		}
 		flags = msginfo->flags.perm_flags | markflags.perm_flags;
+		color = (flags >> 7) & 7; 
+		debug_print("*** marking label color %d\n", color);
 		add_mark(default_folder, msgnum, flags);
 	}
 	else {
@@ -1123,6 +1151,9 @@ gchar * filteringaction_to_string(FilteringAction * action)
 	gchar * command_str;
 	gint i;
 	gchar * account_id_str;
+	gchar * labelcolor_str;
+
+	/* FIXME: use g_sprintf() throughout */
 
 	command_str = NULL;
 	command_str = get_matchparser_tab_str(action->type);
@@ -1150,6 +1181,10 @@ gchar * filteringaction_to_string(FilteringAction * action)
 		account_id_str = itos(action->account_id);
 		return g_strconcat(command_str, " ", account_id_str,
 				   " \"", action->destination, "\"", NULL);
+
+	case MATCHING_ACTION_COLOR:
+		labelcolor_str = itos(action->labelcolor);
+		return g_strconcat(command_str, " ", labelcolor_str, NULL);  
 
 	default:
 		return NULL;
@@ -1203,6 +1238,7 @@ void prefs_filtering_write_config(void)
 
 		prop = (FilteringProp *) cur->data;
 		filtering_str = filteringprop_to_string(prop);
+		debug_print("*** WRITING %s\n", filtering_str);
 		if (fputs(filtering_str, pfile->fp) == EOF ||
 		    fputc('\n', pfile->fp) == EOF) {
 			FILE_OP_ERROR(rcpath, "fputs || fputc");

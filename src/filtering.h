@@ -28,7 +28,8 @@
 struct _FilteringAction {
 	gint type;
 	gint account_id;
-	gchar * destination;
+	gchar *destination;
+	gint labelcolor;
 };
 
 typedef struct _FilteringAction FilteringAction;
@@ -44,7 +45,8 @@ extern GSList * prefs_filtering;
 
 
 FilteringAction * filteringaction_new(int type, int account_id,
-				      gchar * destination);
+				      gchar * destination,
+				      gint labelcolor);
 void filteringaction_free(FilteringAction * action);
 FilteringAction * filteringaction_parse(gchar ** str);
 

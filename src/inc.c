@@ -120,6 +120,23 @@ static void inc_finished(MainWindow *mainwin)
 {
 	FolderItem *item;
 
+	/* XXX: major problems right here. if we change marks after
+	 * incorporation of mail, folderview_select() rewrites it
+	 * right under our nose. folderview_select() eventually
+	 * calls summary_show(), which rewrites the cache twice:
+	 * one for the previously selected FolderItem*, and one
+	 * for the newly selected FolderItem* 
+	 *
+	 * since filtering also allows changing mark files, 
+	 * i've solved this by using a global variable (in 
+	 * SummmaryView*). a better solution is to use the folder
+	 * hash table, and see whether the newly and currently 
+	 * selected FolderItem* where updated by the filtering. */
+
+	mainwin->summaryview->filtering_happened = TRUE;
+
+	/* XXX: filtering_happened is reset by summary_show() */
+
 	if (prefs_common.open_inbox_on_inc) {
 		item = cur_account && cur_account->inbox
 			? folder_find_item_from_path(cur_account->inbox)
@@ -584,9 +601,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 		if(!ssl_init_socket(sockinfo)) {
 			pop3_automaton_terminate(NULL, atm);
 			automaton_destroy(atm);
-
 			return INC_ERROR;
-		}
 	} else {
 		sockinfo->ssl = NULL;
 	}
