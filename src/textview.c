@@ -995,6 +995,12 @@ static void textview_write_link(TextView *textview, const gchar *url,
     }
 #endif
 
+    if (!conv || conv_convert(conv, buf, sizeof(buf), str) < 0)
+	strncpy2(buf, str, sizeof(buf));
+
+    strcrchomp(buf);
+    gtk_stext_insert(text, textview->msgfont, NULL, NULL, " ", 1);
+ 
     /* this part is based on the code in make_clickable_parts */
     if (prefs_common.enable_color) {
 	link_color = &uri_color;
