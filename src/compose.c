@@ -3828,17 +3828,8 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 
 #if USE_GPGME
 	if (!is_draft && compose->use_signing && compose->gnupg_mode) {
-		gchar *outbuf;
+		gchar *tmpbuf;
 
-		if (encoding == ENC_QUOTED_PRINTABLE) {
-			outbuf = g_malloc(strlen(buf) * 4);
-			qp_encode_line(outbuf, buf);
-			g_free(buf);
-			buf = g_strdup(outbuf);
-			already_encoded = TRUE;
-			g_free(outbuf);
-		}
-		
 		if (compose_clearsign_text(compose, &buf) < 0) {
 			g_warning("clearsign failed\n");
 			fclose(fp);
@@ -3846,6 +3837,9 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 			g_free(buf);
 			return -1;
 		}
+		tmpbuf = conv_codeset_strdup(buf, CS_UTF_8, out_codeset);
+		g_free(buf);
+		buf = tmpbuf;
 	}
 #endif
 
@@ -3955,7 +3949,8 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	}
 	if (compose->use_encryption) {
 		if (rfc2015_encrypt(file, compose->to_list,
-				    compose->gnupg_mode) < 0) {
+				    compose->gnupg_mode,
+				    out_codeset) < 0) {
 			unlink(file);
 			return -1;
 		}

@@ -1,3 +1,10 @@
+2004-08-23 [colin]	0.9.12cvs77.3
+
+	* src/compose.c
+		Fix again inline gpg signing (which outputs utf8
+		in gtk2). Not syncing this fix to HEAD as this 
+		code is meant to die.
+
 2004-08-23 [colin]	0.9.12cvs77.2
 
 	* src/prefs_account.h
