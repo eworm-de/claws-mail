@@ -12,7 +12,6 @@ src/addritem.c
 src/addrselect.c
 src/alertpanel.c
 src/automaton.c
-src/base64.c
 src/codeconv.c
 src/colorlabel.c
 src/compose.c
@@ -91,9 +90,7 @@ src/session.c
 src/setup.c
 src/sigstatus.c
 src/smtp.c
-src/socket.c
 src/sourcewindow.c
-src/ssl.c
 src/ssl_certificate.c
 src/ssl_manager.c
 src/statusbar.c
@@ -105,10 +102,15 @@ src/template.c
 src/textview.c
 src/toolbar.c
 src/unmime.c
-src/utils.c
-src/uuencode.c
 src/vcard.c
 src/xml.c
 src/xmlprops.c
 src/noticeview.c
 src/crash.c
+src/common/base64.c
+src/common/hooks.c
+src/common/log.c
+src/common/socket.c
+src/common/ssl.c
+src/common/utils.c
+src/common/uuencode.c
