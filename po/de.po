@@ -6399,7 +6399,7 @@ msgstr "Schlüssel %s abgelaufen"
 #: src/rfc2015.c:300
 #, c-format
 msgid "Signature made at %s\n"
-msgstr "Digitale Unterschrift gemacht bei %s\n"
+msgstr "Digitale Unterschrift gemacht am %s\n"
 
 #: src/rfc2015.c:309
 #, c-format
