@@ -787,7 +787,7 @@ static void prefs_receive_create(void)
 	gtk_widget_show (entry_incext);
 	gtk_box_pack_start (GTK_BOX (hbox), entry_incext, TRUE, TRUE, 0);
 
-	button_incext = gtk_button_new_with_label ("... ");
+	button_incext = gtk_button_new_with_label (" ... ");
 	gtk_widget_show (button_incext);
 	gtk_box_pack_start (GTK_BOX (hbox), button_incext, FALSE, FALSE, 0);
 
@@ -1517,7 +1517,7 @@ static void prefs_display_create(void)
 
 	PACK_FRAME(vbox1, frame_font, _("Font"));
 
-	table1 = gtk_table_new (1, 3, FALSE);
+	table1 = gtk_table_new (4, 3, FALSE);
 	gtk_widget_show (table1);
 	gtk_container_add (GTK_CONTAINER (frame_font), table1);
 	gtk_container_set_border_width (GTK_CONTAINER (table1), 8);
@@ -1525,6 +1525,7 @@ static void prefs_display_create(void)
 	gtk_table_set_col_spacings (GTK_TABLE (table1), 8);
 
 	label_textfont = gtk_label_new (_("Text"));
+	gtk_misc_set_alignment(GTK_MISC(label_textfont), 0, 0.5);
 	gtk_widget_show (label_textfont);
 	gtk_table_attach (GTK_TABLE (table1), label_textfont, 0, 1, 0, 1,
 			  GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
@@ -1534,7 +1535,7 @@ static void prefs_display_create(void)
 	gtk_table_attach (GTK_TABLE (table1), entry_textfont, 1, 2, 0, 1,
 			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
 
-	button_textfont = gtk_button_new_with_label ("... ");
+	button_textfont = gtk_button_new_with_label (" ... ");
 	gtk_widget_show (button_textfont);
 	gtk_table_attach (GTK_TABLE (table1), button_textfont, 2, 3, 0, 1,
 			  0, 0, 0, 0);
@@ -1542,6 +1543,7 @@ static void prefs_display_create(void)
 			    GTK_SIGNAL_FUNC (prefs_font_select), entry_textfont);
 
 	tmplabel = gtk_label_new (_("Small"));
+	gtk_misc_set_alignment(GTK_MISC(tmplabel), 0, 0.5);
 	gtk_widget_show (tmplabel);
 	gtk_table_attach (GTK_TABLE (table1), tmplabel, 0, 1, 1, 2,
 			  GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
@@ -1551,7 +1553,7 @@ static void prefs_display_create(void)
 	gtk_table_attach (GTK_TABLE (table1), tmpentry, 1, 2, 1, 2,
 			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
 
-	tmpbutton = gtk_button_new_with_label ("... ");
+	tmpbutton = gtk_button_new_with_label (" ... ");
 	gtk_widget_show (tmpbutton);
 	gtk_table_attach (GTK_TABLE (table1), tmpbutton, 2, 3, 1, 2,
 			  0, 0, 0, 0);
@@ -1560,6 +1562,7 @@ static void prefs_display_create(void)
 	display.entry_smallfont = tmpentry;			  
 
 	tmplabel = gtk_label_new (_("Normal"));
+	gtk_misc_set_alignment(GTK_MISC(tmplabel), 0, 0.5);
 	gtk_widget_show (tmplabel);
 	gtk_table_attach (GTK_TABLE (table1), tmplabel, 0, 1, 2, 3,
 			  GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
@@ -1569,7 +1572,7 @@ static void prefs_display_create(void)
 	gtk_table_attach (GTK_TABLE (table1), tmpentry, 1, 2, 2, 3,
 			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
 
-	tmpbutton = gtk_button_new_with_label ("... ");
+	tmpbutton = gtk_button_new_with_label (" ... ");
 	gtk_widget_show (tmpbutton);
 	gtk_table_attach (GTK_TABLE (table1), tmpbutton, 2, 3, 2, 3,
 			  0, 0, 0, 0);
@@ -1578,6 +1581,7 @@ static void prefs_display_create(void)
 	display.entry_normalfont = tmpentry;			  
 
 	tmplabel = gtk_label_new (_("Bold"));
+	gtk_misc_set_alignment(GTK_MISC(tmplabel), 0, 0.5);
 	gtk_widget_show (tmplabel);
 	gtk_table_attach (GTK_TABLE (table1), tmplabel, 0, 1, 3, 4,
 			  GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
@@ -1587,7 +1591,7 @@ static void prefs_display_create(void)
 	gtk_table_attach (GTK_TABLE (table1), tmpentry, 1, 2, 3, 4,
 			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
 
-	tmpbutton = gtk_button_new_with_label ("... ");
+	tmpbutton = gtk_button_new_with_label (" ... ");
 	gtk_widget_show (tmpbutton);
 	gtk_table_attach (GTK_TABLE (table1), tmpbutton, 2, 3, 3, 4,
 			  0, 0, 0, 0);
@@ -2197,7 +2201,7 @@ static void prefs_quote_colors_dialog_create(void)
 	GtkWidget *uri_label;
 	GtkWidget *hbbox;
 	GtkWidget *ok_btn;
-	/*GtkWidget *cancel_btn;*/
+	//GtkWidget *cancel_btn;
 	GtkWidget *recycle_colors_btn;
 	GtkWidget *frame_colors;
 
