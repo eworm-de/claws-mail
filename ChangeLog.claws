@@ -1,3 +1,8 @@
+2002-11-05 [alfons]	0.8.5claws77
+
+	* src/crash.c
+		very minor cleanups: nothing to see here, move on. :-)
+
 2002-11-05 [colin]	0.8.5claws76
 
 	* src/main.c
