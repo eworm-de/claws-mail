@@ -1,3 +1,13 @@
+2001-10-15 [christoph]	0.6.3claws16
+
+	* src/account.c
+	* src/compose.c
+	* src/prefs_folder_item.[ch]
+		applied wwp <subscript@free.fr>'s folder
+		default account patch
+	* po/de.po
+		Fixed wrong translation
+
 2001-10-13 [alfons, christoph, melvin]	
 			0.6.3claws15
 

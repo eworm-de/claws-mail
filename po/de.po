@@ -385,7 +385,7 @@ msgstr "Löschen"
 
 #: src/addressbook.c:632
 msgid "Lookup"
-msgstr "Vorschau"
+msgstr "Suchen"
 
 #: src/addressbook.c:644 src/compose.c:1197 src/compose.c:3242
 #: src/headerview.c:55 src/summary_search.c:156

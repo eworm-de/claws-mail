@@ -37,6 +37,7 @@
 #include "account.h"
 #include "prefs.h"
 #include "prefs_account.h"
+#include "prefs_folder_item.h"
 #include "compose.h"
 #include "manage_window.h"
 #include "inc.h"
@@ -572,12 +573,34 @@ static void account_edit_prefs(void)
 	account_clist_set();
 }
 
+static void account_delete_references_recursive(const GNode *node, const gint account)
+{
+	/* the son */
+	if (node->data) {
+		FolderItem *item = node->data;
+		if (item->prefs) /* && item->prefs->stype == F_NORMAL */
+			if (item->prefs->default_account == account) {
+				item->prefs->enable_default_account = FALSE;
+				item->prefs->default_account = 0;
+				prefs_folder_item_save_config(item);
+			}
+	}
+	/* its children (vertical dive) */
+	if (node->children)
+		account_delete_references_recursive(node->children, account);
+	/* its brothers (horizontal dive) */
+	if (node->next)
+		account_delete_references_recursive(node->next, account);
+}
+
 static void account_delete(void)
 {
 	GtkCList *clist = GTK_CLIST(edit_account.clist);
 	PrefsAccount *ac_prefs;
 	gint row;
-
+	GList *list;
+	Folder *folder;
+	
 	if (!clist->selection) return;
 
 	if (alertpanel(_("Delete account"),
@@ -593,6 +616,14 @@ static void account_delete(void)
 	}
 	account_destroy(ac_prefs);
 	account_clist_set();
+
+	debug_print(_("Removing deleted account references for all the folders...\n"));
+	list = folder_get_list();
+	for (; list != NULL; list = list->next) {
+		folder = FOLDER(list->data);
+		if (folder->node)  /* && folder->type == F_? */
+			account_delete_references_recursive(folder->node, ac_prefs->account_id);
+	}
 }
 
 static void account_up(void)

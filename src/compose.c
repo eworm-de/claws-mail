@@ -497,7 +497,21 @@ Compose * compose_new_with_folderitem(PrefsAccount *account, FolderItem *item)
 Compose * compose_generic_new(PrefsAccount *account, const gchar *to, FolderItem *item)
 {
 	Compose *compose;
+	GList *cur_ac;
+	GList *account_list;
+	PrefsAccount *ac_prefs;
 
+	if (item && item->prefs->enable_default_account) {
+		/* get a PrefsAccount *pointer on the wished account */
+		account_list=account_get_list();
+		for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
+			ac_prefs = (PrefsAccount *)cur_ac->data;
+			if (ac_prefs->account_id == item->prefs->default_account) {
+				account = ac_prefs;
+				break;
+			}
+		}
+	}
 	if (!account) account = cur_account;
 	g_return_val_if_fail(account != NULL, NULL);
 

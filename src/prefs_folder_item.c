@@ -26,6 +26,8 @@
 #include "folder.h"
 #include "prefs_folder_item.h"
 #include "summaryview.h"
+#include "menu.h"
+#include "account.h"
 #include "prefs.h"
 #include "manage_window.h"
 
@@ -40,6 +42,8 @@ struct PrefsFolderItemDialog
 	GtkWidget *entry_default_to;
 	GtkWidget *checkbtn_folder_chmod;
 	GtkWidget *entry_folder_chmod;
+	GtkWidget *checkbtn_enable_default_account;
+	GtkWidget *optmenu_default_account;
 };
 
 static PrefParam param[] = {
@@ -74,6 +78,10 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"folder_chmod", "", &tmp_prefs.folder_chmod, P_INT,
 	 NULL, NULL, NULL},
+	{"enable_default_account", "", &tmp_prefs.enable_default_account, P_BOOL,
+	 NULL, NULL, NULL},
+	{"default_account", NULL, &tmp_prefs.default_account, P_INT,
+	 NULL, NULL, NULL},
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
@@ -82,6 +90,7 @@ void prefs_folder_item_cancel_cb(GtkWidget *widget, struct PrefsFolderItemDialog
 void prefs_folder_item_ok_cb(GtkWidget *widget, struct PrefsFolderItemDialog *dialog);
 void prefs_folder_item_default_to_cb(GtkWidget *widget, struct PrefsFolderItemDialog *dialog);
 void prefs_folder_item_folder_chmod_cb(GtkWidget *widget, struct PrefsFolderItemDialog *dialog);
+void prefs_folder_item_default_account_cb(GtkWidget *widget, struct PrefsFolderItemDialog *dialog);
 gint prefs_folder_item_chmod_mode(gchar *folder_chmod);
 
 void prefs_folder_item_read_config(FolderItem * item)
@@ -172,6 +181,8 @@ PrefsFolderItem * prefs_folder_item_new(void)
 	tmp_prefs.default_to = NULL;
 	tmp_prefs.enable_folder_chmod = FALSE;
 	tmp_prefs.folder_chmod = 0;
+	tmp_prefs.enable_default_account = FALSE;
+	tmp_prefs.default_account = 0;
 
 	* prefs = tmp_prefs;
 	
@@ -235,7 +246,18 @@ void prefs_folder_item_create(FolderItem *item) {
 	GtkWidget *entry_default_to;
 	GtkWidget *checkbtn_folder_chmod;
 	GtkWidget *entry_folder_chmod;
-
+	GtkWidget *hbox2;
+	GtkWidget *checkbtn_enable_default_account;
+	GtkWidget *optmenu_default_account;
+	GtkWidget *optmenu_default_account_menu;
+	GtkWidget *optmenu_default_account_menuitem;
+	GList *cur_ac;
+	GList *account_list;
+	PrefsAccount *ac_prefs;
+	GtkOptionMenu *optmenu;
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+	gint account_index, index;
 	dialog = g_new0(struct PrefsFolderItemDialog, 1);
 	dialog->item = item;
 
@@ -263,7 +285,7 @@ void prefs_folder_item_create(FolderItem *item) {
 	/* Request Return Receipt */
 	checkbtn_request_return_receipt = gtk_check_button_new_with_label(_("Request Return Receipt"));
 	gtk_widget_show(checkbtn_request_return_receipt);
-	gtk_table_attach_defaults(GTK_TABLE(table), checkbtn_request_return_receipt, 0, 2, rowcount, rowcount + 1);
+	gtk_table_attach(GTK_TABLE(table), checkbtn_request_return_receipt, 0, 2, rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_request_return_receipt),
 				     item->ret_rcpt ? TRUE : FALSE);
 
@@ -272,7 +294,7 @@ void prefs_folder_item_create(FolderItem *item) {
 	/* Default To */
 	checkbtn_default_to = gtk_check_button_new_with_label(_("Default To: "));
 	gtk_widget_show(checkbtn_default_to);
-	gtk_table_attach_defaults(GTK_TABLE(table), checkbtn_default_to, 0, 1, rowcount, rowcount + 1);
+	gtk_table_attach(GTK_TABLE(table), checkbtn_default_to, 0, 1, rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_to), item->prefs->enable_default_to);
 	gtk_signal_connect(GTK_OBJECT(checkbtn_default_to), "toggled",
 			    GTK_SIGNAL_FUNC(prefs_folder_item_default_to_cb), dialog);
@@ -289,7 +311,7 @@ void prefs_folder_item_create(FolderItem *item) {
 	/* Folder chmod */
 	checkbtn_folder_chmod = gtk_check_button_new_with_label(_("Folder chmod: "));
 	gtk_widget_show(checkbtn_folder_chmod);
-	gtk_table_attach_defaults(GTK_TABLE(table), checkbtn_folder_chmod, 0, 1, rowcount, rowcount + 1);
+	gtk_table_attach(GTK_TABLE(table), checkbtn_folder_chmod, 0, 1, rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_folder_chmod), item->prefs->enable_folder_chmod);
 	gtk_signal_connect(GTK_OBJECT(checkbtn_folder_chmod), "toggled",
@@ -309,6 +331,48 @@ void prefs_folder_item_create(FolderItem *item) {
 	
 	rowcount++;
 
+	/* Default account */
+	checkbtn_enable_default_account = gtk_check_button_new_with_label(_("Default account: "));
+	gtk_widget_show(checkbtn_enable_default_account);
+	gtk_table_attach(GTK_TABLE(table), checkbtn_enable_default_account, 0, 1, rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_default_account), item->prefs->enable_default_account);
+	gtk_signal_connect(GTK_OBJECT(checkbtn_enable_default_account), "toggled",
+			    GTK_SIGNAL_FUNC(prefs_folder_item_default_account_cb), dialog);
+
+ 	optmenu_default_account = gtk_option_menu_new ();
+ 	gtk_widget_show (optmenu_default_account);
+	gtk_table_attach_defaults(GTK_TABLE(table), optmenu_default_account, 1, 2, rowcount, rowcount + 1);
+ 	optmenu_default_account_menu = gtk_menu_new ();
+
+	account_list = account_get_list();
+	account_index = 0;
+	index = 0;
+	for (cur_ac = account_list; cur_ac != NULL; cur_ac = cur_ac->next) {
+		ac_prefs = (PrefsAccount *)cur_ac->data;
+	 	MENUITEM_ADD (optmenu_default_account_menu, optmenu_default_account_menuitem,
+					ac_prefs->account_name?ac_prefs->account_name : _("Untitled"),
+					ac_prefs->account_id);
+		/* get the index for menu's set_history (sad method?) */
+		if (ac_prefs->account_id == item->prefs->default_account)
+			account_index = index;
+		index++;			
+	}
+
+	dialog->item->prefs->default_account=item->prefs->default_account;
+
+	optmenu=GTK_OPTION_MENU(optmenu_default_account);
+ 	gtk_option_menu_set_menu(optmenu, optmenu_default_account_menu);
+
+	gtk_option_menu_set_history(optmenu, account_index);
+
+	menu = gtk_option_menu_get_menu(optmenu);
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
+
+	gtk_widget_set_sensitive(optmenu_default_account, item->prefs->enable_default_account);
+
+	rowcount++;
+
 	/* Ok and Cancle Buttons */
 	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
 				&cancel_btn, _("Cancel"), NULL, NULL);
@@ -326,6 +390,8 @@ void prefs_folder_item_create(FolderItem *item) {
 	dialog->entry_default_to = entry_default_to;
 	dialog->checkbtn_folder_chmod = checkbtn_folder_chmod;
 	dialog->entry_folder_chmod = entry_folder_chmod;
+	dialog->checkbtn_enable_default_account = checkbtn_enable_default_account;
+	dialog->optmenu_default_account = optmenu_default_account;
 
 	gtk_widget_show(window);
 }
@@ -346,6 +412,8 @@ void prefs_folder_item_delete_cb(GtkWidget *widget, GdkEventAny *event, struct P
 void prefs_folder_item_ok_cb(GtkWidget *widget, struct PrefsFolderItemDialog *dialog) {
 	gchar *buf;
 	PrefsFolderItem *prefs = dialog->item->prefs;
+	GtkWidget *menu;
+	GtkWidget *menuitem;
 
 	prefs->request_return_receipt = 
 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->checkbtn_request_return_receipt));
@@ -362,6 +430,12 @@ void prefs_folder_item_ok_cb(GtkWidget *widget, struct PrefsFolderItemDialog *di
 	buf = gtk_editable_get_chars(GTK_EDITABLE(dialog->entry_folder_chmod), 0, -1);
 	prefs->folder_chmod = prefs_folder_item_chmod_mode(buf);
 	g_free(buf);
+
+ 	prefs->enable_default_account = 
+ 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->checkbtn_enable_default_account));
+ 	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(dialog->optmenu_default_account));
+ 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+ 	prefs->default_account = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
 
 	prefs_folder_item_save_config(dialog->item);
 	prefs_folder_item_destroy(dialog);
@@ -388,4 +462,8 @@ gint prefs_folder_item_chmod_mode(gchar *folder_chmod) {
 	}
 
 	return newmode;
+}
+void prefs_folder_item_default_account_cb(GtkWidget *widget, struct PrefsFolderItemDialog *dialog) {
+	gtk_widget_set_sensitive(dialog->optmenu_default_account,
+	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->checkbtn_enable_default_account)));
 }
