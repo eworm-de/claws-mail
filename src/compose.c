@@ -1700,7 +1700,10 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 				     COMPOSE_TO);
 	} else if ((compose->account->protocol != A_NNTP) || followup_and_reply_to) {
 		compose_entry_append(compose,
-		 		    ((compose->replyto && !ignore_replyto)
+		 		    ((msginfo->folder->prefs->enable_default_reply_to
+				      && msginfo->folder->prefs->default_reply_to)
+				     ? msginfo->folder->prefs->default_reply_to
+				     : (compose->replyto && !ignore_replyto)
 				     ? compose->replyto
 				     : msginfo->from ? msginfo->from : ""),
 				     COMPOSE_TO);
