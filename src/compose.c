@@ -2046,7 +2046,8 @@ static void compose_wrap_line(Compose *compose)
 			}
 			line_end = 1;
 		} else {
-			if (ch_len == 1 && strchr(INDENT_CHARS, *cbuf))
+			if (ch_len == 1 
+			    && strchr(prefs_common.quote_chars, *cbuf))
 				quoted = 1;
 			else if (ch_len != 1 || !isspace(*cbuf))
 				quoted = 0;
@@ -2069,7 +2070,7 @@ static void compose_wrap_line(Compose *compose)
 			line_end = 1;
 		} else {
 			if (line_end && ch_len == 1 &&
-			    strchr(INDENT_CHARS, *cbuf))
+			    strchr(prefs_common.quote_chars, *cbuf))
 				goto compose_end; /* quoted part */
 
 			line_end = 0;
@@ -2214,7 +2215,7 @@ static guint get_indent_length(GtkSText *text, guint start_pos, guint text_len)
 		if (cbuf[0] == '\n')
 			break;
 
-		is_indent = strchr(INDENT_CHARS, cbuf[0]) ? TRUE : FALSE;
+		is_indent = strchr(prefs_common.quote_chars, cbuf[0]) ? TRUE : FALSE;
 		is_space = strchr(SPACE_CHARS, cbuf[0]) ? TRUE : FALSE;
 
 		switch (state) {
@@ -2242,7 +2243,8 @@ static guint get_indent_length(GtkSText *text, guint start_pos, guint text_len)
 			if (is_indent == FALSE && !isupper(cbuf[0]))
 				goto out;
 			if (is_indent == TRUE) {
-				if (alnum_cnt > 0 && cbuf[0] != '>')
+				if (alnum_cnt > 0 
+				    && !strchr(prefs_common.quote_chars, cbuf[0]))
 					goto out;
 				alnum_cnt = 0;
 				state = WAIT_FOR_SPACE;

@@ -94,6 +94,8 @@ struct _PrefsCommon
 	gboolean bounce_keep_from;
 	gboolean smart_wrapping;
 	gboolean block_cursor;
+	gchar *quote_chars;
+	
 #if USE_PSPELL
 	gboolean enable_pspell;
 	gchar *pspell_path;

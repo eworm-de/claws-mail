@@ -269,7 +269,8 @@ void subst_chars			(gchar		*str,
 void subst_for_filename			(gchar		*str);
 gboolean is_header_line			(const gchar	*str);
 gboolean is_ascii_str			(const guchar	*str);
-gint get_quote_level			(const gchar	*str);
+gint get_quote_level			(const gchar	*str,
+					 const gchar	*quote_chars);
 gchar *strstr_with_skip_quote		(const gchar	*haystack,
 					 const gchar	*needle);
 gchar **strsplit_with_quote		(const gchar	*str,
@@ -358,6 +359,12 @@ void subject_table_insert(GHashTable *subject_table, gchar * subject,
 			  void * data);
 void subject_table_remove(GHashTable *subject_table, gchar * subject);
 gboolean subject_is_reply(const gchar *subject);
+
+/* quoting recognition */
+const gchar * line_has_quote_char	(const gchar *str,
+					 const gchar *quote_chars);
+const gchar * line_has_quote_char_last	(const gchar *str,
+					 const gchar *quote_chars);
 
 
 #endif /* __UTILS_H__ */

@@ -151,6 +151,8 @@ static struct Quote {
 
 	GtkWidget *entry_fw_quotemark;
 	GtkWidget *text_fw_quotefmt;
+	
+	GtkWidget *entry_quote_chars;
 } quote;
 
 static struct Display {
@@ -437,6 +439,8 @@ static PrefParam param[] = {
 	 "?n{Newsgroups: %n\\n}?s{Subject: %s\\n}\\n\\n%M",
 	 &prefs_common.fw_quotefmt, P_STRING, &quote.text_fw_quotefmt,
 	 prefs_set_data_from_text, prefs_set_text},
+	{"quote_chars", ">", &prefs_common.quote_chars, P_STRING,
+	 &quote.entry_quote_chars, prefs_set_data_from_entry, prefs_set_entry},
 
 	/* Display */
 	{"widget_font", NULL, &prefs_common.widgetfont, P_STRING,
@@ -1896,6 +1900,9 @@ static void prefs_quote_create(void)
 	GtkWidget *entry_fw_quotemark;
 	GtkWidget *text_fw_quotefmt;
 
+	GtkWidget *entry_quote_chars;
+	GtkWidget *label_quote_chars;
+	
 	GtkWidget *btn_quotedesc;
 
 	GtkWidget *checkbtn_reply_with_quote;
@@ -1998,11 +2005,40 @@ static void prefs_quote_create(void)
 	gtk_signal_connect(GTK_OBJECT(btn_quotedesc), "clicked",
 			   GTK_SIGNAL_FUNC(quote_fmt_quote_description), NULL);
 
+	/* quote chars */
+
+	PACK_FRAME (vbox1, frame_quote, _("Quoting characters"));
+
+	vbox_quote = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox_quote);
+	gtk_container_add (GTK_CONTAINER (frame_quote), vbox_quote);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
+
+	hbox1 = gtk_hbox_new (FALSE, 32);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, FALSE, FALSE, 0);
+
+	hbox2 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox2);
+	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
+
+	label_quote_chars = gtk_label_new (_("Treat these characters as quotation marks: "));
+	gtk_widget_show (label_quote_chars);
+	gtk_box_pack_start (GTK_BOX (hbox2), label_quote_chars, FALSE, FALSE, 0);
+
+	entry_quote_chars = gtk_entry_new ();
+	gtk_widget_show (entry_quote_chars);
+	gtk_box_pack_start (GTK_BOX (hbox2), entry_quote_chars,
+			    FALSE, FALSE, 0);
+	gtk_widget_set_usize (entry_quote_chars, 64, -1);
+
+
 	compose.checkbtn_reply_with_quote= checkbtn_reply_with_quote;
 	quote.entry_quotemark    = entry_quotemark;
 	quote.text_quotefmt      = text_quotefmt;
 	quote.entry_fw_quotemark = entry_fw_quotemark;
 	quote.text_fw_quotefmt   = text_fw_quotefmt;
+	quote.entry_quote_chars  = entry_quote_chars;
 }
 
 static void prefs_display_create(void)

@@ -983,7 +983,7 @@ gboolean is_ascii_str(const guchar *str)
 	return TRUE;
 }
 
-gint get_quote_level(const gchar *str)
+gint get_quote_level(const gchar *str, const gchar *quote_chars)
 {
 	const gchar *first_pos;
 	const gchar *last_pos;
@@ -991,11 +991,11 @@ gint get_quote_level(const gchar *str)
 	gint quote_level = -1;
 
 	/* speed up line processing by only searching to the last '>' */
-	if ((first_pos = strchr(str, '>')) != NULL) {
+	if ((first_pos = line_has_quote_char(str, quote_chars)) != NULL) {
 		/* skip a line if it contains a '<' before the initial '>' */
 		if (memchr(str, '<', first_pos - str) != NULL)
 			return -1;
-		last_pos = strrchr(first_pos, '>');
+		last_pos = line_has_quote_char_last(first_pos, quote_chars);
 	} else
 		return -1;
 
@@ -1007,14 +1007,16 @@ gint get_quote_level(const gchar *str)
 				break;
 		}
 
-		if (*p == '>')
+		if (strchr(quote_chars, *p))
 			quote_level++;
 		else if (*p != '-' && !isspace(*p) && p <= last_pos) {
 			/* any characters are allowed except '-' and space */
-			while (*p != '-' && *p != '>' && !isspace(*p) &&
-			       p < last_pos)
+			while (*p != '-' 
+			       && !strchr(quote_chars, *p) 
+			       && !isspace(*p) 
+			       && p < last_pos)
 				p++;
-			if (*p == '>')
+			if (strchr(quote_chars, *p))
 				quote_level++;
 			else
 				break;
@@ -1024,6 +1026,42 @@ gint get_quote_level(const gchar *str)
 	}
 
 	return quote_level;
+}
+
+const gchar * line_has_quote_char(const gchar * str, const gchar *quote_chars) 
+{
+	gchar * position = NULL;
+	gchar * tmp_pos = NULL;
+	int i;
+
+	if (quote_chars == NULL)
+		return FALSE;
+	
+	for (i = 0; i < strlen(quote_chars); i++) {
+		tmp_pos = strchr (str,	quote_chars[i]);
+		if(position == NULL 
+		   || (tmp_pos != NULL && position >= tmp_pos) )
+			position = tmp_pos;
+	}
+	return position; 
+}
+
+const gchar * line_has_quote_char_last(const gchar * str, const gchar *quote_chars) 
+{
+	gchar * position = NULL;
+	gchar * tmp_pos = NULL;
+	int i;
+
+	if (quote_chars == NULL)
+		return FALSE;
+	
+	for (i = 0; i < strlen(quote_chars); i++) {
+		tmp_pos = strrchr (str,	quote_chars[i]);
+		if(position == NULL 
+		   || (tmp_pos != NULL && position <= tmp_pos) )
+			position = tmp_pos;
+	}
+	return position; 
 }
 
 gchar *strstr_with_skip_quote(const gchar *haystack, const gchar *needle)

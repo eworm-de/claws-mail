@@ -1,3 +1,11 @@
+2002-04-28 [colin]	0.7.5claws2
+
+	* src/compose.c
+	  src/textview.c
+	  src/prefs_common.[ch]
+	  src/utils.[ch]
+		Added user-definable quotation characters recognition.
+
 2002-04-28 [paul]	0.7.5claws1
 
 	* sync with 0.7.5cvs4

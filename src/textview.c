@@ -1021,8 +1021,9 @@ static void textview_write_line(TextView *textview, const gchar *str,
 	   >, foo>, _> ... ok, <foo>, foo bar>, foo-> ... ng
 	   Up to 3 levels of quotations are detected, and each
 	   level is colored using a different color. */
-	if (prefs_common.enable_color && strchr(buf, '>')) {
-		quotelevel = get_quote_level(buf);
+	if (prefs_common.enable_color 
+	    && line_has_quote_char(buf, prefs_common.quote_chars)) {
+		quotelevel = get_quote_level(buf, prefs_common.quote_chars);
 
 		/* set up the correct foreground color */
 		if (quotelevel > 2) {
