@@ -1,8 +1,19 @@
-2002-02-12 [alfons]	0.7.0claws68
+2002-02-12 [carsten]	0.7.0claws69
+	* src/folderview.c
+	  src/mainwindow.[ch]
+	  src/stock_pixmap.c
+	  src/summaryview.c
+	  	- refreshing after changing pixmap theme better
+		  now (thanks Paul)
+		- wanted to remove some mem leaks, but alfons was
+		  faster (and had the better solution ;)
 
-	* src/prefs_common.c
-	* src/stock_pixmap.[ch]
-		plug mem leaks, refactor code a little bit
+2002-02-12 [alfons]     0.7.0claws68
+
+        * src/prefs_common.c
+        * src/stock_pixmap.[ch]
+                plug mem leaks, refactor code a little bit
+
 
 2002-02-12 [sergey]	0.7.0claws67
 
