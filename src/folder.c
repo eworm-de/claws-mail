@@ -1187,8 +1187,29 @@ MsgInfo *folder_item_fetch_msginfo(FolderItem *item, gint num)
 		return msginfo;
 	
 	g_return_val_if_fail(folder->fetch_msginfo, NULL);
-	msginfo = folder->fetch_msginfo(folder, item, num);
-	return msginfo;
+	if((msginfo = folder->fetch_msginfo(folder, item, num)) != NULL) {
+		msgcache_add_msg(item->cache, msginfo);
+		return msginfo;
+	}
+	
+	return NULL;
+}
+
+MsgInfo *folder_item_fetch_msginfo_by_id(FolderItem *item, const gchar *msgid)
+{
+	Folder *folder;
+	MsgInfo *msginfo;
+	
+	g_return_val_if_fail(item != NULL, NULL);
+	
+	folder = item->folder;
+	if(!item->cache)
+		folder_item_read_cache(item);
+	
+	if((msginfo = msgcache_get_msg_by_id(item->cache, msgid)) != NULL)
+		return msginfo;
+
+	return NULL;
 }
 
 GSList *folder_item_get_msg_list(FolderItem *item)

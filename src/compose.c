@@ -923,14 +923,8 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	} else
 		reply_account = account;
 
-	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_FORWARDED);
-	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_REPLIED);
-	if (MSG_IS_IMAP(msginfo->flags))
-		imap_msg_set_perm_flags(msginfo, MSG_REPLIED);
-	CHANGE_FLAGS(msginfo);
-
 	compose = compose_create(account, COMPOSE_REPLY);
-	compose->replyinfo = procmsg_msginfo_copy(msginfo);
+	compose->replyinfo = procmsg_msginfo_new_ref(msginfo);
 
 #if 0 /* NEW COMPOSE GUI */
 	if (followup_and_reply_to) {
@@ -3432,11 +3426,19 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	}
 	/* Save copy folder */
 	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn))) {
-		gchar *str;
+		gchar *savefolderid;
 		
-		str = gtk_editable_get_chars(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
-		fprintf(fp, "SCF:%s\n", str);
-		g_free(str);
+		savefolderid = gtk_editable_get_chars(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
+		fprintf(fp, "SCF:%s\n", savefolderid);
+		g_free(savefolderid);
+	}
+	/* Message-ID of message replying to */
+	if((compose->replyinfo != NULL) && (compose->replyinfo->msgid != NULL)) {
+		gchar *folderid;
+		
+		folderid = folder_item_get_identifier(compose->replyinfo->folder);
+		fprintf(fp, "RMID:%s%%%s\n", folderid, compose->replyinfo->msgid);
+		g_free(folderid);
 	}
 	fprintf(fp, "\n");
 

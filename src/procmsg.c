@@ -1158,7 +1158,8 @@ enum
 	Q_NEWSGROUPS       = 3,
 	Q_MAIL_ACCOUNT_ID  = 4,
 	Q_NEWS_ACCOUNT_ID  = 5,
-	Q_SAVE_COPY_FOLDER = 6
+	Q_SAVE_COPY_FOLDER = 6,
+	Q_REPLY_MESSAGE_ID = 7,
 };
 
 gint procmsg_send_message_queue(const gchar *file)
@@ -1170,6 +1171,7 @@ gint procmsg_send_message_queue(const gchar *file)
 				       {"MAID:", NULL, FALSE},
 				       {"NAID:", NULL, FALSE},
 				       {"SCF:",  NULL, FALSE},
+				       {"RMID:", NULL, FALSE},
 				       {NULL,    NULL, FALSE}};
 	FILE *fp;
 	gint filepos;
@@ -1179,6 +1181,7 @@ gint procmsg_send_message_queue(const gchar *file)
 	GSList *to_list = NULL;
 	GSList *newsgroup_list = NULL;
 	gchar *savecopyfolder = NULL;
+	gchar *replymessageid = NULL;
 	gchar buf[BUFFSIZE];
 	gint hnum;
 	PrefsAccount *mailac = NULL, *newsac = NULL;
@@ -1216,6 +1219,9 @@ gint procmsg_send_message_queue(const gchar *file)
 			break;
 		case Q_SAVE_COPY_FOLDER:
 			if (!savecopyfolder) savecopyfolder = g_strdup(p);
+			break;
+		case Q_REPLY_MESSAGE_ID:
+			if (!replymessageid) replymessageid = g_strdup(p);
 			break;
 		}
 	}
@@ -1336,6 +1342,29 @@ gint procmsg_send_message_queue(const gchar *file)
 		procmsg_save_to_outbox(outbox, file, TRUE);
 	}
 
+	if(replymessageid != NULL) {
+		gchar **tokens;
+		FolderItem *item;
+		
+		tokens = g_strsplit(replymessageid, "%", 0);
+		item = folder_find_item_from_identifier(tokens[0]);
+		if(item != NULL) {
+			MsgInfo *msginfo;
+			
+			msginfo = folder_item_fetch_msginfo_by_id(item, tokens[1]);
+			if(msginfo != NULL) {
+				procmsg_msginfo_unset_flags(msginfo, MSG_FORWARDED, 0);
+				procmsg_msginfo_set_flags(msginfo, MSG_REPLIED, 0);
+
+				procmsg_msginfo_free(msginfo);
+			}
+		}
+		g_strfreev(tokens);
+	}
+
+	g_free(savecopyfolder);
+	g_free(replymessageid);
+	
 	return (newsval != 0 ? newsval : mailval);
 }
 

@@ -326,6 +326,8 @@ gint   folder_item_scan			(FolderItem	*item);
 void   folder_item_scan_foreach		(GHashTable	*table);
 MsgInfo *folder_item_fetch_msginfo	(FolderItem 	*item,
 					 gint		 num);
+MsgInfo *folder_item_fetch_msginfo_by_id(FolderItem 	*item,
+					 const gchar 	*msgid);
 GSList *folder_item_get_msg_list	(FolderItem 	*item);
 gchar *folder_item_fetch_msg		(FolderItem	*item,
 					 gint		 num);
