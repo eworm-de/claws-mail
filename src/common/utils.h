@@ -313,17 +313,17 @@ gint scan_mailto_url			(const gchar	*mailto,
 					 gchar	       **body);
 
 /* return static strings */
-gchar *get_home_dir		(void);
-gchar *get_rc_dir		(void);
-gchar *get_news_cache_dir	(void);
-gchar *get_imap_cache_dir	(void);
-gchar *get_mbox_cache_dir	(void);
-gchar *get_mime_tmp_dir		(void);
-gchar *get_template_dir		(void);
-gchar *get_header_cache_dir     (void);
-gchar *get_tmp_dir		(void);
-gchar *get_tmp_file		(void);
-gchar *get_domain_name		(void);
+const gchar *get_home_dir		(void);
+const gchar *get_rc_dir			(void);
+const gchar *get_news_cache_dir		(void);
+const gchar *get_imap_cache_dir		(void);
+const gchar *get_mbox_cache_dir		(void);
+const gchar *get_mime_tmp_dir		(void);
+const gchar *get_template_dir		(void);
+const gchar *get_header_cache_dir	(void);
+const gchar *get_tmp_dir		(void);
+gchar *get_tmp_file			(void);
+const gchar *get_domain_name		(void);
 
 /* file / directory handling */
 off_t get_file_size		(const gchar	*file);

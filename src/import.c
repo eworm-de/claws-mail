@@ -47,6 +47,7 @@
 #include "gtkutils.h"
 #include "manage_window.h"
 #include "folder.h"
+#include "codeconv.h"
 
 static GtkWidget *window;
 static GtkWidget *file_entry;
@@ -63,7 +64,7 @@ static void import_cancel_cb(GtkWidget *widget, gpointer data);
 static void import_filesel_cb(GtkWidget *widget, gpointer data);
 static void import_destsel_cb(GtkWidget *widget, gpointer data);
 static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data);
-static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data);
+static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data);
 
 gint import_mbox(FolderItem *default_dest)
 {
@@ -91,12 +92,25 @@ gint import_mbox(FolderItem *default_dest)
 	gtk_main();
 
 	if (import_ack) {
-		gchar *filename, *destdir;
+		const gchar *utf8filename, *destdir;
 		FolderItem *dest;
 
-		filename = gtk_entry_get_text(GTK_ENTRY(file_entry));
+		utf8filename = gtk_entry_get_text(GTK_ENTRY(file_entry));
 		destdir = gtk_entry_get_text(GTK_ENTRY(dest_entry));
-		if (filename && *filename) {
+		if (utf8filename && *utf8filename) {
+			const gchar *src_codeset = CS_UTF_8;
+			const gchar *dest_codeset = conv_get_current_charset_str();
+			gchar *filename;
+
+#warning FIXME_GTK2 /* should we use g_filename_from_utf8? */
+			filename = conv_codeset_strdup(utf8filename,
+						       src_codeset,
+						       dest_codeset);
+			if (!filename) {
+				g_warning("faild to convert character set\n");
+				filename = g_strdup(utf8filename);
+			}
+
 			if (!destdir || !*destdir) {
 				dest = folder_find_item_from_path(INBOX_DIR);
 			} else
@@ -108,6 +122,8 @@ gint import_mbox(FolderItem *default_dest)
 			} else {
 				ok = proc_mbox(dest, filename);
 			}
+
+			g_free(filename);
 		}
 	}
 
@@ -126,16 +142,16 @@ static void import_create(void)
 	GtkWidget *dest_label;
 	GtkWidget *confirm_area;
 
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Import"));
 	gtk_container_set_border_width(GTK_CONTAINER(window), 5);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, FALSE);
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(delete_event), NULL);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(key_pressed), NULL);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(delete_event), NULL);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 
 	vbox = gtk_vbox_new(FALSE, 4);
@@ -154,7 +170,7 @@ static void import_create(void)
 	gtk_container_set_border_width(GTK_CONTAINER(table), 8);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
-	gtk_widget_set_usize(table, 420, -1);
+	gtk_widget_set_size_request(table, 420, -1);
 
 	file_label = gtk_label_new(_("Importing file:"));
 	gtk_table_attach(GTK_TABLE(table), file_label, 0, 1, 0, 1,
@@ -177,14 +193,14 @@ static void import_create(void)
 	file_button = gtk_button_new_with_label(_(" Select... "));
 	gtk_table_attach(GTK_TABLE(table), file_button, 2, 3, 0, 1,
 			 0, 0, 0, 0);
-	gtk_signal_connect(GTK_OBJECT(file_button), "clicked",
-			   GTK_SIGNAL_FUNC(import_filesel_cb), NULL);
+	g_signal_connect(G_OBJECT(file_button), "clicked",
+			 G_CALLBACK(import_filesel_cb), NULL);
 
 	dest_button = gtk_button_new_with_label(_(" Select... "));
 	gtk_table_attach(GTK_TABLE(table), dest_button, 2, 3, 1, 2,
 			 0, 0, 0, 0);
-	gtk_signal_connect(GTK_OBJECT(dest_button), "clicked",
-			   GTK_SIGNAL_FUNC(import_destsel_cb), NULL);
+	g_signal_connect(G_OBJECT(dest_button), "clicked",
+			 G_CALLBACK(import_destsel_cb), NULL);
 
 	gtkut_button_set_create(&confirm_area,
 				&ok_button,	_("OK"),
@@ -193,10 +209,10 @@ static void import_create(void)
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_button);
 
-	gtk_signal_connect(GTK_OBJECT(ok_button), "clicked",
-			   GTK_SIGNAL_FUNC(import_ok_cb), NULL);
-	gtk_signal_connect(GTK_OBJECT(cancel_button), "clicked",
-			   GTK_SIGNAL_FUNC(import_cancel_cb), NULL);
+	g_signal_connect(G_OBJECT(ok_button), "clicked",
+			 G_CALLBACK(import_ok_cb), NULL);
+	g_signal_connect(G_OBJECT(cancel_button), "clicked",
+			 G_CALLBACK(import_cancel_cb), NULL);
 
 	gtk_widget_show_all(window);
 }
@@ -220,7 +236,20 @@ static void import_filesel_cb(GtkWidget *widget, gpointer data)
 	gchar *filename;
 
 	filename = filesel_select_file(_("Select importing file"), NULL);
-	if (filename)
+	if (!filename) return;
+
+	if (g_getenv ("G_BROKEN_FILENAMES")) {
+		const gchar *oldstr = filename;
+		filename = conv_codeset_strdup (filename,
+						conv_get_current_charset_str(),
+						CS_UTF_8);
+		if (!filename) {
+			g_warning("import_filesel_cb(): faild to convert character set.");
+			filename = g_strdup(oldstr);
+		}
+		gtk_entry_set_text(GTK_ENTRY(file_entry), filename);
+		g_free(filename);
+	} else
 		gtk_entry_set_text(GTK_ENTRY(file_entry), filename);
 }
 
@@ -243,8 +272,9 @@ static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data)
 	return TRUE;
 }
 
-static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
+static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		import_cancel_cb(NULL, NULL);
+	return FALSE;
 }

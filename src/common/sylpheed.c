@@ -22,6 +22,7 @@
 #endif
 
 #include "defs.h"
+#include <stdlib.h>
 #include <glib.h>
 
 #if HAVE_LOCALE_H
@@ -93,7 +94,9 @@ gboolean sylpheed_init(int *argc, char ***argv)
 
 	setlocale(LC_ALL, "");
 	bindtextdomain(PACKAGE, LOCALEDIR);
+	bind_textdomain_codeset (PACKAGE, "UTF-8");
 	textdomain(PACKAGE);
+	putenv("G_BROKEN_FILENAMES=1");
 
 	/* backup if old rc file exists */
 	if (is_file_exist(RC_DIR)) {

@@ -24,6 +24,7 @@
 
 #include "xml.h"
 #include "utils.h"
+#include "../codeconv.h"
 
 #define SPARSE_MEMORY
 /* if this is defined all attr.names and tag.names are stored
@@ -231,8 +232,8 @@ gint xml_parse_next_tag(XMLFile *file)
 	/* parse attributes ( name=value ) */
 	while (*bufp) {
 		XMLAttr *attr;
-		gchar *attr_name;
-		gchar *attr_value;
+		gchar *attr_name, *attr_value;
+		gchar *utf8attr_name, *utf8attr_value;
 		gchar *p;
 		gchar quote;
 
@@ -264,9 +265,31 @@ gint xml_parse_next_tag(XMLFile *file)
 		xml_unescape_str(attr_value);
 
 		attr = g_new(XMLAttr, 1);
-		attr->name  = XML_STRING_ADD(attr_name);
-		attr->value = g_strdup(attr_value);
+#warning FIXME_GTK2
+		utf8attr_name  = conv_codeset_strdup
+					(attr_name,
+					 conv_get_current_charset_str(),
+					 CS_UTF_8);
+		utf8attr_value = conv_codeset_strdup
+					(attr_value,
+					 conv_get_current_charset_str(),
+					 CS_UTF_8);
+		if (!utf8attr_name) {
+			g_warning("xml_parse_next_tag(): "
+				  "faild to convert character set of attr_name\n");
+			utf8attr_name = g_strdup(attr_name);
+		}
+		if (!utf8attr_value) {
+			g_warning("xml_parse_next_tag(): "
+				  "faild to convert character set of attr_value\n");
+			utf8attr_value = g_strdup(attr_value);
+		}
+
+		attr->name  = XML_STRING_ADD(utf8attr_name);
+		attr->value = utf8attr_value;
 		tag->attr   = g_list_append(tag->attr, attr);
+
+		g_free(utf8attr_name);
 	}
 
 	return 0;
@@ -315,6 +338,7 @@ gchar *xml_get_element(XMLFile *file)
 {
 	gchar *str;
 	gchar *end;
+	gchar *utf8str;
 
 	while ((end = strchr(file->bufp, '<')) == NULL)
 		if (xml_read_line(file) < 0) return NULL;
@@ -335,7 +359,18 @@ gchar *xml_get_element(XMLFile *file)
 		return NULL;
 	}
 
-	return str;
+	utf8str = conv_codeset_strdup
+			(str,
+			 conv_get_current_charset_str(),
+			 CS_UTF_8);
+	if (!utf8str) {
+		g_warning("xml_get_element(): "
+			  "faild to convert character set.\n");
+		utf8str = str;
+	} else
+		g_free(str);
+
+	return utf8str;
 }
 
 gint xml_read_line(XMLFile *file)
@@ -451,15 +486,25 @@ gint xml_unescape_str(gchar *str)
 	return 0;
 }
 
+#warning FIXME_GTK2
 gint xml_file_put_escape_str(FILE *fp, const gchar *str)
 {
+	const gchar *src_codeset = CS_UTF_8;
+	const gchar *dest_codeset = conv_get_current_charset_str();
+	gchar *tmpstr = NULL;
 	const gchar *p;
 
 	g_return_val_if_fail(fp != NULL, -1);
 
 	if (!str) return 0;
 
-	for (p = str; *p != '\0'; p++) {
+	tmpstr = conv_codeset_strdup(str, src_codeset, dest_codeset);
+	if (!tmpstr) {
+		g_warning("xml_file_put_escape_str(): Faild to convert character set.");
+		tmpstr = g_strdup(str);
+	}
+
+	for (p = tmpstr; *p != '\0'; p++) {
 		switch (*p) {
 		case '<':
 			fputs("&lt;", fp);
@@ -480,6 +525,8 @@ gint xml_file_put_escape_str(FILE *fp, const gchar *str)
 			fputc(*p, fp);
 		}
 	}
+
+	g_free(tmpstr);
 
 	return 0;
 }

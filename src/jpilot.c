@@ -1719,7 +1719,7 @@ gboolean jpilot_validate( JPilotFile *pilotFile ) {
  *         no home. Filename should be <code>g_free()</code> when done.
  */
 gchar *jpilot_find_pilotdb( void ) {
-	gchar *homedir;
+	const gchar *homedir;
 	gchar str[ WORK_BUFLEN ];
 	gint len;
 	FILE *fp;

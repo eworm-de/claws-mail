@@ -26,14 +26,14 @@
 
 #define MANAGE_WINDOW_SIGNALS_CONNECT(window) \
 { \
-	gtk_signal_connect(GTK_OBJECT(window), "focus_in_event", \
-			   GTK_SIGNAL_FUNC(manage_window_focus_in), NULL); \
-	gtk_signal_connect(GTK_OBJECT(window), "focus_out_event", \
-			   GTK_SIGNAL_FUNC(manage_window_focus_out), NULL); \
-	gtk_signal_connect(GTK_OBJECT(window), "unmap_event", \
-			   GTK_SIGNAL_FUNC(manage_window_unmap), NULL); \
-	gtk_signal_connect(GTK_OBJECT(window), "destroy", \
-			   GTK_SIGNAL_FUNC(manage_window_destroy), NULL); \
+	g_signal_connect(G_OBJECT(window), "focus_in_event", \
+			 G_CALLBACK(manage_window_focus_in), NULL); \
+	g_signal_connect(G_OBJECT(window), "focus_out_event", \
+			 G_CALLBACK(manage_window_focus_out), NULL); \
+	g_signal_connect(G_OBJECT(window), "unmap_event", \
+			 G_CALLBACK(manage_window_unmap), NULL); \
+	g_signal_connect(G_OBJECT(window), "destroy", \
+			 G_CALLBACK(manage_window_destroy), NULL); \
 }
 
 gint manage_window_focus_in		(GtkWidget	*widget,

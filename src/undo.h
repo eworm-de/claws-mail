@@ -23,7 +23,7 @@
 #define __UNDO_H__
 
 #include <glib.h>
-#include <gtk/gtkwidget.h>
+#include <gtk/gtktextview.h>
 #include <gtk/gtkitemfactory.h>
 
 typedef enum 
@@ -51,7 +51,7 @@ typedef void (*UndoChangeStateFunc)	(UndoMain	*undostruct,
 
 struct _UndoMain 
 {
-	GtkWidget *text;
+	GtkTextView *textview;
 
 	GList *undo;
 	GList *redo;
@@ -74,5 +74,7 @@ void undo_set_change_state_func	(UndoMain		*undostruct,
 
 void undo_undo			(UndoMain		*undostruct); 
 void undo_redo			(UndoMain		*undostruct); 
+void undo_block			(UndoMain 		*undostruct);
+void undo_unblock		(UndoMain 		*undostruct);
 
 #endif /* __UNDO_H__ */

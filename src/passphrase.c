@@ -27,7 +27,6 @@
 #include <sys/mman.h>
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>
-#include <gdk/gdkx.h>  /* GDK_DISPLAY() */
 #include <gtk/gtkmain.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkwindow.h>
@@ -39,6 +38,9 @@
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkfilesel.h>
 #include <gtk/gtksignal.h>
+#ifdef GDK_WINDOWING_X11
+#include <gdk/gdkx.h>  /* GDK_DISPLAY() */
+#endif /* GDK_WINDOWING_X11 */
 
 #include "intl.h"
 #include "passphrase.h"
@@ -55,8 +57,8 @@ static void passphrase_ok_cb(GtkWidget *widget, gpointer data);
 static void passphrase_cancel_cb(GtkWidget *widget, gpointer data);
 static gint passphrase_deleted(GtkWidget *widget, GdkEventAny *event,
 			       gpointer data);
-static void passphrase_key_pressed(GtkWidget *widget, GdkEventKey *event,
-				   gpointer data);
+static gboolean passphrase_key_pressed(GtkWidget *widget, GdkEventKey *event,
+				       gpointer data);
 static gchar* passphrase_mbox (const gchar *desc);
 
 
@@ -81,17 +83,17 @@ passphrase_mbox (const gchar *desc)
     GtkWidget *ok_button;
     GtkWidget *cancel_button;
 
-    window = gtk_window_new(GTK_WINDOW_DIALOG);
+    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), _("Passphrase"));
-    gtk_widget_set_usize(window, 450, -1);
+    gtk_widget_set_size_request(window, 450, -1);
     gtk_container_set_border_width(GTK_CONTAINER(window), 4);
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
     gtk_window_set_modal(GTK_WINDOW(window), TRUE);
     gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
-    gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-                       GTK_SIGNAL_FUNC(passphrase_deleted), NULL);
-    gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-                       GTK_SIGNAL_FUNC(passphrase_key_pressed), NULL);
+    g_signal_connect(G_OBJECT(window), "delete_event",
+		     G_CALLBACK(passphrase_deleted), NULL);
+    g_signal_connect(G_OBJECT(window), "key_press_event",
+		     G_CALLBACK(passphrase_key_pressed), NULL);
     MANAGE_WINDOW_SIGNALS_CONNECT(window);
     manage_window_set_transient(GTK_WINDOW(window));
 
@@ -125,7 +127,7 @@ passphrase_mbox (const gchar *desc)
 
     confirm_box = gtk_hbutton_box_new ();
     gtk_button_box_set_layout (GTK_BUTTON_BOX(confirm_box), GTK_BUTTONBOX_END);
-    gtk_button_box_set_spacing (GTK_BUTTON_BOX(confirm_box), 5);
+    gtk_box_set_spacing (GTK_BOX(confirm_box), 5);
 
     ok_button = gtk_button_new_with_label (_("OK"));
     GTK_WIDGET_SET_FLAGS (ok_button, GTK_CAN_DEFAULT);
@@ -138,15 +140,15 @@ passphrase_mbox (const gchar *desc)
     gtk_box_pack_end(GTK_BOX(vbox), confirm_box, FALSE, FALSE, 0);
     gtk_widget_grab_default (ok_button);
 
-    gtk_signal_connect(GTK_OBJECT(ok_button), "clicked",
-                       GTK_SIGNAL_FUNC(passphrase_ok_cb), NULL);
-    gtk_signal_connect(GTK_OBJECT(pass_entry), "activate",
-                       GTK_SIGNAL_FUNC(passphrase_ok_cb), NULL);
-    gtk_signal_connect(GTK_OBJECT(cancel_button), "clicked",
-                       GTK_SIGNAL_FUNC(passphrase_cancel_cb), NULL);
+    g_signal_connect(G_OBJECT(ok_button), "clicked",
+		     G_CALLBACK(passphrase_ok_cb), NULL);
+    g_signal_connect(G_OBJECT(pass_entry), "activate",
+		     G_CALLBACK(passphrase_ok_cb), NULL);
+    g_signal_connect(G_OBJECT(cancel_button), "clicked",
+		     G_CALLBACK(passphrase_cancel_cb), NULL);
 
     if (grab_all)
-        gtk_object_set (GTK_OBJECT(window), "type", GTK_WINDOW_POPUP, NULL);
+        g_object_set (G_OBJECT(window), "type", GTK_WINDOW_POPUP, NULL);
     gtk_window_set_position (GTK_WINDOW(window), GTK_WIN_POS_CENTER);
     if (grab_all)   
         gtk_window_set_policy (GTK_WINDOW(window), FALSE, FALSE, TRUE);
@@ -154,17 +156,23 @@ passphrase_mbox (const gchar *desc)
     gtk_widget_show_all(window);
 
     if (grab_all) {
+#ifdef GDK_WINDOWING_X11
         XGrabServer(GDK_DISPLAY());
+#endif /* GDK_WINDOWING_X11 */
         if ( gdk_pointer_grab ( window->window, TRUE, 0,
                                 NULL, NULL, GDK_CURRENT_TIME)) {
+#ifdef GDK_WINDOWING_X11
             XUngrabServer ( GDK_DISPLAY() );
+#endif /* GDK_WINDOWING_X11 */
             g_warning ("OOPS: Could not grab mouse\n");
             gtk_widget_destroy (window);
             return NULL;
         }
         if ( gdk_keyboard_grab( window->window, FALSE, GDK_CURRENT_TIME )) {
             gdk_pointer_ungrab (GDK_CURRENT_TIME);
+#ifdef GDK_WINDOWING_X11
             XUngrabServer ( GDK_DISPLAY() );
+#endif /* GDK_WINDOWING_X11 */
             g_warning ("OOPS: Could not grab keyboard\n");
             gtk_widget_destroy (window);
             return NULL;
@@ -174,7 +182,9 @@ passphrase_mbox (const gchar *desc)
     gtk_main();
 
     if (grab_all) {
+#ifdef GDK_WINDOWING_X11
         XUngrabServer (GDK_DISPLAY());
+#endif /* GDK_WINDOWING_X11 */
         gdk_pointer_ungrab (GDK_CURRENT_TIME);
         gdk_keyboard_ungrab (GDK_CURRENT_TIME);
         gdk_flush();
@@ -183,9 +193,9 @@ passphrase_mbox (const gchar *desc)
     manage_window_focus_out(window, NULL, NULL);
 
     if (pass_ack) {
-        the_passphrase = gtk_entry_get_text(GTK_ENTRY(pass_entry));
-        if (the_passphrase) /* Hmmm: Do we really need this? */
-            the_passphrase = g_strdup (the_passphrase);
+        const gchar *entry_text = gtk_entry_get_text(GTK_ENTRY(pass_entry));
+        if (entry_text) /* Hmmm: Do we really need this? */
+            the_passphrase = g_strdup (entry_text);
     }
     gtk_widget_destroy (window);
 
@@ -216,11 +226,12 @@ passphrase_deleted(GtkWidget *widget, GdkEventAny *event, gpointer data)
 }
 
 
-static void 
+static gboolean
 passphrase_key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
     if (event && event->keyval == GDK_Escape)
         passphrase_cancel_cb(NULL, NULL);
+    return FALSE;
 }
 
 static gint 

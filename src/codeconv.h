@@ -165,6 +165,7 @@ void conv_jistoeuc	(gchar *outbuf, gint outlen, const gchar *inbuf);
 void conv_euctojis	(gchar *outbuf, gint outlen, const gchar *inbuf);
 void conv_sjistoeuc	(gchar *outbuf, gint outlen, const gchar *inbuf);
 void conv_anytoeuc	(gchar *outbuf, gint outlen, const gchar *inbuf);
+void conv_anytoutf8	(gchar *outbuf, gint outlen, const gchar *inbuf);
 void conv_anytojis	(gchar *outbuf, gint outlen, const gchar *inbuf);
 
 void conv_unreadable_eucjp	(gchar *str);

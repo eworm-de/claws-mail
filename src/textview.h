@@ -36,25 +36,16 @@ struct _TextView
 {
 	GtkWidget *vbox;
 	GtkWidget *scrolledwin;
-	GtkWidget *scrolledwin_sb;
-	GtkWidget *scrolledwin_mb;
 	GtkWidget *text;
-	GtkWidget *text_sb;
-	GtkWidget *text_mb;
 
 	GtkWidget *popup_menu;
 	GtkItemFactory *popup_factory;
 
-	gboolean text_is_mb;
 	gboolean default_text;
 	gboolean is_in_signature;
 	
 	GSList *uri_list;
 	gint body_pos;
-	gint cur_pos;
-
-	GdkFont *msgfont;
-	GdkFont *boldfont;
 
 	gboolean show_all_headers;
 

@@ -79,18 +79,58 @@ AC_PROG_YACC
 AM_PROG_LIBTOOL
 
 SYLPHEED_ACLOCAL_INCLUDE(ac)
+  
+dnl ******************************
+dnl Checks for host
+dnl ******************************
+AC_CANONICAL_HOST
+
+dnl Copied from the official gtk+-2 configure.in
+AC_MSG_CHECKING([for some Win32 platform])
+case "$host" in
+  *-*-mingw*|*-*-cygwin*)
+    platform_win32=yes
+    LDFLAGS="$LDFLAGS -mwindows"
+    ;;
+  *)
+    platform_win32=no
+    ;;
+esac
+AC_MSG_RESULT([$platform_win32])
+AM_CONDITIONAL(PLATFORM_WIN32, test x"$platform_win32" = x"yes")
+
+if test x"$platform_win32" = x"yes"; then
+    WINDRES=windres
+    AC_SUBST(WINDRES)
+fi
+
+AC_MSG_CHECKING([for native Win32])
+case "$host" in
+  *-*-mingw*)
+    os_win32=yes
+    ;;
+  *)
+    os_win32=no
+    ;;
+esac
+AC_MSG_RESULT([$os_win32])
+AM_CONDITIONAL(OS_WIN32, test x"$os_win32" = x"yes")
 
 case "$target" in
 *-darwin*)
 	CFLAGS="$CFLAGS -traditional-cpp -fno-common"
 	;;
 esac
-
+  
+dnl Checks for iconv
 AM_ICONV
 
 dnl for gettext
 ALL_LINGUAS="bg cs de el en_GB es fr hr hu it ja ko nl pl pt_BR ru sk sr sv zh_TW.Big5"
-AM_GNU_GETTEXT([use-libtool])
+GETTEXT_PACKAGE=sylpheed
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Define text domain.])
+AM_GLIB_GNU_GETTEXT
 dnl AC_CHECK_FUNC(gettext, AC_CHECK_LIB(intl, gettext))
 localedir='${prefix}/${DATADIRNAME}/locale'
 AC_SUBST(localedir)
@@ -187,9 +227,15 @@ dnl ** common code **
 dnl *****************
 
 dnl check for glib
-AM_PATH_GLIB(1.2.6,,
+AM_PATH_GLIB_2_0(2.0.0,,
 	AC_MSG_ERROR(Test for GLIB failed. See the file 'INSTALL' for help.),
-	gthread)
+	gmodule gobject gthread)
+
+dnl Check for bind_textdomain_codeset, including -lintl if GLib brings it in.
+syl_save_LIBS=$LIBS
+LIBS="$LIBS $GTK_LIBS"
+AC_CHECK_FUNCS(bind_textdomain_codeset)
+LIBS=$syl_save_LIBS
 
 dnl check for IPv6 option
 AC_ARG_ENABLE(ipv6,
@@ -240,7 +286,7 @@ dnl ** GTK user interface **
 dnl ************************
 
 dnl Checks for GTK
-AM_PATH_GTK(1.2.6,,
+AM_PATH_GTK_2_0(2.0.0,,
 	AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
 
 dnl check if gdk / gtk was compiled with USE_XIM
@@ -433,20 +479,14 @@ if test x"$ac_cv_enable_image_viewer_plugin" = xyes; then
 		[ac_cv_enable_imlib=$enableval], [ac_cv_enable_imlib=yes])
 
 	if test "$ac_cv_enable_gdk_pixbuf" = yes; then
-		AM_PATH_GDK_PIXBUF(0.8.0,
-			[AC_DEFINE(HAVE_GDK_PIXBUF, 1, Define if you use gdk-pixbuf to support image viewer)
-			 ac_cv_enable_imlib=no], [ac_cv_enable_gdk_pixbuf=no])
-	fi
-	if test "$ac_cv_enable_imlib" = yes; then
-		AM_PATH_GDK_IMLIB(1.9,
-			AC_DEFINE(HAVE_GDK_IMLIB, 1, Define if you use gdk_imlib to support image viewer),
-			[ac_cv_enable_imlib=no])
+		PKG_CHECK_MODULES(GDK_PIXBUF, \
+			[ gdk-pixbuf-2.0 ],
+			[ AC_DEFINE(HAVE_GDK_PIXBUF, 1, Define if you use gdk-pixbuf to support image viewer) ],
+			[ ac_cv_enable_gdk_pixbuf=no ])
 	fi
 
 	if test "$ac_cv_enable_gdk_pixbuf" = yes; then
 		PLUGINS="image-viewer(gdk-pixbuf) $PLUGINS"
-	elif test "$ac_cv_enable_imlib" = yes; then
-		PLUGINS="image-viewer(gdk_imlib) $PLUGINS"
 	else
 		ac_cv_enable_image_viewer_plugin=no
 	fi
@@ -496,7 +536,6 @@ dnl ****************************
 AC_OUTPUT([
 Makefile
 sylpheed.spec
-intl/Makefile
 ac/Makefile
 po/Makefile.in
 src/common/version.h

@@ -33,14 +33,13 @@
 #include "inc.h"
 #include "log.h"
 #include "logwindow.h"
+#include "prefs_common.h"
 
-#define TITLE_FONT	"-*-helvetica-medium-r-normal--17-*-*-*-*-*-*-*," \
-			"-*-*-medium-r-normal--16-*-*-*-*-*-*-*,*"
-#define MESSAGE_FONT	"-*-helvetica-medium-r-normal--14-*-*-*-*-*-*-*," \
-			"-*-*-medium-r-normal--14-*-*-*-*-*-*-*,*"
 #define ALERT_PANEL_WIDTH	380
 #define TITLE_HEIGHT		72
 #define MESSAGE_HEIGHT		62
+
+#define DEFAULT_TITLE_FONT	"Helvetica 16"
 
 static gboolean alertpanel_is_open = FALSE;
 static AlertValue value;
@@ -63,7 +62,7 @@ static void alertpanel_button_clicked	(GtkWidget		*widget,
 static gint alertpanel_deleted		(GtkWidget		*widget,
 					 GdkEventAny		*event,
 					 gpointer		 data);
-static void alertpanel_close		(GtkWidget		*widget,
+static gboolean alertpanel_close	(GtkWidget		*widget,
 					 GdkEventAny		*event,
 					 gpointer		 data);
 
@@ -221,8 +220,7 @@ static void alertpanel_create(const gchar *title,
 			      gboolean	   can_disable,
 			      GtkWidget *custom_widget)
 {
-	static GdkFont *titlefont;
-	GtkStyle *style;
+	static PangoFontDescription *font_desc;
 	GtkWidget *label;
 	GtkWidget *hbox;
 	GtkWidget *vbox;
@@ -243,13 +241,13 @@ static void alertpanel_create(const gchar *title,
 	gtk_window_set_policy(GTK_WINDOW(dialog), FALSE, FALSE, FALSE);
 	gtk_container_set_border_width
 		(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), 5);
-	gtk_window_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-	gtk_signal_connect(GTK_OBJECT(dialog), "delete_event",
-			   GTK_SIGNAL_FUNC(alertpanel_deleted),
-			   (gpointer)G_ALERTOTHER);
-	gtk_signal_connect(GTK_OBJECT(dialog), "key_press_event",
-			   GTK_SIGNAL_FUNC(alertpanel_close),
-			   (gpointer)G_ALERTOTHER);
+	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+	g_signal_connect(G_OBJECT(dialog), "delete_event",
+			 G_CALLBACK(alertpanel_deleted),
+			 (gpointer)G_ALERTOTHER);
+	g_signal_connect(G_OBJECT(dialog), "key_press_event",
+			 G_CALLBACK(alertpanel_close),
+			 (gpointer)G_ALERTOTHER);
 	gtk_widget_realize(dialog);
 
 	/* for title label */
@@ -263,12 +261,15 @@ static void alertpanel_create(const gchar *title,
 	label = gtk_label_new(title);
 	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 16);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
-	style = gtk_style_copy(gtk_widget_get_style(label));
-	if (!titlefont)
-		titlefont = gtkut_font_load(TITLE_FONT);
-	if (titlefont)
-		style->font = titlefont;
-	gtk_widget_set_style(label, style);
+	if (!font_desc) {
+		gchar *fontstr = prefs_common.titlefont
+					? prefs_common.titlefont
+					: DEFAULT_TITLE_FONT;
+		font_desc = pango_font_description_from_string (fontstr);
+	}
+	if (font_desc) {
+		gtk_widget_modify_font (label, font_desc);
+	}
 
 	/* for message and button(s) */
 	vbox = gtk_vbox_new(FALSE, 0);
@@ -277,7 +278,7 @@ static void alertpanel_create(const gchar *title,
 
 	spc_vbox = gtk_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), spc_vbox, FALSE, FALSE, 0);
-	gtk_widget_set_usize(spc_vbox, -1, 16);
+	gtk_widget_set_size_request(spc_vbox, -1, 16);
 
 	msg_vbox = gtk_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(vbox), msg_vbox, FALSE, FALSE, 0);
@@ -310,13 +311,13 @@ static void alertpanel_create(const gchar *title,
 					     TRUE);
 		gtk_box_pack_start(GTK_BOX(hbox), disable_chkbtn,
 				   FALSE, FALSE, 0);
-		gtk_signal_connect(GTK_OBJECT(disable_chkbtn), "toggled",
-				   GTK_SIGNAL_FUNC(alertpanel_button_toggled),
-				   GUINT_TO_POINTER(G_ALERTDISABLE));
+		g_signal_connect(G_OBJECT(disable_chkbtn), "toggled",
+				 G_CALLBACK(alertpanel_button_toggled),
+				 GUINT_TO_POINTER(G_ALERTDISABLE));
 	} else {
 		spc_vbox = gtk_vbox_new(FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(vbox), spc_vbox, FALSE, FALSE, 0);
-		gtk_widget_set_usize(spc_vbox, -1, 20);
+		gtk_widget_set_size_request(spc_vbox, -1, 20);
 	}
 
 	/* for button(s) */
@@ -344,17 +345,17 @@ static void alertpanel_create(const gchar *title,
 		gtk_widget_grab_focus(button3);
 	}
 
-	gtk_signal_connect(GTK_OBJECT(button1), "clicked",
-			   GTK_SIGNAL_FUNC(alertpanel_button_clicked),
-			   GUINT_TO_POINTER(G_ALERTDEFAULT));
+	g_signal_connect(G_OBJECT(button1), "clicked",
+			 G_CALLBACK(alertpanel_button_clicked),
+			 GUINT_TO_POINTER(G_ALERTDEFAULT));
 	if (button2_label)
-		gtk_signal_connect(GTK_OBJECT(button2), "clicked",
-				   GTK_SIGNAL_FUNC(alertpanel_button_clicked),
-				   GUINT_TO_POINTER(G_ALERTALTERNATE));
+		g_signal_connect(G_OBJECT(button2), "clicked",
+				 G_CALLBACK(alertpanel_button_clicked),
+				 GUINT_TO_POINTER(G_ALERTALTERNATE));
 	if (button3_label)
-		gtk_signal_connect(GTK_OBJECT(button3), "clicked",
-				   GTK_SIGNAL_FUNC(alertpanel_button_clicked),
-				   GUINT_TO_POINTER(G_ALERTOTHER));
+		g_signal_connect(G_OBJECT(button3), "clicked",
+				 G_CALLBACK(alertpanel_button_clicked),
+				 GUINT_TO_POINTER(G_ALERTOTHER));
 
 	gtk_widget_show_all(dialog);
 }
@@ -380,12 +381,13 @@ static gint alertpanel_deleted(GtkWidget *widget, GdkEventAny *event,
 	return TRUE;
 }
 
-static void alertpanel_close(GtkWidget *widget, GdkEventAny *event,
+static gboolean alertpanel_close(GtkWidget *widget, GdkEventAny *event,
 			     gpointer data)
 {
 	if (event->type == GDK_KEY_PRESS)
 		if (((GdkEventKey *)event)->keyval != GDK_Escape)
-			return;
+			return FALSE;
 
 	value = (value & ~G_ALERT_VALUE_MASK) | (AlertValue)data;
+	return FALSE;
 }

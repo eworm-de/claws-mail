@@ -48,24 +48,28 @@ static void gtk_shruler_draw_ticks 	(GtkRuler        *ruler);
 static void gtk_shruler_draw_pos      	(GtkRuler        *ruler);
 #endif
 
-guint
+GType
 gtk_shruler_get_type(void)
 {
-	static guint shruler_type = 0;
+	static GType shruler_type = 0;
 
   	if ( !shruler_type ) {
-   		static const GtkTypeInfo shruler_info = {
-			"GtkSHRuler",
-			sizeof (GtkSHRuler),
+   		static const GTypeInfo shruler_info = {
 			sizeof (GtkSHRulerClass),
-			(GtkClassInitFunc) gtk_shruler_class_init,
-			(GtkObjectInitFunc) gtk_shruler_init,
-			/* reserved_1 */ NULL,
-        	/* reserved_2 */ NULL,
-        	(GtkClassInitFunc) NULL,
-     	 };
+
+			(GBaseInitFunc) NULL,
+			(GBaseFinalizeFunc) NULL,
+
+			(GClassInitFunc) gtk_shruler_class_init,
+			(GClassFinalizeFunc) NULL,
+			NULL,	/* class_data */
+
+			sizeof (GtkSHRuler),
+			0,	/* n_preallocs */
+			(GInstanceInitFunc) gtk_shruler_init,
+		};
 		/* inherit from GtkHRuler */
-      	shruler_type = gtk_type_unique( gtk_hruler_get_type (), &shruler_info );
+		shruler_type = g_type_register_static (GTK_TYPE_HRULER, "GtkSHRuler", &shruler_info, (GTypeFlags)0);
 	}
 	return shruler_type;
 }
@@ -99,15 +103,15 @@ gtk_shruler_init (GtkSHRuler * shruler)
 	GtkWidget * widget;
 	
 	widget = GTK_WIDGET (shruler);
-	widget->requisition.width = widget->style->klass->xthickness * 2 + 1;
-	widget->requisition.height = widget->style->klass->ythickness * 2 + RULER_HEIGHT;
+	widget->requisition.width = widget->style->xthickness * 2 + 1;
+	widget->requisition.height = widget->style->ythickness * 2 + RULER_HEIGHT;
 }
 
 
 GtkWidget*
 gtk_shruler_new(void)
 {
-	return GTK_WIDGET( gtk_type_new( gtk_shruler_get_type() ) );
+	return GTK_WIDGET( g_object_new( gtk_shruler_get_type(), NULL ) );
 }
 
 static void
@@ -132,10 +136,10 @@ gtk_shruler_draw_ticks(GtkRuler *ruler)
 	
 	gc = widget->style->fg_gc[GTK_STATE_NORMAL];
 	bg_gc = widget->style->bg_gc[GTK_STATE_NORMAL];
-	font = widget->style->font;
+	font = gtk_style_get_font(widget->style);
 
-	xthickness = widget->style->klass->xthickness;
-	ythickness = widget->style->klass->ythickness;
+	xthickness = widget->style->xthickness;
+	ythickness = widget->style->ythickness;
 
 	width = widget->allocation.width;
 	height = widget->allocation.height - ythickness * 2;

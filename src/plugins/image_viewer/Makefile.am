@@ -10,7 +10,6 @@ image_viewer_la_SOURCES = \
 image_viewer_la_LDFLAGS = \
 	-avoid-version -module \
 	$(GTK_LIBS) \
-	$(GDK_IMLIB_LIBS) \
 	$(GDK_PIXBUF_LIBS)
 
 INCLUDES = \
@@ -22,6 +21,5 @@ AM_CPPFLAGS = \
 	$(ASPELL_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
-	$(GDK_IMLIB_CFLAGS) \
 	$(GDK_PIXBUF_CFLAGS) \
 	$(OPENSSL_CFLAGS)

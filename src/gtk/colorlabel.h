@@ -21,11 +21,12 @@
 #define COLORLABEL_H__
 
 #include <glib.h>
+#include <gtk/gtkimage.h>
 
 gint colorlabel_get_color_count			(void);
 GdkColor colorlabel_get_color			(gint		 color_index);
 gchar *colorlabel_get_color_text		(gint		 color_index);
-GtkPixmap *colorlabel_create_color_pixmap	(GdkColor	 color);
+GtkImage *colorlabel_create_color_pixmap	(GdkColor	 color);
 gboolean colorlabel_changed			(void);
 GtkWidget *colorlabel_create_check_color_menu_item
 						(gint		 color_index);

@@ -71,7 +71,7 @@ static void from_activated(void);
 static void to_activated(void);
 static void subject_activated(void);
 static void body_activated(void);
-static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data);
+static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data);
 
 void summary_search(SummaryView *summaryview)
 {
@@ -96,15 +96,15 @@ static void summary_search_create(SummaryView *summaryview)
 	GtkWidget *checkbtn_hbox;
 	GtkWidget *confirm_area;
 
-	window = gtk_window_new (GTK_WINDOW_DIALOG);
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW (window), _("Search messages"));
-	gtk_widget_set_usize (window, 450, -1);
+	gtk_widget_set_size_request (window, 450, -1);
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, TRUE);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(gtk_widget_hide_on_delete), NULL);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(key_pressed), NULL);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(gtk_widget_hide_on_delete), NULL);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 
 	vbox1 = gtk_vbox_new (FALSE, 0);
@@ -122,29 +122,29 @@ static void summary_search_create(SummaryView *summaryview)
 	gtk_widget_show (from_entry);
 	gtk_table_attach (GTK_TABLE (table1), from_entry, 1, 3, 0, 1,
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
-	gtk_signal_connect(GTK_OBJECT(from_entry), "activate",
-			   GTK_SIGNAL_FUNC(from_activated), summaryview);
+	g_signal_connect(G_OBJECT(from_entry), "activate",
+			 G_CALLBACK(from_activated), summaryview);
 
 	to_entry = gtk_entry_new ();
 	gtk_widget_show (to_entry);
 	gtk_table_attach (GTK_TABLE (table1), to_entry, 1, 3, 1, 2,
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
-	gtk_signal_connect(GTK_OBJECT(to_entry), "activate",
-			   GTK_SIGNAL_FUNC(to_activated), summaryview);
+	g_signal_connect(G_OBJECT(to_entry), "activate",
+			 G_CALLBACK(to_activated), summaryview);
 
 	subject_entry = gtk_entry_new ();
 	gtk_widget_show (subject_entry);
 	gtk_table_attach (GTK_TABLE (table1), subject_entry, 1, 3, 2, 3,
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
-	gtk_signal_connect(GTK_OBJECT(subject_entry), "activate",
-			   GTK_SIGNAL_FUNC(subject_activated), summaryview);
+	g_signal_connect(G_OBJECT(subject_entry), "activate",
+			 G_CALLBACK(subject_activated), summaryview);
 
 	body_entry = gtk_entry_new ();
 	gtk_widget_show (body_entry);
 	gtk_table_attach (GTK_TABLE (table1), body_entry, 1, 3, 3, 4,
 			  GTK_EXPAND|GTK_FILL, 0, 0, 0);
-	gtk_signal_connect(GTK_OBJECT(body_entry), "activate",
-			   GTK_SIGNAL_FUNC(body_activated), summaryview);
+	g_signal_connect(G_OBJECT(body_entry), "activate",
+			 G_CALLBACK(body_activated), summaryview);
 
 	from_label = gtk_label_new (_("From:"));
 	gtk_widget_show (from_label);
@@ -210,17 +210,30 @@ static void summary_search_create(SummaryView *summaryview)
 	gtk_box_pack_start (GTK_BOX (vbox1), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(search_btn);
 
-	gtk_signal_connect(GTK_OBJECT(search_btn), "clicked",
-			   GTK_SIGNAL_FUNC(summary_search_execute),
-			   summaryview);
-	gtk_signal_connect(GTK_OBJECT(clear_btn), "clicked",
-			   GTK_SIGNAL_FUNC(summary_search_clear),
-			   summaryview);
-	gtk_signal_connect_object(GTK_OBJECT(close_btn), "clicked",
-				  GTK_SIGNAL_FUNC(gtk_widget_hide),
-				  GTK_OBJECT(window));
+	g_signal_connect(G_OBJECT(search_btn), "clicked",
+			 G_CALLBACK(summary_search_execute),
+			 summaryview);
+	g_signal_connect(G_OBJECT(clear_btn), "clicked",
+			 G_CALLBACK(summary_search_clear),
+			 summaryview);
+	g_signal_connect_closure
+		(G_OBJECT(close_btn), "clicked",
+		 g_cclosure_new_swap(G_CALLBACK(gtk_widget_hide),
+				     window, NULL),
+		 FALSE);
 }
 
+#define GET_ENTRY(entry) gtk_entry_get_text(GTK_ENTRY(entry))
+
+#define SHOW_ERROR_MESSAGE(error) \
+{ \
+   if (error != NULL) { \
+      g_warning("%s\n", error->message); \
+      g_error_free(error); \
+   } \
+}
+
+#warning FIXME_GTK2
 static void summary_search_execute(GtkButton *button, gpointer data)
 {
 	SummaryView *summaryview = data;
@@ -237,10 +250,12 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 	gboolean   to_matched;
 	gboolean subj_matched;
 	gboolean body_matched;
-	gchar *body_str;
+	const gchar *body_str;
 	wchar_t *wcs_hs, *fromwcs, *towcs, *subjwcs;
 	wchar_t *(* WCSFindFunc) (const wchar_t *haystack,
 				  const wchar_t *needle);
+	glong items_read, items_written;
+	GError *error = NULL;
 
 	if (summary_is_locked(summaryview)) return;
 	summary_lock(summaryview);
@@ -267,10 +282,19 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 	else
 		WCSFindFunc = wcscasestr;
 
-	fromwcs = (wchar_t *)GTK_ENTRY(from_entry)->text;
-	towcs   = (wchar_t *)GTK_ENTRY(to_entry)->text;
-	subjwcs = (wchar_t *)GTK_ENTRY(subject_entry)->text;
-	body_str = gtk_entry_get_text(GTK_ENTRY(body_entry));
+	fromwcs = (wchar_t *)g_utf8_to_ucs4(GET_ENTRY(from_entry),
+					    -1, &items_read, &items_written,
+					    &error);
+	SHOW_ERROR_MESSAGE(error);
+	towcs   = (wchar_t *)g_utf8_to_ucs4(GET_ENTRY(to_entry),
+					    -1, &items_read, &items_written,
+					    &error);
+	SHOW_ERROR_MESSAGE(error);
+	subjwcs = (wchar_t *)g_utf8_to_ucs4(GET_ENTRY(subject_entry),
+					    -1, &items_read, &items_written,
+					    &error);
+	SHOW_ERROR_MESSAGE(error);
+	body_str = GET_ENTRY(body_entry);
 
 	if (search_all) {
 		gtk_clist_freeze(GTK_CLIST(ctree));
@@ -342,31 +366,40 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 		
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
 
-		if (*fromwcs && msginfo->from) {
-			wcs_hs = strdup_mbstowcs(msginfo->from);
+		if (fromwcs && *fromwcs && msginfo->from) {
+			wcs_hs = (wchar_t *)g_utf8_to_ucs4(msginfo->from,
+							    -1, &items_read, &items_written,
+							    &error);
+			SHOW_ERROR_MESSAGE(error);
 			if (wcs_hs && WCSFindFunc(wcs_hs, fromwcs) != NULL)
 				from_matched = TRUE;
 			else
 				all_matched = FALSE;
 			g_free(wcs_hs);
 		}	
-		if (*towcs && msginfo->to) {
-			wcs_hs = strdup_mbstowcs(msginfo->to);
+		if (towcs && *towcs && msginfo->to) {
+			wcs_hs = (wchar_t *)g_utf8_to_ucs4(msginfo->to,
+							    -1, &items_read, &items_written,
+							    &error);
+			SHOW_ERROR_MESSAGE(error);
 			if (wcs_hs && WCSFindFunc(wcs_hs, towcs) != NULL)
 				to_matched = TRUE;
 			else
 				all_matched = FALSE;
 			g_free(wcs_hs);
 		}
-		if (*subjwcs && msginfo->subject) {
-			wcs_hs = strdup_mbstowcs(msginfo->subject);
+		if (subjwcs && *subjwcs && msginfo->subject) {
+			wcs_hs = (wchar_t *)g_utf8_to_ucs4(msginfo->subject,
+							    -1, &items_read, &items_written,
+							    &error);
+			SHOW_ERROR_MESSAGE(error);
 			if (wcs_hs && WCSFindFunc(wcs_hs, subjwcs) != NULL)
 				subj_matched = TRUE;
 			else
 				all_matched = FALSE;
 			g_free(wcs_hs);
 		}
-		if (*body_str) {
+		if (body_str && *body_str) {
 			if (procmime_find_string(msginfo, body_str, case_sens))
 				body_matched = TRUE;
 			else
@@ -404,8 +437,14 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 	if (*body_str)
 		main_window_cursor_normal(summaryview->mainwin);
 
+	g_free(fromwcs);
+	g_free(towcs);
+	g_free(subjwcs);
+
 	summary_unlock(summaryview);
 }
+
+#undef GET_ENTRY
 
 static void summary_search_clear(GtkButton *button, gpointer data)
 {
@@ -435,8 +474,9 @@ static void body_activated(void)
 	gtk_button_clicked(GTK_BUTTON(search_btn));
 }
 
-static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
+static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		gtk_widget_hide(window);
+	return FALSE;
 }

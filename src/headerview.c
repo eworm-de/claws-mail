@@ -30,7 +30,7 @@
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtklabel.h>
-#include <gtk/gtkpixmap.h>
+#include <gtk/gtkimage.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -46,7 +46,7 @@
 #include "gtkutils.h"
 #include "utils.h"
 
-static GdkFont *boldfont;
+PangoFontDescription *boldfont;
 
 #define TR(str)	(prefs_common.trans_hdr ? gettext(str) : str)
 
@@ -133,17 +133,14 @@ HeaderView *headerview_create(void)
 
 void headerview_init(HeaderView *headerview)
 {
-	if (!boldfont)
-		boldfont = gtkut_font_load(BOLD_FONT);
+	if (!boldfont && BOLD_FONT)
+		boldfont = pango_font_description_from_string
+				(BOLD_FONT);
 
 #define SET_FONT_STYLE(wid) \
 { \
-	GtkStyle *style; \
- \
-	style = gtk_style_copy(gtk_widget_get_style(headerview->wid)); \
 	if (boldfont) \
-		style->font = boldfont; \
-	gtk_widget_set_style(headerview->wid, style); \
+		gtk_widget_modify_font(headerview->wid, boldfont); \
 }
 
 	SET_FONT_STYLE(from_header_label);
@@ -168,38 +165,25 @@ void headerview_init(HeaderView *headerview)
 
 void headerview_show(HeaderView *headerview, MsgInfo *msginfo)
 {
-	gchar *str;
-
 	headerview_clear(headerview);
 
-	if (msginfo->from) {
-		Xstrdup_a(str, msginfo->from, return);
-		conv_unreadable_locale(str);
-	} else
-		str = NULL;
 	gtk_label_set_text(GTK_LABEL(headerview->from_body_label),
-			   str ? str : _("(No From)"));
+			   msginfo->from ? msginfo->from : _("(No From)"));
 	if (msginfo->to) {
-		Xstrdup_a(str, msginfo->to, return);
-		conv_unreadable_locale(str);
-		gtk_label_set_text(GTK_LABEL(headerview->to_body_label), str);
+		gtk_label_set_text(GTK_LABEL(headerview->to_body_label),
+				   msginfo->to);
 		gtk_widget_show(headerview->to_header_label);
 		gtk_widget_show(headerview->to_body_label);
 	}
 	if (msginfo->newsgroups) {
-		Xstrdup_a(str, msginfo->newsgroups, return);
-		conv_unreadable_locale(str);
-		gtk_label_set_text(GTK_LABEL(headerview->ng_body_label), str);
+		gtk_label_set_text(GTK_LABEL(headerview->ng_body_label),
+				   msginfo->newsgroups);
 		gtk_widget_show(headerview->ng_header_label);
 		gtk_widget_show(headerview->ng_body_label);
 	}
-	if (msginfo->subject) {
-		Xstrdup_a(str, msginfo->subject, return);
-		conv_unreadable_locale(str);
-	} else
-		str = NULL;
 	gtk_label_set_text(GTK_LABEL(headerview->subject_body_label),
-			   str ? str : _("(No Subject)"));
+			   msginfo->subject ? msginfo->subject :
+			   _("(No Subject)"));
 
 #if HAVE_LIBCOMPFACE
 	headerview_show_xface(headerview, msginfo);
@@ -241,12 +225,12 @@ static void headerview_show_xface(HeaderView *headerview, MsgInfo *msginfo)
 	if (!headerview->image) {
 		GtkWidget *image;
 
-		image = gtk_pixmap_new(pixmap, mask);
+		image = gtk_image_new_from_pixmap(pixmap, mask);
 		gtk_box_pack_start(GTK_BOX(hbox), image, FALSE, FALSE, 0);
 		gtk_widget_show(image);
 		headerview->image = image;
 	} else {
-		gtk_pixmap_set(GTK_PIXMAP(headerview->image), pixmap, mask);
+		gtk_image_set_from_pixmap(GTK_IMAGE(headerview->image), pixmap, mask);
 		gtk_widget_show(headerview->image);
 	}
 

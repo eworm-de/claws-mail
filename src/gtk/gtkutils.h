@@ -32,7 +32,7 @@
 #include <gtk/gtkeditable.h>
 #include <gtk/gtkctree.h>
 #include <gtk/gtkcombo.h>
-#include "gtkstext.h"
+#include <gtk/gtktextview.h>
 #include <stdlib.h>
 #if HAVE_WCHAR_H
 #  include <wchar.h>
@@ -75,13 +75,11 @@
 	(GTK_CTREE_ROW(node)->row.data)
 
 #define GTKUT_CTREE_REFRESH(clist) \
-	GTK_CLIST_CLASS(GTK_OBJECT(clist)->klass)->refresh(clist)
+	GTK_CLIST_GET_CLASS(clist)->refresh(clist)
 
-gint gtkut_get_font_width		(GdkFont	*font);
-gint gtkut_get_font_height		(GdkFont	*font);
-
-GdkFont *gtkut_font_load		(const gchar	*fontset_name);
-GdkFont *gtkut_font_load_from_fontset	(const gchar	*fontset_name);
+gboolean gtkut_get_font_size		(GtkWidget	*widget,
+					 gint		*width,
+					 gint		*height);
 
 void gtkut_convert_int_to_gdk_color	(gint		 rgbvalue,
 					 GdkColor	*color);
@@ -145,4 +143,24 @@ GtkWidget *gtkut_account_menu_new	(GList			*ac_list,
 
 void gtkut_set_widget_bgcolor_rgb	(GtkWidget 	*widget,
 					 guint 		 rgbvalue);
+
+gboolean gtkut_text_buffer_match_string	(GtkTextBuffer	*text,
+					 gint		 pos,
+					 gunichar	*wcs,
+					 gint		 len,
+					 gboolean	 case_sens);
+guint gtkut_text_buffer_str_compare_n	(GtkTextBuffer	*text,
+					 guint		 pos1,
+					 guint		 pos2,
+					 guint		 len,
+					 guint		 text_len);
+guint gtkut_text_buffer_str_compare	(GtkTextBuffer	*text,
+					 guint		 start_pos,
+					 guint		 text_len,
+					 const gchar	*str);
+gboolean gtkut_text_buffer_is_uri_string(GtkTextBuffer	*text,
+					 guint		 start_pos,
+					 guint		 text_len);
+gchar *gtkut_text_view_get_selection	(GtkTextView	*textview);
+
 #endif /* __GTKUTILS_H__ */

@@ -218,6 +218,8 @@ struct _AttachInfo
 	off_t size;
 };
 
+/*#warning FIXME_GTK2 */
+/* attache_files will be locale encode */
 Compose *compose_new			(PrefsAccount	*account,
 				 	 const gchar	*mailto,
 				 	 GPtrArray	*attach_files);

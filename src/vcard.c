@@ -626,7 +626,7 @@ gboolean vcard_validate( const VCardFile *cardFile ) {
 *	be g_free() when done.
 */
 gchar *vcard_find_gnomecard( void ) {
-	gchar *homedir;
+	const gchar *homedir;
 	gchar buf[ WORK_BUFLEN ];
 	gchar str[ WORK_BUFLEN ];
 	gchar *fileSpec;

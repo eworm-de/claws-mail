@@ -323,7 +323,7 @@ static void export_html_browse( GtkWidget *widget, gpointer data ) {
  * \param data   User data.
  */
 static void exp_html_file_ok( GtkWidget *widget, gpointer data ) {
-	gchar *sFile;
+	const gchar *sFile;
 	AddressFileSelection *afs;
 	GtkWidget *fileSel;
 
@@ -682,7 +682,7 @@ static void export_html_dialog_create( void ) {
 	GtkWidget *hsbox;
 	GtkWidget *statusbar;
 
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_widget_set_usize(window, EXPORTHTML_WIDTH, EXPORTHTML_HEIGHT );
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
 	gtk_window_set_title( GTK_WINDOW(window),

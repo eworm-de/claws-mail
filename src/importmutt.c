@@ -155,7 +155,7 @@ static void imp_mutt_cancel( GtkWidget *widget, gboolean *cancelled ) {
 }
 
 static void imp_mutt_file_ok( GtkWidget *widget, gpointer data ) {
-	gchar *sFile;
+	const gchar *sFile;
 	AddressFileSelection *afs;
 	GtkWidget *fileSel;
 
@@ -233,7 +233,7 @@ static void imp_mutt_create( gboolean *cancelled ) {
 	GtkWidget *hsbox;
 	gint top;
 
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_widget_set_usize(window, 450, -1);
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
 	gtk_window_set_title( GTK_WINDOW(window), _("Import MUTT file into Address Book") );

@@ -183,7 +183,7 @@ static void prefs_scoring_create(void)
 
 	debug_print("Creating scoring configuration window...\n");
 
-	window = gtk_window_new (GTK_WINDOW_DIALOG);
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
@@ -508,7 +508,7 @@ static void prefs_scoring_condition_define_done(MatcherList * matchers)
 
 static void prefs_scoring_condition_define(void)
 {
-	gchar * cond_str;
+	const gchar * cond_str;
 	MatcherList * matchers = NULL;
 
 	cond_str = gtk_entry_get_text(GTK_ENTRY(scoring.cond_entry));
@@ -531,8 +531,8 @@ static void prefs_scoring_condition_define(void)
 static void prefs_scoring_register_cb(void)
 {
 	MatcherList * cond;
-	gchar * cond_str;
-	gchar * score_str;
+	const gchar * cond_str;
+	const gchar * score_str;
 	ScoringProp * prop;
 	gint score;
 
@@ -570,8 +570,8 @@ static void prefs_scoring_substitute_cb(void)
 	GtkCList *clist = GTK_CLIST(scoring.cond_clist);
 	gint row;
 	MatcherList * cond;
-	gchar * cond_str;
-	gchar * score_str;
+	const gchar * cond_str;
+	const gchar * score_str;
 	ScoringProp * prop;
 	gint score;
 
@@ -722,8 +722,8 @@ static void prefs_scoring_key_pressed(GtkWidget *widget, GdkEventKey *event,
 static void prefs_scoring_ok(void)
 {
 	MatcherList * cond;
-	gchar * cond_str;
-	gchar * score_str;
+	const gchar * cond_str;
+	const gchar * score_str;
 	gchar * scoring_str;
 	gchar * str;
 	ScoringProp * prop;

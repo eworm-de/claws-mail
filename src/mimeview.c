@@ -223,16 +223,16 @@ MimeView *mimeview_create(MainWindow *mainwin)
 				       GTK_CAN_FOCUS);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), ctree);
 
-	gtk_signal_connect(GTK_OBJECT(ctree), "tree_select_row",
-			   GTK_SIGNAL_FUNC(mimeview_selected), mimeview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "button_press_event",
-			   GTK_SIGNAL_FUNC(mimeview_button_pressed), mimeview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "key_press_event",
-			   GTK_SIGNAL_FUNC(mimeview_key_pressed), mimeview);
-	gtk_signal_connect(GTK_OBJECT (ctree),"start_drag",
-			   GTK_SIGNAL_FUNC (mimeview_start_drag), mimeview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "drag_data_get",
-			   GTK_SIGNAL_FUNC(mimeview_drag_data_get), mimeview);
+	g_signal_connect(G_OBJECT(ctree), "tree_select_row",
+			 G_CALLBACK(mimeview_selected), mimeview);
+	g_signal_connect(G_OBJECT(ctree), "button_press_event",
+			 G_CALLBACK(mimeview_button_pressed), mimeview);
+	g_signal_connect(G_OBJECT(ctree), "key_press_event",
+			 G_CALLBACK(mimeview_key_pressed), mimeview);
+	g_signal_connect(G_OBJECT (ctree),"start_drag",
+			 G_CALLBACK (mimeview_start_drag), mimeview);
+	g_signal_connect(G_OBJECT(ctree), "drag_data_get",
+			 G_CALLBACK(mimeview_drag_data_get), mimeview);
 
 	mime_notebook = gtk_notebook_new();
         gtk_widget_show(mime_notebook);
@@ -240,7 +240,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
         gtk_notebook_set_show_tabs(GTK_NOTEBOOK(mime_notebook), FALSE);
         gtk_notebook_set_show_border(GTK_NOTEBOOK(mime_notebook), FALSE);
 	
- 	gtk_notebook_set_page(GTK_NOTEBOOK(notebook), 0);
+ 	gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), 0);
 				
 	icon_vbox = gtk_vbox_new(FALSE, 2);
 	icon_scroll = gtk_layout_new(NULL, NULL);
@@ -251,15 +251,15 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	arrow = gtk_arrow_new(GTK_ARROW_LEFT, GTK_SHADOW_NONE);
 	gtk_widget_show(arrow);
 	gtk_container_add(GTK_CONTAINER(mime_toggle), arrow);
-	gtk_signal_connect(GTK_OBJECT(mime_toggle), "toggled", 
-			   GTK_SIGNAL_FUNC(mime_toggle_button_cb), mimeview);
+	g_signal_connect(G_OBJECT(mime_toggle), "toggled", 
+			 G_CALLBACK(mime_toggle_button_cb), mimeview);
 
 	icon_mainbox = gtk_vbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(icon_mainbox), mime_toggle, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(icon_mainbox), icon_scroll, TRUE, TRUE, 3);
 	gtk_box_pack_end(GTK_BOX(icon_mainbox), scrollbutton, FALSE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(icon_mainbox), "size_allocate", 
-			GTK_SIGNAL_FUNC(icon_scroll_size_allocate_cb), mimeview);
+	g_signal_connect(G_OBJECT(icon_mainbox), "size_allocate", 
+			 G_CALLBACK(icon_scroll_size_allocate_cb), mimeview);
 	
 	ctree_mainbox = gtk_hbox_new(FALSE, 0);	
 	gtk_box_pack_start(GTK_BOX(ctree_mainbox), scrolledwin, TRUE, TRUE, 0);
@@ -398,14 +398,14 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 		set_unchecked_signature(mimeinfo);
 #endif
 
-	gtk_signal_handler_block_by_func(GTK_OBJECT(ctree), mimeview_selected,
-					 mimeview);
+	g_signal_handlers_block_by_func(G_OBJECT(ctree), mimeview_selected,
+					mimeview);
 
 	mimeview_set_multipart_tree(mimeview, mimeinfo, NULL);
 	icon_list_create(mimeview, mimeinfo);
 
-	gtk_signal_handler_unblock_by_func(GTK_OBJECT(ctree),
-					   mimeview_selected, mimeview);
+	g_signal_handlers_unblock_by_func(G_OBJECT(ctree),
+					  mimeview_selected, mimeview);
 
 	/* search first text part */
 	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
@@ -668,7 +668,8 @@ static gboolean mimeview_show_part(MimeView *mimeview, MimeInfo *partinfo)
 	}
 	viewer->show_mimepart(viewer, mimeview->file, partinfo);
 
-	return TRUE;
+#warning FIXME_GTK2 Is it correct?
+	return FALSE;
 }
 
 static void mimeview_change_view_type(MimeView *mimeview, MimeViewType type)
@@ -854,12 +855,17 @@ void mimeview_pass_key_press_event(MimeView *mimeview, GdkEventKey *event)
 #define BREAK_ON_MODIFIER_KEY() \
 	if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) != 0) break
 
+#warning FIXME_GTK2
+#if 0
 #define KEY_PRESS_EVENT_STOP() \
 	if (gtk_signal_n_emissions_by_name \
 		(GTK_OBJECT(ctree), "key_press_event") > 0) { \
 		gtk_signal_emit_stop_by_name(GTK_OBJECT(ctree), \
 					     "key_press_event"); \
 	}
+#else
+#define KEY_PRESS_EVENT_STOP()
+#endif
 
 static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				 MimeView *mimeview)
@@ -895,8 +901,7 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		BREAK_ON_MODIFIER_KEY();
 		if (!GTK_CTREE_NODE_NEXT(mimeview->opened)) break;
 		KEY_PRESS_EVENT_STOP();
-
-		gtk_signal_emit_by_name(GTK_OBJECT(ctree), "scroll_vertical",
+		g_signal_emit_by_name(G_OBJECT(ctree), "scroll_vertical",
 					GTK_SCROLL_STEP_FORWARD, 0.0);
 		return TRUE;
 	case GDK_p:
@@ -904,8 +909,7 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		BREAK_ON_MODIFIER_KEY();
 		if (!GTK_CTREE_NODE_PREV(mimeview->opened)) break;
 		KEY_PRESS_EVENT_STOP();
-
-		gtk_signal_emit_by_name(GTK_OBJECT(ctree), "scroll_vertical",
+		g_signal_emit_by_name(G_OBJECT(ctree), "scroll_vertical",
 					GTK_SCROLL_STEP_BACKWARD, 0.0);
 		return TRUE;
 	case GDK_y:
@@ -941,6 +945,7 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 				   MimeView	    *mimeview)
 {
 	gchar *filename, *uriname;
+	const gchar *bname;
 	MimeInfo *partinfo;
 
 	if (!mimeview->opened) return;
@@ -951,11 +956,11 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 	if (!partinfo->filename && !partinfo->name) return;
 
 	filename = partinfo->filename ? partinfo->filename : partinfo->name;
-	filename = g_basename(filename);
-	if (*filename == '\0') return;
+	bname = g_basename(filename);
+	if (*bname == '\0') return;
 
 	filename = g_strconcat(get_mime_tmp_dir(), G_DIR_SEPARATOR_S,
-			       filename, NULL);
+			       bname, NULL);
 
 	if (procmime_get_part(filename, mimeview->file, partinfo) < 0)
 		alertpanel_error
@@ -1360,6 +1365,8 @@ static void icon_selected (MimeView *mimeview, gint num, MimeInfo *partinfo)
 	}
 }		
 
+#warning FIXME_GTK2
+#if 0
 #undef  KEY_PRESS_EVENT_STOP
 #define KEY_PRESS_EVENT_STOP() \
 	if (gtk_signal_n_emissions_by_name \
@@ -1367,6 +1374,7 @@ static void icon_selected (MimeView *mimeview, gint num, MimeInfo *partinfo)
 		gtk_signal_emit_stop_by_name(GTK_OBJECT(button), \
 					     "key_press_event"); \
 	}
+#endif
 static gint icon_key_pressed(GtkWidget *button, GdkEventKey *event,
 			     MimeView *mimeview)
 {
@@ -1468,7 +1476,7 @@ static void toggle_icon(GtkToggleButton *button, MimeView *mimeview)
 {
 	GList *child;
 	
-	child = gtk_container_children(GTK_CONTAINER(mimeview->icon_vbox));
+	child = gtk_container_get_children(GTK_CONTAINER(mimeview->icon_vbox));
 	for (; child != NULL; child = g_list_next(child)) {
 		if (GTK_IS_TOGGLE_BUTTON(child->data) && 
 		    GTK_TOGGLE_BUTTON(child->data) != button &&
@@ -1564,10 +1572,10 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	gtk_tooltips_set_tip(mimeview->tooltips, button, tip, NULL);
 	g_free(tip);
 	gtk_widget_show_all(button);
-	gtk_signal_connect(GTK_OBJECT(button), "button_press_event", 
-			   GTK_SIGNAL_FUNC(icon_clicked_cb), mimeview);
-	gtk_signal_connect(GTK_OBJECT(button), "key_press_event", 
-			   GTK_SIGNAL_FUNC(icon_key_pressed), mimeview);
+	g_signal_connect(G_OBJECT(button), "button_press_event", 
+			 G_CALLBACK(icon_clicked_cb), mimeview);
+	g_signal_connect(G_OBJECT(button), "key_press_event", 
+			 G_CALLBACK(icon_key_pressed), mimeview);
 	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
 
 }
@@ -1682,8 +1690,8 @@ static void icon_list_create(MimeView *mimeview, MimeInfo *mimeinfo)
 	gtk_widget_size_request(mimeview->icon_vbox, &size);
 	width = size.width + 4;
 	if (width > mimeview->icon_mainbox->requisition.width) {
-		gtk_widget_set_usize(mimeview->icon_mainbox, 
-				     width, -1);
+		gtk_widget_set_size_request(mimeview->icon_mainbox, 
+					    width, -1);
 	}
 
 }

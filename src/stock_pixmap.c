@@ -20,7 +20,7 @@
 #include "defs.h"
 #include <glib.h>
 #include <gtk/gtkwidget.h>
-#include <gtk/gtkpixmap.h>
+#include <gtk/gtkimage.h>
 #include <string.h>
 #include <dirent.h>
 
@@ -230,7 +230,7 @@ GtkWidget *stock_pixmap_widget(GtkWidget *window, StockPixmap icon)
 	g_return_val_if_fail(icon >= 0 && icon < N_STOCK_PIXMAPS, NULL);
 
 	if (stock_pixmap_gdk(window, icon, &pixmap, &mask) != -1)
-		return gtk_pixmap_new(pixmap, mask);
+		return gtk_image_new_from_pixmap(pixmap, mask);
 	
 	return NULL;
 }

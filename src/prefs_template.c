@@ -62,7 +62,7 @@ static GSList *prefs_template_get_list		(void);
 static gint prefs_template_deleted_cb		(GtkWidget	*widget,
 						 GdkEventAny	*event,
 						 gpointer	 data);
-static void prefs_template_key_pressed_cb	(GtkWidget	*widget,
+static gboolean prefs_template_key_pressed_cb	(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 gpointer	 data);
 static void prefs_template_cancel_cb		(void);
@@ -134,8 +134,8 @@ static void prefs_template_window_create(void)
 	gchar *title[1];
 
 	/* main window */
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
-	gtk_window_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, FALSE);
 	gtk_window_set_default_size(GTK_WINDOW(window), 400, -1);
@@ -186,12 +186,12 @@ static void prefs_template_window_create(void)
 				       GTK_POLICY_ALWAYS);
 	gtk_box_pack_start(GTK_BOX(vbox1), scroll2, TRUE, TRUE, 0);
 
-	text_value = gtk_text_new(NULL, NULL);
+	text_value = gtk_text_view_new();
 	gtk_widget_show(text_value);
-	gtk_widget_set_usize(text_value, -1, 120);
+	gtk_widget_set_size_request(text_value, -1, 120);
 	gtk_container_add(GTK_CONTAINER(scroll2), text_value);
-	gtk_text_set_editable(GTK_TEXT(text_value), TRUE);
-	gtk_text_set_word_wrap(GTK_TEXT(text_value), TRUE);
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(text_value), TRUE);
+	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text_value), GTK_WRAP_WORD);
 
 	/* vbox for buttons and templates list */
 	vbox2 = gtk_vbox_new(FALSE, 6);
@@ -207,7 +207,7 @@ static void prefs_template_window_create(void)
 	arrow1 = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
 	gtk_widget_show(arrow1);
 	gtk_box_pack_start(GTK_BOX(hbox2), arrow1, FALSE, FALSE, 0);
-	gtk_widget_set_usize(arrow1, -1, 16);
+	gtk_widget_set_size_request(arrow1, -1, 16);
 
 	hbox3 = gtk_hbox_new(TRUE, 4);
 	gtk_widget_show(hbox3);
@@ -216,27 +216,27 @@ static void prefs_template_window_create(void)
 	reg_btn = gtk_button_new_with_label(_("Add"));
 	gtk_widget_show(reg_btn);
 	gtk_box_pack_start(GTK_BOX(hbox3), reg_btn, FALSE, TRUE, 0);
-	gtk_signal_connect(GTK_OBJECT (reg_btn), "clicked",
-			   GTK_SIGNAL_FUNC (prefs_template_register_cb), NULL);
+	g_signal_connect(G_OBJECT (reg_btn), "clicked",
+			 G_CALLBACK (prefs_template_register_cb), NULL);
 
 	subst_btn = gtk_button_new_with_label(_("  Replace  "));
 	gtk_widget_show(subst_btn);
 	gtk_box_pack_start(GTK_BOX(hbox3), subst_btn, FALSE, TRUE, 0);
-	gtk_signal_connect(GTK_OBJECT(subst_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_template_substitute_cb),
-			   NULL);
+	g_signal_connect(G_OBJECT(subst_btn), "clicked",
+			 G_CALLBACK(prefs_template_substitute_cb),
+			 NULL);
 
 	del_btn = gtk_button_new_with_label(_("Delete"));
 	gtk_widget_show(del_btn);
 	gtk_box_pack_start(GTK_BOX(hbox3), del_btn, FALSE, TRUE, 0);
-	gtk_signal_connect(GTK_OBJECT(del_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_template_delete_cb), NULL);
+	g_signal_connect(G_OBJECT(del_btn), "clicked",
+			 G_CALLBACK(prefs_template_delete_cb), NULL);
 
 	desc_btn = gtk_button_new_with_label(_(" Symbols "));
 	gtk_widget_show(desc_btn);
 	gtk_box_pack_end(GTK_BOX(hbox2), desc_btn, FALSE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(desc_btn), "clicked",
-			   GTK_SIGNAL_FUNC(quote_fmt_quote_description), NULL);
+	g_signal_connect(G_OBJECT(desc_btn), "clicked",
+			 G_CALLBACK(quote_fmt_quote_description), NULL);
 
 	/* templates list */
 	scroll1 = gtk_scrolled_window_new(NULL, NULL);
@@ -249,15 +249,15 @@ static void prefs_template_window_create(void)
 	title[0] = _("Current templates");
 	clist_tmpls = gtk_clist_new_with_titles(1, title);
 	gtk_widget_show(clist_tmpls);
-	gtk_widget_set_usize(scroll1, -1, 140);
+	gtk_widget_set_size_request(scroll1, -1, 140);
 	gtk_container_add(GTK_CONTAINER(scroll1), clist_tmpls);
 	gtk_clist_set_column_width(GTK_CLIST(clist_tmpls), 0, 80);
 	gtk_clist_set_selection_mode(GTK_CLIST(clist_tmpls),
 				     GTK_SELECTION_BROWSE);
 	GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(clist_tmpls)->column[0].button,
 			       GTK_CAN_FOCUS);
-	gtk_signal_connect(GTK_OBJECT (clist_tmpls), "select_row",
-			   GTK_SIGNAL_FUNC (prefs_template_select_cb), NULL);
+	g_signal_connect(G_OBJECT (clist_tmpls), "select_row",
+			 G_CALLBACK (prefs_template_select_cb), NULL);
 
 	/* ok | cancel */
 	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
@@ -268,15 +268,15 @@ static void prefs_template_window_create(void)
 
 	gtk_window_set_title(GTK_WINDOW(window), _("Template configuration"));
 
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(prefs_template_deleted_cb), NULL);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(prefs_template_key_pressed_cb), NULL);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(prefs_template_deleted_cb), NULL);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(prefs_template_key_pressed_cb), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
-	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_template_ok_cb), NULL);
-	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
-			    GTK_SIGNAL_FUNC(prefs_template_cancel_cb), NULL);
+	g_signal_connect(G_OBJECT(ok_btn), "clicked",
+			 G_CALLBACK(prefs_template_ok_cb), NULL);
+	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
+			 G_CALLBACK(prefs_template_cancel_cb), NULL);
 
 	address_completion_start(window);
 
@@ -345,11 +345,12 @@ static gint prefs_template_deleted_cb(GtkWidget *widget, GdkEventAny *event,
 	return TRUE;
 }
 
-static void prefs_template_key_pressed_cb(GtkWidget *widget,
-					  GdkEventKey *event, gpointer data)
+static gboolean prefs_template_key_pressed_cb(GtkWidget *widget,
+					      GdkEventKey *event, gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		prefs_template_cancel_cb();
+	return FALSE;
 }
 
 static void prefs_template_ok_cb(void)
@@ -376,6 +377,8 @@ static void prefs_template_select_cb(GtkCList *clist, gint row, gint column,
 {
 	Template *tmpl;
 	Template tmpl_def;
+	GtkTextBuffer *buffer;
+	GtkTextIter iter;
 
 	tmpl_def.name = _("Template");
 	tmpl_def.subject = "";
@@ -397,14 +400,10 @@ static void prefs_template_select_cb(GtkCList *clist, gint row, gint column,
 	gtk_entry_set_text(GTK_ENTRY(templates.entry_subject),
 			   tmpl->subject ? tmpl->subject : "");
 	
-	gtk_text_freeze(GTK_TEXT(templates.text_value));
-	gtk_text_set_point(GTK_TEXT(templates.text_value), 0);
-	gtk_text_forward_delete
-		(GTK_TEXT(templates.text_value), 
-		 gtk_text_get_length(GTK_TEXT(templates.text_value)));
-	gtk_text_insert(GTK_TEXT(templates.text_value), NULL, NULL, NULL,
-	                tmpl->value, -1);
-	gtk_text_thaw(GTK_TEXT(templates.text_value));
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(templates.text_value));
+	gtk_text_buffer_set_text(buffer, "\0", -1);
+	gtk_text_buffer_get_start_iter(buffer, &iter);
+	gtk_text_buffer_insert(buffer, &iter, tmpl->value, -1);
 }
 
 static GSList *prefs_template_get_list(void)
@@ -434,11 +433,15 @@ static gint prefs_template_clist_set_row(gint row)
 	gchar *bcc;	
 	gchar *value;
 	gchar *title[1];
+	GtkTextBuffer *buffer;
+	GtkTextIter start, end;
 
 	g_return_val_if_fail(row != 0, -1);
 
-	value = gtk_editable_get_chars(GTK_EDITABLE(templates.text_value),
-				       0, -1);
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(templates.text_value));
+	gtk_text_buffer_get_start_iter(buffer, &start);
+	gtk_text_buffer_get_iter_at_offset(buffer, &end, -1);
+	value = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
 
 	if (value && *value != '\0') {
 		gchar *parsed_buf;

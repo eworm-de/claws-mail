@@ -392,8 +392,8 @@ static gchar *search_array_str			(GPtrArray	*array,
 static void imap_path_separator_subst		(gchar		*str,
 						 gchar		 separator);
 
-static gchar *imap_modified_utf7_to_locale	(const gchar	*mutf7_str);
-static gchar *imap_locale_to_modified_utf7	(const gchar	*from);
+static gchar *imap_utf8_to_modified_utf7	(const gchar	*from);
+static gchar *imap_modified_utf7_to_utf8	(const gchar	*mutf7_str);
 
 static GSList *imap_get_seq_set_from_numlist    (MsgNumberList  *msglist);
 static GSList *imap_get_seq_set_from_msglist	(MsgInfoList 	*msglist);
@@ -1298,7 +1298,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 			new_item->stype = F_INBOX;
 			folder->inbox = new_item;
 		} else if (!item->parent || item->stype == F_INBOX) {
-			gchar *base;
+			const gchar *base;
 
 			base = g_basename(new_item->path);
 
@@ -1333,7 +1333,7 @@ static GSList *imap_parse_list(IMAPFolder *folder, IMAPSession *session,
 	gchar flags[256];
 	gchar separator_str[16];
 	gchar *p;
-	gchar *name;
+	const gchar *name;
 	gchar *loc_name, *loc_path;
 	GSList *item_list = NULL;
 	GString *str;
@@ -1391,8 +1391,8 @@ static GSList *imap_parse_list(IMAPFolder *folder, IMAPSession *session,
 		name = g_basename(buf);
 		if (name[0] == '.') continue;
 
-		loc_name = imap_modified_utf7_to_locale(name);
-		loc_path = imap_modified_utf7_to_locale(buf);
+		loc_name = imap_modified_utf7_to_utf8(name);
+		loc_path = imap_modified_utf7_to_utf8(buf);
 		new_item = folder_item_new(FOLDER(folder), loc_name, loc_path);
 		if (strcasestr(flags, "\\Noinferiors") != NULL)
 			new_item->no_sub = TRUE;
@@ -1561,7 +1561,7 @@ FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 
 	/* keep trailing directory separator to create a folder that contains
 	   sub folder */
-	imap_path = imap_locale_to_modified_utf7(dirpath);
+	imap_path = imap_utf8_to_modified_utf7(dirpath);
 	strtailchomp(dirpath, '/');
 	Xstrdup_a(new_name, name, {g_free(dirpath); return NULL;});
 	strtailchomp(new_name, '/');
@@ -1663,7 +1663,7 @@ gint imap_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 	} else
 		newpath = g_strdup(name);
 
-	real_newpath = imap_locale_to_modified_utf7(newpath);
+	real_newpath = imap_utf8_to_modified_utf7(newpath);
 	imap_path_separator_subst(real_newpath, separator);
 
 	ok = imap_cmd_rename(session, real_oldpath, real_newpath);
@@ -2079,7 +2079,7 @@ static gchar *imap_get_real_path(IMAPFolder *folder, const gchar *path)
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(path != NULL, NULL);
 
-	real_path = imap_locale_to_modified_utf7(path);
+	real_path = imap_utf8_to_modified_utf7(path);
 	separator = imap_get_path_separator(folder, path);
 	imap_path_separator_subst(real_path, separator);
 
@@ -3218,7 +3218,7 @@ static void imap_path_separator_subst(gchar *str, gchar separator)
 	}
 }
 
-static gchar *imap_modified_utf7_to_locale(const gchar *mutf7_str)
+static gchar *imap_modified_utf7_to_utf8(const gchar *mutf7_str)
 {
 #if !HAVE_ICONV
 	const gchar *from_p;
@@ -3251,10 +3251,9 @@ static gchar *imap_modified_utf7_to_locale(const gchar *mutf7_str)
 	if (!iconv_ok) return g_strdup(mutf7_str);
 
 	if (cd == (iconv_t)-1) {
-		cd = iconv_open(conv_get_current_charset_str(), "UTF-7");
+		cd = iconv_open(conv_get_current_charset_str(), CS_UTF_8);
 		if (cd == (iconv_t)-1) {
-			g_warning("iconv cannot convert UTF-7 to %s\n",
-				  conv_get_current_charset_str());
+			g_warning(_("iconv cannot convert UTF-7 to UTF-8\n"));
 			iconv_ok = FALSE;
 			return g_strdup(mutf7_str);
 		}
@@ -3291,8 +3290,7 @@ static gchar *imap_modified_utf7_to_locale(const gchar *mutf7_str)
 
 	if (iconv(cd, (ICONV_CONST gchar **)&norm_utf7_p, &norm_utf7_len,
 		  &to_p, &to_len) == -1) {
-		g_warning(_("iconv cannot convert UTF-7 to %s\n"),
-			  conv_get_current_charset_str());
+		g_warning(_("iconv cannot convert UTF-7 to UTF-8\n"));
 		g_string_free(norm_utf7, TRUE);
 		g_free(to_str);
 		return g_strdup(mutf7_str);
@@ -3307,7 +3305,7 @@ static gchar *imap_modified_utf7_to_locale(const gchar *mutf7_str)
 #endif /* !HAVE_ICONV */
 }
 
-static gchar *imap_locale_to_modified_utf7(const gchar *from)
+static gchar *imap_utf8_to_modified_utf7(const gchar *from)
 {
 #if !HAVE_ICONV
 	const gchar *from_p;
@@ -3338,10 +3336,9 @@ static gchar *imap_locale_to_modified_utf7(const gchar *from)
 	if (!iconv_ok) return g_strdup(from);
 
 	if (cd == (iconv_t)-1) {
-		cd = iconv_open("UTF-7", conv_get_current_charset_str());
+		cd = iconv_open("UTF-7", CS_UTF_8);
 		if (cd == (iconv_t)-1) {
-			g_warning("iconv cannot convert %s to UTF-7\n",
-				  conv_get_current_charset_str());
+			g_warning("iconv cannot convert UTF-8 to UTF-7\n");
 			iconv_ok = FALSE;
 			return g_strdup(from);
 		}
@@ -3388,8 +3385,7 @@ static gchar *imap_locale_to_modified_utf7(const gchar *from)
 			if (iconv(cd, (ICONV_CONST gchar **)&from_tmp,
 				  &conv_len,
 				  &norm_utf7_p, &norm_utf7_len) == -1) {
-				g_warning("iconv cannot convert %s to UTF-7\n",
-					  conv_get_current_charset_str());
+				g_warning(_("iconv cannot convert UTF-8 to UTF-7\n"));
 				return g_strdup(from);
 			}
 

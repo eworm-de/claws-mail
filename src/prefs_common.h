@@ -125,11 +125,20 @@ struct _PrefsCommon
 #endif
         
 	/* Display */
+	/* obsolete fonts */
+	gchar *widgetfont_gtk1;
+	gchar *textfont_gtk1;
+	gchar *normalfont_gtk1;
+	gchar *boldfont_gtk1;
+	gchar *smallfont_gtk1;
+
+	/* new fonts */
 	gchar *widgetfont;
 	gchar *textfont;
 	gchar *normalfont;
 	gchar *boldfont;
 	gchar *smallfont;
+	gchar *titlefont;
 
 	gboolean trans_hdr;
 	gboolean display_folder_unread;

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include "gtksctree.h"
+#include "sylpheed-marshal.h"
 
 
 enum {
@@ -64,8 +65,6 @@ static GtkCTreeClass *parent_class;
 static guint sctree_signals[LAST_SIGNAL];
 
 
-#define GTK_CLIST_CLASS_FW(_widget_) GTK_CLIST_CLASS (((GtkObject*) (_widget_))->klass)
-
 /**
  * gtk_sctree_get_type:
  * @void: 
@@ -74,24 +73,28 @@ static guint sctree_signals[LAST_SIGNAL];
  * 
  * Return value: The type ID for GtkSCTreeClass
  **/
-GtkType
+GType
 gtk_sctree_get_type (void)
 {
-	static GtkType sctree_type = 0;
+	static GType sctree_type = 0;
 
 	if (!sctree_type) {
-		GtkTypeInfo sctree_info = {
-			"GtkSCTree",
-			sizeof (GtkSCTree),
+		GTypeInfo sctree_info = {
 			sizeof (GtkSCTreeClass),
-			(GtkClassInitFunc) gtk_sctree_class_init,
-			(GtkObjectInitFunc) gtk_sctree_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+
+			(GBaseInitFunc) NULL,
+			(GBaseFinalizeFunc) NULL,
+
+			(GClassInitFunc) gtk_sctree_class_init,
+			(GClassFinalizeFunc) NULL,
+			NULL,	/* class_data */
+
+			sizeof (GtkSCTree),
+			0,	/* n_preallocs */
+			(GInstanceInitFunc) gtk_sctree_init,
 		};
 
-		sctree_type = gtk_type_unique (gtk_ctree_get_type (), &sctree_info);
+		sctree_type = g_type_register_static (GTK_TYPE_CTREE, "GtkSCTree", &sctree_info, (GTypeFlags)0);
 	}
 
 	return sctree_type;
@@ -114,39 +117,43 @@ gtk_sctree_class_init (GtkSCTreeClass *klass)
 	parent_class = gtk_type_class (gtk_ctree_get_type ());
 
 	sctree_signals[ROW_POPUP_MENU] =
-		gtk_signal_new ("row_popup_menu",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (GtkSCTreeClass, row_popup_menu),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE, 1,
-				GTK_TYPE_GDK_EVENT);
+		g_signal_new ("row_popup_menu",
+			      G_TYPE_FROM_CLASS (klass),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (GtkSCTreeClass, row_popup_menu),
+			      NULL, NULL,
+			      sylpheed_marshal_VOID__POINTER,
+			      G_TYPE_NONE, 1,
+			      GDK_TYPE_EVENT);
 	sctree_signals[EMPTY_POPUP_MENU] =
-		gtk_signal_new ("empty_popup_menu",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (GtkSCTreeClass, empty_popup_menu),
-				gtk_marshal_NONE__POINTER,
-				GTK_TYPE_NONE, 1,
-				GTK_TYPE_GDK_EVENT);
+		g_signal_new ("empty_popup_menu",
+			      G_TYPE_FROM_CLASS (klass),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (GtkSCTreeClass, empty_popup_menu),
+			      NULL, NULL,
+			      sylpheed_marshal_VOID__POINTER,
+			      G_TYPE_NONE, 1,
+			      GDK_TYPE_EVENT);
 	sctree_signals[OPEN_ROW] =
-		gtk_signal_new ("open_row",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (GtkSCTreeClass, open_row),
-				gtk_marshal_NONE__NONE,
-				GTK_TYPE_NONE, 0);
+		g_signal_new ("open_row",
+			      G_TYPE_FROM_CLASS (klass),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (GtkSCTreeClass, open_row),
+			      NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE, 0);
 	sctree_signals[START_DRAG] =
-		gtk_signal_new ("start_drag",
-				GTK_RUN_FIRST,
-				object_class->type,
-				GTK_SIGNAL_OFFSET (GtkSCTreeClass, start_drag),
-				gtk_marshal_NONE__INT_POINTER,
-				GTK_TYPE_NONE, 2,
-				GTK_TYPE_INT,
-				GTK_TYPE_GDK_EVENT);
+		g_signal_new ("start_drag",
+			      G_TYPE_FROM_CLASS (klass),
+			      G_SIGNAL_RUN_FIRST,
+			      G_STRUCT_OFFSET (GtkSCTreeClass, start_drag),
+			      NULL, NULL,
+			      sylpheed_marshal_VOID__INT_POINTER,
+			      G_TYPE_NONE, 2,
+			      G_TYPE_INT,
+			      GDK_TYPE_EVENT);
 
-	gtk_object_class_add_signals (object_class, sctree_signals, LAST_SIGNAL);
+	/* gtk_object_class_add_signals (object_class, sctree_signals, LAST_SIGNAL); */
 
 	clist_class->clear = gtk_sctree_clear;
         ctree_class->tree_collapse = gtk_sctree_collapse;
@@ -228,7 +235,7 @@ select_row (GtkSCTree *sctree, gint row, gint col, guint state)
 
 	gtk_clist_freeze (GTK_CLIST (sctree));
 	GTK_CLIST(sctree)->focus_row = row;
-	GTK_CLIST_CLASS(GTK_OBJECT(sctree)->klass)->refresh(GTK_CLIST(sctree));
+	GTK_CLIST_GET_CLASS(sctree)->refresh(GTK_CLIST(sctree));
 	if (!additive)
 		gtk_clist_unselect_all (GTK_CLIST (sctree));
 
@@ -242,12 +249,12 @@ select_row (GtkSCTree *sctree, gint row, gint col, guint state)
 			if (row_is_selected(sctree, row))
 				gtk_clist_unselect_row (GTK_CLIST (sctree), row, col);
 			else
-				gtk_signal_emit_by_name
-					(GTK_OBJECT (sctree),
+				g_signal_emit_by_name
+					(G_OBJECT (sctree),
 					 "tree_select_row", node, col);
 		} else {
-			gtk_signal_emit_by_name
-				(GTK_OBJECT (sctree),
+			g_signal_emit_by_name
+				(G_OBJECT (sctree),
 				 "tree_select_row", node, col);
 		}
 		sctree->anchor_row = node;
@@ -322,14 +329,14 @@ gtk_sctree_button_press (GtkWidget *widget, GdkEventButton *event)
 			if (on_row) {
 				if (!row_is_selected(sctree,row))
 					select_row (sctree, row, col, 0);
-				gtk_signal_emit (GTK_OBJECT (sctree),
+				g_signal_emit (G_OBJECT (sctree),
 						 sctree_signals[ROW_POPUP_MENU],
-						 event);
+						 0, event);
 			} else {
 				gtk_clist_unselect_all(clist);
-				gtk_signal_emit (GTK_OBJECT (sctree),
+				g_signal_emit (G_OBJECT (sctree),
 						 sctree_signals[EMPTY_POPUP_MENU],
-						 event);
+						 0, event);
 			}
 			retval = TRUE;
 		}
@@ -344,8 +351,8 @@ gtk_sctree_button_press (GtkWidget *widget, GdkEventButton *event)
 		sctree->dnd_select_pending_state = 0;
 
 		if (on_row)
-			gtk_signal_emit (GTK_OBJECT (sctree),
-					 sctree_signals[OPEN_ROW]);
+			g_signal_emit (GTK_OBJECT (sctree),
+				       sctree_signals[OPEN_ROW], 0);
 
 		retval = TRUE;
 		break;
@@ -444,10 +451,11 @@ gtk_sctree_motion (GtkWidget *widget, GdkEventMotion *event)
 		sctree->dnd_select_pending_state = 0;
 	}
 
-	gtk_signal_emit (GTK_OBJECT (sctree),
-			 sctree_signals[START_DRAG],
-			 sctree->dnd_press_button,
-			 event);
+	g_signal_emit (G_OBJECT (sctree),
+		       sctree_signals[START_DRAG],
+		       0,
+		       sctree->dnd_press_button,
+		       event);
 	return TRUE;
 }
 
@@ -540,13 +548,36 @@ gtk_sctree_collapse (GtkCTree *ctree, GtkCTreeNode *node)
 GtkWidget *gtk_sctree_new_with_titles (gint columns, gint tree_column, 
 				       gchar *titles[])
 {
+#if 0
 	GtkSCTree* sctree;
 
 	sctree = gtk_type_new (gtk_sctree_get_type ());
 	gtk_ctree_construct (GTK_CTREE (sctree), columns, tree_column, titles);
+	
 	gtk_clist_set_selection_mode(GTK_CLIST(sctree), GTK_SELECTION_EXTENDED);
 
 	return GTK_WIDGET (sctree);
+#else
+	GtkWidget *widget;
+                                                                                                            
+	g_return_val_if_fail (columns > 0, NULL);
+	g_return_val_if_fail (tree_column >= 0 && tree_column < columns, NULL);
+                                                                                                            
+	widget = gtk_widget_new (TYPE_GTK_SCTREE,
+				 "n_columns", columns,
+				 "tree_column", tree_column,
+				 NULL);
+	if (titles) {
+		GtkCList *clist = GTK_CLIST (widget);
+		guint i;
+
+		for (i = 0; i < columns; i++)
+			gtk_clist_set_column_title (clist, i, titles[i]);
+		gtk_clist_column_titles_show (clist);
+	}
+
+	return widget;
+#endif
 }
 
 void gtk_sctree_select (GtkSCTree *sctree, GtkCTreeNode *node)
@@ -698,7 +729,7 @@ gtk_sctree_sort_recursive (GtkCTree     *ctree,
 	gtk_clist_freeze (clist);
 
 	if (clist->selection_mode == GTK_SELECTION_EXTENDED) {
-		GTK_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
+		GTK_CLIST_GET_CLASS (clist)->resync_selection (clist, NULL);
       
 		g_list_free (clist->undo_selection);
 		g_list_free (clist->undo_unselection);
@@ -737,7 +768,7 @@ gtk_sctree_sort_node (GtkCTree     *ctree,
 	gtk_clist_freeze (clist);
 
 	if (clist->selection_mode == GTK_SELECTION_EXTENDED) {
-		GTK_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
+		GTK_CLIST_GET_CLASS (clist)->resync_selection (clist, NULL);
 
 		g_list_free (clist->undo_selection);
 		g_list_free (clist->undo_unselection);
@@ -780,7 +811,7 @@ gtk_ctree_unlink (GtkCTree     *ctree,
 	clist = GTK_CLIST (ctree);
   
 	if (update_focus_row && clist->selection_mode == GTK_SELECTION_EXTENDED) {
-		GTK_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
+		GTK_CLIST_GET_CLASS (clist)->resync_selection (clist, NULL);
 
 		g_list_free (clist->undo_selection);
 		g_list_free (clist->undo_unselection);
@@ -893,7 +924,7 @@ gtk_ctree_link (GtkCTree     *ctree,
 	clist = GTK_CLIST (ctree);
 
 	if (update_focus_row && clist->selection_mode == GTK_SELECTION_EXTENDED) {
-		GTK_CLIST_CLASS_FW (clist)->resync_selection (clist, NULL);
+		GTK_CLIST_GET_CLASS (clist)->resync_selection (clist, NULL);
 
 		g_list_free (clist->undo_selection);
 		g_list_free (clist->undo_unselection);

@@ -61,6 +61,7 @@ typedef gint (*SockAddrFunc)	(GList		*addr_list,
 typedef struct _SockConnectData	SockConnectData;
 typedef struct _SockLookupData	SockLookupData;
 typedef struct _SockAddrData	SockAddrData;
+typedef struct _SockSource	SockSource;
 
 struct _SockConnectData {
 	gint id;
@@ -92,19 +93,20 @@ struct _SockAddrData {
 	struct sockaddr *addr;
 };
 
+struct _SockSource {
+	GSource parent;
+	SockInfo *sock;
+};
+
 static guint io_timeout = 60;
 
 static GList *sock_connect_data_list = NULL;
 
-static gboolean sock_prepare		(gpointer	 source_data,
-					 GTimeVal	*current_time,
-					 gint		*timeout,
-					 gpointer	 data);
-static gboolean sock_check		(gpointer	 source_data,
-					 GTimeVal	*current_time,
-					 gpointer	 user_data);
-static gboolean sock_dispatch		(gpointer	 source_data,
-					 GTimeVal	*current_time,
+static gboolean sock_prepare		(GSource	*source,
+					 gint		*timeout);
+static gboolean sock_check		(GSource	*source);
+static gboolean sock_dispatch		(GSource	*source,
+					 GSourceFunc	 callback,
 					 gpointer	 user_data);
 
 GSourceFuncs sock_watch_funcs = {
@@ -269,17 +271,15 @@ gboolean sock_is_nonblocking_mode(SockInfo *sock)
 }
 
 
-static gboolean sock_prepare(gpointer source_data, GTimeVal *current_time,
-			     gint *timeout, gpointer data)
+static gboolean sock_prepare(GSource *source, gint *timeout)
 {
 	*timeout = 1;
 	return FALSE;
 }
 
-static gboolean sock_check(gpointer source_data, GTimeVal *current_time,
-			   gpointer user_data)
+static gboolean sock_check(GSource *source)
 {
-	SockInfo *sock = (SockInfo *)source_data;
+	SockInfo *sock = ((SockSource *)source)->sock;
 	struct timeval timeout = {0, 0};
 	fd_set fds;
 	GIOCondition condition = sock->condition;
@@ -311,10 +311,10 @@ static gboolean sock_check(gpointer source_data, GTimeVal *current_time,
 	return FD_ISSET(sock->sock, &fds) != 0;
 }
 
-static gboolean sock_dispatch(gpointer source_data, GTimeVal *current_time,
+static gboolean sock_dispatch(GSource *source, GSourceFunc callback,
 			      gpointer user_data)
 {
-	SockInfo *sock = (SockInfo *)source_data;
+	SockInfo *sock = ((SockSource *)source)->sock;
 
 	return sock->callback(sock, sock->condition, user_data);
 }
@@ -336,8 +336,14 @@ guint sock_add_watch(SockInfo *sock, GIOCondition condition, SockFunc func,
 
 #if USE_OPENSSL
 	if (sock->ssl)
-		return g_source_add(G_PRIORITY_DEFAULT, FALSE,
-				    &sock_watch_funcs, sock, data, NULL);
+	{
+		GSource *source = g_source_new(&sock_watch_funcs,
+					       sizeof(SockSource));
+		((SockSource *) source)->sock = sock;
+		g_source_set_priority(source, G_PRIORITY_DEFAULT);
+		g_source_set_can_recurse(source, FALSE);
+		g_source_attach(source, NULL);
+	}
 #endif
 
 	return g_io_add_watch(sock->sock_ch, condition, sock_watch_cb, sock);

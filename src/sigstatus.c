@@ -84,7 +84,7 @@ static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data)
 	return TRUE;
 }
 
-static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
+static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
 	GpgmegtkSigStatus hd = data;
 
@@ -92,6 +92,7 @@ static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 		hd->running = 0;
 		do_destroy(hd);
 	}
+	return FALSE;
 }
 
 GpgmegtkSigStatus gpgmegtk_sig_status_create(void)
@@ -107,16 +108,16 @@ GpgmegtkSigStatus gpgmegtk_sig_status_create(void)
 	hd = g_malloc0(sizeof *hd);
 	hd->running = 1;
 
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	hd->mainwindow = window;
-	gtk_widget_set_usize(window, 400, -1);
+	gtk_widget_set_size_request(window, 400, -1);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, FALSE);
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(delete_event), hd);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(key_pressed), hd);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+				G_CALLBACK(delete_event), hd);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(key_pressed), hd);
 
 	vbox = gtk_vbox_new(FALSE, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
@@ -135,8 +136,8 @@ GpgmegtkSigStatus gpgmegtk_sig_status_create(void)
 				NULL, NULL, NULL, NULL);
 	gtk_box_pack_end(GTK_BOX(vbox), okay_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(okay_btn);
-	gtk_signal_connect(GTK_OBJECT(okay_btn), "clicked",
-			   GTK_SIGNAL_FUNC(okay_cb), hd);
+	g_signal_connect(G_OBJECT(okay_btn), "clicked",
+			 G_CALLBACK(okay_cb), hd);
 
 	gtk_widget_show_all(window);
 

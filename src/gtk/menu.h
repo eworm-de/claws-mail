@@ -27,14 +27,17 @@
 #include <gtk/gtkmenushell.h>
 #include <gtk/gtkoptionmenu.h>
 
+#define MENU_VAL_ID "Sylpheed::Menu::ValueID"
+
 #define MENUITEM_ADD(menu, menuitem, label, data) \
 { \
 	menuitem = gtk_menu_item_new_with_label(label); \
 	gtk_widget_show(menuitem); \
-	gtk_menu_append(GTK_MENU(menu), menuitem); \
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), menuitem); \
 	if (data) \
-		gtk_object_set_user_data(GTK_OBJECT(menuitem), \
-					 GINT_TO_POINTER(data)); \
+		g_object_set_data(G_OBJECT(menuitem), \
+				  MENU_VAL_ID, \
+				  GINT_TO_POINTER(data)); \
 }
 
 #define menu_set_insensitive_all(menu_shell) \
@@ -75,6 +78,7 @@ void menu_toggle_toggle		(GtkItemFactory		*ifactory,
 void menu_button_position	(GtkMenu		*menu,
 				 gint			*x,
 				 gint			*y,
+				 gboolean		*push_in,
 				 gpointer		 user_data);
 
 gint menu_find_option_menu_index(GtkOptionMenu		*optmenu,

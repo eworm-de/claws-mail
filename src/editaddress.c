@@ -126,11 +126,12 @@ static gint edit_person_delete_event(GtkWidget *widget, GdkEventAny *event, gboo
 	return TRUE;
 }
 
-static void edit_person_key_pressed(GtkWidget *widget, GdkEventKey *event, gboolean *cancelled) {
+static gboolean edit_person_key_pressed(GtkWidget *widget, GdkEventKey *event, gboolean *cancelled) {
 	if (event && event->keyval == GDK_Escape) {
 		*cancelled = TRUE;
 		gtk_main_quit();
 	}
+	return FALSE;
 }
 
 static gchar *_title_new_ = NULL;
@@ -474,18 +475,18 @@ static void addressbook_edit_person_dialog_create( gboolean *cancelled ) {
 	GtkWidget *hsbox;
 	GtkWidget *statusbar;
 
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
-	gtk_widget_set_usize(window, EDITPERSON_WIDTH, EDITPERSON_HEIGHT );
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_widget_set_size_request(window, EDITPERSON_WIDTH, EDITPERSON_HEIGHT );
 	/* gtk_container_set_border_width(GTK_CONTAINER(window), 0); */
 	gtk_window_set_title(GTK_WINDOW(window), _("Edit Person Data"));
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);	
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(edit_person_delete_event),
-			   cancelled);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(edit_person_key_pressed),
-			   cancelled);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(edit_person_delete_event),
+			 cancelled);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(edit_person_key_pressed),
+			 cancelled);
 
 	vbox = gtk_vbox_new(FALSE, 4);
 	/* gtk_container_set_border_width(GTK_CONTAINER(vbox), BORDER_WIDTH); */
@@ -515,12 +516,12 @@ static void addressbook_edit_person_dialog_create( gboolean *cancelled ) {
 	gtk_box_pack_end(GTK_BOX(vnbox), hbbox, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
 
-	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-			   GTK_SIGNAL_FUNC(edit_person_ok), cancelled);
-	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
-			   GTK_SIGNAL_FUNC(edit_person_cancel), cancelled);
-	gtk_signal_connect(GTK_OBJECT(notebook), "switch_page",
-			   GTK_SIGNAL_FUNC(edit_person_switch_page), NULL );
+	g_signal_connect(G_OBJECT(ok_btn), "clicked",
+			 G_CALLBACK(edit_person_ok), cancelled);
+	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
+			 G_CALLBACK(edit_person_cancel), cancelled);
+	g_signal_connect(G_OBJECT(notebook), "switch_page",
+			 G_CALLBACK(edit_person_switch_page), NULL );
 
 	gtk_widget_show_all(vbox);
 
@@ -702,7 +703,7 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 
 	vbuttonbox = gtk_vbutton_box_new();
 	gtk_button_box_set_layout( GTK_BUTTON_BOX(vbuttonbox), GTK_BUTTONBOX_START );
-	gtk_button_box_set_spacing( GTK_BUTTON_BOX(vbuttonbox), 8 );
+	gtk_box_set_spacing( GTK_BOX(vbuttonbox), 8 );
 	gtk_container_set_border_width( GTK_CONTAINER(vbuttonbox), 4 );
 	gtk_container_add( GTK_CONTAINER(vboxb), vbuttonbox );
 
@@ -728,20 +729,20 @@ static void addressbook_edit_person_page_email( gint pageNum, gchar *pageLbl ) {
 	gtk_widget_show_all(vbox);
 
 	/* Event handlers */
-	gtk_signal_connect( GTK_OBJECT(clist), "select_row",
-			GTK_SIGNAL_FUNC( edit_person_email_list_selected), NULL );
-	gtk_signal_connect( GTK_OBJECT(buttonUp), "clicked",
-			GTK_SIGNAL_FUNC( edit_person_email_move_up ), NULL );
-	gtk_signal_connect( GTK_OBJECT(buttonDown), "clicked",
-			GTK_SIGNAL_FUNC( edit_person_email_move_down ), NULL );
-	gtk_signal_connect( GTK_OBJECT(buttonDel), "clicked",
-			GTK_SIGNAL_FUNC( edit_person_email_delete ), NULL );
-	gtk_signal_connect( GTK_OBJECT(buttonMod), "clicked",
-			GTK_SIGNAL_FUNC( edit_person_email_modify ), NULL );
-	gtk_signal_connect( GTK_OBJECT(buttonAdd), "clicked",
-			GTK_SIGNAL_FUNC( edit_person_email_add ), NULL );
-	gtk_signal_connect( GTK_OBJECT(buttonClr), "clicked",
-			GTK_SIGNAL_FUNC( edit_person_email_clear ), NULL );
+	g_signal_connect( G_OBJECT(clist), "select_row",
+			  G_CALLBACK( edit_person_email_list_selected), NULL );
+	g_signal_connect( G_OBJECT(buttonUp), "clicked",
+			  G_CALLBACK( edit_person_email_move_up ), NULL );
+	g_signal_connect( G_OBJECT(buttonDown), "clicked",
+			  G_CALLBACK( edit_person_email_move_down ), NULL );
+	g_signal_connect( G_OBJECT(buttonDel), "clicked",
+			  G_CALLBACK( edit_person_email_delete ), NULL );
+	g_signal_connect( G_OBJECT(buttonMod), "clicked",
+			  G_CALLBACK( edit_person_email_modify ), NULL );
+	g_signal_connect( G_OBJECT(buttonAdd), "clicked",
+			  G_CALLBACK( edit_person_email_add ), NULL );
+	g_signal_connect( G_OBJECT(buttonClr), "clicked",
+			  G_CALLBACK( edit_person_email_clear ), NULL );
 
 	personeditdlg.clist_email   = clist;
 	personeditdlg.entry_email   = entry_email;
@@ -842,7 +843,7 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 
 	vbuttonbox = gtk_vbutton_box_new();
 	gtk_button_box_set_layout( GTK_BUTTON_BOX(vbuttonbox), GTK_BUTTONBOX_START );
-	gtk_button_box_set_spacing( GTK_BUTTON_BOX(vbuttonbox), 8 );
+	gtk_box_set_spacing( GTK_BOX(vbuttonbox), 8 );
 	gtk_container_set_border_width( GTK_CONTAINER(vbuttonbox), 4 );
 	gtk_container_add( GTK_CONTAINER(vboxb), vbuttonbox );
 
@@ -862,16 +863,16 @@ static void addressbook_edit_person_page_attrib( gint pageNum, gchar *pageLbl ) 
 	gtk_widget_show_all(vbox);
 
 	/* Event handlers */
-	gtk_signal_connect( GTK_OBJECT(clist), "select_row",
-			GTK_SIGNAL_FUNC( edit_person_attrib_list_selected), NULL );
-	gtk_signal_connect( GTK_OBJECT(buttonDel), "clicked",
-			GTK_SIGNAL_FUNC( edit_person_attrib_delete ), NULL );
-	gtk_signal_connect( GTK_OBJECT(buttonMod), "clicked",
-			GTK_SIGNAL_FUNC( edit_person_attrib_modify ), NULL );
-	gtk_signal_connect( GTK_OBJECT(buttonAdd), "clicked",
-			GTK_SIGNAL_FUNC( edit_person_attrib_add ), NULL );
-	gtk_signal_connect( GTK_OBJECT(buttonClr), "clicked",
-			GTK_SIGNAL_FUNC( edit_person_attrib_clear ), NULL );
+	g_signal_connect( G_OBJECT(clist), "select_row",
+			  G_CALLBACK( edit_person_attrib_list_selected), NULL );
+	g_signal_connect( G_OBJECT(buttonDel), "clicked",
+			  G_CALLBACK( edit_person_attrib_delete ), NULL );
+	g_signal_connect( G_OBJECT(buttonMod), "clicked",
+			  G_CALLBACK( edit_person_attrib_modify ), NULL );
+	g_signal_connect( G_OBJECT(buttonAdd), "clicked",
+			  G_CALLBACK( edit_person_attrib_add ), NULL );
+	g_signal_connect( G_OBJECT(buttonClr), "clicked",
+			  G_CALLBACK( edit_person_attrib_clear ), NULL );
 
 	personeditdlg.clist_attrib  = clist;
 	personeditdlg.entry_atname  = entry_name;
@@ -968,10 +969,10 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent, I
 
 	/* Select appropriate start page */
 	if( pgMail ) {
-		gtk_notebook_set_page( GTK_NOTEBOOK(personeditdlg.notebook), PAGE_EMAIL );
+		gtk_notebook_set_current_page( GTK_NOTEBOOK(personeditdlg.notebook), PAGE_EMAIL );
 	}
 	else {
-		gtk_notebook_set_page( GTK_NOTEBOOK(personeditdlg.notebook), PAGE_BASIC );
+		gtk_notebook_set_current_page( GTK_NOTEBOOK(personeditdlg.notebook), PAGE_BASIC );
 	}
 
 	gtk_clist_select_row( GTK_CLIST(personeditdlg.clist_email), 0, 0 );

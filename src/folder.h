@@ -211,7 +211,8 @@ struct _FolderClass
 	GSList  	*(*get_msginfos)	(Folder		*folder,
 						 FolderItem	*item,
 						 MsgNumberList	*msgnum_list);
-	gchar 		*(*fetch_msg)		(Folder		*folder,
+	/* return value is locale charset */
+ 	gchar 		*(*fetch_msg)		(Folder		*folder,
 						 FolderItem	*item,
 						 gint		 num);
 	gint     	(*add_msg)		(Folder		*folder,
@@ -268,8 +269,8 @@ struct _FolderItem
 {
 	SpecialFolderItemType stype;
 
-	gchar *name;
-	gchar *path;
+	gchar *name; /* UTF-8 */
+	gchar *path; /* UTF-8 */
 
 	time_t mtime;
 
@@ -407,6 +408,7 @@ FolderItem *folder_get_default_processing (void);
 void folder_set_missing_folders		(void);
 void folder_unref_account_all		(PrefsAccount	*account);
 
+/* return value is locale encoded file name */
 gchar *folder_item_get_path		(FolderItem	*item);
 
 gint   folder_item_open			(FolderItem	*item);
@@ -418,6 +420,7 @@ MsgInfo *folder_item_get_msginfo	(FolderItem 	*item,
 MsgInfo *folder_item_get_msginfo_by_msgid(FolderItem 	*item,
 					 const gchar 	*msgid);
 GSList *folder_item_get_msg_list	(FolderItem 	*item);
+/* return value is locale charset */
 gchar *folder_item_fetch_msg		(FolderItem	*item,
 					 gint		 num);
 gint   folder_item_add_msg		(FolderItem	*dest,
@@ -448,6 +451,7 @@ void 	folder_item_change_msg_flags	(FolderItem 	*item,
 					 MsgPermFlags 	 newflags);
 gboolean folder_item_is_msg_changed	(FolderItem	*item,
 					 MsgInfo	*msginfo);
+/* return value is locale chaset */
 gchar *folder_item_get_cache_file	(FolderItem	*item);
 gchar *folder_item_get_mark_file	(FolderItem	*item);
 gchar * folder_item_get_identifier	(FolderItem * item);

@@ -52,7 +52,7 @@ struct _GtkSCTreeClass {
 };
 
 
-GtkType gtk_sctree_get_type (void);
+GType gtk_sctree_get_type (void);
 
 GtkWidget *gtk_sctree_new_with_titles	(gint		 columns, 
 					 gint		 tree_column, 

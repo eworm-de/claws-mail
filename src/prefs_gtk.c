@@ -36,6 +36,7 @@
 #include "gtkutils.h"
 #include "passcrypt.h"
 #include "base64.h"
+#include "codeconv.h"
 
 #define CL(x)	(((gulong) (x) >> (gulong) 8) & 0xFFUL)
 #define RGB_FROM_GDK_COLOR(c) \
@@ -116,10 +117,23 @@ void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 
 		switch (param[i].type) {
 		case P_STRING:
+		{
+#warning FIXME_GTK2
+			gchar *tmp;
+
+			tmp = *value ?
+				conv_codeset_strdup(value,
+						    conv_get_current_charset_str(),
+						    CS_UTF_8)
+				: g_strdup("");
+			if (!tmp) {
+				g_warning("faild to convert character set.");
+				tmp = g_strdup(value);
+			}
 			g_free(*((gchar **)param[i].data));
-			*((gchar **)param[i].data) =
-				*value ? g_strdup(value) : NULL;
+			*((gchar **)param[i].data) = tmp;
 			break;
+		}
 		case P_INT:
 			*((gint *)param[i].data) =
 				(gint)atoi(value);
@@ -256,10 +270,24 @@ gint prefs_write_param(PrefParam *param, FILE *fp)
 	for (i = 0; param[i].name != NULL; i++) {
 		switch (param[i].type) {
 		case P_STRING:
+		{
+#warning FIXME_GTK2
+			gchar *tmp = NULL;
+
+			if (*((gchar **)param[i].data)) {
+				tmp = conv_codeset_strdup(*((gchar **)param[i].data),
+							  CS_UTF_8,
+							  conv_get_current_charset_str());
+				if (!tmp)
+					tmp = g_strdup(*((gchar **)param[i].data));
+			}
+
 			g_snprintf(buf, sizeof(buf), "%s=%s\n", param[i].name,
-				   *((gchar **)param[i].data) ?
-				   *((gchar **)param[i].data) : "");
+				   tmp ? tmp : "");
+
+			g_free(tmp);
 			break;
+		}
 		case P_INT:
 			g_snprintf(buf, sizeof(buf), "%s=%d\n", param[i].name,
 				   *((gint *)param[i].data));
@@ -326,14 +354,27 @@ void prefs_set_default(PrefParam *param)
 		if (!param[i].data) continue;
 
 		switch (param[i].type) {
+#warning FIXME_GTK2
 		case P_STRING:
 		case P_PASSWORD:
 			g_free(*((gchar **)param[i].data));
 			if (param[i].defval != NULL) {
-				if (!strncasecmp(param[i].defval, "ENV_", 4))
-					*((gchar **)param[i].data) =
-						g_strdup(g_getenv(param[i].defval + 4));
-				else if (param[i].defval[0] == '~')
+				if (!strncasecmp(param[i].defval, "ENV_", 4)) {
+					const gchar *envstr;
+					gchar *tmp;
+
+					envstr = g_getenv(param[i].defval + 4);
+					tmp = envstr && *envstr ?
+						conv_codeset_strdup(envstr,
+								    conv_get_current_charset_str(),
+								    CS_UTF_8)
+						: g_strdup("");
+					if (!tmp) {
+						g_warning("faild to convert character set.");
+						tmp = g_strdup(envstr);
+					}
+					*((gchar **)param[i].data) = tmp;
+				} else if (param[i].defval[0] == '~')
 					*((gchar **)param[i].data) =
 						g_strconcat(get_home_dir(),
 							    param[i].defval + 1,
@@ -426,7 +467,7 @@ void prefs_dialog_create(PrefsDialog *dialog)
 
 	g_return_if_fail(dialog != NULL);
 
-	window = gtk_window_new (GTK_WINDOW_DIALOG);
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_position (GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
@@ -516,6 +557,7 @@ void prefs_set_dialog_to_default(PrefParam *param)
 		switch (tmpparam.type) {
 		case P_STRING:
 		case P_PASSWORD:
+#warning FIXME_GTK2
 			if (tmpparam.defval) {
 				if (!strncasecmp(tmpparam.defval, "ENV_", 4)) {
 					str_data = g_strdup(g_getenv(param[i].defval + 4));
@@ -576,7 +618,8 @@ void prefs_set_dialog_to_default(PrefParam *param)
 
 void prefs_set_data_from_entry(PrefParam *pparam)
 {
-	gchar **str, *entry_str;
+	gchar **str;
+	const gchar *entry_str;
 
 	g_return_if_fail(*pparam->widget != NULL);
 
@@ -631,7 +674,7 @@ void prefs_set_entry(PrefParam *pparam)
 void prefs_set_data_from_text(PrefParam *pparam)
 {
 	gchar **str;
-	gchar *text, *tp;
+	gchar *text = NULL, *tp = NULL;
 	gchar *tmp, *tmpp;
 
 	g_return_if_fail(*pparam->widget != NULL);
@@ -641,8 +684,20 @@ void prefs_set_data_from_text(PrefParam *pparam)
 	case P_PASSWORD:
 		str = (gchar **)pparam->data;
 		g_free(*str);
-		tp = text = gtk_editable_get_chars
-			(GTK_EDITABLE(*pparam->widget), 0, -1);
+		if (GTK_IS_EDITABLE(*pparam->widget)) {   /* need? */
+			tp = text = gtk_editable_get_chars
+					(GTK_EDITABLE(*pparam->widget), 0, -1);
+		} else if (GTK_IS_TEXT_VIEW(*pparam->widget)) {
+			GtkTextView *textview = GTK_TEXT_VIEW(*pparam->widget);
+			GtkTextBuffer *buffer = gtk_text_view_get_buffer(textview);
+			GtkTextIter start, end;
+			gtk_text_buffer_get_start_iter(buffer, &start);
+			gtk_text_buffer_get_iter_at_offset(buffer, &end, -1);
+			tp = text = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
+		}
+
+		g_return_if_fail (tp && text);
+
 		if (text[0] == '\0') {
 			*str = NULL;
 			g_free(text);
@@ -673,7 +728,9 @@ void prefs_set_text(PrefParam *pparam)
 {
 	gchar *buf, *sp, *bufp;
 	gchar **str;
-	GtkText *text;
+	GtkTextView *text;
+	GtkTextBuffer *buffer;
+	GtkTextIter iter;
 
 	g_return_if_fail(*pparam->widget != NULL);
 
@@ -698,14 +755,14 @@ void prefs_set_text(PrefParam *pparam)
 		} else
 			buf = "";
 
-		text = GTK_TEXT(*pparam->widget);
-		gtk_text_set_point(text, 0);
-		gtk_text_forward_delete(text, gtk_text_get_length(text));
-		gtk_text_set_point(text, 0);
-		gtk_text_insert(text, NULL, NULL, NULL, buf, -1);
+		text = GTK_TEXT_VIEW(*pparam->widget);
+		buffer = gtk_text_view_get_buffer(text);
+		gtk_text_buffer_set_text(buffer, "\0", -1);
+		gtk_text_buffer_get_start_iter(buffer, &iter);
+		gtk_text_buffer_insert(buffer, &iter, buf, -1);
 		break;
 	default:
-		g_warning("Invalid PrefType for GtkText widget: %d\n",
+		g_warning("Invalid PrefType for GtkTextView widget: %d\n",
 			  pparam->type);
 	}
 }

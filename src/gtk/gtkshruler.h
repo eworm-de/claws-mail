@@ -49,7 +49,7 @@ struct _GtkSHRulerClass
 };
 
 
-guint      gtk_shruler_get_type (void);
+GType      gtk_shruler_get_type (void);
 GtkWidget* gtk_shruler_new      (void);
 void       gtk_shruler_set_pos  (GtkSHRuler *ruler,
 				 gfloat      pos);

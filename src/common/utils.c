@@ -46,6 +46,7 @@
 #include "intl.h"
 #include "utils.h"
 #include "socket.h"
+#include "../codeconv.h"
 
 #define BUFFSIZE	8192
 
@@ -1393,7 +1394,7 @@ GList *uri_list_extract_filenames(const gchar *uri_list)
 {
 	GList *result = NULL;
 	const gchar *p, *q;
-	gchar *file;
+	gchar *escaped_utf8uri;
 
 	p = uri_list;
 
@@ -1401,17 +1402,36 @@ GList *uri_list_extract_filenames(const gchar *uri_list)
 		if (*p != '#') {
 			while (isspace(*p)) p++;
 			if (!strncmp(p, "file:", 5)) {
-				p += 5;
 				q = p;
+				q += 5;
 				while (*q && *q != '\n' && *q != '\r') q++;
 
 				if (q > p) {
+					gchar *file, *locale_file = NULL;
 					q--;
 					while (q > p && isspace(*q)) q--;
-					file = g_malloc(q - p + 2);
-					strncpy(file, p, q - p + 1);
-					file[q - p + 1] = '\0';
-					result = g_list_append(result,file);
+					Xalloca(escaped_utf8uri, q - p + 2,
+						return result);
+					Xalloca(file, q - p + 2,
+						return result);
+					*file = '\0';
+					strncpy(escaped_utf8uri, p, q - p + 1);
+					escaped_utf8uri[q - p + 1] = '\0';
+					decode_uri(file, escaped_utf8uri);
+#warning FIXME_GTK2 /* should we use g_filename_from_utf8()? */
+                    /*
+		     * g_filename_from_uri() rejects escaped/locale encoded uri
+		     * string which come from Nautilus.
+		     */
+					if (g_utf8_validate(file, -1, NULL))
+						locale_file
+							= conv_codeset_strdup(
+								file + 5,
+								CS_UTF_8,
+								conv_get_current_charset_str());
+					if (!locale_file)
+						locale_file = g_strdup(file + 5);
+					result = g_list_append(result, locale_file);
 				}
 			}
 		}
@@ -1500,7 +1520,7 @@ gint scan_mailto_url(const gchar *mailto, gchar **to, gchar **cc, gchar **bcc,
  * but as long as we are not able to do our own extensions to glibc, we do
  * it here.
  */
-gchar *get_home_dir(void)
+const gchar *get_home_dir(void)
 {
 #if HAVE_DOSISH_SYSTEM
     static gchar *home_dir;
@@ -1525,7 +1545,7 @@ gchar *get_home_dir(void)
 #endif
 }
 
-gchar *get_rc_dir(void)
+const gchar *get_rc_dir(void)
 {
 	static gchar *rc_dir = NULL;
 
@@ -1536,7 +1556,7 @@ gchar *get_rc_dir(void)
 	return rc_dir;
 }
 
-gchar *get_news_cache_dir(void)
+const gchar *get_news_cache_dir(void)
 {
 	static gchar *news_cache_dir = NULL;
 
@@ -1547,7 +1567,7 @@ gchar *get_news_cache_dir(void)
 	return news_cache_dir;
 }
 
-gchar *get_imap_cache_dir(void)
+const gchar *get_imap_cache_dir(void)
 {
 	static gchar *imap_cache_dir = NULL;
 
@@ -1558,7 +1578,7 @@ gchar *get_imap_cache_dir(void)
 	return imap_cache_dir;
 }
 
-gchar *get_mbox_cache_dir(void)
+const gchar *get_mbox_cache_dir(void)
 {
 	static gchar *mbox_cache_dir = NULL;
 
@@ -1569,7 +1589,7 @@ gchar *get_mbox_cache_dir(void)
 	return mbox_cache_dir;
 }
 
-gchar *get_mime_tmp_dir(void)
+const gchar *get_mime_tmp_dir(void)
 {
 	static gchar *mime_tmp_dir = NULL;
 
@@ -1580,7 +1600,7 @@ gchar *get_mime_tmp_dir(void)
 	return mime_tmp_dir;
 }
 
-gchar *get_template_dir(void)
+const gchar *get_template_dir(void)
 {
 	static gchar *template_dir = NULL;
 
@@ -1591,7 +1611,7 @@ gchar *get_template_dir(void)
 	return template_dir;
 }
 
-gchar *get_header_cache_dir(void)
+const gchar *get_header_cache_dir(void)
 {
 	static gchar *header_dir = NULL;
 
@@ -1602,7 +1622,7 @@ gchar *get_header_cache_dir(void)
 	return header_dir;
 }
 
-gchar *get_tmp_dir(void)
+const gchar *get_tmp_dir(void)
 {
 	static gchar *tmp_dir = NULL;
 
@@ -1624,7 +1644,7 @@ gchar *get_tmp_file(void)
 	return tmp_file;
 }
 
-gchar *get_domain_name(void)
+const gchar *get_domain_name(void)
 {
 	static gchar *domain_name = NULL;
 

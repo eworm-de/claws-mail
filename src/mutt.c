@@ -561,7 +561,7 @@ gint mutt_import_data( MuttFile *muttFile, AddressCache *cache ) {
 * no home. Filename should be g_free() when done.
 */
 gchar *mutt_find_file( void ) {
-	gchar *homedir;
+	const gchar *homedir;
 	gchar str[ WORK_BUFLEN ];
 	gint len;
 	FILE *fp;

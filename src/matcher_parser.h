@@ -31,10 +31,10 @@ extern int matcher_parserlineno;
 void matcher_parser_start_parsing	(FILE *f);
 int matcher_parserparse			(void);
 
-MatcherList *matcher_parser_get_cond	(gchar *str);
-MatcherProp *matcher_parser_get_prop	(gchar *str);
-FilteringProp *matcher_parser_get_filtering	(gchar *str);
-ScoringProp *matcher_parser_get_scoring		(gchar *str);
-GSList *matcher_parser_get_action_list(gchar *str);
+MatcherList *matcher_parser_get_cond	(const gchar *str);
+MatcherProp *matcher_parser_get_prop	(const gchar *str);
+FilteringProp *matcher_parser_get_filtering	(const gchar *str);
+ScoringProp *matcher_parser_get_scoring		(const gchar *str);
+GSList *matcher_parser_get_action_list(const gchar *str);
 
 #endif

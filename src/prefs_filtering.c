@@ -199,7 +199,7 @@ static void prefs_filtering_create(void)
 
 	debug_print("Creating filtering configuration window...\n");
 
-	window = gtk_window_new (GTK_WINDOW_DIALOG);
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
@@ -706,7 +706,7 @@ static void prefs_filtering_condition_define_done(MatcherList * matchers)
 
 static void prefs_filtering_condition_define(void)
 {
-	gchar * cond_str;
+	const gchar * cond_str;
 	MatcherList * matchers = NULL;
 
 	cond_str = gtk_entry_get_text(GTK_ENTRY(filtering.cond_entry));
@@ -740,7 +740,7 @@ static void prefs_filtering_action_define_done(GSList * action_list)
 
 static void prefs_filtering_action_define(void)
 {
-	gchar * action_str;
+	const gchar * action_str;
 	GSList * action_list = NULL;
 
 	action_str = gtk_entry_get_text(GTK_ENTRY(filtering.action_entry));
@@ -769,8 +769,8 @@ static void prefs_filtering_action_define(void)
 static FilteringProp * prefs_filtering_dialog_to_filtering(gboolean alert)
 {
 	MatcherList * cond;
-	gchar * cond_str;
-	gchar * action_str;
+	const gchar * cond_str;
+	const gchar * action_str;
 	FilteringProp * prop;
 	GSList * action_list;
 

@@ -199,16 +199,16 @@ static void addressbook_entry_gotfocus		(GtkWidget	*widget);
 static void addressbook_entry_changed		(GtkWidget	*widget);
 #endif
 
-static void addressbook_list_button_pressed	(GtkWidget	*widget,
+static gboolean addressbook_list_button_pressed	(GtkWidget	*widget,
 						 GdkEventButton	*event,
 						 gpointer	 data);
-static void addressbook_list_button_released	(GtkWidget	*widget,
+static gboolean addressbook_list_button_released(GtkWidget	*widget,
 						 GdkEventButton	*event,
 						 gpointer	 data);
-static void addressbook_tree_button_pressed	(GtkWidget	*ctree,
+static gboolean addressbook_tree_button_pressed	(GtkWidget	*ctree,
 						 GdkEventButton	*event,
 						 gpointer	 data);
-static void addressbook_tree_button_released	(GtkWidget	*ctree,
+static gboolean addressbook_tree_button_released(GtkWidget	*ctree,
 						 GdkEventButton	*event,
 						 gpointer	 data);
 static void addressbook_popup_close		(GtkMenuShell	*menu_shell,
@@ -295,7 +295,7 @@ static void addressbook_move_nodes_up		(GtkCTree	*ctree,
 						GtkCTreeNode	*node);
 static GtkCTreeNode *addressbook_find_group_node (GtkCTreeNode	*parent,
 						   ItemGroup	*group);
-static void key_pressed				(GtkWidget	*widget,
+static gboolean key_pressed			(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 gpointer	 data);
 static gint addressbook_treenode_compare_func	(GtkCList	*clist,
@@ -621,15 +621,15 @@ static void addressbook_create(void)
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Address book"));
-	gtk_widget_set_usize(window, ADDRESSBOOK_WIDTH, ADDRESSBOOK_HEIGHT);
+	gtk_widget_set_size_request(window, ADDRESSBOOK_WIDTH, ADDRESSBOOK_HEIGHT);
 	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, TRUE);
 	gtk_window_set_wmclass(GTK_WINDOW(window), "addressbook", "Sylpheed");
 	gtk_widget_realize(window);
 
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(addressbook_close), NULL);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(key_pressed), NULL);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(addressbook_close), NULL);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 
 	vbox = gtk_vbox_new(FALSE, 0);
@@ -650,7 +650,7 @@ static void addressbook_create(void)
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(ctree_swin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_ALWAYS);
-	gtk_widget_set_usize(ctree_swin, COL_FOLDER_WIDTH + 40, -1);
+	gtk_widget_set_size_request(ctree_swin, COL_FOLDER_WIDTH + 40, -1);
 
 	/* Address index */
 	ctree = gtk_ctree_new(1, 0);
@@ -664,14 +664,14 @@ static void addressbook_create(void)
 	gtk_clist_set_compare_func(GTK_CLIST(ctree),
 				   addressbook_treenode_compare_func);
 
-	gtk_signal_connect(GTK_OBJECT(ctree), "tree_select_row",
-			   GTK_SIGNAL_FUNC(addressbook_tree_selected), NULL);
-	gtk_signal_connect(GTK_OBJECT(ctree), "button_press_event",
-			   GTK_SIGNAL_FUNC(addressbook_tree_button_pressed),
-			   NULL);
-	gtk_signal_connect(GTK_OBJECT(ctree), "button_release_event",
-			   GTK_SIGNAL_FUNC(addressbook_tree_button_released),
-			   NULL);
+	g_signal_connect(G_OBJECT(ctree), "tree_select_row",
+			 G_CALLBACK(addressbook_tree_selected), NULL);
+	g_signal_connect(G_OBJECT(ctree), "button_press_event",
+			 G_CALLBACK(addressbook_tree_button_pressed),
+			 NULL);
+	g_signal_connect(G_OBJECT(ctree), "button_release_event",
+			 G_CALLBACK(addressbook_tree_button_released),
+			 NULL);
 
 	clist_vbox = gtk_vbox_new(FALSE, 4);
 
@@ -699,22 +699,22 @@ static void addressbook_create(void)
 		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(clist)->column[i].button,
 				       GTK_CAN_FOCUS);
 
-	gtk_signal_connect(GTK_OBJECT(clist), "tree_select_row",
-			   GTK_SIGNAL_FUNC(addressbook_list_row_selected), NULL);
-	gtk_signal_connect(GTK_OBJECT(clist), "tree_unselect_row",
-			   GTK_SIGNAL_FUNC(addressbook_list_row_unselected), NULL);
-	gtk_signal_connect(GTK_OBJECT(clist), "button_press_event",
-			   GTK_SIGNAL_FUNC(addressbook_list_button_pressed),
-			   NULL);
-	gtk_signal_connect(GTK_OBJECT(clist), "button_release_event",
-			   GTK_SIGNAL_FUNC(addressbook_list_button_released),
-			   NULL);
-	gtk_signal_connect(GTK_OBJECT(clist), "select_row",
-			   GTK_SIGNAL_FUNC(addressbook_list_selected), NULL);
-	gtk_signal_connect(GTK_OBJECT(clist), "tree_expand",
-			   GTK_SIGNAL_FUNC(addressbook_person_expand_node), NULL );
-	gtk_signal_connect(GTK_OBJECT(clist), "tree_collapse",
-			   GTK_SIGNAL_FUNC(addressbook_person_collapse_node), NULL );
+	g_signal_connect(G_OBJECT(clist), "tree_select_row",
+			 G_CALLBACK(addressbook_list_row_selected), NULL);
+	g_signal_connect(G_OBJECT(clist), "tree_unselect_row",
+			 G_CALLBACK(addressbook_list_row_unselected), NULL);
+	g_signal_connect(G_OBJECT(clist), "button_press_event",
+			 G_CALLBACK(addressbook_list_button_pressed),
+			 NULL);
+	g_signal_connect(G_OBJECT(clist), "button_release_event",
+			 G_CALLBACK(addressbook_list_button_released),
+			 NULL);
+	g_signal_connect(G_OBJECT(clist), "select_row",
+			 G_CALLBACK(addressbook_list_selected), NULL);
+	g_signal_connect(G_OBJECT(clist), "tree_expand",
+			 G_CALLBACK(addressbook_person_expand_node), NULL );
+	g_signal_connect(G_OBJECT(clist), "tree_collapse",
+			 G_CALLBACK(addressbook_person_collapse_node), NULL );
 
 	hbox = gtk_hbox_new(FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(clist_vbox), hbox, FALSE, FALSE, 0);
@@ -726,12 +726,12 @@ static void addressbook_create(void)
 	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 0);
 
 	address_completion_register_entry(GTK_ENTRY(entry));
-	gtk_signal_connect(GTK_OBJECT(entry), "focus_in_event",
-			   GTK_SIGNAL_FUNC(addressbook_entry_gotfocus), NULL);
+	g_signal_connect(G_OBJECT(entry), "focus_in_event",
+			 G_CALLBACK(addressbook_entry_gotfocus), NULL);
 
 #if 0
-	gtk_signal_connect(GTK_OBJECT(entry), "changed",
-			   GTK_SIGNAL_FUNC(addressbook_entry_changed), NULL);
+	g_signal_connect(G_OBJECT(entry), "changed",
+			 G_CALLBACK(addressbook_entry_changed), NULL);
 #endif
 
 	paned = gtk_hpaned_new();
@@ -748,7 +748,7 @@ static void addressbook_create(void)
 	/* Button panel */
 	hbbox = gtk_hbutton_box_new();
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(hbbox), GTK_BUTTONBOX_END);
-	gtk_button_box_set_spacing(GTK_BUTTON_BOX(hbbox), 2);
+	gtk_box_set_spacing(GTK_BOX(hbbox), 2);
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 
 	del_btn = gtk_button_new_with_label(_("Delete"));
@@ -761,12 +761,12 @@ static void addressbook_create(void)
 	GTK_WIDGET_SET_FLAGS(lup_btn, GTK_CAN_DEFAULT);
 	gtk_box_pack_start(GTK_BOX(hbbox), lup_btn, TRUE, TRUE, 0);
 
-	gtk_signal_connect(GTK_OBJECT(del_btn), "clicked",
-			   GTK_SIGNAL_FUNC(addressbook_del_clicked), NULL);
-	gtk_signal_connect(GTK_OBJECT(reg_btn), "clicked",
-			   GTK_SIGNAL_FUNC(addressbook_reg_clicked), NULL);
-	gtk_signal_connect(GTK_OBJECT(lup_btn), "clicked",
-			   GTK_SIGNAL_FUNC(addressbook_lup_clicked), NULL);
+	g_signal_connect(G_OBJECT(del_btn), "clicked",
+			 G_CALLBACK(addressbook_del_clicked), NULL);
+	g_signal_connect(G_OBJECT(reg_btn), "clicked",
+			 G_CALLBACK(addressbook_reg_clicked), NULL);
+	g_signal_connect(G_OBJECT(lup_btn), "clicked",
+			 G_CALLBACK(addressbook_lup_clicked), NULL);
 
 	to_btn = gtk_button_new_with_label
 		(prefs_common.trans_hdr ? _("To:") : "To:");
@@ -781,15 +781,15 @@ static void addressbook_create(void)
 	GTK_WIDGET_SET_FLAGS(bcc_btn, GTK_CAN_DEFAULT);
 	gtk_box_pack_start(GTK_BOX(hbbox), bcc_btn, TRUE, TRUE, 0);
 
-	gtk_signal_connect(GTK_OBJECT(to_btn), "clicked",
-			   GTK_SIGNAL_FUNC(addressbook_to_clicked),
-			   GINT_TO_POINTER(COMPOSE_TO));
-	gtk_signal_connect(GTK_OBJECT(cc_btn), "clicked",
-			   GTK_SIGNAL_FUNC(addressbook_to_clicked),
-			   GINT_TO_POINTER(COMPOSE_CC));
-	gtk_signal_connect(GTK_OBJECT(bcc_btn), "clicked",
-			   GTK_SIGNAL_FUNC(addressbook_to_clicked),
-			   GINT_TO_POINTER(COMPOSE_BCC));
+	g_signal_connect(G_OBJECT(to_btn), "clicked",
+			 G_CALLBACK(addressbook_to_clicked),
+			 GINT_TO_POINTER(COMPOSE_TO));
+	g_signal_connect(G_OBJECT(cc_btn), "clicked",
+			 G_CALLBACK(addressbook_to_clicked),
+			 GINT_TO_POINTER(COMPOSE_CC));
+	g_signal_connect(G_OBJECT(bcc_btn), "clicked",
+			 G_CALLBACK(addressbook_to_clicked),
+			 GINT_TO_POINTER(COMPOSE_BCC));
 
 	/* Build icons for interface */
 	stock_pixmap_gdk( window, STOCK_PIXMAP_INTERFACE,
@@ -830,8 +830,8 @@ static void addressbook_create(void)
 				       n_entries,
 				       "<AddressBookTree>", &tree_factory,
 				       NULL);
-	gtk_signal_connect(GTK_OBJECT(tree_popup), "selection_done",
-			   GTK_SIGNAL_FUNC(addressbook_popup_close), NULL);
+	g_signal_connect(G_OBJECT(tree_popup), "selection_done",
+			 G_CALLBACK(addressbook_popup_close), NULL);
 	n_entries = sizeof(addressbook_list_popup_entries) /
 		sizeof(addressbook_list_popup_entries[0]);
 	list_popup = menu_create_items(addressbook_list_popup_entries,
@@ -1142,7 +1142,8 @@ static void addressbook_to_clicked(GtkButton *button, gpointer data)
 	Compose *compose;
 	AddrSelectItem *item;
 	AddrItemObject *aio;
-	gchar *addr;
+	const gchar *addr;
+	gchar *tmpaddr;
 
 	compose = addrbook.target_compose;
 	if( ! compose ) return;
@@ -1163,10 +1164,10 @@ static void addressbook_to_clicked(GtkButton *button, gpointer data)
 		aio = item->addressItem;
 		if( aio->type == ADDR_ITEM_PERSON ||
 		    aio->type == ADDR_ITEM_EMAIL ) {
-			addr = addressbook_format_address( aio );
+			tmpaddr = addressbook_format_address( aio );
 			compose_entry_append(
-				compose, addr, (ComposeEntryType) data );
-			g_free( addr );
+				compose, tmpaddr, (ComposeEntryType) data );
+			g_free( tmpaddr );
 		}
 		else if( aio->type == ADDR_ITEM_GROUP ) {
 			ItemGroup *group = ( ItemGroup * ) aio;
@@ -1174,11 +1175,11 @@ static void addressbook_to_clicked(GtkButton *button, gpointer data)
 			while( nodeMail ) {
 				ItemEMail *email = nodeMail->data;
 
-				addr = addressbook_format_address(
+				tmpaddr = addressbook_format_address(
 						( AddrItemObject * ) email );
 				compose_entry_append(
-					compose, addr, (ComposeEntryType) data );
-				g_free( addr );
+					compose, tmpaddr, (ComposeEntryType) data );
+				g_free( tmpaddr );
 				nodeMail = g_list_next( nodeMail );
 			}
 		}
@@ -1798,11 +1799,11 @@ static void addressbook_entry_gotfocus( GtkWidget *widget ) {
 	gtk_editable_select_region( GTK_EDITABLE(addrbook.entry), 0, -1 );
 }
 
-static void addressbook_list_button_pressed(GtkWidget *widget,
-					    GdkEventButton *event,
-					    gpointer data)
+static gboolean addressbook_list_button_pressed(GtkWidget *widget,
+						GdkEventButton *event,
+						gpointer data)
 {
-	if( ! event ) return;
+	if( ! event ) return FALSE;
 
 	addressbook_list_menu_setup();
 
@@ -1810,17 +1811,18 @@ static void addressbook_list_button_pressed(GtkWidget *widget,
 		gtk_menu_popup( GTK_MENU(addrbook.list_popup), NULL, NULL, NULL, NULL,
 		       event->button, event->time );
 	}
+	return FALSE;
 }
 
-static void addressbook_list_button_released(GtkWidget *widget,
-					     GdkEventButton *event,
-					     gpointer data)
+static gboolean addressbook_list_button_released(GtkWidget *widget,
+						 GdkEventButton *event,
+						 gpointer data)
 {
 }
 
-static void addressbook_tree_button_pressed(GtkWidget *ctree,
-					    GdkEventButton *event,
-					    gpointer data)
+static gboolean addressbook_tree_button_pressed(GtkWidget *ctree,
+						GdkEventButton *event,
+						gpointer data)
 {
 	GtkCList *clist = GTK_CLIST(ctree);
 	gint row, column;
@@ -1837,7 +1839,7 @@ static void addressbook_tree_button_pressed(GtkWidget *ctree,
 	gboolean canTreePaste = FALSE;
 	gboolean canLookup = FALSE;
 
-	if( ! event ) return;
+	if( ! event ) return FALSE;
 	addressbook_menubar_set_sensitive( FALSE );
 
 	if( gtk_clist_get_selection_info( clist, event->x, event->y, &row, &column ) ) {
@@ -1849,7 +1851,7 @@ static void addressbook_tree_button_pressed(GtkWidget *ctree,
 	menu_set_insensitive_all(GTK_MENU_SHELL(addrbook.tree_popup));
 	gtk_widget_set_sensitive( addrbook.lup_btn, FALSE );
 
-	if( obj == NULL ) return;
+	if( obj == NULL ) return FALSE;
 
 	if( ! addrclip_is_empty( _clipBoard_ ) ) {
 		canTreePaste = TRUE;
@@ -1930,14 +1932,16 @@ static void addressbook_tree_button_pressed(GtkWidget *ctree,
 			       event->button, event->time);
 	}
 
+	return FALSE;
 }
 
-static void addressbook_tree_button_released(GtkWidget *ctree,
-					     GdkEventButton *event,
-					     gpointer data)
+static gboolean addressbook_tree_button_released(GtkWidget *ctree,
+						 GdkEventButton *event,
+						 gpointer data)
 {
 	gtk_ctree_select(GTK_CTREE(addrbook.ctree), addrbook.opened);
 	gtkut_ctree_set_focus_row(GTK_CTREE(addrbook.ctree), addrbook.opened);
+	return FALSE;
 }
 
 static void addressbook_popup_close(GtkMenuShell *menu_shell, gpointer data)
@@ -3231,10 +3235,11 @@ void addressbook_export_to_file( void ) {
 	}
 }
 
-static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
+static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		addressbook_close();
+	return FALSE;
 }
 
 /*

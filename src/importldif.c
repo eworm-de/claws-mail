@@ -184,7 +184,7 @@ static void imp_ldif_message( void ) {
 	gchar *sMsg = NULL;
 	gint pageNum;
 
-	pageNum = gtk_notebook_current_page( GTK_NOTEBOOK(impldif_dlg.notebook) );
+	pageNum = gtk_notebook_get_current_page( GTK_NOTEBOOK(impldif_dlg.notebook) );
 	if( pageNum == PAGE_FILE_INFO ) {
 		sMsg = _( "Please specify address book name and file to import." );
 	}
@@ -321,14 +321,14 @@ static void imp_ldif_field_list_selected(
  * \param event Event object.
  * \param data  Data.
  */
-static void imp_ldif_field_list_toggle(
+static gboolean imp_ldif_field_list_toggle(
 		GtkCList *clist, GdkEventButton *event, gpointer data )
 {
 	Ldif_FieldRec *rec;
 	gboolean toggle = FALSE;
 
-	if( ! event ) return;
-	if( impldif_dlg.rowIndSelect < 0 ) return;
+	if( ! event ) return FALSE;
+	if( impldif_dlg.rowIndSelect < 0 ) return FALSE;
 	if( event->button == 1 ) {
 		/* If single click in select column */
 		if( event->type == GDK_BUTTON_PRESS ) {
@@ -337,8 +337,8 @@ static void imp_ldif_field_list_toggle(
 			gint row, col;
 
 			gtk_clist_get_selection_info( clist, x, y, &row, &col );
-			if( col != FIELD_COL_SELECT ) return;
-			if( row > impldif_dlg.rowCount ) return;
+			if( col != FIELD_COL_SELECT ) return FALSE;
+			if( row > impldif_dlg.rowCount ) return FALSE;
 
 			/* Set row */
 			impldif_dlg.rowIndSelect = row;
@@ -359,6 +359,7 @@ static void imp_ldif_field_list_toggle(
 			imp_ldif_update_row( clist );
 		}
 	}
+	return FALSE;
 }
 
 /**
@@ -506,10 +507,10 @@ static void imp_ldif_finish_show() {
 static void imp_ldif_prev( GtkWidget *widget ) {
 	gint pageNum;
 
-	pageNum = gtk_notebook_current_page( GTK_NOTEBOOK(impldif_dlg.notebook) );
+	pageNum = gtk_notebook_get_current_page( GTK_NOTEBOOK(impldif_dlg.notebook) );
 	if( pageNum == PAGE_ATTRIBUTES ) {
 		/* Goto file page stuff */
-		gtk_notebook_set_page(
+		gtk_notebook_set_current_page(
 			GTK_NOTEBOOK(impldif_dlg.notebook), PAGE_FILE_INFO );
 		gtk_widget_set_sensitive( impldif_dlg.btnPrev, FALSE );
 	}
@@ -523,11 +524,11 @@ static void imp_ldif_prev( GtkWidget *widget ) {
 static void imp_ldif_next( GtkWidget *widget ) {
 	gint pageNum;
 
-	pageNum = gtk_notebook_current_page( GTK_NOTEBOOK(impldif_dlg.notebook) );
+	pageNum = gtk_notebook_get_current_page( GTK_NOTEBOOK(impldif_dlg.notebook) );
 	if( pageNum == PAGE_FILE_INFO ) {
 		/* Goto attributes stuff */
 		if( imp_ldif_file_move() ) {
-			gtk_notebook_set_page(
+			gtk_notebook_set_current_page(
 				GTK_NOTEBOOK(impldif_dlg.notebook), PAGE_ATTRIBUTES );
 			imp_ldif_message();
 			gtk_widget_set_sensitive( impldif_dlg.btnPrev, TRUE );
@@ -539,7 +540,7 @@ static void imp_ldif_next( GtkWidget *widget ) {
 	else if( pageNum == PAGE_ATTRIBUTES ) {
 		/* Goto finish stuff */
 		if( imp_ldif_field_move() ) {
-			gtk_notebook_set_page(
+			gtk_notebook_set_current_page(
 				GTK_NOTEBOOK(impldif_dlg.notebook), PAGE_FINISH );
 			imp_ldif_finish_show();
 		}
@@ -554,7 +555,7 @@ static void imp_ldif_next( GtkWidget *widget ) {
 static void imp_ldif_cancel( GtkWidget *widget, gpointer data ) {
 	gint pageNum;
 
-	pageNum = gtk_notebook_current_page( GTK_NOTEBOOK(impldif_dlg.notebook) );
+	pageNum = gtk_notebook_get_current_page( GTK_NOTEBOOK(impldif_dlg.notebook) );
 	if( pageNum != PAGE_FINISH ) {
 		impldif_dlg.cancelled = TRUE;
 	}
@@ -567,7 +568,7 @@ static void imp_ldif_cancel( GtkWidget *widget, gpointer data ) {
  * \param data   User data.
  */
 static void imp_ldif_file_ok( GtkWidget *widget, gpointer data ) {
-	gchar *sFile;
+	const gchar *sFile;
 	AddressFileSelection *afs;
 	GtkWidget *fileSel;
 
@@ -604,10 +605,10 @@ static void imp_ldif_file_select_create( AddressFileSelection *afs ) {
 
 	fileSelector = gtk_file_selection_new( _("Select LDIF File") );
 	gtk_file_selection_hide_fileop_buttons( GTK_FILE_SELECTION(fileSelector) );
-	gtk_signal_connect( GTK_OBJECT (GTK_FILE_SELECTION(fileSelector)->ok_button),
-		"clicked", GTK_SIGNAL_FUNC (imp_ldif_file_ok), ( gpointer ) afs );
-	gtk_signal_connect( GTK_OBJECT (GTK_FILE_SELECTION(fileSelector)->cancel_button),
-		"clicked", GTK_SIGNAL_FUNC (imp_ldif_file_cancel), ( gpointer ) afs );
+	g_signal_connect( G_OBJECT (GTK_FILE_SELECTION(fileSelector)->ok_button),
+			  "clicked", G_CALLBACK (imp_ldif_file_ok), ( gpointer ) afs );
+	g_signal_connect( G_OBJECT (GTK_FILE_SELECTION(fileSelector)->cancel_button),
+			  "clicked", G_CALLBACK (imp_ldif_file_cancel), ( gpointer ) afs );
 	afs->fileSelector = fileSelector;
 	afs->cancelled = TRUE;
 }
@@ -646,10 +647,11 @@ static gint imp_ldif_delete_event( GtkWidget *widget, GdkEventAny *event, gpoint
  * \param event  Event object.
  * \param data   User data.
  */
-static void imp_ldif_key_pressed( GtkWidget *widget, GdkEventKey *event, gpointer data ) {
+static gboolean imp_ldif_key_pressed( GtkWidget *widget, GdkEventKey *event, gpointer data ) {
 	if (event && event->keyval == GDK_Escape) {
 		imp_ldif_cancel( widget, data );
 	}
+	return FALSE;
 }
 
 /**
@@ -730,8 +732,8 @@ static void imp_ldif_page_file( gint pageNum, gchar *pageLbl ) {
 	gtk_widget_show_all(vbox);
 
 	/* Button handler */
-	gtk_signal_connect(GTK_OBJECT(btnFile), "clicked",
-			   GTK_SIGNAL_FUNC(imp_ldif_file_select), NULL);
+	g_signal_connect(G_OBJECT(btnFile), "clicked",
+			 G_CALLBACK(imp_ldif_file_select), NULL);
 
 	impldif_dlg.entryFile = entryFile;
 	impldif_dlg.entryName = entryName;
@@ -898,12 +900,12 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 	gtk_widget_show_all(vbox);
 
 	/* Event handlers */
-	gtk_signal_connect( GTK_OBJECT(clist_field), "select_row",
-			GTK_SIGNAL_FUNC(imp_ldif_field_list_selected), NULL );
-	gtk_signal_connect( GTK_OBJECT(clist_field), "button_press_event",
-			GTK_SIGNAL_FUNC(imp_ldif_field_list_toggle), NULL );
-	gtk_signal_connect( GTK_OBJECT(btnModify), "clicked",
-			GTK_SIGNAL_FUNC(imp_ldif_modify_pressed), NULL );
+	g_signal_connect( G_OBJECT(clist_field), "select_row",
+			  G_CALLBACK(imp_ldif_field_list_selected), NULL );
+	g_signal_connect( G_OBJECT(clist_field), "button_press_event",
+			  G_CALLBACK(imp_ldif_field_list_toggle), NULL );
+	g_signal_connect( G_OBJECT(btnModify), "clicked",
+			  G_CALLBACK(imp_ldif_modify_pressed), NULL );
 
 	impldif_dlg.clist_field = clist_field;
 	impldif_dlg.entryField  = entryField;
@@ -993,18 +995,18 @@ static void imp_ldif_dialog_create() {
 	GtkWidget *hsbox;
 	GtkWidget *statusbar;
 
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
-	gtk_widget_set_usize(window, IMPORTLDIF_WIDTH, IMPORTLDIF_HEIGHT );
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_widget_set_size_request(window, IMPORTLDIF_WIDTH, IMPORTLDIF_HEIGHT );
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
 	gtk_window_set_title( GTK_WINDOW(window), _("Import LDIF file into Address Book") );
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);	
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(imp_ldif_delete_event),
-			   NULL );
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(imp_ldif_key_pressed),
-			   NULL );
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(imp_ldif_delete_event),
+			 NULL );
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(imp_ldif_key_pressed),
+			 NULL );
 
 	vbox = gtk_vbox_new(FALSE, 4);
 	gtk_widget_show(vbox);
@@ -1037,12 +1039,12 @@ static void imp_ldif_dialog_create() {
 	gtk_widget_grab_default(btnNext);
 
 	/* Button handlers */
-	gtk_signal_connect(GTK_OBJECT(btnPrev), "clicked",
-			   GTK_SIGNAL_FUNC(imp_ldif_prev), NULL);
-	gtk_signal_connect(GTK_OBJECT(btnNext), "clicked",
-			   GTK_SIGNAL_FUNC(imp_ldif_next), NULL);
-	gtk_signal_connect(GTK_OBJECT(btnCancel), "clicked",
-			   GTK_SIGNAL_FUNC(imp_ldif_cancel), NULL);
+	g_signal_connect(G_OBJECT(btnPrev), "clicked",
+			 G_CALLBACK(imp_ldif_prev), NULL);
+	g_signal_connect(G_OBJECT(btnNext), "clicked",
+			 G_CALLBACK(imp_ldif_next), NULL);
+	g_signal_connect(G_OBJECT(btnCancel), "clicked",
+			 G_CALLBACK(imp_ldif_cancel), NULL);
 
 	gtk_widget_show_all(vbox);
 
@@ -1090,7 +1092,7 @@ AddressBookFile *addressbook_imp_ldif( AddressIndex *addrIndex ) {
 	gtk_label_set_text( GTK_LABEL(impldif_dlg.entryField), "" );
 	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.entryAttrib), "" );
 	gtk_clist_clear( GTK_CLIST(impldif_dlg.clist_field) );
-	gtk_notebook_set_page( GTK_NOTEBOOK(impldif_dlg.notebook), PAGE_FILE_INFO );
+	gtk_notebook_set_current_page( GTK_NOTEBOOK(impldif_dlg.notebook), PAGE_FILE_INFO );
 	gtk_widget_set_sensitive( impldif_dlg.btnPrev, FALSE );
 	gtk_widget_set_sensitive( impldif_dlg.btnNext, TRUE );
 	stock_pixmap_gdk( impldif_dlg.window, STOCK_PIXMAP_MARK,

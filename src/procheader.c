@@ -903,6 +903,23 @@ void procheader_date_get_localtime(gchar *dest, gint len, const time_t timer)
 		strftime(dest, len, prefs_common.date_format, lt);
 	else
 		strftime(dest, len, default_format, lt);
+
+#warning FIXME_GTK2
+#if 1
+	{
+		gchar *str;
+		const gchar *src_codeset, *dest_codeset;
+
+		src_codeset = conv_get_current_charset_str();
+		dest_codeset = CS_UTF_8;
+		str = conv_codeset_strdup(dest, src_codeset, dest_codeset);
+		if (str) {
+			g_snprintf(dest, len, "%s", str);
+			strncpy2(dest, str, len);
+			g_free(str);
+		}
+	}
+#endif
 }
 
 gint get_header_from_msginfo(MsgInfo *msginfo, gchar *buf, gint len, gchar *header)

@@ -1,5 +1,9 @@
 #!/bin/sh
 
+cd po
+/bin/sh poconv.sh
+cd ..
+
 aclocal -I ac \
   && libtoolize --force --copy \
   && autoheader \

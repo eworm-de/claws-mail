@@ -104,11 +104,12 @@ static gint addressadd_delete_event( GtkWidget *widget, GdkEventAny *event, gboo
 	return TRUE;
 }
 
-static void addressadd_key_pressed( GtkWidget *widget, GdkEventKey *event, gboolean *cancelled ) {
+static gboolean addressadd_key_pressed( GtkWidget *widget, GdkEventKey *event, gboolean *cancelled ) {
 	if (event && event->keyval == GDK_Escape) {
 		addressadd_cancelled = TRUE;
 		gtk_main_quit();
 	}
+	return FALSE;
 }
 
 static void addressadd_ok( GtkWidget *widget, gboolean *cancelled ) {
@@ -127,8 +128,8 @@ static void addressadd_folder_select( GtkCTree *ctree, gint row, gint column,
 	addressadd_dlg.fiSelected = gtk_clist_get_row_data( GTK_CLIST(ctree), row );
 }
 
-static void addressadd_tree_button( GtkCTree *ctree, GdkEventButton *event, gpointer data ) {
-	if( ! event ) return;
+static gboolean addressadd_tree_button( GtkCTree *ctree, GdkEventButton *event, gpointer data ) {
+	if( ! event ) return FALSE;
 	if( event->button == 1 ) {
 		/* Handle double click */
 		if( event->type == GDK_2BUTTON_PRESS ) {
@@ -136,6 +137,8 @@ static void addressadd_tree_button( GtkCTree *ctree, GdkEventButton *event, gpoi
 			gtk_main_quit();
 		}
 	}
+
+	return FALSE;
 }
 
 static void addressadd_create( void ) {
@@ -156,16 +159,16 @@ static void addressadd_create( void ) {
 	GtkWidget *statusbar;
 	gint top;
 
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
-	gtk_widget_set_usize( window, 300, 400 );
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_widget_set_size_request( window, 300, 400 );
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
 	gtk_window_set_title( GTK_WINDOW(window), _("Add to address book") );
 	gtk_window_set_position( GTK_WINDOW(window), GTK_WIN_POS_MOUSE );
 	gtk_window_set_modal( GTK_WINDOW(window), TRUE );
-	gtk_signal_connect( GTK_OBJECT(window), "delete_event",
-			    GTK_SIGNAL_FUNC(addressadd_delete_event), NULL );
-	gtk_signal_connect( GTK_OBJECT(window), "key_press_event",
-			    GTK_SIGNAL_FUNC(addressadd_key_pressed), NULL );
+	g_signal_connect( G_OBJECT(window), "delete_event",
+			  G_CALLBACK(addressadd_delete_event), NULL );
+	g_signal_connect( G_OBJECT(window), "key_press_event",
+			  G_CALLBACK(addressadd_key_pressed), NULL );
 
 	vbox = gtk_vbox_new(FALSE, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
@@ -243,14 +246,14 @@ static void addressadd_create( void ) {
 	gtk_container_set_border_width( GTK_CONTAINER(hbbox), 0 );
 	gtk_widget_grab_default(ok_btn);
 
-	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-			   GTK_SIGNAL_FUNC(addressadd_ok), NULL);
-	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
-			   GTK_SIGNAL_FUNC(addressadd_cancel), NULL);
-	gtk_signal_connect(GTK_OBJECT(tree_folder), "select_row",
-			   GTK_SIGNAL_FUNC(addressadd_folder_select), NULL);
-	gtk_signal_connect(GTK_OBJECT(tree_folder), "button_press_event",
-			   GTK_SIGNAL_FUNC(addressadd_tree_button), NULL);
+	g_signal_connect(G_OBJECT(ok_btn), "clicked",
+			 G_CALLBACK(addressadd_ok), NULL);
+	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
+			 G_CALLBACK(addressadd_cancel), NULL);
+	g_signal_connect(G_OBJECT(tree_folder), "select_row",
+			 G_CALLBACK(addressadd_folder_select), NULL);
+	g_signal_connect(G_OBJECT(tree_folder), "button_press_event",
+			 G_CALLBACK(addressadd_tree_button), NULL);
 
 	gtk_widget_show_all(vbox);
 

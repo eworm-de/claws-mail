@@ -1499,13 +1499,11 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 
 	toolbar_data = g_new0(Toolbar, 1); 
 
-	toolbar = gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL,
-				  GTK_TOOLBAR_BOTH);
+	toolbar = gtk_toolbar_new();
 	gtk_container_add(GTK_CONTAINER(container), toolbar);
 	gtk_container_set_border_width(GTK_CONTAINER(container), 2);
-	gtk_toolbar_set_button_relief(GTK_TOOLBAR(toolbar), GTK_RELIEF_NONE);
-	gtk_toolbar_set_space_style(GTK_TOOLBAR(toolbar),
-				    GTK_TOOLBAR_SPACE_LINE);
+	gtk_toolbar_set_orientation(GTK_TOOLBAR(toolbar), GTK_ORIENTATION_HORIZONTAL);
+	gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_BOTH);
 	
 	for (cur = toolbar_list; cur != NULL; cur = cur->next) {
 
@@ -1531,7 +1529,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 						toolbar_item->text,
 						(""),
 						(""),
-						icon_wid, toolbar_buttons_cb, 
+						icon_wid, G_CALLBACK(toolbar_buttons_cb), 
 						toolbar_item);
 		
 		switch (toolbar_item->index) {
@@ -1560,7 +1558,7 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 							    _("News"),
 							    (""),
 							    (""),
-							    icon_news, toolbar_buttons_cb, 
+							    icon_news, G_CALLBACK(toolbar_buttons_cb), 
 							    toolbar_item);
 			toolbar_data->compose_mail_btn = item; 
 			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 

@@ -99,7 +99,7 @@ static void account_selected		(GtkCList	*clist,
 static void account_row_moved		(GtkCList	*clist,
 					 gint		 source_row,
 					 gint		 dest_row);
-static void account_key_pressed		(GtkWidget	*widget,
+static gboolean account_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
 
@@ -549,15 +549,15 @@ static void account_edit_create(void)
 
 	debug_print("Creating account edit window...\n");
 
-	window = gtk_window_new (GTK_WINDOW_DIALOG);
-	gtk_widget_set_usize (window, 500, 320);
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_widget_set_size_request (window, 500, 320);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_set_title (GTK_WINDOW (window), _("Edit accounts"));
 	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
-	gtk_signal_connect (GTK_OBJECT (window), "delete_event",
-			    GTK_SIGNAL_FUNC (account_delete_event), NULL);
-	gtk_signal_connect (GTK_OBJECT (window), "key_press_event",
-			    GTK_SIGNAL_FUNC (account_key_pressed), NULL);
+	g_signal_connect (G_OBJECT (window), "delete_event",
+			  G_CALLBACK (account_delete_event), NULL);
+	g_signal_connect (G_OBJECT (window), "key_press_event",
+			  G_CALLBACK (account_key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT (window);
 	gtk_widget_realize(window);
 
@@ -612,10 +612,10 @@ static void account_edit_create(void)
 		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(clist)->column[i].button,
 				       GTK_CAN_FOCUS);
 
-	gtk_signal_connect (GTK_OBJECT (clist), "select_row",
-			    GTK_SIGNAL_FUNC (account_selected), NULL);
-	gtk_signal_connect_after (GTK_OBJECT (clist), "row_move",
-				  GTK_SIGNAL_FUNC (account_row_moved), NULL);
+	g_signal_connect (G_OBJECT (clist), "select_row",
+			  G_CALLBACK (account_selected), NULL);
+	g_signal_connect_after (G_OBJECT (clist), "row_move",
+				G_CALLBACK (account_row_moved), NULL);
 
 	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
@@ -624,32 +624,32 @@ static void account_edit_create(void)
 	add_btn = gtk_button_new_with_label (_("Add"));
 	gtk_widget_show (add_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), add_btn, FALSE, FALSE, 4);
-	gtk_signal_connect (GTK_OBJECT(add_btn), "clicked",
-			    GTK_SIGNAL_FUNC (account_add), NULL);
+	g_signal_connect (G_OBJECT(add_btn), "clicked",
+			  G_CALLBACK (account_add), NULL);
 
 	edit_btn = gtk_button_new_with_label (_("Edit"));
 	gtk_widget_show (edit_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), edit_btn, FALSE, FALSE, 4);
-	gtk_signal_connect (GTK_OBJECT(edit_btn), "clicked",
-			    GTK_SIGNAL_FUNC (account_edit_prefs), NULL);
+	g_signal_connect (G_OBJECT(edit_btn), "clicked",
+			  G_CALLBACK (account_edit_prefs), NULL);
 
 	del_btn = gtk_button_new_with_label (_(" Delete "));
 	gtk_widget_show (del_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), del_btn, FALSE, FALSE, 4);
-	gtk_signal_connect (GTK_OBJECT(del_btn), "clicked",
-			    GTK_SIGNAL_FUNC (account_delete), NULL);
+	g_signal_connect (G_OBJECT(del_btn), "clicked",
+			  G_CALLBACK (account_delete), NULL);
 
 	down_btn = gtk_button_new_with_label (_("Down"));
 	gtk_widget_show (down_btn);
 	gtk_box_pack_end (GTK_BOX (vbox2), down_btn, FALSE, FALSE, 4);
-	gtk_signal_connect (GTK_OBJECT(down_btn), "clicked",
-			    GTK_SIGNAL_FUNC (account_down), NULL);
+	g_signal_connect (G_OBJECT(down_btn), "clicked",
+			  G_CALLBACK (account_down), NULL);
 
 	up_btn = gtk_button_new_with_label (_("Up"));
 	gtk_widget_show (up_btn);
 	gtk_box_pack_end (GTK_BOX (vbox2), up_btn, FALSE, FALSE, 4);
-	gtk_signal_connect (GTK_OBJECT(up_btn), "clicked",
-			    GTK_SIGNAL_FUNC (account_up), NULL);
+	g_signal_connect (G_OBJECT(up_btn), "clicked",
+			  G_CALLBACK (account_up), NULL);
 
 	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);
@@ -662,8 +662,8 @@ static void account_edit_create(void)
 	default_btn = gtk_button_new_with_label (_(" Set as default account "));
 	gtk_widget_show (default_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), default_btn, TRUE, FALSE, 0);
-	gtk_signal_connect (GTK_OBJECT(default_btn), "clicked",
-			    GTK_SIGNAL_FUNC (account_set_default), NULL);
+	g_signal_connect (G_OBJECT(default_btn), "clicked",
+			  G_CALLBACK (account_set_default), NULL);
 
 	gtkut_button_set_create(&hbbox, &close_btn, _("Close"),
 				NULL, NULL, NULL, NULL);
@@ -671,9 +671,9 @@ static void account_edit_create(void)
 	gtk_box_pack_end (GTK_BOX (hbox), hbbox, FALSE, FALSE, 0);
 	gtk_widget_grab_default (close_btn);
 
-	gtk_signal_connect (GTK_OBJECT (close_btn), "clicked",
-			    GTK_SIGNAL_FUNC (account_edit_close),
-			    NULL);
+	g_signal_connect (G_OBJECT (close_btn), "clicked",
+			  G_CALLBACK (account_edit_close),
+			  NULL);
 
 	stock_pixmap_gdk(clist, STOCK_PIXMAP_MARK, &markxpm, &markxpmmask);
 	stock_pixmap_gdk(clist, STOCK_PIXMAP_CHECKBOX_ON,
@@ -853,11 +853,12 @@ static void account_row_moved(GtkCList *clist, gint source_row, gint dest_row)
 		gtk_clist_moveto(clist, dest_row, -1, 0.5, 0.0);
 }
 
-static void account_key_pressed(GtkWidget *widget, GdkEventKey *event,
-				gpointer data)
+static gboolean account_key_pressed(GtkWidget *widget, GdkEventKey *event,
+				    gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		account_edit_close();
+	return FALSE;
 }
 
 /* set one CList row or add new row */

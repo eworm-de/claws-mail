@@ -254,7 +254,7 @@ static void prefs_filtering_action_create(void)
 
 	debug_print("Creating matcher configuration window...\n");
 
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
@@ -713,7 +713,7 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 	gint action_type;
 	gint list_id;
 	gint account_id;
-	gchar * destination;
+	const gchar * destination;
 	gint labelcolor = 0;
         FilteringAction * action;
 

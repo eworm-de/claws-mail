@@ -380,18 +380,18 @@ MessageView *messageview_create_with_new_window(MainWindow *mainwin)
 	gtk_window_set_title(GTK_WINDOW(window), _("Sylpheed - Message View"));
 	gtk_window_set_wmclass(GTK_WINDOW(window), "message_view", "Sylpheed");
 	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, FALSE);
-	gtk_widget_set_usize(window, prefs_common.msgwin_width,
-			     prefs_common.msgwin_height);
+	gtk_widget_set_size_request(window, prefs_common.msgwin_width,
+				    prefs_common.msgwin_height);
 
 	msgview = messageview_create(mainwin);
 
-	gtk_signal_connect(GTK_OBJECT(window), "size_allocate",
-			   GTK_SIGNAL_FUNC(messageview_size_allocate_cb),
-			   msgview);
-	gtk_signal_connect(GTK_OBJECT(window), "destroy",
-			   GTK_SIGNAL_FUNC(messageview_destroy_cb), msgview);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(key_pressed), msgview);
+	g_signal_connect(G_OBJECT(window), "size_allocate",
+			 G_CALLBACK(messageview_size_allocate_cb),
+			 msgview);
+	g_signal_connect(G_OBJECT(window), "destroy",
+			 G_CALLBACK(messageview_destroy_cb), msgview);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(key_pressed), msgview);
 
 	messageview_add_toolbar(msgview, window);
 
@@ -838,8 +838,14 @@ void messageview_copy_clipboard(MessageView *messageview)
 	TextView *text;
 
 	text = messageview_get_current_textview(messageview);
-	if (text)
-		gtk_editable_copy_clipboard(GTK_EDITABLE(text->text));
+	if (text) {
+		GtkTextView *textview = GTK_TEXT_VIEW(text->text);
+		GtkTextBuffer *buffer = gtk_text_view_get_buffer(textview);
+		GtkClipboard *clipboard
+			= gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+
+		gtk_text_buffer_copy_clipboard(buffer, clipboard);
+	}
 }
 
 void messageview_select_all(MessageView *messageview)
@@ -1046,29 +1052,35 @@ gchar *messageview_get_selection(MessageView *msgview)
 {
 	TextView *textview;
 	gchar *text = NULL;
-	GtkEditable *edit = NULL;
+	GtkTextView *edit = NULL;
+	GtkTextBuffer *textbuf;
 	gint body_pos = 0;
 	
 	g_return_val_if_fail(msgview != NULL, NULL);
 
 	textview = messageview_get_current_textview(msgview);
 	if (textview) {
-		edit = GTK_EDITABLE(textview->text);
+		edit = GTK_TEXT_VIEW(textview->text);
 		body_pos = textview->body_pos;
 	} else {
-		edit = GTK_EDITABLE(msgview->mimeview->textview->text);
+		edit = GTK_TEXT_VIEW(msgview->mimeview->textview->text);
 		body_pos = msgview->mimeview->textview->body_pos;
 	}
 
 	g_return_val_if_fail(edit != NULL, NULL);
 
-	if (edit->has_selection)
-		text = gtkut_editable_get_selection(edit);
-	else if (msgview->filtered) 
-		text = gtk_editable_get_chars (edit, body_pos, -1);
-	else
+	textbuf = gtk_text_view_get_buffer(edit);
+
+	if (gtk_text_buffer_get_selection_bounds(textbuf, NULL, NULL))
+		return gtkut_text_view_get_selection(edit);
+	else if (msgview->filtered) {
+		GtkTextIter start_iter, end_iter;
+		gtk_text_buffer_get_iter_at_offset(textbuf, &start_iter, body_pos);
+		gtk_text_buffer_get_end_iter(textbuf, &end_iter);
+		gtk_text_buffer_get_text(textbuf, &start_iter, &end_iter, FALSE);
+	} else
 		text = NULL;
-	
+
 	return text;
 }
 

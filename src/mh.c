@@ -42,6 +42,7 @@
 #include "procmsg.h"
 #include "procheader.h"
 #include "utils.h"
+#include "codeconv.h"
 
 static void mh_folder_init(Folder * folder,
 			   const gchar * name, const gchar * path);
@@ -81,6 +82,8 @@ static gchar *mh_get_new_msg_filename(FolderItem * dest);
 static MsgInfo *mh_parse_msg(const gchar * file, FolderItem * item);
 static void	mh_remove_missing_folder_items	(Folder		*folder);
 static void mh_scan_tree_recursive(FolderItem * item);
+static gchar	*mh_filename_from_utf8		(const gchar	*path);
+static gchar	*mh_filename_to_utf8		(const gchar	*path);
 
 static gboolean mh_rename_folder_func(GNode * node, gpointer data);
 static gchar *mh_item_get_path(Folder *folder, FolderItem *item);
@@ -243,7 +246,7 @@ gchar *mh_fetch_msg(Folder *folder, FolderItem *item, gint num)
 
 	path = folder_item_get_path(item);
 	file = g_strconcat(path, G_DIR_SEPARATOR_S, itos(num), NULL);
-	g_free(path);
+
 	if (!is_file_exist(file)) {
 		g_free(file);
 		return NULL;
@@ -559,7 +562,7 @@ gchar *mh_item_get_path(Folder *folder, FolderItem *item)
 FolderItem *mh_create_folder(Folder *folder, FolderItem *parent,
 			     const gchar *name)
 {
-	gchar *path;
+	gchar *path, *real_name;
 	gchar *fullpath;
 	FolderItem *new_item;
 	gchar *mh_sequences_filename;
@@ -574,7 +577,9 @@ FolderItem *mh_create_folder(Folder *folder, FolderItem *parent,
 		if (make_dir_hier(path) != 0)
 			return NULL;
 		
-	fullpath = g_strconcat(path, G_DIR_SEPARATOR_S, name, NULL);
+	real_name = mh_filename_from_utf8(name);
+	fullpath = g_strconcat(path, G_DIR_SEPARATOR_S, real_name, NULL);
+	g_free(real_name);
 	g_free(path);
 
 	if (make_dir(fullpath) < 0) {
@@ -608,9 +613,10 @@ FolderItem *mh_create_folder(Folder *folder, FolderItem *parent,
 
 gint mh_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 {
+ 	gchar *real_name;
 	gchar *oldpath;
 	gchar *dirname;
-	gchar *newpath;
+	gchar *newpath, *utf8newpath;
 	gchar *paths[2];
 
 	g_return_val_if_fail(folder != NULL, -1);
@@ -623,8 +629,9 @@ gint mh_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 		make_dir_hier(oldpath);
 
 	dirname = g_dirname(oldpath);
-	newpath = g_strconcat(dirname, G_DIR_SEPARATOR_S, name, NULL);
-	g_free(dirname);
+	real_name = mh_filename_from_utf8(name);
+	newpath = g_strconcat(dirname, G_DIR_SEPARATOR_S, real_name, NULL);
+	g_free(real_name);
 
 	if (rename(oldpath, newpath) < 0) {
 		FILE_OP_ERROR(oldpath, "rename");
@@ -638,16 +645,17 @@ gint mh_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 
 	if (strchr(item->path, G_DIR_SEPARATOR) != NULL) {
 		dirname = g_dirname(item->path);
-		newpath = g_strconcat(dirname, G_DIR_SEPARATOR_S, name, NULL);
+		utf8newpath = g_strconcat(dirname, G_DIR_SEPARATOR_S,
+					  name, NULL);
 		g_free(dirname);
 	} else
-		newpath = g_strdup(name);
+		utf8newpath = g_strdup(name);
 
 	g_free(item->name);
 	item->name = g_strdup(name);
 
 	paths[0] = g_strdup(item->path);
-	paths[1] = newpath;
+	paths[1] = utf8newpath;
 	g_node_traverse(item->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
 			mh_rename_folder_func, paths);
 
@@ -776,7 +784,7 @@ static void mh_scan_tree_recursive(FolderItem *item)
 	DIR *dp;
 	struct dirent *d;
 	struct stat s;
-	gchar *entry;
+ 	gchar *real_path, *entry, *utf8entry, *utf8name;
 	gint n_msg = 0;
 
 	g_return_if_fail(item != NULL);
@@ -784,11 +792,13 @@ static void mh_scan_tree_recursive(FolderItem *item)
 
 	folder = item->folder;
 
-	dp = opendir(item->path ? item->path : ".");
+	real_path = item->path ? mh_filename_from_utf8(item->path) : g_strdup(".");
+	dp = opendir(real_path);
 	if (!dp) {
-		FILE_OP_ERROR(item->path ? item->path : ".", "opendir");
+		FILE_OP_ERROR(real_path, "opendir");
 		return;
 	}
+	g_free(real_path);
 
 	debug_print("scanning %s ...\n",
 		    item->path ? item->path
@@ -799,15 +809,19 @@ static void mh_scan_tree_recursive(FolderItem *item)
 	while ((d = readdir(dp)) != NULL) {
 		if (d->d_name[0] == '.') continue;
 
+		utf8name = mh_filename_to_utf8(d->d_name);
 		if (item->path)
-			entry = g_strconcat(item->path, G_DIR_SEPARATOR_S,
-					    d->d_name, NULL);
+			utf8entry = g_strconcat(item->path, G_DIR_SEPARATOR_S,
+						utf8name, NULL);
 		else
-			entry = g_strdup(d->d_name);
+			utf8entry = g_strdup(utf8name);
+		entry = mh_filename_from_utf8(utf8entry);
 
 		if (stat(entry, &s) < 0) {
 			FILE_OP_ERROR(entry, "stat");
 			g_free(entry);
+			g_free(utf8entry);
+			g_free(utf8name);
 			continue;
 		}
 
@@ -818,6 +832,8 @@ static void mh_scan_tree_recursive(FolderItem *item)
 #if 0
 			if (mh_is_maildir(entry)) {
 				g_free(entry);
+				g_free(utf8entry);
+				g_free(utf8name);
 				continue;
 			}
 #endif
@@ -832,7 +848,7 @@ static void mh_scan_tree_recursive(FolderItem *item)
 			}
 			if (!new_item) {
 				debug_print("new folder '%s' found.\n", entry);
-				new_item = folder_item_new(folder, d->d_name, entry);
+				new_item = folder_item_new(folder, utf8name, utf8entry);
 				folder_item_append(item, new_item);
 			}
 
@@ -864,6 +880,8 @@ static void mh_scan_tree_recursive(FolderItem *item)
 		} else if (to_number(d->d_name) != -1) n_msg++;
 
 		g_free(entry);
+		g_free(utf8entry);
+		g_free(utf8name);
 	}
 
 	closedir(dp);
@@ -912,4 +930,38 @@ static gboolean mh_rename_folder_func(GNode *node, gpointer data)
 	item->path = new_itempath;
 
 	return FALSE;
+}
+
+#warning FIXME_GTK2 /* should we use g_filename_from_utf8()? */
+static gchar *mh_filename_from_utf8(const gchar *path)
+{
+	const gchar *src_codeset = CS_UTF_8;
+	const gchar *dest_codeset = conv_get_current_charset_str();
+	gchar *real_path;
+
+	real_path = conv_codeset_strdup(path, src_codeset, dest_codeset);
+	if (!real_path) {
+		g_warning("mh_filename_from_utf8: faild to convert character set\n");
+		/* FIXME: show dialog? */
+		real_path = g_strdup(path);
+	}
+
+	return real_path;
+}
+
+#warning FIXME_GTK2 /* should we use g_filename_to_utf8()? */
+static gchar *mh_filename_to_utf8(const gchar *path)
+{
+	const gchar *src_codeset = conv_get_current_charset_str();
+	const gchar *dest_codeset = CS_UTF_8;
+	gchar *utf8path;
+
+	utf8path = conv_codeset_strdup(path, src_codeset, dest_codeset);
+	if (!utf8path) {
+		g_warning("mh_filename_to_utf8: faild to convert character set\n");
+		/* FIXME: show dialog? */
+		utf8path = g_strdup(path);
+	}
+
+	return utf8path;
 }

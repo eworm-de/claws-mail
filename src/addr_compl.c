@@ -167,7 +167,7 @@ static void add_address1(const char *str, address_entry *ae)
 {
 	completion_entry *ce1;
 	ce1 = g_new0(completion_entry, 1),
-	ce1->string = g_strdup(str);
+	ce1->string = g_utf8_strdown(str, -1);
 	/* GCompletion list is case sensitive */
 	g_strdown(ce1->string);
 	ce1->ref = ae;
@@ -277,69 +277,52 @@ gint start_address_completion(void)
  */
 static gchar *get_address_from_edit(GtkEntry *entry, gint *start_pos)
 {
-	const gchar *edit_text;
+	const gchar *edit_text, *p;
 	gint cur_pos;
-	wchar_t *wtext;
-	wchar_t *wp;
-	wchar_t rfc_mail_sep;
-	wchar_t quote;
-	wchar_t lt;
-	wchar_t gt;
 	gboolean in_quote = FALSE;
 	gboolean in_bracket = FALSE;
 	gchar *str;
 
-	if (mbtowc(&rfc_mail_sep, ",", 1) < 0) return NULL;
-	if (mbtowc(&quote, "\"", 1) < 0) return NULL;
-	if (mbtowc(&lt, "<", 1) < 0) return NULL;
-	if (mbtowc(&gt, ">", 1) < 0) return NULL;
-
 	edit_text = gtk_entry_get_text(entry);
 	if (edit_text == NULL) return NULL;
-
-	wtext = strdup_mbstowcs(edit_text);
-	g_return_val_if_fail(wtext != NULL, NULL);
 
 	cur_pos = gtk_editable_get_position(GTK_EDITABLE(entry));
 
 	/* scan for a separator. doesn't matter if walk points at null byte. */
-	for (wp = wtext + cur_pos; wp > wtext; wp--) {
-		if (*wp == quote)
-			in_quote ^= TRUE;
-		else if (!in_quote) {
-			if (!in_bracket && *wp == rfc_mail_sep)
+	for (p = g_utf8_offset_to_pointer(edit_text, cur_pos);
+	     p > edit_text;
+	     p = g_utf8_prev_char(p)) {
+		if (*p == '"') {
+			in_quote = TRUE;
+		} else if (!in_quote) {
+			if (!in_bracket && *p == ',') {
 				break;
-			else if (*wp == gt)
+			} else if (*p == '<')
 				in_bracket = TRUE;
-			else if (*wp == lt)
+			else if (*p == '>')
 				in_bracket = FALSE;
 		}
 	}
 
 	/* have something valid */
-	if (wcslen(wp) == 0) {
-		g_free(wtext);
+	if (g_utf8_strlen(p, -1) == 0)
 		return NULL;
-	}
 
 #define IS_VALID_CHAR(x) \
-	(iswalnum(x) || (x) == quote || (x) == lt || ((x) > 0x7f))
+	(isalnum(x) || (x) == '"' || (x) == '<' || (((unsigned char)(x)) > 0x7f))
 
 	/* now scan back until we hit a valid character */
-	for (; *wp && !IS_VALID_CHAR(*wp); wp++)
+	for (; *p && !IS_VALID_CHAR(*p); p = g_utf8_next_char(p))
 		;
 
 #undef IS_VALID_CHAR
 
-	if (wcslen(wp) == 0) {
-		g_free(wtext);
+	if (g_utf8_strlen(p, -1) == 0)
 		return NULL;
-	}
 
-	if (start_pos) *start_pos = wp - wtext;
+	if (start_pos) *start_pos = g_utf8_pointer_to_offset(edit_text, p);
 
-	str = strdup_wcstombs(wp);
-	g_free(wtext);
+	str = g_strdup(p);
 
 	return str;
 } 
@@ -377,13 +360,12 @@ guint complete_address(const gchar *str)
 
 	g_return_val_if_fail(str != NULL, 0);
 
-	Xstrdup_a(d, str, return 0);
+	/* g_completion is case sensitive */
+	d = g_utf8_strdown(str, -1);
 
 	clear_completion_cache();
 	g_completion_prefix = g_strdup(str);
 
-	/* g_completion is case sensitive */
-	g_strdown(d);
 	result = g_completion_complete(g_completion, d, NULL);
 
 	count = g_list_length(result);
@@ -409,6 +391,9 @@ guint complete_address(const gchar *str)
 	}
 
 	g_completion_count = count;
+
+	g_free(d);
+
 	return count;
 }
 
@@ -713,14 +698,14 @@ static void addrcompl_resize_window( CompletionWindow *cw ) {
 	gdk_window_get_geometry( cw->window->window, &x, &y, &width, &height, &depth );
 
 	gtk_widget_size_request( cw->clist, &r );
-	gtk_widget_set_usize( cw->window, width, r.height );
+	gtk_widget_set_size_request( cw->window, width, r.height );
 	gtk_widget_show_all( cw->window );
 	gtk_widget_size_request( cw->clist, &r );
 
 	/* Adjust window height to available screen space */
 	if( ( y + r.height ) > gdk_screen_height() ) {
 		gtk_window_set_policy( GTK_WINDOW( cw->window ), TRUE, FALSE, FALSE );
-		gtk_widget_set_usize( cw->window, width, gdk_screen_height() - y );
+		gtk_widget_set_size_request( cw->window, width, gdk_screen_height() - y );
 	}
 }
 
@@ -919,7 +904,7 @@ static void completion_window_apply_selection(GtkCList *clist, GtkEntry *entry)
 	/* Move focus to next widget */
 	parent = GTK_WIDGET(entry)->parent;
 	if( parent ) {
-		gtk_container_focus( GTK_CONTAINER(parent), GTK_DIR_TAB_FORWARD );
+		gtk_widget_child_focus( parent, GTK_DIR_TAB_FORWARD );
 	}
 }
 
@@ -933,9 +918,9 @@ void address_completion_start(GtkWidget *mainwindow)
 	start_address_completion();
 
 	/* register focus change hook */
-	gtk_signal_connect(GTK_OBJECT(mainwindow), "set_focus",
-			   GTK_SIGNAL_FUNC(address_completion_mainwindow_set_focus),
-			   mainwindow);
+	g_signal_connect(G_OBJECT(mainwindow), "set_focus",
+			 G_CALLBACK(address_completion_mainwindow_set_focus),
+			 mainwindow);
 }
 
 /**
@@ -954,16 +939,15 @@ void address_completion_register_entry(GtkEntry *entry)
 	g_return_if_fail(GTK_IS_ENTRY(entry));
 
 	/* add hooked property */
-	gtk_object_set_data(GTK_OBJECT(entry), ENTRY_DATA_TAB_HOOK, entry);
+	g_object_set_data(G_OBJECT(entry), ENTRY_DATA_TAB_HOOK, entry);
 
 	/* add keypress event */
-	gtk_signal_connect_full(GTK_OBJECT(entry), "key_press_event",
-				GTK_SIGNAL_FUNC(address_completion_entry_key_pressed),
-				NULL,
+	g_signal_connect_closure
+		(GTK_OBJECT(entry), "key_press_event",
+		 g_cclosure_new(G_CALLBACK(address_completion_entry_key_pressed),
 				COMPLETION_UNIQUE_DATA,
-				NULL,
-				0,
-				0); /* magic */
+				NULL),
+		 FALSE); /* magic */
 }
 
 /**
@@ -977,17 +961,17 @@ void address_completion_unregister_entry(GtkEntry *entry)
 	g_return_if_fail(entry != NULL);
 	g_return_if_fail(GTK_IS_ENTRY(entry));
 
-	entry_obj = gtk_object_get_data(GTK_OBJECT(entry), ENTRY_DATA_TAB_HOOK);
+	entry_obj = g_object_get_data(G_OBJECT(entry), ENTRY_DATA_TAB_HOOK);
 	g_return_if_fail(entry_obj);
 	g_return_if_fail(entry_obj == GTK_OBJECT(entry));
 
 	/* has the hooked property? */
-	gtk_object_set_data(GTK_OBJECT(entry), ENTRY_DATA_TAB_HOOK, NULL);
+	g_object_set_data(G_OBJECT(entry), ENTRY_DATA_TAB_HOOK, NULL);
 
 	/* remove the hook */
-	gtk_signal_disconnect_by_func(GTK_OBJECT(entry), 
-		GTK_SIGNAL_FUNC(address_completion_entry_key_pressed),
-		COMPLETION_UNIQUE_DATA);
+	g_signal_handlers_disconnect_by_func(G_OBJECT(entry), 
+			G_CALLBACK(address_completion_entry_key_pressed),
+			COMPLETION_UNIQUE_DATA);
 }
 
 /**
@@ -1008,8 +992,11 @@ static void address_completion_mainwindow_set_focus(GtkWindow *window,
 						    GtkWidget *widget,
 						    gpointer   data)
 {
-	if (widget)
+	
+	if (widget && GTK_IS_ENTRY(widget) &&
+	    g_object_get_data(G_OBJECT(widget), ENTRY_DATA_TAB_HOOK)) {
 		clear_completion_cache();
+	}
 }
 
 /**
@@ -1032,14 +1019,14 @@ static gboolean address_completion_entry_key_pressed(GtkEntry    *entry,
 			 * reported by the system. */
 			ev->keyval = GDK_AudibleBell_Enable;
 			ev->state &= ~GDK_SHIFT_MASK;
-			gtk_signal_emit_stop_by_name(GTK_OBJECT(entry),
-						     "key_press_event");
 
 			/* Create window */			
 			address_completion_create_completion_window(entry);
 
 			/* Start remote queries */
 			addrcompl_start_search();
+
+			return TRUE;
 		}
 		else {
 			/* old behaviour */
@@ -1058,7 +1045,7 @@ static gboolean address_completion_entry_key_pressed(GtkEntry    *entry,
 	} else
 		clear_completion_cache();
 
-	return TRUE;
+	return FALSE;
 }
 /**
  * Initialize search term for address completion.
@@ -1137,26 +1124,26 @@ static void address_completion_create_completion_window( GtkEntry *entry_ )
 	gdk_window_get_geometry(entry->window, &x, &y, &width, &height, &depth);
 	gdk_window_get_deskrelative_origin (entry->window, &x, &y);
 	y += height;
-	gtk_widget_set_uposition(window, x, y);
+	gtk_window_move(GTK_WINDOW(window), x, y);
 
 	/* Resize window to fit initial (empty) address list */
 	gtk_widget_size_request( clist, &r );
-	gtk_widget_set_usize( window, width, r.height );
+	gtk_widget_set_size_request( window, width, r.height );
 	gtk_widget_show_all( window );
 	gtk_widget_size_request( clist, &r );
 
 	/* Setup handlers */
-	gtk_signal_connect(GTK_OBJECT(clist), "select_row",
-			   GTK_SIGNAL_FUNC(completion_window_select_row),
-			   _compWindow_ );
-	gtk_signal_connect(GTK_OBJECT(window),
-			   "button-press-event",
-			   GTK_SIGNAL_FUNC(completion_window_button_press),
-			   _compWindow_ );
-	gtk_signal_connect(GTK_OBJECT(window),
-			   "key-press-event",
-			   GTK_SIGNAL_FUNC(completion_window_key_press),
-			   _compWindow_ );
+	g_signal_connect(G_OBJECT(clist), "select_row",
+			 G_CALLBACK(completion_window_select_row),
+			 _compWindow_ );
+	g_signal_connect(G_OBJECT(window),
+			 "button-press-event",
+			 G_CALLBACK(completion_window_button_press),
+			 _compWindow_ );
+	g_signal_connect(G_OBJECT(window),
+			 "key-press-event",
+			 G_CALLBACK(completion_window_key_press),
+			 _compWindow_ );
 	gdk_pointer_grab(window->window, TRUE,
 			 GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK |
 			 GDK_BUTTON_RELEASE_MASK,
@@ -1307,7 +1294,7 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 
 		/* Move focus to next widget */
 		if( parent ) {
-			gtk_container_focus( GTK_CONTAINER(parent), GTK_DIR_TAB_FORWARD );
+			gtk_widget_child_focus( parent, GTK_DIR_TAB_FORWARD );
 		}
 		return FALSE;
 	}
@@ -1323,7 +1310,7 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 
 		/* Move focus to previous widget */
 		if( parent ) {
-			gtk_container_focus( GTK_CONTAINER(parent), GTK_DIR_TAB_BACKWARD );
+			gtk_widget_child_focus( parent, GTK_DIR_TAB_BACKWARD );
 		}
 		return FALSE;
 	}

@@ -25,10 +25,12 @@
 #include "defs.h"
 
 #include <glib.h>
-#include <gdk/gdkx.h>
+#ifdef GDK_WINDOWING_X11
+#	include <gdk/gdkx.h>
+#endif /* GDK_WINDOWING_X11 */
 #include <gtk/gtk.h>
 #include <gtk/gtkwidget.h>
-#include <gtk/gtkpixmap.h>
+#include <gtk/gtkimage.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkcheckmenuitem.h>
 #include <gtk/gtklabel.h>
@@ -143,17 +145,17 @@ static GtkWidget *colorlabel_create_color_widget(GdkColor color)
 	GtkWidget *widget;
 
 	widget = gtk_drawing_area_new();
-	gtk_drawing_area_size(GTK_DRAWING_AREA(widget), 16, 16);
+	gtk_widget_set_size_request(widget, 16, 16);
 
 #define CL(x)		(((gulong) (x) >> (gulong) 8) & 0xFFUL)	
 #define CR(r, g, b)	((CL(r) << (gulong) 16) | \
 			 (CL(g) << (gulong)  8) | \
 			 (CL(b)))
 
-	gtk_signal_connect(GTK_OBJECT(widget), "expose_event", 
-			   GTK_SIGNAL_FUNC
+	g_signal_connect(G_OBJECT(widget), "expose_event", 
+			 G_CALLBACK
 			   	(colorlabel_drawing_area_expose_event_cb),
-			   GINT_TO_POINTER
+			 GINT_TO_POINTER
 			   	((gint)CR(color.red, color.green, color.blue)));
 
 	return widget;
@@ -251,7 +253,7 @@ GtkWidget *colorlabel_create_check_color_menu_item(gint color_index)
 
 	gtk_container_add(GTK_CONTAINER(align), label_colors[color_index].widget);
 	gtk_widget_show(label_colors[color_index].widget);
-	gtk_widget_set_usize(align, 16, 16);
+	gtk_widget_set_size_request(align, 16, 16);
 
 	gtk_box_pack_start(GTK_BOX(hbox), align, FALSE, FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 4);
@@ -274,11 +276,11 @@ GtkWidget *colorlabel_create_color_menu(void)
 
 	/* create the menu items. each item has its color code attached */
 	menu = gtk_menu_new();
-	gtk_object_set_data(GTK_OBJECT(menu), "label_color_menu", menu);
+	g_object_set_data(G_OBJECT(menu), "label_color_menu", menu);
 
 	item = gtk_menu_item_new_with_label(_("None"));
-	gtk_menu_append(GTK_MENU(menu), item);
-	gtk_object_set_data(GTK_OBJECT(item), "color", GUINT_TO_POINTER(0));
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+	g_object_set_data(G_OBJECT(item), "color", GUINT_TO_POINTER(0));
 	gtk_widget_show(item);
 	
 	/* and the color items */
@@ -286,7 +288,7 @@ GtkWidget *colorlabel_create_color_menu(void)
 		GtkWidget *widget = colorlabel_create_color_widget(label_colors[i].color);
 
 		item  = gtk_menu_item_new();
-		gtk_object_set_data(GTK_OBJECT(item), "color", GUINT_TO_POINTER(i + 1));
+		g_object_set_data(G_OBJECT(item), "color", GUINT_TO_POINTER(i + 1));
 
 		label = gtk_label_new(label_colors[i].label);
 		
@@ -302,12 +304,12 @@ GtkWidget *colorlabel_create_color_menu(void)
 
 		gtk_container_add(GTK_CONTAINER(align), widget);
 		gtk_widget_show(widget);
-		gtk_widget_set_usize(align, 16, 16);
+		gtk_widget_set_size_request(align, 16, 16);
 
 		gtk_box_pack_start(GTK_BOX(hbox), align, FALSE, FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 4);
 		
-		gtk_menu_append(GTK_MENU(menu), item);
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 		gtk_widget_show(item);
 	}
 
@@ -322,10 +324,10 @@ guint colorlabel_get_color_menu_active_item(GtkWidget *menu)
 	guint      color;
 
 	g_return_val_if_fail
-		(gtk_object_get_data(GTK_OBJECT(menu), "label_color_menu"), 0);
+		(g_object_get_data(G_OBJECT(menu), "label_color_menu"), 0);
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	color = GPOINTER_TO_UINT
-		(gtk_object_get_data(GTK_OBJECT(menuitem), "color"));
+		(g_object_get_data(G_OBJECT(menuitem), "color"));
 	return color;
 }
 

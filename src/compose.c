@@ -47,7 +47,9 @@
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkscrolledwindow.h>
-#include <gtk/gtkthemes.h>
+#include <gtk/gtktreeview.h>
+#warning FIXME_GTK2
+/* #include <gtk/gtkthemes.h> */
 #include <gtk/gtkdnd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -72,7 +74,6 @@
 #include "main.h"
 #include "mainwindow.h"
 #include "compose.h"
-#include "gtkstext.h"
 #include "addressbook.h"
 #include "folderview.h"
 #include "procmsg.h"
@@ -123,22 +124,22 @@ typedef enum
 
 typedef enum
 {
-	COMPOSE_CALL_GTK_STEXT_MOVE_BEGINNING_OF_LINE,
-	COMPOSE_CALL_GTK_STEXT_MOVE_FORWARD_CHARACTER,
-	COMPOSE_CALL_GTK_STEXT_MOVE_BACKWARD_CHARACTER,
-	COMPOSE_CALL_GTK_STEXT_MOVE_FORWARD_WORD,
-	COMPOSE_CALL_GTK_STEXT_MOVE_BACKWARD_WORD,
-	COMPOSE_CALL_GTK_STEXT_MOVE_END_OF_LINE,
-	COMPOSE_CALL_GTK_STEXT_MOVE_NEXT_LINE,
-	COMPOSE_CALL_GTK_STEXT_MOVE_PREVIOUS_LINE,
-	COMPOSE_CALL_GTK_STEXT_DELETE_FORWARD_CHARACTER,
-	COMPOSE_CALL_GTK_STEXT_DELETE_BACKWARD_CHARACTER,
-	COMPOSE_CALL_GTK_STEXT_DELETE_FORWARD_WORD,
-	COMPOSE_CALL_GTK_STEXT_DELETE_BACKWARD_WORD,
-	COMPOSE_CALL_GTK_STEXT_DELETE_LINE,
-	COMPOSE_CALL_GTK_STEXT_DELETE_LINE_N,
-	COMPOSE_CALL_GTK_STEXT_DELETE_TO_LINE_END
-} ComposeCallGtkSTextAction;
+	COMPOSE_CALL_ADVANCED_ACTION_MOVE_BEGINNING_OF_LINE,
+	COMPOSE_CALL_ADVANCED_ACTION_MOVE_FORWARD_CHARACTER,
+	COMPOSE_CALL_ADVANCED_ACTION_MOVE_BACKWARD_CHARACTER,
+	COMPOSE_CALL_ADVANCED_ACTION_MOVE_FORWARD_WORD,
+	COMPOSE_CALL_ADVANCED_ACTION_MOVE_BACKWARD_WORD,
+	COMPOSE_CALL_ADVANCED_ACTION_MOVE_END_OF_LINE,
+	COMPOSE_CALL_ADVANCED_ACTION_MOVE_NEXT_LINE,
+	COMPOSE_CALL_ADVANCED_ACTION_MOVE_PREVIOUS_LINE,
+	COMPOSE_CALL_ADVANCED_ACTION_DELETE_FORWARD_CHARACTER,
+	COMPOSE_CALL_ADVANCED_ACTION_DELETE_BACKWARD_CHARACTER,
+	COMPOSE_CALL_ADVANCED_ACTION_DELETE_FORWARD_WORD,
+	COMPOSE_CALL_ADVANCED_ACTION_DELETE_BACKWARD_WORD,
+	COMPOSE_CALL_ADVANCED_ACTION_DELETE_LINE,
+	COMPOSE_CALL_ADVANCED_ACTION_DELETE_LINE_N,
+	COMPOSE_CALL_ADVANCED_ACTION_DELETE_TO_LINE_END
+} ComposeCallAdvancedAction;
 
 typedef enum
 {
@@ -265,7 +266,7 @@ static void attach_property_cancel		(GtkWidget	*widget,
 static gint attach_property_delete_event	(GtkWidget	*widget,
 						 GdkEventAny	*event,
 						 gboolean	*cancelled);
-static void attach_property_key_pressed		(GtkWidget	*widget,
+static gboolean attach_property_key_pressed	(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 gboolean	*cancelled);
 
@@ -283,7 +284,7 @@ static void compose_undo_state_changed		(UndoMain	*undostruct,
 						 gint		 redo_state,
 						 gpointer	 data);
 
-static gint calc_cursor_xpos	(GtkSText	*text,
+static gint calc_cursor_xpos	(GtkTextView	*text,
 				 gint		 extra,
 				 gint		 char_width);
 
@@ -303,10 +304,10 @@ static void attach_selected		(GtkCList	*clist,
 					 gint		 column,
 					 GdkEvent	*event,
 					 gpointer	 data);
-static void attach_button_pressed	(GtkWidget	*widget,
+static gboolean attach_button_pressed	(GtkWidget	*widget,
 					 GdkEventButton	*event,
 					 gpointer	 data);
-static void attach_key_pressed		(GtkWidget	*widget,
+static gboolean attach_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
 
@@ -359,22 +360,14 @@ static void compose_paste_cb		(Compose	*compose);
 static void compose_paste_as_quote_cb	(Compose	*compose);
 static void compose_allsel_cb		(Compose	*compose);
 
-static void compose_gtk_stext_action_cb	(Compose		   *compose,
-					 ComposeCallGtkSTextAction  action);
+static void compose_advanced_action_cb	(Compose		   *compose,
+					 ComposeCallAdvancedAction  action);
 
 static void compose_grab_focus_cb	(GtkWidget	*widget,
 					 Compose	*compose);
 
-static void compose_changed_cb		(GtkEditable	*editable,
+static void compose_changed_cb		(GtkTextBuffer	*textbuf,
 					 Compose	*compose);
-static void compose_button_press_cb	(GtkWidget	*widget,
-					 GdkEventButton	*event,
-					 Compose	*compose);
-#if 0
-static void compose_key_press_cb	(GtkWidget	*widget,
-					 GdkEventKey	*event,
-					 Compose	*compose);
-#endif
 
 #if 0
 static void compose_toggle_to_cb	(gpointer	 data,
@@ -457,10 +450,10 @@ static void subject_activated		(GtkWidget	*widget,
 
 static void text_activated		(GtkWidget	*widget,
 					 Compose	*compose);
-static void text_inserted		(GtkWidget	*widget,
+static void text_inserted		(GtkTextBuffer	*buffer,
+					 GtkTextIter	*iter,
 					 const gchar	*text,
-					 gint		 length,
-					 gint		*position,
+					 gint		 len,
 					 Compose	*compose);
 static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				  gboolean to_all, gboolean to_ml,
@@ -516,78 +509,78 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Edit/A_dvanced"),	NULL, NULL, 0, "<Branch>"},
 	{N_("/_Edit/A_dvanced/Move a character backward"),
 					"<control>B",
-					compose_gtk_stext_action_cb,
-					COMPOSE_CALL_GTK_STEXT_MOVE_BACKWARD_CHARACTER,
+					compose_advanced_action_cb,
+					COMPOSE_CALL_ADVANCED_ACTION_MOVE_BACKWARD_CHARACTER,
 					NULL},
 	{N_("/_Edit/A_dvanced/Move a character forward"),
 					"<control>F",
-					compose_gtk_stext_action_cb,
-					COMPOSE_CALL_GTK_STEXT_MOVE_FORWARD_CHARACTER,
+					compose_advanced_action_cb,
+					COMPOSE_CALL_ADVANCED_ACTION_MOVE_FORWARD_CHARACTER,
 					NULL},
 	{N_("/_Edit/A_dvanced/Move a word backward"),
 					NULL, /* "<alt>B" */
-					compose_gtk_stext_action_cb,
-					COMPOSE_CALL_GTK_STEXT_MOVE_BACKWARD_WORD,
+					compose_advanced_action_cb,
+					COMPOSE_CALL_ADVANCED_ACTION_MOVE_BACKWARD_WORD,
 					NULL},
 	{N_("/_Edit/A_dvanced/Move a word forward"),
 					NULL, /* "<alt>F" */
-					compose_gtk_stext_action_cb,
-					COMPOSE_CALL_GTK_STEXT_MOVE_FORWARD_WORD,
+					compose_advanced_action_cb,
+					COMPOSE_CALL_ADVANCED_ACTION_MOVE_FORWARD_WORD,
 					NULL},
 	{N_("/_Edit/A_dvanced/Move to beginning of line"),
 					NULL, /* "<control>A" */
-					compose_gtk_stext_action_cb,
-					COMPOSE_CALL_GTK_STEXT_MOVE_BEGINNING_OF_LINE,
+					compose_advanced_action_cb,
+					COMPOSE_CALL_ADVANCED_ACTION_MOVE_BEGINNING_OF_LINE,
 					NULL},
 	{N_("/_Edit/A_dvanced/Move to end of line"),
 					"<control>E",
-					compose_gtk_stext_action_cb,
-					COMPOSE_CALL_GTK_STEXT_MOVE_END_OF_LINE,
+					compose_advanced_action_cb,
+					COMPOSE_CALL_ADVANCED_ACTION_MOVE_END_OF_LINE,
 					NULL},
 	{N_("/_Edit/A_dvanced/Move to previous line"),
 					"<control>P",
-					compose_gtk_stext_action_cb,
-					COMPOSE_CALL_GTK_STEXT_MOVE_PREVIOUS_LINE,
+					compose_advanced_action_cb,
+					COMPOSE_CALL_ADVANCED_ACTION_MOVE_PREVIOUS_LINE,
 					NULL},
 	{N_("/_Edit/A_dvanced/Move to next line"),
 					"<control>N",
-					compose_gtk_stext_action_cb,
-					COMPOSE_CALL_GTK_STEXT_MOVE_NEXT_LINE,
+					compose_advanced_action_cb,
+					COMPOSE_CALL_ADVANCED_ACTION_MOVE_NEXT_LINE,
 					NULL},
 	{N_("/_Edit/A_dvanced/Delete a character backward"),
 					"<control>H",
-					compose_gtk_stext_action_cb,
-					COMPOSE_CALL_GTK_STEXT_DELETE_BACKWARD_CHARACTER,
+					compose_advanced_action_cb,
+					COMPOSE_CALL_ADVANCED_ACTION_DELETE_BACKWARD_CHARACTER,
 					NULL},
 	{N_("/_Edit/A_dvanced/Delete a character forward"),
 					"<control>D",
-					compose_gtk_stext_action_cb,
-					COMPOSE_CALL_GTK_STEXT_DELETE_FORWARD_CHARACTER,
+					compose_advanced_action_cb,
+					COMPOSE_CALL_ADVANCED_ACTION_DELETE_FORWARD_CHARACTER,
 					NULL},
 	{N_("/_Edit/A_dvanced/Delete a word backward"),
 					NULL, /* "<control>W" */
-					compose_gtk_stext_action_cb,
-					COMPOSE_CALL_GTK_STEXT_DELETE_BACKWARD_WORD,
+					compose_advanced_action_cb,
+					COMPOSE_CALL_ADVANCED_ACTION_DELETE_BACKWARD_WORD,
 					NULL},
 	{N_("/_Edit/A_dvanced/Delete a word forward"),
 					NULL, /* "<alt>D", */
-					compose_gtk_stext_action_cb,
-					COMPOSE_CALL_GTK_STEXT_DELETE_FORWARD_WORD,
+					compose_advanced_action_cb,
+					COMPOSE_CALL_ADVANCED_ACTION_DELETE_FORWARD_WORD,
 					NULL},
 	{N_("/_Edit/A_dvanced/Delete line"),
 					"<control>U",
-					compose_gtk_stext_action_cb,
-					COMPOSE_CALL_GTK_STEXT_DELETE_LINE,
+					compose_advanced_action_cb,
+					COMPOSE_CALL_ADVANCED_ACTION_DELETE_LINE,
 					NULL},
 	{N_("/_Edit/A_dvanced/Delete entire line"),
 					NULL,
-					compose_gtk_stext_action_cb,
-					COMPOSE_CALL_GTK_STEXT_DELETE_LINE_N,
+					compose_advanced_action_cb,
+					COMPOSE_CALL_ADVANCED_ACTION_DELETE_LINE_N,
 					NULL},
 	{N_("/_Edit/A_dvanced/Delete to end of line"),
 					"<control>K",
-					compose_gtk_stext_action_cb,
-					COMPOSE_CALL_GTK_STEXT_DELETE_TO_LINE_END,
+					compose_advanced_action_cb,
+					COMPOSE_CALL_ADVANCED_ACTION_DELETE_TO_LINE_END,
 					NULL},
 	{N_("/_Edit/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Edit/_Wrap current paragraph"),
@@ -690,7 +683,9 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			     GPtrArray *attach_files)
 {
 	Compose *compose;
-	GtkSText *text;
+	GtkTextView *textview;
+	GtkTextBuffer *textbuf;
+	GtkTextIter iter;
 	GtkItemFactory *ifactory;
 	gboolean grab_focus_on_last = TRUE;
 
@@ -706,8 +701,8 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	compose->replyinfo = NULL;
 	compose->fwdinfo   = NULL;
 
-	text = GTK_STEXT(compose->text);
-	gtk_stext_freeze(text);
+	textview = GTK_TEXT_VIEW(compose->text);
+	textbuf = gtk_text_view_get_buffer(textview);
 
 #ifdef USE_ASPELL
 	if (item && item->prefs && item->prefs->enable_default_dictionary &&
@@ -718,10 +713,8 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 
 	if (account->auto_sig)
 		compose_insert_sig(compose, FALSE);
-	gtk_editable_set_position(GTK_EDITABLE(text), 0);
-	gtk_stext_set_point(text, 0);
-
-	gtk_stext_thaw(text);
+	gtk_text_buffer_get_start_iter(textbuf, &iter);
+	gtk_text_buffer_place_cursor(textbuf, &iter);
 
 	if (account->protocol != A_NNTP) {
 		if (mailto && *mailto != '\0') {
@@ -771,6 +764,8 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	/* Grab focus on last header only if no default_to was set */
 	if (grab_focus_on_last)
 		gtk_widget_grab_focus(compose->header_last->entry);
+
+	undo_unblock(compose->undostruct);
 
 	if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
@@ -915,7 +910,8 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	Compose *compose;
 	PrefsAccount *account = NULL;
 	PrefsAccount *reply_account;
-	GtkSText *text;
+	GtkTextBuffer *buffer;
+	GtkTextIter iter;
 
 	g_return_if_fail(msginfo != NULL);
 	g_return_if_fail(msginfo->folder != NULL);
@@ -963,9 +959,6 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				to_sender, followup_and_reply_to);
 	compose_show_first_last_header(compose, TRUE);
 
-	text = GTK_STEXT(compose->text);
-	gtk_stext_freeze(text);
-
 #ifdef USE_ASPELL
 	if (msginfo->folder && msginfo->folder->prefs && 
 	    msginfo->folder->prefs && 
@@ -994,11 +987,13 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	if (quote && prefs_common.linewrap_quote)
 		compose_wrap_line_all(compose);
 
-	gtk_editable_set_position(GTK_EDITABLE(text), 0);
-	gtk_stext_set_point(text, 0);
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(compose->text));
+	gtk_text_buffer_get_start_iter(buffer, &iter);
+	gtk_text_buffer_place_cursor(buffer, &iter);
 
-	gtk_stext_thaw(text);
 	gtk_widget_grab_focus(compose->text);
+
+	undo_unblock(compose->undostruct);
 
 	if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
@@ -1015,7 +1010,9 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 			 gboolean as_attach, const gchar *body)
 {
 	Compose *compose;
-	GtkSText *text;
+	GtkTextView *textview;
+	GtkTextBuffer *textbuf;
+	GtkTextIter iter;
 
 	g_return_val_if_fail(msginfo != NULL, NULL);
 	g_return_val_if_fail(msginfo->folder != NULL, NULL);
@@ -1068,8 +1065,8 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		g_free(buf2);
 	}
 
-	text = GTK_STEXT(compose->text);
-	gtk_stext_freeze(text);
+	textview = GTK_TEXT_VIEW(compose->text);
+	textbuf = gtk_text_view_get_buffer(textview);
 
 	if (as_attach) {
 		gchar *msgfile;
@@ -1110,10 +1107,9 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	if (prefs_common.linewrap_quote)
 		compose_wrap_line_all(compose);
 
-	gtk_editable_set_position(GTK_EDITABLE(compose->text), 0);
-	gtk_stext_set_point(GTK_STEXT(compose->text), 0);
+	gtk_text_buffer_get_start_iter(textbuf, &iter);
+	gtk_text_buffer_place_cursor(textbuf, &iter);
 
-	gtk_stext_thaw(text);
 #if 0 /* NEW COMPOSE GUI */
 	if (account->protocol != A_NNTP)
 		gtk_widget_grab_focus(compose->to_entry);
@@ -1143,7 +1139,9 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 {
 	Compose *compose;
-	GtkSText *text;
+	GtkTextView *textview;
+	GtkTextBuffer *textbuf;
+	GtkTextIter iter;
 	GSList *msginfo;
 	gchar *msgfile;
 
@@ -1170,8 +1168,8 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 
 	compose = compose_create(account, COMPOSE_FORWARD);
 
-	text = GTK_STEXT(compose->text);
-	gtk_stext_freeze(text);
+	textview = GTK_TEXT_VIEW(compose->text);
+	textbuf = gtk_text_view_get_buffer(textview);
 
 	for (msginfo = msginfo_list; msginfo != NULL; msginfo = msginfo->next) {
 		msgfile = procmsg_get_message_file_path((MsgInfo *)msginfo->data);
@@ -1189,10 +1187,9 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 	if (prefs_common.linewrap_quote)
 		compose_wrap_line_all(compose);
 
-	gtk_editable_set_position(GTK_EDITABLE(compose->text), 0);
-	gtk_stext_set_point(GTK_STEXT(compose->text), 0);
+	gtk_text_buffer_get_start_iter(textbuf, &iter);
+	gtk_text_buffer_place_cursor(textbuf, &iter);
 
-	gtk_stext_thaw(text);
 	gtk_widget_grab_focus(compose->header_last->entry);
 	
 #if 0 /* NEW COMPOSE GUI */
@@ -1209,7 +1206,10 @@ void compose_reedit(MsgInfo *msginfo)
 {
 	Compose *compose;
 	PrefsAccount *account = NULL;
-	GtkSText *text;
+	GtkTextView *textview;
+	GtkTextBuffer *textbuf;
+	GtkTextMark *mark;
+	GtkTextIter iter;
 	FILE *fp;
 	gchar buf[BUFFSIZE];
 
@@ -1273,21 +1273,22 @@ void compose_reedit(MsgInfo *msginfo)
 	if (compose_parse_header(compose, msginfo) < 0) return;
 	compose_reedit_set_entry(compose, msginfo);
 
-	text = GTK_STEXT(compose->text);
-	gtk_stext_freeze(text);
+	textview = GTK_TEXT_VIEW(compose->text);
+	textbuf = gtk_text_view_get_buffer(textview);
+	mark = gtk_text_buffer_get_insert(textbuf);
+	gtk_text_buffer_get_iter_at_mark(textbuf, &iter, mark);
 
 	if ((fp = procmime_get_first_text_content(msginfo)) == NULL)
 		g_warning("Can't get text part\n");
 	else {
 		while (fgets(buf, sizeof(buf), fp) != NULL) {
 			strcrchomp(buf);
-			gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
+			gtk_text_buffer_insert(textbuf, &iter, buf, -1);
 		}
 		fclose(fp);
 	}
 	compose_attach_parts(compose, msginfo);
 
-	gtk_stext_thaw(text);
 	gtk_widget_grab_focus(compose->text);
 
         if (prefs_common.auto_exteditor)
@@ -1330,10 +1331,8 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 				   msginfo->subject);
 	gtk_editable_set_editable(GTK_EDITABLE(compose->subject_entry), FALSE);
 
-	gtk_stext_freeze(GTK_STEXT(compose->text));
 	compose_quote_fmt(compose, msginfo, "%M", NULL, NULL);
-	gtk_editable_set_editable(GTK_EDITABLE(compose->text), FALSE);
-	gtk_stext_thaw(GTK_STEXT(compose->text));
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(compose->text), TRUE);
 
 	ifactory = gtk_item_factory_from_widget(compose->popupmenu);
 	menu_set_sensitive(ifactory, "/Add...", FALSE);
@@ -1502,10 +1501,16 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 	if (subject)
 		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), subject);
 	if (body) {
-		gtk_stext_insert(GTK_STEXT(compose->text),
-				NULL, NULL, NULL, body, -1);
-		gtk_stext_insert(GTK_STEXT(compose->text),
-				NULL, NULL, NULL, "\n", 1);
+		GtkTextView *text = GTK_TEXT_VIEW(compose->text);
+		GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+		GtkTextMark *mark;
+		GtkTextIter iter;
+
+		mark = gtk_text_buffer_get_insert(buffer);
+		gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
+
+		gtk_text_buffer_insert(buffer, &iter, body, -1);
+		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 	}
 
 	g_free(to);
@@ -1694,7 +1699,6 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 				const gchar *fmt, const gchar *qmark,
 				const gchar *body)
 {
-	GtkSText *text = GTK_STEXT(compose->text);
 	static MsgInfo dummyinfo;
 	gchar *quote_str = NULL;
 	gchar *buf;
@@ -1734,19 +1738,23 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	} else
 		buf = "";
 
-	gtk_stext_freeze(text);
-
 	for (p = buf; *p != '\0'; ) {
+		GtkTextView *text = GTK_TEXT_VIEW(compose->text);
+		GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+		GtkTextMark *mark;
+		GtkTextIter iter;
+
+		mark = gtk_text_buffer_get_insert(buffer);
+		gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
+
 		lastp = strchr(p, '\n');
 		len = lastp ? lastp - p + 1 : -1;
-		gtk_stext_insert(text, NULL, NULL, NULL, p, len);
+		gtk_text_buffer_insert(buffer, &iter, p, len);
 		if (lastp)
 			p = lastp + 1;
 		else
 			break;
 	}
-
-	gtk_stext_thaw(text);
 
 	return buf;
 }
@@ -1917,33 +1925,38 @@ static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 
 static void compose_insert_sig(Compose *compose, gboolean replace)
 {
-	GtkSText *text = GTK_STEXT(compose->text);
+	GtkTextView *text = GTK_TEXT_VIEW(compose->text);
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+	GtkTextMark *mark;
+	GtkTextIter iter;
 	gint cur_pos;
-	gint len;
 
 	g_return_if_fail(compose->account != NULL);
 
-	cur_pos = gtk_editable_get_position(GTK_EDITABLE(text));
+	mark = gtk_text_buffer_get_insert(buffer);
+	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
+	cur_pos = gtk_text_iter_get_offset (&iter);
 
-	gtk_stext_freeze(text);
-
-	len = gtk_stext_get_length(text);
-	gtk_stext_set_point(text, len);
+	gtk_text_buffer_get_end_iter(buffer, &iter);
 
 	if (replace && compose->sig_str) {
-		gint pos;
+		gboolean found;
+		GtkTextIter first_iter, start_iter, end_iter;
+
+		gtk_text_buffer_get_start_iter(buffer, &first_iter);
 
 		if (compose->sig_str[0] == '\0')
-			pos = -1;
+			found = FALSE;
 		else
-			pos = gtkut_stext_find(text, 0, compose->sig_str, TRUE);
+			found = gtk_text_iter_forward_search(&first_iter,
+							     compose->sig_str,
+							     GTK_TEXT_SEARCH_TEXT_ONLY,
+							     &start_iter, &end_iter,
+							     NULL);
 
-		if (pos != -1) {
-			len = get_mbs_len(compose->sig_str);
-			if (len >= 0) {
-				gtk_stext_set_point(text, pos);
-				gtk_stext_forward_delete(text, len);
-			}
+		if (found) {
+			gtk_text_buffer_delete(buffer, &start_iter, &end_iter);
+			iter = start_iter;
 		}
 	}
 
@@ -1952,15 +1965,13 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 	if (!compose->sig_str || (replace && !compose->account->auto_sig))
 		compose->sig_str = g_strdup("");
 
-	gtk_stext_insert(text, NULL, NULL, NULL, compose->sig_str, -1);
+	gtk_text_buffer_insert(buffer, &iter, compose->sig_str, -1);
 
-	gtk_stext_thaw(text);
+	if (cur_pos > gtk_text_buffer_get_char_count (buffer))
+		cur_pos = gtk_text_buffer_get_char_count (buffer);
 
-	if (cur_pos > gtk_stext_get_length(text))
-		cur_pos = gtk_stext_get_length(text);
-
-	gtk_editable_set_position(GTK_EDITABLE(text), cur_pos);
-	gtk_stext_set_point(text, cur_pos);
+	gtk_text_buffer_get_iter_at_offset (buffer, &iter, cur_pos);
+	gtk_text_buffer_place_cursor (buffer, &iter);
 }
 
 static gchar *compose_get_signature_str(Compose *compose)
@@ -2006,7 +2017,10 @@ static gchar *compose_get_signature_str(Compose *compose)
 
 static void compose_insert_file(Compose *compose, const gchar *file)
 {
-	GtkSText *text = GTK_STEXT(compose->text);
+	GtkTextView *text;
+	GtkTextBuffer *buffer;
+	GtkTextMark *mark;
+	GtkTextIter iter;
 	gchar buf[BUFFSIZE];
 	gint len;
 	FILE *fp;
@@ -2018,21 +2032,32 @@ static void compose_insert_file(Compose *compose, const gchar *file)
 		return;
 	}
 
-	gtk_stext_freeze(text);
+	text = GTK_TEXT_VIEW(compose->text);
+	buffer = gtk_text_view_get_buffer(text);
+	mark = gtk_text_buffer_get_insert(buffer);
+	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
+#warning FIXME_GTK2
+#if 1 /* FIXME_GTK2 */
+		const gchar *cur_encoding = conv_get_current_charset_str();
+		gchar *str = conv_codeset_strdup(buf, cur_encoding, CS_UTF_8);
+
+		if (!str) continue;
+
 		/* strip <CR> if DOS/Windows file,
 		   replace <CR> with <LF> if Macintosh file. */
-		strcrchomp(buf);
-		len = strlen(buf);
-		if (len > 0 && buf[len - 1] != '\n') {
+		strcrchomp(str);
+		len = strlen(str);
+		if (len > 0 && str[len - 1] != '\n') {
 			while (--len >= 0)
-				if (buf[len] == '\r') buf[len] = '\n';
+				if (str[len] == '\r') str[len] = '\n';
 		}
-		gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
-	}
+		gtk_text_buffer_insert(buffer, &iter, str, -1);
 
-	gtk_stext_thaw(text);
+		g_free (str);
+#endif /* FIXME_GTK2 */
+	}
 
 	fclose(fp);
 }
@@ -2085,7 +2110,7 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 		if (!strcasecmp(content_type, "message/rfc822")) {
 			MsgInfo *msginfo;
 			MsgFlags flags = {0, 0};
-			gchar *name;
+			const gchar *name;
 
 			if (procmime_get_encoding_for_file(file) == ENC_7BIT)
 				ainfo->encoding = ENC_7BIT;
@@ -2193,108 +2218,132 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 }
 
 #undef IS_FIRST_PART_TEXT
+  
+#define CHAR_BUF_SIZE 8
 
-#define GET_CHAR(pos, buf, len)						     \
+#define GET_CHAR(iter_p, buf, len)					     \
 {									     \
-	if (text->use_wchar)						     \
-		len = wctomb(buf, (wchar_t)GTK_STEXT_INDEX(text, (pos)));    \
-	else {								     \
-		buf[0] = GTK_STEXT_INDEX(text, (pos));			     \
+	GtkTextIter end_iter;						     \
+	gchar *tmp;							     \
+	end_iter = *iter_p;						     \
+	gtk_text_iter_forward_char(&end_iter);				     \
+	tmp = gtk_text_buffer_get_text(textbuf, iter_p, &end_iter, FALSE);   \
+	if (tmp) {							     \
+		glong items_read, items_witten;				     \
+		GError *error = NULL;					     \
+		gunichar *wide_char;					     \
+		strncpy2(buf, tmp, CHAR_BUF_SIZE);			     \
+		wide_char = g_utf8_to_ucs4(tmp, -1,			     \
+					   &items_read, &items_witten,	     \
+					   &error);			     \
+		if (error != NULL) {					     \
+			g_warning("%s\n", error->message);		     \
+			g_error_free(error);				     \
+		}							     \
+		len = wide_char && g_unichar_iswide(*wide_char) ? 2 : 1;     \
+		g_free(wide_char);					     \
+	} else {							     \
+		buf[0] = '\0';						     \
 		len = 1;						     \
 	}								     \
+	g_free(tmp);							     \
 }
-
-#define DISP_WIDTH(len) \
-	((len > 2 && conv_get_current_charset() == C_UTF_8) ? 2 : \
-	 (len == 2 && conv_get_current_charset() == C_UTF_8) ? 1 : len)
 
 #define INDENT_CHARS	">|#"
 #define SPACE_CHARS	" \t"
 
+#warning FIXME_GTK2
 static void compose_wrap_line(Compose *compose)
 {
-	GtkSText *text = GTK_STEXT(compose->text);
+	GtkTextView *text = GTK_TEXT_VIEW(compose->text);
+	GtkTextBuffer *textbuf = gtk_text_view_get_buffer(text);
+	GtkTextMark *mark;
+	GtkTextIter insert_iter, iter;
 	gint ch_len, last_ch_len;
-	gchar cbuf[MB_LEN_MAX], last_ch;
+	gchar cbuf[CHAR_BUF_SIZE], last_ch;
 	guint text_len;
-	guint line_end;
-	guint quoted;
 	gint p_start, p_end;
 	gint line_pos, cur_pos;
 	gint line_len, cur_len;
+	gboolean line_end, quoted;
 
-	gtk_stext_freeze(text);
-
-	text_len = gtk_stext_get_length(text);
-
-	/* check to see if the point is on the paragraph mark (empty line). */
-	cur_pos = gtk_stext_get_point(text);
-	GET_CHAR(cur_pos, cbuf, ch_len);
+	text_len = gtk_text_buffer_get_char_count(textbuf);
+	mark = gtk_text_buffer_get_insert(textbuf);
+	gtk_text_buffer_get_iter_at_mark(textbuf, &insert_iter, mark);
+	cur_pos = gtk_text_iter_get_offset(&insert_iter);
+	GET_CHAR(&insert_iter, cbuf, ch_len);
 	if ((ch_len == 1 && *cbuf == '\n') || cur_pos == text_len) {
+		GtkTextIter prev_iter;
 		if (cur_pos == 0)
-			goto compose_end; /* on the paragraph mark */
-		GET_CHAR(cur_pos - 1, cbuf, ch_len);
+			return; /* on the paragraph mark */
+		prev_iter = insert_iter;
+		gtk_text_iter_backward_char(&prev_iter);
+		GET_CHAR(&prev_iter, cbuf, ch_len);
 		if (ch_len == 1 && *cbuf == '\n')
-			goto compose_end; /* on the paragraph mark */
+			return; /* on the paragraph mark */
 	}
 
 	/* find paragraph start. */
-	line_end = quoted = 0;
-	for (p_start = cur_pos; p_start >= 0; --p_start) {
-		GET_CHAR(p_start, cbuf, ch_len);
+	line_end = quoted = FALSE;
+	for (iter = insert_iter; gtk_text_iter_backward_char(&iter);) {
+		GET_CHAR(&iter, cbuf, ch_len);
 		if (ch_len == 1 && *cbuf == '\n') {
 			if (quoted)
-				goto compose_end; /* quoted part */
+				return; /* quoted part */
 			if (line_end) {
-				p_start += 2;
+				gtk_text_iter_forward_chars(&iter, 2);
 				break;
 			}
-			line_end = 1;
+			line_end = TRUE;
 		} else {
 			if (ch_len == 1 
 			    && strchr(prefs_common.quote_chars, *cbuf))
-				quoted = 1;
+				quoted = TRUE;
 			else if (ch_len != 1 || !isspace(*cbuf))
-				quoted = 0;
+				quoted = FALSE;
 
-			line_end = 0;
+			line_end = FALSE;
 		}
 	}
-	if (p_start < 0)
-		p_start = 0;
+	p_start = gtk_text_iter_get_offset(&iter);
 
 	/* find paragraph end. */
-	line_end = 0;
-	for (p_end = cur_pos; p_end < text_len; p_end++) {
-		GET_CHAR(p_end, cbuf, ch_len);
+	line_end = FALSE;
+	for (iter = insert_iter; gtk_text_iter_forward_char(&iter);) {
+		GET_CHAR(&iter, cbuf, ch_len);
 		if (ch_len == 1 && *cbuf == '\n') {
 			if (line_end) {
 				p_end -= 1;
+				gtk_text_iter_backward_char(&iter);
 				break;
 			}
-			line_end = 1;
+			line_end = TRUE;
 		} else {
 			if (line_end && ch_len == 1 &&
 			    strchr(prefs_common.quote_chars, *cbuf))
-				goto compose_end; /* quoted part */
+				return; /* quoted part */
 
-			line_end = 0;
+			line_end = FALSE;
 		}
 	}
+	p_end = gtk_text_iter_get_offset(&iter);
+
 	if (p_end >= text_len)
 		p_end = text_len;
 
 	if (p_start >= p_end)
-		goto compose_end;
+		return;
 
 	line_len = cur_len = 0;
 	last_ch_len = 0;
 	last_ch = '\0';
 	line_pos = p_start;
 	for (cur_pos = p_start; cur_pos < p_end; cur_pos++) {
-		guint space = 0;
+		gboolean space = FALSE;
 
-		GET_CHAR(cur_pos, cbuf, ch_len);
+		gtk_text_buffer_get_iter_at_offset(textbuf, &iter, cur_pos);
+
+		GET_CHAR(&iter, cbuf, ch_len);
 
 		if (ch_len < 0) {
 			cbuf[0] = '\0';
@@ -2302,27 +2351,31 @@ static void compose_wrap_line(Compose *compose)
 		}
 
 		if (ch_len == 1 && isspace(*cbuf))
-			space = 1;
+			space = TRUE;
 
 		if (ch_len == 1 && *cbuf == '\n') {
-			guint replace = 0;
+			gboolean replace = FALSE;
+			GtkTextIter next_iter = iter;
+
+			gtk_text_iter_forward_char(&next_iter);
+
 			if (last_ch_len == 1 && !isspace(last_ch)) {
 				if (cur_pos + 1 < p_end) {
-					GET_CHAR(cur_pos + 1, cbuf, ch_len);
+					GET_CHAR(&next_iter, cbuf, ch_len);
 					if (ch_len == 1 && !isspace(*cbuf))
-						replace = 1;
+						replace = TRUE;
 				}
 			}
-			gtk_stext_set_point(text, cur_pos + 1);
-			gtk_stext_backward_delete(text, 1);
+			gtk_text_buffer_delete(textbuf, &iter, &next_iter);
 			if (replace) {
-				gtk_stext_set_point(text, cur_pos);
-				gtk_stext_insert(text, NULL, NULL, NULL, " ", 1);
-				space = 1;
+				gtk_text_buffer_insert(textbuf, &iter, " ", 1);
+				space = TRUE;
 			}
 			else {
 				p_end--;
 				cur_pos--;
+				gtk_text_buffer_get_iter_at_offset
+					(textbuf, &iter, cur_pos);
 				continue;
 			}
 		}
@@ -2335,14 +2388,19 @@ static void compose_wrap_line(Compose *compose)
 			line_len = cur_len + ch_len;
 		}
 
-		if (cur_len + DISP_WIDTH(ch_len) > prefs_common.linewrap_len &&
+		gtk_text_buffer_get_iter_at_offset(textbuf, &iter, line_pos);
+
+		if (cur_len + ch_len > prefs_common.linewrap_len &&
 		    line_len > 0) {
 			gint tlen = ch_len;
+			GtkTextIter prev_iter = iter;
 
-			GET_CHAR(line_pos - 1, cbuf, ch_len);
+			gtk_text_iter_backward_char(&prev_iter);
+
+			GET_CHAR(&prev_iter, cbuf, ch_len);
 			if (ch_len == 1 && isspace(*cbuf)) {
-				gtk_stext_set_point(text, line_pos);
-				gtk_stext_backward_delete(text, 1);
+				gtk_text_buffer_delete(textbuf, &prev_iter, &iter);
+				iter = prev_iter;
 				p_end--;
 				cur_pos--;
 				line_pos--;
@@ -2351,38 +2409,37 @@ static void compose_wrap_line(Compose *compose)
 			}
 			ch_len = tlen;
 
-			gtk_stext_set_point(text, line_pos);
-			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
+			gtk_text_buffer_insert(textbuf, &iter, "\n", 1);
 			p_end++;
 			cur_pos++;
 			line_pos++;
-			cur_len = cur_len - line_len + DISP_WIDTH(ch_len);
+			cur_len = cur_len - line_len + ch_len;
 			line_len = 0;
 			continue;
 		}
 
 		if (ch_len > 1) {
 			line_pos = cur_pos + 1;
-			line_len = cur_len + DISP_WIDTH(ch_len);
+			line_len = cur_len + ch_len;
 		}
-		cur_len += DISP_WIDTH(ch_len);
+		cur_len += ch_len;
 	}
-
-compose_end:
-	gtk_stext_thaw(text);
 }
 
 #undef WRAP_DEBUG
 #ifdef WRAP_DEBUG
 /* Darko: used when I debug wrapping */
-void dump_text(GtkSText *text, int pos, int tlen, int breakoncr)
+void dump_text(GtkTextBuffer textbuf, int pos, int tlen, int breakoncr)
 {
 	gint i, clen;
-	gchar cbuf[MB_LEN_MAX];
+	gchar cbuf[CHAR_BUF_SIZE];
 
 	printf("%d [", pos);
-	for (i = pos; i < tlen; i++) {
-		GET_CHAR(i, cbuf, clen);
+	gtk_text_buffer_get_iter_at_offset(textbuf, &iter, pos);
+	gtk_text_buffer_get_iter_at_offset(textbuf, &end_iter, pos + tlen);
+	for (; gtk_text_iter_forward_char(&iter) &&
+		     gtk_text_iter_compare(&iter, &end_iter) < 0;)
+		GET_CHAR(&iter, cbuf, clen);
 		if (clen < 0) break;
 		if (breakoncr && clen == 1 && cbuf[0] == '\n')
 			break;
@@ -2404,12 +2461,12 @@ typedef enum {
    uppercase characters immediately followed by >,
    and the repeating sequences of the above */
 /* return indent length */
-static guint get_indent_length(GtkSText *text, guint start_pos, guint text_len)
+static guint get_indent_length(GtkTextBuffer *textbuf, guint start_pos, guint text_len)
 {
 	guint i_len = 0;
 	guint i, ch_len, alnum_cnt = 0;
 	IndentState state = WAIT_FOR_INDENT_CHAR;
-	gchar cbuf[MB_LEN_MAX];
+	gchar cbuf[CHAR_BUF_SIZE];
 	gboolean is_space;
 	gboolean is_indent;
 
@@ -2418,7 +2475,10 @@ static guint get_indent_length(GtkSText *text, guint start_pos, guint text_len)
 	}
 
 	for (i = start_pos; i < text_len; i++) {
-		GET_CHAR(i, cbuf, ch_len);
+		GtkTextIter iter;
+
+		gtk_text_buffer_get_iter_at_offset(textbuf, &iter, i);
+		GET_CHAR(&iter, cbuf, ch_len);
 		if (ch_len > 1)
 			break;
 
@@ -2475,36 +2535,49 @@ out:
 }
 
 /* insert quotation string when line was wrapped */
-static guint ins_quote(GtkSText *text, guint indent_len,
+static guint ins_quote(GtkTextBuffer *textbuf, GtkTextIter *iter,
+		       guint indent_len,
 		       guint prev_line_pos, guint text_len,
 		       gchar *quote_fmt)
 {
-	guint i, ins_len = 0;
-	gchar ch;
+	guint ins_len = 0;
 
 	if (indent_len) {
-		for (i = 0; i < indent_len; i++) {
-			ch = GTK_STEXT_INDEX(text, prev_line_pos + i);
-			gtk_stext_insert(text, NULL, NULL, NULL, &ch, 1);
-		}
-		ins_len = indent_len;
+		GtkTextIter iter1, iter2;
+		gchar *text;
+
+		gtk_text_buffer_get_iter_at_offset(textbuf, &iter1,
+						   prev_line_pos);
+		gtk_text_buffer_get_iter_at_offset(textbuf, &iter2,
+						   prev_line_pos + indent_len);
+		text = gtk_text_buffer_get_text(textbuf, &iter1, &iter2, FALSE);
+		if (!text) return 0;
+
+		gtk_text_buffer_insert(textbuf, iter, text, -1);
+		ins_len = g_utf8_strlen(text, -1);
+
+		g_free(text);
 	}
 
 	return ins_len;
 }
 
 /* check if we should join the next line */
-static gboolean join_next_line(GtkSText *text, guint start_pos, guint tlen,
-			       guint prev_ilen, gboolean autowrap)
+static gboolean join_next_line_is_needed(GtkTextBuffer *textbuf,
+					 guint start_pos, guint tlen,
+					 guint prev_ilen, gboolean autowrap)
 {
 	guint indent_len, ch_len;
 	gboolean do_join = FALSE;
-	gchar cbuf[MB_LEN_MAX];
+	gchar cbuf[CHAR_BUF_SIZE];
 
-	indent_len = get_indent_length(text, start_pos, tlen);
+	indent_len = get_indent_length(textbuf, start_pos, tlen);
 
 	if ((autowrap || indent_len > 0) && indent_len == prev_ilen) {
-		GET_CHAR(start_pos + indent_len, cbuf, ch_len);
+		GtkTextIter iter;
+		gtk_text_buffer_get_iter_at_offset(textbuf, &iter,
+						   start_pos + indent_len);
+		GET_CHAR(&iter, cbuf, ch_len);
 		if (ch_len > 0 && (cbuf[0] != '\n'))
 			do_join = TRUE;
 	}
@@ -2517,12 +2590,12 @@ static void compose_wrap_line_all(Compose *compose)
 	compose_wrap_line_all_full(compose, FALSE);
 }
 
-#define STEXT_FREEZE() \
-	if (!frozen) { gtk_stext_freeze(text); frozen = TRUE; }
-
 static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 {
-	GtkSText *text = GTK_STEXT(compose->text);
+#if 0
+	GtkTextView *text = GTK_TEXT_VIEW(compose->text);
+	GtkTextBuffer *textbuf = gtk_text_view_get_buffer(text);
+	GtkTextIter iter, end_iter;
 	guint tlen;
 	guint line_pos = 0, cur_pos = 0, p_pos = 0;
 	gint line_len = 0, cur_len = 0;
@@ -2532,104 +2605,96 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 	gboolean linewrap_quote = TRUE;
 	gboolean set_editable_pos = FALSE;
 	gint editable_pos = 0;
-	gboolean frozen = FALSE;
 	guint linewrap_len = prefs_common.linewrap_len;
 	gchar *qfmt = prefs_common.quotemark;
-	gchar cbuf[MB_LEN_MAX];
+	gchar cbuf[CHAR_BUF_SIZE];
 
-	tlen = gtk_stext_get_length(text);
+	tlen = gtk_text_buffer_get_char_count(textbuf);
 
 	for (; cur_pos < tlen; cur_pos++) {
 		/* mark position of new line - needed for quotation wrap */
 		if (is_new_line) {
 			if (linewrap_quote)
-				i_len = get_indent_length(text, cur_pos, tlen);
+				i_len = get_indent_length(textbuf, cur_pos, tlen);
 
 			is_new_line = FALSE;
 			p_pos = cur_pos;
-#ifdef WRAP_DEBUG
-			g_print("new line i_len=%d p_pos=", i_len);
-			dump_text(text, p_pos, tlen, 1);
-#endif
 		}
 
-		GET_CHAR(cur_pos, cbuf, ch_len);
+		gtk_text_buffer_get_iter_at_offset(textbuf, &iter, cur_pos);
+		GET_CHAR(&iter, cbuf, ch_len);
 
 		/* fix line length for tabs */
 		if (ch_len == 1 && *cbuf == '\t') {
-			guint tab_width = text->default_tab_width;
+#warning FIXME_GTK2
+			/* guint tab_width = text->default_tab_width; */
+			guint tab_width = 8;
 			guint tab_offset = line_len % tab_width;
 
-#ifdef WRAP_DEBUG
-			g_print("found tab at pos=%d line_len=%d ", cur_pos,
-				line_len);
-#endif
 			if (tab_offset) {
 				line_len += tab_width - tab_offset - 1;
 				cur_len = line_len;
 			}
-#ifdef WRAP_DEBUG
-			printf("new_len=%d\n", line_len);
-#endif
 		}
 
 		/* we have encountered line break */
 		if (ch_len == 1 && *cbuf == '\n') {
 			gint clen;
-			gchar cb[MB_LEN_MAX];
+			gchar cb[CHAR_BUF_SIZE];
 
 			/* should we join the next line */
 			if ((autowrap || i_len != cur_len) && do_delete &&
-			    join_next_line
-				(text, cur_pos + 1, tlen, i_len, autowrap))
+			    join_next_line_is_needed
+				(textbuf, cur_pos + 1, tlen, i_len, autowrap))
 				do_delete = TRUE;
 			else
 				do_delete = FALSE;
 
-#ifdef WRAP_DEBUG
-			g_print("found CR at %d do_del is %d next line is ",
-			       cur_pos, do_delete);
-			dump_text(text, cur_pos + 1, tlen, 1);
-#endif
-
 			/* skip delete if it is continuous URL */
 			if (do_delete && (line_pos - p_pos <= i_len) &&
-			    gtk_stext_is_uri_string(text, line_pos, tlen))
+			    gtkut_text_buffer_is_uri_string(textbuf, line_pos,
+							    tlen))
 				do_delete = FALSE;
 
-#ifdef WRAP_DEBUG
-			g_print("l_len=%d wrap_len=%d do_del=%d\n",
-				line_len, linewrap_len, do_delete);
-#endif
 			/* should we delete to perform smart wrapping */
 			if (line_len < linewrap_len && do_delete) {
-				STEXT_FREEZE();
 				/* get rid of newline */
-				gtk_stext_set_point(text, cur_pos);
-				gtk_stext_forward_delete(text, 1);
+				gtk_text_buffer_get_iter_at_offset(textbuf,
+								   &iter,
+								   cur_pos);
+				end_iter = iter;
+				gtk_text_iter_forward_char(&end_iter);
+				gtk_text_buffer_delete(textbuf, &iter, &end_iter);
 				tlen--;
 
 				/* if text starts with quote fmt or with
 				   indent string, delete them */
 				if (i_len) {
 					guint ilen;
-					ilen =  gtk_stext_str_compare_n
-						(text, cur_pos, p_pos, i_len,
+					ilen =  gtkut_text_buffer_str_compare_n
+						(textbuf, cur_pos, p_pos, i_len,
 						 tlen);
 					if (ilen) {
-						gtk_stext_forward_delete
-							(text, ilen);
+						end_iter = iter;
+						gtk_text_iter_forward_chars
+							(&end_iter, ilen);
+						gtk_text_buffer_delete(textbuf,
+								       &iter,
+								       &end_iter);
 						tlen -= ilen;
 					}
 				}
 
-				GET_CHAR(cur_pos, cb, clen);
+				gtk_text_buffer_get_iter_at_offset(textbuf,
+								   &iter,
+								   cur_pos);
+				GET_CHAR(&iter, cb, clen);
 
 				/* insert space if it's alphanumeric */
 				if ((cur_pos != line_pos) &&
 				    ((clen > 1) || isalnum(cb[0]))) {
-					gtk_stext_insert(text, NULL, NULL,
-							NULL, " ", 1);
+					gtk_text_buffer_insert(textbuf, &iter,
+							       " ", 1);
 					tlen++;
 				}
 
@@ -2772,21 +2837,21 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 
 		if (ch_len > 1) {
 			line_pos = cur_pos + 1;
-			line_len = cur_len + DISP_WIDTH(ch_len);
+			line_len = cur_len + ch_len;
 		}
 		/* advance to next character in buffer */
-		cur_len += DISP_WIDTH(ch_len);
+		cur_len += ch_len;
 	}
 
-	if (frozen)
-		gtk_stext_thaw(text);
-
-	if (set_editable_pos && editable_pos <= tlen)
-		gtk_editable_set_position(GTK_EDITABLE(text), editable_pos);
+	if (set_editable_pos && editable_pos <= tlen) {
+		gtk_text_buffer_get_iter_at_offset(textbuf, &iter, editable_pos);
+		gtk_text_buffer_place_cursor(textbuf, &iter);
+	}
+#endif
 }
 
-#undef STEXT_FREEZE
 #undef GET_CHAR
+#undef CHAR_BUF_SIZE
 
 static void compose_set_title(Compose *compose)
 {
@@ -2966,7 +3031,7 @@ gboolean compose_check_for_valid_recipient(Compose *compose) {
 
 static gboolean compose_check_entries(Compose *compose, gboolean check_subject)
 {
-	gchar *str;
+	const gchar *str;
 
 	if (compose_check_for_valid_recipient(compose) == FALSE) {
 		alertpanel_error(_("Recipient is not specified."));
@@ -3147,7 +3212,7 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
 	gboolean first_address;
 	GSList *list;
 	ComposeHeaderEntry *headerentry;
-	gchar *headerentryname;
+	const gchar *headerentryname;
 	gchar *cc_hdr;
 	gchar *to_hdr;
 
@@ -3163,8 +3228,8 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
 
 		if (g_strcasecmp(headerentryname, cc_hdr) == 0 
 		   || g_strcasecmp(headerentryname, to_hdr) == 0) {
-			str = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
-			Xstrdup_a(str, str, return -1);
+			const gchar *entstr = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
+			Xstrdup_a(str, entstr, return -1);
 			g_strstrip(str);
 			if (str[0] != '\0') {
 				compose_convert_header
@@ -3191,6 +3256,7 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 {
 	gchar buf[BUFFSIZE];
 	gchar *str;
+	const gchar *entstr;
 	/* struct utsname utsbuf; */
 
 	g_return_val_if_fail(fp != NULL, -1);
@@ -3212,9 +3278,9 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 		fprintf(fp, "Resent-From: %s\n", compose->account->address);
 
 	/* Subject */
-	str = gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
-	if (*str != '\0') {
-		Xstrdup_a(str, str, return -1);
+	entstr = gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
+	if (*entstr != '\0') {
+		Xstrdup_a(str, entstr, return -1);
 		g_strstrip(str);
 		if (*str != '\0') {
 			compose_convert_header(buf, sizeof(buf), str,
@@ -3397,6 +3463,8 @@ static gint compose_clearsign_text(Compose *compose, gchar **text)
 static gint compose_write_to_file(Compose *compose, const gchar *file,
 				  gboolean is_draft)
 {
+	GtkTextBuffer *buffer;
+	GtkTextIter start, end;
 	FILE *fp;
 	size_t len;
 	gchar *chars;
@@ -3417,7 +3485,10 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	}
 
 	/* get all composed text */
-	chars = gtk_editable_get_chars(GTK_EDITABLE(compose->text), 0, -1);
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(compose->text));
+	gtk_text_buffer_get_start_iter(buffer, &start);
+	gtk_text_buffer_get_end_iter(buffer, &end);
+	chars = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
 	len = strlen(chars);
 	if (is_ascii_str(chars)) {
 		buf = chars;
@@ -3447,11 +3518,16 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 			encoding = ENC_BASE64;
 #endif
 
+#warning FIXME_GTK2
+#if 0 /* FIXME_GTK2 */
 		src_codeset = conv_get_current_charset_str();
 		/* if current encoding is US-ASCII, set it the same as
 		   outgoing one to prevent code conversion failure */
 		if (!strcasecmp(src_codeset, CS_US_ASCII))
 			src_codeset = out_codeset;
+#else /* FIXME_GTK2 */
+		src_codeset = CS_UTF_8;
+#endif /* FIXME_GTK2 */
 
 		debug_print("src encoding = %s, out encoding = %s, transfer encoding = %s\n",
 			    src_codeset, out_codeset, procmime_get_encoding_str(encoding));
@@ -3614,9 +3690,12 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 
 static gint compose_write_body_to_file(Compose *compose, const gchar *file)
 {
+	GtkTextBuffer *buffer;
+	GtkTextIter start, end;
 	FILE *fp;
 	size_t len;
-	gchar *chars;
+	gchar *chars, *tmp;
+	const gchar *src_codeset, *dest_codeset;
 
 	if ((fp = fopen(file, "wb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
@@ -3629,7 +3708,19 @@ static gint compose_write_body_to_file(Compose *compose, const gchar *file)
 		g_warning("can't change file mode\n");
 	}
 
-	chars = gtk_editable_get_chars(GTK_EDITABLE(compose->text), 0, -1);
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(compose->text));
+	gtk_text_buffer_get_start_iter(buffer, &start);
+	gtk_text_buffer_get_end_iter(buffer, &end);
+	tmp = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
+
+#warning FIXME_GTK2
+#if 1 /* FIXME_GTK2 */
+	src_codeset = CS_UTF_8;
+	dest_codeset = conv_get_current_charset_str();
+	chars = conv_codeset_strdup(tmp, src_codeset, dest_codeset);
+	g_free(tmp);
+	if (!chars) return -1;
+#endif /* FIXME_GTK2 */
 
 	/* write body */
 	len = strlen(chars);
@@ -3995,21 +4086,22 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 		Xstrdup_a(out, str, return -1);		\
 	}						\
 }
-
-#define PUT_RECIPIENT_HEADER(header, str)				     \
-{									     \
-	if (*str != '\0') {						     \
-		Xstrdup_a(str, str, return -1);				     \
-		g_strstrip(str);					     \
-		if (*str != '\0') {					     \
-			compose->to_list = address_list_append		     \
-				(compose->to_list, str);		     \
-			compose_convert_header				     \
-				(buf, sizeof(buf), str, strlen(header) + 2,  \
-				 TRUE);					     \
-			fprintf(fp, "%s: %s\n", header, buf);		     \
-		}							     \
-	}								     \
+  
+#define PUT_RECIPIENT_HEADER(header, str)				      \
+{									      \
+	if (*str != '\0') {						      \
+		gchar *dest;						      \
+		Xstrdup_a(dest, str, return -1);			      \
+		g_strstrip(dest);					      \
+		if (*dest != '\0') {					      \
+			compose->to_list = address_list_append		      \
+				(compose->to_list, dest);		      \
+			compose_convert_header				      \
+				(buf, sizeof(buf), dest, strlen(header) + 2,  \
+				 TRUE);					      \
+			fprintf(fp, "%s: %s\n", header, buf);		      \
+		}							      \
+	}								      \
 }
 
 #define IS_IN_CUSTOM_HEADER(header) \
@@ -4025,7 +4117,7 @@ static gint compose_write_headers_from_headerlist(Compose *compose,
 	gboolean first_address;
 	GSList *list;
 	ComposeHeaderEntry *headerentry;
-	gchar * headerentryname;
+	const gchar * headerentryname;
 
 	if (IS_IN_CUSTOM_HEADER(header)) {
 		return 0;
@@ -4042,8 +4134,8 @@ static gint compose_write_headers_from_headerlist(Compose *compose,
 		headerentryname = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(headerentry->combo)->entry));
 
 		if (!g_strcasecmp(trans_hdr, headerentryname)) {
-			str = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
-			Xstrdup_a(str, str, return -1);
+			const gchar *entstr = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
+			Xstrdup_a(str, entstr, return -1);
 			g_strstrip(str);
 			if (str[0] != '\0') {
 				compose_convert_header
@@ -4073,6 +4165,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 				  gboolean is_draft)
 {
 	gchar buf[BUFFSIZE];
+	const gchar *entry_str;
 	gchar *str;
 	gchar *name;
 	GSList *list;
@@ -4122,8 +4215,8 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	compose_write_headers_from_headerlist(compose, fp, "To");
 #if 0 /* NEW COMPOSE GUI */
 	if (compose->use_to) {
-		str = gtk_entry_get_text(GTK_ENTRY(compose->to_entry));
-		PUT_RECIPIENT_HEADER("To", str);
+		entry_str = gtk_entry_get_text(GTK_ENTRY(compose->to_entry));
+		PUT_RECIPIENT_HEADER("To", entry_str);
 	}
 #endif
 
@@ -4131,9 +4224,9 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	compose_write_headers_from_headerlist(compose, fp, "Newsgroups");
 #if 0 /* NEW COMPOSE GUI */
 	if (compose->use_newsgroups) {
-		str = gtk_entry_get_text(GTK_ENTRY(compose->newsgroups_entry));
-		if (*str != '\0') {
-			Xstrdup_a(str, str, return -1);
+		entry_str = gtk_entry_get_text(GTK_ENTRY(compose->newsgroups_entry));
+		if (*entry_str != '\0') {
+			Xstrdup_a(str, entry_str, return -1);
 			g_strstrip(str);
 			remove_space(str);
 			if (*str != '\0') {
@@ -4166,9 +4259,9 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 #endif
 
 	/* Subject */
-	str = gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
-	if (*str != '\0' && !IS_IN_CUSTOM_HEADER("Subject")) {
-		Xstrdup_a(str, str, return -1);
+	entry_str = gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
+	if (*entry_str != '\0' && !IS_IN_CUSTOM_HEADER("Subject")) {
+		Xstrdup_a(str, entry_str, return -1);
 		g_strstrip(str);
 		if (*str != '\0') {
 			compose_convert_header(buf, sizeof(buf), str,
@@ -4198,9 +4291,9 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	compose_write_headers_from_headerlist(compose, fp, "Followup-To");
 #if 0 /* NEW COMPOSE GUI */
 	if (compose->use_followupto && !IS_IN_CUSTOM_HEADER("Followup-To")) {
-		str = gtk_entry_get_text(GTK_ENTRY(compose->followup_entry));
-		if (*str != '\0') {
-			Xstrdup_a(str, str, return -1);
+		entry_str = gtk_entry_get_text(GTK_ENTRY(compose->followup_entry));
+		if (*entry_str != '\0') {
+			Xstrdup_a(str, entry_str, return -1);
 			g_strstrip(str);
 			remove_space(str);
 			if (*str != '\0') {
@@ -4216,9 +4309,9 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	compose_write_headers_from_headerlist(compose, fp, "Reply-To");
 #if 0 /* NEW COMPOSE GUI */
 	if (compose->use_replyto && !IS_IN_CUSTOM_HEADER("Reply-To")) {
-		str = gtk_entry_get_text(GTK_ENTRY(compose->reply_entry));
-		if (*str != '\0') {
-			Xstrdup_a(str, str, return -1);
+		entry_str = gtk_entry_get_text(GTK_ENTRY(compose->reply_entry));
+		if (*entry_str != '\0') {
+			Xstrdup_a(str, entry_str, return -1);
 			g_strstrip(str);
 			if (*str != '\0') {
 				compose_convert_header(buf, sizeof(buf), str,
@@ -4363,7 +4456,8 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		}
 		g_free(tmp);
 		
-		headervalue = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
+		entry_str = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
+		Xstrdup_a(headervalue, entry_str, return -1);
 		subst_char(headervalue, '\r', ' ');
 		subst_char(headervalue, '\n', ' ');
 		string = std_headers;
@@ -4441,7 +4535,8 @@ static void compose_create_header_entry(Compose *compose)
 	GtkWidget *combo;
 	GtkWidget *entry;
 	GList *combo_list = NULL;
-	gchar **string, *header = NULL;
+	gchar **string;
+	const gchar *header = NULL;
 	ComposeHeaderEntry *headerentry;
 	gboolean standard_header = FALSE;
 
@@ -4460,7 +4555,7 @@ static void compose_create_header_entry(Compose *compose)
 	gtk_widget_show(combo);
 	gtk_table_attach(GTK_TABLE(compose->header_table), combo, 0, 1, compose->header_nextrow, compose->header_nextrow+1, GTK_SHRINK, GTK_FILL, 0, 0);
 	if (compose->header_last) {	
-		gchar *last_header_entry = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry));
+		const gchar *last_header_entry = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry));
 		string = headers;
 		while (*string != NULL) {
 			if (!strcmp(*string, last_header_entry))
@@ -4596,35 +4691,35 @@ static GtkWidget *compose_create_header(Compose *compose)
 
 	gtk_table_set_col_spacings(GTK_TABLE(table), 4);
 
-	gtk_signal_connect(GTK_OBJECT(to_entry), "activate",
-			   GTK_SIGNAL_FUNC(to_activated), compose);
-	gtk_signal_connect(GTK_OBJECT(newsgroups_entry), "activate",
-			   GTK_SIGNAL_FUNC(newsgroups_activated), compose);
-	gtk_signal_connect(GTK_OBJECT(subject_entry), "activate",
-			   GTK_SIGNAL_FUNC(subject_activated), compose);
-	gtk_signal_connect(GTK_OBJECT(cc_entry), "activate",
-			   GTK_SIGNAL_FUNC(cc_activated), compose);
-	gtk_signal_connect(GTK_OBJECT(bcc_entry), "activate",
-			   GTK_SIGNAL_FUNC(bcc_activated), compose);
-	gtk_signal_connect(GTK_OBJECT(reply_entry), "activate",
-			   GTK_SIGNAL_FUNC(replyto_activated), compose);
-	gtk_signal_connect(GTK_OBJECT(followup_entry), "activate",
-			   GTK_SIGNAL_FUNC(followupto_activated), compose);
+	g_signal_connect(G_OBJECT(to_entry), "activate",
+			 G_CALLBACK(to_activated), compose);
+	g_signal_connect(G_OBJECT(newsgroups_entry), "activate",
+			 G_CALLBACK(newsgroups_activated), compose);
+	g_signal_connect(G_OBJECT(subject_entry), "activate",
+			 G_CALLBACK(subject_activated), compose);
+	g_signal_connect(G_OBJECT(cc_entry), "activate",
+			 G_CALLBACK(cc_activated), compose);
+	g_signal_connect(G_OBJECT(bcc_entry), "activate",
+			 G_CALLBACK(bcc_activated), compose);
+	g_signal_connect(G_OBJECT(reply_entry), "activate",
+			 G_CALLBACK(replyto_activated), compose);
+	g_signal_connect(G_OBJECT(followup_entry), "activate",
+			 G_CALLBACK(followupto_activated), compose);
 
-	gtk_signal_connect(GTK_OBJECT(subject_entry), "grab_focus",
-			   GTK_SIGNAL_FUNC(compose_grab_focus_cb), compose);
-	gtk_signal_connect(GTK_OBJECT(to_entry), "grab_focus",
-			   GTK_SIGNAL_FUNC(compose_grab_focus_cb), compose);
-	gtk_signal_connect(GTK_OBJECT(newsgroups_entry), "grab_focus",
-			   GTK_SIGNAL_FUNC(compose_grab_focus_cb), compose);
-	gtk_signal_connect(GTK_OBJECT(cc_entry), "grab_focus",
-			   GTK_SIGNAL_FUNC(compose_grab_focus_cb), compose);
-	gtk_signal_connect(GTK_OBJECT(bcc_entry), "grab_focus",
-			   GTK_SIGNAL_FUNC(compose_grab_focus_cb), compose);
-	gtk_signal_connect(GTK_OBJECT(reply_entry), "grab_focus",
-			   GTK_SIGNAL_FUNC(compose_grab_focus_cb), compose);
-	gtk_signal_connect(GTK_OBJECT(followup_entry), "grab_focus",
-			   GTK_SIGNAL_FUNC(compose_grab_focus_cb), compose);
+	g_signal_connect(G_OBJECT(subject_entry), "grab_focus",
+			 G_CALLBACK(compose_grab_focus_cb), compose);
+	g_signal_connect(G_OBJECT(to_entry), "grab_focus",
+			 G_CALLBACK(compose_grab_focus_cb), compose);
+	g_signal_connect(G_OBJECT(newsgroups_entry), "grab_focus",
+			 G_CALLBACK(compose_grab_focus_cb), compose);
+	g_signal_connect(G_OBJECT(cc_entry), "grab_focus",
+			 G_CALLBACK(compose_grab_focus_cb), compose);
+	g_signal_connect(G_OBJECT(bcc_entry), "grab_focus",
+			 G_CALLBACK(compose_grab_focus_cb), compose);
+	g_signal_connect(G_OBJECT(reply_entry), "grab_focus",
+			 G_CALLBACK(compose_grab_focus_cb), compose);
+	g_signal_connect(G_OBJECT(followup_entry), "grab_focus",
+			 G_CALLBACK(compose_grab_focus_cb), compose);
 #endif
 
 	compose->table	          = NULL;
@@ -4666,7 +4761,7 @@ GtkWidget *compose_create_attach(Compose *compose)
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(attach_scrwin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_ALWAYS);
-	gtk_widget_set_usize(attach_scrwin, -1, 80);
+	gtk_widget_set_size_request(attach_scrwin, -1, 80);
 
 	attach_clist = gtk_clist_new_with_titles(N_ATTACH_COLS, titles);
 	gtk_clist_set_column_justification(GTK_CLIST(attach_clist), COL_SIZE,
@@ -4681,20 +4776,20 @@ GtkWidget *compose_create_attach(Compose *compose)
 			 GTK_CAN_FOCUS);
 	gtk_container_add(GTK_CONTAINER(attach_scrwin), attach_clist);
 
-	gtk_signal_connect(GTK_OBJECT(attach_clist), "select_row",
-			   GTK_SIGNAL_FUNC(attach_selected), compose);
-	gtk_signal_connect(GTK_OBJECT(attach_clist), "button_press_event",
-			   GTK_SIGNAL_FUNC(attach_button_pressed), compose);
-	gtk_signal_connect(GTK_OBJECT(attach_clist), "key_press_event",
-			   GTK_SIGNAL_FUNC(attach_key_pressed), compose);
+	g_signal_connect(G_OBJECT(attach_clist), "select_row",
+			 G_CALLBACK(attach_selected), compose);
+	g_signal_connect(G_OBJECT(attach_clist), "button_press_event",
+			 G_CALLBACK(attach_button_pressed), compose);
+	g_signal_connect(G_OBJECT(attach_clist), "key_press_event",
+			 G_CALLBACK(attach_key_pressed), compose);
 
 	/* drag and drop */
 	gtk_drag_dest_set(attach_clist,
 			  GTK_DEST_DEFAULT_ALL, compose_mime_types, 1,
 			  GDK_ACTION_COPY | GDK_ACTION_MOVE);
-	gtk_signal_connect(GTK_OBJECT(attach_clist), "drag_data_received",
-			   GTK_SIGNAL_FUNC(compose_attach_drag_received_cb),
-			   compose);
+	g_signal_connect(G_OBJECT(attach_clist), "drag_data_received",
+			 G_CALLBACK(compose_attach_drag_received_cb),
+			 compose);
 
 	compose->attach_scrwin = attach_scrwin;
 	compose->attach_clist  = attach_clist;
@@ -4801,6 +4896,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	GtkWidget *ruler;
 	GtkWidget *scrolledwin;
 	GtkWidget *text;
+	GtkTextBuffer *buffer;
+	GtkClipboard *clipboard;
 
 	UndoMain *undostruct;
 
@@ -4835,7 +4932,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, FALSE);
-	gtk_widget_set_usize(window, -1, prefs_common.compose_height);
+	gtk_widget_set_size_request(window, -1, prefs_common.compose_height);
 	gtk_window_set_wmclass(GTK_WINDOW(window), "compose window", "Sylpheed");
 
 	if (!geometry.max_width) {
@@ -4845,10 +4942,10 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL,
 				      &geometry, GDK_HINT_MAX_SIZE);
 
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(compose_delete_cb), compose);
-	gtk_signal_connect(GTK_OBJECT(window), "destroy",
-			   GTK_SIGNAL_FUNC(compose_destroy_cb), compose);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(compose_delete_cb), compose);
+	g_signal_connect(G_OBJECT(window), "destroy",
+			 G_CALLBACK(compose_destroy_cb), compose);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 	gtk_widget_realize(window);
 
@@ -4874,7 +4971,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	
 	/* Notebook */
 	notebook = gtk_notebook_new();
-	gtk_widget_set_usize(notebook, -1, 130);
+	gtk_widget_set_size_request(notebook, -1, 130);
 	gtk_widget_show(notebook);
 
 	/* header labels and entries */
@@ -4923,65 +5020,71 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	gtk_ruler_set_range(GTK_RULER(ruler), 0.0, 100.0, 1.0, 100.0);
 	gtk_box_pack_start(GTK_BOX(ruler_hbox), ruler, TRUE, TRUE,
 			   BORDER_WIDTH + 1);
-	gtk_widget_set_usize(ruler_hbox, 1, -1);
+	gtk_widget_set_size_request(ruler_hbox, 1, -1);
 
 	/* text widget */
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 	gtk_box_pack_start(GTK_BOX(edit_vbox), scrolledwin, TRUE, TRUE, 0);
-	gtk_widget_set_usize(scrolledwin, prefs_common.compose_width, -1);
+	gtk_widget_set_size_request(scrolledwin, prefs_common.compose_width, -1);
 
-	text = gtk_stext_new(gtk_scrolled_window_get_hadjustment
-			    (GTK_SCROLLED_WINDOW(scrolledwin)),
-			    gtk_scrolled_window_get_vadjustment
-			    (GTK_SCROLLED_WINDOW(scrolledwin)));
-	GTK_STEXT(text)->default_tab_width = 8;
-	gtk_stext_set_editable(GTK_STEXT(text), TRUE);
+	text = gtk_text_view_new();
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), TRUE);
+	clipboard = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
+	gtk_text_buffer_add_selection_clipboard(buffer, clipboard);
+#warning FIXME_GTK2
+	/* GTK_STEXT(text)->default_tab_width = 8; */
 
+#warning FIXME_GTK2
+#if 0
 	if (prefs_common.block_cursor) {
 		GTK_STEXT(text)->cursor_type = GTK_STEXT_CURSOR_BLOCK;
 	}
+#endif
 	
+#warning FIXME_GTK2
+#if 0
 	if (prefs_common.smart_wrapping) {	
 		gtk_stext_set_word_wrap(GTK_STEXT(text), TRUE);
 		gtk_stext_set_wrap_rmargin(GTK_STEXT(text), prefs_common.linewrap_len);
 	}		
+#else
+	if (prefs_common.smart_wrapping) {	
+		gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD);
+	}		
+#endif
 
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
 
-	gtk_signal_connect(GTK_OBJECT(text), "changed",
-			   GTK_SIGNAL_FUNC(compose_changed_cb), compose);
-	gtk_signal_connect(GTK_OBJECT(text), "grab_focus",
-			   GTK_SIGNAL_FUNC(compose_grab_focus_cb), compose);
-	gtk_signal_connect(GTK_OBJECT(text), "activate",
-			   GTK_SIGNAL_FUNC(text_activated), compose);
-	gtk_signal_connect(GTK_OBJECT(text), "insert_text",
-			   GTK_SIGNAL_FUNC(text_inserted), compose);
-	gtk_signal_connect_after(GTK_OBJECT(text), "button_press_event",
-				 GTK_SIGNAL_FUNC(compose_button_press_cb),
-				 edit_vbox);
-#if 0
-	gtk_signal_connect_after(GTK_OBJECT(text), "key_press_event",
-				 GTK_SIGNAL_FUNC(compose_key_press_cb),
-				 compose);
-#endif
-	gtk_signal_connect_after(GTK_OBJECT(text), "size_allocate",
-				 GTK_SIGNAL_FUNC(compose_edit_size_alloc),
-				 ruler);
+#warning FIXME_GTK2
+#if 0 /* FIXME_GTK2 */
+	g_signal_connect(G_OBJECT(text), "activate",
+			 G_CALLBACK(text_activated), compose);
+#endif /* FIXME_GTK2 */
+
+	g_signal_connect_after(G_OBJECT(text), "size_allocate",
+			       G_CALLBACK(compose_edit_size_alloc),
+			       ruler);
+	g_signal_connect(G_OBJECT(buffer), "changed",
+			 G_CALLBACK(compose_changed_cb), compose);
+	g_signal_connect(G_OBJECT(text), "grab_focus",
+			 G_CALLBACK(compose_grab_focus_cb), compose);
+	g_signal_connect(G_OBJECT(buffer), "insert-text",
+			 G_CALLBACK(text_inserted), compose);
 
 	/* drag and drop */
 	gtk_drag_dest_set(text, GTK_DEST_DEFAULT_ALL, compose_mime_types, 1,
 			  GDK_ACTION_COPY | GDK_ACTION_MOVE);
-	gtk_signal_connect(GTK_OBJECT(text), "drag_data_received",
-			   GTK_SIGNAL_FUNC(compose_insert_drag_received_cb),
-			   compose);
+	g_signal_connect(G_OBJECT(text), "drag_data_received",
+			 G_CALLBACK(compose_insert_drag_received_cb),
+			 compose);
 	gtk_widget_show_all(vbox);
 
 	/* pane between attach clist and text */
 	paned = gtk_vpaned_new();
 	gtk_paned_set_gutter_size(GTK_PANED(paned), 12);
-	gtk_paned_set_handle_size(GTK_PANED(paned), 12);
 	gtk_container_add(GTK_CONTAINER(vbox2), paned);
 	gtk_paned_add1(GTK_PANED(paned), notebook);
 	gtk_paned_add2(GTK_PANED(paned), edit_vbox);
@@ -4990,6 +5093,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	style = gtk_widget_get_style(text);
 
 	/* workaround for the slow down of GtkSText when using Pixmap theme */
+#warning FIXME_GTK2
+#if 0 /* FIXME_GTK2 */
 	if (style->engine) {
 		GtkThemeEngine *engine;
 
@@ -4998,14 +5103,19 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 		new_style = gtk_style_copy(style);
 		style->engine = engine;
 	} else
+#endif /* FIXME_GTK2 */
 		new_style = gtk_style_copy(style);
 
 	if (prefs_common.textfont) {
-		GdkFont *font;
+		PangoFontDescription *font_desc;
 
-		if ((font = gtkut_font_load(prefs_common.textfont)) != NULL) {
-			gdk_font_unref(new_style->font);
-			new_style->font = font;
+		font_desc = pango_font_description_from_string
+					(prefs_common.textfont);
+		if (font_desc) {
+			if (new_style->font_desc)
+				pango_font_description_free
+					(new_style->font_desc);
+			new_style->font_desc = font_desc;
 		}
 	}
 
@@ -5248,9 +5358,9 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 					       ac->account_name, ac->address);
 		MENUITEM_ADD(menu, menuitem, name, ac->account_id);
 		g_free(name);
-		gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
-				   GTK_SIGNAL_FUNC(account_activated),
-				   compose);
+		g_signal_connect(G_OBJECT(menuitem), "activate",
+				 G_CALLBACK(account_activated),
+				 compose);
 	}
 
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu), menu);
@@ -5348,11 +5458,11 @@ static void compose_set_template_menu(Compose *compose)
 		Template *tmpl = (Template *)cur->data;
 
 		item = gtk_menu_item_new_with_label(tmpl->name);
-		gtk_menu_append(GTK_MENU(menu), item);
-		gtk_signal_connect(GTK_OBJECT(item), "activate",
-				   GTK_SIGNAL_FUNC(compose_template_activate_cb),
-				   compose);
-		gtk_object_set_data(GTK_OBJECT(item), "template", tmpl);
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+		g_signal_connect(G_OBJECT(item), "activate",
+				 G_CALLBACK(compose_template_activate_cb),
+				 compose);
+		g_object_set_data(G_OBJECT(item), "template", tmpl);
 		gtk_widget_show(item);
 	}
 
@@ -5385,12 +5495,17 @@ void compose_reflect_prefs_pixmap_theme(void)
 static void compose_template_apply(Compose *compose, Template *tmpl,
 				   gboolean replace)
 {
+	GtkTextView *text;
+	GtkTextBuffer *buffer;
+	GtkTextMark *mark;
+	GtkTextIter iter;
 	gchar *qmark;
 	gchar *parsed_str;
 
 	if (!tmpl || !tmpl->value) return;
 
-	gtk_stext_freeze(GTK_STEXT(compose->text));
+	text = GTK_TEXT_VIEW(compose->text);
+	buffer = gtk_text_view_get_buffer(text);
 
 	if (tmpl->subject && *tmpl->subject != '\0')
 		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry),
@@ -5404,7 +5519,10 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 		compose_entry_append(compose, tmpl->bcc, COMPOSE_BCC);
 
 	if (replace)
-		gtkut_stext_clear(GTK_STEXT(compose->text));
+		gtk_text_buffer_set_text(buffer, "\0", 1);
+
+	mark = gtk_text_buffer_get_insert(buffer);
+	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
 
 	if ((compose->replyinfo == NULL) && (compose->fwdinfo == NULL)) {
 		parsed_str = compose_quote_fmt(compose, NULL, tmpl->value,
@@ -5429,14 +5547,12 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 		compose_insert_sig(compose, FALSE);
 
 	if (replace && parsed_str) {
-		gtk_editable_set_position(GTK_EDITABLE(compose->text), 0);
-		gtk_stext_set_point(GTK_STEXT(compose->text), 0);
+		gtk_text_buffer_get_start_iter(buffer, &iter);
+		gtk_text_buffer_place_cursor(buffer, &iter);
 	}
 
 	if (parsed_str)
 		compose_changed_cb(NULL, compose);
-
-	gtk_stext_thaw(GTK_STEXT(compose->text));
 }
 
 static void compose_destroy(Compose *compose)
@@ -5576,6 +5692,7 @@ static void compose_attach_property(Compose *compose)
 			   ainfo->name ? ainfo->name : "");
 
 	for (;;) {
+		const gchar *entry_text;
 		gchar *text;
 		gchar *cnttype = NULL;
 		gchar *file = NULL;
@@ -5591,11 +5708,11 @@ static void compose_attach_property(Compose *compose)
 			break;
 		}
 
-		text = gtk_entry_get_text(GTK_ENTRY(attach_prop.mimetype_entry));
-		if (*text != '\0') {
+		entry_text = gtk_entry_get_text(GTK_ENTRY(attach_prop.mimetype_entry));
+		if (*entry_text != '\0') {
 			gchar *p;
 
-			text = g_strstrip(g_strdup(text));
+			text = g_strstrip(g_strdup(entry_text));
 			if ((p = strchr(text, '/')) && !strchr(p + 1, '/')) {
 				cnttype = g_strdup(text);
 				g_free(text);
@@ -5609,13 +5726,13 @@ static void compose_attach_property(Compose *compose)
 		menu = gtk_option_menu_get_menu(optmenu);
 		menuitem = gtk_menu_get_active(GTK_MENU(menu));
 		ainfo->encoding = GPOINTER_TO_INT
-			(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
+			(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
 
-		text = gtk_entry_get_text(GTK_ENTRY(attach_prop.path_entry));
-		if (*text != '\0') {
-			if (is_file_exist(text) &&
-			    (size = get_file_size(text)) > 0)
-				file = g_strdup(text);
+		entry_text = gtk_entry_get_text(GTK_ENTRY(attach_prop.path_entry));
+		if (*entry_text != '\0') {
+			if (is_file_exist(entry_text) &&
+			    (size = get_file_size(entry_text)) > 0)
+				file = g_strdup(entry_text);
 			else {
 				alertpanel_error
 					(_("File doesn't exist or is empty."));
@@ -5624,10 +5741,10 @@ static void compose_attach_property(Compose *compose)
 			}
 		}
 
-		text = gtk_entry_get_text(GTK_ENTRY(attach_prop.filename_entry));
-		if (*text != '\0') {
+		entry_text = gtk_entry_get_text(GTK_ENTRY(attach_prop.filename_entry));
+		if (*entry_text != '\0') {
 			g_free(ainfo->name);
-			ainfo->name = g_strdup(text);
+			ainfo->name = g_strdup(entry_text);
 		}
 
 		if (cnttype) {
@@ -5684,18 +5801,18 @@ static void compose_attach_property_create(gboolean *cancelled)
 
 	debug_print("Creating attach_property window...\n");
 
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
-	gtk_widget_set_usize(window, 480, -1);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_widget_set_size_request(window, 480, -1);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_title(GTK_WINDOW(window), _("Properties"));
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(attach_property_delete_event),
-			   cancelled);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(attach_property_key_pressed),
-			   cancelled);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(attach_property_delete_event),
+			 cancelled);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(attach_property_key_pressed),
+			 cancelled);
 
 	vbox = gtk_vbox_new(FALSE, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
@@ -5771,12 +5888,12 @@ static void compose_attach_property_create(gboolean *cancelled)
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
 
-	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-			   GTK_SIGNAL_FUNC(attach_property_ok),
-			   cancelled);
-	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
-			   GTK_SIGNAL_FUNC(attach_property_cancel),
-			   cancelled);
+	g_signal_connect(G_OBJECT(ok_btn), "clicked",
+			 G_CALLBACK(attach_property_ok),
+			 cancelled);
+	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
+			 G_CALLBACK(attach_property_cancel),
+			 cancelled);
 
 	gtk_widget_show_all(vbox);
 
@@ -5812,13 +5929,15 @@ static gint attach_property_delete_event(GtkWidget *widget, GdkEventAny *event,
 	return TRUE;
 }
 
-static void attach_property_key_pressed(GtkWidget *widget, GdkEventKey *event,
-					gboolean *cancelled)
+static gboolean attach_property_key_pressed(GtkWidget *widget,
+					    GdkEventKey *event,
+					    gboolean *cancelled)
 {
 	if (event && event->keyval == GDK_Escape) {
 		*cancelled = TRUE;
 		gtk_main_quit();
 	}
+	return FALSE;
 }
 
 static void compose_exec_ext_editor(Compose *compose)
@@ -6000,14 +6119,12 @@ static void compose_input_cb(gpointer data, gint source,
 	waitpid(compose->exteditor_pid, NULL, 0);
 
 	if (buf[0] == '0') {		/* success */
-		GtkSText *text = GTK_STEXT(compose->text);
+		GtkTextView *text = GTK_TEXT_VIEW(compose->text);
+		GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
 
-		gtk_stext_freeze(text);
-		gtk_stext_set_point(text, 0);
-		gtk_stext_forward_delete(text, gtk_stext_get_length(text));
+		gtk_text_buffer_set_text(buffer, "\0", 1);
 		compose_insert_file(compose, compose->exteditor_file);
 		compose_changed_cb(NULL, compose);
-		gtk_stext_thaw(text);
 
 		if (unlink(compose->exteditor_file) < 0)
 			FILE_OP_ERROR(compose->exteditor_file, "unlink");
@@ -6127,14 +6244,10 @@ static void compose_undo_state_changed(UndoMain *undostruct, gint undo_state,
 	}
 }
 
-static gint calc_cursor_xpos(GtkSText *text, gint extra, gint char_width)
+static gint calc_cursor_xpos(GtkTextView *text, gint extra, gint char_width)
 {
-	gint cursor_pos;
-
-	cursor_pos = (text->cursor_pos_x - extra) / char_width;
-	cursor_pos = MAX(cursor_pos, 0);
-
-	return cursor_pos;
+#warning FIXME_GTK2
+	return 0;
 }
 
 /* callback functions */
@@ -6148,18 +6261,18 @@ static gboolean compose_edit_size_alloc(GtkEditable *widget,
 					GtkSHRuler *shruler)
 {
 	if (prefs_common.show_ruler) {
-		gint char_width;
+		gint char_width = 0, char_height = 0;
 		gint line_width_in_chars;
 
-		char_width = gtkut_get_font_width
-			(GTK_WIDGET(widget)->style->font);
+		gtkut_get_font_size(GTK_WIDGET(widget),
+				    &char_width, &char_height);
 		line_width_in_chars =
 			(allocation->width - allocation->x) / char_width;
 
 		/* got the maximum */
 		gtk_ruler_set_range(GTK_RULER(shruler),
 				    0.0, line_width_in_chars,
-				    calc_cursor_xpos(GTK_STEXT(widget),
+				    calc_cursor_xpos(GTK_TEXT_VIEW(widget),
 						     allocation->x,
 						     char_width),
 				    /*line_width_in_chars*/ char_width);
@@ -6191,14 +6304,14 @@ static void attach_selected(GtkCList *clist, gint row, gint column,
 		compose_attach_property(compose);
 }
 
-static void attach_button_pressed(GtkWidget *widget, GdkEventButton *event,
-				  gpointer data)
+static gboolean attach_button_pressed(GtkWidget *widget, GdkEventButton *event,
+				      gpointer data)
 {
 	Compose *compose = (Compose *)data;
 	GtkCList *clist = GTK_CLIST(compose->attach_clist);
 	gint row, column;
 
-	if (!event) return;
+	if (!event) return FALSE;
 
 	if (event->button == 3) {
 		if ((clist->selection && !clist->selection->next) ||
@@ -6214,20 +6327,23 @@ static void attach_button_pressed(GtkWidget *widget, GdkEventButton *event,
 		gtk_menu_popup(GTK_MENU(compose->popupmenu), NULL, NULL,
 			       NULL, NULL, event->button, event->time);
 	}
+
+	return FALSE;
 }
 
-static void attach_key_pressed(GtkWidget *widget, GdkEventKey *event,
-			       gpointer data)
+static gboolean attach_key_pressed(GtkWidget *widget, GdkEventKey *event,
+				   gpointer data)
 {
 	Compose *compose = (Compose *)data;
 
-	if (!event) return;
+	if (!event) return FALSE;
 
 	switch (event->keyval) {
 	case GDK_Delete:
 		compose_attach_remove_selected(compose);
 		break;
 	}
+	return FALSE;
 }
 
 static void compose_allow_user_actions (Compose *compose, gboolean allow)
@@ -6467,7 +6583,7 @@ static void compose_template_activate_cb(GtkWidget *widget, gpointer data)
 	gchar *msg;
 	AlertValue val;
 
-	tmpl = gtk_object_get_data(GTK_OBJECT(widget), "template");
+	tmpl = g_object_get_data(G_OBJECT(widget), "template");
 	g_return_if_fail(tmpl != NULL);
 
 	msg = g_strdup_printf(_("Do you want to apply the template `%s' ?"),
@@ -6558,66 +6674,305 @@ static void compose_allsel_cb(Compose *compose)
 			(GTK_EDITABLE(compose->focused_editable), 0, -1);
 }
 
-static void compose_gtk_stext_action_cb(Compose *compose,
-					ComposeCallGtkSTextAction action)
+static void textview_move_beginning_of_line (GtkTextView *text)
 {
-	GtkSText *text = GTK_STEXT(compose->text);
+	GtkTextBuffer *buffer;
+	GtkTextMark *mark;
+	GtkTextIter ins;
+
+	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	mark = gtk_text_buffer_get_insert(buffer);
+	gtk_text_buffer_get_iter_at_mark(buffer, &ins, mark);
+	gtk_text_iter_set_line_offset(&ins, 0);
+	gtk_text_buffer_place_cursor(buffer, &ins);
+}
+
+static void textview_move_forward_character (GtkTextView *text)
+{
+	GtkTextBuffer *buffer;
+	GtkTextMark *mark;
+	GtkTextIter ins;
+
+	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	mark = gtk_text_buffer_get_insert(buffer);
+	gtk_text_buffer_get_iter_at_mark(buffer, &ins, mark);
+	if (gtk_text_iter_forward_cursor_position(&ins))
+		gtk_text_buffer_place_cursor(buffer, &ins);
+}
+
+static void textview_move_backward_character (GtkTextView *text)
+{
+	GtkTextBuffer *buffer;
+	GtkTextMark *mark;
+	GtkTextIter ins;
+
+	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	mark = gtk_text_buffer_get_insert(buffer);
+	gtk_text_buffer_get_iter_at_mark(buffer, &ins, mark);
+	if (gtk_text_iter_backward_cursor_position(&ins))
+		gtk_text_buffer_place_cursor(buffer, &ins);
+}
+
+static void textview_move_forward_word (GtkTextView *text)
+{
+	GtkTextBuffer *buffer;
+	GtkTextMark *mark;
+	GtkTextIter ins;
+	gint count;
+
+	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	mark = gtk_text_buffer_get_insert(buffer);
+	gtk_text_buffer_get_iter_at_mark(buffer, &ins, mark);
+	count = gtk_text_iter_inside_word (&ins) ? 2 : 1;
+	if (gtk_text_iter_forward_word_ends(&ins, count)) {
+		gtk_text_iter_backward_word_start(&ins);
+		gtk_text_buffer_place_cursor(buffer, &ins);
+	}
+}
+
+static void textview_move_backward_word (GtkTextView *text)
+{
+	GtkTextBuffer *buffer;
+	GtkTextMark *mark;
+	GtkTextIter ins;
+	gint count;
+
+	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	mark = gtk_text_buffer_get_insert(buffer);
+	gtk_text_buffer_get_iter_at_mark(buffer, &ins, mark);
+	count = gtk_text_iter_inside_word (&ins) ? 2 : 1;
+	if (gtk_text_iter_backward_word_starts(&ins, 1))
+		gtk_text_buffer_place_cursor(buffer, &ins);
+}
+
+static void textview_move_end_of_line (GtkTextView *text)
+{
+	GtkTextBuffer *buffer;
+	GtkTextMark *mark;
+	GtkTextIter ins;
+
+	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	mark = gtk_text_buffer_get_insert(buffer);
+	gtk_text_buffer_get_iter_at_mark(buffer, &ins, mark);
+	if (gtk_text_iter_forward_to_line_end(&ins))
+		gtk_text_buffer_place_cursor(buffer, &ins);
+}
+
+static void textview_move_next_line (GtkTextView *text)
+{
+	GtkTextBuffer *buffer;
+	GtkTextMark *mark;
+	GtkTextIter ins;
+	gint offset;
+
+	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	mark = gtk_text_buffer_get_insert(buffer);
+	gtk_text_buffer_get_iter_at_mark(buffer, &ins, mark);
+#warning FIXME_GTK2 /* should regist current line offset */
+	offset = gtk_text_iter_get_line_offset(&ins);
+	if (gtk_text_iter_forward_line(&ins)) {
+		gtk_text_iter_set_line_offset(&ins, offset);
+		gtk_text_buffer_place_cursor(buffer, &ins);
+	}
+}
+
+static void textview_move_previous_line (GtkTextView *text)
+{
+	GtkTextBuffer *buffer;
+	GtkTextMark *mark;
+	GtkTextIter ins;
+	gint offset;
+
+	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	mark = gtk_text_buffer_get_insert(buffer);
+	gtk_text_buffer_get_iter_at_mark(buffer, &ins, mark);
+#warning FIXME_GTK2 /* should regist current line offset */
+	offset = gtk_text_iter_get_line_offset(&ins);
+	if (gtk_text_iter_backward_line(&ins)) {
+		gtk_text_iter_set_line_offset(&ins, offset);
+		gtk_text_buffer_place_cursor(buffer, &ins);
+	}
+}
+
+static void textview_delete_forward_character (GtkTextView *text)
+{
+	GtkTextBuffer *buffer;
+	GtkTextMark *mark;
+	GtkTextIter ins, end_iter;
+
+	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	mark = gtk_text_buffer_get_insert(buffer);
+	gtk_text_buffer_get_iter_at_mark(buffer, &ins, mark);
+	end_iter = ins;
+	if (gtk_text_iter_forward_char(&end_iter)) {
+		gtk_text_buffer_delete(buffer, &ins, &end_iter);
+	}
+}
+
+static void textview_delete_backward_character (GtkTextView *text)
+{
+	GtkTextBuffer *buffer;
+	GtkTextMark *mark;
+	GtkTextIter ins, end_iter;
+
+	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	mark = gtk_text_buffer_get_insert(buffer);
+	gtk_text_buffer_get_iter_at_mark(buffer, &ins, mark);
+	end_iter = ins;
+	if (gtk_text_iter_backward_char(&end_iter)) {
+		gtk_text_buffer_delete(buffer, &end_iter, &ins);
+	}
+}
+
+static void textview_delete_forward_word (GtkTextView *text)
+{
+	GtkTextBuffer *buffer;
+	GtkTextMark *mark;
+	GtkTextIter ins, end_iter;
+
+	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	mark = gtk_text_buffer_get_insert(buffer);
+	gtk_text_buffer_get_iter_at_mark(buffer, &ins, mark);
+	end_iter = ins;
+	if (gtk_text_iter_forward_word_end(&end_iter)) {
+		gtk_text_buffer_delete(buffer, &ins, &end_iter);
+	}
+}
+
+static void textview_delete_backward_word (GtkTextView *text)
+{
+	GtkTextBuffer *buffer;
+	GtkTextMark *mark;
+	GtkTextIter ins, end_iter;
+
+	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	mark = gtk_text_buffer_get_insert(buffer);
+	gtk_text_buffer_get_iter_at_mark(buffer, &ins, mark);
+	end_iter = ins;
+	if (gtk_text_iter_backward_word_start(&end_iter)) {
+		gtk_text_buffer_delete(buffer, &end_iter, &ins);
+	}
+}
+
+static void textview_delete_line (GtkTextView *text)
+{
+	GtkTextBuffer *buffer;
+	GtkTextMark *mark;
+	GtkTextIter ins, start_iter, end_iter;
+	gboolean found;
+
+	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	mark = gtk_text_buffer_get_insert(buffer);
+	gtk_text_buffer_get_iter_at_mark(buffer, &ins, mark);
+
+	start_iter = ins;
+	gtk_text_iter_set_line_offset(&start_iter, 0);
+
+	end_iter = ins;
+	if (gtk_text_iter_ends_line(&end_iter))
+		found = gtk_text_iter_forward_char(&end_iter);
+	else
+		found = gtk_text_iter_forward_to_line_end(&end_iter);
+
+	if (found)
+		gtk_text_buffer_delete(buffer, &start_iter, &end_iter);
+}
+
+static void textview_delete_to_line_end (GtkTextView *text)
+{
+	GtkTextBuffer *buffer;
+	GtkTextMark *mark;
+	GtkTextIter ins, end_iter;
+	gboolean found;
+
+	g_return_if_fail(GTK_IS_TEXT_VIEW(text));
+
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	mark = gtk_text_buffer_get_insert(buffer);
+	gtk_text_buffer_get_iter_at_mark(buffer, &ins, mark);
+	end_iter = ins;
+	if (gtk_text_iter_ends_line(&end_iter))
+		found = gtk_text_iter_forward_char(&end_iter);
+	else
+		found = gtk_text_iter_forward_to_line_end(&end_iter);
+	if (found)
+		gtk_text_buffer_delete(buffer, &ins, &end_iter);
+}
+
+static void compose_advanced_action_cb(Compose *compose,
+					ComposeCallAdvancedAction action)
+{
+	GtkTextView *text = GTK_TEXT_VIEW(compose->text);
 	static struct {
-		void (*do_action) (GtkSText *text);
+		void (*do_action) (GtkTextView *text);
 	} action_table[] = {
-		{gtk_stext_move_beginning_of_line},
-		{gtk_stext_move_forward_character},
-		{gtk_stext_move_backward_character},
-		{gtk_stext_move_forward_word},
-		{gtk_stext_move_backward_word},
-		{gtk_stext_move_end_of_line},
-		{gtk_stext_move_next_line},
-		{gtk_stext_move_previous_line},
-		{gtk_stext_delete_forward_character},
-		{gtk_stext_delete_backward_character},
-		{gtk_stext_delete_forward_word},
-		{gtk_stext_delete_backward_word},
-		{gtk_stext_delete_line},
-		{gtk_stext_delete_line}, /* gtk_stext_delete_line_n */
-		{gtk_stext_delete_to_line_end}
+		{textview_move_beginning_of_line},
+		{textview_move_forward_character},
+		{textview_move_backward_character},
+		{textview_move_forward_word},
+		{textview_move_backward_word},
+		{textview_move_end_of_line},
+		{textview_move_next_line},
+		{textview_move_previous_line},
+		{textview_delete_forward_character},
+		{textview_delete_backward_character},
+		{textview_delete_forward_word},
+		{textview_delete_backward_word},
+		{textview_delete_line},
+		{NULL}, /* gtk_stext_delete_line_n */
+		{textview_delete_to_line_end}
 	};
 
 	if (!GTK_WIDGET_HAS_FOCUS(text)) return;
 
-	if (action >= COMPOSE_CALL_GTK_STEXT_MOVE_BEGINNING_OF_LINE &&
-	    action <= COMPOSE_CALL_GTK_STEXT_DELETE_TO_LINE_END)
-		action_table[action].do_action(text);
+	if (action >= COMPOSE_CALL_ADVANCED_ACTION_MOVE_BEGINNING_OF_LINE &&
+	    action <= COMPOSE_CALL_ADVANCED_ACTION_DELETE_TO_LINE_END) {
+		if (action_table[action].do_action)
+			action_table[action].do_action(text);
+		else
+			g_warning("Not implemented yet.");
+	}
 }
 
 static void compose_grab_focus_cb(GtkWidget *widget, Compose *compose)
 {
-	if (GTK_IS_EDITABLE(widget))
+	if (GTK_IS_EDITABLE(widget) || GTK_IS_TEXT_VIEW(widget))
 		compose->focused_editable = widget;
 }
 
-static void compose_changed_cb(GtkEditable *editable, Compose *compose)
+static void compose_changed_cb(GtkTextBuffer *textbuf, Compose *compose)
 {
 	if (compose->modified == FALSE) {
 		compose->modified = TRUE;
 		compose_set_title(compose);
 	}
 }
-
-static void compose_button_press_cb(GtkWidget *widget, GdkEventButton *event,
-				    Compose *compose)
-{
-	gtk_stext_set_point(GTK_STEXT(widget),
-			   gtk_editable_get_position(GTK_EDITABLE(widget)));
-}
-
-#if 0
-static void compose_key_press_cb(GtkWidget *widget, GdkEventKey *event,
-				 Compose *compose)
-{
-	gtk_stext_set_point(GTK_STEXT(widget),
-			   gtk_editable_get_position(GTK_EDITABLE(widget)));
-}
-#endif
 
 #if 0 /* NEW COMPOSE GUI */
 static void compose_toggle_to_cb(gpointer data, guint action,
@@ -7007,47 +7362,47 @@ static void text_activated(GtkWidget *widget, Compose *compose)
 	compose_send_control_enter(compose);
 }
 
-static void text_inserted(GtkWidget *widget, const gchar *text,
-			  gint length, gint *position, Compose *compose)
+static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
+			  const gchar *text, gint len, Compose *compose)
 {
-	GtkEditable *editable = GTK_EDITABLE(widget);
-	gint paste_as_quotation = GPOINTER_TO_INT(gtk_object_get_data
-				(GTK_OBJECT(widget), "paste_as_quotation"));
+	g_return_if_fail(text);
 
-	gtk_signal_handler_block_by_func(GTK_OBJECT(widget),
-					 GTK_SIGNAL_FUNC(text_inserted),
-					 compose);
+	gint paste_as_quotation = GPOINTER_TO_INT(g_object_get_data
+				(G_OBJECT(compose->text), "paste_as_quotation"));
+
+	g_signal_handlers_block_by_func(G_OBJECT(buffer),
+					G_CALLBACK(text_inserted),
+					compose);
 	if (paste_as_quotation) {
 		gchar *new_text;
 		gchar *qmark;
-		gint pos;
 
-		new_text = g_strndup(text, length);
+		if (len < 0)
+			len = strlen(text);
+
+		new_text = g_strndup(text, len);
 		if (prefs_common.quotemark && *prefs_common.quotemark)
 			qmark = prefs_common.quotemark;
 		else
 			qmark = "> ";
-		gtk_stext_set_point(GTK_STEXT(widget), *position);
+		gtk_text_buffer_place_cursor(buffer, iter);
 		compose_quote_fmt(compose, NULL, "%Q", qmark, new_text);
-		pos = gtk_stext_get_point(GTK_STEXT(widget));
-		gtk_editable_set_position(editable, pos);
-		*position = pos;
 		g_free(new_text);
-		gtk_object_set_data(GTK_OBJECT(widget), "paste_as_quotation",
-				    GINT_TO_POINTER(paste_as_quotation - 1));
+		g_object_set_data(G_OBJECT(compose->text), "paste_as_quotation",
+				  GINT_TO_POINTER(paste_as_quotation - 1));
 	} else
-		gtk_editable_insert_text(editable, text, length, position);
+		gtk_text_buffer_insert(buffer, iter, text, len);
 
 	if (prefs_common.autowrap)
 		compose_wrap_line_all_full(compose, TRUE);
 
-	gtk_signal_handler_unblock_by_func(GTK_OBJECT(widget),
-					   GTK_SIGNAL_FUNC(text_inserted),
-					   compose);
-	gtk_signal_emit_stop_by_name(GTK_OBJECT(editable), "insert_text");
+	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
+					  G_CALLBACK(text_inserted),
+					  compose);
+	g_signal_stop_emission_by_name(G_OBJECT(buffer), "insert-text");
 
 	if (prefs_common.autosave && 
-	    gtk_stext_get_length(GTK_STEXT(widget)) % prefs_common.autosave_length == 0)
+	    gtk_text_buffer_get_char_count(buffer) % prefs_common.autosave_length == 0)
 		gtk_timeout_add(500, (GtkFunction) compose_defer_auto_save_draft, compose);
 }
 
@@ -7062,7 +7417,7 @@ static gboolean compose_send_control_enter(Compose *compose)
 	GdkEvent *ev;
 	GdkEventKey *kev;
 	GtkItemFactory *ifactory;
-	GtkAccelEntry *accel;
+	GtkAccelKey *accel;
 	GtkWidget *send_menu;
 	GSList *list;
 	GdkModifierType ignored_mods =
@@ -7078,13 +7433,13 @@ static gboolean compose_send_control_enter(Compose *compose)
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 	send_menu = gtk_item_factory_get_widget(ifactory, "/Message/Send");
-	list = gtk_accel_group_entries_from_object(GTK_OBJECT(send_menu));
+	list = gtk_accel_groups_from_object(G_OBJECT(send_menu));
 	if (!list)
 		return FALSE;
 
-	accel = (GtkAccelEntry *)list->data;
-	if (accel && accel->accelerator_key == kev->keyval &&
-	    (accel->accelerator_mods & ~ignored_mods) ==
+	accel = (GtkAccelKey *)list->data;
+	if (accel && accel->accel_key == kev->keyval &&
+	    (accel->accel_mods & ~ignored_mods) ==
 	    (kev->state & ~ignored_mods)) {
 		compose_send_cb(compose, 0, NULL);
 		return TRUE;

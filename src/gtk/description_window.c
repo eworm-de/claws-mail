@@ -58,7 +58,7 @@ static void description_create(DescriptionWindow * dwindow)
 	int line;
 	int j;
 
-	dwindow->window = gtk_window_new(GTK_WINDOW_DIALOG);
+	dwindow->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_widget_set_usize(dwindow->window,400,450);
 	
 	gtk_window_set_title(GTK_WINDOW(dwindow->window),

@@ -76,9 +76,9 @@ static void prefs_display_header_row_moved	(GtkCList	*clist,
 						 gint		 dest_row,
 						 gpointer	 data);
 
-static void prefs_display_header_key_pressed	(GtkWidget	*widget,
-						 GdkEventKey	*event,
-						 gpointer	 data);
+static gboolean prefs_display_header_key_pressed	(GtkWidget	*widget,
+													 GdkEventKey	*event,
+													 gpointer	 data);
 static void prefs_display_header_ok		(void);
 static void prefs_display_header_cancel		(void);
 static gint prefs_display_header_deleted	(GtkWidget	*widget,
@@ -177,9 +177,9 @@ static void prefs_display_header_create(void)
 
 	debug_print("Creating display header setting window...\n");
 
-	window = gtk_window_new (GTK_WINDOW_DIALOG);
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
-	gtk_window_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
+	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
 	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
 
@@ -200,18 +200,18 @@ static void prefs_display_header_create(void)
 	gtk_window_set_title (GTK_WINDOW(window),
 			      _("Displayed header configuration"));
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
-	gtk_signal_connect (GTK_OBJECT(window), "delete_event",
-			    GTK_SIGNAL_FUNC(prefs_display_header_deleted),
-			    NULL);
-	gtk_signal_connect (GTK_OBJECT(window), "key_press_event",
-			    GTK_SIGNAL_FUNC(prefs_display_header_key_pressed),
-			    NULL);
-	gtk_signal_connect (GTK_OBJECT(ok_btn), "clicked",
-			    GTK_SIGNAL_FUNC(prefs_display_header_ok),
-			    NULL);
-	gtk_signal_connect (GTK_OBJECT(cancel_btn), "clicked",
-			    GTK_SIGNAL_FUNC(prefs_display_header_cancel),
-			    NULL);
+	g_signal_connect (G_OBJECT(window), "delete_event",
+			  G_CALLBACK(prefs_display_header_deleted),
+			  NULL);
+	g_signal_connect (G_OBJECT(window), "key_press_event",
+			  G_CALLBACK(prefs_display_header_key_pressed),
+			  NULL);
+	g_signal_connect (G_OBJECT(ok_btn), "clicked",
+			  G_CALLBACK(prefs_display_header_ok),
+			  NULL);
+	g_signal_connect (G_OBJECT(cancel_btn), "clicked",
+			  G_CALLBACK(prefs_display_header_cancel),
+			  NULL);
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -229,7 +229,7 @@ static void prefs_display_header_create(void)
 	hdr_combo = gtk_combo_new ();
 	gtk_widget_show (hdr_combo);
 	gtk_box_pack_start (GTK_BOX (hbox1), hdr_combo, TRUE, TRUE, 0);
-	gtk_widget_set_usize (hdr_combo, 150, -1);
+	gtk_widget_set_size_request (hdr_combo, 150, -1);
 	gtkut_combo_set_items (GTK_COMBO (hdr_combo),
 			       "From", "To", "Cc", "Subject", "Date",
 			       "Reply-To", "Sender", "User-Agent", "X-Mailer",
@@ -246,7 +246,7 @@ static void prefs_display_header_create(void)
 	gtk_box_pack_start (GTK_BOX (clist_hbox), clist_hbox1, TRUE, TRUE, 0);
 
 	clist_scrolledwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_set_usize (clist_scrolledwin, 200, 210);
+	gtk_widget_set_size_request (clist_scrolledwin, 200, 210);
 	gtk_widget_show (clist_scrolledwin);
 	gtk_box_pack_start (GTK_BOX (clist_hbox1), clist_scrolledwin,
 			    TRUE, TRUE, 0);
@@ -264,9 +264,9 @@ static void prefs_display_header_create(void)
 	gtk_clist_set_use_drag_icons (GTK_CLIST (headers_clist), FALSE);
 	GTK_WIDGET_UNSET_FLAGS (GTK_CLIST (headers_clist)->column[0].button,
 				GTK_CAN_FOCUS);
-	gtk_signal_connect_after
-		(GTK_OBJECT (headers_clist), "row_move",
-		 GTK_SIGNAL_FUNC (prefs_display_header_row_moved), NULL);
+	g_signal_connect_after
+		(G_OBJECT (headers_clist), "row_move",
+		 G_CALLBACK (prefs_display_header_row_moved), NULL);
 
 	btn_vbox = gtk_vbox_new (FALSE, 8);
 	gtk_widget_show (btn_vbox);
@@ -275,27 +275,27 @@ static void prefs_display_header_create(void)
 	reg_btn = gtk_button_new_with_label (_("Add"));
 	gtk_widget_show (reg_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), reg_btn, FALSE, TRUE, 0);
-	gtk_signal_connect (GTK_OBJECT (reg_btn), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_display_header_register_cb),
-			    FALSE);
+	g_signal_connect (G_OBJECT (reg_btn), "clicked",
+			  G_CALLBACK (prefs_display_header_register_cb),
+			  FALSE);
 	del_btn = gtk_button_new_with_label (_("Delete"));
 	gtk_widget_show (del_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), del_btn, FALSE, TRUE, 0);
-	gtk_signal_connect (GTK_OBJECT (del_btn), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_display_header_delete_cb),
-			    headers_clist);
+	g_signal_connect (G_OBJECT (del_btn), "clicked",
+			  G_CALLBACK (prefs_display_header_delete_cb),
+			  headers_clist);
 
 	up_btn = gtk_button_new_with_label (_("Up"));
 	gtk_widget_show (up_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), up_btn, FALSE, FALSE, 0);
-	gtk_signal_connect (GTK_OBJECT (up_btn), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_display_header_up), NULL);
+	g_signal_connect (G_OBJECT (up_btn), "clicked",
+			  G_CALLBACK (prefs_display_header_up), NULL);
 
 	down_btn = gtk_button_new_with_label (_("Down"));
 	gtk_widget_show (down_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), down_btn, FALSE, FALSE, 0);
-	gtk_signal_connect (GTK_OBJECT (down_btn), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_display_header_down), NULL);
+	g_signal_connect (G_OBJECT (down_btn), "clicked",
+			  G_CALLBACK (prefs_display_header_down), NULL);
 
 	/* hidden headers list */
 
@@ -304,7 +304,7 @@ static void prefs_display_header_create(void)
 	gtk_box_pack_start (GTK_BOX (clist_hbox), clist_hbox2, TRUE, TRUE, 0);
 
 	clist_scrolledwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_set_usize (clist_scrolledwin, 200, 210);
+	gtk_widget_set_size_request (clist_scrolledwin, 200, 210);
 	gtk_widget_show (clist_scrolledwin);
 	gtk_box_pack_start (GTK_BOX (clist_hbox2), clist_scrolledwin,
 			    TRUE, TRUE, 0);
@@ -330,15 +330,15 @@ static void prefs_display_header_create(void)
 	reg_btn = gtk_button_new_with_label (_("Add"));
 	gtk_widget_show (reg_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), reg_btn, FALSE, TRUE, 0);
-	gtk_signal_connect (GTK_OBJECT (reg_btn), "clicked",
-			    GTK_SIGNAL_FUNC
+	g_signal_connect (G_OBJECT (reg_btn), "clicked",
+			    G_CALLBACK
 			    (prefs_display_header_register_cb),
 			    (void *) TRUE);
 	del_btn = gtk_button_new_with_label (_("Delete"));
 	gtk_widget_show (del_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), del_btn, FALSE, TRUE, 0);
-	gtk_signal_connect (GTK_OBJECT (del_btn), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_display_header_delete_cb),
+	g_signal_connect (G_OBJECT	 (del_btn), "clicked",
+			    G_CALLBACK (prefs_display_header_delete_cb),
 			    (void *) hidden_headers_clist);
 
 	PACK_CHECK_BUTTON (btn_hbox, checkbtn_other_headers,
@@ -521,7 +521,7 @@ static gint prefs_display_header_clist_set_row(gboolean hidden)
 {
 	GtkCList *clist;
 	DisplayHeaderProp *dp;
-	gchar *entry_text;
+	const gchar *entry_text;
 	gchar *dp_str[1];
 	gint row;
 
@@ -609,12 +609,13 @@ static void prefs_display_header_row_moved(GtkCList *clist, gint source_row,
 	prefs_display_header_set_list();
 }
 
-static void prefs_display_header_key_pressed(GtkWidget *widget,
+static gboolean prefs_display_header_key_pressed(GtkWidget *widget,
 					     GdkEventKey *event,
 					     gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		prefs_display_header_cancel();
+	return FALSE;
 }
 
 static void prefs_display_header_ok(void)

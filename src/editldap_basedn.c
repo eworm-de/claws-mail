@@ -79,11 +79,12 @@ static gint edit_ldap_bdn_delete_event( GtkWidget *widget, GdkEventAny *event, g
 	return TRUE;
 }
 
-static void edit_ldap_bdn_key_pressed( GtkWidget *widget, GdkEventKey *event, gboolean *cancelled ) {
+static gboolean edit_ldap_bdn_key_pressed( GtkWidget *widget, GdkEventKey *event, gboolean *cancelled ) {
 	if (event && event->keyval == GDK_Escape) {
 		ldapedit_basedn_cancelled = TRUE;
 		gtk_main_quit();
 	}
+	return FALSE;
 }
 
 static void edit_ldap_bdn_ok( GtkWidget *widget, gboolean *cancelled ) {
@@ -106,14 +107,15 @@ static void edit_ldap_bdn_list_select( GtkCList *clist, gint row, gint column, G
 	}
 }
 
-static void edit_ldap_bdn_list_button( GtkCList *clist, GdkEventButton *event, gpointer data ) {
-	if( ! event ) return;
+static gboolean edit_ldap_bdn_list_button( GtkCList *clist, GdkEventButton *event, gpointer data ) {
+	if( ! event ) return FALSE;
 	if( event->button == 1 ) {
 		if( event->type == GDK_2BUTTON_PRESS ) {
 			ldapedit_basedn_cancelled = FALSE;
 			gtk_main_quit();
 		}
 	}
+	return FALSE;
 }
 
 static void edit_ldap_bdn_create(void) {
@@ -135,16 +137,16 @@ static void edit_ldap_bdn_create(void) {
 	GtkWidget *statusbar;
 	gint top;
 
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
-	gtk_widget_set_usize(window, 300, 270);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_widget_set_size_request(window, 300, 270);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 0);
 	gtk_window_set_title(GTK_WINDOW(window), _("Edit LDAP - Select Search Base"));
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);	
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(edit_ldap_bdn_delete_event), NULL );
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(edit_ldap_bdn_key_pressed), NULL );
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(edit_ldap_bdn_delete_event), NULL );
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(edit_ldap_bdn_key_pressed), NULL );
 
 	vbox = gtk_vbox_new(FALSE, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
@@ -218,14 +220,14 @@ static void edit_ldap_bdn_create(void) {
 	hsep = gtk_hseparator_new();
 	gtk_box_pack_end(GTK_BOX(vbox), hsep, FALSE, FALSE, 0);
 
-	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-			   GTK_SIGNAL_FUNC(edit_ldap_bdn_ok), NULL);
-	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
-			   GTK_SIGNAL_FUNC(edit_ldap_bdn_cancel), NULL);
-	gtk_signal_connect(GTK_OBJECT(basedn_list), "select_row",
-			   GTK_SIGNAL_FUNC(edit_ldap_bdn_list_select), NULL);
-	gtk_signal_connect(GTK_OBJECT(basedn_list), "button_press_event",
-			   GTK_SIGNAL_FUNC(edit_ldap_bdn_list_button), NULL);
+	g_signal_connect(G_OBJECT(ok_btn), "clicked",
+			 G_CALLBACK(edit_ldap_bdn_ok), NULL);
+	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
+			 G_CALLBACK(edit_ldap_bdn_cancel), NULL);
+	g_signal_connect(G_OBJECT(basedn_list), "select_row",
+			 G_CALLBACK(edit_ldap_bdn_list_select), NULL);
+	g_signal_connect(G_OBJECT(basedn_list), "button_press_event",
+			 G_CALLBACK(edit_ldap_bdn_list_button), NULL);
 
 	gtk_widget_show_all(vbox);
 

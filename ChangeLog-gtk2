@@ -1,0 +1,130 @@
+2003-09-14 Takuro Ashie <ashie@homa.ne.jp>
+
+        * Enabled to compile on sylpheed-claws.
+	(tray-icon plugin still cannot compile yet.)
+
+2003-09-06 Takuro Ashie <ashie@homa.ne.jp>
+
+        * Updated to 0.9.5.
+
+2003-08-02 Takuro Ashie <ashie@homa.ne.jp>
+
+	* Updated to 0.9.4.
+	* Ported monitoring SSL mechanism to GSource of GLib2
+	(I don't confirm it)
+	* Added _gtk2 suffix to key name of font preference to avoid
+	ovverwriting preference of Gtk+-1.2 version.
+
+2003-06-09 Takuro Ashie <ashie@homa.ne.jp>
+
+	* Updated to 0.9.2.
+
+2003-05-30 Takuro Ashie <ashie@homa.ne.jp>
+
+	* Updated to 0.9.1.
+        * Translate po files into UTF-8 when execute autogen.sh.
+
+2003-05-28 Takuro Ashie <ashie@homa.ne.jp>
+
+	* Updated to 0.9.0.
+
+2003-04-29 Takuro Ashie <ashie@homa.ne.jp>
+
+	* Plugged GError related memory leaks.
+
+2003-04-28 Takuro Ashie <ashie@homa.ne.jp>
+
+	* Changed default size of fonts.
+	* Enabled to set titile font size of warning dialog.
+
+2003-04-23 Takuro Ashie <ashie@homa.ne.jp>
+
+	* Embed a sylpheed icon into executable binary on Windows.
+
+2003-04-21 Takuro Ashie <ashie@homa.ne.jp>
+
+	* I forgot to traslate character set of element string in src/xml.c.
+
+2003-04-18 Takuro Ashie <ashie@homa.ne.jp>
+
+	* Fixed detecting bind_textdomain_codeset in configure.in.
+	* The bug in which "Example" of "Date fromat" preference isn't displayed
+	correctly has been fixed.
+
+2003-04-04 Takuro Ashie <ashie@homa.ne.jp>
+
+	* Added bind_textdomain_codeset into AC_CHECK_FUNCS.
+	  Replaced AM_GLIB_GNU_GETTEXT to AM_GNU_GETTEXT.
+	  glib-gettextize
+	  Removed intl directory.
+	  Translated po files into UTF-8.
+	  (Thanks! Ryuji Abe)
+
+2003-03-28 Takuro Ashie <ashie@homa.ne.jp>
+
+	* The bug which doesn't unscape string in xml.c has been fixed.
+
+2003-03-27 Takuro Ashie <ashie@homa.ne.jp>
+
+	* The bug which is failed to translate encoding of file name thorough
+	file dialog has been fixed.
+
+2003-03-25 Takuro Ashie <ashie@homa.ne.jp>
+
+	* Modified to translate file names which is used in inporting/expoting
+	mbox feature and "Save as" feature into locale encoding.
+	* Translate file names into locale encoding when "Attache file" and
+	"Insert file".
+	* Force set G_BROKEN_FILENAMES environment variable.
+	* Other minor fixes.
+
+2003-03-17 Takuro Ashie <ashie@homa.ne.jp>
+
+	* Modified to treat MH folder's name as locale encoding.
+
+2003-03-16 Takuro Ashie <ashie@homa.ne.jp>
+
+	* The bug which clash on switching candidates of auto completion of
+	addresses, cannot use auto completion in Japanesse is fixed
+	(Thanks! Tokunaga-san)бе
+
+2003-03-14 Takuro Ashie <ashie@homa.ne.jp>
+
+	* The bug which cannot switch key accelerator preference has been fixed
+	(Thanks! smbd-san)бе
+
+2003-03-14 Takuro Ashie <ashie@homa.ne.jp>
+
+	* version 0.8.11-gtk2-20030314
+
+2003-03-14 Takuro Ashie <ashie@homa.ne.jp>
+
+	* The bug in which character set conversion of filtering messages has
+	been fixed.(Thanks! COCOA-san).
+
+2003-03-13 Takuro Ashie <ashie@homa.ne.jp>
+
+	* Revived "Leave space on head" preference in "Message" category.
+	* A bug which clash when put the cursor to end of buffer and execute
+	"Wrap current paragraph" was fixed.(Thanks! Tokunaga-san)
+
+2003-03-12 Takuro Ashie <ashie@homa.ne.jp>
+
+	* version 0.8.11-gtk2-20030312
+
+2003-03-12 Takuro Ashie <ashie@homa.ne.jp>
+
+	* Fixed position of  switching account popup (Thanks! Ikezoe-san)бе
+	* Modified to use Pango's API directly for font preference.
+	* Integrated GtkTextView of textview to one widget.
+	* Set fonts of header title in textview by "header_title" tag.
+	* Removed some deprecated codes.
+
+2003-03-11 Takuro Ashie <ashie@homa.ne.jp>
+
+	* Updated to 0.8.11.
+	* Merged cygwin patch(Thanks! Sakai-san).
+
+2003-03-09 Takuro Ashie <ashie@homa.ne.jp>
+
+	* version 0.8.10-gtk2-20030309

@@ -446,22 +446,53 @@ static PrefParam param[] = {
 	/* Display */
 	{"widget_font", NULL, &prefs_common.widgetfont, P_STRING,
 	 NULL, NULL, NULL},
-	{"message_font", "-misc-fixed-medium-r-normal--14-*-*-*-*-*-*-*",
+	{"message_font", "Helvetica 14",
 	 &prefs_common.textfont, P_STRING,
 	 &display.entry_textfont,
 	 prefs_set_data_from_entry, prefs_set_entry},
-	{"small_font",   "-*-helvetica-medium-r-normal--10-*-*-*-*-*-*-*",
+	{"small_font",   "Helvetica 10",
 	 &prefs_common.smallfont,   P_STRING,
 	 &display.entry_smallfont,
 	 prefs_set_data_from_entry, prefs_set_entry},
-	{"bold_font",    "-*-helvetica-bold-r-normal--12-*-*-*-*-*-*-*",
+	{"bold_font",    "Helvetica Bold 14",
 	 &prefs_common.boldfont,    P_STRING,
 	 &display.entry_boldfont,
 	 prefs_set_data_from_entry, prefs_set_entry},
-	{"normal_font",  "-*-helvetica-medium-r-normal--12-*-*-*-*-*-*-*",
+	{"normal_font",  "Helvetica 14",
 	 &prefs_common.normalfont,  P_STRING,
 	 &display.entry_normalfont, 
 	 prefs_set_data_from_entry, prefs_set_entry},
+
+#if 0 /* sylpheed-gtk2(original) separate font setting with gtk+-1.2 version */
+	/* Obsolete fonts. For coexisting with Gtk+-1.2 version */
+	{"widget_font", NULL, &prefs_common.widgetfont_gtk1, P_STRING,
+	 NULL, NULL, NULL},
+	{"message_font", "-misc-fixed-medium-r-normal--14-*-*-*-*-*-*-*",
+	 &prefs_common.textfont_gtk1, P_STRING,
+	 NULL, NULL, NULL},
+	{"normal_font", DEFAULT_NORMAL_FONT_GTK1, &prefs_common.normalfont_gtk1, P_STRING,
+	 NULL, NULL, NULL},
+	{"bold_font", DEFAULT_BOLD_FONT_GTK1, &prefs_common.boldfont_gtk1, P_STRING,
+	 NULL, NULL, NULL},
+	{"small_font", DEFAULT_SMALL_FONT_GTK1, &prefs_common.smallfont_gtk1, P_STRING,
+	 NULL, NULL, NULL},
+
+	/* new fonts */
+	{"widget_font_gtk2", NULL, &prefs_common.widgetfont, P_STRING,
+	 NULL, NULL, NULL},
+	{"message_font_gtk2", DEFAULT_MESSAGE_FONT,
+	 &prefs_common.textfont, P_STRING,
+	 &display.entry_textfont,
+	 prefs_set_data_from_entry, prefs_set_entry},
+	{"normal_font_gtk2", DEFAULT_NORMAL_FONT, &prefs_common.normalfont, P_STRING,
+	 NULL, NULL, NULL},
+	{"bold_font_gtk2", DEFAULT_BOLD_FONT, &prefs_common.boldfont, P_STRING,
+	 NULL, NULL, NULL},
+	{"small_font_gtk2", DEFAULT_SMALL_FONT, &prefs_common.smallfont, P_STRING,
+	 NULL, NULL, NULL},
+	{"title_font_gtk2", DEFAULT_TITLE_FONT, &prefs_common.titlefont, P_STRING,
+	 NULL, NULL, NULL},
+#endif
 
 
 	{"display_folder_unread_num", "TRUE",
@@ -847,7 +878,7 @@ static void date_format_ok_btn_clicked		(GtkButton	*button,
 						 GtkWidget     **widget);
 static void date_format_cancel_btn_clicked	(GtkButton	*button,
 						 GtkWidget     **widget);
-static void date_format_key_pressed		(GtkWidget	*keywidget,
+static gboolean date_format_key_pressed		(GtkWidget	*keywidget,
 						 GdkEventKey	*event,
 						 GtkWidget     **widget);
 static gboolean date_format_on_delete		(GtkWidget	*dialogwidget,
@@ -865,7 +896,7 @@ static GtkWidget *date_format_create            (GtkButton      *button,
 
 static void prefs_quote_colors_dialog		(void);
 static void prefs_quote_colors_dialog_create	(void);
-static void prefs_quote_colors_key_pressed	(GtkWidget	*widget,
+static gboolean prefs_quote_colors_key_pressed	(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 gpointer	 data);
 static void quote_color_set_dialog		(GtkWidget	*widget,
@@ -874,9 +905,9 @@ static void quote_colors_set_dialog_ok		(GtkWidget	*widget,
 						 gpointer	 data);
 static void quote_colors_set_dialog_cancel	(GtkWidget	*widget,
 						 gpointer	 data);
-static void quote_colors_set_dialog_key_pressed	(GtkWidget	*widget,
-						 GdkEventKey	*event,
-						 gpointer	 data);
+static gboolean quote_colors_set_dialog_key_pressed	(GtkWidget	*widget,
+							 GdkEventKey	*event,
+							 gpointer	 data);
 static void set_button_bg_color			(GtkWidget	*widget,
 						 gint		 color);
 static void prefs_enable_message_color_toggled	(void);
@@ -884,16 +915,16 @@ static void prefs_recycle_colors_toggled	(GtkWidget	*widget);
 
 static void prefs_font_select	(GtkButton *button, GtkEntry *entry);
 
-static void prefs_font_selection_key_pressed	(GtkWidget	*widget,
-						 GdkEventKey	*event,
-						 gpointer	 data);
+static gboolean prefs_font_selection_key_pressed	(GtkWidget	*widget,
+							 GdkEventKey	*event,
+							 gpointer	 data);
 static void prefs_font_selection_ok		(GtkButton	*button, GtkEntry *entry);
 
 static void prefs_keybind_select		(void);
 static gint prefs_keybind_deleted		(GtkWidget	*widget,
 						 GdkEventAny	*event,
 						 gpointer	 data);
-static void prefs_keybind_key_pressed		(GtkWidget	*widget,
+static gboolean prefs_keybind_key_pressed	(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 gpointer	 data);
 static void prefs_keybind_cancel		(void);
@@ -902,7 +933,7 @@ static void prefs_keybind_apply_clicked		(GtkWidget	*widget);
 static gint prefs_common_deleted	(GtkWidget	*widget,
 					 GdkEventAny	*event,
 					 gpointer	 data);
-static void prefs_common_key_pressed	(GtkWidget	*widget,
+static gboolean prefs_common_key_pressed(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
 static void prefs_common_ok		(void);
@@ -985,7 +1016,7 @@ void prefs_common_open(void)
 	}
 
 	manage_window_set_transient(GTK_WINDOW(dialog.window));
-	gtk_notebook_set_page(GTK_NOTEBOOK(dialog.notebook), 0);
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(dialog.notebook), 0);
 	gtk_widget_grab_focus(dialog.ok_btn);
 
 	prefs_set_dialog(param);
@@ -1002,16 +1033,16 @@ static void prefs_common_create(void)
 	prefs_dialog_create(&dialog);
 	gtk_window_set_title (GTK_WINDOW(dialog.window),
 			      _("Common Preferences"));
-	gtk_signal_connect (GTK_OBJECT(dialog.window), "delete_event",
-			    GTK_SIGNAL_FUNC(prefs_common_deleted), NULL);
-	gtk_signal_connect (GTK_OBJECT(dialog.window), "key_press_event",
-			    GTK_SIGNAL_FUNC(prefs_common_key_pressed), NULL);
+	g_signal_connect (G_OBJECT(dialog.window), "delete_event",
+			  G_CALLBACK(prefs_common_deleted), NULL);
+	g_signal_connect (G_OBJECT(dialog.window), "key_press_event",
+			  G_CALLBACK(prefs_common_key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(dialog.window);
 
-	gtk_signal_connect (GTK_OBJECT(dialog.ok_btn), "clicked",
-			    GTK_SIGNAL_FUNC(prefs_common_ok), NULL);
-	gtk_signal_connect (GTK_OBJECT(dialog.apply_btn), "clicked",
-			    GTK_SIGNAL_FUNC(prefs_common_apply), NULL);
+	g_signal_connect (G_OBJECT(dialog.ok_btn), "clicked",
+			  G_CALLBACK(prefs_common_ok), NULL);
+	g_signal_connect (G_OBJECT(dialog.apply_btn), "clicked",
+			  G_CALLBACK(prefs_common_apply), NULL);
 	gtk_signal_connect_object (GTK_OBJECT(dialog.cancel_btn), "clicked",
 				   GTK_SIGNAL_FUNC(prefs_common_cancel),
 				   GTK_OBJECT(dialog.window));
@@ -1168,7 +1199,7 @@ static void prefs_receive_create(void)
 		(GTK_ADJUSTMENT (spinbtn_autochk_adj), 1, 0);
 	gtk_widget_show (spinbtn_autochk);
 	gtk_box_pack_start (GTK_BOX (hbox_autochk), spinbtn_autochk, FALSE, FALSE, 0);
-	gtk_widget_set_usize (spinbtn_autochk, 64, -1);
+	gtk_widget_set_size_request (spinbtn_autochk, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_autochk), TRUE);
 
 	label_autochk2 = gtk_label_new (_("minute(s)"));
@@ -1227,12 +1258,12 @@ static void prefs_receive_create(void)
 	PACK_CHECK_BUTTON (hbox, checkbtn_newmail_manu,
 			   _("after manual checking"));
 	gtk_box_pack_start (GTK_BOX(vbox2), hbox, FALSE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(checkbtn_newmail_auto), "toggled",
-			   GTK_SIGNAL_FUNC(prefs_common_recv_dialog_newmail_notify_toggle_cb),
-			   NULL);
-	gtk_signal_connect(GTK_OBJECT(checkbtn_newmail_manu), "toggled",
-			   GTK_SIGNAL_FUNC(prefs_common_recv_dialog_newmail_notify_toggle_cb),
-			   NULL);
+	g_signal_connect(G_OBJECT(checkbtn_newmail_auto), "toggled",
+			 G_CALLBACK(prefs_common_recv_dialog_newmail_notify_toggle_cb),
+			 NULL);
+	g_signal_connect(G_OBJECT(checkbtn_newmail_manu), "toggled",
+			 G_CALLBACK(prefs_common_recv_dialog_newmail_notify_toggle_cb),
+			 NULL);
 
 	hbox_newmail_notify = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);
@@ -1586,7 +1617,7 @@ static void prefs_compose_create(void)
 			   _("Autosave to Drafts folder every "));
 
 	entry_autosave_length = gtk_entry_new();
-	gtk_widget_set_usize (entry_autosave_length, 64, -1);	
+	gtk_widget_set_size_request (entry_autosave_length, 64, -1);	
 	gtk_widget_show (entry_autosave_length);
 	gtk_box_pack_start (GTK_BOX (hbox_autosave), entry_autosave_length, FALSE, FALSE, 0);
 	
@@ -1607,7 +1638,7 @@ static void prefs_compose_create(void)
 		(GTK_ADJUSTMENT (spinbtn_undolevel_adj), 1, 0);
 	gtk_widget_show (spinbtn_undolevel);
 	gtk_box_pack_start (GTK_BOX (hbox_undolevel), spinbtn_undolevel, FALSE, FALSE, 0);
-	gtk_widget_set_usize (spinbtn_undolevel, 64, -1);
+	gtk_widget_set_size_request (spinbtn_undolevel, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_undolevel), TRUE);
 
         /* line-wrapping */
@@ -1632,7 +1663,7 @@ static void prefs_compose_create(void)
 		(GTK_ADJUSTMENT (spinbtn_linewrap_adj), 1, 0);
 	gtk_widget_show (spinbtn_linewrap);
 	gtk_box_pack_start (GTK_BOX (hbox3), spinbtn_linewrap, FALSE, FALSE, 0);
-	gtk_widget_set_usize (spinbtn_linewrap, 64, -1);
+	gtk_widget_set_size_request (spinbtn_linewrap, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_linewrap), TRUE);
 
 	label_linewrap = gtk_label_new (_("characters"));
@@ -1741,7 +1772,7 @@ static void prefs_quote_create(void)
 	entry_quotemark = gtk_entry_new ();
 	gtk_widget_show (entry_quotemark);
 	gtk_box_pack_start (GTK_BOX (hbox2), entry_quotemark, FALSE, FALSE, 0);
-	gtk_widget_set_usize (entry_quotemark, 64, -1);
+	gtk_widget_set_size_request (entry_quotemark, 64, -1);
 
 	scrolledwin_quotefmt = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_show (scrolledwin_quotefmt);
@@ -1750,11 +1781,11 @@ static void prefs_quote_create(void)
 		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt),
 		 GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 
-	text_quotefmt = gtk_text_new (NULL, NULL);
+	text_quotefmt = gtk_text_view_new ();
 	gtk_widget_show (text_quotefmt);
 	gtk_container_add(GTK_CONTAINER(scrolledwin_quotefmt), text_quotefmt);
-	gtk_text_set_editable (GTK_TEXT (text_quotefmt), TRUE);
-	gtk_widget_set_usize(text_quotefmt, -1, 60);
+	gtk_text_view_set_editable (GTK_TEXT_VIEW(text_quotefmt), TRUE);
+	gtk_widget_set_size_request(text_quotefmt, -1, 60);
 
 	/* forward */
 
@@ -1781,7 +1812,7 @@ static void prefs_quote_create(void)
 	gtk_widget_show (entry_fw_quotemark);
 	gtk_box_pack_start (GTK_BOX (hbox2), entry_fw_quotemark,
 			    FALSE, FALSE, 0);
-	gtk_widget_set_usize (entry_fw_quotemark, 64, -1);
+	gtk_widget_set_size_request (entry_fw_quotemark, 64, -1);
 
 	scrolledwin_quotefmt = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_show (scrolledwin_quotefmt);
@@ -1790,12 +1821,12 @@ static void prefs_quote_create(void)
 		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt),
 		 GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 
-	text_fw_quotefmt = gtk_text_new (NULL, NULL);
+	text_fw_quotefmt = gtk_text_view_new ();
 	gtk_widget_show (text_fw_quotefmt);
 	gtk_container_add(GTK_CONTAINER(scrolledwin_quotefmt),
 			  text_fw_quotefmt);
-	gtk_text_set_editable (GTK_TEXT (text_fw_quotefmt), TRUE);
-	gtk_widget_set_usize(text_fw_quotefmt, -1, 60);
+	gtk_text_view_set_editable (GTK_TEXT_VIEW (text_fw_quotefmt), TRUE);
+	gtk_widget_set_size_request(text_fw_quotefmt, -1, 60);
 
 	hbox1 = gtk_hbox_new (FALSE, 32);
 	gtk_widget_show (hbox1);
@@ -1805,8 +1836,8 @@ static void prefs_quote_create(void)
 		gtk_button_new_with_label (_(" Description of symbols "));
 	gtk_widget_show (btn_quotedesc);
 	gtk_box_pack_start (GTK_BOX (hbox1), btn_quotedesc, FALSE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(btn_quotedesc), "clicked",
-			   GTK_SIGNAL_FUNC(quote_fmt_quote_description), NULL);
+	g_signal_connect(G_OBJECT(btn_quotedesc), "clicked",
+			 G_CALLBACK(quote_fmt_quote_description), NULL);
 
 	/* quote chars */
 
@@ -1833,7 +1864,7 @@ static void prefs_quote_create(void)
 	gtk_widget_show (entry_quote_chars);
 	gtk_box_pack_start (GTK_BOX (hbox2), entry_quote_chars,
 			    FALSE, FALSE, 0);
-	gtk_widget_set_usize (entry_quote_chars, 64, -1);
+	gtk_widget_set_size_request (entry_quote_chars, 64, -1);
 
 
 	compose.checkbtn_reply_with_quote= checkbtn_reply_with_quote;
@@ -1901,8 +1932,8 @@ static void prefs_display_create(void)
 	gtk_widget_show (button_textfont);
 	gtk_table_attach (GTK_TABLE (table1), button_textfont, 2, 3, 0, 1,
 			  0, 0, 0, 0);
-	gtk_signal_connect (GTK_OBJECT (button_textfont), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_font_select), entry_textfont);
+	g_signal_connect (G_OBJECT (button_textfont), "clicked",
+			  G_CALLBACK (prefs_font_select), entry_textfont);
 
 	tmplabel = gtk_label_new (_("Small"));
 	gtk_misc_set_alignment(GTK_MISC(tmplabel), 0, 0.5);
@@ -1919,8 +1950,8 @@ static void prefs_display_create(void)
 	gtk_widget_show (tmpbutton);
 	gtk_table_attach (GTK_TABLE (table1), tmpbutton, 2, 3, 1, 2,
 			  0, 0, 0, 0);
-	gtk_signal_connect (GTK_OBJECT(tmpbutton), "clicked",
-			    GTK_SIGNAL_FUNC(prefs_font_select), tmpentry);
+	g_signal_connect (G_OBJECT(tmpbutton), "clicked",
+			  G_CALLBACK(prefs_font_select), tmpentry);
 	display.entry_smallfont = tmpentry;			  
 
 	tmplabel = gtk_label_new (_("Normal"));
@@ -1938,8 +1969,8 @@ static void prefs_display_create(void)
 	gtk_widget_show (tmpbutton);
 	gtk_table_attach (GTK_TABLE (table1), tmpbutton, 2, 3, 2, 3,
 			  0, 0, 0, 0);
-	gtk_signal_connect (GTK_OBJECT(tmpbutton), "clicked",
-				GTK_SIGNAL_FUNC(prefs_font_select), tmpentry);
+	g_signal_connect (G_OBJECT(tmpbutton), "clicked",
+			  G_CALLBACK(prefs_font_select), tmpentry);
 	display.entry_normalfont = tmpentry;			  
 
 	tmplabel = gtk_label_new (_("Bold"));
@@ -1957,8 +1988,8 @@ static void prefs_display_create(void)
 	gtk_widget_show (tmpbutton);
 	gtk_table_attach (GTK_TABLE (table1), tmpbutton, 2, 3, 3, 4,
 			  0, 0, 0, 0);
-	gtk_signal_connect (GTK_OBJECT(tmpbutton), "clicked",
-				GTK_SIGNAL_FUNC(prefs_font_select), tmpentry);
+	g_signal_connect (G_OBJECT(tmpbutton), "clicked",
+			  G_CALLBACK(prefs_font_select), tmpentry);
 	display.entry_boldfont = tmpentry;
 
 	vbox2 = gtk_vbox_new (FALSE, 0);
@@ -1989,7 +2020,7 @@ static void prefs_display_create(void)
 	gtk_widget_show (spinbtn_ng_abbrev_len);
 	gtk_box_pack_start (GTK_BOX (hbox1), spinbtn_ng_abbrev_len,
 			    FALSE, FALSE, 0);
-	gtk_widget_set_usize (spinbtn_ng_abbrev_len, 56, -1);
+	gtk_widget_set_size_request (spinbtn_ng_abbrev_len, 56, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_ng_abbrev_len),
 				     TRUE);
 
@@ -2035,8 +2066,8 @@ static void prefs_display_create(void)
 
 	gtk_widget_show (button_datefmt);
 	gtk_box_pack_start (GTK_BOX (hbox1), button_datefmt, FALSE, FALSE, 0);
-	gtk_signal_connect (GTK_OBJECT (button_datefmt), "clicked",
-			    GTK_SIGNAL_FUNC (date_format_create), NULL);
+	g_signal_connect (G_OBJECT (button_datefmt), "clicked",
+			  G_CALLBACK (date_format_create), NULL);
 
 	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW);
 
@@ -2048,9 +2079,9 @@ static void prefs_display_create(void)
 		(_(" Set displayed items in summary... "));
 	gtk_widget_show (button_dispitem);
 	gtk_box_pack_start (GTK_BOX (hbox1), button_dispitem, FALSE, TRUE, 0);
-	gtk_signal_connect (GTK_OBJECT (button_dispitem), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_summary_column_open),
-			    NULL);
+	g_signal_connect (G_OBJECT (button_dispitem), "clicked",
+			  G_CALLBACK (prefs_summary_column_open),
+			  NULL);
 
 	display.entry_textfont	= entry_textfont;
 	display.button_textfont	= button_textfont;
@@ -2110,15 +2141,15 @@ static void prefs_message_create(void)
 
 	PACK_CHECK_BUTTON (hbox1, chkbtn_enablecol,
 			   _("Enable coloration of message"));
-	gtk_signal_connect(GTK_OBJECT(chkbtn_enablecol), "toggled",
-			   GTK_SIGNAL_FUNC(prefs_enable_message_color_toggled),
-			   NULL);
+	g_signal_connect(G_OBJECT(chkbtn_enablecol), "toggled",
+			 G_CALLBACK(prefs_enable_message_color_toggled),
+			 NULL);
 
 	button_edit_col = gtk_button_new_with_label (_(" Edit... "));
 	gtk_widget_show (button_edit_col);
 	gtk_box_pack_end (GTK_BOX (hbox1), button_edit_col, FALSE, TRUE, 0);
-	gtk_signal_connect (GTK_OBJECT (button_edit_col), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_quote_colors_dialog), NULL);
+	g_signal_connect (G_OBJECT (button_edit_col), "clicked",
+			  G_CALLBACK(prefs_quote_colors_dialog), NULL);
 
 	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, button_edit_col);
 
@@ -2143,9 +2174,9 @@ static void prefs_message_create(void)
 	gtk_widget_show (button_edit_disphdr);
 	gtk_box_pack_end (GTK_BOX (hbox1), button_edit_disphdr,
 			  FALSE, TRUE, 0);
-	gtk_signal_connect (GTK_OBJECT (button_edit_disphdr), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_display_header_open),
-			    NULL);
+	g_signal_connect (G_OBJECT (button_edit_disphdr), "clicked",
+			  G_CALLBACK (prefs_display_header_open),
+			  NULL);
 
 	SET_TOGGLE_SENSITIVITY(chkbtn_disphdr, button_edit_disphdr);
 
@@ -2170,7 +2201,7 @@ static void prefs_message_create(void)
 	gtk_widget_show (spinbtn_linespc);
 	gtk_box_pack_start (GTK_BOX (hbox_linespc), spinbtn_linespc,
 			    FALSE, FALSE, 0);
-	gtk_widget_set_usize (spinbtn_linespc, 64, -1);
+	gtk_widget_set_size_request (spinbtn_linespc, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_linespc), TRUE);
 
 	label_linespc = gtk_label_new (_("pixel(s)"));
@@ -2209,7 +2240,7 @@ static void prefs_message_create(void)
 	gtk_widget_show (spinbtn_scrollstep);
 	gtk_box_pack_start (GTK_BOX (hbox_scr), spinbtn_scrollstep,
 			    FALSE, FALSE, 0);
-	gtk_widget_set_usize (spinbtn_scrollstep, 64, -1);
+	gtk_widget_set_size_request (spinbtn_scrollstep, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_scrollstep),
 				     TRUE);
 
@@ -2290,7 +2321,7 @@ static void prefs_privacy_create(void)
 	hbox_spc = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox1), hbox_spc, FALSE, FALSE, 0);
-	gtk_widget_set_usize (hbox_spc, 12, -1);
+	gtk_widget_set_size_request (hbox_spc, 12, -1);
 
 	label = gtk_label_new (_("Expire after"));
 	gtk_widget_show (label);
@@ -2309,7 +2340,7 @@ static void prefs_privacy_create(void)
  	gtk_box_pack_start (GTK_BOX (hbox1), spinbtn_store_passphrase, FALSE, FALSE, 0);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_store_passphrase),
 				     TRUE);
-	gtk_widget_set_usize (spinbtn_store_passphrase, 64, -1);
+	gtk_widget_set_size_request (spinbtn_store_passphrase, 64, -1);
 
 	label = gtk_label_new (_("minute(s) "));
 	gtk_widget_show (label);
@@ -2322,7 +2353,7 @@ static void prefs_privacy_create(void)
 	hbox_spc = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox1), hbox_spc, FALSE, FALSE, 0);
-	gtk_widget_set_usize (hbox_spc, 12, -1);
+	gtk_widget_set_size_request (hbox_spc, 12, -1);
 
 	SET_TOGGLE_SENSITIVITY (checkbtn_store_passphrase, vbox3);
 
@@ -2457,8 +2488,8 @@ static void prefs_interface_create(void)
 	button_keybind = gtk_button_new_with_label (_(" Set key bindings... "));
 	gtk_widget_show (button_keybind);
 	gtk_box_pack_start (GTK_BOX (hbox1), button_keybind, FALSE, FALSE, 0);
-	gtk_signal_connect (GTK_OBJECT (button_keybind), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_keybind_select), NULL);
+	g_signal_connect (G_OBJECT (button_keybind), "clicked",
+			  G_CALLBACK (prefs_keybind_select), NULL);
 
  	PACK_FRAME(vbox1, frame_pixmap_theme, _("Icon theme"));
  	
@@ -2642,7 +2673,7 @@ static void prefs_other_create(void)
 	loglength_tooltip = gtk_tooltips_new();
 	
 	loglength_entry = gtk_entry_new ();
-	gtk_widget_set_usize (GTK_WIDGET (loglength_entry), 64, -1);
+	gtk_widget_set_size_request (GTK_WIDGET (loglength_entry), 64, -1);
 	gtk_box_pack_start (GTK_BOX (hbox_cliplog), loglength_entry,
 			    FALSE, TRUE, 0);
 	gtk_widget_show (GTK_WIDGET (loglength_entry));
@@ -2708,7 +2739,7 @@ static void prefs_other_create(void)
 	gtk_widget_show (spinbtn_iotimeout);
 	gtk_box_pack_start (GTK_BOX (hbox1), spinbtn_iotimeout,
 			    FALSE, FALSE, 0);
-	gtk_widget_set_usize (spinbtn_iotimeout, 64, -1);
+	gtk_widget_set_size_request (spinbtn_iotimeout, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_iotimeout), TRUE);
 
 	label_iotimeout = gtk_label_new (_("seconds"));
@@ -2751,8 +2782,8 @@ static void date_format_ok_btn_clicked(GtkButton *button, GtkWidget **widget)
 	g_return_if_fail(*widget != NULL);
 	g_return_if_fail(display.entry_datefmt != NULL);
 
-	datefmt_sample = GTK_WIDGET(gtk_object_get_data
-				    (GTK_OBJECT(*widget), "datefmt_sample"));
+	datefmt_sample = GTK_WIDGET(g_object_get_data
+				    (G_OBJECT(*widget), "datefmt_sample"));
 	g_return_if_fail(datefmt_sample != NULL);
 
 	text = gtk_editable_get_chars(GTK_EDITABLE(datefmt_sample), 0, -1);
@@ -2774,11 +2805,12 @@ static void date_format_cancel_btn_clicked(GtkButton *button,
 	*widget = NULL;
 }
 
-static void date_format_key_pressed(GtkWidget *keywidget, GdkEventKey *event,
-				    GtkWidget **widget)
+static gboolean date_format_key_pressed(GtkWidget *keywidget, GdkEventKey *event,
+					GtkWidget **widget)
 {
 	if (event && event->keyval == GDK_Escape)
 		date_format_cancel_btn_clicked(NULL, widget);
+	return FALSE;
 }
 
 static gboolean date_format_on_delete(GtkWidget *dialogwidget,
@@ -2806,7 +2838,16 @@ static void date_format_entry_on_change(GtkEditable *editable,
 	if (text)
 		strftime(buffer, sizeof buffer, text, cal_time); 
 	g_free(text);
-	gtk_label_set_text(example, buffer);
+
+	text = conv_codeset_strdup(buffer,
+				   conv_get_current_charset_str(),
+				   CS_UTF_8);
+	if (!text)
+		text = g_strdup(buffer);
+
+	gtk_label_set_text(example, text);
+
+	g_free(text);
 }
 
 static void date_format_select_row(GtkWidget *date_format_list, gint row,
@@ -2815,7 +2856,7 @@ static void date_format_select_row(GtkWidget *date_format_list, gint row,
 {
 	gint cur_pos;
 	gchar *format;
-	gchar *old_format;
+	const gchar *old_format;
 	gchar *new_format;
 	GtkWidget *datefmt_sample;
 
@@ -2917,11 +2958,11 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 
 	if (datefmt_win) return datefmt_win;
 
-	datefmt_win = gtk_window_new(GTK_WINDOW_DIALOG);
+	datefmt_win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width(GTK_CONTAINER(datefmt_win), 8);
 	gtk_window_set_title(GTK_WINDOW(datefmt_win), _("Date format"));
 	gtk_window_set_position(GTK_WINDOW(datefmt_win), GTK_WIN_POS_CENTER);
-	gtk_widget_set_usize(datefmt_win, 440, 280);
+	gtk_widget_set_size_request(datefmt_win, 440, 280);
 
 	vbox1 = gtk_vbox_new(FALSE, 10);
 	gtk_widget_show(vbox1);
@@ -2964,15 +3005,16 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	gtk_label_set_justify(GTK_LABEL(label1), GTK_JUSTIFY_LEFT);
 	gtk_misc_set_alignment(GTK_MISC(label1), 0, 0.5);
 
-	datefmt_entry = gtk_entry_new_with_max_length(256);
+	datefmt_entry = gtk_entry_new();
+	gtk_entry_set_max_length(GTK_ENTRY(datefmt_entry), 256);
 	gtk_widget_show(datefmt_entry);
 	gtk_table_attach(GTK_TABLE(table), datefmt_entry, 1, 2, 0, 1,
 			 (GTK_EXPAND | GTK_FILL), 0, 0, 0);
 
 	/* we need the "sample" entry box; add it as data so callbacks can
 	 * get the entry box */
-	gtk_object_set_data(GTK_OBJECT(datefmt_win), "datefmt_sample",
-			    datefmt_entry);
+	g_object_set_data(G_OBJECT(datefmt_win), "datefmt_sample",
+			  datefmt_entry);
 
 	label2 = gtk_label_new(_("Example"));
 	gtk_widget_show(label2);
@@ -3000,25 +3042,25 @@ static GtkWidget *date_format_create(GtkButton *button, void *data)
 	date_format_entry_on_change(GTK_EDITABLE(datefmt_entry),
 				    GTK_LABEL(label3));
 
-	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-			   GTK_SIGNAL_FUNC(date_format_ok_btn_clicked),
-			   &datefmt_win);
-	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
-			   GTK_SIGNAL_FUNC(date_format_cancel_btn_clicked),
-			   &datefmt_win);
-	gtk_signal_connect(GTK_OBJECT(datefmt_win), "key_press_event",
-			   GTK_SIGNAL_FUNC(date_format_key_pressed),
-			   &datefmt_win);
-	gtk_signal_connect(GTK_OBJECT(datefmt_win), "delete_event",
-			   GTK_SIGNAL_FUNC(date_format_on_delete),
-			   &datefmt_win);
-	gtk_signal_connect(GTK_OBJECT(datefmt_entry), "changed",
-			   GTK_SIGNAL_FUNC(date_format_entry_on_change),
-			   label3);
+	g_signal_connect(G_OBJECT(ok_btn), "clicked",
+			 G_CALLBACK(date_format_ok_btn_clicked),
+			 &datefmt_win);
+	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
+			 G_CALLBACK(date_format_cancel_btn_clicked),
+			 &datefmt_win);
+	g_signal_connect(G_OBJECT(datefmt_win), "key_press_event",
+			 G_CALLBACK(date_format_key_pressed),
+			 &datefmt_win);
+	g_signal_connect(G_OBJECT(datefmt_win), "delete_event",
+			 G_CALLBACK(date_format_on_delete),
+			 &datefmt_win);
+	g_signal_connect(G_OBJECT(datefmt_entry), "changed",
+			 G_CALLBACK(date_format_entry_on_change),
+			 label3);
 
-	gtk_signal_connect(GTK_OBJECT(datefmt_clist), "select_row",
-			   GTK_SIGNAL_FUNC(date_format_select_row),
-			   datefmt_win);
+	g_signal_connect(G_OBJECT(datefmt_clist), "select_row",
+			 G_CALLBACK(date_format_select_row),
+			 datefmt_win);
 
 	gtk_window_set_position(GTK_WINDOW(datefmt_win), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(datefmt_win), TRUE);
@@ -3061,7 +3103,7 @@ static void prefs_quote_colors_dialog_create(void)
 	GtkWidget *recycle_colors_btn;
 	GtkWidget *frame_colors;
 
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 2);
 	gtk_window_set_title(GTK_WINDOW(window), _("Set message colors"));
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
@@ -3083,39 +3125,39 @@ static void prefs_quote_colors_dialog_create(void)
 	color_buttons.quote_level1_btn = gtk_button_new();
 	gtk_table_attach (GTK_TABLE (table), color_buttons.quote_level1_btn,
 			  0, 1, 0, 1, 0, 0, 0, 0);
-	gtk_widget_set_usize (color_buttons.quote_level1_btn, 40, 30);
+	gtk_widget_set_size_request (color_buttons.quote_level1_btn, 40, 30);
 	gtk_container_set_border_width
 		(GTK_CONTAINER (color_buttons.quote_level1_btn), 5);
 
 	color_buttons.quote_level2_btn = gtk_button_new();
 	gtk_table_attach (GTK_TABLE (table), color_buttons.quote_level2_btn,
 			  0, 1, 1, 2, 0, 0, 0, 0);
-	gtk_widget_set_usize (color_buttons.quote_level2_btn, 40, 30);
+	gtk_widget_set_size_request (color_buttons.quote_level2_btn, 40, 30);
 	gtk_container_set_border_width (GTK_CONTAINER (color_buttons.quote_level2_btn), 5);
 
 	color_buttons.quote_level3_btn = gtk_button_new_with_label ("");
 	gtk_table_attach (GTK_TABLE (table), color_buttons.quote_level3_btn,
 			  0, 1, 2, 3, 0, 0, 0, 0);
-	gtk_widget_set_usize (color_buttons.quote_level3_btn, 40, 30);
+	gtk_widget_set_size_request (color_buttons.quote_level3_btn, 40, 30);
 	gtk_container_set_border_width
 		(GTK_CONTAINER (color_buttons.quote_level3_btn), 5);
 
 	color_buttons.uri_btn = gtk_button_new_with_label ("");
 	gtk_table_attach (GTK_TABLE (table), color_buttons.uri_btn,
 			  0, 1, 3, 4, 0, 0, 0, 0);
-	gtk_widget_set_usize (color_buttons.uri_btn, 40, 30);
+	gtk_widget_set_size_request (color_buttons.uri_btn, 40, 30);
 	gtk_container_set_border_width (GTK_CONTAINER (color_buttons.uri_btn), 5);
 
 	color_buttons.tgt_folder_btn = gtk_button_new_with_label ("");
 	gtk_table_attach (GTK_TABLE (table), color_buttons.tgt_folder_btn,
 			  0, 1, 4, 5, 0, 0, 0, 0);
-	gtk_widget_set_usize (color_buttons.tgt_folder_btn, 40, 30);
+	gtk_widget_set_size_request (color_buttons.tgt_folder_btn, 40, 30);
 	gtk_container_set_border_width (GTK_CONTAINER (color_buttons.tgt_folder_btn), 5);
 
 	color_buttons.signature_btn = gtk_button_new_with_label ("");
 	gtk_table_attach (GTK_TABLE (table), color_buttons.signature_btn,
 			  0, 1, 5, 6, 0, 0, 0, 0);
-	gtk_widget_set_usize (color_buttons.signature_btn, 40, 30);
+	gtk_widget_set_size_request (color_buttons.signature_btn, 40, 30);
 	gtk_container_set_border_width (GTK_CONTAINER (color_buttons.signature_btn), 5);
 
 	quotelevel1_label = gtk_label_new (_("Quoted Text - First Level"));
@@ -3163,28 +3205,28 @@ static void prefs_quote_colors_dialog_create(void)
 
 	gtk_widget_grab_default(ok_btn);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(prefs_quote_colors_key_pressed),
-			   NULL);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(gtk_main_quit), NULL);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(prefs_quote_colors_key_pressed),
+			 NULL);
 
-	gtk_signal_connect(GTK_OBJECT(color_buttons.quote_level1_btn), "clicked",
-			   GTK_SIGNAL_FUNC(quote_color_set_dialog), "LEVEL1");
-	gtk_signal_connect(GTK_OBJECT(color_buttons.quote_level2_btn), "clicked",
-			   GTK_SIGNAL_FUNC(quote_color_set_dialog), "LEVEL2");
-	gtk_signal_connect(GTK_OBJECT(color_buttons.quote_level3_btn), "clicked",
-			   GTK_SIGNAL_FUNC(quote_color_set_dialog), "LEVEL3");
-	gtk_signal_connect(GTK_OBJECT(color_buttons.uri_btn), "clicked",
-			   GTK_SIGNAL_FUNC(quote_color_set_dialog), "URI");
-	gtk_signal_connect(GTK_OBJECT(color_buttons.tgt_folder_btn), "clicked",
-			   GTK_SIGNAL_FUNC(quote_color_set_dialog), "TGTFLD");
-	gtk_signal_connect(GTK_OBJECT(color_buttons.signature_btn), "clicked",
-			   GTK_SIGNAL_FUNC(quote_color_set_dialog), "SIGNATURE");
-	gtk_signal_connect(GTK_OBJECT(recycle_colors_btn), "toggled",
-			   GTK_SIGNAL_FUNC(prefs_recycle_colors_toggled), NULL);
-	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-			   GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
+	g_signal_connect(G_OBJECT(color_buttons.quote_level1_btn), "clicked",
+			 G_CALLBACK(quote_color_set_dialog), "LEVEL1");
+	g_signal_connect(G_OBJECT(color_buttons.quote_level2_btn), "clicked",
+			 G_CALLBACK(quote_color_set_dialog), "LEVEL2");
+	g_signal_connect(G_OBJECT(color_buttons.quote_level3_btn), "clicked",
+			 G_CALLBACK(quote_color_set_dialog), "LEVEL3");
+	g_signal_connect(G_OBJECT(color_buttons.uri_btn), "clicked",
+			 G_CALLBACK(quote_color_set_dialog), "URI");
+	g_signal_connect(G_OBJECT(color_buttons.tgt_folder_btn), "clicked",
+			 G_CALLBACK(quote_color_set_dialog), "TGTFLD");
+	g_signal_connect(G_OBJECT(color_buttons.signature_btn), "clicked",
+			 G_CALLBACK(quote_color_set_dialog), "SIGNATURE");
+	g_signal_connect(G_OBJECT(recycle_colors_btn), "toggled",
+			 G_CALLBACK(prefs_recycle_colors_toggled), NULL);
+	g_signal_connect(G_OBJECT(ok_btn), "clicked",
+			 G_CALLBACK(gtk_main_quit), NULL);
 
 	/* show message button colors and recycle options */
 	set_button_bg_color(color_buttons.quote_level1_btn,
@@ -3206,11 +3248,12 @@ static void prefs_quote_colors_dialog_create(void)
 	quote_color_win = window;
 }
 
-static void prefs_quote_colors_key_pressed(GtkWidget *widget,
-					   GdkEventKey *event, gpointer data)
+static gboolean prefs_quote_colors_key_pressed(GtkWidget *widget,
+					       GdkEventKey *event, gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		gtk_main_quit();
+	return FALSE;
 }
 
 static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
@@ -3250,13 +3293,13 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 	gtk_window_set_policy(GTK_WINDOW(color_dialog), FALSE, FALSE, FALSE);
 	manage_window_set_transient(GTK_WINDOW(color_dialog));
 
-	gtk_signal_connect(GTK_OBJECT(GTK_COLOR_SELECTION_DIALOG(color_dialog)->ok_button),
-			   "clicked", GTK_SIGNAL_FUNC(quote_colors_set_dialog_ok), data);
-	gtk_signal_connect(GTK_OBJECT(GTK_COLOR_SELECTION_DIALOG(color_dialog)->cancel_button),
-			   "clicked", GTK_SIGNAL_FUNC(quote_colors_set_dialog_cancel), data);
-	gtk_signal_connect(GTK_OBJECT(color_dialog), "key_press_event",
-			   GTK_SIGNAL_FUNC(quote_colors_set_dialog_key_pressed),
-			   data);
+	g_signal_connect(G_OBJECT(GTK_COLOR_SELECTION_DIALOG(color_dialog)->ok_button),
+			 "clicked", G_CALLBACK(quote_colors_set_dialog_ok), data);
+	g_signal_connect(G_OBJECT(GTK_COLOR_SELECTION_DIALOG(color_dialog)->cancel_button),
+			 "clicked", G_CALLBACK(quote_colors_set_dialog_cancel), data);
+	g_signal_connect(G_OBJECT(color_dialog), "key_press_event",
+			 G_CALLBACK(quote_colors_set_dialog_key_pressed),
+			 data);
 
 	/* preselect the previous color in the color selection dialog */
 	color[0] = (gdouble) ((rgbvalue & 0xff0000) >> 16) / 255.0;
@@ -3320,11 +3363,12 @@ static void quote_colors_set_dialog_cancel(GtkWidget *widget, gpointer data)
 	gtk_widget_destroy(color_dialog);
 }
 
-static void quote_colors_set_dialog_key_pressed(GtkWidget *widget,
-						GdkEventKey *event,
-						gpointer data)
+static gboolean quote_colors_set_dialog_key_pressed(GtkWidget *widget,
+						    GdkEventKey *event,
+						    gpointer data)
 {
 	gtk_widget_destroy(color_dialog);
+	return FALSE;
 }
 
 static void set_button_bg_color(GtkWidget *widget, gint rgbvalue)
@@ -3368,29 +3412,30 @@ static void prefs_font_select(GtkButton *button, GtkEntry *entry)
 	if (!font_sel_win) {
 		font_sel_win = gtk_font_selection_dialog_new
 			(_("Font selection"));
-		gtk_window_position(GTK_WINDOW(font_sel_win),
-				    GTK_WIN_POS_CENTER);
-		gtk_signal_connect(GTK_OBJECT(font_sel_win), "delete_event",
-				   GTK_SIGNAL_FUNC(gtk_widget_hide_on_delete),
-				   NULL);
-		gtk_signal_connect
-			(GTK_OBJECT(font_sel_win), "key_press_event",
-			 GTK_SIGNAL_FUNC(prefs_font_selection_key_pressed),
+		gtk_window_set_position(GTK_WINDOW(font_sel_win),
+					GTK_WIN_POS_CENTER);
+		g_signal_connect(G_OBJECT(font_sel_win), "delete_event",
+				 G_CALLBACK(gtk_widget_hide_on_delete),
+				 NULL);
+		g_signal_connect
+			(G_OBJECT(font_sel_win), "key_press_event",
+			 G_CALLBACK(prefs_font_selection_key_pressed),
 			 NULL);
-		gtk_signal_connect_object
-			(GTK_OBJECT(GTK_FONT_SELECTION_DIALOG(font_sel_win)->cancel_button),
+		g_signal_connect_closure
+			(G_OBJECT(GTK_FONT_SELECTION_DIALOG(font_sel_win)->cancel_button),
 			 "clicked",
-			 GTK_SIGNAL_FUNC(gtk_widget_hide_on_delete),
-			 GTK_OBJECT(font_sel_win));
+			 g_cclosure_new_swap(G_CALLBACK(gtk_widget_hide_on_delete),
+					     font_sel_win, NULL),
+			 FALSE);
 	}
 
 	if(font_sel_conn_id) {
 		gtk_signal_disconnect(GTK_OBJECT(GTK_FONT_SELECTION_DIALOG(font_sel_win)->ok_button), font_sel_conn_id);
 	}
-	font_sel_conn_id = gtk_signal_connect
-		(GTK_OBJECT(GTK_FONT_SELECTION_DIALOG(font_sel_win)->ok_button),
+	font_sel_conn_id = g_signal_connect
+		(G_OBJECT(GTK_FONT_SELECTION_DIALOG(font_sel_win)->ok_button),
 	         "clicked",
-		 GTK_SIGNAL_FUNC(prefs_font_selection_ok),
+		 G_CALLBACK(prefs_font_selection_ok),
 		 entry);
 	printf("%i\n", font_sel_conn_id);
 
@@ -3404,12 +3449,13 @@ static void prefs_font_select(GtkButton *button, GtkEntry *entry)
 	gtk_widget_show(font_sel_win);
 }
 
-static void prefs_font_selection_key_pressed(GtkWidget *widget,
-					     GdkEventKey *event,
-					     gpointer data)
+static gboolean prefs_font_selection_key_pressed(GtkWidget *widget,
+						 GdkEventKey *event,
+						 gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		gtk_widget_hide(font_sel_win);
+	return FALSE;
 }
 
 static void prefs_font_selection_ok(GtkButton *button, GtkEntry *entry)
@@ -3439,7 +3485,7 @@ static void prefs_keybind_select(void)
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
 
-	window = gtk_window_new (GTK_WINDOW_DIALOG);
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_set_title (GTK_WINDOW (window), _("Key bindings"));
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
@@ -3470,7 +3516,7 @@ static void prefs_keybind_select(void)
 			       "Mutt",
 			       _("Old Sylpheed"),
 			       NULL);
-	gtk_entry_set_editable (GTK_ENTRY (GTK_COMBO (combo)->entry), FALSE);
+	gtk_editable_set_editable(GTK_EDITABLE(GTK_COMBO (combo)->entry), FALSE);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
@@ -3490,16 +3536,16 @@ static void prefs_keybind_select(void)
 	gtk_widget_grab_default (ok_btn);
 
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
-	gtk_signal_connect (GTK_OBJECT (window), "delete_event",
-			    GTK_SIGNAL_FUNC (prefs_keybind_deleted), NULL);
-	gtk_signal_connect (GTK_OBJECT (window), "key_press_event",
-			    GTK_SIGNAL_FUNC (prefs_keybind_key_pressed), NULL);
-	gtk_signal_connect (GTK_OBJECT (ok_btn), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_keybind_apply_clicked),
-			    NULL);
-	gtk_signal_connect (GTK_OBJECT (cancel_btn), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_keybind_cancel),
-			    NULL);
+	g_signal_connect (G_OBJECT (window), "delete_event",
+			  G_CALLBACK (prefs_keybind_deleted), NULL);
+	g_signal_connect (G_OBJECT (window), "key_press_event",
+			  G_CALLBACK (prefs_keybind_key_pressed), NULL);
+	g_signal_connect (G_OBJECT (ok_btn), "clicked",
+			  G_CALLBACK (prefs_keybind_apply_clicked),
+			  NULL);
+	g_signal_connect (G_OBJECT (cancel_btn), "clicked",
+			  G_CALLBACK (prefs_keybind_cancel),
+			  NULL);
 
 	gtk_widget_show_all(window);
 
@@ -3507,11 +3553,12 @@ static void prefs_keybind_select(void)
 	keybind.combo = combo;
 }
 
-static void prefs_keybind_key_pressed(GtkWidget *widget, GdkEventKey *event,
-				      gpointer data)
+static gboolean prefs_keybind_key_pressed(GtkWidget *widget, GdkEventKey *event,
+					  gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		prefs_keybind_cancel();
+	return FALSE;
 }
 
 static gint prefs_keybind_deleted(GtkWidget *widget, GdkEventAny *event,
@@ -3527,239 +3574,269 @@ static void prefs_keybind_cancel(void)
 	keybind.window = NULL;
 	keybind.combo = NULL;
 }
+  
+struct KeyBind {
+	const gchar *accel_path;
+	const gchar *accel_key;
+};
+
+static void prefs_keybind_apply(struct KeyBind keybind[], gint num)
+{
+	gint i;
+	guint key;
+	GdkModifierType mods;
+
+	for (i = 0; i < num; i++) {
+		const gchar *accel_key
+			= keybind[i].accel_key ? keybind[i].accel_key : "";
+		gtk_accelerator_parse(accel_key, &key, &mods);
+		gtk_accel_map_change_entry(keybind[i].accel_path,
+					   key, mods, TRUE);
+	}
+}
 
 static void prefs_keybind_apply_clicked(GtkWidget *widget)
 {
 	GtkEntry *entry = GTK_ENTRY(GTK_COMBO(keybind.combo)->entry);
-	gchar *text;
-	gchar *rc_str;
+	const gchar *text;
+	struct KeyBind *menurc;
+	gint n_menurc;
 
-	static gchar *default_menurc =
-		"(menu-path \"<Main>/File/Empty trash\" \"\")\n"
-		"(menu-path \"<Main>/File/Save as...\" \"<control>S\")\n"
-		"(menu-path \"<Main>/File/Print...\" \"\")\n"
-		"(menu-path \"<Main>/File/Exit\" \"<control>Q\")\n"
+	static struct KeyBind default_menurc[] = {
+		{"<Main>/File/Empty trash",			""},
+		{"<Main>/File/Save as...",			"<control>S"},
+		{"<Main>/File/Print...",			""},
+		{"<Main>/File/Exit",				"<control>Q"},
 
-		"(menu-path \"<Main>/Edit/Copy\" \"<control>C\")\n"
-		"(menu-path \"<Main>/Edit/Select all\" \"<control>A\")\n"
-		"(menu-path \"<Main>/Edit/Find in current message...\" \"<control>F\")\n"
-		"(menu-path \"<Main>/Edit/Search folder...\" \"<shift><control>F\")\n"
+		{"<Main>/Edit/Copy",				"<control>C"},
+		{"<Main>/Edit/Select all",			"<control>A"},
+		{"<Main>/Edit/Find in current message...",	"<control>F"},
+		{"<Main>/Edit/Search folder...",		"<shift><control>F"},
 
-		"(menu-path \"<Main>/View/Expand Summary View\" \"V\")\n"
-		"(menu-path \"<Main>/View/Expand Message View\" \"<shift>V\")\n"
-		"(menu-path \"<Main>/View/Thread view\" \"<control>T\")\n"
-		"(menu-path \"<Main>/View/Go to/Prev message\" \"P\")\n"
-		"(menu-path \"<Main>/View/Go to/Next message\" \"N\")\n"
-		"(menu-path \"<Main>/View/Go to/Prev unread message\" \"<shift>P\")\n"
-		"(menu-path \"<Main>/View/Go to/Next unread message\" \"<shift>N\")\n"
-		"(menu-path \"<Main>/View/Go to/Other folder...\" \"G\")\n"
-		"(menu-path \"<Main>/View/Open in new window\" \"<control><alt>N\")\n"
-		"(menu-path \"<Main>/View/View source\" \"<control>U\")\n"
-		"(menu-path \"<Main>/View/Show all headers\" \"<control>H\")\n"
-		"(menu-path \"<Main>/View/Update\" \"<control><alt>U\")\n"
+		{"<Main>/View/Expand Summary View",		"V"},
+		{"<Main>/View/Expand Message View",		"<shift>V"},
+		{"<Main>/View/Thread view",			"<control>T"},
+		{"<Main>/View/Go to/Prev message",		"P"},
+		{"<Main>/View/Go to/Next message",		"N"},
+		{"<Main>/View/Go to/Prev unread message",	"<shift>P"},
+		{"<Main>/View/Go to/Next unread message",	"<shift>N"},
+		{"<Main>/View/Go to/Other folder...",		"G"},
+		{"<Main>/View/Open in new window",		"<control><alt>N"},
+		{"<Main>/View/View source",			"<control>U"},
+		{"<Main>/View/Show all headers",		"<control>H"},
+		{"<Main>/View/Update",				"<control><alt>U"},
 
-		"(menu-path \"<Main>/Message/Get new mail\" \"<control>I\")\n"
-		"(menu-path \"<Main>/Message/Get from all accounts\" \"<shift><control>I\")\n"
-		"(menu-path \"<Main>/Message/Compose an email message\" \"<control>M\")\n"
-		"(menu-path \"<Main>/Message/Reply\" \"<control>R\")\n"
-		"(menu-path \"<Main>/Message/Reply to/all\" \"<shift><control>R\")\n"
-		"(menu-path \"<Main>/Message/Reply to/sender\" \"\")\n"
-		"(menu-path \"<Main>/Message/Reply to/mailing list\" \"<control>L\")\n"
-		"(menu-path \"<Main>/Message/Forward\" \"<control><alt>F\")\n"
-		/* "(menu-path \"<Main>/Message/Forward as attachment\" \"\")\n" */
-		"(menu-path \"<Main>/Message/Move...\" \"<control>O\")\n"
-		"(menu-path \"<Main>/Message/Copy...\" \"<shift><control>O\")\n"
-		"(menu-path \"<Main>/Message/Delete\" \"<control>D\")\n"
-		"(menu-path \"<Main>/Message/Mark/Mark\" \"<shift>asterisk\")\n"
-		"(menu-path \"<Main>/Message/Mark/Unmark\" \"U\")\n"
-		"(menu-path \"<Main>/Message/Mark/Mark as unread\" \"<shift>exclam\")\n"
-		"(menu-path \"<Main>/Message/Mark/Mark as read\" \"\")\n"
+		{"<Main>/Message/Get new mail",			"<control>I"},
+		{"<Main>/Message/Get from all accounts",	"<shift><control>I"},
+		{"<Main>/Message/Compose an email message",	"<control>M"},
+		{"<Main>/Message/Reply",			"<control>R"},
+		{"<Main>/Message/Reply to/all",			"<shift><control>R"},
+		{"<Main>/Message/Reply to/sender",		""},
+		{"<Main>/Message/Reply to/mailing list",	"<control>L"},
+		{"<Main>/Message/Forward",			"<control><alt>F"},
+		/* {"<Main>/Message/Forward as attachment",	 ""}, */
+		{"<Main>/Message/Move...",			"<control>O"},
+		{"<Main>/Message/Copy...",			"<shift><control>O"},
+		{"<Main>/Message/Delete",			"<control>D"},
+		{"<Main>/Message/Mark/Mark",			"<shift>asterisk"},
+		{"<Main>/Message/Mark/Unmark",			"U"},
+		{"<Main>/Message/Mark/Mark as unread",		"<shift>exclam"},
+		{"<Main>/Message/Mark/Mark as read",		""},
 
-		"(menu-path \"<Main>/Tools/Address book\" \"<shift><control>A\")\n"
-		"(menu-path \"<Main>/Tools/Execute\" \"X\")\n"
-		"(menu-path \"<Main>/Tools/Log window\" \"<shift><control>L\")\n"
+		{"<Main>/Tools/Address book",			"<shift><control>A"},
+		{"<Main>/Tools/Execute",			"X"},
+		{"<Main>/Tools/Log window",			"<shift><control>L"},
 
-		"(menu-path \"<Compose>/File/Close\" \"<control>W\")\n"
-		"(menu-path \"<Compose>/Edit/Select all\" \"<control>A\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Move a word backward\" \"\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Move a word forward\" \"\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Move to beginning of line\" \"\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Delete a word backward\" \"\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Delete a word forward\" \"\")";
+		{"<Compose>/File/Close",				"<control>W"},
+		{"<Compose>/Edit/Select all",				"<control>A"},
+		{"<Compose>/Edit/Advanced/Move a word backward",	""},
+		{"<Compose>/Edit/Advanced/Move a word forward",		""},
+		{"<Compose>/Edit/Advanced/Move to beginning of line",	""},
+		{"<Compose>/Edit/Advanced/Delete a word backward",	""},
+		{"<Compose>/Edit/Advanced/Delete a word forward",	""},
+	};
 
-	static gchar *mew_wl_menurc =
-		"(menu-path \"<Main>/File/Empty trash\" \"<shift>D\")\n"
-		"(menu-path \"<Main>/File/Save as...\" \"Y\")\n"
-		"(menu-path \"<Main>/File/Print...\" \"<shift>numbersign\")\n"
-		"(menu-path \"<Main>/File/Exit\" \"<shift>Q\")\n"
+	static struct KeyBind mew_wl_menurc[] = {
+		{"<Main>/File/Empty trash",			"<shift>D"},
+		{"<Main>/File/Save as...",			"Y"},
+		{"<Main>/File/Print...",			"<shift>numbersign"},
+		{"<Main>/File/Exit",				"<shift>Q"},
 
-		"(menu-path \"<Main>/Edit/Copy\" \"<control>C\")\n"
-		"(menu-path \"<Main>/Edit/Select all\" \"<control>A\")\n"
-		"(menu-path \"<Main>/Edit/Find in current message...\" \"<control>F\")\n"
-		"(menu-path \"<Main>/Edit/Search folder...\" \"<control>S\")\n"
+		{"<Main>/Edit/Copy",				"<control>C"},
+		{"<Main>/Edit/Select all",			"<control>A"},
+		{"<Main>/Edit/Find in current message...",	"<control>F"},
+		{"<Main>/Edit/Search folder...",		"<control>S"},
 
-		"(menu-path \"<Main>/View/Expand Summary View\" \"\")\n"
-		"(menu-path \"<Main>/View/Expand Message View\" \"\")\n"
-		"(menu-path \"<Main>/View/Thread view\" \"<shift>T\")\n"
-		"(menu-path \"<Main>/View/Go to/Prev message\" \"P\")\n"
-		"(menu-path \"<Main>/View/Go to/Next message\" \"N\")\n"
-		"(menu-path \"<Main>/View/Go to/Prev unread message\" \"<shift>P\")\n"
-		"(menu-path \"<Main>/View/Go to/Next unread message\" \"<shift>N\")\n"
-		"(menu-path \"<Main>/View/Go to/Other folder...\" \"G\")\n"
-		"(menu-path \"<Main>/View/Open in new window\" \"<control><alt>N\")\n"
-		"(menu-path \"<Main>/View/View source\" \"<control>U\")\n"
-		"(menu-path \"<Main>/View/Show all headers\" \"<shift>H\")\n"
-		"(menu-path \"<Main>/View/Update\" \"<shift>S\")\n"
+		{"<Main>/View/Expand Summary View",		""},
+		{"<Main>/View/Expand Message View",		""},
+		{"<Main>/View/Thread view",			"<shift>T"},
+		{"<Main>/View/Go to/Prev message",		"P"},
+		{"<Main>/View/Go to/Next message",		"N"},
+		{"<Main>/View/Go to/Prev unread message",	"<shift>P"},
+		{"<Main>/View/Go to/Next unread message",	"<shift>N"},
+		{"<Main>/View/Go to/Other folder...",		"G"},
+		{"<Main>/View/Open in new window",		"<control><alt>N"},
+		{"<Main>/View/View source",			"<control>U"},
+		{"<Main>/View/Show all headers",		"<shift>H"},
+		{"<Main>/View/Update",				"<shift>S"},
 
-		"(menu-path \"<Main>/Message/Get new mail\" \"<control>I\")\n"
-		"(menu-path \"<Main>/Message/Get from all accounts\" \"<shift><control>I\")\n"
-		"(menu-path \"<Main>/Message/Compose an email message\" \"W\")\n"
-		"(menu-path \"<Main>/Message/Reply\" \"<control>R\")\n"
-		"(menu-path \"<Main>/Message/Reply to/all\" \"<shift>A\")\n"
-		"(menu-path \"<Main>/Message/Reply to/sender\" \"\")\n"
-		"(menu-path \"<Main>/Message/Reply to/mailing list\" \"<control>L\")\n"
-		"(menu-path \"<Main>/Message/Forward\" \"F\")\n"
-		/* "(menu-path \"<Main>/Message/Forward as attachment\" \"<shift>F\")\n" */
-		"(menu-path \"<Main>/Message/Move...\" \"O\")\n"
-		"(menu-path \"<Main>/Message/Copy...\" \"<shift>O\")\n"
-		"(menu-path \"<Main>/Message/Delete\" \"D\")\n"
-		"(menu-path \"<Main>/Message/Mark/Mark\" \"<shift>asterisk\")\n"
-		"(menu-path \"<Main>/Message/Mark/Unmark\" \"U\")\n"
-		"(menu-path \"<Main>/Message/Mark/Mark as unread\" \"<shift>exclam\")\n"
-		"(menu-path \"<Main>/Message/Mark/Mark as read\" \"<shift>R\")\n"
+		{"<Main>/Message/Get new mail",			"<control>I"},
+		{"<Main>/Message/Get from all accounts",	"<shift><control>I"},
+		{"<Main>/Message/Compose an email message",	"W"},
+		{"<Main>/Message/Reply",			"<control>R"},
+		{"<Main>/Message/Reply to/all",			"<shift>A"},
+		{"<Main>/Message/Reply to/sender",		""},
+		{"<Main>/Message/Reply to/mailing list",	"<control>L"},
+		{"<Main>/Message/Forward",			"F"},
+		/* {"<Main>/Message/Forward as attachment", "<shift>F"}, */
+		{"<Main>/Message/Move...",			"O"},
+		{"<Main>/Message/Copy...",			"<shift>O"},
+		{"<Main>/Message/Delete",			"D"},
+		{"<Main>/Message/Mark/Mark",			"<shift>asterisk"},
+		{"<Main>/Message/Mark/Unmark",			"U"},
+		{"<Main>/Message/Mark/Mark as unread",		"<shift>exclam"},
+		{"<Main>/Message/Mark/Mark as read",		"<shift>R"},
 
-		"(menu-path \"<Main>/Tools/Address book\" \"<shift><control>A\")\n"
-		"(menu-path \"<Main>/Tools/Execute\" \"X\")\n"
-		"(menu-path \"<Main>/Tools/Log window\" \"<shift><control>L\")\n"
+		{"<Main>/Tools/Address book",			"<shift><control>A"},
+		{"<Main>/Tools/Execute",			"X"},
+		{"<Main>/Tools/Log window",			"<shift><control>L"},
 
-		"(menu-path \"<Compose>/File/Close\" \"<alt>W\")\n"
-		"(menu-path \"<Compose>/Edit/Select all\" \"\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Move a word backward\" \"<alt>B\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Move a word forward\" \"<alt>F\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Move to beginning of line\" \"<control>A\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Delete a word backward\" \"<control>W\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Delete a word forward\" \"<alt>D\")";
+		{"<Compose>/File/Close",				"<alt>W"},
+		{"<Compose>/Edit/Select all",				""},
+		{"<Compose>/Edit/Advanced/Move a word backward,"	"<alt>B"},
+		{"<Compose>/Edit/Advanced/Move a word forward",		"<alt>F"},
+		{"<Compose>/Edit/Advanced/Move to beginning of line",	"<control>A"},
+		{"<Compose>/Edit/Advanced/Delete a word backward",	"<control>W"},
+		{"<Compose>/Edit/Advanced/Delete a word forward",	"<alt>D"},
+	};
 
-	static gchar *mutt_menurc =
-		"(menu-path \"<Main>/File/Empty trash\" \"\")\n"
-		"(menu-path \"<Main>/File/Save as...\" \"S\")\n"
-		"(menu-path \"<Main>/File/Print...\" \"P\")\n"
-		"(menu-path \"<Main>/File/Exit\" \"Q\")\n"
+	static struct KeyBind mutt_menurc[] = {
+		{"<Main>/File/Empty trash",			""},
+		{"<Main>/File/Save as...",			"S"},
+		{"<Main>/File/Print...",			"P"},
+		{"<Main>/File/Exit",				"Q"},
 
-		"(menu-path \"<Main>/Edit/Copy\" \"<control>C\")\n"
-		"(menu-path \"<Main>/Edit/Select all\" \"<control>A\")\n"
-		"(menu-path \"<Main>/Edit/Find in current message...\" \"<control>F\")\n"
-		"(menu-path \"<Main>/Edit/Search messages...\" \"slash\")\n"
+		{"<Main>/Edit/Copy",				"<control>C"},
+		{"<Main>/Edit/Select all",			"<control>A"},
+		{"<Main>/Edit/Find in current message...",	"<control>F"},
+		{"<Main>/Edit/Search messages...",		"slash"},
 
-		"(menu-path \"<Main>/View/Toggle summary view\" \"V\")\n"
-		"(menu-path \"<Main>/View/Thread view\" \"<control>T\")\n"
-		"(menu-path \"<Main>/View/Go to/Prev message\" \"\")\n"
-		"(menu-path \"<Main>/View/Go to/Next message\" \"\")\n"
-		"(menu-path \"<Main>/View/Go to/Prev unread message\" \"\")\n"
-		"(menu-path \"<Main>/View/Go to/Next unread message\" \"\")\n"
-		"(menu-path \"<Main>/View/Go to/Other folder...\" \"C\")\n"
-		"(menu-path \"<Main>/View/Open in new window\" \"<control><alt>N\")\n"
-		"(menu-path \"<Main>/View/View source\" \"<control>U\")\n"
-		"(menu-path \"<Main>/View/Show all headers\" \"<control>H\")\n"
-		"(menu-path \"<Main>/View/Update\" \"<control><alt>U\")\n"
+		{"<Main>/View/Toggle summary view",		"V"},
+		{"<Main>/View/Thread view",			"<control>T"},
+		{"<Main>/View/Go to/Prev message",		""},
+		{"<Main>/View/Go to/Next message",		""},
+		{"<Main>/View/Go to/Prev unread message",	""},
+		{"<Main>/View/Go to/Next unread message",	""},
+		{"<Main>/View/Go to/Other folder...",		"C"},
+		{"<Main>/View/Open in new window",		"<control><alt>N"},
+		{"<Main>/View/View source",			"<control>U"},
+		{"<Main>/View/Show all headers",		"<control>H"},
+		{"<Main>/View/Update",				"<control><alt>U"},
 
-		"(menu-path \"<Main>/Message/Get new mail\" \"<control>I\")\n"
-		"(menu-path \"<Main>/Message/Get from all accounts\" \"<shift><control>I\")\n"
-		"(menu-path \"<Main>/Message/Compose new message\" \"M\")\n"
-		"(menu-path \"<Main>/Message/Reply\" \"R\")\n"
-		"(menu-path \"<Main>/Message/Reply to/all\" \"G\")\n"
-		"(menu-path \"<Main>/Message/Reply to/sender\" \"\")\n"
-		"(menu-path \"<Main>/Message/Reply to/mailing list\" \"<control>L\")\n"
-		"(menu-path \"<Main>/Message/Forward\" \"F\")\n"
-		"(menu-path \"<Main>/Message/Forward as attachment\" \"\")\n"
-		"(menu-path \"<Main>/Message/Move...\" \"<control>O\")\n"
-		"(menu-path \"<Main>/Message/Copy...\" \"<shift>C\")\n"
-		"(menu-path \"<Main>/Message/Delete\" \"D\")\n"
-		"(menu-path \"<Main>/Message/Mark/Mark\" \"<shift>F\")\n"
-		"(menu-path \"<Main>/Message/Mark/Unmark\" \"U\")\n"
-		"(menu-path \"<Main>/Message/Mark/Mark as unread\" \"<shift>N\")\n"
-		"(menu-path \"<Main>/Message/Mark/Mark as read\" \"\")\n"
+		{"<Main>/Message/Get new mail",			"<control>I"},
+		{"<Main>/Message/Get from all accounts",	"<shift><control>I"},
+		{"<Main>/Message/Compose new message",		"M"},
+		{"<Main>/Message/Reply",			"R"},
+		{"<Main>/Message/Reply to/all",			"G"},
+		{"<Main>/Message/Reply to/sender",		""},
+		{"<Main>/Message/Reply to/mailing list",	"<control>L"},
+		{"<Main>/Message/Forward",			"F"},
+		{"<Main>/Message/Forward as attachment",	""},
+		{"<Main>/Message/Move...",			"<control>O"},
+		{"<Main>/Message/Copy...",			"<shift>C"},
+		{"<Main>/Message/Delete",			"D"},
+		{"<Main>/Message/Mark/Mark",			"<shift>F"},
+		{"<Main>/Message/Mark/Unmark",			"U"},
+		{"<Main>/Message/Mark/Mark as unread",		"<shift>N"},
+		{"<Main>/Message/Mark/Mark as read",		""},
 
-		"(menu-path \"<Main>/Tools/Address book\" \"<shift><control>A\")\n"
-		"(menu-path \"<Main>/Tools/Execute\" \"X\")\n"
-		"(menu-path \"<Main>/Tools/Log window\" \"<shift><control>L\")\n"
+		{"<Main>/Tools/Address book",			"<shift><control>A"},
+		{"<Main>/Tools/Execute",			"X"},
+		{"<Main>/Tools/Log window",			"<shift><control>L"},
 
-		"(menu-path \"<Compose>/File/Close\" \"<alt>W\")\n"
-		"(menu-path \"<Compose>/Edit/Select all\" \"\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Move a word backward\" \"<alt>B\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Move a word forward\" \"<alt>F\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Move to beginning of line\" \"<control>A\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Delete a word backward\" \"<control>W\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Delete a word forward\" \"<alt>D\")";
+		{"<Compose>/File/Close",				"<alt>W"},
+		{"<Compose>/Edit/Select all",				""},
+		{"<Compose>/Edit/Advanced/Move a word backward",	"<alt>B"},
+		{"<Compose>/Edit/Advanced/Move a word forward",		"<alt>F"},
+		{"<Compose>/Edit/Advanced/Move to beginning of line",	"<control>A"},
+		{"<Compose>/Edit/Advanced/Delete a word backward",	"<control>W"},
+		{"<Compose>/Edit/Advanced/Delete a word forward",	"<alt>D"},
+	};
 
-	static gchar *old_sylpheed_menurc =
-		"(menu-path \"<Main>/File/Empty trash\" \"\")\n"
-		"(menu-path \"<Main>/File/Save as...\" \"\")\n"
-		"(menu-path \"<Main>/File/Print...\" \"<alt>P\")\n"
-		"(menu-path \"<Main>/File/Exit\" \"<alt>Q\")\n"
+	static struct KeyBind old_sylpheed_menurc[] = {
+		{"<Main>/File/Empty trash",			""},
+		{"<Main>/File/Save as...",			""},
+		{"<Main>/File/Print...",			"<alt>P"},
+		{"<Main>/File/Exit",				"<alt>Q"},
 
-		"(menu-path \"<Main>/Edit/Copy\" \"<control>C\")\n"
-		"(menu-path \"<Main>/Edit/Select all\" \"<control>A\")\n"
-		"(menu-path \"<Main>/Edit/Find in current message...\" \"<control>F\")\n"
-		"(menu-path \"<Main>/Edit/Search folder...\" \"<control>S\")\n"
+		{"<Main>/Edit/Copy",				"<control>C"},
+		{"<Main>/Edit/Select all",			"<control>A"},
+		{"<Main>/Edit/Find in current message...",	"<control>F"},
+		{"<Main>/Edit/Search folder...",		"<control>S"},
 
-		"(menu-path \"<Main>/View/Expand Summary View\" \"\")\n"
-		"(menu-path \"<Main>/View/Expand Message View\" \"\")\n"
-		"(menu-path \"<Main>/View/Thread view\" \"<control>T\")\n"
-		"(menu-path \"<Main>/View/Go to/Prev message\" \"P\")\n"
-		"(menu-path \"<Main>/View/Go to/Next message\" \"N\")\n"
-		"(menu-path \"<Main>/View/Go to/Prev unread message\" \"<shift>P\")\n"
-		"(menu-path \"<Main>/View/Go to/Next unread message\" \"<shift>N\")\n"
-		"(menu-path \"<Main>/View/Go to/Other folder...\" \"<alt>G\")\n"
-		"(menu-path \"<Main>/View/Open in new window\" \"<shift><control>N\")\n"
-		"(menu-path \"<Main>/View/View source\" \"<control>U\")\n"
-		"(menu-path \"<Main>/View/Show all headers\" \"<control>H\")\n"
-		"(menu-path \"<Main>/View/Update\" \"<alt>U\")\n"
+		{"<Main>/View/Expand Summary View",		""},
+		{"<Main>/View/Expand Message View",		""},
+		{"<Main>/View/Thread view",			"<control>T"},
+		{"<Main>/View/Go to/Prev message",		"P"},
+		{"<Main>/View/Go to/Next message",		"N"},
+		{"<Main>/View/Go to/Prev unread message",	"<shift>P"},
+		{"<Main>/View/Go to/Next unread message",	"<shift>N"},
+		{"<Main>/View/Go to/Other folder...",		"<alt>G"},
+		{"<Main>/View/Open in new window",		"<shift><control>N"},
+		{"<Main>/View/View source",			"<control>U"},
+		{"<Main>/View/Show all headers",		"<control>H"},
+		{"<Main>/View/Update",				"<alt>U"},
 
-		"(menu-path \"<Main>/Message/Get new mail\" \"<alt>I\")\n"
-		"(menu-path \"<Main>/Message/Get from all accounts\" \"<shift><alt>I\")\n"
-		"(menu-path \"<Main>/Message/Compose an email message\" \"<alt>N\")\n"
-		"(menu-path \"<Main>/Message/Reply\" \"<alt>R\")\n"
-		"(menu-path \"<Main>/Message/Reply to/all\" \"<shift><alt>R\")\n"
-		"(menu-path \"<Main>/Message/Reply to/sender\" \"<control><alt>R\")\n"
-		"(menu-path \"<Main>/Message/Reply to/mailing list\" \"<control>L\")\n"
-		"(menu-path \"<Main>/Message/Forward\" \"<shift><alt>F\")\n"
-		/* "(menu-path \"<Main>/Message/Forward as attachment\" \"<shift><control>F\")\n" */
-		"(menu-path \"<Main>/Message/Move...\" \"<alt>O\")\n"
-		"(menu-path \"<Main>/Message/Copy...\" \"\")\n"
-		"(menu-path \"<Main>/Message/Delete\" \"<alt>D\")\n"
-		"(menu-path \"<Main>/Message/Mark/Mark\" \"<shift>asterisk\")\n"
-		"(menu-path \"<Main>/Message/Mark/Unmark\" \"U\")\n"
-		"(menu-path \"<Main>/Message/Mark/Mark as unread\" \"<shift>exclam\")\n"
-		"(menu-path \"<Main>/Message/Mark/Mark as read\" \"\")\n"
+		{"<Main>/Message/Get new mail",			"<alt>I"},
+		{"<Main>/Message/Get from all accounts",	"<shift><alt>I"},
+		{"<Main>/Message/Compose an email message",	"<alt>N"},
+		{"<Main>/Message/Reply",			"<alt>R"},
+		{"<Main>/Message/Reply to/all",			"<shift><alt>R"},
+		{"<Main>/Message/Reply to/sender",		"<control><alt>R"},
+		{"<Main>/Message/Reply to/mailing list",	"<control>L"},
+		{"<Main>/Message/Forward",			 "<shift><alt>F"},
+		/* "(menu-path \"<Main>/Message/Forward as attachment", "<shift><control>F"}, */
+		{"<Main>/Message/Move...",			"<alt>O"},
+		{"<Main>/Message/Copy...",			""},
+		{"<Main>/Message/Delete",			"<alt>D"},
+		{"<Main>/Message/Mark/Mark",			"<shift>asterisk"},
+		{"<Main>/Message/Mark/Unmark",			"U"},
+		{"<Main>/Message/Mark/Mark as unread",		"<shift>exclam"},
+		{"<Main>/Message/Mark/Mark as read",		""},
 
-		"(menu-path \"<Main>/Tools/Address book\" \"<alt>A\")\n"
-		"(menu-path \"<Main>/Tools/Execute\" \"<alt>X\")\n"
-		"(menu-path \"<Main>/Tools/Log window\" \"<alt>L\")\n"
+		{"<Main>/Tools/Address book",			"<alt>A"},
+		{"<Main>/Tools/Execute",			"<alt>X"},
+		{"<Main>/Tools/Log window",			"<alt>L"},
 
-		"(menu-path \"<Compose>/File/Close\" \"<alt>W\")\n"
-		"(menu-path \"<Compose>/Edit/Select all\" \"\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Move a word backward\" \"<alt>B\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Move a word forward\" \"<alt>F\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Move to beginning of line\" \"<control>A\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Delete a word backward\" \"<control>W\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Delete a word forward\" \"<alt>D\")";
-
+		{"<Compose>/File/Close",				"<alt>W"},
+		{"<Compose>/Edit/Select all",				""},
+		{"<Compose>/Edit/Advanced/Move a word backward",	"<alt>B"},
+		{"<Compose>/Edit/Advanced/Move a word forward",		"<alt>F"},
+		{"<Compose>/Edit/Advanced/Move to beginning of line",	"<control>A"},
+		{"<Compose>/Edit/Advanced/Delete a word backward",	"<control>W"},
+		{"<Compose>/Edit/Advanced/Delete a word forward",	"<alt>D"},
+	};
+  
 	text = gtk_entry_get_text(entry);
-
-	if (!strcmp(text, _("Default")))
-		rc_str = default_menurc;
-	else if (!strcmp(text, "Mew / Wanderlust"))
-		rc_str = mew_wl_menurc;
-	else if (!strcmp(text, "Mutt"))
-		rc_str = mutt_menurc;
-	else if (!strcmp(text, _("Old Sylpheed")))
-		rc_str = old_sylpheed_menurc;
-	else
+  
+	if (!strcmp(text, _("Default"))) {
+		menurc = default_menurc;
+		n_menurc = G_N_ELEMENTS(default_menurc);
+	} else if (!strcmp(text, "Mew / Wanderlust")) {
+		menurc = mew_wl_menurc;
+		n_menurc = G_N_ELEMENTS(mew_wl_menurc);
+	} else if (!strcmp(text, "Mutt")) {
+		menurc = mutt_menurc;
+		n_menurc = G_N_ELEMENTS(mutt_menurc);
+	} else if (!strcmp(text, _("Old Sylpheed"))) {
+	        menurc = old_sylpheed_menurc;
+		n_menurc = G_N_ELEMENTS(old_sylpheed_menurc);
+	} else {
 		return;
+	}
 
-	menu_factory_clear_rc(rc_str);
-	gtk_item_factory_parse_rc_string(rc_str);
+	/* prefs_keybind_apply(empty_menurc, G_N_ELEMENTS(empty_menurc)); */
+	prefs_keybind_apply(menurc, n_menurc);
 
 	gtk_widget_destroy(keybind.window);
 	keybind.window = NULL;
@@ -3774,7 +3851,7 @@ static void prefs_common_charset_set_data_from_optmenu(PrefParam *pparam)
 
 	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(*pparam->widget));
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-	charset = gtk_object_get_user_data(GTK_OBJECT(menuitem));
+	charset = g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID);
 	g_free(*((gchar **)pparam->data));
 	*((gchar **)pparam->data) = g_strdup(charset);
 }
@@ -3805,7 +3882,7 @@ static void prefs_common_encoding_set_data_from_optmenu(PrefParam *pparam)
 	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(*pparam->widget));
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	*((TransferEncodingMethod *)pparam->data) = GPOINTER_TO_INT
-		(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
+		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
 }
 
 static void prefs_common_encoding_set_optmenu(PrefParam *pparam)
@@ -3835,7 +3912,7 @@ static void prefs_common_recv_dialog_set_data_from_optmenu(PrefParam *pparam)
 	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(*pparam->widget));
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	*((RecvDialogMode *)pparam->data) = GPOINTER_TO_INT
-		(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
+		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
 }
 
 static void prefs_common_recv_dialog_set_optmenu(PrefParam *pparam)
@@ -3901,11 +3978,12 @@ static gint prefs_common_deleted(GtkWidget *widget, GdkEventAny *event,
 	return TRUE;
 }
 
-static void prefs_common_key_pressed(GtkWidget *widget, GdkEventKey *event,
-				     gpointer data)
+static gboolean prefs_common_key_pressed(GtkWidget *widget, GdkEventKey *event,
+					 gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		prefs_common_cancel();
+	return FALSE;
 }
 
 static void prefs_common_ok(void)
@@ -3918,7 +3996,7 @@ static void prefs_common_ok(void)
 
 static void prefs_common_apply(void)
 {
-	gchar *entry_pixmap_theme_str;
+	const gchar *entry_pixmap_theme_str;
 	gboolean update_pixmap_theme;
 	gchar *backup_theme_path;
 	

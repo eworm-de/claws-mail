@@ -885,7 +885,8 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 		dup2(oldout, 1);
 	} else if (mimeinfo->mime_type == MIME_TEXT) {
 		while (fgets(buf, sizeof(buf), tmpfp) != NULL) {
-			str = conv_codeset_strdup(buf, src_codeset, NULL);
+#warning FIXME_GTK2
+			str = conv_codeset_strdup(buf, src_codeset, CS_UTF_8);
 			if (str) {
 				fputs(str, outfp);
 				g_free(str);
@@ -1043,7 +1044,7 @@ gboolean procmime_find_string(MsgInfo *msginfo, const gchar *str,
 gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 {
 	static guint32 id = 0;
-	gchar *base;
+	const gchar *base;
 	gchar *filename;
 	gchar f_prefix[10];
 
@@ -1054,12 +1055,14 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 	if (MIME_TEXT_HTML == mimeinfo->mime_type)
 		base = "mimetmp.html";
 	else {
+		gchar *tmp;
 		base = mimeinfo->filename ? mimeinfo->filename
 			: mimeinfo->name ? mimeinfo->name : "mimetmp";
 		base = g_basename(base);
 		if (*base == '\0') base = "mimetmp";
-		Xstrdup_a(base, base, return NULL);
-		subst_for_filename(base);
+		Xstrdup_a(tmp, base, return NULL);
+		subst_for_filename(tmp);
+		base = tmp;
 	}
 
 	filename = g_strconcat(get_mime_tmp_dir(), G_DIR_SEPARATOR_S,

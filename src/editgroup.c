@@ -116,11 +116,12 @@ static gint edit_group_delete_event(GtkWidget *widget, GdkEventAny *event, gbool
 	return TRUE;
 }
 
-static void edit_group_key_pressed(GtkWidget *widget, GdkEventKey *event, gboolean *cancelled) {
+static gboolean edit_group_key_pressed(GtkWidget *widget, GdkEventKey *event, gboolean *cancelled) {
 	if (event && event->keyval == GDK_Escape) {
 		*cancelled = TRUE;
 		gtk_main_quit();
 	}
+	return FALSE;
 }
 
 static gchar *edit_group_format_item_clist( ItemPerson *person, ItemEMail *email ) {
@@ -197,22 +198,24 @@ static void edit_group_to_avail( GtkWidget *widget, gpointer data ) {
 	}
 }
 
-static void edit_group_list_group_button( GtkCList *clist, GdkEventButton *event, gpointer data ) {
-	if( ! event ) return;
+static gboolean edit_group_list_group_button( GtkCList *clist, GdkEventButton *event, gpointer data ) {
+	if( ! event ) return FALSE;
 	if( event->button == 1 ) {
 		if( event->type == GDK_2BUTTON_PRESS ) {
 			edit_group_to_avail( NULL, NULL );
 		}
 	}
+	return FALSE;
 }
 
-static void edit_group_list_avail_button( GtkCList *clist, GdkEventButton *event, gpointer data ) {
-	if( ! event ) return;
+static gboolean edit_group_list_avail_button( GtkCList *clist, GdkEventButton *event, gpointer data ) {
+	if( ! event ) return FALSE;
 	if( event->button == 1 ) {
 		if( event->type == GDK_2BUTTON_PRESS ) {
 			edit_group_to_group( NULL, NULL );
 		}
 	}
+	return FALSE;
 }
 
 static gint edit_group_list_compare_func( GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2 ) {
@@ -258,18 +261,18 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	titles[ GROUP_COL_EMAIL   ] = _("E-Mail Address");
 	titles[ GROUP_COL_REMARKS ] = _("Remarks");
 
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
-	gtk_widget_set_usize(window, EDITGROUP_WIDTH, EDITGROUP_HEIGHT );
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_widget_set_size_request(window, EDITGROUP_WIDTH, EDITGROUP_HEIGHT );
 	gtk_container_set_border_width(GTK_CONTAINER(window), 0);
 	gtk_window_set_title(GTK_WINDOW(window), _("Edit Group Data"));
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);	
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(edit_group_delete_event),
-			   cancelled);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(edit_group_key_pressed),
-			   cancelled);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(edit_group_delete_event),
+			 cancelled);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(edit_group_key_pressed),
+			 cancelled);
 
 	vbox = gtk_vbox_new( FALSE, 6 );
 	gtk_container_set_border_width(GTK_CONTAINER(vbox), BORDER_WIDTH);
@@ -371,22 +374,22 @@ static void addressbook_edit_group_create( gboolean *cancelled ) {
 	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
 
-	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-			   GTK_SIGNAL_FUNC(edit_group_ok), cancelled);
-	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
-			   GTK_SIGNAL_FUNC(edit_group_cancel), cancelled);
+	g_signal_connect(G_OBJECT(ok_btn), "clicked",
+			 G_CALLBACK(edit_group_ok), cancelled);
+	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
+			 G_CALLBACK(edit_group_cancel), cancelled);
 
 	gtk_widget_show_all(vbox);
 
 	/* Event handlers */
-	gtk_signal_connect( GTK_OBJECT(buttonGroup), "clicked",
-			GTK_SIGNAL_FUNC( edit_group_to_group ), NULL );
-	gtk_signal_connect( GTK_OBJECT(buttonAvail), "clicked",
-			GTK_SIGNAL_FUNC( edit_group_to_avail ), NULL );
-	gtk_signal_connect(GTK_OBJECT(clist_avail), "button_press_event",
-			   GTK_SIGNAL_FUNC(edit_group_list_avail_button), NULL);
-	gtk_signal_connect(GTK_OBJECT(clist_group), "button_press_event",
-			   GTK_SIGNAL_FUNC(edit_group_list_group_button), NULL);
+	g_signal_connect( G_OBJECT(buttonGroup), "clicked",
+			  G_CALLBACK( edit_group_to_group ), NULL );
+	g_signal_connect( G_OBJECT(buttonAvail), "clicked",
+			  G_CALLBACK( edit_group_to_avail ), NULL );
+	g_signal_connect(G_OBJECT(clist_avail), "button_press_event",
+			 G_CALLBACK(edit_group_list_avail_button), NULL);
+	g_signal_connect(G_OBJECT(clist_group), "button_press_event",
+			 G_CALLBACK(edit_group_list_group_button), NULL);
 
 	groupeditdlg.window     = window;
 	groupeditdlg.ok_btn     = ok_btn;

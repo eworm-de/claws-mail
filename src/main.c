@@ -230,7 +230,7 @@ int main(int argc, char *argv[])
 	gtk_rc_parse("./gtkrc");
 
 	userrc = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, MENU_RC, NULL);
-	gtk_item_factory_parse_rc(userrc);
+	gtk_accel_map_load (userrc);
 	g_free(userrc);
 
 	CHDIR_RETURN_VAL_IF_FAIL(get_home_dir(), 1);
@@ -649,7 +649,7 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 	addressbook_export_to_file();
 
 	filename = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, MENU_RC, NULL);
-	gtk_item_factory_dump_rc(filename, NULL, TRUE);
+	gtk_accel_map_save (filename);
 	g_free(filename);
 
 	/* delete temporary files */

@@ -61,7 +61,7 @@ static void message_search_create(MessageView *summaryview);
 static void message_search_execute(GtkButton *button, gpointer data);
 static void message_search_clear(GtkButton *button, gpointer data);
 static void body_activated(void);
-static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data);
+static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data);
 
 void message_search(MessageView *messageview)
 {
@@ -83,16 +83,16 @@ static void message_search_create(MessageView *messageview)
 	GtkWidget *checkbtn_hbox;
 	GtkWidget *confirm_area;
 
-	window = gtk_window_new (GTK_WINDOW_DIALOG);
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW (window),
 			      _("Find in current message"));
-	gtk_widget_set_usize (window, 450, -1);
+	gtk_widget_set_size_request (window, 450, -1);
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, TRUE);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(gtk_widget_hide_on_delete), NULL);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(key_pressed), NULL);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(gtk_widget_hide_on_delete), NULL);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 
 	vbox1 = gtk_vbox_new (FALSE, 0);
@@ -110,18 +110,20 @@ static void message_search_create(MessageView *messageview)
 	body_entry = gtk_entry_new ();
 	gtk_widget_show (body_entry);
 	gtk_box_pack_start (GTK_BOX (hbox1), body_entry, TRUE, TRUE, 0);
-	gtk_signal_connect(GTK_OBJECT(body_entry), "activate",
-			   GTK_SIGNAL_FUNC(body_activated), messageview);
+	g_signal_connect(G_OBJECT(body_entry), "activate",
+			 G_CALLBACK(body_activated), messageview);
 
 	checkbtn_hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (checkbtn_hbox);
 	gtk_box_pack_start (GTK_BOX (vbox1), checkbtn_hbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (checkbtn_hbox), 8);
 
-	case_checkbtn = gtk_check_button_new_with_label (_("Case sensitive"));
+#warning FIXME_GTK2
+	case_checkbtn = gtk_check_button_new_with_label (_("Case sensitive (Broken)"));
 	gtk_widget_show (case_checkbtn);
 	gtk_box_pack_start (GTK_BOX (checkbtn_hbox), case_checkbtn,
 			    FALSE, FALSE, 0);
+	gtk_widget_set_sensitive(case_checkbtn, FALSE);
 
 	backward_checkbtn =
 		gtk_check_button_new_with_label (_("Backward search"));
@@ -137,15 +139,17 @@ static void message_search_create(MessageView *messageview)
 	gtk_box_pack_start (GTK_BOX (vbox1), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(search_btn);
 
-	gtk_signal_connect(GTK_OBJECT(search_btn), "clicked",
-			   GTK_SIGNAL_FUNC(message_search_execute),
-			   messageview);
-	gtk_signal_connect(GTK_OBJECT(clear_btn), "clicked",
-			   GTK_SIGNAL_FUNC(message_search_clear),
-			   messageview);
-	gtk_signal_connect_object(GTK_OBJECT(close_btn), "clicked",
-				  GTK_SIGNAL_FUNC(gtk_widget_hide),
-				  GTK_OBJECT(window));
+	g_signal_connect(G_OBJECT(search_btn), "clicked",
+			 G_CALLBACK(message_search_execute),
+			 messageview);
+	g_signal_connect(G_OBJECT(clear_btn), "clicked",
+			 G_CALLBACK(message_search_clear),
+			 messageview);
+	g_signal_connect_closure
+		(G_OBJECT(close_btn), "clicked",
+		 g_cclosure_new_swap(G_CALLBACK(gtk_widget_hide),
+				     window, NULL),
+		 FALSE);
 }
 
 static void message_search_execute(GtkButton *button, gpointer data)
@@ -154,7 +158,7 @@ static void message_search_execute(GtkButton *button, gpointer data)
 	gboolean case_sens;
 	gboolean backward;
 	gboolean all_searched = FALSE;
-	gchar *body_str;
+	const gchar *body_str;
 
 	body_str = gtk_entry_get_text(GTK_ENTRY(body_entry));
 	if (*body_str == '\0') return;
@@ -215,8 +219,9 @@ static void body_activated(void)
 	gtk_button_clicked(GTK_BUTTON(search_btn));
 }
 
-static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
+static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		gtk_widget_hide(window);
+	return FALSE;
 }

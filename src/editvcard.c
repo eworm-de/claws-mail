@@ -102,7 +102,7 @@ static void edit_vcard_file_check( void ) {
 }
 
 static void edit_vcard_file_ok( GtkWidget *widget, gpointer data ) {
-	gchar *sFile;
+	const gchar *sFile;
 	AddressFileSelection *afs;
 	GtkWidget *fileSel;
 
@@ -131,10 +131,10 @@ static void edit_vcard_file_select_create( AddressFileSelection *afs ) {
 
 	fileSelector = gtk_file_selection_new( _("Select vCard File") );
 	gtk_file_selection_hide_fileop_buttons( GTK_FILE_SELECTION(fileSelector) );
-	gtk_signal_connect( GTK_OBJECT (GTK_FILE_SELECTION(fileSelector)->ok_button),
-                             "clicked", GTK_SIGNAL_FUNC (edit_vcard_file_ok), ( gpointer ) afs );
-	gtk_signal_connect( GTK_OBJECT (GTK_FILE_SELECTION(fileSelector)->cancel_button),
-                             "clicked", GTK_SIGNAL_FUNC (edit_vcard_file_cancel), ( gpointer ) afs );
+	g_signal_connect( G_OBJECT (GTK_FILE_SELECTION(fileSelector)->ok_button),
+			  "clicked", G_CALLBACK (edit_vcard_file_ok), ( gpointer ) afs );
+	g_signal_connect( G_OBJECT (GTK_FILE_SELECTION(fileSelector)->cancel_button),
+			  "clicked", G_CALLBACK (edit_vcard_file_cancel), ( gpointer ) afs );
 	afs->fileSelector = fileSelector;
 	afs->cancelled = TRUE;
 }
@@ -158,11 +158,12 @@ static gint edit_vcard_delete_event( GtkWidget *widget, GdkEventAny *event, gboo
 	return TRUE;
 }
 
-static void edit_vcard_key_pressed( GtkWidget *widget, GdkEventKey *event, gboolean *cancelled ) {
+static gboolean edit_vcard_key_pressed( GtkWidget *widget, GdkEventKey *event, gboolean *cancelled ) {
 	if (event && event->keyval == GDK_Escape) {
 		*cancelled = TRUE;
 		gtk_main_quit();
 	}
+	return FALSE;
 }
 
 static void addressbook_edit_vcard_create( gboolean *cancelled ) {
@@ -182,18 +183,18 @@ static void addressbook_edit_vcard_create( gboolean *cancelled ) {
 	GtkWidget *hsbox;
 	gint top;
 
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
-	gtk_widget_set_usize(window, 450, -1);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_widget_set_size_request(window, 450, -1);
 	gtk_container_set_border_width( GTK_CONTAINER(window), 0 );
 	gtk_window_set_title(GTK_WINDOW(window), _("Edit vCard Entry"));
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);	
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(edit_vcard_delete_event),
-			   cancelled);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(edit_vcard_key_pressed),
-			   cancelled);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(edit_vcard_delete_event),
+			 cancelled);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(edit_vcard_key_pressed),
+			 cancelled);
 
 	vbox = gtk_vbox_new(FALSE, 8);
 	gtk_container_add(GTK_CONTAINER(window), vbox);
@@ -245,14 +246,14 @@ static void addressbook_edit_vcard_create( gboolean *cancelled ) {
 	hsep = gtk_hseparator_new();
 	gtk_box_pack_end(GTK_BOX(vbox), hsep, FALSE, FALSE, 0);
 
-	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-			   GTK_SIGNAL_FUNC(edit_vcard_ok), cancelled);
-	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
-			   GTK_SIGNAL_FUNC(edit_vcard_cancel), cancelled);
-	gtk_signal_connect(GTK_OBJECT(file_btn), "clicked",
-			   GTK_SIGNAL_FUNC(edit_vcard_file_select), NULL);
-	gtk_signal_connect(GTK_OBJECT(check_btn), "clicked",
-			   GTK_SIGNAL_FUNC(edit_vcard_file_check), NULL);
+	g_signal_connect(G_OBJECT(ok_btn), "clicked",
+			 G_CALLBACK(edit_vcard_ok), cancelled);
+	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
+			 G_CALLBACK(edit_vcard_cancel), cancelled);
+	g_signal_connect(G_OBJECT(file_btn), "clicked",
+			 G_CALLBACK(edit_vcard_file_select), NULL);
+	g_signal_connect(G_OBJECT(check_btn), "clicked",
+			 G_CALLBACK(edit_vcard_file_check), NULL);
 
 	gtk_widget_show_all(vbox);
 

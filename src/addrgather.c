@@ -470,7 +470,7 @@ static void addrgather_dlg_create( void ) {
 	GtkWidget *hbbox;
 	GtkWidget *hsbox;
 
-	window = gtk_window_new( GTK_WINDOW_DIALOG );
+	window = gtk_window_new( GTK_WINDOW_TOPLEVEL );
 	gtk_widget_set_usize( window, 380, -1 );
 	gtk_container_set_border_width(GTK_CONTAINER(window), 0);
 	gtk_window_set_position( GTK_WINDOW(window), GTK_WIN_POS_CENTER );

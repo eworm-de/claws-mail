@@ -29,7 +29,8 @@
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkctree.h>
 #include <gtk/gtkcombo.h>
-#include <gtk/gtkthemes.h>
+#warning FIXME_GTK2
+/* #include <gtk/gtkthemes.h> */
 #include <gtk/gtkbindings.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -49,71 +50,23 @@
 #include "menu.h"
 #include "prefs_account.h"
 
-gint gtkut_get_font_width(GdkFont *font)
+#warning FIXME_GTK2
+gboolean gtkut_get_font_size(GtkWidget *widget,
+			     gint *width, gint *height)
 {
-	gchar *str;
-	gint width;
+	PangoLayout *layout;
+	const gchar *str = "Abcdef";
 
-	if (conv_get_current_charset() == C_UTF_8)
-		str = "Abcdef";
-	else
-		str = _("Abcdef");
+	g_return_val_if_fail(GTK_IS_WIDGET(widget), FALSE);
 
-	width = gdk_string_width(font, str);
-	width /= strlen(str);
+	layout = gtk_widget_create_pango_layout(widget, str);
+	g_return_val_if_fail(layout, FALSE);
+	pango_layout_get_pixel_size(layout, width, height);
+	if (width)
+		*width = *width / g_utf8_strlen(str, -1);
+	g_object_unref(layout);
 
-	return width;
-}
-
-gint gtkut_get_font_height(GdkFont *font)
-{
-	gchar *str;
-	gint height;
-
-	if (conv_get_current_charset() == C_UTF_8)
-		str = "Abcdef";
-	else
-		str = _("Abcdef");
-
-	height = gdk_string_height(font, str);
-
-	return height;
-}
-
-GdkFont *gtkut_font_load(const gchar *fontset_name)
-{
-	GdkFont *font;
-
-	g_return_val_if_fail(fontset_name != NULL, NULL);
-
-	if (conv_get_current_charset() == C_US_ASCII)
-		font = gtkut_font_load_from_fontset(fontset_name);
-	else
-		font = gdk_fontset_load(fontset_name);
-
-	return font;
-}
-
-GdkFont *gtkut_font_load_from_fontset(const gchar *fontset_name)
-{
-	GdkFont *font = NULL;
-
-	if (strchr(fontset_name, ',') == NULL) {
-		font = gdk_font_load(fontset_name);
-	} else {
-		gchar **fonts;
-		gint i;
-
-		fonts = g_strsplit(fontset_name, ",", -1);
-		for (i = 0; fonts[i] != NULL && fonts[i][0] != '\0';
-		     i++) {
-			font = gdk_font_load(fonts[i]);
-			if (font) break;
-		}
-		g_strfreev(fonts);
-	}
-
-	return font;
+	return TRUE;
 }
 
 void gtkut_convert_int_to_gdk_color(gint rgbvalue, GdkColor *color)
@@ -136,7 +89,7 @@ void gtkut_button_set_create(GtkWidget **bbox,
 
 	*bbox = gtk_hbutton_box_new();
 	gtk_button_box_set_layout(GTK_BUTTON_BOX(*bbox), GTK_BUTTONBOX_END);
-	gtk_button_box_set_spacing(GTK_BUTTON_BOX(*bbox), 5);
+	gtk_box_set_spacing(GTK_BOX(*bbox), 5);
 
 	*button1 = gtk_button_new_with_label(label1);
 	GTK_WIDGET_SET_FLAGS(*button1, GTK_CAN_DEFAULT);
@@ -343,23 +296,16 @@ void gtkut_combo_set_items(GtkCombo *combo, const gchar *str1, ...)
 gchar *gtkut_editable_get_selection(GtkEditable *editable)
 {
 	guint start_pos, end_pos;
+	gboolean found;
 
-	g_return_val_if_fail(editable != NULL, NULL);
+	g_return_val_if_fail(GTK_IS_EDITABLE(editable), NULL);
 
-	if (!editable->has_selection) return NULL;
-
-	if (editable->selection_start_pos == editable->selection_end_pos)
+	found = gtk_editable_get_selection_bounds(editable,
+						  &start_pos, &end_pos);
+	if (found)
+		return gtk_editable_get_chars(editable, start_pos, end_pos);
+	else
 		return NULL;
-
-	if (editable->selection_start_pos < editable->selection_end_pos) {
-		start_pos = editable->selection_start_pos;
-		end_pos = editable->selection_end_pos;
-	} else {
-		start_pos = editable->selection_end_pos;
-		end_pos = editable->selection_start_pos;
-	}
-
-	return gtk_editable_get_chars(editable, start_pos, end_pos);
 }
 
 /*
@@ -375,9 +321,12 @@ static void gtkut_check_before_remove(GtkWidget *widget, gpointer unused)
 	if (GTK_IS_CONTAINER(widget))
 		gtk_container_forall(GTK_CONTAINER(widget),
 				     gtkut_check_before_remove, NULL);
+#warning FIXME_GTK2
+#if 0
 	if (GTK_IS_EDITABLE(widget))
 		gtk_editable_claim_selection(GTK_EDITABLE(widget),
 					     FALSE, GDK_CURRENT_TIME);
+#endif
 }
 
 /*
@@ -444,6 +393,8 @@ void gtkut_widget_get_uposition(GtkWidget *widget, gint *px, gint *py)
 
 void gtkut_widget_disable_theme_engine(GtkWidget *widget)
 {
+#warning FIXME_GTK2
+#if 0
 	GtkStyle *style, *new_style;
 
 	style = gtk_widget_get_style(widget);
@@ -457,24 +408,14 @@ void gtkut_widget_disable_theme_engine(GtkWidget *widget)
 		style->engine = engine;
 		gtk_widget_set_style(widget, new_style);
 	}
-}
-
-static void gtkut_widget_draw_cb(GtkWidget *widget, GdkRectangle *area,
-				 gboolean *flag)
-{
-	*flag = TRUE;
-	gtk_signal_disconnect_by_data(GTK_OBJECT(widget), flag);
+#endif
 }
 
 void gtkut_widget_wait_for_draw(GtkWidget *widget)
 {
-	gboolean flag = FALSE;
-
 	if (!GTK_WIDGET_DRAWABLE(widget)) return;
 
-	gtk_signal_connect(GTK_OBJECT(widget), "draw",
-			   GTK_SIGNAL_FUNC(gtkut_widget_draw_cb), &flag);
-	while (!flag)
+	while (gtk_events_pending())
 		gtk_main_iteration();
 }
 
@@ -483,16 +424,16 @@ static void gtkut_clist_bindings_add(GtkWidget *clist)
 	GtkBindingSet *binding_set;
 
 	binding_set = gtk_binding_set_by_class
-		(GTK_CLIST_CLASS(GTK_OBJECT(clist)->klass));
+		(GTK_CLIST_GET_CLASS(clist));
 
 	gtk_binding_entry_add_signal(binding_set, GDK_n, GDK_CONTROL_MASK,
 				     "scroll_vertical", 2,
-				     GTK_TYPE_ENUM, GTK_SCROLL_STEP_FORWARD,
-				     GTK_TYPE_FLOAT, 0.0);
+				     G_TYPE_ENUM, GTK_SCROLL_STEP_FORWARD,
+				     G_TYPE_FLOAT, 0.0);
 	gtk_binding_entry_add_signal(binding_set, GDK_p, GDK_CONTROL_MASK,
 				     "scroll_vertical", 2,
-				     GTK_TYPE_ENUM, GTK_SCROLL_STEP_BACKWARD,
-				     GTK_TYPE_FLOAT, 0.0);
+				     G_TYPE_ENUM, GTK_SCROLL_STEP_BACKWARD,
+				     G_TYPE_FLOAT, 0.0);
 }
 
 void gtkut_widget_init(void)
@@ -500,16 +441,22 @@ void gtkut_widget_init(void)
 	GtkWidget *clist;
 
 	clist = gtk_clist_new(1);
+	g_object_ref(G_OBJECT(clist));
+	gtk_object_sink(GTK_OBJECT(clist));
 	gtkut_clist_bindings_add(clist);
-	gtk_widget_unref(clist);
+	g_object_unref(G_OBJECT(clist));
 
 	clist = gtk_ctree_new(1, 0);
+	g_object_ref(G_OBJECT(clist));
+	gtk_object_sink(GTK_OBJECT(clist));
 	gtkut_clist_bindings_add(clist);
-	gtk_widget_unref(clist);
+	g_object_unref(G_OBJECT(clist));
 
 	clist = gtk_sctree_new_with_titles(1, 0, NULL);
+	g_object_ref(G_OBJECT(clist));
+	gtk_object_sink(GTK_OBJECT(clist));
 	gtkut_clist_bindings_add(clist);
-	gtk_widget_unref(clist);
+	g_object_unref(G_OBJECT(clist));
 }
 
 void gtkut_widget_set_app_icon(GtkWidget *widget)
@@ -587,4 +534,154 @@ void gtkut_set_widget_bgcolor_rgb(GtkWidget *widget, guint rgbvalue)
 	newstyle->bg[GTK_STATE_ACTIVE]   = gdk_color;
 	gtk_widget_set_style(widget, newstyle);
 }
+  
+#warning FIXME_GTK2
+#if 1 /* FIXME_GTK2 */
+gboolean gtkut_text_buffer_match_string(GtkTextBuffer *textbuf, gint pos, gunichar *wcs,
+					gint len, gboolean case_sens)
+{
+	GtkTextIter start_iter, end_iter;
+	gchar *utf8str;
+	gint match_count = 0;
 
+	gtk_text_buffer_get_iter_at_offset(textbuf, &start_iter, pos);
+	gtk_text_buffer_get_iter_at_offset(textbuf, &end_iter, pos + len);
+
+	utf8str = gtk_text_buffer_get_text(textbuf, &start_iter, &end_iter, FALSE);
+	if (!utf8str) return FALSE;
+
+	if ((gint) g_utf8_strlen(utf8str, -1) != len) {
+		g_free(utf8str);
+		return FALSE;
+	}
+
+	for (; match_count < len; pos++, match_count++) {
+		gchar *ptr = g_utf8_offset_to_pointer(utf8str, match_count);
+		gunichar ch;
+
+		if (!ptr) break;
+		ch = g_utf8_get_char(ptr);
+
+		if (case_sens) {
+			if (ch != wcs[match_count])
+				break;
+		} else {
+			if (g_unichar_tolower(ch) !=
+			    g_unichar_tolower(wcs[match_count]))
+				break;
+		}
+	}
+
+	g_free(utf8str);
+
+	if (match_count == len)
+		return TRUE;
+	else
+		return FALSE;
+}
+
+guint gtkut_text_buffer_str_compare_n(GtkTextBuffer *textbuf,
+				      guint pos1, guint pos2,
+				      guint len, guint text_len)
+{
+	guint i;
+
+	for (i = 0; i < len && pos1 + i < text_len && pos2 + i < text_len; i++) {
+		GtkTextIter start_iter, end_iter;
+		gchar *utf8str1, *utf8str2;
+
+		gtk_text_buffer_get_iter_at_offset(textbuf, &start_iter,
+						   pos1 + i);
+		gtk_text_buffer_get_iter_at_offset(textbuf, &end_iter,
+						   pos1 + i + 1);
+		utf8str1 = gtk_text_buffer_get_text(textbuf,
+						    &start_iter,
+						    &end_iter,
+						    FALSE);
+
+		gtk_text_buffer_get_iter_at_offset(textbuf, &start_iter,
+						   pos2 + i);
+		gtk_text_buffer_get_iter_at_offset(textbuf, &end_iter,
+						   pos2 + i + 1);
+		utf8str2 = gtk_text_buffer_get_text(textbuf,
+						    &start_iter,
+						    &end_iter,
+						    FALSE);
+
+		if (!utf8str1 || !utf8str2 || strcmp(utf8str1, utf8str2)) {
+			g_free(utf8str1);
+			g_free(utf8str2);
+			break;
+		}
+
+		g_free(utf8str1);
+		g_free(utf8str2);
+	}
+
+	return i;
+}
+
+guint gtkut_text_buffer_str_compare(GtkTextBuffer *textbuf,
+				    guint start_pos, guint text_len,
+				    const gchar *str)
+{
+	gunichar *wcs;
+	guint len = 0;
+	glong items_read = 0, items_written = 0;
+	gboolean result;
+	GError *error = NULL;
+
+	if (!str) return 0;
+
+	wcs = g_utf8_to_ucs4(str, -1, &items_read, &items_written, &error);
+	if (error != NULL) {
+		g_warning("An error occured while converting a string from UTF-8 to UCS-4: %s\n",
+			  error->message);
+		g_error_free(error);
+	}
+	if (!wcs || items_written <= 0) return 0;
+	len = (guint) items_written;
+
+	if (len > text_len - start_pos)
+		result = FALSE;
+	else
+		result = gtkut_text_buffer_match_string(textbuf, start_pos,
+							wcs, len,
+							TRUE);
+
+	g_free(wcs);
+
+	return result ? len : 0;
+}
+
+gboolean gtkut_text_buffer_is_uri_string(GtkTextBuffer *textbuf,
+					 guint start_pos, guint text_len)
+{
+	if (gtkut_text_buffer_str_compare(textbuf, start_pos, text_len, "http://")  ||
+	    gtkut_text_buffer_str_compare(textbuf, start_pos, text_len, "ftp://")   ||
+	    gtkut_text_buffer_str_compare(textbuf, start_pos, text_len, "https://") ||
+	    gtkut_text_buffer_str_compare(textbuf, start_pos, text_len, "www."))
+		return TRUE;
+
+	return FALSE;
+}
+  
+gchar *gtkut_text_view_get_selection(GtkTextView *textview)
+{
+	GtkTextBuffer *buffer;
+	GtkTextIter start_iter, end_iter;
+	gboolean found;
+
+	g_return_val_if_fail(GTK_IS_TEXT_VIEW(textview), NULL);
+
+	buffer = gtk_text_view_get_buffer(textview);
+	found = gtk_text_buffer_get_selection_bounds(buffer,
+						     &start_iter,
+						     &end_iter);
+	if (found)
+		return gtk_text_buffer_get_text(buffer, &start_iter, &end_iter,
+						FALSE);
+	else
+		return NULL;
+}
+#endif /* FIXME_GTK2 */

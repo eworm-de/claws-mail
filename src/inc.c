@@ -349,10 +349,10 @@ static IncProgressDialog *inc_progress_dialog_create(gboolean autocheck)
 	progress = progress_dialog_create();
 	gtk_window_set_title(GTK_WINDOW(progress->window),
 			     _("Retrieving new messages"));
-	gtk_signal_connect(GTK_OBJECT(progress->cancel_btn), "clicked",
-			   GTK_SIGNAL_FUNC(inc_cancel_cb), dialog);
-	gtk_signal_connect(GTK_OBJECT(progress->window), "delete_event",
-			   GTK_SIGNAL_FUNC(inc_dialog_delete_cb), dialog);
+	g_signal_connect(G_OBJECT(progress->cancel_btn), "clicked",
+			 G_CALLBACK(inc_cancel_cb), dialog);
+	g_signal_connect(G_OBJECT(progress->window), "delete_event",
+			 G_CALLBACK(inc_dialog_delete_cb), dialog);
 	/* manage_window_set_transient(GTK_WINDOW(progress->window)); */
 
 	progress_dialog_set_value(progress, 0.0);
@@ -1100,7 +1100,8 @@ static gint inc_dialog_delete_cb(GtkWidget *widget, GdkEventAny *event,
 
 static gint inc_spool(void)
 {
-	gchar *mbox, *logname;
+	gchar *mbox;
+	const gchar *logname;
 	gint msgs;
 
 	logname = g_get_user_name();

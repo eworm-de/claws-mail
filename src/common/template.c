@@ -29,6 +29,7 @@
 #include "intl.h"
 #include "utils.h"
 #include "template.h"
+#include "../codeconv.h"
 
 static GSList *template_list;
 
@@ -38,6 +39,9 @@ static Template *template_load(gchar *filename)
 	FILE *fp;
 	gchar buf[BUFFSIZE];
 	gint bytes_read;
+#warning FIXME_GTK2
+	const gchar *src_codeset = conv_get_current_charset_str();
+	const gchar *dest_codeset = CS_UTF_8;
 
 	if ((fp = fopen(filename, "rb")) == NULL) {
 		FILE_OP_ERROR(filename, "fopen");
@@ -53,18 +57,36 @@ static Template *template_load(gchar *filename)
 	tmpl->value = NULL;
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		gchar *tmp = NULL;
+
 		if (buf[0] == '\n')
 			break;
-		else if (!g_strncasecmp(buf, "Name:", 5))
-			tmpl->name = g_strdup(g_strstrip(buf + 5));
-		else if (!g_strncasecmp(buf, "Subject:", 8))
-			tmpl->subject = g_strdup(g_strstrip(buf + 8));
-		else if (!g_strncasecmp(buf, "To:", 3))
-			tmpl->to = g_strdup(g_strstrip(buf + 3));
-		else if (!g_strncasecmp(buf, "Cc:", 3))
-			tmpl->cc = g_strdup(g_strstrip(buf + 3));
-		else if (!g_strncasecmp(buf, "Bcc:", 4))
-			tmpl->bcc = g_strdup(g_strstrip(buf + 4));						
+		else if (!g_strncasecmp(buf, "Name:", 5)) {
+			tmp = conv_codeset_strdup(buf + 5,
+						  src_codeset,
+						  dest_codeset);
+			tmpl->name = tmp ? g_strstrip(tmp) : g_strdup(buf + 5);
+		} else if (!g_strncasecmp(buf, "Subject:", 8)) {
+			tmp = conv_codeset_strdup(buf + 8,
+						  src_codeset,
+						  dest_codeset);
+			tmpl->subject = tmp ? g_strstrip(tmp) : g_strdup(buf + 8);
+		} else if (!g_strncasecmp(buf, "To:", 3)) {
+			tmp = conv_codeset_strdup(buf + 3,
+						  src_codeset,
+						  dest_codeset);
+			tmpl->to = tmp ? g_strstrip(tmp) : g_strdup(buf + 3);
+		} else if (!g_strncasecmp(buf, "Cc:", 3)) {
+			tmp = conv_codeset_strdup(buf + 3,
+						  src_codeset,
+						  dest_codeset);
+			tmpl->cc = tmp ? g_strstrip(tmp) : g_strdup(buf + 3);
+		} else if (!g_strncasecmp(buf, "Bcc:", 4)) {
+			tmp = conv_codeset_strdup(buf + 4,
+						  src_codeset,
+						  dest_codeset);
+			tmpl->bcc = tmp ? g_strstrip(tmp) : g_strdup(buf + 4);
+		}
 	}
 
 	if (!tmpl->name) {
@@ -81,7 +103,10 @@ static Template *template_load(gchar *filename)
 		}
 	}
 	fclose(fp);
-	tmpl->value = g_strndup(buf, bytes_read);
+	buf[bytes_read] = '\0';
+	tmpl->value = conv_codeset_strdup(buf, src_codeset, dest_codeset);
+	if (!tmpl->value)
+		tmpl->value = g_strdup(buf);
 
 	return tmpl;
 }
@@ -111,7 +136,7 @@ void template_clear_config(GSList *tmpl_list)
 
 GSList *template_read_config(void)
 {
-	gchar *path;
+	const gchar *path;
 	gchar *filename;
 	DIR *dp;
 	struct dirent *de;
@@ -157,7 +182,7 @@ GSList *template_read_config(void)
 
 void template_write_config(GSList *tmpl_list)
 {
-	gchar *path;
+	const gchar *path;
 	GSList *cur;
 	Template *tmpl;
 	FILE *fp;
@@ -180,6 +205,10 @@ void template_write_config(GSList *tmpl_list)
 
 	for (cur = tmpl_list, tmpl_num = 1; cur != NULL;
 	     cur = cur->next, tmpl_num++) {
+#warning FIXME_GTK2
+		const gchar *src_codeset = CS_UTF_8;
+		const gchar *dest_codeset = conv_get_current_charset_str();
+		gchar *tmp = NULL;
 		gchar *filename;
 
 		tmpl = cur->data;
@@ -190,21 +219,58 @@ void template_write_config(GSList *tmpl_list)
 		if ((fp = fopen(filename, "wb")) == NULL) {
 			FILE_OP_ERROR(filename, "fopen");
 			g_free(filename);
-			g_free(path);
 			return;
 		}
 
-		fprintf(fp, "Name: %s\n", tmpl->name);
-		if (tmpl->subject && *tmpl->subject != '\0')
-			fprintf(fp, "Subject: %s\n", tmpl->subject);
-		if (tmpl->to && *tmpl->to != '\0')
-			fprintf(fp, "To: %s\n", tmpl->to);
-		if (tmpl->cc && *tmpl->cc != '\0')
-			fprintf(fp, "Cc: %s\n", tmpl->cc);
-		if (tmpl->bcc && *tmpl->bcc != '\0')
-			fprintf(fp, "Bcc: %s\n", tmpl->bcc);						
+		tmp = conv_codeset_strdup(tmpl->name, src_codeset, dest_codeset);
+		if (!tmp)
+			tmp = g_strdup(tmpl->name);
+		fprintf(fp, "Name: %s\n", tmp ? tmp : "");
+		g_free(tmp);
+
+		if (tmpl->subject && *tmpl->subject != '\0') {
+			tmp = conv_codeset_strdup(tmpl->subject,
+						  src_codeset, dest_codeset);
+			if (!tmp)
+				tmp = g_strdup(tmpl->subject);
+			fprintf(fp, "Subject: %s\n", tmp);
+			g_free(tmp);
+		}
+
+		if (tmpl->to && *tmpl->to != '\0') {
+			tmp = conv_codeset_strdup(tmpl->to,
+						  src_codeset, dest_codeset);
+			if (!tmp)
+				tmp = g_strdup(tmpl->to);
+			fprintf(fp, "To: %s\n", tmp);
+			g_free(tmp);
+		}
+
+		if (tmpl->cc && *tmpl->cc != '\0') {
+			tmp = conv_codeset_strdup(tmpl->cc,
+						  src_codeset, dest_codeset);
+			if (!tmp)
+				tmp = g_strdup(tmpl->cc);
+			fprintf(fp, "Cc: %s\n", tmp);
+			g_free(tmp);
+		}
+
+		if (tmpl->bcc && *tmpl->bcc != '\0') {
+			tmp = conv_codeset_strdup(tmpl->bcc,
+						  src_codeset, dest_codeset);
+			if (!tmp)
+				tmp = g_strdup(tmpl->bcc);
+			fprintf(fp, "Bcc: %s\n", tmp);
+			g_free(tmp);
+		}
+
 		fputs("\n", fp);
-		fwrite(tmpl->value, sizeof(gchar) * strlen(tmpl->value), 1, fp);
+		tmp = conv_codeset_strdup(tmpl->value,
+					  src_codeset, dest_codeset);
+		if (!tmp)
+			tmp = g_strdup(tmpl->value);
+		fwrite(tmp, sizeof(gchar) * strlen(tmp), 1, fp);
+		g_free(tmp);
 		fclose(fp);
 	}
 }

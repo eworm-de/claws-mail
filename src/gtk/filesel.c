@@ -41,7 +41,7 @@ static void filesel_create(const gchar *title, gboolean multiple_files);
 static void filesel_ok_cb(GtkWidget *widget, gpointer data);
 static void filesel_cancel_cb(GtkWidget *widget, gpointer data);
 static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data);
-static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data);
+static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data);
 
 static void filesel_file_list_select_row_multi(GtkCList *clist, gint row, gint col,
 					       GdkEventButton *event, gpointer userdata);
@@ -90,7 +90,7 @@ gchar *filesel_select_file(const gchar *title, const gchar *file)
 		gtk_main_iteration();
 
 	if (filesel_ack) {
-		gchar *str;
+		const gchar *str;
 
 		str = gtk_file_selection_get_filename
 			(GTK_FILE_SELECTION(filesel));
@@ -148,7 +148,7 @@ GList *filesel_select_multiple_files(const gchar *title, const gchar *file)
 		gtk_main_iteration();
 
 	if (filesel_ack) {
-		gchar *fname = NULL;
+		const gchar *fname = NULL;
 
 		list = filesel_get_multiple_filenames();
 
@@ -182,17 +182,17 @@ static void filesel_create(const gchar *title, gboolean multiple_files)
 	gtk_window_set_wmclass
 		(GTK_WINDOW(filesel), "file_selection", "Sylpheed");
 
-	gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(filesel)->ok_button),
-			   "clicked", GTK_SIGNAL_FUNC(filesel_ok_cb),
-			   NULL);
-	gtk_signal_connect
-		(GTK_OBJECT(GTK_FILE_SELECTION(filesel)->cancel_button),
-		 "clicked", GTK_SIGNAL_FUNC(filesel_cancel_cb),
+	g_signal_connect(G_OBJECT(GTK_FILE_SELECTION(filesel)->ok_button),
+			 "clicked", G_CALLBACK(filesel_ok_cb),
+			 NULL);
+	g_signal_connect
+		(G_OBJECT(GTK_FILE_SELECTION(filesel)->cancel_button),
+		 "clicked", G_CALLBACK(filesel_cancel_cb),
 		 NULL);
-	gtk_signal_connect(GTK_OBJECT(filesel), "delete_event",
-			   GTK_SIGNAL_FUNC(delete_event), NULL);
-	gtk_signal_connect(GTK_OBJECT(filesel), "key_press_event",
-			   GTK_SIGNAL_FUNC(key_pressed), NULL);
+	g_signal_connect(G_OBJECT(filesel), "delete_event",
+			 G_CALLBACK(delete_event), NULL);
+	g_signal_connect(G_OBJECT(filesel), "key_press_event",
+			 G_CALLBACK(key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(filesel);
 
 	if (multiple_files) {
@@ -245,10 +245,11 @@ static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data)
 	return TRUE;
 }
 
-static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
+static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		filesel_cancel_cb(NULL, NULL);
+	return FALSE;
 }
 
 /* handle both "select_row" and "unselect_row". note that we're using the
@@ -329,15 +330,12 @@ static GList *filesel_get_multiple_filenames(void)
 	 * entry is only useful for extracting the current directory. */
 	GtkCList *file_list  = GTK_CLIST(GTK_FILE_SELECTION(filesel)->file_list);
 	GList    *list = NULL, *sel_list;
-	gchar 	 *cwd, *tmp;	 
+	gchar 	 *cwd;	 
 	gboolean  separator;
 
 	g_return_val_if_fail(file_list->selection != NULL, NULL);
 
-	tmp = gtk_file_selection_get_filename(GTK_FILE_SELECTION(filesel));
-	tmp = g_strdup(tmp);
-	cwd = g_dirname(tmp);
-	g_free(tmp);
+	cwd = g_dirname(gtk_file_selection_get_filename(GTK_FILE_SELECTION(filesel)));
 	g_return_val_if_fail(cwd != NULL, NULL);
 
 	/* only quick way to check the end of a multi byte string for our

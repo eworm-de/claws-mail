@@ -77,7 +77,7 @@ static void cancel_clicked	(GtkWidget	*widget,
 static gint delete_event	(GtkWidget	*widget,
 				 GdkEventAny	*event,
 				 gpointer	 data);
-static void key_pressed		(GtkWidget	*widget,
+static gboolean key_pressed	(GtkWidget	*widget,
 				 GdkEventKey	*event,
 				 gpointer	 data);
 static void entry_activated	(GtkEditable	*editable);
@@ -166,14 +166,14 @@ static void input_dialog_create(void)
 
 	dialog = gtk_dialog_new();
 	gtk_window_set_policy(GTK_WINDOW(dialog), FALSE, FALSE, FALSE);
-	gtk_widget_set_usize(dialog, INPUT_DIALOG_WIDTH, -1);
+	gtk_widget_set_size_request(dialog, INPUT_DIALOG_WIDTH, -1);
 	gtk_container_set_border_width
 		(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), 5);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
-	gtk_signal_connect(GTK_OBJECT(dialog), "delete_event",
-			   GTK_SIGNAL_FUNC(delete_event), NULL);
-	gtk_signal_connect(GTK_OBJECT(dialog), "key_press_event",
-			   GTK_SIGNAL_FUNC(key_pressed), NULL);
+	g_signal_connect(G_OBJECT(dialog), "delete_event",
+			 G_CALLBACK(delete_event), NULL);
+	g_signal_connect(G_OBJECT(dialog), "key_press_event",
+			 G_CALLBACK(key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(dialog);
 
 	gtk_widget_realize(dialog);
@@ -191,13 +191,13 @@ static void input_dialog_create(void)
 
 	entry = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(entry), "activate",
-			   GTK_SIGNAL_FUNC(entry_activated), NULL);
+	g_signal_connect(G_OBJECT(entry), "activate",
+			 G_CALLBACK(entry_activated), NULL);
 
 	combo = gtk_combo_new();
 	gtk_box_pack_start(GTK_BOX(vbox), combo, FALSE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(GTK_COMBO(combo)->entry), "activate",
-			   GTK_SIGNAL_FUNC(combo_activated), NULL);
+	g_signal_connect(G_OBJECT(GTK_COMBO(combo)->entry), "activate",
+			 G_CALLBACK(combo_activated), NULL);
 
 	gtkut_button_set_create(&confirm_area,
 				&ok_button,     _("OK"),
@@ -207,10 +207,10 @@ static void input_dialog_create(void)
 			  confirm_area);
 	gtk_widget_grab_default(ok_button);
 
-	gtk_signal_connect(GTK_OBJECT(ok_button), "clicked",
-			   GTK_SIGNAL_FUNC(ok_clicked), NULL);
-	gtk_signal_connect(GTK_OBJECT(cancel_button), "clicked",
-			   GTK_SIGNAL_FUNC(cancel_clicked), NULL);
+	g_signal_connect(G_OBJECT(ok_button), "clicked",
+			 G_CALLBACK(ok_clicked), NULL);
+	g_signal_connect(G_OBJECT(cancel_button), "clicked",
+			 G_CALLBACK(cancel_clicked), NULL);
 
 
 	gtk_widget_show_all(GTK_DIALOG(dialog)->vbox);
@@ -275,8 +275,8 @@ static void input_dialog_set(const gchar *title, const gchar *message,
 	gtk_label_set_text(GTK_LABEL(msg_label), message);
 	if (default_string && *default_string) {
 		gtk_entry_set_text(GTK_ENTRY(entry_), default_string);
-		gtk_entry_set_position(GTK_ENTRY(entry_), 0);
-		gtk_entry_select_region(GTK_ENTRY(entry_), 0, -1);
+		gtk_editable_set_position(GTK_EDITABLE(entry_), 0);
+		gtk_editable_select_region(GTK_EDITABLE(entry_), 0, -1);
 	} else
 		gtk_entry_set_text(GTK_ENTRY(entry_), "");
 
@@ -304,12 +304,14 @@ static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data)
 	return TRUE;
 }
 
-static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
+static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
 	if (event && event->keyval == GDK_Escape) {
 		ack = FALSE;
 		fin = TRUE;
 	}
+
+	return FALSE;
 }
 
 static void entry_activated(GtkEditable *editable)

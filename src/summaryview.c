@@ -2,7 +2,7 @@
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
  * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
- * This program is free software; you can redistribute it and/or modify
+ * This program is free software; you can redistributte it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
@@ -90,9 +90,6 @@
 #define SUMMARY_COL_STATUS_WIDTH	13
 #define SUMMARY_COL_LOCKED_WIDTH	13
 #define SUMMARY_COL_MIME_WIDTH		11
-
-static GdkFont *boldfont;
-static GdkFont *smallfont;
 
 static GtkStyle *bold_style;
 static GtkStyle *bold_marked_style;
@@ -257,16 +254,17 @@ static GtkWidget *summary_ctree_create	(SummaryView	*summaryview);
 static gint summary_toggle_pressed	(GtkWidget		*eventbox,
 					 GdkEventButton		*event,
 					 SummaryView		*summaryview);
-static void summary_button_pressed	(GtkWidget		*ctree,
+static gboolean summary_button_pressed	(GtkWidget		*ctree,
 					 GdkEventButton		*event,
 					 SummaryView		*summaryview);
-static void summary_button_released	(GtkWidget		*ctree,
+static gboolean summary_button_released	(GtkWidget		*ctree,
 					 GdkEventButton		*event,
 					 SummaryView		*summaryview);
-static gint summary_key_pressed		(GtkWidget		*ctree,
+static gboolean summary_key_pressed	(GtkWidget		*ctree,
 					 GdkEventKey		*event,
 					 SummaryView		*summaryview);
-static gint summary_searchbar_pressed	(GtkWidget		*ctree,
+static gboolean summary_searchbar_pressed
+					(GtkWidget		*ctree,
 					 GdkEventKey		*event,
 					 SummaryView		*summaryview);
 static void summary_searchbar_focus_evt	(GtkWidget		*ctree,
@@ -589,9 +587,9 @@ SummaryView *summary_create(void)
 	gtk_box_pack_end(GTK_BOX(hbox), toggle_eventbox, FALSE, FALSE, 4);
 	toggle_arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
 	gtk_container_add(GTK_CONTAINER(toggle_eventbox), toggle_arrow);
-	gtk_signal_connect(GTK_OBJECT(toggle_eventbox), "button_press_event",
-			   GTK_SIGNAL_FUNC(summary_toggle_pressed),
-			   summaryview);
+	g_signal_connect(G_OBJECT(toggle_eventbox), "button_press_event",
+			 G_CALLBACK(summary_toggle_pressed),
+			 summaryview);
 	
 	
 	statlabel_msgs = gtk_label_new("");
@@ -605,7 +603,7 @@ SummaryView *summary_create(void)
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_ALWAYS);
 	gtk_box_pack_start(GTK_BOX(vbox), scrolledwin, TRUE, TRUE, 0);
-	gtk_widget_set_usize(vbox,
+	gtk_widget_set_size_request(vbox,
 			     prefs_common.summaryview_width,
 			     prefs_common.summaryview_height);
 
@@ -630,21 +628,21 @@ SummaryView *summary_create(void)
 
 	search_type = gtk_menu_new();
 	MENUITEM_ADD (search_type, menuitem, _("Subject"), S_SEARCH_SUBJECT);
-	gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
-			   GTK_SIGNAL_FUNC(summary_searchtype_changed),
-			   summaryview);
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(summary_searchtype_changed),
+			 summaryview);
 	MENUITEM_ADD (search_type, menuitem, _("From"), S_SEARCH_FROM);
-	gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
-			   GTK_SIGNAL_FUNC(summary_searchtype_changed),
-			   summaryview);
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(summary_searchtype_changed),
+			 summaryview);
 	MENUITEM_ADD (search_type, menuitem, _("To"), S_SEARCH_TO);
-	gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
-			   GTK_SIGNAL_FUNC(summary_searchtype_changed),
-			   summaryview);
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(summary_searchtype_changed),
+			 summaryview);
 	MENUITEM_ADD (search_type, menuitem, _("Extended"), S_SEARCH_EXTENDED);
-	gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
-			   GTK_SIGNAL_FUNC(summary_searchtype_changed),
-			   summaryview);
+	g_signal_connect(G_OBJECT(menuitem), "activate",
+			 G_CALLBACK(summary_searchtype_changed),
+			 summaryview);
 
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(search_type_opt), search_type);
 	
@@ -658,27 +656,27 @@ SummaryView *summary_create(void)
 	
 	gtkut_button_set_create(&search_hbbox, &search_description, _("Extended Symbols"),
 				NULL, NULL, NULL, NULL);
-	gtk_signal_connect(GTK_OBJECT(search_description), "clicked",
-			   GTK_SIGNAL_FUNC(search_description_cb), NULL);
+	g_signal_connect(G_OBJECT(search_description), "clicked",
+			 G_CALLBACK(search_description_cb), NULL);
 	gtk_box_pack_start(GTK_BOX(hbox_search), search_hbbox, FALSE, FALSE, 2);
 				
 	gtk_widget_show(search_string);
 	gtk_widget_show(hbox_search);
 
-	gtk_signal_connect(GTK_OBJECT(search_string), "key_press_event",
-			   GTK_SIGNAL_FUNC(summary_searchbar_pressed),
-			   summaryview);
+	g_signal_connect(G_OBJECT(search_string), "key_press_event",
+			 G_CALLBACK(summary_searchbar_pressed),
+			 summaryview);
 
-	gtk_signal_connect(GTK_OBJECT(search_string), "focus_in_event",
-			   GTK_SIGNAL_FUNC(summary_searchbar_focus_evt),
-			   summaryview);
+	g_signal_connect(G_OBJECT(search_string), "focus_in_event",
+			 G_CALLBACK(summary_searchbar_focus_evt),
+			 summaryview);
 
-	gtk_signal_connect(GTK_OBJECT(search_string), "focus_out_event",
-			   GTK_SIGNAL_FUNC(summary_searchbar_focus_evt),
-			   summaryview);
+	g_signal_connect(G_OBJECT(search_string), "focus_out_event",
+			 G_CALLBACK(summary_searchbar_focus_evt),
+			 summaryview);
 
-  	gtk_signal_connect (GTK_OBJECT(toggle_search), "toggled",
-                        GTK_SIGNAL_FUNC(tog_searchbar_cb), summaryview);
+  	g_signal_connect (G_OBJECT(toggle_search), "toggled",
+			  G_CALLBACK(tog_searchbar_cb), summaryview);
 
 	/* create popup menu */
 	n_entries = sizeof(summary_popup_entries) /
@@ -752,11 +750,18 @@ void summary_init(SummaryView *summaryview)
 			 &gpgsignedxpm, &gpgsignedxpmmask);
 
 	if (!small_style) {
+		PangoFontDescription *font_desc = NULL;
+
 		small_style = gtk_style_copy
 			(gtk_widget_get_style(summaryview->ctree));
-		if (!smallfont)
-			smallfont = gtkut_font_load(SMALL_FONT);
-		small_style->font = smallfont;
+		if (SMALL_FONT)
+			font_desc = pango_font_description_from_string
+						(SMALL_FONT);
+		if (font_desc) {
+			if (small_style->font_desc)
+				pango_font_description_free(small_style->font_desc);
+			small_style->font_desc = font_desc;
+		}
 		small_marked_style = gtk_style_copy(small_style);
 		small_marked_style->fg[GTK_STATE_NORMAL] =
 			summaryview->color_marked;
@@ -765,11 +770,18 @@ void summary_init(SummaryView *summaryview)
 			summaryview->color_dim;
 	}
 	if (!bold_style) {
+		PangoFontDescription *font_desc = NULL;
 		bold_style = gtk_style_copy
 			(gtk_widget_get_style(summaryview->ctree));
-		if (!boldfont)
-			boldfont = gtkut_font_load(BOLD_FONT);
-		bold_style->font = boldfont;
+		if (BOLD_FONT)
+			font_desc = pango_font_description_from_string
+						(BOLD_FONT);
+		if (font_desc) {
+			if (bold_style->font_desc)
+				pango_font_description_free
+					(bold_style->font_desc);
+			bold_style->font_desc = font_desc;
+		}
 		bold_marked_style = gtk_style_copy(bold_style);
 		bold_marked_style->fg[GTK_STATE_NORMAL] =
 			summaryview->color_marked;
@@ -1014,7 +1026,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		gint search_type = GPOINTER_TO_INT(gtk_object_get_user_data(
 				   GTK_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
 				   GTK_MENU(summaryview->search_type))))));
-		gchar *search_string = gtk_entry_get_text(GTK_ENTRY(summaryview->search_string));
+		const gchar *search_string = gtk_entry_get_text(GTK_ENTRY(summaryview->search_string));
 		gchar *searched_header = NULL;
 		MatcherList * tmp_list = NULL;
 		
@@ -1435,12 +1447,15 @@ void summary_select_next_unread(SummaryView *summaryview)
  			}
 
 			if (val == G_ALERTDEFAULT) {
+#warning FIXME_GTK2
+#if 0
 				if (gtk_signal_n_emissions_by_name
 					(GTK_OBJECT(ctree), "key_press_event") > 0)
 						gtk_signal_emit_stop_by_name
 							(GTK_OBJECT(ctree),
 							 "key_press_event");
 				folderview_select_next_unread(summaryview->folderview);
+#endif
 				return;
 			} 
 			else
@@ -1490,12 +1505,15 @@ void summary_select_next_new(SummaryView *summaryview)
 				   "Go to next folder?"),
 				 _("Yes"), _("Search again"), _("No"));
 		if (val == G_ALERTDEFAULT) {
+#warning FIXME_GTK2
+#if 0
 			if (gtk_signal_n_emissions_by_name
 				(GTK_OBJECT(ctree), "key_press_event") > 0)
 					gtk_signal_emit_stop_by_name
 						(GTK_OBJECT(ctree),
 						 "key_press_event");
 			folderview_select_next_unread(summaryview->folderview);
+#endif
 			return;
 		} else if (val == G_ALERTALTERNATE)
 			node = NULL;
@@ -1928,9 +1946,9 @@ static void summary_status_show(SummaryView *summaryview)
 	gchar *name;
 
 	if (!summaryview->folder_item) {
-		gtk_label_set(GTK_LABEL(summaryview->statlabel_folder), "");
-		gtk_label_set(GTK_LABEL(summaryview->statlabel_select), "");
-		gtk_label_set(GTK_LABEL(summaryview->statlabel_msgs),   "");
+		gtk_label_set_text(GTK_LABEL(summaryview->statlabel_folder), "");
+		gtk_label_set_text(GTK_LABEL(summaryview->statlabel_select), "");
+		gtk_label_set_text(GTK_LABEL(summaryview->statlabel_msgs),   "");
 		return;
 	}
 
@@ -1948,7 +1966,7 @@ static void summary_status_show(SummaryView *summaryview)
 	}
 
 	name = folder_item_get_name(summaryview->folder_item);
-	gtk_label_set(GTK_LABEL(summaryview->statlabel_folder), name);
+	gtk_label_set_text(GTK_LABEL(summaryview->statlabel_folder), name);
 	g_free(name);
 
 	if (summaryview->deleted)
@@ -1987,7 +2005,7 @@ static void summary_status_show(SummaryView *summaryview)
 		
 	str = g_strconcat(n_selected ? itos(n_selected) : "",
 					itstr, sel, spc, del, mv, cp, NULL);
-	gtk_label_set(GTK_LABEL(summaryview->statlabel_select), str);
+	gtk_label_set_text(GTK_LABEL(summaryview->statlabel_select), str);
 	g_free(str);
 	g_free(sel);
 	g_free(del);
@@ -2001,7 +2019,7 @@ static void summary_status_show(SummaryView *summaryview)
 				      summaryview->folder_item->unread_msgs,
 				      summaryview->folder_item->total_msgs,
 				      to_human_readable(summaryview->total_size));
-	gtk_label_set(GTK_LABEL(summaryview->statlabel_msgs), str);
+	gtk_label_set_text(GTK_LABEL(summaryview->statlabel_msgs), str);
 	g_free(str);
 }
 
@@ -2058,7 +2076,7 @@ static void summary_set_column_titles(SummaryView *summaryview)
 		}
 
 		if (type == S_COL_MIME) {
-			label = gtk_pixmap_new(clipxpm, clipxpmmask);
+			label = gtk_image_new_from_pixmap(clipxpm, clipxpmmask);
 			gtk_widget_show(label);
 			gtk_clist_set_column_widget(clist, pos, label);
 			continue;
@@ -2572,8 +2590,8 @@ void summary_step(SummaryView *summaryview, GtkScrollType type)
 	if (messageview_is_visible(summaryview->messageview))
 		summaryview->display_msg = TRUE;
 
-	gtk_signal_emit_by_name(GTK_OBJECT(ctree), "scroll_vertical",
-				type, 0.0);
+	g_signal_emit_by_name(G_OBJECT(ctree), "scroll_vertical",
+			      type, 0.0);
 
 	if (GTK_CLIST(ctree)->selection)
 		gtk_sctree_set_anchor_row
@@ -3417,7 +3435,21 @@ void summary_save_as(SummaryView *summaryview)
 		Xstrdup_a(filename, msginfo->subject, return);
 		subst_for_filename(filename);
 	}
-	dest = filesel_select_file(_("Save as"), filename);
+	if (g_getenv ("G_BROKEN_FILENAMES") &&
+	    filename && g_utf8_validate(filename, -1, NULL)) {
+		gchar *oldstr = filename;
+		filename = conv_codeset_strdup(filename,
+					       CS_UTF_8,
+					       conv_get_current_charset_str());
+		if (!filename) {
+			g_warning("summary_save_as(): faild to convert character set.");
+			filename = g_strdup(oldstr);
+		}
+		dest = filesel_select_file(_("Save as"), filename);
+		g_free(filename);
+	} else
+		dest = filesel_select_file(_("Save as"), filename);
+	filename = NULL;
 	if (!dest) return;
 	if (is_file_exist(dest)) {
 		aval = alertpanel(_("Append or Overwrite"),
@@ -3716,8 +3748,8 @@ void summary_thread_build(SummaryView *summaryview)
 	STATUSBAR_PUSH(summaryview->mainwin, _("Building threads..."));
 	main_window_cursor_wait(summaryview->mainwin);
 
-	gtk_signal_handler_block_by_func(GTK_OBJECT(ctree),
-					 summary_tree_expanded, summaryview);
+	g_signal_handlers_block_by_func(G_OBJECT(ctree),
+				       G_CALLBACK(summary_tree_expanded), summaryview);
 	gtk_clist_freeze(GTK_CLIST(ctree));
 
 	node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
@@ -3765,8 +3797,8 @@ void summary_thread_build(SummaryView *summaryview)
 	gtkut_ctree_set_focus_row(ctree, summaryview->selected);
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
-	gtk_signal_handler_unblock_by_func(GTK_OBJECT(ctree),
-					   summary_tree_expanded, summaryview);
+	g_signal_handlers_unblock_by_func(G_OBJECT(ctree),
+					 G_CALLBACK(summary_tree_expanded), summaryview);
 
 	debug_print("done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
@@ -3814,8 +3846,8 @@ void summary_unthread(SummaryView *summaryview)
 	STATUSBAR_PUSH(summaryview->mainwin, _("Unthreading..."));
 	main_window_cursor_wait(summaryview->mainwin);
 	
-	gtk_signal_handler_block_by_func(GTK_OBJECT(ctree),
-					 summary_tree_collapsed, summaryview);
+	g_signal_handlers_block_by_func(G_OBJECT(ctree),
+					summary_tree_collapsed, summaryview);
 	gtk_clist_freeze(GTK_CLIST(ctree));
 
 	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
@@ -3834,8 +3866,8 @@ void summary_unthread(SummaryView *summaryview)
 	gtk_sctree_sort_recursive(ctree, NULL);	
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
-	gtk_signal_handler_unblock_by_func(GTK_OBJECT(ctree),
-					   summary_tree_collapsed, summaryview);
+	g_signal_handlers_unblock_by_func(G_OBJECT(ctree),
+					   G_CALLBACK(summary_tree_collapsed), summaryview);
 
 	debug_print("done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
@@ -4033,11 +4065,11 @@ static void summary_colorlabel_menu_item_activate_cb(GtkWidget *widget,
 	guint color = GPOINTER_TO_UINT(data);
 	SummaryView *summaryview;
 
-	summaryview = gtk_object_get_data(GTK_OBJECT(widget), "summaryview");
+	summaryview = g_object_get_data(G_OBJECT(widget), "summaryview");
 	g_return_if_fail(summaryview != NULL);
 
 	/* "dont_toggle" state set? */
-	if (gtk_object_get_data(GTK_OBJECT(summaryview->colorlabel_menu),
+	if (g_object_get_data(G_OBJECT(summaryview->colorlabel_menu),
 				"dont_toggle"))
 		return;
 
@@ -4132,13 +4164,13 @@ static void summary_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_item
 
 	/* NOTE: don't return prematurely because we set the "dont_toggle"
 	 * state for check menu items */
-	gtk_object_set_data(GTK_OBJECT(menu), "dont_toggle",
-			    GINT_TO_POINTER(1));
+	g_object_set_data(G_OBJECT(menu), "dont_toggle",
+			  GINT_TO_POINTER(1));
 
 	/* clear items. get item pointers. */
 	for (n = 0, cur = menu->children; cur != NULL; cur = cur->next) {
 		if (GTK_IS_CHECK_MENU_ITEM(cur->data)) {
-			gtk_check_menu_item_set_state
+			gtk_check_menu_item_set_active
 				(GTK_CHECK_MENU_ITEM(cur->data), FALSE);
 			items[n] = GTK_CHECK_MENU_ITEM(cur->data);
 			n++;
@@ -4158,7 +4190,7 @@ static void summary_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_item
 			if (msginfo) {
 				clabel = MSG_GET_COLORLABEL_VALUE(msginfo->flags);
 				if (!items[clabel]->active)
-					gtk_check_menu_item_set_state
+					gtk_check_menu_item_set_active
 						(items[clabel], TRUE);
 			}
 		}
@@ -4166,8 +4198,8 @@ static void summary_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_item
 		g_warning("invalid number of color elements (%d)\n", n);
 
 	/* reset "dont_toggle" state */
-	gtk_object_set_data(GTK_OBJECT(menu), "dont_toggle",
-			    GINT_TO_POINTER(0));
+	g_object_set_data(G_OBJECT(menu), "dont_toggle",
+			  GINT_TO_POINTER(0));
 }
 
 static void summary_colorlabel_menu_create(SummaryView *summaryview)
@@ -4179,8 +4211,8 @@ static void summary_colorlabel_menu_create(SummaryView *summaryview)
 
 	label_menuitem = gtk_item_factory_get_item(summaryview->popupfactory,
 						   "/Color label");
-	gtk_signal_connect(GTK_OBJECT(label_menuitem), "activate",
-			   GTK_SIGNAL_FUNC(summary_colorlabel_menu_item_activate_item_cb),
+	g_signal_connect(G_OBJECT(label_menuitem), "activate",
+			 G_CALLBACK(summary_colorlabel_menu_item_activate_item_cb),
 			   summaryview);
 	gtk_widget_show(label_menuitem);
 
@@ -4192,26 +4224,26 @@ static void summary_colorlabel_menu_create(SummaryView *summaryview)
 	 * can always get back the SummaryView pointer. */
 
 	item = gtk_check_menu_item_new_with_label(_("None"));
-	gtk_menu_append(GTK_MENU(menu), item);
-	gtk_signal_connect(GTK_OBJECT(item), "activate",
-			   GTK_SIGNAL_FUNC(summary_colorlabel_menu_item_activate_cb),
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+	g_signal_connect(G_OBJECT(item), "activate",
+			 G_CALLBACK(summary_colorlabel_menu_item_activate_cb),
 			   GUINT_TO_POINTER(0));
-	gtk_object_set_data(GTK_OBJECT(item), "summaryview", summaryview);
+	g_object_set_data(G_OBJECT(item), "summaryview", summaryview);
 	gtk_widget_show(item);
 
 	item = gtk_menu_item_new();
-	gtk_menu_append(GTK_MENU(menu), item);
+	gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
 	gtk_widget_show(item);
 
 	/* create pixmap/label menu items */
 	for (i = 0; i < N_COLOR_LABELS; i++) {
 		item = colorlabel_create_check_color_menu_item(i);
-		gtk_menu_append(GTK_MENU(menu), item);
-		gtk_signal_connect(GTK_OBJECT(item), "activate",
-				   GTK_SIGNAL_FUNC(summary_colorlabel_menu_item_activate_cb),
-				   GUINT_TO_POINTER(i + 1));
-		gtk_object_set_data(GTK_OBJECT(item), "summaryview",
-				    summaryview);
+		gtk_menu_shell_append(GTK_MENU_SHELL(menu), item);
+		g_signal_connect(G_OBJECT(item), "activate",
+				 G_CALLBACK(summary_colorlabel_menu_item_activate_cb),
+				 GUINT_TO_POINTER(i + 1));
+		g_object_set_data(G_OBJECT(item), "summaryview",
+				  summaryview);
 		gtk_widget_show(item);
 	}
 
@@ -4286,7 +4318,7 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 				     GTK_CTREE_EXPANDER_TRIANGLE);
 #endif
 	gtk_ctree_set_indent(GTK_CTREE(ctree), 16);
-	gtk_object_set_user_data(GTK_OBJECT(ctree), summaryview);
+	g_object_set_data(G_OBJECT(ctree), "user_data", summaryview);
 
 	for (pos = 0; pos < N_SUMMARY_COLS; pos++) {
 		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(ctree)->column[pos].button,
@@ -4297,10 +4329,10 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 
 	/* connect signal to the buttons for sorting */
 #define CLIST_BUTTON_SIGNAL_CONNECT(col, func) \
-	gtk_signal_connect \
-		(GTK_OBJECT(GTK_CLIST(ctree)->column[col_pos[col]].button), \
+	g_signal_connect \
+		(G_OBJECT(GTK_CLIST(ctree)->column[col_pos[col]].button), \
 		 "clicked", \
-		 GTK_SIGNAL_FUNC(func), \
+		 G_CALLBACK(func), \
 		 summaryview)
 
 	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_MARK   , summary_mark_clicked);
@@ -4316,34 +4348,34 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 
 #undef CLIST_BUTTON_SIGNAL_CONNECT
 
-	gtk_signal_connect(GTK_OBJECT(ctree), "tree_select_row",
-			   GTK_SIGNAL_FUNC(summary_selected), summaryview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "button_press_event",
-			   GTK_SIGNAL_FUNC(summary_button_pressed),
-			   summaryview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "button_release_event",
-			   GTK_SIGNAL_FUNC(summary_button_released),
-			   summaryview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "key_press_event",
-			   GTK_SIGNAL_FUNC(summary_key_pressed), summaryview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "resize_column",
-			   GTK_SIGNAL_FUNC(summary_col_resized), summaryview);
-        gtk_signal_connect(GTK_OBJECT(ctree), "open_row",
-			   GTK_SIGNAL_FUNC(summary_open_row), summaryview);
+	g_signal_connect(G_OBJECT(ctree), "tree_select_row",
+			 G_CALLBACK(summary_selected), summaryview);
+	g_signal_connect(G_OBJECT(ctree), "button_press_event",
+			 G_CALLBACK(summary_button_pressed),
+			 summaryview);
+	g_signal_connect(G_OBJECT(ctree), "button_release_event",
+			 G_CALLBACK(summary_button_released),
+			 summaryview);
+	g_signal_connect(G_OBJECT(ctree), "key_press_event",
+			 G_CALLBACK(summary_key_pressed), summaryview);
+	g_signal_connect(G_OBJECT(ctree), "resize_column",
+			 G_CALLBACK(summary_col_resized), summaryview);
+        g_signal_connect(G_OBJECT(ctree), "open_row",
+			 G_CALLBACK(summary_open_row), summaryview);
 
-	gtk_signal_connect_after(GTK_OBJECT(ctree), "tree_expand",
-				 GTK_SIGNAL_FUNC(summary_tree_expanded),
-				 summaryview);
-	gtk_signal_connect_after(GTK_OBJECT(ctree), "tree_collapse",
-				 GTK_SIGNAL_FUNC(summary_tree_collapsed),
-				 summaryview);
+	g_signal_connect_after(G_OBJECT(ctree), "tree_expand",
+			       G_CALLBACK(summary_tree_expanded),
+			       summaryview);
+	g_signal_connect_after(G_OBJECT(ctree), "tree_collapse",
+			       G_CALLBACK(summary_tree_collapsed),
+			       summaryview);
 
-	gtk_signal_connect(GTK_OBJECT(ctree), "start_drag",
-			   GTK_SIGNAL_FUNC(summary_start_drag),
-			   summaryview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "drag_data_get",
-			   GTK_SIGNAL_FUNC(summary_drag_data_get),
-			   summaryview);
+	g_signal_connect(G_OBJECT(ctree), "start_drag",
+			 G_CALLBACK(summary_start_drag),
+			 summaryview);
+	g_signal_connect(G_OBJECT(ctree), "drag_data_get",
+			 G_CALLBACK(summary_drag_data_get),
+			 summaryview);
 
 	return ctree;
 }
@@ -4363,7 +4395,7 @@ void summary_set_column_order(SummaryView *summaryview)
 	gtk_widget_destroy(summaryview->ctree);
 
 	summaryview->ctree = ctree = summary_ctree_create(summaryview);
-	pixmap = gtk_pixmap_new(clipxpm, clipxpmmask);
+	pixmap = gtk_image_new_from_pixmap(clipxpm, clipxpmmask);
 	gtk_clist_set_column_widget(GTK_CLIST(ctree),
 				    summaryview->col_pos[S_COL_MIME], pixmap);
 	gtk_widget_show(pixmap);
@@ -4395,10 +4427,10 @@ static gint summary_toggle_pressed(GtkWidget *eventbox, GdkEventButton *event,
 	return TRUE;
 }
 
-static void summary_button_pressed(GtkWidget *ctree, GdkEventButton *event,
-				   SummaryView *summaryview)
+static gboolean summary_button_pressed(GtkWidget *ctree, GdkEventButton *event,
+				       SummaryView *summaryview)
 {
-	if (!event) return;
+	if (!event) return FALSE;
 
 	if (event->button == 3) {
 		summaryview->display_msg = TRUE;
@@ -4412,11 +4444,14 @@ static void summary_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		    messageview_is_visible(summaryview->messageview))
 			summaryview->display_msg = TRUE;
 	}
+
+	return FALSE;
 }
 
-static void summary_button_released(GtkWidget *ctree, GdkEventButton *event,
-				    SummaryView *summaryview)
+static gboolean summary_button_released(GtkWidget *ctree, GdkEventButton *event,
+					SummaryView *summaryview)
 {
+	return FALSE;
 }
 
 void summary_pass_key_press_event(SummaryView *summaryview, GdkEventKey *event)
@@ -4430,8 +4465,8 @@ void summary_pass_key_press_event(SummaryView *summaryview, GdkEventKey *event)
 #define RETURN_IF_LOCKED() \
 	if (summaryview->mainwin->lock_count) return TRUE
 
-static gint summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
-				SummaryView *summaryview)
+static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
+				    SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(widget);
 	GtkCTreeNode *node;
@@ -4509,8 +4544,8 @@ static gint summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	return TRUE;
 }
 
-static gint summary_searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
-				SummaryView *summaryview)
+static gboolean summary_searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
+					  SummaryView *summaryview)
 {
 	if (event != NULL && event->keyval == GDK_Return)
 	 	summary_show(summaryview, summaryview->folder_item);
@@ -4521,13 +4556,13 @@ static void summary_searchbar_focus_evt(GtkWidget *widget, GdkEventFocus *event,
 				SummaryView *summaryview)
 {
 	if (event != NULL && event->in)
-		gtk_signal_handler_block_by_func(GTK_OBJECT(summaryview->mainwin->window), 
-						 GTK_SIGNAL_FUNC(mainwindow_key_pressed),
-                                         	 summaryview->mainwin);
+		g_signal_handlers_block_by_func(G_OBJECT(summaryview->mainwin->window), 
+						G_CALLBACK(mainwindow_key_pressed),
+						summaryview->mainwin);
 	else
-		gtk_signal_handler_unblock_by_func(GTK_OBJECT(summaryview->mainwin->window), 
-						   GTK_SIGNAL_FUNC(mainwindow_key_pressed),
-                                         	   summaryview->mainwin);
+		g_signal_handlers_unblock_by_func(G_OBJECT(summaryview->mainwin->window), 
+						  G_CALLBACK(mainwindow_key_pressed),
+						  summaryview->mainwin);
 }
 
 static void summary_searchtype_changed(GtkMenuItem *widget, gpointer data)

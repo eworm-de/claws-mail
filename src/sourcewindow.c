@@ -40,16 +40,12 @@ static void source_window_size_alloc_cb	(GtkWidget	*widget,
 					 GtkAllocation	*allocation);
 static void source_window_destroy_cb	(GtkWidget	*widget,
 					 SourceWindow	*sourcewin);
-static void key_pressed			(GtkWidget	*widget,
+static gboolean key_pressed		(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 SourceWindow	*sourcewin);
 
-static GdkFont *msgfont = NULL;
-
 static void source_window_init()
 {
-	if (!msgfont && prefs_common.textfont)
-		msgfont = gtkut_font_load(prefs_common.textfont);
 }
 
 SourceWindow *source_window_create(void)
@@ -58,6 +54,7 @@ SourceWindow *source_window_create(void)
 	GtkWidget *window;
 	GtkWidget *scrolledwin;
 	GtkWidget *text;
+	static PangoFontDescription *font_desc = NULL;
 
 	debug_print("Creating source window...\n");
 	sourcewin = g_new0(SourceWindow, 1);
@@ -66,16 +63,16 @@ SourceWindow *source_window_create(void)
 	gtk_window_set_title(GTK_WINDOW(window), _("Source of the message"));
 	gtk_window_set_wmclass(GTK_WINDOW(window), "source_window", "Sylpheed");
 	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, FALSE);
-	gtk_widget_set_usize(window, prefs_common.sourcewin_width,
-			     prefs_common.sourcewin_height);
-	gtk_signal_connect(GTK_OBJECT(window), "size_allocate",
-			   GTK_SIGNAL_FUNC(source_window_size_alloc_cb),
-			   sourcewin);
-	gtk_signal_connect(GTK_OBJECT(window), "destroy",
-			   GTK_SIGNAL_FUNC(source_window_destroy_cb),
-			   sourcewin);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(key_pressed), sourcewin);
+	gtk_widget_set_size_request(window, prefs_common.sourcewin_width,
+				    prefs_common.sourcewin_height);
+	g_signal_connect(G_OBJECT(window), "size_allocate",
+			 G_CALLBACK(source_window_size_alloc_cb),
+			 sourcewin);
+	g_signal_connect(G_OBJECT(window), "destroy",
+			 G_CALLBACK(source_window_destroy_cb),
+			 sourcewin);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(key_pressed), sourcewin);
 	gtk_widget_realize(window);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
@@ -84,10 +81,15 @@ SourceWindow *source_window_create(void)
 	gtk_container_add(GTK_CONTAINER(window), scrolledwin);
 	gtk_widget_show(scrolledwin);
 
-	text = gtk_text_new(gtk_scrolled_window_get_hadjustment
-			    (GTK_SCROLLED_WINDOW(scrolledwin)),
-			    gtk_scrolled_window_get_vadjustment
-			    (GTK_SCROLLED_WINDOW(scrolledwin)));
+	text = gtk_text_view_new();
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), FALSE);
+	if (!font_desc && prefs_common.textfont)
+		font_desc = pango_font_description_from_string
+					(prefs_common.textfont);
+	if (font_desc) {
+		gtk_widget_modify_font(text, font_desc);
+		pango_font_description_free(font_desc);
+	}
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
 	gtk_widget_show(text);
 
@@ -135,26 +137,27 @@ void source_window_show_msg(SourceWindow *sourcewin, MsgInfo *msginfo)
 	g_free(title);
 	g_free(file);
 
-	gtk_text_freeze(GTK_TEXT(sourcewin->text));
-
 	while (fgets(buf, sizeof(buf), fp) != NULL)
 		source_window_append(sourcewin, buf);
-
-	gtk_text_thaw(GTK_TEXT(sourcewin->text));
 
 	fclose(fp);
 }
 
 void source_window_append(SourceWindow *sourcewin, const gchar *str)
 {
+	GtkTextView *text = GTK_TEXT_VIEW(sourcewin->text);
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+	GtkTextIter iter;
 	gchar *out;
 	gint len;
 
 	len = strlen(str) + 1;
 	Xalloca(out, len, return);
+#warning FIXME_GTK2
 	conv_localetodisp(out, len, str);
-	gtk_text_insert(GTK_TEXT(sourcewin->text), msgfont, NULL, NULL,
-			out, -1);
+
+	gtk_text_buffer_get_iter_at_offset(buffer, &iter, -1);
+	gtk_text_buffer_insert(buffer, &iter, out, -1);
 }
 
 static void source_window_size_alloc_cb(GtkWidget *widget,
@@ -172,11 +175,11 @@ static void source_window_destroy_cb(GtkWidget *widget,
 	source_window_destroy(sourcewin);
 }
 
-static void key_pressed(GtkWidget *widget, GdkEventKey *event,
-			SourceWindow *sourcewin)
+static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event,
+			    SourceWindow *sourcewin)
 {
 
-	if (!event || !sourcewin) return;
+	if (!event || !sourcewin) return FALSE;
 	
 	switch (event->keyval) {
 	case GDK_A:
@@ -188,4 +191,6 @@ static void key_pressed(GtkWidget *widget, GdkEventKey *event,
 		gtk_widget_destroy(sourcewin->window);
 		break;
 	}
+
+	return FALSE;
 }

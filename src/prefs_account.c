@@ -557,7 +557,7 @@ static void prefs_account_edit_custom_header	(void);
 static gint prefs_account_deleted		(GtkWidget	*widget,
 						 GdkEventAny	*event,
 						 gpointer	 data);
-static void prefs_account_key_pressed		(GtkWidget	*widget,
+static gboolean prefs_account_key_pressed	(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 gpointer	 data);
 static void prefs_account_ok			(void);
@@ -678,7 +678,7 @@ PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs)
 	}
 
 	manage_window_set_transient(GTK_WINDOW(dialog.window));
-	gtk_notebook_set_page(GTK_NOTEBOOK(dialog.notebook), 0);
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(dialog.notebook), 0);
 	gtk_widget_grab_focus(dialog.ok_btn);
 
 	tmp_ac_prefs = *ac_prefs;
@@ -746,18 +746,18 @@ static void prefs_account_create(void)
 
 	/* create dialog */
 	prefs_dialog_create(&dialog);
-	gtk_signal_connect(GTK_OBJECT(dialog.window), "delete_event",
-			   GTK_SIGNAL_FUNC(prefs_account_deleted), NULL);
-	gtk_signal_connect(GTK_OBJECT(dialog.window), "key_press_event",
-			   GTK_SIGNAL_FUNC(prefs_account_key_pressed), NULL);
+	g_signal_connect(G_OBJECT(dialog.window), "delete_event",
+			 G_CALLBACK(prefs_account_deleted), NULL);
+	g_signal_connect(G_OBJECT(dialog.window), "key_press_event",
+			 G_CALLBACK(prefs_account_key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(dialog.window);
 
-	gtk_signal_connect(GTK_OBJECT(dialog.ok_btn), "clicked",
-	 		   GTK_SIGNAL_FUNC(prefs_account_ok), NULL);
-	gtk_signal_connect(GTK_OBJECT(dialog.apply_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_account_apply), NULL);
-	gtk_signal_connect(GTK_OBJECT(dialog.cancel_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_account_cancel), NULL);
+	g_signal_connect(G_OBJECT(dialog.ok_btn), "clicked",
+			 G_CALLBACK(prefs_account_ok), NULL);
+	g_signal_connect(G_OBJECT(dialog.apply_btn), "clicked",
+			 G_CALLBACK(prefs_account_apply), NULL);
+	g_signal_connect(G_OBJECT(dialog.cancel_btn), "clicked",
+			 G_CALLBACK(prefs_account_cancel), NULL);
 
 	prefs_account_basic_create();
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Basic"), page++);
@@ -802,9 +802,9 @@ static void prefs_account_fix_size(void)
 
 #define SET_ACTIVATE(menuitem) \
 { \
-	gtk_signal_connect(GTK_OBJECT(menuitem), "activate", \
-			   GTK_SIGNAL_FUNC(prefs_account_protocol_activated), \
-			   NULL); \
+	g_signal_connect(G_OBJECT(menuitem), "activate", \
+			 G_CALLBACK(prefs_account_protocol_activated), \
+			 NULL); \
 }
 
 #define TABLE_YPAD 2
@@ -861,7 +861,7 @@ static void prefs_account_basic_create(void)
 
 	acname_entry = gtk_entry_new ();
 	gtk_widget_show (acname_entry);
-	gtk_widget_set_usize (acname_entry, DEFAULT_ENTRY_WIDTH, -1);
+	gtk_widget_set_size_request (acname_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), acname_entry, TRUE, TRUE, 0);
 
 	default_chkbtn = gtk_check_button_new_with_label (_("Set as default"));
@@ -1001,14 +1001,14 @@ static void prefs_account_basic_create(void)
 
 	uid_entry = gtk_entry_new ();
 	gtk_widget_show (uid_entry);
-	gtk_widget_set_usize (uid_entry, DEFAULT_ENTRY_WIDTH, -1);
+	gtk_widget_set_size_request (uid_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_table_attach (GTK_TABLE (serv_table), uid_entry, 1, 2, 7, 8,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
 
 	pass_entry = gtk_entry_new ();
 	gtk_widget_show (pass_entry);
-	gtk_widget_set_usize (pass_entry, DEFAULT_ENTRY_WIDTH, -1);
+	gtk_widget_set_size_request (pass_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_table_attach (GTK_TABLE (serv_table), pass_entry, 3, 4, 7, 8,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL, 0, 0);
@@ -1046,9 +1046,9 @@ static void prefs_account_basic_create(void)
 	gtk_table_attach (GTK_TABLE (serv_table), mailcmd_chkbtn, 0, 4, 5, 6,
 			  GTK_EXPAND | GTK_FILL,
 			  0, 0, TABLE_YPAD);
-	gtk_signal_connect(GTK_OBJECT(mailcmd_chkbtn), "toggled",
-			   GTK_SIGNAL_FUNC(prefs_account_mailcmd_toggled),
-			   NULL);
+	g_signal_connect(G_OBJECT(mailcmd_chkbtn), "toggled",
+			 G_CALLBACK(prefs_account_mailcmd_toggled),
+			 NULL);
 
 	mailcmd_label = gtk_label_new (_("command to send mails"));
 	gtk_widget_show (mailcmd_label);
@@ -1156,7 +1156,7 @@ static void prefs_account_receive_create(void)
 	hbox_spc = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox1), hbox_spc, FALSE, FALSE, 0);
-	gtk_widget_set_usize (hbox_spc, 12, -1);
+	gtk_widget_set_size_request (hbox_spc, 12, -1);
 
 	leave_time_label = gtk_label_new (_("Remove after"));
 	gtk_widget_show (leave_time_label);
@@ -1164,7 +1164,7 @@ static void prefs_account_receive_create(void)
 
 	leave_time_entry = gtk_entry_new ();
 	gtk_widget_show (leave_time_entry);
-	gtk_widget_set_usize (leave_time_entry, 64, -1);
+	gtk_widget_set_size_request (leave_time_entry, 64, -1);
 	gtk_box_pack_start (GTK_BOX (hbox1), leave_time_entry, FALSE, FALSE, 0);
 
 	leave_time_label = gtk_label_new (_("days"));
@@ -1182,7 +1182,7 @@ static void prefs_account_receive_create(void)
 	hbox_spc = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox1), hbox_spc, FALSE, FALSE, 0);
-	gtk_widget_set_usize (hbox_spc, 12, -1);
+	gtk_widget_set_size_request (hbox_spc, 12, -1);
 
 	leave_time_label = gtk_label_new (_("(0 days: remove immediately)"));
 	gtk_widget_show (leave_time_label);
@@ -1201,7 +1201,7 @@ static void prefs_account_receive_create(void)
 
 	size_limit_entry = gtk_entry_new ();
 	gtk_widget_show (size_limit_entry);
-	gtk_widget_set_usize (size_limit_entry, 64, -1);
+	gtk_widget_set_size_request (size_limit_entry, 64, -1);
 	gtk_box_pack_start (GTK_BOX (hbox1), size_limit_entry, FALSE, FALSE, 0);
 
 	label = gtk_label_new (_("KB"));
@@ -1222,15 +1222,15 @@ static void prefs_account_receive_create(void)
 
 	inbox_entry = gtk_entry_new ();
 	gtk_widget_show (inbox_entry);
-	gtk_widget_set_usize (inbox_entry, DEFAULT_ENTRY_WIDTH, -1);
+	gtk_widget_set_size_request (inbox_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_box_pack_start (GTK_BOX (hbox1), inbox_entry, TRUE, TRUE, 0);
 
 	inbox_btn = gtk_button_new_with_label (_(" Select... "));
 	gtk_widget_show (inbox_btn);
 	gtk_box_pack_start (GTK_BOX (hbox1), inbox_btn, FALSE, FALSE, 0);
-	gtk_signal_connect (GTK_OBJECT (inbox_btn), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_account_select_folder_cb),
-			    inbox_entry);
+	g_signal_connect (G_OBJECT (inbox_btn), "clicked",
+			  G_CALLBACK (prefs_account_select_folder_cb),
+			  inbox_entry);
 
 	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
 
@@ -1258,7 +1258,7 @@ static void prefs_account_receive_create(void)
 	gtk_widget_show (spinbtn_maxarticle);
 	gtk_box_pack_start (GTK_BOX (hbox2), spinbtn_maxarticle,
 			    FALSE, FALSE, 0);
-	gtk_widget_set_usize (spinbtn_maxarticle, 64, -1);
+	gtk_widget_set_size_request (spinbtn_maxarticle, 64, -1);
 	gtk_spin_button_set_numeric
 		(GTK_SPIN_BUTTON (spinbtn_maxarticle), TRUE);
 
@@ -1373,9 +1373,9 @@ static void prefs_account_send_create(void)
 	gtk_widget_show (customhdr_edit_btn);
 	gtk_box_pack_start (GTK_BOX (hbox), customhdr_edit_btn,
 			    FALSE, FALSE, 0);
-	gtk_signal_connect (GTK_OBJECT (customhdr_edit_btn), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_account_edit_custom_header),
-			    NULL);
+	g_signal_connect (G_OBJECT (customhdr_edit_btn), "clicked",
+			  G_CALLBACK (prefs_account_edit_custom_header),
+			  NULL);
 
 	SET_TOGGLE_SENSITIVITY (customhdr_chkbtn, customhdr_edit_btn);
 
@@ -1400,7 +1400,7 @@ static void prefs_account_send_create(void)
 	hbox_spc = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
-	gtk_widget_set_usize (hbox_spc, 12, -1);
+	gtk_widget_set_size_request (hbox_spc, 12, -1);
 
 	label = gtk_label_new (_("Authentication method"));
 	gtk_widget_show (label);
@@ -1429,7 +1429,7 @@ static void prefs_account_send_create(void)
 	hbox_spc = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
-	gtk_widget_set_usize (hbox_spc, 12, -1);
+	gtk_widget_set_size_request (hbox_spc, 12, -1);
 
 	label = gtk_label_new (_("User ID"));
 	gtk_widget_show (label);
@@ -1437,7 +1437,7 @@ static void prefs_account_send_create(void)
 
 	smtp_uid_entry = gtk_entry_new ();
 	gtk_widget_show (smtp_uid_entry);
-	gtk_widget_set_usize (smtp_uid_entry, DEFAULT_ENTRY_WIDTH, -1);
+	gtk_widget_set_size_request (smtp_uid_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), smtp_uid_entry, TRUE, TRUE, 0);
 
 	label = gtk_label_new (_("Password"));
@@ -1446,7 +1446,7 @@ static void prefs_account_send_create(void)
 
 	smtp_pass_entry = gtk_entry_new ();
 	gtk_widget_show (smtp_pass_entry);
-	gtk_widget_set_usize (smtp_pass_entry, DEFAULT_ENTRY_WIDTH, -1);
+	gtk_widget_set_size_request (smtp_pass_entry, DEFAULT_ENTRY_WIDTH, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), smtp_pass_entry, TRUE, TRUE, 0);
 	gtk_entry_set_visibility (GTK_ENTRY (smtp_pass_entry), FALSE);
 
@@ -1459,7 +1459,7 @@ static void prefs_account_send_create(void)
 	hbox_spc = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
-	gtk_widget_set_usize (hbox_spc, 12, -1);
+	gtk_widget_set_size_request (hbox_spc, 12, -1);
 
 	label = gtk_label_new
 		(_("If you leave these entries empty, the same\n"
@@ -1473,9 +1473,9 @@ static void prefs_account_send_create(void)
 	PACK_CHECK_BUTTON (vbox3, pop_bfr_smtp_chkbtn,
 		_("Authenticate with POP3 before sending"));
 	
-	gtk_signal_connect (GTK_OBJECT (pop_bfr_smtp_chkbtn), "clicked",
-			    GTK_SIGNAL_FUNC (pop_bfr_smtp_tm_set_sens),
-			    NULL);
+	g_signal_connect (G_OBJECT (pop_bfr_smtp_chkbtn), "clicked",
+			  G_CALLBACK (pop_bfr_smtp_tm_set_sens),
+			  NULL);
 
 	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);
@@ -1484,7 +1484,7 @@ static void prefs_account_send_create(void)
 	hbox_spc = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
-	gtk_widget_set_usize (hbox_spc, 12, -1);
+	gtk_widget_set_size_request (hbox_spc, 12, -1);
 
 	label = gtk_label_new(_("POP authentication timeout: "));
 	gtk_widget_show (label);
@@ -1492,7 +1492,7 @@ static void prefs_account_send_create(void)
 
 	pop_bfr_smtp_tm_entry = gtk_entry_new ();
 	gtk_widget_show (pop_bfr_smtp_tm_entry);
-	gtk_widget_set_usize (pop_bfr_smtp_tm_entry, 30, -1);
+	gtk_widget_set_size_request (pop_bfr_smtp_tm_entry, 30, -1);
 	gtk_box_pack_start (GTK_BOX (hbox), pop_bfr_smtp_tm_entry, FALSE, FALSE, 0);
 
 	label = gtk_label_new(_("minutes"));
@@ -1563,7 +1563,7 @@ static void prefs_account_compose_create(void)
 	gtk_widget_show (entry_sigsep);
 	gtk_box_pack_start (GTK_BOX (hbox1), entry_sigsep, FALSE, FALSE, 0);
 
-	gtk_widget_set_usize (entry_sigsep, 64, -1);
+	gtk_widget_set_size_request (entry_sigsep, 64, -1);
 
 	sig_hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (sig_hbox);
@@ -1573,16 +1573,18 @@ static void prefs_account_compose_create(void)
 	gtk_widget_show (sigfile_radiobtn);
 	gtk_box_pack_start (GTK_BOX (sig_hbox), sigfile_radiobtn,
 			    FALSE, FALSE, 0);
-	gtk_object_set_user_data (GTK_OBJECT (sigfile_radiobtn),
-				  GINT_TO_POINTER (SIG_FILE));
+	g_object_set_data (G_OBJECT (sigfile_radiobtn),
+			   MENU_VAL_ID,
+			   GINT_TO_POINTER (SIG_FILE));
 
 	sigcmd_radiobtn = gtk_radio_button_new_with_label_from_widget
 		(GTK_RADIO_BUTTON(sigfile_radiobtn), _("Command output"));
 	gtk_widget_show (sigcmd_radiobtn);
 	gtk_box_pack_start (GTK_BOX (sig_hbox), sigcmd_radiobtn,
 			    FALSE, FALSE, 0);
-	gtk_object_set_user_data (GTK_OBJECT (sigcmd_radiobtn),
-				  GINT_TO_POINTER (SIG_COMMAND));
+	g_object_set_data (G_OBJECT (sigcmd_radiobtn),
+			   MENU_VAL_ID,
+			   GINT_TO_POINTER (SIG_COMMAND));
 
 	hbox2 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox2);
@@ -1712,8 +1714,8 @@ static void prefs_account_privacy_create(void)
 			    FALSE, FALSE, 0);
 	gtk_object_set_user_data (GTK_OBJECT (gnupg_inline_radiobtn),
 				  GINT_TO_POINTER (GNUPG_MODE_INLINE));
-	gtk_signal_connect (GTK_OBJECT (gnupg_inline_radiobtn), "clicked",
-			    prefs_account_gnupg_inline_warning, NULL);
+	g_signal_connect (G_OBJECT (gnupg_inline_radiobtn), "clicked",
+			  prefs_account_gnupg_inline_warning, NULL);
 
 
 	PACK_FRAME (vbox1, frame1, _("Sign key"));
@@ -1728,8 +1730,9 @@ static void prefs_account_privacy_create(void)
 	gtk_widget_show (defaultkey_radiobtn);
 	gtk_box_pack_start (GTK_BOX (vbox2), defaultkey_radiobtn,
 			    FALSE, FALSE, 0);
-	gtk_object_set_user_data (GTK_OBJECT (defaultkey_radiobtn),
-				  GINT_TO_POINTER (SIGN_KEY_DEFAULT));
+	g_object_set_data (G_OBJECT (defaultkey_radiobtn),
+			   MENU_VAL_ID,
+			   GINT_TO_POINTER (SIGN_KEY_DEFAULT));
 
 	emailkey_radiobtn = gtk_radio_button_new_with_label_from_widget
 		(GTK_RADIO_BUTTON (defaultkey_radiobtn),
@@ -1737,8 +1740,9 @@ static void prefs_account_privacy_create(void)
 	gtk_widget_show (emailkey_radiobtn);
 	gtk_box_pack_start (GTK_BOX (vbox2), emailkey_radiobtn,
 			    FALSE, FALSE, 0);
-	gtk_object_set_user_data (GTK_OBJECT (emailkey_radiobtn),
-				  GINT_TO_POINTER (SIGN_KEY_BY_FROM));
+	g_object_set_data (G_OBJECT (emailkey_radiobtn),
+			   MENU_VAL_ID,
+			   GINT_TO_POINTER (SIGN_KEY_BY_FROM));
 
 	customkey_radiobtn = gtk_radio_button_new_with_label_from_widget
 		(GTK_RADIO_BUTTON (defaultkey_radiobtn),
@@ -1746,8 +1750,9 @@ static void prefs_account_privacy_create(void)
 	gtk_widget_show (customkey_radiobtn);
 	gtk_box_pack_start (GTK_BOX (vbox2), customkey_radiobtn,
 			    FALSE, FALSE, 0);
-	gtk_object_set_user_data (GTK_OBJECT (customkey_radiobtn),
-				  GINT_TO_POINTER (SIGN_KEY_CUSTOM));
+	g_object_set_data (G_OBJECT (customkey_radiobtn),
+			   MENU_VAL_ID,
+			   GINT_TO_POINTER (SIGN_KEY_CUSTOM));
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -1756,7 +1761,7 @@ static void prefs_account_privacy_create(void)
 	label = gtk_label_new ("");
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
-	gtk_widget_set_usize (label, 16, -1);
+	gtk_widget_set_size_request (label, 16, -1);
 
 	label = gtk_label_new (_("User or key ID:"));
 	gtk_widget_show (label);
@@ -1788,8 +1793,9 @@ static void prefs_account_privacy_create(void)
 		(GTK_RADIO_BUTTON (btn_p), label);			\
 	gtk_widget_show (btn);						\
 	gtk_box_pack_start (GTK_BOX (box), btn, FALSE, FALSE, 0);	\
-	gtk_object_set_user_data (GTK_OBJECT (btn),			\
-				  GINT_TO_POINTER (data));		\
+	g_object_set_data (G_OBJECT (btn),				\
+			   MENU_VAL_ID,					\
+			   GINT_TO_POINTER (data));			\
 }
 
 #define CREATE_RADIO_BUTTONS(box,					\
@@ -1800,8 +1806,9 @@ static void prefs_account_privacy_create(void)
 	btn1 = gtk_radio_button_new_with_label(NULL, btn1_label);	\
 	gtk_widget_show (btn1);						\
 	gtk_box_pack_start (GTK_BOX (box), btn1, FALSE, FALSE, 0);	\
-	gtk_object_set_user_data (GTK_OBJECT (btn1),			\
-				  GINT_TO_POINTER (btn1_data));		\
+	g_object_set_data (G_OBJECT (btn1),				\
+			   MENU_VAL_ID,					\
+			   GINT_TO_POINTER (btn1_data));		\
 									\
 	CREATE_RADIO_BUTTON(box, btn2, btn1, btn2_label, btn2_data);	\
 	CREATE_RADIO_BUTTON(box, btn3, btn1, btn3_label, btn3_data);	\
@@ -1890,8 +1897,9 @@ static void prefs_account_ssl_create(void)
 	gtk_widget_show (nntp_nossl_radiobtn);
 	gtk_box_pack_start (GTK_BOX (vbox4), nntp_nossl_radiobtn,
 			    FALSE, FALSE, 0);
-	gtk_object_set_user_data (GTK_OBJECT (nntp_nossl_radiobtn),
-				  GINT_TO_POINTER (SSL_NONE));
+	g_object_set_data (G_OBJECT (nntp_nossl_radiobtn),
+			   MENU_VAL_ID,
+			   GINT_TO_POINTER (SSL_NONE));
 
 	CREATE_RADIO_BUTTON(vbox4, nntp_ssltunnel_radiobtn, nntp_nossl_radiobtn,
 			    _("Use SSL for NNTP connection"), SSL_TUNNEL);
@@ -1927,7 +1935,7 @@ static void prefs_account_ssl_create(void)
 	hbox_spc = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox), hbox_spc, FALSE, FALSE, 0);
-	gtk_widget_set_usize (hbox_spc, 16, -1);
+	gtk_widget_set_size_request (hbox_spc, 16, -1);
 
 	label = gtk_label_new
 		(_("(Turn this off if you have SSL connection problems)"));
@@ -2038,10 +2046,11 @@ static void prefs_account_advanced_create(void)
 
 #define PACK_PORT_ENTRY(box, entry) \
 	{ \
-	entry = gtk_entry_new_with_max_length (5); \
+	entry = gtk_entry_new (); \
+	gtk_entry_set_max_length  (GTK_ENTRY(entry), 5); \
 	gtk_widget_show (entry); \
 	gtk_box_pack_start (GTK_BOX (box), entry, FALSE, FALSE, 0); \
-	gtk_widget_set_usize (entry, 64, -1); \
+	gtk_widget_set_size_request (entry, 64, -1); \
 	}
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
@@ -2096,9 +2105,9 @@ static void prefs_account_advanced_create(void)
 	PACK_HBOX (hbox1);
 	PACK_CHECK_BUTTON (hbox1, checkbtn_crosspost, 
 			   _("Mark cross-posted messages as read and color:"));
-	gtk_signal_connect (GTK_OBJECT (checkbtn_crosspost), "toggled",
-					GTK_SIGNAL_FUNC (crosspost_color_toggled),
-					NULL);
+	g_signal_connect (G_OBJECT (checkbtn_crosspost), "toggled",
+			  G_CALLBACK (crosspost_color_toggled),
+			  NULL);
 
 	colormenu_crosspost = gtk_option_menu_new();
 	gtk_widget_show (colormenu_crosspost);
@@ -2154,9 +2163,9 @@ static void prefs_account_advanced_create(void)
 	gtk_widget_show (button);					\
 	gtk_table_attach (GTK_TABLE (table), button,			\
 			  2, 3, n, n + 1, GTK_FILL, 0, 0, 0);		\
-	gtk_signal_connect						\
-		(GTK_OBJECT (button), "clicked",			\
-		 GTK_SIGNAL_FUNC (prefs_account_select_folder_cb),	\
+	g_signal_connect						\
+		(G_OBJECT (button), "clicked",			\
+		 G_CALLBACK (prefs_account_select_folder_cb),		\
 		 entry);						\
 									\
 	SET_TOGGLE_SENSITIVITY (chkbtn, entry);				\
@@ -2206,11 +2215,12 @@ static gint prefs_account_deleted(GtkWidget *widget, GdkEventAny *event,
 	return TRUE;
 }
 
-static void prefs_account_key_pressed(GtkWidget *widget, GdkEventKey *event,
-				      gpointer data)
+static gboolean prefs_account_key_pressed(GtkWidget *widget, GdkEventKey *event,
+					  gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		prefs_account_cancel();
+	return FALSE;
 }
 
 static void prefs_account_ok(void)
@@ -2228,7 +2238,7 @@ static gint prefs_account_apply(void)
 	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(basic.protocol_optmenu));
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	protocol = GPOINTER_TO_INT
-		(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
+		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
 
 	if (*gtk_entry_get_text(GTK_ENTRY(basic.acname_entry)) == '\0') {
 		alertpanel_error(_("Account name is not entered."));
@@ -2318,12 +2328,12 @@ static void prefs_account_enum_set_data_from_radiobtn(PrefParam *pparam)
 	GSList *group;
 
 	radiobtn = GTK_RADIO_BUTTON (*pparam->widget);
-	group = gtk_radio_button_group (radiobtn);
+	group = gtk_radio_button_get_group (radiobtn);
 	while (group != NULL) {
 		GtkToggleButton *btn = GTK_TOGGLE_BUTTON (group->data);
 		if (gtk_toggle_button_get_active (btn)) {
 			*((gint *)pparam->data) = GPOINTER_TO_INT
-				(gtk_object_get_user_data (GTK_OBJECT (btn)));
+				(g_object_get_data (G_OBJECT (btn), MENU_VAL_ID));
 			break;
 		}
 		group = group->next;
@@ -2338,10 +2348,10 @@ static void prefs_account_enum_set_radiobtn(PrefParam *pparam)
 
 	data = GINT_TO_POINTER (*((gint *)pparam->data));
 	radiobtn = GTK_RADIO_BUTTON (*pparam->widget);
-	group = gtk_radio_button_group (radiobtn);
+	group = gtk_radio_button_get_group (radiobtn);
 	while (group != NULL) {
 		GtkToggleButton *btn = GTK_TOGGLE_BUTTON (group->data);
-		gpointer data1 = gtk_object_get_user_data (GTK_OBJECT (btn));
+		gpointer data1 = g_object_get_data (G_OBJECT (btn), MENU_VAL_ID);
 		if (data1 == data) {
 			gtk_toggle_button_set_active (btn, TRUE);
 			break;
@@ -2370,7 +2380,7 @@ static void prefs_account_protocol_set_data_from_optmenu(PrefParam *pparam)
 	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(*pparam->widget));
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	*((RecvProtocol *)pparam->data) = GPOINTER_TO_INT
-		(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
+		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
 }
 
 static void prefs_account_protocol_set_optmenu(PrefParam *pparam)
@@ -2461,7 +2471,7 @@ static void prefs_account_smtp_auth_type_set_data_from_optmenu(PrefParam *pparam
 	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(*pparam->widget));
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	*((RecvProtocol *)pparam->data) = GPOINTER_TO_INT
-		(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
+		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
 }
 
 static void prefs_account_smtp_auth_type_set_optmenu(PrefParam *pparam)
@@ -2496,7 +2506,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 	RecvProtocol protocol;
 
 	protocol = GPOINTER_TO_INT
-		(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
+		(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
 
 	switch(protocol) {
 	case A_NNTP:

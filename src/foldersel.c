@@ -83,7 +83,7 @@ static void foldersel_activated	(void);
 static gint delete_event	(GtkWidget	*widget,
 				 GdkEventAny	*event,
 				 gpointer	 data);
-static void key_pressed		(GtkWidget	*widget,
+static gboolean key_pressed	(GtkWidget	*widget,
 				 GdkEventKey	*event,
 				 gpointer	 data);
 
@@ -144,19 +144,19 @@ static void foldersel_create(void)
 	GtkWidget *scrolledwin;
 	GtkWidget *confirm_area;
 
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Select folder"));
-	gtk_widget_set_usize(window, 300, 400);
+	gtk_widget_set_size_request(window, 300, 400);
 	gtk_container_set_border_width(GTK_CONTAINER(window), BORDER_WIDTH);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, TRUE);
 	gtk_window_set_wmclass
 		(GTK_WINDOW(window), "folder_selection", "Sylpheed");
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(delete_event), NULL);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(key_pressed), NULL);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(delete_event), NULL);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 
 	vbox = gtk_vbox_new(FALSE, 4);
@@ -179,15 +179,15 @@ static void foldersel_create(void)
 	gtk_clist_set_compare_func(GTK_CLIST(ctree), foldersel_clist_compare);
 	GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(ctree)->column[0].button,
 			       GTK_CAN_FOCUS);
-	/* gtk_signal_connect(GTK_OBJECT(ctree), "tree_select_row",
-			   GTK_SIGNAL_FUNC(foldersel_selected), NULL); */
-	gtk_signal_connect(GTK_OBJECT(ctree), "select_row",
-			   GTK_SIGNAL_FUNC(foldersel_selected), NULL);
+	/* g_signal_connect(G_OBJECT(ctree), "tree_select_row",
+			    G_CALLBACK(foldersel_selected), NULL); */
+	g_signal_connect(G_OBJECT(ctree), "select_row",
+			 G_CALLBACK(foldersel_selected), NULL);
 
 	entry = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(entry), "activate",
-			   GTK_SIGNAL_FUNC(foldersel_activated), NULL);
+	g_signal_connect(G_OBJECT(entry), "activate",
+			 G_CALLBACK(foldersel_activated), NULL);
 
 	gtkut_button_set_create(&confirm_area,
 				&ok_button,	_("OK"),
@@ -197,10 +197,10 @@ static void foldersel_create(void)
 	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_button);
 
-	gtk_signal_connect(GTK_OBJECT(ok_button), "clicked",
-			   GTK_SIGNAL_FUNC(foldersel_ok), NULL);
-	gtk_signal_connect(GTK_OBJECT(cancel_button), "clicked",
-			   GTK_SIGNAL_FUNC(foldersel_cancel), NULL);
+	g_signal_connect(G_OBJECT(ok_button), "clicked",
+			 G_CALLBACK(foldersel_ok), NULL);
+	g_signal_connect(G_OBJECT(cancel_button), "clicked",
+			 G_CALLBACK(foldersel_cancel), NULL);
 
 	gtk_widget_show_all(window);
 }
@@ -347,10 +347,11 @@ static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data)
 	return TRUE;
 }
 
-static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
+static gboolean key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		foldersel_cancel(NULL, NULL);
+	return FALSE;
 }
 
 static gint foldersel_clist_compare(GtkCList *clist,

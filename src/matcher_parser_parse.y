@@ -77,7 +77,7 @@ void matcher_parser_start_parsing(FILE *f)
 	matcher_parserparse();
 }
  
-FilteringProp *matcher_parser_get_filtering(gchar *str)
+FilteringProp *matcher_parser_get_filtering(const gchar *str)
 {
 	void *bufstate;
 
@@ -96,7 +96,7 @@ FilteringProp *matcher_parser_get_filtering(gchar *str)
 	return filtering;
 }
 
-ScoringProp *matcher_parser_get_scoring(gchar *str)
+ScoringProp *matcher_parser_get_scoring(const gchar *str)
 {
 	void *bufstate;
 
@@ -117,7 +117,7 @@ ScoringProp *matcher_parser_get_scoring(gchar *str)
 
 static gboolean check_quote_symetry(gchar *str)
 {
-	gchar *walk;
+	const gchar *walk;
 	int ret = 0;
 	
 	if (str == NULL)
@@ -134,7 +134,7 @@ static gboolean check_quote_symetry(gchar *str)
 	return !(ret % 2);
 }
 
-MatcherList *matcher_parser_get_cond(gchar *str)
+MatcherList *matcher_parser_get_cond(const gchar *str)
 {
 	void *bufstate;
 
@@ -156,7 +156,7 @@ MatcherList *matcher_parser_get_cond(gchar *str)
 	return cond;
 }
 
-GSList *matcher_parser_get_action_list(gchar *str)
+GSList *matcher_parser_get_action_list(const gchar *str)
 {
 	void *bufstate;
 
@@ -178,7 +178,7 @@ GSList *matcher_parser_get_action_list(gchar *str)
 	return action_list;
 }
 
-MatcherProp *matcher_parser_get_prop(gchar *str)
+MatcherProp *matcher_parser_get_prop(const gchar *str)
 {
 	MatcherList *list;
 	MatcherProp *prop;

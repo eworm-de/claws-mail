@@ -660,7 +660,7 @@ gint pine_import_data( PineFile *pineFile, AddressCache *cache ) {
  * no home. Filename should be g_free() when done.
  */
 gchar *pine_find_file( void ) {
-	gchar *homedir;
+	const gchar *homedir;
 	gchar str[ WORK_BUFLEN ];
 	gint len;
 	FILE *fp;

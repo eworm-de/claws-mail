@@ -29,6 +29,7 @@
 #include <gtk/gtkitemfactory.h>
 #include <gtk/gtkcheckmenuitem.h>
 #include <gtk/gtkbutton.h>
+#include <gtk/gtkwindow.h>
 
 #include "intl.h"
 #include "menu.h"
@@ -56,7 +57,7 @@ GtkWidget *menubar_create(GtkWidget *window, GtkItemFactoryEntry *entries,
 	gtk_item_factory_set_translate_func(factory, menu_translate,
 					    NULL, NULL);
 	gtk_item_factory_create_items(factory, n_entries, entries, data);
-	gtk_accel_group_attach(factory->accel_group, GTK_OBJECT(window));
+	gtk_window_add_accel_group (GTK_WINDOW (window), factory->accel_group);
 
 	return gtk_item_factory_get_widget(factory, path);
 }
@@ -84,7 +85,7 @@ GtkWidget *popupmenu_create(GtkWidget *window, GtkItemFactoryEntry *entries,
 	gtk_item_factory_set_translate_func(factory, menu_translate,
 					    NULL, NULL);
 	gtk_item_factory_create_items(factory, n_entries, entries, data);
-	gtk_accel_group_attach(accel_group, GTK_OBJECT(window));
+	gtk_window_add_accel_group(GTK_WINDOW (window), accel_group);
 
 	return gtk_item_factory_get_widget(factory, path);
 }
@@ -106,6 +107,8 @@ static void factory_print_func(gpointer data, gchar *string)
 	g_string_append_c(out_str, '\n');
 }
 
+#warning FIXME_GTK2
+#if 0
 GString *menu_factory_get_rc(const gchar *path)
 {
 	GString *string;
@@ -178,6 +181,7 @@ void menu_factory_copy_rc(const gchar *src_path, const gchar *dest_path)
 	gtk_item_factory_parse_rc_string(string->str);
 	g_string_free(string, TRUE);
 }
+#endif
 
 void menu_set_sensitive(GtkItemFactory *ifactory, const gchar *path,
 			gboolean sensitive)
@@ -223,42 +227,25 @@ void menu_toggle_toggle(GtkItemFactory *ifactory, const gchar *path)
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), !((GTK_CHECK_MENU_ITEM(widget))->active));
 }
 
-void menu_button_position(GtkMenu *menu, gint *x, gint *y, gpointer user_data)
+void menu_button_position(GtkMenu *menu, gint *x, gint *y, gboolean *push_in,
+			  gpointer user_data)
 {
-	GtkWidget *button;
-	GtkRequisition requisition;
-	gint button_xpos, button_ypos;
-	gint xpos, ypos;
-	gint width, height;
-	gint scr_width, scr_height;
+        GtkWidget *widget;
+        gint wheight;
+        gint wx, wy;
 
-	g_return_if_fail(user_data != NULL);
-	g_return_if_fail(GTK_IS_BUTTON(user_data));
+	g_return_if_fail(x && y);
+ 	g_return_if_fail(GTK_IS_BUTTON(user_data));
 
-	button = GTK_WIDGET(user_data);
+	widget = GTK_WIDGET(user_data);
 
-	gtk_widget_get_child_requisition(GTK_WIDGET(menu), &requisition);
-	width = requisition.width;
-	height = requisition.height;
-	gdk_window_get_origin(button->window, &button_xpos, &button_ypos);
-
-	xpos = button_xpos;
-	ypos = button_ypos + button->allocation.height;
-
-	scr_width = gdk_screen_width();
-	scr_height = gdk_screen_height();
-
-	if (xpos + width > scr_width)
-		xpos -= (xpos + width) - scr_width;
-	if (ypos + height > scr_height)
-		ypos = button_ypos - height;
-	if (xpos < 0)
-		xpos = 0;
-	if (ypos < 0)
-		ypos = 0;
-
-	*x = xpos;
-	*y = ypos;
+        gdk_window_get_origin(widget->window, x, y);
+        wheight = widget->requisition.height;
+        wx = widget->allocation.x;
+        wy = widget->allocation.y;
+         
+        *y = *y + wy + wheight;
+        *x = *x + wx;
 }
 
 gint menu_find_option_menu_index(GtkOptionMenu *optmenu, gpointer data,
@@ -275,7 +262,8 @@ gint menu_find_option_menu_index(GtkOptionMenu *optmenu, gpointer data,
 	for (cur = GTK_MENU_SHELL(menu)->children, n = 0;
 	     cur != NULL; cur = cur->next, n++) {
 		menuitem = GTK_WIDGET(cur->data);
-		menu_data = gtk_object_get_user_data(GTK_OBJECT(menuitem));
+		menu_data = g_object_get_data(G_OBJECT(menuitem),
+					      MENU_VAL_ID);
 		if (func) {
 			if (func(menu_data, data) == 0)
 				return n;
@@ -291,6 +279,8 @@ static void menu_item_add_accel( GtkWidget *widget, guint accel_signal_id, GtkAc
 				 guint accel_key, GdkModifierType accel_mods, GtkAccelFlags accel_flags,
 				 gpointer user_data)
 {
+#warning FIXME_GTK2
+#if 0
 	GtkWidget *connected = GTK_WIDGET(user_data);	
 	if (gtk_signal_n_emissions_by_name(GTK_OBJECT(widget),"add_accelerator") > 1 ) return;
 	gtk_widget_remove_accelerators(connected,"activate",FALSE);
@@ -302,26 +292,30 @@ static void menu_item_add_accel( GtkWidget *widget, guint accel_signal_id, GtkAc
 				   accel_key, accel_mods,
 				   GTK_ACCEL_VISIBLE );
 	gtk_accel_group_unlock_entry(accel_group,accel_key,accel_mods);				   
+#endif
 }
 
 static void menu_item_remove_accel(GtkWidget *widget, GtkAccelGroup *accel_group,
 			           guint accel_key, GdkModifierType accel_mods,
 			           gpointer user_data)
 {	
+#warning FIXME_GTK2
+#if 0
 	GtkWidget *wid = GTK_WIDGET(user_data);
 
 	if (gtk_signal_n_emissions_by_name(GTK_OBJECT(widget),
 	    "remove_accelerator") > 2 )
 		return;
 	gtk_widget_remove_accelerators(wid,"activate",FALSE);
+#endif
 }
 
 static void connect_accel_change_signals(GtkWidget* widget, GtkWidget *wid2) 
 {
 	gtk_signal_connect_after(GTK_OBJECT(widget), "add_accelerator", 
-				 menu_item_add_accel, wid2);
+				 G_CALLBACK(menu_item_add_accel), wid2);
 	gtk_signal_connect_after(GTK_OBJECT(widget), "remove_accelerator", 
-				 menu_item_remove_accel, wid2);
+				 G_CALLBACK(menu_item_remove_accel), wid2);
 }
 
 void menu_connect_identical_items(void)

@@ -54,11 +54,16 @@ static void set_plugin_list(PluginWindow *pluginwindow)
 	gchar *text[1];
 	gint row;
 	GtkCList *clist = GTK_CLIST(pluginwindow->plugin_list);
+	GtkTextBuffer *textbuf;
+	GtkTextIter start_iter, end_iter;
 	
 	plugins = plugin_get_list();
 	gtk_clist_freeze(clist);
 	gtk_clist_clear(clist);
-	gtk_editable_delete_text(GTK_EDITABLE(pluginwindow->plugin_desc), 0, -1);
+	textbuf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(pluginwindow->plugin_desc));
+	gtk_text_buffer_get_start_iter(textbuf, &start_iter);
+	gtk_text_buffer_get_end_iter(textbuf, &end_iter);
+	gtk_text_buffer_delete(textbuf, &start_iter, &end_iter);
 	gtk_widget_set_sensitive(pluginwindow->unload_btn, FALSE);
 	
 	for(cur = plugins; cur != NULL; cur = g_slist_next(cur)) {
@@ -75,17 +80,20 @@ static void select_row_cb(GtkCList *clist, gint row, gint column,
 			  GdkEventButton *event, PluginWindow *pluginwindow)
 {
 	Plugin *plugin;
-	GtkEditable *plugin_desc = GTK_EDITABLE(pluginwindow->plugin_desc);
+	GtkTextView *plugin_desc = GTK_TEXT_VIEW(pluginwindow->plugin_desc);
+	GtkTextBuffer *textbuf = gtk_text_view_get_buffer(plugin_desc);
+	GtkTextIter start_iter, end_iter;
 	const gchar *text;
-	gint pos = 0;
 	
 	plugin = (Plugin *) gtk_clist_get_row_data(clist, row);
 	pluginwindow->selected_plugin = plugin;
 
 	if (pluginwindow->selected_plugin != NULL) {
-		gtk_editable_delete_text(plugin_desc, 0, -1);
+		gtk_text_buffer_get_start_iter(textbuf, &start_iter);
+		gtk_text_buffer_get_end_iter(textbuf, &end_iter);
+		gtk_text_buffer_delete(textbuf, &start_iter, &end_iter);
 		text = plugin_get_desc(plugin);
-		gtk_editable_insert_text(plugin_desc, text, strlen(text), &pos);
+		gtk_text_buffer_insert(textbuf, &start_iter, text, strlen(text));
 		gtk_widget_set_sensitive(pluginwindow->unload_btn, TRUE);
 	} else {
 		gtk_widget_set_sensitive(pluginwindow->unload_btn, FALSE);
@@ -200,7 +208,7 @@ void pluginwindow_create()
 				       (scrolledwindow3), GTK_POLICY_NEVER,
 				       GTK_POLICY_ALWAYS);
 
-	plugin_desc = gtk_text_new(NULL, NULL);
+	plugin_desc = gtk_text_view_new();
 	gtk_widget_show(plugin_desc);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow3), plugin_desc);
 
@@ -227,7 +235,7 @@ void pluginwindow_create()
 	GTK_WIDGET_SET_FLAGS(close_btn, GTK_CAN_DEFAULT);
 	/* ----------------------------------------------------------- */
 
-	gtk_text_set_word_wrap(GTK_TEXT(plugin_desc), TRUE);
+	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(plugin_desc), GTK_WRAP_WORD);
 	gtk_widget_set_sensitive(GTK_WIDGET(unload_btn), FALSE);
 
 	pluginwindow = g_new0(PluginWindow, 1);

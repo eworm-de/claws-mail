@@ -109,7 +109,7 @@ static void prefs_summary_column_cancel	(void);
 static gint prefs_summary_column_delete_event	(GtkWidget	*widget,
 						 GdkEventAny	*event,
 						 gpointer	 data);
-static void prefs_summary_column_key_pressed	(GtkWidget	*widget,
+static gboolean prefs_summary_column_key_pressed(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 gpointer	 data);
 
@@ -169,19 +169,19 @@ static void prefs_summary_column_create(void)
 
 	debug_print("Creating summary column setting window...\n");
 
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
-	gtk_window_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
 	gtk_window_set_title(GTK_WINDOW(window),
 			     _("Displayed items configuration"));
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(prefs_summary_column_delete_event),
-			   NULL);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(prefs_summary_column_key_pressed),
-			   NULL);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(prefs_summary_column_delete_event),
+			 NULL);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(prefs_summary_column_key_pressed),
+			 NULL);
 
 	vbox = gtk_vbox_new(FALSE, 6);
 	gtk_widget_show(vbox);
@@ -212,7 +212,7 @@ static void prefs_summary_column_create(void)
 	gtk_box_pack_start(GTK_BOX(hbox1), clist_hbox, TRUE, TRUE, 0);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
-	gtk_widget_set_usize(scrolledwin, 180, 210);
+	gtk_widget_set_size_request(scrolledwin, 180, 210);
 	gtk_widget_show(scrolledwin);
 	gtk_box_pack_start(GTK_BOX(clist_hbox), scrolledwin, TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
@@ -245,17 +245,17 @@ static void prefs_summary_column_create(void)
 	gtk_widget_show(remove_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox1), remove_btn, FALSE, FALSE, 0);
 
-	gtk_signal_connect(GTK_OBJECT(add_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_summary_column_add), NULL);
-	gtk_signal_connect(GTK_OBJECT(remove_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_summary_column_remove), NULL);
+	g_signal_connect(G_OBJECT(add_btn), "clicked",
+			 G_CALLBACK(prefs_summary_column_add), NULL);
+	g_signal_connect(G_OBJECT(remove_btn), "clicked",
+			 G_CALLBACK(prefs_summary_column_remove), NULL);
 
 	clist_hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(clist_hbox);
 	gtk_box_pack_start(GTK_BOX(hbox1), clist_hbox, TRUE, TRUE, 0);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
-	gtk_widget_set_usize(scrolledwin, 180, 210);
+	gtk_widget_set_size_request(scrolledwin, 180, 210);
 	gtk_widget_show(scrolledwin);
 	gtk_box_pack_start(GTK_BOX(clist_hbox), scrolledwin, TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
@@ -290,10 +290,10 @@ static void prefs_summary_column_create(void)
 	gtk_widget_show(down_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox1), down_btn, FALSE, FALSE, 0);
 
-	gtk_signal_connect(GTK_OBJECT(up_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_summary_column_up), NULL);
-	gtk_signal_connect(GTK_OBJECT(down_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_summary_column_down), NULL);
+	g_signal_connect(G_OBJECT(up_btn), "clicked",
+			 G_CALLBACK(prefs_summary_column_up), NULL);
+	g_signal_connect(G_OBJECT(down_btn), "clicked",
+			 G_CALLBACK(prefs_summary_column_down), NULL);
 
 	btn_hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(btn_hbox);
@@ -306,9 +306,9 @@ static void prefs_summary_column_create(void)
 	default_btn = gtk_button_new_with_label(_(" Use default "));
 	gtk_widget_show(default_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), default_btn, TRUE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(default_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_summary_column_set_to_default),
-			   NULL);
+	g_signal_connect(G_OBJECT(default_btn), "clicked",
+			 G_CALLBACK(prefs_summary_column_set_to_default),
+			 NULL);
 
 	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
 				&cancel_btn, _("Cancel"), NULL, NULL);
@@ -316,10 +316,10 @@ static void prefs_summary_column_create(void)
 	gtk_box_pack_end(GTK_BOX(btn_hbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_btn);
 
-	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_summary_column_ok), NULL);
-	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_summary_column_cancel), NULL);
+	g_signal_connect(G_OBJECT(ok_btn), "clicked",
+			 G_CALLBACK(prefs_summary_column_ok), NULL);
+	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
+			 G_CALLBACK(prefs_summary_column_cancel), NULL);
 
 	summary_col.window      = window;
 	summary_col.stock_clist = stock_clist;
@@ -534,10 +534,11 @@ static gint prefs_summary_column_delete_event(GtkWidget *widget,
 	return TRUE;
 }
 
-static void prefs_summary_column_key_pressed(GtkWidget *widget,
-					     GdkEventKey *event,
-					     gpointer data)
+static gboolean prefs_summary_column_key_pressed(GtkWidget *widget,
+						 GdkEventKey *event,
+						 gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		summary_col.finished = TRUE;
+	return FALSE;
 }

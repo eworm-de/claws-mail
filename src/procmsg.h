@@ -241,6 +241,7 @@ GNode  *procmsg_get_thread_tree		(GSList		*mlist);
 void	procmsg_move_messages		(GSList		*mlist);
 void	procmsg_copy_messages		(GSList		*mlist);
 
+/* return path is locale charset */
 gchar  *procmsg_get_message_file_path	(MsgInfo	*msginfo);
 gchar  *procmsg_get_message_file	(MsgInfo	*msginfo);
 GSList *procmsg_get_message_file_list	(MsgInfoList	*mlist);

@@ -82,10 +82,15 @@ static void image_viewer_load_file(ImageViewer *imageviewer, const gchar *imgfil
 	gint avail_height;
 	gint new_width;
 	gint new_height;
+	GError *error = NULL;
 
 	debug_print("image_viewer_show_mimepart\n");
 
-	pixbuf = gdk_pixbuf_new_from_file(imgfile);
+	pixbuf = gdk_pixbuf_new_from_file(imgfile, &error);
+	if (error) {
+		g_warning(error->message);
+		g_error_free(error);
+	}
 	if (!pixbuf) {
 		g_warning("Can't load the image.");	
 		return;

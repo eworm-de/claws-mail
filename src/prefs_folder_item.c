@@ -181,14 +181,14 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * _page,
 				  rowcount, rowcount + 1);
 
 	folder_color_btn = gtk_button_new_with_label("");
-	gtk_widget_set_usize(folder_color_btn, 36, 26);
+	gtk_widget_set_size_request(folder_color_btn, 36, 26);
   	gtk_box_pack_start (GTK_BOX(hbox), folder_color_btn, FALSE, FALSE, 0);
 
 	page->folder_color = item->prefs->color;
 
-	gtk_signal_connect(GTK_OBJECT(folder_color_btn), "clicked",
-			   GTK_SIGNAL_FUNC(folder_color_set_dialog),
-			   page);
+	g_signal_connect(G_OBJECT(folder_color_btn), "clicked",
+			 G_CALLBACK(folder_color_set_dialog),
+			 page);
 
 	gtkut_set_widget_bgcolor_rgb(folder_color_btn, item->prefs->color);
 
@@ -489,7 +489,7 @@ void prefs_folder_item_compose_save_func(PrefsPage *_page)
  	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_enable_default_account));
  	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_default_account));
  	menuitem = gtk_menu_get_active(GTK_MENU(menu));
- 	prefs->default_account = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
+ 	prefs->default_account = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
 
 #if USE_ASPELL
 	prefs->enable_default_dictionary =

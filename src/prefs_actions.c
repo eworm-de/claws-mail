@@ -84,9 +84,9 @@ static void prefs_actions_row_move	(GtkCList	*clist,
 static gint prefs_actions_deleted	(GtkWidget	*widget,
 					 GdkEventAny	*event,
 					 gpointer	*data);
-static void prefs_actions_key_pressed	(GtkWidget	*widget,
-					 GdkEventKey	*event,
-					 gpointer	 data);
+static gboolean prefs_actions_key_pressed(GtkWidget	*widget,
+					  GdkEventKey	*event,
+					  gpointer	 data);
 static void prefs_actions_cancel	(GtkWidget	*w,
 					 gpointer	 data);
 static void prefs_actions_ok		(GtkWidget	*w,
@@ -146,10 +146,10 @@ static void prefs_actions_create(MainWindow *mainwin)
 
 	debug_print("Creating actions configuration window...\n");
 
-	window = gtk_window_new (GTK_WINDOW_DIALOG);
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 
 	gtk_container_set_border_width(GTK_CONTAINER (window), 8);
-	gtk_window_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, TRUE);
 	gtk_window_set_default_size(GTK_WINDOW(window), 400, -1);
@@ -165,15 +165,15 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_widget_grab_default(ok_btn);
 
 	gtk_window_set_title(GTK_WINDOW(window), _("Actions configuration"));
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(prefs_actions_deleted), NULL);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(prefs_actions_key_pressed), NULL);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(prefs_actions_deleted), NULL);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(prefs_actions_key_pressed), NULL);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
-	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_actions_ok), mainwin);
-	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_actions_cancel), NULL);
+	g_signal_connect(G_OBJECT(ok_btn), "clicked",
+			 G_CALLBACK(prefs_actions_ok), mainwin);
+	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
+			 G_CALLBACK(prefs_actions_cancel), NULL);
 
 	vbox1 = gtk_vbox_new(FALSE, 8);
 	gtk_widget_show(vbox1);
@@ -212,7 +212,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
 	gtk_widget_show(arrow);
 	gtk_box_pack_start(GTK_BOX(reg_hbox), arrow, FALSE, FALSE, 0);
-	gtk_widget_set_usize(arrow, -1, 16);
+	gtk_widget_set_size_request(arrow, -1, 16);
 
 	btn_hbox = gtk_hbox_new(TRUE, 4);
 	gtk_widget_show(btn_hbox);
@@ -221,27 +221,27 @@ static void prefs_actions_create(MainWindow *mainwin)
 	reg_btn = gtk_button_new_with_label(_("Add"));
 	gtk_widget_show(reg_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), reg_btn, FALSE, TRUE, 0);
-	gtk_signal_connect(GTK_OBJECT(reg_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_actions_register_cb), NULL);
+	g_signal_connect(G_OBJECT(reg_btn), "clicked",
+			 G_CALLBACK(prefs_actions_register_cb), NULL);
 
 	subst_btn = gtk_button_new_with_label(_(" Replace "));
 	gtk_widget_show(subst_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), subst_btn, FALSE, TRUE, 0);
-	gtk_signal_connect(GTK_OBJECT(subst_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_actions_substitute_cb),
-			   NULL);
+	g_signal_connect(G_OBJECT(subst_btn), "clicked",
+			 G_CALLBACK(prefs_actions_substitute_cb),
+			 NULL);
 
 	del_btn = gtk_button_new_with_label(_("Delete"));
 	gtk_widget_show(del_btn);
 	gtk_box_pack_start(GTK_BOX(btn_hbox), del_btn, FALSE, TRUE, 0);
-	gtk_signal_connect(GTK_OBJECT(del_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_actions_delete_cb), NULL);
+	g_signal_connect(G_OBJECT(del_btn), "clicked",
+			 G_CALLBACK(prefs_actions_delete_cb), NULL);
 
 	help_button = gtk_button_new_with_label(_(" Syntax help "));
 	gtk_widget_show(help_button);
 	gtk_box_pack_end(GTK_BOX(reg_hbox), help_button, FALSE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(help_button), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_actions_help_cb), NULL);
+	g_signal_connect(G_OBJECT(help_button), "clicked",
+			 G_CALLBACK(prefs_actions_help_cb), NULL);
 
 	cond_hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(cond_hbox);
@@ -249,7 +249,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 
 	cond_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(cond_scrolledwin);
-	gtk_widget_set_usize(cond_scrolledwin, -1, 150);
+	gtk_widget_set_size_request(cond_scrolledwin, -1, 150);
 	gtk_box_pack_start(GTK_BOX(cond_hbox), cond_scrolledwin,
 			   TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW (cond_scrolledwin),
@@ -265,11 +265,11 @@ static void prefs_actions_create(MainWindow *mainwin)
 				     GTK_SELECTION_BROWSE);
 	GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(cond_clist)->column[0].button,
 			       GTK_CAN_FOCUS);
-	gtk_signal_connect(GTK_OBJECT(cond_clist), "select_row",
-			   GTK_SIGNAL_FUNC(prefs_actions_select), NULL);
-	gtk_signal_connect_after(GTK_OBJECT(cond_clist), "row_move",
-				 GTK_SIGNAL_FUNC(prefs_actions_row_move),
-				 NULL);
+	g_signal_connect(G_OBJECT(cond_clist), "select_row",
+			 G_CALLBACK(prefs_actions_select), NULL);
+	g_signal_connect_after(G_OBJECT(cond_clist), "row_move",
+			       G_CALLBACK(prefs_actions_row_move),
+			       NULL);
 
 	btn_vbox = gtk_vbox_new(FALSE, 8);
 	gtk_widget_show(btn_vbox);
@@ -278,14 +278,14 @@ static void prefs_actions_create(MainWindow *mainwin)
 	up_btn = gtk_button_new_with_label(_("Up"));
 	gtk_widget_show(up_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), up_btn, FALSE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(up_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_actions_up), NULL);
+	g_signal_connect(G_OBJECT(up_btn), "clicked",
+			 G_CALLBACK(prefs_actions_up), NULL);
 
 	down_btn = gtk_button_new_with_label(_("Down"));
 	gtk_widget_show(down_btn);
 	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(down_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_actions_down), NULL);
+	g_signal_connect(G_OBJECT(down_btn), "clicked",
+			 G_CALLBACK(prefs_actions_down), NULL);
 
 	gtk_widget_show(window);
 
@@ -324,13 +324,25 @@ void prefs_actions_read_config(void)
 	}
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		g_strchomp(buf);
-		act = strstr(buf, ": ");
+		const gchar *src_codeset = conv_get_current_charset_str();
+		const gchar *dest_codeset = CS_UTF_8;
+		gchar *tmp;
+
+		tmp = conv_codeset_strdup(buf, src_codeset, dest_codeset);
+		if (!tmp) {
+			g_warning("Faild to convert character set of action configuration\n");
+			tmp = g_strdup(buf);
+		}
+
+		g_strchomp(tmp);
+		act = strstr(tmp, ": ");
 		if (act && act[2] && 
 		    action_get_type(&act[2]) != ACTION_ERROR)
 			prefs_common.actions_list =
 				g_slist_append(prefs_common.actions_list,
-					       g_strdup(buf));
+					       tmp);
+		else
+			g_free(tmp);
 	}
 	fclose(fp);
 }
@@ -351,7 +363,17 @@ void prefs_actions_write_config(void)
 	}
 
 	for (cur = prefs_common.actions_list; cur != NULL; cur = cur->next) {
-		gchar *act = (gchar *)cur->data;
+		gchar *tmp = (gchar *)cur->data;
+		const gchar *src_codeset = CS_UTF_8;
+		const gchar *dest_codeset = conv_get_current_charset_str();
+		gchar *act;
+
+		act = conv_codeset_strdup(tmp, src_codeset, dest_codeset);
+		if (!act) {
+			g_warning("Faild to convert character set of action configuration\n");
+			act = g_strdup(act);
+		}
+
 		if (fputs(act, pfile->fp) == EOF ||
 		    fputc('\n', pfile->fp) == EOF) {
 			FILE_OP_ERROR(rcpath, "fputs || fputc");
@@ -359,6 +381,7 @@ void prefs_actions_write_config(void)
 			g_free(rcpath);
 			return;
 		}
+		g_free(act);
 	}
 	
 	g_free(rcpath);
@@ -416,7 +439,7 @@ static void prefs_actions_set_list(void)
 static gint prefs_actions_clist_set_row(gint row)
 {
 	GtkCList *clist = GTK_CLIST(actions.actions_clist);
-	gchar *entry_text;
+	const gchar *entry_text;
 	gint len;
 	gchar action[PREFSBUFSIZE];
 	gchar *buf[1];
@@ -603,11 +626,12 @@ static gint prefs_actions_deleted(GtkWidget *widget, GdkEventAny *event,
 	return TRUE;
 }
 
-static void prefs_actions_key_pressed(GtkWidget *widget, GdkEventKey *event,
-				      gpointer data)
+static gboolean prefs_actions_key_pressed(GtkWidget *widget, GdkEventKey *event,
+					  gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
 		prefs_actions_cancel(widget, data);
+	return FALSE;
 }
 
 static void prefs_actions_cancel(GtkWidget *w, gpointer data)

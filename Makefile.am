@@ -1,8 +1,10 @@
-SUBDIRS = ac po src man manual faq tools config intl
+SUBDIRS = ac po src man manual faq tools config
 
 EXTRA_DIST = \
 	ChangeLog.claws \
 	ChangeLog.jp \
+	ChangeLog-gtk2 \
+	ChangeLog-gtk2.jp \
 	README.claws \
 	README.jp \
 	sylpheed-128x128.png \
@@ -15,6 +17,8 @@ EXTRA_DIST = \
 	TODO \
 	TODO.claws \
 	TODO.jp \
+	TODO-gtk2 \
+	TODO-gtk2.jp \
 	autogen.sh 
 
 if SYLPHEED_GNOME

@@ -78,9 +78,6 @@ typedef enum
 
 static GList *folderview_list = NULL;
 
-static GdkFont *normalfont;
-static GdkFont *boldfont;
-
 static GtkStyle *normal_style;
 static GtkStyle *normal_color_style;
 static GtkStyle *bold_style;
@@ -158,13 +155,13 @@ static gint folderview_compare_name	(gconstpointer	 a,
 					 gconstpointer	 b);
 
 /* callback functions */
-static void folderview_button_pressed	(GtkWidget	*ctree,
-					 GdkEventButton	*event,
-					 FolderView	*folderview);
-static void folderview_button_released	(GtkWidget	*ctree,
-					 GdkEventButton	*event,
-					 FolderView	*folderview);
-static void folderview_key_pressed	(GtkWidget	*widget,
+static gboolean folderview_button_pressed	(GtkWidget	*ctree,
+						 GdkEventButton	*event,
+						 FolderView	*folderview);
+static gboolean folderview_button_released	(GtkWidget	*ctree,
+						 GdkEventButton	*event,
+						 FolderView	*folderview);
+static gboolean folderview_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 FolderView	*folderview);
 static void folderview_selected		(GtkCTree	*ctree,
@@ -390,7 +387,7 @@ FolderView *folderview_create(void)
 		(GTK_SCROLLED_WINDOW(scrolledwin),
 		 GTK_POLICY_AUTOMATIC,
 		 prefs_common.folderview_vscrollbar_policy);
-	gtk_widget_set_usize(scrolledwin,
+	gtk_widget_set_size_request(scrolledwin,
 			     prefs_common.folderview_width,
 			     prefs_common.folderview_height);
 
@@ -451,63 +448,63 @@ FolderView *folderview_create(void)
 				       "<MboxFolder>", &mbox_factory,
 				       folderview);
 
-	gtk_signal_connect(GTK_OBJECT(ctree), "key_press_event",
-			   GTK_SIGNAL_FUNC(folderview_key_pressed),
-			   folderview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "button_press_event",
-			   GTK_SIGNAL_FUNC(folderview_button_pressed),
-			   folderview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "button_release_event",
-			   GTK_SIGNAL_FUNC(folderview_button_released),
-			   folderview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "tree_select_row",
-			   GTK_SIGNAL_FUNC(folderview_selected), folderview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "start_drag",
-			   GTK_SIGNAL_FUNC(folderview_start_drag), folderview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "drag_data_get",
-			   GTK_SIGNAL_FUNC(folderview_drag_data_get),
-			   folderview);
+	g_signal_connect(G_OBJECT(ctree), "key_press_event",
+			 G_CALLBACK(folderview_key_pressed),
+			 folderview);
+	g_signal_connect(G_OBJECT(ctree), "button_press_event",
+			 G_CALLBACK(folderview_button_pressed),
+			 folderview);
+	g_signal_connect(G_OBJECT(ctree), "button_release_event",
+			 G_CALLBACK(folderview_button_released),
+			 folderview);
+	g_signal_connect(G_OBJECT(ctree), "tree_select_row",
+			 G_CALLBACK(folderview_selected), folderview);
+	g_signal_connect(G_OBJECT(ctree), "start_drag",
+			 G_CALLBACK(folderview_start_drag), folderview);
+	g_signal_connect(G_OBJECT(ctree), "drag_data_get",
+			 G_CALLBACK(folderview_drag_data_get),
+			 folderview);
 
-	gtk_signal_connect_after(GTK_OBJECT(ctree), "tree_expand",
-				 GTK_SIGNAL_FUNC(folderview_tree_expanded),
-				 folderview);
-	gtk_signal_connect_after(GTK_OBJECT(ctree), "tree_collapse",
-				 GTK_SIGNAL_FUNC(folderview_tree_collapsed),
-				 folderview);
+	g_signal_connect_after(G_OBJECT(ctree), "tree_expand",
+			       G_CALLBACK(folderview_tree_expanded),
+			       folderview);
+	g_signal_connect_after(G_OBJECT(ctree), "tree_collapse",
+			       G_CALLBACK(folderview_tree_collapsed),
+			       folderview);
 
-	gtk_signal_connect(GTK_OBJECT(ctree), "resize_column",
-			   GTK_SIGNAL_FUNC(folderview_col_resized),
-			   folderview);
+	g_signal_connect(G_OBJECT(ctree), "resize_column",
+			 G_CALLBACK(folderview_col_resized),
+			 folderview);
 
-	gtk_signal_connect(GTK_OBJECT(mail_popup), "selection_done",
-			   GTK_SIGNAL_FUNC(folderview_popup_close),
-			   folderview);
-	gtk_signal_connect(GTK_OBJECT(imap_popup), "selection_done",
-			   GTK_SIGNAL_FUNC(folderview_popup_close),
-			   folderview);
-	gtk_signal_connect(GTK_OBJECT(news_popup), "selection_done",
-			   GTK_SIGNAL_FUNC(folderview_popup_close),
-			   folderview);
-	gtk_signal_connect(GTK_OBJECT(mbox_popup), "selection_done",
-			   GTK_SIGNAL_FUNC(folderview_popup_close),
-			   folderview);
+	g_signal_connect(G_OBJECT(mail_popup), "selection_done",
+			 G_CALLBACK(folderview_popup_close),
+			 folderview);
+	g_signal_connect(G_OBJECT(imap_popup), "selection_done",
+			 G_CALLBACK(folderview_popup_close),
+			 folderview);
+	g_signal_connect(G_OBJECT(news_popup), "selection_done",
+			 G_CALLBACK(folderview_popup_close),
+			 folderview);
+	g_signal_connect(G_OBJECT(mbox_popup), "selection_done",
+			 G_CALLBACK(folderview_popup_close),
+			 folderview);
 
         /* drop callback */
 	gtk_drag_dest_set(ctree, GTK_DEST_DEFAULT_ALL & ~GTK_DEST_DEFAULT_HIGHLIGHT,
 			  summary_drag_types, 1,
 			  GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_DEFAULT);
-	gtk_signal_connect(GTK_OBJECT(ctree), "drag_motion",
-			   GTK_SIGNAL_FUNC(folderview_drag_motion_cb),
-			   folderview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "drag_leave",
-			   GTK_SIGNAL_FUNC(folderview_drag_leave_cb),
-			   folderview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "drag_data_received",
-			   GTK_SIGNAL_FUNC(folderview_drag_received_cb),
-			   folderview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "drag_end",
-			   GTK_SIGNAL_FUNC(folderview_drag_end_cb),
-			   folderview);
+	g_signal_connect(G_OBJECT(ctree), "drag_motion",
+			 G_CALLBACK(folderview_drag_motion_cb),
+			 folderview);
+	g_signal_connect(G_OBJECT(ctree), "drag_leave",
+			 G_CALLBACK(folderview_drag_leave_cb),
+			 folderview);
+	g_signal_connect(G_OBJECT(ctree), "drag_data_received",
+			 G_CALLBACK(folderview_drag_received_cb),
+			 folderview);
+	g_signal_connect(G_OBJECT(ctree), "drag_end",
+			 G_CALLBACK(folderview_drag_end_cb),
+			 folderview);
 
 	folderview->scrolledwin  = scrolledwin;
 	folderview->ctree        = ctree;
@@ -588,6 +585,7 @@ void folderview_init(FolderView *folderview)
 	gtk_clist_set_column_widget(GTK_CLIST(ctree),COL_NEW,hbox_new);
 	gtk_clist_set_column_widget(GTK_CLIST(ctree),COL_UNREAD,hbox_unread);
 			
+#if 0
 	if (!normalfont) {
 		if (gtkut_font_load(NORMAL_FONT) == NULL) {
 			GtkStyle *style = gtk_style_new();
@@ -609,10 +607,18 @@ void folderview_init(FolderView *folderview)
 		else
 			boldfont = gtkut_font_load(BOLD_FONT);
 	}
+#endif
 	
 	if (!bold_style) {
+		PangoFontDescription *font_desc;
 		bold_style = gtk_style_copy(gtk_widget_get_style(ctree));
-		bold_style->font = boldfont;
+		font_desc = pango_font_description_from_string(BOLD_FONT);
+		if (font_desc) {
+			if (bold_style->font_desc)
+				pango_font_description_free
+					(bold_style->font_desc);
+			bold_style->font_desc = font_desc;
+		}
 		bold_color_style = gtk_style_copy(bold_style);
 		bold_color_style->fg[GTK_STATE_NORMAL] = folderview->color_new;
 
@@ -620,8 +626,15 @@ void folderview_init(FolderView *folderview)
 		bold_tgtfold_style->fg[GTK_STATE_NORMAL] = folderview->color_op;
 	}
 	if (!normal_style) {
+		PangoFontDescription *font_desc;
 		normal_style = gtk_style_copy(gtk_widget_get_style(ctree));
-		normal_style->font = normalfont;
+		font_desc = pango_font_description_from_string(NORMAL_FONT);
+		if (font_desc) {
+			if (normal_style->font_desc)
+				pango_font_description_free
+					(normal_style->font_desc);
+			normal_style->font_desc = font_desc;
+		}
 		normal_color_style = gtk_style_copy(normal_style);
 		normal_color_style->fg[GTK_STATE_NORMAL] = folderview->color_new;
 	}
@@ -811,8 +824,8 @@ static GtkWidget *label_window_create(const gchar *str)
 	GtkWidget *window;
 	GtkWidget *label;
 
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
-	gtk_widget_set_usize(window, 380, 60);
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_widget_set_size_request(window, 380, 60);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_title(GTK_WINDOW(window), str);
@@ -1427,8 +1440,8 @@ void folderview_delete_folder(FolderView *folderview)
 
 /* callback functions */
 
-static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
-				      FolderView *folderview)
+static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
+					  FolderView *folderview)
 {
 	GtkCList *clist = GTK_CLIST(ctree);
 	gint prev_row = -1, row = -1, column = -1;
@@ -1448,11 +1461,11 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	gboolean folder_processing  = FALSE;
 	gboolean folder_scoring  = FALSE;
 
-	if (!event) return;
+	if (!event) return FALSE;
 
 	if (event->button == 1) {
 		folderview->open_folder = TRUE;
-		return;
+		return FALSE;
 	}
 
 	if (event->button == 2 || event->button == 3) {
@@ -1468,7 +1481,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 
 		if (!gtk_clist_get_selection_info(clist, event->x, event->y,
 						  &row, &column))
-			return;
+			return FALSE;
 		if (prev_row != row) {
 			gtk_clist_unselect_all(clist);
 			if (event->button == 2)
@@ -1481,11 +1494,11 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		}
 	}
 
-	if (event->button != 3) return;
+	if (event->button != 3) return FALSE;
 
 	item = gtk_clist_get_row_data(clist, row);
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->folder != NULL);
+	g_return_val_if_fail(item != NULL, FALSE);
+	g_return_val_if_fail(item->folder != NULL, FALSE);
 	folder = item->folder;
 
 	if (folderview->mainwin->lock_count == 0) {
@@ -1575,18 +1588,20 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		SET_SENS(mbox_factory, "/Processing...", folder_processing);
 		SET_SENS(mbox_factory, "/Scoring...", folder_scoring);
 	} else
-		return;
+		return FALSE;
 
 #undef SET_SENS
 
 	gtk_menu_popup(GTK_MENU(popup), NULL, NULL, NULL, NULL,
 		       event->button, event->time);
+
+	return FALSE;
 }
 
-static void folderview_button_released(GtkWidget *ctree, GdkEventButton *event,
-				       FolderView *folderview)
+static gboolean folderview_button_released(GtkWidget *ctree, GdkEventButton *event,
+					   FolderView *folderview)
 {
-	if (!event) return;
+	if (!event) return FALSE;
 
 	if (event->button == 1 && folderview->open_folder == FALSE &&
 	    folderview->opened != NULL) {
@@ -1594,12 +1609,14 @@ static void folderview_button_released(GtkWidget *ctree, GdkEventButton *event,
 					  folderview->opened);
 		gtk_ctree_select(GTK_CTREE(ctree), folderview->opened);
 	}
+
+	return FALSE;
 }
 
-static void folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
-				   FolderView *folderview)
+static gboolean folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
+				       FolderView *folderview)
 {
-	if (!event) return;
+	if (!event) return FALSE;
 
 	switch (event->keyval) {
 	case GDK_Return:
@@ -1622,6 +1639,8 @@ static void folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	default:
 		break;
 	}
+
+	return FALSE;
 }
 
 static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
@@ -2830,13 +2849,13 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 		drag_state_start(folderview, node, item);
 	
 	if (acceptable) {
-		gtk_signal_handler_block_by_func
-			(GTK_OBJECT(widget),
-			 GTK_SIGNAL_FUNC(folderview_selected), folderview);
+		g_signal_handlers_block_by_func
+			(G_OBJECT(widget),
+			 G_CALLBACK(folderview_selected), folderview);
 		gtk_ctree_select(GTK_CTREE(widget), node);
-		gtk_signal_handler_unblock_by_func
-			(GTK_OBJECT(widget),
-			 GTK_SIGNAL_FUNC(folderview_selected), folderview);
+		g_signal_handlers_unblock_by_func
+			(G_OBJECT(widget),
+			 G_CALLBACK(folderview_selected), folderview);
 		gdk_drag_status(context, 
 					(context->actions == GDK_ACTION_COPY ?
 					GDK_ACTION_COPY : GDK_ACTION_MOVE) , time);

@@ -103,11 +103,11 @@ static void main_window_set_widgets		(MainWindow	*mainwin,
 						 SeparateType	 type);
 
 #if 0
-static void toolbar_account_button_pressed	(GtkWidget	*widget,
+static gboolean toolbar_account_button_pressed	(GtkWidget	*widget,
 						 GdkEventButton	*event,
 						 gpointer	 data);
 #endif
-static void ac_label_button_pressed		(GtkWidget	*widget,
+static gboolean ac_label_button_pressed		(GtkWidget	*widget,
 						 GdkEventButton	*event,
 						 gpointer	 data);
 static void ac_menu_popup_closed		(GtkMenuShell	*menu_shell,
@@ -766,14 +766,14 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
 				      GDK_HINT_MIN_SIZE);
 
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(main_window_close_cb), mainwin);
+	g_signal_connect(G_OBJECT(window), "delete_event",
+			 G_CALLBACK(main_window_close_cb), mainwin);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
-	gtk_signal_connect(GTK_OBJECT(window), "focus_in_event",
-			   GTK_SIGNAL_FUNC(mainwindow_focus_in_event),
-			   mainwin);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-				GTK_SIGNAL_FUNC(mainwindow_key_pressed), mainwin);
+	g_signal_connect(G_OBJECT(window), "focus_in_event",
+			 G_CALLBACK(mainwindow_focus_in_event),
+			 mainwin);
+	g_signal_connect(G_OBJECT(window), "key_press_event",
+			 G_CALLBACK(mainwindow_key_pressed), mainwin);
 
 	gtk_widget_realize(window);
 	gtk_widget_add_events(window, GDK_KEY_PRESS_MASK|GDK_KEY_RELEASE_MASK);
@@ -821,7 +821,7 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_box_pack_start(GTK_BOX(hbox_stat), statusbar, TRUE, TRUE, 0);
 
 	progressbar = gtk_progress_bar_new();
-	gtk_widget_set_usize(progressbar, 120, 1);
+	gtk_widget_set_size_request(progressbar, 120, 1);
 	gtk_box_pack_start(GTK_BOX(hbox_stat), progressbar, FALSE, FALSE, 0);
 
 	online_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_WORK_ONLINE);
@@ -836,11 +836,11 @@ MainWindow *main_window_create(SeparateType type)
 			     offline_switch, _("Go online"), NULL);
 	gtk_container_add (GTK_CONTAINER(online_switch), online_pixmap);
 	gtk_button_set_relief (GTK_BUTTON(online_switch), GTK_RELIEF_NONE);
-	gtk_signal_connect (GTK_OBJECT(online_switch), "clicked", (GtkSignalFunc)online_switch_clicked, mainwin);
+	g_signal_connect (G_OBJECT(online_switch), "clicked", G_CALLBACK(online_switch_clicked), mainwin);
 	gtk_box_pack_start (GTK_BOX(hbox_stat), online_switch, FALSE, FALSE, 0);
 	gtk_container_add (GTK_CONTAINER(offline_switch), offline_pixmap);
 	gtk_button_set_relief (GTK_BUTTON(offline_switch), GTK_RELIEF_NONE);
-	gtk_signal_connect (GTK_OBJECT(offline_switch), "clicked", (GtkSignalFunc)online_switch_clicked, mainwin);
+	g_signal_connect (G_OBJECT(offline_switch), "clicked", G_CALLBACK(online_switch_clicked), mainwin);
 	gtk_box_pack_start (GTK_BOX(hbox_stat), offline_switch, FALSE, FALSE, 0);
 	
 	statuslabel = gtk_label_new("");
@@ -852,10 +852,10 @@ MainWindow *main_window_create(SeparateType type)
 			     ac_button, _("Select account"), NULL);
 	gtk_button_set_relief(GTK_BUTTON(ac_button), GTK_RELIEF_NONE);
 	GTK_WIDGET_UNSET_FLAGS(ac_button, GTK_CAN_FOCUS);
-	gtk_widget_set_usize(ac_button, -1, 1);
+	gtk_widget_set_size_request(ac_button, -1, 1);
 	gtk_box_pack_end(GTK_BOX(hbox_stat), ac_button, FALSE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(ac_button), "button_press_event",
-			   GTK_SIGNAL_FUNC(ac_label_button_pressed), mainwin);
+	g_signal_connect(G_OBJECT(ac_button), "button_press_event",
+			 G_CALLBACK(ac_label_button_pressed), mainwin);
 
 	ac_label = gtk_label_new("");
 	gtk_container_add(GTK_CONTAINER(ac_button), ac_label);
@@ -937,9 +937,9 @@ MainWindow *main_window_create(SeparateType type)
 
 	main_window_set_widgets(mainwin, type);
 
-	gtk_signal_connect(GTK_OBJECT(window), "size_allocate",
-			   GTK_SIGNAL_FUNC(main_window_size_allocate_cb),
-			   mainwin);
+	g_signal_connect(G_OBJECT(window), "size_allocate",
+			 G_CALLBACK(main_window_size_allocate_cb),
+			 mainwin);
 
 	/* set menu items */
 	menuitem = gtk_item_factory_get_item
@@ -982,8 +982,8 @@ MainWindow *main_window_create(SeparateType type)
 	/* set account selection menu */
 	ac_menu = gtk_item_factory_get_widget
 		(ifactory, "/Configuration/Change current account");
-	gtk_signal_connect(GTK_OBJECT(ac_menu), "selection_done",
-			   GTK_SIGNAL_FUNC(ac_menu_popup_closed), mainwin);
+	g_signal_connect(G_OBJECT(ac_menu), "selection_done",
+			 G_CALLBACK(ac_menu_popup_closed), mainwin);
 	mainwin->ac_menu = ac_menu;
 
 	toolbar_main_set_sensitive(mainwin);
@@ -1175,10 +1175,11 @@ void main_window_set_account_menu(GList *account_list)
 				(ac_prefs->account_name
 				 ? ac_prefs->account_name : _("Untitled"));
 			gtk_widget_show(menuitem);
-			gtk_menu_append(GTK_MENU(mainwin->ac_menu), menuitem);
-			gtk_signal_connect(GTK_OBJECT(menuitem), "activate",
-					   GTK_SIGNAL_FUNC(account_menu_cb),
-					   ac_prefs);
+			gtk_menu_shell_append(GTK_MENU_SHELL(mainwin->ac_menu),
+					      menuitem);
+			g_signal_connect(G_OBJECT(menuitem), "activate",
+					 G_CALLBACK(account_menu_cb),
+					 ac_prefs);
 		}
 	}
 }
@@ -1825,12 +1826,12 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 				       "folder_view", "Sylpheed");
 		gtk_window_set_policy(GTK_WINDOW(folderwin),
 				      TRUE, TRUE, FALSE);
-		gtk_widget_set_uposition(folderwin, prefs_common.folderwin_x,
-					 prefs_common.folderwin_y);
+		gtk_window_move(GTK_WINDOW(folderwin), prefs_common.folderwin_x,
+				prefs_common.folderwin_y);
 		gtk_container_set_border_width(GTK_CONTAINER(folderwin),
 					       BORDER_WIDTH);
-		gtk_signal_connect(GTK_OBJECT(folderwin), "delete_event",
-				   GTK_SIGNAL_FUNC(folder_window_close_cb),
+		g_signal_connect(G_OBJECT(folderwin), "delete_event",
+				 G_CALLBACK(folder_window_close_cb),
 				   mainwin);
 		gtk_container_add(GTK_CONTAINER(folderwin),
 				  GTK_WIDGET_PTR(mainwin->folderview));
@@ -1846,13 +1847,13 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 				       "message_view", "Sylpheed");
 		gtk_window_set_policy(GTK_WINDOW(messagewin),
 				      TRUE, TRUE, FALSE);
-		gtk_widget_set_uposition(messagewin, prefs_common.main_msgwin_x,
-					 prefs_common.main_msgwin_y);
+		gtk_window_move(GTK_WINDOW(messagewin), prefs_common.main_msgwin_x,
+				prefs_common.main_msgwin_y);
 		gtk_container_set_border_width(GTK_CONTAINER(messagewin),
 					       BORDER_WIDTH);
-		gtk_signal_connect(GTK_OBJECT(messagewin), "delete_event",
-				   GTK_SIGNAL_FUNC(message_window_close_cb),
-				   mainwin);
+		g_signal_connect(G_OBJECT(messagewin), "delete_event",
+				 G_CALLBACK(message_window_close_cb),
+				 mainwin);
 		gtk_container_add(GTK_CONTAINER(messagewin),
 				  GTK_WIDGET_PTR(mainwin->messageview));
 		gtk_widget_realize(messagewin);
@@ -1860,15 +1861,15 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 			gtk_widget_show(messagewin);
 	}
 
-	gtk_widget_set_usize(GTK_WIDGET_PTR(mainwin->folderview),
-			     prefs_common.folderview_width,
-			     prefs_common.folderview_height);
-	gtk_widget_set_usize(GTK_WIDGET_PTR(mainwin->summaryview),
-			     prefs_common.summaryview_width,
-			     prefs_common.summaryview_height);
-	gtk_widget_set_usize(GTK_WIDGET_PTR(mainwin->messageview),
-			     prefs_common.msgview_width,
-			     prefs_common.msgview_height);
+	gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->folderview),
+				    prefs_common.folderview_width,
+				    prefs_common.folderview_height);
+	gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->summaryview),
+				    prefs_common.summaryview_width,
+				    prefs_common.summaryview_height);
+	gtk_widget_set_size_request(GTK_WIDGET_PTR(mainwin->messageview),
+				    prefs_common.msgview_width,
+				    prefs_common.msgview_height);
 
 	switch (type) {
 	case SEPARATE_NONE:
@@ -1955,9 +1956,9 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		break;
 	}
 
-	gtk_widget_set_uposition(mainwin->window,
-				 prefs_common.mainwin_x,
-				 prefs_common.mainwin_y);
+	gtk_window_move(GTK_WINDOW(mainwin->window),
+			prefs_common.mainwin_x,
+			prefs_common.mainwin_y);
 
 	gtk_widget_queue_resize(vbox_body);
 	gtk_widget_queue_resize(mainwin->vbox);
@@ -2001,15 +2002,15 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 				       ((type & SEPARATE_MESSAGE) != 0));
 
 	if (folderwin) {
-		gtk_signal_connect
-			(GTK_OBJECT(folderwin), "size_allocate",
-			 GTK_SIGNAL_FUNC(folder_window_size_allocate_cb),
+		g_signal_connect
+			(G_OBJECT(folderwin), "size_allocate",
+			 G_CALLBACK(folder_window_size_allocate_cb),
 			 mainwin);
 	}
 	if (messagewin) {
-		gtk_signal_connect
-			(GTK_OBJECT(messagewin), "size_allocate",
-			 GTK_SIGNAL_FUNC(message_window_size_allocate_cb),
+		g_signal_connect
+			(G_OBJECT(messagewin), "size_allocate",
+			 G_CALLBACK(message_window_size_allocate_cb),
 			 mainwin);
 	}
 
@@ -2035,39 +2036,43 @@ void main_window_destroy_all(void)
 }
 
 #if 0
-static void toolbar_account_button_pressed(GtkWidget *widget,
-					   GdkEventButton *event,
-					   gpointer data)
+static gboolean toolbar_account_button_pressed(GtkWidget *widget,
+					       GdkEventButton *event,
+					       gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
 
-	if (!event) return;
-	if (event->button != 3) return;
+	if (!event) return FALSE;
+	if (event->button != 3) return FALSE;
 
 	gtk_button_set_relief(GTK_BUTTON(widget), GTK_RELIEF_NORMAL);
-	gtk_object_set_data(GTK_OBJECT(mainwin->ac_menu), "menu_button",
-			    widget);
+	g_object_set_data(G_OBJECT(mainwin->ac_menu), "menu_button",
+			  widget);
 
 	gtk_menu_popup(GTK_MENU(mainwin->ac_menu), NULL, NULL,
 		       menu_button_position, widget,
 		       event->button, event->time);
+
+	return FALSE;
 }
 #endif
 
-static void ac_label_button_pressed(GtkWidget *widget, GdkEventButton *event,
-				    gpointer data)
+static gboolean ac_label_button_pressed(GtkWidget *widget, GdkEventButton *event,
+					gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
 
-	if (!event) return;
+	if (!event) return FALSE;
 
 	gtk_button_set_relief(GTK_BUTTON(widget), GTK_RELIEF_NORMAL);
-	gtk_object_set_data(GTK_OBJECT(mainwin->ac_menu), "menu_button",
-			    widget);
+	g_object_set_data(G_OBJECT(mainwin->ac_menu), "menu_button",
+			  widget);
 
 	gtk_menu_popup(GTK_MENU(mainwin->ac_menu), NULL, NULL,
 		       menu_button_position, widget,
 		       event->button, event->time);
+
+	return TRUE;
 }
 
 static void ac_menu_popup_closed(GtkMenuShell *menu_shell, gpointer data)
@@ -2075,10 +2080,10 @@ static void ac_menu_popup_closed(GtkMenuShell *menu_shell, gpointer data)
 	MainWindow *mainwin = (MainWindow *)data;
 	GtkWidget *button;
 
-	button = gtk_object_get_data(GTK_OBJECT(menu_shell), "menu_button");
+	button = g_object_get_data(G_OBJECT(menu_shell), "menu_button");
 	if (!button) return;
 	gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
-	gtk_object_remove_data(GTK_OBJECT(mainwin->ac_menu), "menu_button");
+	g_object_set_data(G_OBJECT(mainwin->ac_menu), "menu_button", NULL);
 	manage_window_focus_in(mainwin->window, NULL, NULL);
 }
 

@@ -40,7 +40,6 @@
 #include "procheader.h"
 #include "prefs_common.h"
 #include "codeconv.h"
-#include "gtkstext.h"
 #include "utils.h"
 #include "gtkutils.h"
 #include "procmime.h"
@@ -121,14 +120,6 @@ static GdkColor bad_sig_color = {
 };
 #endif
 
-static GdkFont *text_sb_font;
-static GdkFont *text_mb_font;
-static gint text_sb_font_orig_ascent;
-static gint text_sb_font_orig_descent;
-static gint text_mb_font_orig_ascent;
-static gint text_mb_font_orig_descent;
-static GdkFont *spacingfont;
-
 static void textview_show_ertf		(TextView	*textview,
 					 FILE		*fp,
 					 CodeConverter	*conv);
@@ -160,12 +151,19 @@ static void textview_show_header	(TextView	*textview,
 static gint textview_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 TextView	*textview);
+#warning FIXME_GTK2
+#if 0
 static gint textview_button_pressed	(GtkWidget	*widget,
 					 GdkEventButton	*event,
 					 TextView	*textview);
 static gint textview_button_released	(GtkWidget	*widget,
 					 GdkEventButton	*event,
 					 TextView	*textview);
+#else
+static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
+					    GdkEvent *event, GtkTextIter *iter,
+					    TextView *textview);
+#endif
 
 static void textview_uri_list_remove_all(GSList		*uri_list);
 
@@ -183,101 +181,60 @@ TextView *textview_create(void)
 {
 	TextView *textview;
 	GtkWidget *vbox;
-	GtkWidget *scrolledwin_sb;
-	GtkWidget *scrolledwin_mb;
-	GtkWidget *text_sb;
-	GtkWidget *text_mb;
+	GtkWidget *scrolledwin;
+	GtkWidget *text;
+	GtkTextBuffer *buffer;
+	GtkClipboard *clipboard;
+	PangoFontDescription *font_desc = NULL;
 
 	debug_print("Creating text view...\n");
 	textview = g_new0(TextView, 1);
 
-	scrolledwin_sb = gtk_scrolled_window_new(NULL, NULL);
-	scrolledwin_mb = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin_sb),
+	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin_mb),
-				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_widget_set_usize(scrolledwin_sb, prefs_common.mainview_width, -1);
-	gtk_widget_set_usize(scrolledwin_mb, prefs_common.mainview_width, -1);
+	gtk_widget_set_size_request(scrolledwin, prefs_common.mainview_width, -1);
 
 	/* create GtkSText widgets for single-byte and multi-byte character */
-	text_sb = gtk_stext_new(NULL, NULL);
-	text_mb = gtk_stext_new(NULL, NULL);
-	GTK_STEXT(text_sb)->default_tab_width = 8;
-	GTK_STEXT(text_mb)->default_tab_width = 8;
-	gtk_widget_show(text_sb);
-	gtk_widget_show(text_mb);
-	gtk_stext_set_word_wrap(GTK_STEXT(text_sb), TRUE);
-	gtk_stext_set_word_wrap(GTK_STEXT(text_mb), TRUE);
-	gtk_widget_ensure_style(text_sb);
-	gtk_widget_ensure_style(text_mb);
-	if (text_sb->style && text_sb->style->font->type == GDK_FONT_FONTSET) {
-		GtkStyle *style;
-		GdkFont *font;
+	text = gtk_text_view_new();
+	gtk_widget_show(text);
+	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), FALSE);
+	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD);
 
-		font = gtkut_font_load_from_fontset(prefs_common.normalfont);
-		if (font) {
-			style = gtk_style_copy(text_sb->style);
-			gdk_font_unref(style->font);
-			style->font = font;
-			gtk_widget_set_style(text_sb, style);
-		}
+	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	clipboard = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
+	gtk_text_buffer_add_selection_clipboard(buffer, clipboard);
+
+	gtk_widget_ensure_style(text);
+
+	if (prefs_common.normalfont)
+		font_desc = pango_font_description_from_string
+					(prefs_common.normalfont);
+	if (font_desc) {
+		gtk_widget_modify_font(text, font_desc);
 	}
-	if (text_mb->style && text_mb->style->font->type == GDK_FONT_FONT) {
-		GtkStyle *style;
-		GdkFont *font;
+	pango_font_description_free(font_desc);
 
-		font = gdk_fontset_load(prefs_common.normalfont);
-		if (font) {
-			style = gtk_style_copy(text_mb->style);
-			gdk_font_unref(style->font);
-			style->font = font;
-			gtk_widget_set_style(text_mb, style);
-		}
-	}
-	gtk_widget_ref(scrolledwin_sb);
-	gtk_widget_ref(scrolledwin_mb);
+	gtk_widget_ref(scrolledwin);
 
-	gtk_container_add(GTK_CONTAINER(scrolledwin_sb), text_sb);
-	gtk_container_add(GTK_CONTAINER(scrolledwin_mb), text_mb);
-	gtk_signal_connect(GTK_OBJECT(text_sb), "key_press_event",
-			   GTK_SIGNAL_FUNC(textview_key_pressed),
-			   textview);
-	gtk_signal_connect_after(GTK_OBJECT(text_sb), "button_press_event",
-				 GTK_SIGNAL_FUNC(textview_button_pressed),
-				 textview);
-	gtk_signal_connect_after(GTK_OBJECT(text_sb), "button_release_event",
-				 GTK_SIGNAL_FUNC(textview_button_released),
-				 textview);
-	gtk_signal_connect(GTK_OBJECT(text_mb), "key_press_event",
-			   GTK_SIGNAL_FUNC(textview_key_pressed),
-			   textview);
-	gtk_signal_connect_after(GTK_OBJECT(text_mb), "button_press_event",
-				 GTK_SIGNAL_FUNC(textview_button_pressed),
-				 textview);
-	gtk_signal_connect_after(GTK_OBJECT(text_mb), "button_release_event",
-				 GTK_SIGNAL_FUNC(textview_button_released),
-				 textview);
+	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
 
-	gtk_widget_show(scrolledwin_sb);
-	gtk_widget_show(scrolledwin_mb);
+	g_signal_connect(G_OBJECT(text), "key_press_event",
+			 G_CALLBACK(textview_key_pressed),
+			 textview);
+
+	gtk_widget_show(scrolledwin);
 
 	vbox = gtk_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), scrolledwin_sb, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox), scrolledwin, TRUE, TRUE, 0);
 
 	gtk_widget_show(vbox);
 
 	textview->vbox             = vbox;
-	textview->scrolledwin      = scrolledwin_sb;
-	textview->scrolledwin_sb   = scrolledwin_sb;
-	textview->scrolledwin_mb   = scrolledwin_mb;
-	textview->text             = text_sb;
-	textview->text_sb          = text_sb;
-	textview->text_mb          = text_mb;
-	textview->text_is_mb       = FALSE;
+	textview->scrolledwin      = scrolledwin;
+	textview->text             = text;
 	textview->uri_list         = NULL;
 	textview->body_pos         = 0;
-	textview->cur_pos          = 0;
 	textview->show_all_headers = FALSE;
 	textview->last_buttonpress = GDK_NOTHING;
 	textview->show_url_msgid   = 0;
@@ -285,13 +242,67 @@ TextView *textview_create(void)
 	return textview;
 }
 
+static void textview_create_tags(GtkTextView *text, TextView *textview)
+{
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+	GtkTextTag *tag;
+
+	gtk_text_buffer_create_tag(buffer, "header",
+				   "pixels-above-lines", 0,
+				   "pixels-above-lines-set", TRUE,
+				   "pixels-below-lines", 0,
+				   "pixels-below-lines-set", TRUE,
+				   "left-margin", 0,
+				   "left-margin-set", TRUE,
+				   NULL);
+	gtk_text_buffer_create_tag(buffer, "header_title",
+				   "font", prefs_common.boldfont,
+				   NULL);
+	gtk_text_buffer_create_tag(buffer, "quote0",
+				   "foreground-gdk", &quote_colors[0],
+				   NULL);
+	gtk_text_buffer_create_tag(buffer, "quote1",
+				   "foreground-gdk", &quote_colors[1],
+				   NULL);
+	gtk_text_buffer_create_tag(buffer, "quote2",
+				   "foreground-gdk", &quote_colors[2],
+				   NULL);
+	gtk_text_buffer_create_tag(buffer, "emphasis",
+				   "foreground-gdk", &emphasis_color,
+				   NULL);
+ 	gtk_text_buffer_create_tag(buffer, "signature",
+				   "foreground-gdk", &signature_color,
+				   NULL);
+ 	tag = gtk_text_buffer_create_tag(buffer, "link",
+					 "foreground-gdk", &uri_color,
+					 NULL);
+#if USE_GPGME
+	gtk_text_buffer_create_tag(buffer, "good-signature",
+				   "foreground-gdk", &good_sig_color,
+				   NULL);
+	gtk_text_buffer_create_tag(buffer, "bad-signature",
+				   "foreground-gdk", &bad_sig_color,
+				   NULL);
+	gtk_text_buffer_create_tag(buffer, "nocheck-signature",
+				   "foreground-gdk", &nocheck_sig_color,
+				   NULL);
+#endif /*USE_GPGME  */
+
+       g_signal_connect(G_OBJECT(tag), "event",
+                         G_CALLBACK(textview_uri_button_pressed), textview);
+ }
+
 void textview_init(TextView *textview)
 {
-	gtkut_widget_disable_theme_engine(textview->text_sb);
-	gtkut_widget_disable_theme_engine(textview->text_mb);
+#warning FIXME_GTK2
+#if 0
+	gtkut_widget_disable_theme_engine(textview->text);
+#endif
 	textview_update_message_colors();
 	textview_set_all_headers(textview, FALSE);
 	textview_set_font(textview, NULL);
+
+	textview_create_tags(GTK_TEXT_VIEW(textview->text), textview);
 }
 
 void textview_update_message_colors(void)
@@ -319,7 +330,6 @@ void textview_update_message_colors(void)
 void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 			   const gchar *file)
 {
-	GtkSText *text;
 	FILE *fp;
 	const gchar *charset = NULL;
 	GPtrArray *headers = NULL;
@@ -339,28 +349,29 @@ void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 	textview_set_font(textview, charset);
 	textview_clear(textview);
 
-	text = GTK_STEXT(textview->text);
-
-	gtk_stext_freeze(text);
-
 	if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0) perror("fseek");
 	headers = textview_scan_header(textview, fp);
 	if (headers) {
+		GtkTextView *text = GTK_TEXT_VIEW(textview->text);
+		GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+		GtkTextIter iter;
+
 		textview_show_header(textview, headers);
 		procheader_header_array_destroy(headers);
-		textview->body_pos = gtk_stext_get_length(text);
+
+		gtk_text_buffer_get_end_iter(buffer, &iter);
+		textview->body_pos = gtk_text_iter_get_offset(&iter);
 	}
 
 	textview_add_parts(textview, mimeinfo, fp);
 
-	gtk_stext_thaw(text);
-
 	fclose(fp);
+
+	textview_set_position(textview, 0);
 }
 
 void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 {
-	GtkSText *text;
 	gchar buf[BUFFSIZE];
 	const gchar *boundary = NULL;
 	gint boundary_len = 0;
@@ -438,30 +449,34 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 
 	textview_set_font(textview, charset);
 
-	text = GTK_STEXT(textview->text);
-
-	gtk_stext_freeze(text);
 	textview_clear(textview);
 
 	if (headers) {
+		GtkTextView *text = GTK_TEXT_VIEW(textview->text);
+		GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+		GtkTextIter iter;
+
 		textview_show_header(textview, headers);
 		procheader_header_array_destroy(headers);
-		textview->body_pos = gtk_stext_get_length(text);
-		if (!mimeinfo->main)
-			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
+
+		gtk_text_buffer_get_end_iter(buffer, &iter);
+		textview->body_pos = gtk_text_iter_get_offset(&iter);
+		if (!mimeinfo->main) {
+			gtk_text_buffer_insert(buffer, &iter, "\n", 1);
+		}
 	}
 
 	if (mimeinfo->mime_type == MIME_MULTIPART || is_rfc822_part)
 		textview_add_parts(textview, mimeinfo, fp);
 	else
 		textview_write_body(textview, mimeinfo, fp, charset);
-
-	gtk_stext_thaw(text);
 }
 
 static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 {
-	GtkSText *text = GTK_STEXT(textview->text);
+	GtkTextView *text;
+	GtkTextBuffer *buffer;
+	GtkTextIter iter;
 	gchar buf[BUFFSIZE];
 	const gchar *boundary = NULL;
 	gint boundary_len = 0;
@@ -470,6 +485,10 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 
 	g_return_if_fail(mimeinfo != NULL);
 	g_return_if_fail(fp != NULL);
+
+	text = GTK_TEXT_VIEW(textview->text);
+	buffer = gtk_text_view_get_buffer(text);
+	gtk_text_buffer_get_end_iter(buffer, &iter);
 
 	if (mimeinfo->mime_type == MIME_MULTIPART) return;
 
@@ -489,16 +508,12 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	if (mimeinfo->mime_type == MIME_MESSAGE_RFC822) {
 		headers = textview_scan_header(textview, fp);
 		if (headers) {
-			gtk_stext_freeze(text);
-			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
+			gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 			textview_show_header(textview, headers);
 			procheader_header_array_destroy(headers);
-			gtk_stext_thaw(text);
 		}
 		return;
 	}
-
-	gtk_stext_freeze(text);
 
 #if USE_GPGME
 	if (mimeinfo->sigstatus)
@@ -517,6 +532,8 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 
 #if USE_GPGME
 	if (mimeinfo->sigstatus && !mimeinfo->sigstatus_full) {
+#warning FIXME_GTK2
+#if 0
 		gchar *tmp;
 		/* use standard font */
 		gpointer oldfont = textview->msgfont;
@@ -529,28 +546,35 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 		textview->msgfont = (GdkFont *)oldfont;
 		oldfont = NULL;
 		g_free(tmp);
+#else
+		gchar *tmp;
+
+		tmp = g_strconcat("pgp: ", _("Check signature"), NULL);
+		textview_write_link(textview, buf, tmp, NULL);
+#endif
 	} else if (mimeinfo->sigstatus) {
-		GdkColor *color;
+		const gchar *color;
 		if (!strcmp(mimeinfo->sigstatus, _("Good signature")))
-			color = &good_sig_color;
+			color = "good-signature";
 		else if (!strcmp(mimeinfo->sigstatus, _("BAD signature")))
-			color = &bad_sig_color;
+			color = "bad-signature";
 		else
-			color = &nocheck_sig_color; 
-		gtk_stext_insert(text, NULL, color, NULL, buf, -1);
+			color = "nocheck-signature";
+		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, "\n", 1,
+							 color, NULL);
 	} else
 #endif
 	if (mimeinfo->mime_type != MIME_TEXT &&
 	    mimeinfo->mime_type != MIME_TEXT_HTML &&
 	    mimeinfo->mime_type != MIME_TEXT_ENRICHED) {
-		gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
+		gtk_text_buffer_insert(buffer, &iter, buf, -1);
 	} else {
 		if (!mimeinfo->main &&
 		    mimeinfo->parent &&
 		    mimeinfo->parent->children != mimeinfo)
-			gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
+			gtk_text_buffer_insert(buffer, &iter, buf, -1);
 		else if (prefs_common.display_header)
-			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
+			gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 		if (textview->messageview->forced_charset)
 			charset = textview->messageview->forced_charset;
 		else if (prefs_common.force_charset)
@@ -559,8 +583,6 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 			charset = mimeinfo->charset;
 		textview_write_body(textview, mimeinfo, fp, charset);
 	}
-
-	gtk_stext_thaw(text);
 }
 
 static void textview_add_parts(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
@@ -586,19 +608,22 @@ static void textview_add_parts(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 }
 
 #define TEXT_INSERT(str) \
-	gtk_stext_insert(text, textview->msgfont, NULL, NULL, str, -1)
+	gtk_text_buffer_insert(buffer, &iter, str, -1)
 
 void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 {
-	GtkSText *text;
+	GtkTextView *text;
+	GtkTextBuffer *buffer;
+	GtkTextIter iter;
 
 	if (!partinfo) return;
 
 	textview_set_font(textview, NULL);
-	text = GTK_STEXT(textview->text);
 	textview_clear(textview);
 
-	gtk_stext_freeze(text);
+	text = GTK_TEXT_VIEW(textview->text);
+	buffer = gtk_text_view_get_buffer(text);
+	gtk_text_buffer_get_start_iter(buffer, &iter);
 
 	TEXT_INSERT(_("To save this part, pop up the context menu with "));
 	TEXT_INSERT(_("right click and select `Save as...', "));
@@ -611,22 +636,23 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	TEXT_INSERT(_("`Open' or `Open with...', "));
 	TEXT_INSERT(_("or double-click, or click the center button, "));
 	TEXT_INSERT(_("or press `l' key."));
-
-	gtk_stext_thaw(text);
 }
 
 #if USE_GPGME
 void textview_show_signature_part(TextView *textview, MimeInfo *partinfo)
 {
-	GtkSText *text;
+	GtkTextView *text;
+	GtkTextBuffer *buffer;
+	GtkTextIter iter;
 
 	if (!partinfo) return;
 
 	textview_set_font(textview, NULL);
-	text = GTK_STEXT(textview->text);
 	textview_clear(textview);
 
-	gtk_stext_freeze(text);
+	text = GTK_TEXT_VIEW(textview->text);
+	buffer = gtk_text_view_get_buffer(text);
+	gtk_text_buffer_get_start_iter(buffer, &iter);
 
 	if (partinfo->sigstatus_full == NULL) {
 		TEXT_INSERT(_("This signature has not been checked yet.\n"));
@@ -635,8 +661,6 @@ void textview_show_signature_part(TextView *textview, MimeInfo *partinfo)
 	} else {
 		TEXT_INSERT(partinfo->sigstatus_full);
 	}
-
-	gtk_stext_thaw(text);
 }
 #endif /* USE_GPGME */
 
@@ -998,18 +1022,22 @@ static gchar *make_email_string(const gchar *bp, const gchar *ep)
 		last->next = NULL; \
 	} else { \
 		g_warning("alloc error scanning URIs\n"); \
-		gtk_stext_insert(text, textview->msgfont, fg_color, NULL, \
-				linebuf, -1); \
+		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, \
+							 linebuf, -1, \
+							 fg_tag, NULL); \
 		return; \
 	}
 
 /* textview_make_clickable_parts() - colorizes clickable parts */
 static void textview_make_clickable_parts(TextView *textview,
-					  GdkFont *font,
-					  GdkColor *fg_color,
-					  GdkColor *uri_color,
+					  const gchar *fg_tag,
+					  const gchar *uri_tag,
 					  const gchar *linebuf)
 {
+	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+	GtkTextIter iter;
+
 	/* parse table - in order of priority */
 	struct table {
 		const gchar *needle; /* token */
@@ -1046,7 +1074,7 @@ static void textview_make_clickable_parts(TextView *textview,
 		struct txtpos	*next;		/* next */
 	} head = {NULL, NULL, 0,  NULL}, *last = &head;
 
-	GtkSText *text = GTK_STEXT(textview->text);
+	gtk_text_buffer_get_end_iter(buffer, &iter);
 
 	/* parse for clickable parts, and build a list of begin and end positions  */
 	for (walk = linebuf, n = 0;;) {
@@ -1090,25 +1118,32 @@ static void textview_make_clickable_parts(TextView *textview,
 
 			uri = g_new(RemoteURI, 1);
 			if (last->bp - normal_text > 0)
-				gtk_stext_insert(text, font,
-						fg_color, NULL,
-						normal_text,
-						last->bp - normal_text);
+				gtk_text_buffer_insert_with_tags_by_name
+					(buffer, &iter,
+					 normal_text,
+					 last->bp - normal_text,
+					 fg_tag, NULL);
 			uri->uri = parser[last->pti].build_uri(last->bp,
 							       last->ep);
-			uri->start = gtk_stext_get_point(text);
-			gtk_stext_insert(text, font, uri_color,
-					NULL, last->bp, last->ep - last->bp);
-			uri->end = gtk_stext_get_point(text);
+			uri->start = gtk_text_iter_get_offset(&iter);
+			gtk_text_buffer_insert_with_tags_by_name
+				(buffer, &iter,
+				 last->bp, last->ep - last->bp,
+				 uri_tag, NULL);
+			uri->end = gtk_text_iter_get_offset(&iter);
 			textview->uri_list =
 				g_slist_append(textview->uri_list, uri);
 		}
 
 		if (*normal_text)
-			gtk_stext_insert(text, font, fg_color,
-					NULL, normal_text, -1);
-	} else
-		gtk_stext_insert(text, font, fg_color, NULL, linebuf, -1);
+			gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
+								 normal_text, -1,
+								 fg_tag, NULL);
+	} else {
+		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter,
+							 linebuf, -1,
+							 fg_tag, NULL);
+	}
 }
 
 #undef ADD_TXT_POS
@@ -1116,11 +1151,20 @@ static void textview_make_clickable_parts(TextView *textview,
 static void textview_write_line(TextView *textview, const gchar *str,
 				CodeConverter *conv)
 {
-	GtkSText *text = GTK_STEXT(textview->text);
+	GtkTextView *text;
+	GtkTextBuffer *buffer;
+	GtkTextIter iter;
 	gchar buf[BUFFSIZE];
-	GdkColor *fg_color;
+	gchar *fg_color;
 	gint quotelevel = -1;
+	gchar quote_tag_str[10];
 
+	text = GTK_TEXT_VIEW(textview->text);
+	buffer = gtk_text_view_get_buffer(text);
+	gtk_text_buffer_get_end_iter(buffer, &iter);
+
+#warning FIXME_GTK2
+#if 0
 	if (!conv) {
 		if (textview->text_is_mb)
 			conv_localetodisp(buf, sizeof(buf), str);
@@ -1130,6 +1174,12 @@ static void textview_write_line(TextView *textview, const gchar *str,
 		conv_localetodisp(buf, sizeof(buf), str);
 	else if (textview->text_is_mb)
 		conv_unreadable_locale(buf);
+#else
+	if (!conv)
+		strncpy2(buf, str, sizeof(buf));
+	else if (conv_convert(conv, buf, sizeof(buf), str) < 0)
+		conv_localetodisp(buf, sizeof(buf), str);
+#endif
 
 	strcrchomp(buf);
 	if (prefs_common.conv_mb_alnum) conv_mb_alnum(buf);
@@ -1155,30 +1205,30 @@ static void textview_write_line(TextView *textview, const gchar *str,
 
 	if (quotelevel == -1)
 		fg_color = NULL;
-	else
-		fg_color = &quote_colors[quotelevel];
+	else {
+		g_snprintf(quote_tag_str, sizeof(quote_tag_str),
+			   "quote%d", quotelevel);
+		fg_color = quote_tag_str;
+	}
 
 	if (prefs_common.enable_color && (strcmp(buf,"-- \n") == 0 || textview->is_in_signature)) {
-		fg_color = &signature_color;
+		fg_color = "signature";
 		textview->is_in_signature = TRUE;
 	}
-	
-	if (prefs_common.head_space && spacingfont && buf[0] != '\n')
-		gtk_stext_insert(text, spacingfont, NULL, NULL, " ", 1);
 
 	if (prefs_common.enable_color)
-		textview_make_clickable_parts(textview, textview->msgfont,
-					      fg_color, &uri_color, buf);
-	else
-		textview_make_clickable_parts(textview, textview->msgfont,
-					      fg_color, NULL, buf);
+		textview_make_clickable_parts(textview, fg_color, "link", buf);
+  	else
+		textview_make_clickable_parts(textview, fg_color, NULL, buf);
 }
 
 void textview_write_link(TextView *textview, const gchar *str,
 			 const gchar *uri, CodeConverter *conv)
 {
     	GdkColor *link_color = NULL;
-	GtkSText *text = GTK_STEXT(textview->text);
+	GtkTextView *text;
+	GtkTextBuffer *buffer;
+	GtkTextIter iter;
 	gchar buf[BUFFSIZE];
 	gchar *bufp;
 	RemoteURI *r_uri;
@@ -1186,6 +1236,12 @@ void textview_write_link(TextView *textview, const gchar *str,
 	if (*str == '\0')
 		return;
 
+	text = GTK_TEXT_VIEW(textview->text);
+	buffer = gtk_text_view_get_buffer(text);
+	gtk_text_buffer_get_end_iter(buffer, &iter);
+
+#warning FIXME_GTK2
+#if 0
 	if (!conv) {
 		if (textview->text_is_mb)
 			conv_localetodisp(buf, sizeof(buf), str);
@@ -1195,53 +1251,50 @@ void textview_write_link(TextView *textview, const gchar *str,
 		conv_localetodisp(buf, sizeof(buf), str);
 	else if (textview->text_is_mb)
 		conv_unreadable_locale(buf);
+#else
+	if (!conv)
+		strncpy2(buf, str, sizeof(buf));
+	else if (conv_convert(conv, buf, sizeof(buf), str) < 0)
+		conv_localetodisp(buf, sizeof(buf), str);
+#endif
 
 	strcrchomp(buf);
 
+	gtk_text_buffer_get_end_iter(buffer, &iter);
+
 	for (bufp = buf; isspace(*bufp); bufp++)
-		gtk_stext_insert(text, textview->msgfont, NULL, NULL, bufp, 1);
+		gtk_text_buffer_insert(buffer, &iter, bufp, 1);
 
     	if (prefs_common.enable_color) {
 		link_color = &uri_color;
     	}
 	r_uri = g_new(RemoteURI, 1);
 	r_uri->uri = g_strdup(uri);
-	r_uri->start = gtk_stext_get_point(text);
-	gtk_stext_insert(text, textview->msgfont, link_color, NULL, bufp, -1);
-	r_uri->end = gtk_stext_get_point(text);
+	r_uri->start = gtk_text_iter_get_offset(&iter);
+	gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, bufp, -1,
+						 "link", NULL);
+	r_uri->end = gtk_text_iter_get_offset(&iter);
 	textview->uri_list = g_slist_append(textview->uri_list, r_uri);
 }
 
 void textview_clear(TextView *textview)
 {
-	GtkSText *text = GTK_STEXT(textview->text);
+	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
+	GtkTextBuffer *buffer;
 
-	gtk_stext_freeze(text);
-	gtk_stext_set_point(text, 0);
-	gtk_stext_forward_delete(text, gtk_stext_get_length(text));
-	gtk_stext_thaw(text);
+	buffer = gtk_text_view_get_buffer(text);
+	gtk_text_buffer_set_text(buffer, "\0", -1);
 
 	textview_uri_list_remove_all(textview->uri_list);
 	textview->uri_list = NULL;
 
 	textview->body_pos = 0;
-	textview->cur_pos  = 0;
 }
 
 void textview_destroy(TextView *textview)
 {
 	textview_uri_list_remove_all(textview->uri_list);
 	textview->uri_list = NULL;
-
-	if (!textview->scrolledwin_sb->parent)
-		gtk_widget_destroy(textview->scrolledwin_sb);
-	if (!textview->scrolledwin_mb->parent)
-		gtk_widget_destroy(textview->scrolledwin_mb);
-
-	if (textview->msgfont)
-		gdk_font_unref(textview->msgfont);
-	if (textview->boldfont)
-		gdk_font_unref(textview->boldfont);
 
 	g_free(textview);
 }
@@ -1253,102 +1306,26 @@ void textview_set_all_headers(TextView *textview, gboolean all_headers)
 
 void textview_set_font(TextView *textview, const gchar *codeset)
 {
-	gboolean use_fontset = TRUE;
-
-	/* In multi-byte mode, GtkSText can't display 8bit characters
-	   correctly, so it must be single-byte mode. */
-	if (MB_CUR_MAX > 1) {
-		if (codeset && conv_get_current_charset() != C_UTF_8) {
-			if (!g_strncasecmp(codeset, "ISO-8859-", 9) ||
-			    !g_strcasecmp(codeset, "BALTIC"))
-				use_fontset = FALSE;
-			else if (conv_get_current_charset() != C_EUC_JP &&
-				 (!g_strncasecmp(codeset, "KOI8-", 5) ||
-				  !g_strncasecmp(codeset, "CP", 2)    ||
-				  !g_strncasecmp(codeset, "WINDOWS-", 8)))
-				use_fontset = FALSE;
-		}
-	} else
-		use_fontset = FALSE;
-
-	if (textview->text_is_mb && !use_fontset) {
-		GtkWidget *parent;
-
-		parent = textview->scrolledwin_mb->parent;
-		gtkut_container_remove(GTK_CONTAINER(parent),
-				       textview->scrolledwin_mb);
-		gtk_container_add(GTK_CONTAINER(parent),
-				  textview->scrolledwin_sb);
-
-		textview->text = textview->text_sb;
-		textview->text_is_mb = FALSE;
-	} else if (!textview->text_is_mb && use_fontset) {
-		GtkWidget *parent;
-
-		parent = textview->scrolledwin_sb->parent;
-		gtkut_container_remove(GTK_CONTAINER(parent),
-				       textview->scrolledwin_sb);
-		gtk_container_add(GTK_CONTAINER(parent),
-				  textview->scrolledwin_mb);
-
-		textview->text = textview->text_mb;
-		textview->text_is_mb = TRUE;
-	}
-
 	if (prefs_common.textfont) {
-		GdkFont *font;
+		PangoFontDescription *font_desc = NULL;
 
-		if (use_fontset) {
-			if (text_mb_font) {
-				text_mb_font->ascent = text_mb_font_orig_ascent;
-				text_mb_font->descent = text_mb_font_orig_descent;
-			}
-			font = gdk_fontset_load(prefs_common.textfont);
-			if (font && text_mb_font != font) {
-				if (text_mb_font)
-					gdk_font_unref(text_mb_font);
-				text_mb_font = font;
-				text_mb_font_orig_ascent = font->ascent;
-				text_mb_font_orig_descent = font->descent;
-			}
-		} else {
-			if (text_sb_font) {
-				text_sb_font->ascent = text_sb_font_orig_ascent;
-				text_sb_font->descent = text_sb_font_orig_descent;
-			}
-			if (MB_CUR_MAX > 1)
-				font = gdk_font_load("-*-courier-medium-r-normal--14-*-*-*-*-*-iso8859-1");
-			else
-				font = gtkut_font_load_from_fontset
-					(prefs_common.textfont);
-			if (font && text_sb_font != font) {
-				if (text_sb_font)
-					gdk_font_unref(text_sb_font);
-				text_sb_font = font;
-				text_sb_font_orig_ascent = font->ascent;
-				text_sb_font_orig_descent = font->descent;
-			}
-		}
-
-		if (font) {
-			gint ascent, descent;
-
-			descent = prefs_common.line_space / 2;
-			ascent  = prefs_common.line_space - descent;
-			font->ascent  += ascent;
-			font->descent += descent;
-
-			if (textview->msgfont)
-				gdk_font_unref(textview->msgfont);
-			textview->msgfont = font;
-			gdk_font_ref(font);
+		if (prefs_common.textfont)
+			font_desc = pango_font_description_from_string
+						(prefs_common.textfont);
+		if (font_desc) {
+			gtk_widget_modify_font(textview->text, font_desc);
+			pango_font_description_free(font_desc);
 		}
 	}
-
-	if (!textview->boldfont && prefs_common.boldfont)
-		textview->boldfont = gtkut_font_load(prefs_common.boldfont);
-	if (!spacingfont)
-		spacingfont = gdk_font_load("-*-*-medium-r-normal--6-*");
+	gtk_text_view_set_pixels_above_lines(GTK_TEXT_VIEW(textview->text),
+					     prefs_common.line_space / 2);
+	gtk_text_view_set_pixels_below_lines(GTK_TEXT_VIEW(textview->text),
+					     prefs_common.line_space / 2);
+	if (prefs_common.head_space) {
+		gtk_text_view_set_left_margin(GTK_TEXT_VIEW(textview->text), 6);
+	} else {
+		gtk_text_view_set_left_margin(GTK_TEXT_VIEW(textview->text), 0);
+	}
 }
 
 enum
@@ -1369,12 +1346,12 @@ enum
 
 void textview_set_position(TextView *textview, gint pos)
 {
-	if (pos < 0) {
-		textview->cur_pos =
-			gtk_stext_get_length(GTK_STEXT(textview->text));
-	} else {
-		textview->cur_pos = pos;
-	}
+	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+	GtkTextIter iter;
+
+	gtk_text_buffer_get_iter_at_offset(buffer, &iter, pos);
+	gtk_text_buffer_place_cursor(buffer, &iter);
 }
 
 static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
@@ -1436,23 +1413,32 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 
 static void textview_show_header(TextView *textview, GPtrArray *headers)
 {
-	GtkSText *text = GTK_STEXT(textview->text);
+	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+	GtkTextIter iter;
 	Header *header;
 	gint i;
 
 	g_return_if_fail(headers != NULL);
 
-	gtk_stext_freeze(text);
-
 	for (i = 0; i < headers->len; i++) {
 		header = g_ptr_array_index(headers, i);
 		g_return_if_fail(header->name != NULL);
 
-		gtk_stext_insert(text, textview->boldfont, NULL, NULL,
-				header->name, -1);
+		gtk_text_buffer_get_end_iter (buffer, &iter);
+		gtk_text_buffer_insert_with_tags_by_name
+			(buffer, &iter, header->name, -1,
+			 "header_title", "header", NULL);
 		if (header->name[strlen(header->name) - 1] != ' ')
+#warning FIXME_GTK2
+#if 0
 			gtk_stext_insert(text, textview->boldfont,
 					NULL, NULL, " ", 1);
+#else
+			gtk_text_buffer_insert_with_tags_by_name
+				(buffer, &iter, " ", 1,
+				 "header_title", "header", NULL);
+#endif
 
 		if (procheader_headername_equal(header->name, "Subject") ||
 		    procheader_headername_equal(header->name, "From")    ||
@@ -1460,34 +1446,39 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 		    procheader_headername_equal(header->name, "Cc"))
 			unfold_line(header->body);
 
+#warning FIXME_GTK2
+#if 0
 		if (textview->text_is_mb == TRUE)
 			conv_unreadable_locale(header->body);
+#endif
 
 		if (prefs_common.enable_color &&
 		    (procheader_headername_equal(header->name, "X-Mailer") ||
 		     procheader_headername_equal(header->name,
 						 "X-Newsreader")) &&
-		    strstr(header->body, "Sylpheed") != NULL)
-			gtk_stext_insert(text, NULL, &emphasis_color, NULL,
-					header->body, -1);
-		else if (prefs_common.enable_color) {
-			textview_make_clickable_parts(textview,
-						      NULL, NULL, &uri_color,
+		    strstr(header->body, "Sylpheed") != NULL) {
+			gtk_text_buffer_get_end_iter (buffer, &iter);
+			gtk_text_buffer_insert_with_tags_by_name
+				(buffer, &iter, header->body, -1,
+				 "header", "emphasis", NULL);
+		} else if (prefs_common.enable_color) {
+			textview_make_clickable_parts(textview, "header", "link",
 						      header->body);
 		} else {
-			textview_make_clickable_parts(textview,
-						      NULL, NULL, NULL,
+			textview_make_clickable_parts(textview, "header", NULL,
 						      header->body);
 		}
-		gtk_stext_insert(text, textview->msgfont, NULL, NULL, "\n", 1);
+		gtk_text_buffer_get_end_iter (buffer, &iter);
+		gtk_text_buffer_insert_with_tags_by_name(buffer, &iter, "\n", 1,
+							 "header", NULL);
 	}
-
-	gtk_stext_thaw(text);
 }
 
 gboolean textview_search_string(TextView *textview, const gchar *str,
 				gboolean case_sens)
 {
+#warning FIXME_GTK2 /* currently, these search functions ignores case_sens */
+#if 0
 	GtkSText *text = GTK_STEXT(textview->text);
 	gint pos;
 	gint len;
@@ -1509,11 +1500,47 @@ gboolean textview_search_string(TextView *textview, const gchar *str,
 	}
 
 	return FALSE;
+#else
+	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+	GtkTextMark *mark;
+	GtkTextIter iter, start, end, *pos;
+	gboolean found;
+	gint insert_offset, selbound_offset;
+
+	/* reset selection */
+	mark = gtk_text_buffer_get_mark(buffer, "insert");
+	gtk_text_buffer_get_iter_at_mark(buffer, &start, mark);
+	insert_offset = gtk_text_iter_get_offset(&start);
+	mark = gtk_text_buffer_get_mark(buffer, "selection_bound");
+	gtk_text_buffer_get_iter_at_mark(buffer, &end, mark);
+	selbound_offset = gtk_text_iter_get_offset(&end);
+
+	pos = insert_offset > selbound_offset ? &start : &end;
+	gtk_text_buffer_place_cursor(buffer, pos);
+
+	/* search */
+	mark = gtk_text_buffer_get_insert(buffer);
+	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
+	found = gtk_text_iter_forward_search(&iter, str,
+					     GTK_TEXT_SEARCH_VISIBLE_ONLY,
+					     &start, &end, NULL);
+	if (found) {
+		gtk_text_buffer_place_cursor(buffer, &start);
+		gtk_text_buffer_move_mark_by_name(buffer, "selection_bound", &end);
+		mark = gtk_text_buffer_get_mark(buffer, "insert");
+		gtk_text_view_scroll_mark_onscreen(text, mark);
+	}
+
+	return found;
+#endif
 }
 
 gboolean textview_search_string_backward(TextView *textview, const gchar *str,
 					 gboolean case_sens)
 {
+#warning FIXME_GTK2
+#if 0
 	GtkSText *text = GTK_STEXT(textview->text);
 	gint pos;
 	wchar_t *wcs;
@@ -1550,11 +1577,46 @@ gboolean textview_search_string_backward(TextView *textview, const gchar *str,
 
 	g_free(wcs);
 	return found;
+#else
+	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
+	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+	GtkTextMark *mark;
+	GtkTextIter iter, start, end, *pos;
+	gboolean found;
+	gint insert_offset, selbound_offset;
+
+	/* reset selection */
+	mark = gtk_text_buffer_get_mark(buffer, "insert");
+	gtk_text_buffer_get_iter_at_mark(buffer, &start, mark);
+	insert_offset = gtk_text_iter_get_offset(&start);
+	mark = gtk_text_buffer_get_mark(buffer, "selection_bound");
+	gtk_text_buffer_get_iter_at_mark(buffer, &end, mark);
+	selbound_offset = gtk_text_iter_get_offset(&end);
+
+	pos = insert_offset < selbound_offset ? &start : &end;
+	gtk_text_buffer_place_cursor(buffer, pos);
+
+	/* search */
+	mark = gtk_text_buffer_get_insert(buffer);
+	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
+	found = gtk_text_iter_backward_search(&iter, str,
+					      GTK_TEXT_SEARCH_VISIBLE_ONLY,
+					      &start, &end, NULL);
+	if (found) {
+		gtk_text_buffer_place_cursor(buffer, &end);
+		gtk_text_buffer_move_mark_by_name(buffer, "selection_bound", &start);
+		mark = gtk_text_buffer_get_mark(buffer, "insert");
+		gtk_text_view_scroll_mark_onscreen(text, mark);
+	}
+
+	return found;
+#endif
 }
 
 void textview_scroll_one_line(TextView *textview, gboolean up)
 {
-	GtkSText *text = GTK_STEXT(textview->text);
+	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
+	GtkAdjustment *vadj = text->vadjustment;
 	gfloat upper;
 
 	if (prefs_common.enable_smooth_scroll) {
@@ -1563,30 +1625,31 @@ void textview_scroll_one_line(TextView *textview, gboolean up)
 	}
 
 	if (!up) {
-		upper = text->vadj->upper - text->vadj->page_size;
-		if (text->vadj->value < upper) {
-			text->vadj->value +=
-				text->vadj->step_increment * 4;
-			text->vadj->value =
-				MIN(text->vadj->value, upper);
-			gtk_signal_emit_by_name(GTK_OBJECT(text->vadj),
-						"value_changed");
+		upper = vadj->upper - vadj->page_size;
+		if (vadj->value < upper) {
+			vadj->value +=
+				vadj->step_increment * 4;
+			vadj->value =
+				MIN(vadj->value, upper);
+			g_signal_emit_by_name(G_OBJECT(vadj),
+					      "value_changed", 0);
 		}
 	} else {
-		if (text->vadj->value > 0.0) {
-			text->vadj->value -=
-				text->vadj->step_increment * 4;
-			text->vadj->value =
-				MAX(text->vadj->value, 0.0);
-			gtk_signal_emit_by_name(GTK_OBJECT(text->vadj),
-						"value_changed");
+		if (vadj->value > 0.0) {
+			vadj->value -=
+				vadj->step_increment * 4;
+			vadj->value =
+				MAX(vadj->value, 0.0);
+			g_signal_emit_by_name(G_OBJECT(vadj),
+					      "value_changed", 0);
 		}
 	}
 }
 
 gboolean textview_scroll_page(TextView *textview, gboolean up)
 {
-	GtkSText *text = GTK_STEXT(textview->text);
+	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
+	GtkAdjustment *vadj = text->vadjustment;
 	gfloat upper;
 	gfloat page_incr;
 
@@ -1594,25 +1657,25 @@ gboolean textview_scroll_page(TextView *textview, gboolean up)
 		return textview_smooth_scroll_page(textview, up);
 
 	if (prefs_common.scroll_halfpage)
-		page_incr = text->vadj->page_increment / 2;
+		page_incr = vadj->page_increment / 2;
 	else
-		page_incr = text->vadj->page_increment;
+		page_incr = vadj->page_increment;
 
 	if (!up) {
-		upper = text->vadj->upper - text->vadj->page_size;
-		if (text->vadj->value < upper) {
-			text->vadj->value += page_incr;
-			text->vadj->value = MIN(text->vadj->value, upper);
-			gtk_signal_emit_by_name(GTK_OBJECT(text->vadj),
-						"value_changed");
+		upper = vadj->upper - vadj->page_size;
+		if (vadj->value < upper) {
+			vadj->value += page_incr;
+			vadj->value = MIN(vadj->value, upper);
+			g_signal_emit_by_name(G_OBJECT(vadj),
+					      "value_changed", 0);
 		} else
 			return FALSE;
 	} else {
-		if (text->vadj->value > 0.0) {
-			text->vadj->value -= page_incr;
-			text->vadj->value = MAX(text->vadj->value, 0.0);
-			gtk_signal_emit_by_name(GTK_OBJECT(text->vadj),
-						"value_changed");
+		if (vadj->value > 0.0) {
+			vadj->value -= page_incr;
+			vadj->value = MAX(vadj->value, 0.0);
+			g_signal_emit_by_name(G_OBJECT(vadj),
+					      "value_changed", 0);
 		} else
 			return FALSE;
 	}
@@ -1624,7 +1687,8 @@ static void textview_smooth_scroll_do(TextView *textview,
 				      gfloat old_value, gfloat last_value,
 				      gint step)
 {
-	GtkSText *text = GTK_STEXT(textview->text);
+	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
+	GtkAdjustment *vadj = text->vadjustment;
 	gint change_value;
 	gboolean up;
 	gint i;
@@ -1637,33 +1701,36 @@ static void textview_smooth_scroll_do(TextView *textview,
 		up = TRUE;
 	}
 
-	gdk_key_repeat_disable();
+#warning FIXME_GTK2
+	/* gdk_key_repeat_disable(); */
 
 	for (i = step; i <= change_value; i += step) {
-		text->vadj->value = old_value + (up ? -i : i);
-		gtk_signal_emit_by_name(GTK_OBJECT(text->vadj),
-					"value_changed");
+		vadj->value = old_value + (up ? -i : i);
+		g_signal_emit_by_name(G_OBJECT(vadj),
+				      "value_changed", 0);
 	}
 
-	text->vadj->value = last_value;
-	gtk_signal_emit_by_name(GTK_OBJECT(text->vadj), "value_changed");
+	vadj->value = last_value;
+	g_signal_emit_by_name(G_OBJECT(vadj), "value_changed", 0);
 
-	gdk_key_repeat_restore();
+#warning FIXME_GTK2
+	/* gdk_key_repeat_restore(); */
 }
 
 static void textview_smooth_scroll_one_line(TextView *textview, gboolean up)
 {
-	GtkSText *text = GTK_STEXT(textview->text);
+	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
+	GtkAdjustment *vadj = text->vadjustment;
 	gfloat upper;
 	gfloat old_value;
 	gfloat last_value;
 
 	if (!up) {
-		upper = text->vadj->upper - text->vadj->page_size;
-		if (text->vadj->value < upper) {
-			old_value = text->vadj->value;
-			last_value = text->vadj->value +
-				text->vadj->step_increment * 4;
+		upper = vadj->upper - vadj->page_size;
+		if (vadj->value < upper) {
+			old_value = vadj->value;
+			last_value = vadj->value +
+				vadj->step_increment * 4;
 			last_value = MIN(last_value, upper);
 
 			textview_smooth_scroll_do(textview, old_value,
@@ -1671,10 +1738,10 @@ static void textview_smooth_scroll_one_line(TextView *textview, gboolean up)
 						  prefs_common.scroll_step);
 		}
 	} else {
-		if (text->vadj->value > 0.0) {
-			old_value = text->vadj->value;
-			last_value = text->vadj->value -
-				text->vadj->step_increment * 4;
+		if (vadj->value > 0.0) {
+			old_value = vadj->value;
+			last_value = vadj->value -
+				vadj->step_increment * 4;
 			last_value = MAX(last_value, 0.0);
 
 			textview_smooth_scroll_do(textview, old_value,
@@ -1686,22 +1753,23 @@ static void textview_smooth_scroll_one_line(TextView *textview, gboolean up)
 
 static gboolean textview_smooth_scroll_page(TextView *textview, gboolean up)
 {
-	GtkSText *text = GTK_STEXT(textview->text);
+	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
+	GtkAdjustment *vadj = text->vadjustment;
 	gfloat upper;
 	gfloat page_incr;
 	gfloat old_value;
 	gfloat last_value;
 
 	if (prefs_common.scroll_halfpage)
-		page_incr = text->vadj->page_increment / 2;
+		page_incr = vadj->page_increment / 2;
 	else
-		page_incr = text->vadj->page_increment;
+		page_incr = vadj->page_increment;
 
 	if (!up) {
-		upper = text->vadj->upper - text->vadj->page_size;
-		if (text->vadj->value < upper) {
-			old_value = text->vadj->value;
-			last_value = text->vadj->value + page_incr;
+		upper = vadj->upper - vadj->page_size;
+		if (vadj->value < upper) {
+			old_value = vadj->value;
+			last_value = vadj->value + page_incr;
 			last_value = MIN(last_value, upper);
 
 			textview_smooth_scroll_do(textview, old_value,
@@ -1710,9 +1778,9 @@ static gboolean textview_smooth_scroll_page(TextView *textview, gboolean up)
 		} else
 			return FALSE;
 	} else {
-		if (text->vadj->value > 0.0) {
-			old_value = text->vadj->value;
-			last_value = text->vadj->value - page_incr;
+		if (vadj->value > 0.0) {
+			old_value = vadj->value;
+			last_value = vadj->value - page_incr;
 			last_value = MAX(last_value, 0.0);
 
 			textview_smooth_scroll_do(textview, old_value,
@@ -1725,12 +1793,19 @@ static gboolean textview_smooth_scroll_page(TextView *textview, gboolean up)
 	return TRUE;
 }
 
+#warning FIXME_GTK2
+#if 0
 #define KEY_PRESS_EVENT_STOP() \
 	if (gtk_signal_n_emissions_by_name \
 		(GTK_OBJECT(widget), "key_press_event") > 0) { \
-		gtk_signal_emit_stop_by_name(GTK_OBJECT(widget), \
-					     "key_press_event"); \
+		g_signal_stop_emission_by_name(G_OBJECT(widget), \
+					       "key_press_event"); \
 	}
+#else
+#define KEY_PRESS_EVENT_STOP() \
+	g_signal_stop_emission_by_name(G_OBJECT(widget), \
+				       "key_press_event");
+#endif
 
 static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				 TextView *textview)
@@ -1816,6 +1891,8 @@ static gint show_url_timeout_cb(gpointer data)
 		return FALSE;
 }
 
+#warning FIXME_GTK2
+#if 0
 static gint textview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 				    TextView *textview)
 {
@@ -1920,6 +1997,58 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 		textview->last_buttonpress = event->type;
 	return FALSE;
 }
+#else
+static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
+					    GdkEvent *event, GtkTextIter *iter,
+					    TextView *textview)
+{
+	GtkTextIter start_iter, end_iter;
+	gint start_pos, end_pos;
+	GdkEventButton *bevent;
+
+	if (event->type != GDK_BUTTON_PRESS && event->type != GDK_2BUTTON_PRESS)
+		return FALSE;
+
+	bevent = (GdkEventButton *) event;
+
+	if (event &&
+	    ((event->type == GDK_2BUTTON_PRESS && bevent->button == 1) ||
+	     bevent->button == 2)) {
+		GSList *cur;
+
+                start_iter = *iter;
+                                                                                          
+                if(!gtk_text_iter_backward_to_tag_toggle(&start_iter, tag)) {
+                        debug_print("Can't find start.");
+                        return FALSE;
+                }
+		start_pos = gtk_text_iter_get_offset(&start_iter);
+
+                end_iter = *iter;
+                if(!gtk_text_iter_forward_to_tag_toggle(&end_iter, tag)) {
+                        debug_print("Can't find end");
+                        return FALSE;
+                }
+		end_pos = gtk_text_iter_get_offset(&end_iter);
+
+		for (cur = textview->uri_list; cur != NULL; cur = cur->next) {
+			RemoteURI *uri = (RemoteURI *)cur->data;
+
+			if (start_pos == uri->start &&
+			    end_pos ==  uri->end) {
+				if (!g_strncasecmp(uri->uri, "mailto:", 7))
+					compose_new(NULL, uri->uri + 7, NULL);
+				else
+					open_uri(uri->uri,
+						 prefs_common.uri_cmd);
+				return TRUE;
+			}
+		}
+	}
+
+	return FALSE;
+}
+#endif
 
 static void textview_uri_list_remove_all(GSList *uri_list)
 {
