@@ -1,3 +1,15 @@
+2001-11-25 [hoa]	0.6.5claws33
+
+	* src/main.c
+		processing mails at startup
+
+	* src/folderview.c
+	* src/summaryview.[ch]
+		processing mails when entering folder
+
+	* src/prefs_filtering.c
+		fixed some UI bugs
+
 2001-11-24 [alfons]	0.6.5claws32
 
 	* src/summaryview.[ch]

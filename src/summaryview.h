@@ -247,4 +247,6 @@ void summary_set_colorlabel_color (GtkCTree		*ctree,
 
 void summary_set_column_order	  (SummaryView		*summaryview);
 
+void processing_apply();
+
 #endif /* __SUMMARY_H__ */

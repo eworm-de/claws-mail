@@ -217,6 +217,8 @@ static void folderview_drag_received_cb  (GtkWidget        *widget,
 					  FolderView       *folderview);
 static void folderview_scoring_cb(FolderView *folderview, guint action,
 				  GtkWidget *widget);
+static void folderview_processing_cb(FolderView *folderview, guint action,
+				     GtkWidget *widget);
 static void folderview_property_cb(FolderView *folderview, guint action, GtkWidget *widget);
 
 static GtkItemFactoryEntry folderview_mbox_popup_entries[] =
@@ -228,6 +230,7 @@ static GtkItemFactoryEntry folderview_mbox_popup_entries[] =
 	{N_("/Remove _mailbox"),	NULL, folderview_remove_mailbox_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Property..."),		NULL, NULL, 0, NULL},
+	{N_("/_Processing..."),		NULL, folderview_processing_cb, 0, NULL},
 	{N_("/_Scoring..."),		NULL, folderview_scoring_cb, 0, NULL}
 };
 
@@ -243,6 +246,7 @@ static GtkItemFactoryEntry folderview_mail_popup_entries[] =
 	{N_("/Remove _mailbox"),	NULL, folderview_remove_mailbox_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Property..."),		NULL, folderview_property_cb, 0, NULL},
+	{N_("/_Processing..."),		NULL, folderview_processing_cb, 0, NULL},
 	{N_("/_Scoring..."),		NULL, folderview_scoring_cb, 0, NULL}
 };
 
@@ -258,6 +262,7 @@ static GtkItemFactoryEntry folderview_imap_popup_entries[] =
 	{N_("/Remove _IMAP4 account"),	NULL, folderview_rm_imap_server_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Property..."),		NULL, NULL, 0, NULL},
+	{N_("/_Processing..."),		NULL, folderview_processing_cb, 0, NULL},
 	{N_("/_Scoring..."),		NULL, folderview_scoring_cb, 0, NULL}
 };
 
@@ -270,6 +275,7 @@ static GtkItemFactoryEntry folderview_news_popup_entries[] =
 	{N_("/Remove _news account"),	 NULL, folderview_rm_news_server_cb, 0, NULL},
 	{N_("/---"),			 NULL, NULL, 0, "<Separator>"},
 	{N_("/_Property..."),		 NULL, NULL, 0, NULL},
+	{N_("/_Processing..."),		NULL, folderview_processing_cb, 0, NULL},
 	{N_("/_Scoring..."),		NULL, folderview_scoring_cb, 0, NULL}
 };
 
@@ -1202,6 +1208,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	gboolean rescan_tree     = FALSE;
 	gboolean remove_tree     = FALSE;
 	gboolean folder_property = FALSE;
+	gboolean folder_processing  = FALSE;
 	gboolean folder_scoring  = FALSE;
 
 	if (!event) return;
@@ -1252,12 +1259,14 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 			if (item->parent == NULL)
 				update_tree = rescan_tree = TRUE;
 			else if (item->stype == F_NORMAL)
-				rename_folder = delete_folder = folder_property = folder_scoring = TRUE;
+				rename_folder = delete_folder = folder_property = folder_scoring = folder_processing = TRUE;
 			else if (item->stype == F_INBOX)
-				folder_property = folder_scoring = TRUE;
+				folder_property = folder_scoring = folder_processing = TRUE;
+			else if (item->stype == F_TRASH)
+				folder_processing = TRUE;
 		} else if (FOLDER_TYPE(folder) == F_NEWS) {
 			if (item->parent != NULL)
-				delete_folder = folder_scoring = TRUE;
+				delete_folder = folder_scoring = folder_processing = TRUE;
 		}
 	}
 
@@ -1274,6 +1283,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		SET_SENS(mail_factory, "/Rescan folder tree", rescan_tree);
 		SET_SENS(mail_factory, "/Remove mailbox", remove_tree);
 		SET_SENS(mail_factory, "/Property...", folder_property);
+		SET_SENS(mail_factory, "/Processing...", folder_processing);
 		SET_SENS(mail_factory, "/Scoring...", folder_scoring);
 	} else if (FOLDER_TYPE(folder) == F_IMAP) {
 		popup = folderview->imap_popup;
@@ -1284,6 +1294,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		SET_SENS(imap_factory, "/Update folder tree", update_tree);
 		SET_SENS(imap_factory, "/Rescan folder tree", rescan_tree);
 		SET_SENS(imap_factory, "/Remove IMAP4 account", remove_tree);
+		SET_SENS(imap_factory, "/Processing...", folder_processing);
 		SET_SENS(imap_factory, "/Scoring...", folder_scoring);
 	} else if (FOLDER_TYPE(folder) == F_NEWS) {
 		popup = folderview->news_popup;
@@ -1291,6 +1302,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		SET_SENS(news_factory, "/Subscribe to newsgroup...", new_folder);
 		SET_SENS(news_factory, "/Remove newsgroup", delete_folder);
 		SET_SENS(news_factory, "/Remove news account", remove_tree);
+		SET_SENS(news_factory, "/Processing...", folder_processing);
 		SET_SENS(news_factory, "/Scoring...", folder_scoring);
 	} else if (FOLDER_TYPE(folder) == F_MBOX) {
 		popup = folderview->mbox_popup;
@@ -1298,6 +1310,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		SET_SENS(mbox_factory, "/Create new folder...", new_folder);
 		SET_SENS(mbox_factory, "/Rename folder...", rename_folder);
 		SET_SENS(mbox_factory, "/Delete folder", delete_folder);
+		SET_SENS(mbox_factory, "/Processing...", folder_processing);
 		SET_SENS(mbox_factory, "/Scoring...", folder_scoring);
 	} else
 		return;
@@ -2234,6 +2247,21 @@ static void folderview_scoring_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item->folder != NULL);
 
 	prefs_scoring_open(item);
+}
+
+static void folderview_processing_cb(FolderView *folderview, guint action,
+				     GtkWidget *widget)
+{
+	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	FolderItem *item;
+
+	if (!folderview->selected) return;
+
+	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(item->folder != NULL);
+
+	prefs_filtering_open(item);
 }
 
 static void folderview_property_cb(FolderView *folderview, guint action, GtkWidget *widget) {

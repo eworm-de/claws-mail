@@ -250,6 +250,7 @@ static void summary_unthread_for_exec_func	(GtkCTree	*ctree,
 						 GtkCTreeNode	*node,
 						 gpointer	 data);
 
+void summary_processing(SummaryView *summaryview, GSList * mlist);
 static void summary_filter_func		(GtkCTree		*ctree,
 					 GtkCTreeNode		*node,
 					 gpointer		 data);
@@ -757,6 +758,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	main_window_cursor_wait(summaryview->mainwin);
 
 	mlist = item->folder->get_msg_list(item->folder, item, !update_cache);
+
+	summary_processing(summaryview, mlist);
 
 	for(cur = mlist ; cur != NULL ; cur = g_slist_next(cur)) {
 		MsgInfo * msginfo = (MsgInfo *) cur->data;
@@ -3557,6 +3560,62 @@ static void summary_unthread_for_exec_func(GtkCTree *ctree, GtkCTreeNode *node,
 	}
 }
 
+void summary_processing(SummaryView *summaryview, GSList * mlist)
+{
+	GSList * processing_list;
+	FolderItem * folder_item;
+	GSList * cur;
+	gchar * id;
+	gchar * buf;
+
+	folder_item = summaryview->folder_item;
+	if (folder_item == NULL)
+		return;
+
+	processing_list = folder_item->prefs->processing;
+
+	if (processing_list == NULL)
+		return;
+
+	summary_lock(summaryview);
+	
+	buf = g_strdup_printf(_("Processing (%s)..."), folder_item->path);
+	debug_print(buf);
+	STATUSBAR_PUSH(summaryview->mainwin, buf);
+	g_free(buf);
+
+	main_window_cursor_wait(summaryview->mainwin);
+
+	summaryview->folder_table = g_hash_table_new(NULL, NULL);
+
+	for(cur = mlist ; cur != NULL ; cur = cur->next) {
+		MsgInfo * msginfo;
+
+		msginfo = (MsgInfo *) cur->data;
+		filter_msginfo_move_or_delete(processing_list, msginfo,
+					      summaryview->folder_table);
+	}
+	
+	folder_item_scan_foreach(summaryview->folder_table);
+	folderview_update_item_foreach(summaryview->folder_table);
+	
+	g_hash_table_destroy(summaryview->folder_table);
+	summaryview->folder_table = NULL;
+	
+	if (prefs_common.immediate_exec) {
+		summary_unlock(summaryview);
+		summary_execute(summaryview);
+		summary_lock(summaryview);
+	} else
+		summary_status_show(summaryview);
+
+	debug_print(_("done.\n"));
+	STATUSBAR_POP(summaryview->mainwin);
+	main_window_cursor_normal(summaryview->mainwin);
+
+	summary_unlock(summaryview);
+}
+
 void summary_filter(SummaryView *summaryview)
 {
 	if (!prefs_common.fltlist && !global_processing) {
@@ -4687,6 +4746,68 @@ static void summary_unignore_thread(SummaryView *summaryview)
 
 	summary_status_show(summaryview);
 }
+
+
+static gboolean processing_apply_func(GNode *node, gpointer data)
+{
+	FolderItem *item;
+	GSList * processing;
+	SummaryView * summaryview = (SummaryView *) data;
+	
+	if (node == NULL)
+		return FALSE;
+
+	item = node->data;
+	/* prevent from the warning */
+	if (item->path == NULL)
+		return FALSE;
+	processing = item->prefs->processing;
+
+	if (processing != NULL) {
+		gchar * buf;
+		GSList * mlist;
+		GSList * cur;
+
+		buf = g_strdup_printf(_("Processing (%s)..."), item->path);
+		debug_print(buf);
+		STATUSBAR_PUSH(summaryview->mainwin, buf);
+		g_free(buf);
+
+		mlist = item->folder->get_msg_list(item->folder, item,
+						   TRUE);
+		
+		for(cur = mlist ; cur != NULL ; cur = cur->next) {
+			MsgInfo * msginfo;
+			
+			msginfo = (MsgInfo *) cur->data;
+			filter_msginfo_move_or_delete(processing, msginfo,
+						      NULL);
+			procmsg_msginfo_free(msginfo);
+		}
+
+		g_slist_free(mlist);
+		
+		STATUSBAR_POP(summaryview->mainwin);
+	}
+
+
+	return FALSE;
+}
+
+void processing_apply(SummaryView * summaryview)
+{
+	GList * cur;
+
+	for (cur = folder_get_list() ; cur != NULL ; cur = g_list_next(cur)) {
+		Folder *folder;
+
+		folder = (Folder *) cur->data;
+		g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
+				processing_apply_func, summaryview);
+	}
+}
+
+
 /*
  * End of Source.
  */

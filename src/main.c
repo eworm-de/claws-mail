@@ -285,6 +285,8 @@ int main(int argc, char *argv[])
 
 	/* prefs_scoring_read_config(); */
 	prefs_matcher_read_config();
+	/* make one all-folder processing before using sylpheed */
+	processing_apply(mainwin->summaryview);
 
 	addressbook_read_file();
 
