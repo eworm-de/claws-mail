@@ -47,6 +47,7 @@
 #include "account.h"
 #include "alertpanel.h"
 #include "send.h"
+#include "pgptext.h"
 
 static void messageview_change_view_type(MessageView	*messageview,
 					 MessageType	 type);
@@ -379,6 +380,26 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo)
 		    rfc2015_is_encrypted(mimeinfo)) {
 			MSG_SET_TMP_FLAGS(msginfo->flags, MSG_ENCRYPTED);
 		}
+		if (!MSG_IS_ENCRYPTED(msginfo->flags) &&
+		    pgptext_is_encrypted(mimeinfo, msginfo)) {
+			MSG_SET_TMP_FLAGS(msginfo->flags, MSG_ENCRYPTED);
+			/* To avoid trouble with the rfc2015 stuff we go for encryption 
+			 * right here. */
+			if (MSG_IS_ENCRYPTED(msginfo->flags) &&
+			    !msginfo->plaintext_file  &&
+			    !msginfo->decryption_failed) {
+				/* This is an encrypted message but it has not yet
+				 * been decrypted and there was no unsuccessful
+				 * decryption attempt */
+				pgptext_decrypt_message(msginfo, mimeinfo, fp);
+				if (msginfo->plaintext_file &&
+				    !msginfo->decryption_failed) {
+					fclose(fp);
+					continue;
+				}
+			}
+		}
+		
 		if (MSG_IS_ENCRYPTED(msginfo->flags) &&
 		    !msginfo->plaintext_file  &&
 		    !msginfo->decryption_failed) {

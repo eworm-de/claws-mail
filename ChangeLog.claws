@@ -1,3 +1,11 @@
+2001-10-13 [paul]	0.6.3claws13
+
+	* src/pgptext.[ch] **NEW FILES**
+	* src/Makefile.am, src/messageview.c, src/mimeview.c
+		decrypt ascii-armored gpg text embedded in
+		the message body.
+		Submitted by Jens Jahnke <jan0sch@gmx.net>
+
 2001-10-13 [christoph]	0.6.3claws12
 
 	* README.claws

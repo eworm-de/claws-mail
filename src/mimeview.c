@@ -51,6 +51,7 @@
 #include "gtkutils.h"
 #include "prefs_common.h"
 #include "rfc2015.h"
+#include "pgptext.h"
 
 typedef enum
 {
@@ -224,6 +225,8 @@ static gboolean mimeview_is_signed(MimeView *mimeview)
 	/* walk the tree and see whether there is a signature somewhere */
 	do {
 		if (rfc2015_has_signature(partinfo))
+			return TRUE;
+		if (pgptext_has_signature(partinfo))
 			return TRUE;
         } while ((partinfo = partinfo->parent) != NULL);
 

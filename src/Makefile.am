@@ -97,6 +97,7 @@ sylpheed_SOURCES = \
 	procmime.c procmime.h \
 	rfc2015.c rfc2015.h \
 	passphrase.c passphrase.h \
+	pgptext.c pgptext.h \
 	select-keys.c select-keys.h \
 	sigstatus.c sigstatus.h \
 	simple-gettext.c \
