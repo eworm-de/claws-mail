@@ -1,3 +1,9 @@
+2002-11-26 [christoph]	0.8.6claws16
+
+	* src/ssl.c
+		rewrite the ssl code a little bit, only use one
+		SSL context, set default certificates' file/path
+
 2002-11-26 [thorsten]	0.8.6claws15
 
 	* src/compose.c
