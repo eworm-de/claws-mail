@@ -1,3 +1,10 @@
+2001-10-08 [paul]	0.6.2claws24
+
+	* src/summaryview.c
+		more sync with sylpheed 0.6.2cvs12
+		Fixed the bug that didn't select the last row correctly
+
+
 2001-10-07 [paul]	0.6.2claws23
 
 	* sync with sylpheed 0.6.2cvs12

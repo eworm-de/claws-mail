@@ -6,6 +6,8 @@
 	  Melvin Hadasht).
 	* src/summaryview.c: delete messages permanently if the current
 	  folder is trash and 'delete' operation is executed.
+	  Fixed the bug that didn't select the last row correctly (thanks
+	  to Alfons Hoogervorst).
 	* src/folder.[ch]: folder_item_remove_msgs(): new. It removes
 	  all messages given in the list.
 

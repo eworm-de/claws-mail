@@ -910,8 +910,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 			   message, but do not display it */
 			node = summary_find_next_unread_msg(summaryview, NULL);
 			if (node == NULL && GTK_CLIST(ctree)->row_list != NULL)
-				node = GTK_CTREE_NODE
-					(GTK_CLIST(ctree)->row_list_end);
+				node = gtk_ctree_node_nth
+					(ctree, GTK_CLIST(ctree)->rows - 1);
 			summary_select_node(summaryview, node, FALSE);
 		}
 	} else {
@@ -1380,7 +1380,7 @@ static GtkCTreeNode *summary_find_prev_unread_msg(SummaryView *summaryview,
 	if (current_node)
 		node = current_node;
 	else
-		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list_end);
+		node = gtk_ctree_node_nth(ctree, GTK_CLIST(ctree)->rows - 1);
 
 	for (; node != NULL; node = GTK_CTREE_NODE_PREV(node)) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
@@ -1420,7 +1420,7 @@ static GtkCTreeNode *summary_find_prev_marked_msg(SummaryView *summaryview,
 	if (current_node)
 		node = GTK_CTREE_NODE_PREV(current_node);
 	else
-		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list_end);
+		node = gtk_ctree_node_nth(ctree, GTK_CLIST(ctree)->rows - 1);
 
 	for (; node != NULL; node = GTK_CTREE_NODE_PREV(node)) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
@@ -1460,7 +1460,7 @@ static GtkCTreeNode *summary_find_prev_labeled_msg(SummaryView *summaryview,
 	if (current_node)
 		node = GTK_CTREE_NODE_PREV(current_node);
 	else
-		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list_end);
+		node = gtk_ctree_node_nth(ctree, GTK_CLIST(ctree)->rows - 1);
 
 	for (; node != NULL; node = GTK_CTREE_NODE_PREV(node)) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);

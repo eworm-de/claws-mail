@@ -6,6 +6,8 @@
 	  さん thanks)。
 	* src/summaryview.c: 現在のフォルダがごみ箱の場合に「削除」操作を
 	  実行したらメッセージを完全削除するようにした。
+	  最後の行を正しく選択しないバグを修正(Alfons Hoogervorst さん
+	  thanks)。
 	* src/folder.[ch]: folder_item_remove_msgs(): 新規。リストで与え
 	  られた全てのメッセージを削除する。
 
