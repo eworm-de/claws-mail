@@ -201,7 +201,7 @@ gint smtp_auth(SMTPSession *session, SMTPAuthType forced_auth_type)
 	switch (authtype) {
 	case SMTPAUTH_LOGIN:
 		if (!strncmp(buf, "334 ", 4))
-			to64frombits(buf, session->user, strlen(session->user));
+			base64_encode(buf, session->user, strlen(session->user));
 		else
 			/* Server rejects AUTH */
 			g_snprintf(buf, sizeof(buf), "*");
@@ -212,7 +212,7 @@ gint smtp_auth(SMTPSession *session, SMTPAuthType forced_auth_type)
 		smtp_ok(sock, buf, sizeof(buf));
 
 		if (!strncmp(buf, "334 ", 4))
-			to64frombits(buf, session->pass, strlen(session->pass));
+			base64_encode(buf, session->pass, strlen(session->pass));
 		else
 			/* Server rejects AUTH */
 			g_snprintf(buf, sizeof(buf), "*");
@@ -223,7 +223,7 @@ gint smtp_auth(SMTPSession *session, SMTPAuthType forced_auth_type)
 	case SMTPAUTH_CRAM_MD5:
 		if (!strncmp(buf, "334 ", 4)) {
 			challenge = g_malloc(strlen(buf + 4) + 1);
-			challengelen = from64tobits(challenge, buf + 4);
+			challengelen = base64_decode(challenge, buf + 4, -1);
 			challenge[challengelen] = '\0';
 			if (verbose)
 				log_print("ESMTP< [Decoded: %s]\n", challenge);
@@ -239,7 +239,7 @@ gint smtp_auth(SMTPSession *session, SMTPAuthType forced_auth_type)
 				log_print("ESMTP> [Encoded: %s]\n", response);
 
 			response64 = g_malloc((strlen(response) + 3) * 2 + 1);
-			to64frombits(response64, response, strlen(response));
+			base64_encode(response64, response, strlen(response));
 			g_free(response);
 
 			sock_printf(sock, "%s\r\n", response64);

@@ -205,12 +205,6 @@ static void about_create(void)
 
 	gtk_text_freeze(GTK_TEXT(text));
 
-	gtk_text_insert(GTK_TEXT(text), NULL, NULL, NULL,
-		_("The portions applied from fetchmail is Copyright 1997 by Eric S. "
-		  "Raymond.  Portions of those are also copyrighted by Carl Harris, "
-		  "1993 and 1995.  Copyright retained for the purpose of protecting free "
-		  "redistribution of source.\n\n"), -1);
-
 #if USE_GPGME
 	gtk_text_insert(GTK_TEXT(text), NULL, NULL, NULL,
 		_("GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>\n\n"), -1);

@@ -3172,7 +3172,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 
 		for (i = 0; i < len; i += B64_LINE_SIZE) {
 			l = MIN(B64_LINE_SIZE, len - i);
-			to64frombits(outbuf, buf + i, l);
+			base64_encode(outbuf, buf + i, l);
 			fputs(outbuf, fp);
 			fputc('\n', fp);
 		}
@@ -3555,12 +3555,12 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 			while ((len = fread(inbuf, sizeof(gchar),
 					    B64_LINE_SIZE, attach_fp))
 			       == B64_LINE_SIZE) {
-				to64frombits(outbuf, inbuf, B64_LINE_SIZE);
+				base64_encode(outbuf, inbuf, B64_LINE_SIZE);
 				fputs(outbuf, fp);
 				fputc('\n', fp);
 			}
 			if (len > 0 && feof(attach_fp)) {
-				to64frombits(outbuf, inbuf, len);
+				base64_encode(outbuf, inbuf, len);
 				fputs(outbuf, fp);
 				fputc('\n', fp);
 			}
