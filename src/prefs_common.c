@@ -2957,6 +2957,9 @@ static void prefs_other_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox_cliplog), loglength_entry,
 			    FALSE, TRUE, 0);
 	gtk_widget_show (GTK_WIDGET (loglength_entry));
+	loglength_label = gtk_label_new (_("(0 to stop logging in the log window)"));
+	gtk_box_pack_start (GTK_BOX (hbox_cliplog), loglength_label,
+			    FALSE, TRUE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_cliplog, loglength_entry);
 
 	/* On Exit */

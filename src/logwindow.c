@@ -141,6 +141,8 @@ void log_window_append(const gchar *str, LogType type)
 	gchar *head = NULL;
 
 	g_return_if_fail(logwindow != NULL);
+	if (prefs_common.cliplog && !prefs_common.loglength)
+		return;
 
 	text = GTK_TEXT(logwindow->text);
 
@@ -180,13 +182,14 @@ static void key_pressed(GtkWidget *widget, GdkEventKey *event,
 		gtk_widget_hide(logwin->window);
 }
 
-#define LOG_AVG_LINE_LEN 80
-void log_window_clear(GtkWidget *text)
+void log_window_clear(GtkWidget *textw)
 {
         guint length;
 	guint point;
+	gboolean was_frozen = FALSE;
+	GtkText *text = GTK_TEXT(textw);
 	
-	length = gtk_text_get_length (GTK_TEXT (text));
+	length = gtk_text_get_length (text);
 	debug_print("Log window length: %u\n", length);
 	
 	if (length > prefs_common.loglength) {
@@ -194,30 +197,23 @@ void log_window_clear(GtkWidget *text)
 	        /* find the end of the first line after the cut off
 		 * point */
        	        point = length - prefs_common.loglength;
-		
-		do {
-			gchar *str;
-			if ((str = gtk_editable_get_chars (GTK_EDITABLE (text),
-					point, point + LOG_AVG_LINE_LEN))) {
-				if ((lf = strchr(str, '\n')) != NULL)
-					point += lf - str;
-				else 
-					point += strlen(str);
-				g_free(str);
-			} else
-				break;
-		} while (lf == NULL);
-				
+		while (point < length && GTK_TEXT_INDEX(text, point) != '\n')
+			point++;
 		/* erase the text */
-		gtk_text_set_point (GTK_TEXT (text), 0);
-		gtk_text_freeze (GTK_TEXT (text));
-		if (!gtk_text_forward_delete (GTK_TEXT (text), point + 1))
+		if (text->freeze_count) {
+			was_frozen = TRUE;
+			gtk_text_thaw(text);
+		}
+		gtk_text_set_point (text, 0);
+		gtk_text_freeze(text);
+		if (!gtk_text_forward_delete (text, point + 1))
 		        debug_print("Error clearing log\n");
-		gtk_text_thaw (GTK_TEXT (text));
-		gtk_text_set_point (GTK_TEXT (text),
-				    gtk_text_get_length (GTK_TEXT (text)));
+		gtk_text_thaw(text);
+		gtk_text_set_point(text,
+				   gtk_text_get_length (GTK_TEXT (text)));
+		if (was_frozen)
+			gtk_text_freeze(text);
 	}
-	
 }
 
 

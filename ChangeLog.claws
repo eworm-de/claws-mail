@@ -1,3 +1,11 @@
+2002-11-05 [melvin]	0.8.5claws72
+
+	* src/logwindow.c
+		Fixed log-clipping bug #616795.
+		To stop logging in the log window use 0 length.
+	* src/prefs_common.c
+		Added a label to inform about the 0 log length behaviour.
+
 2002-11-05 [paul]	0.8.5claws71
 
 	* sync with 0.8.5cvs17
