@@ -1472,12 +1472,11 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 gboolean textview_search_string(TextView *textview, const gchar *str,
 				gboolean case_sens)
 {
-#warning FIXME_GTK2 /* currently, these search functions ignores case_sens */
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
 	GtkTextMark *mark;
-	GtkTextIter iter, start, end, *pos;
-	gboolean found;
+	GtkTextIter iter, start, end, real_end, *pos;
+	gboolean found = FALSE;
 	gint insert_offset, selbound_offset;
 
 	/* reset selection */
@@ -1494,12 +1493,36 @@ gboolean textview_search_string(TextView *textview, const gchar *str,
 	/* search */
 	mark = gtk_text_buffer_get_insert(buffer);
 	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
-	found = gtk_text_iter_forward_search(&iter, str,
+	if (case_sens) {
+		found = gtk_text_iter_forward_search(&iter, str,
 					     GTK_TEXT_SEARCH_VISIBLE_ONLY,
 					     &start, &end, NULL);
+	} else {
+		gchar *text = NULL;
+		int i = 0;
+		gtk_text_buffer_get_end_iter(buffer, &real_end);
+		text = strdup(gtk_text_buffer_get_text(buffer, &iter, 
+						       &real_end, FALSE));
+		
+		while (!found && i++ < strlen(text)) {
+			found = (strncasecmp(text+i, str, strlen(str)) == 0);
+		}
+		
+		i += gtk_text_iter_get_offset(&end);
+		
+		if (found) {
+			gtk_text_buffer_get_iter_at_offset(buffer, &start, i);
+			gtk_text_buffer_get_iter_at_offset(buffer, &end, 
+							   i + strlen(str));
+		}
+		
+		g_free(text);
+	}
+	
 	if (found) {
 		gtk_text_buffer_place_cursor(buffer, &start);
-		gtk_text_buffer_move_mark_by_name(buffer, "selection_bound", &end);
+		gtk_text_buffer_move_mark_by_name(buffer, "selection_bound", 
+						  &end);
 		mark = gtk_text_buffer_get_mark(buffer, "insert");
 		gtk_text_view_scroll_mark_onscreen(text, mark);
 	}
@@ -1510,12 +1533,11 @@ gboolean textview_search_string(TextView *textview, const gchar *str,
 gboolean textview_search_string_backward(TextView *textview, const gchar *str,
 					 gboolean case_sens)
 {
-#warning FIXME_GTK2
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
 	GtkTextMark *mark;
-	GtkTextIter iter, start, end, *pos;
-	gboolean found;
+	GtkTextIter iter, start, real_start, end, *pos;
+	gboolean found = FALSE;
 	gint insert_offset, selbound_offset;
 
 	/* reset selection */
@@ -1532,12 +1554,39 @@ gboolean textview_search_string_backward(TextView *textview, const gchar *str,
 	/* search */
 	mark = gtk_text_buffer_get_insert(buffer);
 	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
-	found = gtk_text_iter_backward_search(&iter, str,
+	if (case_sens) {
+		found = gtk_text_iter_backward_search(&iter, str,
 					      GTK_TEXT_SEARCH_VISIBLE_ONLY,
 					      &start, &end, NULL);
+	} else {
+		gchar *text = NULL;
+		int i = 0;
+		if (gtk_text_iter_get_offset(&iter) == 0) 
+			gtk_text_buffer_get_end_iter(buffer, &iter);
+		
+		i = gtk_text_iter_get_offset(&iter) - strlen(str) - 1;
+		gtk_text_buffer_get_start_iter(buffer, &real_start);
+		
+		text = strdup(gtk_text_buffer_get_text(buffer, &real_start, 
+						       &iter, FALSE));
+
+		while (!found && i-- >= 0) {
+			found = (strncasecmp(text+i, str, strlen(str)) == 0);
+		}
+				
+		if (found) {
+			gtk_text_buffer_get_iter_at_offset(buffer, &start, i);
+			gtk_text_buffer_get_iter_at_offset(buffer, &end, 
+							   i + strlen(str));
+		}
+		
+		g_free(text);
+	}
+		
 	if (found) {
 		gtk_text_buffer_place_cursor(buffer, &end);
-		gtk_text_buffer_move_mark_by_name(buffer, "selection_bound", &start);
+		gtk_text_buffer_move_mark_by_name(buffer, "selection_bound", 
+						  &start);
 		mark = gtk_text_buffer_get_mark(buffer, "insert");
 		gtk_text_view_scroll_mark_onscreen(text, mark);
 	}

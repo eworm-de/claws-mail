@@ -122,8 +122,7 @@ static void message_search_create(MessageView *messageview)
 	gtk_widget_show (case_checkbtn);
 	gtk_box_pack_start (GTK_BOX (checkbtn_hbox), case_checkbtn,
 			    FALSE, FALSE, 0);
-	gtk_widget_set_sensitive(case_checkbtn, FALSE);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(case_checkbtn), TRUE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(case_checkbtn), FALSE);
 
 	backward_checkbtn =
 		gtk_check_button_new_with_label (_("Backward search"));

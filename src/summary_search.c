@@ -181,7 +181,7 @@ static void summary_search_create(SummaryView *summaryview)
 	gtk_container_set_border_width (GTK_CONTAINER (checkbtn_hbox), 8);
 
 	case_checkbtn = gtk_check_button_new_with_label (_("Case sensitive"));
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(case_checkbtn), TRUE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(case_checkbtn), FALSE);
 	gtk_widget_show (case_checkbtn);
 	gtk_box_pack_start (GTK_BOX (checkbtn_hbox), case_checkbtn,
 			    FALSE, FALSE, 0);
