@@ -187,7 +187,6 @@ gint path_cmp(const gchar *s1, const gchar *s2)
 
 	if (s1[len1 - 1] == G_DIR_SEPARATOR) len1--;
 	if (s2[len2 - 1] == G_DIR_SEPARATOR) len2--;
-
 	return strncmp(s1, s2, MAX(len1, len2));
 }
 
