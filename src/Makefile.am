@@ -87,7 +87,8 @@ sylpheed_SOURCES = \
 	filtering.c filtering.h \
 	prefs_filtering.c prefs_filtering.h \
 	mbox_folder.c mbox_folder.h \
-	quote_fmt.tab.c quote_fmt.tab.h
+	quote_fmt_lex.l quote_fmt_lex.h \
+	quote_fmt_parse.y
 
 EXTRA_DIST = \
 	pixmaps/clip.xpm \
@@ -151,3 +152,10 @@ CPPFLAGS = \
 	-DLOCALEDIR=\""$(localedir)"\" \
 	-DMANUALDIR=\""$(manualdir)"\" \
 	-DHOST_ALIAS=\""$(host_alias)"\"
+
+YFLAGS = -d
+
+BUILT_SOURCES = \
+	quote_fmt_lex.c \
+	quote_fmt_parse.c \
+	quote_fmt_parse.h

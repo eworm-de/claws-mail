@@ -1,3 +1,21 @@
+2001-06-05 [sergey]
+
+	* configure.in: added AM_PROG_LEX and AC_PROG_YACC.
+
+	* src/Makefile.am: replaced quote_fmt.tab.[ch] by
+	quote_fmt_lex.[lh], quote_fmt_parse.y; added YFLAGS=-d; added
+	BUILT_SOURCES to make all files rebuild properly.
+
+	* src/compose.c: removed #include "quote_fmt.tab.h".
+
+	* src/quote_fmt_lex.l: renamed from quote_fmt.l; changed to return
+	CHARACTER value in yylval.
+
+	* src/quote_fmt_parse.y: renamed from quote_fmt.y; changed to
+	receive CHARACTER value by documented means (yylval).
+
+	* src/lex.quote_fmt.c, src/quote_fmt.{l,y,tab.{c,h}}: removed.
+
 2001-06-05 [hoa]
 
 	* src/Makefile.am
