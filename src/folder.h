@@ -119,7 +119,7 @@ typedef void (*FolderUIFunc)		(Folder		*folder,
 typedef void (*FolderDestroyNotify)	(Folder		*folder,
 					 FolderItem	*item,
 					 gpointer	 data);
-typedef void (*FolderItemFunc)		(FolderItem	*item,
+typedef void (*FolderItemFunc)	(FolderItem	*item,
 					 gpointer	 data);
 
 

@@ -20,8 +20,14 @@
 #ifndef FOLDERUTILS_H
 #define FOLDERUTILS_H 1
 
+typedef enum {
+	DELETE_DUPLICATES_REMOVE,
+	DELETE_DUPLICATES_SETFLAG,
+} DeleteDuplicatesMode;
+
 #include "folder.h"
 
-void folderutils_delete_duplicates(FolderItem *item);
+gint folderutils_delete_duplicates(FolderItem *item,
+				   DeleteDuplicatesMode mode);
 
 #endif /* FOLDERUTILS_H */

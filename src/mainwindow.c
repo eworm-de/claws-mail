@@ -88,6 +88,7 @@
 #include "progressindicator.h"
 #include "localfolder.h"
 #include "filtering.h"
+#include "folderutils.h"
 
 #define AC_LABEL_WIDTH	240
 
@@ -291,6 +292,9 @@ static void attract_by_subject_cb(MainWindow	*mainwin,
 				  GtkWidget	*widget);
 
 static void delete_duplicated_cb (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
+static void delete_duplicated_all_cb (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 static void filter_cb		 (MainWindow	*mainwin,
@@ -704,7 +708,11 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Tools/Actio_ns"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/Delete du_plicated messages"),
+						NULL, NULL, 0, "<Branch>"},
+	{N_("/_Tools/Delete du_plicated messages/In selected folder"),
 						NULL, delete_duplicated_cb,   0, NULL},
+	{N_("/_Tools/Delete du_plicated messages/In all folders"),
+						NULL, delete_duplicated_all_cb,   0, NULL},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/E_xecute"),		"X", execute_summary_cb, 0, NULL},
 #ifdef USE_OPENSSL
@@ -1754,7 +1762,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Tools/Create filter rule"           , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 		{"/Tools/Actions"                      , M_TARGET_EXIST|M_UNLOCKED},
 		{"/Tools/Execute"                      , M_DELAY_EXEC},
-		{"/Tools/Delete duplicated messages"   , M_MSG_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
+		{"/Tools/Delete duplicated messages/In selected folder"   , M_MSG_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 
 		{"/Configuration", M_UNLOCKED},
 
@@ -2718,11 +2726,40 @@ static void delete_duplicated_cb(MainWindow *mainwin, guint action,
 		main_window_cursor_wait(mainwin);
 		STATUSBAR_PUSH(mainwin, _("Deleting duplicated messages..."));
 
-		folderutils_delete_duplicates(item);
+		folderutils_delete_duplicates(item, prefs_common.immediate_exec ?
+					      DELETE_DUPLICATES_REMOVE : DELETE_DUPLICATES_SETFLAG);
 
 		STATUSBAR_POP(mainwin);
 		main_window_cursor_normal(mainwin);
 	}
+}
+
+struct DelDupsData
+{
+	guint	dups;
+	guint	folders;
+};
+
+static void deldup_all(FolderItem *item, gpointer _data)
+{
+	struct DelDupsData *data = _data;
+	gint result;
+	
+	result = folderutils_delete_duplicates(item, DELETE_DUPLICATES_REMOVE);
+	if (result >= 0) {
+		data->dups += result;
+		data->folders += 1;
+	}
+}
+
+static void delete_duplicated_all_cb(MainWindow *mainwin, guint action,
+				 GtkWidget *widget)
+{
+	struct DelDupsData data = {0, 0};
+
+	folder_func_to_all_folders(deldup_all, &data);
+	alertpanel_notice(_("Deleted %d duplicate message(s) in %d folders.\n"),
+			  data.dups, data.folders);
 }
 
 static void filter_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
@@ -3074,4 +3111,3 @@ gboolean mainwindow_progressindicator_hook(gpointer source, gpointer userdata)
 /*
 * End of Source.
 */
-

@@ -1,3 +1,10 @@
+2004-03-29 [christoph]	0.9.10claws36
+
+	* src/folder.h
+	* src/folderutils.[ch]
+	* src/mainwindow.c
+		add delete duplicates for all folders
+
 2004-03-29 [alfons]	0.9.10claws35
 
 	* src/folder.c
