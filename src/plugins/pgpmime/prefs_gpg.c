@@ -89,7 +89,7 @@ static void prefs_privacy_create(void)
 	hbox_spc = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox1), hbox_spc, FALSE, FALSE, 0);
-	gtk_widget_set_usize (hbox_spc, 12, -1);
+	gtk_widget_set_size_request (hbox_spc, 12, -1);
 
 	label = gtk_label_new (_("Expire after"));
 	gtk_widget_show (label);
@@ -108,7 +108,7 @@ static void prefs_privacy_create(void)
  	gtk_box_pack_start (GTK_BOX (hbox1), spinbtn_store_passphrase, FALSE, FALSE, 0);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_store_passphrase),
 				     TRUE);
-	gtk_widget_set_usize (spinbtn_store_passphrase, 64, -1);
+	gtk_widget_set_size_request (spinbtn_store_passphrase, 64, -1);
 
 	label = gtk_label_new (_("minute(s) "));
 	gtk_widget_show (label);
@@ -121,7 +121,7 @@ static void prefs_privacy_create(void)
 	hbox_spc = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox_spc);
 	gtk_box_pack_start (GTK_BOX (hbox1), hbox_spc, FALSE, FALSE, 0);
-	gtk_widget_set_usize (hbox_spc, 12, -1);
+	gtk_widget_set_size_request (hbox_spc, 12, -1);
 
 	SET_TOGGLE_SENSITIVITY (checkbtn_store_passphrase, vbox3);
 

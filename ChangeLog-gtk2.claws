@@ -1,3 +1,9 @@
+2004-10-12 [paul]	0.9.12cvs124.2
+
+	* src/plugins/pgpmime/prefs_gpg.c
+	* src/plugins/pgpmime/prefs_gpg.h
+		forgotten in last commit	
+
 2004-10-12 [paul]	0.9.12cvs124.1
 
 	* ChangeLog.claws
