@@ -1,3 +1,8 @@
+2005-01-18 [colin]	1.0.0cvs0.1
+
+	* src/foldersel.c
+		Specify search column - patch by Alfons
+
 2005-01-18 [colin]	0.9.13cvs36.3
 
 	* src/prefs_toolbar.c

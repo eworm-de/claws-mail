@@ -349,7 +349,8 @@ static void foldersel_create(void)
 						(tree_view));
 	gtk_tree_view_set_headers_visible(tree_view, FALSE);
 	gtk_tree_view_set_rules_hint(tree_view, TRUE);					       
-	
+	gtk_tree_view_set_search_column(tree_view, FOLDERSEL_FOLDERNAME); 
+
 	selector = gtk_tree_view_get_selection(tree_view);
 	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
 	gtk_tree_selection_set_select_function(selector, foldersel_selected,
