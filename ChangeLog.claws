@@ -1,3 +1,10 @@
+2001-11-06 [melvin]	0.6.4claws28
+
+	* src/gtkspell.c
+		fixed bug #476792 Selection overtyping with spell checker
+		fixed bug which could cause a buffer overflow
+		fixed a memory leak
+
 2001-11-06 [hoa]	0.6.4claws27
 	
 	* src/procmsg.c
