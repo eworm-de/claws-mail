@@ -224,7 +224,6 @@ void gtkut_clist_set_focus_row(GtkCList *clist, gint row)
 {
 	clist->focus_row = row;
 	GTKUT_CTREE_REFRESH(clist);
-	gtk_clist_moveto(clist, row, 0, 0.5, 0);
 }
 
 void gtkut_combo_set_items(GtkCombo *combo, const gchar *str1, ...)

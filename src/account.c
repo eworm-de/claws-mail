@@ -807,6 +807,7 @@ static void account_clist_set(void)
 	if (prev_row >= 0) {
 		gtk_clist_select_row(clist, prev_row, -1);
 		gtkut_clist_set_focus_row(clist, prev_row);
+		gtk_clist_moveto(clist, prev_row, 0, 0.5, 0);
 	}
 
 	gtk_clist_thaw(clist);
