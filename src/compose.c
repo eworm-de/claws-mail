@@ -2043,6 +2043,7 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 		procmime_mimeinfo_free_all(mimeinfo);
 		return;
 	}
+
 	if (IS_FIRST_PART_TEXT(child))
 		child = child->next;
 
@@ -2053,11 +2054,17 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 			child = procmime_mimeinfo_next(child);
 			continue;
 		}
-
+		if(child->parent && child->parent->parent
+		&& !strcasecmp(child->parent->parent->content_type, "multipart/signed")
+		&& child->mime_type == MIME_TEXT) {
+			/* this is the main text part of a signed message */
+			child = procmime_mimeinfo_next(child);
+			continue;
+		}
 		outfile = procmime_get_tmp_file_name(child);
 		if (procmime_get_part(outfile, infile, child) < 0)
 			g_warning(_("Can't get the part of multipart message."));
-		else
+		else if (compose->mode != COMPOSE_REEDIT || strcmp(child->content_type, "application/pgp-signature"))
 			compose_attach_append
 				(compose, outfile,
 				 child->filename ? child->filename : child->name,

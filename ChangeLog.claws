@@ -1,3 +1,9 @@
+2002-09-23 [colin]	0.83claws15
+
+	* src/compose.c
+		Drop pgp-signature when reediting a signed queued
+		message
+
 2002-09-23 [melvin]	0.8.3claws14
 
 	* po/fr.po
