@@ -1,3 +1,11 @@
+2002-09-22 [oliver]	0.8.3claws8
+
+	* src/prefs_actions.[ch]
+	custom toolbar for compose	
+		actions callback from compose toolbar
+	* src/folderview.c
+		remove include toolbar.h
+		
 2002-09-22 [oliver]	0.8.3claws7
 	
 	* src/prefs_toolbar.[ch]

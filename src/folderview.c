@@ -62,7 +62,6 @@
 #include "folder.h"
 #include "inc.h"
 #include "statusbar.h"
-#include "toolbar.h"
 
 typedef enum
 {
