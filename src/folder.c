@@ -996,7 +996,10 @@ void folder_item_close(FolderItem *item)
 gint folder_item_scan(FolderItem *item)
 {
 	Folder *folder;
-	GSList *folder_list = NULL, *cache_list = NULL, *folder_list_cur, *cache_list_cur, *new_list = NULL;
+	GSList *folder_list = NULL, *cache_list = NULL;
+	GSList *folder_list_cur, *cache_list_cur, *new_list = NULL;
+	GSList *exists_list = NULL, *elem;
+	GSList *newmsg_list = NULL;
 	guint newcnt = 0, unreadcnt = 0, totalcnt = 0, unreadmarkedcnt = 0;
 	guint cache_max_num, folder_max_num, cache_cur_num, folder_cur_num;
 	gboolean update_flags = 0;
@@ -1132,36 +1135,13 @@ gint folder_item_scan(FolderItem *item)
 
 			msginfo = msgcache_get_msg(item->cache, folder_cur_num);
 			if (folder->is_msg_changed && folder->is_msg_changed(folder, item, msginfo)) {
-				MsgInfo *newmsginfo;
-
 				msgcache_remove_msg(item->cache, msginfo->msgnum);
+				new_list = g_slist_prepend(new_list, GINT_TO_POINTER(msginfo->msgnum));
+				procmsg_msginfo_free(msginfo);
 
-				if (NULL != (newmsginfo = folder->get_msginfo(folder, item, folder_cur_num))) {
-					msgcache_add_msg(item->cache, newmsginfo);
-					if (MSG_IS_NEW(newmsginfo->flags) && !MSG_IS_IGNORE_THREAD(newmsginfo->flags))
-						newcnt++;
-					if (MSG_IS_UNREAD(newmsginfo->flags) && !MSG_IS_IGNORE_THREAD(newmsginfo->flags))
-						unreadcnt++;
-					if (MSG_IS_UNREAD(newmsginfo->flags) && procmsg_msg_has_marked_parent(newmsginfo))
-						unreadmarkedcnt++;
-					if (procmsg_msg_has_flagged_parent(newmsginfo, MSG_IGNORE_THREAD))
-						procmsg_msginfo_set_flags(newmsginfo, MSG_IGNORE_THREAD, 0);
-					procmsg_msginfo_free(newmsginfo);
-				}					
-
-				debug_print("Updated msginfo for message %d.\n", folder_cur_num);
-			} else {
-				if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-					newcnt++;
-				if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-					unreadcnt++;
-				if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
-					unreadmarkedcnt++;
-				if (!MSG_IS_IGNORE_THREAD(msginfo->flags) && procmsg_msg_has_flagged_parent(msginfo, MSG_IGNORE_THREAD))
-					procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
-			}
-			totalcnt++;
-			procmsg_msginfo_free(msginfo);
+				debug_print("Remembering message %d to update...\n", folder_cur_num);
+			} else
+				exists_list = g_slist_prepend(exists_list, msginfo);
 
 			/* Move to next folder and cache number */
 			cache_list_cur = cache_list_cur->next;
@@ -1177,77 +1157,72 @@ gint folder_item_scan(FolderItem *item)
 			else
 				folder_cur_num = G_MAXINT;
 
-			update_flags |= F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT;
-
 			continue;
 		}
 	}
-
-	for(cache_list_cur = cache_list; cache_list_cur != NULL; cache_list_cur = g_slist_next(cache_list_cur)) {
+	
+	for(cache_list_cur = cache_list; cache_list_cur != NULL; cache_list_cur = g_slist_next(cache_list_cur))
 		procmsg_msginfo_free((MsgInfo *) cache_list_cur->data);
-	}
 
 	g_slist_free(cache_list);
 	g_slist_free(folder_list);
 
-	if (folder->get_msginfos) {
-		GSList *elem;
-		GSList *newmsg_list;
-		MsgInfo *msginfo;
-		
-		if (new_list) {
+	if (new_list != NULL) {
+		if (folder->get_msginfos) {
 			newmsg_list = folder->get_msginfos(folder, item, new_list);
-			for (elem = newmsg_list; elem != NULL; elem = g_slist_next(elem)) {
-				msginfo = (MsgInfo *) elem->data;
-				msgcache_add_msg(item->cache, msginfo);
-				if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-					newcnt++;
-				if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-					unreadcnt++;
-				if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
-					unreadmarkedcnt++;
-				if (procmsg_msg_has_flagged_parent(msginfo, MSG_IGNORE_THREAD))
-					procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
-				totalcnt++;
-				procmsg_msginfo_free(msginfo);
-
-				update_flags |= F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT;
-			}
-			g_slist_free(newmsg_list);
-		}
-	} else if (folder->get_msginfo) {
-		GSList *elem;
+		} else if (folder->get_msginfo) {
+			GSList *elem;
 	
-		for (elem = new_list; elem != NULL; elem = g_slist_next(elem)) {
-			MsgInfo *msginfo;
-			guint num;
+			for (elem = new_list; elem != NULL; elem = g_slist_next(elem)) {
+				MsgInfo *msginfo;
+				guint num;
 
-			num = GPOINTER_TO_INT(elem->data);
-			msginfo = folder->get_msginfo(folder, item, num);
-			if (msginfo != NULL) {
-				msgcache_add_msg(item->cache, msginfo);
-				if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-				    newcnt++;
-				if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-				    unreadcnt++;
-				if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
-					unreadmarkedcnt++;
-				if (procmsg_msg_has_flagged_parent(msginfo, MSG_IGNORE_THREAD))
-					procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
-				totalcnt++;
-				procmsg_msginfo_free(msginfo);
-				debug_print("Added newly found message %d to cache.\n", num);
+				num = GPOINTER_TO_INT(elem->data);
+				msginfo = folder->get_msginfo(folder, item, num);
+				if (msginfo != NULL) {
+					newmsg_list = g_slist_prepend(newmsg_list, msginfo);
+					debug_print("Added newly found message %d to cache.\n", num);
+				}
 			}
-
-			update_flags |= F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT;
 		}
+		g_slist_free(new_list);
 	}
+
+	if (newmsg_list != NULL) {
+		GSList *elem;
+
+		for (elem = newmsg_list; elem != NULL; elem = g_slist_next(elem))
+			msgcache_add_msg(item->cache, elem->data);
+
+		update_flags |= F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT;
+		
+		exists_list = g_slist_concat(exists_list, newmsg_list);
+	}
+
+	for (elem = exists_list; elem != NULL; elem = g_slist_next(elem)) {
+		MsgInfo *msginfo;
+
+		msginfo = elem->data;
+		if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
+			newcnt++;
+		if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
+			unreadcnt++;
+		if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
+			unreadmarkedcnt++;
+		if (!MSG_IS_IGNORE_THREAD(msginfo->flags) && procmsg_msg_has_flagged_parent(msginfo, MSG_IGNORE_THREAD))
+			procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
+		totalcnt++;
+
+		procmsg_msginfo_free(msginfo);
+	}
+	g_slist_free(exists_list);
 
 	item->new = newcnt;
 	item->unread = unreadcnt;
 	item->total = totalcnt;
 	item->unreadmarked = unreadmarkedcnt;
-	g_slist_free(new_list);
+
+	update_flags |= F_ITEM_UPDATE_MSGCNT;
 
 	folder_item_update(item, update_flags);
 

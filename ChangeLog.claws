@@ -1,3 +1,10 @@
+2003-02-25 [christoph]	0.8.10claws51
+
+	* src/folder.c
+		some code optimization of folder scanning code
+
+	Patch submitted by Simon 'corecode' Schubert <corecode@corecode.ath.cx>	
+
 2003-02-25 [christoph]	0.8.10claws50
 
 	* src/main.c
