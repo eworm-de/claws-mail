@@ -1047,9 +1047,11 @@ static void prefs_filtering_action_select(GtkCList *clist,
 static gboolean prefs_filtering_action_key_pressed(GtkWidget *widget,
     GdkEventKey *event, gpointer data)
 {
-	if (event && event->keyval == GDK_Escape)
+	if (event && event->keyval == GDK_Escape) {
 		prefs_filtering_action_cancel();
-	return TRUE;		
+		return TRUE;		
+	}
+	return FALSE;
 }
 
 /*!

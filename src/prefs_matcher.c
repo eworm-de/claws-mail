@@ -1622,9 +1622,11 @@ static void prefs_matcher_criteria_select(GtkList *list,
 static gboolean prefs_matcher_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				     gpointer data)
 {
-	if (event && event->keyval == GDK_Escape)
+	if (event && event->keyval == GDK_Escape) {
 		prefs_matcher_cancel();
-	return TRUE;		
+		return TRUE;		
+	}
+	return FALSE;
 }
 
 /*!
