@@ -7,7 +7,6 @@
 	  about time to make the cache files endian neutral (bribe
 	  Hiro to accept the new system too)
 	o make sock_gets() use buffered I/O
-	o investigate crash handlers
 
 [thorsten]
 	
