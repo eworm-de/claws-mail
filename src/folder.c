@@ -2382,8 +2382,11 @@ const PersistPrefs *folder_get_persist_prefs(GHashTable *pptable, const char *na
 void folder_item_restore_persist_prefs(FolderItem *item, GHashTable *pptable)
 {
 	const PersistPrefs *pp;
+	gchar *id = folder_item_get_identifier(item);
 
-	pp = folder_get_persist_prefs(pptable, item->path); 
+	pp = folder_get_persist_prefs(pptable, id); 
+	g_free(id);
+
 	if (!pp) return;
 
 	/* CLAWS: since not all folder properties have been migrated to 
@@ -2404,14 +2407,15 @@ static void folder_get_persist_prefs_recursive(GNode *node, GHashTable *pptable)
 	FolderItem *item = FOLDER_ITEM(node->data);
 	PersistPrefs *pp;
 	GNode *child, *cur;
+	gchar *id;
 
 	g_return_if_fail(node != NULL);
 	g_return_if_fail(item != NULL);
 
-	/* FIXME: item->path == NULL for top level folder, so this means that 
-	 * properties of MH folder root will not be stored. Not quite important, 
-	 * because the top level folder properties are not special anyway. */
+	/* NOTE: item->path == NULL means top level folder; not interesting
+	 * to store preferences of that one.  */
 	if (item->path) {
+		id = folder_item_get_identifier(item);
 		pp = g_new0(PersistPrefs, 1);
 		g_return_if_fail(pp != NULL);
 		pp->collapsed = item->collapsed;
@@ -2420,8 +2424,8 @@ static void folder_get_persist_prefs_recursive(GNode *node, GHashTable *pptable)
 		pp->hide_read_msgs = item->hide_read_msgs;
 		pp->sort_key  = item->sort_key;
 		pp->sort_type = item->sort_type;
-		g_hash_table_insert(pptable, g_strdup(item->path), pp);
-	}		
+		g_hash_table_insert(pptable, id, pp);
+	}
 
 	if (node->children) {
 		child = node->children;
