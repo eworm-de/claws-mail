@@ -392,16 +392,27 @@ gint news_scan_group(Folder *folder, FolderItem *item)
 	}
 	g_free(path);
 
-	if (first < min) {
+	if (max < first || last < min)
 		new = unread = total = num;
-	} else if (max < first) {
-		new = unread = total = num;
-	} else if (last > max) {
-		new += last - max;
-		unread += last - max;
+	else {
+		if (min < first)
+			min = first;
+		else if (first < min) {
+			num -= min - first;
+			first = min;
+		}
+
+		if (last < max)
+			max = last;
+		else if (max < last) {
+			new += last - max;
+			unread += last - max;
+		}
+
 		if (new > num) new = num;
 		if (unread > num) unread = num;
 	}
+
 	item->new = new;
 	item->unread = unread;
 	item->total = num;

@@ -1,3 +1,10 @@
+2002-05-27
+
+	* src/news.c: news_scan_group(): fixed a bug that set the wrong
+	  values in some cases.
+	* src/prefs_account.c: corrected English in Advanced - Folder
+	  settings.
+
 2002-05-23
 
 	* src/textview.c: textview_show_message(), textview_show_part():
