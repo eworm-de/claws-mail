@@ -137,10 +137,26 @@ static gboolean procmsg_ignore_node(GNode *node, gpointer data)
 	return FALSE;
 }
 
+/* CLAWS subject threading:
+  
+  in the first round it inserts subject lines in a hash 
+  table. a duplicate subject line replaces the one in
+  the table only if its older. (this round should actually 
+  create a list of all duplicate subject lines)
+
+  the second round finishes the threads by attaching
+  duplicate subject lines to the one found in the
+  hash table. as soon as a subject line is found that
+  is too old, that one becomes the new parent for
+  the next iteration. (this fails when a parent arrived
+  later than its child.)
+*/  
+
 /* return the reversed thread tree */
 GNode *procmsg_get_thread_tree(GSList *mlist)
 {
 	GNode *root, *parent, *node, *next, *last;
+	GNode *prev; /* CLAWS */
 	GHashTable *msgid_table;
 	GHashTable *subject_table;
 	MsgInfo *msginfo;
@@ -173,81 +189,74 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 		    g_hash_table_lookup(msgid_table, msgid) == NULL)
 			g_hash_table_insert(msgid_table, (gchar *)msgid, node);
 
+		/* CLAWS: add subject to table (without prefix) */
 		if (prefs_common.thread_by_subject) {
 			GNode *found_subject = NULL;
 			
 			subject  = msginfo->subject;
 			subject += subject_get_reply_prefix_length(subject);
-
-			/* if reply look for parent */
-			if (msginfo->subject != subject) 
-				found_subject = subject_table_lookup_clean
+			found_subject = subject_table_lookup_clean
 					(subject_table, (gchar *) subject);
 									   
-			if (found_subject == NULL)
+			if (found_subject == NULL) 
 				subject_table_insert_clean(subject_table, (gchar *) subject,
 						           node);
-			else {
+			else if ( ((MsgInfo*)(found_subject->data))->date_t > 
+                                  ((MsgInfo*)(node->data))->date_t )  {
 				/* replace if msg in table is older than current one 
-				 * can add here more stuff. */
-                                if ( ((MsgInfo*)(found_subject->data))->date_t > 
-                                     ((MsgInfo*)(node->data))->date_t )  {
-					subject_table_remove_clean(subject_table, (gchar *) subject);
-					subject_table_insert_clean(subject_table, (gchar *) subject, node);
-				} 
+				   TODO: should create a list of messages with same subject */
+				subject_table_remove_clean(subject_table, (gchar *) subject);
+				subject_table_insert_clean(subject_table, (gchar *) subject, node);
 			}
 		}
 	}
 
 	/* complete the unfinished threads */
 	for (node = root->children; node != NULL; ) {
+		prev = node->prev;	/* CLAWS: need the last node */
+		parent = NULL;
 		next = node->next;
 		msginfo = (MsgInfo *)node->data;
-		parent = NULL;
-		if (msginfo->inreplyto) 
+		if (msginfo->inreplyto) { 
 			parent = g_hash_table_lookup(msgid_table, msginfo->inreplyto);
-		/* node should not be the parent, and node should not be an ancestor
-		 * of parent (circular reference) */
-		if (parent && parent != node 
-		&& !g_node_is_ancestor(node, parent)) {
-			g_node_unlink(node);
-			g_node_insert_before
-				(parent, parent->children, node);
-			/* CLAWS: ignore thread */
-			if (MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-				g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, procmsg_ignore_node, NULL);
-			}
+			/* node should not be the parent, and node should not 
+			   be an ancestor of parent (circular reference) */
+			if (parent && parent != node && 
+			    !g_node_is_ancestor(node, parent)) {
+				g_node_unlink(node);
+				g_node_insert_before
+					(parent, parent->children, node);
+				/* CLAWS: ignore thread */
+				if (MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
+					g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, procmsg_ignore_node, NULL);
+			}				
 		}
-		last = node; /* CLAWS: need to have the last one for subject threading */
+		last = (next == NULL) ? prev : node;
 		node = next;
 	}
 
-	/* CLAWS: now see if the first level (below root) still has some nodes that can be
-	 * threaded by subject line. we need to handle this in a special way to prevent
-	 * circular reference from a node that has already been threaded by IN-REPLY-TO
-	 * but is also in the subject line hash table */
 	if (prefs_common.thread_by_subject) {
 		for (node = last; node && node != NULL;) {
 			next = node->prev;
 			msginfo = (MsgInfo *) node->data;
 			subject = msginfo->subject + subject_get_reply_prefix_length(msginfo->subject);
-
+			
+			/* may not parentize if parent was delivered after childs */
 			if (subject != msginfo->subject)
 				parent = subject_table_lookup_clean(subject_table, (gchar *) subject);
 			else
-				parent = NULL; /* may not parentize if parent was delivered after
-						* childs */
+				parent = NULL; 
 			
-			/* the node may already be threaded by IN-REPLY-TO,
-			   so go up in the tree to find the parent node */
+			/* the node may already be threaded by IN-REPLY-TO, so go up in the tree to 
+			   find the parent node */
 			if (parent != NULL) {
 				if (g_node_is_ancestor(node, parent))
 					parent = NULL;
 				if (parent == node)
 					parent = NULL;
-				/* Make new thread parent if too old compared to previous one; probably
-				 * breaks ignoring threads for subject threading. This still isn't
-				 * accurate because the tree isn't sorted by date. */	
+				/* make new thread parent if too old compared to previous one; probably
+				   breaks ignoring threads for subject threading. not accurate because
+				   the tree isn't sorted by date. */
 				if (parent && abs(difftime(msginfo->date_t, ((MsgInfo *)parent->data)->date_t)) >
 						prefs_common.thread_by_subject_max_age * 3600 * 24) {
 					subject_table_remove_clean(subject_table, (gchar *) subject);
@@ -255,7 +264,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 					parent = NULL;
 				}
 			}
-
+			
 			if (parent) {
 				g_node_unlink(node);
 				g_node_append(parent, node);
@@ -264,6 +273,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 					g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, procmsg_ignore_node, NULL);
 				}
 			}
+
 			node = next;
 		}	
 	}

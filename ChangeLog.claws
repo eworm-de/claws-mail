@@ -1,3 +1,12 @@
+2003-07-15 [alfons]	0.9.3claws8
+
+	* src/procmsg.c
+		o fix a bug where 'last' didn't really point to the last message
+		  in the top level list of children, but to the last threaded
+		  message. 
+		
+		o clean up and make it easier to sync
+
 2003-07-15 [alfons]	0.9.3claws7
 
 	* src/mainwindow.c
