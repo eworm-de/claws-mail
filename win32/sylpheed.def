@@ -1187,6 +1187,7 @@ EXPORTS
 	new_aspell_string_list 
 	new_aspell_string_map 
 	news_cancel_article 
+	news_doprogress 
 	news_fetch_msg 
 	news_fetch_msgnum_sort 
 	news_folder_destroy 

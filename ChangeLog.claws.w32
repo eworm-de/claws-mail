@@ -1,4 +1,10 @@
-2003-02-06 [thorsten]	0.8.9claws-42-1
+2003-02-09 [thorsten]	0.8.9claws50-1
+
+	* src/news.c
+		show progress while fetching headers
+		(sync to claws after thaw)
+
+2003-02-06 [thorsten]	0.8.9claws42-1
 
 	* src/codeconv.c
 		add Windows-XXXX encodings
@@ -16,7 +22,7 @@
 	* src/unmime.c
 		remove old iconv g_free() crashfix
 
-2003-02-02 [thorsten]	0.8.9claws-34-1
+2003-02-02 [thorsten]	0.8.9claws34-1
 
 	* src/codeconv.c
 	  src/gtkstext.c
@@ -26,7 +32,7 @@
 	* src/main.c
 		fix: remove log handler (warning)
 	
-2003-02-02 [thorsten]	0.8.9claws-32-1
+2003-02-02 [thorsten]	0.8.9claws32-1
 
 	* src/utils.c
 	  src/compose.c

@@ -52,6 +52,8 @@
 #include "inputdialog.h"
 #include "alertpanel.h"
 #include "log.h"
+#include "mainwindow.h"
+#include "inc.h"
 #if USE_OPENSSL
 #  include "ssl.h"
 #endif
@@ -1159,6 +1161,46 @@ MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 	return msginfo;
 }
 
+/*!
+ *\brief	Set/reset/update progressbar, max. 10 redraws/second
+ *
+ *\param	action What to do with the statusbar
+ *			= 0 : Reset to zero
+ *			< 0 : Init maximum to -(action)
+ *			> 0 : Increase by (action)
+ */
+void news_doprogress(glong action) {
+	static glong curcount=0;
+	static glong maxval;
+	static MainWindow *mainwin=0;
+	static struct timeval tv_prev, tv_cur;
+	
+	if (!mainwin)
+		mainwin = mainwindow_get_mainwindow();
+	g_return_if_fail(mainwin);
+
+	if (action < 0)
+		maxval = -action;
+	else if (action == 0) {
+		curcount=0;
+		gtk_progress_bar_update(
+			GTK_PROGRESS_BAR(mainwin->progressbar), 0.0);
+	} else {
+		curcount += action;
+		gettimeofday(&tv_cur, NULL);
+		if (!(tv_cur.tv_sec - tv_prev.tv_sec > 0 ||
+			tv_cur.tv_usec - tv_prev.tv_usec > 100)
+		    || !maxval)
+			return;
+
+		gtk_progress_bar_update(
+			GTK_PROGRESS_BAR(mainwin->progressbar),
+			(float)curcount/maxval);
+		while (gtk_events_pending()) gtk_main_iteration ();
+		gettimeofday(&tv_prev, NULL);
+	}
+}
+
 static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *item, guint begin, guint end)
 {
 	gchar buf[NNTPBUFSIZE];
@@ -1169,18 +1211,22 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 	g_return_val_if_fail(session != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
 
+	inc_lock();
 	log_message(_("getting xover %d - %d in %s...\n"),
 		    begin, end, item->path);
 	if (nntp_xover(session->nntp_sock, begin, end) != NN_SUCCESS) {
 		log_warning(_("can't get xover\n"));
-		return NULL;
+		goto unlock_leave;
 	}
 
+	news_doprogress(-3*(end-begin));
+	statusbar_print_all(_("Getting overview (%d articles)..."),end-begin);
 	for (;;) {
 		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
 			log_warning(_("error occurred while getting xover.\n"));
-			return newlist;
+			goto unlock_leave;
 		}
+		news_doprogress(1);
 
 		if (buf[0] == '.' && buf[1] == '\r') break;
 
@@ -1205,16 +1251,19 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 
 	if (nntp_xhdr(session->nntp_sock, "to", begin, end) != NN_SUCCESS) {
 		log_warning(_("can't get xhdr\n"));
-		return newlist;
+			goto unlock_leave;
 	}
 
 	llast = newlist;
 
+	statusbar_pop_all();
+	statusbar_print_all(_("Getting headers (%d articles)..."),end-begin);
 	for (;;) {
 		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
 			log_warning(_("error occurred while getting xhdr.\n"));
-			return newlist;
+			goto unlock_leave;
 		}
+		news_doprogress(1);
 
 		if (buf[0] == '.' && buf[1] == '\r') break;
 		if (!llast) {
@@ -1230,16 +1279,19 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 
 	if (nntp_xhdr(session->nntp_sock, "cc", begin, end) != NN_SUCCESS) {
 		log_warning(_("can't get xhdr\n"));
-		return newlist;
+		goto unlock_leave;
 	}
 
 	llast = newlist;
 
+	statusbar_pop_all();
+	statusbar_print_all(_("Getting crossposted articles (%d messages)..."),end-begin);
 	for (;;) {
 		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
 			log_warning(_("error occurred while getting xhdr.\n"));
-			return newlist;
+			goto unlock_leave;
 		}
+		news_doprogress(1);
 
 		if (buf[0] == '.' && buf[1] == '\r') break;
 		if (!llast) {
@@ -1253,6 +1305,10 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 		llast = llast->next;
 	}
 
+unlock_leave:
+	news_doprogress(0);
+	statusbar_pop_all();
+	inc_unlock();
 	return newlist;
 }
 
