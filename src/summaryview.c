@@ -4486,12 +4486,18 @@ static gint summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	GtkCTreeNode *node;
 	MessageView *messageview;
 	TextView *textview;
+	GtkAdjustment *sumadj;
 
 	if (summary_is_locked(summaryview)) return TRUE;
 	if (!event) return TRUE;
 
 	switch (event->keyval) {
 	case GDK_Left:		/* Move focus */
+		sumadj = gtk_scrolled_window_get_hadjustment
+				(GTK_SCROLLED_WINDOW(summaryview->scrolledwin));
+		if (sumadj->lower != sumadj->value) 
+			break;
+		/* FALLTHROUGH */	
 	case GDK_Escape:
 		gtk_widget_grab_focus(summaryview->folderview->ctree);
 		return TRUE;
