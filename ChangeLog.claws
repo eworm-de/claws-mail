@@ -1,3 +1,12 @@
+2002-12-27 [alfons]	0.8.8claws12
+
+	re-organize matcher part 1
+
+	* src/matcher.h
+		map yacc generated constants to sylpheed matcher constants
+	* src/matcher.c
+		add function to find a matcher constant from a string
+
 2002-12-27 [christoph]	0.8.8claws11
 
 	* src/compose.c

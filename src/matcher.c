@@ -132,6 +132,20 @@ gchar * get_matchparser_tab_str(gint id)
 	return NULL;
 }
 
+gint get_matchparser_tab_id(const gchar *str)
+{
+	gint i;
+
+	/*
+	 * begs for a hash table
+	 */
+	for (i = 0; i < sizeof matchparser_tab / sizeof matchparser_tab[0]; i++) {
+		if (g_strcasecmp(matchparser_tab[i].str, str) == 0)
+			return matchparser_tab[i].id;
+	}
+	return -1;
+}
+
 /* matcher_escape_str() - escapes a string returns newly allocated escaped string */
 gchar *matcher_escape_str(const gchar *str)
 {
