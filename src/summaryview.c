@@ -2489,7 +2489,6 @@ static void summary_mark_row(SummaryView *summaryview, GtkCTreeNode *row)
 	MsgInfo *msginfo;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
-	msginfo->to_folder = NULL;
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted--;
 	if (MSG_IS_MOVE(msginfo->flags)) {
@@ -2715,7 +2714,6 @@ static void summary_unmark_row(SummaryView *summaryview, GtkCTreeNode *row)
 	MsgInfo *msginfo;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
-	msginfo->to_folder = NULL;
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted--;
 	if (MSG_IS_MOVE(msginfo->flags)) {

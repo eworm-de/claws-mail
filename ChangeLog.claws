@@ -1,3 +1,8 @@
+2001-09-12 [darko]
+	
+	* src/summaryview.c
+		fix crash when message that is marked for copy/move is unmarked
+
 2001-09-09 [paul]
 
 	* configure.in
