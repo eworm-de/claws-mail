@@ -89,8 +89,6 @@ static struct Receive {
 	GtkWidget *rmmail_chkbtn;
 	GtkWidget *leave_time_entry;
 	GtkWidget *getall_chkbtn;
-	GtkWidget *sd_filter_on_recv_chkbtn;
-	GtkWidget *sd_rmmail_chkbtn;
 	GtkWidget *size_limit_chkbtn;
 	GtkWidget *size_limit_entry;
 	GtkWidget *filter_on_recv_chkbtn;
@@ -302,14 +300,6 @@ static PrefParam param[] = {
 
 	{"filter_on_receive", "TRUE", &tmp_ac_prefs.filter_on_recv, P_BOOL,
 	 &receive.filter_on_recv_chkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-
-	/* selective download */	
-	{"sd_filter_on_receive", "TRUE", &tmp_ac_prefs.sd_filter_on_recv, P_BOOL,
-	 &receive.sd_filter_on_recv_chkbtn,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"sd_remove_mail_on_download", "TRUE", &tmp_ac_prefs.sd_rmmail_on_download, P_BOOL,
-	 &receive.sd_rmmail_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"receive_at_get_all", "TRUE", &tmp_ac_prefs.recv_at_getall, P_BOOL,
@@ -1109,8 +1099,6 @@ static void prefs_account_receive_create(void)
 	GtkWidget *size_limit_entry;
 	GtkWidget *label;
 	GtkWidget *filter_on_recv_chkbtn;
-	GtkWidget *sd_filter_on_recv_chkbtn;
-	GtkWidget *sd_rmmail_chkbtn;
 	GtkWidget *vbox3;
 	GtkWidget *inbox_label;
 	GtkWidget *inbox_entry;
@@ -1181,10 +1169,6 @@ static void prefs_account_receive_create(void)
 
 	PACK_CHECK_BUTTON (vbox2, getall_chkbtn,
 			   _("Download all messages on server"));
-	PACK_CHECK_BUTTON (vbox2, sd_filter_on_recv_chkbtn,
-			   _("Use filtering rules with Selective Download"));
-	PACK_CHECK_BUTTON (vbox2, sd_rmmail_chkbtn,
-			   _("Remove mail after downloading with Selective Download"));
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -1276,8 +1260,6 @@ static void prefs_account_receive_create(void)
 	receive.size_limit_chkbtn        = size_limit_chkbtn;
 	receive.size_limit_entry         = size_limit_entry;
 	receive.filter_on_recv_chkbtn    = filter_on_recv_chkbtn;
-	receive.sd_filter_on_recv_chkbtn = sd_filter_on_recv_chkbtn;
-	receive.sd_rmmail_chkbtn         = sd_rmmail_chkbtn;
 	receive.inbox_label              = inbox_label;
 	receive.inbox_entry              = inbox_entry;
 	receive.inbox_btn                = inbox_btn;

@@ -53,14 +53,6 @@ typedef enum {
 typedef enum {
 	/* login and retrieve messages, as before */
 	STYPE_NORMAL,
-	/* send TOP to server and retrieve all available Headers */
-	STYPE_PREVIEW_ALL,
-	/* send TOP to server and retrieve new Headers */
-	STYPE_PREVIEW_NEW,
-	/* delete selected Headers on Server */
-	STYPE_DELETE, 
-	/* download + remove Mail from Server */
-	STYPE_DOWNLOAD,
 	/* just login (pop before smtp) */
 	STYPE_POP_BEFORE_SMTP,
 } Pop3SessionType;

@@ -1,3 +1,11 @@
+2003-03-26 [oliver]	0.8.11claws53
+	* src/matcher.[ch]
+	* src/matcher_parser_parse.y 
+	* src/pop.c 
+	* src/prefs_account.[ch]
+	* src/prefs_filtering.c
+		remove selective donwload
+
 2003-03-26 [oliver]	0.8.11claws52
 
 	* src/inc.[ch] 
