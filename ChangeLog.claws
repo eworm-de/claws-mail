@@ -1,4 +1,16 @@
+2003-09-07 [christoph]	0.9.4claws71
+
+	* src/compose.c
+		replace '\n' and '\r' before removing trailing spaces
+
+	* src/folder.[ch]
+	* src/folderview.c
+		add information about new or removed items in folder tree change
+		notification and use this in folderview to add and remove only
+		the appected items and not refresh the whole tree
+
 2003-09-07 [match]	0.9.4claws70
+
 	* src/Makefile.am
 	* src/addr_compl.c
 	* src/addressbook.c

@@ -2769,9 +2769,15 @@ gboolean folderview_update_folder(gpointer source, gpointer userdata)
 	ctree = folderview->ctree;
 	g_return_val_if_fail(ctree != NULL, FALSE);
 
-	if (hookdata->update_flags & FOLDER_TREE_CHANGED) {
+	if (hookdata->update_flags & FOLDER_NEW_FOLDERITEM)
+		folderview_create_folder_node(folderview, hookdata->item);
+	else if (hookdata->update_flags & FOLDER_REMOVE_FOLDERITEM) {
+		GtkCTreeNode *node;
+
+		node = gtk_ctree_find_by_row_data(GTK_CTREE(ctree), NULL, hookdata->item);
+		gtk_ctree_remove_node(GTK_CTREE(ctree), node);
+	} else if (hookdata->update_flags & FOLDER_TREE_CHANGED)
 		folderview_set(folderview);
-	}
 
 	return FALSE;
 }

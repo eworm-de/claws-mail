@@ -110,11 +110,8 @@ typedef enum
 typedef enum
 {
 	FOLDER_TREE_CHANGED = 1 << 0,
-/*
-	maybe enhance with:
-	FOLDER_NEW_FOLDERITEM
-	FOLDER_REMOVE_FOLDERITEM
-*/
+	FOLDER_NEW_FOLDERITEM = 1 << 1,
+	FOLDER_REMOVE_FOLDERITEM = 1 << 2,
 } FolderUpdateFlags;
 
 typedef enum
@@ -332,9 +329,7 @@ struct _FolderUpdateData
 {
 	Folder			*folder;
 	FolderUpdateFlags	 update_flags;
-/*
-	FolderItem		*item
-*/
+	FolderItem		*item;
 };
 
 struct _FolderItemUpdateData

@@ -4396,9 +4396,9 @@ static void compose_convert_header(gchar *dest, gint len, gchar *src,
 
 	if (len < 1) return;
 
-	g_strchomp(src);
 	subst_char(src, '\n', ' ');
 	subst_char(src, '\r', ' ');
+	g_strchomp(src);
 
 	conv_encode_header(dest, len, src, header_len, addr_field);
 }
