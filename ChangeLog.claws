@@ -1,3 +1,14 @@
+2002-03-27 [melvin]	0.7.4claws51
+
+	* src/prefs_actions.c
+		Added support to pass only one message part (as a
+		file) to the command using '%p'. No quotes are needed
+		because doubles quotes are automatically added.
+		Fixed bug where Sylpheed could block when waiting for
+		a child process to finish.
+		Changed the help menu to remove quotes around symbols to 
+		avoid misinterpretation (they must not be used).
+
 2002-03-27 [melvin]	0.7.4claws50
 
 	* src/inc.c
