@@ -5178,7 +5178,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 	if (replace)
 		gtk_stext_clear(GTK_STEXT(compose->text));
 
-	if (compose->replyinfo == NULL) {
+	if ((compose->replyinfo == NULL) && (compose->fwdinfo == NULL)) {
 		parsed_str = compose_quote_fmt(compose, NULL, tmpl->value,
 					       NULL, NULL);
 	} else {
@@ -5187,8 +5187,14 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 		else
 			qmark = "> ";
 
-		parsed_str = compose_quote_fmt(compose, compose->replyinfo,
-					       tmpl->value, qmark, NULL);
+		if (compose->replyinfo != NULL)
+			parsed_str = compose_quote_fmt(compose, compose->replyinfo,
+						       tmpl->value, qmark, NULL);
+		else if (compose->fwdinfo != NULL)
+			parsed_str = compose_quote_fmt(compose, compose->fwdinfo,
+						       tmpl->value, qmark, NULL);
+		else
+			parsed_str = NULL;
 	}
 
 	if (replace && parsed_str && prefs_common.auto_sig)

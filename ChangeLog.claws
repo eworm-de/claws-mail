@@ -1,3 +1,10 @@
+2003-01-18 [christoph]	0.8.8claws112
+
+	* src/compose.c
+		fix applying templates to forwarded messages
+
+	Patch submitted by Ivan Francolin Martinez <ivanfm@users.sourceforge.net>
+
 2003-01-17 [christoph]	0.8.8claws111
 
 	* src/folder.c
