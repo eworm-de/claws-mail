@@ -1854,6 +1854,10 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		break;
 	}
 
+	/* rehide quick search if necessary */
+	if (!prefs_common.show_searchbar)
+		gtk_widget_hide(mainwin->summaryview->hbox_search);
+	
 	mainwin->type = type;
 
 	mainwin->messageview->visible = TRUE;
