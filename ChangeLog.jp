@@ -1,3 +1,29 @@
+2004-06-17
+
+	* version 0.9.12
+
+2004-06-17
+
+	* src/session.c: session_set_timeout(): interval が 0 のとき
+	  timeout_tag をリセットしていなかったバグを修正。
+
+2004-06-16
+
+	* src/gtkstext.c: gtk_stext_update_text(): cache の null チェックを
+	  追加(Jim Hranicky さん thanks)。
+
+2004-06-15
+
+	* src/defs.h: 特定のプラットフォーム(例: FreeBSD)におけるキャッシュ
+	  の非互換性問題に対処するために CACHE_VERSION を増加。
+	* src/procmsg.c: procmsg_read_cache(): エラーが発生したら読み込んだ
+	  キャッシュデータを全て破棄するようにした。
+
+2004-06-10
+
+	* src/summaryview.[ch]: 使用不可能なときは「再編集」メニューを隠す
+	  ようにした。
+
 2004-06-08
 
 	* src/inc.[ch]

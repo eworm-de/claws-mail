@@ -1,3 +1,28 @@
+2004-06-17
+
+	* version 0.9.12
+
+2004-06-17
+
+	* src/session.c: session_set_timeout(): fixed a bug that didn't
+	  reset timeout_tag when interval is 0.
+
+2004-06-16
+
+	* src/gtkstext.c: gtk_stext_update_text(): added null checking for
+	  cache (thanks to Jim Hranicky).
+
+2004-06-15
+
+	* src/defs.h: increased CACHE_VERSION to work around the
+	  incompatibility of the cache on some platforms (ex. FreeBSD).
+	* src/procmsg.c: procmsg_read_cache(): discard all read cache data
+	  if an error occurred.
+
+2004-06-10
+
+	* src/summaryview.[ch]: hide 'Re-edit' menu when it's unusable.
+
 2004-06-08
 
 	* src/inc.[ch]

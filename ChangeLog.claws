@@ -1,3 +1,10 @@
+2004-06-17 [paul]	0.9.11cvs13
+	
+	* sync with main 0.9.12 release
+	  src/session.c
+		session_set_timeout(): fixed a bug that didn't
+	  	reset timeout_tag when interval is 0.
+
 2004-06-16 [christoph]	0.9.11cvs12
 
 	* src/textview.c

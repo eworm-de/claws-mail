@@ -1,5 +1,12 @@
 Changes of Sylpheed
 
+* 0.9.12
+
+    * A session timeout for POP3/SMTP has been implemented.
+    * The 'Print' menu on the context menu has been restored.
+    * the value of CACHE_VERSION has been increased to prevent a cache
+      incompatibility problem on some platforms such as FreeBSD.
+
 * 0.9.11
 
     * The spring-loaded folder has been implemented for the folder view.

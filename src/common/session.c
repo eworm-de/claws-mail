@@ -214,6 +214,8 @@ void session_set_timeout(Session *session, guint interval)
 	if (interval > 0)
 		session->timeout_tag =
 			g_timeout_add(interval, session_timeout_cb, session);
+	else
+		session->timeout_tag = 0;
 }
 
 static gboolean session_timeout_cb(gpointer data)
