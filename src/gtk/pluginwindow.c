@@ -120,7 +120,7 @@ static void load_cb(GtkButton *button, PluginWindow *pluginwindow)
 {
 	gchar *file, *error = NULL;
 
-	file = filesel_select_file(_("Select Plugin to load"), PLUGINDIR);
+	file = filesel_select_file_open(_("Select Plugin to load"), PLUGINDIR);
 	if (file == NULL)
 		return;
 

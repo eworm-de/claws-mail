@@ -42,13 +42,15 @@
 #include "utils.h"
 
 static gchar *last_selected_dir = NULL;
-static GList *filesel_create(const gchar *title, const gchar *path, gboolean multiple_files)
+static GList *filesel_create(const gchar *title, const gchar *path, 
+			     gboolean multiple_files,
+			     gboolean open)
 {
 	GSList *slist = NULL, *slist_orig = NULL;
 	GList *list = NULL;
 
-	gint action = (path != NULL) ? GTK_FILE_CHOOSER_ACTION_SAVE:GTK_FILE_CHOOSER_ACTION_OPEN;
-	gchar * action_btn = (path != NULL) ? GTK_STOCK_SAVE:GTK_STOCK_OPEN;
+	gint action = (open == TRUE) ? GTK_FILE_CHOOSER_ACTION_OPEN:GTK_FILE_CHOOSER_ACTION_SAVE;
+	gchar * action_btn = (open == TRUE) ? GTK_STOCK_OPEN:GTK_STOCK_SAVE;
 	GtkWidget *chooser = gtk_file_chooser_dialog_new (title, NULL, action, 
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 				action_btn, GTK_RESPONSE_OK, 
@@ -64,7 +66,9 @@ static GList *filesel_create(const gchar *title, const gchar *path, gboolean mul
 	if (path) {
 		char *filename = NULL;
 		char *realpath = strdup(path);
-		if ((filename = strrchr(path, G_DIR_SEPARATOR)) != NULL) {
+		if (path[strlen(path)-1] == G_DIR_SEPARATOR) {
+			filename = "";
+		} else if ((filename = strrchr(path, G_DIR_SEPARATOR)) != NULL) {
 			filename++;
 			*(strrchr(realpath, G_DIR_SEPARATOR)+1) = '\0';
 		} else {
@@ -117,9 +121,9 @@ static GList *filesel_create(const gchar *title, const gchar *path, gboolean mul
  * This opens an Open type dialog.
  * @param title the title of the dialog
  */
-GList *filesel_select_multiple_files(const gchar *title)
+GList *filesel_select_multiple_files_open(const gchar *title)
 {
-	return filesel_create(title, NULL, TRUE);
+	return filesel_create(title, NULL, TRUE, TRUE);
 }
 
 /**
@@ -129,13 +133,23 @@ GList *filesel_select_multiple_files(const gchar *title)
  * @param title the title of the dialog
  * @param path the optional path to save to
  */
-gchar *filesel_select_file(const gchar *title, const gchar *path)
+static gchar *filesel_select_file(const gchar *title, const gchar *path,
+				  gboolean open)
 {
-	GList * list = filesel_create(title, path, FALSE);
+	GList * list = filesel_create(title, path, FALSE, open);
 	gchar * result = NULL;
 	if (list) {
 		result = strdup(list->data);
 	}
 	g_list_free(list);
 	return result;
+}
+gchar *filesel_select_file_open(const gchar *title, const gchar *path)
+{
+	return filesel_select_file (title, path, TRUE);
+}
+
+gchar *filesel_select_file_save(const gchar *title, const gchar *path)
+{
+	return filesel_select_file (title, path, FALSE);
 }

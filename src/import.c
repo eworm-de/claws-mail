@@ -235,7 +235,7 @@ static void import_filesel_cb(GtkWidget *widget, gpointer data)
 {
 	gchar *filename;
 
-	filename = filesel_select_file(_("Select importing file"), NULL);
+	filename = filesel_select_file_open(_("Select importing file"), NULL);
 	if (!filename) return;
 
 	if (g_getenv ("G_BROKEN_FILENAMES")) {

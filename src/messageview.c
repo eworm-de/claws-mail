@@ -953,7 +953,7 @@ void messageview_save_as(MessageView *messageview)
 		Xstrdup_a(filename, msginfo->subject, return);
 		subst_for_filename(filename);
 	}
-	dest = filesel_select_file(_("Save as"), filename);
+	dest = filesel_select_file_save(_("Save as"), filename);
 	if (!dest) return;
 	if (is_file_exist(dest)) {
 		AlertValue aval;

@@ -230,7 +230,7 @@ static void export_filesel_cb(GtkWidget *widget, gpointer data)
 {
 	gchar *filename;
 
-	filename = filesel_select_file(_("Select exporting file"), NULL);
+	filename = filesel_select_file_save(_("Select exporting file"), NULL);
 	if (!filename) return;
 
 	if (g_getenv ("G_BROKEN_FILENAMES")) {

@@ -1,3 +1,20 @@
+2004-07-21 [colin]	0.9.12cvs33.10
+
+	* src/compose.c
+	* src/crash.c
+	* src/export.c
+	* src/import.c
+	* src/messageview.c
+	* src/mimeview.c
+	* src/prefs_spelling.c
+	* src/prefs_themes.c
+	* src/summaryview.c
+	* src/gtk/filesel.c
+	* src/gtk/filesel.h
+	* src/gtk/pluginwindow.c
+		Untwist open/save mode guessing logic, make
+		it explicit
+
 2004-07-20 [colin]	0.9.12cvs33.9
 
 	* src/codeconv.c

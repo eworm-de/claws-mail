@@ -296,7 +296,7 @@ static void crash_save_crash_log(GtkButton *button, const gchar *text)
 	timer = time(NULL);
 	lt = localtime(&timer);
 	strftime(buf, sizeof buf, "sylpheed-crash-log-%Y-%m-%d-%H-%M-%S.txt", lt);
-	if (NULL != (filename = filesel_select_file(_("Save crash information"), buf))
+	if (NULL != (filename = filesel_select_file_save(_("Save crash information"), buf))
 	&&  *filename)
 		str_write_to_file(text, filename);
 	g_free(filename);	

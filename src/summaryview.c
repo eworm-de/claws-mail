@@ -3264,10 +3264,10 @@ void summary_save_as(SummaryView *summaryview)
 			g_warning("summary_save_as(): faild to convert character set.");
 			filename = g_strdup(oldstr);
 		}
-		dest = filesel_select_file(_("Save as"), filename);
+		dest = filesel_select_file_save(_("Save as"), filename);
 		g_free(filename);
 	} else
-		dest = filesel_select_file(_("Save as"), filename);
+		dest = filesel_select_file_save(_("Save as"), filename);
 	filename = NULL;
 	if (!dest) return;
 	if (is_file_exist(dest)) {

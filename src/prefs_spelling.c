@@ -92,7 +92,7 @@ static void prefs_spelling_btn_aspell_path_clicked_cb(GtkWidget *widget,
 	gchar *file_path;
 	GtkWidget *new_menu;
 
-	file_path = filesel_select_file(_("Select dictionaries location"),
+	file_path = filesel_select_file_open(_("Select dictionaries location"),
 					prefs_common.aspell_path);
 	if (file_path != NULL) {
 		gchar *tmp_path, *tmp;
