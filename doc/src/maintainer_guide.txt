@@ -1,72 +1,323 @@
-1. Files
+1. Files in src/
 
-about.c is the about dialog
-account.c is the accounts list dialog
-addressbook.c is the address book dialog
-addr_compl.c is the address completion process
-base64.c handles the base64 conversion
-compose.c is the compose dialog
-esmtp.c handles the esmtp protocol with authentification
-filesel.c is a file selection dialog
-filter.c handles the filtering process
-folder.c handles the folder structure (left panel) without any gtk
-foldersel.c / folderview.c is the left panel gtk implementation
-gtksctree.c ********* NO DESCRIPTION *************
-gtkshruler.c ********* NO DESCRIPTION *************
-gtkutils ********* NO DESCRIPTION *************
-headerview.c is the little header viewer between the list of mails and
-	     the mail viewer.
-headerwin.c is the displaying of the all the header in a window
-	    (show all headers option)
-html.c is an HTML parser
-imageview.c is the image viewer
-imap.c is the handling of the IMAP4 procotol
-import.c import from mbox dialog
-inc.c ********* NO DESCRIPTION *************
-inputdialog.c is a dialog where you can enter texts
-logwindow.c is the log window (tool menu / log window)
-main.c ********* NO DESCRIPTION *************
-mainwindow.c is the 3-paned main window
-manage_window.c ********* NO DESCRIPTION *************
-manual.c ********* NO DESCRIPTION *************
-mbox.c is the mbox importer/exporter
-md5.c / md5ify.c is the md5 processing
-md5ify.c
-menu.c
-messageview.c is the mail viewer part of the main window
-mh.c handles mh folders
-mimeview.c is the displaying of the list of the MIME part of the mail
-	   (at the top of the mail viewer when it is displayed)
-news.c is the news session handling (it uses the nntp protocol)
-nntp.c is the handling of the NNTP procotol
-passphrase.c is the dialog box to enter a password
-pop.c is the handling of the POP3 protocol
-prefs.c is a preference file parser and somes function that
-	set values from the state of a gtk component.
-prefs_account.c is preferences for account dialog
-prefs_common.c is the preference dialog
-prefs_filter.c is preferences for filter dialog
-procheader.c is the RFC822 headers parser.
-procmime.c is a MIME parser.
-procmsg.c handle the list of message files.
-progressdialog.c is a dialog box with a progress bar
-recv.c ********* NO DESCRIPTION *************
-rfc2015.c ********* NO DESCRIPTION *************
-rfc822.c ********* NO DESCRIPTION *************
-select-keys.c ********* NO DESCRIPTION *************
-send.c is the message sender (SMTP only).
-session.c ********* NO DESCRIPTION *************
-setup.c ********* NO DESCRIPTION *************
-smtp.c is the handling of the SMTP protocol.
-socket.c is some function to make it easier to use TCP/unix socket.
-sourcewindow.c ********* NO DESCRIPTION *************
-statusbar.c ********* NO DESCRIPTION *************
-stock_pixmap.c handle the pixmaps including pixmap theming
-summaryview.c is the displaying of list of the mail in a folder
+account.c
+   is the accounts list dialog
+action.c
+   *********** NO DESCRIPTION *********
+addr_compl.c
+   is the address completion process
+addrbook.c
+   management of address book
+addrcache.c
+   *********** NO DESCRIPTION *********
+addrcindex.c
+   *********** NO DESCRIPTION *********
+addrclip.c
+   *********** NO DESCRIPTION *********
+addressadd.c
+   *********** NO DESCRIPTION *********
+addressbook.c
+   is the address book dialog
+addrgather.c
+   *********** NO DESCRIPTION *********
+addrharvest.c
+   *********** NO DESCRIPTION *********
+addrindex.c
+   *********** NO DESCRIPTION *********
+addritem.c
+   *********** NO DESCRIPTION *********
+addrselect.c
+   *********** NO DESCRIPTION *********
+alertpanel.c
+   *********** NO DESCRIPTION *********
+codeconv.c
+   *********** NO DESCRIPTION *********
+compose.c
+   is the compose dialog
+crash.c
+   *********** NO DESCRIPTION *********
+customheader.c
+   function to parse custom headers configuration file
+displayheader.c
+   function to parse headers display configuration file
+editaddress.c
+   *********** NO DESCRIPTION *********
+editbook.c
+   *********** NO DESCRIPTION *********
+editgroup.c
+   *********** NO DESCRIPTION *********
+editjpilot.c
+   *********** NO DESCRIPTION *********
+editldap.c
+   *********** NO DESCRIPTION *********
+editldap_basedn.c
+   *********** NO DESCRIPTION *********
+editvcard.c
+   *********** NO DESCRIPTION *********
+enriched.c
+   *********** NO DESCRIPTION *********
+exphtmldlg.c
+   *********** NO DESCRIPTION *********
+expldifdlg.c
+   *********** NO DESCRIPTION *********
+export.c
+   *********** NO DESCRIPTION *********
+exporthtml.c
+   *********** NO DESCRIPTION *********
+exportldif.c
+   *********** NO DESCRIPTION *********
+filtering.c
+   handles the filtering process and function for filtering data structure
+folder.c
+   handles the folder structure (left panel) without any gtk
+folder_item_prefs.c
+   *********** NO DESCRIPTION *********
+foldersel.c
+   *********** NO DESCRIPTION *********
+folderview.c
+   is the left panel gtk implementation
+grouplistdialog.c
+   This is the newsgroup selection dialog box
+headerview.c
+   is the little header viewer between the list of mails and
+   the mail viewer.html.c
+imap.c
+   is the handling of the IMAP4 procotol
+import.c
+   import from mbox dialog
+importldif.c
+   *********** NO DESCRIPTION *********
+importmutt.c
+   *********** NO DESCRIPTION *********
+importpine.c
+   *********** NO DESCRIPTION *********
+inc.c
+   retrievement of POP3 or mbox accounts
+inputdialog.c
+   This is a dialog for the user to type something.
+jpilot.c
+   *********** NO DESCRIPTION *********
+ldapctrl.c
+   *********** NO DESCRIPTION *********
+ldapquery.c
+   *********** NO DESCRIPTION *********
+ldapserver.c
+   *********** NO DESCRIPTION *********
+ldaputil.c
+   *********** NO DESCRIPTION *********
+ldif.c
+   *********** NO DESCRIPTION *********
+logwindow.c
+   is the log window (tool menu / log window)
+main.c
+   is the main program entry of Sylpheed
+mainwindow.c
+   is the 3-paned main window
+manual.c
+   *********** NO DESCRIPTION *********
+matcher.c
+    this is some function to match the messages, to handle data structure
+    of matcher/filtering/scoring system or to convert data structures
+    to string.
+matcher_parser_lex.l
+    this is the lexer used in the parse operation of the configuration files
+    of the matcher/filtering/scoring system.
+matcher_parser_parse.y
+    this is the parser of the configuration files of
+    the matcher/filtering/scoring system.
+mbox.c
+   is the mbox importer/exporter
+mbox_folder.c
+   is the mbox folder support
+message_search.c
+   *********** NO DESCRIPTION *********
+messageview.c
+   is the mail viewer part of the main window
+mh.c
+   handles mh folders
+mimeview.c
+   is the displaying of the list of the MIME part of the mail
+   (at the top of the mail viewer when it is displayed)
+msgcache.c
+   *********** NO DESCRIPTION *********
+mutt.c
+   *********** NO DESCRIPTION *********
+news.c
+   is the news session handling (it uses the nntp protocol)
+noticeview.c
+   *********** NO DESCRIPTION *********
+passphrase.c
+   *********** NO DESCRIPTION *********
+pine.c
+   *********** NO DESCRIPTION *********
+pop.c
+   *********** NO DESCRIPTION *********
+prefs_account.c
+   is preferences for account dialog
+prefs_actions.c
+   is preferences for action dialog
+prefs_common.c
+   is the preferences dialog
+prefs_customheader.c
+   is the preferences dialog for custom headers
+prefs_display_header.c
+   is the preferences dialog for headers display
+prefs_filtering.c
+   is preferences for filtering system dialog
+prefs_filtering_action.c
+   let the user define the actions for a filtering rule
+prefs_folder_item.c
+   is the preference dialog for a folder item
+prefs_gtk.c
+   *********** NO DESCRIPTION *********
+prefs_matcher.c
+   let the user define the condition for a filtering rule or a scoring rule
+prefs_scoring.c
+   is preferences for scoring system dialog
+prefs_summary_column.c
+   *********** NO DESCRIPTION *********
+prefs_template.c
+   *********** NO DESCRIPTION *********
+prefs_toolbar.c
+   *********** NO DESCRIPTION *********
+procheader.c
+   is the RFC822 headers parser.
+procmime.c
+   is a MIME parser.
+procmsg.c
+   handle the list of message files.
+progressdialog.c
+   is a dialog box with a progress bar
+quote_fmt.c
+   is the quotation system for forward or reply
+quote_fmt_lex.l
+   is the lexer for the configuration of the quotation system
+quote_fmt_parse.y
+   is the parser for the configuration of the quotation system
+recv.c
+   This will receive some data from a file descriptor and write
+   them to a file.
+rfc2015.c
+   GPG support
+scoring.c
+   handles the scoring process and function for scoring data structure
+select-keys.c
+   *********** NO DESCRIPTION *********
+send_message.c
+   message sending to SMTP or through sendmail command.
+setup.c
+   *********** NO DESCRIPTION *********
+sigstatus.c
+   *********** NO DESCRIPTION *********
+simple-gettext.c
+   *********** NO DESCRIPTION *********
+sourcewindow.c
+   Displays the source of the messages.
+ssl_manager.c
+   *********** NO DESCRIPTION *********
+statusbar.c
+   *********** NO DESCRIPTION *********
+stock_pixmap.c
+   handle the pixmaps including pixmap theming
+string_match.c
+   *********** NO DESCRIPTION *********
+summary_search.c
+   *********** NO DESCRIPTION *********
+summaryview.c
+   is the displaying of list of the mail in a folder
 	      (up/right in the main window).
-textview.c is the mail (without MIME part) displaying of the
-	   mail viewer.
-unmime.c ********* NO DESCRIPTION *************
-utils.c ********* NO DESCRIPTION *************
-uuencode.c ********* NO DESCRIPTION *************
-xml.c ********* NO DESCRIPTION *************
+syldap.c
+   *********** NO DESCRIPTION *********
+textview.c
+   is the mail (without MIME part) displaying of the
+   mail viewer.
+toolbar.c
+   *********** NO DESCRIPTION *********
+undo.c
+   *********** NO DESCRIPTION *********
+unmime.c
+   *********** NO DESCRIPTION *********
+vcard.c
+   *********** NO DESCRIPTION *********
+
+
+2. Files in common/
+
+base64.c
+   handles the base64 conversion
+hooks.c
+   *********** NO DESCRIPTION *********
+log.c
+   *********** NO DESCRIPTION *********
+md5.c
+   This is MD5 calculation
+mgutils.c
+   *********** NO DESCRIPTION *********
+nntp.c
+  is the handling of the NNTP procotol
+passcrypt.c
+  encoding of the password in the configuration files.
+plugin.c
+   *********** NO DESCRIPTION *********
+prefs.c
+   is a preference file parser.
+quoted-printable.c
+   handle quoted-printable conversion
+session.c
+   This is network connection.
+smtp.c
+   handles the SMTP and ESMTP protocol with authentification
+socket.c
+   is some function to make it easier to use TCP/unix socket.
+ssl.c
+   *********** NO DESCRIPTION *********
+ssl_certificate.c
+   *********** NO DESCRIPTION *********
+stringtable.c
+   *********** NO DESCRIPTION *********
+sylpheed.c
+   *********** NO DESCRIPTION *********
+template.c
+   *********** NO DESCRIPTION *********
+utils.c
+   *********** NO DESCRIPTION *********
+uuencode.c
+   UU encoder
+xml.c
+   XML parser
+xmlprops.c
+   *********** NO DESCRIPTION *********
+
+
+3. Files in gtk/
+
+about.c
+   this is the about dialog
+colorlabel.c
+   *********** NO DESCRIPTION *********
+description_window.c
+   *********** NO DESCRIPTION *********
+filesel.c
+   This is a file selection dialog
+gtkaspell.c
+   *********** NO DESCRIPTION *********
+gtksctree.c
+   This is a modified GtkCTree.
+gtkshruler.c
+   *********** NO DESCRIPTION *********
+gtkstext.c
+   This is a modified GtkText.
+gtkutils.c
+   *********** NO DESCRIPTION *********
+gtkvscrollbutton.c
+   *********** NO DESCRIPTION *********
+manage_window.c
+   *********** NO DESCRIPTION *********
+menu.c
+   *********** NO DESCRIPTION *********
+pluginwindow.c
+   *********** NO DESCRIPTION *********
+prefswindow.c
+   *********** NO DESCRIPTION *********
+sslcertwindow.c
+   *********** NO DESCRIPTION *********
