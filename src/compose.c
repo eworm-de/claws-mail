@@ -6279,7 +6279,6 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	Compose *compose = (Compose *)data;
 	AlertValue val;
-	gchar *tmp = NULL;
 	
 	if (compose->exteditor_tag != -1) {
 		if (!compose_ext_editor_kill(compose))
