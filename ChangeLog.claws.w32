@@ -1,3 +1,8 @@
+2005-01-29 [thorsten]	1.0.0cvs9.3
+
+	* src/common/socket.c
+		fix: resource leak (open socket) after failed connections
+
 2005-01-29 [thorsten]	1.0.0cvs9.2
 
 	* src/action.c

@@ -303,13 +303,13 @@ gint fd_open_lock_service(const gushort port)
 
 	if (bind(sock, (struct sockaddr *)&sin, sizeof(sin)) < 0) {
 		perror("bind");
-		close(sock);
+		closesocket(sock);
 		return -1;
 	}
 
 	if (listen(sock, 1) < 0) {
 		perror("listen");
-		close(sock);
+		closesocket(sock);
 		return -1;
 	}
 
@@ -692,7 +692,11 @@ static gint sock_connect_by_getaddrinfo(const gchar *hostname, gushort	port)
 			(sock, ai->ai_addr, ai->ai_addrlen, io_timeout) == 0)
 			break;
 
+#ifdef WIN32
+		closesocket(sock);
+#else
 		close(sock);
+#endif
 	}
 
 	if (res != NULL)
@@ -753,7 +757,11 @@ SockInfo *sock_connect(const gchar *hostname, gushort port)
 
 	if (sock_connect_by_hostname(sock, hostname, port) < 0) {
 		if (errno != 0) perror("connect");
+#ifdef WIN32
+		closesocket(sock);
+#else
 		close(sock);
+#endif
 		return NULL;
 	}
 #endif /* INET6 */
@@ -797,13 +805,21 @@ static gboolean sock_connect_async_cb(GIOChannel *source,
 	len = sizeof(val);
 	if (getsockopt(fd, SOL_SOCKET, SO_ERROR, &val, &len) < 0) {
 		perror("getsockopt");
+#ifdef WIN32
+		closesocket(fd);
+#else
 		close(fd);
+#endif
 		sock_connect_address_list_async(conn_data);
 		return FALSE;
 	}
 
 	if (val != 0) {
+#ifdef WIN32
+		closesocket(fd);
+#else
 		close(fd);
+#endif
 		sock_connect_address_list_async(conn_data);
 		return FALSE;
 	}
@@ -926,7 +942,11 @@ static gint sock_connect_address_list_async(SockConnectData *conn_data)
 				break;
 			} else {
 				perror("connect");
+#ifdef WIN32
+				closesocket(sock);
+#else
 				close(sock);
+#endif
 			}
 		} else
 			break;
