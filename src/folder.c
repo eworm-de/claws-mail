@@ -956,12 +956,11 @@ gint folder_item_scan(FolderItem *item)
 		}
 		/* Check if msginfo needs update if in cache and in folder */
 		if((folderscaninfo[i] & IN_FOLDER) && 
-		   (folderscaninfo[i] & IN_CACHE) &&
-		   (folder->is_msg_changed != NULL)) {
+		   (folderscaninfo[i] & IN_CACHE)) {
 			MsgInfo *msginfo;
 
 			msginfo = msgcache_get_msg(item->cache, num);
-			if(folder->is_msg_changed(folder, item, msginfo)) {
+			if(folder->is_msg_changed && folder->is_msg_changed(folder, item, msginfo)) {
 				MsgInfo *newmsginfo;
 
 				msgcache_remove_msg(item->cache, msginfo->msgnum);
