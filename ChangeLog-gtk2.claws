@@ -1,3 +1,10 @@
+2005-02-27 [paul]	1.0.1cvs20.1
+
+	* ChangeLog.claws
+	* configure.ac
+	* src/messageview.c
+		sync with HEAD
+
 2005-02-27 [colin]	1.0.1cvs19.4
 
 	* src/procheader.c

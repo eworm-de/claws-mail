@@ -294,7 +294,7 @@ static GtkItemFactoryEntry msgview_entries[] =
 					NULL, create_filter_cb, FILTER_BY_TO, NULL},
 	{N_("/_Tools/_Create filter rule/by _Subject"),
 					NULL, create_filter_cb, FILTER_BY_SUBJECT, NULL},
-	{N_("/_Tools/Create processing rule/"),
+	{N_("/_Tools/Create processing rule"),
 					NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/Create processing rule/_Automatically"),
 					NULL, create_processing_cb, FILTER_BY_AUTO, NULL},

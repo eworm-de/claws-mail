@@ -1,3 +1,9 @@
+2005-02-27 [paul]	1.0.1cvs20
+
+	* src/messageview.c
+		fix crash-causing typo. spotted by
+		Ralgh Young 
+
 2005-02-25 [paul]	1.0.1cvs19
 
 	* src/prefs_account.c
