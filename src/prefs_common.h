@@ -66,6 +66,9 @@ struct _PrefsCommon
 	/* Display */
 	gchar *widgetfont;
 	gchar *textfont;
+	gchar *smallfont;
+	gchar *boldfont;
+	gchar *normalfont;
 	gboolean display_folder_unread;
 	ToolbarStyle toolbar_style;
 	gboolean show_statusbar;

@@ -90,11 +90,17 @@
 #define FOLDER_SPACING			4
 #define COLOR_DIM			35000
 
+#if 0
 #define NORMAL_FONT	"-*-helvetica-medium-r-normal--12-*," \
 			"-*-*-medium-r-normal--12-*-*-*-*-*-*-*,*"
 #define BOLD_FONT	"-*-helvetica-bold-r-normal--12-*," \
 			"-*-*-bold-r-normal--12-*-*-*-*-*-*-*,*"
 #define SMALL_FONT	"-*-helvetica-medium-r-normal--10-*," \
 			"-*-*-medium-r-normal--10-*-*-*-*-*-*-*,*"
+#else
+#define NORMAL_FONT prefs_common.normalfont
+#define BOLD_FONT   prefs_common.boldfont
+#define SMALL_FONT	prefs_common.smallfont
+#endif
 
 #endif /* __DEFS_H__ */

@@ -38,6 +38,7 @@
 #include "procmsg.h"
 #include "codeconv.h"
 #include "utils.h"
+#include "prefs_common.h"
 
 static GdkFont *normalfont;
 static GdkFont *boldfont;
