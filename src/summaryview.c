@@ -3047,9 +3047,12 @@ void summary_delete(SummaryView *summaryview)
 				 FALSE);
 	}
 
-	if (prefs_common.immediate_exec || item->stype == F_TRASH)
+	if (prefs_common.immediate_exec || item->stype == F_TRASH) {
 		summary_execute(summaryview);
-	else
+		/* after deleting, the anchor may be at an invalid row
+		 * so reset it to the node we found earlier */
+		gtk_sctree_set_anchor_row(GTK_SCTREE(ctree), node);
+	} else
 		summary_status_show(summaryview);
 }
 

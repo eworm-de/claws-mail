@@ -1,3 +1,13 @@
+2002-12-29 [alfons]	0.8.8claws20
+
+	* src/summaryview.c
+		set gtksctree's anchor correct (immediate execute
+		changes the tree's layout, and anchor points at 
+		the incorrect row). fixes "[ 657233 ] multiple msg 
+		delete sometimes off by 1".
+		we probably have to look for more tree layout /
+		anchor glitches.
+
 2002-12-29 [paul]	0.8.8claws19
 
 	* src/summaryview.c
