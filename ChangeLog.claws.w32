@@ -1,3 +1,13 @@
+2003-04-13 [thorsten]	0.8.11claws88-1
+
+	* sylpheed-128x128.png
+	  sylpheed-64x64.png
+		fix: readded as binary
+	* win32/sylpheed.ico
+	  win32/sylpheed-256.ico	*** NEW FILE ***
+	  	add: hicolor icon
+		(submitted by Lim Chee Aun)
+
 2003-04-13 [thorsten]	0.8.11claws85-1
 
 	* src/addrbook.c
