@@ -1,3 +1,10 @@
+2002-01-11 [alfons]	0.6.6claws50
+
+	* src/import.c
+		use claws' semantics for getting folder item when
+		importing an mbox file into a folder 
+		(submitted by Dale P. Smith)
+
 2002-01-11 [christoph]	0.6.6claws49
 
 	* src/prefs.h

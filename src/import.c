@@ -95,7 +95,7 @@ gint import_mbox(FolderItem *default_dest)
 			if (!destdir || !*destdir) {
 				dest = folder_find_item_from_path(INBOX_DIR);
 			} else
-				dest = folder_find_item_from_path(destdir);
+				dest = folder_find_item_from_identifier(destdir);
 
 			if (!dest) {
 				g_warning("Can't find the folder.\n");
@@ -226,10 +226,14 @@ static void import_filesel_cb(GtkWidget *widget, gpointer data)
 static void import_destsel_cb(GtkWidget *widget, gpointer data)
 {
 	FolderItem *dest;
+	gchar *path;
 
 	dest = foldersel_folder_sel(NULL, NULL);
-	if (dest && dest->path)
-		gtk_entry_set_text(GTK_ENTRY(dest_entry), dest->path);
+	if (!dest)
+		 return;
+	path = folder_item_get_identifier(dest);
+	gtk_entry_set_text(GTK_ENTRY(dest_entry), path);
+	g_free(path);
 }
 
 static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data)
