@@ -158,6 +158,7 @@ void procmime_mimeinfo_replace(MimeInfo *old, MimeInfo *new)
 MimeInfo *procmime_mimeinfo_parent(MimeInfo *mimeinfo)
 {
 	g_return_val_if_fail(mimeinfo != NULL, NULL);
+	g_return_val_if_fail(mimeinfo->node != NULL, NULL);
 
 	if (mimeinfo->node->parent == NULL)
 		return NULL;

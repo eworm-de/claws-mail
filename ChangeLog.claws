@@ -1,3 +1,9 @@
+2004-01-25 [alfons]	0.9.8claws51
+
+	* src/procmime.c
+		add NULL pointer check for mimeinfo->node in
+		procmime_mimeinfo_parent()
+
 2004-01-25 [darko]	0.9.8claws50
 
 	* src/compose.c
