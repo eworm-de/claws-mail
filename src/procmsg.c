@@ -22,6 +22,7 @@
 #include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include "intl.h"
 #include "main.h"
@@ -457,20 +458,21 @@ gboolean procmsg_msg_exist(MsgInfo *msginfo)
 void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 				PrefsFilterType type)
 {
-	static HeaderEntry hentry[] = {{"X-BeenThere:",    NULL, FALSE},
-				       {"X-ML-Name:",      NULL, FALSE},
-				       {"X-List:",         NULL, FALSE},
-				       {"X-Mailing-list:", NULL, FALSE},
-				       {"List-Id:",        NULL, FALSE},
-				       {NULL,              NULL, FALSE}};
-
+	static HeaderEntry hentry[] = {{"X-BeenThere:",    NULL, TRUE},
+				       {"X-ML-Name:",      NULL, TRUE},
+				       {"X-List:",         NULL, TRUE},
+				       {"X-Mailing-list:", NULL, TRUE},
+				       {"List-Id:",        NULL, TRUE},
+				       {"X-Sequence:",	   NULL, TRUE},
+				       {NULL,		   NULL, FALSE}};
 	enum
 	{
 		H_X_BEENTHERE	 = 0,
 		H_X_ML_NAME      = 1,
 		H_X_LIST         = 2,
 		H_X_MAILING_LIST = 3,
-		H_LIST_ID	 = 4
+		H_LIST_ID	 = 4,
+		H_X_SEQUENCE	 = 5
 	};
 
 	FILE *fp;
@@ -491,30 +493,44 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 		procheader_get_header_fields(fp, hentry);
 		fclose(fp);
 
+#define SET_FILTER_KEY(hstr, idx)	\
+{					\
+	*header = g_strdup(hstr);	\
+	*key = hentry[idx].body;	\
+	hentry[idx].body = NULL;	\
+}
+
 		if (hentry[H_X_BEENTHERE].body != NULL) {
-			*header = g_strdup("header \"X-BeenThere\"");
-			*key = hentry[H_X_BEENTHERE].body;
-			hentry[H_X_BEENTHERE].body = NULL;
+			SET_FILTER_KEY("header \"X-BeenThere\"", H_X_BEENTHERE);
 		} else if (hentry[H_X_ML_NAME].body != NULL) {
-			*header = g_strdup("header \"X-ML-Name\"");
-			*key = hentry[H_X_ML_NAME].body;
-			hentry[H_X_ML_NAME].body = NULL;
+			SET_FILTER_KEY("header \"X-ML-Name\"", H_X_ML_NAME);
 		} else if (hentry[H_X_LIST].body != NULL) {
-			*header = g_strdup("header \"X-List\"");
-			*key = hentry[H_X_LIST].body;
-			hentry[H_X_LIST].body = NULL;
+			SET_FILTER_KEY("header \"X-List\"", H_X_LIST);
 		} else if (hentry[H_X_MAILING_LIST].body != NULL) {
-			*header = g_strdup("header \"X-Mailing-List\"");
-			*key = hentry[H_X_MAILING_LIST].body;
-			hentry[H_X_MAILING_LIST].body = NULL;
+			SET_FILTER_KEY("header \"X-Mailing-List\"", H_X_MAILING_LIST);
 		} else if (hentry[H_LIST_ID].body != NULL) {
-			*header = g_strdup("header \"List-Id\"");
-			*key = hentry[H_LIST_ID].body;
-			hentry[H_LIST_ID].body = NULL;
+			SET_FILTER_KEY("header \"List-Id\"", H_LIST_ID);
+			extract_list_id_str(*key);
+		} else if (hentry[H_X_SEQUENCE].body != NULL) {
+			gchar *p;
+
+			SET_FILTER_KEY("X-Sequence", H_X_SEQUENCE);
+			p = *key;
+			while (*p != '\0') {
+				while (*p != '\0' && !isspace(*p)) p++;
+				while (isspace(*p)) p++;
+				if (isdigit(*p)) {
+					*p = '\0';
+					break;
+				}
+			}
+			g_strstrip(*key);
 		} else if (msginfo->subject) {
 			*header = g_strdup("subject");
 			*key = g_strdup(msginfo->subject);
 		}
+
+#undef SET_FILTER_KEY
 
 		g_free(hentry[H_X_BEENTHERE].body);
 		hentry[H_X_BEENTHERE].body = NULL;

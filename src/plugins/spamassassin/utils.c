@@ -33,6 +33,8 @@
 /* Aug 14, 2002 bj: moved these to utils.c */
 /* Jan 13, 2003 ym: added timeout functionality */
 
+/* -------------------------------------------------------------------------- */
+
 typedef void    sigfunc(int);   /* for signal handlers */
 
 #ifdef WIN32
@@ -57,8 +59,9 @@ static void catch_alrm(int x) {
   /* dummy */
 }
 
-ssize_t timeout_read(ssize_t (*reader)(int d, void *buf, size_t nbytes),
-                     int fd, void *buf, size_t nbytes) {
+ssize_t
+fd_timeout_read (int fd, void *buf, size_t nbytes)
+{
   ssize_t nred;
   sigfunc* sig;
 
@@ -69,7 +72,7 @@ ssize_t timeout_read(ssize_t (*reader)(int d, void *buf, size_t nbytes),
   }
 #endif
   do {
-    nred = reader(fd, buf, nbytes);
+    nred = read (fd, buf, nbytes);
   } while(nred < 0 && errno == EAGAIN);
 
   if(nred < 0 && errno == EINTR)
@@ -88,14 +91,53 @@ ssize_t timeout_read(ssize_t (*reader)(int d, void *buf, size_t nbytes),
 }
 
 int
+ssl_timeout_read (SSL *ssl, void *buf, int nbytes)
+{
+  int nred;
+  sigfunc* sig;
+
+#ifndef WIN32
+  sig = sig_catch(SIGALRM, catch_alrm);
+  if (libspamc_timeout > 0) {
+    alarm(libspamc_timeout);
+  }
+#endif
+
+  do {
+#ifdef SPAMC_SSL
+    nred = SSL_read (ssl, buf, nbytes);
+#else
+    nred = 0;			/* never used */
+#endif
+  } while(nred < 0 && errno == EAGAIN);
+
+  if(nred < 0 && errno == EINTR)
+    errno = ETIMEDOUT;
+
+#ifndef WIN32
+  if (libspamc_timeout > 0) {
+    alarm(0);
+  }
+#endif
+
+  /* restore old signal handler */
+#ifndef WIN32
+  sig_catch(SIGALRM, sig);
+#endif
+
+  return nred;
+}
+
+/* -------------------------------------------------------------------------- */
+
+int
 full_read (int fd, unsigned char *buf, int min, int len)
 {
   int total;
   int thistime;
 
-
   for (total = 0; total < min; ) {
-    thistime = timeout_read (read, fd, buf+total, len-total);
+    thistime = fd_timeout_read (fd, buf+total, len-total);
 
     if (thistime < 0) {
       return -1;

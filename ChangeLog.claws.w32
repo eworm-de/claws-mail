@@ -1,3 +1,9 @@
+2003-04-18 [thorsten]	0.8.11claws102-1
+
+	* src/actions.c
+		fixes: pass input to action ('>'), loss of output (didn't
+		wait for atdout AND stderr to close)
+
 2003-04-18 [thorsten]	0.8.11claws88-2
 
 	* src/folder.c

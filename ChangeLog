@@ -1,3 +1,74 @@
+2003-04-18
+
+	* src/procmsg.c: procmsg_get_filter_keyword(): added X-Sequence to
+	  auto-detected headers.
+	* src/action.[ch]
+	  src/prefs_actions.c
+	  src/compose.c
+	  src/mainwindow.c: modified function names.
+	  get_user_string(): Use input_dialog() instead of its own
+	  implementation.
+
+2003-04-17
+
+	* src/codeconv.[ch]: conv_encode_header(): don't include '(' and ')'
+	  in encoded strings if addr_field is TRUE.
+	* src/compose.c: compose_convert_header(): added a flag 'addr_field'.
+
+2003-04-16
+
+	* src/prefs_actions.[ch]: separated action execution routine into
+	  action.[ch].
+
+2003-04-16
+
+	* src/prefs_actions.c: minor code cleanup.
+
+2003-04-16
+
+	* src/codeconv.[ch]: conv_iconv_strdup(): fixed the handling of
+	  EILSEQ.
+
+2003-04-16
+
+	* src/inc.c:
+	  inc_recv_data_progressive()
+	  inc_recv_data_finished()
+	  inc_recv_message()
+	  send_recv_message()
+	  send_send_data_progressive()
+	  send_send_data_finished(): added assertion.
+
+2003-04-16
+
+	* src/codeconv.[ch]: conv_iconv_strdup(): fixed potential memory
+	  corruption bug.
+
+2003-04-16
+
+	* src/codeconv.[ch]: conv_iconv_strdup(): don't include nul character
+	  in source buffer since it messed up some encoding conversion (like
+	  UTF-7).
+
+2003-04-15
+
+	* src/procmsg.c: procmsg_get_filter_keyword(): unfold headers and
+	  extract ID from List-Id header.
+	* src/utils.[ch]: extract_one_parenthesis_with_skip_quote(): removed.
+	  extract_list_id_str(): extract ID string from List-Id header.
+
+2003-04-15
+
+	* src/prefs_actions.c: merged from the claws branch. Fixes several
+	  bugs and adds some features.
+
+2003-04-14
+
+	* src/compose.c: compose_parse_header(): fixed a bug that unnecessary
+	  linebreaks were included on reediting.
+	* src/imap.c
+	  src/pop.c: fixed typos: 'occured'.
+
 2003-04-11
 
 	* src/compose.[ch]: implemented auto signature replacement on

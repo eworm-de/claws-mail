@@ -834,6 +834,7 @@ gchar *conv_iconv_strdup(const gchar *inbuf,
 	gint out_size;
 	gint out_left;
 	gint n_conv;
+	gint len;
 
 	if (!src_code)
 		src_code = conv_get_outgoing_charset_str();
@@ -853,40 +854,58 @@ gchar *conv_iconv_strdup(const gchar *inbuf,
 		return NULL;
 
 	inbuf_p = inbuf;
-	in_size = strlen(inbuf) + 1;
+	in_size = strlen(inbuf);
 	in_left = in_size;
-	out_size = in_size * 2;
+	out_size = (in_size + 1) * 2;
 	outbuf = g_malloc(out_size);
 	outbuf_p = outbuf;
 	out_left = out_size;
+
+#define EXPAND_BUF()				\
+{						\
+	len = outbuf_p - outbuf;		\
+	out_size *= 2;				\
+	outbuf = g_realloc(outbuf, out_size);	\
+	outbuf_p = outbuf + len;		\
+	out_left = out_size - len;		\
+}
 
 	while ((n_conv = iconv(cd, (ICONV_CONST gchar **)&inbuf_p, &in_left,
 			       &outbuf_p, &out_left)) < 0) {
 		if (EILSEQ == errno) {
 			inbuf_p++;
 			in_left--;
+			if (out_left == 0) {
+				EXPAND_BUF();
+			}
 			*outbuf_p++ = SUBST_CHAR;
 			out_left--;
 		} else if (EINVAL == errno) {
-			*outbuf_p = '\0';
 			break;
 		} else if (E2BIG == errno) {
-			out_size *= 2;
-			outbuf = g_realloc(outbuf, out_size);
-			inbuf_p = inbuf;
-			in_left = in_size;
-			outbuf_p = outbuf;
-			out_left = out_size;
+			EXPAND_BUF();
 		} else {
 			g_warning("conv_iconv_strdup(): %s\n",
 				  g_strerror(errno));
-			*outbuf_p = '\0';
 			break;
 		}
 	}
 
-	iconv(cd, NULL, NULL, &outbuf_p, &out_left);
-	outbuf = g_realloc(outbuf, strlen(outbuf) + 1);
+	while ((n_conv = iconv(cd, NULL, NULL, &outbuf_p, &out_left)) < 0) {
+		if (E2BIG == errno) {
+			EXPAND_BUF();
+		} else {
+			g_warning("conv_iconv_strdup(): %s\n",
+				  g_strerror(errno));
+			break;
+		}
+	}
+
+#undef EXPAND_BUF
+
+	len = outbuf_p - outbuf;
+	outbuf = g_realloc(outbuf, len + 1);
+	outbuf[len] = '\0';
 
 	iconv_close(cd);
 
@@ -901,6 +920,7 @@ static const struct {
 	{C_US_ASCII,		CS_US_ASCII},
 	{C_US_ASCII,		CS_ANSI_X3_4_1968},
 	{C_UTF_8,		CS_UTF_8},
+	{C_UTF_7,		CS_UTF_7},
 	{C_ISO_8859_1,		CS_ISO_8859_1},
 	{C_ISO_8859_2,		CS_ISO_8859_2},
 	{C_ISO_8859_3,		CS_ISO_8859_3},
@@ -1384,6 +1404,7 @@ gboolean conv_is_multibyte_encoding(CharSet encoding)
 	case C_GB2312:
 	case C_BIG5:
 	case C_UTF_8:
+	case C_UTF_7:
 		return TRUE;
 	default:
 		return FALSE;
@@ -1493,7 +1514,7 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 }
 
 void conv_encode_header(gchar *dest, gint len, const gchar *src,
-			gint header_len)
+			gint header_len, gboolean addr_field)
 {
 	const gchar *cur_encoding;
 	const gchar *out_encoding;
@@ -1549,6 +1570,13 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 			continue;
 		}
 
+		/* don't include parentheses in encoded strings */
+		if (addr_field && (*srcp == '(' || *srcp == ')')) {
+			LBREAK_IF_REQUIRED(left < 2, FALSE);
+			*destp++ = *srcp++;
+			left--;
+		}
+
 		while (1) {
 			gint mb_len = 0;
 			gint cur_len = 0;
@@ -1563,6 +1591,10 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 
 			while (*p != '\0') {
 				if (isspace(*p) && !is_next_nonascii(p + 1))
+					break;
+				/* don't include parentheses in encoded
+				   strings */
+				if (addr_field && (*p == '(' || *p == ')'))
 					break;
 
 				if (MB_CUR_MAX > 1) {

@@ -74,12 +74,16 @@ struct _PrefsCommon
  	gboolean newmail_notify_auto;
  	gboolean newmail_notify_manu;
  	gchar   *newmail_notify_cmd;
+	RecvDialogMode recv_dialog_mode;
+	gboolean close_recv_dialog;
+	gboolean no_recv_err_panel;
 
 	/* Send */
 	gboolean use_extsend;
 	gchar *extsend_cmd;
 	gboolean savemsg;
 	gboolean queue_msg;
+	SendDialogMode send_dialog_mode;
 	gchar *outgoing_charset;
 	TransferEncodingMethod encoding_method;
 
@@ -114,7 +118,7 @@ struct _PrefsCommon
 	gboolean enable_aspell;
 	gchar *aspell_path;
 	gchar *dictionary;
-	gint misspelled_col;
+	gulong misspelled_col;
 	gint aspell_sugmode;
 	gboolean check_while_typing;
 	gboolean use_alternate;
@@ -197,12 +201,12 @@ struct _PrefsCommon
 
 	/* Message */
 	gboolean enable_color;
-	gint quote_level1_col;
-	gint quote_level2_col;
-	gint quote_level3_col;
-	gint uri_col;
-	gint tgt_folder_col;
-	gint signature_col;
+	gulong quote_level1_col;
+	gulong quote_level2_col;
+	gulong quote_level3_col;
+	gulong uri_col;
+	gulong tgt_folder_col;
+	gulong signature_col;
 	gboolean recycle_quote_colors;
 	gboolean conv_mb_alnum;
 	gboolean display_header_pane;
@@ -246,10 +250,6 @@ struct _PrefsCommon
 	gboolean mark_as_read_on_new_window;
 	gboolean open_inbox_on_inc;
 	gboolean immediate_exec;
-	RecvDialogMode recv_dialog_mode;
-	SendDialogMode send_dialog_mode;
-	gboolean close_recv_dialog;
-	gboolean no_recv_err_panel;
 	NextUnreadMsgDialogShow next_unread_msg_dialog;
 	gboolean add_address_by_click;
 	gchar *pixmap_theme_path;
@@ -281,7 +281,7 @@ struct _PrefsCommon
 	gboolean work_offline;
 	
 	gint summary_quicksearch_type;
-	gint color_new;
+	gulong color_new;
 };
 
 extern PrefsCommon prefs_common;

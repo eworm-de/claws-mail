@@ -1,3 +1,97 @@
+2003-04-18 [oliver]	0.8.11claws102
+
+	* src/inc.c 
+	* src/prefs_account.h
+		remove Pop3SessionType (used by selective download)
+	* src/prefs_toolbar.c
+		enable set Default Toolbar button
+
+2003-04-18 [paul]	0.8.11claws101
+
+	* sync with 0.8.11cvs29
+		see ChangeLog 2003-04-18
+
+2003-04-17 [paul]	0.8.11claws100
+
+	* src/prefs_common.[ch]
+	  src/summaryview.c
+	  	remove 'Open next message on deletion' option,
+		as the same effect can now be achieved via the
+		'Always open messages in summary when selected'
+		option.
+
+2003-04-17 [paul]	0.8.11claws99
+
+	* sync with 0.8.11cvs28
+		see ChangeLog 2003-04-17
+
+2003-04-17 [christoph]	0.8.11claws98
+
+	* ac/spamassassin.m4
+	* src/plugins/spamassassin/libspamc.[ch]
+	* src/plugins/spamassassin/utils.[ch]
+		sync libspamc with SpamAssassin project
+
+2003-04-17 [christoph]	0.8.11claws97
+
+	* src/common/socket.h
+	* src/gtk/sslcertwindow.h
+		rename old USE_SSL to USE_OPENSSL
+
+2003-04-17 [paul]	0.8.11claws96
+
+	* src/prefs_common.h
+		use gulong for P_COLOR so that it compiles/runs on
+		64-bit systems. Patch submitted by James Noyes
+		<jnoyes-claws@retrogeeks.com>
+		
+	* po/de.po
+		updated by Jens
+
+2003-04-17 [paul]	0.8.11claws95
+
+	* sync with 0.8.11cvs27
+		see ChangeLog 2003-04-16
+
+2003-04-15 [paul]	0.8.11claws94
+
+	* src/prefs_common.[ch]
+		rearrange to stop the window getting too long:
+			move Receive dialog stuff to Receive tab
+			move Send dialog to Send tab
+			remove Dialogs frame
+		rename 'Open messages in summary with cursor keys' to
+		'Always open messages in summary when selected', as its
+		more appropriate
+
+2003-04-15 [paul]	0.8.11claws93
+
+	* src/prefs_common.[ch]
+	  src/summaryview.c
+	  	add new option '/Interface/Open next message on deletion'
+
+2003-04-15 [paul]	0.8.11claws92
+
+	* src/summaryview.[ch]
+		add /Mark/Lock and /Mark/Unlock to the pop-up
+		menu. Patch submitted by Ivan Francolin Martinez
+		<ivanfm@users.sourceforge.net>
+
+2003-04-15 [paul]	0.8.11claws91
+
+	* sync with 0.8.11cvs24
+		see ChangeLog 2003-04-15
+
+2003-04-14 [jens]	0.8.11claws90
+
+	* updated German translation and some corrections from
+		Roland Bless <bless@tm.uka.de>
+
+2003-04-14 [paul]	0.8.11claws89
+
+	* sync with 0.8.11cvs22
+		see ChangeLog 2003-04-14
+
 2003-04-13 [paul]	0.8.11claws88
 
 	* src/plugins/clamav/clamav_plugin.c

@@ -1523,7 +1523,6 @@ gboolean textview_search_string(TextView *textview, const gchar *str,
 {
 	GtkSText *text = GTK_STEXT(textview->text);
 	gint pos;
-	wchar_t *wcs;
 	gint len;
 #ifdef WIN32
 	gchar *p_str = g_strdup(str);

@@ -67,6 +67,7 @@
 #include "prefs_folder_item.h"
 #include "prefs_summary_column.h"
 #include "prefs_template.h"
+#include "action.h"
 #include "account.h"
 #include "addressbook.h"
 #include "logwindow.h"
@@ -991,7 +992,7 @@ MainWindow *main_window_create(SeparateType type)
 	toolbar_main_set_sensitive(mainwin);
 
 	/* create actions menu */
-	update_mainwin_actions_menu(ifactory, mainwin);
+	action_update_mainwin_menu(ifactory, mainwin);
 
 	/* attach accel groups to main window */
 #define	ADD_MENU_ACCEL_GROUP_TO_WINDOW(menu,win)	\

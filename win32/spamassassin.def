@@ -1,5 +1,6 @@
 
 EXPORTS
+	fd_timeout_read 
 	full_read 
 	full_write 
 	gpg_started 
@@ -23,4 +24,4 @@ EXPORTS
 	socketread 
 	spamassassin_get_config 
 	spamassassin_save_config 
-	timeout_read 
+	ssl_timeout_read 

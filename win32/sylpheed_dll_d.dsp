@@ -100,6 +100,10 @@ SOURCE=..\src\account.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\action.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\addr_compl.c
 # End Source File
 # Begin Source File
@@ -721,6 +725,10 @@ SOURCE=..\src\gtk\about.h
 # Begin Source File
 
 SOURCE=..\src\account.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\action.h
 # End Source File
 # Begin Source File
 

@@ -21,6 +21,9 @@ EXPORTS
 	account_set_as_default 
 	account_set_menu 
 	account_set_missing_folder 
+	action_get_type 
+	action_update_compose_menu 
+	action_update_mainwin_menu 
 	actions_execute 
 	add_history 
 	addrbook_add_address_list 
@@ -619,7 +622,7 @@ EXPORTS
 	exporthtml_set_stylesheet 
 	exporthtml_test_dir 
 	extract_address 
-	extract_one_parenthesis_with_skip_quote 
+	extract_list_id_str 
 	extract_parenthesis 
 	extract_parenthesis_with_skip_quote 
 	extract_quote 
@@ -754,7 +757,6 @@ EXPORTS
 	folderview_unselect 
 	folderview_update_item 
 	folderview_update_msg_num 
-	fork_child 
 	fromuutobits 
 	g_int_compare 
 	g_stricase_equal 
@@ -1644,6 +1646,8 @@ EXPORTS
 	summary_mark_as_unread 
 	summary_move_selected_to 
 	summary_move_to 
+	summary_msgs_lock 
+	summary_msgs_unlock 
 	summary_open_msg 
 	summary_pass_key_press_event 
 	summary_print 
@@ -1753,8 +1757,6 @@ EXPORTS
 	unlink_tempfiles 
 	unlock_mbox 
 	unmime_header 
-	update_compose_actions_menu 
-	update_mainwin_actions_menu 
 	uri_list_extract_filenames 
 	uudigit 
 	vcard_create 

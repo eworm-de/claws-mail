@@ -193,6 +193,7 @@ LIBS= \
 OBJECTS= \
 	about.o \
 	account.o \
+	action.o \
 	addr_compl.o \
 	addrbook.o \
 	addrcache.o \
@@ -503,6 +504,7 @@ clean: demo_clean spamassassin_clean spamassassin_gtk_clean
 # sylpheed
 about.o: 	about.c about.h
 account.o: 	account.c account.h
+action.o: 	action.c action.h
 addr_compl.o: 	addr_compl.c addr_compl.h
 addrbook.o: 	addrbook.c addrbook.h
 addrcache.o: 	addrcache.c addrcache.h

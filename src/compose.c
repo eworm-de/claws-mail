@@ -92,7 +92,7 @@
 #include "customheader.h"
 #include "prefs_common.h"
 #include "prefs_account.h"
-#include "prefs_actions.h"
+#include "action.h"
 #include "account.h"
 #include "filesel.h"
 #include "procheader.h"
@@ -255,7 +255,8 @@ static gint compose_write_headers		(Compose	*compose,
 static void compose_convert_header		(gchar		*dest,
 						 gint		 len,
 						 gchar		*src,
-						 gint		 header_len);
+						 gint		 header_len,
+						 gboolean	 addr_field);
 static void compose_generate_msgid		(Compose	*compose,
 						 gchar		*buf,
 						 gint		 len);
@@ -1550,11 +1551,11 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 {
 	static HeaderEntry hentry[] = {{"Reply-To:",	NULL, TRUE},
-				       {"Cc:",		NULL, FALSE},
+				       {"Cc:",		NULL, TRUE},
 				       {"References:",	NULL, FALSE},
-				       {"Bcc:",		NULL, FALSE},
-				       {"Newsgroups:",	NULL, FALSE},
-				       {"Followup-To:",	NULL, FALSE},
+				       {"Bcc:",		NULL, TRUE},
+				       {"Newsgroups:",  NULL, TRUE},
+				       {"Followup-To:", NULL, TRUE},
 				       {"List-Post:",	NULL, FALSE},
 				       {"X-Priority:",	NULL, FALSE},
 				       {NULL,		NULL, FALSE}};
@@ -3274,7 +3275,7 @@ static gint compose_redirect_write_headers_from_headerlist(Compose *compose,
 			if (str[0] != '\0') {
 				compose_convert_header
 					(buf, sizeof(buf), str,
-					strlen("Resent-To") + 2);
+					strlen("Resent-To") + 2, TRUE);
 				if (first_address) {
 					fprintf(fp, "Resent-To: ");
 					first_address = FALSE;
@@ -3310,7 +3311,7 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 	if (compose->account->name && *compose->account->name) {
 		compose_convert_header
 			(buf, sizeof(buf), compose->account->name,
-			 strlen("From: "));
+			 strlen("From: "), TRUE);
 		fprintf(fp, "Resent-From: %s <%s>\n",
 			buf, compose->account->address);
 	} else
@@ -3323,7 +3324,7 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 		g_strstrip(str);
 		if (*str != '\0') {
 			compose_convert_header(buf, sizeof(buf), str,
-					       strlen("Subject: "));
+					       strlen("Subject: "), FALSE);
 			fprintf(fp, "Subject: %s\n", buf);
 		}
 	}
@@ -3393,7 +3394,8 @@ static gint compose_redirect_write_to_file(Compose *compose, const gchar *file)
 					compose_convert_header
 						(buf, sizeof(buf),
 						 compose->account->name,
-						 strlen("From: "));
+						 strlen("From: "),
+						 FALSE);
 					fprintf(fdest, "%s <%s>",
 						buf,
 						compose->account->address);
@@ -4048,7 +4050,7 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 			fprintf(fp, "Content-Disposition: inline\n");
 		} else {
 			compose_convert_header(filename, sizeof(filename),
-					       ainfo->name, 12);
+					       ainfo->name, 12, FALSE);
 			fprintf(fp, "Content-Type: %s;\n"
 				    " name=\"%s\"\n",
 				ainfo->content_type, filename);
@@ -4121,7 +4123,8 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 			compose->to_list = address_list_append		     \
 				(compose->to_list, str);		     \
 			compose_convert_header				     \
-				(buf, sizeof(buf), str, strlen(header) + 2); \
+				(buf, sizeof(buf), str, strlen(header) + 2,  \
+				 TRUE);					     \
 			fprintf(fp, "%s: %s\n", header, buf);		     \
 		}							     \
 	}								     \
@@ -4173,7 +4176,7 @@ static gint compose_write_headers_from_headerlist(Compose *compose,
 			if (str[0] != '\0') {
 				compose_convert_header
 					(buf, sizeof(buf), str,
-					strlen(header) + 2);
+					strlen(header) + 2, TRUE);
 				if (first_address) {
 					fprintf(fp, "%s: ", header);
 					first_address = FALSE;
@@ -4238,14 +4241,14 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 
 		p_name = g_strdup(compose->account->name);
 		locale_from_utf8(&p_name);
-		compose_convert_header
-			(buf, sizeof(buf), p_name,
-			 strlen("From: "));
+			compose_convert_header
+				(buf, sizeof(buf), p_name,
+				 strlen("From: "), TRUE);
 		g_free(p_name);
 #else
 			compose_convert_header
 				(buf, sizeof(buf), compose->account->name,
-				 strlen("From: "));
+				 strlen("From: "), TRUE);
 #endif
 			QUOTE_IF_REQUIRED(name, buf);
 			fprintf(fp, "From: %s <%s>\n",
@@ -4288,7 +4291,8 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 					newsgroup_list_append
 						(compose->newsgroup_list, str);
 				compose_convert_header(buf, sizeof(buf), str,
-						       strlen("Newsgroups: "));
+						       strlen("Newsgroups: "),
+						       TRUE);
 				fprintf(fp, "Newsgroups: %s\n", buf);
 #ifdef WIN32
 				g_free(str);
@@ -4339,7 +4343,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 			locale_from_utf8(&str);
 #endif
 			compose_convert_header(buf, sizeof(buf), str,
-					       strlen("Subject: "));
+					       strlen("Subject: "), FALSE);
 			fprintf(fp, "Subject: %s\n", buf);
 #ifdef WIN32
 			g_free(str);
@@ -4377,7 +4381,8 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 				locale_from_utf8(&str);
 #endif
 				compose_convert_header(buf, sizeof(buf), str,
-						       strlen("Followup-To: "));
+						       strlen("Followup-To: "),
+						       TRUE);
 				fprintf(fp, "Followup-To: %s\n", buf);
 #ifdef WIN32
 				g_free(str);
@@ -4400,7 +4405,8 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 				locale_from_utf8(&str);
 #endif
 				compose_convert_header(buf, sizeof(buf), str,
-						       strlen("Reply-To: "));
+						       strlen("Reply-To: "),
+						       TRUE);
 				fprintf(fp, "Reply-To: %s\n", buf);
 #ifdef WIN32
 				g_free(str);
@@ -4418,13 +4424,13 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		locale_from_utf8(&p_org);
 		compose_convert_header(buf, sizeof(buf),
 				       p_org,
-				       strlen("Organization: "));
+				       strlen("Organization: "), FALSE);
 		fprintf(fp, "Organization: %s\n", buf);
 		g_free(p_org);
 #else
 		compose_convert_header(buf, sizeof(buf),
 				       compose->account->organization,
-				       strlen("Organization: "));
+				       strlen("Organization: "), FALSE);
 		fprintf(fp, "Organization: %s\n", buf);
 #endif
 	}
@@ -4473,14 +4479,14 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 				compose_convert_header
 					(buf, sizeof(buf),
 					 p_value,
-					 strlen(chdr->name) + 2);
+					 strlen(chdr->name) + 2, FALSE);
 				fprintf(fp, "%s: %s\n", chdr->name, buf);
 				g_free(p_value);
 #else
 				compose_convert_header
 					(buf, sizeof(buf),
 					 chdr->value ? chdr->value : "",
-					 strlen(chdr->name) + 2);
+					 strlen(chdr->name) + 2, FALSE);
 				fprintf(fp, "%s: %s\n", chdr->name, buf);
 #endif
 			}
@@ -4528,7 +4534,10 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		if (compose->return_receipt) {
 			if (compose->account->name
 			    && *compose->account->name) {
-				compose_convert_header(buf, sizeof(buf), compose->account->name, strlen("Disposition-Notification-To: "));
+				compose_convert_header(buf, sizeof(buf), 
+						       compose->account->name, 
+						       strlen("Disposition-Notification-To: "),
+						       TRUE);
 				fprintf(fp, "Disposition-Notification-To: %s <%s>\n", buf, compose->account->address);
 			} else
 				fprintf(fp, "Disposition-Notification-To: %s\n", compose->account->address);
@@ -4601,7 +4610,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 #undef IS_IN_CUSTOM_HEADER
 
 static void compose_convert_header(gchar *dest, gint len, gchar *src,
-				   gint header_len)
+				   gint header_len, gboolean addr_field)
 {
 	g_return_if_fail(src != NULL);
 	g_return_if_fail(dest != NULL);
@@ -4610,7 +4619,7 @@ static void compose_convert_header(gchar *dest, gint len, gchar *src,
 
 	g_strchomp(src);
 
-	conv_encode_header(dest, len, src, header_len);
+	conv_encode_header(dest, len, src, header_len, addr_field);
 }
 
 static void compose_generate_msgid(Compose *compose, gchar *buf, gint len)
@@ -5267,7 +5276,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	}
 #endif
 
-	update_compose_actions_menu(ifactory, "/Tools/Actions", compose);
+	action_update_compose_menu(ifactory, compose);
 
 
 	undostruct = undo_init(text);
@@ -5396,7 +5405,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry), prefs_common.trans_hdr ? _("Newsgroups:") : "Newsgroups:");
 
 	addressbook_set_target_compose(compose);
-	update_compose_actions_menu(ifactory, "/Tools/Actions", compose);
+	action_update_compose_menu(ifactory, compose);
 	
 	if (mode != COMPOSE_REDIRECT)
 		compose_set_template_menu(compose);

@@ -273,10 +273,6 @@ void extract_parenthesis		(gchar		*str,
 					 gchar		 op,
 					 gchar		 cl);
 
-void extract_one_parenthesis_with_skip_quote	(gchar		*str,
-						 gchar		 quote_chr,
-						 gchar		 op,
-						 gchar		 cl);
 void extract_parenthesis_with_skip_quote	(gchar		*str,
 						 gchar		 quote_chr,
 						 gchar		 op,
@@ -294,6 +290,7 @@ gchar *strrchr_with_skip_quote		(const gchar	*str,
 					 gint		 quote_chr,
 					 gint		 c);
 void extract_address			(gchar		*str);
+void extract_list_id_str		(gchar		*str);
 
 GSList *slist_concat_unique		(GSList		*first,
 					 GSList		*second);

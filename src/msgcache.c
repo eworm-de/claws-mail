@@ -363,7 +363,7 @@ static void msgcache_write_func(gpointer key, gpointer value, gpointer user_data
 {
 	MsgInfo *msginfo;
 	struct write_fps *write_fps;
-	
+
 	msginfo = (MsgInfo *)value;
 	write_fps = user_data;
 

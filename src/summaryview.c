@@ -194,6 +194,8 @@ static void summary_mark_row		(SummaryView		*summaryview,
 					 GtkCTreeNode		*row);
 static void summary_lock_row		(SummaryView		*summaryview,
 					 GtkCTreeNode		*row);
+static void summary_unlock_row		(SummaryView		*summaryview,
+					 GtkCTreeNode		*row);
 static void summary_mark_row_as_read	(SummaryView		*summaryview,
 					 GtkCTreeNode		*row);
 static void summary_mark_row_as_unread	(SummaryView		*summaryview,
@@ -432,6 +434,8 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/_Mark/Mark all read"),    NULL, summary_mark_all_read, 0, NULL},
 	{N_("/_Mark/Ignore thread"),	NULL, summary_ignore_thread, 0, NULL},
 	{N_("/_Mark/Unignore thread"),	NULL, summary_unignore_thread, 0, NULL},
+	{N_("/_Mark/Lock"),		NULL, summary_msgs_lock, 0, NULL},
+	{N_("/_Mark/Unlock"),		NULL, summary_msgs_unlock, 0, NULL},
 	{N_("/Color la_bel"),		NULL, NULL, 		0, NULL},
 
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
@@ -1314,6 +1318,8 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	menu_set_sensitive(ifactory, "/Mark/Mark all read", TRUE);
 	menu_set_sensitive(ifactory, "/Mark/Ignore thread",   TRUE);
 	menu_set_sensitive(ifactory, "/Mark/Unignore thread", TRUE);
+	menu_set_sensitive(ifactory, "/Mark/Lock", TRUE);
+	menu_set_sensitive(ifactory, "/Mark/Unlock", TRUE);
 
 	menu_set_sensitive(ifactory, "/Color label", TRUE);
 
@@ -2867,7 +2873,6 @@ static void summary_mark_row(SummaryView *summaryview, GtkCTreeNode *row)
 
 static void summary_lock_row(SummaryView *summaryview, GtkCTreeNode *row)
 {
-	/* almost verbatim summary_mark_row(); may want a menu action? */
 	gboolean changed = FALSE;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
@@ -2888,6 +2893,21 @@ static void summary_lock_row(SummaryView *summaryview, GtkCTreeNode *row)
 	procmsg_msginfo_set_flags(msginfo, MSG_LOCKED, 0);
 	summary_set_row_marks(summaryview, row);
 	debug_print("Message %d is locked\n", msginfo->msgnum);
+}
+
+static void summary_unlock_row(SummaryView *summaryview, GtkCTreeNode *row)
+{
+	gboolean changed = FALSE;
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	MsgInfo *msginfo;
+
+	msginfo = gtk_ctree_node_get_row_data(ctree, row);
+	if (!MSG_IS_LOCKED(msginfo->flags))
+		return;
+	procmsg_msginfo_set_to_folder(msginfo, NULL);
+	procmsg_msginfo_unset_flags(msginfo, MSG_LOCKED, 0);
+	summary_set_row_marks(summaryview, row);
+	debug_print("Message %d is unlocked\n", msginfo->msgnum);
 }
 
 void summary_mark(SummaryView *summaryview)
@@ -2936,6 +2956,34 @@ void summary_mark_as_read(SummaryView *summaryview)
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
 		summary_mark_row_as_read(summaryview,
 					 GTK_CTREE_NODE(cur->data));
+	folder_item_update_thaw();
+	
+	summary_status_show(summaryview);
+}
+
+void summary_msgs_lock(SummaryView *summaryview)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GList *cur;
+
+	folder_item_update_freeze();
+	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
+		summary_lock_row(summaryview,
+					 GTK_CTREE_NODE(cur->data));
+	folder_item_update_thaw();
+	
+	summary_status_show(summaryview);
+}
+
+void summary_msgs_unlock(SummaryView *summaryview)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GList *cur;
+
+	folder_item_update_freeze();
+	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
+		summary_unlock_row(summaryview,
+				   GTK_CTREE_NODE(cur->data));
 	folder_item_update_thaw();
 	
 	summary_status_show(summaryview);
@@ -3150,18 +3198,8 @@ void summary_delete(SummaryView *summaryview)
 	if (!node)
 		node = summary_find_prev_msg(summaryview, sel_last);
 
-	if (node) {
-		if (sel_last && node == gtkut_ctree_node_next(ctree, sel_last))
-			summary_step(summaryview, GTK_SCROLL_STEP_FORWARD);
-		else if (sel_last && node == GTK_CTREE_NODE_PREV(sel_last))
-			summary_step(summaryview, GTK_SCROLL_STEP_BACKWARD);
-		else
-			summary_select_node
-				(summaryview, node,
-				 messageview_is_visible(summaryview->messageview),
-				 FALSE);
-	}
-
+	summary_select_node(summaryview, node, FALSE, FALSE);
+	
 	if (prefs_common.immediate_exec || item->stype == F_TRASH) {
 		summary_execute(summaryview);
 		/* after deleting, the anchor may be at an invalid row

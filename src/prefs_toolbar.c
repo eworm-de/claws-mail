@@ -332,14 +332,12 @@ static gboolean is_duplicate(ToolbarPage *prefs_toolbar, gchar *chosen_action)
 	return FALSE;
 }
 
-#if 0
 static void prefs_toolbar_default(GtkButton *button, ToolbarPage *prefs_toolbar)
 {
 	toolbar_clear_list(prefs_toolbar->source);
 	toolbar_set_default(prefs_toolbar->source);
 	prefs_toolbar_set_displayed(prefs_toolbar);
 }
-#endif
 
 static void get_action_name(gchar *entry, gchar **menu)
 {
@@ -647,6 +645,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	GtkWidget *reg_btn;
 	GtkWidget *subst_btn;
 	GtkWidget *del_btn;
+	GtkWidget *default_btn;
 	GtkWidget *vbox_frame;
 	GtkWidget *table;
 	GtkWidget *scrolledwindow_clist_icon;
@@ -783,6 +782,12 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	gtk_box_pack_start(GTK_BOX(btn_hbox), del_btn, FALSE, TRUE, 0);
 	gtk_signal_connect(GTK_OBJECT(del_btn), "clicked",
 			    GTK_SIGNAL_FUNC(prefs_toolbar_delete), 
+			    prefs_toolbar);
+
+	default_btn = gtk_button_new_with_label(_(" Default "));
+	gtk_box_pack_end(GTK_BOX(reg_hbox), default_btn, FALSE, TRUE, 0);
+	gtk_signal_connect(GTK_OBJECT(default_btn), "clicked",
+			    GTK_SIGNAL_FUNC(prefs_toolbar_default), 
 			    prefs_toolbar);
 
 	/* currently active toolbar items */

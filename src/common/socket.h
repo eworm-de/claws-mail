@@ -100,12 +100,12 @@ gint fd_getline		(gint sock, gchar **str);
 gint fd_close		(gint sock);
 
 /* Functions for SSL */
-#if USE_SSL
+#if USE_OPENSSL
 gint ssl_read		(SSL *ssl, gchar *buf, gint len);
 gint ssl_write		(SSL *ssl, const gchar *buf, gint len);
 gint ssl_write_all	(SSL *ssl, const gchar *buf, gint len);
 gint ssl_gets		(SSL *ssl, gchar *buf, gint len);
-gchar *ssl_getline	(SSL *ssl);
+gint ssl_getline	(SSL *ssl, gchar **str);
 #endif
 
 #ifdef WIN32

@@ -33,6 +33,7 @@ typedef enum
 	C_AUTO,
 	C_US_ASCII,
 	C_UTF_8,
+	C_UTF_7,
 	C_ISO_8859_1,
 	C_ISO_8859_2,
 	C_ISO_8859_3,
@@ -101,6 +102,7 @@ struct _CodeConverter
 #define CS_US_ASCII		"US-ASCII"
 #define CS_ANSI_X3_4_1968	"ANSI_X3.4-1968"
 #define CS_UTF_8		"UTF-8"
+#define CS_UTF_7		"UTF-7"
 #define CS_ISO_8859_1		"ISO-8859-1"
 #define CS_ISO_8859_2		"ISO-8859-2"
 #define CS_ISO_8859_3		"ISO-8859-3"
@@ -224,7 +226,8 @@ void conv_unmime_header			(gchar		*outbuf,
 void conv_encode_header			(gchar		*dest,
 					 gint		 len,
 					 const gchar	*src,
-					 gint		 header_len);
+					 gint		 header_len,
+					 gboolean	 addr_field);
 
 #ifdef WIN32
 void conv_X_any_to_disp(gchar *buf, gint len);

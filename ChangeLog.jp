@@ -1,3 +1,73 @@
+2003-04-18
+
+	* src/procmsg.c: procmsg_get_filter_keyword(): 自動検出されるヘッダ
+	  に X-Sequence を追加。
+	* src/action.[ch]
+	  src/prefs_actions.c
+	  src/compose.c
+	  src/mainwindow.c: 関数名を修正。
+	  get_user_string(): 独自の実装の代わりに input_dialog() を使用。
+
+2003-04-17
+
+	* src/codeconv.[ch]: conv_encode_header(): addr_field が TRUE の
+	  場合はエンコード文字列に '(' と ')' を含めないようにした。
+	* src/compose.c: compose_convert_header(): フラグ 'addr_field' を
+	  追加。
+
+2003-04-16
+
+	* src/prefs_actions.[ch]: アクション実行ルーチンを action.[ch] に
+	  分離。
+
+2003-04-16
+
+	* src/prefs_actions.c: 少しコードの整理。
+
+2003-04-16
+
+	* src/codeconv.[ch]: conv_iconv_strdup(): EILSEQ の処理を修正。
+
+2003-04-16
+
+	* src/inc.c:
+	  inc_recv_data_progressive()
+	  inc_recv_data_finished()
+	  inc_recv_message()
+	  send_recv_message()
+	  send_send_data_progressive()
+	  send_send_data_finished(): assertion を追加。
+
+2003-04-16
+
+	* src/codeconv.[ch]: conv_iconv_strdup(): 潜在的なメモリ破壊バグを
+	  修正。
+
+2003-04-16
+
+	* src/codeconv.[ch]: conv_iconv_strdup(): 一部のエンコーディング変換
+	  (UTF-7 等)を混乱させていたため、ソースバッファにヌル文字を含めない
+	  ようにした。
+
+2003-04-15
+
+	* src/procmsg.c: procmsg_get_filter_keyword(): ヘッダの改行を除去し、
+	  List-Id ヘッダから ID を抽出するようにした。
+	* src/utils.[ch]: extract_one_parenthesis_with_skip_quote(): 削除。
+	  extract_list_id_str(): List-Id ヘッダから ID 文字列を抽出。
+
+2003-04-15
+
+	* src/prefs_actions.c: claws ブランチからマージ。いくつかのバグ修正
+	  と機能追加。
+
+2003-04-14
+
+	* src/compose.c: compose_parse_header(): 再編集時に不要な改行が含ま
+	  れるバグを修正。
+	* src/imap.c
+	  src/pop.c: 'occured' という typo を修正。
+
 2003-04-11
 
 	* src/compose.[ch]: アカウント変更時の自動署名切り替えを実装。
