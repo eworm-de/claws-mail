@@ -131,8 +131,8 @@ static GdkPixmap *repliedxpm;
 static GdkBitmap *repliedxpmmask;
 static GdkPixmap *forwardedxpm;
 static GdkBitmap *forwardedxpmmask;
-/*static GdkPixmap *ignorethreadxpm;
-static GdkBitmap *ignorethreadxpmmask;*/
+static GdkPixmap *ignorethreadxpm;
+static GdkBitmap *ignorethreadxpmmask;
 
 static GdkPixmap *clipxpm;
 static GdkBitmap *clipxpmmask;
@@ -225,8 +225,8 @@ static void summary_execute_delete	(SummaryView		*summaryview);
 static void summary_execute_delete_func	(GtkCTree		*ctree,
 					 GtkCTreeNode		*node,
 					 gpointer		 data);
-/*static void summary_ignore_thread(SummaryView *summaryview);
-static void summary_unignore_thread(SummaryView *summaryview);*/
+static void summary_ignore_thread(SummaryView *summaryview);
+static void summary_unignore_thread(SummaryView *summaryview);
 
 static void summary_unthread_for_exec		(SummaryView	*summaryview);
 static void summary_unthread_for_exec_func	(GtkCTree	*ctree,
@@ -347,8 +347,8 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 #if MARK_ALL_READ	
 	{N_("/_Mark/Mark all read"),    NULL, summary_mark_all_read, 0, NULL},
 #endif	
-/*	{N_("/_Mark/Ignore thread"),	NULL, summary_ignore_thread, 0, NULL},
-	{N_("/_Mark/Unignore thread"),	NULL, summary_unignore_thread, 0, NULL},*/
+	{N_("/_Mark/Ignore thread"),	NULL, summary_ignore_thread, 0, NULL},
+	{N_("/_Mark/Unignore thread"),	NULL, summary_unignore_thread, 0, NULL},
 
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_Reply"),			NULL, summary_reply_cb,	COMPOSE_REPLY, NULL},
@@ -783,8 +783,8 @@ void summary_init(SummaryView *summaryview)
 		      replied_xpm);
 	PIXMAP_CREATE(summaryview->ctree, forwardedxpm, forwardedxpmmask,
 		      forwarded_xpm);
-	/*PIXMAP_CREATE(summaryview->ctree, ignorethreadxpm, ignorethreadxpmmask,
-		      ignorethread_xpm);*/
+	PIXMAP_CREATE(summaryview->ctree, ignorethreadxpm, ignorethreadxpmmask,
+		      ignorethread_xpm);
 	PIXMAP_CREATE(summaryview->ctree, clipxpm, clipxpmmask, clip_xpm);
 	PIXMAP_CREATE(summaryview->hbox, folderxpm, folderxpmmask,
 		      DIRECTORY_OPEN_XPM);
@@ -1244,8 +1244,8 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 #if MARK_ALL_READ	
 	menu_set_sensitive(ifactory, "/Mark/Mark all read", TRUE);
 #endif	
-	/*menu_set_sensitive(ifactory, "/Mark/Ignore thread",   TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Unignore thread", TRUE);*/
+	menu_set_sensitive(ifactory, "/Mark/Ignore thread",   TRUE);
+	menu_set_sensitive(ifactory, "/Mark/Unignore thread", TRUE);
 
 	menu_set_sensitive(ifactory, "/Select all", TRUE);
 
@@ -1440,7 +1440,7 @@ static GtkCTreeNode *summary_find_next_unread_msg(SummaryView *summaryview,
 
 	for (; node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
-		if (MSG_IS_UNREAD(msginfo->flags) /*&& !MSG_IS_IGNORE_THREAD(msginfo->flags)*/) break;
+		if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) break;
 	}
 
 	return node;
@@ -1630,9 +1630,9 @@ static void summary_set_marks_func(GtkCTree *ctree, GtkCTreeNode *node,
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, node);
 
-	if (MSG_IS_NEW(msginfo->flags) /*&& !MSG_IS_IGNORE_THREAD(msginfo->flags)*/)
+	if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->newmsgs++;
-	if (MSG_IS_UNREAD(msginfo->flags) /*&& !MSG_IS_IGNORE_THREAD(msginfo->flags)*/)
+	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->unread++;
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted++;
@@ -1657,9 +1657,9 @@ static void summary_update_status(SummaryView *summaryview)
 	     node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 		msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
 
-		if (MSG_IS_NEW(msginfo->flags) /*&& !MSG_IS_IGNORE_THREAD(msginfo->flags)*/)
+		if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 			summaryview->newmsgs++;
-		if (MSG_IS_UNREAD(msginfo->flags)/* && !MSG_IS_IGNORE_THREAD(msginfo->flags)*/)
+		if (MSG_IS_UNREAD(msginfo->flags)&& !MSG_IS_IGNORE_THREAD(msginfo->flags))
 			summaryview->unread++;
 		if (MSG_IS_DELETED(msginfo->flags))
 			summaryview->deleted++;
@@ -1915,15 +1915,15 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 			}
 			if(parent) {
 				parentinfo = gtk_ctree_node_get_row_data(ctree, parent);
-				/*if(parentinfo && MSG_IS_IGNORE_THREAD(parentinfo->flags)) {*/
-/*
+				if(parentinfo && MSG_IS_IGNORE_THREAD(parentinfo->flags)) {
+
 					if (MSG_IS_NEW(msginfo->flags))
 						summaryview->newmsgs--;
 					if (MSG_IS_UNREAD(msginfo->flags))
 						summaryview->unread--;
-*/
-					/*MSG_SET_PERM_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
-				}*/
+
+					MSG_SET_PERM_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
+				}
 			}
 
 			node = gtk_ctree_insert_node
@@ -2248,9 +2248,9 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 	}
 	g_free(filename);
 
-	if (MSG_IS_NEW(msginfo->flags) /*&& !MSG_IS_IGNORE_THREAD(msginfo->flags)*/)
+	if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->newmsgs--;
-	if (MSG_IS_UNREAD(msginfo->flags) /*&& !MSG_IS_IGNORE_THREAD(msginfo->flags)*/)
+	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->unread--;
 	if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
 		MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
@@ -2451,10 +2451,10 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 	gtk_ctree_node_set_foreground(ctree, row, NULL);
 
 	/* set new/unread column */
-	/*if (MSG_IS_IGNORE_THREAD(flags)) {
+	if (MSG_IS_IGNORE_THREAD(flags)) {
 		gtk_ctree_node_set_pixmap(ctree, row, S_COL_UNREAD,
 					  ignorethreadxpm, ignorethreadxpmmask);
-	} else*/ if (MSG_IS_NEW(flags)) {
+	} else if (MSG_IS_NEW(flags)) {
 		gtk_ctree_node_set_pixmap(ctree, row, S_COL_UNREAD,
 					  newxpm, newxpmmask);
 	} else if (MSG_IS_UNREAD(flags)) {
@@ -2589,9 +2589,9 @@ static void summary_mark_row_as_read(SummaryView *summaryview,
 	MsgInfo *msginfo;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
-	if (MSG_IS_NEW(msginfo->flags) /*&& !MSG_IS_IGNORE_THREAD(msginfo->flags)*/)
+	if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->newmsgs--;
-	if (MSG_IS_UNREAD(msginfo->flags) /*&& !MSG_IS_IGNORE_THREAD(msginfo->flags)*/)
+	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->unread--;
 	if (MSG_IS_NEW(msginfo->flags) ||
 	    MSG_IS_UNREAD(msginfo->flags)) {
@@ -4129,7 +4129,7 @@ static gint summary_cmp_by_score(GtkCList *clist,
 		return summary_cmp_by_date(clist, ptr1, ptr2);
 }
 
-/*static void summary_ignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpointer data)
+static void summary_ignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpointer data)
 {
 	SummaryView *summaryview = (SummaryView *) data;
 	MsgInfo *msginfo;
@@ -4189,5 +4189,5 @@ static void summary_unignore_thread(SummaryView *summaryview)
 	}
 
 	summary_status_show(summaryview);
-} */
+}
 

@@ -65,7 +65,7 @@ typedef enum
 #define MSG_LABEL_GREEN    (MSG_LABEL_6)
 #define MSG_LABEL_BROWN    (MSG_LABEL_7)
 
-	/*MSG_IGNORE_THREAD   = 1 << 10,*/   /* ignore threads */
+	MSG_IGNORE_THREAD   = 1 << 10,   /* ignore threads */
 
 	/* RESERVED */
 	MSG_RESERVED_CLAWS  = 1 << 30,	/* for sylpheed-claws */
@@ -122,7 +122,7 @@ typedef enum
 
 /* Claws related flags */
 #define MSG_IS_REALLY_DELETED(msg)	(((msg).perm_flags & MSG_REALLY_DELETED) != 0)
-/*#define MSG_IS_IGNORE_THREAD(msg)	(((msg).perm_flags & MSG_IGNORE_THREAD) != 0)*/
+#define MSG_IS_IGNORE_THREAD(msg)	(((msg).perm_flags & MSG_IGNORE_THREAD) != 0)
 #define MSG_GET_LABEL(msg)		(((msg).perm_flags & MSG_LABEL))
 #define MSG_GET_LABEL_VALUE(msg)	(MSG_GET_LABEL(msg) >> MSG_LABEL_SBIT)
 /* 7 == nr. of colors excl. none */
