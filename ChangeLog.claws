@@ -1,3 +1,10 @@
+2003-07-13 [alfons]	0.9.3claws3
+
+	* src/summaryview.c
+		o for now don't pass on keys when they we're handled by 
+		  ctree::key_press_event
+		o clean up
+
 2003-07-13 [alfons]	0.9.3claws2
 	
 	* src/main.c

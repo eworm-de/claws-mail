@@ -263,7 +263,7 @@ static void summary_button_pressed	(GtkWidget		*ctree,
 static void summary_button_released	(GtkWidget		*ctree,
 					 GdkEventButton		*event,
 					 SummaryView		*summaryview);
-static void summary_key_pressed		(GtkWidget		*ctree,
+static gint summary_key_pressed		(GtkWidget		*ctree,
 					 GdkEventKey		*event,
 					 SummaryView		*summaryview);
 static gint summary_searchbar_pressed	(GtkWidget		*ctree,
@@ -526,7 +526,8 @@ static DescriptionWindow search_descr = {
 	search_descr_strings
 };
 	
-static void search_description_cb (GtkWidget *widget) {
+static void search_description_cb(GtkWidget *widget)
+{
 	description_window_create(&search_descr);
 };
 
@@ -4453,7 +4454,7 @@ void summary_pass_key_press_event(SummaryView *summaryview, GdkEventKey *event)
 #define RETURN_IF_LOCKED() \
 	if (summaryview->mainwin->lock_count) return
 
-static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
+static gint summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(widget);
@@ -4461,14 +4462,14 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	MessageView *messageview;
 	TextView *textview;
 
-	if (summary_is_locked(summaryview)) return;
-	if (!event) return;
+	if (summary_is_locked(summaryview)) return TRUE;
+	if (!event) return TRUE;
 
 	switch (event->keyval) {
 	case GDK_Left:		/* Move focus */
 	case GDK_Escape:
 		gtk_widget_grab_focus(summaryview->folderview->ctree);
-		return;
+		return TRUE;
 	default:
 		break;
 	}
@@ -4478,7 +4479,7 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		if (node)
 			gtk_sctree_select(GTK_SCTREE(ctree), node);
 		else
-			return;
+			return TRUE;
 	}
 
 	messageview = summaryview->messageview;
@@ -4525,6 +4526,7 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	default:
 		break;
 	}
+	return TRUE;
 }
 
 static gint summary_searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
