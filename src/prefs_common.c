@@ -94,6 +94,7 @@ static struct Compose {
 	GtkWidget *checkbtn_autosig;
 	GtkWidget *entry_sigsep;
 
+	GtkWidget *checkbtn_reply_account_autosel;
 	GtkWidget *entry_fw_quotemark;
 	GtkWidget *text_fw_quotefmt;
 
@@ -103,7 +104,6 @@ static struct Compose {
 	GtkWidget *checkbtn_wrapatsend;
 
 	GtkWidget * checkbtn_forward_as_attachment;
-	GtkWidget * checkbtn_reply_account_autoselect;
 	GtkWidget * checkbtn_smart_wrapping;
 } compose;
 
@@ -293,8 +293,8 @@ static PrefParam param[] = {
 	{"forward_as_attachment", "FALSE", &prefs_common.forward_as_attachment,
 	 P_BOOL, &compose.checkbtn_forward_as_attachment,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"reply_account_autoselect", "TRUE", &prefs_common.reply_account_autoselect,
-	 P_BOOL, &compose.checkbtn_reply_account_autoselect,
+	{"reply_account_autoselect", "TRUE", &prefs_common.reply_account_autosel,
+	 P_BOOL, &compose.checkbtn_reply_account_autosel,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
         {"smart_wrapping", "TRUE", &prefs_common.smart_wrapping,
 	 P_BOOL, &compose.checkbtn_smart_wrapping,
@@ -1072,7 +1072,7 @@ static void prefs_compose_create(void)
 	GtkWidget *checkbtn_wrapatsend;
 
 	GtkWidget *checkbtn_forward_as_attachment;
-	GtkWidget *checkbtn_reply_account_autoselect;
+	GtkWidget *checkbtn_reply_account_autosel;
 	GtkWidget *checkbtn_smart_wrapping;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
@@ -1202,7 +1202,7 @@ static void prefs_compose_create(void)
 	PACK_CHECK_BUTTON (vbox1, checkbtn_forward_as_attachment,
 			   _("Forward as attachment"));
 
-	PACK_CHECK_BUTTON (vbox1, checkbtn_reply_account_autoselect,
+	PACK_CHECK_BUTTON (vbox1, checkbtn_reply_account_autosel,
 			   _("Automatically select account for mail replies"));
 
 	PACK_CHECK_BUTTON (vbox1, checkbtn_smart_wrapping,
@@ -1216,6 +1216,8 @@ static void prefs_compose_create(void)
 	compose.checkbtn_autosig = checkbtn_autosig;
 	compose.entry_sigsep     = entry_sigsep;
 
+	compose.checkbtn_reply_account_autosel = checkbtn_reply_account_autosel;
+
 	compose.spinbtn_linewrap     = spinbtn_linewrap;
 	compose.spinbtn_linewrap_adj = spinbtn_linewrap_adj;
 	compose.checkbtn_wrapquote   = checkbtn_wrapquote;
@@ -1223,8 +1225,6 @@ static void prefs_compose_create(void)
 
 	compose.checkbtn_forward_as_attachment =
 		checkbtn_forward_as_attachment;
-	compose.checkbtn_reply_account_autoselect =
-		checkbtn_reply_account_autoselect;
 	compose.checkbtn_smart_wrapping = 
 		checkbtn_smart_wrapping;
 }

@@ -301,7 +301,7 @@ void procmime_scan_content_type(MimeInfo *mimeinfo, const gchar *content_type)
 	gchar *buf;
 
 	if (conv_get_current_charset() == C_EUC_JP &&
-	    strchr(content_type, '\007')) {
+	    strchr(content_type, '\033')) {
 		gint len;
 		len = strlen(content_type) * 2 + 1;
 		Xalloca(buf, len, return);
@@ -396,7 +396,7 @@ void procmime_scan_content_disposition(MimeInfo *mimeinfo,
 	gchar *buf;
 
 	if (conv_get_current_charset() == C_EUC_JP &&
-	    strchr(content_disposition, '\007')) {
+	    strchr(content_disposition, '\033')) {
 		gint len;
 		len = strlen(content_disposition) * 2 + 1;
 		Xalloca(buf, len, return);

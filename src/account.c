@@ -172,14 +172,14 @@ PrefsAccount *account_find_from_smtp_server(const gchar *address,
 	return NULL;
 }
 
-/**
+/*
  * account_find_mail_from_address:
  * @address: Email address string.
- * 
+ *
  * Find a mail (not news) account with the specified email address.
- * 
+ *
  * Return value: The found account, or NULL if not found.
- **/
+ */
 PrefsAccount *account_find_mail_from_address(const gchar *address)
 {
 	GList *cur;
@@ -187,7 +187,7 @@ PrefsAccount *account_find_mail_from_address(const gchar *address)
 
 	for (cur = account_list; cur != NULL; cur = cur->next) {
 		ac = (PrefsAccount *)cur->data;
-		if (ac->protocol != A_NNTP &&
+		if (!ac->protocol != A_NNTP &&
 		    !strcmp2(address, ac->address))
 			return ac;
 	}
@@ -481,7 +481,7 @@ static void account_edit_create(void)
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, FALSE, 0);
 
-	default_btn = gtk_button_new_with_label (_(" Set as usually used account "));
+	default_btn = gtk_button_new_with_label (_(" Set as default account "));
 	gtk_widget_show (default_btn);
 	gtk_box_pack_start (GTK_BOX (vbox2), default_btn, TRUE, FALSE, 0);
 	gtk_signal_connect (GTK_OBJECT(default_btn), "clicked",

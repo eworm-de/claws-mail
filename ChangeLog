@@ -1,5 +1,16 @@
 2001-07-25
 
+	* src/account.c: account_edit_create(): modified the text of
+	  default button.
+	* src/procmime.c:
+	  procmime_scan_content_type(), procmime_scan_content_disposition():
+	  fixed ESC code detection.
+	* src/compose.c: compose_reply(): automatically select account
+	  according to the message header.
+	* src/prefs_common.[ch]: added member "reply_account_autosel".
+
+2001-07-25
+
 	* src/progressdialog.c: made the CList scrollable.
 	* src/inc.c: inc_start(): don't abort with non-fatal error.
 

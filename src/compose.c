@@ -576,13 +576,11 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	g_return_if_fail(msginfo->folder != NULL);
 
 	account = msginfo->folder->folder->account;
-	if (!account && msginfo->to && prefs_common.reply_account_autoselect) {
+	if (!account && msginfo->to && prefs_common.reply_account_autosel) {
 		gchar *to;
-
-		to = g_strdup(msginfo->to);
+		Xstrdup_a(to, msginfo->to, return);
 		extract_address(to);
 		account = account_find_mail_from_address(to);
-		g_free(to);
 	}
 	if (!account) account = cur_account;
 	g_return_if_fail(account != NULL);

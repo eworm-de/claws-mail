@@ -1,5 +1,16 @@
 2001-07-25
 
+	* src/account.c: account_edit_create(): デフォルトボタンの文字列
+	  を修正。
+	* src/procmime.c:
+	  procmime_scan_content_type(), procmime_scan_content_disposition():
+	  ESC コード検出を修正。
+	* src/compose.c: compose_reply(): メッセージヘッダに従ってアカウント
+	  を自動的に選択するようにした。
+	* src/prefs_common.[ch]: メンバ "reply_account_autosel" を追加。
+
+2001-07-25
+
 	* src/progressdialog.c: CList をスクロール可能にした。
 	* src/inc.c: inc_start(): 致命的でないエラーで中断しないようにした。
 

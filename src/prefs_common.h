@@ -69,11 +69,11 @@ struct _PrefsCommon
 	gint linewrap_len;
 	gboolean linewrap_quote;
 	gboolean linewrap_at_send;
+	gboolean reply_account_autosel;
 	gboolean show_ruler;
 	gchar *fw_quotemark;
 	gchar *fw_quotefmt;
 	gboolean forward_as_attachment;
-	gboolean reply_account_autoselect;
 	gboolean smart_wrapping;
 
 	/* Display */

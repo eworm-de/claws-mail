@@ -1,3 +1,10 @@
+2001-07-25 [alfons]
+
+	* configure.in
+		Sylpheed 0.5.1claws2
+		
+	* sync with Sylpheed 0.5.1cvs4
+
 2001-07-25 [christoph]
 
 	* src/scoring.c
