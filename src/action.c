@@ -557,6 +557,9 @@ static void message_actions_execute(MessageView *msgview, guint action_nb,
 
 	/* Point to the beginning of the command-line */
 	action += 2;
+#ifdef WIN32
+	action = g_locale_from_utf8(action, -1, NULL, NULL, NULL);
+#endif
 
 	textview = messageview_get_current_textview(msgview);
 	if (textview) {
@@ -577,6 +580,9 @@ static void message_actions_execute(MessageView *msgview, guint action_nb,
 		execute_filtering_actions(action, msg_list);
 	else
 		execute_actions(action, msg_list, text, msgfont, body_pos, partinfo);
+#ifdef WIN32
+	g_free(action);
+#endif
 }
 
 static gboolean execute_filtering_actions(gchar *action, GSList *msglist)
@@ -807,6 +813,7 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 	GError *error=NULL;
 	GIOChannel *ch_in, *ch_out, *ch_err;
 	gint n;
+  	gchar buf[_MAX_PATH];
 #endif
 
 	sync = !(children->action_type & ACTION_ASYNC);
@@ -832,6 +839,10 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 			*(*(tmp_argv)+len-2) = '\0';
 		}
 	}
+	/* use DOS filenames to work around spaces in pathnames */
+	for (n=1; child_argv[n]; n++)
+		if (GetShortPathName(child_argv[n], buf, sizeof(buf)))
+			child_argv[n] = g_strdup(buf);
 	if (g_spawn_async_with_pipes((const gchar *)NULL,
 				     child_argv,
 				     (gchar**)NULL,

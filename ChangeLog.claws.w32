@@ -1,3 +1,10 @@
+2003-10-01 [thorsten]	0.9.5claws32-1
+
+	* src/action.c
+	  src/compose.c
+	  	use short DOS path/filenames for actions and external
+		editor, utf8 fixes
+
 2003-09-02 [thorsten]	0.9.4claws58-1
 
 	* src/textview.c

@@ -115,6 +115,9 @@
 #include "undo.h"
 #include "foldersel.h"
 #include "toolbar.h"
+#ifdef WIN32
+#include "utils.h"
+#endif
 
 #if USE_GPGME
 #  include "rfc2015.h"
@@ -6290,21 +6293,26 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 		gint hEditor=0;
 		gint n,len=0;
 		gchar *fullname;
-		gchar **parsed_cmdline;
+		gchar *parsed_cmdline[1024]={0};
+		gchar *loc_buf;
 
-		cmdline = strsplit_with_quote(buf, " ", 1024);
+		loc_buf = g_locale_from_utf8(buf, -1, NULL, NULL, NULL);
+		cmdline = strsplit_with_quote(loc_buf, " ", 1024);
+		g_free(loc_buf);
 
 		fullname = w32_parse_path(cmdline[0]);
-		len = strlen(fullname);
-		for (n=1; cmdline[n]; len+=strlen(cmdline[n++]));
-		parsed_cmdline=g_new0(gchar*, len);
-
-		parsed_cmdline[0]=g_strdup_printf("\"%s\"",fullname);
+		if (GetShortPathName(fullname, buf, sizeof(buf)))
+			parsed_cmdline[0] = g_strdup(buf);
+		else
+			parsed_cmdline[0] = g_strdup(fullname);
 
 		for (n=1; cmdline[n]; n++)
-			parsed_cmdline[n]=g_strdup(cmdline[n]);
+			if (GetShortPathName(cmdline[n], buf, sizeof(buf)))
+				parsed_cmdline[n] = g_strdup(buf);
+			else
+				parsed_cmdline[n] = g_strdup(cmdline[n]);
 
-		if ((hEditor=spawnvp(P_NOWAIT, fullname, cmdline)) < 0) {
+		if ((hEditor=spawnvp(P_NOWAIT, fullname, parsed_cmdline)) < 0) {
 			gint source;
 			GdkInputCondition condition;
 			gchar *p_buf = g_strdup_printf(_("Cannot execute\n%s"),&buf);
@@ -6320,7 +6328,6 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 		gtk_timeout_add( 50, ext_editor_timeout_cb, compose );
 
 		for (n=0; parsed_cmdline[n]; g_free(parsed_cmdline[n++]));
-		g_free(parsed_cmdline);
 		g_free(fullname);
 	}
 #else
