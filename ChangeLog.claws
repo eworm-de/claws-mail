@@ -1,3 +1,10 @@
+2002-12-13 [christoph]	0.8.6claws105
+
+	* src/mh.c
+		create .mh_sequences file in new MH folders
+		(closes feature request [ 523162 ] MH folders should
+		 get a .mh_sequences)
+
 2002-12-13 [colin]	0.8.6claws104
 
 	* src/summaryview.c

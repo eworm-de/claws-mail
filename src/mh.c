@@ -892,6 +892,8 @@ FolderItem *mh_create_folder(Folder *folder, FolderItem *parent,
 	gchar *path;
 	gchar *fullpath;
 	FolderItem *new_item;
+	gchar *mh_sequences_filename;
+	FILE *mh_sequences_file;
 
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(parent != NULL, NULL);
@@ -919,7 +921,16 @@ FolderItem *mh_create_folder(Folder *folder, FolderItem *parent,
 		path = g_strdup(name);
 	new_item = folder_item_new(folder, name, path);
 	folder_item_append(parent, new_item);
+
 	g_free(path);
+
+	path = folder_item_get_path(new_item);
+	mh_sequences_filename = g_strconcat(path, G_DIR_SEPARATOR_S,
+					    ".mh_sequences", NULL);
+	if ((mh_sequences_file = fopen(mh_sequences_filename, "a+b")) != NULL) {
+		fclose(mh_sequences_file);
+	}
+	g_free(mh_sequences_filename);
 
 	return new_item;
 }
