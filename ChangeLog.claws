@@ -1,3 +1,8 @@
+2003-02-18 [colin]	0.8.10claws21
+
+	* src/imap.c
+		Fix port selection when using starttls
+
 2003-02-18 [paul]	0.8.10claws20
 
 	* src/mainwindow.c
