@@ -9,6 +9,7 @@ Action scripts:
   google_msgid.pl               Search groups.google.com for selected message-id
   google_search.pl		Search google.com for selected text
   multiwebsearch.pl		Search any search engine for the selected text
+  textviewer.sh			Attempt to view an attachment as plain text
   uudec                         Decode and display uuencoded images
 
 Addressbook conversion:
