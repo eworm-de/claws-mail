@@ -1,6 +1,20 @@
 2001-04-21
 
-	* enhanced GnuPG key selection support [sergey]
+	* enhanced GnuPG key selection support [sergey]:
+
+	  * src/select-keys.c: updated to newer version from Win32
+	    branch with support for selecting arbitrary keys.
+	  * src/prefs_account.c: added the Privacy tab to the account
+	    options window.
+	    prefs_account_privacy_create(),
+	    prefs_account_sign_key_set_data_from_radiobtn(),
+	    prefs_account_sign_key_set_radiobtn(): new functions.
+	  * src/prefs_account.h: new preferences sign_key_type, sign_key_id.
+	  * src/rfc2015.c: set_signers(): new function.
+	    pgp_sign(): add the account parameter, call set_signers().
+	    rfc2015_sign(): add the account parameter, pass it to pgp_sign().
+	  * src/rfc2015.h: rfc2015_sign(): updated prototype.
+	  * src/compose.c: pass the current account to rfc2015_sign().
 
 	* tag name claws added to prevent confusion with main branch [alfons]
 
