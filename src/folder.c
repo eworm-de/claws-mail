@@ -1987,6 +1987,7 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 
 	relation = g_relation_new(2);
 	g_relation_index(relation, 0, g_direct_hash, g_direct_equal);
+	g_relation_index(relation, 1, g_direct_hash, g_direct_equal);
 
 	/* 
 	 * Copy messages to destination folder and 
@@ -2013,6 +2014,11 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 	 * Fetch new MsgInfos for new messages in dest folder,
 	 * add them to the msgcache and update folder message counts
 	 */
+	if (g_relation_count(relation, GINT_TO_POINTER(0), 1) > 0) {
+		folder_item_scan_full(dest, FALSE);
+		folderscan = TRUE;
+	}
+
 	for (l = msglist; l != NULL; l = g_slist_next(l)) {
 		MsgInfo *msginfo = (MsgInfo *) l->data;
                 GTuples *tuples;
@@ -2024,32 +2030,19 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 		if (num >= 0) {
 			MsgInfo *newmsginfo;
 
-			if (num == 0) {
-				gchar *file;
-
-				if (!folderscan) {
-					folder_item_scan_full(dest, FALSE);
-					folderscan = TRUE;
-				}
-				file = folder_item_fetch_msg(msginfo->folder, msginfo->msgnum);
-				num = folder_item_get_msg_num_by_file(dest, file);
-				g_free(file);
+			if (folderscan) {
+				newmsginfo = folder_item_get_msginfo_by_msgid(dest, msginfo->msgid);
+				copy_msginfo_flags(msginfo, newmsginfo);
+				num = newmsginfo->msgnum;
+				procmsg_msginfo_free(newmsginfo);				
+			} else {
+				newmsginfo = folder->klass->get_msginfo(folder, dest, num);
+				add_msginfo_to_cache(dest, newmsginfo, msginfo);
+				procmsg_msginfo_free(newmsginfo);
 			}
 
 			if (num > lastnum)
 				lastnum = num;
-
-			if (num == 0)
-				continue;
-
-			if (!folderscan && 
-			    ((newmsginfo = folder->klass->get_msginfo(folder, dest, num)) != NULL)) {
-				add_msginfo_to_cache(dest, newmsginfo, msginfo);
-				procmsg_msginfo_free(newmsginfo);
-			} else if ((newmsginfo = msgcache_get_msg(dest->cache, num)) != NULL) {
-				copy_msginfo_flags(msginfo, newmsginfo);
-				procmsg_msginfo_free(newmsginfo);
-			}
 		}
 	}
 

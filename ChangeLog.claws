@@ -1,3 +1,11 @@
+2003-09-25 [christoph]	0.9.5claws29
+
+	* src/folder.c
+		o don't fetch source message to get it's message id
+		o immediately scan dest folder when copying a message did not
+		  return a new message number and not do it when the first message
+		  without a new message number is found
+
 2003-09-23 [christoph]	0.9.5claws28
 
 	* src/compose.c
