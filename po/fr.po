@@ -10,7 +10,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed\n"
-"POT-Creation-Date: 2001-09-21 20:21+0200\n"
+"POT-Creation-Date: 2001-09-24 01:13+0200\n"
 "PO-Revision-Date: 2000-08-28\n"
 "Last-Translator: Paul Rolland <rol@as2917.net>\n"
 "Language-Team: Paul Rolland <rol@as2917.net>\n"
@@ -97,13 +97,13 @@ msgstr ""
 #: src/editldap.c:243 src/editldap_basedn.c:215 src/editvcard.c:239
 #: src/export.c:185 src/foldersel.c:179 src/grouplistdialog.c:204
 #: src/import.c:189 src/inputdialog.c:160 src/main.c:369 src/main.c:377
-#: src/mainwindow.c:2164 src/messageview.c:348 src/mimeview.c:737
+#: src/mainwindow.c:2173 src/messageview.c:348 src/mimeview.c:737
 #: src/passphrase.c:119 src/prefs.c:473 src/prefs_common.c:2501
 #: src/prefs_common.c:2658 src/prefs_common.c:2937 src/prefs_common.c:3056
 #: src/prefs_customheader.c:157 src/prefs_display_header.c:194
 #: src/prefs_filter.c:198 src/prefs_filtering.c:318 src/prefs_matcher.c:303
 #: src/prefs_matcher.c:1471 src/prefs_scoring.c:199 src/prefs_templates.c:211
-#: src/sigstatus.c:134 src/summaryview.c:2982 src/summaryview.c:3761
+#: src/sigstatus.c:134 src/summaryview.c:2979 src/summaryview.c:3768
 msgid "OK"
 msgstr "OK"
 
@@ -242,13 +242,13 @@ msgstr "Choisissez un dossier"
 #: src/editldap.c:244 src/editldap_basedn.c:216 src/editvcard.c:240
 #: src/export.c:186 src/foldersel.c:180 src/grouplistdialog.c:205
 #: src/import.c:190 src/inputdialog.c:161 src/main.c:369 src/main.c:377
-#: src/mainwindow.c:2164 src/messageview.c:348 src/mimeview.c:737
+#: src/mainwindow.c:2173 src/messageview.c:348 src/mimeview.c:737
 #: src/passphrase.c:123 src/prefs.c:474 src/prefs_common.c:2502
 #: src/prefs_common.c:3057 src/prefs_customheader.c:158
 #: src/prefs_display_header.c:195 src/prefs_filter.c:199
 #: src/prefs_filtering.c:319 src/prefs_matcher.c:304 src/prefs_scoring.c:200
 #: src/prefs_templates.c:212 src/progressdialog.c:77 src/select-keys.c:326
-#: src/summaryview.c:779 src/summaryview.c:2982 src/summaryview.c:3761
+#: src/summaryview.c:779 src/summaryview.c:2979 src/summaryview.c:3768
 msgid "Cancel"
 msgstr "Annuler"
 
@@ -373,7 +373,7 @@ msgstr "Nom :"
 
 #. Buttons
 #: src/addressbook.c:627 src/addressbook.c:1659 src/addressbook.c:1665
-#: src/editaddress.c:852 src/editaddress.c:982 src/mainwindow.c:1783
+#: src/editaddress.c:852 src/editaddress.c:982 src/mainwindow.c:1792
 #: src/prefs_display_header.c:284 src/prefs_display_header.c:340
 #: src/prefs_filter.c:408 src/prefs_filtering.c:213 src/prefs_filtering.c:524
 #: src/prefs_matcher.c:505 src/prefs_scoring.c:290 src/prefs_templates.c:185
@@ -627,7 +627,7 @@ msgstr "Brun"
 #. * index of label_colors[] as data parameter. for the None color we
 #. * pass an invalid (high) value. also we attach a data pointer so we
 #. * can always get back the SummaryView pointer.
-#: src/colorlabel.c:281 src/gtkspell.c:1126 src/summaryview.c:3630
+#: src/colorlabel.c:281 src/gtkspell.c:1234 src/summaryview.c:3637
 msgid "None"
 msgstr "Aucun"
 
@@ -930,7 +930,7 @@ msgstr "De :"
 msgid "Attachments"
 msgstr "Pièces jointes"
 
-#: src/compose.c:3910 src/mainwindow.c:1646 src/prefs_account.c:582
+#: src/compose.c:3910 src/mainwindow.c:1655 src/prefs_account.c:582
 #: src/prefs_common.c:793
 msgid "Send"
 msgstr "Envoyer"
@@ -1467,12 +1467,12 @@ msgstr "Enregistrement des données des dossiers...\n"
 msgid "Setting folder info..."
 msgstr "Initialisation des données des dossiers..."
 
-#: src/folderview.c:624 src/mainwindow.c:2769 src/setup.c:81
+#: src/folderview.c:624 src/mainwindow.c:2740 src/setup.c:81
 #, c-format
 msgid "Scanning folder %s%c%s ..."
 msgstr "Analyse du dossier %s%c%s ..."
 
-#: src/folderview.c:628 src/mainwindow.c:2774 src/setup.c:86
+#: src/folderview.c:628 src/mainwindow.c:2745 src/setup.c:86
 #, c-format
 msgid "Scanning folder %s ..."
 msgstr "Analyse du dossier %s ..."
@@ -1638,20 +1638,20 @@ msgstr "Fait."
 msgid "%d newsgroups received (%s read)"
 msgstr "%d groupes de discussion reçus (%s lu)"
 
-#: src/gtkspell.c:125 src/gtkspell.c:164
+#: src/gtkspell.c:128 src/gtkspell.c:167
 msgid "Pspell could not be started."
 msgstr ""
 
-#: src/gtkspell.c:137 src/gtkspell.c:190
+#: src/gtkspell.c:140 src/gtkspell.c:196
 #, c-format
 msgid "Pspell error : %s\n"
 msgstr "Erreur pspell : %s\n"
 
-#: src/gtkspell.c:179
+#: src/gtkspell.c:184
 msgid "Pspell could not be configured."
 msgstr "Pspell n'a pas pu être configuré."
 
-#: src/gtkspell.c:304
+#: src/gtkspell.c:307
 #, c-format
 msgid ""
 "Language : %s\n"
@@ -1664,72 +1664,85 @@ msgstr ""
 "Jargon : %s\n"
 "Module : %s\n"
 
-#: src/gtkspell.c:452 src/gtkspell.c:891
-msgid "Fast Mode"
-msgstr ""
+#: src/gtkspell.c:363
+msgid "Pspell set_path_and_dict error."
+msgstr "Pspell erreur dans set_path_and_dict"
 
-#: src/gtkspell.c:456 src/gtkspell.c:904
+#: src/gtkspell.c:373
+#, c-format
+msgid "Pspell path & dict. error %s\n"
+msgstr "Pspell erreur en mettant path & dict %s\n"
+
+#: src/gtkspell.c:459 src/gtkspell.c:981
+msgid "Fast Mode"
+msgstr "Mode rapide"
+
+#: src/gtkspell.c:463 src/gtkspell.c:993
 msgid "Normal Mode"
 msgstr "Mode normal"
 
-#: src/gtkspell.c:460 src/gtkspell.c:915
+#: src/gtkspell.c:467 src/gtkspell.c:1005
 msgid "Bad Spellers Mode"
 msgstr "Mode novice"
 
-#: src/gtkspell.c:482
+#: src/gtkspell.c:490
 msgid "Pspell set_sug_mod could not reset path & dict\n"
 msgstr "Pspell set_sug_mod : chemin et dico non initialisés\n"
 
-#: src/gtkspell.c:493
+#: src/gtkspell.c:501
 #, c-format
 msgid "Pspell set sug-mode error %s\n"
 msgstr "Pspell erreur dans set_sug_mode %s\n"
 
-#: src/gtkspell.c:833
+#: src/gtkspell.c:920
 msgid "Spell check all"
 msgstr "Tout vérifier"
 
-#: src/gtkspell.c:845
+#: src/gtkspell.c:933
 msgid "Change dictionary"
 msgstr "Changer de dictionnaire"
 
-#: src/gtkspell.c:877 src/gtkspell.c:983
+#: src/gtkspell.c:967 src/gtkspell.c:1087
 msgid "More..."
 msgstr "Autres..."
 
-#: src/gtkspell.c:941
+#: src/gtkspell.c:1020
+msgid "Learn from mistakes"
+msgstr "Apprendre des erreurs"
+
+#: src/gtkspell.c:1043
 #, c-format
 msgid "Accept `%s' for this session"
 msgstr "Accepter '%s' pour cette session"
 
-#: src/gtkspell.c:950
+#: src/gtkspell.c:1053
 #, c-format
 msgid "Add `%s' to personal dictionary"
 msgstr "Ajouter '%s' au dictionnaire personnel"
 
-#: src/gtkspell.c:966
+#: src/gtkspell.c:1069
 msgid "(no suggestions)"
 msgstr "(pas de suggestions)"
 
-#: src/gtkspell.c:976
+#: src/gtkspell.c:1080
 msgid "Others..."
 msgstr "Autres..."
 
-#: src/gtkspell.c:1154
+#: src/gtkspell.c:1262
 #, c-format
 msgid "Checking for dictionaries in %s\n"
 msgstr "Recherche de dictionnaires dans %s\n"
 
-#: src/gtkspell.c:1162
+#: src/gtkspell.c:1270
 #, c-format
 msgid "Found dictionary %s\n"
 msgstr "Dictionnaire trouvé : %s\n"
 
-#: src/gtkspell.c:1170
+#: src/gtkspell.c:1278
 msgid "No dictionary found\n"
 msgstr "Aucun dictionnaire trouvé\n"
 
-#: src/gtkspell.c:1174
+#: src/gtkspell.c:1282
 msgid "No dictionary found"
 msgstr "Aucun dictionnaire trouvé"
 
@@ -1745,11 +1758,11 @@ msgstr "Sujet :"
 msgid "Creating header view...\n"
 msgstr "Création de la vue des en-têtes...\n"
 
-#: src/headerview.c:174 src/summaryview.c:2111
+#: src/headerview.c:174 src/summaryview.c:2108
 msgid "(No From)"
 msgstr "(Pas d'expéditeur)"
 
-#: src/headerview.c:189 src/summaryview.c:2147
+#: src/headerview.c:189 src/summaryview.c:2144
 msgid "(No Subject)"
 msgstr "(Pas de sujet)"
 
@@ -1881,12 +1894,12 @@ msgstr "impossible d'analyser l'enveloppe: %s\n"
 msgid "Deleting cached messages %d - %d ... "
 msgstr "Suppression de tous les messages en cache %d - %d... "
 
-#: src/imap.c:1257 src/imap.c:1276 src/mainwindow.c:784 src/mainwindow.c:1562
+#: src/imap.c:1257 src/imap.c:1276 src/mainwindow.c:784 src/mainwindow.c:1571
 #: src/mh.c:932 src/mh.c:939 src/news.c:748 src/procmsg.c:261
 #: src/procmsg.c:325 src/summaryview.c:1540 src/summaryview.c:1769
-#: src/summaryview.c:1963 src/summaryview.c:2063 src/summaryview.c:2693
-#: src/summaryview.c:3312 src/summaryview.c:3349 src/summaryview.c:3370
-#: src/summaryview.c:3445
+#: src/summaryview.c:1960 src/summaryview.c:2060 src/summaryview.c:2690
+#: src/summaryview.c:3319 src/summaryview.c:3356 src/summaryview.c:3377
+#: src/summaryview.c:3452
 msgid "done.\n"
 msgstr "Fait.\n"
 
@@ -2712,136 +2725,136 @@ msgstr "Entrez le chemin vers la boîte aux lettres."
 msgid "Creation of the mailbox failed."
 msgstr "Échec lors de la création de la boîte aux lettres."
 
-#: src/mainwindow.c:1415
+#: src/mainwindow.c:1424
 msgid "Setting widgets..."
 msgstr "Définition des widgets..."
 
-#: src/mainwindow.c:1629
+#: src/mainwindow.c:1638
 msgid "Get"
 msgstr "Relever"
 
-#: src/mainwindow.c:1630
+#: src/mainwindow.c:1639
 msgid "Get new mail from current account"
 msgstr "Relever le courrier du compte actuel"
 
-#: src/mainwindow.c:1635
+#: src/mainwindow.c:1644
 msgid "Get all"
 msgstr "Tout relever"
 
-#: src/mainwindow.c:1636
+#: src/mainwindow.c:1645
 msgid "Get new mail from all accounts"
 msgstr "Relever le courrier de tous les comptes"
 
-#: src/mainwindow.c:1647
+#: src/mainwindow.c:1656
 msgid "Send queued message(s)"
 msgstr "Envoyer les messages en attente"
 
-#: src/mainwindow.c:1664
+#: src/mainwindow.c:1673
 msgid "Compose email message"
 msgstr "Composer un nouveau message"
 
-#: src/mainwindow.c:1665
+#: src/mainwindow.c:1674
 msgid "email"
 msgstr "Composer"
 
-#: src/mainwindow.c:1673 src/mainwindow.c:1710
+#: src/mainwindow.c:1682 src/mainwindow.c:1719
 msgid "Email"
 msgstr "Composer"
 
-#: src/mainwindow.c:1688
+#: src/mainwindow.c:1697
 msgid "Compose news article"
 msgstr "Composer un article de groupes de discussion"
 
-#: src/mainwindow.c:1689
+#: src/mainwindow.c:1698
 msgid "news"
 msgstr "Groupes de discussions"
 
-#: src/mainwindow.c:1697 src/mainwindow.c:1721 src/prefs_common.c:950
+#: src/mainwindow.c:1706 src/mainwindow.c:1730 src/prefs_common.c:950
 msgid "News"
 msgstr "Article"
 
-#: src/mainwindow.c:1711
+#: src/mainwindow.c:1720
 msgid "Compose an email message"
 msgstr "Composer un message"
 
-#: src/mainwindow.c:1722
+#: src/mainwindow.c:1731
 msgid "Compose a news message"
 msgstr "Composer un article"
 
-#: src/mainwindow.c:1748
+#: src/mainwindow.c:1757
 msgid "Reply"
 msgstr "Répondre"
 
-#: src/mainwindow.c:1749
+#: src/mainwindow.c:1758
 msgid "Reply to the message"
 msgstr "Répondre au message"
 
-#: src/mainwindow.c:1756
+#: src/mainwindow.c:1765
 msgid "All"
 msgstr "À tous"
 
-#: src/mainwindow.c:1757
+#: src/mainwindow.c:1766
 msgid "Reply to all"
 msgstr "Répondre à tous"
 
-#: src/mainwindow.c:1764
+#: src/mainwindow.c:1773
 msgid "Sender"
 msgstr "À l'envoyeur"
 
-#: src/mainwindow.c:1765
+#: src/mainwindow.c:1774
 msgid "Reply to sender"
 msgstr "Répondre à l'expéditeur"
 
-#: src/mainwindow.c:1772 src/prefs_filtering.c:218
+#: src/mainwindow.c:1781 src/prefs_filtering.c:218
 msgid "Forward"
 msgstr "Transférer"
 
-#: src/mainwindow.c:1773
+#: src/mainwindow.c:1782
 msgid "Forward the message"
 msgstr "Transférer le message"
 
-#: src/mainwindow.c:1784
+#: src/mainwindow.c:1793
 msgid "Delete the message"
 msgstr "Supprimer le message"
 
-#: src/mainwindow.c:1792 src/prefs_filtering.c:220 src/prefs_filtering.c:456
+#: src/mainwindow.c:1801 src/prefs_filtering.c:220 src/prefs_filtering.c:456
 #: src/prefs_matcher.c:151
 msgid "Execute"
 msgstr "Exécuter"
 
-#: src/mainwindow.c:1793
+#: src/mainwindow.c:1802
 msgid "Execute marked process"
 msgstr "Exécuter les commandes marquées"
 
-#: src/mainwindow.c:1801
+#: src/mainwindow.c:1810
 msgid "Next"
 msgstr "Suivant"
 
-#: src/mainwindow.c:1802
+#: src/mainwindow.c:1811
 msgid "Next unread message"
 msgstr "Message non lu suivant"
 
-#: src/mainwindow.c:1884
+#: src/mainwindow.c:1893
 msgid "Email message"
 msgstr "Message email"
 
-#: src/mainwindow.c:1892
+#: src/mainwindow.c:1901
 msgid "News article"
 msgstr "Article de news"
 
-#: src/mainwindow.c:2163 src/summaryview.c:3760
+#: src/mainwindow.c:2172 src/summaryview.c:3767
 msgid "Exit"
 msgstr "Quitter"
 
-#: src/mainwindow.c:2163 src/summaryview.c:3760
+#: src/mainwindow.c:2172 src/summaryview.c:3767
 msgid "Exit this program?"
 msgstr "Quitter Sylpheed ?"
 
-#: src/mainwindow.c:2304
+#: src/mainwindow.c:2313
 msgid "Some errors occurred while sending queued messages."
 msgstr "Une erreur est survenue pendant l'envoi de messages en attente."
 
-#: src/mainwindow.c:2517
+#: src/mainwindow.c:2526
 #, c-format
 msgid "forced charset: %s\n"
 msgstr "Jeu de caractères forcé : %s\n"
@@ -3107,15 +3120,15 @@ msgstr "Sélectionner \"Vérifier la  signature\" pour vérifier"
 msgid "Can't save the part of multipart message."
 msgstr "Impossible d'enregistrer une pièce d'un message multipart"
 
-#: src/mimeview.c:729 src/summaryview.c:2975
+#: src/mimeview.c:729 src/summaryview.c:2972
 msgid "Save as"
 msgstr "Enregistrer sous"
 
-#: src/mimeview.c:735 src/summaryview.c:2980
+#: src/mimeview.c:735 src/summaryview.c:2977
 msgid "Overwrite"
 msgstr "Écraser"
 
-#: src/mimeview.c:736 src/summaryview.c:2981
+#: src/mimeview.c:736 src/summaryview.c:2978
 msgid "Overwrite existing file?"
 msgstr "Écraser le fichier existant ?"
 
@@ -5443,75 +5456,75 @@ msgstr "\tDéfinition du résumé à partir des données du message..."
 msgid "Setting summary from message data..."
 msgstr "Définition du résumé à partir des données du message..."
 
-#: src/summaryview.c:2040
+#: src/summaryview.c:2037
 #, c-format
 msgid "Writing summary cache (%s)..."
 msgstr "Ecriture du cache résumé (%s)..."
 
-#: src/summaryview.c:2108
+#: src/summaryview.c:2105
 msgid "(No Date)"
 msgstr "(Pas de date)"
 
-#: src/summaryview.c:2506
+#: src/summaryview.c:2503
 #, c-format
 msgid "Message %d is marked\n"
 msgstr "Le message %d est marqué\n"
 
-#: src/summaryview.c:2537
-#, fuzzy, c-format
+#: src/summaryview.c:2534
+#, c-format
 msgid "Message %d is marked as read\n"
-msgstr "Le message %d est marqué non lu\n"
+msgstr "Le message %d est marqué comme lu\n"
 
-#: src/summaryview.c:2590
+#: src/summaryview.c:2587
 #, c-format
 msgid "Message %d is marked as unread\n"
 msgstr "Le message %d est marqué non lu\n"
 
-#: src/summaryview.c:2644
+#: src/summaryview.c:2641
 #, c-format
 msgid "Message %s/%d is set to delete\n"
 msgstr "Le message %s/%d sera détruit\n"
 
-#: src/summaryview.c:2658
+#: src/summaryview.c:2655
 msgid "Current folder is Trash."
 msgstr "Le dossier courant est la Corbeille."
 
-#: src/summaryview.c:2680 src/summaryview.c:2682
+#: src/summaryview.c:2677 src/summaryview.c:2679
 msgid "Deleting duplicated messages..."
 msgstr "Suppression des messages en double..."
 
-#: src/summaryview.c:2740
+#: src/summaryview.c:2737
 #, c-format
 msgid "Message %s/%d is unmarked\n"
 msgstr "Le message %s/%d est démarqué\n"
 
-#: src/summaryview.c:2799
+#: src/summaryview.c:2796
 #, c-format
 msgid "Message %d is set to move to %s\n"
 msgstr "Le message %d est marqué pour déplacement dans %s\n"
 
-#: src/summaryview.c:2811
+#: src/summaryview.c:2808
 msgid "Destination is same as current folder."
 msgstr "La destination est identique au dossier actuel."
 
-#: src/summaryview.c:2885
+#: src/summaryview.c:2882
 #, c-format
 msgid "Message %d is set to copy to %s\n"
 msgstr "Le message %d est à copier vers %s\n"
 
-#: src/summaryview.c:2898
+#: src/summaryview.c:2895
 msgid "Destination to copy is same as current folder."
 msgstr "La destination et la source de la copie sont identiques"
 
-#: src/summaryview.c:2948
+#: src/summaryview.c:2945
 msgid "Selecting all messages..."
 msgstr "Sélection de tous les messages"
 
-#: src/summaryview.c:3002
+#: src/summaryview.c:2999
 msgid "Print"
 msgstr "Impression"
 
-#: src/summaryview.c:3003
+#: src/summaryview.c:3000
 #, c-format
 msgid ""
 "Enter the print command line:\n"
@@ -5520,7 +5533,7 @@ msgstr ""
 "Saisissez la ligne de commande d'impression:\n"
 "('%s' sera remplacé par le nom du fichier)"
 
-#: src/summaryview.c:3009
+#: src/summaryview.c:3006
 #, c-format
 msgid ""
 "Print command line is invalid:\n"
@@ -5529,37 +5542,37 @@ msgstr ""
 "La ligne de commande d'impression est invalide:\n"
 "`%s'"
 
-#: src/summaryview.c:3251 src/summaryview.c:3252
+#: src/summaryview.c:3246 src/summaryview.c:3247
 msgid "Building threads..."
 msgstr "Construction des threads..."
 
-#: src/summaryview.c:3325 src/summaryview.c:3326
+#: src/summaryview.c:3332 src/summaryview.c:3333
 msgid "Unthreading..."
 msgstr "Suppression des threads..."
 
-#: src/summaryview.c:3359
+#: src/summaryview.c:3366
 msgid "Unthreading for execution..."
 msgstr "Suppression des threads pour exécution..."
 
-#: src/summaryview.c:3409
+#: src/summaryview.c:3416
 msgid "filtering..."
 msgstr "tri en cours..."
 
-#: src/summaryview.c:3410
+#: src/summaryview.c:3417
 msgid "Filtering..."
 msgstr "Tri en cours..."
 
-#: src/summaryview.c:3732
+#: src/summaryview.c:3739
 #, c-format
 msgid "Go to %s\n"
 msgstr "Aller à %s\n"
 
-#: src/summaryview.c:4336
+#: src/summaryview.c:4343
 #, fuzzy, c-format
 msgid "Message %d is marked as ignore thread\n"
 msgstr "Le message %d est marqué lu\n"
 
-#: src/summaryview.c:4367
+#: src/summaryview.c:4374
 #, fuzzy, c-format
 msgid "Message %d is marked as unignore thread\n"
 msgstr "Le message %d est marqué non lu\n"
