@@ -119,7 +119,7 @@ static void toolbar_child_detached		(GtkWidget	*widget,
 						 GtkWidget	*child,
 						 gpointer	 data);
 
-static void ac_label_button_pressed		(GtkWidget	*widget,
+static gboolean ac_label_button_pressed		(GtkWidget	*widget,
 						 GdkEventButton	*event,
 						 gpointer	 data);
 static void ac_menu_popup_closed		(GtkMenuShell	*menu_shell,
@@ -1983,8 +1983,12 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 				       "message_view", "Sylpheed");
 		gtk_window_set_policy(GTK_WINDOW(messagewin),
 				      TRUE, TRUE, FALSE);
-		gtk_window_move(GTK_WINDOW(messagewin), prefs_common.main_msgwin_x,
+		gtk_window_move(GTK_WINDOW(messagewin), 
+				prefs_common.main_msgwin_x,
 				prefs_common.main_msgwin_y);
+		gtk_widget_set_size_request(messagewin, 
+					    prefs_common.msgwin_width,
+					    prefs_common.msgwin_height);
 		gtk_container_set_border_width(GTK_CONTAINER(messagewin),
 					       BORDER_WIDTH);
 		g_signal_connect(G_OBJECT(messagewin), "delete_event",
@@ -2218,7 +2222,7 @@ static void toolbar_child_detached(GtkWidget *widget, GtkWidget *child,
 	gtk_widget_set_usize(child, -1, -1);
 }
 
-static void ac_label_button_pressed(GtkWidget *widget, GdkEventButton *event,
+static gboolean ac_label_button_pressed(GtkWidget *widget, GdkEventButton *event,
 				    gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;

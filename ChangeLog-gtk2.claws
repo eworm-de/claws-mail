@@ -1,3 +1,10 @@
+2004-07-20 [colin]	0.9.12cvs33.7
+
+	* src/mainwindow.c
+		Set the separated messageview to the saved
+		size of Claws' messageview (Patch by Alfons)
+		Fix a callback prototype (me)
+
 2004-07-20 [colin]	0.9.12cvs33.6
 
 	* src/codeconv.h
