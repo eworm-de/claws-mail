@@ -101,3 +101,26 @@ gint folderutils_delete_duplicates(FolderItem *item,
 
 	return dups;	
 }
+
+void folderutils_mark_all_read(FolderItem *item)
+{
+	MsgInfoList *msglist, *cur;
+
+	g_return_if_fail(item != NULL);
+
+	msglist = folder_item_get_msg_list(item);
+	if (msglist == NULL)
+		return;
+
+	folder_item_update_freeze();
+	for (cur = msglist; cur != NULL; cur = g_slist_next(cur)) {
+		MsgInfo *msginfo = cur->data;
+
+		if (msginfo->flags.perm_flags & (MSG_NEW | MSG_UNREAD))
+			procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
+		procmsg_msginfo_free(msginfo);
+	}
+	folder_item_update_thaw();
+
+	g_slist_free(msglist);
+}

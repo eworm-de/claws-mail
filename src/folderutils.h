@@ -29,5 +29,6 @@ typedef enum {
 
 gint folderutils_delete_duplicates(FolderItem *item,
 				   DeleteDuplicatesMode mode);
+void folderutils_mark_all_read	  (FolderItem *item);
 
 #endif /* FOLDERUTILS_H */

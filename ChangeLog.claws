@@ -1,3 +1,12 @@
+2004-04-22 [christoph]	0.9.10claws50
+
+	* src/folderutils.[ch]
+		add folderutils_mark_all_read()
+
+	* src/folderview.c
+		readd "mark all read" from popup menu, now works
+		in all folders and not only the opened folder
+
 2004-04-21 [christoph]	0.9.10claws49
 
 	* src/Makefile.am

@@ -61,6 +61,7 @@
 #include "inc.h"
 #include "statusbar.h"
 #include "hooks.h"
+#include "folderutils.h"
 
 typedef enum
 {
@@ -553,10 +554,13 @@ void folderview_select(FolderView *folderview, FolderItem *item)
 static void mark_all_read_cb(FolderView *folderview, guint action,
                              GtkWidget *widget)
 {
-/* TODO: claws can do this in all folders not just the opened folder
-	if (folderview->selected)
-		summary_mark_all_read(folderview->summaryview);
-*/
+	FolderItem *item;
+
+	item = folderview_get_selected(folderview);
+	if (item == NULL)
+		return;
+
+	folderutils_mark_all_read(item);
 }
 
 static void folderview_select_node(FolderView *folderview, GtkCTreeNode *node)
