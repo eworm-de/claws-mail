@@ -144,7 +144,7 @@ static void free_all(void)
 	g_completion = NULL;
 }
 
-static gint add_address1(const char *str, address_entry *ae)
+static void add_address1(const char *str, address_entry *ae)
 {
 	completion_entry *ce1;
 	ce1 = g_new0(completion_entry, 1),

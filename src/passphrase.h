@@ -28,7 +28,7 @@ struct passphrase_cb_info_s {
 };
 
 void gpgmegtk_set_passphrase_grab (gint yesno);
-const char* gpgmegtk_passphrase_cb(void *opaque, const char *desc, void *r_hd);
+const char* gpgmegtk_passphrase_cb(void *opaque, const char *desc, void **r_hd);
 void gpgmegtk_free_passphrase();
 
 #endif /* GPGMEGTK_PASSPHRASE_H */

@@ -1063,7 +1063,6 @@ static void prefs_account_receive_create(void)
 	GtkWidget *sd_filter_on_recv_chkbtn;
 	GtkWidget *sd_rmmail_chkbtn;
 	GtkWidget *vbox3;
-	GtkWidget *hbox2;
 	GtkWidget *inbox_label;
 	GtkWidget *inbox_entry;
 	GtkWidget *inbox_btn;
@@ -1781,9 +1780,6 @@ static void prefs_account_advanced_create(void)
  	GtkWidget *checkbtn_crosspost;
  	GtkWidget *colormenu_crosspost;
  	GtkWidget *menu;
- 	GtkWidget *menuitem;
- 	GtkWidget *item;
- 	gint i;
 	GtkWidget *imap_frame;
 	GtkWidget *imapdir_label;
 	GtkWidget *imapdir_entry;
@@ -2222,8 +2218,6 @@ static void prefs_account_smtp_auth_type_set_optmenu(PrefParam *pparam)
 static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 {
 	RecvProtocol protocol;
-	gboolean active;
-	gint auth;
 
 	protocol = GPOINTER_TO_INT
 		(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
@@ -2520,20 +2514,4 @@ static void prefs_account_mailcmd_toggled(GtkToggleButton *button,
 	gtk_widget_set_sensitive(basic.smtpserv_label, !use_mailcmd);
 	gtk_widget_set_sensitive(basic.uid_entry,  !use_mailcmd);
 	gtk_widget_set_sensitive(basic.pass_entry, !use_mailcmd);
-}
-
-static void prefs_account_smtp_userid_cb(GtkEditable *editable,
-					 gpointer smtp_passwd)
-{
-	gchar *buf;
-	gboolean use_smtp_userid;
-	
-	buf = gtk_editable_get_chars(editable, 0, -1);
-	if(buf[0] == '\0') {
-		use_smtp_userid = FALSE;
-	} else {
-		use_smtp_userid = TRUE;
-	}
-	gtk_widget_set_sensitive(GTK_WIDGET(smtp_passwd), use_smtp_userid);
-	g_free(buf);
 }

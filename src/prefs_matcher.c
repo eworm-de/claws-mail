@@ -675,7 +675,6 @@ static MatcherList * prefs_matcher_get_list(void)
 	gchar * matcher_str;
 	MatcherProp * prop;
 	gint row = 1;
-	gchar * tmp;
 	gboolean bool_and;
 	GSList * matcher_list;
 	MatcherList * matchers;
@@ -1136,7 +1135,6 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 				 GdkEvent *event)
 {
 	gchar * matcher_str;
-	gchar * tmp;
 	MatcherProp * prop;
 	gboolean negative_cond;
 	gint criteria;

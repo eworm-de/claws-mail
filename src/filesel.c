@@ -312,7 +312,6 @@ static GList *filesel_get_multiple_filenames(void)
 	 * that need to be escaped). instead we use the file_list. the
 	 * entry is only useful for extracting the current directory. */
 	GtkCList *file_list  = GTK_CLIST(GTK_FILE_SELECTION(filesel)->file_list);
-	GtkEntry *file_entry = GTK_ENTRY(GTK_FILE_SELECTION(filesel)->selection_entry);
 	GList    *list = NULL, *sel_list;
 	gchar 	 *cwd, *tmp;	 
 	gboolean  separator;

@@ -1351,15 +1351,6 @@ static void addrbook_load_hash_table_email_vis( gpointer key, gpointer value, gp
 }
 
 /*
-* Load hash table with links to email addresses.
-*/
-static void addrbook_load_hash_table_email( AddressBookFile *book, GHashTable *table ) {
-	g_return_if_fail( book != NULL );
-	g_return_if_fail( table != NULL );
-	g_hash_table_foreach( book->addressCache->itemHash, addrbook_load_hash_table_email_vis, table );
-}
-
-/*
 * Build available email list visitor function.
 */
 static void addrbook_build_avail_email_vis( gpointer key, gpointer value, gpointer data ) {
@@ -1727,16 +1718,6 @@ gchar *addrbook_gen_new_file_name( gint fileNum ) {
 * Address book test functions...
 * ***********************************************************************
 */
-
-static void addrbook_show_attribs( GList *attr ) {
-	while( attr ) {
-		gchar *name = ((XMLAttr *)attr->data)->name;
-		gchar *value = ((XMLAttr *)attr->data)->value;
-		printf( "\tn/v = %s : %s\n", name, value );
-		attr = g_list_next( attr );
-	}
-	printf( "\t---\n" );
-}
 
 /*
 * Test email address list.

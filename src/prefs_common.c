@@ -1690,10 +1690,7 @@ static void prefs_compose_create(void)
 {
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
-	GtkWidget *vbox3;
 	GtkWidget *hbox1;
-	GtkWidget *hbox2;
-	GtkWidget *btn_quotefmt;
 
 	GtkWidget *frame_sig;
 	GtkWidget *vbox_sig;
@@ -1701,13 +1698,10 @@ static void prefs_compose_create(void)
 	GtkWidget *label_sigsep;
 	GtkWidget *entry_sigsep;
 
-	GtkWidget *frame_editor;
-	GtkWidget *hbox_editor;
 	GtkWidget *checkbtn_autoextedit;
 
 	GtkWidget *frame_autosel;
 	GtkWidget *hbox_autosel;
-	GtkWidget *vbox_autosel;
 	GtkWidget *checkbtn_reply_account_autosel;
 	GtkWidget *checkbtn_forward_account_autosel;
 	GtkWidget *checkbtn_reedit_account_autosel;
@@ -1729,8 +1723,6 @@ static void prefs_compose_create(void)
 	GtkWidget *checkbtn_autowrap;
 	GtkWidget *checkbtn_wrapatsend;
 
-	GtkWidget *frame_reply;
-	GtkWidget *checkbtn_quote;
 	GtkWidget *checkbtn_forward_as_attachment;
 	GtkWidget *checkbtn_redirect_keep_from;
 	GtkWidget *checkbtn_smart_wrapping;
@@ -4197,37 +4189,6 @@ static void prefs_common_cancel(void)
 	inc_unlock();
 }
 
-
-static struct _ComposePrefs
-{
-	GtkWidget *window;
-
-	GtkWidget *close_btn;
-} composeprefs;
-
-static void compose_prefs_key_pressed(GtkWidget *widget, GdkEventKey *event);
-static gint compose_prefs_delete_event(GtkWidget *widget, GdkEventAny *event);
-static void compose_prefs_close(GtkWidget *widget);
-static void compose_prefs_fmt_create(void);
-
-static void compose_prefs_close(GtkWidget *widget)
-{
-	gtk_widget_hide(composeprefs.window);
-}
-
-static gint compose_prefs_delete_event(GtkWidget *widget, GdkEventAny *event)
-{
-	gtk_widget_hide(composeprefs.window);
-
-	return TRUE;
-}
-
-static void compose_prefs_key_pressed(GtkWidget *widget, GdkEventKey *event)
-{
-	if (event && event->keyval == GDK_Escape) {
-		gtk_widget_hide(composeprefs.window);
-	}
-}
 
 /* static void prefs_recvdialog_set_data_from_optmenu(PrefParam *pparam)
 {

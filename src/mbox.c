@@ -102,7 +102,6 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, GHashTable *folder_table)
 	do {
 		FILE *tmp_fp;
 		FolderItem *dropfolder;
-		gchar *startp, *endp, *rpath;
 		gint empty_line;
 		gint val;
 		gboolean is_next_msg = FALSE;

@@ -348,24 +348,6 @@ static gchar *vcard_get_tagvalue( gchar* line, gchar dlm ) {
 }
 
 /*
-* Dump linked lists of character strings (for debug).
-*/
-static void vcard_dump_lists( GSList *listName, GSList *listAddr, GSList *listRem, GSList *listID, FILE *stream ) {
-	fprintf( stream, "dump name\n" );
-	fprintf( stream, "------------\n" );
-	mgu_print_list( listName, stdout );
-	fprintf( stream, "dump address\n" );
-	fprintf( stream, "------------\n" );
-	mgu_print_list( listAddr, stdout );
-	fprintf( stream, "dump remarks\n" );
-	fprintf( stdout, "------------\n" );
-	mgu_print_list( listRem, stdout );
-	fprintf( stream, "dump id\n" );
-	fprintf( stdout, "------------\n" );
-	mgu_print_list( listID, stdout );
-}
-
-/*
 * Build an address list entry and append to list of address items.
 */
 static void vcard_build_items( VCardFile *cardFile, GSList *listName, GSList *listAddr, GSList *listRem,

@@ -208,7 +208,7 @@ struct _Pine_ParsedRec_ {
  * Free data record.
  * Enter: rec Data record.
  */
-static pine_free_rec( Pine_ParsedRec *rec ) {
+static void pine_free_rec( Pine_ParsedRec *rec ) {
 	if( rec ) {
 		g_free( rec->nickName );
 		g_free( rec->name );
@@ -227,20 +227,6 @@ static pine_free_rec( Pine_ParsedRec *rec ) {
 		rec->isGroup = FALSE;
 		g_free( rec );
 	}
-}
-
-/*
- * Print data record.
- * Enter: rec    Data record.
- *        stream File.
- */
-static void pine_print_rec( Pine_ParsedRec *rec, FILE *stream ) {
-	fprintf( stream, "nick :%s:\n", rec->nickName );
-	fprintf( stream, "name :%s:\n", rec->name );
-	fprintf( stream, "addr :%s:\n", rec->address );
-	fprintf( stream, "fcc  :%s:\n", rec->fcc );
-	fprintf( stream, "comm :%s:\n", rec->comments );
-	fprintf( stream, "group:%s:\n", rec->isGroup ? "yes" : "no" );
 }
 
 /*
@@ -423,7 +409,7 @@ static void pine_parse_address( PineFile *pineFile, AddressCache *cache, Pine_Pa
 	gint len;
 
 	buf = rec->address;
-	while( atCh = strchr( buf, CHAR_AT ) ) {
+	while((atCh = strchr( buf, CHAR_AT )) != NULL) {
 		name = pine_parse_name( buf, atCh, &bp, &ep );
 		len = ( size_t ) ( ep - bp );
 		strncpy( addr, bp, len );

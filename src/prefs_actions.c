@@ -1123,10 +1123,10 @@ static gboolean execute_actions(gchar     *action,
 				GtkWidget *text,
 				MimeView  *mimeview)
 {
-	GList *cur, *selection;
+	GList *cur, *selection = NULL;
 	GSList *children_list = NULL;
 	gint is_ok  = TRUE;
-	gint selection_len;
+	gint selection_len = 0;
 	Children *children;
 	ChildInfo *child_info;
 	gint action_type;
@@ -1600,8 +1600,8 @@ static void update_io_dialog(Children *children)
 static void create_io_dialog(Children *children)
 {
 	GtkWidget *dialog;
-	GtkWidget *entry;
-	GtkWidget *input_hbox;
+	GtkWidget *entry = NULL;
+	GtkWidget *input_hbox = NULL;
 	GtkWidget *send_button;
 	GtkWidget *label;
 	GtkWidget *text;

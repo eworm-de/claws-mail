@@ -39,6 +39,7 @@
 #endif
 #include "alertpanel.h"
 #include "news.h"
+#include "imap.h"
 
 typedef struct _FlagInfo	FlagInfo;
 
@@ -48,15 +49,8 @@ struct _FlagInfo
 	MsgFlags flags;
 };
 
-static void mark_sum_func			(gpointer	 key,
-						 gpointer	 value,
-						 gpointer	 data);
-
 static GHashTable *procmsg_read_mark_file	(const gchar	*folder);
-static gint procmsg_cmp_msgnum			(gconstpointer	 a,
-						 gconstpointer	 b);
-static gint procmsg_cmp_flag_msgnum		(gconstpointer	 a,
-						 gconstpointer	 b);
+void   procmsg_msginfo_write_flags		(MsgInfo 	*msginfo);
 
 
 GHashTable *procmsg_msg_hash_table_create(GSList *mlist)
@@ -462,51 +456,6 @@ struct MarkSum {
 	gint first;
 };
 
-static void mark_sum_func(gpointer key, gpointer value, gpointer data)
-{
-	MsgFlags *flags = value;
-	gint num = GPOINTER_TO_INT(key);
-	struct MarkSum *marksum = data;
-
-	if (marksum->first <= num) {
-		if (MSG_IS_NEW(*flags) && !MSG_IS_IGNORE_THREAD(*flags)) (*marksum->new)++;
-		if (MSG_IS_UNREAD(*flags) && !MSG_IS_IGNORE_THREAD(*flags)) (*marksum->unread)++;
-		if (num > *marksum->max) *marksum->max = num;
-		if (num < *marksum->min || *marksum->min == 0) *marksum->min = num;
-		(*marksum->total)++;
-	}
-
-	g_free(flags);
-}
-
-#if 0 /* NEW CACHE DOES NOT ALLOW ACCESS TO THE MARK FILE */
-void procmsg_get_mark_sum(const gchar *folder,
-			  gint *new, gint *unread, gint *total,
-			  gint *min, gint *max,
-			  gint first)
-{
-	GHashTable *mark_table;
-	struct MarkSum marksum;
-
-	*new = *unread = *total = *min = *max = 0;
-	marksum.new    = new;
-	marksum.unread = unread;
-	marksum.total  = total;
-	marksum.min    = min;
-	marksum.max    = max;
-	marksum.first  = first;
-
-	mark_table = procmsg_read_mark_file(folder);
-
-	if (mark_table) {
-		g_hash_table_foreach(mark_table, mark_sum_func, &marksum);
-		g_hash_table_destroy(mark_table);
-	}
-	debug_print("mark->new = %d, mark->unread = %d, mark->total = %d\n",
-		    *(marksum.new), *(marksum.unread), *(marksum.total));
-}
-#endif
-
 static GHashTable *procmsg_read_mark_file(const gchar *folder)
 {
 	FILE *fp;
@@ -695,7 +644,6 @@ void procmsg_move_messages(GSList *mlist)
 	GSList *cur, *movelist = NULL;
 	MsgInfo *msginfo;
 	FolderItem *dest = NULL;
-	GHashTable *hash;
 
 	if (!mlist) return;
 
@@ -726,7 +674,6 @@ void procmsg_copy_messages(GSList *mlist)
 	GSList *cur, *copylist = NULL;
 	MsgInfo *msginfo;
 	FolderItem *dest = NULL;
-	GHashTable *hash;
 
 	if (!mlist) return;
 
@@ -901,7 +848,6 @@ void procmsg_empty_trash(void)
 
 gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 {
-	gint i;
 	gint ret = 0;
 	GSList *list, *elem;
 
@@ -952,7 +898,6 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 {
 	gint num;
 	FILE *fp;
-	MsgFlags flag = {0, 0};
 	MsgInfo *msginfo;
 
 	debug_print(_("saving sent message...\n"));
@@ -1192,17 +1137,6 @@ guint procmsg_msginfo_memusage(MsgInfo *msginfo)
 	return memusage;
 }
 
-static gint procmsg_cmp_msgnum(gconstpointer a, gconstpointer b)
-{
-	const MsgInfo *msginfo = a;
-	const guint msgnum = GPOINTER_TO_UINT(b);
-
-	if (!msginfo)
-		return -1;
-
-	return msginfo->msgnum - msgnum;
-}
-
 gint procmsg_cmp_msgnum_for_sort(gconstpointer a, gconstpointer b)
 {
 	const MsgInfo *msginfo1 = a;
@@ -1214,17 +1148,6 @@ gint procmsg_cmp_msgnum_for_sort(gconstpointer a, gconstpointer b)
 		return -1;
 
 	return msginfo1->msgnum - msginfo2->msgnum;
-}
-
-static gint procmsg_cmp_flag_msgnum(gconstpointer a, gconstpointer b)
-{
-	const FlagInfo *finfo = a;
-	const guint msgnum = GPOINTER_TO_UINT(b);
-
-	if (!finfo)
-		return -1;
-
-	return finfo->msgnum - msgnum;
 }
 
 enum

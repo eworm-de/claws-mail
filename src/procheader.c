@@ -204,15 +204,14 @@ GSList *procheader_get_header_list_from_file(const gchar *file)
 
 GSList *procheader_get_header_list(FILE *fp)
 {
-	gchar buf[BUFFSIZE], tmp[BUFFSIZE];
-	gchar *p;
+	gchar buf[BUFFSIZE];
 	GSList *hlist = NULL;
 	Header *header;
 
 	g_return_val_if_fail(fp != NULL, NULL);
 
 	while (procheader_get_unfolded_line(buf, sizeof(buf), fp) != NULL) {
-		if (header = procheader_parse_header(buf))
+		if ((header = procheader_parse_header(buf)) != NULL)
 			hlist = g_slist_append(hlist, header);
 		/*
 		if (*buf == ':') continue;
@@ -237,8 +236,7 @@ GSList *procheader_get_header_list(FILE *fp)
 
 GPtrArray *procheader_get_header_array(FILE *fp)
 {
-	gchar buf[BUFFSIZE], tmp[BUFFSIZE];
-	gchar *p;
+	gchar buf[BUFFSIZE];
 	GPtrArray *headers;
 	Header *header;
 
@@ -247,7 +245,7 @@ GPtrArray *procheader_get_header_array(FILE *fp)
 	headers = g_ptr_array_new();
 
 	while (procheader_get_unfolded_line(buf, sizeof(buf), fp) != NULL) {
-		if (header = procheader_parse_header(buf))
+		if ((header = procheader_parse_header(buf)) != NULL)
 			g_ptr_array_add(headers, header);
 		/*
 		if (*buf == ':') continue;
@@ -272,8 +270,7 @@ GPtrArray *procheader_get_header_array(FILE *fp)
 
 GPtrArray *procheader_get_header_array_asis(FILE *fp)
 {
-	gchar buf[BUFFSIZE], tmp[BUFFSIZE];
-	gchar *p;
+	gchar buf[BUFFSIZE];
 	GPtrArray *headers;
 	Header *header;
 
@@ -282,7 +279,7 @@ GPtrArray *procheader_get_header_array_asis(FILE *fp)
 	headers = g_ptr_array_new();
 
 	while (procheader_get_one_field(buf, sizeof(buf), fp, NULL) != -1) {
-		if (header = procheader_parse_header(buf))
+		if ((header = procheader_parse_header(buf)) != NULL)
 			g_ptr_array_add(headers, header);
 			/*
 		if (*buf == ':') continue;
@@ -752,7 +749,6 @@ gboolean procheader_date_parse_to_tm(const gchar *src, struct tm *t, char *zone)
 	gint hh, mm, ss;
 	GDateMonth dmonth;
 	gchar *p;
-	time_t timer;
 
 	if (!t)
 		return FALSE;
@@ -868,25 +864,27 @@ void procheader_date_get_localtime(gchar *dest, gint len, const time_t timer)
 
 gint get_header_from_msginfo(MsgInfo *msginfo, gchar *buf, gint len,gchar *header)
 {
-       gchar *file;
-       FILE *fp;
-       HeaderEntry hentry[]={{header,NULL,TRUE},
-                                    {NULL,NULL,FALSE}};
-       gint val;
-       g_return_if_fail(msginfo != NULL);
-       file = procmsg_get_message_file_path(msginfo);
-       if ((fp = fopen(file, "rb")) == NULL) {
+	gchar *file;
+	FILE *fp;
+	HeaderEntry hentry[]={{header,NULL,TRUE},
+                              {NULL,NULL,FALSE}};
+	gint val;
+       
+	g_return_val_if_fail(msginfo != NULL, -1);
+	file = procmsg_get_message_file_path(msginfo);
+	if ((fp = fopen(file, "rb")) == NULL) {
                FILE_OP_ERROR(file, "fopen");
                g_free(file);
-               return;
-        }
-       val=procheader_get_one_field(buf,len, fp, hentry);
-     	if (fclose(fp) == EOF) {
+               return -1;
+	}
+	val=procheader_get_one_field(buf,len, fp, hentry);
+	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(file, "fclose");
 		unlink(file);
 		return -1;
 	}
-       if (val == -1)
-          return -1;
-       return 0;
+        if (val == -1)
+		return -1;
+
+	return 0;
 }

@@ -176,7 +176,7 @@ gboolean addrselect_test_empty( AddrSelectList *asl ) {
 GList *addrselect_get_list( AddrSelectList *asl ) {
 	GList *node, *list;
 
-	g_return_if_fail( asl != NULL );
+	g_return_val_if_fail(asl != NULL, NULL);
 	list = NULL;
 	node = asl->listSelect;
 	while( node ) {

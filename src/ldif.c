@@ -326,24 +326,6 @@ static gchar *ldif_get_tagvalue( gchar* line ) {
 }
 
 /*
-* Dump linked lists of character strings (for debug).
-*/
-static void ldif_dump_lists( GSList *listName, GSList *listAddr, GSList *listRem, GSList *listID, FILE *stream ) {
-	fprintf( stream, "dump name\n" );
-	fprintf( stream, "------------\n" );
-	mgu_print_list( listName, stdout );
-	fprintf( stream, "dump address\n" );
-	fprintf( stream, "------------\n" );
-	mgu_print_list( listAddr, stdout );
-	fprintf( stream, "dump remarks\n" );
-	fprintf( stdout, "------------\n" );
-	mgu_print_list( listRem, stdout );
-	fprintf( stream, "dump id\n" );
-	fprintf( stdout, "------------\n" );
-	mgu_print_list( listID, stdout );
-}
-
-/*
 * Parsed address data.
 */
 typedef struct _Ldif_ParsedRec_ Ldif_ParsedRec;
@@ -587,25 +569,6 @@ static void ldif_print_record( Ldif_ParsedRec *rec, FILE *stream ) {
 	list = NULL;
 }
 #endif
-
-static void ldif_dump_b64( gchar *buf ) {
-	Base64Decoder *decoder = NULL;
-	gchar outBuf[8192];
-	gint len;
-
-	printf( "base-64 : inbuf : %s\n", buf );
-	decoder = base64_decoder_new();
-	len = base64_decoder_decode( decoder, buf, outBuf );
-	if (len < 0) {
-		printf( "base-64 : Bad BASE64 content\n" );
-	}
-	else {
-		outBuf[len] = '\0';
-		printf( "base-64 : %d : %s\n\n", len, outBuf );
-	}
-	base64_decoder_free( decoder );
-	decoder = NULL;
-}
 
 /*
 * Read file data into address cache.

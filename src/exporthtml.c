@@ -216,7 +216,7 @@ void exporthtml_print( ExportHtmlCtl *ctl, FILE *stream ) {
  * found in list, it will be returned.
  */
 static StylesheetEntry *exporthtml_find_stylesheet( ExportHtmlCtl *ctl ) {
-	StylesheetEntry *retVal;
+	StylesheetEntry *retVal = NULL;
 	StylesheetEntry *entry;
 	GList *node;
 
@@ -1019,7 +1019,7 @@ void exporthtml_process(
 
 	tt = time( NULL );
 	fprintf( htmlFile, "<p>%s</p>\n", ctime( &tt ) );
-	fprintf( htmlFile, "<hr width=\"100%\"></hr>\n" );
+	fprintf( htmlFile, "<hr width=\"100\%\"></hr>\n" );
 
 	fprintf( htmlFile, "</body>\n" );
 	fprintf( htmlFile, "</html>\n" );
@@ -1075,7 +1075,7 @@ gboolean exporthtml_test_dir( ExportHtmlCtl *ctl ) {
 	DIR *dp;
 
 	retVal = FALSE;
-	if( dp = opendir( ctl->dirOutput ) ) {
+	if((dp = opendir( ctl->dirOutput )) != NULL) {
 		retVal = TRUE;
 		closedir( dp );
 	}

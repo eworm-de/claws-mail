@@ -2,8 +2,9 @@
  * This program is based on gtkflist.c
  */
 
-#include "gtksctree.h"
+#include <stdlib.h>
 
+#include "gtksctree.h"
 
 enum {
 	ROW_POPUP_MENU,

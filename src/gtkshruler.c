@@ -112,14 +112,6 @@ gtk_shruler_new(void)
 	return GTK_WIDGET( gtk_type_new( gtk_shruler_get_type() ) );
 }
 
-static gint
-gtk_shruler_motion_notify(GtkWidget      *widget,
-			  GdkEventMotion *event)
-{
-	/* I could have perhaps set this to NULL */
-	return FALSE;
-}
-
 static void
 gtk_shruler_draw_ticks(GtkRuler *ruler)
 {

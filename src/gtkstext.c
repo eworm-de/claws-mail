@@ -44,7 +44,7 @@
 
 #include "compose.h"
 #include "gtkstext.h"
-
+#include "gtkutils.h"
 
 /* line_arrow.xbm */
 #define line_arrow_width 6

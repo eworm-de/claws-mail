@@ -121,8 +121,6 @@ static void toolbar_inc_all_cb		(GtkWidget	*widget,
 static void toolbar_send_cb		(GtkWidget	*widget,
 					 gpointer	 data);
 
-static void toolbar_compose_cb		(GtkWidget	*widget,
-					 gpointer	 data);
 static void toolbar_compose_news_cb	(GtkWidget	*widget,
 					 gpointer	 data);
 static void toolbar_compose_mail_cb	(GtkWidget	*widget,
@@ -164,10 +162,6 @@ static void toolbar_exec_cb		(GtkWidget	*widget,
 static void toolbar_next_unread_cb	(GtkWidget	*widget,
 					 gpointer	 data);
 
-static void toolbar_prefs_cb		(GtkWidget	*widget,
-					 gpointer	 data);
-static void toolbar_account_cb		(GtkWidget	*widget,
-					 gpointer	 data);
 
 #if 0
 static void toolbar_account_button_pressed	(GtkWidget	*widget,
@@ -272,9 +266,6 @@ static void send_queue_cb		(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
 
-static void compose_cb			(MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
 static void compose_mail_cb(MainWindow *mainwin, guint action,
 			    GtkWidget *widget);
 static void compose_news_cb(MainWindow *mainwin, guint action,
@@ -830,7 +821,6 @@ MainWindow *main_window_create(SeparateType type)
 	GtkItemFactory *ifactory;
 	GtkWidget *ac_menu;
 	GtkWidget *menuitem;
-	GtkWidget *compose_popup;
 	GtkWidget *reply_popup;
 	GtkWidget *replyall_popup;
 	GtkWidget *replysender_popup;
@@ -1487,7 +1477,7 @@ void main_window_add_mailbox(MainWindow *mainwin)
 
 	folder_add(folder);
 	folder_set_ui_func(folder, scan_tree_func, mainwin);
-	folder->scan_tree(folder);
+	folder_scan_tree(folder);
 	folder_set_ui_func(folder, NULL, NULL);
 
 	folderview_set(mainwin->folderview);
@@ -1581,7 +1571,7 @@ static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 		/*		if (item->folder->type != F_NEWS) */
 		state |= M_ALLOW_DELETE;
 
-		if (selection == SUMMARY_NONE && item->hide_read_msgs
+		if ((selection == SUMMARY_NONE && item->hide_read_msgs)
 		    || selection != SUMMARY_NONE)
 			state |= M_HIDE_READ_MSG;	
 	}		
@@ -2079,8 +2069,6 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	GtkWidget *delete_btn;
 	GtkWidget *exec_btn;
 	
-	GtkTooltips *tooltips;
-
 	toolbar = gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL,
 				  GTK_TOOLBAR_BOTH);
 	gtk_container_add(GTK_CONTAINER(container), toolbar);
@@ -2318,7 +2306,6 @@ static void toolbar_reply_to_all_popup_closed_cb(GtkMenuShell *menu_shell, gpoin
 static void toolbar_reply_to_sender_popup_cb(GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
 	MainWindow *mainwindow = (MainWindow *) data;
-	GtkWidget *replysender_menu, *replysender_item;
 
 	if (!event) return;
 
@@ -2382,17 +2369,6 @@ static void toolbar_send_cb	(GtkWidget	*widget,
 	MainWindow *mainwin = (MainWindow *)data;
 
 	send_queue_cb(mainwin, 0, NULL);
-}
-
-static void toolbar_compose_cb	(GtkWidget	*widget,
-				 gpointer	 data)
-{
-	MainWindow *mainwin = (MainWindow *)data;
-
-	if (mainwin->compose_btn_type == COMPOSEBUTTON_MAIL)
-		compose_cb(mainwin, 0, NULL);
-	else
-		compose_news_cb(mainwin, 0, NULL);
 }
 
 static void toolbar_compose_news_cb	(GtkWidget	*widget,
@@ -2475,20 +2451,6 @@ static void toolbar_next_unread_cb	(GtkWidget	*widget,
 	MainWindow *mainwin = (MainWindow *)data;
 
 	next_unread_cb(mainwin, 0, NULL);
-}
-
-static void toolbar_prefs_cb	(GtkWidget	*widget,
-				 gpointer	 data)
-{
-	prefs_common_open();
-}
-
-static void toolbar_account_cb	(GtkWidget	*widget,
-				 gpointer	 data)
-{
-	MainWindow *mainwin = (MainWindow *)data;
-
-	prefs_account_open_cb(mainwin, 0, NULL);
 }
 
 #if 0
@@ -2858,19 +2820,6 @@ static void send_queue_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 			folderview_update_item(folder->queue, TRUE);
 		}
 	}
-}
-
-static void compose_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
-{
-	if (mainwin->summaryview->folder_item) {
-		if (mainwin->summaryview->folder_item->folder->account != NULL
-		    && mainwin->summaryview->folder_item->folder->account->protocol == A_NNTP)
-			compose_new_with_recipient(mainwin->summaryview->folder_item->folder->account, mainwin->summaryview->folder_item->path);
-		else
-			compose_new_with_folderitem(mainwin->summaryview->folder_item->folder->account, mainwin->summaryview->folder_item);
-	}
-	else
-		compose_new(NULL);
 }
 
 static void compose_mail_cb(MainWindow *mainwin, guint action,
@@ -3327,8 +3276,6 @@ static void activate_compose_button (MainWindow *mainwin,
 				ToolbarStyle style,
 				ComposeButtonType type)
 {
-	SensitiveCond state = main_window_get_current_state(mainwin);
-
 	if (style == TOOLBAR_NONE) 
 		return;
 

@@ -261,6 +261,7 @@ static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 		inc_spool_account(account);
 		return 1;
 	}
+	return 0;
 }
 
 void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
@@ -565,7 +566,6 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		/* CLAWS: perform filtering actions on dropped message */
 		if (global_processing != NULL) {
 			FolderItem *processing, *inbox;
-			Folder *folder;
 			MsgInfo *msginfo;
 			GSList *msglist, *msglist_element;
 
@@ -1114,8 +1114,6 @@ static gint inc_spool(void)
 static void inc_spool_account(PrefsAccount *account)
 {
 	FolderItem *inbox;
-	FolderItem *dropfolder;
-	gint val;
 
 	if (account->inbox) {
 		inbox = folder_find_item_from_path(account->inbox);
@@ -1135,7 +1133,6 @@ static void inc_all_spool(void)
 	if (!list) return;
 
 	for (; list != NULL; list = list->next) {
-		IncSession *session;
 		PrefsAccount *account = list->data;
 
 		if ((account->protocol == A_LOCAL) &&

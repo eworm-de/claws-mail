@@ -80,9 +80,6 @@ static gint news_get_article_cmd	 (NNTPSession	*session,
 static gint news_get_article		 (NNTPSession	*session,
 					  gint		 num,
 					  gchar		*filename);
-static gint news_get_header		 (NNTPSession	*session,
-					  gint		 num,
-					  gchar		*filename);
 
 static gint news_select_group		 (NNTPSession	*session,
 					  const gchar	*group,
@@ -374,9 +371,6 @@ gint news_scan_group(Folder *folder, FolderItem *item)
 {
 	NNTPSession *session;
 	gint num = 0, first = 0, last = 0;
-	gint new = 0, unread = 0, total = 0;
-	gint min = 0, max = 0;
-	gchar *path;
 	gint ok;
 
 	g_return_val_if_fail(folder != NULL, -1);
@@ -648,11 +642,6 @@ static gint news_remove_msg(Folder *folder, FolderItem *item, gint num)
 static gint news_get_article(NNTPSession *session, gint num, gchar *filename)
 {
 	return news_get_article_cmd(session, "ARTICLE", num, filename);
-}
-
-static gint news_get_header(NNTPSession *session, gint num, gchar *filename)
-{
-	return news_get_article_cmd(session, "HEAD", num, filename);
 }
 
 /**

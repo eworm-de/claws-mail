@@ -43,5 +43,8 @@ gboolean addressbook_load_completion	( gint (*callBackFunc) ( const gchar *, con
 void addressbook_gather			( FolderItem *folderItem,
 					  gboolean sourceInd,
 					  GList *msgList );
+void addressbook_harvest		(FolderItem 	*folderItem,
+					 gboolean sourceInd,
+					 GList *msgList);
 
 #endif /* __ADDRESSBOOK_H__ */

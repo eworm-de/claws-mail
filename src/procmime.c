@@ -480,7 +480,6 @@ void procmime_scan_content_disposition(MimeInfo *mimeinfo,
 void procmime_scan_content_description(MimeInfo *mimeinfo,
 				       const gchar *content_description)
 {
-	gchar *delim, *p, *dispos;
 	gchar *buf;
 
 	gchar *tmp;
@@ -505,7 +504,6 @@ void procmime_scan_content_description(MimeInfo *mimeinfo,
 void procmime_scan_subject(MimeInfo *mimeinfo,
 			   const gchar *subject)
 {
-	gchar *delim, *p, *dispos;
 	gchar *buf;
 
 	gchar *tmp;
@@ -788,7 +786,6 @@ void renderer_read_config(void)
 
 void renderer_write_config(void)
 {
-	int i;
 	gchar * rcpath;
 	PrefFile *pfile;
 	GList * cur;
@@ -823,7 +820,6 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 	gboolean conv_fail = FALSE;
 	gchar buf[BUFFSIZE];
 	gchar *str;
-	int i;
 	struct ContentRenderer * renderer;
 	GList * cur;
 
