@@ -1,3 +1,9 @@
+2003-04-17 [christoph]	0.8.11claws97
+
+	* src/common/socket.h
+	* src/gtk/sslcertwindow.h
+		rename old USE_SSL to USE_OPENSSL
+
 2003-04-17 [paul]	0.8.11claws96
 
 	* src/prefs_common.h
