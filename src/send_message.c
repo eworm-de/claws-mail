@@ -42,12 +42,12 @@
 #include "procheader.h"
 #include "account.h"
 #include "progressdialog.h"
+#include "statusbar.h"
 #include "inputdialog.h"
 #include "alertpanel.h"
 #include "manage_window.h"
 #include "utils.h"
 #include "gtkutils.h"
-#include "statusbar.h"
 #include "inc.h"
 #include "log.h"
 
@@ -454,10 +454,12 @@ static gint send_recv_message(Session *session, const gchar *msg, gpointer data)
 	case SMTP_HELO:
 		g_snprintf(buf, sizeof(buf), _("Sending HELO..."));
 		state_str = _("Authenticating");
+		statusbar_print_all(_("Sending message..."));
 		break;
 	case SMTP_EHLO:
 		g_snprintf(buf, sizeof(buf), _("Sending EHLO..."));
 		state_str = _("Authenticating");
+		statusbar_print_all(_("Sending message..."));
 		break;
 	case SMTP_AUTH:
 		g_snprintf(buf, sizeof(buf), _("Authenticating..."));

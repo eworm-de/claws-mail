@@ -74,8 +74,6 @@ gboolean sock_is_nonblocking_mode	(SockInfo *sock);
 guint sock_add_watch			(SockInfo *sock, GIOCondition condition,
 					 SockFunc func, gpointer data);
 
-gboolean sock_has_pending_data		(SockInfo *sock);
-
 struct hostent *my_gethostbyname	(const gchar *hostname);
 
 SockInfo *sock_connect			(const gchar *hostname, gushort port);

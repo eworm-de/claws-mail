@@ -282,14 +282,20 @@ static gboolean sock_check(gpointer source_data, GTimeVal *current_time,
 	SockInfo *sock = (SockInfo *)source_data;
 	struct timeval timeout = {0, 0};
 	fd_set fds;
+	GIOCondition condition = sock->condition;
 
 #if USE_OPENSSL
 	if (sock->ssl) {
-		if (sock->condition & G_IO_IN) {
-			if (SSL_pending(sock->ssl) > 0) {
-				g_print("SSL has pending data\n");
+		if (condition & G_IO_IN) {
+			if (SSL_pending(sock->ssl) > 0)
 				return TRUE;
-			}
+			if (SSL_want_write(sock->ssl))
+				condition |= G_IO_OUT;
+		}
+
+		if (condition & G_IO_OUT) {
+			if (SSL_want_read(sock->ssl))
+				condition |= G_IO_IN;
 		}
 	}
 #endif
@@ -298,8 +304,8 @@ static gboolean sock_check(gpointer source_data, GTimeVal *current_time,
 	FD_SET(sock->sock, &fds);
 
 	select(sock->sock + 1,
-	       (sock->condition & G_IO_IN)  ? &fds : NULL,
-	       (sock->condition & G_IO_OUT) ? &fds : NULL,
+	       (condition & G_IO_IN)  ? &fds : NULL,
+	       (condition & G_IO_OUT) ? &fds : NULL,
 	       NULL, &timeout);
 
 	return FD_ISSET(sock->sock, &fds) != 0;
@@ -335,31 +341,6 @@ guint sock_add_watch(SockInfo *sock, GIOCondition condition, SockFunc func,
 #endif
 
 	return g_io_add_watch(sock->sock_ch, condition, sock_watch_cb, sock);
-}
-
-gboolean sock_has_pending_data(SockInfo *sock)
-{
-	struct timeval timeout = {0, 0};
-	fd_set fds;
-
-#if USE_OPENSSL
-	if (sock->ssl) {
-		if (SSL_pending(sock->ssl) > 0)
-			g_print("socket has pending data\n");
-
-		return SSL_pending(sock->ssl) > 0;
-	}
-#endif
-
-	FD_ZERO(&fds);
-	FD_SET(sock->sock, &fds);
-
-	select(sock->sock + 1, &fds, NULL, NULL, &timeout);
-
-	if (FD_ISSET(sock->sock, &fds))
-		g_print("socket has pending data\n");
-
-	return FD_ISSET(sock->sock, &fds);
 }
 
 static gint fd_check_io(gint fd, GIOCondition cond)
@@ -1046,11 +1027,7 @@ gint ssl_read(SSL *ssl, gchar *buf, gint len)
 	case SSL_ERROR_NONE:
 		return ret;
 	case SSL_ERROR_WANT_READ:
-		g_print("ssl_read(): SSL_ERROR_WANT_READ\n");
-		errno = EAGAIN;
-		return -1;
 	case SSL_ERROR_WANT_WRITE:
-		g_print("ssl_read(): SSL_ERROR_WANT_WRITE\n");
 		errno = EAGAIN;
 		return -1;
 	default:
@@ -1096,11 +1073,7 @@ gint ssl_write(SSL *ssl, const gchar *buf, gint len)
 	case SSL_ERROR_NONE:
 		return ret;
 	case SSL_ERROR_WANT_READ:
-		g_print("ssl_write(): SSL_ERROR_WANT_READ\n");
-		errno = EAGAIN;
-		return -1;
 	case SSL_ERROR_WANT_WRITE:
-		g_print("ssl_write(): SSL_ERROR_WANT_WRITE\n");
 		errno = EAGAIN;
 		return -1;
 	default:
@@ -1344,11 +1317,7 @@ gint ssl_peek(SSL *ssl, gchar *buf, gint len)
 	case SSL_ERROR_NONE:
 		return ret;
 	case SSL_ERROR_WANT_READ:
-		g_print("ssl_peek(): SSL_ERROR_WANT_READ\n");
-		errno = EAGAIN;
-		return -1;
 	case SSL_ERROR_WANT_WRITE:
-		g_print("ssl_peek(): SSL_ERROR_WANT_WRITE\n");
 		errno = EAGAIN;
 		return -1;
 	default:

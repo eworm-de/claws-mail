@@ -171,6 +171,7 @@ void session_destroy(Session *session)
 	g_return_if_fail(session->destroy != NULL);
 
 	debug_print("session: session_destroy()\n");
+
 	session_close(session);
 	session->destroy(session);
 	g_free(session->server);
@@ -401,14 +402,9 @@ static gboolean session_read_msg_cb(SockInfo *source, GIOCondition condition,
 
 	/* this should always succeed */
 	if (read_len < 0) {
-		switch (errno) {
-		case EAGAIN:
-			return TRUE;
-		default:
-			g_warning("sock_read: %s\n", g_strerror(errno));
-			session->state = SESSION_ERROR;
-			return FALSE;
-		}
+		g_warning("sock_read: %s\n", g_strerror(errno));
+		session->state = SESSION_ERROR;
+		return FALSE;
 	}
 
 	buf[read_len] = '\0';

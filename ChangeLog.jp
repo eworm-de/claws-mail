@@ -1,3 +1,18 @@
+2003-07-04
+
+	* version 0.9.3
+
+2003-07-04
+
+	* src/defs.h: UI_REFRESH_INTERVAL を 40msec から 50msec に変更。
+	* src/session.c: session_read_msg_cb(): sock_read() がエラーで
+	  返るときは常に失敗するようにした。
+	* src/socket.[ch]: sock_check(): 例外的な SSL の状態に対応。
+	  sock_has_pending_data(): 削除。
+	  デバッグ出力を削除。
+	* src/send_message.c: send_recv_message(): メッセージをステータスバー
+	  に表示。
+
 2003-07-03
 
 	* src/inc.[ch]: 受信中に CList の受信済メッセージ数を更新。
