@@ -303,7 +303,9 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 		MimeInfo *partinfo;
 
 		partinfo = gtk_ctree_node_get_row_data(ctree, node);
-		if (partinfo && partinfo->mime_type == MIME_TEXT)
+		if (partinfo &&
+		    (partinfo->mime_type == MIME_TEXT ||
+		     partinfo->mime_type == MIME_TEXT_HTML))
 			break;
 	}
 	if (!node)

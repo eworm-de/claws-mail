@@ -2,8 +2,15 @@
 
 	* Released version 0.6.6claws, cvs tag: rel_0_6_6
 
+	* src/mimeview.c
+		last minute sync with main 0.6.6
+
 	* po/es.po
 		updated by Ricardo Mones Lastra
+		update for last minute sync
+	* po/fr.po
+	* po/nl.po
+		update for last minute sync
 
 2001-12-15 [melvin]
 
