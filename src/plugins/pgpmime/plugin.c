@@ -52,7 +52,7 @@ gint plugin_init(gchar **error)
 
 void plugin_done(void)
 {
-	prefs_gpg_init();
+	prefs_gpg_done();
 	pgpmime_done();
 	sgpgme_done();
 }

@@ -1,3 +1,8 @@
+2004-11-23 [thorsten]	0.9.12cvs168
+
+	* src/plugins/pgpmime/plugin.c
+		typo: plugin_init instead of plugin_done
+
 2004-11-23 [thorsten]	0.9.12cvs167
 
 	* commitHelper
