@@ -1,3 +1,9 @@
+2004-09-23 [christoph]	0.9.12cvs103
+
+	* src/plugins/spamassassin/libspamc.[ch]
+	* src/plugins/spamassassin/utils.[ch]
+		update libspamc to SpamAssassin 3.0.0
+
 2004-09-17 [paul]	0.9.12cvs102
 
 	* ChangeLog
