@@ -1423,7 +1423,7 @@ gint mbox_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 
 		if (stat(file, &s) < 0) {
 			mbox_unlock_file(dest_fp, mbox_path);
-			g_warning(_("unvalid file - %s.\n"), file);
+			g_warning(_("invalid file - %s.\n"), file);
 			fclose(dest_fp);
 			fclose(src_fp);
 			g_free(mbox_path);

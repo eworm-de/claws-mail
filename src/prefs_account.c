@@ -1359,7 +1359,7 @@ static void prefs_account_privacy_create(void)
 			   _("Encrypt message by default"));
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_ascii_armored,
-			   _("Plain ASCII armored"));
+			   _("Plain ASCII-armored"));
 	gtk_signal_connect(GTK_OBJECT(checkbtn_ascii_armored), "toggled",
 				prefs_account_ascii_armored_warning, (gpointer)0);
 
@@ -1433,9 +1433,9 @@ static void prefs_account_ascii_armored_warning(GtkWidget* widget,
 {
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget))
 		&& gtk_notebook_get_current_page(GTK_NOTEBOOK(dialog.notebook))) {
-		alertpanel_message(_("Warning - Privacy/Plain ASCII armored"),
-			_("Its not recommend to use the old style plain ASCII\n"
-			"armored mode for encypted messages. It doesn't comply\n"
+		alertpanel_message(_("Warning - Privacy/Plain ASCII-armored"),
+			_("Its not recommend to use the old style plain ASCII-\n"
+			"armored mode for encrypted messages. It doesn't comply\n"
 			"with the RFC 3156 - MIME security with OpenPGP."));
 	}
 }
@@ -1645,7 +1645,7 @@ static void prefs_account_advanced_create(void)
 
 	PACK_HBOX (hbox1);
 	PACK_CHECK_BUTTON (hbox1, checkbtn_crosspost, 
-			   _("Mark crossposted messages as read and color:"));
+			   _("Mark cross-posted messages as read and color:"));
 	gtk_signal_connect (GTK_OBJECT (checkbtn_crosspost), "toggled",
 					GTK_SIGNAL_FUNC (crosspost_color_toggled),
 					NULL);

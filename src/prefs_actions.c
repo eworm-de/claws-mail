@@ -1163,7 +1163,7 @@ ChildInfo *fork_child(gchar *cmd,
 		return NULL; /* Pipe error */
 	}
 	
-	debug_print(_("Forking child and granchild.\n"));
+	debug_print(_("Forking child and grandchild.\n"));
 
 	pid_c = fork();
 	if (pid_c == (pid_t) 0) {/* Child */
