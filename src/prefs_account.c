@@ -314,6 +314,9 @@ static void prefs_account_privacy_create	(void);
 #endif /* USE_GPGME */
 static void prefs_account_advanced_create	(void);
 
+static gint prefs_account_deleted		(GtkWidget	*widget,
+						 GdkEventAny	*event,
+						 gpointer	 data);
 static void prefs_account_key_pressed		(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 gpointer	 data);
@@ -501,7 +504,7 @@ static void prefs_account_create(void)
 	/* create dialog */
 	prefs_dialog_create(&dialog);
 	gtk_signal_connect(GTK_OBJECT(dialog.window), "delete_event",
-			   GTK_SIGNAL_FUNC(prefs_account_cancel), NULL);
+			   GTK_SIGNAL_FUNC(prefs_account_deleted), NULL);
 	gtk_signal_connect(GTK_OBJECT(dialog.window), "key_press_event",
 			   GTK_SIGNAL_FUNC(prefs_account_key_pressed), NULL);
 	gtk_signal_connect(GTK_OBJECT(dialog.window), "focus_in_event",
@@ -1202,6 +1205,13 @@ static void prefs_account_advanced_create(void)
 	advanced.popport_entry		= entry_popport;
 	advanced.domain_chkbtn		= checkbtn_domain;
 	advanced.domain_entry		= entry_domain;
+}
+
+static gint prefs_account_deleted(GtkWidget *widget, GdkEventAny *event,
+				  gpointer data)
+{
+	prefs_account_cancel();
+	return TRUE;
 }
 
 static void prefs_account_key_pressed(GtkWidget *widget, GdkEventKey *event,

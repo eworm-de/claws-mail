@@ -54,6 +54,9 @@ static void alertpanel_button_toggled	(GtkToggleButton *button,
 					 gpointer	 data);
 static void alertpanel_button_clicked	(GtkWidget	*widget,
 					 gpointer	 data);
+static gint alertpanel_deleted		(GtkWidget	*widget,
+					 GdkEventAny	*event,
+					 gpointer	 data);
 static void alertpanel_close		(GtkWidget	*widget,
 					 GdkEventAny	*event,
 					 gpointer	 data);
@@ -186,7 +189,7 @@ static void alertpanel_create(const gchar *title,
 		(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), 5);
 	gtk_window_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 	gtk_signal_connect(GTK_OBJECT(dialog), "delete_event",
-			   GTK_SIGNAL_FUNC(alertpanel_close),
+			   GTK_SIGNAL_FUNC(alertpanel_deleted),
 			   (gpointer)G_ALERTOTHER);
 	gtk_signal_connect(GTK_OBJECT(dialog), "key_press_event",
 			   GTK_SIGNAL_FUNC(alertpanel_close),
@@ -293,6 +296,13 @@ static void alertpanel_button_toggled(GtkToggleButton *button,
 static void alertpanel_button_clicked(GtkWidget *widget, gpointer data)
 {
 	value = (value & ~G_ALERT_VALUE_MASK) | (AlertValue)data;
+}
+
+static gint alertpanel_deleted(GtkWidget *widget, GdkEventAny *event,
+			       gpointer data)
+{
+	value = (value & ~G_ALERT_VALUE_MASK) | (AlertValue)data;
+	return TRUE;
 }
 
 static void alertpanel_close(GtkWidget *widget, GdkEventAny *event,

@@ -79,6 +79,8 @@ static void fill_clist (struct select_keys_s *sk, const char *pattern);
 static void create_dialog (struct select_keys_s *sk);
 static void open_dialog (struct select_keys_s *sk);
 static void close_dialog (struct select_keys_s *sk);
+static gint delete_event_cb (GtkWidget *widget,
+                             GdkEventAny *event, gpointer data);
 static void key_pressed_cb (GtkWidget *widget,
                             GdkEventKey *event, gpointer data);
 static void select_btn_cb (GtkWidget *widget, gpointer data);
@@ -270,7 +272,7 @@ create_dialog (struct select_keys_s *sk)
     gtk_window_set_title (GTK_WINDOW (window), _("Select Keys"));
     gtk_window_set_modal (GTK_WINDOW (window), TRUE);
     gtk_signal_connect (GTK_OBJECT (window), "delete_event",
-                        GTK_SIGNAL_FUNC (close_dialog), sk);
+                        GTK_SIGNAL_FUNC (delete_event_cb), sk);
     gtk_signal_connect (GTK_OBJECT (window), "key_press_event",
                         GTK_SIGNAL_FUNC (key_pressed_cb), sk);
 
@@ -361,6 +363,18 @@ close_dialog (struct select_keys_s *sk)
     g_return_if_fail (sk);
     gtk_widget_destroy (sk->window);
     sk->window = NULL;
+}
+
+
+static gint
+delete_event_cb (GtkWidget *widget, GdkEventAny *event, gpointer data)
+{
+    struct select_keys_s *sk = data;
+
+    sk->okay = 0;
+    gtk_main_quit ();
+
+    return TRUE;
 }
 
 

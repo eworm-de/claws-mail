@@ -35,6 +35,7 @@ static gboolean filesel_ack;
 static void filesel_create(const gchar *title);
 static void filesel_ok_cb(GtkWidget *widget, gpointer data);
 static void filesel_cancel_cb(GtkWidget *widget, gpointer data);
+static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data);
 static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data);
 
 gchar *filesel_select_file(const gchar *title, const gchar *file)
@@ -98,7 +99,7 @@ static void filesel_create(const gchar *title)
 		 "clicked", GTK_SIGNAL_FUNC(filesel_cancel_cb),
 		 NULL);
 	gtk_signal_connect(GTK_OBJECT(filesel), "delete_event",
-			   GTK_SIGNAL_FUNC(filesel_cancel_cb),
+			   GTK_SIGNAL_FUNC(delete_event),
 			   NULL);
 	gtk_signal_connect(GTK_OBJECT(filesel), "key_press_event",
 			   GTK_SIGNAL_FUNC(key_pressed), NULL);
@@ -120,6 +121,12 @@ static void filesel_cancel_cb(GtkWidget *widget, gpointer data)
 {
 	filesel_ack = FALSE;
 	gtk_main_quit();
+}
+
+static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data)
+{
+	filesel_cancel_cb(NULL, NULL);
+	return TRUE;
 }
 
 static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)

@@ -570,6 +570,9 @@ static void prefs_font_selection_key_pressed	(GtkWidget	*widget,
 						 gpointer	 data);
 static void prefs_font_selection_ok		(GtkButton	*button);
 
+static gint prefs_common_deleted	(GtkWidget	*widget,
+					 GdkEventAny	*event,
+					 gpointer	 data);
 static void prefs_common_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
@@ -614,7 +617,7 @@ static void prefs_common_create(void)
 	gtk_window_set_title (GTK_WINDOW(dialog.window),
 			      _("Common Preferences"));
 	gtk_signal_connect (GTK_OBJECT(dialog.window), "delete_event",
-			    GTK_SIGNAL_FUNC(prefs_common_cancel), NULL);
+			    GTK_SIGNAL_FUNC(prefs_common_deleted), NULL);
 	gtk_signal_connect (GTK_OBJECT(dialog.window), "key_press_event",
 			    GTK_SIGNAL_FUNC(prefs_common_key_pressed), NULL);
 	gtk_signal_connect (GTK_OBJECT(dialog.window), "focus_in_event",
@@ -2476,6 +2479,13 @@ static void prefs_common_charset_set_optmenu(PrefParam *pparam)
 
 	gtk_option_menu_set_history(optmenu, 0);
 	prefs_common_charset_set_data_from_optmenu(pparam);
+}
+
+static gint prefs_common_deleted(GtkWidget *widget, GdkEventAny *event,
+				 gpointer data)
+{
+	prefs_common_cancel();
+	return TRUE;
 }
 
 static void prefs_common_key_pressed(GtkWidget *widget, GdkEventKey *event,

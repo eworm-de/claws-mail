@@ -62,6 +62,7 @@ static void import_ok_cb(GtkWidget *widget, gpointer data);
 static void import_cancel_cb(GtkWidget *widget, gpointer data);
 static void import_filesel_cb(GtkWidget *widget, gpointer data);
 static void import_destsel_cb(GtkWidget *widget, gpointer data);
+static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data);
 static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data);
 
 gint import_mbox(FolderItem *default_dest)
@@ -128,7 +129,7 @@ static void import_create(void)
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, FALSE);
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(import_cancel_cb), NULL);
+			   GTK_SIGNAL_FUNC(delete_event), NULL);
 	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
 			   GTK_SIGNAL_FUNC(key_pressed), NULL);
 	gtk_signal_connect(GTK_OBJECT(window), "focus_in_event",
@@ -229,6 +230,12 @@ static void import_destsel_cb(GtkWidget *widget, gpointer data)
 	dest = foldersel_folder_sel(NULL);
 	if (dest && dest->path)
 		gtk_entry_set_text(GTK_ENTRY(dest_entry), dest->path);
+}
+
+static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data)
+{
+	import_cancel_cb(NULL, NULL);
+	return TRUE;
 }
 
 static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)

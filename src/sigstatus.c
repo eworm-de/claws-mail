@@ -77,6 +77,17 @@ static void okay_cb(GtkWidget *widget, gpointer data)
 }
 
 
+static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data)
+{
+        GpgmegtkSigStatus hd = data;
+
+        hd->running = 0;
+        do_destroy(hd);
+
+	return TRUE;
+}
+
+
 static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
         GpgmegtkSigStatus hd = data;
@@ -108,7 +119,7 @@ GpgmegtkSigStatus gpgmegtk_sig_status_create()
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
         gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-                           GTK_SIGNAL_FUNC(okay_cb), hd);
+                           GTK_SIGNAL_FUNC(delete_event), hd);
         gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
                            GTK_SIGNAL_FUNC(key_pressed), hd);
 

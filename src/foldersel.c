@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,6 +74,7 @@ static void foldersel_selected(GtkCList *clist, gint row, gint column,
 static void foldersel_ok(GtkButton *button, gpointer data);
 static void foldersel_cancel(GtkButton *button, gpointer data);
 static void foldersel_activated(void);
+static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data);
 static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data);
 
 FolderItem *foldersel_folder_sel(const gchar *default_folder)
@@ -134,7 +135,7 @@ static void foldersel_create(void)
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, TRUE);
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(foldersel_cancel), NULL);
+			   GTK_SIGNAL_FUNC(delete_event), NULL);
 	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
 			   GTK_SIGNAL_FUNC(key_pressed), NULL);
 	gtk_signal_connect(GTK_OBJECT(window), "focus_in_event",
@@ -281,6 +282,12 @@ static void foldersel_cancel(GtkButton *button, gpointer data)
 static void foldersel_activated(void)
 {
 	gtk_button_clicked(GTK_BUTTON(ok_button));
+}
+
+static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data)
+{
+	foldersel_cancel(NULL, NULL);
+	return TRUE;
 }
 
 static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)

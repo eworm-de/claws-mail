@@ -1,3 +1,26 @@
+2001-05-08
+
+	* src/select-keys.c: delete_event_cb(): removed `;' from its end.
+
+2001-05-07
+
+	* src/prefs_common.c
+	  src/prefs_account.c
+	  src/prefs_filter.c
+	  src/account.c
+	  src/alertpanel.c
+	  src/filesel.c
+	  src/foldersel.c
+	  src/export.c
+	  src/import.c
+	  src/inputdialog.c
+	  src/passphrase.c
+	  src/select-keys.c
+	  src/sigstatus.c: fixed a bug that accidentally destroyed dialogs
+	  when closed them with delete_event (thanks to DINH).
+	  Added *_deleted() and *delete_event() which handle delete_event
+	  signal correctly.
+
 2001-05-06
 
 	* src/prefs_display_header.c: merged some changes from claws branch:

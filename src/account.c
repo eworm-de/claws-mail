@@ -77,6 +77,9 @@ static void account_down		(void);
 static void account_set_default		(void);
 
 static void account_edit_close		(void);
+static gint account_delete_event	(GtkWidget	*widget,
+					 GdkEventAny	*event,
+					 gpointer	 data);
 static void account_key_pressed		(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
@@ -357,7 +360,7 @@ static void account_edit_create(void)
 	gtk_window_set_title (GTK_WINDOW (window), _("Edit accounts"));
 	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
 	gtk_signal_connect (GTK_OBJECT (window), "delete_event",
-			    GTK_SIGNAL_FUNC (account_edit_close), NULL);
+			    GTK_SIGNAL_FUNC (account_delete_event), NULL);
 	gtk_signal_connect (GTK_OBJECT (window), "key_press_event",
 			    GTK_SIGNAL_FUNC (account_key_pressed), NULL);
 	gtk_signal_connect (GTK_OBJECT (window), "focus_in_event",
@@ -579,6 +582,13 @@ static void account_edit_close(void)
 	gtk_widget_hide(edit_account.window);
 
 	inc_autocheck_timer_set();
+}
+
+static gint account_delete_event(GtkWidget *widget, GdkEventAny *event,
+				 gpointer data)
+{
+	account_edit_close();
+	return TRUE;
 }
 
 static void account_key_pressed(GtkWidget *widget, GdkEventKey *event,

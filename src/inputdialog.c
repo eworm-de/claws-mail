@@ -59,6 +59,9 @@ static void ok_clicked		(GtkWidget	*widget,
 				 gpointer	 data);
 static void cancel_clicked	(GtkWidget	*widget,
 				 gpointer	 data);
+static gint delete_event	(GtkWidget	*widget,
+				 GdkEventAny	*event,
+				 gpointer	 data);
 static void key_pressed		(GtkWidget	*widget,
 				 GdkEventKey	*event,
 				 gpointer	 data);
@@ -125,7 +128,7 @@ static void input_dialog_create(void)
 		(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), 5);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 	gtk_signal_connect(GTK_OBJECT(dialog), "delete_event",
-			   GTK_SIGNAL_FUNC(cancel_clicked), NULL);
+			   GTK_SIGNAL_FUNC(delete_event), NULL);
 	gtk_signal_connect(GTK_OBJECT(dialog), "key_press_event",
 			   GTK_SIGNAL_FUNC(key_pressed), NULL);
 	gtk_signal_connect(GTK_OBJECT(dialog), "focus_in_event",
@@ -194,6 +197,14 @@ static void cancel_clicked(GtkWidget *widget, gpointer data)
 {
 	ack = FALSE;
 	gtk_main_quit();
+}
+
+static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data)
+{
+	ack = FALSE;
+	gtk_main_quit();
+
+	return TRUE;
 }
 
 static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)

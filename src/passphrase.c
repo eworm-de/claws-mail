@@ -46,6 +46,8 @@ static gboolean pass_ack;
 
 static void passphrase_ok_cb(GtkWidget *widget, gpointer data);
 static void passphrase_cancel_cb(GtkWidget *widget, gpointer data);
+static gint passphrase_deleted(GtkWidget *widget, GdkEventAny *event,
+			       gpointer data);
 static void passphrase_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				   gpointer data);
 static GtkWidget *create_description (const gchar *desc);
@@ -77,7 +79,7 @@ gpgmegtk_passphrase_mbox (const gchar *desc)
     gtk_window_set_modal(GTK_WINDOW(window), TRUE);
     gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
     gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-                       GTK_SIGNAL_FUNC(passphrase_cancel_cb), NULL);
+                       GTK_SIGNAL_FUNC(passphrase_deleted), NULL);
     gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
                        GTK_SIGNAL_FUNC(passphrase_key_pressed), NULL);
 
@@ -188,6 +190,14 @@ passphrase_cancel_cb(GtkWidget *widget, gpointer data)
 {
     pass_ack = FALSE;
     gtk_main_quit();
+}
+
+
+static gint
+passphrase_deleted(GtkWidget *widget, GdkEventAny *event, gpointer data)
+{
+    passphrase_cancel_cb(NULL, NULL);
+    return TRUE;
 }
 
 
