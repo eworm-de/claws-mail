@@ -62,6 +62,7 @@
 #include "foldersel.h"
 #include "inc.h"
 #include "statusbar.h"
+#include "hooks.h"
 
 typedef enum
 {
@@ -259,9 +260,8 @@ static void folderview_drag_data_get     (GtkWidget        *widget,
 
 void folderview_create_folder_node       (FolderView       *folderview, 
 					  FolderItem       *item);
-void folderview_update_item		 (FolderItem 	   *item,
-                                          gboolean 	    update_summary,
-					  gpointer 	    data);
+void folderview_update_item		 (gpointer 	    source,
+					  gpointer	    data);
 
 static void folderview_scoring_cb(FolderView *folderview, guint action,
 				  GtkWidget *widget);
@@ -506,7 +506,7 @@ FolderView *folderview_create(void)
 	folderview->mbox_factory = mbox_factory;
 
 	folderview->folder_item_update_callback_id =
-		folder_item_update_callback_register(folderview_update_item, (gpointer) folderview);
+		hooks_register_hook("folder_item_update", folderview_update_item, (gpointer) folderview);
 
 	gtk_widget_show_all(scrolledwin);
 
@@ -1261,22 +1261,24 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		folderview_update_node(folderview, node);
 }
 
-void folderview_update_item(FolderItem *item, gboolean update_summary, gpointer data)
+void folderview_update_item(gpointer source, gpointer data)
 {
+	FolderItemUpdateData *update_info = (FolderItemUpdateData *)source;
 	FolderView *folderview = (FolderView *)data;
 	GtkCTree *ctree;
 	GtkCTreeNode *node;
 
+	g_return_if_fail(update_info != NULL);
+	g_return_if_fail(update_info->item != NULL);
 	g_return_if_fail(folderview != NULL);
-	g_return_if_fail(item != NULL);
 
     	ctree = GTK_CTREE(folderview->ctree);
 
-	node = gtk_ctree_find_by_row_data(ctree, NULL, item);
+	node = gtk_ctree_find_by_row_data(ctree, NULL, update_info->item);
 	if (node) {
 		folderview_update_node(folderview, node);
-		if (update_summary && folderview->opened == node)
-			summary_show(folderview->summaryview, item);
+		if (update_info->content_change && folderview->opened == node)
+			summary_show(folderview->summaryview, update_info->item);
 	}
 }
 

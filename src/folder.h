@@ -23,13 +23,14 @@
 #include <glib.h>
 #include <time.h>
 
-typedef struct _Folder		Folder;
-typedef struct _LocalFolder	LocalFolder;
-typedef struct _RemoteFolder	RemoteFolder;
+typedef struct _Folder			Folder;
+typedef struct _LocalFolder		LocalFolder;
+typedef struct _RemoteFolder		RemoteFolder;
 #if 0
-typedef struct _MaildirFolder	MaildirFolder;
+typedef struct _MaildirFolder		MaildirFolder;
 #endif
-typedef struct _FolderItem	FolderItem;
+typedef struct _FolderItem		FolderItem;
+typedef struct _FolderItemUpdateData	FolderItemUpdateData;
 
 #include "prefs_folder_item.h"
 
@@ -112,9 +113,6 @@ typedef void (*FolderDestroyNotify)	(Folder		*folder,
 					 FolderItem	*item,
 					 gpointer	 data);
 typedef void (*FolderItemFunc)		(FolderItem	*item,
-					 gpointer	 data);
-typedef void (*FolderItemUpdateFunc)	(FolderItem	*item,
-					 gboolean	 contentchange,
 					 gpointer	 data);
 
 struct _Folder
@@ -289,6 +287,12 @@ typedef struct {
 	guint		ret_rcpt	: 1; /* CLAWS */
 } PersistPrefs;
 
+struct _FolderItemUpdateData
+{
+	FolderItem	*item;
+	gboolean	 content_change;
+};
+
 Folder     *folder_new			(FolderType	 type,
 					 const gchar	*name,
 					 const gchar	*path);
@@ -407,8 +411,5 @@ void folder_update_item			(FolderItem *item,
 void folder_update_items_when_required	(gboolean contentchange);
 void folder_update_item_recursive	(FolderItem *item,
 					 gboolean update_summary);
-gint folder_item_update_callback_register(FolderItemUpdateFunc func,
-					  gpointer data);
-void folder_item_update_callback_unregister(gint id);
 
 #endif /* __FOLDER_H__ */
