@@ -1,3 +1,8 @@
+2002-08-10 [paul]	0.8.1claws48
+
+	* src/prefs_toolbar.c
+		re-work the UI
+
 2002-08-10 [paul]	0.8.1claws47
 
 	* src/main.c
