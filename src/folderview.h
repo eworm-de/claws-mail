@@ -51,6 +51,7 @@ struct _FolderView
 	gboolean open_folder;
 
 	GdkColor color_new;
+	GdkColor color_op;
 
 	MainWindow   *mainwin;
 	SummaryView  *summaryview;
@@ -80,4 +81,5 @@ void folderview_new_folder		(FolderView	*folderview);
 void folderview_rename_folder		(FolderView	*folderview);
 void folderview_delete_folder		(FolderView	*folderview);
 
+void folderview_set_target_folder_color (gint		color_op);
 #endif /* __FOLDERVIEW_H__ */

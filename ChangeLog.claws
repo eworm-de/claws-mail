@@ -1,3 +1,13 @@
+2001-07-31 [darko]
+
+        * src/folder.[ch]
+        * src/folderview.[ch]
+        * src/mainwindow.c
+        * src/mh.c
+        * src/prefs_common.[ch]
+        * src/summaryview.c
+		target folder colourization
+
 2001-07-30 [paul]
 
 	more sync with Sylpheed 0.5.1cvs6 

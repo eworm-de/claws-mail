@@ -377,6 +377,8 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 				   dest->last_num + 1);
 	g_free(destdir);
 
+	dest->op_count--;
+
 	if (is_file_exist(destfile)) {
 		g_warning(_("%s already exists."), destfile);
 		g_free(srcfile);

@@ -592,8 +592,8 @@ MainWindow *main_window_create(SeparateType type)
 	SummaryView *summaryview;
 	MessageView *messageview;
 	GdkColormap *colormap;
-	GdkColor color[3];
-	gboolean success[3];
+	GdkColor color[4];
+	gboolean success[4];
 	guint n_menu_entries;
 	GtkItemFactory *ifactory;
 	GtkWidget *ac_menu;
@@ -703,6 +703,9 @@ MainWindow *main_window_create(SeparateType type)
 	folderview->color_new.red = (guint16)55000;
 	folderview->color_new.green = folderview->color_new.blue = 15000;
 
+	gtkut_convert_int_to_gdk_color(prefs_common.tgt_folder_col,
+				       &folderview->color_op);
+
 	summaryview->color_important.red = 0;
 	summaryview->color_marked.green = 0;
 	summaryview->color_important.blue = (guint16)65535;
@@ -710,10 +713,11 @@ MainWindow *main_window_create(SeparateType type)
 	color[0] = summaryview->color_marked;
 	color[1] = summaryview->color_dim;
 	color[2] = folderview->color_new;
+	color[3] = folderview->color_op;
 
 	colormap = gdk_window_get_colormap(window->window);
-	gdk_colormap_alloc_colors(colormap, color, 3, FALSE, TRUE, success);
-	for (i = 0; i < 3; i++) {
+	gdk_colormap_alloc_colors(colormap, color, 4, FALSE, TRUE, success);
+	for (i = 0; i < 4; i++) {
 		if (success[i] == FALSE)
 			g_warning(_("MainWindow: color allocation %d failed\n"), i);
 	}
@@ -2430,6 +2434,8 @@ static void update_summary_cb(MainWindow *mainwin, guint action,
 
 	if (!mainwin->summaryview->folder_item) return;
 	if (!folderview->opened) return;
+
+	folder_update_op_count();
 
 	fitem = gtk_ctree_node_get_row_data(GTK_CTREE(folderview->ctree),
 					    folderview->opened);

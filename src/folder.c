@@ -29,6 +29,7 @@
 
 #include "intl.h"
 #include "folder.h"
+#include "folderview.h"
 #include "session.h"
 #include "imap.h"
 #include "news.h"
@@ -60,6 +61,7 @@ static gboolean folder_read_folder_func	(GNode		*node,
 static gchar *folder_get_list_path	(void);
 static void folder_write_list_recursive	(GNode		*node,
 					 gpointer	 data);
+static void folder_update_op_count_rec	(GNode		*node);
 
 
 Folder *folder_new(FolderType type, const gchar *name, const gchar *path)
@@ -646,6 +648,7 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 
 	num = folder->move_msgs_with_dest(folder, dest, msglist);
 	if (num > 0) dest->last_num = num;
+	else dest->op_count = 0;
 
 	return num;
 }
@@ -752,6 +755,7 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 
 	num = folder->copy_msgs_with_dest(folder, dest, msglist);
 	if (num > 0) dest->last_num = num;
+	else dest->op_count = 0;
 
 	return num;
 }
@@ -1282,6 +1286,39 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 		fprintf(fp, "</%s>\n", depth == 1 ? "folder" : "folderitem");
 	} else
 		fputs(" />\n", fp);
+}
+
+static void folder_update_op_count_rec(GNode *node) {
+	FolderItem *fitem = FOLDER_ITEM(node->data);
+
+	if (g_node_depth(node) > 0) {
+		if (fitem->op_count > 0) {
+			fitem->op_count = 0;
+			folderview_update_item(fitem, 0);
+		}
+		if (node->children) {
+			GNode *child;
+
+			child = node->children;
+			while (child) {
+				GNode *cur;
+
+				cur = child;
+				child = cur->next;
+				folder_update_op_count_rec(cur);
+			}
+		}
+	}
+}
+
+void folder_update_op_count() {
+	GList *cur;
+	Folder *folder;
+
+	for (cur = folder_list; cur != NULL; cur = cur->next) {
+		folder = cur->data;
+		folder_update_op_count_rec(folder->node);
+	}
 }
 
 typedef struct _type_str {

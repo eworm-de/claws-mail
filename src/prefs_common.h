@@ -151,6 +151,7 @@ struct _PrefsCommon
 	gint quote_level2_col;
 	gint quote_level3_col;
 	gint uri_col;
+	gint tgt_folder_col;
 	gushort sig_col;
 	gboolean recycle_quote_colors;
 	gboolean conv_mb_alnum;

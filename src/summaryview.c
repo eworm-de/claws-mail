@@ -2358,17 +2358,27 @@ void summary_set_marks_selected(SummaryView *summaryview)
 
 static void summary_mark_row(SummaryView *summaryview, GtkCTreeNode *row)
 {
+	gboolean changed = FALSE;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
-	msginfo->to_folder = NULL;
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted--;
-	if (MSG_IS_MOVE(msginfo->flags))
+	if (MSG_IS_MOVE(msginfo->flags)) {
 		summaryview->moved--;
-	if (MSG_IS_COPY(msginfo->flags))
+		changed = TRUE;
+	}
+	if (MSG_IS_COPY(msginfo->flags)) {
 		summaryview->copied--;
+		changed = TRUE;
+	}
+	if (changed && !prefs_common.immediate_exec) {
+		msginfo->to_folder->op_count--;
+		if (msginfo->to_folder->op_count == 0)
+			folderview_update_item(msginfo->to_folder, 0);
+	}
+	msginfo->to_folder = NULL;
 	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_DELETED);
 	MSG_UNSET_TMP_FLAGS(msginfo->flags, MSG_MOVE | MSG_COPY);
 	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_MARKED);
@@ -2472,6 +2482,7 @@ void summary_mark_as_unread(SummaryView *summaryview)
 
 static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 {
+	gboolean changed = FALSE;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 
@@ -2479,11 +2490,20 @@ static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 
 	if (MSG_IS_DELETED(msginfo->flags)) return;
 
-	msginfo->to_folder = NULL;
-	if (MSG_IS_MOVE(msginfo->flags))
+	if (MSG_IS_MOVE(msginfo->flags)) {
 		summaryview->moved--;
-	if (MSG_IS_COPY(msginfo->flags))
+		changed = TRUE;
+	}
+	if (MSG_IS_COPY(msginfo->flags)) {
 		summaryview->copied--;
+		changed = TRUE;
+	}
+	if (changed && !prefs_common.immediate_exec) {
+		msginfo->to_folder->op_count--;
+		if (msginfo->to_folder->op_count == 0)
+			folderview_update_item(msginfo->to_folder, 0);
+	}
+	msginfo->to_folder = NULL;
 	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_MARKED);
 	MSG_UNSET_TMP_FLAGS(msginfo->flags, MSG_MOVE | MSG_COPY);
 	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_DELETED);
@@ -2563,17 +2583,27 @@ static void summary_delete_duplicated_func(GtkCTree *ctree, GtkCTreeNode *node,
 
 static void summary_unmark_row(SummaryView *summaryview, GtkCTreeNode *row)
 {
+	gboolean changed = FALSE;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
-	msginfo->to_folder = NULL;
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted--;
-	if (MSG_IS_MOVE(msginfo->flags))
+	if (MSG_IS_MOVE(msginfo->flags)) {
 		summaryview->moved--;
-	if (MSG_IS_COPY(msginfo->flags))
+		changed = TRUE;
+	}
+	if (MSG_IS_COPY(msginfo->flags)) {
 		summaryview->copied--;
+		changed = TRUE;
+	}
+	if (changed && !prefs_common.immediate_exec) {
+		msginfo->to_folder->op_count--;
+		if (msginfo->to_folder->op_count == 0)
+			folderview_update_item(msginfo->to_folder, 0);
+	}
+	msginfo->to_folder = NULL;
 	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_MARKED | MSG_DELETED);
 	MSG_UNSET_TMP_FLAGS(msginfo->flags, MSG_MOVE | MSG_COPY);
 	CHANGE_FLAGS(msginfo);
@@ -2598,23 +2628,45 @@ void summary_unmark(SummaryView *summaryview)
 static void summary_move_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 				FolderItem *to_folder)
 {
+	gboolean changed = FALSE;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 
 	g_return_if_fail(to_folder != NULL);
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
+	if (MSG_IS_MOVE(msginfo->flags)) {
+		if (!prefs_common.immediate_exec) {
+			msginfo->to_folder->op_count--;
+			if (msginfo->to_folder->op_count == 0) {
+				folderview_update_item(msginfo->to_folder, 0);
+				changed = TRUE;
+			}
+		}
+	}
 	msginfo->to_folder = to_folder;
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted--;
+	if (MSG_IS_COPY(msginfo->flags)) {
+		summaryview->copied--;
+		if (!prefs_common.immediate_exec)
+			msginfo->to_folder->op_count--;
+	}
 	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_MARKED | MSG_DELETED);
 	MSG_UNSET_TMP_FLAGS(msginfo->flags, MSG_COPY);
 	if (!MSG_IS_MOVE(msginfo->flags)) {
 		MSG_SET_TMP_FLAGS(msginfo->flags, MSG_MOVE);
 		summaryview->moved++;
+		changed = TRUE;
 	}
-	if (!prefs_common.immediate_exec)
+	if (!prefs_common.immediate_exec) {
 		summary_set_row_marks(summaryview, row);
+		if (changed) {
+			msginfo->to_folder->op_count++;
+			if (msginfo->to_folder->op_count == 1)
+				folderview_update_item(msginfo->to_folder, 0);
+		}
+	}
 
 	debug_print(_("Message %d is set to move to %s\n"),
 		    msginfo->msgnum, to_folder->path);
@@ -2641,8 +2693,11 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 
 	if (prefs_common.immediate_exec)
 		summary_execute(summaryview);
-	else
+	else {
 		summary_status_show(summaryview);
+
+		folderview_update_item(to_folder, 0);
+	}
 }
 
 void summary_move_to(SummaryView *summaryview)
@@ -2659,23 +2714,45 @@ void summary_move_to(SummaryView *summaryview)
 static void summary_copy_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 				FolderItem *to_folder)
 {
+	gboolean changed = FALSE;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 
 	g_return_if_fail(to_folder != NULL);
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
+	if (MSG_IS_COPY(msginfo->flags)) {
+		if (!prefs_common.immediate_exec) {
+			msginfo->to_folder->op_count--;
+			if (msginfo->to_folder->op_count == 0) {
+				folderview_update_item(msginfo->to_folder, 0);
+				changed = TRUE;
+			}
+		}
+	}
 	msginfo->to_folder = to_folder;
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted--;
+	if (MSG_IS_MOVE(msginfo->flags)) {
+		summaryview->moved--;
+		if (!prefs_common.immediate_exec)
+			msginfo->to_folder->op_count--;
+	}
 	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_MARKED | MSG_DELETED);
 	MSG_UNSET_TMP_FLAGS(msginfo->flags, MSG_MOVE);
 	if (!MSG_IS_COPY(msginfo->flags)) {
 		MSG_SET_TMP_FLAGS(msginfo->flags, MSG_COPY);
 		summaryview->copied++;
+		changed = TRUE;
 	}
-	if (!prefs_common.immediate_exec)
+	if (!prefs_common.immediate_exec) {
 		summary_set_row_marks(summaryview, row);
+		if (changed) {
+			msginfo->to_folder->op_count++;
+			if (msginfo->to_folder->op_count == 1)
+				folderview_update_item(msginfo->to_folder, 0);
+		}
+	}
 
 	debug_print(_("Message %d is set to copy to %s\n"),
 		    msginfo->msgnum, to_folder->path);
@@ -2703,8 +2780,11 @@ void summary_copy_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 
 	if (prefs_common.immediate_exec)
 		summary_execute(summaryview);
-	else
+	else {
 		summary_status_show(summaryview);
+
+		folderview_update_item(to_folder, 0);
+	}
 }
 
 void summary_copy_to(SummaryView *summaryview)

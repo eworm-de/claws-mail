@@ -216,6 +216,8 @@ struct _FolderItem
 	guint no_select : 1; /* not selectable?   */
 	guint collapsed : 1; /* collapsed item    */
 
+	gint op_count;
+
 	FolderItem *parent;
 
 	Folder *folder;
@@ -257,6 +259,7 @@ void   folder_add		(Folder		*folder);
 GList *folder_get_list		(void);
 gint   folder_read_list		(void);
 void   folder_write_list	(void);
+void   folder_update_op_count	(void);
 
 Folder     *folder_find_from_path	(const gchar	*path);
 FolderItem *folder_find_item_from_path	(const gchar	*path);

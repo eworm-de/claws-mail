@@ -468,11 +468,15 @@ void folderview_select(FolderView *folderview, FolderItem *item)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	GtkCTreeNode *node;
+	GtkCTreeNode *old_selected = folderview->selected;
 
 	if (!item) return;
 
 	node = gtk_ctree_find_by_row_data(ctree, NULL, item);
 	if (node) folderview_select_node(folderview, node);
+
+	if (old_selected != node)
+		folder_update_op_count();
 }
 
 static void folderview_select_node(FolderView *folderview, GtkCTreeNode *node)
@@ -911,10 +915,19 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		style->fg[GTK_STATE_NORMAL]   = folderview->color_new;
 		style->fg[GTK_STATE_SELECTED] = folderview->color_new;
 	} else {
-		style->fg[GTK_STATE_NORMAL] =
-			ctree_style->fg[GTK_STATE_NORMAL];
-		style->fg[GTK_STATE_SELECTED] =
-			ctree_style->fg[GTK_STATE_SELECTED];
+		if (item->op_count > 0) {
+			if (boldfont)
+				style->font = boldfont;
+			style->fg[GTK_STATE_NORMAL]   =
+				folderview->color_op;
+			style->fg[GTK_STATE_SELECTED] =
+				folderview->color_op;
+		} else {
+			style->fg[GTK_STATE_NORMAL] =
+				ctree_style->fg[GTK_STATE_NORMAL];
+			style->fg[GTK_STATE_SELECTED] =
+				ctree_style->fg[GTK_STATE_SELECTED];
+		}
 	}
 
 	gtk_ctree_node_set_row_style(ctree, node, style);
@@ -2158,4 +2171,14 @@ static void folderview_property_cb(FolderView *folderview, guint action, GtkWidg
 	g_return_if_fail(item->folder != NULL);
 
 	prefs_folder_item_create(item);
+}
+
+void folderview_set_target_folder_color(gint color_op) {
+	GList *list;
+	FolderView *folderview;
+
+	for (list = folderview_list; list != NULL; list = list->next) {
+		folderview = (FolderView *)list->data;
+		gtkut_convert_int_to_gdk_color(color_op, &folderview->color_op);
+	}
 }

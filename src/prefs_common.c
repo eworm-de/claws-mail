@@ -49,6 +49,7 @@
 #include "gtkutils.h"
 #include "alertpanel.h"
 #include "folder.h"
+#include "folderview.h"
 
 PrefsCommon prefs_common;
 
@@ -180,6 +181,7 @@ static struct MessageColorButtons {
 	GtkWidget *quote_level2_btn;
 	GtkWidget *quote_level3_btn;
 	GtkWidget *uri_btn;
+	GtkWidget *tgt_folder_btn;
 } color_buttons;
 
 static GtkWidget *quote_desc_win;
@@ -448,6 +450,8 @@ static PrefParam param[] = {
 	{"quote_level3_color", "179", &prefs_common.quote_level3_col, P_INT,
 	 NULL, NULL, NULL},
 	{"uri_color", "32512", &prefs_common.uri_col, P_INT,
+	 NULL, NULL, NULL},
+	{"target_folder_color", "14294218", &prefs_common.tgt_folder_col, P_INT,
 	 NULL, NULL, NULL},
 	{"signature_color", "0", &prefs_common.sig_col, P_USHORT,
 	 NULL, NULL, NULL},
@@ -2235,6 +2239,7 @@ static void prefs_quote_colors_dialog_create(void)
 	GtkWidget *quotelevel2_label;
 	GtkWidget *quotelevel3_label;
 	GtkWidget *uri_label;
+	GtkWidget *tgt_folder_label;
 	GtkWidget *hbbox;
 	GtkWidget *ok_btn;
 	//GtkWidget *cancel_btn;
@@ -2257,7 +2262,7 @@ static void prefs_quote_colors_dialog_create(void)
 	gtk_container_add (GTK_CONTAINER (frame_colors), table);
 	gtk_container_set_border_width (GTK_CONTAINER (table), 8);
 	gtk_table_set_row_spacings (GTK_TABLE (table), 2);
-	gtk_table_set_col_spacings (GTK_TABLE (table), 4);
+	gtk_table_set_col_spacings (GTK_TABLE (table), 5);
 
 	color_buttons.quote_level1_btn = gtk_button_new();
 	gtk_table_attach (GTK_TABLE (table), color_buttons.quote_level1_btn,
@@ -2285,6 +2290,12 @@ static void prefs_quote_colors_dialog_create(void)
 	gtk_widget_set_usize (color_buttons.uri_btn, 40, 30);
 	gtk_container_set_border_width (GTK_CONTAINER (color_buttons.uri_btn), 5);
 
+	color_buttons.tgt_folder_btn = gtk_button_new_with_label ("");
+	gtk_table_attach (GTK_TABLE (table), color_buttons.tgt_folder_btn,
+			  0, 1, 4, 5, 0, 0, 0, 0);
+	gtk_widget_set_usize (color_buttons.tgt_folder_btn, 40, 30);
+	gtk_container_set_border_width (GTK_CONTAINER (color_buttons.tgt_folder_btn), 5);
+
 	quotelevel1_label = gtk_label_new (_("Quoted Text - First Level"));
 	gtk_table_attach (GTK_TABLE (table), quotelevel1_label, 1, 2, 0, 1,
 			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
@@ -2308,6 +2319,12 @@ static void prefs_quote_colors_dialog_create(void)
 			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
 	gtk_label_set_justify (GTK_LABEL (uri_label), GTK_JUSTIFY_LEFT);
 	gtk_misc_set_alignment (GTK_MISC (uri_label), 0, 0.5);
+
+	tgt_folder_label = gtk_label_new (_("Target folder"));
+	gtk_table_attach (GTK_TABLE (table), tgt_folder_label, 1, 2, 4, 5,
+			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
+	gtk_label_set_justify (GTK_LABEL (tgt_folder_label), GTK_JUSTIFY_LEFT);
+	gtk_misc_set_alignment (GTK_MISC (tgt_folder_label), 0, 0.5);
 
 	PACK_CHECK_BUTTON (vbox, recycle_colors_btn,
 			   _("Recycle quote colors"));
@@ -2335,6 +2352,8 @@ static void prefs_quote_colors_dialog_create(void)
 			   GTK_SIGNAL_FUNC(quote_color_set_dialog), "LEVEL3");
 	gtk_signal_connect(GTK_OBJECT(color_buttons.uri_btn), "clicked",
 			   GTK_SIGNAL_FUNC(quote_color_set_dialog), "URI");
+	gtk_signal_connect(GTK_OBJECT(color_buttons.tgt_folder_btn), "clicked",
+			   GTK_SIGNAL_FUNC(quote_color_set_dialog), "TGTFLD");
 	gtk_signal_connect(GTK_OBJECT(recycle_colors_btn), "toggled",
 			   GTK_SIGNAL_FUNC(prefs_recycle_colors_toggled), NULL);
 	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
@@ -2349,6 +2368,8 @@ static void prefs_quote_colors_dialog_create(void)
 			    prefs_common.quote_level3_col);
 	set_button_bg_color(color_buttons.uri_btn,
 			    prefs_common.uri_col);
+	set_button_bg_color(color_buttons.tgt_folder_btn,
+			    prefs_common.tgt_folder_col);
 	gtk_toggle_button_set_active((GtkToggleButton *)recycle_colors_btn,
 				     prefs_common.recycle_quote_colors);
 
@@ -2383,6 +2404,9 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 	} else if(g_strcasecmp(type, "URI") == 0) {
 		title = _("Pick color for URI");
 		rgbvalue = prefs_common.uri_col;
+	} else if(g_strcasecmp(type, "TGTFLD") == 0) {
+		title = _("Pick color for target folder");
+		rgbvalue = prefs_common.tgt_folder_col;
 	} else {   /* Should never be called */
 		g_warning("Unrecognized datatype '%s' in quote_color_set_dialog\n", type);
 		return;
@@ -2446,6 +2470,10 @@ static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
 	} else if (g_strcasecmp(type, "URI") == 0) {
 		prefs_common.uri_col = rgbvalue;
 		set_button_bg_color(color_buttons.uri_btn, rgbvalue);
+	} else if (g_strcasecmp(type, "TGTFLD") == 0) {
+		prefs_common.tgt_folder_col = rgbvalue;
+		set_button_bg_color(color_buttons.tgt_folder_btn, rgbvalue);
+		folderview_set_target_folder_color(prefs_common.tgt_folder_col);
 	} else
 		fprintf( stderr, "Unrecognized datatype '%s' in quote_color_set_dialog_ok\n", type );
 
