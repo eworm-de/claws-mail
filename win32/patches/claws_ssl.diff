@@ -1,0 +1,24 @@
+diff -u src\config_org.h src\config.h
+--- src\config_org.h	Mon Apr 15 01:14:38 2002
++++ src\config.h	Sun Apr 14 23:51:58 2002
+@@ -34,4 +34,4 @@
+ 
+ /* Define if you use OpenSSL to support SSL */
+-#undef USE_SSL
++#define USE_SSL 1
+ 
+diff -u sylpheed_org.dsp sylpheed.dsp
+--- sylpheed_org.dsp	Fri Apr 12 20:56:08 2002
++++ sylpheed.dsp	Mon Apr 15 01:06:32 2002
+@@ -1109,3 +1109,11 @@
+ # End Source File
++# Begin Source File
++
++SOURCE=..\..\lib\ssleay32.lib
++# End Source File
++# Begin Source File
++
++SOURCE=..\..\lib\libeay32.lib
++# End Source File
+ # End Target
+ # End Projectdiff -u config_org.h config.h

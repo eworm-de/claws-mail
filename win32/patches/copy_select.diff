@@ -1,0 +1,63 @@
+# selecting all with [ctrl-a] or copying with [ctrl-c]
+# didnt work with multipart messages.
+# 09.05.02 16:32 Thorsten Maerz <torte@netztorte.de>
+Index: mainwindow.c
+===================================================================
+RCS file: /cvsroot/sylpheed-claws/sylpheed-claws/src/mainwindow.c,v
+retrieving revision 1.153
+diff -u -r1.153 mainwindow.c
+--- mainwindow.c	2 May 2002 16:47:21 -0000	1.153
++++ mainwindow.c	9 May 2002 14:09:30 -0000
+@@ -3002,8 +3002,11 @@
+ {
+ 	if (GTK_WIDGET_HAS_FOCUS(mainwin->summaryview->ctree))
+ 		summary_select_all(mainwin->summaryview);
+-	else if (mainwin->summaryview->msg_is_toggled_on &&
+-		 GTK_WIDGET_HAS_FOCUS(mainwin->messageview->textview->text))
++	else if (mainwin->summaryview->msg_is_toggled_on && (
++		 GTK_WIDGET_HAS_FOCUS(mainwin->messageview->textview->text) ||
++		 GTK_WIDGET_HAS_FOCUS(mainwin->messageview->mimeview->ctree) ||
++		 GTK_WIDGET_HAS_FOCUS(mainwin->messageview->mimeview->notebook) ||
++		 GTK_WIDGET_HAS_FOCUS(mainwin->messageview->mimeview->textview->text)))
+ 		messageview_select_all(mainwin->messageview);
+ }
+ 
+Index: messageview.c
+===================================================================
+RCS file: /cvsroot/sylpheed-claws/sylpheed-claws/src/messageview.c,v
+retrieving revision 1.36
+diff -u -r1.36 messageview.c
+--- messageview.c	8 May 2002 06:26:11 -0000	1.36
++++ messageview.c	9 May 2002 14:09:34 -0000
+@@ -506,7 +506,14 @@
+ 
+ void messageview_copy_clipboard(MessageView *messageview)
+ {
+-	switch (messageview->type) {
++	gint displaytype = /* force MVIEV_TEXT on first page */
++		((messageview->type == MVIEW_MIME)
++		&& (gtk_notebook_get_current_page(GTK_NOTEBOOK(
++				messageview->mimeview->notebook)) > 0))
++		? MVIEW_MIME
++		: MVIEW_TEXT;
++
++	switch (displaytype) {
+ 	case MVIEW_TEXT:
+ 		gtk_editable_copy_clipboard(GTK_EDITABLE(messageview->textview->text));
+ 		break;
+@@ -520,7 +527,14 @@
+ 
+ void messageview_select_all(MessageView *messageview)
+ {
+-	switch (messageview->type) {
++	gint displaytype = /* force MVIEV_TEXT on first page */
++		((messageview->type == MVIEW_MIME)
++		&& (gtk_notebook_get_current_page(GTK_NOTEBOOK(
++				messageview->mimeview->notebook)) > 0))
++		? MVIEW_MIME
++		: MVIEW_TEXT;
++
++	switch (displaytype) {
+ 	case MVIEW_TEXT:
+ 		gtk_editable_select_region(GTK_EDITABLE(messageview->textview->text), 0, -1);
+ 		break;

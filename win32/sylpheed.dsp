@@ -4,16 +4,16 @@
 
 # TARGTYPE "Win32 (x86) Application" 0x0101
 
-CFG=sylpheed - Win32 Debug
+CFG=sylpheed - Win32 Release
 !MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
 !MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
-!MESSAGE NMAKE /f "sylpheed_debug.mak".
+!MESSAGE NMAKE /f "sylpheed.mak".
 !MESSAGE 
 !MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
 !MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
-!MESSAGE NMAKE /f "sylpheed_debug.mak" CFG="sylpheed - Win32 Debug"
+!MESSAGE NMAKE /f "sylpheed.mak" CFG="sylpheed - Win32 Release"
 !MESSAGE 
 !MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /W3 /GX /O2 /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I ".\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I ".\libkcc" /I "\dev\proj\gpgme\gpgme" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /YX /FD /c
+# ADD CPP /nologo /W3 /GX /O2 /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "..\libkcc" /I "\dev\proj\gpgme\gpgme" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x411 /d "NDEBUG"
@@ -52,7 +52,7 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
+# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386
 # ADD LINK32 wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /machine:I386 /out:"sylpheed.exe"
 
 !ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I ".\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I ".\libkcc" /I "\dev\proj\gpgme\gpgme" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "..\libkcc" /I "\dev\proj\gpgme\gpgme" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x411 /d "_DEBUG"
@@ -79,8 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /out:"sylpheed_d.exe" /pdbtype:sept
-# SUBTRACT LINK32 /pdb:none
+# ADD LINK32 wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /debug /machine:I386 /out:"sylpheed_d.exe" /pdbtype:sept
 
 !ENDIF 
 
@@ -93,495 +92,495 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\src\about.c
+SOURCE=..\src\about.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\account.c
+SOURCE=..\src\account.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\addr_compl.c
+SOURCE=..\src\addr_compl.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\addrbook.c
+SOURCE=..\src\addrbook.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\addrcache.c
+SOURCE=..\src\addrcache.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\addrclip.c
+SOURCE=..\src\addrclip.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\addressadd.c
+SOURCE=..\src\addressadd.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\addressbook.c
+SOURCE=..\src\addressbook.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\addrgather.c
+SOURCE=..\src\addrgather.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\addrharvest.c
+SOURCE=..\src\addrharvest.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\addrindex.c
+SOURCE=..\src\addrindex.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\addritem.c
+SOURCE=..\src\addritem.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\addrselect.c
+SOURCE=..\src\addrselect.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\alertpanel.c
+SOURCE=..\src\alertpanel.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\automaton.c
+SOURCE=..\src\automaton.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\base64.c
+SOURCE=..\src\base64.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\codeconv.c
+SOURCE=..\src\codeconv.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\colorlabel.c
+SOURCE=..\src\colorlabel.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\libjconv\compat.c
+SOURCE=..\libjconv\compat.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\compose.c
+SOURCE=..\src\compose.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\libjconv\conv.c
+SOURCE=..\libjconv\conv.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\customheader.c
+SOURCE=..\src\customheader.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\displayheader.c
+SOURCE=..\src\displayheader.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\editaddress.c
+SOURCE=..\src\editaddress.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\editbook.c
+SOURCE=..\src\editbook.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\editgroup.c
+SOURCE=..\src\editgroup.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\editjpilot.c
+SOURCE=..\src\editjpilot.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\editldap.c
+SOURCE=..\src\editldap.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\editldap_basedn.c
+SOURCE=..\src\editldap_basedn.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\editvcard.c
+SOURCE=..\src\editvcard.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\enriched.c
+SOURCE=..\src\enriched.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\exphtmldlg.c
+SOURCE=..\src\exphtmldlg.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\export.c
+SOURCE=..\src\export.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\exporthtml.c
+SOURCE=..\src\exporthtml.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\filesel.c
+SOURCE=..\src\filesel.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\filter.c
+SOURCE=..\src\filter.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\filtering.c
+SOURCE=..\src\filtering.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\folder.c
+SOURCE=..\src\folder.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\foldersel.c
+SOURCE=..\src\foldersel.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\folderview.c
+SOURCE=..\src\folderview.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\grouplistdialog.c
+SOURCE=..\src\grouplistdialog.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\gtksctree.c
+SOURCE=..\src\gtksctree.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\gtkshruler.c
+SOURCE=..\src\gtkshruler.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\gtkstext.c
+SOURCE=..\src\gtkstext.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\gtkutils.c
+SOURCE=..\src\gtkutils.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\headerview.c
+SOURCE=..\src\headerview.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\html.c
+SOURCE=..\src\html.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\imageview.c
+SOURCE=..\src\imageview.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\imap.c
+SOURCE=..\src\imap.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\import.c
+SOURCE=..\src\import.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\importldif.c
+SOURCE=..\src\importldif.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\importmutt.c
+SOURCE=..\src\importmutt.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\importpine.c
+SOURCE=..\src\importpine.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\inc.c
+SOURCE=..\src\inc.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\libjconv\info.c
+SOURCE=..\libjconv\info.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\inputdialog.c
+SOURCE=..\src\inputdialog.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\jpilot.c
+SOURCE=..\src\jpilot.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ldif.c
+SOURCE=..\src\ldif.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\logwindow.c
+SOURCE=..\src\logwindow.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\main.c
+SOURCE=..\src\main.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\mainwindow.c
+SOURCE=..\src\mainwindow.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\manage_window.c
+SOURCE=..\src\manage_window.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\manual.c
+SOURCE=..\src\manual.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\matcher.c
+SOURCE=..\src\matcher.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\matcher_parser_lex.c
+SOURCE=..\src\matcher_parser_lex.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\matcher_parser_parse.c
+SOURCE=..\src\matcher_parser_parse.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\mbox.c
+SOURCE=..\src\mbox.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\mbox_folder.c
+SOURCE=..\src\mbox_folder.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\md5.c
+SOURCE=..\src\md5.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\menu.c
+SOURCE=..\src\menu.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\message_search.c
+SOURCE=..\src\message_search.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\messageview.c
+SOURCE=..\src\messageview.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\mgutils.c
+SOURCE=..\src\mgutils.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\mh.c
+SOURCE=..\src\mh.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\mimeview.c
+SOURCE=..\src\mimeview.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\mutt.c
+SOURCE=..\src\mutt.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\news.c
+SOURCE=..\src\news.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\nntp.c
+SOURCE=..\src\nntp.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\passphrase.c
+SOURCE=..\src\passphrase.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\pine.c
+SOURCE=..\src\pine.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\pop.c
+SOURCE=..\src\pop.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\prefs.c
+SOURCE=..\src\prefs.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\prefs_account.c
+SOURCE=..\src\prefs_account.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\prefs_actions.c
+SOURCE=..\src\prefs_actions.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\prefs_common.c
+SOURCE=..\src\prefs_common.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\prefs_customheader.c
+SOURCE=..\src\prefs_customheader.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\prefs_display_header.c
+SOURCE=..\src\prefs_display_header.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\prefs_filter.c
+SOURCE=..\src\prefs_filter.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\prefs_filtering.c
+SOURCE=..\src\prefs_filtering.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\prefs_folder_item.c
+SOURCE=..\src\prefs_folder_item.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\prefs_matcher.c
+SOURCE=..\src\prefs_matcher.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\prefs_scoring.c
+SOURCE=..\src\prefs_scoring.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\prefs_summary_column.c
+SOURCE=..\src\prefs_summary_column.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\prefs_template.c
+SOURCE=..\src\prefs_template.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\procheader.c
+SOURCE=..\src\procheader.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\procmime.c
+SOURCE=..\src\procmime.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\procmsg.c
+SOURCE=..\src\procmsg.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\progressdialog.c
+SOURCE=..\src\progressdialog.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\quote_fmt.c
+SOURCE=..\src\quote_fmt.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\quote_fmt_lex.c
+SOURCE=..\src\quote_fmt_lex.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\quote_fmt_parse.c
+SOURCE=..\src\quote_fmt_parse.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\recv.c
+SOURCE=..\src\recv.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\rfc2015.c
+SOURCE=..\src\rfc2015.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\rfc822.c
+SOURCE=..\src\rfc822.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\scoring.c
+SOURCE=..\src\scoring.c
 # End Source File
 # Begin Source File
 
-SOURCE=".\src\select-keys.c"
+SOURCE="..\src\select-keys.c"
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\selective_download.c
+SOURCE=..\src\selective_download.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\send.c
+SOURCE=..\src\send.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\session.c
+SOURCE=..\src\session.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\setup.c
+SOURCE=..\src\setup.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\sigstatus.c
+SOURCE=..\src\sigstatus.c
 # End Source File
 # Begin Source File
 
-SOURCE=".\src\simple-gettext.c"
+SOURCE="..\src\simple-gettext.c"
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\smtp.c
+SOURCE=..\src\smtp.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\socket.c
+SOURCE=..\src\socket.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\sourcewindow.c
+SOURCE=..\src\sourcewindow.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ssl.c
+SOURCE=..\src\ssl.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\statusbar.c
+SOURCE=..\src\statusbar.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\stock_pixmap.c
+SOURCE=..\src\stock_pixmap.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\string_match.c
+SOURCE=..\src\string_match.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\stringtable.c
+SOURCE=..\src\stringtable.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\summary_search.c
+SOURCE=..\src\summary_search.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\summaryview.c
+SOURCE=..\src\summaryview.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\syldap.c
+SOURCE=..\src\syldap.c
 # End Source File
 # Begin Source File
 
@@ -589,39 +588,39 @@ SOURCE=.\sylpheed.rc
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\template.c
+SOURCE=..\src\template.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\textview.c
+SOURCE=..\src\textview.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\undo.c
+SOURCE=..\src\undo.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\unmime.c
+SOURCE=..\src\unmime.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\utils.c
+SOURCE=..\src\utils.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\uuencode.c
+SOURCE=..\src\uuencode.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\vcard.c
+SOURCE=..\src\vcard.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\xml.c
+SOURCE=..\src\xml.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\xmlprops.c
+SOURCE=..\src\xmlprops.c
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -629,455 +628,455 @@ SOURCE=.\src\xmlprops.c
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\src\about.h
+SOURCE=..\src\about.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\account.h
+SOURCE=..\src\account.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\addr_compl.h
+SOURCE=..\src\addr_compl.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\addrbook.h
+SOURCE=..\src\addrbook.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\addrcache.h
+SOURCE=..\src\addrcache.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\addressadd.h
+SOURCE=..\src\addressadd.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\addressbook.h
+SOURCE=..\src\addressbook.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\addressitem.h
+SOURCE=..\src\addressitem.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\addrindex.h
+SOURCE=..\src\addrindex.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\addritem.h
+SOURCE=..\src\addritem.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\alertpanel.h
+SOURCE=..\src\alertpanel.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\automaton.h
+SOURCE=..\src\automaton.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\base64.h
+SOURCE=..\src\base64.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\codeconv.h
+SOURCE=..\src\codeconv.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\colorlabel.h
+SOURCE=..\src\colorlabel.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\compose.h
+SOURCE=..\src\compose.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\config.h
+SOURCE=..\src\config.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\customheader.h
+SOURCE=..\src\customheader.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\defs.h
+SOURCE=..\src\defs.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\displayheader.h
+SOURCE=..\src\displayheader.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\editaddress.h
+SOURCE=..\src\editaddress.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\editbook.h
+SOURCE=..\src\editbook.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\editgroup.h
+SOURCE=..\src\editgroup.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\editjpilot.h
+SOURCE=..\src\editjpilot.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\editldap.h
+SOURCE=..\src\editldap.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\editldap_basedn.h
+SOURCE=..\src\editldap_basedn.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\editvcard.h
+SOURCE=..\src\editvcard.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\exphtmldlg.h
+SOURCE=..\src\exphtmldlg.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\export.h
+SOURCE=..\src\export.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\exporthtml.h
+SOURCE=..\src\exporthtml.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\filesel.h
+SOURCE=..\src\filesel.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\filter.h
+SOURCE=..\src\filter.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\folder.h
+SOURCE=..\src\folder.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\foldersel.h
+SOURCE=..\src\foldersel.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\folderview.h
+SOURCE=..\src\folderview.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\grouplistdialog.h
+SOURCE=..\src\grouplistdialog.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\gtksctree.h
+SOURCE=..\src\gtksctree.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\gtkshruler.h
+SOURCE=..\src\gtkshruler.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\gtkstext.h
+SOURCE=..\src\gtkstext.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\gtkutils.h
+SOURCE=..\src\gtkutils.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\headerview.h
+SOURCE=..\src\headerview.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\html.h
+SOURCE=..\src\html.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\imageview.h
+SOURCE=..\src\imageview.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\imap.h
+SOURCE=..\src\imap.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\import.h
+SOURCE=..\src\import.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\importldif.h
+SOURCE=..\src\importldif.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\inc.h
+SOURCE=..\src\inc.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\inputdialog.h
+SOURCE=..\src\inputdialog.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\intl.h
+SOURCE=..\src\intl.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\libjconv\jconv.h
+SOURCE=..\libjconv\jconv.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\jpilot.h
+SOURCE=..\src\jpilot.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ldif.h
+SOURCE=..\src\ldif.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\logwindow.h
+SOURCE=..\src\logwindow.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\main.h
+SOURCE=..\src\main.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\mainwindow.h
+SOURCE=..\src\mainwindow.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\manage_window.h
+SOURCE=..\src\manage_window.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\manual.h
+SOURCE=..\src\manual.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\mbox.h
+SOURCE=..\src\mbox.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\md5.h
+SOURCE=..\src\md5.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\menu.h
+SOURCE=..\src\menu.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\message_search.h
+SOURCE=..\src\message_search.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\messageview.h
+SOURCE=..\src\messageview.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\mgutils.h
+SOURCE=..\src\mgutils.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\mh.h
+SOURCE=..\src\mh.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\mimeview.h
+SOURCE=..\src\mimeview.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\news.h
+SOURCE=..\src\news.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\nntp.h
+SOURCE=..\src\nntp.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\passphrase.h
+SOURCE=..\src\passphrase.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\pop.h
+SOURCE=..\src\pop.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\prefs.h
+SOURCE=..\src\prefs.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\prefs_account.h
+SOURCE=..\src\prefs_account.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\prefs_common.h
+SOURCE=..\src\prefs_common.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\prefs_customheader.h
+SOURCE=..\src\prefs_customheader.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\prefs_display_header.h
+SOURCE=..\src\prefs_display_header.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\prefs_filter.h
+SOURCE=..\src\prefs_filter.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\prefs_folder_item.h
+SOURCE=..\src\prefs_folder_item.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\prefs_summary_column.h
+SOURCE=..\src\prefs_summary_column.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\prefs_template.h
+SOURCE=..\src\prefs_template.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\procheader.h
+SOURCE=..\src\procheader.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\procmime.h
+SOURCE=..\src\procmime.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\procmsg.h
+SOURCE=..\src\procmsg.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\progressdialog.h
+SOURCE=..\src\progressdialog.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\quote_fmt.h
+SOURCE=..\src\quote_fmt.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\quote_fmt_lex.h
+SOURCE=..\src\quote_fmt_lex.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\quote_fmt_parse.h
+SOURCE=..\src\quote_fmt_parse.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\recv.h
+SOURCE=..\src\recv.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\rfc2015.h
+SOURCE=..\src\rfc2015.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\rfc822.h
+SOURCE=..\src\rfc822.h
 # End Source File
 # Begin Source File
 
-SOURCE=".\src\select-keys.h"
+SOURCE="..\src\select-keys.h"
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\send.h
+SOURCE=..\src\send.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\session.h
+SOURCE=..\src\session.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\setup.h
+SOURCE=..\src\setup.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\sigstatus.h
+SOURCE=..\src\sigstatus.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\smtp.h
+SOURCE=..\src\smtp.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\socket.h
+SOURCE=..\src\socket.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\sourcewindow.h
+SOURCE=..\src\sourcewindow.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\ssl.h
+SOURCE=..\src\ssl.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\statusbar.h
+SOURCE=..\src\statusbar.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\stock_pixmap.h
+SOURCE=..\src\stock_pixmap.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\stringtable.h
+SOURCE=..\src\stringtable.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\summary_search.h
+SOURCE=..\src\summary_search.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\summaryview.h
+SOURCE=..\src\summaryview.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\syldap.h
+SOURCE=..\src\syldap.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\template.h
+SOURCE=..\src\template.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\textview.h
+SOURCE=..\src\textview.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\undo.h
+SOURCE=..\src\undo.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\unmime.h
+SOURCE=..\src\unmime.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\utils.h
+SOURCE=..\src\utils.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\uuencode.h
+SOURCE=..\src\uuencode.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\vcard.h
+SOURCE=..\src\vcard.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\version.h
+SOURCE=..\src\version.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\xml.h
+SOURCE=..\src\xml.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\src\xmlprops.h
+SOURCE=..\src\xmlprops.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
@@ -1090,55 +1089,55 @@ SOURCE=.\sylpheed.ico
 # End Group
 # Begin Source File
 
-SOURCE="..\..\lib\glib-2.0.lib"
+SOURCE="..\..\..\lib\glib-2.0.lib"
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\lib\gtk.lib
+SOURCE=..\..\..\lib\gtk.lib
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\lib\gdk.lib
+SOURCE=..\..\..\lib\gdk.lib
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\lib\iconv.lib
+SOURCE=..\..\..\lib\iconv.lib
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\lib\intl.lib
+SOURCE=..\..\..\lib\intl.lib
 # End Source File
 # Begin Source File
 
-SOURCE=..\w32lib\w32lib_d.lib
+SOURCE=..\..\w32lib\w32lib.lib
 # End Source File
 # Begin Source File
 
-SOURCE=..\gpgme\gpgme_d.lib
+SOURCE=..\..\gpgme\gpgme.lib
 # End Source File
 # Begin Source File
 
-SOURCE=..\libcompface\libcompface_d.lib
+SOURCE=..\..\libcompface\libcompface.lib
 # End Source File
 # Begin Source File
 
-SOURCE=..\libkcc\libkcc_d.lib
+SOURCE=..\..\libkcc\libkcc.lib
 # End Source File
 # Begin Source File
 
-SOURCE=..\regex\regex_d.lib
+SOURCE=..\..\regex\regex.lib
 # End Source File
 # Begin Source File
 
-SOURCE=..\fnmatch\fnmatch_d.lib
+SOURCE=..\..\fnmatch\fnmatch.lib
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\lib\libeay32.lib
+SOURCE=..\..\..\lib\libeay32.lib
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\lib\ssleay32.lib
+SOURCE=..\..\..\lib\ssleay32.lib
 # End Source File
 # End Target
 # End Project

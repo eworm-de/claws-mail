@@ -1,0 +1,15 @@
+diff -Pru libjconv.orig/conv.c libjconv/conv.c
+--- libjconv.orig/conv.c	Wed Dec 26 17:34:04 2001
++++ libjconv/conv.c	Sat Mar 23 10:55:20 2002
+@@ -81,7 +81,10 @@
+ 		case E2BIG:
+ 		case EBADF:
+ 		default:
+-			abort();
++			// abort();
++			// error_code = EINVAL;
++			// goto break_loop;
++			;
+ 		}
+ 		if (from_p_old == from_p) {
+ 			/* I believe iconv() is buggy if we reach here.

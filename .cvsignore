@@ -17,13 +17,3 @@ tags
 TAGS
 *.swp
 depcomp
-*.dsp
-*.dsw
-*.ilk
-*.ncb
-*.opt
-*.plg
-*.exe
-*~
-Debug
-Release

@@ -1,0 +1,151 @@
+diff -Nrc sylpheed-claws.orig/src/procheader.c sylpheed-claws/src/procheader.c
+*** sylpheed-claws.orig/src/procheader.c	Thu Mar 14 05:14:12 2002
+--- sylpheed-claws/src/procheader.c	Sun May  5 05:51:51 2002
+***************
+*** 613,618 ****
+--- 613,622 ----
+  				MSG_SET_TMP_FLAGS(msginfo->flags,
+  						  MSG_ENCRYPTED);
+  			}
++ 			else if (!strncasecmp(hp, "application/pgp", 15)) {
++ 				MSG_SET_TMP_FLAGS(msginfo->flags,
++ 						  MSG_ENCRYPTED);
++ 			}
+  			else if (!strncasecmp(hp, "multipart", 9))
+  				MSG_SET_TMP_FLAGS(msginfo->flags, MSG_MIME);
+  			break;
+diff -Nrc sylpheed-claws.orig/src/procmime.c sylpheed-claws/src/procmime.c
+*** sylpheed-claws.orig/src/procmime.c	Thu Mar 14 05:14:12 2002
+--- sylpheed-claws/src/procmime.c	Sun May  5 05:51:51 2002
+***************
+*** 1061,1066 ****
+--- 1061,1068 ----
+  		type = MIME_TEXT;
+  	else if (!strncasecmp(mime_type, "application/octet-stream", 24))
+  		type = MIME_APPLICATION_OCTET_STREAM;
++ 	else if (!strncasecmp(mime_type, "application/pgp", 24))
++ 		type = MIME_APPLICATION_PGP;
+  	else if (!strncasecmp(mime_type, "application/", 12))
+  		type = MIME_APPLICATION;
+  	else if (!strncasecmp(mime_type, "multipart/", 10))
+diff -Nrc sylpheed-claws.orig/src/procmime.h sylpheed-claws/src/procmime.h
+*** sylpheed-claws.orig/src/procmime.h	Thu Feb 21 09:53:00 2002
+--- sylpheed-claws/src/procmime.h	Sun May  5 05:51:51 2002
+***************
+*** 49,54 ****
+--- 49,55 ----
+  	MIME_MESSAGE_RFC822,
+  	MIME_APPLICATION,
+  	MIME_APPLICATION_OCTET_STREAM,
++ 	MIME_APPLICATION_PGP,
+  	MIME_MULTIPART,
+  	MIME_IMAGE,
+  	MIME_AUDIO,
+diff -Nrc sylpheed-claws.orig/src/rfc2015.c sylpheed-claws/src/rfc2015.c
+*** sylpheed-claws.orig/src/rfc2015.c	Sat Apr 13 06:20:27 2002
+--- sylpheed-claws/src/rfc2015.c	Sun May  5 05:51:51 2002
+***************
+*** 543,582 ****
+      g_return_if_fail (msginfo != NULL);
+      g_return_if_fail (mimeinfo != NULL);
+      g_return_if_fail (fp != NULL);
+!     g_return_if_fail (mimeinfo->mime_type == MIME_MULTIPART);
+  
+!     debug_print ("** decrypting multipart/encrypted message");
+  
+      /* skip headers */
+      if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0)
+          perror("fseek");
+      tmpinfo = procmime_scan_mime_header(fp);
+!     if (!tmpinfo || tmpinfo->mime_type != MIME_MULTIPART) {
+          DECRYPTION_ABORT();
+      }
+  
+      procmime_scan_multipart_message(tmpinfo, fp);
+  
+!     /* check that we have the 2 parts */
+!     partinfo = tmpinfo->children;
+!     if (!partinfo || !partinfo->next) {
+!         DECRYPTION_ABORT();
+!     }
+!     if (!g_strcasecmp (partinfo->content_type, "application/pgp-encrypted")) {
+!         /* Fixme: check that the version is 1 */
+          ver_ok = 1;
+      }
+!     partinfo = partinfo->next;
+!     if (ver_ok &&
+!         !g_strcasecmp (partinfo->content_type, "application/octet-stream")) {
+!         if (partinfo->next)
+!             g_warning ("oops: pgp_encrypted with more than 2 parts");
+!     }
+!     else {
+          DECRYPTION_ABORT();
+      }
+! 
+!     debug_print ("** yep, it is pgp encrypted");
+  
+      plain = pgp_decrypt (partinfo, fp);
+      if (!plain) {
+--- 543,604 ----
+      g_return_if_fail (msginfo != NULL);
+      g_return_if_fail (mimeinfo != NULL);
+      g_return_if_fail (fp != NULL);
+!     g_return_if_fail ((mimeinfo->mime_type == MIME_MULTIPART) || 
+!                       (mimeinfo->mime_type == MIME_APPLICATION_PGP));
+  
+!     debug_print ("** decrypting multipart/encrypted or application/pgp message\n");
+  
+      /* skip headers */
+      if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0)
+          perror("fseek");
+      tmpinfo = procmime_scan_mime_header(fp);
+!     if (!tmpinfo) {
+          DECRYPTION_ABORT();
+      }
+  
+      procmime_scan_multipart_message(tmpinfo, fp);
++    
++     switch (tmpinfo->mime_type) {
++     case MIME_APPLICATION_PGP:
++ 	/* Support for mutt-style application/pgp content */
+  
+!         /* check that we have the 1 part */
+!         partinfo = tmpinfo->children;
+!         
+! 	/* Fixme: check that the version is 1 */
+          ver_ok = 1;
++         break;
++     case MIME_MULTIPART:
++     
++         /* check that we have the 2 parts */
++         partinfo = tmpinfo->children;
++         if (!partinfo || !partinfo->next) {
++             DECRYPTION_ABORT();
++         }
++         if (!g_strcasecmp (partinfo->content_type, "application/pgp-encrypted")) {
++             /* Fixme: check that the version is 1 */
++             ver_ok = 1;
++         }
++         partinfo = partinfo->next;
++         if (!g_strcasecmp (partinfo->content_type, "application/octet-stream")) 
++ 	{
++             if (partinfo->next)
++                 g_warning ("oops: pgp_encrypted with more than 2 parts");
++         }
++         else {
++             DECRYPTION_ABORT();
++         }
++ 	break;
++     default:
++         DECRYPTION_ABORT();
+      }
+!    
+!     if (!ver_ok) {
+! 	debug_print("incorrect version\n");
+          DECRYPTION_ABORT();
+      }
+!     
+!     debug_print ("** yep, it is pgp encrypted\n");
+  
+      plain = pgp_decrypt (partinfo, fp);
+      if (!plain) {
