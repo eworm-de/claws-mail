@@ -1,3 +1,30 @@
+* calypso_import.pl
+
+  WHAT IT DOES
+
+  This perl script imports mbox files that are exported by Calypso.
+  It recreates the folder structure by scanning the "X-CalypsoFolder"
+  header and reincludes the attachments referenced in the
+  "X-CalypsoHtmlBody" "X-CalypsoAccount" "X-Attachment" headers.
+  
+  HOW TO USE IT
+
+  Export the Calypso mailbox by selecting "Save to archive" and check
+  the "Save attachments" box.
+  Edit the script to set following variables (at the top of the file):
+    $mboxdir  : path to the exported mbox, e.g. 'Archive' or '.'
+    $mboxfile : name of exported mbox, e.g. 'mail.txt'
+    $outdir   : name of the MH folder to create, e.g. 'Calypso'
+  Run the script using
+    perl calypso_import.pl
+  Finally, import that folder by either selecting "New mailbox" or
+  moving it into your existing directory and recreate the folder
+  structure manually (contentmenu from folderview).
+
+  Any questions, comments or problems, contact Thorsten Maerz <torte@netztorte.de>
+
+-----------------------------------------------------------------------
+
 * eud2gc.py
 
   WHAT IT DOES
