@@ -3596,9 +3596,11 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 	mimetext->data.mem = buf;
 	mimetext->type = MIMETYPE_TEXT;
 	mimetext->subtype = g_strdup("plain");
+	if (encoding != ENC_UNKNOWN)
+		procmime_encode_content(mimetext, encoding);
+
 	g_hash_table_insert(mimetext->typeparameters, g_strdup("charset"),
 			    g_strdup(out_codeset));
-	/* procmime_encode_content(mimetext, encoding); */
 
 	/* append attachment parts */
 	if (compose_use_attach(compose)) {
