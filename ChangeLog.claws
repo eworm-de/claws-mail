@@ -1,6 +1,13 @@
+2001-10-20 [paul]	0.6.3claws28
+
+	* sync with sylpheed 0.6.3cvs9
+		see ChangeLog entry 2001-10-19
+
+	* correct Alfons' last ChangeLog.claws entry
+
 2001-10-19 [alfons]
 
-	* src/gpgtext.[ch]
+	* src/pgptext.[ch]
 		fix compilation problems (part of bug #472895)
 
 2001-10-18 [hoa]        0.6.3claws27

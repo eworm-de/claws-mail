@@ -347,6 +347,7 @@ static void ldif_clear_rec( Ldif_ParsedRec *rec ) {
 	rec->listID = NULL;
 }
 
+#if 0
 static void ldif_print_record( Ldif_ParsedRec *rec, FILE *stream ) {
 	fprintf( stdout, "LDIF Parsed Record:\n" );
 	fprintf( stdout, "common name:" );
@@ -368,6 +369,7 @@ static void ldif_print_record( Ldif_ParsedRec *rec, FILE *stream ) {
 	mgu_print_list( rec->listID, stdout );
 	if( ! rec->listID ) fprintf( stdout, "\n" );
 }
+#endif
 
 /*
 * Read file data into address cache.
@@ -454,14 +456,14 @@ static void ldif_read_file( LdifFile *ldifFile, AddressCache *cache ) {
 
 }
 
-// ============================================================================================
 /*
+* ============================================================================================
 * Read file into list. Main entry point
 * Enter:  ldifFile LDIF control data.
 *         cache    Address cache to load.
 * Return: Status code.
+* ============================================================================================
 */
-// ============================================================================================
 gint ldif_import_data( LdifFile *ldifFile, AddressCache *cache ) {
 	g_return_val_if_fail( ldifFile != NULL, MGU_BAD_ARGS );
 	ldifFile->retVal = MGU_SUCCESS;

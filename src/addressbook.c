@@ -337,7 +337,7 @@ static void addressbook_list_select_clear	(void);
 static void addressbook_list_select_add		(AddressObject *obj);
 static void addressbook_list_select_remove	(AddressObject *obj);
 
-static void addressbook_import_ldif_cb		();
+static void addressbook_import_ldif_cb		(void);
 
 static GtkItemFactoryEntry addressbook_entries[] =
 {
@@ -363,8 +363,8 @@ static GtkItemFactoryEntry addressbook_entries[] =
 	{N_("/_Address/---"),		NULL,		NULL, 0, "<Separator>"},
 	{N_("/_Address/_Edit"),		"<alt>Return",	addressbook_edit_address_cb,    0, NULL},
 	{N_("/_Address/_Delete"),	NULL,		addressbook_delete_address_cb,  0, NULL},
-	{N_("/_Tools/---"),		NULL,		NULL, 0, "<Separator>"},
-	{N_("/_Tools/Import _LDIF"),	NULL,           addressbook_import_ldif_cb,	0, NULL},
+	{N_("/_Tools"),			NULL,		NULL, 0, "<Branch>"},
+	{N_("/_Tools/Import _LDIF file"), NULL,		addressbook_import_ldif_cb,	0, NULL},
 	{N_("/_Help"),			NULL,		NULL, 0, "<LastBranch>"},
 	{N_("/_Help/_About"),		NULL,		about_show, 0, NULL}
 };
@@ -377,10 +377,9 @@ static GtkItemFactoryEntry addressbook_entries[] =
 	{N_("/_Edit/_Paste"),		"<ctl>V",	NULL,                           0, NULL},
 	{N_("/_Tools"),			NULL,		NULL, 0, "<Branch>"},
 	{N_("/_Tools/Import _Mozilla"),	NULL,           NULL,				0, NULL},
-	{N_("/_Tools/Import _LDIF"),	NULL,           NULL,				0, NULL},
 	{N_("/_Tools/Import _vCard"),	NULL,           NULL,				0, NULL},
 	{N_("/_Tools/---"),		NULL,		NULL, 0, "<Separator>"},
-	{N_("/_Tools/Export _LDIF"),	NULL,           NULL,				0, NULL},
+	{N_("/_Tools/Export _LDIF file"), NULL,		NULL,				0, NULL},
 	{N_("/_Tools/Export v_Card"),	NULL,           NULL,				0, NULL},
 */
 
@@ -3466,28 +3465,24 @@ static void addressbook_import_ldif_cb() {
 	GtkCTreeNode *newNode;
 
 	adapter = addrbookctl_find_interface( ADDR_IF_BOOK );
-	if( adapter ) {
-		if( adapter->treeNode ) {
-			abf = addressbook_imp_ldif( _addressIndex_ );
-			if( abf ) {
-				ds = addrindex_index_add_datasource( _addressIndex_, ADDR_IF_BOOK, abf );
-				ads = addressbook_create_ds_adapter( ds, ADDR_BOOK, NULL );
-				addressbook_ads_set_name( ads, abf->name );
-				newNode = addressbook_add_object( adapter->treeNode, ADDRESS_OBJECT(ads) );
-				if( newNode ) {
-					gtk_ctree_select( GTK_CTREE(addrbook.ctree), newNode );
-					addrbook.treeSelected = newNode;
-				}
+	if ( !adapter || !adapter->treeNode ) return;
 
-				/* Notify address completion */
-				invalidate_address_completion();
-			}
-		}
+	abf = addressbook_imp_ldif( _addressIndex_ );
+	if ( !abf ) return;
+
+	ds = addrindex_index_add_datasource( _addressIndex_, ADDR_IF_BOOK, abf );
+	ads = addressbook_create_ds_adapter( ds, ADDR_BOOK, NULL );
+	addressbook_ads_set_name( ads, abf->name );
+	newNode = addressbook_add_object( adapter->treeNode, ADDRESS_OBJECT(ads) );
+	if ( newNode ) {
+		gtk_ctree_select( GTK_CTREE(addrbook.ctree), newNode );
+		addrbook.treeSelected = newNode;
 	}
 
+	/* Notify address completion */
+	invalidate_address_completion();
 }
 
 /*
 * End of Source.
 */
-

@@ -78,7 +78,7 @@ struct _AddressInterface {
 	GList *(*getListPerson)( void * );
 	GList *(*getAllPersons)( void * );
 	GList *(*getAllGroups)( void * );
-	gchar *(*getName) ( void * );
+	gchar *(*getName)( void * );
 	void (*setAccessFlag)( void *, void * );
 };
 

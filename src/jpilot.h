@@ -63,11 +63,12 @@ struct _JPilotFile {
 
 /* Limits */
 #define JPILOT_NUM_LABELS	22	/* Number of labels */
-#define JPILOT_NUM_PHONELABELS  8 	/* Number of phone number labels */
+#define JPILOT_NUM_PHONELABELS	8 	/* Number of phone number labels */
 #define JPILOT_NUM_CATEG	16	/* Number of categories */
 #define JPILOT_LEN_LABEL	15	/* Max length of label */
 #define JPILOT_LEN_CATEG	15	/* Max length of category */
-#define JPILOT_NUM_ADDR_PHONE   5	/* Number of phone entries a person can have */
+#define JPILOT_NUM_ADDR_PHONE	5	/* Number of phone entries a person
+					   can have */
 
 /* Function prototypes */
 JPilotFile *jpilot_create		( void );
@@ -113,4 +114,3 @@ gint jpilot_read_modified		( JPilotFile *pilotFile );
 #endif /* USE_JPILOT */
 
 #endif /* __JPILOT_H__ */
-

@@ -79,7 +79,7 @@ struct _LdifFile {
 	gchar        *path;
 	gchar        *bufptr;
 	gchar        buffer[ LDIFBUFSIZE ];
-	// AddressCache *addressCache;
+	/* AddressCache *addressCache; */
 	gint         retVal;
 };
 

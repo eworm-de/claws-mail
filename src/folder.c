@@ -1297,7 +1297,7 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 		if (item->ret_rcpt)
 			fputs(" reqretrcpt=\"1\"", fp);
 		fprintf(fp,
-			" mtime=\"%ld\" new=\"%d\" unread=\"%d\" total=\"%d\"",
+			" mtime=\"%lu\" new=\"%d\" unread=\"%d\" total=\"%d\"",
 			item->mtime, item->new, item->unread, item->total);
 	}
 

@@ -3,6 +3,14 @@
 	* src/smtp.[ch]: smtp_from(): abort if auth failed.
 	* changed C++-style comments into C-style in some files, and
 	  removed unnecessary commented out codes.
+	* src/addrcache.[ch]
+	  src/addressbook.c
+	  src/addrindex.[ch]
+	  src/jpilot.[ch]
+	  src/syldap.[ch]: updated the addressbook code, and fixed the
+	  thread bug of LDAP.
+	* src/ldif.[ch]
+	  src/importldif.[ch]: new.
 
 2001-10-18
 

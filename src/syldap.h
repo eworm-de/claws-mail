@@ -65,7 +65,7 @@ struct _SyldapServer {
 	pthread_t    *thread;
 	gboolean     busyFlag;
 	void         (*callBack)( void * );
-	guint	     idleId;
+	guint        idleId;
 };
 
 /* Function prototypes */
@@ -109,4 +109,3 @@ gboolean syldap_test_ldap_lib	( void );
 #endif	/* USE_LDAP */
 
 #endif /* __SYLDAP_H__ */
-

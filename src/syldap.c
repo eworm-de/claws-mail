@@ -28,6 +28,8 @@
 #ifdef USE_LDAP
 
 #include <glib.h>
+#include <gdk/gdk.h>
+#include <gtk/gtkmain.h>
 #include <sys/time.h>
 #include <string.h>
 #include <ldap.h>
@@ -234,6 +236,7 @@ void syldap_free( SyldapServer *ldapServer ) {
 	g_free( ldapServer->bindPass );
 	g_free( ldapServer->searchCriteria );
 	g_free( ldapServer->searchValue );
+	g_free( ldapServer->thread );
 
 	ldapServer->port = 0;
 	ldapServer->entriesRead = 0;
@@ -253,7 +256,6 @@ void syldap_free( SyldapServer *ldapServer ) {
 	ldapServer->searchCriteria = NULL;
 	ldapServer->searchValue = NULL;
 	ldapServer->addressCache = NULL;
-	g_free(ldapServer->thread);
 	ldapServer->thread = NULL;
 	ldapServer->busyFlag = FALSE;
 	ldapServer->retVal = MGU_SUCCESS;
@@ -635,11 +637,11 @@ gint syldap_search( SyldapServer *ldapServer ) {
  * main thread (the thread running the GTK event loop). */
 static gint syldap_display_search_results(SyldapServer *ldapServer)
 {
-	/* NOTE: when this function is called the accompanying thread should 
+	/* NOTE: when this function is called the accompanying thread should
 	 * already be terminated. */
 	gtk_idle_remove(ldapServer->idleId);
 	ldapServer->callBack(ldapServer);
-	/* FIXME:  match should know whether to free this SyldapServer stuff.  */
+	/* FIXME:  match should know whether to free this SyldapServer stuff. */
 	g_free(ldapServer->thread);
 	ldapServer->thread = NULL;
 	return TRUE;
@@ -675,7 +677,6 @@ gint syldap_read_data( SyldapServer *ldapServer ) {
 		gdk_threads_enter();
 		ldapServer->idleId = gtk_idle_add(syldap_display_search_results, ldapServer);
 		gdk_threads_leave();
-	
 	}
 
 	return ldapServer->retVal;
@@ -712,7 +713,7 @@ gint syldap_read_data_th( SyldapServer *ldapServer ) {
 	ldapServer->busyFlag = FALSE;
 	syldap_check_search( ldapServer );
 	if( ldapServer->retVal == MGU_SUCCESS ) {
-//		debug_print("Staring LDAP read thread\n");
+		/* debug_print("Staring LDAP read thread\n"); */
 
 		ldapServer->busyFlag = TRUE;
 		ldapServer->thread = g_new0(pthread_t, 1);

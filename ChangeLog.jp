@@ -3,6 +3,14 @@
 	* src/smtp.[ch]: smtp_from(): 認証に失敗した場合中断するようにした。
 	* C++ スタイルのコメントを C スタイルに変更し、不要なコメントアウト
 	  されたコードを削除。
+	* src/addrcache.[ch]
+	  src/addressbook.c
+	  src/addrindex.[ch]
+	  src/jpilot.[ch]
+	  src/syldap.[ch]: アドレス帳のコードを更新し、 LDAP のスレッド
+	  のバグを修正。
+	* src/ldif.[ch]
+	  src/importldif.[ch]: 新規。
 
 2001-10-18
 

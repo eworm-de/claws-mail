@@ -36,6 +36,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <dlfcn.h>
+#include <netinet/in.h>
 
 #ifdef HAVE_LIBPISOCK_PI_ARGS_H
 #  include <libpisock/pi-args.h>
@@ -138,12 +139,12 @@ typedef struct {
 
 /* Shamelessly copied from JPilot (libplugin.h) */
 typedef struct {
-   unsigned long header_len;
-   unsigned long header_version;
-   unsigned long rec_len;
-   unsigned long unique_id;
-   unsigned long rt; /* Record Type */
-   unsigned char attrib;
+	unsigned long header_len;
+	unsigned long header_version;
+	unsigned long rec_len;
+	unsigned long unique_id;
+	unsigned long rt; /* Record Type */
+	unsigned char attrib;
 } PC3RecordHeader;
 
 /*
@@ -281,9 +282,9 @@ GList *jpilot_get_custom_labels( JPilotFile *pilotFile ) {
 }
 
 /*
- * Return filespec of PC3 file corresponding to JPilot PDB file.
- * Note: Filespec should be g_free() when done.
- */
+* Return filespec of PC3 file corresponding to JPilot PDB file.
+* Note: Filespec should be g_free() when done.
+*/
 static gchar *jpilot_get_pc3_file( JPilotFile *pilotFile ) {
 	gchar *fileSpec, *r;
 	gint i, len, pos;
@@ -349,7 +350,8 @@ static gboolean jpilot_check_files( JPilotFile *pilotFile ) {
 	gchar *pcFile;
 
 	/* Check main file */
-	if( addrcache_check_file( pilotFile->addressCache, pilotFile->path ) ) return TRUE;
+	if( addrcache_check_file( pilotFile->addressCache, pilotFile->path ) )
+		return TRUE;
 
 	/* Test PC3 file */
 	if( ! pilotFile->havePC3 ) return FALSE;
@@ -436,7 +438,7 @@ void jpilot_print_file( JPilotFile *pilotFile, FILE *stream ) {
 	addrcache_print( pilotFile->addressCache, stream );
 	fprintf( stream, "  ret val: %d\n", pilotFile->retVal );
 	fprintf( stream, " have pc3: %s\n", pilotFile->havePC3 ? "yes" : "no" );
-	fprintf( stream, " pc3 time: %d\n", pilotFile->pc3ModifyTime );
+	fprintf( stream, " pc3 time: %lu\n", pilotFile->pc3ModifyTime );
 	addritem_print_item_folder( pilotFile->addressCache->rootFolder, stream );
 }
 
@@ -464,7 +466,7 @@ void jpilot_print_short( JPilotFile *pilotFile, FILE *stream ) {
 	}
 	addrcache_print( pilotFile->addressCache, stream );
 	fprintf( stream, " have pc3: %s\n", pilotFile->havePC3 ? "yes" : "no" );
-	fprintf( stream, " pc3 time: %d\n", pilotFile->pc3ModifyTime );
+	fprintf( stream, " pc3 time: %lu\n", pilotFile->pc3ModifyTime );
 }
 
 /* Shamelessly copied from JPilot (libplugin.c) */
@@ -724,7 +726,7 @@ static int read_header(FILE *pc_in, PC3RecordHeader *header) {
 	num = fread(&l, sizeof(l), 1, pc_in);
 	if (feof(pc_in)) {
 		return -1;
-	}      
+	}
 	if (num!=1) {
 		return num;
 	}
@@ -736,7 +738,7 @@ static int read_header(FILE *pc_in, PC3RecordHeader *header) {
 	num = fread(packed_header+sizeof(l), len-sizeof(l), 1, pc_in);
 	if (feof(pc_in)) {
 		return -1;
-	}      
+	}
 	if (num!=1) {
 		return num;
 	}
@@ -750,17 +752,17 @@ static gint jpilot_read_next_pc( FILE *in, buf_rec *br ) {
 	PC3RecordHeader header;
 	int rec_len, num;
 	char *record;
-   
+
 	if(feof(in)) {
-	 	return MGU_EOF;
+		return MGU_EOF;
 	}
 	num = read_header(in, &header);
 	if (num < 1) {
 		if (ferror(in)) {
-	 		return MGU_ERROR_READ;
+			return MGU_ERROR_READ;
 		}
 		if (feof(in)) {
-	 		return MGU_EOF;
+			return MGU_EOF;
 		}
 	}
 	rec_len = header.rec_len;
@@ -772,7 +774,7 @@ static gint jpilot_read_next_pc( FILE *in, buf_rec *br ) {
 	if (num != 1) {
 		if (ferror(in)) {
 			free(record);
-	 		return MGU_ERROR_READ;
+			return MGU_ERROR_READ;
 		}
 	}
 	br->rt = header.rt;
@@ -810,12 +812,12 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 	recs_returned = 0;
 
 	if( pilotFile->path == NULL ) {
-	 	return MGU_BAD_ARGS;
+		return MGU_BAD_ARGS;
 	}
-	
+
 	in = fopen( pilotFile->path, "r" );
 	if (!in) {
-	 	return MGU_OPEN_FILE;
+		return MGU_OPEN_FILE;
 	}
 
 	/* Read the database header */
@@ -835,8 +837,8 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 	num_records = dbh.number_of_records;
 	out_of_order = 0;
 	prev_offset = 0;
-   
-	for (i=1; i<num_records+1; i++) {
+
+	for (i = 1; i < num_records + 1; i++) {
 		num = fread(&rh, sizeof(record_header), 1, in);
 		if (num != 1) {
 			if (ferror(in)) {
@@ -920,7 +922,7 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 			temp_br->size = rec_size;
 
 			*records = g_list_append(*records, temp_br);
-	 
+
 			recs_returned++;
 		}
 	}
@@ -933,7 +935,7 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 	pc_in = fopen( pcFile, "r");
 	g_free( pcFile );
 
-	if( pc_in==NULL ) {
+	if( pc_in == NULL ) {
 		return MGU_SUCCESS;
 	}
 
@@ -973,8 +975,8 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 	return MGU_SUCCESS;
 }
 
-#define	FULLNAME_BUFSIZE   256
-#define	EMAIL_BUFSIZE      256
+#define FULLNAME_BUFSIZE	256
+#define EMAIL_BUFSIZE		256
 /*
  * Unpack address, building new data inside cache.
  */
@@ -1001,7 +1003,7 @@ static void jpilot_load_address( JPilotFile *pilotFile, buf_rec *buf, ItemFolder
 		addrEnt = addr.entry;
 		attrib = buf->attrib;
 		unique_id = buf->unique_id;
-	      	cat_id = attrib & 0x0F;
+		cat_id = attrib & 0x0F;
 
 		*fullName = *bufEMail = '\0';
 		if( addrEnt[ IND_LABEL_FIRSTNAME ] ) {
@@ -1048,8 +1050,8 @@ static void jpilot_load_address( JPilotFile *pilotFile, buf_rec *buf, ItemFolder
 					email = addritem_create_item_email();
 					addritem_email_set_address( email, bufEMail );
 					addrcache_id_email( pilotFile->addressCache, email );
-					addrcache_person_add_email(
-						pilotFile->addressCache, person, email );
+					addrcache_person_add_email
+						( pilotFile->addressCache, person, email );
 				}
 			}
 		}
@@ -1074,10 +1076,9 @@ static void jpilot_load_address( JPilotFile *pilotFile, buf_rec *buf, ItemFolder
 					addritem_email_set_address( email, bufEMail );
 					addritem_email_set_remarks( email, ai->labels[ind] );
 					addrcache_id_email( pilotFile->addressCache, email );
-					addrcache_person_add_email(
-						pilotFile->addressCache, person, email );
+					addrcache_person_add_email
+						( pilotFile->addressCache, person, email );
 				}
-
 			}
 
 			node = g_list_next( node );
@@ -1086,15 +1087,13 @@ static void jpilot_load_address( JPilotFile *pilotFile, buf_rec *buf, ItemFolder
 		if( person->listEMail ) {
 			if( cat_id > -1 && cat_id < JPILOT_NUM_CATEG ) {
 				/* Add to specified category */
-				addrcache_folder_add_person(
-					pilotFile->addressCache, folderInd[cat_id], person );
-			}
-			else {
+				addrcache_folder_add_person
+					( pilotFile->addressCache, folderInd[cat_id], person );
+			} else {
 				/* Add to root folder */
 				addrcache_add_person( pilotFile->addressCache, person );
 			}
-		}
-		else {
+		} else {
 			addritem_free_item_person( person );
 			person = NULL;
 		}
@@ -1195,9 +1194,6 @@ static gint jpilot_read_metadata( JPilotFile *pilotFile ) {
 		free(buf);
 	}
 	if( num <= 0 ) {
-		/*
-		fprintf( stderr, "error reading '%s'\n", pilotFile->path );
-		*/
 		pilotFile->retVal = MGU_ERROR_READ;
 		return pilotFile->retVal;
 	}
