@@ -1,3 +1,11 @@
+2003-08-27 [christoph]	0.9.4claws40
+
+	* src/folderview.c
+		fix bug that the current summary settings were copied to the
+		wrong folder item, when the folder item prefs are opened.
+		Copying is not required because summary settings and
+		folder_item_prefs do not contain the same settings
+
 2003-08-27 [thorsten]	0.9.4claws39
 
 	* src/imap.c
