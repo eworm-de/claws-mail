@@ -594,8 +594,8 @@ MainWindow *main_window_create(SeparateType type)
 	SummaryView *summaryview;
 	MessageView *messageview;
 	GdkColormap *colormap;
-	GdkColor color[3];
-	gboolean success[3];
+	GdkColor color[4];
+	gboolean success[4];
 	guint n_menu_entries;
 	GtkItemFactory *ifactory;
 	GtkWidget *ac_menu;
@@ -718,8 +718,8 @@ MainWindow *main_window_create(SeparateType type)
 	color[3] = folderview->color_op;
 
 	colormap = gdk_window_get_colormap(window->window);
-	gdk_colormap_alloc_colors(colormap, color, 3, FALSE, TRUE, success);
-	for (i = 0; i < 3; i++) {
+	gdk_colormap_alloc_colors(colormap, color, 4, FALSE, TRUE, success);
+	for (i = 0; i < 4; i++) {
 		if (success[i] == FALSE)
 			g_warning(_("MainWindow: color allocation %d failed\n"), i);
 	}
