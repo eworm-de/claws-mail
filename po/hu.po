@@ -8118,14 +8118,14 @@ msgid "Quoted message body without signature"
 msgstr "Idézett üzenet szövege aláirás nélkül"
 
 #: src/quote_fmt.c:59
-#, c-format
-msgid "Insert expr if x is set\n"
+msgid ""
+"Insert expr if x is set\n"
 "x is one of the characters above after %"
-msgstr "Kifejezés beszúrása, ha x be van állítva\n"
+msgstr ""
+"Kifejezés beszúrása, ha x be van állítva\n"
 "x a fenti karakterek közüli lehet a % jel után"
 
 #: src/quote_fmt.c:61
-#, c-format
 msgid "Literal %"
 msgstr "% jel"
 

@@ -4,13 +4,18 @@
 	  src/plugins/traycon/Makefile.am
 	  	add missing files
 		
-	* po/es.po
+	* po/bg.po
+	  po/en_GB.po
+	  po/es.po
 	  po/it.po
+	  po/pt_BR.po
 	  po/ru.po
 	  po/sr.po
-	  	update Spanish, Italian, Russian, and Serbian
-		translations, submitted by Ricardo Mones Lastra,
-		Alessandro Maestri, Ruslan N. Balkin, and Urke MMI
+	  	update Bulgarian, British English, Spanish, Italian, 
+		Brazilian Portuguese, Russian, and Serbian translations, 
+		submitted by George Danchev, [me], Ricardo Mones Lastra,
+		André Filipe de Assunção e Brito, Alessandro Maestri, 
+		Ruslan N. Balkin, and Urke MMI
 
 2003-05-23 [melvin]	0.8.11claws176
 
