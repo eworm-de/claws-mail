@@ -70,7 +70,7 @@
 	* src/common/nntp.[ch]
 	* src/common/socket.[ch]
 	* src/common/ssl.[ch]
-	* src/gtk/sslcertwindow.c
+	* src/gtk/sslcertwindow.[ch]
 	* ac/openssl.m4
 		use new autoconf script to detect OpenSSL with extra parameters
 		to specify the location of libs and includes, also remove USE_SSL
