@@ -1,3 +1,8 @@
+2003-01-02 [thorsten]	0.8.8claws38
+
+	* src/prefs.c
+		fixed acessing members of freed pfile struct
+
 2003-01-02 [thorsten]	0.8.8claws37
 
 	* src/procmsg.c
