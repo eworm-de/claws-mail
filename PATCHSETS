@@ -208,3 +208,4 @@
 ( cvs diff -u -r 1.32 -r 1.33 src/prefs_toolbar.c; ) > 0.9.13cvs36.patchset
 ( cvs diff -u -r 1.127 -r 1.128 AUTHORS; cvs diff -u -r 1.72 -r 1.73 po/es.po; cvs diff -u -r 1.51 -r 1.52 po/fr.po; cvs diff -u -r 1.8 -r 1.9 po/hr.po; cvs diff -u -r 1.38 -r 1.39 po/it.po; cvs diff -u -r 1.53 -r 1.54 po/pt_BR.po; cvs diff -u -r 1.13 -r 1.14 po/sk.po; cvs diff -u -r 1.24 -r 1.25 po/sr.po; ) > 0.9.13cvs37.patchset
 ( cvs diff -u -r 1.25 -r 1.26 src/crash.c; cvs diff -u -r 1.11 -r 1.12 src/gtk/pluginwindow.c; ) > 0.9.13cvs38.patchset
+( cvs diff -u -r 1.24 -r 1.25 po/ja.po; ) > 1.0.0cvs1.patchset
