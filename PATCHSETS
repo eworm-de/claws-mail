@@ -268,3 +268,4 @@
 ( cvs diff -u -r 1.207.2.22 -r 1.207.2.23 src/folderview.c; ) > 0.9.12cvs176.1.patchset
 ( cvs diff -u -r 1.12.2.8 -r 1.12.2.9 src/gtk/prefswindow.c; cvs diff -u -r 1.5.2.6 -r 1.5.2.7 src/gtk/pluginwindow.c; ) > 0.9.12cvs177.1.patchset
 ( cvs diff -u -r 1.6.10.1 -r 1.6.10.2 src/addrharvest.c; ) > 0.9.12cvs177.2.patchset
+( cvs diff -u -r 1.6.10.2 -r 1.6.10.3 src/addrharvest.c; ) > 0.9.12cvs177.3.patchset

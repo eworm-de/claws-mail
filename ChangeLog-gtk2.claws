@@ -1,3 +1,8 @@
+2004-12-01 [colin]	0.9.12cvs177.3
+
+	* src/addrharvest.c
+		Replace sizeof with strlen
+
 2004-12-01 [paul]	0.9.12cvs177.2
 
 	* src/addrharvest.c
