@@ -104,7 +104,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		exit(2);
     	}
 
-    	debug_print("Loaded %d viruses.\n", no);
+    	debug_print("Database loaded (containing in total %d signatures)\n", no);
 
     	cl_buildtrie(root);
 

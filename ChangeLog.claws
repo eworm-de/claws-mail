@@ -1,3 +1,12 @@
+2003-08-16 [paul]	0.9.4claws25
+
+	* src/plugins/clamav/clamav_plugin.c
+		reword a debug_print
+		
+	* src/plugins/dillo_viewer/dillo_prefs.c
+		cosmetic: change the labels' text, add tooltips, and
+		left-align the hint
+
 2003-08-15 [christoph]	0.9.4claws24
 
 	* src/news.c
