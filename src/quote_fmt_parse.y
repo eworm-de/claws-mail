@@ -130,6 +130,7 @@ static int isseparator(char ch)
 %token SHOW_SENDER_INITIAL SHOW_SUBJECT SHOW_TO SHOW_MESSAGEID
 %token SHOW_PERCENT SHOW_CC SHOW_REFERENCES SHOW_MESSAGE
 %token SHOW_QUOTED_MESSAGE SHOW_BACKSLASH SHOW_TAB
+%token SHOW_QUOTED_MESSAGE_NO_SIGNATURE SHOW_MESSAGE_NO_SIGNATURE
 %token SHOW_EOL SHOW_QUESTION_MARK SHOW_OPARENT SHOW_CPARENT
 %token QUERY_DATE QUERY_FROM
 %token QUERY_FULLNAME QUERY_SUBJECT QUERY_TO QUERY_NEWSGROUPS
@@ -278,6 +279,36 @@ special:
 		if ((fp = procmime_get_text_part(msginfo)) == NULL)
 			g_warning(_("Can't get text part\n"));
 		while (fgets(buf, sizeof(buf), fp) != NULL) {
+			if (quote_str)
+				INSERT(quote_str);
+			INSERT(buf);
+		}
+		fclose(fp);
+	}
+	| SHOW_MESSAGE_NO_SIGNATURE
+	{
+		gchar buf[BUFFSIZE];
+		FILE * fp;
+
+		if ((fp = procmime_get_text_part(msginfo)) == NULL)
+			g_warning(_("Can't get text part\n"));
+		while (fgets(buf, sizeof(buf), fp) != NULL) {
+			if (strncmp(buf, "-- ", 3) == 0)
+				break;
+			INSERT(buf);
+		}
+		fclose(fp);
+	}
+	| SHOW_QUOTED_MESSAGE_NO_SIGNATURE
+	{
+		gchar buf[BUFFSIZE];
+		FILE * fp;
+
+		if ((fp = procmime_get_text_part(msginfo)) == NULL)
+			g_warning(_("Can't get text part\n"));
+		while (fgets(buf, sizeof(buf), fp) != NULL) {
+			if (strncmp(buf, "-- ", 3) == 0)
+				break;
 			if (quote_str)
 				INSERT(quote_str);
 			INSERT(buf);

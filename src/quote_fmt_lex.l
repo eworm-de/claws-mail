@@ -21,6 +21,8 @@
 "%r" /* references */ return SHOW_REFERENCES;
 "%M" /* message */ return SHOW_MESSAGE;
 "%Q" /* quoted message */ return SHOW_QUOTED_MESSAGE;
+"%m" /* message with no signature */ return SHOW_MESSAGE_NO_SIGNATURE;
+"%q" /* quoted message with no signature */ return SHOW_QUOTED_MESSAGE_NO_SIGNATURE;
 "%%" /* % */ return SHOW_PERCENT;
 "\\\\" /* \ */ return SHOW_BACKSLASH;
 "\\t" /* tab */ return SHOW_TAB;

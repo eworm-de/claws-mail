@@ -64,6 +64,7 @@ struct _PrefsCommon
 	gboolean show_ruler;
 	gchar *fw_quotemark;
 	gchar *fw_quotefmt;
+	gboolean forward_as_attachment;
 
 	/* Display */
 	gchar *widgetfont;

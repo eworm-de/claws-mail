@@ -100,6 +100,8 @@ static struct Compose {
 	GtkObject *spinbtn_linewrap_adj;
 	GtkWidget *checkbtn_wrapquote;
 	GtkWidget *checkbtn_wrapatsend;
+
+	GtkWidget * checkbtn_forward_as_attachment;
 } compose;
 
 static struct Display {
@@ -277,6 +279,9 @@ static PrefParam param[] = {
 	{"linewrap_before_sending", "FALSE",
 	 &prefs_common.linewrap_at_send, P_BOOL,
 	 &compose.checkbtn_wrapatsend,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"forward_as_attachment", "FALSE", &prefs_common.forward_as_attachment,
+	 P_BOOL, &compose.checkbtn_forward_as_attachment,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"show_ruler", "TRUE", &prefs_common.show_ruler, P_BOOL,
@@ -1041,6 +1046,8 @@ static void prefs_compose_create(void)
 	GtkWidget *checkbtn_wrapquote;
 	GtkWidget *checkbtn_wrapatsend;
 
+	GtkWidget *checkbtn_forward_as_attachment;
+
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
@@ -1165,6 +1172,10 @@ static void prefs_compose_create(void)
 	PACK_CHECK_BUTTON
 		(hbox4, checkbtn_wrapatsend, _("Wrap before sending"));
 
+	PACK_CHECK_BUTTON (vbox1, checkbtn_forward_as_attachment,
+			   _("Forward as attachment"));
+
+
 	/*
 	compose.checkbtn_quote   = checkbtn_quote;
 	compose.entry_quotemark  = entry_quotemark;
@@ -1177,6 +1188,9 @@ static void prefs_compose_create(void)
 	compose.spinbtn_linewrap_adj = spinbtn_linewrap_adj;
 	compose.checkbtn_wrapquote   = checkbtn_wrapquote;
 	compose.checkbtn_wrapatsend  = checkbtn_wrapatsend;
+
+	compose.checkbtn_forward_as_attachment =
+		checkbtn_forward_as_attachment;
 }
 
 static void date_format_ok_btn_clicked(GtkButton *button, GtkWidget **widget)
@@ -2440,6 +2454,8 @@ static void prefs_quote_description_create(void)
 		 "\n"
 		 "%M\n"
 		 "%Q\n"
+		 "%m\n"
+		 "%q\n"
 		 "%%");
 
 	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
@@ -2464,6 +2480,8 @@ static void prefs_quote_description_create(void)
 		   "\n"
 		   "Message body\n"
 		   "Quoted message body\n"
+		   "Message body without signature\n"
+		   "Quoted message body without signature\n"
 		   "%"));
 
 	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);

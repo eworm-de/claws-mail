@@ -807,8 +807,11 @@ Compose * compose_forward(PrefsAccount * account, MsgInfo *msginfo,
 	g_return_val_if_fail(msginfo->folder != NULL, NULL);
 
 	if (account == NULL) {
+		account = cur_account;
+		/*
 		account = msginfo->folder->folder->account;
 		if (!account) account = cur_account;
+		*/
 	}
 	g_return_val_if_fail(account != NULL, NULL);
 

@@ -1,3 +1,22 @@
+2001-06-17 [hoa]
+
+	* src/compose.c
+		forwarding use the current account.
+
+	* src/mainwindow.c
+		the "compose message" button has been replaced with
+		"new mail" and "new news" buttons
+
+	* src/prefs_common.[ch]
+		added a configuration option to use the forward button
+		as "forward as attachment"
+		changed reply and forward format description
+
+	* src/quote_fmt_lex.l
+	* src/quote_fmt_parse.y
+		added message with no signature in format for reply
+		and forward.
+
 2001-06-17 [paul]
 
         Minor UI stuff

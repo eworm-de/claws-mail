@@ -112,6 +112,10 @@ static void toolbar_send_cb		(GtkWidget	*widget,
 
 static void toolbar_compose_cb		(GtkWidget	*widget,
 					 gpointer	 data);
+static void toolbar_compose_news_cb		(GtkWidget	*widget,
+					 gpointer	 data);
+static void toolbar_compose_mail_cb		(GtkWidget	*widget,
+					 gpointer	 data);
 static void toolbar_reply_cb		(GtkWidget	*widget,
 					 gpointer	 data);
 static void toolbar_reply_to_all_cb	(GtkWidget	*widget,
@@ -218,6 +222,10 @@ static void send_queue_cb		(MainWindow	*mainwin,
 static void compose_cb			(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
+static void compose_mail_cb(MainWindow *mainwin, guint action,
+			    GtkWidget *widget);
+static void compose_news_cb(MainWindow *mainwin, guint action,
+			    GtkWidget *widget);
 static void reply_cb			(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -472,7 +480,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/Send queued messa_ges"),
 						NULL, send_queue_cb, 0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/Compose _new message"),	"<alt>N",	compose_cb, 0, NULL},
+	{N_("/_Message/Compose a _new mail"),	"<alt>N", compose_mail_cb, 0, NULL},
+	{N_("/_Message/Compose a news message"),	NULL,	compose_news_cb, 0, NULL},
 	{N_("/_Message/_Reply"),		"<alt>R", 	reply_cb, COMPOSE_REPLY, NULL},
 	{N_("/_Message/Repl_y to sender"),	"<control><alt>R", reply_cb, COMPOSE_REPLY_TO_SENDER, NULL},
 	{N_("/_Message/Reply to a_ll"),		"<shift><alt>R", reply_cb, COMPOSE_REPLY_TO_ALL, NULL},
@@ -1476,11 +1485,19 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 
 	CREATE_TOOLBAR_ICON(stock_mail_compose_xpm);
 	compose_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
-					      _("Compose"),
-					      _("Compose new message"),
+					      _("New mail"),
+					      _("Compose a new mail"),
 					      "New",
 					      icon_wid,
-					      toolbar_compose_cb,
+					      toolbar_compose_mail_cb,
+					      mainwin);
+	CREATE_TOOLBAR_ICON(stock_mail_compose_xpm);
+	compose_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
+					      _("New news"),
+					      _("Compose a news message"),
+					      "New",
+					      icon_wid,
+					      toolbar_compose_news_cb,
 					      mainwin);
 	CREATE_TOOLBAR_ICON(stock_mail_reply_xpm);
 	reply_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
@@ -1622,6 +1639,22 @@ static void toolbar_compose_cb	(GtkWidget	*widget,
 	compose_cb(mainwin, 0, NULL);
 }
 
+static void toolbar_compose_news_cb	(GtkWidget	*widget,
+				 gpointer	 data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+
+	compose_news_cb(mainwin, 0, NULL);
+}
+
+static void toolbar_compose_mail_cb	(GtkWidget	*widget,
+				 gpointer	 data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+
+	compose_mail_cb(mainwin, 0, NULL);
+}
+
 static void toolbar_reply_cb	(GtkWidget	*widget,
 				 gpointer	 data)
 {
@@ -1651,7 +1684,10 @@ static void toolbar_forward_cb	(GtkWidget	*widget,
 {
 	MainWindow *mainwin = (MainWindow *)data;
 
-	reply_cb(mainwin, COMPOSE_FORWARD, NULL);
+	if (prefs_common.forward_as_attachment)
+		reply_cb(mainwin, COMPOSE_FORWARD_AS_ATTACH, NULL);
+	else
+		reply_cb(mainwin, COMPOSE_FORWARD, NULL);
 }
 
 static void toolbar_delete_cb	(GtkWidget	*widget,
@@ -1955,6 +1991,57 @@ static void compose_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 	}
 	else
 		compose_new(NULL);
+}
+
+static void compose_mail_cb(MainWindow *mainwin, guint action,
+			    GtkWidget *widget)
+{
+	PrefsAccount * ac;
+	GList * list;
+	GList * cur;
+
+	if (mainwin->summaryview->folder_item) {
+		ac = mainwin->summaryview->folder_item->folder->account;
+		if (ac && ac->protocol != A_NNTP) {
+			compose_new(ac);
+			return;
+		}
+	}
+
+	list = account_get_list();
+	for(cur = list ; cur != NULL ; cur = g_list_next(cur)) {
+		ac = (PrefsAccount *) cur->data;
+		if (ac->protocol != A_NNTP) {
+			compose_new(ac);
+			return;
+		}
+	}
+}
+
+static void compose_news_cb(MainWindow *mainwin, guint action,
+			    GtkWidget *widget)
+{
+	PrefsAccount * ac;
+	GList * list;
+	GList * cur;
+
+	if (mainwin->summaryview->folder_item) {
+		ac = mainwin->summaryview->folder_item->folder->account;
+		if (ac && ac->protocol == A_NNTP) {
+			FolderItem * item = mainwin->summaryview->folder_item;
+			compose_new_with_recipient(ac, item->path);
+			return;
+		}
+	}
+
+	list = account_get_list();
+	for(cur = list ; cur != NULL ; cur = g_list_next(cur)) {
+		ac = (PrefsAccount *) cur->data;
+		if (ac->protocol == A_NNTP) {
+			compose_new(ac);
+			return;
+		}
+	}
 }
 
 static void reply_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
