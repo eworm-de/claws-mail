@@ -1,3 +1,9 @@
+2001-11-28
+
+	* src/src/compose.c
+	  src/prefs_template.c
+	  src/template.[ch]: テンプレートに To フィールドを追加。
+
 2001-11-27
 
 	* src/textview.c: textview_show_part(): 最初に見つかった

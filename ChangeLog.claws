@@ -1,3 +1,8 @@
+2001-11-29 [paul]	0.6.5claws43
+	
+        * sync with sylpheed 0.6.5cvs19
+        	see ChangeLog entry 2001-11-28
+
 2001-11-29 [melvin]	0.6.5claws42
 	* src/Makefile.am
 		added enriched.[ch] to the list of files

@@ -43,6 +43,7 @@ static struct Templates {
 	GtkWidget *clist_tmpls;
 	GtkWidget *entry_name;
 	GtkWidget *entry_subject;
+	GtkWidget *entry_to;
 	GtkWidget *text_value;
 } templates;
 
@@ -82,6 +83,22 @@ void prefs_template_open(void)
 	gtk_widget_show(templates.window);
 }
 
+#define ADD_ENTRY(vbox, entry, str) \
+{ \
+	hbox1 = gtk_hbox_new(FALSE, 8); \
+	gtk_widget_show(hbox1); \
+	gtk_box_pack_start(GTK_BOX(vbox), hbox1, FALSE, FALSE, 0); \
+	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 2); \
+ \
+	label1 = gtk_label_new(str); \
+	gtk_widget_show(label1); \
+	gtk_box_pack_start(GTK_BOX(hbox1), label1, FALSE, FALSE, 0); \
+ \
+	entry = gtk_entry_new(); \
+	gtk_widget_show(entry); \
+	gtk_box_pack_start(GTK_BOX(hbox1), entry, TRUE, TRUE, 0); \
+}
+
 static void prefs_template_window_create(void)
 {
 	/* window structure ;) */
@@ -91,7 +108,9 @@ static void prefs_template_window_create(void)
 	GtkWidget       *hbox1;
 	GtkWidget         *label1;
 	GtkWidget         *entry_name;
-	GtkWidget         *entry_subject;
+	GtkWidget         *vbox_hdr;
+	GtkWidget           *entry_to;
+	GtkWidget           *entry_subject;
 	GtkWidget       *scroll2;
 	GtkWidget         *text_value;
 	GtkWidget     *vbox2;
@@ -128,37 +147,17 @@ static void prefs_template_window_create(void)
 	gtk_container_set_border_width(GTK_CONTAINER(vbox1), 8);
 	gtk_paned_pack1(GTK_PANED(vpaned), vbox1, FALSE, FALSE);
 
-	/* hbox for a label and template name entry */
-	hbox1 = gtk_hbox_new(FALSE, 8);
-	gtk_widget_show(hbox1);
-	gtk_box_pack_start(GTK_BOX(vbox1), hbox1, FALSE, FALSE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 2);
+	ADD_ENTRY(vbox1, entry_name, _("Template name"));
 
-	/* self-documenting */
-	label1 = gtk_label_new(_("Template name"));
-	gtk_widget_show(label1);
-	gtk_box_pack_start(GTK_BOX(hbox1), label1, FALSE, FALSE, 0);
+	/* vbox to handle headers */
+	vbox_hdr = gtk_vbox_new(FALSE, 2);
+	gtk_widget_show(vbox_hdr);
+	gtk_box_pack_start(GTK_BOX(vbox1), vbox_hdr, FALSE, FALSE, 0);
 
-	/* holds template name */
-	entry_name = gtk_entry_new();
-	gtk_widget_show(entry_name);
-	gtk_box_pack_start(GTK_BOX(hbox1), entry_name, TRUE, TRUE, 0);
+	ADD_ENTRY(vbox_hdr, entry_to, _("To"));
+	ADD_ENTRY(vbox_hdr, entry_subject, _("Subject"));
 
-	/* hbox for a label and subject entry */
-	hbox1 = gtk_hbox_new(FALSE, 8);
-	gtk_widget_show(hbox1);
-	gtk_box_pack_start(GTK_BOX(vbox1), hbox1, FALSE, FALSE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 2);
-
-	/* self-documenting */
-	label1 = gtk_label_new(_("Subject"));
-	gtk_widget_show(label1);
-	gtk_box_pack_start(GTK_BOX(hbox1), label1, FALSE, FALSE, 0);
-
-	/* holds subject */
-	entry_subject = gtk_entry_new();
-	gtk_widget_show(entry_subject);
-	gtk_box_pack_start(GTK_BOX(hbox1), entry_subject, TRUE, TRUE, 0);
+#undef ADD_ENTRY
 
 	/* template content */
 	scroll2 = gtk_scrolled_window_new(NULL, NULL);
@@ -268,6 +267,7 @@ static void prefs_template_window_create(void)
 	templates.clist_tmpls = clist_tmpls;
 	templates.entry_name = entry_name;
 	templates.entry_subject = entry_subject;
+	templates.entry_to = entry_to;
 	templates.text_value = text_value;
 }
 
@@ -400,6 +400,7 @@ static gint prefs_template_clist_set_row(gint row)
 	Template *tmp_tmpl;
 	gchar *name;
 	gchar *subject;
+	gchar *to;
 	gchar *value;
 	gchar *title[1];
 
@@ -409,12 +410,15 @@ static gint prefs_template_clist_set_row(gint row)
 				      0, -1);
 	subject = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_subject),
 				      0, -1);
+	to = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_to),
+				    0, -1);
 	value = gtk_editable_get_chars(GTK_EDITABLE(templates.text_value),
 				       0, -1);
 
 	tmpl = g_new(Template, 1);
 	tmpl->name = name;
 	tmpl->subject = subject;
+	tmpl->to = to;
 	tmpl->value = value;
 
 	title[0] = name;

@@ -4604,6 +4604,8 @@ static void compose_template_apply(Compose *compose, Template *tmpl)
 	if (tmpl->subject)
 		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry),
 				   tmpl->subject);
+	if (tmpl->to)
+		compose_entry_append(compose, tmpl->to, COMPOSE_TO);
 
 	if (compose->replyinfo == NULL) {
 		MsgInfo dummyinfo;
