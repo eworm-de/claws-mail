@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
+ <TITLE>Guide de l'utilisateur Sylpheed: Recevoir des Messages</TITLE>
+ <LINK HREF="sylpheed-10.html" REL=next>
+ <LINK HREF="sylpheed-8.html" REL=previous>
+ <LINK HREF="sylpheed.html#toc9" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="sylpheed-10.html">Next</A>
+<A HREF="sylpheed-8.html">Previous</A>
+<A HREF="sylpheed.html#toc9">Contents</A>
+<HR>
+<H2><A NAME="s9">9. Recevoir des Messages</A></H2>
+
+<H2><A NAME="ss9.1">9.1 En utilisant la fonction de réception de Sylpheed</A>
+</H2>
+
+<P>Recevoir des messages à partir d'un serveur POP est très facile, une fois que vous avez configuré Sylpheed de la bonne manière. Vous pouvez vous référe à la section "Configurer un compte" sur la manière de le faire.
+<P>Une fois que vous êtes connectés sur internet ou par un autre réseau qui vous donne accès au serveur POP, pressezs simplement le bouton "Obtenir du courrier" (ou pressez Alt-I) et Sylpheed se connectera au serveur pour traiter votre nouveau courrier. Une fois que vous l'avez retrouvé, tous les filtres que vous avez configurés seront exécutés et la fenêtre des répertoires vous montrera, en gras, quel répertoire/boîte aux lettres contient de nouveaux messages.
+<H2><A NAME="ss9.2">9.2 En utilisant d'autres programmes tels que fetchmail</A>
+</H2>
+
+<P>Ce n'est pas inclus dans le champ de cet article, voici quelques informations sur fetchmail ou getmail.
+<P>vous devez avoir ces programmes installés et configurés correctement. Veuillez aller voir les fichiers de pages de manuel/README des programmes appropriés pour ce faire.
+<P>Après avoir configuré le programme, vous pouvez l'invoquer, soit à la mai, soit par le biais de CRON, pour obtenir vos courriers. Le courrier sera habituellement téléchargé dans /var/spool/mail/your_user_id. Vous pouvez ensuite indiquer à Sylpheed, par la voie d'un compte de regarder dans votre boîte aux lettres Unix locale, pour y trouver le courrier. Pour ceci, vous pressez le bouton "Obtenir du courrier" ou pressez "Alt-I".
+<HR>
+<A HREF="sylpheed-10.html">Next</A>
+<A HREF="sylpheed-8.html">Previous</A>
+<A HREF="sylpheed.html#toc9">Contents</A>
+</BODY>
+</HTML>

@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
+ <TITLE>Guide de l'utilisateur Sylpheed: Dialogues et vues</TITLE>
+ <LINK HREF="sylpheed-8.html" REL=next>
+ <LINK HREF="sylpheed-6.html" REL=previous>
+ <LINK HREF="sylpheed.html#toc7" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="sylpheed-8.html">Next</A>
+<A HREF="sylpheed-6.html">Previous</A>
+<A HREF="sylpheed.html#toc7">Contents</A>
+<HR>
+<H2><A NAME="s7">7. Dialogues et vues</A></H2>
+
+<P>
+<H2><A NAME="ss7.1">7.1 Vues des répertoires </A>
+</H2>
+
+<P>La vue des répertoires vous montre tous les répertoires de courriers que vous avez créés dans une structure en arbre. Si vous voulez voir les en-têtes des messages dans un répertoire spécifique, cliquez simplement sur le nom du répertoire une fois et dans la vue résumée, vous pouvez voir les messages dans le répertoire de courriers sélectionnés.
+<P>Lorsque vous voyez un signe + devant le nom du répertoire, cela signifie que la branche de répertoire de cette partie de l'arbre est 'rentrée'. Vous pouvez l'étendre en pliquant sur le signe + . De la même manière, vous pouvez aussi rentrer le signe - devant une branche étendue de l'arbre du répertoire.
+<P>Répertoires spéciaux :
+<P>Brouillon : ici, vous pouvez stocker les messages que vous voulez envoyer plus souvent ou sur lesquels vous voulez encore travailler dessus. En utilisant l'option 'reedit' dans le menu message, vous pouvez encore éditer le message.
+<P>Poubelle : c'est ici que vont tous les messages effacés. En fonction de la configuration des préférences communes, cette boîte est ou n'est pas vidée lorsque vous quittez Sylpheed.
+<H2><A NAME="ss7.2">7.2 Vue résumée </A>
+</H2>
+
+<P>La fenêtre des résumés peut vous montrer beaucoup de choses. Vous pouvez sélectionner ce qui vous voulez voir dans le menu résumé, en sélectionnant l'option "Set display item". Une liste de toutes les options est :
+<UL>
+<LI>Marque : montre si le message est marqué</LI>
+<LI>Non lu : montre si le message est lu ou non</LI>
+<LI>MIME : montre les attachements MIME</LI>
+<LI>Numéro : montre le numéro MH du message</LI>
+<LI>Taille : la taille du message complet incluant les attachements</LI>
+<LI>Date : la date de l'envoi par l'émetteur</LI>
+<LI>De qui : qui a envoyé le message</LI>
+<LI>Sujet : quel est le but du message</LI>
+</UL>
+
+Vous pouvez trier la vue de résumé de différentes manières, en cliquant sur le bouton qui est au dessus de la colonne. Cliquez une fois pour trier dans un sens (a-z), cliquez une fois encore pour l'autre sens (z-a).
+<P>Si vous pensez que la taille de la colonne n'est pas bonne, vous pouvez l'ajuster en plaçant le curseur de la souris à coté du bouton de la colonne que vous voulez ajuster, pressez sur le bouton 1 de la souris (bouton de gauche) et tirez la colonne à la taille que vous souhaitez.
+<P>Sélectionnez un message en cliquant dessus avec la souris. Une fois que la fenêtre de résumé est active, vous pouvez aussi vous déplacer de haut en bas dans la liste avec les touches de curseur ou presser "p"(revious) et "n"(ext) comme dans Pine.
+<H2><A NAME="ss7.3">7.3 Vue de message </A>
+</H2>
+
+<P>Dans la vue de message, vous pouvez lire le message que vous avez sélectionné dans la fenêtre de résumé. Si vous entrez dans la fenêtre de résumé sans sélectionner de message, la vue de message sera vide. En haut de la vue de message quelques informations sont affichées sur le message que vous êtes en train de lire, de même que quelques statistiques sur le répertoire sélectionné.
+<P>Vous pouvez dérouler de haut en bas dans le message en utilisant les touches de flèches (après avoir cliqué à l'intérieur du message) ou avec l'utilisation de la barre de déroulement.
+<H2><A NAME="ss7.4">7.4 Préférences communes</A>
+</H2>
+
+<P>Les préférences communes, trouvées dans le menu de configuration, vous montrent les onglets suivants :
+<H3>Onglet de réception</H3>
+
+<P>Ici, vous pouvez configurer comment recevoir les messages.
+<P>
+<UL>
+<LI>Vous pouvez définir un programme spécial pour récupérer les messages à partir de la boîte aux lettres Unix par défaut. habituellement, ce n'est pas utilisé mais vous pouvez l'utiliser. Actuellement, cette information peut être fausse. Si quelqu'un en sait plus, faites-le moi savoir.</LI>
+<LI>La file locale vous laisse définir l'endroit où est située votre boîte aux lettres locale. Vous pouvez aussi dire à Sylpheed de filtrer ou non les messages entrants à partir de cette file de messages.</LI>
+<LI>Autocontrôler de nouveaux courriers. Lorsque vous validez cette option, Sylpheed contrôlera s'il y a de nouveaux courriers dans l'intervalle.</LI>
+<LI>Contrôlez les nouveaux courriers au démarrage signifiant que Sylpheed cherchera immédiatement les nouveaux courriers sur les comptes sélectionnés lorsqu'il est chargé.</LI>
+<LI>Dans la section des nouvelles, vous pouvez spécifier combien d'articles doivent être téléchargés lors de l'ouverture d'un groupe de nouvelles.</LI>
+</UL>
+<H2><A NAME="ss7.5">7.5 Configurer un compte/changer un compte</A>
+</H2>
+
+<P>De manière à initialiser un compte dans Sylpheed, dans le menu de configuration, vous sélectionnez "Créer un nouveau compte". Si vous voulez changer les éléments d'un compte existant, vous sélectionnez l'option "Éditer les comptes..." dans le menu de configuration et alors vous sélectionnez le compte que vous voulez changer. Après ceci, vous choisissez "éditer". Alors un dialogue apparaît dans lequel vous pouvez entrer ou mettre à jour les zones suivantes :
+<P>
+<H3>Onglet Basic</H3>
+
+<P>Dans l'onglet "Basic", vous nommez le compte. Ceci est pour rendre l'identification du compte plus facile.
+<P>Choisissez un nom qui est représentatif du compte, comme le nom du fournisseur, la boîte aux lettres ou les serveurs de nouvelles que vous êtes en train d'initialiser. Vous pouvez sélectionner ce compte pour être celui par défaut ("Habituellement utilisé").
+<P>Entrez votre nom et l'adresse de courrier et si vous en avez une, l'organisation pour laquelle vous utilisez Sylpheed.
+Dans la boîte de protocole, vous sélectionnez le type de service que ce compte va utiliser. les styles que vous pouvez choisir sont : POP3 normal, POP3 APOP auth, IMAP4, nouvelles NNTP ou Aucun (local).
+Dans le champ "inbox", vous pouvez entrer le répertoire de courrier où le courrier pour ce compte sera stocké. Cette option est désactivée lorsque vous configurez une compte de Nouvelles NNTP.
+<P>Pour les services POP3 et IMAP, vous pourrez alors spécifier le serveur dans lequel votre courrier est stocké. Les détails sur ce nom et aussi le nom qui va dans le champ de "serveur SMPT (envoi)" doivent vous être fournis par votre fournisseur.
+<P>Pour une boîte aux lettres Unix locale, le "Serveur pour la reception" est désactivé, car c'est vous qui recevez les messages.
+<P>Les champs pour l'ID utilisateur et le mot de passe seront aussi désactivés pour les comptes qui ne traitent pas avec les services POP3 ou IMAP. Sinon, vous pouvez entrer le nom de connexion et le mot de passe pour le serveur de courrier avec votre fournisseur ici. Habituellement, ce sont les même que votre nom de connexion et votre mot de passe pour accéder aux services de connexion mais ce n'est pas standard. En cas de doute, contactez l'aide de votre fournisseur.  
+<P>
+<H3>Onglet de Réception</H3>
+
+<P>L'onglet "Recevoir" n'est utilisé que pour les comptes POP3. Ici, vous spécifiez si les courriers qui ont été retrouvés avec succès doivent être enlevés du serveur. Vous pouvez aussi indiquer à Sylpheed de mettre tous les messages ici, pas seulement ceux que vous avez déjà reçu (dans le cas où vous laissez vos messages sur le serveur). La troisème option valide ce compte pour qu'il soit inclus lorsques les courriers sont vérifiés pour "tous les comptes" (voir le menu de message pour ceci) et si les messages entrants doivent être immédiatement traités lors de la réception.
+<H3>Onglet Envoi </H3>
+
+<P>Dans l'onglet "envoi", vous pouvez configurer quelques initialisations supplémentaires.
+<H3>Onglet Composition </H3>
+<P>Dans l'onglet "Composition", vous pouvez définir votre fichier de signature.
+<H3>Onglet avancé</H3>
+
+<P>Dans l'onglet "Avancé", vous pouvez éditer les numéros de ports pour les serveurs que vous allez utiliser. Ceci ne demande normalement pas de changement.
+<HR>
+<A HREF="sylpheed-8.html">Next</A>
+<A HREF="sylpheed-6.html">Previous</A>
+<A HREF="sylpheed.html#toc7">Contents</A>
+</BODY>
+</HTML>

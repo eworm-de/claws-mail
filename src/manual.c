@@ -39,6 +39,9 @@ void manual_open(ManualLang lang)
 	case MANUAL_LANG_EN:
 		lang_str = "en";
 		break;
+	case MANUAL_LANG_FR:
+		lang_str = "fr";
+		break;
 	case MANUAL_LANG_JA:
 		lang_str = "ja";
 		break;

@@ -1,0 +1,135 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
+ <TITLE>Guide de l'utilisateur Sylpheed: Reference</TITLE>
+ <LINK HREF="sylpheed-18.html" REL=next>
+ <LINK HREF="sylpheed-16.html" REL=previous>
+ <LINK HREF="sylpheed.html#toc17" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="sylpheed-18.html">Next</A>
+<A HREF="sylpheed-16.html">Previous</A>
+<A HREF="sylpheed.html#toc17">Contents</A>
+<HR>
+<H2><A NAME="s17">17. Reference</A></H2>
+
+<P>Dans cette section, vous allez trouvez quelques informations sur ce qui peut 
+être utile pour vous rendre Sylpheed plus clair pour ce qui concerne les 
+raccourcis claviers et une structure du format du carnet d'adresse.
+<H2><A NAME="ss17.1">17.1 Liste des raccourcis clavier</A>
+</H2>
+
+<P>
+<H3>Raccourcis à une touche :</H3>
+
+<P>
+<UL>
+<LI>a : crée un nouveau message ;</LI>
+<LI>d : efface le message sélectionné ;</LI>
+<LI>f : fait suivre le message sélectionné ;</LI>
+<LI>g : va dans un répertoire spécifique par le biais d'un dialogue de 
+navigation ;</LI>
+<LI>n : saute au message suivant/à la partie suivante d'un message 
+multipartie ;</LI>
+<LI>p : saute au message précédent/à la partie précédente d'un message 
+multipartie ;</LI>
+<LI>v : commute la vue de message on/off ;</LI>
+<LI>w : même que un (((((((((((((()))))))))))))))</LI>
+<LI>y : Dialogue Ouvre sauvegarde comme...</LI>
+</UL>
+<H3>Raccourcis au menu Fichier :</H3>
+
+<P>
+<UL>
+<LI>Alt-F : ouvre le menu FICHIER ;</LI>
+<LI>Alt-P : imprimer ;</LI>
+<LI>Alt-W : fermer ;</LI>
+<LI>Alt-Q : quitter.</LI>
+</UL>
+<H3>raccourcis au menu Editer</H3>
+
+<P>
+<UL>
+<LI>Alt-E : ouvre le menu EDITER ;</LI>
+<LI>Ctrl-C : copier ;</LI>
+<LI>Ctrl-A : sélectionner tout ;</LI>
+<LI>Ctrl-S : checher.</LI>
+</UL>
+<H3>Raccourcis au menu Vue</H3>
+
+<P>
+<UL>
+<LI>Alt-V : ouvre le menu VUE.</LI>
+</UL>
+<H3>Raccourcis au menu Message</H3>
+
+<P>
+<UL>
+<LI>Alt-M : ouvre le menu MESSAGE ;</LI>
+<LI>Alt-I : contrôle le courrier pour tous les comptes courants ;</LI>
+<LI>Shift-Alt-I : Contrôle les courriers pour tous les comptes ;</LI>
+<LI>Alt-N : compose des nouveaux messages ;</LI>
+<LI>Alt-R : répondre au message ;</LI>
+<LI>Ctrl-Alt-R : répondre à l'émetteur (contrairement à répondre à i.e. une 
+liste de diffusion) ;</LI>
+<LI>Shift-Alt-R : répondre à tous (inclut toutes les adresses dans À : et 
+Cc :) ;</LI>
+<LI>Ctrl-F : faire suivre le message ;</LI>
+<LI>Shift-Ctrl-F : faire suivre le message en attachement ;</LI>
+<LI>Alt-O : déplacer le message ;</LI>
+<LI>Alt-D : effacer le message ;</LI>
+<LI>Shift-Ctrl-N : ouvrir le message dans une nouvelle fenêtre ;</LI>
+<LI>Ctrl-U : voir le source du message ;</LI>
+<LI>Ctrl-H : montrer tous les en-têtes du message ;</LI>
+</UL>
+<H3>Raccourcis du menu résumé</H3>
+
+<P>
+<UL>
+<LI>Alt-S : ouvre le menu Résumé<P>
+</LI>
+<LI>Alt-X : exécute (commandes en instance, c'est seulement utile lorsque 
+les commandes ne sont pas exécutées immédiatement) ;</LI>
+<LI>Alt-U : mise à jour des la vue ;</LI>
+<LI>Alt-G : aller dans les autres répertoires ;</LI>
+<LI>Ctrl-T : vue en file ;</LI>
+<LI>Shift-Ctrl-T : enlever la vue en file.</LI>
+</UL>
+<H3>Raccourcis au menu OUTILS</H3>
+
+<P>
+<UL>
+<LI>Alt-T : ouvrir le menu outil ;</LI>
+<LI>Alt-A : ouvrir le carnet d'adresse ;</LI>
+<LI>Alt-L : ouvrir un journal de connexion.</LI>
+</UL>
+<H2><A NAME="ss17.2">17.2 Format de donnée du carnet d'adresse</A>
+</H2>
+
+<P>Le carnet d'adresse est situé dans &nbsp;/.sylpheed. Il est nommé addressbook.xml.
+Le format général du carnet d'adresse est :
+<P>
+<P>
+<HR>
+<PRE>
+&lt; addressbook &gt;&lt;p>
+ &lt; common_address &gt;&lt;p>
+    &lt; group name="Common addresses" &gt;&lt;p>
+    &lt; item &gt;&lt;p>
+     &lt; name &gt; Paul &lt; /name &gt;&lt;p>
+     &lt; address &gt; paul@nlpagan.net &lt; /address &gt;&lt;p>
+     &lt; remarks &gt; Writes Sylph. manual &lt; /remarks &gt;&lt;p>
+        &lt; /item &gt;&lt;p>
+    &lt; /group &gt;&lt;p>
+ &lt; /common_address &gt;&lt;p>
+&lt; /addressbook &gt;
+</PRE>
+<HR>
+<P>
+<HR>
+<A HREF="sylpheed-18.html">Next</A>
+<A HREF="sylpheed-16.html">Previous</A>
+<A HREF="sylpheed.html#toc17">Contents</A>
+</BODY>
+</HTML>

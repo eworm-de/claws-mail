@@ -23,6 +23,7 @@
 typedef enum
 {
 	MANUAL_LANG_EN,
+	MANUAL_LANG_FR,
 	MANUAL_LANG_JA,
 } ManualLang;
 
