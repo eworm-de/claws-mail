@@ -4,6 +4,7 @@
 		Fixed bug #184 "Entering non-ascii character deletes
 		previous char if spell checking enabled": this makes
 		the spell checking in multibytes (e.g. UTF-8)locales work.
+		(Patch by Luke Plant).
 		
 2003-07-04 [christoph]	0.9.0claws78
 
