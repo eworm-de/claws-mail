@@ -193,7 +193,7 @@ are hardly noticable, but deserve mentioning:
   shell to get their path.
 
   Then run sylpheed and go to Configuration -> Common preferences ->
-  Compose.  Check the box 'Enable spell checker (EXPERIMENTAL)' and
+  Spell Checker.  Check the box 'Enable spell checker (EXPERIMENTAL)' and
   use the file selector ('...' button) to select the path where the
   dictionaries reside.  Within the file selector, go to that directory
   and select *any* file in the file lists.  Click ok. You should then
