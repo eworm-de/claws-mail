@@ -2083,8 +2083,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	    !MSG_IS_NEWS(msginfo->flags)) {
 		gchar *from;
 
-		Xalloca(from, strlen(msginfo->from) + 1, return);
-		strcpy(from, msginfo->from);
+		Xstrdup_a(from, msginfo->from, return);
 		extract_address(from);
 		if (account_find_from_address(from)) {
 			g_free(to);
@@ -2098,8 +2097,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 		gint count;
 		gchar *from;
   
-		Xalloca(from, strlen(msginfo->from) + 1, return);
-		strcpy(from, msginfo->from);
+		Xstrdup_a(from, msginfo->from, return);
 		extract_address(from);
 		if (*from) {
 			count = complete_address(from);
