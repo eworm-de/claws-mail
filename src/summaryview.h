@@ -254,9 +254,6 @@ void summary_select_all		  (SummaryView		*summaryview);
 void summary_unselect_all	  (SummaryView		*summaryview);
 void summary_select_thread	  (SummaryView		*summaryview);
 
-void summary_reply		  (SummaryView		*summaryview,
-				   ComposeMode		 mode);
-
 void summary_set_colorlabel	  (SummaryView		*summaryview,
 				   guint		 labelcolor,
 				   GtkWidget		*widget);

@@ -1,3 +1,18 @@
+2003-02-28 [oliver]	0.8.10claws63
+	
+	* src/toolbar.[ch]
+		* fix bug where reply in Messageview replied to 
+	  	Message displayed in summaryview
+		(reportedd via ML by chinatinte at gmx dot ch)
+		* fix bug where toolbar popups (WITH_QUOTE, WITHOUT_QOUTE)
+		didn't work in separate MessageView Toolbar
+		(wondering if anybody uses this at all ?)
+	* src/summaryview.[ch]
+		use toolbar.c's toolbar_reply instead of summary_reply (removed)
+		(generalize reply and forward code);
+	* src/messageview.c 
+		remove focus_in event which updated summaryview to messageview
+
 2003-02-28 [paul]	0.8.10claws62
 
 	* po/Makefile.in.in

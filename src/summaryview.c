@@ -4102,120 +4102,6 @@ void summary_filter_open(SummaryView *summaryview, PrefsFilterType type)
 	prefs_filtering_open(NULL, header, key);
 }
 
-void summary_reply(SummaryView *summaryview, ComposeMode mode)
-{
-	GList *sel = GTK_CLIST(summaryview->ctree)->selection;
-	MsgInfo *msginfo;
-	gchar *text;
-
-	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
-					      summaryview->selected);
-	if (!msginfo) return;
-
-	text = gtkut_editable_get_selection
-		(GTK_EDITABLE(summaryview->messageview->textview->text));
-
-	if (!text && summaryview->messageview->type == MVIEW_MIME
-	    && summaryview->messageview->mimeview->type == MIMEVIEW_TEXT
-	    && summaryview->messageview->mimeview->textview
-	    && !summaryview->messageview->mimeview->textview->default_text) {
-	 	text = gtkut_editable_get_selection (GTK_EDITABLE 
-			 (summaryview->messageview->mimeview->textview->text));   
-	}
-	
-	switch (mode) {
-	case COMPOSE_REPLY:
-		if (prefs_common.default_reply_list)
-			compose_reply(msginfo, prefs_common.reply_with_quote,
-			    	      FALSE, TRUE, FALSE, text);
-		else
-			compose_reply(msginfo, prefs_common.reply_with_quote,
-				      FALSE, FALSE, FALSE, text);
-		break;
-	case COMPOSE_REPLY_WITH_QUOTE:
-		if (prefs_common.default_reply_list)
-			compose_reply(msginfo, TRUE, FALSE, TRUE, FALSE, text);
-		else
-			compose_reply(msginfo, TRUE, FALSE, FALSE, FALSE, text);
-		break;
-	case COMPOSE_REPLY_WITHOUT_QUOTE:
-		if (prefs_common.default_reply_list)
-			compose_reply(msginfo, FALSE, FALSE, TRUE, FALSE, NULL);
-		else
-			compose_reply(msginfo, FALSE, FALSE, FALSE, FALSE, NULL);
-		break;
-	case COMPOSE_REPLY_TO_SENDER:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      FALSE, FALSE, TRUE, text);
-		break;
-	case COMPOSE_FOLLOWUP_AND_REPLY_TO:
-		compose_followup_and_reply_to(msginfo,
-					      prefs_common.reply_with_quote,
-					      FALSE, FALSE, text);
-		break;
-	case COMPOSE_REPLY_TO_SENDER_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, FALSE, FALSE, TRUE, text);
-		break;
-	case COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, FALSE, FALSE, TRUE, NULL);
-		break;
-	case COMPOSE_REPLY_TO_ALL:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      TRUE, FALSE, FALSE, text);
-		break;
-	case COMPOSE_REPLY_TO_ALL_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, TRUE, FALSE, FALSE, text);
-		break;
-	case COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, TRUE, FALSE, FALSE, NULL);
-		break;
-	case COMPOSE_REPLY_TO_LIST:
-		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      FALSE, TRUE, FALSE, text);
-		break;
-	case COMPOSE_REPLY_TO_LIST_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, FALSE, TRUE, FALSE, text);
-		break;
-	case COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, FALSE, TRUE, FALSE, NULL);
-		break;
-	case COMPOSE_FORWARD:
-		if (prefs_common.forward_as_attachment) {
-			summary_reply_cb(summaryview, COMPOSE_FORWARD_AS_ATTACH, NULL);
-			return;
-		} else {
-			summary_reply_cb(summaryview, COMPOSE_FORWARD_INLINE, NULL);
-			return;
-		}
-		break;
-	case COMPOSE_FORWARD_INLINE:
-		if (sel && !sel->next) {
-			compose_forward(NULL, msginfo, FALSE, text);
-			break;
-		}
-		/* if (sel->next) FALL THROUGH */
-	case COMPOSE_FORWARD_AS_ATTACH:
-		{
-			GSList *msginfo_list = NULL;
-			for ( ; sel != NULL; sel = sel->next)
-				msginfo_list = g_slist_append(msginfo_list, 
-					gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
-						GTK_CTREE_NODE(sel->data)));
-			compose_forward_multiple(NULL, msginfo_list);
-			g_slist_free(msginfo_list);
-		}			
-		break;
-	case COMPOSE_REDIRECT:
-		compose_redirect(NULL, msginfo);
-		break;
-	default:
-		g_warning("summary_reply_cb(): invalid action: %d\n", mode);
-	}
-
-	summary_set_marks_selected(summaryview);
-	g_free(text);
-}
-
 /* color label */
 
 #define N_COLOR_LABELS colorlabel_get_color_count()
@@ -4868,7 +4754,10 @@ static void summary_col_resized(GtkCList *clist, gint column, gint width,
 static void summary_reply_cb(SummaryView *summaryview, guint action,
 			     GtkWidget *widget)
 {
-	summary_reply(summaryview, (ComposeMode)action);
+	ToolbarItem *item;
+	item->parent = summaryview;
+	item->type = TOOLBAR_MAIN;
+	toolbar_reply(item, action);
 }
 
 static void summary_execute_cb(SummaryView *summaryview, guint action,
