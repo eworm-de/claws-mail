@@ -127,6 +127,7 @@ void      toolbar_save_config_file         (void);
 void      toolbar_read_config_file         (void);
 void      toolbar_set_default_toolbar      (void);
 void      toolbar_clear_list               (void);
+void      toolbar_update                   (void);
 void      toolbar_destroy                  (MainWindow         *mainwin);
 
 gint      toolbar_ret_val_from_descr       (gchar              *descr);

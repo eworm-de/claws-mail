@@ -771,8 +771,6 @@ MainWindow *main_window_create(SeparateType type)
 
 	/* create the popup menus for the reply buttons specials */
 	toolbar_popups_create(mainwin, window);
-			   
-	//main_window_toolbar_create(mainwin, handlebox);
 	toolbar_create(mainwin, handlebox);
 
 	/* vbox that contains body */
@@ -1044,11 +1042,7 @@ void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
 
 		/* pixmap themes */
 		if (pixmap_theme_changed) {
-			gtk_container_remove(GTK_CONTAINER(mainwin->handlebox), 
-					     GTK_WIDGET(mainwin->toolbar->toolbar));
-
-			mainwin->toolbar->toolbar = NULL;
-			toolbar_create(mainwin, mainwin->handlebox);
+			toolbar_update();
 			set_toolbar_style(mainwin);
 			folderview_reflect_prefs_pixmap_theme(mainwin->folderview);
 			summary_reflect_prefs_pixmap_theme(mainwin->summaryview);

@@ -180,7 +180,7 @@ static GtkItemFactoryEntry fwd_popup_entries[] =
 
 void toolbar_actions_cb(GtkWidget *widget, ToolbarItem *toolbar_item)
 {
-	if (toolbar_item->action < sizeof (t_action) / sizeof (t_action[0]))
+	if (toolbar_item->action < sizeof(t_action) / sizeof(t_action[0]))
 		t_action[toolbar_item->action].func(widget, mwin);
 }
 
@@ -188,8 +188,8 @@ gint toolbar_ret_val_from_descr(gchar *descr)
 {
 	gint i;
 	
-	for (i = 0; i < sizeof (t_action) / sizeof (t_action[0]); i++) {
-		if (g_strcasecmp (t_action[i].descr, descr) == 0)
+	for (i = 0; i < sizeof(t_action) / sizeof(t_action[0]); i++) {
+		if (g_strcasecmp(t_action[i].descr, descr) == 0)
 				return i;
 	}
 	
@@ -198,7 +198,7 @@ gint toolbar_ret_val_from_descr(gchar *descr)
 
 gchar *toolbar_ret_descr_from_val(gint val)
 {
-	g_return_val_if_fail (val >=0 && val <= sizeof(t_action) / sizeof(t_action[0]), NULL);
+	g_return_val_if_fail(val >=0 && val <= sizeof(t_action) / sizeof(t_action[0]), NULL);
 
 	return t_action[val].descr;
 
@@ -208,8 +208,8 @@ static gint toolbar_ret_val_from_text(gchar *text)
 {
 	gint i;
 	
-	for (i = 0; i < sizeof (t_action) / sizeof (t_action[0]); i++) {
-		if (g_strcasecmp (t_action[i].action_text, text) == 0)
+	for (i = 0; i < sizeof(t_action) / sizeof(t_action[0]); i++) {
+		if (g_strcasecmp(t_action[i].action_text, text) == 0)
 				return i;
 	}
 	
@@ -218,7 +218,7 @@ static gint toolbar_ret_val_from_text(gchar *text)
 
 gchar *toolbar_ret_text_from_val(gint val)
 {
-	g_return_val_if_fail (val >=0 && val <= sizeof(t_action) / sizeof(t_action[0]), NULL);
+	g_return_val_if_fail(val >=0 && val <= sizeof(t_action) / sizeof(t_action[0]), NULL);
 
 	return t_action[val].action_text;
 }
@@ -245,7 +245,7 @@ GList *toolbar_get_action_items(void)
 	gint i;
 	
 	for (i = 0; i < N_ACTION_VAL; i++) {
-		items = g_list_append (items, t_action[i].descr);
+		items = g_list_append(items, t_action[i].descr);
 	}
 
 	return items;
@@ -258,24 +258,24 @@ static void toolbar_parse_item(XMLFile *file)
 	ToolbarItem *item = NULL;
 
 	attr = xml_get_current_tag_attr(file);
-	item = g_new0 (ToolbarItem, 1);
+	item = g_new0(ToolbarItem, 1);
 	while( attr ) {
 		name = ((XMLAttr *)attr->data)->name;
 		value = ((XMLAttr *)attr->data)->value;
 		
-		if (strcmp (name, TOOLBAR_ICON_FILE) == 0) 
+		if (g_strcasecmp(name, TOOLBAR_ICON_FILE) == 0) 
 			item->file = g_strdup (value);
-		else if (strcmp (name, TOOLBAR_ICON_TEXT) == 0)
+		else if (g_strcasecmp(name, TOOLBAR_ICON_TEXT) == 0)
 			item->text = g_strdup (value);
-		else if (strcmp (name, TOOLBAR_ICON_ACTION) == 0)
+		else if (g_strcasecmp(name, TOOLBAR_ICON_ACTION) == 0)
 			item->action = toolbar_ret_val_from_text(value);
 
-		attr = g_list_next (attr);
+		attr = g_list_next(attr);
 	}
 	if (item->action != -1) {
 		
 		if ( !toolbar_is_duplicate(item->action)) 
-			toolbar_list = g_slist_append (toolbar_list, item);
+			toolbar_list = g_slist_append(toolbar_list, item);
 	}
 }
 
@@ -304,32 +304,32 @@ void toolbar_set_default_toolbar(void)
 		{ A_GOTO_NEXT,     STOCK_PIXMAP_DOWN_ARROW,           _("Next")    },
 	};
 		
-	for (i = 0; i < sizeof (default_toolbar) / sizeof (default_toolbar[0]); i++) {
+	for (i = 0; i < sizeof(default_toolbar) / sizeof(default_toolbar[0]); i++) {
 		
-		ToolbarItem *toolbar_item = g_new0 (ToolbarItem, 1);
+		ToolbarItem *toolbar_item = g_new0(ToolbarItem, 1);
 		
 		if (default_toolbar[i].action != A_SEPARATOR) {
 			
-			gchar *file = stock_pixmap_get_name ((StockPixmap)default_toolbar[i].icon);
+			gchar *file = stock_pixmap_get_name((StockPixmap)default_toolbar[i].icon);
 			
-			toolbar_item->file   = g_strdup (file);
+			toolbar_item->file   = g_strdup(file);
 			toolbar_item->action = default_toolbar[i].action;
-			toolbar_item->text   = g_strdup (default_toolbar[i].text);
+			toolbar_item->text   = g_strdup(default_toolbar[i].text);
 		} else {
 
-			toolbar_item->file   = g_strdup (SEPARATOR);
+			toolbar_item->file   = g_strdup(SEPARATOR);
 			toolbar_item->action = A_SEPARATOR;
 		}
 		
 		if (toolbar_item->action != -1) {
 			
 			if ( !toolbar_is_duplicate(toolbar_item->action)) 
-				toolbar_list = g_slist_append (toolbar_list, toolbar_item);
+				toolbar_list = g_slist_append(toolbar_list, toolbar_item);
 		}	
 	}
 }
 
-void toolbar_save_config_file ()
+void toolbar_save_config_file()
 {
 	GSList *cur;
 	FILE *fp;
@@ -338,36 +338,36 @@ void toolbar_save_config_file ()
 
 	debug_print("save Toolbar Configuration\n");
 
-	fileSpec = g_strconcat (get_rc_dir(), G_DIR_SEPARATOR_S, TOOLBAR_FILE, NULL );
-	pfile = prefs_write_open (fileSpec);
+	fileSpec = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, TOOLBAR_FILE, NULL );
+	pfile = prefs_write_open(fileSpec);
 	g_free( fileSpec );
 	if( pfile ) {
 		fp = pfile->fp;
-		fprintf (fp, "<?xml version=\"1.0\" encoding=\"%s\" ?>\n",
-				conv_get_current_charset_str());
+		fprintf(fp, "<?xml version=\"1.0\" encoding=\"%s\" ?>\n",
+			conv_get_current_charset_str());
 
-		fprintf (fp, "<%s>\n", TOOLBAR_TAG_INDEX);
+		fprintf(fp, "<%s>\n", TOOLBAR_TAG_INDEX);
 
 		for (cur = toolbar_list; cur != NULL; cur = cur->next) {
 			ToolbarItem *toolbar_item = (ToolbarItem*) cur->data;
 			
-			if (g_strcasecmp (toolbar_item->file, SEPARATOR) != 0) 
-				fprintf (fp, "\t<%s %s=\"%s\" %s=\"%s\" %s=\"%s\"/>\n",
-					 TOOLBAR_TAG_ITEM, 
-					 TOOLBAR_ICON_FILE, toolbar_item->file,
-					 TOOLBAR_ICON_TEXT, toolbar_item->text,
-					 TOOLBAR_ICON_ACTION, 
-					 toolbar_ret_text_from_val (toolbar_item->action));
+			if (g_strcasecmp(toolbar_item->file, SEPARATOR) != 0) 
+				fprintf(fp, "\t<%s %s=\"%s\" %s=\"%s\" %s=\"%s\"/>\n",
+					TOOLBAR_TAG_ITEM, 
+					TOOLBAR_ICON_FILE, toolbar_item->file,
+					TOOLBAR_ICON_TEXT, toolbar_item->text,
+					TOOLBAR_ICON_ACTION, 
+					toolbar_ret_text_from_val(toolbar_item->action));
 			else 
-				fprintf (fp, "\t<%s/>\n", TOOLBAR_TAG_SEPARATOR); 
+				fprintf(fp, "\t<%s/>\n", TOOLBAR_TAG_SEPARATOR); 
 		}
 
-		fprintf (fp, "</%s>\n", TOOLBAR_TAG_INDEX);	
+		fprintf(fp, "</%s>\n", TOOLBAR_TAG_INDEX);	
 	
-		if( prefs_write_close (pfile) < 0 ) 
-			g_warning(_("failed to write toolbar configuration to file\n"));
+		if (prefs_write_close (pfile) < 0 ) 
+			g_warning("failed to write toolbar configuration to file\n");
 	} else
-		g_warning(_("failed to open toolbar configuration file for writing\n"));
+		g_warning("failed to open toolbar configuration file for writing\n");
 }
 
 void toolbar_clear_list()
@@ -375,16 +375,16 @@ void toolbar_clear_list()
 	while (toolbar_list != NULL) {
 		ToolbarItem *item = (ToolbarItem*) toolbar_list->data;
 		
-		toolbar_list = g_slist_remove (toolbar_list, item);
+		toolbar_list = g_slist_remove(toolbar_list, item);
 		if (item->file)
-			g_free (item->file);
+			g_free(item->file);
 		if (item->text)
-			g_free (item->text);
+			g_free(item->text);
 	}
-	g_slist_free (toolbar_list);
+	g_slist_free(toolbar_list);
 }
 
-void toolbar_read_config_file ()
+void toolbar_read_config_file(void)
 {
 	XMLFile *file   = NULL;
 	gchar *fileSpec = NULL;
@@ -393,40 +393,40 @@ void toolbar_read_config_file ()
 
 	debug_print("read Toolbar Configuration\n");
 
-	fileSpec = g_strconcat (get_rc_dir(), G_DIR_SEPARATOR_S, TOOLBAR_FILE, NULL );
-	file = xml_open_file (fileSpec);
-	g_free (fileSpec);
+	fileSpec = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, TOOLBAR_FILE, NULL );
+	file = xml_open_file(fileSpec);
+	g_free(fileSpec);
 
 	toolbar_clear_list();
 
 	if (file) {
-		if ((setjmp (jumper))
-		|| (xml_get_dtd (file))
-		|| (xml_parse_next_tag (file))
-		|| (!xml_compare_tag (file, TOOLBAR_TAG_INDEX))) {
+		if ((setjmp(jumper))
+		|| (xml_get_dtd(file))
+		|| (xml_parse_next_tag(file))
+		|| (!xml_compare_tag(file, TOOLBAR_TAG_INDEX))) {
 			xml_close_file(file);
 			return;
 		}
 
-		attr = xml_get_current_tag_attr (file);
+		attr = xml_get_current_tag_attr(file);
 		
 		retVal = TRUE;
 		for (;;) {
 			if (!file->level) 
 				break;
 			/* Get item tag */
-			if (xml_parse_next_tag (file)) 
-				longjmp (jumper, 1);
+			if (xml_parse_next_tag(file)) 
+				longjmp(jumper, 1);
 
 			/* Get next tag (icon, icon_text or icon_action) */
-			if (xml_compare_tag (file, TOOLBAR_TAG_ITEM)) {
-				toolbar_parse_item (file);
-			} else if (xml_compare_tag (file, TOOLBAR_TAG_SEPARATOR)) {
-				ToolbarItem *item = g_new0 (ToolbarItem, 1);
+			if (xml_compare_tag(file, TOOLBAR_TAG_ITEM)) {
+				toolbar_parse_item(file);
+			} else if (xml_compare_tag(file, TOOLBAR_TAG_SEPARATOR)) {
+				ToolbarItem *item = g_new0(ToolbarItem, 1);
 			
-				item->file   = g_strdup (SEPARATOR);
+				item->file   = g_strdup(SEPARATOR);
 				item->action = A_SEPARATOR;
-				toolbar_list = g_slist_append (toolbar_list, item);
+				toolbar_list = g_slist_append(toolbar_list, item);
 			}
 
 		}
@@ -439,8 +439,8 @@ void toolbar_read_config_file ()
 	}
 }
 
-static void toolbar_actions_execute_cb (GtkWidget	*widget,
-				 gpointer	 data)
+static void toolbar_actions_execute_cb(GtkWidget *widget,
+				       gpointer	 data)
 {
 	gint i = 0;
 	GSList *cur, *lop;
@@ -460,11 +460,11 @@ static void toolbar_actions_execute_cb (GtkWidget	*widget,
 				action_p[0] = 0x00;
 				if (g_strcasecmp(act->name, action) == 0) {
 					found = TRUE;
-					g_free (action);
+					g_free(action);
 					break;
 				} else 
 					i++;
-				g_free (action);
+				g_free(action);
 			}
 			if (found) 
 				break;
@@ -474,11 +474,11 @@ static void toolbar_actions_execute_cb (GtkWidget	*widget,
 	if (found)
 		actions_execute(mwin, i, widget);
 	else
-		g_warning (_("Error: did not find Sylpheed Action to execute"));
+		g_warning ("Error: did not find Sylpheed Action to execute");
 }
 
 static void toolbar_inc_cb	         (GtkWidget	*widget,
-				 gpointer	 data)
+					  gpointer	 data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
 
@@ -659,7 +659,8 @@ static void toolbar_forward_popup_cb(GtkWidget *widget, GdkEventButton *event, g
 	}
 }
 
-static void toolbar_forward_popup_closed_cb(GtkMenuShell *menu_shell, gpointer data)
+static void toolbar_forward_popup_closed_cb (GtkMenuShell *menu_shell, 
+					     gpointer     data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
 
@@ -667,9 +668,9 @@ static void toolbar_forward_popup_closed_cb(GtkMenuShell *menu_shell, gpointer d
 	manage_window_focus_in(mainwin->window, NULL, NULL);
 }
 
-static void activate_compose_button (MainToolbar *toolbar,
-				ToolbarStyle style,
-				ComposeButtonType type)
+static void activate_compose_button (MainToolbar       *toolbar,
+				     ToolbarStyle      style,
+				     ComposeButtonType type)
 {
 	if ((!toolbar->compose_mail_btn) || (!toolbar->compose_news_btn))
 		return;
@@ -681,17 +682,8 @@ static void activate_compose_button (MainToolbar *toolbar,
 	toolbar->compose_btn_type = type;	
 }
 
-void toolbar_reflect_prefs_pixmap_theme(MainWindow *mainwin)
-{
-	gtk_container_remove(GTK_CONTAINER(mainwin->handlebox), 
-			     GTK_WIDGET(mainwin->toolbar->toolbar));
-
-	mainwin->toolbar->toolbar = NULL;
-	toolbar_create(mainwin, mainwin->handlebox);
-
-}
-
-void toolbar_set_compose_button(MainToolbar *toolbar, ComposeButtonType compose_btn_type)
+void toolbar_set_compose_button (MainToolbar       *toolbar, 
+				 ComposeButtonType compose_btn_type)
 {
 	if (toolbar->compose_btn_type != compose_btn_type)
 		activate_compose_button(toolbar, 
@@ -703,7 +695,9 @@ void toolbar_set_sensitive(MainWindow *mainwin)
 {
 	SensitiveCond state;
 	gboolean sensitive;
+	guint no_items = g_slist_length(toolbar_list);
 	MainToolbar *toolbar = mainwin->toolbar;
+	GSList *cur;
 	gint i = 0;
 	gint total = 0;
 
@@ -711,11 +705,11 @@ void toolbar_set_sensitive(MainWindow *mainwin)
 		GtkWidget *widget;
 		SensitiveCond cond;
 		gboolean empty;
-	} entry[11];
+	} entry[no_items + 1];
 
 #define SET_WIDGET_COND(w, c)     \
 {			       \
-         entry[total].widget = w; \
+        entry[total].widget = w; \
 	entry[total].cond   = c; \
 	total++;		       \
 }
@@ -735,6 +729,12 @@ void toolbar_set_sensitive(MainWindow *mainwin)
 	SET_WIDGET_COND(toolbar->delete_btn,
 			M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED);
 	SET_WIDGET_COND(toolbar->exec_btn, M_MSG_EXIST|M_EXEC|M_UNLOCKED);
+
+	for (cur = toolbar->syl_action; cur != NULL;  cur = cur->next) {
+		ToolbarSylpheedActions *act = (ToolbarSylpheedActions*)cur->data;
+		
+		SET_WIDGET_COND(act->widget, M_TARGET_EXIST|M_UNLOCKED);
+	}
 
 #undef SET_WIDGET_COND
 
@@ -761,7 +761,7 @@ void toolbar_popups_create(MainWindow *mainwin, GtkWidget *window)
 	GtkWidget *fwd_popup;
 
 	if (mainwin->toolbar != NULL)
-		g_free (mainwin->toolbar);
+		g_free(mainwin->toolbar);
 
 	mainwin->toolbar = g_new0(MainToolbar, 1); 
 	
@@ -800,6 +800,31 @@ void toolbar_popups_create(MainWindow *mainwin, GtkWidget *window)
 	mainwin->toolbar->fwd_popup         = fwd_popup;
 }
 
+void toolbar_update(void)
+{
+	gtk_container_remove(GTK_CONTAINER(mwin->handlebox), 
+			     GTK_WIDGET(mwin->toolbar->toolbar));
+	
+	mwin->toolbar->toolbar    = NULL;
+	mwin->toolbar->get_btn    = NULL;
+	mwin->toolbar->getall_btn = NULL;
+	mwin->toolbar->send_btn   = NULL;
+	mwin->toolbar->compose_mail_btn = NULL;
+	mwin->toolbar->compose_news_btn = NULL;
+	mwin->toolbar->reply_btn        = NULL;	
+	mwin->toolbar->replyall_btn     = NULL;	
+	mwin->toolbar->replysender_btn  = NULL;	
+	mwin->toolbar->fwd_btn    = NULL;	
+	mwin->toolbar->delete_btn = NULL;	
+	mwin->toolbar->next_btn   = NULL;	
+	mwin->toolbar->exec_btn   = NULL;
+
+	toolbar_destroy(mwin);
+	toolbar_create(mwin, mwin->handlebox);
+	toolbar_set_sensitive(mwin);
+
+}
+
 void toolbar_destroy(MainWindow *mainwin)
 {
 	ToolbarSylpheedActions *syl_action;
@@ -810,11 +835,11 @@ void toolbar_destroy(MainWindow *mainwin)
 		syl_action = (ToolbarSylpheedActions*)mainwin->toolbar->syl_action->data;
 
 		if (syl_action->name)
-			g_free (syl_action->name);
+			g_free(syl_action->name);
 		mainwin->toolbar->syl_action = g_slist_remove(mainwin->toolbar->syl_action, syl_action);
 	}
 
-	g_slist_free (mainwin->toolbar->syl_action);
+	g_slist_free(mainwin->toolbar->syl_action);
 }
 
 void toolbar_create(MainWindow *mainwin,
@@ -847,15 +872,15 @@ void toolbar_create(MainWindow *mainwin,
 		toolbar_item  = (ToolbarItem*) cur->data;
 		
 
-		if (g_strcasecmp (toolbar_item->file, SEPARATOR) == 0) {
-			gtk_toolbar_append_space (GTK_TOOLBAR (toolbar));
+		if (g_strcasecmp(toolbar_item->file, SEPARATOR) == 0) {
+			gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
 			continue;
 		}
 
-		icon_wid = stock_pixmap_widget(container, stock_pixmap_get_icon (toolbar_item->file));
+		icon_wid = stock_pixmap_widget(container, stock_pixmap_get_icon(toolbar_item->file));
 		item  = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 						toolbar_item->text,
-						toolbar_ret_descr_from_val (toolbar_item->action),
+						toolbar_ret_descr_from_val(toolbar_item->action),
 						(""),
 						icon_wid, toolbar_actions_cb, 
 						toolbar_item);
@@ -874,7 +899,7 @@ void toolbar_create(MainWindow *mainwin,
 			icon_news = stock_pixmap_widget(container, STOCK_PIXMAP_NEWS_COMPOSE);
 			item_news = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 							    _("News"),
-							    toolbar_ret_descr_from_val (A_COMPOSE_NEWS),
+							    toolbar_ret_descr_from_val(A_COMPOSE_NEWS),
 							    (""),
 							    icon_news, toolbar_actions_cb, 
 							    toolbar_item);
@@ -925,7 +950,7 @@ void toolbar_create(MainWindow *mainwin,
 
 			mainwin->toolbar->syl_action = g_slist_append(mainwin->toolbar->syl_action,
 								      syl_action);
-			gtk_widget_show (item);
+			gtk_widget_show(item);
 			break;
 		default:
 			break;
@@ -936,18 +961,18 @@ void toolbar_create(MainWindow *mainwin,
 	if (!mainwin->toolbar->exec_btn) {
 		toolbar_item = g_new0(ToolbarItem, 1);
 		toolbar_item->action = A_EXECUTE;
-		toolbar_item->file   = stock_pixmap_get_name (STOCK_PIXMAP_EXEC);
+		toolbar_item->file   = stock_pixmap_get_name(STOCK_PIXMAP_EXEC);
 		toolbar_item->text   = toolbar_ret_text_from_val(A_EXECUTE);
 
 		icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_EXEC);
 		item = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					       _("Execute"),
-					       toolbar_ret_descr_from_val (A_EXECUTE),
+					       toolbar_ret_descr_from_val(A_EXECUTE),
 					       (""),
 					       icon_wid, toolbar_actions_cb,
 					       toolbar_item);
 		mainwin->toolbar->exec_btn = item;
-		g_free (toolbar_item);
+		g_free(toolbar_item);
 	}
 	
 	mainwin->toolbar->toolbar = toolbar;
