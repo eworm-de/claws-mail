@@ -117,7 +117,6 @@ enum {
 	MA_(FORWARD_AS_ATTACHMENT),
 	MA_(COLOR),
 	MA_(REDIRECT),
-	MA_(DELETE_ON_SERVER),
 	MA_(CHANGE_SCORE),
 	/* boolean operations */
 	MB_(OR),

@@ -463,9 +463,6 @@ gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *act
 	case MATCHACTION_COLOR:
 		g_snprintf(dest, destlen, "%s %d", command_str, action->labelcolor);
 		return dest;  
-	case MATCHACTION_DELETE_ON_SERVER:
-		g_snprintf(dest, destlen, "%s", command_str);
-		return dest;
 	default:
 		return NULL;
 	}

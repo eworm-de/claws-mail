@@ -82,9 +82,6 @@ void inc_mail			(MainWindow	*mainwin,
 				 gboolean notify);
 void inc_all_account_mail	(MainWindow	*mainwin,
 				 gboolean notify);
-void inc_selective_download     (MainWindow	*mainwin, 
-				 PrefsAccount 	*acc,
-				 gint         	 session);
 void inc_progress_update	(Pop3Session	*session);
 gint inc_drop_message		(const gchar	*file,
 				 Pop3Session	*session);

@@ -63,7 +63,6 @@
 #include "alertpanel.h"
 #include "folder.h"
 #include "filtering.h"
-#include "selective_download.h"
 #include "log.h"
 #include "hooks.h"
 
@@ -204,30 +203,6 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
  	inc_notify_cmd(new_msgs, notify);
 	inc_autocheck_timer_set();
 	inc_unlock();
-}
-
-void inc_selective_download(MainWindow *mainwin, PrefsAccount *acc, gint session)
-{
-	GSList *cur;
-	gint new_msgs = 0;
-
-	acc->session = session;
-	inc_account_mail(acc, mainwin);
-	acc->session = STYPE_NORMAL;
-	
-	for (cur = acc->msg_list; cur != NULL; cur = cur->next) {
-		HeaderItems *items =(HeaderItems*)cur->data;
-
-		if (items->state == SD_DOWNLOADED && 
-		    items->del_by_old_session == FALSE) {
-			new_msgs++;			
-		}
-	}
-
-	if (new_msgs) {
-		inc_finished(mainwin, TRUE);
-		inc_notify_cmd(new_msgs, prefs_common.newmail_notify_manu);
-	}
 }
 
 void inc_pop_before_smtp(PrefsAccount *acc)

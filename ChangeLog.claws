@@ -1,3 +1,10 @@
+2003-03-26 [oliver]	0.8.11claws52
+
+	* src/inc.[ch] 
+	* src/filtering.c 
+	* src/mainwindow.c 
+		remove selective donwload
+
 2003-03-26 [oliver]	0.8.11claws51
 	
 	* src/Makefile.am

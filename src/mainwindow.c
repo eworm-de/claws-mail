@@ -80,7 +80,6 @@
 #include "about.h"
 #include "manual.h"
 #include "version.h"
-#include "selective_download.h"
 #include "ssl_manager.h"
 #include "sslcertwindow.h"
 #include "prefs_gtk.h"
@@ -638,8 +637,6 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/_Mark/Mark all _read"),	NULL, mark_all_read_cb, 0, NULL},
 
 	{N_("/_Tools"),				NULL, NULL, 0, "<Branch>"},
-	{N_("/_Tools/_Selective download..."),	"<alt>S", sel_download_cb, 0, NULL},
-	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/_Address book..."),	"<shift><control>A", addressbook_open_cb, 0, NULL},
 	{N_("/_Tools/Add sender to address boo_k"),
 						NULL, add_address_cb, 0, NULL},
@@ -1583,7 +1580,6 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Cancel a news message" , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NEWS},
 		{"/Message/Mark"   		  , M_TARGET_EXIST},
 
-		{"/Tools/Selective download..."	    , M_HAVE_ACCOUNT|M_UNLOCKED},
 		{"/Tools/Add sender to address book", M_SINGLE_TARGET_EXIST},
 		{"/Tools/Harvest addresses"	    , M_UNLOCKED},
 		{"/Tools/Filter messages"           , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
@@ -2254,12 +2250,6 @@ static void log_window_show_cb(MainWindow *mainwin, guint action,
 			       GtkWidget *widget)
 {
 	log_window_show(mainwin->logwin);
-}
-
-static void sel_download_cb(MainWindow *mainwin, guint action,
-			       GtkWidget *widget)
-{
-	selective_download(mainwin);
 }
 
 static void inc_cancel_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
