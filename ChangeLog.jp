@@ -1,3 +1,14 @@
+2002-05-31
+
+	* 永続的なソート順を実装。
+	* src/folder.[ch]:
+	  folder_build_tree(): 'sort_key' と 'sort_type' 属性を読み込む。
+	  folder_write_list_recursive(): ソート状態を書き込む。
+	  src/mainwindow.c
+	  src/summaryview.[ch]: summary_show(): 必要であればソートする。
+	  降順ソートの場合先頭のノードを選択。
+	  SummarySortType とソート状態の変数を SummaryView から削除。
+
 2002-05-30
 
 	* src/account.c

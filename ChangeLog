@@ -1,3 +1,15 @@
+2002-05-31
+
+	* implemented persistent sort order.
+	* src/folder.[ch]:
+	  folder_build_tree(): read 'sort_key' and 'sort_type' attributes.
+	  folder_write_list_recursive(): write sorting state.
+	  src/mainwindow.c
+	  src/summaryview.[ch]: summary_show(): sort if required.
+	  select the top node on descending sort.
+	  Removed SummarySortType and sorting state variables from
+	  SummaryView.
+
 2002-05-30
 
 	* src/account.c

@@ -1144,6 +1144,8 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	PrefsAccount *account = NULL;
 	gboolean no_sub = FALSE, no_select = FALSE, collapsed = FALSE, 
 		 threaded = TRUE, ret_rcpt = FALSE, hidereadmsgs = FALSE;
+	FolderSortKey sort_key = SORT_BY_NONE;
+	FolderSortType sort_type = SORT_ASCENDING;
 	gint mtime = 0, new = 0, unread = 0, total = 0;
 
 	g_return_val_if_fail(node->data != NULL, FALSE);
@@ -1201,6 +1203,35 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 			hidereadmsgs =  *attr->value == '1' ? TRUE : FALSE;
 		else if (!strcmp(attr->name, "reqretrcpt"))
 			ret_rcpt =  *attr->value == '1' ? TRUE : FALSE;
+		else if (!strcmp(attr->name, "sort_key")) {
+			if (!strcmp(attr->value, "none"))
+				sort_key = SORT_BY_NONE;
+			else if (!strcmp(attr->value, "number"))
+				sort_key = SORT_BY_NUMBER;
+			else if (!strcmp(attr->value, "size"))
+				sort_key = SORT_BY_SIZE;
+			else if (!strcmp(attr->value, "date"))
+				sort_key = SORT_BY_DATE;
+			else if (!strcmp(attr->value, "from"))
+				sort_key = SORT_BY_FROM;
+			else if (!strcmp(attr->value, "subject"))
+				sort_key = SORT_BY_SUBJECT;
+			else if (!strcmp(attr->value, "score"))
+				sort_key = SORT_BY_SCORE;
+			else if (!strcmp(attr->value, "label"))
+				sort_key = SORT_BY_LABEL;
+			else if (!strcmp(attr->value, "mark"))
+				sort_key = SORT_BY_MARK;
+			else if (!strcmp(attr->value, "unread"))
+				sort_key = SORT_BY_UNREAD;
+			else if (!strcmp(attr->value, "mime"))
+				sort_key = SORT_BY_MIME;
+		} else if (!strcmp(attr->name, "sort_type")) {
+			if (!strcmp(attr->value, "ascending"))
+				sort_type = SORT_ASCENDING;
+			else
+				sort_type = SORT_DESCENDING;
+		}
 	}
 
 	item = folder_item_new(name, path);
@@ -1216,6 +1247,8 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	item->threaded  = threaded;
 	item->hide_read_msgs  = hidereadmsgs;
 	item->ret_rcpt  = ret_rcpt;
+	item->sort_key  = sort_key;
+	item->sort_type = sort_type;
 	item->parent = FOLDER_ITEM(node->parent->data);
 	item->folder = folder;
 	switch (stype) {
@@ -1326,6 +1359,9 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 					   "news", "unknown"};
 	static gchar *folder_item_stype_str[] = {"normal", "inbox", "outbox",
 						 "draft", "queue", "trash"};
+	static gchar *sort_key_str[] = {"none", "number", "size", "date",
+					"from", "subject", "score", "label",
+					"mark", "unread", "mime"};
 
 	g_return_if_fail(item != NULL);
 
@@ -1386,6 +1422,16 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 			fputs(" hidereadmsgs=\"0\"", fp);
 		if (item->ret_rcpt)
 			fputs(" reqretrcpt=\"1\"", fp);
+
+		if (item->sort_key != SORT_BY_NONE) {
+			fprintf(fp, " sort_key=\"%s\"",
+				sort_key_str[item->sort_key]);
+			if (item->sort_type == SORT_ASCENDING)
+				fprintf(fp, " sort_type=\"ascending\"");
+			else
+				fprintf(fp, " sort_type=\"descending\"");
+		}
+
 		fprintf(fp,
 			" mtime=\"%lu\" new=\"%d\" unread=\"%d\" total=\"%d\"",
 			item->mtime, item->new, item->unread, item->total);
