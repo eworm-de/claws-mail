@@ -1,3 +1,8 @@
+2003-12-04 [paul]	0.9.7claws18
+
+	* po/POTFILES.in
+		remove 'src/prefs_scoring.c'
+
 2003-12-03 [hoa]	0.9.7claws17
 
 	* src/Makefile.am

@@ -86,7 +86,6 @@ src/prefs_folder_item.c
 src/prefs_fonts.c
 src/prefs_gtk.c
 src/prefs_matcher.c
-src/prefs_scoring.c
 src/prefs_spelling.c
 src/prefs_summary_column.c
 src/prefs_template.c
