@@ -1,4 +1,4 @@
-; dlltool -D spamassassin.dll -k -z spamassassin.dll.def --export-all-symbols --exclude-symbols WinMain@16 spamassassin.o libspamc.o libspamc_utils.o
+; dlltool -D spamassassin.dll -z spamassassin.dll.def --export-all-symbols --exclude-symbols WinMain@16 spamassassin.o libspamc.o libspamc_utils.o
 EXPORTS
 	aspell_config_assign @ 1 DATA ; 
 	aspell_config_clone @ 2 DATA ; 

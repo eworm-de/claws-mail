@@ -1,4 +1,4 @@
-; dlltool -D spamassassin_gtk.dll -k -z spamassassin_gtk.dll.def --export-all-symbols --exclude-symbols WinMain@16 spamassassin_gtk.o
+; dlltool -D spamassassin_gtk.dll -z spamassassin_gtk.dll.def --export-all-symbols --exclude-symbols WinMain@16 spamassassin_gtk.o
 EXPORTS
 	getconf @ 1 ; 
 	gpg_started @ 2 DATA ; 

@@ -394,7 +394,11 @@ int message_filter(const struct sockaddr *addr, char *username, int flags, struc
 
     /* Now, read from spamd */
     for(len=0; len<8192; len++){
+#ifdef WIN32
+        i=recv(sock, buf+len, 1, 0);
+#else
         i=read(sock, buf+len, 1);
+#endif
         if(i<0){
             free(buf);
             free(m->out); m->out=m->msg; m->out_len=m->msg_len;
@@ -433,7 +437,11 @@ int message_filter(const struct sockaddr *addr, char *username, int flags, struc
         /* Handle different versioned headers */
         if(version-1.0>0.01){
             for(len=0; len<8192; len++){
+#ifdef WIN32
+                i=recv(sock, buf+len, 1, 0);
+#else
                 i=read(sock, buf+len, 1);
+#endif
                 if(i<=0){
                     free(buf);
                     free(m->out); m->out=m->msg; m->out_len=m->msg_len;

@@ -50,7 +50,11 @@ full_write (int fd, const unsigned char *buf, int len)
   int thistime;
 
   for (total = 0; total < len; ) {
+#ifdef WIN32
+    thistime = send (fd, buf+total, len-total, 0);
+#else
     thistime = write (fd, buf+total, len-total);
+#endif
 
     if (thistime < 0) {
       if(EINTR == errno || EAGAIN == errno) continue;

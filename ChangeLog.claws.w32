@@ -1,3 +1,9 @@
+2003-01-13 [thorsten]	0.8.5claws90-1
+
+	* src/plugins/spamassassin/libspamc.c
+	  src/plugins/spamassassin/utils.c
+	  	fix: communication with spamd
+
 2003-01-13 [thorsten]	0.8.5claws89-1
 
 	* win32/*_dll*.dsp
