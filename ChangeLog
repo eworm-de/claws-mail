@@ -1,3 +1,7 @@
+2002-07-04
+
+	* configure.in: added check for strchr.
+
 2002-07-02
 
 	* src/prefs_common.[ch]
