@@ -1,3 +1,8 @@
+2003-07-20 [alfons]	0.9.3claws37
+
+	* src/compose.c
+		put menu inside #ifdef USE_ASPELL..#endif
+
 2003-07-20 [christoph]	0.9.3claws36
 
 	* src/procmsg.c

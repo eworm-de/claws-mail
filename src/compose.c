@@ -6210,7 +6210,9 @@ static void compose_allow_user_actions (Compose *compose, gboolean allow)
 	toolbar_comp_set_sensitive(compose, allow);
 	menu_set_sensitive(ifactory, "/File", allow);
 	menu_set_sensitive(ifactory, "/Edit", allow);
+#if USE_ASPELL
 	menu_set_sensitive(ifactory, "/Spelling", allow);
+#endif	
 	menu_set_sensitive(ifactory, "/Message", allow);
 	menu_set_sensitive(ifactory, "/Tools", allow);
 	menu_set_sensitive(ifactory, "/Help", allow);
