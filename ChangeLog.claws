@@ -2,7 +2,7 @@
 
 	* src/compose.c
 		fix Bug #136 'Nonprovided quotation marks crash claws'
-		patch submitted by P. Pêkala <c0rn@gazeta.pl>
+		patch submitted by Pawel Pêkala <c0rn@gazeta.pl>
 
 2003-06-19 [alfons]	0.9.0claws48
 
