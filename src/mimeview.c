@@ -270,7 +270,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	gtk_tooltips_set_delay(tooltips, 0); 
 
 	paned = gtk_vpaned_new();
-	gtk_paned_set_gutter_size(GTK_PANED(paned), 0);
+	gtk_paned_set_gutter_size(GTK_PANED(paned), 6);
 	gtk_paned_pack1(GTK_PANED(paned), ctree_mainbox, FALSE, TRUE);
 	gtk_paned_pack2(GTK_PANED(paned), mime_notebook, TRUE, TRUE);
 	gtk_container_add(GTK_CONTAINER(notebook), paned);
