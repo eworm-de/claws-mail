@@ -379,6 +379,7 @@ static void news_flag_crosspost		(MsgInfo *msginfo);
 static void tog_searchbar_cb		(GtkWidget	*w,
 					 gpointer	 data);
 
+static void summary_update_msg		(MsgInfo *info, gpointer data);
 
 GtkTargetEntry summary_drag_types[1] =
 {
@@ -606,6 +607,8 @@ SummaryView *summary_create(void)
 	summaryview->search_type_opt = search_type_opt;
 	summaryview->search_type = search_type;
 	summaryview->search_string = search_string;
+	summaryview->msginfo_update_callback_id =
+		msginfo_update_callback_register(summary_update_msg, (gpointer) summaryview);
 
 	/* CLAWS: need this to get the SummaryView * from
 	 * the CList */
@@ -5410,6 +5413,15 @@ void summary_save_prefs_to_folderitem(SummaryView *summaryview, FolderItem *item
 
 	/* Threading */
 	item->threaded = summaryview->threaded;
+}
+
+static void summary_update_msg(MsgInfo *msginfo, gpointer data) {
+	GtkCTreeNode *node;
+	SummaryView *summaryview = (SummaryView *)data;
+	node = gtk_ctree_find_by_row_data(GTK_CTREE(summaryview->ctree), NULL, msginfo);
+	
+	if (node) 
+		summary_set_row_marks(summaryview, node);
 }
 
 /*

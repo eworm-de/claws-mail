@@ -2688,6 +2688,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		/* comes from folderview */
 		char *source;
 		char *buf;
+		gint status;
 		GtkCTreeNode *src_node;
 		FolderItem *new_item, *src_parent;
 		
@@ -2718,7 +2719,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		gtk_widget_set_sensitive(folderview->ctree, FALSE);
 		inc_lock();
 		main_window_cursor_wait(folderview->mainwin);
-		if ((new_item = folder_item_move_to(src_item, item)) != NULL) {
+		if ((status = folder_item_move_to(src_item, item, &new_item)) == F_MOVE_OK) {
 			main_window_cursor_normal(folderview->mainwin);
 			gtk_drag_finish(drag_context, TRUE, TRUE, time);
 		
@@ -2739,6 +2740,17 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 			main_window_cursor_normal(folderview->mainwin);
 			gtk_drag_finish(drag_context, FALSE, FALSE, time);
 			STATUSBAR_POP(folderview->mainwin);
+			switch (status) {
+			case F_MOVE_FAILED_DEST_IS_PARENT:
+				alertpanel_error(_("Source and destination are the same."));
+				break;
+			case F_MOVE_FAILED_DEST_IS_CHILD:
+				alertpanel_error(_("Can't move a folder to one of its children."));
+				break;
+			default:
+				alertpanel_error(_("Move failed!"));
+				break;
+			}
 		}	
 		inc_unlock();		
 		gtk_widget_set_sensitive(folderview->ctree, TRUE);

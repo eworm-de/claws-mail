@@ -96,6 +96,14 @@ typedef enum
 	SORT_DESCENDING
 } FolderSortType;
 
+typedef enum
+{
+	F_MOVE_OK,
+	F_MOVE_FAILED_DEST_IS_PARENT,
+	F_MOVE_FAILED_DEST_IS_CHILD,
+	F_MOVE_FAILED
+} FolderMoveStatus;
+
 typedef void (*FolderUIFunc)		(Folder		*folder,
 					 FolderItem	*item,
 					 gpointer	 data);
@@ -361,8 +369,9 @@ gchar *folder_item_fetch_msg		(FolderItem	*item,
 gint   folder_item_add_msg		(FolderItem	*dest,
 					 const gchar	*file,
 					 gboolean	 remove_source);
-FolderItem   *folder_item_move_to	(FolderItem	*src,
-					 FolderItem	*dest);
+gint   folder_item_move_to		(FolderItem	*src,
+					 FolderItem	*dest,
+					 FolderItem    **new_item);
 gint   folder_item_move_msg		(FolderItem	*dest,
 					 MsgInfo	*msginfo);
 gint   folder_item_move_msgs_with_dest	(FolderItem	*dest,

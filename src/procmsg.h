@@ -280,4 +280,11 @@ void procmsg_msginfo_unset_flags	(MsgInfo *msginfo,
 					 MsgPermFlags perm_flags,
 					  MsgTmpFlags tmp_flags);
 
+/* callback system for updates */
+typedef void (*MsgInfoUpdateFunc)	(MsgInfo	*info,
+					 gpointer	 data);
+gint msginfo_update_callback_register(MsgInfoUpdateFunc func, gpointer data);
+void msginfo_update_callback_unregister(gint id);
+
+void msginfo_update_item		(MsgInfo	*info);
 #endif /* __PROCMSG_H__ */
