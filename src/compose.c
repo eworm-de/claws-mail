@@ -4734,6 +4734,12 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	}
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL,
 				      &geometry, GDK_HINT_MAX_SIZE);
+	if (!geometry.min_width) {
+		geometry.min_width = 600;
+		geometry.min_height = 480;
+	}
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL,
+				      &geometry, GDK_HINT_MIN_SIZE);
 	gtk_widget_set_uposition(window, prefs_common.compose_x, 
 				 prefs_common.compose_y);
 
@@ -4828,6 +4834,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	text = gtk_text_view_new();
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD_CHAR);
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), TRUE);
 	clipboard = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
 	gtk_text_buffer_add_selection_clipboard(buffer, clipboard);

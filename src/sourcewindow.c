@@ -56,6 +56,8 @@ SourceWindow *source_window_create(void)
 	GtkWidget *text;
 	static PangoFontDescription *font_desc = NULL;
 
+	static GdkGeometry geometry;
+	
 	debug_print("Creating source window...\n");
 	sourcewin = g_new0(SourceWindow, 1);
 
@@ -64,6 +66,14 @@ SourceWindow *source_window_create(void)
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	gtk_widget_set_size_request(window, prefs_common.sourcewin_width,
 				    prefs_common.sourcewin_height);
+	
+	if (!geometry.min_height) {
+		geometry.min_width = 400;
+		geometry.min_height = 320;
+	}
+	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL, &geometry,
+				      GDK_HINT_MIN_SIZE);
+
 	g_signal_connect(G_OBJECT(window), "size_allocate",
 			 G_CALLBACK(source_window_size_alloc_cb),
 			 sourcewin);
@@ -81,6 +91,7 @@ SourceWindow *source_window_create(void)
 	gtk_widget_show(scrolledwin);
 
 	text = gtk_text_view_new();
+	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD_CHAR);
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), FALSE);
 	if (!font_desc && prefs_common.textfont)
 		font_desc = pango_font_description_from_string

@@ -204,3 +204,4 @@
 ( cvs diff -u -r 1.2504.2.24 -r 1.2504.2.25 ChangeLog.claws; cvs diff -u -r 1.382.2.52 -r 1.382.2.53 src/compose.c; cvs diff -u -r 1.36.2.9 -r 1.36.2.10 src/common/utils.c; cvs diff -u -r 1.5.2.11 -r 1.5.2.12 src/gtk/menu.c; ) > 0.9.12cvs130.1.patchset
 ( cvs diff -u -r 1.52.2.6 -r 1.52.2.7 src/prefs_folder_item.c; ) > 0.9.12cvs130.2.patchset
 ( cvs diff -u -r 1.2504.2.25 -r 1.2504.2.26 ChangeLog.claws; cvs diff -u -r 1.382.2.53 -r 1.382.2.54 src/compose.c; ) > 0.9.12cvs131.1.patchset
+( cvs diff -u -r 1.382.2.54 -r 1.382.2.55 src/compose.c; cvs diff -u -r 1.9.2.7 -r 1.9.2.8 src/sourcewindow.c; ) > 0.9.12cvs131.2.patchset

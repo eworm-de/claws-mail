@@ -1,3 +1,10 @@
+2004-10-21 [paul]	0.9.12cvs131.2
+
+	* src/compose.c
+	* src/sourcewindow.c
+		fix wrapping
+		fix window shrinking 
+
 2004-10-21 [colin]	0.9.12cvs131.1
 
 	* ChangeLog.claws
