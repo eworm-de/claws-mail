@@ -51,8 +51,6 @@
 #include "gtkstext.h"
 #include "mimeview.h"
 
-#define WAIT_LAP 10000
-
 typedef enum
 {
 	ACTION_NONE 	= 1 << 0,
@@ -93,7 +91,6 @@ struct _Children
 	GtkWidget	*scrolledwin;
 
 	gchar		*action;
-	guint		 timer;
 	GSList		*list;
 	gint		 nb;
 	gint		 open_in;
@@ -1221,12 +1218,8 @@ static gboolean execute_actions(gchar *action, GtkWidget *window,
 					      GDK_INPUT_READ,
 					      catch_status, child_info);
 		}
-		children->timer = children->open_in ? 0 :
-				  gtk_timeout_add(WAIT_LAP, wait_for_children,
-						  children);
 	}
-	if (children->open_in)
-		create_io_dialog(children);
+	create_io_dialog(children);
 
 	return is_ok;
 }
@@ -1456,14 +1449,6 @@ static gint wait_for_children(gpointer data)
 		cur = cur->next;
 	}
 
-	if (!children->dialog && 
-	    (new_output || children->timer))
-		create_io_dialog(children);
-
-	if (children->timer) {
-		gtk_timeout_remove(children->timer);
-		children->timer = 0;
-	}
 	children->output |= new_output;
 
 	if (new_output || (children->dialog && (nb != children->nb)))

@@ -1,3 +1,9 @@
+2002-07-30 [melvin]	0.8.0claws28
+
+	* src/prefs_actions.c
+		Made the actions' input/output dialog display
+		without delay.
+
 2002-07-30 [christoph]	0.8.0claws27
 
 	* src/procmsg.c
