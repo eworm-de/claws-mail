@@ -1,3 +1,9 @@
+2002-12-08 [christoph]	0.8.6claws75
+
+	* src/summaryview.c
+		The function that is called when a color lable changes
+		should not change the color lable again
+
 2002-12-08 [colin]	0.8.6claws74
 
 	* src/gtk/sslcertwindow.c

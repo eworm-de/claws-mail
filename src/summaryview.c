@@ -4220,8 +4220,6 @@ void summary_set_colorlabel_color(GtkCTree *ctree, GtkCTreeNode *node,
 	gint color_index;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, node);
-	procmsg_msginfo_unset_flags(msginfo, MSG_CLABEL_FLAG_MASK, 0);
-	procmsg_msginfo_set_flags(msginfo, MSG_COLORLABEL_TO_FLAGS(labelcolor), 0);
 
 	color_index = labelcolor == 0 ? -1 : (gint)labelcolor - 1;
 	ctree_style = gtk_widget_get_style(GTK_WIDGET(ctree));
@@ -4251,16 +4249,26 @@ void summary_set_colorlabel_color(GtkCTree *ctree, GtkCTreeNode *node,
 	gtk_ctree_node_set_row_style(ctree, node, style);
 }
 
+static void summary_set_row_colorlable(SummaryView *summaryview, GtkCTreeNode *row, guint labelcolor)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	MsgInfo *msginfo;
+
+	msginfo = gtk_ctree_node_get_row_data(ctree, row);
+
+	procmsg_msginfo_unset_flags(msginfo, MSG_CLABEL_FLAG_MASK, 0);
+	procmsg_msginfo_set_flags(msginfo, MSG_COLORLABEL_TO_FLAGS(labelcolor), 0);
+}
+
 void summary_set_colorlabel(SummaryView *summaryview, guint labelcolor,
 			    GtkWidget *widget)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-	GtkCList *clist = GTK_CLIST(summaryview->ctree);
 	GList *cur;
 
-	for (cur = clist->selection; cur != NULL; cur = cur->next)
-		summary_set_colorlabel_color(ctree, GTK_CTREE_NODE(cur->data),
-					     labelcolor);
+	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
+		summary_set_row_colorlable(summaryview,
+					   GTK_CTREE_NODE(cur->data), labelcolor);
 }
 
 static void summary_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_item,
