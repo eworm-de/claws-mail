@@ -77,6 +77,7 @@ struct _PrefsCommon
 	gint undolevels;
 	gint linewrap_len;
 	gboolean linewrap_quote;
+	gboolean autowrap;
 	gboolean linewrap_at_send;
 	gboolean auto_exteditor;
 	gboolean reply_account_autosel;

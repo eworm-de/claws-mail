@@ -7312,6 +7312,10 @@ static void text_inserted(GtkWidget *widget, const gchar *text,
 		g_free(new_text);
 	} else
 		gtk_editable_insert_text(editable, text, length, position);
+
+	if (prefs_common.autowrap)
+		compose_wrap_line_all(compose);
+
 	gtk_signal_handler_unblock_by_func(GTK_OBJECT(widget),
 					   GTK_SIGNAL_FUNC(text_inserted),
 					   compose);

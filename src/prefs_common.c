@@ -118,15 +118,15 @@ static struct Compose {
 	GtkWidget *checkbtn_autoextedit;
 	GtkWidget *spinbtn_undolevel;
 	GtkObject *spinbtn_undolevel_adj;
-	GtkWidget *checkbtn_reply_account_autosel;
-	GtkWidget *checkbtn_forward_account_autosel;
-	GtkWidget *checkbtn_reedit_account_autosel;
-
 	GtkWidget *spinbtn_linewrap;
 	GtkObject *spinbtn_linewrap_adj;
 	GtkWidget *checkbtn_wrapquote;
+	GtkWidget *checkbtn_autowrap;
 	GtkWidget *checkbtn_wrapatsend;
 
+	GtkWidget *checkbtn_reply_account_autosel;
+	GtkWidget *checkbtn_forward_account_autosel;
+	GtkWidget *checkbtn_reedit_account_autosel;
 	GtkWidget *checkbtn_quote;
 	GtkWidget *checkbtn_forward_as_attachment;
 	GtkWidget *checkbtn_redirect_keep_from;
@@ -385,6 +385,9 @@ static PrefParam param[] = {
 	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 	{"linewrap_quotation", "FALSE", &prefs_common.linewrap_quote, P_BOOL,
 	 &compose.checkbtn_wrapquote,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"linewrap_auto", "FALSE", &prefs_common.autowrap, P_BOOL,
+	 &compose.checkbtn_autowrap,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"linewrap_before_sending", "FALSE",
 	 &prefs_common.linewrap_at_send, P_BOOL,
@@ -1782,6 +1785,7 @@ static void prefs_compose_create(void)
 	GtkObject *spinbtn_linewrap_adj;
 	GtkWidget *spinbtn_linewrap;
 	GtkWidget *checkbtn_wrapquote;
+	GtkWidget *checkbtn_autowrap;
 	GtkWidget *checkbtn_wrapatsend;
 
 	GtkWidget *frame_reply;
@@ -1796,20 +1800,6 @@ static void prefs_compose_create(void)
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
-
-
-
-	hbox1 = gtk_hbox_new (FALSE, 32);
-	gtk_widget_show (hbox1);
-
-	hbox2 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox2);
-	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
-
-
-	hbox1 = gtk_hbox_new (FALSE, 32);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
 	PACK_FRAME(vbox1, frame_sig, _("Signature"));
 
@@ -1856,9 +1846,7 @@ static void prefs_compose_create(void)
 	PACK_CHECK_BUTTON (vbox2, checkbtn_autoextedit,
 			   _("Automatically launch the external editor"));
 
-	PACK_VSPACER (vbox2, vbox3, VSPACING_NARROW_2);
-
-	hbox5 = gtk_hbox_new (FALSE, 32);
+	hbox5 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox5);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox5, FALSE, FALSE, 0);
 
@@ -1886,8 +1874,6 @@ static void prefs_compose_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox_undolevel), spinbtn_undolevel, FALSE, FALSE, 0);
 	gtk_widget_set_usize (spinbtn_undolevel, 64, -1);
 	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_undolevel), TRUE);
-
-	PACK_VSPACER (vbox2, vbox3, VSPACING_NARROW_2);
 
         /* line-wrapping */
 	PACK_FRAME(vbox1, frame_msgwrap, _("Message wrapping"));
@@ -1918,13 +1904,14 @@ static void prefs_compose_create(void)
 	gtk_widget_show (label_linewrap);
 	gtk_box_pack_start (GTK_BOX (hbox3), label_linewrap, FALSE, FALSE, 0);
 
-	PACK_VSPACER (vbox2, vbox3, VSPACING_NARROW_2);
-
-	hbox4 = gtk_hbox_new (FALSE, 32);
+	hbox4 = gtk_hbox_new (FALSE, VSPACING);
 	gtk_widget_show (hbox4);
 	gtk_box_pack_start (GTK_BOX (vbox_linewrap), hbox4, FALSE, FALSE, 0);
 
 	PACK_CHECK_BUTTON (hbox4, checkbtn_wrapquote, _("Wrap quotation"));
+
+	PACK_CHECK_BUTTON (hbox4, checkbtn_autowrap, _("Wrap on input"));
+
 	PACK_CHECK_BUTTON
 		(hbox4, checkbtn_wrapatsend, _("Wrap before sending"));
 
@@ -1951,6 +1938,7 @@ static void prefs_compose_create(void)
 	compose.spinbtn_linewrap     = spinbtn_linewrap;
 	compose.spinbtn_linewrap_adj = spinbtn_linewrap_adj;
 	compose.checkbtn_wrapquote   = checkbtn_wrapquote;
+	compose.checkbtn_autowrap    = checkbtn_autowrap;
 	compose.checkbtn_wrapatsend  = checkbtn_wrapatsend;
 
 	compose.checkbtn_forward_as_attachment =

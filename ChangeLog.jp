@@ -1,5 +1,10 @@
 2002-06-25
 
+	* src/prefs_common.[ch]
+	  src/compose.c: 「入力時に自動改行」を実装。
+
+2002-06-25
+
 	* src/summaryview.[ch]
 	  src/mainwindow.c: 「移動/{次の,前の}新着メッセージ」メニューを追加。
 	  少しコードを整理。

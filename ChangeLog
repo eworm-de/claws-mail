@@ -1,5 +1,10 @@
 2002-06-25
 
+	* src/prefs_common.[ch]
+	  src/compose.c: enabled "Wrap on input".
+
+2002-06-25
+
 	* src/summaryview.[ch]
 	  src/mainwindow.c: added "Go to/{Prev,Next} new message" menu.
 	  Made some code cleanups.
