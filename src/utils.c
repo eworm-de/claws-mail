@@ -2100,7 +2100,7 @@ FILE *my_tmpfile(void)
 
 #ifdef WIN32
 	gchar *name_used = _tempnam( get_rc_dir(), "procmime");
-	int tmpfd = _open(name_used, _O_CREAT | _O_TEMPORARY | _O_RDWR | _O_BINARY );
+	int tmpfd = _open(name_used, _O_CREAT | _O_RDWR | _O_BINARY );
 	if (tmpfd<0) {
 		perror(g_strdup_printf("cant create %s",name_used));
 		return 0;
