@@ -822,20 +822,27 @@ rfc2015_encrypt (const char *file, GSList *recp_list)
     if (!mime_version_seen) 
         fputs ("MIME-Version: 1\r\n", fp);
 
-    fprintf (fp,
-	     "Content-Type: multipart/encrypted;"
-	     " protocol=\"application/pgp-encrypted\";\r\n"
-	     " boundary=\"%s\"\r\n"
-	     "\r\n"
-	     "--%s\r\n"
-	     "Content-Type: application/pgp-encrypted\r\n"
-	     "\r\n"
-	     "Version: 1\r\n"
-	     "\r\n"
-	     "--%s\r\n"
-	     "Content-Type: application/octet-stream\r\n"
-	     "\r\n",
-	     boundary, boundary, boundary);
+    if (prefs_common.ascii_armored) {
+        fprintf(fp, 
+            "Content-Type: text/plain; charset=us-ascii\r\n"
+            "Content-Transfer-Encoding: 7bit\r\n"  
+            "\r\n");
+    } else {
+        fprintf (fp,
+	        "Content-Type: multipart/encrypted;"
+	        " protocol=\"application/pgp-encrypted\";\r\n"
+	        " boundary=\"%s\"\r\n"
+	        "\r\n"
+	        "--%s\r\n"
+	        "Content-Type: application/pgp-encrypted\r\n"
+	        "\r\n"
+	        "Version: 1\r\n"
+	        "\r\n"
+	        "--%s\r\n"
+	        "Content-Type: application/octet-stream\r\n"
+	        "\r\n",
+	        boundary, boundary, boundary);
+    }
 
     /* append the encrypted stuff */
     err = gpgme_data_rewind (cipher);
@@ -854,11 +861,13 @@ rfc2015_encrypt (const char *file, GSList *recp_list)
     }
 
     /* and the final boundary */
-    fprintf (fp,
-	     "\r\n"
-	     "--%s--\r\n"
-	     "\r\n",
-	     boundary);
+    if (!prefs_common.ascii_armored) {
+        fprintf (fp,
+	        "\r\n"
+	        "--%s--\r\n"
+	        "\r\n",
+            boundary);
+    }
     fflush (fp);
     if (ferror (fp)) {
         FILE_OP_ERROR (file, "fwrite");

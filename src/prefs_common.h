@@ -192,6 +192,7 @@ struct _PrefsCommon
 
 	/* Privacy */
 	gboolean default_encrypt;
+	gboolean ascii_armored;
 	gboolean default_sign;
 	gboolean auto_check_signatures;
 	gboolean gpg_signature_popup;

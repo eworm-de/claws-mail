@@ -169,6 +169,7 @@ static struct Message {
 #if USE_GPGME
 static struct Privacy {
 	GtkWidget *checkbtn_default_encrypt;
+    GtkWidget *checkbtn_ascii_armored;
 	GtkWidget *checkbtn_default_sign;
 	GtkWidget *checkbtn_auto_check_signatures;
 	GtkWidget *checkbtn_gpg_signature_popup;
@@ -220,6 +221,8 @@ static void prefs_common_charset_set_optmenu	      (PrefParam *pparam);
 static void prefs_common_default_signkey_set_data_from_optmenu
 							(PrefParam *pparam);
 static void prefs_common_default_signkey_set_optmenu	(PrefParam *pparam);
+static void prefs_common_ascii_armored_warning(GtkWidget* widget, 
+												gpointer unused);
 #endif
 static void prefs_common_recv_dialog_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_common_recv_dialog_set_optmenu(PrefParam *pparam);
@@ -564,6 +567,9 @@ static PrefParam param[] = {
 	/* Privacy */
 	{"default_encrypt", "FALSE", &prefs_common.default_encrypt, P_BOOL,
 	 &privacy.checkbtn_default_encrypt,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"ascii_armored", "FALSE", &prefs_common.ascii_armored, P_BOOL,
+	 &privacy.checkbtn_ascii_armored,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"default_sign", "FALSE", &prefs_common.default_sign, P_BOOL,
 	 &privacy.checkbtn_default_sign,
@@ -1915,6 +1921,7 @@ static void prefs_privacy_create(void)
 	GtkWidget *vbox2;
 	GtkWidget *hbox1;
 	GtkWidget *checkbtn_default_encrypt;
+    GtkWidget *checkbtn_ascii_armored;
 	GtkWidget *checkbtn_default_sign;
 	GtkWidget *checkbtn_auto_check_signatures;
 	GtkWidget *checkbtn_gpg_signature_popup;
@@ -1936,6 +1943,11 @@ static void prefs_privacy_create(void)
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_default_encrypt,
 			   _("Encrypt message by default"));
+
+	PACK_CHECK_BUTTON (vbox2, checkbtn_ascii_armored,
+			   _("Plain ASCII armored"));
+	gtk_signal_connect(GTK_OBJECT(checkbtn_ascii_armored), "toggled",
+				prefs_common_ascii_armored_warning, (gpointer)0);
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_default_sign,
 			   _("Sign message by default"));
@@ -1975,6 +1987,7 @@ static void prefs_privacy_create(void)
 	gtk_widget_set_sensitive(optmenu, FALSE);
 
 	privacy.checkbtn_default_encrypt = checkbtn_default_encrypt;
+    privacy.checkbtn_ascii_armored = checkbtn_ascii_armored;
 	privacy.checkbtn_default_sign    = checkbtn_default_sign;
 	privacy.checkbtn_auto_check_signatures
 					 = checkbtn_auto_check_signatures;
@@ -2029,6 +2042,18 @@ static void prefs_common_default_signkey_set_optmenu(PrefParam *pparam)
 	gtk_option_menu_set_history(optmenu, 0);
 	prefs_common_charset_set_data_from_optmenu(pparam);
 #endif
+}
+
+static void prefs_common_ascii_armored_warning(GtkWidget* widget,
+												gpointer unused)
+{
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget))
+		&& gtk_notebook_get_current_page(GTK_NOTEBOOK(dialog.notebook))) {
+		alertpanel_message("Warning - Privacy/Plain ASCII armored",
+			"Its not recommend to use the old style plain ASCII\n"
+			"armored mode for encypted messages. It doesn't comply\n"
+			"with the RFC 3156 - MIME security with OpenPGP.");
+	}
 }
 #endif /* USE_GPGME */
 

@@ -1,3 +1,11 @@
+2001-10-12 [paul]	0.6.3claws11
+
+	* src/prefs_common.[ch], src/rfc2015.c
+		enable ascii-armored gpg text to be embedded in the
+		message body, selectable through the 'Privacy'
+		preferences. Supports encrypting only.
+		Submitted by Ravemax <ravemax@dextrose.com>
+
 2001-10-12 [paul]	0.6.3claws10
 
 	* sync with sylpheed 0.6.3cvs6
