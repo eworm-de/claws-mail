@@ -1071,8 +1071,11 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 	void  *button1_cb = NULL;
 	void  *button2_cb = NULL;
 
-	if (!partial_msg_in_uidl_list(msginfo))
+	if (!partial_msg_in_uidl_list(msginfo)) {
+		/* in case it was there from previous mail */
+		noticeview_hide(noticeview);
 		return;
+	}
 
 	switch (msginfo->planned_download) {
 	case POP3_PARTIAL_DLOAD_UNKN:
