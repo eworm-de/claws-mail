@@ -105,6 +105,8 @@ MsgInfo *news_get_msginfo		 (Folder 	*folder,
 GSList *news_get_msginfos		 (Folder 	*folder,
 					  FolderItem 	*item,
 					  GSList 	*msgnum_list);
+gboolean news_scan_required		 (Folder 	*folder,
+					  FolderItem 	*item);
 
 gint news_post_stream			 (Folder 	*folder, 
 					  FILE 		*fp);
@@ -136,7 +138,7 @@ FolderClass news_class =
 	NULL,
 	NULL,
 	NULL,
-	NULL,
+	news_scan_required,
 
 	/* Message functions */
 	news_get_msginfo,
@@ -1043,4 +1045,9 @@ GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 	progressindicator_stop(PROGRESS_TYPE_NETWORK);
 
 	return msginfo_list;
+}
+
+gboolean news_scan_required(Folder *folder, FolderItem *item)
+{
+	return TRUE;
 }
