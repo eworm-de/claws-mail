@@ -117,6 +117,7 @@ static struct Compose {
 
 	GtkWidget * checkbtn_forward_as_attachment;
 	GtkWidget * checkbtn_smart_wrapping;
+	GtkWidget * checkbtn_block_cursor;
 
 	/* spelling */
 #if USE_PSPELL
@@ -348,6 +349,9 @@ static PrefParam param[] = {
 	 prefs_set_data_from_toggle, prefs_set_toggle},
         {"smart_wrapping", "TRUE", &prefs_common.smart_wrapping,
 	 P_BOOL, &compose.checkbtn_smart_wrapping,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"block_cursor", "FALSE", &prefs_common.block_cursor,
+	 P_BOOL, &compose.checkbtn_block_cursor,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 #if USE_PSPELL
 	{"enable_pspell", "TRUE", &prefs_common.enable_pspell,
@@ -1276,6 +1280,7 @@ static void prefs_compose_create(void)
 
 	GtkWidget *checkbtn_forward_as_attachment;
 	GtkWidget *checkbtn_smart_wrapping;
+	GtkWidget *checkbtn_block_cursor;
 
 #if USE_PSPELL
 	GtkWidget *frame_spell;
@@ -1452,6 +1457,9 @@ static void prefs_compose_create(void)
 
 	PACK_CHECK_BUTTON (vbox1, checkbtn_smart_wrapping,
 			   _("Smart wrapping (EXPERIMENTAL)"));
+	
+	PACK_CHECK_BUTTON (vbox1, checkbtn_block_cursor,
+			  _("Block cursor"));
 
 #if USE_PSPELL
 	/* spell checker defaults */			   
@@ -1529,6 +1537,8 @@ static void prefs_compose_create(void)
 		checkbtn_forward_as_attachment;
 	compose.checkbtn_smart_wrapping = 
 		checkbtn_smart_wrapping;
+	compose.checkbtn_block_cursor   =
+		checkbtn_block_cursor;
 
 #if USE_PSPELL
 	compose.checkbtn_enable_pspell = checkbtn_enable_pspell;

@@ -3549,6 +3549,11 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 			    (GTK_SCROLLED_WINDOW(scrolledwin)));
 	GTK_STEXT(text)->default_tab_width = 8;
 	gtk_stext_set_editable(GTK_STEXT(text), TRUE);
+
+	if (prefs_common.block_cursor) {
+		GTK_STEXT(text)->cursor_type = STEXT_CURSOR_BLOCK;
+	}
+	
 	if (prefs_common.smart_wrapping) {	
 		gtk_stext_set_word_wrap(GTK_STEXT(text), TRUE);
 		gtk_stext_set_wrap_rmargin(GTK_STEXT(text), prefs_common.linewrap_len);

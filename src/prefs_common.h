@@ -85,6 +85,7 @@ struct _PrefsCommon
 	gchar *fw_quotefmt;
 	gboolean forward_as_attachment;
 	gboolean smart_wrapping;
+	gboolean block_cursor;
 #if USE_PSPELL
 	gboolean enable_pspell;
 	gchar *pspell_path;
