@@ -16,7 +16,8 @@ spamassassin_gtk_la_SOURCES = \
 
 spamassassin_gtk_la_LDFLAGS = \
 	-avoid-version -module \
-	$(GTK_LIBS)
+	$(GTK_LIBS) \
+	$(OPENSSL_LIBS)
 
 INCLUDES = \
 	-I../.. \
@@ -26,7 +27,8 @@ INCLUDES = \
 CPPFLAGS = \
 	$(ASPELL_CFLAGS) \
 	$(GLIB_CFLAGS) \
-	$(GTK_CFLAGS)
+	$(GTK_CFLAGS) \
+	$(OPENSSL_CFLAGS)
 
 EXTRA_DIST = \
 	README
