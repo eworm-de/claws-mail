@@ -1219,10 +1219,6 @@ static void create_io_dialog(Children *children)
 	children->abort_btn    = abort_button;
 	children->close_btn    = close_button;
 
-	output_font = gtkut_font_load_from_fontset(prefs_common.textfont);
-	gtk_object_set_data_full(GTK_OBJECT(dialog), "s_txtfont",
-				 output_font, 
-				 (GtkDestroyNotify)gdk_font_unref); 
 	gtk_widget_show(dialog);
 }
 
