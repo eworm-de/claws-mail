@@ -145,7 +145,8 @@ const gchar *plugin_name()
 
 const gchar *plugin_desc()
 {
-	return "";
+	return "This plugin uses the GtkMathView widget to render "
+	       "MathML attachments (Content-Type: text/mathml)";
 }
 
 const gchar *plugin_type()

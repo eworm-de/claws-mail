@@ -42,7 +42,8 @@ const gchar *plugin_name()
 
 const gchar *plugin_desc()
 {
-	return "";
+	return "This plugin uses either gdk-pixbuf or imlib to display "
+	       "attached images.";
 }
 
 const gchar *plugin_type()
