@@ -1487,7 +1487,14 @@ ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 	selection = gtk_editable_get_chars(GTK_EDITABLE(text), start, end);
 
 	if (action_type & ACTION_PIPE_IN) {
+#ifdef WIN32
+		gchar *p_selection = g_strdup(selection);
+		locale_from_utf8(&p_selection);
+		write(chld_in[1], p_selection, strlen(p_selection));
+		g_free(p_selection);
+#else
 		write(chld_in[1], selection, strlen(selection));
+#endif
 		if (!(action_type & (ACTION_OPEN_IN | ACTION_HIDE_IN)))
 			close(chld_in[1]);
 		child_info->chld_in = -1; /* No more input */
@@ -1843,6 +1850,9 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 
 	input = gtk_editable_get_chars(GTK_EDITABLE(children->input_entry),
 				       0, -1);
+#ifdef WIN32
+	locale_from_utf8(&input);
+#endif
 	c = write(child_info->chld_in, input, strlen(input));
 
 	g_free(input);
@@ -1880,14 +1890,7 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 		gtk_stext_freeze(GTK_STEXT(text));
 		while (TRUE) {
 #ifdef WIN32
-			gchar *p_buf;
-			GIOError err;
-			GError gerr;
-
-			err = g_io_channel_read(channel, buf, PREFSBUFSIZE - 1, &c);
-			p_buf = g_locale_to_utf8(buf, c, NULL, NULL, NULL); /* XXX:tm OEM conversion */
-			memmove(buf, p_buf, c);
-			g_free(p_buf);
+			g_io_channel_read(channel, buf, PREFSBUFSIZE - 1, &c);
 #else
 			c = read(source, buf, PREFSBUFSIZE - 1);
 #endif

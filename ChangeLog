@@ -1,3 +1,8 @@
+2002-07-29
+
+	* src/logwindow.c: freeze GtkText widget while hidden.
+	  log_window_append(): changed the header for message and warning.
+
 2002-07-26
 
 	* src/news.c: implement automatic cache expiration.

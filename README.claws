@@ -17,6 +17,8 @@ Summary:
    * pixmap themes
    * user definable actions
    * spell checking (with installation instructions)
+   * new cache
+   * selective download, delete messages on server
 4. How to contribute
 5. How to request features
 6. Installing Claws from CVS
@@ -420,6 +422,7 @@ are hardly noticeable, but deserve mentioning:
     su root.
 
 * simplify subject string
+-----------------------------------
     It is possible to remove parts of string from the subject line.
     Example: [Sylpheed-claws-users] This is a test
     becomes: This is a test
@@ -430,6 +433,7 @@ are hardly noticeable, but deserve mentioning:
     \[sylpheed:[0-9]{5}\]
 
 * new cache
+-----------------------------------
     New cache is  a new data cache structure for sylpheed, that will
     solve many of the problems sylpheed currently has with updates to
     flags.  But you will also notice a large speed gain when you open
@@ -465,6 +469,16 @@ are hardly noticeable, but deserve mentioning:
 
 There are a lot more options. If you find one, don't hesitate to
 mention it.
+
+* selective download, delete messages on server
+-----------------------------------
+    The selective download window lets you select messages, that
+    should be retrieved from or deleted on the server.
+    The selection can be automated by setting up a *global*
+    filtering rule (folder based rules are ignored), e.g
+      subject match "SPAM" delete_on_server
+    Next time, you retrieve the headers using selective download,
+    all messages that matched this criteria are marked.
 
 
 

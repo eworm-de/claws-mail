@@ -176,23 +176,41 @@ void headerview_init(HeaderView *headerview)
 void headerview_show(HeaderView *headerview, MsgInfo *msginfo)
 {
 #ifdef WIN32
-	gchar* p_subject;
-	p_subject = g_strdup( msginfo->subject );
+	gchar *p_subject    = g_strdup( msginfo->subject );
+	gchar *p_from       = g_strdup( msginfo->from );
+	gchar *p_to         = g_strdup( msginfo->to );
+	gchar *p_newsgroups = g_strdup( msginfo->newsgroups );
+
 	locale_to_utf8( &p_subject ) ;
+	locale_to_utf8( &p_from ) ;
+	locale_to_utf8( &p_to ) ;
+	locale_to_utf8( &p_newsgroups ) ;
 #endif
 	headerview_clear(headerview);
 
 	gtk_label_set_text(GTK_LABEL(headerview->from_body_label),
+#ifdef WIN32
+			   p_from ? p_from : _("(No From)"));
+#else
 			   msginfo->from ? msginfo->from : _("(No From)"));
+#endif
 	if (msginfo->to) {
 		gtk_label_set_text(GTK_LABEL(headerview->to_body_label),
+#ifdef WIN32
+				   p_to);
+#else
 				   msginfo->to);
+#endif
 		gtk_widget_show(headerview->to_header_label);
 		gtk_widget_show(headerview->to_body_label);
 	}
 	if (msginfo->newsgroups) {
 		gtk_label_set_text(GTK_LABEL(headerview->ng_body_label),
+#ifdef WIN32
+				   p_newsgroups);
+#else
 				   msginfo->newsgroups);
+#endif
 		gtk_widget_show(headerview->ng_header_label);
 		gtk_widget_show(headerview->ng_body_label);
 	}
@@ -209,6 +227,9 @@ void headerview_show(HeaderView *headerview, MsgInfo *msginfo)
 #endif
 #ifdef WIN32
 	g_free( p_subject );
+	g_free( p_from );
+	g_free( p_to );
+	g_free( p_newsgroups );
 #endif
 }
 

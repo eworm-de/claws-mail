@@ -1,3 +1,13 @@
+2002-07-29 [thorsten]	0.8.0claws25
+
+	* README.claws
+		added selective download, delete on server
+
+2002-07-29 [paul]	0.8.0claws24
+
+	* sync with 0.8.1cvs3
+		see ChangeLog 2002-07-29
+
 2002-07-27 [christoph]	0.8.0claws23
 
 	* src/folder.c

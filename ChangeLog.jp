@@ -1,3 +1,8 @@
+2002-07-29
+
+	* src/logwindow.c: 隠しているときは GtkText ウィジェットをフリーズ。
+	  log_window_append(): メッセージと警告のヘッダを変更。
+
 2002-07-26
 
 	* src/news.c: 自動キャッシュ削除を実装。
