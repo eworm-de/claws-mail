@@ -1,3 +1,8 @@
+2002-11-24 [paul]	0.8.5claws182
+
+	* po/bg.po
+		updated by George Danchev
+
 2002-11-23 [alfons]	0.8.5claws181
 
 	* src/imap.c
