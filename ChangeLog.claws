@@ -1,3 +1,8 @@
+2004-08-20 [paul]
+
+        * src/plugins/pgpmime/plugin.c
+                modify PGP/MIME plugin's description
+
 2004-08-16 [colin]	0.9.12cvs65
 
 	* src/common/ssl.c
