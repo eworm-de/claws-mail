@@ -36,9 +36,11 @@ There are some things that frequently come up when switching to Claws:
 
 * Why does the advanced filtering system not work?
 
-  Claws will only use the new filtering system when you cleared the Sylpheed
-  filter rules list. 
-
+  Claws uses the new filtering system as soon as you define a new rule for it.
+  Your old sylpheed filter rules will not be used. In subdirectory tools/ of
+  the distribution there is a Perl script called filter_conv.pl which convers
+  old filter rules to the claws filtering system.
+  
 
 * What happened to the compose email and compose news buttons? 
 
@@ -100,3 +102,28 @@ are hardly noticable, but deserve mentioning:
 
 There are a lot more options. If you find one, don't hesitate to
 mention it.
+
+
+How to contribute
+-----------------
+
+Write a patch, submit it to the Sylpheed ML, Sylpheed Claws Users ML,
+or bother any of the current Claws developers. There's no way to
+predict whether your patch will or will not end up in Claws or Main.
+Mostly they will. And if not, there's probably nothing wrong with
+your code - or maybe there is. Generally, adding a cool or useful
+thing to your patch will attract a lot of attention of other users
+or developers.
+
+
+How to request features
+-----------------------
+
+Ask around in both Sylpheed ML and Sylpheed Claws Users ML. Note
+that some developers may already thought about your feature, may
+perhaps be implementing it - or the feature was already discussed
+and rejected for whatever reason. Don't complain, be patient. Or
+you might want to go ahead and hack a patch for it. That would
+be very cool! (c. How to contribute)
+
+

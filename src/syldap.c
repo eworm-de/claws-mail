@@ -647,7 +647,6 @@ gint syldap_read_data( SyldapServer *ldapServer ) {
 	/* Callback */
 	ldapServer->busyFlag = FALSE;
 	if( ldapServer->callBack ) {
-		sched_yield();
 		( ldapServer->callBack )( ldapServer );
 	}
 	ldapServer->thread = NULL;
