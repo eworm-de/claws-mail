@@ -494,8 +494,8 @@ static MimeViewer *get_viewer_for_content_type(MimeView *mimeview, const gchar *
 		gint i = 0;
 
 		while (curfactory->content_types[i] != NULL) {
-			debug_print("%s\n", curfactory->content_types[i]);
 			if(!fnmatch(curfactory->content_types[i], content_type, FNM_CASEFOLD)) {
+				debug_print("%s\n", curfactory->content_types[i]);
 				factory = curfactory;
 				break;
 			}
@@ -528,7 +528,7 @@ static MimeViewer *get_viewer_for_mimeinfo(MimeView *mimeview, MimeInfo *partinf
 	MimeViewer *viewer = NULL;
 
 	if ((partinfo->type == MIMETYPE_APPLICATION) &&
-            (g_strcasecmp(partinfo->subtype, "octet-stream")) &&
+            (!g_strcasecmp(partinfo->subtype, "octet-stream")) &&
 	    (partinfo->name != NULL)) {
 		content_type = procmime_get_mime_type(partinfo->name);
 	} else {
@@ -782,7 +782,8 @@ static void part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 			menu_set_sensitive(mimeview->popupfactory,
 					   "/Display as text", TRUE);
 		if (partinfo &&
-		    partinfo->type == MIMETYPE_APPLICATION)
+		    partinfo->type == MIMETYPE_APPLICATION &&
+		    !g_strcasecmp(partinfo->subtype, "octet-stream"))
 			menu_set_sensitive(mimeview->popupfactory,
 					   "/Open", FALSE);
 		else
@@ -1154,7 +1155,8 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 	if (cmdline) {
 		cmd = cmdline;
 		def_cmd = NULL;
-	} else if (MIMETYPE_APPLICATION == partinfo->type) {
+	} else if (MIMETYPE_APPLICATION == partinfo->type &&
+		   !g_strcasecmp(partinfo->subtype, "octet-stream")) {
 		return;
 	} else if (MIMETYPE_IMAGE == partinfo->type) {
 		cmd = prefs_common.mime_image_viewer;

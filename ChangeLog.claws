@@ -1,3 +1,9 @@
+2003-11-14 [luke]	0.9.6claws75
+        * src/mimeview.c
+                fix a couple of problems that treated application/* and
+                application/octet-stream the wrong way around
+                (since 0.9.6claws10), causing "Open" to do nothing.
+
 2003-11-14 [christoph]	0.9.6claws74
 
 	* src/messageview.c
