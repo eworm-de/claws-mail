@@ -243,3 +243,4 @@
 ( cvs diff -u -r 1.150.2.13 -r 1.150.2.14 src/procmsg.c; ) > 0.9.12cvs148.1.patchset
 ( cvs diff -u -r 1.150.2.14 -r 1.150.2.15 src/procmsg.c; ) > 0.9.12cvs149.1.patchset
 ( cvs diff -u -r 1.1.2.9 -r 1.1.2.10 src/plugins/pgpmime/pgpmime.c; ) > 0.9.12cvs150.1.patchset
+( cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/plugins/pgpmime/pgpmime.c; ) > 0.9.12cvs151.1.patchset

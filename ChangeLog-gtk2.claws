@@ -1,3 +1,8 @@
+2004-11-17 [colin]	0.9.12cvs151.1
+
+	* src/plugins/pgpmime/pgpmime.c
+		Sync with HEAD (remove debug printf)
+
 2004-11-17 [colin]	0.9.12cvs150.1
 
 	* src/plugins/pgpmime/pgpmime.c
