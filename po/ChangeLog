@@ -1,3 +1,20 @@
+2001-07-02
+
+	* modified zh_TW.Big5.po (removed backslash escaping) so that the
+	  newer gettext can process it.
+
+2001-07-02  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.38.
+
+2001-07-01
+
+	* updated nl.po.
+
+2001-06-25
+
+	* updated es.po, it.po and nl.po.
+
 2001-06-21
 
 	* updated it.po and el.po.
