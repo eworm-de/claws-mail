@@ -771,7 +771,8 @@ static void quicksearch_reset_folder_items(QuickSearch *quicksearch,
 void quicksearch_reset_cur_folder_item(QuickSearch *quicksearch)
 {
 	if (quicksearch->root_folder_item)
-		quicksearch_reset_folder_items(quicksearch, quicksearch->root_folder_item);
+		quicksearch_reset_folder_items(quicksearch, 
+					       quicksearch->root_folder_item);
 	
 	quicksearch->root_folder_item = NULL;
 }

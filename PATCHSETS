@@ -336,3 +336,4 @@
 ( cvs diff -u -r 1.1.2.14 -r 1.1.2.15 src/gtk/quicksearch.c; cvs diff -u -r 1.204.2.27 -r 1.204.2.28 src/prefs_common.c; cvs diff -u -r 1.103.2.10 -r 1.103.2.11 src/prefs_common.h; ) > 1.0.0cvs5.1.patchset
 ( cvs diff -u -r 1.395.2.43 -r 1.395.2.44 src/summaryview.c; ) > 1.0.0cvs6.1.patchset
 ( cvs diff -u -r 1.395.2.44 -r 1.395.2.45 src/summaryview.c; ) > 1.0.0cvs7.1.patchset
+( cvs diff -u -r 1.395.2.45 -r 1.395.2.46 src/summaryview.c; cvs diff -u -r 1.1.2.15 -r 1.1.2.16 src/gtk/quicksearch.c; ) > 1.0.0cvs8.1.patchset
