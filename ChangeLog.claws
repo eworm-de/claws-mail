@@ -1,3 +1,9 @@
+2004-12-02 [colin]	0.9.12cvs179
+
+	* src/compose.c
+		Prevent duplicate edition of queued
+		and drafted mails
+
 2004-12-02 [colin]	0.9.12cvs178
 
 	* src/compose.c
