@@ -199,6 +199,25 @@ GtkWidget *cert_presenter(SSLCertificate *cert)
 	return vbox;
 }
 
+static gboolean sslcert_ask_hook(gpointer source, gpointer data)
+{
+	SSLCertHookData *hookdata = (SSLCertHookData *)source;
+	if (hookdata == NULL) {
+		return FALSE;
+	}
+	if (hookdata->old_cert == NULL)
+		hookdata->accept = sslcertwindow_ask_new_cert(hookdata->cert);
+	else
+		hookdata->accept = sslcertwindow_ask_changed_cert(hookdata->old_cert, hookdata->cert);
+
+	return TRUE;
+}
+
+void sslcertwindow_register_hook(void)
+{
+	hooks_register_hook(SSLCERT_ASK_HOOKLIST, sslcert_ask_hook, NULL);
+}
+
 void sslcertwindow_show_cert(SSLCertificate *cert)
 {
 	GtkWidget *cert_widget = cert_presenter(cert);

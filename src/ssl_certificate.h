@@ -30,6 +30,8 @@
 #include <openssl/objects.h>
 #include <glib.h>
 
+#define SSLCERT_ASK_HOOKLIST "sslcert_ask"
+
 typedef struct _SSLCertificate SSLCertificate;
 
 struct _SSLCertificate
@@ -37,6 +39,15 @@ struct _SSLCertificate
 	X509 *x509_cert;
 	gchar *host;
 	gushort port;
+};
+
+typedef struct _SSLCertHookData SSLCertHookData;
+
+struct _SSLCertHookData
+{
+	SSLCertificate *cert;
+	SSLCertificate *old_cert;
+	gboolean accept;
 };
 
 SSLCertificate *ssl_certificate_find (gchar *host, gushort port);

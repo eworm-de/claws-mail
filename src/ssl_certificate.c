@@ -26,11 +26,11 @@
 #include <openssl/ssl.h>
 #include <glib.h>
 #include "ssl_certificate.h"
-#include "sslcertwindow.h"
 #include "utils.h"
 #include "intl.h"
 #include "log.h"
 #include "socket.h"
+#include "hooks.h"
 
 static SSLCertificate *ssl_certificate_new_lookup(X509 *x509_cert, gchar *host, gushort port, gboolean lookup);
 
@@ -335,7 +335,8 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 {
 	SSLCertificate *current_cert = ssl_certificate_new(x509_cert, host, port);
 	SSLCertificate *known_cert;
-
+	SSLCertHookData cert_hook_data;
+	
 	if (current_cert == NULL) {
 		debug_print("Buggy certificate !\n");
 		return FALSE;
@@ -381,11 +382,15 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 			return FALSE;
 		}
 #endif
-		/* FIXME: replace this with a hook, then uncomment the check in ssl.c */ 
-		val = sslcertwindow_ask_new_cert(current_cert);
+		cert_hook_data.cert = current_cert;
+		cert_hook_data.old_cert = NULL;
+		cert_hook_data.accept = FALSE;
+		
+		hooks_invoke(SSLCERT_ASK_HOOKLIST, &cert_hook_data);
+		
 		g_free(err_msg);
 
-		if (!val) {
+		if (!cert_hook_data.accept) {
 			ssl_certificate_destroy(current_cert);
 			return FALSE;
 		} else {
@@ -416,12 +421,15 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 			return FALSE;
 		}
 #endif
+		cert_hook_data.cert = current_cert;
+		cert_hook_data.old_cert = known_cert;
+		cert_hook_data.accept = FALSE;
 		
-		/* FIXME: replace this with a hook, then uncomment the check in ssl.c */ 
-		val = sslcertwindow_ask_changed_cert(known_cert, current_cert);
+		hooks_invoke(SSLCERT_ASK_HOOKLIST, &cert_hook_data);
+		
 		g_free(err_msg);
 
-		if (!val) {
+		if (!cert_hook_data.accept) {
 			ssl_certificate_destroy(current_cert);
 			ssl_certificate_destroy(known_cert);
 			return FALSE;

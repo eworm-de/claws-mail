@@ -83,6 +83,7 @@
 #include "version.h"
 #include "selective_download.h"
 #include "ssl_manager.h"
+#include "sslcertwindow.h"
 
 #define AC_LABEL_WIDTH	240
 
@@ -1103,7 +1104,9 @@ MainWindow *main_window_create(SeparateType type)
 	summary_init(summaryview);
 	messageview_init(messageview);
 	log_window_init(mainwin->logwin);
-
+#ifdef USE_OPENSSL
+	sslcertwindow_register_hook();
+#endif
 	mainwin->lock_count = 0;
 	mainwin->menu_lock_count = 0;
 	mainwin->cursor_count = 0;

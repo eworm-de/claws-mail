@@ -1,3 +1,14 @@
+2002-12-09 [colin]	0.8.6claws83
+
+	* src/gtk/sslcertwindow.[ch]
+		Implement hook for certificate acception
+	* src/ssl_certificate.[ch]
+		Implement hook for certificate acception
+	* src/common/ssl.c
+		Reenable certificate acception check
+	* src/mainwindow.c
+		Register sslcertwindow's hook
+	
 2002-12-08 [christoph]	0.8.6claws82
 
 	* src/about.c

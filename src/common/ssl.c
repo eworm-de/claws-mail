@@ -109,17 +109,12 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 		return FALSE;
 	}
 
-/*	FIXME
-
-	gui independant certificate check and callback for
-	gui for user accepted certificates
-	
 	if (!ssl_certificate_check(server_cert, sockinfo->hostname, sockinfo->port)) {
 		X509_free(server_cert);
 		SSL_free(ssl);
 		return FALSE;
 	}
-*/
+
 	X509_free(server_cert);
 	sockinfo->ssl = ssl;
 
