@@ -1,3 +1,9 @@
+
+2001-04-28 [alfons]
+
+	* sync with 0.4.65cvs11
+	* configure.in: corrected to have the new gpg checks
+
 2001-04-27 [alfons]
 
 	* completed sync with 0.4.65cvs10

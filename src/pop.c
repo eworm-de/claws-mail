@@ -166,7 +166,8 @@ gint pop3_getrange_stat_recv(SockInfo *sock, gpointer data)
 	gint ok;
 
 	if ((ok = pop3_ok(sock, buf)) == PS_SUCCESS) {
-		if (sscanf(buf, "%d %d", &state->count, &state->bytes) != 2) {
+		if (sscanf(buf, "%d %d", &state->count, &state->total_bytes)
+		    != 2) {
 			log_warning(_("POP3 protocol error\n"));
 			return -1;
 		} else {
@@ -177,7 +178,7 @@ gint pop3_getrange_stat_recv(SockInfo *sock, gpointer data)
 				state->new = state->count;
 				if (state->ac_prefs->rmmail ||
 				    state->ac_prefs->getall)
-					return POP3_RETR_SEND;
+					return POP3_GETSIZE_LIST_SEND;
 				else
 					return POP3_GETRANGE_UIDL_SEND;
 			}
@@ -212,11 +213,11 @@ gint pop3_getrange_last_recv(SockInfo *sock, gpointer data)
 			else {
 				state->new = state->count - last;
 				state->cur_msg = last + 1;
-				return POP3_RETR_SEND;
+				return POP3_GETSIZE_LIST_SEND;
 			}
 		}
 	} else
-		return POP3_RETR_SEND;
+		return POP3_GETSIZE_LIST_SEND;
 }
 
 gint pop3_getrange_uidl_send(SockInfo *sock, gpointer data)
@@ -266,9 +267,48 @@ gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 	if (nb && (sock_set_nonblocking_mode(sock, TRUE) < 0)) return -1;
 
 	if (new == TRUE)
-		return POP3_RETR_SEND;
+		return POP3_GETSIZE_LIST_SEND;
 	else
 		return POP3_LOGOUT_SEND;
+}
+
+gint pop3_getsize_list_send(SockInfo *sock, gpointer data)
+{
+	pop3_gen_send(sock, "LIST");
+
+	return POP3_GETSIZE_LIST_RECV;
+}
+
+gint pop3_getsize_list_recv(SockInfo *sock, gpointer data)
+{
+	Pop3State *state = (Pop3State *)data;
+	gboolean nb;
+	gchar buf[POPBUFSIZE];
+
+	if (pop3_ok(sock, NULL) != PS_SUCCESS) return POP3_LOGOUT_SEND;
+
+	state->sizes = g_new0(gint, state->count + 1);
+	state->cur_total_bytes = 0;
+
+	nb = sock_is_nonblocking_mode(sock);
+	if (nb && (sock_set_nonblocking_mode(sock, FALSE) < 0)) return -1;
+
+	while (sock_read(sock, buf, sizeof(buf)) >= 0) {
+		gint num, size;
+
+		if (buf[0] == '.') break;
+		if (sscanf(buf, "%d %d", &num, &size) != 2)
+			continue;
+
+		if (num <= state->count)
+			state->sizes[num] = size;
+		if (num < state->cur_msg)
+			state->cur_total_bytes += size;
+	}
+
+	if (nb && (sock_set_nonblocking_mode(sock, TRUE) < 0)) return -1;
+
+	return POP3_RETR_SEND;
 }
 
 gint pop3_retr_send(SockInfo *sock, gpointer data)
@@ -289,10 +329,15 @@ gint pop3_retr_recv(SockInfo *sock, gpointer data)
 	gint ok, drop_ok;
 
 	if ((ok = pop3_ok(sock, NULL)) == PS_SUCCESS) {
+		state->cur_msg_bytes = 0;
+
 		if (recv_write_to_file(sock, (file = get_tmp_file())) < 0) {
 			state->inc_state = INC_NOSPACE;
 			return -1;
 		}
+
+		state->cur_total_bytes += state->sizes[state->cur_msg];
+
 		if ((drop_ok = inc_drop_message(file, state)) < 0) {
 			state->inc_state = INC_ERROR;
 			return -1;

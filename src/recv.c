@@ -33,6 +33,9 @@
 
 #define BUFFSIZE	8192
 
+static RecvUIFunc	recv_ui_func;
+static gpointer		recv_ui_func_data;
+
 gint recv_write_to_file(SockInfo *sock, const gchar *filename)
 {
 	FILE *fp;
@@ -115,13 +118,17 @@ gint recv_write(SockInfo *sock, FILE *fp)
 		if (len > 1 && buf[len - 1] == '\n' && buf[len - 2] == '\r') {
 			buf[len - 2] = '\n';
 			buf[len - 1] = '\0';
+			len--;
 		}
 
 		if (buf[0] == '.' && buf[1] == '.')
-			memmove(buf, buf + 1, strlen(buf));
+			memmove(buf, buf + 1, len--);
 
 		if (!strncmp(buf, ">From ", 6))
-			memmove(buf, buf + 1, strlen(buf));
+			memmove(buf, buf + 1, len--);
+
+		if (recv_ui_func)
+			recv_ui_func(sock, len, recv_ui_func_data);
 
 		if (fp && fputs(buf, fp) == EOF) {
 			perror("fputs");
@@ -186,4 +193,10 @@ gint recv_bytes_write(SockInfo *sock, glong size, FILE *fp)
 
 	if (nb) sock_set_nonblocking_mode(sock, TRUE);
 	return 0;
+}
+
+void recv_set_ui_func(RecvUIFunc func, gpointer data)
+{
+	recv_ui_func = func;
+	recv_ui_func_data = data;
 }

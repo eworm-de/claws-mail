@@ -1,3 +1,19 @@
+2001-04-27
+
+	* src/progressdialog.c: progress_dialog_create(): ダイアログの
+	  サイズを修正し、拡大可能にした。
+	* src/smtp.c
+	  src/esmtp.c: smtp_ok(), esmtp_ok(): エラー応答を正しく処理して
+	  いなかったバグを修正(大政さん thanks)。
+	* src/pop.[ch]: pop3_getsize_list_send() と pop3_getsize_list_recv()
+	  を追加。
+	* src/recv.[ch]: recv_write() が各 sock_read() 毎にコールバック関数
+	  を呼ぶようにする recv_set_ui_func() を追加。
+	* src/inc.h: Pop3State において、 bytes を total_bytes に改名し、
+	  cur_msg_bytes, cur_total_bytes, そして sizes を追加。
+	* src/inc.c: 各 sock_read() 毎にプログレスバーを更新する
+	  inc_pop3_recv_func() を追加。
+
 2001-04-26
 
 	* src/mh.c: mh_is_maildir_one(): is_dir_exist() を使用するように

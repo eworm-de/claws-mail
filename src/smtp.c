@@ -149,9 +149,12 @@ gint smtp_ok(SockInfo *sock)
 			return SM_OK;
 		else if (smtp_response[3] != '-')
 			return SM_ERROR;
-			else if (smtp_response[0] == '5' && smtp_response[1] == '0' &&
-				 (smtp_response[3] == '4' || smtp_response[3] == '3' || smtp_response[3] == '1'))
-				return SM_ERROR;
+		else if (smtp_response[0] == '5' &&
+			 smtp_response[1] == '0' &&
+			 (smtp_response[2] == '4' ||
+			  smtp_response[2] == '3' ||
+			  smtp_response[2] == '1'))
+			return SM_ERROR;
 	}
 
 	return SM_UNRECOVERABLE;

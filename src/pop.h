@@ -38,6 +38,8 @@ typedef enum {
 	POP3_GETRANGE_LAST_RECV,
 	POP3_GETRANGE_UIDL_SEND,
 	POP3_GETRANGE_UIDL_RECV,
+	POP3_GETSIZE_LIST_SEND,
+	POP3_GETSIZE_LIST_RECV,
 	POP3_RETR_SEND,
 	POP3_RETR_RECV,
 	POP3_DELETE_SEND,
@@ -86,6 +88,8 @@ gint pop3_getrange_last_send	(SockInfo *sock, gpointer data);
 gint pop3_getrange_last_recv	(SockInfo *sock, gpointer data);
 gint pop3_getrange_uidl_send	(SockInfo *sock, gpointer data);
 gint pop3_getrange_uidl_recv	(SockInfo *sock, gpointer data);
+gint pop3_getsize_list_send	(SockInfo *sock, gpointer data);
+gint pop3_getsize_list_recv	(SockInfo *sock, gpointer data);
 gint pop3_retr_send		(SockInfo *sock, gpointer data);
 gint pop3_retr_recv		(SockInfo *sock, gpointer data);
 gint pop3_delete_send		(SockInfo *sock, gpointer data);

@@ -1,3 +1,19 @@
+2001-04-27
+
+	* src/progressdialog.c: progress_dialog_create(): modified the
+	  size of dialog and made it stretchable.
+	* src/smtp.c
+	  src/esmtp.c: smtp_ok(), esmtp_ok(): fixed a bug that didn't
+	  process an error response correctly (thanks to Ohmasa).
+	* src/pop.[ch]: added pop3_getsize_list_send(),
+	  pop3_getsize_list_recv().
+	* src/recv.[ch]: added recv_set_ui_func() that makes recv_write()
+	  call the callback function for each sock_read().
+	* src/inc.h: in Pop3State, renamed bytes to total_bytes, and added
+	  cur_msg_bytes, cur_total_bytes, and sizes.
+	* src/inc.c: added inc_pop3_recv_func() that updates the progress
+	  bar for each sock_read().
+
 2001-04-26
 
 	* src/mh.c: mh_is_maildir_one(): modified so that it uses

@@ -887,7 +887,7 @@ static MsgInfo *mh_parse_msg(const gchar *file, FolderItem *item)
 
 static gboolean mh_is_maildir_one(const gchar *path, const gchar *dir)
 {
-	char *entry;
+	gchar *entry;
 	gboolean result;
 
 	entry = g_strconcat(path, G_DIR_SEPARATOR_S, dir, NULL);

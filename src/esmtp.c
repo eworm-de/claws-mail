@@ -156,9 +156,9 @@ gint esmtp_ok(SockInfo *sock)
 			return SM_ERROR;
 		else if (esmtp_response[0] == '5' &&
 			 esmtp_response[1] == '0' &&
-			 (esmtp_response[3] == '4' ||
-			  esmtp_response[3] == '3' ||
-			  esmtp_response[3] == '1'))
+			 (esmtp_response[2] == '4' ||
+			  esmtp_response[2] == '3' ||
+			  esmtp_response[2] == '1'))
 			return SM_ERROR;
 	}
 

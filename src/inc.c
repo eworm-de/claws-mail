@@ -97,6 +97,10 @@ static void inc_write_uidl_list		(Pop3State		*state);
 static gint connection_check_cb		(Automaton	*atm);
 #endif
 
+static void inc_pop3_recv_func		(SockInfo	*sock,
+					 gint		 read_len,
+					 gpointer	 data);
+
 static void inc_put_error		(IncState	 istate);
 
 static void inc_cancel			(GtkWidget	*widget,
@@ -320,6 +324,8 @@ static Pop3State *inc_pop3_state_new(PrefsAccount *account)
 static void inc_pop3_state_destroy(Pop3State *state)
 {
 	g_hash_table_destroy(state->folder_table);
+	g_free(state->sizes);
+
 	if (state->id_table) {
 		hash_free_strings(state->id_table);
 		g_hash_table_destroy(state->id_table);
@@ -452,7 +458,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	gchar *server;
 	gushort port;
 	gchar *buf;
-	AtmHandler handlers[] = {
+	static AtmHandler handlers[] = {
 		pop3_greeting_recv      ,
 		pop3_getauth_user_send  , pop3_getauth_user_recv,
 		pop3_getauth_pass_send  , pop3_getauth_pass_recv,
@@ -460,6 +466,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 		pop3_getrange_stat_send , pop3_getrange_stat_recv,
 		pop3_getrange_last_send , pop3_getrange_last_recv,
 		pop3_getrange_uidl_send , pop3_getrange_uidl_recv,
+		pop3_getsize_list_send  , pop3_getsize_list_recv,
 		pop3_retr_send          , pop3_retr_recv,
 		pop3_delete_send        , pop3_delete_recv,
 		pop3_logout_send        , pop3_logout_recv
@@ -522,6 +529,8 @@ static IncState inc_pop3_session_do(IncSession *session)
 	pop3_state->sockinfo = sockinfo;
 	atm->help_sock = sockinfo;
 
+	recv_set_ui_func(inc_pop3_recv_func, session);
+
 #if USE_THREADS
 	atm->timeout_tag = gtk_timeout_add
 		(TIMEOUT_ITV, (GtkFunction)connection_check_cb, atm);
@@ -532,6 +541,8 @@ static IncState inc_pop3_session_do(IncSession *session)
 #endif
 
 	gtk_main();
+
+	recv_set_ui_func(NULL, NULL);
 
 #if USE_THREADS
 	//pthread_join(sockinfo->connect_thr, NULL);
@@ -654,6 +665,27 @@ static gint connection_check_cb(Automaton *atm)
 }
 #endif
 
+static void inc_pop3_recv_func(SockInfo *sock, gint read_len, gpointer data)
+{
+	IncSession *session = (IncSession *)data;
+	Pop3State *state = session->pop3_state;
+	IncProgressDialog *inc_dialog = session->data;
+	ProgressDialog *dialog = inc_dialog->dialog;
+
+	state->cur_msg_bytes += read_len;
+
+	//g_snprintf(buf, sizeof(buf),
+	//	   _("Retrieving message (%d / %d)"),
+	//	   state->cur_msg, state->count);
+	//progress_dialog_set_label(dialog, buf);
+
+	progress_dialog_set_percentage
+		(dialog,
+		 (gfloat)(state->cur_total_bytes + state->cur_msg_bytes) /
+		 (gfloat)(state->total_bytes));
+	GTK_EVENTS_FLUSH();
+}
+
 void inc_progress_update(Pop3State *state, Pop3Phase phase)
 {
 	gchar buf[MSGBUFSIZE];
@@ -686,8 +718,12 @@ void inc_progress_update(Pop3State *state, Pop3Phase phase)
 			   _("Retrieving message (%d / %d)"),
 			   state->cur_msg, state->count);
 		progress_dialog_set_label(dialog, buf);
+		//progress_dialog_set_percentage
+		//	(dialog, (gfloat)state->cur_msg / state->count);
 		progress_dialog_set_percentage
-			(dialog, (gfloat)state->cur_msg / state->count);
+			(dialog,
+			 (gfloat)(state->cur_total_bytes) /
+			 (gfloat)(state->total_bytes));
 		break;
 	case POP3_DELETE_SEND:
 	case POP3_DELETE_RECV:
