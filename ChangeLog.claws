@@ -1,3 +1,10 @@
+2002-05-17 [melvin]	0.7.5claws30
+
+	* src/prefs_actions.c
+		Fixed bug where using %F not at the end of the command 
+		resulted in an additional empty argument being created.
+		Thanks to Darko Koruga for reporting the bug.
+
 2002-05-17 [melvin]	0.7.5claws29
 
 	* po/fr.po

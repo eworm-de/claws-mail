@@ -592,7 +592,8 @@ static gchar *parse_action_cmd		(gchar *action,
 					msg = gtk_ctree_node_get_row_data(ctree,
 					      GTK_CTREE_NODE(cur->data));
 					cmd = parse_append_filename(cmd, msg);
-					cmd = g_string_append_c(cmd, ' ');
+					if (cur->next)
+						cmd = g_string_append_c(cmd, ' ');
 				     }
 				     p++;
 				     break;
