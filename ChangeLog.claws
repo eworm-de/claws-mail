@@ -1,3 +1,14 @@
+2003-01-09 [christoph]	0.8.8claws71
+
+	* src/compose.c
+	* src/gtk/menu.[ch]
+		fix wrong selecting of mime encoding type, when
+		opening property dialog of attachments in the
+		compose window. 7bit was always selected and that
+		destoryed files with 8bit data.
+		(closes bug #9 Sylpheed-claws destroys attachments when
+		 changing MIME-types)
+
 2003-01-09 [paul]	0.8.8claws70
 
 	* sync with 0.8.8cvs3
@@ -24,7 +35,7 @@
 		name to be edited and remarks to be entered
 		Patch submitted by Luke Plant
 
-2003-01-08 [darko]
+2003-01-08 [darko]	0.8.8claws66
 
 	* README.claws, src/summaryview.c
 	  	fix description for marked messages

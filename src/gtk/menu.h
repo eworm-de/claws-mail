@@ -77,4 +77,7 @@ gint menu_find_option_menu_index(GtkOptionMenu		*optmenu,
 
 void menu_connect_identical_items(void);
 
+void menu_select_by_data	(GtkMenu 		*menu,
+				 gpointer		 data);
+
 #endif /* __MENU_H__ */

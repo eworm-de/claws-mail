@@ -306,6 +306,26 @@ void menu_connect_identical_items(void)
 	}
 }
 
-
-
+void menu_select_by_data(GtkMenu *menu, gpointer data)
+{
+	GList *children, *cur;
+	GtkWidget *select_item = NULL;
 	
+	g_return_if_fail(menu != NULL);
+
+	children = gtk_container_children(GTK_CONTAINER(menu));
+
+	for (cur = children; cur != NULL; cur = g_list_next(cur)) {
+		GtkObject *child = GTK_OBJECT(cur->data);
+
+		if (gtk_object_get_user_data(child) == data) {
+			select_item = GTK_WIDGET(child);
+		}
+	}
+	if (select_item != NULL) {
+		gtk_menu_shell_select_item(GTK_MENU_SHELL(menu), select_item);
+		gtk_menu_shell_activate_item(GTK_MENU_SHELL(menu), select_item, FALSE);
+	}
+
+	g_list_free(children);
+}

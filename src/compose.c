@@ -5305,9 +5305,11 @@ static void compose_attach_property(Compose *compose)
 
 	optmenu = GTK_OPTION_MENU(attach_prop.encoding_optmenu);
 	if (ainfo->encoding == ENC_UNKNOWN)
-		gtk_option_menu_set_history(optmenu, ENC_BASE64);
+		menu_select_by_data(gtk_option_menu_get_menu(optmenu),
+				    GINT_TO_POINTER(ENC_BASE64));
 	else
-		gtk_option_menu_set_history(optmenu, ainfo->encoding);
+		menu_select_by_data(gtk_option_menu_get_menu(optmenu),
+				    GINT_TO_POINTER(ainfo->encoding));
 
 	gtk_entry_set_text(GTK_ENTRY(attach_prop.mimetype_entry),
 			   ainfo->content_type ? ainfo->content_type : "");
