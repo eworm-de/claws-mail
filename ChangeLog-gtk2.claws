@@ -1,3 +1,8 @@
+2004-11-15 [colin]	0.9.12cvs146.10
+
+	* src/codeconv.c
+		More unreadable locale fixes
+
 2004-11-14 [colin]	0.9.12cvs146.9
 
 	* src/textview.c

@@ -577,10 +577,10 @@ void conv_unreadable_latin(gchar *str)
 void conv_unreadable_utf8(gchar *str)
 {
 	register guchar *p = str;
-printf("in %s\n", str);
+
 	while (*p != '\0') {
 		/* convert CR+LF -> LF */
-printf("p %x(%c) - %x\n",*p, *p, (*p & 0xff));
+
 		if (*p == '\r' && *(p + 1) == '\n')
 			memmove(p, p + 1, strlen(p));
 		else if (((*p & 0xff) >= 0x7f) 
@@ -588,7 +588,6 @@ printf("p %x(%c) - %x\n",*p, *p, (*p & 0xff));
 			*p = SUBST_CHAR;
 		p++;
 	}
-printf("out %s\n", str);
 }
 
 void conv_unreadable_locale(gchar *str)
@@ -1462,8 +1461,6 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 
 	memset(outbuf, 0, outlen);
 	
-#warning FIXME_GTK2
-/* Should we always ensure to convert? */
 	locale = conv_get_current_locale();
 
 	if (locale && !strncasecmp(locale, "ja", 2)) {
@@ -1475,17 +1472,21 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 		conv_anytodisp(buf, buflen, str);
 		unmime_header(outbuf, buf);
 	} else {
-		gchar *tmp;
+		gchar *tmp = NULL;
 		unmime_header(outbuf, str);
 		if (outbuf && !g_utf8_validate(outbuf, -1, NULL)) {
-			tmp = conv_codeset_strdup(outbuf,
+			if (strcmp(conv_get_current_charset_str(), CS_UTF_8))
+				tmp = conv_codeset_strdup(outbuf,
 					conv_get_current_charset_str(),
 					CS_UTF_8);
+
 			if (tmp) {
 				strncpy(outbuf, tmp, outlen-1);
 				g_free(tmp);
+			} else {
+				conv_localetodisp(outbuf, outlen, str);
 			}
-		}
+		} 
 	}
 }
 
