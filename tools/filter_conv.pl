@@ -27,7 +27,9 @@ close FOLDERLIST;
 foreach $folderlist (@folderlist) {
 	if ($folderlist =~ m/<folder type="mh"/) {
       		$folderlist =~ s/<folder type="mh" name="//;
-                $folderlist =~ s/" path="[A-Z0-9]+">\n//ig;
+                $folderlist =~ s/" path="[A-Z0-9]+"//ig;
+		$folderlist =~ s/ collapsed="1"//;
+		$folderlist =~ s/>\n//ig;
                 $folderlist =~ s/^ +//;
                 $mailbox = $folderlist;
         }
