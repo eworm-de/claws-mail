@@ -49,10 +49,11 @@ typedef enum
 	COL_DEFAULT	= 0,
 	COL_NAME	= 1,
 	COL_PROTOCOL	= 2,
-	COL_SERVER	= 3
+	COL_SERVER	= 3,
+        COL_GETALL      = 4
 } EditAccountColumnPos;
 
-# define N_EDIT_ACCOUNT_COLS	4
+# define N_EDIT_ACCOUNT_COLS	5
 
 #define PREFSBUFSIZE		1024
 
@@ -75,6 +76,8 @@ static void account_up			(void);
 static void account_down		(void);
 
 static void account_set_default		(void);
+
+static void account_set_recv_at_get_all	(void);
 
 static void account_edit_close		(void);
 static gint account_delete_event	(GtkWidget	*widget,
@@ -266,6 +269,9 @@ void account_add(void)
 	if (ac_prefs->is_default)
 		account_set_as_default(ac_prefs);
 
+	if (ac_prefs->recv_at_getall)
+		account_set_as_recv_at_get_all(ac_prefs);
+
 	account_clist_set();
 
 	if (ac_prefs->protocol == A_IMAP4 || ac_prefs->protocol == A_NNTP) {
@@ -315,6 +321,24 @@ PrefsAccount *account_get_default(void)
 
 	return NULL;
 }
+
+void account_set_as_recv_at_get_all(PrefsAccount *ac_prefs)
+{
+	PrefsAccount *ap;
+	GList *cur;
+
+	for (cur = account_list; cur != NULL; cur = cur->next) {
+ 		ap = (PrefsAccount *)cur->data;
+ 		if (ap->account_name == ac_prefs->account_name) {
+			if (ap->recv_at_getall == 0)
+				ap->recv_at_getall = 1;
+			else
+				ap->recv_at_getall = 0;
+		}
+        }
+
+}
+
 
 void account_set_missing_folder(void)
 {
@@ -382,6 +406,8 @@ static void account_edit_create(void)
 
 	GtkWidget *default_btn;
 
+        GtkWidget *recvatgetall_btn;
+
 	GtkWidget *hbbox;
 	GtkWidget *close_btn;
 
@@ -421,6 +447,7 @@ static void account_edit_create(void)
 	titles[COL_NAME]     = _("Name");
 	titles[COL_PROTOCOL] = _("Protocol");
 	titles[COL_SERVER]   = _("Server");
+        titles[COL_GETALL]   = _("Get all");
 
 	clist = gtk_clist_new_with_titles (N_EDIT_ACCOUNT_COLS, titles);
 	gtk_widget_show (clist);
@@ -429,6 +456,7 @@ static void account_edit_create(void)
 	gtk_clist_set_column_width (GTK_CLIST(clist), COL_NAME    , 100);
 	gtk_clist_set_column_width (GTK_CLIST(clist), COL_PROTOCOL, 70);
 	gtk_clist_set_column_width (GTK_CLIST(clist), COL_SERVER  , 100);
+	gtk_clist_set_column_width (GTK_CLIST(clist), COL_GETALL  , 20);
 	gtk_clist_set_selection_mode (GTK_CLIST(clist), GTK_SELECTION_BROWSE);
 
 	for (i = 0; i < N_EDIT_ACCOUNT_COLS; i++)
@@ -486,7 +514,13 @@ static void account_edit_create(void)
 	gtk_signal_connect (GTK_OBJECT(default_btn), "clicked",
 			    GTK_SIGNAL_FUNC (account_set_default), NULL);
 
-	gtkut_button_set_create(&hbbox, &close_btn, _("Close"),
+	recvatgetall_btn = gtk_button_new_with_label (_(" Enable/Disable 'Receive at Get all' "));
+	gtk_widget_show (recvatgetall_btn);
+	gtk_box_pack_start (GTK_BOX (vbox2), recvatgetall_btn, TRUE, FALSE, 0);
+	gtk_signal_connect (GTK_OBJECT(recvatgetall_btn), "clicked",
+			    GTK_SIGNAL_FUNC (account_set_recv_at_get_all), NULL);
+
+        gtkut_button_set_create(&hbbox, &close_btn, _("Close"),
 				NULL, NULL, NULL, NULL);
 	gtk_widget_show(hbbox);
 	gtk_box_pack_end (GTK_BOX (hbox), hbbox, FALSE, FALSE, 0);
@@ -601,6 +635,20 @@ static void account_set_default(void)
 	main_window_reflect_prefs_all();
 }
 
+static void account_set_recv_at_get_all(void)
+{
+	GtkCList *clist = GTK_CLIST(edit_account.clist);
+	gint row;
+	PrefsAccount *ac_prefs;
+
+	if (!clist->selection) return;
+
+	row = GPOINTER_TO_INT(clist->selection->data);
+	ac_prefs = gtk_clist_get_row_data(clist, row);
+	account_set_as_recv_at_get_all(ac_prefs);
+	account_clist_set();
+}
+
 static void account_edit_close(void)
 {
 	account_list_set();
@@ -665,6 +713,15 @@ static gint account_clist_set_row(PrefsAccount *ac_prefs, gint row)
 	text[COL_SERVER] = ac_prefs->protocol == A_NNTP
 		? ac_prefs->nntp_server : ac_prefs->recv_server;
 
+  	if (!ac_prefs->protocol == A_POP3) {
+	text[COL_GETALL] = ac_prefs->recv_at_getall == 1  ? _("No")  :
+	                   ac_prefs->recv_at_getall == 0  ? _("No")   : "";
+        }
+        else {
+	text[COL_GETALL] = ac_prefs->recv_at_getall == 1  ? _("Yes")  :
+	                   ac_prefs->recv_at_getall == 0  ? _("No")   : "";
+	}
+
 	if (row < 0)
 		row = gtk_clist_append(clist, text);
 	else {
@@ -672,6 +729,7 @@ static gint account_clist_set_row(PrefsAccount *ac_prefs, gint row)
 		gtk_clist_set_text(clist, row, COL_NAME, text[COL_NAME]);
 		gtk_clist_set_text(clist, row, COL_PROTOCOL, text[COL_PROTOCOL]);
 		gtk_clist_set_text(clist, row, COL_SERVER, text[COL_SERVER]);
+		gtk_clist_set_text(clist, row, COL_GETALL, text[COL_GETALL]);
 	}
 
 	gtk_clist_set_row_data(clist, row, ac_prefs);
