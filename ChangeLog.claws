@@ -1,7 +1,7 @@
 2001-10-18 [hoa]        0.6.3claws27
 
 	* src/grouplistdialog.[c]
-		bugfix when we refresh was clicked
+		bugfix when we refresh was clicked (bug 472701)
 
 2001-10-19 [christoph]	0.6.3claws26
 
@@ -24,7 +24,7 @@
 
 	* src/folderview.c
 	* src/grouplistdialog.[ch]
-		enhanced news subscription interface
+		enhanced news subscription interface (feature 469113)
 
 	* src/news.c
 	* src/news.h
