@@ -1,3 +1,9 @@
+2004-01-15 [alfons]	0.9.8claws31
+	
+	* src/summaryview.c
+		keep MSG_REPLIED and MSG_FORWARDED even when marking a
+		message as read
+
 2004-01-12 [christoph]	0.9.8claws30
 
 	* src/procmime.c

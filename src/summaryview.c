@@ -2958,7 +2958,6 @@ static void summary_mark_row_as_unread(SummaryView *summaryview,
 	&& procmsg_msg_has_marked_parent(msginfo))
 		summaryview->unreadmarked++;
 
-	procmsg_msginfo_unset_flags(msginfo, MSG_REPLIED | MSG_FORWARDED, 0);
 	procmsg_msginfo_set_flags(msginfo, MSG_UNREAD, 0);
 	debug_print("Message %d is marked as unread\n",
 		msginfo->msgnum);
