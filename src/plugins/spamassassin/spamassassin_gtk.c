@@ -75,6 +75,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page, GtkWindow *window
 	GtkWidget *label8;
 	GtkWidget *label9;
 	GtkWidget *hbox1;
+	GtkWidget *hbox2;
 	GtkWidget *hostname;
 	GtkWidget *label5;
 	GtkObject *port_adj;
@@ -107,28 +108,6 @@ static void spamassassin_create_widget_func(PrefsPage * _page, GtkWindow *window
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label4), 0, 0.5);
 
-	label6 = gtk_label_new(_("Maximum Message Size"));
-	gtk_widget_show(label6);
-	gtk_table_attach(GTK_TABLE(table1), label6, 0, 1, 2, 3,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label6), 0, 0.5);
-
-	label8 = gtk_label_new(_("Folder for saved Spam"));
-	gtk_widget_show(label8);
-	gtk_table_attach(GTK_TABLE(table1), label8, 0, 1, 4, 5,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-	gtk_label_set_justify(GTK_LABEL(label8), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment(GTK_MISC(label8), 0, 0.5);
-
-	label9 = gtk_label_new(_("Receive Spam"));
-	gtk_widget_show(label9);
-	gtk_table_attach(GTK_TABLE(table1), label9, 0, 1, 3, 4,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label9), 0, 0.5);
-
 	hbox1 = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(hbox1);
 	gtk_table_attach(GTK_TABLE(table1), hbox1, 1, 2, 1, 2,
@@ -150,6 +129,43 @@ static void spamassassin_create_widget_func(PrefsPage * _page, GtkWindow *window
 	gtk_widget_show(port);
 	gtk_box_pack_start(GTK_BOX(hbox1), port, FALSE, TRUE, 0);
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(port), TRUE);
+
+	label6 = gtk_label_new(_("Maximum Message Size"));
+	gtk_widget_show(label6);
+	gtk_table_attach(GTK_TABLE(table1), label6, 0, 1, 2, 3,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+	gtk_misc_set_alignment(GTK_MISC(label6), 0, 0.5);
+
+  	hbox2 = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hbox2);
+  	gtk_table_attach (GTK_TABLE (table1), hbox2, 1, 2, 2, 3,
+                    	  (GtkAttachOptions) (GTK_FILL),
+                    	  (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+  	max_size_adj = gtk_adjustment_new (250, 0, 10000, 10, 10, 10);
+  	max_size = gtk_spin_button_new (GTK_ADJUSTMENT (max_size_adj), 1, 0);
+	gtk_widget_show (max_size);
+  	gtk_box_pack_start (GTK_BOX (hbox2), max_size, FALSE, FALSE, 0);
+
+  	label11 = gtk_label_new ("kB");
+	gtk_widget_show (label11);
+  	gtk_box_pack_start (GTK_BOX (hbox2), label11, FALSE, FALSE, 0);
+
+	label8 = gtk_label_new(_("Folder for saved Spam"));
+	gtk_widget_show(label8);
+	gtk_table_attach(GTK_TABLE(table1), label8, 0, 1, 4, 5,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+	gtk_label_set_justify(GTK_LABEL(label8), GTK_JUSTIFY_LEFT);
+	gtk_misc_set_alignment(GTK_MISC(label8), 0, 0.5);
+
+	label9 = gtk_label_new(_("Receive Spam"));
+	gtk_widget_show(label9);
+	gtk_table_attach(GTK_TABLE(table1), label9, 0, 1, 3, 4,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+	gtk_misc_set_alignment(GTK_MISC(label9), 0, 0.5);
 
 	enable = gtk_check_button_new_with_label("");
 	gtk_widget_show(enable);
@@ -173,13 +189,6 @@ static void spamassassin_create_widget_func(PrefsPage * _page, GtkWindow *window
 	gtk_label_set_justify(GTK_LABEL(label10), GTK_JUSTIFY_RIGHT);
 	gtk_misc_set_alignment(GTK_MISC(label10), 1, 0.5);
 
-	max_size_adj = gtk_adjustment_new(250, 0, 10000, 10, 10, 10);
-	max_size = gtk_spin_button_new(GTK_ADJUSTMENT(max_size_adj), 1, 0);
-	gtk_widget_show(max_size);
-	gtk_table_attach(GTK_TABLE(table1), max_size, 1, 2, 2, 3,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-
 	save_folder = gtk_entry_new();
 	gtk_widget_show(save_folder);
 	gtk_table_attach(GTK_TABLE(table1), save_folder, 1, 2, 4, 5,
@@ -191,13 +200,6 @@ static void spamassassin_create_widget_func(PrefsPage * _page, GtkWindow *window
 	gtk_table_attach(GTK_TABLE(table1), button4, 2, 3, 4, 5,
 			 (GtkAttachOptions) (GTK_SHRINK | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
-
-	label11 = gtk_label_new(_("kB"));
-	gtk_widget_show(label11);
-	gtk_table_attach(GTK_TABLE(table1), label11, 2, 3, 2, 3,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label11), 0, 0.5);
 	/* --------------------------------------------------------- */
 
 	config = spamassassin_get_config();
