@@ -1,3 +1,13 @@
+2003-10-13 [paul]	0.9.6claws19
+
+	* src/compose.c
+		when using 'Reply to all' include the 'send replies
+		to' folder property
+		
+	* po/ja.po
+		update Japanese translation. submitted by Rui Hirokawa 
+		<rui_hirokawa@ybb.ne.jp>	
+
 2003-10-13 [hoa]	0.9.6claws18
 
 	* src/account.c

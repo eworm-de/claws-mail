@@ -1854,6 +1854,10 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 
 	if (replyto && from)
 		cc_list = address_list_append_with_comments(cc_list, from);
+	if (to_all && msginfo->folder && 
+	    msginfo->folder->prefs->enable_default_reply_to)
+	    	cc_list = address_list_append_with_comments(cc_list,
+				msginfo->folder->prefs->default_reply_to);
 	cc_list = address_list_append_with_comments(cc_list, msginfo->to);
 	cc_list = address_list_append_with_comments(cc_list, compose->cc);
 
