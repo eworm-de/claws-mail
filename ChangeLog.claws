@@ -1,4 +1,12 @@
-2002-04-05 [paul]	0.7.4claws65
+2002-04-06 [paul]	0.7.4claws67
+
+	* tools/filter_conv.pl
+		modify to be able to find the name of the first
+		mailbox and use that. main's filter does not
+		record the full path to the mailbox and therefore
+		can only filter to the first mailbox.
+
+2002-04-05 [paul]	0.7.4claws66
 
 	* tools/filter_conv.pl
 		attempt to make the script all-encompassing and
