@@ -34,6 +34,7 @@
 #include "main.h"
 #include "headerwindow.h"
 #include "mainwindow.h"
+#include "prefs_common.h"
 #include "procheader.h"
 #include "procmsg.h"
 #include "codeconv.h"
