@@ -1,3 +1,18 @@
+2002-09-24
+
+	* src/addr_compl.c:
+	  replace_address_in_edit(): check if newtext is NULL.
+	  completion_window_button_press(): fixed a memory leak.
+	* src/pop.c: LOOKUP_NEXT_MSG(): don't expire messages whose
+	  recv_time is RECV_TIME_KEEP.
+	  pop3_getrange_uidl_recv(): only set get_all flag if
+	  ac_prefs->getall is set.
+	  pop3_retr_recv(): don't delete messages which are not received
+	  by filter, and set recv_time to RECV_TIME_KEEP in the case.
+	* src/pop.h: added an enum RecvTime.
+	* src/inc.c: inc_drop_message(): unlink temporary message file if
+	  not received by filter.
+
 2002-09-20
 
 	* src/mainwindow.c: added 'Edit/Select thread' menu.

@@ -65,6 +65,12 @@ typedef enum {
 	N_POP3_PHASE
 } Pop3Phase;
 
+typedef enum {
+	RECV_TIME_NONE     = 0,
+	RECV_TIME_RECEIVED = 1,
+	RECV_TIME_KEEP     = 2
+} RecvTime;
+
 struct _Pop3MsgInfo
 {
 	gint size;
