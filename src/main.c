@@ -367,7 +367,7 @@ int main(int argc, char *argv[])
 
 	prefs_toolbar_init();
 
-	plugin_load_all("GTK");
+	plugin_load_all("GTK2");
 	
 	static_mainwindow = mainwin;
 	gtk_main();
@@ -431,7 +431,7 @@ static void exit_sylpheed(MainWindow *mainwin)
 
 	main_window_destroy(mainwin);
 	
-	plugin_unload_all("GTK");
+	plugin_unload_all("GTK2");
 
 	prefs_toolbar_done();
 

@@ -171,5 +171,5 @@ const gchar *plugin_desc(void)
 
 const gchar *plugin_type(void)
 {
-	return "GTK";
+	return "GTK2";
 }
