@@ -43,6 +43,7 @@
 #include "utils.h"
 #include "news.h"
 #include "folder.h"
+#include "alertpanel.h"
 
 #define GROUPLIST_DIALOG_WIDTH	420
 #define GROUPLIST_DIALOG_HEIGHT	400

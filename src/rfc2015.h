@@ -26,6 +26,7 @@
 #include "procmime.h"
 #include "prefs_account.h"
 
+void rfc2015_disable_all (void);
 void rfc2015_secure_remove (const char *fname);
 MimeInfo * rfc2015_find_signature (MimeInfo *mimeinfo);
 gboolean rfc2015_has_signature (MimeInfo *mimeinfo);

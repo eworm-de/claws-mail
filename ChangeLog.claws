@@ -1,3 +1,15 @@
+2001-05-12 [sergey]
+
+	* src/matcher.c, src/scoring.c: changed "#ifdef 0" to "#if 0" for
+	some picky compilers.
+	* src/rfc2015.h: provide prototype for rfc2015_disable_all().
+	* src/grouplist_dialog.c: include alertpanel.h.
+	* src/prefs_headers.c (prefs_headers_deleted): added GTK_BUTTON to
+	fix compile warning.
+	* src/scoring.c, src/prefs_folder_item.c, src/matcher.c: brought
+	#include "defs.h" before others to prevent the warning of `MIN'
+	and `MAX' redefinition.
+
 2001-05-11 [hoa]
 
 	* src/main.c

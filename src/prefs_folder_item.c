@@ -1,8 +1,8 @@
+#include "defs.h"
 #include "folder.h"
 #include "prefs_folder_item.h"
 #include "summaryview.h"
 #include "prefs.h"
-#include "defs.h"
 
 PrefsFolderItem tmp_prefs;
 

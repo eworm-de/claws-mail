@@ -3,9 +3,9 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <stdio.h>
+#include "defs.h"
 #include "intl.h"
 #include "utils.h"
-#include "defs.h"
 #include "procheader.h"
 #include "matcher.h"
 #include "scoring.h"
@@ -104,7 +104,7 @@ gint score_message(GSList * scoring_list, MsgInfo * info)
 	return score;
 }
 
-#ifdef 0
+#if 0
 static void scoringprop_print(ScoringProp * prop)
 {
 	GSList * l;

@@ -669,6 +669,6 @@ static void prefs_headers_cancel(GtkButton *button)
 static gint prefs_headers_deleted(GtkWidget *widget, GdkEventAny *event,
 				  gpointer data)
 {
-	prefs_headers_cancel(widget);
+	prefs_headers_cancel(GTK_BUTTON(widget));
 	return TRUE;
 }

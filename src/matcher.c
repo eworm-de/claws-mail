@@ -2,8 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
-#include "utils.h"
 #include "defs.h"
+#include "utils.h"
 #include "procheader.h"
 #include "matcher.h"
 
@@ -934,7 +934,7 @@ gboolean matcherlist_match(MatcherList * matchers, MsgInfo * info)
 	return result;
 }
 
-#ifdef 0
+#if 0
 static void matcherprop_print(MatcherProp * matcher)
 {
   int i;
