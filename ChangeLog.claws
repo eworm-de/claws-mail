@@ -1,3 +1,11 @@
+2004-09-29 [paul]	0.9.12cvs113
+
+	* src/quote_fmt_parse.y
+		In the quotation templates recognise sender's first and last 
+		names (%F %L) when the name is in the format "Duck, Donald".
+		Patch submitted by Thomas Gilgin, <thomas_gilgin@users.sourceforge.net>
+
+
 2004-09-28 [colin]	0.9.12cvs112
 
 	* src/mainwindow.c
