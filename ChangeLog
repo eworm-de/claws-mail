@@ -1,3 +1,16 @@
+2001-10-02
+
+	* src/summaryview.[ch]: implemented new locking mechanism, and
+	  replaced every static locks with summary_lock(), summary_unlock(),
+	  and added locks to some extra functions.
+	  This fixes a bug that caused segfault when 'd' (delete) key
+	  was kept pressing.
+
+2001-10-01
+
+	* src/addressbook.c: addressbook_folder_load_person(): fixed a bug
+	  that caused segfault (thanks to Stefaan A Eeckels).
+
 2001-09-30
 
 	* src/textview.[ch]: added textview_set_position().
@@ -24,6 +37,12 @@
 	  imap_status(), imap_cmd_login(), imap_cmd_list(),
 	  imap_cmd_do_select(), imap_cmd_create(), imap_cmd_delete(),
 	  imap_cmd_copy(): use QUOTE_IF_REQUIRED().
+	* compose.c: compose_write_to_file(): workaround for the problem
+	  when using libjconv and 8bit codes cannot be converted on C
+	  locale.
+	* codeconv.[ch]: added "ANSI_X3.4-1968" to encoding strings.
+	  conv_codeset_strdup(): don't convert if source and destination
+	  codeset are identical.
 
 2001-09-30
 

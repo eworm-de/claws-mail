@@ -2009,7 +2009,7 @@ static void addressbook_folder_load_person( GtkCTree *clist, ItemFolder *itemFol
 			text[COL_ADDRESS] = email->address;
 			text[COL_REMARKS] = email->remarks;
 			eMailAddr = ADDRITEM_NAME(email);
-			if( *eMailAddr == '\0' ) eMailAddr = NULL;
+			if( eMailAddr && *eMailAddr == '\0' ) eMailAddr = NULL;
 			if( flgFirst ) {
 				/* First email belongs with person */
 				gchar *str = addressbook_format_item_clist( person, email );

@@ -26,9 +26,14 @@
 /* alfons - hashed string table (I wasn't content with GStringChunk; 
  * can't recall why :-) */
 
+#if 0
 #define XXX_DEBUG \
-	debug_print  
- 
+	debug_print
+#else
+#define XXX_DEBUG \
+	if (0) debug_print
+#endif
+
 typedef struct StringEntry_ {
 	gint	ref_count;
 	gchar  *string;

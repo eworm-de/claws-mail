@@ -111,6 +111,8 @@ struct _SummaryView
 	GdkColor color_marked;
 	GdkColor color_dim;
 
+	guint lock_count;
+
 	MainWindow   *mainwin;
 	FolderView   *folderview;
 	HeaderView   *headerview;
@@ -161,6 +163,10 @@ gboolean summary_show		  (SummaryView		*summaryview,
 void summary_clear_list		  (SummaryView		*summaryview);
 void summary_clear_all		  (SummaryView		*summaryview);
 
+void summary_lock		  (SummaryView		*summaryview);
+void summary_unlock		  (SummaryView		*summaryview);
+gboolean summary_is_locked	  (SummaryView		*summaryview);
+
 SummarySelection summary_get_selection_type	(SummaryView	*summaryview);
 
 void summary_select_prev_unread	  (SummaryView		*summaryview);
@@ -184,7 +190,7 @@ void summary_sort		  (SummaryView		*summaryview,
 
 void summary_delete		  (SummaryView		*summaryview);
 void summary_delete_duplicated	  (SummaryView		*summaryview);
-void summary_execute		  (SummaryView		*summaryview);
+gboolean summary_execute	  (SummaryView		*summaryview);
 void summary_attract_by_subject	  (SummaryView		*summaryview);
 gint summary_write_cache	  (SummaryView		*summaryview);
 void summary_pass_key_press_event (SummaryView		*summaryview,

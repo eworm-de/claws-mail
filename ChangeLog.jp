@@ -1,3 +1,16 @@
+2001-10-02
+
+	* src/summaryview.[ch]: 新たなロック機構を実装し、全ての静的な
+	  ロックを summary_lock(), summary_unlock() で置き換え、いくつか
+	  の関数にさらにロックを追加した。
+	  これにより 'd' (削除) キーを押しっぱなしにしたときに segfault を
+	  起こすバグを修正。
+
+2001-10-01
+
+	* src/addressbook.c: addressbook_folder_load_person(): segfault を
+	  起こすバグを修正(Stefaan A Eeckels さん thanks)。
+
 2001-09-30
 
 	* src/textview.[ch]: textview_set_position() を追加。
@@ -24,6 +37,11 @@
 	  imap_status(), imap_cmd_login(), imap_cmd_list(),
 	  imap_cmd_do_select(), imap_cmd_create(), imap_cmd_delete(),
 	  imap_cmd_copy(): QUOTE_IF_REQUIRED() を使用。
+	* compose.c: compose_write_to_file(): libjconv 使用時に C locale
+	  で 8bit コードが変換できない問題に対処。
+	* codeconv.[ch]: エンコーディング文字列に "ANSI_X3.4-1968" を追加。
+	  conv_codeset_strdup(): 変換元と変換先のコードセットが同一の
+	  場合は変換しないようにした。
 
 2001-09-30
 

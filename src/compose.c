@@ -2421,10 +2421,12 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 		if (!strcasecmp(out_codeset, "US-ASCII"))
 			out_codeset = "ISO-8859-1";
 		encoding = procmime_get_encoding_for_charset(out_codeset);
-		debug_print("charset = %s, encoding = %s\n",
-			    out_codeset, procmime_get_encoding_str(encoding));
-
 		src_codeset = conv_get_current_charset_str();
+		if (!strcasecmp(src_codeset, "US-ASCII"))
+			src_codeset = "ISO-8859-1";
+		debug_print("src encoding = %s, out encoding = %s, transfer encoding = %s\n",
+			    src_codeset, out_codeset, procmime_get_encoding_str(encoding));
+
 		buf = conv_codeset_strdup(chars, src_codeset, out_codeset);
 		if (!buf) {
 			g_free(chars);

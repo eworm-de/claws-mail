@@ -277,6 +277,9 @@ static void summary_col_resized		(GtkCList		*clist,
 static void summary_reply_cb		(SummaryView		*summaryview,
 					 guint			 action,
 					 GtkWidget		*widget);
+static void summary_execute_cb		(SummaryView		*summaryview,
+					 guint			 action,
+					 GtkWidget		*widget);
 static void summary_show_all_header_cb	(SummaryView		*summaryview,
 					 guint			 action,
 					 GtkWidget		*widget);
@@ -372,7 +375,7 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/M_ove..."),		NULL, summary_move_to,	0, NULL},
 	{N_("/_Copy..."),		NULL, summary_copy_to,	0, NULL},
 	{N_("/_Delete"),		NULL, summary_delete,	0, NULL},
-	{N_("/E_xecute"),		NULL, summary_execute,	0, NULL},
+	{N_("/E_xecute"),		NULL, summary_execute_cb,	0, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_Mark"),			NULL, NULL,		0, "<Branch>"},
 	{N_("/_Mark/_Mark"),		NULL, summary_mark,	0, NULL},
@@ -386,8 +389,8 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/Color la_bel"),		NULL, NULL, 		0, NULL},
 
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
-	{N_("/Add sender to address _book"),
-					NULL, summary_add_address_cb,		0, NULL},
+	{N_("/Add sender to address boo_k"),
+					NULL, summary_add_address_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_View"),			NULL, NULL,		0, "<Branch>"},
 	{N_("/_View/Open in new _window"),
@@ -591,6 +594,7 @@ SummaryView *summary_create(void)
 	summaryview->popupmenu = popupmenu;
 	summaryview->popupfactory = popupfactory;
 	summaryview->msg_is_toggled_on = TRUE;
+	summaryview->lock_count = 0;
 	summaryview->sort_mode = SORT_BY_NONE;
 	summaryview->sort_type = GTK_SORT_ASCENDING;
 
@@ -749,11 +753,10 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	gint sort_type;
         static gboolean locked = FALSE;
 
-	if (locked)
-		return FALSE;
+	if (summary_is_locked(summaryview)) return FALSE;
 
 	inc_lock();
-	locked = TRUE;
+	summary_lock(summaryview);
 
 	STATUSBAR_POP(summaryview->mainwin);
 
@@ -780,9 +783,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 		else if (G_ALERTALTERNATE == val)
 			summary_write_cache(summaryview);
 		else {
-			locked = FALSE;
+			summary_unlock(summaryview);
 			inc_unlock();
-                        return FALSE;
+			return FALSE;
 		}
    		folder_update_op_count();
 	}
@@ -813,7 +816,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 		summary_clear_all(summaryview);
 		summaryview->folder_item = item;
 		gtk_clist_thaw(GTK_CLIST(ctree));
-		locked = FALSE;
+		summary_unlock(summaryview);
 		inc_unlock();
 		return TRUE;
 	}
@@ -935,7 +938,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	STATUSBAR_PUSH(summaryview->mainwin, _("Done."));
 
 	main_window_cursor_normal(summaryview->mainwin);
-	locked = FALSE;
+	summary_unlock(summaryview);
 	inc_unlock();
 
 	return TRUE;
@@ -1000,6 +1003,22 @@ void summary_clear_all(SummaryView *summaryview)
 	summary_set_menu_sensitive(summaryview);
 	main_window_set_toolbar_sensitive(summaryview->mainwin);
 	summary_status_show(summaryview);
+}
+
+void summary_lock(SummaryView *summaryview)
+{
+	summaryview->lock_count++;
+}
+
+void summary_unlock(SummaryView *summaryview)
+{
+	if (summaryview->lock_count)
+		summaryview->lock_count--;
+}
+
+gboolean summary_is_locked(SummaryView *summaryview)
+{
+	return summaryview->lock_count > 0;
 }
 
 SummarySelection summary_get_selection_type(SummaryView *summaryview)
@@ -2184,13 +2203,12 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 	gchar *filename;
-	static gboolean lock = FALSE;
 
 	if (!new_window && summaryview->displayed == row) return;
 	g_return_if_fail(row != NULL);
 
-	if (lock) return;
-	lock = TRUE;
+	if (summary_is_locked(summaryview)) return;
+	summary_lock(summaryview);
 
 	STATUSBAR_POP(summaryview->mainwin);
 	GTK_EVENTS_FLUSH();
@@ -2199,7 +2217,7 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 
 	filename = procmsg_get_message_file(msginfo);
 	if (!filename) {
-		lock = FALSE;
+		summary_unlock(summaryview);
 		return;
 	}
 	g_free(filename);
@@ -2241,7 +2259,7 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 	if (GTK_WIDGET_VISIBLE(summaryview->headerwin->window))
 		header_window_show(summaryview->headerwin, msginfo);
 
-	lock = FALSE;
+	summary_unlock(summaryview);
 }
 
 void summary_redisplay_msg(SummaryView *summaryview)
@@ -2676,6 +2694,8 @@ void summary_delete(SummaryView *summaryview)
 	if (!summaryview->folder_item ||
 	    summaryview->folder_item->folder->type == F_NEWS) return;
 
+	if (summary_is_locked(summaryview)) return;
+
 	/* if current folder is trash, don't delete */
 	if (summaryview->folder_item->stype == F_TRASH) {
 		alertpanel_notice(_("Current folder is Trash."));
@@ -2830,6 +2850,9 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 	if (!to_folder) return;
 	if (!summaryview->folder_item ||
 	    summaryview->folder_item->folder->type == F_NEWS) return;
+
+	if (summary_is_locked(summaryview)) return;
+
 	if (summaryview->folder_item == to_folder) {
 		alertpanel_notice(_("Destination is same as current folder."));
 		return;
@@ -2916,6 +2939,9 @@ void summary_copy_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 	if (!to_folder) return;
 	if (!summaryview->folder_item ||
 	    summaryview->folder_item->folder->type == F_NEWS) return;
+
+	if (summary_is_locked(summaryview)) return;
+
 	if (summaryview->folder_item == to_folder) {
 		alertpanel_notice
 			(_("Destination to copy is same as current folder."));
@@ -3044,14 +3070,17 @@ void summary_print(SummaryView *summaryview)
 	g_free(cmdline);
 }
 
-void summary_execute(SummaryView *summaryview)
+gboolean summary_execute(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
 	GtkCTreeNode *node, *next;
 
 	if (!summaryview->folder_item ||
-	    summaryview->folder_item->folder->type == F_NEWS) return;
+	    summaryview->folder_item->folder->type == F_NEWS) return FALSE;
+
+	if (summary_is_locked(summaryview)) return FALSE;
+	summary_lock(summaryview);
 
 	gtk_clist_freeze(clist);
 
@@ -3099,6 +3128,9 @@ void summary_execute(SummaryView *summaryview)
 	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
 
 	gtk_clist_thaw(clist);
+
+	summary_unlock(summaryview);
+	return TRUE;
 }
 
 static void summary_execute_move(SummaryView *summaryview)
@@ -3269,6 +3301,8 @@ void summary_thread_build(SummaryView *summaryview, gboolean init)
 	GtkCTreeNode *parent;
 	MsgInfo *msginfo;
 
+	summary_lock(summaryview);
+
 	debug_print(_("Building threads..."));
 	STATUSBAR_PUSH(summaryview->mainwin, _("Building threads..."));
 	main_window_cursor_wait(summaryview->mainwin);
@@ -3345,6 +3379,8 @@ void summary_thread_build(SummaryView *summaryview, gboolean init)
 	debug_print(_("done.\n"));
 	STATUSBAR_POP(summaryview->mainwin);
 	main_window_cursor_normal(summaryview->mainwin);
+
+	summary_unlock(summaryview);
 }
 
 void summary_unthread(SummaryView *summaryview)
@@ -3354,6 +3390,8 @@ void summary_unthread(SummaryView *summaryview)
 	GtkCTreeNode *child;
 	GtkCTreeNode *sibling;
 	GtkCTreeNode *next_child;
+
+	summary_lock(summaryview);
 
 	debug_print(_("Unthreading..."));
 	STATUSBAR_PUSH(summaryview->mainwin, _("Unthreading..."));
@@ -3382,12 +3420,16 @@ void summary_unthread(SummaryView *summaryview)
 	debug_print(_("done.\n"));
 	STATUSBAR_POP(summaryview->mainwin);
 	main_window_cursor_normal(summaryview->mainwin);
+
+	summary_unlock(summaryview);
 }
 
 static void summary_unthread_for_exec(SummaryView *summaryview)
 {
 	GtkCTreeNode *node;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+
+	summary_lock(summaryview);
 
 	debug_print(_("Unthreading for execution..."));
 
@@ -3401,6 +3443,8 @@ static void summary_unthread_for_exec(SummaryView *summaryview)
 	gtk_clist_thaw(GTK_CLIST(ctree));
 
 	debug_print(_("done.\n"));
+
+	summary_unlock(summaryview);
 }
 
 static void summary_unthread_for_exec_func(GtkCTree *ctree, GtkCTreeNode *node,
@@ -3438,6 +3482,8 @@ static void summary_unthread_for_exec_func(GtkCTree *ctree, GtkCTreeNode *node,
 void summary_filter(SummaryView *summaryview)
 {
 	if (!prefs_common.fltlist) return;
+
+	summary_lock(summaryview);
 
 	debug_print(_("filtering..."));
 	STATUSBAR_PUSH(summaryview->mainwin, _("Filtering..."));
@@ -3478,6 +3524,8 @@ void summary_filter(SummaryView *summaryview)
 	debug_print(_("done.\n"));
 	STATUSBAR_POP(summaryview->mainwin);
 	main_window_cursor_normal(summaryview->mainwin);
+
+	summary_unlock(summaryview);
 }
 
 static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
@@ -3650,7 +3698,6 @@ static void summary_colorlabel_menu_create(SummaryView *summaryview)
 	gtk_signal_connect(GTK_OBJECT(label_menuitem), "activate",
 			   GTK_SIGNAL_FUNC(summary_colorlabel_menu_item_activate_item_cb),
 			   summaryview);
-
 	gtk_widget_show(label_menuitem);
 
 	menu = gtk_menu_new();
@@ -4099,6 +4146,12 @@ static void summary_reply_cb(SummaryView *summaryview, guint action,
 	}
 
 	summary_set_marks_selected(summaryview);
+}
+
+static void summary_execute_cb(SummaryView *summaryview, guint action,
+			       GtkWidget *widget)
+{
+	summary_execute(summaryview);
 }
 
 static void summary_show_all_header_cb(SummaryView *summaryview,

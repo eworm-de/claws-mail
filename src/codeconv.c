@@ -351,6 +351,11 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 		}
 	}
 
+	/* don't convert if src and dest codeset are identical */
+	if (src_codeset && dest_codeset &&
+	    !strcasecmp(src_codeset, dest_codeset))
+		return g_strdup(inbuf);
+
 #if HAVE_LIBJCONV
 	if (src_codeset) {
 		codesets = &src_codeset;
@@ -439,6 +444,7 @@ static const struct {
 	gchar *const name;
 } charsets[] = {
 	{C_US_ASCII,		CS_US_ASCII},
+	{C_US_ASCII,		CS_ANSI_X3_4_1968},
 	{C_UTF_8,		CS_UTF_8},
 	{C_ISO_8859_1,		CS_ISO_8859_1},
 	{C_ISO_8859_2,		CS_ISO_8859_2},
@@ -619,16 +625,12 @@ CharSet conv_get_current_charset(void)
 
 const gchar *conv_get_current_charset_str(void)
 {
-#if HAVE_LIBJCONV
-	return jconv_info_get_current_codeset();
-#else
 	static const gchar *codeset = NULL;
 
 	if (!codeset)
 		codeset = conv_get_charset_str(conv_get_current_charset());
 
 	return codeset ? codeset : "US-ASCII";
-#endif
 }
 
 CharSet conv_get_outgoing_charset(void)
