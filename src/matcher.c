@@ -950,56 +950,56 @@ gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 				if (info->subject != NULL)
 					strcpy(p, info->subject);
 				else
-					strcpy(p, "(none)");
+					strcpy(p, _("(none)"));
 				p += strlen(p);
 				break;
 			case 'f': /* from */
 				if (info->from != NULL)
 					strcpy(p, info->from);
 				else
-					strcpy(p, "(none)");
+					strcpy(p, _("(none)"));
 				p += strlen(p);
 				break;
 			case 't': /* to */
 				if (info->to != NULL)
 					strcpy(p, info->to);
 				else
-					strcpy(p, "(none)");
+					strcpy(p, _("(none)"));
 				p += strlen(p);
 				break;
 			case 'c': /* cc */
 				if (info->cc != NULL)
 					strcpy(p, info->cc);
 				else
-					strcpy(p, "(none)");
+					strcpy(p, _("(none)"));
 				p += strlen(p);
 				break;
 			case 'd': /* date */
 				if (info->date != NULL)
 					strcpy(p, info->date);
 				else
-					strcpy(p, "(none)");
+					strcpy(p, _("(none)"));
 				p += strlen(p);
 				break;
 			case 'i': /* message-id */
 				if (info->msgid != NULL)
 					strcpy(p, info->msgid);
 				else
-					strcpy(p, "(none)");
+					strcpy(p, _("(none)"));
 				p += strlen(p);
 				break;
 			case 'n': /* newsgroups */
 				if (info->newsgroups != NULL)
 					strcpy(p, info->newsgroups);
 				else
-					strcpy(p, "(none)");
+					strcpy(p, _("(none)"));
 				p += strlen(p);
 				break;
 			case 'r': /* references */
 				if (info->references != NULL)
 					strcpy(p, info->references);
 				else
-					strcpy(p, "(none)");
+					strcpy(p, _("(none)"));
 				p += strlen(p);
 				break;
 			case 'F': /* file */
