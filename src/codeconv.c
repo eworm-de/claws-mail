@@ -1042,6 +1042,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 	while (*wsrcp) {
 		wchar_t *wp, *wtmp, *wtmpp;
 		gint nspc = 0;
+		gboolean str_is_non_ascii;
 
 		/* irresponsible buffer overrun check */
 		if ((len - (destp - dest)) < (MAX_LINELEN + 1) * 2) break;
@@ -1052,8 +1053,11 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 			wp = wsrcp;
 			while ((wp = find_wspace(wp)) != NULL)
 				if (!is_next_nonascii(wp)) break;
-		} else
+			str_is_non_ascii = TRUE;
+		} else {
 			wp = find_wspace(wsrcp);
+			str_is_non_ascii = FALSE;
+		}
 
 		if (wp != NULL) {
 			wtmp = wcsndup(wsrcp, wp - wsrcp);
@@ -1088,7 +1092,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 				if (prev_mbl == 1 && mbl == 2)
 					mb_seqlen += JIS_SEQLEN * 2;
 
-				if (mb_seqlen) {
+				if (str_is_non_ascii) {
 					gint dlen = mimehdr_len +
 						B64LEN(tlen + mb_seqlen + mbl);
 
@@ -1145,7 +1149,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 				line_len++;
 			}
 
-			if (mb_seqlen) {
+			if (str_is_non_ascii) {
 				gchar *tmp_jis;
 
 				tmp_jis = g_new(gchar, tlen + mb_seqlen + 1);

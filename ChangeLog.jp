@@ -1,3 +1,46 @@
+2002-05-22
+
+	* src/compose.c: compose_redirect_write_to_file():
+	  change_file_mode_rw() の対象を訂正。 fclose() が成功したかどうか
+	  をチェック。エラーが起こった場合は不完全なファイルを unlink 。
+
+2002-05-22
+
+	* src/compose.c:
+	  compose_create(): リダイレクトモード時は草稿関連のメニューを無効
+	  にするようにした。
+	  compose_redirect_write_to_file(): fwrite() のエラーハンドリング
+	  を修正。
+	* src/prefs_common.c: 「差出人が自分の場合は `差出人' カラムに宛先
+	  を表示する」オプションをデフォルトでオフにした。
+
+2002-05-21
+
+	* src/compose.[ch]: 「リダイレクト」(または Bounce)機能を実装。
+	  claws ブランチの実装に基づく。
+	  compose_redirect(): 新規ウィンドウを作成し、編集不可にする。
+	  compose_redirect_write_to_file(): いくつかを除いて元のメッセージ
+	  のヘッダと本文をコピー。
+	  compose_redirect_write_headers(): さらに "Resent-*" ヘッダを追加。
+	  compose_create(): リダイレクトモード時のメニューセンシティビティ
+	  をセット。
+
+2002-05-20
+
+	* src/codeconv.c: conv_encode_header(): エンコードされた文字列と
+	  次の折り返された文字列との間に不要なスペースが挿入されるバグを
+	  修正(とみたまさひろさん thanks)。
+
+2002-05-19
+
+	* src/mainwindow.[ch]: リファクタリングを行った。
+	  main_window_toggle_message_view(): summary_toggle_view_real() を
+	  ここに移動。
+	* src/messageview.[ch]: messageview_is_visible(): 新規。
+	* src/summary_search.c
+	  src/summaryview.[ch]: SummaryView::msg_is_toggled_on: 削除。
+	  代わりに messageview_is_visible() を使用。
+
 2002-05-17
 
 	* src/mainwindow.c: 「すべてのスレッドを展開/閉じる」メニューを追加。

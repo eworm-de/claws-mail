@@ -1,3 +1,44 @@
+2002-05-22
+
+	* src/compose.c: compose_redirect_write_to_file(): correct the target
+	  for change_file_mode_rw(). Check if fclose() succeeded. Unlink
+	  incomplete file when an error occured.
+
+2002-05-22
+
+	* src/compose.c:
+	  compose_create(): disable menus for draft on redirection mode.
+	  compose_redirect_write_to_file(): correct the error handling of
+	  fwrite().
+	* src/prefs_common.c: turned off the "Display recipient on `From'
+	  column if sender is yourself" option by default.
+
+2002-05-21
+
+	* src/compose.[ch]: implemented 'Redirect' (aka Bounce) feature.
+	  Based on the implementation of the claws branch.
+	  compose_redirect(): create a new window and make it uneditable.
+	  compose_redirect_write_to_file(): copy headers and body of
+	  original message except for some.
+	  compose_redirect_write_headers(): add extra "Resent-*" headers.
+	  compose_create(): set menu sensitivity for redirection mode.
+
+2002-05-20
+
+	* src/codeconv.c: conv_encode_header(): fixed a bug that unnecessary
+	  space is inserted between encoded string and the following folded
+	  one (thanks to Masahiro Tomita).
+
+2002-05-19
+
+	* src/mainwindow.[ch]: some refactoring has been made.
+	  main_window_toggle_message_view(): moved summary_toggle_view_real()
+	  here.
+	* src/messageview.[ch]: messageview_is_visible(): new.
+	* src/summary_search.c
+	  src/summaryview.[ch]: SummaryView::msg_is_toggled_on: removed.
+	  Instead use messageview_is_visible().
+
 2002-05-17
 
 	* src/mainwindow.c: added 'Expand/Collapse all threads' menu.
