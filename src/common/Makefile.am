@@ -1,7 +1,8 @@
 noinst_LTLIBRARIES = libsylpheedcommon.la
 
 libsylpheedcommon_la_SOURCES = \
-	base64.c base64.h 
+	base64.c base64.h \
+	uuencode.c uuencode.h
 
 INCLUDES = \
 	$(GLIB_CFLAGS)

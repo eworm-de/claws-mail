@@ -33,7 +33,7 @@
 #include "procmime.h"
 #include "procheader.h"
 #include "common/base64.h"
-#include "uuencode.h"
+#include "common/uuencode.h"
 #include "unmime.h"
 #include "html.h"
 #include "enriched.h"
