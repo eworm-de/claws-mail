@@ -1,3 +1,9 @@
+2005-01-29 [thorsten]	1.0.0cvs9.2
+
+	* src/action.c
+		fix: strip CRs from pipe input
+		Thanks to Thomas Gilgin for the initial patch.
+
 2005-01-23 [thorsten]	1.0.0cvs9.1
 
 	* ChangeLog.claws

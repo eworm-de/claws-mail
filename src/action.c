@@ -1478,7 +1478,16 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 		gtk_stext_freeze(GTK_STEXT(text));
 		while (TRUE) {
 #ifdef WIN32
+			gint to, from;
+
 			g_io_channel_read(channel, buf, sizeof(buf) - 1, &c);
+			/* strip CRs */
+			for (to = from = 0; to < c; to++) {
+				for (; (from < sizeof(buf))
+					&& (buf[from] == '\r'); from++)
+					c--;
+				buf[to] = buf[from++];
+			}
 #else
 			c = read(source, buf, sizeof(buf) - 1);
 #endif
