@@ -1,3 +1,9 @@
+2005-01-24 [colin]	1.0.0cvs10
+
+	* src/folderview.c
+		Use (+) in collapsed folders with quicksearch-
+		matching subfolders
+
 2005-01-23 [holger]	1.0.0cvs9
 
 	* src/crash.c

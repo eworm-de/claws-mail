@@ -217,3 +217,4 @@
 ( cvs diff -u -r 1.454 -r 1.455 src/summaryview.c; ) > 1.0.0cvs7.patchset
 ( cvs diff -u -r 1.455 -r 1.456 src/summaryview.c; cvs diff -u -r 1.11 -r 1.12 src/gtk/quicksearch.c; ) > 1.0.0cvs8.patchset
 ( cvs diff -u -r 1.26 -r 1.27 src/crash.c; ) > 1.0.0cvs9.patchset
+( cvs diff -u -r 1.255 -r 1.256 src/folderview.c; ) > 1.0.0cvs10.patchset
