@@ -115,6 +115,8 @@ void mimeview_init		(MimeView	*mimeview);
 void mimeview_show_message	(MimeView	*mimeview,
 				 MimeInfo	*mimeinfo,
 				 const gchar	*file);
+gboolean mimeview_show_part	(MimeView 	*mimeview, 
+				 MimeInfo 	*partinfo);
 void mimeview_destroy		(MimeView	*mimeview);
 void mimeview_update		(MimeView 	*mimeview);
 void mimeview_clear		(MimeView	*mimeview);
