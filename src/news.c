@@ -108,8 +108,9 @@ static void news_delete_expired_caches	 (GSList	*alist,
 static gint news_remove_msg		 (Folder	*folder, 
 					  FolderItem	*item, 
 					  gint		 num);
-GSList *news_get_num_list		 (Folder 	*folder, 
-					  FolderItem 	*item);
+gint news_get_num_list		 	 (Folder 	*folder, 
+					  FolderItem 	*item,
+					  GSList       **list);
 MsgInfo *news_fetch_msginfo		 (Folder 	*folder, 
 					  FolderItem 	*item,
 					  gint 		 num);
@@ -660,7 +661,7 @@ static gint news_remove_msg(Folder *folder, FolderItem *item, gint num)
 	gint r;
 
 	dir = folder_item_get_path(item);
-	printf("removing %d in %s\n",num,dir);
+	debug_print("news_remove_msg: removing msg %d in %s\n",num,dir);
 	r = remove_numbered_files(dir, num, num);
 	g_free(dir);
 
@@ -1051,33 +1052,34 @@ gint news_cancel_article(Folder * folder, MsgInfo * msginfo)
 	return 0;
 }
 
-GSList *news_get_num_list(Folder *folder, FolderItem *item)
+gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_list)
 {
 	NNTPSession *session;
-	gint i, ok, num, first, last;
-	GSList *msgnum_list = NULL;
+	gint i, ok, num, first, last, nummsgs = 0;
 	gchar *dir;
 
+	g_return_val_if_fail(item != NULL, -1);
+	g_return_val_if_fail(item->folder != NULL, -1);
+	g_return_val_if_fail(item->folder->type == F_NEWS, -1);
+
 	session = news_session_get(folder);
-	g_return_val_if_fail(session != NULL, NULL);
-	g_return_val_if_fail(item != NULL, NULL);
-	g_return_val_if_fail(item->folder != NULL, NULL);
-	g_return_val_if_fail(item->folder->type == F_NEWS, NULL);
+	g_return_val_if_fail(session != NULL, -1);
 
 	ok = news_select_group(session, item->path, &num, &first, &last);
 	if (ok != NN_SUCCESS) {
 		log_warning(_("can't set group: %s\n"), item->path);
-		return NULL;
+		return -1;
 	}
 
 	if(last < first) {
 		log_warning(_("invalid article range: %d - %d\n"),
 			    first, last);
-		return NULL;
+		return 0;
 	}
 
 	for(i = first; i <= last; i++) {
-		msgnum_list = g_slist_prepend(msgnum_list, GINT_TO_POINTER(i));
+		*msgnum_list = g_slist_prepend(*msgnum_list, GINT_TO_POINTER(i));
+		nummsgs++;
 	}
 
 	dir = folder_item_get_path(item);
@@ -1085,7 +1087,7 @@ GSList *news_get_num_list(Folder *folder, FolderItem *item)
 	remove_numbered_files(dir, 1, first - 1);
 	g_free(dir);
 
-	return msgnum_list;
+	return nummsgs;
 }
 
 #define READ_TO_LISTEND(hdr) \

@@ -1,3 +1,47 @@
+2002-10-18 [alfons]	0.8.5claws47
+
+	* src/mbox.c
+		drop imported messages in folder selected by user,
+		and not in the inbox
+		(closes bug [ 625424 ] Import mbox always to "Inbox" folder)
+
+2002-10-18 [alfons]	0.8.5claws46
+
+	* src/compose.c
+		make automagic reply work correctly for email accounts 
+		(whether it's viable to do a full sync with Hiro's 
+		compose.c is still under discussion)
+
+2002-10-18 [melvin]	0.8.5claws45
+
+	* src/prefs_actions.c
+		Fixed bug #622275 where asynchroneous actions left 
+		zombies processes
+		Made (synchroneous) actions' input be displayed live.
+
+2002-10-18 [christoph]	0.8.5claws44
+
+	* src/textview.c
+		don't add a newline in the textview in front of the
+		first textpart if header display is disabled
+		(closes bug [ 603385 ] disabled header display leaves blank
+		 lin)
+
+2002-10-18 [christoph]	0.8.5claws43
+
+	* src/folder.[ch]
+	* src/imap.c
+	* src/mbox_folder.c
+	* src/mh.c
+	* src/news.c
+		folder->get_num_list now returns an error code
+		(closes bug [ 609424 ] News cache cleared on failure)
+		
+2002-10-17 [colin] 	0.8.5claws42
+	
+	* src/news.c
+		Changed a printf by debug_print
+
 2002-10-16 [paul]	
 
 	* tools/OOo2sylpheed.pl

@@ -545,7 +545,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 		    mimeinfo->parent &&
 		    mimeinfo->parent->children != mimeinfo)
 			gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
-		else
+		else if (prefs_common.display_header)
 			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
 		if (prefs_common.force_charset)
 			charset = prefs_common.force_charset;
@@ -1386,7 +1386,6 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 		g_ptr_array_free(headers, TRUE);
 	} else
 		procheader_header_array_destroy(headers);
-
 
 	return sorted_headers;
 }

@@ -71,7 +71,6 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox)
 	gchar buf[MSGBUFSIZE], from_line[MSGBUFSIZE];
 	gchar *tmp_file;
 	gint msgs = 0;
-	FolderItem *inbox;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(mbox != NULL, -1);
@@ -106,7 +105,6 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox)
 	}
 
 	tmp_file = get_tmp_file();
-	inbox    = folder_get_default_inbox();
 
 	do {
 		FILE *tmp_fp;
@@ -235,7 +233,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox)
 
 		if (global_processing) {
 			/* CLAWS: new filtering */
-			filter_message(global_processing, inbox,
+			filter_message(global_processing, dest,
 				       msgnum);
 		}
 
