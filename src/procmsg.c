@@ -1109,34 +1109,43 @@ gint procmsg_send_message_queue(const gchar *file)
 			if (!fwdmessageid) fwdmessageid = g_strdup(p);
 			break;
 		case Q_PRIVACY_SYSTEM:
-			if (privacy_system == NULL) privacy_system = g_strdup(p);
+			if (!privacy_system) privacy_system = g_strdup(p);
 			break;
 		case Q_ENCRYPT:
 			if (p[0] == '1') encrypt = TRUE;
 			break;
 		case Q_ENCRYPT_DATA:
-			if (encrypt_data == NULL) encrypt_data = g_strdup(p);
+			if (!encrypt_data) encrypt_data = g_strdup(p);
 			break;
 		}
 	}
 	filepos = ftell(fp);
 
 	if (encrypt) {
-		/* FIXME: memory leaks, in case of errors */
 		MimeInfo *mimeinfo;
 
 		fclose(fp);
-
+		
 		mimeinfo = procmime_scan_queue_file(file);
-		if (!privacy_encrypt(privacy_system, mimeinfo, encrypt_data))
-			return -1;
-
-		fp = my_tmpfile();
-		if (procmime_write_mimeinfo(mimeinfo, fp) < 0) {
-			fclose(fp);
+		if (!privacy_encrypt(privacy_system, mimeinfo, encrypt_data)
+		|| (fp = my_tmpfile()) == NULL
+		||  procmime_write_mimeinfo(mimeinfo, fp) < 0) {
+			if (fp)
+				fclose(fp);
+			procmime_mimeinfo_free_all(mimeinfo);
+			g_free(from);
+			g_free(smtpserver);
+			slist_free_strings(to_list);
+			g_slist_free(to_list);
+			slist_free_strings(newsgroup_list);
+			g_slist_free(newsgroup_list);
+			g_free(savecopyfolder);
+			g_free(replymessageid);
+			g_free(fwdmessageid);
+			g_free(privacy_system);
+			g_free(encrypt_data);
 			return -1;
 		}
-		procmime_mimeinfo_free_all(mimeinfo);
 			
 		rewind(fp);
 		filepos = 0;
@@ -1221,12 +1230,6 @@ gint procmsg_send_message_queue(const gchar *file)
 		g_free(tmp);
 	}
 
-	slist_free_strings(to_list);
-	g_slist_free(to_list);
-	slist_free_strings(newsgroup_list);
-	g_slist_free(newsgroup_list);
-	g_free(from);
-	g_free(smtpserver);
 	fclose(fp);
 
 	/* save message to outbox */
@@ -1284,10 +1287,18 @@ gint procmsg_send_message_queue(const gchar *file)
 		g_strfreev(tokens);
 	}
 
+	g_free(from);
+	g_free(smtpserver);
+	slist_free_strings(to_list);
+	g_slist_free(to_list);
+	slist_free_strings(newsgroup_list);
+	g_slist_free(newsgroup_list);
 	g_free(savecopyfolder);
 	g_free(replymessageid);
 	g_free(fwdmessageid);
-	
+	g_free(privacy_system);
+	g_free(encrypt_data);
+
 	return (newsval != 0 ? newsval : mailval);
 }
 

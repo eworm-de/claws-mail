@@ -1,3 +1,8 @@
+2004-11-16 [colin]	0.9.12cvs147
+
+	* src/procmsg.c
+		Fix leaks in procmsg_send_message_queue
+
 2004-11-12 [paul]	0.9.12cvs146
 
 	* src/prefs_account.c
