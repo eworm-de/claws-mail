@@ -401,5 +401,7 @@ const gchar * line_has_quote_char	(const gchar *str,
 const gchar * line_has_quote_char_last	(const gchar *str,
 					 const gchar *quote_chars);
 
+/* used in extended search */
+gchar * expand_search_string	(const gchar *str);
 
 #endif /* __UTILS_H__ */

@@ -1,3 +1,15 @@
+2002-12-05 [darko]	0.8.6claws62
+
+	* src/utils.[ch]
+		expand_search_string(): new function
+		converts Mutt-like patterns to Sylpheed's
+		filtering engine
+	* src/summaryview.c
+		use expand_search_string() to allow Mutt-like
+		patterns in extended search
+	* README.claws
+		document extended option in quick search
+
 2002-12-05 [paul]	0.8.6claws61
 
 	* sync with 0.8.6cvs16

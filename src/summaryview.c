@@ -921,8 +921,17 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		gchar *searched_header = NULL;
 		MatcherList * tmp_list = NULL;
 		
-		if (search_type == S_SEARCH_EXTENDED)
-			tmp_list = matcher_parser_get_cond(search_string);
+		if (search_type == S_SEARCH_EXTENDED) {
+			char *newstr;
+
+			newstr = expand_search_string(search_string);
+			if (newstr) {
+				tmp_list = matcher_parser_get_cond(newstr);
+				g_free(newstr);
+			}
+			else
+				tmp_list = NULL;
+		}
 
 		not_killed = NULL;
 		for (cur = mlist ; cur != NULL ; cur = g_slist_next(cur)) {
