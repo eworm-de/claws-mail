@@ -1,3 +1,8 @@
+2004-10-21 [colin]	0.9.12cvs132
+
+	* src/compose.c
+		Remove extraneous separator in Options
+
 2004-10-21 [colin]	0.9.12cvs131
 
 	* src/compose.c

@@ -647,7 +647,6 @@ static GtkItemFactoryEntry compose_entries[] =
 					NULL, NULL, 0, "<Branch>"},
 #endif
 	{N_("/_Options"),		NULL, NULL, 0, "<Branch>"},
-	{N_("/_Options/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Options/Privacy System"),		NULL, NULL,   0, "<Branch>"},
 	{N_("/_Options/Privacy System/None"),	NULL, compose_set_privacy_system_cb,   0, "<RadioItem>"},
 	{N_("/_Options/Si_gn"),   	NULL, compose_toggle_sign_cb   , 0, "<ToggleItem>"},
