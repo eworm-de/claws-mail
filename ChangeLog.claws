@@ -9,6 +9,10 @@
 
 2001-04-28 [alfons]
 
+	* src/textview.c, colorization of email addresses in headers
+
+	0.4.65claws6
+
 	* bug sync with sylpheed
 	* prefs_common.c: created date format ui for darko
 	* sync with 0.4.65cvs11

@@ -46,6 +46,7 @@
 #include "procmime.h"
 #include "html.h"
 #include "compose.h"
+#include "addressbook.h"
 
 #define FONT_LOAD(font, s) \
 { \
@@ -530,7 +531,73 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 			result = TRUE;
 		}
 	}
+	
+	if (result) {
+		/* we now have at least the address. now see if this is <bracketed>; in this
+		 * case we also scan for the informative part. we could make this a useful
+		 * function because it tries to parse out an email address backwards. :) */
+		if ( ((bp_ - 1 > start) && *(bp_ - 1) == '<') &&  (*ep_ == '>')) {
+			char	closure_stack[128];
+			char   *ptr = closure_stack;
+#define FULL_STACK()	((ptr - closure_stack) >= sizeof closure_stack) 
+#define IN_STACK()		(ptr > closure_stack)
+/* has underrun check */
+#define POP_STACK()		if(IN_STACK()) --ptr		
+/* has overrun check */
+#define PUSH_STACK(c)	if(!FULL_STACK()) *ptr++ = (c); else return TRUE 
+/* has underrun check */
+#define PEEK_STACK()	(IN_STACK() ? *(ptr - 1) : 0)
 
+			ep_++;
+
+			/* scan for the informative part */
+			for (bp_ -= 2; bp_ >= start; bp_--) {
+				/* if closure on the stack keep scanning */
+				if (PEEK_STACK() == *bp_) {
+					POP_STACK();
+				}					
+				else {
+					if (*bp_ == '\'' || *bp_ == '"')  {
+						PUSH_STACK(*bp_);
+					}						
+					else {
+						if (!PEEK_STACK()) {
+							/* if nothing in the closure stack, do the special conditions
+							 * the following if..else expression simply checks whether 
+							 * a token is acceptable. if not acceptable, the clause
+							 * should terminate the loop with a 'break' */
+							if ( *bp_ == '-' 
+							&&   (((bp_ - 1) >= start) && isalnum(*(bp_ - 1))) 
+							&&   (((bp_ + 1) < ep_)    && isalnum(*(bp_ + 1))) ) {
+								/* hyphens are allowed, but only in between alnums */
+							}
+							else if ( !ispunct(*bp_) ) {
+								/* but anything not being a punctiation is ok */
+							}
+							else {
+								break; /* anything else is rejected */
+							}
+						}
+					}
+				}
+			}
+			
+			bp_++;
+
+#undef PEEK_STACK
+#undef PUSH_STACK
+#undef POP_STACK
+#undef IN_STACK
+#undef FULL_STACK
+
+			/* scan forward (should start with an alnum) */
+			for (; *bp_ != '<' && isspace(*bp_) && *bp_ != '"'; bp_++)
+				;
+
+			*ep = ep_;
+			*bp = bp_;
+		}
+	}
 	return result;
 }
 
@@ -564,6 +631,7 @@ static gchar *make_email_string(const gchar *bp, const gchar *ep)
 
 /* textview_make_clickable_parts() - colorizes clickable parts */
 static void textview_make_clickable_parts(TextView *textview, GtkText *text,
+					  GdkFont  *textfont,
 					  GdkColor *fg_color,
 					  GdkColor *uri_color,
 					  const gchar *linebuf)
@@ -624,7 +692,7 @@ static void textview_make_clickable_parts(TextView *textview, GtkText *text,
 		if (scanpos) {
 			/* check if URI can be parsed */
 			if (parser[last_index].parse(linebuf, scanpos, &bp, &ep)
-			    && (ep - bp - 1) > strlen(parser[n].needle)) {
+			    && (ep - bp - 1) > strlen(parser[last_index].needle)) {
 					ADD_TXT_POS(bp, ep, last_index);
 					walk = ep;
 			} else
@@ -645,13 +713,13 @@ static void textview_make_clickable_parts(TextView *textview, GtkText *text,
 
 			uri = g_new(RemoteURI, 1);
 			if (last->bp - normal_text > 0)
-				gtk_text_insert(text, textview->msgfont,
+				gtk_text_insert(text, textfont,
 						fg_color, NULL,
 						normal_text,
 						last->bp - normal_text);
 			uri->uri = parser[last->pti].build_uri(last->bp, last->ep);
 			uri->start = gtk_text_get_point(text);
-			gtk_text_insert(text, textview->msgfont, uri_color,
+			gtk_text_insert(text, textfont, uri_color,
 					NULL, last->bp, last->ep - last->bp);
 			uri->end = gtk_text_get_point(text);
 			textview->uri_list =
@@ -659,10 +727,10 @@ static void textview_make_clickable_parts(TextView *textview, GtkText *text,
 		}
 
 		if (*normal_text)
-			gtk_text_insert(text, textview->msgfont, fg_color,
+			gtk_text_insert(text, textfont, fg_color,
 					NULL, normal_text, -1);
 	} else
-		gtk_text_insert(text, textview->msgfont, fg_color, NULL,
+		gtk_text_insert(text, textfont, fg_color, NULL,
 				linebuf, -1);
 }
 
@@ -723,6 +791,7 @@ static void textview_write_line(TextView *textview, const gchar *str,
 
 	if (prefs_common.enable_color)
 		textview_make_clickable_parts(textview, text,
+						  textview->msgfont,
 					      fg_color, &uri_color, buf);
 	else
 		gtk_text_insert(text, textview->msgfont, fg_color, NULL,
@@ -932,9 +1001,19 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 		    strstr(header->body, "Sylpheed") != NULL)
 			gtk_text_insert(text, NULL, &emphasis_color, NULL,
 					header->body, -1);
-		else
-			gtk_text_insert(text, NULL, NULL, NULL,
-					header->body, -1);
+		else {
+			if (prefs_common.enable_color) {
+				textview_make_clickable_parts(textview, text,
+											  NULL,
+											  NULL, 
+											  &uri_color, 
+											  header->body);
+			}											  
+			else {											  
+				gtk_text_insert(text, NULL, NULL, NULL,
+						header->body, -1);
+			}						
+		}					
 		gtk_text_insert(text, textview->msgfont, NULL, NULL, "\n", 1);
 	}
 
@@ -1162,8 +1241,9 @@ static void textview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 				    TextView *textview)
 {
 	if (event &&
-	    ((event->button == 1 && event->type == GDK_2BUTTON_PRESS) ||
-	     event->button == 2)) {
+	    ((event->button == 1 && event->type == GDK_2BUTTON_PRESS) 
+		|| event->button == 2
+		|| event->button == 3)) {
 		GSList *cur;
 		guint current_pos;
 
@@ -1174,9 +1254,10 @@ static void textview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 
 			if (current_pos >= uri->start &&
 			    current_pos <  uri->end) {
-				if (!strncasecmp(uri->uri, "mailto:", 7))
+				if (!strncasecmp(uri->uri, "mailto:", 7)) {
 					compose_new_with_recipient
 						(NULL, uri->uri + 7);
+				}						
 				else
 					open_uri(uri->uri,
 						 prefs_common.uri_cmd);
