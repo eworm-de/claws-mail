@@ -1,3 +1,8 @@
+2004-09-28 [colin]	0.9.12cvs107
+
+	* src/addressbook.c
+		Fix double-click on entries
+
 2004-09-28 [colin]	0.9.12cvs106
 
 	* src/inc.c
