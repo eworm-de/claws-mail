@@ -1,3 +1,13 @@
+2003-05-02 [paul]	0.8.11claws139
+
+	* src/addr_compl.[ch]
+	  src/addressbook.[ch]
+	  src/addrindex.c
+	  src/summaryview.c
+	  	revert match's changes to (finally) remove the bug where
+		opening a folder causes massive slowdown when using the 
+		'Display sender using address book' option
+
 2003-05-01 [melvin]	0.8.11claws138
 
 	* src/plugins/dillo_viewer/dillo_prefs.[ch]
