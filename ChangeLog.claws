@@ -1,3 +1,8 @@
+2003-08-10 [christoph]	0.9.4claws16
+
+	* src/imap.c
+		add more checks in imap_close
+
 2003-08-09 [alfons]	0.9.4claws15
 
 	* src/prefs_spelling.c
