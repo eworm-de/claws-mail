@@ -1,3 +1,9 @@
+2002-06-13 [paul]	0.7.6claws46
+
+	* src/filesel.c
+		allow filename to be typed in, rather than just
+		selected by the mouse. Patch by Gustavo Noronha Silva.
+
 2002-06-13 [alfons]	0.7.6claws45
 
 	* src/mainwindow.[ch]

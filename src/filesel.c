@@ -141,16 +141,13 @@ GList *filesel_select_multiple_files(const gchar *title, const gchar *file)
 	gtk_main();
 
 	if (filesel_ack) {
-		GtkWidget *entry;
 		gchar *fname = NULL;
 
 		list = filesel_get_multiple_filenames();
 
 		if (!list) {
-			entry = GTK_FILE_SELECTION(filesel)->selection_entry;
-			fname = gtk_entry_get_text (GTK_ENTRY(entry));
-			if (fname && fname[0] != '\0')
-				list = g_list_append (list, g_strdup(fname));
+			fname = gtk_file_selection_get_filename (GTK_FILE_SELECTION(filesel));
+			list = g_list_append (list, g_strdup(fname));
 		}
 	}
 
