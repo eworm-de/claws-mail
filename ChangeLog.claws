@@ -1,5 +1,11 @@
 2001-04-25
 
+	* ac/sv-check-type.m4: new autoconf macro.
+	* configure.in: fixed wint_t typedef detection (did not work
+	  with gcc-2.96).
+
+2001-04-25
+
 	* acconfig.h: added USE_GTKGDK_XIM definition for autoheader.
 	  [hiroyuki]
 
