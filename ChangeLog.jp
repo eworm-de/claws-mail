@@ -1,3 +1,30 @@
+2002-11-07
+
+	* src/prefs_account.[ch]: 使われていないため
+	  prefs_account_save_config() を削除。
+	* src/procmime.[ch]: procmime_mimeinfo_free_all() が全ての場合に
+	  使えるため procmime_mimeinfo_free() を削除。
+
+2002-11-06
+
+	* src/account.c: account_get_special_folder(): F_INBOX に対応し、
+	  コードを整理。
+
+2002-11-06
+
+	* src/compose.[ch]: ComposeEntryType: COMPOSE_* を COMPOSE_ENTRY_*
+	  に変更し、 COMPOSE_ENTRY_{REPLY_TO,SUBJECT,FOLLOWUP_TO} を追加。
+	  compose_reply()
+	  compose_forward()
+	  compose_redirect(): FolderItem を引数に加え、 item の設定を反映
+	  させるようにした。
+	  compose_entry_set(): 新規。
+	  compose_entry_append(): コードの整理。
+	  compose_entries_set_from_item(): ComposeMode を引数にとるようにし、
+	  FolderItem::use_auto_to_on_reply が有効になるようにした。
+	* src/summaryview.c: summary_reply(): folder_item を
+	  compose_{reply,forward,redirect}() に渡すようにした。
+
 2002-11-05
 
 	* src/gtkutils.[ch]:

@@ -660,7 +660,7 @@ void prefs_filtering_rename_path(const gchar *old_path, const gchar *new_path)
 				action->destination = dest_path;
 			} else { /* for non-leaf folders */
 				/* compare with trailing slash */
-				if(!strncmp(old_path_with_sep, action->destination, oldpathlen+1)) {
+				if (!strncmp(old_path_with_sep, action->destination, oldpathlen+1)) {
 					
 					suffix = action->destination + oldpathlen + 1;
 					dest_path = g_strconcat(new_path,
@@ -670,9 +670,16 @@ void prefs_filtering_rename_path(const gchar *old_path, const gchar *new_path)
 					action->destination = dest_path;
 				}
 			}
+		} else {
+			/* folder-moving a leaf */
+			if (!strcmp(old_path, action->destination)) {		
+				dest_path = g_strdup(new_path);
+				g_free(action->destination);
+				action->destination = dest_path;
+			}
 		}
 	}
-
+	g_free(old_path_with_sep);
 	prefs_matcher_write_config();
 }
 

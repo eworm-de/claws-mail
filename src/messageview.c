@@ -446,7 +446,7 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	file = procmsg_get_message_file_path(msginfo);
 	if (!file) {
 		g_warning(_("can't get message file path.\n"));
-		procmime_mimeinfo_free(mimeinfo);
+		procmime_mimeinfo_free_all(mimeinfo);
 		return;
 	}
 
@@ -465,7 +465,7 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	} else {
 		messageview_change_view_type(messageview, MVIEW_TEXT);
 		textview_show_message(messageview->textview, mimeinfo, file);
-		procmime_mimeinfo_free(mimeinfo);
+		procmime_mimeinfo_free_all(mimeinfo);
 	}
 
 	if (MSG_IS_RETRCPT_PENDING(msginfo->flags))

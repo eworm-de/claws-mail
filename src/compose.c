@@ -156,6 +156,20 @@ typedef enum
 	PRIORITY_LOWEST
 } PriorityLevel;
 
+#if USE_GPGME
+typedef enum
+{
+	SIG_MODE_DETACH,
+	SIG_MODE_CLEAR
+} ComposeSigMode;
+
+typedef enum
+{
+	ENC_MODE_DETACH,
+	ENC_MODE_ASCII
+} ComposeEncMode;
+#endif
+
 #define B64_LINE_SIZE		57
 #define B64_BUFFSIZE		77
 
@@ -441,6 +455,16 @@ static void compose_toggle_sign_cb	(gpointer	 data,
 static void compose_toggle_encrypt_cb	(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
+static void compose_set_sigmode_cb	(gpointer 	 data,
+					 guint 		 action,
+					 GtkWidget 	*widget);
+static void compose_set_encmode_cb	(gpointer 	 data,
+					 guint 		 action,
+					 GtkWidget 	*widget);
+static void compose_update_sigmode_menu_item(Compose * compose);
+static void compose_update_encmode_menu_item(Compose * compose);
+static void activate_gnupg_mode 	(Compose *compose, 
+					 PrefsAccount *account);
 #endif
 static void compose_toggle_return_receipt_cb(gpointer data, guint action,
 					     GtkWidget *widget);
@@ -677,7 +701,13 @@ static GtkItemFactoryEntry compose_entries[] =
 #if USE_GPGME
 	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Si_gn"),   	NULL, compose_toggle_sign_cb   , 0, "<ToggleItem>"},
+	{N_("/_Message/Sign mode"),		NULL,		NULL,   0, "<Branch>"},	
+	{N_("/_Message/Sign mode/MIME"), NULL,	compose_set_sigmode_cb,   SIG_MODE_DETACH, "<RadioItem>"},	
+	{N_("/_Message/Sign mode/Clear"),NULL,	compose_set_sigmode_cb,   SIG_MODE_CLEAR, "/Message/Sign mode/MIME"},	
 	{N_("/_Message/_Encrypt"),	NULL, compose_toggle_encrypt_cb, 0, "<ToggleItem>"},
+	{N_("/_Message/Encrypt mode"),		NULL,		NULL,   0, "<Branch>"},	
+	{N_("/_Message/Encrypt mode/MIME"), NULL, compose_set_encmode_cb,   ENC_MODE_DETACH, "<RadioItem>"},	
+	{N_("/_Message/Encrypt mode/ASCII"),NULL, compose_set_encmode_cb,   ENC_MODE_ASCII, "/Message/Encrypt mode/MIME"},	
 #endif /* USE_GPGME */
 	{N_("/_Message/---"),		NULL,		NULL,	0, "<Separator>"},
 	{N_("/_Message/_Priority"),	NULL,		NULL,   0, "<Branch>"},
@@ -1317,6 +1347,8 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 #if USE_GPGME
 	menu_set_sensitive(ifactory, "/Message/Sign", FALSE);
 	menu_set_sensitive(ifactory, "/Message/Encrypt", FALSE);
+	menu_set_sensitive(ifactory, "/Message/Sign mode/", FALSE);
+	menu_set_sensitive(ifactory, "/Message/Encrypt mode/", FALSE);
 #endif
 	menu_set_sensitive(ifactory, "/Message/Request Return Receipt", FALSE);
 	menu_set_sensitive(ifactory, "/Tools/Template", FALSE);
@@ -1879,7 +1911,10 @@ static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 #endif
 
 	compose_update_priority_menu_item(compose);
-
+#if USE_GPGME	
+	compose_update_sigmode_menu_item(compose);
+	compose_update_encmode_menu_item(compose);
+#endif
 	compose_show_first_last_header(compose, TRUE);
 
 #if 0 /* NEW COMPOSE GUI */
@@ -2926,6 +2961,8 @@ static void compose_select_account(Compose *compose, PrefsAccount *account)
 	menuitem = gtk_item_factory_get_item(ifactory, "/Message/Encrypt");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 				       account->default_encrypt);
+				       
+	activate_gnupg_mode(compose, account);		
 #endif /* USE_GPGME */
 }
 
@@ -3447,7 +3484,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 
 #if USE_GPGME
 		if (!is_draft &&
-		    compose->use_signing && !compose->account->clearsign &&
+		    compose->use_signing && !compose->sigmode &&
 		    encoding == ENC_8BIT)
 			encoding = ENC_BASE64;
 #endif
@@ -3511,7 +3548,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	}
 
 #if USE_GPGME
-	if (!is_draft && compose->use_signing && compose->account->clearsign) {
+	if (!is_draft && compose->use_signing && compose->sigmode) {
 		if (compose_clearsign_text(compose, &buf) < 0) {
 			g_warning("clearsign failed\n");
 			fclose(fp);
@@ -3583,7 +3620,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	if (is_draft)
 		return 0;
 
-	if ((compose->use_signing && !compose->account->clearsign) ||
+	if ((compose->use_signing && !compose->sigmode) ||
 	    compose->use_encryption) {
 		if (canonicalize_file_replace(file) < 0) {
 			unlink(file);
@@ -3591,7 +3628,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 		}
 	}
 
-	if (compose->use_signing && !compose->account->clearsign) {
+	if (compose->use_signing && !compose->sigmode) {
 		GSList *key_list;
 
 		if (compose_create_signers_list(compose, &key_list) < 0 ||
@@ -3602,7 +3639,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	}
 	if (compose->use_encryption) {
 		if (rfc2015_encrypt(file, compose->to_list,
-				    compose->account->ascii_armored) < 0) {
+				    compose->encmode) < 0) {
 			unlink(file);
 			return -1;
 		}
@@ -5262,6 +5299,10 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	/* Priority */
 	compose->priority = PRIORITY_NORMAL;
 	compose_update_priority_menu_item(compose);
+	
+#if USE_GPGME
+	activate_gnupg_mode(compose, account);
+#endif	
 
 	set_toolbar_style(compose);
 
@@ -5572,6 +5613,74 @@ static void compose_update_priority_menu_item(Compose * compose)
 	}
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 }	
+
+#if USE_GPGME 
+static void compose_set_sigmode_cb(gpointer data,
+				    guint action,
+				    GtkWidget *widget)
+{
+	Compose *compose = (Compose *) data;
+	compose->sigmode = action;
+}
+
+static void compose_update_sigmode_menu_item(Compose * compose)
+{
+	GtkItemFactory *ifactory;
+	GtkWidget *menuitem = NULL;
+
+	ifactory = gtk_item_factory_from_widget(compose->menubar);
+	
+	switch (compose->sigmode) {
+		case SIG_MODE_DETACH:
+			menuitem = gtk_item_factory_get_item
+				(ifactory, "/Message/Sign mode/MIME");
+			break;
+		case SIG_MODE_CLEAR:
+			menuitem = gtk_item_factory_get_item
+				(ifactory, "/Message/Sign mode/Clear");
+			break;
+	}
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
+
+	if (compose->use_signing == TRUE)
+		menu_set_sensitive(ifactory, "/Message/Sign mode", TRUE);	
+	else
+		menu_set_sensitive(ifactory, "/Message/Sign mode", FALSE);	
+}	
+ 
+static void compose_set_encmode_cb(gpointer data,
+				    guint action,
+				    GtkWidget *widget)
+{
+	Compose *compose = (Compose *) data;
+	compose->encmode = action;
+}
+
+static void compose_update_encmode_menu_item(Compose * compose)
+{
+	GtkItemFactory *ifactory;
+	GtkWidget *menuitem = NULL;
+
+	ifactory = gtk_item_factory_from_widget(compose->menubar);
+	
+	switch (compose->encmode) {
+		case ENC_MODE_DETACH:
+			menuitem = gtk_item_factory_get_item
+				(ifactory, "/Message/Encrypt mode/MIME");
+			break;
+		case ENC_MODE_ASCII:
+			menuitem = gtk_item_factory_get_item
+				(ifactory, "/Message/Encrypt mode/ASCII");
+			break;
+	}
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
+	
+	if (compose->use_encryption == TRUE)
+		menu_set_sensitive(ifactory, "/Message/Encrypt mode", TRUE);		
+	else
+		menu_set_sensitive(ifactory, "/Message/Encrypt mode", FALSE);
+}	
+#endif
  
 static void compose_set_template_menu(Compose *compose)
 {
@@ -7183,6 +7292,8 @@ static void compose_toggle_sign_cb(gpointer data, guint action,
 		compose->use_signing = TRUE;
 	else
 		compose->use_signing = FALSE;
+
+	compose_update_sigmode_menu_item(compose);
 }
 
 static void compose_toggle_encrypt_cb(gpointer data, guint action,
@@ -7194,6 +7305,24 @@ static void compose_toggle_encrypt_cb(gpointer data, guint action,
 		compose->use_encryption = TRUE;
 	else
 		compose->use_encryption = FALSE;
+		
+	compose_update_encmode_menu_item(compose);
+}
+
+static void activate_gnupg_mode (Compose *compose, PrefsAccount *account) 
+{
+	if (account->clearsign)
+		compose->sigmode = SIG_MODE_CLEAR;
+	else
+		compose->sigmode = SIG_MODE_DETACH;
+	compose_update_sigmode_menu_item(compose);
+
+	if (account->ascii_armored)
+		compose->encmode = ENC_MODE_ASCII;
+	else
+		compose->encmode = ENC_MODE_DETACH;
+
+	compose_update_encmode_menu_item(compose); 
 }
 #endif /* USE_GPGME */
 

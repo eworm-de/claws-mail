@@ -524,7 +524,8 @@ FolderItem *folder_create_folder(FolderItem *parent, const gchar *name)
 	FolderItem *new_item;
 
 	new_item = parent->folder->create_folder(parent->folder, parent, name);
-	new_item->cache = msgcache_new();
+	if (new_item)
+		new_item->cache = msgcache_new();
 
 	return new_item;
 }
@@ -1527,6 +1528,115 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 	return num;
 }
 */
+		
+gint folder_item_move_recursive (FolderItem *src, FolderItem *dest) 
+{
+	GSList *mlist;
+	GSList *cur;
+	FolderItem *new_item;
+	FolderItem *next_item;
+	GNode *srcnode;
+
+	mlist = folder_item_get_msg_list(src);
+
+	/* move messages */
+	debug_print("Moving %s to %s\n", src->path, dest->path);
+	new_item = folder_create_folder(dest, g_basename(src->path));
+	
+	if (new_item == NULL) {
+		printf("Can't create folder\n");
+		return -1;
+	}
+	
+	for (cur = mlist ; cur != NULL ; cur = cur->next) {
+		MsgInfo * msginfo;
+		msginfo = (MsgInfo *) cur->data;
+		folder_item_move_msg(new_item, msginfo);
+	}
+	srcnode = src->folder->node;	
+	srcnode = g_node_find(srcnode, G_PRE_ORDER, G_TRAVERSE_ALL, src);
+	srcnode = srcnode->children;
+	while (srcnode != NULL) {
+		if (srcnode && srcnode->data) {
+			next_item = (FolderItem*) srcnode->data;
+			if (folder_item_move_recursive(next_item, new_item) != 0)
+				return -1;
+		}
+		srcnode = srcnode->next;
+	}
+	return 0;
+}
+
+FolderItem *folder_item_move_to(FolderItem *src, FolderItem *dest)
+{
+	FolderItem *tmp = dest->parent;
+	char * srcpath, * dstpath;
+	char * phys_srcpath, * phys_dstpath;
+
+	while (tmp) {
+		if (tmp == src) {
+			alertpanel_error(_("Can't move a folder to one of its children."));
+			return NULL;
+		}
+		tmp = tmp->parent;
+	}
+	
+	tmp = src->parent;
+	
+	srcpath = folder_item_get_identifier(src);
+	dstpath = folder_item_get_identifier(dest);
+	
+	if(dstpath == NULL && dest->folder && dest->parent == NULL) {
+		/* dest can be a root folder */
+		dstpath = folder_get_identifier(dest->folder);
+	}
+	if (srcpath == NULL || dstpath == NULL) {
+		printf("Can't get identifiers\n");
+		return NULL;
+	}
+
+	phys_srcpath = folder_item_get_path(src);
+	phys_dstpath = g_strconcat(folder_item_get_path(dest),G_DIR_SEPARATOR_S,g_basename(srcpath),NULL);
+
+	if (src->parent == dest) {
+		alertpanel_error(_("Source and destination are the same."));
+		g_free(srcpath);
+		g_free(dstpath);
+		g_free(phys_srcpath);
+		g_free(phys_dstpath);
+		return NULL;
+	}
+	debug_print("moving \"%s\" to \"%s\"\n", phys_srcpath, phys_dstpath);
+	if (folder_item_move_recursive(src, dest) != 0) {
+		alertpanel_error(_("Move failed !"));
+		return NULL;
+	}
+	
+	/* update rules */
+	debug_print("updating rules ....\n");
+	prefs_filtering_rename_path(srcpath, g_strconcat(dstpath, 
+						G_DIR_SEPARATOR_S, 
+						g_basename(srcpath), 
+						NULL));
+
+	src->folder->remove_folder(src->folder, src);
+	/* not to much worry if remove fails, move has been done */
+	
+	folder_write_list();
+
+	/* rescan parents */
+	debug_print("rescanning foldertree ....\n");
+	folderview_rescan_tree(dest->folder);
+		
+	g_free(srcpath);
+	g_free(dstpath);
+	g_free(phys_srcpath);
+	g_free(phys_dstpath);
+	return folder_find_item_from_identifier(g_strconcat(dstpath, 
+							G_DIR_SEPARATOR_S, 
+							g_basename(srcpath), 
+							NULL));
+}
 
 gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 {

@@ -60,28 +60,6 @@ MimeInfo *procmime_mimeinfo_new(void)
 	return mimeinfo;
 }
 
-void procmime_mimeinfo_free(MimeInfo *mimeinfo)
-{
-	if (!mimeinfo) return;
-
-	g_free(mimeinfo->encoding);
-	g_free(mimeinfo->content_type);
-	g_free(mimeinfo->charset);
-	g_free(mimeinfo->name);
-	g_free(mimeinfo->boundary);
-	g_free(mimeinfo->content_disposition);
-	g_free(mimeinfo->filename);
-#if USE_GPGME
-	g_free(mimeinfo->plaintextfile);
-	g_free(mimeinfo->sigstatus);
-	g_free(mimeinfo->sigstatus_full);
-#endif
-
-	procmime_mimeinfo_free(mimeinfo->sub);
-
-	g_free(mimeinfo);
-}
-
 void procmime_mimeinfo_free_all(MimeInfo *mimeinfo)
 {
 	while (mimeinfo != NULL) {

@@ -1,3 +1,31 @@
+2002-11-07
+
+	* src/prefs_account.[ch]: removed prefs_account_save_config() since
+	  it is not used.
+	* src/procmime.[ch]: removed procmime_mimeinfo_free() since
+	  procmime_mimeinfo_free_all() can be used in every case.
+
+2002-11-06
+
+	* src/account.c: account_get_special_folder(): support F_INBOX, and
+	  made code cleanup.
+
+2002-11-06
+
+	* src/compose.[ch]: ComposeEntryType: changed COMPOSE_* to
+	  COMPOSE_ENTRY_*, and added
+	  COMPOSE_ENTRY_{REPLY_TO,SUBJECT,FOLLOWUP_TO}.
+	  compose_reply()
+	  compose_forward()
+	  compose_redirect(): added FolderItem to the arguments, and reflect
+	  settings in the item.
+	  compose_entry_set(): new.
+	  compose_entry_append(): code cleanup.
+	  compose_entries_set_from_item(): take ComposeMode in its arguments,
+	  and enabled FolderItem::use_auto_to_on_reply.
+	* src/summaryview.c: summary_reply(): pass folder_item to
+	  compose_{reply,forward,redirect}().
+
 2002-11-05
 
 	* src/gtkutils.[ch]:

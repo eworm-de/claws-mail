@@ -169,6 +169,9 @@ struct _Compose
 	/* privacy settings */
 	gboolean use_signing;
 	gboolean use_encryption;
+	
+	gint sigmode;
+	gint encmode;
 
 	gboolean modified;
 

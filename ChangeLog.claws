@@ -1,3 +1,82 @@
+2002-11-07 [colin]	0.8.5claws89
+
+	* src/folderview.c
+	  src/folder.c
+		Allow folder dropping to a root folder
+
+2002-11-07 [paul] 	0.8.5claws88
+
+	* src/compose.c
+		revert last commit
+
+2002-11-07 [paul]	0.8.5claws87
+
+	* src/compose.c
+		fix reply-to-list bug. closes bug report
+		"[633382] reply-to-list broken in recent cvs"
+
+2002-11-07 [paul]	0.8.5claws86
+
+	* src/compose.c
+		add a forgotten '#if USE_GPGME ... #endif'
+
+2002-11-07 [paul]	0.8.5claws85
+
+	* sync with 0.8.5cvs20
+		see ChangeLog 2002-11-07
+
+2002-11-07 [colin]	0.8.5claws84
+
+	* src/folder.[ch]
+		Change folder_item_move_to to return the newly 
+		created folderitem.
+	* src/folderview.c
+		Select the new folderitem after moving.
+
+2002-11-07 [colin]	0.8.5claws83
+
+	* src/prefs_filtering.c
+		Fix rule rewriting when moving a leaf folder to a 
+		shorter path
+
+2002-11-07 [colin]	0.8.5claws82
+
+	* src/prefs_filtering.c
+		fix a leak
+
+2002-11-07 [colin]	0.8.5claws81
+
+	* src/folder.[ch]
+		Add folder_item_move_to() function to move a 
+		folderitem into another one (updates matcher etc)
+	* src/folderview.c
+		Add folder drag'n drop (context menu to come)
+		[Should be dataloss free, but Please backup before 
+		 trying !]
+
+2002-11-06 [colin]	0.8.5claws80
+
+	* src/mh.c
+		mh_create_folder() returns NULL if can't create
+		directory hierarchy
+
+2002-11-06 [paul]	0.8.5claws79
+
+	* src/compose.[ch]
+		allow 'on-the-fly' changing of the type of encryption 
+		and/or signing used (mime/ascii) via the compose window
+
+2002-11-06 [paul]	0.8.5claws78
+
+	* sync with 0.8.5cvs19
+		see ChangeLog 2002-11-06 for src/account.c: 
+		account_get_special_folder()
+		
+2002-11-05 [alfons]	0.8.5claws77
+
+	* src/crash.c
+		very minor cleanups: nothing to see here, move on. :-)
+
 2002-11-05 [colin]	0.8.5claws76
 
 	* src/main.c

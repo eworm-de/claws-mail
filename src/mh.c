@@ -955,9 +955,10 @@ FolderItem *mh_create_folder(Folder *folder, FolderItem *parent,
 	g_return_val_if_fail(name != NULL, NULL);
 
 	path = folder_item_get_path(parent);
-	if (!is_dir_exist(path))
-		make_dir_hier(path);
-
+	if (!is_dir_exist(path)) 
+		if (make_dir_hier(path) != 0)
+			return NULL;
+		
 	fullpath = g_strconcat(path, G_DIR_SEPARATOR_S, name, NULL);
 	g_free(path);
 

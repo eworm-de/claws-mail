@@ -567,17 +567,6 @@ void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 	prefs_custom_header_read_config(ac_prefs);
 }
 
-void prefs_account_save_config(PrefsAccount *ac_prefs)
-{
-	gchar *buf;
-
-	g_return_if_fail(ac_prefs != NULL);
-
-	tmp_ac_prefs = *ac_prefs;
-	buf = g_strdup_printf("Account: %d", ac_prefs->account_id);
-	prefs_save_config(param, buf, ACCOUNT_RC);
-}
-
 void prefs_account_save_config_all(GList *account_list)
 {
 	GList *cur;

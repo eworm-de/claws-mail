@@ -446,7 +446,14 @@ FolderItem *account_get_special_folder(PrefsAccount *ac_prefs,
 
 	g_return_val_if_fail(ac_prefs != NULL, NULL);
 
-	if (type == F_OUTBOX) {
+	switch (type) {
+	case F_INBOX:
+		if (ac_prefs->folder)
+			item = FOLDER(ac_prefs->folder)->inbox;
+		if (!item)
+			item = folder_get_default_inbox();
+		break;
+	case F_OUTBOX:
 		if (ac_prefs->set_sent_folder && ac_prefs->sent_folder) {
 			item = folder_find_item_from_identifier
 				(ac_prefs->sent_folder);
@@ -457,7 +464,8 @@ FolderItem *account_get_special_folder(PrefsAccount *ac_prefs,
 			if (!item)
 				item = folder_get_default_outbox();
 		}
-	} else if (type == F_DRAFT) {
+		break;
+	case F_DRAFT:
 		if (ac_prefs->set_draft_folder && ac_prefs->draft_folder) {
 			item = folder_find_item_from_identifier
 				(ac_prefs->draft_folder);
@@ -468,12 +476,14 @@ FolderItem *account_get_special_folder(PrefsAccount *ac_prefs,
 			if (!item)
 				item = folder_get_default_draft();
 		}
-	} else if (type == F_QUEUE) {
+		break;
+	case F_QUEUE:
 		if (ac_prefs->folder)
 			item = FOLDER(ac_prefs->folder)->queue;
 		if (!item)
 			item = folder_get_default_queue();
-	} else if (type == F_TRASH) {
+		break;
+	case F_TRASH:
 		if (ac_prefs->set_trash_folder && ac_prefs->trash_folder) {
 			item = folder_find_item_from_identifier
 				(ac_prefs->trash_folder);
@@ -484,6 +494,9 @@ FolderItem *account_get_special_folder(PrefsAccount *ac_prefs,
 			if (!item)
 				item = folder_get_default_trash();
 		}
+		break;
+	default:
+		break;
 	}
 
 	return item;

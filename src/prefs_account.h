@@ -198,7 +198,6 @@ PrefsAccount *prefs_account_new		(void);
 
 void prefs_account_read_config		(PrefsAccount	*ac_prefs,
 					 const gchar	*label);
-void prefs_account_save_config		(PrefsAccount	*ac_prefs);
 void prefs_account_save_config_all	(GList		*account_list);
 
 void prefs_account_free			(PrefsAccount	*ac_prefs);
