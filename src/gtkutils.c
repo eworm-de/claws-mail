@@ -504,6 +504,26 @@ void gtkut_widget_get_uposition(GtkWidget *widget, gint *px, gint *py)
 	*py = y;
 }
 
+void gtkut_window_popup(GtkWidget *window)
+{
+	gint x, y, sx, sy, new_x, new_y;
+
+	g_return_if_fail(window != NULL);
+	g_return_if_fail(window->window != NULL);
+
+	gdk_window_get_origin(window->window, &x, &y);
+	sx = gdk_screen_width();
+	sy = gdk_screen_height();
+	new_x = x % sx; if (new_x < 0) new_x = 0;
+	new_y = y % sy; if (new_y < 0) new_y = 0;
+	if (new_x != x || new_y != y)
+		gdk_window_move(window->window, new_x, new_y);
+
+	gdk_window_raise(window->window);
+	gdk_window_show(window->window);
+}
+
+
 static void gtkut_clist_bindings_add(GtkWidget *clist)
 {
 	GtkBindingSet *binding_set;

@@ -1776,51 +1776,18 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 
 void main_window_popup(MainWindow *mainwin)
 {
-	gint x, y;
-	gint sx, sy;
-	GtkWidget *widget;
-
-	gdk_window_get_origin(mainwin->window->window, &x, &y);
-	sx = gdk_screen_width();
-	sy = gdk_screen_height();
-	x %= sx; if (x < 0) x = 0;
-	y %= sy; if (y < 0) y = 0;
-	gdk_window_move(mainwin->window->window, x, y);
-	gdk_window_raise(mainwin->window->window);
-	gdk_window_show(mainwin->window->window);
-
-	debug_print("window position: x = %d, y = %d\n", x, y);
+	gtkut_window_popup(mainwin->window);
 
 	switch (mainwin->type) {
 	case SEPARATE_FOLDER:
-		widget = mainwin->win.sep_folder.folderwin;
-		gdk_window_get_origin(widget->window, &x, &y);
-		x %= sx; if (x < 0) x = 0;
-		y %= sy; if (y < 0) y = 0;
-		gdk_window_move(widget->window, x, y);
-		gdk_window_raise(widget->window);
+		gtkut_window_popup(mainwin->win.sep_folder.folderwin);
 		break;
 	case SEPARATE_MESSAGE:
-		widget = mainwin->win.sep_message.messagewin;
-		gdk_window_get_origin(widget->window, &x, &y);
-		x %= sx; if (x < 0) x = 0;
-		y %= sy; if (y < 0) y = 0;
-		gdk_window_move(widget->window, x, y);
-		gdk_window_raise(widget->window);
+		gtkut_window_popup(mainwin->win.sep_message.messagewin);
 		break;
 	case SEPARATE_BOTH:
-		widget = mainwin->win.sep_both.folderwin;
-		gdk_window_get_origin(widget->window, &x, &y);
-		x %= sx; if (x < 0) x = 0;
-		y %= sy; if (y < 0) y = 0;
-		gdk_window_move(widget->window, x, y);
-		gdk_window_raise(widget->window);
-		widget = mainwin->win.sep_both.messagewin;
-		gdk_window_get_origin(widget->window, &x, &y);
-		x %= sx; if (x < 0) x = 0;
-		y %= sy; if (y < 0) y = 0;
-		gdk_window_move(widget->window, x, y);
-		gdk_window_raise(widget->window);
+		gtkut_window_popup(mainwin->win.sep_both.folderwin);
+		gtkut_window_popup(mainwin->win.sep_both.messagewin);
 		break;
 	default:
 		break;

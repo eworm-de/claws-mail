@@ -1,3 +1,13 @@
+2002-12-03 [sergey]	0.8.6claws55
+
+	* src/gtkutils.c
+	* src/gtkutils.h
+		gtkut_window_popup(): new function.
+	* src/mainwindow.c
+		main_window_popup(): use gtkut_window_popup() to raise
+		window without changing its position.
+		(see sylpheed-main ML message [sylpheed:17247])
+
 2002-12-03 [sergey]	0.8.6claws54
 
 	* src/send.c
