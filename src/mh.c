@@ -627,8 +627,6 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 		return -1;
 	}
 	
-	dest->op_count--;
-
 	if (copy_file(srcfile, destfile) < 0) {
 		FILE_OP_ERROR(srcfile, "copy");
 		g_free(srcfile);
