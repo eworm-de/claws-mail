@@ -593,7 +593,6 @@ IMAPSession *imap_session_new(const PrefsAccount *account)
 	IMAPSession *session;
 	SockInfo *imap_sock;
 	gushort port;
-	gboolean is_preauth;
 
 #ifdef USE_OPENSSL
 	/* FIXME: IMAP over SSL only... */ 
@@ -644,7 +643,7 @@ IMAPSession *imap_session_new(const PrefsAccount *account)
 	session->capability = NULL;
 
 	session->mbox = NULL;
-	session->authenticated = is_preauth;
+	session->authenticated = FALSE;
 	session->cmd_count = 0;
 
 	/* Only need to log in if the connection was not PREAUTH */
@@ -669,7 +668,7 @@ IMAPSession *imap_session_new(const PrefsAccount *account)
 		}
 
 		imap_free_capabilities(session);
-		session->authenticated = is_preauth;
+		session->authenticated = FALSE;
 		session->cmd_count = 1;
 
 		if (imap_greeting(session) != IMAP_SUCCESS) {
@@ -679,7 +678,7 @@ IMAPSession *imap_session_new(const PrefsAccount *account)
 	}
 #endif
 	log_message("IMAP connection is %s-authenticated\n",
-		    (is_preauth) ? "pre" : "un");
+		    (session->authenticated) ? "pre" : "un");
 
 	return session;
 }
@@ -2762,7 +2761,7 @@ static gint imap_cmd_expunge(IMAPSession *session)
 
 static gint imap_cmd_ok(IMAPSession *session, GPtrArray *argbuf)
 {
-	gint ok;
+	gint ok = IMAP_SUCCESS;
 	gchar *buf;
 	gint cmd_num;
 	gchar *data;
@@ -2772,40 +2771,36 @@ static gint imap_cmd_ok(IMAPSession *session, GPtrArray *argbuf)
 		// make sure data is long enough for any substring of buf
 		data = alloca(strlen(buf) + 1);
 
+		// untagged line read
 		if (buf[0] == '*' && buf[1] == ' ') {
 			gint num;
 			if (argbuf)
 				g_ptr_array_add(argbuf, g_strdup(buf + 2));
 
-			if (sscanf(buf + 2, "%d %s", &num, data) < 2)
-				continue;
+			if (sscanf(buf + 2, "%d %s", &num, data) >= 2) {
+				if (!strcmp(data, "EXISTS")) {
+					session->exists = num;
+					session->folder_content_changed = TRUE;
+				}
 
-			if (!strcmp(data, "EXISTS")) {
-				session->exists = num;
-				session->folder_content_changed = TRUE;
+				if(!strcmp(data, "EXPUNGE")) {
+					session->exists--;
+					session->folder_content_changed = TRUE;
+				}
 			}
-
-			if(!strcmp(data, "EXPUNGE")) {
-				session->exists--;
-				session->folder_content_changed = TRUE;
-			}
-
-			continue;
-		}
-
-		if (sscanf(buf, "%d %s", &cmd_num, data) < 2) {
-			g_free(buf);
-			return IMAP_ERROR;
-		} else if (cmd_num == session->cmd_count &&
-			 !strcmp(data, "OK")) {
+		// tagged line with correct tag and OK response found
+		} else if ((sscanf(buf, "%d %s", &cmd_num, data) >= 2) &&
+			   (cmd_num == session->cmd_count) &&
+			   !strcmp(data, "OK")) {
 			if (argbuf)
 				g_ptr_array_add(argbuf, g_strdup(buf));
-			g_free(buf);
-			return IMAP_SUCCESS;
+			break;
+		// everything else
 		} else {
-			g_free(buf);
-			return IMAP_ERROR;
+			ok = IMAP_ERROR;
+			break;
 		}
+		g_free(buf);
 	}
 	g_free(buf);
 
