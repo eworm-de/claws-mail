@@ -749,8 +749,6 @@ void messageview_destroy(MessageView *messageview)
 	msgview_list = g_list_remove(msgview_list, messageview); 
 
 	g_free(messageview);
-
-	gtk_widget_unref(mimeview);
 }
 
 void messageview_delete(MessageView *msgview)

@@ -1,3 +1,7 @@
+2004-01-25 Thorsten Maerz <torte@netztorte.de>
+	* src/messageview.c
+		remove orphaned mimeview unref()
+
 2004-01-20 Thorsten Maerz <torte@netztorte.de>
 	* src/grouplistdialog.c
 		expand nodes containing subscribed groups
