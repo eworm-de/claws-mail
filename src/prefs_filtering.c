@@ -66,6 +66,7 @@ static struct Filtering {
 	GtkWidget *dest_entry;
 	GtkWidget *dest_btn;
 	GtkWidget *dest_label;
+	GtkWidget *recip_label;
 	GtkWidget *exec_label;
 	GtkWidget *exec_btn;
 
@@ -296,6 +297,7 @@ static void prefs_filtering_create(void)
 	GtkWidget *account_list;
 	GtkWidget *account_combo;
 	GtkWidget *dest_label;
+	GtkWidget *recip_label;
 	GtkWidget *exec_label;
 	GtkWidget *dest_entry;
 	GtkWidget *dest_btn;
@@ -470,6 +472,11 @@ static void prefs_filtering_create(void)
 	gtk_misc_set_alignment (GTK_MISC (dest_label), 0, 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox1), dest_label, FALSE, FALSE, 0);
 
+	recip_label = gtk_label_new (_("Recipient"));
+	gtk_widget_show (recip_label);
+	gtk_misc_set_alignment (GTK_MISC (recip_label), 0, 0.5);
+	gtk_box_pack_start (GTK_BOX (hbox1), recip_label, FALSE, FALSE, 0);
+
 	exec_label = gtk_label_new (_("Execute"));
 	gtk_widget_show (exec_label);
 	gtk_misc_set_alignment (GTK_MISC (exec_label), 0, 0.5);
@@ -594,6 +601,7 @@ static void prefs_filtering_create(void)
 	filtering.dest_entry = dest_entry;
 	filtering.dest_btn = dest_btn;
 	filtering.dest_label = dest_label;
+	filtering.recip_label = recip_label;
 	filtering.exec_label = exec_label;
 	filtering.exec_btn = exec_btn;
 
@@ -972,13 +980,19 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(gboolean alert)
 	switch (action_id) {
 	case ACTION_MOVE:
 	case ACTION_COPY:
-	case ACTION_FORWARD:
-	case ACTION_FORWARD_AS_ATTACHMENT:
-	case ACTION_REDIRECT:
 	case ACTION_EXECUTE:
 		destination = gtk_entry_get_text(GTK_ENTRY(filtering.dest_entry));
 		if (*destination == '\0') {
 			if(alert == TRUE) alertpanel_error(_("Destination is not set."));
+			return NULL;
+		}
+		break;
+	case ACTION_FORWARD:
+	case ACTION_FORWARD_AS_ATTACHMENT:
+	case ACTION_REDIRECT:
+		destination = gtk_entry_get_text(GTK_ENTRY(filtering.dest_entry));
+		if (*destination == '\0') {
+			if(alert == TRUE) alertpanel_error(_("Recipient is not set."));
 			return NULL;
 		}
 		break;
@@ -1229,11 +1243,13 @@ static void prefs_filtering_action_selection_changed(GtkList *list,
 
 	if (filtering.current_action != value) {
 		if (filtering.current_action == ACTION_FORWARD 
-		||  filtering.current_action == ACTION_FORWARD_AS_ATTACHMENT) {
+		||  filtering.current_action == ACTION_FORWARD_AS_ATTACHMENT
+		||  filtering.current_action == ACTION_REDIRECT) {
 			debug_print("unregistering address completion entry\n");
 			address_completion_unregister_entry(GTK_ENTRY(filtering.dest_entry));
 		}
-		if (value == ACTION_FORWARD || value == ACTION_FORWARD_AS_ATTACHMENT) {
+		if (value == ACTION_FORWARD || value == ACTION_FORWARD_AS_ATTACHMENT
+		||  value == ACTION_REDIRECT) {
 			debug_print("registering address completion entry\n");
 			address_completion_register_entry(GTK_ENTRY(filtering.dest_entry));
 		}
@@ -1260,6 +1276,7 @@ static void prefs_filtering_action_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering.dest_btn, TRUE);
 		gtk_widget_show(filtering.dest_label);
 		gtk_widget_set_sensitive(filtering.dest_label, TRUE);
+		gtk_widget_hide(filtering.recip_label);
 		gtk_widget_hide(filtering.exec_label);
 		gtk_widget_hide(filtering.exec_btn);
 		gtk_widget_hide(filtering.color_optmenu);
@@ -1275,6 +1292,7 @@ static void prefs_filtering_action_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering.dest_btn, TRUE);
 		gtk_widget_show(filtering.dest_label);
 		gtk_widget_set_sensitive(filtering.dest_label, TRUE);
+		gtk_widget_hide(filtering.recip_label);
 		gtk_widget_hide(filtering.exec_label);
 		gtk_widget_hide(filtering.exec_btn);
 		gtk_widget_hide(filtering.color_optmenu);
@@ -1290,6 +1308,7 @@ static void prefs_filtering_action_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering.dest_btn, FALSE);
 		gtk_widget_show(filtering.dest_label);
 		gtk_widget_set_sensitive(filtering.dest_label, FALSE);
+		gtk_widget_hide(filtering.recip_label);
 		gtk_widget_hide(filtering.exec_label);
 		gtk_widget_hide(filtering.exec_btn);
 		gtk_widget_hide(filtering.color_optmenu);
@@ -1305,6 +1324,7 @@ static void prefs_filtering_action_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering.dest_btn, FALSE);
 		gtk_widget_show(filtering.dest_label);
 		gtk_widget_set_sensitive(filtering.dest_label, FALSE);
+		gtk_widget_hide(filtering.recip_label);
 		gtk_widget_hide(filtering.exec_label);
 		gtk_widget_hide(filtering.exec_btn);
 		gtk_widget_hide(filtering.color_optmenu);
@@ -1320,6 +1340,7 @@ static void prefs_filtering_action_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering.dest_btn, FALSE);
 		gtk_widget_show(filtering.dest_label);
 		gtk_widget_set_sensitive(filtering.dest_label, FALSE);
+		gtk_widget_hide(filtering.recip_label);
 		gtk_widget_hide(filtering.exec_label);
 		gtk_widget_hide(filtering.exec_btn);
 		gtk_widget_hide(filtering.color_optmenu);
@@ -1335,6 +1356,7 @@ static void prefs_filtering_action_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering.dest_btn, FALSE);
 		gtk_widget_show(filtering.dest_label);
 		gtk_widget_set_sensitive(filtering.dest_label, FALSE);
+		gtk_widget_hide(filtering.recip_label);
 		gtk_widget_hide(filtering.exec_label);
 		gtk_widget_hide(filtering.exec_btn);
 		gtk_widget_hide(filtering.color_optmenu);
@@ -1350,6 +1372,7 @@ static void prefs_filtering_action_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering.dest_btn, FALSE);
 		gtk_widget_show(filtering.dest_label);
 		gtk_widget_set_sensitive(filtering.dest_label, FALSE);
+		gtk_widget_hide(filtering.recip_label);
 		gtk_widget_hide(filtering.exec_label);
 		gtk_widget_hide(filtering.exec_btn);
 		gtk_widget_hide(filtering.color_optmenu);
@@ -1363,8 +1386,9 @@ static void prefs_filtering_action_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering.dest_entry, TRUE);
 		gtk_widget_show(filtering.dest_btn);
 		gtk_widget_set_sensitive(filtering.dest_btn, FALSE);
-		gtk_widget_show(filtering.dest_label);
-		gtk_widget_set_sensitive(filtering.dest_label, TRUE);
+		gtk_widget_hide(filtering.dest_label);
+		gtk_widget_show(filtering.recip_label);
+		gtk_widget_set_sensitive(filtering.recip_label, TRUE);
 		gtk_widget_hide(filtering.exec_label);
 		gtk_widget_hide(filtering.exec_btn);
 		gtk_widget_hide(filtering.color_optmenu);
@@ -1378,8 +1402,9 @@ static void prefs_filtering_action_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering.dest_entry, TRUE);
 		gtk_widget_show(filtering.dest_btn);
 		gtk_widget_set_sensitive(filtering.dest_btn, FALSE);
-		gtk_widget_show(filtering.dest_label);
-		gtk_widget_set_sensitive(filtering.dest_label, TRUE);
+		gtk_widget_hide(filtering.dest_label);
+		gtk_widget_show(filtering.recip_label);
+		gtk_widget_set_sensitive(filtering.recip_label, TRUE);
 		gtk_widget_hide(filtering.exec_label);
 		gtk_widget_hide(filtering.exec_btn);
 		gtk_widget_hide(filtering.color_optmenu);
@@ -1393,8 +1418,9 @@ static void prefs_filtering_action_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering.dest_entry, TRUE);
 		gtk_widget_show(filtering.dest_btn);
 		gtk_widget_set_sensitive(filtering.dest_btn, FALSE);
-		gtk_widget_show(filtering.dest_label);
-		gtk_widget_set_sensitive(filtering.dest_label, TRUE);
+		gtk_widget_hide(filtering.dest_label);
+		gtk_widget_show(filtering.recip_label);
+		gtk_widget_set_sensitive(filtering.recip_label, TRUE);
 		gtk_widget_hide(filtering.exec_label);
 		gtk_widget_hide(filtering.exec_btn);
 		gtk_widget_hide(filtering.color_optmenu);
@@ -1408,6 +1434,7 @@ static void prefs_filtering_action_select(GtkList *list,
 		gtk_widget_set_sensitive(filtering.dest_entry, TRUE);
 		gtk_widget_hide(filtering.dest_btn);
 		gtk_widget_hide(filtering.dest_label);
+		gtk_widget_hide(filtering.recip_label);
 		gtk_widget_show(filtering.exec_label);
 		gtk_widget_set_sensitive(filtering.exec_btn, TRUE);
 		gtk_widget_show(filtering.exec_btn);
@@ -1421,6 +1448,7 @@ static void prefs_filtering_action_select(GtkList *list,
 		gtk_widget_hide(filtering.dest_entry);
 		gtk_widget_hide(filtering.dest_btn);
 		gtk_widget_hide(filtering.dest_label);
+		gtk_widget_hide(filtering.recip_label);
 		gtk_widget_hide(filtering.exec_label);
 		gtk_widget_show(filtering.exec_btn);
 		gtk_widget_set_sensitive(filtering.exec_btn, FALSE);
