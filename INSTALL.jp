@@ -34,6 +34,7 @@ o Linux2000G (Intel / PPC)
 o HOLON Linux 2.0 (Intel / PPC)
 o Linux for PPC Japanese Edition 2.0 (glibc 2.1.x)
 o Linux for PPC Japanese Edition 3.0 (glibc 2.1.x)
+o LinuxPPC Q4 2000 (glibc 2.1.x)
 o Linux MLD4
 o Linux MLD5
 o Plamo Linux 2.0
@@ -54,6 +55,7 @@ o Caldera Workstation 3.1
 o Conectiva Linux 4.0
 o Conectiva Linux 5.0
 o Vector Linux 1.5
+o Yellow Dog Linux 2.0 (glibc 2.2.1)
 o FreeBSD 3.2-RELEASE
 o FreeBSD 3.4-RELEASE
 o FreeBSD 4.0-RELEASE

@@ -63,6 +63,7 @@
 #include "prefs_scoring.h"
 #include "prefs_account.h"
 #include "prefs_folder_item.h"
+#include "prefs_summary_column.h"
 #include "account.h"
 #include "addressbook.h"
 #include "headerwindow.h"
@@ -946,10 +947,20 @@ void main_window_reflect_prefs_all(void)
 		else
 			gtk_widget_show(mainwin->exec_btn);
 
-		summary_change_display_item(mainwin->summaryview);
 		summary_redisplay_msg(mainwin->summaryview);
 		headerview_set_visibility(mainwin->messageview->headerview,
 					  prefs_common.display_header_pane);
+	}
+}
+
+void main_window_set_summary_column(void)
+{
+	GList *cur;
+	MainWindow *mainwin;
+
+	for (cur = mainwin_list; cur != NULL; cur = cur->next) {
+		mainwin = (MainWindow *)cur->data;
+		summary_set_column_order(mainwin->summaryview);
 	}
 }
 
@@ -1228,6 +1239,7 @@ static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 {
 	SensitiveCond state = 0;
 	SummarySelection selection;
+	FolderItem *item = mainwin->summaryview->folder_item;
 
 	selection = summary_get_selection_type(mainwin->summaryview);
 
@@ -1235,8 +1247,8 @@ static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 		state |= M_UNLOCKED;
 	if (selection != SUMMARY_NONE)
 		state |= M_MSG_EXIST;
-	if (mainwin->summaryview->folder_item) {
-		if (mainwin->summaryview->folder_item->threaded)
+	if (item) {
+		if (item->threaded)
 			state |= M_THREADED;
 		else
 			state |= M_UNTHREADED;	
@@ -1246,17 +1258,15 @@ static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 		state |= M_TARGET_EXIST;
 	if (selection == SUMMARY_SELECTED_SINGLE)
 		state |= M_SINGLE_TARGET_EXIST;
-	if (mainwin->summaryview->folder_item &&
-	    mainwin->summaryview->folder_item->folder->type != F_NEWS)
+	if (item && item->folder->type != F_NEWS)
 		state |= M_EXEC;
 	if (mainwin->summaryview->folder_item &&
 	    mainwin->summaryview->folder_item->folder->type == F_NEWS)
 		state |= M_NEWS;
 	if (selection == SUMMARY_SELECTED_SINGLE &&
-	    (mainwin->summaryview->folder_item &&
-	     (mainwin->summaryview->folder_item->stype == F_DRAFT ||
-	      mainwin->summaryview->folder_item->stype == F_OUTBOX ||
-	      mainwin->summaryview->folder_item->stype == F_QUEUE)))
+	    (item &&
+	     (item->stype == F_OUTBOX || item->stype == F_DRAFT ||
+	      item->stype == F_QUEUE)))
 		state |= M_ALLOW_REEDIT;
 	if (cur_account)
 		state |= M_HAVE_ACCOUNT;
@@ -2568,7 +2578,7 @@ static void thread_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 static void set_display_item_cb(MainWindow *mainwin, guint action,
 				GtkWidget *widget)
 {
-	prefs_summary_display_item_set();
+	prefs_summary_column_open();
 }
 
 static void sort_summary_cb(MainWindow *mainwin, guint action,

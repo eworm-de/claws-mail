@@ -1,3 +1,11 @@
+2001-10-22 [paul]	0.6.4claws1
+
+	* sync with sylpheed 0.6.4 release
+		see ChangeLog entries 2001-10-21
+
+	* po/fr.po, po/pt_BR.po
+		updated by Melvin Hadasht and Fabio Junior Beneditto
+
 2001-10-21 [paul]	0.6.3claws30
 
 	* src/compose.c

@@ -43,12 +43,12 @@ typedef enum
 	S_COL_MARK,
 	S_COL_UNREAD,
 	S_COL_MIME,
-	S_COL_NUMBER,
-	S_COL_SCORE,
-	S_COL_SIZE,
-	S_COL_DATE,
-	S_COL_FROM,
 	S_COL_SUBJECT,
+	S_COL_FROM,
+	S_COL_DATE,
+	S_COL_SIZE,
+	S_COL_NUMBER,
+	S_COL_SCORE
 } SummaryColumnType;
 
 #define N_SUMMARY_COLS	9
@@ -191,20 +191,26 @@ guint summary_get_current_msgnum  (SummaryView		*summaryview);
 void summary_select_node	  (SummaryView		*summaryview,
 				   GtkCTreeNode		*node,
 				   gboolean		 display_msg);
+
 void summary_thread_build	  (SummaryView		*summaryview);
 void summary_unthread		  (SummaryView		*summaryview);
+
 void summary_filter		  (SummaryView		*summaryview);
 void summary_sort		  (SummaryView		*summaryview,
 				   SummarySortType	 type);
 
 void summary_delete		  (SummaryView		*summaryview);
 void summary_delete_duplicated	  (SummaryView		*summaryview);
+
 gboolean summary_execute	  (SummaryView		*summaryview);
+
 void summary_attract_by_subject	  (SummaryView		*summaryview);
+
 gint summary_write_cache	  (SummaryView		*summaryview);
+
 void summary_pass_key_press_event (SummaryView		*summaryview,
 				   GdkEventKey		*event);
-void summary_change_display_item  (SummaryView		*summaryview);
+
 void summary_redisplay_msg	  (SummaryView		*summaryview);
 void summary_open_msg		  (SummaryView		*summaryview);
 void summary_view_source	  (SummaryView		*summaryview);
@@ -236,5 +242,7 @@ void summary_set_colorlabel	  (SummaryView		*summaryview,
 void summary_set_colorlabel_color (GtkCTree		*ctree,
 				   GtkCTreeNode		*node,
 				   guint		 labelcolor);
+
+void summary_set_column_order	  (SummaryView		*summaryview);
 
 #endif /* __SUMMARY_H__ */

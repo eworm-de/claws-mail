@@ -1,3 +1,28 @@
+2001-10-21
+
+	* version 0.6.4
+
+2001-10-21
+
+	* src/prefs_summary_column.[ch]:
+	  made prefs_summary_column_get_config() public.
+	* src/summaryview.c: summary_ctree_create(): some code cleanup.
+	* configure.in: moved the position of SSL checking after LDAP
+	  for linking problem.
+
+2001-10-21
+
+	* src/mainwindow.c
+	  src/summaryview.c: allowed reedit in the outbox.
+	* src/prefs_summary_column.[ch]: new. UI for setting summary
+	  columns.
+	* src/mainwindow.[ch]: main_window_set_summary_column(): new.
+	  It calls summary_set_column_order().
+	* src/summaryview.[ch]:
+	  summary_ctree_create(): new. separated from summary_create().
+	  summary_set_column_order(): new. It destroys the current
+	  CTree and replaces it with the new one.
+
 2001-10-19
 
 	* src/smtp.[ch]: smtp_from(): abort if auth failed.

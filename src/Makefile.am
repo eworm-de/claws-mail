@@ -30,6 +30,7 @@ sylpheed_SOURCES = \
 	prefs_account.c prefs_account.h \
 	prefs_display_header.c prefs_display_header.h \
 	prefs_customheader.c prefs_customheader.h \
+	prefs_summary_column.c prefs_summary_column.h \
 	account.c account.h \
 	displayheader.c displayheader.h \
 	customheader.c customheader.h \
@@ -42,6 +43,8 @@ sylpheed_SOURCES = \
 	addrindex.c addrindex.h \
 	mgutils.c mgutils.h \
 	vcard.c vcard.h \
+	ldif.c ldif.h \
+	importldif.c importldif.h \
 	jpilot.c jpilot.h \
 	syldap.c syldap.h \
 	editbook.c editbook.h \
@@ -92,8 +95,6 @@ sylpheed_SOURCES = \
 	imap.c imap.h \
 	xml.c xml.h \
 	html.c html.h \
-	ldif.c ldif.h \
-	importldif.c importldif.h \
 	procmime.c procmime.h \
 	rfc2015.c rfc2015.h \
 	passphrase.c passphrase.h \

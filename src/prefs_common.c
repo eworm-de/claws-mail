@@ -38,6 +38,7 @@
 #include "prefs.h"
 #include "prefs_common.h"
 #include "prefs_display_header.h"
+#include "prefs_summary_column.h"
 #include "mainwindow.h"
 #include "summaryview.h"
 #include "messageview.h"
@@ -428,24 +429,62 @@ static PrefParam param[] = {
 	{"show_statusbar", "TRUE", &prefs_common.show_statusbar, P_BOOL,
 	 NULL, NULL, NULL},
 
-	{"show_mark", "TRUE", &prefs_common.show_mark, P_BOOL,
-	 NULL, NULL, NULL},
-	{"show_unread", "TRUE", &prefs_common.show_unread, P_BOOL,
-	 NULL, NULL, NULL},
-	{"show_mime", "TRUE", &prefs_common.show_mime, P_BOOL,
-	 NULL, NULL, NULL},
-	{"show_number", "FALSE", &prefs_common.show_number, P_BOOL,
-	 NULL, NULL, NULL},
-	{"show_score", "TRUE", &prefs_common.show_score, P_BOOL,
-	 NULL, NULL, NULL},
-	{"show_size", "FALSE", &prefs_common.show_size, P_BOOL,
-	 NULL, NULL, NULL},
-	{"show_date", "TRUE", &prefs_common.show_date, P_BOOL,
-	 NULL, NULL, NULL},
-	{"show_from", "TRUE", &prefs_common.show_from, P_BOOL,
-	 NULL, NULL, NULL},
-	{"show_subject", "TRUE", &prefs_common.show_subject, P_BOOL,
-	 NULL, NULL, NULL},
+	{"summary_col_show_mark", "TRUE",
+	 &prefs_common.summary_col_visible[S_COL_MARK], P_BOOL, NULL, NULL, NULL},
+	{"summary_col_show_unread", "TRUE",
+	 &prefs_common.summary_col_visible[S_COL_UNREAD], P_BOOL, NULL, NULL, NULL},
+	{"summary_col_show_mime", "TRUE",
+	 &prefs_common.summary_col_visible[S_COL_MIME], P_BOOL, NULL, NULL, NULL},
+	{"summary_col_show_subject", "TRUE",
+	 &prefs_common.summary_col_visible[S_COL_SUBJECT], P_BOOL, NULL, NULL, NULL},
+	{"summary_col_show_from", "TRUE",
+	 &prefs_common.summary_col_visible[S_COL_FROM], P_BOOL, NULL, NULL, NULL},
+	{"summary_col_show_date", "TRUE",
+	 &prefs_common.summary_col_visible[S_COL_DATE], P_BOOL, NULL, NULL, NULL},
+	{"summary_col_show_size", "TRUE",
+	 &prefs_common.summary_col_visible[S_COL_SIZE], P_BOOL, NULL, NULL, NULL},
+	{"summary_col_show_number", "FALSE",
+	 &prefs_common.summary_col_visible[S_COL_NUMBER], P_BOOL, NULL, NULL, NULL},
+	{"summary_col_show_score", "FALSE",
+	 &prefs_common.summary_col_visible[S_COL_SCORE], P_BOOL, NULL, NULL, NULL},
+
+	{"summary_col_pos_mark", "0",
+	  &prefs_common.summary_col_pos[S_COL_MARK], P_INT, NULL, NULL, NULL},
+	{"summary_col_pos_unread", "1",
+	  &prefs_common.summary_col_pos[S_COL_UNREAD], P_INT, NULL, NULL, NULL},
+	{"summary_col_pos_mime", "2",
+	  &prefs_common.summary_col_pos[S_COL_MIME], P_INT, NULL, NULL, NULL},
+	{"summary_col_pos_subject", "3",
+	  &prefs_common.summary_col_pos[S_COL_SUBJECT], P_INT, NULL, NULL, NULL},
+	{"summary_col_pos_from", "4",
+	  &prefs_common.summary_col_pos[S_COL_FROM], P_INT, NULL, NULL, NULL},
+	{"summary_col_pos_date", "5",
+	  &prefs_common.summary_col_pos[S_COL_DATE], P_INT, NULL, NULL, NULL},
+	{"summary_col_pos_size", "6",
+	  &prefs_common.summary_col_pos[S_COL_SIZE], P_INT, NULL, NULL, NULL},
+	{"summary_col_pos_number", "7",
+	  &prefs_common.summary_col_pos[S_COL_NUMBER], P_INT, NULL, NULL, NULL},
+	{"summary_col_pos_score", "8",
+	 &prefs_common.summary_col_pos[S_COL_SCORE], P_INT, NULL, NULL, NULL},
+
+	{"summary_col_size_mark", "10",
+	 &prefs_common.summary_col_size[S_COL_MARK], P_INT, NULL, NULL, NULL},
+	{"summary_col_size_unread", "13",
+	 &prefs_common.summary_col_size[S_COL_UNREAD], P_INT, NULL, NULL, NULL},
+	{"summary_col_size_mime", "10",
+	 &prefs_common.summary_col_size[S_COL_MIME], P_INT, NULL, NULL, NULL},
+	{"summary_col_size_subject", "200",
+	 &prefs_common.summary_col_size[S_COL_SUBJECT], P_INT, NULL, NULL, NULL},
+	{"summary_col_size_from", "120",
+	 &prefs_common.summary_col_size[S_COL_FROM], P_INT, NULL, NULL, NULL},
+	{"summary_col_size_date", "118",
+	 &prefs_common.summary_col_size[S_COL_DATE], P_INT, NULL, NULL, NULL},
+	{"summary_col_size_size", "45",
+	 &prefs_common.summary_col_size[S_COL_SIZE], P_INT, NULL, NULL, NULL},
+	{"summary_col_size_number", "40",
+	 &prefs_common.summary_col_size[S_COL_NUMBER], P_INT, NULL, NULL, NULL},
+	{"summary_col_size_score", "40",
+	 &prefs_common.summary_col_size[S_COL_SCORE], P_INT, NULL, NULL, NULL},
 
 	/* Widget size */
 	{"folderview_width", "179", &prefs_common.folderview_width, P_INT,
@@ -460,28 +499,12 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"folder_col_total", "32", &prefs_common.folder_col_total, P_INT,
 	 NULL, NULL, NULL},
+
 	{"summaryview_width", "600", &prefs_common.summaryview_width, P_INT,
 	 NULL, NULL, NULL},
 	{"summaryview_height", "173", &prefs_common.summaryview_height, P_INT,
 	 NULL, NULL, NULL},
-	{"summary_col_mark", "10", &prefs_common.summary_col_mark, P_INT,
-	 NULL, NULL, NULL},
-	{"summary_col_unread", "13", &prefs_common.summary_col_unread, P_INT,
-	 NULL, NULL, NULL},
-	{"summary_col_mime", "10", &prefs_common.summary_col_mime, P_INT,
-	 NULL, NULL, NULL},
-	{"summary_col_number", "40", &prefs_common.summary_col_number, P_INT,
-	 NULL, NULL, NULL},
-	{"summary_col_score", "40", &prefs_common.summary_col_score,
-	 P_INT, NULL, NULL, NULL},
-	{"summary_col_size", "48", &prefs_common.summary_col_size, P_INT,
-	 NULL, NULL, NULL},
-	{"summary_col_date", "120", &prefs_common.summary_col_date, P_INT,
-	 NULL, NULL, NULL},
-	{"summary_col_from", "140", &prefs_common.summary_col_from, P_INT,
-	 NULL, NULL, NULL},
-	{"summary_col_subject", "200", &prefs_common.summary_col_subject,
-	 P_INT, NULL, NULL, NULL},
+
 	{"mainview_x", "64", &prefs_common.mainview_x, P_INT,
 	 NULL, NULL, NULL},
 	{"mainview_y", "64", &prefs_common.mainview_y, P_INT,
@@ -713,20 +736,6 @@ static void set_button_bg_color			(GtkWidget	*widget,
 						 gint		 color);
 static void prefs_enable_message_color_toggled	(void);
 static void prefs_recycle_colors_toggled	(GtkWidget	*widget);
-
-/* functions for setting items of SummaryView */
-static void prefs_summary_display_item_dialog_create
-					(gboolean	*cancelled);
-static void display_item_ok		(GtkWidget	*widget,
-					 gboolean	*cancelled);
-static void display_item_cancel		(GtkWidget	*widget,
-					 gboolean	*cancelled);
-static gint display_item_delete_event	(GtkWidget	*widget,
-					 GdkEventAny	*event,
-					 gboolean	*cancelled);
-static void display_item_key_pressed	(GtkWidget	*widget,
-					 GdkEventKey	*event,
-					 gboolean	*cancelled);
 
 static void prefs_font_select	(GtkButton *button, GtkEntry *entry);
 
@@ -1736,7 +1745,7 @@ static void prefs_display_create(void)
 	gtk_widget_show (button_dispitem);
 	gtk_box_pack_start (GTK_BOX (hbox1), button_dispitem, FALSE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (button_dispitem), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_summary_display_item_set),
+			    GTK_SIGNAL_FUNC (prefs_summary_column_open),
 			    NULL);
 
 	display.entry_textfont	= entry_textfont;
@@ -3020,163 +3029,6 @@ static void prefs_quote_description_create(void)
 					  GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
 
 	gtk_widget_show_all(vbox);
-}
-
-/* functions for setting items of SummaryView */
-
-static struct _SummaryDisplayItem
-{
-	GtkWidget *window;
-
-	GtkWidget *chkbtn[N_SUMMARY_COLS];
-
-	GtkWidget *ok_btn;
-	GtkWidget *cancel_btn;
-} summarydispitem;
-
-#define SET_ACTIVE(column, var) \
-	gtk_toggle_button_set_active \
-		(GTK_TOGGLE_BUTTON(summarydispitem.chkbtn[column]), \
-		 prefs_common.var)
-#define GET_ACTIVE(column, var) \
-	prefs_common.var = gtk_toggle_button_get_active \
-		(GTK_TOGGLE_BUTTON(summarydispitem.chkbtn[column]))
-
-void prefs_summary_display_item_set(void)
-{
-	static gboolean cancelled;
-
-	if (!summarydispitem.window)
-		prefs_summary_display_item_dialog_create(&cancelled);
-	gtk_widget_grab_focus(summarydispitem.ok_btn);
-	gtk_widget_show(summarydispitem.window);
-	manage_window_set_transient(GTK_WINDOW(summarydispitem.window));
-
-	SET_ACTIVE(S_COL_MARK, show_mark);
-	SET_ACTIVE(S_COL_UNREAD, show_unread);
-	SET_ACTIVE(S_COL_MIME, show_mime);
-	SET_ACTIVE(S_COL_NUMBER, show_number);
-	SET_ACTIVE(S_COL_SCORE, show_score);
-	SET_ACTIVE(S_COL_SIZE, show_size);
-	SET_ACTIVE(S_COL_DATE, show_date);
-	SET_ACTIVE(S_COL_FROM, show_from);
-	SET_ACTIVE(S_COL_SUBJECT, show_subject);
-
-	gtk_main();
-	gtk_widget_hide(summarydispitem.window);
-
-	if (cancelled != TRUE) {
-		GET_ACTIVE(S_COL_MARK, show_mark);
-		GET_ACTIVE(S_COL_UNREAD, show_unread);
-		GET_ACTIVE(S_COL_MIME, show_mime);
-		GET_ACTIVE(S_COL_NUMBER, show_number);
-		GET_ACTIVE(S_COL_SCORE, show_score);
-		GET_ACTIVE(S_COL_SIZE, show_size);
-		GET_ACTIVE(S_COL_DATE, show_date);
-		GET_ACTIVE(S_COL_FROM, show_from);
-		GET_ACTIVE(S_COL_SUBJECT, show_subject);
-
-		main_window_reflect_prefs_all();
-	}
-}
-
-#undef SET_ACTIVE
-#undef GET_ACTIVE
-
-#define SET_CHECK_BUTTON(column, label) \
-{ \
-	summarydispitem.chkbtn[column] = \
-		gtk_check_button_new_with_label(label); \
-	gtk_box_pack_start(GTK_BOX(chkbtn_vbox), \
-			   summarydispitem.chkbtn[column], \
-			   FALSE, FALSE, 0); \
-}
-
-static void prefs_summary_display_item_dialog_create(gboolean *cancelled)
-{
-	GtkWidget *window;
-	GtkWidget *vbox;
-	GtkWidget *chkbtn_vbox;
-	GtkWidget *hbbox;
-	GtkWidget *ok_btn;
-	GtkWidget *cancel_btn;
-
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
-	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
-	gtk_window_set_title(GTK_WINDOW(window), _("Set display item"));
-	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
-	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(display_item_delete_event),
-			   cancelled);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(display_item_key_pressed),
-			   cancelled);
-
-	vbox = gtk_vbox_new(FALSE, 8);
-	gtk_container_add(GTK_CONTAINER(window), vbox);
-
-	chkbtn_vbox = gtk_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), chkbtn_vbox, FALSE, FALSE, 0);
-
-	SET_CHECK_BUTTON(S_COL_MARK, _("Mark"));
-	SET_CHECK_BUTTON(S_COL_UNREAD, _("Unread"));
-	SET_CHECK_BUTTON(S_COL_MIME, _("MIME"));
-	SET_CHECK_BUTTON(S_COL_NUMBER, _("Number"));
-	SET_CHECK_BUTTON(S_COL_SCORE, _("Score"));
-	SET_CHECK_BUTTON(S_COL_SIZE, _("Size"));
-	SET_CHECK_BUTTON(S_COL_DATE, _("Date"));
-	SET_CHECK_BUTTON(S_COL_FROM, _("From"));
-	SET_CHECK_BUTTON(S_COL_SUBJECT, _("Subject"));
-
-	gtkut_button_set_create(&hbbox, &ok_btn, _("OK"),
-				&cancel_btn, _("Cancel"), NULL, NULL);
-	gtk_box_pack_end(GTK_BOX(vbox), hbbox, FALSE, FALSE, 0);
-	gtk_widget_grab_default(ok_btn);
-
-	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-			   GTK_SIGNAL_FUNC(display_item_ok), cancelled);
-	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
-			   GTK_SIGNAL_FUNC(display_item_cancel), cancelled);
-
-	gtk_widget_show_all(vbox);
-
-	summarydispitem.window = window;
-	summarydispitem.ok_btn = ok_btn;
-	summarydispitem.cancel_btn = cancel_btn;
-}
-
-#undef SET_CHECK_BUTTON
-
-static void display_item_ok(GtkWidget *widget, gboolean *cancelled)
-{
-	*cancelled = FALSE;
-	gtk_main_quit();
-}
-
-static void display_item_cancel(GtkWidget *widget, gboolean *cancelled)
-{
-	*cancelled = TRUE;
-	gtk_main_quit();
-}
-
-static gint display_item_delete_event(GtkWidget *widget, GdkEventAny *event,
-				      gboolean *cancelled)
-{
-	*cancelled = TRUE;
-	gtk_main_quit();
-
-	return TRUE;
-}
-
-static void display_item_key_pressed(GtkWidget *widget, GdkEventKey *event,
-				     gboolean *cancelled)
-{
-	if (event && event->keyval == GDK_Escape) {
-		*cancelled = TRUE;
-		gtk_main_quit();
-	}
 }
 
 static void prefs_font_select(GtkButton *button, GtkEntry *entry)

@@ -27,6 +27,7 @@
 #include <glib.h>
 
 #include "mainwindow.h"
+#include "summaryview.h"
 #include "codeconv.h"
 #include "textview.h"
 
@@ -116,15 +117,10 @@ struct _PrefsCommon
 	gint kill_score;
 	gint important_score;
 
-	gboolean show_mark;
-	gboolean show_unread;
-	gboolean show_mime;
-	gboolean show_number;
-	gboolean show_score;
-	gboolean show_size;
-	gboolean show_date;
-	gboolean show_from;
-	gboolean show_subject;
+	/* Summary columns visibility, position and size */
+	gboolean summary_col_visible[N_SUMMARY_COLS];
+	gint summary_col_pos[N_SUMMARY_COLS];
+	gint summary_col_size[N_SUMMARY_COLS];
 
 	/* Widget size */
 	gint folderview_x;
@@ -138,15 +134,6 @@ struct _PrefsCommon
 
 	gint summaryview_width;
 	gint summaryview_height;
-	gint summary_col_mark;
-	gint summary_col_unread;
-	gint summary_col_mime;
-	gint summary_col_number;
-	gint summary_col_size;
-	gint summary_col_date;
-	gint summary_col_from;
-	gint summary_col_subject;
-	gint summary_col_score;
 
 	gint mainview_x;
 	gint mainview_y;

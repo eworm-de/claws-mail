@@ -1,5 +1,16 @@
 Changes of Sylpheed
 
+* 0.6.4
+
+    * The performance of summary display on large number of messages
+      has been improved.
+    * Columns of the summary view became reorderable.
+    * The default order of the summary view columns has been changed.
+    * Reedit has been enabled in the outbox.
+    * LDIF file import has been implemented.
+    * The crash bug of LDAP has been fixed.
+    * Some other bugs have been fixed.
+
 * 0.6.3
 
     * Message body text search has been implemented.

@@ -60,6 +60,7 @@
 #include "headerwindow.h"
 #include "sourcewindow.h"
 #include "prefs_common.h"
+#include "prefs_summary_column.h"
 #include "account.h"
 #include "compose.h"
 #include "utils.h"
@@ -234,8 +235,8 @@ static void summary_execute_delete_func	(GtkCTree		*ctree,
 					 gpointer		 data);
 
 static void summary_thread_init		(SummaryView		*summaryview);
-static void summary_ignore_thread(SummaryView *summaryview);
-static void summary_unignore_thread(SummaryView *summaryview);
+static void summary_ignore_thread	(SummaryView  *summaryview);
+static void summary_unignore_thread	(SummaryView *summaryview);
 
 static void summary_unthread_for_exec		(SummaryView	*summaryview);
 static void summary_unthread_for_exec_func	(GtkCTree	*ctree,
@@ -253,6 +254,8 @@ static void summary_colorlabel_menu_item_activate_item_cb
 					  (GtkMenuItem	*label_menu_item,
 					   gpointer	 data);
 static void summary_colorlabel_menu_create(SummaryView	*summaryview);
+
+static GtkWidget *summary_ctree_create	(SummaryView	*summaryview);
 
 /* callback functions */
 static void summary_toggle_pressed	(GtkWidget		*eventbox,
@@ -314,6 +317,8 @@ static void summary_date_clicked	(GtkWidget		*button,
 static void summary_from_clicked	(GtkWidget		*button,
 					 SummaryView		*summaryview);
 static void summary_subject_clicked	(GtkWidget		*button,
+					 SummaryView		*summaryview);
+static void summary_score_clicked	(GtkWidget		*button,
 					 SummaryView		*summaryview);
 
 static void summary_start_drag		(GtkWidget        *widget, 
@@ -417,31 +422,17 @@ static const gchar *const col_label[N_SUMMARY_COLS] = {
 	N_("M"),	/* S_COL_MARK    */
 	N_("U"),	/* S_COL_UNREAD  */
 	"",		/* S_COL_MIME    */
-	N_("No."),	/* S_COL_NUMBER  */
-	N_("Score"),    /* S_COL_SCORE	 */
-	N_("Size"),	/* S_COL_SIZE    */
-	N_("Date"),	/* S_COL_DATE    */
+	N_("Subject"),	/* S_COL_SUBJECT */
 	N_("From"),	/* S_COL_FROM    */
-	N_("Subject")	/* S_COL_SUBJECT */
+	N_("Date"),	/* S_COL_DATE    */
+	N_("Size"),	/* S_COL_SIZE    */
+	N_("No."),	/* S_COL_NUMBER  */
+	N_("Score")	/* S_COL_SCORE   */
 };
 
 SummaryView *summary_create(void)
 {
 	SummaryView *summaryview;
-	SummaryColumnState *col_state;
-	gint *col_pos;
-	SummaryColumnType col_default[N_SUMMARY_COLS] = {
-		S_COL_MARK,
-		S_COL_UNREAD,
-		S_COL_MIME,
-		S_COL_NUMBER,
-		S_COL_SCORE,
-		S_COL_SIZE,
-		S_COL_DATE,
-		S_COL_FROM,
-		S_COL_SUBJECT
-	};
-	const gchar *titles[N_SUMMARY_COLS];
 	GtkWidget *vbox;
 	GtkWidget *scrolledwin;
 	GtkWidget *ctree;
@@ -454,7 +445,6 @@ SummaryView *summary_create(void)
 	GtkWidget *popupmenu;
 	GtkItemFactory *popupfactory;
 	gint n_entries;
-	gint i;
 
 	debug_print(_("Creating summary view...\n"));
 	summaryview = g_new0(SummaryView, 1);
@@ -470,105 +460,13 @@ SummaryView *summary_create(void)
 			     prefs_common.summaryview_width,
 			     prefs_common.summaryview_height);
 
-	col_state = summaryview->col_state;
-	col_pos = summaryview->col_pos;
+	ctree = summary_ctree_create(summaryview);
 
-	for (i = 0; i < N_SUMMARY_COLS; i++) {
-		SummaryColumnType type;
-
-		type = col_state[i].type = col_default[i];
-		col_state[i].visible = TRUE;
-		col_pos[i] = i;
-		switch (type) {
-		case S_COL_SCORE:
-		case S_COL_SIZE:
-		case S_COL_NUMBER:
-		case S_COL_DATE:
-		case S_COL_FROM:
-		case S_COL_SUBJECT:
-			if (prefs_common.trans_hdr)
-				titles[i] = gettext(col_label[type]);
-			else
-				titles[i] = col_label[type];
-			break;
-		default:
-			titles[i] = gettext(col_label[type]);
-		}
-	}
-
-	ctree = gtk_sctree_new_with_titles
-		(N_SUMMARY_COLS, col_pos[S_COL_SUBJECT], (gchar **)titles);
 	gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolledwin),
 					    GTK_CLIST(ctree)->hadjustment);
 	gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolledwin),
 					    GTK_CLIST(ctree)->vadjustment);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), ctree);
-	gtk_clist_set_selection_mode(GTK_CLIST(ctree), GTK_SELECTION_EXTENDED);
-	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_MARK],
-					   GTK_JUSTIFY_CENTER);
-	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_UNREAD],
-					   GTK_JUSTIFY_CENTER);
-	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_MIME],
-					   GTK_JUSTIFY_CENTER);
-	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_NUMBER],
-					   GTK_JUSTIFY_RIGHT);
-	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_SCORE],
-					   GTK_JUSTIFY_RIGHT);
-	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_SIZE],
-					   GTK_JUSTIFY_RIGHT);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_MARK],
-				   SUMMARY_COL_MARK_WIDTH);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_UNREAD],
-				   SUMMARY_COL_UNREAD_WIDTH);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_MIME],
-				   SUMMARY_COL_MIME_WIDTH);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_NUMBER],
-				   prefs_common.summary_col_number);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_SCORE],
-				   prefs_common.summary_col_score);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_SIZE],
-				   prefs_common.summary_col_size);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_DATE],
-				   prefs_common.summary_col_date);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_FROM],
-				   prefs_common.summary_col_from);
-	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_SUBJECT],
-				   prefs_common.summary_col_subject);
-	gtk_ctree_set_line_style(GTK_CTREE(ctree), GTK_CTREE_LINES_DOTTED);
-	gtk_ctree_set_expander_style(GTK_CTREE(ctree),
-				     GTK_CTREE_EXPANDER_SQUARE);
-#if 0
-	gtk_ctree_set_line_style(GTK_CTREE(ctree), GTK_CTREE_LINES_NONE);
-	gtk_ctree_set_expander_style(GTK_CTREE(ctree),
-				     GTK_CTREE_EXPANDER_TRIANGLE);
-#endif
-	gtk_ctree_set_indent(GTK_CTREE(ctree), 18);
-	gtk_object_set_user_data(GTK_OBJECT(ctree), summaryview);
-
-	/* don't let title buttons take key focus */
-	for (i = 0; i < N_SUMMARY_COLS; i++)
-		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(ctree)->column[i].button,
-				       GTK_CAN_FOCUS);
-
-	/* connect signal to the buttons for sorting */
-#define CLIST_BUTTON_SIGNAL_CONNECT(col, func) \
-	gtk_signal_connect \
-		(GTK_OBJECT(GTK_CLIST(ctree)->column[col_pos[col]].button), \
-		 "clicked", \
-		 GTK_SIGNAL_FUNC(func), \
-		 summaryview)
-
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_MARK   , summary_mark_clicked);
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_UNREAD , summary_unread_clicked);
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_MIME   , summary_mime_clicked);
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_NUMBER , summary_num_clicked);
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SCORE  , summary_score_clicked);
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SIZE   , summary_size_clicked);
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_DATE   , summary_date_clicked);
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_FROM   , summary_from_clicked);
-	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SUBJECT, summary_subject_clicked);
-
-#undef CLIST_BUTTON_SIGNAL_CONNECT
 
 	/* create status label */
 	hbox = gtk_hbox_new(FALSE, 0);
@@ -584,6 +482,9 @@ SummaryView *summary_create(void)
 	gtk_box_pack_end(GTK_BOX(hbox), toggle_eventbox, FALSE, FALSE, 4);
 	toggle_arrow = gtk_arrow_new(GTK_ARROW_DOWN, GTK_SHADOW_OUT);
 	gtk_container_add(GTK_CONTAINER(toggle_eventbox), toggle_arrow);
+	gtk_signal_connect(GTK_OBJECT(toggle_eventbox), "button_press_event",
+			   GTK_SIGNAL_FUNC(summary_toggle_pressed),
+			   summaryview);
 
 	statlabel_msgs = gtk_label_new("");
 	gtk_box_pack_end(GTK_BOX(hbox), statlabel_msgs, FALSE, FALSE, 4);
@@ -594,40 +495,6 @@ SummaryView *summary_create(void)
 	popupmenu = menu_create_items(summary_popup_entries, n_entries,
 				      "<SummaryView>", &popupfactory,
 				      summaryview);
-
-	/* connect signals */
-	gtk_signal_connect(GTK_OBJECT(ctree), "tree_select_row",
-			   GTK_SIGNAL_FUNC(summary_selected), summaryview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "button_press_event",
-			   GTK_SIGNAL_FUNC(summary_button_pressed),
-			   summaryview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "button_release_event",
-			   GTK_SIGNAL_FUNC(summary_button_released),
-			   summaryview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "key_press_event",
-			   GTK_SIGNAL_FUNC(summary_key_pressed), summaryview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "resize_column",
-			   GTK_SIGNAL_FUNC(summary_col_resized), summaryview);
-        gtk_signal_connect(GTK_OBJECT(ctree), "open_row",
-			   GTK_SIGNAL_FUNC(summary_open_row), summaryview);
-
-	gtk_signal_connect_after(GTK_OBJECT(ctree), "tree_expand",
-				 GTK_SIGNAL_FUNC(summary_tree_expanded),
-				 summaryview);
-	gtk_signal_connect_after(GTK_OBJECT(ctree), "tree_collapse",
-				 GTK_SIGNAL_FUNC(summary_tree_collapsed),
-				 summaryview);
-
-	gtk_signal_connect(GTK_OBJECT(ctree), "start_drag",
-			   GTK_SIGNAL_FUNC(summary_start_drag),
-			   summaryview);
-	gtk_signal_connect(GTK_OBJECT(ctree), "drag_data_get",
-			   GTK_SIGNAL_FUNC(summary_drag_data_get),
-			   summaryview);
-
-	gtk_signal_connect(GTK_OBJECT(toggle_eventbox), "button_press_event",
-			   GTK_SIGNAL_FUNC(summary_toggle_pressed),
-			   summaryview);
 
 	summaryview->vbox = vbox;
 	summaryview->scrolledwin = scrolledwin;
@@ -644,8 +511,6 @@ SummaryView *summary_create(void)
 	summaryview->lock_count = 0;
 	summaryview->sort_mode = SORT_BY_NONE;
 	summaryview->sort_type = GTK_SORT_ASCENDING;
-
-	summary_change_display_item(summaryview);
 
 	gtk_widget_show_all(vbox);
 
@@ -1150,9 +1015,9 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	menu_set_sensitive(ifactory, "/View/Open in new window", sens);
 	menu_set_sensitive(ifactory, "/View/Source", sens);
 	menu_set_sensitive(ifactory, "/View/All header", sens);
-	if ((summaryview->folder_item->stype == F_DRAFT) ||
-	    (summaryview->folder_item->stype == F_OUTBOX) ||
-	    (summaryview->folder_item->stype == F_QUEUE))
+	if (summaryview->folder_item->stype == F_OUTBOX ||
+	    summaryview->folder_item->stype == F_DRAFT  ||
+	    summaryview->folder_item->stype == F_QUEUE)
 		menu_set_sensitive(ifactory, "/Re-edit", sens);
 
 	menu_set_sensitive(ifactory, "/Save as...", sens);
@@ -2212,7 +2077,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	else
 		text[col_pos[S_COL_DATE]] = _("(No Date)");
 
-	text[S_COL_FROM] = msginfo->fromname ? msginfo->fromname :
+	text[col_pos[S_COL_FROM]] = msginfo->fromname ? msginfo->fromname :
 		_("(No From)");
 	if (prefs_common.swap_from && msginfo->from && msginfo->to &&
 	    !MSG_IS_NEWS(msginfo->flags)) {
@@ -2362,10 +2227,10 @@ void summary_reedit(SummaryView *summaryview)
 	MsgInfo *msginfo;
 
 	if (!summaryview->selected) return;
-	if (!summaryview->folder_item ||
-	    (summaryview->folder_item->stype != F_DRAFT &&
-	     summaryview->folder_item->stype != F_OUTBOX &&
-	     summaryview->folder_item->stype != F_QUEUE)) return;
+	if (!summaryview->folder_item) return;
+	if (summaryview->folder_item->stype != F_OUTBOX &&
+	    summaryview->folder_item->stype != F_DRAFT  &&
+	    summaryview->folder_item->stype != F_QUEUE) return;
 
 	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
 					      summaryview->selected);
@@ -3826,6 +3691,169 @@ static void summary_colorlabel_menu_create(SummaryView *summaryview)
 	summaryview->colorlabel_menu = menu;
 }
 
+static GtkWidget *summary_ctree_create(SummaryView *summaryview)
+{
+	GtkWidget *ctree;
+	gint *col_pos = summaryview->col_pos;
+	SummaryColumnState *col_state;
+	const gchar *titles[N_SUMMARY_COLS];
+	SummaryColumnType type;
+	gint pos;
+
+	col_state = prefs_summary_column_get_config();
+	for (pos = 0; pos < N_SUMMARY_COLS; pos++) {
+		summaryview->col_state[pos] = col_state[pos];
+		type = col_state[pos].type;
+		col_pos[type] = pos;
+
+		switch (type) {
+		case S_COL_NUMBER:
+		case S_COL_DATE:
+		case S_COL_FROM:
+		case S_COL_SUBJECT:
+		case S_COL_SCORE:
+			if (prefs_common.trans_hdr)
+				titles[pos] = gettext(col_label[type]);
+			else
+				titles[pos] = col_label[type];
+			break;
+		default:
+			titles[pos] = gettext(col_label[type]);
+		}
+	}
+	col_state = summaryview->col_state;
+
+	ctree = gtk_sctree_new_with_titles
+		(N_SUMMARY_COLS, col_pos[S_COL_SUBJECT], (gchar **)titles);
+
+	gtk_clist_set_selection_mode(GTK_CLIST(ctree), GTK_SELECTION_EXTENDED);
+	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_MARK],
+					   GTK_JUSTIFY_CENTER);
+	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_UNREAD],
+					   GTK_JUSTIFY_CENTER);
+	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_MIME],
+					   GTK_JUSTIFY_CENTER);
+	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_SIZE],
+					   GTK_JUSTIFY_RIGHT);
+	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_NUMBER],
+					   GTK_JUSTIFY_RIGHT);
+	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_SCORE],
+					   GTK_JUSTIFY_RIGHT);
+	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_MARK],
+				   SUMMARY_COL_MARK_WIDTH);
+	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_UNREAD],
+				   SUMMARY_COL_UNREAD_WIDTH);
+	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_MIME],
+				   SUMMARY_COL_MIME_WIDTH);
+	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_SUBJECT],
+				   prefs_common.summary_col_size[S_COL_SUBJECT]);
+	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_FROM],
+				   prefs_common.summary_col_size[S_COL_FROM]);
+	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_DATE],
+				   prefs_common.summary_col_size[S_COL_DATE]);
+	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_SIZE],
+				   prefs_common.summary_col_size[S_COL_SIZE]);
+	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_NUMBER],
+				   prefs_common.summary_col_size[S_COL_NUMBER]);
+	gtk_clist_set_column_width(GTK_CLIST(ctree), col_pos[S_COL_SCORE],
+				   prefs_common.summary_col_size[S_COL_SCORE]);
+	gtk_ctree_set_line_style(GTK_CTREE(ctree), GTK_CTREE_LINES_DOTTED);
+	gtk_ctree_set_expander_style(GTK_CTREE(ctree),
+				     GTK_CTREE_EXPANDER_SQUARE);
+#if 0
+	gtk_ctree_set_line_style(GTK_CTREE(ctree), GTK_CTREE_LINES_NONE);
+	gtk_ctree_set_expander_style(GTK_CTREE(ctree),
+				     GTK_CTREE_EXPANDER_TRIANGLE);
+#endif
+	gtk_ctree_set_indent(GTK_CTREE(ctree), 18);
+	gtk_object_set_user_data(GTK_OBJECT(ctree), summaryview);
+
+	for (pos = 0; pos < N_SUMMARY_COLS; pos++) {
+		GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(ctree)->column[pos].button,
+				       GTK_CAN_FOCUS);
+		gtk_clist_set_column_visibility
+			(GTK_CLIST(ctree), pos, col_state[pos].visible);
+	}
+
+	/* connect signal to the buttons for sorting */
+#define CLIST_BUTTON_SIGNAL_CONNECT(col, func) \
+	gtk_signal_connect \
+		(GTK_OBJECT(GTK_CLIST(ctree)->column[col_pos[col]].button), \
+		 "clicked", \
+		 GTK_SIGNAL_FUNC(func), \
+		 summaryview)
+
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_MARK   , summary_mark_clicked);
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_UNREAD , summary_unread_clicked);
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_MIME   , summary_mime_clicked);
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_NUMBER , summary_num_clicked);
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SIZE   , summary_size_clicked);
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_DATE   , summary_date_clicked);
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_FROM   , summary_from_clicked);
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SUBJECT, summary_subject_clicked);
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SCORE,   summary_score_clicked);
+
+#undef CLIST_BUTTON_SIGNAL_CONNECT
+
+	gtk_signal_connect(GTK_OBJECT(ctree), "tree_select_row",
+			   GTK_SIGNAL_FUNC(summary_selected), summaryview);
+	gtk_signal_connect(GTK_OBJECT(ctree), "button_press_event",
+			   GTK_SIGNAL_FUNC(summary_button_pressed),
+			   summaryview);
+	gtk_signal_connect(GTK_OBJECT(ctree), "button_release_event",
+			   GTK_SIGNAL_FUNC(summary_button_released),
+			   summaryview);
+	gtk_signal_connect(GTK_OBJECT(ctree), "key_press_event",
+			   GTK_SIGNAL_FUNC(summary_key_pressed), summaryview);
+	gtk_signal_connect(GTK_OBJECT(ctree), "resize_column",
+			   GTK_SIGNAL_FUNC(summary_col_resized), summaryview);
+        gtk_signal_connect(GTK_OBJECT(ctree), "open_row",
+			   GTK_SIGNAL_FUNC(summary_open_row), summaryview);
+
+	gtk_signal_connect_after(GTK_OBJECT(ctree), "tree_expand",
+				 GTK_SIGNAL_FUNC(summary_tree_expanded),
+				 summaryview);
+	gtk_signal_connect_after(GTK_OBJECT(ctree), "tree_collapse",
+				 GTK_SIGNAL_FUNC(summary_tree_collapsed),
+				 summaryview);
+
+	gtk_signal_connect(GTK_OBJECT(ctree), "start_drag",
+			   GTK_SIGNAL_FUNC(summary_start_drag),
+			   summaryview);
+	gtk_signal_connect(GTK_OBJECT(ctree), "drag_data_get",
+			   GTK_SIGNAL_FUNC(summary_drag_data_get),
+			   summaryview);
+
+	return ctree;
+}
+
+void summary_set_column_order(SummaryView *summaryview)
+{
+	GtkWidget *ctree;
+	GtkWidget *scrolledwin = summaryview->scrolledwin;
+	GtkWidget *pixmap;
+	FolderItem *item;
+
+	item = summaryview->folder_item;
+	summary_clear_all(summaryview);
+	gtk_widget_destroy(summaryview->ctree);
+
+	summaryview->ctree = ctree = summary_ctree_create(summaryview);
+	pixmap = gtk_pixmap_new(clipxpm, clipxpmmask);
+	gtk_clist_set_column_widget(GTK_CLIST(ctree),
+				    summaryview->col_pos[S_COL_MIME], pixmap);
+	gtk_widget_show(pixmap);
+	gtk_scrolled_window_set_hadjustment(GTK_SCROLLED_WINDOW(scrolledwin),
+					    GTK_CLIST(ctree)->hadjustment);
+	gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(scrolledwin),
+					    GTK_CLIST(ctree)->vadjustment);
+	gtk_container_add(GTK_CONTAINER(scrolledwin), ctree);
+	gtk_widget_show(ctree);
+
+	summary_show(summaryview, item, FALSE);
+}
+
+
 /* callback functions */
 
 static void summary_toggle_pressed(GtkWidget *eventbox, GdkEventButton *event,
@@ -3846,8 +3874,7 @@ static void summary_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	if (!event) return;
 
 	if (event->button == 3) {
-		/* Right button clicked */
-		/* summary_set_add_sender_menu(summaryview); */
+		/* right clicked */
 		gtk_menu_popup(GTK_MENU(summaryview->popupmenu), NULL, NULL,
 			       NULL, NULL, event->button, event->time);
 	} else if (event->button == 2) {
@@ -4064,9 +4091,9 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 static void summary_open_row(GtkSCTree *sctree, SummaryView *summaryview)
 {
-	if (summaryview->folder_item->stype == F_DRAFT  ||
-	    summaryview->folder_item->stype == F_OUTBOX ||
-            summaryview->folder_item->stype == F_QUEUE)
+	if (summaryview->folder_item->stype == F_OUTBOX ||
+	    summaryview->folder_item->stype == F_DRAFT  ||
+	    summaryview->folder_item->stype == F_QUEUE)
 		summary_reedit(summaryview);
 	else
 		summary_open_msg(summaryview);
@@ -4136,37 +4163,9 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 static void summary_col_resized(GtkCList *clist, gint column, gint width,
 				SummaryView *summaryview)
 {
-	switch (summaryview->col_state[column].type) {
-	case S_COL_MARK:
-		prefs_common.summary_col_mark = width;
-		break;
-	case S_COL_UNREAD:
-		prefs_common.summary_col_unread = width;
-		break;
-	case S_COL_MIME:
-		prefs_common.summary_col_mime = width;
-		break;
-	case S_COL_NUMBER:
-		prefs_common.summary_col_number = width;
-		break;
-	case S_COL_SCORE:
-		prefs_common.summary_col_score = width;
-		break;
-	case S_COL_SIZE:
-		prefs_common.summary_col_size = width;
-		break;
-	case S_COL_DATE:
-		prefs_common.summary_col_date = width;
-		break;
-	case S_COL_FROM:
-		prefs_common.summary_col_from = width;
-		break;
-	case S_COL_SUBJECT:
-		prefs_common.summary_col_subject = width;
-		break;
-	default:
-		break;
-	}
+	SummaryColumnType type = summaryview->col_state[column].type;
+
+	prefs_common.summary_col_size[type] = width;
 }
 
 static void summary_reply_cb(SummaryView *summaryview, guint action,
@@ -4302,27 +4301,6 @@ static void summary_subject_clicked(GtkWidget *button,
 				    SummaryView *summaryview)
 {
 	summary_sort(summaryview, SORT_BY_SUBJECT);
-}
-
-void summary_change_display_item(SummaryView *summaryview)
-{
-	GtkCList *clist = GTK_CLIST(summaryview->ctree);
-
-#define SET_VISIBLE(col, visible) \
-	gtk_clist_set_column_visibility(clist, summaryview->col_pos[col], \
-					prefs_common.visible)
-
-	SET_VISIBLE(S_COL_MARK   , show_mark);
-	SET_VISIBLE(S_COL_UNREAD , show_unread);
-	SET_VISIBLE(S_COL_MIME   , show_mime);
-	SET_VISIBLE(S_COL_NUMBER , show_number);
-	SET_VISIBLE(S_COL_SCORE  , show_score);
-	SET_VISIBLE(S_COL_SIZE   , show_size);
-	SET_VISIBLE(S_COL_DATE   , show_date);
-	SET_VISIBLE(S_COL_FROM   , show_from);
-	SET_VISIBLE(S_COL_SUBJECT, show_subject);
-
-#undef SET_VISIBLE
 }
 
 static void summary_start_drag(GtkWidget *widget, gint button, GdkEvent *event,
