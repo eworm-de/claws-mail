@@ -8,6 +8,7 @@ EXTRA_TOOLS = \
 	google_msgid.pl \
 	kmail2sylpheed.pl \
 	kmail2sylpheed_v2.pl \
+	launch_phoenix \
 	newscache_clean.pl \
 	outlook2sylpheed.pl \
 	sylpheed-switcher \

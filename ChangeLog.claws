@@ -1,3 +1,19 @@
+2003-01-08 [paul]
+
+	* tools/Makefile.am
+	  tools/launch_phoenix	** NEW FILE **
+	  	add script that enables using Phoenix as the default
+		web browser. 
+		Submitted by Mohammed Sameer <Uniball@linux-egypt.org>
+		
+	* tools/OOo2sylpheed.pl
+		remove full path to sylpheed executable, just 'sylpheed'
+		will do
+		
+	* tools/README
+		add launch_phoenix informtion and re-arrange and compress
+		the data a little
+
 2003-01-07 [christoph]	0.8.8claws65
 
 	* src/folder.c
