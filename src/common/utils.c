@@ -3294,7 +3294,8 @@ int subject_get_reply_prefix_length(const gchar *subject)
 	static const gchar * const reply_prefixes[] = {
 		"[Rr][Ee]\\:",			/* "Re:" */
 		"[Rr][Ee]\\[[1-9][0-9]*\\]\\:",	/* Intelligent but stupidly non-conforming Re[XXX]:*/
-		"[Aa][Nn][Tt][Ww]\\:"		/* Overactive i18n / translation teams             */
+		"[Aa][Nn][Tt][Ww]\\:",		/* Overactive i18n / translation teams */
+		"[Aa][Ww]\\:"			/* "Aw:" */
 		/* add more */
 	};
 	const int REPLY_PREFIXES = sizeof reply_prefixes / sizeof reply_prefixes[0];
