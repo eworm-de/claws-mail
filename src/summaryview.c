@@ -657,28 +657,35 @@ SummaryView *summary_create(void)
 	
 	gtk_widget_show(search_type);
 	
-	search_string = gtk_entry_new();
-	
+	search_string = gtk_combo_new();
 	gtk_box_pack_start(GTK_BOX(hbox_search), search_string, FALSE, FALSE, 2);
-	
+	gtk_combo_set_value_in_list(GTK_COMBO(search_string), FALSE, TRUE);
+	gtk_combo_set_case_sensitive(GTK_COMBO(search_string), FALSE);
+	if (prefs_common.summary_quicksearch_history) 
+		gtk_combo_set_popdown_strings(GTK_COMBO(search_string), 
+			prefs_common.summary_quicksearch_history);
+	gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(search_string)->entry), "");
+	gtk_widget_show(search_string);
+		
 	gtkut_button_set_create(&search_hbbox, &search_description, _("Extended Symbols"),
 				NULL, NULL, NULL, NULL);
 	gtk_signal_connect(GTK_OBJECT(search_description), "clicked",
 			   GTK_SIGNAL_FUNC(search_description_cb), NULL);
-	gtk_box_pack_start(GTK_BOX(hbox_search), search_hbbox, FALSE, FALSE, 2);
-				
-	gtk_widget_show(search_string);
+	gtk_box_pack_start(GTK_BOX(hbox_search), search_hbbox, FALSE, FALSE, 2);				
 	gtk_widget_show(hbox_search);
 
-	gtk_signal_connect(GTK_OBJECT(search_string), "key_press_event",
+	gtk_signal_connect(GTK_OBJECT(GTK_COMBO(search_string)->entry), 
+			   "key_press_event",
 			   GTK_SIGNAL_FUNC(summary_searchbar_pressed),
 			   summaryview);
 
-	gtk_signal_connect(GTK_OBJECT(search_string), "focus_in_event",
+	gtk_signal_connect(GTK_OBJECT(GTK_COMBO(search_string)->entry), 
+			   "focus_in_event",
 			   GTK_SIGNAL_FUNC(summary_searchbar_focus_evt),
 			   summaryview);
 
-	gtk_signal_connect(GTK_OBJECT(search_string), "focus_out_event",
+	gtk_signal_connect(GTK_OBJECT(GTK_COMBO(search_string)->entry), 
+			   "focus_out_event",
 			   GTK_SIGNAL_FUNC(summary_searchbar_focus_evt),
 			   summaryview);
 
@@ -914,7 +921,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	if (item != summaryview->folder_item) {
 		/* changing folder, reset search */
-		gtk_entry_set_text(GTK_ENTRY(summaryview->search_string), "");
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(summaryview->search_string)->entry), "");
 	}
 	
 	/* STATUSBAR_POP(summaryview->mainwin); */
@@ -1015,12 +1022,12 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		summary_set_hide_read_msgs_menu(summaryview, FALSE);
 	}
 
-	if (strlen(gtk_entry_get_text(GTK_ENTRY(summaryview->search_string))) > 0) {
+	if (strlen(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(summaryview->search_string)->entry))) > 0) {
 		GSList *not_killed;
 		gint search_type = GPOINTER_TO_INT(gtk_object_get_user_data(
 				   GTK_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
 				   GTK_MENU(summaryview->search_type))))));
-		gchar *search_string = gtk_entry_get_text(GTK_ENTRY(summaryview->search_string));
+		gchar *search_string = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(summaryview->search_string)->entry));
 		gchar *searched_header = NULL;
 		MatcherList * tmp_list = NULL;
 		
@@ -4531,8 +4538,18 @@ static gint summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 static gint summary_searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 				SummaryView *summaryview)
 {
-	if (event != NULL && event->keyval == GDK_Return)
+	if (event != NULL && event->keyval == GDK_Return) {
+		gchar *search_string = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(summaryview->search_string)->entry));
+		if (search_string && strlen(search_string) != 0) {
+			prefs_common.summary_quicksearch_history =
+				add_history(prefs_common.summary_quicksearch_history,
+					    search_string);
+			gtk_combo_set_popdown_strings(GTK_COMBO(summaryview->search_string), 
+				prefs_common.summary_quicksearch_history);			
+		}
 	 	summary_show(summaryview, summaryview->folder_item);
+	 	gtk_signal_emit_stop_by_name(GTK_OBJECT(widget), "key_press_event");
+	}
 	return TRUE; 		
 }
 
@@ -4563,7 +4580,7 @@ static void summary_searchtype_changed(GtkMenuItem *widget, gpointer data)
 		gtk_widget_hide(sw->search_description);
 	}
 
-	if (gtk_entry_get_text(GTK_ENTRY(sw->search_string)))
+	if (gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(sw->search_string)->entry)))
 	 	summary_show(sw, sw->folder_item);
 }
 
@@ -5414,7 +5431,7 @@ static void summary_find_answers (SummaryView *summaryview, MsgInfo *msg)
 				    S_SEARCH_EXTENDED);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(summaryview->toggle_search), TRUE);
 
-	gtk_entry_set_text(GTK_ENTRY(summaryview->search_string), buf);
+	gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(summaryview->search_string)->entry), buf);
 	g_free(buf);
 	summary_show(summaryview, summaryview->folder_item);
 	node = gtk_ctree_node_nth(GTK_CTREE(summaryview->ctree), 0);

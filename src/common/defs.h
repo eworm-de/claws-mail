@@ -59,6 +59,7 @@
 #define ACTIONS_RC		"actionsrc"
 #define RENDERER_RC		"rendererrc"
 #define COMMAND_HISTORY		"command_history"
+#define QUICKSEARCH_HISTORY	"quicksearch_history"
 #define TEMPLATE_DIR		"templates"
 #define TMP_DIR			"tmp"
 #define NEWSGROUP_LIST		".newsgroup_list"

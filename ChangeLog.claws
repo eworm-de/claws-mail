@@ -1,3 +1,11 @@
+2004-03-24 [alfons]	0.9.10claws29
+
+	* src/prefs_common.[ch]
+	  src/summaryview.c
+	  src/common/defs.h
+		add history to quick search (patch submitted by 
+		Ivan Francolin Martinez - thanks!)
+
 2004-03-24 [alfons]	0.9.10claws28
 
 	* src/imap.c

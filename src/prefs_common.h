@@ -292,6 +292,7 @@ struct _PrefsCommon
 	gboolean work_offline;
 	
 	gint summary_quicksearch_type;
+	GList *summary_quicksearch_history;
 	gulong color_new;
 };
 

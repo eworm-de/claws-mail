@@ -864,43 +864,54 @@ PrefsCommon *prefs_common_get(void)
 	return &prefs_common;
 }
 
-void prefs_common_read_config(void)
+/*
+ * Read history list from the specified history file
+ */
+GList *prefs_common_read_history(const gchar *history) 
 {
 	FILE *fp;
 	gchar *path;
 	gchar buf[PREFSBUFSIZE];
+	GList *tmp = NULL;
 
-	prefs_read_config(param, "Common", COMMON_RC);
-
-	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMAND_HISTORY,
+	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, history,
 			   NULL);
 	if ((fp = fopen(path, "rb")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 		g_free(path);
-		return;
+		return NULL;
 	}
 	g_free(path);
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		g_strstrip(buf);
 		if (buf[0] == '\0') continue;
-		prefs_common.mime_open_cmd_history =
-			add_history(prefs_common.mime_open_cmd_history, buf);
+		tmp = add_history(tmp, buf);
 	}
 	fclose(fp);
 
-	prefs_common.mime_open_cmd_history =
-		g_list_reverse(prefs_common.mime_open_cmd_history);
+	tmp = g_list_reverse(tmp);
 }
 
-void prefs_common_save_config(void)
+void prefs_common_read_config(void)
+{
+	prefs_read_config(param, "Common", COMMON_RC);
+
+	prefs_common.mime_open_cmd_history =
+		prefs_common_read_history(COMMAND_HISTORY);
+	prefs_common.summary_quicksearch_history =
+		prefs_common_read_history(QUICKSEARCH_HISTORY);
+}
+
+/*
+ * Save history list to the specified history file
+ */
+void prefs_common_save_history(const gchar *history, GList *list)
 {
 	GList *cur;
 	FILE *fp;
 	gchar *path;
 
-	prefs_save_config(param, "Common", COMMON_RC);
-
-	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMAND_HISTORY,
+	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, history,
 			   NULL);
 	if ((fp = fopen(path, "wb")) == NULL) {
 		FILE_OP_ERROR(path, "fopen");
@@ -908,14 +919,23 @@ void prefs_common_save_config(void)
 		return;
 	}
 
-	for (cur = prefs_common.mime_open_cmd_history;
-	     cur != NULL; cur = cur->next) {
+	for (cur = list; cur != NULL; cur = cur->next) {
 		fputs((gchar *)cur->data, fp);
 		fputc('\n', fp);
 	}
 
 	fclose(fp);
 	g_free(path);
+}
+
+void prefs_common_save_config(void)
+{
+	prefs_save_config(param, "Common", COMMON_RC);
+
+	prefs_common_save_history(COMMAND_HISTORY, 
+		prefs_common.mime_open_cmd_history);
+	prefs_common_save_history(QUICKSEARCH_HISTORY, 
+		prefs_common.summary_quicksearch_history);
 }
 
 void prefs_common_open(void)
