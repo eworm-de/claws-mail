@@ -1,3 +1,8 @@
+2003-08-19 [paul]	0.9.4claws30
+
+	* po/bg.po
+		updated by George Danchev
+
 2003-08-18 [luke]	0.9.4claws29
 	* src/mimeview.[ch]
 	* src/gtk/gtkvscrollbutton.[ch]
