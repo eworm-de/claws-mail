@@ -1707,23 +1707,23 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 
 	switch (encas) {
 	case ENC_AS_TOKEN:
-		g_string_append_printf(buf, "%s=%s", param, val);
+		g_string_sprintfa(buf, "%s=%s", param, val);
 		break;
 
 	case ENC_AS_QUOTED_STRING:
-		g_string_append_printf(buf, "%s=\"%s\"", param, val);
+		g_string_sprintfa(buf, "%s=\"%s\"", param, val);
 		break;
 
 	case ENC_AS_EXTENDED:
-		g_string_append_printf(buf, "%s*=%s''", param,
+		g_string_sprintfa(buf, "%s*=%s''", param,
 			conv_get_current_charset_str());
 		for (valpos = val; *valpos != '\0'; valpos++) {
 			if (IS_ASCII(*valpos) && isalnum(*valpos)) {
-				g_string_append_printf(buf, "%c", *valpos);
+				g_string_sprintfa(buf, "%c", *valpos);
 			} else {
 				gchar hexstr[3] = "XX";
 				get_hex_str(hexstr, *valpos);
-				g_string_append_printf(buf, "%%%s", hexstr);
+				g_string_sprintfa(buf, "%%%s", hexstr);
 			}
 		}
 		break;

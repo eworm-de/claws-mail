@@ -1,3 +1,8 @@
+2004-11-23 [colin]	0.9.12cvs166
+
+	* src/procmime.c
+		Uh, changed API.
+
 2004-11-23 [colin]	0.9.12cvs165
 
 	* src/procmime.c
