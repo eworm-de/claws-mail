@@ -1457,12 +1457,23 @@ gchar *get_header_cache_dir(void)
 	return header_dir;
 }
 
+gchar *get_tmp_dir(void)
+{
+	static gchar *tmp_dir = NULL;
+
+	if (!tmp_dir)
+		tmp_dir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+				      TMP_DIR, NULL);
+
+	return tmp_dir;
+}
+
 gchar *get_tmp_file(void)
 {
 	static gchar *tmp_file = NULL;
 
 	if (!tmp_file)
-		tmp_file = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+		tmp_file = g_strconcat(get_tmp_dir(), G_DIR_SEPARATOR_S,
 				       "tmpfile", NULL);
 
 	return tmp_file;
@@ -1974,7 +1985,7 @@ gint copy_file(const gchar *src, const gchar *dest)
 }
 #endif
 
-gint copy_file(const gchar *src, const gchar *dest)
+gint copy_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 {
 	FILE *src_fp, *dest_fp;
 	gint n_read;
@@ -2049,14 +2060,17 @@ gint copy_file(const gchar *src, const gchar *dest)
 		return -1;
 	}
 
+	if (keep_backup == FALSE && dest_bak)
+		unlink(dest_bak);
+
 	g_free(dest_bak);
 
 	return 0;
 }
 
-gint move_file(const gchar *src, const gchar *dest)
+gint move_file(const gchar *src, const gchar *dest, gboolean overwrite)
 {
-	if (is_file_exist(dest)) {
+	if (overwrite == FALSE && is_file_exist(dest)) {
 		g_warning(_("move_file(): file %s already exists."), dest);
 		return -1;
 	}
@@ -2068,7 +2082,7 @@ gint move_file(const gchar *src, const gchar *dest)
 		return -1;
 	}
 
-	if (copy_file(src, dest) < 0) return -1;
+	if (copy_file(src, dest, FALSE) < 0) return -1;
 
 	unlink(src);
 
@@ -2078,15 +2092,30 @@ gint move_file(const gchar *src, const gchar *dest)
 /* convert line endings into CRLF. If the last line doesn't end with
  * linebreak, add it.
  */
-gint canonicalize_file(FILE *src_fp, FILE *dest_fp)
+gint canonicalize_file(const gchar *src, const gchar *dest)
 {
+	FILE *src_fp, *dest_fp;
 	gchar buf[BUFFSIZE];
 	gint len;
 	gboolean err = FALSE;
 	gboolean last_linebreak = FALSE;
 
-	rewind(src_fp);
-	rewind(dest_fp);
+	if ((src_fp = fopen(src, "rb")) == NULL) {
+		FILE_OP_ERROR(src, "fopen");
+		return -1;
+	}
+
+	if ((dest_fp = fopen(dest, "wb")) == NULL) {
+		FILE_OP_ERROR(dest, "fopen");
+		fclose(src_fp);
+		return -1;
+	}
+
+	if (change_file_mode_rw(dest_fp, dest) < 0) {
+		FILE_OP_ERROR(dest, "chmod");
+		g_warning("can't change file mode\n");
+	}
+
 	while (fgets(buf, sizeof(buf), src_fp) != NULL) {
 		gint r = 0;
 
@@ -2110,8 +2139,10 @@ gint canonicalize_file(FILE *src_fp, FILE *dest_fp)
 		}
 
 		if (r == EOF) {
-			g_warning("writing to destination file failed.\n");
-
+			g_warning("writing to %s failed.\n", dest);
+			fclose(dest_fp);
+			fclose(src_fp);
+			unlink(dest);
 			return -1;
 		}
 	}
@@ -2121,7 +2152,18 @@ gint canonicalize_file(FILE *src_fp, FILE *dest_fp)
 			err = TRUE;
 	}
 
+	if (ferror(src_fp)) {
+		FILE_OP_ERROR(src, "fread");
+		err = TRUE;
+	}
+	fclose(src_fp);
+	if (fclose(dest_fp) == EOF) {
+		FILE_OP_ERROR(dest, "fclose");
+		err = TRUE;
+	}
+
 	if (err) {
+		unlink(dest);
 		return -1;
 	}
 
@@ -2130,37 +2172,19 @@ gint canonicalize_file(FILE *src_fp, FILE *dest_fp)
 
 gint canonicalize_file_replace(const gchar *file)
 {
-	gchar *tmp_file, *dirname;
-	FILE *src, *dest;
+	gchar *tmp_file;
 
-	src = fopen(file, "r");
+	tmp_file = get_tmp_file();
 
-	dirname = g_dirname(file);
-	dest = get_tmpfile_in_dir(dirname, &tmp_file);
-	g_free(dirname);
-
-	debug_print("Writing canonicalized file to %s\n", tmp_file);
-
-	if (canonicalize_file(src, dest) < 0) {
-		fclose(dest);
-		fclose(src);
-
-		g_free(tmp_file);
+	if (canonicalize_file(file, tmp_file) < 0)
 		return -1;
-	}
-	fclose(dest);
-	fclose(src);
 
-	unlink(file);
-	if (rename(tmp_file, file) < 0) {
+	if (move_file(tmp_file, file, TRUE) < 0) {
 		FILE_OP_ERROR(file, "rename");
 		unlink(tmp_file);
-
-		g_free(tmp_file);
 		return -1;
 	}
 
-	g_free(tmp_file);
 	return 0;
 }
 
@@ -2185,7 +2209,7 @@ FILE *my_tmpfile(void)
 	gint fd;
 	FILE *fp;
 
-	tmpdir = g_get_tmp_dir();
+	tmpdir = get_tmp_dir();
 	tmplen = strlen(tmpdir);
 	progname = g_get_prgname();
 	proglen = strlen(progname);

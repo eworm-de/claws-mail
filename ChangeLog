@@ -1,3 +1,27 @@
+2002-08-08
+
+	* src/utils.[ch]: get_tmp_file(): new. Returns the directory for
+	  temporary files in ~/.sylpheed/.
+	* src/main.c: create temporary directory in ~/.sylpheed/.
+	* src/compose.c
+	  src/inc.c: create temporary files in ~/.sylpheed/, and modified
+	  the file name.
+	  compose_exec_ext_editor(): fixed a bug that failed to create the
+	  temporary file if g_get_tmp_dir() returned directory other than
+	  '/tmp'.
+
+2002-08-08
+
+	* src/utils.c: copy_file(): check if dest_bak != NULL when unlinking.
+
+2002-08-08
+
+	* src/utils.[ch]: canonicalize_file_replace(): fixed a bug that fails
+	  to replace the file when the given file and temporary file are not
+	  on the same filesystem.
+	  copy_file(): added a flag whether to keep backup.
+	  move_file(): added a flag whether to overwrite the destination file.
+
 2002-08-07
 
 	* src/socket.[ch]: fixed the linking failure when IPv6 is enabled.

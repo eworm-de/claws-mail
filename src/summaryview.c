@@ -3126,7 +3126,7 @@ void summary_save_as(SummaryView *summaryview)
 	}
 
 	src = procmsg_get_message_file(msginfo);
-	if (copy_file(src, dest) < 0) {
+	if (copy_file(src, dest, TRUE) < 0) {
 		alertpanel_error(_("Can't save the file `%s'."),
 				 g_basename(dest));
 	}

@@ -415,7 +415,7 @@ gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 	g_return_val_if_fail(destfile != NULL, -1);
 
 	if (link(file, destfile) < 0) {
-		if (copy_file(file, destfile) < 0) {
+		if (copy_file(file, destfile, TRUE) < 0) {
 			g_warning(_("can't copy message %s to %s\n"),
 				  file, destfile);
 			g_free(destfile);
@@ -468,7 +468,7 @@ static gint mh_do_move(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 
 	srcfile = procmsg_get_message_file(msginfo);
 
-	if (move_file(srcfile, destfile) < 0) {
+	if (move_file(srcfile, destfile, FALSE) < 0) {
 		g_free(srcfile);
 		g_free(destfile);
 		return -1;
@@ -565,7 +565,7 @@ static gint mh_do_move_msgs_with_dest(Folder *folder, FolderItem *dest,
 		destfile = mh_get_new_msg_filename(dest);
 		if(!destfile) return -1;
 
-		if (move_file(srcfile, destfile) < 0) {
+		if (move_file(srcfile, destfile, FALSE) < 0) {
 			g_free(srcfile);
 			g_free(destfile);
 			break;
@@ -633,8 +633,8 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 		g_free(srcfile);
 		return -1;
 	}
-	
-	if (copy_file(srcfile, destfile) < 0) {
+
+	if (copy_file(srcfile, destfile, TRUE) < 0) {
 		FILE_OP_ERROR(srcfile, "copy");
 		g_free(srcfile);
 		g_free(destfile);
@@ -731,7 +731,7 @@ gint mh_copy_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 		if (!destfile) break;
 		srcfile = procmsg_get_message_file(msginfo);
 
-		if (copy_file(srcfile, destfile) < 0) {
+		if (copy_file(srcfile, destfile, TRUE) < 0) {
 			FILE_OP_ERROR(srcfile, "copy");
 			g_free(srcfile);
 			g_free(destfile);

@@ -1164,8 +1164,8 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 	if ((lockfd = lock_mbox(mbox, LOCK_FLOCK)) < 0)
 		return -1;
 
-	g_snprintf(tmp_mbox, sizeof(tmp_mbox), "%s%ctmpmbox%d",
-		   get_rc_dir(), G_DIR_SEPARATOR, (gint)mbox);
+	g_snprintf(tmp_mbox, sizeof(tmp_mbox), "%s%ctmpmbox.%08x",
+		   get_tmp_dir(), G_DIR_SEPARATOR, (gint)mbox);
 
 	if (copy_mbox(mbox, tmp_mbox) < 0) {
 		unlock_mbox(mbox, lockfd, LOCK_FLOCK);

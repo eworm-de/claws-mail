@@ -5479,20 +5479,22 @@ static void attach_property_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 static void compose_exec_ext_editor(Compose *compose)
 {
-	gchar tmp[64];
+	gchar *tmp;
 	pid_t pid;
 	gint pipe_fds[2];
 
-	g_snprintf(tmp, sizeof(tmp), "%s%ctmpmsg.%08x",
-		   g_get_tmp_dir(), G_DIR_SEPARATOR, (gint)compose);
+	tmp = g_strdup_printf("%s%ctmpmsg.%08x", get_tmp_dir(),
+			      G_DIR_SEPARATOR, (gint)compose);
 
 	if (pipe(pipe_fds) < 0) {
 		perror("pipe");
+		g_free(tmp);
 		return;
 	}
 
 	if ((pid = fork()) < 0) {
 		perror("fork");
+		g_free(tmp);
 		return;
 	}
 
@@ -5537,6 +5539,8 @@ static void compose_exec_ext_editor(Compose *compose)
 		close(pipe_fds[1]);
 		_exit(0);
 	}
+
+	g_free(tmp);
 }
 
 static gint compose_exec_ext_editor_real(const gchar *file)
@@ -6080,7 +6084,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 
 	lock = TRUE;
 
-	tmp = g_strdup_printf("%s%cdraft.%d", g_get_tmp_dir(),
+	tmp = g_strdup_printf("%s%cdraft.%08x", get_tmp_dir(),
 			      G_DIR_SEPARATOR, (gint)compose);
 
 	if (compose_write_to_file(compose, tmp, TRUE) < 0) {

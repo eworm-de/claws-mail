@@ -302,6 +302,7 @@ gchar *get_mbox_cache_dir	(void);
 gchar *get_mime_tmp_dir		(void);
 gchar *get_template_dir		(void);
 gchar *get_header_cache_dir     (void);
+gchar *get_tmp_dir		(void);
 gchar *get_tmp_file		(void);
 gchar *get_domain_name		(void);
 
@@ -330,16 +331,18 @@ gint remove_expired_files	(const gchar	*dir,
 				 guint		 hours);
 gint remove_dir_recursive	(const gchar	*dir);
 gint copy_file			(const gchar	*src,
-				 const gchar	*dest);
+				 const gchar	*dest,
+				 gboolean	 keep_backup);
 gint move_file			(const gchar	*src,
+				 const gchar	*dest,
+				 gboolean	 overwrite);
+gint canonicalize_file		(const gchar	*src,
 				 const gchar	*dest);
 gint canonicalize_file_replace	(const gchar	*file);
 gint change_file_mode_rw	(FILE		*fp,
 				 const gchar	*file);
 FILE *my_tmpfile		(void);
 FILE *str_open_as_stream	(const gchar	*str);
-FILE *get_tmpfile_in_dir	(const gchar 	*dir,
-				 gchar 		**filename);
 
 /* process execution */
 gint execute_async		(gchar *const	 argv[]);

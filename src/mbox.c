@@ -368,7 +368,7 @@ gint unlock_mbox(const gchar *base, gint fd, LockType type)
 
 gint copy_mbox(const gchar *src, const gchar *dest)
 {
-	return copy_file(src, dest);
+	return copy_file(src, dest, TRUE);
 }
 
 void empty_mbox(const gchar *mbox)
