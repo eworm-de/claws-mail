@@ -97,6 +97,7 @@ Session *smtp_session_new(void)
 	session->auth_type                 = 0;
 
 	session->error_val                 = SM_OK;
+	session->error_msg                 = NULL;
 
 	return SESSION(session);
 }
@@ -111,6 +112,8 @@ static void smtp_session_destroy(Session *session)
 	g_free(smtp_session->from);
 
 	g_free(smtp_session->send_data);
+
+	g_free(smtp_session->error_msg);
 }
 
 static gint smtp_from(SMTPSession *session)
@@ -434,11 +437,17 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 		log_warning(_("error occurred on SMTP session\n"));
 		smtp_session->state = SMTP_ERROR;
 		smtp_session->error_val = SM_ERROR;
+		g_free(smtp_session->error_msg);
+		smtp_session->error_msg = g_strdup(msg);
 		return -1;
 	}
 
-	if (msg[0] == '5' && msg[1] == '3' && msg[2] == '5') {
-		smtp_session->state = SMTP_AUTH_FAILED;
+	if (!strncmp(msg, "535", 3)) {
+		log_warning(_("error occurred on authentication\n"));
+		smtp_session->state = SMTP_ERROR;
+		smtp_session->error_val = SM_AUTHFAIL;
+		g_free(smtp_session->error_msg);
+		smtp_session->error_msg = g_strdup(msg);
 		return -1;
 	}
 
@@ -446,6 +455,8 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 		log_warning(_("error occurred on SMTP session\n"));
 		smtp_session->state = SMTP_ERROR;
 		smtp_session->error_val = SM_ERROR;
+		g_free(smtp_session->error_msg);
+		smtp_session->error_msg = g_strdup(msg);
 		return -1;
 	}
 
@@ -536,7 +547,6 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 		session_disconnect(session);
 		break;
 	case SMTP_ERROR:
-	case SMTP_AUTH_FAILED:
 	default:
 		log_warning(_("error occurred on SMTP session\n"));
 		smtp_session->error_val = SM_ERROR;

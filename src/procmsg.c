@@ -1057,18 +1057,6 @@ gint procmsg_send_message_queue(const gchar *file)
 				mailval = send_message_smtp(&tmp_ac, to_list, fp);
 			}
 		}
-		if (mailval < 0) {
-            		if (!local)
-				alertpanel_error_log(
-					_("Error occurred while sending the message to `%s'."),
-					mailac ? mailac->smtp_server : smtpserver);
-			else
-				alertpanel_error_log(
-					_("Error occurred while sending the message with command `%s'."),
-					(mailac && mailac->use_mail_command && 
-					 mailac->mail_command && (*mailac->mail_command)) ? 
-						mailac->mail_command : prefs_common.extsend_cmd);
-		}
 	}
 
 	fseek(fp, filepos, SEEK_SET);

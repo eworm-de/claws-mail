@@ -76,7 +76,6 @@ typedef enum
 	SMTP_RSET,
 	SMTP_QUIT,
 	SMTP_ERROR,
-	SMTP_AUTH_FAILED,
 	SMTP_DISCONNECTED,
 
 	N_SMTP_PHASE
@@ -109,6 +108,7 @@ struct _SMTPSession
 	SMTPAuthType auth_type;
 
 	SMTPErrorValue error_val;
+	gchar *error_msg;
 };
 
 Session *smtp_session_new	(void);

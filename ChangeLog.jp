@@ -1,5 +1,14 @@
 2003-04-25
 
+	* src/smtp.[ch]: エラーが発生したら応答文字列を SMTPSession::error_msg
+	  にセットするようにした。
+	* src/send_message.c: エラーが発生したらエラーダイアログを表示。
+	* src/main.c: send_queue()
+	  src/mainwindow.c: send_queue_cb(): ここではエラーダイアログを表示
+	  しない。
+
+2003-04-25
+
 	* src/session.c: session_close(): state が SESSION_DISCONNECTED で
 	  ない場合のみ子プロセスを kill するようにした。
 	* src/send_message.c: send_cancel_button_cb()

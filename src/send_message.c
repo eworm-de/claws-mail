@@ -43,6 +43,7 @@
 #include "account.h"
 #include "progressdialog.h"
 #include "inputdialog.h"
+#include "alertpanel.h"
 #include "manage_window.h"
 #include "utils.h"
 #include "gtkutils.h"
@@ -77,11 +78,14 @@ static gint send_send_data_finished	(Session		*session,
 					 guint			 len,
 					 gpointer		 data);
 
-static SendProgressDialog *send_progress_dialog_create	(void);
-static void send_progress_dialog_destroy	(SendProgressDialog *dialog);
+static SendProgressDialog *send_progress_dialog_create(void);
+static void send_progress_dialog_destroy(SendProgressDialog *dialog);
 
 static void send_cancel_button_cb	(GtkWidget	*widget,
 					 gpointer	 data);
+
+static void send_put_error		(Session	*session);
+
 
 gint send_message(const gchar *file, PrefsAccount *ac_prefs, GSList *to_list)
 {
@@ -227,6 +231,9 @@ gint send_message_queue(const gchar *file)
 		if (val == 0 && newsac) {
 			fseek(fp, fpos, SEEK_SET);
 			val = news_post_stream(FOLDER(newsac->folder), fp);
+			if (val < 0)
+				alertpanel_error_log(_("Error occurred while posting the message to %s ."),
+						 newsac->nntp_server);
 		}
 	}
 
@@ -418,6 +425,12 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 	else if (dialog->cancelled == TRUE)
 		ret = -1;
 
+	if (ret == -1) {
+		manage_window_focus_in(dialog->dialog->window, NULL, NULL);
+		send_put_error(session);
+		manage_window_focus_in(dialog->dialog->window, NULL, NULL);
+	}
+
 	session_destroy(session);
 	send_progress_dialog_destroy(dialog);
 
@@ -468,7 +481,6 @@ static gint send_recv_message(Session *session, const gchar *msg, gpointer data)
 		state_str = _("Quitting");
 		break;
 	case SMTP_ERROR:
-	case SMTP_AUTH_FAILED:
 		g_warning("send: error: %s\n", msg);
 		return 0;
 	default:
@@ -551,3 +563,36 @@ static void send_cancel_button_cb(GtkWidget *widget, gpointer data)
 
 	dialog->cancelled = TRUE;
 }
+
+static void send_put_error(Session *session)
+{
+	gchar *msg;
+
+	msg = SMTP_SESSION(session)->error_msg;
+
+	switch (SMTP_SESSION(session)->error_val) {
+	case SM_ERROR:
+	case SM_UNRECOVERABLE:
+		if (msg)
+			alertpanel_error_log
+				(_("Error occurred while sending the message:\n%s"),
+				 msg);
+		else
+			alertpanel_error_log
+				(_("Error occurred while sending the message."));
+		break;
+	case SM_AUTHFAIL:
+		if (msg)
+			alertpanel_error_log
+				(_("Authentication failed:\n%s"), msg);
+		else
+			alertpanel_error_log
+				(_("Authentication failed."));
+	default:
+		if (session->state == SESSION_ERROR)
+			alertpanel_error_log
+				(_("Error occurred while sending the message."));
+		break;
+	}
+}
+

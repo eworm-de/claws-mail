@@ -1,5 +1,13 @@
 2003-04-25
 
+	* src/smtp.[ch]: set the response string to SMTPSession::error_msg
+	  if error occurred.
+	* src/send_message.c: show error dialog if error occurred.
+	* src/main.c: send_queue()
+	  src/mainwindow.c: send_queue_cb(): don't show error dialog here.
+
+2003-04-25
+
 	* src/session.c: session_close(): kill child process only if
 	  state is not SESSION_DISCONNECTED.
 	* src/send_message.c: send_cancel_button_cb()
