@@ -2460,12 +2460,6 @@ void summary_step(SummaryView *summaryview, GtkScrollType type)
 			(GTK_SCTREE(ctree),
 			 GTK_CTREE_NODE(GTK_CLIST(ctree)->selection->data));
 
-#if 0
-	if(summaryview->selected) {
-		gtk_sctree_reanchor (GTK_SCTREE(ctree), summaryview->selected);
-	}
-#endif
-
 }
 
 void summary_toggle_view(SummaryView *summaryview)

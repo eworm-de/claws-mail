@@ -1038,11 +1038,3 @@ gtk_ctree_last_visible (GtkCTree     *ctree,
 
 	return gtk_ctree_last_visible (ctree, work);
 }
-
-void gtk_sctree_reanchor (GtkSCTree *sctree, GtkCTreeNode *node)
-{
-	g_return_if_fail (sctree != NULL);
-	g_return_if_fail (node != NULL);
-	sctree->anchor_row = node;
-	
-}
