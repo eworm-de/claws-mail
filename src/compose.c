@@ -6971,12 +6971,8 @@ static void compose_toggle_encrypt_cb(gpointer data, guint action,
 
 static void activate_privacy_system(Compose *compose, PrefsAccount *account) 
 {
-	/* TODO
-	if (account->default_gnupg_mode)
-		compose->gnupg_mode = GNUPG_MODE_INLINE;
-	else
-		compose->gnupg_mode = GNUPG_MODE_DETACH;
-	*/		
+	g_free(compose->privacy_system);
+	compose->privacy_system = g_strdup(account->default_privacy_system);
 	compose_update_privacy_system_menu_item(compose);
 }
 

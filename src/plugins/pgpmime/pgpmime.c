@@ -472,7 +472,8 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo)
 	newinfo->type = MIMETYPE_APPLICATION;
 	newinfo->subtype = g_strdup("pgp-signature");
 	newinfo->content = MIMECONTENT_MEM;
-	newinfo->data.mem = g_memdup(sigcontent, len + 1);
+	newinfo->data.mem = g_malloc(len + 1);
+	g_memmove(newinfo->data.mem, sigcontent, len);
 	newinfo->data.mem[len] = '\0';
 	g_node_append(sigmultipart->node, newinfo->node);
 
@@ -565,7 +566,8 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 	newinfo->type = MIMETYPE_APPLICATION;
 	newinfo->subtype = g_strdup("octet-stream");
 	newinfo->content = MIMECONTENT_MEM;
-	newinfo->data.mem = g_memdup(enccontent, len + 1);
+	newinfo->data.mem = g_malloc(len);
+	g_memmove(newinfo->data.mem, enccontent, len);
 	newinfo->data.mem[len] = '\0';
 	g_node_append(encmultipart->node, newinfo->node);
 

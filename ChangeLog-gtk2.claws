@@ -1,3 +1,14 @@
+2004-11-09 [colin]	0.9.12cvs144.1
+
+	* ChangeLog.claws
+	* src/compose.c
+	* src/folder.c
+	* src/folder_item_prefs.c
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/plugins/pgpmime/pgpmime.c
+		Sync with HEAD
+
 2004-11-08 [colin]	0.9.12cvs143.1
 
 	* src/summaryview.c

@@ -136,6 +136,7 @@ static struct Compose {
 } compose;
 
 static struct Privacy {
+	GtkWidget *default_privacy_system;
 	GtkWidget *default_encrypt_chkbtn;
 	GtkWidget *default_sign_chkbtn;
 } privacy;
@@ -200,6 +201,9 @@ static void prefs_account_fix_size			(void);
 static void prefs_account_protocol_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_account_protocol_set_optmenu		(PrefParam *pparam);
 static void prefs_account_protocol_activated		(GtkMenuItem *menuitem);
+
+static void prefs_account_set_string_from_optmenu	(PrefParam *pparam);
+static void prefs_account_set_optmenu_from_string	(PrefParam *pparam);
 
 static void prefs_account_imap_auth_type_set_data_from_optmenu
 							(PrefParam *pparam);
@@ -391,6 +395,9 @@ static PrefParam param[] = {
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	/* Privacy */
+	{"default_privacy_system", "", &tmp_ac_prefs.default_privacy_system, P_STRING,
+	 &privacy.default_privacy_system,
+	 prefs_account_set_string_from_optmenu, prefs_account_set_optmenu_from_string},
 	{"default_encrypt", "FALSE", &tmp_ac_prefs.default_encrypt, P_BOOL,
 	 &privacy.default_encrypt_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -629,6 +636,32 @@ static gint prefs_account_get_new_id(void)
 	return last_id + 1;
 }
 
+void update_privacy_system_menu() {
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+	GSList *system_ids, *cur;
+
+	menu = gtk_menu_new();
+	menuitem = gtk_menu_item_new_with_label(_("None"));
+	gtk_widget_show(menuitem);
+	g_object_set_data(G_OBJECT(menuitem), MENU_VAL_ID, "");
+	gtk_menu_append(GTK_MENU(menu), menuitem);
+
+	system_ids = privacy_get_system_ids();
+	for (cur = system_ids; cur != NULL; cur = g_slist_next(cur)) {
+		gchar *id = (gchar *) cur->data;
+		const gchar *name;
+		
+		name = privacy_system_get_name(id);
+		menuitem = gtk_menu_item_new_with_label(name);
+		gtk_widget_show(menuitem);
+		g_object_set_data_full(G_OBJECT(menuitem), MENU_VAL_ID, id, g_free);
+		gtk_menu_append(GTK_MENU(menu), menuitem);
+	}
+
+	gtk_option_menu_set_menu(GTK_OPTION_MENU(privacy.default_privacy_system), menu);
+}
+
 PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs)
 {
 	gboolean new_account = FALSE;
@@ -656,6 +689,8 @@ PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs)
 	gtk_widget_grab_focus(dialog.ok_btn);
 
 	tmp_ac_prefs = *ac_prefs;
+
+	update_privacy_system_menu();
 
 	if (new_account) {
 		PrefsAccount *def_ac;
@@ -1634,6 +1669,9 @@ static void prefs_account_privacy_create(void)
 {
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
+	GtkWidget *hbox1;
+	GtkWidget *label;
+	GtkWidget *default_privacy_system;
 	GtkWidget *default_encrypt_chkbtn;
 	GtkWidget *default_sign_chkbtn;
 
@@ -1646,11 +1684,24 @@ static void prefs_account_privacy_create(void)
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
+	hbox1 = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_container_add (GTK_CONTAINER(vbox2), hbox1);
+
+	label = gtk_label_new(_("Default privacy system"));
+	gtk_widget_show(label);
+	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
+
+	default_privacy_system = gtk_option_menu_new();
+	gtk_widget_show (default_privacy_system);
+	gtk_box_pack_start (GTK_BOX(hbox1), default_privacy_system, TRUE, TRUE, 0);
+
 	PACK_CHECK_BUTTON (vbox2, default_encrypt_chkbtn,
 			   _("Encrypt message by default"));
 	PACK_CHECK_BUTTON (vbox2, default_sign_chkbtn,
 			   _("Sign message by default"));
 			    
+	privacy.default_privacy_system = default_privacy_system;
 	privacy.default_encrypt_chkbtn = default_encrypt_chkbtn;
 	privacy.default_sign_chkbtn    = default_sign_chkbtn;
 }
@@ -2361,6 +2412,71 @@ static void prefs_account_smtp_auth_type_set_optmenu(PrefParam *pparam)
 	menu = gtk_option_menu_get_menu(optmenu);
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
+}
+
+static void prefs_account_set_string_from_optmenu(PrefParam *pparam)
+{
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+	gchar **str;
+
+	g_return_if_fail(*pparam->widget != NULL);
+
+	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(*pparam->widget));
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	if (menuitem == NULL)
+		return;
+
+	str = (gchar **) pparam->data;
+        g_free(*str);
+	*str = g_strdup(g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID));
+}
+
+static void prefs_account_set_optmenu_from_string(PrefParam *pparam)
+{
+	GtkWidget *optionmenu;
+	GtkWidget *menu;
+	gboolean found = FALSE;
+	GList *children, *cur;
+	gchar *prefsid;
+	guint i = 0;
+
+	g_return_if_fail(*pparam->widget != NULL);
+
+	prefsid = *((gchar **) pparam->data);
+	if (prefsid == NULL)
+		return;
+
+	optionmenu = *pparam->widget;
+	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(optionmenu));
+	children = gtk_container_children(GTK_CONTAINER(menu));
+	for (cur = children; cur != NULL; cur = g_list_next(cur)) {
+		GtkWidget *item = (GtkWidget *) cur->data;
+		gchar *id;
+
+		id = g_object_get_data(G_OBJECT(item), MENU_VAL_ID);
+		if (id != NULL && strcmp(id, prefsid) == 0) {
+			found = TRUE;
+			gtk_option_menu_set_history(GTK_OPTION_MENU(optionmenu), i);
+		}
+		i++;
+	}
+
+	if (!found) {
+		gchar *name;
+		GtkWidget *menuitem;
+
+		name = g_strdup_printf(_("Unsupported (%s)"), prefsid);
+		menuitem = gtk_menu_item_new_with_label(name);
+		gtk_widget_show(menuitem);
+		g_object_set_data_full(G_OBJECT(menuitem), MENU_VAL_ID, g_strdup(prefsid), g_free);
+		gtk_menu_append(GTK_MENU(menu), menuitem);
+		g_free(name);
+
+		gtk_option_menu_set_history(GTK_OPTION_MENU(optionmenu), i);
+	}
+
+	g_list_free(children);
 }
 
 static void prefs_account_protocol_activated(GtkMenuItem *menuitem)

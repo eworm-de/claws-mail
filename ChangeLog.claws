@@ -1,3 +1,28 @@
+2004-11-09 [christoph]	0.9.12cvs144
+
+	* src/compose.c
+	* src/prefs_account.[ch]
+		add option menu to select default privacy system
+
+	* src/plugins/pgpmime/pgpmime.c
+		better memory allocation
+
+	* src/folder.c
+		syncronize flags when scanning a folder
+
+2004-11-08 [colin]	0.9.12cvs143
+
+	* src/summaryview.c
+		Prevent useless folder count updates while 
+		quicksearch is running. It is really annoying 
+		while quicksearch is running a full-mail
+		scan, like 'b foo', in a big folder.
+
+2004-11-08 [colin]	0.9.12cvs142
+
+	* src/textview.c
+		Really fix these mail URIs
+
 2004-11-08 [colin]	0.9.12cvs141
 
 	* src/textview.c

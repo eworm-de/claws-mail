@@ -127,8 +127,9 @@ struct _PrefsAccount
 	gchar    *auto_replyto;
 
 	/* Privacy */
-	gboolean default_encrypt;
-	gboolean default_sign;
+	gchar	 *default_privacy_system;
+	gboolean  default_encrypt;
+	gboolean  default_sign;
 
 	/* Advanced */
 	gboolean  set_smtpport;
