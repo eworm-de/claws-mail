@@ -1,3 +1,9 @@
+2001-09-24 [alfons]
+	
+	* src/prefs_folder_item.c
+		add check for item->prefs->default_to string is NULL and
+		add another check when freeing this string
+
 2001-09-24 [paul]
 
 	* configure.in

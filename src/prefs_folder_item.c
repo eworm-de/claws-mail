@@ -180,7 +180,8 @@ PrefsFolderItem * prefs_folder_item_new(void)
 
 void prefs_folder_item_free(PrefsFolderItem * prefs)
 {
-	g_free(prefs->default_to);
+	if (prefs->default_to) 
+		g_free(prefs->default_to);
 	if (prefs->scoring != NULL)
 		prefs_scoring_free(prefs->scoring);
 	g_free(prefs);
@@ -214,6 +215,9 @@ gint prefs_folder_item_get_sort_type(FolderItem * item)
 	else
 		return GTK_SORT_ASCENDING;
 }
+
+#define SAFE_STRING(str) \
+	(str) ? (str) : ""
 
 void prefs_folder_item_create(FolderItem *item) {
 	struct PrefsFolderItemDialog *dialog;
@@ -266,7 +270,7 @@ void prefs_folder_item_create(FolderItem *item) {
 	PACK_CHECK_BUTTON(vbox, checkbtn_request_return_receipt,
 			   _("Request Return Receipt"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_request_return_receipt),
-				     item->ret_rcpt);
+				     item->ret_rcpt ? TRUE : FALSE);
 
 	/* Default To */
 	hbox = gtk_hbox_new(FALSE, 8);
@@ -283,7 +287,7 @@ void prefs_folder_item_create(FolderItem *item) {
 	gtk_widget_show(entry_default_to);
 	gtk_box_pack_start(GTK_BOX(hbox), entry_default_to, FALSE, FALSE, 0);
 	gtk_editable_set_editable(GTK_EDITABLE(entry_default_to), item->prefs->enable_default_to);
-	gtk_entry_set_text(GTK_ENTRY(entry_default_to), item->prefs->default_to);
+	gtk_entry_set_text(GTK_ENTRY(entry_default_to), SAFE_STRING(item->prefs->default_to));
 
 	/* Folder chmod */
 	hbox = gtk_hbox_new(FALSE, 8);
