@@ -1,3 +1,10 @@
+2005-01-16 [colin]	0.9.13cvs36.1
+
+	* ChangeLog
+	* ChangeLog.jp
+	* ChangeLog.claws
+		Sync with HEAD (nothing applicable)
+
 2005-01-16 [colin]	0.9.13cvs33.2
 
 	* src/prefs_toolbar.c

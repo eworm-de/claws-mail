@@ -1,3 +1,8 @@
+2005-01-11
+
+	* src/template.c: template_write_config(): 潜在的なメモリ破壊バグ
+	  を修正。
+
 2005-01-06
 
 	* src/pop.[ch]: Pop3State に POP3_DONE を追加(ログアウトが完了した
