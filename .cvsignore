@@ -6,3 +6,7 @@ config.status
 stamp-h
 Makefile
 sylpheed.spec
+configure
+Makefile.in
+aclocal.m4
+stamp-h.in
