@@ -347,6 +347,8 @@ else
 	fi
 fi
 echo "GPGME      : $ac_cv_enable_gpgme"
+echo "JPilot     : $ac_cv_enable_jpilot"
+echo "LDAP       : $ac_cv_enable_ldap"
 echo "OpenSSL    : $ac_cv_enable_ssl"
 if test "$ac_cv_disable_compface" = no; then
 	echo "compface   : yes"

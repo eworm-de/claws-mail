@@ -5,6 +5,9 @@
 		Enhanced automatic account selection on replies
 		Submitted by Melvin Hadasht <melvin.hadasht@free.fr>
 
+	* configure.in
+		add LDAP and JPilot to the configuration results output.
+
 2001-08-29 [christoph]
 
 	* src/summeryview.c
