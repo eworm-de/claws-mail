@@ -1,3 +1,9 @@
+2004-07-18 [colin]	0.9.12cvs32.5
+
+	* src/prefs_common.c
+		Define sensible default prefs for 
+		wrapping
+
 2004-07-18 [colin]	0.9.12cvs32.4
 
 	* src/compose.c
