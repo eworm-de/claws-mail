@@ -1,3 +1,8 @@
+2001-10-08 [paul]	0.6.3claws1
+
+	* sync with sylpheed 0.6.3 release
+		see ChangeLog entry 2001-10-08
+
 2001-10-08 [paul]	0.6.2claws24
 
 	* src/summaryview.c

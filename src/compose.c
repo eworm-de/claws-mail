@@ -1983,7 +1983,7 @@ static void compose_wrap_line(Compose *compose)
 {
 	GtkSText *text = GTK_STEXT(compose->text);
 	gint ch_len, last_ch_len;
-	gchar cbuf[MB_CUR_MAX], last_ch;
+	gchar cbuf[MB_LEN_MAX], last_ch;
 	guint text_len;
 	guint line_end;
 	guint quoted;
@@ -2182,7 +2182,7 @@ static void compose_wrap_line_all(Compose *compose)
 	guint quote_len = 0;
 	guint linewrap_quote = prefs_common.linewrap_quote;
 	gchar *quote_fmt = prefs_common.quotemark;
-	gchar cbuf[MB_CUR_MAX];
+	gchar cbuf[MB_LEN_MAX];
 
 	gtk_stext_freeze(text);
 
@@ -2489,18 +2489,22 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	len = strlen(chars);
 	if (is_ascii_str(chars)) {
 		buf = g_strdup(chars);
-		out_codeset = "US-ASCII";
+		out_codeset = CS_US_ASCII;
 		encoding = ENC_7BIT;
 	} else {
 		const gchar *src_codeset;
 
 		out_codeset = conv_get_outgoing_charset_str();
-		if (!strcasecmp(out_codeset, "US-ASCII"))
-			out_codeset = "ISO-8859-1";
+		if (!strcasecmp(out_codeset, CS_US_ASCII))
+			out_codeset = CS_ISO_8859_1;
 		encoding = procmime_get_encoding_for_charset(out_codeset);
+
 		src_codeset = conv_get_current_charset_str();
-		if (!strcasecmp(src_codeset, "US-ASCII"))
-			src_codeset = "ISO-8859-1";
+		/* if current encoding is US-ASCII, set it the same as
+		   outgoing one to prevent code conversion failure */
+		if (!strcasecmp(src_codeset, CS_US_ASCII))
+			src_codeset = out_codeset;
+
 		debug_print("src encoding = %s, out encoding = %s, transfer encoding = %s\n",
 			    src_codeset, out_codeset, procmime_get_encoding_str(encoding));
 

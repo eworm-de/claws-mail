@@ -71,10 +71,16 @@ gint pop3_getauth_user_send(SockInfo *sock, gpointer data)
 
 gint pop3_getauth_user_recv(SockInfo *sock, gpointer data)
 {
+	Pop3State *state = (Pop3State *)data;
+
 	if (pop3_ok(sock, NULL) == PS_SUCCESS)
 		return POP3_GETAUTH_PASS_SEND;
-	else
+	else {
+		log_warning(_("error occurred on authentication\n"));
+		state->error_val = PS_AUTHFAIL;
+		state->inc_state = INC_AUTH_FAILED;
 		return -1;
+	}
 }
 
 gint pop3_getauth_pass_send(SockInfo *sock, gpointer data)

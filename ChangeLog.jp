@@ -1,3 +1,20 @@
+2001-10-08
+
+	* version 0.6.3
+
+2001-10-08
+
+	* src/compose.c: compose_write_to_file()
+	  src/codeconv.c: conv_codeset_strdup(): C locale 上での libjconv
+	  問題へのさらなる対処。
+	* src/editldap_basedn.c: ダイアログを開くときの segfault を修正。
+	* src/utils.c: is_next_mbs()
+	  src/compose.c: compose_wrap_line(), compose_wrap_line_all():
+	  ANSI C へ準拠させるために MB_CUR_MAX を MB_LEN_MAX へ変更。
+	* configure.in: 必要な GPGME のバージョンを 0.2.3 に上げた。
+	* src/pop.c: pop3_getauth_user_recv(): POP3 サーバが通常の認証を
+	  拒否したときに受信ダイアログを閉じるバグを修正。
+
 2001-10-07
 
 	* src/prefs_common.c: prefs_receive_create(): 英語の修正。

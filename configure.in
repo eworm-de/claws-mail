@@ -5,10 +5,10 @@ PACKAGE=sylpheed
 dnl version number
 MAJOR_VERSION=0
 MINOR_VERSION=6
-MICRO_VERSION=2
+MICRO_VERSION=3
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws24
+EXTRA_VERSION=claws1
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl
@@ -61,7 +61,7 @@ AC_PROG_YACC
 SYLPHEED_ACLOCAL_INCLUDE(ac)
 
 dnl for gettext
-ALL_LINGUAS="cs de el es fr hr it ja ko nl pl pt_BR ru"
+ALL_LINGUAS="cs de el es fr hr it ja ko nl pl pt_BR ru sv"
 AM_GNU_GETTEXT
 dnl AC_CHECK_FUNC(gettext, AC_CHECK_LIB(intl, gettext))
 localedir='${prefix}/${DATADIRNAME}/locale'
@@ -105,7 +105,7 @@ AC_ARG_ENABLE(gpgme,
 AC_MSG_CHECKING([whether to use GPGME])
 if test $ac_cv_enable_gpgme = yes; then
 	AC_MSG_RESULT(yes)
-	AM_PATH_GPGME(0.2.1, AC_DEFINE(USE_GPGME), [use_gpgme=no
+	AM_PATH_GPGME(0.2.3, AC_DEFINE(USE_GPGME), [use_gpgme=no
 						    ac_cv_enable_gpgme=no])
 else
 	AC_MSG_RESULT(no)

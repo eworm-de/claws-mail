@@ -362,8 +362,12 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 		n_codesets = 1;
 	} else
 		codesets = jconv_info_get_pref_codesets(&n_codesets);
-	if (!dest_codeset)
+	if (!dest_codeset) {
 		dest_codeset = conv_get_current_charset_str();
+		/* don't convert if current codeset is US-ASCII */
+		if (!strcasecmp(dest_codeset, CS_US_ASCII))
+			return g_strdup(inbuf);
+	}
 
 	if (jconv_alloc_conv(inbuf, strlen(inbuf), &buf, &len,
 			     codesets, n_codesets,
@@ -527,8 +531,9 @@ static const struct {
 	{"lt_LT"		, C_ISO_8859_13},
 	{"lv_LV"		, C_ISO_8859_13},
 
-	{"C"		, C_US_ASCII},
-	{"POSIX"	, C_US_ASCII},
+	{"C"			, C_US_ASCII},
+	{"POSIX"		, C_US_ASCII},
+	{"ANSI_X3.4-1968"	, C_US_ASCII},
 };
 #endif /* !HAVE_LIBJCONV */
 
@@ -651,7 +656,7 @@ CharSet conv_get_outgoing_charset(void)
 	/* skip US-ASCII and UTF-8 */
 	pref_codesets = jconv_info_get_pref_codesets(&n_pref_codesets);
 	for (i = 0; i < n_pref_codesets; i++) {
-		for (j = 2; j < sizeof(charsets) / sizeof(charsets[0]); j++) {
+		for (j = 3; j < sizeof(charsets) / sizeof(charsets[0]); j++) {
 			if (!strcasecmp(pref_codesets[i], charsets[j].name)) {
 				out_charset = charsets[j].charset;
 				return out_charset;

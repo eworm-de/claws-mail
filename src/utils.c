@@ -472,7 +472,7 @@ gboolean is_next_mbs(const wchar_t *s)
 {
 	gint mbl;
 	const wchar_t *wp;
-	gchar tmp[MB_CUR_MAX];
+	gchar tmp[MB_LEN_MAX];
 
 	/* skip head space */
 	for (wp = s; *wp != (wchar_t)0 && iswspace(*wp); wp++)
