@@ -1,3 +1,15 @@
+2002-01-07 [christoph]	0.6.6claws43
+
+	* src/mh.c
+		search for free message number, do not only rely
+		on last_num
+	* src/send.c
+		fix smtp auth and use extra account information
+		if available, if not use pop3 data instead
+		(closes bug #500341)		
+	* src/ssl.[ch]
+		match coding style
+
 2002-01-06 [alfons]	0.6.6claws42
 
 	* src/mainwindow.c

@@ -276,6 +276,7 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 	gchar buf[BUFFSIZE];
 	gushort port;
 	gchar *domain;
+	gchar *user = NULL;
 	gchar *pass = NULL;
 	GSList *cur;
 	gint size;
@@ -298,15 +299,30 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 	domain = ac_prefs->set_domain ? ac_prefs->domain : NULL;
 
 	if (ac_prefs->use_smtp_auth) {
-		if (ac_prefs->passwd)
-			pass = ac_prefs->passwd;
-		else if (ac_prefs->tmp_pass)
-			pass = ac_prefs->tmp_pass;
-		else {
-			pass = send_query_password(ac_prefs->smtp_server,
-						   ac_prefs->userid);
-			if (!pass) pass = g_strdup("");
-			ac_prefs->tmp_pass = pass;
+		if (ac_prefs->smtp_userid) {
+			user = ac_prefs->smtp_userid;
+			if(ac_prefs->smtp_passwd)
+				pass = ac_prefs->smtp_passwd;
+			else if (ac_prefs->tmp_pass)
+				pass = ac_prefs->tmp_pass;
+			else {
+				pass = send_query_password(ac_prefs->smtp_server,
+							   ac_prefs->smtp_userid);
+				if (!pass) pass = g_strdup("");
+				ac_prefs->tmp_pass = pass;
+			}
+		} else {
+			user = ac_prefs->userid;
+			if (ac_prefs->passwd) {
+				pass = ac_prefs->passwd;
+			} else if (ac_prefs->tmp_pass)
+				pass = ac_prefs->tmp_pass;
+			else {
+				pass = send_query_password(ac_prefs->smtp_server,
+							   ac_prefs->userid);
+				if (!pass) pass = g_strdup("");
+				ac_prefs->tmp_pass = pass;
+			}
 		}
 	}
 
@@ -342,7 +358,7 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 	GTK_EVENTS_FLUSH();
 
 	SEND_EXIT_IF_NOTOK
-		(smtp_from(smtp_sock, ac_prefs->address, ac_prefs->userid,
+		(smtp_from(smtp_sock, ac_prefs->address, user,
 			   pass, ac_prefs->use_smtp_auth),
 		 "sending MAIL FROM");
 
