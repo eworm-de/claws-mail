@@ -706,6 +706,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
 	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_FORWARDED);
 	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_REPLIED);
+	imap_do_reply(msginfo);
 
 	CHANGE_FLAGS(msginfo);
 

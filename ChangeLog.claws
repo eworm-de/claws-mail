@@ -1,3 +1,15 @@
+2001-12-10 [paul]	0.6.5claws71
+
+	* src/compose.c
+	* src/imap.[ch]
+	* src/summaryview.c
+		fix: imap server now gets informed of MARKED, UNMARKED
+		and REPLY events. Now people can use different IMAP-Mail
+		clients and have the exact same information about MARKED,
+		UNMARKED and REPLY status with all of them. Especially
+		useful for imap servers with a web-frontend.
+		submitted by Tobias Sandhaas <medlor@web.de>
+
 2001-12-09 [melvin]	0.6.5claws70
 	
 	* src/textview.[ch]

@@ -133,4 +133,8 @@ FolderItem *imap_create_folder		(Folder		*folder,
 gint imap_remove_folder			(Folder		*folder,
 					 FolderItem	*item);
 
+gint imap_do_mark        		(MsgInfo    	*msginfo);
+gint imap_do_unmark      		(MsgInfo    	*msginfo);
+gint imap_do_reply       		(MsgInfo    	*msginfo);
+
 #endif /* __IMAP_H__ */

@@ -592,6 +592,51 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 	return ok;
 }
 
+gint imap_do_mark        (MsgInfo    *msginfo)
+{
+    Folder     *folder = msginfo->folder->folder;
+    IMAPSession *session;
+
+    g_return_val_if_fail(folder != NULL, -1);
+    g_return_val_if_fail(folder->type == F_IMAP, -1);
+    g_return_val_if_fail(msginfo != NULL, -1);
+
+    session = imap_session_get(folder);
+    if (!session) return -1;
+    debug_print(_("imap_do_mark(): Message %s/%d is marked . %d\n"), msginfo->folder->path, msginfo->msgnum, folder->type);
+    imap_set_message_flags(session, msginfo->msgnum, msginfo->msgnum, IMAP_FLAG_FLAGGED, TRUE);
+}
+
+gint imap_do_unmark        (MsgInfo    *msginfo)
+{
+    Folder     *folder = msginfo->folder->folder;
+    IMAPSession *session;
+ 
+    g_return_val_if_fail(folder != NULL, -1);
+    g_return_val_if_fail(folder->type == F_IMAP, -1);
+    g_return_val_if_fail(msginfo != NULL, -1);
+ 
+    session = imap_session_get(folder);
+    if (!session) return -1;
+    debug_print(_("imap_do_unmark(): Message %s/%d is unmarked . %d\n"), msginfo->folder->path, msginfo->msgnum, folder->type);
+    imap_set_message_flags(session, msginfo->msgnum, msginfo->msgnum, IMAP_FLAG_FLAGGED, FALSE);
+}
+
+gint imap_do_reply        (MsgInfo    *msginfo)
+{
+    Folder     *folder = msginfo->folder->folder;
+    IMAPSession *session;
+ 
+    g_return_val_if_fail(folder != NULL, -1);
+    g_return_val_if_fail(folder->type == F_IMAP, -1);
+    g_return_val_if_fail(msginfo != NULL, -1);
+ 
+    session = imap_session_get(folder);
+    if (!session) return -1;
+    debug_print(_("imap_do_reply(): Message %s/%d is replied . %d\n"), msginfo->folder->path, msginfo->msgnum, folder->type);
+    imap_set_message_flags(session, msginfo->msgnum, msginfo->msgnum, IMAP_FLAG_ANSWERED, TRUE);
+}
+
 static gint imap_do_copy_msgs_with_dest(Folder *folder, FolderItem *dest, 
 					GSList *msglist,
 					gboolean remove_source)

@@ -2569,7 +2569,8 @@ static void summary_mark_row(SummaryView *summaryview, GtkCTreeNode *row)
 	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_MARKED);
 	CHANGE_FLAGS(msginfo);
 	summary_set_row_marks(summaryview, row);
-	debug_print(_("Message %d is marked\n"), msginfo->msgnum);
+   	imap_do_mark(msginfo);
+	debug_print(_("Message %s/%d is marked\n"), msginfo->folder->path, msginfo->msgnum);
 }
 
 static void summary_lock_row(SummaryView *summaryview, GtkCTreeNode *row)
@@ -2861,7 +2862,7 @@ static void summary_unmark_row(SummaryView *summaryview, GtkCTreeNode *row)
 	MSG_UNSET_TMP_FLAGS(msginfo->flags, MSG_MOVE | MSG_COPY);
 	CHANGE_FLAGS(msginfo);
 	summary_set_row_marks(summaryview, row);
-
+	imap_do_unmark(msginfo);
 	debug_print(_("Message %s/%d is unmarked\n"),
 		    msginfo->folder->path, msginfo->msgnum);
 }
