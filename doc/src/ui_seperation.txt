@@ -29,3 +29,9 @@ nntp.[ch]		common/nntp.[ch]	ok
 session.[ch]		common/session.[ch]	ok
 
 smtp.[ch]		common/smtp.[ch]	ok
+
+gtkstext.[ch]		gtk/gtkstext.[ch]	ok
+
+gtkshruler.[ch]		gtk/gtkshruler.[ch]	ok
+
+manage_window.[ch]	gtk/manage_window.[ch]	ok
