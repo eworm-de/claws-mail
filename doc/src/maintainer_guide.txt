@@ -1,83 +1,92 @@
+Contents:
+
+  1. Files in src/
+  2. Files in src/common/
+  3. Files in src/gtk/
+  4. Hooks summary
+
+
+------------------------------------------------------------------------------
 1. Files in src/
 
 account.c
    is the accounts list dialog
 action.c
-   *********** NO DESCRIPTION *********
+   dialog and functions for external actions
 addr_compl.c
    is the address completion process
 addrbook.c
    management of address book
 addrcache.c
-   *********** NO DESCRIPTION *********
+   functions to maintain address cache
 addrcindex.c
-   *********** NO DESCRIPTION *********
+   functions to maintain address completion index
 addrclip.c
-   *********** NO DESCRIPTION *********
+   contains address clipboard objects and related functions
 addressadd.c
-   *********** NO DESCRIPTION *********
+   add address to address book dialog
 addressbook.c
    is the address book dialog
 addrgather.c
-   *********** NO DESCRIPTION *********
+   dialog for gathering EMail addresses from mail folder
 addrharvest.c
-   *********** NO DESCRIPTION *********
+   functions for an E-Mail address harvester
 addrindex.c
-   *********** NO DESCRIPTION *********
+   general functions for accessing address index file
 addritem.c
-   *********** NO DESCRIPTION *********
+   general primitive address item objects
 addrselect.c
-   *********** NO DESCRIPTION *********
+   address list item selection objects
 alertpanel.c
-   *********** NO DESCRIPTION *********
+   dialog displaying warnings and notifications
 codeconv.c
-   *********** NO DESCRIPTION *********
+   conversion of charset encodings
 compose.c
    is the compose dialog
 crash.c
-   *********** NO DESCRIPTION *********
+   collect gdb backtrace info on crashes
 customheader.c
    function to parse custom headers configuration file
 displayheader.c
    function to parse headers display configuration file
 editaddress.c
-   *********** NO DESCRIPTION *********
+   editing single addressbook entries
 editbook.c
-   *********** NO DESCRIPTION *********
+   editing addressbooks
 editgroup.c
-   *********** NO DESCRIPTION *********
+   editing addressbook groups
 editjpilot.c
-   *********** NO DESCRIPTION *********
+   edit JPilot address book data
 editldap.c
-   *********** NO DESCRIPTION *********
+   edit LDAP address book data
 editldap_basedn.c
-   *********** NO DESCRIPTION *********
+   LDAP Base DN selection dialog
 editvcard.c
-   *********** NO DESCRIPTION *********
+   edit vCard address book data
 enriched.c
-   *********** NO DESCRIPTION *********
+   parses text/enriched mime type
 exphtmldlg.c
-   *********** NO DESCRIPTION *********
+   export address book to HTML file (GUI)
 expldifdlg.c
-   *********** NO DESCRIPTION *********
+   export address book to LDIF file (GUI)
 export.c
-   *********** NO DESCRIPTION *********
+   exports MH folders to MBOX
 exporthtml.c
-   *********** NO DESCRIPTION *********
+   export address book to HTML file
 exportldif.c
-   *********** NO DESCRIPTION *********
+   export address book to LDIF file
 filtering.c
    handles the filtering process and function for filtering data structure
 folder.c
    handles the folder structure (left panel) without any gtk
 folder_item_prefs.c
-   *********** NO DESCRIPTION *********
+   folder property functions (load, save, copy, ...)
 foldersel.c
-   *********** NO DESCRIPTION *********
+   dialog for selecting mail folders
 folderview.c
    is the left panel gtk implementation
 grouplistdialog.c
-   This is the newsgroup selection dialog box
+   this is the newsgroup selection dialog box
 headerview.c
    is the little header viewer between the list of mails and
    the mail viewer.html.c
@@ -86,27 +95,28 @@ imap.c
 import.c
    import from mbox dialog
 importldif.c
-   *********** NO DESCRIPTION *********
+   import LDIF address book data
 importmutt.c
-   *********** NO DESCRIPTION *********
+   import Mutt address book data
 importpine.c
-   *********** NO DESCRIPTION *********
+   import Pine address book data
 inc.c
    retrievement of POP3 or mbox accounts
 inputdialog.c
-   This is a dialog for the user to type something.
+   this is a dialog for the user to type something.
 jpilot.c
-   *********** NO DESCRIPTION *********
+   functions necessary to access JPilot database files
 ldapctrl.c
-   *********** NO DESCRIPTION *********
+   functions for LDAP control data
 ldapquery.c
-   *********** NO DESCRIPTION *********
+   functions necessary to define and perform LDAP queries
 ldapserver.c
-   *********** NO DESCRIPTION *********
+   functions necessary to access LDAP servers
 ldaputil.c
-   *********** NO DESCRIPTION *********
+   some utility functions to access LDAP servers
 ldif.c
-   *********** NO DESCRIPTION *********
+   functions necessary to access LDIF files (LDAP Data Interchange Format
+   files)
 logwindow.c
    is the log window (tool menu / log window)
 main.c
@@ -114,23 +124,23 @@ main.c
 mainwindow.c
    is the 3-paned main window
 manual.c
-   *********** NO DESCRIPTION *********
+   help menu: links to manual and FAQ
 matcher.c
-    this is some function to match the messages, to handle data structure
-    of matcher/filtering/scoring system or to convert data structures
-    to string.
+   this is some function to match the messages, to handle data structure
+   of matcher/filtering/scoring system or to convert data structures
+   to string.
 matcher_parser_lex.l
-    this is the lexer used in the parse operation of the configuration files
-    of the matcher/filtering/scoring system.
+   this is the lexer used in the parse operation of the configuration files
+   of the matcher/filtering/scoring system.
 matcher_parser_parse.y
-    this is the parser of the configuration files of
-    the matcher/filtering/scoring system.
+   this is the parser of the configuration files of
+   the matcher/filtering/scoring system.
 mbox.c
    is the mbox importer/exporter
 mbox_folder.c
    is the mbox folder support
 message_search.c
-   *********** NO DESCRIPTION *********
+   dialog for searching current message
 messageview.c
    is the mail viewer part of the main window
 mh.c
@@ -139,9 +149,9 @@ mimeview.c
    is the displaying of the list of the MIME part of the mail
    (at the top of the mail viewer when it is displayed)
 msgcache.c
-   *********** NO DESCRIPTION *********
+   handles cached message infos
 mutt.c
-   *********** NO DESCRIPTION *********
+   functions necessary to access MUTT address book file
 news.c
    is the news session handling (it uses the nntp protocol)
 noticeview.c
@@ -149,9 +159,9 @@ noticeview.c
 passphrase.c
    *********** NO DESCRIPTION *********
 pine.c
-   *********** NO DESCRIPTION *********
+   functions necessary to access Pine address book file
 pop.c
-   *********** NO DESCRIPTION *********
+   functions for POP3 sessions
 prefs_account.c
    is preferences for account dialog
 prefs_actions.c
@@ -169,17 +179,17 @@ prefs_filtering_action.c
 prefs_folder_item.c
    is the preference dialog for a folder item
 prefs_gtk.c
-   *********** NO DESCRIPTION *********
+   common functions for handling config windows
 prefs_matcher.c
    let the user define the condition for a filtering rule or a scoring rule
 prefs_scoring.c
    is preferences for scoring system dialog
 prefs_summary_column.c
-   *********** NO DESCRIPTION *********
+   dialog for selecting items to display in summaryview
 prefs_template.c
-   *********** NO DESCRIPTION *********
+   dialog for editing templates
 prefs_toolbar.c
-   *********** NO DESCRIPTION *********
+   dialog for customizing toolbars
 procheader.c
    is the RFC822 headers parser.
 procmime.c
@@ -195,70 +205,71 @@ quote_fmt_lex.l
 quote_fmt_parse.y
    is the parser for the configuration of the quotation system
 recv.c
-   This will receive some data from a file descriptor and write
+   this will receive some data from a file descriptor and write
    them to a file.
 rfc2015.c
    GPG support
 scoring.c
    handles the scoring process and function for scoring data structure
 select-keys.c
-   *********** NO DESCRIPTION *********
+   dialog for selecting gpg keys
 send_message.c
    message sending to SMTP or through sendmail command.
 setup.c
-   *********** NO DESCRIPTION *********
+   functions for first run (select mailbox dialog) 
 sigstatus.c
-   *********** NO DESCRIPTION *********
+   dialog for gpg signature check
 simple-gettext.c
-   *********** NO DESCRIPTION *********
+   a simplified version of gettext
 sourcewindow.c
-   Displays the source of the messages.
+   displays the source of the messages.
 ssl_manager.c
-   *********** NO DESCRIPTION *********
+   dialog for handling SSL certificates
 statusbar.c
-   *********** NO DESCRIPTION *********
+   functions for handling statusbar output
 stock_pixmap.c
    handle the pixmaps including pixmap theming
 string_match.c
-   *********** NO DESCRIPTION *********
+   regexp pattern matching utilities
 summary_search.c
-   *********** NO DESCRIPTION *********
+   dialog for searching folders
 summaryview.c
    is the displaying of list of the mail in a folder
 	      (up/right in the main window).
 syldap.c
-   *********** NO DESCRIPTION *********
+   functions necessary to access LDAP servers
 textview.c
    is the mail (without MIME part) displaying of the
    mail viewer.
 toolbar.c
-   *********** NO DESCRIPTION *********
+   functions for handling toolbars
 undo.c
-   *********** NO DESCRIPTION *********
+   undo functions for message editor
 unmime.c
-   *********** NO DESCRIPTION *********
+   decodes headers based on RFC2045 and RFC2047
 vcard.c
-   *********** NO DESCRIPTION *********
+   functions necessary to access vCard files
 
 
-2. Files in common/
+------------------------------------------------------------------------------
+2. Files in src/common/
 
 base64.c
    handles the base64 conversion
 hooks.c
-   *********** NO DESCRIPTION *********
+   functions for handling hooks
 log.c
-   *********** NO DESCRIPTION *********
+   functions for logging (stdout, file, hook)
 md5.c
    This is MD5 calculation
 mgutils.c
-   *********** NO DESCRIPTION *********
+   common tools for string and list handling
 nntp.c
   is the handling of the NNTP procotol
 passcrypt.c
   encoding of the password in the configuration files.
 plugin.c
-   *********** NO DESCRIPTION *********
+   functions for plugin handling
 prefs.c
    is a preference file parser.
 quoted-printable.c
@@ -270,17 +281,17 @@ smtp.c
 socket.c
    is some function to make it easier to use TCP/unix socket.
 ssl.c
-   *********** NO DESCRIPTION *********
+   SSL init and cleanup functions
 ssl_certificate.c
-   *********** NO DESCRIPTION *********
+   functions for checking SSL certificates
 stringtable.c
-   *********** NO DESCRIPTION *********
+   functions for handling hashed string tables
 sylpheed.c
-   *********** NO DESCRIPTION *********
+   application init and cleanup functions
 template.c
-   *********** NO DESCRIPTION *********
+   functions for loading and saving templates
 utils.c
-   *********** NO DESCRIPTION *********
+   common tool functions
 uuencode.c
    UU encoder
 xml.c
@@ -289,35 +300,91 @@ xmlprops.c
    *********** NO DESCRIPTION *********
 
 
-3. Files in gtk/
+------------------------------------------------------------------------------
+3. Files in src/gtk/
 
 about.c
    this is the about dialog
 colorlabel.c
-   *********** NO DESCRIPTION *********
+   dialog for setting message color
 description_window.c
-   *********** NO DESCRIPTION *********
+   dialog for showing descriptions (e.g. action syntax)
 filesel.c
    This is a file selection dialog
 gtkaspell.c
-   *********** NO DESCRIPTION *********
+   spellchecking widget
 gtksctree.c
    This is a modified GtkCTree.
 gtkshruler.c
-   *********** NO DESCRIPTION *********
+   ruler widget (shown in message editor)
 gtkstext.c
    This is a modified GtkText.
 gtkutils.c
-   *********** NO DESCRIPTION *********
+   common tools for gtk widgets (e.g. ctree)
 gtkvscrollbutton.c
-   *********** NO DESCRIPTION *********
+   composite widget to provide vertical scrolling
 manage_window.c
    *********** NO DESCRIPTION *********
 menu.c
-   *********** NO DESCRIPTION *********
+   functions for handling menus
 pluginwindow.c
-   *********** NO DESCRIPTION *********
+   dialog for loading and unloading plugins
 prefswindow.c
-   *********** NO DESCRIPTION *********
+   treeview based preferences dialog
 sslcertwindow.c
-   *********** NO DESCRIPTION *********
+   dialog to display, change or add SSL certificates
+
+
+------------------------------------------------------------------------------
+4. Hooks summary
+
+FOLDER_ITEM_UPDATE_HOOKLIST
+  invocation	after folder content has changed
+  definition	folder.h
+  usage		folder.c, trayicon plugin
+  source	FolderItemUpdateData
+  return	/
+FOLDER_UPDATE_HOOKLIST
+  invocation	after folder content has changed
+  definition	folder.h
+  usage		folder.c
+  source	FolderUpdateData
+  return	/
+LOG_APPEND_TEXT_HOOKLIST
+  invocation	after appending LogText to logfiles
+  definition	common/log.h
+  usage		logwindow.c, demo plugin
+  source	LogText
+  return	/
+MAIL_FILTERING_HOOKLIST
+  invocation	before applying filtering rules
+  definition	procmsg.h
+  usage		spamassassin plugin, clamav plugin.
+  source	MailFilteringData
+  return	TRUE stops further processing of current message
+MAIL_RECEIVE_HOOKLIST
+  invocation	after mail retrieval (before filtering)
+  definition	pop.h
+  usage		fetchinfo plugin
+  source	MailFilteringData
+  return	TRUE stops further processing of this message
+MSGINFO_UPDATE_HOOKLIST
+  invocation	when msginfo has changed
+  definition	procmsg.h
+  usage		summaryview.c
+  source	MsginfoUpdate
+  return	/
+PROGRESSINDICATOR_HOOKLIST
+  invocation	starts/stops/sets progressbar
+  definition	common/progressindicator.h
+  usage		mainwindow.c
+  source	ProgressData
+  data		MainWindow
+  return	/
+SSLCERT_ASK_HOOKLIST
+  invocation	asks for accepting new or modified SSL sertificates
+  definition	common/ssl_certificate.h
+  usage		ssl_certificate.c
+  source	SSLCertHookData
+  return	/
+
