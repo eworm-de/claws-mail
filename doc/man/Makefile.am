@@ -1,6 +1,4 @@
-mandatadir = $(mandir)/
+man_MANS = \
+     sylpheed.1
 
-mandata_DATA = \
-     sylpheed.1.gz
-
-EXTRA_DIST = $(mandata_DATA)
+EXTRA_DIST = $(man_MANS)
