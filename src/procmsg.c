@@ -222,8 +222,8 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 	 * circular reference from a node that has already been threaded by IN-REPLY-TO
 	 * but is also in the subject line hash table */
 	if (prefs_common.thread_by_subject) {
-		for (node = root->children; node && node != NULL;) {
-			next = node->next;
+		for (node = last; node && node != NULL;) {
+			next = node->prev;
 			msginfo = (MsgInfo *) node->data;
 			subject = msginfo->subject + subject_get_reply_prefix_length(msginfo->subject);
 			parent = subject_table_lookup_clean(subject_table, (gchar *) subject);
