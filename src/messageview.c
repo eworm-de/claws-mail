@@ -575,6 +575,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 				   "receipt."), to, buf);
 		val = alertpanel(_("Warning"), message, _("Send"),
 				_("+Don't Send"), NULL);
+		g_free(message);				
 		if (val != G_ALERTDEFAULT)
 			return -1;
 	}

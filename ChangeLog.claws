@@ -1,3 +1,8 @@
+2003-07-29 [alfons]	0.9.3claws75
+
+	* src/messageview.c
+		fix a memleak (claws-only)
+
 2003-07-29 [alfons]	0.9.3claws74
 
 	* src/mimeview.[ch]
