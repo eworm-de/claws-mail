@@ -1,4 +1,4 @@
-2004-07-08 [claws]	0.9.12cvs16
+2004-07-08 [paul]	0.9.12cvs16
 
 	* src/inc.c [1.174]
 		fix occasional non-clearance of the statusbar
