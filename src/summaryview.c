@@ -756,7 +756,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	main_window_cursor_wait(summaryview->mainwin);
 
 	mlist = item->folder->get_msg_list(item->folder, item, !update_cache);
-	debug_print("*** folder %s has %d messages\n", item->path, g_slist_length(mlist));
 
 	summary_processing(summaryview, mlist);
 
