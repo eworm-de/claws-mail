@@ -1,3 +1,11 @@
+2002-06-20 [alfons]	0.7.8claws11
+
+	* src/selective_download.c
+	* src/selective_download.h
+		fix assorted mix of allocation errors (should solve
+		problem reported by Philippe Gramoullé, see:
+		http://sourceforge.net/mailarchive/forum.php?thread_id=828668&forum_id=2006)
+
 2002-06-20 [melvin]	0.7.8claws10
 
 	* tools/gpg-sign *REMOVED*

@@ -166,7 +166,11 @@ static void sd_clear_msglist()
 	PrefsAccount *acc = cur_account;
 	while (acc->msg_list != NULL) {
 		HeaderItems *item = (HeaderItems*)acc->msg_list->data;
+
 		acc->msg_list = g_slist_remove(acc->msg_list, item);
+		g_free(item->from);
+		g_free(item->subject);
+		g_free(item);
 	}	
 	g_slist_free(acc->msg_list);
 	sd_update_msg_num(acc);
@@ -241,29 +245,35 @@ SD_State sd_header_filter(MsgInfo *msginfo)
  *
  * - retrieve msginfo from saved header files
  */
-MsgInfo *sd_get_msginfo_from_file(const gchar *filename)
+static MsgInfo *sd_get_msginfo_from_file(const gchar *filename)
 {
-	MsgInfo *msginfo  = g_new0(MsgInfo, 1);
-	MsgInfo *msg;
-	MsgFlags msgflags = { 0, 0 };
+	MsgInfo  *msginfo;
+	MsgFlags  msgflags = { 0, 0 };
+	gchar	  date[HEADER_ITEM_MAX_DATE_SIZE];
 
-	msg  = procheader_parse_file(filename, msgflags, TRUE, FALSE);
+	msginfo = procheader_parse_file(filename, msgflags, TRUE, FALSE);
 
-	if (!msg) {
-		msginfo->subject = _("(No Subject)");
-		msginfo->from    = _("(No Sender)");
-		msginfo->date    = _("(No Date)");
-	} else {
-		g_memmove(&msginfo, &msg, sizeof(msginfo)); 
+	/*
+	 * ALF - we need to make sure we dynamically allocate interesting 
+	 * members, otherwise we can't free the msginfo using 
+	 * procmsg_msginfo_free() later on.
+	 */
 
+	if (msginfo) {
 		if (msginfo->date_t) {
-			gchar date_modified[80];
-			procheader_date_get_localtime(date_modified,
-						      sizeof(date_modified),
-						      msginfo->date_t);
-			msginfo->date = date_modified;
-		}
-	} 
+			procheader_date_get_localtime(date, sizeof date, msginfo->date_t);
+			msginfo->date = g_strdup(date);					
+		}			
+	} else 
+		msginfo = g_new0(MsgInfo, 1);
+
+	if (!msginfo->date) 
+		msginfo->date = g_strdup(_("(No Date)"));
+	if (!msginfo->from)
+		msginfo->from = g_strdup(_("(No Sender)"));
+	if (!msginfo->subject)
+		msginfo->subject = g_strdup(_("(No Subject)"));
+		
 	return msginfo;
 }
 
@@ -369,7 +379,7 @@ static void sd_update_msg_num(PrefsAccount *acc)
  *
  * - get items for clist from Files
  */
-static void sd_clist_get_items()
+static void sd_clist_get_items(void)
 {
 	GSList *cur;
 	PrefsAccount *acc = cur_account;
@@ -378,12 +388,13 @@ static void sd_clist_get_items()
 	for (cur = acc->msg_list; cur != NULL; cur = cur->next) {
 
 		HeaderItems *items = (HeaderItems*) cur->data;
-		gchar *filename = g_strdup_printf("%s%i", path, items->index);
-		MsgInfo *msginfo  = sd_get_msginfo_from_file(filename);
+		gchar *filename    = g_strdup_printf("%s%i", path, items->index);
+		MsgInfo *msginfo   = sd_get_msginfo_from_file(filename);
 		
-		items->from    = msginfo->from;
-		items->subject = msginfo->subject;
-		strncpy2(items->date, msginfo->date, sizeof(items->date));
+		items->from        = g_strdup(msginfo->from);
+		items->subject     = g_strdup(msginfo->subject);
+		
+		strncpy2(items->date, msginfo->date, sizeof items->date);
 		
 		msginfo->folder = folder_get_default_processing();
 
@@ -399,7 +410,7 @@ static void sd_clist_get_items()
 
 		folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
 		g_free(filename);
-		g_free(msginfo);
+		procmsg_msginfo_free(msginfo);
 	}
 
 	g_free(path);
