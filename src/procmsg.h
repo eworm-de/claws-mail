@@ -51,6 +51,8 @@ typedef enum
 	MSG_LABEL_GREEN   = 1 << 9 | 1 << 8 | 0 << 7,
 	MSG_LABEL_BROWN   = 1 << 9 | 1 << 8 | 1 << 7,
 
+	MSG_IGNORE_THREAD = 1 << 10,
+
 	/* temporary flags (0xffff0000) */
 	MSG_MOVE	= 1 << 16,
 	MSG_COPY	= 1 << 17,
@@ -70,8 +72,8 @@ typedef enum
 					 MSG_DELETED   | \
 					 MSG_REPLIED   | \
 					 MSG_FORWARDED | \
-                                         MSG_LABEL     | \
                                          MSG_REALLY_DELETED | \
+                                         MSG_LABEL     | \
 					 MSG_IGNORE_THREAD)
 #define MSG_CACHED_FLAG_MASK		(MSG_MIME)
 
@@ -95,8 +97,8 @@ typedef enum
 #define MSG_IS_MIME(msg)		((msg & MSG_MIME) != 0)
 #define MSG_IS_NEWS(msg)		((msg & MSG_NEWS) != 0)
 #define MSG_IS_CACHED(msg)		((msg & MSG_CACHED) != 0)
-#define MSG_IS_IGNORE_THREAD(msg)	((msg & MSG_IGNORE_THREAD) != 0)
 #define MSG_GET_LABEL(msg)		(msg & MSG_LABEL)
+#define MSG_IS_IGNORE_THREAD(msg)	((msg & MSG_IGNORE_THREAD) != 0)
 
 #define WRITE_CACHE_DATA_INT(n, fp) \
 	fwrite(&n, sizeof(n), 1, fp)
