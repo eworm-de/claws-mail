@@ -1403,7 +1403,6 @@ void folder_item_set_default_flags(FolderItem *dest, MsgFlags *flags)
 	} else {
 		flags->perm_flags = 0;
 	}
-	flags->tmp_flags = MSG_CACHED;
 	if (FOLDER_TYPE(dest->folder) == F_MH) {
 		if (dest->stype == F_QUEUE) {
 			MSG_SET_TMP_FLAGS(*flags, MSG_QUEUED);
@@ -1487,40 +1486,10 @@ gint folder_item_close(FolderItem *item)
 	return folder->klass->close(folder, item);
 }
 
-static void msginfo_set_mime_flags(GNode *node, gpointer data)
-{
-	MsgInfo *msginfo = data;
-	MimeInfo *mimeinfo = node->data;
-
-	if (mimeinfo->disposition == DISPOSITIONTYPE_ATTACHMENT) {
-		MSG_SET_TMP_FLAGS(msginfo->flags, MSG_HAS_ATTACHMENT);
-	} else if (mimeinfo->disposition == DISPOSITIONTYPE_UNKNOWN && 
-		 mimeinfo->type != MIMETYPE_TEXT &&
-		 mimeinfo->type != MIMETYPE_MULTIPART) {
-		MSG_SET_TMP_FLAGS(msginfo->flags, MSG_HAS_ATTACHMENT)
-	}
-
-	/* don't descend below top level message for signed and encrypted info */
-	if (mimeinfo->type == MIMETYPE_MESSAGE)
-		return;
-
-	if (privacy_mimeinfo_is_signed(mimeinfo)) {
-		MSG_SET_TMP_FLAGS(msginfo->flags, MSG_SIGNED);
-	}
-
-	if (privacy_mimeinfo_is_encrypted(mimeinfo)) {
-		MSG_SET_TMP_FLAGS(msginfo->flags, MSG_ENCRYPTED);
-	} else {
-		/* searching inside encrypted parts doesn't really make sense */
-		g_node_children_foreach(mimeinfo->node, G_TRAVERSE_ALL, msginfo_set_mime_flags, msginfo);
-	}
-}
-
 static MsgInfoList *get_msginfos(FolderItem *item, MsgNumberList *numlist)
 {
 	MsgInfoList *msglist = NULL;
 	Folder *folder = item->folder;
-	MsgInfoList *elem;
 
 	if (folder->klass->get_msginfos != NULL)
 		msglist = folder->klass->get_msginfos(folder, item, numlist);
@@ -1536,16 +1505,6 @@ static MsgInfoList *get_msginfos(FolderItem *item, MsgNumberList *numlist)
 			if (msginfo != NULL)
 				msglist = g_slist_prepend(msglist, msginfo);
 		}		
-	}
-
-	for (elem = msglist; elem != NULL; elem = g_slist_next(elem)) {
-		MsgInfo *msginfo = elem->data;
-		MimeInfo *mimeinfo;
-
-		mimeinfo = procmime_scan_message(msginfo);
-		/* check for attachments */
-		g_node_children_foreach(mimeinfo->node, G_TRAVERSE_ALL, msginfo_set_mime_flags, msginfo);
-		procmime_mimeinfo_free_all(mimeinfo);
 	}
 
 	return msglist;
@@ -1577,30 +1536,21 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	guint newcnt = 0, unreadcnt = 0, totalcnt = 0, unreadmarkedcnt = 0;
 	guint cache_max_num, folder_max_num, cache_cur_num, folder_cur_num;
 	gboolean update_flags = 0, old_uids_valid = FALSE;
-	gint err = -1;
-#ifdef USE_GPGME
-	gint old_auto_check = 0;
-	old_auto_check = prefs_common.auto_check_signatures;
-	prefs_common.auto_check_signatures = 0;
-#endif
-	if (item == NULL)
-		goto bail_scan;
-	if (item->path == NULL)
-		goto bail_scan;
+    
+	g_return_val_if_fail(item != NULL, -1);
+	if (item->path == NULL) return -1;
 
 	folder = item->folder;
 
-	if (folder == NULL)
-		goto bail_scan;
-	if (folder->klass->get_num_list == NULL)
-		goto bail_scan;
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(folder->klass->get_num_list != NULL, -1);
 
 	debug_print("Scanning folder %s for cache changes.\n", item->path);
 
 	/* Get list of messages for folder and cache */
 	if (folder->klass->get_num_list(item->folder, item, &folder_list, &old_uids_valid) < 0) {
 		debug_print("Error fetching list of message numbers\n");
-		goto bail_scan;
+		return(-1);
 	}
 
 	if (old_uids_valid) {
@@ -1813,12 +1763,8 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 
 	folder_item_update(item, update_flags);
 	folder_item_update_thaw();
-	err = 0;
-bail_scan:
-#ifdef USE_GPGME
-	prefs_common.auto_check_signatures = old_auto_check;
-#endif
-	return err;
+
+	return 0;
 }
 
 gint folder_item_syncronize_flags(FolderItem *item)
@@ -2115,9 +2061,40 @@ GSList *folder_item_get_msg_list(FolderItem *item)
 	return msgcache_get_msg_list(item->cache);
 }
 
+static void msginfo_set_mime_flags(GNode *node, gpointer data)
+{
+	MsgInfo *msginfo = data;
+	MimeInfo *mimeinfo = node->data;
+
+	if (mimeinfo->disposition == DISPOSITIONTYPE_ATTACHMENT) {
+		procmsg_msginfo_set_flags(msginfo, 0, MSG_HAS_ATTACHMENT);
+	} else if (mimeinfo->disposition == DISPOSITIONTYPE_UNKNOWN && 
+		 mimeinfo->type != MIMETYPE_TEXT &&
+		 mimeinfo->type != MIMETYPE_MULTIPART) {
+		procmsg_msginfo_set_flags(msginfo, 0, MSG_HAS_ATTACHMENT);
+	}
+
+	/* don't descend below top level message for signed and encrypted info */
+	if (mimeinfo->type == MIMETYPE_MESSAGE)
+		return;
+
+	if (privacy_mimeinfo_is_signed(mimeinfo)) {
+		procmsg_msginfo_set_flags(msginfo, 0, MSG_SIGNED);
+	}
+
+	if (privacy_mimeinfo_is_encrypted(mimeinfo)) {
+		procmsg_msginfo_set_flags(msginfo, 0, MSG_ENCRYPTED);
+	} else {
+		/* searching inside encrypted parts doesn't really make sense */
+		g_node_children_foreach(mimeinfo->node, G_TRAVERSE_ALL, msginfo_set_mime_flags, msginfo);
+	}
+}
+
 gchar *folder_item_fetch_msg(FolderItem *item, gint num)
 {
 	Folder *folder;
+	gchar *msgfile;
+	MsgInfo *msginfo;
 
 	g_return_val_if_fail(item != NULL, NULL);
 
@@ -2125,7 +2102,25 @@ gchar *folder_item_fetch_msg(FolderItem *item, gint num)
 
 	g_return_val_if_fail(folder->klass->fetch_msg != NULL, NULL);
 
-	return folder->klass->fetch_msg(folder, item, num);
+	msgfile = folder->klass->fetch_msg(folder, item, num);
+
+	msginfo = folder_item_get_msginfo(item, num);
+	if ((msginfo != NULL) && !MSG_IS_SCANNED(msginfo->flags)) {
+		MimeInfo *mimeinfo;
+
+		if (msginfo->folder->stype != F_QUEUE && 
+		    msginfo->folder->stype != F_DRAFT)
+			mimeinfo = procmime_scan_file(msgfile);
+		else
+			mimeinfo = procmime_scan_queue_file(msgfile);
+		/* check for attachments */
+		g_node_children_foreach(mimeinfo->node, G_TRAVERSE_ALL, msginfo_set_mime_flags, msginfo);
+		procmime_mimeinfo_free_all(mimeinfo);
+
+		procmsg_msginfo_set_flags(msginfo, 0, MSG_SCANNED);
+	}
+
+	return msgfile;
 }
 
 gint folder_item_fetch_all_msg(FolderItem *item)
@@ -2417,12 +2412,7 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 	FolderItem *next_item;
 	GNode *srcnode;
 	gchar *old_id, *new_id;
-	gint err = 1;
-#ifdef USE_GPGME
-	gint old_auto_check = 0;
-	old_auto_check = prefs_common.auto_check_signatures;
-	prefs_common.auto_check_signatures = 0;
-#endif
+
 	mlist = folder_item_get_msg_list(src);
 
 	/* move messages */
@@ -2430,7 +2420,7 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 	new_item = folder_create_folder(dest, src->name);
 	if (new_item == NULL) {
 		printf("Can't create folder\n");
-		goto bail_move;
+		return NULL;
 	}
 	
 	if (new_item->folder == NULL)
@@ -2463,7 +2453,7 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 			next_item = (FolderItem*) srcnode->data;
 			srcnode = srcnode->next;
 			if (folder_item_move_recursive(next_item, new_item) == NULL)
-				goto bail_move;
+				return NULL;
 		}
 	}
 	old_id = folder_item_get_identifier(src);
@@ -2479,17 +2469,8 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 		prefs_filtering_rename_path(old_id, new_id);
 	g_free(old_id);
 	g_free(new_id);
-	err = 0;
 
-bail_move:
-#ifdef USE_GPGME
-	prefs_common.auto_check_signatures = old_auto_check;
-#endif
-
-	if (err != 0)
-		return NULL;
-	else
-		return new_item;
+	return new_item;
 }
 
 gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_item)

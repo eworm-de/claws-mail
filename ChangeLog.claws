@@ -1,3 +1,20 @@
+2004-09-08 [christoph]	0.9.12cvs98
+
+	* src/procmsg.[ch]
+		change MSG_CACHED (unused in claws) to MSG_SCANNED to remember
+		if the message structure has been scanned
+
+	* src/folder.c
+		o scan structure when the mail is fetched for the first time
+		  to prevent unnecessary fetching of messages while scanning
+		  the folder for messages
+		o revert 0.9.12cvs24
+
+	* src/plugins/pgpmime/pgpmime.c
+		check signature if auto signature checking is enabled when the
+		signature status is requested for first time and not when
+		checking if a part has a signature
+
 2004-09-07 [colin]	0.9.12cvs97
 
 	* src/inc.c

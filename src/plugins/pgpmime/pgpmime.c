@@ -116,9 +116,6 @@ static gboolean pgpmime_is_signed(MimeInfo *mimeinfo)
 	data->done_sigtest = TRUE;
 	data->is_signed = TRUE;
 
-	if (prefs_common.auto_check_signatures)
-		pgpmime_check_signature(mimeinfo);
-	
 	return TRUE;
 }
 
@@ -186,6 +183,10 @@ static SignatureStatus pgpmime_get_sig_status(MimeInfo *mimeinfo)
 	
 	g_return_val_if_fail(data != NULL, SIGNATURE_INVALID);
 
+	if (data->sigstatus == GPGME_SIG_STAT_NONE && 
+	    prefs_common.auto_check_signatures)
+		pgpmime_check_signature(mimeinfo);
+	
 	return sgpgme_sigstat_gpgme_to_privacy(data->ctx, data->sigstatus);
 }
 
@@ -195,6 +196,10 @@ static gchar *pgpmime_get_sig_info_short(MimeInfo *mimeinfo)
 	
 	g_return_val_if_fail(data != NULL, g_strdup("Error"));
 
+	if (data->sigstatus == GPGME_SIG_STAT_NONE && 
+	    prefs_common.auto_check_signatures)
+		pgpmime_check_signature(mimeinfo);
+	
 	return sgpgme_sigstat_info_short(data->ctx, data->sigstatus);
 }
 
@@ -204,6 +209,10 @@ static gchar *pgpmime_get_sig_info_full(MimeInfo *mimeinfo)
 	
 	g_return_val_if_fail(data != NULL, g_strdup("Error"));
 
+	if (data->sigstatus == GPGME_SIG_STAT_NONE && 
+	    prefs_common.auto_check_signatures)
+		pgpmime_check_signature(mimeinfo);
+	
 	return sgpgme_sigstat_info_full(data->ctx, data->sigstatus);
 }
 
@@ -314,13 +323,12 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 	} else
 		gpgme_release(ctx);
 
-	
 	return decinfo;
 }
 
 static PrivacySystem pgpmime_system = {
 	"pgpmime",			/* id */
-	"PGP/Mime",			/* name */
+	"PGP Mime",			/* name */
 
 	pgpmime_free_privacydata,	/* free_privacydata */
 
