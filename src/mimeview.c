@@ -552,7 +552,7 @@ static MimeViewer *get_viewer_for_mimeinfo(MimeView *mimeview, MimeInfo *partinf
 	return viewer;
 }
 
-static gboolean mimeview_show_part(MimeView *mimeview, MimeInfo *partinfo)
+gboolean mimeview_show_part(MimeView *mimeview, MimeInfo *partinfo)
 {
 	MimeViewer *viewer;
 	

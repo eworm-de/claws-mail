@@ -237,3 +237,4 @@
 ( cvs diff -u -r 1.2 -r 1.3 src/partial_download.c; ) > 1.0.0cvs27.patchset
 ( cvs diff -u -r 1.472 -r 1.473 src/compose.c; ) > 1.0.0cvs28.patchset
 ( cvs diff -u -r 1.69 -r 1.70 po/de.po; cvs diff -u -r 1.73 -r 1.74 po/es.po; cvs diff -u -r 1.52 -r 1.53 po/fr.po; cvs diff -u -r 1.40 -r 1.41 po/it.po; cvs diff -u -r 1.14 -r 1.15 po/sk.po; cvs diff -u -r 1.25 -r 1.26 po/sr.po; ) > 1.0.0cvs29.patchset
+( cvs diff -u -r 1.129 -r 1.130 src/mimeview.c; cvs diff -u -r 1.23 -r 1.24 src/mimeview.h; cvs diff -u -r 1.131 -r 1.132 src/messageview.c; ) > 1.0.1cvs1.patchset

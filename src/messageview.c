@@ -757,6 +757,12 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	else 
 		noticeview_hide(messageview->noticeview);
 
+	mimeinfo = procmime_mimeinfo_next(mimeinfo);
+	if (mimeinfo && (mimeinfo->type != MIMETYPE_TEXT || strcmp(mimeinfo->subtype, "plain"))) {
+		printf("showing %s/%s\n", procmime_get_media_type_str(mimeinfo->type), mimeinfo->subtype);
+		mimeview_show_part(messageview->mimeview,mimeinfo);
+	}
+
 	g_free(file);
 
 	return 0;
