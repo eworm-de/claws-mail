@@ -2166,6 +2166,7 @@ gint canonicalize_file_replace(const gchar *file)
 	if (canonicalize_file(file, tmp_file) < 0)
 		return -1;
 
+	unlink(file);
 	if (rename(tmp_file, file) < 0) {
 		FILE_OP_ERROR(file, "rename");
 		unlink(tmp_file);

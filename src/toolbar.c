@@ -400,19 +400,14 @@ void toolbar_read_config_file ()
 	toolbar_clear_list();
 
 	if (file) {
-
-		if (setjmp (jumper)) {
-			xml_close_file (file);
+		if ((setjmp (jumper))
+		|| (xml_get_dtd (file))
+		|| (xml_parse_next_tag (file))
+		|| (!xml_compare_tag (file, TOOLBAR_TAG_INDEX))) {
+			xml_close_file(file);
 			return;
 		}
 
-		if (xml_get_dtd (file)) 
-			return;
-		if (xml_parse_next_tag (file)) 
-			return;
-		if (!xml_compare_tag (file, TOOLBAR_TAG_INDEX)) 
-			return;
-				
 		attr = xml_get_current_tag_attr (file);
 		
 		retVal = TRUE;
@@ -435,8 +430,9 @@ void toolbar_read_config_file ()
 			}
 
 		}
+		xml_close_file(file);
 	}
-	else {	
+	else {
 		/* save default toolbar */
 		toolbar_set_default_toolbar();
 		toolbar_save_config_file();

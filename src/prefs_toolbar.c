@@ -134,7 +134,7 @@ static void prefs_toolbar_populate(void)
 	GdkPixmap *xpm;
 	GdkBitmap *xpmmask;
 	gchar *avail[2];
-	gchar *activ[5];
+	gchar *activ[5] = {0};
 	gchar *act;
 	
 	gtk_clist_clear (clist_icons);
@@ -330,7 +330,7 @@ static gint prefs_toolbar_register(void)
 	gint row_set = 0;
 	GdkPixmap *xpm;
 	GdkBitmap *xpmmask;
-	gchar *item[5];
+	gchar *item[5] = {0};
 
 	if (clist_icons->rows == 0) return -1; 
 
@@ -392,7 +392,7 @@ static gint prefs_toolbar_substitute(void)
 	gint row_set = 0;
 	GdkPixmap *xpm;
 	GdkBitmap *xpmmask;
-	gchar *item[5];
+	gchar *item[5] = {0};
 	gchar *ac_set;
 
 	/* no rows or nothing selected */
