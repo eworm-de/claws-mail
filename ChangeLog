@@ -1,3 +1,16 @@
+2004-01-23
+
+	* src/folder.[ch]: folder_item_fetch_all_msg(): new. It fetches all
+	  messages in a folder.
+	* src/folderview.c: implemented 'Download' feature.
+
+2004-01-23
+
+	* src/gtkutils.[ch]: implemented ComboButton which adds an arrow
+	  menu button to a button.
+	* src/mainwindow.[ch]: main_window_toolbar_create(): added combo
+	  button to reply and forward button.
+
 2004-01-22
 
 	* src/mainwindow.c: fixed automatic expansion of window size because

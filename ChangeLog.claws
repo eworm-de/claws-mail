@@ -1,3 +1,14 @@
+2004-01-25 [paul]	0.9.8claws47
+
+	* sync with 0.9.8cvs8
+		see ChangeLog 2004-01-23
+		
+	* tools/mbox_convert.pl
+		Fixed (hopefully) to account for From lines 
+		that are of various lengths and that might have
+		timezone info at the end
+		submitted by Fred Marton
+
 2004-01-25 [thorsten]	0.9.8claws46
 
 	* src/messageview.c
