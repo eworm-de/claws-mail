@@ -2,6 +2,7 @@
 
 	* src/toolbar.h
 		removed GSList declaration causing trouble on MacOS-X
+		(submitted by alfons, reported by xfesty)
 
 2002-11-01 [paul]	0.8.5claws67
 
