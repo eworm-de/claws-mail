@@ -1,3 +1,8 @@
+2002-06-05 [paul]	0.7.6claws31
+
+	* src/mainwindow.c
+		add 'Sort by locked' and 'Sort by score'
+
 2002-06-05 [paul]	0.7.6claws30
 
 	* sync with 0.7.6cvs24

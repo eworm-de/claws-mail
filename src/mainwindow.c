@@ -552,6 +552,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/_Sort/by _unread"),		NULL, sort_summary_cb, SORT_BY_UNREAD, "/View/Sort/by number"},
 	{N_("/_View/_Sort/by a_ttachment"),
 						NULL, sort_summary_cb, SORT_BY_MIME, "/View/Sort/by number"},
+	{N_("/_View/_Sort/by score"),		NULL, sort_summary_cb, SORT_BY_SCORE, "/View/Sort/by number"},
+	{N_("/_View/_Sort/by locked"),		NULL, sort_summary_cb, SORT_BY_LOCKED, "/View/Sort/by number"},
 	{N_("/_View/_Sort/D_on't sort"),	NULL, sort_summary_cb, SORT_BY_NONE, "/View/Sort/by number"},
 	{N_("/_View/_Sort/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Sort/Ascending"),		NULL, sort_summary_type_cb, SORT_ASCENDING, "<RadioItem>"},
@@ -1738,6 +1740,10 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 			menu_path = "/View/Sort/by unread"; break;
 		case SORT_BY_MIME:
 			menu_path = "/View/Sort/by attachment"; break;
+		case SORT_BY_SCORE:
+			menu_path = "/View/Sort/by score"; break;
+		case SORT_BY_LOCKED:
+			menu_path = "/View/Sort/by locked"; break;
 		case SORT_BY_NONE:
 		default:
 			menu_path = "/View/Sort/Don't sort"; break;
