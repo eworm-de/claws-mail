@@ -1418,8 +1418,8 @@ gchar *gtkpspell_get_dictionary_menu_active_item(GtkWidget *menu)
 guchar *convert_to_pspell_encoding (const guchar *encoding)
 {
 	guchar * pspell_encoding;
-	/* Beware, strstr2 returns 0 if string is found -1 if not */
-	if (!strstr2(encoding, "ISO-8859-")) {
+
+	if (strstr2(encoding, "ISO-8859-")) {
 		pspell_encoding = g_strdup_printf("iso8859%s", encoding+8);
 	}
 	else

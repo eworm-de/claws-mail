@@ -1,3 +1,14 @@
+2001-10-26 [christoph]	0.6.4claws10
+
+	* src/account.c
+		made search for accounts by email address not case
+		sensitive
+	* src/folder.c
+		fixed memory leak in folder_item_get_identifier
+	* src/gtkspell.c
+	* src/utils.c
+		fixed wrong strstr2 (should work like strstr)
+
 2001-10-26 [darko]	0.6.4claws9
 
 	* src/compose.c src/gtkstext.[ch]

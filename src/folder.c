@@ -1424,18 +1424,14 @@ static gchar * folder_item_get_tree_identifier(FolderItem * item)
 
 gchar * folder_item_get_identifier(FolderItem * item)
 {
-	gchar * path;
 	gchar * id;
 	gchar * folder_str;
 
+	g_return_if_fail(item->path != NULL);
+
 	folder_str = folder_get_identifier(item->folder);
-
-	if (item->path == NULL) {
-		g_free(folder_str);
-		return NULL;
-	}
-
 	id = g_strconcat(folder_str, "/", item->path, NULL);
+	g_free(folder_str);
 
 	return id;
 }
