@@ -1,3 +1,12 @@
+2004-10-18 [christoph]	0.9.12cvs128
+
+	* src/plugins/pgpmime/passphrase.c
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/prefs_gpg.[ch]
+	* src/plugins/pgpmime/prefs_gpg.glade
+	* src/plugins/pgpmime/sgpgme.c
+		add GPG prefs
+
 2004-10-18 [christoph]	0.9.12cvs127
 
 	* src/addrbook.c

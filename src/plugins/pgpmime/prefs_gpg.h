@@ -22,12 +22,13 @@ typedef struct GPGConfig GPGConfig;
 struct GPGConfig
 {
 	gboolean auto_check_signatures;
-	gboolean gpg_signature_popup;
 	gboolean store_passphrase;
 	gint store_passphrase_timeout;
 	gboolean passphrase_grab;
 	gboolean gpg_warning;
 };
 
-void prefs_gpg_init();
-void prefs_gpg_done();
+void prefs_gpg_init(void);
+void prefs_gpg_done(void);
+void prefs_gpg_save_config(void);
+struct GPGConfig *prefs_gpg_get_config();
