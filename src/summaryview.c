@@ -5013,6 +5013,8 @@ void summary_select_thread(SummaryView *summaryview)
 	GtkCTreeNode *node = summaryview->selected;
 	GList *cur;
 
+	g_return_if_fail(node != NULL);
+	
 	while (GTK_CTREE_ROW(node)->parent != NULL)
 		node = GTK_CTREE_ROW(node)->parent;
 
