@@ -136,6 +136,7 @@ static void send_queue			(void);
 static void initial_processing		(FolderItem *item, gpointer data);
 static void quit_signal_handler         (int sig);
 static void install_basic_sighandlers   (void);
+static void exit_sylpheed		(MainWindow *mainwin);
 
 #if 0
 /* for gettext */
@@ -352,6 +353,69 @@ int main(int argc, char *argv[])
 	static_mainwindow = mainwin;
 	gtk_main();
 
+	exit_sylpheed(mainwin);
+
+	return 0;
+}
+
+static void save_all_caches(FolderItem *item, gpointer data)
+{
+	if (!item->cache)
+		return;
+	folder_item_write_cache(item);
+}
+
+static void exit_sylpheed(MainWindow *mainwin)
+{
+	gchar *filename;
+	GList *list;
+
+	debug_print("shutting down\n");
+
+	inc_autocheck_timer_remove();
+
+	if (prefs_common.clean_on_exit)
+		main_window_empty_trash(mainwin, prefs_common.ask_on_clean);
+
+	/* save prefs for opened folder */
+	if(mainwin->folderview->opened)
+	{
+		FolderItem *item;
+
+		item = gtk_ctree_node_get_row_data(GTK_CTREE(mainwin->folderview->ctree), mainwin->folderview->opened);
+		summary_save_prefs_to_folderitem(mainwin->folderview->summaryview, item);
+	}
+
+	/* save all state before exiting */
+	folder_write_list();
+	folder_func_to_all_folders(save_all_caches, NULL);
+	for (list = folder_get_list(); list != NULL; list = g_list_next(list)) {
+		Folder *folder = FOLDER(list->data);
+
+		folder_tree_destroy(folder);
+	}
+
+	main_window_get_size(mainwin);
+	main_window_get_position(mainwin);
+	prefs_common_save_config();
+	account_save_config_all();
+	addressbook_export_to_file();
+
+	filename = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, MENU_RC, NULL);
+	gtk_item_factory_dump_rc(filename, NULL, TRUE);
+	g_free(filename);
+
+	/* delete temporary files */
+	remove_all_files(get_mime_tmp_dir());
+
+	close_log_file();
+
+	/* delete crashfile */
+	if (!cmd.crash)
+		unlink(get_crashfile_name());
+
+	lock_socket_remove();
+
 	main_window_destroy(mainwin);
 	
 	plugin_unload_all("GTK");
@@ -372,7 +436,6 @@ int main(int argc, char *argv[])
 #endif
 	sylpheed_done();
 
-	return 0;
 }
 
 static void parse_cmd_opt(int argc, char *argv[])
@@ -497,13 +560,6 @@ static gint get_queued_message_num(void)
 	return queue->total_msgs;
 }
 
-static void save_all_caches(FolderItem *item, gpointer data)
-{
-	if (!item->cache)
-		return;
-	folder_item_write_cache(item);
-}
-
 static void initial_processing(FolderItem *item, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
@@ -566,15 +622,7 @@ gboolean clean_quit(gpointer data)
 		
 	draft_all_messages();
 
-	if (prefs_common.warn_queued_on_exit) {	
-		/* disable the popup */ 
-		prefs_common.warn_queued_on_exit = FALSE;	
-		app_will_exit(NULL, static_mainwindow);
-		prefs_common.warn_queued_on_exit = TRUE;
-		prefs_common_save_config();
-	} else {
-		app_will_exit(NULL, static_mainwindow);
-	}
+	exit_sylpheed(static_mainwindow);
 	exit(0);
 
 	return FALSE;
@@ -583,8 +631,6 @@ gboolean clean_quit(gpointer data)
 void app_will_exit(GtkWidget *widget, gpointer data)
 {
 	MainWindow *mainwin = data;
-	gchar *filename;
-	GList *list;
 	
 	if (compose_get_compose_list()) {
 		gint val = alertpanel(_("Notice"),
@@ -609,51 +655,6 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 			return;
 		manage_window_focus_in(mainwin->window, NULL, NULL);
 	}
-
-	inc_autocheck_timer_remove();
-
-	if (prefs_common.clean_on_exit)
-		main_window_empty_trash(mainwin, prefs_common.ask_on_clean);
-
-	/* save prefs for opened folder */
-	if(mainwin->folderview->opened)
-	{
-		FolderItem *item;
-
-		item = gtk_ctree_node_get_row_data(GTK_CTREE(mainwin->folderview->ctree), mainwin->folderview->opened);
-		summary_save_prefs_to_folderitem(mainwin->folderview->summaryview, item);
-	}
-
-	/* save all state before exiting */
-	folder_write_list();
-	folder_func_to_all_folders(save_all_caches, NULL);
-	for (list = folder_get_list(); list != NULL; list = g_list_next(list)) {
-		Folder *folder = FOLDER(list->data);
-
-		folder_tree_destroy(folder);
-	}
-
-	main_window_get_size(mainwin);
-	main_window_get_position(mainwin);
-	prefs_common_save_config();
-	account_save_config_all();
-	addressbook_export_to_file();
-
-	filename = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, MENU_RC, NULL);
-	gtk_item_factory_dump_rc(filename, NULL, TRUE);
-	g_free(filename);
-
-	/* delete temporary files */
-	remove_all_files(get_mime_tmp_dir());
-
-	close_log_file();
-
-	/* delete crashfile */
-	if (!cmd.crash)
-		unlink(get_crashfile_name());
-
-	lock_socket_remove();
-
 	gtk_main_quit();
 }
 
