@@ -1531,11 +1531,13 @@ static void folderview_new_folder_cb(FolderView *folderview, guint action,
 				  _("NewFolder"));
 	if (!new_folder) return;
 
-	if (strchr(new_folder, G_DIR_SEPARATOR) != NULL) {
-		alertpanel_error(_("`%c' can't be included in folder name."),
-				 G_DIR_SEPARATOR);
-		g_free(new_folder);
-		return;
+	if (item->folder->type != F_MBOX) {
+		if (strchr(new_folder, G_DIR_SEPARATOR) != NULL) {
+			alertpanel_error(_("`%c' can't be included in folder name."),
+					 G_DIR_SEPARATOR);
+			g_free(new_folder);
+			return;
+		}
 	}
 
 	/* find whether the directory already exists */

@@ -1,3 +1,8 @@
+2001-11-09 [hoa]	0.6.5.claws4
+	
+	* src/folderview.c
+		allows creation of mbox folder item from any files.
+
 2001-11-07 [alfons]	0.6.5.claws3
 	
 	* src/utils.c
