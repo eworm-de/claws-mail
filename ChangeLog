@@ -1,3 +1,22 @@
+2001-07-04
+
+	* src/prefs_account.[ch]: the port numbers of IMAP4 and NNTP
+	  became specifiable.
+	* src/imap.c: imap_session_get()
+	  src/news.c: news_session_new_for_folder(), news_session_get():
+	  use user-defined port number if specified.
+
+2001-07-03
+
+	* src/imap.c: imap_scan_tree_recursive(): get mailbox status when
+	  scanning.
+	  imap_scan_folder(): implemented. It updates the numbers of new,
+	  unread and total messages.
+	  imap_status(): new. It parses the response of STATUS command.
+	  imap_status_uidnext(): removed.
+	  imap_cmd_status(): removed.
+	* src/textview.c: textview_show_part(): fixed potential memory leaks.
+
 2001-07-03
 
 	* src/alertpanel.c: alertpanel_create(): fixed truncated message.
@@ -7,6 +26,9 @@
 	  detection.
 	* src/prefs_common.c: prefs_send_create(): made some more character
 	  sets specifiable when not using libjconv.
+	* configure.in: disabled --enable-threads option temporarily.
+	* INSTALL
+	  INSTALL.jp: deleted the description about --enable-threads option.
 
 2001-07-02
 

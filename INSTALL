@@ -86,12 +86,6 @@ I recommend you to install gdk-pixbuf or gdk_imlib library before installing
 for built-in image view support, and libcompface for X-Face support.
 
 
-If you want to enable multithread support, append the option
---enable-threads after ./configure.
-
-WARNING: Multithread support is still in an experimental stage, and it
-         DOESN'T work correctly. DON'T use it unless you want to hack it.
-
 If you want to enable IPv6 support, append the option
 --enable-ipv6 after ./configure.
 

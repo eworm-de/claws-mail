@@ -79,7 +79,7 @@ struct _PrefsAccount
 	gboolean recv_at_getall;
 	gboolean filter_on_recv;
 
-        gchar *imap_dir;
+	gchar *imap_dir;
 
 	/* Send */
 	gboolean  add_date;
@@ -110,6 +110,8 @@ struct _PrefsAccount
 	gushort   smtpport;
 	gboolean  set_popport;
 	gushort   popport;
+	gboolean  set_imapport;
+	gushort   imapport;
 	gboolean  set_nntpport;
 	gushort   nntpport;
 	gboolean  set_domain;

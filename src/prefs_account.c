@@ -127,8 +127,15 @@ static struct Privacy {
 static struct Advanced {
 	GtkWidget *smtpport_chkbtn;
 	GtkWidget *smtpport_entry;
+	GtkWidget *popport_hbox;
 	GtkWidget *popport_chkbtn;
 	GtkWidget *popport_entry;
+	GtkWidget *imapport_hbox;
+	GtkWidget *imapport_chkbtn;
+	GtkWidget *imapport_entry;
+	GtkWidget *nntpport_hbox;
+	GtkWidget *nntpport_chkbtn;
+	GtkWidget *nntpport_entry;
 	GtkWidget *domain_chkbtn;
 	GtkWidget *domain_entry;
 } advanced;
@@ -298,6 +305,22 @@ static PrefParam param[] = {
 
 	{"pop_port", "110", &tmp_ac_prefs.popport, P_USHORT,
 	 &advanced.popport_entry,
+	 prefs_set_data_from_entry, prefs_set_entry},
+
+	{"set_imapport", "FALSE", &tmp_ac_prefs.set_imapport, P_BOOL,
+	 &advanced.imapport_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"imap_port", "143", &tmp_ac_prefs.imapport, P_USHORT,
+	 &advanced.imapport_entry,
+	 prefs_set_data_from_entry, prefs_set_entry},
+
+	{"set_nntpport", "FALSE", &tmp_ac_prefs.set_nntpport, P_BOOL,
+	 &advanced.nntpport_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"nntp_port", "119", &tmp_ac_prefs.nntpport, P_USHORT,
+	 &advanced.nntpport_entry,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"set_domain", "FALSE", &tmp_ac_prefs.set_domain, P_BOOL,
@@ -1179,12 +1202,32 @@ static void prefs_account_advanced_create(void)
 	GtkWidget *hbox1;
 	GtkWidget *checkbtn_smtpport;
 	GtkWidget *entry_smtpport;
-	GtkWidget *hbox2;
+	GtkWidget *hbox_popport;
 	GtkWidget *checkbtn_popport;
 	GtkWidget *entry_popport;
-	GtkWidget *hbox3;
+	GtkWidget *hbox_imapport;
+	GtkWidget *checkbtn_imapport;
+	GtkWidget *entry_imapport;
+	GtkWidget *hbox_nntpport;
+	GtkWidget *checkbtn_nntpport;
+	GtkWidget *entry_nntpport;
 	GtkWidget *checkbtn_domain;
 	GtkWidget *entry_domain;
+
+#define PACK_HBOX(hbox) \
+{ \
+	hbox = gtk_hbox_new (FALSE, 8); \
+	gtk_widget_show (hbox); \
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0); \
+}
+
+#define PACK_PORT_ENTRY(box, entry) \
+{ \
+	entry = gtk_entry_new_with_max_length (5); \
+	gtk_widget_show (entry); \
+	gtk_box_pack_start (GTK_BOX (box), entry, FALSE, FALSE, 0); \
+	gtk_widget_set_usize (entry, 64, -1); \
+}
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1195,45 +1238,51 @@ static void prefs_account_advanced_create(void)
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
-
+	PACK_HBOX (hbox1);
 	PACK_CHECK_BUTTON (hbox1, checkbtn_smtpport, _("Specify SMTP port"));
+	PACK_PORT_ENTRY (hbox1, entry_smtpport);
+	SET_TOGGLE_SENSITIVITY (checkbtn_smtpport, entry_smtpport);
 
-	entry_smtpport = gtk_entry_new_with_max_length (5);
-	gtk_widget_show (entry_smtpport);
-	gtk_box_pack_start (GTK_BOX (hbox1), entry_smtpport, FALSE, FALSE, 0);
-	gtk_widget_set_usize (entry_smtpport, 64, -1);
-	SET_TOGGLE_SENSITIVITY(checkbtn_smtpport, entry_smtpport);
+	PACK_HBOX (hbox_popport);
+	PACK_CHECK_BUTTON (hbox_popport, checkbtn_popport,
+			   _("Specify POP3 port"));
+	PACK_PORT_ENTRY (hbox_popport, entry_popport);
+	SET_TOGGLE_SENSITIVITY (checkbtn_popport, entry_popport);
 
-	hbox2 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox2);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox2, FALSE, FALSE, 0);
+	PACK_HBOX (hbox_imapport);
+	PACK_CHECK_BUTTON (hbox_imapport, checkbtn_imapport,
+			   _("Specify IMAP4 port"));
+	PACK_PORT_ENTRY (hbox_imapport, entry_imapport);
+	SET_TOGGLE_SENSITIVITY (checkbtn_imapport, entry_imapport);
 
-	PACK_CHECK_BUTTON (hbox2, checkbtn_popport, _("Specify POP3 port"));
+	PACK_HBOX (hbox_nntpport);
+	PACK_CHECK_BUTTON (hbox_nntpport, checkbtn_nntpport,
+			   _("Specify NNTP port"));
+	PACK_PORT_ENTRY (hbox_nntpport, entry_nntpport);
+	SET_TOGGLE_SENSITIVITY (checkbtn_nntpport, entry_nntpport);
 
-	entry_popport = gtk_entry_new_with_max_length (5);
-	gtk_widget_show (entry_popport);
-	gtk_box_pack_start (GTK_BOX (hbox2), entry_popport, FALSE, FALSE, 0);
-	gtk_widget_set_usize (entry_popport, 64, -1);
-	SET_TOGGLE_SENSITIVITY(checkbtn_popport, entry_popport);
-
-	hbox3 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox3);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox3, FALSE, FALSE, 0);
-
-	PACK_CHECK_BUTTON (hbox3, checkbtn_domain, _("Specify domain name"));
+	PACK_HBOX (hbox1);
+	PACK_CHECK_BUTTON (hbox1, checkbtn_domain, _("Specify domain name"));
 
 	entry_domain = gtk_entry_new ();
 	gtk_widget_show (entry_domain);
-	gtk_box_pack_start (GTK_BOX (hbox3), entry_domain, TRUE, TRUE, 0);
-	SET_TOGGLE_SENSITIVITY(checkbtn_domain, entry_domain);
+	gtk_box_pack_start (GTK_BOX (hbox1), entry_domain, TRUE, TRUE, 0);
+	SET_TOGGLE_SENSITIVITY (checkbtn_domain, entry_domain);
+
+#undef PACK_HBOX
+#undef PACK_PORT_ENTRY
 
 	advanced.smtpport_chkbtn	= checkbtn_smtpport;
 	advanced.smtpport_entry		= entry_smtpport;
+	advanced.popport_hbox		= hbox_popport;
 	advanced.popport_chkbtn		= checkbtn_popport;
 	advanced.popport_entry		= entry_popport;
+	advanced.imapport_hbox		= hbox_imapport;
+	advanced.imapport_chkbtn	= checkbtn_imapport;
+	advanced.imapport_entry		= entry_imapport;
+	advanced.nntpport_hbox		= hbox_nntpport;
+	advanced.nntpport_chkbtn	= checkbtn_nntpport;
+	advanced.nntpport_entry		= entry_nntpport;
 	advanced.domain_chkbtn		= checkbtn_domain;
 	advanced.domain_entry		= entry_domain;
 }
@@ -1474,6 +1523,9 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 			(GTK_TOGGLE_BUTTON(basic.nntpauth_chkbtn), NULL);
 		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
 		gtk_widget_set_sensitive(receive.imap_frame, FALSE);
+		gtk_widget_hide(advanced.popport_hbox);
+		gtk_widget_hide(advanced.imapport_hbox);
+		gtk_widget_show(advanced.nntpport_hbox);
 		break;
 	case A_LOCAL:
 		gtk_widget_set_sensitive(basic.inbox_label, TRUE);
@@ -1518,6 +1570,9 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
 		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
 		gtk_widget_set_sensitive(receive.imap_frame, FALSE);
+		gtk_widget_hide(advanced.popport_hbox);
+		gtk_widget_hide(advanced.imapport_hbox);
+		gtk_widget_hide(advanced.nntpport_hbox);
 		prefs_account_mailcmd_toggled
 			(GTK_TOGGLE_BUTTON(basic.mailcmd_chkbtn), NULL);
 		break;
@@ -1568,6 +1623,9 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(receive.imap_frame, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
+		gtk_widget_hide(advanced.popport_hbox);
+		gtk_widget_show(advanced.imapport_hbox);
+		gtk_widget_hide(advanced.nntpport_hbox);
 		break;
 	case A_POP3:
 	default:
@@ -1617,6 +1675,9 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(receive.imap_frame, FALSE);
 		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
+		gtk_widget_show(advanced.popport_hbox);
+		gtk_widget_hide(advanced.imapport_hbox);
+		gtk_widget_hide(advanced.nntpport_hbox);
 		break;
 	}
 

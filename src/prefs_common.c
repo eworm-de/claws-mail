@@ -357,7 +357,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"show_mime", "TRUE", &prefs_common.show_mime, P_BOOL,
 	 NULL, NULL, NULL},
-	{"show_number", "TRUE", &prefs_common.show_number, P_BOOL,
+	{"show_number", "FALSE", &prefs_common.show_number, P_BOOL,
 	 NULL, NULL, NULL},
 	{"show_score", "TRUE", &prefs_common.show_score, P_BOOL,
 	 NULL, NULL, NULL},

@@ -1,3 +1,20 @@
+2001-07-04
+
+	* src/prefs_account.[ch]: IMAP4 と NNTP のポート番号を指定可能にした。
+	* src/imap.c: imap_session_get()
+	  src/news.c: news_session_new_for_folder(), news_session_get():
+	  指定されていればユーザ定義のポート番号を使用するようにした。
+
+2001-07-03
+
+	* src/imap.c: imap_scan_tree_recursive(): スキャン中にメールボックス
+	  のステータスを取得するようにした。
+	  imap_scan_folder(): 実装。新着、未読、合計のメッセージ数を更新する。
+	  imap_status(): 新規。 STATUS コマンドの応答を解析する。
+	  imap_status_uidnext(): 削除。
+	  imap_cmd_status(): 削除。
+	* src/textview.c: textview_show_part(): 潜在的なメモリリークを修正。
+
 2001-07-03
 
 	* src/alertpanel.c: alertpanel_create(): メッセージが途切れるのを修正。
@@ -7,6 +24,9 @@
 	  修正。
 	* src/prefs_common.c: prefs_send_create(): libjconv 未使用時に
 	  追加でいくつかの文字コードセットを指定できるようにした。
+	* configure.in: 一時的に --enable-threads を無効にした。
+	* INSTALL
+	  INSTALL.jp: --enable-threads オプションについての記述を削除。
 
 2001-07-01
 

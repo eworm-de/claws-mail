@@ -141,6 +141,9 @@ static Session *news_session_new_for_folder(Folder *folder)
 	const gchar *userid = NULL;
 	gchar *passwd = NULL;
 
+	g_return_val_if_fail(folder != NULL, NULL);
+	g_return_val_if_fail(folder->account != NULL, NULL);
+
 	ac = folder->account;
 	if (ac->use_nntp_auth && ac->userid && ac->userid[0]) {
 		userid = ac->userid;
@@ -150,7 +153,9 @@ static Session *news_session_new_for_folder(Folder *folder)
 			passwd = news_query_password(ac->nntp_server, userid);
 	}
 
-	session = news_session_new(ac->nntp_server, NNTP_PORT, userid, passwd);
+	session = news_session_new(ac->nntp_server,
+				   ac->set_nntpport ? ac->nntpport : NNTP_PORT,
+				   userid, passwd);
 	g_free(passwd);
 
 	return session;
@@ -175,7 +180,9 @@ NNTPSession *news_session_get(Folder *folder)
 	if (nntp_mode(session->nntp_sock, FALSE) != NN_SUCCESS) {
 		log_warning(_("NNTP connection to %s:%d has been"
 			      " disconnected. Reconnecting...\n"),
-			    folder->account->nntp_server, NNTP_PORT);
+			    folder->account->nntp_server,
+			    folder->account->set_nntpport ?
+			    folder->account->nntpport : NNTP_PORT);
 		session_destroy(REMOTE_FOLDER(folder)->session);
 		REMOTE_FOLDER(folder)->session =
 			news_session_new_for_folder(folder);
