@@ -6,16 +6,16 @@ main-branch (http://sylpheed.good-day.net)
 claws-branch (http://sylpheed-claws.sourceforge.net)
 
 	Hoa viet Dinh		<dinh.viet.hoa@free.fr>
-	Match Grun			<match@dimensional.com>
+	Match Grun		<match@dimensional.com>
 	Melvin Hadasht		<melvin.hadasht@free.fr>
 	Christoph Hohmann	<reboot@gmx.ch>
 	Alfons Hoogervorst	<alfons@proteus.demon.nl>
 	Darko Koruga		<darko.koruga@hermes.si>
-	Colin Leroy			<colin@colino.net>
-	Paul Mangan			<claws@thewildbeast.co.uk>
+	Colin Leroy		<colin@colino.net>
+	Paul Mangan		<claws@thewildbeast.co.uk>
 	Martin Schaaf		<mascha@ma-scha.de>
 	Carsten Schurig		<Carsten.Schurig@web.de>
-	Sergey Vlasov		<vsu@mivlgu.murom.ru>
+	Sergey Vlasov		<vsu@users.sourceforge.net>
 	Hiroyuki Yamamoto	<hiro-y@kcn.ne.jp>
 
 sylpheed-w32 (http://www.gnupg.org/cvs-access.html)	
@@ -28,15 +28,15 @@ sylpheed-claws-w32 (http://sylpheed-claws.sourceforge.net)
 
 sylpheed documentation (http://sylpheeddoc.sourceforge.net)
 
-	François Barriere 		<barriere.francois@libertysurf.fr>
+	François Barriere 	<barriere.francois@libertysurf.fr>
 	Martin Bretschneider	<martin.bretschneider@gmx.de>
-	Hoa viet Dinh			<dinh.viet.hoa@free.fr>
-	Melvin Hadasht			<melvin.hadasht@free.fr>
-	Paul Kater				<paul@nlpagan.net>
+	Hoa viet Dinh		<dinh.viet.hoa@free.fr>
+	Melvin Hadasht		<melvin.hadasht@free.fr>
+	Paul Kater		<paul@nlpagan.net>
 	Ricardo Mones Lastra 	<mones@aic.uniovi.es>
-	Jens Oberender			<j.obi@troja.net>
-	Marcelo Ramos 			<mramos@montevideo.com.uy>
-	Guido Rudolphi			<rudolphi@netmon.ch>
+	Jens Oberender		<j.obi@troja.net>
+	Marcelo Ramos 		<mramos@montevideo.com.uy>
+	Guido Rudolphi		<rudolphi@netmon.ch>
 	Nick Selby
 
 user manuals
