@@ -34,11 +34,13 @@
 #include "logwindow.h"
 #include "utils.h"
 #include "gtkutils.h"
+#include "prefs_common.h"
 
 static LogWindow *logwindow;
 
 static void key_pressed(GtkWidget *widget, GdkEventKey *event,
 			LogWindow *logwin);
+void log_window_clear(GtkWidget *text);
 
 LogWindow *log_window_create(void)
 {
@@ -147,6 +149,8 @@ void log_window_append(const gchar *str, LogType type)
 
 	if (head) gtk_text_insert(text, NULL, color, NULL, head, -1);
 	gtk_text_insert(text, NULL, color, NULL, str, -1);
+	if (prefs_common.cliplog)
+	       log_window_clear (GTK_WIDGET (text));
 }
 
 static void key_pressed(GtkWidget *widget, GdkEventKey *event,
@@ -155,3 +159,37 @@ static void key_pressed(GtkWidget *widget, GdkEventKey *event,
 	if (event && event->keyval == GDK_Escape)
 		gtk_widget_hide(logwin->window);
 }
+
+void log_window_clear(GtkWidget *text)
+{
+        guint length;
+	guint point;
+	gchar *str;
+	
+	length = gtk_text_get_length (GTK_TEXT (text));
+	debug_print(_("Log window length: %u"), length);
+	
+	if (length > prefs_common.loglength) {
+	        /* find the end of the first line after the cut off
+		 * point */
+       	        point = length - prefs_common.loglength;
+	        gtk_text_set_point (GTK_TEXT (text), point);
+		str = gtk_editable_get_chars (GTK_EDITABLE (text),
+					      point, point + 1);
+		gtk_text_freeze (GTK_TEXT (text));
+		while(str && *str != '\n')
+		       str = gtk_editable_get_chars (GTK_EDITABLE (text),
+						     ++point, point + 2);
+		
+		/* erase the text */
+		gtk_text_set_point (GTK_TEXT (text), 0);
+		if (!gtk_text_forward_delete (GTK_TEXT (text), point + 1))
+		        debug_print (_("Error clearing log"));
+		gtk_text_thaw (GTK_TEXT (text));
+		gtk_text_set_point (GTK_TEXT (text),
+				    gtk_text_get_length (GTK_TEXT (text)));
+	}
+	
+}
+
+

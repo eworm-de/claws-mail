@@ -237,6 +237,9 @@ static struct Other {
 	GtkWidget *checkbtn_cleanonexit;
 	GtkWidget *checkbtn_askonclean;
 	GtkWidget *checkbtn_warnqueued;
+        GtkWidget *checkbtn_cliplog;
+        GtkWidget *loglength_entry;
+
 } other;
 
 static struct MessageColorButtons {
@@ -826,6 +829,12 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"important_score", "1", &prefs_common.important_score, P_INT,
 	 NULL, NULL, NULL},
+        {"clip_log", "FALSE", &prefs_common.cliplog, P_BOOL,
+	 &other.checkbtn_cliplog,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"log_length", "1000", &prefs_common.loglength, P_INT,
+	 &other.loglength_entry,
+	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
@@ -2875,6 +2884,13 @@ static void prefs_other_create(void)
 	GtkWidget *exteditor_combo;
 	GtkWidget *exteditor_entry;
 
+	GtkWidget *frame_cliplog;
+	GtkWidget *vbox_cliplog;
+	GtkWidget *hbox_cliplog;
+	GtkWidget *checkbtn_cliplog;
+	GtkWidget *loglength_label;
+	GtkWidget *loglength_entry;
+
 	GtkWidget *frame_exit;
 	GtkWidget *vbox_exit;
 	GtkWidget *checkbtn_confonexit;
@@ -2962,6 +2978,30 @@ static void prefs_other_create(void)
 			       NULL);
 	exteditor_entry = GTK_COMBO (exteditor_combo)->entry;
 
+	/* Clip Log */
+	PACK_FRAME (vbox1, frame_cliplog, _("Log Size"));
+
+	vbox_cliplog = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox_cliplog);
+	gtk_container_add (GTK_CONTAINER (frame_cliplog), vbox_cliplog);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_cliplog), 8);
+	PACK_CHECK_BUTTON (vbox_cliplog, checkbtn_cliplog,
+			   _("Clip the log size"));
+	hbox_cliplog = gtk_hbox_new (FALSE, 3);
+	gtk_container_add (GTK_CONTAINER (vbox_cliplog), hbox_cliplog);
+	gtk_widget_show (hbox_cliplog);
+	
+	loglength_label = gtk_label_new (_("Log window length"));
+	gtk_box_pack_start (GTK_BOX (hbox_cliplog), loglength_label,
+			    FALSE, TRUE, 0);
+	gtk_widget_show (GTK_WIDGET (loglength_label));
+	loglength_entry = gtk_entry_new ();
+	gtk_widget_set_usize (GTK_WIDGET (loglength_entry), 64, -1);
+	gtk_box_pack_start (GTK_BOX (hbox_cliplog), loglength_entry,
+			    FALSE, TRUE, 0);
+	gtk_widget_show (GTK_WIDGET (loglength_entry));
+	SET_TOGGLE_SENSITIVITY(checkbtn_cliplog, loglength_entry);
+
 	/* On Exit */
 	PACK_FRAME (vbox1, frame_exit, _("On exit"));
 
@@ -2992,6 +3032,9 @@ static void prefs_other_create(void)
 
 	other.exteditor_combo = exteditor_combo;
 	other.exteditor_entry = exteditor_entry;
+
+	other.checkbtn_cliplog     = checkbtn_cliplog;
+	other.loglength_entry      = loglength_entry;
 
 	other.checkbtn_confonexit  = checkbtn_confonexit;
 	other.checkbtn_cleanonexit = checkbtn_cleanonexit;
