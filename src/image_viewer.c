@@ -35,7 +35,7 @@
 typedef struct _ImageViewer ImageViewer;
 
 MimeViewerFactory image_viewer_factory;
-static void image_viewer_get_resized_size(gint w, gint h, gint aw, gint ah,
+void image_viewer_get_resized_size(gint w, gint h, gint aw, gint ah,
 					  gint * sw, gint * sh);
 static void image_viewer_clear_viewer(MimeViewer *imageviewer);
 
@@ -203,7 +203,7 @@ static void image_viewer_destroy_viewer(MimeViewer *_mimeviewer)
 	g_free(imageviewer);
 }
 
-static void image_viewer_get_resized_size(gint w, gint h, gint aw, gint ah,
+void image_viewer_get_resized_size(gint w, gint h, gint aw, gint ah,
 			     gint *sw, gint *sh)
 {
 	gfloat wratio = 1.0;

@@ -2051,3 +2051,33 @@ gint procmime_write_mimeinfo(MimeInfo *mimeinfo, FILE *fp)
 
 	return 0;
 }
+
+gchar *procmime_get_part_file_name(MimeInfo *mimeinfo)
+{
+	gchar *base;
+	const gchar *base_;
+
+	if ((mimeinfo->type == MIMETYPE_TEXT) && !g_ascii_strcasecmp(mimeinfo->subtype, "html"))
+		base = g_strdup("mimetmp.html");
+	else {
+		const gchar *basetmp;
+		gchar *basename;
+
+		basetmp = procmime_mimeinfo_get_parameter(mimeinfo, "filename");
+		if (basetmp == NULL)
+			basetmp = procmime_mimeinfo_get_parameter(mimeinfo, "name");
+		if (basetmp == NULL)
+			basetmp = "mimetmp";
+		basename = g_path_get_basename(basetmp);
+		if (*basename == '\0') {
+			g_free(basename);
+			basename = g_strdup("mimetmp");
+		}
+		base = conv_filename_from_utf8(basename);
+		g_free(basename);
+		subst_for_shellsafe_filename(base);
+	}
+	
+	return base;
+}
+

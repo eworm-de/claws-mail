@@ -52,10 +52,14 @@
 #include "mimeview.h"
 #include "alertpanel.h"
 #include "menu.h"
+#include "image_viewer.h"
+#include "filesel.h"
 
 struct _RemoteURI
 {
 	gchar *uri;
+
+	gchar *filename;
 
 	guint start;
 	guint end;
@@ -201,6 +205,9 @@ static void mail_to_uri_cb 			(TextView 	*textview,
 static void copy_mail_to_uri_cb			(TextView 	*textview,
 						 guint		 action,
 						 void		*data);
+static void save_file_cb			(TextView 	*textview,
+						 guint		 action,
+						 void		*data);
 
 static GtkItemFactoryEntry textview_link_popup_entries[] = 
 {
@@ -215,6 +222,11 @@ static GtkItemFactoryEntry textview_mail_popup_entries[] =
 	{N_("/_Copy"),			NULL, copy_mail_to_uri_cb, 0, NULL},
 };
 
+static GtkItemFactoryEntry textview_file_popup_entries[] = 
+{
+	{N_("/_Save this image..."),		NULL, save_file_cb, 0, NULL},
+};
+
 
 TextView *textview_create(void)
 {
@@ -224,8 +236,8 @@ TextView *textview_create(void)
 	GtkWidget *text;
 	GtkTextBuffer *buffer;
 	GtkClipboard *clipboard;
-	GtkItemFactory *link_popupfactory, *mail_popupfactory;
-	GtkWidget *link_popupmenu, *mail_popupmenu;
+	GtkItemFactory *link_popupfactory, *mail_popupfactory, *file_popupfactory;
+	GtkWidget *link_popupmenu, *mail_popupmenu, *file_popupmenu;
 	gint n_entries;
 
 	debug_print("Creating text view...\n");
@@ -288,6 +300,12 @@ TextView *textview_create(void)
 				      "<UriPopupMenu>", &mail_popupfactory,
 				      textview);
 
+	n_entries = sizeof(textview_file_popup_entries) /
+		sizeof(textview_file_popup_entries[0]);
+	file_popupmenu = menu_create_items(textview_file_popup_entries, n_entries,
+				      "<FilePopupMenu>", &file_popupfactory,
+				      textview);
+
 	textview->vbox               = vbox;
 	textview->scrolledwin        = scrolledwin;
 	textview->text               = text;
@@ -299,6 +317,8 @@ TextView *textview_create(void)
 	textview->link_popup_factory = link_popupfactory;
 	textview->mail_popup_menu    = mail_popupmenu;
 	textview->mail_popup_factory = mail_popupfactory;
+	textview->file_popup_menu    = file_popupmenu;
+	textview->file_popup_factory = file_popupfactory;
 
 	return textview;
 }
@@ -445,7 +465,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 {
 	GtkTextView *text;
 	GtkTextBuffer *buffer;
-	GtkTextIter iter;
+	GtkTextIter iter, start_iter;
 	gchar buf[BUFFSIZE];
 	GPtrArray *headers = NULL;
 	const gchar *name;
@@ -522,28 +542,42 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 				return;
 			}
 
-			/* if (prefs_common.resize_img) {
+			if (prefs_common.resize_img) {
+				int new_width, new_height;
 				GdkPixbuf *scaled;
+				image_viewer_get_resized_size(gdk_pixbuf_get_width(pixbuf),
+						 gdk_pixbuf_get_height(pixbuf),
+						 textview->scrolledwin->allocation.width - 100, 
+						 gdk_pixbuf_get_height(pixbuf),
+						 &new_width, &new_height);
+				scaled = gdk_pixbuf_scale_simple
+					(pixbuf, new_width, new_height, GDK_INTERP_BILINEAR);
 
-				scaled = imageview_get_resized_pixbuf
-					(pixbuf, textview->text, 8);
 				g_object_unref(pixbuf);
 				pixbuf = scaled;
-			} */
+			}
 
-			/* uri_str = g_filename_to_uri(filename, NULL, NULL);
+			uri_str = g_filename_to_uri(filename, NULL, NULL);
 			if (uri_str) {
 				uri = g_new(RemoteURI, 1);
 				uri->uri = uri_str;
-				uri->filename =
-					procmime_get_part_file_name(mimeinfo);
 				uri->start = gtk_text_iter_get_offset(&iter);
+				
+				gtk_text_buffer_insert_pixbuf(buffer, &iter, pixbuf);
+				
 				uri->end = uri->start + 1;
+				uri->filename = procmime_get_part_file_name(mimeinfo);
 				textview->uri_list =
 					g_slist_append(textview->uri_list, uri);
-			} */
-			gtk_text_buffer_insert_pixbuf(buffer, &iter, pixbuf);
-			gtk_text_buffer_insert(buffer, &iter, "\n", 1);
+				
+				gtk_text_buffer_insert(buffer, &iter, " ", 1);
+				gtk_text_buffer_get_iter_at_offset(buffer, &start_iter, uri->start);	
+				gtk_text_buffer_apply_tag_by_name(buffer, "link", 
+						&start_iter, &iter);
+			} else {
+				gtk_text_buffer_insert_pixbuf(buffer, &iter, pixbuf);
+				gtk_text_buffer_insert(buffer, &iter, " ", 1);
+			}
 
 			g_object_unref(pixbuf);
 			g_free(filename);
@@ -1211,6 +1245,7 @@ static void textview_make_clickable_parts(TextView *textview,
 				(buffer, &iter, last->bp, last->ep - last->bp,
 				 uri_tag, fg_tag, NULL);
 			uri->end = gtk_text_iter_get_offset(&iter);
+			uri->filename = NULL;
 			textview->uri_list =
 				g_slist_append(textview->uri_list, uri);
 		}
@@ -1326,6 +1361,7 @@ void textview_write_link(TextView *textview, const gchar *str,
 	gtk_text_buffer_insert_with_tags_by_name
 		(buffer, &iter, bufp, -1, "link", NULL);
 	r_uri->end = gtk_text_iter_get_offset(&iter);
+	r_uri->filename = NULL;
 	textview->uri_list = g_slist_append(textview->uri_list, r_uri);
 }
 
@@ -2074,7 +2110,7 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 				compose_new(account, uri->uri + 7, NULL);
 			}
 			return TRUE;
-		} else {
+		} else if (g_ascii_strncasecmp(uri->uri, "file:", 5)) {
 			if (bevent->button == 1 &&
 			    textview_uri_security_check(textview, uri) == TRUE) 
 					open_uri(uri->uri,
@@ -2088,6 +2124,16 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 					       bevent->button, bevent->time);
 			}
 			return TRUE;
+		} else {
+			if (bevent->button == 3) {
+				g_object_set_data(
+					G_OBJECT(textview->file_popup_menu),
+					"menu_button", uri);
+				gtk_menu_popup(GTK_MENU(textview->file_popup_menu), 
+					       NULL, NULL, NULL, NULL, 
+					       bevent->button, bevent->time);
+				return TRUE;
+			}
 		}
 	}
 
@@ -2163,6 +2209,7 @@ static void textview_uri_list_remove_all(GSList *uri_list)
 	for (cur = uri_list; cur != NULL; cur = cur->next) {
 		if (cur->data) {
 			g_free(((RemoteURI *)cur->data)->uri);
+			g_free(((RemoteURI *)cur->data)->filename);
 			g_free(cur->data);
 		}
 	}
@@ -2181,6 +2228,75 @@ static void open_uri_cb (TextView *textview, guint action, void *data)
 		open_uri(uri->uri,
 			 prefs_common.uri_cmd);
 	g_object_set_data(G_OBJECT(textview->link_popup_menu), "menu_button",
+			  NULL);
+}
+
+static void save_file_cb (TextView *textview, guint action, void *data)
+{
+	RemoteURI *uri = g_object_get_data(G_OBJECT(textview->file_popup_menu),
+					   "menu_button");
+	gchar *filename = NULL;
+	gchar *filepath = NULL;
+	gchar *filedir = NULL;
+	gchar *tmp_filename = NULL;
+	if (uri == NULL)
+		return;
+
+	if (uri->filename == NULL)
+		return;
+	
+	filename = g_strdup(uri->filename);
+	
+	if (!g_utf8_validate(filename, -1, NULL)) {
+		gchar *tmp = conv_filename_to_utf8(filename);
+		g_free(filename);
+		filename = tmp;
+	}
+
+	subst_for_filename(filename);
+	
+	if (prefs_common.attach_save_dir)
+		filepath = g_strconcat(prefs_common.attach_save_dir,
+				       G_DIR_SEPARATOR_S, filename, NULL);
+	else
+		filepath = g_strdup(filename);
+
+	g_free(filename);
+
+	filename = filesel_select_file_save(_("Save as"), filepath);
+	if (!filename) {
+		g_free(filepath);
+		return;
+	}
+
+	if (is_file_exist(filename)) {
+		AlertValue aval;
+		gchar *res;
+		
+		res = g_strdup_printf(_("Overwrite existing file '%s'?"),
+				      filename);
+		aval = alertpanel(_("Overwrite"), res, GTK_STOCK_OK, 
+				  GTK_STOCK_CANCEL, NULL);
+		g_free(res);					  
+		if (G_ALERTDEFAULT != aval) 
+			return;
+	}
+
+	tmp_filename = g_filename_from_uri(uri->uri, NULL, NULL);
+	copy_file(tmp_filename, filename, FALSE);
+	g_free(tmp_filename);
+	
+	filedir = g_path_get_dirname(filename);
+	if (filedir && strcmp(filedir, ".")) {
+		if (prefs_common.attach_save_dir)
+			g_free(prefs_common.attach_save_dir);
+		prefs_common.attach_save_dir = g_strdup(filedir);
+	}
+
+	g_free(filedir);
+	g_free(filepath);
+
+	g_object_set_data(G_OBJECT(textview->file_popup_menu), "menu_button",
 			  NULL);
 }
 

@@ -22,5 +22,7 @@
 
 void image_viewer_init	(void);
 void image_viewer_done	(void);
+void image_viewer_get_resized_size(gint w, gint h, gint aw, gint ah,
+			     gint *sw, gint *sh);
 
 #endif

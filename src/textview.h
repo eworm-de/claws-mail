@@ -44,6 +44,8 @@ struct _TextView
 	GtkItemFactory *link_popup_factory;
 	GtkWidget *mail_popup_menu;
 	GtkItemFactory *mail_popup_factory;
+	GtkWidget *file_popup_menu;
+	GtkItemFactory *file_popup_factory;
 
 	gboolean default_text;
 	gboolean is_in_signature;
