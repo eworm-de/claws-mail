@@ -106,6 +106,14 @@ gboolean debug_mode = FALSE ;
 static gint lock_socket = -1;
 static gint lock_socket_tag = 0;
 
+typedef enum 
+{
+	ONLINE_MODE_DONT_CHANGE,
+ 	ONLINE_MODE_ONLINE,
+	ONLINE_MODE_OFFLINE
+} OnlineMode;
+
+
 static struct Cmd {
 	gboolean receive;
 	gboolean receive_all;
@@ -114,6 +122,7 @@ static struct Cmd {
 	GPtrArray *attach_files;
 	gboolean status;
 	gboolean send;
+	int online_mode;
 #ifndef WIN32
 	gboolean crash;
 	gchar   *crash_params;
@@ -448,6 +457,11 @@ int main(int argc, char *argv[])
 	if (cmd.send)
 		send_queue();
 
+	if (cmd.online_mode == ONLINE_MODE_OFFLINE)
+		main_window_toggle_work_offline(mainwin, TRUE);
+	if (cmd.online_mode == ONLINE_MODE_ONLINE)
+		main_window_toggle_work_offline(mainwin, FALSE);
+	
 	gtk_main();
 
 	addressbook_destroy();
@@ -524,6 +538,10 @@ static void parse_cmd_opt(int argc, char *argv[])
 			exit(0);
 		} else if (!strncmp(argv[i], "--status", 8)) {
 			cmd.status = TRUE;
+		} else if (!strncmp(argv[i], "--online", 8)) {
+			cmd.online_mode = ONLINE_MODE_ONLINE;
+		} else if (!strncmp(argv[i], "--offline", 9)) {
+			cmd.online_mode = ONLINE_MODE_OFFLINE;
 		} else if (!strncmp(argv[i], "--help", 6)) {
 			g_print(_("Usage: %s [OPTION]...\n"),
 				g_basename(argv[0]));
@@ -536,6 +554,8 @@ static void parse_cmd_opt(int argc, char *argv[])
 			puts(_("  --receive-all          receive new messages of all accounts"));
 			puts(_("  --send                 send all queued messages"));
 			puts(_("  --status               show the total number of messages"));
+			puts(_("  --online               switch to online mode"));
+			puts(_("  --offline              switch to offline mode"));
 			puts(_("  --debug                debug mode"));
 			puts(_("  --help                 display this help and exit"));
 			puts(_("  --version              output version information and exit"));
@@ -808,6 +828,18 @@ static gint prohibit_duplicate_launch(void)
 #else
 		fd_write(uxsock, "send\n", 5);
 #endif
+	} else if (cmd.online_mode == ONLINE_MODE_ONLINE) {
+#ifdef WIN32
+		sock_write(lock_sock, "online\n", 5);
+#else
+		fd_write(uxsock, "online\n", 6);
+#endif
+	} else if (cmd.online_mode == ONLINE_MODE_OFFLINE) {
+#ifdef WIN32
+		sock_write(lock_sock, "offline\n", 5);
+#else
+		fd_write(uxsock, "offline\n", 7);
+#endif
 	} else if (cmd.status) {
 		gchar buf[BUFFSIZE];
 
@@ -873,6 +905,10 @@ static void lock_socket_input_cb(gpointer data,
 		open_compose_new(buf + strlen("compose") + 1, NULL);
 	} else if (!strncmp(buf, "send", 4)) {
 		send_queue();
+	} else if (!strncmp(buf, "online", 6)) {
+		main_window_toggle_work_offline(mainwin, FALSE);
+	} else if (!strncmp(buf, "offline", 7)) {
+		main_window_toggle_work_offline(mainwin, TRUE);
 	} else if (!strncmp(buf, "status", 6)) {
 		guint new, unread, total;
 

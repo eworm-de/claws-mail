@@ -1,3 +1,50 @@
+2002-10-16 [paul]	
+
+	* tools/OOo2sylpheed.pl
+		allow for spaces in the name of the
+		file to be attached.
+
+2002-10-16 [colin]	0.8.5claws41
+
+	* src/main.c
+		Use a tristate to change online mode
+
+2002-10-16 [paul]	0.8.5claws40
+
+	* po/es.po
+		updated by Ricardo Mones Lastra
+
+2002-10-16 [colin]	0.8.5claws39
+
+	* src/main.c
+	  src/mainwindow.[ch]
+		Added --online and --offline command-line
+		switches
+
+2002-10-15 [christoph]	0.8.5claws38
+
+	* src/procmime.c
+		set mimeinfo->name to NULL after g_free to
+		avoid double freeing with g_free
+
+2002-10-14 [christoph]	0.8.5claws37
+
+	* src/compose.c
+	* src/filtering.c
+	* src/summaryview.c
+		remove calls to folder->change_flags that are now
+		done by procmsg flag functions (seems it is not
+		used by any foldertype anyway)
+	* src/folder.c
+		init folder->change_flags with NULL
+
+2002-10-14 [christoph]	0.8.5claws36
+
+	* src/folder.[ch]
+	* src/imap.[ch]
+		use virtual functions for folder item new and destroy
+		functions
+
 2002-10-14 [melvin]	0.8.5claws35
 
 	* src/compose.c

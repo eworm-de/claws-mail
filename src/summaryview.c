@@ -2366,14 +2366,6 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 #endif
 }
 
-#define CHANGE_FLAGS(msginfo) \
-{ \
-if (msginfo->folder->folder->change_flags != NULL) \
-msginfo->folder->folder->change_flags(msginfo->folder->folder, \
-				      msginfo->folder, \
-				      msginfo); \
-}
-
 static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row)
 {
 	summary_display_msg_full(summaryview, row, FALSE, FALSE);

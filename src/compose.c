@@ -797,14 +797,6 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
         return compose;
 }
 
-#define CHANGE_FLAGS(msginfo) \
-{ \
-if (msginfo->folder->folder->change_flags != NULL) \
-msginfo->folder->folder->change_flags(msginfo->folder->folder, \
-				      msginfo->folder, \
-				      msginfo); \
-}
-
 /*
 Compose *compose_new_followup_and_replyto(PrefsAccount *account,
 					   const gchar *followupto, gchar * to)
@@ -1026,7 +1018,6 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_FORWARDED);
 	if (MSG_IS_IMAP(msginfo->flags))
 		imap_msg_unset_perm_flags(msginfo, MSG_REPLIED);
-	CHANGE_FLAGS(msginfo);
 
 	compose = compose_create(account, COMPOSE_FORWARD);
 
@@ -1137,7 +1128,6 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 	for (msginfo = msginfo_list; msginfo != NULL; msginfo = msginfo->next) {
 		MSG_UNSET_PERM_FLAGS(((MsgInfo *)msginfo->data)->flags, MSG_REPLIED);
 		MSG_SET_PERM_FLAGS(((MsgInfo *)msginfo->data)->flags, MSG_FORWARDED);
-		CHANGE_FLAGS(((MsgInfo *)msginfo->data));
 	}
 
 	compose = compose_create(account, COMPOSE_FORWARD);

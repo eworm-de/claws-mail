@@ -133,6 +133,9 @@ struct _Folder
 					 FolderItem	*item,
 					 gboolean	 use_cache);
 */
+	FolderItem *(*item_new)		(Folder		*folder);
+	void	 (*item_destroy)	(Folder		*folder,
+					 FolderItem	*item);
 	gchar *  (*fetch_msg)		(Folder		*folder,
 					 FolderItem	*item,
 					 gint		 num);
