@@ -78,9 +78,6 @@ typedef enum
 
 static GList *folderview_list = NULL;
 
-static GdkFont *normalfont;
-static GdkFont *boldfont;
-
 static GtkStyle *normal_style;
 static GtkStyle *normal_color_style;
 static GtkStyle *bold_style;
@@ -535,6 +532,8 @@ FolderView *folderview_create(void)
 
 void folderview_init(FolderView *folderview)
 {
+	static GdkFont *boldfont = NULL;
+	static GdkFont *normalfont = NULL;
 	GtkWidget *ctree = folderview->ctree;
 	GtkWidget *label_new;
 	GtkWidget *label_unread;
@@ -589,27 +588,32 @@ void folderview_init(FolderView *folderview)
 	gtk_clist_set_column_widget(GTK_CLIST(ctree),COL_UNREAD,hbox_unread);
 			
 	if (!normalfont) {
-		if (gtkut_font_load(NORMAL_FONT) == NULL) {
-			GtkStyle *style = gtk_style_new();
+		normalfont = gtkut_font_load(prefs_common.normalfont);
+		if (!normalfont) {
+			GtkStyle *style;
+			style = gtk_widget_get_style(ctree);
 			normalfont = style->font;
 			gdk_font_ref(normalfont);
-			gtk_style_unref(style);
 		} 
-		else 
-			normalfont = gtkut_font_load(NORMAL_FONT);
 	}
 	
+	if (!normal_style) {
+		normal_style = gtk_style_copy(gtk_widget_get_style(ctree));
+		normal_style->font = normalfont;
+		normal_color_style = gtk_style_copy(normal_style);
+		normal_color_style->fg[GTK_STATE_NORMAL] = folderview->color_new;
+	}
+
 	if (!boldfont) {
-		if (gtkut_font_load(BOLD_FONT) == NULL) {
-			GtkStyle *style = gtk_style_new();
+		boldfont = gtkut_font_load(prefs_common.boldfont);
+		if (!boldfont) {
+			GtkStyle *style;
+			style = gtk_widget_get_style(ctree);
 			boldfont = style->font;
 			gdk_font_ref(boldfont);
-			gtk_style_unref(style);
 		}
-		else
-			boldfont = gtkut_font_load(BOLD_FONT);
 	}
-	
+
 	if (!bold_style) {
 		bold_style = gtk_style_copy(gtk_widget_get_style(ctree));
 		bold_style->font = boldfont;
@@ -618,12 +622,6 @@ void folderview_init(FolderView *folderview)
 
 		bold_tgtfold_style = gtk_style_copy(bold_style);
 		bold_tgtfold_style->fg[GTK_STATE_NORMAL] = folderview->color_op;
-	}
-	if (!normal_style) {
-		normal_style = gtk_style_copy(gtk_widget_get_style(ctree));
-		normal_style->font = normalfont;
-		normal_color_style = gtk_style_copy(normal_style);
-		normal_color_style->fg[GTK_STATE_NORMAL] = folderview->color_new;
 	}
 }
 

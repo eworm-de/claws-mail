@@ -1,3 +1,9 @@
+2003-09-16
+
+	* src/folderview.c: folderview_init(): フォントが読み込めない場合は
+	  gtk のデフォルトに fallback するようにした(起動時のクラッシュを
+	  修正)。さらに不要なコードを除去。
+
 2003-09-15
 
 	* src/compose.c: compose_insert_sig(): マニュアル操作のときは現在の
