@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=11
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws124
+EXTRA_VERSION=claws125
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -355,16 +355,16 @@ dnl *************************
 
 PLUGINS=""
 
-AC_ARG_ENABLE(demo-plugin,
-	[  --enable-demo-plugin    Build demo plugin [default=no]],
-	[ac_cv_enable_demo_plugin=$enableval], [ac_cv_enable_demo_plugin=no])
-AM_CONDITIONAL(BUILD_DEMO_PLUGIN, test x"$ac_cv_enable_demo_plugin" = xyes)
-if test x"$ac_cv_enable_demo_plugin" = xyes; then
-	PLUGINS="demo $PLUGINS"
+AC_ARG_ENABLE(trayicon-plugin,
+	[  --enable-trayicon-plugin   System Tray Icon [default=no]],
+	[ac_cv_enable_trayicon_plugin=$enableval], [ac_cv_enable_trayicon_plugin=no])
+AM_CONDITIONAL(BUILD_TRAYICON_PLUGIN, test x"$ac_cv_enable_trayicon_plugin" = xyes)
+if test x"$ac_cv_enable_trayicon_plugin" = xyes; then
+	PLUGINS="trayicon $PLUGINS"
 fi
 
 AC_ARG_ENABLE(spamassassin-plugin,
-	[  --enable-spamassassin-plugin    Build spamassassin plugin [default=no]],
+	[  --enable-spamassassin-plugin    Build SpamAssassin plugin [default=no]],
 	[ac_cv_enable_spamassassin_plugin=$enableval], [ac_cv_enable_spamassassin_plugin=no])
 AM_CONDITIONAL(BUILD_SPAMASSASSIN_PLUGIN, test x"$ac_cv_enable_spamassassin_plugin" = xyes)
 if test x"$ac_cv_enable_spamassassin_plugin" = xyes; then
@@ -383,14 +383,6 @@ if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
 	AC_SUBST(GTK_MATH_VIEW_LIBS)
 
 	PLUGINS="mathml-viewer $PLUGINS"
-fi
-
-AC_ARG_ENABLE(dillo-viewer-plugin,
-	[  --enable-dillo-viewer-plugin   Build Dillo plugin for html mail rendering [default=no]],
-	[ac_cv_enable_dillo_viewer_plugin=$enableval], [ac_cv_enable_dillo_viewer_plugin=no])
-AM_CONDITIONAL(BUILD_DILLO_VIEWER_PLUGIN, test x"$ac_cv_enable_dillo_viewer_plugin" = xyes)
-if test x"$ac_cv_enable_dillo_viewer_plugin" = xyes; then
-	PLUGINS="dillo-viewer $PLUGINS"
 fi
 
 AC_ARG_ENABLE(image-viewer-plugin,
@@ -423,16 +415,24 @@ if test x"$ac_cv_enable_image_viewer_plugin" = xyes; then
 	PLUGINS="image $PLUGINS"
 fi
 
-AC_ARG_ENABLE(trayicon-plugin,
-	[  --enable-trayicon-plugin   System Tray Icon [default=no]],
-	[ac_cv_enable_trayicon_plugin=$enableval], [ac_cv_enable_trayicon_plugin=no])
-AM_CONDITIONAL(BUILD_TRAYICON_PLUGIN, test x"$ac_cv_enable_trayicon_plugin" = xyes)
-if test x"$ac_cv_enable_trayicon_plugin" = xyes; then
-	PLUGINS="trayicon $PLUGINS"
+AC_ARG_ENABLE(dillo-viewer-plugin,
+	[  --enable-dillo-viewer-plugin   Build Dillo plugin for html mail rendering [default=no]],
+	[ac_cv_enable_dillo_viewer_plugin=$enableval], [ac_cv_enable_dillo_viewer_plugin=no])
+AM_CONDITIONAL(BUILD_DILLO_VIEWER_PLUGIN, test x"$ac_cv_enable_dillo_viewer_plugin" = xyes)
+if test x"$ac_cv_enable_dillo_viewer_plugin" = xyes; then
+	PLUGINS="dillo-viewer $PLUGINS"
+fi
+
+AC_ARG_ENABLE(demo-plugin,
+	[  --enable-demo-plugin    Build demo plugin [default=no]],
+	[ac_cv_enable_demo_plugin=$enableval], [ac_cv_enable_demo_plugin=no])
+AM_CONDITIONAL(BUILD_DEMO_PLUGIN, test x"$ac_cv_enable_demo_plugin" = xyes)
+if test x"$ac_cv_enable_demo_plugin" = xyes; then
+	PLUGINS="demo $PLUGINS"
 fi
 
 AC_ARG_ENABLE(clamav-plugin,
-	[  --enable-clamav-plugin    Build clamav plugin [default=no]],
+	[  --enable-clamav-plugin    Build Clam AntiVirus plugin [default=no]],
 	[ac_cv_enable_clamav_plugin=$enableval], [ac_cv_enable_clamav_plugin=no])
 AM_CONDITIONAL(BUILD_CLAMAV_PLUGIN, test x"$ac_cv_enable_clamav_plugin" = xyes)
 if test x"$ac_cv_enable_clamav_plugin" = xyes; then
