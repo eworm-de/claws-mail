@@ -1,3 +1,8 @@
+2003-05-23 [melvin]	0.8.11claws176
+
+	* po/fr.po
+		Updated French translations
+
 2003-05-22 [paul]	0.8.11claws175
 
 	* src/Makefile.am
