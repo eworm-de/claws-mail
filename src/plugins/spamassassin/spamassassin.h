@@ -22,13 +22,19 @@
 
 #include <glib.h>
 
-extern gboolean spamassassin_enable;
-extern gchar *spamassassin_hostname;
-extern int spamassassin_port;
-extern int spamassassin_max_size;
-extern gboolean spamassassin_receive_spam;
-extern gchar *spamassassin_save_folder;
+typedef struct _SpamAssassinConfig SpamAssassinConfig;
 
-void spamassassin_save_config();
+struct _SpamAssassinConfig
+{
+	gboolean	 enable;
+	gchar		*hostname;
+	guint 		 port;
+	guint 		 max_size;
+	gboolean 	 receive_spam;
+	gchar 		*save_folder;
+};
+
+SpamAssassinConfig *spamassassin_get_config();
+void		    spamassassin_save_config();
 
 #endif
