@@ -1,3 +1,8 @@
+2004-10-01 [colin]	0.9.12cvs118.1
+
+	* src/mimeview.c
+		Sync with HEAD (better Save All fix)
+
 2004-10-01 [colin]	0.9.12cvs117.2
 
 	* src/gtk/gtksctree.c
