@@ -506,6 +506,7 @@ static gchar *search_descr_strings[] = {
 	"T",	 N_("marked messages"),
 	"U",	 N_("unread messages"),
 	"x S",	 N_("messages which contain S in References header"),
+	"X cmd", N_("messages returning 0 when passed to command"),
 	"y S",	 N_("messages which contain S in X-Label header"),
 	 "",	 "" ,
 	"&",	 N_("logical AND operator"),
