@@ -291,19 +291,8 @@ dnl Check for X-Face support
 AC_ARG_ENABLE(compface,
 	[  --disable-compface      Do not use compface (X-Face)],
 	[ac_cv_enable_compface=$enableval], [ac_cv_enable_compface=yes])
-AC_MSG_CHECKING([whether to use compface])
 if test "$ac_cv_enable_compface" = yes; then
-	AC_MSG_RESULT(yes)
-	AC_MSG_CHECKING([whether compface library is available])
-	AC_MSG_RESULT($ac_cv_enable_compface)
-
-	if test "$ac_cv_enable_compface" = yes; then
-		COMPFACE_LIBS="$COMPFACE_LIBS -lcompface"
-		AC_DEFINE(HAVE_LIBCOMPFACE, 1, Define if you want compface support.)
-		AC_SUBST(COMPFACE_LIBS)
-	fi
-else
-	AC_MSG_RESULT(no)
+	AC_CHECK_LIB(compface, uncompface,,[ac_cv_enable_compface=no])
 fi
 
 dnl for LDAP support in addressbook
