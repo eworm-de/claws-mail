@@ -401,4 +401,7 @@ static gint mswin_helper_timeout_cb(gpointer);
 
 wchar_t  *gtkwcs2winwcs(wchar_t *gtkwcs);
 
+#undef isspace
+#define isspace iswspace
+
 #endif /* __UTILS_H__ */

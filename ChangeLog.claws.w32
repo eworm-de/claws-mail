@@ -1,3 +1,10 @@
+2002-07-17 [thorsten]	0.7.8claws74-2
+
+	* src/utils.h
+		fix: replace iswspace by isspace
+	* win32/mailcap.win32
+		changed some default apps
+
 2002-07-17 [thorsten]	0.7.8claws74-1
 
 	* src/utils.c
