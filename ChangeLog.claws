@@ -1,3 +1,66 @@
+2003-10-02 [paul]	0.9.6claws
+
+	* 0.9.6claws released
+
+2003-10-02 [paul]
+
+	* po/es.po
+	  po/sk.po
+	  	update Spanish and Slovak translations
+		submitted by Ricardo Mones Lastra and Andrej Kacian
+ 
+2003-10-02 [paul]	0.9.5claws43
+
+	* po/en_GB.po
+		update British English translation
+
+2003-10-02 [paul]	0.9.5claws42
+
+	* po/hr.po
+		update Croatian translation, submitted by Dragan
+
+2003-10-01 [paul]	0.9.5claws41
+
+	* po/pl.po
+	  po/sr.po
+	  	update Polish and Serbian translations, submitted by
+		Emil and Urke MMI
+
+2003-10-01 [melvin] 	0.9.5claws40
+
+	* po/fr.po
+		Updated French translations
+
+2003-10-01 [melvin] 	0.9.5claws39
+
+	* src/prefs_fonts.c
+		Fixed a Gtk warning
+
+	* src/plugins/dillo_prefs.c	
+		Quasi unnoticeable UI clean-up.
+
+2003-10-01 [paul]
+
+	* tools/README
+	  tools/maildir2sylpheed.pl
+	  	bug fixes, rewrites, submitted by Matthias Förste 
+		<itsjustme@users.sourceforge.net>
+
+2003-09-29 [paul]	0.9.5claws38
+
+	* src/inc.c
+		fix my coding carelessness
+
+2003-09-29 [paul]	0.9.5claws37
+
+	* po/POTFILES.in
+	  src/Makefile.am
+	  src/main.c
+	  src/prefs_common.[ch]
+	  src/prefs_fonts.[ch]	** NEW FILES **
+	  	move Font config options to Other Prefs/Display/Fonts
+		(user's current configuration is preserved)
+
 2003-09-29 [paul]	0.9.5claws36
 
 	* src/inc.c

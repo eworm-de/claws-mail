@@ -524,6 +524,10 @@ SOURCE=..\src\prefs_folder_item.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\prefs_fonts.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\prefs_gtk.c
 # End Source File
 # Begin Source File
@@ -1125,6 +1129,10 @@ SOURCE=..\src\prefs_filtering_action.h
 # Begin Source File
 
 SOURCE=..\src\prefs_folder_item.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\prefs_fonts.h
 # End Source File
 # Begin Source File
 

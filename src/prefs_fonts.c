@@ -51,6 +51,9 @@ typedef struct _FontsPage
 	GtkWidget *entry_smallfont;
 	GtkWidget *entry_normalfont;
 	GtkWidget *entry_boldfont;
+#ifdef WIN32
+	GtkWidget *entry_spacingfont;
+#endif
 	GtkWidget *button_textfont;
 } FontsPage;
 

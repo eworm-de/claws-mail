@@ -135,16 +135,6 @@ static struct Quote {
 } quote;
 
 static struct Display {
-	GtkWidget *entry_textfont;
-	GtkWidget *button_textfont;
-
-	GtkWidget *entry_smallfont;
-	GtkWidget *entry_normalfont;
-	GtkWidget *entry_boldfont;
-#ifdef WIN32
-	GtkWidget *entry_spacingfont;
-#endif
-
 	GtkWidget *chkbtn_folder_unread;
 	GtkWidget *entry_ng_abbrev_len;
 	GtkWidget *spinbtn_ng_abbrev_len;
@@ -239,8 +229,6 @@ static struct KeybindDialog {
 	GtkWidget *combo;
 } keybind;
 
-static GtkWidget *font_sel_win;
-static guint font_sel_conn_id; 
 static GtkWidget *quote_color_win;
 static GtkWidget *color_dialog;
 
@@ -434,56 +422,37 @@ static PrefParam param[] = {
    pointer to the function for widget setting
  */
 	/* Display */
-#ifdef WIN32
-	{"widget_font", NULL,
-	 &prefs_common.widgetfont, P_STRING,
-	 NULL, NULL, NULL},
-#else
 	{"widget_font", NULL, &prefs_common.widgetfont, P_STRING,
 	 NULL, NULL, NULL},
-#endif
 #ifdef WIN32
 	{"message_font", DEFAULT_MESSAGE_FONT,
 #else
 	{"message_font", "-misc-fixed-medium-r-normal--14-*-*-*-*-*-*-*",
 #endif
-	 &prefs_common.textfont, P_STRING,
-	 &display.entry_textfont,
-	 prefs_set_data_from_entry, prefs_set_entry},
+	 &prefs_common.textfont, P_STRING, NULL, NULL, NULL},
 #ifdef WIN32
 	{"small_font",   SMALL_FONT,
 #else
 	{"small_font",   "-*-helvetica-medium-r-normal--10-*-*-*-*-*-*-*",
 #endif
-	 &prefs_common.smallfont,   P_STRING,
-	 &display.entry_smallfont,
-	 prefs_set_data_from_entry, prefs_set_entry},
+	 &prefs_common.smallfont,   P_STRING, NULL, NULL, NULL},
 #ifdef  WIN32
 	 /*XXX:tm */
 	{"spacing_font", DEFAULT_SPACING_FONT, 
-	 &prefs_common.spacingfont, P_STRING,
-	 NULL, NULL, NULL},
-/* 	 
-	 &display.entry_spacingfont,
-	 prefs_set_data_from_entry, prefs_set_entry},
-*/
+	 &prefs_common.spacingfont, P_STRING, NULL, NULL, NULL},
 #endif
 #ifdef WIN32
 	{"bold_font",    BOLD_FONT,
 #else
 	{"bold_font",    "-*-helvetica-bold-r-normal--12-*-*-*-*-*-*-*",
 #endif
-	 &prefs_common.boldfont,    P_STRING,
-	 &display.entry_boldfont,
-	 prefs_set_data_from_entry, prefs_set_entry},
+	 &prefs_common.boldfont,    P_STRING, NULL, NULL, NULL},
 #ifdef WIN32
 	{"normal_font",  NORMAL_FONT,
 #else
 	{"normal_font",  "-*-helvetica-medium-r-normal--12-*-*-*-*-*-*-*",
 #endif
-	 &prefs_common.normalfont,  P_STRING,
-	 &display.entry_normalfont, 
-	 prefs_set_data_from_entry, prefs_set_entry},
+	 &prefs_common.normalfont,  P_STRING, NULL, NULL, NULL},
 
 
 	{"display_folder_unread_num", "TRUE",
@@ -912,13 +881,6 @@ static void set_button_bg_color			(GtkWidget	*widget,
 						 gint		 color);
 static void prefs_enable_message_color_toggled	(void);
 static void prefs_recycle_colors_toggled	(GtkWidget	*widget);
-
-static void prefs_font_select	(GtkButton *button, GtkEntry *entry);
-
-static void prefs_font_selection_key_pressed	(GtkWidget	*widget,
-						 GdkEventKey	*event,
-						 gpointer	 data);
-static void prefs_font_selection_ok		(GtkButton	*button, GtkEntry *entry);
 
 static void prefs_keybind_select		(void);
 static gint prefs_keybind_deleted		(GtkWidget	*widget,
@@ -1816,11 +1778,6 @@ static void prefs_quote_create(void)
 static void prefs_display_create(void)
 {
 	GtkWidget *vbox1;
-	GtkWidget *frame_font;
-	GtkWidget *table1;
-	GtkWidget *label_textfont;
-	GtkWidget *entry_textfont;
-	GtkWidget *button_textfont;
 	GtkWidget *chkbtn_transhdr;
 	GtkWidget *chkbtn_folder_unread;
 	GtkWidget *hbox1;
@@ -1837,98 +1794,11 @@ static void prefs_display_create(void)
 	GtkWidget *button_datefmt;
 	GtkWidget *entry_datefmt;
 	GtkWidget *button_dispitem;
-	GtkWidget *tmplabel, *tmpbutton, *tmpentry;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
-
-	PACK_FRAME(vbox1, frame_font, _("Font"));
-
-	table1 = gtk_table_new (4, 3, FALSE);
-
-	gtk_widget_show (table1);
-	gtk_container_add (GTK_CONTAINER (frame_font), table1);
-	gtk_container_set_border_width (GTK_CONTAINER (table1), 8);
-	gtk_table_set_row_spacings (GTK_TABLE (table1), 8);
-	gtk_table_set_col_spacings (GTK_TABLE (table1), 8);
-
-	label_textfont = gtk_label_new (_("Text"));
-	gtk_misc_set_alignment(GTK_MISC(label_textfont), 0, 0.5);
-	gtk_widget_show (label_textfont);
-	gtk_table_attach (GTK_TABLE (table1), label_textfont, 0, 1, 0, 1,
-			  GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-
-	entry_textfont = gtk_entry_new ();
-	gtk_widget_show (entry_textfont);
-	gtk_table_attach (GTK_TABLE (table1), entry_textfont, 1, 2, 0, 1,
-			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
-
-	button_textfont = gtk_button_new_with_label (" ... ");
-
-	gtk_widget_show (button_textfont);
-	gtk_table_attach (GTK_TABLE (table1), button_textfont, 2, 3, 0, 1,
-			  0, 0, 0, 0);
-	gtk_signal_connect (GTK_OBJECT (button_textfont), "clicked",
-			    GTK_SIGNAL_FUNC (prefs_font_select), entry_textfont);
-
-	tmplabel = gtk_label_new (_("Small"));
-	gtk_misc_set_alignment(GTK_MISC(tmplabel), 0, 0.5);
-	gtk_widget_show (tmplabel);
-	gtk_table_attach (GTK_TABLE (table1), tmplabel, 0, 1, 1, 2,
-			  GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-
-	tmpentry = gtk_entry_new ();
-	gtk_widget_show (tmpentry);
-	gtk_table_attach (GTK_TABLE (table1), tmpentry, 1, 2, 1, 2,
-			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
-
-	tmpbutton = gtk_button_new_with_label (" ... ");
-	gtk_widget_show (tmpbutton);
-	gtk_table_attach (GTK_TABLE (table1), tmpbutton, 2, 3, 1, 2,
-			  0, 0, 0, 0);
-	gtk_signal_connect (GTK_OBJECT(tmpbutton), "clicked",
-			    GTK_SIGNAL_FUNC(prefs_font_select), tmpentry);
-	display.entry_smallfont = tmpentry;			  
-
-	tmplabel = gtk_label_new (_("Normal"));
-	gtk_misc_set_alignment(GTK_MISC(tmplabel), 0, 0.5);
-	gtk_widget_show (tmplabel);
-	gtk_table_attach (GTK_TABLE (table1), tmplabel, 0, 1, 2, 3,
-			  GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-
-	tmpentry = gtk_entry_new ();
-	gtk_widget_show (tmpentry);
-	gtk_table_attach (GTK_TABLE (table1), tmpentry, 1, 2, 2, 3,
-			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
-
-	tmpbutton = gtk_button_new_with_label (" ... ");
-	gtk_widget_show (tmpbutton);
-	gtk_table_attach (GTK_TABLE (table1), tmpbutton, 2, 3, 2, 3,
-			  0, 0, 0, 0);
-	gtk_signal_connect (GTK_OBJECT(tmpbutton), "clicked",
-				GTK_SIGNAL_FUNC(prefs_font_select), tmpentry);
-	display.entry_normalfont = tmpentry;			  
-
-	tmplabel = gtk_label_new (_("Bold"));
-	gtk_misc_set_alignment(GTK_MISC(tmplabel), 0, 0.5);
-	gtk_widget_show (tmplabel);
-	gtk_table_attach (GTK_TABLE (table1), tmplabel, 0, 1, 3, 4,
-			  GTK_FILL, (GTK_EXPAND | GTK_FILL), 0, 0);
-
-	tmpentry = gtk_entry_new ();
-	gtk_widget_show (tmpentry);
-	gtk_table_attach (GTK_TABLE (table1), tmpentry, 1, 2, 3, 4,
-			  (GTK_EXPAND | GTK_FILL), 0, 0, 0);
-
-	tmpbutton = gtk_button_new_with_label (" ... ");
-	gtk_widget_show (tmpbutton);
-	gtk_table_attach (GTK_TABLE (table1), tmpbutton, 2, 3, 3, 4,
-			  0, 0, 0, 0);
-	gtk_signal_connect (GTK_OBJECT(tmpbutton), "clicked",
-				GTK_SIGNAL_FUNC(prefs_font_select), tmpentry);
-	display.entry_boldfont = tmpentry;
 
 	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
@@ -2020,9 +1890,6 @@ static void prefs_display_create(void)
 	gtk_signal_connect (GTK_OBJECT (button_dispitem), "clicked",
 			    GTK_SIGNAL_FUNC (prefs_summary_column_open),
 			    NULL);
-
-	display.entry_textfont	= entry_textfont;
-	display.button_textfont	= button_textfont;
 
 	display.chkbtn_transhdr           = chkbtn_transhdr;
 	display.chkbtn_folder_unread      = chkbtn_folder_unread;
@@ -3352,75 +3219,6 @@ static void prefs_recycle_colors_toggled(GtkWidget *widget)
 
 	is_active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
 	prefs_common.recycle_quote_colors = is_active;
-}
-
-static void prefs_font_select(GtkButton *button, GtkEntry *entry)
-{
-	gchar *font_name;
-	
-	g_return_if_fail(entry != NULL);
-	
-	if (!font_sel_win) {
-		font_sel_win = gtk_font_selection_dialog_new
-			(_("Font selection"));
-		gtk_window_position(GTK_WINDOW(font_sel_win),
-				    GTK_WIN_POS_CENTER);
-		gtk_signal_connect(GTK_OBJECT(font_sel_win), "delete_event",
-				   GTK_SIGNAL_FUNC(gtk_widget_hide_on_delete),
-				   NULL);
-		gtk_signal_connect
-			(GTK_OBJECT(font_sel_win), "key_press_event",
-			 GTK_SIGNAL_FUNC(prefs_font_selection_key_pressed),
-			 NULL);
-		gtk_signal_connect_object
-			(GTK_OBJECT(GTK_FONT_SELECTION_DIALOG(font_sel_win)->cancel_button),
-			 "clicked",
-			 GTK_SIGNAL_FUNC(gtk_widget_hide_on_delete),
-			 GTK_OBJECT(font_sel_win));
-	}
-
-	if(font_sel_conn_id) {
-		gtk_signal_disconnect(GTK_OBJECT(GTK_FONT_SELECTION_DIALOG(font_sel_win)->ok_button), font_sel_conn_id);
-	}
-	font_sel_conn_id = gtk_signal_connect
-		(GTK_OBJECT(GTK_FONT_SELECTION_DIALOG(font_sel_win)->ok_button),
-	         "clicked",
-		 GTK_SIGNAL_FUNC(prefs_font_selection_ok),
-		 entry);
-	printf("%i\n", font_sel_conn_id);
-
-	font_name = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
-	gtk_font_selection_dialog_set_font_name(GTK_FONT_SELECTION_DIALOG(font_sel_win), font_name);
-	g_free(font_name);
-	manage_window_set_transient(GTK_WINDOW(font_sel_win));
-	gtk_window_set_modal(GTK_WINDOW(font_sel_win), TRUE);
-	gtk_widget_grab_focus
-		(GTK_FONT_SELECTION_DIALOG(font_sel_win)->ok_button);
-	gtk_widget_show(font_sel_win);
-}
-
-static void prefs_font_selection_key_pressed(GtkWidget *widget,
-					     GdkEventKey *event,
-					     gpointer data)
-{
-	if (event && event->keyval == GDK_Escape)
-		gtk_widget_hide(font_sel_win);
-}
-
-static void prefs_font_selection_ok(GtkButton *button, GtkEntry *entry)
-{
-	gchar *fontname;
-
-	fontname = gtk_font_selection_dialog_get_font_name
-		(GTK_FONT_SELECTION_DIALOG(font_sel_win));
-
-	if (fontname) {
-		gtk_entry_set_text(entry, fontname);
-
-		g_free(fontname);
-	}
-
-	gtk_widget_hide(font_sel_win);
 }
 
 static void prefs_keybind_select(void)

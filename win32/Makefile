@@ -304,6 +304,7 @@ OBJECTS= \
 	prefs_filtering.o \
 	prefs_filtering_action.o \
 	prefs_folder_item.o \
+	prefs_fonts.o \
 	prefs_gtk.o \
 	prefs_matcher.o \
 	prefs_scoring.o \
@@ -640,6 +641,7 @@ prefs_display_header.o: 	prefs_display_header.c prefs_display_header.h
 prefs_filtering.o: 	prefs_filtering.c prefs_filtering.h
 prefs_filtering_action.o:	prefs_filtering_action.c prefs_filtering_action.h
 prefs_folder_item.o: 	prefs_folder_item.c prefs_folder_item.h
+prefs_fonts.o: 	prefs_fonts.c prefs_fonts.h
 prefs_gtk.o: 	prefs_gtk.c prefs_gtk.h
 prefs_matcher.o: 	prefs_matcher.c prefs_matcher.h
 prefs_scoring.o: 	prefs_scoring.c prefs_scoring.h

@@ -1,7 +1,5 @@
 #!/usr/bin/perl
 
-#  * Copyright © 2003 Paul Mangan <claws@thewildbeast.co.uk>
-#  *
 #  * This file is free software; you can redistribute it and/or modify it
 #  * under the terms of the GNU General Public License as published by
 #  * the Free Software Foundation; either version 2 of the License, or
@@ -15,6 +13,12 @@
 #  * You should have received a copy of the GNU General Public License
 #  * along with this program; if not, write to the Free Software
 #  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+#  *
+#  * Copyright © 2003 Paul Mangan <claws@thewildbeast.co.uk>
+#  *
+#  * 2003-10-01: add --debug and --dry-run options
+#  * 2003-09-30: updated/improved by Matthias Förste <itsjustme@users.sourceforge.net>
+#  * 2003-05-27: version one
 
 ## script name : maildir2sylpheed.pl
 
@@ -22,19 +26,27 @@
 
 ## USAGE: maildir2sylpheed.pl --kmaildir=Mail
 
-## tested with Kmail 1.5.2
+## tested with Kmail version 1.5.2
+
+use strict;
 
 use Getopt::Long;
-use File::Recurse;
+use File::Find;
 
-$kmaildir  = '';
-$iNeedHelp = '';
+my $kmaildir  = '';
+my $iNeedHelp = '';
+# dont actually change anything if set(useful in conjunction with debug)
+my $PRETEND = '';
+# print debug info if set
+my $DEBUG = '';
 
-$sylpheed_tmpdir = "sylpheed_tmp";
-$kmail_olddir    = "kmail_junk";
+my $sylpheed_tmpdir = "$ENV{HOME}/sylpheed_tmp";
+my $kmail_olddir    = "$ENV{HOME}/kmail_junk";
 
 GetOptions("kmaildir=s" => \$kmaildir,
-	   "help"	 => \$iNeedHelp);
+	   "help"	=> \$iNeedHelp,
+	   "dry-run"	=> \$PRETEND,
+	   "debug"	=> \$DEBUG);
 
 if ($kmaildir eq "" || $iNeedHelp) {
 	if (!$iNeedHelp) {
@@ -46,28 +58,54 @@ if ($kmaildir eq "" || $iNeedHelp) {
 	exit;
 }
 
-chdir($ENV{HOME});
+$kmaildir = "$ENV{PWD}/$kmaildir" unless '/' eq substr($kmaildir,0,1);
 
-$MAIL_dir = "$ENV{HOME}/$kmaildir";
+my $count = 1;
+my $MAIL_dir = "$kmaildir";
 
-mkdir("$sylpheed_tmpdir", 0755);
+my $find_opts = { wanted => \&process };
 
-my %files = Recurse(["$MAIL_dir"], {});
+if (-d $MAIL_dir) {
+	find($find_opts , ($MAIL_dir));
+} else {
+	print "\n$MAIL_dir is not a directory !\n";
+	exit;
+}
 
-foreach (keys %files) { 
-	$dir = $_;
-	push(@dirs, "$_");
-	foreach (@{ $files{$_} }) { 
-		push(@files, "$dir/$_");
+unless ($PRETEND) {
+	mkdir("$sylpheed_tmpdir", 0755);
+	system("mv $kmaildir $kmail_olddir");
+	system("mv $sylpheed_tmpdir $ENV{HOME}/Mail");
+
+	print "\n\nSucessfully converted mailbox \"$MAIL_dir\"\n";
+	print "Start Sylpheed and right-click \"Mailbox (MH)\" and ";
+	print "select \"Rebuild folder tree\"\n";
+	print "You may also need to run \"/File/Folder/Check for ";
+	print "new messages in all folders\"\n\n";
+	print "Your kmail directories have been backed-up to\n";
+	print "$kmail_olddir\n\n";
+}
+
+print "\n";
+exit;
+
+sub process() {
+  	if (-d) {
+		process_dir($File::Find::dir);
+	} else {
+		process_file($File::Find::name);
 	}
 }
 
-foreach $direc (@dirs) {
-	if ($direc !~ m/^drafts$/
-	    && $direc !~ m/^outbox$/
-	    && $direc !~ m/^trash$/
-	    && $direc !~ m/^inbox$/) {
-	    	$tmpdir = $direc;
+sub process_dir() {
+	my $direc = shift();
+  	$DEBUG && print "\nDIR $direc";
+
+	if ($direc !~ m/^drafts$/ &&
+	    $direc !~ m/^outbox$/ &&
+      	    $direc !~ m/^trash$/  && 
+    	    $direc !~ m/^inbox$/) {
+		my $tmpdir = $direc;
 		$tmpdir =~ s/^$MAIL_dir//;
 		$tmpdir =~ s/sent-mail/sent/;
 		$tmpdir =~ s/\/cur$//;
@@ -75,61 +113,45 @@ foreach $direc (@dirs) {
 		$tmpdir =~ s/^\///;
 		$tmpdir =~ s/\.directory//g;
 		$tmpdir =~ s/\.//g;
-		mkdir("$sylpheed_tmpdir/$tmpdir");
-		opendir(DIR, "$direc")
-			|| die("Can't open directory");
-		push(@subdirs,(readdir(DIR)));
-		closedir DIR;
+		
+		my $newdir = "$sylpheed_tmpdir/$tmpdir";
+		$DEBUG && print qq{\n>>> -e "$newdir" || mkdir("$newdir")};
+		$PRETEND || -e "$newdir" || mkdir("$newdir");
 	}
 
-	foreach $subdir (@subdirs) {
-		if ($subdir !~ m/\.directory$/
-		    && $subdir!~ m/^\.*$/
-	    	    && $subdir !~ m/cur\/$/
-	    	    && $subdir !~ m/new\/$/
-	    	    && $subdir !~ m/tmp\/$/) {
-			$sub_dir =~ s/\.directory//;
-			unless (-e "$sylpheed_tmpdir/$tmpdir/$sub_dir") {
-				mkdir("$sylpheed_tmpdir/$tmpdir/$sub_dir");
-			}
-		}		
-	}
 }
 
-$count = 1;
-foreach $file (@files) {
-	$tmpfile = $file;
-	if ($tmpfile =~ m/\/cur\//
-	    || $tmpfile =~ m/\/new\//) {
-		$tmpfile =~ s/\/new//;
-		$tmpfile =~ s/\/cur//;
-		@spl_str = split("/", $tmpfile);
-		pop(@spl_str);
-		push(@spl_str, "$count");
-		foreach $spl_str (@spl_str) {
+sub process_file {
+	my $file = shift;
+  	$DEBUG && print "\nFILE $file";
+
+  	my $nfile;
+  	my $tmpfile = $file;
+
+  	if ($tmpfile =~ m/\/cur\// || 
+	    $tmpfile =~ m/\/new\//) {
+
+    		$tmpfile =~ s/\/new//;
+    		$tmpfile =~ s/\/cur//;
+
+    		my @spl_str = split("/", $tmpfile);
+    		pop(@spl_str);
+    		push(@spl_str, "$count");
+
+    		foreach my $spl_str (@spl_str) {
 			$spl_str =~ s/^\.//;
 			$spl_str =~ s/\.directory$//;
 			$spl_str =~ s/sent-mail/sent/;
 		}
-		$nfile = join("/", @spl_str);
-		$nfile =~ s/\/$kmaildir\//\/$sylpheed_tmpdir\//;
+
+    		$nfile = join("/", @spl_str);
+    		$nfile =~ s|$kmaildir|$sylpheed_tmpdir/|;
 	}
 
 	if (-e "$file" && $nfile ne "") {
-		system("cp \"$file\" \"$nfile\"");
-		$count++;
-	}	
+    		$DEBUG && print qq{\n+++ cp "$file" "$nfile"};
+    		$PRETEND || system("cp \"$file\" \"$nfile\"");
+    		$count++;
+  	}
+
 }
-
-system("mv $kmaildir $kmail_olddir");
-system("mv $sylpheed_tmpdir $ENV{HOME}/Mail");
-
-print "Sucessfully converted mailbox \"$MAIL_dir\"\n";
-print "Start Sylpheed and right-click \"Mailbox (MH)\" and ";
-print "select \"Rebuild folder tree\"\n";
-print "You may also need to run \"/File/Folder/Check for ";
-print "new messages in all folders\"\n\n";
-print "Your kmail directories have been backed-up to\n";
-print "$ENV{HOME}/$kmail_olddir\n\n";
-
-exit;

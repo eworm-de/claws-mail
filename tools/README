@@ -350,6 +350,11 @@ Mailbox conversion
 	in all folders'
 	Your maildir directory will be backed-up.
 	
+	Additional options:
+		--debug		debug mode
+		--dry-run	test mode, nothing is actually written
+		--help		brief usage info
+	
   Contact: Paul Mangan <claws@thewildbeast.co.uk>
 --------------------------------------------------------------------------------
 
