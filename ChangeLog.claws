@@ -1,3 +1,8 @@
+2003-07-24 [paul]	0.9.3claws50
+
+	* tools/maildir2sylpheed.pl
+		fix typo
+
 2003-07-24 [paul]	0.9.3claws49
 
 	* src/mimeview.c

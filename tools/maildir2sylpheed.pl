@@ -127,7 +127,7 @@ system("mv $sylpheed_tmpdir $ENV{HOME}/Mail");
 print "Sucessfully converted mailbox \"$MAIL_dir\"\n";
 print "Start Sylpheed and right-click \"Mailbox (MH)\" and ";
 print "select \"Rebuild folder tree\"\n";
-print "You may also need to run \"/File/Folder/Check for "
+print "You may also need to run \"/File/Folder/Check for ";
 print "new messages in all folders\"\n\n";
 print "Your kmail directories have been backed-up to\n";
 print "$ENV{HOME}/$kmail_olddir\n\n";
