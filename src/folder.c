@@ -970,7 +970,6 @@ void folder_item_close(FolderItem *item)
 	g_return_if_fail(item != NULL);
 	
 	mlist = folder_item_get_msg_list(item);
-	
 	for (cur = mlist ; cur != NULL ; cur = cur->next) {
 		MsgInfo * msginfo;
 
@@ -979,10 +978,12 @@ void folder_item_close(FolderItem *item)
 			procmsg_msginfo_unset_flags(msginfo, MSG_NEW, 0);
 		procmsg_msginfo_free(msginfo);
 	}
+	g_slist_free(mlist);
+
+	folder_item_write_cache(olditem);
 	
 	folder_update_item(item, FALSE);
 
-	g_slist_free(mlist);
 }
 
 gint folder_item_scan(FolderItem *item)

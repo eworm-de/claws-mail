@@ -1,3 +1,11 @@
+2002-11-13 [christoph]	0.8.5claws141
+
+	* src/folder.c
+	* src/folderview.c
+		moved cache saving to folder_item_close
+		the folderview should not have to deal with
+		this things
+
 2002-11-13 [christoph]	0.8.5claws140
 
 	* src/summaryview.c
