@@ -1,3 +1,8 @@
+2004-12-09 [colin]	0.9.13cvs10.1
+
+	* src/procmime.c
+		Sync with HEAD (fix B64 encoding from memory)
+
 2004-12-08 [colin]	0.9.13cvs9.1
 
 	* src/gtk/colorlabel.c
