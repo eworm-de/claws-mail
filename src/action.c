@@ -60,6 +60,7 @@ struct _Children
 	GtkWidget	*text;
 	GtkWidget	*input_entry;
 	GtkWidget	*input_hbox;
+	GtkWidget	*progress_bar;
 	GtkWidget	*abort_btn;
 	GtkWidget	*close_btn;
 	GtkWidget	*scrolledwin;
@@ -68,6 +69,7 @@ struct _Children
 	ActionType	 action_type;
 	GSList		*list;
 	gint		 nb;
+	gint		 initial_nb;
 	gint		 open_in;
 	gboolean	 output;
 
@@ -691,6 +693,7 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 
 		children->list	      = children_list;
 		children->nb	      = g_slist_length(children_list);
+		children->initial_nb  = children->nb;
 
 		for (cur = children_list; cur; cur = cur->next) {
 			child_info = (ChildInfo *) cur->data;
@@ -990,6 +993,12 @@ static void update_io_dialog(Children *children)
 
 	debug_print("Updating actions input/output dialog.\n");
 
+	if (children->progress_bar) {
+		gtk_progress_configure(GTK_PROGRESS(children->progress_bar),
+				children->initial_nb -children->nb,
+				0.0, children->initial_nb);
+	}
+
 	if (!children->nb) {
 		gtk_widget_set_sensitive(children->abort_btn, FALSE);
 		gtk_widget_set_sensitive(children->close_btn, TRUE);
@@ -1045,6 +1054,7 @@ static void create_io_dialog(Children *children)
 	GtkWidget *text;
 	GtkWidget *scrolledwin;
 	GtkWidget *hbox;
+	GtkWidget *progress_bar = NULL;
 	GtkWidget *abort_button;
 	GtkWidget *close_button;
 
@@ -1111,6 +1121,25 @@ static void create_io_dialog(Children *children)
 		gtk_widget_grab_focus(entry);
 	}
 
+	if (children->initial_nb > 1) {
+		progress_bar = gtk_progress_bar_new();
+		gtk_progress_bar_set_bar_style(GTK_PROGRESS_BAR(progress_bar),
+				GTK_PROGRESS_CONTINUOUS);
+		gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR(progress_bar),
+				GTK_PROGRESS_LEFT_TO_RIGHT);
+		gtk_progress_set_activity_mode(GTK_PROGRESS(progress_bar), 
+				FALSE);
+		gtk_progress_set_format_string(GTK_PROGRESS(progress_bar),
+				_("Completed %v/%u"));
+		gtk_progress_set_show_text(GTK_PROGRESS(progress_bar), TRUE);
+		gtk_progress_configure(GTK_PROGRESS(progress_bar),
+				children->initial_nb -children->nb,
+				0.0, children->initial_nb);
+
+		gtk_box_pack_start(GTK_BOX(vbox), progress_bar, TRUE, TRUE, 0);
+		gtk_widget_show(progress_bar);
+	}
+
 	gtkut_button_set_create(&hbox, &abort_button, _("Abort"),
 				&close_button, _("Close"), NULL, NULL);
 	gtk_signal_connect(GTK_OBJECT(abort_button), "clicked",
@@ -1124,13 +1153,14 @@ static void create_io_dialog(Children *children)
 
 	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), hbox);
 
-	children->dialog      = dialog;
-	children->scrolledwin = scrolledwin;
-	children->text        = text;
-	children->input_hbox  = children->open_in ? input_hbox : NULL;
-	children->input_entry = children->open_in ? entry : NULL;
-	children->abort_btn   = abort_button;
-	children->close_btn   = close_button;
+	children->dialog       = dialog;
+	children->scrolledwin  = scrolledwin;
+	children->text         = text;
+	children->input_hbox   = children->open_in ? input_hbox : NULL;
+	children->input_entry  = children->open_in ? entry : NULL;
+	children->progress_bar = progress_bar;
+	children->abort_btn    = abort_button;
+	children->close_btn    = close_button;
 
 	gtk_widget_show(dialog);
 }
