@@ -172,7 +172,7 @@ static void addressbook_to_clicked		(GtkButton	*button,
 static void addressbook_lup_clicked		(GtkButton	*button,
 						 gpointer	data);
 
-static void addressbook_tree_selected		(GtkCTree	*ctree,
+static gboolean addressbook_tree_selected	(GtkCTree	*ctree,
 						 GtkCTreeNode	*node,
 						 gint		 column,
 						 gpointer	 data);
@@ -1323,7 +1323,7 @@ static void addressbook_menuitem_set_sensitive( AddressObject *obj, GtkCTreeNode
  * \param column Column number where selected occurred.
  * \param data   Pointer to user data.
  */
-static void addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
+static gboolean addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
 				      gint column, gpointer data)
 {
 	AddressObject *obj = NULL;
@@ -1339,7 +1339,7 @@ static void addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
 
 	if( addrbook.clist ) gtk_clist_clear( GTK_CLIST(addrbook.clist) );
 	if( node ) obj = gtk_ctree_node_get_row_data( ctree, node );
-	if( obj == NULL ) return;
+	if( obj == NULL ) return FALSE;
 
 	addrbook.opened = node;
 
@@ -1348,9 +1348,9 @@ static void addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
 		static gboolean tVal = TRUE;
 
 		ads = ADAPTER_DSOURCE(obj);
-		if( ads == NULL ) return;
+		if( ads == NULL ) return FALSE;
 		ds = ads->dataSource;
-		if( ds == NULL ) return;		
+		if( ds == NULL ) return FALSE;		
 
 		if( addrindex_ds_get_modify_flag( ds ) ) {
 			addrindex_ds_read_data( ds );
@@ -1392,6 +1392,8 @@ static void addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
 	addressbook_menuitem_set_sensitive( obj, node );
 
 	addressbook_list_select_clear();
+	
+	return FALSE;
 }
 
 /**
@@ -1902,6 +1904,7 @@ static gboolean addressbook_list_button_released(GtkWidget *widget,
 						 GdkEventButton *event,
 						 gpointer data)
 {
+	return FALSE;
 }
 
 static gboolean addressbook_tree_button_pressed(GtkWidget *ctree,
