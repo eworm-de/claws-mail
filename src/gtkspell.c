@@ -1259,9 +1259,8 @@ GtkWidget *gtkpspell_dictionary_option_menu_new(const gchar *pspell_path)
 	for (tmp = dict_list; tmp != NULL; tmp = g_slist_next(tmp)) {
 		dict = (Dictionary *) tmp->data;
 		item = gtk_menu_item_new_with_label(dict->dictname);
-		if (dict->dictname)
-			gtk_object_set_data(GTK_OBJECT(item), "dict_name",
-					 dict); 
+		gtk_object_set_data(GTK_OBJECT(item), "dict_name",
+				    dict->fullname); 
 					 
 		gtk_menu_append(GTK_MENU(menu), item);					 
 		gtk_widget_show(item);
@@ -1275,14 +1274,14 @@ GtkWidget *gtkpspell_dictionary_option_menu_new(const gchar *pspell_path)
 gchar *gtkpspell_get_dictionary_menu_active_item(GtkWidget *menu)
 {
 	GtkWidget *menuitem;
-	Dictionary *result;
+	gchar *dict_fullname;
 	gchar *label;
 
 	g_return_val_if_fail(GTK_IS_MENU(menu), NULL);
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
-        result = (Dictionary *) gtk_object_get_data(GTK_OBJECT(menuitem), "dict_name");
-        g_return_val_if_fail(result->fullname, NULL);
-	label = g_strdup(result->fullname);
+        dict_fullname = (gchar *) gtk_object_get_data(GTK_OBJECT(menuitem), "dict_name");
+        g_return_val_if_fail(dict_fullname, NULL);
+	label = g_strdup(dict_fullname);
         return label;
   
 }
@@ -1580,7 +1579,7 @@ static GtkMenu *make_config_menu(GtkPspell *gtkpspell)
 				tmp = g_slist_next(tmp)) {
 			dict = (Dictionary *) tmp->data;
 			item = gtk_check_menu_item_new_with_label(dict->dictname);
-			gtk_object_set_data(GTK_OBJECT(item), "dict_name", dict); 
+			gtk_object_set_data(GTK_OBJECT(item), "dict_name", dict->fullname); 
 			if (strcmp2(dict->fullname, gtkpspell->gtkpspeller->dictionary->fullname))
 				gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(item), FALSE);
 			else {
@@ -1706,25 +1705,23 @@ static gboolean deactivate_menu_cb(GtkWidget *w, gpointer *data)
 /* change_dict_cb() - Menu callback : change dict */
 static void change_dict_cb(GtkWidget *w, GtkPspell *gtkpspell)
 {
-	Dictionary 	*dict, *dict2;       
+	Dictionary 	*dict;       
+	gchar		*fullname;
 	GtkPspeller 	*gtkpspeller;
 	gint 		 sug_mode;
   
-	/* Dict is simply the menu label */
-
-        dict = (Dictionary *) gtk_object_get_data(GTK_OBJECT(w), "dict_name");
+        fullname = (gchar *) gtk_object_get_data(GTK_OBJECT(w), "dict_name");
 	
-	if (!strcmp2(dict->fullname, _("None")))
+	if (!strcmp2(fullname, _("None")))
 			return;
 
 	sug_mode  = gtkpspell->default_sug_mode;
 
-	dict2 = dictionary_dup(dict);
-	if (dict2->encoding)
-		g_free(dict2->encoding);
-	dict2->encoding = g_strdup(gtkpspell->gtkpspeller->dictionary->encoding);
+	dict = g_new0(Dictionary, 1);
+	dict->fullname = g_strdup(fullname);
+	dict->encoding = g_strdup(gtkpspell->gtkpspeller->dictionary->encoding);
 	
-	gtkpspeller = gtkpspeller_new(dict2);
+	gtkpspeller = gtkpspeller_new(dict);
 
 	if (!gtkpspeller) {
 		gchar *message;
@@ -1739,7 +1736,7 @@ static void change_dict_cb(GtkWidget *w, GtkPspell *gtkpspell)
 		gtkpspell_set_sug_mode(gtkpspell, sug_mode);
 	}
 	
-	dictionary_delete(dict2);
+	dictionary_delete(dict);
 }
 
 /******************************************************************************/

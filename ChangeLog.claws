@@ -1,9 +1,14 @@
-2001-01-16 [darko]	0.7.0claws10
+2002-01-17 [melvin]	0.7.0claws11
+
+	* src/gtkspell.c
+		fix default dictionary not being saved.
+
+2002-01-16 [darko]	0.7.0claws10
 
 	* src/compose.c
 		fix wrapping crash with URL longer than wrapping margin
 
-2001-12-08 [hoa]	0.7.0claws10
+2002-12-08 [hoa]	0.7.0claws10
 
 	* src/matcher_parser_parse.y
 		fixed some bugs
@@ -33,7 +38,7 @@
 		fixed a long standingspell checker bug which could 
 		cause a crash after sending a message.
 
-2001-01-16 [paul]	0.7.0claws6
+2002-01-16 [paul]	0.7.0claws6
 
 	* sync with sylpheed 0.7.0cvs7
 		see ChangeLog entries 2002-01-10, 2002-01-11, 2002-01-14,
