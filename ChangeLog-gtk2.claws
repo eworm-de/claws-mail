@@ -1,3 +1,8 @@
+2005-02-12 [paul]	1.0.1cvs4.4
+
+	* src/textview.c
+		add 'Copy' to contextual menu on emails
+
 2005-02-11 [colin]	1.0.1cvs4.3
 
 	* src/compose.c

@@ -198,6 +198,9 @@ static void add_uri_to_addrbook_cb 		(TextView 	*textview,
 static void mail_to_uri_cb 			(TextView 	*textview, 
 						 guint 		 action, 
 						 void 		*data);
+static void copy_mail_to_uri_cb			(TextView 	*textview,
+						 guint		 action,
+						 void		*data);
 
 static GtkItemFactoryEntry textview_link_popup_entries[] = 
 {
@@ -209,6 +212,7 @@ static GtkItemFactoryEntry textview_mail_popup_entries[] =
 {
 	{N_("/_Add to addressbook"),	NULL, add_uri_to_addrbook_cb, 0, NULL},
 	{N_("/_Email"),			NULL, mail_to_uri_cb, 0, NULL},
+	{N_("/_Copy"),			NULL, copy_mail_to_uri_cb, 0, NULL},
 };
 
 
@@ -2199,4 +2203,20 @@ static void mail_to_uri_cb (TextView *textview, guint action, void *data)
 	compose_new(account, uri->uri + 7, NULL);
 }
 
+static void copy_mail_to_uri_cb	(TextView *textview, guint action, void *data)
+{
+	gchar *fromaddress;
+	RemoteURI *uri = g_object_get_data(G_OBJECT(textview->mail_popup_menu),
+					   "menu_button");
+	if (uri == NULL)
+		return;
+
+	fromaddress = g_strdup(uri->uri + 7);
+	
+	gtk_clipboard_set_text(gtk_clipboard_get(GDK_NONE), fromaddress, -1);
+	g_object_set_data(G_OBJECT(textview->mail_popup_menu), "menu_button",
+			  NULL);
+
+	g_free(fromaddress);
+}
 
