@@ -18,6 +18,9 @@
 /* Define if you use GPGME to support OpenPGP */
 #undef USE_GPGME
 
+/* Define if you use PSPELL to support spell checking */
+#undef USE_PSPELL
+
 /* Define if you use OpenSSL to support SSL */
 #undef USE_SSL
 
