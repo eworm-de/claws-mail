@@ -399,6 +399,12 @@ gint session_send_msg(Session *session, SessionMsgType type, const gchar *msg)
 			g_free(str);
 			return -1;
 		}
+#ifdef WIN32
+		/* ensure data written to pipe */
+		g_io_channel_flush(session->write_ch, NULL);
+		/* run other threads to eval message */
+		Sleep(0);
+#endif
 		size -= bytes_written;
 		cur += bytes_written;
 	}

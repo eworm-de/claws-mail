@@ -1,3 +1,8 @@
+2003-05-18 [thorsten]	0.8.11claws157-1
+
+	* src/common/session.c
+		fix: flush/Sleep after each pipe write to avoid data loss
+
 2003-05-04 [thorsten]	0.8.11claws140-1
 
 	* src/ssl.c
