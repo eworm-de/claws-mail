@@ -246,6 +246,9 @@ void compose_entry_append		(Compose	  *compose,
 					 const gchar	  *address,
 					 ComposeEntryType  type);
 
+void compose_entry_select		(Compose	  *compose,
+					 const gchar	  *address);
+
 gint compose_send			(Compose	  *compose);
 
 void compose_reflect_prefs_all			(void);
