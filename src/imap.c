@@ -2642,6 +2642,45 @@ static gint imap_cmd_delete(SockInfo *sock, const gchar *folder)
 	return imap_cmd_ok(sock, NULL);
 }
 
+static gint imap_cmd_search(SockInfo *sock, const gchar *criteria, GSList **list)
+{
+	gint ok;
+	gchar *uidlist;
+	GPtrArray *argbuf;
+
+	g_return_val_if_fail(criteria != NULL, IMAP_ERROR);
+	g_return_val_if_fail(list != NULL, IMAP_ERROR);
+
+	*list = NULL;
+	
+	argbuf = g_ptr_array_new();
+	imap_cmd_gen_send(sock, "UID SEARCH %s", criteria);
+
+	ok = imap_cmd_ok(sock, argbuf);
+	if (ok != IMAP_SUCCESS) {
+		ptr_array_free_strings(argbuf);
+		g_ptr_array_free(argbuf, TRUE);
+		return ok;
+	}
+
+	if ((uidlist = search_array_str(argbuf, "SEARCH ")) != NULL) {
+		gchar **strlist, **p;
+
+		strlist = g_strsplit(uidlist + 7, " ", 0);
+		for (p = strlist; *p != NULL; ++p) {
+			guint msgnum;
+
+			if (sscanf(*p, "%d", &msgnum) == 1)
+				*list = g_slist_append(*list, GINT_TO_POINTER(msgnum));
+		}
+		g_strfreev(strlist);
+	}
+	ptr_array_free_strings(argbuf);
+	g_ptr_array_free(argbuf, TRUE);
+
+	return IMAP_SUCCESS;
+}
+
 static gint imap_cmd_fetch(SockInfo *sock, guint32 uid, const gchar *filename)
 {
 	gint ok;
@@ -3253,12 +3292,8 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 	IMAPFolderItem *item = (IMAPFolderItem *)_item;
 	IMAPSession *session;
 	gint ok, lastuid_old, nummsgs = 0, exists, resent, unseen, uid_val;
-	gint msgnum;
-	GPtrArray *argbuf;
-	gchar *cmdbuf = NULL;
-	gchar *dir;
-	gchar *uidlist;
-	gchar **p, **list;
+	GSList *uidlist, *elem;
+	gchar *dir, *cmd_buf;
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(item != NULL, -1);
@@ -3277,40 +3312,61 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 	if (exists == 0)
 		return 0;
 
-	argbuf = g_ptr_array_new();
-	cmdbuf = g_strdup_printf("UID SEARCH UID %d:*", item->lastuid + 1);
-	imap_cmd_gen_send(SESSION(session)->sock, cmdbuf);
-	g_free(cmdbuf);
-	ok = imap_cmd_ok(SESSION(session)->sock, argbuf);
-	if (ok != IMAP_SUCCESS) {
-		if (ok == IMAP_SOCKET) {
-			session_destroy((Session *)session);
-			((RemoteFolder *)folder)->session = NULL;
-		}
+	cmd_buf = g_strdup_printf("UID %d:*", item->lastuid + 1);
+	ok = imap_cmd_search(SESSION(session)->sock, cmd_buf, &uidlist);
+	g_free(cmd_buf);
 
+	if (ok == IMAP_SOCKET) {
+		session_destroy((Session *)session);
+		((RemoteFolder *)folder)->session = NULL;
+		return -1;
+	}
+
+	if (ok != IMAP_SUCCESS) {
+		gint i;
+		GPtrArray *argbuf;
+
+		argbuf = g_ptr_array_new();
+
+		cmd_buf = g_strdup_printf("UID FETCH %d:* (UID)", item->lastuid + 1);
+		imap_cmd_gen_send(SESSION(session)->sock, cmd_buf);
+		g_free(cmd_buf);
+		ok = imap_cmd_ok(SESSION(session)->sock, argbuf);
+		if (ok != IMAP_SUCCESS) {
+			ptr_array_free_strings(argbuf);
+			g_ptr_array_free(argbuf, TRUE);
+			return -1;
+		}
+	
+		for(i = 0; i < argbuf->len; i++) {
+			int ret, msgnum;
+	
+			if((ret = sscanf(g_ptr_array_index(argbuf, i), 
+				    "%*d FETCH (UID %d)", &msgnum)) == 1)
+				uidlist = g_slist_prepend(uidlist, GINT_TO_POINTER(msgnum));
+		}
 		ptr_array_free_strings(argbuf);
 		g_ptr_array_free(argbuf, TRUE);
-		return -1;
 	}
 
 	lastuid_old = item->lastuid;
 	*msgnum_list = g_slist_copy(item->uid_list);
 	debug_print("Got %d uids from cache\n", g_slist_length(item->uid_list));
 
-	if ((uidlist = search_array_str(argbuf, "SEARCH ")) != NULL) {
-		list = g_strsplit(uidlist + 7, " ", 0);
-		for (p = list; *p != NULL; ++p) {
-			if (sscanf(*p, "%d", &msgnum) == 1 && msgnum > lastuid_old) {
-				*msgnum_list = g_slist_prepend(*msgnum_list, GINT_TO_POINTER(msgnum));
-				item->uid_list = g_slist_prepend(item->uid_list, GINT_TO_POINTER(msgnum));
-				nummsgs++;
+	for (elem = uidlist; elem != NULL; elem = g_slist_next(elem)) {
+		guint msgnum;
 
-				if(msgnum > item->lastuid)
-					item->lastuid = msgnum;
-			}	
+		msgnum = GPOINTER_TO_INT(elem->data);
+		if (msgnum > lastuid_old) {
+			*msgnum_list = g_slist_prepend(*msgnum_list, GINT_TO_POINTER(msgnum));
+			item->uid_list = g_slist_prepend(item->uid_list, GINT_TO_POINTER(msgnum));
+			nummsgs++;
+
+			if(msgnum > item->lastuid)
+				item->lastuid = msgnum;
 		}
-		g_strfreev(list);
 	}
+	g_slist_free(uidlist);
 
 	if (g_slist_length(item->uid_list) != exists) {
 		/* Cache contains more messages then folder, we have cached
@@ -3329,9 +3385,6 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 	debug_print("removing old messages from %s\n", dir);
 	remove_numbered_files_not_in_list(dir, *msgnum_list);
 	g_free(dir);
-
-	ptr_array_free_strings(argbuf);
-	g_ptr_array_free(argbuf, TRUE);
 
 	return nummsgs;
 }

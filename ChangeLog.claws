@@ -1,3 +1,9 @@
+2003-03-08 [christoph]	0.8.10claws101
+
+	* src/imap.c
+		add workaround for IMAP servers that do not
+		support the "UID SEARCH UID" command
+
 2003-03-07 [christoph]	0.8.10claws100
 
 	* src/plugins/spamassassin/spamassassin.[ch]
