@@ -1912,6 +1912,7 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 					open_uri(uri->uri,
 						 prefs_common.uri_cmd);
 				}
+				g_free(trimmed_uri);
 			}
 		}
 	}
