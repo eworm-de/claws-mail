@@ -76,6 +76,9 @@ static gint imap_set_article_flags	(IMAPSession	*session,
 					 IMAPFlags	 flag,
 					 gboolean	 is_set);
 
+static void imap_parse_namespace	(IMAPSession	*session,
+					 Folder		*folder);
+
 static gchar *imap_parse_atom		(SockInfo *sock,
 					 gchar	  *src,
 					 gchar	  *dest,
@@ -100,6 +103,8 @@ static gint imap_cmd_login	(SockInfo	*sock,
 				 const gchar	*pass);
 static gint imap_cmd_logout	(SockInfo	*sock);
 static gint imap_cmd_noop	(SockInfo	*sock);
+static gint imap_cmd_namespace	(SockInfo	*sock,
+				 gchar	       **ns_str);
 static gint imap_cmd_select	(SockInfo	*sock,
 				 const gchar	*folder,
 				 gint		*exists,
@@ -769,6 +774,75 @@ static SockInfo *imap_open(const gchar *server, gushort port, gchar *buf)
 	return sock;
 }
 
+#define THROW goto catch
+
+static void imap_parse_namespace(IMAPSession *session, Folder *folder)
+{
+	gchar *ns_str;
+	gchar *name;
+	gchar *separator;
+	gchar *p;
+	IMAPNameSpace *namespace;
+	GList *ns_list = NULL;
+
+	g_return_if_fail(session != NULL);
+	g_return_if_fail(folder != NULL);
+	g_return_if_fail(folder->type == F_IMAP);
+
+	if (imap_cmd_namespace(SESSION(session)->sock, &ns_str)
+	    != IMAP_SUCCESS) {
+		log_warning(_("can't get namespace\n"));
+		return;
+	}
+
+	/* get the first element */
+	extract_one_parenthesis_with_skip_quote(ns_str, '"', '(', ')');
+	g_strstrip(ns_str);
+	p = ns_str;
+
+	while (*p != '\0') {
+		while (*p && *p != '(') p++;
+		if (*p == '\0') THROW;
+		p++;
+
+		while (*p && *p != '"') p++;
+		if (*p == '\0') THROW;
+		p++;
+		name = p;
+
+		while (*p && *p != '"') p++;
+		if (*p == '\0') THROW;
+		*p = '\0';
+		p++;
+
+		while (*p && *p != '"') p++;
+		if (*p == '\0') THROW;
+		p++;
+		separator = p;
+
+		while (*p && *p != '"') p++;
+		if (*p == '\0') THROW;
+		*p = '\0';
+		p++;
+
+		while (*p && *p != ')') p++;
+		if (*p == '\0') THROW;
+		p++;
+
+		namespace = g_new(IMAPNameSpace, 1);
+		namespace->name = g_strdup(name);
+		namespace->separator = separator[0];
+		ns_list = g_list_append(ns_list, namespace);
+		IMAP_FOLDER(folder)->namespace = ns_list;
+	}
+
+catch:
+	g_free(ns_str);
+	return;
+}
+
+#undef THROW
+
 static gchar *imap_parse_atom(SockInfo *sock, gchar *src, gchar *dest,
 			      gchar *orig_buf)
 {
@@ -1079,6 +1153,7 @@ static gint imap_set_article_flags(IMAPSession *session,
 }
 
 
+/* low-level IMAP4rev1 commands */
 
 static gint imap_cmd_login(SockInfo *sock,
 			   const gchar *user, const gchar *pass)
@@ -1104,6 +1179,33 @@ static gint imap_cmd_noop(SockInfo *sock)
 	imap_cmd_gen_send(sock, "NOOP");
 	return imap_cmd_ok(sock, NULL);
 }
+
+#define THROW(err) { ok = err; goto catch; }
+
+static gint imap_cmd_namespace(SockInfo *sock, gchar **ns_str)
+{
+	gint ok;
+	GPtrArray *argbuf;
+	gchar *str;
+
+	argbuf = g_ptr_array_new();
+
+	imap_cmd_gen_send(sock, "NAMESPACE");
+	if ((ok = imap_cmd_ok(sock, argbuf)) != IMAP_SUCCESS) THROW(ok);
+
+	str = search_array_contain_str(argbuf, "NAMESPACE");
+	if (!str) THROW(IMAP_ERROR);
+
+	*ns_str = g_strdup(str);
+
+catch:
+	ptr_array_free_strings(argbuf);
+	g_ptr_array_free(argbuf, TRUE);
+
+	return ok;
+}
+
+#undef THROW
 
 static gint imap_cmd_select(SockInfo *sock, const gchar *folder,
 			    gint *exists, gint *recent, gint *unseen,
@@ -1231,6 +1333,7 @@ static gint imap_cmd_append(SockInfo *sock, const gchar *destfolder,
 
 	g_return_val_if_fail(file != NULL, IMAP_ERROR);
 
+	size = get_file_size(file);
 	imap_cmd_gen_send(sock, "APPEND %s {%d}", destfolder, size);
 	ok = imap_cmd_ok(sock, NULL);
 	if (ok != IMAP_SUCCESS) {

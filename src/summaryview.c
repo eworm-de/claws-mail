@@ -646,6 +646,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	gchar *buf;
 	gboolean is_refresh;
 	guint prev_msgnum = 0;
+	GtkCTreeNode *selected_node = summaryview->folderview->selected;
 	GSList *cur;
 	gint sort_mode;
 	gint sort_type;
@@ -676,7 +677,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	} else
 		summary_write_cache(summaryview);
 
-	summaryview->folderview->opened = summaryview->folderview->selected;
+	summaryview->folderview->opened = selected_node;
 
 	gtk_clist_freeze(GTK_CLIST(ctree));
 

@@ -1,3 +1,11 @@
+2001-06-13
+
+	* src/imap.c: imap_parse_namespace(), imap_cmd_namespace(): new.
+
+2001-06-11
+
+	* src/summaryview.c: summary_show(): fixed a glitch in folder view.
+
 2001-06-08
 
 	* src/imap.[ch]: added imap_add_msg(), and imap_append_message(),

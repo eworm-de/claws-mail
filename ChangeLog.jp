@@ -1,3 +1,11 @@
+2001-06-13
+
+	* src/imap.c: imap_parse_namespace(), imap_cmd_namespace(): 新規。
+
+2001-06-11
+
+	* src/summaryview.c: summary_show(): フォルダビューの不具合を修正。
+
 2001-06-08
 
 	* src/imap.[ch]: ファイルを IMAP4 フォルダに追加する

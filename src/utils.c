@@ -558,6 +558,35 @@ void extract_parenthesis(gchar *str, gchar op, gchar cl)
 	*destp = '\0';
 }
 
+void extract_one_parenthesis_with_skip_quote(gchar *str, gchar quote_chr,
+					     gchar op, gchar cl)
+{
+	register gchar *srcp, *destp;
+	gint in_brace;
+	gboolean in_quote = FALSE;
+
+	srcp = destp = str;
+
+	if ((srcp = strchr_with_skip_quote(destp, quote_chr, op))) {
+		memmove(destp, srcp + 1, strlen(srcp));
+		in_brace = 1;
+		while(*destp) {
+			if (*destp == op && !in_quote)
+				in_brace++;
+			else if (*destp == cl && !in_quote)
+				in_brace--;
+			else if (*destp == quote_chr)
+				in_quote ^= TRUE;
+
+			if (in_brace == 0)
+				break;
+
+			destp++;
+		}
+	}
+	*destp = '\0';
+}
+
 void extract_parenthesis_with_skip_quote(gchar *str, gchar quote_chr,
 					 gchar op, gchar cl)
 {
@@ -567,7 +596,7 @@ void extract_parenthesis_with_skip_quote(gchar *str, gchar quote_chr,
 
 	srcp = destp = str;
 
-	while ((srcp = strchr_with_skip_quote(destp, '"', op))) {
+	while ((srcp = strchr_with_skip_quote(destp, quote_chr, op))) {
 		if (destp > str)
 			*destp++ = ' ';
 		memmove(destp, srcp + 1, strlen(srcp));

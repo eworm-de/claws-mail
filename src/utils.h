@@ -196,10 +196,16 @@ void eliminate_parenthesis		(gchar		*str,
 void extract_parenthesis		(gchar		*str,
 					 gchar		 op,
 					 gchar		 cl);
-void extract_parenthesis_with_skip_quote(gchar		*str,
-					 gchar		 quote_chr,
-					 gchar		 op,
-					 gchar		 cl);
+
+void extract_one_parenthesis_with_skip_quote	(gchar		*str,
+						 gchar		 quote_chr,
+						 gchar		 op,
+						 gchar		 cl);
+void extract_parenthesis_with_skip_quote	(gchar		*str,
+						 gchar		 quote_chr,
+						 gchar		 op,
+						 gchar		 cl);
+
 void eliminate_quote			(gchar		*str,
 					 gchar		 quote_chr);
 void extract_quote			(gchar		*str,
