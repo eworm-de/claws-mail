@@ -81,10 +81,34 @@ ScoringProp * matcher_parser_get_scoring(gchar * str)
 	return scoring;
 }
 
+static gboolean check_quote_symetry (gchar *str)
+{
+	gchar *walk;
+	int ret = 0;
+	
+	if (str == NULL)
+		return TRUE; /* heh, that's symetric */
+	if (*str == '\0')
+		return TRUE;
+	for (walk = str; *walk; walk++) {
+		if (*walk == '\"') {
+			if (walk == str 	/* first char */
+			|| *(walk - 1) != '\\') /* not escaped */
+				ret ++;
+		}
+	}
+	return !(ret%2);
+}
+
 MatcherList * matcher_parser_get_cond(gchar * str)
 {
 	void * bufstate;
 
+	if (!check_quote_symetry(str)) {
+		cond = NULL;
+		return cond;
+	}
+	
 	/* bad coding to enable the sub-grammar matching
 	   in yacc */
 	matcher_parserlineno = 1;
@@ -128,13 +152,15 @@ void matcher_parsererror(char * str)
 
 	if (matchers_list) {
 		for(l = matchers_list ; l != NULL ;
-		    l = g_slist_next(l))
+		    l = g_slist_next(l)) {
 			matcherprop_free((MatcherProp *)
 					 l->data);
+			l->data = NULL;
+		}
 		g_slist_free(matchers_list);
 		matchers_list = NULL;
 	}
-
+	cond = NULL;
 	g_warning(_("scoring / filtering parsing: %i: %s\n"),
 		  matcher_parserlineno, str);
 	error = 1;

@@ -767,10 +767,10 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 {
 	gchar *destdir;
 	IMAPSession *session;
-	gint messages, recent, unseen;
+	gint messages, recent, unseen, exists;
 	guint32 uid_next, uid_validity;
 	gint ok;
-
+    
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(folder->type == F_IMAP, -1);
 	g_return_val_if_fail(dest != NULL, -1);
@@ -794,7 +794,17 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 
 	destdir = imap_get_real_path(IMAP_FOLDER(folder), dest->path);
 
-	if (remove_source)
+    /* ensure source folder selected */
+    if (strcmp(((IMAPFolder *)folder)->selected_folder, 
+                    msginfo->folder->path) != 0) {
+	    ok = imap_select(session, IMAP_FOLDER(folder), msginfo->folder->path,
+			     &exists, &recent, &unseen, &uid_validity);
+	    statusbar_pop_all();
+	    if (ok != IMAP_SUCCESS)
+		    return -1;
+    }
+        
+    if (remove_source)
 		debug_print("Moving message %s%c%d to %s ...\n",
 			    msginfo->folder->path, G_DIR_SEPARATOR,
 			    msginfo->msgnum, destdir);
@@ -829,6 +839,8 @@ static gint imap_do_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
 	MsgInfo *msginfo;
 	IMAPSession *session;
 	gint ok = IMAP_SUCCESS;
+	gint exists, recent, unseen;
+	guint32 uid_validity;
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(dest != NULL, -1);
@@ -847,6 +859,17 @@ static gint imap_do_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
 			continue;
 		}
 
+        /* ensure source folder selected */
+        if (strcmp(((IMAPFolder *)folder)->selected_folder, 
+                        msginfo->folder->path) != 0) {
+	        ok = imap_select(session, IMAP_FOLDER(folder), 
+                    msginfo->folder->path, &exists, &recent, &unseen, 
+                    &uid_validity);
+	        statusbar_pop_all();
+	        if (ok != IMAP_SUCCESS)
+		        return -1;
+        }
+        
 		if (remove_source)
 			debug_print("Moving message %s%c%d to %s ...\n",
 				    msginfo->folder->path, G_DIR_SEPARATOR,

@@ -99,7 +99,7 @@ static void ssl_certificate_save (SSLCertificate *cert)
 			  cert->host, ".", port, ".cert", NULL);
 
 	g_free(port);
-	fp = fopen(file, "w");
+	fp = fopen(file, "wb");
 	if (fp == NULL) {
 		g_free(file);
 		alertpanel_error(_("Can't save certificate !"));
@@ -207,7 +207,7 @@ SSLCertificate *ssl_certificate_find (gchar *host, gushort port)
 			  fqdn_host, ".", buf, ".cert", NULL);
 
 	g_free(buf);
-	fp = fopen(file, "r");
+	fp = fopen(file, "rb");
 	if (fp == NULL) {
 		g_free(file);
 		g_free(fqdn_host);

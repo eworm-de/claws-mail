@@ -1057,21 +1057,24 @@ void folder_item_close(FolderItem *item)
 	GSList *mlist, *cur;
 	
 	g_return_if_fail(item != NULL);
-	
-	mlist = folder_item_get_msg_list(item);
-	
-	for (cur = mlist ; cur != NULL ; cur = cur->next) {
-		MsgInfo * msginfo;
 
-		msginfo = (MsgInfo *) cur->data;
-		if (MSG_IS_NEW(msginfo->flags))
-			procmsg_msginfo_unset_flags(msginfo, MSG_NEW, 0);
-		procmsg_msginfo_free(msginfo);
-	}
+	if (item->new) {
+		mlist = folder_item_get_msg_list(item);
+		for (cur = mlist ; cur != NULL ; cur = cur->next) {
+			MsgInfo * msginfo;
+
+			msginfo = (MsgInfo *) cur->data;
+			if (MSG_IS_NEW(msginfo->flags))
+				procmsg_msginfo_unset_flags(msginfo, MSG_NEW, 0);
+			procmsg_msginfo_free(msginfo);
+		}
+		g_slist_free(mlist);
+	}		
+
+	folder_item_write_cache(item);
 	
 	folder_update_item(item, FALSE);
 
-	g_slist_free(mlist);
 }
 
 gint folder_item_scan(FolderItem *item)
@@ -2101,16 +2104,17 @@ gint folder_item_remove_msgs(FolderItem *item, GSList *msglist)
 	gint ret = 0;
 
 	g_return_val_if_fail(item != NULL, -1);
-	
 	folder = item->folder;
+	g_return_val_if_fail(folder != NULL, -1);
+
+	if (!item->cache) folder_item_read_cache(item);
+
 	if (folder->remove_msgs) {
 		ret = folder->remove_msgs(folder, item, msglist);
 		if (ret == 0)
-			folder->scan(folder);
+			folder_item_scan(item);
 		return ret;
 	}
-
-	if (!item->cache) folder_item_read_cache(item);
 
 	while (msglist != NULL) {
 		MsgInfo *msginfo = (MsgInfo *)msglist->data;
@@ -2786,6 +2790,9 @@ void folder_item_apply_processing(FolderItem *item)
 	g_slist_free(mlist);
 }
 
+/*
+ *  Callback handling for FolderItem content changes
+ */
 GSList *folder_item_update_callbacks_list = NULL;
 gint	folder_item_update_callbacks_nextid = 0;
 
@@ -2850,12 +2857,10 @@ void folder_update_item(FolderItem *item, gboolean contentchange)
 	folder_item_update_callback_execute(item, contentchange);
 }
 
-static void folder_update_item_func(FolderItem *item, gpointer data)
+static void folder_update_item_func(FolderItem *item, gpointer contentchange)
 {
-	gboolean contentchange = GPOINTER_TO_INT(data);
-	
 	if (item->need_update) {
-		folder_item_update_callback_execute(item, contentchange);
+		folder_item_update_callback_execute(item, GPOINTER_TO_INT(contentchange));
 		item->need_update = FALSE;
 	}
 }

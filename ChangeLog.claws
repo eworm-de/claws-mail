@@ -1,3 +1,109 @@
+2002-11-14 [christoph]	0.8.5claws151
+
+	* src/folder.c
+		fix wrong position of NULL pointer check found
+		by Sergey
+
+2002-11-14 [christoph]	0.8.5claws150
+
+	* src/folder.c
+		fix segfault when deleting messages from IMAP folders
+		(closes bug [ 635641 ] Crash deleting mail in IMAP trash)
+
+2002-11-14 [colin]	0.8.5claws149
+
+	* src/compose.c
+		Forwarding was also ignoring the folder's default account.
+
+2002-11-14 [colin]	0.8.5claws148
+
+	* src/compose.c
+		Fix sent folder not set to folder properties when 
+		forwarding.
+
+2002-11-14 [thorsten]	0.8.5claws147
+
+	* src/inc.c
+		inc_start(): Files were not moved from .processing to inbox,
+		if no global processing rule existed
+
+2002-11-14 [colin]	0.8.5claws146
+
+	* src/ssl_certificate
+		Fix file operations
+
+2002-11-14 [paul]	0.8.5claws145
+
+	* po/it.po
+		updated by Alessandro Maestri
+
+2002-11-13 [alfons]	0.8.5claws144
+
+	* src/folder.c
+		folder_item_close(): only mark messages unread
+		when a folder has new messages 
+
+2002-11-13 [keith]	0.8.5claws143
+
+	* src/imap.c
+		Fix problem moving or copying between
+		IMAP folders
+
+2002-11-13 [colin]	0.8.5claws142
+
+	* src/matcher_parser_parse.y
+		Fix rule problem when " don't match
+
+2002-11-13 [christoph]	0.8.5claws141
+
+	* src/folder.c
+	* src/folderview.c
+		moved cache saving to folder_item_close
+		the folderview should not have to deal with
+		this things
+
+2002-11-13 [christoph]	0.8.5claws140
+
+	* src/summaryview.c
+		moved setting of important score to
+		summary_set_prefs_from_folderitem
+
+2002-11-13 [colin]	0.8.5claws139
+
+	* src/matcher_parser_parse.y
+		Fix a segfault in the parser (happening when
+		a good expression had been tested and a bad 
+		one arrives)
+
+2002-11-13 [paul]	0.8.5claws138
+
+	* sync with 0.8.5cvs24
+		see ChangeLog 2002-11-13
+		
+	* po/pt_BR.po
+		updated by Fabio Jr. Beneditto
+
+2002-11-13 [colin]	0.8.5claws137
+	
+	* src/msgcache.c
+	  src/defs.h
+	  src/procmsg.[ch]
+		Revert last commit, problem
+
+2002-11-13 [colin]	0.8.5claws136
+
+	* src/msgcache.c
+		Remove duplicated code
+	* src/defs.h
+		Bumped CACHE_VERSION and MARK_VERSION
+	* src/procmsg.[ch]
+		Network endian for cache and mark files
+
+2002-11-12 [colin]	0.8.5claws135
+
+	* src/inc.c
+		Fix the "socket error" dialog which disappeared
+
 2002-11-12 [colin] 	0.8.5claws134
 
 	* src/msgcache.c

@@ -996,6 +996,8 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	g_return_val_if_fail(msginfo != NULL, NULL);
 	g_return_val_if_fail(msginfo->folder != NULL, NULL);
 
+	if (msginfo->folder->prefs->enable_default_account)
+		account = account_find_from_id(msginfo->folder->prefs->default_account);
 	if (!account) 
 		account = msginfo->folder->folder->account;
 	if (!account && msginfo->to && prefs_common.forward_account_autosel) {
@@ -1104,6 +1106,16 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 
 	if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
+	
+	/*save folder*/
+	if (msginfo->folder && msginfo->folder->prefs && msginfo->folder->prefs->save_copy_to_folder) {
+		gchar *folderidentifier;
+
+    		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), TRUE);
+		folderidentifier = folder_item_get_identifier(msginfo->folder);
+		gtk_entry_set_text(GTK_ENTRY(compose->savemsg_entry), folderidentifier);
+		g_free(folderidentifier);
+	}
 
         return compose;
 }
