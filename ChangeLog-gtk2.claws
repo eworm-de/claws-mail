@@ -1,3 +1,9 @@
+2004-12-07 [torte]	0.9.13cvs2.2
+
+	* src/procmime.c
+		[Bug 650] reply button causes crash
+		Thanks to David Relson and Christoph
+
 2004-12-07 [colin]	0.9.13cvs2.1
 
 	* ChangeLog.claws

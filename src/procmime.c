@@ -856,26 +856,24 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 	g_snprintf(f_prefix, sizeof(f_prefix), "%08x.", id++);
 
 	if ((mimeinfo->type == MIMETYPE_TEXT) && !g_ascii_strcasecmp(mimeinfo->subtype, "html"))
-		base = "mimetmp.html";
+		base = g_strdup("mimetmp.html");
 	else {
 		const gchar *basetmp;
-		gchar *basename;
 
 		basetmp = procmime_mimeinfo_get_parameter(mimeinfo, "filename");
 		if (basetmp == NULL)
 			basetmp = procmime_mimeinfo_get_parameter(mimeinfo, "name");
 		if (basetmp == NULL)
 			basetmp = "mimetmp";
-		basename = g_path_get_basename(basetmp);
-		if (*basename == '\0') basename = g_strdup("mimetmp");
-		Xstrdup_a(base, basename, {g_free(basename); return NULL;});
+		base = g_path_get_basename(basetmp);
+		if (*base == '\0') base = g_strdup("mimetmp");
 		subst_for_shellsafe_filename(base);
-		g_free(basename);
 	}
 
 	filename = g_strconcat(get_mime_tmp_dir(), G_DIR_SEPARATOR_S,
 			       f_prefix, base, NULL);
 
+	g_free(base);
 	return filename;
 }
 
