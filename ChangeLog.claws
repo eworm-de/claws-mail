@@ -1,3 +1,10 @@
+2005-03-25 [paul]
+
+	* tools/Makefile.am
+	* tools/README
+	* tools/acroread2sylpheed.pl
+		add script to send pdfs as attachments from Adobe Reader 7
+
 2005-03-21 [holger]	1.0.3cvs7
 
 	* src/plugins/spamassassin/spamassassin.c

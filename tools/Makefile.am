@@ -1,5 +1,6 @@
 EXTRA_TOOLS = \
 	OOo2sylpheed.pl \
+	acroread2sylpheed.pl \
 	calypso_convert.pl \
 	convert_mbox.pl \
 	eud2gc.py \
