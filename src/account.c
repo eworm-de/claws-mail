@@ -1171,7 +1171,6 @@ PrefsAccount *account_get_reply_account(MsgInfo *msginfo, gboolean reply_autosel
 		gchar * field = NULL;
 		int fieldno = 0;
 		for (field = msginfo->to; fieldno++ < 2; field = msginfo->cc) {
-			printf("search %s (%d)\n", field, fieldno);
 			if (!account && field) {
 				gchar *to = NULL;
 				printf("finding from %s\n", field);
