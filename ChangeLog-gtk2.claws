@@ -1,3 +1,37 @@
+2004-11-12 [paul]	0.9.12cvs146.1
+
+	* ChangeLog
+	* ChangeLog.claws
+	* ChangeLog.jp
+	* NEWS
+	* configure.ac
+	* src/account.c
+	* src/folderview.c
+	* src/folderview.h
+	* src/imap.c
+	* src/imap_gtk.c
+	* src/inc.c
+	* src/mainwindow.c
+	* src/mh_gtk.c
+	* src/news_gtk.c
+	* src/pop.c
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/prefs_ext_prog.c
+	* src/procmime.c
+	* src/procmime.h
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/summary_search.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/common/defs.h
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/gtk/menu.c
+	* src/gtk/menu.h
+		sync with HEAD
+
 2004-11-11 [colin]	0.9.12cvs144.2
 
 	* src/textview.c

@@ -203,6 +203,17 @@ gint menu_find_option_menu_index(GtkOptionMenu *optmenu, gpointer data,
 	return -1;
 }
 
+gpointer menu_get_option_menu_active_user_data(GtkOptionMenu *optmenu)
+{
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+
+	menu = gtk_option_menu_get_menu(optmenu);
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+
+	return g_object_get_data(G_OBJECT(menuitem), MENU_VAL_ID);
+}
+
 /* call backs for accelerator changes on selected menu items */
 static void menu_item_add_accel( GtkWidget *widget, guint accel_signal_id, GtkAccelGroup *accel_group,
 				 guint accel_key, GdkModifierType accel_mods, GtkAccelFlags accel_flags,

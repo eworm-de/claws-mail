@@ -138,8 +138,8 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 			       "gnome-moz-remote --newwin '%s'",
 			       "kfmclient openURL '%s'",
 			       "opera -newwindow '%s'",
-			       "kterm -e w3m '%s'",
-			       "kterm -e lynx '%s'",
+			       "rxvt -e w3m '%s'",
+			       "rxvt -e lynx '%s'",
 			       NULL);
 	uri_entry = GTK_COMBO (uri_combo)->entry;
 	gtk_entry_set_text(GTK_ENTRY(uri_entry), prefs_common.uri_cmd ? prefs_common.uri_cmd : "");

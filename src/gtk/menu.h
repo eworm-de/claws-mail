@@ -84,6 +84,8 @@ gint menu_find_option_menu_index(GtkOptionMenu		*optmenu,
 				 gpointer		 data,
 				 GCompareFunc		 func);
 
+gpointer menu_get_option_menu_active_user_data
+				(GtkOptionMenu		*optmenu);
 void menu_connect_identical_items(void);
 
 void menu_select_by_data	(GtkMenu 		*menu,

@@ -600,24 +600,31 @@ void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
 	}
 }
 
-void procmsg_empty_trash(void)
+void procmsg_empty_trash(FolderItem *trash)
+{
+	FILE *fp;
+
+	if (trash && trash->total_msgs > 0) {
+		GSList *mlist = folder_item_get_msg_list(trash);
+		GSList *cur;
+		for (cur = mlist ; cur != NULL ; cur = cur->next) {
+			MsgInfo * msginfo = (MsgInfo *) cur->data;
+			partial_mark_for_delete(msginfo);
+			procmsg_msginfo_free(msginfo);
+		}
+
+		folder_item_remove_all_msg(trash);
+	}
+}
+
+void procmsg_empty_all_trash(void)
 {
 	FolderItem *trash;
 	GList *cur;
 
 	for (cur = folder_get_list(); cur != NULL; cur = cur->next) {
 		trash = FOLDER(cur->data)->trash;
-		if (trash && trash->total_msgs > 0) {
-			GSList *mlist = folder_item_get_msg_list(trash);
-			GSList *cur;
-			for (cur = mlist ; cur != NULL ; cur = cur->next) {
-				MsgInfo * msginfo = (MsgInfo *) cur->data;
-				partial_mark_for_delete(msginfo);
-				procmsg_msginfo_free(msginfo);
-			}
-
-			folder_item_remove_all_msg(trash);
-		}
+		procmsg_empty_trash(trash);
 	}
 }
 

@@ -268,7 +268,7 @@ static void update_tree_cb(FolderView *folderview, guint action,
 {
 	FolderItem *item;
 
-	item = folderview_get_selected(folderview);
+	item = folderview_get_selected_item(folderview);
 	g_return_if_fail(item != NULL);
 
 	summary_show(folderview->summaryview, NULL);

@@ -144,6 +144,26 @@ void ptr_array_free_strings(GPtrArray *array)
 	}
 }
 
+gboolean str_find(const gchar *haystack, const gchar *needle)
+{
+	return strstr(haystack, needle) != NULL ? TRUE : FALSE;
+}
+
+gboolean str_case_find(const gchar *haystack, const gchar *needle)
+{
+	return strcasestr(haystack, needle) != NULL ? TRUE : FALSE;
+}
+
+gboolean str_find_equal(const gchar *haystack, const gchar *needle)
+{
+	return strcmp(haystack, needle) == 0;
+}
+
+gboolean str_case_find_equal(const gchar *haystack, const gchar *needle)
+{
+	return strcasecmp(haystack, needle) == 0;
+}
+
 gint to_number(const gchar *nstr)
 {
 	register const guchar *p;
@@ -2900,6 +2920,8 @@ FILE *my_tmpfile(void)
 	tmpdir = get_tmp_dir();
 	tmplen = strlen(tmpdir);
 	progname = g_get_prgname();
+	if (progname == NULL)
+		progname = "sylpheed-claws";
 	proglen = strlen(progname);
 	Xalloca(fname, tmplen + 1 + proglen + sizeof(suffix),
 		return tmpfile());

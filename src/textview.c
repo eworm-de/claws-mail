@@ -1781,14 +1781,18 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		if (summaryview)
 			summary_pass_key_press_event(summaryview, event);
 		else
-			textview_scroll_page(textview, FALSE);
+			textview_scroll_page
+				(textview,
+				 (event->state &
+				  (GDK_SHIFT_MASK|GDK_MOD1_MASK)) != 0);
 		break;
 	case GDK_BackSpace:
 		textview_scroll_page(textview, TRUE);
 		break;
 	case GDK_Return:
-		textview_scroll_one_line(textview,
-					 (event->state & GDK_MOD1_MASK) != 0);
+		textview_scroll_one_line
+			(textview, (event->state &
+				    (GDK_SHIFT_MASK|GDK_MOD1_MASK)) != 0);
 		break;
 	case GDK_Delete:
 		if (summaryview)

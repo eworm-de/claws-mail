@@ -207,7 +207,7 @@ static gint pop3_getrange_last_recv(Pop3Session *session, const gchar *msg)
 	gint last;
 
 	if (sscanf(msg, "%d", &last) == 0) {
-		log_error(_("POP3 protocol error\n"));
+		log_warning(_("POP3 protocol error\n"));
 		session->error_val = PS_PROTOCOL;
 		return -1;
 	} else {
@@ -271,6 +271,7 @@ static gint pop3_getrange_uidl_recv(Pop3Session *session, const gchar *data,
 			session->msg[num].received = 
 				(partial_recv != POP3_MUST_COMPLETE_RECV);
 			session->msg[num].partial_recv = partial_recv;
+
 		}
 		if (!session->new_msg_exist &&
 		    (session->ac_prefs->getall || recv_time == RECV_TIME_NONE ||
@@ -872,7 +873,7 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 			pop3_stls_send(pop3_session);
 		else
 #endif
-		if (pop3_session->ac_prefs->protocol == A_APOP)
+		if (pop3_session->ac_prefs->use_apop_auth)
 			pop3_getauth_apop_send(pop3_session);
 		else
 			pop3_getauth_user_send(pop3_session);
@@ -881,7 +882,7 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 	case POP3_STLS:
 		if (pop3_stls_recv(pop3_session) != PS_SUCCESS)
 			return -1;
-		if (pop3_session->ac_prefs->protocol == A_APOP)
+		if (pop3_session->ac_prefs->use_apop_auth)
 			pop3_getauth_apop_send(pop3_session);
 		else
 			pop3_getauth_user_send(pop3_session);

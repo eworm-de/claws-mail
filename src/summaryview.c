@@ -4373,6 +4373,7 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	MessageView *messageview;
 	TextView *textview;
 	GtkAdjustment *adj;
+	gboolean mod_pressed;
 
 	if (summary_is_locked(summaryview)) return TRUE;
 	if (!event) return TRUE;
@@ -4457,9 +4458,16 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 						    summaryview->selected);
 				break;
 			}
-			if (!textview_scroll_page(textview, FALSE))
-				summary_select_next_unread(summaryview);
-		}				
+			mod_pressed = ((event->state & 
+					(GDK_SHIFT_MASK|GDK_MOD1_MASK)) != 0);
+			if (mod_pressed) {
+				if (!textview_scroll_page(textview, TRUE))
+					summary_select_prev_unread(summaryview);
+			} else {
+				if (!textview_scroll_page(textview, FALSE))
+					summary_select_next_unread(summaryview);
+			}				
+		}
 		break;
 	case GDK_BackSpace:	/* Page up */
 		textview_scroll_page(textview, TRUE);
@@ -4471,7 +4479,8 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 			break;
 		}
 		textview_scroll_one_line
-			(textview, (event->state & GDK_MOD1_MASK) != 0);
+			(textview, (event->state &
+				    (GDK_SHIFT_MASK|GDK_MOD1_MASK)) != 0);
 		break;
 	case GDK_Delete:
 		BREAK_ON_MODIFIER_KEY();

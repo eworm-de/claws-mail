@@ -738,28 +738,24 @@ FILE *procmime_get_first_text_content(MsgInfo *msginfo)
 }
 
 gboolean procmime_find_string_part(MimeInfo *mimeinfo, const gchar *filename,
-				   const gchar *str, gboolean case_sens)
+				   const gchar *str, StrFindFunc find_func)
 {
 	FILE *outfp;
 	gchar buf[BUFFSIZE];
-	gchar *(* StrFindFunc) (const gchar *haystack, const gchar *needle);
 
 	g_return_val_if_fail(mimeinfo != NULL, FALSE);
 	g_return_val_if_fail(mimeinfo->type == MIMETYPE_TEXT, FALSE);
 	g_return_val_if_fail(str != NULL, FALSE);
+	g_return_val_if_fail(find_func != NULL, FALSE);
 
 	outfp = procmime_get_text_content(mimeinfo);
 
 	if (!outfp)
 		return FALSE;
 
-	if (case_sens)
-		StrFindFunc = strstr;
-	else
-		StrFindFunc = strcasestr;
-
 	while (fgets(buf, sizeof(buf), outfp) != NULL) {
-		if (StrFindFunc(buf, str) != NULL) {
+		strretchomp(buf);
+		if (find_func(buf, str)) {
 			fclose(outfp);
 			return TRUE;
 		}
@@ -771,7 +767,7 @@ gboolean procmime_find_string_part(MimeInfo *mimeinfo, const gchar *filename,
 }
 
 gboolean procmime_find_string(MsgInfo *msginfo, const gchar *str,
-			      gboolean case_sens)
+			      StrFindFunc find_func)
 {
 	MimeInfo *mimeinfo;
 	MimeInfo *partinfo;
@@ -780,6 +776,7 @@ gboolean procmime_find_string(MsgInfo *msginfo, const gchar *str,
 
 	g_return_val_if_fail(msginfo != NULL, FALSE);
 	g_return_val_if_fail(str != NULL, FALSE);
+	g_return_val_if_fail(find_func != NULL, FALSE);
 
 	filename = procmsg_get_message_file(msginfo);
 	if (!filename) return FALSE;
@@ -789,7 +786,7 @@ gboolean procmime_find_string(MsgInfo *msginfo, const gchar *str,
 	     partinfo = procmime_mimeinfo_next(partinfo)) {
 		if (partinfo->type == MIMETYPE_TEXT) {
 			if (procmime_find_string_part
-				(partinfo, filename, str, case_sens) == TRUE) {
+				(partinfo, filename, str, find_func) == TRUE) {
 				found = TRUE;
 				break;
 			}

@@ -1,3 +1,45 @@
+2004-11-12 [paul]	0.9.12cvs146
+
+	* src/prefs_account.c
+	* src/procmime.c
+	* src/procmime.h
+		fix sync breakage 
+
+2004-11-12 [paul]
+
+	* src/pixmaps/complete.xpm
+	* src/pixmaps/continue.xpm
+		small sync with main, see ChangeLog 2004-11-11
+
+2004-11-11 [paul]	0.9.12cvs145
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/account.c
+	* src/folderview.c
+	* src/folderview.h
+	* src/imap.c
+	* src/imap_gtk.c
+	* src/inc.c
+	* src/mainwindow.c
+	* src/mh_gtk.c
+	* src/news_gtk.c
+	* src/pop.c
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/prefs_ext_prog.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/summary_search.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/common/defs.h
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/gtk/menu.c
+	* src/gtk/menu.h
+		sync with main 1.0.0beta2 (plus 4)
+
 2004-11-09 [christoph]	0.9.12cvs144
 
 	* src/compose.c

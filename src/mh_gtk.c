@@ -156,7 +156,7 @@ static void delete_folder_cb(FolderView *folderview, guint action,
 	gchar *old_path;
 	gchar *old_id;
 
-	item = folderview_get_selected(folderview);
+	item = folderview_get_selected_item(folderview);
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->path != NULL);
 	g_return_if_fail(item->folder != NULL);
@@ -207,7 +207,7 @@ static void rename_folder_cb(FolderView *folderview, guint action,
 	gchar *old_id;
 	gchar *new_id;
 
-	item = folderview_get_selected(folderview);
+	item = folderview_get_selected_item(folderview);
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->path != NULL);
 	g_return_if_fail(item->folder != NULL);
@@ -261,7 +261,7 @@ static void move_folder_cb(FolderView *folderview, guint action, GtkWidget *widg
 {
 	FolderItem *from_folder = NULL, *to_folder = NULL;
 
-	from_folder = folderview_get_selected(folderview);
+	from_folder = folderview_get_selected_item(folderview);
 	if (!from_folder || from_folder->folder->klass != mh_get_class())
 		return;
 
@@ -277,7 +277,7 @@ static void update_tree_cb(FolderView *folderview, guint action,
 {
 	FolderItem *item;
 
-	item = folderview_get_selected(folderview);
+	item = folderview_get_selected_item(folderview);
 	g_return_if_fail(item != NULL);
 
 	summary_show(folderview->summaryview, NULL);
@@ -298,7 +298,7 @@ static void remove_mailbox_cb(FolderView *folderview, guint action,
 	gchar *message;
 	AlertValue avalue;
 
-	item = folderview_get_selected(folderview);
+	item = folderview_get_selected_item(folderview);
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 	if (folder_item_parent(item)) return;
