@@ -90,7 +90,7 @@ typedef enum
 	MSG_CACHED	= 1 << 31
 } MsgTmpFlags;
 
-#define MSG_CACHED_FLAG_MASK	(MSG_MIME)
+#define MSG_CACHED_FLAG_MASK	(MSG_MIME | MSG_ENCRYPTED)
 
 #define MSG_SET_FLAGS(msg, flags)	{ (msg) |= (flags); }
 #define MSG_UNSET_FLAGS(msg, flags)	{ (msg) &= ~(flags); }

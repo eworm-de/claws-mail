@@ -958,7 +958,7 @@ static MsgInfo *mh_parse_msg(const gchar *file, FolderItem *item)
 		MSG_SET_TMP_FLAGS(flags, MSG_DRAFT);
 	}
 
-	msginfo = procheader_parse(file, flags, FALSE);
+	msginfo = procheader_parse(file, flags, FALSE, FALSE);
 	if (!msginfo) return NULL;
 
 	msginfo->msgnum = atoi(file);

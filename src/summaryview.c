@@ -100,7 +100,7 @@
 #define SUMMARY_COL_MARK_WIDTH		10
 #define SUMMARY_COL_UNREAD_WIDTH	13
 #define SUMMARY_COL_LOCKED_WIDTH	13
-#define SUMMARY_COL_MIME_WIDTH		10
+#define SUMMARY_COL_MIME_WIDTH		11
 
 static GdkFont *boldfont;
 static GdkFont *smallfont;
@@ -132,6 +132,10 @@ static GdkBitmap *lockedxpmmask;
 
 static GdkPixmap *clipxpm;
 static GdkBitmap *clipxpmmask;
+static GdkPixmap *keyxpm;
+static GdkBitmap *keyxpmmask;
+static GdkPixmap *clipkeyxpm;
+static GdkBitmap *clipkeyxpmmask;
 
 static void summary_free_msginfo_func	(GtkCTree		*ctree,
 					 GtkCTreeNode		*node,
@@ -544,6 +548,10 @@ void summary_init(SummaryView *summaryview)
 			 &lockedxpm, &lockedxpmmask);
 	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_IGNORETHREAD,
 			 &ignorethreadxpm, &ignorethreadxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_CLIP_KEY,
+			 &clipkeyxpm, &clipkeyxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_KEY,
+			 &keyxpm, &keyxpmmask);
 
 	if (!small_style) {
 		small_style = gtk_style_copy
@@ -2262,6 +2270,7 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
+	MsgFlags flags;
 	gchar *filename;
 
 	if (!new_window && summaryview->displayed == row) return;
@@ -2296,6 +2305,8 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 		summary_status_show(summaryview);
 	}
 
+	flags = msginfo->flags;
+
 	if (new_window) {
 		MessageView *msgview;
 
@@ -2318,7 +2329,8 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 		gtkut_ctree_node_move_if_on_the_edge(ctree, row);
 	}
 
-	if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
+	if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags) ||
+	    (MSG_IS_MIME(msginfo->flags) - MSG_IS_MIME(flags) != 0)) {
 		MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
 		CHANGE_FLAGS(msginfo);
 		summary_set_row_marks(summaryview, row);
@@ -2575,7 +2587,13 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_LOCKED], NULL);
 	}
 
-	if (MSG_IS_MIME(flags)) {
+	if (MSG_IS_MIME(flags) && MSG_IS_ENCRYPTED(flags)) {
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
+					  clipkeyxpm, clipkeyxpmmask);
+	} else if (MSG_IS_ENCRYPTED(flags)) {
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
+					  keyxpm, keyxpmmask);
+	} else if (MSG_IS_MIME(flags)) {
 		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
 					  clipxpm, clipxpmmask);
 	} else {

@@ -30,6 +30,7 @@
 #include "pixmaps/checkbox_off.xpm"
 #include "pixmaps/checkbox_on.xpm"
 #include "pixmaps/clip.xpm"
+#include "pixmaps/clipkey.xpm"
 #include "pixmaps/complete.xpm"
 #include "pixmaps/continue.xpm"
 #include "pixmaps/deleted.xpm"
@@ -41,6 +42,7 @@
 #include "pixmaps/inbox.xpm"
 #include "pixmaps/interface.xpm"
 #include "pixmaps/jpilot.xpm"
+#include "pixmaps/key.xpm"
 #include "pixmaps/ldap.xpm"
 #include "pixmaps/linewrap.xpm"
 #include "pixmaps/mark.xpm"
@@ -90,6 +92,7 @@ static StockPixmapData pixmaps[] =
 	{checkbox_off_xpm		, NULL, NULL},
 	{checkbox_on_xpm		, NULL, NULL},
 	{clip_xpm			, NULL, NULL},
+	{clipkey_xpm			, NULL, NULL},
 	{complete_xpm			, NULL, NULL},
 	{continue_xpm			, NULL, NULL},
 	{deleted_xpm			, NULL, NULL},
@@ -101,6 +104,7 @@ static StockPixmapData pixmaps[] =
 	{inbox_xpm			, NULL, NULL},
 	{interface_xpm			, NULL, NULL},
 	{jpilot_xpm			, NULL, NULL},
+	{key_xpm			, NULL, NULL},
 	{ldap_xpm			, NULL, NULL},
 	{linewrap_xpm			, NULL, NULL},
 	{mark_xpm			, NULL, NULL},

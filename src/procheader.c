@@ -437,7 +437,8 @@ enum
 	H_RETURN_RECEIPT_TO = 16
 };
 
-MsgInfo *procheader_parse(const gchar *file, MsgFlags flags, gboolean full)
+MsgInfo *procheader_parse(const gchar *file, MsgFlags flags,
+			  gboolean full, gboolean decrypted)
 {
 	FILE *fp;
 	MsgInfo *msginfo;
@@ -447,7 +448,7 @@ MsgInfo *procheader_parse(const gchar *file, MsgFlags flags, gboolean full)
 		return NULL;
 	}
 
-	msginfo = procheader_file_parse(fp, flags, full);
+	msginfo = procheader_file_parse(fp, flags, full, decrypted);
 
 	fclose(fp);
 
@@ -462,7 +463,7 @@ MsgInfo *procheader_parse(const gchar *file, MsgFlags flags, gboolean full)
 #define ALLOW_HEADER_HINT
 
 MsgInfo *procheader_file_parse(FILE * fp, MsgFlags flags,
-			       gboolean full)
+			       gboolean full, gboolean decrypted)
 {
 	static HeaderEntry hentry_full[] = {{"Date:",		NULL, FALSE},
 					   {"From:",		NULL, TRUE},
@@ -521,6 +522,9 @@ MsgInfo *procheader_file_parse(FILE * fp, MsgFlags flags,
 	else 
 		MSG_SET_PERM_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
 	
+	if (decrypted)
+		MSG_UNSET_TMP_FLAGS(msginfo->flags, MSG_MIME);
+
 	msginfo->inreplyto = NULL;
 
 	while ((hnum = procheader_get_one_field(buf, sizeof(buf), fp, hentry))
@@ -598,7 +602,18 @@ MsgInfo *procheader_file_parse(FILE * fp, MsgFlags flags,
 			}
 			break;
 		case H_CONTENT_TYPE:
-			if (!strncasecmp(hp, "multipart", 9))
+			if (decrypted) {
+				if (!strncasecmp(hp, "multipart", 9) &&
+				    strncasecmp(hp, "multipart/signed", 16)) {
+					MSG_SET_TMP_FLAGS(msginfo->flags,
+							  MSG_MIME);
+				}
+			}
+			else if (!strncasecmp(hp, "multipart/encrypted", 19)) {
+				MSG_SET_TMP_FLAGS(msginfo->flags,
+						  MSG_ENCRYPTED);
+			}
+			else if (!strncasecmp(hp, "multipart", 9))
 				MSG_SET_TMP_FLAGS(msginfo->flags, MSG_MIME);
 			break;
 #ifdef ALLOW_HEADER_HINT			

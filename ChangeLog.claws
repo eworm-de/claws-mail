@@ -1,3 +1,20 @@
+2001-12-27 [darko]	0.6.6claws26
+
+	* src/filtering.c
+	* src/mbox_folder.c
+	* src/messageview.c
+	* src/mh.c
+	* src/procheader.[ch]
+	* src/procmsg.h
+	* src/stock_pixmap.[ch]
+	* src/summaryview.c
+		Show key icon for encrypted mails in summary view
+
+	* src/pixmaps/clip.xpm
+	* src/pixmaps/clipkey.xpm
+	* src/pixmaps/key.xpm
+		New/modified icons for the above
+
 2001-12-27 [melvin]	0.6.6claws25
 
 	* src/prefs_common.c
