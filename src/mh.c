@@ -69,7 +69,6 @@ GSList *mh_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 	g_return_val_if_fail(item != NULL, NULL);
 
 	path = folder_item_get_path(item);
-
 	if (stat(path, &s) < 0) {
 		FILE_OP_ERROR(path, "stat");
 	} else {
@@ -121,7 +120,6 @@ gchar *mh_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	g_return_val_if_fail(num > 0 && num <= item->last_num, NULL);
 
 	path = folder_item_get_path(item);
-
 	file = g_strconcat(path, G_DIR_SEPARATOR_S, itos(num), NULL);
 	g_free(path);
 	if (!is_file_exist(file)) {

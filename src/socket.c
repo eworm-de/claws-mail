@@ -490,6 +490,7 @@ gint sock_close(SockInfo *sock)
 	ret = fd_close(sock->sock); 
 	g_free(sock->hostname);
 	g_free(sock);
+
 	return ret;
 }
 

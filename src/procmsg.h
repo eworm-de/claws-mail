@@ -111,11 +111,11 @@ struct _MsgInfo
 	gchar *date;
 	gchar *from;
 	gchar *to;
+	gchar *cc;
 	gchar *newsgroups;
 	gchar *subject;
 	gchar *msgid;
 	gchar *inreplyto;
-	gchar *cc;
 
 	FolderItem *folder;
 	FolderItem *to_folder;

@@ -178,8 +178,6 @@ int main(int argc, char *argv[])
 	prog_version = PROG_VERSION;
 	startup_dir = g_get_current_dir();
 
-	/*	parse_cmd_opt(argc, argv); */
-
 	CHDIR_RETURN_VAL_IF_FAIL(get_home_dir(), 1);
 
 	/* check and create unix domain socket */
@@ -301,7 +299,8 @@ static void parse_cmd_opt(int argc, char *argv[])
 			puts("Sylpheed version " VERSION);
 			exit(0);
 		} else if (!strncmp(argv[i], "--help", 6)) {
-			g_print(_("Usage: %s [OPTION]...\n"), g_get_prgname());
+			g_print(_("Usage: %s [OPTION]...\n"),
+				g_basename(argv[0]));
 
 			puts(_("  --compose [address]    open composition window"));
 			puts(_("  --receive              receive new messages"));
@@ -474,4 +473,3 @@ static void open_compose_new_with_recipient(const gchar *address)
 	else
 		compose_new(NULL);
 }
-

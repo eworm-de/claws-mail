@@ -331,7 +331,7 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 
 	if (headers) {
 		textview_show_header(textview, headers);
-		procheader_header_array_destroy(headers);		
+		procheader_header_array_destroy(headers);
 	}
 
 	tmpfp = procmime_decode_content(NULL, fp, mimeinfo);
@@ -618,7 +618,7 @@ static gchar *make_email_string(const gchar *bp, const gchar *ep)
 
 /* textview_make_clickable_parts() - colorizes clickable parts */
 static void textview_make_clickable_parts(TextView *textview,
-					  GdkFont  *font,
+					  GdkFont *font,
 					  GdkColor *fg_color,
 					  GdkColor *uri_color,
 					  const gchar *linebuf)
@@ -707,7 +707,7 @@ static void textview_make_clickable_parts(TextView *textview,
 						normal_text,
 						last->bp - normal_text);
 			uri->uri = parser[last->pti].build_uri(last->bp, 
-						last->ep);
+							       last->ep);
 			uri->start = gtk_text_get_point(text);
 			gtk_text_insert(text, font, uri_color,
 					NULL, last->bp, last->ep - last->bp);
@@ -970,6 +970,7 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 	}
 
 	g_ptr_array_free(headers, TRUE);
+
 	return sorted_headers;
 }
 
@@ -1197,8 +1198,6 @@ static void textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 {
 	SummaryView *summaryview = NULL;
 
-	widget = widget;
-
 	if (!event) return;
 	if (textview->messageview->mainwin)
 		summaryview = textview->messageview->mainwin->summaryview;
@@ -1240,11 +1239,9 @@ static void textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 static void textview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 				    TextView *textview)
 {
-	widget = widget;
 	if (event &&
-	    ((event->button == 1 && event->type == GDK_2BUTTON_PRESS) 
-		|| event->button == 2
-		|| event->button == 3)) {
+	    ((event->button == 1 && event->type == GDK_2BUTTON_PRESS)
+	     || event->button == 2 || event->button == 3)) {
 		GSList *cur;
 		guint current_pos;
 
@@ -1267,16 +1264,15 @@ static void textview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 						addressbook_add_contact_by_menu(NULL, fromname, fromaddress, NULL);
 						g_free(fromaddress);
 						g_free(fromname);
-					}
-					else {
+					} else {
 						compose_new_with_recipient
 							(NULL, uri->uri + 7);
-					}		
-				}						
-				else
+					}
+				} else {
 					open_uri(uri->uri,
 						 prefs_common.uri_cmd);
-			}				
+				}
+			}
 		}
 	}
 }

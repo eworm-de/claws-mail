@@ -21,7 +21,6 @@
 
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtkbindings.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkpixmap.h>
@@ -351,7 +350,6 @@ SummaryView *summary_create(void)
 	GtkWidget *toggle_arrow;
 	GtkWidget *popupmenu;
 	GtkItemFactory *popupfactory;
-	GtkBindingSet *binding_set;
 	gint n_entries;
 	gint i;
 
@@ -492,20 +490,6 @@ SummaryView *summary_create(void)
 	popupmenu = menu_create_items(summary_popup_entries, n_entries,
 				      "<SummaryView>", &popupfactory,
 				      summaryview);
-
-	/* bind keys */
-	binding_set = gtk_binding_set_by_class
-		(GTK_CLIST_CLASS(GTK_OBJECT(ctree)->klass));
-
-	gtk_binding_entry_add_signal(binding_set, GDK_n, GDK_CONTROL_MASK,
-				     "scroll_vertical", 2,
-				     GTK_TYPE_ENUM, GTK_SCROLL_STEP_FORWARD,
-				     GTK_TYPE_FLOAT, 0.0);
-	gtk_binding_entry_add_signal(binding_set, GDK_p, GDK_CONTROL_MASK,
-				     "scroll_vertical", 2,
-				     GTK_TYPE_ENUM, GTK_SCROLL_STEP_BACKWARD,
-				     GTK_TYPE_FLOAT, 0.0);
-	gtk_binding_entry_clear(binding_set, GDK_space, 0);
 
 	/* connect signals */
 	gtk_signal_connect(GTK_OBJECT(ctree), "tree_select_row",

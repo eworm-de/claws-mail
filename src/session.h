@@ -21,6 +21,7 @@
 #define __SESSION_H__
 
 #include <glib.h>
+
 #include "socket.h"
 
 typedef struct _Session	Session;

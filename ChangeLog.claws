@@ -1,3 +1,18 @@
+2001-05-23 [hiroyuki]
+
+	* src/headerwindow.c
+	  src/inc.c
+	  src/main.c
+	  src/mh.c
+	  src/nntp.c
+	  src/procmsg.h
+	  src/session.h
+	  src/socket.[ch]
+	  src/summaryview.c
+	  src/textview.c
+	  src/automaton.c
+	  src/folderview.c: more sync with 0.4.99cvs2.
+
 2001-05-22 [paul]
 
         0.4.99claws2

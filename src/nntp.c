@@ -301,7 +301,7 @@ static void nntp_gen_send(NNTPSockInfo *sock, const gchar *format, ...)
 
 	if (verbose) {
 		if (!g_strncasecmp(buf, "AUTHINFO PASS", 13))
-			log_print("NNTP> AUTHINFO PASS ***\n");
+			log_print("NNTP> AUTHINFO PASS ********\n");
 		else
 			log_print("NNTP> %s\n", buf);
 	}

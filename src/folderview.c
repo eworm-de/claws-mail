@@ -327,7 +327,7 @@ FolderView *folderview_create(void)
 				 GTK_SIGNAL_FUNC(folderview_tree_collapsed),
 				 folderview);
 
-        gtk_signal_connect(GTK_OBJECT(ctree), "resize_column",
+	gtk_signal_connect(GTK_OBJECT(ctree), "resize_column",
 			   GTK_SIGNAL_FUNC(folderview_col_resized),
 			   folderview);
 
@@ -695,11 +695,11 @@ static gboolean folderview_have_unread_children(FolderView *folderview,
 	return FALSE;
 }
 
-
 static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	GtkStyle *style, *prev_style, *ctree_style;
+	GtkCTreeNode *parent;
 	FolderItem *item;
 	GdkPixmap *xpm, *openxpm;
 	GdkBitmap *mask, *openmask;
@@ -841,13 +841,10 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 
 	gtk_ctree_node_set_row_style(ctree, node, style);
 
-	if (use_bold) {
-		GtkCTreeNode *parent;
-
-		parent = gtkut_ctree_find_collapsed_parent(ctree, node);
-		if (parent)
-			folderview_update_node(folderview, parent);
-	}
+	parent = node;
+	while ((parent = gtkut_ctree_find_collapsed_parent(ctree, parent))
+	       != NULL)
+		folderview_update_node(folderview, parent);
 }
 
 void folderview_update_item(FolderItem *item, gboolean update_summary)

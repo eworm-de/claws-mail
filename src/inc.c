@@ -143,7 +143,7 @@ void inc_mail(MainWindow *mainwin)
 		/* external incorporating program */
 		if ((pid = fork()) < 0) {
 			perror("fork");
-			inc_autocheck_timer_set();			
+			inc_autocheck_timer_set();
 			return;
 		}
 
@@ -170,7 +170,7 @@ void inc_mail(MainWindow *mainwin)
 	}
 
 	inc_finished(mainwin);
-	inc_autocheck_timer_set();	
+	inc_autocheck_timer_set();
 }
 
 static void inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
@@ -209,7 +209,7 @@ void inc_all_account_mail(MainWindow *mainwin)
 	if (!list) {
 		inc_autocheck_timer_set();
 		return;
-	}		
+	}
 
 	for (; list != NULL; list = list->next) {
 		IncSession *session;
@@ -225,7 +225,7 @@ void inc_all_account_mail(MainWindow *mainwin)
 	if (!queue_list) {
 		inc_autocheck_timer_set();
 		return;
-	}	
+	}
 
 	inc_dialog = inc_progress_dialog_create();
 	inc_dialog->queue_list = queue_list;
@@ -721,7 +721,7 @@ void inc_progress_update(Pop3State *state, Pop3Phase phase)
 	case POP3_GETAUTH_PASS_RECV:
 	case POP3_GETAUTH_APOP_SEND:
 	case POP3_GETAUTH_APOP_RECV:
-		progress_dialog_set_label(dialog, _("Authorizing..."));		
+		progress_dialog_set_label(dialog, _("Authorizing..."));
 		break;
 	case POP3_GETRANGE_STAT_SEND:
 	case POP3_GETRANGE_STAT_RECV:
@@ -785,7 +785,6 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 		return -1;
 	}
 
-
 	if (prefs_filtering == NULL) {
 		/* old filtering */
 		if (state->ac_prefs->filter_on_recv) {
@@ -798,8 +797,7 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 			}
 		} else
 			dropfolder = inbox;
-	}
-	else {
+	} else {
 		/* new filtering */
 		dropfolder = inbox;
 	}
