@@ -1,3 +1,8 @@
+2003-08-10 [alfons]	0.9.4claws17
+
+	* src/summaryview.c
+		make `Select All' sensitive too
+
 2003-08-10 [christoph]	0.9.4claws16
 
 	* src/imap.c

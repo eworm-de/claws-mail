@@ -1338,6 +1338,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 		{"/Print..."			, M_TARGET_EXIST|M_UNLOCKED},
 
 		{"/Select thread"		, M_SINGLE_TARGET_EXIST},
+		{"/Select all"			, M_TARGET_EXIST},
 
 		{NULL, 0}
 	};
