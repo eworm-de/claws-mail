@@ -225,7 +225,7 @@ static void imp_ldif_modify_pressed( GtkWidget *widget, gpointer data ) {
 	rec = gtk_clist_get_row_data( clist, impldif_dlg.rowIndSelect );
 
 	g_free( rec->userName );
-	rec->userName = g_strdup( gtk_editable_get_chars( GTK_EDITABLE(impldif_dlg.name_attrib), 0, -1 ) );
+	rec->userName = gtk_editable_get_chars( GTK_EDITABLE(impldif_dlg.name_attrib), 0, -1 );
 	rec->selected = gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( impldif_dlg.check_select) );
 	imp_ldif_update_row( clist );
 	gtk_clist_select_row( clist, row, 0 );
@@ -328,10 +328,13 @@ static gboolean imp_ldif_file_move() {
 static void imp_ldif_finish_show() {
 	gchar *recs;
 	gchar *sMsg;
+	gchar *name;
 
 	recs = g_strdup_printf( "%d", _ldifFile_->importCount );
-	gtk_label_set_text( GTK_LABEL(impldif_dlg.labelBook),
-		gtk_editable_get_chars( GTK_EDITABLE(impldif_dlg.name_entry), 0, -1 ) );
+
+	name = 	gtk_editable_get_chars( GTK_EDITABLE(impldif_dlg.name_entry), 0, -1 );
+	gtk_label_set_text( GTK_LABEL(impldif_dlg.labelBook), name );
+	g_free( name );
 	gtk_label_set_text( GTK_LABEL(impldif_dlg.labelFile), _ldifFile_->path );
 	gtk_label_set_text( GTK_LABEL(impldif_dlg.labelRecords), recs );
 	g_free( recs );

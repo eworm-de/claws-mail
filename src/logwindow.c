@@ -160,6 +160,7 @@ static void key_pressed(GtkWidget *widget, GdkEventKey *event,
 		gtk_widget_hide(logwin->window);
 }
 
+#define LOG_AVG_LINE_LEN 80
 void log_window_clear(GtkWidget *text)
 {
         guint length;
@@ -170,16 +171,22 @@ void log_window_clear(GtkWidget *text)
 	debug_print(_("Log window length: %u\n"), length);
 	
 	if (length > prefs_common.loglength) {
+		gchar *lf;
 	        /* find the end of the first line after the cut off
 		 * point */
        	        point = length - prefs_common.loglength;
-	        gtk_text_set_point (GTK_TEXT (text), point);
-		str = gtk_editable_get_chars (GTK_EDITABLE (text),
-					      point, point + 1);
+		
+		do {
+			str = gtk_editable_get_chars (GTK_EDITABLE (text),
+					point, point + LOG_AVG_LINE_LEN);
+			if ((lf = strchr(str, '\n')) != NULL)
+				point += lf - str;
+			else 
+				point += LOG_AVG_LINE_LEN;
+			g_free(str);
+		} while (lf == NULL);
+				
 		gtk_text_freeze (GTK_TEXT (text));
-		while(str && *str != '\n')
-		       str = gtk_editable_get_chars (GTK_EDITABLE (text),
-						     ++point, point + 2);
 		
 		/* erase the text */
 		gtk_text_set_point (GTK_TEXT (text), 0);

@@ -313,7 +313,7 @@ gchar *edit_ldap_basedn_selection( const gchar *hostName, const gint port, gchar
 	if( ldapedit_basedn_cancelled ) return NULL;
 	if( ldapedit_basedn_bad_server ) return NULL;
 
-	retVal = g_strdup( gtk_editable_get_chars( GTK_EDITABLE(ldapedit_basedn.basedn_entry), 0, -1 ) );
+	retVal = gtk_editable_get_chars( GTK_EDITABLE(ldapedit_basedn.basedn_entry), 0, -1 );
 	g_strchomp( retVal ); g_strchug( retVal );
 	if( *retVal == '\0' ) {
 		g_free( retVal );

@@ -3025,6 +3025,7 @@ static void date_format_entry_on_change(GtkEditable *editable,
 	if (text)
 		strftime(buffer, sizeof buffer, text, cal_time); 
 	gtk_label_set_text(example, buffer);
+	g_free(text);
 }
 
 static void date_format_select_row(GtkWidget *date_format_list, gint row,

@@ -3256,14 +3256,14 @@ static void addressbook_lup_clicked( GtkButton *button, gpointer data ) {
 #endif
 	gchar *sLookup;
 
-	sLookup = gtk_editable_get_chars( GTK_EDITABLE(addrbook.entry), 0, -1 );
-	g_strchomp( sLookup );
-
 	if( ! addrbook.treeSelected ) return;
 	if( GTK_CTREE_ROW( addrbook.treeSelected )->level == 1 ) return;
 
 	obj = gtk_ctree_node_get_row_data( ctree, addrbook.treeSelected );
 	if( obj == NULL ) return;
+		
+	sLookup = gtk_editable_get_chars( GTK_EDITABLE(addrbook.entry), 0, -1 );
+	g_strchomp( sLookup );
 
 #ifdef USE_LDAP
 	if( obj->type == ADDR_DATASOURCE ) {
@@ -3287,7 +3287,7 @@ static void addressbook_lup_clicked( GtkButton *button, gpointer data ) {
 		}
 	}
 #endif
-
+	g_free( sLookup );
 }
 
 /* **********************************************************************

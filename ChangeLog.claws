@@ -1,3 +1,24 @@
+2002-07-23 [melvin]	0.8.0claws5
+
+	* src/addressbook.c
+	* src/addrgather.c
+	* src/editaddress.c
+	* src/editgroup.c
+	* src/editldap_basedn.c
+	* src/importldif.c
+	* src/prefs_common.c
+		Fixed few memory leak (gtk_editable_get_chars returns
+		an allocated string)
+	* src/logwindow.c
+		Fixed few memory leak (gtk_editable_get_chars returns
+		an allocated string) and modified a little the log cutting
+		loop.
+	* src/compose.c
+		Replaced a call to an obsolete function gtk_entry_get_text()
+		by gtk_editable_get_chars()
+	* src/send.c
+		Removed a debug printf
+
 2002-07-23 [christoph]	0.8.0claws4
 
 	* src/filesel.c

@@ -157,8 +157,11 @@ static void edit_person_set_window_title( gint pageNum ) {
 			sTitle = g_strdup( _title_edit_ );
 		}
 		else {
-			sTitle = g_strdup_printf( "%s - %s", _title_edit_,
-					gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_name), 0, -1 ) );
+			gchar *name;
+			name = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_name), 0, -1 );
+			sTitle = g_strdup_printf( "%s - %s", _title_edit_, name );
+			g_free( name );
+					
 		}
 		gtk_window_set_title( GTK_WINDOW(personeditdlg.window), sTitle );
 		g_free( sTitle );
@@ -260,12 +263,12 @@ static void edit_person_email_delete( gpointer data ) {
 
 static ItemEMail *edit_person_email_edit( gboolean *error, ItemEMail *email ) {
 	ItemEMail *retVal = NULL;
-	gchar *sEmail, *sAlias, *sRemarks;
+	gchar *sEmail, *sAlias, *sRemarks, *tEmail;
 	*error = TRUE;
-	sEmail = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_email), 0, -1 );
+	tEmail = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_email), 0, -1 );
 	sAlias = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_alias), 0, -1 );
 	sRemarks = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_remarks), 0, -1 );
-	sEmail = mgu_email_check_empty( sEmail );
+	sEmail = mgu_email_check_empty( tEmail );
 	if( sEmail ) {
 		if( email == NULL ) {
 			email = addritem_create_item_email();
@@ -279,6 +282,10 @@ static ItemEMail *edit_person_email_edit( gboolean *error, ItemEMail *email ) {
 	else {
 		edit_person_status_show( _( "An E-Mail address must be supplied." ) );
 	}
+	g_free( tEmail );
+	g_free( sEmail );
+	g_free( sAlias );
+	g_free( sRemarks );
 	return retVal;
 }
 
@@ -389,12 +396,12 @@ static void edit_person_attrib_delete( gpointer data ) {
 
 static UserAttribute *edit_person_attrib_edit( gboolean *error, UserAttribute *attrib ) {
 	UserAttribute *retVal = NULL;
-	gchar *sName, *sValue;
+	gchar *sName, *sValue, *tName, *tValue;
 	*error = TRUE;
-	sName = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_atname), 0, -1 );
-	sValue = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_atvalue), 0, -1 );
-	sName = mgu_email_check_empty( sName );
-	sValue = mgu_email_check_empty( sValue );
+	tName = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_atname), 0, -1 );
+	tValue = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_atvalue), 0, -1 );
+	sName = mgu_email_check_empty( tName );
+	sValue = mgu_email_check_empty( tValue );
 	if( sName && sValue ) {
 		if( attrib == NULL ) {
 			attrib = addritem_create_attribute();
@@ -407,6 +414,10 @@ static UserAttribute *edit_person_attrib_edit( gboolean *error, UserAttribute *a
 	else {
 		edit_person_status_show( _( "A Name and Value must be supplied." ) );
 	}
+	g_free( tName );
+	g_free( sName );
+	g_free( tValue );
+	g_free( sValue );
 	return retVal;
 }
 
@@ -973,7 +984,7 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent, I
 		return NULL;
 	}
 
-	cn = g_strdup( gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_name), 0, -1 ) );
+	cn = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_name), 0, -1 );
 	if( person ) {
 		/* Update email/attribute list */
 		addrbook_update_address_list( abf, person, listEMail );
@@ -993,13 +1004,17 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent, I
 
 	if( ! cancelled ) {
 		/* Set person stuff */
+		gchar *name;
 		addritem_person_set_common_name( person, cn );
-		addritem_person_set_first_name( person,
-			gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_first), 0, -1 ) );
-		addritem_person_set_last_name( person,
-			gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_last), 0, -1 ) );
-		addritem_person_set_nick_name( person,
-			gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_nick), 0, -1 ) );
+		name = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_first), 0, -1 ); 
+		addritem_person_set_first_name( person, name );
+		g_free( name );
+		name = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_last), 0, -1 );
+		addritem_person_set_last_name( person, name );
+		g_free( name );
+		name = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_nick), 0, -1 );
+		addritem_person_set_nick_name( person, name );
+		g_free( name );
 	}
 	g_free( cn );
 
