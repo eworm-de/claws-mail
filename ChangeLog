@@ -1,3 +1,9 @@
+2003-02-28
+
+	* src/main.c: main(): remove lock socket if sylpheed is not running
+	  when --status command is executed.
+	  lock_socket_remove(): new.
+
 2003-02-27
 
 	* src/codeconv.c: conv_codeset_strdup(): don't convert if current

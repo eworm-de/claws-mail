@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,8 +100,7 @@ typedef enum
 	ONLINE_MODE_OFFLINE
 } OnlineMode;
 
-
-static struct Cmd {
+static struct RemoteCmd {
 	gboolean receive;
 	gboolean receive_all;
 	gboolean compose;
@@ -122,6 +121,7 @@ static void idle_function_for_gpgme(void);
 
 static gint prohibit_duplicate_launch	(void);
 static gchar * get_crashfile_name	(void);
+static gint lock_socket_remove		(void);
 static void lock_socket_input_cb	(gpointer	   data,
 					 gint		   source,
 					 GdkInputCondition condition);
@@ -193,6 +193,7 @@ int main(int argc, char *argv[])
 
 	if (cmd.status) {
 		puts("0 Sylpheed not running.");
+		lock_socket_remove();
 		return 0;
 	}
 
@@ -586,15 +587,11 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 
 	close_log_file();
 
-	/* delete unix domain socket */
-	gdk_input_remove(lock_socket_tag);
-	fd_close(lock_socket);
-	filename = get_socket_name();
-	unlink(filename);
-	
 	/* delete crashfile */
 	if (!cmd.crash)
 		unlink(get_crashfile_name());
+
+	lock_socket_remove();
 
 	gtk_main_quit();
 }
@@ -706,6 +703,21 @@ static gint prohibit_duplicate_launch(void)
 
 	fd_close(uxsock);
 	return -1;
+}
+
+static gint lock_socket_remove(void)
+{
+	gchar *filename;
+
+	if (lock_socket < 0) return -1;
+
+	if (lock_socket_tag > 0)
+		gdk_input_remove(lock_socket_tag);
+	fd_close(lock_socket);
+	filename = get_socket_name();
+	unlink(filename);
+
+	return 0;
 }
 
 static void lock_socket_input_cb(gpointer data,

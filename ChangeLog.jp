@@ -1,3 +1,9 @@
+2003-02-28
+
+	* src/main.c: main(): --status コマンドが実行された時に sylpheed
+	  が起動していない場合はロックソケットを削除。
+	  lock_socket_remove(): 新規。
+
 2003-02-27
 
 	* src/codeconv.c: conv_codeset_strdup(): 現在のコードセットが
