@@ -30,7 +30,9 @@
 #include "plugin.h"
 #include "common/utils.h"
 #include "prefs.h"
+#include "folder.h"
 #include "prefswindow.h"
+#include "foldersel.h"
 #include "spamassassin.h"
 
 struct SpamAssassinPage
@@ -44,6 +46,21 @@ struct SpamAssassinPage
 	GtkWidget *receive_spam;
 	GtkWidget *save_folder;
 };
+
+static void foldersel_cb(GtkWidget *widget, gpointer data)
+{
+	struct SpamAssassinPage *page = (struct SpamAssassinPage *) data;
+	FolderItem *item;
+	gchar *item_id;
+	gint newpos = 0;
+	
+	item = foldersel_folder_sel(NULL, FOLDER_SEL_MOVE, NULL);
+	if (item && (item_id = folder_item_get_identifier(item)) != NULL) {
+		gtk_editable_delete_text(GTK_EDITABLE(page->save_folder), 0, -1);
+		gtk_editable_insert_text(GTK_EDITABLE(page->save_folder), item_id, strlen(item_id), &newpos);
+		g_free(item_id);
+	}
+}
 
 static void spamassassin_create_widget_func(PrefsPage * _page)
 {
@@ -72,7 +89,6 @@ static void spamassassin_create_widget_func(PrefsPage * _page)
 
 	table1 = gtk_table_new(6, 3, FALSE);
 	gtk_widget_show(table1);
-	gtk_container_set_border_width(GTK_CONTAINER(table1), 8);
 	gtk_table_set_row_spacings(GTK_TABLE(table1), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table1), 8);
 
@@ -183,8 +199,6 @@ static void spamassassin_create_widget_func(PrefsPage * _page)
 	gtk_misc_set_alignment(GTK_MISC(label11), 0, 0.5);
 	/* --------------------------------------------------------- */
 
-	gtk_widget_set_sensitive(button4, FALSE);
-
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable), spamassassin_enable);
 	gtk_entry_set_text(GTK_ENTRY(hostname), spamassassin_hostname);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(port), (float) spamassassin_port);
@@ -200,6 +214,8 @@ static void spamassassin_create_widget_func(PrefsPage * _page)
 	page->save_folder = save_folder;
 
 	page->page.widget = table1;
+
+	gtk_signal_connect(GTK_OBJECT(button4), "released", GTK_SIGNAL_FUNC(foldersel_cb), page);
 }
 
 static void spamassassin_destroy_widget_func(PrefsPage *_page)
