@@ -1,3 +1,9 @@
+2003-02-19 [paul]	0.8.10claws29
+
+	* src/mainwindow.c
+		add tooltips to online/offline button and account selector
+		button
+
 2003-02-19 [paul]	0.8.10claws28
 
 	* src/folder.c
