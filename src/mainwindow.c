@@ -2648,6 +2648,10 @@ static gboolean mainwindow_focus_in_event(GtkWidget *widget, GdkEventFocus *focu
 	SummaryView *summary;
 
 	g_return_val_if_fail(data, FALSE);
+
+	if (gtk_grab_get_current()) 
+		return FALSE;
+	
 	summary = ((MainWindow *)data)->summaryview;
 	g_return_val_if_fail(summary, FALSE);
 	if (summary->selected != summary->displayed)

@@ -1,3 +1,10 @@
+2003-01-05 [alfons]	0.8.8claws44
+
+	* src/mainwindow.c
+		focus_in_event handler should not select summary view row 
+		when another window (menu, dialog) grabbed for events 
+		(bug #7, "[0.8.8claws42] Message summary focus") 
+
 2003-01-04 [christoph]	0.8.8claws43
 
 	* src/procmsg.c
