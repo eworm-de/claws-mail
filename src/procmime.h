@@ -71,20 +71,20 @@ typedef enum
  * An example of MimeInfo structure:
  *
  * 1: +- message/rfc822			(root)
- *      |
- * 2:   +- multipart/mixed		(children of 1)
- *      |  |
- * 3:   |  +- multipart/alternative	(children of 2)
- *      |  |  |
- * 4:   |  |  +- text/plain		(children of 3)
- *      |  |  |
- * 5:   |  |  +- text/html		(next of 4)
- *      |  |
- * 6:   |  +- message/rfc822		(next of 3)
- *      |     |
- * 7:   |     ...			(children of 6)
- *      |
- * 8:   +- image/jpeg			(next of 2)
+ *       |
+ * 2:    +- multipart/mixed		(children of 1)
+ *          |
+ * 3:       +- multipart/alternative	(children of 2)
+ *          |  |
+ * 4:       |  +- text/plain		(children of 3)
+ *          |  |
+ * 5:       |  +- text/html		(next of 4)
+ *          |
+ * 6:       +- message/rfc822		(next of 3)
+ *          |   |
+ * 7:       |   ...			(children of 6)
+ *          |
+ * 8:       +- image/jpeg		(next of 6)
  */
 
 struct _MimeInfo
