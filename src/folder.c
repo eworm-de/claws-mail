@@ -1580,21 +1580,30 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	guint newcnt = 0, unreadcnt = 0, totalcnt = 0, unreadmarkedcnt = 0;
 	guint cache_max_num, folder_max_num, cache_cur_num, folder_cur_num;
 	gboolean update_flags = 0, old_uids_valid = FALSE;
-    
-	g_return_val_if_fail(item != NULL, -1);
-	if (item->path == NULL) return -1;
+	gint err = -1;
+#ifdef USE_GPGME
+	gint old_auto_check = 0;
+	old_auto_check = prefs_common.auto_check_signatures;
+	prefs_common.auto_check_signatures = 0;
+#endif
+	if (item == NULL)
+		goto bail_scan;
+	if (item->path == NULL)
+		goto bail_scan;
 
 	folder = item->folder;
 
-	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(folder->klass->get_num_list != NULL, -1);
+	if (folder == NULL)
+		goto bail_scan;
+	if (folder->klass->get_num_list == NULL)
+		goto bail_scan;
 
 	debug_print("Scanning folder %s for cache changes.\n", item->path);
 
 	/* Get list of messages for folder and cache */
 	if (folder->klass->get_num_list(item->folder, item, &folder_list, &old_uids_valid) < 0) {
 		debug_print("Error fetching list of message numbers\n");
-		return(-1);
+		goto bail_scan;
 	}
 
 	if (old_uids_valid) {
@@ -1807,8 +1816,12 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 
 	folder_item_update(item, update_flags);
 	folder_item_update_thaw();
-
-	return 0;
+	err = 0;
+bail_scan:
+#ifdef USE_GPGME
+	prefs_common.auto_check_signatures = old_auto_check;
+#endif
+	return err;
 }
 
 gint folder_item_syncronize_flags(FolderItem *item)
@@ -2384,7 +2397,12 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 	FolderItem *next_item;
 	GNode *srcnode;
 	gchar *old_id, *new_id;
-
+	gint err = 1;
+#ifdef USE_GPGME
+	gint old_auto_check = 0;
+	old_auto_check = prefs_common.auto_check_signatures;
+	prefs_common.auto_check_signatures = 0;
+#endif
 	mlist = folder_item_get_msg_list(src);
 
 	/* move messages */
@@ -2392,7 +2410,7 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 	new_item = folder_create_folder(dest, src->name);
 	if (new_item == NULL) {
 		printf("Can't create folder\n");
-		return NULL;
+		goto bail_move;
 	}
 	
 	if (new_item->folder == NULL)
@@ -2425,7 +2443,7 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 			next_item = (FolderItem*) srcnode->data;
 			srcnode = srcnode->next;
 			if (folder_item_move_recursive(next_item, new_item) == NULL)
-				return NULL;
+				goto bail_move;
 		}
 	}
 	old_id = folder_item_get_identifier(src);
@@ -2441,8 +2459,17 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 		prefs_filtering_rename_path(old_id, new_id);
 	g_free(old_id);
 	g_free(new_id);
+	err = 0;
 
-	return new_item;
+bail_move:
+#ifdef USE_GPGME
+	prefs_common.auto_check_signatures = old_auto_check;
+#endif
+
+	if (err != 0)
+		return NULL;
+	else
+		return new_item;
 }
 
 gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_item)
