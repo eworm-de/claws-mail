@@ -395,26 +395,6 @@ int main(int argc, char *argv[])
 	if (cmd.online_mode == ONLINE_MODE_ONLINE)
 		main_window_toggle_work_offline(mainwin, FALSE);
 
-	if (cmd.receive_all)
-		inc_all_account_mail(mainwin, FALSE, 
-				     prefs_common.newmail_notify_manu);
-	else if (prefs_common.chk_on_startup)
-		inc_all_account_mail(mainwin, TRUE, 
-				     prefs_common.newmail_notify_manu);
-	else if (cmd.receive)
-		inc_mail(mainwin, prefs_common.newmail_notify_manu);
-	else
-		gtk_widget_grab_focus(folderview->ctree);
-
-	if (cmd.compose)
-		open_compose_new(cmd.compose_mailto, cmd.attach_files);
-	if (cmd.attach_files) {
-		ptr_array_free_strings(cmd.attach_files);
-		g_ptr_array_free(cmd.attach_files, TRUE);
-		cmd.attach_files = NULL;
-	}
-	if (cmd.send)
-		send_queue();
 	if (cmd.status_folders) {
 		g_ptr_array_free(cmd.status_folders, TRUE);
 		cmd.status_folders = NULL;
@@ -435,6 +415,28 @@ int main(int argc, char *argv[])
 #ifdef HAVE_STARTUP_NOTIFICATION
 	startup_notification_complete(FALSE);
 #endif
+
+	if (cmd.receive_all)
+		inc_all_account_mail(mainwin, FALSE, 
+				     prefs_common.newmail_notify_manu);
+	else if (prefs_common.chk_on_startup)
+		inc_all_account_mail(mainwin, TRUE, 
+				     prefs_common.newmail_notify_manu);
+	else if (cmd.receive)
+		inc_mail(mainwin, prefs_common.newmail_notify_manu);
+	else
+		gtk_widget_grab_focus(folderview->ctree);
+
+	if (cmd.compose)
+		open_compose_new(cmd.compose_mailto, cmd.attach_files);
+	if (cmd.attach_files) {
+		ptr_array_free_strings(cmd.attach_files);
+		g_ptr_array_free(cmd.attach_files, TRUE);
+		cmd.attach_files = NULL;
+	}
+	if (cmd.send)
+		send_queue();
+	
 	gtk_main();
 
 	exit_sylpheed(mainwin);
