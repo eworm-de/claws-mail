@@ -130,9 +130,7 @@ static void mh_folder_init(Folder *folder, const gchar *name, const gchar *path)
 
 	folder_local_folder_init(folder, name, path);
 
-/*
-	folder->get_msg_list        = mh_get_msg_list;
-*/
+/*	folder->get_msg_list        = mh_get_msg_list; */
 	folder->fetch_msg           = mh_fetch_msg;
 	folder->fetch_msginfo       = mh_fetch_msginfo;
 	folder->add_msg             = mh_add_msg;
@@ -143,15 +141,14 @@ static void mh_folder_init(Folder *folder, const gchar *name, const gchar *path)
 	folder->remove_msg          = mh_remove_msg;
 	folder->remove_all_msg      = mh_remove_all_msg;
 	folder->is_msg_changed      = mh_is_msg_changed;
-/*
-	folder->scan                = mh_scan_folder;
-*/
+/*	folder->scan                = mh_scan_folder; */
 	folder->get_num_list	    = mh_get_num_list;
 	folder->scan_tree           = mh_scan_tree;
 	folder->create_tree         = mh_create_tree;
 	folder->create_folder       = mh_create_folder;
 	folder->rename_folder       = mh_rename_folder;
 	folder->remove_folder       = mh_remove_folder;
+	folder->destroy             = mh_folder_destroy;
 }
 
 void mh_get_last_num(Folder *folder, FolderItem *item)

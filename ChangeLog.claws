@@ -1,3 +1,11 @@
+2002-09-02 [alfons]	0.8.2claws20
+
+	* src/folder.c
+	* src/mh.c
+		revert change of 0.8.2claws16 and use the mh_folder_destroy
+		as folder->destroy virtual as suggested by Hiro
+		(the mh.c code seems to have been lost around mh.c.1.21)
+
 2002-09-02 [paul]	0.8.2claws19
 
 	* po/pt_BR.po
