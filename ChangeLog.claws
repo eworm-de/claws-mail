@@ -1,3 +1,11 @@
+2003-05-28 [christoph]	0.9.0claws5
+
+	* src/imap.c
+		fix truncation of too long commands
+
+	(closes Bug 167 IMAP hangs trying to get envelope
+	 information in imap_get_uncached_messages)
+
 2003-05-27 [paul]	0.9.0claws4
 
 	* tools/Makefile.am

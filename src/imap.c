@@ -2780,18 +2780,18 @@ static gint imap_cmd_ok(IMAPSession *session, GPtrArray *argbuf)
 
 static void imap_gen_send(IMAPSession *session, const gchar *format, ...)
 {
-	gchar buf[IMAPBUFSIZE];
-	gchar tmp[IMAPBUFSIZE];
+	gchar *buf;
+	gchar *tmp;
 	gchar *p;
 	va_list args;
 
 	va_start(args, format);
-	g_vsnprintf(tmp, sizeof(tmp), format, args);
+	tmp = g_strdup_vprintf(format, args);
 	va_end(args);
 
 	session->cmd_count++;
 
-	g_snprintf(buf, sizeof(buf), "%d %s\r\n", session->cmd_count, tmp);
+	buf = g_strdup_printf("%d %s\r\n", session->cmd_count, tmp);
 	if (!strncasecmp(tmp, "LOGIN ", 6) && (p = strchr(tmp + 6, ' '))) {
 		*p = '\0';
 		log_print("IMAP4> %d %s ********\n", session->cmd_count, tmp);
@@ -2799,6 +2799,8 @@ static void imap_gen_send(IMAPSession *session, const gchar *format, ...)
 		log_print("IMAP4> %d %s\n", session->cmd_count, tmp);
 
 	sock_write_all(SESSION(session)->sock, buf, strlen(buf));
+	g_free(tmp);
+	g_free(buf);
 }
 
 static gint imap_gen_recv(IMAPSession *session, gchar **buf)
