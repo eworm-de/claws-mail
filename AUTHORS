@@ -1,19 +1,20 @@
 main-branch (http://sylpheed.good-day.net)
 
-	Hiroyuki Yamamoto (hiro-y@kcn.ne.jp / yamamoto@good-day.co.jp)
+	Hiroyuki Yamamoto	<hiro-y@kcn.ne.jp>
+				<yamamoto@good-day.co.jp>
 
 claws-branch (http://sylpheed-claws.sourceforge.net)
 
-	Hoa viet Dinh (dinh@enseirb.fr)
-	Alfons Hoogervorst (alfons@proteus.demon.nl)
-	Darko Koruga (darko.koruga@hermes.si)
-	Paul Mangan (claws@thewildbeast.co.uk)
-	Sergey Vlasov (vsu@mivlgu.murom.ru)
-	Hiroyuki Yamamoto (hiro-y@kcn.ne.jp)
+	Hoa viet Dinh		<dinh@enseirb.fr>
+	Alfons Hoogervorst	<alfons@proteus.demon.nl>
+	Darko Koruga		<darko.koruga@hermes.si>
+	Paul Mangan		<claws@thewildbeast.co.uk>
+	Sergey Vlasov		<vsu@mivlgu.murom.ru>
+	Hiroyuki Yamamoto	<hiro-y@kcn.ne.jp>
 
 sylpheed-w32 (http://www.gnupg.org/cvs-access.html)	
 
-	Werner Koch (wk@gnupg.org)
+	Werner Koch		<wk@gnupg.org>
 
 contributors (beside the above; based on Changelog)
 
@@ -42,7 +43,7 @@ contributors (beside the above; based on Changelog)
 	Takahashi
 	Leandro Pereira
 	Nishimura
-	BONAIM
+	Yoichi Imai
 	Tsutsui
 	Yanase
 	TOGAWA
@@ -56,11 +57,9 @@ contributors (beside the above; based on Changelog)
 	T. Yamamoto
 	YAMAGUCHI
 	Tomita
-    Nishiyama
-	NINOMIYA
+	Nishiyama
 	Hotta
 	Nishika
 	shigeri
 	Tajiri
-	wakai
-	
+	Wakai
