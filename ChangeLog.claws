@@ -1,3 +1,14 @@
+2002-10-31 [paul]	0.8.5claws60
+
+	* src/summaryview.c
+		remove check for global_processing in summary_filter_open(). 
+		This fixes the bug where if the user uses the right-click 
+		'Create filter rule...' and doesn't have any filter rules 
+		already defined in claws' advanced filtering, the newly 
+		created filter rule goes to main's filtering which is 
+		inaccessible through the gui. Now the filter rule gets added
+		to claws' filtering by default.
+
 2002-10-28 [melvin]	0.8.5claws59
 
 	* src/prefs_actions.c

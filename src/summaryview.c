@@ -3935,14 +3935,8 @@ void summary_filter_open(SummaryView *summaryview, PrefsFilterType type)
 					      summaryview->selected);
 	if (!msginfo) return;
 
-	if (global_processing) {
-		header_offset = 1;
-		hentry_offset = 5;
-	}
-	else {
-		header_offset = 0;
-		hentry_offset = 0;
-	}
+	header_offset = 1;
+	hentry_offset = 5;
 
 	switch (type) {
 	case FILTER_BY_NONE:
@@ -4006,10 +4000,7 @@ void summary_filter_open(SummaryView *summaryview, PrefsFilterType type)
 	 * and have set entries. Otherwise we're hosed.  
 	 */
 
-	if (global_processing)
-		prefs_filtering_open(NULL, header, key);
-	else
-		prefs_filter_open(header, key);
+	prefs_filtering_open(NULL, header, key);
 }
 
 void summary_reply(SummaryView *summaryview, ComposeMode mode)
