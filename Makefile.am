@@ -4,6 +4,7 @@ EXTRA_DIST = \
 	ChangeLog.jp \
 	INSTALL.jp \
 	README.jp \
+	README.claws \
 	TODO.jp \
 	sylpheed.spec \
 	sylpheed.spec.in \
