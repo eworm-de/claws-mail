@@ -1098,10 +1098,23 @@ void summary_select_prev_unread(SummaryView *summaryview)
 	if (!node) {
 		AlertValue val;
 
-		val = alertpanel(_("No more unread messages"),
-				 _("No unread message found. "
-				   "Search from the end?"),
-				 _("Yes"), _("No"), NULL);
+ 		switch (prefs_common.next_unread_msg_dialog) {
+ 			case NEXTUNREADMSGDIALOG_ALWAYS:
+				val = alertpanel(_("No more unread messages"),
+						 _("No unread message found. "
+						   "Search from the end?"),
+						 _("Yes"), _("No"), NULL);
+ 				break;
+ 			case NEXTUNREADMSGDIALOG_ASSUME_YES:
+ 				val = G_ALERTDEFAULT;
+ 				break;
+ 			case NEXTUNREADMSGDIALOG_ASSUME_NO:
+ 				val = !G_ALERTDEFAULT;
+ 				break;
+ 			default:
+ 				debug_print(
+ 					_("Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"));
+ 		}
 		if (val != G_ALERTDEFAULT) return;
 		node = summary_find_prev_unread_msg(summaryview, NULL);
 	}
@@ -1135,10 +1148,24 @@ void summary_select_next_unread(SummaryView *summaryview)
 	} else {
 		AlertValue val;
 
-		val = alertpanel(_("No more unread messages"),
-				 _("No unread message found. "
-				   "Go to next folder?"),
-				 _("Yes"), _("No"), NULL);
+ 		switch (prefs_common.next_unread_msg_dialog) {
+ 			case NEXTUNREADMSGDIALOG_ALWAYS:
+				val = alertpanel(_("No more unread messages"),
+						 _("No unread message found. "
+						   "Go to next folder?"),
+						 _("Yes"), _("No"), NULL);
+ 				break;
+ 			case NEXTUNREADMSGDIALOG_ASSUME_YES:
+ 				val = G_ALERTDEFAULT;
+ 				break;
+ 			case NEXTUNREADMSGDIALOG_ASSUME_NO:
+ 				val = !G_ALERTDEFAULT;
+ 				break;
+ 			default:
+ 				debug_print(
+ 					_("Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"));
+ 		}
+
 		if (val == G_ALERTDEFAULT) {
 			if (gtk_signal_n_emissions_by_name
 				(GTK_OBJECT(ctree), "key_press_event") > 0)

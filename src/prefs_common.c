@@ -188,6 +188,7 @@ static struct Interface {
 	GtkWidget *checkbtn_warnqueued;
 	GtkWidget *checkbtn_addaddrbyclick;
 	GtkWidget *optmenu_recvdialog;
+ 	GtkWidget *optmenu_nextunreadmsgdialog;
 } interface;
 
 static struct Other {
@@ -221,6 +222,8 @@ static void prefs_common_default_signkey_set_optmenu	(PrefParam *pparam);
 #endif
 static void prefs_common_recv_dialog_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_common_recv_dialog_set_optmenu(PrefParam *pparam);
+static void prefs_nextunreadmsgdialog_set_data_from_optmenu(PrefParam *pparam);
+static void prefs_nextunreadmsgdialog_set_optmenu(PrefParam *pparam);
 
 #if USE_PSPELL
 static void prefs_dictionary_set_data_from_optmenu(PrefParam *param);
@@ -605,6 +608,10 @@ static PrefParam param[] = {
 	 &interface.optmenu_recvdialog,
 	 prefs_common_recv_dialog_set_data_from_optmenu,
 	 prefs_common_recv_dialog_set_optmenu},
+	{"nextunreadmsg_dialog", NULL, &prefs_common.next_unread_msg_dialog, P_ENUM,
+	 &interface.optmenu_nextunreadmsgdialog,
+	 prefs_nextunreadmsgdialog_set_data_from_optmenu,
+	 prefs_nextunreadmsgdialog_set_optmenu},
 
 	{"add_address_by_click", "FALSE", &prefs_common.add_address_by_click,
 	 P_BOOL, &interface.checkbtn_addaddrbyclick,
@@ -2041,6 +2048,11 @@ static void prefs_interface_create(void)
 	GtkWidget *checkbtn_askonclean;
 	GtkWidget *checkbtn_warnqueued;
 
+ 	GtkWidget *hbox2;
+ 	GtkWidget *optmenu_nextunreadmsgdialog;
+ 	GtkWidget *optmenu_nextunreadmsgdialog_menu;
+ 	GtkWidget *nextunreadmsgdialog_menuitem;
+
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
@@ -2116,6 +2128,32 @@ static void prefs_interface_create(void)
 		(vbox_addr, checkbtn_addaddrbyclick,
 		 _("Add address to destination when double-clicked"));
 
+ 	/* Next Unread Message Dialog */
+ 	hbox2 = gtk_hbox_new (FALSE, 8);
+ 	gtk_widget_show (hbox2);
+ 	gtk_box_pack_start (GTK_BOX (vbox2), hbox2, FALSE, FALSE, 0);
+
+ 	label = gtk_label_new (_("Show no-unread-message dialog"));
+ 	gtk_widget_show (label);
+ 	gtk_box_pack_start (GTK_BOX (hbox2), label, FALSE, FALSE, 0);
+
+ 	optmenu_nextunreadmsgdialog = gtk_option_menu_new ();
+ 	gtk_widget_show (optmenu_nextunreadmsgdialog);
+ 	gtk_box_pack_start (GTK_BOX (hbox2), optmenu_nextunreadmsgdialog,
+			    FALSE, FALSE, 0);
+
+ 	optmenu_nextunreadmsgdialog_menu = gtk_menu_new ();
+ 	MENUITEM_ADD (optmenu_nextunreadmsgdialog_menu, nextunreadmsgdialog_menuitem,
+		      _("Always"),  NEXTUNREADMSGDIALOG_ALWAYS);
+ 	MENUITEM_ADD (optmenu_nextunreadmsgdialog_menu, nextunreadmsgdialog_menuitem,
+		      _("Assume 'Yes'"),  NEXTUNREADMSGDIALOG_ASSUME_YES);
+ 	MENUITEM_ADD (optmenu_nextunreadmsgdialog_menu, nextunreadmsgdialog_menuitem,
+		      _("Assume 'No'"), NEXTUNREADMSGDIALOG_ASSUME_NO);
+
+ 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_nextunreadmsgdialog),
+		      		  optmenu_nextunreadmsgdialog_menu);
+
+
 	/* Receive Dialog */
 /*	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);
@@ -2162,15 +2200,16 @@ static void prefs_interface_create(void)
 			   _("Warn if there are queued messages"));
 
 	/* interface.checkbtn_emacs          = checkbtn_emacs; */
-	interface.checkbtn_openunread     = checkbtn_openunread;
-	interface.checkbtn_openinbox      = checkbtn_openinbox;
-	interface.checkbtn_immedexec      = checkbtn_immedexec;
-	interface.optmenu_recvdialog	  = optmenu_recvdialog;
-	interface.checkbtn_addaddrbyclick = checkbtn_addaddrbyclick;
-	interface.checkbtn_confonexit     = checkbtn_confonexit;
-	interface.checkbtn_cleanonexit    = checkbtn_cleanonexit;
-	interface.checkbtn_askonclean     = checkbtn_askonclean;
-	interface.checkbtn_warnqueued     = checkbtn_warnqueued;
+	interface.checkbtn_openunread         = checkbtn_openunread;
+	interface.checkbtn_openinbox          = checkbtn_openinbox;
+	interface.checkbtn_immedexec          = checkbtn_immedexec;
+	interface.optmenu_recvdialog	      = optmenu_recvdialog;
+	interface.checkbtn_addaddrbyclick     = checkbtn_addaddrbyclick;
+	interface.optmenu_nextunreadmsgdialog = optmenu_nextunreadmsgdialog;
+	interface.checkbtn_confonexit         = checkbtn_confonexit;
+	interface.checkbtn_cleanonexit        = checkbtn_cleanonexit;
+	interface.checkbtn_askonclean         = checkbtn_askonclean;
+	interface.checkbtn_warnqueued         = checkbtn_warnqueued;
 }
 
 static void prefs_other_create(void)
@@ -3278,6 +3317,44 @@ static void prefs_common_apply(void)
 
 	inc_autocheck_timer_remove();
 	inc_autocheck_timer_set();
+}
+
+static void prefs_nextunreadmsgdialog_set_data_from_optmenu(PrefParam *pparam)
+{
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+
+	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(*pparam->widget));
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	*((NextUnreadMsgDialogShow *)pparam->data) = GPOINTER_TO_INT
+		(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
+}
+
+static void prefs_nextunreadmsgdialog_set_optmenu(PrefParam *pparam)
+{
+	NextUnreadMsgDialogShow dialog_show;
+	GtkOptionMenu *optmenu = GTK_OPTION_MENU(*pparam->widget);
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+
+	dialog_show = *((NextUnreadMsgDialogShow *)pparam->data);
+
+	switch (dialog_show) {
+	case NEXTUNREADMSGDIALOG_ALWAYS:
+		gtk_option_menu_set_history(optmenu, 0);
+		break;
+	case NEXTUNREADMSGDIALOG_ASSUME_YES:
+		gtk_option_menu_set_history(optmenu, 1);
+		break;
+	case NEXTUNREADMSGDIALOG_ASSUME_NO:
+		gtk_option_menu_set_history(optmenu, 2);
+		break;
+	default:
+	}
+
+	menu = gtk_option_menu_get_menu(optmenu);
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
 }
 
 static void prefs_common_cancel(void)

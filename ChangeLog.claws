@@ -1,3 +1,13 @@
+2001-09-25 [paul]
+
+	* 0.6.2claws4
+
+	* src/prefs_common.[ch], src/summaryview.c
+		'next unread msg' 'go to next folder?' dialog can be
+		given default behaviour, either always show dialog,
+		or assume 'yes', or assume 'no'
+		Submitted by wwp <subscript@free.fr>
+
 2001-09-25 [melvin]
 		
 	* src/compose.c src/gtkspell.[ch]
