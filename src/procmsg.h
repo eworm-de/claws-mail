@@ -72,6 +72,7 @@ typedef GSList MsgNumberList;
 #define MSG_LOCKED		(1U << 11)   /* msg is locked  */
 #define MSG_RETRCPT_PENDING	(1U << 12)   /* return receipt pending */
 /* RESERVED */
+#define	MSG_RESERVED_CLAWS	(1U << 30)   /* for sylpheed-claws */
 #define	MSG_RESERVED		(1U << 31)
 
 typedef guint32 MsgPermFlags;
