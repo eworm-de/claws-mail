@@ -1,3 +1,10 @@
+2004-10-21 [colin]	0.9.12cvs133
+
+	* src/compose.c
+		Sync with HEAD (Remove extra separator in compose's Options)
+	* src/textview.c
+		Set wrapping to char
+
 2004-10-21 [paul]	0.9.12cvs131.2
 
 	* src/compose.c

@@ -187,7 +187,7 @@ TextView *textview_create(void)
 	text = gtk_text_view_new();
 	gtk_widget_show(text);
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), FALSE);
-	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD);
+	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD_CHAR);
 	gtk_text_view_set_cursor_visible(GTK_TEXT_VIEW(text), FALSE);
 	g_signal_connect(G_OBJECT(text), "populate-popup",
 		 G_CALLBACK(populate_popup), NULL);
