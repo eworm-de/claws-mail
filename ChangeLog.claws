@@ -1,3 +1,9 @@
+2002-11-14 [thorsten]	0.8.5claws147
+
+	* src/inc.c
+		inc_start(): Files were not moved from .processing to inbox,
+		if no global processing rule existed
+
 2002-11-14 [colin]	0.8.5claws146
 
 	* src/ssl_certificate

@@ -479,6 +479,9 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 	gint new_msgs = 0;
 	gchar *msg;
 	gchar *fin_msg;
+	FolderItem *processing, *inbox;
+	MsgInfo *msginfo;
+	GSList *msglist, *msglist_element;
 
 	while (inc_dialog->queue_list != NULL) {
 		session = inc_dialog->queue_list->data;
@@ -579,39 +582,33 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		statusbar_pop_all();
 
 		/* CLAWS: perform filtering actions on dropped message */
-		if (global_processing != NULL) {
-			FolderItem *processing, *inbox;
-			MsgInfo *msginfo;
-			GSList *msglist, *msglist_element;
-
-			/* CLAWS: get default inbox (perhaps per account) */
-			if (pop3_state->ac_prefs->inbox) {
-				/* CLAWS: get destination folder / mailbox */
-				inbox = folder_find_item_from_identifier(pop3_state->ac_prefs->inbox);
-				if (!inbox)
-					inbox = folder_get_default_inbox();
-			} else
+		/* CLAWS: get default inbox (perhaps per account) */
+		if (pop3_state->ac_prefs->inbox) {
+			/* CLAWS: get destination folder / mailbox */
+			inbox = folder_find_item_from_identifier(pop3_state->ac_prefs->inbox);
+			if (!inbox)
 				inbox = folder_get_default_inbox();
+		} else
+			inbox = folder_get_default_inbox();
 
-			/* get list of messages in processing */
-			processing = folder_get_default_processing();
-			folder_item_scan(processing);
-			msglist = folder_item_get_msg_list(processing);
+		/* get list of messages in processing */
+		processing = folder_get_default_processing();
+		folder_item_scan(processing);
+		msglist = folder_item_get_msg_list(processing);
 
-			/* process messages */
-			for(msglist_element = msglist; msglist_element != NULL; msglist_element = msglist_element->next) {
-				msginfo = (MsgInfo *) msglist_element->data;
-				/* filter if enabled in prefs or move to inbox if not */
-				if(pop3_state->ac_prefs->filter_on_recv) {
-					filter_message_by_msginfo_with_inbox(global_processing, msginfo,
-									     inbox);
-				} else {
-					folder_item_move_msg(inbox, msginfo);
-				}
-				procmsg_msginfo_free(msginfo);
+		/* process messages */
+		for(msglist_element = msglist; msglist_element != NULL; msglist_element = msglist_element->next) {
+			msginfo = (MsgInfo *) msglist_element->data;
+			/* filter if enabled in prefs or move to inbox if not */
+			if(global_processing && pop3_state->ac_prefs->filter_on_recv) {
+				filter_message_by_msginfo_with_inbox(global_processing, msginfo,
+								     inbox);
+			} else {
+				folder_item_move_msg(inbox, msginfo);
 			}
-			g_slist_free(msglist);
+			procmsg_msginfo_free(msginfo);
 		}
+		g_slist_free(msglist);
 
 
 		new_msgs += pop3_state->cur_total_num;
