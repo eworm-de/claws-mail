@@ -331,7 +331,28 @@ static gboolean quote_colors_set_dialog_key_pressed(GtkWidget *widget,
 						GdkEventKey *event,
 						gpointer data)
 {
-	gtk_widget_destroy(color_dialog);
+	if (event) {
+		switch (event->keyval) {
+			case GDK_Escape:
+				gtk_button_clicked(GTK_BUTTON(GTK_COLOR_SELECTION_DIALOG
+							(widget)->cancel_button));
+				return TRUE;
+			case GDK_Return: 
+			case GDK_KP_Enter:
+				/* NOTE: changing focus makes widget accept all currently 
+				 * changed settings! */
+				gtk_widget_grab_focus
+					(GTK_COLOR_SELECTION_DIALOG
+						(widget)->ok_button);
+				/* call ok handler */						
+				gtk_button_clicked(GTK_BUTTON
+					(GTK_COLOR_SELECTION_DIALOG
+						(widget)->ok_button));
+				return TRUE;
+			default:
+				break;
+		}
+	}
 	return FALSE;
 }
 

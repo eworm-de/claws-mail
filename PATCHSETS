@@ -293,3 +293,4 @@
 ( cvs diff -u -r 1.12.2.16 -r 1.12.2.17 src/action.c; ) > 0.9.13cvs21.2.patchset
 ( cvs diff -u -r 1.396.2.17 -r 1.396.2.18 ChangeLog; cvs diff -u -r 1.2504.2.40 -r 1.2504.2.41 ChangeLog.claws; cvs diff -u -r 1.391.2.17 -r 1.391.2.18 ChangeLog.jp; cvs diff -u -r 1.42.2.7 -r 1.42.2.8 NEWS; cvs diff -u -r 1.654.2.326 -r 1.654.2.327 configure.ac; cvs diff -u -r 1.61.2.15 -r 1.61.2.16 src/account.c; ) > 0.9.13cvs22.1.patchset
 ( cvs diff -u -r 1.26.2.6 -r 1.26.2.7 src/foldersel.c; ) > 0.9.13cvs22.2.patchset
+( cvs diff -u -r 1.61.2.16 -r 1.61.2.17 src/account.c; cvs diff -u -r 1.60.2.5 -r 1.60.2.6 src/prefs_actions.c; cvs diff -u -r 1.16.2.4 -r 1.16.2.5 src/prefs_customheader.c; cvs diff -u -r 1.59.2.10 -r 1.59.2.11 src/prefs_filtering.c; cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/prefs_msg_colors.c; cvs diff -u -r 1.10.2.2 -r 1.10.2.3 src/prefs_summary_column.c; cvs diff -u -r 1.12.2.11 -r 1.12.2.12 src/gtk/prefswindow.c; ) > 0.9.13cvs22.3.patchset

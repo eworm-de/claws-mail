@@ -28,7 +28,6 @@
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkhbox.h>
-#include <gtk/gtkclist.h>
 #include <gtk/gtkbutton.h>
 #include <gdk/gdkkeysyms.h>
 
@@ -43,12 +42,25 @@
 #include "gtkutils.h"
 #include "utils.h"
 
+enum {
+	SUMCOL_NAME,
+	SUMCOL_TYPE,
+	N_SUMCOL_COLUMNS
+};
+
+#define TARGET_INFO_SUMCOL  (0xFEEDBABE)
+
+static const GtkTargetEntry row_targets[] = {
+	{ "PREFS_SUM_COL_MODEL_ROW", GTK_TARGET_SAME_APP, TARGET_INFO_SUMCOL }
+};
+
+
 static struct _SummaryColumnDialog
 {
 	GtkWidget *window;
 
-	GtkWidget *stock_clist;
-	GtkWidget *shown_clist;
+	GtkWidget *stock_list_view;
+	GtkWidget *shown_list_view;
 
 	GtkWidget *add_btn;
 	GtkWidget *remove_btn;
@@ -113,6 +125,36 @@ static gboolean prefs_summary_column_key_pressed(GtkWidget	*widget,
 						 GdkEventKey	*event,
 						 gpointer	 data);
 
+static GtkListStore *prefs_summary_column_create_store	(void);
+
+static gint prefs_summary_column_insert_column	(GtkListStore *store,
+						 gint row,
+						 const gchar *name,
+						 SummaryColumnType type);
+					       
+static SummaryColumnType prefs_summary_column_get_column	(GtkWidget *list, 
+								 gint row);
+
+static GtkWidget *prefs_summary_column_list_view_create	(const gchar *name);
+
+static void prefs_filtering_create_list_view_columns	(GtkWidget *list_view, 
+							 const gchar *name);
+
+static void drag_data_get	(GtkTreeView *tree_view, 
+				 GdkDragContext *context, 
+				 GtkSelectionData *data, 
+				 guint info, 
+				 guint time, 
+				 GtkTreeModel *model);
+			  
+static void drag_data_received	(GtkTreeView *tree_view, 
+				 GdkDragContext *context,
+				 gint x, gint y, 
+				 GtkSelectionData *data,
+				 guint info, 
+				 guint time, 
+				 GtkTreeModel *model);
+
 void prefs_summary_column_open(void)
 {
 	inc_lock();
@@ -149,8 +191,8 @@ static void prefs_summary_column_create(void)
 	GtkWidget *hbox1;
 	GtkWidget *clist_hbox;
 	GtkWidget *scrolledwin;
-	GtkWidget *stock_clist;
-	GtkWidget *shown_clist;
+	GtkWidget *stock_list_view;
+	GtkWidget *shown_list_view;
 
 	GtkWidget *btn_vbox;
 	GtkWidget *btn_vbox1;
@@ -164,8 +206,6 @@ static void prefs_summary_column_create(void)
 	GtkWidget *confirm_area;
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
-
-	gchar *title[1];
 
 	debug_print("Creating summary column setting window...\n");
 
@@ -219,14 +259,11 @@ static void prefs_summary_column_create(void)
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	title[0] = _("Available items");
-	stock_clist = gtk_clist_new_with_titles(1, title);
-	gtk_widget_show(stock_clist);
-	gtk_container_add(GTK_CONTAINER(scrolledwin), stock_clist);
-	gtk_clist_set_selection_mode(GTK_CLIST(stock_clist),
-				     GTK_SELECTION_BROWSE);
-	GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(stock_clist)->column[0].button,
-			       GTK_CAN_FOCUS);
+				       
+	stock_list_view = prefs_summary_column_list_view_create
+				(_("Available items"));
+	gtk_widget_show(stock_list_view);
+	gtk_container_add(GTK_CONTAINER(scrolledwin), stock_list_view);
 
 	/* add/remove button */
 	btn_vbox = gtk_vbox_new(FALSE, 0);
@@ -262,16 +299,10 @@ static void prefs_summary_column_create(void)
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_AUTOMATIC);
 
-	title[0] = _("Displayed items");
-	shown_clist = gtk_clist_new_with_titles(1, title);
-	gtk_widget_show(shown_clist);
-	gtk_container_add(GTK_CONTAINER(scrolledwin), shown_clist);
-	gtk_clist_set_selection_mode(GTK_CLIST(shown_clist),
-				     GTK_SELECTION_BROWSE);
-	gtk_clist_set_reorderable(GTK_CLIST(shown_clist), TRUE);
-	gtk_clist_set_use_drag_icons(GTK_CLIST(shown_clist), FALSE);
-	GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(shown_clist)->column[0].button,
-			       GTK_CAN_FOCUS);
+	shown_list_view = prefs_summary_column_list_view_create
+				(_("Displayed items"));
+	gtk_widget_show(shown_list_view);
+	gtk_container_add(GTK_CONTAINER(scrolledwin), shown_list_view);
 
 	/* up/down button */
 	btn_vbox = gtk_vbox_new(FALSE, 0);
@@ -321,15 +352,16 @@ static void prefs_summary_column_create(void)
 	g_signal_connect(G_OBJECT(cancel_btn), "clicked",
 			 G_CALLBACK(prefs_summary_column_cancel), NULL);
 
+
 	summary_col.window      = window;
-	summary_col.stock_clist = stock_clist;
-	summary_col.shown_clist = shown_clist;
 	summary_col.add_btn     = add_btn;
 	summary_col.remove_btn  = remove_btn;
 	summary_col.up_btn      = up_btn;
 	summary_col.down_btn    = down_btn;
 	summary_col.ok_btn      = ok_btn;
 	summary_col.cancel_btn  = cancel_btn;
+	summary_col.stock_list_view = stock_list_view;
+	summary_col.shown_list_view = shown_list_view;
 }
 
 SummaryColumnState *prefs_summary_column_get_config(void)
@@ -371,14 +403,18 @@ void prefs_summary_column_set_config(SummaryColumnState *state)
 
 static void prefs_summary_column_set_dialog(SummaryColumnState *state)
 {
-	GtkCList *stock_clist = GTK_CLIST(summary_col.stock_clist);
-	GtkCList *shown_clist = GTK_CLIST(summary_col.shown_clist);
+	GtkListStore *stock_store, *shown_store;
 	gint pos;
 	SummaryColumnType type;
 	gchar *name;
 
-	gtk_clist_clear(stock_clist);
-	gtk_clist_clear(shown_clist);
+	stock_store = GTK_LIST_STORE(gtk_tree_view_get_model
+			(GTK_TREE_VIEW(summary_col.stock_list_view)));
+	shown_store = GTK_LIST_STORE(gtk_tree_view_get_model
+			(GTK_TREE_VIEW(summary_col.shown_list_view)));
+
+	gtk_list_store_clear(stock_store);
+	gtk_list_store_clear(shown_store);
 
 	if (!state)
 		state = prefs_summary_column_get_config();
@@ -388,40 +424,45 @@ static void prefs_summary_column_set_dialog(SummaryColumnState *state)
 		type = state[pos].type;
 		name = gettext(col_name[type]);
 
-		if (state[pos].visible) {
-			row = gtk_clist_append(shown_clist, (gchar **)&name);
-			gtk_clist_set_row_data(shown_clist, row,
-					       GINT_TO_POINTER(type));
-		} else {
-			row = gtk_clist_append(stock_clist, (gchar **)&name);
-			gtk_clist_set_row_data(stock_clist, row,
-					       GINT_TO_POINTER(type));
-		}
+		if (state[pos].visible)
+			prefs_summary_column_insert_column(shown_store,
+							   -1, name,
+							   type);
+		else
+			prefs_summary_column_insert_column(stock_store,
+							    -1, name,
+							    type);
 	}
 }
 
 static void prefs_summary_column_set_view(void)
 {
-	GtkCList *stock_clist = GTK_CLIST(summary_col.stock_clist);
-	GtkCList *shown_clist = GTK_CLIST(summary_col.shown_clist);
+	gint stock_n_rows, shown_n_rows;
 	SummaryColumnState state[N_SUMMARY_COLS];
 	SummaryColumnType type;
 	gint row, pos = 0;
 
-	g_return_if_fail
-		(stock_clist->rows + shown_clist->rows == N_SUMMARY_COLS);
+	stock_n_rows = gtk_tree_model_iter_n_children
+		(gtk_tree_view_get_model(GTK_TREE_VIEW
+			(summary_col.stock_list_view)), NULL);
+	shown_n_rows = gtk_tree_model_iter_n_children
+		(gtk_tree_view_get_model(GTK_TREE_VIEW
+			(summary_col.shown_list_view)), NULL);
 
-	for (row = 0; row < stock_clist->rows; row++) {
-		type = GPOINTER_TO_INT
-			(gtk_clist_get_row_data(stock_clist, row));
+	g_return_if_fail
+		(stock_n_rows + shown_n_rows == N_SUMMARY_COLS);
+
+	for (row = 0; row < stock_n_rows; row++) {
+		type = prefs_summary_column_get_column
+			(summary_col.stock_list_view, row);
 		state[row].type = type;
 		state[row].visible = FALSE;
 	}
 
 	pos = row;
-	for (row = 0; row < shown_clist->rows; row++) {
-		type = GPOINTER_TO_INT
-			(gtk_clist_get_row_data(shown_clist, row));
+	for (row = 0; row < shown_n_rows; row++) {
+		type = prefs_summary_column_get_column
+			(summary_col.shown_list_view, row);
 		state[pos + row].type = type;
 		state[pos + row].visible = TRUE;
 	}
@@ -432,80 +473,155 @@ static void prefs_summary_column_set_view(void)
 
 static void prefs_summary_column_add(void)
 {
-	GtkCList *stock_clist = GTK_CLIST(summary_col.stock_clist);
-	GtkCList *shown_clist = GTK_CLIST(summary_col.shown_clist);
-	gint row;
-	SummaryColumnType type;
+	GtkListStore *stock_store, *shown_store;
+	GtkTreeIter stock_sel, shown_sel, shown_add;
+	gboolean shown_sel_valid;
 	gchar *name;
+	SummaryColumnType type;
+	
+	stock_store = GTK_LIST_STORE(gtk_tree_view_get_model
+		(GTK_TREE_VIEW(summary_col.stock_list_view)));
+	shown_store = GTK_LIST_STORE(gtk_tree_view_get_model
+		(GTK_TREE_VIEW(summary_col.shown_list_view)));
+	
+	if (!gtk_tree_selection_get_selected
+		(gtk_tree_view_get_selection
+			(GTK_TREE_VIEW(summary_col.stock_list_view)),
+		 NULL,
+		 &stock_sel))
+		return;
 
-	if (!stock_clist->selection) return;
+	shown_sel_valid = gtk_tree_selection_get_selected
+		(gtk_tree_view_get_selection
+			(GTK_TREE_VIEW(summary_col.shown_list_view)),
+		 NULL,
+		 &shown_sel);
+			 
+	gtk_tree_model_get(GTK_TREE_MODEL(stock_store), &stock_sel,
+			   SUMCOL_TYPE, &type,
+			   -1);
+			
+	gtk_list_store_remove(stock_store, &stock_sel);
 
-	row = GPOINTER_TO_INT(stock_clist->selection->data);
-	type = GPOINTER_TO_INT(gtk_clist_get_row_data(stock_clist, row));
-	gtk_clist_remove(stock_clist, row);
-	if (stock_clist->rows == row)
-		gtk_clist_select_row(stock_clist, row - 1, -1);
+	gtk_list_store_insert_after(shown_store, &shown_add, 
+				    shown_sel_valid ? &shown_sel : NULL);
 
-	if (!shown_clist->selection)
-		row = 0;
-	else
-		row = GPOINTER_TO_INT(shown_clist->selection->data) + 1;
-
-	name = gettext(col_name[type]);
-	row = gtk_clist_insert(shown_clist, row, (gchar **)&name);
-	gtk_clist_set_row_data(shown_clist, row, GINT_TO_POINTER(type));
-	gtk_clist_select_row(shown_clist, row, -1);
+	name = gettext(col_name[type]);				    
+				    
+	gtk_list_store_set(shown_store, &shown_add,
+			   SUMCOL_NAME, name,
+			   SUMCOL_TYPE, type,
+			   -1);
+	
+	gtk_tree_selection_select_iter(gtk_tree_view_get_selection
+		(GTK_TREE_VIEW(summary_col.shown_list_view)),
+		 &shown_add);
 }
 
 static void prefs_summary_column_remove(void)
 {
-	GtkCList *stock_clist = GTK_CLIST(summary_col.stock_clist);
-	GtkCList *shown_clist = GTK_CLIST(summary_col.shown_clist);
-	gint row;
-	SummaryColumnType type;
+	GtkListStore *stock_store, *shown_store;
+	GtkTreeIter shown_sel, stock_sel, stock_add;
+	gboolean stock_sel_valid;
 	gchar *name;
+	SummaryColumnType type;
+	
+	stock_store = GTK_LIST_STORE(gtk_tree_view_get_model
+		(GTK_TREE_VIEW(summary_col.stock_list_view)));
+	shown_store = GTK_LIST_STORE(gtk_tree_view_get_model
+		(GTK_TREE_VIEW(summary_col.shown_list_view)));
+		
+	if (!gtk_tree_selection_get_selected
+		(gtk_tree_view_get_selection
+			(GTK_TREE_VIEW(summary_col.shown_list_view)),
+		 NULL,
+		 &shown_sel))
+		return;
 
-	if (!shown_clist->selection) return;
+	stock_sel_valid = gtk_tree_selection_get_selected
+		(gtk_tree_view_get_selection
+			(GTK_TREE_VIEW(summary_col.stock_list_view)),
+		 NULL,
+		 &stock_sel);
+	
+	gtk_tree_model_get(GTK_TREE_MODEL(shown_store), &shown_sel,
+			   SUMCOL_TYPE, &type,
+			   -1);
+			
+	gtk_list_store_remove(shown_store, &shown_sel);
 
-	row = GPOINTER_TO_INT(shown_clist->selection->data);
-	type = GPOINTER_TO_INT(gtk_clist_get_row_data(shown_clist, row));
-	gtk_clist_remove(shown_clist, row);
-	if (shown_clist->rows == row)
-		gtk_clist_select_row(shown_clist, row - 1, -1);
+	gtk_list_store_insert_after(stock_store, &stock_add, 
+				    stock_sel_valid ? &stock_sel : NULL);
 
-	if (!stock_clist->selection)
-		row = 0;
-	else
-		row = GPOINTER_TO_INT(stock_clist->selection->data) + 1;
-
-	name = gettext(col_name[type]);
-	row = gtk_clist_insert(stock_clist, row, (gchar **)&name);
-	gtk_clist_set_row_data(stock_clist, row, GINT_TO_POINTER(type));
-	gtk_clist_select_row(stock_clist, row, -1);
+	name = gettext(col_name[type]);				    
+				    
+	gtk_list_store_set(stock_store, &stock_add,
+			   SUMCOL_NAME, name,
+			   SUMCOL_TYPE, type,
+			   -1);
+	
+	gtk_tree_selection_select_iter(gtk_tree_view_get_selection
+		(GTK_TREE_VIEW(summary_col.stock_list_view)),
+		&stock_add);
 }
 
 static void prefs_summary_column_up(void)
 {
-	GtkCList *clist = GTK_CLIST(summary_col.shown_clist);
-	gint row;
+	GtkTreePath *prev, *sel;
+	GtkTreeIter isel;
+	GtkListStore *shown_store;
+	GtkTreeIter iprev;
+	
+	if (!gtk_tree_selection_get_selected
+		(gtk_tree_view_get_selection
+			(GTK_TREE_VIEW(summary_col.shown_list_view)),
+		 NULL,
+		 &isel))
+		return;
 
-	if (!clist->selection) return;
+	shown_store = GTK_LIST_STORE(gtk_tree_view_get_model
+		(GTK_TREE_VIEW(summary_col.shown_list_view)));
 
-	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row > 0)
-		gtk_clist_row_move(clist, row, row - 1);
+	sel = gtk_tree_model_get_path(GTK_TREE_MODEL(shown_store), 
+				      &isel);
+	if (!sel)
+		return;
+
+	prev = gtk_tree_path_copy(sel);		
+	if (!gtk_tree_path_prev(prev)) {
+		gtk_tree_path_free(prev);
+		gtk_tree_path_free(sel);
+		return;
+	}
+
+	gtk_tree_model_get_iter(GTK_TREE_MODEL(shown_store),
+				&iprev, prev);
+	gtk_tree_path_free(sel);
+	gtk_tree_path_free(prev);
+
+	gtk_list_store_swap(shown_store, &iprev, &isel);
 }
 
 static void prefs_summary_column_down(void)
 {
-	GtkCList *clist = GTK_CLIST(summary_col.shown_clist);
-	gint row;
+	GtkListStore *shown_store;
+	GtkTreeIter next, sel;
+	
+	if (!gtk_tree_selection_get_selected
+		(gtk_tree_view_get_selection
+			(GTK_TREE_VIEW(summary_col.shown_list_view)),
+		 NULL,
+		 &sel))
+		return;
 
-	if (!clist->selection) return;
+	shown_store = GTK_LIST_STORE(gtk_tree_view_get_model
+		(GTK_TREE_VIEW(summary_col.shown_list_view)));
 
-	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row >= 0 && row < clist->rows - 1)
-		gtk_clist_row_move(clist, row, row + 1);
+	next = sel;
+	if (!gtk_tree_model_iter_next(GTK_TREE_MODEL(shown_store), &next)) 
+		return;
+
+	gtk_list_store_swap(shown_store, &next, &sel);
 }
 
 static void prefs_summary_column_set_to_default(void)
@@ -542,3 +658,242 @@ static gboolean prefs_summary_column_key_pressed(GtkWidget *widget,
 		summary_col.finished = TRUE;
 	return FALSE;
 }
+
+static GtkListStore *prefs_summary_column_create_store(void)
+{
+	return gtk_list_store_new(N_SUMCOL_COLUMNS,
+				  G_TYPE_STRING,
+				  G_TYPE_INT,
+				  -1);
+}
+
+static gint prefs_summary_column_insert_column(GtkListStore *store,
+					       gint row,
+					       const gchar *name,
+					       SummaryColumnType type)
+{
+	GtkTreeIter iter;
+
+	if (row >= 0) {
+		if (!gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(store),
+						   &iter, NULL, row))
+			row = -1;						   
+	}
+	if (row < 0) {
+		/* add new */
+		gtk_list_store_append(store, &iter);
+		gtk_list_store_set(store, &iter,
+				   SUMCOL_NAME, name,
+				   SUMCOL_TYPE, type,
+				   -1);
+		return -1 + gtk_tree_model_iter_n_children(GTK_TREE_MODEL(store),
+							   NULL);
+	} else {
+		/* change existing */
+		gtk_list_store_set(store, &iter, 
+				   SUMCOL_NAME, name,
+				   SUMCOL_TYPE, type,
+				   -1);
+	}
+}
+
+/*!
+ *\brief	Return the columnn type for a row
+ */
+static SummaryColumnType prefs_summary_column_get_column(GtkWidget *list, gint row)
+{	
+	GtkTreeView *list_view = GTK_TREE_VIEW(list);
+	GtkTreeModel *model = gtk_tree_view_get_model(list_view);
+	GtkTreeIter iter;
+	SummaryColumnType result;
+
+	if (!gtk_tree_model_iter_nth_child(model, &iter, NULL, row))
+		return -1;
+	
+	gtk_tree_model_get(model, &iter, 
+			   SUMCOL_TYPE, &result,
+			   -1);
+	
+	return result;
+}
+
+static GtkWidget *prefs_summary_column_list_view_create(const gchar *name)
+{
+	GtkWidget *list_view;
+	GtkTreeSelection *selector;
+	GtkTreeModel *model;
+
+	model = GTK_TREE_MODEL(prefs_summary_column_create_store());
+	list_view = gtk_tree_view_new_with_model(model);
+	g_object_unref(G_OBJECT(model));
+	
+	gtk_tree_view_set_rules_hint(GTK_TREE_VIEW(list_view), TRUE);
+	
+	selector = gtk_tree_view_get_selection(GTK_TREE_VIEW(list_view));
+	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
+
+	prefs_filtering_create_list_view_columns(GTK_WIDGET(list_view), name);
+
+	gtk_tree_view_enable_model_drag_source(GTK_TREE_VIEW(list_view),
+					       GDK_BUTTON1_MASK,
+					       row_targets,
+					       G_N_ELEMENTS(row_targets), 
+					       GDK_ACTION_MOVE);
+					    
+	gtk_tree_view_enable_model_drag_dest(GTK_TREE_VIEW(list_view), 
+					     row_targets, 
+					     G_N_ELEMENTS(row_targets), 
+					     GDK_ACTION_MOVE);
+	    	
+	g_signal_connect(G_OBJECT(list_view), "drag_data_get",
+			 G_CALLBACK(drag_data_get),
+			 model);
+
+	g_signal_connect(G_OBJECT(list_view), "drag_data_received",
+			 G_CALLBACK(drag_data_received),
+			 model);
+
+	return list_view;
+}
+
+static void prefs_filtering_create_list_view_columns(GtkWidget *list_view, 
+						     const gchar *name)
+{
+	GtkTreeViewColumn *column;
+	GtkCellRenderer *renderer;
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes
+		(name, renderer, "text", SUMCOL_NAME, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
+}
+
+static void drag_data_get(GtkTreeView *tree_view, GdkDragContext *context, 
+			  GtkSelectionData *data, guint info, 
+			  guint time, GtkTreeModel *model)
+{
+	GtkWidget *source;
+	GtkTreeIter iter;
+	SummaryColumnType type;
+	GtkTreeModel *source_model;
+
+	if (info != TARGET_INFO_SUMCOL) 
+		return;
+
+	if (!gtk_tree_selection_get_selected
+			(gtk_tree_view_get_selection(tree_view),
+			 &source_model, &iter)) 
+		return;			 
+	
+	gtk_tree_model_get(source_model, &iter, 
+			   SUMCOL_TYPE, &type,
+			   -1);
+
+	/* send the type */
+	gtk_selection_data_set(data, data->target, 8, (gchar *) &type, sizeof type);
+}
+
+static void drag_data_received(GtkTreeView *tree_view, GdkDragContext *context,
+			       gint x, gint y, GtkSelectionData *data,
+			       guint info, guint time, GtkTreeModel *model)
+{
+	GtkWidget *source;
+	GtkTreePath *dst = NULL, *sel = NULL;
+	GtkTreeIter isel, idst;
+	GtkTreeViewDropPosition pos;
+	gboolean before;
+	SummaryColumnType type;
+	GtkTreeModel *sel_model;
+	gchar *name;
+	
+	source = gtk_drag_get_source_widget(context);
+	
+	if (source == GTK_WIDGET(tree_view)) {
+	
+		/*
+		 * Same widget: re-order
+		 */
+		 
+		gtk_tree_selection_get_selected(gtk_tree_view_get_selection(tree_view),
+					   NULL, &isel);
+		sel = gtk_tree_model_get_path(model, &isel);
+		gtk_tree_view_get_dest_row_at_pos(tree_view, x, y,
+						  &dst, &pos);
+
+		/* NOTE: dst is invalid if selection beyond last row, in that
+		 * case move beyond last one (XXX_move_before(..., NULL)) */						  
+
+		if (dst) 						  
+			gtk_tree_model_get_iter(model, &idst, dst);
+		else 
+			gtk_list_store_move_before(GTK_LIST_STORE(model),
+						   &isel,
+						   NULL);
+
+		/* we do not drag if no valid dst and sel, and when
+		 * dst and sel are the same (moving after or before
+		 * itself doesn't change order...) */
+		if ((dst && sel) && gtk_tree_path_compare(sel, dst) != 0) {
+			if (pos == GTK_TREE_VIEW_DROP_BEFORE
+			||  pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE)
+				gtk_list_store_move_before(GTK_LIST_STORE(model),
+							   &isel,
+							   &idst);
+			else
+				gtk_list_store_move_after(GTK_LIST_STORE(model),
+							  &isel,
+							  &idst);
+			
+		} 
+		gtk_tree_path_free(dst);					  
+		gtk_tree_path_free(sel);
+		gtk_drag_finish(context, TRUE, FALSE, time);
+		
+	} else if (source == summary_col.stock_list_view 
+	||	   source == summary_col.shown_list_view) {
+	
+		/*
+		 * Other widget: change and update
+		 */
+
+		
+		/* get source information and remove */
+		gtk_tree_selection_get_selected(gtk_tree_view_get_selection(
+						GTK_TREE_VIEW(source)),
+						&sel_model, &isel);
+		type = *((gint *) data->data);
+		name = gettext(col_name[type]);
+		gtk_list_store_remove(GTK_LIST_STORE(sel_model), &isel);
+
+		/* get insertion position */
+		gtk_tree_view_get_dest_row_at_pos(tree_view, x, y, &dst, &pos);
+
+		/* NOTE: dst is invalid if insertion point beyond last row, 
+		 * just append to list in that case (XXX_store_append()) */
+
+		if (dst) {
+			gtk_tree_model_get_iter(model, &idst, dst);
+
+			if (pos == GTK_TREE_VIEW_DROP_BEFORE
+			||  pos == GTK_TREE_VIEW_DROP_INTO_OR_BEFORE)
+				gtk_list_store_insert_before(GTK_LIST_STORE(model),
+							     &isel,
+							     &idst);
+			else
+				gtk_list_store_insert_after(GTK_LIST_STORE(model),
+							    &isel,
+							    &idst);
+		} else
+			gtk_list_store_append(GTK_LIST_STORE(model),
+					      &isel);
+		
+		gtk_list_store_set(GTK_LIST_STORE(model), &isel,
+				   SUMCOL_NAME, name,
+				   SUMCOL_TYPE, type, -1);
+		gtk_tree_path_free(dst);
+		gtk_drag_finish(context, TRUE, FALSE, time);
+	}
+
+	/* XXXX: should we call gtk_drag_finish() for other code paths? */
+}
+

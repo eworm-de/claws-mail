@@ -31,6 +31,15 @@
 #include "prefswindow.h"
 #include "gtkutils.h"
 
+enum { 
+	PREFS_PAGE_TITLE,		/* page title */
+	PREFS_PAGE_DATA,		/* PrefsTreeNode data */	
+	PREFS_PAGE_DATA_AUTO_FREE,	/* auto free for PREFS_PAGE_DATA */
+	PREFS_PAGE_WEIGHT,		/* weight */
+	PREFS_PAGE_INDEX,		/* index in original page list */
+	N_PREFS_PAGE_COLUMNS
+};
+
 typedef struct _PrefsWindow PrefsWindow;
 typedef struct _PrefsTreeNode PrefsTreeNode;
 
@@ -39,7 +48,7 @@ struct _PrefsWindow
 	GtkWidget *window;
 	GtkWidget *table1;
 	GtkWidget *scrolledwindow1;
-	GtkWidget *ctree;
+	GtkWidget *tree_view;
 	GtkWidget *table2;
 	GtkWidget *pagelabel;
 	GtkWidget *labelframe;
@@ -60,49 +69,32 @@ struct _PrefsWindow
 struct _PrefsTreeNode
 {
 	PrefsPage *page;
-	gfloat     treeweight;
+	gfloat     treeweight; /* GTK2: not used */
 };
 
-static gboolean ctree_select_row(GtkCTree *ctree, GList *node, gint column, gpointer user_data)
-{
-	PrefsTreeNode *prefsnode;
-	PrefsPage *page;
-	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
-	gchar *labeltext;
-	gint pagenum, i;
+static GType G_TYPE_AUTO_POINTER;
 
-	prefsnode = gtk_ctree_node_get_row_data(GTK_CTREE(ctree), GTK_CTREE_NODE(node));
-	page = prefsnode->page;
+typedef struct AutoPointerRef {
+	gpointer	pointer;
+	glong		cnt;
+} AutoPointerRef;
 
-	debug_print("%f\n", prefsnode->treeweight);
+typedef struct AutoPointer {
+	AutoPointerRef *ref;
+} AutoPointer;
 
-	if (page == NULL) {
-		gtk_label_set_text(GTK_LABEL(prefswindow->pagelabel), "");
-		pagenum = gtk_notebook_page_num(GTK_NOTEBOOK(prefswindow->notebook),
-						prefswindow->empty_page);
-		gtk_notebook_set_page(GTK_NOTEBOOK(prefswindow->notebook), pagenum);
-		return FALSE;
-	}
+static gpointer g_auto_pointer_new			(gpointer pointer);
+static gpointer g_auto_pointer_copy			(gpointer p);
+static void g_auto_pointer_free				(gpointer p);
 
-	if (!page->page_open) {
-		page->create_widget(page, GTK_WINDOW(prefswindow->window), prefswindow->data);
-		gtk_container_add(GTK_CONTAINER(prefswindow->notebook), page->widget);
-		page->page_open = TRUE;
-	}
-
-	i = 0;
-	while (page->path[i + 1] != 0)
-		i++;
-	labeltext = page->path[i];
-
-	gtk_label_set_text(GTK_LABEL(prefswindow->pagelabel), labeltext);
-
-	pagenum = gtk_notebook_page_num(GTK_NOTEBOOK(prefswindow->notebook),
-					page->widget);
-	gtk_notebook_set_page(GTK_NOTEBOOK(prefswindow->notebook), pagenum);
-
-	return FALSE;
-}
+static GtkTreeStore *prefswindow_create_data_store	(void);
+static GtkWidget *prefswindow_tree_view_create		(PrefsWindow* prefswindow);
+static void prefs_filtering_create_tree_view_columns	(GtkWidget *tree_view);
+static gboolean prefswindow_row_selected		(GtkTreeSelection *selector,
+							 GtkTreeModel *model, 
+							 GtkTreePath *path,
+							 gboolean currently_selected,
+							 gpointer data);
 
 static void save_all_pages(GSList *prefs_pages)
 {
@@ -143,6 +135,7 @@ static void close_prefs_window(PrefsWindow *prefswindow)
 	debug_print("prefs window closed\n");
 
 	close_all_pages(prefswindow->prefs_pages);
+
 	gtk_widget_destroy(prefswindow->window);
 	g_slist_free(prefswindow->prefs_pages);
 	if(prefswindow->func != NULL)
@@ -173,39 +166,6 @@ static gboolean window_closed(GtkWidget *widget, GdkEvent *event, gpointer user_
 	return FALSE;
 }
 
-struct name_search
-{
-	gchar *text;
-	GtkCTreeNode *node;
-};
-
-static gboolean find_child_by_name(GtkCTree *ctree, GtkCTreeNode *node, struct name_search *name_search)
-{
-	gchar *text = NULL;
-
-	text = GTK_CELL_TEXT(GTK_CTREE_ROW(node)->row.cell[0])->text;
-	if (text == NULL)
-		return FALSE;
-
-	if (strcmp(text, name_search->text) == 0)
-		name_search->node = node;
-
-	return FALSE;
-}
-
-gint compare_func(GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
-{
-	PrefsTreeNode *prefsnode1 = ((GtkCListRow *)ptr1)->data;
-	PrefsTreeNode *prefsnode2 = ((GtkCListRow *)ptr2)->data;
-
-	if (prefsnode1 == NULL || prefsnode2 == NULL)
-		return 0;
-
-	return prefsnode1->treeweight > prefsnode2->treeweight ? -1 : 
-	       prefsnode1->treeweight < prefsnode2->treeweight ?  1 : 
-							          0;
-}
-
 static gboolean prefswindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				    PrefsWindow *data)
 {
@@ -233,14 +193,146 @@ static gboolean prefswindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	return FALSE;
 }
 
+typedef struct FindNodeByName {
+	const gchar *name;
+	gboolean     found;
+	GtkTreeIter  node;
+} FindNodeByName;
+
+static gboolean find_node_by_name(GtkTreeModel *model, GtkTreePath *path,
+				  GtkTreeIter *iter, FindNodeByName *data)
+{
+	gchar *name;
+	gboolean result = FALSE;
+
+	gtk_tree_model_get(model, iter, PREFS_PAGE_TITLE, &name, -1);
+	if (name) {
+		result = strcmp(name, data->name) == 0;
+		if (result) {
+			data->found = TRUE;
+			data->node  = *iter;
+		}			
+		g_free(name);
+	}
+	
+	return result;
+}
+
+static gint prefswindow_tree_sort_by_weight(GtkTreeModel *model, 
+					    GtkTreeIter  *a,
+					    GtkTreeIter  *b,
+					    gpointer      context)
+{
+	gfloat f1, f2;
+	gint i1, i2;
+
+	/* From observation sorting should keep in account the original
+	 * order in the prefs_pages list. I.e. if equal weight, prefer 
+	 * the index in the pages list */ 
+	gtk_tree_model_get(model, a, 
+			   PREFS_PAGE_INDEX,  &i1,
+			   PREFS_PAGE_WEIGHT, &f1, -1);
+	gtk_tree_model_get(model, b, 
+			   PREFS_PAGE_INDEX,  &i2,
+			   PREFS_PAGE_WEIGHT, &f2, -1);
+
+	return f1 < f2 ? -1 : (f1 > f2 ?  1 : 
+	      (i1 < i2 ?  1 : (i1 > i2 ? -1 : 0)));
+}
+				  
+static void prefswindow_build_tree(GtkWidget *tree_view, GSList *prefs_pages)
+{
+	GtkTreeStore *store = GTK_TREE_STORE(gtk_tree_view_get_model
+			(GTK_TREE_VIEW(tree_view)));
+	GSList *cur;
+	gint index; /* index in pages list */
+	GtkTreeSelection *selection;
+	GtkTreeIter iter;
+	
+	for (cur = prefs_pages, index = 0; cur != NULL; cur = g_slist_next(cur), index++) {
+		PrefsPage *page = (PrefsPage *)cur->data;
+		FindNodeByName find_name;
+		GtkTreeIter node, child;
+		PrefsTreeNode *prefs_node;
+		int i;
+
+		/* each page tree component string */
+		for (i = 0; page->path[i] != NULL; i++) {
+			find_name.found = FALSE;
+			find_name.name  = page->path[i];
+			
+			/* find node to attach to 
+			 * FIXME: we search the entire tree, so this is suboptimal... */
+			gtk_tree_model_foreach(GTK_TREE_MODEL(store), 
+					       (GtkTreeModelForeachFunc) find_node_by_name,
+					       &find_name);
+			if (find_name.found) {
+				node = find_name.node;
+				gtk_tree_model_get(GTK_TREE_MODEL(store), &node,
+						   PREFS_PAGE_DATA, &prefs_node,
+						   -1);
+			} else {
+				gpointer autoptr; 
+			
+				/* create a new top level */
+				gtk_tree_store_append(store, &child, i == 0 ? NULL : &node);
+				prefs_node = g_new0(PrefsTreeNode, 1);
+				autoptr = g_auto_pointer_new(prefs_node);
+				gtk_tree_store_set(store, &child,
+						   PREFS_PAGE_TITLE, page->path[i],
+						   PREFS_PAGE_DATA,  prefs_node,
+						   PREFS_PAGE_DATA_AUTO_FREE, autoptr,
+						   PREFS_PAGE_INDEX, index,
+						   PREFS_PAGE_WEIGHT, 0.0f,
+						   -1);
+				g_auto_pointer_free(autoptr);
+				node = child;
+			}
+		}
+
+		/* right now we have a node and its prefs_node */
+		prefs_node->page = page;
+
+		/* parents "inherit" the max weight of the children */
+		do {
+			gfloat f;
+			
+			gtk_tree_model_get(GTK_TREE_MODEL(store), &node, 
+					   PREFS_PAGE_WEIGHT, &f,
+					   -1);
+			if (page->weight > f) {
+				f = page->weight;
+				gtk_tree_store_set(store, &node,
+						   PREFS_PAGE_WEIGHT, f,
+						   -1);
+			}	
+			child = node;	
+		} while (gtk_tree_model_iter_parent(GTK_TREE_MODEL(store),	
+						    &node, &child));
+	}
+
+	gtk_tree_view_expand_all(GTK_TREE_VIEW(tree_view));
+
+	/* set sort func & sort */
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store),
+					PREFS_PAGE_WEIGHT,
+					prefswindow_tree_sort_by_weight,
+					NULL, NULL);
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store),
+					     PREFS_PAGE_WEIGHT,
+					     GTK_SORT_DESCENDING);
+
+	/* select first one */					     
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree_view));
+	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter))
+		gtk_tree_selection_select_iter(selection, &iter);
+}
+
 void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer data, GtkDestroyNotify func)
 {
-	static gchar *titles[1];
-	GSList *cur;
 	gint optsize;
 	PrefsWindow *prefswindow;
-
-	titles[0] = _("Page Index");
+	GtkTreeStore *store;
 
 	prefswindow = g_new0(PrefsWindow, 1);
 
@@ -265,9 +357,10 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer dat
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(prefswindow->scrolledwindow1), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_table_attach(GTK_TABLE(prefswindow->table1), prefswindow->scrolledwindow1, 0, 1, 0, 1, GTK_FILL, GTK_FILL | GTK_EXPAND, 2, 2);
 
-	prefswindow->ctree = gtk_ctree_new_with_titles(1, 0, titles);
-	gtk_widget_show(prefswindow->ctree);
-	gtk_container_add(GTK_CONTAINER(prefswindow->scrolledwindow1), prefswindow->ctree);
+	prefswindow->tree_view = prefswindow_tree_view_create(prefswindow);
+	gtk_widget_show(prefswindow->tree_view);
+	gtk_container_add(GTK_CONTAINER(prefswindow->scrolledwindow1), 
+			  prefswindow->tree_view);
 
 	prefswindow->frame = gtk_frame_new(NULL);
 	gtk_widget_show(prefswindow->frame);
@@ -300,57 +393,9 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer dat
 	gtk_widget_show(prefswindow->empty_page);
 	gtk_container_add(GTK_CONTAINER(prefswindow->notebook), prefswindow->empty_page);
 
-	/* actually we should create a tree here */
-	for (cur = prefs_pages; cur != NULL; cur = g_slist_next(cur)) {
-		PrefsPage *page = (PrefsPage *)cur->data;
-		GtkCTreeNode *node = NULL;
-		gchar *text[2], *part;
-		int i;
-		struct name_search name_search;
-		PrefsTreeNode *prefsnode;
-		for (i = 0; page->path[i] != NULL; i++) {
-			part = page->path[i];
-			name_search.text = part;
-			name_search.node = NULL;
+	prefswindow_build_tree(prefswindow->tree_view, prefs_pages);		
 
-			gtk_ctree_post_recursive_to_depth(GTK_CTREE(prefswindow->ctree), node, node != NULL ? GTK_CTREE_ROW(node)->level + 1 : 1, GTK_CTREE_FUNC(find_child_by_name), &name_search);
-
-			if (name_search.node) {
-				node = name_search.node;
-			} else {
-				text[0] = part;
-				node = gtk_ctree_insert_node(GTK_CTREE(prefswindow->ctree), node, NULL, text, 0, NULL, NULL, NULL, NULL, FALSE, TRUE);
-
-				prefsnode = g_new0(PrefsTreeNode, 1);
-				prefsnode->treeweight = 0.0;
-				gtk_ctree_node_set_row_data_full(GTK_CTREE(prefswindow->ctree), node, prefsnode, g_free);
-			}
-		}
-
-		prefsnode = (PrefsTreeNode *) GTK_CTREE_ROW(node)->row.data;
-		prefsnode->page = page;
-
-		for (; node != NULL; node = GTK_CTREE_ROW(node)->parent) {
-			PrefsTreeNode *curnode = (PrefsTreeNode *) GTK_CTREE_ROW(node)->row.data;
-
-			if (page->weight > curnode->treeweight)
-				curnode->treeweight = page->weight;
-		}
-	}
-	g_signal_connect(G_OBJECT(prefswindow->ctree), "tree-select-row", 
-			 G_CALLBACK(ctree_select_row), prefswindow);
-
-	gtk_clist_set_selection_mode(GTK_CLIST(prefswindow->ctree), GTK_SELECTION_BROWSE);
-	gtk_clist_column_titles_passive(GTK_CLIST(prefswindow->ctree));
-	optsize = gtk_clist_optimal_column_width(GTK_CLIST(prefswindow->ctree), 0);
-	gtk_clist_set_column_resizeable(GTK_CLIST(prefswindow->ctree), 0, TRUE);
-	gtk_clist_set_column_auto_resize(GTK_CLIST(prefswindow->ctree), 0, FALSE);
-	gtk_clist_set_column_width(GTK_CLIST(prefswindow->ctree), 0, optsize);
-	gtk_clist_set_column_min_width(GTK_CLIST(prefswindow->ctree), 0, optsize);
-	gtk_clist_set_column_max_width(GTK_CLIST(prefswindow->ctree), 0, optsize);
-	gtk_clist_set_compare_func(GTK_CLIST(prefswindow->ctree), compare_func);
-	gtk_ctree_sort_recursive(GTK_CTREE(prefswindow->ctree), NULL);
-	gtk_widget_grab_focus(GTK_WIDGET(prefswindow->ctree));
+	gtk_widget_grab_focus(prefswindow->tree_view);
 
 	gtkut_button_set_create(&prefswindow->confirm_area,
 				&prefswindow->ok_btn,		_("OK"),
@@ -379,3 +424,154 @@ void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data)
 {
 	prefswindow_open_full(title, prefs_pages, data, NULL);
 }
+
+/* NOTE: auto pointer could be made more generic, but this works
+ * fine for now. */
+
+static gpointer g_auto_pointer_new(gpointer p)
+{	
+	AutoPointerRef *ref = g_new0(AutoPointerRef, 1);
+	AutoPointer    *ptr = g_new0(AutoPointer, 1);
+
+	ref->pointer = p;
+	ref->cnt = 1;
+
+	ptr->ref = ref;
+
+	return ptr;
+}
+
+static gpointer g_auto_pointer_copy(gpointer p)
+{
+	AutoPointer	*ptr = p;
+	AutoPointerRef	*ref = ptr->ref;
+	AutoPointer	*newp = g_new0(AutoPointer, 1);
+	newp->ref = ref;
+
+	++(ref->cnt);
+	return newp;
+}
+
+static void g_auto_pointer_free(gpointer p)
+{
+	AutoPointer	*ptr = p;
+	AutoPointerRef	*ref = ptr->ref;
+
+	if (--(ref->cnt) == 0) {
+		g_free(ref->pointer);
+		g_free(ref);
+	}
+	g_free(ptr);		
+}
+
+static void prefswindow_static_init(void)
+{
+	if (!G_TYPE_AUTO_POINTER)
+		G_TYPE_AUTO_POINTER = 
+			g_boxed_type_register_static("G_TYPE_AUTO_POINTER",
+						     g_auto_pointer_copy,
+						     g_auto_pointer_free);
+}
+
+static GtkTreeStore *prefswindow_create_data_store(void)
+{
+	/* should always be called before using auto pointer type */
+	prefswindow_static_init();
+	
+	return gtk_tree_store_new(N_PREFS_PAGE_COLUMNS,
+				  G_TYPE_STRING,
+				  G_TYPE_POINTER,
+				  G_TYPE_AUTO_POINTER,
+				  G_TYPE_FLOAT,
+				  G_TYPE_INT,
+				  -1);
+}
+
+static GtkWidget *prefswindow_tree_view_create(PrefsWindow *prefswindow)
+{
+	GtkTreeView *tree_view;
+	GtkTreeSelection *selector;
+	GtkTreeModel *model;
+
+	model = GTK_TREE_MODEL(prefswindow_create_data_store());
+	tree_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(model));
+	g_object_unref(model);
+	gtk_tree_view_set_rules_hint(tree_view, TRUE);
+	
+	selector = gtk_tree_view_get_selection(tree_view);
+	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
+	gtk_tree_selection_set_select_function(selector, prefswindow_row_selected,
+					       prefswindow, NULL);
+
+	/* create the columns */
+	prefs_filtering_create_tree_view_columns(GTK_WIDGET(tree_view));
+
+	return GTK_WIDGET(tree_view);
+}
+
+static void prefs_filtering_create_tree_view_columns(GtkWidget *tree_view)
+{
+	GtkTreeViewColumn *column;
+	GtkCellRenderer *renderer;
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes
+		(_("Page Index"),
+		 renderer,
+		 "text", PREFS_PAGE_TITLE,
+		 NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(tree_view), column);		
+}
+
+static gboolean prefswindow_row_selected(GtkTreeSelection *selector,
+					 GtkTreeModel *model, 
+					 GtkTreePath *path,
+					 gboolean currently_selected,
+					 gpointer data)
+{
+	PrefsTreeNode *prefsnode;
+	PrefsPage *page;
+	PrefsWindow *prefswindow = (PrefsWindow *) data;
+	gchar *labeltext;
+	gint pagenum, i;
+	GtkTreeIter iter;
+
+	if (currently_selected) 
+		return TRUE;
+
+	if (!gtk_tree_model_get_iter(GTK_TREE_MODEL(model), &iter, path))
+		return TRUE;
+
+	gtk_tree_model_get(model, &iter, PREFS_PAGE_DATA, &prefsnode, -1);
+	page = prefsnode->page;
+
+	debug_print("%f\n", prefsnode->treeweight);
+
+	if (page == NULL) {
+		gtk_label_set_text(GTK_LABEL(prefswindow->pagelabel), "");
+		pagenum = gtk_notebook_page_num(GTK_NOTEBOOK(prefswindow->notebook),
+						prefswindow->empty_page);
+		gtk_notebook_set_page(GTK_NOTEBOOK(prefswindow->notebook), pagenum);
+		return TRUE;
+	}
+
+	if (!page->page_open) {
+		page->create_widget(page, GTK_WINDOW(prefswindow->window), prefswindow->data);
+		gtk_container_add(GTK_CONTAINER(prefswindow->notebook), page->widget);
+		page->page_open = TRUE;
+	}
+
+	i = 0;
+	while (page->path[i + 1] != 0)
+		i++;
+	labeltext = page->path[i];
+
+	gtk_label_set_text(GTK_LABEL(prefswindow->pagelabel), labeltext);
+
+	pagenum = gtk_notebook_page_num(GTK_NOTEBOOK(prefswindow->notebook),
+					page->widget);
+	gtk_notebook_set_page(GTK_NOTEBOOK(prefswindow->notebook), pagenum);
+
+	return TRUE;
+}
+

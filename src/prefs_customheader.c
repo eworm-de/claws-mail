@@ -46,6 +46,12 @@
 #include "gtkutils.h"
 #include "alertpanel.h"
 
+enum {
+	CUSTHDR_STRING,		/*!< display string managed by list store */
+	CUSTHDR_DATA,		/*!< string managed by us */
+	N_CUSTHDR_COLUMNS
+};
+
 static struct CustomHdr {
 	GtkWidget *window;
 
@@ -55,31 +61,21 @@ static struct CustomHdr {
 	GtkWidget *hdr_combo;
 	GtkWidget *hdr_entry;
 	GtkWidget *val_entry;
-	GtkWidget *customhdr_clist;
+	GtkWidget *list_view;
 } customhdr;
 
 /* widget creating functions */
 static void prefs_custom_header_create	(void);
 
-static void prefs_custom_header_set_dialog	(PrefsAccount *ac);
-static void prefs_custom_header_set_list	(PrefsAccount *ac);
-static gint prefs_custom_header_clist_set_row	(PrefsAccount *ac,
-						 gint	       row);
+static void prefs_custom_header_set_dialog		(PrefsAccount *ac);
+static void prefs_custom_header_set_list		(PrefsAccount *ac);
+static void prefs_custom_header_list_view_set_row	(PrefsAccount *ac);
 
 /* callback functions */
 static void prefs_custom_header_add_cb		(void);
 static void prefs_custom_header_delete_cb	(void);
 static void prefs_custom_header_up		(void);
 static void prefs_custom_header_down		(void);
-static void prefs_custom_header_select		(GtkCList	*clist,
-						 gint		 row,
-						 gint		 column,
-						 GdkEvent	*event);
-
-static void prefs_custom_header_row_moved	(GtkCList	*clist,
-						 gint		 source_row,
-						 gint		 dest_row,
-						 gpointer	 data);
 
 static gboolean prefs_custom_header_key_pressed	(GtkWidget	*widget,
 						 GdkEventKey	*event,
@@ -89,6 +85,24 @@ static void prefs_custom_header_cancel		(void);
 static gint prefs_custom_header_deleted		(GtkWidget	*widget,
 						 GdkEventAny	*event,
 						 gpointer	 data);
+
+static GtkListStore* prefs_custom_header_create_data_store	(void);
+
+static void prefs_custom_header_list_view_insert_header	(GtkWidget *list_view,
+							 GtkTreeIter *row_iter,
+							 gchar *header,
+							 gpointer data);
+
+static GtkWidget *prefs_custom_header_list_view_create (void);
+
+static void prefs_custom_header_create_list_view_columns	(GtkWidget *list_view);
+
+static gboolean prefs_custom_header_selected	(GtkTreeSelection *selector,
+						 GtkTreeModel *model, 
+						 GtkTreePath *path,
+						 gboolean currently_selected,
+						 gpointer data);
+
 
 static PrefsAccount *cur_ac = NULL;
 
@@ -134,7 +148,7 @@ static void prefs_custom_header_create(void)
 
 	GtkWidget *ch_hbox;
 	GtkWidget *ch_scrolledwin;
-	GtkWidget *customhdr_clist;
+	GtkWidget *list_view;
 
 	GtkWidget *btn_vbox;
 	GtkWidget *up_btn;
@@ -258,23 +272,9 @@ static void prefs_custom_header_create(void)
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
 
-	title[0] = _("Current custom headers");
-	customhdr_clist = gtk_clist_new_with_titles(1, title);
-	gtk_widget_show (customhdr_clist);
-	gtk_container_add (GTK_CONTAINER (ch_scrolledwin), customhdr_clist);
-	gtk_clist_set_column_width (GTK_CLIST (customhdr_clist), 0, 80);
-	gtk_clist_set_selection_mode (GTK_CLIST (customhdr_clist),
-				      GTK_SELECTION_BROWSE);
-	gtk_clist_set_reorderable (GTK_CLIST (customhdr_clist), TRUE);
-	gtk_clist_set_use_drag_icons (GTK_CLIST (customhdr_clist), FALSE);
-	GTK_WIDGET_UNSET_FLAGS (GTK_CLIST (customhdr_clist)->column[0].button,
-				GTK_CAN_FOCUS);
-	g_signal_connect (G_OBJECT (customhdr_clist), "select_row",
-			  G_CALLBACK (prefs_custom_header_select),
-			  NULL);
-	g_signal_connect_after
-		(G_OBJECT (customhdr_clist), "row_move",
-		 G_CALLBACK (prefs_custom_header_row_moved), NULL);
+	list_view = prefs_custom_header_list_view_create();
+	gtk_widget_show (list_view);
+	gtk_container_add (GTK_CONTAINER (ch_scrolledwin), list_view);
 
 	btn_vbox = gtk_vbox_new (FALSE, 8);
 	gtk_widget_show (btn_vbox);
@@ -302,7 +302,7 @@ static void prefs_custom_header_create(void)
 	customhdr.hdr_entry  = GTK_COMBO (hdr_combo)->entry;
 	customhdr.val_entry  = val_entry;
 
-	customhdr.customhdr_clist   = customhdr_clist;
+	customhdr.list_view   = list_view;
 }
 
 void prefs_custom_header_read_config(PrefsAccount *ac)
@@ -434,58 +434,68 @@ void prefs_custom_header_write_config(PrefsAccount *ac)
 
 static void prefs_custom_header_set_dialog(PrefsAccount *ac)
 {
-	GtkCList *clist = GTK_CLIST(customhdr.customhdr_clist);
+	GtkListStore *store;
 	GSList *cur;
-	gchar *ch_str[1];
-	gint row;
-
-	gtk_clist_freeze(clist);
-	gtk_clist_clear(clist);
+	
+	store = GTK_LIST_STORE(gtk_tree_view_get_model
+				(GTK_TREE_VIEW(customhdr.list_view)));
+	gtk_list_store_clear(store);
 
 	for (cur = ac->customhdr_list; cur != NULL; cur = cur->next) {
  		CustomHeader *ch = (CustomHeader *)cur->data;
+		gchar *ch_str;
 
-		ch_str[0] = g_strdup_printf("%s: %s", ch->name,
-					    ch->value ? ch->value : "");
-		row = gtk_clist_append(clist, ch_str);
-		gtk_clist_set_row_data(clist, row, ch);
+		ch_str = g_strdup_printf("%s: %s", ch->name,
+					 ch->value ? ch->value : "");
 
-		g_free(ch_str[0]);
+		prefs_custom_header_list_view_insert_header
+			(customhdr.list_view, NULL, ch_str, ch);						 
+
+		g_free(ch_str);
 	}
-
-	gtk_clist_thaw(clist);
 }
 
 static void prefs_custom_header_set_list(PrefsAccount *ac)
 {
-	gint row = 0;
 	CustomHeader *ch;
+	GtkTreeIter iter;
+	GtkListStore *store;
 
 	g_slist_free(ac->customhdr_list);
 	ac->customhdr_list = NULL;
 
-	while ((ch = gtk_clist_get_row_data
-		(GTK_CLIST(customhdr.customhdr_clist), row)) != NULL) {
-		ac->customhdr_list = g_slist_append(ac->customhdr_list, ch);
-		row++;
+	store = GTK_LIST_STORE(gtk_tree_view_get_model
+				(GTK_TREE_VIEW(customhdr.list_view)));
+
+	if (gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter)) {
+		do {
+			gtk_tree_model_get(GTK_TREE_MODEL(store), &iter,
+					   CUSTHDR_DATA, &ch,
+					   -1);
+			ac->customhdr_list = g_slist_append(ac->customhdr_list, ch);
+		} while (gtk_tree_model_iter_next(GTK_TREE_MODEL(store),
+						  &iter));
 	}
 }
 
-static gint prefs_custom_header_clist_set_row(PrefsAccount *ac, gint row)
+static void prefs_custom_header_list_view_set_row(PrefsAccount *ac)
 {
-	GtkCList *clist = GTK_CLIST(customhdr.customhdr_clist);
 	CustomHeader *ch;
 	const gchar *entry_text;
-	gchar *ch_str[1];
+	gchar *ch_str;
+	GtkListStore *store;
+
+	store = GTK_LIST_STORE(gtk_tree_view_get_model
+				(GTK_TREE_VIEW(customhdr.list_view)));
 
 	entry_text = gtk_entry_get_text(GTK_ENTRY(customhdr.hdr_entry));
 	if (entry_text[0] == '\0') {
 		alertpanel_error(_("Header name is not set."));
-		return -1;
+		return;
 	}
 	if (!custom_header_is_allowed(entry_text)) {
 		alertpanel_error(_("This Header name is not allowed as a custom header."));
-		return -1;
+		return;
 	}
 
 	ch = g_new0(CustomHeader, 1);
@@ -505,99 +515,101 @@ static gint prefs_custom_header_clist_set_row(PrefsAccount *ac, gint row)
 		gtk_entry_set_text(GTK_ENTRY(customhdr.val_entry), ch->value);
 	}
 
-	ch_str[0] = g_strdup_printf("%s: %s", ch->name,
-				    ch->value ? ch->value : "");
-
-	if (row < 0)
-		row = gtk_clist_append(clist, ch_str);
-	else {
-		CustomHeader *tmp_ch;
-
-		gtk_clist_set_text(clist, row, 0, ch_str[0]);
-		tmp_ch = gtk_clist_get_row_data(clist, row);
-		if (tmp_ch)
-			custom_header_free(tmp_ch);
-	}
-
-	gtk_clist_set_row_data(clist, row, ch);
-
-	g_free(ch_str[0]);
+	ch_str = g_strdup_printf("%s: %s", ch->name,
+				 ch->value ? ch->value : "");
+	
+	prefs_custom_header_list_view_insert_header
+		(customhdr.list_view, NULL, ch_str, ch);
+	
+	g_free(ch_str);
 
 	prefs_custom_header_set_list(cur_ac);
 
-	return row;
 }
 
 static void prefs_custom_header_add_cb(void)
 {
-	prefs_custom_header_clist_set_row(cur_ac, -1);
+	prefs_custom_header_list_view_set_row(cur_ac);
 }
 
 static void prefs_custom_header_delete_cb(void)
 {
-	GtkCList *clist = GTK_CLIST(customhdr.customhdr_clist);
+	GtkTreeIter sel;
+	GtkTreeModel *model;
 	CustomHeader *ch;
-	gint row;
 
-	if (!clist->selection) return;
-	row = GPOINTER_TO_INT(clist->selection->data);
+	if (!gtk_tree_selection_get_selected(gtk_tree_view_get_selection
+				(GTK_TREE_VIEW(customhdr.list_view)),
+				&model, &sel))
+		return;	
 
 	if (alertpanel(_("Delete header"),
 		       _("Do you really want to delete this header?"),
 		       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
 		return;
 
-	ch = gtk_clist_get_row_data(clist, row);
-	custom_header_free(ch);
-	gtk_clist_remove(clist, row);
+	gtk_tree_model_get(model, &sel,
+			   CUSTHDR_DATA, &ch,
+			   -1);
+	gtk_list_store_remove(GTK_LIST_STORE(model), &sel);
+
 	cur_ac->customhdr_list = g_slist_remove(cur_ac->customhdr_list, ch);
+	
+	custom_header_free(ch);
 }
 
 static void prefs_custom_header_up(void)
 {
-	GtkCList *clist = GTK_CLIST(customhdr.customhdr_clist);
-	gint row;
+	GtkTreePath *prev, *sel;
+	GtkTreeIter isel;
+	GtkListStore *store;
+	GtkTreeIter iprev;
+	
+	if (!gtk_tree_selection_get_selected
+		(gtk_tree_view_get_selection
+			(GTK_TREE_VIEW(customhdr.list_view)),
+		 (GtkTreeModel **) &store,	
+		 &isel))
+		return;
 
-	if (!clist->selection) return;
+	sel = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &isel);
+	if (!sel)
+		return;
+	
+	/* no move if we're at row 0... */
+	prev = gtk_tree_path_copy(sel);
+	if (!gtk_tree_path_prev(prev)) {
+		gtk_tree_path_free(prev);
+		gtk_tree_path_free(sel);
+		return;
+	}
 
-	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row > 0)
-		gtk_clist_row_move(clist, row, row - 1);
+	gtk_tree_model_get_iter(GTK_TREE_MODEL(store),
+				&iprev, prev);
+	gtk_tree_path_free(sel);
+	gtk_tree_path_free(prev);
+
+	gtk_list_store_swap(store, &iprev, &isel);
+	prefs_custom_header_set_list(cur_ac);
 }
 
 static void prefs_custom_header_down(void)
 {
-	GtkCList *clist = GTK_CLIST(customhdr.customhdr_clist);
-	gint row;
+	GtkListStore *store;
+	GtkTreeIter next, sel;
+	
+	if (!gtk_tree_selection_get_selected
+		(gtk_tree_view_get_selection
+			(GTK_TREE_VIEW(customhdr.list_view)),
+		 (GtkTreeModel **) &store,
+		 &sel))
+		return;
 
-	if (!clist->selection) return;
+	next = sel;
+	if (!gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &next)) 
+		return;
 
-	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row >= 0 && row < clist->rows - 1)
-		gtk_clist_row_move(clist, row, row + 1);
-}
-
-#define ENTRY_SET_TEXT(entry, str) \
-	gtk_entry_set_text(GTK_ENTRY(entry), str ? str : "")
-
-static void prefs_custom_header_select(GtkCList *clist, gint row, gint column,
-				       GdkEvent *event)
-{
-	CustomHeader *ch;
-	CustomHeader default_ch = { 0, "", NULL };
-
-	ch = gtk_clist_get_row_data(clist, row);
-	if (!ch) ch = &default_ch;
-
-	ENTRY_SET_TEXT(customhdr.hdr_entry, ch->name);
-	ENTRY_SET_TEXT(customhdr.val_entry, ch->value);
-}
-
-#undef ENTRY_SET_TEXT
-
-static void prefs_custom_header_row_moved(GtkCList *clist, gint source_row,
-					  gint dest_row, gpointer data)
-{
+	gtk_list_store_swap(store, &next, &sel);
 	prefs_custom_header_set_list(cur_ac);
 }
 
@@ -628,3 +640,114 @@ static gint prefs_custom_header_deleted(GtkWidget *widget, GdkEventAny *event,
 	prefs_custom_header_cancel();
 	return TRUE;
 }
+
+static GtkListStore* prefs_custom_header_create_data_store(void)
+{
+	return gtk_list_store_new(N_CUSTHDR_COLUMNS,
+				  G_TYPE_STRING,	
+				  G_TYPE_POINTER,
+				  -1);
+}
+
+static void prefs_custom_header_list_view_insert_header(GtkWidget *list_view,
+							GtkTreeIter *row_iter,
+							gchar *header,
+							gpointer data)
+{
+	GtkTreeIter iter;
+	GtkListStore *list_store = GTK_LIST_STORE(gtk_tree_view_get_model
+					(GTK_TREE_VIEW(list_view)));
+
+	if (row_iter == NULL) {
+		/* append new */
+		gtk_list_store_append(list_store, &iter);
+		gtk_list_store_set(list_store, &iter,
+				   CUSTHDR_STRING, header,
+				   CUSTHDR_DATA,   data,
+				   -1);
+	} else {
+		/* change existing */
+		CustomHeader *old_data;
+
+		gtk_tree_model_get(GTK_TREE_MODEL(list_store), row_iter,
+				   CUSTHDR_DATA, &old_data,
+				   -1);
+
+		custom_header_free(old_data);
+		
+		gtk_list_store_set(list_store, row_iter,
+				   CUSTHDR_STRING, header,
+				   CUSTHDR_DATA, data,
+				   -1);
+	}
+}
+
+static GtkWidget *prefs_custom_header_list_view_create(void)
+{
+	GtkTreeView *list_view;
+	GtkTreeSelection *selector;
+	GtkTreeModel *model;
+
+	model = GTK_TREE_MODEL(prefs_custom_header_create_data_store());
+	list_view = GTK_TREE_VIEW(gtk_tree_view_new_with_model(model));
+	g_object_unref(model);	
+	
+	gtk_tree_view_set_rules_hint(list_view, TRUE);
+	
+	selector = gtk_tree_view_get_selection(list_view);
+	gtk_tree_selection_set_mode(selector, GTK_SELECTION_BROWSE);
+	gtk_tree_selection_set_select_function(selector, prefs_custom_header_selected,
+					       NULL, NULL);
+
+	/* create the columns */
+	prefs_custom_header_create_list_view_columns(GTK_WIDGET(list_view));
+
+	return GTK_WIDGET(list_view);
+}
+
+static void prefs_custom_header_create_list_view_columns(GtkWidget *list_view)
+{
+	GtkTreeViewColumn *column;
+	GtkCellRenderer *renderer;
+
+	renderer = gtk_cell_renderer_text_new();
+	column = gtk_tree_view_column_new_with_attributes
+		(_("Current custom headers"),
+		 renderer,
+		 "text", CUSTHDR_STRING,
+		 NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(list_view), column);		
+}
+
+#define ENTRY_SET_TEXT(entry, str) \
+	gtk_entry_set_text(GTK_ENTRY(entry), str ? str : "")
+
+static gboolean prefs_custom_header_selected(GtkTreeSelection *selector,
+					     GtkTreeModel *model, 
+					     GtkTreePath *path,
+					     gboolean currently_selected,
+					     gpointer data)
+{
+	GtkTreeIter iter;
+	CustomHeader *ch;
+	CustomHeader default_ch = { 0, "", NULL };
+
+	if (currently_selected)
+		return TRUE;
+
+	if (!gtk_tree_model_get_iter(model, &iter, path))
+		return TRUE;
+
+	gtk_tree_model_get(model, &iter, 
+			   CUSTHDR_DATA, &ch,
+			   -1);
+	
+	if (!ch) ch = &default_ch;
+
+	ENTRY_SET_TEXT(customhdr.hdr_entry, ch->name);
+	ENTRY_SET_TEXT(customhdr.val_entry, ch->value);
+			   
+	return TRUE;
+}
+
+#undef ENTRY_SET_TEXT
