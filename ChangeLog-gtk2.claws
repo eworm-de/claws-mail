@@ -1,3 +1,8 @@
+2004-09-07 [colin]	0.9.12cvs97.1
+
+	* src/inc.c
+		Sync with HEAD (meaningful error messages)
+
 2004-09-06 [colin]	0.9.12cvs96.1
 
 	* src/toolbar.c

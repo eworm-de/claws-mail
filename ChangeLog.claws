@@ -1,3 +1,69 @@
+2004-09-07 [colin]	0.9.12cvs97
+
+	* src/inc.c
+		Change session error messages so that they
+		are a bit more helpful (the origin of the
+		error is not apparent if one isn't in 
+		front of Sylpheed when it happens).
+
+2004-09-06 [colin]	0.9.12cvs96
+
+	* src/toolbar.c
+		Fix graying out Redirect in non english languages
+		Patch by Fabien Vantard
+
+2004-09-06 [colin]	0.9.12cvs95
+
+	* src/summaryview.c
+	* src/mimeview.c
+		Fix dropped URIs
+
+2004-09-06 [colin]	0.9.12cvs94
+
+	* src/addressbook.c
+	* src/addressitem.h
+	* src/addritem.c
+	* src/addritem.h
+		Add basic drag and drop to addressbook
+
+2004-09-03 [colin]	0.9.12cvs93
+
+	* src/summaryview.c
+		Next/Prev unread message should start
+		from next/prev node (especially if 
+		mark_as_read_delay != 0)
+
+2004-09-03 [colin]	0.9.12cvs92
+
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/summaryview.c
+		Add an hidden 'mark_as_read_delay' pref 
+
+2004-09-02 [colin]	0.9.12cvs91
+
+	* src/gtk/menu.c
+		Add unduplicated menu entries (fixes bug 532)
+		Patch by Fabien Vantard
+
+2004-09-02 [colin]	0.9.12cvs90
+
+	* src/account.c
+		Fix bug 582 (broken auto account selection)
+
+2004-09-02 [colin]	0.9.12cvs89
+
+	* src/addrindex.c
+		Free deleted queries too
+
+2004-09-02 [colin]	0.9.12cvs88
+
+	* src/ldapquery.c
+		Fix freezes in LDAP, due to memory corruption
+		after deletion of a query (and not removing it
+		from the corresponding list of queries).
+		Very probably fixes bug 567 and bug 569
+
 2004-09-02 [colin]	0.9.12cvs87
 
 	* src/prefs_spelling.c

@@ -123,7 +123,7 @@ static gint inc_drop_message		(Pop3Session	*session,
 					 const gchar	*file);
 
 static void inc_put_error		(IncState	 istate,
-					 const gchar	*msg);
+					 Pop3Session 	*session);
 
 static void inc_cancel_cb		(GtkWidget	*widget,
 					 gpointer	 data);
@@ -660,7 +660,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 				manage_window_focus_in
 					(inc_dialog->dialog->window,
 					 NULL, NULL);
-			inc_put_error(inc_state, pop3_session->error_msg);
+			inc_put_error(inc_state, pop3_session);
 			if (inc_dialog->show_dialog)
 				manage_window_focus_out
 					(inc_dialog->dialog->window,
@@ -1073,7 +1073,7 @@ static gint inc_drop_message(Pop3Session *session, const gchar *file)
 	return 0;
 }
 
-static void inc_put_error(IncState istate, const gchar *msg)
+static void inc_put_error(IncState istate, Pop3Session *session)
 {
 	gchar *log_msg = NULL;
 	gchar *err_msg = NULL;
@@ -1084,16 +1084,18 @@ static void inc_put_error(IncState istate, const gchar *msg)
 		log_msg = _("Connection failed.");
 		if (prefs_common.no_recv_err_panel)
 			break;
-		err_msg = g_strdup(log_msg);
+		err_msg = g_strdup_printf(_("Connection to %s:%d failed."),
+					  SESSION(session)->server, 
+					  SESSION(session)->port);
 		break;
 	case INC_ERROR:
 		log_msg = _("Error occurred while processing mail.");
 		if (prefs_common.no_recv_err_panel)
 			break;
-		if (msg)
+		if (session->error_msg)
 			err_msg = g_strdup_printf
 				(_("Error occurred while processing mail:\n%s"),
-				 msg);
+				 session->error_msg);
 		else
 			err_msg = g_strdup(log_msg);
 		break;
@@ -1111,21 +1113,25 @@ static void inc_put_error(IncState istate, const gchar *msg)
 		log_msg = _("Socket error.");
 		if (prefs_common.no_recv_err_panel)
 			break;
-		err_msg = g_strdup(log_msg);
+		err_msg = g_strdup_printf(_("Socket error on connection to %s:%d."),
+					  SESSION(session)->server, 
+					  SESSION(session)->port);
 		break;
 	case INC_EOF:
 		log_msg = _("Connection closed by the remote host.");
 		if (prefs_common.no_recv_err_panel)
 			break;
-		err_msg = g_strdup(log_msg);
+		err_msg = g_strdup_printf(_("Connection to %s:%d closed by the remote host."), 
+					  SESSION(session)->server, 
+					  SESSION(session)->port);
 		break;
 	case INC_LOCKED:
 		log_msg = _("Mailbox is locked.");
 		if (prefs_common.no_recv_err_panel)
 			break;
-		if (msg)
+		if (session->error_msg)
 			err_msg = g_strdup_printf(_("Mailbox is locked:\n%s"),
-						  msg);
+						  session->error_msg);
 		else
 			err_msg = g_strdup(log_msg);
 		break;
@@ -1133,9 +1139,9 @@ static void inc_put_error(IncState istate, const gchar *msg)
 		log_msg = _("Authentication failed.");
 		if (prefs_common.no_recv_err_panel)
 			break;
-		if (msg)
+		if (session->error_msg)
 			err_msg = g_strdup_printf
-				(_("Authentication failed:\n%s"), msg);
+				(_("Authentication failed:\n%s"), session->error_msg);
 		else
 			err_msg = g_strdup(log_msg);
 		break;
@@ -1143,7 +1149,9 @@ static void inc_put_error(IncState istate, const gchar *msg)
 		log_msg = _("Session timed out.");
 		if (prefs_common.no_recv_err_panel)
 			break;
-		err_msg = g_strdup(log_msg);
+		err_msg = g_strdup_printf(_("Connection to %s:%d timed out."), 
+					  SESSION(session)->server, 
+					  SESSION(session)->port);
 		break;
 	default:
 		break;
