@@ -1,0 +1,71 @@
+1. Files
+
+about.c is the about dialog
+account.c is the accounts list dialog
+addressbook.c is the address book dialog
+addr_compl.c is the address completion process
+base64.c handles the base64 conversion
+compose.c is the compose dialog
+esmtp.c handles the esmtp protocol with authentification
+filesel.c is a file selection dialog
+filter.c handles the filtering process
+folder.c handles the folder structure (left panel) without any gtk
+foldersel.c / folderview.c is the left panel gtk implementation
+gtksctree.c ********* NO DESCRIPTION *************
+gtkshruler.c ********* NO DESCRIPTION *************
+gtkutils ********* NO DESCRIPTION *************
+headerview.c is the little header viewer between the list of mails and
+	     the mail viewer.
+headerwin.c is the displaying of the all the header in a window
+	    (show all headers option)
+html.c is an HTML parser
+imageview.c is the image viewer
+imap.c is the handling of the IMAP4 procotol
+import.c import from mbox dialog
+inc.c ********* NO DESCRIPTION *************
+inputdialog.c is a dialog where you can enter texts
+logwindow.c is the log window (tool menu / log window)
+main.c ********* NO DESCRIPTION *************
+mainwindow.c is the 3-paned main window
+manage_window.c ********* NO DESCRIPTION *************
+manual.c ********* NO DESCRIPTION *************
+mbox.c is the mbox importer/exporter
+md5.c / md5ify.c is the md5 processing
+md5ify.c
+menu.c
+messageview.c is the mail viewer part of the main window
+mh.c handles mh folders
+mimeview.c is the displaying of the list of the MIME part of the mail
+	   (at the top of the mail viewer when it is displayed)
+news.c is the news session handling (it uses the nntp protocol)
+nntp.c is the handling of the NNTP procotol
+passphrase.c is the dialog box to enter a password
+pop.c is the handling of the POP3 protocol
+prefs.c is a preference file parser and somes function that
+	set values from the state of a gtk component.
+prefs_account.c is preferences for account dialog
+prefs_common.c is the preference dialog
+prefs_filter.c is preferences for filter dialog
+procheader.c is the RFC822 headers parser.
+procmime.c is a MIME parser.
+procmsg.c handle the list of message files.
+progressdialog.c is a dialog box with a progress bar
+recv.c ********* NO DESCRIPTION *************
+rfc2015.c ********* NO DESCRIPTION *************
+rfc822.c ********* NO DESCRIPTION *************
+select-keys.c ********* NO DESCRIPTION *************
+send.c is the message sender (SMTP only).
+session.c ********* NO DESCRIPTION *************
+setup.c ********* NO DESCRIPTION *************
+smtp.c is the handling of the SMTP protocol.
+socket.c is some function to make it easier to use TCP/unix socket.
+sourcewindow.c ********* NO DESCRIPTION *************
+statusbar.c ********* NO DESCRIPTION *************
+summaryview.c is the displaying of list of the mail in a folder
+	      (up/right in the main window).
+textview.c is the mail (without MIME part) displaying of the
+	   mail viewer.
+unmime.c ********* NO DESCRIPTION *************
+utils.c ********* NO DESCRIPTION *************
+uuencode.c ********* NO DESCRIPTION *************
+xml.c ********* NO DESCRIPTION *************
