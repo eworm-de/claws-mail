@@ -71,34 +71,34 @@ static struct Headers {
 #define PREFSBUFSIZE		1024
 
 /* widget creating functions */
-static void prefs_display_headers_create		(void);
+static void prefs_display_headers_create	(void);
 
 static void prefs_display_headers_set_dialog	(void);
 static void prefs_display_headers_set_list	(void);
 static gint prefs_display_headers_clist_set_row	(gint	 row);
 
 /* callback functions */
-static void prefs_display_headers_select_dest_cb	(void);
+static void prefs_display_headers_select_dest_cb(void);
 static void prefs_display_headers_register_cb	(void);
 static void prefs_display_headers_substitute_cb	(void);
 static void prefs_display_headers_delete_cb	(void);
 static void prefs_display_headers_up		(void);
 static void prefs_display_headers_down		(void);
-static void prefs_display_headers_select		(GtkCList	*clist,
-					 gint		 row,
-					 gint		 column,
-					 GdkEvent	*event);
+static void prefs_display_headers_select	(GtkCList	*clist,
+						 gint		 row,
+						 gint		 column,
+						 GdkEvent	*event);
 
 static void prefs_display_headers_other_headers_toggled(void);
 
 static void prefs_display_headers_key_pressed	(GtkWidget	*widget,
-					 GdkEventKey	*event,
-					 gpointer	 data);
+						 GdkEventKey	*event,
+						 gpointer	 data);
 static void prefs_display_headers_close		(GtkButton	*button);
 
 PrefsDisplayHeaders prefs_display_headers = { 1, NULL};
 
-static char * defaults[] =
+static gchar *defaults[] =
 {
 	"Sender",
 	"From",
@@ -107,6 +107,8 @@ static char * defaults[] =
 	"Cc",
 	"Subject",
 	"Date",
+	"User-Agent",
+	"X-Mailer",
 	"-Received",
 	"-Message-Id",
 	"-In-Reply-To",
@@ -124,8 +126,8 @@ static void prefs_display_headers_set_default(void)
 {
 	int i;
 
-	for(i = 0 ; i < sizeof(defaults) / sizeof(char *) ; i++) {
-		HeaderDisplayProp * dp =
+	for(i = 0; i < sizeof(defaults) / sizeof(defaults[0]); i++) {
+		HeaderDisplayProp *dp =
 			header_display_prop_read_str(defaults[i]);
 		prefs_display_headers.headers_list =
 			g_slist_append(prefs_display_headers.headers_list, dp);
@@ -155,10 +157,9 @@ static void prefs_display_headers_create(void)
 
 	GtkWidget *vbox1;
 
-	GtkWidget *table1;
+	GtkWidget *hbox1;
 	GtkWidget *hdr_label;
 	GtkWidget *hdr_combo;
-	GtkWidget *key_label;
 	GtkWidget *key_check;
 
 	GtkWidget *reg_hbox;
@@ -178,7 +179,7 @@ static void prefs_display_headers_create(void)
 
 	GtkWidget *checkbtn_other_headers;
 
-	gchar *title[] = {_("Order of headers"), _("Action")};
+	gchar *title[] = {_("Header name"), _("Action")};
 
 	debug_print(_("Creating headers setting window...\n"));
 
@@ -218,42 +219,24 @@ static void prefs_display_headers_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox), vbox1, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
-	table1 = gtk_table_new (2, 2, FALSE);
-	gtk_widget_show (table1);
-	gtk_box_pack_start (GTK_BOX (vbox1), table1,
-			    FALSE, FALSE, 0);
-	gtk_table_set_row_spacings (GTK_TABLE (table1), 8);
-	gtk_table_set_col_spacings (GTK_TABLE (table1), 8);
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, TRUE, 0);
 
 	hdr_label = gtk_label_new (_("Header"));
 	gtk_widget_show (hdr_label);
-	gtk_table_attach (GTK_TABLE (table1), hdr_label, 0, 1, 0, 1,
-			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
-			  0, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (hdr_label), 0, 0.5);
-	
+	gtk_box_pack_start (GTK_BOX (hbox1), hdr_label, FALSE, FALSE, 0);
+
 	hdr_combo = gtk_combo_new ();
 	gtk_widget_show (hdr_combo);
-	gtk_table_attach (GTK_TABLE (table1), hdr_combo, 0, 1, 1, 2,
-			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
-			  0, 0, 0);
+	gtk_box_pack_start (GTK_BOX (hbox1), hdr_combo, TRUE, TRUE, 0);
 	gtk_widget_set_usize (hdr_combo, 150 /* 96 */, -1);
 	gtkut_combo_set_items (GTK_COMBO (hdr_combo),
 			       "From", "To", "Subject", "Date", NULL);
 
-	key_label = gtk_label_new (_("Order (or Hide)"));
-	gtk_widget_show (key_label);
-	gtk_table_attach (GTK_TABLE (table1), key_label, 1, 2, 0, 1,
-			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
-			  0, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (key_label), 0, 0.5);
-	
-	//	key_entry = gtk_entry_new ();
-	key_check = gtk_check_button_new();
+	key_check = gtk_check_button_new_with_label(_("Show"));
 	gtk_widget_show (key_check);
-	gtk_table_attach (GTK_TABLE (table1), key_check, 1, 2, 1, 2,
-			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
-			  0, 0, 0);
+	gtk_box_pack_start (GTK_BOX (hbox1), key_check, FALSE, FALSE, 0);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(key_check), 1);
 
 	/* register / substitute / delete */
@@ -313,7 +296,7 @@ static void prefs_display_headers_create(void)
 	gtk_widget_show (headers_clist);
 	gtk_container_add (GTK_CONTAINER (ch_scrolledwin), headers_clist);
 	gtk_clist_set_column_width (GTK_CLIST (headers_clist), 0, 150);
-	gtk_clist_set_column_width (GTK_CLIST (headers_clist), 1, 50);
+	/* gtk_clist_set_column_width (GTK_CLIST (headers_clist), 1, 50); */
 	gtk_clist_set_selection_mode (GTK_CLIST (headers_clist),
 				      GTK_SELECTION_BROWSE);
 	GTK_WIDGET_UNSET_FLAGS (GTK_CLIST (headers_clist)->column[0].button,
@@ -351,13 +334,13 @@ static void prefs_display_headers_create(void)
 
 	gtk_widget_show_all(window);
 
-	headers.window    = window;
-	headers.close_btn = close_btn;
+	headers.window        = window;
+	headers.close_btn     = close_btn;
 
-	headers.hdr_combo  = hdr_combo;
-	headers.hdr_entry  = GTK_COMBO (hdr_combo)->entry;
-	headers.key_check  = key_check;
-	headers.headers_clist   = headers_clist;
+	headers.hdr_combo     = hdr_combo;
+	headers.hdr_entry     = GTK_COMBO (hdr_combo)->entry;
+	headers.key_check     = key_check;
+	headers.headers_clist = headers_clist;
 
 	headers.other_headers = checkbtn_other_headers;
 }
@@ -400,7 +383,8 @@ void prefs_display_headers_read_config(void)
 		else {
 			dp = header_display_prop_read_str(buf);
 			if (dp)
-				prefs_display_headers.headers_list = g_slist_append(prefs_display_headers.headers_list, dp);
+				prefs_display_headers.headers_list =
+					g_slist_append(prefs_display_headers.headers_list, dp);
 		}
  	}
  
@@ -413,7 +397,7 @@ void prefs_display_headers_write_config(void)
 	PrefFile *pfile;
 	GSList *cur;
 	gchar buf[PREFSBUFSIZE];
-	FILE * fp;
+	FILE *fp;
 	HeaderDisplayProp *dp;
 
 	debug_print(_("Writing configuration for displaying of headers...\n"));
@@ -480,19 +464,11 @@ static void prefs_display_headers_set_dialog()
 	     cur = cur->next) {
  		HeaderDisplayProp *dp = (HeaderDisplayProp *)cur->data;
 
-		/*
-		if (dp->hidden)
-			dp_str[0] = g_strdup_printf("(%s)", dp->name);
-		else
-			dp_str[0] = g_strdup_printf("%s", dp->name);
-		*/
 		dp_str[0] = dp->name;
-		dp_str[1] = dp->hidden ? _("Hide") : _("Order");
+		dp_str[1] = dp->hidden ? _("Hide") : _("Show");
 
 		row = gtk_clist_append(clist, dp_str);
 		gtk_clist_set_row_data(clist, row, dp);
-
-		//		g_free(dp_str[0]);
 	}
 
 	gtk_clist_thaw(clist);
@@ -542,13 +518,7 @@ static gint prefs_display_headers_clist_set_row(gint row)
 		(GTK_TOGGLE_BUTTON(headers.key_check));
 
 	dp_str[0] = dp->name;
-	dp_str[1] = dp->hidden ? _("Hide") : _("Order");
-	/*
-	if (dp->hidden)
-		dp_str[0] = g_strdup_printf("(%s)", dp->name);
-	else
-		dp_str[0] = g_strdup_printf("%s", dp->name);
-	*/
+	dp_str[1] = dp->hidden ? _("Hide") : _("Show");
 
 	if (row < 0)
 		row = gtk_clist_append(clist, dp_str);
@@ -563,8 +533,6 @@ static gint prefs_display_headers_clist_set_row(gint row)
 	}
 
 	gtk_clist_set_row_data(clist, row, dp);
-
-	//	g_free(dp_str[0]);
 
 	prefs_display_headers_set_list();
 
@@ -649,19 +617,20 @@ static void prefs_display_headers_down(void)
 static void prefs_display_headers_select(GtkCList *clist, gint row,
 					 gint column, GdkEvent *event)
 {
- 	HeaderDisplayProp *dp;
- 	HeaderDisplayProp default_dp = { "", 0 };
- 
- 	dp = gtk_clist_get_row_data(clist, row);
- 	if (!dp)
- 		dp = &default_dp;
- 
+	HeaderDisplayProp *dp;
+	HeaderDisplayProp default_dp = { "", 0 };
+
+	dp = gtk_clist_get_row_data(clist, row);
+	if (!dp)
+		dp = &default_dp;
+
  	ENTRY_SET_TEXT(headers.hdr_entry, dp->name);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(headers.key_check),
 				     !dp->hidden);
 
 	if ((row != 0) && event && (event->type == GDK_2BUTTON_PRESS)) {
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(headers.key_check), dp->hidden);
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON(headers.key_check), dp->hidden);
 		prefs_display_headers_clist_set_row(row);
 	}
 }

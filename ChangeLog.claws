@@ -1,3 +1,7 @@
+2001-05-02 [hiroyuki]
+
+	* src/prefs_display_headers.c: modified the layout and some labels.
+
 2001-05-02 [sergey]
 
 	* src/prefs_account.c (prefs_account_fix_size): new function.
