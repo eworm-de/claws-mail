@@ -678,7 +678,10 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Tools/_Harvest addresses/from _Messages..."),
 						NULL, addr_harvest_msg_cb, 0, NULL},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Tools/_Filter messages"),		NULL, filter_cb, 0, NULL},
+	{N_("/_Tools/_Filter all messages in folder"),
+						NULL, filter_cb, 0, NULL},
+	{N_("/_Tools/Filter _selected messages"),
+						NULL, filter_cb, 1, NULL},
 	{N_("/_Tools/_Create filter rule"),	NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/_Create filter rule/_Automatically"),
 						NULL, create_filter_cb, FILTER_BY_AUTO, NULL},
@@ -1744,13 +1747,14 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Cancel a news message" , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NEWS},
 		{"/Message/Mark"   		  , M_TARGET_EXIST},
 
-		{"/Tools/Add sender to address book", M_SINGLE_TARGET_EXIST},
-		{"/Tools/Harvest addresses"	    , M_UNLOCKED},
-		{"/Tools/Filter messages"           , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Tools/Create filter rule"        , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
-		{"/Tools/Actions"                   , M_TARGET_EXIST|M_UNLOCKED},
-		{"/Tools/Execute"                   , M_DELAY_EXEC},
-		{"/Tools/Delete duplicated messages", M_MSG_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
+		{"/Tools/Add sender to address book"   , M_SINGLE_TARGET_EXIST},
+		{"/Tools/Harvest addresses"	       , M_UNLOCKED},
+		{"/Tools/Filter all messages in folder", M_MSG_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Tools/Filter selected messages"     , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Tools/Create filter rule"           , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+		{"/Tools/Actions"                      , M_TARGET_EXIST|M_UNLOCKED},
+		{"/Tools/Execute"                      , M_DELAY_EXEC},
+		{"/Tools/Delete duplicated messages"   , M_MSG_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 
 		{"/Configuration", M_UNLOCKED},
 
@@ -2723,7 +2727,7 @@ static void delete_duplicated_cb(MainWindow *mainwin, guint action,
 
 static void filter_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
-	summary_filter(mainwin->summaryview);
+	summary_filter(mainwin->summaryview, (gboolean)action);
 }
 
 static void execute_summary_cb(MainWindow *mainwin, guint action,

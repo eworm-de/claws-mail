@@ -1,3 +1,12 @@
+2004-03-13 [paul]	0.9.10claws10
+
+	* sync with 0.9.10cvs5
+		see ChangeLog 2004-03-02 and 2004-03-12, 
+		specifically:
+		'always move messages by default when using DnD (except 
+		for News folder). Copy messages if Ctrl-key is pressed.'
+		and 'added a function to filter selected messages'
+
 2004-03-12 [christoph]	0.9.10claws9
 
 	* src/codeconv.c

@@ -2837,9 +2837,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 				case GDK_ACTION_MOVE:
 				case GDK_ACTION_DEFAULT:
 				default:
-			if (FOLDER_TYPE(src_item->folder) != FOLDER_TYPE(item->folder) ||
-			    (FOLDER_TYPE(item->folder) == F_IMAP &&
-			     src_item->folder != item->folder))
+			if (FOLDER_TYPE(src_item->folder) == F_NEWS)
 				summary_copy_selected_to(folderview->summaryview, item);
 			else
 				summary_move_selected_to(folderview->summaryview, item);

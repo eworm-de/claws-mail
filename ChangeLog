@@ -1,3 +1,39 @@
+2004-03-12
+
+	* src/mainwindow.c
+	  src/summaryview.[ch]: added a function to filter selected
+	  messages.
+
+2004-03-12
+
+	* src/filter.[ch]
+	  src/prefs_filter.c: rewrote the filtering system (the UI is not
+	  implemented yet).
+
+2004-03-09
+
+	* src/filter.c: fixed the matching algorithm of "not contain" flag
+	  (also match if a header not exist, and handle same multiple
+	  headers).
+	* src/imageview.c: get_resized_size(): fixed a typo that caused
+	  resizing problem.
+
+2004-03-02
+
+	* src/folder.c
+	  src/mh.c: only update FolderItem::last_num when removing the last
+	  number of message in MH folders, and don't scan in other case
+	  (fixes wrong message count on moving).
+
+2004-03-02
+
+	* src/folderview.c
+	  src/summaryview.c: always move messages by default when using DnD
+	  (except for News folder). Copy messages if Ctrl-key is pressed.
+	* src/mainwindow.c: main_window_empty_trash()
+	  src/summaryview.c: summary_execute(): added missing
+	  statusbar_pop_all().
+
 2004-02-29
 
 	* version 0.9.10
@@ -14,8 +50,8 @@
 	* src/inc.c: code cleanup.
 	* src/mainwindow.[ch]: added main_window_get() and
 	  main_window_toggle_online_if_offline().
-	* src/prefs_common.c: prefs_common_read_config(): fixed a bug that made
-	  it offline mode on first execution.
+	* src/prefs_common.c: prefs_common_read_config(): fixed a bug that
+	  made it offline mode on first execution.
 
 2004-02-25
 

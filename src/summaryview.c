@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3914,7 +3914,7 @@ void summary_collapse_threads(SummaryView *summaryview)
 	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
 }
 
-void summary_filter(SummaryView *summaryview)
+void summary_filter(SummaryView *summaryview, gboolean selected_only)
 {
 	if (!filtering_rules) {
 		alertpanel_error(_("No filter rules defined."));
@@ -3946,10 +3946,20 @@ void summary_filter(SummaryView *summaryview)
 			summary_status_show(summaryview);
 	}
 	else {
-		gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree), NULL,
-					GTK_CTREE_FUNC(summary_filter_func),
-					summaryview);
+		if (selected_only) {
+			GList *cur;
 
+			for (cur = GTK_CLIST(summaryview->ctree)->selection;
+		     	     cur != NULL; cur = cur->next) {
+				summary_filter_func(GTK_CTREE(summaryview->ctree),
+					    	    GTK_CTREE_NODE(cur->data),
+					    	    summaryview);
+			}
+		} else {
+			gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree), NULL,
+						GTK_CTREE_FUNC(summary_filter_func),
+						summaryview);
+		}
 		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 	}
 
