@@ -161,6 +161,7 @@ gint prefs_file_close(PrefFile *pfile)
 				
 				return -1;
 			}
+		fclose(orig_fp);
 	}
 
 	tmppath = g_strconcat(path, ".tmp", NULL);
