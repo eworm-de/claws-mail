@@ -1,3 +1,11 @@
+2003-09-29 [paul]	0.9.5claws36
+
+	* src/inc.c
+	  src/prefs_account.c
+	  	allow 'local_mbox' value to point to either a directory 
+		(/var/mail -  default, new) or a file (/var/mail/username
+		- original)
+
 2003-09-28 [paul]	0.9.5claws35
 
 	* src/rfc2015.c
