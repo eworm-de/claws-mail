@@ -244,3 +244,4 @@
 ( cvs diff -u -r 1.473 -r 1.474 src/compose.c; ) > 1.0.1cvs4.patchset
 ( cvs diff -u -r 1.71 -r 1.72 src/filtering.c; ) > 1.0.1cvs5.patchset
 ( cvs diff -u -r 1.474 -r 1.475 src/compose.c; cvs diff -u -r 1.103 -r 1.104 src/procmime.c; ) > 1.0.1cvs6.patchset
+( cvs diff -u -r 1.475 -r 1.476 src/compose.c; cvs diff -u -r 1.104 -r 1.105 src/procmime.c; ) > 1.0.1cvs7.patchset

@@ -1,3 +1,10 @@
+2005-02-15 [colin]	1.0.1cvs7
+
+	* src/compose.c
+	* src/procmime.c
+		Optimize (constant instead of strlen). Thanks
+		Alfons for the hint.
+
 2005-02-14 [colin]	1.0.1cvs6
 
 	* src/compose.c
