@@ -1,3 +1,8 @@
+2003-02-15 [alfons]	0.9.9claws11
+	
+	* src/common/utils.c
+		add prefix for italian ms o(e) 
+
 2003-02-14 [paul]	0.9.9claws10
 
 	* src/foldersel.c
