@@ -51,6 +51,7 @@
 #include "prefs_common.h"
 #include "prefs_account.h"
 #include "prefs_actions.h"
+#include "prefs_ext_prog.h"
 #include "prefs_fonts.h"
 #include "prefs_spelling.h"
 #include "prefs_themes.h"
@@ -251,6 +252,7 @@ int main(int argc, char *argv[])
 	sgpgme_init();
 	pgpmime_init();
 #endif
+	prefs_ext_prog_init();
 	prefs_themes_init();
 	prefs_fonts_init();
 #ifdef USE_ASPELL
@@ -424,6 +426,7 @@ static void exit_sylpheed(MainWindow *mainwin)
 	pgpmime_done();
 	sgpgme_done();
 #endif
+	prefs_ext_prog_done();
 	prefs_themes_done();
 	prefs_fonts_done();
 #ifdef USE_ASPELL       

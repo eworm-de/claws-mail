@@ -1,3 +1,17 @@
+2004-01-09 [paul]	0.9.8claws23
+
+	* po/POTFILES.in
+	  src/Makefile.am
+	  src/main.c
+	  src/prefs_common.c
+	  src/prefs_ext_prog.[ch]	** NEW FILES **
+	  	move External Command options from 'Common Prefs/Other' to
+		'Other Prefs/Message View/External Programs', also reveal
+		the hidden options for audio player and image viewer.
+		
+	* src/prefs_common.c
+		fix toggling of header pane
+
 2004-01-09 [paul]	0.9.8claws22
 
 	* src/compose.c

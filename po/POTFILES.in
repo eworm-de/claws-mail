@@ -80,6 +80,7 @@ src/prefs_actions.c
 src/prefs_common.c
 src/prefs_customheader.c
 src/prefs_display_header.c
+src/prefs_ext_prog.c
 src/prefs_filtering_action.c
 src/prefs_filtering.c
 src/prefs_folder_item.c

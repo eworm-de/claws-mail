@@ -184,12 +184,6 @@ static struct Interface {
 } interface;
 
 static struct Other {
-	GtkWidget *uri_combo;
-	GtkWidget *uri_entry;
-	GtkWidget *printcmd_entry;
-	GtkWidget *exteditor_combo;
-	GtkWidget *exteditor_entry;
-
 	GtkWidget *checkbtn_addaddrbyclick;
 	GtkWidget *checkbtn_confonexit;
 	GtkWidget *checkbtn_cleanonexit;
@@ -720,13 +714,11 @@ static PrefParam param[] = {
 	
 	/* Other */
 	{"uri_open_command", DEFAULT_BROWSER_CMD,
-	 &prefs_common.uri_cmd, P_STRING,
-	 &other.uri_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &prefs_common.uri_cmd, P_STRING, NULL, NULL, NULL},
 	{"print_command", "lpr %s", &prefs_common.print_cmd, P_STRING,
-	 &other.printcmd_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 NULL, NULL, NULL},
 	{"ext_editor_command", "gedit %s",
-	 &prefs_common.ext_editor_cmd, P_STRING,
-	 &other.exteditor_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &prefs_common.ext_editor_cmd, P_STRING, NULL, NULL, NULL},
 
 	{"add_address_by_click", "FALSE", &prefs_common.add_address_by_click,
 	 P_BOOL, &other.checkbtn_addaddrbyclick,
@@ -2232,20 +2224,7 @@ static void prefs_interface_create(void)
 static void prefs_other_create(void)
 {
 	GtkWidget *vbox1;
-	GtkWidget *ext_frame;
-	GtkWidget *ext_table;
 	GtkWidget *hbox1;
-
-	GtkWidget *uri_label;
-	GtkWidget *uri_combo;
-	GtkWidget *uri_entry;
-
-	GtkWidget *printcmd_label;
-	GtkWidget *printcmd_entry;
-
-	GtkWidget *exteditor_label;
-	GtkWidget *exteditor_combo;
-	GtkWidget *exteditor_entry;
 
 	GtkWidget *frame_addr;
 	GtkWidget *vbox_addr;
@@ -2282,73 +2261,6 @@ static void prefs_other_create(void)
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
-
-	PACK_FRAME(vbox1, ext_frame,
-		   _("External commands (%s will be replaced with file name / URI)"));
-
-	ext_table = gtk_table_new (3, 2, FALSE);
-	gtk_widget_show (ext_table);
-	gtk_container_add (GTK_CONTAINER (ext_frame), ext_table);
-	gtk_container_set_border_width (GTK_CONTAINER (ext_table), 8);
-	gtk_table_set_row_spacings (GTK_TABLE (ext_table), VSPACING_NARROW);
-	gtk_table_set_col_spacings (GTK_TABLE (ext_table), 8);
-
-	uri_label = gtk_label_new (_("Web browser"));
-	gtk_widget_show(uri_label);
-	gtk_table_attach (GTK_TABLE (ext_table), uri_label, 0, 1, 0, 1,
-			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (uri_label), 1, 0.5);
-
-	uri_combo = gtk_combo_new ();
-	gtk_widget_show (uri_combo);
-	gtk_table_attach (GTK_TABLE (ext_table), uri_combo, 1, 2, 0, 1,
-			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	gtkut_combo_set_items (GTK_COMBO (uri_combo),
-			       DEFAULT_BROWSER_CMD,
-			       "galeon --new-tab '%s'",
-			       "galeon '%s'",
-			       "mozilla -remote 'openurl(%s,new-window)'",
-			       "netscape -remote 'openURL(%s, new-window)'",
-			       "netscape '%s'",
-			       "gnome-moz-remote --newwin '%s'",
-			       "kfmclient openURL '%s'",
-			       "opera -newwindow '%s'",
-			       "kterm -e w3m '%s'",
-			       "kterm -e lynx '%s'",
-			       NULL);
-	uri_entry = GTK_COMBO (uri_combo)->entry;
-
-	printcmd_label = gtk_label_new (_("Print"));
-	gtk_widget_show (printcmd_label);
-	gtk_table_attach (GTK_TABLE (ext_table), printcmd_label, 0, 1, 1, 2,
-			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (printcmd_label), 1, 0.5);
-
-	printcmd_entry = gtk_entry_new ();
-	gtk_widget_show (printcmd_entry);
-	gtk_table_attach (GTK_TABLE (ext_table), printcmd_entry, 1, 2, 1, 2,
-			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
-
-	exteditor_label = gtk_label_new (_("Editor"));
-	gtk_widget_show (exteditor_label);
-	gtk_table_attach (GTK_TABLE (ext_table), exteditor_label, 0, 1, 2, 3,
-			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (exteditor_label), 1, 0.5);
-
-	exteditor_combo = gtk_combo_new ();
-	gtk_widget_show (exteditor_combo);
-	gtk_table_attach (GTK_TABLE (ext_table), exteditor_combo, 1, 2, 2, 3,
-			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	gtkut_combo_set_items (GTK_COMBO (exteditor_combo),
-			       "gedit %s",
-			       "kedit %s",
-			       "mgedit --no-fork %s",
-			       "emacs %s",
-			       "xemacs %s",
-			       "kterm -e jed %s",
-			       "kterm -e vi %s",
-			       NULL);
-	exteditor_entry = GTK_COMBO (exteditor_combo)->entry;
 
 	PACK_FRAME (vbox1, frame_addr, _("Address book"));
 
@@ -2454,13 +2366,6 @@ static void prefs_other_create(void)
 	label_iotimeout = gtk_label_new (_("seconds"));
 	gtk_widget_show (label_iotimeout);
 	gtk_box_pack_start (GTK_BOX (hbox1), label_iotimeout, FALSE, FALSE, 0);
-
-	other.uri_combo = uri_combo;
-	other.uri_entry = uri_entry;
-	other.printcmd_entry = printcmd_entry;
-
-	other.exteditor_combo = exteditor_combo;
-	other.exteditor_entry = exteditor_entry;
 
 	other.checkbtn_addaddrbyclick = checkbtn_addaddrbyclick;
 	
@@ -3593,6 +3498,7 @@ static void prefs_common_apply(void)
 
 	prefs_set_data_from_dialog(param);
 	sock_set_io_timeout(prefs_common.io_timeout_secs);
+	main_window_reflect_prefs_all_real(FALSE);
 	prefs_common_save_config();
 
 	mainwindow = mainwindow_get_mainwindow();
