@@ -26,9 +26,11 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include <sys/un.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <resolv.h>
 #include <netdb.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -157,6 +159,25 @@ gint sock_set_io_timeout(guint sec)
 {
 	io_timeout = sec;
 	return 0;
+}
+
+void refresh_resolvers(void)
+{
+	static time_t resolv_conf_changed = (time_t)NULL;
+	struct stat s;
+
+	/* This makes the glibc re-read resolv.conf, if it changed
+	 * since our startup. Maybe that should be #ifdef'ed, I don't
+	 * know if it'd work on BSDs.
+	 * Why doesn't the glibc do it by itself?
+	 */
+	if (stat("/etc/resolv.conf", &s) == 0) {
+		if (s.st_mtime > resolv_conf_changed) {
+			resolv_conf_changed = s.st_mtime;
+			res_init();
+		}
+	} /* else
+		we'll have bigger problems. */
 }
 
 gint fd_connect_unix(const gchar *path)
@@ -387,7 +408,7 @@ static gint sock_connect_with_timeout(gint sock,
 {
 	gint ret;
 	void (*prev_handler)(gint);
-
+	
 	alarm(0);
 	prev_handler = signal(SIGALRM, timeout_handler);
 	if (sigsetjmp(jmpenv, 1)) {
@@ -410,7 +431,7 @@ struct hostent *my_gethostbyname(const gchar *hostname)
 {
 	struct hostent *hp;
 	void (*prev_handler)(gint);
-
+	
 	alarm(0);
 	prev_handler = signal(SIGALRM, timeout_handler);
 	if (sigsetjmp(jmpenv, 1)) {
@@ -467,6 +488,8 @@ static gint sock_connect_by_hostname(gint sock, const gchar *hostname,
 	ad.sin_family = AF_INET;
 	ad.sin_port = htons(port);
 
+	refresh_resolvers();
+
 	if (!my_inet_aton(hostname, &ad.sin_addr)) {
 		if ((hp = my_gethostbyname(hostname)) == NULL) {
 			fprintf(stderr, "%s: unknown host.\n", hostname);
@@ -493,6 +516,8 @@ static gint sock_connect_by_getaddrinfo(const gchar *hostname, gushort	port)
 	gint sock = -1, gai_error;
 	struct addrinfo hints, *res, *ai;
 	gchar port_str[6];
+
+	refresh_resolvers();
 
 	memset(&hints, 0, sizeof(hints));
 	/* hints.ai_flags = AI_CANONNAME; */
@@ -851,6 +876,8 @@ static SockLookupData *sock_get_address_info_async(const gchar *hostname,
 	SockLookupData *lookup_data = NULL;
 	gint pipe_fds[2];
 	pid_t pid;
+	
+	refresh_resolvers();
 
 	if (pipe(pipe_fds) < 0) {
 		perror("pipe");
