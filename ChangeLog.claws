@@ -1,3 +1,8 @@
+2001-09-19 [melvin]
+
+	* src/about.c
+		added pspell to compiled-in features
+
 2001-09-18 [melvin]
 
 	* switched to pspell and dropped ispell
