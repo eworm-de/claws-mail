@@ -1,5 +1,7 @@
 2001-12-22 [alfons]	0.6.6claws8
 
+	* src/addressbook.c
+		correct function signature
 	* src/socket.[ch]
 	* src/imap.[ch]
 	* src/prefs_account.[ch]

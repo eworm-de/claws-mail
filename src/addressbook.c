@@ -330,7 +330,7 @@ static void addressbook_list_select_add		(AddressObject *obj);
 static void addressbook_list_select_remove	(AddressObject *obj);
 
 static void addressbook_import_ldif_cb		(void);
-static void addressbook_import_mutt_cb		();
+static void addressbook_import_mutt_cb		(void);
 
 static GtkItemFactoryEntry addressbook_entries[] =
 {
@@ -3485,7 +3485,7 @@ static void addressbook_import_ldif_cb() {
 /*
 * Import MUTT file.
 */
-static void addressbook_import_mutt_cb() {
+static void addressbook_import_mutt_cb(void) {
 	AddressDataSource *ds = NULL;
 	AdapterDSource *ads = NULL;
 	AddressBookFile *abf = NULL;
