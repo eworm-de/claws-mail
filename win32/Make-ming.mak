@@ -1,15 +1,13 @@
 # vim:ts=32:noet
 #
 # Makefile for Sylpheed-Claws / Win32 / GCC
-# - MinGW GCC 2.95
-# - MinGW GCC 3.2
-# - Cygwin/MinGW GCC 2.95
-# 
+# - Win32/MinGW GCC 2.95/3.2
+# - Cygwin/MinGW GCC 2.95/3.2
+# - Linux/MinGW GCC 2.95/3.2
 # Before building, read the README-w32.txt and
 # 1. Create that directory structure
-# 2. Generate missing sources (-> patch_claws.bat)
-# 3. Set DEBUGVERSION, GCCVERSION, CYGWIN according to your environment
-# 4. Call "make -f Make-ming.mak"
+# 2. Set DEBUGVERSION, GCCVERSION, CYGWIN according to your environment
+# 3. Call "make -f Make-ming.mak"
 #    (use mingw32-make.exe for mingw-2.0.x)
 #
 # Note:
@@ -52,7 +50,11 @@ REGEXDIR	=../../regex
 W32LIBDIR	=../../w32lib
 LIBJCONVDIR	=../libjconv
 
-SRCDIR	=../src
+ROOTDIR	=..
+SRCDIR	=$(ROOTDIR)/src
+PODIR	=$(ROOTDIR)/po
+
+SRCDIR_ESC	=\.\.\/src\/
 
 ################################################################################
 
@@ -82,13 +84,60 @@ endif
 ################################################################################
 
 CC=$(CROSS)gcc
-VPATH=../src:../libjconv
+RESCOMP=$(CROSS)windres
+FLEX=flex
+YACC=bison -y
+MSGFMT=msgfmt
+ICONV=iconv
+SED=sed
+CD=cd
+RM=rm
+
+###
+
+VPATH=$(SRCDIR):$(PODIR):$(LIBJCONVDIR)
 DEFINES=-DHAVE_CONFIG_H -DHAVE_BYTE_TYPEDEF $(DEBUGDEF)
 EXTRALIBS=-lwsock32
 RESOURCE=appicon
-RESCOMP=$(CROSS)windres
 
 FLAGS=$(DEBUGFLAG) $(BITFIELD) $(NOCYGWIN) $(OPTIMIZATION)
+
+### version
+
+CONFIGURE_IN=$(ROOTDIR)/configure.in
+VERSION_H_IN=$(SRCDIR)/version.h.in
+VERSION_H=$(SRCDIR)/version.h
+
+PACKAGE=$(shell grep ^PACKAGE= $(CONFIGURE_IN)|sed -e "s/.*=//" -)
+MAJOR_VERSION=$(shell grep ^MAJOR_VERSION= $(CONFIGURE_IN)|sed -e "s/.*=//" -)
+MINOR_VERSION=$(shell grep ^MINOR_VERSION= $(CONFIGURE_IN)|sed -e "s/.*=//" -)
+MICRO_VERSION=$(shell grep ^MICRO_VERSION= $(CONFIGURE_IN)|sed -e "s/.*=//" -)
+EXTRA_VERSION=$(shell grep ^EXTRA_VERSION= $(CONFIGURE_IN)|sed -e "s/.*=//" -)
+VERSION=$(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)$(EXTRA_VERSION)
+
+### bisonfiles
+
+# names of parser output files and escaped versions
+LEX_YY_C=lex.yy.c
+Y_TAB_C=y.tab.c
+Y_TAB_H=y.tab.h
+LEX_YY_C_ESC=lex\.yy\.c
+Y_TAB_C_ESC=y\.tab\.c
+Y_TAB_H_ESC=y\.tab\.h
+
+QUOTE_FMT=$(SRCDIR)/quote_fmt
+MATCHER_PARSER=$(SRCDIR)/matcher_parser
+QUOTE_FMT_TARGETS=$(QUOTE_FMT)_lex.c $(QUOTE_FMT)_parse.c $(QUOTE_FMT)_parse.h
+MATCHER_PARSER_TARGETS=$(MATCHER_PARSER)_lex.c $(MATCHER_PARSER)_parse.c $(MATCHER_PARSER)_parse.h
+
+### translation
+
+MOFILES=bg.mo cs.mo de.mo el.mo en_GB.mo es.mo fr.mo hr.mo it.mo ja.mo ko.mo nl.mo pl.mo pt_BR.mo ru.mo sr.mo sv.mo
+MONAME=sylpheed.mo
+# avoid check for backslash, different shells need different escaping. yucc!
+CHARSET_RE=\(.*Content-Type: text\/plain; charset=\)\([-a-zA-Z0-9]*\)\(.*\)
+
+### sylpheed
 
 INCLUDES= \
 	-I. \
@@ -266,14 +315,48 @@ OBJECTS= \
 
 ### targets
 
-all: $(OBJECTS) $(RESOURCE) link
-$(RESOURCE):
-	$(RESCOMP) $@.rc $@.o
-link: $(APPNAME)
-$(APPNAME):
+all: version bisonfiles compile translation
+
+compile: $(APPNAME)
+version: $(VERSION_H)
+bisonfiles: $(QUOTE_FMT_TARGETS) $(MATCHER_PARSER_TARGETS)
+translation: $(MOFILES)
+
+$(APPNAME): $(OBJECTS) $(RESOURCE).o
 	$(CC) $(NOCONSOLE) $(FLAGS) $(OBJECTS) $(RESOURCE).o $(EXTRALIBS) $(LIBS) -o $(APPNAME)
+$(RESOURCE).o: $(RESOURCE).rc
+	$(RESCOMP) $< $@
+
+$(VERSION_H): $(CONFIGURE_IN) $(VERSION_H_IN)
+	echo Version: $(PACKAGE) $(VERSION)
+	$(SED) -e "s/@PACKAGE@/$(PACKAGE)/;s/@VERSION@/$(VERSION)/;" $(VERSION_H_IN) > $@
+
+%.mo: $(PODIR)/%.po
+	@# change Content-Type to "utf-8" (needed for unix msgfmt)
+	$(SED) -e "/$(CHARSET_RE)/ s/$(CHARSET_RE)/\1utf-8\3/; " $< > $(*F)-tmp.po
+	@# convert to utf-8, extract unmodified charset from original .po
+	$(ICONV) -f $(shell sed -n -e "/$(CHARSET_RE)/ {s/$(CHARSET_RE)/\2/;p;} " $<) -t utf-8 $(*F)-tmp.po > $(*F)-utf8.po
+	@# create final .mo file
+	$(MSGFMT) -o $@ $(*F)-utf8.po
+	@# cleanup
+	@-$(RM) $(*F)-tmp.po $(*F)-utf8.po
+
+%_lex.c: $(SRCDIR)/%_lex.l
+	$(FLEX) $(SRCDIR)/$(*F)_lex.l
+	$(SED) -e "s/$(SRCDIR_ESC)//;s/$(LEX_YY_C_ESC)/$(@F)/" $(LEX_YY_C) > $(SRCDIR)/$(*F)_lex.c
+
+%_parse.c %_parse.h: $(SRCDIR)/%_parse.y
+	$(YACC) -d $(SRCDIR)/$(*F)_parse.y
+	$(SED) -e "s/$(SRCDIR_ESC)//;s/$(Y_TAB_C_ESC)/$(*F)_parse.c/" $(Y_TAB_C) > $(SRCDIR)/$(*F)_parse.c
+	$(SED) -e "s/$(SRCDIR_ESC)//;s/$(Y_TAB_H_ESC)/$(*F)_parse.h/" $(Y_TAB_H) > $(SRCDIR)/$(*F)_parse.h
+# hack: prevent autogeneration
+%_lex.l %_parse.y:
+	@echo dummy:$@
+
 clean:
-	-rm *.o $(APPNAME)
+	-$(RM) *.o $(APPNAME)
+	-$(RM) $(LEX_YY_C) $(Y_TAB_C) $(Y_TAB_H)
+	-$(CD) $(SRCDIR); $(RM) $(QUOTE_FMT_TARGETS) $(MATCHER_PARSER_TARGETS)
 
 ### dependencies
 # sylpheed
@@ -373,6 +456,7 @@ procheader.o: 	procheader.c procheader.h
 procmime.o: 	procmime.c procmime.h
 procmsg.o: 	procmsg.c procmsg.h
 progressdialog.o: 	progressdialog.c progressdialog.h
+quote_fmt.o:	quote_fmt.c quote_fmt.h
 recv.o: 	recv.c recv.h
 rfc2015.o: 	rfc2015.c rfc2015.h
 scoring.o: 	scoring.c scoring.h
@@ -407,7 +491,6 @@ xmlprops.o: 	xmlprops.c xmlprops.h
 # bison / flex generated
 matcher_parser_lex.o: 	matcher_parser_lex.c matcher_parser_lex.h
 matcher_parser_parse.o: 	matcher_parser_parse.c matcher_parser_parse.h
-quote_fmt.o:	quote_fmt.c quote_fmt.h
 quote_fmt_lex.o:	quote_fmt_lex.c quote_fmt_lex.h
 quote_fmt_parse.o: 	quote_fmt_parse.c quote_fmt_parse.h
 # win32 additions
@@ -417,5 +500,3 @@ w32_mailcap.o:	w32_mailcap.c w32_mailcap.h
 compat.o:	compat.c jconv.h
 conv.o:	conv.c jconv.h
 info.o:	info.c jconv.h
-
-

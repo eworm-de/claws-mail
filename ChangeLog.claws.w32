@@ -1,3 +1,8 @@
+2002-11-03 [thorsten]	0.8.5claws66-7
+
+	* src/Make-ming.mak
+		add: create version.h, bison files, translations (no need for batchfiles)
+
 2002-11-02 [thorsten]	0.8.5claws66-6
 
 	* src/summaryview.c
