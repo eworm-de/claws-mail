@@ -583,13 +583,19 @@ void pop3_get_uidl_table(PrefsAccount *ac_prefs, Pop3Session *session)
 		recv_time = RECV_TIME_NONE;
 		partial_recv = POP3_TOTALLY_RECEIVED;
 		
-		if (sscanf(buf, "%s\t%ld\t%s", uidl, &recv_time, &tmp) < 2) {
-			if (sscanf(buf, "%s", uidl) != 1)
-				continue;
-			else {
-				recv_time = now;
+		if (sscanf(buf, "%s\t%ld\t%s", uidl, &recv_time, &tmp) < 3) {
+			if (sscanf(buf, "%s\t%ld", uidl, &recv_time) != 2) {
+				if (sscanf(buf, "%s", uidl) != 1)
+					continue;
+				else {
+					recv_time = now;
+					strcpy(tmp, "0");
+				}
+			} else {
+				strcpy(tmp, "0");
 			}
 		}
+
 		if (recv_time == RECV_TIME_NONE)
 			recv_time = RECV_TIME_RECEIVED;
 		g_hash_table_insert(table, g_strdup(uidl),

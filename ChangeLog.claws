@@ -1,3 +1,9 @@
+2004-07-26 [colin]	0.9.12cvs35
+
+	* src/pop.c
+		Fix uidl-file parsing when not in new
+		format
+
 2004-07-19 [colin]	0.9.12cvs34
 
 	* src/compose.c
