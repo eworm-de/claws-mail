@@ -1,3 +1,13 @@
+2003-05-08 [christoph]	0.8.11claws148
+
+	* src/imap.[ch]
+		o use CAPABILIY as first command and check for PREAUTH
+		  information in the response to it
+		o rewrite all imap_cmd_* functions to use an IMAPSession
+		  instead of a SockInfo as parameter
+		o do STARTTLS after fetching and checking the server
+		  capabilities
+
 2003-05-08 [paul]	0.8.11claws147
 
 	* tools/Makefile.am
