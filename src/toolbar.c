@@ -1683,7 +1683,12 @@ void toolbar_main_set_sensitive(gpointer data)
 		SET_WIDGET_COND(GTK_WIDGET_PTR(toolbar->fwd_combo),
 			M_HAVE_ACCOUNT|M_TARGET_EXIST); 
 
-	SET_WIDGET_COND(toolbar->next_btn, M_MSG_EXIST);
+	if (prefs_common.next_unread_msg_dialog == NEXTUNREADMSGDIALOG_ASSUME_NO) {
+		SET_WIDGET_COND(toolbar->next_btn, M_MSG_EXIST);
+	} else {
+		SET_WIDGET_COND(toolbar->next_btn, 0);
+	}
+
 	SET_WIDGET_COND(toolbar->delete_btn,
 			M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED);
 	SET_WIDGET_COND(toolbar->exec_btn, M_DELAY_EXEC);

@@ -1,3 +1,9 @@
+2004-07-06 [christoph]	0.9.12cvs13
+
+	* src/toolbar.c
+		enable next unread button in empty folders if next folder
+		dialog is not disabled
+
 2004-07-06 [colin]	0.9.12cvs12
 
 	* src/common/smtp.c [1.16]
