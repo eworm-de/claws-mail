@@ -1,3 +1,12 @@
+2002-12-10 [jens]	0.8.6claws95
+
+	* src/*.c
+		removed gettext from g_warnings
+	* po/POTFILES.in
+		cleaned and updated
+	* po/de.po
+		updated
+
 2002-12-10 [colin]	0.8.6claws94
 
 	* src/main.c

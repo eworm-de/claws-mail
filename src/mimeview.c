@@ -1011,7 +1011,7 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 		g_snprintf(buf, sizeof(buf), cmd, filename);
 	else {
 		if (cmd)
-			g_warning(_("MIME viewer command line is invalid: `%s'"), cmd);
+			g_warning("MIME viewer command line is invalid: `%s'", cmd);
 		if (def_cmd)
 			g_snprintf(buf, sizeof(buf), def_cmd, filename);
 		else

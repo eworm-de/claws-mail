@@ -136,7 +136,7 @@ void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 #define TRY(func) \
 if (!(func)) \
 { \
-	g_warning(_("failed to write configuration to file\n")); \
+	g_warning("failed to write configuration to file\n"); \
 	if (orig_fp) fclose(orig_fp); \
 	prefs_write_close_revert(pfile); \
 	g_free(rcpath); \
@@ -164,7 +164,7 @@ void prefs_save_config(PrefParam *param, const gchar *label,
 	}
 
 	if ((pfile = prefs_write_open(rcpath)) == NULL) {
-		g_warning(_("failed to write configuration to file\n"));
+		g_warning("failed to write configuration to file\n");
 		if (orig_fp) fclose(orig_fp);
 		g_free(rcpath);
 		return;
@@ -209,7 +209,7 @@ void prefs_save_config(PrefParam *param, const gchar *label,
 
 	if (orig_fp) fclose(orig_fp);
 	if (prefs_write_close(pfile) < 0)
-		g_warning(_("failed to write configuration to file\n"));
+		g_warning("failed to write configuration to file\n");
 	g_free(rcpath);
 
 	debug_print("Configuration is saved.\n");
@@ -267,7 +267,7 @@ PrefFile *prefs_write_open(const gchar *path)
 	g_return_val_if_fail(path != NULL, NULL);
 
 	if (prefs_is_readonly(path)) {
-		g_warning(_("no permission - %s\n"), path);
+		g_warning("no permission - %s\n", path);
 		return NULL;
 	}
 

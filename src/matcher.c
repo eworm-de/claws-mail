@@ -1038,7 +1038,7 @@ gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 								 info->msgnum);
 				
 				if (filename == NULL) {
-					g_warning(_("filename is not set"));
+					g_warning("filename is not set");
 					return NULL;
 				}
 				else
@@ -1258,7 +1258,7 @@ void prefs_matcher_write_config(void)
 			     MATCHER_RC, NULL);
 
 	if ((pfile = prefs_write_open(rcpath)) == NULL) {
-		g_warning(_("failed to write configuration to file\n"));
+		g_warning("failed to write configuration to file\n");
 		g_free(rcpath);
 		return;
 	}
@@ -1269,7 +1269,7 @@ void prefs_matcher_write_config(void)
 	g_free(rcpath);
 
 	if (prefs_write_close(pfile) < 0) {
-		g_warning(_("failed to write configuration to file\n"));
+		g_warning("failed to write configuration to file\n");
 		return;
 	}
 }

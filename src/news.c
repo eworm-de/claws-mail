@@ -278,8 +278,8 @@ NNTPSession *news_session_get(Folder *folder)
 
 	if (nntp_mode(NNTP_SESSION(rfolder->session)->nntp_sock, FALSE)
 	    != NN_SUCCESS) {
-		log_warning(_("NNTP connection to %s:%d has been"
-			      " disconnected. Reconnecting...\n"),
+		log_warning("NNTP connection to %s:%d has been"
+			      " disconnected. Reconnecting...\n",
 			    folder->account->nntp_server,
 			    folder->account->set_nntpport ?
 			    folder->account->nntpport : NNTP_PORT);
@@ -375,7 +375,7 @@ gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	ok = news_select_group(session, item->path, NULL, NULL, NULL);
 	statusbar_pop_all();
 	if (ok != NN_SUCCESS) {
-		g_warning(_("can't select group %s\n"), item->path);
+		g_warning("can't select group %s\n", item->path);
 		g_free(filename);
 		return NULL;
 	}
@@ -385,7 +385,7 @@ gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 			      num, filename);
 	statusbar_pop_all();
 	if (ok < 0) {
-		g_warning(_("can't read article %d\n"), num);
+		g_warning("can't read article %d\n", num);
 		g_free(filename);
 		return NULL;
 	}
@@ -407,7 +407,7 @@ gint news_scan_group(Folder *folder, FolderItem *item)
 
 	ok = news_select_group(session, item->path, &num, &first, &last);
 	if (ok != NN_SUCCESS) {
-		log_warning(_("can't set group: %s\n"), item->path);
+		log_warning("can't set group: %s\n", item->path);
 		return -1;
 	}
 
@@ -508,7 +508,7 @@ GSList *news_get_group_list(Folder *folder)
 		}
 		statusbar_pop_all();
 		if (recv_write_to_file(SESSION(session)->sock, filename) < 0) {
-			log_warning(_("can't retrieve newsgroup list\n"));
+			log_warning("can't retrieve newsgroup list\n");
 			session_destroy(SESSION(session));
 			REMOTE_FOLDER(folder)->session = NULL;
 			g_free(filename);
@@ -625,7 +625,7 @@ gint news_post_stream(Folder *folder, FILE *fp)
 
 	ok = nntp_post(session->nntp_sock, fp);
 	if (ok != NN_SUCCESS) {
-		log_warning(_("can't post article.\n"));
+		log_warning("can't post article.\n");
 		return -1;
 	}
 
@@ -645,7 +645,7 @@ static gint news_get_article_cmd(NNTPSession *session, const gchar *cmd,
 	g_free(msgid);
 
 	if (recv_write_to_file(session->nntp_sock->sock, filename) < 0) {
-		log_warning(_("can't retrieve article %d\n"), num);
+		log_warning("can't retrieve article %d\n", num);
 		return -1;
 	}
 
@@ -728,13 +728,13 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 
 	ok = news_select_group(session, item->path, &num, &first, &last);
 	if (ok != NN_SUCCESS) {
-		log_warning(_("can't set group: %s\n"), item->path);
+		log_warning("can't set group: %s\n", item->path);
 		return NULL;
 	}
 
 	/* calculate getting overview range */
 	if (first > last) {
-		log_warning(_("invalid article range: %d - %d\n"),
+		log_warning("invalid article range: %d - %d\n",
 			    first, last);
 		return NULL;
 	}
@@ -760,13 +760,13 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 	log_message(_("getting xover %d - %d in %s...\n"),
 		    begin, end, item->path);
 	if (nntp_xover(session->nntp_sock, begin, end) != NN_SUCCESS) {
-		log_warning(_("can't get xover\n"));
+		log_warning("can't get xover\n");
 		return NULL;
 	}
 
 	for (;;) {
 		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
-			log_warning(_("error occurred while getting xover.\n"));
+			log_warning("error occurred while getting xover.\n");
 			return newlist;
 		}
 
@@ -774,7 +774,7 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 
 		msginfo = news_parse_xover(buf);
 		if (!msginfo) {
-			log_warning(_("invalid xover line: %s\n"), buf);
+			log_warning("invalid xover line: %s\n", buf);
 			continue;
 		}
 
@@ -792,7 +792,7 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 	}
 
 	if (nntp_xhdr(session->nntp_sock, "to", begin, end) != NN_SUCCESS) {
-		log_warning(_("can't get xhdr\n"));
+		log_warning("can't get xhdr\n");
 		return newlist;
 	}
 
@@ -800,7 +800,7 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 
 	for (;;) {
 		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
-			log_warning(_("error occurred while getting xhdr.\n"));
+			log_warning("error occurred while getting xhdr.\n");
 			return newlist;
 		}
 
@@ -817,7 +817,7 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 	}
 
 	if (nntp_xhdr(session->nntp_sock, "cc", begin, end) != NN_SUCCESS) {
-		log_warning(_("can't get xhdr\n"));
+		log_warning("can't get xhdr\n");
 		return newlist;
 	}
 
@@ -825,7 +825,7 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 
 	for (;;) {
 		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
-			log_warning(_("error occurred while getting xhdr.\n"));
+			log_warning("error occurred while getting xhdr.\n");
 			return newlist;
 		}
 
@@ -1025,7 +1025,7 @@ gint news_cancel_article(Folder * folder, MsgInfo * msginfo)
 	}
 	if (change_file_mode_rw(tmpfp, tmp) < 0) {
 		FILE_OP_ERROR(tmp, "chmod");
-		g_warning(_("can't change file mode\n"));
+		g_warning("can't change file mode\n");
 	}
 	
 	fprintf(tmpfp, "From: %s\r\n", msginfo->from);

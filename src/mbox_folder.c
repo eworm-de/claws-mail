@@ -168,8 +168,8 @@ static gboolean mbox_file_lock_file(gchar * base)
 	lockfile = g_strdup_printf("%s.%d", base, getpid());
 	if ((lockfp = fopen(lockfile, "wb")) == NULL) {
 		FILE_OP_ERROR(lockfile, "fopen");
-		g_warning(_("can't create lock file %s\n"), lockfile);
-		g_warning(_("use 'flock' instead of 'file' if possible.\n"));
+		g_warning("can't create lock file %s\n", lockfile);
+		g_warning("use 'flock' instead of 'file' if possible.\n");
 		g_free(lockfile);
 		return FALSE;
 	}
@@ -181,15 +181,15 @@ static gboolean mbox_file_lock_file(gchar * base)
 	while (link(lockfile, locklink) < 0) {
 		FILE_OP_ERROR(lockfile, "link");
 		if (retry >= 5) {
-			g_warning(_("can't create %s\n"), lockfile);
+			g_warning("can't create %s\n", lockfile);
 			unlink(lockfile);
 			g_free(lockfile);
 			g_free(locklink);
 			return -1;
 		}
 		if (retry == 0)
-			g_warning(_("mailbox is owned by another"
-				    " process, waiting...\n"));
+			g_warning("mailbox is owned by another"
+				    " process, waiting...\n");
 		retry++;
 		sleep(5);
 	}
@@ -267,7 +267,7 @@ static gboolean mbox_lockread_file(FILE * fp, gchar * base)
 			debug_print("lockfile lock %s.\n", base);
 		}
 		else
-			g_warning(_("could not lock read file %s\n"), base);
+			g_warning("could not lock read file %s\n", base);
 	}
 	else
 		debug_print("fcntl lock %s.\n", base);
@@ -286,7 +286,7 @@ static gboolean mbox_lockwrite_file(FILE * fp, gchar * base)
 			debug_print("lockfile lock %s.\n", base);
 		}
 		else
-			g_warning(_("could not lock write file %s\n"), base);
+			g_warning("could not lock write file %s\n", base);
 	}
 	else
 		debug_print("fcntl lock %s.\n", base);
@@ -1298,7 +1298,7 @@ static gboolean mbox_extract_msg(FolderItem * item, gint msgnum,
 
 	if (change_file_mode_rw(dest, dest_filename) < 0) {
 		FILE_OP_ERROR(dest_filename, "chmod");
-		g_warning(_("can't change file mode\n"));
+		g_warning("can't change file mode\n");
 	}
 
 	if (!mbox_write_data(src, dest, dest_filename, size)) {
@@ -1399,7 +1399,7 @@ gint mbox_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 
 	if (change_file_mode_rw(dest_fp, mbox_path) < 0) {
 		FILE_OP_ERROR(mbox_path, "chmod");
-		g_warning(_("can't change file mode\n"));
+		g_warning("can't change file mode\n");
 	}
 
 	old_size = ftell(dest_fp);
@@ -1408,7 +1408,7 @@ gint mbox_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 
 	if (fgets(from_line, sizeof(from_line), src_fp) == NULL) {
 		mbox_unlock_file(dest_fp, mbox_path);
-		g_warning(_("unvalid file - %s.\n"), file);
+		g_warning("unvalid file - %s.\n", file);
 		fclose(dest_fp);
 		fclose(src_fp);
 		g_free(mbox_path);
@@ -1420,7 +1420,7 @@ gint mbox_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 
 		if (stat(file, &s) < 0) {
 			mbox_unlock_file(dest_fp, mbox_path);
-			g_warning(_("invalid file - %s.\n"), file);
+			g_warning("invalid file - %s.\n", file);
 			fclose(dest_fp);
 			fclose(src_fp);
 			g_free(mbox_path);
@@ -1438,7 +1438,7 @@ gint mbox_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 			break;
 		if (fwrite(buf, n_read, 1, dest_fp) < 1) {
 			mbox_unlock_file(dest_fp, mbox_path);
-			g_warning(_("writing to %s failed.\n"), mbox_path);
+			g_warning("writing to %s failed.\n", mbox_path);
 			ftruncate(fileno(dest_fp), old_size);
 			fclose(dest_fp);
 			fclose(src_fp);
@@ -1810,7 +1810,7 @@ static gboolean mbox_write_data(FILE * mbox_fp, FILE * new_fp,
 			return FALSE;
 		}
 		if (fwrite(buf, n_read, 1, new_fp) < 1) {
-			g_warning(_("writing to %s failed.\n"), new_filename);
+			g_warning("writing to %s failed.\n", new_filename);
 			return FALSE;
 		}
 		
@@ -1968,7 +1968,7 @@ static gboolean mbox_rewrite(gchar * mbox)
 
 	if (change_file_mode_rw(new_fp, new) < 0) {
 		FILE_OP_ERROR(new, "chmod");
-		g_warning(_("can't change file mode\n"));
+		g_warning("can't change file mode\n");
 	}
 
 	mbox_lockwrite_file(new_fp, new);
@@ -1989,7 +1989,7 @@ static gboolean mbox_rewrite(gchar * mbox)
 	unlink(mbox);
 
 	if (rename(new, mbox) == -1) {
-		g_warning(_("can't rename %s to %s\n"), new, mbox);
+		g_warning("can't rename %s to %s\n", new, mbox);
 		mbox_unlock_file(new_fp, new);
 		fclose(new_fp);
 		mbox_unlock_file(mbox_fp, mbox);
@@ -2000,7 +2000,7 @@ static gboolean mbox_rewrite(gchar * mbox)
 
 	if (change_file_mode_rw(new_fp, mbox) < 0) {
 		FILE_OP_ERROR(new, "chmod");
-		g_warning(_("can't change file mode\n"));
+		g_warning("can't change file mode\n");
 	}
 
 	mbox_unlock_file(new_fp, new);
@@ -2065,7 +2065,7 @@ static gboolean mbox_purge_deleted(gchar * mbox)
 
 	if (change_file_mode_rw(new_fp, new) < 0) {
 		FILE_OP_ERROR(new, "chmod");
-		g_warning(_("can't change file mode\n"));
+		g_warning("can't change file mode\n");
 	}
 
 	mbox_lockwrite_file(new_fp, new);
@@ -2088,7 +2088,7 @@ static gboolean mbox_purge_deleted(gchar * mbox)
 	unlink(mbox);
 
 	if (rename(new, mbox) == -1) {
-		g_warning(_("can't rename %s to %s\n"), new, mbox);
+		g_warning("can't rename %s to %s\n", new, mbox);
 		mbox_unlock_file(new_fp, new);
 		fclose(new_fp);
 		mbox_unlock_file(mbox_fp, mbox);
@@ -2099,7 +2099,7 @@ static gboolean mbox_purge_deleted(gchar * mbox)
 
 	if (change_file_mode_rw(new_fp, mbox) < 0) {
 		FILE_OP_ERROR(new, "chmod");
-		g_warning(_("can't change file mode\n"));
+		g_warning("can't change file mode\n");
 	}
 
 	mbox_unlock_file(new_fp, new);
@@ -2121,8 +2121,8 @@ static gboolean mbox_purge_deleted(gchar * mbox)
 { \
 	if (!is_dir_exist(dir)) { \
 		if (is_file_exist(dir)) { \
-			g_warning(_("File `%s' already exists.\n" \
-				    "Can't create folder."), dir); \
+			g_warning("File `%s' already exists.\n" \
+				    "Can't create folder.", dir); \
 			return -1; \
 		} \
 		if (mkdir(dir, S_IRWXU) < 0) { \
@@ -2232,7 +2232,7 @@ gint mbox_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 	if (rename(item->path, path) == -1) {
 		g_free(foldername);
 		g_free(path);
-		g_warning(_("Cannot rename folder item"));
+		g_warning("Cannot rename folder item");
 
 		return -1;
 	}

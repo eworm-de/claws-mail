@@ -137,7 +137,7 @@ static gint procmsg_read_cache_data_str(FILE *fp, gchar **str)
 		ret = -1;
 
 	if (ret < 0)
-		g_warning(_("Cache data is corrupted\n"));
+		g_warning("Cache data is corrupted\n");
 
 	return ret;
 }
@@ -153,7 +153,7 @@ static gint procmsg_read_cache_data_str(FILE *fp, gchar **str)
 #define READ_CACHE_DATA_INT(n, fp) \
 { \
 	if (fread(&n, sizeof(n), 1, fp) != 1) { \
-		g_warning(_("Cache data is corrupted\n")); \
+		g_warning("Cache data is corrupted\n"); \
 		procmsg_msginfo_free(msginfo); \
 		break; \
 	} \
@@ -433,7 +433,7 @@ void procmsg_add_flags(FolderItem *item, gint num, MsgFlags flags)
 	g_return_if_fail(path != NULL);
 
 	if ((fp = procmsg_open_mark_file(path, TRUE)) == NULL) {
-		g_warning(_("can't open mark file\n"));
+		g_warning("can't open mark file\n");
 		g_free(path);
 		return;
 	}
@@ -516,12 +516,12 @@ FILE *procmsg_open_mark_file(const gchar *folder, gboolean append)
 		/* reopen with append mode */
 		fclose(fp);
 		if ((fp = fopen(markfile, "ab")) == NULL)
-			g_warning(_("Can't open mark file with append mode.\n"));
+			g_warning("Can't open mark file with append mode.\n");
 	} else {
 		/* open with overwrite mode if mark file doesn't exist or
 		   version is different */
 		if ((fp = fopen(markfile, "wb")) == NULL)
-			g_warning(_("Can't open mark file with write mode.\n"));
+			g_warning("Can't open mark file with write mode.\n");
 		else {
 			ver = MARK_VERSION;
 			WRITE_CACHE_DATA_INT(ver, fp);
@@ -746,7 +746,7 @@ gchar *procmsg_get_message_file(MsgInfo *msginfo)
 
 	filename = folder_item_fetch_msg(msginfo->folder, msginfo->msgnum);
 	if (!filename)
-		g_warning(_("can't fetch message %d\n"), msginfo->msgnum);
+		g_warning("can't fetch message %d\n", msginfo->msgnum);
 
 	return filename;
 }
@@ -880,7 +880,7 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 		file = folder_item_fetch_msg(queue, msginfo->msgnum);
 		if (file) {
 			if (procmsg_send_message_queue(file) < 0) {
-				g_warning(_("Sending queued message %d failed.\n"), msginfo->msgnum);
+				g_warning("Sending queued message %d failed.\n", msginfo->msgnum);
 				ret = -1;
 			} else {
 			/* CLAWS: 
@@ -985,7 +985,7 @@ void procmsg_print_message(MsgInfo *msginfo, const gchar *cmdline)
 	g_return_if_fail(msginfo);
 
 	if ((tmpfp = procmime_get_first_text_content(msginfo)) == NULL) {
-		g_warning(_("Can't get text part\n"));
+		g_warning("Can't get text part\n");
 		return;
 	}
 
@@ -1019,7 +1019,7 @@ void procmsg_print_message(MsgInfo *msginfo, const gchar *cmdline)
 		g_snprintf(buf, sizeof(buf) - 1, cmdline, prtmp);
 	else {
 		if (cmdline)
-			g_warning(_("Print command line is invalid: `%s'\n"),
+			g_warning("Print command line is invalid: `%s'\n",
 				  cmdline);
 		g_snprintf(buf, sizeof(buf) - 1, def_cmd, prtmp);
 	}
@@ -1283,7 +1283,7 @@ gint procmsg_send_message_queue(const gchar *file)
 	if (to_list) {
 		debug_print("Sending message by mail\n");
 		if (!from) {
-			g_warning(_("Queued message header is broken.\n"));
+			g_warning("Queued message header is broken.\n");
 			mailval = -1;
 		} else if (mailac && mailac->use_mail_command &&
 			   mailac->mail_command && (* mailac->mail_command)) {
@@ -1296,8 +1296,8 @@ gint procmsg_send_message_queue(const gchar *file)
 			if (!mailac) {
 				mailac = account_find_from_smtp_server(from, smtpserver);
 				if (!mailac) {
-					g_warning(_("Account not found. "
-						    "Using current account...\n"));
+					g_warning("Account not found. "
+						    "Using current account...\n");
 					mailac = cur_account;
 				}
 			}
@@ -1307,7 +1307,7 @@ gint procmsg_send_message_queue(const gchar *file)
 			else {
 				PrefsAccount tmp_ac;
 
-				g_warning(_("Account not found.\n"));
+				g_warning("Account not found.\n");
 
 				memset(&tmp_ac, 0, sizeof(PrefsAccount));
 				tmp_ac.address = from;
@@ -1346,7 +1346,7 @@ gint procmsg_send_message_queue(const gchar *file)
     		} else {
     			if (change_file_mode_rw(tmpfp, tmp) < 0) {
             			FILE_OP_ERROR(tmp, "chmod");
-            			g_warning(_("can't change file mode\n"));
+            			g_warning("can't change file mode\n");
     			}
 
 			while ((newsval == 0) && fgets(buf, sizeof(buf), fp) != NULL) {
@@ -1593,7 +1593,7 @@ void procmsg_msginfo_write_flags(MsgInfo *msginfo)
 		procmsg_write_flags(msginfo, fp);
 		fclose(fp);
 	} else {
-		g_warning(_("Can't open mark file.\n"));
+		g_warning("Can't open mark file.\n");
 	}
 	
 	g_free(destdir);

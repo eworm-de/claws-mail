@@ -104,7 +104,7 @@ void quote_fmt_init(MsgInfo *info, const gchar *my_quote_str,
 
 void quote_fmterror(char *str)
 {
-	g_warning(_("Error: %s\n"), str);
+	g_warning("Error: %s\n", str);
 	error = 1;
 }
 
@@ -378,7 +378,7 @@ special:
 				fp = procmime_get_first_text_content(msginfo);
 
 			if (fp == NULL)
-				g_warning(_("Can't get text part\n"));
+				g_warning("Can't get text part\n");
 			else {
 				while (fgets(buf, sizeof(buf), fp) != NULL) {
 					strcrchomp(buf);
@@ -400,7 +400,7 @@ special:
 				fp = procmime_get_first_text_content(msginfo);
 
 			if (fp == NULL)
-				g_warning(_("Can't get text part\n"));
+				g_warning("Can't get text part\n");
 			else {
 				while (fgets(buf, sizeof(buf), fp) != NULL) {
 					strcrchomp(buf);
@@ -424,7 +424,7 @@ special:
 				fp = procmime_get_first_text_content(msginfo);
 
 			if (fp == NULL)
-				g_warning(_("Can't get text part\n"));
+				g_warning("Can't get text part\n");
 			else {
 				while (fgets(buf, sizeof(buf), fp) != NULL) {
 					strcrchomp(buf);
@@ -448,7 +448,7 @@ special:
 				fp = procmime_get_first_text_content(msginfo);
 
 			if (fp == NULL)
-				g_warning(_("Can't get text part\n"));
+				g_warning("Can't get text part\n");
 			else {
 				while (fgets(buf, sizeof(buf), fp) != NULL) {
 					strcrchomp(buf);

@@ -778,7 +778,7 @@ void renderer_write_config(void)
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, RENDERER_RC, NULL);
 	
 	if ((pfile = prefs_write_open(rcpath)) == NULL) {
-		g_warning(_("failed to write configuration to file\n"));
+		g_warning("failed to write configuration to file\n");
 		g_free(rcpath);
 		return;
 	}
@@ -793,7 +793,7 @@ void renderer_write_config(void)
 	}
 
 	if (prefs_write_close(pfile) < 0) {
-		g_warning(_("failed to write configuration to file\n"));
+		g_warning("failed to write configuration to file\n");
 		return;
 	}
 }
@@ -903,7 +903,7 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 	}
 
 	if (conv_fail)
-		g_warning(_("procmime_get_text_content(): Code conversion failed.\n"));
+		g_warning("procmime_get_text_content(): Code conversion failed.\n");
 
 	fclose(tmpfp);
 	rewind(outfp);

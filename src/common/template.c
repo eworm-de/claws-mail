@@ -169,7 +169,7 @@ void template_write_config(GSList *tmpl_list)
 
 	if (!is_dir_exist(path)) {
 		if (is_file_exist(path)) {
-			g_warning(_("file %s already exists\n"), path);
+			g_warning("file %s already exists\n", path);
 			return;
 		}
 		if (make_dir(path) < 0)

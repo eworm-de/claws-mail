@@ -713,7 +713,7 @@ gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint uid)
 			 NULL, NULL, NULL, NULL);
 	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
-		g_warning(_("can't select mailbox %s\n"), item->path);
+		g_warning("can't select mailbox %s\n", item->path);
 		g_free(filename);
 		return NULL;
 	}
@@ -724,7 +724,7 @@ gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint uid)
 	statusbar_pop_all();
 
 	if (ok != IMAP_SUCCESS) {
-		g_warning(_("can't fetch message %d\n"), uid);
+		g_warning("can't fetch message %d\n", uid);
 		g_free(filename);
 		return NULL;
 	}
@@ -752,7 +752,7 @@ gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 			 &messages, &recent, &uid_next, &uid_validity, &unseen);
 	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
-		g_warning(_("can't append message %s\n"), file);
+		g_warning("can't append message %s\n", file);
 		return -1;
 	}
 
@@ -761,7 +761,7 @@ gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 	g_free(destdir);
 
 	if (ok != IMAP_SUCCESS) {
-		g_warning(_("can't append message %s\n"), file);
+		g_warning("can't append message %s\n", file);
 		return -1;
 	}
 
@@ -791,7 +791,7 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 	if (!session) return -1;
 
 	if (msginfo->folder == dest) {
-		g_warning(_("the src folder is identical to the dest.\n"));
+		g_warning("the src folder is identical to the dest.\n");
 		return -1;
 	}
 
@@ -799,7 +799,7 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 			 &messages, &recent, &uid_next, &uid_validity, &unseen);
 	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
-		g_warning(_("can't copy message\n"));
+		g_warning("can't copy message\n");
 		return -1;
 	}
 
@@ -861,7 +861,7 @@ static gint imap_do_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
 		msginfo = (MsgInfo *)cur->data;
 
 		if (msginfo->folder == dest) {
-			g_warning(_("the src folder is identical to the dest.\n"));
+			g_warning("the src folder is identical to the dest.\n");
 			continue;
 		}
 
@@ -1436,12 +1436,12 @@ static FolderItem *imap_create_special_folder(Folder *folder,
 	new_item = imap_create_folder(folder, item, name);
 
 	if (!new_item) {
-		g_warning(_("Can't create '%s'\n"), name);
+		g_warning("Can't create '%s'\n", name);
 		if (!folder->inbox) return NULL;
 
 		new_item = imap_create_folder(folder, folder->inbox, name);
 		if (!new_item)
-			g_warning(_("Can't create '%s' under INBOX\n"), name);
+			g_warning("Can't create '%s' under INBOX\n", name);
 		else
 			new_item->stype = stype;
 	} else
@@ -3044,7 +3044,7 @@ static gchar *imap_modified_utf7_to_locale(const gchar *mutf7_str)
 	if (cd == (iconv_t)-1) {
 		cd = iconv_open(conv_get_current_charset_str(), "UTF-7");
 		if (cd == (iconv_t)-1) {
-			g_warning(_("iconv cannot convert UTF-7 to %s\n"),
+			g_warning("iconv cannot convert UTF-7 to %s\n",
 				  conv_get_current_charset_str());
 			iconv_ok = FALSE;
 			return g_strdup(mutf7_str);
@@ -3081,7 +3081,7 @@ static gchar *imap_modified_utf7_to_locale(const gchar *mutf7_str)
 	to_p = to_str = g_malloc(to_len + 1);
 
 	if (iconv(cd, &norm_utf7_p, &norm_utf7_len, &to_p, &to_len) == -1) {
-		g_warning(_("iconv cannot convert UTF-7 to %s\n"),
+		g_warning("iconv cannot convert UTF-7 to %s\n",
 			  conv_get_current_charset_str());
 		g_string_free(norm_utf7, TRUE);
 		g_free(to_str);
@@ -3115,7 +3115,7 @@ static gchar *imap_locale_to_modified_utf7(const gchar *from)
 	if (cd == (iconv_t)-1) {
 		cd = iconv_open("UTF-7", conv_get_current_charset_str());
 		if (cd == (iconv_t)-1) {
-			g_warning(_("iconv cannot convert %s to UTF-7\n"),
+			g_warning("iconv cannot convert %s to UTF-7\n",
 				  conv_get_current_charset_str());
 			iconv_ok = FALSE;
 			return g_strdup(from);
@@ -3148,7 +3148,7 @@ static gchar *imap_locale_to_modified_utf7(const gchar *from)
 			from_len -= mblen;
 			if (iconv(cd, &from_tmp, &mblen,
 				  &norm_utf7_p, &norm_utf7_len) == -1) {
-				g_warning(_("iconv cannot convert %s to UTF-7\n"),
+				g_warning("iconv cannot convert %s to UTF-7\n",
 					  conv_get_current_charset_str());
 				return g_strdup(from);
 			}

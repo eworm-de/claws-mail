@@ -581,7 +581,7 @@ void prefs_account_save_config_all(GList *account_list)
 		if (fprintf(pfile->fp, "[Account: %d]\n",
 			    tmp_ac_prefs.account_id) <= 0 ||
 		    prefs_write_param(param, pfile->fp) < 0) {
-			g_warning(_("failed to write configuration to file\n"));
+			g_warning("failed to write configuration to file\n");
 			prefs_write_close_revert(pfile);
 			return;
 		}
@@ -595,7 +595,7 @@ void prefs_account_save_config_all(GList *account_list)
 	}
 
 	if (prefs_write_close(pfile) < 0)
-		g_warning(_("failed to write configuration to file\n"));
+		g_warning("failed to write configuration to file\n");
 }
 
 void prefs_account_free(PrefsAccount *ac_prefs)

@@ -279,7 +279,7 @@ static gboolean filtering_apply_rule(FilteringProp *filtering, MsgInfo *info)
 	gchar    buf[50];
 
 	if (FALSE == (result = filteringaction_apply(filtering->action, info))) {
-		g_warning(_("action %s could not be applied"), 
+		g_warning("action %s could not be applied", 
 		filteringaction_to_string(buf, sizeof buf, filtering->action));
 	}
 	return result;
@@ -314,7 +314,7 @@ static void filter_msginfo(GSList * filtering_list, FolderItem *inbox,
 	gboolean applied;
 	
 	if (info == NULL) {
-		g_warning(_("msginfo is not set"));
+		g_warning("msginfo is not set");
 		return;
 	}
 	
@@ -386,14 +386,14 @@ void filter_message(GSList *filtering_list, FolderItem *inbox,
 	FolderItem *item = folder_get_default_processing();
 
 	if (item == NULL) {
-		g_warning(_("folderitem not set"));
+		g_warning("folderitem not set");
 		return;
 	}
 
 	filename = folder_item_fetch_msg(item, msgnum);
 
 	if (filename == NULL) {
-		g_warning(_("filename is not set"));
+		g_warning("filename is not set");
 		return;
 	}
 
@@ -402,7 +402,7 @@ void filter_message(GSList *filtering_list, FolderItem *inbox,
 	g_free(filename);
 
 	if (msginfo == NULL) {
-		g_warning(_("could not get info for %s"), filename);
+		g_warning("could not get info for %s", filename);
 		return;
 	}
 

@@ -165,7 +165,7 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str)
 		ret = -1;
 
 	if (ret < 0)
-		g_warning(_("Cache data is corrupted\n"));
+		g_warning("Cache data is corrupted\n");
 
 	return ret;
 }
@@ -183,7 +183,7 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str)
 #define READ_CACHE_DATA_INT(n, fp) \
 { \
 	if (fread(&n, sizeof(n), 1, fp) != 1) { \
-		g_warning(_("Cache data is corrupted\n")); \
+		g_warning("Cache data is corrupted\n"); \
 		procmsg_msginfo_free(msginfo); \
 		error = TRUE; \
 		break; \

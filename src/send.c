@@ -173,7 +173,7 @@ gint send_message_queue(const gchar *file)
 	}
 
 	if (((!ac || (ac && ac->protocol != A_NNTP)) && !to_list) || !from) {
-		g_warning(_("Queued message header is broken.\n"));
+		g_warning("Queued message header is broken.\n");
 		val = -1;
 	} else if (prefs_common.use_extsend && prefs_common.extsend_cmd) {
 		val = send_message_local(prefs_common.extsend_cmd, fp);
@@ -198,8 +198,8 @@ gint send_message_queue(const gchar *file)
 		} else {
 			ac = account_find_from_smtp_server(from, server);
 			if (!ac) {
-				g_warning(_("Account not found. "
-					    "Using current account...\n"));
+				g_warning("Account not found. "
+					    "Using current account...\n");
 				ac = cur_account;
 				if (ac && ac->protocol != A_NNTP)
 					mailac = ac;
@@ -213,7 +213,7 @@ gint send_message_queue(const gchar *file)
 			else {
 				PrefsAccount tmp_ac;
 
-				g_warning(_("Account not found.\n"));
+				g_warning("Account not found.\n");
 
 				memset(&tmp_ac, 0, sizeof(PrefsAccount));
 				tmp_ac.address = from;
@@ -250,7 +250,7 @@ gint send_message_local(const gchar *command, FILE *fp)
 
 	pipefp = popen(command, "w");
 	if (!pipefp) {
-		g_warning(_("Can't execute external command: %s\n"), command);
+		g_warning("Can't execute external command: %s\n", command);
 		return -1;
 	}
 
@@ -274,7 +274,7 @@ gint send_message_local(const gchar *command, FILE *fp)
 
 	sigprocmask(SIG_SETMASK, &osig, NULL);
 	if (r != 0) {
-		g_warning(_("external command `%s' failed with code `%i'\n"), command, r);
+		g_warning("external command `%s' failed with code `%i'\n", command, r);
 		return -1;
 	}
 

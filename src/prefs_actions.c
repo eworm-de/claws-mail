@@ -503,7 +503,7 @@ void prefs_actions_write_config(void)
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ACTIONS_RC, NULL);
 	if ((pfile= prefs_write_open(rcpath)) == NULL) {
-		g_warning(_("failed to write configuration to file\n"));
+		g_warning("failed to write configuration to file\n");
 		g_free(rcpath);
 		return;
 	}
@@ -522,7 +522,7 @@ void prefs_actions_write_config(void)
 	g_free(rcpath);
 
 	if (prefs_write_close(pfile) < 0) {
-		g_warning(_("failed to write configuration to file\n"));
+		g_warning("failed to write configuration to file\n");
 		return;
 	}
 }

@@ -292,7 +292,7 @@ static gint disposition_notification_queue(PrefsAccount * account,
 	}
 	if (change_file_mode_rw(fp, tmp) < 0) {
 		FILE_OP_ERROR(tmp, "chmod");
-		g_warning(_("can't change file mode\n"));
+		g_warning("can't change file mode\n");
 	}
 
 	/* queueing variables */
@@ -341,7 +341,7 @@ static gint disposition_notification_queue(PrefsAccount * account,
 
 	queue = folder_get_default_queue();
 	if ((num = folder_item_add_msg(queue, tmp, TRUE)) < 0) {
-		g_warning(_("can't queue the message\n"));
+		g_warning("can't queue the message\n");
 		unlink(tmp);
 		g_free(tmp);
 		return -1;
@@ -438,7 +438,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	/* chmod for security */
 	if (change_file_mode_rw(fp, tmp) < 0) {
 		FILE_OP_ERROR(tmp, "chmod");
-		g_warning(_("can't change file mode\n"));
+		g_warning("can't change file mode\n");
 	}
 
 	/* Date */
@@ -516,7 +516,7 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 
 	file = procmsg_get_message_file_path(msginfo);
 	if (!file) {
-		g_warning(_("can't get message file path.\n"));
+		g_warning("can't get message file path.\n");
 		procmime_mimeinfo_free_all(mimeinfo);
 		return;
 	}
@@ -767,7 +767,7 @@ static void return_receipt_send_clicked(NoticeView *noticeview, MsgInfo *msginfo
 
 	file = procmsg_get_message_file_path(msginfo);
 	if (!file) {
-		g_warning(_("can't get message file path.\n"));
+		g_warning("can't get message file path.\n");
 		return;
 	}
 

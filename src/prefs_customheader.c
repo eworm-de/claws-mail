@@ -383,7 +383,7 @@ void prefs_custom_header_write_config(PrefsAccount *ac)
 	}
 
 	if ((pfile = prefs_write_open(rcpath)) == NULL) {
-		g_warning(_("failed to write configuration to file\n"));
+		g_warning("failed to write configuration to file\n");
 		g_free(rcpath);
 		return;
 	}
@@ -429,7 +429,7 @@ void prefs_custom_header_write_config(PrefsAccount *ac)
  	}
 
 	if (prefs_write_close(pfile) < 0) {
-		g_warning(_("failed to write configuration to file\n"));
+		g_warning("failed to write configuration to file\n");
 		return;
 	}
 }

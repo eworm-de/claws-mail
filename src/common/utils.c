@@ -2086,7 +2086,7 @@ gint copy_file(const gchar *src, const gchar *dest)
 		while (len > 0) {
 			n_write = write(dest_fd, bufp, len);
 			if (n_write <= 0) {
-				g_warning(_("writing to %s failed.\n"), dest);
+				g_warning("writing to %s failed.\n", dest);
 				close(dest_fd);
 				close(src_fd);
 				unlink(dest);
@@ -2106,7 +2106,7 @@ gint copy_file(const gchar *src, const gchar *dest)
 	close(dest_fd);
 
 	if (n_read < 0 || get_file_size(src) != get_file_size(dest)) {
-		g_warning(_("File copy from %s to %s failed.\n"), src, dest);
+		g_warning("File copy from %s to %s failed.\n", src, dest);
 		unlink(dest);
 		if (dest_bak) {
 			if (rename(dest_bak, dest) < 0)
@@ -2147,14 +2147,14 @@ gint append_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 
 	if (change_file_mode_rw(dest_fp, dest) < 0) {
 		FILE_OP_ERROR(dest, "chmod");
-		g_warning(_("can't change file mode\n"));
+		g_warning("can't change file mode\n");
 	}
 
 	while ((n_read = fread(buf, sizeof(gchar), sizeof(buf), src_fp)) > 0) {
 		if (n_read < sizeof(buf) && ferror(src_fp))
 			break;
 		if (fwrite(buf, n_read, 1, dest_fp) < 1) {
-			g_warning(_("writing to %s failed.\n"), dest);
+			g_warning("writing to %s failed.\n", dest);
 			fclose(dest_fp);
 			fclose(src_fp);
 			unlink(dest);
@@ -2215,14 +2215,14 @@ gint copy_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 
 	if (change_file_mode_rw(dest_fp, dest) < 0) {
 		FILE_OP_ERROR(dest, "chmod");
-		g_warning(_("can't change file mode\n"));
+		g_warning("can't change file mode\n");
 	}
 
 	while ((n_read = fread(buf, sizeof(gchar), sizeof(buf), src_fp)) > 0) {
 		if (n_read < sizeof(buf) && ferror(src_fp))
 			break;
 		if (fwrite(buf, n_read, 1, dest_fp) < 1) {
-			g_warning(_("writing to %s failed.\n"), dest);
+			g_warning("writing to %s failed.\n", dest);
 			fclose(dest_fp);
 			fclose(src_fp);
 			unlink(dest);
@@ -2314,7 +2314,7 @@ gint copy_file_part(FILE *fp, off_t offset, size_t length, const gchar *dest)
 		if (n_read < to_read && ferror(fp))
 			break;
 		if (fwrite(buf, n_read, 1, dest_fp) < 1) {
-			g_warning(_("writing to %s failed.\n"), dest);
+			g_warning("writing to %s failed.\n", dest);
 			fclose(dest_fp);
 			unlink(dest);
 			return -1;
@@ -2790,7 +2790,7 @@ gint open_uri(const gchar *uri, const gchar *cmdline)
 		g_snprintf(buf, sizeof(buf), cmdline, encoded_uri);
 	else {
 		if (cmdline)
-			g_warning(_("Open URI command line is invalid: `%s'"),
+			g_warning("Open URI command line is invalid: `%s'",
 				  cmdline);
 		g_snprintf(buf, sizeof(buf), default_cmdline, encoded_uri);
 	}

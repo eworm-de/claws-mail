@@ -1034,7 +1034,7 @@ MainWindow *main_window_create(SeparateType type)
 	gdk_colormap_alloc_colors(colormap, color, 4, FALSE, TRUE, success);
 	for (i = 0; i < 4; i++) {
 		if (success[i] == FALSE)
-			g_warning(_("MainWindow: color allocation %d failed\n"), i);
+			g_warning("MainWindow: color allocation %d failed\n", i);
 	}
 
 	debug_print("done.\n");
