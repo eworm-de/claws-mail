@@ -2000,6 +2000,65 @@ gint copy_file(const gchar *src, const gchar *dest)
 }
 #endif
 
+
+/*
+ * Append src file body to the tail of dest file.
+ * Now keep_backup has no effects.
+ */
+gint append_file(const gchar *src, const gchar *dest, gboolean keep_backup)
+{
+	FILE *src_fp, *dest_fp;
+	gint n_read;
+	gchar buf[BUFSIZ];
+
+	gboolean err = FALSE;
+
+	if ((src_fp = fopen(src, "rb")) == NULL) {
+		FILE_OP_ERROR(src, "fopen");
+		return -1;
+	}
+	
+	if ((dest_fp = fopen(dest, "ab")) == NULL) {
+		FILE_OP_ERROR(dest, "fopen");
+		fclose(src_fp);
+		return -1;
+	}
+
+	if (change_file_mode_rw(dest_fp, dest) < 0) {
+		FILE_OP_ERROR(dest, "chmod");
+		g_warning(_("can't change file mode\n"));
+	}
+
+	while ((n_read = fread(buf, sizeof(gchar), sizeof(buf), src_fp)) > 0) {
+		if (n_read < sizeof(buf) && ferror(src_fp))
+			break;
+		if (fwrite(buf, n_read, 1, dest_fp) < 1) {
+			g_warning(_("writing to %s failed.\n"), dest);
+			fclose(dest_fp);
+			fclose(src_fp);
+			unlink(dest);
+			return -1;
+		}
+	}
+
+	if (ferror(src_fp)) {
+		FILE_OP_ERROR(src, "fread");
+		err = TRUE;
+	}
+	fclose(src_fp);
+	if (fclose(dest_fp) == EOF) {
+		FILE_OP_ERROR(dest, "fclose");
+		err = TRUE;
+	}
+
+	if (err) {
+		unlink(dest);
+		return -1;
+	}
+
+	return 0;
+}
+
 gint copy_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 {
 	FILE *src_fp, *dest_fp;

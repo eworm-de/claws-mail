@@ -1,3 +1,19 @@
+2002-09-24 [alfons]	0.8.3claws21
+
+	patch by Satoshi Nagayasu: allows appending / saving multiple 
+	selected files (closes "[ 612279 ] save multiple mesg(s) in 
+	'Save as ...'")
+
+	* AUTHORS
+		add Satoshi Nagayasu
+	* src/summaryview.c
+		summary_save_as(): allow saving selected files to
+		one file
+		summary_set_menu_sensitive: enable "Save As..." when
+		multiple files are selected
+	* src/utils.[ch]
+		append_file(): new function
+
 2002-09-24 [colin]	0.8.3claws20
 
 	* src/procmime.c
