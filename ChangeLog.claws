@@ -1,3 +1,9 @@
+2001-05-14 [hiroyuki]
+
+	* src/md5global.h
+	  src/md5ify.c
+	  src/md5ify.h: removed from the cvs.
+
 2001-05-13 [sergey]
 
 	* src/main.c: include rfc2015.h to avoid compiler warnings.
