@@ -1,3 +1,12 @@
+2003-08-16 [christoph]	0.9.4claws27
+
+	* src/mainwindow.c
+		remember and restore window sizes and position when the main
+		window is hidden or shown
+
+	(closes Bug 274 Window size in 0.9.4claws18 not remembered when
+	 minimised/reopened using trayicon)
+
 2003-08-16 [paul]	0.9.4claws26
 
 	* src/crash.c
