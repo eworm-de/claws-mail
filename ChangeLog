@@ -1,5 +1,12 @@
 2003-02-17
 
+	* src/colorlabel.c: don't use pixmaps for label color rect but draw
+	  rectangles so we can respect the color map of palette based visuals
+	  (fixes the long time crashes on Solaris - thanks to Alfons
+	  Hoogervorst).
+
+2003-02-17
+
 	* src/procheader.c: procheader_date_parse(): made month string case
 	  insensitive.
 	* src/prefs_filter.c: prefs_filter_close(): fixed the crash when the

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001 Hiroyuki Yamamoto & The Sylpheed Claws Team
+ * Copyright (C) 2001-2003 Hiroyuki Yamamoto & The Sylpheed Claws Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,7 +133,7 @@ static gboolean colorlabel_drawing_area_expose_event_cb
 			   widget->allocation.height);
 
 	gdk_gc_unref(gc);			   
-	
+
 	return FALSE;
 }
 
@@ -150,8 +150,10 @@ static GtkWidget *colorlabel_create_color_widget(GdkColor color)
 			 (CL(b)))
 
 	gtk_signal_connect(GTK_OBJECT(widget), "expose_event", 
-			   colorlabel_drawing_area_expose_event_cb,
-			   GINT_TO_POINTER( (gint) CR(color.red, color.green, color.blue )));
+			   GTK_SIGNAL_FUNC
+			   	(colorlabel_drawing_area_expose_event_cb),
+			   GINT_TO_POINTER
+			   	((gint)CR(color.red, color.green, color.blue)));
 
 	return widget;
 }

@@ -1,5 +1,12 @@
 2003-02-17
 
+	* src/colorlabel.c: カラーラベルの矩形に pixmap を使わず、矩形を
+	  描画するようにし、パレットベースの画面のカラーマップに従うよう
+	  にした(長期に渡る Solaris でのクラッシュを修正 - Alfons
+	  Hoogervorst さん thanks)。
+
+2003-02-17
+
 	* src/procheader.c: procheader_date_parse(): 月の文字列を大小文字を
 	  区別しないようにした。
 	* src/prefs_filter.c: prefs_filter_close(): セレクションリストが
