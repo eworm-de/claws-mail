@@ -603,7 +603,7 @@ static MsgInfo *news_parse_xover(const gchar *xover_str)
 	 * RFC2980 for details
 	 */
 
-	tmp = strchr(xref, '\t');
+	tmp = strchr(line, '\t');
 	if (!tmp) tmp = strchr(line, '\r');
 	if (!tmp) tmp = strchr(line, '\n');
 	if (tmp) *tmp = '\0';
@@ -641,12 +641,14 @@ static MsgInfo *news_parse_xover(const gchar *xover_str)
 			msginfo->inreplyto = g_strdup(p);
 	}
 
+	/*
 	msginfo->xref = g_strdup(xref);
 	p = msginfo->xref+strlen(msginfo->xref) - 1;
 	while (*p == '\r' || *p == '\n') {
 		*p = '\0';
 		p--;
 	}
+	*/
 
 	return msginfo;
 }
