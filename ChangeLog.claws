@@ -1,3 +1,12 @@
+2001-07-22 [alfons]
+
+	* po/nl.po
+		update Dutch translation
+
+	* src/prefs_filtering.c, 
+	  src/prefs_matcher.c
+		add more translatable strings		
+
 2001-07-21 [alfons]
 
 	0.5.0claws7

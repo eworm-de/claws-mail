@@ -114,7 +114,7 @@ enum {
 };
 
 gchar * bool_op_text [] = {
-	"or", "and"
+	N_("or"), N_("and")
 };
 
 enum {
@@ -123,7 +123,7 @@ enum {
 };
 
 gchar * predicate_text [] = {
-	"contains", "does not contain"
+	N_("contains"), N_("does not contain")
 };
 
 enum {
@@ -132,21 +132,21 @@ enum {
 };
 
 gchar * predicate_flag_text [] = {
-	"yes", "no"
+	N_("yes"), N_("no")
 };
 
 gchar * criteria_text [] = {
-	"All messages", "Subject",
-	"From", "To", "Cc", "To or Cc",
-	"Newsgroups", "In reply to", "References",
-	"Age greater than", "Age lower than",
-	"Header", "Headers part",
-	"Body part", "Whole message",
-	"Unread flag", "New flag",
-	"Marked flag", "Deleted flag",
-	"Replied flag", "Forwarded flag",
-	"Score greater than", "Score lower than",
-	"Execute"
+	N_("All messages"), N_("Subject"),
+	N_("From"), N_("To"), N_("Cc"), N_("To or Cc"),
+	N_("Newsgroups"), N_("In reply to"), N_("References"),
+	N_("Age greater than"), N_("Age lower than"),
+	N_("Header"), N_("Headers part"),
+	N_("Body part"), N_("Whole message"),
+	N_("Unread flag"), N_("New flag"),
+	N_("Marked flag"), N_("Deleted flag"),
+	N_("Replied flag"), N_("Forwarded flag"),
+	N_("Score greater than"), N_("Score lower than"),
+	N_("Execute")
 };
 
 static gint get_sel_from_list(GtkList * list)

@@ -212,11 +212,18 @@ static gint prefs_filtering_get_matching_from_action(gint action_id)
 	}
 }
 
-gchar * action_text [] = {
-	"Move",	"Copy", "Delete",
-	"Mark", "Unmark", "Mark as read", "Mark as unread",
-	"Forward", "Forward as attachment", "Execute",
-	"Color"
+static gchar * action_text [] = {
+	N_("Move"),	
+	N_("Copy"), 
+	N_("Delete"),
+	N_("Mark"), 
+	N_("Unmark"), 
+	N_("Mark as read"), 
+	N_("Mark as unread"),
+	N_("Forward"), 
+	N_("Forward as attachment"), 
+	N_("Execute"),
+	N_("Color")
 };
 
 void prefs_filtering_open(void)
