@@ -1,3 +1,14 @@
+2003-06-01 [thorsten]	0.9.0claws5-1
+
+	* src/common/socket.c
+	  src/common/utils.c
+	  win32/Makefile
+	  win32/config.h
+	  win32/demo[_d].dsp
+	  win32/spamassassin[_gtk][_d].dsp
+	  win32/sylpheed_dll[_d].dsp
+		add: use WinSock2, enable IPv6
+
 2003-05-19 [thorsten]	0.8.11claws161-1
 
 	* src/folder.c

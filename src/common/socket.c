@@ -23,6 +23,13 @@
 
 #include <glib.h>
 #ifdef WIN32
+# include <winsock2.h>
+# ifdef INET6
+#  include <ws2tcpip.h>
+#  ifdef _MSC_VER
+#   include <tpipv6.h>  // For IPv6 Tech Preview.
+#  endif /* _MSC_VER */
+# endif /* INET6 */
 # include <w32lib.h>
 # include <sys/stat.h>
 #else

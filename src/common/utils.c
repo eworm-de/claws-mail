@@ -4002,4 +4002,60 @@ gchar *w32_move_to_exec_dir(const gchar *filename)
 	res = CopyFile(filename, exec_name, FALSE);
 	return exec_name;
 }
-#endif
+/*----------------------------------------------------------------------*/
+/* GCC cant handle inline declaration of gai_strerror() */
+#if defined(INET6) && defined(__MINGW32__)
+// WARNING: The gai_strerror inline functions below use static buffers, 
+// and hence are not thread-safe.  We'll use buffers long enough to hold 
+// 1k characters.  Any system error messages longer than this will be 
+// returned as empty strings.  However 1k should work for the error codes 
+// used by getaddrinfo().
+#define GAI_STRERROR_BUFFER_SIZE 1024
+
+//WS2TCPIP_INLINE 
+char *
+WSAAPI
+gai_strerrorA(
+    IN int ecode)
+{
+    DWORD dwMsgLen;
+    static char buff[GAI_STRERROR_BUFFER_SIZE + 1];
+
+    dwMsgLen = FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM
+                             |FORMAT_MESSAGE_IGNORE_INSERTS
+                             |FORMAT_MESSAGE_MAX_WIDTH_MASK,
+                              NULL,
+                              ecode,
+                              MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                              (LPSTR)buff,
+                              GAI_STRERROR_BUFFER_SIZE,
+                              NULL);
+
+    return buff;
+}
+
+//WS2TCPIP_INLINE 
+WCHAR *
+WSAAPI
+gai_strerrorW(
+    IN int ecode
+    )
+{
+    DWORD dwMsgLen;
+    static WCHAR buff[GAI_STRERROR_BUFFER_SIZE + 1];
+
+    dwMsgLen = FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM
+                             |FORMAT_MESSAGE_IGNORE_INSERTS
+                             |FORMAT_MESSAGE_MAX_WIDTH_MASK,
+                              NULL,
+                              ecode,
+                              MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                              (LPWSTR)buff,
+                              GAI_STRERROR_BUFFER_SIZE,
+                              NULL);
+
+    return buff;
+}
+#endif /* defined(INET6) && defined(__MINGW32__) */
+
+#endif /* WIN32 */

@@ -21,7 +21,7 @@
 #undef USE_THREADS
 
 /* Define if you want IPv6 support.  */
-#undef INET6
+#define INET6 1
 
 /* GPGME has no VC project * Define if you use GPGME to support OpenPGP */
 //#undef USE_GPGME
