@@ -1,3 +1,13 @@
+2003-08-03 [alfons]	0.9.3claws95
+
+	* src/summaryview.c
+		mark flag has precedence over important flag - seems
+		to have been changed in sync of 0.9.3claws45. this fixes
+		a regression where messages that were scored as important
+		don't show their mark flags. (using the same column for
+		both importance as mark flags is the real problem
+		ofcourse)
+
 2003-08-03 [melvin]	0.9.3claws94
 
 	* po/fr.po

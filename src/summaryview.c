@@ -2701,6 +2701,9 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 		}
 			gtk_ctree_node_set_foreground
 				(ctree, row, &summaryview->color_dim);
+	} else if (MSG_IS_MARKED(flags)) {
+		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MARK],
+					  markxpm, markxpmmask);
 	} else if (MSG_IS_MOVE(flags)) {
 		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_MARK], "o");
 		if (style)
@@ -2726,9 +2729,6 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 		gtk_ctree_node_set_text(ctree, row, S_COL_MARK, "!");
 		gtk_ctree_node_set_foreground(ctree, row,
 					      &summaryview->color_important);
-	} else if (MSG_IS_MARKED(flags)) {
-		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MARK],
-					  markxpm, markxpmmask);
 	} else {
 		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_MARK], NULL);
 	}
