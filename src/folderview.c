@@ -1880,6 +1880,9 @@ static void folderview_new_folder_cb(FolderView *folderview, guint action,
 				  _("NewFolder"));
 	if (!new_folder) return;
 
+#ifdef WIN32
+	locale_from_utf8(&new_folder);
+#endif
 	if (item->folder->type != F_MBOX) {
 		if (strchr(new_folder, G_DIR_SEPARATOR) != NULL) {
 			alertpanel_error(_("`%c' can't be included in folder name."),
@@ -1990,6 +1993,9 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 	gchar *old_path;
 	gchar *old_id;
 	gchar *new_id;
+#ifdef WIN32
+	gchar *p_path;
+#endif
 
 	if (!folderview->selected) return;
 
@@ -2001,14 +2007,22 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 	name_ = trim_string(item->name, 32);
 	Xstrdup_a(name, name_, return);
 	g_free(name_);
+#ifdef WIN32
+	p_path = g_strdup(item->path);
+	locale_to_utf8(&p_path);
+#endif
 	message = g_strdup_printf(_("Input new name for `%s':"), name);
 	new_folder = input_dialog(_("Rename folder"), message,
+#ifdef WIN32
+				  g_basename(p_path));
+	g_free(p_path);
+#else
 				  g_basename(item->path));
+#endif
 	g_free(message);
 	if (!new_folder) return;
 
 #ifdef WIN32
-	new_folder = g_strdup(new_folder);
 	locale_from_utf8(&new_folder);
 #endif
 
@@ -2164,9 +2178,6 @@ static void folderview_delete_folder_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item->folder != NULL);
 
 	name_ = trim_string(item->name, 32);
-#ifdef WIN32
-	locale_to_utf8(&name_);
-#endif
 
 	Xstrdup_a(name, name_, return);
 	g_free(name_);

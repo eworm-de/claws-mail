@@ -264,25 +264,7 @@ static gboolean foldersel_gnode_func(GtkCTree *ctree, guint depth,
 		}
 	}
 
-#ifdef WIN32
-	{
-		FolderItem *p_item;
-		p_item = g_malloc(sizeof(FolderItem));
-		memcpy(p_item, item, sizeof(FolderItem));
-		if (p_item->path){
-			gchar *p_path;
-			p_path = g_strdup(p_item->path);
-			locale_to_utf8(&p_path);
-			/* g_free(p_item->path); */
-			p_item->path = g_strdup(p_path);
-			g_free(p_path);
-		}
-		gtk_ctree_node_set_row_data(ctree, cnode, p_item);
-		/* g_free(p_item); */
-	}
-#else
 	gtk_ctree_node_set_row_data(ctree, cnode, item);
-#endif
 	gtk_ctree_set_node_info(ctree, cnode, name,
 				FOLDER_SPACING,
 				folderxpm, folderxpmmask,
@@ -369,8 +351,16 @@ static void foldersel_selected(GtkCList *clist, gint row, gint column,
 	GdkEventButton *ev = (GdkEventButton *)event;
 
 	item = gtk_clist_get_row_data(clist, row);
+#ifdef WIN32
+	if (item) {
+		gchar *p_path = g_strdup(item->path ? item->path : "");
+		locale_to_utf8(&p_path);
+		gtk_entry_set_text(GTK_ENTRY(entry),p_path);
+	}
+#else
 	if (item) gtk_entry_set_text(GTK_ENTRY(entry),
 				     item->path ? item->path : "");
+#endif
 
 	if (ev && GDK_2BUTTON_PRESS == ev->type)
 		gtk_button_clicked(GTK_BUTTON(ok_button));
