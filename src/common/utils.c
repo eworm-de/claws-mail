@@ -2771,9 +2771,9 @@ gint execute_async(gchar *const argv[])
 	for (n=0; argv[n]; n++) {
 		gchar buf[BUFSIZ];
 		if (n) parsed_argv[n]=g_strdup(argv[n]);
-		if (GetShortPathName(argv[n], buf, sizeof(buf))){
-			g_free(argv[n]);
-			argv[n] = g_strdup(buf);
+		if (GetShortPathName(parsed_argv[n], buf, sizeof(buf))){
+			g_free(parsed_argv[n]);
+			parsed_argv[n] = g_strdup(buf);
 		}
 	}
 
@@ -2837,9 +2837,9 @@ gint execute_sync(gchar *const argv[])
 	for (n=0; argv[n]; n++) {
 		gchar buf[BUFSIZ];
 		if (n) parsed_argv[n]=g_strdup(argv[n]);
-		if (GetShortPathName(argv[n], buf, sizeof(buf))){
-			g_free(argv[n]);
-			argv[n] = g_strdup(buf);
+		if (GetShortPathName(parsed_argv[n], buf, sizeof(buf))){
+			g_free(parsed_argv[n]);
+			parsed_argv[n] = g_strdup(buf);
 		}
 	}
 

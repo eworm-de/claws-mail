@@ -98,6 +98,12 @@ gint export_mbox(FolderItem *default_src)
 
 		srcdir = gtk_entry_get_text(GTK_ENTRY(src_entry));
 		mbox = gtk_entry_get_text(GTK_ENTRY(file_entry));
+#ifdef WIN32
+		mbox = g_strdup(mbox);
+		srcdir = g_strdup(srcdir);
+		locale_from_utf8(&mbox);
+		locale_from_utf8(&srcdir);
+#endif
 
 		if (mbox && *mbox) {
 			src = folder_find_item_from_identifier(srcdir);
@@ -106,6 +112,10 @@ gint export_mbox(FolderItem *default_src)
 			else
 				ok = export_to_mbox(src, mbox);
 		}
+#ifdef WIN32
+		g_free(mbox);
+		g_free(srcdir);
+#endif
 	}
 
 	gtk_widget_hide(window);

@@ -1770,7 +1770,10 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	/* Open Folder */
 	buf = g_strdup_printf(_("Opening Folder %s..."), item->path);
 	debug_print("%s\n", buf);
+#ifdef WIN32
+	locale_to_utf8(&buf);
 	STATUSBAR_PUSH(folderview->mainwin, buf);
+#endif
 	g_free(buf);
 
 	main_window_cursor_wait(folderview->mainwin);

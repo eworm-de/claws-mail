@@ -47,6 +47,9 @@
 #include "gtkutils.h"
 #include "manage_window.h"
 #include "folder.h"
+#ifdef WIN32
+#include "common/utils.h"
+#endif
 
 static GtkWidget *window;
 static GtkWidget *file_entry;
@@ -96,6 +99,12 @@ gint import_mbox(FolderItem *default_dest)
 
 		filename = gtk_entry_get_text(GTK_ENTRY(file_entry));
 		destdir = gtk_entry_get_text(GTK_ENTRY(dest_entry));
+#ifdef WIN32
+		filename = g_strdup(filename);
+		destdir = g_strdup(destdir);
+		locale_from_utf8(&filename);
+		locale_from_utf8(&destdir);
+#endif
 		if (filename && *filename) {
 			if (!destdir || !*destdir) {
 				dest = folder_find_item_from_path(INBOX_DIR);
@@ -109,6 +118,10 @@ gint import_mbox(FolderItem *default_dest)
 				ok = proc_mbox(dest, filename);
 			}
 		}
+#ifdef WIN32
+		g_free(filename);
+		g_free(destdir);
+#endif
 	}
 
 	gtk_widget_hide(window);
