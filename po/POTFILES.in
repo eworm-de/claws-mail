@@ -99,4 +99,5 @@ src/ssl_manager.c
 src/string_match.c
 src/summary_search.c
 src/summaryview.c
+src/textview.c
 src/toolbar.c
