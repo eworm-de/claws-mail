@@ -1,3 +1,9 @@
+2004-01-08 [paul]	0.9.8claws20
+
+	* src/plugins/clamav/clamav_plugin.c
+	  src/plugins/spamassassin/spamassassin.c
+	  	inform the user what is happening via the statusbar
+
 2004-01-06 [paul]	0.9.8claws19
 
 	* po/es.po
