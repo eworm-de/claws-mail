@@ -1,3 +1,21 @@
+2002-04-22 [paul]	0.7.4claws92
+
+	* faq/de/*
+		add German FAQ
+	* faq/en/*
+	  faq/es/*
+	  faq/fr/*
+		update English, Spanish and French FAQs
+	* manual/de/*
+	  manual/es/*
+		add German and Spanish manuals
+	* manual/en/*
+	  manual/fr/*
+		update English and French manuals
+
+	* src/Makefile.am
+		add to and re-arrange the pixmap entries
+
 2002-04-22 [darko]	0.7.4claws91
 
 	* src/compose.c
