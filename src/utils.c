@@ -31,6 +31,7 @@
 #ifdef WIN32
  #include <w32lib.h>
  #include <process.h>
+ #include <fcntl.h>
 #else
  #include <netdb.h>
  #include <unistd.h>
@@ -2097,7 +2098,18 @@ FILE *my_tmpfile(void)
 		return fp;
 #endif /* HAVE_MKSTEMP */
 
+#ifdef WIN32
+	gchar *name_used = _tempnam( get_rc_dir(), "procmime");
+	int tmpfd = _open(name_used, _O_CREAT | _O_TEMPORARY | _O_RDWR | _O_BINARY );
+	if (tmpfd<0) {
+		perror(g_strdup_printf("cant create %s",name_used));
+		return 0;
+	}
+	else
+		return (fdopen(tmpfd,"w+b"));
+#else
 	return tmpfile();
+#endif
 }
 
 FILE *str_open_as_stream(const gchar *str)
