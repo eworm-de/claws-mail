@@ -2061,12 +2061,13 @@ void summary_sort(SummaryView *summaryview,
 	if (summaryview->sort_key == SORT_BY_NONE)
 		return;
 
-	if(cmp_func != NULL) {
+	if (cmp_func != NULL) {
 		debug_print("Sorting summary...");
 		STATUSBAR_PUSH(summaryview->mainwin, _("Sorting summary..."));
 
 		main_window_cursor_wait(summaryview->mainwin);
 
+                gtk_clist_freeze(clist);
 		gtk_clist_set_compare_func(clist, cmp_func);
 
 		gtk_clist_set_sort_type(clist, (GtkSortType)sort_type);
@@ -2079,6 +2080,8 @@ void summary_sort(SummaryView *summaryview,
 
 		if (summaryview->threaded)
 			summary_thread_init(summaryview);
+                        
+                gtk_clist_thaw(clist);
 
 		debug_print("done.\n");
 		STATUSBAR_POP(summaryview->mainwin);

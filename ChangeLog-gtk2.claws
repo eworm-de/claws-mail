@@ -1,3 +1,8 @@
+2005-04-02 [colin]	1.9.6cvs22
+
+	* src/summaryview.c
+		Make scrolling faster. Patch by Alfons.
+
 2005-04-01 [colin]	1.9.6cvs21
 
 	* src/Makefile.am
