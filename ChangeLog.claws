@@ -1,3 +1,13 @@
+2003-12-30 [luke]	0.9.8claws14
+	* src/procheader.[ch]
+		o added procheader_get_one_field_asis() that does not do
+		  unfolding
+		o fix procheader_get_header_array_asis() to use the above,
+		  fixing ugliness of headers in textview
+
+	* src/compose.c
+		o don't unfold headers when redirecting.	
+
 2003-12-30 [paul]	0.9.8claws13
 
 	* po/POTFILES.in

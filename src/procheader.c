@@ -168,6 +168,35 @@ static gint generic_get_one_field(gchar *buf, gint len, void *data,
 	return hnum;
 }
 
+gint procheader_get_one_field_asis(gchar *buf, gint len, FILE *fp)
+{
+	gint nexthead;
+
+	if (fgets(buf, len, fp) == NULL) return -1;
+	if (buf[0] == '\r' || buf[0] == '\n') return -1;
+
+	/* concatenate multi-line fields */
+	while (1) {
+		nexthead = file_peekchar(fp);
+		/* ([*WSP CRLF] 1*WSP) */
+		if (nexthead == ' ' || nexthead == '\t') {
+			size_t buflen = strlen(buf);
+			
+			/* concatenate next line */
+			if ((len - buflen) > 2) {
+				if (fgets(buf + buflen, len - buflen, fp) == NULL)
+					break;
+			} else
+				break;
+		} else {
+			/* remove trailing new line */
+			strretchomp(buf);
+			break;
+		}
+	}
+	return 0;
+}
+
 #if 0
 gchar *procheader_get_unfolded_line(gchar *buf, gint len, FILE *fp)
 {
@@ -326,7 +355,7 @@ GPtrArray *procheader_get_header_array_asis(FILE *fp)
 
 	headers = g_ptr_array_new();
 
-	while (procheader_get_one_field(buf, sizeof(buf), fp, NULL) != -1) {
+	while (procheader_get_one_field_asis(buf, sizeof(buf), fp) != -1) {
 		if ((header = procheader_parse_header(buf)) != NULL)
 			g_ptr_array_add(headers, header);
 			/*
