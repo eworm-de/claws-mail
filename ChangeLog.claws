@@ -1,3 +1,8 @@
+2003-11-26 [paul]	0.9.6claws99
+
+	* src/Makefile.am
+		add reference to pixmaps/mime_message.xpm
+
 2003-11-26 [paul]	0.9.6claws98
 
 	* po/POTFILES.in
