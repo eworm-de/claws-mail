@@ -1,3 +1,9 @@
+2004-01-25 [thorsten]	0.9.8claws59-1
+
+	* src/compose.c
+		fix: invalid filehandle when closing external editor
+		(Patch by Alfons. Thanks)
+
 2004-01-25 [thorsten]	0.9.8claws33-1
 
 	* src/w32_aspell_init.[ch]
