@@ -373,8 +373,10 @@ void quicksearch_set(QuickSearch *quicksearch, QuickSearchType type,
 
 	prepare_matcher(quicksearch);
 
+	quicksearch_set_running(quicksearch, TRUE);
 	if (quicksearch->callback != NULL)
 		quicksearch->callback(quicksearch, quicksearch->callback_data);	
+	quicksearch_set_running(quicksearch, FALSE);
 }
 
 gboolean quicksearch_is_active(QuickSearch *quicksearch)
