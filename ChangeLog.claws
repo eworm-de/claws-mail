@@ -1,3 +1,10 @@
+2001-10-26 [paul]	0.6.4claws8
+
+	* src/html.c
+		ignore css and javascript tags in html mail
+		case-insensitive, with or without double-quoted
+		strings
+
 2001-10-26 [paul]	0.6.4claws7
 
 	* sync with sylpheed 0.6.4cvs1
