@@ -1,3 +1,17 @@
+2003-03-25 [christop]	0.8.11claws47
+
+	* doc-src/readme.txt
+	* doc-src/rfc2554.txt
+		add RFC about SMTP AUTH
+
+	* src/send_message.c
+	* src/common/smtp.[ch]
+		add extra error code for authentication errors and
+		clear temporary password when this error occurs
+
+	(closes Bug 84 authentication failure while sending should
+	 prompt for password again)
+
 2003-03-25 [christoph]	0.8.11claws46
 
 	* configure.ac

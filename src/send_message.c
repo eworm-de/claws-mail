@@ -402,8 +402,12 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 	       session->state != SESSION_ERROR)
 		gtk_main_iteration();
 
-	if (session->state == SESSION_ERROR ||
-	    SMTP_SESSION(session)->state == SMTP_ERROR)
+	if (SMTP_SESSION(session)->state == SMTP_AUTH_FAILED) {
+		g_free(ac_prefs->tmp_smtp_pass);
+		ac_prefs->tmp_smtp_pass = NULL;
+		ret = -1;
+	} else if ((session->state == SESSION_ERROR) ||
+		   (SMTP_SESSION(session)->state == SMTP_ERROR))
 		ret = -1;
 	else if (dialog->cancelled == TRUE)
 		ret = -1;
@@ -456,6 +460,7 @@ static gint send_recv_message(Session *session, const gchar *msg, gpointer data)
 		state_str = _("Quitting");
 		break;
 	case SMTP_ERROR:
+	case SMTP_AUTH_FAILED:
 		g_warning("send: error: %s\n", msg);
 		return 0;
 	default:
