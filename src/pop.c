@@ -79,7 +79,7 @@ static gint pop3_write_msg_to_file	(const gchar	*file,
 					 guint		 len);
 
 static Pop3State pop3_lookup_next	(Pop3Session	*session);
-static gint pop3_ok			(Pop3Session	*session,
+static Pop3ErrorValue pop3_ok		(Pop3Session	*session,
 					 const gchar	*msg);
 
 static gint pop3_session_recv_msg		(Session	*session,
@@ -229,7 +229,6 @@ static gint pop3_getrange_uidl_recv(Pop3Session *session, const gchar *msg)
 	gchar id[IDLEN + 1];
 	gint num;
 	time_t recv_time;
-	gint next_state;
 
 	if (msg[0] == '.') {
 		session->uidl_is_valid = TRUE;
@@ -301,7 +300,6 @@ static gint pop3_retr_recv(Pop3Session *session, const gchar *data, guint len)
 {
 	gchar *file;
 	gint drop_ok;
-	gint next_state;
 
 	file = get_tmp_file();
 	if (pop3_write_msg_to_file(file, data, len) < 0) {
@@ -314,7 +312,7 @@ static gint pop3_retr_recv(Pop3Session *session, const gchar *data, guint len)
 	drop_ok = inc_drop_message(file, session);
 	g_free(file);
 	if (drop_ok < 0) {
-		session->error_val = PS_ERROR;
+		session->error_val = PS_IOERR;
 		return -1;
 	}
 
@@ -615,9 +613,11 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
 	return POP3_RETR;
 }
 
-static gint pop3_ok(Pop3Session *session, const gchar *msg)
+static Pop3ErrorValue pop3_ok(Pop3Session *session, const gchar *msg)
 {
-	gint ok;
+	Pop3ErrorValue ok;
+
+	log_print("POP3< %s\n", msg);
 
 	if (!strncmp(msg, "+OK", 3))
 		ok = PS_SUCCESS;
@@ -625,32 +625,49 @@ static gint pop3_ok(Pop3Session *session, const gchar *msg)
 		if (strstr(msg + 4, "lock") ||
 		    strstr(msg + 4, "Lock") ||
 		    strstr(msg + 4, "LOCK") ||
-		    strstr(msg + 4, "wait"))
+		    strstr(msg + 4, "wait")) {
+			log_warning(_("mailbox is locked\n"));
 			ok = PS_LOCKBUSY;
-		else
-			ok = PS_PROTOCOL;
+		} else {
+			switch (session->state) {
+#if USE_OPENSSL
+			case POP3_STLS:
+				log_warning(_("can't start TLS session\n"));
+				ok = PS_ERROR;
+				break;
+#endif
+			case POP3_GETAUTH_USER:
+			case POP3_GETAUTH_PASS:
+			case POP3_GETAUTH_APOP:
+				log_warning(_("error occurred on authentication\n"));
+				ok = PS_AUTHFAIL;
+				break;
+			default:
+				log_warning(_("error occured on POP3 session\n"));
+				ok = PS_ERROR;
+			}
+		}
 
 		fprintf(stderr, "POP3: %s\n", msg);
 	} else
 		ok = PS_PROTOCOL;
 
+	session->error_val = ok;
 	return ok;
 }
 
 static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 {
 	Pop3Session *pop3_session = POP3_SESSION(session);
-	gint val;
+	Pop3ErrorValue val;
 	const gchar *body;
 
 	body = msg;
 	if (pop3_session->state != POP3_GETRANGE_UIDL_RECV &&
 	    pop3_session->state != POP3_GETSIZE_LIST_RECV) {
-		log_print("POP3< %s\n", msg);
 		val = pop3_ok(pop3_session, msg);
 		if (val != PS_SUCCESS) {
 			pop3_session->state = POP3_ERROR;
-			pop3_session->error_val = val;
 			return -1;
 		}
 

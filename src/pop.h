@@ -60,6 +60,33 @@ typedef enum {
 } Pop3State;
 
 typedef enum {
+	PS_SUCCESS	= 0,	/* command successful */
+	PS_NOMAIL	= 1,	/* no mail available */
+	PS_SOCKET	= 2,	/* socket I/O woes */
+	PS_AUTHFAIL	= 3,	/* user authorization failed */
+	PS_PROTOCOL	= 4,	/* protocol violation */
+	PS_SYNTAX	= 5,	/* command-line syntax error */
+	PS_IOERR	= 6,	/* file I/O error */
+	PS_ERROR	= 7,	/* protocol error */
+	PS_EXCLUDE	= 8,	/* client-side exclusion error */
+	PS_LOCKBUSY	= 9,	/* server responded lock busy */
+	PS_SMTP		= 10,	/* SMTP error */
+	PS_DNS		= 11,	/* fatal DNS error */
+	PS_BSMTP	= 12,	/* output batch could not be opened */
+	PS_MAXFETCH	= 13,	/* poll ended by fetch limit */
+
+	/* leave space for more codes */
+
+	PS_UNDEFINED	= 23,	/* something I hadn't thought of */
+	PS_TRANSIENT	= 24,	/* transient failure (internal use) */
+	PS_REFUSED	= 25,	/* mail refused (internal use) */
+	PS_RETAINED	= 26,	/* message retained (internal use) */
+	PS_TRUNCATED	= 27,	/* headers incomplete (internal use) */
+
+	PS_CONTINUE	= 128	/* more responses may follow */
+} Pop3ErrorValue;
+
+typedef enum {
 	RECV_TIME_NONE     = 0,
 	RECV_TIME_RECEIVED = 1,
 	RECV_TIME_KEEP     = 2
@@ -102,7 +129,7 @@ struct _Pop3Session
 
 	time_t current_time;
 
-	gint error_val;
+	Pop3ErrorValue error_val;
 
 	gpointer data;
 };
@@ -110,29 +137,6 @@ struct _Pop3Session
 #define POPBUFSIZE	512
 #define IDLEN		128
 
-/* exit code values */
-#define		PS_SUCCESS	0	/* successful receipt of messages */
-#define		PS_NOMAIL	1	/* no mail available */
-#define		PS_SOCKET	2	/* socket I/O woes */
-#define		PS_AUTHFAIL	3	/* user authorization failed */
-#define		PS_PROTOCOL	4	/* protocol violation */
-#define		PS_SYNTAX	5	/* command-line syntax error */
-#define		PS_IOERR	6	/* bad permissions on rc file */
-#define		PS_ERROR	7	/* protocol error */
-#define		PS_EXCLUDE	8	/* client-side exclusion error */
-#define		PS_LOCKBUSY	9	/* server responded lock busy */
-#define		PS_SMTP		10	/* SMTP error */
-#define		PS_DNS		11	/* fatal DNS error */
-#define		PS_BSMTP	12	/* output batch could not be opened */
-#define		PS_MAXFETCH	13	/* poll ended by fetch limit */
-/* leave space for more codes */
-#define		PS_UNDEFINED	23	/* something I hadn't thought of */
-#define		PS_TRANSIENT	24	/* transient failure (internal use) */
-#define		PS_REFUSED	25	/* mail refused (internal use) */
-#define		PS_RETAINED	26	/* message retained (internal use) */
-#define		PS_TRUNCATED	27	/* headers incomplete (internal use) */
-
-#define		PS_CONTINUE	128
 
 Session *pop3_session_new	(PrefsAccount	*account);
 GHashTable *pop3_get_uidl_table	(PrefsAccount	*account);

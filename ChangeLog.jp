@@ -1,3 +1,11 @@
+2003-03-28
+
+	* src/pop.h: エラー値を enum に変更。
+	* src/pop.c: pop3_retr_recv(): inc_drop_message() が失敗したら
+	  PS_IOERR を返すようにした。
+	  pop3_ok(): 現在の状態に基づいて適切なエラー値を返すようにした。
+	  エラーが発生した場合は警告をログに出力するようにした。
+
 2003-03-27
 
 	* src/nntp.[ch]
