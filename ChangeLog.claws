@@ -1,3 +1,11 @@
+2003-07-14 [alfons]	0.9.3claws6
+
+	* src/procmsg.c
+		tune the threader so it will not subject-thread any message
+		without a subject prefix (this will not thread correctly if 
+		a parent is delivered after their childs, but it looks 
+		better right now)
+
 2003-07-13 [christoph]	0.9.3claws5
 
 	* src/mainwindow.c

@@ -146,7 +146,6 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 	MsgInfo *msginfo;
 	const gchar *msgid;
 	const gchar *subject;
-	GNode *found_subject;
 
 	root = g_node_new(NULL);
 	msgid_table = g_hash_table_new(g_str_hash, g_str_equal);
@@ -175,10 +174,16 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 			g_hash_table_insert(msgid_table, (gchar *)msgid, node);
 
 		if (prefs_common.thread_by_subject) {
+			GNode *found_subject = NULL;
+			
 			subject  = msginfo->subject;
 			subject += subject_get_reply_prefix_length(subject);
-			found_subject = subject_table_lookup_clean(subject_table,
-							           (gchar *) subject);
+
+			/* if reply look for parent */
+			if (msginfo->subject != subject) 
+				found_subject = subject_table_lookup_clean
+					(subject_table, (gchar *) subject);
+									   
 			if (found_subject == NULL)
 				subject_table_insert_clean(subject_table, (gchar *) subject,
 						           node);
@@ -226,7 +231,12 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 			next = node->prev;
 			msginfo = (MsgInfo *) node->data;
 			subject = msginfo->subject + subject_get_reply_prefix_length(msginfo->subject);
-			parent = subject_table_lookup_clean(subject_table, (gchar *) subject);
+
+			if (subject != msginfo->subject)
+				parent = subject_table_lookup_clean(subject_table, (gchar *) subject);
+			else
+				parent = NULL; /* may not parentize if parent was delivered after
+						* childs */
 			
 			/* the node may already be threaded by IN-REPLY-TO,
 			   so go up in the tree to find the parent node */
