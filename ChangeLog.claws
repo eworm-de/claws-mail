@@ -1,3 +1,15 @@
+2002-12-27 [paul]	0.8.8claws10
+
+	* src/mainwindow.c
+		remove unneeded 'GtkWidget *vbox'
+		
+	* src/summaryview.c
+		further sync with 0.8.8 - make sort
+		by recipient work as expected
+		
+	* NEWS
+		sync with 0.8.8
+
 2002-12-27 [paul]	0.8.8claws9
 
 	* po/pt_BR.po
