@@ -247,6 +247,11 @@ void folder_item_append(FolderItem *parent, FolderItem *item)
 	g_node_append_data(node, item);
 }
 
+gboolean folder_item_remove_func(GNode *node, gpointer data)
+{
+	folder_item_destroy((FolderItem *)node->data);
+}
+
 void folder_item_remove(FolderItem *item)
 {
 	GNode *node;
@@ -257,6 +262,9 @@ void folder_item_remove(FolderItem *item)
 	node = item->folder->node;
 	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
 	g_return_if_fail(node != NULL);
+
+	g_node_traverse(node, G_POST_ORDER, G_TRAVERSE_ALL, -1,
+		        folder_item_remove_func, NULL);
 
 	/* TODO: free all FolderItem's first */
 	if (item->folder->node == node)
