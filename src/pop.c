@@ -343,13 +343,18 @@ static gint pop3_retr_recv(Pop3Session *session, const gchar *data, guint len)
 	gint drop_ok;
 	MailReceiveData mail_receive_data;
 
-	mail_receive_data.session = session;
-	mail_receive_data.data = g_strndup(data, len);
+	/* NOTE: we allocate a slightly larger buffer with a zero terminator
+	 * because some plugins may think that it has a C string. */ 
+	mail_receive_data.session  = session;
+	mail_receive_data.data     = g_new0(gchar, len + 1);
+	mail_receive_data.data_len = len;
+	memcpy(mail_receive_data.data, data, len); 
+	
 	hooks_invoke(MAIL_RECEIVE_HOOKLIST, &mail_receive_data);
 
 	file = get_tmp_file();
-	if (pop3_write_msg_to_file(file, mail_receive_data.data,
-		strlen(mail_receive_data.data), NULL) < 0) {
+	if (pop3_write_msg_to_file(file, mail_receive_data.data, 
+				   mail_receive_data.data_len, NULL) < 0) {
 		g_free(file);
 		g_free(mail_receive_data.data);
 		session->error_val = PS_IOERR;
@@ -407,8 +412,13 @@ static gint pop3_top_recv(Pop3Session *session, const gchar *data, guint len)
 	MailReceiveData mail_receive_data;
 	gchar *partial_notice = NULL;
 	
-	mail_receive_data.session = session;
-	mail_receive_data.data = g_strndup(data, len);
+	/* NOTE: we allocate a slightly larger buffer with a zero terminator
+	 * because some plugins may think that it has a C string. */ 
+	mail_receive_data.session  = session;
+	mail_receive_data.data     = g_new0(gchar, len + 1);
+	mail_receive_data.data_len = len;
+	memcpy(mail_receive_data.data, data, len);
+	
 	hooks_invoke(MAIL_RECEIVE_HOOKLIST, &mail_receive_data);
 
 	partial_notice = g_strdup_printf("SC-Marked-For-Download: 0\n"
@@ -422,7 +432,8 @@ static gint pop3_top_recv(Pop3Session *session, const gchar *data, guint len)
 					 session->msg[session->cur_msg].size);
 	file = get_tmp_file();
 	if (pop3_write_msg_to_file(file, mail_receive_data.data,
-		strlen(mail_receive_data.data), partial_notice) < 0) {
+				   mail_receive_data.data_len,  
+				   partial_notice) < 0) {
 		g_free(file);
 		g_free(mail_receive_data.data);
 		session->error_val = PS_IOERR;
@@ -647,10 +658,10 @@ gint pop3_write_uidl_list(Pop3Session *session)
 
 	for (n = 1; n <= session->count; n++) {
 		msg = &session->msg[n];
-		if (msg->uidl && msg->received && !msg->deleted) {
+		if (msg->uidl && msg->received &&
+		    (!msg->deleted || session->state != POP3_DONE))
 			fprintf(fp, "%s\t%ld\t%d\n", 
 				msg->uidl, msg->recv_time, msg->partial_recv);
-		}
 	}
 
 	if (fclose(fp) == EOF) FILE_OP_ERROR(path, "fclose");
@@ -963,6 +974,7 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 		}
 		break;
 	case POP3_LOGOUT:
+		pop3_session->state = POP3_DONE;
 		session_disconnect(session);
 		break;
 	case POP3_ERROR:

@@ -1,3 +1,11 @@
+2005-03-05 [thorsten]	1.0.1cvs0.3
+
+	* src/pop.c
+	* src/pop.h
+		fix: Include 0.9.13cvs25 and cvs29, truncation was caused by
+		fetchinfo-plugin (I must have confused cvs25 with cvs29).
+		Thanks to Colin Leroy for the hint.
+
 2005-02-09 [thorsten]	1.0.1cvs0.2
 
 	* src/summaryview.c
