@@ -112,13 +112,30 @@ mention it.
 How to contribute
 -----------------
 
-Write a patch, submit it to the Sylpheed ML, Sylpheed Claws Users ML,
-or bother any of the current Claws developers. There's no way to
-predict whether your patch will or will not end up in Claws or Main.
-Mostly they will. And if not, there's probably nothing wrong with
-your code - or maybe there is. Generally, adding a cool or useful
-thing to your patch will attract a lot of attention of other users
-or developers.
+Sylpheed Main: 
+
+	submit it to the Sylpheed ML, Hiroyuki, or Paul Mangan
+	(for incorporation on the Sylpheed Patches page)
+
+Sylpheed Claws:
+
+	It is highly recommended to use the sourceforge project page
+	of claws. Check: 
+	http://sourceforge.net/tracker/?atid=384600&group_id=25528&func=browse
+
+	If that's too troublesome, either contact Paul Mangan or consider
+	posting to the sylpheed claws users mailing list.
+
+	Bugs can be reported in the same way; the recommended web page:
+	http://sourceforge.net/tracker/?group_id=25528&atid=384598
+
+	Ofcourse you can also post to the sylpheed claws users
+	mailing list.
+
+Also, we really try to incorporate good contributions, but sometimes we
+don't have enough time. If the contribution is really big, or requires
+a long time to stabilize, send a mail to Paul Mangan. We can probably
+arrange access to the Claws branch.
 
 
 How to request features
@@ -127,8 +144,7 @@ How to request features
 Ask around in both Sylpheed ML and Sylpheed Claws Users ML. Note
 that some developers may already thought about your feature, may
 perhaps be implementing it - or the feature was already discussed
-and rejected for whatever reason. Don't complain, be patient. Or
-you might want to go ahead and hack a patch for it. That would
-be very cool! (c. How to contribute)
+and rejected for whatever reason.  You might want to go ahead and 
+hack a patch for it. (That would be very cool!)
 
 
