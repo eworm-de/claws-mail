@@ -569,7 +569,7 @@ static void send_queue(void)
 {
 	GList *list;
 
-	if (procmsg_send_queue() < 0)
+	if (procmsg_send_queue(prefs_common.savemsg) < 0)
 		alertpanel_error(_("Some errors occurred while sending queued messages."));
 
 	statusbar_pop_all();

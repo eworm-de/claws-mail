@@ -242,7 +242,10 @@ FILE   *procmsg_open_message_decrypted	(MsgInfo	*msginfo,
 gboolean procmsg_msg_exist		(MsgInfo	*msginfo);
 
 void	procmsg_empty_trash		(void);
-gint	procmsg_send_queue		(void);
+gint	procmsg_send_queue		(gboolean	 save_msgs);
+gint	procmsg_save_to_outbox		(FolderItem	*outbox,
+					 const gchar	*file,
+					 gboolean	 is_queued);
 void	procmsg_print_message		(MsgInfo	*msginfo,
 					 const gchar	*cmdline);
 

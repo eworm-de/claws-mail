@@ -203,8 +203,6 @@ static gint compose_write_to_file		(Compose	*compose,
 						 gboolean	 is_draft);
 static gint compose_write_body_to_file		(Compose	*compose,
 						 const gchar	*file);
-static gint compose_save_to_outbox		(Compose	*compose,
-						 const gchar	*file);
 static gint compose_remove_reedit_target	(Compose	*compose);
 static gint compose_queue			(Compose	*compose,
 						 gint		*msgnum,
@@ -2698,13 +2696,17 @@ gint compose_send(Compose *compose)
 				folderview_update_item
 					(compose->targetinfo->folder, TRUE);
 		}
-	}
+		/* save message to outbox */
+		if (prefs_common.savemsg) {
+			Folder *folder = FOLDER(compose->account->folder);
+			FolderItem *outbox = NULL;
 
-	/* save message to outbox */
-	if (ok == 0 && prefs_common.savemsg) {
-		if (compose_save_to_outbox(compose, tmp) < 0)
-			alertpanel_error
-				(_("Can't save the message to outbox."));
+			if (folder)
+				outbox = folder->outbox;
+			if (procmsg_save_to_outbox(outbox, tmp, FALSE) < 0)
+				alertpanel_error
+					(_("Can't save the message to outbox."));
+		}
 	}
 
 	unlink(tmp);
@@ -3094,43 +3096,6 @@ static gint compose_write_body_to_file(Compose *compose, const gchar *file)
 		unlink(file);
 		return -1;
 	}
-	return 0;
-}
-
-static gint compose_save_to_outbox(Compose *compose, const gchar *file)
-{
-	FolderItem *outbox;
-	gchar *path;
-	gint num;
-	FILE *fp;
-
-	debug_print(_("saving sent message...\n"));
-
-	outbox = folder_get_default_outbox();
-	path = folder_item_get_path(outbox);
-	if (!is_dir_exist(path))
-		make_dir_hier(path);
-
-	folder_item_scan(outbox);
-	if ((num = folder_item_add_msg(outbox, file, FALSE)) < 0) {
-		g_free(path);
-		g_warning(_("can't save message\n"));
-		return -1;
-	}
-
-	if ((fp = procmsg_open_mark_file(path, TRUE)) == NULL)
-		g_warning(_("can't open mark file\n"));
-	else {
-		MsgInfo newmsginfo;
-
-		newmsginfo.msgnum = num;
-		newmsginfo.flags.perm_flags = 0;
-		newmsginfo.flags.tmp_flags = 0;
-		procmsg_write_flags(&newmsginfo, fp);
-		fclose(fp);
-	}
-	g_free(path);
-
 	return 0;
 }
 
