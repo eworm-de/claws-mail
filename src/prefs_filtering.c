@@ -203,6 +203,8 @@ static gint prefs_filtering_get_matching_from_action(gint action_id)
 		return MATCHACTION_FORWARD;
 	case ACTION_FORWARD_AS_ATTACHMENT:
 		return MATCHACTION_FORWARD_AS_ATTACHMENT;
+	case ACTION_BOUNCE:
+		return MATCHACTION_BOUNCE;
 	case ACTION_EXECUTE:
 		return MATCHACTION_EXECUTE;
 	case ACTION_COLOR:
@@ -939,9 +941,9 @@ static void prefs_filtering_select_set(FilteringProp * prop)
 				     ACTION_MARK_AS_UNREAD);
 		break;
 	case MATCHACTION_FORWARD:
+		list_id = get_list_id_from_account_id(action->account_id);
 		gtk_list_select_item(GTK_LIST(filtering.action_list),
 				     ACTION_FORWARD);
-		list_id = get_list_id_from_account_id(action->account_id);
 		gtk_list_select_item(GTK_LIST(filtering.account_list),
 				     list_id);
 		break;
@@ -953,9 +955,9 @@ static void prefs_filtering_select_set(FilteringProp * prop)
 				     list_id);
 		break;
 	case MATCHACTION_BOUNCE:
+		list_id = get_list_id_from_account_id(action->account_id);
 		gtk_list_select_item(GTK_LIST(filtering.action_list),
 				     ACTION_BOUNCE);
-		list_id = get_list_id_from_account_id(action->account_id);
 		gtk_list_select_item(GTK_LIST(filtering.account_list),
 				     list_id);
 		break;

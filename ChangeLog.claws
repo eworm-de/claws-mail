@@ -1,3 +1,11 @@
+2001-12-08 [hoa]	0.7.0claws10
+
+	* src/matcher_parser_parse.y
+		fixed some bugs
+
+	* src/prefs_filtering.c
+		now, we can use bounce action in the dialog box.
+
 2002-01-16 [carsten]	0.7.0claws9
 	* src/gtkstext.c
 		removed the <control> and <alt> shortcuts because they're

@@ -769,7 +769,7 @@ MATCHER_EXECUTE MATCHER_STRING
 	gint account_id = 0;
 
 	action_type = MATCHACTION_FORWARD;
-	account_id = $2;
+	account_id = atoi($2);
 	destination = $3;
 	action = filteringaction_new(action_type, account_id, destination, 0);
 }
@@ -780,7 +780,7 @@ MATCHER_EXECUTE MATCHER_STRING
 	gint account_id = 0;
 
 	action_type = MATCHACTION_FORWARD_AS_ATTACHMENT;
-	account_id = $2;
+	account_id = atoi($2);
 	destination = $3;
 	action = filteringaction_new(action_type, account_id, destination, 0);
 }
@@ -791,7 +791,7 @@ MATCHER_EXECUTE MATCHER_STRING
 	gint account_id = 0;
 
 	action_type = MATCHACTION_BOUNCE;
-	account_id = $2;
+	account_id = atoi($2);
 	destination = $3;
 	action = filteringaction_new(action_type, account_id, destination, 0);
 }
