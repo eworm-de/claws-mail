@@ -1,12 +1,71 @@
+2002-09-22 [oliver]	0.8.3claws9
+	
+	* README.claws
+		explain custom toolbar
+
+2002-09-22 [oliver]	0.8.3claws8
+
+	* src/prefs_actions.[ch]
+	custom toolbar for compose	
+		actions callback from compose toolbar
+	* src/folderview.c
+		remove include toolbar.h
+		
+2002-09-22 [oliver]	0.8.3claws7
+	
+	* src/prefs_toolbar.[ch]
+		custom toolbar for compose
+		- generic prefs_toolbar handles both
+		  Mainwin's toolbar as well as Compose toolbar		
+		
+2002-09-22 [oliver]	0.8.3claws6
+	
+	* src/toolbar.[ch]
+		custom toolbar for compose
+		restructure toolbar.[ch]
+		
+2002-09-22 [oliver]	0.8.3claws5
+
+	* src/compose.[ch]
+		custom toolbar for compose
+		
+2002-09-22 [oliver]	0.8.3claws4
+	
+	* src/mainwindow.[ch]
+		custom toolbar for compose 
+		move mainwin toolbar back to mainwindow
+
+2002-09-22 [alfons]	0.8.3claws3
+
+	* src/procmsg.c
+		:%sno/if(/if (/gc
+		:%sno/for(/for (/gc
+		(beautify)
+
+2002-09-22 [alfons]	0.8.3claws2
+	
+	* src/procmsg.c
+		procmsg_save_to_outbox(): don't unlink message file from queue;
+		callers should do it using folder_item_remove_msg()
+
+2002-09-22 [colin]	0.8.3claws1
+
+	* src/mimeview.[ch]
+		Made mimeview_check_signature() public
+	* src/textview.c
+		Made GPG signatures verifiable by clicking
+		the [application/pgp-signature] in the Text
+		view
+
 2002-09-22 [paul]	0.8.3claws
 
-	*po/bg.po
-	 po/en_GB.po
-	 po/es.po
-	 po/it.po
-	 po/pl.po
-	 po/pt_BR.po
-	 po/sr.po
+	* po/bg.po
+	  po/en_GB.po
+	  po/es.po
+	  po/it.po
+	  po/pl.po
+	  po/pt_BR.po
+	  po/sr.po
 	 	updated translations, submitted by George Danchev,
 		me, Ricardo Mones Lastra, Alessandro Maestri,
 		Witold Wladyslaw Wojciech Wilk, Fabio Jr.Beneditto 

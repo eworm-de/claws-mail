@@ -23,6 +23,7 @@
 #include <glib.h>
 
 typedef struct _MainWindow  MainWindow;
+typedef struct _MainToolbar MainToolbar;
 
 #include "folderview.h"
 #include "summaryview.h"
@@ -130,6 +131,51 @@ struct _MainWindow
 	MessageView	*messageview;
 	LogWindow	*logwin;
 };
+typedef enum 
+{
+	COMPOSEBUTTON_MAIL,
+ 	COMPOSEBUTTON_NEWS
+} ComposeButtonType;
+
+struct _MainToolbar {
+
+	GtkWidget *toolbar;
+
+	GtkWidget *get_btn;
+	GtkWidget *getall_btn;
+	GtkWidget *sel_down;
+	GtkWidget *sel_down_all;
+	GtkWidget *sel_down_cur;
+	GtkWidget *send_btn;
+
+	GtkWidget *compose_mail_btn;
+	GtkWidget *compose_news_btn;
+
+	GtkWidget *reply_btn;
+	GtkWidget *replysender_btn;
+	GtkWidget *replyall_btn;
+
+	GtkWidget *fwd_btn;
+
+	GtkWidget *delete_btn;
+	GtkWidget *next_btn;
+	GtkWidget *exec_btn;
+
+	GtkWidget *separator;
+
+	/* for the reply buttons */
+	GtkWidget *reply_popup;
+	GtkWidget *replyall_popup;
+	GtkWidget *replysender_popup;
+	
+	/* the forward button similar to the reply buttons*/
+	GtkWidget *fwd_popup;
+
+	ComposeButtonType compose_btn_type;
+
+	GSList    *t_action_list;
+	GSList    *t_item_list;
+};
 
 MainWindow *main_window_create		(SeparateType	 type);
 
@@ -161,36 +207,13 @@ void main_window_set_menu_sensitive	(MainWindow	*mainwin);
 void main_window_popup			(MainWindow	*mainwin);
 
 void main_window_toolbar_set_compose_button	(MainWindow *mainwin, 
-					 ComposeButtonType compose_btn_type);
+						 ComposeButtonType compose_btn_type);
 
 SensitiveCond main_window_get_current_state   (MainWindow *mainwin);
 
-void reply_cb			          (MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
+void toolbar_set_sensitive                    (MainWindow *mainwin);
 
-void inc_mail_cb			          (MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
-
-void inc_all_account_mail_cb	          (MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
-
-void send_queue_cb		          (MainWindow	*mainwin,
-					 guint		 action,
-					 GtkWidget	*widget);
-
-void compose_mail_cb                          (MainWindow       *mainwin, 
-					 guint action,
-			                   GtkWidget         *widget);
-
-void compose_news_cb                          (MainWindow       *mainwin, 
-					 guint action,
-			                   GtkWidget         *widget);
-
-void next_unread_cb	                   (MainWindow	*mainwin,
-				          guint		 action,
-				          GtkWidget	*widget);
-
+void toolbar_set_compose_button               (MainToolbar        *toolbar, 
+					       ComposeButtonType  compose_btn_type);
+void main_window_destroy_all                  (void);
 #endif /* __MAINWINDOW_H__ */

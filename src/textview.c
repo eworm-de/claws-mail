@@ -50,6 +50,7 @@
 #include "addressbook.h"
 #include "displayheader.h"
 #include "account.h"
+#include "mimeview.h"
 
 #ifdef WIN32
 #define FONTSET_LOAD(font, s) \
@@ -519,6 +520,22 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 		g_snprintf(buf, sizeof(buf), "\n[%s (%d bytes)]\n",
 			   mimeinfo->content_type, mimeinfo->size);
 
+#if USE_GPGME
+	if (mimeinfo->sigstatus && !mimeinfo->sigstatus_full) {
+		gchar *tmp;
+		/* use standard font */
+		gpointer oldfont = textview->msgfont;
+		textview->msgfont = NULL;
+
+		tmp = g_strconcat("pgp: ", _("Check signature"), NULL);
+		textview_write_link(textview, tmp, buf, NULL);
+		
+		/* put things back */
+		textview->msgfont = (GdkFont *)oldfont;
+		oldfont = NULL;
+		g_free(tmp);
+	} else
+#endif
 	if (mimeinfo->mime_type != MIME_TEXT &&
 	    mimeinfo->mime_type != MIME_TEXT_HTML &&
 	    mimeinfo->mime_type != MIME_TEXT_ENRICHED) {
@@ -1872,7 +1889,18 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 						}
 						compose_new(account, uri->uri + 7, NULL);
 					}
-				} else {
+				} else 
+#if USE_GPGME
+				if (!g_strncasecmp(uri->uri, "pgp:", 4)) {
+					GtkAdjustment *pos = gtk_scrolled_window_get_vadjustment(
+								GTK_SCROLLED_WINDOW(textview->scrolledwin));
+					gfloat vpos = pos->value;
+					mimeview_check_signature(textview->messageview->mimeview);
+					/* scroll back where we were */
+					gtk_adjustment_set_value(pos, vpos);
+				} else
+#endif
+				{
 					open_uri(uri->uri,
 						 prefs_common.uri_cmd);
 				}

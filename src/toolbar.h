@@ -20,17 +20,62 @@
 #ifndef __CUSTOM_TOOLBAR_H__
 #define __CUSTOM_TOOLBAR_H__
 
-#define SEPARATOR        "separator"
-#define TOOLBAR_FILE     "toolbar_main.xml"
+#define SEPARATOR            "separator"
+#define SEPARATOR_PIXMAP     "---"
 
-#define SEPARATOR_PIXMAP "---"
+typedef enum {
+	TOOLBAR_MAIN,	
+	TOOLBAR_COMPOSE,
+} Toolbar;
 
-typedef enum 
-{
+GSList *toolbar_list;
+
+#define TOOLBAR_DESTROY_ITEMS(t_item_list) \
+{ \
+        ToolbarItem *t_item; \
+	while (t_item_list != NULL) { \
+		t_item = (ToolbarItem*)t_item_list->data; \
+		t_item_list = g_slist_remove(t_item_list, t_item); \
+		if (t_item->file) \
+			g_free(t_item->file); \
+		if (t_item->text) \
+			g_free(t_item->text);\
+		g_free(t_item);\
+	}\
+	g_slist_free(t_item_list);\
+}
+
+#define TOOLBAR_DESTROY_ACTIONS(t_action_list) \
+{ \
+	ToolbarSylpheedActions *t_action; \
+	while (t_action_list != NULL) { \
+		t_action = (ToolbarSylpheedActions*)t_action_list->data;\
+		t_action_list = \
+			g_slist_remove(t_action_list, t_action);\
+		if (t_action->name) \
+			g_free(t_action->name); \
+		g_free(t_action); \
+	} \
+	g_slist_free(t_action_list); \
+}
+
+typedef struct _ToolbarConfig ToolbarConfig;
+struct _ToolbarConfig {
+	const gchar  *conf_file;
+	GSList       *item_list;
+};
+
+
+/* enum holds available actions for both 
+   Compose Toolbar and Main Toolbar 
+*/
+enum {
+	/* main toolbar */
 	A_RECEIVE_ALL = 0,
 	A_RECEIVE_CUR,
 	A_SEND_QUEUED,
 	A_COMPOSE_EMAIL,
+	A_COMPOSE_NEWS,
 	A_REPLY_MESSAGE,
 	A_REPLY_SENDER,
 	A_REPLY_ALL,
@@ -38,28 +83,39 @@ typedef enum
 	A_DELETE,
 	A_EXECUTE,
 	A_GOTO_NEXT,
+
+	/* compose toolbar */
+	A_SEND,
+	A_SENDL,
+	A_DRAFT,
+	A_INSERT,
+	A_ATTACH,
+	A_SIG,
+	A_EXTEDITOR,
+	A_LINEWRAP,
+	A_ADDRBOOK,
+
+	/* common items */
 	A_SYL_ACTIONS,
-	
+	A_SEPARATOR,
+
 	N_ACTION_VAL
-} CTActionVal;
+};
 
-#define A_COMPOSE_NEWS N_ACTION_VAL + 1
-#define A_SEPARATOR    N_ACTION_VAL + 2
-
-typedef struct _ToolbarAction ToolbarAction;
-struct _ToolbarAction
+typedef struct _ToolbarText ToolbarText;
+struct _ToolbarText 
 {
-	gchar *action_text;
+	gchar *index_str;
 	gchar *descr;
-	void (*func)(GtkWidget *widget, gpointer data);
 };
 
 typedef struct _ToolbarItem ToolbarItem;
 struct _ToolbarItem 
 {
-	gchar *file;
-	gchar *text;
-	gint  action;
+	gint      index;
+	gchar    *file;
+	gchar    *text;
+	gpointer  parent;
 };
 
 typedef struct _ToolbarSylpheedActions ToolbarSylpheedActions;
@@ -69,72 +125,26 @@ struct _ToolbarSylpheedActions
 	gchar     *name;
 };
 
-typedef enum 
-{
-	COMPOSEBUTTON_MAIL,
-	COMPOSEBUTTON_NEWS
-} ComposeButtonType;
 
-typedef struct _MainToolbar MainToolbar;
+void      toolbar_action_execute           (GtkWidget           *widget,
+					    GSList              *action_list, 
+					    gpointer            data,
+					    gint                source);
 
-struct _MainToolbar {
+GList    *toolbar_get_action_items         (Toolbar            source);
 
-	GtkWidget *toolbar;
+void      toolbar_save_config_file         (Toolbar            source);
+void      toolbar_read_config_file         (Toolbar            source);
 
-	GtkWidget *get_btn;
-	GtkWidget *getall_btn;
-	GtkWidget *sel_down;
-	GtkWidget *sel_down_all;
-	GtkWidget *sel_down_cur;
-	GtkWidget *send_btn;
+void      toolbar_set_default              (Toolbar            source);
+void      toolbar_clear_list               (Toolbar            source);
 
-	GtkWidget *compose_mail_btn;
-	GtkWidget *compose_news_btn;
+GSList   *toolbar_get_list                 (Toolbar            source);
+void      toolbar_set_list_item            (ToolbarItem        *t_item, 
+					    Toolbar            source);
 
-	GtkWidget *reply_btn;
-	GtkWidget *replysender_btn;
-	GtkWidget *replyall_btn;
+gint      toolbar_ret_val_from_descr       (const gchar        *descr);
+gchar    *toolbar_ret_descr_from_val       (gint                val);
 
-	GtkWidget *fwd_btn;
-
-	GtkWidget *delete_btn;
-	GtkWidget *next_btn;
-	GtkWidget *exec_btn;
-
-	GSList    *syl_action;
-	GtkWidget *separator;
-
-	/* for the reply buttons */
-	GtkWidget *reply_popup;
-	GtkWidget *replyall_popup;
-	GtkWidget *replysender_popup;
-	
-	/* the forward button similar to the reply buttons*/
-	GtkWidget *fwd_popup;
-
-	ComposeButtonType compose_btn_type;
-};
-
-extern GSList *toolbar_list;
-
-void      toolbar_actions_cb               (GtkWidget          *widget, 
-					    ToolbarItem        *toolbar_item);
-
-GList    *toolbar_get_action_items         (void);
-void      toolbar_save_config_file         (void);
-void      toolbar_read_config_file         (void);
-void      toolbar_set_default_toolbar      (void);
-void      toolbar_clear_list               (void);
-void      toolbar_update                   (void);
-void      toolbar_destroy                  (MainWindow         *mainwin);
-
-gint      toolbar_ret_val_from_descr       (gchar              *descr);
-gchar    *toolbar_ret_descr_from_val       (gint               val);
-gchar    *toolbar_ret_text_from_val        (gint               val);
-void      toolbar_create                   (MainWindow         *mainwin,
-					    GtkWidget          *container);
-
-void      toolbar_set_sensitive            (MainWindow         *mainwin);
-void      toolbar_set_compose_button       (MainToolbar        *toolbar, 
-					    ComposeButtonType  compose_btn_type);
+void      toolbar_destroy_items            (GSList             *t_item_list);
 #endif /* __CUSTOM_TOOLBAR_H__ */

@@ -72,12 +72,14 @@ static struct _Toolbar {
 	GtkWidget *combo_syl_list;
 	GtkWidget *combo_syl_entry;
 
-}mtoolbar;
+	Toolbar    source;
+	GList     *combo_action_list;
+
+}toolbar;
 
 #define CELL_SPACING 24
 #define ERROR_MSG _("Selected Action already set.\nPlease choose another Action from List")
 
-static void prefs_toolbar_open                   (void);
 static void prefs_toolbar_populate               (void);
 static gboolean is_duplicate                     (gchar *chosen_action);
 static void prefs_toolbar_save                   (void);
@@ -123,26 +125,35 @@ static gint prefs_toolbar_key_pressed            (GtkWidget *widget,
 						  GdkEventKey *event,
 						  gpointer data);
 
-void prefs_toolbar(void)
+void prefs_toolbar(Toolbar source)
 {
-	toolbar_read_config_file();
-	prefs_toolbar_open();
-}
+	gchar *win_titles[2];
+	win_titles[TOOLBAR_MAIN]    = _("set Main toolbar items");
+	win_titles[TOOLBAR_COMPOSE] = _("set Compose toolbar items");  
 
-static void prefs_toolbar_open(void)
-{
-	if (!mtoolbar.window)
+	toolbar.source = source;
+
+	toolbar_read_config_file(toolbar.source);
+
+	if (!toolbar.window)
 		prefs_toolbar_create();
 
-	manage_window_set_transient(GTK_WINDOW(mtoolbar.window));
+	manage_window_set_transient(GTK_WINDOW(toolbar.window));
 	prefs_toolbar_populate();
-	gtk_widget_show(mtoolbar.window);
+	gtk_window_set_title(GTK_WINDOW(toolbar.window), win_titles[toolbar.source]);
+	gtk_widget_show(toolbar.window);
 }
 
 void prefs_toolbar_close(void)
 {
-	main_window_reflect_prefs_all_real(TRUE);
-	gtk_widget_hide(mtoolbar.window);
+	gtk_widget_hide(toolbar.window);
+	if (toolbar.source == TOOLBAR_MAIN) 
+		main_window_reflect_prefs_all_real(TRUE);
+	else if (toolbar.source == TOOLBAR_COMPOSE)
+		compose_reflect_prefs_pixmap_theme();
+	
+	g_list_free(toolbar.combo_action_list);
+	
 }
 
 static void prefs_toolbar_set_displayed(void)
@@ -151,7 +162,8 @@ static void prefs_toolbar_set_displayed(void)
 	GdkBitmap *xpmmask;
 	gchar *activ[4];
 	GSList *cur;
-	GtkCList *clist_set = GTK_CLIST(mtoolbar.clist_set);
+	GtkCList *clist_set = GTK_CLIST(toolbar.clist_set);
+	GSList *toolbar_list = toolbar_get_list(toolbar.source);
 
 	gtk_clist_clear(clist_set);
 	gtk_clist_freeze(clist_set);
@@ -164,12 +176,12 @@ static void prefs_toolbar_set_displayed(void)
 			gint row_num;
 			StockPixmap icon = stock_pixmap_get_icon(item->file);
 			
-			stock_pixmap_gdk(mtoolbar.clist_set, icon,
+			stock_pixmap_gdk(toolbar.clist_set, icon,
 					  &xpm, &xpmmask);
 			activ[0] = g_strdup("");
 			activ[1] = g_strdup(item->file);
 			activ[2] = g_strdup(item->text);
-			activ[3] = g_strdup(toolbar_ret_descr_from_val(item->action));
+			activ[3] = g_strdup(toolbar_ret_descr_from_val(item->index));
 			row_num  = gtk_clist_append(clist_set, activ);
 			gtk_clist_set_pixmap(clist_set, 
 					      row_num, 0, xpm, xpmmask);
@@ -198,9 +210,8 @@ static void prefs_toolbar_populate(void)
 {
 	gint i;
 	GSList *cur;
-	GList *combo_action_items;
 	GList *syl_actions = NULL;
-	GtkCList *clist_icons = GTK_CLIST(mtoolbar.clist_icons);
+	GtkCList *clist_icons = GTK_CLIST(toolbar.clist_icons);
 	GdkPixmap *xpm;
 	GdkBitmap *xpmmask;
 	gchar *avail[2];
@@ -216,11 +227,11 @@ static void prefs_toolbar_populate(void)
 	g_free(avail[0]);
 	g_free(avail[1]);
 
-	combo_action_items = toolbar_get_action_items();
-	gtk_combo_set_popdown_strings(GTK_COMBO(mtoolbar.combo_action), combo_action_items);
-	gtk_combo_set_value_in_list(GTK_COMBO(mtoolbar.combo_action), 0, FALSE);
-	gtk_entry_set_text(GTK_ENTRY(mtoolbar.combo_entry), combo_action_items->data);
-	g_list_free(combo_action_items);
+	toolbar.combo_action_list = toolbar_get_action_items(toolbar.source);
+	gtk_combo_set_popdown_strings(GTK_COMBO(toolbar.combo_action), toolbar.combo_action_list);
+	gtk_combo_set_value_in_list(GTK_COMBO(toolbar.combo_action), 0, FALSE);
+	gtk_entry_set_text(GTK_ENTRY(toolbar.combo_entry), toolbar.combo_action_list->data);
+	//g_list_free(combo_action_list);
 
 	/* get currently defined sylpheed actions */
 	if (prefs_common.actions_list != NULL) {
@@ -230,10 +241,10 @@ static void prefs_toolbar_populate(void)
 			syl_actions = g_list_append(syl_actions, act);
 		} 
 
-		gtk_combo_set_popdown_strings(GTK_COMBO(mtoolbar.combo_syl_action), syl_actions);
-		gtk_combo_set_value_in_list(GTK_COMBO(mtoolbar.combo_syl_action), 0, FALSE);
-		gtk_entry_set_text(GTK_ENTRY(mtoolbar.combo_syl_entry), syl_actions->data);
-		prefs_toolbar_selection_changed(GTK_LIST(mtoolbar.combo_syl_list), NULL);
+		gtk_combo_set_popdown_strings(GTK_COMBO(toolbar.combo_syl_action), syl_actions);
+		gtk_combo_set_value_in_list(GTK_COMBO(toolbar.combo_syl_action), 0, FALSE);
+		gtk_entry_set_text(GTK_ENTRY(toolbar.combo_syl_entry), syl_actions->data);
+		prefs_toolbar_selection_changed(GTK_LIST(toolbar.combo_syl_list), NULL);
 		g_list_free(syl_actions);
 	}
 
@@ -241,7 +252,7 @@ static void prefs_toolbar_populate(void)
 		avail[0] = g_strdup("");
 		avail[1] = g_strdup(stock_pixmap_get_name((StockPixmap)i));
 
-		stock_pixmap_gdk(mtoolbar.clist_icons, i,
+		stock_pixmap_gdk(toolbar.clist_icons, i,
 				  &xpm, &xpmmask);
 		gtk_clist_append(clist_icons, avail);
 		gtk_clist_set_pixmap(clist_icons, 
@@ -258,12 +269,12 @@ static void prefs_toolbar_populate(void)
 
 	prefs_toolbar_set_displayed();
 
-	toolbar_clear_list();
+	toolbar_clear_list(toolbar.source);
 }
 
 static gboolean is_duplicate(gchar *chosen_action)
 {
-	GtkCList *clist = GTK_CLIST(mtoolbar.clist_set);
+	GtkCList *clist = GTK_CLIST(toolbar.clist_set);
 	gchar *entry;
 	gint row = 0;
 	gchar *syl_act = toolbar_ret_descr_from_val(A_SYL_ACTIONS);
@@ -289,36 +300,40 @@ static gboolean is_duplicate(gchar *chosen_action)
 static void prefs_toolbar_save(void)
 {
 	gint row = 0;
-	GtkCList *clist = GTK_CLIST(mtoolbar.clist_set);
+	GtkCList *clist = GTK_CLIST(toolbar.clist_set);
 	gchar *entry = NULL;
+	GSList *toolbar_list = NULL;
 	
-	toolbar_clear_list();
+	toolbar_clear_list(toolbar.source);
 
 	if (clist->rows == 0) {
-		toolbar_set_default_toolbar();
+		toolbar_set_default(toolbar.source);
 	}
 	else {
 		do {
-			ToolbarItem *toolbar_item = g_new0(ToolbarItem, 1);
+			ToolbarItem *t_item = g_new0(ToolbarItem, 1);
 			
 			gtk_clist_get_text(clist, row, 1, &entry);
-			toolbar_item->file = g_strdup(entry);
+			t_item->file = g_strdup(entry);
 			
 			gtk_clist_get_text(clist, row, 2, &entry);
-			toolbar_item->text = g_strdup(entry);
+			t_item->text = g_strdup(entry);
 			
 			gtk_clist_get_text(clist, row, 3, &entry);	
-			toolbar_item->action = toolbar_ret_val_from_descr(entry);
+			t_item->index = toolbar_ret_val_from_descr(entry);
 			
 			/* TODO: save A_SYL_ACTIONS only if they are still active */
+			toolbar_set_list_item(t_item, toolbar.source);
 
-			toolbar_list = g_slist_append(toolbar_list, toolbar_item);
+			g_free(t_item->file);
+			g_free(t_item->text);
+			g_free(t_item);
 			row++;
 			
 		} while(gtk_clist_get_text(clist, row, 3, &entry));
 	}
 
-	toolbar_save_config_file();
+	toolbar_save_config_file(toolbar.source);
 }
 
 static void prefs_toolbar_ok(GtkButton *button, gpointer data)
@@ -334,8 +349,8 @@ static void prefs_toolbar_cancel(GtkButton *button, gpointer data)
 
 static void prefs_toolbar_default(GtkButton *button, gpointer data)
 {
-	toolbar_clear_list();
-	toolbar_set_default_toolbar();
+	toolbar_clear_list(toolbar.source);
+	toolbar_set_default(toolbar.source);
 	prefs_toolbar_set_displayed();
 }
 
@@ -356,8 +371,8 @@ static void get_action_name(gchar *entry, gchar **menu)
 
 static void prefs_toolbar_register(GtkButton *button, gpointer data)
 {
-	GtkCList *clist_set   = GTK_CLIST(mtoolbar.clist_set);
-	GtkCList *clist_icons = GTK_CLIST(mtoolbar.clist_icons);
+	GtkCList *clist_set   = GTK_CLIST(toolbar.clist_set);
+	GtkCList *clist_icons = GTK_CLIST(toolbar.clist_icons);
 	gchar *syl_act = toolbar_ret_descr_from_val(A_SYL_ACTIONS);
 	gint row_icons = 0;
 	gint row_set = 0;
@@ -374,7 +389,7 @@ static void prefs_toolbar_register(GtkButton *button, gpointer data)
 		return;
 
 	gtk_clist_get_text(clist_icons, row_icons, 1, &item[1]);
-	item[3] = g_strdup(gtk_entry_get_text(GTK_ENTRY(mtoolbar.combo_entry)));
+	item[3] = g_strdup(gtk_entry_get_text(GTK_ENTRY(toolbar.combo_entry)));
 	
 	/* SEPARATOR or other ? */
 	if (g_strcasecmp(item[1], SEPARATOR) == 0) {
@@ -382,7 +397,7 @@ static void prefs_toolbar_register(GtkButton *button, gpointer data)
 		item[2] = g_strdup("");
 		item[3] = g_strdup("");
 		
-		row_set = gtk_clist_append(GTK_CLIST(mtoolbar.clist_set), item);
+		row_set = gtk_clist_append(GTK_CLIST(toolbar.clist_set), item);
 
 		g_free(item[0]);
 	} else {
@@ -393,19 +408,19 @@ static void prefs_toolbar_register(GtkButton *button, gpointer data)
 			return;
 		}
 
-		stock_pixmap_gdk(mtoolbar.clist_set, stock_pixmap_get_icon(item[1]),
+		stock_pixmap_gdk(toolbar.clist_set, stock_pixmap_get_icon(item[1]),
 				  &xpm, &xpmmask);
 
 		if (g_strcasecmp(item[3], syl_act) == 0) {
 
-			gchar *entry = gtk_entry_get_text(GTK_ENTRY(mtoolbar.combo_syl_entry));
+			gchar *entry = gtk_entry_get_text(GTK_ENTRY(toolbar.combo_syl_entry));
 			get_action_name(entry, &item[2]);
 		}
 		else {
-			item[2] = g_strdup(gtk_entry_get_text(GTK_ENTRY(mtoolbar.entry_icon_text)));
+			item[2] = g_strdup(gtk_entry_get_text(GTK_ENTRY(toolbar.entry_icon_text)));
 		}
 
-		row_set = gtk_clist_append(GTK_CLIST(mtoolbar.clist_set), item);
+		row_set = gtk_clist_append(GTK_CLIST(toolbar.clist_set), item);
 		gtk_clist_set_pixmap(clist_set, row_set, 0, xpm, xpmmask);
 	}
 
@@ -418,8 +433,8 @@ static void prefs_toolbar_register(GtkButton *button, gpointer data)
 
 static void prefs_toolbar_substitute(GtkButton *button, gpointer data)
 {
-	GtkCList *clist_set   = GTK_CLIST(mtoolbar.clist_set);
-	GtkCList *clist_icons = GTK_CLIST(mtoolbar.clist_icons);
+	GtkCList *clist_set   = GTK_CLIST(toolbar.clist_set);
+	GtkCList *clist_icons = GTK_CLIST(toolbar.clist_icons);
 	gchar *syl_act = toolbar_ret_descr_from_val(A_SYL_ACTIONS);
 	gint row_icons = 0;
 	gint row_set = 0;
@@ -445,7 +460,7 @@ static void prefs_toolbar_substitute(GtkButton *button, gpointer data)
 	
 	gtk_clist_get_text(clist_icons, row_icons, 1, &item[1]);
 	gtk_clist_get_text(clist_set, row_set, 3, &ac_set);
-	item[3] = g_strdup(gtk_entry_get_text(GTK_ENTRY(mtoolbar.combo_entry)));
+	item[3] = g_strdup(gtk_entry_get_text(GTK_ENTRY(toolbar.combo_entry)));
 
 	if (g_strcasecmp(item[1], SEPARATOR) == 0) {
 		item[0] = g_strdup(SEPARATOR_PIXMAP);
@@ -464,15 +479,15 @@ static void prefs_toolbar_substitute(GtkButton *button, gpointer data)
 			return;
 		}
 
-		stock_pixmap_gdk(mtoolbar.clist_set, stock_pixmap_get_icon(item[1]),
+		stock_pixmap_gdk(toolbar.clist_set, stock_pixmap_get_icon(item[1]),
 				  &xpm, &xpmmask);
 
 		if (g_strcasecmp(item[3], syl_act) == 0) {
 
-			gchar *entry = gtk_entry_get_text(GTK_ENTRY(mtoolbar.combo_syl_entry));
+			gchar *entry = gtk_entry_get_text(GTK_ENTRY(toolbar.combo_syl_entry));
 			get_action_name(entry, &item[2]);
 		} else {
-			item[2] = g_strdup(gtk_entry_get_text(GTK_ENTRY(mtoolbar.entry_icon_text)));
+			item[2] = g_strdup(gtk_entry_get_text(GTK_ENTRY(toolbar.entry_icon_text)));
 		}
 
 		gtk_clist_remove(clist_set, row_set);
@@ -489,7 +504,7 @@ static void prefs_toolbar_substitute(GtkButton *button, gpointer data)
 
 static void prefs_toolbar_delete(GtkButton *button, gpointer data)
 {
-	GtkCList *clist_set = GTK_CLIST(mtoolbar.clist_set);
+	GtkCList *clist_set = GTK_CLIST(toolbar.clist_set);
 	gint row_set = 0;
 
 	if (clist_set->rows == 0) return; 
@@ -512,7 +527,7 @@ static void prefs_toolbar_delete(GtkButton *button, gpointer data)
 
 static void prefs_toolbar_up(GtkButton *button, gpointer data)
 {
-	GtkCList *clist = GTK_CLIST(mtoolbar.clist_set);
+	GtkCList *clist = GTK_CLIST(toolbar.clist_set);
 	gint row = 0;
 
 	if (!clist->selection) return;
@@ -529,7 +544,7 @@ static void prefs_toolbar_up(GtkButton *button, gpointer data)
 
 static void prefs_toolbar_down(GtkButton *button, gpointer data)
 {
-	GtkCList *clist = GTK_CLIST(mtoolbar.clist_set);
+	GtkCList *clist = GTK_CLIST(toolbar.clist_set);
 	gint row = 0;
 
 	if (!clist->selection) return;
@@ -547,11 +562,13 @@ static void prefs_toolbar_down(GtkButton *button, gpointer data)
 static void prefs_toolbar_select_row_set(GtkCList *clist, gint row, gint column,
 					 GdkEvent *event, gpointer user_data)
 {
-	GtkCList *clist_ico = GTK_CLIST(mtoolbar.clist_icons);
+	GtkCList *clist_ico = GTK_CLIST(toolbar.clist_icons);
 	gchar *syl_act = toolbar_ret_descr_from_val(A_SYL_ACTIONS);
 	gint row_set = 0;
 	gint row_ico = 0;
+	gint item_num = 0;
 	gchar *file, *icon_text, *descr, *entry;
+	GList *cur;
 
 	if (clist->selection->data) 
 		row_set = GPOINTER_TO_INT(clist->selection->data);	
@@ -561,10 +578,19 @@ static void prefs_toolbar_select_row_set(GtkCList *clist, gint row, gint column,
 	gtk_clist_get_text(clist, row_set, 3, &descr);
 
 	if (g_strcasecmp(descr, syl_act) != 0)
-		gtk_entry_set_text(GTK_ENTRY(mtoolbar.entry_icon_text), icon_text);
+		gtk_entry_set_text(GTK_ENTRY(toolbar.entry_icon_text), icon_text);
+	
+	/* scan combo list for selected description an set combo item accordingly */
+	for (cur = toolbar.combo_action_list; cur != NULL; cur = cur->next) {
+		gchar *item_str = (gchar*)cur->data;
+		if (g_strcasecmp(item_str, descr) == 0) {
+			gtk_list_select_item(GTK_LIST(toolbar.combo_list), item_num);
+			break;
+		}
+		else
+			item_num++;
+	}
 
-	gtk_list_select_item(GTK_LIST(mtoolbar.combo_list), 
-			      toolbar_ret_val_from_descr(descr));
 	do {
 		gtk_clist_get_text(clist_ico, row_ico, 1, &entry);
 		row_ico++;
@@ -577,22 +603,21 @@ static void prefs_toolbar_select_row_set(GtkCList *clist, gint row, gint column,
 static void prefs_toolbar_select_row_icons(GtkCList *clist, gint row, gint column,
 					   GdkEvent *event, gpointer user_data)
 {
-	GtkCList *clist_icons = GTK_CLIST(mtoolbar.clist_icons);
+	GtkCList *clist_icons = GTK_CLIST(toolbar.clist_icons);
 	gchar *text;
 	
 	gtk_clist_get_text(clist_icons, row, 1, &text);
 
-	if (!text) 
-		return;
+	if (!text) return;
 
 	if (g_strcasecmp(SEPARATOR, text) == 0) {
-		gtk_widget_set_sensitive(mtoolbar.combo_action,     FALSE);
-		gtk_widget_set_sensitive(mtoolbar.entry_icon_text,  FALSE);
-		gtk_widget_set_sensitive(mtoolbar.combo_syl_action, FALSE);
+		gtk_widget_set_sensitive(toolbar.combo_action,     FALSE);
+		gtk_widget_set_sensitive(toolbar.entry_icon_text,  FALSE);
+		gtk_widget_set_sensitive(toolbar.combo_syl_action, FALSE);
 	} else {
-		gtk_widget_set_sensitive(mtoolbar.combo_action,     TRUE);
-		gtk_widget_set_sensitive(mtoolbar.entry_icon_text,  TRUE);
-		gtk_widget_set_sensitive(mtoolbar.combo_syl_action, TRUE);
+		gtk_widget_set_sensitive(toolbar.combo_action,     TRUE);
+		gtk_widget_set_sensitive(toolbar.entry_icon_text,  TRUE);
+		gtk_widget_set_sensitive(toolbar.combo_syl_action, TRUE);
 	}
 }
 
@@ -600,28 +625,28 @@ static void prefs_toolbar_selection_changed(GtkList *list,
 					    gpointer user_data)
 {
 
-	gchar *cur_entry = g_strdup(gtk_entry_get_text(GTK_ENTRY(mtoolbar.combo_entry)));
+	gchar *cur_entry = g_strdup(gtk_entry_get_text(GTK_ENTRY(toolbar.combo_entry)));
 	gchar *actions_entry = toolbar_ret_descr_from_val(A_SYL_ACTIONS);
 
-	gtk_widget_set_sensitive(mtoolbar.combo_syl_action, TRUE);
+	gtk_widget_set_sensitive(toolbar.combo_syl_action, TRUE);
 
 	if (g_strcasecmp(cur_entry, actions_entry) == 0) {
-		gtk_widget_hide(mtoolbar.entry_icon_text);
-		gtk_widget_show(mtoolbar.combo_syl_action);
-		gtk_label_set_text(GTK_LABEL(mtoolbar.label_icon_text), _("Sylpheed Action"));
+		gtk_widget_hide(toolbar.entry_icon_text);
+		gtk_widget_show(toolbar.combo_syl_action);
+		gtk_label_set_text(GTK_LABEL(toolbar.label_icon_text), _("Sylpheed Action"));
 
 		if (prefs_common.actions_list == NULL) {
-		    gtk_widget_set_sensitive(mtoolbar.combo_syl_action, FALSE);
+		    gtk_widget_set_sensitive(toolbar.combo_syl_action, FALSE);
 		}
 
 	} else {
-		gtk_widget_hide(mtoolbar.combo_syl_action);
-		gtk_widget_show(mtoolbar.entry_icon_text);
-		gtk_label_set_text(GTK_LABEL(mtoolbar.label_icon_text), _("Toolbar text"));
+		gtk_widget_hide(toolbar.combo_syl_action);
+		gtk_widget_show(toolbar.entry_icon_text);
+		gtk_label_set_text(GTK_LABEL(toolbar.label_icon_text), _("Toolbar text"));
 	}
 
-	gtk_misc_set_alignment(GTK_MISC(mtoolbar.label_icon_text), 1, 0.5);
-	gtk_widget_show(mtoolbar.label_icon_text);
+	gtk_misc_set_alignment(GTK_MISC(toolbar.label_icon_text), 1, 0.5);
+	gtk_widget_show(toolbar.label_icon_text);
 	g_free(cur_entry);
 }
 
@@ -677,14 +702,14 @@ static void prefs_toolbar_create(void)
 	GtkWidget *default_btn;
 
 	gchar *titles[N_DISPLAYED_ITEMS_COLS];
-
+ 
 	debug_print("Creating custom toolbar window...\n");
 
 	window = gtk_window_new(GTK_WINDOW_DIALOG);
 	gtk_widget_set_usize(window, 450, -1); 
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
 	gtk_window_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_title(GTK_WINDOW(window), _("Customize toolbar"));
+	
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, TRUE);
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
@@ -875,19 +900,19 @@ static void prefs_toolbar_create(void)
 	gtk_signal_connect(GTK_OBJECT(down_btn), "clicked",
 			   GTK_SIGNAL_FUNC(prefs_toolbar_down), NULL);
 	
-	mtoolbar.window           = window;
-	mtoolbar.clist_icons      = clist_icons;
-	mtoolbar.clist_set        = clist_set;
-	mtoolbar.combo_action     = combo_action;
-	mtoolbar.combo_entry      = combo_entry;
-	mtoolbar.combo_list       = combo_list;
-	mtoolbar.entry_icon_text  = entry_icon_text;
-	mtoolbar.combo_syl_action = combo_syl_action;
-	mtoolbar.combo_syl_list   = combo_syl_list;
-	mtoolbar.combo_syl_entry  = combo_syl_entry;
+	toolbar.window           = window;
+	toolbar.clist_icons      = clist_icons;
+	toolbar.clist_set        = clist_set;
+	toolbar.combo_action     = combo_action;
+	toolbar.combo_entry      = combo_entry;
+	toolbar.combo_list       = combo_list;
+	toolbar.entry_icon_text  = entry_icon_text;
+	toolbar.combo_syl_action = combo_syl_action;
+	toolbar.combo_syl_list   = combo_syl_list;
+	toolbar.combo_syl_entry  = combo_syl_entry;
 
-	mtoolbar.label_icon_text  = label_icon_text;
-	mtoolbar.label_action_sel = label_action_sel;
+	toolbar.label_icon_text  = label_icon_text;
+	toolbar.label_action_sel = label_action_sel;
 
 	gtk_widget_show_all(window);
 }

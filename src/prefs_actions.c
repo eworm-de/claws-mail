@@ -1017,11 +1017,16 @@ void update_compose_actions_menu(GtkItemFactory *ifactory,
 			    compose);
 }
 
-void actions_execute(MainWindow *mainwin, 
+void actions_execute(gpointer data, 
 		     guint action_nb,
-		     GtkWidget *widget)
+		     GtkWidget *widget,
+		     gint source)
 {
-	mainwin_actions_execute_cb(mainwin, action_nb, widget);
+	if (source == TOOLBAR_MAIN) 
+		mainwin_actions_execute_cb((MainWindow*)data, action_nb, widget);
+
+	else if (source == TOOLBAR_COMPOSE)
+		compose_actions_execute_cb((Compose*)data, action_nb, widget);
 }
 
 
