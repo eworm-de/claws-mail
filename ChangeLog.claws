@@ -1,3 +1,8 @@
+2002-12-08 [colin]	0.8.6claws76
+	
+	* src/main.c
+		put back argv0 for CRASH_DIALOG
+
 2002-12-08 [christoph]	0.8.6claws75
 
 	* src/Makefile.am

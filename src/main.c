@@ -85,6 +85,9 @@
 
 gchar *prog_version;
 gchar *startup_dir;
+#ifdef CRASH_DIALOG
+gchar *argv0;
+#endif
 
 static gint lock_socket = -1;
 static gint lock_socket_tag = 0;
@@ -167,6 +170,9 @@ int main(int argc, char *argv[])
 
 	prog_version = PROG_VERSION;
 	startup_dir = g_get_current_dir();
+#ifdef CRASH_DIALOG
+	argv0 = g_strdup(argv[0]);
+#endif
 
 	parse_cmd_opt(argc, argv);
 
