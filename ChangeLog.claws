@@ -1,3 +1,10 @@
+2004-08-03 [christoph]
+
+	* configure.ac
+	* m4/openssl.m4			** REMOVE **
+		use pkg-config to get OpenSSL CFLAGS and LIBS
+		(OpenSSL 0.9.7 is required now)
+
 2004-08-02 [paul]	0.9.12cvs40
 
 	* AUTHORS

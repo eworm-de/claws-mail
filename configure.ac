@@ -235,7 +235,14 @@ else
 fi
 
 dnl Check for OpenSSL
-AM_PATH_OPENSSL
+AC_ARG_ENABLE(openssl,
+	[  --enable-openssl    Attempt to use OpenSSL for SSL support.],
+	[ac_cv_enable_openssl=$enableval], [ac_cv_enable_openssl=yes])
+if test x"$ac_cv_enable_openssl" = xyes; then
+	PKG_CHECK_MODULES(OPENSSL, openssl >= 0.9.7, :, ac_cv_enable_openssl=no)
+fi
+AC_SUBST(OPENSSL_CFLAGS)
+AC_SUBST(OPENSSL_LIBS)
 
 dnl password encryption
 OLDLIBS=$LIBS
@@ -459,12 +466,12 @@ if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
 	PKG_CHECK_MODULES(GTK_MATH_VIEW, gtkmathview >= 0.4.2 gtkmathview < 0.5, :, ac_cv_enable_mathml_viewer_plugin=no)
 
 	if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
-		AC_SUBST(GTK_MATH_VIEW_CFLAGS)
-		AC_SUBST(GTK_MATH_VIEW_LIBS)
 
 		PLUGINS="mathml-viewer $PLUGINS"
 	fi
 fi
+AC_SUBST(GTK_MATH_VIEW_CFLAGS)
+AC_SUBST(GTK_MATH_VIEW_LIBS)
 AM_CONDITIONAL(BUILD_MATHML_VIEWER_PLUGIN, test x"$ac_cv_enable_mathml_viewer_plugin" = xyes)
 
 dnl --- Image Viewer ---
@@ -527,13 +534,13 @@ if test x"$ac_cv_enable_clamav_plugin" = xyes; then
 	AC_CHECK_HEADERS(clamav.h, :, ac_cv_enable_clamav_plugin=no)
 	if test x"$ac_cv_enable_clamav_plugin" = xyes; then
 		CLAMAV_LIBS="${clamav_lib}"
-		AC_SUBST(CLAMAV_LIBS)
 
 		PLUGINS="clamav $PLUGINS"
 	else
 		AC_MSG_NOTICE([clamav library not found, will not build clamav plugin])
 	fi
 fi
+AC_SUBST(CLAMAV_LIBS)
 AM_CONDITIONAL(BUILD_CLAMAV_PLUGIN, test x"$ac_cv_enable_clamav_plugin" = xyes)
 
 dnl ****************************
