@@ -3675,12 +3675,12 @@ static void summary_execute_delete_func(GtkCTree *ctree, GtkCTreeNode *node,
 						msginfo->msgid)) {
 			g_hash_table_remove(summaryview->msgid_table,
 					    msginfo->msgid);
-		}					   
+		}	
 		if (msginfo->subject && *msginfo->subject && 
-		    node == g_hash_table_lookup(summaryview->subject_table,
-						msginfo->subject)) {
-			g_hash_table_remove(summaryview->subject_table,
-					    msginfo->subject);
+		    node == subject_table_lookup(summaryview->subject_table,
+						 msginfo->subject)) {
+			subject_table_remove(summaryview->subject_table,
+					     msginfo->subject);
 		}					    
 	}
 }

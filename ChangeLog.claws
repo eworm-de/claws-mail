@@ -1,3 +1,10 @@
+2002-12-24 [alfons]	0.8.7claws7
+
+	* src/summaryview.c
+		summary_thread_build(): fix real cause of the crash mentioned in
+		0.8.7claws3. use subject_XXX() and not g_hash_table_XXX() functions,
+		this way we get meaningful ctree nodes 
+
 2002-12-24 [oliver]	0.8.7claws6
 
 	* src/mainwindow.[ch]
