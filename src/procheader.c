@@ -516,13 +516,13 @@ enum
 	H_X_STATUS      = 12,
 	H_FROM_SPACE	= 13,
 	H_SC_PLANNED_DOWNLOAD = 14,
-	H_X_FACE	= 15,
-	H_DISPOSITION_NOTIFICATION_TO = 16,
-	H_RETURN_RECEIPT_TO = 17,
-	H_SC_PARTIALLY_RETRIEVED = 18,
-	H_SC_ACCOUNT_SERVER = 19,
-	H_SC_ACCOUNT_LOGIN = 20,
-	H_SC_MESSAGE_SIZE = 21
+	H_SC_MESSAGE_SIZE = 15,
+	H_X_FACE	= 16,
+	H_DISPOSITION_NOTIFICATION_TO = 17,
+	H_RETURN_RECEIPT_TO = 18,
+	H_SC_PARTIALLY_RETRIEVED = 19,
+	H_SC_ACCOUNT_SERVER = 20,
+	H_SC_ACCOUNT_LOGIN = 21,
 };
 
 static HeaderEntry hentry_full[] = {{"Date:",		NULL, FALSE},
@@ -540,13 +540,13 @@ static HeaderEntry hentry_full[] = {{"Date:",		NULL, FALSE},
 				   {"X-Status:",        NULL, FALSE},
 				   {"From ",		NULL, FALSE},
 				   {"SC-Marked-For-Download:", NULL, FALSE},
+				   {"SC-Message-Size:", NULL, FALSE},
 				   {"X-Face:",		NULL, FALSE},
 				   {"Disposition-Notification-To:", NULL, FALSE},
 				   {"Return-Receipt-To:", NULL, FALSE},
 				   {"SC-Partially-Retrieved:", NULL, FALSE},
 				   {"SC-Account-Server:", NULL, FALSE},
 				   {"SC-Account-Login:",NULL, FALSE},
-				   {"SC-Message-Size:", NULL, FALSE},
 				   {NULL,		NULL, FALSE}};
 
 static HeaderEntry hentry_short[] = {{"Date:",		NULL, FALSE},
@@ -564,6 +564,7 @@ static HeaderEntry hentry_short[] = {{"Date:",		NULL, FALSE},
 				    {"X-Status:",	NULL, FALSE},
 				    {"From ",		NULL, FALSE},
 				    {"SC-Marked-For-Download:", NULL, FALSE},
+				    {"SC-Message-Size:",NULL, FALSE},
 				    {NULL,		NULL, FALSE}};
 
 HeaderEntry* procheader_get_headernames(gboolean full)

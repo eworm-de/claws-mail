@@ -475,6 +475,7 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 		READ_CACHE_DATA(msginfo->references, fp);
 		READ_CACHE_DATA(msginfo->xref, fp);
 		READ_CACHE_DATA_INT(msginfo->planned_download, fp);
+		READ_CACHE_DATA_INT(msginfo->total_size, fp);
 
 		msginfo->folder = item;
 		msginfo->flags.tmp_flags |= tmp_flags;
@@ -552,6 +553,7 @@ void msgcache_write_cache(MsgInfo *msginfo, FILE *fp)
 	WRITE_CACHE_DATA(msginfo->references, fp);
 	WRITE_CACHE_DATA(msginfo->xref, fp);
 	WRITE_CACHE_DATA_INT(msginfo->planned_download, fp);
+	WRITE_CACHE_DATA_INT(msginfo->total_size, fp);
 }
 
 static void msgcache_write_flags(MsgInfo *msginfo, FILE *fp)
