@@ -56,6 +56,9 @@ fi;
 if [ "$name" == "leroyc" ]; then
 	name="colin";
 fi;
+if [ "$name" == "torte" ]; then
+	name="thorsten";
+fi;
 
 log="`date --utc +%Y-%m-%d` [$name]\t$nextsversion\n\n"
 for line in $files; do
