@@ -1830,7 +1830,6 @@ static void compose_exec_sig(Compose *compose, gchar *sigfile)
 
 static void compose_insert_sig(Compose *compose)
 {
-	PrefsAccount *account;
 	gchar *sigfile;
 
 	if (compose->account && compose->account->sig_path)
@@ -1845,9 +1844,9 @@ static void compose_insert_sig(Compose *compose)
 	}
 
 	gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL, "\n\n", 2);
-	if (account->sig_sep) {
+	if (compose->account->sig_sep) {
 		gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL,
-				account->sig_sep, -1);
+				 compose->account->sig_sep, -1);
 		gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL,
 				"\n", 1);
 	}
@@ -5178,7 +5177,6 @@ void compose_reflect_prefs_pixmap_theme(void)
 static void compose_template_apply(Compose *compose, Template *tmpl,
 				   gboolean replace)
 {
-	PrefsAccount *account;
 	gchar *qmark;
 	gchar *parsed_str;
 
@@ -5219,7 +5217,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 			parsed_str = NULL;
 	}
 
-	if (replace && parsed_str && account->auto_sig)
+	if (replace && parsed_str && compose->account->auto_sig)
 		compose_insert_sig(compose);
 
 	if (replace && parsed_str) {

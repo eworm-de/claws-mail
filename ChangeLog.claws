@@ -1,3 +1,9 @@
+2003-02-14 [alfons]	0.8.10claws12
+
+	* src/compose.c
+		fix breakage because of uninitialized account pointer.
+		please verify.
+
 2003-02-14 [paul]	0.8.10claws11
 
 	* src/compose.c
