@@ -1,3 +1,10 @@
+2004-12-30 [paul]	0.9.13cvs22.2
+
+	* src/foldersel.c
+		use GTK 2 Tree View
+		patch by Alfons, with root folder sorting fix
+		by Stephan Sachse
+
 2004-12-30 [paul]	0.9.13cvs22.1
 
 	* ChangeLog
