@@ -812,13 +812,14 @@ static void mimeview_save_all(MimeView *mimeview)
 	/* return to first children */
 	attachment = partinfo->parent->children->next;
 	/* for each attachment, extract it in the selected dir. */
-	while(attachment != NULL)
-	{
+	while (attachment != NULL) {
 		static guint subst_cnt = 1;
 		gchar *attachdir;
 		gchar *attachname = (attachment->filename)
 			? g_strdup(attachment->filename)
 			: g_strdup_printf("noname.%d",subst_cnt++);
+		AlertValue aval;
+		gchar *res;
 
 		subst_chars(attachname, "/\\", G_DIR_SEPARATOR);
 		subst_chars(attachname, ":?*&|<>\t\r\n", '_');
@@ -830,17 +831,17 @@ static void mimeview_save_all(MimeView *mimeview)
 		attachdir = g_dirname(buf);
 		make_dir_hier(attachdir);
 		g_free(attachdir);
-		g_free(attachname);
 
 		if (is_file_exist(buf)) {
-			AlertValue aval;
-
-			aval = alertpanel(_("Overwrite"),
-					  _("Overwrite existing file?"),
-					  _("OK"), _("Cancel"), NULL);
-			if (G_ALERTDEFAULT != aval) return;
+			res = g_strdup_printf(_("Overwrite existing file '%s'?"),
+					      attachname);
+			aval = alertpanel(_("Overwrite"), res, _("OK"), 
+					  _("Cancel"), NULL);
+			g_free(res);					  
 		}
-		if (procmime_get_part(buf, mimeview->file, attachment) < 0)
+		g_free(attachname);
+
+		if (G_ALERTDEFAULT == aval && procmime_get_part(buf, mimeview->file, attachment) < 0)
 			alertpanel_error(_("Can't save the part of multipart message."));
 		attachment = attachment->next;
 	}

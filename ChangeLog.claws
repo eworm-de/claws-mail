@@ -1,3 +1,9 @@
+2003-01-19 [alfons]	0.8.8claws120
+
+	* src/mimeview.c
+		mimeview_save_all(): display name of file before overwriting;
+		continue saving all, even when one overwrite was cancelled
+
 2003-01-19 [christoph]	0.8.8claws119
 
 	* src/summaryview.c
