@@ -1,3 +1,8 @@
+2003-02-03 [thorsten]	0.9.9claws0-2
+
+	* src/main.c
+		fix: clean remnants in mimetmp dir
+
 2003-02-03 [thorsten]	0.9.9claws0-1
 
 	* src/compose.c

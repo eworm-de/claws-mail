@@ -391,6 +391,7 @@ int main(int argc, char *argv[])
 	}
 #ifdef WIN32
 	remove_all_files(get_tmp_dir());
+	remove_all_files(get_mime_tmp_dir());
 #endif
 	/* make the crash-indicator file */
 	str_write_to_file("foo", get_crashfile_name());
