@@ -1,4 +1,10 @@
+2003-07-23 [alfons]	0.9.3claws47
+
+	* src/mimeview.c
+		make icon list look like a list of toggles
+
 2003-07-23 [luke]	0.9.3claws46
+
 	* src/pixmaps/mimeview_gpg_expired.xpm
 	* src/pixmaps/mimeview_gpg_failed.xpm
 	* src/pixmaps/mimeview_gpg_passed.xpm

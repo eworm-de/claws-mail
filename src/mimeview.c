@@ -125,11 +125,15 @@ static void icon_selected               (MimeView       *mimeview,
 static gint icon_key_pressed            (GtkWidget      *button, 
 					 GdkEventKey    *event,
 					 MimeView       *mimeview);
+static void icon_toggled_cb		(GtkToggleButton *button,
+					 MimeView	*mimeview);
 static void icon_list_append_icon 	(MimeView 	*mimeview, 
 					 MimeInfo 	*mimeinfo);
 static void icon_list_create		(MimeView 	*mimeview, 
 					 MimeInfo 	*mimeinfo);
 static void icon_list_clear		(MimeView	*mimeview);
+static void icon_list_toggle_by_mime_info (MimeView	*mimeview,
+					   MimeInfo	*mimeinfo);
 static void mime_toggle_button_cb 	(GtkWidget 	*button,
 					 MimeView 	*mimeview);
 static void part_button_pressed		(MimeView 	*mimeview, 
@@ -419,6 +423,8 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 
 	if (node) {
 		gtk_ctree_select(ctree, node);
+		icon_list_toggle_by_mime_info
+			(mimeview, gtk_ctree_node_get_row_data(ctree, node));
 		gtkut_ctree_set_focus_row(ctree, node);
 		gtk_widget_grab_focus(mimeview->ctree);
 	}
@@ -1332,6 +1338,24 @@ static gint icon_key_pressed(GtkWidget *button, GdkEventKey *event,
 	return FALSE;
 }
 
+static void icon_toggled_cb(GtkToggleButton *button, MimeView *mimeview)
+{
+	GList *child;
+	
+	if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button)))
+		return;
+	
+	child = gtk_container_children(GTK_CONTAINER(mimeview->icon_vbox));
+	for (; child != NULL; child = g_list_next(child)) {
+		if (GTK_IS_TOGGLE_BUTTON(child->data) &&  
+		    GTK_TOGGLE_BUTTON(child->data) != button)
+			if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(child->data)))
+				gtk_toggle_button_set_active
+					(GTK_TOGGLE_BUTTON(child->data),
+					 FALSE);
+	}
+}
+
 static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo) 
 {
 	GtkWidget *pixmap;
@@ -1349,7 +1373,7 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 		gtk_widget_show(sep);
 		gtk_box_pack_start(GTK_BOX(vbox), sep, TRUE, TRUE, 3);
 	}
-	button = gtk_button_new();
+	button = gtk_toggle_button_new();
 	gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
 	gtk_object_set_data(GTK_OBJECT(button), "icon_number", 
 		GINT_TO_POINTER(mimeview->icon_count));
@@ -1427,6 +1451,8 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 			   GTK_SIGNAL_FUNC(icon_clicked_cb), mimeview);
 	gtk_signal_connect(GTK_OBJECT(button), "key_press_event", 
 			   GTK_SIGNAL_FUNC(icon_key_pressed), mimeview);
+	gtk_signal_connect(GTK_OBJECT(button), "toggled", 
+			   GTK_SIGNAL_FUNC(icon_toggled_cb), mimeview);
 	gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
 
 }
@@ -1444,6 +1470,22 @@ static void icon_list_clear (MimeView *mimeview)
 	mimeview->icon_count = 0;
 	adj  = gtk_layout_get_vadjustment(GTK_LAYOUT(mimeview->icon_scroll));
 	adj->value = 0;
+}
+
+static void icon_list_toggle_by_mime_info(MimeView	*mimeview,
+					  MimeInfo	*mimeinfo)
+{
+	GList *child;
+	
+	child = gtk_container_children(GTK_CONTAINER(mimeview->icon_vbox));
+	for (; child != NULL; child = g_list_next(child)) {
+		if (GTK_IS_TOGGLE_BUTTON(child->data) &&  
+		    gtk_object_get_data(GTK_OBJECT(child->data),
+					"partinfo") == (gpointer)mimeinfo) {
+			gtk_toggle_button_set_active
+				(GTK_TOGGLE_BUTTON(child->data), TRUE);
+		}				 
+	}
 }
 
 static void icon_scroll_size_allocate_cb(GtkWidget *widget, 
