@@ -88,8 +88,8 @@ struct _SummaryView
 	GtkWidget *statlabel_folder;
 	GtkWidget *statlabel_select;
 	GtkWidget *statlabel_msgs;
-	GtkWidget *toggle_view_btn;
-	GtkWidget *toggle_view_arrow;
+	GtkWidget *toggle_eventbox;
+	GtkWidget *toggle_arrow;
 	GtkWidget *popupmenu;
 	GtkWidget *colorlabel_menu;
 
@@ -100,7 +100,6 @@ struct _SummaryView
 	GtkCTreeNode *selected;
 	GtkCTreeNode *displayed;
 
-	gboolean msg_is_toggled_on;
 	gboolean display_msg;
 
 	GdkColor color_important;
@@ -207,6 +206,7 @@ void summary_view_source	  (SummaryView		*summaryview);
 void summary_reedit		  (SummaryView		*summaryview);
 void summary_step		  (SummaryView		*summaryview,
 				   GtkScrollType	 type);
+void summary_toggle_view	  (SummaryView		*summaryview);
 void summary_set_marks_selected	  (SummaryView		*summaryview);
 
 void summary_move_selected_to	  (SummaryView		*summaryview,

@@ -1,3 +1,13 @@
+2002-06-11 [alfons]	0.7.6claws40
+
+	* src/messageview.[ch]
+	* src/summaryview.[ch]
+	* src/summary_search.c
+	* src/mainwindow.c
+		perform a sync to bring in Hiro's separate view implementation 
+
+		(NOTE: may still be buggy; 0.7.6claws39 marked as LAST_STABLE)
+
 2002-06-11 [paul]	0.7.6claws39
 	
 	* src/prefs_account.c

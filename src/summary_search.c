@@ -44,6 +44,7 @@
 #include "main.h"
 #include "summary_search.h"
 #include "summaryview.h"
+#include "messageview.h"
 #include "mainwindow.h"
 #include "utils.h"
 #include "gtkutils.h"
@@ -354,7 +355,8 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 			if (search_all)
 				gtk_ctree_select(ctree, node);
 			else {
-				if (summaryview->msg_is_toggled_on) {
+				if (messageview_is_visible
+					(summaryview->messageview)) {
 					summary_unlock(summaryview);
 					summary_select_node
 						(summaryview, node, TRUE, TRUE);
