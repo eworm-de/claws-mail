@@ -117,7 +117,7 @@ FolderClass mh_class =
 	NULL,
 };
 
-FolderClass *mh_get_class()
+FolderClass *mh_get_class(void)
 {
 	return &mh_class;
 }

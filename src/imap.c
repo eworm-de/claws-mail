@@ -419,7 +419,7 @@ FolderClass imap_class =
 	imap_change_flags,
 };
 
-FolderClass *imap_get_class()
+FolderClass *imap_get_class(void)
 {
 	return &imap_class;
 }

@@ -914,7 +914,8 @@ static void prefs_common_ok		(void);
 static void prefs_common_apply		(void);
 static void prefs_common_cancel		(void);
 
-void prefs_common_init() {
+void prefs_common_init(void) 
+{
 	prefs_common.disphdr_list = NULL;
 }
 

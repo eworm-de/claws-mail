@@ -77,7 +77,7 @@ struct _MimeViewerFactory
 	gchar *content_type;
 	gint priority;
 	
-	MimeViewer *(*create_viewer) ();
+	MimeViewer *(*create_viewer) (void);
 };
 
 struct _MimeViewer

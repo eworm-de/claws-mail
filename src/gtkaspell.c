@@ -192,7 +192,7 @@ GtkAspellConfig * gtkaspellconfig;
 
 /******************************************************************************/
 
-GtkAspellCheckers *gtkaspell_checkers_new()
+GtkAspellCheckers *gtkaspell_checkers_new(void)
 {
 	GtkAspellCheckers *gtkaspellcheckers;
 	
@@ -204,7 +204,7 @@ GtkAspellCheckers *gtkaspell_checkers_new()
 	return gtkaspellcheckers;
 }
 	
-GtkAspellCheckers *gtkaspell_checkers_delete()
+GtkAspellCheckers *gtkaspell_checkers_delete(void)
 {
 	GSList *checkers;
 	GSList *dict_list;

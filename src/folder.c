@@ -76,7 +76,7 @@ void folder_item_free_cache		(FolderItem *item);
 
 static GSList *classlist;
 
-void folder_system_init()
+void folder_system_init(void)
 {
 	folder_register_class(mh_get_class());
 	folder_register_class(imap_get_class());
@@ -84,7 +84,7 @@ void folder_system_init()
 	folder_register_class(mbox_get_class());
 }
 
-GSList *folder_get_class_list()
+GSList *folder_get_class_list(void)
 {
 	return classlist;
 }
@@ -1329,7 +1329,7 @@ void folder_item_free_cache(FolderItem *item)
 	item->cache = NULL;
 }
 
-void folder_clean_cache_memory()
+void folder_clean_cache_memory(void)
 {
 	gint memusage = 0;
 
@@ -2550,7 +2550,8 @@ static void folder_update_op_count_rec(GNode *node)
 	}
 }
 
-void folder_update_op_count() {
+void folder_update_op_count(void) 
+{
 	GList *cur;
 	Folder *folder;
 
@@ -2813,7 +2814,7 @@ void folder_item_update_recursive(FolderItem *item, FolderItemUpdateFlags update
 	}
 }
 
-void folder_item_update_freeze()
+void folder_item_update_freeze(void)
 {
 	folder_item_update_freeze_cnt++;
 }
@@ -2830,7 +2831,7 @@ static void folder_item_update_func(FolderItem *item, gpointer data)
 	}
 }
 
-void folder_item_update_thaw()
+void folder_item_update_thaw(void)
 {
 	if (folder_item_update_freeze_cnt > 0)
 		folder_item_update_freeze_cnt--;

@@ -131,7 +131,7 @@ static gboolean prefs_scoring_free_func(GNode *node, gpointer data)
 	return FALSE;
 }
 
-void prefs_scoring_clear()
+void prefs_scoring_clear(void)
 {
 	GList * cur;
 

@@ -209,13 +209,9 @@ void session_destroy(Session *session)
 
 	debug_print("session: session_destroy()\n");
 	session_close(session);
-	g_print("$$$ session_destroy() session->destroy called\n");
 	session->destroy(session);
-	g_print("$$$ session_destroy() freeing session server\n");
 	g_free(session->server);
-	g_print("$$$ session_destroy() freeing session\n");
 	g_free(session);
-	g_print("$$$ session_destroy() done\n");
 }
 
 void session_set_recv_message_notify(Session *session,
@@ -276,21 +272,18 @@ static gint session_close(Session *session)
 		session->read_tag = 0;
 	}
 	
-	g_print("$$$ %s: closing read channel\n", session->child_pid == 0 ? "child" : "parent");
 	if (session->read_ch) {
 		g_io_channel_close(session->read_ch);
 		g_io_channel_unref(session->read_ch);
 		session->read_ch = NULL;
 	}
 	
-	g_print("$$$ %s: closing write channel\n", session->child_pid == 0 ? "child" : "parent");
 	if (session->write_ch) {
 		g_io_channel_close(session->write_ch);
 		g_io_channel_unref(session->write_ch);
 		session->write_ch = NULL;
 	}
 
-	g_print("$$$ %s: closing socket\n", session->child_pid == 0 ? "child" : "parent");
 	if (session->sock) {
 		sock_close(session->sock);
 		session->sock = NULL;
@@ -298,14 +291,12 @@ static gint session_close(Session *session)
 	}
 
 	if (session->child_pid) {
-		g_print("$$$ %s: closing child\n", session->child_pid == 0 ? "child" : "parent");
 		if (session->state != SESSION_DISCONNECTED)
 			kill(session->child_pid, SIGTERM);
 		waitpid(session->child_pid, NULL, 0);
 		session->child_pid = 0;
 	}
 
-	g_print("$$$ %s: exiting session_close\n", session->child_pid == 0 ? "child" : "parent");
 	return 0;
 }
 
@@ -731,12 +722,8 @@ gboolean session_parent_input_cb(GIOChannel *source, GIOCondition condition,
 	case SESSION_MSG_NORMAL:
 		msg_data = msg + strlen("MESSAGE ");
 		ret = session->recv_msg(session, msg_data);
-		g_print("$$$ > session_parent_input_cb(data: %lx)\n", 
-			session->recv_msg_notify_data);
 		session->recv_msg_notify(session, msg_data,
 					 session->recv_msg_notify_data);
-		g_print("$$$ < session_parent_input_cb(data: %lx)\n", 
-			session->recv_msg_notify_data);
 		if (ret > 0)
 			session_send_msg(session, SESSION_MSG_CONTROL,
 					 "CONTINUE");

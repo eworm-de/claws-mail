@@ -107,7 +107,7 @@ FolderClass mbox_class =
 	mbox_change_flags,
 };
 
-FolderClass *mbox_get_class()
+FolderClass *mbox_get_class(void)
 {
 	return &mbox_class;
 }

@@ -1,3 +1,25 @@
+2003-05-13 [alfons]	0.8.11claws151
+
+	* src/common/session.c
+		remove debug traces
+		
+	* src/addrcache.[ch]
+	* src/filtering.[ch]
+	* src/folder.[c]
+	* src/gtkaspell.[ch]
+	* src/imap.[ch]
+	* src/mbox_folder.[ch]
+	* src/mh.[ch]
+	* src/mimeview.h
+	* src/msgcache.[ch]
+	* src/news.[ch]
+	* src/passphrase.[ch]
+	* src/prefs_common.[ch]
+	* src/prefs_gtk.[ch]
+	* src/procmsg.c
+	* src/scoring.[ch]
+		be pedantic; (in prototypes () implies (int))
+
 2003-05-13 [alfons]	0.8.11claws150
 
 	* src/prefs_toolbar.[ch]

@@ -31,7 +31,7 @@ typedef struct _MsgCache MsgCache;
 #include "procmsg.h"
 #include "folder.h"
 
-MsgCache   	*msgcache_new				();
+MsgCache   	*msgcache_new				(void);
 void	   	 msgcache_destroy			(MsgCache *cache);
 MsgCache   	*msgcache_read_cache			(FolderItem *item,
 							 const gchar *cache_file);

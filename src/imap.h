@@ -22,6 +22,6 @@
 
 #include "folder.h"
 
-FolderClass *imap_get_class		();
+FolderClass *imap_get_class		(void);
 
 #endif /* __IMAP_H__ */

@@ -772,7 +772,7 @@ MsgInfo *procmsg_msginfo_new_ref(MsgInfo *msginfo)
 	return msginfo;
 }
 
-MsgInfo *procmsg_msginfo_new()
+MsgInfo *procmsg_msginfo_new(void)
 {
 	MsgInfo *newmsginfo;
 

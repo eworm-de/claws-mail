@@ -50,7 +50,7 @@ static int addrcache_next_cache_id() {
 /*
 * Create new address cache.
 */
-AddressCache *addrcache_create() {
+AddressCache *addrcache_create(void) {
 	AddressCache *cache;
 	gint t;
 

@@ -35,7 +35,7 @@ struct _MsgCache {
 	time_t		 last_access;
 };
 
-MsgCache *msgcache_new()
+MsgCache *msgcache_new(void)
 {
 	MsgCache *cache;
 	
