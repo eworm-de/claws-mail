@@ -1,3 +1,10 @@
+2003-01-13 [thorsten]	0.8.8claws116-2
+
+	* src/mimeview.c
+		fix: click on attachment did not open default application
+	* src/textview.c
+		fix: shift click on http/mailto links as doubleclick workaround
+
 2003-01-13 [thorsten]	0.8.8claws116-1
 
 	* win32/utils/sylpheed-setup.iss	*** REMOVED ***

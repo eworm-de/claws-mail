@@ -959,7 +959,7 @@ static void mimeview_launch(MimeView *mimeview)
 
 	if ( (open_cmd=g_strdup(w32_mailcap_lookup(partinfo->name)))==NULL) {
 		open_cmd = g_malloc(MAX_PATH);
-		FindExecutable(partinfo->name, NULL, open_cmd);
+		FindExecutable(filename, NULL, open_cmd);
 		if (!(open_cmd && *open_cmd)){
 			g_free(open_cmd);
 			open_cmd = NULL;

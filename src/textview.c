@@ -1912,14 +1912,13 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 			if (textview->cur_pos >= uri->start &&
 			    textview->cur_pos <  uri->end) {
 				/* single click: display url in statusbar */
-#ifdef oWIN32
-				if (event->button == 1 && textview->last_buttonpress != GDK_2BUTTON_PRESS) {
-					if (textview->messageview->mainwin
+#ifdef WIN32
+				if (event->button == 1 && textview->last_buttonpress != GDK_2BUTTON_PRESS
 						&& event->state != GDK_SHIFT_MASK) {
 #else
 				if (event->button == 1 && textview->last_buttonpress != GDK_2BUTTON_PRESS) {
-					if (textview->messageview->mainwin) {
 #endif
+					if (textview->messageview->mainwin) {
 						if (textview->show_url_msgid) {
 						  	gtk_timeout_remove(textview->show_url_timeout_tag);
 							gtk_statusbar_remove(GTK_STATUSBAR(
