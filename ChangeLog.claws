@@ -1,3 +1,8 @@
+2003-07-18 [alfons]	0.9.3claws24
+	
+	* src/common/plugin.[ch]
+		const correctness
+
 2003-07-18 [christoph]	0.9.3claws23
 
 	* src/common/hooks.c

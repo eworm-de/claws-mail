@@ -153,7 +153,7 @@ void plugin_unload(Plugin *plugin)
 	g_free(plugin);
 }
 
-void plugin_load_all(gchar *type)
+void plugin_load_all(const gchar *type)
 {
 	gchar *rcpath;
 	gchar buf[BUFFSIZE];
@@ -186,7 +186,7 @@ void plugin_load_all(gchar *type)
 	g_free(rcpath);
 }
 
-void plugin_unload_all(gchar *type)
+void plugin_unload_all(const gchar *type)
 {
 	GSList *list, *cur;
 
