@@ -253,10 +253,10 @@ GpgmeData sgpgme_decrypt(GpgmeData cipher)
     	}
 
 	err = gpgme_op_decrypt(ctx, cipher, plain);
-	gpgmegtk_free_passphrase();
 	gpgme_release(ctx);
 
 	if (err != GPGME_No_Error) {
+		gpgmegtk_free_passphrase();
 		gpgme_data_release(plain);
 		return NULL;
 	}

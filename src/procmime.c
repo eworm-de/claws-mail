@@ -1080,9 +1080,15 @@ static void procmime_parse_content_type(const gchar *content_type, MimeInfo *mim
 
 		parameters_parts = g_strsplit(*strarray, "=", 1);
 		if ((parameters_parts[0] != NULL) && (parameters_parts[1] != NULL)) {
+			gchar *firstspace;
+
+			g_strstrip(parameters_parts[0]);
+			g_strstrip(parameters_parts[1]);
 			g_strdown(parameters_parts[0]);
 			if(parameters_parts[1][0] == '"')
 				extract_quote(parameters_parts[1], '"');
+			else if ((firstspace = strchr(parameters_parts[1], ' ')) != NULL)
+				*firstspace = '\0';
 
 			g_hash_table_insert(mimeinfo->parameters,
 					    g_strdup(parameters_parts[0]),
