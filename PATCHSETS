@@ -360,3 +360,4 @@
 ( cvs diff -u -r 1.2504.2.44 -r 1.2504.2.45 ChangeLog.claws; cvs diff -u -r 1.654.2.392 -r 1.654.2.393 configure.ac; cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/partial_download.c; ) > 1.0.0cvs27.1.patchset
 ( cvs diff -u -r 1.396.2.20 -r 1.396.2.21 ChangeLog; cvs diff -u -r 1.2504.2.45 -r 1.2504.2.46 ChangeLog.claws; cvs diff -u -r 1.391.2.20 -r 1.391.2.21 ChangeLog.jp; cvs diff -u -r 1.654.2.393 -r 1.654.2.394 configure.ac; cvs diff -u -r 1.382.2.93 -r 1.382.2.94 src/compose.c; ) > 1.0.0cvs28.1.patchset
 ( cvs diff -u -r 1.382.2.94 -r 1.382.2.95 src/compose.c; ) > 1.0.0cvs28.2.patchset
+( cvs diff -u -r 1.382.2.95 -r 1.382.2.96 src/compose.c; ) > 1.0.0cvs28.3.patchset

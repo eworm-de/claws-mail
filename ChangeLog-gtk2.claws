@@ -1,3 +1,8 @@
+2005-02-06 [colin]	1.0.0cvs28.3
+
+	* src/compose.c
+		Make compose a bit faster - patch by Alfons.
+
 2005-02-06 [colin]	1.0.0cvs28.2
 
 	* src/compose.c

@@ -1332,26 +1332,18 @@ void compose_reedit(MsgInfo *msginfo)
 					G_CALLBACK(compose_changed_cb),
 					compose);
 					
-	g_signal_handlers_block_by_func(G_OBJECT(textbuf),
-					G_CALLBACK(text_inserted),
-					compose);
-
 	if ((fp = procmime_get_first_text_content(msginfo)) == NULL)
 		g_warning("Can't get text part\n");
 	else {
 		while (fgets(buf, sizeof(buf), fp) != NULL) {
 			strcrchomp(buf);
 			gtk_text_buffer_insert(textbuf, &iter, buf, -1);
-			gtk_text_buffer_get_iter_at_mark(textbuf, &iter, mark);
 		}
 		fclose(fp);
 	}
 	
 	compose_attach_parts(compose, msginfo);
 
-	g_signal_handlers_unblock_by_func(G_OBJECT(textbuf),
-					G_CALLBACK(text_inserted),
-					compose);
 	g_signal_handlers_unblock_by_func(G_OBJECT(textbuf),
 					G_CALLBACK(compose_changed_cb),
 					compose);
@@ -7416,8 +7408,14 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 {
 	gint paste_as_quotation = GPOINTER_TO_INT(g_object_get_data
 				(G_OBJECT(compose->text), "paste_as_quotation"));
+	GtkTextMark *mark;
 
-	g_return_if_fail(text);
+	/* CLAWS: pass to default handler only if not pasting as quotation, and 
+	 * no autowrap */
+	if (!paste_as_quotation && !compose->autowrap) 
+		return;
+
+	g_return_if_fail(text != NULL);
 
 	g_signal_handlers_block_by_func(G_OBJECT(buffer),
 					G_CALLBACK(text_inserted),
@@ -7442,8 +7440,10 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 	} else
 		gtk_text_buffer_insert(buffer, iter, text, len);
 
-	if (compose->autowrap)
-		compose_wrap_line_all_full(compose, TRUE);
+	mark = gtk_text_buffer_create_mark(buffer, NULL, iter, FALSE);
+	compose_wrap_line_all_full(compose, TRUE);
+	gtk_text_buffer_get_iter_at_mark(buffer, iter, mark);
+	gtk_text_buffer_delete_mark(buffer, mark);
 
 	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
 					  G_CALLBACK(text_inserted),
@@ -7455,7 +7455,6 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 		compose->draft_timeout_tag = gtk_timeout_add
 			(500, (GtkFunction) compose_defer_auto_save_draft, compose);
 }
-
 static gint compose_defer_auto_save_draft(Compose *compose)
 {
 	compose->draft_timeout_tag = -1;
