@@ -1,3 +1,9 @@
+2004-12-04 [paul]	0.9.12cvs182.2
+
+	* src/Makefile.am
+		remove 'pixmaps/dir_noselect.xpm'. from local patch,
+	 	committed in error	
+
 2004-12-04 [paul]	0.9.12cvs182.1
 
 	* ChangeLog
