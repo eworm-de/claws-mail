@@ -1,3 +1,10 @@
+2002-07-26 [christoph]	0.8.0claws14
+
+	* src/folder.c
+	* src/folderview.c
+	* src/imap.c
+		fix imap folder rescanning
+
 2002-07-25 [christoph]	0.8.0claws13
 
 	* src/filter.c

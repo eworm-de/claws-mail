@@ -328,6 +328,9 @@ gboolean folder_tree_destroy_func(GNode *node, gpointer data) {
 
 void folder_tree_destroy(Folder *folder)
 {
+	g_return_if_fail(folder != NULL);
+	g_return_if_fail(folder->node != NULL);
+	
 	prefs_scoring_clear();
 	prefs_filtering_clear();
 
@@ -449,7 +452,7 @@ void folder_scan_tree(Folder *folder)
 	folder_tree_destroy(folder);
 
 	folder->scan_tree(folder);
-	
+
 	g_node_traverse(folder->node, G_POST_ORDER, G_TRAVERSE_ALL, -1, folder_scan_tree_func, pptable);
 	folder_persist_prefs_free(pptable);
 

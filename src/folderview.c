@@ -1639,7 +1639,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 			gdk_pointer_ungrab(GDK_CURRENT_TIME);
 	}
 
-	if((item->folder->type == F_IMAP) || (item->folder->type == F_NEWS)) {
+	if(((item->folder->type == F_IMAP) && !item->no_select) || (item->folder->type == F_NEWS)) {
 		folder_item_scan(item);
 	}
 

@@ -359,6 +359,9 @@ static gboolean imap_reset_uid_lists_func(GNode *node, gpointer data)
 
 static void imap_reset_uid_lists(Folder *folder)
 {
+	if(folder->node == NULL)
+		return;
+	
 	/* Destroy all uid lists and rest last uid */
 	g_node_traverse(folder->node, G_IN_ORDER, G_TRAVERSE_ALL, -1, imap_reset_uid_lists_func, NULL);	
 }
@@ -1065,9 +1068,9 @@ void imap_scan_tree(Folder *folder)
 		debug_print("IMAP root directory: %s\n", root_folder);
 	}
 
-	folder_tree_destroy(folder);
 	item = folder_item_new(folder, folder->name, root_folder);
 	item->folder = folder;
+	item->no_select = TRUE;
 	folder->node = g_node_new(item);
 
 	imap_scan_tree_recursive(session, item);
