@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed\n"
-"POT-Creation-Date: 2001-04-26 13:47+0900\n"
+"POT-Creation-Date: 2001-05-01 18:07+0900\n"
 "PO-Revision-Date: 1999-10-12\n"
 "Last-Translator: Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -92,7 +92,7 @@ msgstr ""
 #: src/import.c:188 src/inputdialog.c:155 src/main.c:314 src/main.c:322
 #: src/mainwindow.c:1655 src/mimeview.c:705 src/passphrase.c:115
 #: src/prefs.c:467 src/prefs_common.c:1772 src/prefs_common.c:1991
-#: src/prefs_common.c:2107 src/summaryview.c:2016 src/summaryview.c:2522
+#: src/prefs_common.c:2107 src/summaryview.c:2016 src/summaryview.c:2524
 msgid "OK"
 msgstr "OK"
 
@@ -176,15 +176,15 @@ msgstr "本当にこのアカウントを削除してもいいですか?"
 
 #: src/account.c:500 src/addressbook.c:579 src/addressbook.c:1224
 #: src/compose.c:3243 src/folderview.c:1273 src/folderview.c:1315
-#: src/folderview.c:1404 src/folderview.c:1437 src/folderview.c:1536
-#: src/folderview.c:1569 src/mainwindow.c:944 src/prefs_filter.c:715
+#: src/folderview.c:1404 src/folderview.c:1444 src/folderview.c:1543
+#: src/folderview.c:1576 src/mainwindow.c:944 src/prefs_filter.c:715
 #: src/summary_search.c:297 src/summaryview.c:573 src/summaryview.c:813
 msgid "Yes"
 msgstr "はい"
 
 #: src/account.c:500 src/compose.c:3243 src/folderview.c:1273
-#: src/folderview.c:1315 src/folderview.c:1404 src/folderview.c:1437
-#: src/folderview.c:1536 src/folderview.c:1569
+#: src/folderview.c:1315 src/folderview.c:1404 src/folderview.c:1444
+#: src/folderview.c:1543 src/folderview.c:1576
 msgid "+No"
 msgstr "+いいえ"
 
@@ -380,7 +380,7 @@ msgstr "アドレス"
 #: src/inputdialog.c:156 src/main.c:314 src/main.c:322 src/mainwindow.c:1655
 #: src/mimeview.c:705 src/passphrase.c:119 src/prefs.c:468
 #: src/prefs_common.c:2108 src/progressdialog.c:75 src/select-keys.c:324
-#: src/summaryview.c:573 src/summaryview.c:2016 src/summaryview.c:2522
+#: src/summaryview.c:573 src/summaryview.c:2016 src/summaryview.c:2524
 msgid "Cancel"
 msgstr "キャンセル"
 
@@ -393,12 +393,12 @@ msgstr "アドレス帳ファイルを読み込み中..."
 msgid "%s doesn't exist.\n"
 msgstr "%s は存在しません。\n"
 
-#: src/addressbook.c:1550 src/addressbook.c:1843 src/imap.c:618
+#: src/addressbook.c:1550 src/addressbook.c:1843 src/imap.c:661
 #: src/mainwindow.c:675 src/mainwindow.c:1281 src/mh.c:842 src/mh.c:849
-#: src/news.c:483 src/procmsg.c:257 src/procmsg.c:321 src/summaryview.c:994
+#: src/news.c:484 src/procmsg.c:257 src/procmsg.c:321 src/summaryview.c:994
 #: src/summaryview.c:1200 src/summaryview.c:1282 src/summaryview.c:1343
-#: src/summaryview.c:1800 src/summaryview.c:2273 src/summaryview.c:2296
-#: src/summaryview.c:2317 src/summaryview.c:2410
+#: src/summaryview.c:1800 src/summaryview.c:2275 src/summaryview.c:2298
+#: src/summaryview.c:2319 src/summaryview.c:2412
 msgid "done.\n"
 msgstr "完了。\n"
 
@@ -418,7 +418,7 @@ msgstr "注意"
 msgid "Warning"
 msgstr "警告"
 
-#: src/alertpanel.c:124 src/inc.c:397
+#: src/alertpanel.c:124 src/inc.c:403
 msgid "Error"
 msgstr "エラー"
 
@@ -1028,7 +1028,7 @@ msgstr ""
 msgid "Delete folder"
 msgstr "フォルダの削除"
 
-#: src/folderview.c:1278
+#: src/folderview.c:1278 src/folderview.c:1409
 #, c-format
 msgid "can't remove folder `%s'\n"
 msgstr "フォルダ `%s' を削除できません\n"
@@ -1051,43 +1051,43 @@ msgstr "フォルダの削除"
 msgid "Really delete folder `%s'?"
 msgstr "本当にフォルダ `%s' を削除しますか?"
 
-#: src/folderview.c:1434
+#: src/folderview.c:1441
 #, c-format
 msgid "Really delete IMAP4 server `%s'?"
 msgstr "本当にIMAP4サーバ `%s' を削除しますか?"
 
-#: src/folderview.c:1436
+#: src/folderview.c:1443
 msgid "Delete IMAP4 server"
 msgstr "IMAP4サーバの削除"
 
-#: src/folderview.c:1477
+#: src/folderview.c:1484
 msgid "Subscribe newsgroup"
 msgstr "ニュースグループの購読"
 
-#: src/folderview.c:1478
+#: src/folderview.c:1485
 msgid "Input subscribing newsgroup:"
 msgstr "購読するニュースグループを入力してください:"
 
-#: src/folderview.c:1487
+#: src/folderview.c:1494
 #, c-format
 msgid "The newsgroup `%s' already exists."
 msgstr "ニュースグループ `%s' はすでに存在します。"
 
-#: src/folderview.c:1533
+#: src/folderview.c:1540
 #, c-format
 msgid "Really delete newsgroup `%s'?"
 msgstr "本当にニュースグループ `%s' を削除しますか?"
 
-#: src/folderview.c:1535
+#: src/folderview.c:1542
 msgid "Delete newsgroup"
 msgstr "ニュースグループの削除"
 
-#: src/folderview.c:1566
+#: src/folderview.c:1573
 #, c-format
 msgid "Really delete news server `%s'?"
 msgstr "本当にニュースサーバ `%s' を削除しますか?"
 
-#: src/folderview.c:1568
+#: src/folderview.c:1575
 msgid "Delete news server"
 msgstr "ニュースサーバの削除"
 
@@ -1141,102 +1141,110 @@ msgstr "イメージビューを作成中...\n"
 msgid "Can't load the image."
 msgstr "画像を読み込めません。"
 
-#: src/imap.c:141
+#: src/imap.c:145
 #, c-format
 msgid "IMAP4 connection to %s:%d has been disconnected. Reconnecting...\n"
 msgstr "%s:%d へのIMAP4の接続が切れています。再接続します...\n"
 
-#: src/imap.c:164
+#: src/imap.c:168
 #, c-format
 msgid "creating IMAP4 connection to %s:%d ...\n"
 msgstr "%s:%d へのIMAP4の接続を確立中...\n"
 
-#: src/imap.c:231 src/imap.c:419 src/imap.c:455
+#: src/imap.c:236 src/imap.c:424 src/imap.c:460
 #, c-format
 msgid "can't select folder: %s\n"
 msgstr "フォルダ %s を選択できません\n"
 
-#: src/imap.c:304
+#: src/imap.c:309
 #, c-format
 msgid "message %d has been already cached.\n"
 msgstr "%d 番のメッセージはすでにキャッシュされています。\n"
 
-#: src/imap.c:313
+#: src/imap.c:318
 #, c-format
 msgid "getting message %d...\n"
 msgstr "%d 番のメッセージを取得しています...\n"
 
-#: src/imap.c:319 src/procmsg.c:575
+#: src/imap.c:324 src/procmsg.c:575
 #, c-format
 msgid "can't fetch message %d\n"
 msgstr "メッセージ %d を取り込めません\n"
 
-#: src/imap.c:340 src/imap.c:381 src/mh.c:170 src/mh.c:264 src/mh.c:335
+#: src/imap.c:345 src/imap.c:386 src/mh.c:170 src/mh.c:264 src/mh.c:335
 #: src/mh.c:419
 msgid "the src folder is identical to the dest.\n"
 msgstr "移動元フォルダが移動先と同一です。\n"
 
-#: src/imap.c:350 src/imap.c:390 src/mh.c:183 src/mh.c:267
+#: src/imap.c:355 src/imap.c:395 src/mh.c:183 src/mh.c:267
 #, c-format
 msgid "Moving message %s%c%d to %s ...\n"
 msgstr "メッセージ %s%c%d を %s に移動しています...\n"
 
-#: src/imap.c:426
+#: src/imap.c:431
 #, c-format
 msgid "can't set deleted flags: %d\n"
 msgstr "deleted フラグをセットできません: %d\n"
 
-#: src/imap.c:432 src/imap.c:468
+#: src/imap.c:437 src/imap.c:473
 msgid "can't expunge\n"
 msgstr "expunge できません\n"
 
-#: src/imap.c:462
+#: src/imap.c:467
 #, c-format
 msgid "can't set deleted flags: 1:%d\n"
 msgstr "deleted フラグをセットできません: 1:%d\n"
 
-#: src/imap.c:521
+#: src/imap.c:510
+msgid "can't create mailbox\n"
+msgstr "メールボックスを作成できません\n"
+
+#: src/imap.c:538
+msgid "can't delete mailbox\n"
+msgstr "メールボックスを削除できません\n"
+
+#: src/imap.c:564
 msgid "can't get envelope\n"
 msgstr "エンベロープを取得できません\n"
 
-#: src/imap.c:527
+#: src/imap.c:570
 msgid "error occurred while getting envelope.\n"
 msgstr "エンベロープを取得中にエラーが発生しました。\n"
 
-#: src/imap.c:535
+#: src/imap.c:578
 #, c-format
 msgid "can't parse envelope: %s\n"
 msgstr "エンベロープを解析できません: %s\n"
 
-#: src/imap.c:565
+#: src/imap.c:608
 #, c-format
 msgid "deleting message %d...\n"
 msgstr "%d 番のメッセージを削除しています...\n"
 
-#: src/imap.c:600
+#: src/imap.c:643
 msgid "\tDeleting all cached messages... "
 msgstr "\t全てのキャッシュされたメッセージを削除しています... "
 
-#: src/imap.c:628
+#: src/imap.c:670
 #, c-format
 msgid "Can't connect to IMAP4 server: %s:%d\n"
 msgstr "IMAP4サーバ: %s:%d に接続できません\n"
 
-#: src/imap.c:653
+#: src/imap.c:693
 msgid "IMAP4 login failed.\n"
 msgstr "IMAP4のログインに失敗しました。\n"
 
-#: src/imap.c:794
+#: src/imap.c:846
 #, c-format
 msgid "can't copy %d to %s\n"
 msgstr "メッセージ %d を %s にコピーできません\n"
 
-#: src/imap.c:1101
+#: src/imap.c:1153
 #, c-format
 msgid "error while imap command: STORE %d:%d %s\n"
 msgstr "imap コマンド中のエラー: STORE %d:%d %s\n"
 
-#: src/imap.c:1149
+#: src/imap.c:1201
 msgid "error while imap command: EXPUNGE\n"
 msgstr "imap コマンド中のエラー: EXPUNGE\n"
 
@@ -1260,99 +1268,99 @@ msgstr "インポート先:"
 msgid "Select importing file"
 msgstr "インポートするファイルを選択"
 
-#: src/inc.c:179 src/inc.c:221
+#: src/inc.c:183 src/inc.c:225
 msgid "Standby"
 msgstr "待機中"
 
-#: src/inc.c:239
+#: src/inc.c:243
 msgid "Retrieving new messages"
 msgstr "新着メッセージを受信中"
 
-#: src/inc.c:366
+#: src/inc.c:372
 #, c-format
 msgid "Input password for %s on %s:"
 msgstr "%s (%s) のパスワードを入力してください:"
 
-#: src/inc.c:370
+#: src/inc.c:376
 msgid "Input password"
 msgstr "パスワードの入力"
 
-#: src/inc.c:387
+#: src/inc.c:393
 msgid "Retrieving"
 msgstr "受信中"
 
-#: src/inc.c:394
+#: src/inc.c:400
 msgid "Done"
 msgstr "完了"
 
-#: src/inc.c:403
+#: src/inc.c:409
 #, c-format
 msgid "Authorization for %s on %s failed"
 msgstr "%s (%s) の認証に失敗しました"
 
-#: src/inc.c:467
+#: src/inc.c:475
 #, c-format
 msgid "getting new messages of account %s...\n"
 msgstr "アカウント %s の新着メッセージを取り込んでいます...\n"
 
-#: src/inc.c:475
+#: src/inc.c:483
 #, c-format
 msgid "%s: Retrieving new messages"
 msgstr "%s: 新着メッセージを受信中"
 
-#: src/inc.c:496
+#: src/inc.c:504
 #, c-format
 msgid "Connecting to POP3 server: %s ..."
 msgstr "POP3サーバ: %s に接続中..."
 
-#: src/inc.c:507 src/inc.c:635
+#: src/inc.c:515 src/inc.c:649
 #, c-format
 msgid "Can't connect to POP3 server: %s:%d\n"
 msgstr "POP3サーバ: %s:%d に接続できません\n"
 
-#: src/inc.c:510 src/inc.c:638
+#: src/inc.c:518 src/inc.c:652
 #, c-format
 msgid "Can't connect to POP3 server: %s:%d"
 msgstr "POP3サーバ: %s:%d に接続できません"
 
-#: src/inc.c:669
+#: src/inc.c:683 src/inc.c:722
+#, c-format
+msgid "Retrieving message (%d / %d) (%d / %d bytes)"
+msgstr "メッセージを受信中 (%d / %d) (%d / %d bytes)"
+
+#: src/inc.c:708
 msgid "Authorizing"
 msgstr "認証中"
 
-#: src/inc.c:678
+#: src/inc.c:717
 msgid "Getting number of new messages"
 msgstr "新着メッセージの数を取得中"
 
-#: src/inc.c:683
-#, c-format
-msgid "Retrieving message (%d / %d)"
-msgstr "メッセージを受信中 (%d / %d)"
-
-#: src/inc.c:691
+#: src/inc.c:733
 msgid "Deleting message"
 msgstr "メッセージを削除中"
 
-#: src/inc.c:695
+#: src/inc.c:737
 msgid "Quitting"
 msgstr "切断中"
 
-#: src/inc.c:723
+#: src/inc.c:765
 msgid "a message won't be received\n"
 msgstr "メッセージは受信されません\n"
 
-#: src/inc.c:750
+#: src/inc.c:792
 msgid "Error occurred while processing mail."
 msgstr "メールの処理中にエラーが発生しました。"
 
-#: src/inc.c:753
+#: src/inc.c:795
 msgid "No disk space left."
 msgstr "ディスクの空き容量がありません。"
 
-#: src/inc.c:804
+#: src/inc.c:846
 msgid "no messages in local mailbox.\n"
 msgstr "ローカルのメールボックスにはメッセージがありません。\n"
 
-#: src/inc.c:815
+#: src/inc.c:857
 #, c-format
 msgid "Getting new messages from %s into %s...\n"
 msgstr "新しいメッセージを %s から %s に取り込んでいます...\n"
@@ -2007,11 +2015,11 @@ msgstr "アカウント"
 msgid "Account setting"
 msgstr "アカウントの設定"
 
-#: src/mainwindow.c:1654 src/summaryview.c:2521
+#: src/mainwindow.c:1654 src/summaryview.c:2523
 msgid "Exit"
 msgstr "終了"
 
-#: src/mainwindow.c:1654 src/summaryview.c:2521
+#: src/mainwindow.c:1654 src/summaryview.c:2523
 msgid "Exit this program?"
 msgstr "このプログラムを終了しますか?"
 
@@ -2205,91 +2213,91 @@ msgstr "MIME ビューアのコマンドラインが無効です: `%s'"
 msgid "creating NNTP connection to %s:%d ...\n"
 msgstr "%s:%d への NNTP の接続を確立中...\n"
 
-#: src/news.c:111
+#: src/news.c:112
 #, c-format
 msgid "NNTP connection to %s:%d has been disconnected. Reconnecting...\n"
 msgstr "%s:%d への NNTP の接続が切れています。再接続します...\n"
 
-#: src/news.c:182
+#: src/news.c:183
 #, c-format
 msgid "article %d has been already cached.\n"
 msgstr "%d 番の記事はすでにキャッシュされています。\n"
 
-#: src/news.c:191
+#: src/news.c:192
 #, c-format
 msgid "getting article %d...\n"
 msgstr "%d 番の記事を取得しています...\n"
 
-#: src/news.c:196
+#: src/news.c:197
 #, c-format
 msgid "can't read article %d\n"
 msgstr "%d 番の記事を読めません\n"
 
-#: src/news.c:228
+#: src/news.c:229
 msgid "can't post article.\n"
 msgstr "記事をポストできません。\n"
 
-#: src/news.c:252
+#: src/news.c:253
 #, c-format
 msgid "can't retrieve article %d\n"
 msgstr "%d 番の記事を取得できません\n"
 
-#: src/news.c:291
+#: src/news.c:292
 #, c-format
 msgid "can't set group: %s\n"
 msgstr "グループを %s にセットできません\n"
 
-#: src/news.c:297
+#: src/news.c:298
 #, c-format
 msgid "invalid article range: %d - %d\n"
 msgstr "無効な記事の範囲です: %d - %d\n"
 
-#: src/news.c:306
+#: src/news.c:307
 msgid "no new articles.\n"
 msgstr "新着記事はありません。\n"
 
-#: src/news.c:316
+#: src/news.c:317
 #, c-format
 msgid "getting xover %d - %d in %s...\n"
 msgstr "xover %d - %d を取得中 (%s)...\n"
 
-#: src/news.c:319
+#: src/news.c:320
 msgid "can't get xover\n"
 msgstr "xover 情報を取得できません\n"
 
-#: src/news.c:325
+#: src/news.c:326
 msgid "error occurred while getting xover.\n"
 msgstr "xover 情報を取得中にエラーが発生しました。\n"
 
-#: src/news.c:333
+#: src/news.c:334
 #, c-format
 msgid "invalid xover line: %s\n"
 msgstr "無効な xover 行です: %s\n"
 
-#: src/news.c:434
+#: src/news.c:435
 #, c-format
 msgid "deleting article %d...\n"
 msgstr "%d 番の記事を削除しています...\n"
 
-#: src/news.c:465
+#: src/news.c:466
 msgid "\tDeleting all cached articles... "
 msgstr "\t全てのキャッシュされた記事を削除しています... "
 
-#: src/nntp.c:44
+#: src/nntp.c:43
 #, c-format
 msgid "Can't connect to NNTP server: %s:%d\n"
 msgstr "NNTPサーバ: %s:%d に接続できません\n"
 
-#: src/nntp.c:73 src/nntp.c:135
+#: src/nntp.c:70 src/nntp.c:132
 #, c-format
 msgid "protocol error: %s\n"
 msgstr "プロトコルエラー: %s\n"
 
-#: src/nntp.c:95 src/nntp.c:141
+#: src/nntp.c:92 src/nntp.c:138
 msgid "protocol error\n"
 msgstr "プロトコルエラー\n"
 
-#: src/nntp.c:174 src/nntp.c:180
+#: src/nntp.c:171 src/nntp.c:177
 msgid "Error occurred while posting\n"
 msgstr "ポスト中にエラーが発生しました\n"
 
@@ -2334,7 +2342,7 @@ msgstr "必要なAPOPタイムスタンプが応答メッセージにありません\n"
 msgid "Timestamp syntax error in greeting\n"
 msgstr "応答メッセージのタイムスタンプの文法エラー\n"
 
-#: src/pop.c:170 src/pop.c:207
+#: src/pop.c:171 src/pop.c:208
 msgid "POP3 protocol error\n"
 msgstr "POP3 プロトコルエラー\n"
 
@@ -3294,11 +3302,11 @@ msgstr "状態"
 msgid "Creating progress dialog...\n"
 msgstr "進行状況ダイアログを作成中...\n"
 
-#: src/recv.c:107
+#: src/recv.c:110
 msgid "error occurred while retrieving data.\n"
 msgstr "データの取得中にエラーが発生しました。\n"
 
-#: src/recv.c:128 src/recv.c:169 src/recv.c:181
+#: src/recv.c:135 src/recv.c:180 src/recv.c:196
 msgid "Can't write to file.\n"
 msgstr "ファイルに書き込めません。\n"
 
@@ -3397,29 +3405,29 @@ msgstr "鍵の追加"
 msgid "Enter another user or key ID\n"
 msgstr "別のユーザまたは鍵IDを入力してください\n"
 
-#: src/send.c:146
+#: src/send.c:148
 msgid "Queued message header is broken.\n"
 msgstr "送信待機中のメッセージのヘッダが壊れています。\n"
 
-#: src/send.c:155
+#: src/send.c:157
 msgid "Account not found. Using current account...\n"
 msgstr "アカウントが見つかりません。現在のアカウントを使用します...\n"
 
-#: src/send.c:166
+#: src/send.c:168
 msgid "Account not found.\n"
 msgstr "アカウントが見つかりません。\n"
 
-#: src/send.c:197
+#: src/send.c:199
 #, c-format
 msgid "Connecting to SMTP server: %s ...\n"
 msgstr "SMTPサーバ: %s に接続中...\n"
 
-#: src/send.c:239
+#: src/send.c:240
 #, c-format
 msgid "Can't connect to SMTP server: %s:%d\n"
 msgstr "SMTPサーバ: %s:%d に接続できません\n"
 
-#: src/send.c:252
+#: src/send.c:251
 msgid "Error occurred while sending HELO\n"
 msgstr "HELO を送信中にエラーが発生しました\n"
 
@@ -3757,27 +3765,27 @@ msgstr ""
 "印刷のコマンドラインが無効です:\n"
 "`%s'"
 
-#: src/summaryview.c:2260 src/summaryview.c:2261
+#: src/summaryview.c:2262 src/summaryview.c:2263
 msgid "Building threads..."
 msgstr "スレッドを構築中..."
 
-#: src/summaryview.c:2283 src/summaryview.c:2284
+#: src/summaryview.c:2285 src/summaryview.c:2286
 msgid "Unthreading..."
 msgstr "スレッドを解除中..."
 
-#: src/summaryview.c:2306
+#: src/summaryview.c:2308
 msgid "Unthreading for execution..."
 msgstr "実行のためにスレッドを解除中..."
 
-#: src/summaryview.c:2393
+#: src/summaryview.c:2395
 msgid "filtering..."
 msgstr "振り分け中..."
 
-#: src/summaryview.c:2394
+#: src/summaryview.c:2396
 msgid "Filtering..."
 msgstr "振り分け中..."
 
-#: src/summaryview.c:2498
+#: src/summaryview.c:2500
 #, c-format
 msgid "Go to %s\n"
 msgstr "%s に移動\n"

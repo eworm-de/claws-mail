@@ -2211,7 +2211,9 @@ static void summary_execute_delete(SummaryView *summaryview)
 	GSList *cur;
 
 	trash = summaryview->folder_item->folder->trash;
-	g_return_if_fail(trash != NULL);
+	if (summaryview->folder_item->folder->type == F_MH) {
+		g_return_if_fail(trash != NULL);
+	}
 	if (summaryview->folder_item == trash) return;
 
 	/* search deleting messages and execute */

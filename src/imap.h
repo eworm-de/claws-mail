@@ -96,5 +96,7 @@ void imap_scan_folder			(Folder		*folder,
 FolderItem *imap_create_folder		(Folder		*folder,
 					 FolderItem	*parent,
 					 const gchar	*name);
+gint imap_remove_folder			(Folder		*folder,
+					 FolderItem	*item);
 
 #endif /* __IMAP_H__ */

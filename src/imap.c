@@ -67,6 +67,10 @@ static gint imap_select		(SockInfo	*sock,
 				 gint		*recent,
 				 gint		*unseen,
 				 gulong		*uid);
+static gint imap_create		(SockInfo	*sock,
+				 const gchar	*folder);
+static gint imap_delete		(SockInfo	*sock,
+				 const gchar	*folder);
 static gint imap_get_envelope	(SockInfo	*sock,
 				 gint		 first,
 				 gint		 last);
@@ -480,26 +484,64 @@ void imap_scan_folder(Folder *folder, FolderItem *item)
 FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 			       const gchar *name)
 {
-	gchar *path;
+	gint ok;
+	gchar *dirpath, *imappath;
+	IMAPSession *session;
 	FolderItem *new_item;
 
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(parent != NULL, NULL);
 	g_return_val_if_fail(name != NULL, NULL);
 
-	imap_session_connect_if_not(folder);
+	session = imap_session_connect_if_not(folder);
+	if (!session) return NULL;
 
 	if (parent->path)
-		path = g_strconcat(parent->path, G_DIR_SEPARATOR_S, name,
-				   NULL);
+		dirpath = g_strconcat(parent->path, G_DIR_SEPARATOR_S, name,
+				      NULL);
 	else
-		path = g_strdup(name);
+		dirpath = g_strdup(name);
 
-	new_item = folder_item_new(name, path);
+	imappath = g_strdup(dirpath);
+	/* imap_path_subst_slash_to_dot(imappath); */
+
+	ok = imap_create(SESSION(session)->sock, imappath);
+	if (ok != IMAP_SUCCESS) {
+		log_warning(_("can't create mailbox\n"));
+		g_free(imappath);
+		g_free(dirpath);
+		return NULL;
+	}
+
+	new_item = folder_item_new(name, dirpath);
 	folder_item_append(parent, new_item);
-	g_free(path);
+	g_free(imappath);
+	g_free(dirpath);
 
 	return new_item;
+}
+
+gint imap_remove_folder(Folder *folder, FolderItem *item)
+{
+	gint ok;
+	IMAPSession *session;
+
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(item != NULL, -1);
+	g_return_val_if_fail(item->path != NULL, -1);
+
+	session = imap_session_connect_if_not(folder);
+	if (!session) return -1;
+
+	ok = imap_delete(SESSION(session)->sock, item->path);
+	if (ok != IMAP_SUCCESS) {
+		log_warning(_("can't delete mailbox\n"));
+		return -1;
+	}
+
+	folder_item_remove(item);
+
+	return 0;
 }
 
 static GSList *imap_get_uncached_messages(IMAPSession *session,
@@ -722,6 +764,18 @@ bail:
 	g_ptr_array_free(argbuf, TRUE);
 
 	return ok;
+}
+
+static gint imap_create(SockInfo *sock, const gchar *folder)
+{
+	imap_gen_send(sock, "CREATE \"%s\"", folder);
+	return imap_ok(sock, NULL);
+}
+
+static gint imap_delete(SockInfo *sock, const gchar *folder)
+{
+	imap_gen_send(sock, "DELETE \"%s\"", folder);
+	return imap_ok(sock, NULL);
 }
 
 static gchar *strchr_cpy(const gchar *src, gchar ch, gchar *dest, gint len)

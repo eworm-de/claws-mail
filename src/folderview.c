@@ -1406,12 +1406,19 @@ static void folderview_rm_imap_folder_cb(FolderView *folderview, guint action,
 	g_free(message);
 	if (avalue != G_ALERTDEFAULT) return;
 
-	if (folderview->opened == folderview->selected) {
+	if (item->folder->remove_folder(item->folder, item) < 0) {
+		g_warning(_("can't remove folder `%s'\n"), item->path);
+		return;
+	}
+
+	if (folderview->opened == folderview->selected ||
+	    gtk_ctree_is_ancestor(ctree,
+				  folderview->selected,
+				  folderview->opened)) {
 		summary_clear_all(folderview->summaryview);
 		folderview->opened = NULL;
 	}
 
-	folder_item_remove(item);
 	gtk_ctree_remove_node(ctree, folderview->selected);
 	folder_write_list();
 }

@@ -57,9 +57,6 @@ void automaton_input_cb(gpointer data, gint dummy_source,
 	sock = atm->help_sock;
 	g_assert (sock->sock == dummy_source);
 
-
-	//g_print("atm->num = %d\n", atm->num);
- 
 	if (atm->timeout_tag > 0) {
 		gtk_timeout_remove(atm->timeout_tag);
 		atm->timeout_tag = 0;
