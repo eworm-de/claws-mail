@@ -1,3 +1,9 @@
+2005-01-14 [colin]	0.9.13cvs33
+
+	* src/html.c
+	* src/msgcache.c
+		Fix coding style issues from the last patch
+
 2005-01-14 [colin]	0.9.13cvs32
 
 	* src/msgcache.c
