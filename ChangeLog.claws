@@ -1,9 +1,17 @@
+2003-09-11 [paul]	0.9.5claws5
+
+	* src/rfc2015.c
+	  src/common/utils.h
+		more sync'ing from 0.9.5cvs2
+
+	fixes bug 197 'Header lines encrypted by GPG'
+
 2003-09-11 [christoph]	0.9.5claws4
 
 	* src/compose.c
 	* src/rfc2015.c
 	* src/common/utils.h
-		fix last sync
+		fix sync with 0.9.5cvs2
 
 2003-09-11 [paul]	0.9.5claws3
 
@@ -15,8 +23,6 @@
 	* sync with 0.9.5cvs2
 		see ChangeLog 2003-09-05
 		
-	fixes bug 197 'Header lines encrypted by GPG'
-
 2003-09-11 [paul]	0.9.5claws1
 
 	* sync with 0.9.5cvs3
