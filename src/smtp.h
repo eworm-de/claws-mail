@@ -29,6 +29,7 @@
 #define	SM_OK			0
 #define	SM_ERROR		128
 #define	SM_UNRECOVERABLE	129
+#define	SM_AUTHFAIL		130
 
 #define	ESMTP_8BITMIME		0x01
 #define	ESMTP_SIZE		0x02

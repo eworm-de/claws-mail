@@ -62,7 +62,8 @@ gint smtp_from(SockInfo *sock, const gchar *from,
 		} else
 			authtype = SMTPAUTH_CRAM_MD5;
 
-		esmtp_auth(sock, authtype, userid, passwd);
+		if (esmtp_auth(sock, authtype, userid, passwd) != SM_OK)
+			return SM_AUTHFAIL;
 	}
 
 	if (strchr(from, '<'))

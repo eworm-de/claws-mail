@@ -1,3 +1,10 @@
+2001-10-13 [paul]	0.6.3claws14
+
+	* src/prefs_account.[ch], src/send.c, src/smtp.[ch]
+		add Sergey's smtpcred.patch
+		adds separate username/password setting for SMTP Auth
+		needed by some servers
+
 2001-10-13 [paul]	0.6.3claws13
 
 	* src/pgptext.[ch] **NEW FILES**

@@ -88,6 +88,7 @@ struct _PrefsAccount
 
 	/* Temporarily preserved password */
 	gchar *tmp_pass;
+	gchar *tmp_smtp_passwd;
 
 	/* Receive */
 	gboolean rmmail;
@@ -108,6 +109,8 @@ struct _PrefsAccount
 	gboolean  set_autoreplyto;
 	gchar    *auto_replyto;
 	gboolean use_smtp_auth;
+	gchar	 *smtp_userid;
+	gchar	 *smtp_passwd;
 	gboolean pop_before_smtp;
 
 	GSList *customhdr_list;

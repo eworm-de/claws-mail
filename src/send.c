@@ -49,6 +49,7 @@
 #include "procheader.h"
 #include "utils.h"
 #include "gtkutils.h"
+#include "inputdialog.h"
 
 #define SMTP_PORT	25
 #if USE_SSL
@@ -66,21 +67,14 @@ struct _SendProgressDialog
 
 static gint send_message_local	(const gchar *command, FILE *fp);
 
-#if USE_SSL
 static gint send_message_smtp	(GSList *to_list, const gchar *from,
-				 const gchar *server, gushort port,
-				 const gchar *domain, const gchar *userid,
-				 const gchar *passwd, gboolean use_smtp_auth,
-				 SSLSMTPType ssl_type, FILE *fp);
+				 const gchar *server, PrefsAccount *ac,
+				 FILE *fp);
+#if USE_SSL
 static SockInfo *send_smtp_open	(const gchar *server, gushort port,
 				 const gchar *domain, gboolean use_smtp_auth,
 				 SSLSMTPType ssl_type);
 #else
-static gint send_message_smtp	(GSList *to_list, const gchar *from,
-				 const gchar *server, gushort port,
-				 const gchar *domain, const gchar *userid,
-				 const gchar *passwd, gboolean use_smtp_auth,
-				 FILE *fp);
 static SockInfo *send_smtp_open	(const gchar *server, gushort port,
 				 const gchar *domain, gboolean use_smtp_auth);
 #endif
@@ -96,8 +90,6 @@ gint send_message(const gchar *file, PrefsAccount *ac_prefs, GSList *to_list)
 {
 	FILE *fp;
 	gint val;
-	gushort port;
-	gchar *domain;
 
 	g_return_val_if_fail(file != NULL, -1);
 	g_return_val_if_fail(ac_prefs != NULL, -1);
@@ -114,26 +106,7 @@ gint send_message(const gchar *file, PrefsAccount *ac_prefs, GSList *to_list)
 		return val;
 	}
 
-#if USE_SSL
-	port = ac_prefs->set_smtpport ? ac_prefs->smtpport :
-		ac_prefs->ssl_smtp == SSL_SMTP_TUNNEL ? SSMTP_PORT : SMTP_PORT;
-#else
-	port = ac_prefs->set_smtpport ? ac_prefs->smtpport : SMTP_PORT;
-#endif
-	domain = ac_prefs->set_domain ? ac_prefs->domain : NULL;
-
-#if USE_SSL
-	val = send_message_smtp(to_list, ac_prefs->address,
-				ac_prefs->smtp_server, port, domain,
-				ac_prefs->userid, ac_prefs->passwd,
-				ac_prefs->use_smtp_auth, ac_prefs->ssl_smtp,
-				fp);
-#else
-	val = send_message_smtp(to_list, ac_prefs->address,
-				ac_prefs->smtp_server, port, domain,
-				ac_prefs->userid, ac_prefs->passwd,
-				ac_prefs->use_smtp_auth, fp);
-#endif
+	val = send_message_smtp(to_list, NULL, NULL, ac_prefs, fp);
 
 	fclose(fp);
 	return val;
@@ -197,9 +170,6 @@ gint send_message_queue(const gchar *file)
 	} else if (prefs_common.use_extsend && prefs_common.extsend_cmd) {
 		val = send_message_local(prefs_common.extsend_cmd, fp);
 	} else {
-		gushort port;
-		gchar *domain;
-
 		if (!ac) {
 			ac = account_find_from_smtp_server(from, server);
 			if (!ac) {
@@ -210,35 +180,11 @@ gint send_message_queue(const gchar *file)
 		}
 
 		if (ac) {
-#if USE_SSL
-			port = ac->set_smtpport ? ac->smtpport :
-				ac->ssl_smtp == SSL_SMTP_TUNNEL ?
-				SSMTP_PORT : SMTP_PORT;
-#else
-			port = ac->set_smtpport ? ac->smtpport : SMTP_PORT;
-#endif
-			domain = ac->set_domain ? ac->domain : NULL;
-#if USE_SSL
-			val = send_message_smtp
-				(to_list, from, ac->smtp_server, port, domain,
-				 ac->userid, ac->passwd, ac->use_smtp_auth,
-				 ac->ssl_smtp, fp);
-#else
-			val = send_message_smtp
-				(to_list, from, ac->smtp_server, port, domain,
-				 ac->userid, ac->passwd, ac->use_smtp_auth, fp);
-#endif
+			val = send_message_smtp(to_list, from, NULL, ac, fp);
 		} else {
 			g_warning(_("Account not found.\n"));
-#if USE_SSL
-			val = send_message_smtp
-				(to_list, from, server, SMTP_PORT, NULL,
-				 NULL, NULL, FALSE, FALSE, fp);
-#else
-			val = send_message_smtp
-				(to_list, from, server, SMTP_PORT, NULL,
-				 NULL, NULL, FALSE, fp);
-#endif
+			val = send_message_smtp(to_list, from, server, NULL,
+						fp);
 		}
 	}
 
@@ -284,6 +230,7 @@ static gint send_message_local(const gchar *command, FILE *fp)
 	if (dialog->cancelled) { \
 		sock_close(smtp_sock); \
 		send_progress_dialog_destroy(dialog); \
+		g_free(passwd); \
 		return -1; \
 	} \
 }
@@ -295,37 +242,44 @@ static gint send_message_local(const gchar *command, FILE *fp)
 		log_warning("Error occurred while %s\n", s); \
 		sock_close(smtp_sock); \
 		send_progress_dialog_destroy(dialog); \
+		g_free(passwd); \
 		return -1; \
 	} \
 }
 
 #define SEND_EXIT_IF_NOTOK(f, s) \
 { \
+	gint ok; \
 	EXIT_IF_CANCELLED(); \
-	if ((f) != SM_OK) { \
+	if ((ok = (f)) != SM_OK) { \
 		log_warning("Error occurred while %s\n", s); \
+		if (ok == SM_AUTHFAIL) { \
+			if (ac && ac->tmp_smtp_passwd) { \
+				g_free(ac->tmp_smtp_passwd); \
+				ac->tmp_smtp_passwd = NULL; \
+			} \
+		} \
 		if (smtp_quit(smtp_sock) != SM_OK) \
 			log_warning("Error occurred while sending QUIT\n"); \
 		sock_close(smtp_sock); \
 		send_progress_dialog_destroy(dialog); \
+		g_free(passwd); \
 		return -1; \
 	} \
 }
 
-#if USE_SSL
 static gint send_message_smtp(GSList *to_list, const gchar *from,
-			      const gchar *server, gushort port,
-			      const gchar *domain, const gchar *userid,
-			      const gchar *passwd, gboolean use_smtp_auth,
-			      SSLSMTPType ssl_type, FILE *fp)
-#else
-static gint send_message_smtp(GSList *to_list, const gchar *from,
-			      const gchar *server, gushort port,
-			      const gchar *domain, const gchar *userid,
-			      const gchar *passwd, gboolean use_smtp_auth,
+			      const gchar *server, PrefsAccount *ac,
 			      FILE *fp)
-#endif
 {
+	gushort port;
+	const gchar *domain;
+	const gchar *userid;
+	gchar *passwd = NULL;
+	gboolean use_smtp_auth;
+#if USE_SSL
+	SSLSMTPType ssl_type;
+#endif
 	SockInfo *smtp_sock = NULL;
 	SendProgressDialog *dialog;
 	GtkCList *clist;
@@ -335,9 +289,60 @@ static gint send_message_smtp(GSList *to_list, const gchar *from,
 	gint size;
 
 	g_return_val_if_fail(to_list != NULL, -1);
-	g_return_val_if_fail(from != NULL, -1);
-	g_return_val_if_fail(server != NULL, -1);
 	g_return_val_if_fail(fp != NULL, -1);
+
+	if (ac == NULL) {
+		g_return_val_if_fail(from != NULL, -1);
+		g_return_val_if_fail(server != NULL, -1);
+		port = SMTP_PORT;
+		domain = userid = passwd = NULL;
+		use_smtp_auth = FALSE;
+#if USE_SSL
+		ssl_type = FALSE;
+#endif
+	} else {
+		if (from == NULL)
+			from = ac->address;
+		if (server == NULL)
+			server = ac->smtp_server;
+		g_return_val_if_fail(from != NULL, -1);
+		g_return_val_if_fail(server != NULL, -1);
+
+#if USE_SSL
+		port = ac->set_smtpport ? ac->smtpport :
+			ac->ssl_smtp == SSL_SMTP_TUNNEL ?
+			SSMTP_PORT : SMTP_PORT;
+		ssl_type = ac->ssl_smtp;
+#else
+		port = ac->set_smtpport ? ac->smtpport : SMTP_PORT;
+#endif
+		domain = ac->set_domain ? ac->domain : NULL;
+		userid = ac->smtp_userid;
+		use_smtp_auth = ac->use_smtp_auth;
+		if (ac->smtp_passwd)
+			passwd = g_strdup(ac->smtp_passwd);
+		else if (ac->tmp_smtp_passwd)
+			passwd = g_strdup(ac->tmp_smtp_passwd);
+		else if (use_smtp_auth && userid) {
+			gchar *pass;
+			gchar *message;
+
+			message = g_strdup_printf
+				(_("Input password for %s on %s:"),
+				 userid, server);
+
+			pass = input_dialog_with_invisible(_("Input password"),
+							   message, NULL);
+			g_free(message);
+			if (pass) {
+				ac->tmp_smtp_passwd = g_strdup(pass);
+				passwd = pass;
+			}
+		}
+	}
+
+	if (use_smtp_auth && (!userid || !passwd))
+		use_smtp_auth = FALSE;
 
 	size = get_left_file_size(fp);
 	if (size < 0) return -1;
@@ -399,6 +404,7 @@ static gint send_message_smtp(GSList *to_list, const gchar *from,
 
 	sock_close(smtp_sock);
 	send_progress_dialog_destroy(dialog);
+	g_free(passwd);
 
 	return 0;
 }
