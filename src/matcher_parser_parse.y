@@ -628,15 +628,6 @@ MATCHER_ALL
 	expr = $3;
 	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
 }
-| MATCHER_NOT_MESSAGE match_type MATCHER_STRING
-{
-	gint criteria = 0;
-	gchar * expr = NULL;
-
-	criteria = MATCHCRITERIA_NOT_MESSAGE;
-	expr = $3;
-	prop = matcherprop_new(criteria, NULL, match_type, expr, 0);
-}
 | MATCHER_EXECUTE MATCHER_STRING
 {
 	gint criteria = 0;

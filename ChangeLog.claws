@@ -1,3 +1,11 @@
+2001-07-08 [hoa]
+
+	* AUTHORS
+		changed my email address
+
+	* src/matcher_parser_parse.y
+		clean the parser to remove conflicts
+
 2001-07-09 [alfons]
 
 	* AUTHORS
