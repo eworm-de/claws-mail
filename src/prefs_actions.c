@@ -551,8 +551,6 @@ static guint get_action_type(gchar *action)
 		} else if (p[0] == '&') {
 			if (p[1] == 0x00)
 				action_type |= ACTION_ASYNC;
-			else
-				action_type = ACTION_ERROR;
 		}
 		p++;
 	}

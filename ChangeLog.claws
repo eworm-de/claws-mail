@@ -1,3 +1,9 @@
+2003-01-18 [melvin]	0.8.8claws116
+
+	* src/prefs_actions.c
+		Removed syntax limitation of only one '&' at the end of command.
+			Now actions that contain '>/dev/null 2>&1' are possible.
+
 2003-01-18 [melvin]	0.8.8claws115
 
 	* src/prefs_actions.c
