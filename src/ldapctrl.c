@@ -55,6 +55,7 @@ LdapControl *ldapctl_create( void ) {
 	ctl->maxEntries = LDAPCTL_MAX_ENTRIES;
 	ctl->timeOut = LDAPCTL_DFL_TIMEOUT;
 	ctl->maxQueryAge = LDAPCTL_DFL_QUERY_AGE;
+	ctl->matchingOption = LDAPCTL_MATCH_BEGINWITH;
 
 	/* Mutex to protect control block */
 	ctl->mutexCtl = g_malloc0( sizeof( pthread_mutex_t ) );
@@ -163,6 +164,27 @@ void ldapctl_set_max_query_age( LdapControl* ctl, const gint value ) {
 }
 
 /**
+ * Specify matching option to be used for searches.
+ * \param ctl   Control object to process.
+ * \param value Matching option, as follows:
+ * <ul>
+ * <li><code>LDAPCTL_MATCH_BEGINWITH</code> for "begins with" search</li>
+ * <li><code>LDAPCTL_MATCH_CONTAINS</code> for "contains" search</li>
+ * </ul>
+ */
+void ldapctl_set_matching_option( LdapControl* ctl, const gint value ) {
+	if( value < LDAPCTL_MATCH_BEGINWITH ) {
+		ctl->matchingOption = LDAPCTL_MATCH_BEGINWITH;
+	}
+	else if( value > LDAPCTL_MATCH_CONTAINS ) {
+		ctl->matchingOption = LDAPCTL_MATCH_BEGINWITH;
+	}
+	else {
+		ctl->matchingOption = value;
+	}
+}
+
+/**
  * Specify search criteria list to be used.
  * \param ctl   Control data object.
  * \param value Linked list of LDAP attribute names to use for search.
@@ -259,6 +281,7 @@ void ldapctl_clear( LdapControl *ctl ) {
 	ctl->maxEntries = 0;
 	ctl->timeOut = 0;
 	ctl->maxQueryAge = 0;
+	ctl->matchingOption = LDAPCTL_MATCH_BEGINWITH;
 }
 
 /**
@@ -299,6 +322,7 @@ void ldapctl_default_values( LdapControl *ctl ) {
 	ctl->maxEntries = LDAPCTL_MAX_ENTRIES;
 	ctl->timeOut = LDAPCTL_DFL_TIMEOUT;
 	ctl->maxQueryAge = LDAPCTL_DFL_QUERY_AGE;
+	ctl->matchingOption = LDAPCTL_MATCH_BEGINWITH;
 
 	ldapctl_default_attributes( ctl );
 }
@@ -325,6 +349,7 @@ void ldapctl_print( const LdapControl *ctl, FILE *stream ) {
 	fprintf( stream, "max entry: %d\n",   ctl->maxEntries );
 	fprintf( stream, "  timeout: %d\n",   ctl->timeOut );
 	fprintf( stream, "  max age: %d\n",   ctl->maxQueryAge );
+	fprintf( stream, "match opt: %d\n",   ctl->matchingOption );
 	fprintf( stream, "crit list:\n" );
 	if( ctl->listCriteria ) {
 		mgu_print_dlist( ctl->listCriteria, stream );
@@ -377,6 +402,7 @@ void ldapctl_copy( const LdapControl *ctlFrom, LdapControl *ctlTo ) {
 	ctlTo->maxEntries = ctlFrom->maxEntries;
 	ctlTo->timeOut = ctlFrom->timeOut;
 	ctlTo->maxQueryAge = ctlFrom->maxQueryAge;
+	ctlTo->matchingOption = ctlFrom->matchingOption;
 
 	/* Unlock */
 	pthread_mutex_unlock( ctlTo->mutexCtl );
@@ -384,22 +410,48 @@ void ldapctl_copy( const LdapControl *ctlFrom, LdapControl *ctlTo ) {
 }
 
 /**
+ * Search criteria fragment - two terms - begin with (default).
+ */
+static gchar *_criteria2BeginWith = "(&(givenName=%s*)(sn=%s*))";
+
+/**
+ * Search criteria fragment - two terms - contains.
+ */
+static gchar *_criteria2Contains  = "(&(givenName=*%s*)(sn=*%s*))";
+
+/**
  * Create an LDAP search criteria by parsing specified search term. The search
  * term may contain two names separated by the first embedded space found in
  * the search term. It is assumed that the two tokens are first name and last
  * name, or vice versa. An appropriate search criteria will be constructed.
  *
- * \param  searchTerm Reference to search term to process.
+ * \param  searchTerm   Reference to search term to process.
+ * \param  matchOption  Set to the following:
+ * <ul>
+ * <li><code>LDAPCTL_MATCH_BEGINWITH</code> for "begins with" search</li>
+ * <li><code>LDAPCTL_MATCH_CONTAINS</code> for "contains" search</li>
+ * </ul>
+ *
  * \return Formatted search criteria, or <code>NULL</code> if there is no
  *         embedded spaces. The search term should be g_free() when no
  *         longer required.
  */
-static gchar *ldapctl_build_ldap_criteria( gchar *searchTerm ) {
+static gchar *ldapctl_build_ldap_criteria(
+		const gchar *searchTerm, const gint matchOption )
+{
 	gchar *p;
 	gchar *t1;
 	gchar *t2 = NULL;
 	gchar *term;
 	gchar *crit = NULL;
+	gchar *criteriaFmt;
+
+	if( matchOption == LDAPCTL_MATCH_CONTAINS ) {
+		criteriaFmt = _criteria2Contains;
+	}
+	else {
+		criteriaFmt = _criteria2BeginWith;
+	}
 
 	term = g_strdup( searchTerm );
 	g_strstrip( term );
@@ -420,8 +472,8 @@ static gchar *ldapctl_build_ldap_criteria( gchar *searchTerm ) {
 		gchar *p1, *p2;
 
 		g_strstrip( t2 );
-		p1 = g_strdup_printf( "(&(givenName=%s*)(sn=%s*))", t1, t2 );
-		p2 = g_strdup_printf( "(&(givenName=%s*)(sn=%s*))", t2, t1 );
+		p1 = g_strdup_printf( criteriaFmt, t1, t2 );
+		p2 = g_strdup_printf( criteriaFmt, t2, t1 );
 		crit = g_strdup_printf( "(&(|%s%s)(mail=*))", p1, p2 );
 
 		g_free( t2 );
@@ -432,6 +484,17 @@ static gchar *ldapctl_build_ldap_criteria( gchar *searchTerm ) {
 	return crit;
 }
 
+
+/**
+ * Search criteria fragment - single term - begin with (default).
+ */
+static gchar *_criteriaBeginWith = "(%s=%s*)";
+
+/**
+ * Search criteria fragment - single term - contains.
+ */
+static gchar *_criteriaContains  = "(%s=*%s*)";
+
 /**
  * Build a formatted LDAP search criteria string from criteria list.
  * \param ctl  Control object to process.
@@ -441,13 +504,21 @@ static gchar *ldapctl_build_ldap_criteria( gchar *searchTerm ) {
 gchar *ldapctl_format_criteria( LdapControl *ctl, const gchar *searchVal ) {
 	GList *node;
 	gchar *p1, *p2, *retVal;
+	gchar *criteriaFmt;
 
 	g_return_val_if_fail( ctl != NULL, NULL );
 	g_return_val_if_fail( searchVal != NULL, NULL );
 
 	/* Test whether there are more that one search terms */
-	retVal = ldapctl_build_ldap_criteria( searchVal );
+	retVal = ldapctl_build_ldap_criteria( searchVal, ctl->matchingOption );
 	if( retVal ) return retVal;
+
+	if( ctl->matchingOption ==  LDAPCTL_MATCH_CONTAINS ) {
+		criteriaFmt = _criteriaContains;
+	}
+	else {
+		criteriaFmt = _criteriaBeginWith;
+	}
 
 	/* No - just a simple search */
 	/* p1 contains previous formatted criteria */
@@ -468,7 +539,7 @@ gchar *ldapctl_format_criteria( LdapControl *ctl, const gchar *searchVal ) {
 			gchar *crit;
 
 			/* Format query criteria */
-			crit = g_strdup_printf( "(%s=%s*)", attr, searchVal );
+			crit = g_strdup_printf( criteriaFmt, attr, searchVal );
 
 			/* Append to existing criteria */			
 			g_free( p2 );
@@ -478,7 +549,7 @@ gchar *ldapctl_format_criteria( LdapControl *ctl, const gchar *searchVal ) {
 		}
 		else {
 			/* First time through - Format query criteria */
-			p2 = g_strdup_printf( "(%s=%s*)", attr, searchVal );
+			p2 = g_strdup_printf( criteriaFmt, attr, searchVal );
 		}
 	}
 

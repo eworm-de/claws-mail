@@ -710,11 +710,11 @@ static gint ldapqry_connect( LdapQuery *qry ) {
 	gint rc;
 
 	/* Initialize connection */
-	printf( "===ldapqry_connect===\n" );
-	ldapqry_print( qry, stdout );
+	/* printf( "===ldapqry_connect===\n" ); */
+	/* ldapqry_print( qry, stdout ); */
 	ctl = qry->control;
-	ldapctl_print( ctl, stdout );
-	printf( "======\n" );
+	/* ldapctl_print( ctl, stdout ); */
+	/* printf( "======\n" ); */
 	ldapqry_touch( qry );
 	qry->startTime = qry->touchTime;
 	qry->elapsedTime = -1;
@@ -1356,6 +1356,10 @@ gint ldapqry_perform_locate( LdapQuery *qry ) {
 void ldapquery_remove_results( LdapQuery *qry ) {
 	/* Set query as aged - will be retired on a later call */
 	ldapqry_set_aged_flag( qry, TRUE );
+	/*
+	printf( "ldapquery_remove_results...\n" );
+	printf( "testing busy flag...\n" );
+	*/
 	if( ldapqry_get_busy_flag( qry ) ) {
 		/* Query is still busy - cancel query */
 		/* printf( "\tquery is still busy running...\n" ); */
