@@ -578,7 +578,6 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 {
 	MsgInfo *msginfo;
 	gchar buf[BUFFSIZE];
-	gchar *reference = NULL;
 	gchar *p, *tmp;
 	gchar *hp;
 	HeaderEntry *hentry;
@@ -663,17 +662,20 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			msginfo->msgid = g_strdup(hp);
 			break;
 		case H_REFERENCES:
+			msginfo->references =
+				references_list_prepend(msginfo->references,
+							hp);
+			break;
 		case H_IN_REPLY_TO:
-			if (!reference) {
-				msginfo->references = g_strdup(hp);
-				eliminate_parenthesis(hp, '(', ')');
-				if ((p = strrchr(hp, '<')) != NULL &&
-				    strchr(p + 1, '>') != NULL) {
-					extract_parenthesis(p, '<', '>');
-					remove_space(p);
-					if (*p != '\0')
-						reference = g_strdup(p);
-				}
+			if (msginfo->inreplyto) break;
+
+			eliminate_parenthesis(hp, '(', ')');
+			if ((p = strrchr(hp, '<')) != NULL &&
+			    strchr(p + 1, '>') != NULL) {
+				extract_parenthesis(p, '<', '>');
+				remove_space(p);
+				if (*p != '\0')
+					msginfo->inreplyto = g_strdup(p);
 			}
 			break;
 		case H_CONTENT_TYPE:
@@ -748,7 +750,10 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			break;
 		}
 	}
-	msginfo->inreplyto = reference;
+
+	if (!msginfo->inreplyto && msginfo->references)
+		msginfo->inreplyto =
+			g_strdup((gchar *)msginfo->references->data);
 
 	return msginfo;
 }

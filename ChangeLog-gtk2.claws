@@ -1,3 +1,12 @@
+2005-03-31 [colin]	1.9.6cvs18
+
+	* src/news.c
+		Fix parsing references
+	* src/msgcache.c
+		don't put nulls in the references list
+	* src/procheader.c
+		commit that forgotten file in 1.9.6cvs14
+
 2005-03-31 [colin]	1.9.6cvs17
 
 	* src/compose.c

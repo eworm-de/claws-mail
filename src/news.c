@@ -663,8 +663,18 @@ static MsgInfo *news_parse_xover(const gchar *xover_str)
          * into having the actual list of references in the References: header.
          * We need a GSList here, so msginfo_free() and msginfo_copy() can do 
          * their things properly. */ 
-        if (ref) {         
-                msginfo->references = g_slist_append(msginfo->references, g_strdup(ref)); 
+        if (ref && strlen(ref)) {       
+		gchar **ref_tokens = g_strsplit(ref, " ", -1);
+		guint i = 0;
+		
+		while (ref_tokens[i]) {
+			gchar *cur_ref = ref_tokens[i];
+			msginfo->references = references_list_append(msginfo->references, 
+					g_strdup(cur_ref));
+			i++;
+		}
+		g_strfreev(ref_tokens);
+		
                 eliminate_parenthesis(ref, '(', ')');
                 if ((p = strrchr(ref, '<')) != NULL) {
                         extract_parenthesis(p, '<', '>');
@@ -672,7 +682,7 @@ static MsgInfo *news_parse_xover(const gchar *xover_str)
                         if (*p != '\0')
                                 msginfo->inreplyto = g_strdup(p);
                 }
-        }                
+        } 
 
 	/*
 	msginfo->xref = g_strdup(xref);

@@ -468,12 +468,15 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 		READ_CACHE_DATA_INT(msginfo->total_size, fp);
 
 		READ_CACHE_DATA_INT(refnum, fp);
+
 		for (; refnum != 0; refnum--) {
-			gchar *ref;
+			gchar *ref = NULL;
 
 			READ_CACHE_DATA(ref, fp);
-			msginfo->references =
-				g_slist_prepend(msginfo->references, ref);
+
+			if (ref && strlen(ref))
+				msginfo->references =
+					g_slist_prepend(msginfo->references, ref);
 		}
 		if (msginfo->references)
 			msginfo->references =
@@ -558,6 +561,7 @@ void msgcache_write_cache(MsgInfo *msginfo, FILE *fp)
 	WRITE_CACHE_DATA_INT(msginfo->total_size, fp);
         
 	WRITE_CACHE_DATA_INT(g_slist_length(msginfo->references), fp);
+
 	for (cur = msginfo->references; cur != NULL; cur = cur->next) {
 		WRITE_CACHE_DATA((gchar *)cur->data, fp);
 	}
