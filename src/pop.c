@@ -495,17 +495,21 @@ gint pop3_retr_send(SockInfo *sock, gpointer data)
 gint pop3_retr_recv(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
-	const gchar *file;
+	gchar *file;
 	gint ok, drop_ok;
 	gint next_state;
 	if ((ok = pop3_ok(sock, NULL)) == PS_SUCCESS) {
-		if (recv_write_to_file(sock, (file = get_tmp_file())) < 0) {
+		file = get_tmp_file();
+		if (recv_write_to_file(sock, file) < 0) {
+			g_free(file);
 			if (state->inc_state == INC_SUCCESS)
 				state->inc_state = INC_NOSPACE;
 			return -1;
 		}
 
-		if ((drop_ok = inc_drop_message(file, state)) < 0) {
+		drop_ok = inc_drop_message(file, state);
+		g_free(file);
+		if (drop_ok < 0) {
 			state->inc_state = INC_ERROR;
 			return -1;
 		}

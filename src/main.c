@@ -46,6 +46,9 @@
 #include <time.h>
 #include <sys/types.h>
 #include <signal.h>
+#ifndef WIN32
+#include <execinfo.h>
+#endif
 
 #if HAVE_LOCALE_H
 #  include <locale.h>
@@ -90,6 +93,10 @@
 
 #include "version.h"
 
+#ifndef WIN32
+#include "crash.h"
+#endif
+
 gchar *prog_version;
 gchar *startup_dir;
 #ifdef _DEBUG   /* WIN32 */
@@ -109,6 +116,10 @@ static struct Cmd {
 	GPtrArray *attach_files;
 	gboolean status;
 	gboolean send;
+#ifndef WIN32
+	gboolean crash;
+	gchar   *crash_params;
+#endif
 } cmd;
 
 static void parse_cmd_opt(int argc, char *argv[]);
@@ -205,6 +216,15 @@ int main(int argc, char *argv[])
 	gtk_set_locale();
 	gtk_init(&argc, &argv);
 
+#ifndef WIN32
+	if (cmd.crash) {
+		crash_main(cmd.crash_params);
+		return 0;
+	}
+
+	crash_install_handlers();
+#endif
+
 #if USE_THREADS || USE_LDAP
 	g_thread_init(NULL);
 	if (!g_thread_supported())
@@ -285,6 +305,7 @@ int main(int argc, char *argv[])
 	MAKE_DIR_IF_NOT_EXIST(get_imap_cache_dir());
 	MAKE_DIR_IF_NOT_EXIST(get_news_cache_dir());
 	MAKE_DIR_IF_NOT_EXIST(get_mime_tmp_dir());
+	MAKE_DIR_IF_NOT_EXIST(get_tmp_dir());
 	MAKE_DIR_IF_NOT_EXIST(RC_DIR G_DIR_SEPARATOR_S "uidl");
 
 	if (is_file_exist(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log")) {
@@ -501,7 +522,14 @@ static void parse_cmd_opt(int argc, char *argv[])
 			puts(_("  --version              output version information and exit"));
 
 			exit(1);
+#ifndef WIN32
+		} else if (!strncmp(argv[i], "--crash", 7)) {
+			cmd.crash = TRUE;
+			cmd.crash_params = g_strdup(argv[i + 1]);
+			i++;
+#endif
 		}
+		
 	}
 
 	if (cmd.attach_files && cmd.compose == FALSE) {
@@ -540,7 +568,6 @@ static void initial_processing(FolderItem *item, gpointer data)
 			      ? item->path 
 			      : _("top level folder"));
 	debug_print("%s\n", buf);
-	STATUSBAR_PUSH(mainwin, buf);
 	g_free(buf);
 
 	main_window_cursor_wait(mainwin);

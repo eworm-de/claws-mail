@@ -19,6 +19,7 @@
 
 #include <glib.h>
 #include <ctype.h>
+#include <string.h>
 
 #include "base64.h"
 

@@ -76,40 +76,40 @@ static gint   toolbar_ret_val_from_text      (gchar *text);
 
 
 /* callback functions */
-static void toolbar_inc_cb		        (GtkWidget	*widget,
-				        gpointer	         data);
+static void toolbar_inc_cb		(GtkWidget	*widget,
+				         gpointer	 data);
 
 static void toolbar_inc_all_cb	        (GtkWidget	*widget,
-				        gpointer	         data);
+				         gpointer	 data);
 
 static void toolbar_send_cb	        (GtkWidget	*widget,
-				        gpointer	         data);
+				         gpointer	 data);
 
 static void toolbar_compose_cb	        (GtkWidget	*widget,
-				        gpointer	         data);
+				         gpointer	 data);
 
 static void toolbar_reply_cb	        (GtkWidget	*widget,
-				        gpointer	         data);
+				         gpointer	 data);
 
-static void toolbar_reply_to_all_cb	        (GtkWidget	*widget,
-				        gpointer	         data);
+static void toolbar_reply_to_all_cb	(GtkWidget	*widget,
+				         gpointer	 data);
 
-static void toolbar_reply_to_sender_cb       (GtkWidget	*widget,
-					gpointer	         data);
+static void toolbar_reply_to_sender_cb	(GtkWidget	*widget,
+					 gpointer	 data);
 
 static void toolbar_forward_cb	        (GtkWidget	*widget,
-				        gpointer	          data);
+				         gpointer	 data);
 
 static void toolbar_delete_cb	        (GtkWidget	*widget,
-					gpointer	         data);
+					 gpointer	 data);
 
 static void toolbar_exec_cb	        (GtkWidget	*widget,
-					gpointer	         data);
+					 gpointer	 data);
 
 static void toolbar_next_unread_cb	(GtkWidget	*widget,
-				 gpointer	 data);
+				 	 gpointer	 data);
 
-static void toolbar_actions_execute_cb       (GtkWidget	*widget,
+static void toolbar_actions_execute_cb	(GtkWidget	*widget,
 					 gpointer	 data);
 
 static void toolbar_reply_popup_cb	(GtkWidget	*widget,
@@ -122,39 +122,42 @@ static void toolbar_reply_to_all_popup_cb(GtkWidget	*widget,
 					 GdkEventButton *event,
 					 gpointer	 data);
 
-static void toolbar_reply_to_all_popup_closed_cb(GtkMenuShell	*menu_shell,
+static void toolbar_reply_to_all_popup_closed_cb
+					(GtkMenuShell	*menu_shell,
 					 gpointer	 data);
 
 static void toolbar_reply_to_sender_popup_cb(GtkWidget	*widget,
 					 GdkEventButton *event,
 					 gpointer	 data);
-static void toolbar_reply_to_sender_popup_closed_cb(GtkMenuShell	*menu_shell,
+static void toolbar_reply_to_sender_popup_closed_cb
+					(GtkMenuShell	*menu_shell,
 					 gpointer	 data);
 
 static void toolbar_forward_popup_cb	 (GtkWidget	 *widget,
 					 GdkEventButton    *event,
 					 gpointer	 data);
 
-static void toolbar_forward_popup_closed_cb   (GtkMenuShell	*menu_shell,
+static void toolbar_forward_popup_closed_cb   		
+					(GtkMenuShell	*menu_shell,
 					 gpointer	 data);
 
 static ToolbarAction t_action[] = 
 {
-	{ "A_RECEIVE_ALL",   N_("Receive Mail on all Accounts"),    toolbar_inc_all_cb               },
-	{ "A_RECEIVE_CUR",   N_("Receive Mail on current Account"), toolbar_inc_cb                   },
-	{ "A_SEND_QUEUD",    N_("Send Queud Message(s)"),           toolbar_send_cb                  },
-	{ "A_COMPOSE_EMAIL", N_("Compose Email"),                   toolbar_compose_cb               },
-	{ "A_REPLY_MESSAGE", N_("Reply to Message"),                toolbar_reply_cb                 },
-	{ "A_REPLY_SENDER",  N_("Reply to Sender"),                 toolbar_reply_to_sender_cb       },
-	{ "A_REPLY_ALL",     N_("Reply to All"),                    toolbar_reply_to_all_cb          },
-	{ "A_FORWARD",       N_("Forward Message"),                 toolbar_forward_cb               },
-	{ "A_DELETE",        N_("Delete Message"),                  toolbar_delete_cb                },
-	{ "A_EXECUTE",       N_("Execute"),                         toolbar_exec_cb                  },
-	{ "A_GOTO_NEXT",     N_("Goto Next Message"),               toolbar_next_unread_cb           },
-	{ "A_SYL_ACTIONS",   N_("Sylpheed Actions Feature"),        toolbar_actions_execute_cb       },
+	{ "A_RECEIVE_ALL",   N_("Receive Mail on all Accounts"),    toolbar_inc_all_cb        },
+	{ "A_RECEIVE_CUR",   N_("Receive Mail on current Account"), toolbar_inc_cb            },
+	{ "A_SEND_QUEUED",   N_("Send Queued Message(s)"),          toolbar_send_cb           },
+	{ "A_COMPOSE_EMAIL", N_("Compose Email"),                   toolbar_compose_cb        },
+	{ "A_REPLY_MESSAGE", N_("Reply to Message"),                toolbar_reply_cb          },
+	{ "A_REPLY_SENDER",  N_("Reply to Sender"),                 toolbar_reply_to_sender_cb},
+	{ "A_REPLY_ALL",     N_("Reply to All"),                    toolbar_reply_to_all_cb   },
+	{ "A_FORWARD",       N_("Forward Message"),                 toolbar_forward_cb        },
+	{ "A_DELETE",        N_("Delete Message"),                  toolbar_delete_cb         },
+	{ "A_EXECUTE",       N_("Execute"),                         toolbar_exec_cb           },
+	{ "A_GOTO_NEXT",     N_("Goto Next Message"),               toolbar_next_unread_cb    },
+	{ "A_SYL_ACTIONS",   N_("Sylpheed Actions Feature"),        toolbar_actions_execute_cb},
 
-	{ "A_COMPOSE_NEWS",  N_("Compose News"),                    toolbar_compose_cb               },    
-	{ "A_SEPARATOR",     SEPARATOR,                             NULL                             },
+	{ "A_COMPOSE_NEWS",  N_("Compose News"),                    toolbar_compose_cb        },    
+	{ "A_SEPARATOR",     SEPARATOR,                             NULL                      }
 };
 
 static GtkItemFactoryEntry reply_popup_entries[] =
@@ -267,7 +270,11 @@ static void toolbar_parse_item(XMLFile *file)
 		if (strcmp (name, TOOLBAR_ICON_FILE) == 0) 
 			item->file = g_strdup (value);
 		else if (strcmp (name, TOOLBAR_ICON_TEXT) == 0)
+#ifdef WIN32
+			item->text = g_locale_to_utf8(value, -1, NULL, NULL, NULL);
+#else
 			item->text = g_strdup (value);
+#endif
 		else if (strcmp (name, TOOLBAR_ICON_ACTION) == 0)
 			item->action = toolbar_ret_val_from_text(value);
 
@@ -292,7 +299,7 @@ void toolbar_set_default_toolbar(void)
 		{ A_RECEIVE_CUR,   STOCK_PIXMAP_MAIL_RECEIVE,         _("Get")     },
 		{ A_RECEIVE_ALL,   STOCK_PIXMAP_MAIL_RECEIVE_ALL,     _("Get All") },
 		{ A_SEPARATOR,     0,                                 ("")         }, 
-		{ A_SEND_QUEUD,    STOCK_PIXMAP_MAIL_SEND_QUEUE,      _("Send")    },
+		{ A_SEND_QUEUED,   STOCK_PIXMAP_MAIL_SEND_QUEUE,      _("Send")    },
 		{ A_COMPOSE_EMAIL, STOCK_PIXMAP_MAIL_COMPOSE,         _("Email")   },
 		{ A_SEPARATOR,     0,                                 ("")         },
 		{ A_REPLY_MESSAGE, STOCK_PIXMAP_MAIL_REPLY,           _("Reply")   }, 
@@ -300,7 +307,7 @@ void toolbar_set_default_toolbar(void)
 		{ A_REPLY_SENDER,  STOCK_PIXMAP_MAIL_REPLY_TO_AUTHOR, _("Sender")  },
 		{ A_FORWARD,       STOCK_PIXMAP_MAIL_FORWARD,         _("Forward") },
 		{ A_SEPARATOR,     0,                                 ("")         },
-		{ A_DELETE,        STOCK_PIXMAP_DELETED,              _("Delete")  },
+		{ A_DELETE,        STOCK_PIXMAP_CLOSE,                _("Delete")  },
 		{ A_EXECUTE,       STOCK_PIXMAP_EXEC,                 _("Execute") },
 		{ A_GOTO_NEXT,     STOCK_PIXMAP_DOWN_ARROW,           _("Next")    },
 	};
@@ -345,26 +352,33 @@ void toolbar_save_config_file ()
 	if( pfile ) {
 		fp = pfile->fp;
 		fprintf (fp, "<?xml version=\"1.0\" encoding=\"%s\" ?>\n",
-#ifdef WIN32
-				"utf-8");
-#else
 				conv_get_current_charset_str());
-#endif
 
 		fprintf (fp, "<%s>\n", TOOLBAR_TAG_INDEX);
 
 		for (cur = toolbar_list; cur != NULL; cur = cur->next) {
 			ToolbarItem *toolbar_item = (ToolbarItem*) cur->data;
+#ifdef WIN32
+		  	gchar *p_text=g_locale_from_utf8(toolbar_item->text,
+				-1,NULL,NULL,NULL);
+#endif
 			
 			if (g_strcasecmp (toolbar_item->file, SEPARATOR) != 0) 
 				fprintf (fp, "\t<%s %s=\"%s\" %s=\"%s\" %s=\"%s\"/>\n",
 					 TOOLBAR_TAG_ITEM, 
 					 TOOLBAR_ICON_FILE, toolbar_item->file,
+#ifdef WIN32
+					 TOOLBAR_ICON_TEXT, p_text,
+#else
 					 TOOLBAR_ICON_TEXT, toolbar_item->text,
+#endif
 					 TOOLBAR_ICON_ACTION, 
 					 toolbar_ret_text_from_val (toolbar_item->action));
 			else 
 				fprintf (fp, "\t<%s/>\n", TOOLBAR_TAG_SEPARATOR); 
+#ifdef WIN32
+			g_free(p_text);
+#endif
 		}
 
 		fprintf (fp, "</%s>\n", TOOLBAR_TAG_INDEX);	
@@ -870,7 +884,7 @@ void toolbar_create(MainWindow *mainwin,
 		case A_RECEIVE_CUR:
 			mainwin->toolbar->get_btn = item;
 			break;
-		case A_SEND_QUEUD:
+		case A_SEND_QUEUED:
 			mainwin->toolbar->send_btn = item; 
 			break;
 		case A_COMPOSE_EMAIL:

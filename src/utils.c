@@ -62,6 +62,22 @@ static void hash_free_strings_func(gpointer key, gpointer value, gpointer data);
 static GSList *tempfiles=NULL;
 #endif
 
+#ifdef WIN32
+gint mkstemp(const gchar const *template)
+{
+	gchar *name_used = g_strdup(_mktemp(template));
+	int tmpfd = _open(name_used, _O_CREAT | _O_RDWR | _O_BINARY );
+
+	tempfiles=g_slist_append(tempfiles, name_used);
+	if (tmpfd<0) {
+		perror(g_strdup_printf("cant create %s",name_used));
+		return -1;
+	}
+	else
+		return (fdopen(tmpfd,"w+b"));
+}
+#endif
+
 void list_free_strings(GList *list)
 {
 	list = g_list_first(list);
@@ -1488,13 +1504,24 @@ gchar *get_header_cache_dir(void)
 	return header_dir;
 }
 
+gchar *get_tmp_dir(void)
+{
+	static gchar *tmp_dir = NULL;
+
+	if (!tmp_dir)
+		tmp_dir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+				      TMP_DIR, NULL);
+
+	return tmp_dir;
+}
+
 gchar *get_tmp_file(void)
 {
-	static gchar *tmp_file = NULL;
+	gchar *tmp_file;
+	static guint32 id = 0;
 
-	if (!tmp_file)
-		tmp_file = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-				       "tmpfile", NULL);
+	tmp_file = g_strdup_printf("%s%ctmpfile.%08x",
+				   get_tmp_dir(), G_DIR_SEPARATOR, id++);
 
 	return tmp_file;
 }
@@ -2010,7 +2037,7 @@ gint copy_file(const gchar *src, const gchar *dest)
 }
 #endif
 
-gint copy_file(const gchar *src, const gchar *dest)
+gint copy_file(const gchar *src, const gchar *dest, gboolean keep_backup)
 {
 	FILE *src_fp, *dest_fp;
 	gint n_read;
@@ -2085,15 +2112,18 @@ gint copy_file(const gchar *src, const gchar *dest)
 		return -1;
 	}
 
+	if (keep_backup == FALSE && dest_bak)
+		unlink(dest_bak);
+
 	g_free(dest_bak);
 
 	return 0;
 }
 
-gint move_file(const gchar *src, const gchar *dest)
+gint move_file(const gchar *src, const gchar *dest, gboolean overwrite)
 {
-	if (is_file_exist(dest)) {
-		g_warning(_("move_file(): file %s already exists."), dest);
+	if (overwrite == FALSE && is_file_exist(dest)) {
+		g_warning("move_file(): file %s already exists.", dest);
 		return -1;
 	}
 
@@ -2104,7 +2134,7 @@ gint move_file(const gchar *src, const gchar *dest)
 		return -1;
 	}
 
-	if (copy_file(src, dest) < 0) return -1;
+	if (copy_file(src, dest, FALSE) < 0) return -1;
 
 	unlink(src);
 
@@ -2198,16 +2228,19 @@ gint canonicalize_file_replace(const gchar *file)
 
 	tmp_file = get_tmp_file();
 
-	if (canonicalize_file(file, tmp_file) < 0)
-		return -1;
-
-	unlink(file);
-	if (rename(tmp_file, file) < 0) {
-		FILE_OP_ERROR(file, "rename");
-		unlink(tmp_file);
+	if (canonicalize_file(file, tmp_file) < 0) {
+		g_free(tmp_file);
 		return -1;
 	}
 
+	if (move_file(tmp_file, file, TRUE) < 0) {
+		g_warning("can't replace %s .\n", file);
+		unlink(tmp_file);
+		g_free(tmp_file);
+		return -1;
+	}
+
+	g_free(tmp_file);
 	return 0;
 }
 
@@ -2225,6 +2258,7 @@ void unlink_tempfile_cb(gchar *data, gpointer user_data)
 {
 	chmod(data, _S_IREAD | _S_IWRITE);
 	unlink(data);
+	g_free(data);
 }
 
 void unlink_tempfiles(void)
@@ -2236,7 +2270,7 @@ void unlink_tempfiles(void)
 
 FILE *my_tmpfile(void)
 {
-#if HAVE_MKSTEMP
+#if HAVE_MKSTEMP || WIN32
 	const gchar suffix[] = ".XXXXXX";
 	const gchar *tmpdir;
 	guint tmplen;
@@ -2246,7 +2280,7 @@ FILE *my_tmpfile(void)
 	gint fd;
 	FILE *fp;
 
-	tmpdir = g_get_tmp_dir();
+	tmpdir = get_tmp_dir();
 	tmplen = strlen(tmpdir);
 	progname = g_get_prgname();
 	proglen = strlen(progname);
@@ -2262,6 +2296,9 @@ FILE *my_tmpfile(void)
 	if (fd < 0)
 		return tmpfile();
 
+#ifdef WIN32
+	return fd;
+#else
 	unlink(fname);
 
 	fp = fdopen(fd, "w+b");
@@ -2269,22 +2306,10 @@ FILE *my_tmpfile(void)
 		close(fd);
 	else
 		return fp;
+#endif
 #endif /* HAVE_MKSTEMP */
 
-#ifdef WIN32
-	gchar *name_used = _tempnam( get_rc_dir(), "procmime");
-	int tmpfd = _open(name_used, _O_CREAT | _O_RDWR | _O_BINARY );
-
-	tempfiles=g_slist_append(tempfiles, name_used);
-	if (tmpfd<0) {
-		perror(g_strdup_printf("cant create %s",name_used));
-		return 0;
-	}
-	else
-		return (fdopen(tmpfd,"w+b"));
-#else
 	return tmpfile();
-#endif
 }
 
 FILE *str_open_as_stream(const gchar *str)
@@ -2311,6 +2336,81 @@ FILE *str_open_as_stream(const gchar *str)
 
 	rewind(fp);
 	return fp;
+}
+
+gint str_write_to_file(const gchar *str, const gchar *file)
+{
+	FILE *fp;
+	size_t len;
+
+	g_return_val_if_fail(str != NULL, -1);
+	g_return_val_if_fail(file != NULL, -1);
+
+	if ((fp = fopen(file, "wb")) == NULL) {
+		FILE_OP_ERROR(file, "fopen");
+		return -1;
+	}
+
+	len = strlen(str);
+	if (len == 0) {
+		fclose(fp);
+		return 0;
+	}
+
+	if (fwrite(str, len, 1, fp) != 1) {
+		FILE_OP_ERROR(file, "fwrite");
+		fclose(fp);
+		unlink(file);
+		return -1;
+	}
+
+	if (fclose(fp) == EOF) {
+		FILE_OP_ERROR(file, "fclose");
+		unlink(file);
+		return -1;
+	}
+
+	return 0;
+}
+
+gchar *file_read_to_str(const gchar *file)
+{
+	GByteArray *array;
+	FILE *fp;
+	gchar buf[BUFSIZ];
+	gint n_read;
+	gchar *str;
+
+	g_return_val_if_fail(file != NULL, NULL);
+
+	if ((fp = fopen(file, "rb")) == NULL) {
+		FILE_OP_ERROR(file, "fopen");
+		return NULL;
+	}
+
+	array = g_byte_array_new();
+
+	while ((n_read = fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
+		if (n_read < sizeof(buf) && ferror(fp))
+			break;
+		g_byte_array_append(array, buf, n_read);
+	}
+
+	if (ferror(fp)) {
+		FILE_OP_ERROR(file, "fread");
+		fclose(fp);
+		g_byte_array_free(array, TRUE);
+		return NULL;
+	}
+
+	fclose(fp);
+
+	buf[0] = '\0';
+	g_byte_array_append(array, buf, 1);
+	str = (gchar *)array->data;
+	g_byte_array_free(array, FALSE);
+
+	return str;
 }
 
 gint execute_async(gchar *const argv[])
@@ -2961,6 +3061,16 @@ gboolean subject_is_reply(const gchar *subject)
 	 * Re: Re: Re: Re: Re: Re: Re: Re:" stuff. */
 	if (subject == NULL) return FALSE;
 	else return 0 == g_strncasecmp(subject, "Re: ", 4);
+}
+
+FILE *get_tmpfile_in_dir(const gchar *dir, gchar **filename)
+{
+	int fd;
+	
+	*filename = g_strdup_printf("%s%csylpheed.XXXXXX", dir, G_DIR_SEPARATOR);
+	fd = mkstemp(*filename);
+
+	return fdopen(fd, "w+");
 }
 
 #ifdef WIN32

@@ -111,7 +111,7 @@ static struct Send {
 	GtkWidget *smtp_uid_entry;
 	GtkWidget *smtp_pass_entry;
 	GtkWidget *pop_bfr_smtp_chkbtn;
-} Xsend;
+} p_send;
 
 static struct Compose {
 	GtkWidget *sigpath_entry;
@@ -129,6 +129,7 @@ static struct Privacy {
 	GtkWidget *default_encrypt_chkbtn;
 	GtkWidget *default_sign_chkbtn;
 	GtkWidget *ascii_armored_chkbtn;
+	GtkWidget *clearsign_chkbtn;
 	GtkWidget *defaultkey_radiobtn;
 	GtkWidget *emailkey_radiobtn;
 	GtkWidget *customkey_radiobtn;
@@ -310,33 +311,33 @@ static PrefParam param[] = {
 
 	/* Send */
 	{"add_date", "TRUE", &tmp_ac_prefs.add_date, P_BOOL,
-	 &Xsend.date_chkbtn,
+	 &p_send.date_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"generate_msgid", "TRUE", &tmp_ac_prefs.gen_msgid, P_BOOL,
-	 &Xsend.msgid_chkbtn,
+	 &p_send.msgid_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"add_custom_header", "FALSE", &tmp_ac_prefs.add_customhdr, P_BOOL,
-	 &Xsend.customhdr_chkbtn,
+	 &p_send.customhdr_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"use_smtp_auth", "FALSE", &tmp_ac_prefs.use_smtp_auth, P_BOOL,
-	 &Xsend.smtp_auth_chkbtn,
+	 &p_send.smtp_auth_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"smtp_auth_method", "0", &tmp_ac_prefs.smtp_auth_type, P_ENUM,
-	 &Xsend.smtp_auth_type_optmenu,
+	 &p_send.smtp_auth_type_optmenu,
 	 prefs_account_smtp_auth_type_set_data_from_optmenu,
 	 prefs_account_smtp_auth_type_set_optmenu},
 
 	{"smtp_user_id", NULL, &tmp_ac_prefs.smtp_userid, P_STRING,
-	 &Xsend.smtp_uid_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &p_send.smtp_uid_entry, prefs_set_data_from_entry, prefs_set_entry},
 	{"smtp_password", NULL, &tmp_ac_prefs.smtp_passwd, P_STRING,
-	 &Xsend.smtp_pass_entry, prefs_set_data_from_entry, prefs_set_entry},
+	 &p_send.smtp_pass_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	{"pop_before_smtp", "FALSE", &tmp_ac_prefs.pop_before_smtp, P_BOOL,
-	 &Xsend.pop_bfr_smtp_chkbtn,
+	 &p_send.pop_bfr_smtp_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	/* Compose */
@@ -378,6 +379,9 @@ static PrefParam param[] = {
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"ascii_armored", "FALSE", &tmp_ac_prefs.ascii_armored, P_BOOL,
 	 &privacy.ascii_armored_chkbtn,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"clearsign", "FALSE", &tmp_ac_prefs.clearsign, P_BOOL,
+	 &privacy.clearsign_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"sign_key", NULL, &tmp_ac_prefs.sign_key, P_ENUM,
 	 &privacy.defaultkey_radiobtn,
@@ -1358,15 +1362,15 @@ static void prefs_account_send_create(void)
 		_("Authenticate with POP3 before sending"));
 	gtk_widget_set_sensitive(pop_bfr_smtp_chkbtn, FALSE);
 
-	Xsend.date_chkbtn      = date_chkbtn;
-	Xsend.msgid_chkbtn     = msgid_chkbtn;
-	Xsend.customhdr_chkbtn = customhdr_chkbtn;
+	p_send.date_chkbtn      = date_chkbtn;
+	p_send.msgid_chkbtn     = msgid_chkbtn;
+	p_send.customhdr_chkbtn = customhdr_chkbtn;
 
-	Xsend.smtp_auth_chkbtn       = smtp_auth_chkbtn;
-	Xsend.smtp_auth_type_optmenu = optmenu;
-	Xsend.smtp_uid_entry         = smtp_uid_entry;
-	Xsend.smtp_pass_entry        = smtp_pass_entry;
-	Xsend.pop_bfr_smtp_chkbtn    = pop_bfr_smtp_chkbtn;
+	p_send.smtp_auth_chkbtn       = smtp_auth_chkbtn;
+	p_send.smtp_auth_type_optmenu = optmenu;
+	p_send.smtp_uid_entry         = smtp_uid_entry;
+	p_send.smtp_pass_entry        = smtp_pass_entry;
+	p_send.pop_bfr_smtp_chkbtn    = pop_bfr_smtp_chkbtn;
 }
 
 static void prefs_account_compose_create(void)
@@ -1470,6 +1474,7 @@ static void prefs_account_privacy_create(void)
 	GtkWidget *default_encrypt_chkbtn;
 	GtkWidget *default_sign_chkbtn;
 	GtkWidget *ascii_armored_chkbtn;
+	GtkWidget *clearsign_chkbtn;
 	GtkWidget *defaultkey_radiobtn;
 	GtkWidget *emailkey_radiobtn;
 	GtkWidget *customkey_radiobtn;
@@ -1489,7 +1494,9 @@ static void prefs_account_privacy_create(void)
 	PACK_CHECK_BUTTON (vbox2, default_sign_chkbtn,
 			   _("Sign message by default"));
 	PACK_CHECK_BUTTON (vbox2, ascii_armored_chkbtn,
-			   _("Use ASCII-armored format"));
+			   _("Use ASCII-armored format for encryption"));
+	PACK_CHECK_BUTTON (vbox2, clearsign_chkbtn,
+			   _("Use clear text signature"));
 	gtk_signal_connect (GTK_OBJECT (ascii_armored_chkbtn), "toggled",
 			    prefs_account_ascii_armored_warning, NULL);
 
@@ -1549,6 +1556,7 @@ static void prefs_account_privacy_create(void)
 	privacy.default_encrypt_chkbtn = default_encrypt_chkbtn;
 	privacy.default_sign_chkbtn    = default_sign_chkbtn;
 	privacy.ascii_armored_chkbtn   = ascii_armored_chkbtn;
+	privacy.clearsign_chkbtn       = clearsign_chkbtn;
 	privacy.defaultkey_radiobtn    = defaultkey_radiobtn;
 	privacy.emailkey_radiobtn      = emailkey_radiobtn;
 	privacy.customkey_radiobtn     = customkey_radiobtn;

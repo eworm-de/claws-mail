@@ -211,6 +211,34 @@
 
 -----------------------------------------------------------------------
 
+* outlook2sylpheed.pl
+
+  WHAT IT DOES
+  
+  This perl script converts an Outlook generated contact list into a 
+  Sylpheed XML address book.
+
+  HOW TO USE IT
+  
+  You must export Outlook Express contact list as TXT file, choosing
+  only "Name" and "Address" fields to export.
+
+  You must exit Sylpheed before converting the contact list.
+
+  From the command line, execute the following:
+
+	outlook2sylpheed.pl fullpathname
+
+  BUGS
+
+  Only works with fields described above. If you have more complex
+  examples send them to me, and I'll try to enhance the script.
+
+  Any questions, comments or problems, contact 
+  Ricardo Mones Lastra <mones@aic.uniovi.es>
+
+-----------------------------------------------------------------------
+
 * sylpheed-switcher
 
   WHAT IT DOES

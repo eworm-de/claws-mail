@@ -1,3 +1,125 @@
+2002-08-11 alfons	0.8.1claws52
+
+	* src/claws.c
+		clean up some warnings
+
+2002-08-11 [alfons]	0.8.1claws51
+
+	* acconfig.h
+	* configure.in
+	* src/crash.[ch]	** NEW FILES **
+	* src/main.c		
+		initial gdb crash handler
+
+2002-08-11 [paul]	0.8.1claws50
+
+	* src/prefs_toolbar.c
+		replace Up/Down arrow pixmaps with text to be
+		consistent across icon themes
+
+2002-08-11 [paul]	0.8.1claws49
+
+	* src/prefs_common.c
+	  src/prefs_toolbar.c
+		rename 'Pixmap' -> 'Icon'
+
+	* src/toolbar.[ch]
+		rename  'A_SEND_QUEUD' -> 'A_SEND_QUEUED'
+
+2002-08-10 [paul]	0.8.1claws48
+
+	* src/prefs_toolbar.c
+		re-work the UI
+
+2002-08-10 [paul]	0.8.1claws47
+
+	* src/main.c
+		don't write Processing progress to status bar
+		patch submitted by Alexander Evseev
+
+	* src/prefs_toolbar.c
+		re-position and resize window
+		make window assume correct size on first call
+
+2002-08-10 [paul]	0.8.1claws46
+
+	* src/mainwindow.c
+	  src/prefs_toolbar.c
+	  src/toolbar.c
+	  src/toolbar.h
+		obey coding style
+		follow UI text conventions
+
+2002-08-10 [alfons]	0.8.1claws45
+
+	* src/toolbar.c
+		correct pixmap for delete action
+
+2002-08-10 [paul]	0.8.1claws44
+
+	* po/pt_BR.po
+		updated by Fabio Jr. Beneditto
+
+2002-08-10 [paul]	0.8.1claws43
+
+	* po/POTFILES.in
+		add custom toolbar files
+
+2002-08-10 [paul]	0.8.1claws42
+
+	* sync with 0.8.1cvs22
+		see ChangeLog 2002-08-09
+
+2002-08-09 [paul]	0.8.1claws41
+
+	* tools/Makefile.am
+	  tools/README
+	  tools/outlook2sylpheed.pl	** NEW FILE **
+		add script to convert exported Outlook
+		contacts list to a Sylpheed addressbook.
+		Submitted by Ricardo Mones Lastra.
+
+2002-08-09 [paul]	0.8.1claws40
+
+	* AUTHORS
+	  configure.in
+	  po/sr.po	** NEW FILE **
+		add Serbian message catalog. Submitted by
+		Urosevic Aleksandar aka Urke MMI <urke-kg@eunet.yu>		
+
+2002-08-09 [paul]	0.8.1claws39
+
+	* sync with 0.8.1cvs21
+		see ChangeLog 2002-08-08
+
+2002-08-08 [oliver]	0.8.1claws38
+
+	* src/mainwindow.c
+		move Custom Toolbar to Configuration menu
+
+2002-08-08 [oliver]	0.8.1claws37
+
+	* src/prefs_toolbar.c
+		fix substitute pixmap bug
+
+2002-08-08 [paul]	0.8.1claws36
+
+	* sync with 0.8.1cvs19
+		see ChangeLog 2002-08-08
+
+2002-08-07 [christoph]	0.8.1claws35
+
+	* src/utils.c
+		fixed a memory leak in new canonicalize_file_replace
+
+2002-08-07 [christoph]	0.8.1claws34
+
+	* src/utils.[ch]
+		o canonicalize_file_replace should create the temporary
+		  file in the same directory as the original file.
+		o added get_tmpfile_in_dir that creates a temorary file
+		  in a specified directory.
+
 2002-08-07 [melvin]	0.8.1claws33
 
 	* src/toolbar.c

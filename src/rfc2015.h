@@ -25,16 +25,24 @@
 
 #include "procmime.h"
 
-void rfc2015_disable_all (void);
-void rfc2015_secure_remove (const char *fname);
-MimeInfo * rfc2015_find_signature (MimeInfo *mimeinfo);
-gboolean rfc2015_has_signature (MimeInfo *mimeinfo);
-void rfc2015_check_signature (MimeInfo *mimeinfo, FILE *fp);
-int rfc2015_is_encrypted (MimeInfo *mimeinfo);
-gboolean rfc2015_msg_is_encrypted (gchar *file);
-void rfc2015_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp);
-GSList *rfc2015_create_signers_list (const char *keyid);
-int rfc2015_encrypt (const char *file, GSList *recp_list, gboolean ascii_armored);
-int rfc2015_sign (const char *file, GSList *key_list);
+void rfc2015_disable_all		(void);
+void rfc2015_secure_remove		(const gchar	*fname);
+MimeInfo *rfc2015_find_signature	(MimeInfo	*mimeinfo);
+gboolean rfc2015_has_signature		(MimeInfo	*mimeinfo);
+void rfc2015_check_signature		(MimeInfo	*mimeinfo,
+					 FILE		*fp);
+gint rfc2015_is_encrypted		(MimeInfo	*mimeinfo);
+gboolean rfc2015_msg_is_encrypted	(const gchar	*file);
+void rfc2015_decrypt_message		(MsgInfo	*msginfo,
+					 MimeInfo	*mimeinfo,
+					 FILE		*fp);
+GSList *rfc2015_create_signers_list	(const gchar	*keyid);
+gint rfc2015_encrypt			(const gchar	*file,
+					 GSList		*recp_list,
+					 gboolean	 ascii_armored);
+gint rfc2015_sign			(const gchar	*file,
+					 GSList		*key_list);
+gint rfc2015_clearsign			(const gchar	*file,
+					 GSList		*key_list);
 
 #endif /* __RFC2015_H__ */

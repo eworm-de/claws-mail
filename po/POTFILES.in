@@ -77,6 +77,7 @@ src/prefs_matcher.c
 src/prefs_scoring.c
 src/prefs_summary_column.c
 src/prefs_template.c
+src/prefs_toolbar.c
 src/procheader.c
 src/procmime.c
 src/procmsg.c
@@ -102,6 +103,7 @@ src/summaryview.c
 src/syldap.c
 src/template.c
 src/textview.c
+src/toolbar.c
 src/unmime.c
 src/utils.c
 src/uuencode.c

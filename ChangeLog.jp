@@ -1,3 +1,55 @@
+2002-08-09
+
+	* src/compose.c: compose_write_to_file(): 指定した場合メッセージ本文
+	  をクリア署名するようにした。
+	  compose_clearsign_text(): 新規。文字列をクリア署名したもので
+	  置き換える。
+	* src/prefs_account.c: クリア署名のオプションを追加。
+	* src/rfc2015.c: rfc2015_clearsign(): 新規。
+	  pgp_sign(): クリア署名のフラグを追加。
+	* src/utils.[ch]: get_tmp_file(): 新規に確保された一意のファイル名
+	  を返すようにした(呼び出し側で解放する必要がある)。
+	  str_write_to_file(), file_read_to_str(): 新規。
+
+2002-08-08
+
+	* src/procmsg.c: procmsg_read_mark_file(): メモリリークを避ける
+	  ためキーの重複をチェック。
+
+2002-08-08
+
+	* src/base64.c: memcpy() のために string.h を include した。
+	* src/gtksctree.c: 関数 abs() の代わりにマクロ ABS() を使用。
+	* src/prefs_account.c
+	  src/prefs_common.c: sys/socket.h 中の関数 send() と衝突しないように
+	  'send' を 'p_send' に名称変更した。
+	* src/mainwindow.c: 不要な関数をコメントアウトした。
+	* src/utils.c: canonicalize_file_replace(): 警告メッセージを訂正。
+
+2002-08-08
+
+	* src/utils.[ch]: get_tmp_file(): 新規。 ~/.sylpheed/ 中のテンポラリ
+	  ファイル用のディレクトリを返す。
+	* src/main.c: ~/.sylpheed/ 中にテンポラリディレクトリを作成。
+	* src/compose.c
+	  src/inc.c: ~/.sylpheed/ 中にテンポラリファイルを作るようにし、
+	  ファイル名を修正。
+	  compose_exec_ext_editor(): g_get_tmp_dir() が '/tmp' 以外を返した
+	  ときにテンポラリファイルの作成に失敗するバグを修正。
+
+2002-08-08
+
+	* src/utils.c: copy_file(): unlink するときに dest_bak != NULL か
+	  どうかをチェック。
+
+2002-08-08
+
+	* src/utils.[ch]: canonicalize_file_replace(): 与えられたファイルと
+	  一時ファイルが同じファイルシステム上になかった場合にファイルの
+	  置き換えに失敗するバグを修正。
+	  copy_file(): バックアップを保持するかどうかのフラグを追加。
+	  move_file(): 移動先ファイルを上書きするかどうかのフラグを追加。
+
 2002-08-07
 
 	* src/socket.[ch]: IPv6 が有効な場合にリンクに失敗するのを修正。

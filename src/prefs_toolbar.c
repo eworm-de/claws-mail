@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001 Hiroyuki Yamamoto
+ * Copyright (C) 2002 Hiroyuki Yamamoto & the Sylpheed-Claws team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,16 @@
 #include "toolbar.h"
 #include "prefs_toolbar.h"
 
+typedef enum
+{
+	COL_ICON	= 0,
+	COL_FILENAME	= 1,
+	COL_TEXT	= 2,
+	COL_EVENT	= 3
+} DisplayedItemsColumnPos;
+
+# define N_DISPLAYED_ITEMS_COLS	4
+
 static struct _Toolbar {
 	GtkWidget *window;
 
@@ -63,7 +73,7 @@ static struct _Toolbar {
 
 }mtoolbar;
 
-#define CELL_SPACING 30
+#define CELL_SPACING 24
 #define ERROR_MSG _("Selected Action already set.\nPlease choose another Action from List")
 
 static void prefs_toolbar_open                   (void);
@@ -330,7 +340,7 @@ static gint prefs_toolbar_register(void)
 	gint row_set = 0;
 	GdkPixmap *xpm;
 	GdkBitmap *xpmmask;
-	gchar *item[5] = {0};
+	gchar *item[4];
 
 	if (clist_icons->rows == 0) return -1; 
 
@@ -348,7 +358,8 @@ static gint prefs_toolbar_register(void)
 		item[3] = g_strdup ("");
 		
 		row_set = gtk_clist_append (GTK_CLIST (mtoolbar.clist_set), item);
-	
+
+		g_free (item[0]);
 	} else {
 
 		if (is_duplicate (item[3])) {
@@ -376,7 +387,6 @@ static gint prefs_toolbar_register(void)
 	gtk_clist_moveto(clist_set, row_set, 0, row_set/clist_set->rows, 0);
 	gtk_clist_select_row (clist_set, row_set, 0);
 
-	g_free (item[0]);
 	g_free (item[2]);
 	g_free (item[3]);
 
@@ -392,7 +402,7 @@ static gint prefs_toolbar_substitute(void)
 	gint row_set = 0;
 	GdkPixmap *xpm;
 	GdkBitmap *xpmmask;
-	gchar *item[5] = {0};
+	gchar *item[4];
 	gchar *ac_set;
 
 	/* no rows or nothing selected */
@@ -417,6 +427,8 @@ static gint prefs_toolbar_substitute(void)
 
 		gtk_clist_remove (clist_set, row_set);
 		row_set = gtk_clist_insert (clist_set, row_set, item);
+
+		g_free (item[0]);
 	} else {
 
 		if ((is_duplicate(item[3])) && (g_strcasecmp(item[3], ac_set) != 0)){
@@ -441,12 +453,9 @@ static gint prefs_toolbar_substitute(void)
 		gtk_clist_set_pixmap (clist_set, row_set, 0, xpm, xpmmask);
 	}
 	
-
-	
 	gtk_clist_moveto(clist_set, row_set, 0, row_set/clist_set->rows, 0);
 	gtk_clist_select_row (clist_set, row_set, 0);
 
-	g_free (item[0]);
 	g_free (item[2]);
 	g_free (item[3]);
 	
@@ -574,7 +583,7 @@ static void prefs_toolbar_selection_changed(GtkList *list,
 	if (g_strcasecmp (cur_entry, actions_entry) == 0) {
 		gtk_widget_hide (mtoolbar.entry_icon_text);
 		gtk_widget_show (mtoolbar.combo_syl_action);
-		gtk_label_set_text (GTK_LABEL(mtoolbar.label_icon_text), _("select Sylpheed Action"));
+		gtk_label_set_text (GTK_LABEL(mtoolbar.label_icon_text), _("Sylpheed Action"));
 
 		if (prefs_common.actions_list == NULL) {
 		    gtk_widget_set_sensitive (mtoolbar.combo_syl_action, FALSE);
@@ -583,7 +592,7 @@ static void prefs_toolbar_selection_changed(GtkList *list,
 	} else {
 		gtk_widget_hide (mtoolbar.combo_syl_action);
 		gtk_widget_show (mtoolbar.entry_icon_text);
-		gtk_label_set_text (GTK_LABEL(mtoolbar.label_icon_text), _("enter Toolbar Text (shown below Pixmap)"));
+		gtk_label_set_text (GTK_LABEL(mtoolbar.label_icon_text), _("Toolbar text"));
 	}
 }
 
@@ -632,34 +641,43 @@ static void prefs_toolbar_create(void)
 	GtkWidget *label_file;
 	GtkWidget *label_text;
 	GtkWidget *label_action;
-	GtkWidget *toolbar;
+
+	GtkWidget *btn_vbox;
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
-	GtkWidget *icon_wid;
 
 	GtkWidget *confirm_area;
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
 
+	gchar *titles[N_DISPLAYED_ITEMS_COLS];
+
+	debug_print(_("Creating custom toolbar window...\n"));
+
 	window = gtk_window_new (GTK_WINDOW_DIALOG);
-	gtk_window_set_title (GTK_WINDOW (window), _("Customize Toolbar"));
-	//gtk_widget_set_usize (window, 400, 500);
-	gtk_widget_realize (window);
+	gtk_widget_set_usize (window, 450, -1); 
+	gtk_container_set_border_width(GTK_CONTAINER (window), 8);
+	gtk_window_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+	gtk_window_set_title (GTK_WINDOW (window), _("Customize toolbar"));
+	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
+	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, TRUE);
+	gtk_signal_connect(GTK_OBJECT (window), "delete_event",
+			   GTK_SIGNAL_FUNC (prefs_toolbar_cancel),
+			   NULL);
+	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
+			   GTK_SIGNAL_FUNC(prefs_toolbar_key_pressed),
+			   NULL);
+	MANAGE_WINDOW_SIGNALS_CONNECT(window);	
+	gtk_widget_realize (window); 
 
 	main_vbox = gtk_vbox_new (FALSE, 0);
-
+	gtk_widget_show (main_vbox);
 	gtk_container_add (GTK_CONTAINER (window), main_vbox);
 	
-	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
-				&cancel_btn, _("Cancel"), NULL, NULL);
-	gtk_box_pack_end (GTK_BOX(main_vbox), confirm_area, FALSE, FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (confirm_area), 5);
-	gtk_widget_grab_default (ok_btn);
-
 	top_hbox = gtk_hbox_new (FALSE, 0);
 	gtk_box_pack_start (GTK_BOX (main_vbox), top_hbox, TRUE, TRUE, 0);
   
-	compose_frame = gtk_frame_new (_("compose Toolbar Item"));
+	compose_frame = gtk_frame_new (_("Available toolbar items"));
 	gtk_box_pack_start (GTK_BOX (top_hbox), compose_frame, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (compose_frame), 5);
 
@@ -679,12 +697,11 @@ static void prefs_toolbar_create(void)
 	gtk_clist_set_column_width (GTK_CLIST (clist_icons), 0, 35);
 	gtk_clist_set_column_width (GTK_CLIST (clist_icons), 1, 200);
 	gtk_clist_column_titles_hide (GTK_CLIST (clist_icons));
-	gtk_widget_set_usize (clist_icons, 300, 150);
+	gtk_widget_set_usize (clist_icons, 225, 108); 
 	
 	/* icon description */
-	hbox_icon_text = gtk_hbox_new (TRUE, 5);
+	hbox_icon_text = gtk_hbox_new (FALSE, 5);
 	gtk_container_add (GTK_CONTAINER (vbox_frame), hbox_icon_text);
-	gtk_container_set_border_width (GTK_CONTAINER (hbox_icon_text), 5);
 	
 	label_icon_text = gtk_label_new ("");
 	gtk_box_pack_start (GTK_BOX (hbox_icon_text), label_icon_text, FALSE, FALSE, 5);
@@ -694,23 +711,22 @@ static void prefs_toolbar_create(void)
 
 	/* Sylpheed Action Combo Box */	
 	combo_syl_action = gtk_combo_new ();
-	gtk_box_pack_start (GTK_BOX (hbox_icon_text), combo_syl_action, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox_icon_text), combo_syl_action, FALSE, FALSE, 0);
 
 	combo_syl_list = GTK_COMBO (combo_syl_action)->list;
 	combo_syl_entry = GTK_COMBO (combo_syl_action)->entry;
 	gtk_entry_set_editable (GTK_ENTRY (combo_syl_entry), FALSE);
 
 	/* available actions */
-	hbox_action = gtk_hbox_new (TRUE, 5);
+	hbox_action = gtk_hbox_new (FALSE, 5);
 	gtk_container_add (GTK_CONTAINER (vbox_frame), hbox_action);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox_action), 5);
 	
-	label_action_sel = gtk_label_new (_("select Action executed on click"));
+	label_action_sel = gtk_label_new (_("Event executed on click"));
 	gtk_box_pack_start (GTK_BOX (hbox_action), label_action_sel, FALSE, FALSE, 0);
-	gtk_label_set_justify (GTK_LABEL (label_action_sel), GTK_JUSTIFY_RIGHT);
 	
 	combo_action = gtk_combo_new ();
-	gtk_box_pack_start (GTK_BOX (hbox_action), combo_action, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox_action), combo_action, FALSE, FALSE, 0);
 	
 	combo_list = GTK_COMBO (combo_action)->list;
 	combo_entry = GTK_COMBO (combo_action)->entry;
@@ -747,7 +763,7 @@ static void prefs_toolbar_create(void)
 			    NULL);
 
 	/* currently active toolbar items */
-	frame_toolbar_items = gtk_frame_new (_("set ToolbarItems"));
+	frame_toolbar_items = gtk_frame_new (_("Displayed toolbar items"));
 	gtk_box_pack_start (GTK_BOX (main_vbox), frame_toolbar_items, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (frame_toolbar_items), 5);
 	
@@ -756,80 +772,60 @@ static void prefs_toolbar_create(void)
 	
 	scrolledwindow_clist_set = gtk_scrolled_window_new (NULL, NULL);
 	gtk_box_pack_start (GTK_BOX (hbox_bottom), scrolledwindow_clist_set, TRUE, TRUE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow_clist_set), 5);
+	gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow_clist_set), 1);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow_clist_icon), 
 					GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+
+	titles[COL_ICON]     = _("Icon");
+	titles[COL_FILENAME] = _("File name");
+	titles[COL_TEXT]     = _("Icon text");
+	titles[COL_EVENT]    = _("Mapped event");
 	
-	clist_set = gtk_clist_new (4);
+	clist_set = gtk_clist_new_with_titles (N_DISPLAYED_ITEMS_COLS, titles);
+	gtk_widget_show (clist_set);
 	gtk_container_add (GTK_CONTAINER (scrolledwindow_clist_set), clist_set);
-	gtk_clist_set_column_width (GTK_CLIST (clist_set), 0, 80);
-	gtk_clist_set_column_width (GTK_CLIST (clist_set), 1, 80);
-	gtk_clist_set_column_width (GTK_CLIST (clist_set), 2, 80);
-	gtk_clist_set_column_width (GTK_CLIST (clist_set), 3, 80);
+	gtk_clist_set_column_width (GTK_CLIST(clist_set), COL_ICON    , 80);
+	gtk_clist_set_column_width (GTK_CLIST(clist_set), COL_FILENAME, 80);
+	gtk_clist_set_column_width (GTK_CLIST(clist_set), COL_TEXT    , 80);
+	gtk_clist_set_column_width (GTK_CLIST(clist_set), COL_EVENT   , 80);
 	gtk_clist_column_titles_show (GTK_CLIST (clist_set));
-	gtk_widget_set_usize (clist_set, 300, 200);
+	gtk_widget_set_usize (clist_set, 225, 120);
 
-	label_icon = gtk_label_new (_("Toolbar Icon"));
-	gtk_clist_set_column_widget (GTK_CLIST (clist_set), 0, label_icon);
-	
-	label_file = gtk_label_new (_("File Name"));
-	gtk_clist_set_column_widget (GTK_CLIST (clist_set), 1, label_file);
+	btn_vbox = gtk_vbox_new (FALSE, 8);
+	gtk_widget_show (btn_vbox);
+	gtk_box_pack_start (GTK_BOX (hbox_bottom), btn_vbox, FALSE, FALSE, 5);
 
-	label_text = gtk_label_new (_("Icon Text"));
-	gtk_clist_set_column_widget (GTK_CLIST (clist_set), 2, label_text);
+	up_btn = gtk_button_new_with_label (_("Up"));
+	gtk_widget_show (up_btn);
+	gtk_box_pack_start (GTK_BOX (btn_vbox), up_btn, FALSE, FALSE, 2);
 
-	label_action = gtk_label_new (_("Mapped Action"));
-	gtk_clist_set_column_widget (GTK_CLIST (clist_set), 3, label_action);
-	
-	toolbar = gtk_toolbar_new (GTK_ORIENTATION_VERTICAL, GTK_TOOLBAR_BOTH);
-	gtk_box_pack_start (GTK_BOX (hbox_bottom), toolbar, FALSE, FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (toolbar), 5);
+	down_btn = gtk_button_new_with_label (_("Down"));
+	gtk_widget_show (down_btn);
+	gtk_box_pack_start (GTK_BOX (btn_vbox), down_btn, FALSE, FALSE, 0);
 
-	icon_wid = stock_pixmap_widget(hbox_bottom, STOCK_PIXMAP_UP_ARROW);
-	up_btn = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
-					     GTK_TOOLBAR_CHILD_BUTTON,
-					     NULL,
-					     NULL,
-					     _("Up"), NULL,
-					     icon_wid, NULL, NULL);
-
-	icon_wid = stock_pixmap_widget(hbox_bottom, STOCK_PIXMAP_DOWN_ARROW);
-	down_btn = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
-					       GTK_TOOLBAR_CHILD_BUTTON,
-					       NULL,
-					       NULL,
-					       _("Down"), NULL,
-					       icon_wid, NULL, NULL);
-
-	gtk_signal_connect(GTK_OBJECT (window), "delete_event",
-			   GTK_SIGNAL_FUNC (prefs_toolbar_cancel),
-			   NULL);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(prefs_toolbar_key_pressed),
-			   NULL);
-	MANAGE_WINDOW_SIGNALS_CONNECT(window);	
+	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
+				&cancel_btn, _("Cancel"), NULL, NULL);
+	gtk_box_pack_end (GTK_BOX(main_vbox), confirm_area, FALSE, FALSE, 0);
+	gtk_container_set_border_width (GTK_CONTAINER (confirm_area), 5);
+	gtk_widget_grab_default (ok_btn);
 
 	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_toolbar_ok), 
-			   NULL);
+			   GTK_SIGNAL_FUNC(prefs_toolbar_ok), NULL);
 	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_toolbar_cancel), 
-			   NULL);
+			   GTK_SIGNAL_FUNC(prefs_toolbar_cancel), NULL);
 	gtk_signal_connect(GTK_OBJECT (clist_set), "select_row",
 			   GTK_SIGNAL_FUNC (prefs_toolbar_select_row_set),
 			   NULL);
 	gtk_signal_connect(GTK_OBJECT (clist_icons), "select_row",
 			   GTK_SIGNAL_FUNC (prefs_toolbar_select_row_icons),
 			   NULL);
-	gtk_signal_connect(GTK_OBJECT (down_btn), "clicked",
-			   GTK_SIGNAL_FUNC (prefs_toolbar_down),
-			   NULL);
-	gtk_signal_connect(GTK_OBJECT (up_btn), "clicked",
-			   GTK_SIGNAL_FUNC (prefs_toolbar_up),
-			   NULL);
 	gtk_signal_connect(GTK_OBJECT(combo_list), "selection-changed",
 			   GTK_SIGNAL_FUNC(prefs_toolbar_selection_changed),
 			   NULL);
+	gtk_signal_connect(GTK_OBJECT (up_btn), "clicked",
+			   GTK_SIGNAL_FUNC (prefs_toolbar_up), NULL);
+	gtk_signal_connect(GTK_OBJECT (down_btn), "clicked",
+			   GTK_SIGNAL_FUNC (prefs_toolbar_down), NULL);
 	
 	mtoolbar.window           = window;
 	mtoolbar.clist_icons      = clist_icons;
