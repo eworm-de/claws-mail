@@ -1082,10 +1082,12 @@ gint procmsg_send_message_queue(const gchar *file)
 
 		switch (hnum) {
 		case Q_SENDER:
-			if (!from) from = g_strdup(p);
+			if (from == NULL) 
+				from = g_strdup(p);
 			break;
 		case Q_SMTPSERVER:
-			if (!smtpserver) smtpserver = g_strdup(p);
+			if (smtpserver == NULL) 
+				smtpserver = g_strdup(p);
 			break;
 		case Q_RECIPIENTS:
 			to_list = address_list_append(to_list, p);
@@ -1100,22 +1102,28 @@ gint procmsg_send_message_queue(const gchar *file)
 			newsac = account_find_from_id(atoi(p));
 			break;
 		case Q_SAVE_COPY_FOLDER:
-			if (!savecopyfolder) savecopyfolder = g_strdup(p);
+			if (savecopyfolder == NULL) 
+				savecopyfolder = g_strdup(p);
 			break;
 		case Q_REPLY_MESSAGE_ID:
-			if (!replymessageid) replymessageid = g_strdup(p);
+			if (replymessageid == NULL) 
+				replymessageid = g_strdup(p);
 			break;
 		case Q_FWD_MESSAGE_ID:
-			if (!fwdmessageid) fwdmessageid = g_strdup(p);
+			if (fwdmessageid == NULL) 
+				fwdmessageid = g_strdup(p);
 			break;
 		case Q_PRIVACY_SYSTEM:
-			if (!privacy_system) privacy_system = g_strdup(p);
+			if (privacy_system == NULL) 
+				privacy_system = g_strdup(p);
 			break;
 		case Q_ENCRYPT:
-			if (p[0] == '1') encrypt = TRUE;
+			if (p[0] == '1') 
+				encrypt = TRUE;
 			break;
 		case Q_ENCRYPT_DATA:
-			if (!encrypt_data) encrypt_data = g_strdup(p);
+			if (encrypt_data == NULL) 
+				encrypt_data = g_strdup(p);
 			break;
 		}
 	}

@@ -1,3 +1,10 @@
+2004-11-17 [colin]	0.9.12cvs149
+
+	* src/procmsg.c
+		< Reboot_> don't compare pointers to NULL with !
+		So, use the other form to bring consistency.
+		Also fix coding style.
+
 2004-11-16 [colin]	0.9.12cvs148
 
 	* src/procmsg.c

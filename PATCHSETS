@@ -131,3 +131,4 @@
 ( cvs diff -u -r 1.119 -r 1.120 src/prefs_account.c; cvs diff -u -r 1.91 -r 1.92 src/procmime.c; cvs diff -u -r 1.32 -r 1.33 src/procmime.h; ) > 0.9.12cvs146.patchset
 ( cvs diff -u -r 1.170 -r 1.171 src/procmsg.c; ) > 0.9.12cvs147.patchset
 ( cvs diff -u -r 1.171 -r 1.172 src/procmsg.c; ) > 0.9.12cvs148.patchset
+( cvs diff -u -r 1.172 -r 1.173 src/procmsg.c; ) > 0.9.12cvs149.patchset
