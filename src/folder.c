@@ -2048,6 +2048,7 @@ gint folder_item_remove_msg(FolderItem *item, gint num)
 	MsgInfo *msginfo;
 
 	g_return_val_if_fail(item != NULL, -1);
+	g_return_val_if_fail(folder->klass->remove_msg != NULL, -1);
 
 	folder = item->folder;
 	if (!item->cache) folder_item_read_cache(item);

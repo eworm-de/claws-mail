@@ -1,3 +1,9 @@
+2003-04-26 [christoph]	0.8.11claws114
+
+	* src/folder.c
+		check if remove virtual really exists before
+		calling the function
+
 2003-04-25 [match]	0.8.11claws113
 
 	* src/addrindex.c
