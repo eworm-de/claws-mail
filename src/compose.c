@@ -2712,7 +2712,6 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 			g_print("l_len=%d wrap_len=%d do_del=%d\n",
 				line_len, linewrap_len, do_delete);
 #endif
-			/* should we delete to perform smart wrapping */
 			if (line_len < linewrap_len && do_delete) {
 				STEXT_FREEZE();
 				/* get rid of newline */
@@ -4615,11 +4614,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 		GTK_STEXT(text)->cursor_type = GTK_STEXT_CURSOR_BLOCK;
 	}
 	
-	if (prefs_common.smart_wrapping) {	
-		gtk_stext_set_word_wrap(GTK_STEXT(text), TRUE);
-		gtk_stext_set_wrap_rmargin(GTK_STEXT(text), prefs_common.linewrap_len);
-	}		
-
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
 
 	gtk_signal_connect(GTK_OBJECT(text), "changed",
