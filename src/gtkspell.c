@@ -58,7 +58,6 @@
 #include "gtkspell.h"
 
 #include <pspell/pspell.h>
-#include <pspell/string_list.h>
 /* size of the text buffer used in various word-processing routines. */
 #define BUFSIZE 1024
 
@@ -422,7 +421,7 @@ guchar *gtkpspell_get_dict(GtkPspell *gtkpspell)
 	jargon   = g_strdup(pspell_config_retrieve(gtkpspell->config, "jargon"  ));
 	len      = strlen(language) + strlen(spelling) + strlen(jargon);
 
-	if (len < BUFSIZE) {
+	if (len + 4 < BUFSIZE) {
 		dict = g_new(char,len + 4);
 		strcpy(dict, language);
 		if (spelling) {
@@ -704,6 +703,7 @@ static void change_color(GtkPspell * gtkpspell,
 		gtk_signal_handler_unblock_by_func(GTK_OBJECT(gtktext),
 						   GTK_SIGNAL_FUNC(entry_insert_cb), 
 						   gtkpspell);
+		g_free(newtext);
 	}
 	gtk_xtext_thaw(gtktext);
 }
@@ -829,6 +829,7 @@ static void entry_delete_cb(GtkXText *gtktext, gint start, gint end,
 	}
 
 	gtk_editable_set_position(GTK_EDITABLE(gtktext), origpos);
+	gtk_xtext_set_point(gtktext, origpos);
 	gtk_editable_select_region(GTK_EDITABLE(gtktext), origpos, origpos);
 	/* this is to *UNDO* the selection, in case they were holding shift
          * while hitting backspace. */
