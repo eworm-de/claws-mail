@@ -1,3 +1,15 @@
+2003-03-06
+
+	* src/codeconv.[ch]: 足りない文字エンコーディングと locale を追加。
+
+2003-03-06
+
+	* src/procmsg.[ch]:
+	  procmsg_get_mark_sum()
+	  procmsg_open_mark_file()
+	  procmsg_read_mark_file(): ディレクトリパスの代わりに FolderItem
+	  を受け取るようにした。
+
 2003-03-05
 
 	* src/codeconv.c: conv_encode_header(): 長い非 ASCII 文字列を

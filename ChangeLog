@@ -1,3 +1,15 @@
+2003-03-06
+
+	* src/codeconv.[ch]: added missing character encodings and locales.
+
+2003-03-06
+
+	* src/procmsg.[ch]:
+	  procmsg_get_mark_sum()
+	  procmsg_open_mark_file()
+	  procmsg_read_mark_file(): take FolderItem instead of directory
+	  path.
+
 2003-03-05
 
 	* src/codeconv.c: conv_encode_header(): fixed a bug that spaces

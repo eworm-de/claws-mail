@@ -35,18 +35,39 @@ typedef enum
 	C_UTF_8,
 	C_ISO_8859_1,
 	C_ISO_8859_2,
+	C_ISO_8859_3,
 	C_ISO_8859_4,
 	C_ISO_8859_5,
+	C_ISO_8859_6,
 	C_ISO_8859_7,
 	C_ISO_8859_8,
 	C_ISO_8859_9,
+	C_ISO_8859_10,
 	C_ISO_8859_11,
 	C_ISO_8859_13,
+	C_ISO_8859_14,
 	C_ISO_8859_15,
 	C_BALTIC,
+	C_CP1250,
 	C_CP1251,
+	C_CP1252,
+	C_CP1253,
+	C_CP1254,
+	C_CP1255,
+	C_CP1256,
+	C_CP1257,
+	C_CP1258,
+	C_WINDOWS_1250,
 	C_WINDOWS_1251,
+	C_WINDOWS_1252,
+	C_WINDOWS_1253,
+	C_WINDOWS_1254,
+	C_WINDOWS_1255,
+	C_WINDOWS_1256,
+	C_WINDOWS_1257,
+	C_WINDOWS_1258,
 	C_KOI8_R,
+	C_KOI8_T,
 	C_KOI8_U,
 	C_ISO_2022_JP,
 	C_ISO_2022_JP_2,
@@ -57,10 +78,14 @@ typedef enum
 	C_ISO_2022_CN,
 	C_EUC_CN,
 	C_GB2312,
+	C_GBK,
 	C_EUC_TW,
 	C_BIG5,
+	C_BIG5_HKSCS,
 	C_TIS_620,
-	C_WINDOWS_874
+	C_WINDOWS_874,
+	C_GEORGIAN_PS,
+	C_TCVN5712_1
 } CharSet;
 
 typedef void (*CodeConvFunc) (gchar *outbuf, gint outlen, const gchar *inbuf);
@@ -78,18 +103,39 @@ struct _CodeConverter
 #define CS_UTF_8		"UTF-8"
 #define CS_ISO_8859_1		"ISO-8859-1"
 #define CS_ISO_8859_2		"ISO-8859-2"
+#define CS_ISO_8859_3		"ISO-8859-3"
 #define CS_ISO_8859_4		"ISO-8859-4"
 #define CS_ISO_8859_5		"ISO-8859-5"
+#define CS_ISO_8859_6		"ISO-8859-6"
 #define CS_ISO_8859_7		"ISO-8859-7"
 #define CS_ISO_8859_8		"ISO-8859-8"
 #define CS_ISO_8859_9		"ISO-8859-9"
+#define CS_ISO_8859_10		"ISO-8859-10"
 #define CS_ISO_8859_11		"ISO-8859-11"
 #define CS_ISO_8859_13		"ISO-8859-13"
+#define CS_ISO_8859_14		"ISO-8859-14"
 #define CS_ISO_8859_15		"ISO-8859-15"
 #define CS_BALTIC		"BALTIC"
+#define CS_CP1250		"CP1250"
 #define CS_CP1251		"CP1251"
+#define CS_CP1252		"CP1252"
+#define CS_CP1253		"CP1253"
+#define CS_CP1254		"CP1254"
+#define CS_CP1255		"CP1255"
+#define CS_CP1256		"CP1256"
+#define CS_CP1257		"CP1257"
+#define CS_CP1258		"CP1258"
+#define CS_WINDOWS_1250		"Windows-1250"
 #define CS_WINDOWS_1251		"Windows-1251"
+#define CS_WINDOWS_1252		"Windows-1252"
+#define CS_WINDOWS_1253		"Windows-1253"
+#define CS_WINDOWS_1254		"Windows-1254"
+#define CS_WINDOWS_1255		"Windows-1255"
+#define CS_WINDOWS_1256		"Windows-1256"
+#define CS_WINDOWS_1257		"Windows-1257"
+#define CS_WINDOWS_1258		"Windows-1258"
 #define CS_KOI8_R		"KOI8-R"
+#define CS_KOI8_T		"KOI8-T"
 #define CS_KOI8_U		"KOI8-U"
 #define CS_ISO_2022_JP		"ISO-2022-JP"
 #define CS_ISO_2022_JP_2	"ISO-2022-JP-2"
@@ -104,10 +150,14 @@ struct _CodeConverter
 #define CS_ISO_2022_CN		"ISO-2022-CN"
 #define CS_EUC_CN		"EUC-CN"
 #define CS_GB2312		"GB2312"
+#define CS_GBK			"GBK"
 #define CS_EUC_TW		"EUC-TW"
 #define CS_BIG5			"Big5"
+#define CS_BIG5_HKSCS		"BIG5-HKSCS"
 #define CS_TIS_620		"TIS-620"
 #define CS_WINDOWS_874		"Windows-874"
+#define CS_GEORGIAN_PS		"GEORGIAN-PS"
+#define CS_TCVN5712_1		"TCVN5712-1"
 
 void conv_jistoeuc(gchar *outbuf, gint outlen, const gchar *inbuf);
 void conv_euctojis(gchar *outbuf, gint outlen, const gchar *inbuf);
@@ -156,6 +206,7 @@ CharSet conv_get_current_charset		(void);
 const gchar *conv_get_current_charset_str	(void);
 CharSet conv_get_outgoing_charset		(void);
 const gchar *conv_get_outgoing_charset_str	(void);
+gboolean conv_is_multibyte_encoding		(CharSet	 encoding);
 
 const gchar *conv_get_current_locale		(void);
 

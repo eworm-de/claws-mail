@@ -619,13 +619,17 @@ void conv_localetodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 	case C_US_ASCII:
 	case C_ISO_8859_1:
 	case C_ISO_8859_2:
+	case C_ISO_8859_3:
 	case C_ISO_8859_4:
 	case C_ISO_8859_5:
+	case C_ISO_8859_6:
 	case C_ISO_8859_7:
 	case C_ISO_8859_8:
 	case C_ISO_8859_9:
+	case C_ISO_8859_10:
 	case C_ISO_8859_11:
 	case C_ISO_8859_13:
+	case C_ISO_8859_14:
 	case C_ISO_8859_15:
 		conv_unreadable_latin(outbuf);
 		break;
@@ -746,13 +750,17 @@ CodeConvFunc conv_get_code_conv_func(const gchar *src_charset_str,
 		break;
 	case C_ISO_8859_1:
 	case C_ISO_8859_2:
+	case C_ISO_8859_3:
 	case C_ISO_8859_4:
 	case C_ISO_8859_5:
+	case C_ISO_8859_6:
 	case C_ISO_8859_7:
 	case C_ISO_8859_8:
 	case C_ISO_8859_9:
+	case C_ISO_8859_10:
 	case C_ISO_8859_11:
 	case C_ISO_8859_13:
+	case C_ISO_8859_14:
 	case C_ISO_8859_15:
 		if (dest_charset == C_AUTO)
 			code_conv = conv_latintodisp;
@@ -859,18 +867,39 @@ static const struct {
 	{C_UTF_8,		CS_UTF_8},
 	{C_ISO_8859_1,		CS_ISO_8859_1},
 	{C_ISO_8859_2,		CS_ISO_8859_2},
+	{C_ISO_8859_3,		CS_ISO_8859_3},
 	{C_ISO_8859_4,		CS_ISO_8859_4},
 	{C_ISO_8859_5,		CS_ISO_8859_5},
+	{C_ISO_8859_6,		CS_ISO_8859_6},
 	{C_ISO_8859_7,		CS_ISO_8859_7},
 	{C_ISO_8859_8,		CS_ISO_8859_8},
 	{C_ISO_8859_9,		CS_ISO_8859_9},
+	{C_ISO_8859_10,		CS_ISO_8859_10},
 	{C_ISO_8859_11,		CS_ISO_8859_11},
 	{C_ISO_8859_13,		CS_ISO_8859_13},
+	{C_ISO_8859_14,		CS_ISO_8859_14},
 	{C_ISO_8859_15,		CS_ISO_8859_15},
 	{C_BALTIC,		CS_BALTIC},
+	{C_CP1250,		CS_CP1250},
 	{C_CP1251,		CS_CP1251},
+	{C_CP1252,		CS_CP1252},
+	{C_CP1253,		CS_CP1253},
+	{C_CP1254,		CS_CP1254},
+	{C_CP1255,		CS_CP1255},
+	{C_CP1256,		CS_CP1256},
+	{C_CP1257,		CS_CP1257},
+	{C_CP1258,		CS_CP1258},
+	{C_WINDOWS_1250,	CS_WINDOWS_1250},
 	{C_WINDOWS_1251,	CS_WINDOWS_1251},
+	{C_WINDOWS_1252,	CS_WINDOWS_1252},
+	{C_WINDOWS_1253,	CS_WINDOWS_1253},
+	{C_WINDOWS_1254,	CS_WINDOWS_1254},
+	{C_WINDOWS_1255,	CS_WINDOWS_1255},
+	{C_WINDOWS_1256,	CS_WINDOWS_1256},
+	{C_WINDOWS_1257,	CS_WINDOWS_1257},
+	{C_WINDOWS_1258,	CS_WINDOWS_1258},
 	{C_KOI8_R,		CS_KOI8_R},
+	{C_KOI8_T,		CS_KOI8_T},
 	{C_KOI8_U,		CS_KOI8_U},
 	{C_ISO_2022_JP,		CS_ISO_2022_JP},
 	{C_ISO_2022_JP_2,	CS_ISO_2022_JP_2},
@@ -884,10 +913,14 @@ static const struct {
 	{C_ISO_2022_CN,		CS_ISO_2022_CN},
 	{C_EUC_CN,		CS_EUC_CN},
 	{C_GB2312,		CS_GB2312},
+	{C_GBK,			CS_GBK},
 	{C_EUC_TW,		CS_EUC_TW},
 	{C_BIG5,		CS_BIG5},
+	{C_BIG5_HKSCS,		CS_BIG5_HKSCS},
 	{C_TIS_620,		CS_TIS_620},
 	{C_WINDOWS_874,		CS_WINDOWS_874},
+	{C_GEORGIAN_PS,		CS_GEORGIAN_PS},
+	{C_TCVN5712_1,		CS_TCVN5712_1},
 };
 
 static const struct {
@@ -896,61 +929,173 @@ static const struct {
 	CharSet out_charset;
 } locale_table[] = {
 	{"ja_JP.eucJP"	, C_EUC_JP	, C_ISO_2022_JP},
-	{"ja_JP.ujis"	, C_EUC_JP	, C_ISO_2022_JP},
+	{"ja_JP.EUC-JP"	, C_EUC_JP	, C_ISO_2022_JP},
 	{"ja_JP.EUC"	, C_EUC_JP	, C_ISO_2022_JP},
+	{"ja_JP.ujis"	, C_EUC_JP	, C_ISO_2022_JP},
 	{"ja_JP.SJIS"	, C_SHIFT_JIS	, C_ISO_2022_JP},
 	{"ja_JP.JIS"	, C_ISO_2022_JP	, C_ISO_2022_JP},
 	{"ja_JP"	, C_EUC_JP	, C_ISO_2022_JP},
+	{"ko_KR.EUC-KR"	, C_EUC_KR	, C_EUC_KR},
 	{"ko_KR"	, C_EUC_KR	, C_EUC_KR},
 	{"zh_CN.GB2312"	, C_GB2312	, C_GB2312},
+	{"zh_CN.GBK"	, C_GBK		, C_GB2312},
 	{"zh_CN"	, C_GB2312	, C_GB2312},
+	{"zh_HK"	, C_BIG5_HKSCS	, C_BIG5_HKSCS},
 	{"zh_TW.eucTW"	, C_EUC_TW	, C_BIG5},
+	{"zh_TW.EUC-TW"	, C_EUC_TW	, C_BIG5},
 	{"zh_TW.Big5"	, C_BIG5	, C_BIG5},
 	{"zh_TW"	, C_BIG5	, C_BIG5},
 
 	{"ru_RU.KOI8-R"	, C_KOI8_R	, C_KOI8_R},
+	{"ru_RU.KOI8R"	, C_KOI8_R	, C_KOI8_R},
 	{"ru_RU.CP1251"	, C_WINDOWS_1251, C_KOI8_R},
 	{"ru_RU"	, C_ISO_8859_5	, C_KOI8_R},
+	{"tg_TJ"	, C_KOI8_T	, C_KOI8_T},
 	{"ru_UA"	, C_KOI8_U	, C_KOI8_U},
 	{"uk_UA"	, C_KOI8_U	, C_KOI8_U},
+
 	{"be_BY"	, C_WINDOWS_1251, C_WINDOWS_1251},
 	{"bg_BG"	, C_WINDOWS_1251, C_WINDOWS_1251},
 
-	{"en_US"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"yi_US"	, C_WINDOWS_1255, C_WINDOWS_1255},
+
+	{"af_ZA"	, C_ISO_8859_1  , C_ISO_8859_1},
+	{"br_FR"	, C_ISO_8859_1	, C_ISO_8859_1},
 	{"ca_ES"	, C_ISO_8859_1	, C_ISO_8859_1},
 	{"da_DK"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"de_AT"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"de_BE"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"de_CH"	, C_ISO_8859_1	, C_ISO_8859_1},
 	{"de_DE"	, C_ISO_8859_1	, C_ISO_8859_1},
-	{"nl_NL"	, C_ISO_8859_1	, C_ISO_8859_1},
-	{"et_EE"	, C_ISO_8859_1	, C_ISO_8859_1},
-	{"fi_FI"	, C_ISO_8859_1	, C_ISO_8859_1},
-	{"fr_FR"	, C_ISO_8859_1	, C_ISO_8859_1},
-	{"is_IS"	, C_ISO_8859_1	, C_ISO_8859_1},
-	{"it_IT"	, C_ISO_8859_1	, C_ISO_8859_1},
-	{"no_NO"	, C_ISO_8859_1	, C_ISO_8859_1},
-	{"pt_PT"	, C_ISO_8859_1	, C_ISO_8859_1},
-	{"pt_BR"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"de_LU"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"en_AU"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"en_BW"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"en_CA"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"en_DK"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"en_GB"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"en_HK"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"en_IE"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"en_NZ"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"en_PH"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"en_SG"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"en_US"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"en_ZA"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"en_ZW"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"es_AR"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"es_BO"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"es_CL"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"es_CO"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"es_CR"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"es_DO"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"es_EC"	, C_ISO_8859_1	, C_ISO_8859_1},
 	{"es_ES"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"es_GT"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"es_HN"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"es_MX"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"es_NI"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"es_PA"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"es_PE"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"es_PR"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"es_PY"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"es_SV"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"es_US"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"es_UY"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"es_VE"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"et_EE"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"eu_ES"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"fi_FI"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"fo_FO"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"fr_BE"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"fr_CA"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"fr_CH"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"fr_FR"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"fr_LU"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"ga_IE"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"gl_ES"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"gv_GB"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"id_ID"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"is_IS"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"it_CH"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"it_IT"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"kl_GL"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"kw_GB"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"ms_MY"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"nl_BE"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"nl_NL"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"nn_NO"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"no_NO"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"oc_FR"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"pt_BR"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"pt_PT"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"sq_AL"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"sv_FI"	, C_ISO_8859_1	, C_ISO_8859_1},
 	{"sv_SE"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"tl_PH"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"uz_UZ"	, C_ISO_8859_1	, C_ISO_8859_1},
+	{"wa_BE"	, C_ISO_8859_1	, C_ISO_8859_1},
 
+	{"bs_BA"	, C_ISO_8859_2	, C_ISO_8859_2},
+	{"cs_CZ"	, C_ISO_8859_2	, C_ISO_8859_2},
 	{"hr_HR"	, C_ISO_8859_2	, C_ISO_8859_2},
 	{"hu_HU"	, C_ISO_8859_2	, C_ISO_8859_2},
 	{"pl_PL"	, C_ISO_8859_2	, C_ISO_8859_2},
 	{"ro_RO"	, C_ISO_8859_2	, C_ISO_8859_2},
 	{"sk_SK"	, C_ISO_8859_2	, C_ISO_8859_2},
 	{"sl_SI"	, C_ISO_8859_2	, C_ISO_8859_2},
-	{"el_GR"	, C_ISO_8859_7	, C_ISO_8859_7},
-	{"iw_IL"	, C_ISO_8859_8	, C_ISO_8859_8},
-	{"tr_TR"	, C_ISO_8859_9	, C_ISO_8859_9},
 
-	{"th_TH"	, C_TIS_620	, C_TIS_620},
-	/* {"th_TH"	, C_WINDOWS_874}, */
-	/* {"th_TH"	, C_ISO_8859_11}, */
+	{"sr_YU@cyrillic"	, C_ISO_8859_5	, C_ISO_8859_5},
+	{"sr_YU"		, C_ISO_8859_2	, C_ISO_8859_2},
+
+	{"mt_MT"		, C_ISO_8859_3	, C_ISO_8859_3},
 
 	{"lt_LT.iso88594"	, C_ISO_8859_4	, C_ISO_8859_4},
 	{"lt_LT.ISO8859-4"	, C_ISO_8859_4	, C_ISO_8859_4},
 	{"lt_LT.ISO_8859-4"	, C_ISO_8859_4	, C_ISO_8859_4},
 	{"lt_LT"		, C_ISO_8859_13	, C_ISO_8859_13},
-	{"lv_LV"		, C_ISO_8859_13	, C_ISO_8859_13},
+
+	{"mk_MK"	, C_ISO_8859_5	, C_ISO_8859_5},
+
+	{"ar_AE"	, C_ISO_8859_6	, C_ISO_8859_6},
+	{"ar_BH"	, C_ISO_8859_6	, C_ISO_8859_6},
+	{"ar_DZ"	, C_ISO_8859_6	, C_ISO_8859_6},
+	{"ar_EG"	, C_ISO_8859_6	, C_ISO_8859_6},
+	{"ar_IQ"	, C_ISO_8859_6	, C_ISO_8859_6},
+	{"ar_JO"	, C_ISO_8859_6	, C_ISO_8859_6},
+	{"ar_KW"	, C_ISO_8859_6	, C_ISO_8859_6},
+	{"ar_LB"	, C_ISO_8859_6	, C_ISO_8859_6},
+	{"ar_LY"	, C_ISO_8859_6	, C_ISO_8859_6},
+	{"ar_MA"	, C_ISO_8859_6	, C_ISO_8859_6},
+	{"ar_OM"	, C_ISO_8859_6	, C_ISO_8859_6},
+	{"ar_QA"	, C_ISO_8859_6	, C_ISO_8859_6},
+	{"ar_SA"	, C_ISO_8859_6	, C_ISO_8859_6},
+	{"ar_SD"	, C_ISO_8859_6	, C_ISO_8859_6},
+	{"ar_SY"	, C_ISO_8859_6	, C_ISO_8859_6},
+	{"ar_TN"	, C_ISO_8859_6	, C_ISO_8859_6},
+	{"ar_YE"	, C_ISO_8859_6	, C_ISO_8859_6},
+
+	{"el_GR"	, C_ISO_8859_7	, C_ISO_8859_7},
+	{"he_IL"	, C_ISO_8859_8	, C_ISO_8859_8},
+	{"iw_IL"	, C_ISO_8859_8	, C_ISO_8859_8},
+	{"tr_TR"	, C_ISO_8859_9	, C_ISO_8859_9},
+
+	{"lv_LV"	, C_ISO_8859_13	, C_ISO_8859_13},
+	{"mi_NZ"	, C_ISO_8859_13	, C_ISO_8859_13},
+
+	{"cy_GB"	, C_ISO_8859_14	, C_ISO_8859_14},
+
+	{"ar_IN"	, C_UTF_8	, C_UTF_8},
+	{"en_IN"	, C_UTF_8	, C_UTF_8},
+	{"se_NO"	, C_UTF_8	, C_UTF_8},
+	{"ta_IN"	, C_UTF_8	, C_UTF_8},
+	{"te_IN"	, C_UTF_8	, C_UTF_8},
+	{"ur_PK"	, C_UTF_8	, C_UTF_8},
+
+	{"th_TH"	, C_TIS_620	, C_TIS_620},
+	/* {"th_TH"	, C_WINDOWS_874}, */
+	/* {"th_TH"	, C_ISO_8859_11}, */
+
+	{"ka_GE"	, C_GEORGIAN_PS	, C_GEORGIAN_PS},
+	{"vi_VN.TCVN"	, C_TCVN5712_1	, C_TCVN5712_1},
 
 	{"C"			, C_US_ASCII	, C_US_ASCII},
 	{"POSIX"		, C_US_ASCII	, C_US_ASCII},
@@ -1160,6 +1305,27 @@ const gchar *conv_get_outgoing_charset_str(void)
 	str = conv_get_charset_str(out_charset);
 
 	return str ? str : CS_US_ASCII;
+}
+
+gboolean conv_is_multibyte_encoding(CharSet encoding)
+{
+	switch (encoding) {
+	case C_EUC_JP:
+	case C_EUC_KR:
+	case C_EUC_TW:
+	case C_EUC_CN:
+	case C_ISO_2022_JP:
+	case C_ISO_2022_JP_2:
+	case C_ISO_2022_KR:
+	case C_ISO_2022_CN:
+	case C_SHIFT_JIS:
+	case C_GB2312:
+	case C_BIG5:
+	case C_UTF_8:
+		return TRUE;
+	default:
+		return FALSE;
+	}
 }
 
 const gchar *conv_get_current_locale(void)

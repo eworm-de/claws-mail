@@ -1,3 +1,8 @@
+2003-03-06 [paul]	0.8.10claws89
+
+	* sync with 0.8.10cvs25
+		see ChangeLog 2003-03-06
+
 2003-03-06 [oliver]	0.8.10claws88
 	
 	* src/messageview.c
