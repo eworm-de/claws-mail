@@ -1,3 +1,14 @@
+2004-06-09 [christoph]	0.9.11cvs7
+
+	* src/folder.[ch]
+		add information about added or removed messages to
+		FOLDER_ITEM_UPDATE hook
+
+	* src/imap_gtk.c
+	* src/mh_gtk.c
+		scan folder when removing a folder failed instead of
+		updating the summaryview
+
 2004-06-08 [paul]	0.9.11cvs6
 
 	* sync with main 0.9.11cvs2

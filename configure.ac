@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=11
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=6
+EXTRA_VERSION=7
 EXTRA_RELEASE=
 
 if test \( $EXTRA_VERSION -eq 0 \) -o \( "x$EXTRA_RELEASE" != "x" \); then
@@ -201,14 +201,6 @@ dnl *****************
 dnl ** common code **
 dnl *****************
 
-dnl search for encrypt function
-OLDLIBS=$LIBS
-LIBS=
-AC_SEARCH_LIBS(encrypt, crypt, [], AC_MSG_ERROR(['encrypt'-function not found.]))
-CRYPT_LIBS=$LIBS
-AC_SUBST(CRYPT_LIBS)
-LIBS=$OLDLIBS
-
 dnl check for glib
 AM_PATH_GLIB(1.2.6,,
 	AC_MSG_ERROR(Test for GLIB failed. See the file 'INSTALL' for help.),
@@ -245,7 +237,14 @@ fi
 dnl Check for OpenSSL
 AM_PATH_OPENSSL
 
-dnl Key for password encryption
+dnl password encryption
+OLDLIBS=$LIBS
+LIBS=
+AC_SEARCH_LIBS(encrypt, crypt, [], AC_MSG_ERROR(['encrypt'-function not found.]))
+CRYPT_LIBS=$LIBS
+AC_SUBST(CRYPT_LIBS)
+LIBS=$OLDLIBS
+
 AC_ARG_WITH(passcrypt-key, [  --with-passcrypt-key=KEY     Key used to encode passwords (8 byte string)],
 	    with_passcrypt_key="$withval", with_passcrypt_key="passkey0")
 AC_SUBST(PASSCRYPT_KEY, $with_passcrypt_key)
