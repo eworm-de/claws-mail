@@ -1,4 +1,11 @@
+2003-08-02 [christoph]	0.9.3claws92
+
+	* configure.ac
+		o rearrange plugin tests
+		o add test for clamav.h to ClamAV tests
+
 2003-08-02 [luke]	0.9.3claws91
+
 	* src/mimeview.c
 		o fixed appearance of icon list when toggling back from the 
 		  ctree
@@ -9,7 +16,6 @@
 	* src/messageview.c
 		o fixed bug 4 - focus lost when changing messageview view type
 	
-
 2003-08-02 [christoph]	0.9.3claws90
 
 	* src/common/hooks.c
