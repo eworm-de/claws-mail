@@ -1,3 +1,10 @@
+2001-07-24 [alfons]
+
+	Release Sylpheed 0.5.1claws
+
+	* configure.in
+		change to release version 0.5.1claws
+
 2001-07-24 [christoph]
 
 	* src/summaryview.c
