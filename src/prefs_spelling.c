@@ -371,6 +371,20 @@ void prefs_spelling_init(void)
 
 	prefs_gtk_register_page((PrefsPage *) page);
 	prefs_spelling = page;
+	
+	if (!prefs_common.dictionary)
+		prefs_common.dictionary = g_strdup_printf("%s%s",
+						prefs_common.aspell_path,
+						g_getenv("LANG"));
+	if (!strlen(prefs_common.dictionary)
+	||  !strcmp(prefs_common.dictionary,"(None"))
+		prefs_common.dictionary = g_strdup_printf("%s%s",
+						prefs_common.aspell_path,
+						g_getenv("LANG"));
+	if (strcasestr(prefs_common.dictionary,".utf"))
+		*(strcasestr(prefs_common.dictionary,".utf")) = '\0';
+	if (strstr(prefs_common.dictionary,"@"))
+		*(strstr(prefs_common.dictionary,"@")) = '\0';
 }
 
 void prefs_spelling_done(void)
