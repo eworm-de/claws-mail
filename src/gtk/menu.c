@@ -224,10 +224,13 @@ static void menu_item_remove_accel(GtkWidget *widget, GtkAccelGroup *accel_group
 
 static void connect_accel_change_signals(GtkWidget* widget, GtkWidget *wid2) 
 {
+#warning FIXME_GTK2
+#if 0
 	g_signal_connect_after(G_OBJECT(widget), "add_accelerator", 
 			       G_CALLBACK(menu_item_add_accel), wid2);
 	g_signal_connect_after(G_OBJECT(widget), "remove_accelerator", 
 			       G_CALLBACK(menu_item_remove_accel), wid2);
+#endif
 }
 
 void menu_connect_identical_items(void)

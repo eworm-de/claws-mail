@@ -861,9 +861,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	summaryview->folder_item = item;
 	item->opened = TRUE;
 
-	g_signal_handlers_unblock_matched(G_OBJECT(ctree), G_SIGNAL_MATCH_DATA,
-					  0, 0, NULL, NULL, summaryview);
-
 	buf = g_strdup_printf(_("Scanning folder (%s)..."), item->path);
 	debug_print("%s\n", buf);
 	STATUSBAR_PUSH(summaryview->mainwin, buf);
@@ -963,9 +960,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	if (summaryview->sort_key != SORT_BY_NONE)
 		summary_sort(summaryview, summaryview->sort_key, summaryview->sort_type);
-
-	g_signal_handlers_unblock_matched(G_OBJECT(ctree), G_SIGNAL_MATCH_DATA,
-					  0, 0, NULL, NULL, summaryview);
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
 

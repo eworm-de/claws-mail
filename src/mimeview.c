@@ -630,7 +630,7 @@ static void display_full_info_cb(GtkWidget *widget, gpointer user_data);
 static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo)
 {
 	gchar *text = NULL, *button_text = NULL;
-	GtkSignalFunc func = NULL;
+	void  *func = NULL;
 	StockPixmap icon = STOCK_PIXMAP_PRIVACY_SIGNED;
 
 	g_return_if_fail(mimeview != NULL);
@@ -670,7 +670,7 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo)
 	noticeview_set_button_text(mimeview->siginfoview, button_text);
 	noticeview_set_button_press_callback(
 		mimeview->siginfoview,
-		func,
+		GTK_SIGNAL_FUNC(func),
 		(gpointer) mimeview);
 	noticeview_set_icon(mimeview->siginfoview, icon);
 }
@@ -940,7 +940,7 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 				   guint	     time,
 				   MimeView	    *mimeview)
 {
-	gchar *filename, *uriname;
+	gchar *filename, *uriname, *tmp;
 	MimeInfo *partinfo;
 
 	if (!mimeview->opened) return;
@@ -949,12 +949,16 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 	partinfo = mimeview_get_selected_part(mimeview);
 	if (!partinfo) return;
 
-	filename = g_basename(get_part_name(partinfo));
+	filename = g_path_get_basename(get_part_name(partinfo));
 	if (*filename == '\0') return;
 
+	tmp = filename;
+	
 	filename = g_strconcat(get_mime_tmp_dir(), G_DIR_SEPARATOR_S,
 			       filename, NULL);
 
+	g_free(tmp);
+	
 	if (procmime_get_part(filename, partinfo) < 0)
 		alertpanel_error
 			(_("Can't save the part of multipart message."));
@@ -1616,7 +1620,6 @@ static void icon_list_clear (MimeView *mimeview)
 	mimeview->icon_count = 0;
 	adj  = gtk_layout_get_vadjustment(GTK_LAYOUT(mimeview->icon_scroll));
 	adj->value = adj->lower;
-	g_signal_stop_emission_by_name(G_OBJECT (adj), "value_changed");
 }
 
 static void icon_list_toggle_by_mime_info(MimeView	*mimeview,

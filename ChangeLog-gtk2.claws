@@ -1,3 +1,11 @@
+2004-07-17 [colin]	0.9.12cvs28.2
+
+	* src/mimeview.c
+	* src/procmime.c
+	* src/summaryview.c
+	* src/gtk/menu.c
+		Squash some compile and glib warnings
+
 2004-07-17 [paul]	0.9.12cvs28.1
 
 	* src/mimeview.c

@@ -100,7 +100,8 @@ void procmime_mimeinfo_free_all(MimeInfo *mimeinfo)
 {
 	GNode *node;
 
-	g_return_if_fail(mimeinfo);
+	if (!mimeinfo)
+		return;
 
 	node = mimeinfo->node;
 	g_node_traverse(node, G_IN_ORDER, G_TRAVERSE_ALL, -1, free_func, NULL);
@@ -227,7 +228,6 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	gchar buf[BUFFSIZE];
 	gint readend;
 	gchar *tmpfilename;
-	gchar *mimetmpdir;
 	FILE *outfp, *infp;
 	struct stat statbuf;
 
@@ -243,8 +243,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	}
 	fseek(infp, mimeinfo->offset, SEEK_SET);
 
-	mimetmpdir = get_mime_tmp_dir();
-	outfp = get_tmpfile_in_dir(mimetmpdir, &tmpfilename);
+	outfp = get_tmpfile_in_dir(get_mime_tmp_dir(), &tmpfilename);
 	if (!outfp) {
 		perror("tmpfile");
 		return FALSE;
