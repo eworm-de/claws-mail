@@ -1183,10 +1183,18 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 
 	gtk_ctree_node_set_foreground(ctree, node, NULL);
 
-	if (use_bold && use_color) {
-		style = bold_color_style;
-	} else if (use_bold) {
-		style = bold_style;
+	if (use_bold) {
+		if (item->prefs->color > 0 && !use_color) {
+			GdkColor gdk_color;
+
+			gtkut_convert_int_to_gdk_color(item->prefs->color, &gdk_color);
+			color_style = gtk_style_copy(bold_style);
+			color_style->fg[GTK_STATE_NORMAL] = gdk_color;
+			style = color_style;
+		} else if (use_color)
+			style = bold_color_style;
+		else
+			style = bold_style;
 		if (item->op_count > 0) {
 			style = bold_tgtfold_style;
 		}

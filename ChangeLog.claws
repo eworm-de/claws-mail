@@ -1,4 +1,10 @@
-2003-07-28 [alfons]	0.9.3claws69
+2003-07-29 [paul]	0.9.3claws70
+
+	* src/folderview.c
+		use the colour from the folder pref unless the folder
+		has new messages
+
+2003-07-29 [alfons]	0.9.3claws69
 
 	* src/procmsg.[ch]
 	* src/messageview.c
