@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __SSL_CHECK_H__
-#define __SSL_CHECK_H__
+#ifndef __SSL_CERTIFICATE_H__
+#define __SSL_CERTIFICATE_H__
 
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
@@ -29,24 +29,15 @@
 #include <openssl/ssl.h>
 #include <glib.h>
 
-typedef enum {
-	SSL_CERTIFICATE_OK,
-	SSL_CERTIFICATE_UNKNOWN,
-	SSL_CERTIFICATE_CHANGED
-} SSLCertificateStatus;
-
 typedef struct _SSLCertificate SSLCertificate;
 
 struct _SSLCertificate
 {
 	X509 *x509_cert;
 	gchar *host;
-	gchar *issuer;
-	gchar *subject;
-	gchar *fingerprint;
 };
 
 gboolean ssl_certificate_check (X509 *x509_cert, gchar *host);
 
 #endif /* USE_SSL */
-#endif /* SSL_CHECK_H */
+#endif /* SSL_CERTIFICATE_H */

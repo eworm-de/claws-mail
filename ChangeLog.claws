@@ -1,3 +1,8 @@
+2002-11-11 [colin]	0.8.5claws126
+
+	* src/ssl_certificate.h
+		_Really_ clean it
+
 2002-11-11 [colin]	0.8.5claws125
 	
 	* src/ssl_certificate.c
