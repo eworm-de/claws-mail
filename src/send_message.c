@@ -431,11 +431,9 @@ static gint send_recv_message(Session *session, const gchar *msg, gpointer data)
 	gchar buf[BUFFSIZE];
 	gchar *state_str;
 
-	g_print("$$$ > send_recv_message(data: %lx)\n", data);
 	dialog = (SendProgressDialog *) data;
 	state_str = NULL;
 	smtp_session = SMTP_SESSION(session);
-	g_print("$$$ > send_recv_message(dialog: %lx)\n", dialog);
 
 	switch (smtp_session->state) {
 	case SMTP_READY:

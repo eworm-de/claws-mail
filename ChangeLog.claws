@@ -1,3 +1,9 @@
+2003-03-30 [alfons]	0.8.11claws69
+
+	* src/send_message.c
+		remove two debug traces and see if people still report
+		errors
+
 2003-03-30 [alfons]	0.8.11claws68
 
 	* src/send_message.c
