@@ -1,3 +1,65 @@
+2001-08-21
+
+	* src/pop.c: pop3_getsize_list_recv(), pop3_retr_recv(),
+	  pop3_delete_recv(): don't try to receive messages which are not
+	  exist.
+
+2001-08-21
+
+	* src/mainwindow.c: main_window_lock(), main_window_unlock():
+	  removed the whole menubar locking.
+	  main_window_set_menu_sensitive(): process the sensitivity change
+	  with a table, and deal with locking.
+
+2001-08-20
+
+	* src/summaryview.[ch]: summary_get_selection_type(): new.
+	  It returns the current selection state of summary view.
+	  summary_key_pressed(): abort on some commands if main window
+	  is locked.
+	* src/mainwindow.[ch]: main_window_lock(), main_window_unlock():
+	  increase/decrease the lock count.
+
+2001-08-19
+
+	* src/prefs_filter.c: prefs_filter_create(): added List-Id to the
+	  default header list.
+	* src/prefs_common.[ch]: added the option for receive dialog mode
+	  to the Interface tab.
+	* src/inc.[ch]: inc_progress_dialog_create(): don't make the dialog
+	  transient, and show dialog only if the setting is
+	  RECV_DIALOG_ALWAYS, or RECV_DIALOG_ACTIVE and a window is active.
+	* src/mainwindow.[ch]: main_window_lock(), main_window_unlock():
+	  new. Lock / unlock the user-interface.
+	* src/progressdialog.c: progress_dialog_create(): don't make the
+	  dialog modal.
+
+2001-08-18
+
+	* src/folderview.c: folderview_update_node(): suppressed unnecessary
+	  recursive call.
+	* src/menu.[ch]: menu_button_position(): new. It calculates the
+	  position of popup menu.
+	* src/mainwindow.c: toolbar_account_button_pressed(),
+	  ac_label_button_pressed(): put the popup menu to the correct
+	  position. Change the style of the button while opening the menu.
+	  ac_menu_popup_closed(): new function called on selection_done
+	  event.
+	* src/gtkutils.c: gtkut_ctree_node_next(): fixed a crash bug when
+	  node == NULL.
+	* src/summaryview.c: applied the summary fix patch from Sergey Vlasov
+	  (thanks!).
+	  Fixed the bug that didn't select previous message in refresh mode
+	  if threads were not expanded.
+	  summary_select_node(): new.
+	* src/inc.c: applied the summary view update optimization patch from
+	  Sergey Vlasov (thanks!).
+	  If no new messages are received, don't perform summary refreshing.
+	  In addition to the Vlasov's patch, POP3 receive information is
+	  also used.
+	* src/inc.h: added a new member cur_total_num to Pop3State.
+	* src/pop.c: pop3_retr_recv(): increase state->cur_total_num.
+
 2001-08-14
 
 	* version 0.5.3

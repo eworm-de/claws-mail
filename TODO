@@ -6,6 +6,7 @@ TODO
 o POP before SMTP
 o full-text search of messages (plain, or hooking up with Namazu)
 o original icons and logos
+o autosave
 o template function
 o speed-up of filtering
 o regular expression support at filtering

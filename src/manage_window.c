@@ -56,3 +56,8 @@ void manage_window_set_transient(GtkWindow *window)
 	if (window && focus_window)
 		gtk_window_set_transient_for(window, GTK_WINDOW(focus_window));
 }
+
+GtkWidget *manage_window_get_focus_window(void)
+{
+	return focus_window;
+}

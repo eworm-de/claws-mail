@@ -269,8 +269,8 @@ static void prefs_filter_create(void)
 	gtk_widget_set_usize (hdr_combo1, 96, -1);
 	gtkut_combo_set_items (GTK_COMBO (hdr_combo1),
 			       "Subject", "From", "To", "Cc", "Reply-To",
-			       "Sender", "X-ML-Name", "X-List", "X-Sequence",
-			       "X-Mailer",
+			       "Sender", "List-Id",
+			       "X-ML-Name", "X-List", "X-Sequence", "X-Mailer",
 			       NULL);
 
 	hdr_combo2 = gtk_combo_new ();
@@ -280,8 +280,8 @@ static void prefs_filter_create(void)
 	gtk_widget_set_usize (hdr_combo2, 96, -1);
 	gtkut_combo_set_items (GTK_COMBO (hdr_combo2), _("(none)"),
 			       "Subject", "From", "To", "Cc", "Reply-To",
-			       "Sender", "X-ML-Name", "X-List", "X-Sequence",
-			       "X-Mailer",
+			       "Sender", "List-Id",
+			       "X-ML-Name", "X-List", "X-Sequence", "X-Mailer",
 			       NULL);
 
 	key_label = gtk_label_new (_("Keyword"));

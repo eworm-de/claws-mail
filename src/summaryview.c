@@ -150,6 +150,10 @@ static void summary_write_cache_func	(GtkCTree		*ctree,
 static void summary_set_menu_sensitive	(SummaryView		*summaryview);
 static void summary_set_add_sender_menu	(SummaryView		*summaryview);
 
+static void summary_select_node		(SummaryView		*summaryview,
+					 GtkCTreeNode		*node,
+					 gboolean		 display_msg);
+
 static guint summary_get_msgnum		(SummaryView		*summaryview,
 					 GtkCTreeNode		*node);
 
@@ -907,11 +911,20 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	gboolean is_refresh;
 	guint selected_msgnum = 0;
 	guint displayed_msgnum = 0;
-
 	GtkCTreeNode *selected_node = summaryview->folderview->selected;
 	GSList *cur;
 	gint sort_mode;
 	gint sort_type;
+        static gboolean locked = FALSE;
+
+	if (locked) {
+		g_print("Summary view is locked, waiting...\n");
+		return FALSE;
+		/* while (locked)
+			gtk_main_iteration();
+		g_print("unlocked.\n"); */
+	}
+	locked = TRUE;
 
 	STATUSBAR_POP(summaryview->mainwin);
 
@@ -935,8 +948,10 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 			summary_execute(summaryview);
 		else if (G_ALERTALTERNATE == val)
 			summary_write_cache(summaryview);
-		else
-			return FALSE;
+		else {
+			locked = FALSE;
+                        return FALSE;
+		}
    		folder_update_op_count();
 	}
 	else if (!summaryview->filtering_happened) {
@@ -966,6 +981,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 		summary_clear_all(summaryview);
 		summaryview->folder_item = item;
 		gtk_clist_thaw(GTK_CLIST(ctree));
+		locked = FALSE;
 		return TRUE;
 	}
 	g_free(buf);
@@ -1053,6 +1069,15 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 		if (!summaryview->displayed)
 			messageview_clear(summaryview->messageview);
 		summary_select_by_msgnum(summaryview, selected_msgnum);
+		if (!summaryview->selected) {
+			/* no selected message - select first unread
+			   message, but do not display it */
+			node = summary_find_next_unread_msg(summaryview, NULL);
+			if (node == NULL && GTK_CLIST(ctree)->row_list != NULL)
+				node = GTK_CTREE_NODE
+					(GTK_CLIST(ctree)->row_list_end);
+			summary_select_node(summaryview, node, FALSE);
+		}
 	} else {
 		/* select first unread message */
 		if (sort_mode == SORT_BY_SCORE)
@@ -1063,15 +1088,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 
 		if (node == NULL && GTK_CLIST(ctree)->row_list != NULL)
 			node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list_end);
-		if (node) {
-			GTK_EVENTS_FLUSH();
-			gtkut_ctree_expand_parent_all(ctree, node);
-			gtk_ctree_node_moveto(ctree, node, -1, 0.5, 0);
-			gtk_widget_grab_focus(GTK_WIDGET(ctree));
-			if (prefs_common.open_unread_on_enter)
-				summaryview->display_msg = TRUE;
-			gtk_sctree_select(GTK_SCTREE(ctree), node);
-		}
+		summary_select_node(summaryview, node,
+				    prefs_common.open_unread_on_enter);
 	}
 
 	summary_status_show(summaryview);
@@ -1085,6 +1103,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	STATUSBAR_PUSH(summaryview->mainwin, _("Done."));
 
 	main_window_cursor_normal(summaryview->mainwin);
+	locked = FALSE;
 
 	return TRUE;
 }
@@ -1150,11 +1169,9 @@ void summary_clear_all(SummaryView *summaryview)
 	summary_status_show(summaryview);
 }
 
-static void summary_set_menu_sensitive(SummaryView *summaryview)
+SummarySelection summary_get_selection_type(SummaryView *summaryview)
 {
-	GtkItemFactory *ifactory = summaryview->popupfactory;
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
-	gboolean sens;
 	SummarySelection selection;
 
 	if (!clist->row_list)
@@ -1166,7 +1183,17 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	else
 		selection = SUMMARY_SELECTED_MULTIPLE;
 
-	main_window_set_menu_sensitive(summaryview->mainwin, selection);
+	return selection;
+}
+
+static void summary_set_menu_sensitive(SummaryView *summaryview)
+{
+	GtkItemFactory *ifactory = summaryview->popupfactory;
+	SummarySelection selection;
+	gboolean sens;
+
+	selection = summary_get_selection_type(summaryview);
+	main_window_set_menu_sensitive(summaryview->mainwin);
 
 	if (selection == SUMMARY_NONE) {
 		GtkWidget *submenu;
@@ -1357,9 +1384,25 @@ void summary_select_prev_marked(SummaryView *summaryview)
 void summary_select_by_msgnum(SummaryView *summaryview, guint msgnum)
 {
 	GtkCTreeNode *node;
-	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 
 	node = summary_find_msg_by_msgnum(summaryview, msgnum);
+	summary_select_node(summaryview, node, FALSE);
+}
+
+/**
+ * summary_select_node:
+ * @summaryview: Summary view.
+ * @node: Summary tree node.
+ * @display_msg: TRUE to display the selected message.
+ *
+ * Select @node (bringing it into view by scrolling and expanding its
+ * thread, if necessary) and unselect all others.  If @display_msg is
+ * TRUE, display the corresponding message in the message view.
+ **/
+static void summary_select_node(SummaryView *summaryview, GtkCTreeNode *node,
+				gboolean display_msg)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 
 	if (node) {
 		GTK_EVENTS_FLUSH();
@@ -1367,7 +1410,7 @@ void summary_select_by_msgnum(SummaryView *summaryview, guint msgnum)
 		gtk_ctree_node_moveto(ctree, node, -1, 0.5, 0);
 		gtk_widget_grab_focus(GTK_WIDGET(ctree));
 		gtk_sctree_unselect_all(GTK_SCTREE(ctree));
-		summaryview->display_msg = FALSE;
+		summaryview->display_msg = display_msg;
 		gtk_sctree_select(GTK_SCTREE(ctree), node);
 	}
 }
@@ -1452,7 +1495,7 @@ static GtkCTreeNode *summary_find_msg_by_msgnum(SummaryView *summaryview,
 
 	node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 
-	for (; node != NULL; node = GTK_CTREE_NODE_NEXT(node)) {
+	for (; node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
 		if (msginfo->msgnum == msgnum) break;
 	}
@@ -1611,7 +1654,7 @@ static void summary_update_status(SummaryView *summaryview)
 	summaryview->deleted = summaryview->moved = summaryview->copied = 0;
 
 	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
-	     node != NULL; node = GTK_CTREE_NODE_NEXT(node)) {
+	     node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 		msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
 
 		if (MSG_IS_NEW(msginfo->flags) /*&& !MSG_IS_IGNORE_THREAD(msginfo->flags)*/)
@@ -3040,7 +3083,7 @@ void summary_execute(SummaryView *summaryview)
 
 	node = GTK_CTREE_NODE(clist->row_list);
 	while (node != NULL) {
-		next = GTK_CTREE_NODE_NEXT(node);
+		next = gtkut_ctree_node_next(ctree, node);
 		if (gtk_ctree_node_get_row_data(ctree, node) == NULL) {
 			if (node == summaryview->displayed) {
 				messageview_clear(summaryview->messageview);
@@ -3514,6 +3557,9 @@ void summary_pass_key_press_event(SummaryView *summaryview, GdkEventKey *event)
 #define BREAK_ON_MODIFIER_KEY() \
 	if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) != 0) break
 
+#define RETURN_IF_LOCKED() \
+	if (summaryview->mainwin->lock_count) return
+
 #define KEY_PRESS_EVENT_STOP() \
 	if (gtk_signal_n_emissions_by_name \
 		(GTK_OBJECT(ctree), "key_press_event") > 0) { \
@@ -3533,6 +3579,7 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	switch (event->keyval) {
 	case GDK_g:		/* Go */
 	case GDK_G:
+		RETURN_IF_LOCKED();
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();
 		to_folder = foldersel_folder_sel(NULL, NULL);
@@ -3555,11 +3602,13 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 			compose_new(NULL);
 		return;
 	case GDK_D:		/* Empty trash */
+		RETURN_IF_LOCKED();
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();
 		main_window_empty_trash(summaryview->mainwin, TRUE);
 		return;
 	case GDK_Q:		/* Quit */
+		RETURN_IF_LOCKED();
 		BREAK_ON_MODIFIER_KEY();
 
 		if (prefs_common.confirm_on_exit) {
@@ -3640,6 +3689,7 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		summary_mark_as_unread(summaryview);
 		break;
 	case GDK_d:		/* Delete */
+		RETURN_IF_LOCKED();
 		BREAK_ON_MODIFIER_KEY();
 		summary_delete(summaryview);
 		break;
@@ -3649,15 +3699,18 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		summary_unmark(summaryview);
 		break;
 	case GDK_o:		/* Move */
+		RETURN_IF_LOCKED();
 		BREAK_ON_MODIFIER_KEY();
 		summary_move_to(summaryview);
 		break;
 	case GDK_O:		/* Copy */
+		RETURN_IF_LOCKED();
 		BREAK_ON_MODIFIER_KEY();
 		summary_copy_to(summaryview);
 		break;
 	case GDK_x:		/* Execute */
 	case GDK_X:
+		RETURN_IF_LOCKED();
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();
 		summary_execute(summaryview);
@@ -3690,6 +3743,7 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 }
 
 #undef BREAK_ON_MODIFIER_KEY
+#undef RETURN_IF_LOCKED
 #undef KEY_PRESS_EVENT_STOP
 
 static void summary_open_row(GtkSCTree *sctree, SummaryView *summaryview)

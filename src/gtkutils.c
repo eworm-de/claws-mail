@@ -173,6 +173,8 @@ GtkCTreeNode *gtkut_ctree_node_next(GtkCTree *ctree, GtkCTreeNode *node)
 {
 	GtkCTreeNode *parent;
 
+	if (!node) return NULL;
+
 	if (GTK_CTREE_ROW(node)->children)
 		return GTK_CTREE_ROW(node)->children;
 

@@ -32,12 +32,11 @@
 
 typedef struct _PrefsCommon	PrefsCommon;
 
-typedef enum
-{
-	RECVDIALOG_ALWAYS,
-	RECVDIALOG_WINDOW_ACTIVE,
-	RECVDIALOG_NEVER
-} RecvDialogShow;
+typedef enum {
+	RECV_DIALOG_ALWAYS,
+	RECV_DIALOG_ACTIVE,
+	RECV_DIALOG_NEVER
+} RecvDialogMode;
 
 struct _PrefsCommon
 {
@@ -194,8 +193,8 @@ struct _PrefsCommon
 	gboolean open_unread_on_enter;
 	gboolean open_inbox_on_inc;
 	gboolean immediate_exec;
+	RecvDialogMode recv_dialog_mode;
 	gboolean add_address_by_click;
-	RecvDialogShow receive_dialog;
 
 	gboolean confirm_on_exit;
 	gboolean clean_on_exit;

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,8 @@
 #include <gtk/gtkmenubar.h>
 #include <gtk/gtkitemfactory.h>
 #include <gtk/gtkcheckmenuitem.h>
+#include <gtk/gtkbutton.h>
+
 
 #include "intl.h"
 #include "menu.h"
@@ -98,4 +100,42 @@ void menu_set_toggle(GtkItemFactory *ifactory, const gchar *path,
 
 	widget = gtk_item_factory_get_item(ifactory, path);
 	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(widget), active);
+}
+
+void menu_button_position(GtkMenu *menu, gint *x, gint *y, gpointer user_data)
+{
+	GtkWidget *button;
+	GtkRequisition requisition;
+	gint button_xpos, button_ypos;
+	gint xpos, ypos;
+	gint width, height;
+	gint scr_width, scr_height;
+
+	g_return_if_fail(user_data != NULL);
+	g_return_if_fail(GTK_IS_BUTTON(user_data));
+
+	button = GTK_WIDGET(user_data);
+
+	gtk_widget_get_child_requisition(GTK_WIDGET(menu), &requisition);
+	width = requisition.width;
+	height = requisition.height;
+	gdk_window_get_origin(button->window, &button_xpos, &button_ypos);
+
+	xpos = button_xpos;
+	ypos = button_ypos + button->allocation.height;
+
+	scr_width = gdk_screen_width();
+	scr_height = gdk_screen_height();
+
+	if (xpos + width > scr_width)
+		xpos -= (xpos + width) - scr_width;
+	if (ypos + height > scr_height)
+		ypos = button_ypos - height;
+	if (xpos < 0)
+		xpos = 0;
+	if (ypos < 0)
+		ypos = 0;
+
+	*x = xpos;
+	*y = ypos;
 }

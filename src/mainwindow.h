@@ -81,7 +81,7 @@ struct _MainWindow
 	GtkWidget *vbox;
 	GtkWidget *menubar;
 
-	/* tool bar */
+	/* toolbar */
 	GtkWidget *handlebox;
 	GtkWidget *toolbar;
 	GtkWidget *get_btn;
@@ -122,6 +122,7 @@ struct _MainWindow
 
 	ToolbarStyle toolbar_style;
 
+	guint lock_count;
 	guint cursor_count;
 
 	FolderView	*folderview;
@@ -132,22 +133,29 @@ struct _MainWindow
 };
 
 MainWindow *main_window_create		(SeparateType	 type);
+
 void main_window_cursor_wait		(MainWindow	*mainwin);
 void main_window_cursor_normal		(MainWindow	*mainwin);
+
+void main_window_lock			(MainWindow	*mainwin);
+void main_window_unlock			(MainWindow	*mainwin);
+
 void main_window_reflect_prefs_all	(void);
 void main_window_set_account_menu	(GList		*account_list);
 void main_window_separation_change	(MainWindow	*mainwin,
 					 SeparateType	 type);
+
 void main_window_get_size		(MainWindow	*mainwin);
 void main_window_get_position		(MainWindow	*mainwin);
+
 void main_window_empty_trash		(MainWindow	*mainwin,
 					 gboolean	 confirm);
 void main_window_add_mailbox		(MainWindow	*mainwin);
 
 void main_window_set_toolbar_sensitive	(MainWindow	*mainwin,
 					 gboolean	 sensitive);
-void main_window_set_menu_sensitive	(MainWindow	*mainwin,
-					 gint		 selection);
+void main_window_set_menu_sensitive	(MainWindow	*mainwin);
+
 void main_window_popup			(MainWindow	*mainwin);
 /*void main_window_set_thread_option      (MainWindow *mainwin);*/
 

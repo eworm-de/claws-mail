@@ -53,6 +53,8 @@ struct _IncProgressDialog
 
 	MainWindow *mainwin;
 
+	gboolean show_dialog;
+
 	GList *queue_list;	/* list of IncSession */
 };
 
@@ -81,6 +83,7 @@ struct _Pop3State
 	gint new;
 	gint total_bytes;
 	gint cur_msg;
+	gint cur_total_num;
 	gint cur_total_bytes;
 	gint *sizes;
 

@@ -1,3 +1,66 @@
+2001-08-21
+
+	* src/pop.c: pop3_getsize_list_recv(), pop3_retr_recv(),
+	  pop3_delete_recv(): 存在しないメッセージを取得しようとしないよう
+	  にした。
+
+2001-08-21
+
+	* src/mainwindow.c: main_window_lock(), main_window_unlock():
+	  メニューバー全体のロックを削除。
+	  main_window_set_menu_sensitive(): sensitivity の変更をテーブル
+	  で行うようにし、ロックに対応。
+
+2001-08-20
+
+	* src/summaryview.[ch]: summary_get_selection_type(): 新規。サマリ
+	  ビューの現在の選択状態を返す。
+	  summary_key_pressed(): メインウィンドウがロックされていたら
+	  いくつかのコマンドで抜けるようにした。
+	* src/mainwindow.[ch]: main_window_lock(), main_window_unlock():
+	  ロックカウントを増加/減少させるようにした。
+
+2001-08-19
+
+	* src/prefs_filter.c: prefs_filter_create(): デフォルトのヘッダ
+	  リストに List-Id を追加。
+	* src/prefs_common.[ch]: 受信ダイアログモードのオプションを
+	  インタフェースタブに追加。
+	* src/inc.[ch]: inc_progress_dialog_create(): ダイアログを transient
+	  にしないようにし、設定が RECV_DIALOG_ALWAYS か、または
+	  RECV_DIALOG_ACTIVE でウィンドウがアクティブのときのみダイアログを
+	  表示するようにした。
+	* src/mainwindow.[ch]: main_window_lock(), main_window_unlock():
+	  新規。ユーザインタフェースをロック/ロック解除する。
+	* src/progressdialog.c: progress_dialog_create(): ダイアログを
+	  モーダルにしないようにした。
+
+2001-08-18
+
+	* src/folderview.c: folderview_update_node(): 不要な再帰呼び出しを
+	  抑制。
+	* src/menu.[ch]: menu_button_position(): 新規。ポップアップメニュー
+	  の位置を計算する。
+	* src/mainwindow.c: toolbar_account_button_pressed(),
+	  ac_label_button_pressed(): ポップアップメニューを正しい位置に
+	  置くようにした。メニューを開いている間ボタンのスタイルを変化
+	  させるようにした。
+	  ac_menu_popup_closed(): selection_done イベント時に呼ばれる新規
+	  関数。
+	* src/gtkutils.c: gtkut_ctree_node_next(): node == NULL のときに
+	  クラッシュするバグを修正。
+	* src/summaryview.c: Sergey Vlasov さんからのサマリ修正パッチを
+	  適用(thanks!)。
+	  スレッドを展開しない場合に更新モードで以前のメッセージを選択
+	  できないバグを修正。
+	  summary_select_node(): 新規。
+	* src/inc.c: Sergey Vlasov さんからのサマリビュー更新最適化パッチ
+	  を適用(thanks!)。
+	  新着メッセージが受信されなければ、サマリの更新を行わないようにした。
+	  Vlasov 氏のパッチに加え、 POP3 の受信情報も同様に使用。
+	* src/inc.h: Pop3State に新メンバ cur_total_num を追加。
+	* src/pop.c: pop3_retr_recv(): state->cur_total_num を増加させる。
+
 2001-08-14
 
 	* version 0.5.3

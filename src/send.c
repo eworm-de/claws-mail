@@ -499,6 +499,7 @@ static SendProgressDialog *send_progress_dialog_create(void)
 			   GTK_SIGNAL_FUNC(send_cancel), dialog);
 	gtk_signal_connect(GTK_OBJECT(progress->window), "delete_event",
 			   GTK_SIGNAL_FUNC(gtk_true), NULL);
+	gtk_window_set_modal(GTK_WINDOW(progress->window), TRUE);
 	manage_window_set_transient(GTK_WINDOW(progress->window));
 
 	progress_dialog_set_value(progress, 0.0);

@@ -298,16 +298,23 @@ gint pop3_getsize_list_recv(SockInfo *sock, gpointer data)
 	state->cur_total_bytes = 0;
 
 	while (sock_gets(sock, buf, sizeof(buf)) >= 0) {
-		gint num, size;
+		guint num, size;
 
 		if (buf[0] == '.') break;
 		if (sscanf(buf, "%u %u", &num, &size) != 2)
-			break;
+			return -1;
 
 		if (num > 0 && num <= state->count)
 			state->sizes[num] = size;
 		if (num > 0 && num < state->cur_msg)
 			state->cur_total_bytes += size;
+	}
+
+	while (state->sizes[state->cur_msg] == 0) {
+		if (state->cur_msg == state->count)
+			return POP3_LOGOUT_SEND;
+		else
+			state->cur_msg++;
 	}
 
 	return POP3_RETR_SEND;
@@ -336,12 +343,14 @@ gint pop3_retr_recv(SockInfo *sock, gpointer data)
 			return -1;
 		}
 
-		state->cur_total_bytes += state->sizes[state->cur_msg];
-
 		if ((drop_ok = inc_drop_message(file, state)) < 0) {
 			state->inc_state = INC_ERROR;
 			return -1;
 		}
+
+		state->cur_total_bytes += state->sizes[state->cur_msg];
+		state->cur_total_num++;
+
 		if (drop_ok == 0 && state->ac_prefs->rmmail)
 			return POP3_DELETE_SEND;
 
@@ -355,6 +364,12 @@ gint pop3_retr_recv(SockInfo *sock, gpointer data)
 
 		if (state->cur_msg < state->count) {
 			state->cur_msg++;
+			while (state->sizes[state->cur_msg] == 0) {
+				if (state->cur_msg == state->count)
+					return POP3_LOGOUT_SEND;
+				else
+					state->cur_msg++;
+			}
 			return POP3_RETR_SEND;
 		} else
 			return POP3_LOGOUT_SEND;
@@ -383,6 +398,12 @@ gint pop3_delete_recv(SockInfo *sock, gpointer data)
 	if ((ok = pop3_ok(sock, NULL)) == PS_SUCCESS) {
 		if (state->cur_msg < state->count) {
 			state->cur_msg++;
+			while (state->sizes[state->cur_msg] == 0) {
+				if (state->cur_msg == state->count)
+					return POP3_LOGOUT_SEND;
+				else
+					state->cur_msg++;
+			}
 			return POP3_RETR_SEND;
 		} else
 			return POP3_LOGOUT_SEND;

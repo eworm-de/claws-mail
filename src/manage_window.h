@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,5 +34,8 @@ gint manage_window_focus_out		(GtkWidget	*widget,
 void manage_window_set_transient	(GtkWindow	*window);
 
 extern GtkWidget *focus_window;
+
+GtkWidget *manage_window_get_focus_window	(void);
+
 
 #endif /* __MANAGE_WINDOW_H__ */

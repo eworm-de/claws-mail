@@ -75,8 +75,9 @@ GdkBitmap *okxpmmask;
 
 #define MSGBUFSIZE	8192
 
-static void inc_finished		(MainWindow		*mainwin);
-static void inc_account_mail		(PrefsAccount		*account,
+static void inc_finished		(MainWindow		*mainwin,
+					 gboolean		 new_messages);
+static gint inc_account_mail		(PrefsAccount		*account,
 					 MainWindow		*mainwin);
 
 static IncProgressDialog *inc_progress_dialog_create	(void);
@@ -86,7 +87,7 @@ static IncSession *inc_session_new	(PrefsAccount		*account);
 static void inc_session_destroy		(IncSession		*session);
 static Pop3State *inc_pop3_state_new	(PrefsAccount		*account);
 static void inc_pop3_state_destroy	(Pop3State		*state);
-static void inc_start			(IncProgressDialog	*inc_dialog);
+static gint inc_start			(IncProgressDialog	*inc_dialog);
 static IncState inc_pop3_session_do	(IncSession		*session);
 static gint pop3_automaton_terminate	(SockInfo		*source,
 					 Automaton		*atm);
@@ -116,7 +117,16 @@ static void inc_all_spool(void);
 
 static gint inc_autocheck_func		(gpointer	 data);
 
-static void inc_finished(MainWindow *mainwin)
+/**
+ * inc_finished:
+ * @mainwin: Main window.
+ * @new_messages: TRUE if some messages have been received.
+ * 
+ * Update the folder view and the summary view after receiving
+ * messages.  If @new_messages is FALSE, this function avoids unneeded
+ * updating.
+ **/
+static void inc_finished(MainWindow *mainwin, gboolean new_messages)
 {
 	FolderItem *item;
 
@@ -139,6 +149,7 @@ static void inc_finished(MainWindow *mainwin)
 
 	/* XXX: filtering_happened is reset by summary_show() */
 
+	if (!new_messages && !prefs_common.scan_all_after_inc) return;
 
 	if (prefs_common.open_inbox_on_inc) {
 		item = cur_account && cur_account->inbox
@@ -155,8 +166,11 @@ static void inc_finished(MainWindow *mainwin)
 
 void inc_mail(MainWindow *mainwin)
 {
+	gint new_msgs = 0;
+
 	inc_autocheck_timer_remove();
 	summary_write_cache(mainwin->summaryview);
+	main_window_lock(mainwin);
 
 	if (prefs_common.use_extinc && prefs_common.extinc_path) {
 		gint pid;
@@ -164,6 +178,7 @@ void inc_mail(MainWindow *mainwin)
 		/* external incorporating program */
 		if ((pid = fork()) < 0) {
 			perror("fork");
+			main_window_unlock(mainwin);
 			inc_autocheck_timer_set();
 			return;
 		}
@@ -181,27 +196,28 @@ void inc_mail(MainWindow *mainwin)
 		/* wait until child process is terminated */
 		waitpid(pid, NULL, 0);
 
-		if (prefs_common.inc_local) inc_spool();
-		inc_all_spool();
+		if (prefs_common.inc_local)
+			new_msgs = inc_spool();
 	} else {
-		if (prefs_common.inc_local) inc_spool();
-		inc_all_spool();
+		if (prefs_common.inc_local)
+			new_msgs = inc_spool();
 
-		inc_account_mail(cur_account, mainwin);
+		new_msgs += inc_account_mail(cur_account, mainwin);
 	}
 
-	inc_finished(mainwin);
+	inc_finished(mainwin, new_msgs > 0);
+	main_window_unlock(mainwin);
 	inc_autocheck_timer_set();
 }
 
-static void inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
+static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 {
 	IncProgressDialog *inc_dialog;
 	IncSession *session;
 	gchar *text[3];
 
 	session = inc_session_new(account);
-	if (!session) return;
+	if (!session) return 0;
 
 	inc_dialog = inc_progress_dialog_create();
 	inc_dialog->queue_list = g_list_append(inc_dialog->queue_list, session);
@@ -213,22 +229,26 @@ static void inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 	text[2] = _("Standby");
 	gtk_clist_append(GTK_CLIST(inc_dialog->dialog->clist), text);
 
-	inc_start(inc_dialog);
+	return inc_start(inc_dialog);
 }
 
 void inc_all_account_mail(MainWindow *mainwin)
 {
 	GList *list, *queue_list = NULL;
 	IncProgressDialog *inc_dialog;
+	gint new_msgs = 0;
 
 	inc_autocheck_timer_remove();
 	summary_write_cache(mainwin->summaryview);
+	main_window_lock(mainwin);
 
-	if (prefs_common.inc_local) inc_spool();
+	if (prefs_common.inc_local)
+		new_msgs = inc_spool();
 
 	list = account_get_list();
 	if (!list) {
-		inc_finished(mainwin);
+		inc_finished(mainwin, new_msgs > 0);
+		main_window_unlock(mainwin);
 		inc_autocheck_timer_set();
 		return;
 	}
@@ -245,7 +265,8 @@ void inc_all_account_mail(MainWindow *mainwin)
 	}
 
 	if (!queue_list) {
-		inc_finished(mainwin);
+		inc_finished(mainwin, new_msgs > 0);
+		main_window_unlock(mainwin);
 		inc_autocheck_timer_set();
 		return;
 	}
@@ -265,9 +286,10 @@ void inc_all_account_mail(MainWindow *mainwin)
 		gtk_clist_append(GTK_CLIST(inc_dialog->dialog->clist), text);
 	}
 
-	inc_start(inc_dialog);
+	new_msgs += inc_start(inc_dialog);
 
-	inc_finished(mainwin);
+	inc_finished(mainwin, new_msgs > 0);
+	main_window_unlock(mainwin);
 	inc_autocheck_timer_set();
 }
 
@@ -285,25 +307,18 @@ static IncProgressDialog *inc_progress_dialog_create(void)
 			   GTK_SIGNAL_FUNC(inc_cancel), dialog);
 	gtk_signal_connect(GTK_OBJECT(progress->window), "delete_event",
 			   GTK_SIGNAL_FUNC(gtk_true), NULL);
-	if((prefs_common.receive_dialog == RECVDIALOG_ALWAYS) ||
-	    ((prefs_common.receive_dialog == RECVDIALOG_WINDOW_ACTIVE) && focus_window)) {
-		manage_window_set_transient(GTK_WINDOW(progress->window));
-	}
 
 	progress_dialog_set_value(progress, 0.0);
-
-	if((prefs_common.receive_dialog == RECVDIALOG_ALWAYS) ||
-	    ((prefs_common.receive_dialog == RECVDIALOG_WINDOW_ACTIVE) && focus_window)) {
-		gtk_widget_show(progress->window);
-	}
 
 	PIXMAP_CREATE(progress->clist, okxpm, okxpmmask, complete_xpm);
 	PIXMAP_CREATE(progress->clist,
 		      currentxpm, currentxpmmask, continue_xpm);
 	PIXMAP_CREATE(progress->clist, errorxpm, errorxpmmask, error_xpm);
 
-	if((prefs_common.receive_dialog == RECVDIALOG_ALWAYS) ||
-	    ((prefs_common.receive_dialog == RECVDIALOG_WINDOW_ACTIVE) && focus_window)) {
+	if (prefs_common.recv_dialog_mode == RECV_DIALOG_ALWAYS ||
+	    (prefs_common.recv_dialog_mode == RECV_DIALOG_ACTIVE &&
+	     manage_window_get_focus_window())) {
+		dialog->show_dialog = TRUE;
 		gtk_widget_show_now(progress->window);
 	}
 
@@ -392,7 +407,7 @@ static void inc_pop3_state_destroy(Pop3State *state)
 	g_free(state);
 }
 
-static void inc_start(IncProgressDialog *inc_dialog)
+static gint inc_start(IncProgressDialog *inc_dialog)
 {
 	IncSession *session;
 	GtkCList *clist = GTK_CLIST(inc_dialog->dialog->clist);
@@ -400,14 +415,13 @@ static void inc_start(IncProgressDialog *inc_dialog)
 	IncState inc_state;
 	gint num = 0;
 	gint error_num = 0;
+	gint new_msgs = 0;
 
 	while (inc_dialog->queue_list != NULL) {
 		session = inc_dialog->queue_list->data;
 		pop3_state = session->pop3_state;
 
 		inc_progress_dialog_clear(inc_dialog);
-
-		gtk_clist_moveto(clist, num, 0, 1.0, 0.0);
 
 		pop3_state->user = g_strdup(pop3_state->ac_prefs->userid);
 		if (pop3_state->ac_prefs->passwd)
@@ -428,11 +442,10 @@ static void inc_start(IncProgressDialog *inc_dialog)
 			pass = input_dialog_with_invisible(_("Input password"),
 							   message, NULL);
 			g_free(message);
-			if((prefs_common.receive_dialog == RECVDIALOG_ALWAYS) ||
-			    ((prefs_common.receive_dialog == RECVDIALOG_WINDOW_ACTIVE) && focus_window)) {
-				manage_window_focus_in(inc_dialog->mainwin->window,
-						       NULL, NULL);
-			}
+			if (inc_dialog->show_dialog)
+				manage_window_focus_in
+					(inc_dialog->mainwin->window,
+					 NULL, NULL);
 			if (pass) {
 				pop3_state->ac_prefs->tmp_pass = g_strdup(pass);
 				pop3_state->pass = pass;
@@ -470,8 +483,8 @@ static void inc_start(IncProgressDialog *inc_dialog)
 
 		if (pop3_state->error_val == PS_AUTHFAIL) {
 			if(!prefs_common.noerrorpanel) {
-				if((prefs_common.receive_dialog == RECVDIALOG_ALWAYS) ||
-				    ((prefs_common.receive_dialog == RECVDIALOG_WINDOW_ACTIVE) && focus_window)) {
+				if((prefs_common.recv_dialog_mode == RECV_DIALOG_ALWAYS) ||
+				    ((prefs_common.recv_dialog_mode == RECV_DIALOG_ACTIVE) && focus_window)) {
 					manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
 				}
 				alertpanel_error
@@ -482,11 +495,9 @@ static void inc_start(IncProgressDialog *inc_dialog)
 		}
 
 		statusbar_pop_all();
-		if((prefs_common.receive_dialog == RECVDIALOG_ALWAYS) ||
-		    ((prefs_common.receive_dialog == RECVDIALOG_WINDOW_ACTIVE) && focus_window)) {
-			manage_window_focus_in(inc_dialog->mainwin->window, NULL, NULL);
-		}
-		
+
+		new_msgs += pop3_state->cur_total_num;
+
 		if (!prefs_common.scan_all_after_inc) {
 			folder_item_scan_foreach(pop3_state->folder_table);
 			folderview_update_item_foreach
@@ -517,9 +528,13 @@ static void inc_start(IncProgressDialog *inc_dialog)
 	}
 
 	if (error_num) {
-		manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
+		if (inc_dialog->show_dialog)
+			manage_window_focus_in(inc_dialog->dialog->window,
+					       NULL, NULL);
 		alertpanel_error(_("Some errors occured while getting mail."));
-		manage_window_focus_out(inc_dialog->dialog->window, NULL, NULL);
+		if (inc_dialog->show_dialog)
+			manage_window_focus_out(inc_dialog->dialog->window,
+						NULL, NULL);
 	}
 
 	while (inc_dialog->queue_list != NULL) {
@@ -530,6 +545,8 @@ static void inc_start(IncProgressDialog *inc_dialog)
 	}
 
 	inc_progress_dialog_destroy(inc_dialog);
+
+	return new_msgs;
 }
 
 
@@ -605,8 +622,8 @@ static IncState inc_pop3_session_do(IncSession *session)
 		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
 			    server, port);
 		if(!prefs_common.noerrorpanel) {
-			if((prefs_common.receive_dialog == RECVDIALOG_ALWAYS) ||
-			    ((prefs_common.receive_dialog == RECVDIALOG_WINDOW_ACTIVE) && focus_window)) {
+			if((prefs_common.recv_dialog_mode == RECV_DIALOG_ALWAYS) ||
+			    ((prefs_common.recv_dialog_mode == RECV_DIALOG_ACTIVE) && focus_window)) {
 				manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
 			}
 			alertpanel_error(_("Can't connect to POP3 server: %s:%d"),
@@ -763,8 +780,8 @@ static gint connection_check_cb(Automaton *atm)
 		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
 			    sockinfo->hostname, sockinfo->port);
 		if(!prefs_common.noerrorpanel) {
-			if((prefs_common.receive_dialog == RECVDIALOG_ALWAYS) ||
-			    ((prefs_common.receive_dialog == RECVDIALOG_WINDOW_ACTIVE) && focus_window)) {
+			if((prefs_common.recv_dialog_mode == RECV_DIALOG_ALWAYS) ||
+			    ((prefs_common.recv_dialog_mode == RECV_DIALOG_ACTIVE) && focus_window)) {
 				manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
 			}
 			alertpanel_error(_("Can't connect to POP3 server: %s:%d"),

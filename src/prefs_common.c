@@ -168,7 +168,7 @@ static struct Privacy {
 #endif
 
 static struct Interface {
-	GtkWidget *checkbtn_emacs;
+	/* GtkWidget *checkbtn_emacs; */
 	GtkWidget *checkbtn_openunread;
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
@@ -177,7 +177,7 @@ static struct Interface {
 	GtkWidget *checkbtn_askonclean;
 	GtkWidget *checkbtn_warnqueued;
 	GtkWidget *checkbtn_addaddrbyclick;
-	GtkWidget *recvdialog_optmenu;
+	GtkWidget *optmenu_recvdialog;
 } interface;
 
 static struct Other {
@@ -209,8 +209,8 @@ static void prefs_common_default_signkey_set_data_from_optmenu
 							(PrefParam *pparam);
 static void prefs_common_default_signkey_set_optmenu	(PrefParam *pparam);
 #endif
-static void prefs_recvdialog_set_data_from_optmenu(PrefParam *pparam);
-static void prefs_recvdialog_set_optmenu(PrefParam *pparam);
+static void prefs_common_recv_dialog_set_data_from_optmenu(PrefParam *pparam);
+static void prefs_common_recv_dialog_set_optmenu(PrefParam *pparam);
 
 static void prefs_dictionary_set_data_from_optmenu(PrefParam *param);
 static void prefs_dictionary_set_optmenu(PrefParam *pparam);
@@ -564,8 +564,8 @@ static PrefParam param[] = {
 	{"separate_message", "FALSE", &prefs_common.sep_msg, P_BOOL,
 	 NULL, NULL, NULL},
 
-	{"emulate_emacs", "FALSE", &prefs_common.emulate_emacs, P_BOOL,
-	 NULL, NULL, NULL},
+	/* {"emulate_emacs", "FALSE", &prefs_common.emulate_emacs, P_BOOL,
+	 NULL, NULL, NULL}, */
 
 	{"open_unread_on_enter", "FALSE", &prefs_common.open_unread_on_enter,
 	 P_BOOL, &interface.checkbtn_openunread,
@@ -576,14 +576,14 @@ static PrefParam param[] = {
 	{"immediate_execution", "TRUE", &prefs_common.immediate_exec, P_BOOL,
 	 &interface.checkbtn_immedexec,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"receive_dialog_mode", "1", &prefs_common.recv_dialog_mode, P_ENUM,
+	 &interface.optmenu_recvdialog,
+	 prefs_common_recv_dialog_set_data_from_optmenu,
+	 prefs_common_recv_dialog_set_optmenu},
+
 	{"add_address_by_click", "FALSE", &prefs_common.add_address_by_click,
 	 P_BOOL, &interface.checkbtn_addaddrbyclick,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"receive_dialog", NULL, &prefs_common.receive_dialog, P_ENUM,
-	 &interface.recvdialog_optmenu,
-	 prefs_recvdialog_set_data_from_optmenu,
-	 prefs_recvdialog_set_optmenu},
-
 	{"confirm_on_exit", "TRUE", &prefs_common.confirm_on_exit, P_BOOL,
 	 &interface.checkbtn_confonexit,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -1949,20 +1949,22 @@ static void prefs_interface_create(void)
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
 	GtkWidget *vbox3;
-	GtkWidget *checkbtn_emacs;
+	/* GtkWidget *checkbtn_emacs; */
 	GtkWidget *checkbtn_openunread;
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
-	GtkWidget *checkbtn_addaddrbyclick;
-	GtkWidget *hbox;
-	GtkWidget *recvdialog_optmenu;
-	GtkWidget *recvdialog_optmenu_menu;
-	GtkWidget *recvdialog_menuitem;
+	GtkWidget *hbox1;
 	GtkWidget *label;
+	GtkWidget *optmenu_recvdialog;
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+
+	GtkWidget *frame_addr;
+        GtkWidget *vbox_addr;
+	GtkWidget *checkbtn_addaddrbyclick;
 
 	GtkWidget *frame_exit;
 	GtkWidget *vbox_exit;
-	GtkWidget *hbox1;
 	GtkWidget *checkbtn_confonexit;
 	GtkWidget *checkbtn_cleanonexit;
 	GtkWidget *checkbtn_askonclean;
@@ -1977,11 +1979,11 @@ static void prefs_interface_create(void)
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
-	PACK_CHECK_BUTTON (vbox2, checkbtn_emacs,
+	/* PACK_CHECK_BUTTON (vbox2, checkbtn_emacs,
 			   _("Emulate the behavior of mouse operation of\n"
 			     "Emacs-based mailer"));
 	gtk_label_set_justify (GTK_LABEL (GTK_BIN (checkbtn_emacs)->child),
-			       GTK_JUSTIFY_LEFT);
+			       GTK_JUSTIFY_LEFT);   */
 
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_openunread,
@@ -2009,13 +2011,40 @@ static void prefs_interface_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 8);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
+
+	label = gtk_label_new (_("Show receive dialog"));
+	gtk_widget_show (label);
+	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
+
+	optmenu_recvdialog = gtk_option_menu_new ();
+	gtk_widget_show (optmenu_recvdialog);
+	gtk_box_pack_start (GTK_BOX (hbox1), optmenu_recvdialog,
+			    FALSE, FALSE, 0);
+
+	menu = gtk_menu_new ();
+	MENUITEM_ADD (menu, menuitem, _("Always"), RECV_DIALOG_ALWAYS);
+	MENUITEM_ADD (menu, menuitem, _("Only if a window is active"),
+		      RECV_DIALOG_ACTIVE);
+	MENUITEM_ADD (menu, menuitem, _("Never"), RECV_DIALOG_NEVER);
+
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_recvdialog), menu);
+
+	PACK_FRAME (vbox1, frame_addr, _("Address book"));
+
+	vbox_addr = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox_addr);
+	gtk_container_add (GTK_CONTAINER (frame_addr), vbox_addr);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_addr), 8);
+
 	PACK_CHECK_BUTTON
-		(vbox2, checkbtn_addaddrbyclick,
+		(vbox_addr, checkbtn_addaddrbyclick,
 		 _("Add address to destination when double-clicked"));
 
-
 	/* Receive Dialog */
-	hbox = gtk_hbox_new (FALSE, 8);
+/*	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 
@@ -2033,7 +2062,7 @@ static void prefs_interface_create(void)
 	MENUITEM_ADD (recvdialog_optmenu_menu, recvdialog_menuitem, _("Only if a sylpheed window is active"),  RECVDIALOG_WINDOW_ACTIVE);
 	MENUITEM_ADD (recvdialog_optmenu_menu, recvdialog_menuitem, _("Never"), RECVDIALOG_NEVER);
 
-	gtk_option_menu_set_menu (GTK_OPTION_MENU (recvdialog_optmenu), recvdialog_optmenu_menu);
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (recvdialog_optmenu), recvdialog_optmenu_menu);     */
 
 	/* On Exit */
 	PACK_FRAME (vbox1, frame_exit, _("On exit"));
@@ -2059,12 +2088,12 @@ static void prefs_interface_create(void)
 	PACK_CHECK_BUTTON (vbox_exit, checkbtn_warnqueued,
 			   _("Warn if there are queued messages"));
 
-	interface.checkbtn_emacs          = checkbtn_emacs;
+	/* interface.checkbtn_emacs          = checkbtn_emacs; */
 	interface.checkbtn_openunread     = checkbtn_openunread;
 	interface.checkbtn_openinbox      = checkbtn_openinbox;
 	interface.checkbtn_immedexec      = checkbtn_immedexec;
+	interface.optmenu_recvdialog	  = recvdialog_optmenu;
 	interface.checkbtn_addaddrbyclick = checkbtn_addaddrbyclick;
-	interface.recvdialog_optmenu	  = recvdialog_optmenu;
 	interface.checkbtn_confonexit     = checkbtn_confonexit;
 	interface.checkbtn_cleanonexit    = checkbtn_cleanonexit;
 	interface.checkbtn_askonclean     = checkbtn_askonclean;
@@ -3107,6 +3136,42 @@ static void prefs_common_charset_set_optmenu(PrefParam *pparam)
 	prefs_common_charset_set_data_from_optmenu(pparam);
 }
 
+static void prefs_common_recv_dialog_set_data_from_optmenu(PrefParam *pparam)
+{
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+
+	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(*pparam->widget));
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	*((RecvDialogMode *)pparam->data) = GPOINTER_TO_INT
+		(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
+}
+
+static void prefs_common_recv_dialog_set_optmenu(PrefParam *pparam)
+{
+	RecvDialogMode mode = *((RecvDialogMode *)pparam->data);
+	GtkOptionMenu *optmenu = GTK_OPTION_MENU(*pparam->widget);
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+
+	switch (mode) {
+	case RECV_DIALOG_ALWAYS:
+		gtk_option_menu_set_history(optmenu, 0);
+		break;
+	case RECV_DIALOG_ACTIVE:
+		gtk_option_menu_set_history(optmenu, 1);
+		break;
+	case RECV_DIALOG_NEVER:
+		gtk_option_menu_set_history(optmenu, 2);
+		break;
+	default:
+	}
+
+	menu = gtk_option_menu_get_menu(optmenu);
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
+}
+
 static gint prefs_common_deleted(GtkWidget *widget, GdkEventAny *event,
 				 gpointer data)
 {
@@ -3326,7 +3391,7 @@ static void compose_prefs_key_pressed(GtkWidget *widget, GdkEventKey *event)
 	}
 }
 
-static void prefs_recvdialog_set_data_from_optmenu(PrefParam *pparam)
+/* static void prefs_recvdialog_set_data_from_optmenu(PrefParam *pparam)
 {
 	GtkWidget *menu;
 	GtkWidget *menuitem;
@@ -3335,9 +3400,9 @@ static void prefs_recvdialog_set_data_from_optmenu(PrefParam *pparam)
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	*((RecvDialogShow *)pparam->data) = GPOINTER_TO_INT
 		(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
-}
+}  */
 
-static void prefs_recvdialog_set_optmenu(PrefParam *pparam)
+/* static void prefs_recvdialog_set_optmenu(PrefParam *pparam)
 {
 	RecvDialogShow dialog_show;
 	GtkOptionMenu *optmenu = GTK_OPTION_MENU(*pparam->widget);
@@ -3362,4 +3427,4 @@ static void prefs_recvdialog_set_optmenu(PrefParam *pparam)
 	menu = gtk_option_menu_get_menu(optmenu);
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
-}
+}     */

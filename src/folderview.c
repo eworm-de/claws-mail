@@ -824,7 +824,6 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	GtkStyle *style = NULL;
-	GtkCTreeNode *parent;
 	FolderItem *item;
 	GdkPixmap *xpm, *openxpm;
 	GdkBitmap *mask, *openmask;
@@ -930,7 +929,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	}
 
 	if (item->stype == F_TRASH) return;
-
+		use_bold = use_color = FALSE;
 	if (item->stype == F_QUEUE) {
 		/* highlight queue folder if there are any messages */
 		use_bold = use_color = (item->total > 0);
@@ -972,10 +971,8 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 
 	gtk_ctree_node_set_row_style(ctree, node, style);
 
-	parent = node;
-	while ((parent = gtkut_ctree_find_collapsed_parent(ctree, parent))
-	       != NULL)
-		folderview_update_node(folderview, parent);
+	if ((node = gtkut_ctree_find_collapsed_parent(ctree, node)) != NULL)
+		folderview_update_node(folderview, node);
 }
 
 void folderview_update_item(FolderItem *item, gboolean update_summary)
