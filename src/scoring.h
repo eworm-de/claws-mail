@@ -25,7 +25,7 @@ void scoringprop_free(ScoringProp * prop);
 gint scoringprop_score_message(ScoringProp * scoring, MsgInfo * info);
 
 ScoringProp * scoringprop_parse(gchar ** str);
-
+ScoringProp * scoringprop_copy(ScoringProp *src);
 
 gint score_message(GSList * scoring_list, MsgInfo * info);
 

@@ -713,7 +713,7 @@ static void folder_color_set_dialog_key_pressed(GtkWidget *widget,
 
 void prefs_folder_item_copy_prefs(FolderItem * src, FolderItem * dest)
 {
-	GSList *tmp_prop_list = NULL, *tmp;
+	GSList *tmp_prop_list = NULL, *tmp_scor_list = NULL, *tmp;
 	prefs_folder_item_read_config(src);
 
 	tmp_prefs.directory			= g_strdup(src->prefs->directory);
@@ -730,6 +730,16 @@ void prefs_folder_item_copy_prefs(FolderItem * src, FolderItem * dest)
 	/* FIXME!
 	tmp_prefs.scoring			= g_slist_copy(src->prefs->scoring); 
 	*/
+
+	prefs_matcher_read_config();
+	for (tmp = src->prefs->scoring; tmp != NULL && tmp->data != NULL;) {
+		ScoringProp *prop = (ScoringProp *)tmp->data;
+		
+		tmp_scor_list = g_slist_append(tmp_scor_list,
+					   scoringprop_copy(prop));
+		tmp = tmp->next;
+	}
+	tmp_prefs.scoring			= tmp_scor_list;
 
 	for (tmp = src->prefs->processing; tmp != NULL && tmp->data != NULL;) {
 		FilteringProp *prop = (FilteringProp *)tmp->data;

@@ -2705,9 +2705,9 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 			folderview_create_folder_node_recursive(folderview, new_item);
 			folderview_update_item(src_parent, TRUE);
 			folderview_update_item_recursive(new_item, TRUE);
-			gtk_sctree_sort_recursive(GTK_CTREE(widget), 
+			folderview_sort_folders(folderview, 
 				gtk_ctree_find_by_row_data(GTK_CTREE(widget), 
-					NULL, new_item->parent));
+					NULL, new_item->parent), new_item->folder);
 			STATUSBAR_PUSH(folderview->mainwin, _("Done."));
 			main_window_cursor_normal(folderview->mainwin);
 			summary_clear_all(folderview->summaryview);

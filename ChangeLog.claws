@@ -1,3 +1,13 @@
+2002-11-08 [colin]	0.8.5claws99
+
+	* src/folderview.c
+		Fix folder reordering after a move if parent is 
+		root
+	* src/scoring.[ch]
+		Add function to copy a ScoringProp
+	* src/prefs_folder_item.c
+		Copy scoring rules when copying a folder prefs
+
 2002-11-08 [colin]	0.8.5claws98
 
 	* src/folderview.c
