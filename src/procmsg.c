@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,9 @@
 #include "folder.h"
 #include "prefs_common.h"
 #include "account.h"
+#if USE_GPGME
+#  include "rfc2015.h"
+#endif
 
 typedef struct _FlagInfo	FlagInfo;
 
@@ -396,30 +399,43 @@ struct MarkSum {
 	gint *new;
 	gint *unread;
 	gint *total;
+	gint *min;
+	gint *max;
+	gint first;
 };
 
 static void mark_sum_func(gpointer key, gpointer value, gpointer data)
 {
 	MsgFlags *flags = value;
+	gint num = GPOINTER_TO_INT(key);
 	struct MarkSum *marksum = data;
 
-	if (MSG_IS_NEW(*flags) && !MSG_IS_IGNORE_THREAD(*flags)) (*marksum->new)++;
-	if (MSG_IS_UNREAD(*flags) && !MSG_IS_IGNORE_THREAD(*flags)) (*marksum->unread)++;
-	(*marksum->total)++;
+	if (marksum->first <= num) {
+		if (MSG_IS_NEW(*flags) && !MSG_IS_IGNORE_THREAD(*flags)) (*marksum->new)++;
+		if (MSG_IS_UNREAD(*flags) && !MSG_IS_IGNORE_THREAD(*flags)) (*marksum->unread)++;
+		if (num > *marksum->max) *marksum->max = num;
+		if (num < *marksum->min || *marksum->min == 0) *marksum->min = num;
+		(*marksum->total)++;
+	}
 
 	g_free(flags);
 }
 
 void procmsg_get_mark_sum(const gchar *folder,
-			  gint *new, gint *unread, gint *total)
+			  gint *new, gint *unread, gint *total,
+			  gint *min, gint *max,
+			  gint first)
 {
 	GHashTable *mark_table;
 	struct MarkSum marksum;
 
-	*new = *unread = *total = 0;
+	*new = *unread = *total = *min = *max = 0;
 	marksum.new    = new;
 	marksum.unread = unread;
 	marksum.total  = total;
+	marksum.min    = min;
+	marksum.max    = max;
+	marksum.first  = first;
 
 	mark_table = procmsg_read_mark_file(folder);
 
@@ -733,6 +749,52 @@ FILE *procmsg_open_message(MsgInfo *msginfo)
 
 	return fp;
 }
+
+#if USE_GPGME
+FILE *procmsg_open_message_decrypted(MsgInfo *msginfo, MimeInfo **mimeinfo)
+{
+	FILE *fp;
+	MimeInfo *mimeinfo_;
+
+	g_return_val_if_fail(msginfo != NULL, NULL);
+
+	if (mimeinfo) *mimeinfo = NULL;
+
+	if ((fp = procmsg_open_message(msginfo)) == NULL) return NULL;
+
+	mimeinfo_ = procmime_scan_mime_header(fp);
+	if (!mimeinfo_) {
+		fclose(fp);
+		return NULL;
+	}
+
+	if (!MSG_IS_ENCRYPTED(msginfo->flags) &&
+	    rfc2015_is_encrypted(mimeinfo_)) {
+		MSG_SET_TMP_FLAGS(msginfo->flags, MSG_ENCRYPTED);
+	}
+
+	if (MSG_IS_ENCRYPTED(msginfo->flags) &&
+	    !msginfo->plaintext_file &&
+	    !msginfo->decryption_failed) {
+		rfc2015_decrypt_message(msginfo, mimeinfo_, fp);
+		if (msginfo->plaintext_file &&
+		    !msginfo->decryption_failed) {
+			fclose(fp);
+			procmime_mimeinfo_free_all(mimeinfo_);
+			if ((fp = procmsg_open_message(msginfo)) == NULL)
+				return NULL;
+			mimeinfo_ = procmime_scan_mime_header(fp);
+			if (!mimeinfo_) {
+				fclose(fp);
+				return NULL;
+			}
+		}
+	}
+
+	if (mimeinfo) *mimeinfo = mimeinfo_;
+	return fp;
+}
+#endif
 
 gboolean procmsg_msg_exist(MsgInfo *msginfo)
 {
