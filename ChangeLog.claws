@@ -1,3 +1,10 @@
+2003-12-07 [thorsten]	0.9.7claws29
+
+	* src/filtering.c
+		debug_print some warning if destfolder missing
+	* src/prefs_filtering.c
+		uninitialized filter list when deleting a folder
+
 2003-12-06 [paul]	0.9.7claws28
 
 	* src/procheader.c

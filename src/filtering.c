@@ -173,8 +173,11 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 	case MATCHACTION_MOVE:
 		dest_folder =
 			folder_find_item_from_identifier(action->destination);
-		if (!dest_folder)
+		if (!dest_folder) {
+			debug_print("*** folder not found '%s'\n",
+				action->destination ?action->destination :"");
 			return FALSE;
+		}
 		
 		if (folder_item_move_msg(dest_folder, info) == -1) {
 			debug_print("*** could not move message\n");
@@ -187,8 +190,11 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		dest_folder =
 			folder_find_item_from_identifier(action->destination);
 
-		if (!dest_folder)
+		if (!dest_folder) {
+			debug_print("*** folder not found '%s'\n",
+				action->destination ?action->destination :"");
 			return FALSE;
+		}
 
 		if (folder_item_copy_msg(dest_folder, info) == -1)
 			return FALSE;
