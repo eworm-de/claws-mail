@@ -45,25 +45,10 @@ static void key_pressed			(GtkWidget	*widget,
 
 static GdkFont *msgfont = NULL;
 
-#define FONT_LOAD(font, s) \
-{ \
-	gchar *fontstr, *p; \
- \
-	Xstrdup_a(fontstr, s, ); \
-	if ((p = strchr(fontstr, ',')) != NULL) *p = '\0'; \
-	font = gdk_font_load(fontstr); \
-}
-
 static void source_window_init()
 {
-	if (msgfont != NULL || prefs_common.textfont == NULL)
-		return;
-
-	if (MB_CUR_MAX == 1) {
-		FONT_LOAD(msgfont, prefs_common.textfont);
-	} else {
-		msgfont = gdk_fontset_load(prefs_common.textfont);
-	}
+	if (!msgfont && prefs_common.textfont)
+		msgfont = gtkut_font_load(prefs_common.textfont);
 }
 
 SourceWindow *source_window_create(void)

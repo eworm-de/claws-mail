@@ -4598,7 +4598,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	GdkColormap *cmap;
 	GdkColor color[1];
 	gboolean success[1];
-	GdkFont   *font;
 	GtkWidget *popupmenu;
 	GtkItemFactory *popupfactory;
 	GtkItemFactory *ifactory;
@@ -4789,16 +4788,9 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 		new_style = gtk_style_copy(style);
 
 	if (prefs_common.textfont) {
-		if (MB_CUR_MAX == 1) {
-			gchar *fontstr, *p;
+		GdkFont *font;
 
-			Xstrdup_a(fontstr, prefs_common.textfont, );
-			if (fontstr && (p = strchr(fontstr, ',')) != NULL)
-				*p = '\0';
-			font = gdk_font_load(fontstr);
-		} else
-			font = gdk_fontset_load(prefs_common.textfont);
-		if (font) {
+		if ((font = gtkut_font_load(prefs_common.textfont)) != NULL) {
 			gdk_font_unref(new_style->font);
 			new_style->font = font;
 		}

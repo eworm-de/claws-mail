@@ -52,17 +52,6 @@
 #include "account.h"
 #include "mimeview.h"
 
-#define FONT_LOAD(font, s) \
-{ \
-	gchar *fontstr, *p; \
- \
-	Xstrdup_a(fontstr, s, ); \
-	if ((p = strchr(fontstr, ',')) != NULL) *p = '\0'; \
-	font = gdk_font_load(fontstr); \
-	if (!font) \
-		g_warning("Couldn't load the font '%s'\n", fontstr); \
-}
-
 typedef struct _RemoteURI	RemoteURI;
 
 struct _RemoteURI
@@ -203,7 +192,7 @@ TextView *textview_create(void)
 		GtkStyle *style;
 		GdkFont *font;
 
-		FONT_LOAD(font, prefs_common.normalfont);
+		font = gtkut_font_load_from_fontset(prefs_common.normalfont);
 		if (font) {
 			style = gtk_style_copy(text_sb->style);
 			gdk_font_unref(style->font);
@@ -1229,11 +1218,11 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 				text_sb_font->ascent = text_sb_font_orig_ascent;
 				text_sb_font->descent = text_sb_font_orig_descent;
 			}
-			if (MB_CUR_MAX > 1) {
-				FONT_LOAD(font, "-*-courier-medium-r-normal--14-*-*-*-*-*-iso8859-1");
-			} else {
-				FONT_LOAD(font, prefs_common.textfont);
-			}
+			if (MB_CUR_MAX > 1)
+				font = gdk_font_load("-*-courier-medium-r-normal--14-*-*-*-*-*-iso8859-1");
+			else
+				font = gtkut_font_load_from_fontset
+					(prefs_common.textfont);
 			if (font && text_sb_font != font) {
 				if (text_sb_font)
 					gdk_font_unref(text_sb_font);
@@ -1259,7 +1248,7 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 	}
 
 	if (!textview->boldfont && prefs_common.boldfont)
-		FONT_LOAD(textview->boldfont, prefs_common.boldfont);
+		textview->boldfont = gtkut_font_load(prefs_common.boldfont);
 	if (!spacingfont)
 		spacingfont = gdk_font_load("-*-*-medium-r-normal--6-*");
 }

@@ -134,7 +134,7 @@ HeaderView *headerview_create(void)
 void headerview_init(HeaderView *headerview)
 {
 	if (!boldfont)
-		boldfont = gdk_fontset_load(BOLD_FONT);
+		boldfont = gtkut_font_load(BOLD_FONT);
 
 #define SET_FONT_STYLE(wid) \
 { \

@@ -1,7 +1,36 @@
+2002-11-05
+
+	* src/gtkutils.[ch]:
+	  gtkut_font_load(): new. It automatically choose font or fontset
+	  by current locale.
+	  gtkut_font_load_from_fontset(): new. It tries to load single font
+	  instead of fontset from a fontset string.
+	* src/alertpanel.c
+	  src/folderview.c
+	  src/headerview.c
+	  src/summaryview.c: workaround for the problem that couldn't display
+	  8-bit characters in C or POSIX locale (use font instead of fontset).
+	* src/compose.c
+	  src/sourcewindow.c
+	  src/textview.c: made code cleanup using gtkut_font_load*().
+
+2002-10-29
+
+	* src/mh.c: mh_get_msginfo(): set correct message number.
+
+2002-10-29
+
+	* src/folder.[ch]: added a new virtual method Folder::get_msginfo().
+	  It returns a new MsgInfo associated to a message number.
+	  folder_item_get_msginfo(): new.
+	* src/imap.[ch]: imap_get_msginfo(): new.
+	* src/mh.[ch]: mh_get_msginfo(): new.
+	* src/news.[ch]: news_get_msginfo(): new.
+
 2002-10-28
 
 	* src/codeconv.c: conv_euctojis(): fixed a bug which will cause
-	  infinite loop if a invalid code appeared.
+	  infinite loop if an invalid code appeared.
 
 2002-10-25
 

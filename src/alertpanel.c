@@ -236,7 +236,7 @@ static void alertpanel_create(const gchar *title,
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	style = gtk_style_copy(gtk_widget_get_style(label));
 	if (!titlefont)
-		titlefont = gdk_fontset_load(TITLE_FONT);
+		titlefont = gtkut_font_load(TITLE_FONT);
 	if (titlefont)
 		style->font = titlefont;
 	gtk_widget_set_style(label, style);

@@ -646,7 +646,7 @@ void summary_init(SummaryView *summaryview)
 		small_style = gtk_style_copy
 			(gtk_widget_get_style(summaryview->ctree));
 		if (!smallfont)
-			smallfont = gdk_fontset_load(SMALL_FONT);
+			smallfont = gtkut_font_load(SMALL_FONT);
 		small_style->font = smallfont;
 		small_marked_style = gtk_style_copy(small_style);
 		small_marked_style->fg[GTK_STATE_NORMAL] =
@@ -659,7 +659,7 @@ void summary_init(SummaryView *summaryview)
 		bold_style = gtk_style_copy
 			(gtk_widget_get_style(summaryview->ctree));
 		if (!boldfont)
-			boldfont = gdk_fontset_load(BOLD_FONT);
+			boldfont = gtkut_font_load(BOLD_FONT);
 		bold_style->font = boldfont;
 		bold_marked_style = gtk_style_copy(bold_style);
 		bold_marked_style->fg[GTK_STATE_NORMAL] =

@@ -31,6 +31,7 @@
 #include <gtk/gtkcombo.h>
 #include <gtk/gtkthemes.h>
 #include <gtk/gtkbindings.h>
+#include <stdlib.h>
 #include <stdarg.h>
 #include <sys/stat.h>
 
@@ -77,6 +78,42 @@ gint gtkut_get_font_height(GdkFont *font)
 	height = gdk_string_height(font, str);
 
 	return height;
+}
+
+GdkFont *gtkut_font_load(const gchar *fontset_name)
+{
+	GdkFont *font;
+
+	g_return_val_if_fail(fontset_name != NULL, NULL);
+
+	if (MB_CUR_MAX == 1)
+		font = gtkut_font_load_from_fontset(fontset_name);
+	else
+		font = gdk_fontset_load(fontset_name);
+
+	return font;
+}
+
+GdkFont *gtkut_font_load_from_fontset(const gchar *fontset_name)
+{
+	GdkFont *font = NULL;
+
+	if (strchr(fontset_name, ',') == NULL) {
+		font = gdk_font_load(fontset_name);
+	} else {
+		gchar **fonts;
+		gint i;
+
+		fonts = g_strsplit(fontset_name, ",", -1);
+		for (i = 0; fonts[i] != NULL && fonts[i][0] != '\0';
+		     i++) {
+			font = gdk_font_load(fonts[i]);
+			if (font) break;
+		}
+		g_strfreev(fonts);
+	}
+
+	return font;
 }
 
 void gtkut_convert_int_to_gdk_color(gint rgbvalue, GdkColor *color)

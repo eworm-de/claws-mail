@@ -537,9 +537,9 @@ void folderview_init(FolderView *folderview)
 
 
 	if (!normalfont)
-		normalfont = gdk_fontset_load(NORMAL_FONT);
+		normalfont = gtkut_font_load(NORMAL_FONT);
 	if (!boldfont)
-		boldfont = gdk_fontset_load(BOLD_FONT);
+		boldfont = gtkut_font_load(BOLD_FONT);
 
 	if (!bold_style) {
 		bold_style = gtk_style_copy(gtk_widget_get_style(ctree));

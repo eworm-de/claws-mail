@@ -1,3 +1,32 @@
+2002-11-05
+
+	* src/gtkutils.[ch]:
+	  gtkut_font_load(): 新規。現在の locale によって font または fontset
+	  を自動的に選択する。
+	  gtkut_font_load_from_fontset(): 新規。フォントセット文字列から
+	  フォントセットの代わりに単一のフォントの読み込みを試みる。
+	* src/alertpanel.c
+	  src/folderview.c
+	  src/headerview.c
+	  src/summaryview.c: C または POSIX locale で 8-bit 文字を表示
+	  できない問題に対処(fontset の代わりに font を使用)。
+	* src/compose.c
+	  src/sourcewindow.c
+	  src/textview.c: gtkut_font_load*() を使用してコードを整理。
+
+2002-10-29
+
+	* src/mh.c: mh_get_msginfo(): 正しいメッセージ番号をセット。
+
+2002-10-29
+
+	* src/folder.[ch]: 新規仮想メソッド Folder::get_msginfo() を追加。
+	  メッセージ番号に対応する新規 MsgInfo を返す。
+	  folder_item_get_msginfo(): 新規。
+	* src/imap.[ch]: imap_get_msginfo(): 新規。
+	* src/mh.[ch]: mh_get_msginfo(): 新規。
+	* src/news.[ch]: news_get_msginfo(): 新規。
+
 2002-10-28
 
 	* src/codeconv.c: conv_euctojis(): 不正なコードが出現したら無限
