@@ -68,6 +68,7 @@ src/prefs_filter.c
 src/prefs_filtering.c
 src/prefs_matcher.c
 src/prefs_scoring.c
+src/prefs_actions.c
 src/prefs_summary_column.c
 src/prefs_template.c
 src/procheader.c
