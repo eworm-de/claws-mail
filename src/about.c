@@ -211,10 +211,6 @@ static void about_create(void)
 		  "1993 and 1995.  Copyright retained for the purpose of protecting free "
 		  "redistribution of source.\n\n"), -1);
 
-	gtk_text_insert(GTK_TEXT(text), NULL, NULL, NULL,
-		_("Kcc is copyright by Yasuhiro Tonooka <tonooka@msi.co.jp>, "
-		  "and libkcc is copyright by takeshi@SoftAgency.co.jp.\n\n"), -1);
-
 #if USE_GPGME
 	gtk_text_insert(GTK_TEXT(text), NULL, NULL, NULL,
 		_("GPGME is copyright 2001 by Werner Koch <dd9jn@gnu.org>\n\n"), -1);

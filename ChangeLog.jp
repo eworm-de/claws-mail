@@ -1,3 +1,12 @@
+2002-07-08
+
+	* libkcc: ソースツリーから削除。
+	* COPYING
+	  src/about.c: libkcc の著作権表示を削除。
+	* src/codeconv.c: conv_guess_encoding(): スピードアップのために
+	  最初に ASCII コードをチェック。
+	* src/prefs_actions.c: 不要なスペース/タブを除去。
+
 2002-07-05
 
 	* src/prefs_actions.c: コーディングスタイルに準拠。

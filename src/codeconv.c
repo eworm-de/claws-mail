@@ -479,6 +479,8 @@ CharSet conv_guess_encoding(const gchar *str)
 			if (guessed == C_US_ASCII)
 				return C_ISO_2022_JP;
 			p += 2;
+		} else if (isascii(*p)) {
+			p++;
 		} else if (iseuckanji(*p) && iseuckanji(*(p + 1))) {
 			if (*p >= 0xfd && *p <= 0xfe)
 				return C_EUC_JP;
