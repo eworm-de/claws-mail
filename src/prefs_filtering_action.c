@@ -159,7 +159,7 @@ static gint get_sel_from_list(GtkList *list)
 	void * sel;
 	GList * child;
 
-	if (list->selection == NULL)
+	if (list->selection == NULL) 
 		return -1;
 
 	sel = list->selection->data;
@@ -729,7 +729,9 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 		destination = gtk_entry_get_text(GTK_ENTRY(filtering_action.dest_entry));
 		if (*destination == '\0') {
 			if (alert)
-                                alertpanel_error(_("Destination is not set."));
+                                alertpanel_error(action_id == ACTION_EXECUTE 
+						 ? _("Command line not set")
+						 : _("Destination is not set."));
 			return NULL;
 		}
 		break;
@@ -772,8 +774,13 @@ static void prefs_filtering_action_register_cb(void)
 	prefs_filtering_action_clist_set_row(-1, action);
 
 	filteringaction_free(action);
-
-	prefs_filtering_action_reset_dialog();
+	/* presumably gtk_list_select_item(), called by 
+	 * prefs_filtering_action_reset_dialog() activates 
+	 * what seems to be a bug. this causes any other 
+	 * list items to be unselectable */
+	/* prefs_filtering_action_reset_dialog(); */
+	gtk_list_select_item(GTK_LIST(filtering_action.account_list), 0);
+	gtk_entry_set_text(GTK_ENTRY(filtering_action.dest_entry), "");
 	prefs_filtering_action_update_hscrollbar();
 }
 

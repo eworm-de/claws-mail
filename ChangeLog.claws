@@ -1,3 +1,12 @@
+2003-04-14 [alfons]	0.9.5claws13
+
+	* src/prefs_filtering_action.c
+		o add proper message if empty execute command line
+		o don't select first action item after registering a
+		  new action to prevent (what seems to be a GTK) bug
+		  #36, "filtering will only accept one action change 
+		  per invocation".
+
 2003-04-14 [alfons]	0.9.5claws12
 
 	* src/prefs_filtering.c
