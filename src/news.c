@@ -93,21 +93,9 @@ static gint news_select_group		 (NNTPSession	*session,
 					  gint		*num,
 					  gint		*first,
 					  gint		*last);
-static GSList *news_get_uncached_articles(NNTPSession	*session,
-					  FolderItem	*item,
-					  gint		 cache_last,
-					  gint		*rfirst,
-					  gint		*rlast);
 static MsgInfo *news_parse_xover	 (const gchar	*xover_str);
 static gchar *news_parse_xhdr		 (const gchar	*xhdr_str,
 					  MsgInfo	*msginfo);
-static GSList *news_delete_old_articles	 (GSList	*alist,
-					  FolderItem	*item,
-					  gint		 first);
-static void news_delete_all_articles	 (FolderItem	*item);
-static void news_delete_expired_caches	 (GSList	*alist,
-					  FolderItem	*item);
-
 static gint news_remove_msg		 (Folder	*folder, 
 					  FolderItem	*item, 
 					  gint		 num);
@@ -297,57 +285,6 @@ NNTPSession *news_session_get(Folder *folder)
 	if (rfolder->session)
 		rfolder->session->last_access_time = time(NULL);
 	return NNTP_SESSION(rfolder->session);
-}
-
-GSList *news_get_article_list(Folder *folder, FolderItem *item,
-			      gboolean use_cache)
-{
-	GSList *alist;
-	NNTPSession *session;
-
-	g_return_val_if_fail(folder != NULL, NULL);
-	g_return_val_if_fail(item != NULL, NULL);
-	g_return_val_if_fail(folder->type == F_NEWS, NULL);
-
-	session = news_session_get(folder);
-
-	if (!session) {
-		alist = procmsg_read_cache(item, FALSE);
-		item->last_num = procmsg_get_last_num_in_msg_list(alist);
-	} else if (use_cache) {
-		GSList *newlist;
-		gint cache_last;
-		gint first, last;
-
-		alist = procmsg_read_cache(item, FALSE);
-
-		cache_last = procmsg_get_last_num_in_msg_list(alist);
-		newlist = news_get_uncached_articles
-			(session, item, cache_last, &first, &last);
-		if (first == 0 && last == 0) {
-			news_delete_all_articles(item);
-			procmsg_msg_list_free(alist);
-			alist = NULL;
-		} else {
-			alist = news_delete_old_articles(alist, item, first);
-			news_delete_expired_caches(alist, item);
-		}
-
-		alist = g_slist_concat(alist, newlist);
-
-		item->last_num = last;
-	} else {
-		gint last;
-
-		alist = news_get_uncached_articles
-			(session, item, 0, NULL, &last);
-		news_delete_all_articles(item);
-		item->last_num = last;
-	}
-
-	procmsg_set_flags(alist, item);
-
-	return alist;
 }
 
 gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
@@ -705,143 +642,6 @@ static gint news_select_group(NNTPSession *session, const gchar *group,
 	return ok;
 }
 
-static GSList *news_get_uncached_articles(NNTPSession *session,
-					  FolderItem *item, gint cache_last,
-					  gint *rfirst, gint *rlast)
-{
-	gint ok;
-	gint num = 0, first = 0, last = 0, begin = 0, end = 0;
-	gchar buf[NNTPBUFSIZE];
-	GSList *newlist = NULL;
-	GSList *llast = NULL;
-	MsgInfo *msginfo;
-
-	if (rfirst) *rfirst = -1;
-	if (rlast)  *rlast  = -1;
-
-	g_return_val_if_fail(session != NULL, NULL);
-	g_return_val_if_fail(item != NULL, NULL);
-	g_return_val_if_fail(item->folder != NULL, NULL);
-	g_return_val_if_fail(item->folder->type == F_NEWS, NULL);
-
-	ok = news_select_group(session, item->path, &num, &first, &last);
-	if (ok != NN_SUCCESS) {
-		log_warning("can't set group: %s\n", item->path);
-		return NULL;
-	}
-
-	/* calculate getting overview range */
-	if (first > last) {
-		log_warning("invalid article range: %d - %d\n",
-			    first, last);
-		return NULL;
-	}
-
-	if (rfirst) *rfirst = first;
-	if (rlast)  *rlast  = last;
-
-	if (cache_last < first)
-		begin = first;
-	else if (last < cache_last)
-		begin = first;
-	else if (last == cache_last) {
-		debug_print("no new articles.\n");
-		return NULL;
-	} else
-		begin = cache_last + 1;
-	end = last;
-
-	if (item->account->max_articles > 0 &&
-	    end - begin + 1 > item->account->max_articles)
-		begin = end - item->account->max_articles + 1;
-
-	log_message(_("getting xover %d - %d in %s...\n"),
-		    begin, end, item->path);
-	if (nntp_xover(session->nntp_sock, begin, end) != NN_SUCCESS) {
-		log_warning("can't get xover\n");
-		return NULL;
-	}
-
-	for (;;) {
-		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
-			log_warning("error occurred while getting xover.\n");
-			return newlist;
-		}
-
-		if (buf[0] == '.' && buf[1] == '\r') break;
-
-		msginfo = news_parse_xover(buf);
-		if (!msginfo) {
-			log_warning("invalid xover line: %s\n", buf);
-			continue;
-		}
-
-		msginfo->folder = item;
-		msginfo->flags.perm_flags = MSG_NEW|MSG_UNREAD;
-		msginfo->flags.tmp_flags = MSG_NEWS;
-		msginfo->newsgroups = g_strdup(item->path);
-
-		if (!newlist)
-			llast = newlist = g_slist_append(newlist, msginfo);
-		else {
-			llast = g_slist_append(llast, msginfo);
-			llast = llast->next;
-		}
-	}
-
-	if (nntp_xhdr(session->nntp_sock, "to", begin, end) != NN_SUCCESS) {
-		log_warning("can't get xhdr\n");
-		return newlist;
-	}
-
-	llast = newlist;
-
-	for (;;) {
-		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
-			log_warning("error occurred while getting xhdr.\n");
-			return newlist;
-		}
-
-		if (buf[0] == '.' && buf[1] == '\r') break;
-		if (!llast) {
-			g_warning("llast == NULL\n");
-			continue;
-		}
-
-		msginfo = (MsgInfo *)llast->data;
-		msginfo->to = news_parse_xhdr(buf, msginfo);
-
-		llast = llast->next;
-	}
-
-	if (nntp_xhdr(session->nntp_sock, "cc", begin, end) != NN_SUCCESS) {
-		log_warning("can't get xhdr\n");
-		return newlist;
-	}
-
-	llast = newlist;
-
-	for (;;) {
-		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
-			log_warning("error occurred while getting xhdr.\n");
-			return newlist;
-		}
-
-		if (buf[0] == '.' && buf[1] == '\r') break;
-		if (!llast) {
-			g_warning("llast == NULL\n");
-			continue;
-		}
-
-		msginfo = (MsgInfo *)llast->data;
-		msginfo->cc = news_parse_xhdr(buf, msginfo);
-
-		llast = llast->next;
-	}
-
-	return newlist;
-}
-
 #define PARSE_ONE_PARAM(p, srcp) \
 { \
 	p = strchr(srcp, '\t'); \
@@ -940,70 +740,6 @@ static gchar *news_parse_xhdr(const gchar *xhdr_str, MsgInfo *msginfo)
 		return g_strndup(p, tmp - p);
 	else
 		return g_strdup(p);
-}
-
-static GSList *news_delete_old_articles(GSList *alist, FolderItem *item,
-					gint first)
-{
-	GSList *cur, *next;
-	MsgInfo *msginfo;
-	gchar *dir;
-
-	g_return_val_if_fail(item != NULL, alist);
-	g_return_val_if_fail(item->folder != NULL, alist);
-	g_return_val_if_fail(item->folder->type == F_NEWS, alist);
-
-	if (first < 2) return alist;
-
-	debug_print("Deleting cached articles 1 - %d ...\n", first - 1);
-
-	dir = folder_item_get_path(item);
-	remove_numbered_files(dir, 1, first - 1);
-	g_free(dir);
-
-	for (cur = alist; cur != NULL; ) {
-		next = cur->next;
-
-		msginfo = (MsgInfo *)cur->data;
-		if (msginfo && msginfo->msgnum < first) {
-			procmsg_msginfo_free(msginfo);
-			alist = g_slist_remove(alist, msginfo);
-		}
-
-		cur = next;
-	}
-
-	return alist;
-}
-
-static void news_delete_all_articles(FolderItem *item)
-{
-	gchar *dir;
-
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->folder != NULL);
-	g_return_if_fail(item->folder->type == F_NEWS);
-
-	debug_print("Deleting all cached articles...\n");
-
-	dir = folder_item_get_path(item);
-	remove_all_numbered_files(dir);
-	g_free(dir);
-}
-
-static void news_delete_expired_caches(GSList *alist, FolderItem *item)
-{
-	gchar *dir;
-
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->folder != NULL);
-	g_return_if_fail(item->folder->type == F_NEWS);
-
-	debug_print("Deleting expired cached articles...\n");
-
-	dir = folder_item_get_path(item);
-	remove_expired_files(dir, 24 * 7);
-	g_free(dir);
 }
 
 gint news_cancel_article(Folder * folder, MsgInfo * msginfo)

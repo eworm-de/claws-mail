@@ -295,7 +295,6 @@ char *ssl_certificate_check_signer (X509 *cert)
 {
 	X509_STORE_CTX store_ctx;
 	X509_STORE *store;
-	int ok = 0;
 	char *err_msg = NULL;
 
 	store = X509_STORE_new();

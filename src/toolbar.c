@@ -91,6 +91,8 @@ static void activate_compose_button 		(Toolbar	*toolbar,
 				     		 ComposeButtonType type);
 
 /* toolbar callbacks */
+static void toolbar_reply			(gpointer 	 data, 
+						 guint 		 action);
 static void toolbar_delete_cb			(GtkWidget	*widget,
 					 	 gpointer        data);
 
@@ -1135,10 +1137,7 @@ static void toolbar_compose_cb(GtkWidget *widget, gpointer data)
 
 static void toolbar_popup_cb(gpointer data, guint action, GtkWidget *widget)
 {
-	MainWindow *mainwin = get_mainwin(data);
-
-	g_return_if_fail(mainwin != NULL);
-	reply_cb(mainwin, action, widget);
+	toolbar_reply(data, action);
 }
 
 
@@ -1147,40 +1146,8 @@ static void toolbar_popup_cb(gpointer data, guint action, GtkWidget *widget)
  */
 static void toolbar_reply_cb(GtkWidget *widget, gpointer data)
 {
-	ToolbarItem *toolbar_item = (ToolbarItem*)data;
-	MainWindow *mainwin = get_mainwin(data);
-
-	g_return_if_fail(toolbar_item != NULL);
-
-	switch (toolbar_item->type) {
-	case TOOLBAR_MAIN:
-		mainwin = (MainWindow*)toolbar_item->parent;
-		if (prefs_common.default_reply_list)
-			reply_cb(mainwin, 
-				 prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_LIST_WITH_QUOTE 
-				 : COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE, 
-				 NULL);
-		else
-			reply_cb(mainwin, 
-				 prefs_common.reply_with_quote ? COMPOSE_REPLY_WITH_QUOTE 
-				 : COMPOSE_REPLY_WITHOUT_QUOTE,
-				 NULL);
-		break;
-	case TOOLBAR_MSGVIEW:
-		if (prefs_common.default_reply_list)
-			reply_cb(mainwin, 
-				 prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_LIST_WITH_QUOTE 
-				 : COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE,
-				 NULL);
-		else
-			reply_cb(mainwin,
-				 prefs_common.reply_with_quote ? COMPOSE_REPLY_WITH_QUOTE 
-				 : COMPOSE_REPLY_WITHOUT_QUOTE,
-				 NULL);
-		break;
-	default:
-		debug_print("toolbar event not supported\n");
-	}
+	toolbar_reply(data, prefs_common.reply_with_quote ? 
+		      COMPOSE_REPLY_WITH_QUOTE : COMPOSE_REPLY_WITHOUT_QUOTE);
 }
 
 
@@ -1189,30 +1156,9 @@ static void toolbar_reply_cb(GtkWidget *widget, gpointer data)
  */
 static void toolbar_reply_to_all_cb(GtkWidget *widget, gpointer data)
 {
-	ToolbarItem *toolbar_item = (ToolbarItem*)data;
-	MainWindow *mainwin;
-	MessageView *msgview;
-
-	g_return_if_fail(toolbar_item != NULL);
-
-	switch (toolbar_item->type) {
-	case TOOLBAR_MAIN:
-		mainwin = (MainWindow*)toolbar_item->parent;
-		reply_cb(mainwin, 
-			 prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_ALL_WITH_QUOTE 
-			 : COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE, 
-			 NULL);
-		break;
-	case TOOLBAR_MSGVIEW:
-		msgview = (MessageView*)toolbar_item->parent;
-		compose_reply(msgview->msginfo,
-			      prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_ALL_WITH_QUOTE 
-			      : COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE,
-			      TRUE, FALSE, FALSE, NULL);
-		break;
-	default:
-		debug_print("toolbar event not supported\n");
-	}
+	toolbar_reply(data,
+		      prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_ALL_WITH_QUOTE 
+		      : COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE);
 }
 
 
@@ -1221,30 +1167,9 @@ static void toolbar_reply_to_all_cb(GtkWidget *widget, gpointer data)
  */
 static void toolbar_reply_to_list_cb(GtkWidget *widget, gpointer data)
 {
-	ToolbarItem *toolbar_item = (ToolbarItem*)data;
-	MainWindow *mainwin;
-	MessageView *msgview;
-
-	g_return_if_fail(toolbar_item != NULL);
-
-	switch (toolbar_item->type) {
-	case TOOLBAR_MAIN:
-		mainwin = (MainWindow*)toolbar_item->parent;
-		reply_cb(mainwin, 
-			 prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_LIST_WITH_QUOTE 
-			 : COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE, 
-			 NULL);
-		break;
-	case TOOLBAR_MSGVIEW:
-		msgview = (MessageView*)toolbar_item->parent;
-		compose_reply(msgview->msginfo,
-			      prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_LIST_WITH_QUOTE 
-			      : COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE,
-			      FALSE, TRUE, FALSE, NULL);
-		break;
-	default:
-		debug_print("toolbar event not supported\n");
-	}
+	toolbar_reply(data, 
+		      prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_LIST_WITH_QUOTE 
+		      : COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE);
 }
 
 
@@ -1253,30 +1178,9 @@ static void toolbar_reply_to_list_cb(GtkWidget *widget, gpointer data)
  */ 
 static void toolbar_reply_to_sender_cb(GtkWidget *widget, gpointer data)
 {
-	ToolbarItem *toolbar_item = (ToolbarItem*)data;
-	MainWindow *mainwin;
-	MessageView *msgview;
-
-	g_return_if_fail(toolbar_item != NULL);
-
-	switch (toolbar_item->type) {
-	case TOOLBAR_MAIN:
-		mainwin = (MainWindow*)toolbar_item->parent;
-		reply_cb(mainwin, 
-			 prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_SENDER_WITH_QUOTE 
-			 : COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE, 
-			 NULL);
-		break;
-	case TOOLBAR_MSGVIEW:
-		msgview = (MessageView*)toolbar_item->parent;
-		compose_reply(msgview->msginfo,
-			      prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_SENDER_WITH_QUOTE 
-			      : COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE,
-			      FALSE, FALSE, FALSE, NULL);
-		break;
-	default:
-		debug_print("toolbar event not supported\n\n");
-	}
+	toolbar_reply(data, 
+		      prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_SENDER_WITH_QUOTE 
+		      : COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE);
 }
 
 /*
@@ -1309,30 +1213,7 @@ static void toolbar_addrbook_cb(GtkWidget *widget, gpointer data)
  */
 static void toolbar_forward_cb(GtkWidget *widget, gpointer data)
 {
-	ToolbarItem *toolbar_item = (ToolbarItem*)data;
-	MainWindow *mainwin = get_mainwin(data);
-	
-	g_return_if_fail(toolbar_item != NULL);
-
-	switch (toolbar_item->type) {
-	case TOOLBAR_MAIN:
-		mainwin = (MainWindow*)toolbar_item->parent;
-		if (prefs_common.forward_as_attachment)
-			reply_cb(mainwin, COMPOSE_FORWARD_AS_ATTACH, NULL);
-		else
-			reply_cb(mainwin, COMPOSE_FORWARD, NULL);
-		break;
-		
-	case TOOLBAR_MSGVIEW:
-		if (prefs_common.forward_as_attachment)
-			reply_cb(mainwin, COMPOSE_FORWARD_AS_ATTACH, NULL);
-		else
-			reply_cb(mainwin, COMPOSE_FORWARD, NULL);
-		break;
-		
-	default:
-		debug_print("toolbar event not supported\n");
-	}
+	toolbar_reply(data, COMPOSE_FORWARD);
 }
 
 
@@ -1497,7 +1378,7 @@ static GtkWidget *get_window_widget(ToolbarType type, gpointer data)
 }
 
 static void toolbar_buttons_cb(GtkWidget   *widget, 
-				      ToolbarItem *item)
+			       ToolbarItem *item)
 {
 	gint num_items;
 	gint i;
@@ -2092,13 +1973,156 @@ void delete_msgview_cb(gpointer data, guint action, GtkWidget *widget)
 	}	
 }
 
-void reply_cb(gpointer data, guint action, GtkWidget *widget)
+void toolbar_menu_reply(ToolbarType type, gpointer data, guint action)
 {
-	MainWindow *mainwin = (MainWindow*)data;
+	ToolbarItem *item;
 
-	g_return_if_fail(mainwin != NULL);
+	g_return_if_fail(data != NULL);
 
-	summary_reply(mainwin->summaryview, (ComposeMode)action);
+	item = g_new0(ToolbarItem, 1);
+	item->parent = data;
+	item->type = type;
+	toolbar_reply(item, action);
+	g_free(item);	
+}
+
+static void toolbar_reply(gpointer data, guint action)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
+	MessageView *msgview;
+	SummaryView *summaryview;
+	GList *sel = NULL;
+	MsgInfo *msginfo = NULL;
+	gchar *text;
+
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow*)toolbar_item->parent;
+		summaryview = mainwin->summaryview;
+		msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
+						      summaryview->selected);
+		msgview = mainwin->summaryview->messageview;
+		sel = GTK_CLIST(summaryview->ctree)->selection;
+		break;
+	case TOOLBAR_MSGVIEW:
+		msgview = (MessageView*)toolbar_item->parent;
+		summaryview = msgview->mainwin->summaryview;
+		msginfo = msgview->msginfo;
+		break;
+	default:
+		return;
+	}
+
+	g_return_if_fail (msginfo != NULL);
+	g_return_if_fail (summaryview != NULL);
+
+	text = gtkut_editable_get_selection
+		(GTK_EDITABLE(msgview->textview->text));
+	
+	if (!text && msgview->type == MVIEW_MIME
+	    && msgview->mimeview->type == MIMEVIEW_TEXT
+	    && msgview->mimeview->textview
+	    && !msgview->mimeview->textview->default_text) {
+		text = gtkut_editable_get_selection 
+			(GTK_EDITABLE(msgview->mimeview->textview->text));   
+	}
+
+	switch (action) {
+	case COMPOSE_REPLY:
+		compose_reply(msginfo, prefs_common.reply_with_quote,
+		    	      FALSE, prefs_common.default_reply_list, FALSE, text);
+		break;
+	case COMPOSE_REPLY_WITH_QUOTE:
+		compose_reply(msginfo, TRUE, FALSE, prefs_common.default_reply_list, FALSE, text);
+		break;
+	case COMPOSE_REPLY_WITHOUT_QUOTE:
+		compose_reply(msginfo, FALSE, FALSE, prefs_common.default_reply_list, FALSE, NULL);
+		break;
+	case COMPOSE_REPLY_TO_SENDER:
+		compose_reply(msginfo, prefs_common.reply_with_quote,
+			      FALSE, FALSE, TRUE, text);
+		break;
+	case COMPOSE_FOLLOWUP_AND_REPLY_TO:
+		compose_followup_and_reply_to(msginfo,
+					      prefs_common.reply_with_quote,
+					      FALSE, FALSE, text);
+		break;
+	case COMPOSE_REPLY_TO_SENDER_WITH_QUOTE:
+		compose_reply(msginfo, TRUE, FALSE, FALSE, TRUE, text);
+		break;
+	case COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE:
+		compose_reply(msginfo, FALSE, FALSE, FALSE, TRUE, NULL);
+		break;
+	case COMPOSE_REPLY_TO_ALL:
+		compose_reply(msginfo, prefs_common.reply_with_quote,
+			      TRUE, FALSE, FALSE, text);
+		break;
+	case COMPOSE_REPLY_TO_ALL_WITH_QUOTE:
+		compose_reply(msginfo, TRUE, TRUE, FALSE, FALSE, text);
+		break;
+	case COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE:
+		compose_reply(msginfo, FALSE, TRUE, FALSE, FALSE, NULL);
+		break;
+	case COMPOSE_REPLY_TO_LIST:
+		compose_reply(msginfo, prefs_common.reply_with_quote,
+			      FALSE, TRUE, FALSE, text);
+		break;
+	case COMPOSE_REPLY_TO_LIST_WITH_QUOTE:
+		compose_reply(msginfo, TRUE, FALSE, TRUE, FALSE, text);
+		break;
+	case COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE:
+		compose_reply(msginfo, FALSE, FALSE, TRUE, FALSE, NULL);
+		break;
+	case COMPOSE_FORWARD:
+		if (prefs_common.forward_as_attachment) {
+			toolbar_reply(data, COMPOSE_FORWARD_AS_ATTACH);
+			return;
+		} else {
+			toolbar_reply(data, COMPOSE_FORWARD_INLINE);
+			return;
+		}
+		break;
+	case COMPOSE_FORWARD_INLINE:
+		/* check if we reply to more than one Message */
+		if (sel && !sel->next && toolbar_item->type == TOOLBAR_MAIN) {
+				compose_forward(NULL, msginfo, FALSE, text);
+				break;
+		} else if (sel == NULL && toolbar_item->type == TOOLBAR_MSGVIEW) {
+			compose_forward(NULL, msginfo, FALSE, text);
+			break;
+		}
+		/* more messages FALL THROUGH */
+	case COMPOSE_FORWARD_AS_ATTACH:
+		{
+			GSList *msginfo_list = NULL;
+			/* check if we reply to more than one Message */
+			if (sel != NULL) {
+				for ( ; sel != NULL; sel = sel->next)
+					msginfo_list = 
+						g_slist_append(msginfo_list, 
+							       gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
+											  GTK_CTREE_NODE(sel->data)));
+			} else {
+				/* invoked from messageview */
+				msginfo_list = g_slist_append(msginfo_list, msginfo);
+			}
+			
+			compose_forward_multiple(NULL, msginfo_list);
+			g_slist_free(msginfo_list);
+
+		}			
+		break;
+	case COMPOSE_REDIRECT:
+		compose_redirect(NULL, msginfo);
+		break;
+	default:
+		g_warning("toolbar_reply(): invalid action: %d\n", action);
+	}
+	
+	summary_set_marks_selected(summaryview);
+
+	g_free(text); 	
 }
 
 void inc_mail_cb(gpointer data, guint action, GtkWidget *widget)

@@ -150,7 +150,6 @@ static void addressadd_create( void ) {
 	GtkWidget *vlbox;
 	GtkWidget *tree_win;
 	GtkWidget *hbbox;
-	GtkWidget *hsep;
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
 	GtkWidget *hsbox;

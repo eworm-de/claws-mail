@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,12 @@ typedef enum {
 	A_NNTP,
 	A_LOCAL
 } RecvProtocol;
+
+typedef enum {
+	SIG_FILE,
+	SIG_COMMAND,
+	SIG_DIRECT
+} SigType;
 
 typedef enum {
 	/* login and retrieve messages, as before */
@@ -141,6 +147,7 @@ struct _PrefsAccount
 	GSList *customhdr_list;
 
 	/* Compose */
+	SigType sig_type;
 	gchar    *sig_path;
 	gboolean  auto_sig;
 	gchar 	 *sig_sep;

@@ -524,7 +524,7 @@ folder.o: 	folder.c folder.h
 foldersel.o: 	foldersel.c foldersel.h
 folderview.o: 	folderview.c folderview.h
 grouplistdialog.o: 	grouplistdialog.c grouplistdialog.h
-gtkaspell.o: 	gtkaspell.c gtkaspell.h gtkxtext.h
+gtkaspell.o: 	gtkaspell.c gtkaspell.h
 gtksctree.o: 	gtksctree.c gtksctree.h
 gtkshruler.o: 	gtkshruler.c gtkshruler.h
 gtkstext.o: 	gtkstext.c gtkstext.h

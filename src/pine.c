@@ -452,7 +452,7 @@ static ItemEMail *pine_insert_table(
 	ItemEMail *email;
 	gchar *key;
 
-	g_return_if_fail( address != NULL );
+	g_return_val_if_fail( address != NULL, NULL );
 
 	/* create an entry with empty name if needed */
 	if ( name == NULL )

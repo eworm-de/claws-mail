@@ -1,3 +1,22 @@
+2003-02-28
+
+	* src/prefs_account.[ch]: 署名にコマンドの出力を使用するオプション
+	  を追加。
+	* src/compose.c: compose_insert_sig(): 指定された場合はコマンドの
+	  出力を使用。
+	  compose_insert_command_output(): 新規。
+
+2003-02-28
+
+	* src/main.c: main(): --status コマンドが実行された時に sylpheed
+	  が起動していない場合はロックソケットを削除。
+	  lock_socket_remove(): 新規。
+
+2003-02-27
+
+	* src/codeconv.c: conv_codeset_strdup(): 現在のコードセットが
+	  US-ASCII (または POSIX) の場合は変換しないようにした。
+
 2003-02-21
 
 	* src/codeconv.c: conv_iconv_strdup(): 無効な文字をスキップして

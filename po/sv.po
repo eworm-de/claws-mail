@@ -7078,7 +7078,7 @@ msgstr "Visar källkoden till %s ...\n"
 #: src/sourcewindow.c:143
 #, c-format
 msgid "%s - Source"
-msgstr "%S - Källkod"
+msgstr "%s - Källkod"
 
 #: src/ssl.c:44
 msgid "SSLv23 not available\n"
@@ -7111,7 +7111,7 @@ msgstr "Vel vid skapande av SSL-kontext\n"
 #: src/ssl.c:106
 #, c-format
 msgid "SSL connect failed (%s)\n"
-msgstr "SSL-uppkoppling misslyckades\n"
+msgstr "SSL-uppkoppling misslyckades (%s)\n"
 
 #. Get the cipher
 #: src/ssl.c:113

@@ -207,6 +207,8 @@ static void compose_reedit_set_entry		(Compose	*compose,
 static void compose_insert_sig			(Compose	*compose);
 static void compose_insert_file			(Compose	*compose,
 						 const gchar	*file);
+static void compose_insert_command_output	(Compose	*compose,
+						 const gchar	*cmdline);
 static void compose_attach_append		(Compose	*compose,
 						 const gchar	*file,
 						 const gchar	*type,
@@ -1902,94 +1904,28 @@ static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 #undef SET_ENTRY
 #undef SET_ADDRESS
 
-static void compose_exec_sig(Compose *compose, gchar *sigfile)
-{
-	FILE  *sigprg;
-	gchar  *buf;
-	size_t buf_len = 128;
-#ifdef WIN32
-	gint retval;
-	gchar *tmp;
-	gchar *cmd;
-#endif
-
-	if (strlen(sigfile) < 2)
-	  return;
-
-#ifdef WIN32
-	tmp = get_tmp_file();
-	cmd = g_strdup_printf("%s > %s",sigfile+1,tmp);
-	retval = system(cmd);
-	sigprg = fopen(tmp, "r");
-#else
-	sigprg = popen(sigfile+1, "r");
-#endif
-	if (sigprg) {
-
-		buf = g_malloc(buf_len);
-
-		if (!buf) {
-			gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL, \
-			"Unable to insert signature (malloc failed)\n", -1);
-
-#ifdef WIN32
-			fclose(sigprg);
-			unlink(tmp);
-			g_free(tmp);
-			g_free(cmd);
-#else
-			pclose(sigprg);
-#endif
-			return;
-		}
-
-		while (!feof(sigprg)) {
-#ifdef WIN32
-			memset(buf, 0, buf_len);
-#else
-			bzero(buf, buf_len);
-#endif
-			fread(buf, buf_len-1, 1, sigprg);
-			gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL, buf, -1);
-		}
-
-		g_free(buf);
-#ifdef WIN32
-		fclose(sigprg);
-		unlink(tmp);
-		g_free(tmp);
-		g_free(cmd);
-#else
-		pclose(sigprg);
-#endif
-	}
-	else
-	{
-		gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL, \
-		"Can't exec file: ", -1);
-		gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL, \
-		sigfile+1, -1);
-#ifdef WIN32
-		unlink(tmp);
-		g_free(tmp);
-		g_free(cmd);
-#endif
-	}
-}
-
 static void compose_insert_sig(Compose *compose)
 {
-	gchar *sigfile;
+	static gchar *default_sigfile;
+	gchar *sigfile = NULL;
 
-	if (compose->account && compose->account->sig_path)
-		sigfile = g_strdup(compose->account->sig_path);
-	else
-		sigfile = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
-				      DEFAULT_SIGNATURE, NULL);
+	g_return_if_fail(compose->account != NULL);
 
-	if (!is_file_or_fifo_exist(sigfile) && sigfile[0] != '|') {
-		g_free(sigfile);
-		return;
+	if (compose->account->sig_type == SIG_FILE) {
+		if (compose->account->sig_path)
+			sigfile = compose->account->sig_path;
+		else {
+			if (!default_sigfile)
+				default_sigfile = g_strconcat
+					(get_home_dir(), G_DIR_SEPARATOR_S,
+					 DEFAULT_SIGNATURE, NULL);
+			sigfile = default_sigfile;
+		}
+
+		if (!is_file_or_fifo_exist(sigfile)) {
+			g_warning("can't open signature file: %s\n", sigfile);
+			return;
+		}
 	}
 
 	gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL, "\n\n", 2);
@@ -2000,11 +1936,12 @@ static void compose_insert_sig(Compose *compose)
 				"\n", 1);
 	}
 
-	if (sigfile[0] == '|')
-		compose_exec_sig(compose, sigfile);
-	else
+	if (compose->account->sig_type == SIG_COMMAND) {
+		if (compose->account->sig_path)
+			compose_insert_command_output
+				(compose, compose->account->sig_path);
+	} else
 		compose_insert_file(compose, sigfile);
-	g_free(sigfile);
 }
 
 static void compose_insert_file(Compose *compose, const gchar *file)
@@ -2048,6 +1985,57 @@ static void compose_insert_file(Compose *compose, const gchar *file)
 	gtk_stext_thaw(text);
 
 	fclose(fp);
+}
+
+static void compose_insert_command_output(Compose *compose,
+					  const gchar *cmdline)
+{
+	GtkSText *text = GTK_STEXT(compose->text);
+	gchar buf[BUFFSIZE];
+	gint len;
+	FILE *fp;
+#ifdef WIN32
+	gint retval;
+	gchar *tmp;
+	gchar *cmd;
+#endif
+
+	g_return_if_fail(cmdline != NULL);
+
+#ifdef WIN32
+	tmp = get_tmp_file();
+	cmd = g_strdup_printf("%s > %s",cmdline ,tmp);
+	retval = system(cmd);
+	fp = fopen(tmp, "r");
+#else
+	if ((fp = popen(cmdline, "r")) == NULL) {
+		FILE_OP_ERROR(cmdline, "popen");
+		return;
+	}
+#endif
+
+	gtk_stext_freeze(text);
+
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		strcrchomp(buf);
+		len = strlen(buf);
+		if (len > 0 && buf[len - 1] != '\n') {
+			while (--len >= 0)
+				if (buf[len] == '\r') buf[len] = '\n';
+		}
+		gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
+	}
+
+	gtk_stext_thaw(text);
+
+#ifdef WIN32
+	fclose(fp);
+	unlink(tmp);
+	g_free(tmp);
+	g_free(cmd);
+#else
+	pclose(fp);
+#endif
 }
 
 static void compose_attach_append(Compose *compose, const gchar *file,
@@ -3927,9 +3915,6 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 
 	for (row = 0; (ainfo = gtk_clist_get_row_data(clist, row)) != NULL;
 	     row++) {
-		gchar buf[BUFFSIZE];
-		gchar inbuf[B64_LINE_SIZE], outbuf[B64_BUFFSIZE];
-
 		if ((attach_fp = fopen(ainfo->file, "rb")) == NULL) {
 			g_warning("Can't open file %s\n", ainfo->file);
 			continue;

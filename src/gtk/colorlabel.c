@@ -28,6 +28,7 @@
 #ifndef WIN32
 #include <gdk/gdkx.h>
 #endif
+#include <gtk/gtk.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkpixmap.h>
 #include <gtk/gtkmenu.h>

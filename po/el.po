@@ -2,7 +2,6 @@
 # Copyright (C) 2001 Free Software Foundation, Inc.
 # Michalis Kabrianis <Michalis@bigfoot.com>, 2001.
 #
-#: src/addrgather.c:278
 msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed 0.4.52\n"
@@ -1194,12 +1193,12 @@ msgstr " [Τροποποιημένο]"
 #: src/compose.c:2602
 #, c-format
 msgid "%s - Compose message%s"
-msgstr "%s - Σύνθεση μηνύματος"
+msgstr "%s - Σύνθεση μηνύματος%s"
 
 #: src/compose.c:2605
 #, c-format
 msgid "Compose message%s"
-msgstr "Σύνθεση μηνύματος"
+msgstr "Σύνθεση μηνύματος%s"
 
 #: src/compose.c:2629
 msgid ""
@@ -7572,7 +7571,7 @@ msgstr "Το μήνυμα %s/%d δεν έχει σημειωθεί\n"
 #: src/summaryview.c:3206
 #, c-format
 msgid "Message %d is set to move to %s\n"
-msgstr "Το μήνυμα %s/%d έχει οριστεί για μετακίνηση στο %s\n"
+msgstr "Το μήνυμα %d έχει οριστεί για μετακίνηση στο %s\n"
 
 #: src/summaryview.c:3221
 msgid "Destination is same as current folder."

@@ -889,7 +889,6 @@ EXPORTS
 	imap_fetch_msg 
 	imap_folder_destroy 
 	imap_folder_new 
-	imap_get_msg_list 
 	imap_get_msginfo 
 	imap_get_msginfos 
 	imap_get_num_list 
@@ -988,6 +987,7 @@ EXPORTS
 	main_window_popup 
 	main_window_reflect_prefs_all 
 	main_window_reflect_prefs_all_real 
+	main_window_reply_cb 
 	main_window_separation_change 
 	main_window_set_account_menu 
 	main_window_set_menu_sensitive 
@@ -1135,7 +1135,6 @@ EXPORTS
 	mh_folder_destroy 
 	mh_folder_new 
 	mh_get_last_num 
-	mh_get_msg_list 
 	mh_get_msginfo 
 	mh_get_new_msg_filename 
 	mh_get_num_list 
@@ -1192,7 +1191,6 @@ EXPORTS
 	news_fetch_msgnum_sort 
 	news_folder_destroy 
 	news_folder_new 
-	news_get_article_list 
 	news_get_group_list 
 	news_get_msginfo 
 	news_get_msginfos 
@@ -1426,13 +1424,11 @@ EXPORTS
 	procmime_scan_mime_type 
 	procmime_scan_multipart_message 
 	procmime_scan_subject 
-	procmsg_add_flags 
 	procmsg_cmp_msgnum_for_sort 
 	procmsg_copy_messages 
 	procmsg_empty_trash 
 	procmsg_find_children 
 	procmsg_find_children_func 
-	procmsg_flush_mark_queue 
 	procmsg_get_last_num_in_msg_list 
 	procmsg_get_message_file 
 	procmsg_get_message_file_path 
@@ -1454,21 +1450,15 @@ EXPORTS
 	procmsg_msginfo_set_flags 
 	procmsg_msginfo_set_to_folder 
 	procmsg_msginfo_unset_flags 
-	procmsg_msginfo_write_flags 
-	procmsg_open_mark_file 
 	procmsg_open_message 
 	procmsg_open_message_decrypted 
 	procmsg_print_message 
-	procmsg_read_cache 
 	procmsg_remove_special_headers 
 	procmsg_save_to_outbox 
 	procmsg_send_message_queue 
 	procmsg_send_queue 
-	procmsg_set_flags 
 	procmsg_to_folder_hash_table_create 
 	procmsg_update_unread_children 
-	procmsg_write_cache 
-	procmsg_write_flags 
 	prog_version 
 	progress_dialog_create 
 	progress_dialog_destroy 
@@ -1524,7 +1514,6 @@ EXPORTS
 	renderer_read_config 
 	renderer_write_config 
 	replace_address_in_edit 
-	reply_cb 
 	rfc2015_check_signature 
 	rfc2015_clearsign 
 	rfc2015_create_signers_list 
@@ -1699,7 +1688,6 @@ EXPORTS
 	summary_redisplay_msg 
 	summary_reedit 
 	summary_reflect_prefs_pixmap_theme 
-	summary_reply 
 	summary_save_as 
 	summary_save_prefs_to_folderitem 
 	summary_search 
@@ -1772,6 +1760,7 @@ EXPORTS
 	toolbar_init 
 	toolbar_is_duplicate 
 	toolbar_main_set_sensitive 
+	toolbar_menu_reply 
 	toolbar_read_config_file 
 	toolbar_ret_descr_from_val 
 	toolbar_ret_val_from_descr 

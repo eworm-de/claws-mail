@@ -1,3 +1,22 @@
+2003-02-28
+
+	* src/prefs_account.[ch]: added an option to use command output for
+	  signature.
+	* src/compose.c: compose_insert_sig(): use command output if
+	  specified.
+	  compose_insert_command_output(): new.
+
+2003-02-28
+
+	* src/main.c: main(): remove lock socket if sylpheed is not running
+	  when --status command is executed.
+	  lock_socket_remove(): new.
+
+2003-02-27
+
+	* src/codeconv.c: conv_codeset_strdup(): don't convert if current
+	  codeset is US-ASCII (or POSIX).
+
 2003-02-21
 
 	* src/codeconv.c: conv_iconv_strdup(): try to skip invalid characters

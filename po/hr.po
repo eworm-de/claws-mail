@@ -4203,7 +4203,7 @@ msgstr "pisanje u %s nije uspjelo.\n"
 #: src/mbox_folder.c:1767 src/mh.c:750
 #, c-format
 msgid "Last number in dir %s = %d\n"
-msgstr "Posljednji broj u direktoriju %s = %s\n"
+msgstr "Posljednji broj u direktoriju %s = %d\n"
 
 #: src/mbox_folder.c:1960
 #, c-format

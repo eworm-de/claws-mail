@@ -1,3 +1,131 @@
+2003-03-01 [thorsten]	0.8.10claws68
+
+	* po/el.po
+	  po/hr.po
+	  po/it.po
+	  po/nl.po
+	  po/sr.po
+	  po/sv.po
+		corrected format strings
+	* po/en_GB.po
+		corrected headers
+		(fix compile errors with GNU gettext-0.11.5)
+
+2003-03-01 [oliver]	0.8.10claws67
+
+	* ???
+
+2003-03-01 [oliver]	0.8.10claws66
+
+	* src/mainwindow.c
+	* src/messageview.c
+		menu callbacks call toolbar_menu_reply
+	* src/toolbar.[ch]
+		callbacks from menu handled by toolbar_menu_reply
+
+2003-03-01 [paul]	0.8.10claws65
+
+	* src/addressbook.c
+		revert commit 0.8.10claws54 - breaks editing of
+		addressbook.
+		
+	* po/bg.po
+		update Bulgarian translation, submitted by
+		George Danchev
+
+2003-02-28 [christoph]	0.8.10claws64
+
+	* src/account.c
+	* src/addressadd.c
+	* src/compose.c
+	* src/gtkaspell.c
+	* src/gtkxtext.h		** REMOVE **
+	* src/imap.c
+	* src/matcher.[ch]
+	* src/mh.c
+	* src/news.c
+	* src/pine.c
+	* src/prefs_common.c
+	* src/prefs_matcher.c
+	* src/procheader.[ch]
+	* src/procmsg.[ch]
+	* src/toolbar.c
+	* src/common/ssl_certificate.c
+	* src/gtk/colorlabel.c
+	* src/gtk/menu.c
+		o fix warnings
+		o remove code obsoleted by new cache and folder system rework
+
+2003-02-28 [oliver]	0.8.10claws63
+	
+	* src/toolbar.[ch]
+		* fix bug where reply in Messageview replied to 
+	  	Message displayed in summaryview
+		(reportedd via ML by chinatinte at gmx dot ch)
+		* fix bug where toolbar popups (WITH_QUOTE, WITHOUT_QOUTE)
+		didn't work in separate MessageView Toolbar
+		(wondering if anybody uses this at all ?)
+	* src/summaryview.[ch]
+		use toolbar.c's toolbar_reply instead of summary_reply (removed)
+		(generalize reply and forward code);
+	* src/messageview.c 
+		remove focus_in event which updated summaryview to messageview
+
+2003-02-28 [paul]	0.8.10claws62
+
+	* po/Makefile.in.in
+		add the --check option
+		Patch submitted by Ricardo Mones Lastra
+
+2003-02-28 [paul]	0.8.10claws61
+
+	* src/prefs_account.c
+		re-order 'Signature' items
+
+2003-02-28 [paul]	0.8.10claws60
+
+	* sync with 0.8.10cvs20
+		see ChangeLog 2003-02-28
+
+2003-02-28 [paul]	0.8.10claws59
+
+	* po/POTFILES.in
+		update to reflect recent movement of files
+
+2003-02-28 [paul]	0.8.10claws58
+
+	* sync with 0.8.10cvs19
+		see ChangeLog 2003-02-28
+
+2003-02-27 [martin]	0.8.10claws57
+
+	* src/prefs_matcher.c 
+		fix segfault in prefs_matcher_ok() when the
+		last entry is deleted and prevents that the
+		message "entry not saved" comes up after deleting
+		an entry
+
+2003-02-27 [martin]	0.8.10claws56
+
+	* src/prefs_filtering.c 
+		fix segfault in prefs_filtering_ok() when the
+		last entry is deleted and prevents that the
+		message "entry not saved" comes up after deleting
+		an entry
+
+2003-02-27 [paul]	0.8.10claws55
+
+	* sync with 0.8.10cvs18
+		see ChangeLog 2003-02-27
+
+2003-02-27 [paul]	0.8.10claws54
+
+	* src/addressbook.c
+		fix bug where the address book crashes with 
+		multiple lookups.
+		Patch [687729] submitted by David Frager 
+		<dbfrager@users.sourceforge.net>
+
 2003-02-25 [christoph]	0.8.10claws53
 
 	* src/Makefile.am

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 2001-2003 Hiroyuki Yamamoto and the Sylpheed-Claws team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -198,9 +198,6 @@ void 	toolbar_comp_set_sensitive	(gpointer	 data,
 void 	delete_msgview_cb		(gpointer	 data, 
 					 guint		 action, 
 					 GtkWidget 	*widget);
-void 	reply_cb			(gpointer	 data, 
-					 guint		 action, 
-					 GtkWidget 	*widget);
 void	inc_mail_cb			(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -230,5 +227,7 @@ void	toolbar_set_style		(GtkWidget	*toolbar_wid,
 					 guint		 action);
 void 	toolbar_destroy			(Toolbar	*toolbar);
 void 	toolbar_init			(Toolbar	*toolbar);
-					    
+void 	toolbar_menu_reply		(ToolbarType	 type,
+					 gpointer 	 data, 	
+					 guint 		 action);
 #endif /* __CUSTOM_TOOLBAR_H__ */

@@ -119,6 +119,7 @@ static struct Send {
 } p_send;
 
 static struct Compose {
+	GtkWidget *sigfile_radiobtn;
 	GtkWidget *entry_sigpath;
 	GtkWidget *checkbtn_autosig;
 	GtkWidget *entry_sigsep;
@@ -206,10 +207,8 @@ static void prefs_account_smtp_auth_type_set_data_from_optmenu
 							(PrefParam *pparam);
 static void prefs_account_smtp_auth_type_set_optmenu	(PrefParam *pparam);
 
-#if USE_GPGME || USE_OPENSSL
 static void prefs_account_enum_set_data_from_radiobtn	(PrefParam *pparam);
 static void prefs_account_enum_set_radiobtn		(PrefParam *pparam);
-#endif /* USE_GPGME || USE_OPENSSL */
 
 #if USE_GPGME
 static void prefs_account_gnupg_inline_warning		(GtkWidget *widget);
@@ -359,6 +358,10 @@ static PrefParam param[] = {
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	/* Compose */
+	{"signature_type", "0", &tmp_ac_prefs.sig_type, P_ENUM,
+	 &compose.sigfile_radiobtn,
+	 prefs_account_enum_set_data_from_radiobtn,
+	 prefs_account_enum_set_radiobtn},
 	{"signature_path", "~/"DEFAULT_SIGNATURE, &tmp_ac_prefs.sig_path, P_STRING,
 	 &compose.entry_sigpath,
 	 prefs_set_data_from_entry, prefs_set_entry},
@@ -1481,6 +1484,7 @@ static void prefs_account_send_create(void)
 static void prefs_account_compose_create(void)
 {
 	GtkWidget *vbox1;
+	GtkWidget *sig_hbox;
 	GtkWidget *hbox1;
 	GtkWidget *hbox2;
 	GtkWidget *frame_sig;
@@ -1490,6 +1494,8 @@ static void prefs_account_compose_create(void)
 	GtkWidget *checkbtn_autosig;
 	GtkWidget *label_sigsep;
 	GtkWidget *entry_sigsep;
+	GtkWidget *sigfile_radiobtn;
+	GtkWidget *sigcmd_radiobtn;
 	GtkWidget *frame;
 	GtkWidget *table;
 	GtkWidget *autocc_chkbtn;
@@ -1527,10 +1533,29 @@ static void prefs_account_compose_create(void)
 
 	gtk_widget_set_usize (entry_sigsep, 64, -1);
 
+	sig_hbox = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (sig_hbox);
+	gtk_box_pack_start (GTK_BOX (vbox_sig), sig_hbox, FALSE, FALSE, 0);
+
+	sigfile_radiobtn = gtk_radio_button_new_with_label (NULL, _("File"));
+	gtk_widget_show (sigfile_radiobtn);
+	gtk_box_pack_start (GTK_BOX (sig_hbox), sigfile_radiobtn,
+			    FALSE, FALSE, 0);
+	gtk_object_set_user_data (GTK_OBJECT (sigfile_radiobtn),
+				  GINT_TO_POINTER (SIG_FILE));
+
+	sigcmd_radiobtn = gtk_radio_button_new_with_label_from_widget
+		(GTK_RADIO_BUTTON(sigfile_radiobtn), _("Command output"));
+	gtk_widget_show (sigcmd_radiobtn);
+	gtk_box_pack_start (GTK_BOX (sig_hbox), sigcmd_radiobtn,
+			    FALSE, FALSE, 0);
+	gtk_object_set_user_data (GTK_OBJECT (sigcmd_radiobtn),
+				  GINT_TO_POINTER (SIG_COMMAND));
+
 	hbox2 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (vbox_sig), hbox2, TRUE, TRUE, 0);
-	label_sigpath = gtk_label_new (_("Signature file"));
+	label_sigpath = gtk_label_new (_("Signature"));
 	gtk_widget_show (label_sigpath);
 	gtk_box_pack_start (GTK_BOX (hbox2), label_sigpath, FALSE, FALSE, 0);
 
@@ -1586,6 +1611,7 @@ static void prefs_account_compose_create(void)
 
 	SET_TOGGLE_SENSITIVITY (autoreplyto_chkbtn, autoreplyto_entry);
 
+	compose.sigfile_radiobtn = sigfile_radiobtn;
 	compose.entry_sigpath      = entry_sigpath;
 	compose.checkbtn_autosig   = checkbtn_autosig;
 	compose.entry_sigsep       = entry_sigsep;

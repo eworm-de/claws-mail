@@ -621,7 +621,6 @@ static gboolean set_dictionary(AspellConfig *config, Dictionary *dict)
 	gchar *language = NULL;
 	gchar *jargon = NULL;
 	gchar *size   = NULL;
-	gchar *end      = NULL;
 	gchar  buf[BUFSIZE];
 	
 	g_return_val_if_fail(config, FALSE);
@@ -1454,14 +1453,11 @@ static GSList *create_empty_dictionary_list(void)
 GSList *gtkaspell_get_dictionary_list(const gchar *aspell_path, gint refresh)
 {
 	GSList *list;
-	gchar *dict_path, *tmp, *prevdir;
-	gchar tmpname[BUFSIZE];
 	Dictionary *dict;
 	AspellConfig *config;
 	AspellDictInfoList *dlist;
 	AspellDictInfoEnumeration *dels;
 	const AspellDictInfo *entry;
-	struct dirent *ent;
 
 	if (!gtkaspellcheckers)
 		gtkaspellcheckers = gtkaspell_checkers_new();

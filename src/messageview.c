@@ -62,9 +62,6 @@ static void messageview_size_allocate_cb(GtkWidget	*widget,
 static void key_pressed			(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 MessageView	*messageview);
-static void focus_in			(GtkWidget 	*widget, 
-					 GdkEventFocus 	*event,
-					 gpointer 	 data);
 
 static void return_receipt_show		(NoticeView     *noticeview, 
 				         MsgInfo        *msginfo);	
@@ -74,7 +71,7 @@ static void return_receipt_send_clicked (NoticeView	*noticeview,
 static PrefsAccount *select_account_from_list
 					(GList		*ac_list);
 
-static void messageview_menubar_cb	(gpointer 	 data, 
+static void messageview_menubar_cb	(MessageView 	*msgview,
 					 guint 		 action, 
 					 GtkWidget 	*widget);
 					 
@@ -219,8 +216,6 @@ MessageView *messageview_create_with_new_window(MainWindow *mainwin)
 			   GTK_SIGNAL_FUNC(messageview_destroy_cb), msgview);
 	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
 			   GTK_SIGNAL_FUNC(key_pressed), msgview);
-	gtk_signal_connect(GTK_OBJECT(window), "focus_in_event",
-			   GTK_SIGNAL_FUNC(focus_in), msgview);
 
 	messageview_add_toolbar(msgview, window);
 
@@ -727,15 +722,6 @@ static void key_pressed(GtkWidget *widget, GdkEventKey *event,
 		gtk_widget_destroy(messageview->window);
 }
 
-static void focus_in(GtkWidget *widget, GdkEventFocus *event,
-		     gpointer data)
-{
-	MessageView *msgview = (MessageView*)data;
-
-	summary_select_by_msgnum(msgview->mainwin->summaryview, 
-				 msgview->msginfo->msgnum);
-}
-
 void messageview_toggle_view_real(MessageView *messageview)
 {
 	MainWindow *mainwin = messageview->mainwin;
@@ -840,13 +826,9 @@ static PrefsAccount *select_account_from_list(GList *ac_list)
 	return account_find_from_id(account_id);
 }
 
-static void messageview_menubar_cb(gpointer data, guint action, GtkWidget *widget)
+static void messageview_menubar_cb(MessageView *msgview, guint action, GtkWidget *widget)
 {
-	MessageView *msgview = (MessageView*)data;
-	MainWindow *mainwin = (MainWindow*)msgview->mainwin;
-
-	g_return_if_fail(mainwin != NULL);
-	reply_cb(mainwin, action, widget);
+	toolbar_menu_reply(TOOLBAR_MSGVIEW, msgview, action);
 }
 
 static void messageview_close_cb(gpointer data, guint action, GtkWidget *widget)
