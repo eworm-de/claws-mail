@@ -1599,17 +1599,19 @@ void procmsg_msginfo_write_flags(MsgInfo *msginfo)
 	g_free(destdir);
 }
 
-gboolean procmsg_msg_has_marked_parent	(MsgInfo *info)
+gboolean procmsg_msg_has_flagged_parent(MsgInfo *info, MsgPermFlags perm_flags)
 {
 	MsgInfo *tmp;
+
 	g_return_val_if_fail(info != NULL, FALSE);
+
 	if (info != NULL && info->folder != NULL && info->inreplyto != NULL) {
 		tmp = folder_item_get_msginfo_by_msgid(info->folder, info->inreplyto);
-		if (tmp && MSG_IS_MARKED(tmp->flags)) {
+		if (tmp && (tmp->flags.perm_flags & perm_flags)) {
 			procmsg_msginfo_free(tmp);
 			return TRUE;
 		} else if (tmp != NULL) {
-			gboolean result = procmsg_msg_has_marked_parent(tmp);
+			gboolean result = procmsg_msg_has_flagged_parent(tmp, perm_flags);
 			procmsg_msginfo_free(tmp);
 			return result;
 		} else {
@@ -1617,6 +1619,11 @@ gboolean procmsg_msg_has_marked_parent	(MsgInfo *info)
 		}
 	} else
 		return FALSE;
+}
+
+gboolean procmsg_msg_has_marked_parent(MsgInfo *info)
+{
+	return procmsg_msg_has_flagged_parent(info, MSG_MARKED);
 }	
 
 GSList *procmsg_find_children (MsgInfo *info)
