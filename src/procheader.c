@@ -902,6 +902,8 @@ void procheader_date_get_localtime(gchar *dest, gint len, const time_t timer)
 {
 	struct tm *lt;
 	gchar *default_format = "%y/%m/%d(%a) %H:%M";
+	gchar *str;
+	const gchar *src_codeset, *dest_codeset;
 
 	lt = localtime(&timer);
 
@@ -910,22 +912,14 @@ void procheader_date_get_localtime(gchar *dest, gint len, const time_t timer)
 	else
 		strftime(dest, len, default_format, lt);
 
-#warning FIXME_GTK2
-#if 1
-	{
-		gchar *str;
-		const gchar *src_codeset, *dest_codeset;
-
-		src_codeset = conv_get_current_charset_str();
-		dest_codeset = CS_UTF_8;
-		str = conv_codeset_strdup(dest, src_codeset, dest_codeset);
-		if (str) {
-			g_snprintf(dest, len, "%s", str);
-			strncpy2(dest, str, len);
-			g_free(str);
-		}
+	src_codeset = conv_get_current_charset_str();
+	dest_codeset = CS_UTF_8;
+	str = conv_codeset_strdup(dest, src_codeset, dest_codeset);
+	if (str) {
+		g_snprintf(dest, len, "%s", str);
+		strncpy2(dest, str, len);
+		g_free(str);
 	}
-#endif
 }
 
 /* Added by Mel Hadasht on 27 Aug 2001 */

@@ -151,7 +151,7 @@ void source_window_append(SourceWindow *sourcewin, const gchar *str)
 
 	len = strlen(str) + 1;
 	Xalloca(out, len, return);
-#warning FIXME_GTK2
+	
 	conv_localetodisp(out, len, str);
 
 	gtk_text_buffer_get_iter_at_offset(buffer, &iter, -1);

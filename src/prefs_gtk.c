@@ -118,7 +118,6 @@ void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 		switch (param[i].type) {
 		case P_STRING:
 		{
-#warning FIXME_GTK2
 			gchar *tmp;
 
 			tmp = *value ?
@@ -127,7 +126,7 @@ void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 						    CS_UTF_8)
 				: g_strdup("");
 			if (!tmp) {
-				g_warning("faild to convert character set.");
+				g_warning("failed to convert character set.");
 				tmp = g_strdup(value);
 			}
 			g_free(*((gchar **)param[i].data));
@@ -271,7 +270,6 @@ gint prefs_write_param(PrefParam *param, FILE *fp)
 		switch (param[i].type) {
 		case P_STRING:
 		{
-#warning FIXME_GTK2
 			gchar *tmp = NULL;
 
 			if (*((gchar **)param[i].data)) {
@@ -356,7 +354,6 @@ void prefs_set_default(PrefParam *param)
 		if (!param[i].data) continue;
 
 		switch (param[i].type) {
-#warning FIXME_GTK2
 		case P_STRING:
 		case P_PASSWORD:
 			g_free(*((gchar **)param[i].data));
@@ -559,7 +556,6 @@ void prefs_set_dialog_to_default(PrefParam *param)
 		switch (tmpparam.type) {
 		case P_STRING:
 		case P_PASSWORD:
-#warning FIXME_GTK2
 			if (tmpparam.defval) {
 				if (!strncasecmp(tmpparam.defval, "ENV_", 4)) {
 					str_data = g_strdup(g_getenv(param[i].defval + 4));

@@ -276,10 +276,7 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 
 void textview_init(TextView *textview)
 {
-#warning FIXME_GTK2
-#if 0
 	gtkut_widget_disable_theme_engine(textview->text);
-#endif
 	textview_update_message_colors();
 	textview_set_all_headers(textview, FALSE);
 	textview_set_font(textview, NULL);
@@ -1433,15 +1430,9 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 			(buffer, &iter, header->name, -1,
 			 "header_title", "header", NULL);
 		if (header->name[strlen(header->name) - 1] != ' ')
-#warning FIXME_GTK2
-#if 0
-			gtk_stext_insert(text, textview->boldfont,
-					NULL, NULL, " ", 1);
-#else
-			gtk_text_buffer_insert_with_tags_by_name
+		gtk_text_buffer_insert_with_tags_by_name
 				(buffer, &iter, " ", 1,
 				 "header_title", "header", NULL);
-#endif
 
 		if (procheader_headername_equal(header->name, "Subject") ||
 		    procheader_headername_equal(header->name, "From")    ||
@@ -1481,29 +1472,6 @@ gboolean textview_search_string(TextView *textview, const gchar *str,
 				gboolean case_sens)
 {
 #warning FIXME_GTK2 /* currently, these search functions ignores case_sens */
-#if 0
-	GtkSText *text = GTK_STEXT(textview->text);
-	gint pos;
-	gint len;
-
-	g_return_val_if_fail(str != NULL, FALSE);
-
-	len = get_mbs_len(str);
-	g_return_val_if_fail(len >= 0, FALSE);
-
-	pos = textview->cur_pos;
-	if (pos < textview->body_pos)
-		pos = textview->body_pos;
-
-	if ((pos = gtkut_stext_find(text, pos, str, case_sens)) != -1) {
-		gtk_editable_set_position(GTK_EDITABLE(text), pos + len);
-		gtk_editable_select_region(GTK_EDITABLE(text), pos, pos + len);
-		textview_set_position(textview, pos + len);
-		return TRUE;
-	}
-
-	return FALSE;
-#else
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
 	GtkTextMark *mark;
@@ -1536,51 +1504,12 @@ gboolean textview_search_string(TextView *textview, const gchar *str,
 	}
 
 	return found;
-#endif
 }
 
 gboolean textview_search_string_backward(TextView *textview, const gchar *str,
 					 gboolean case_sens)
 {
 #warning FIXME_GTK2
-#if 0
-	GtkSText *text = GTK_STEXT(textview->text);
-	gint pos;
-	wchar_t *wcs;
-	gint len;
-	gint text_len;
-	gboolean found = FALSE;
-
-	g_return_val_if_fail(str != NULL, FALSE);
-
-	wcs = strdup_mbstowcs(str);
-	g_return_val_if_fail(wcs != NULL, FALSE);
-	len = wcslen(wcs);
-	pos = textview->cur_pos;
-	text_len = gtk_stext_get_length(text);
-	if (text_len - textview->body_pos < len) {
-		g_free(wcs);
-		return FALSE;
-	}
-	if (pos <= textview->body_pos || text_len - pos < len)
-		pos = text_len - len;
-
-	for (; pos >= textview->body_pos; pos--) {
-		if (gtk_stext_match_string(text, pos, wcs, len, case_sens)
-		    == TRUE) {
-			gtk_editable_set_position(GTK_EDITABLE(text), pos);
-			gtk_editable_select_region(GTK_EDITABLE(text),
-						   pos, pos + len);
-			textview_set_position(textview, pos - 1);
-			found = TRUE;
-			break;
-		}
-		if (pos == textview->body_pos) break;
-	}
-
-	g_free(wcs);
-	return found;
-#else
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
 	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
 	GtkTextMark *mark;
@@ -1613,7 +1542,6 @@ gboolean textview_search_string_backward(TextView *textview, const gchar *str,
 	}
 
 	return found;
-#endif
 }
 
 void textview_scroll_one_line(TextView *textview, gboolean up)
@@ -1704,9 +1632,6 @@ static void textview_smooth_scroll_do(TextView *textview,
 		up = TRUE;
 	}
 
-#warning FIXME_GTK2
-	/* gdk_key_repeat_disable(); */
-
 	for (i = step; i <= change_value; i += step) {
 		vadj->value = old_value + (up ? -i : i);
 		g_signal_emit_by_name(G_OBJECT(vadj),
@@ -1715,9 +1640,6 @@ static void textview_smooth_scroll_do(TextView *textview,
 
 	vadj->value = last_value;
 	g_signal_emit_by_name(G_OBJECT(vadj), "value_changed", 0);
-
-#warning FIXME_GTK2
-	/* gdk_key_repeat_restore(); */
 }
 
 static void textview_smooth_scroll_one_line(TextView *textview, gboolean up)
@@ -1796,19 +1718,9 @@ static gboolean textview_smooth_scroll_page(TextView *textview, gboolean up)
 	return TRUE;
 }
 
-#warning FIXME_GTK2
-#if 0
-#define KEY_PRESS_EVENT_STOP() \
-	if (gtk_signal_n_emissions_by_name \
-		(G_OBJECT(widget), "key_press_event") > 0) { \
-		g_signal_stop_emission_by_name(G_OBJECT(widget), \
-					       "key_press_event"); \
-	}
-#else
 #define KEY_PRESS_EVENT_STOP() \
 	g_signal_stop_emission_by_name(G_OBJECT(widget), \
 				       "key_press_event");
-#endif
 
 static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				 TextView *textview)

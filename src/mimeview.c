@@ -846,17 +846,9 @@ void mimeview_pass_key_press_event(MimeView *mimeview, GdkEventKey *event)
 #define BREAK_ON_MODIFIER_KEY() \
 	if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) != 0) break
 
-#warning FIXME_GTK2
-#if 0
 #define KEY_PRESS_EVENT_STOP() \
-	if (gtk_signal_n_emissions_by_name \
-		(GTK_OBJECT(ctree), "key_press_event") > 0) { \
-		gtk_signal_emit_stop_by_name(GTK_OBJECT(ctree), \
-					     "key_press_event"); \
-	}
-#else
-#define KEY_PRESS_EVENT_STOP()
-#endif
+        g_signal_stop_emission_by_name(G_OBJECT(ctree), \
+                                       "key_press_event");
 
 static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				 MimeView *mimeview)
@@ -1360,16 +1352,11 @@ static void icon_selected (MimeView *mimeview, gint num, MimeInfo *partinfo)
 		gtk_ctree_select(GTK_CTREE(mimeview->ctree), node);
 }		
 
-#warning FIXME_GTK2
-#if 0
 #undef  KEY_PRESS_EVENT_STOP
 #define KEY_PRESS_EVENT_STOP() \
-	if (gtk_signal_n_emissions_by_name \
-		(GTK_OBJECT(button), "key_press_event") > 0) { \
-		gtk_signal_emit_stop_by_name(GTK_OBJECT(button), \
-					     "key_press_event"); \
-	}
-#endif
+        g_signal_stop_emission_by_name(G_OBJECT(button), \
+                                       "key_press_event");
+
 static gint icon_key_pressed(GtkWidget *button, GdkEventKey *event,
 			     MimeView *mimeview)
 {
@@ -1686,14 +1673,7 @@ static void icon_scroll_size_allocate_cb(GtkWidget *widget,
 	mainbox_size = &mimeview->icon_mainbox->allocation;
 	vbox_size = &mimeview->icon_vbox->allocation;
 	layout_size = &mimeview->icon_scroll->allocation;
-	
-#warning FIXME_GTK2 /* this code cause hang up. */
-#if 0
-	/* centralise the vbox */
-	gtk_layout_move(GTK_LAYOUT(mimeview->icon_scroll), mimeview->icon_vbox, 
-			(mainbox_size->width - vbox_size->width)/2, 0);
-#endif
-	
+		
 	gtk_layout_set_size(GTK_LAYOUT(mimeview->icon_scroll), 
 			    GTK_LAYOUT(mimeview->icon_scroll)->width, 
 			    MAX(vbox_size->height, layout_size->height));

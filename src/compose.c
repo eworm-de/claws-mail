@@ -48,8 +48,7 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtktreeview.h>
-#warning FIXME_GTK2
-/* #include <gtk/gtkthemes.h> */
+
 #include <gtk/gtkdnd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -2125,8 +2124,6 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
-#warning FIXME_GTK2
-#if 1 /* FIXME_GTK2 */
 		const gchar *cur_encoding = conv_get_current_charset_str();
 		gchar *str = conv_codeset_strdup(buf, cur_encoding, CS_UTF_8);
 
@@ -2143,7 +2140,6 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 		gtk_text_buffer_insert(buffer, &iter, str, -1);
 
 		g_free (str);
-#endif /* FIXME_GTK2 */
 	}
 
 	fclose(fp);
@@ -2398,7 +2394,6 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 
 #define SPACE_CHARS	" \t"
 
-#warning FIXME_GTK2
 static void compose_wrap_line(Compose *compose)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(compose->text);
@@ -2772,8 +2767,6 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 
 		/* fix line length for tabs */
 		if (ch_len == 1 && *cbuf == '\t') {
-#warning FIXME_GTK2
-			/* guint tab_width = text->default_tab_width; */
 			guint tab_width = 8;
 			guint tab_offset = line_len % tab_width;
 
@@ -3663,16 +3656,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 			encoding = ENC_BASE64;
 #endif
 
-#warning FIXME_GTK2
-#if 0 /* FIXME_GTK2 */
-		src_codeset = conv_get_current_charset_str();
-		/* if current encoding is US-ASCII, set it the same as
-		   outgoing one to prevent code conversion failure */
-		if (!strcasecmp(src_codeset, CS_US_ASCII))
-			src_codeset = out_codeset;
-#else /* FIXME_GTK2 */
 		src_codeset = CS_UTF_8;
-#endif /* FIXME_GTK2 */
 
 		debug_print("src encoding = %s, out encoding = %s, transfer encoding = %s\n",
 			    src_codeset, out_codeset, procmime_get_encoding_str(encoding));
@@ -3858,14 +3842,11 @@ static gint compose_write_body_to_file(Compose *compose, const gchar *file)
 	gtk_text_buffer_get_end_iter(buffer, &end);
 	tmp = gtk_text_buffer_get_text(buffer, &start, &end, FALSE);
 
-#warning FIXME_GTK2
-#if 1 /* FIXME_GTK2 */
 	src_codeset = CS_UTF_8;
 	dest_codeset = conv_get_current_charset_str();
 	chars = conv_codeset_strdup(tmp, src_codeset, dest_codeset);
 	g_free(tmp);
 	if (!chars) return -1;
-#endif /* FIXME_GTK2 */
 
 	/* write body */
 	len = strlen(chars);
@@ -4281,12 +4262,7 @@ static gint compose_write_headers_from_headerlist(Compose *compose,
 
 		if (!g_strcasecmp(trans_hdr, headerentryname)) {
 			const gchar *entstr = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
-#warning FIXME_GTK2
-#if 1
 			gchar *tmpstr = conv_codeset_strdup(entstr, CS_UTF_8, conv_get_current_charset_str());
-#else
-			gchar *tmpstr = strdup(entstr);
-#endif
 			Xstrdup_a(str, tmpstr, return -1);
 			g_strstrip(str);
 			if (str[0] != '\0') {
@@ -4635,12 +4611,7 @@ static void compose_convert_header(gchar *dest, gint len, gchar *src,
 
 	if (len < 1) return;
 
-#warning FIXME_GTK2
-#if 1
 	tmpstr = conv_codeset_strdup(src, CS_UTF_8, conv_get_current_charset_str());
-#else
-	tmpstr = strdup(src);
-#endif
 
 	subst_char(tmpstr, '\n', ' ');
 	subst_char(tmpstr, '\r', ' ');
@@ -5197,35 +5168,12 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), TRUE);
 	clipboard = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
 	gtk_text_buffer_add_selection_clipboard(buffer, clipboard);
-#warning FIXME_GTK2
-	/* GTK_STEXT(text)->default_tab_width = 8; */
-
-#warning FIXME_GTK2
-#if 0
-	if (prefs_common.block_cursor) {
-		GTK_STEXT(text)->cursor_type = GTK_STEXT_CURSOR_BLOCK;
-	}
-#endif
 	
-#warning FIXME_GTK2
-#if 0
-	if (prefs_common.smart_wrapping) {	
-		gtk_stext_set_word_wrap(GTK_STEXT(text), TRUE);
-		gtk_stext_set_wrap_rmargin(GTK_STEXT(text), prefs_common.linewrap_len);
-	}		
-#else
 	if (prefs_common.smart_wrapping) {	
 		gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(text), GTK_WRAP_WORD);
 	}		
-#endif
 
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
-
-#warning FIXME_GTK2
-#if 0 /* FIXME_GTK2 */
-	g_signal_connect(G_OBJECT(text), "activate",
-			 G_CALLBACK(text_activated), compose);
-#endif /* FIXME_GTK2 */
 
 	g_signal_connect_after(G_OBJECT(text), "size_allocate",
 			       G_CALLBACK(compose_edit_size_alloc),
@@ -5255,19 +5203,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	style = gtk_widget_get_style(text);
 
-	/* workaround for the slow down of GtkSText when using Pixmap theme */
-#warning FIXME_GTK2
-#if 0 /* FIXME_GTK2 */
-	if (style->engine) {
-		GtkThemeEngine *engine;
-
-		engine = style->engine;
-		style->engine = NULL;
-		new_style = gtk_style_copy(style);
-		style->engine = engine;
-	} else
-#endif /* FIXME_GTK2 */
-		new_style = gtk_style_copy(style);
+	new_style = gtk_style_copy(style);
 
 	if (prefs_common.textfont) {
 		PangoFontDescription *font_desc;

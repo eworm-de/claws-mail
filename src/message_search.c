@@ -118,12 +118,12 @@ static void message_search_create(MessageView *messageview)
 	gtk_box_pack_start (GTK_BOX (vbox1), checkbtn_hbox, TRUE, TRUE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (checkbtn_hbox), 8);
 
-#warning FIXME_GTK2
-	case_checkbtn = gtk_check_button_new_with_label (_("Case sensitive (Broken)"));
+	case_checkbtn = gtk_check_button_new_with_label (_("Case sensitive"));
 	gtk_widget_show (case_checkbtn);
 	gtk_box_pack_start (GTK_BOX (checkbtn_hbox), case_checkbtn,
 			    FALSE, FALSE, 0);
 	gtk_widget_set_sensitive(case_checkbtn, FALSE);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(case_checkbtn), TRUE);
 
 	backward_checkbtn =
 		gtk_check_button_new_with_label (_("Backward search"));

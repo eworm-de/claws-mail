@@ -112,7 +112,6 @@ static struct Compose {
 	GtkWidget *checkbtn_forward_as_attachment;
 	GtkWidget *checkbtn_redirect_keep_from;
 	GtkWidget *checkbtn_smart_wrapping;
-	GtkWidget *checkbtn_block_cursor;
 	GtkWidget *checkbtn_reply_with_quote;
 	
 	GtkWidget *checkbtn_autosave;
@@ -315,9 +314,6 @@ static PrefParam param[] = {
 	{"undo_level", "50", &prefs_common.undolevels, P_INT,
 	 &compose.spinbtn_undolevel,
 	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
-	{"block_cursor", "FALSE", &prefs_common.block_cursor,
-	 P_BOOL, &compose.checkbtn_block_cursor,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"linewrap_length", "72", &prefs_common.linewrap_len, P_INT,
 	 &compose.spinbtn_linewrap,
@@ -1418,7 +1414,6 @@ static void prefs_compose_create(void)
 	GtkWidget *checkbtn_forward_as_attachment;
 	GtkWidget *checkbtn_redirect_keep_from;
 	GtkWidget *checkbtn_smart_wrapping;
-	GtkWidget *checkbtn_block_cursor;
 	GtkWidget *frame_msgwrap;
 
 	GtkWidget *hbox_autosave;
@@ -1462,9 +1457,6 @@ static void prefs_compose_create(void)
 
 	PACK_CHECK_BUTTON (hbox5, checkbtn_forward_as_attachment,
 			   _("Forward as attachment"));
-
-	PACK_CHECK_BUTTON (hbox5, checkbtn_block_cursor,
-			  _("Block cursor"));
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_redirect_keep_from,
 			   _("Keep the original 'From' header when redirecting"));
@@ -1576,7 +1568,7 @@ static void prefs_compose_create(void)
 	compose.checkbtn_smart_wrapping = 
 		checkbtn_smart_wrapping;
 	compose.checkbtn_block_cursor   =
-		checkbtn_block_cursor;
+		FALSE; /* gtk2 */
 	compose.checkbtn_default_reply_list = checkbtn_default_reply_list;
 }
 

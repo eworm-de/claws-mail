@@ -1,3 +1,39 @@
+2004-07-03 [colin]	0.9.11cvs17.6
+
+	Removed FIXME_GTK2 warnings
+	* src/codeconv.c
+		useless #warnings (rewrite needed)
+	* src/compose.c
+		useless #warnings (rewrite needed)
+		useless #warnings (gtk2 is like that)
+		useless #warnings (previously fixed)
+	* src/main.c
+		useless #warnings (previously fixed)
+	* src/message_search.c
+		useless #warnings (gtk2 is like that)
+		Made apparent that search is case-sensitive
+	* src/mimeview.c
+		useless #warnings (rewrite needed)
+		useless #warnings (gtk2 is like that)
+		reimplemented real warnings
+	* src/prefs_common.c
+		Removed block cursor option (not it gtk2)
+	* src/prefs_gtk.c
+		useless #warnings (rewrite needed)
+	* src/procheader.c
+		useless #warnings (rewrite needed)
+	* src/sourcewindow.c
+		useless #warnings (incorrect placing)
+	* src/summary_search.c
+		useless #warnings (gtk2 is like that)
+		Made apparent that search is case-sensitive
+	* src/action.c
+		useless #warnings (gtk2 is like that)
+	* src/textview.c
+		useless #warnings (rewrite needed)
+	* src/toolbar.c
+		useless #warnings (rewrite needed)
+
 2004-07-03 [colin]	0.9.11cvs17.5
 
 	* src/textview.c

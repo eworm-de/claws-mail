@@ -411,10 +411,6 @@ static void exit_sylpheed(MainWindow *mainwin)
 	addressbook_export_to_file();
 
 	filename = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, MENU_RC, NULL);
-#warning FIXME_GTK2 gtk_item_factory_dump_rc() not existing
-#if 0
-	gtk_item_factory_dump_rc(filename, NULL, TRUE);
-#endif
 	gtk_accel_map_save(filename);
 	g_free(filename);
 

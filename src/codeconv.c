@@ -732,32 +732,26 @@ void conv_euctodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 	conv_unreadable_eucjp(outbuf);
 }
 
-#warning FIXME_GTK2
-#if 0
-void conv_anytodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
-{
-	conv_anytoeuc(outbuf, outlen, inbuf);
-	conv_unreadable_eucjp(outbuf);
-}
-#else
 void conv_anytodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	conv_anytoutf8(outbuf, outlen, inbuf);
 }
-#endif
 
+#warning FIXME_GTK2
 void conv_ustodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	strncpy2(outbuf, inbuf, outlen);
 	conv_unreadable_8bit(outbuf);
 }
 
+#warning FIXME_GTK2
 void conv_latintodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	strncpy2(outbuf, inbuf, outlen);
 	conv_unreadable_latin(outbuf);
 }
 
+#warning FIXME_GTK2
 void conv_localetodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
 	strncpy2(outbuf, inbuf, outlen);
@@ -774,7 +768,6 @@ CodeConverter *conv_code_converter_new(const gchar *charset)
 	CodeConverter *conv;
 
 	conv = g_new0(CodeConverter, 1);
-#warning FIXME_GTK2
 	conv->code_conv_func = conv_get_code_conv_func(charset, CS_UTF_8);
 	conv->charset_str = g_strdup(charset);
 	conv->charset = conv_get_charset_from_str(charset);
@@ -797,7 +790,6 @@ gint conv_convert(CodeConverter *conv, gchar *outbuf, gint outlen,
 	else {
 		gchar *str;
 
-#warning FIXME_GTK2
 		str = conv_iconv_strdup(inbuf, conv->charset_str, CS_UTF_8);
 		if (!str)
 			return -1;

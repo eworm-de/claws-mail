@@ -536,7 +536,6 @@ void toolbar_save_config_file(ToolbarType source)
 		for (cur = toolbar_config[source].item_list; cur != NULL; cur = cur->next) {
 			ToolbarItem *toolbar_item = (ToolbarItem*) cur->data;
 			
-#warning FIXME_GTK2
 			if (toolbar_item->index != A_SEPARATOR) {
 				fprintf(fp, "\t<%s %s=\"%s\" %s=\"",
 					TOOLBAR_TAG_ITEM, 
