@@ -473,6 +473,8 @@ static gchar *make_uri_string(const gchar *bp, const gchar *ep)
 	 !isspace(ch) && \
 	 !strchr("()<>\"", (ch)))
 
+#define IS_QUOTE(ch) ((ch) == '\'' || (ch) == '"')
+
 /* get_email_part() - retrieves an email address. Returns TRUE if succesful */
 static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 			       const gchar **bp, const gchar **ep)
@@ -522,9 +524,11 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 
 	if (!result) return FALSE;
 
-	/* we now have at least the address. now see if this is <bracketed>; in this
-	 * case we also scan for the informative part. we could make this a useful
-	 * function because it tries to parse out an email address backwards. :) */
+	/* skip if it's between quotes "'alfons@proteus.demon.nl'" <alfons@proteus.demon.nl> */
+	if (bp_ - 1 > start && IS_QUOTE(*(bp_ - 1)) && IS_QUOTE(*ep_)) 
+		return FALSE;
+
+	/* see if this is <bracketed>; in this case we also scan for the informative part. */
 	if (bp_ - 1 <= start || *(bp_ - 1) != '<' || *ep_ != '>')
 		return TRUE;
 
@@ -588,6 +592,7 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 	return result;
 }
 
+#undef IS_QUOTE
 #undef IS_RFC822_CHAR
 
 static gchar *make_email_string(const gchar *bp, const gchar *ep)

@@ -1,3 +1,10 @@
+2001-05-27 [alfons]
+
+	* src/textview.c:
+		
+		(get_email_part): skip quoted email addresses, like in e.g.
+		"'alfons@proteus.demon.nl'".
+
 2001-05-26 [alfons]
 
 	Minor GUI fixes adding horizontal scrollbars to Hoa's matcher dialogs,
