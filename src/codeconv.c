@@ -931,7 +931,7 @@ gchar *conv_iconv_strdup(const gchar *inbuf,
 
 	if (outbuf == NULL && strcasecmp(src_code, CS_ISO_8859_15)) 
 		/* also try iso-8859-15 */
-		outbuf = conv_iconv_strdup(inbuf, CS_ISO_8859_15, idest_code);
+		outbuf = conv_iconv_strdup(inbuf, CS_ISO_8859_15, dest_code);
 	if (outbuf == NULL)
 		g_warning(_("Valid locale type set? (Currently: %s to %s)\n"),
 			  src_code, dest_code);

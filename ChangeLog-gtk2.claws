@@ -1,3 +1,8 @@
+2004-07-20 [colin]	0.9.12cvs33.8
+
+	* src/codeconv.c
+		Fix typo
+
 2004-07-20 [colin]	0.9.12cvs33.7
 
 	* src/mainwindow.c
