@@ -1,3 +1,8 @@
+2002-12-31 [paul]	0.8.8claws29
+
+	* po/POTFILES.in
+		remove obsolete entry 'src/menu.c'
+
 2002-12-31 [alfons]	0.8.8claws28
 
 	* src/matcher.[ch]
