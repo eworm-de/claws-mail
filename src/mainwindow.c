@@ -716,6 +716,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Help/_FAQ/_English"),		NULL, faq_open_cb, MANUAL_LANG_EN, NULL},
 	{N_("/_Help/_FAQ/_Spanish"),		NULL, faq_open_cb, MANUAL_LANG_ES, NULL},
 	{N_("/_Help/_FAQ/_French"),		NULL, faq_open_cb, MANUAL_LANG_FR, NULL},
+	{N_("/_Help/_FAQ/_Italian"),		NULL, faq_open_cb, MANUAL_LANG_IT, NULL},
 	{N_("/_Help/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Help/_About"),			NULL, about_show, 0, NULL}
 };

@@ -41,6 +41,8 @@ static gchar *get_lang_str(ManualLang lang)
 		return "es";
 	case MANUAL_LANG_FR:
 		return "fr";
+	case MANUAL_LANG_IT:
+		return "it";
 	case MANUAL_LANG_JA:
 		return "ja";
 	default:

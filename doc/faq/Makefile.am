@@ -1,1 +1,1 @@
-SUBDIRS = en es fr
+SUBDIRS = en es fr it
