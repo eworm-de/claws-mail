@@ -1,3 +1,9 @@
+2001-12-14 [carsten]	0.6.5claws88
+	* src/gtkutils.c
+		gtkut_clist_set_focus_row does a gtk_clist_moveto
+		now, so that the focused row will be seen in any case
+		(reported by wwp on sf-claws-user)
+
 2001-12-14 [darko]	0.6.5claws87
 
 	* src/compose.c
