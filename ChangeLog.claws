@@ -1,6 +1,11 @@
 2002-10-08 [paul]	0.8.5claws
 
 	* 0.8.5claws release
+	
+	* src/compose.c
+	  src/procheader.c
+	  src/procmsg.c
+	  	fix quote reply format for newsgroups reply bug
 
 2002-10-07 [paul]	0.8.3claws53
 

@@ -593,7 +593,7 @@ MsgInfo *procheader_parse_stream(FILE *fp, MsgFlags flags, gboolean full,
 					g_strconcat(p, ",", hp, NULL);
 				g_free(p);
 			} else
-				msginfo->newsgroups = g_strdup(buf + 12);
+				msginfo->newsgroups = g_strdup(hp);
 			break;
 		case H_SUBJECT:
 			if (msginfo->subject) break;
