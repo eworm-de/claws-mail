@@ -1,3 +1,8 @@
+2002-02-14 [carsten]	0.7.1.claws2
+	* src/stock_pixmap.c
+		used opendir/readdir/closedir instead of scandir
+		-> code should work now on Solaris
+
 2002-02-14 [paul]	0.7.1claws1
 
 	* sync with sylpheed 0.7.1cvs8

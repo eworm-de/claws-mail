@@ -243,17 +243,19 @@ gint stock_pixmap_gdk(GtkWidget *window, StockPixmap icon,
 
 static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname)
 {
-	struct dirent **namelist;
-	int n;
-
-	if ((n = scandir(dirname, &namelist, 0, alphasort)) <= 0)
+	struct dirent *d;
+	DIR *dp;
+	
+	if ((dp = opendir(dirname)) == NULL) {
+		FILE_OP_ERROR(dirname, "opendir");
 		return;
-
-	while (n--) {
+	}
+	
+	while ((d = readdir(dp)) != NULL) {
 		gchar *entry;
 		gchar *fullentry;
 
-		entry     = namelist[n]->d_name;
+		entry     = d->d_name;
 		fullentry = g_strconcat(dirname, G_DIR_SEPARATOR_S, entry, NULL);
 		
 		if (strcmp(entry, ".") != 0 && strcmp(entry, "..") != 0 && is_dir_exist(fullentry)) {
@@ -271,9 +273,8 @@ static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname)
 			if (i == N_STOCK_PIXMAPS) 
 				g_free(fullentry);
 		}
-		g_free(namelist[n]);
 	}
-	g_free(namelist);
+	closedir(dp);
 }
 
 GList *stock_pixmap_themes_list_new(void)
