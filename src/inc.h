@@ -71,9 +71,6 @@ struct _IncSession
 	Session *session;
 	IncState inc_state;
 
-	GHashTable *folder_table;	/* table of destination folders */
-	GHashTable *tmp_folder_table;	/* for progressive update */
-
 	gint cur_total_bytes;
 
 	gpointer data;

@@ -105,13 +105,7 @@ static void inc_progress_dialog_set_progress
 					(IncProgressDialog	*inc_dialog,
 					 IncSession		*inc_session);
 
-static void inc_update_folderview	(IncProgressDialog	*inc_dialog,
-					 IncSession		*inc_session);
-
 static void inc_progress_dialog_update_periodic
-					(IncProgressDialog	*inc_dialog,
-					 IncSession		*inc_session);
-static void inc_update_folderview_periodic
 					(IncProgressDialog	*inc_dialog,
 					 IncSession		*inc_session);
 
@@ -471,9 +465,6 @@ static IncSession *inc_session_new(PrefsAccount *account)
 	session_set_recv_data_notify(session->session,
 				     inc_recv_data_finished, session);
 
-	session->folder_table = g_hash_table_new(NULL, NULL);
-	session->tmp_folder_table = g_hash_table_new(NULL, NULL);
-
 	return session;
 }
 
@@ -482,8 +473,6 @@ static void inc_session_destroy(IncSession *session)
 	g_return_if_fail(session != NULL);
 
 	session_destroy(session->session);
-	g_hash_table_destroy(session->folder_table);
-	g_hash_table_destroy(session->tmp_folder_table);
 	g_free(session);
 }
 
@@ -929,17 +918,6 @@ static gboolean hash_remove_func(gpointer key, gpointer value, gpointer data)
 	return TRUE;
 }
 
-static void inc_update_folderview(IncProgressDialog *inc_dialog,
-				  IncSession *inc_session)
-{
-	if (g_hash_table_size(inc_session->tmp_folder_table) > 0) {
-		folderview_update_item_foreach(inc_session->tmp_folder_table,
-					       FALSE);
-		g_hash_table_foreach_remove(inc_session->tmp_folder_table,
-					    hash_remove_func, NULL);
-	}
-}
-
 static void inc_progress_dialog_update_periodic(IncProgressDialog *inc_dialog,
 						IncSession *inc_session)
 {
@@ -961,30 +939,6 @@ static void inc_progress_dialog_update_periodic(IncProgressDialog *inc_dialog,
 		inc_progress_dialog_update(inc_dialog, inc_session);
 		inc_dialog->progress_tv.tv_sec = tv_cur.tv_sec;
 		inc_dialog->progress_tv.tv_usec = tv_cur.tv_usec;
-	}
-}
-
-static void inc_update_folderview_periodic(IncProgressDialog *inc_dialog,
-					   IncSession *inc_session)
-{
-	struct timeval tv_cur;
-	struct timeval tv_result;
-	gint msec;
-
-	gettimeofday(&tv_cur, NULL);
-
-	tv_result.tv_sec = tv_cur.tv_sec - inc_dialog->folder_tv.tv_sec;
-	tv_result.tv_usec = tv_cur.tv_usec - inc_dialog->folder_tv.tv_usec;
-	if (tv_result.tv_usec < 0) {
-		tv_result.tv_sec--;
-		tv_result.tv_usec += 1000000;
-	}
-
-	msec = tv_result.tv_sec * 1000 + tv_result.tv_usec / 1000;
-	if (msec > FOLDER_UPDATE_INTERVAL) {
-		inc_update_folderview(inc_dialog, inc_session);
-		inc_dialog->folder_tv.tv_sec = tv_cur.tv_sec;
-		inc_dialog->folder_tv.tv_usec = tv_cur.tv_usec;
 	}
 }
 
@@ -1012,7 +966,6 @@ static gint inc_recv_data_progressive(Session *session, guint cur_len,
 
 	inc_dialog = (IncProgressDialog *)inc_session->data;
 	inc_progress_dialog_update_periodic(inc_dialog, inc_session);
-	inc_update_folderview_periodic(inc_dialog, inc_session);
 
 	return 0;
 }
@@ -1030,7 +983,6 @@ static gint inc_recv_data_finished(Session *session, guint len, gpointer data)
 
 	if (POP3_SESSION(session)->state == POP3_LOGOUT) {
 		inc_progress_dialog_update(inc_dialog, inc_session);
-		inc_update_folderview(inc_dialog, inc_session);
 	}
 
 	return 0;
@@ -1060,7 +1012,6 @@ static gint inc_recv_message(Session *session, const gchar *msg, gpointer data)
 		break;
 	case POP3_LOGOUT:
 		inc_progress_dialog_update(inc_dialog, inc_session);
-		inc_update_folderview(inc_dialog, inc_session);
 		break;
 	default:
 		break;
