@@ -266,3 +266,4 @@
 ( cvs diff -u -r 1.458 -r 1.459 src/summaryview.c; cvs diff -u -r 1.75 -r 1.76 src/summaryview.h; ) > 1.0.3cvs4.patchset
 ( cvs diff -u -r 1.480 -r 1.481 src/compose.c; ) > 1.0.3cvs5.patchset
 ( cvs diff -u -r 1.15 -r 1.16 src/common/plugin.c; cvs diff -u -r 1.62 -r 1.63 src/procheader.c; ) > 1.0.3cvs6.patchset
+( cvs diff -u -r 1.24 -r 1.25 src/plugins/spamassassin/spamassassin.c; ) > 1.0.3cvs7.patchset
