@@ -26,7 +26,7 @@
 		  add_score. To get the behaviour of older scoring 
 		  system, you have to define some equivalent rule :
 		  "score_lower -9999 hide"
-		  "score_greater -9999 mark"
+		  "score_greater 9999 mark"
 		  
 		  To define global rules, you have to define them 
 		  in the new global processing rules.
