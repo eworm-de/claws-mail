@@ -487,15 +487,15 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 	fclose(fp);
 	g_hash_table_thaw(cache->msgnum_table);
 
-	if(error) {
-		msgcache_destroy(cache);
-		return NULL;
-	}
-
 	if (conv != NULL) {
 		if (conv->free != NULL)
 			conv->free(conv);
 		g_free(conv);
+	}
+
+	if(error) {
+		msgcache_destroy(cache);
+		return NULL;
 	}
 
 	cache->last_access = time(NULL);

@@ -2220,7 +2220,7 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 
 			msginfo = procheader_parse_file(file, flags, FALSE, FALSE);
 			if (msginfo && msginfo->subject)
-				name = msginfo->subject;
+				name = g_strdup(msginfo->subject);
 			else
 				name = g_path_get_basename(filename ? filename : file);
 

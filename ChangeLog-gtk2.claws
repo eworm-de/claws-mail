@@ -1,3 +1,11 @@
+2004-11-23 [colin]	0.9.12cvs158.9
+
+	* src/compose.c
+		Fix double-free when forwarding
+	* src/msgcache.c
+		Fix leak on error path
+		
+
 2004-11-23 [colin]	0.9.12cvs158.8
 
 	* src/compose.c
