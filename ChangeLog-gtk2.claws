@@ -1,3 +1,8 @@
+2004-07-13 [colin]	0.9.12cvs18.9
+
+	* src/gtk/quicksearch.c
+		Use alphabetic order
+
 2004-07-13 [colin]	0.9.12cvs18.8
 
 	* src/pop.c
