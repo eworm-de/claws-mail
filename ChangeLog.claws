@@ -1,3 +1,9 @@
+2002-11-29 [oliver]	0.8.6claws38
+
+	* src/toolbar.c 
+		remove not needed variables and includes
+		make messageview stay opened and move to next when msgs are deleted 
+
 2002-11-29 [oliver]	0.8.6claws37
 	
 	* src/toolbar.c 

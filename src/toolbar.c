@@ -40,7 +40,6 @@
 #include "xml.h"
 #include "mgutils.h"
 #include "prefs.h"
-#include "folder.h"
 #include "codeconv.h"
 #include "stock_pixmap.h"
 #include "mainwindow.h"
@@ -660,27 +659,29 @@ void common_toolbar_delete_cb(GtkWidget	  *widget,
 	ToolbarParent *parent = (ToolbarParent*)data;
 	MainWindow *mainwin;
 	MessageView *msgview;
-	GList *cur;
-	GtkCTreeNode *sel_last = NULL;
-	GtkCTreeNode *node;
-	MsgInfo *msginfo;
-	SummaryView *summaryview;
 
 	g_return_if_fail(parent != NULL);
 	
 	switch (parent->type) {
 	case TOOLBAR_MSGVIEW:
 		msgview = (MessageView*)parent->data;
-		summaryview = msgview->mainwin->summaryview;
-		summary_delete(summaryview);	
+		summary_delete(msgview->mainwin->summaryview);	
 		/* do we really want to close the widget ? 
 		   I`d rather have it staying open and moving to next msg 
-		   in summaryview ... - oha
-		*/
-		toolbar_clear_list(TOOLBAR_MSGVIEW);
-		TOOLBAR_DESTROY_ITEMS(msgview->toolbar->item_list);	
-		TOOLBAR_DESTROY_ACTIONS(msgview->toolbar->action_list);
-		gtk_widget_destroy(msgview->window);
+		   in summaryview ... - oha */
+		/* following code is already used somewhere else, perhaps wrap it in a function ? */
+		if (msgview->mainwin->summaryview->selected) {
+			GtkCTree *ctree = GTK_CTREE(msgview->mainwin->summaryview->ctree);
+			MsgInfo * msginfo = gtk_ctree_node_get_row_data(ctree, 
+									msgview->mainwin->summaryview->selected);
+			messageview_show(msgview, msginfo, 
+					 msgview->all_headers);
+		} else {
+			toolbar_clear_list(TOOLBAR_MSGVIEW);
+			TOOLBAR_DESTROY_ITEMS(msgview->toolbar->item_list);	
+			TOOLBAR_DESTROY_ACTIONS(msgview->toolbar->action_list);
+			gtk_widget_destroy(msgview->window);
+		}
         	break;
         case TOOLBAR_MAIN:
 		mainwin = (MainWindow*)parent->data;
