@@ -3282,7 +3282,7 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				compose_new_with_recipient
 					(ac, summaryview->folder_item->path);
 			else
-				compose_new(ac);
+				compose_new_with_folderitem(ac, summaryview->folder_item);
 		} else
 			compose_new(NULL);
 		return;

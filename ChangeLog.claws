@@ -3,9 +3,23 @@
 	* src/summaryview.c
 		fixed segfault that happend when the selected
 		message was removed while retrieving new messages.
+
 	* po/es.po
 		updated translation
 		(submitted by Ricardo Mones Lastra <mones@trasgu.aic.uniovi.es>)
+
+	* src/folderview.c
+	* src/prefs_folder_item.[ch]
+		added folderitem preferences dialog with
+		default To: and auto request return receipt
+
+	* src/compose.[ch]
+	* src/menu.[ch]
+		changes to handle new folderitem preferences
+
+	* src/mainwindow.c
+	* src/summaryview.c
+		call compose new mail with current folderitem
 
 2001-07-22 [alfons]
 

@@ -174,6 +174,9 @@ Compose * compose_new		(PrefsAccount	*account);
 Compose * compose_new_with_recipient	(PrefsAccount	*account,
 					 const gchar	*to);
 
+Compose * compose_new_with_folderitem	(PrefsAccount	*account,
+					 FolderItem	*item);
+
 void compose_followup_and_reply_to (MsgInfo	*msginfo,
 				    gboolean	 quote,
 				    gboolean	 to_all,

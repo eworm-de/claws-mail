@@ -210,6 +210,7 @@ static void folderview_drag_received_cb  (GtkWidget        *widget,
 					  FolderView       *folderview);
 static void folderview_scoring_cb(FolderView *folderview, guint action,
 				  GtkWidget *widget);
+static void folderview_property_cb(FolderView *folderview, guint action, GtkWidget *widget);
 
 static GtkItemFactoryEntry folderview_mbox_popup_entries[] =
 {
@@ -232,7 +233,7 @@ static GtkItemFactoryEntry folderview_mail_popup_entries[] =
 	{N_("/_Update folder tree"),	NULL, folderview_update_tree_cb, 0, NULL},
 	{N_("/Remove _mailbox"),	NULL, folderview_remove_mailbox_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Property..."),		NULL, NULL, 0, NULL},
+	{N_("/_Property..."),		NULL, folderview_property_cb, 0, NULL},
 	{N_("/_Scoring..."),		NULL, folderview_scoring_cb, 0, NULL}
 };
 
@@ -1201,6 +1202,8 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 				   "/Delete folder", TRUE);
 		menu_set_sensitive(folderview->mail_factory,
 				   "/Scoring...", TRUE);
+		menu_set_sensitive(folderview->mail_factory,
+				   "/Property...", TRUE);
 	} else if (folder->type == F_IMAP && item->parent == NULL) {
 		menu_set_sensitive(folderview->imap_factory,
 				   "/Create new folder...", TRUE);
@@ -2142,4 +2145,17 @@ static void folderview_scoring_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item->folder != NULL);
 
 	prefs_scoring_open(item);
+}
+
+static void folderview_property_cb(FolderView *folderview, guint action, GtkWidget *widget) {
+	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	FolderItem *item;
+
+	if (!folderview->selected) return;
+
+	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(item->folder != NULL);
+
+	prefs_folder_item_create(item);
 }

@@ -2158,7 +2158,7 @@ static void compose_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 		    && mainwin->summaryview->folder_item->folder->account->protocol == A_NNTP)
 			compose_new_with_recipient(mainwin->summaryview->folder_item->folder->account, mainwin->summaryview->folder_item->path);
 		else
-			compose_new(mainwin->summaryview->folder_item->folder->account);
+			compose_new_with_folderitem(mainwin->summaryview->folder_item->folder->account, mainwin->summaryview->folder_item);
 	}
 	else
 		compose_new(NULL);
@@ -2174,13 +2174,13 @@ static void compose_mail_cb(MainWindow *mainwin, guint action,
 	if (mainwin->summaryview->folder_item) {
 		ac = mainwin->summaryview->folder_item->folder->account;
 		if (ac && ac->protocol != A_NNTP) {
-			compose_new(ac);
+			compose_new_with_folderitem(ac, mainwin->summaryview->folder_item);
 			return;
 		}
 	}
 
 	if(cur_account && (cur_account->protocol != A_NNTP)) {
-		compose_new(cur_account);
+		compose_new_with_folderitem(cur_account, mainwin->summaryview->folder_item);
 		return;
 	}
 
@@ -2188,7 +2188,7 @@ static void compose_mail_cb(MainWindow *mainwin, guint action,
 	for(cur = list ; cur != NULL ; cur = g_list_next(cur)) {
 		ac = (PrefsAccount *) cur->data;
 		if (ac->protocol != A_NNTP) {
-			compose_new(ac);
+			compose_new_with_folderitem(ac, mainwin->summaryview->folder_item);
 			return;
 		}
 	}

@@ -26,6 +26,7 @@
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenubar.h>
 #include <gtk/gtkitemfactory.h>
+#include <gtk/gtkcheckmenuitem.h>
 
 #include "intl.h"
 #include "menu.h"
@@ -86,4 +87,15 @@ void menu_set_insensitive_all(GtkMenuShell *menu_shell)
 
 	for (cur = menu_shell->children; cur != NULL; cur = cur->next)
 		gtk_widget_set_sensitive(GTK_WIDGET(cur->data), FALSE);
+}
+
+void menu_set_toggle(GtkItemFactory *ifactory, const gchar *path,
+			gboolean active)
+{
+	GtkWidget *widget;
+
+	g_return_if_fail(ifactory != NULL);
+
+	widget = gtk_item_factory_get_item(ifactory, path);
+	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(widget), active);
 }

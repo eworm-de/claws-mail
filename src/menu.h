@@ -49,5 +49,8 @@ void menu_set_sensitive		(GtkItemFactory		*ifactory,
 				 const gchar		*path,
 				 gboolean		 sensitive);
 void menu_set_insensitive_all	(GtkMenuShell		*menu_shell);
+void menu_set_toggle		(GtkItemFactory 	*ifactory,
+				 const gchar 		*path,
+				 gboolean 		 active);
 
 #endif /* __MENU_H__ */

@@ -388,6 +388,10 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				  gboolean ignore_replyto,
 				  gboolean followup_and_reply_to);
 
+Compose * compose_generic_new (PrefsAccount	*account,
+			       const gchar	*to,
+			       FolderItem	*item);
+
 static GtkItemFactoryEntry compose_popup_entries[] =
 {
 	{N_("/_Add..."),	NULL, compose_attach_cb, 0, NULL},
@@ -455,10 +459,20 @@ static GtkTargetEntry compose_mime_types[] =
 
 Compose * compose_new(PrefsAccount *account)
 {
-	return compose_new_with_recipient(account, NULL);
+	return compose_generic_new(account, NULL, NULL);
 }
 
 Compose * compose_new_with_recipient(PrefsAccount *account, const gchar *to)
+{
+	return compose_generic_new(account, to, NULL);
+}
+
+Compose * compose_new_with_folderitem(PrefsAccount *account, FolderItem *item)
+{
+	return compose_generic_new(account, NULL, item);
+}
+
+Compose * compose_generic_new(PrefsAccount *account, const gchar *to, FolderItem *item)
 {
 	Compose *compose;
 
@@ -477,8 +491,19 @@ Compose * compose_new_with_recipient(PrefsAccount *account, const gchar *to)
 		if (to) {
 			compose_entry_append(compose, to, COMPOSE_TO);
 			gtk_widget_grab_focus(compose->subject_entry);
-		} else
-			gtk_widget_grab_focus(compose->to_entry);
+		} else {
+			if(item && item->prefs->enable_default_to) {
+				compose_entry_append(compose, item->prefs->default_to, COMPOSE_TO);
+			} else {
+				gtk_widget_grab_focus(compose->to_entry);
+			}
+		}
+		if(item && item->prefs->request_return_receipt) {
+			GtkItemFactory *ifactory;
+		
+			ifactory = gtk_item_factory_from_widget(compose->menubar);
+			menu_set_toggle(ifactory, "/Message/Request Return Receipt", TRUE);
+		}
 	} else {
 		if (to) {
 			compose_entry_append(compose, to, COMPOSE_NEWSGROUPS);
