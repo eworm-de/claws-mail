@@ -4504,7 +4504,6 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_Up:
 	case GDK_Down:
 		if ((node = summaryview->selected) != NULL) {
-			printf("gdk_up/down\n");
 			GtkCTreeNode *next = NULL;
 			next = (event->keyval == GDK_Down)
 					? gtkut_ctree_node_next(ctree, node)
