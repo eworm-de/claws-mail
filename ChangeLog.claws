@@ -1,3 +1,9 @@
+2003-12-08 [paul]	0.9.7claws32
+
+	* src/imap.c
+	  src/inc.c
+	  	plug memory leaks (patch by Alfons)
+
 2003-12-08 [christoph]	0.9.7claws31
 
 	* src/folder_item_prefs.[ch]

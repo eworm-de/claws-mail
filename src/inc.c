@@ -1085,6 +1085,7 @@ static gint inc_spool_account(PrefsAccount *account)
 {
 	FolderItem *inbox;
 	gchar *mbox, *logname;
+	gint result;
 
 	logname = g_get_user_name();
 
@@ -1100,8 +1101,9 @@ static gint inc_spool_account(PrefsAccount *account)
 	else 
 		mbox = g_strconcat(account->local_mbox,
 			   	   G_DIR_SEPARATOR_S, logname, NULL);
-
-	return get_spool(inbox, mbox);
+	result = get_spool(inbox, mbox);
+	g_free(mbox);
+	return result;
 }
 
 static gint inc_all_spool(void)
