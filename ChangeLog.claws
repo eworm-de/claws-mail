@@ -1,4 +1,10 @@
-2002-09-25 [colin]	0.8.3claws19
+2002-09-24 [colin]	0.8.3claws20
+
+	* src/procmime.c
+		Fix segfault when mimeinfo doesn't have a 
+		content_type. 
+
+2002-09-24 [colin]	0.8.3claws19
 
 	* src/prefs_common.[ch]
 		Add a preference to display send dialog or not

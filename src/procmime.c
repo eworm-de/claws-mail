@@ -404,7 +404,8 @@ void procmime_scan_content_type(MimeInfo *mimeinfo, const gchar *content_type)
 				conv_unmime_header(tmp, len, value, NULL);
 				g_free(mimeinfo->name);
 				/*pgp signatures should NOT have a name */
-				if (strcasecmp(mimeinfo->content_type, "application/pgp-signature"))
+				if (mimeinfo->content_type 
+				&&  strcasecmp(mimeinfo->content_type, "application/pgp-signature"))
 					mimeinfo->name = g_strdup(tmp);
 			} else if (!strcasecmp(attr, "boundary"))
 				mimeinfo->boundary = g_strdup(value);
@@ -470,7 +471,8 @@ void procmime_scan_content_disposition(MimeInfo *mimeinfo,
 				conv_unmime_header(tmp, len, value, NULL);
 				g_free(mimeinfo->filename);
 				/*pgp signatures should NOT have a name */
-				if (strcasecmp(mimeinfo->content_type, "application/pgp-signature"))
+				if (mimeinfo->content_type 
+				&&  strcasecmp(mimeinfo->content_type, "application/pgp-signature"))
 					mimeinfo->filename = g_strdup(tmp);
 				break;
 			}
@@ -503,7 +505,8 @@ void procmime_scan_content_description(MimeInfo *mimeinfo,
 	conv_unmime_header(tmp, blen, buf, NULL);
 	g_free(mimeinfo->name);
 	/*pgp signatures should NOT have a name */
-	if (strcasecmp(mimeinfo->content_type, "application/pgp-signature"))
+	if (mimeinfo->content_type 
+	&&  strcasecmp(mimeinfo->content_type, "application/pgp-signature"))
 		mimeinfo->name = g_strdup(tmp);
 }
 
