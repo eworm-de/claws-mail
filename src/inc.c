@@ -1314,18 +1314,22 @@ static gpointer autocheck_data = NULL;
 static void inc_notify_cmd(gint new_msgs, gboolean notify)
 {
 
-	gchar *buf;
+	gchar *buf, *numpos;
 
 	if (!(new_msgs && notify && prefs_common.newmail_notify_cmd &&
 	    *prefs_common.newmail_notify_cmd))
 		     return;
-	if ((buf = strchr(prefs_common.newmail_notify_cmd, '%')) &&
-		buf[1] == 'd' && !strchr(&buf[1], '%'))
-		buf = g_strdup_printf(prefs_common.newmail_notify_cmd, 
-				      new_msgs);
-	else
-		buf = g_strdup(prefs_common.newmail_notify_cmd);
+	buf = g_strdup(prefs_common.newmail_notify_cmd);
+	if ((numpos = strstr(buf, "%d")) != NULL) {
+		gchar *buf2;
 
+		*numpos = '\0';
+		buf2 = g_strdup_printf("%s%d%s", buf, new_msgs, numpos + 2);
+		g_free(buf);
+		buf = buf2;
+	}
+
+	debug_print("executing new mail notification command: %s\n", buf);
 	execute_command_line(buf, TRUE);
 
 	g_free(buf);

@@ -1,3 +1,8 @@
+2004-07-05 [christoph]	0.9.12cvs9
+
+	* src/inc.c
+		better replacing of %d in new mail notification command
+
 2004-07-05 [colin]	0.9.12cvs8
 
 	* src/common/smtp.[ch]
