@@ -890,6 +890,8 @@ GList *prefs_common_read_history(const gchar *history)
 	fclose(fp);
 
 	tmp = g_list_reverse(tmp);
+
+	return tmp;
 }
 
 void prefs_common_read_config(void)
