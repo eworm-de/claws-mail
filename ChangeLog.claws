@@ -1,3 +1,11 @@
+2003-05-14 [christoph]	0.8.11claws153
+
+	* src/plugins/image_viewer/viewer.c
+	* src/plugins/image_viewer/viewer.glade		** NEW **
+	* src/plugins/image_viewer/viewerprefs.c
+		make it possible to disable the autoload function in the
+		imageviewer again
+
 2003-05-14 [christoph]	0.8.11claws152
 
 	* src/folder.c
