@@ -1,3 +1,8 @@
+2004-11-16 [colin]	0.9.12cvs147.1
+
+	* src/procmsg.c
+		Sync with Main (leak fix)
+
 2004-11-16 [colin]	0.9.12cvs146.14
 
 	* src/compose.c
