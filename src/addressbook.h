@@ -25,33 +25,36 @@
 #include <gtk/gtkitemfactory.h>
 #include <gtk/gtkctree.h>
 
-#define ADDRESS_OBJECT(obj)		((AddressObject *)(obj))
-#define ADDRESS_OBJECT_TYPE(obj)	(ADDRESS_OBJECT((obj))->type)
-#define ADDRESS_ITEM(obj)		((AddressItem *)(obj))
-#define ADDRESS_GROUP(obj)		((AddressGroup *)(obj))
-#define ADDRESS_FOLDER(obj)		((AddressFolder *)(obj))
+#include "addressitem.h"
+#include "vcard.h"
 
-typedef struct _AddressBook	AddressBook;
-typedef struct _AddressObject	AddressObject;
-typedef struct _AddressItem	AddressItem;
-typedef struct _AddressGroup	AddressGroup;
-typedef struct _AddressFolder	AddressFolder;
+#ifdef USE_JPILOT
+#include "jpilot.h"
+#endif
+
+#ifdef USE_LDAP
+#include "syldap.h"
+#endif
+
+#define ADDRESS_GROUP(obj)		((AddressGroup *)obj)
+#define ADDRESS_FOLDER(obj)		((AddressFolder *)obj)
+#define ADDRESS_VCARD(obj)		((AddressVCard *)obj)
+#define ADDRESS_JPILOT(obj)		((AddressJPilot *)obj)
+#define ADDRESS_CATEGORY(obj)		((AddressCategory *)obj)
+#define ADDRESS_LDAP(obj)		((AddressLDAP *)obj)
+
 
 #include "compose.h"
 
-typedef enum
-{
-	ADDR_ITEM,
-	ADDR_GROUP,
-	ADDR_FOLDER
-} AddressObjectType;
-
+typedef struct _AddressBook	AddressBook;
 struct _AddressBook
 {
 	GtkWidget *window;
+	GtkWidget *menubar;
 	GtkWidget *ctree;
 	GtkWidget *clist;
 	GtkWidget *entry;
+	GtkWidget *statusbar;
 
 	GtkWidget *del_btn;
 	GtkWidget *reg_btn;
@@ -64,31 +67,23 @@ struct _AddressBook
 	GtkWidget *list_popup;
 	GtkItemFactory *tree_factory;
 	GtkItemFactory *list_factory;
+	GtkItemFactory *menu_factory;
 
 	GtkCTreeNode *common;
 	GtkCTreeNode *personal;
+	GtkCTreeNode *vcard;
+	GtkCTreeNode *jpilot;
+	GtkCTreeNode *ldap;
 	GtkCTreeNode *selected;
 	GtkCTreeNode *opened;
 
 	gboolean open_folder;
 
 	Compose *target_compose;
+	gint status_cid;
 };
 
-struct _AddressObject
-{
-	AddressObjectType type;
-};
-
-struct _AddressItem
-{
-	AddressObject obj;
-
-	gchar *name;
-	gchar *address;
-	gchar *remarks;
-};
-
+typedef struct _AddressGroup	AddressGroup;
 struct _AddressGroup
 {
 	AddressObject obj;
@@ -99,6 +94,7 @@ struct _AddressGroup
 	GList *items;
 };
 
+typedef struct _AddressFolder	AddressFolder;
 struct _AddressFolder
 {
 	AddressObject obj;
@@ -108,6 +104,66 @@ struct _AddressFolder
 	/* Folder contains Groups and Items */
 	GList *items;
 };
+
+typedef struct _AddressVCard	AddressVCard;
+struct _AddressVCard
+{
+	AddressObject obj;
+
+	gchar *name;
+	VCardFile *cardFile;
+
+	/* Folder contains only VCards */
+	GList *items;
+};
+
+#ifdef USE_JPILOT
+typedef struct _AddressJPilot	AddressJPilot;
+struct _AddressJPilot
+{
+	AddressObject obj;
+
+	gchar *name;
+	JPilotFile *pilotFile;
+
+	/* Folder contains only JPilotFiles */
+	/* Folder contains only Items for each category */
+	GList *items;
+};
+
+typedef struct _AddressCategory	AddressCategory;
+struct _AddressCategory
+{
+	AddressObject obj;
+
+	gchar *name;
+	JPilotFile *pilotFile;
+	AddressItem *category;
+
+	/* Category contains only Items */
+	GList *items;
+};
+#endif
+
+#ifdef USE_LDAP
+typedef struct _AddressLDAP	AddressLDAP;
+struct _AddressLDAP
+{
+	AddressObject obj;
+
+	gchar *name;
+	SyldapServer *ldapServer;
+
+	/* Folder contains only SyldapServers */
+	GList *items;
+};
+#endif
+
+struct _AddressFileSelection {
+	GtkWidget *fileSelector;
+	gboolean cancelled;
+};
+typedef struct _AddressFileSelection AddressFileSelection;
 
 void addressbook_open			(Compose	*target);
 void addressbook_set_target_compose	(Compose	*target);
@@ -129,8 +185,8 @@ gint addressbook_add_contact  (const gchar *group, const gchar *name,
                                const gchar *address, const gchar *remarks); 
 
 gboolean addressbook_add_contact_by_menu(GtkWidget   *submenu,
-										 const gchar *name, 
-										 const gchar *address, 
-										 const gchar *remarks);
+					 const gchar *name, 
+					 const gchar *address, 
+					 const gchar *remarks);
 
 #endif /* __ADDRESSBOOK_H__ */

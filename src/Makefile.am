@@ -88,7 +88,16 @@ sylpheed_SOURCES = \
 	prefs_filtering.c prefs_filtering.h \
 	mbox_folder.c mbox_folder.h \
 	quote_fmt_lex.l quote_fmt_lex.h \
-	quote_fmt_parse.y quote_fmt.h 
+	quote_fmt_parse.y quote_fmt.h \
+	addressitem.h \
+	mgutils.c mgutils.h \
+	vcard.c vcard.h \
+	jpilot.c jpilot.h \
+	syldap.c syldap.h \
+	editvcard.c editvcard.h \
+	editjpilot.c editjpilot.h \
+	editldap.c editldap.h \
+	editldap_basedn.c editldap_basedn.h
 
 EXTRA_DIST = \
 	quote_fmt_parse.h \
@@ -132,7 +141,11 @@ EXTRA_DIST = \
 	pixmaps/stock_down_arrow.xpm \
 	pixmaps/stock_paste.xpm \
 	pixmaps/tb_address_book.xpm \
-	pixmaps/sylpheed-logo.xpm
+	pixmaps/sylpheed-logo.xpm \
+	pixmaps/vcard.xpm \
+	pixmaps/jpilot.xpm \
+	pixmaps/category.xpm \
+	pixmaps/ldap.xpm
 
 INCLUDES = \
 	-DG_LOG_DOMAIN=\"Sylpheed\" \
