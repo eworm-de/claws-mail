@@ -1661,7 +1661,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 	} entry[] = {
 		{"/File/Add mailbox..."        , M_UNLOCKED},
                 {"/File/Add mbox mailbox..."   , M_UNLOCKED},
-		{"/File/Rescan folder tree"    , M_UNLOCKED},
+		{"/File/Check for new mails in all folders", M_UNLOCKED},
 		{"/File/Folder"                , M_UNLOCKED},
 		{"/File/Import mbox file..."   , M_UNLOCKED},
 		{"/File/Export to mbox file...", M_UNLOCKED},
