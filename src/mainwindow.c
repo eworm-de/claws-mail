@@ -1937,7 +1937,7 @@ static void update_folderview_cb(MainWindow *mainwin, guint action,
 				 GtkWidget *widget)
 {
 	summary_show(mainwin->summaryview, NULL, FALSE);
-	folderview_update_all_node();
+	folderview_update_all();
 }
 
 static void new_folder_cb(MainWindow *mainwin, guint action,

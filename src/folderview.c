@@ -674,6 +674,29 @@ void folderview_update_tree(Folder *folder)
 	gtk_widget_destroy(window);
 }
 
+void folderview_update_all(void)
+{
+	GList *list;
+	GtkWidget *window;
+
+	window = label_window_create(_("Updating all folders..."));
+
+	list = folder_get_list();
+	for (; list != NULL; list = list->next) {
+		Folder *folder = list->data;
+
+		if (!folder->scan_tree) continue;
+		folder_set_ui_func(folder, folderview_scan_tree_func, NULL);
+		folder->scan_tree(folder);
+		folder_set_ui_func(folder, NULL, NULL);
+	}
+
+	folder_write_list();
+	folderview_set_all();
+
+	gtk_widget_destroy(window);
+}
+
 void folderview_update_all_node(void)
 {
 	GList *list;
