@@ -1,3 +1,8 @@
+2002-01-31 [paul]	0.7.0claws42
+
+	* src/mainwindow.c
+		add '/View/Hide read messages' to main_window_set_menu_sensitive()
+
 2002-01-31 [paul]	0.7.0claws41
 
 	* sync with sylpheed 0.7.0cvs27

@@ -1478,6 +1478,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/View/Sort"                      , M_MSG_EXIST},
 		{"/View/Thread view"               , M_UNTHREADED},
 		{"/View/Unthread view"             , M_THREADED},
+		{"/View/Hide read messages"	   , M_MSG_EXIST},
 		{"/View/Go to"                     , M_MSG_EXIST},
 		{"/View/Go to/Prev message"        , M_MSG_EXIST},
 		{"/View/Go to/Next message"        , M_MSG_EXIST},
