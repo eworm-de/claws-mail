@@ -116,7 +116,8 @@ gchar *input_dialog_with_invisible(const gchar *title, const gchar *message,
 }
 
 gchar *input_dialog_combo(const gchar *title, const gchar *message,
-			  const gchar *default_string, GList *list)
+			  const gchar *default_string, GList *list,
+			  gboolean case_sensitive)
 {
 	if (dialog && GTK_WIDGET_VISIBLE(dialog)) return NULL;
 
@@ -136,6 +137,8 @@ gchar *input_dialog_combo(const gchar *title, const gchar *message,
 		gtk_combo_set_popdown_strings(GTK_COMBO(combo), &empty_list);
 	} else
 		gtk_combo_set_popdown_strings(GTK_COMBO(combo), list);
+
+	gtk_combo_set_case_sensitive(GTK_COMBO(combo), case_sensitive);
 
 	return input_dialog_open(title, message, default_string);
 }

@@ -166,27 +166,27 @@ EXTRA_DIST = \
 	pixmaps/continue.xpm \
 	pixmaps/complete.xpm \
 	pixmaps/error.xpm \
-	pixmaps/stock_mail.xpm \
-	pixmaps/stock_mail_attach.xpm \
-	pixmaps/stock_mail_receive.xpm \
-	pixmaps/stock_mail_receive_all.xpm \
-	pixmaps/stock_mail_send.xpm \
-	pixmaps/stock_mail_send_queue.xpm \
-	pixmaps/stock_mail_compose.xpm \
-	pixmaps/stock_news_compose.xpm \
-	pixmaps/stock_mail_reply.xpm \
-	pixmaps/stock_mail_reply_to_all.xpm \
-	pixmaps/stock_mail_reply_to_author.xpm \
-	pixmaps/stock_mail_forward.xpm \
-	pixmaps/stock_preferences.xpm \
-	pixmaps/stock_properties.xpm \
-	pixmaps/stock_search.xpm \
-	pixmaps/stock_close.xpm \
-	pixmaps/stock_exec.xpm \
-	pixmaps/stock_trash.xpm \
-	pixmaps/stock_up_arrow.xpm \
-	pixmaps/stock_down_arrow.xpm \
-	pixmaps/stock_paste.xpm \
+	pixmaps/mail.xpm \
+	pixmaps/mail_attach.xpm \
+	pixmaps/mail_receive.xpm \
+	pixmaps/mail_receive_all.xpm \
+	pixmaps/mail_send.xpm \
+	pixmaps/mail_send_queue.xpm \
+	pixmaps/mail_compose.xpm \
+	pixmaps/news_compose.xpm \
+	pixmaps/mail_reply.xpm \
+	pixmaps/mail_reply_to_all.xpm \
+	pixmaps/mail_reply_to_author.xpm \
+	pixmaps/mail_forward.xpm \
+	pixmaps/preferences.xpm \
+	pixmaps/properties.xpm \
+	pixmaps/search.xpm \
+	pixmaps/close.xpm \
+	pixmaps/exec.xpm \
+	pixmaps/trash.xpm \
+	pixmaps/up_arrow.xpm \
+	pixmaps/down_arrow.xpm \
+	pixmaps/paste.xpm \
 	pixmaps/tb_address_book.xpm \
 	pixmaps/sylpheed-logo.xpm \
 	pixmaps/address.xpm \

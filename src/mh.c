@@ -47,6 +47,8 @@ static void	mh_folder_init			(Folder		*folder,
 						 const gchar	*name,
 						 const gchar	*path);
 
+static gchar   *mh_get_new_msg_filename		(FolderItem	*dest);
+
 static GSList  *mh_get_uncached_msgs		(GHashTable	*msg_table,
 						 FolderItem	*item);
 static MsgInfo *mh_parse_msg			(const gchar	*file,
@@ -177,27 +179,27 @@ gchar *mh_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	return file;
 }
 
-gchar *mh_get_newmsg_filename(FolderItem *dest)
+static gchar *mh_get_new_msg_filename(FolderItem *dest)
 {
 	gchar *destfile;
 	gchar *destpath;
-	gboolean found = FALSE;
 
 	destpath = folder_item_get_path(dest);
 	g_return_val_if_fail(destpath != NULL, NULL);
+
 	if (!is_dir_exist(destpath))
 		make_dir_hier(destpath);
 
-	do {
+	for (;;) {
 		destfile = g_strdup_printf("%s%c%d", destpath, G_DIR_SEPARATOR,
 					   dest->last_num + 1);
-		if(is_file_exist(destfile)) {
+		if (is_file_entry_exist(destfile)) {
 			dest->last_num++;
 			g_free(destfile);
-		} else {
-			found = TRUE;
-		}
-	} while(!found);
+		} else
+			break;
+	}
+
 	g_free(destpath);
 
 	return destfile;
@@ -232,8 +234,8 @@ gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 		if (dest->last_num < 0) return -1;
 	}
 
-	destfile = mh_get_newmsg_filename(dest);
-	if(!destfile) return -1;
+	destfile = mh_get_new_msg_filename(dest);
+	g_return_val_if_fail(destfile != NULL, -1);
 
 	if (link(file, destfile) < 0) {
 		if (copy_file(file, destfile) < 0) {
@@ -278,21 +280,22 @@ static gint mh_do_move(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 
 	prefs = dest->prefs;
 
-	destdir = folder_item_get_path(dest);
+	destfile = mh_get_new_msg_filename(dest);
+	g_return_val_if_fail(destfile != NULL, -1);
 
 	debug_print(_("Moving message %s%c%d to %s ...\n"),
 		    msginfo->folder->path, G_DIR_SEPARATOR,
 		    msginfo->msgnum, dest->path);
 	srcfile = procmsg_get_message_file(msginfo);
 
-	destfile = mh_get_newmsg_filename(dest);
+	destfile = mh_get_new_msg_filename(dest);
 	if(!destfile) return -1;
 
+	srcfile = procmsg_get_message_file(msginfo);
 
 	if (move_file(srcfile, destfile) < 0) {
 		g_free(srcfile);
 		g_free(destfile);
-		g_free(destdir);
 		return -1;
 	}
 
@@ -310,6 +313,7 @@ static gint mh_do_move(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	g_free(destfile);
 	dest->last_num++;
 
+	destdir = folder_item_get_path(dest);
  	if ((fp = procmsg_open_mark_file(destdir, TRUE)) == NULL)
  		g_warning(_("Can't open mark file.\n"));
  	else {
@@ -409,8 +413,10 @@ static gint mh_do_move_msgs_with_dest(Folder *folder, FolderItem *dest,
 			    msginfo->folder->path, G_DIR_SEPARATOR,
 			    msginfo->msgnum, dest->path);
 
+		destfile = mh_get_new_msg_filename(dest);
+		if (!destfile) break;
 		srcfile = procmsg_get_message_file(msginfo);
-		destfile = mh_get_newmsg_filename(dest);
+		destfile = mh_get_new_msg_filename(dest);
 		if(!destfile) return -1;
 
 		if (move_file(srcfile, destfile) < 0) {
@@ -477,28 +483,19 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 
 	prefs = dest->prefs;
 
-	destdir = folder_item_get_path(dest);
-	if (!is_dir_exist(destdir))
-		make_dir_hier(destdir);
+	destfile = mh_get_new_msg_filename(dest);
+	g_return_val_if_fail(destfile != NULL, -1);
 
 	debug_print(_("Copying message %s%c%d to %s ...\n"),
 		    msginfo->folder->path, G_DIR_SEPARATOR,
 		    msginfo->msgnum, dest->path);
+
 	srcfile = procmsg_get_message_file(msginfo);
-	destfile = mh_get_newmsg_filename(dest);
-	if(!destfile) {
-		g_free(srcfile);
-		if (fp) fclose(fp);
-		return -1;
-	}
-	
-	dest->op_count--;
 
 	if (copy_file(srcfile, destfile) < 0) {
 		FILE_OP_ERROR(srcfile, "copy");
 		g_free(srcfile);
 		g_free(destfile);
-		g_free(destdir);
 		return -1;
 	}
 
@@ -516,6 +513,7 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	g_free(destfile);
 	dest->last_num++;
 
+	destdir = folder_item_get_path(dest);
  	if ((fp = procmsg_open_mark_file(destdir, TRUE)) == NULL)
  		g_warning(_("Can't open mark file.\n"));
  	else {
@@ -620,12 +618,9 @@ gint mh_copy_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 			    msginfo->folder->path, G_DIR_SEPARATOR,
 			    msginfo->msgnum, dest->path);
 
+		destfile = mh_get_new_msg_filename(dest);
+		if (!destfile) break;
 		srcfile = procmsg_get_message_file(msginfo);
-		destfile = mh_get_newmsg_filename(dest);
-		if(!destfile) {
-			g_free(srcfile);
-			break;
-		}
 
 		if (copy_file(srcfile, destfile) < 0) {
 			FILE_OP_ERROR(srcfile, "copy");

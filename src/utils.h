@@ -298,9 +298,15 @@ gchar *get_domain_name		(void);
 off_t get_file_size		(const gchar	*file);
 off_t get_file_size_as_crlf	(const gchar	*file);
 off_t get_left_file_size	(FILE		*fp);
+
 gboolean file_exist		(const gchar	*file,
 				 gboolean	 allow_fifo);
 gboolean is_dir_exist		(const gchar	*dir);
+gboolean is_file_entry_exist	(const gchar	*file);
+
+#define is_file_exist(file)		file_exist(file, FALSE)
+#define is_file_or_fifo_exist(file)	file_exist(file, TRUE)
+
 gint change_dir			(const gchar	*dir);
 gint make_dir_hier		(const gchar	*dir);
 gint remove_all_files		(const gchar	*dir);
@@ -317,9 +323,6 @@ gint change_file_mode_rw	(FILE		*fp,
 				 const gchar	*file);
 FILE *my_tmpfile		(void);
 FILE *str_open_as_stream	(const gchar	*str);
-
-#define is_file_exist(file)		file_exist(file, FALSE)
-#define is_file_or_fifo_exist(file)	file_exist(file, TRUE)
 
 /* process execution */
 gint execute_async		(gchar *const	 argv[]);

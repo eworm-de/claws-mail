@@ -1,3 +1,28 @@
+2002-04-21
+
+	* src/mh.c: mh_get_new_msg_filename(): 新規。新規メッセージのファイル
+	  名を返す。
+	  mh_add_msg()
+	  mh_do_move()
+	  mh_do_move_msgs_with_dest()
+	  mh_copy_msg()
+	  mh_copy_msgs_with_dest(): mh_get_new_msg_filename() を使用。
+	* src/utils.[ch]: is_file_entry_exist() を追加。 stat() が成功したら
+	  TRUE を返す。
+	* src/imap.c:
+	  imap_fetch_msg(): 必要であれば FETCH の前にメールボックスを SELECT
+	  するようにした。
+	  imap_scan_folder(): UIDNEXT の値を用いて last_num をセット。
+	  imap_select(): SELECT の必要がなければすぐに返るようにした。
+	  現在選択中のメールボックスのパスを保存。
+	  imap_status(): UIDNEXT を追加。
+
+2002-04-20
+
+	* src/folder.c: folder_item_scan(): 警告を除去。
+	* src/inputdialog.[ch]: input_dialog_combo(): 大小文字の区別の指定の
+	  ための引数を追加。
+
 2002-04-17
 
 	* src/mainwindow.c: main_window_create(): 最小サイズを制限。

@@ -31,7 +31,8 @@ gchar *input_dialog_with_invisible	(const gchar	*title,
 gchar *input_dialog_combo		(const gchar	*title,
 					 const gchar	*message,
 					 const gchar	*default_string,
-					 GList		*list);
+					 GList		*list,
+					 gboolean	 case_sensitive);
 gchar *input_dialog_query_password	(const gchar	*server,
 					 const gchar	*user);
 

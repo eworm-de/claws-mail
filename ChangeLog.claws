@@ -1,3 +1,12 @@
+2002-04-21 [paul]	0.7.4claws85
+
+	* sync with 0.7.4cvs49
+		see ChangeLog entries 2002-04-20 and 2002-04-21
+
+	* src/Makefile.am
+		clean up: remove old 'stock_' element from xpm 
+		filenames.
+
 2002-04-21 [alfons]	0.7.4claws84
 
 	apply sync patch from Paul

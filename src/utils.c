@@ -1438,6 +1438,18 @@ gboolean is_dir_exist(const gchar *dir)
 	return FALSE;
 }
 
+gboolean is_file_entry_exist(const gchar *file)
+{
+	struct stat s;
+
+	if (stat(file, &s) < 0) {
+		if (ENOENT != errno) FILE_OP_ERROR(file, "stat");
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
 gint change_dir(const gchar *dir)
 {
 	gchar *prevdir = NULL;

@@ -862,7 +862,8 @@ static void mimeview_open_with(MimeView *mimeview)
 		 _("Enter the command line to open file:\n"
 		   "(`%s' will be replaced with file name)"),
 		 prefs_common.mime_open_cmd,
-		 prefs_common.mime_open_cmd_history);
+		 prefs_common.mime_open_cmd_history,
+		 TRUE);
 	if (cmd) {
 		mimeview_view_file(filename, partinfo, cmd);
 		g_free(prefs_common.mime_open_cmd);

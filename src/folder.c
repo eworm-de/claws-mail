@@ -750,7 +750,7 @@ gint folder_item_scan(FolderItem *item)
 {
 	Folder *folder;
 
-	g_return_if_fail(item != NULL);
+	g_return_val_if_fail(item != NULL, -1);
 
 	folder = item->folder;
 	return folder->scan(folder, item);

@@ -1,3 +1,27 @@
+2002-04-21
+
+	* src/mh.c: mh_get_new_msg_filename(): new. It returns the filename
+	  for new message.
+	  mh_add_msg()
+	  mh_do_move()
+	  mh_do_move_msgs_with_dest()
+	  mh_copy_msg()
+	  mh_copy_msgs_with_dest(): use mh_get_new_msg_filename().
+	* src/utils.[ch]: added is_file_entry_exist() which returns TRUE
+	  if stat() succeeded.
+	* src/imap.c:
+	  imap_fetch_msg(): SELECT mailbox before FETCH if required.
+	  imap_scan_folder(): set last_num using the value of UIDNEXT.
+	  imap_select(): return immediately if there is no need for SELECT.
+	  preserve the path of currently selected mailbox.
+	  imap_status(): added UIDNEXT.
+
+2002-04-20
+
+	* src/folder.c: folder_item_scan(): removed the warning.
+	* src/inputdialog.[ch]: input_dialog_combo(): added an argument for
+	  setting case sensitivity.
+
 2002-04-17
 
 	* src/mainwindow.c: main_window_create(): restrict the minimum size.
