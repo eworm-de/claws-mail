@@ -1,3 +1,28 @@
+2002-09-27
+
+	* src/compose.c: compose_new(): 効果が無く、ハングを引き起こすだけ
+	  であるため XIM の workaround を削除。
+
+2002-09-26
+
+	* src/compose.[ch]: compose_reply(): ML への返信用のフラグを追加。
+	  compose_parse_header(): List-Post ヘッダもパース。
+	  compose_reply_set_entry(): ML への返信に対応(ML のアドレスが
+	  見つからなければ通常の返信に fallback する)。
+	* src/mainwindow.c
+	  src/prefs_common.c
+	  src/summaryview.c: 返信メニューを再構成し、「メーリングリストに
+	  返信」を追加。
+	* src/utils.[ch]: scan_mailto_url(): 新規。 mailto URL をスキャンし、
+	  新規に確保したパラメータを返す。
+
+2002-09-25
+
+	* src/account.c: account_read_config_all(): アカウント情報を設定
+	  ファイルで初期化する前にデフォルトに設定するようにした。
+	* src/prefs_account.[ch]: prefs_account_new(): 新規。デフォルトの
+	  設定で初期化されたアカウント情報構造体を新規に作成して返す。
+
 2002-09-24
 
 	* src/addr_compl.c:

@@ -1,3 +1,30 @@
+2002-09-27
+
+	* src/compose.c: compose_new(): removed the workaround for XIM
+	  because it doesn't have any effect and only seems to cause
+	  hangs.
+
+2002-09-26
+
+	* src/compose.[ch]: compose_reply(): added a flag for reply-to-ML.
+	  compose_parse_header(): parse also List-Post header.
+	  compose_reply_set_entry(): support reply-to-ML (fall back to
+	  normal reply if ML address is not found).
+	* src/mainwindow.c
+	  src/prefs_common.c
+	  src/summaryview.c: reorganized Reply menu and added 'Reply to
+	  mailing list'.
+	* src/utils.[ch]: scan_mailto_url(): new. It scans mailto URL and
+	  returns newly allocated parameters.
+
+2002-09-25
+
+	* src/account.c: account_read_config_all(): set account information
+	  to default before initializing with configuration file.
+	* src/prefs_account.[ch]: prefs_account_new(): new. It returns a
+	  newly created account information structure initialized by
+	  the default settings.
+
 2002-09-24
 
 	* src/addr_compl.c:

@@ -1,3 +1,63 @@
+2002-09-29 [paul]	0.8.3claws32
+
+	* po/bg.po
+	  po/sr.po
+	  	updated by George Danchev and Urke MMI
+		respectively
+
+2002-09-27 [christoph]	0.8.3claws31
+
+	* doc-src/readme.txt
+	* doc-src/rfc1806.txt
+	* doc-src/rfc2183.txt
+	* doc-src/rfc2980.txt
+		update rfcs
+
+2002-09-27 [melvin]	0.8.3claws30
+
+	* ac/aspell.m4
+		Fixed typo which could break linking
+
+2002-09-27 [melvin]	0.8.3claws29
+
+	* ac/aspell.m4
+		Improved GNU/aspell checking. 
+		Fixed bug #614490
+
+2002-09-27 [paul]	0.8.3claws28
+
+	* sync with 0.8.3cvs8
+		see ChangeLog 2002-09-27
+
+2002-09-26 [colin]	0.8.3claws27
+
+	* src/toolbar.[ch]
+	  src/mainwindow.[ch]
+		Add "Reply to Mailing-list" to the toolbar
+
+2002-09-26 [christoph]	0.8.3claws26
+
+	* src/summaryview.c
+		Fix wrong message counts in summaryview status
+
+2002-09-26 [paul]	0.8.3claws25
+
+	* sync with 0.8.3cvs7
+		see ChangeLog 2002-09-26
+
+2002-09-26 [paul]	0.8.3claws24
+
+	* sync with 0.8.3cvs6
+		see ChangeLog 2002-09-25
+
+2002-09-25 [christoph]	0.8.3claws23
+
+	* src/prefs_common.c
+	* src/prefs_folder_item.c
+	* src/prefs_scoring.c
+		Renamed "kill score" to "hide score" in GUI
+		and prefs files
+
 2002-09-25 [paul]	0.8.3claws22
 
 	* sync with 0.8.3cvs5

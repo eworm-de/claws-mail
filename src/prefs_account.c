@@ -502,6 +502,8 @@ static PrefParam param[] = {
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
+static gint prefs_account_get_new_id		(void);
+
 static void prefs_account_create		(void);
 static void prefs_account_basic_create		(void);
 static void prefs_account_receive_create	(void);
@@ -532,6 +534,19 @@ static void prefs_account_key_pressed		(GtkWidget	*widget,
 static void prefs_account_ok			(void);
 static gint prefs_account_apply			(void);
 static void prefs_account_cancel		(void);
+
+PrefsAccount *prefs_account_new(void)
+{
+	PrefsAccount *ac_prefs;
+
+	ac_prefs = g_new0(PrefsAccount, 1);
+	memset(&tmp_ac_prefs, 0, sizeof(PrefsAccount));
+	prefs_set_default(param);
+	*ac_prefs = tmp_ac_prefs;
+	ac_prefs->account_id = prefs_account_get_new_id();
+
+	return ac_prefs;
+}
 
 void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 {
@@ -636,11 +651,7 @@ PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs)
 	cancelled = FALSE;
 
 	if (!ac_prefs) {
-		ac_prefs = g_new0(PrefsAccount, 1);
-		memset(&tmp_ac_prefs, 0, sizeof(PrefsAccount));
-		prefs_set_default(param);
-		*ac_prefs = tmp_ac_prefs;
-		ac_prefs->account_id = prefs_account_get_new_id();
+		ac_prefs = prefs_account_new();
 		new_account = TRUE;
 	}
 

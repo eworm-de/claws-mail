@@ -51,8 +51,6 @@ struct PrefsFolderItemDialog
 	GtkWidget *checkbtn_save_copy_to_folder;
 	GtkWidget *checkbtn_default_to;
 	GtkWidget *entry_default_to;
-	GtkWidget *checkbtn_default_reply_to;
-	GtkWidget *entry_default_reply_to;
 	GtkWidget *checkbtn_simplify_subject;
 	GtkWidget *entry_simplify_subject;
 	GtkWidget *checkbtn_folder_chmod;
@@ -82,7 +80,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	/*{"enable_thread", "TRUE", &tmp_prefs.enable_thread, P_BOOL,
 	 NULL, NULL, NULL},*/
-	{"kill_score", "-9999", &tmp_prefs.kill_score, P_INT,
+	{"hide_score", "-9999", &tmp_prefs.kill_score, P_INT,
 	 NULL, NULL, NULL},
 	{"important_score", "1", &tmp_prefs.important_score, P_INT,
 	 NULL, NULL, NULL},
@@ -92,10 +90,6 @@ static PrefParam param[] = {
 	{"enable_default_to", "", &tmp_prefs.enable_default_to, P_BOOL,
 	 NULL, NULL, NULL},
 	{"default_to", "", &tmp_prefs.default_to, P_STRING,
-	 NULL, NULL, NULL},
-	{"enable_default_reply_to", "", &tmp_prefs.enable_default_reply_to, P_BOOL,
-	 NULL, NULL, NULL},
-	{"default_reply_to", "", &tmp_prefs.default_reply_to, P_STRING,
 	 NULL, NULL, NULL},
 	{"enable_simplify_subject", "", &tmp_prefs.enable_simplify_subject, P_BOOL,
 	 NULL, NULL, NULL},
@@ -212,8 +206,6 @@ PrefsFolderItem * prefs_folder_item_new(void)
 	tmp_prefs.request_return_receipt = FALSE;
 	tmp_prefs.enable_default_to = FALSE;
 	tmp_prefs.default_to = NULL;
-	tmp_prefs.enable_default_reply_to = FALSE;
-	tmp_prefs.default_reply_to = NULL;
 	tmp_prefs.enable_simplify_subject = FALSE;
 	tmp_prefs.simplify_subject_regexp = NULL;
 	tmp_prefs.enable_folder_chmod = FALSE;
@@ -235,8 +227,6 @@ void prefs_folder_item_free(PrefsFolderItem * prefs)
 {
 	if (prefs->default_to) 
 		g_free(prefs->default_to);
-	if (prefs->default_reply_to) 
-		g_free(prefs->default_reply_to);
 	if (prefs->scoring != NULL)
 		prefs_scoring_free(prefs->scoring);
 	g_free(prefs);
@@ -276,8 +266,6 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 	GtkWidget *checkbtn_save_copy_to_folder;
 	GtkWidget *checkbtn_default_to;
 	GtkWidget *entry_default_to;
-	GtkWidget *checkbtn_default_reply_to;
-	GtkWidget *entry_default_reply_to;
 	GtkWidget *checkbtn_simplify_subject;
 	GtkWidget *entry_simplify_subject;
 	GtkWidget *checkbtn_folder_chmod;
@@ -364,23 +352,6 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 	SET_TOGGLE_SENSITIVITY(checkbtn_default_to, entry_default_to);
 	gtk_entry_set_text(GTK_ENTRY(entry_default_to), SAFE_STRING(item->prefs->default_to));
 	address_completion_register_entry(GTK_ENTRY(entry_default_to));
-
-	rowcount++;
-
-	/* Default Reply-To */
-	checkbtn_default_reply_to = gtk_check_button_new_with_label(_("Default Reply-To: "));
-	gtk_widget_show(checkbtn_default_reply_to);
-	gtk_table_attach(GTK_TABLE(table), checkbtn_default_reply_to, 0, 1, 
-			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_default_reply_to), 
-				     item->prefs->enable_default_reply_to);
-
-	entry_default_reply_to = gtk_entry_new();
-	gtk_widget_show(entry_default_reply_to);
-	gtk_table_attach_defaults(GTK_TABLE(table), entry_default_reply_to, 1, 2, rowcount, rowcount + 1);
-	SET_TOGGLE_SENSITIVITY(checkbtn_default_reply_to, entry_default_reply_to);
-	gtk_entry_set_text(GTK_ENTRY(entry_default_reply_to), SAFE_STRING(item->prefs->default_reply_to));
-	address_completion_register_entry(GTK_ENTRY(entry_default_reply_to));
 
 	rowcount++;
 
@@ -511,8 +482,6 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 	dialog->checkbtn_save_copy_to_folder = checkbtn_save_copy_to_folder;
 	dialog->checkbtn_default_to = checkbtn_default_to;
 	dialog->entry_default_to = entry_default_to;
-	dialog->checkbtn_default_reply_to = checkbtn_default_reply_to;
-	dialog->entry_default_reply_to = entry_default_reply_to;
 	dialog->checkbtn_simplify_subject = checkbtn_simplify_subject;
 	dialog->entry_simplify_subject = entry_simplify_subject;
 	dialog->checkbtn_folder_chmod = checkbtn_folder_chmod;
@@ -532,7 +501,6 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 void prefs_folder_item_destroy(struct PrefsFolderItemDialog *dialog) 
 {
 	address_completion_unregister_entry(GTK_ENTRY(dialog->entry_default_to));
-	address_completion_unregister_entry(GTK_ENTRY(dialog->entry_default_reply_to));
 	address_completion_end(dialog->window);
 	gtk_widget_destroy(dialog->window);
 	g_free(dialog);
@@ -578,12 +546,6 @@ void prefs_folder_item_ok_cb(GtkWidget *widget,
 	g_free(prefs->default_to);
 	prefs->default_to = 
 	    gtk_editable_get_chars(GTK_EDITABLE(dialog->entry_default_to), 0, -1);
-
-	prefs->enable_default_reply_to = 
-	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->checkbtn_default_reply_to));
-	g_free(prefs->default_reply_to);
-	prefs->default_reply_to = 
-	    gtk_editable_get_chars(GTK_EDITABLE(dialog->entry_default_reply_to), 0, -1);
 
 	prefs->enable_simplify_subject =
 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->checkbtn_simplify_subject));

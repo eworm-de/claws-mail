@@ -48,8 +48,6 @@ struct _PrefsFolderItem {
 	gboolean request_return_receipt;
 	gboolean enable_default_to;
 	gchar *default_to;
-	gboolean enable_default_reply_to;
-	gchar *default_reply_to;
 	gboolean enable_simplify_subject;
 	gchar *simplify_subject_regexp;
 	gboolean enable_folder_chmod;
