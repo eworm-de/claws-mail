@@ -1,3 +1,14 @@
+2004-11-17 [paul]	0.9.12cvs152
+
+	* ChangeLog
+	* ChangeLog.jp
+	* NEWS
+	* src/compose.c
+	* src/jpilot.c
+	* src/procmime.c
+		sync with main 1.0.0beta3
+		see ChangeLog 2004-11-15 and 2004-11-16
+
 2004-11-17 [colin]	0.9.12cvs151
 
 	* src/plugins/pgpmime/pgpmime.c

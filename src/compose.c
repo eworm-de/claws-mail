@@ -2140,7 +2140,7 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 			MsgFlags flags = {0, 0};
 			gchar *name;
 
-			if (procmime_get_encoding_for_file(file) == ENC_7BIT)
+			if (procmime_get_encoding_for_text_file(file) == ENC_7BIT)
 				ainfo->encoding = ENC_7BIT;
 			else
 				ainfo->encoding = ENC_8BIT;
@@ -2156,8 +2156,7 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 			procmsg_msginfo_free(msginfo);
 		} else {
 			if (!g_strncasecmp(content_type, "text", 4))
-				ainfo->encoding =
-					procmime_get_encoding_for_file(file);
+				ainfo->encoding = procmime_get_encoding_for_text_file(file);
 			else
 				ainfo->encoding = ENC_BASE64;
 			ainfo->name = g_strdup
@@ -2170,7 +2169,8 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 				g_strdup("application/octet-stream");
 			ainfo->encoding = ENC_BASE64;
 		} else if (!g_strncasecmp(ainfo->content_type, "text", 4))
-			ainfo->encoding = procmime_get_encoding_for_file(file);
+			ainfo->encoding =
+				procmime_get_encoding_for_text_file(file);
 		else
 			ainfo->encoding = ENC_BASE64;
 		ainfo->name = g_strdup(g_basename(filename ? filename : file));	

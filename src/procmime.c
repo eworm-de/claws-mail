@@ -997,31 +997,52 @@ EncodingType procmime_get_encoding_for_charset(const gchar *charset)
 		return ENC_8BIT;
 }
 
-EncodingType procmime_get_encoding_for_file(const gchar *file)
+EncodingType procmime_get_encoding_for_text_file(const gchar *file)
 {
 	FILE *fp;
-	guchar buf[BUFSIZ];
+	guchar buf[BUFFSIZE];
 	size_t len;
+	size_t octet_chars = 0;
+	size_t total_len = 0;
+	gfloat octet_percentage;
 
 	if ((fp = fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return ENC_UNKNOWN;
 	}
 
-	while ((len = fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
+	while ((len = fread(buf, sizeof(guchar), sizeof(buf), fp)) > 0) {
 		guchar *p;
 		gint i;
 
-		for (p = buf, i = 0; i < len; p++, i++) {
-			if (*p & 0x80) {
-				fclose(fp);
-				return ENC_BASE64;
-			}
+		for (p = buf, i = 0; i < len; ++p, ++i) {
+			if (*p & 0x80)
+				++octet_chars;
 		}
+		total_len += len;
 	}
 
 	fclose(fp);
-	return ENC_7BIT;
+	
+	if (total_len > 0)
+		octet_percentage = (gfloat)octet_chars / (gfloat)total_len;
+	else
+		octet_percentage = 0.0;
+
+	debug_print("procmime_get_encoding_for_text_file(): "
+		    "8bit chars: %d / %d (%f%%)\n", octet_chars, total_len,
+		    100.0 * octet_percentage);
+
+	if (octet_percentage > 0.20) {
+		debug_print("using BASE64\n");
+		return ENC_BASE64;
+	} else if (octet_chars > 0) {
+		debug_print("using quoted-printable\n");
+		return ENC_QUOTED_PRINTABLE;
+	} else {
+		debug_print("using 7bit\n");
+		return ENC_7BIT;
+	}
 }
 
 struct EncodingTable 

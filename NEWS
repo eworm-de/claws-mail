@@ -1,6 +1,18 @@
 Changes of Sylpheed
 
-* 1.0beta2
+* 1.0.0beta3
+
+    * The Japanese JPilot address book has been supported.
+    * Back scrolling on Shift/Alt and Space key press has been enabled.
+    * Attached text files are now canonicalized before encoded to BASE64
+      to conform with RFC 2045.
+    * The optimal Content-Transfer-Encoding will be used when attaching
+      text files.
+    * The icons of the receive dialog have been modified.
+    * Mozilla Firefox has become a default web browser.
+    * The auto-expanding status bar has been fixed.
+
+* 1.0.0beta2
 
     * don't move or delete immediately at local filtering when immediate
       execution option is off.
@@ -10,7 +22,7 @@ Changes of Sylpheed
     * AND/OR matching option has been added to the summary search dialog.
     * APOP setting became a separate option for POP3.
 
-* 1.0beta1
+* 1.0.0beta1
 
     * Icons are added to the alert dialog and filter edit dialog.
     * Cc is added for the parameter of templates.
