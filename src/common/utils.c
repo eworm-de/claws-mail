@@ -611,7 +611,6 @@ gint subject_compare_for_sort(const gchar *s1, const gchar *s2)
 void trim_subject_for_compare(gchar *str)
 {
 	gchar *srcp;
-	int skip;
 
 	eliminate_parenthesis(str, '[', ']');
 	eliminate_parenthesis(str, '(', ')');
@@ -3818,6 +3817,72 @@ gchar *generate_msgid(const gchar *address, gchar *buf, gint len)
 	return buf;
 }
 
+/**
+ * Create a new boundary in a way that it is very unlikely that this
+ * will occur in the following text.  It would be easy to ensure
+ * uniqueness if everything is either quoted-printable or base64
+ * encoded (note that conversion is allowed), but because MIME bodies
+ * may be nested, it may happen that the same boundary has already
+ * been used. We avoid scanning the message for conflicts and hope the
+ * best.
+ *
+ *   boundary := 0*69<bchars> bcharsnospace
+ *   bchars := bcharsnospace / " "
+ *   bcharsnospace := DIGIT / ALPHA / "'" / "(" / ")" /
+ *                    "+" / "_" / "," / "-" / "." /
+ *                    "/" / ":" / "=" / "?"  
+ *
+ * ":" and "," removed because of buggy MTAs
+ */
+
+gchar *generate_mime_boundary(void)
+{
+	static gchar tbl[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	                     "abcdefghijklmnopqrstuvwxyz" 
+			     "1234567890'()+_./=?";
+	gchar bufuniq[17];
+	gchar bufdate[BUFFSIZE];
+	int i, equal;
+	int pid;
+
+	pid = getpid();
+
+	/* We make the boundary depend on the pid, so that all running
+	 * processed generate different values even when they have been
+	 * started within the same second and srand48(time(NULL)) has been
+	 * used.  I can't see whether this is really an advantage but it
+	 * doesn't do any harm.
+	 */
+	equal = -1;
+	for (i = 0; i < sizeof(bufuniq) - 1; i++) {
+#ifdef WIN32
+		bufuniq[i] = tbl[(rand() ^ pid) % (sizeof(tbl) - 1)];	/* fill with random */
+#else
+		bufuniq[i] = tbl[(lrand48() ^ pid) % (sizeof(tbl) - 1)];	/* fill with random */
+#endif
+		if (bufuniq[i] == '=' && equal == -1)
+			equal = i;
+	}
+	bufuniq[i] = 0;
+
+	/* now make sure that we do have the sequence "=." in it which cannot
+	 * be matched by quoted-printable or base64 encoding */
+	if (equal != -1 && (equal + 1) < i)
+		bufuniq[equal + 1] = '.';
+	else {
+		bufuniq[0] = '=';
+		bufuniq[1] = '.';
+	}
+
+	get_rfc822_date(bufdate, sizeof(bufdate));
+	subst_char(bufdate, ' ', '_');
+	subst_char(bufdate, ',', '_');
+	subst_char(bufdate, ':', '_');
+
+	return g_strdup_printf("Multipart_%s_%s",
+			       bufdate, bufuniq);
+}
+
 #ifdef WIN32
 /* -------------------------------------------------------------------------
  * w32_parse_path - substitute placesholders with directory names
@@ -4141,14 +4206,15 @@ gchar *w32_move_to_exec_dir(const gchar *filename)
 /*----------------------------------------------------------------------*/
 /* GCC cant handle inline declaration of gai_strerror() */
 #if defined(INET6) && defined(__MINGW32__)
-// WARNING: The gai_strerror inline functions below use static buffers, 
-// and hence are not thread-safe.  We'll use buffers long enough to hold 
-// 1k characters.  Any system error messages longer than this will be 
-// returned as empty strings.  However 1k should work for the error codes 
-// used by getaddrinfo().
+/* WARNING: The gai_strerror inline functions below use static buffers, 
+ * and hence are not thread-safe.  We'll use buffers long enough to hold 
+ * 1k characters.  Any system error messages longer than this will be 
+ * returned as empty strings.  However 1k should work for the error codes 
+ * used by getaddrinfo().
+ */
 #define GAI_STRERROR_BUFFER_SIZE 1024
 
-//WS2TCPIP_INLINE 
+/* WS2TCPIP_INLINE */ 
 char *
 WSAAPI
 gai_strerrorA(
@@ -4170,7 +4236,7 @@ gai_strerrorA(
     return buff;
 }
 
-//WS2TCPIP_INLINE 
+/* WS2TCPIP_INLINE */
 WCHAR *
 WSAAPI
 gai_strerrorW(

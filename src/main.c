@@ -417,8 +417,12 @@ int main(int argc, char *argv[])
 	/* ignore SIGPIPE signal for preventing sudden death of program */
 	signal(SIGPIPE, SIG_IGN);
 
-	if (cmd.receive_all || prefs_common.chk_on_startup)
-		inc_all_account_mail(mainwin, prefs_common.newmail_notify_manu);
+	if (cmd.receive_all)
+		inc_all_account_mail(mainwin, FALSE, 
+				     prefs_common.newmail_notify_manu);
+	else if (prefs_common.chk_on_startup)
+		inc_all_account_mail(mainwin, TRUE, 
+				     prefs_common.newmail_notify_manu);
 	else if (cmd.receive)
 		inc_mail(mainwin, prefs_common.newmail_notify_manu);
 	else
@@ -974,7 +978,8 @@ static void lock_socket_input_cb(gpointer data,
 	if (!strncmp(buf, "popup", 5)) {
 		main_window_popup(mainwin);
 	} else if (!strncmp(buf, "receive_all", 11)) {
-		inc_all_account_mail(mainwin, prefs_common.newmail_notify_manu);
+		inc_all_account_mail(mainwin, FALSE,
+				     prefs_common.newmail_notify_manu);
 	} else if (!strncmp(buf, "receive", 7)) {
 		inc_mail(mainwin, prefs_common.newmail_notify_manu);
 	} else if (!strncmp(buf, "compose_attach", 14)) {

@@ -35,7 +35,7 @@ typedef struct _PrefsCommon	PrefsCommon;
 
 typedef enum {
 	RECV_DIALOG_ALWAYS,
-	RECV_DIALOG_ACTIVE,
+	RECV_DIALOG_MANUAL,
 	RECV_DIALOG_NEVER
 } RecvDialogMode;
 

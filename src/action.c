@@ -778,7 +778,7 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 		child_argv = g_strsplit(cmd, " ", 1024);
 	else { /* new glib */
 		child_argv = strsplit_with_quote(cmd, " ", 1024);
-		// strip enclosing quotes (argv[0] is already unquoted)
+		/* strip enclosing quotes (argv[0] is already unquoted) */
 		for (tmp_argv=child_argv+1; *tmp_argv; tmp_argv++) {
 			gint len=strlen(*tmp_argv);
 			memmove(*tmp_argv, *(tmp_argv)+1, len-1);
@@ -799,7 +799,6 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 		ch_in  = g_io_channel_unix_new(chld_in[1]);
 		ch_out = g_io_channel_unix_new(chld_out[0]);
 		ch_err = g_io_channel_unix_new(chld_err[0]);
-		/* g_io_channel_win32_set_debug(chan,TRUE); */
 		for (n=0; child_argv[n]; n++) g_free(child_argv[n]);
 		g_free(child_argv);
 	} else {
@@ -1073,18 +1072,28 @@ static gint io_dialog_key_pressed_cb(GtkWidget *widget, GdkEventKey *event,
 static void childinfo_close_pipes(ChildInfo *child_info)
 {
 #ifndef WIN32 /* WIN32:event sources are deleted by returning FALSE */
+	/* stdout and stderr pipes are guaranteed to be removed by
+	 * their handler, but in case where we receive child exit notification
+	 * before grand-child's pipes closing signals, we check them and close
+	 * them if necessary
+	 */
 	if (child_info->tag_in > 0)
 		gdk_input_remove(child_info->tag_in);
-	gdk_input_remove(child_info->tag_out);
-	gdk_input_remove(child_info->tag_err);
+	if (child_info->tag_out > 0)
+		gdk_input_remove(child_info->tag_out);
+	if (child_info->tag_err > 0)
+		gdk_input_remove(child_info->tag_err);
 #endif
 
 	if (child_info->chld_in >= 0)
 		close(child_info->chld_in);
 #ifndef WIN32 /* WIN32:process still running, close at G_IO_HUP */
-	close(child_info->chld_out);
-	close(child_info->chld_err);
+	if (child_info->chld_out >= 0)
+		close(child_info->chld_out);
+	if (child_info->chld_err >= 0)
+		close(child_info->chld_err);
 #endif
+
 	close(child_info->chld_status);
 }
 
@@ -1416,24 +1425,20 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 		if (c > 0)
 			child_info->new_out = TRUE;
 	}
-#ifdef WIN32
-	if (cond & G_IO_HUP) {
-		if (source == child_info->chld_out)
-			child_info->chld_out = -1 ;
-		else if (source == child_info->chld_err)
-			child_info->chld_err = -1 ;
-
-		if ((child_info->chld_out == -1)
-		&&  (child_info->chld_err == -1)) {
-				write(child_info->chld_status_tx, "0\n", 2);
-				close(child_info->chld_status_tx);
+	if (c == 0) {
+		if (source == child_info->chld_out) {
+			gdk_input_remove(child_info->tag_out);
+			child_info->tag_out = -1;
+			close(child_info->chld_out);
+			child_info->chld_out = -1;
+		} else {
+			gdk_input_remove(child_info->tag_err);
+			child_info->tag_err = -1;
+			close(child_info->chld_err);
+			child_info->chld_err = -1;
 		}
-#endif
-		close(source);
-		return FALSE;
-	} else {
-		return TRUE;
 	}
+	
 	wait_for_children(child_info->children);
 }
 

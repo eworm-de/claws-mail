@@ -789,6 +789,7 @@ EXPORTS
 	g_stricase_hash 
 ;	gai_strerrorA@4 
 ;	gai_strerrorW@4 
+	generate_mime_boundary 
 	generate_msgid 
 	get_abbrev_newsgroup_name 
 	get_address_info_async_thread 
@@ -880,6 +881,7 @@ EXPORTS
 	gtk_stext_thaw 
 	gtk_vscrollbutton_get_type 
 	gtk_vscrollbutton_new 
+	gtkaspell_change_dict 
 	gtkaspell_check_all 
 	gtkaspell_check_backwards 
 	gtkaspell_check_forwards_go 

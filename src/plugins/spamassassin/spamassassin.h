@@ -29,9 +29,10 @@ struct _SpamAssassinConfig
 	gboolean	 enable;
 	gchar		*hostname;
 	guint 		 port;
-	guint 		 max_size;
 	gboolean 	 receive_spam;
 	gchar 		*save_folder;
+	guint 		 max_size;
+	guint 		 timeout;
 };
 
 SpamAssassinConfig *spamassassin_get_config	(void);

@@ -1956,8 +1956,6 @@ static void folderview_new_folder_cb(FolderView *folderview, guint action,
 	} 
 	g_free(new_folder);
 
-	folderview_create_folder_node(folderview, new_item);
-
 	folder_write_list();
 }
 
@@ -2204,6 +2202,14 @@ static void folderview_delete_folder_cb(FolderView *folderview, guint action,
 	Xstrdup_a(old_path, item->path, return);
 	old_id = folder_item_get_identifier(item);
 
+	if (folderview->opened == folderview->selected ||
+	    gtk_ctree_is_ancestor(ctree,
+				  folderview->selected,
+				  folderview->opened)) {
+		summary_clear_all(folderview->summaryview);
+		folderview->opened = NULL;
+	}
+
 	if (item->folder->klass->remove_folder(item->folder, item) < 0) {
 		alertpanel_error(_("Can't remove the folder `%s'."), name);
 		if (folderview->opened == folderview->selected)
@@ -2213,18 +2219,6 @@ static void folderview_delete_folder_cb(FolderView *folderview, guint action,
 		return;
 	}
 
-	/* if (FOLDER_TYPE(item->folder) == F_MH)
-		prefs_filtering_delete_path(old_path); */
-
-	if (folderview->opened == folderview->selected ||
-	    gtk_ctree_is_ancestor(ctree,
-				  folderview->selected,
-				  folderview->opened)) {
-		summary_clear_all(folderview->summaryview);
-		folderview->opened = NULL;
-	}
-
-	gtk_ctree_remove_node(ctree, folderview->selected);
 	folder_write_list();
 
 	prefs_filtering_delete_path(old_id);
@@ -2565,7 +2559,6 @@ static void folderview_property_cb(FolderView *folderview, guint action,
 	if (item->parent == NULL && item->folder->account)
 		account_open(item->folder->account);
 	else {
-		summary_save_prefs_to_folderitem(folderview->summaryview, item);
 		prefs_folder_item_open(item);
 	}
 }
@@ -2650,8 +2643,6 @@ static void folderview_move_to(FolderView *folderview, FolderItem *from_folder,
 			gtk_ctree_remove_node(GTK_CTREE(folderview->ctree), src_node);
 		else 
 			debug_print("can't remove src node: is null\n");
-
-		folderview_create_folder_node_recursive(folderview, new_folder);
 
 		folder_item_update_recursive(new_folder, F_ITEM_UPDATE_MSGCNT);
 

@@ -75,8 +75,10 @@ static void prefs_filtering_set_list	(void);
 static void prefs_filtering_register_cb	(void);
 static void prefs_filtering_substitute_cb	(void);
 static void prefs_filtering_delete_cb	(void);
+static void prefs_filtering_top		(void);
 static void prefs_filtering_up		(void);
 static void prefs_filtering_down	(void);
+static void prefs_filtering_bottom	(void);
 static void prefs_filtering_select	(GtkCList	*clist,
 					 gint		 row,
 					 gint		 column,
@@ -187,8 +189,11 @@ static void prefs_filtering_create(void)
 	GtkWidget *cond_clist;
 
 	GtkWidget *btn_vbox;
+	GtkWidget *spc_vbox;
+	GtkWidget *top_btn;
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
+	GtkWidget *bottom_btn;
 
 	gchar *title[1];
 
@@ -333,6 +338,14 @@ static void prefs_filtering_create(void)
 	gtk_widget_show (btn_vbox);
 	gtk_box_pack_start (GTK_BOX (cond_hbox), btn_vbox, FALSE, FALSE, 0);
 
+	top_btn = gtk_button_new_with_label (_("Top"));
+	gtk_widget_show (top_btn);
+	gtk_box_pack_start (GTK_BOX (btn_vbox), top_btn, FALSE, FALSE, 0);
+	gtk_signal_connect (GTK_OBJECT (top_btn), "clicked",
+			    GTK_SIGNAL_FUNC (prefs_filtering_top), NULL);
+
+	PACK_VSPACER (btn_vbox, spc_vbox, VSPACING_NARROW_2);
+
 	up_btn = gtk_button_new_with_label (_("Up"));
 	gtk_widget_show (up_btn);
 	gtk_box_pack_start (GTK_BOX (btn_vbox), up_btn, FALSE, FALSE, 0);
@@ -344,6 +357,14 @@ static void prefs_filtering_create(void)
 	gtk_box_pack_start (GTK_BOX (btn_vbox), down_btn, FALSE, FALSE, 0);
 	gtk_signal_connect (GTK_OBJECT (down_btn), "clicked",
 			    GTK_SIGNAL_FUNC (prefs_filtering_down), NULL);
+
+	PACK_VSPACER (btn_vbox, spc_vbox, VSPACING_NARROW_2);
+
+	bottom_btn = gtk_button_new_with_label (_("Bottom"));
+	gtk_widget_show (bottom_btn);
+	gtk_box_pack_start (GTK_BOX (btn_vbox), bottom_btn, FALSE, FALSE, 0);
+	gtk_signal_connect (GTK_OBJECT (bottom_btn), "clicked",
+			    GTK_SIGNAL_FUNC (prefs_filtering_bottom), NULL);
 
 	gtk_widget_set_usize(window, 500, -1);
 
@@ -870,6 +891,18 @@ static void prefs_filtering_delete_cb(void)
 	prefs_filtering_update_hscrollbar();
 }
 
+static void prefs_filtering_top(void)
+{
+	GtkCList *clist = GTK_CLIST(filtering.cond_clist);
+	gint row;
+
+	if (!clist->selection) return;
+
+	row = GPOINTER_TO_INT(clist->selection->data);
+	if (row > 1)
+		gtk_clist_row_move(clist, row, 1);
+}
+
 static void prefs_filtering_up(void)
 {
 	GtkCList *clist = GTK_CLIST(filtering.cond_clist);
@@ -880,9 +913,8 @@ static void prefs_filtering_up(void)
 	row = GPOINTER_TO_INT(clist->selection->data);
 	if (row > 1) {
 		gtk_clist_row_move(clist, row, row - 1);
-		if(gtk_clist_row_is_visible(clist, row - 1) != GTK_VISIBILITY_FULL) {
-			gtk_clist_moveto(clist, row - 1, 0, 0, 0);
-		} 
+		if (gtk_clist_row_is_visible(clist, row - 1) != GTK_VISIBILITY_FULL) 
+			gtk_clist_moveto(clist, row - 1, 0, 0, 0); 
 	}
 }
 
@@ -896,10 +928,21 @@ static void prefs_filtering_down(void)
 	row = GPOINTER_TO_INT(clist->selection->data);
 	if (row > 0 && row < clist->rows - 1) {
 		gtk_clist_row_move(clist, row, row + 1);
-		if(gtk_clist_row_is_visible(clist, row + 1) != GTK_VISIBILITY_FULL) {
-			gtk_clist_moveto(clist, row + 1, 0, 1, 0);
-		} 
+		if (gtk_clist_row_is_visible(clist, row + 1) != GTK_VISIBILITY_FULL)
+			gtk_clist_moveto(clist, row + 1, 0, 1, 0); 
 	}
+}
+
+static void prefs_filtering_bottom(void)
+{
+	GtkCList *clist = GTK_CLIST(filtering.cond_clist);
+	gint row;
+
+	if (!clist->selection) return;
+
+	row = GPOINTER_TO_INT(clist->selection->data);
+	if (row > 0 && row < clist->rows - 1)
+		gtk_clist_row_move(clist, row, clist->rows - 1);
 }
 
 static void prefs_filtering_select_set(FilteringProp *prop)

@@ -1,3 +1,25 @@
+2003-09-01
+
+	* src/inc.[ch]
+	  src/main.c
+	  src/mainwindow.c
+	  src/prefs_common.[ch]: added the receive dialog's option to
+	  display the dialog only on manual receiving, and the
+	  RECV_DIALOG_ACTIVE option was removed.
+
+2003-09-01
+
+	* src/compose.c: compose_write_headers(): also replace ':' in the
+	  MIME boundary with '_' (as a workaround for broken servers).
+
+2003-08-28
+
+	* src/imap.c: imap_scan_tree_recursive(): fixed compile error.
+
+2003-08-27
+
+	* src/prefs_filter.c: added 'Top' and 'Bottom' button.
+
 2003-08-26
 
 	* src/folder.[ch]: folder_item_remove_children(): new. It removes

@@ -1,3 +1,201 @@
+2003-09-07 [christoph]	0.9.4claws68
+
+	* src/compose.c
+		o make sure we don't have any newlines in header values
+		o check custom headers for spaces and newlines and ignore
+		  malformed header names
+
+2003-09-06 [christoph]	0.9.4claws67
+
+	* src/folder.c
+	* src/folderview.c
+		invoke notification hook for folder tree changes after append
+		and remove folder
+
+	(closes Bug 294 Crash while moving folder with many subdirectories)
+
+2003-09-06 [christoph]	0.9.4claws66
+
+	* src/folder.c
+		destroy folder's MsgCache if FolderItem is removed to make sure
+		it is not saved when the FolderItem is destroyed
+
+2003-09-06 [christoph]	0.9.4claws65
+
+	* src/plugins/clamav/clamav_plugin.c
+		fix copy & paste bug
+
+2003-09-05 [christoph]	0.9.4claws64
+
+	* src/folder.c
+	* src/messageview.[ch]
+	* src/procmsg.[ch]
+	* src/summaryview.c
+		extend MSGINFO_UPDATE_HOOK to send delete notifications. Used
+		by MessageView to clear it when the message is deleted. Should
+		work even if messages are deleted in MainWindow or by
+		processing.
+
+2003-09-05 [alfons]	0.9.4claws63
+
+	* src/messageview.c
+		deleting a message in a message view frees its msginfo, make 
+		messageview_update_all() aware of that (should fix bug #293,
+		"deleting message caused crash")
+
+2003-09-05 [melvin]	0.9.4claws62
+
+	* src/action.c
+		Improve synchronous action exit code (fixes 
+		a ~5 seconds delay after action exit on RedHat 9)
+
+2003-09-04 [christoph]	0.9.4claws61
+
+	* src/compose.c
+	* src/rfc2015.c
+	* src/common/utils.[ch]
+		add util function to create mime boundary and use it
+		in compose and gpg code
+
+2003-09-04 [alfons]	0.9.4claws60
+
+	* src/folder.c
+		source folder item's GNode should already have been freed in 
+		a previous call to src->folder->klass->remove_folder()
+		(should fix bug #287, "crash when moving folders")
+
+2003-09-03 [thorsten]	0.9.4claws59
+
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		fix compile error
+
+2003-09-03 [christoph]	0.9.4claws58
+
+	* src/plugins/spamassassin/spamassassin.[ch]
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		add timeout config option
+
+2003-09-03 [paul]	0.9.4claws57
+
+	* po/sk.po	** NEW FILE **
+		add Slovak translation. Submitted by Andrej Kacian 
+		<andrej@kacian.sk>
+
+2003-09-03 [paul]	0.9.4claws56
+
+	* src/plugins/clamav/clamav_plugin_gtk.c
+		gui tweaks: replace a label with a tooltip, modify the
+		text, use gtk_check_button_new(); instead of
+		gtk_check_button_new_with_label("");
+
+2003-09-02 [alfons]	0.9.4claws55
+
+	* src/gtk/filesel.c
+		remember last used dir when attaching multiple files (should fix
+		bug #290, "Attach File does not remember directory")
+
+2003-09-01 [paul]	0.9.4claws54
+
+	* po/es.po
+		updated by Ricardo Mones Lastra
+
+2003-09-01 [alfons]	0.9.4claws53
+
+	* src/gtk/gtkaspell.[ch]
+		be pedantic and strict and use const gchar * instead of guchar *
+
+2003-09-01 [alfons]	0.9.4claws52
+
+	* src/mainwindow.c
+	* src/summaryviewc.
+		re-enable Save As when multiple messages are selected
+
+2003-09-01 [paul]	0.9.4claws51
+
+	* src/textview.c
+		g_free(trimmed_uri);
+
+2003-09-01 [paul]	0.9.4claws50
+
+	* sync with 0.9.4cvs13
+		see ChangeLog 2003-09-01
+
+2003-09-01 [paul]	0.9.4claws49
+
+	* src/textview.c
+		trim uri before sending to the statusbar
+		fixes Bug 275 'Clicking on long URL wrapped onto two lines
+		in the message window causes main S-C window to enlarge 
+		past screen edges'
+
+2003-09-01 [paul]	0.9.4claws48
+
+	* sync with 0.9.4cvs12
+		see ChangeLog 2003-09-01
+
+2003-08-30 [christoph]	0.9.4claws47
+
+	* src/compose.c
+	* src/folder_item_prefs.[ch]
+	* src/prefs_folder_item.c
+	* src/gtk/gtkaspell.[ch]
+		commit per folder dictionary patch by
+		Paul Evans <nerd@freeuk.com>
+
+2003-08-30 [christoph]	0.9.4claws46
+
+	* src/plugins/spamassassin/spamassassin_gtk.c
+	* src/plugins/spamassassin/spamassassin_gtk.glade
+		reduce GUI clutter by placing hints into tooltips
+
+2003-08-30 [paul]	0.9.4claws45
+
+	* src/compose.c
+		add 'Content-Disposition: inline' to a text/plain
+	  	part when using PGP/MIME signing
+
+2003-08-30 [paul]	0.9.4claws44
+
+	* src/prefs_common.c
+	  src/prefs_spelling.c
+	  src/prefs_spelling.glade
+	  	reduce GUI clutter by placing hints into tooltips
+
+2003-08-29 [christoph]	0.9.4claws43
+
+	* configure.ac
+		fix bug found by Ivan Rayner <ivanr@sgi.com>
+
+	* src/stock_pixmap.c
+		change unecessary warning into a debug message
+
+	* src/plugins/clamav/Makefile.am
+		Fix error "-I$(CLAMAV_LIBS)"
+
+2003-08-29 [christoph]	0.9.4claws42
+
+	* intl/Makefile.in
+	* src/Makefile.am
+	* src/matcher.h
+	* src/common/Makefile.am
+	* src/common/passcrypt.c
+		commit fixes and patches for some of the IRIX problems found by
+		Ivan Rayner <ivanr@sgi.com>
+
+2003-08-29 [paul]	0.9.4claws41
+
+	* src/prefs_filtering.c
+		add 'Top' and 'Bottom' buttons, based on changes in
+		src/prefs_filter.c in 0.9.4cvs11.
+
+2003-08-27 [christoph]	0.9.4claws40
+
+	* src/folderview.c
+		fix bug that the current summary settings were copied to the
+		wrong folder item, when the folder item prefs are opened.
+		Copying is not required because summary settings and
+		folder_item_prefs do not contain the same settings
+
 2003-08-27 [thorsten]	0.9.4claws39
 
 	* src/imap.c

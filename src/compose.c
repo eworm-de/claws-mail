@@ -725,6 +725,13 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	text = GTK_STEXT(compose->text);
 	gtk_stext_freeze(text);
 
+#ifdef USE_ASPELL
+	if (item && item->prefs && item->prefs->enable_default_dictionary &&
+	    compose->gtkaspell) 
+		gtkaspell_change_dict(compose->gtkaspell, 
+		    item->prefs->default_dictionary);
+#endif
+
 	if (account->auto_sig)
 		compose_insert_sig(compose, FALSE);
 	gtk_editable_set_position(GTK_EDITABLE(text), 0);
@@ -975,6 +982,15 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	text = GTK_STEXT(compose->text);
 	gtk_stext_freeze(text);
 
+#ifdef USE_ASPELL
+	if (msginfo->folder && msginfo->folder->prefs && 
+	    msginfo->folder->prefs && 
+	    msginfo->folder->prefs->enable_default_dictionary &&
+	    compose->gtkaspell)
+		gtkaspell_change_dict(compose->gtkaspell, 
+		    msginfo->folder->prefs->default_dictionary);
+#endif
+
 	if (quote) {
 		gchar *qmark;
 
@@ -1068,22 +1084,6 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		compose->fwdinfo = procmsg_msginfo_copy(msginfo);
 
 	if (msginfo->subject && *msginfo->subject) {
-//<<<<<<< compose.c
-//#ifdef WIN32
-//		gchar *p_subject;
-//		p_subject = g_strdup(msginfo->subject);
-//		locale_to_utf8(&p_subject);
-//
-//		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), "Fw: ");
-//		gtk_entry_append_text(GTK_ENTRY(compose->subject_entry),
-//				      p_subject);
-//		g_free(p_subject);
-//#else
-//		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), "Fw: ");
-//		gtk_entry_append_text(GTK_ENTRY(compose->subject_entry),
-//				      msginfo->subject);
-//#endif
-//=======
 		gchar *buf, *buf2, *p;
 
 		buf = p = g_strdup(msginfo->subject);
@@ -1098,7 +1098,6 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		
 		g_free(buf);
 		g_free(buf2);
-//>>>>>>> 1.371
 	}
 
 	text = GTK_STEXT(compose->text);
@@ -4532,16 +4531,16 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	/* MIME */
 	fprintf(fp, "Mime-Version: 1.0\n");
 	if (compose_use_attach(compose)) {
-		get_rfc822_date(buf, sizeof(buf));
-		subst_char(buf, ' ', '_');
-		subst_char(buf, ',', '_');
-		compose->boundary = g_strdup_printf("Multipart_%s_%08x",
-						    buf, (guint)compose);
+		compose->boundary = generate_mime_boundary();
 		fprintf(fp,
 			"Content-Type: multipart/mixed;\n"
 			" boundary=\"%s\"\n", compose->boundary);
 	} else {
 		fprintf(fp, "Content-Type: text/plain; charset=%s\n", charset);
+#if USE_GPGME
+		if (compose->use_signing && !compose->gnupg_mode)
+			fprintf(fp, "Content-Disposition: inline\n");
+#endif
 		fprintf(fp, "Content-Transfer-Encoding: %s\n",
 			procmime_get_encoding_str(encoding));
 	}
@@ -4594,9 +4593,14 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		headerentry = ((ComposeHeaderEntry *)list->data);
 		
 		tmp = g_strdup(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(headerentry->combo)->entry)));
+		if (strchr(tmp, ' ') != NULL || strchr(tmp, '\r') != NULL || strchr(tmp, '\n') != NULL) {
+			g_free(tmp);
+			continue;
+		}
 #ifdef WIN32
 		locale_from_utf8(&tmp);
 #endif
+
 		if (!strstr(tmp, ":")) {
 			headername_wcolon = g_strconcat(tmp, ":", NULL);
 			headername = g_strdup(tmp);
@@ -4611,6 +4615,8 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		headervalue = g_strdup(headervalue);
 		locale_from_utf8(&headervalue);
 #endif
+		subst_char(headervalue, '\r', ' ');
+		subst_char(headervalue, '\n', ' ');
 		string = std_headers;
 		while (*string != NULL) {
 			headername_trans = prefs_common.trans_hdr ? gettext(*string) : *string;
@@ -4633,8 +4639,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		g_free(headervalue);
 #endif
 		g_free(headername);
-		g_free(headername_wcolon);
-		
+		g_free(headername_wcolon);		
 	}
 
 	/* separator between header and body */
@@ -4654,6 +4659,8 @@ static void compose_convert_header(gchar *dest, gint len, gchar *src,
 	if (len < 1) return;
 
 	g_strchomp(src);
+	subst_char(src, '\n', ' ');
+	subst_char(src, '\r', ' ');
 
 	conv_encode_header(dest, len, src, header_len, addr_field);
 }

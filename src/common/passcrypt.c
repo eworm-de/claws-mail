@@ -32,7 +32,7 @@
 
 #include "passcrypt.h"
 
-void crypt_cfb_buf(const char key[8], void *buf, unsigned len,
+void crypt_cfb_buf(const char key[8], unsigned char *buf, unsigned len,
 		   unsigned chunksize, int decrypt);
 static void crypt_cfb_shift(unsigned char *to,
 			    const unsigned char *from, unsigned len);
@@ -57,7 +57,7 @@ unsigned char crypt_cfb_iv[64];
 int crypt_cfb_blocksize = 8;	/* 8 for DES */
 
 void
-crypt_cfb_buf(const char key[8], void *buf, unsigned len,
+crypt_cfb_buf(const char key[8], unsigned char *buf, unsigned len,
 	      unsigned chunksize, int decrypt)
 {
 	unsigned char temp[64];
@@ -78,12 +78,10 @@ crypt_cfb_buf(const char key[8], void *buf, unsigned len,
 		if (chunksize > len)
 			chunksize = len;
 		if (decrypt)
-			crypt_cfb_shift(crypt_cfb_iv,
-					(unsigned char *) buf, chunksize);
+			crypt_cfb_shift(crypt_cfb_iv, buf, chunksize);
 		crypt_cfb_xor((unsigned char *) buf, temp, chunksize);
 		if (!decrypt)
-			crypt_cfb_shift(crypt_cfb_iv,
-					(unsigned char *) buf, chunksize);
+			crypt_cfb_shift(crypt_cfb_iv, buf, chunksize);
 		len -= chunksize;
 #ifdef WIN32
 		(char*)buf += chunksize;

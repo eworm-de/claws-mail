@@ -1649,7 +1649,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/File/Empty trash"                          , M_UNLOCKED},
 		{"/File/Work offline"	       		      , M_UNLOCKED},
 
-		{"/File/Save as...", M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+		{"/File/Save as...", M_TARGET_EXIST|M_UNLOCKED},
 		{"/File/Print..."  , M_TARGET_EXIST|M_UNLOCKED},
 		/* {"/File/Close"  , M_UNLOCKED}, */
 		{"/File/Exit"      , M_UNLOCKED},

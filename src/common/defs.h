@@ -121,31 +121,31 @@
 #define MAX_HISTORY_SIZE		16
 
 #ifdef WIN32
-  #define LOCK_PORT			54321	// (-_-;;
+# define LOCK_PORT			54321
 #endif
  
-#ifdef jjjWIN32
+#ifdef jpWIN32
 #  define NORMAL_FONT		"-*-*-normal-r-normal--12-*-*-*-m-*-jisx0208.1983-0," \
 				"-*-*-normal-r-normal--12-*-*-*-*-*-*-*"
 #  define BOLD_FONT		"-*-*-bold-r-normal--12-*-*-*-m-*-jisx0208.1983-0," \
 				"-*-*-bold-r-normal--12-*-*-*-*-*-*-*"
 #  define SMALL_FONT		"-*-*-normal-r-normal--10-*-*-*-m-*-jisx0208.1983-0," \
 				"-*-*-normal-r-normal--10-*-*-*-*-*-*-*"
- // Added
+/* Added */
 #  define DEFAULT_MESSAGE_FONT	"-*-*-normal-r-normal--12-*-*-*-m-*-jisx0208.1983-0," \
 				"-*-*-normal-r-normal--12-*-*-*-*-*-*-*"
 #  define DEFAULT_SPACING_FONT	"-*-*-normal-r-normal--6-*-*-*-m-*-jisx0208.1983-0," \
 				"-*-*-normal-r-normal--6-*-*-*-*-*-*-*"
 #endif
-//-----------------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
 #ifdef WIN32
 #  define NORMAL_FONT		"-*-Arial-normal-r-normal--15-*-*-*-*-*-*-*"
 #  define BOLD_FONT		"-*-Arial-bold-r-normal--15-*-*-*-*-*-*-*"
 #  define SMALL_FONT		"-*-Arial-normal-r-normal--14-*-*-*-*-*-*-*"
-//#  define NORMAL_FONT		"-*-Microsoft Sans Serif-normal-r-normal--14-*-*-*-*-*-iso8859-1"
-//#  define BOLD_FONT		"-*-Microsoft Sans Serif-bold-r-normal--14-*-*-*-*-*-iso8859-1"
-//#  define SMALL_FONT		"-*-Microsoft Sans Serif-normal-r-normal--14-*-*-*-*-*-iso8859-1"
- // Added
+/*#  define NORMAL_FONT		"-*-Microsoft Sans Serif-normal-r-normal--14-*-*-*-*-*-iso8859-1" */
+/*#  define BOLD_FONT		"-*-Microsoft Sans Serif-bold-r-normal--14-*-*-*-*-*-iso8859-1"   */
+/*#  define SMALL_FONT		"-*-Microsoft Sans Serif-normal-r-normal--14-*-*-*-*-*-iso8859-1" */
+/* Added */
 #  define DEFAULT_MESSAGE_FONT	"-*-*-normal-r-normal--18-*-*-*-m-*-*-*"
 #  define DEFAULT_SPACING_FONT	"-*-*-normal-r-normal--12-*-*-*-m-*-*-*"
 #else
@@ -158,17 +158,13 @@
 #define PIXMAP_THEME_DIR	"themes"
 
 #ifdef WIN32
-//XXX:tm   w32lib.h ?
-//used in: prefs.c
-#  define F_EXISTS	00 //Existence only 
-#  define W_OK		02 //Write permission 
-#  define R_OK		04 //Read permission 
-#  define F_OK		06 //Read and write permission 
+#  define F_EXISTS	00 /* Existence only            */
+#  define W_OK		02 /* Write permission          */
+#  define R_OK		04 /* Read permission           */
+#  define F_OK		06 /* Read and write permission */
 #endif
 
 #ifdef WIN32
-//XXX:tm  put to w32lib.h ?
-//used in: mh.h summaryview.c
 #  define S_IRGRP	_S_IREAD
 #  define S_IWGRP	_S_IWRITE
 #  define S_IXGRP	_S_IEXEC

@@ -100,11 +100,13 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"port", "783", &config.port, P_INT,
 	 NULL, NULL, NULL},
-	{"max_size", "250", &config.max_size, P_INT,
-	 NULL, NULL, NULL},
 	{"receive_spam", "TRUE", &config.receive_spam, P_BOOL,
 	 NULL, NULL, NULL},
 	{"save_folder", NULL, &config.save_folder, P_STRING,
+	 NULL, NULL, NULL},
+	{"max_size", "250", &config.max_size, P_INT,
+	 NULL, NULL, NULL},
+	{"timeout", "30", &config.timeout, P_INT,
 	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
@@ -134,7 +136,7 @@ static gboolean msg_is_spam(FILE *fp)
 
 	m.type = MESSAGE_NONE;
 	m.max_len = config.max_size * 1024;
-	m.timeout = 30;
+	m.timeout = config.timeout;
 
 	if (message_read(fileno(fp), flags, &m) != EX_OK) {
 		debug_print("failed to read message\n");

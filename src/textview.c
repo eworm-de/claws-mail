@@ -1372,7 +1372,7 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 	if (!spacingfont)
 #ifdef WIN32
 		spacingfont = gtkut_font_load(prefs_common.spacingfont);
-		// XXX:tm spacingfont FONTSET_LOAD(spacingfont, prefs_common.spacingfont);
+		/* XXX:tm spacingfont FONTSET_LOAD(spacingfont, prefs_common.spacingfont); */
 #else
 		spacingfont = gdk_font_load("-*-*-medium-r-normal--6-*");
 #endif
@@ -1893,17 +1893,15 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 
 			if (textview->cur_pos >= uri->start &&
 			    textview->cur_pos <= uri->end) {
+			    	gchar *trimmed_uri;
+				
+				trimmed_uri = trim_string(uri->uri, 60);
+#ifdef WIN32
+				locale_to_utf8(&trimmed_uri);
+#endif
 				/* single click: display url in statusbar */
-#ifdef WIN32
-				if (event->button == 1 && textview->last_buttonpress != GDK_2BUTTON_PRESS
-						&& event->state != GDK_SHIFT_MASK) {
-#else
 				if (event->button == 1 && textview->last_buttonpress != GDK_2BUTTON_PRESS) {
-#endif
 					if (textview->messageview->mainwin) {
-#ifdef WIN32
-						gchar *p_uri=g_locale_to_utf8(uri->uri, -1, NULL, NULL, NULL);
-#endif
 						if (textview->show_url_msgid) {
 						  	gtk_timeout_remove(textview->show_url_timeout_tag);
 							gtk_statusbar_remove(GTK_STATUSBAR(
@@ -1915,25 +1913,13 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 						textview->show_url_msgid = gtk_statusbar_push(
 								GTK_STATUSBAR(textview->messageview->mainwin->statusbar),
 								textview->messageview->mainwin->folderview_cid,
-#ifdef WIN32
-								p_uri);
-#else
-								uri->uri);
-#endif
+								trimmed_uri);
 						textview->show_url_timeout_tag = gtk_timeout_add( 4000, show_url_timeout_cb, textview );
 						gtkut_widget_wait_for_draw(textview->messageview->mainwin->hbox_stat);
-#ifdef WIN32
-						g_free(p_uri);
-#endif
 					}
 				} else
 				if (!g_strncasecmp(uri->uri, "mailto:", 7)) {
-#ifdef WIN32
-					/* Gtk/Win swallows any doubleclick -> accept shift click instead */
-					if (event->button == 3 && (!event->state == GDK_SHIFT_MASK)) {
-#else
 					if (event->button == 3) {
-#endif
 						gchar *fromname, *fromaddress;
 						
 						/* extract url */
@@ -1979,6 +1965,7 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 					open_uri(uri->uri,
 						 prefs_common.uri_cmd);
 				}
+				g_free(trimmed_uri);
 			}
 		}
 	}

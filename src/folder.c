@@ -251,6 +251,8 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 
 void folder_item_append(FolderItem *parent, FolderItem *item)
 {
+	FolderUpdateData hookdata;
+
 	g_return_if_fail(parent != NULL);
 	g_return_if_fail(parent->folder != NULL);
 	g_return_if_fail(parent->node != NULL);
@@ -259,11 +261,20 @@ void folder_item_append(FolderItem *parent, FolderItem *item)
 	item->parent = parent;
 	item->folder = parent->folder;
 	item->node = g_node_append_data(parent->node, item);
+
+	hookdata.folder = item->folder;
+	hookdata.update_flags = FOLDER_TREE_CHANGED;
+	hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
 }
 
 static gboolean folder_item_remove_func(GNode *node, gpointer data)
 {
 	FolderItem *item = FOLDER_ITEM(node->data);
+
+	if (item->cache != NULL) {
+		msgcache_destroy(item->cache);
+		item->cache = NULL;
+	}
 
 	folder_item_destroy(item);
 	return FALSE;
@@ -271,7 +282,9 @@ static gboolean folder_item_remove_func(GNode *node, gpointer data)
 
 void folder_item_remove(FolderItem *item)
 {
+	Folder *folder = item->folder;
 	GNode *node;
+	FolderUpdateData hookdata;
 
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
@@ -285,6 +298,10 @@ void folder_item_remove(FolderItem *item)
 	g_node_traverse(node, G_POST_ORDER, G_TRAVERSE_ALL, -1,
 			folder_item_remove_func, NULL);
 	g_node_destroy(node);
+
+	hookdata.folder = folder;
+	hookdata.update_flags = FOLDER_TREE_CHANGED;
+	hooks_invoke(FOLDER_UPDATE_HOOKLIST, &hookdata);
 }
 
 void folder_item_remove_children(FolderItem *item)
@@ -368,13 +385,21 @@ gboolean folder_tree_destroy_func(GNode *node, gpointer data) {
 
 void folder_tree_destroy(Folder *folder)
 {
+	GNode *node;
+
 	g_return_if_fail(folder != NULL);
+
+	node = folder->node;
 	
 	prefs_scoring_clear_folder(folder);
 	prefs_filtering_clear_folder(folder);
 
-	if (folder->node)
-		folder_item_remove(FOLDER_ITEM(folder->node->data));
+	if (node != NULL) {
+		g_node_traverse(node, G_POST_ORDER, G_TRAVERSE_ALL, -1,
+				folder_tree_destroy_func, NULL);
+		g_node_destroy(node);
+		folder->node = NULL;
+	}
 }
 
 void folder_add(Folder *folder)
@@ -867,6 +892,8 @@ FolderItem *folder_find_item_from_identifier(const gchar *identifier)
 gchar *folder_item_get_name(FolderItem *item)
 {
 	gchar *name = NULL;
+
+	g_return_val_if_fail(item != NULL, g_strdup(""));
 
 	switch (item->stype) {
 	case F_INBOX:
@@ -1725,6 +1752,8 @@ static void add_msginfo_to_cache(FolderItem *item, MsgInfo *newmsginfo, MsgInfo 
 
 static void remove_msginfo_from_cache(FolderItem *item, MsgInfo *msginfo)
 {
+	MsgInfoUpdate msginfo_update;
+
 	if (!item->cache)
 		folder_item_read_cache(item);
 
@@ -1735,6 +1764,10 @@ static void remove_msginfo_from_cache(FolderItem *item, MsgInfo *msginfo)
 	if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 		msginfo->folder->unreadmarked_msgs--;
 	msginfo->folder->total_msgs--;
+
+	msginfo_update.msginfo = msginfo;
+	msginfo_update.flags = MSGINFO_UPDATE_DELETED;
+	hooks_invoke(MSGINFO_UPDATE_HOOKLIST, &msginfo_update);
 
 	msgcache_remove_msg(item->cache, msginfo->msgnum);
 	folder_item_update(msginfo->folder, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
@@ -1861,7 +1894,7 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 }
 */
 		
-FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest) 
+FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest) 
 {
 	GSList *mlist;
 	FolderItem *new_item;
@@ -1950,7 +1983,6 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_ite
 	FolderItem *tmp = dest->parent;
 	gchar * src_identifier, * dst_identifier;
 	gchar * phys_srcpath, * phys_dstpath;
-	GNode *src_node;
 	
 	while (tmp) {
 		if (tmp == src) {
@@ -1991,14 +2023,6 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_ite
 	if ((tmp = folder_item_move_recursive(src, dest)) == NULL) {
 		return F_MOVE_FAILED;
 	}
-	
-	/* update rules */
-	src_node = g_node_find(src->folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, src);
-	if (src_node) 
-		g_node_destroy(src_node);
-	else
-		debug_print("can't remove node: it's null!\n");
-	/* not to much worry if remove fails, move has been done */
 	
 	g_free(src_identifier);
 	g_free(dst_identifier);

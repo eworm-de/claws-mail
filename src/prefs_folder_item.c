@@ -37,11 +37,16 @@
 #include "manage_window.h"
 #include "utils.h"
 #include "addr_compl.h"
+#include "prefs_common.h"
 #include "prefs_scoring.h"
 #include "gtkutils.h"
 #include "filtering.h"
 #include "folder_item_prefs.h"
 #include "gtk/colorsel.h"
+
+#if USE_ASPELL
+#include "gtkaspell.h"
+#endif
 
 #define ASSIGN_STRING(string, value) \
 	{ \
@@ -81,6 +86,10 @@ struct FolderItemComposePage
 	GtkWidget *entry_default_reply_to;
 	GtkWidget *checkbtn_enable_default_account;
 	GtkWidget *optmenu_default_account;
+#if USE_ASPELL
+	GtkWidget *checkbtn_enable_default_dictionary;
+	GtkWidget *optmenu_default_dictionary;
+#endif
 };
 
 
@@ -259,8 +268,17 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * _page,
 	GtkWidget *optmenu_default_account;
 	GtkWidget *optmenu_default_account_menu;
 	GtkWidget *optmenu_default_account_menuitem;
+#if USE_ASPELL
+	GtkWidget *checkbtn_enable_default_dictionary;
+	GtkWidget *optmenu_default_dictionary;
+	GtkWidget *optmenu_default_dictionary_menu;
+	GtkWidget *opemenu_default_dictionary_menuitem;
+#endif
 	GList *cur_ac;
 	GList *account_list;
+#if USE_ASPELL
+	gchar *dictionary;
+#endif
 	PrefsAccount *ac_prefs;
 	GtkOptionMenu *optmenu;
 	GtkWidget *menu;
@@ -270,7 +288,12 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * _page,
 	page->item	   = item;
 
 	/* Table */
-	table = gtk_table_new(5, 2, FALSE);
+#if USE_ASPELL
+# define TABLEHEIGHT 6
+#else
+# define TABLEHEIGHT 5
+#endif
+	table = gtk_table_new(TABLEHEIGHT, 2, FALSE);
 	gtk_widget_show(table);
 	gtk_table_set_row_spacings(GTK_TABLE(table), -1);
 	rowcount = 0;
@@ -373,6 +396,39 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * _page,
 
 	rowcount++;
 
+#if USE_ASPELL
+	/* Default dictionary */
+	checkbtn_enable_default_dictionary = gtk_check_button_new_with_label(_("Default dictionary: "));
+	gtk_widget_show(checkbtn_enable_default_dictionary);
+	gtk_table_attach(GTK_TABLE(table), checkbtn_enable_default_dictionary, 0, 1,
+	    		 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_default_dictionary),
+	    			     item->prefs->enable_default_dictionary);
+
+	optmenu_default_dictionary = gtk_option_menu_new();
+	gtk_widget_show(optmenu_default_dictionary);
+	gtk_table_attach_defaults(GTK_TABLE(table), optmenu_default_dictionary, 1, 2,
+	    			rowcount, rowcount + 1);
+
+	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu_default_dictionary), 
+				 gtkaspell_dictionary_option_menu_new(
+					 prefs_common.aspell_path));
+
+	dictionary = item->prefs->default_dictionary;
+
+	optmenu = GTK_OPTION_MENU(optmenu_default_dictionary);
+
+	menu = gtk_option_menu_get_menu(optmenu);
+	if (dictionary)
+		gtkaspell_set_dictionary_menu_active_item(optmenu_default_dictionary, dictionary);
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
+
+	SET_TOGGLE_SENSITIVITY(checkbtn_enable_default_dictionary, optmenu_default_dictionary);
+
+	rowcount++;
+#endif
+
 	page->window = GTK_WIDGET(window);
 	page->table = table;
 	page->checkbtn_request_return_receipt = checkbtn_request_return_receipt;
@@ -383,6 +439,10 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * _page,
 	page->entry_default_reply_to = entry_default_reply_to;
 	page->checkbtn_enable_default_account = checkbtn_enable_default_account;
 	page->optmenu_default_account = optmenu_default_account;
+#ifdef USE_ASPELL
+	page->checkbtn_enable_default_dictionary = checkbtn_enable_default_dictionary;
+	page->optmenu_default_dictionary = optmenu_default_dictionary;
+#endif
 
 	address_completion_start(page->window);
 
@@ -430,6 +490,14 @@ void prefs_folder_item_compose_save_func(PrefsPage *_page)
  	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_default_account));
  	menuitem = gtk_menu_get_active(GTK_MENU(menu));
  	prefs->default_account = GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
+
+#if USE_ASPELL
+	prefs->enable_default_dictionary =
+	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_enable_default_dictionary));
+	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(page->optmenu_default_dictionary));
+	ASSIGN_STRING(prefs->default_dictionary,
+	    gtkaspell_get_dictionary_menu_active_item(menu));
+#endif
 
 	folder_item_prefs_save_config(page->item);
 }

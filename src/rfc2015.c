@@ -61,8 +61,6 @@ static char *mime_version_name[] = {
     NULL
 };
 
-static char *create_boundary		(void);
-
 static void sig_expiration_check	(GString 	*str,
 					 GpgmeCtx	 ctx,
 					 GpgmeKey	 key, 
@@ -870,7 +868,7 @@ rfc2015_encrypt (const char *file, GSList *recp_list, gboolean ascii_armored)
     GpgmeRecipients rset = NULL;
     size_t nread;
     int mime_version_seen = 0;
-    char *boundary = create_boundary ();
+    char *boundary = generate_mime_boundary ();
 
     /* Create the list of recipients */
     rset = gpgmegtk_recipient_selection (recp_list);
@@ -1202,7 +1200,7 @@ rfc2015_sign (const char *file, GSList *key_list)
     GpgmeData sigdata = NULL;
     size_t nread;
     int mime_version_seen = 0;
-    char *boundary = create_boundary ();
+    char *boundary = generate_mime_boundary ();
     char *micalg = NULL;
     char *siginfo;
 
@@ -1474,65 +1472,6 @@ failure:
     gpgme_data_release(text);
     gpgme_data_release(sigdata);
     return -1;
-}
-
-
-/****************
- * Create a new boundary in a way that it is very unlikely that this
- * will occur in the following text.  It would be easy to ensure
- * uniqueness if everything is either quoted-printable or base64
- * encoded (note that conversion is allowed), but because MIME bodies
- * may be nested, it may happen that the same boundary has already
- * been used. We avoid scanning the message for conflicts and hope the
- * best.
- *
- *   boundary := 0*69<bchars> bcharsnospace
- *   bchars := bcharsnospace / " "
- *   bcharsnospace := DIGIT / ALPHA / "'" / "(" / ")" /
- *                    "+" / "_" / "," / "-" / "." /
- *                    "/" / ":" / "=" / "?"  
- */
-
-static char *
-create_boundary (void)
-{
-    static char tbl[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-			"abcdefghijklmnopqrstuvwxyz"
-			"1234567890'()+_,./:=?";
-    char buf[17];
-    int i, equal;
-    int pid;
-
-    pid = getpid();
-
-    /* We make the boundary depend on the pid, so that all running
-     * processed generate different values even when they have been
-     * started within the same second and srand48(time(NULL)) has been
-     * used.  I can't see whether this is really an advantage but it
-     * doesn't do any harm.
-     */
-    equal = -1;
-    for(i = 0; i < sizeof(buf) - 1; i++) {
-#ifdef WIN32
-      buf[i] = tbl[(rand() ^ pid) % (sizeof(tbl) - 1)]; /* fill with random */
-#else
-      buf[i] = tbl[(lrand48() ^ pid) % (sizeof(tbl) - 1)]; /* fill with random */
-#endif
-	if(buf[i] == '=' && equal == -1)
-	    equal = i;
-    }
-    buf[i] = 0;
-
-    /* now make sure that we do have the sequence "=." in it which cannot
-     * be matched by quoted-printable or base64 encoding */
-    if(equal != -1 && (equal+1) < i)
-	buf[equal+1] = '.';
-    else {
-	buf[0] = '=';
-	buf[1] = '.';
-    }
-
-    return g_strdup(buf);
 }
 
 #endif /* USE_GPGME */

@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=4
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=39
+EXTRA_VERSION=68
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}claws
 else
@@ -89,7 +89,7 @@ esac
 AM_ICONV
 
 dnl for gettext
-ALL_LINGUAS="bg cs de el en_GB es fr hr hu it ja ko nl pl pt_BR ru sr sv zh_TW.Big5"
+ALL_LINGUAS="bg cs de el en_GB es fr hr hu it ja ko nl pl pt_BR ru sk sr sv zh_TW.Big5"
 AM_GNU_GETTEXT([use-libtool])
 dnl AC_CHECK_FUNC(gettext, AC_CHECK_LIB(intl, gettext))
 localedir='${prefix}/${DATADIRNAME}/locale'
@@ -484,7 +484,7 @@ if test x"$ac_cv_enable_clamav_plugin" = xyes; then
 
 		PLUGINS="clamav $PLUGINS"
 	else
-		AC_MSG_NOTICE(clamav library not found, will not build clamav plugin)
+		AC_MSG_NOTICE([clamav library not found, will not build clamav plugin])
 	fi
 fi
 AM_CONDITIONAL(BUILD_CLAMAV_PLUGIN, test x"$ac_cv_enable_clamav_plugin" = xyes)

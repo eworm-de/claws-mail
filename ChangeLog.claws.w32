@@ -1,3 +1,14 @@
+2003-09-02 [thorsten]	0.9.4claws58-1
+
+	* src/textview.c
+		remove shift-click workaround (double-clicks work)
+	* src/sction.c
+	  src/compose.c
+	  src/textview.c
+	  src/common/defs.h
+	  src/common/utils.c
+		cleanups
+
 2003-09-02 [thorsten]	0.9.4claws39-1
 
 	* src/compose.c

@@ -2055,7 +2055,7 @@ void inc_all_account_mail_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	MainWindow *mainwin = (MainWindow*)data;
 
-	inc_all_account_mail(mainwin, prefs_common.newmail_notify_manu);
+	inc_all_account_mail(mainwin, FALSE, prefs_common.newmail_notify_manu);
 }
 
 void send_queue_cb(gpointer data, guint action, GtkWidget *widget)

@@ -27,7 +27,7 @@
 # ifdef INET6
 #  include <ws2tcpip.h>
 #  ifdef _MSC_VER
-#   include <tpipv6.h>  // For IPv6 Tech Preview.
+#   include <tpipv6.h>  /* For IPv6 Tech Preview. */
 #  endif /* _MSC_VER */
 # endif /* INET6 */
 # include <w32lib.h>
@@ -383,25 +383,25 @@ gboolean sock_is_nonblocking_mode(SockInfo *sock)
 #ifdef WIN32
 static gboolean glib2_sock_prepare(SockSource *source, gint *timeout_)
 {
-	return sock_prepare(	source->sock,		// source_data
-				NULL,			// current_time
-				timeout_,		// timeout
-				NULL);			// user_data
+	return sock_prepare(	source->sock,		/* source_data  */
+				NULL,			/* current_time */
+				timeout_,		/* timeout      */
+				NULL);			/* user_data    */
 }
 
 static gboolean glib2_sock_check(SockSource *source)
 {
-	return sock_check(	source->sock,		// source_data
-				NULL,			// current_time
-				source->sock->data);	// user_data
+	return sock_check(	source->sock,		/* source_data  */
+				NULL,			/* current_time */
+				source->sock->data);	/* user_data    */
 }
 
 static gboolean glib2_sock_dispatch(SockSource *source, GSourceFunc callback,
 				    gpointer user_data)
 {
-	return sock_dispatch(	source->sock,		// source_data
-				callback,		// current_time
-				source->sock->data);	// user_data
+	return sock_dispatch(	source->sock,		/* source_data  */
+				callback,		/* current_time */
+				source->sock->data);	/* user_data    */
 }
 #endif
 

@@ -151,7 +151,6 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 	GtkWidget *checkbtn_enable_aspell;
 	GtkWidget *checkbtn_check_while_typing;
 	GtkWidget *checkbtn_use_alternate;
-	GtkWidget *label1;
 	GtkWidget *label2;
 	GtkWidget *entry_aspell_path;
 	GtkWidget *label3;
@@ -164,6 +163,9 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 	GtkWidget *btn_aspell_path;
 	GtkWidget *hbox1;
 	GtkWidget *misspelled_btn;
+	GtkTooltips *tooltips;
+
+	tooltips = gtk_tooltips_new ();
 
 	table = gtk_table_new(8, 3, FALSE);
 	gtk_widget_show(table);
@@ -192,15 +194,8 @@ void prefs_spelling_create_widget(PrefsPage *_page, GtkWindow *window, gpointer 
 	gtk_table_attach(GTK_TABLE(table), checkbtn_use_alternate, 0, 3, 2,
 			 3, (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
-
-	label1 =
-	    gtk_label_new(_
-			  ("Enabling an alternate dictionary makes switching\nwith the last used dictionary faster"));
-	gtk_widget_show(label1);
-	gtk_table_attach(GTK_TABLE(table), label1, 0, 3, 3, 4,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label1), 7.45058e-09, 0.5);
+	gtk_tooltips_set_tip (tooltips, checkbtn_use_alternate, 
+			_("Faster switching with last used dictionary"), NULL);
 
 	label2 = gtk_label_new(_("Dictionaries path:"));
 	gtk_widget_show(label2);
