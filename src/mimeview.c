@@ -873,6 +873,24 @@ static void mimeview_save_all(MimeView *mimeview)
 	dirname = filesel_select_file(_("Save as"), defname);
 	if (!dirname) return;
 
+	if (!is_dir_exist (dirname)) {
+		alertpanel_error(_("`%s' is not a directory."),
+				 dirname);
+		g_free (dirname);
+		return;
+	}
+	
+	{ /* add a / after the dirname, in case the user didn't */
+		gchar *dirname_tmp = NULL;
+		int dirname_last_char = strlen (dirname) - 1;
+
+		if (dirname[dirname_last_char] != G_DIR_SEPARATOR) {
+			dirname_tmp = g_strconcat (dirname, G_DIR_SEPARATOR_S, NULL);
+			g_free (dirname);
+			dirname = dirname_tmp;
+		}
+	}
+
 	/* return to first children */
 	if (!partinfo->parent->children) return;  /* multipart container? */
 	attachment = partinfo->parent->children->next;
