@@ -1312,7 +1312,7 @@ SOURCE=..\src\vcard.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\version.h
+SOURCE=..\src\common\version.h
 # End Source File
 # Begin Source File
 
