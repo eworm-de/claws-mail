@@ -1,5 +1,15 @@
 Changes of Sylpheed
 
+* 0.8.9
+
+    * Transition from libjconv to direct use of iconv() API has been made.
+    * Quoted-Printable encoding for outgoing messages has been enabled.
+    * Content-Transfer-Encoding for outgoing messages became user definable.
+    * The abbreviation method of newsgroup name has been improved.
+    * Russian locales support has been improved.
+    * Fixes for message canonicalization have been made.
+    * Bugs of header MIME encoding have been fixed.
+
 * 0.8.8
 
     * The option to sort by recipient has been added.
