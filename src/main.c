@@ -797,10 +797,13 @@ static void send_queue(void)
 		Folder *folder = list->data;
 
 		if (folder->queue) {
-			if (procmsg_send_queue
-				(folder->queue, prefs_common.savemsg) < 0)
+			gint res = procmsg_send_queue
+				(folder->queue, prefs_common.savemsg);
+
+			if (res < 0)	
 				alertpanel_error(_("Some errors occurred while sending queued messages."));
-			folder_item_scan(folder->queue);
+			if (res) 	
+				folder_item_scan(folder->queue);
 			if (prefs_common.savemsg && folder->outbox) {
 				if (folder->outbox == def_outbox)
 					def_outbox = NULL;

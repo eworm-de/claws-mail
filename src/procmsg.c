@@ -464,9 +464,18 @@ void procmsg_empty_trash(void)
 	}
 }
 
+/*!
+ *\brief	Send messages in queue
+ *
+ *\param	queue Queue folder to process
+ *\param	save_msgs Unused
+ *
+ *\return	Number of messages sent, negative if an error occurred
+ *		positive if no error occurred
+ */
 gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 {
-	gint ret = 0;
+	gint ret = 1, count = 0;
 	GSList *list, *elem;
 
 	if (!queue)
@@ -476,37 +485,42 @@ gint procmsg_send_queue(FolderItem *queue, gboolean save_msgs)
 	folder_item_scan(queue);
 	list = folder_item_get_msg_list(queue);
 
-
 	for (elem = list; elem != NULL; elem = elem->next) {
 		gchar *file;
 		MsgInfo *msginfo;
 		
 		msginfo = (MsgInfo *)(elem->data);
-
-		file = folder_item_fetch_msg(queue, msginfo->msgnum);
-		if (file) {
-			if (procmsg_send_message_queue(file) < 0) {
-				g_warning("Sending queued message %d failed.\n", msginfo->msgnum);
-				ret = -1;
-			} else {
-			/* CLAWS: 
-			 * We save in procmsg_send_message_queue because
-			 * we need the destination folder from the queue
-			 * header
-			 			
-				if (save_msgs)
-					procmsg_save_to_outbox
-						(queue->folder->outbox,
-						 file, TRUE);
-*/
-				folder_item_remove_msg(queue, msginfo->msgnum);
+		if (!MSG_IS_LOCKED(msginfo->flags)) {
+			file = folder_item_fetch_msg(queue, msginfo->msgnum);
+			if (file) {
+				if (procmsg_send_message_queue(file) < 0) {
+					g_warning("Sending queued message %d failed.\n", 
+						  msginfo->msgnum);
+					ret = -1;
+				} else {
+					/* CLAWS: 
+					 * We save in procmsg_send_message_queue because
+					 * we need the destination folder from the queue
+					 * header
+							
+					if (save_msgs)
+						procmsg_save_to_outbox
+							(queue->folder->outbox,
+							 file, TRUE);
+					 */
+					count++; 
+					folder_item_remove_msg(queue, msginfo->msgnum);
+				}
+				g_free(file);
 			}
-			g_free(file);
 		}
+		/* FIXME: supposedly if only one message is locked, and queue
+		 * is being flushed, the following free says something like 
+		 * "freeing msg ## in folder (nil)". */
 		procmsg_msginfo_free(msginfo);
 	}
 
-	return ret;
+	return ret * count;
 }
 
 gint procmsg_remove_special_headers(const gchar *in, const gchar *out)
