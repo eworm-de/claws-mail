@@ -1,3 +1,9 @@
+2002-07-31 [paul]	0.8.1claws3
+
+	* man/sylpheed.1
+		add the '--attach' option and a few other
+		minor changes
+
 2002-07-31 [paul]	0.8.1claws2
 
 	* sync with 0.8.1cvs5
