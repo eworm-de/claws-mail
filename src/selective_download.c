@@ -258,7 +258,9 @@ static MsgInfo *sd_get_msginfo_from_file(const gchar *filename)
 		procheader_date_get_localtime(date, sizeof date, msginfo->date_t);
 		if (msginfo->date) g_free(msginfo->date);
 		msginfo->date = g_strdup(date);
-	} else 
+	} 
+
+	if (!msginfo)
 		msginfo = g_new0(MsgInfo, 1);
 
 	if (!msginfo->date) 
