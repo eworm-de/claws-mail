@@ -2966,10 +2966,6 @@ time_t tzoffset_sec(time_t *now)
 		off = 23 * 60 + 59;	/* if not, insert silly value */
 	if (off <= -24 * 60)
 		off = -(23 * 60 + 59);
-	if (off > 12 * 60)
-		off -= 24 * 60;
-	if (off < -12 * 60)
-		off += 24 * 60;
 
 	return off * 60;
 }

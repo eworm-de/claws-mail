@@ -1,7 +1,14 @@
+2003-02-19 [hiro]	0.8.10claws27
+
+	* src/common/utils.c
+		fix bug #54 'yesterdays date is displayed in the message 
+		summary window'
+
 2003-02-19 [paul]	0.8.10claws26
 
 	* src/compose.c
-		fix bug [688596] Reply-to header in news
+		fix bug reported in Feature Request [688596] 
+		'Reply-to header in news'
 
 2003-02-18 [paul]	0.8.10claws25
 
