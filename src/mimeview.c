@@ -531,7 +531,7 @@ static MimeViewer *get_viewer_for_mimeinfo(MimeView *mimeview, MimeInfo *partinf
             (!g_strcasecmp(partinfo->subtype, "octet-stream"))) {
 		const gchar *filename;
 
-		filename = procmime_mimeinfo_get_parameter(partinfo, "name");
+		filename = procmime_mimeinfo_get_parameter(partinfo, "filename");
 		if (filename != NULL)
 			content_type = procmime_get_mime_type(filename);
 	} else {

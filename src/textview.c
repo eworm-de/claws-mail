@@ -436,9 +436,9 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 
 	gtk_stext_freeze(text);
 
-	if (g_hash_table_lookup(mimeinfo->parameters, "name") != NULL)
+	if (g_hash_table_lookup(mimeinfo->parameters, "filename") != NULL)
 		g_snprintf(buf, sizeof(buf), "\n[%s  %s/%s (%d bytes)]\n",
-			   (gchar *) g_hash_table_lookup(mimeinfo->parameters, "name"),
+			   (gchar *) g_hash_table_lookup(mimeinfo->parameters, "filename"),
 			   procmime_get_type_str(mimeinfo->type),
 			   mimeinfo->subtype, mimeinfo->length);
 	else
