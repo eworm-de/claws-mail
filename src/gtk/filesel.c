@@ -41,6 +41,7 @@
 #include "gtkutils.h"
 #include "utils.h"
 
+static gchar *last_selected_dir = NULL;
 static GList *filesel_create(const gchar *title, const gchar *path, gboolean multiple_files)
 {
 	GSList *slist = NULL, *slist_orig = NULL;
@@ -63,9 +64,9 @@ static GList *filesel_create(const gchar *title, const gchar *path, gboolean mul
 	if (path) {
 		char *filename = NULL;
 		char *realpath = strdup(path);
-		if ((filename = strrchr(path,'/')) != NULL) {
+		if ((filename = strrchr(path, G_DIR_SEPARATOR)) != NULL) {
 			filename++;
-			*(strrchr(realpath, '/')+1) = '\0';
+			*(strrchr(realpath, G_DIR_SEPARATOR)+1) = '\0';
 		} else {
 			filename = (char *) path;
 			free(realpath); 
@@ -74,6 +75,11 @@ static GList *filesel_create(const gchar *title, const gchar *path, gboolean mul
 		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(chooser), realpath);
 		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(chooser), filename);
 		free(realpath);
+	} else {
+		if (!last_selected_dir)
+			last_selected_dir = g_strdup_printf("%s%c", get_home_dir(), G_DIR_SEPARATOR);
+
+		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(chooser), last_selected_dir);
 	}
 
 	if (gtk_dialog_run (GTK_DIALOG (chooser)) == GTK_RESPONSE_OK) 
@@ -84,6 +90,17 @@ static GList *filesel_create(const gchar *title, const gchar *path, gboolean mul
 
 	slist_orig = slist;
 	
+	if (slist) {
+		gchar *tmp = strdup(slist->data);
+		if (last_selected_dir)
+			g_free(last_selected_dir);
+		
+		if (strrchr(tmp, G_DIR_SEPARATOR))
+			*(strrchr(tmp, G_DIR_SEPARATOR)+1) = '\0';
+		last_selected_dir = g_strdup(tmp);
+		g_free(tmp);
+	}
+
 	while (slist) {
 		list = g_list_append(list, slist->data);
 		slist = slist->next;

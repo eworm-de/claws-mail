@@ -1,3 +1,8 @@
+2004-07-18 [colin]	0.9.12cvs32.1
+
+	* src/gtk/filesel.c
+		Fix erratic folder selection in open mode
+
 2004-07-18 [colin]	0.9.12cvs31.11
 
 	* src/pop.c
