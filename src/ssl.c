@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ void ssl_init(void)
 	}
 
 	ssl_ctx_TLSv1 = SSL_CTX_new(TLSv1_client_method());
-        if (ssl_ctx_TLSv1 == NULL) {
+	if (ssl_ctx_TLSv1 == NULL) {
 		debug_print(_("TLSv1 not available\n"));
 	} else {
 		debug_print(_("TLSv1 available\n"));
@@ -76,24 +76,24 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 	gint ret;
 
 	switch (method) {
-		case SSL_METHOD_SSLv23:
-			if (!ssl_ctx_SSLv23) {
-				log_warning(_("SSL method not available\n"));
-				return FALSE;
-			}
-			sockinfo->ssl = SSL_new(ssl_ctx_SSLv23);
-			break;
-		case SSL_METHOD_TLSv1:
-			if (!ssl_ctx_TLSv1) {
-				log_warning(_("SSL method not available\n"));
-				return FALSE;
-			}
-			sockinfo->ssl = SSL_new(ssl_ctx_TLSv1);
-			break;
-		default:
-			log_warning(_("Unknown SSL method *PROGRAM BUG*\n"));
+	case SSL_METHOD_SSLv23:
+		if (!ssl_ctx_SSLv23) {
+			log_warning(_("SSL method not available\n"));
 			return FALSE;
-			break;
+		}
+		sockinfo->ssl = SSL_new(ssl_ctx_SSLv23);
+		break;
+	case SSL_METHOD_TLSv1:
+		if (!ssl_ctx_TLSv1) {
+			log_warning(_("SSL method not available\n"));
+			return FALSE;
+		}
+		sockinfo->ssl = SSL_new(ssl_ctx_TLSv1);
+		break;
+	default:
+		log_warning(_("Unknown SSL method *PROGRAM BUG*\n"));
+		return FALSE;
+		break;
 	}
 
 	if (sockinfo->ssl == NULL) {
@@ -109,6 +109,7 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 	}
 
 	/* Get the cipher */
+
 	log_print(_("SSL connection using %s\n"), SSL_get_cipher(sockinfo->ssl));
 
 	/* Get server's certificate (note: beware of dynamic allocation) */

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,18 +23,12 @@
 typedef enum
 {
 	MANUAL_LANG_EN,
+	MANUAL_LANG_ES,
 	MANUAL_LANG_FR,
 	MANUAL_LANG_JA,
 } ManualLang;
 
-typedef enum
-{
-	FAQ_LANG_EN,
-	FAQ_LANG_ES,
-	FAQ_LANG_FR,
-} FaqLang;
-
 void manual_open(ManualLang lang);
-void faq_open(FaqLang lang);
+void faq_open	(ManualLang lang);
 
 #endif /* __MANUAL_H__ */

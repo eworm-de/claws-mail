@@ -1,5 +1,15 @@
 Changes of Sylpheed
 
+* 0.7.4
+
+    * The bug that lost UIDL information if any error occured before issuing
+      UIDL command was fixed.
+    * Message retrieving is now cancelable from the menu even if the dialog
+      is hidden.
+    * Some warnings on compiling with gcc-3.0 have been removed.
+    * The English manual has been updated.
+    * The FAQs in English, Spanish and French have been added.
+
 * 0.7.3
 
     * Attached files will be inherited on forwarding or reediting.

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,11 +40,12 @@ typedef enum {
 	SSL_METHOD_TLSv1
 } SSLMethod;
 
-void ssl_init(void);
-void ssl_done(void);
-gboolean ssl_init_socket(SockInfo *sockinfo);
-gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method);
-void ssl_done_socket(SockInfo *sockinfo);
+void ssl_init				(void);
+void ssl_done				(void);
+gboolean ssl_init_socket		(SockInfo	*sockinfo);
+gboolean ssl_init_socket_with_method	(SockInfo	*sockinfo,
+					 SSLMethod	 method);
+void ssl_done_socket			(SockInfo	*sockinfo);
 
 #endif /* USE_SSL */
 

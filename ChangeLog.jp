@@ -1,3 +1,26 @@
+2002-03-09
+
+	* version 0.7.4
+
+2002-03-09
+
+	* src/ssl.[ch]: コーディングスタイルを合わせた。
+	* src/compose.c: compose_send_later_cb(): ファイルの保存に失敗する
+	  バグを修正。
+	* faq/Makefile.am
+	  faq/en/Makefile.am
+	  faq/en/sylpheed-faq*.html
+	  faq/es/Makefile.am
+	  faq/es/sylpheed-faq*.html
+	  faq/fr/Makefile.am
+	  faq/fr/sylpheed-faq*.html
+	  configure.in
+	  Makefile.am
+	  src/Makefile.am
+	  src/defs.h
+	  src/mainwindow.c
+	  src/manual.[ch]: 英語、スペイン語、フランス語の FAQ を追加。
+
 2002-03-07
 
 	* manual/en/sylpheed*.html: 最新版に更新。
