@@ -309,7 +309,7 @@ GtkPspell *gtkpspell_new(const gchar *dictionary,
 	gtk_signal_connect(GTK_OBJECT(gtktext), "button-press-event",
 		           GTK_SIGNAL_FUNC(button_press_intercept_cb), gtkpspell);
 	
-	debug_print("Pspell: created gtkpspell %0x\n", gtkpspell);
+	debug_print("Pspell: created gtkpspell %0x\n", (guint) gtkpspell);
 
 	return gtkpspell;
 }
@@ -344,7 +344,7 @@ void gtkpspell_delete(GtkPspell * gtkpspell)
 	if (gtkpspell->suggestions_list)
 		free_suggestions_list(gtkpspell);
 	
-	debug_print("Pspell: deleting gtkpspell %0x\n", gtkpspell);
+	debug_print("Pspell: deleting gtkpspell %0x\n", (guint) gtkpspell);
 
 	g_free(gtkpspell);
 
@@ -749,7 +749,7 @@ gboolean gtkpspell_set_sug_mode(GtkPspell *gtkpspell, gint themode)
 	g_return_val_if_fail(gtkpspell->gtkpspeller->config, FALSE);
 
 	debug_print("Pspell: setting sug mode of gtkpspeller %0x to %d\n",
-			gtkpspell->gtkpspeller, themode);
+			(guint) gtkpspell->gtkpspeller, themode);
 	config = gtkpspell->gtkpspeller->config;
 	switch (themode) {
 		case PSPELL_FASTMODE: 
@@ -1261,13 +1261,6 @@ static void add_word_to_personal_cb(GtkWidget *w, gpointer data)
 
 	gtk_menu_shell_deactivate(GTK_MENU_SHELL(GTK_WIDGET(w)->parent));
 	set_point_continue(gtkpspell);
-}
-
-static void deactivate_sug_menu_cb(GtkObject *w, gpointer data)
-{
-	GtkMenuShell *menu_shell = GTK_MENU_SHELL(data);
-	debug_print("Destroying %0x\n", w);
-	gtk_menu_shell_deactivate(menu_shell);
 }
 
 static void check_with_alternate_cb(GtkWidget *w,
@@ -2037,7 +2030,7 @@ static GtkMenu *make_config_menu(GtkPspell *gtkpspell)
 		gtkpspell->popup_config_menu = gtk_menu_new();
 
 	debug_print("Pspell: creating/using popup_config_menu %0x\n", 
-			gtkpspell->popup_config_menu);
+			(guint) gtkpspell->popup_config_menu);
 	populate_submenu(gtkpspell, gtkpspell->popup_config_menu);
 
         return GTK_MENU(gtkpspell->popup_config_menu);
@@ -2050,7 +2043,7 @@ void gtkpspell_populate_submenu(GtkPspell *gtkpspell, GtkWidget *menuitem)
 	menu = GTK_WIDGET(GTK_MENU_ITEM(menuitem)->submenu);
 	
 	debug_print("Pspell: using config menu %0x\n", 
-			gtkpspell->popup_config_menu);
+			(guint) gtkpspell->popup_config_menu);
 	populate_submenu(gtkpspell, menu);
 	
 	gtkpspell->config_menu = menu;

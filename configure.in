@@ -8,7 +8,7 @@ MINOR_VERSION=7
 MICRO_VERSION=1
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws8
+EXTRA_VERSION=claws9
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -208,17 +208,6 @@ else
 	AC_MSG_RESULT(no)
 fi
 
-dnl get ispell path
-dnl
-AC_PATH_PROG(ispell_path, ispell, no)
-if test "$ispell_path" != no; then
-	AC_DEFINE_UNQUOTED(ISPELL_PATH, "$ispell_path")
-	AC_SUBST(ISPELL_PATH)
-else
-	AC_DEFINE_UNQUOTED(ISPELL_PATH, "/usr/bin/ispell")
-	AC_SUBST(ISPELL_PATH)
-fi
-
 dnl Check for libjconv
 AC_ARG_ENABLE(jconv,
 	[  --disable-jconv         Do not use libjconv],
@@ -286,6 +275,8 @@ if test $ac_cv_enable_pspell = yes; then
 	AC_MSG_RESULT(yes)
 	AM_PATH_PSPELL(.12.2, AC_DEFINE(USE_PSPELL), [use_pspell=no
 						    ac_cv_enable_pspell=no])
+	pspell_path="`pspell-config --pkgdatadir`"
+	AC_DEFINE_UNQUOTED(PSPELL_PATH, "${pspell_path}/")
 else
 	AC_MSG_RESULT(no)
 fi

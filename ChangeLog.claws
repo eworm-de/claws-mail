@@ -1,3 +1,8 @@
+2002-02-17 [melvin]	0.7.1claws9
+
+	* src/gtkspell.c
+		Fixed compile-time warnings.
+
 2002-02-16 [alfons]	0.7.1claws8
 
 	* src/filesel.c
