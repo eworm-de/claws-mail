@@ -850,7 +850,7 @@ gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_list)
 
 #define READ_TO_LISTEND(hdr) \
 	while (!(buf[0] == '.' && buf[1] == '\r')) { \
-		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) { \
+		if (sock_gets(session->nntp_sock->sock, buf, sizeof(buf)) < 0) { \
 			log_warning(_("error occurred while getting %s.\n"), hdr); \
 			return msginfo; \
 		} \
@@ -875,7 +875,7 @@ MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 		return NULL;
 	}
 	
-	if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
+	if (sock_gets(session->nntp_sock->sock, buf, sizeof(buf)) < 0) {
 		log_warning(_("error occurred while getting xover.\n"));
 		return NULL;
 	}
@@ -900,7 +900,7 @@ MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 		return msginfo;
 	}
 
-	if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
+	if (sock_gets(session->nntp_sock->sock, buf, sizeof(buf)) < 0) {
 		log_warning(_("error occurred while getting xhdr.\n"));
 		return msginfo;
 	}
@@ -914,7 +914,7 @@ MsgInfo *news_get_msginfo(Folder *folder, FolderItem *item, gint num)
 		return msginfo;
 	}
 
-	if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
+	if (sock_gets(session->nntp_sock->sock, buf, sizeof(buf)) < 0) {
 		log_warning(_("error occurred while getting xhdr.\n"));
 		return msginfo;
 	}
@@ -945,7 +945,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 	}
 
 	for (;;) {
-		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
+		if (sock_gets(session->nntp_sock->sock, buf, sizeof(buf)) < 0) {
 			log_warning(_("error occurred while getting xover.\n"));
 			return newlist;
 		}
@@ -984,7 +984,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 	llast = newlist;
 
 	for (;;) {
-		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
+		if (sock_gets(session->nntp_sock->sock, buf, sizeof(buf)) < 0) {
 			log_warning(_("error occurred while getting xhdr.\n"));
 			return newlist;
 		}
@@ -1014,7 +1014,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 	llast = newlist;
 
 	for (;;) {
-		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
+		if (sock_gets(session->nntp_sock->sock, buf, sizeof(buf)) < 0) {
 			log_warning(_("error occurred while getting xhdr.\n"));
 			return newlist;
 		}

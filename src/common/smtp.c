@@ -420,6 +420,11 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 		return -1;
 	}
 
+	if (msg[0] == '5' && msg[1] == '3' && msg[2] == '5') {
+		smtp_session->state = SMTP_AUTH_FAILED;
+		return -1;
+	}
+
 	if (msg[0] != '1' && msg[0] != '2' && msg[0] != '3') {
 		smtp_session->state = SMTP_ERROR;
 		return -1;
@@ -506,6 +511,7 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 		session_disconnect(session);
 		break;
 	case SMTP_ERROR:
+	case SMTP_AUTH_FAILED:
 	default:
 		return -1;
 	}

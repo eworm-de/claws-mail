@@ -10,6 +10,7 @@ rfc2183.txt	The Content-Disposition Header Field
 rfc2342.txt	IMAP4 Namespace
 rfc2359.txt	IMAP4 UIDPLUS extension
 rfc2487.txt	SMTP Service Extension for Secure SMTP over TLS
+rfc2554.txt	SMTP Service Extension for Authentication
 rfc2821.txt	SMTP
 rfc2822.txt	Internet Message Format
 rfc2980.txt	Common NNTP Extensions

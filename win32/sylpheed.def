@@ -914,12 +914,6 @@ EXPORTS
 	html_parse 
 	html_parser_destroy 
 	html_parser_new 
-	imageview_clear 
-	imageview_create 
-	imageview_destroy 
-	imageview_get_resized_size 
-	imageview_init 
-	imageview_show_image 
 	imap_add_msg 
 	imap_change_flags 
 	imap_check_msgnum_validity 

@@ -288,10 +288,6 @@ SOURCE=..\src\html.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\imageview.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\imap.c
 # End Source File
 # Begin Source File
@@ -901,10 +897,6 @@ SOURCE=..\src\common\hooks.h
 # Begin Source File
 
 SOURCE=..\src\html.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\imageview.h
 # End Source File
 # Begin Source File
 

@@ -240,7 +240,6 @@ OBJECTS= \
 	headerview.o \
 	hooks.o \
 	html.o \
-	imageview.o \
 	imap.o \
 	import.o \
 	importldif.o \
@@ -550,7 +549,6 @@ gtkutils.o: 	gtkutils.c gtkutils.h
 headerview.o: 	headerview.c headerview.h
 hooks.o:	hooks.c hooks.h
 html.o: 	html.c html.h
-imageview.o: 	imageview.c imageview.h
 imap.o: 	imap.c imap.h
 import.o: 	import.c import.h
 importldif.o: 	importldif.c importldif.h

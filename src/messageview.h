@@ -28,7 +28,6 @@ typedef struct _MessageView		MessageView;
 #include "mainwindow.h"
 #include "headerview.h"
 #include "textview.h"
-#include "imageview.h"
 #include "mimeview.h"
 #include "noticeview.h"
 #include "procmsg.h"
@@ -55,7 +54,6 @@ struct _MessageView
 
 	HeaderView *headerview;
 	TextView *textview;
-	ImageView *imageview;
 	MimeView *mimeview;
 	NoticeView *noticeview;
 

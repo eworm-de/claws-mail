@@ -30,14 +30,12 @@ typedef struct _MimeViewerFactory 	MimeViewerFactory;
 typedef struct _MimeViewer 		MimeViewer;
 
 #include "textview.h"
-#include "imageview.h"
 #include "messageview.h"
 #include "procmime.h"
 
 typedef enum
 {
 	MIMEVIEW_TEXT,
-	MIMEVIEW_IMAGE,
 	MIMEVIEW_VIEWER,
 } MimeViewType;
 
@@ -59,7 +57,6 @@ struct _MimeView
 	GtkCTreeNode *opened;
 
 	TextView *textview;
-	ImageView *imageview;
 	MimeViewer *mimeviewer;
 
 	MessageView *messageview;

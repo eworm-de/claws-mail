@@ -213,9 +213,6 @@ struct _PrefsCommon
 	gint scroll_step;
 	gboolean scroll_halfpage;
 
-	gboolean display_img;
-	gboolean resize_image;
-
 	gchar *force_charset;
 
 	gboolean show_other_header;

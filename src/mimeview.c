@@ -77,8 +77,6 @@ static GtkCTreeNode *mimeview_append_part	(MimeView	*mimeview,
 						 GtkCTreeNode	*parent);
 static void mimeview_show_message_part		(MimeView	*mimeview,
 						 MimeInfo	*partinfo);
-static void mimeview_show_image_part		(MimeView	*mimeview,
-						 MimeInfo	*partinfo);
 static void mimeview_change_view_type		(MimeView	*mimeview,
 						 MimeViewType	 type);
 static void mimeview_clear			(MimeView	*mimeview);
@@ -106,7 +104,6 @@ static void mimeview_drag_data_get      (GtkWidget	  *widget,
 					 MimeView	  *mimeview);
 
 static void mimeview_display_as_text	(MimeView	*mimeview);
-static void mimeview_show_image		(MimeView	*mimeview);
 static void mimeview_save_as		(MimeView	*mimeview);
 static void mimeview_save_all		(MimeView	*mimeview);
 static void mimeview_launch		(MimeView	*mimeview);
@@ -120,7 +117,6 @@ static GtkItemFactoryEntry mimeview_popup_entries[] =
 	{N_("/_Open"),		  NULL, mimeview_launch,	  0, NULL},
 	{N_("/Open _with..."),	  NULL, mimeview_open_with,	  0, NULL},
 	{N_("/_Display as text"), NULL, mimeview_display_as_text, 0, NULL},
-	{N_("/_Display image"),   NULL, mimeview_show_image,      0, NULL},
 	{N_("/_Save as..."),	  NULL, mimeview_save_as,	  0, NULL},
 	{N_("/Save _all..."),	  NULL, mimeview_save_all,	  0, NULL}
 #if USE_GPGME
@@ -506,30 +502,6 @@ static void mimeview_show_message_part(MimeView *mimeview, MimeInfo *partinfo)
 	fclose(fp);
 }
 
-static void mimeview_show_image_part(MimeView *mimeview, MimeInfo *partinfo)
-{
-	gchar *filename;
-
-	if (!partinfo) return;
-
-	filename = procmime_get_tmp_file_name(partinfo);
-
-	if (procmime_get_part(filename, mimeview->file, partinfo) < 0)
-		alertpanel_error
-			(_("Can't get the part of multipart message."));
-	else {
-		mimeview_change_view_type(mimeview, MIMEVIEW_IMAGE);
-		/* Workaround for the GTK+ bug with handling scroll adjustments
-		 * in GtkViewport */
-		imageview_clear(mimeview->imageview);
-		imageview_show_image(mimeview->imageview, partinfo, filename,
-				     prefs_common.resize_image);
-		unlink(filename);
-	}
-
-	g_free(filename);
-}
-
 static MimeViewer *get_viewer_for_content_type(MimeView *mimeview, const gchar *content_type)
 {
 	GSList *cur;
@@ -559,11 +531,31 @@ static MimeViewer *get_viewer_for_content_type(MimeView *mimeview, const gchar *
 	return viewer;
 }
 
+static MimeViewer *get_viewer_for_mimeinfo(MimeView *mimeview, MimeInfo *partinfo)
+{
+	gchar *content_type = NULL;
+	MimeViewer *viewer = NULL;
+
+	if ((partinfo->mime_type == MIME_APPLICATION_OCTET_STREAM) &&
+	    (partinfo->name != NULL)) {
+		content_type = procmime_get_mime_type(partinfo->name);
+	} else {
+		content_type = g_strdup(partinfo->content_type);
+	}
+
+	if (content_type != NULL) {
+		viewer = get_viewer_for_content_type(mimeview, content_type);
+		g_free(content_type);
+	}
+
+	return viewer;
+}
+
 static gboolean mimeview_show_part(MimeView *mimeview, MimeInfo *partinfo)
 {
 	MimeViewer *viewer;
 	
-	viewer = get_viewer_for_content_type(mimeview, partinfo->content_type);
+	viewer = get_viewer_for_mimeinfo(mimeview, partinfo);
 	if (viewer == NULL) {
 		if (mimeview->mimeviewer != NULL)
 			mimeview->mimeviewer->clear_viewer(mimeview->mimeviewer);
@@ -585,7 +577,6 @@ static gboolean mimeview_show_part(MimeView *mimeview, MimeInfo *partinfo)
 static void mimeview_change_view_type(MimeView *mimeview, MimeViewType type)
 {
 	TextView  *textview  = mimeview->textview;
-	ImageView *imageview = mimeview->imageview;
 	GList *children;
 
 	if ((mimeview->type != MIMEVIEW_VIEWER) && 
@@ -599,10 +590,6 @@ static void mimeview_change_view_type(MimeView *mimeview, MimeViewType type)
 	}
 
 	switch (type) {
-	case MIMEVIEW_IMAGE:
-		gtk_container_add(GTK_CONTAINER(mimeview->mime_vbox),
-				  GTK_WIDGET_PTR(imageview));
-		break;
 	case MIMEVIEW_TEXT:
 		gtk_container_add(GTK_CONTAINER(mimeview->mime_vbox),
 				  GTK_WIDGET_PTR(textview));
@@ -627,7 +614,6 @@ static void mimeview_clear(MimeView *mimeview)
 
 	gtk_clist_clear(clist);
 	textview_clear(mimeview->textview);
-	imageview_clear(mimeview->imageview);
 	if (mimeview->mimeviewer != NULL)
 		mimeview->mimeviewer->clear_viewer(mimeview->mimeviewer);
 
@@ -670,17 +656,6 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 			mimeview_show_message_part(mimeview, partinfo);
 		
 			break;
-#if (HAVE_GDK_PIXBUF || HAVE_GDK_IMLIB)
-		case MIME_IMAGE:
-			mimeview->textview->default_text = TRUE;	
-			if (prefs_common.display_img)
-				mimeview_show_image_part(mimeview, partinfo);
-			else {
-				mimeview_change_view_type(mimeview, MIMEVIEW_TEXT);
-				textview_show_mime_part(mimeview->textview, partinfo);
-			}
-			break;
-#endif
 		default:
 			mimeview->textview->default_text = TRUE;	
 			mimeview_change_view_type(mimeview, MIMEVIEW_TEXT);
@@ -760,11 +735,6 @@ static gint mimeview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 			menu_set_sensitive(mimeview->popupfactory,
 					   "/Open", TRUE);
 
-#if (HAVE_GDK_PIXBUF || HAVE_GDK_IMLIB)
-		if (partinfo && (partinfo->mime_type == MIME_IMAGE))
-			menu_set_sensitive(mimeview->popupfactory,
-					   "/Display image", TRUE);
-#endif					   
 #if USE_GPGME
 		menu_set_sensitive(mimeview->popupfactory,
 				   "/Check signature",
@@ -851,11 +821,6 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		KEY_PRESS_EVENT_STOP();
 		mimeview_display_as_text(mimeview);
 		return TRUE;	
-	case GDK_i:
-		BREAK_ON_MODIFIER_KEY();
-		KEY_PRESS_EVENT_STOP();
-		mimeview_show_image(mimeview);
-		return TRUE;
 	case GDK_l:
 		BREAK_ON_MODIFIER_KEY();
 		KEY_PRESS_EVENT_STOP();
@@ -974,17 +939,6 @@ static void mimeview_display_as_text(MimeView *mimeview)
 	partinfo = gtk_ctree_node_get_row_data
 		(GTK_CTREE(mimeview->ctree), mimeview->opened);
 	mimeview_show_message_part(mimeview, partinfo);
-}
-
-static void mimeview_show_image(MimeView *mimeview)
-{
-	MimeInfo *partinfo;
-
-	if (!mimeview->opened) return;
-
-	partinfo = gtk_ctree_node_get_row_data
-		(GTK_CTREE(mimeview->ctree), mimeview->opened);
-	mimeview_show_image_part(mimeview, partinfo);
 }
 
 static void mimeview_save_as(MimeView *mimeview)
