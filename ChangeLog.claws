@@ -1,3 +1,10 @@
+2002-10-15 [colin]	0.8.5claws39
+
+	* src/main.c
+	  src/mainwindow.[ch]
+		Added --online and --offline command-line
+		switches
+
 2002-10-15 [christoph]	0.8.5claws38
 
 	* src/procmime.c

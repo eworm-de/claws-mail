@@ -2993,13 +2993,17 @@ static void separate_widget_cb(MainWindow *mainwin, guint action,
 	prefs_common.sep_msg    = (type & SEPARATE_MESSAGE) != 0;
 }
 
-static void toggle_work_offline_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+void main_window_toggle_work_offline (MainWindow *mainwin, gboolean offline)
 {
-	if (GTK_CHECK_MENU_ITEM(widget)->active) {
+	if (offline)
 		online_switch_clicked (GTK_BUTTON(mainwin->online_switch), mainwin);
-	} else {
-		online_switch_clicked (GTK_BUTTON(mainwin->offline_switch), mainwin);		
-	}
+	else
+		online_switch_clicked (GTK_BUTTON(mainwin->offline_switch), mainwin);
+}
+
+static void toggle_work_offline_cb (MainWindow *mainwin, guint action, GtkWidget *widget)
+{
+	main_window_toggle_work_offline(mainwin, GTK_CHECK_MENU_ITEM(widget)->active);
 }
 
 static void online_switch_clicked (GtkButton *btn, gpointer data) 

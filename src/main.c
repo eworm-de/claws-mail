@@ -103,6 +103,8 @@ static struct Cmd {
 	gboolean status;
 	gboolean send;
 	gboolean crash;
+	gboolean online;
+	gboolean offline;
 	gchar   *crash_params;
 } cmd;
 
@@ -356,6 +358,11 @@ int main(int argc, char *argv[])
 	if (cmd.send)
 		send_queue();
 
+	if (cmd.offline)
+		main_window_toggle_work_offline(mainwin, TRUE);
+	if (cmd.online)
+		main_window_toggle_work_offline(mainwin, FALSE);
+	
 	gtk_main();
 
 	addressbook_destroy();
@@ -414,6 +421,10 @@ static void parse_cmd_opt(int argc, char *argv[])
 			exit(0);
 		} else if (!strncmp(argv[i], "--status", 8)) {
 			cmd.status = TRUE;
+		} else if (!strncmp(argv[i], "--online", 8)) {
+			cmd.online = TRUE;
+		} else if (!strncmp(argv[i], "--offline", 9)) {
+			cmd.offline = TRUE;
 		} else if (!strncmp(argv[i], "--help", 6)) {
 			g_print(_("Usage: %s [OPTION]...\n"),
 				g_basename(argv[0]));
@@ -426,6 +437,8 @@ static void parse_cmd_opt(int argc, char *argv[])
 			puts(_("  --receive-all          receive new messages of all accounts"));
 			puts(_("  --send                 send all queued messages"));
 			puts(_("  --status               show the total number of messages"));
+			puts(_("  --online               switch to online mode"));
+			puts(_("  --offline              switch to offline mode"));
 			puts(_("  --debug                debug mode"));
 			puts(_("  --help                 display this help and exit"));
 			puts(_("  --version              output version information and exit"));
@@ -653,6 +666,10 @@ static gint prohibit_duplicate_launch(void)
 		g_free(compose_str);
 	} else if (cmd.send) {
 		fd_write(uxsock, "send\n", 5);
+	} else if (cmd.online) {
+		fd_write(uxsock, "online\n", 6);
+	} else if (cmd.offline) {
+		fd_write(uxsock, "offline\n", 7);
 	} else if (cmd.status) {
 		gchar buf[BUFFSIZE];
 
@@ -704,6 +721,10 @@ static void lock_socket_input_cb(gpointer data,
 		open_compose_new(buf + strlen("compose") + 1, NULL);
 	} else if (!strncmp(buf, "send", 4)) {
 		send_queue();
+	} else if (!strncmp(buf, "online", 6)) {
+		main_window_toggle_work_offline(mainwin, FALSE);
+	} else if (!strncmp(buf, "offline", 7)) {
+		main_window_toggle_work_offline(mainwin, TRUE);
 	} else if (!strncmp(buf, "status", 6)) {
 		guint new, unread, total;
 

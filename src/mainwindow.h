@@ -220,4 +220,8 @@ void toolbar_set_sensitive                    (MainWindow *mainwin);
 void toolbar_set_compose_button               (MainToolbar        *toolbar, 
 					       ComposeButtonType  compose_btn_type);
 void main_window_destroy_all                  (void);
+
+void main_window_toggle_work_offline          (MainWindow        *mainwin, 
+                                               gboolean           offline);
+
 #endif /* __MAINWINDOW_H__ */
