@@ -1,4 +1,4 @@
-2003-05-01 [alfons]	0.8.11claws124
+2003-04-30 [alfons]	0.8.11claws124
 
 	* src/imap.c
 		fix a leak found while browsing Martin Kluge's 
