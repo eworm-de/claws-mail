@@ -77,6 +77,11 @@ if [ "$ans" == "y" ]; then
 		EDITOR=vi
 	fi;
 	$EDITOR $chlog configure.ac
-	echo running cvs commit $@ PATCHSETS $chlog configure.ac
-	cvs commit $@ PATCHSETS $chlog configure.ac
+	if [ "$@" != "" ]; then
+		echo running cvs commit $@ PATCHSETS $chlog configure.ac
+		cvs commit $@ PATCHSETS $chlog configure.ac
+	else
+		echo running cvs commit
+		cvs commit
+	fi;
 fi
