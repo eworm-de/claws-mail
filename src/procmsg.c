@@ -1409,8 +1409,8 @@ gint procmsg_send_message_queue(const gchar *file)
 				procmsg_msginfo_unset_flags(msginfo, MSG_FORWARDED, 0);
 				procmsg_msginfo_set_flags(msginfo, MSG_REPLIED, 0);
 
+				msginfo_update_item(msginfo);
 				procmsg_msginfo_free(msginfo);
-				folder_update_item(item,TRUE);
 			}
 		}
 		g_strfreev(tokens);
@@ -1531,4 +1531,71 @@ void procmsg_msginfo_write_flags(MsgInfo *msginfo)
 	}
 	
 	g_free(destdir);
+}
+
+/*
+ * callback handling
+ */
+GSList *msginfo_update_callbacks_list = NULL;
+gint	msginfo_update_callbacks_nextid = 0;
+
+struct MsgInfoUpdateCallback
+{
+	gint			id;
+	MsgInfoUpdateFunc	func;
+	gpointer		data;
+};
+
+gint msginfo_update_callback_register(MsgInfoUpdateFunc func, gpointer data)
+{
+	struct MsgInfoUpdateCallback *callback;
+
+	g_return_val_if_fail(func != NULL, -1);
+
+	msginfo_update_callbacks_nextid++;
+
+	callback = g_new0(struct MsgInfoUpdateCallback, 1);
+	callback->id = msginfo_update_callbacks_nextid;
+	callback->func = func;
+	callback->data = data;
+
+	msginfo_update_callbacks_list =
+		g_slist_append(msginfo_update_callbacks_list, callback);
+
+	return msginfo_update_callbacks_nextid;
+}
+
+void msginfo_update_callback_unregister(gint id)
+{
+	GSList *list, *next;
+
+	for (list = msginfo_update_callbacks_list; list != NULL; list = next) {
+    		struct MsgInfoUpdateCallback *callback;
+
+		next = list->next;
+
+		callback = list->data;
+		if (callback->id == id) {
+			msginfo_update_callbacks_list =
+				g_slist_remove(msginfo_update_callbacks_list, callback);
+			g_free(callback);
+		}
+	}
+}
+
+static void msginfo_update_callback_execute(MsgInfo *info)
+{
+	GSList *list;
+
+	for (list = msginfo_update_callbacks_list; list != NULL; list = list->next) {
+    		struct MsgInfoUpdateCallback *callback;
+
+		callback = list->data;
+		callback->func(info, callback->data);
+	}
+}
+
+void msginfo_update_item(MsgInfo *info)
+{
+	msginfo_update_callback_execute(info);
 }

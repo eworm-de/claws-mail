@@ -1,3 +1,12 @@
+2002-11-14 [colin]	0.8.5claws153
+
+	* src/procmsg.[ch]
+		Implemented a callback for MsgInfo updates, 
+		heavily copy/pasted from Christoph's folder 
+		callback system
+	* src/summaryview.[ch]
+		Register summary_update_msg as callback
+
 2002-11-14 [colin]	0.8.5claws152
 	
 	* src/procmsg.c

@@ -160,6 +160,7 @@ private:
 
 	/* list for moving/deleting messages */
 	GSList *mlist;
+	int msginfo_update_callback_id;
 };
 
 SummaryView	*summary_create(void);
