@@ -278,7 +278,7 @@ gint plugin_init(gchar **error)
 	return 0;	
 }
 
-void plugin_done()
+void plugin_done(void)
 {
 	prefs_gtk_unregister_page((PrefsPage *) &spamassassin_page);
 

@@ -29,7 +29,7 @@ gint plugin_init(gchar **error)
 	return 0;	
 }
 
-void plugin_done()
+void plugin_done(void)
 {
 	image_viewer_done();
 	image_viewer_prefs_done();

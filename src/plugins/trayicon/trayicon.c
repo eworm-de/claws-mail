@@ -82,7 +82,7 @@ static void set_trayicon_pixmap(TrayIconType icontype)
 	gtk_widget_shape_combine_mask(GTK_WIDGET(trayicon), bitmap, GTK_WIDGET(image)->allocation.x, GTK_WIDGET(image)->allocation.y);
 }
 
-static void update()
+static void update(void)
 {
 	gint new, unread, unreadmarked, total;
 	gchar *buf;
@@ -168,7 +168,7 @@ int plugin_init(gchar **error)
         return 0;
 }
 
-void plugin_done()
+void plugin_done(void)
 {
 	gtk_widget_destroy(GTK_WIDGET(trayicon));
 	hooks_unregister_hook(FOLDER_ITEM_UPDATE_HOOKLIST, hook_id);

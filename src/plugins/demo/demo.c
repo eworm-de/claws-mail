@@ -46,7 +46,7 @@ gint plugin_init(gchar **error)
 	return 0;
 }
 
-void plugin_done()
+void plugin_done(void)
 {
 	hooks_unregister_hook(LOG_APPEND_TEXT_HOOKLIST, hook_id);
 

@@ -287,12 +287,12 @@ MimeViewerFactory image_viewer_factory =
 	image_viewer_create,
 };
 
-void image_viewer_init()
+void image_viewer_init(void)
 {
 	mimeview_register_viewer_factory(&image_viewer_factory);
 }
 
-void image_viewer_done()
+void image_viewer_done(void)
 {
 	mimeview_unregister_viewer_factory(&image_viewer_factory);
 }

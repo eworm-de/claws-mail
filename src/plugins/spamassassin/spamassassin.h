@@ -34,7 +34,7 @@ struct _SpamAssassinConfig
 	gchar 		*save_folder;
 };
 
-SpamAssassinConfig *spamassassin_get_config();
-void		    spamassassin_save_config();
+SpamAssassinConfig *spamassassin_get_config	(void);
+void		    spamassassin_save_config	(void);
 
 #endif

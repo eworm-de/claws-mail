@@ -32,9 +32,9 @@ struct _Plugin
 {
 	gchar	*filename;
 	GModule	*module;
-	gchar	*(*name) ();
-	gchar	*(*desc) ();
-	gchar	*(*type) ();
+	gchar	*(*name) (void);
+	gchar	*(*desc) (void);
+	gchar	*(*type) (void);
 };
 
 /**
@@ -48,7 +48,7 @@ static gint list_find_by_string(gconstpointer data, gconstpointer str)
 	return strcmp((gchar *)data, (gchar *)str) ? TRUE : FALSE;
 }
 
-void plugin_save_list()
+void plugin_save_list(void)
 {
 	gchar *rcpath, *block;
 	PrefFile *pfile;
@@ -207,7 +207,7 @@ void plugin_unload_all(gchar *type)
 	}
 }
 
-GSList *plugin_get_list()
+GSList *plugin_get_list(void)
 {
 	return g_slist_copy(plugins);
 }

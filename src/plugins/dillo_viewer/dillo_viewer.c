@@ -151,7 +151,7 @@ gint plugin_init(gchar **error)
 	return 0;	
 }
 
-void plugin_done()
+void plugin_done(void)
 {
 	mimeview_unregister_viewer_factory(&dillo_viewer_factory);
 }

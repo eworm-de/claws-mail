@@ -33,7 +33,7 @@ struct _ClamAvConfig
 	gchar 		*clamav_save_folder;
 };
 
-ClamAvConfig *clamav_get_config();
-void	      clamav_save_config();
+ClamAvConfig *clamav_get_config		(void);
+void	      clamav_save_config	(void);
 
 #endif

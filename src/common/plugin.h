@@ -26,19 +26,19 @@ typedef struct _Plugin Plugin;
 
 /* Functions to implement by the plugin */
 gint plugin_init		(gchar		**error);
-void plugin_done		();
-const gchar *plugin_name	();
-const gchar *plugin_desc	();
+void plugin_done		(void);
+const gchar *plugin_name	(void);
+const gchar *plugin_desc	(void);
 
 /* Functions by the sylpheed plugin system */
 gint plugin_load		(const gchar	 *filename,
 				 gchar		**error);
 void plugin_unload		(Plugin		 *plugin);
-void plugin_load_all		();
-void plugin_unload_all		();
-void plugin_save_list		();
+void plugin_load_all		(void);
+void plugin_unload_all		(void);
+void plugin_save_list		(void);
 
-GSList *plugin_get_list		();
+GSList *plugin_get_list		(void);
 const gchar *plugin_get_name	(Plugin		 *plugin);
 const gchar *plugin_get_desc	(Plugin		 *plugin);
 

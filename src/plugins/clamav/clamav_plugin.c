@@ -189,12 +189,12 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
 #undef IS_FIRST_PART_TEXT
 
-ClamAvConfig *clamav_get_config()
+ClamAvConfig *clamav_get_config(void)
 {
 	return &config;
 }
 
-void clamav_save_config()
+void clamav_save_config(void)
 {
 	PrefFile *pfile;
 	gchar *rcpath;
@@ -234,7 +234,7 @@ gint plugin_init(gchar **error)
 	
 }
 
-void plugin_done()
+void plugin_done(void)
 {
 	hooks_unregister_hook(MAIL_FILTERING_HOOKLIST, hook_id);
 	g_free(config.clamav_save_folder);

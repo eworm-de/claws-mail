@@ -92,7 +92,7 @@ static void mathml_destroy_viewer(MimeViewer *_viewer)
     	g_free(viewer);
 }
 
-static MimeViewer *mathml_viewer_create()
+static MimeViewer *mathml_viewer_create(void)
 {
 	MathMLViewer *viewer;
 
@@ -133,7 +133,7 @@ gint plugin_init(gchar **error)
 	return 0;	
 }
 
-void plugin_done()
+void plugin_done(void)
 {
 	mimeview_unregister_viewer_factory(&mathml_viewer_factory);
 }

@@ -154,12 +154,12 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	return FALSE;
 }
 
-SpamAssassinConfig *spamassassin_get_config()
+SpamAssassinConfig *spamassassin_get_config(void)
 {
 	return &config;
 }
 
-void spamassassin_save_config()
+void spamassassin_save_config(void)
 {
 	PrefFile *pfile;
 	gchar *rcpath;
@@ -205,7 +205,7 @@ gint plugin_init(gchar **error)
 	
 }
 
-void plugin_done()
+void plugin_done(void)
 {
 	hooks_unregister_hook(MAIL_FILTERING_HOOKLIST, hook_id);
 	g_free(config.hostname);
