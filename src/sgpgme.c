@@ -136,6 +136,11 @@ gchar *sgpgme_sigstat_info_short(GpgmeCtx ctx, GpgmeSigStat status)
 	return g_strdup(_("Error"));
 }
 
+gchar *sgpgme_sigstat_info_full(GpgmeCtx ctx, GpgmeSigStat status)
+{
+	return g_strdup(_("Todo"));
+}
+
 void sgpgme_init()
 {
 	if (gpgme_engine_check_version(GPGME_PROTOCOL_OpenPGP) != 

@@ -44,6 +44,7 @@ gboolean privacy_mimeinfo_is_signed		(MimeInfo *);
 gint privacy_mimeinfo_check_signature		(MimeInfo *);
 SignatureStatus privacy_mimeinfo_get_sig_status	(MimeInfo *);
 gchar *privacy_mimeinfo_sig_info_short		(MimeInfo *);
+gchar *privacy_mimeinfo_sig_info_full		(MimeInfo *);
 
 #if 0 /* NOT YET */
 gboolean privacy_mimeinfo_is_encrypted		(MimeInfo *);

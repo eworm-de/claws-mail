@@ -1,4 +1,14 @@
-2003-11-01 [alfons]	0.9.6claws71
+2003-11-10 [christoph]	0.9.6claws72
+
+	* src/mimeview.c
+	* src/pgpmime.c
+	* src/privacy.[ch]
+	* src/sgpgme.[ch]
+	* src/textview.[ch]
+		o add code to view full signature info
+		o do automatic signature checks
+
+2003-11-10 [alfons]	0.9.6claws71
 
 	* src/summaryview.c
 		don't crash when gtkut_font_load() returns invalid font (has

@@ -615,6 +615,7 @@ void mimeview_clear(MimeView *mimeview)
 }
 
 static void check_signature_cb(GtkWidget *widget, gpointer user_data);
+static void display_full_info_cb(GtkWidget *widget, gpointer user_data);
 
 static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo)
 {
@@ -630,6 +631,8 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo)
 			icon = STOCK_PIXMAP_PRIVACY_SIGNED;
 			break;
 		case SIGNATURE_OK:
+			button_text = _("Full info");
+			func = display_full_info_cb;
 			icon = STOCK_PIXMAP_PRIVACY_PASSED;
 			break;
 		case SIGNATURE_WARN:
@@ -667,6 +670,17 @@ static void check_signature_cb(GtkWidget *widget, gpointer user_data)
 	
 	privacy_mimeinfo_check_signature(mimeinfo);
 	update_signature_noticeview(mimeview, mimeinfo);
+}
+
+static void display_full_info_cb(GtkWidget *widget, gpointer user_data)
+{
+	MimeView *mimeview = (MimeView *) user_data;
+	MimeInfo *mimeinfo = mimeview_get_selected_part(mimeview);
+	gchar *siginfo;
+	
+	siginfo = privacy_mimeinfo_sig_info_full(mimeinfo);
+	textview_set_text(mimeview->textview, siginfo);
+	g_free(siginfo);
 }
 
 static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,

@@ -32,6 +32,7 @@
 #include "procmime.h"
 #include "pgpmime.h"
 #include "sgpgme.h"
+#include "prefs_common.h"
 
 typedef struct _PrivacyDataPGP PrivacyDataPGP;
 
@@ -46,6 +47,8 @@ struct _PrivacyDataPGP
 };
 
 static PrivacySystem pgpmime_system;
+
+static gint pgpmime_check_signature(MimeInfo *mimeinfo);
 
 static PrivacyDataPGP *pgpmime_new_privacydata()
 {
@@ -112,6 +115,9 @@ static gboolean pgpmime_is_signed(MimeInfo *mimeinfo)
 	}
 	data->done_sigtest = TRUE;
 	data->is_signed = TRUE;
+
+	if (prefs_common.auto_check_signatures)
+		pgpmime_check_signature(mimeinfo);
 	
 	return TRUE;
 }
@@ -193,6 +199,15 @@ static gchar *pgpmime_get_sig_info_short(MimeInfo *mimeinfo)
 	return sgpgme_sigstat_info_short(data->ctx, data->sigstatus);
 }
 
+static gchar *pgpmime_get_sig_info_full(MimeInfo *mimeinfo)
+{
+	PrivacyDataPGP *data = (PrivacyDataPGP *) mimeinfo->privacy;
+	
+	g_return_val_if_fail(data != NULL, g_strdup("Error"));
+
+	return sgpgme_sigstat_info_full(data->ctx, data->sigstatus);
+}
+
 static PrivacySystem pgpmime_system = {
 	"PGP/Mime",			/* name */
 
@@ -202,7 +217,7 @@ static PrivacySystem pgpmime_system = {
 	pgpmime_check_signature,	/* check_signature(MimeInfo *) */
 	pgpmime_get_sig_status,		/* get_sig_status(MimeInfo *) */
 	pgpmime_get_sig_info_short,	/* get_sig_info_short(MimeInfo *) */
-	NULL,				/* get_sig_info_full(MimeInfo *) */
+	pgpmime_get_sig_info_full,	/* get_sig_info_full(MimeInfo *) */
 
 	/* NOT YET */
 	NULL,				/* is_encrypted(MimeInfo *) */

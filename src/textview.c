@@ -503,7 +503,7 @@ static void recursive_add_parts(TextView *textview, GNode *node)
                 
                 /*
                   text/plain : score 3
-                  text/*     : score 2
+                  text/ *    : score 2
                   other      : score 1
                 */
                 prefered_body = NULL;
@@ -1312,6 +1312,21 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 		textview->boldfont = gtkut_font_load(prefs_common.boldfont);
 	if (!spacingfont)
 		spacingfont = gdk_font_load("-*-*-medium-r-normal--6-*");
+}
+
+void textview_set_text(TextView *textview, const gchar *text)
+{
+	GtkSText *stext;
+
+	g_return_if_fail(textview != NULL);
+	g_return_if_fail(text != NULL);
+
+	textview_clear(textview);
+
+	stext = GTK_STEXT(textview->text);
+	gtk_stext_freeze(stext);
+	gtk_stext_insert(stext, textview->msgfont, NULL, NULL, text, strlen(text));
+	gtk_stext_thaw(stext);
 }
 
 enum

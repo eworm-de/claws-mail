@@ -123,6 +123,25 @@ gchar *privacy_mimeinfo_sig_info_short(MimeInfo *mimeinfo)
 	return system->get_sig_info_short(mimeinfo);
 }
 
+gchar *privacy_mimeinfo_sig_info_full(MimeInfo *mimeinfo)
+{
+	PrivacySystem *system;
+
+	g_return_val_if_fail(mimeinfo != NULL, NULL);
+
+	if (mimeinfo->privacy == NULL)
+		privacy_mimeinfo_is_signed(mimeinfo);
+	
+	if (mimeinfo->privacy == NULL)
+		return g_strdup(_("No signature found"));
+	
+	system = mimeinfo->privacy->system;
+	if (system->get_sig_info_full == NULL)
+		return g_strdup(_("No information available"));
+	
+	return system->get_sig_info_full(mimeinfo);
+}
+
 gboolean privacy_mimeinfo_is_encrypted(MimeInfo *mimeinfo)
 {
 	g_return_val_if_fail(mimeinfo != NULL, FALSE);
