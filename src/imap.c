@@ -2289,7 +2289,7 @@ static gint imap_cmd_append(SockInfo *sock, const gchar *destfolder,
 
 	g_return_val_if_fail(file != NULL, IMAP_ERROR);
 
-	size = get_file_size(file);
+	size = get_file_size_as_crlf(file);
 	QUOTE_IF_REQUIRED(destfolder_, destfolder);
 	imap_cmd_gen_send(sock, "APPEND %s {%d}", destfolder_, size);
 	ok = imap_cmd_ok(sock, NULL);

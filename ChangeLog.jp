@@ -3,6 +3,8 @@
 	* src/compose.c
 	  src/gtkstext.[ch]: GtkSText 中のハードコードされているショート
 	  カットを削除し、カスタマイズ可能にした。
+	* src/utils.[ch]: LF を CR+LF に変換したときのファイルサイズを
+	  返す get_file_size_as_crlf() を追加。
 
 2002-01-22
 

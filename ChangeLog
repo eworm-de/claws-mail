@@ -3,6 +3,8 @@
 	* src/compose.c
 	  src/gtkstext.[ch]: removed the hardcoded shortcuts in GtkSText,
 	  and made them customizable.
+	* src/utils.[ch]: added get_file_size_as_crlf() which returns
+	  the file size when converting LF to CR+LF.
 
 2002-01-22
 
