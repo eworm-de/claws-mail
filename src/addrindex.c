@@ -1370,7 +1370,7 @@ static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 		attr = g_list_next( attr );
 	}
 
-	server = ldapsvr_create();
+	server = ldapsvr_create_noctl();
 	ldapsvr_set_name( server, serverName );
 	ldapsvr_set_search_flag( server, bSearch );
 	g_free( serverName );
@@ -2591,7 +2591,7 @@ static void addrindex_search_ldap( LdapServer *server, const gint queryID ) {
 	gchar *name;
 
 	if( ! server->searchFlag ) return;
-	printf( "Searching ::%s::\n", ldapsvr_get_name( server ) );
+	/* printf( "Searching ::%s::\n", ldapsvr_get_name( server ) ); */
 
 	/* Retire any aged queries */
 	ldapsvr_retire_query( server );

@@ -511,17 +511,22 @@ static void addrbook_parse_member(AddressBookFile *book, XMLFile *file,
 {
 	GList *attr;
 	gchar *name, *value;
-	gchar *pid = NULL, *eid = NULL;
+	gchar *eid = NULL;
+	/* gchar *pid = NULL; */
 	ItemEMail *email = NULL;
 
 	attr = xml_get_current_tag_attr(file);
 	while (attr) {
 		name = ((XMLAttr *)attr->data)->name;
 		value = ((XMLAttr *)attr->data)->value;
+		/*
 		if (strcmp(name, AB_ATTAG_PID) == 0)
 			pid = g_strdup(value);
 		else if (strcmp(name, AB_ATTAG_EID) == 0)
 			eid = g_strdup(value);
+		*/
+		if( strcmp( name, AB_ATTAG_EID ) == 0 )
+			eid = g_strdup( value );
 		attr = g_list_next(attr);
 	}
 	/* email = addrcache_get_email( book->addressCache, pid, eid ); */

@@ -43,19 +43,31 @@
 #include "adbookbase.h"
 
 /**
- * Create new LDAP server interface object.
+ * Create new LDAP server interface object with no control object.
  * \return Initialized LDAP server object.
  */
-LdapServer *ldapsvr_create() {
+LdapServer *ldapsvr_create_noctl( void ) {
 	LdapServer *server;
 
 	server = g_new0( LdapServer, 1 );
 	server->type = ADBOOKTYPE_LDAP;
 	server->addressCache = addrcache_create();
 	server->retVal = MGU_SUCCESS;
-	server->control = ldapctl_create();
+	server->control = NULL;
 	server->listQuery = NULL;
 	server->searchFlag = FALSE;
+	return server;
+}
+
+/**
+ * Create new LDAP server interface object.
+ * \return Initialized LDAP server object.
+ */
+LdapServer *ldapsvr_create( void ) {
+	LdapServer *server;
+
+	server = ldapsvr_create();
+	server->control = ldapctl_create();
 	return server;
 }
 
@@ -205,6 +217,38 @@ static void ldapsvr_release_control( LdapServer *server ) {
 }
 
 /**
+ * Free all queries.
+ * \param server Server object.
+ */
+void ldapsvr_free_all_query( LdapServer *server ) {
+	GList *node;	
+	g_return_if_fail( server != NULL );
+
+	node = server->listQuery;
+	while( node ) {
+		LdapQuery *qry = node->data;
+		ldapqry_free( qry );
+		node->data = NULL;
+		node = g_list_next( node );
+	}
+	g_list_free( server->listQuery );
+	server->listQuery = NULL;
+}
+
+/**
+ * Add query to server.
+ * \param server Server object.
+ * \param qry    Query object.
+ */
+void ldapsvr_add_query( LdapServer *server, LdapQuery *qry ) {
+	g_return_if_fail( server != NULL );
+	g_return_if_fail( qry != NULL );
+
+	server->listQuery = g_list_append( server->listQuery, qry );
+	qry->server = server;
+}
+
+/**
  * Free up LDAP server interface object by releasing internal memory.
  * \param server Server object.
  */
@@ -222,6 +266,9 @@ void ldapsvr_free( LdapServer *server ) {
 	/* Free LDAP control block */
 	ldapctl_free( server->control );
 	server->control = NULL;
+
+	/* Free all queries */
+	ldapsvr_free_all_query( server );
 
 	/* Clear pointers */
 	server->type = ADBOOKTYPE_NONE;
@@ -270,38 +317,6 @@ void ldapsvr_print_data( LdapServer *server, FILE *stream ) {
 }
 
 /**
- * Add query to server.
- * \param server Server object.
- * \param qry    Query object.
- */
-void ldapsvr_add_query( LdapServer *server, LdapQuery *qry ) {
-	g_return_if_fail( server != NULL );
-	g_return_if_fail( qry != NULL );
-
-	server->listQuery = g_list_append( server->listQuery, qry );
-	qry->server = server;
-}
-
-/**
- * Free all queries.
- * \param server Server object.
- */
-void ldapsvr_free_all_query( LdapServer *server ) {
-	GList *node;	
-	g_return_if_fail( server != NULL );
-
-	node = server->listQuery;
-	while( node ) {
-		LdapQuery *qry = node->data;
-		ldapqry_free( qry );
-		node->data = NULL;
-		node = g_list_next( node );
-	}
-	g_list_free( server->listQuery );
-	server->listQuery = NULL;
-}
-
-/**
  * Return link list of persons.
  * \param server Server object.
  * \return List of persons.
@@ -341,14 +356,16 @@ void ldapsvr_execute_query( LdapServer *server, LdapQuery *qry ) {
 	ldapqry_initialize();
 
 	/* Perform query */	
-	printf( "ldapsvr_execute_query::reading with thread...\n" );
+	/* printf( "ldapsvr_execute_query::reading with thread...\n" ); */
 	if( ldapqry_check_search( qry ) ) {
 		ldapqry_read_data_th( qry );
+		/*
 		if( qry->retVal == LDAPRC_SUCCESS ) {
 			printf( "ldapsvr_execute_query::SUCCESS with thread...\n" );
 		}
+		*/
 	}
-	printf( "ldapsvr_execute_query... terminated\n" );
+	/* printf( "ldapsvr_execute_query... terminated\n" ); */
 }
 
 /**
