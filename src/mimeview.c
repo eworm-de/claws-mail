@@ -992,6 +992,12 @@ gchar *mimeview_get_filename_for_part(MimeInfo *partinfo,
 	if (!filename || !*filename)
 		filename = g_strdup_printf("noname.%d", number);
 
+	if (!g_utf8_validate(filename, -1, NULL)) {
+		gchar *tmp = conv_filename_to_utf8(filename);
+		g_free(filename);
+		filename = tmp;
+	}
+	
 	subst_for_filename(filename);
 
 	fullname = g_strconcat
@@ -1134,6 +1140,12 @@ static void mimeview_save_as(MimeView *mimeview)
 	}
 	partname = g_strdup(get_part_name(partinfo));
 	
+	if (!g_utf8_validate(partname, -1, NULL)) {
+		gchar *tmp = conv_filename_to_utf8(partname);
+		g_free(partname);
+		partname = tmp;
+	}
+
 	subst_for_filename(partname);
 	
 	if (prefs_common.attach_save_dir)
@@ -1601,9 +1613,16 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 			to_human_readable(mimeinfo->length), NULL);
 	g_free(content_type);
 	if (desc && *desc) {
-		tiptmp = g_strjoin("\n", desc, tip, NULL);
+		gchar *tmp = NULL;
+		if (!g_utf8_validate(desc, -1, NULL)) {
+			tmp = conv_filename_to_utf8(desc);
+		} else {
+			tmp = g_strdup(desc);
+		}
+		tiptmp = g_strjoin("\n", tmp, tip, NULL);
 		g_free(tip);
 		tip = tiptmp;
+		g_free(tmp);
 	}
 	if (sigshort && *sigshort) {
 		tiptmp = g_strjoin("\n", tip, sigshort, NULL);
