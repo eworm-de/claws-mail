@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -149,6 +149,7 @@ GSList *procmsg_read_cache		(FolderItem	*item,
 void	procmsg_set_flags		(GSList		*mlist,
 					 FolderItem	*item);
 gint	procmsg_get_last_num_in_cache	(GSList		*mlist);
+void	procmsg_msg_list_free		(GSList		*mlist);
 void	procmsg_write_cache		(MsgInfo	*msginfo,
 					 FILE		*fp);
 void	procmsg_write_flags		(MsgInfo	*msginfo,

@@ -1,10 +1,25 @@
+2001-06-16
+
+	* version 0.4.99
+
+	* src/imap.c: imap_find_namespace(): replace namespace path
+	  separator with slash before comparison.
+	  imap_remove_folder(): use namespace.
+	  imap_create_tree(): use namespece when creating Trash.
+	  imap_get_msg_list(): fixed a bug that returned old list and caused
+	  memory leak if exists == 0.
+	  imap_select(): new. It's a wrapper for imap_cmd_select().
+	* src/foldersel.c: foldersel_set_tree(): show IMAP4 folder too.
+
 2001-06-15
 
 	* src/folderview.c:
 	  folderview_new_folder_cb()
 	  folderview_new_imap_folder_cb(): show error dialog when creation
-	  of folder failed.
+	  or deletion of folder failed.
 	  Made it allow users to create a folder which contains subfolders.
+	  folderview_button_pressed(): disabled delete menu on the special
+	  IMAP4 folder.
 	* AUTHORS: incorporated from claws branch. It now contains all
 	  contributors.
 	* src/send.c: enabled cancellation.

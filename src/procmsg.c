@@ -347,6 +347,17 @@ gint procmsg_get_last_num_in_cache(GSList *mlist)
 	return last;
 }
 
+void procmsg_msg_list_free(GSList *mlist)
+{
+	MsgInfo *msginfo;
+
+	for (; mlist != NULL; mlist = mlist->next) {
+		msginfo = (MsgInfo *)mlist->data;
+		procmsg_msginfo_free(msginfo);
+	}
+	g_slist_free(mlist);
+}
+
 void procmsg_write_cache(MsgInfo *msginfo, FILE *fp)
 {
 	MsgFlags flags = msginfo->flags & MSG_CACHED_FLAG_MASK;

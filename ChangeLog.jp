@@ -1,10 +1,27 @@
+2001-06-16
+
+	* version 0.4.99
+
+	* src/imap.c: imap_find_namespace(): namespace のパス区切りを
+	  比較の前にスラッシュで置換するようにした。
+	  imap_remove_folder(): namespace を使用。
+	  imap_create_tree(): Trash を作成するときに namespace を使うように
+	  した。
+	  imap_get_msg_list(): exists == 0 のときに古いリストを返しメモリ
+	  リークを起こしていたバグを修正。
+	  imap_select(): 新規。 imap_cmd_select() のラッパー。
+	* src/foldersel.c: foldersel_set_tree(): IMAP4 フォルダも表示する
+	  ようにした。
+
 2001-06-15
 
 	* src/folderview.c:
 	  folderview_new_folder_cb()
-	  folderview_new_imap_folder_cb(): フォルダの作成に失敗したら
-	  エラーダイアログを表示するようにした。
+	  folderview_new_imap_folder_cb(): フォルダの作成または削除に失敗
+	  したらエラーダイアログを表示するようにした。
 	  サブフォルダを含むフォルダを作成できるようにした。
+	  folderview_button_pressed(): 特別な IMAP4 フォルダ上で削除メニュー
+	  を無効にした。
 	* AUTHORS: claws ブランチから取込。全ての contributor を含んでいる。
 	* src/send.c: キャンセルを有効にした。
 	  EXIT_IF_CANCELLED(): 新規マクロ。

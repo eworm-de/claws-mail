@@ -1155,7 +1155,10 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 				   "/Create new folder...", TRUE);
 		menu_set_sensitive(folderview->imap_factory,
 				   "/Remove IMAP4 server", TRUE);
-	} else if (folder->type == F_IMAP && item->parent != NULL) {
+	} else if (folder->type == F_IMAP && item->stype != F_NORMAL) {
+		menu_set_sensitive(folderview->imap_factory,
+				   "/Create new folder...", TRUE);
+	} else if (folder->type == F_IMAP) {
 		menu_set_sensitive(folderview->imap_factory,
 				   "/Create new folder...", TRUE);
 		menu_set_sensitive(folderview->imap_factory,
@@ -1167,7 +1170,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 				   "/Subscribe to newsgroup...", TRUE);
 		menu_set_sensitive(folderview->news_factory,
 				   "/Remove news server", TRUE);
-	} else if (folder->type == F_NEWS && item->parent != NULL) {
+	} else if (folder->type == F_NEWS) {
 		menu_set_sensitive(folderview->news_factory,
 				   "/Subscribe to newsgroup...", TRUE);
 		menu_set_sensitive(folderview->news_factory,
@@ -1621,7 +1624,8 @@ static void folderview_delete_folder_cb(FolderView *folderview, guint action,
 	if (avalue != G_ALERTDEFAULT) return;
 
 	if (item->folder->remove_folder(item->folder, item) < 0) {
-		g_warning(_("can't remove folder `%s'\n"), item->path);
+		alertpanel_error(_("Can't remove the folder `%s'."),
+				 item->path);
 		return;
 	}
 
@@ -1757,7 +1761,8 @@ static void folderview_rm_imap_folder_cb(FolderView *folderview, guint action,
 	if (avalue != G_ALERTDEFAULT) return;
 
 	if (item->folder->remove_folder(item->folder, item) < 0) {
-		g_warning(_("can't remove folder `%s'\n"), item->path);
+		alertpanel_error(_("Can't remove the folder `%s'."),
+				 item->path);
 		return;
 	}
 

@@ -232,9 +232,7 @@ static void foldersel_set_tree(void)
 		folder = FOLDER(list->data);
 		g_return_if_fail(folder != NULL);
 
-		if ((folder->type != F_MH) && (folder->type != F_MBOX) &&
-		    (folder->type != F_IMAP))
-			continue;
+		if (folder->type == F_NEWS) continue;
 
 		node = gtk_ctree_insert_gnode(GTK_CTREE(ctree), NULL, NULL,
 					      folder->node,
