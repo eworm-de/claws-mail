@@ -60,8 +60,9 @@ const gchar *plugin_name(void)
 
 const gchar *plugin_desc(void)
 {
-	return _("This plugin allows to check digitally signed messages' "
-		 "signatures, and to decrypt encrypted messages. \n"
+	return _("This plugin enables signature verification of "
+		 "digitally signed messages, and decryption of "
+		 "encrypted messages. \n"
 		 "\n"
 		 "You don't need it to send signed or encrypted emails.");
 }
