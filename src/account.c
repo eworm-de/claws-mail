@@ -645,6 +645,9 @@ static void account_set_recv_at_get_all(void)
 
 	row = GPOINTER_TO_INT(clist->selection->data);
 	ac_prefs = gtk_clist_get_row_data(clist, row);
+
+  	if ((ac_prefs->protocol != A_POP3) && (ac_prefs->protocol != A_APOP)) return;
+	
 	account_set_as_recv_at_get_all(ac_prefs);
 	account_clist_set();
 }
@@ -713,7 +716,7 @@ static gint account_clist_set_row(PrefsAccount *ac_prefs, gint row)
 	text[COL_SERVER] = ac_prefs->protocol == A_NNTP
 		? ac_prefs->nntp_server : ac_prefs->recv_server;
 
-  	if (!ac_prefs->protocol == A_POP3) {
+  	if ((ac_prefs->protocol != A_POP3) && (ac_prefs->protocol != A_APOP)) {
 	text[COL_GETALL] = ac_prefs->recv_at_getall == 1  ? _("No")  :
 	                   ac_prefs->recv_at_getall == 0  ? _("No")   : "";
         }

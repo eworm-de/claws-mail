@@ -1,3 +1,11 @@
+2001-08-13 [christoph]
+
+	* src/account.c
+		receive at get all column showed wrong state for APOP
+		button should only work for POP3 and APOP accounts
+	* src/prefs_account.c
+		added missing preprocessor statement for SSL
+
 2001-08-12 [paul]
 
 	* src/account.[ch]

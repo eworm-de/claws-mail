@@ -156,7 +156,7 @@ static void prefs_account_fix_size			(void);
 static void prefs_account_protocol_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_account_protocol_set_optmenu		(PrefParam *pparam);
 static void prefs_account_protocol_activated		(GtkMenuItem *menuitem);
-#if USE_GPGME
+#if USE_GPGME || USE_SSL
 static void prefs_account_enum_set_data_from_radiobtn (PrefParam *pparam);
 static void prefs_account_enum_set_radiobtn		  (PrefParam *pparam);
 #endif /* USE_GPGME */
@@ -1484,7 +1484,7 @@ static void prefs_account_edit_custom_header(void)
 	prefs_custom_header_open(&tmp_ac_prefs);
 }
 
-#if USE_GPGME
+#if USE_GPGME || USE_SSL
 static void prefs_account_enum_set_data_from_radiobtn(PrefParam *pparam)
 {
 	GtkRadioButton *radiobtn;
