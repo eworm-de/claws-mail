@@ -1,3 +1,8 @@
+2004-02-26 [thorsten]	0.9.9claws33
+
+	* src/mimeview.c
+		Remove misleading static declaration
+
 2004-02-26 [alfons]	0.9.9claws32
 
 	* src/procmime.[ch]
