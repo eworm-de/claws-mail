@@ -1467,9 +1467,9 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 		buflen = strlen(str) * 2 + 1;
 		Xalloca(buf, buflen, return);
 		conv_anytodisp(buf, buflen, str);
-		unmime_header(outbuf, buf);
+		unmime_header(outbuf, outlen, buf);
 	} else
-		unmime_header(outbuf, str);
+		unmime_header(outbuf, outlen, str);
 }
 
 #define MAX_LINELEN		76

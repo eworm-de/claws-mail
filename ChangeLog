@@ -1,3 +1,32 @@
+2005-03-24
+
+	* version 1.0.4
+
+2005-03-24
+
+	* src/procmime.c:
+	  procmime_scan_content_type()
+	  procmime_scan_content_disposition(): fixed possible stack buffer
+	  overflow.
+	* src/codeconv.c: conv_unmime_header()
+	  src/unmime.[ch]: unmime_header(): added an argument for buffer size
+	  and restricted the size of decoded string to remove the possibility
+	  of buffer overflow.
+
+2005-03-18
+
+	* src/smtp.c: smtp_ehlo_recv(): strict check for AUTH string.
+
+2005-03-18
+
+	* src/textview.c: textview_show_html(): force output of newline.
+
+2005-03-18
+
+	* src/account.c: account_find_from_message_file(): added missing
+	  NULL terminator of the HeaderEntry array which had introduced
+	  crash on re-edit (thanks to Michael Schwendt).
+
 2005-03-04
 
 	* version 1.0.3

@@ -1,3 +1,32 @@
+2005-03-24
+
+	* version 1.0.4
+
+2005-03-24
+
+	* src/procmime.c:
+	  procmime_scan_content_type()
+	  procmime_scan_content_disposition(): スタックバッファオーバー
+	  フローを起こす可能性があったのを修正。
+	* src/codeconv.c: conv_unmime_header()
+	  src/unmime.[ch]: unmime_header(): バッファサイズの引数を追加し、
+	  デコードした文字列のサイズを制限し、バッファオーバーフローの
+	  可能性を無くした。
+
+2005-03-18
+
+	* src/smtp.c: smtp_ehlo_recv(): AUTH 文字列を厳密にチェック。
+
+2005-03-18
+
+	* src/textview.c: textview_show_html(): 強制的に改行を出力。
+
+2005-03-18
+
+	* src/account.c: account_find_from_message_file(): HeaderEntry 配列
+	  の NULL 終端が抜けていたのを追加(再編集時にクラッシュを起こして
+	  いた) (Michael Schwendt さん thanks)。
+
 2005-03-04
 
 	* version 1.0.3

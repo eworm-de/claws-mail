@@ -636,6 +636,7 @@ static void textview_show_html(TextView *textview, FILE *fp,
 	        } else
 		        textview_write_line(textview, str, NULL);
 	}
+	textview_write_line(textview, "\n", NULL);
 	html_parser_destroy(parser);
 }
 
