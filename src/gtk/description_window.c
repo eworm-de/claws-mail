@@ -89,18 +89,20 @@ static void description_create(DescriptionWindow * dwindow)
 		if(dwindow->symbol_table[i][0] != '\0') {
 			GtkWidget *label;
 
-			label = gtk_label_new(dwindow->symbol_table[i]);
-			gtk_misc_set_alignment (GTK_MISC(label), 0, 0);
-			gtk_table_attach(GTK_TABLE(table), label,
-					 0, 1, line, line+1,
-					 GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL,
-					 0, 0);
-			for (j = 1; j < dwindow->columns; j++) {
-				label = gtk_label_new(gettext(dwindow->symbol_table[i+j]));
+			for (j = 0; j < dwindow->columns; j++) {
+				gint col = j;
+				gint colend = j+1;
+				/* Expand using next NULL columns */
+				while ((colend < dwindow->columns) && 
+				       (dwindow->symbol_table[i+colend] == NULL)) {
+				       colend++;
+				       j++;
+				}
+				label = gtk_label_new(gettext(dwindow->symbol_table[i+col]));
 				gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 				gtk_misc_set_alignment (GTK_MISC(label), 0, 0);
 				gtk_table_attach(GTK_TABLE(table), label,
-						 j, j+1, line, line+1,
+						 col, colend, line, line+1,
 						 GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL,
 						 0, 0);
 			}
@@ -109,7 +111,7 @@ static void description_create(DescriptionWindow * dwindow)
 			
 			separator = gtk_hseparator_new();
 			gtk_table_attach(GTK_TABLE(table), separator,
-					 0, 2, line, line+1,
+					 0, dwindow->columns, line, line+1,
 					 GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL,
 					 0, 4);
 		}

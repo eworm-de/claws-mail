@@ -1,4 +1,14 @@
-2003-01-24 [match]	0.8.9claws4
+2003-01-25 [christoph]	0.8.9claws5
+
+	* src/gtk/description_window.c
+		o allow description texts to expand over multiple columns
+		o translate all columns
+	* src/prefs_actions.c
+		change syntax description to use new multi column feature
+
+	Patch submitted by Ivan F. Martinez <ivanfm@users.sourceforge.net>
+
+2003-01-25 [match]	0.8.9claws4
 
 	* src/vcard.c
 		fixed bug with Quoted-Printable
@@ -565,18 +575,22 @@
 		Note: - Please verify that no updates are missing
 		      - Check where freeze/thaws should be added
 
-2003-01-07 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.8claws62
+2003-01-07 [christoph]	0.8.8claws62
 
 	* src/prefs_actions.c
 		don't translate empty strings
 
-2003-01-06 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.8claws61
+	Patch submitted by Ivan Francolin Martinez <ivanfm@users.sourceforge.net>
+
+2003-01-06 [christoph]	0.8.8claws61
 
 	* src/prefs_actions.c
 		mark strings for gettext
 	* src/prefs_matcher.c
 		use new description window for Execute action and
 		match condition in Filtering
+
+	Patch submitted by Ivan Francolin Martinez <ivanfm@users.sourceforge.net>
 
 2003-01-06 [alfons]	0.8.8claws60
 
@@ -589,14 +603,16 @@
 		add documentation so others may comprehend the
 		UI part of the conditions
 		
-2003-01-06 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.8claws59
+2003-01-06 [christoph]	0.8.8claws59
 
 	* src/prefs_actions.c
 		use new description window for syntax help
 	* src/gtk/description_window.c
 		fix display of descriptions with column count != 2
 
-2003-01-06 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.8claws58
+	Patch submitted by Ivan Francolin Martinez <ivanfm@users.sourceforge.net>
+
+2003-01-06 [christoph]	0.8.8claws58
 
 	* src/quote_fmt.c
 	* src/summaryview.[ch]
@@ -605,6 +621,8 @@
 		use a generic window to display syntax descriptions
 		currently used in quote_fmt and summaryview (new description
 		for extended quick search)
+
+	Patch submitted by Ivan Francolin Martinez <ivanfm@users.sourceforge.net>
 
 2003-01-06 [paul]	0.8.8claws57
 

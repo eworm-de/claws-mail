@@ -1808,29 +1808,29 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
  * When adding new lines, remember to put one string for each line
  */
 static gchar *actions_desc_strings[] = {
-	N_("Menu name:"),
-	N_("   Use / in menu name to make submenus."),
-	"",
-	N_("Command line:"),
-	N_("* Begin with:"),
-	N_("     | to send message body or selection to command"),
-	N_("     > to send user provided text to command"),
-	N_("     * to send user provided hidden text to command"),
-	N_("* End with:"),
-	N_("     | to replace message body or selection with command output"),
-	N_("     > to insert command's output without replacing old text"),
-	N_("     & to run command asynchronously"),
-	N_("* Use:"),
-	N_("     %f for message file name"),
-	N_("     %F for the list of the file names of selected messages"),
-	N_("     %p for the selected message MIME part."),
+	N_("Menu name:"), NULL,
+	"      ",   N_("Use / in menu name to make submenus."),
+	"", NULL,
+	N_("Command line:"), NULL,
+	N_("* Begin with:"), NULL,
+	"     |",   N_("to send message body or selection to command"),
+	"     >",   N_("to send user provided text to command"),
+	"     *",   N_("to send user provided hidden text to command"),
+	N_("* End with:"), NULL, 
+	"     |",   N_("to replace message body or selection with command output"),
+	"     >",   N_("to insert command's output without replacing old text"),
+	"     &",   N_("to run command asynchronously"),
+	N_("* Use:"), NULL, 
+	"     %f",  N_("for message file name"),
+	"     %F",  N_("for the list of the file names of selected messages"),
+	"     %p",  N_("for the selected message MIME part."),
 	NULL
 };
 
 
 static DescriptionWindow actions_desc_win = { 
         NULL, 
-        1,
+        2,
         N_("Description of symbols"),
         actions_desc_strings
 };
