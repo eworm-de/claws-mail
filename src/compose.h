@@ -93,6 +93,7 @@ struct _Compose
 
 	GtkWidget *vbox2;
 
+	/* Header */
 	GtkWidget *table_vbox;
 	GtkWidget *table;
 /*
@@ -114,9 +115,15 @@ struct _Compose
 */
 	GtkWidget *paned;
 
+	/* Attachments */
 	GtkWidget *attach_scrwin;
 	GtkWidget *attach_clist;
 
+	/* Others */
+	GtkWidget *savemsg_checkbtn;
+	GtkWidget *savemsg_entry;
+
+	/* Textedit */
 	GtkWidget *edit_vbox;
 	GtkWidget *ruler_hbox;
 	GtkWidget *ruler;

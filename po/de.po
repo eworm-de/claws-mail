@@ -690,7 +690,7 @@ msgstr "/_Datei/_Unterschrift einfügen"
 
 #: src/compose.c:425
 msgid "/_Edit/_Undo"
-msgstr "/_Bearbeiten/_Zurück"
+msgstr "/_Bearbeiten/_Rückgängig"
 
 #: src/compose.c:426
 msgid "/_Edit/_Redo"

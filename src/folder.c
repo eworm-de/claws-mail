@@ -361,38 +361,53 @@ void folder_write_list(void)
 		g_warning("failed to write folder list.\n");
 }
 
-static void folder_count_total_msgs_func(GNode *node, guint *new,
-					 guint *unread, guint *total)
+struct TotalMsgCount
 {
-	g_return_if_fail(node != NULL);
+	guint new;
+	guint unread;
+	guint total;
+};
 
-	if (node->data) {
-		FolderItem *item = FOLDER_ITEM(node->data);
-		*new += item->new;
-		*unread += item->unread;
-		*total += item->total;
-	}
+static gboolean folder_count_total_msgs_func(GNode *node, gpointer data)
+{
+	FolderItem *item;
+	struct TotalMsgCount *totalmsgcount;
 
-	if (node->children)
-		folder_count_total_msgs_func(node->children,
-					     new, unread, total);
-	if (node->next)
-		folder_count_total_msgs_func(node->next, new, unread, total);
+	g_return_val_if_fail(node->data != NULL, FALSE);
+
+	totalmsgcount = (struct TotalMsgCount *)data;
+	item = FOLDER_ITEM(node->data);
+	totalmsgcount->new += item->new;
+	totalmsgcount->unread += item->unread;
+	totalmsgcount->total += item->total;
+	
+	return FALSE;
 }
 
 void folder_count_total_msgs(guint *new, guint *unread, guint *total)
 {
 	GList *list;
 	Folder *folder;
-
-	*new = *unread = *total = 0;
+	struct TotalMsgCount totalmsgcount;
 
 	debug_print(_("Counting total number of messages...\n"));
 
+	totalmsgcount.new = 0;
+	totalmsgcount.unread = 0;
+	totalmsgcount.total = 0;
+
 	for (list = folder_list; list != NULL; list = list->next) {
 		folder = FOLDER(list->data);
-		folder_count_total_msgs_func(folder->node, new, unread, total);
+		if(folder->node)
+			g_node_traverse(folder->node, G_PRE_ORDER,
+				G_TRAVERSE_ALL, -1,
+				folder_count_total_msgs_func,
+				&totalmsgcount);
 	}
+
+	*new = totalmsgcount.new;
+	*unread = totalmsgcount.unread;
+	*total = totalmsgcount.total;
 
 	return;
 }
@@ -1496,8 +1511,7 @@ FolderItem * folder_find_item_from_identifier(const gchar *identifier)
 	gchar * name;
 	gchar * path;
 
-	Xalloca(str, strlen(identifier) + 1, return NULL);
-	strcpy(str, identifier);
+	Xstrdup_a(str, identifier, return NULL);
 
 	/* extract box type */
 

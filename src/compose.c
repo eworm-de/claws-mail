@@ -101,6 +101,7 @@
 #include "quote_fmt.h"
 #include "template.h"
 #include "undo.h"
+#include "foldersel.h"
 
 #if USE_GPGME
 #  include "rfc2015.h"
@@ -3172,6 +3173,14 @@ static gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item)
 	if(newsac) {
 		fprintf(fp, "NAID:%d\n", newsac->account_id);
 	}
+	/* Save copy folder */
+	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn))) {
+		gchar *str;
+		
+		str = gtk_editable_get_chars(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
+		fprintf(fp, "SCF:%s\n", str);
+		g_free(str);
+	}
 	fprintf(fp, "\n");
 
 	while (fgets(buf, sizeof(buf), src_fp) != NULL) {
@@ -3711,7 +3720,8 @@ static void compose_add_entry_field(GtkWidget *table, GtkWidget **hbox,
 	(*count)++;
 }
 
-static void compose_create_header_entry(Compose *compose) {
+static void compose_create_header_entry(Compose *compose) 
+{
 	gchar *headers[] = {"To:", "Cc:", "Bcc:", "Newsgroups:", "Reply-To:", "Followup-To:", NULL};
 
 	GtkWidget *combo;
@@ -3767,7 +3777,8 @@ static void compose_create_header_entry(Compose *compose) {
 	compose->header_last = headerentry;
 }
 
-static void compose_add_header_entry(Compose *compose, gchar *header, gchar *text) {
+static void compose_add_header_entry(Compose *compose, gchar *header, gchar *text) 
+{
 	ComposeHeaderEntry *last_header;
 	
 	last_header = compose->header_last;
@@ -3776,19 +3787,8 @@ static void compose_add_header_entry(Compose *compose, gchar *header, gchar *tex
 	gtk_entry_set_text(GTK_ENTRY(last_header->entry), text);
 }
 
-static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
+static GtkWidget *compose_create_header(Compose *compose) 
 {
-	Compose   *compose;
-	GtkWidget *window;
-	GtkWidget *vbox;
-	GtkWidget *menubar;
-	GtkWidget *handlebox;
-
-	GtkWidget *notebook;
-
-	GtkWidget *vbox2;
-
-	GtkWidget *table_vbox;
 	GtkWidget *label;
 	GtkWidget *from_optmenu_hbox;
 #if 0 /* NEW COMPOSE GUI */
@@ -3810,97 +3810,14 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	GtkWidget *followup_entry;
 	GtkWidget *followup_hbox;
 #endif
-	GtkWidget *paned;
-
-	GtkWidget *attach_scrwin;
-	GtkWidget *attach_clist;
-
-	GtkWidget *edit_vbox;
-	GtkWidget *ruler_hbox;
-	GtkWidget *ruler;
-	GtkWidget *scrolledwin;
-	GtkWidget *text;
-
-	GtkWidget *table;
 	GtkWidget *hbox;
 
-	UndoMain *undostruct;
-
-	gchar *titles[] = {_("MIME type"), _("Size"), _("Name")};
-	guint n_menu_entries;
-	GtkStyle  *style, *new_style;
-	GdkColormap *cmap;
-	GdkColor color[1];
-	gboolean success[1];
-	GdkFont   *font;
-	GtkWidget *popupmenu;
-	GtkWidget *menuitem;
-	GtkItemFactory *popupfactory;
-	GtkItemFactory *ifactory;
-	GtkWidget *tmpl_menu;
-	gint n_entries;
 	gint count = 0;
-	gint i;
-
-#if USE_PSPELL
-        GtkPspell * gtkpspell = NULL;
-#endif
-
-	g_return_val_if_fail(account != NULL, NULL);
-
-	debug_print(_("Creating compose window...\n"));
-	compose = g_new0(Compose, 1);
-
-	compose->account = account;
-	compose->orig_account = account;
-
-	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, FALSE);
-	gtk_widget_set_usize(window, -1, prefs_common.compose_height);
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(compose_delete_cb), compose);
-	gtk_signal_connect(GTK_OBJECT(window), "destroy",
-			   GTK_SIGNAL_FUNC(compose_destroy_cb), compose);
-	gtk_signal_connect(GTK_OBJECT(window), "focus_in_event",
-			   GTK_SIGNAL_FUNC(manage_window_focus_in), NULL);
-	gtk_signal_connect(GTK_OBJECT(window), "focus_out_event",
-			   GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
-	gtk_widget_realize(window);
-
-	gtkut_widget_set_composer_icon(window);
-
-	vbox = gtk_vbox_new(FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(window), vbox);
-
-	n_menu_entries = sizeof(compose_entries) / sizeof(compose_entries[0]);
-	menubar = menubar_create(window, compose_entries,
-				 n_menu_entries, "<Compose>", compose);
-	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
-
-	handlebox = gtk_handle_box_new();
-	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
-
-	compose_toolbar_create(compose, handlebox);
-
-	vbox2 = gtk_vbox_new(FALSE, 2);
-	gtk_box_pack_start(GTK_BOX(vbox), vbox2, TRUE, TRUE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(vbox2), BORDER_WIDTH);
-
-	table_vbox = gtk_vbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox2), table_vbox, FALSE, TRUE, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(table_vbox),
-				       BORDER_WIDTH * 2);
-
-	/* Notebook */
-	notebook = gtk_notebook_new();
-	gtk_widget_set_usize(notebook, -1, 180);
-	gtk_widget_show(notebook);
 
 	/* header labels and entries */
 	header_scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(header_scrolledwin);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(header_scrolledwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), header_scrolledwin, gtk_label_new(_("Header")));
 
 	header_table = gtk_table_new(2, 2, FALSE);
 	gtk_widget_show(header_table);
@@ -3988,9 +3905,39 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 			   GTK_SIGNAL_FUNC(compose_grab_focus_cb), compose);
 #endif
 
+	compose->table	          = NULL;
+#if 0 /* NEW COMPOSE GUI */
+	compose->table	          = table;
+	compose->to_hbox          = to_hbox;
+	compose->to_entry         = to_entry;
+	compose->newsgroups_hbox  = newsgroups_hbox;
+	compose->newsgroups_entry = newsgroups_entry;
+#endif
+	compose->subject_entry    = subject_entry;
+#if 0 /* NEW COMPOSE GUI */
+	compose->cc_hbox          = cc_hbox;
+	compose->cc_entry         = cc_entry;
+	compose->bcc_hbox         = bcc_hbox;
+	compose->bcc_entry        = bcc_entry;
+	compose->reply_hbox       = reply_hbox;
+	compose->reply_entry      = reply_entry;
+	compose->followup_hbox    = followup_hbox;
+	compose->followup_entry   = followup_entry;
+#endif
+
+	return header_scrolledwin ;
+}
+
+GtkWidget *compose_create_attach(Compose *compose)
+{
+	gchar *titles[] = {_("MIME type"), _("Size"), _("Name")};
+	gint i;
+
+	GtkWidget *attach_scrwin;
+	GtkWidget *attach_clist;
+
 	/* attachment list */
 	attach_scrwin = gtk_scrolled_window_new(NULL, NULL);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), attach_scrwin, gtk_label_new(_("Attachments")));
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(attach_scrwin),
 				       GTK_POLICY_AUTOMATIC,
 				       GTK_POLICY_ALWAYS);
@@ -4024,6 +3971,181 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 			   GTK_SIGNAL_FUNC(compose_attach_drag_received_cb),
 			   compose);
 
+	compose->attach_scrwin = attach_scrwin;
+	compose->attach_clist  = attach_clist;
+
+	return attach_scrwin;
+}
+
+static void compose_savemsg_checkbtn_cb(GtkWidget *widget, Compose *compose);
+static void compose_savemsg_select_cb(GtkWidget *widget, Compose *compose);
+
+static GtkWidget *compose_create_others(Compose *compose)
+{
+	GtkWidget *table;
+	GtkWidget *savemsg_checkbtn;
+	GtkWidget *savemsg_entry;
+	GtkWidget *savemsg_select;
+	
+	guint rowcount = 0;
+	gchar *folderidentifier;
+
+	/* Table for settings */
+	table = gtk_table_new(3, 1, FALSE);
+	gtk_widget_show(table);
+	gtk_table_set_row_spacings(GTK_TABLE(table), VSPACING_NARROW);
+	rowcount = 0;
+
+	/* Save Message to folder */
+	savemsg_checkbtn = gtk_check_button_new_with_label(_("Save Message to "));
+	gtk_widget_show(savemsg_checkbtn);
+	gtk_table_attach(GTK_TABLE(table), savemsg_checkbtn, 0, 1, rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(savemsg_checkbtn), prefs_common.savemsg);
+	gtk_signal_connect(GTK_OBJECT(savemsg_checkbtn), "toggled",
+			    GTK_SIGNAL_FUNC(compose_savemsg_checkbtn_cb), compose);
+
+	savemsg_entry = gtk_entry_new();
+	gtk_widget_show(savemsg_entry);
+	gtk_table_attach_defaults(GTK_TABLE(table), savemsg_entry, 1, 2, rowcount, rowcount + 1);
+	gtk_editable_set_editable(GTK_EDITABLE(savemsg_entry), prefs_common.savemsg);
+	folderidentifier = folder_item_get_identifier(folder_get_default_outbox());
+	gtk_entry_set_text(GTK_ENTRY(savemsg_entry), folderidentifier);
+	g_free(folderidentifier);
+
+	savemsg_select = gtk_button_new_with_label (_("Select ..."));
+	gtk_widget_show (savemsg_select);
+	gtk_table_attach(GTK_TABLE(table), savemsg_select, 2, 3, rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_signal_connect (GTK_OBJECT (savemsg_select), "clicked",
+			    GTK_SIGNAL_FUNC (compose_savemsg_select_cb),
+			    compose);
+
+	rowcount++;
+
+	compose->savemsg_checkbtn = savemsg_checkbtn;
+	compose->savemsg_entry = savemsg_entry;
+
+	return table;	
+}
+
+static void compose_savemsg_checkbtn_cb(GtkWidget *widget, Compose *compose) 
+{
+	gtk_editable_set_editable(GTK_EDITABLE(compose->savemsg_entry),
+		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn)));
+}
+
+static void compose_savemsg_select_cb(GtkWidget *widget, Compose *compose)
+{
+	FolderItem *dest;
+	gchar * path;
+
+	dest = foldersel_folder_sel(NULL, NULL);
+	if (!dest) return;
+
+	path = folder_item_get_identifier(dest);
+
+	gtk_entry_set_text(GTK_ENTRY(compose->savemsg_entry), path);
+	g_free(path);
+}
+
+static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
+{
+	Compose   *compose;
+	GtkWidget *window;
+	GtkWidget *vbox;
+	GtkWidget *menubar;
+	GtkWidget *handlebox;
+
+	GtkWidget *notebook;
+
+	GtkWidget *vbox2;
+
+	GtkWidget *table_vbox;
+
+	GtkWidget *paned;
+
+	GtkWidget *edit_vbox;
+	GtkWidget *ruler_hbox;
+	GtkWidget *ruler;
+	GtkWidget *scrolledwin;
+	GtkWidget *text;
+
+	GtkWidget *table;
+
+	UndoMain *undostruct;
+
+	guint n_menu_entries;
+	GtkStyle  *style, *new_style;
+	GdkColormap *cmap;
+	GdkColor color[1];
+	gboolean success[1];
+	GdkFont   *font;
+	GtkWidget *popupmenu;
+	GtkWidget *menuitem;
+	GtkItemFactory *popupfactory;
+	GtkItemFactory *ifactory;
+	GtkWidget *tmpl_menu;
+	gint n_entries;
+
+#if USE_PSPELL
+        GtkPspell * gtkpspell = NULL;
+#endif
+
+	g_return_val_if_fail(account != NULL, NULL);
+
+	debug_print(_("Creating compose window...\n"));
+	compose = g_new0(Compose, 1);
+
+	compose->account = account;
+	compose->orig_account = account;
+
+	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, FALSE);
+	gtk_widget_set_usize(window, -1, prefs_common.compose_height);
+	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
+			   GTK_SIGNAL_FUNC(compose_delete_cb), compose);
+	gtk_signal_connect(GTK_OBJECT(window), "destroy",
+			   GTK_SIGNAL_FUNC(compose_destroy_cb), compose);
+	gtk_signal_connect(GTK_OBJECT(window), "focus_in_event",
+			   GTK_SIGNAL_FUNC(manage_window_focus_in), NULL);
+	gtk_signal_connect(GTK_OBJECT(window), "focus_out_event",
+			   GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
+	gtk_widget_realize(window);
+
+	gtkut_widget_set_composer_icon(window);
+
+	vbox = gtk_vbox_new(FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(window), vbox);
+
+	n_menu_entries = sizeof(compose_entries) / sizeof(compose_entries[0]);
+	menubar = menubar_create(window, compose_entries,
+				 n_menu_entries, "<Compose>", compose);
+	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
+
+	handlebox = gtk_handle_box_new();
+	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
+
+	compose_toolbar_create(compose, handlebox);
+
+	vbox2 = gtk_vbox_new(FALSE, 2);
+	gtk_box_pack_start(GTK_BOX(vbox), vbox2, TRUE, TRUE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox2), BORDER_WIDTH);
+
+	table_vbox = gtk_vbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox2), table_vbox, FALSE, TRUE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(table_vbox),
+				       BORDER_WIDTH * 2);
+
+	/* Notebook */
+	notebook = gtk_notebook_new();
+	gtk_widget_set_usize(notebook, -1, 180);
+	gtk_widget_show(notebook);
+
+	/* header labels and entries */
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), compose_create_header(compose), gtk_label_new(_("Header")));
+	/* attachment list */
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), compose_create_attach(compose), gtk_label_new(_("Attachments")));
+	/* Others Tab */
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), compose_create_others(compose), gtk_label_new(_("Others")));
 
 	edit_vbox = gtk_vbox_new(FALSE, 0);
 #if 0 /* NEW COMPOSE GUI */
@@ -4210,29 +4332,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose->vbox2	       = vbox2;
 
 	compose->table_vbox       = table_vbox;
-	compose->table	          = NULL;
-#if 0 /* NEW COMPOSE GUI */
-	compose->table	          = table;
-	compose->to_hbox          = to_hbox;
-	compose->to_entry         = to_entry;
-	compose->newsgroups_hbox  = newsgroups_hbox;
-	compose->newsgroups_entry = newsgroups_entry;
-#endif
-	compose->subject_entry    = subject_entry;
-#if 0 /* NEW COMPOSE GUI */
-	compose->cc_hbox          = cc_hbox;
-	compose->cc_entry         = cc_entry;
-	compose->bcc_hbox         = bcc_hbox;
-	compose->bcc_entry        = bcc_entry;
-	compose->reply_hbox       = reply_hbox;
-	compose->reply_entry      = reply_entry;
-	compose->followup_hbox    = followup_hbox;
-	compose->followup_entry   = followup_entry;
-#endif
-	compose->paned = paned;
 
-	compose->attach_scrwin = attach_scrwin;
-	compose->attach_clist  = attach_clist;
+	compose->paned = paned;
 
 	compose->edit_vbox     = edit_vbox;
 	compose->ruler_hbox    = ruler_hbox;

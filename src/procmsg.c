@@ -945,12 +945,13 @@ static gint procmsg_cmp_flag_msgnum(gconstpointer a, gconstpointer b)
 
 enum
 {
-	Q_SENDER          = 0,
-	Q_SMTPSERVER      = 1,
-	Q_RECIPIENTS      = 2,
-	Q_NEWSGROUPS      = 3,
-	Q_MAIL_ACCOUNT_ID = 4,
-	Q_NEWS_ACCOUNT_ID = 5
+	Q_SENDER           = 0,
+	Q_SMTPSERVER       = 1,
+	Q_RECIPIENTS       = 2,
+	Q_NEWSGROUPS       = 3,
+	Q_MAIL_ACCOUNT_ID  = 4,
+	Q_NEWS_ACCOUNT_ID  = 5,
+	Q_SAVE_COPY_FOLDER = 6
 };
 
 gint procmsg_send_message_queue(const gchar *file)
@@ -961,6 +962,7 @@ gint procmsg_send_message_queue(const gchar *file)
 				       {"NG:",   NULL, FALSE},
 				       {"MAID:", NULL, FALSE},
 				       {"NAID:", NULL, FALSE},
+				       {"SCF:",  NULL, FALSE},
 				       {NULL,    NULL, FALSE}};
 	FILE *fp;
 	gint filepos;
@@ -969,6 +971,7 @@ gint procmsg_send_message_queue(const gchar *file)
 	gchar *smtpserver = NULL;
 	GSList *to_list = NULL;
 	GSList *newsgroup_list = NULL;
+	gchar *savecopyfolder = NULL;
 	gchar buf[BUFFSIZE];
 	gint hnum;
 	PrefsAccount *mailac = NULL, *newsac = NULL;
@@ -1003,6 +1006,9 @@ gint procmsg_send_message_queue(const gchar *file)
 			break;
 		case Q_NEWS_ACCOUNT_ID:
 			newsac = account_find_from_id(atoi(p));
+			break;
+		case Q_SAVE_COPY_FOLDER:
+			if (!savecopyfolder) savecopyfolder = g_strdup(p);
 			break;
 		default:
 		}
@@ -1085,21 +1091,23 @@ gint procmsg_send_message_queue(const gchar *file)
 	}
 
 	/* save message to outbox */
-	if (mailval == 0 && newsval == 0 && prefs_common.savemsg) {
-		FolderItem *outbox;
+	if (mailval == 0 && newsval == 0 && savecopyfolder) {
+		FolderItem *folder;
 		gchar *path;
 		gint num;
 		FILE *fp;
 
 		debug_print(_("saving sent message...\n"));
 
-		outbox = folder_get_default_outbox();
-		path = folder_item_get_path(outbox);
+		folder = folder_find_item_from_identifier(savecopyfolder);
+		if(!folder)
+			folder = folder_get_default_outbox();
+		path = folder_item_get_path(folder);
 		if (!is_dir_exist(path))
 			make_dir_hier(path);
 
-		folder_item_scan(outbox);
-		if ((num = folder_item_add_msg(outbox, tmp, FALSE)) < 0) {
+		folder_item_scan(folder);
+		if ((num = folder_item_add_msg(folder, tmp, FALSE)) < 0) {
 			g_warning(_("can't save message\n"));
 		}
 

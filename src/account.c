@@ -567,24 +567,24 @@ static void account_edit_prefs(void)
 	account_clist_set();
 }
 
-static void account_delete_references_recursive(const GNode *node, const gint account)
+static gboolean account_delete_references_func(GNode *node, gpointer data)
 {
-	/* the son */
-	if (node->data) {
-		FolderItem *item = node->data;
-		if (item->prefs) /* && item->prefs->stype == F_NORMAL */
-			if (item->prefs->default_account == account) {
-				item->prefs->enable_default_account = FALSE;
-				item->prefs->default_account = 0;
-				prefs_folder_item_save_config(item);
-			}
-	}
-	/* its children (vertical dive) */
-	if (node->children)
-		account_delete_references_recursive(node->children, account);
-	/* its brothers (horizontal dive) */
-	if (node->next)
-		account_delete_references_recursive(node->next, account);
+	FolderItem *item;
+	gint account;
+
+	g_return_val_if_fail(node->data != NULL, FALSE);
+
+	item = FOLDER_ITEM(node->data);
+	account = GPOINTER_TO_INT(data);
+
+	if(!item->prefs) /* && item->prefs->stype == F_NORMAL */
+		return FALSE;
+	if(item->prefs->default_account != account)
+		return FALSE;
+	
+	item->prefs->enable_default_account = FALSE;
+	item->prefs->default_account = 0;
+	prefs_folder_item_save_config(item);
 }
 
 static void account_delete(void)
@@ -616,7 +616,10 @@ static void account_delete(void)
 	for (; list != NULL; list = list->next) {
 		folder = FOLDER(list->data);
 		if (folder->node)  /* && folder->type == F_? */
-			account_delete_references_recursive(folder->node, ac_prefs->account_id);
+			g_node_traverse(folder->node, G_PRE_ORDER,
+				G_TRAVERSE_ALL, -1,
+				account_delete_references_func,
+				GINT_TO_POINTER(ac_prefs->account_id));
 	}
 }
 
