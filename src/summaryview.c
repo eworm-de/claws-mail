@@ -1424,17 +1424,6 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 	}
 	g_free(filename);
 
-	if (MSG_IS_NEW(msginfo->flags))
-		summaryview->newmsgs--;
-	if (MSG_IS_UNREAD(msginfo->flags))
-		summaryview->unread--;
-	if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
-		MSG_UNSET_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
-		summary_set_row_marks(summaryview, row);
-		gtk_clist_thaw(GTK_CLIST(ctree));
-		summary_status_show(summaryview);
-	}
-
 	if (new_window) {
 		MessageView *msgview;
 
@@ -1455,6 +1444,17 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 			gtk_widget_grab_focus(summaryview->ctree);
 		GTK_EVENTS_FLUSH();
 		gtkut_ctree_node_move_if_on_the_edge(ctree, row);
+	}
+
+	if (MSG_IS_NEW(msginfo->flags))
+		summaryview->newmsgs--;
+	if (MSG_IS_UNREAD(msginfo->flags))
+		summaryview->unread--;
+	if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
+		MSG_UNSET_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
+		summary_set_row_marks(summaryview, row);
+		gtk_clist_thaw(GTK_CLIST(ctree));
+		summary_status_show(summaryview);
 	}
 
 	if (GTK_WIDGET_VISIBLE(summaryview->headerwin->window))

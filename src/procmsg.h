@@ -121,6 +121,8 @@ struct _MsgInfo
 
 	gchar *xface;
 
+	gchar *dispositionnotificationto;
+
 	/* used only for encrypted messages */
 	gchar *plaintext_file;
 	guint decryption_failed : 1;

@@ -44,6 +44,8 @@
 #include "gtkutils.h"
 #include "utils.h"
 #include "rfc2015.h"
+#include "account.h"
+#include "alertpanel.h"
 
 static void messageview_change_view_type(MessageView	*messageview,
 					 MessageType	 type);
@@ -146,6 +148,82 @@ void messageview_init(MessageView *messageview)
 	//messageview_set_font(messageview);
 }
 
+static void notification_convert_header(gchar *dest, gint len, gchar *src,
+					gint header_len)
+{
+	g_return_if_fail(src != NULL);
+	g_return_if_fail(dest != NULL);
+
+	if (len < 1) return;
+
+	remove_return(src);
+
+	if (is_ascii_str(src)) {
+		strncpy2(dest, src, len);
+		dest[len - 1] = '\0';
+		return;
+	} else
+		conv_encode_header(dest, len, src, header_len);
+}
+
+static gint dispotition_notification_send(MsgInfo * msginfo)
+{
+	gchar buf[BUFFSIZE];
+	gchar tmp[MAXPATHLEN + 1];
+	FILE *fp;
+	GSList * to_list;
+	gint ok;
+
+	/* write to temporary file */
+	g_snprintf(tmp, sizeof(tmp), "%s%ctmpmsg%d",
+		   get_rc_dir(), G_DIR_SEPARATOR, (gint)msginfo);
+
+	if ((fp = fopen(tmp, "w")) == NULL) {
+		FILE_OP_ERROR(tmp, "fopen");
+		return -1;
+	}
+
+	/* chmod for security */
+	if (change_file_mode_rw(fp, tmp) < 0) {
+		FILE_OP_ERROR(tmp, "chmod");
+		g_warning(_("can't change file mode\n"));
+	}
+
+	/* Date */
+	get_rfc822_date(buf, sizeof(buf));
+	fprintf(fp, "Date: %s\n", buf);
+
+	/* From */
+	if (cur_account->name && *cur_account->name) {
+		notification_convert_header
+			(buf, sizeof(buf), cur_account->name,
+			 strlen("From: "));
+		fprintf(fp, "From: %s <%s>\n", buf, cur_account->address);
+	} else
+		fprintf(fp, "From: %s\n", cur_account->address);
+
+	/* To */
+	fprintf(fp, "To: %s\n", msginfo->dispositionnotificationto);
+
+	/* Subject */
+	notification_convert_header(buf, sizeof(buf), msginfo->subject,
+				    strlen("Subject: "));
+	fprintf(fp, "Subject: Disposition notification: %s\n", buf);
+
+	if (fclose(fp) == EOF) {
+		FILE_OP_ERROR(tmp, "fclose");
+		unlink(tmp);
+		return -1;
+	}
+
+	to_list = address_list_append(NULL, msginfo->dispositionnotificationto);
+	ok = send_message(tmp, cur_account, to_list);
+
+	if (unlink(tmp) < 0) FILE_OP_ERROR(tmp, "unlink");
+
+	return ok;
+}
+
 void messageview_show(MessageView *messageview, MsgInfo *msginfo)
 {
 	FILE *fp;
@@ -192,6 +270,19 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo)
 	g_return_if_fail(file != NULL);
 
 	tmpmsginfo = procheader_parse(file, msginfo->flags, TRUE);
+
+	if (tmpmsginfo->dispositionnotificationto
+	    && (MSG_IS_UNREAD(msginfo->flags))) {
+		gint ok;
+		
+		if (alertpanel(_("Return Receipt"), _("Send return receipt ?"),
+			       _("Yes"), _("No"), NULL) == G_ALERTDEFAULT) {
+			ok = dispotition_notification_send(tmpmsginfo);
+			if (ok < 0)
+				alertpanel_error(_("Error occurred while sending notification."));
+		}
+	}
+
 	headerview_show(messageview->headerview, tmpmsginfo);
 	procmsg_msginfo_free(tmpmsginfo);
 

@@ -140,6 +140,8 @@ struct _Compose
 
 	gboolean modified;
 
+	gboolean return_receipt;
+
 	GSList *to_list;
 	GSList *newsgroup_list;
 

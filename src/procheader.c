@@ -280,6 +280,7 @@ enum
 	H_CONTENT_TYPE	= 8,
 	H_SEEN		= 9,
 	H_X_FACE	= 10,
+	H_DISPOSITION_NOTIFICATION_TO = 11
 };
 
 MsgInfo *procheader_parse(const gchar *file, MsgFlags flags, gboolean full)
@@ -295,6 +296,7 @@ MsgInfo *procheader_parse(const gchar *file, MsgFlags flags, gboolean full)
 					   {"Content-Type:",	NULL, FALSE},
 					   {"Seen:",		NULL, FALSE},
 					   {"X-Face:",		NULL, FALSE},
+					   {"Disposition-Notification-To:",NULL, FALSE},
 					   {NULL,		NULL, FALSE}};
 
 	static HeaderEntry hentry_short[] = {{"Date:",		NULL, FALSE},
@@ -414,6 +416,10 @@ MsgInfo *procheader_parse(const gchar *file, MsgFlags flags, gboolean full)
 		case H_X_FACE:
 			if (msginfo->xface) break;
 			msginfo->xface = g_strdup(hp);
+			break;
+		case H_DISPOSITION_NOTIFICATION_TO:
+			if (msginfo->dispositionnotificationto) break;
+			msginfo->dispositionnotificationto = g_strdup(hp);
 			break;
 		default:
 		}

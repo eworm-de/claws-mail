@@ -749,6 +749,7 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 	MEMBCOPY(to_folder);
 
 	MEMBDUP(xface);
+	MEMBDUP(dispositionnotificationto);
 
 	return newmsginfo;
 }
@@ -757,6 +758,7 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 {
 	if (msginfo == NULL) return;
 
+	g_free(msginfo->dispositionnotificationto);
 	g_free(msginfo->xface);
 
 	g_free(msginfo->fromname);

@@ -330,6 +330,8 @@ static void compose_toggle_encrypt_cb	(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
 #endif
+static void compose_toggle_return_receipt_cb(gpointer data, guint action,
+					     GtkWidget *widget);
 
 static void compose_attach_drag_received_cb (GtkWidget		*widget,
 					     GdkDragContext	*drag_context,
@@ -414,6 +416,8 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Message/Si_gn"),   	NULL, compose_toggle_sign_cb, 0, "<ToggleItem>"},
 	{N_("/_Message/_Encrypt"),	NULL, compose_toggle_encrypt_cb, 0, "<ToggleItem>"},
 #endif /* USE_GPGME */
+	{N_("/_Message/---"),		NULL,		NULL,	0, "<Separator>"},
+	{N_("/_Message/_Request Return Receipt"),	NULL, compose_toggle_return_receipt_cb, 0, "<ToggleItem>"},
 	{N_("/_Tool"),			NULL, NULL,	0, "<Branch>"},
 	{N_("/_Tool/Show _ruler"),	NULL, compose_toggle_ruler_cb,	0, "<ToggleItem>"},
 	{N_("/_Tool/_Address book"),	"<alt>A",	compose_address_cb, 0, NULL},
@@ -2100,6 +2104,18 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		fprintf(fp, "Mime-Version: 1.0\n");
 	}
 
+	/* Request Return Receipt */
+	if (!is_in_custom_headers(compose, "Disposition-Notification-To")) {
+		if (compose->return_receipt) {
+			if (compose->account->name
+			    && *compose->account->name) {
+				compose_convert_header(buf, sizeof(buf), compose->account->name, strlen("Disposition-Notification-To: "));
+				fprintf(fp, "Disposition-Notification-To: %s <%s>\n", buf, compose->account->address);
+			} else
+				fprintf(fp, "Disposition-Notification-To: %s\n", compose->account->address);
+		}
+	}
+
 	if (compose->use_attach) {
 		get_rfc822_date(buf, sizeof(buf));
 		subst_char(buf, ' ', '_');
@@ -2635,6 +2651,8 @@ static Compose *compose_create(PrefsAccount *account)
 #endif /* USE_GPGME */
 
 	compose->modified = FALSE;
+
+	compose->return_receipt = FALSE;
 
 	compose->to_list        = NULL;
 	compose->newsgroup_list = NULL;
@@ -4086,4 +4104,15 @@ static void replyto_activated(GtkWidget *widget, Compose *compose)
 static void followupto_activated(GtkWidget *widget, Compose *compose)
 {
 	gtk_widget_grab_focus(compose->text);
+}
+
+static void compose_toggle_return_receipt_cb(gpointer data, guint action,
+					     GtkWidget *widget)
+{
+	Compose *compose = (Compose *)data;
+
+	if (GTK_CHECK_MENU_ITEM(widget)->active)
+		compose->return_receipt = TRUE;
+	else
+		compose->return_receipt = FALSE;
 }
