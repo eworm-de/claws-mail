@@ -1,3 +1,8 @@
+2001-01-08 [alfons]
+	
+	* src/summaryview.c
+		clean up some traces of my debugging stuff
+
 2001-01-09 [alfons]	0.6.6claws45
 
 	* src/filtering.c

@@ -3741,7 +3741,6 @@ void summary_filter(SummaryView *summaryview)
 			summary_status_show(summaryview);
 	}
 	else {
-		FolderItem *item = summaryview->folder_item;
 		summaryview->folder_table = g_hash_table_new(NULL, NULL);
 
 		gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree), NULL,
