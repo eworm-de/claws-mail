@@ -1,3 +1,10 @@
+2001-12-09 [paul]	0.6.5claws67
+
+	* src/imap.c
+        * src/utils.h
+        	allow spaces in imap folder names
+                submitted by Willem van Engen <wvengen@stack.nl>
+
 2001-12-09 [paul]	0.6.5claws66
 
 	* sync with sylpheed 0.6.5cvs24

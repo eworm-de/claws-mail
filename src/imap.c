@@ -708,6 +708,18 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 	return IMAP_SUCCESS;
 }
 
+#define QUOTE_IF_REQUIRED(out, str) \
+{ \
+	if (*str != '"' && strchr(str, ' ')) { \
+		gint len; \
+		len = strlen(str) + 3; \
+		Xalloca(out, len, return IMAP_ERROR); \
+		g_snprintf(out, len, "\"%s\"", str); \
+	} else { \
+		Xstrdup_a(out, str, return IMAP_ERROR); \
+	} \
+}
+
 gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 {
 	gint exists, recent, unseen;
@@ -828,7 +840,7 @@ static void imap_scan_tree_recursive(IMAPSession *session,
 	IMAPFolder *imapfolder;
 	FolderItem *new_item;
 	GSList *item_list, *cur;
-	gchar *real_path;
+	gchar *real_path, *wildcard_path, *wildcard_path_;
 
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
@@ -842,15 +854,21 @@ static void imap_scan_tree_recursive(IMAPSession *session,
 
 	if (item->path) {
 		real_path = imap_get_real_path(imapfolder, item->path);
-		imap_cmd_gen_send(SESSION(session)->sock, "LIST \"\" %s%c%%",
-				  real_path,
+		Xstrconcat_a(wildcard_path, real_path,"/%", return IMAP_ERROR);
+		QUOTE_IF_REQUIRED(wildcard_path_, wildcard_path);
+		imap_cmd_gen_send(SESSION(session)->sock, "LIST \"\" %s",
+				  wildcard_path_,
 				  namespace && namespace->separator
 				  ? namespace->separator : '/');
+		g_free(wildcard_path);
 	} else {
 		real_path = g_strdup(namespace && namespace->name
 				     ? namespace->name : "");
-		imap_cmd_gen_send(SESSION(session)->sock, "LIST \"\" %s%%",
-				  real_path);
+		Xstrconcat_a(wildcard_path, real_path, "%", return IMAP_ERROR);
+		QUOTE_IF_REQUIRED(wildcard_path_, wildcard_path);
+		imap_cmd_gen_send(SESSION(session)->sock, "LIST \"\" %s",
+				  wildcard_path_);
+		g_free(wildcard_path);
 	}
 
 	strtailchomp(real_path, namespace && namespace->separator
@@ -1819,18 +1837,6 @@ catch:
 	return ok;
 }
 
-#define QUOTE_IF_REQUIRED(out, str) \
-{ \
-	if (*str != '"' && strchr(str, ' ')) { \
-		gint len; \
-		len = strlen(str) + 3; \
-		Xalloca(out, len, return IMAP_ERROR); \
-		g_snprintf(out, len, "\"%s\"", str); \
-	} else { \
-		Xstrdup_a(out, str, return IMAP_ERROR); \
-	} \
-}
-
 static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 			const gchar *path,
 			gint *messages, gint *recent, gint *unseen,
@@ -2115,14 +2121,16 @@ static gint imap_cmd_append(SockInfo *sock, const gchar *destfolder,
 {
 	gint ok;
 	gint size;
+        gchar *destfolder_;
 
 	g_return_val_if_fail(file != NULL, IMAP_ERROR);
 
 	size = get_file_size(file);
-	imap_cmd_gen_send(sock, "APPEND %s {%d}", destfolder, size);
+	QUOTE_IF_REQUIRED(destfolder_, destfolder);
+	imap_cmd_gen_send(sock, "APPEND %s {%d}", destfolder_, size);
 	ok = imap_cmd_ok(sock, NULL);
 	if (ok != IMAP_SUCCESS) {
-		log_warning(_("can't append %s to %s\n"), file, destfolder);
+		log_warning(_("can't append %s to %s\n"), file, destfolder_);
 		return -1;
 	}
 

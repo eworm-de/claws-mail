@@ -111,6 +111,21 @@
 	ptr = __tmp; \
 }
 
+#define Xstrconcat_a(ptr, str1, str2, iffail) \
+{ \
+	gchar *__tmp; \
+ \
+	if ((__tmp = alloca(strlen(str1) + strlen(str2) + 1)) == NULL) { \
+		g_warning("can't allocate memory\n"); \
+		iffail; \
+	} else { \
+		strcpy(__tmp, str1); \
+		strcat(__tmp, str2); \
+	} \
+ \
+	ptr = __tmp; \
+}
+
 #define FILE_OP_ERROR(file, func) \
 { \
 	fprintf(stderr, "%s: ", file); \
