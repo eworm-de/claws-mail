@@ -43,7 +43,7 @@ static gint smtp_ok(SockInfo *sock, gchar *buf, gint len);
 Session *smtp_session_new(const gchar *server, gushort port,
 			  const gchar *domain,
 			  const gchar *user, const gchar *pass,
-			  SSLSMTPType ssl_type)
+			  SSLType ssl_type)
 #else
 Session *smtp_session_new(const gchar *server, gushort port,
 			  const gchar *domain,
@@ -59,7 +59,7 @@ Session *smtp_session_new(const gchar *server, gushort port,
 	g_return_val_if_fail(server != NULL, NULL);
 
 #if USE_SSL
-	use_esmtp = user != NULL || ssl_type == SSL_SMTP_STARTTLS;
+	use_esmtp = user != NULL || ssl_type == SSL_STARTTLS;
 #else
 	use_esmtp = user != NULL;
 #endif
@@ -71,7 +71,7 @@ Session *smtp_session_new(const gchar *server, gushort port,
 	}
 
 #if USE_SSL
-	if (ssl_type == SSL_SMTP_TUNNEL && !ssl_init_socket(sock)) {
+	if (ssl_type == SSL_TUNNEL && !ssl_init_socket(sock)) {
 		log_warning(_("SSL connection failed"));
 		sock_close(sock);
 		return NULL;
@@ -99,7 +99,7 @@ Session *smtp_session_new(const gchar *server, gushort port,
 	}
 
 #if USE_SSL
-	if (ssl_type == SSL_SMTP_STARTTLS) {
+	if (ssl_type == SSL_STARTTLS) {
 		val = smtp_starttls(sock);
 		if (val != SM_OK) {
 			log_warning(_("Error occurred while sending STARTTLS\n"));

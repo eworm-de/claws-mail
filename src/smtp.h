@@ -47,15 +47,6 @@ typedef struct _SMTPSession	SMTPSession;
 #define	ESMTP_SIZE		0x02
 #define	ESMTP_ETRN		0x04
 
-#if USE_SSL
-typedef enum
-{
-	SSL_SMTP_NONE,
-	SSL_SMTP_TUNNEL,
-	SSL_SMTP_STARTTLS
-} SSLSMTPType;
-#endif
-
 typedef enum
 {
 	SMTPAUTH_LOGIN      = 1 << 0,
@@ -78,7 +69,7 @@ Session *smtp_session_new	(const gchar	*server,
 				 const gchar	*domain,
 				 const gchar	*user,
 				 const gchar	*pass,
-				 SSLSMTPType	 ssl_type);
+				 SSLType	 ssl_type);
 #else
 Session *smtp_session_new	(const gchar	*server,
 				 gushort	 port,

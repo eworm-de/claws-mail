@@ -796,13 +796,20 @@ static gint account_clist_set_row(PrefsAccount *ac_prefs, gint row)
 	text[COL_NAME]    = ac_prefs->account_name;
 #if USE_SSL
 	text[COL_PROTOCOL] = ac_prefs->protocol == A_POP3 ?
-			     (ac_prefs->ssl_pop ? "POP3 (SSL)" : "POP3") :
+			     (ac_prefs->ssl_pop == SSL_TUNNEL ?
+			      "POP3 (SSL)" :
+			      ac_prefs->ssl_pop == SSL_STARTTLS ?
+			      "POP3 (TLS)" : "POP3") :
 			     ac_prefs->protocol == A_APOP ?
-			     (ac_prefs->ssl_pop ?
-			      "POP3 (APOP, SSL)" : "POP3 (APOP)") :
+			     (ac_prefs->ssl_pop == SSL_TUNNEL ?
+			      "POP3 (APOP, SSL)" :
+			      ac_prefs->ssl_pop == SSL_STARTTLS ?
+			      "POP3 (APOP, TLS)" : "POP3 (APOP)") :
 			     ac_prefs->protocol == A_IMAP4 ?
-			     (ac_prefs->ssl_imap ? "IMAP4 (SSL)" : "IMAP4") :
-			     ac_prefs->protocol == A_LOCAL ? "Local" :
+			     (ac_prefs->ssl_imap == SSL_TUNNEL ?
+			      "IMAP4 (SSL)" :
+			      ac_prefs->ssl_imap == SSL_STARTTLS ?
+			      "IMAP4 (TLS)" : "IMAP4") :
 			     ac_prefs->protocol == A_NNTP ? 
 				  (ac_prefs->ssl_nntp ? "NNTP (SSL)"  :  "NNTP") : "";
 #else

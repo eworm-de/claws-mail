@@ -22,6 +22,10 @@
 
 #include "socket.h"
 
+#if USE_SSL
+#include "ssl.h"
+#endif
+
 typedef struct _NNTPSockInfo	NNTPSockInfo;
 
 struct _NNTPSockInfo
@@ -49,7 +53,7 @@ struct _NNTPSockInfo
 NNTPSockInfo *nntp_open		(const gchar	*server,
 				 gushort	 port,
 				 gchar		*buf,
-				 gboolean use_ssl);
+				 SSLType 	ssl_type);
 #else
 NNTPSockInfo *nntp_open		(const gchar	*server,
 				 gushort	 port,
@@ -62,7 +66,7 @@ NNTPSockInfo *nntp_open_auth	(const gchar	*server,
 				 gchar		*buf,
 				 const gchar	*userid,
 				 const gchar	*passwd,
-				 gboolean use_ssl);
+				 SSLType 	ssl_type);
 #else
 NNTPSockInfo *nntp_open_auth	(const gchar	*server,
 				 gushort	 port,

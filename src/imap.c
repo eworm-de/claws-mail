@@ -116,16 +116,17 @@ static void imap_delete_all_cached_messages	(FolderItem	*item);
 #if USE_SSL
 static SockInfo *imap_open		(const gchar	*server,
 					 gushort	 port,
-					 gboolean	 use_ssl);
+					 SSLType	 ssl_type);
 #else
 static SockInfo *imap_open		(const gchar	*server,
 					 gushort	 port);
 #endif
 
 static SockInfo *imap_open_tunnel(const gchar *server,
-				  const gchar *tunnelcmd);
+				  const gchar *tunnelcmd,
+				  SSLType ssl_type);
 
-static SockInfo *imap_init_sock(SockInfo *sock);
+static SockInfo *imap_init_sock(SockInfo *sock, SSLType ssl_type);
 
 static gint imap_set_message_flags	(IMAPSession	*session,
 					 guint32	 first_uid,
@@ -187,6 +188,7 @@ static gint imap_cmd_login	(SockInfo	*sock,
 				 const gchar	*pass);
 static gint imap_cmd_logout	(SockInfo	*sock);
 static gint imap_cmd_noop	(SockInfo	*sock);
+static gint imap_cmd_starttls	(SockInfo	*sock);
 static gint imap_cmd_namespace	(SockInfo	*sock,
 				 gchar	       **ns_str);
 static gint imap_cmd_list	(SockInfo	*sock,
@@ -325,7 +327,8 @@ static IMAPSession *imap_session_get(Folder *folder)
 
 #if USE_SSL
 	port = folder->account->set_imapport ? folder->account->imapport
-		: folder->account->ssl_imap ? IMAPS_PORT : IMAP4_PORT;
+		: folder->account->ssl_imap == SSL_TUNNEL
+		? IMAPS_PORT : IMAP4_PORT;
 #else
 	port = folder->account->set_imapport ? folder->account->imapport
 		: IMAP4_PORT;
@@ -385,11 +388,11 @@ Session *imap_session_new(const PrefsAccount *account)
 
 #ifdef USE_SSL
 	/* FIXME: IMAP over SSL only... */ 
-	gboolean use_ssl;
+	SSLType ssl_type;
 
 	port = account->set_imapport ? account->imapport
 		: account->ssl_imap ? IMAPS_PORT : IMAP4_PORT;
-	use_ssl = account->ssl_imap ? TRUE : FALSE;	
+	ssl_type = account->ssl_imap ? TRUE : FALSE;	
 #else
 	port = account->set_imapport ? account->imapport
 		: IMAP4_PORT;
@@ -398,7 +401,8 @@ Session *imap_session_new(const PrefsAccount *account)
 	if (account->set_tunnelcmd) {
 		log_message(_("creating tunneled IMAP4 connection\n"));
 		if ((imap_sock = imap_open_tunnel(account->recv_server, 
-						  account->tunnelcmd)) == NULL)
+						  account->tunnelcmd,
+						  ssl_type)) == NULL)
 			return NULL;
 	} else {
 		g_return_val_if_fail(account->recv_server != NULL, NULL);
@@ -408,7 +412,7 @@ Session *imap_session_new(const PrefsAccount *account)
 		
 #if USE_SSL
 		if ((imap_sock = imap_open(account->recv_server, port,
-					   use_ssl)) == NULL)
+					   ssl_type)) == NULL)
 #else
 	       	if ((imap_sock = imap_open(account->recv_server, port)) == NULL)
 #endif
@@ -1592,7 +1596,8 @@ static void imap_delete_all_cached_messages(FolderItem *item)
 
 
 static SockInfo *imap_open_tunnel(const gchar *server,
-			   const gchar *tunnelcmd)
+			   const gchar *tunnelcmd,
+			   SSLType ssl_type)
 {
 	SockInfo *sock;
 
@@ -1601,13 +1606,13 @@ static SockInfo *imap_open_tunnel(const gchar *server,
 			    server);
 		return NULL;
 
-	return imap_init_sock(sock);
+	return imap_init_sock(sock, ssl_type);
 }
 
 
 #if USE_SSL
 static SockInfo *imap_open(const gchar *server, gushort port,
-			   gboolean use_ssl)
+			   SSLType ssl_type)
 #else
 static SockInfo *imap_open(const gchar *server, gushort port)
 #endif
@@ -1621,7 +1626,7 @@ static SockInfo *imap_open(const gchar *server, gushort port)
 	}
 
 #if USE_SSL
-	if (use_ssl && !ssl_init_socket(sock)) {
+	if (ssl_type == SSL_TUNNEL && !ssl_init_socket(sock)) {
 		log_warning(_("Can't establish IMAP4 session with: %s:%d\n"),
 			    server, port);
 		sock_close(sock);
@@ -1629,16 +1634,32 @@ static SockInfo *imap_open(const gchar *server, gushort port)
 	}
 #endif
 
-	return imap_init_sock(sock);
+	return imap_init_sock(sock, ssl_type);
 }
 
 
-static SockInfo *imap_init_sock(SockInfo *sock)
+static SockInfo *imap_init_sock(SockInfo *sock, SSLType ssl_type)
 {
 	imap_cmd_count = 0;
+#if USE_SSL
+	if (ssl_type == SSL_STARTTLS) {
+		gint ok;
+
+		ok = imap_cmd_starttls(sock);
+		if (ok != IMAP_SUCCESS) {
+			log_warning(_("Can't start TLS session.\n"));
+			sock_close(sock);
+			return NULL;
+		}
+		if (!ssl_init_socket_with_method(sock, SSL_METHOD_TLSv1)) {
+			sock_close(sock);
+			return NULL;
+		}
+	}
+#endif
 
 	if (imap_cmd_noop(sock) != IMAP_SUCCESS) {
-		log_warning(_("Can't establish IMAP4 session\n"));
+		log_warning(_("Can't establish IMAP4 session. \n"));
 		sock_close(sock);
 		return NULL;
 	}
@@ -2400,6 +2421,12 @@ static gint imap_greeting(SockInfo *sock, gboolean *is_preauth)
 static gint imap_cmd_noop(SockInfo *sock)
 {
 	imap_cmd_gen_send(sock, "NOOP");
+	return imap_cmd_ok(sock, NULL);
+}
+
+static gint imap_cmd_starttls(SockInfo *sock)
+{
+	imap_cmd_gen_send(sock, "STARTTLS");
 	return imap_cmd_ok(sock, NULL);
 }
 
