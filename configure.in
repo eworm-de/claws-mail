@@ -16,6 +16,14 @@ AM_INIT_AUTOMAKE($PACKAGE, $VERSION, no-define)
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
 AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
 
+dnl GNOME installed?
+AC_PATH_PROG(GNOME_CONFIG, gnome-config, false)
+if test "$GNOME_CONFIG" != false; then
+	gnomedir="`gnome-config --prefix`"
+	AC_SUBST(gnomedir)
+fi
+AM_CONDITIONAL(SYLPHEED_GNOME, test -d "$gnomedir")
+
 dnl libtool versioning
 LT_RELEASE=$MAJOR_VERSION.$MINOR_VERSION
 LT_CURRENT=`expr $MICRO_VERSION - $INTERFACE_AGE`

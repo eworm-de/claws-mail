@@ -1,0 +1,7 @@
+[desktop Entry]
+Name=Sylpheed
+Comment=Hello World
+Exec=sylpheed
+Icon=sylpheed.png
+Terminal=0
+Type=Application

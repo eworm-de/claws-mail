@@ -7,7 +7,21 @@ EXTRA_DIST = \
 	TODO.jp \
 	sylpheed.spec \
 	sylpheed.spec.in \
-	autogen.sh
+	autogen.sh \
+	sylpheed.png \
+	sylpheed.desktop
+
+if SYLPHEED_GNOME
+pixmapdir=$(gnomedir)/share/pixmaps
+pixmap_DATA=sylpheed.png
+gnomapdir=$(gnomedir)/share/gnome/apps/Internet
+gnomap_DATA=sylpheed.desktop
+else
+pixmapdir=
+pixmap_DATA=
+gnomapdir=
+gnomap_DATA=
+endif
 
 BZIP2_ENV =
 
