@@ -158,7 +158,8 @@ static GList *compose_list = NULL;
 
 Compose *compose_generic_new			(PrefsAccount	*account,
 						 const gchar	*to,
-						 FolderItem	*item);
+						 FolderItem	*item,
+						 GPtrArray 	*attach_files);
 
 static Compose *compose_create			(PrefsAccount	*account,
 						 ComposeMode	 mode);
@@ -672,18 +673,13 @@ static GtkTargetEntry compose_mime_types[] =
 	{"text/uri-list", 0, 0}
 };
 
-Compose *compose_new(PrefsAccount *account)
-{
-	return compose_generic_new(account, NULL, NULL);
-}
-
 Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 {
 	Compose *c;
 	gchar *filename;
 	GtkItemFactory *ifactory;
 	
-	c = compose_generic_new(account, NULL, NULL);
+	c = compose_generic_new(account, NULL, NULL, NULL);
 
 	filename = procmsg_get_message_file(msginfo);
 	if (filename == NULL)
@@ -729,17 +725,19 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	return c;
 }
 
-Compose *compose_new_with_recipient(PrefsAccount *account, const gchar *mailto)
+Compose *compose_new(PrefsAccount *account, const gchar *mailto,
+		     GPtrArray *attach_files)
 {
-	return compose_generic_new(account, mailto, NULL);
+	return compose_generic_new(account, mailto, NULL, attach_files);
 }
 
 Compose *compose_new_with_folderitem(PrefsAccount *account, FolderItem *item)
 {
-	return compose_generic_new(account, NULL, item);
+	return compose_generic_new(account, NULL, item, NULL);
 }
 
-Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderItem *item)
+Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderItem *item,
+			     GPtrArray *attach_files)
 {
 	Compose *compose;
 	GtkSText *text;
@@ -771,9 +769,8 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	gtk_widget_grab_focus(compose->text);
 	gtkut_widget_wait_for_draw(compose->text);
 
-
 	if (account->protocol != A_NNTP) {
-		if (mailto) {
+		if (mailto && *mailto != '\0') {
 			compose_entries_set(compose, mailto);
 
 		} else if(item && item->prefs->enable_default_to) {
@@ -794,6 +791,17 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 		 */
 		menu_set_sensitive(ifactory, "/Message/Request Return Receipt", FALSE); 
 	}
+
+	if (attach_files) {
+		gint i;
+		gchar *file;
+
+		for (i = 0; i < attach_files->len; i++) {
+			file = g_ptr_array_index(attach_files, i);
+			compose_attach_append(compose, file, file, NULL);
+		}
+	}
+
 	compose_show_first_last_header(compose, TRUE);
 
 	/* Set save folder */

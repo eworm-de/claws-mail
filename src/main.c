@@ -96,6 +96,7 @@ static struct Cmd {
 	gboolean receive_all;
 	gboolean compose;
 	const gchar *compose_mailto;
+	GPtrArray *attach_files;
 	gboolean status;
 	gboolean send;
 } cmd;
@@ -112,7 +113,8 @@ static void lock_socket_input_cb	(gpointer	   data,
 					 GdkInputCondition condition);
 static gchar *get_socket_name		(void);
 
-static void open_compose_new_with_recipient	(const gchar	*address);
+static void open_compose_new		(const gchar	*address,
+					 GPtrArray	*attach_files);
 
 static void send_queue			(void);
 static void initial_processing		(FolderItem *item, gpointer data);
@@ -147,6 +149,9 @@ int main(int argc, char *argv[])
 	setlocale(LC_ALL, "");
 	bindtextdomain(PACKAGE, LOCALEDIR);
 	textdomain(PACKAGE);
+
+	prog_version = PROG_VERSION;
+	startup_dir = g_get_current_dir();
 
 	parse_cmd_opt(argc, argv);
 
@@ -189,9 +194,6 @@ int main(int argc, char *argv[])
 	userrc = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, MENU_RC, NULL);
 	gtk_item_factory_parse_rc(userrc);
 	g_free(userrc);
-
-	prog_version = PROG_VERSION;
-	startup_dir = g_get_current_dir();
 
 	CHDIR_RETURN_VAL_IF_FAIL(get_home_dir(), 1);
 
@@ -318,7 +320,12 @@ int main(int argc, char *argv[])
 		gtk_widget_grab_focus(folderview->ctree);
 
 	if (cmd.compose)
-		open_compose_new_with_recipient(cmd.compose_mailto);
+		open_compose_new(cmd.compose_mailto, cmd.attach_files);
+	if (cmd.attach_files) {
+		ptr_array_free_strings(cmd.attach_files);
+		g_ptr_array_free(cmd.attach_files, TRUE);
+		cmd.attach_files = NULL;
+	}
 	if (cmd.send)
 		send_queue();
 
@@ -356,6 +363,23 @@ static void parse_cmd_opt(int argc, char *argv[])
 					cmd.compose_mailto = p;
 				i++;
 			}
+		} else if (!strncmp(argv[i], "--attach", 8)) {
+			const gchar *p = argv[i + 1];
+			gchar *file;
+
+			while (p && *p != '\0' && *p != '-') {
+				if (!cmd.attach_files)
+					cmd.attach_files = g_ptr_array_new();
+				if (*p != G_DIR_SEPARATOR)
+					file = g_strconcat(startup_dir,
+							   G_DIR_SEPARATOR_S,
+							   p, NULL);
+				else
+					file = g_strdup(p);
+				g_ptr_array_add(cmd.attach_files, file);
+				i++;
+				p = argv[i + 1];
+			}
 		} else if (!strncmp(argv[i], "--send", 6)) {
 			cmd.send = TRUE;
 		} else if (!strncmp(argv[i], "--version", 9)) {
@@ -368,6 +392,9 @@ static void parse_cmd_opt(int argc, char *argv[])
 				g_basename(argv[0]));
 
 			puts(_("  --compose [address]    open composition window"));
+			puts(_("  --attach file1 [file2]...\n"
+			       "                         open composition window with specified files\n"
+			       "                         attached"));
 			puts(_("  --receive              receive new messages"));
 			puts(_("  --receive-all          receive new messages of all accounts"));
 			puts(_("  --send                 send all queued messages"));
@@ -378,6 +405,11 @@ static void parse_cmd_opt(int argc, char *argv[])
 
 			exit(1);
 		}
+	}
+
+	if (cmd.attach_files && cmd.compose == FALSE) {
+		cmd.compose = TRUE;
+		cmd.compose_mailto = NULL;
 	}
 }
 
@@ -523,7 +555,27 @@ static gint prohibit_duplicate_launch(void)
 		fd_write(uxsock, "receive_all\n", 12);
 	else if (cmd.receive)
 		fd_write(uxsock, "receive\n", 8);
-	else if (cmd.compose) {
+	else if (cmd.compose && cmd.attach_files) {
+		gchar *str, *compose_str;
+		gint i;
+
+		if (cmd.compose_mailto)
+			compose_str = g_strdup_printf("compose_attach %s\n",
+						      cmd.compose_mailto);
+		else
+			compose_str = g_strdup("compose_attach\n");
+
+		fd_write(uxsock, compose_str, strlen(compose_str));
+		g_free(compose_str);
+
+		for (i = 0; i < cmd.attach_files->len; i++) {
+			str = g_ptr_array_index(cmd.attach_files, i);
+			fd_write(uxsock, str, strlen(str));
+			fd_write(uxsock, "\n", 1);
+		}
+
+		fd_write(uxsock, ".\n", 2);
+	} else if (cmd.compose) {
 		gchar *compose_str;
 
 		if (cmd.compose_mailto)
@@ -559,16 +611,31 @@ static void lock_socket_input_cb(gpointer data,
 	sock = fd_accept(source);
 	fd_gets(sock, buf, sizeof(buf));
 
-	if (!strncmp(buf, "popup", 5)){
+	if (!strncmp(buf, "popup", 5)) {
 		main_window_popup(mainwin);
-	} else if (!strncmp(buf, "receive_all", 11)){
+	} else if (!strncmp(buf, "receive_all", 11)) {
 		main_window_popup(mainwin);
 		inc_all_account_mail(mainwin, prefs_common.newmail_notify_manu);
-	} else if (!strncmp(buf, "receive", 7)){
+	} else if (!strncmp(buf, "receive", 7)) {
 		main_window_popup(mainwin);
 		inc_mail(mainwin, prefs_common.newmail_notify_manu);
+	} else if (!strncmp(buf, "compose_attach", 14)) {
+		GPtrArray *files;
+		gchar *mailto;
+
+		mailto = g_strdup(buf + strlen("compose_attach") + 1);
+		files = g_ptr_array_new();
+		while (fd_gets(sock, buf, sizeof(buf)) > 0) {
+			if (buf[0] == '.' && buf[1] == '\n') break;
+			strretchomp(buf);
+			g_ptr_array_add(files, g_strdup(buf));
+		}
+		open_compose_new(mailto, files);
+		ptr_array_free_strings(files);
+		g_ptr_array_free(files, TRUE);
+		g_free(mailto);
 	} else if (!strncmp(buf, "compose", 7)) {
-		open_compose_new_with_recipient(buf + strlen("compose") + 1);
+		open_compose_new(buf + strlen("compose") + 1, NULL);
 	} else if (!strncmp(buf, "send", 4)) {
 		send_queue();
 	} else if (!strncmp(buf, "status", 6)) {
@@ -582,7 +649,7 @@ static void lock_socket_input_cb(gpointer data,
 	fd_close(sock);
 }
 
-static void open_compose_new_with_recipient(const gchar *address)
+static void open_compose_new(const gchar *address, GPtrArray *attach_files)
 {
 	gchar *addr = NULL;
 
@@ -591,10 +658,7 @@ static void open_compose_new_with_recipient(const gchar *address)
 		g_strstrip(addr);
 	}
 
-	if (addr && *addr != '\0')
-		compose_new_with_recipient(NULL, addr);
-	else
-		compose_new(NULL);
+	compose_new(NULL, addr, attach_files);
 }
 
 static void send_queue(void)

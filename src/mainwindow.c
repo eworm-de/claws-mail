@@ -2865,8 +2865,9 @@ static void compose_news_cb(MainWindow *mainwin, guint action,
 	if (mainwin->summaryview->folder_item) {
 		ac = mainwin->summaryview->folder_item->folder->account;
 		if (ac && ac->protocol == A_NNTP) {
-			compose_new_with_recipient
-				(ac, mainwin->summaryview->folder_item->path);
+			compose_new(ac,
+				    mainwin->summaryview->folder_item->path,
+				    NULL);
 			return;
 		}
 	}
@@ -2875,7 +2876,7 @@ static void compose_news_cb(MainWindow *mainwin, guint action,
 	for(cur = list ; cur != NULL ; cur = g_list_next(cur)) {
 		ac = (PrefsAccount *) cur->data;
 		if (ac->protocol == A_NNTP) {
-			compose_new(ac);
+			compose_new(ac, NULL, NULL);
 			return;
 		}
 	}

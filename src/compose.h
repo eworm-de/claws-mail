@@ -212,10 +212,9 @@ struct _AttachInfo
 	off_t size;
 };
 
-Compose *compose_new			(PrefsAccount	*account);
-
-Compose *compose_new_with_recipient	(PrefsAccount	*account,
-					 const gchar	*to);
+Compose *compose_new			(PrefsAccount	*account,
+				 	 const gchar	*mailto,
+				 	 GPtrArray	*attach_files);
 
 Compose *compose_new_with_folderitem	(PrefsAccount	*account,
 					 FolderItem	*item);
