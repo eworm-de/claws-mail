@@ -204,11 +204,11 @@ static void compose_reply_set_entry		(Compose	*compose,
 						 followup_and_reply_to);
 static void compose_reedit_set_entry		(Compose	*compose,
 						 MsgInfo	*msginfo);
-static void compose_insert_sig			(Compose	*compose);
+static void compose_insert_sig			(Compose	*compose,
+						 gboolean	 replace);
+static gchar *compose_get_signature_str		(Compose	*compose);
 static void compose_insert_file			(Compose	*compose,
 						 const gchar	*file);
-static void compose_insert_command_output	(Compose	*compose,
-						 const gchar	*cmdline);
 static void compose_attach_append		(Compose	*compose,
 						 const gchar	*file,
 						 const gchar	*type,
@@ -221,7 +221,8 @@ static void compose_wrap_line_all_full		(Compose	*compose,
 						 gboolean	 autowrap);
 static void compose_set_title			(Compose	*compose);
 static void compose_select_account		(Compose	*compose,
-						 PrefsAccount	*account);
+						 PrefsAccount	*account,
+						 gboolean	 init);
 
 static PrefsAccount *compose_current_mail_account(void);
 /* static gint compose_send			(Compose	*compose); */
@@ -335,6 +336,9 @@ static void compose_attach_cb		(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
 static void compose_insert_file_cb	(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void compose_insert_sig_cb	(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
 
@@ -507,7 +511,7 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_File"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Attach file"),		"<control>M", compose_attach_cb,      0, NULL},
 	{N_("/_File/_Insert file"),		"<control>I", compose_insert_file_cb, 0, NULL},
-	{N_("/_File/Insert si_gnature"),	"<control>G", compose_insert_sig,     0, NULL},
+	{N_("/_File/Insert si_gnature"),	"<control>G", compose_insert_sig_cb,  0, NULL},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Close"),			"<control>W", compose_close_cb, 0, NULL},
 
@@ -717,7 +721,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	gtk_stext_freeze(text);
 
 	if (account->auto_sig)
-		compose_insert_sig(compose);
+		compose_insert_sig(compose, FALSE);
 	gtk_editable_set_position(GTK_EDITABLE(text), 0);
 	gtk_stext_set_point(text, 0);
 
@@ -992,7 +996,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	}
 
 	if (account->auto_sig)
-		compose_insert_sig(compose);
+		compose_insert_sig(compose, FALSE);
 
 	if (quote && prefs_common.linewrap_quote)
 		compose_wrap_line_all(compose);
@@ -1113,7 +1117,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		}
 
 	if (account->auto_sig)
-		compose_insert_sig(compose);
+		compose_insert_sig(compose, FALSE);
 
 	if (prefs_common.linewrap_quote)
 		compose_wrap_line_all(compose);
@@ -1192,7 +1196,7 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 	}
 
 	if (account->auto_sig)
-		compose_insert_sig(compose);
+		compose_insert_sig(compose, FALSE);
 
 	if (prefs_common.linewrap_quote)
 		compose_wrap_line_all(compose);
@@ -1495,7 +1499,7 @@ void compose_toolbar_cb(gint action, gpointer data)
 		compose_attach_cb(compose, 0, NULL);
 		break;
 	case A_SIG:
-		compose_insert_sig(compose);
+		compose_insert_sig(compose, FALSE);
 		break;
 	case A_EXTEDITOR:
 		compose_ext_editor_cb(compose, 0, NULL);
@@ -1999,44 +2003,100 @@ static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 #undef SET_ENTRY
 #undef SET_ADDRESS
 
-static void compose_insert_sig(Compose *compose)
+static void compose_insert_sig(Compose *compose, gboolean replace)
 {
-	static gchar *default_sigfile;
-	gchar *sigfile = NULL;
+	GtkSText *text = GTK_STEXT(compose->text);
+	gint cur_pos;
 
 	g_return_if_fail(compose->account != NULL);
 
+	cur_pos = gtk_editable_get_position(GTK_EDITABLE(text));
+
+	gtk_stext_freeze(text);
+
+	if (replace && compose->sig_str) {
+		gchar *tmp;
+		gint pos;
+		gint len;
+
+		if (compose->account->sig_sep)
+			tmp = g_strconcat(compose->account->sig_sep, "\n",
+					  compose->sig_str, NULL);
+		else
+			tmp = g_strdup(compose->sig_str);
+
+		pos = gtkut_stext_find(text, 0, tmp, TRUE);
+		if (pos != -1) {
+			gtk_stext_set_point(text, pos);
+			len = get_wcs_len(tmp);
+			gtk_stext_forward_delete(text, len);
+		} else {
+			len = gtk_stext_get_length(text);
+			gtk_stext_set_point(text, len);
+		}
+
+		g_free(tmp);
+	} else
+		gtk_stext_insert(text, NULL, NULL, NULL, "\n\n", 2);
+
+	if (compose->account->sig_sep) {
+		gtk_stext_insert(text, NULL, NULL, NULL, 
+				 compose->account->sig_sep, -1);
+		gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
+	}
+
+	g_free(compose->sig_str);
+	compose->sig_str = compose_get_signature_str(compose);
+
+	gtk_stext_insert(text, NULL, NULL, NULL, compose->sig_str, -1);
+
+	gtk_stext_thaw(text);
+
+	if (cur_pos > gtk_stext_get_length(text))
+		cur_pos = gtk_stext_get_length(text);
+
+	gtk_editable_set_position(GTK_EDITABLE(text), cur_pos);
+	gtk_stext_set_point(text, cur_pos);
+}
+
+static gchar *compose_get_signature_str(Compose *compose)
+{
+	static gchar *default_sigfile;
+	gchar *sig_file = NULL;
+	gchar *sig_str = NULL;
+
+	g_return_val_if_fail(compose->account != NULL, NULL);
+
 	if (compose->account->sig_type == SIG_FILE) {
 		if (compose->account->sig_path)
-			sigfile = compose->account->sig_path;
+			sig_file = compose->account->sig_path;
 		else {
 			if (!default_sigfile)
 				default_sigfile = g_strconcat
 					(get_home_dir(), G_DIR_SEPARATOR_S,
 					 DEFAULT_SIGNATURE, NULL);
-			sigfile = default_sigfile;
+			sig_file = default_sigfile;
 		}
 
-		if (!is_file_or_fifo_exist(sigfile)) {
-			g_warning("can't open signature file: %s\n", sigfile);
-			return;
+		if (!is_file_or_fifo_exist(sig_file)) {
+			g_warning("can't open signature file: %s\n", sig_file);
+			return NULL;
 		}
-	}
-
-	gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL, "\n\n", 2);
-	if (compose->account->sig_sep) {
-		gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL,
-				 compose->account->sig_sep, -1);
-		gtk_stext_insert(GTK_STEXT(compose->text), NULL, NULL, NULL,
-				"\n", 1);
 	}
 
 	if (compose->account->sig_type == SIG_COMMAND) {
 		if (compose->account->sig_path)
-			compose_insert_command_output
-				(compose, compose->account->sig_path);
-	} else
-		compose_insert_file(compose, sigfile);
+			sig_str = get_command_output
+				(compose->account->sig_path);
+	} else {
+		gchar *tmp;
+
+		tmp = file_read_to_str(sig_file);
+		sig_str = normalize_newlines(tmp);
+		g_free(tmp);
+	}
+
+	return sig_str;
 }
 
 static void compose_insert_file(Compose *compose, const gchar *file)
@@ -2080,57 +2140,6 @@ static void compose_insert_file(Compose *compose, const gchar *file)
 	gtk_stext_thaw(text);
 
 	fclose(fp);
-}
-
-static void compose_insert_command_output(Compose *compose,
-					  const gchar *cmdline)
-{
-	GtkSText *text = GTK_STEXT(compose->text);
-	gchar buf[BUFFSIZE];
-	gint len;
-	FILE *fp;
-#ifdef WIN32
-	gint retval;
-	gchar *tmp;
-	gchar *cmd;
-#endif
-
-	g_return_if_fail(cmdline != NULL);
-
-#ifdef WIN32
-	tmp = get_tmp_file();
-	cmd = g_strdup_printf("%s > %s",cmdline ,tmp);
-	retval = system(cmd);
-	fp = fopen(tmp, "r");
-#else
-	if ((fp = popen(cmdline, "r")) == NULL) {
-		FILE_OP_ERROR(cmdline, "popen");
-		return;
-	}
-#endif
-
-	gtk_stext_freeze(text);
-
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		strcrchomp(buf);
-		len = strlen(buf);
-		if (len > 0 && buf[len - 1] != '\n') {
-			while (--len >= 0)
-				if (buf[len] == '\r') buf[len] = '\n';
-		}
-		gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
-	}
-
-	gtk_stext_thaw(text);
-
-#ifdef WIN32
-	fclose(fp);
-	unlink(tmp);
-	g_free(tmp);
-	g_free(cmd);
-#else
-	pclose(fp);
-#endif
 }
 
 static void compose_attach_append(Compose *compose, const gchar *file,
@@ -2929,7 +2938,8 @@ compose_current_mail_account(void)
 	return ac;
 }
 
-static void compose_select_account(Compose *compose, PrefsAccount *account)
+static void compose_select_account(Compose *compose, PrefsAccount *account,
+				   gboolean init)
 {
 	GtkWidget *menuitem;
 	GtkItemFactory *ifactory;
@@ -3014,6 +3024,9 @@ static void compose_select_account(Compose *compose, PrefsAccount *account)
 				       
 	activate_gnupg_mode(compose, account);		
 #endif /* USE_GPGME */
+
+	if (!init && account->auto_sig)
+		compose_insert_sig(compose, TRUE);
 }
 
 gboolean compose_check_for_valid_recipient(Compose *compose) {
@@ -3663,7 +3676,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 		g_free(buf);
 		return -1;
 	}
-	// g_free(buf);
+	g_free(buf);
 
 	if (compose_use_attach(compose))
 		compose_write_attach(compose, fp);
@@ -5288,13 +5301,15 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose->to_list        = NULL;
 	compose->newsgroup_list = NULL;
 
+	compose->undostruct = undostruct;
+
+	compose->sig_str = NULL;
+
 	compose->exteditor_file    = NULL;
 	compose->exteditor_pid     = -1;
 	compose->exteditor_readdes = -1;
 	compose->exteditor_tag     = -1;
 
-	compose->redirect_filename = NULL;
-	compose->undostruct = undostruct;
 #if USE_ASPELL
 	menu_set_sensitive(ifactory, "/Spelling", FALSE);
 	if (mode != COMPOSE_REDIRECT) {
@@ -5331,7 +5346,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	}
 #endif
 
-	compose_select_account(compose, account);
+	compose_select_account(compose, account, TRUE);
 
 #if USE_ASPELL
         compose->gtkaspell      = gtkaspell;
@@ -5582,7 +5597,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 		compose_entry_append(compose, tmpl->bcc, COMPOSE_BCC);
 
 	if (replace)
-		gtk_stext_clear(GTK_STEXT(compose->text));
+		gtkut_stext_clear(GTK_STEXT(compose->text));
 
 	if ((compose->replyinfo == NULL) && (compose->fwdinfo == NULL)) {
 		parsed_str = compose_quote_fmt(compose, NULL, tmpl->value,
@@ -5604,7 +5619,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 	}
 
 	if (replace && parsed_str && compose->account->auto_sig)
-		compose_insert_sig(compose);
+		compose_insert_sig(compose, FALSE);
 
 	if (replace && parsed_str) {
 		gtk_editable_set_position(GTK_EDITABLE(compose->text), 0);
@@ -5653,6 +5668,10 @@ static void compose_destroy(Compose *compose)
 
 	if (compose->redirect_filename)
 		g_free(compose->redirect_filename);
+	if (compose->undostruct)
+		undo_destroy(compose->undostruct);
+
+	g_free(compose->sig_str);
 
 	g_free(compose->exteditor_file);
 
@@ -6483,7 +6502,7 @@ static void account_activated(GtkMenuItem *menuitem, gpointer data)
 	g_return_if_fail(ac != NULL);
 
 	if (ac != compose->account)
-		compose_select_account(compose, ac);
+		compose_select_account(compose, ac, FALSE);
 }
 
 static void attach_selected(GtkCList *clist, gint row, gint column,
@@ -6706,6 +6725,14 @@ static void compose_insert_file_cb(gpointer data, guint action,
 		}
 		g_list_free(file_list);
 	}
+}
+
+static void compose_insert_sig_cb(gpointer data, guint action,
+				  GtkWidget *widget)
+{
+	Compose *compose = (Compose *)data;
+
+	compose_insert_sig(compose, FALSE);
 }
 
 static gint compose_delete_cb(GtkWidget *widget, GdkEventAny *event,

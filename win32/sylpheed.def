@@ -639,9 +639,7 @@ EXPORTS
 	file_read_to_str 
 	filesel_select_file 
 	filesel_select_multiple_files 
-	filter_message 
 	filter_message_by_msginfo 
-	filter_message_by_msginfo_with_inbox 
 	filteringaction_free 
 	filteringaction_new 
 	filteringaction_to_string 
@@ -758,11 +756,13 @@ EXPORTS
 	folderview_update_msg_num 
 	fork_child 
 	fromuutobits 
+	g_int_compare 
 	g_stricase_equal 
 	g_stricase_hash 
 	get_abbrev_newsgroup_name 
 	get_aspell_dict_info_list 
 	get_aspell_module_info_list 
+	get_command_output 
 	get_domain_name 
 	get_file_size 
 	get_file_size_as_crlf 
@@ -787,6 +787,7 @@ EXPORTS
 	get_tmp_dir 
 	get_tmp_file 
 	get_tmpfile_in_dir 
+	get_wcs_len 
 	global_processing 
 	global_scoring 
 	gpg_started 
@@ -810,7 +811,6 @@ EXPORTS
 	gtk_shruler_new 
 	gtk_shruler_set_pos 
 	gtk_stext_backward_delete 
-	gtk_stext_clear 
 	gtk_stext_compact_buffer 
 	gtk_stext_delete_backward_character 
 	gtk_stext_delete_backward_word 
@@ -888,6 +888,8 @@ EXPORTS
 	gtkut_font_load_from_fontset 
 	gtkut_get_font_height 
 	gtkut_get_font_width 
+	gtkut_stext_clear 
+	gtkut_stext_find 
 	gtkut_widget_disable_theme_engine 
 	gtkut_widget_get_uposition 
 	gtkut_widget_init 
@@ -1168,7 +1170,6 @@ EXPORTS
 	new_aspell_string_map 
 	news_cancel_article 
 	news_class 
-	news_fetch_msgnum_sort 
 	news_get_class 
 	news_get_group_list 
 	news_get_msginfo 
@@ -1196,6 +1197,7 @@ EXPORTS
 	nntp_stat 
 	nntp_xhdr 
 	nntp_xover 
+	normalize_newlines 
 	noticeview_create 
 	noticeview_destroy 
 	noticeview_hide 
@@ -1380,6 +1382,7 @@ EXPORTS
 	procmsg_empty_trash 
 	procmsg_find_children 
 	procmsg_find_children_func 
+	procmsg_get_filter_keyword 
 	procmsg_get_last_num_in_msg_list 
 	procmsg_get_message_file 
 	procmsg_get_message_file_path 
@@ -1393,6 +1396,7 @@ EXPORTS
 	procmsg_msg_hash_table_create 
 	procmsg_msg_list_free 
 	procmsg_msginfo_copy 
+	procmsg_msginfo_filter 
 	procmsg_msginfo_free 
 	procmsg_msginfo_get_full_info 
 	procmsg_msginfo_memusage 

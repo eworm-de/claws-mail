@@ -31,6 +31,8 @@
 #include "send_message.h"
 #include "procmime.h"
 #include "statusbar.h"
+#include "prefs_filtering.h"
+#include "filtering.h"
 #include "folder.h"
 #include "prefs_common.h"
 #include "account.h"
@@ -450,6 +452,97 @@ gboolean procmsg_msg_exist(MsgInfo *msginfo)
 	g_free(path);
 
 	return ret;
+}
+
+void procmsg_get_filter_keyword(MsgInfo *msginfo, gchar **header, gchar **key,
+				PrefsFilterType type)
+{
+	static HeaderEntry hentry[] = {{"X-BeenThere:",    NULL, FALSE},
+				       {"X-ML-Name:",      NULL, FALSE},
+				       {"X-List:",         NULL, FALSE},
+				       {"X-Mailing-list:", NULL, FALSE},
+				       {"List-Id:",        NULL, FALSE},
+				       {NULL,              NULL, FALSE}};
+
+	enum
+	{
+		H_X_BEENTHERE	 = 0,
+		H_X_ML_NAME      = 1,
+		H_X_LIST         = 2,
+		H_X_MAILING_LIST = 3,
+		H_LIST_ID	 = 4
+	};
+
+	FILE *fp;
+
+	g_return_if_fail(msginfo != NULL);
+	g_return_if_fail(header != NULL);
+	g_return_if_fail(key != NULL);
+
+	*header = NULL;
+	*key = NULL;
+
+	switch (type) {
+	case FILTER_BY_NONE:
+		return;
+	case FILTER_BY_AUTO:
+		if ((fp = procmsg_open_message(msginfo)) == NULL)
+			return;
+		procheader_get_header_fields(fp, hentry);
+		fclose(fp);
+
+		if (hentry[H_X_BEENTHERE].body != NULL) {
+			*header = g_strdup("header \"X-BeenThere\"");
+			*key = hentry[H_X_BEENTHERE].body;
+			hentry[H_X_BEENTHERE].body = NULL;
+		} else if (hentry[H_X_ML_NAME].body != NULL) {
+			*header = g_strdup("header \"X-ML-Name\"");
+			*key = hentry[H_X_ML_NAME].body;
+			hentry[H_X_ML_NAME].body = NULL;
+		} else if (hentry[H_X_LIST].body != NULL) {
+			*header = g_strdup("header \"X-List\"");
+			*key = hentry[H_X_LIST].body;
+			hentry[H_X_LIST].body = NULL;
+		} else if (hentry[H_X_MAILING_LIST].body != NULL) {
+			*header = g_strdup("header \"X-Mailing-List\"");
+			*key = hentry[H_X_MAILING_LIST].body;
+			hentry[H_X_MAILING_LIST].body = NULL;
+		} else if (hentry[H_LIST_ID].body != NULL) {
+			*header = g_strdup("header \"List-Id\"");
+			*key = hentry[H_LIST_ID].body;
+			hentry[H_LIST_ID].body = NULL;
+		} else if (msginfo->subject) {
+			*header = g_strdup("subject");
+			*key = g_strdup(msginfo->subject);
+		}
+
+		g_free(hentry[H_X_BEENTHERE].body);
+		hentry[H_X_BEENTHERE].body = NULL;
+		g_free(hentry[H_X_ML_NAME].body);
+		hentry[H_X_ML_NAME].body = NULL;
+		g_free(hentry[H_X_LIST].body);
+		hentry[H_X_LIST].body = NULL;
+		g_free(hentry[H_X_MAILING_LIST].body);
+		hentry[H_X_MAILING_LIST].body = NULL;
+		g_free(hentry[H_LIST_ID].body);
+		hentry[H_LIST_ID].body = NULL;
+
+		break;
+	case FILTER_BY_FROM:
+		*header = g_strdup("from");
+		*key = g_strdup(msginfo->from);
+		break;
+	case FILTER_BY_TO:
+		*header = g_strdup("to");
+		*key = g_strdup(msginfo->to);
+		break;
+	case FILTER_BY_SUBJECT:
+		*header = g_strdup("subject");
+		*key = g_strdup(msginfo->subject);
+		break;
+	default:
+		break;
+	}
 }
 
 void procmsg_empty_trash(void)
@@ -1334,4 +1427,27 @@ void procmsg_msginfo_set_to_folder(MsgInfo *msginfo, FolderItem *to_folder)
 		to_folder->op_count++;
 		folder_item_update(msginfo->to_folder, F_ITEM_UPDATE_MSGCNT);
 	}
+}
+
+/**
+ * Apply filtering actions to the msginfo
+ *
+ * \param msginfo The MsgInfo describing the message that should be filtered
+ * \return TRUE if the message was moved and MsgInfo is now invalid,
+ *         FALSE otherwise
+ */
+gboolean procmsg_msginfo_filter(MsgInfo *msginfo)
+{
+	MailFilteringData mail_filtering_data;
+			
+	mail_filtering_data.msginfo = msginfo;			
+	if (hooks_invoke(MAIL_FILTERING_HOOKLIST, &mail_filtering_data))
+		return TRUE;
+
+	/* filter if enabled in prefs or move to inbox if not */
+	if((global_processing != NULL) &&
+	   filter_message_by_msginfo(global_processing, msginfo))
+		return TRUE;
+
+	return FALSE;
 }

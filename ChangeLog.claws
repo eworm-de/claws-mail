@@ -1,3 +1,93 @@
+2003-04-12 [paul]	0.8.11claws85
+
+	* sync with 0.8.11cvs21
+		see ChangeLog 2003-04-11
+
+2003-04-11 [paul]	0.8.11claws84
+
+	* po/es.po
+		update Spanish translation. Submitted by Ricardo
+		Mones Lastra.
+
+2003-04-10 [christoph]	0.8.11claws83
+
+	* src/mbox.c
+		fix typo that did not move unfiltered mails to destination
+		folder
+
+	(closes Bug 115 Sylpheed 0.8.11claws81 does not deliver mail correctly
+	 when filtering from spool)
+
+2003-04-10 [christoph]	0.8.11claws82
+
+	* src/imap.c
+		use BODY.PEEK instead of BODY in in message fetch operation
+		to make sure the IMAP server does not set the \Seen flag for
+		messages. Sylpheed does that later itself, when the message
+		is opened in sylpheed
+
+	(closes Bug 111 Claws destroys unread marks)
+
+2003-04-09 [oliver]	0.8.11claws81
+	
+	* src/folder.c
+		fix crash in folder_destroy
+	* README.claws
+		remove selective download
+
+2003-04-09 [christoph]	0.8.11claws80
+
+	* src/imap.c
+		fix crash in imap_get_msginfo() when then fetched message
+		is not found
+
+	(closes Bug 110 Crash during mail composition)
+
+2003-04-08 [christoph]	0.8.11claws79
+
+	* src/folder.c
+	* src/prefs_account.c
+		Filter new messages that are found in an INBOX folder
+		when 'Filter messages on receiving' is enabled in the
+		Folder's AccountPrefs. This allows to use Sylpheed's
+		filtering engine for IMAP folders where messages are
+		added to the INBOX by a MTA
+
+2003-04-08 [paul]	0.8.11claws78
+
+	* src/procmsg.h
+		clean up after last commit
+
+2003-04-08 [paul]	0.8.11claws77
+
+	* sync with 0.8.11cvs20
+		see ChangeLog 2003-04-07 and 2003-04-08
+
+2003-04-07 [christoph]	0.8.11claws76
+
+	* src/filtering.[ch]
+	* src/inc.[ch]
+	* src/mbox.c
+	* src/procmsg.[ch]
+		add procmsg_msginfo_filter() to execute filtering actions
+
+2003-04-06 [christoph]	0.8.11claws75
+
+	* src/imap.c
+		use IMAPSet for imap_cmd_store() and imap_cmd_envelope()
+
+2003-04-06 [christoph]	0.8.11claws74
+
+	* src/common/utils.[ch]
+		add g_int_compare() function for slist sorting
+
+	* src/imap.c
+		fetch all MsgInfos with one command in imap_get_msginfos()
+		using an imap set with a list of ranges
+
+	* src/news.c
+		use new g_int_compare() function
+
 2003-04-06 [thorsten]	0.8.11claws73
 
 	* src/mh.c

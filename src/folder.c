@@ -163,10 +163,11 @@ void folder_destroy(Folder *folder)
 	folder_list = g_list_remove(folder_list, folder);
 
 	folder_tree_destroy(folder);
-	g_free(folder->name);
-	g_free(folder);
 
 	folder->klass->destroy_folder(folder);
+
+	g_free(folder->name);
+	g_free(folder);
 }
 
 void folder_local_folder_destroy(LocalFolder *lfolder)
@@ -1254,12 +1255,21 @@ gint folder_item_scan(FolderItem *item)
 	if (newmsg_list != NULL) {
 		GSList *elem;
 
-		for (elem = newmsg_list; elem != NULL; elem = g_slist_next(elem))
-			msgcache_add_msg(item->cache, elem->data);
+		for (elem = newmsg_list; elem != NULL; elem = g_slist_next(elem)) {
+			MsgInfo *msginfo = (MsgInfo *) elem->data;
+
+			msgcache_add_msg(item->cache, msginfo);
+			if ((item->stype == F_INBOX) &&
+			    (item->folder->account != NULL) && 
+			    (item->folder->account->filter_on_recv) &&
+			    procmsg_msginfo_filter(msginfo))
+				procmsg_msginfo_free(msginfo);
+			else
+				exists_list = g_slist_prepend(exists_list, msginfo);
+		}
+		g_slist_free(newmsg_list);
 
 		update_flags |= F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT;
-		
-		exists_list = g_slist_concat(exists_list, newmsg_list);
 	}
 
 	for (elem = exists_list; elem != NULL; elem = g_slist_next(elem)) {

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -113,7 +113,8 @@ static gint inc_recv_message		(Session	*session,
 					 const gchar	*msg,
 					 gpointer	 data);
 
-static void inc_put_error		(IncState	 istate);
+static void inc_put_error		(IncState	 istate,
+					 const gchar	*msg);
 
 static void inc_cancel_cb		(GtkWidget	*widget,
 					 gpointer	 data);
@@ -592,20 +593,9 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 		/* process messages */
 		for(msglist_element = msglist; msglist_element != NULL; msglist_element = msglist_element->next) {
-			MailFilteringData mail_filtering_data;
 			msginfo = (MsgInfo *) msglist_element->data;
-			
-			mail_filtering_data.msginfo = msginfo;
-			
-			if (!hooks_invoke(MAIL_FILTERING_HOOKLIST, &mail_filtering_data)) {
-				/* filter if enabled in prefs or move to inbox if not */
-				if(global_processing && pop3_session->ac_prefs->filter_on_recv) {
-					filter_message_by_msginfo_with_inbox(global_processing, msginfo,
-									     inbox);
-				} else {
-					folder_item_move_msg(inbox, msginfo);
-				}
-			}
+			if (!pop3_session->ac_prefs->filter_on_recv || !procmsg_msginfo_filter(msginfo))
+				folder_item_move_msg(inbox, msginfo);
 			procmsg_msginfo_free(msginfo);
 		}
 		g_slist_free(msglist);
@@ -625,14 +615,18 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 		if (inc_state != INC_SUCCESS && inc_state != INC_CANCEL) {
 			error_num++;
-			if (inc_state == INC_ERROR    ||
-			    inc_state == INC_IO_ERROR ||
-			    inc_state == INC_SOCKET_ERROR) {
-				inc_put_error(inc_state);
-			} else if (inc_state == INC_NO_SPACE) {
-				inc_put_error(inc_state);
+			if (inc_dialog->show_dialog)
+				manage_window_focus_in
+					(inc_dialog->dialog->window,
+					 NULL, NULL);
+			inc_put_error(inc_state, pop3_session->error_msg);
+			if (inc_dialog->show_dialog)
+				manage_window_focus_out
+					(inc_dialog->dialog->window,
+					 NULL, NULL);
+			if (inc_state == INC_NO_SPACE ||
+			    inc_state == INC_IO_ERROR)
 				break;
-			}
 		}
 
 		inc_session_destroy(session);
@@ -909,13 +903,16 @@ gint inc_drop_message(const gchar *file, Pop3Session *session)
 	return 0;
 }
 
-static void inc_put_error(IncState istate)
+static void inc_put_error(IncState istate, const gchar *msg)
 {
 	switch (istate) {
 	case INC_ERROR:
-		if (!prefs_common.no_recv_err_panel)
-			alertpanel_error
-				(_("Error occurred while processing mail."));
+		if (prefs_common.no_recv_err_panel)
+			break;
+		if (msg)
+			alertpanel_error(_("Error occurred while processing mail:\n%s"), msg);
+		else
+			alertpanel_error(_("Error occurred while processing mail."));
 		break;
 	case INC_NO_SPACE:
 		alertpanel_error(_("No disk space left."));
@@ -924,11 +921,26 @@ static void inc_put_error(IncState istate)
 		alertpanel_error(_("Can't write file."));
 		break;
 	case INC_SOCKET_ERROR:
+		if (prefs_common.no_recv_err_panel)
+			break;
 		alertpanel_error(_("Socket error."));
 		break;
 	case INC_LOCKED:
-		if (!prefs_common.no_recv_err_panel)
+		if (prefs_common.no_recv_err_panel)
+			break;
+		if (msg)
+			alertpanel_error(_("Mailbox is locked:\n%s"), msg);
+		else
 			alertpanel_error(_("Mailbox is locked."));
+		break;
+	case INC_AUTH_FAILED:
+		if (prefs_common.no_recv_err_panel)
+			break;
+		if (msg)
+			alertpanel_error(_("Authentication failed:\n%s"),
+					 msg);
+		else
+			alertpanel_error(_("Authentication failed."));
 		break;
 	default:
 		break;

@@ -6266,6 +6266,34 @@ guint gtk_stext_str_compare(GtkSText *text, guint start_pos, guint text_len,
 	return result ? len : 0;
 }
 
+gint gtkut_stext_find(GtkSText *text, guint start_pos, const gchar *str,
+		      gboolean case_sens)
+{
+	gint pos;
+	wchar_t *wcs;
+	gint len;
+	gint text_len;
+	gint found_pos = -1;
+
+	wcs = strdup_mbstowcs(str);
+	g_return_val_if_fail(wcs != NULL, -1);
+	len = wcslen(wcs);
+	text_len = gtk_stext_get_length(text);
+
+	for (pos = start_pos; pos < text_len; pos++) {
+		if (text_len - pos < len)
+			break;
+		if (gtk_stext_match_string(text, pos, wcs, len, case_sens)
+		    == TRUE) {
+			found_pos = pos;
+			break;
+		}
+	}
+
+	g_free(wcs);
+	return found_pos;
+}
+
 gboolean gtk_stext_is_uri_string(GtkSText *text,
 				   guint start_pos, guint text_len)
 {
@@ -6278,7 +6306,7 @@ gboolean gtk_stext_is_uri_string(GtkSText *text,
 	return FALSE;
 }
 
-void gtk_stext_clear(GtkSText *text)
+void gtkut_stext_clear(GtkSText *text)
 {
 	gtk_stext_freeze(text);
 	gtk_stext_set_point(text, 0);

@@ -1525,51 +1525,40 @@ gboolean textview_search_string(TextView *textview, const gchar *str,
 	gint pos;
 	wchar_t *wcs;
 	gint len;
-	gint text_len;
-	gboolean found = FALSE;
+#ifdef WIN32
+	gchar *p_str = g_strdup(str);
+#endif
 
 	g_return_val_if_fail(str != NULL, FALSE);
 
 #ifdef WIN32
-	{
-		gchar *p_str = g_strdup(str);
-		locale_from_utf8(&p_str);
-		wcs = strdup_mbstowcs(p_str);
-		g_free(p_str);
-	}
-#else
-	wcs = strdup_mbstowcs(str);
+	locale_from_utf8(&p_str);
 #endif
-	g_return_val_if_fail(wcs != NULL, FALSE);
-	len = wcslen(wcs);
+	len = get_wcs_len(str);
+	g_return_val_if_fail(len >= 0, FALSE);
+
 	pos = textview->cur_pos;
 	if (pos < textview->body_pos)
 		pos = textview->body_pos;
-	text_len = gtk_stext_get_length(text);
-	if (text_len - pos < len) {
-		g_free(wcs);
-		return FALSE;
+
+#ifdef WIN32
+	if ((pos = gtkut_stext_find(text, pos, p_str, case_sens)) != -1) {
+#else
+	if ((pos = gtkut_stext_find(text, pos, str, case_sens)) != -1) {
+#endif
+		gtk_editable_set_position(GTK_EDITABLE(text), pos + len);
+		gtk_editable_select_region(GTK_EDITABLE(text), pos, pos + len);
+		textview_set_position(textview, pos + len);
+#ifdef WIN32
+	g_free(p_str);
+#endif
+		return TRUE;
 	}
 
-	for (; pos < text_len; pos++) {
-		if (text_len - pos < len) break;
-		if (gtk_stext_match_string(text, pos, wcs, len, case_sens)
-		    == TRUE) {
-			gtk_widget_hide(GTK_WIDGET(textview->scrolledwin));
-			gtk_editable_set_position(GTK_EDITABLE(text),
-						  pos + len);
-			gtk_editable_select_region(GTK_EDITABLE(text),
-						   pos, pos + len);
-			gtk_widget_show(GTK_WIDGET(textview->scrolledwin));
-			textview_set_position(textview, pos + len);
-			found = TRUE;
-			break;
-		}
-		if (text_len - pos == len) break;
-	}
-
-	g_free(wcs);
-	return found;
+#ifdef WIN32
+	g_free(p_str);
+#endif
+	return FALSE;
 }
 
 gboolean textview_search_string_backward(TextView *textview, const gchar *str,

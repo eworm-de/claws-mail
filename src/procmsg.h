@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +30,10 @@
 #include <sys/types.h>
 #include <string.h>
 
-typedef struct _MsgInfo		MsgInfo;
-typedef struct _MsgFlags	MsgFlags;
-typedef struct _MsgInfoUpdate 	MsgInfoUpdate;
+typedef struct _MsgInfo			MsgInfo;
+typedef struct _MsgFlags		MsgFlags;
+typedef struct _MsgInfoUpdate 		MsgInfoUpdate;
+typedef struct _MailFilteringData	MailFilteringData;
 
 typedef GSList MsgInfoList;
 typedef GSList MsgNumberList;
@@ -145,6 +146,7 @@ typedef enum
 #define MSG_IS_RETRCPT_PENDING(msg)	(((msg).perm_flags & MSG_RETRCPT_PENDING) != 0)
 
 #define MSGINFO_UPDATE_HOOKLIST "msginfo_update"
+#define MAIL_FILTERING_HOOKLIST "mail_filtering_hooklist"
 
 #include "folder.h"
 #include "procmime.h"
@@ -154,6 +156,8 @@ struct _MsgFlags
 	MsgPermFlags perm_flags;
 	MsgTmpFlags  tmp_flags;
 };
+
+#include "prefs_filtering.h"
 
 struct _MsgInfo
 {
@@ -201,6 +205,11 @@ struct _MsgInfoUpdate {
 	MsgInfo	*msginfo;
 };
 
+struct _MailFilteringData
+{
+	MsgInfo	*msginfo;
+};
+
 GHashTable *procmsg_msg_hash_table_create	(GSList		*mlist);
 void procmsg_msg_hash_table_append		(GHashTable	*msg_table,
 						 GSList		*mlist);
@@ -231,6 +240,11 @@ FILE   *procmsg_open_message_decrypted	(MsgInfo	*msginfo,
 					 MimeInfo      **mimeinfo);
 #endif
 gboolean procmsg_msg_exist		(MsgInfo	*msginfo);
+
+void	procmsg_get_filter_keyword	(MsgInfo	  *msginfo,
+					 gchar	         **header,
+					 gchar	         **key,
+					 PrefsFilterType   type);
 
 void	procmsg_empty_trash		(void);
 gint	procmsg_send_queue		(FolderItem	*queue,
@@ -269,4 +283,5 @@ void procmsg_update_unread_children	(MsgInfo 	*info,
 					 gboolean 	 newly_marked);
 void procmsg_msginfo_set_to_folder	(MsgInfo 	*msginfo,
 					 FolderItem 	*to_folder);
+gboolean procmsg_msginfo_filter		(MsgInfo	*msginfo);
 #endif /* __PROCMSG_H__ */

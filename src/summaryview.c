@@ -4047,42 +4047,9 @@ static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
 
 void summary_filter_open(SummaryView *summaryview, PrefsFilterType type)
 {
-	static HeaderEntry hentry[] = {{"X-BeenThere:",    NULL, FALSE},
-				       {"X-ML-Name:",      NULL, FALSE},
-				       {"X-List:",         NULL, FALSE},
-				       {"X-Mailing-list:", NULL, FALSE},
-				       {"List-Id:",        NULL, FALSE},
-				       {NULL,              NULL, FALSE}};
-
-	static gchar *header_strs[] = {"From", "from", "To", "to", "Subject", "subject"};
-
-	static gchar *hentry_strs[]   = {"X-BeenThere", "X-ML-Name", "X-List",
-					 "X-Mailing-List", "List-Id",
-					 "header \"X-BeenThere\"", "header \"X-ML-Name\"",
-					 "header \"X-List\"", "header \"X-Mailing-List\"",
-					 "header \"List-Id\""};
-	enum
-	{
-		H_X_BEENTHERE	 = 0,
-		H_X_ML_NAME      = 1,
-		H_X_LIST         = 2,
-		H_X_MAILING_LIST = 3,
-		H_LIST_ID	 = 4
-	};
-
-	enum
-	{
-		H_FROM    = 0,
-		H_TO      = 2,
-		H_SUBJECT = 4
-	};
-
 	MsgInfo *msginfo;
 	gchar *header = NULL;
 	gchar *key = NULL;
-	FILE *fp;
-	int header_offset;
-	int hentry_offset;
 
 	if (!summaryview->selected) return;
 
@@ -4090,72 +4057,11 @@ void summary_filter_open(SummaryView *summaryview, PrefsFilterType type)
 					      summaryview->selected);
 	if (!msginfo) return;
 
-	header_offset = 1;
-	hentry_offset = 5;
-
-	switch (type) {
-	case FILTER_BY_NONE:
-		break;
-	case FILTER_BY_AUTO:
-		if ((fp = procmsg_open_message(msginfo)) == NULL) return;
-		procheader_get_header_fields(fp, hentry);
-		fclose(fp);
-
-		if (hentry[H_X_BEENTHERE].body != NULL) {
-			header = hentry_strs[H_X_BEENTHERE + hentry_offset];
-			Xstrdup_a(key, hentry[H_X_BEENTHERE].body, );
-		} else if (hentry[H_X_ML_NAME].body != NULL) {
-			header = hentry_strs[H_X_ML_NAME + hentry_offset];
-			Xstrdup_a(key, hentry[H_X_ML_NAME].body, );
-		} else if (hentry[H_X_LIST].body != NULL) {
-			header = hentry_strs[H_X_LIST + hentry_offset];
-			Xstrdup_a(key, hentry[H_X_LIST].body, );
-		} else if (hentry[H_X_MAILING_LIST].body != NULL) {
-			header = hentry_strs[H_X_MAILING_LIST + hentry_offset];
-			Xstrdup_a(key, hentry[H_X_MAILING_LIST].body, );
-		} else if (hentry[H_LIST_ID].body != NULL) {
-			header = hentry_strs[H_LIST_ID + hentry_offset];
-			Xstrdup_a(key, hentry[H_LIST_ID].body, );
-		} else if (msginfo->subject) {
-			header = header_strs[H_SUBJECT + header_offset];
-			key = msginfo->subject;
-		}
-
-		g_free(hentry[H_X_BEENTHERE].body);
-		hentry[H_X_BEENTHERE].body = NULL;
-		g_free(hentry[H_X_ML_NAME].body);
-		hentry[H_X_ML_NAME].body = NULL;
-		g_free(hentry[H_X_LIST].body);
-		hentry[H_X_LIST].body = NULL;
-		g_free(hentry[H_X_MAILING_LIST].body);
-		hentry[H_X_MAILING_LIST].body = NULL;
-		g_free(hentry[H_LIST_ID].body);
-		hentry[H_LIST_ID].body = NULL;
-
-		break;
-	case FILTER_BY_FROM:
-		header = header_strs[H_FROM + header_offset];
-		key = msginfo->from;
-		break;
-	case FILTER_BY_TO:
-		header = header_strs[H_TO + header_offset];
-		key = msginfo->to;
-		break;
-	case FILTER_BY_SUBJECT:
-		header = header_strs[H_SUBJECT + header_offset];
-		key = msginfo->subject;
-		break;
-	default:
-		break;
-	}
-
-	/*
-	 * NOTE: key may be allocated on the stack, so 
-	 * prefs_filter[ing]_open() should have completed 
-	 * and have set entries. Otherwise we're hosed.  
-	 */
-
+	procmsg_get_filter_keyword(msginfo, &header, &key, type);
 	prefs_filtering_open(NULL, header, key);
+
+	g_free(header);
+	g_free(key);
 }
 
 /* color label */
