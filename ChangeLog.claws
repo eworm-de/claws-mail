@@ -1,3 +1,8 @@
+2001-08-02 [alfons]
+
+	* configure.in
+		quick fix for ispell detection...
+
 2001-08-01 [paul]
 
 	* configure.in

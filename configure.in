@@ -188,12 +188,12 @@ fi
 
 dnl get ispell path
 dnl
-AC_PATH_PROG(ispell_path, ispell, x)
-if test "$ispell_path" != x; then
+AC_PATH_PROG(ispell_path, ispell, no)
+if test "$ispell_path" != no; then
 	AC_DEFINE_UNQUOTED(ISPELL_PATH, "$ispell_path")
 	AC_SUBST(ISPELL_PATH)
 else
-	AC_DEFINE_UNQUOTED(ISPELL_PATH, "$ispell_path")
+	AC_DEFINE_UNQUOTED(ISPELL_PATH, "/usr/bin/ispell")
 	AC_SUBST(ISPELL_PATH)
 fi
 
