@@ -1,6 +1,16 @@
 2001-10-29 [darko]
 
 	* src/compose.c
+		fix wrapping for good
+
+2001-10-29 [darko]
+
+	* src/compose.c
+		undo previous change as it broke the smart wrapping
+
+2001-10-29 [darko]
+
+	* src/compose.c
 		fix infinite loop when long URL is quoted
 		(closes bug #475122.
 

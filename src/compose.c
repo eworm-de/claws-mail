@@ -2399,52 +2399,54 @@ static void compose_wrap_line_all(Compose *compose)
 		if (cur_len + ch_len > linewrap_len) {
 			gint tlen;
 
-			if (line_len == 0 || line_pos != prev_line_pos) {
-				/* don't wrap URLs */
-				if (is_url_string(text, line_pos, text_len))
-					goto dontwrapurl;
-				line_len = cur_pos - line_pos;
-				line_pos = cur_pos;
-			}
-
 			if (text->use_wchar)
 				tlen = wctomb(cbuf, (wchar_t)GTK_STEXT_INDEX(text, line_pos - 1));
 			else {
 				cbuf[0] = GTK_STEXT_INDEX(text, line_pos - 1);
 				tlen = 1;
 			}
-			if (tlen == 1 && isspace(*cbuf)) {
-				gtk_stext_set_point(text, line_pos);
-				gtk_stext_backward_delete(text, 1);
-				text_len--;
-				cur_pos--;
-				line_pos--;
-				cur_len--;
-				line_len--;
-			}
+			if ((line_pos - prev_line_pos == indent_len) &&
+			    !is_url_string(text, line_pos, text_len))
+				line_pos = cur_pos;
+			if (!is_url_string(text, line_pos, text_len)) {
+				if (tlen == 1 && isspace(*cbuf)) {
+					gtk_stext_set_point(text, line_pos);
+					gtk_stext_backward_delete(text, 1);
+					text_len--;
+					cur_pos--;
+					line_pos--;
+					cur_len--;
+					line_len--;
+				}
 
-			gtk_stext_set_point(text, line_pos);
-			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
-			gtk_stext_compact_buffer(text);
-			text_len++;
-			cur_pos++;
-			line_pos++;
-			cur_len = cur_len - line_len + ch_len;
-			line_len = 0;
+				gtk_stext_set_point(text, line_pos);
+				gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
+				gtk_stext_compact_buffer(text);
+				text_len++;
+				cur_pos++;
+				line_pos++;
+				cur_len = cur_len - line_len + ch_len;
+				line_len = 0;
+			}
 			if (linewrap_quote && quote_len) {
-				/* only if line is not already quoted */
+				/* only if line is not already quoted 
+				   if this is long line force wrapping */
 				if (!gtkstext_str_strcmp(text, line_pos,
 						         text_len, quote_fmt)) {
 					guint i_len;
 
-					i_len = insert_quote(text, quote_len,
-							     indent_len,
-							     prev_line_pos,
-							     text_len,
-							     quote_fmt);
+					if (line_pos - prev_line_pos > indent_len) {
+						i_len = insert_quote(text, quote_len,
+								     indent_len,
+								     prev_line_pos,
+								     text_len,
+								     quote_fmt);
 
-					gtk_stext_compact_buffer(text);
-					text_len += i_len;
+						gtk_stext_compact_buffer(text);
+						text_len += i_len;
+					}
+					else
+						continue;
 					/* for loop above will increase it */
 					cur_pos = line_pos - 1;
 					cur_len = 0;
@@ -2457,7 +2459,6 @@ static void compose_wrap_line_all(Compose *compose)
 			continue;
 		}
 
-dontwrapurl:
 		if (ch_len > 1) {
 			line_pos = cur_pos + 1;
 			line_len = cur_len + ch_len;
