@@ -361,9 +361,10 @@ FolderView *folderview_create(void)
 	titles[COL_TOTAL]  = _("#");
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
-				       GTK_POLICY_AUTOMATIC,
-				       GTK_POLICY_ALWAYS);
+	gtk_scrolled_window_set_policy
+		(GTK_SCROLLED_WINDOW(scrolledwin),
+		 GTK_POLICY_AUTOMATIC,
+		 prefs_common.folderview_vscrollbar_policy);
 	gtk_widget_set_usize(scrolledwin,
 			     prefs_common.folderview_width,
 			     prefs_common.folderview_height);

@@ -1,3 +1,8 @@
+2002-06-22 [paul]	0.7.8claws14
+
+	* sync with 0.7.8cvs5
+		see ChangeLog 2002-06-19 and 2002-06-20
+
 2002-06-22 [alfons]	0.7.8claws13
 
 	* src/selective_download.c

@@ -1,3 +1,23 @@
+2002-06-20
+
+	* src/folderview.c
+	  src/prefs_common.[ch]: フォルダビューで垂直スクロールバーの
+	  ポリシーを指定する隠しオプションを追加。
+
+2002-06-19
+
+	* src/messageview.[ch]:
+	  messageview_copy_clipboard(): MIME モードでテキストをコピーでき
+	  ないバグを修正。
+	  messageview_get_current_textview(): 新規。
+	  messageview_get_text_widget(): 削除。
+	* src/quote_fmt_parse.y: msginfo が空でもメッセージを引用するように
+	  した。
+	* src/compose.[ch]: 「引用としてペースト」を実装。
+	  text_inserted(): 新しい "insert_text" シグナルのコールバック。
+	  Compose::paste_as_quotation が TRUE ならペーストするテキストに
+	  引用符を付ける。
+
 2002-06-19
 
 	* src/compose.c: ファイルの Content-Type が text/* の場合は、その

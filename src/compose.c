@@ -377,6 +377,7 @@ static void compose_redo_cb		(Compose	*compose);
 static void compose_cut_cb		(Compose	*compose);
 static void compose_copy_cb		(Compose	*compose);
 static void compose_paste_cb		(Compose	*compose);
+static void compose_paste_as_quote_cb	(Compose	*compose);
 static void compose_allsel_cb		(Compose	*compose);
 
 static void compose_gtk_stext_action_cb	(Compose		   *compose,
@@ -455,8 +456,6 @@ static void to_activated		(GtkWidget	*widget,
 					 Compose	*compose);
 static void newsgroups_activated	(GtkWidget	*widget,
 					 Compose	*compose);
-static void subject_activated		(GtkWidget	*widget,
-					 Compose	*compose);
 static void cc_activated		(GtkWidget	*widget,
 					 Compose	*compose);
 static void bcc_activated		(GtkWidget	*widget,
@@ -465,8 +464,17 @@ static void replyto_activated		(GtkWidget	*widget,
 					 Compose	*compose);
 static void followupto_activated	(GtkWidget	*widget,
 					 Compose	*compose);
+static void subject_activated		(GtkWidget	*widget,
+					 Compose	*compose);
 #endif
 
+static void text_activated		(GtkWidget	*widget,
+					 Compose	*compose);
+static void text_inserted		(GtkWidget	*widget,
+					 const gchar	*text,
+					 gint		 length,
+					 gint		*position,
+					 Compose	*compose);
 static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				  gboolean to_all,
 				  gboolean ignore_replyto,
@@ -488,13 +496,11 @@ static void compose_check_backwards	   (Compose *compose);
 static void compose_check_forwards_go	   (Compose *compose);
 #endif
 
+static gboolean compose_send_control_enter	(Compose	*compose);
+
 #ifdef WIN32
 static gint ext_editor_timeout_cb(Compose *compose);
 #endif
-
-static gboolean compose_send_control_enter (Compose *compose);
-static void text_activated		   (GtkWidget	*widget,
-					    Compose	*compose);
 
 static GtkItemFactoryEntry compose_popup_entries[] =
 {
@@ -520,6 +526,8 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Edit/Cu_t"),		"<control>X", compose_cut_cb,    0, NULL},
 	{N_("/_Edit/_Copy"),		"<control>C", compose_copy_cb,   0, NULL},
 	{N_("/_Edit/_Paste"),		"<control>V", compose_paste_cb,  0, NULL},
+	{N_("/_Edit/Paste as _quotation"),
+					NULL, compose_paste_as_quote_cb, 0, NULL},
 	{N_("/_Edit/Select _all"),	"<control>A", compose_allsel_cb, 0, NULL},
 	{N_("/_Edit/A_dvanced"),	NULL, NULL, 0, "<Branch>"},
 	{N_("/_Edit/A_dvanced/Move a character backward"),
@@ -698,7 +706,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 		return NULL;
 
 	c->redirect_filename = filename;
-	
+
 	if (msginfo->subject)
 #ifdef WIN32
 	{
@@ -1119,6 +1127,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	CHANGE_FLAGS(msginfo);
 
 	compose = compose_create(account, COMPOSE_FORWARD);
+
 	if (msginfo->subject && *msginfo->subject) {
 #ifdef WIN32
 		gchar *p_subject;
@@ -1664,10 +1673,14 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 				const gchar *body)
 {
 	GtkSText *text = GTK_STEXT(compose->text);
+	static MsgInfo dummyinfo;
 	gchar *quote_str = NULL;
 	gchar *buf;
 	gchar *p, *lastp;
 	gint len;
+
+	if (!msginfo)
+		msginfo = &dummyinfo;
 
 	if (qmark != NULL) {
 		quote_fmt_init(msginfo, NULL, NULL);
@@ -1749,6 +1762,7 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 
 	if (msginfo->subject && *msginfo->subject) {
 		gchar *buf, *buf2, *p;
+
 		buf = g_strdup(msginfo->subject);
 		while (!strncasecmp(buf, "Re:", 3)) {
 			p = buf + 3;
@@ -1782,7 +1796,6 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 		extract_address(replyto);
 #endif
 	}
-
 	if (msginfo->from) {
 #ifdef WIN32
 		gchar *p_from;
@@ -4770,6 +4783,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 			   GTK_SIGNAL_FUNC(compose_grab_focus_cb), compose);
 	gtk_signal_connect(GTK_OBJECT(text), "activate",
 			   GTK_SIGNAL_FUNC(text_activated), compose);
+	gtk_signal_connect(GTK_OBJECT(text), "insert_text",
+			   GTK_SIGNAL_FUNC(text_inserted), compose);
 	gtk_signal_connect_after(GTK_OBJECT(text), "button_press_event",
 				 GTK_SIGNAL_FUNC(compose_button_press_cb),
 				 edit_vbox);
@@ -4937,6 +4952,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose->modified = FALSE;
 
 	compose->return_receipt = FALSE;
+	compose->paste_as_quotation = FALSE;
 
 	compose->to_list        = NULL;
 	compose->newsgroup_list = NULL;
@@ -5381,11 +5397,8 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 		gtk_stext_clear(GTK_STEXT(compose->text));
 
 	if (compose->replyinfo == NULL) {
-		MsgInfo dummyinfo;
-
-		memset(&dummyinfo, 0, sizeof(MsgInfo));
-		parsed_str = compose_quote_fmt(compose, &dummyinfo,
-					       tmpl->value, NULL, NULL);
+		parsed_str = compose_quote_fmt(compose, NULL, tmpl->value,
+					       NULL, NULL);
 	} else {
 		if (prefs_common.quotemark && *prefs_common.quotemark)
 			qmark = prefs_common.quotemark;
@@ -6721,6 +6734,17 @@ static void compose_paste_cb(Compose *compose)
 			(GTK_EDITABLE(compose->focused_editable));
 }
 
+static void compose_paste_as_quote_cb(Compose *compose)
+{
+	if (compose->focused_editable &&
+	    GTK_WIDGET_HAS_FOCUS(compose->focused_editable)) {
+		compose->paste_as_quotation = TRUE;
+		gtk_editable_paste_clipboard
+			(GTK_EDITABLE(compose->focused_editable));
+		compose->paste_as_quotation = FALSE;
+	}
+}
+
 static void compose_allsel_cb(Compose *compose)
 {
 	if (compose->focused_editable &&
@@ -7220,6 +7244,38 @@ static void compose_show_first_last_header(Compose *compose, gboolean show_first
 static void text_activated(GtkWidget *widget, Compose *compose)
 {
 	compose_send_control_enter(compose);
+}
+
+static void text_inserted(GtkWidget *widget, const gchar *text,
+			  gint length, gint *position, Compose *compose)
+{
+	GtkEditable *editable = GTK_EDITABLE(widget);
+
+	gtk_signal_handler_block_by_func(GTK_OBJECT(widget),
+					 GTK_SIGNAL_FUNC(text_inserted),
+					 compose);
+	if (compose->paste_as_quotation) {
+		gchar *new_text;
+		gchar *qmark;
+		gint pos;
+
+		new_text = g_strndup(text, length);
+		if (prefs_common.quotemark && *prefs_common.quotemark)
+			qmark = prefs_common.quotemark;
+		else
+			qmark = "> ";
+		gtk_stext_set_point(GTK_STEXT(widget), *position);
+		compose_quote_fmt(compose, NULL, "%Q", qmark, new_text);
+		pos = gtk_stext_get_point(GTK_STEXT(widget));
+		gtk_editable_set_position(editable, pos);
+		*position = pos;
+		g_free(new_text);
+	} else
+		gtk_editable_insert_text(editable, text, length, position);
+	gtk_signal_handler_unblock_by_func(GTK_OBJECT(widget),
+					   GTK_SIGNAL_FUNC(text_inserted),
+					   compose);
+	gtk_signal_emit_stop_by_name(GTK_OBJECT(editable), "insert_text");
 }
 
 static gboolean compose_send_control_enter(Compose *compose)

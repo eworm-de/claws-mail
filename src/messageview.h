@@ -35,7 +35,8 @@ typedef struct _MessageView	MessageView;
 typedef enum
 {
 	MVIEW_TEXT,
-	MVIEW_MIME
+	MVIEW_MIME,
+	MVIEW_PLUG
 } MessageType;
 
 struct _MessageView
@@ -50,6 +51,7 @@ struct _MessageView
 	TextView *textview;
 	ImageView *imageview;
 	MimeView *mimeview;
+	GtkWidget *plugview;
 
 	MainWindow *mainwin;
 
@@ -66,6 +68,9 @@ void messageview_clear				(MessageView	*messageview);
 void messageview_destroy			(MessageView	*messageview);
 void messageview_quote_color_set		(void);
 void messageview_set_font			(MessageView	*messageview);
+
+TextView *messageview_get_current_textview	(MessageView	*messageview);
+
 void messageview_copy_clipboard			(MessageView	*messageview);
 void messageview_select_all			(MessageView	*messageview);
 void messageview_set_position			(MessageView	*messageview,
@@ -78,8 +83,6 @@ gboolean messageview_search_string		(MessageView	*messageview,
 gboolean messageview_search_string_backward	(MessageView	*messageview,
 						 const gchar	*str,
 						 gboolean	 case_sens);
-
-GtkWidget *messageview_get_text_widget		(MessageView	*messageview);
 
 gboolean messageview_is_visible			(MessageView	*messageview);
 

@@ -375,7 +375,7 @@ special:
 	}
 	| SHOW_MESSAGE
 	{
-		if (msginfo->folder) {
+		if (msginfo->folder || body) {
 			gchar buf[BUFFSIZE];
 			FILE *fp;
 
@@ -397,7 +397,7 @@ special:
 	}
 	| SHOW_QUOTED_MESSAGE
 	{
-		if (msginfo->folder) {
+		if (msginfo->folder || body) {
 			gchar buf[BUFFSIZE];
 			FILE *fp;
 
@@ -421,7 +421,7 @@ special:
 	}
 	| SHOW_MESSAGE_NO_SIGNATURE
 	{
-		if (msginfo->folder) {
+		if (msginfo->folder || body) {
 			gchar buf[BUFFSIZE];
 			FILE *fp;
 
@@ -445,7 +445,7 @@ special:
 	}
 	| SHOW_QUOTED_MESSAGE_NO_SIGNATURE
 	{
-		if (msginfo->folder) {
+		if (msginfo->folder || body) {
 			gchar buf[BUFFSIZE];
 			FILE *fp;
 
