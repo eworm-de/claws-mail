@@ -367,3 +367,4 @@
 ( cvs diff -u -r 1.65.2.21 -r 1.65.2.22 src/codeconv.c; ) > 1.0.1cvs1.2.patchset
 ( cvs diff -u -r 1.96.2.42 -r 1.96.2.43 src/textview.c; cvs diff -u -r 1.12.2.3 -r 1.12.2.4 src/textview.h; ) > 1.0.1cvs1.3.patchset
 ( cvs diff -u -r 1.94.2.43 -r 1.94.2.44 src/messageview.c; ) > 1.0.1cvs2.1.patchset
+( cvs diff -u -r 1.274.2.30 -r 1.274.2.31 src/mainwindow.c; ) > 1.0.1cvs3.1.patchset
