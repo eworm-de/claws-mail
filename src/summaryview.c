@@ -46,6 +46,7 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <regex.h>
 
 #include "intl.h"
 #include "main.h"
@@ -3620,7 +3621,8 @@ void summary_simplify_subject(SummaryView *summaryview, gchar * rexp,
 	GSList * cur;
 	for(cur = mlist ; cur != NULL ; cur = cur->next) {
 		MsgInfo * msginfo = (MsgInfo *) cur->data;
-		string_remove_all_matches(msginfo->subject, rexp, 0, 0);
+		string_remove_all_matches(msginfo->subject, rexp, 
+					  REG_EXTENDED, 0);
 	}
 }
 

@@ -1,3 +1,9 @@
+2001-12-24 [alfons]	0.6.6claws17
+	
+	* src/summaryview.c
+		use new style regexp for subject stripping 
+		(patch submitted by Thomas Link <t.link.tmp200101@gmx.net>)
+
 2001-12-24 [darko]	0.6.6claws16
 
 	* src/pgptext.c
