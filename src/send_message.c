@@ -426,10 +426,16 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 
 static gint send_recv_message(Session *session, const gchar *msg, gpointer data)
 {
-	SMTPSession *smtp_session = SMTP_SESSION(session);
-	SendProgressDialog *dialog = (SendProgressDialog *)data;
+	SMTPSession *smtp_session;
+	SendProgressDialog *dialog; 
 	gchar buf[BUFFSIZE];
-	gchar *state_str = NULL;
+	gchar *state_str;
+
+	g_print("$$$ > send_recv_message(data: %lx)\n", data);
+	dialog = (SendProgressDialog *) data;
+	state_str = NULL;
+	smtp_session = SMTP_SESSION(session);
+	g_print("$$$ > send_recv_message(dialog: %lx)\n", dialog);
 
 	switch (smtp_session->state) {
 	case SMTP_READY:

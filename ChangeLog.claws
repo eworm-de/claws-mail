@@ -1,3 +1,9 @@
+2003-03-30 [alfons]	0.8.11claws68
+
+	* src/send_message.c
+	* src/commons/session.c
+		add more debug traces
+
 2003-03-30 [christoph]	0.8.11claws67
 
 	* src/folder.c
