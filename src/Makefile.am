@@ -35,10 +35,8 @@ sylpheed_SOURCES = \
 	addr_compl.c addr_compl.h \
 	addressitem.h \
 	adbookbase.h \
-	addrquery.h \
 	addritem.c addritem.h \
 	addrcache.c addrcache.h \
-	addrcindex.c addrcindex.h \
 	addrclip.c addrclip.h \
 	addrselect.c addrselect.h \
 	addrbook.c addrbook.h \
@@ -52,10 +50,6 @@ sylpheed_SOURCES = \
 	importpine.c importpine.h \
 	jpilot.c jpilot.h \
 	syldap.c syldap.h \
-	ldapserver.c ldapserver.h \
-	ldapctrl.c ldapctrl.h \
-	ldapquery.c ldapquery.h \
-	ldaputil.c ldaputil.h \
 	editbook.c editbook.h \
 	editgroup.c editgroup.h \
 	editaddress.c editaddress.h \
@@ -209,6 +203,9 @@ INCLUDES = \
 	$(GPGME_CFLAGS) \
 	$(OPENSSL_CFLAGS) \
 	-I$(includedir)
+
+sylpheed_LDFLAGS = \
+	-export-dynamic
 
 sylpheed_LDADD = \
 	$(ASPELL_LIBS) \

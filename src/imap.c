@@ -2996,7 +2996,22 @@ static void imap_path_separator_subst(gchar *str, gchar separator)
 static gchar *imap_modified_utf7_to_locale(const gchar *mutf7_str)
 {
 #if !HAVE_ICONV
-	return g_strdup(mutf7_str);
+	const gchar *from_p;
+	gchar *to, *to_p;
+
+	to = g_malloc(strlen(mutf7_str) + 1);
+	to_p = to;
+
+	for (from_p = mutf7_str; *from_p != '\0'; from_p++) {
+		if (*from_p == '&' && *(from_p + 1) == '-') {
+			*to_p++ = '&';
+			from_p++;
+		} else
+			*to_p++ = *from_p;
+	}
+	*to_p = '\0';
+
+	return to;
 #else
 	static iconv_t cd = (iconv_t)-1;
 	static gboolean iconv_ok = TRUE;
@@ -3070,7 +3085,22 @@ static gchar *imap_modified_utf7_to_locale(const gchar *mutf7_str)
 static gchar *imap_locale_to_modified_utf7(const gchar *from)
 {
 #if !HAVE_ICONV
-	return g_strdup(from);
+	const gchar *from_p;
+	gchar *to, *to_p;
+
+	to = g_malloc(strlen(from) * 2 + 1);
+	to_p = to;
+
+	for (from_p = from; *from_p != '\0'; from_p++) {
+		if (*from_p == '&') {
+			*to_p++ = '&';
+			*to_p++ = '-';
+		} else
+			*to_p++ = *from_p;
+	}
+	*to_p = '\0';
+
+	return to;
 #else
 	static iconv_t cd = (iconv_t)-1;
 	static gboolean iconv_ok = TRUE;
@@ -3101,22 +3131,37 @@ static gchar *imap_locale_to_modified_utf7(const gchar *from)
 #define IS_PRINT(ch) (isprint(ch) && isascii(ch))
 
 	while (from_len > 0) {
-		if (IS_PRINT(*from_tmp)) {
+		if (*from_tmp == '+') {
+			*norm_utf7_p++ = '+';
+			*norm_utf7_p++ = '-';
+			norm_utf7_len -= 2;
+			from_tmp++;
+			from_len--;
+		} else if (IS_PRINT(*from_tmp)) {
 			/* printable ascii char */
 			*norm_utf7_p = *from_tmp;
 			norm_utf7_p++;
+			norm_utf7_len--;
 			from_tmp++;
 			from_len--;
 		} else {
-			size_t mblen;
+			size_t mb_len = 0, conv_len = 0;
 
 			/* unprintable char: convert to UTF-7 */
-			for (mblen = 0;
-			     !IS_PRINT(from_tmp[mblen]) && mblen < from_len;
-			     mblen++)
-				;
-			from_len -= mblen;
-			if (iconv(cd, (ICONV_CONST gchar **)&from_tmp, &mblen,
+			p = from_tmp;
+			while (!IS_PRINT(*p) && conv_len < from_len) {
+				mb_len = mblen(p, MB_LEN_MAX);
+				if (mb_len <= 0) {
+					g_warning("wrong multibyte sequence\n");
+					return g_strdup(from);
+				}
+				conv_len += mb_len;
+				p += mb_len;
+			}
+
+			from_len -= conv_len;
+			if (iconv(cd, (ICONV_CONST gchar **)&from_tmp,
+				  &conv_len,
 				  &norm_utf7_p, &norm_utf7_len) == -1) {
 				g_warning("iconv cannot convert %s to UTF-7\n",
 					  conv_get_current_charset_str());
@@ -3135,17 +3180,23 @@ static gchar *imap_locale_to_modified_utf7(const gchar *from)
 	for (p = norm_utf7; p < norm_utf7_p; p++) {
 		/* replace: '&' -> "&-",
 			    '+' -> '&',
-			    escaped '/' -> ',' */
+			    "+-" -> '+',
+			    BASE64 '/' -> ',' */
 		if (!in_escape && *p == '&') {
 			g_string_append(to_str, "&-");
 		} else if (!in_escape && *p == '+') {
-			g_string_append_c(to_str, '&');
-			in_escape = TRUE;
+			if (*(p + 1) == '-') {
+				g_string_append_c(to_str, '+');
+				p++;
+			} else {
+				g_string_append_c(to_str, '&');
+				in_escape = TRUE;
+			}
 		} else if (in_escape && *p == '/') {
 			g_string_append_c(to_str, ',');
 		} else if (in_escape && *p == '-') {
-			in_escape = FALSE;
 			g_string_append_c(to_str, '-');
+			in_escape = FALSE;
 		} else {
 			g_string_append_c(to_str, *p);
 		}

@@ -19,3 +19,9 @@ CPPFLAGS = \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(ASPELL_CFLAGS)
+
+EXTRA_DIST = \
+	README \
+	newmail.xpm \
+	nomail.xpm \
+	unreadmail.xpm

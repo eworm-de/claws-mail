@@ -49,6 +49,14 @@ static StringEntry *string_entry_new(const gchar *str)
 	return entry;
 }
 
+static void string_entry_free(StringEntry *entry)
+{
+	g_return_if_fail(entry != NULL);
+
+	g_free(entry->string);
+	g_free(entry);
+}
+
 StringTable *string_table_new(void)
 {
 	StringTable *strtable;
@@ -102,8 +110,7 @@ void string_table_free_string(StringTable *table, gchar *str)
 		if (entry->ref_count <= 0) {
 			XXX_DEBUG ("refcount of string %s dropped to zero\n", entry->string);
 			g_hash_table_remove(table->hash_table, str);
-			g_free(entry->string);
-			g_free(entry);
+			string_entry_free(entry);
 		} else {
 			XXX_DEBUG ("ref-- for %s (%d)\n", entry->string, entry->ref_count); 
 		}
@@ -116,8 +123,7 @@ static gboolean string_table_remove_for_each_fn(gchar *key, StringEntry *entry,
 	g_return_val_if_fail(key != NULL, TRUE);
 	g_return_val_if_fail(entry != NULL, TRUE);
 
-	g_free(entry->string);
-	g_free(entry);
+	string_entry_free(entry);
 
 	return TRUE;
 }

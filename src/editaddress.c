@@ -1030,7 +1030,6 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent, I
 		g_free( name );
 	}
 	g_free( cn );
-	addrbook_invalidate( abf );
 
 	gtk_clist_clear( GTK_CLIST(personeditdlg.clist_email) );
 	gtk_clist_clear( GTK_CLIST(personeditdlg.clist_attrib) );

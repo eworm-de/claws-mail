@@ -45,14 +45,6 @@
 #include "hooks.h"
 #include "msgcache.h"
 
-typedef struct _FlagInfo	FlagInfo;
-
-struct _FlagInfo
-{
-	guint    msgnum;
-	MsgFlags flags;
-};
-
 GHashTable *procmsg_msg_hash_table_create(GSList *mlist)
 {
 	GHashTable *msg_table;

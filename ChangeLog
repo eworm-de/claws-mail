@@ -1,3 +1,47 @@
+2003-05-22
+
+	* src/imap.c:
+	  imap_modified_utf7_to_locale()
+	  imap_locale_to_modified_utf7(): fixed compilation failure when not
+	  using iconv().
+
+2003-05-21
+
+	* src/procmime.c: procmime_scan_multipart_message(): fixed parsing
+	  of message/rfc822 parts.
+
+2003-05-21
+
+	* src/pop.c: pop3_ok(): detect timeout error.
+
+2003-05-20
+
+	* src/imap.c: imap_locale_to_modified_utf7(): fixed the encoding bug
+	  when locale strings include '+'.
+	  imap_modified_utf7_to_locale()
+	  imap_locale_to_modified_utf7(): at least escape/unescape '&' even
+	  if iconv() is not supported.
+
+2003-05-20
+
+	* src/compose.c:
+	  compose_insert_sig()
+	  compose_get_signature_str(): include separator in signature string.
+	  Don't insert separator if signature file is not found.
+	  Disabled use of implicit default signature path (~/.signature) when
+	  sig_path is NULL.
+
+
+2003-05-20
+
+	* src/codeconv.c
+	  src/gtkshruler.c
+	  src/news.c
+	  src/procmsg.c
+	  src/quote_fmt_parse.y
+	  src/smtp.c: suppress warnings that gcc-3.3 issues.
+	  src/stringtable.c: use string_entry_free().
+
 2003-05-19
 
 	* src/compose.c: compose_insert_sig(): fixed the bug that always

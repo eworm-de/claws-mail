@@ -39,7 +39,6 @@
 #ifdef WIN32
 #include "utils.h"
 #endif
-#include "addrquery.h"
 
 #ifndef DEV_STANDALONE
 #include "prefs_gtk.h"
@@ -53,9 +52,7 @@
 #endif
 
 #ifdef USE_LDAP
-#include "ldapserver.h"
-#include "ldapctrl.h"
-#include "ldapquery.h"
+#include "syldap.h"
 #endif
 
 #define TAG_ADDRESS_INDEX    "addressbook"
@@ -94,14 +91,6 @@
 #define ATTAG_LDAP_CRITERIA   "criteria"
 #define ATTAG_LDAP_MAX_ENTRY  "max-entry"
 #define ATTAG_LDAP_TIMEOUT    "timeout"
-#define ATTAG_LDAP_MAX_AGE    "max-age"
-#define ATTAG_LDAP_DYN_SEARCH "dyn-search"
-
-#define ELTAG_LDAP_ATTR_SRCH  "attribute"
-#define ATTAG_LDAP_ATTR_NAME  "name"
-
-/* New attributes */
-#define ATTAG_LDAP_DEFAULT    "default"
 
 #if 0
 N_("Common address")
@@ -118,9 +107,6 @@ N_("Personal address")
 #define DISP_OLD_COMMON       _("Common address")
 #define DISP_OLD_PERSONAL     _("Personal address")
 
-/*
- * Define attribute name-value pair.
- */
 typedef struct _AddressIfAttr AddressIfAttrib;
 struct _AddressIfAttr {
 	gchar *name;
@@ -128,27 +114,9 @@ struct _AddressIfAttr {
 };
 
 /*
- * Define DOM fragment.
- */
-typedef struct _AddressIfFrag AddressIfFragment;
-struct _AddressIfFrag {
-	gchar *name;
-	GList *children;
-	GList *attributes;
-};
-
-/**
- * Build interface with default values.
- *
- * \param type Interface type.
- * \param name Interface name.
- * \param tagIf XML tag name for interface in address index file.
- * \param tagDS XML tag name for datasource in address index file.
- * \return Address interface object.
+* Build interface with default values.
 */
-static AddressInterface *addrindex_create_interface(
-		gint type, gchar *name, gchar *tagIf, gchar *tagDS )
-{
+static AddressInterface *addrindex_create_interface( gint type, gchar *name, gchar *tagIf, gchar *tagDS ) {
 	AddressInterface *iface = g_new0( AddressInterface, 1 );
 
 	ADDRITEM_TYPE(iface) = ITEMTYPE_INTERFACE;
@@ -164,8 +132,6 @@ static AddressInterface *addrindex_create_interface(
 	iface->haveLibrary = TRUE;
 	iface->useInterface = TRUE;
 	iface->readOnly      = TRUE;
-
-	/* Set callbacks to NULL values - override for each interface */
 	iface->getAccessFlag = NULL;
 	iface->getModifyFlag = NULL;
 	iface->getReadFlag   = NULL;
@@ -178,27 +144,16 @@ static AddressInterface *addrindex_create_interface(
 	iface->getAllGroups  = NULL;
 	iface->getName       = NULL;
 	iface->listSource = NULL;
-
-	/* Search stuff */
-	iface->externalQuery = FALSE;
-	iface->searchOrder = 0;		/* Ignored */
-	iface->startSearch = NULL;
-	iface->stopSearch = NULL;
-
 	return iface;
 }
 
-/**
- * Build table of of all address book interfaces.
- * \param addrIndex Address index object.
- */
+/*
+* Build table of interfaces.
+*/
 static void addrindex_build_if_list( AddressIndex *addrIndex ) {
 	AddressInterface *iface;
 
-	/* Create intrinsic XML address book interface */
-	iface = addrindex_create_interface(
-			ADDR_IF_BOOK, "Address Book", TAG_IF_ADDRESS_BOOK,
-			TAG_DS_ADDRESS_BOOK );
+	iface = addrindex_create_interface( ADDR_IF_BOOK, "Address Book", TAG_IF_ADDRESS_BOOK, TAG_DS_ADDRESS_BOOK );
 	iface->readOnly      = FALSE;
 	iface->getModifyFlag = ( void * ) addrbook_get_modified;
 	iface->getAccessFlag = ( void * ) addrbook_get_accessed;
@@ -211,16 +166,10 @@ static void addrindex_build_if_list( AddressIndex *addrIndex ) {
 	iface->getAllPersons = ( void * ) addrbook_get_all_persons;
 	iface->getName       = ( void * ) addrbook_get_name;
 	iface->setAccessFlag = ( void * ) addrbook_set_accessed;
-	iface->searchOrder   = 2;
-
-	/* Add to list of interfaces in address book */	
-	addrIndex->interfaceList =
-		g_list_append( addrIndex->interfaceList, iface );
+	addrIndex->interfaceList = g_list_append( addrIndex->interfaceList, iface );
 	ADDRITEM_PARENT(iface) = ADDRITEM_OBJECT(addrIndex);
 
-	/* Create vCard interface */
-	iface = addrindex_create_interface(
-			ADDR_IF_VCARD, "vCard", TAG_IF_VCARD, TAG_DS_VCARD );
+	iface = addrindex_create_interface( ADDR_IF_VCARD, "vCard", TAG_IF_VCARD, TAG_DS_VCARD );
 	iface->getModifyFlag = ( void * ) vcard_get_modified;
 	iface->getAccessFlag = ( void * ) vcard_get_accessed;
 	iface->getReadFlag   = ( void * ) vcard_get_read_flag;
@@ -232,15 +181,10 @@ static void addrindex_build_if_list( AddressIndex *addrIndex ) {
 	iface->getAllPersons = ( void * ) vcard_get_all_persons;
 	iface->getName       = ( void * ) vcard_get_name;
 	iface->setAccessFlag = ( void * ) vcard_set_accessed;
-	iface->searchOrder   = 3;
-	addrIndex->interfaceList =
-		g_list_append( addrIndex->interfaceList, iface );
+	addrIndex->interfaceList = g_list_append( addrIndex->interfaceList, iface );
 	ADDRITEM_PARENT(iface) = ADDRITEM_OBJECT(addrIndex);
 
-	/* Create JPilot interface */
-	iface = addrindex_create_interface(
-			ADDR_IF_JPILOT, "J-Pilot", TAG_IF_JPILOT,
-			TAG_DS_JPILOT );
+	iface = addrindex_create_interface( ADDR_IF_JPILOT, "J-Pilot", TAG_IF_JPILOT, TAG_DS_JPILOT );
 #ifdef USE_JPILOT
 	iface->haveLibrary = jpilot_test_pilot_lib();
 	iface->useInterface = iface->haveLibrary;
@@ -255,103 +199,72 @@ static void addrindex_build_if_list( AddressIndex *addrIndex ) {
 	iface->getAllPersons = ( void * ) jpilot_get_all_persons;
 	iface->getName       = ( void * ) jpilot_get_name;
 	iface->setAccessFlag = ( void * ) jpilot_set_accessed;
-	iface->searchOrder   = 3;
 #else
 	iface->useInterface = FALSE;
 	iface->haveLibrary = FALSE;
 #endif
-	addrIndex->interfaceList =
-		g_list_append( addrIndex->interfaceList, iface );
+	addrIndex->interfaceList = g_list_append( addrIndex->interfaceList, iface );
 	ADDRITEM_PARENT(iface) = ADDRITEM_OBJECT(addrIndex);
 
-	/* Create LDAP interface */
-	iface = addrindex_create_interface(
-			ADDR_IF_LDAP, "LDAP", TAG_IF_LDAP, TAG_DS_LDAP );
+	iface = addrindex_create_interface( ADDR_IF_LDAP, "LDAP", TAG_IF_LDAP, TAG_DS_LDAP );
 #ifdef USE_LDAP
-	/* iface->haveLibrary = ldapsvr_test_ldap_lib(); */
-	iface->haveLibrary = ldaputil_test_ldap_lib();
+	iface->haveLibrary = syldap_test_ldap_lib();
 	iface->useInterface = iface->haveLibrary;
-	/* iface->getModifyFlag = ( void * ) ldapsvr_get_modified; */
-	iface->getAccessFlag = ( void * ) ldapsvr_get_accessed;
-	/* iface->getReadFlag   = ( void * ) ldapsvr_get_read_flag; */
-	iface->getStatusCode = ( void * ) ldapsvr_get_status;
-	/* iface->getReadData   = ( void * ) ldapsvr_read_data; */
-	iface->getRootFolder = ( void * ) ldapsvr_get_root_folder;
-	iface->getListFolder = ( void * ) ldapsvr_get_list_folder;
-	iface->getListPerson = ( void * ) ldapsvr_get_list_person;
-	iface->getName       = ( void * ) ldapsvr_get_name;
-	iface->setAccessFlag = ( void * ) ldapsvr_set_accessed;
-	iface->externalQuery = TRUE;
-	iface->searchOrder   = 1;
+	iface->getAccessFlag = ( void * ) syldap_get_accessed;
+	/* iface->getModifyFlag = ( void * ) syldap_get_modified; */
+	/* iface->getReadFlag   = ( void * ) syldap_get_read_flag; */
+	iface->getStatusCode = ( void * ) syldap_get_status;
+	iface->getReadData   = ( void * ) syldap_read_data;
+	iface->getRootFolder = ( void * ) syldap_get_root_folder;
+	iface->getListFolder = ( void * ) syldap_get_list_folder;
+	iface->getListPerson = ( void * ) syldap_get_list_person;
+	iface->getName       = ( void * ) syldap_get_name;
+	iface->setAccessFlag = ( void * ) syldap_set_accessed;
 #else
 	iface->useInterface = FALSE;
 	iface->haveLibrary = FALSE;
 #endif
-	addrIndex->interfaceList =
-		g_list_append( addrIndex->interfaceList, iface );
+	addrIndex->interfaceList = g_list_append( addrIndex->interfaceList, iface );
 	ADDRITEM_PARENT(iface) = ADDRITEM_OBJECT(addrIndex);
 
-	/* Two old legacy data sources (pre 0.7.0) */
+	/* Two old legacy data sources */
 	iface = addrindex_create_interface(
 			ADDR_IF_COMMON, "Old Address - common",
 			TAG_IF_OLD_COMMON, NULL );
 	iface->legacyFlag = TRUE;
-	addrIndex->interfaceList =
-		g_list_append( addrIndex->interfaceList, iface );
+	addrIndex->interfaceList = g_list_append( addrIndex->interfaceList, iface );
 	ADDRITEM_PARENT(iface) = ADDRITEM_OBJECT(addrIndex);
 
 	iface = addrindex_create_interface(
 			ADDR_IF_COMMON, "Old Address - personal",
 			TAG_IF_OLD_PERSONAL, NULL );
 	iface->legacyFlag = TRUE;
-	addrIndex->interfaceList =
-		g_list_append( addrIndex->interfaceList, iface );
+	addrIndex->interfaceList = g_list_append( addrIndex->interfaceList, iface );
 	ADDRITEM_PARENT(iface) = ADDRITEM_OBJECT(addrIndex);
 
 }
 
-/**
- * Free DOM fragment.
- * \param fragment Fragment to free.
- */
-static addrindex_free_fragment( AddressIfFragment *fragment ) {
-	GList *node;
-
-	/* Free children */
-	node = fragment->children;
-	while( node ) {
-		AddressIfFragment *child = node->data;
-		addrindex_free_fragment( child );
-		node->data = NULL;
-		node = g_list_next( node );
-	}
-	g_list_free( fragment->children );
-
-	/* Free attributes */
-	node = fragment->attributes;
+/*
+* Free name-value pairs.
+*/
+static void addrindex_free_attributes( GList *list ) {
+	GList *node = list;
 	while( node ) {
 		AddressIfAttrib *nv = node->data;
-		g_free( nv->name );
-		g_free( nv->value );
+		g_free( nv->name ); nv->name = NULL;
+		g_free( nv->value ); nv->value = NULL;
 		g_free( nv );
 		node->data = NULL;
 		node = g_list_next( node );
 	}
-	g_list_free( fragment->attributes );
-
-	g_free( fragment->name );
-	fragment->name = NULL;
-	fragment->attributes = NULL;
-	fragment->children = NULL;
-
-	g_free( fragment );
+	g_list_free( list );
 }
 
-/**
- * Create a new data source.
- * \param ifType Interface type to create.
- * \return Initialized data source.
- */
+/*
+* Create new data source.
+* Enter: ifType Interface type to create.
+* Return: Initialized data source.
+*/
 AddressDataSource *addrindex_create_datasource( AddressIfType ifType ) {
 	AddressDataSource *ds = g_new0( AddressDataSource, 1 );
 
@@ -366,13 +279,11 @@ AddressDataSource *addrindex_create_datasource( AddressIfType ifType ) {
 	return ds;
 }
 
-/**
- * Free up data source.
- * \param ds Data source to free.
- */
+/*
+* Free up data source.
+*/
 void addrindex_free_datasource( AddressDataSource *ds ) {
 	AddressInterface *iface;
-	AddressCache *cache;
 
 	g_return_if_fail( ds != NULL );
 
@@ -396,18 +307,16 @@ void addrindex_free_datasource( AddressDataSource *ds ) {
 #endif
 #ifdef USE_LDAP
 				else if( iface->type == ADDR_IF_LDAP ) {
-					LdapServer *server = ds->rawDataSource;
-					cache = server->addressCache;
-					addrcache_use_index( cache, FALSE );
-					ldapsvr_free( server );
+					SyldapServer *server = ds->rawDataSource;
+					syldap_free( server );
 				}
 #endif
 				else {
 				}
 			}
 			else {
-				AddressIfFragment *fragment = ds->rawDataSource;
-				addrindex_free_fragment( fragment );
+				GList *list = ds->rawDataSource;
+				addrindex_free_attributes( list );
 			}
 		}
 	}
@@ -420,14 +329,9 @@ void addrindex_free_datasource( AddressDataSource *ds ) {
 	ds->type = ADDR_IF_NONE;
 	ds->Xinterface = NULL;
 	ds->rawDataSource = NULL;
-
 	g_free( ds );
 }
 
-/**
- * Free up all data sources for specified interface.
- * \param iface Address interface to process.
- */
 static void addrindex_free_all_datasources( AddressInterface *iface ) {
 	GList *node = iface->listSource;
 	while( node ) {
@@ -438,10 +342,6 @@ static void addrindex_free_all_datasources( AddressInterface *iface ) {
 	}
 }
 
-/**
- * Free up specified interface.
- * \param iface Interface to process.
- */
 static void addrindex_free_interface( AddressInterface *iface ) {
 	/* Free up data sources */
 	addrindex_free_all_datasources( iface );
@@ -469,21 +369,14 @@ static void addrindex_free_interface( AddressInterface *iface ) {
 	iface->haveLibrary = FALSE;
 	iface->listSource = NULL;
 
-	/* Search stuff */
-	iface->searchOrder = 0;
-	iface->startSearch = NULL;
-	iface->stopSearch = NULL;
-
 	g_free( iface );
 }
 
-/**
+/*
  * Return cache ID for specified data source.
- *
- * \param  addrIndex Address index.
- * \param  ds        Data source.
- * \return ID or NULL if not found. This should be <code>g_free()</code>
- *         when done.
+ * Enter: addrIndex Address index.
+ *        ds        Data source.
+ * Return: ID or NULL if not found. This can be g_free() when done.
  */
 gchar *addrindex_get_cache_id( AddressIndex *addrIndex, AddressDataSource *ds ) {
 	gchar *cacheID = NULL;
@@ -504,25 +397,23 @@ gchar *addrindex_get_cache_id( AddressIndex *addrIndex, AddressDataSource *ds ) 
 	return cacheID;
 }
 
-/**
- * Return reference to data source for specified cacheID.
- * \param addrIndex Address index.
- * \param cacheID   ID.
- * \return Data source, or NULL if not found.
+/*
+ * Return data source for specified cacheID.
+ * Enter: addrIndex Address index.
+ *        cacheID   ID.
+ * Return: Data source, or NULL if not found.
  */
-AddressDataSource *addrindex_get_datasource(
-		AddressIndex *addrIndex, const gchar *cacheID )
-{
+AddressDataSource *addrindex_get_datasource( AddressIndex *addrIndex, const gchar *cacheID ) {
 	g_return_val_if_fail( addrIndex != NULL, NULL );
 	g_return_val_if_fail( cacheID != NULL, NULL );
 	return ( AddressDataSource * ) g_hash_table_lookup( addrIndex->hashCache, cacheID );
 }
 
-/**
- * Return reference to address cache for specified cacheID.
- * \param addrIndex Address index.
- * \param cacheID   ID.
- * \return Address cache, or NULL if not found.
+/*
+ * Return cache for specified cacheID.
+ * Enter: addrIndex Address index.
+ *        cacheID   ID.
+ * Return: Address cache, or NULL if not found.
  */
 AddressCache *addrindex_get_cache( AddressIndex *addrIndex, const gchar *cacheID ) {
 	AddressDataSource *ds;
@@ -541,14 +432,12 @@ AddressCache *addrindex_get_cache( AddressIndex *addrIndex, const gchar *cacheID
 	return cache;
 }
 
-/**
- * Add data source into hash table.
- * \param addrIndex Address index.
- * \param ds        Data source.
+/*
+ * Add data source into hash.
+ * Enter: addrIndex Address index.
+ *        ds        Data source.
  */
-static void addrindex_hash_add_cache(
-		AddressIndex *addrIndex, AddressDataSource *ds )
-{
+static void addrindex_hash_add_cache( AddressIndex *addrIndex, AddressDataSource *ds ) {
 	gchar *cacheID;
 
 	cacheID = addrindex_get_cache_id( addrIndex, ds );
@@ -558,8 +447,8 @@ static void addrindex_hash_add_cache(
 }
 
 /*
- * Free hash table callback function.
- */
+* Free hash table callback function.
+*/
 static gboolean addrindex_free_cache_cb( gpointer key, gpointer value, gpointer data ) {
 	g_free( key );
 	key = NULL;
@@ -568,8 +457,8 @@ static gboolean addrindex_free_cache_cb( gpointer key, gpointer value, gpointer 
 }
 
 /*
- * Free hash table of address cache items.
- */
+* Free hash table of address cache items.
+*/
 static void addrindex_free_cache_hash( GHashTable *table ) {
 	g_hash_table_freeze( table );
 	g_hash_table_foreach_remove( table, addrindex_free_cache_cb, NULL );
@@ -578,13 +467,9 @@ static void addrindex_free_cache_hash( GHashTable *table ) {
 }
 
 /*
- * Remove data source from internal hashtable.
- * \param addrIndex Address index.
- * \param ds        Data source to remove.
- */
-static void addrindex_hash_remove_cache(
-		AddressIndex *addrIndex, AddressDataSource *ds )
-{
+* Remove address cache for specified data source from internal hashtable.
+*/
+static void addrindex_hash_remove_cache( AddressIndex *addrIndex, AddressDataSource *ds ) {
 	gchar *cacheID;
 
 	cacheID = addrindex_get_cache_id( addrIndex, ds );
@@ -596,9 +481,8 @@ static void addrindex_hash_remove_cache(
 }
 
 /*
- * Create a new address index.
- * \return Initialized address index object.
- */
+* Create new object.
+*/
 AddressIndex *addrindex_create_index( void ) {
 	AddressIndex *addrIndex = g_new0( AddressIndex, 1 );
 
@@ -617,99 +501,46 @@ AddressIndex *addrindex_create_index( void ) {
 	addrIndex->lastType = ADDR_IF_NONE;
 	addrIndex->dirtyFlag = FALSE;
 	addrIndex->hashCache = g_hash_table_new( g_str_hash, g_str_equal );
-	addrIndex->loadedFlag = FALSE;
-	addrIndex->searchOrder = NULL;
 	addrindex_build_if_list( addrIndex );
 	return addrIndex;
 }
 
-/**
- * Property - Specify file path to address index file.
- * \param addrIndex Address index.
- * \param value Path to index file.
- */
+/*
+* Specify file to be used.
+*/
 void addrindex_set_file_path( AddressIndex *addrIndex, const gchar *value ) {
 	g_return_if_fail( addrIndex != NULL );
 	addrIndex->filePath = mgu_replace_string( addrIndex->filePath, value );
 }
-
-/**
- * Property - Specify file name to address index file.
- * \param addrIndex Address index.
- * \param value File name.
- */
 void addrindex_set_file_name( AddressIndex *addrIndex, const gchar *value ) {
 	g_return_if_fail( addrIndex != NULL );
 	addrIndex->fileName = mgu_replace_string( addrIndex->fileName, value );
 }
-
-/**
- * Property - Specify file path to be used.
- * \param addrIndex Address index.
- * \param value Path to JPilot file.
- */
 void addrindex_set_dirty( AddressIndex *addrIndex, const gboolean value ) {
 	g_return_if_fail( addrIndex != NULL );
 	addrIndex->dirtyFlag = value;
 }
 
-/**
- * Property - get loaded flag. Note that this flag is set after reading data
- * from the address books.
- * \param addrIndex Address index.
- * \return <i>TRUE</i> if address index data was loaded.
- */
-gboolean addrindex_get_loaded( AddressIndex *addrIndex ) {
-	g_return_val_if_fail( addrIndex != NULL, FALSE );
-	return addrIndex->loadedFlag;
-}
-
-/**
- * Return list of address interfaces.
- * \param addrIndex Address index.
- * \return List of address interfaces.
- */
+/*
+* Return list of interfaces.
+*/
 GList *addrindex_get_interface_list( AddressIndex *addrIndex ) {
 	g_return_val_if_fail( addrIndex != NULL, NULL );
 	return addrIndex->interfaceList;
 }
 
-/**
- * Perform any other initialization of address index.
- * \param addrIndex Address index.
- */
-/* void addrindex_initialize( AddressIndex *addrIndex ) {
-	addrcompl_initialize();
-} */
-
-/**
- * Perform any other teardown of address index.
- * \param addrIndex Address index.
- */
-/* void addrindex_teardown( AddressIndex *addrIndex ) {
-	addrcompl_teardown();
-} */
-
-/**
- * Free up address index.
- * \param addrIndex Address index.
- */
+/*
+* Free up object.
+*/
 void addrindex_free_index( AddressIndex *addrIndex ) {
 	GList *node;
 
 	g_return_if_fail( addrIndex != NULL );
 
-	/* Search stuff */
-	g_list_free( addrIndex->searchOrder );
-	addrIndex->searchOrder = NULL;
-
-	/* Free internal storage */
 	g_free( ADDRITEM_ID(addrIndex) );
 	g_free( ADDRITEM_NAME(addrIndex) );
 	g_free( addrIndex->filePath );
 	g_free( addrIndex->fileName );
-
-	/* Clear pointers */	
 	ADDRITEM_TYPE(addrIndex) = ITEMTYPE_NONE;
 	ADDRITEM_ID(addrIndex) = NULL;
 	ADDRITEM_NAME(addrIndex) = NULL;
@@ -723,8 +554,6 @@ void addrindex_free_index( AddressIndex *addrIndex ) {
 	addrIndex->conversionError = FALSE;
 	addrIndex->lastType = ADDR_IF_NONE;
 	addrIndex->dirtyFlag = FALSE;
-
-	/* Free up interfaces */	
 	node = addrIndex->interfaceList;
 	while( node ) {
 		AddressInterface *iface = node->data;
@@ -733,40 +562,28 @@ void addrindex_free_index( AddressIndex *addrIndex ) {
 	}
 	g_list_free( addrIndex->interfaceList );
 	addrIndex->interfaceList = NULL;
-
-	/* Free up hash cache */
 	addrindex_free_cache_hash( addrIndex->hashCache );
 	addrIndex->hashCache = NULL;
-
-	addrIndex->loadedFlag = FALSE;
-
 	g_free( addrIndex );
 }
 
-/**
- * Print address index.
- * \param addrIndex Address index.
- * \parem stream    Stream to print.
+/*
+* Print address index.
 */
 void addrindex_print_index( AddressIndex *addrIndex, FILE *stream ) {
 	g_return_if_fail( addrIndex != NULL );
 	fprintf( stream, "AddressIndex:\n" );
 	fprintf( stream, "\tfile path: '%s'\n", addrIndex->filePath );
 	fprintf( stream, "\tfile name: '%s'\n", addrIndex->fileName );
-	fprintf( stream, "\t   status: %d\n", addrIndex->retVal );
-	fprintf( stream, "\tconverted: '%s'\n",
-			addrIndex->wasConverted ? "yes" : "no" );
-	fprintf( stream, "\tcvt error: '%s'\n",
-			addrIndex->conversionError ? "yes" : "no" );
+	fprintf( stream, "\t   status: %d\n",   addrIndex->retVal );
+	fprintf( stream, "\tconverted: '%s'\n", addrIndex->wasConverted ? "yes" : "no" );
+	fprintf( stream, "\tcvt error: '%s'\n", addrIndex->conversionError ? "yes" : "no" );
 	fprintf( stream, "\t---\n" );
 }
 
-/**
- * Retrieve reference to address interface for specified interface type.
- * \param  addrIndex Address index.
- * \param  ifType Interface type.
- * \return Address interface, or NULL if not found.
- */
+/*
+* Retrieve specified interface from index.
+*/
 AddressInterface *addrindex_get_interface(
 	AddressIndex *addrIndex, AddressIfType ifType )
 {
@@ -787,16 +604,15 @@ AddressInterface *addrindex_get_interface(
 	return retVal;
 }
 
-/**
- * Add raw data source to index. The raw data object (an AddressBookFile or
- * VCardFile object, for example) should be supplied as the raw dataSource
- * argument.
- *
- * \param  addrIndex Address index.
- * \param ifType     Interface type to add.
- * \param dataSource Actual raw data source to add. 
- * \return Data source added, or NULL if invalid interface type.
- */
+/*
+* Add data source to index.
+* Enter: addrIndex  Address index object.
+*        ifType     Interface type to add.
+*        dataSource Actual data source to add.
+* Return: TRUE if data source was added.
+* Note: The raw data object (for example, AddressBookFile or VCardFile object) should be
+* supplied as the dataSource argument.
+*/
 AddressDataSource *addrindex_index_add_datasource(
 	AddressIndex *addrIndex, AddressIfType ifType, gpointer dataSource )
 {
@@ -821,13 +637,13 @@ AddressDataSource *addrindex_index_add_datasource(
 	return ds;
 }
 
-/**
- * Remove specified data source from index.
- * \param  addrIndex Address index.
- * \param  dataSource Data source to add. 
- * \return Reference to data source if removed, or NULL if data source was not
- *         found in index. Note the this object must still be freed.
- */
+/*
+* Remove data source from index.
+* Enter: addrIndex  Address index object.
+*        dataSource Data source to remove.
+* Return: Data source if removed, or NULL if data source was not found in
+* index. Note the this object must still be freed.
+*/
 AddressDataSource *addrindex_index_remove_datasource(
 	AddressIndex *addrIndex, AddressDataSource *dataSource )
 {
@@ -851,14 +667,6 @@ AddressDataSource *addrindex_index_remove_datasource(
 	return retVal;
 }
 
-/**
- * Retrieve a reference to address interface for specified interface type and
- * XML interface tag name.
- * \param  addrIndex Address index.
- * \param  tag       XML interface tag name to match.
- * \param  ifType    Interface type to match.
- * \return Reference to address index, or NULL if not found in index.
- */
 static AddressInterface *addrindex_tag_get_interface(
 	AddressIndex *addrIndex, gchar *tag, AddressIfType ifType )
 {
@@ -884,14 +692,6 @@ static AddressInterface *addrindex_tag_get_interface(
 	return retVal;
 }
 
-/**
- * Retrieve a reference to address interface for specified interface type and
- * XML datasource tag name.
- * \param  addrIndex Address index.
- * \param  ifType    Interface type to match.
- * \param  tag       XML datasource tag name to match.
- * \return Reference to address index, or NULL if not found in index.
- */
 static AddressInterface *addrindex_tag_get_datasource(
 	AddressIndex *addrIndex, AddressIfType ifType, gchar *tag )
 {
@@ -915,27 +715,26 @@ static AddressInterface *addrindex_tag_get_datasource(
 * Interface XML parsing functions.
 * ***********************************************************************
 */
+/*
+static void show_attribs( GList *attr ) {
+	while( attr ) {
+		gchar *name = ((XMLAttr *)attr->data)->name;
+		gchar *value = ((XMLAttr *)attr->data)->value;
+		printf( "\tattr value : %s :%s:\n", name, value );
+		attr = g_list_next( attr );
+	}
+	printf( "\t---\n" );
+}
+*/
 
-/**
- * Write start of XML element to file.
- * \param fp   File.
- * \param lvl  Indentation level.
- * \param name Element name.
- */
-static void addrindex_write_elem_s( FILE *fp, const gint lvl, const gchar *name ) {
+static void addrindex_write_elem_s( FILE *fp, gint lvl, gchar *name ) {
 	gint i;
 	for( i = 0; i < lvl; i++ ) fputs( "  ", fp );
 	fputs( "<", fp );
 	fputs( name, fp );
 }
 
-/**
- * Write end of XML element to file.
- * \param fp   File.
- * \param lvl  Indentation level.
- * \param name Element name.
- */
-static void addrindex_write_elem_e( FILE *fp, const gint lvl, const gchar *name ) {
+static void addrindex_write_elem_e( FILE *fp, gint lvl, gchar *name ) {
 	gint i;
 	for( i = 0; i < lvl; i++ ) fputs( "  ", fp );
 	fputs( "</", fp );
@@ -943,13 +742,7 @@ static void addrindex_write_elem_e( FILE *fp, const gint lvl, const gchar *name 
 	fputs( ">\n", fp );
 }
 
-/**
- * Write XML attribute to file.
- * \param fp    File.
- * \param name  Attribute name.
- * \param value Attribute value.
- */
-static void addrindex_write_attr( FILE *fp, const gchar *name, const gchar *value ) {
+static void addrindex_write_attr( FILE *fp, gchar *name, gchar *value ) {
 	fputs( " ", fp );
 	fputs( name, fp );
 	fputs( "=\"", fp );
@@ -967,36 +760,16 @@ static void addrindex_write_attr( FILE *fp, const gchar *name, const gchar *valu
 	fputs( "\"", fp );
 }
 
-/**
- * Return DOM fragment for current XML tag from file.
- * \param  file XML file being processed.
- * \return Fragment representing DOM fragment for configuration element.
- */
-static AddressIfFragment *addrindex_read_fragment( XMLFile *file ) {
-	AddressIfFragment *fragment;
-	AddressIfFragment *child;
+/*
+* Return list of name-value pairs.
+*/
+static GList *addrindex_read_attributes( XMLFile *file ) {
+	GList *list = NULL;
 	AddressIfAttrib *nv;
-	XMLTag *xtag;
-	GList *list;
 	GList *attr;
 	gchar *name;
 	gchar *value;
-	guint prevLevel;
-	gint rc;
 
-	prevLevel = file->level;
-
-	/* Get current tag name */
-	xtag = xml_get_current_tag( file );
-
-	/* Create new fragment */
-	fragment = g_new0( AddressIfFragment, 1 );
-	fragment->name = g_strdup( xtag->tag );
-	fragment->children = NULL;
-	fragment->attributes = NULL;
-
-	/* Read attributes */
-	list = NULL;
 	attr = xml_get_current_tag_attr( file );
 	while( attr ) {
 		name = ((XMLAttr *)attr->data)->name;
@@ -1007,102 +780,38 @@ static AddressIfFragment *addrindex_read_fragment( XMLFile *file ) {
 		list = g_list_append( list, nv );
 		attr = g_list_next( attr );
 	}
-	fragment->attributes = list;
-
-	/* Now read the children */
-	while( TRUE ) {
-		rc = xml_parse_next_tag( file );
-		if( rc != 0 ) {
-			/* End of file? */
-			break;
-		}
-		if( file->level < prevLevel ) {
-			/* We must be above level we start at */
-			break;
-		}
-		child = addrindex_read_fragment( file );
-		fragment->children = g_list_append( fragment->children, child );
-	}
-
-	return fragment;
+	return list;
 }
 
-/**
- * Write DOM fragment to file.
- * \param fp       File to write.
- * \param fragment DOM fragment for configuration element.
- * \param lvl      Indent level.
- */
-static void addrindex_write_fragment(
-		FILE *fp, const AddressIfFragment *fragment, const gint lvl )
-{
+/*
+* Output name-value pairs.
+*/
+static void addrindex_write_attributes( FILE *fp, gchar *tag, GList *list, gint lvl ) {
 	GList *node;
-
-	if( fragment ) {
-		addrindex_write_elem_s( fp, lvl, fragment->name );
-		node = fragment->attributes;
+	AddressIfAttrib *nv;
+	if( list ) {
+		addrindex_write_elem_s( fp, lvl, tag );
+		node = list;
 		while( node ) {
-			AddressIfAttrib *nv = node->data;
+			nv = node->data;
 			addrindex_write_attr( fp, nv->name, nv->value );
 			node = g_list_next( node );
 		}
-		if( fragment->children ) {
-			fputs(" >\n", fp);
-
-			/* Output children */
-			node = fragment->children;
-			while( node ) {
-				AddressIfFragment *child = node->data;
-				addrindex_write_fragment( fp, child, 1+lvl );
-				node = g_list_next( node );
-			}
-
-			/* Output closing tag */
-			addrindex_write_elem_e( fp, lvl, fragment->name );
-		}
-		else {
-			fputs(" />\n", fp);
-		}
+		fputs(" />\n", fp);
 	}
 }
 
 /*
-static void addrindex_print_fragment_r(
-		const AddressIfFragment *fragment, FILE *stream, gint lvl )
-{
-	GList *node;
-	gint i;
-
-	for( i = 0; i < lvl; i++ )
-		fprintf( stream, "  " );
-	fprintf( stream, "Element:%s:\n", fragment->name );
-	node = fragment->attributes;
+static void addrindex_print_attributes( GList *list, FILE *stream ) {
+	GList *node = list;
 	while( node ) {
 		AddressIfAttrib *nv = node->data;
-		for( i = 0; i < lvl; i++ )
-			fprintf( stream, "  " );
-		fprintf( stream, "    %s : %s\n", nv->name, nv->value );
+		fprintf( stream, "%s : %s\n", nv->name, nv->value );
 		node = g_list_next( node );
 	}
-	node = fragment->children;
-	while( node ) {
-		AddressIfFragment *child = node->data;
-		addrindex_print_fragment_r( child, stream, 1+lvl );
-		node = g_list_next( node );
-	}
-}
-
-static void addrindex_print_fragment( const AddressIfFragment *fragment, FILE *stream ) {
-	addrindex_print_fragment_r( fragment, stream, 0 );
 }
 */
 
-/**
- * Read/parse address index file, creating a data source for a regular
- * intrinsic XML addressbook.
- * \param  file Address index file.
- * \return Data source.
- */
 static AddressDataSource *addrindex_parse_book( XMLFile *file ) {
 	AddressDataSource *ds;
 	AddressBookFile *abf;
@@ -1234,222 +943,111 @@ static void addrindex_write_jpilot( FILE *fp,AddressDataSource *ds, gint lvl ) {
 		fputs( " />\n", fp );
 	}
 }
+#else
+/* Just read/write name-value pairs (preserve data found in file)  */
+static AddressDataSource *addrindex_parse_jpilot( XMLFile *file ) {
+	AddressDataSource *ds;
 
+	ds = addrindex_create_datasource( ADDR_IF_JPILOT );
+	ds->rawDataSource = addrindex_read_attributes( file );
+	return ds;
+}
+
+static void addrindex_write_jpilot( FILE *fp, AddressDataSource *ds, gint lvl ) {
+	GList *list = ds->rawDataSource;
+	if( list ) {
+		addrindex_write_attributes( fp, TAG_DS_JPILOT, list, lvl );
+	}
+}
 #endif
 
 #ifdef USE_LDAP
-/**
- * Parse LDAP criteria attribute data from XML file.
- * \param file Index file.
- * \param ctl  LDAP control object to populate.
- */
-static void addrindex_parse_ldap_attrlist( XMLFile *file, LdapControl *ctl ) {
-	guint prevLevel;
-	XMLTag *xtag;
-	XMLTag *xtagPrev;
-	gint rc;
-	GList *attr;
-	GList *list;
-	GList *node;
-
-	if( file == NULL ) {
-		return;
-	}
-
-	list = NULL;
-	prevLevel = file->level;
-	xtagPrev = xml_get_current_tag( file );
-	while( TRUE ) {
-		rc = xml_parse_next_tag( file );
-		if( rc != 0 ) {
-			/* Terminate prematurely */
-			mgu_free_dlist( list );
-			list = NULL;
-			return;
-		}
-		if( file->level < prevLevel ) {
-			/* We must be above level we start at */
-			break;
-		}
-
-		/* Get a tag (element) */
-		xtag = xml_get_current_tag( file );
-		if( strcmp( xtag->tag, ELTAG_LDAP_ATTR_SRCH ) == 0 ) {
-			/* LDAP criteria attribute */
-			attr = xml_get_current_tag_attr( file );
-			while( attr ) {
-				gchar *name = ((XMLAttr *)attr->data)->name;
-				gchar *value = ((XMLAttr *)attr->data)->value;
-				if( strcmp( name, ATTAG_LDAP_ATTR_NAME ) == 0 ) {
-					if( value && strlen( value ) > 0 ) {
-						list = g_list_append(
-							list, g_strdup( value ) );
-					}
-				}
-				attr = g_list_next( attr );
-			}
-		}
-		else {
-			if( xtag != xtagPrev ) {
-				/* Found a new tag */
-				break;
-			}
-		}
-		xtag = xtagPrev;
-	}
-
-	/* Build list of search attributes */
-	ldapctl_criteria_list_clear( ctl );
-	node = list;
-	while( node ) {
-		ldapctl_criteria_list_add( ctl, node->data );
-		g_free( node->data );
-		node->data = NULL;
-		node = g_list_next( node );
-	}
-	g_list_free( list );
-	list = NULL;
-
-}
-
 static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
 	AddressDataSource *ds;
-	LdapServer *server;
-	LdapControl *ctl;
+	SyldapServer *server;
 	GList *attr;
-	gchar *serverName = NULL;
-	gchar *criteria = NULL;
-	gboolean bSearch = FALSE;
-	gboolean cvtFlag = TRUE;
 
 	ds = addrindex_create_datasource( ADDR_IF_LDAP );
-	ctl = ldapctl_create();
+	server = syldap_create();
 	attr = xml_get_current_tag_attr( file );
 	while( attr ) {
 		gchar *name = ((XMLAttr *)attr->data)->name;
 		gchar *value = ((XMLAttr *)attr->data)->value;
 		gint ivalue = atoi( value );
-
 		if( strcmp( name, ATTAG_LDAP_NAME ) == 0 ) {
-			if( serverName ) g_free( serverName );
-			serverName = g_strdup( value );
+			syldap_set_name( server, value );
 		}
 		else if( strcmp( name, ATTAG_LDAP_HOST ) == 0 ) {
-			ldapctl_set_host( ctl, value );
+			syldap_set_host( server, value );
 		}
 		else if( strcmp( name, ATTAG_LDAP_PORT ) == 0 ) {
-			ldapctl_set_port( ctl, ivalue );
+			syldap_set_port( server, ivalue );
 		}
 		else if( strcmp( name, ATTAG_LDAP_BASE_DN ) == 0 ) {
-			ldapctl_set_base_dn( ctl, value );
+			syldap_set_base_dn( server, value );
 		}
 		else if( strcmp( name, ATTAG_LDAP_BIND_DN ) == 0 ) {
-			ldapctl_set_bind_dn( ctl, value );
+			syldap_set_bind_dn( server, value );
 		}
 		else if( strcmp( name, ATTAG_LDAP_BIND_PASS ) == 0 ) {
-			ldapctl_set_bind_password( ctl, value );
+			syldap_set_bind_password( server, value );
 		}
 		else if( strcmp( name, ATTAG_LDAP_CRITERIA ) == 0 ) {
-			if( criteria ) g_free( criteria );
-			criteria = g_strdup( value );
+			syldap_set_search_criteria( server, value );
 		}
 		else if( strcmp( name, ATTAG_LDAP_MAX_ENTRY ) == 0 ) {
-			ldapctl_set_max_entries( ctl, ivalue );
+			syldap_set_max_entries( server, ivalue );
 		}
 		else if( strcmp( name, ATTAG_LDAP_TIMEOUT ) == 0 ) {
-			ldapctl_set_timeout( ctl, ivalue );
-		}
-		else if( strcmp( name, ATTAG_LDAP_MAX_AGE ) == 0 ) {
-			ldapctl_set_max_query_age( ctl, ivalue );
-		}
-		else if( strcmp( name, ATTAG_LDAP_DYN_SEARCH ) == 0 ) {
-			bSearch = FALSE;
-			cvtFlag = FALSE;
-			if( strcmp( value, "yes" ) == 0 ) {
-				bSearch = TRUE;
-			}
+			syldap_set_timeout( server, ivalue );
 		}
 		attr = g_list_next( attr );
 	}
 
-	server = ldapsvr_create_noctl();
-	ldapsvr_set_name( server, serverName );
-	ldapsvr_set_search_flag( server, bSearch );
-	g_free( serverName );
-	ldapsvr_set_control( server, ctl );
 	ds->rawDataSource = server;
-
-	addrindex_parse_ldap_attrlist( file, ctl );
-	/*
-	 * If criteria have been specified and no attributes were listed, then
-	 * convert old style criteria into an attribute list. Any criteria will
-	 * be dropped when saving data.
-	 */
-	if( criteria ) {
-		if( ! ldapctl_get_criteria_list( ctl ) ) {
-			ldapctl_parse_ldap_search( ctl, criteria );
-		}
-		g_free( criteria );
-	}
-	/*
-	 * If no search flag was found, then we are converting from old format
-	 * server data to new format.
-	 */
-	if( cvtFlag ) {
-		ldapsvr_set_search_flag( server, TRUE );
-	}
-	/* ldapsvr_print_data( server, stdout ); */
-
 	return ds;
 }
 
 static void addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
-	LdapServer *server = ds->rawDataSource;
-	LdapControl *ctl = NULL;
-	GList *node;
-	gchar value[256];
-
+	SyldapServer *server = ds->rawDataSource;
 	if( server ) {
-		ctl = server->control;
-	}
-	if( ctl == NULL ) return;
+		gchar value[256];
 
-	/* Output start element with attributes */
-	addrindex_write_elem_s( fp, lvl, TAG_DS_LDAP );
-	addrindex_write_attr( fp, ATTAG_LDAP_NAME, ldapsvr_get_name( server ) );
-	addrindex_write_attr( fp, ATTAG_LDAP_HOST, ctl->hostName );
+		addrindex_write_elem_s( fp, lvl, TAG_DS_LDAP );
+		addrindex_write_attr( fp, ATTAG_LDAP_NAME, syldap_get_name( server ) );
+		addrindex_write_attr( fp, ATTAG_LDAP_HOST, server->hostName );
 
-	sprintf( value, "%d", ctl->port );	
-	addrindex_write_attr( fp, ATTAG_LDAP_PORT, value );
+		sprintf( value, "%d", server->port );	
+		addrindex_write_attr( fp, ATTAG_LDAP_PORT, value );
 
-	addrindex_write_attr( fp, ATTAG_LDAP_BASE_DN, ctl->baseDN );
-	addrindex_write_attr( fp, ATTAG_LDAP_BIND_DN, ctl->bindDN );
-	addrindex_write_attr( fp, ATTAG_LDAP_BIND_PASS, ctl->bindPass );
+		addrindex_write_attr( fp, ATTAG_LDAP_BASE_DN, server->baseDN );
+		addrindex_write_attr( fp, ATTAG_LDAP_BIND_DN, server->bindDN );
+		addrindex_write_attr( fp, ATTAG_LDAP_BIND_PASS, server->bindPass );
+		addrindex_write_attr( fp, ATTAG_LDAP_CRITERIA, server->searchCriteria );
 
-	sprintf( value, "%d", ctl->maxEntries );
-	addrindex_write_attr( fp, ATTAG_LDAP_MAX_ENTRY, value );
-	sprintf( value, "%d", ctl->timeOut );
-	addrindex_write_attr( fp, ATTAG_LDAP_TIMEOUT, value );
-	sprintf( value, "%d", ctl->maxQueryAge );
-	addrindex_write_attr( fp, ATTAG_LDAP_MAX_AGE, value );
+		sprintf( value, "%d", server->maxEntries );
+		addrindex_write_attr( fp, ATTAG_LDAP_MAX_ENTRY, value );
+		sprintf( value, "%d", server->timeOut );
+		addrindex_write_attr( fp, ATTAG_LDAP_TIMEOUT, value );
 
-	addrindex_write_attr( fp, ATTAG_LDAP_DYN_SEARCH,
-			server->searchFlag ? "yes" : "no" );
-
-	fputs(" >\n", fp);
-
-	/* Output attributes */
-	node = ldapctl_get_criteria_list( ctl );
-	while( node ) {
-		addrindex_write_elem_s( fp, 1+lvl, ELTAG_LDAP_ATTR_SRCH );
-		addrindex_write_attr( fp, ATTAG_LDAP_ATTR_NAME, node->data );
 		fputs(" />\n", fp);
-		node = g_list_next( node );
 	}
+}
+#else
+/* Just read/write name-value pairs (preserve data found in file)  */
+static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
+	AddressDataSource *ds;
 
-	/* End of element */	
-	addrindex_write_elem_e( fp, lvl, TAG_DS_LDAP );
+	ds = addrindex_create_datasource( ADDR_IF_LDAP );
+	ds->rawDataSource = addrindex_read_attributes( file );
+	return ds;
+}
 
+static void addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
+	GList *list = ds->rawDataSource;
+	if( list ) {
+		addrindex_write_attributes( fp, TAG_DS_LDAP, list, lvl );
+	}
 }
 #endif
 
@@ -1457,25 +1055,16 @@ static void addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
 * Address index I/O functions.
 * ***********************************************************************
 */
-/**
- * Read address index file, creating appropriate data sources for each address
- * index file entry.
- *
- * \param  addrIndex Address index.
- * \param  file Address index file.
- */
 static void addrindex_read_index( AddressIndex *addrIndex, XMLFile *file ) {
 	guint prev_level;
 	XMLTag *xtag;
 	AddressInterface *iface = NULL, *dsIFace = NULL;
 	AddressDataSource *ds;
-	gint rc;
 
-	addrIndex->loadedFlag = FALSE;
 	for (;;) {
 		prev_level = file->level;
-		rc = xml_parse_next_tag( file );
-		if( file->level == 0 ) return;
+		xml_parse_next_tag( file );
+		if( file->level < prev_level ) return;
 
 		xtag = xml_get_current_tag( file );
 
@@ -1500,16 +1089,12 @@ static void addrindex_read_index( AddressIndex *addrIndex, XMLFile *file ) {
 				else if( addrIndex->lastType == ADDR_IF_VCARD ) {
 					ds = addrindex_parse_vcard( file );
 				}
-#ifdef USE_JPILOT
 				else if( addrIndex->lastType == ADDR_IF_JPILOT ) {
 					ds = addrindex_parse_jpilot( file );
 				}
-#endif
-#ifdef USE_LDAP
 				else if( addrIndex->lastType == ADDR_IF_LDAP ) {
 					ds = addrindex_parse_ldap( file );
 				}
-#endif
 				if( ds ) {
 					ds->Xinterface = dsIFace;
 					addrindex_hash_add_cache( addrIndex, ds );
@@ -1518,50 +1103,8 @@ static void addrindex_read_index( AddressIndex *addrIndex, XMLFile *file ) {
 				}
 			}
 		}
+		addrindex_read_index( addrIndex, file );
 	}
-}
-
-/*
- * Search order sorting comparison function for building search order list.
- */
-static gint addrindex_search_order_compare( gconstpointer ptrA, gconstpointer ptrB ) {
-	AddressInterface *ifaceA = ( AddressInterface * ) ptrA;
-	AddressInterface *ifaceB = ( AddressInterface * ) ptrB;
-
-	return ifaceA->searchOrder - ifaceB->searchOrder;
-}
-
-/**
- * Build list of data sources to process.
- * \param addrIndex Address index object.
- */
-static void addrindex_build_search_order( AddressIndex *addrIndex ) {
-	AddressInterface *iface;
-	GList *nodeIf;
-
-	/* Clear existing list */
-	g_list_free( addrIndex->searchOrder );
-	addrIndex->searchOrder = NULL;
-
-	/* Build new list */
-	nodeIf = addrIndex->interfaceList;
-	while( nodeIf ) {
-		AddressInterface *iface = nodeIf->data;
-		if( iface->searchOrder > 0 ) {
-			/* Add to search order list */
-			addrIndex->searchOrder = g_list_insert_sorted(
-				addrIndex->searchOrder, iface,
-				addrindex_search_order_compare );
-		}
-		nodeIf = g_list_next( nodeIf );
-	}
-
-	nodeIf = addrIndex->searchOrder;
-	while( nodeIf ) {
-		AddressInterface *iface = nodeIf->data;
-		nodeIf = g_list_next( nodeIf );
-	}
-
 }
 
 static gint addrindex_read_file( AddressIndex *addrIndex ) {
@@ -1576,9 +1119,7 @@ static gint addrindex_read_file( AddressIndex *addrIndex ) {
 	g_free( fileSpec );
 
 	if( file == NULL ) {
-		/*
-		fprintf( stdout, " file '%s' does not exist.\n", addrIndex->fileName );
-		*/
+		/* fprintf( stdout, " file '%s' does not exist.\n", addrIndex->fileName ); */
 		return addrIndex->retVal;
 	}
 
@@ -1592,8 +1133,6 @@ static gint addrindex_read_file( AddressIndex *addrIndex ) {
 		}
 	}
 	xml_close_file( file );
-
-	addrindex_build_search_order( addrIndex );
 
 	return addrIndex->retVal;
 }
@@ -1619,16 +1158,12 @@ static void addrindex_write_index( AddressIndex *addrIndex, FILE *fp ) {
 					if( iface->type == ADDR_IF_VCARD ) {
 						addrindex_write_vcard( fp, ds, lvlItem );
 					}
-#ifdef USE_JPILOT
 					if( iface->type == ADDR_IF_JPILOT ) {
 						addrindex_write_jpilot( fp, ds, lvlItem );
 					}
-#endif
-#ifdef USE_LDAP
 					if( iface->type == ADDR_IF_LDAP ) {
 						addrindex_write_ldap( fp, ds, lvlItem );
 					}
-#endif
 				}
 				nodeDS = g_list_next( nodeDS );
 			}
@@ -2439,521 +1974,6 @@ GList *addrindex_ds_get_all_groups( AddressDataSource *ds ) {
 	return retVal;
 }
 
-/* **********************************************************************
-* Address search stuff.
-* ***********************************************************************
+/*
+* End of Source.
 */
-
-/**
- * Current query ID. This is incremented for each query created.
- */
-static gint _currentQueryID_ = 0;
-
-/*
- * Variables for the search that is being performed.
- */
-static gchar *_searchTerm_ = NULL;
-static gpointer _searchTarget_ = NULL;
-static AddrSearchCallbackFunc *_searchCallback_ = NULL;
-
-/**
- * Setup or register the search that will be performed.
- * \param addrIndex  Address index object.
- * \param searchTerm Search term. A private copy will be made.
- * \param target     Target object that will receive data.
- * \param callBack   Callback function.
- * \return ID allocated to query that will be executed.
- */
-gint addrindex_setup_search(
-	AddressIndex *addrIndex, const gchar *searchTerm,
-	const gpointer target, AddrSearchCallbackFunc callBack )
-{
-	gint queryID;
-
-	/* printf( "search term ::%s::\n", searchTerm ); */
-	g_free( _searchTerm_ );
-	_searchTerm_ = g_strdup( searchTerm );
-
-	queryID = ++_currentQueryID_;
-	_searchTarget_ = target;
-	_searchCallback_ = callBack;
-	/* printf( "query ID ::%d::\n", queryID ); */
-	return queryID;
-}
-
-/**
- * Perform the search for specified address cache.
- * \param cache Cache to be searched.
- * \param queryID ID of search query to be executed.
- */
-static void addrindex_search_cache( AddressCache *cache, const gint queryID ) {
-	AddrCacheIndex *index;
-	GList *listEMail;
-
-	index = cache->searchIndex;
-	if( index == NULL ) return;
-	if( index->invalid ) {
-		addrcache_build_index( cache );
-	}
-
-	/*
-	printf( "query ::%d:: searching index for ::%s::\n", queryID, _searchTerm_ );
-	*/
-	listEMail = addrcindex_search( index, _searchTerm_ );
-	( _searchCallback_ ) ( queryID, listEMail, _searchTarget_ );
-	g_list_free( listEMail );
-	listEMail = NULL;
-	/* printf( "searching index done\n" ); */
-}
-
-#ifdef USE_LDAP
-/**
- * LDAP callback entry point for each address entry found.
- * \param qry       LDAP query.
- * \param listEMail List of Item EMail objects found.
- */
-static void addrindex_ldap_entry_cb( LdapQuery *qry, GList *listEMail ) {
-	GList *node;
-
-	/*
-	printf( "\naddrindex::addrindex_ldap_entry_cb ::%s::\n", qry->queryName );
-	*/
-	node = listEMail;
-	while( node ) {
-		ItemEMail *email = node->data;
-		/* printf( "\temail ::%s::\n", email->address ); */
-		node = g_list_next( node );
-	}
-	if( _searchCallback_ ) {
-		( _searchCallback_ ) ( qry->queryID, listEMail, _searchTarget_ );
-	}
-	g_list_free( listEMail );
-}
-
-/**
- * LDAP callback entry point for completion of search.
- * \param qry LDAP query.
- */
-static void addrindex_ldap_end_cb( LdapQuery *qry ) {
-	/* printf( "\naddrindex::addrindex_ldap_end_cb ::%s::\n", qry->queryName ); */
-}
-
-/**
- * Return results of previous query.
- * \param folder.
- * \return List of ItemEMail objects.
- */
-static void addrindex_ldap_use_previous( const ItemFolder *folder, const gint queryID )
-{
-	GList *listEMail;
-	GList *node;
-	GList *nodeEM;
-
-	listEMail = NULL;
-	if( _searchCallback_ ) {
-		node = folder->listPerson;
-		while( node ) {
-			AddrItemObject *aio = node->data;
-			if( aio &&  aio->type == ITEMTYPE_PERSON ) {
-				ItemPerson *person = node->data;
-				nodeEM = person->listEMail;
-				while( nodeEM ) {
-					ItemEMail *email = nodeEM->data;
-					nodeEM = g_list_next( nodeEM );
-					listEMail = g_list_append( listEMail, email );
-				}
-			}
-			node = g_list_next( node );
-		}
-		( _searchCallback_ ) ( queryID, listEMail, _searchTarget_ );
-		g_list_free( listEMail );
-	}
-}
-
-LdapQuery *ldapsvr_locate_query( LdapServer *server, const gchar *searchTerm );
-
-/**
- * Construct an LDAP query and initiate an LDAP search.
- * \param server  LDAP server object.
- * \param queryID ID of search query to be executed.
- */
-static void addrindex_search_ldap( LdapServer *server, const gint queryID ) {
-	LdapQuery *qry;
-	gchar *name;
-
-	if( ! server->searchFlag ) return;
-	/* printf( "Searching ::%s::\n", ldapsvr_get_name( server ) ); */
-
-	/* Retire any aged queries */
-	ldapsvr_retire_query( server );
-
-	/* Test whether any queries for the same term exist */
-	qry = ldapsvr_locate_query( server, _searchTerm_ );
-	if( qry ) {
-		ItemFolder *folder = qry->folder;
-
-		/* Touch query to ensure it hangs around for a bit longer */		
-		ldapqry_touch( qry );
-		if( folder ) {
-			addrindex_ldap_use_previous( folder, queryID );
-			return;
-		}
-	}
-
-	/* Construct a query */
-	qry = ldapqry_create();
-	ldapqry_set_query_id( qry, queryID );
-	ldapqry_set_search_value( qry, _searchTerm_ );
-	ldapqry_set_query_type( qry, LDAPQUERY_DYNAMIC );
-	ldapqry_set_callback_entry( qry, addrindex_ldap_entry_cb );
-	ldapqry_set_callback_end( qry, addrindex_ldap_end_cb );
-
-	/* Name the query */
-	name = g_strdup_printf( "Search for '%s'", _searchTerm_ );
-	ldapqry_set_name( qry, name );
-	g_free( name );
-
-	ldapsvr_add_query( server, qry );
-	/* printf( "addrindex_search_ldap::executing dynamic search...\n" ); */
-	ldapsvr_execute_query( server, qry );
-}
-
-/**
- * Construct an LDAP query and initiate an LDAP search.
- * \param server      LDAP server object to search.
- * \param searchTerm  Search term to locate.
- * \param callbackEnd Function to call when search has terminated.
- *
- */
-void addrindex_search_ldap_noid(
-	LdapServer *server, const gchar *searchTerm, void * callbackEnd )
-{
-	LdapQuery *qry;
-	gchar *name;
-
-	/* Construct a query */
-	qry = ldapqry_create();
-	ldapqry_set_search_value( qry, searchTerm );
-	ldapqry_set_query_type( qry, LDAPQUERY_STATIC );
-	ldapqry_set_callback_end( qry, callbackEnd );
-
-	/* Name the query */
-	name = g_strdup_printf( "Static Search for '%s'", searchTerm );
-	ldapqry_set_name( qry, name );
-	g_free( name );
-
-	ldapsvr_add_query( server, qry );
-	/* printf( "addrindex_search_ldap_noid::executing static search...\n" ); */
-	ldapsvr_execute_query( server, qry );
-}
-#endif
-
-/**
- * Perform the previously registered search.
- * \param  addrIndex  Address index object.
- * \param  queryID    ID of search query to be executed.
- * \return <i>TRUE</i> if search started successfully, or <i>FALSE</i> if
- *         failed.
- */
-gboolean addrindex_start_search( AddressIndex *addrIndex, const gint queryID ) {
-	AddressInterface *iface;
-	AddressDataSource *ds;
-	AddressCache *cache;
-	GList *nodeIf;
-	GList *nodeDS;
-	gint type;
-
-	/* printf( "addrindex_start_search::%d::\n", queryID ); */
-	nodeIf = addrIndex->searchOrder;
-	while( nodeIf ) {
-		iface = nodeIf->data;
-		nodeIf = g_list_next( nodeIf );
-
-		if( ! iface->useInterface ) {
-			continue;
-		}
-
-		type = iface->type;
-		nodeDS = iface->listSource;
-		while( nodeDS ) {
-			ds = nodeDS->data;
-			nodeDS = g_list_next( nodeDS );
-			cache = NULL;
-
-			if( type == ADDR_IF_BOOK ) {
-				AddressBookFile *abf = ds->rawDataSource;
-				cache = abf->addressCache;
-			}
-			else if( type == ADDR_IF_VCARD ) {
-				VCardFile *vcf = ds->rawDataSource;
-				cache = vcf->addressCache;
-			}
-#ifdef USE_JPILOT
-			else if( type == ADDR_IF_JPILOT ) {
-				JPilotFile *jpf = ds->rawDataSource;
-				cache = jpf->addressCache;
-			}
-#endif
-#ifdef USE_LDAP
-			else if( type == ADDR_IF_LDAP ) {
-				LdapServer *server = ds->rawDataSource;
-				addrindex_search_ldap( server, queryID );
-			}
-#endif
-			if( cache ) {
-				addrindex_search_cache( cache, queryID );
-			}
-		}
-	}
-	return TRUE;
-}
-
-/**
- * Stop the previously registered search.
- * \param addrIndex Address index object.
- * \param queryID ID of search query to stop.
- */
-void addrindex_stop_search( AddressIndex *addrIndex, const gint queryID ){
-#ifdef USE_LDAP
-	AddressInterface *iface;
-	AddressDataSource *ds;
-	GList *nodeIf;
-	GList *nodeDS;
-	gint type;
-
-	/* If query ID does not match, search has not been setup */
-	/* if( queryID != _queryID_ ) return; */
-
-	/* printf( "addrindex_stop_search::%d::\n", queryID ); */
-	nodeIf = addrIndex->searchOrder;
-	while( nodeIf ) {
-		iface = nodeIf->data;
-		nodeIf = g_list_next( nodeIf );
-
-		if( ! iface->useInterface ) {
-			continue;
-		}
-
-		type = iface->type;
-		nodeDS = iface->listSource;
-		while( nodeDS ) {
-			ds = nodeDS->data;
-			nodeDS = g_list_next( nodeDS );
-			if( type == ADDR_IF_LDAP ) {
-				LdapServer *server = ds->rawDataSource;
-				ldapsvr_stop_all_query( server );
-			}
-		}
-	}
-#endif
-}
-
-/**
- * Read all address books that do not support dynamic queries.
- * \param addrIndex Address index object.
- */
-void addrindex_read_all( AddressIndex *addrIndex ) {
-	AddressInterface *iface;
-	AddressDataSource *ds;
-	GList *nodeIf;
-	GList *nodeDS;
-
-	nodeIf = addrIndex->searchOrder;
-	while( nodeIf ) {
-		iface = nodeIf->data;
-		nodeIf = g_list_next( nodeIf );
-
-		if( ! iface->useInterface ) {
-			continue;
-		}
-		if( iface->externalQuery ) {
-			continue;
-		}
-		nodeDS = iface->listSource;
-		while( nodeDS ) {
-			ds = nodeDS->data;
-			nodeDS = g_list_next( nodeDS );
-
-			/* Read address book */
-			if( addrindex_ds_get_modify_flag( ds ) ) {
-				addrindex_ds_read_data( ds );
-				continue;
-			}
-
-			if( ! addrindex_ds_get_read_flag( ds ) ) {
-				addrindex_ds_read_data( ds );
-				continue;
-			}
-		}
-	}
-	addrIndex->loadedFlag = TRUE;
-}
-
-/**
- * Perform a simple search of all non-query type data sources for specified
- * search term. If several entries are found, only the first item is
- * returned. Interfaces that require a time-consuming "external query" are
- * ignored for this search.
- *
- * \param  addrIndex  Address index object.
- * \param  searchTerm Search term to find. Typically an email address.
- * \return List of references to zero or mail E-Mail object that was found in
- *         the address books, or <i>NULL</i> if nothing found. This list
- *         *SHOULD* be freed when done.
- */
-GList *addrindex_quick_search_list(
-		AddressIndex *addrIndex, const gchar *searchTerm )
-{
-	GList *listRet = NULL;
-	GList *listEMail;
-	AddressInterface *iface;
-	AddressDataSource *ds;
-	AddressCache *cache;
-	AddrCacheIndex *index;
-	ItemEMail *email;
-	GList *nodeIf;
-	GList *nodeDS;
-	GList *nodeEM;
-	gint type;
-
-	nodeIf = addrIndex->searchOrder;
-	while( nodeIf ) {
-		iface = nodeIf->data;
-		nodeIf = g_list_next( nodeIf );
-
-		if( ! iface->useInterface ) {
-			/* Ignore interfaces that don't have a library */
-			continue;
-		}
-		if( iface->externalQuery ) {
-			/* Ignore interfaces that require a "query" */
-			continue;
-		}
-
-		type = iface->type;
-		nodeDS = iface->listSource;
-		while( nodeDS ) {
-			ds = nodeDS->data;
-			nodeDS = g_list_next( nodeDS );
-			cache = NULL;
-
-			if( type == ADDR_IF_BOOK ) {
-				AddressBookFile *abf = ds->rawDataSource;
-				cache = abf->addressCache;
-			}
-			else if( type == ADDR_IF_VCARD ) {
-				VCardFile *vcf = ds->rawDataSource;
-				cache = vcf->addressCache;
-			}
-#ifdef USE_JPILOT
-			else if( type == ADDR_IF_JPILOT ) {
-				JPilotFile *jpf = ds->rawDataSource;
-				cache = jpf->addressCache;
-			}
-#endif
-			if( cache ) {
-				index = cache->searchIndex;
-				if( index == NULL ) {
-					continue;
-				}
-				if( index->invalid ) {
-					addrcache_build_index( cache );
-				}
-				listEMail = addrcindex_search( index, searchTerm );
-				nodeEM = listEMail;
-				while( nodeEM ) {
-					email = listEMail->data;
-					listRet = g_list_append( listRet, email );
-					nodeEM = g_list_next( nodeEM );
-				}
-				g_list_free( listEMail );
-			}
-		}
-	}
-	return listRet;
-}
-
-/**
- * Perform a simple search of all non-query type data sources for specified
- * search term. If several entries are found, only the first item is
- * returned. Interfaces that require a time-consuming "external query" are
- * ignored for this search.
- *
- * \param  addrIndex  Address index object.
- * \param  searchTerm Search term to find. Typically an email address.
- * \return Reference to a single E-Mail object that was found in the address
- *         book, or <i>NULL</i> if nothing found. This should *NOT* be freed
- *         when done.
- */
-ItemEMail *addrindex_quick_search_single(
-		AddressIndex *addrIndex, const gchar *searchTerm )
-{
-	ItemEMail *email = NULL;
-	AddressInterface *iface;
-	AddressDataSource *ds;
-	AddressCache *cache;
-	AddrCacheIndex *index;
-	GList *listEMail;
-	GList *nodeIf;
-	GList *nodeDS;
-	gint type;
-
-	/* printf( "addrindex_quick_search::%s::\n", searchTerm ); */
-	nodeIf = addrIndex->searchOrder;
-	while( nodeIf ) {
-		iface = nodeIf->data;
-		nodeIf = g_list_next( nodeIf );
-
-		if( ! iface->useInterface ) {
-			continue;
-		}
-		if( iface->externalQuery ) {
-			continue;
-		}
-
-		type = iface->type;
-		nodeDS = iface->listSource;
-		while( nodeDS ) {
-			ds = nodeDS->data;
-			nodeDS = g_list_next( nodeDS );
-			cache = NULL;
-
-			if( type == ADDR_IF_BOOK ) {
-				AddressBookFile *abf = ds->rawDataSource;
-				cache = abf->addressCache;
-			}
-			else if( type == ADDR_IF_VCARD ) {
-				VCardFile *vcf = ds->rawDataSource;
-				cache = vcf->addressCache;
-			}
-#ifdef USE_JPILOT
-			else if( type == ADDR_IF_JPILOT ) {
-				JPilotFile *jpf = ds->rawDataSource;
-				cache = jpf->addressCache;
-			}
-#endif
-			if( cache ) {
-				index = cache->searchIndex;
-				if( index == NULL ) {
-					continue;
-				}
-				if( index->invalid ) {
-					addrcache_build_index( cache );
-				}
-
-				listEMail = addrcindex_search( index, searchTerm );
-				if( listEMail ) {
-					email = listEMail->data;
-				}
-				g_list_free( listEMail );
-				if( email ) break;
-			}
-		}
-	}
-	return email;
-}
-
-/*
- * End of Source.
- */
-

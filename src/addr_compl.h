@@ -22,17 +22,33 @@
 #define __ADDR_COMPL_H__
 
 gint start_address_completion		(void);
-guint complete_address			(const gchar *str);
-gchar *get_complete_address		(gint        index);
+gint invalidate_address_completion	(void);
+
+guint complete_address			(const gchar	*str);
+
+gchar *get_address_from_edit		(GtkEntry	*entry,
+					 gint		*start_pos);
+void replace_address_in_edit		(GtkEntry	*entry,
+					 const gchar	*newtext,
+					 gint		 start_pos);
+
+gchar *get_complete_address		(gint		 index);
+
+gchar *get_next_complete_address	(void);
+gchar *get_prev_complete_address	(void);
+guint get_completion_count		(void);
+
+gboolean is_completion_pending		(void);
+
+void clear_completion_cache		(void);
+
 gint end_address_completion		(void);
 
 /* ui functions */
-void address_completion_start		(GtkWidget *mainwindow);
-void address_completion_register_entry	(GtkEntry  *entry);
-void address_completion_unregister_entry(GtkEntry  *entry);
-void address_completion_end		(GtkWidget *mainwindow);
 
-void addrcompl_initialize	( void );
-void addrcompl_teardown		( void );
+void address_completion_start	(GtkWidget *mainwindow);
+void address_completion_register_entry	(GtkEntry *entry);
+void address_completion_unregister_entry (GtkEntry *entry);
+void address_completion_end	(GtkWidget *mainwindow);
 
 #endif /* __ADDR_COMPL_H__ */

@@ -404,10 +404,10 @@ static gboolean isprintableeuckanji(guchar c1, guchar c2)
 		return (gboolean)valid_eucjp_tbl[c1 - 0xa2][c2 - 0xa0];
 
 	if (c1 == 0xcf) {
-		if (c2 >= 0xd4 && c2 <= 0xff)
+		if (c2 >= 0xd4 && c2 <= 0xfe)
 			return FALSE;
 	} else if (c1 == 0xf4) {
-		if (c2 >= 0xa7 && c2 <= 0xff)
+		if (c2 >= 0xa7 && c2 <= 0xfe)
 			return FALSE;
 	}
 

@@ -24,44 +24,28 @@
 #include <gtk/gtkwidget.h>
 
 #include "compose.h"
-#include "addrquery.h"
-#include "addritem.h"
 
-void addressbook_open			( Compose *target );
-void addressbook_set_target_compose	( Compose *target );
-Compose *addressbook_get_target_compose	( void );
-void addressbook_read_file		( void );
-void addressbook_export_to_file		( void );
-gint addressbook_obj_name_compare	( gconstpointer a,
-					  gconstpointer b );
+void addressbook_open			(Compose	*target);
+void addressbook_set_target_compose	(Compose	*target);
+Compose *addressbook_get_target_compose	(void);
+void addressbook_read_file		(void);
+void addressbook_export_to_file		(void);
+gint addressbook_obj_name_compare	(gconstpointer	 a,
+					 gconstpointer	 b);
 void addressbook_destroy		( void );
 
-gboolean addressbook_add_contact	( const gchar *name,
-					  const gchar *address,
-					  const gchar *remarks );
-					  
-gboolean addressbook_load_completion	(gint (*callBackFunc) 
-					       (const gchar *, 
-					  	const gchar *, 
-					  	const gchar *));
+gboolean addressbook_add_contact	( const gchar	*name,
+					  const gchar	*address,
+					  const gchar	*remarks );
+
+gboolean addressbook_load_completion	( gint (*callBackFunc) ( const gchar *, const gchar *, const gchar * ) );
 
 void addressbook_gather			( FolderItem *folderItem,
 					  gboolean sourceInd,
 					  GList *msgList );
-void addressbook_harvest		( FolderItem *folderItem,
-					  gboolean sourceInd,
-					  GList *msgList);
-
-gint addressbook_setup_search		( const gchar *searchTerm,
-					  const gpointer target,
-					  AddrSearchCallbackFunc callback );
-gboolean addressbook_start_search	( const gint queryID );
-void addressbook_stop_search		( const gint queryID );
-
-void addressbook_read_all		( void );
-GList *addressbook_quick_search_list	( const gchar *searchTerm );
-ItemEMail *addressbook_quick_search_single( const gchar *searchTerm );
-gchar *addressbook_lookup_name		( const gchar *address );
+void addressbook_harvest		(FolderItem 	*folderItem,
+					 gboolean sourceInd,
+					 GList *msgList);
 
 #endif /* __ADDRESSBOOK_H__ */
 

@@ -903,10 +903,9 @@ void addritem_print_item_group( ItemGroup *group, FILE *stream ) {
 	fprintf( stream, "\t***\n" );
 }
 
-/**
- * Create new address folder.
- * \return Initialized address folder object.
- */
+/*
+* Create new address folder.
+*/
 ItemFolder *addritem_create_item_folder( void ) {
 	ItemFolder *folder;
 	folder = g_new0( ItemFolder, 1 );
@@ -921,17 +920,14 @@ ItemFolder *addritem_create_item_folder( void ) {
 	folder->listFolder = NULL;
 	folder->listPerson = NULL;
 	folder->listGroup = NULL;
-	folder->folderType = ADDRFOLDER_NONE;
-	folder->folderData = NULL;
 	return folder;
 }
 
-/**
- * Copy address book folder. Note that only the folder and not its contents are
- * copied.
- * \param  item Folder to copy.
- * \return A copy of the folder, or <i>NULL</i> if null argument supplied.
- */
+/*
+* Copy address book folder.
+* Enter:  item Folder to copy.
+* Return: A copy of the folder. 
+*/
 ItemFolder *addritem_copy_item_folder( ItemFolder *item ) {
 	ItemFolder *itemNew;
 
@@ -939,7 +935,6 @@ ItemFolder *addritem_copy_item_folder( ItemFolder *item ) {
 	if( item ) {
 		itemNew = addritem_create_item_folder();
 		ADDRITEM_NAME(itemNew) = g_strdup( ADDRITEM_NAME(item) );
-		itemNew->folderType = item->folderType;
 	}
 	return itemNew;
 }
@@ -971,12 +966,11 @@ void addritem_folder_set_remarks( ItemFolder *folder, const gchar *value ) {
 	folder->remarks = mgu_replace_string( folder->remarks, value );
 }
 
-/**
- * Free address folder. Note: this does not free up the lists of children
- * (folders, groups and person). This should be done prior to calling this
- * function.
- * \param folder Folder to free.
- */
+/*
+* Free address folder. Note: this does not free up the lists of children
+* (folders, groups and person). This should be done prior to calling this
+* function.
+*/
 void addritem_free_item_folder( ItemFolder *folder ) {
 	g_return_if_fail( folder != NULL );
 
@@ -998,8 +992,6 @@ void addritem_free_item_folder( ItemFolder *folder ) {
 	folder->listFolder = NULL;
 	folder->listGroup = NULL;
 	folder->listPerson = NULL;
-	folder->folderType = ADDRFOLDER_NONE;
-	folder->folderData = NULL;
 
 	g_free( folder );
 }
@@ -1107,7 +1099,6 @@ void addritem_print_item_folder( ItemFolder *folder, FILE *stream ) {
 	fprintf( stream, "\tsub: %d\n", ADDRITEM_SUBTYPE(folder) );
 	fprintf( stream, "\tnam: '%s'\n", ADDRITEM_NAME(folder) );
 	fprintf( stream, "\trem: '%s'\n", folder->remarks );
-	fprintf( stream, "\ttyp: %d\n", folder->folderType );
 	fprintf( stream, "\t---\n" );
 	parent = ( ItemFolder * ) ADDRITEM_PARENT(folder);
 	if( parent ) {
@@ -1373,42 +1364,6 @@ GList *addritem_folder_path( const ItemFolder *folder, const gboolean seq ) {
 		}
 	}
 	return list;
-}
-
-/**
- * Format E-Mail address.
- * \param email EMail item to format.
- * \return Formatted string. Should be freed after use.
- */
-gchar *addritem_format_email( ItemEMail *email ) {
-	gchar *address;
-	gchar *name;
-	ItemPerson *person;
-
-	address = NULL;
-	name = NULL;
-	if( ADDRITEM_NAME( email ) ) {
-		if( strlen( ADDRITEM_NAME( email ) ) ) {
-			name = ADDRITEM_NAME( email );
-		}
-	}
-	if( ! name ) {
-		person = ( ItemPerson * ) ADDRITEM_PARENT( email );
-		name = ADDRITEM_NAME( person );
-	}
-
-	if( name ) {
-		if( strchr_with_skip_quote( name, '"', ',' ) ) {
-			address = g_strdup_printf( "\"%s\" <%s>", name, email->address );
-		}
-		else {
-			address = g_strdup_printf( "%s <%s>", name, email->address );
-		}
-	}
-	else {
-		address = g_strdup_printf( "%s", email->address );
-	}
-	return address;
 }
 
 /*

@@ -1,6 +1,6 @@
 
 EXPORTS
-	Xrename 
+	inc_autocheck_timer_init 
 	about_show 
 	account_add 
 	account_destroy 
@@ -50,7 +50,6 @@ EXPORTS
 	addrbook_get_root_folder 
 	addrbook_get_status 
 	addrbook_guess_next_file 
-	addrbook_invalidate 
 	addrbook_item_get_bookfile 
 	addrbook_move_email_after 
 	addrbook_move_email_before 
@@ -86,10 +85,8 @@ EXPORTS
 	addrcache_add_folder 
 	addrcache_add_group 
 	addrcache_add_person 
-	addrcache_build_index 
 	addrcache_check_file 
 	addrcache_clear 
-	addrcache_clear_index 
 	addrcache_create 
 	addrcache_dump_hash 
 	addrcache_find_root_folder 
@@ -133,7 +130,6 @@ EXPORTS
 	addrcache_id_folder 
 	addrcache_id_group 
 	addrcache_id_person 
-	addrcache_invalidate 
 	addrcache_mark_file 
 	addrcache_next_id 
 	addrcache_person_add_email 
@@ -154,7 +150,6 @@ EXPORTS
 	addrcache_set_modified 
 	addrcache_set_name 
 	addrcache_set_read_flag 
-	addrcache_use_index 
 	addrcindex_add_email 
 	addrcindex_add_entry 
 	addrcindex_add_person 
@@ -244,22 +239,15 @@ EXPORTS
 	addrindex_get_datasource 
 	addrindex_get_interface 
 	addrindex_get_interface_list 
-	addrindex_get_loaded 
 	addrindex_index_add_datasource 
 	addrindex_index_remove_datasource 
 	addrindex_print_index 
-	addrindex_quick_search_list 
-	addrindex_quick_search_single 
-	addrindex_read_all 
 	addrindex_read_data 
 	addrindex_save_all_books 
 	addrindex_save_data 
 	addrindex_set_dirty 
 	addrindex_set_file_name 
 	addrindex_set_file_path 
-	addrindex_setup_search 
-	addrindex_start_search 
-	addrindex_stop_search 
 	addrindex_write_to 
 	addritem_attrib_set_id 
 	addritem_attrib_set_name 
@@ -289,7 +277,6 @@ EXPORTS
 	addritem_folder_set_id 
 	addritem_folder_set_name 
 	addritem_folder_set_remarks 
-	addritem_format_email 
 	addritem_free_attribute 
 	addritem_free_item_email 
 	addritem_free_item_folder 
@@ -924,7 +911,7 @@ EXPORTS
 	import_mbox 
 	inc_all_account_mail 
 	inc_all_account_mail_cb 
-	inc_autocheck_timer_init 
+	Xrename 
 	inc_autocheck_timer_remove 
 	inc_autocheck_timer_set 
 	inc_cancel_all 

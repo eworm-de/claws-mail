@@ -7,8 +7,9 @@ clamav_plugin_la_SOURCES = \
 
 clamav_plugin_la_LDFLAGS = \
 	-avoid-version -module \
-	$(GTK_LIBS)
-
+	$(GTK_LIBS) \
+	$(CLAMAV_LIBS)
+	
 clamav_plugin_gtk_la_SOURCES = \
 	clamav_plugin_gtk.c clamav_plugin.h
 
@@ -20,8 +21,7 @@ INCLUDES = \
 	-I../.. \
 	-I../../common \
 	-I../../gtk \
-	$(CLAMAV_CFLAGS) \
-	-I$(includedir)
+	-I$(CLAMAV_LIBS)
 
 CPPFLAGS = \
 	$(ASPELL_CFLAGS) \

@@ -50,6 +50,7 @@ Source: "@PAKDIR@\bin\regex.dll";             DestDir: "{app}\bin";             
 Source: "@PAKDIR@\bin\w32lib.dll";            DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 Source: "@PAKDIR@\bin\iconv.dll";             DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 Source: "@PAKDIR@\bin\crypt.dll";             DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
+Source: "@PAKDIR@\bin\pthreadVC.dll";         DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 
 Source: "@PAKDIR@\bin\gspawn-win32-helper.exe";  DestDir: "{app}\bin";                CopyMode: alwaysoverwrite; Components: gtk
 Source: "@PAKDIR@\bin\libgthread-2.0-0.dll";  DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite; Components: gtk
@@ -66,9 +67,11 @@ Source: "@PAKDIR@\doc\manual\*.*";            DestDir: "{app}\doc\manual";      
 Source: "@PAKDIR@\etc\*.*";                   DestDir: "{app}\etc";                   CopyMode: alwaysoverwrite; Flags: recursesubdirs
 Source: "@PAKDIR@\locale\*.*";                DestDir: "{app}\locale";                CopyMode: alwaysoverwrite; Flags: recursesubdirs
 Source: "@PAKDIR@\themes\*.*";                DestDir: "{app}\themes";                CopyMode: alwaysoverwrite; Flags: recursesubdirs; Components: themes
+Source: "@PAKDIR@\openssl\*.*";               DestDir: "{app}\openssl";               CopyMode: alwaysoverwrite; Flags: recursesubdirs
 ; Claws specific
 Source: "@PAKDIR@\bin\libeay32.dll";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 Source: "@PAKDIR@\bin\ssleay32.dll";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
+Source: "@PAKDIR@\bin\openssl.exe";           DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 ; Plugins
 Source: "@PAKDIR@\bin\plugins\demo.dll";              DestDir: "{app}\bin\plugins";   CopyMode: alwaysoverwrite;
 Source: "@PAKDIR@\bin\plugins\spamassassin.dll";      DestDir: "{app}\bin\plugins";   CopyMode: alwaysoverwrite;

@@ -141,7 +141,7 @@ MATCHER_PARSER_TARGETS=$(MATCHER_PARSER)_lex.c $(MATCHER_PARSER)_parse.c $(MATCH
 
 ### translation
 
-MOFILES=bg.mo cs.mo de.mo el.mo en_GB.mo es.mo fr.mo hr.mo hu.mo it.mo ja.mo ko.mo nl.mo pl.mo pt_BR.mo ru.mo sr.mo sv.mo
+MOFILES=bg.mo cs.mo de.mo el.mo en_GB.mo es.mo fr.mo hr.mo hu.mo it.mo ja.mo ko.mo nl.mo pl.mo pt_BR.mo ru.mo sr.mo sv.mo zh_TW.Big5.mo
 MONAME=sylpheed.mo
 # avoid check for backslash, different shells need different escaping. yucc!
 CHARSET_RE=\(.*Content-Type: text\/plain; charset=\)\([-a-zA-Z0-9]*\)\(.*\)
