@@ -24,6 +24,7 @@
 #include "defs.h"
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkvbox.h>
@@ -37,7 +38,6 @@
 #  include <compface.h>
 #endif
 
-#include "intl.h"
 #include "prefs_common.h"
 #include "gtkutils.h"
 #include "utils.h"

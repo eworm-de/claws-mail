@@ -26,6 +26,8 @@
 #include <time.h>
 #include <gtk/gtk.h>
 #include <gpgme.h>
+#include <glib.h>
+#include <glib/gi18n.h>
 
 #include "sgpgme.h"
 #include "privacy.h"
@@ -33,7 +35,6 @@
 #include "utils.h"
 #include "alertpanel.h"
 #include "passphrase.h"
-#include "intl.h"
 #include "prefs_gpg.h"
 #include "select-keys.h"
 

@@ -21,12 +21,13 @@
 #  include "config.h"
 #endif
 
+#include <glib.h>
+#include <glib/gi18n.h>
 #include <ctype.h>
 
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
-#include "intl.h"
 #include "utils.h"
 #include "menu.h"
 #include "prefs_common.h"

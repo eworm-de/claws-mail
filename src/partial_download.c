@@ -47,6 +47,7 @@
 #endif
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
@@ -55,7 +56,6 @@
 #include <time.h>
 #include <errno.h>
 
-#include "intl.h"
 #include "partial_download.h"
 #include "utils.h"
 #include "pop.h"

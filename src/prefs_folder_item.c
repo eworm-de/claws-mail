@@ -25,8 +25,10 @@
 #  include "config.h"
 #endif
 
-#include "intl.h"
 #include "defs.h"
+
+#include <glib.h>
+#include <glib/gi18n.h>
 #include "folder.h"
 #include "prefs_folder_item.h"
 #include "folderview.h"

@@ -25,8 +25,9 @@
 
 #include <openssl/ssl.h>
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include "intl.h"
+
 #include "ssl_certificate.h"
 #include "utils.h"
 #include "alertpanel.h"

@@ -18,13 +18,15 @@
  */
 
 #include "defs.h"
+#include <glib.h>
+#include <glib/gi18n.h>
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
-#include "intl.h"
+
 #include "utils.h"
 #include "procheader.h"
 #include "matcher.h"

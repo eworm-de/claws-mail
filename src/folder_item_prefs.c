@@ -25,7 +25,9 @@
 #  include "config.h"
 #endif
 
-#include "intl.h"
+#include <glib.h>
+#include <glib/gi18n.h>
+
 #include "defs.h"
 #include "folder.h"
 #include "utils.h"

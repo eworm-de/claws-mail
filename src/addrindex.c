@@ -28,8 +28,8 @@
 #include "defs.h"
 
 #include <glib.h>
+#include <glib/gi18n.h>
 
-#include "intl.h"
 #include "mgutils.h"
 #include "addritem.h"
 #include "addrcache.h"

@@ -27,10 +27,10 @@
 #include <stdlib.h>
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
-#include "intl.h"
 #include "prefs_common.h"
 #include "prefs_gtk.h"
 

@@ -23,9 +23,9 @@
 
 #include <stddef.h>
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtkstatusbar.h>
 
-#include "intl.h"
 #include "inputdialog.h"
 #include "alertpanel.h"
 #include "mainwindow.h"

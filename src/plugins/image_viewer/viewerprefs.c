@@ -24,9 +24,9 @@
 #include "defs.h"
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include "intl.h"
 #include "common/utils.h"
 #include "prefs.h"
 #include "prefs_gtk.h"

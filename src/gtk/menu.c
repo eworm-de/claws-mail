@@ -22,6 +22,7 @@
 #endif
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkmenu.h>
@@ -31,7 +32,6 @@
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkwindow.h>
 
-#include "intl.h"
 #include "menu.h"
 #include "utils.h"
 

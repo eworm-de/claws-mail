@@ -23,6 +23,7 @@
 #ifdef USE_OPENSSL
 #include <gtk/gtkwidget.h>
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <sys/types.h>
 #include <dirent.h>
 
@@ -31,7 +32,6 @@
 #include "manage_window.h"
 #include "utils.h"
 #include "mainwindow.h"
-#include "intl.h"
 #include "gtksctree.h"
 #include "alertpanel.h"
 #include "sslcertwindow.h"

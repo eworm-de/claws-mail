@@ -24,6 +24,7 @@
 #include "defs.h"
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
@@ -44,7 +45,6 @@
 #include <regex.h>
 #include <sys/utsname.h>
 
-#include "intl.h"
 #include "utils.h"
 #include "socket.h"
 #include "../codeconv.h"

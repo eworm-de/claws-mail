@@ -24,6 +24,7 @@
 #include <unistd.h>
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <gtkmathview/gtkmathview.h>
 
@@ -31,7 +32,6 @@
 #include "common/version.h"
 #include "plugin.h"
 #include "utils.h"
-#include "intl.h"
 #include "mimeview.h"
 
 typedef struct _MathMLViewer MathMLViewer;

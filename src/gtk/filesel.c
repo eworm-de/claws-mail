@@ -34,12 +34,12 @@
 #include <gtk/gtkfilechooser.h>
 #include <gtk/gtkfilechooserdialog.h>
 
-#include "intl.h"
 #include "sylpheed.h"
 #include "filesel.h"
 #include "manage_window.h"
 #include "gtkutils.h"
 #include "utils.h"
+#include "codeconv.h"
 
 static gchar *last_selected_dir = NULL;
 static GList *filesel_create(const gchar *title, const gchar *path, 

@@ -18,9 +18,10 @@
  */
 
 #include <gtk/gtk.h>
+#include <glib.h>
+#include <glib/gi18n.h>
 
 #include "defs.h"
-#include "intl.h"
 #include "utils.h"
 #include "prefs.h"
 #include "prefs_gtk.h"

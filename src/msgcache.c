@@ -20,10 +20,10 @@
 #include "defs.h"
 
 #include <glib.h>
+#include <glib/gi18n.h>
 
 #include <time.h>
 
-#include "intl.h"
 #include "msgcache.h"
 #include "utils.h"
 #include "procmsg.h"

@@ -26,6 +26,7 @@
 #include <sys/types.h>
 #include <sys/mman.h>
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkwidget.h>
@@ -42,7 +43,6 @@
 #include <gdk/gdkx.h>  /* GDK_DISPLAY() */
 #endif /* GDK_WINDOWING_X11 */
 
-#include "intl.h"
 #include "passphrase.h"
 #include "prefs_common.h"
 #include "manage_window.h"

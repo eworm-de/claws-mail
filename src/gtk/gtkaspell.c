@@ -45,6 +45,7 @@
 #include <dirent.h>
 
 #include <glib.h>
+#include <glib/gi18n.h>
 
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
@@ -55,7 +56,6 @@
 
 #include <aspell.h>
 
-#include "intl.h"
 #include "gtk/gtktext.h"
 #include "utils.h"
 #include "codeconv.h"

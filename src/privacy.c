@@ -18,8 +18,8 @@
  */
 
 #include <glib.h>
+#include <glib/gi18n.h>
 
-#include "intl.h"
 #include "privacy.h"
 #include "procmime.h"
 

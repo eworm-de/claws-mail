@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include "defs.h"
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkwindow.h>
@@ -39,7 +40,6 @@
 #  include <sys/utsname.h>
 #endif
 
-#include "intl.h"
 #include "about.h"
 #include "gtkutils.h"
 #include "stock_pixmap.h"
@@ -57,10 +57,8 @@ void about_show(void)
 {
 	if (!window)
 		about_create();
-	else {
-		gtk_widget_hide(window);
-		gtk_widget_show(window);
-	}
+	else
+		gtk_window_present(GTK_WINDOW(window));
 }
 
 static void about_create(void)
@@ -74,12 +72,12 @@ static void about_create(void)
 	GtkWidget *text;
 	GtkWidget *confirm_area;
 	GtkWidget *ok_button;
+	GtkTextBuffer *buffer;
+	GtkTextIter iter;
 	GtkStyle *style;
 	GdkColormap *cmap;
 	GdkColor uri_color[2] = {{0, 0, 0, 0xffff}, {0, 0xffff, 0, 0}};
 	gboolean success[2];
-	GtkTextBuffer *buffer;
-	GtkTextIter iter;
 
 #if HAVE_SYS_UTSNAME_H
 	struct utsname utsbuf;
@@ -104,6 +102,7 @@ static void about_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox), pixmap, FALSE, FALSE, 0);
 
 	label = gtk_label_new("version "VERSION);
+	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
 #if HAVE_SYS_UTSNAME_H
@@ -121,6 +120,8 @@ static void about_create(void)
 #endif
 
 	label = gtk_label_new(buf);
+	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
+	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
 	g_snprintf(buf, sizeof(buf),
@@ -158,10 +159,12 @@ static void about_create(void)
 	"");
 
 	label = gtk_label_new(buf);
+	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
 	label = gtk_label_new
-		("Copyright (C) 1999-2004 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>");
+		("Copyright (C) 1999-2005 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>");
+	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
 
 	hbox = gtk_hbox_new(FALSE, 0);

@@ -26,6 +26,7 @@
 #include "defs.h"
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,7 +50,6 @@
 #include "main.h"
 #endif
 #include "sylpheed.h"
-#include "intl.h"
 #include "crash.h"
 #include "utils.h"
 #include "filesel.h"

@@ -24,6 +24,7 @@
 #include "defs.h"
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkrc.h>
 
@@ -44,7 +45,6 @@
 #endif
 
 #include "sylpheed.h"
-#include "intl.h"
 #include "main.h"
 #include "mainwindow.h"
 #include "folderview.h"
@@ -593,22 +593,22 @@ static void parse_cmd_opt(int argc, char *argv[])
 			gchar *base = g_path_get_basename(argv[0]);
 			g_print(_("Usage: %s [OPTION]...\n"), base);
 
-			puts(_("  --compose [address]    open composition window"));
-			puts(_("  --attach file1 [file2]...\n"
-			       "                         open composition window with specified files\n"
-			       "                         attached"));
-			puts(_("  --receive              receive new messages"));
-			puts(_("  --receive-all          receive new messages of all accounts"));
-			puts(_("  --send                 send all queued messages"));
- 			puts(_("  --status [folder]...   show the total number of messages"));
- 			puts(_("  --status-full [folder]...\n"
+			g_print(_("  --compose [address]    open composition window"));
+			g_print(_("  --attach file1 [file2]...\n"
+			          "                         open composition window with specified files\n"
+			          "                         attached"));
+			g_print(_("  --receive              receive new messages"));
+			g_print(_("  --receive-all          receive new messages of all accounts"));
+			g_print(_("  --send                 send all queued messages"));
+ 			g_print(_("  --status [folder]...   show the total number of messages"));
+ 			g_print(_("  --status-full [folder]...\n"
  			       "                         show the status of each folder"));
-			puts(_("  --online               switch to online mode"));
-			puts(_("  --offline              switch to offline mode"));
-			puts(_("  --debug                debug mode"));
-			puts(_("  --help                 display this help and exit"));
-			puts(_("  --version              output version information and exit"));
-			puts(_("  --config-dir           output configuration directory"));
+			g_print(_("  --online               switch to online mode"));
+			g_print(_("  --offline              switch to offline mode"));
+			g_print(_("  --debug                debug mode"));
+			g_print(_("  --help                 display this help and exit"));
+			g_print(_("  --version              output version information and exit"));
+			g_print(_("  --config-dir           output configuration directory"));
 
 			g_free(base);
 			exit(1);

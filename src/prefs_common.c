@@ -24,6 +24,7 @@
 #include "defs.h"
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <stdio.h>
@@ -34,7 +35,6 @@
 #include <sys/stat.h>
 #include <errno.h>
 
-#include "intl.h"
 #include "main.h"
 #include "prefs_gtk.h"
 #include "prefs_common.h"
@@ -1503,15 +1503,18 @@ static void prefs_quote_create(void)
 
 	scrolledwin_quotefmt = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_show (scrolledwin_quotefmt);
-	gtk_box_pack_start (GTK_BOX (vbox_quote), scrolledwin_quotefmt, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox_quote), scrolledwin_quotefmt,
+			    TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy
 		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt),
 		 GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type
+		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt), GTK_SHADOW_IN);
 
 	text_quotefmt = gtk_text_view_new ();
 	gtk_widget_show (text_quotefmt);
 	gtk_container_add(GTK_CONTAINER(scrolledwin_quotefmt), text_quotefmt);
-	gtk_text_view_set_editable (GTK_TEXT_VIEW(text_quotefmt), TRUE);
+	gtk_text_view_set_editable (GTK_TEXT_VIEW (text_quotefmt), TRUE);
 	gtk_widget_set_size_request(text_quotefmt, -1, 60);
 
 	/* forward */
@@ -1543,17 +1546,20 @@ static void prefs_quote_create(void)
 
 	scrolledwin_quotefmt = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_show (scrolledwin_quotefmt);
-	gtk_box_pack_start (GTK_BOX (vbox_quote), scrolledwin_quotefmt, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox_quote), scrolledwin_quotefmt,
+			    TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy
 		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt),
 		 GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type
+		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt), GTK_SHADOW_IN);
 
 	text_fw_quotefmt = gtk_text_view_new ();
 	gtk_widget_show (text_fw_quotefmt);
 	gtk_container_add(GTK_CONTAINER(scrolledwin_quotefmt),
 			  text_fw_quotefmt);
 	gtk_text_view_set_editable (GTK_TEXT_VIEW (text_fw_quotefmt), TRUE);
-	gtk_widget_set_size_request(text_fw_quotefmt, -1, 60);
+	gtk_widget_set_size_request (text_fw_quotefmt, -1, 60);
 
 	hbox1 = gtk_hbox_new (FALSE, 32);
 	gtk_widget_show (hbox1);

@@ -24,10 +24,11 @@
 #include "defs.h"
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #ifdef GDK_WINDOWING_X11
-#	include <gdk/gdkx.h>
+#  include <gdk/gdkx.h>
 #endif /* GDK_WINDOWING_X11 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,7 +39,6 @@
 #include <signal.h>
 #include <unistd.h>
 
-#include "intl.h"
 #include "utils.h"
 #include "gtkutils.h"
 #include "manage_window.h"
@@ -648,18 +648,17 @@ static gboolean execute_actions(gchar *action, GSList *msg_list,
 		GtkTextBuffer *textbuf;
 
 		textbuf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
-		is_selection = gtk_text_buffer_get_selection_bounds(textbuf,
-								    &start_iter,
-								    &end_iter);
+		is_selection = gtk_text_buffer_get_selection_bounds
+			(textbuf, &start_iter, &end_iter);
 		if (!is_selection) {
-			gtk_text_buffer_get_start_iter(textbuf, &start_iter);
+			gtk_text_buffer_get_iter_at_offset
+				(textbuf, &start_iter, body_pos);
 			gtk_text_buffer_get_end_iter(textbuf, &end_iter);
 		}
-		msg_str = gtk_text_buffer_get_text(textbuf,
-						   &start_iter, &end_iter,
-						   FALSE);
+		msg_str = gtk_text_buffer_get_text
+			(textbuf, &start_iter, &end_iter, FALSE);
 		if (is_selection)
-			sel_str = g_strdup (msg_str);
+			sel_str = g_strdup(msg_str);
 	}
 
 	if (action_type & ACTION_USER_STR) {
@@ -1108,8 +1107,7 @@ static void update_io_dialog(Children *children)
 
 		gtk_widget_show(children->scrolledwin);
 		textbuf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
-		gtk_text_buffer_get_start_iter(textbuf, &start_iter);
-		gtk_text_buffer_get_end_iter(textbuf, &end_iter);
+		gtk_text_buffer_get_bounds(textbuf, &start_iter, &end_iter);
 		gtk_text_buffer_delete(textbuf, &start_iter, &end_iter);
 		gtk_text_buffer_get_start_iter(textbuf, &iter);
 

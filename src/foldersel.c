@@ -21,6 +21,7 @@
 #include "defs.h"
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkwidget.h>
@@ -42,7 +43,6 @@
 #include <fcntl.h>
 #include <errno.h>
 
-#include "intl.h"
 #include "main.h"
 #include "utils.h"
 #include "gtkutils.h"

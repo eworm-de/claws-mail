@@ -28,6 +28,7 @@
 #include "defs.h"
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
@@ -35,7 +36,6 @@
 #include <math.h>
 #include <setjmp.h>
 
-#include "intl.h"
 #include "mainwindow.h"
 #include "summaryview.h"
 #include "compose.h"

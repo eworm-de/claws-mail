@@ -22,6 +22,7 @@
 #endif
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkwidget.h>
@@ -37,7 +38,6 @@
 #include <gtk/gtkhbbox.h>
 #include <gtk/gtkstock.h>
 
-#include "intl.h"
 #include "inputdialog.h"
 #include "manage_window.h"
 #include "gtkutils.h"

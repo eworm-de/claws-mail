@@ -24,12 +24,12 @@
 #include <unistd.h>
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 
 #include "common/sylpheed.h"
 #include "common/version.h"
-#include "intl.h"
 #include "plugin.h"
 #include "utils.h"
 #include "mimeview.h"

@@ -24,6 +24,7 @@
 #include "defs.h"
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkvbox.h>
@@ -34,7 +35,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "intl.h"
 #include "main.h"
 #include "summaryview.h"
 #include "procheader.h"
@@ -229,7 +229,8 @@ TextView *textview_create(void)
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
-				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+				       GTK_POLICY_AUTOMATIC,
+				       GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
 					    GTK_SHADOW_IN);
 	gtk_widget_set_size_request
@@ -254,11 +255,6 @@ TextView *textview_create(void)
 	gtk_widget_ref(scrolledwin);
 
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
-
-	if (!hand_cursor)
-		hand_cursor = gdk_cursor_new(GDK_HAND2);
-	if (!text_cursor)
-		text_cursor = gdk_cursor_new(GDK_XTERM);
 
 	g_signal_connect(G_OBJECT(text), "key_press_event",
 			 G_CALLBACK(textview_key_pressed),
@@ -357,6 +353,7 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 					 "foreground-gdk", &uri_color,
 					 NULL);
 	gtk_text_buffer_create_tag(buffer, "link-hover",
+				   "foreground-gdk", &uri_color,
 				   "underline", PANGO_UNDERLINE_SINGLE,
 				   NULL);
 
@@ -366,6 +363,11 @@ static void textview_create_tags(GtkTextView *text, TextView *textview)
 
 void textview_init(TextView *textview)
 {
+	if (!hand_cursor)
+		hand_cursor = gdk_cursor_new(GDK_HAND2);
+	if (!text_cursor)
+		text_cursor = gdk_cursor_new(GDK_XTERM);
+
 	textview_update_message_colors();
 	textview_set_all_headers(textview, FALSE);
 	textview_set_font(textview, NULL);
@@ -1475,124 +1477,79 @@ gboolean textview_search_string(TextView *textview, const gchar *str,
 				gboolean case_sens)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
-	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+	GtkTextBuffer *buffer;
+	GtkTextIter iter, end_iter;
 	GtkTextMark *mark;
-	GtkTextIter iter, start, end, real_end, *pos;
-	gboolean found = FALSE;
-	gint insert_offset, selbound_offset;
+	gint pos;
+	gint len;
 
-	/* reset selection */
-	mark = gtk_text_buffer_get_mark(buffer, "insert");
-	gtk_text_buffer_get_iter_at_mark(buffer, &start, mark);
-	insert_offset = gtk_text_iter_get_offset(&start);
-	mark = gtk_text_buffer_get_mark(buffer, "selection_bound");
-	gtk_text_buffer_get_iter_at_mark(buffer, &end, mark);
-	selbound_offset = gtk_text_iter_get_offset(&end);
+	g_return_val_if_fail(str != NULL, FALSE);
 
-	pos = insert_offset > selbound_offset ? &start : &end;
-	gtk_text_buffer_place_cursor(buffer, pos);
+	buffer = gtk_text_view_get_buffer(text);
 
-	/* search */
+	len = g_utf8_strlen(str, -1);
+	g_return_val_if_fail(len >= 0, FALSE);
+
 	mark = gtk_text_buffer_get_insert(buffer);
 	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
-	if (case_sens) {
-		found = gtk_text_iter_forward_search(&iter, str,
-					     GTK_TEXT_SEARCH_VISIBLE_ONLY,
-					     &start, &end, NULL);
-	} else {
-		gchar *text = NULL;
-		int i = 0;
-		gtk_text_buffer_get_end_iter(buffer, &real_end);
-		text = gtk_text_buffer_get_text(buffer, &iter, 
-						&real_end, FALSE);
-		
-		while (!found && i++ < strlen(text) - 1) {
-			found = (strncasecmp(text+i, str, strlen(str)) == 0);
-		}
-		
-		i += gtk_text_iter_get_offset(&end);
-		
-		if (found) {
-			gtk_text_buffer_get_iter_at_offset(buffer, &start, i);
-			gtk_text_buffer_get_iter_at_offset(buffer, &end, 
-							   i + strlen(str));
-		}
-		
-		g_free(text);
-	}
-	
-	if (found) {
-		gtk_text_buffer_place_cursor(buffer, &start);
-		gtk_text_buffer_move_mark_by_name(buffer, "selection_bound", 
-						  &end);
-		mark = gtk_text_buffer_get_mark(buffer, "insert");
-		gtk_text_view_scroll_mark_onscreen(text, mark);
+	pos = gtk_text_iter_get_offset(&iter);
+
+	if ((pos = gtkut_text_buffer_find(buffer, pos, str, case_sens)) != -1) {
+		gtk_text_buffer_get_iter_at_offset(buffer, &end_iter, pos);
+		gtk_text_buffer_get_iter_at_offset(buffer, &iter, pos + len);
+		gtk_text_buffer_select_range(buffer, &iter, &end_iter);
+		gtk_text_view_scroll_to_mark(text, mark, 0.0, FALSE, 0.0, 0.0);
+		return TRUE;
 	}
 
-	return found;
+	return FALSE;
 }
 
 gboolean textview_search_string_backward(TextView *textview, const gchar *str,
 					 gboolean case_sens)
 {
 	GtkTextView *text = GTK_TEXT_VIEW(textview->text);
-	GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
+	GtkTextBuffer *buffer;
+	GtkTextIter iter, end_iter;
 	GtkTextMark *mark;
-	GtkTextIter iter, start, real_start, end, *pos;
+	gint pos;
+	gunichar *wcs;
+	gint len;
+	glong items_read = 0, items_written = 0;
+	GError *error = NULL;
 	gboolean found = FALSE;
-	gint insert_offset, selbound_offset;
 
-	/* reset selection */
-	mark = gtk_text_buffer_get_mark(buffer, "insert");
-	gtk_text_buffer_get_iter_at_mark(buffer, &start, mark);
-	insert_offset = gtk_text_iter_get_offset(&start);
-	mark = gtk_text_buffer_get_mark(buffer, "selection_bound");
-	gtk_text_buffer_get_iter_at_mark(buffer, &end, mark);
-	selbound_offset = gtk_text_iter_get_offset(&end);
+	g_return_val_if_fail(str != NULL, FALSE);
 
-	pos = insert_offset < selbound_offset ? &start : &end;
-	gtk_text_buffer_place_cursor(buffer, pos);
+	buffer = gtk_text_view_get_buffer(text);
 
-	/* search */
+	wcs = g_utf8_to_ucs4(str, -1, &items_read, &items_written, &error);
+	if (error != NULL) {
+		g_warning("An error occured while converting a string from UTF-8 to UCS-4: %s\n", error->message);
+		g_error_free(error);
+	}
+	if (!wcs || items_written <= 0) return FALSE;
+	len = (gint)items_written;
+
 	mark = gtk_text_buffer_get_insert(buffer);
 	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
-	if (case_sens) {
-		found = gtk_text_iter_backward_search(&iter, str,
-					      GTK_TEXT_SEARCH_VISIBLE_ONLY,
-					      &start, &end, NULL);
-	} else {
-		gchar *text = NULL;
-		int i = 0;
-		if (gtk_text_iter_get_offset(&iter) == 0) 
-			gtk_text_buffer_get_end_iter(buffer, &iter);
-		
-		i = gtk_text_iter_get_offset(&iter) - strlen(str) - 1;
-		gtk_text_buffer_get_start_iter(buffer, &real_start);
-		
-		text = gtk_text_buffer_get_text(buffer, &real_start, 
-					        &iter, FALSE);
 
-		while (!found && i-- > 0) {
-			found = (strncasecmp(text+i, str, strlen(str)) == 0);
+	while (gtk_text_iter_backward_char(&iter)) {
+		pos = gtk_text_iter_get_offset(&iter);
+		if (gtkut_text_buffer_match_string
+			(buffer, pos, wcs, len, case_sens) == TRUE) {
+			gtk_text_buffer_get_iter_at_offset(buffer, &iter, pos);
+			gtk_text_buffer_get_iter_at_offset
+				(buffer, &end_iter, pos + len);
+			gtk_text_buffer_select_range(buffer, &iter, &end_iter);
+			gtk_text_view_scroll_to_mark
+				(text, mark, 0.0, FALSE, 0.0, 0.0);
+			found = TRUE;
+			break;
 		}
-				
-		if (found) {
-			gtk_text_buffer_get_iter_at_offset(buffer, &start, i);
-			gtk_text_buffer_get_iter_at_offset(buffer, &end, 
-							   i + strlen(str));
-		}
-		
-		g_free(text);
-	}
-		
-	if (found) {
-		gtk_text_buffer_place_cursor(buffer, &end);
-		gtk_text_buffer_move_mark_by_name(buffer, "selection_bound", 
-						  &start);
-		mark = gtk_text_buffer_get_mark(buffer, "insert");
-		gtk_text_view_scroll_mark_onscreen(text, mark);
 	}
 
+	g_free(wcs);
 	return found;
 }
 

@@ -27,10 +27,10 @@
 #include <stdlib.h>
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
-#include "intl.h"
 #include "prefs_common.h"
 #include "prefs_gtk.h"
 
@@ -144,6 +144,8 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 	
 	hint_label = gtk_label_new (_("You will need to restart for the "
 				      "changes to take effect"));
+	gtk_label_set_justify (GTK_LABEL (hint_label), GTK_JUSTIFY_LEFT);
+	gtkut_widget_set_small_font_size (hint_label);
 	gtk_widget_show (hint_label);
 	gtk_box_pack_start (GTK_BOX (vbox), 
 			    hint_label, FALSE, FALSE, 0);

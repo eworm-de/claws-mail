@@ -24,6 +24,7 @@
 #include <stdio.h>
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
 #include "common/sylpheed.h"
@@ -34,7 +35,6 @@
 #include "folder.h"
 #include "mainwindow.h"
 #include "gtkutils.h"
-#include "intl.h"
 #include "menu.h"
 #include "toolbar.h"
 #include "prefs_common.h"

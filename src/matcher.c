@@ -17,15 +17,17 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <glib.h>
+#include <glib/gi18n.h>
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
+
 #include "defs.h"
 #include "utils.h"
 #include "procheader.h"
 #include "matcher.h"
-#include "intl.h"
 #include "matcher_parser.h"
 #include "prefs_gtk.h"
 #include "addr_compl.h"

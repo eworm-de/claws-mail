@@ -23,10 +23,10 @@
  */
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <string.h>
 #include <sys/stat.h>
 
-#include "intl.h"
 #include "mgutils.h"
 #include "ldif.h"
 #include "addritem.h"

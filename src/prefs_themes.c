@@ -29,9 +29,9 @@
 #include <sys/stat.h>
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include "intl.h"
 #include "utils.h"
 #include "codeconv.h"
 #include "prefs_common.h"
@@ -637,6 +637,8 @@ static void prefs_themes_display_global_stats(const ThemesData *tdata)
 	gstats = g_strdup_printf(_("%d themes available (%d user, %d system, 1 internal)"),
 				 all, usr, sys);
 	gtk_label_set_text(GTK_LABEL(theme->global), gstats);
+	gtk_label_set_justify (GTK_LABEL (theme->global), GTK_JUSTIFY_LEFT);
+	gtkut_widget_set_small_font_size (theme->global);
 	g_free(gstats);
 }
 

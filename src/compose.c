@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include "defs.h"
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkmenu.h>
@@ -51,6 +52,7 @@
 #include <gtk/gtktreemodel.h>
 
 #include <gtk/gtkdnd.h>
+#include <gtk/gtkclipboard.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -71,7 +73,6 @@
 #  include <wctype.h>
 #endif
 
-#include "intl.h"
 #include "main.h"
 #include "mainwindow.h"
 #include "compose.h"
@@ -2438,34 +2439,19 @@ static void compose_attach_parts(Compose *compose, MsgInfo *msginfo)
 #define CHAR_BUF_SIZE 8
 #undef NEXT_PART_NOT_CHILD
 
-#define GET_CHAR(iter_p, buf, len)					     \
-{									     \
-	GtkTextIter end_iter;						     \
-	gchar *tmp;							     \
-	end_iter = *iter_p;						     \
-	gtk_text_iter_forward_char(&end_iter);				     \
-	tmp = gtk_text_buffer_get_text(textbuf, iter_p, &end_iter, FALSE);   \
-	if (tmp) {							     \
-		glong items_read, items_witten;				     \
-		GError *error = NULL;					     \
-		gunichar *wide_char;					     \
-		strncpy2(buf, tmp, CHAR_BUF_SIZE);			     \
-		wide_char = g_utf8_to_ucs4(tmp, -1,			     \
-					   &items_read, &items_witten,	     \
-					   &error);			     \
-		if (error != NULL) {					     \
-			g_warning("%s\n", error->message);		     \
-			g_error_free(error);				     \
-		}							     \
-		len = wide_char && g_unichar_iswide(*wide_char) ? 2 : 1;     \
-		g_free(wide_char);					     \
-	} else {							     \
-		buf[0] = '\0';						     \
-		len = 1;						     \
-	}								     \
-	g_free(tmp);							     \
-}
 
+#define GET_CHAR(iter_p, buf, len)				\
+{								\
+	gunichar uc;						\
+								\
+	uc = gtk_text_iter_get_char(iter_p);			\
+	if (uc != 0)						\
+		len = g_unichar_to_utf8(uc, buf) > 1 ? 2 : 1;	\
+	else {							\
+		buf[0] = '\0';					\
+		len = 1;					\
+	}							\
+}
 #define DISP_WIDTH(len) \
 	((len > 2 && conv_get_locale_charset() == C_UTF_8) ? 2 : \
 	 (len == 2 && conv_get_locale_charset() == C_UTF_8) ? 1 : len)
@@ -2651,15 +2637,15 @@ static void compose_wrap_line(Compose *compose)
 /* Darko: used when I debug wrapping */
 void dump_text(GtkTextBuffer *textbuf, int pos, int tlen, int breakoncr)
 {
-	gint i, clen;
-	gchar cbuf[CHAR_BUF_SIZE];
 	GtkTextIter iter, end_iter;
+	gint clen;
+	gchar cbuf[CHAR_BUF_SIZE];
 
 	printf("%d [", pos);
 	gtk_text_buffer_get_iter_at_offset(textbuf, &iter, pos);
 	gtk_text_buffer_get_iter_at_offset(textbuf, &end_iter, pos + tlen);
 	for (; gtk_text_iter_forward_char(&iter) &&
-		     gtk_text_iter_compare(&iter, &end_iter) < 0;) {
+	     gtk_text_iter_compare(&iter, &end_iter) < 0; ) {
 		GET_CHAR(&iter, cbuf, clen);
 		if (clen < 0) break;
 		if (breakoncr && clen == 1 && cbuf[0] == '\n')
@@ -2682,23 +2668,25 @@ typedef enum {
    uppercase characters immediately followed by >,
    and the repeating sequences of the above */
 /* return indent length */
-static guint get_indent_length(GtkTextBuffer *textbuf, guint start_pos, guint text_len)
+static guint get_indent_length(GtkTextBuffer *textbuf, guint start_pos,
+			       guint text_len)
 {
+	GtkTextIter iter;
 	guint i_len = 0;
-	guint i, ch_len, alnum_cnt = 0;
+	guint ch_len, alnum_cnt = 0;
 	IndentState state = WAIT_FOR_INDENT_CHAR;
 	gchar cbuf[CHAR_BUF_SIZE];
 	gboolean is_space;
 	gboolean is_indent;
+	gboolean iter_next = TRUE;
 
 	if (prefs_common.quote_chars == NULL) {
 		return 0 ;
 	}
 
-	for (i = start_pos; i < text_len; i++) {
-		GtkTextIter iter;
+	gtk_text_buffer_get_iter_at_offset(textbuf, &iter, start_pos);
 
-		gtk_text_buffer_get_iter_at_offset(textbuf, &iter, i);
+	while (iter_next == TRUE) {
 		GET_CHAR(&iter, cbuf, ch_len);
 		if (ch_len > 1)
 			break;
@@ -2746,6 +2734,7 @@ static guint get_indent_length(GtkTextBuffer *textbuf, guint start_pos, guint te
 		}
 
 		i_len++;
+		iter_next = gtk_text_iter_forward_char(&iter);
 	}
 
 out:
@@ -4811,7 +4800,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	gchar *titles[N_ATTACH_COLS];
 	guint n_menu_entries;
-	GtkStyle  *style, *new_style;
 	GdkColormap *cmap;
 	GdkColor color[1];
 	gboolean success[1];
@@ -4989,29 +4977,24 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	gtk_paned_add2(GTK_PANED(paned), edit_vbox);
 	gtk_widget_show_all(paned);
 
-	style = gtk_widget_get_style(text);
-
-	new_style = gtk_style_copy(style);
 
 	if (prefs_common.textfont) {
 		PangoFontDescription *font_desc;
 
 		font_desc = pango_font_description_from_string
-					(prefs_common.textfont);
+			(prefs_common.textfont);
 		if (font_desc) {
-			if (new_style->font_desc)
-				pango_font_description_free
-					(new_style->font_desc);
-			new_style->font_desc = font_desc;
+			gtk_widget_modify_font(text, font_desc);
+			pango_font_description_free(font_desc);
 		}
 	}
-
-	gtk_widget_set_style(text, new_style);
 
 	color[0] = quote_color;
 	cmap = gdk_window_get_colormap(window->window);
 	gdk_colormap_alloc_colors(cmap, color, 1, FALSE, TRUE, success);
 	if (success[0] == FALSE) {
+		GtkStyle *style;
+
 		g_warning("Compose: color allocation failed.\n");
 		style = gtk_widget_get_style(text);
 		quote_color = style->black;
@@ -6528,9 +6511,11 @@ static void compose_attach_cb(gpointer data, guint action, GtkWidget *widget)
 
 		for ( tmp = file_list; tmp; tmp = tmp->next) {
 			gchar *file = (gchar *) tmp->data;
-			compose_attach_append(compose, file, file, NULL);
+			gchar *utf8_filename = conv_filename_to_utf8(file);
+			compose_attach_append(compose, file, utf8_filename, NULL);
 			compose_changed_cb(NULL, compose);
 			g_free(file);
+			g_free(utf8_filename);
 		}
 		g_list_free(file_list);
 	}		

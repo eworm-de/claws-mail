@@ -23,6 +23,8 @@
 
 #include "defs.h"
 
+#include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include <stdio.h>
@@ -32,7 +34,6 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#include "intl.h"
 #include "main.h"
 #include "prefs_gtk.h"
 #include "prefs_account.h"
@@ -1357,6 +1358,8 @@ static void prefs_account_receive_create(void)
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 
 	leave_time_label = gtk_label_new (_("(0 days: remove immediately)"));
+	gtk_label_set_justify (GTK_LABEL (leave_time_label), GTK_JUSTIFY_LEFT);
+	gtkut_widget_set_small_font_size (leave_time_label);
 	gtk_widget_show (leave_time_label);
 	gtk_box_pack_start (GTK_BOX (hbox1), leave_time_label, FALSE, FALSE, 0);
 
@@ -1415,6 +1418,7 @@ static void prefs_account_receive_create(void)
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+	gtkut_widget_set_small_font_size (label);
 
 	PACK_FRAME(vbox1, frame2, _("Maximum number of articles to download"));
 
@@ -1636,11 +1640,13 @@ static void prefs_account_send_create(void)
 	gtk_widget_set_size_request (hbox_spc, 12, -1);
 
 	label = gtk_label_new
-		(_("If you leave these entries empty, the same\n"
+		(_("If you leave these entries empty, the same "
 		   "user ID and password as receiving will be used."));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
+	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+	gtkut_widget_set_small_font_size (label);
 
 	SET_TOGGLE_SENSITIVITY (smtp_auth_chkbtn, vbox4);
 
@@ -2033,6 +2039,7 @@ static void prefs_account_ssl_create(void)
 		(_("(Turn this off if you have SSL connection problems)"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtkut_widget_set_small_font_size (label);
 
 	ssl.pop_frame               = pop_frame;
 	ssl.pop_nossl_radiobtn      = pop_nossl_radiobtn;

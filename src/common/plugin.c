@@ -21,9 +21,9 @@
 
 #include "defs.h"
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gmodule.h>
 
-#include "intl.h"
 #include "utils.h"
 #include "plugin.h"
 #include "prefs.h"

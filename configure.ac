@@ -13,7 +13,7 @@ INTERFACE_AGE=0
 BINARY_AGE=0
 EXTRA_VERSION=3
 EXTRA_RELEASE=
-EXTRA_GTK2_VERSION=.1
+EXTRA_GTK2_VERSION=.2
 
 if test \( $EXTRA_VERSION -eq 0 \) -o \( "x$EXTRA_RELEASE" != "x" \); then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}${EXTRA_RELEASE}${EXTRA_GTK2_VERSION}
@@ -127,10 +127,22 @@ esac
 dnl Checks for iconv
 AM_ICONV
 
+dnl
+dnl Check for bind_textdomain_codeset, including -lintl if GLib brings it in.
+dnl
+syl_save_LIBS=$LIBS
+LIBS="$LIBS $GTK_LIBS"
+AC_CHECK_FUNCS(bind_textdomain_codeset)
+LIBS=$syl_save_LIBS
+
 dnl for gettext
 ALL_LINGUAS="bg cs de el en_GB es fr hr hu it ja ko nl pl pt_BR ru sk sr sv zh_CN zh_TW.Big5"
-AM_GNU_GETTEXT([use-libtool])
-AM_GNU_GETTEXT_VERSION(0.12.1)
+GETTEXT_PACKAGE=sylpheed-claws
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Define text domain.])
+
+AM_GLIB_GNU_GETTEXT
+dnl AM_GNU_GETTEXT
 dnl AC_CHECK_FUNC(gettext, AC_CHECK_LIB(intl, gettext))
 localedir='${prefix}/${DATADIRNAME}/locale'
 AC_SUBST(localedir)
@@ -318,6 +330,13 @@ dnl ************************
 dnl Checks for GTK
 AM_PATH_GTK_2_0(2.4.0,,
 	AC_MSG_ERROR(Test for GTK failed. See the file 'INSTALL' for help.))
+
+dnl --disable-deprecated switch for GTK2 purification
+AC_ARG_ENABLE(deprecated, [  --disable-deprecated  Disable deprecated GTK functions. ],
+			  [GTK_CFLAGS="$GTK_CFLAGS -DG_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"], [])
+
+AC_SUBST(GTK_CFLAGS)
+AC_SUBST(GTK_LIBS)
 
 dnl GNU/Aspell is used for spell checking
 AC_ARG_ENABLE(aspell,
@@ -615,7 +634,6 @@ dnl ****************************
 AC_OUTPUT([
 Makefile
 sylpheed.spec
-intl/Makefile
 m4/Makefile
 po/Makefile.in
 src/common/version.h

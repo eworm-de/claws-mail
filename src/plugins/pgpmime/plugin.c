@@ -22,8 +22,8 @@
 #endif
 
 #include <stddef.h>
-
-#include "intl.h"
+#include <glib.h>
+#include <glib/gi18n.h>
 
 #include "version.h"
 #include "common/sylpheed.h"

@@ -21,9 +21,10 @@
 #  include "config.h"
 #endif
 
-#include <stddef.h>
+#include <glib.h>
+#include <glib/gi18n.h>
 
-#include "intl.h"
+#include <stddef.h>
 
 #include "common/sylpheed.h"
 #include "common/version.h"

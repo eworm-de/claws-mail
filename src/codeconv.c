@@ -22,6 +22,7 @@
 #endif
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
@@ -33,7 +34,6 @@
 
 #include <iconv.h>
 
-#include "intl.h"
 #include "codeconv.h"
 #include "unmime.h"
 #include "base64.h"
@@ -786,7 +786,10 @@ static void conv_euctodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 
 void conv_utf8todisp(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
-	strncpy2(outbuf, inbuf, outlen);
+	if (g_utf8_validate(inbuf, -1, NULL) == TRUE)
+		strncpy2(outbuf, inbuf, outlen);
+	else
+		conv_ustodisp(outbuf, outlen, inbuf);
 }
 
 static void conv_anytodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
@@ -1783,3 +1786,36 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 }
 
 #undef LBREAK_IF_REQUIRED
+gchar *conv_filename_from_utf8(const gchar *utf8_file)
+{
+	gchar *fs_file;
+	GError *error = NULL;
+
+	fs_file = g_filename_from_utf8(utf8_file, -1, NULL, NULL, &error);
+	if (error) {
+		g_warning("failed to convert encoding of file name: %s\n",
+			  error->message);
+		g_error_free(error);
+	}
+	if (!fs_file)
+		fs_file = g_strdup(utf8_file);
+
+	return fs_file;
+}
+
+gchar *conv_filename_to_utf8(const gchar *fs_file)
+{
+	gchar *utf8_file;
+	GError *error = NULL;
+
+	utf8_file = g_filename_to_utf8(fs_file, -1, NULL, NULL, &error);
+	if (error) {
+		g_warning("failed to convert encoding of file name: %s\n",
+			  error->message);
+		g_error_free(error);
+	}
+	if (!utf8_file)
+		utf8_file = g_strdup(fs_file);
+
+	return utf8_file;
+}

@@ -24,6 +24,7 @@
 #include "defs.h"
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -41,7 +42,6 @@
 #include "folder.h"
 #include "session.h"
 #include "procmsg.h"
-#include "intl.h"
 #include "imap.h"
 #include "socket.h"
 #include "ssl.h"

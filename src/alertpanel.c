@@ -22,10 +22,12 @@
 #endif
 
 #include <stddef.h>
+
+#include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
-#include "intl.h"
 #include "mainwindow.h"
 #include "alertpanel.h"
 #include "manage_window.h"
@@ -229,6 +231,7 @@ static void alertpanel_create(const gchar *title,
 			      GtkWidget   *custom_widget,
 			      gint	   alert_type)
 {
+	static PangoFontDescription *font_desc;
 	GtkWidget *label;
 	GtkWidget *w_hbox;
 	GtkWidget *hbox;
@@ -296,6 +299,17 @@ static void alertpanel_create(const gchar *title,
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+	if (!font_desc) {
+		gint size;
+
+		size = pango_font_description_get_size(label->style->font_desc);
+		font_desc = pango_font_description_new();
+		pango_font_description_set_weight(font_desc, PANGO_WEIGHT_BOLD);
+		pango_font_description_set_size
+			(font_desc, size * PANGO_SCALE_X_LARGE);
+	}
+	if (font_desc)
+		gtk_widget_modify_font(label, font_desc);
 	gtk_widget_show(label);
 	g_free(title_full);
 	

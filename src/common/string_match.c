@@ -22,9 +22,10 @@
 #  include "config.h"
 #endif
 
+#include <glib.h>
+#include <glib/gi18n.h>
 #include <string.h>
 
-#include "intl.h"
 #include "string_match.h"
 
 int string_match_precompile (gchar *rexp, regex_t *preg, int cflags)

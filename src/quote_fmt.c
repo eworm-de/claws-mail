@@ -22,10 +22,10 @@
 #endif
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
-#include "intl.h"
 #include "manage_window.h"
 #include "description_window.h"
 #include "gtkutils.h"

@@ -17,7 +17,10 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include "intl.h"
+ #include <glib.h>
+#include <glib/gi18n.h>
+
+
 #include "version.h"
 #include "sylpheed.h"
 #include "plugin.h"

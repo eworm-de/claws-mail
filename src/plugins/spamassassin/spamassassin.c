@@ -27,6 +27,7 @@
 #include <sys/wait.h>
 
 #include <glib.h>
+#include <glib/gi18n.h>
 
 #if HAVE_LOCALE_H
 #  include <locale.h>
@@ -41,7 +42,6 @@
 #include "folder.h"
 #include "prefs.h"
 #include "prefs_gtk.h"
-#include "intl.h"
 
 #include "libspamc.h"
 #include "spamassassin.h"

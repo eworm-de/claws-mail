@@ -20,6 +20,7 @@
 #include "defs.h"
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkvbox.h>
@@ -41,7 +42,6 @@
 #  include "config.h"
 #endif
 
-#include "intl.h"
 #include "utils.h"
 #include "gtk/menu.h"
 #include "account.h"

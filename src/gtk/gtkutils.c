@@ -22,6 +22,7 @@
 #endif
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdk.h>
 #include <gtk/gtkwidget.h>
@@ -40,7 +41,7 @@
 #  include <wctype.h>
 #endif
 
-#include "intl.h"
+#include "defs.h"
 #include "gtkutils.h"
 #include "utils.h"
 #include "gtksctree.h"
@@ -48,6 +49,7 @@
 #include "stock_pixmap.h"
 #include "menu.h"
 #include "prefs_account.h"
+#include "prefs_common.h"
 
 #warning FIXME_GTK2
 gboolean gtkut_get_font_size(GtkWidget *widget,
@@ -66,6 +68,21 @@ gboolean gtkut_get_font_size(GtkWidget *widget,
 	g_object_unref(layout);
 
 	return TRUE;
+}
+
+void gtkut_widget_set_small_font_size(GtkWidget *widget)
+{
+	PangoFontDescription *font_desc;
+	gint size;
+
+	g_return_if_fail(widget != NULL);
+	g_return_if_fail(widget->style != NULL);
+
+	font_desc = pango_font_description_from_string(NORMAL_FONT);
+	size = pango_font_description_get_size(font_desc);
+	pango_font_description_set_size(font_desc, size * PANGO_SCALE_SMALL);
+	gtk_widget_modify_font(widget, font_desc);
+	pango_font_description_free(font_desc);
 }
 
 void gtkut_convert_int_to_gdk_color(gint rgbvalue, GdkColor *color)
@@ -515,8 +532,7 @@ void gtkut_window_popup(GtkWidget *window)
 	if (new_x != x || new_y != y)
 		gdk_window_move(window->window, new_x, new_y);
 
-	gdk_window_raise(window->window);
-	gdk_window_show(window->window);
+	gtk_window_present(GTK_WINDOW(window));
 }
 
 void gtkut_widget_get_uposition(GtkWidget *widget, gint *px, gint *py)
@@ -700,10 +716,11 @@ gboolean gtkut_text_buffer_match_string(GtkTextBuffer *textbuf, gint pos, gunich
 		return FALSE;
 	}
 
-	for (; match_count < len; pos++, match_count++) {
-		gchar *ptr = g_utf8_offset_to_pointer(utf8str, match_count);
+	for (; match_count < len; match_count++) {
+		gchar *ptr;
 		gunichar ch;
 
+		ptr = g_utf8_offset_to_pointer(utf8str, match_count);
 		if (!ptr) break;
 		ch = g_utf8_get_char(ptr);
 
@@ -797,6 +814,39 @@ guint gtkut_text_buffer_str_compare(GtkTextBuffer *textbuf,
 	g_free(wcs);
 
 	return result ? len : 0;
+}
+
+gint gtkut_text_buffer_find(GtkTextBuffer *buffer, guint start_pos,
+			    const gchar *str, gboolean case_sens)
+{
+	gint pos;
+	gunichar *wcs;
+	gint len;
+	glong items_read = 0, items_written = 0;
+	GError *error = NULL;
+	GtkTextIter iter;
+	gint found_pos = -1;
+
+	wcs = g_utf8_to_ucs4(str, -1, &items_read, &items_written, &error);
+	if (error != NULL) {
+		g_warning("An error occured while converting a string from UTF-8 to UCS-4: %s\n", error->message);
+		g_error_free(error);
+	}
+	if (!wcs || items_written <= 0) return -1;
+	len = (gint)items_written;
+
+	gtk_text_buffer_get_iter_at_offset(buffer, &iter, start_pos);
+	do {
+		pos = gtk_text_iter_get_offset(&iter);
+		if (gtkut_text_buffer_match_string
+			(buffer, pos, wcs, len, case_sens) == TRUE) {
+			found_pos = pos;
+			break;
+		}
+	} while (gtk_text_iter_forward_char(&iter));
+
+	g_free(wcs);
+	return found_pos;
 }
 
 gboolean gtkut_text_buffer_is_uri_string(GtkTextBuffer *textbuf,

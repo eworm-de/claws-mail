@@ -24,13 +24,13 @@
 #include "defs.h"
 #include <stdlib.h>
 #include <glib.h>
+#include <glib/gi18n.h>
 
 #if HAVE_LOCALE_H
 #  include <locale.h>
 #endif
 
 #include "sylpheed.h"
-#include "intl.h"
 #include "utils.h"
 #include "ssl.h"
 #include "version.h"

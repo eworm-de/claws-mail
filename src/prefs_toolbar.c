@@ -28,13 +28,13 @@
 #include "defs.h"
 
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <gtk/gtkoptionmenu.h>
 #include <gdk/gdkkeysyms.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "intl.h"
 #include "stock_pixmap.h"
 #include "manage_window.h"
 #include "gtkutils.h"
