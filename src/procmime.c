@@ -1632,8 +1632,6 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 	FILE *fp = user_data;
 	EncodeAs encas = ENC_AS_TOKEN;
 
-	fprintf(fp, "; %s=", param);
-
 	for (valpos = val; *valpos != 0; valpos++) {
 		if (!IS_ASCII(*valpos)) {
 			encas = ENC_AS_EXTENDED;
@@ -1671,16 +1669,27 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 
 	switch (encas) {
 	case ENC_AS_TOKEN:
+		fprintf(fp, "; %s=", param);
 		fprintf(fp, "%s", val);
 		break;
 
 	case ENC_AS_QUOTED_STRING:
+		fprintf(fp, "; %s=", param);
 		fprintf(fp, "\"%s\"", val);
 		break;
 
 	case ENC_AS_EXTENDED:
-		/* FIXME: not yet handled */
-		fprintf(fp, "%s", val);
+		fprintf(fp, "; %s*=", param);
+		fprintf(fp, "%s''", conv_get_current_charset_str());
+		for (valpos = val; *valpos != '\0'; valpos++) {
+			if (IS_ASCII(*valpos) && isalnum(*valpos))
+				fprintf(fp, "%c", *valpos);
+			else {
+				gchar hexstr[3] = "XX";
+				get_hex_str(hexstr, *valpos);
+				fprintf(fp, "%%%s", hexstr);
+			}
+		}
 		break;
 	}
 }

@@ -1,3 +1,15 @@
+2004-11-03 [paul]	0.9.12cvs138.1
+
+	* ChangeLog.claws
+	* configure.ac
+	* po/POTFILES.in
+	* src/prefs_ext_prog.c
+	* src/procmime.c
+	* tools/kdeservicemenu/README
+	* tools/kdeservicemenu/template_sylpheed-attach-files.desktop
+	* tools/kdeservicemenu/template_sylpheed-compress-attach.desktop
+		sync with HEAD
+
 2004-11-01 [christoph]	0.9.12cvs136.2
 
 	* src/procmime.c
