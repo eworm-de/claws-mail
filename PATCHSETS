@@ -182,3 +182,4 @@
 ( cvs diff -u -r 1.207.2.15 -r 1.207.2.16 src/folderview.c; ) > 0.9.12cvs110.1.patchset
 ( cvs diff -u -r 1.207.2.16 -r 1.207.2.17 src/folderview.c; cvs diff -u -r 1.274.2.19 -r 1.274.2.20 src/mainwindow.c; ) > 0.9.12cvs112.1.patchset
 ( cvs diff -u -r 1.654.2.215 -r 1.654.2.216 configure.ac; cvs diff -u -r 1.22.2.2 -r 1.22.2.3 src/quote_fmt_parse.y; ) > 0.9.12cvs113.1.patchset
+( cvs diff -u -r 1.382.2.47 -r 1.382.2.48 src/compose.c; ) > 0.9.12cvs114.1.patchset

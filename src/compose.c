@@ -484,9 +484,6 @@ gboolean compose_headerentry_changed_cb	   (GtkWidget	       *entry,
 gboolean compose_headerentry_key_press_event_cb(GtkWidget	       *entry,
 					    GdkEventKey        *event,
 					    ComposeHeaderEntry *headerentry);
-static gboolean compose_headerentry_button_pressed (GtkWidget *entry, 
-					            GdkEventButton *event,
-						    gpointer data);
 
 static void compose_show_first_last_header (Compose *compose, gboolean show_first);
 
@@ -3329,14 +3326,22 @@ gint compose_send(Compose *compose)
 		goto bail;
 	}
 
-	compose->sending = FALSE;	
-	gtk_widget_destroy(compose->window);
-	/* No more compose access in the normal codepath after this point! */
+
+	if (prefs_common.send_dialog_mode != SEND_DIALOG_ALWAYS) {
+		compose->sending = FALSE;
+		gtk_widget_destroy(compose->window);
+		/* No more compose access in the normal codepath 
+		 * after this point! */
+	}
 
 	if (msgnum == 0) {
 		alertpanel_error(_("The message was queued but could not be "
 				   "sent.\nUse \"Send queued messages\" from "
 				   "the main window to retry."));
+		if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS) {
+			compose->sending = FALSE;
+			compose_allow_user_actions (compose, TRUE);
+		}
 		return 0;
 	}
 	
@@ -3344,9 +3349,20 @@ gint compose_send(Compose *compose)
 	val = procmsg_send_message_queue(msgpath);
 	g_free(msgpath);
 
+	if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS) {
+		compose->sending = FALSE;
+		compose_allow_user_actions (compose, TRUE);
+		if (val != 0) {
+			folder_item_remove_msg(folder, msgnum);
+			folder_item_scan(folder);
+		}
+	}
+
 	if (val == 0) {
 		folder_item_remove_msg(folder, msgnum);
 		folder_item_scan(folder);
+		if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS)
+			gtk_widget_destroy(compose->window);
 	}
 
 	return 0;
@@ -4798,6 +4814,7 @@ static void compose_create_header_entry(Compose *compose)
 	}
 	if (header)
 		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(combo)->entry), header);
+
 	g_signal_connect(G_OBJECT(GTK_COMBO(combo)->entry), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_before_cb), compose);
 	g_signal_connect_after(G_OBJECT(GTK_COMBO(combo)->entry), "grab_focus",
@@ -4820,10 +4837,6 @@ static void compose_create_header_entry(Compose *compose)
 			 G_CALLBACK(compose_grab_focus_before_cb), compose);
 	g_signal_connect_after(G_OBJECT(entry), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
-	g_signal_connect(G_OBJECT(entry), "button-press-event", 
-			 G_CALLBACK(compose_headerentry_button_pressed),
-			 NULL);
-
 	address_completion_register_entry(GTK_ENTRY(entry));
 
         headerentry->compose = compose;
@@ -7676,15 +7689,6 @@ gboolean compose_headerentry_changed_cb(GtkWidget *entry,
 		compose_show_first_last_header(headerentry->compose, FALSE);
 		
 	}
-	return FALSE;
-}
-
-static gboolean compose_headerentry_button_pressed
-	(GtkWidget *entry, GdkEventButton *event, gpointer data)
-{
-	/* if this is a lclick, grab the focus */
-	if (event->button == 1)
-		gtk_widget_grab_focus(entry);
 	return FALSE;
 }
 

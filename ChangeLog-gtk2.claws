@@ -1,3 +1,9 @@
+2004-09-29 [colin]	0.9.12cvs114.1
+
+	* src/compose.c
+		Sync with HEAD
+		Fix focus handling in headers
+
 2004-09-29 [paul]	0.9.12cvs113.1
 
 	* src/quote_fmt_parse.y
