@@ -26,15 +26,19 @@
 #include "hooks.h"
 #include "folder.h"
 #include "mainwindow.h"
+#include "gtkutils.h"
 
 #include "eggtrayicon.h"
-#include "gnome-mail.xpm"
-#include "gnome-nomail.xpm"
+#include "newmail.xpm"
+#include "unreadmail.xpm"
+#include "nomail.xpm"
 
 static gint hook_id;
 
-static GdkPixmap *mail_pixmap;
-static GdkPixmap *mail_bitmap;
+static GdkPixmap *newmail_pixmap;
+static GdkPixmap *newmail_bitmap;
+static GdkPixmap *unreadmail_pixmap;
+static GdkPixmap *unreadmail_bitmap;
 static GdkPixmap *nomail_pixmap;
 static GdkPixmap *nomail_bitmap;
 
@@ -78,8 +82,13 @@ static void set_trayicon_pixmap(TrayIconType icontype)
 
 	switch(icontype) {
 	case TRAYICON_NEW:
-		pixmap = mail_pixmap;
-		bitmap = mail_bitmap;
+		pixmap = newmail_pixmap;
+		bitmap = newmail_bitmap;
+		break;
+	case TRAYICON_UNREAD:
+	case TRAYICON_UNREADMARKED:
+		pixmap = unreadmail_pixmap;
+		bitmap = unreadmail_bitmap;
 		break;
 	default:
 		pixmap = nomail_pixmap;
@@ -88,9 +97,10 @@ static void set_trayicon_pixmap(TrayIconType icontype)
 	}
 
 	gtk_pixmap_set(GTK_PIXMAP(image), pixmap, bitmap);
+	gtk_widget_shape_combine_mask(trayicon, bitmap, 0, 3);
 }
 
-static gboolean folder_item_update_hook(gpointer source, gpointer data)
+static void update()
 {
 	gint new, unread, unreadmarked, total;
 	gchar *buf;
@@ -101,9 +111,14 @@ static gboolean folder_item_update_hook(gpointer source, gpointer data)
         gtk_tooltips_set_tip(tooltips, eventbox, buf, "");
 	g_free(buf);
 
-	set_trayicon_pixmap(new > 0 ? TRAYICON_NEW : TRAYICON_NOTHING);
+	set_trayicon_pixmap(new > 0 ? TRAYICON_NEW : (unread > 0 ? TRAYICON_UNREAD : TRAYICON_NOTHING));
 
 	return FALSE;
+}
+
+static gboolean folder_item_update_hook(gpointer source, gpointer data)
+{
+	update();
 }
 
 int plugin_init(gchar **error)
@@ -115,10 +130,14 @@ int plugin_init(gchar **error)
 	}
 
         trayicon = egg_tray_icon_new("Sylpheed-Claws");
+	gtk_widget_set_usize(GTK_WIDGET(trayicon), 16, 16);
         gtk_container_set_border_width(GTK_CONTAINER(trayicon), 0);
 
-        nomail_pixmap = gdk_pixmap_create_from_xpm_d(GTK_WIDGET(trayicon)->window, &nomail_bitmap, NULL, nomail_xpm);
-        mail_pixmap = gdk_pixmap_create_from_xpm_d(GTK_WIDGET(trayicon)->window, &mail_bitmap, NULL, mail_xpm);
+        PIXMAP_CREATE(GTK_WIDGET(trayicon), nomail_pixmap, nomail_bitmap, nomail_xpm);
+        PIXMAP_CREATE(GTK_WIDGET(trayicon), unreadmail_pixmap, unreadmail_bitmap, unreadmail_xpm);
+        PIXMAP_CREATE(GTK_WIDGET(trayicon), newmail_pixmap, newmail_bitmap, newmail_xpm);
+
+	printf("%p\n", nomail_bitmap->user_data);
     
         eventbox = gtk_event_box_new();
         gtk_container_set_border_width(eventbox, 0);
@@ -134,6 +153,8 @@ int plugin_init(gchar **error)
         gtk_tooltips_enable(tooltips);
 
         gtk_widget_show_all(GTK_WIDGET(trayicon));
+
+	update();
 
         return 0;
 }

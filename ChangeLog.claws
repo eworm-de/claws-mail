@@ -1,3 +1,15 @@
+2003-03-22 [christoph]	0.8.11claws41
+
+	* src/plugins/trayicon/gnome-mail.xpm		** REMOVE **
+	* src/plugins/trayicon/gnome-nomail.xpm		** REMOVE **
+	* src/plugins/trayicon/newmail.xpm		** NEW **
+	* src/plugins/trayicon/nomail.xpm		** NEW **
+	* src/plugins/trayicon/trayicon.c
+	* src/plugins/trayicon/unreadmail.xpm		** NEW **
+		o replace GBiff icons with KBiff icons resized to 16x16 pixel
+		o add icon for unread mails
+		o set transparency for window
+
 2003-03-22 [christoph]	0.8.11claws40
 
 	* src/news.c
