@@ -2724,66 +2724,74 @@ void debug_print_real(const gchar *format, ...)
 	fputs(buf, stdout);
 }
 
+#define TIME_LEN	11
+
 void log_print(const gchar *format, ...)
 {
 	va_list args;
-	gchar buf[BUFFSIZE];
-	gchar *logbuf;
-	gchar timestr[6];
+	gchar buf[BUFFSIZE + TIME_LEN];
 	time_t t;
 
-	va_start(args, format);
-	g_vsnprintf(buf, sizeof(buf), format, args);
-	va_end(args);
-	
 	time(&t);
-	strftime(timestr, 6, "%H:%M", localtime(&t));
-	logbuf = g_strdup_printf("[%s] %s", timestr, buf);
+	strftime(buf, TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
 
-	if (debug_mode) fputs(logbuf, stdout);
-	log_window_append(logbuf, LOG_NORMAL);
+	va_start(args, format);
+	g_vsnprintf(buf + TIME_LEN, BUFFSIZE, format, args);
+	va_end(args);
+
+	if (debug_mode) fputs(buf, stdout);
+	log_window_append(buf, LOG_NORMAL);
 	if (log_fp) {
-		fputs(logbuf, log_fp);
+		fputs(buf, log_fp);
 		fflush(log_fp);
 	}
 	if (log_verbosity_count)
-		statusbar_puts_all(buf);
-	g_free(logbuf);
+		statusbar_puts_all(buf + TIME_LEN);
 }
 
 void log_message(const gchar *format, ...)
 {
 	va_list args;
-	gchar buf[BUFFSIZE];
+	gchar buf[BUFFSIZE + TIME_LEN];
+	time_t t;
+
+	time(&t);
+	strftime(buf, TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
 
 	va_start(args, format);
-	g_vsnprintf(buf, sizeof(buf), format, args);
+	g_vsnprintf(buf + TIME_LEN, BUFFSIZE, format, args);
 	va_end(args);
 
-	if (debug_mode) g_message("%s", buf);
-	log_window_append(buf, LOG_MSG);
+	if (debug_mode) g_message("%s", buf + TIME_LEN);
+	log_window_append(buf + TIME_LEN, LOG_MSG);
 	if (log_fp) {
-		fputs("message: ", log_fp);
-		fputs(buf, log_fp);
+		fwrite(buf, TIME_LEN, 1, log_fp);
+		fputs("* message: ", log_fp);
+		fputs(buf + TIME_LEN, log_fp);
 		fflush(log_fp);
 	}
-	statusbar_puts_all(buf);
+	statusbar_puts_all(buf + TIME_LEN);
 }
 
 void log_warning(const gchar *format, ...)
 {
 	va_list args;
-	gchar buf[BUFFSIZE];
+	gchar buf[BUFFSIZE + TIME_LEN];
+	time_t t;
+
+	time(&t);
+	strftime(buf, TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
 
 	va_start(args, format);
-	g_vsnprintf(buf, sizeof(buf), format, args);
+	g_vsnprintf(buf + TIME_LEN, BUFFSIZE, format, args);
 	va_end(args);
 
 	g_warning("%s", buf);
-	log_window_append(buf, LOG_WARN);
+	log_window_append(buf + TIME_LEN, LOG_WARN);
 	if (log_fp) {
-		fputs("*** warning: ", log_fp);
-		fputs(buf, log_fp);
+		fwrite(buf, TIME_LEN, 1, log_fp);
+		fputs("** warning: ", log_fp);
+		fputs(buf + TIME_LEN, log_fp);
 		fflush(log_fp);
 	}
 }
@@ -2791,17 +2799,22 @@ void log_warning(const gchar *format, ...)
 void log_error(const gchar *format, ...)
 {
 	va_list args;
-	gchar buf[BUFFSIZE];
+	gchar buf[BUFFSIZE + TIME_LEN];
+	time_t t;
+
+	time(&t);
+	strftime(buf, TIME_LEN + 1, "[%H:%M:%S] ", localtime(&t));
 
 	va_start(args, format);
-	g_vsnprintf(buf, sizeof(buf), format, args);
+	g_vsnprintf(buf + TIME_LEN, BUFFSIZE, format, args);
 	va_end(args);
 
 	g_warning("%s", buf);
-	log_window_append(buf, LOG_ERROR);
+	log_window_append(buf + TIME_LEN, LOG_ERROR);
 	if (log_fp) {
+		fwrite(buf, TIME_LEN, 1, log_fp);
 		fputs("*** error: ", log_fp);
-		fputs(buf, log_fp);
+		fputs(buf + TIME_LEN, log_fp);
 		fflush(log_fp);
 	}
 }

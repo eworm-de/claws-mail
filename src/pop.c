@@ -106,8 +106,10 @@ gint pop3_greeting_recv(SockInfo *sock, gpointer data)
 			return POP3_GETAUTH_APOP_SEND;
 		else
 			return POP3_GETAUTH_USER_SEND;
-	} else
+	} else {
+		state->inc_state = INC_ERROR;
 		return -1;
+	}
 }
 
 #if USE_SSL
@@ -124,8 +126,11 @@ gint pop3_stls_recv(SockInfo *sock, gpointer data)
 	gint ok;
 
 	if ((ok = pop3_ok(sock, NULL)) == PS_SUCCESS) {
-		if (!ssl_init_socket_with_method(sock, SSL_METHOD_TLSv1))
+		if (!ssl_init_socket_with_method(sock, SSL_METHOD_TLSv1)) {
+			state->error_val = PS_SOCKET;
+			state->inc_state = INC_ERROR;
 			return -1;
+		}
 		if (state->ac_prefs->protocol == A_APOP)
 			return POP3_GETAUTH_APOP_SEND;
 		else
@@ -135,8 +140,10 @@ gint pop3_stls_recv(SockInfo *sock, gpointer data)
 		state->error_val = PS_PROTOCOL;
 		state->inc_state = INC_ERROR;
 		return POP3_LOGOUT_SEND;
-	} else
+	} else {
+		state->inc_state = INC_ERROR;
 		return -1;
+	}
 }
 #endif /* USE_SSL */
 
@@ -203,11 +210,15 @@ gint pop3_getauth_apop_send(SockInfo *sock, gpointer data)
 	if ((start = strchr(state->greeting, '<')) == NULL) {
 		log_warning(_("Required APOP timestamp not found "
 			      "in greeting\n"));
+		state->error_val = PS_PROTOCOL;
+		state->inc_state = INC_ERROR;
 		return -1;
 	}
 
 	if ((end = strchr(start, '>')) == NULL || end == start + 1) {
 		log_warning(_("Timestamp syntax error in greeting\n"));
+		state->error_val = PS_PROTOCOL;
+		state->inc_state = INC_ERROR;
 		return -1;
 	}
 
@@ -253,6 +264,8 @@ gint pop3_getrange_stat_recv(SockInfo *sock, gpointer data)
 		if (sscanf(buf, "%d %d", &state->count, &state->total_bytes)
 		    != 2) {
 			log_warning(_("POP3 protocol error\n"));
+			state->error_val = PS_PROTOCOL;
+			state->inc_state = INC_ERROR;
 			return -1;
 		} else {
 			if (state->count == 0) {
@@ -265,10 +278,12 @@ gint pop3_getrange_stat_recv(SockInfo *sock, gpointer data)
 				return POP3_GETRANGE_UIDL_SEND;
 			}
 		}
-	} else if (ok == PS_PROTOCOL)
+	} else if (ok == PS_PROTOCOL) {
 		return POP3_LOGOUT_SEND;
-	else
+	} else {
+		state->inc_state = INC_ERROR;
 		return -1;
+	}
 }
 
 gint pop3_getrange_last_send(SockInfo *sock, gpointer data)
@@ -288,6 +303,8 @@ gint pop3_getrange_last_recv(SockInfo *sock, gpointer data)
 
 		if (sscanf(buf, "%d", &last) == 0) {
 			log_warning(_("POP3 protocol error\n"));
+			state->error_val = PS_PROTOCOL;
+			state->inc_state = INC_ERROR;
 			return -1;
 		} else {
 			if (state->count == last)
@@ -315,6 +332,7 @@ gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 	gboolean get_all = FALSE;
 	gchar buf[POPBUFSIZE];
 	gchar id[IDLEN + 1];
+	gint len;
 	gint next_state;
 
 	if (!state->uidl_table) new = TRUE;
@@ -333,7 +351,7 @@ gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 			return POP3_GETSIZE_LIST_SEND;
 	}
 
-	while (sock_gets(sock, buf, sizeof(buf)) >= 0) {
+	while ((len = sock_gets(sock, buf, sizeof(buf))) > 0) {
 		gint num;
 		time_t recv_time;
 
@@ -359,8 +377,14 @@ gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 		}
 	}
 
-	state->uidl_is_valid = TRUE;
+	if (len < 0) {
+		log_error(_("Socket error\n"));
+		state->error_val = PS_SOCKET;
+		state->inc_state = INC_ERROR;
+		return -1;
+	}
 
+	state->uidl_is_valid = TRUE;
 	if (pop3_sd_state(state, POP3_GETRANGE_UIDL_RECV, &next_state))
 		return next_state;
 
@@ -381,18 +405,22 @@ gint pop3_getsize_list_recv(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 	gchar buf[POPBUFSIZE];
+	gint len;
 	gint next_state;
 
 	if (pop3_ok(sock, NULL) != PS_SUCCESS) return POP3_LOGOUT_SEND;
 
 	state->cur_total_bytes = 0;
 
-	while (sock_gets(sock, buf, sizeof(buf)) >= 0) {
+	while ((len = sock_gets(sock, buf, sizeof(buf))) > 0) {
 		guint num, size;
 
 		if (buf[0] == '.') break;
-		if (sscanf(buf, "%u %u", &num, &size) != 2)
+		if (sscanf(buf, "%u %u", &num, &size) != 2) {
+			state->error_val = PS_PROTOCOL;
+			state->inc_state = INC_ERROR;
 			return -1;
+		}
 
 		if (num > 0 && num <= state->count)
 			state->msg[num].size = size;
@@ -400,10 +428,17 @@ gint pop3_getsize_list_recv(SockInfo *sock, gpointer data)
 			state->cur_total_bytes += size;
 	}
 
+	if (len < 0) {
+		log_error(_("Socket error\n"));
+		state->error_val = PS_SOCKET;
+		state->inc_state = INC_ERROR;
+		return -1;
+	}
+
 	if (pop3_sd_state(state, POP3_GETSIZE_LIST_RECV, &next_state))
 		return next_state;
 
-	LOOKUP_NEXT_MSG();	
+	LOOKUP_NEXT_MSG();
 	return POP3_RETR_SEND;
 }
  
@@ -494,10 +529,12 @@ gint pop3_retr_recv(SockInfo *sock, gpointer data)
 			return POP3_RETR_SEND;
 		} else
 			return POP3_LOGOUT_SEND;
-	} else if (ok == PS_PROTOCOL)
+	} else if (ok == PS_PROTOCOL) {
 		return POP3_LOGOUT_SEND;
-	else
+	} else {
+		state->inc_state = INC_ERROR;
 		return -1;
+	}
 }
 
 gint pop3_delete_send(SockInfo *sock, gpointer data)
@@ -516,7 +553,6 @@ gint pop3_delete_recv(SockInfo *sock, gpointer data)
 	gint ok;
 
 	if ((ok = pop3_ok(sock, NULL)) == PS_SUCCESS) {
-
 		state->msg[state->cur_msg].deleted = TRUE;
 		
 		if (pop3_sd_state(state, POP3_DELETE_RECV, &next_state))
@@ -528,10 +564,12 @@ gint pop3_delete_recv(SockInfo *sock, gpointer data)
 			return POP3_RETR_SEND;
 		} else
 			return POP3_LOGOUT_SEND;
-	} else if (ok == PS_PROTOCOL)
+	} else if (ok == PS_PROTOCOL) {
 		return POP3_LOGOUT_SEND;
-	else
+	} else {
+		state->inc_state = INC_ERROR;
 		return -1;
+	}
 }
 
 gint pop3_logout_send(SockInfo *sock, gpointer data)
@@ -543,10 +581,12 @@ gint pop3_logout_send(SockInfo *sock, gpointer data)
 
 gint pop3_logout_recv(SockInfo *sock, gpointer data)
 {
-	if (pop3_ok(sock, NULL) == PS_SUCCESS)
-		return -1;
-	else
-		return -1;
+	Pop3State *state = (Pop3State *)data;
+
+	if (pop3_ok(sock, NULL) != PS_SUCCESS)
+		state->inc_state = INC_ERROR;
+
+	return -1;
 }
 
 static gint pop3_ok(SockInfo *sock, gchar *argbuf)

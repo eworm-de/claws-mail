@@ -2554,9 +2554,9 @@ static void compose_wrap_line_all(Compose *compose)
 			gint clen;
 #ifdef WIN32
 			gchar *cb;
-			cb = g_malloc(MB_CUR_MAX);
+			cb = g_malloc(MB_LEN_MAX);
 #else
-			gchar cb[MB_CUR_MAX];
+			gchar cb[MB_LEN_MAX];
 #endif
 
 			/* should we join the next line */

@@ -1,3 +1,23 @@
+2002-08-01
+
+	* src/compose.c: compose_wrap_line_all(): 文字バッファの初期化を
+	  修正。
+	* src/utils.c:
+	  log_print()
+	  log_message()
+	  log_warning()
+	  log_error(): ログメッセージにタイムスタンプを追加。
+
+2002-07-31
+
+	* src/socket.c: typo を修正(HAVE_SYS_SELECT -> HAVE_SYS_SELECT_H)
+
+2002-07-31
+
+	* src/socket.c: socket I/O タイムアウトを実装。
+	  fd_recv(): 新規。
+	* src/pop.c: 正しくエラーをチェックしてエラー値を返すようにした。
+
 2002-07-31
 
 	* src/prefs_actions.c: アクションの入出力ダイアログを遅延させずに
