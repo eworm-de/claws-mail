@@ -1,4 +1,13 @@
-2002-0901 [alfons]	0.8.2claws18
+2002-09-02 [paul]	0.8.2claws19
+
+	* po/pt_BR.po
+		updated by Fabio Jr. Beneditto
+		
+	* src/defs.h
+		use 'http://claws.sylpheed.org' for homepage link. 
+		Domain provided by Oktay Altunergil <oktay@freelinuxcd.org>
+
+2002-09-01 [alfons]	0.8.2claws18
 
 	* src/mh.c
 		plug memleak related to one Martin Kluge found
