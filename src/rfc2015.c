@@ -71,22 +71,22 @@ static char *create_boundary (void);
 
 static void dump_mimeinfo (const char *text, MimeInfo *x)
 {
-    g_message ("** MimeInfo[%s] %p  level=%d",
+    debug_print ("MimeInfo[%s] %p  level=%d\n",
                text, x, x? x->level:0 );
     if (!x)
         return;
 
-    g_message ("**      enc=`%s' enc_type=%d mime_type=%d",
+    debug_print ("      enc=`%s' enc_type=%d mime_type=%d\n",
                x->encoding, x->encoding_type, x->mime_type );
-    g_message ("**      cont_type=`%s' cs=`%s' name=`%s' bnd=`%s'",
+    debug_print ("      cont_type=`%s' cs=`%s' name=`%s' bnd=`%s'\n",
                x->content_type, x->charset, x->name, x->boundary );
-    g_message ("**      cont_disp=`%s' fname=`%s' fpos=%ld size=%u, lvl=%d",
+    debug_print ("      cont_disp=`%s' fname=`%s' fpos=%ld size=%u, lvl=%d\n",
                x->content_disposition, x->filename, x->fpos, x->size,
                x->level );
     dump_mimeinfo (".main", x->main );
     dump_mimeinfo (".sub", x->sub );
     dump_mimeinfo (".next", x->next );
-    g_message ("** MimeInfo[.parent] %p", x ); 
+    debug_print ("MimeInfo[.parent] %p\n", x ); 
     dump_mimeinfo (".children", x->children );
     dump_mimeinfo (".plaintext", x->plaintext );
 }
@@ -97,16 +97,16 @@ static void dump_part ( MimeInfo *mimeinfo, FILE *fp )
     int c;
 
     if (fseek (fp, mimeinfo->fpos, SEEK_SET)) {
-        g_warning ("dump_part: fseek error");
+        debug_print ("dump_part: fseek error\n");
         return;
     }
 
-    g_message ("** --- begin dump_part ----");
+    debug_print ("--- begin dump_part ----\n");
     while (size-- && (c = getc (fp)) != EOF) 
         putc (c, stderr);
     if (ferror (fp))
-        g_warning ("dump_part: read error");
-    g_message ("** --- end dump_part ----");
+        debug_print ("dump_part: read error\n");
+    debug_print ("--- end dump_part ----\n");
 }
 
 void
@@ -288,7 +288,7 @@ static void check_signature (MimeInfo *mimeinfo, MimeInfo *partinfo, FILE *fp)
 
     err = gpgme_new (&ctx);
     if (err) {
-	g_warning ("gpgme_new failed: %s", gpgme_strerror (err));
+	debug_print ("gpgme_new failed: %s\n", gpgme_strerror (err));
 	goto leave;
     }
 
@@ -302,14 +302,14 @@ static void check_signature (MimeInfo *mimeinfo, MimeInfo *partinfo, FILE *fp)
 	err = gpgme_data_new_from_filepart (&sig, NULL, fp,
 					    partinfo->fpos, partinfo->size);
     if (err) {
-        g_message ("gpgme_data_new_from_filepart failed: %s",
+        debug_print ("gpgme_data_new_from_filepart failed: %s\n",
 		   gpgme_strerror (err));
         goto leave;
     }
 
     err = gpgme_op_verify (ctx, sig, text, &status);
     if (err) 
-        g_message ("gpgme_op_verify failed: %s", gpgme_strerror (err));
+        debug_print ("gpgme_op_verify failed: %s\n", gpgme_strerror (err));
 
     /* FIXME: check what the heck this sig_status_full stuff is.
      * it should better go into sigstatus.c */
@@ -346,14 +346,14 @@ passphrase_cb (void *opaque, const char *desc, void *r_hd)
     }
 
     gpgmegtk_set_passphrase_grab (prefs_common.passphrase_grab);
-    g_message ("%% requesting passphrase for `%s': ", desc );
+    debug_print ("requesting passphrase for `%s': ", desc );
     pass = gpgmegtk_passphrase_mbox (desc);
     if (!pass) {
-        g_message ("%% cancel passphrase entry");
+        debug_print ("cancel passphrase entry\n");
         gpgme_cancel (ctx);
     }
     else
-        g_message ("%% sending passphrase");
+        debug_print ("sending passphrase\n");
 
     return pass;
 }
@@ -383,14 +383,14 @@ copy_gpgmedata_to_temp (GpgmeData data, guint *length)
 
     err = gpgme_data_rewind ( data );
     if (err)
-        g_message ("** gpgme_data_rewind failed: %s", gpgme_strerror (err));
+        debug_print ("gpgme_data_rewind failed: %s\n", gpgme_strerror (err));
 
     while (!(err = gpgme_data_read (data, buf, 100, &nread))) {
         fwrite ( buf, nread, 1, fp );
     }
 
     if (err != GPGME_EOF)
-        g_warning ("** gpgme_data_read failed: %s", gpgme_strerror (err));
+        debug_print ("gpgme_data_read failed: %s\n", gpgme_strerror (err));
 
     fclose (fp);
     *length = nread;
@@ -410,21 +410,21 @@ pgp_decrypt (MimeInfo *partinfo, FILE *fp)
 
     err = gpgme_new (&ctx);
     if (err) {
-        g_message ("gpgme_new failed: %s", gpgme_strerror (err));
+        debug_print ("gpgme_new failed: %s\n", gpgme_strerror (err));
         goto leave;
     }
 
     err = gpgme_data_new_from_filepart (&cipher, NULL, fp,
 					partinfo->fpos, partinfo->size);
     if (err) {
-        g_message ("gpgme_data_new_from_filepart failed: %s",
-                   gpgme_strerror (err));
+        debug_print ("gpgme_data_new_from_filepart failed: %s\n",
+                     gpgme_strerror (err));
         goto leave;
     }
 
     err = gpgme_data_new (&plain);
     if (err) {
-        g_message ("gpgme_new failed: %s", gpgme_strerror (err));
+        debug_print ("gpgme_new failed: %s\n", gpgme_strerror (err));
         goto leave;
     }
 
@@ -438,12 +438,12 @@ pgp_decrypt (MimeInfo *partinfo, FILE *fp)
 leave:
     gpgme_data_release (cipher);
     if (err) {
-        g_warning ("** decryption failed: %s", gpgme_strerror (err));
+        debug_print ("decryption failed: %s\n", gpgme_strerror (err));
         gpgme_data_release (plain);
         plain = NULL;
     }
     else
-        g_message ("** decryption succeeded");
+        debug_print ("decryption succeeded\n");
 
     gpgme_release (ctx);
     return plain;
@@ -459,7 +459,7 @@ MimeInfo * rfc2015_find_signature (MimeInfo *mimeinfo)
     if (g_strcasecmp (mimeinfo->content_type, "multipart/signed"))
         return NULL;
 
-    g_message ("** multipart/signed encountered");
+    debug_print ("multipart/signed encountered\n");
 
     /* check that we have at least 2 parts of the correct type */
     for (partinfo = mimeinfo->children;
@@ -562,7 +562,7 @@ void rfc2015_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
 
     g_return_if_fail (mimeinfo->mime_type == MIME_MULTIPART);
 
-    g_message ("** multipart/encrypted encountered");
+    debug_print ("multipart/encrypted encountered\n");
 
     /* skip headers */
     if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0)
@@ -583,7 +583,7 @@ void rfc2015_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
         else if (n == 2 && !g_strcasecmp (partinfo->content_type,
 					  "application/octet-stream")) {
             if (partinfo->next)
-                g_warning ("** oops: pgp_encrypted with more than 2 parts");
+                debug_print ("oops: pgp_encrypted with more than 2 parts\n");
             break;
         }
     }
@@ -595,7 +595,7 @@ void rfc2015_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
         return;
     }
 
-    g_message ("** yep, it is pgp encrypted");
+    debug_print ("yep, it is pgp encrypted\n");
 
     plain = pgp_decrypt (partinfo, fp);
     if (!plain) {
@@ -627,14 +627,14 @@ void rfc2015_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
 
     err = gpgme_data_rewind (plain);
     if (err)
-        g_message ("** gpgme_data_rewind failed: %s", gpgme_strerror (err));
+        debug_print ("gpgme_data_rewind failed: %s\n", gpgme_strerror (err));
 
     while (!(err = gpgme_data_read (plain, buf, sizeof(buf), &nread))) {
         fwrite (buf, nread, 1, dstfp);
     }
 
     if (err != GPGME_EOF) {
-        g_warning ("** gpgme_data_read failed: %s", gpgme_strerror (err));
+        debug_print ("gpgme_data_read failed: %s\n", gpgme_strerror (err));
     }
 
     fclose (dstfp);
@@ -665,12 +665,12 @@ pgp_encrypt ( GpgmeData plain, GpgmeRecipients rset )
     }
 
     if (err) {
-        g_warning ("** encryption failed: %s", gpgme_strerror (err));
+        debug_print ("encryption failed: %s\n", gpgme_strerror (err));
         gpgme_data_release (cipher);
         cipher = NULL;
     }
     else {
-        g_message ("** encryption succeeded");
+        debug_print ("encryption succeeded\n");
     }
 
     gpgme_release (ctx);
@@ -701,7 +701,7 @@ rfc2015_encrypt (const char *file, GSList *recp_list)
     /* Create the list of recipients */
     rset = gpgmegtk_recipient_selection (recp_list);
     if (!rset) {
-        g_warning ("error creating recipient list" );
+        debug_print ("error creating recipient list\n" );
         goto failure;
     }
 
@@ -715,7 +715,7 @@ rfc2015_encrypt (const char *file, GSList *recp_list)
     if (!err)
 	err = gpgme_data_new (&plain);
     if (err) {
-        g_message ("gpgme_data_new failed: %s", gpgme_strerror (err));
+        debug_print ("gpgme_data_new failed: %s\n", gpgme_strerror (err));
         goto failure;
     }
 
@@ -726,7 +726,7 @@ rfc2015_encrypt (const char *file, GSList *recp_list)
         /* fixme: check for overlong lines */
         if (headerp (buf, content_names)) {
             if (clineidx >= DIM (clines)) {
-                g_message ("rfc2015_encrypt: too many content lines");
+                debug_print ("rfc2015_encrypt: too many content lines\n");
                 goto failure;
             }
             clines[clineidx++] = g_strdup (buf);
@@ -757,7 +757,7 @@ rfc2015_encrypt (const char *file, GSList *recp_list)
 
     /* write them to the temp data and add the rest of the message */
     for (i = 0; !err && i < clineidx; i++) {
-        g_message ("%% %s:%d: cline=`%s'", __FILE__ ,__LINE__, clines[i]);
+        debug_print ("%s:%d: cline=`%s'\n", __FILE__ ,__LINE__, clines[i]);
         err = gpgme_data_write (plain, clines[i], strlen (clines[i]));
     }
     if (!err)
@@ -770,7 +770,7 @@ rfc2015_encrypt (const char *file, GSList *recp_list)
         goto failure;
     }
     if (err) {
-        g_warning ("** gpgme_data_write failed: %s", gpgme_strerror (err));
+        debug_print ("gpgme_data_write failed: %s\n", gpgme_strerror (err));
         goto failure;
     }
 
@@ -803,14 +803,14 @@ rfc2015_encrypt (const char *file, GSList *recp_list)
     /* Write the header, append new content lines, part 1 and part 2 header */
     err = gpgme_data_rewind (header);
     if (err) {
-        g_message ("gpgme_data_rewind failed: %s", gpgme_strerror (err));
+        debug_print ("gpgme_data_rewind failed: %s\n", gpgme_strerror (err));
         goto failure;
     }
     while (!(err = gpgme_data_read (header, buf, BUFFSIZE, &nread))) {
         fwrite (buf, nread, 1, fp);
     }
     if (err != GPGME_EOF) {
-        g_warning ("** gpgme_data_read failed: %s", gpgme_strerror (err));
+        debug_print ("gpgme_data_read failed: %s\n", gpgme_strerror (err));
         goto failure;
     }
     if (ferror (fp)) {
@@ -847,7 +847,7 @@ rfc2015_encrypt (const char *file, GSList *recp_list)
     /* append the encrypted stuff */
     err = gpgme_data_rewind (cipher);
     if (err) {
-        g_warning ("** gpgme_data_rewind on cipher failed: %s",
+        debug_print ("** gpgme_data_rewind on cipher failed: %s\n",
                    gpgme_strerror (err));
         goto failure;
     }
@@ -856,7 +856,7 @@ rfc2015_encrypt (const char *file, GSList *recp_list)
         fwrite (buf, nread, 1, fp);
     }
     if (err != GPGME_EOF) {
-        g_warning ("** gpgme_data_read failed: %s", gpgme_strerror (err));
+        debug_print ("** gpgme_data_read failed: %s\n", gpgme_strerror (err));
         goto failure;
     }
 
@@ -929,7 +929,7 @@ set_signers (GpgmeCtx ctx, PrefsAccount *ac)
     if (err != GPGME_EOF)
 	goto leave;
     if (key_list == NULL) {
-	g_warning ("no keys found for keyid \"%s\"", keyid);
+	debug_print ("no keys found for keyid \"%s\"\n", keyid);
     }
     gpgme_signers_clear (ctx);
     for (p = key_list; p != NULL; p = p->next) {
@@ -940,7 +940,7 @@ set_signers (GpgmeCtx ctx, PrefsAccount *ac)
 
 leave:
     if (err)
-        g_message ("** set_signers failed: %s", gpgme_strerror (err));
+        debug_print ("set_signers failed: %s\n", gpgme_strerror (err));
     for (p = key_list; p != NULL; p = p->next)
 	gpgme_key_unref ((GpgmeKey) p->data);
     g_slist_free (key_list);
@@ -983,12 +983,12 @@ pgp_sign (GpgmeData plain, PrefsAccount *ac)
 
 leave:
     if (err) {
-        g_message ("** signing failed: %s", gpgme_strerror (err));
+        debug_print ("signing failed: %s\n", gpgme_strerror (err));
         gpgme_data_release (sig);
         sig = NULL;
     }
     else {
-        g_message ("** signing succeeded");
+        debug_print ("signing succeeded\n");
     }
 
     gpgme_release (ctx);
@@ -1023,7 +1023,7 @@ rfc2015_sign (const char *file, PrefsAccount *ac)
     if (!err)
         err = gpgme_data_new (&plain);
     if (err) {
-        g_message ("gpgme_data_new failed: %s", gpgme_strerror (err));
+        debug_print ("gpgme_data_new failed: %s\n", gpgme_strerror (err));
         goto failure;
     }
 
@@ -1034,7 +1034,7 @@ rfc2015_sign (const char *file, PrefsAccount *ac)
         /* fixme: check for overlong lines */
         if (headerp (buf, content_names)) {
             if (clineidx >= DIM (clines)) {
-                g_message ("rfc2015_sign: too many content lines");
+                debug_print ("rfc2015_sign: too many content lines\n");
                 goto failure;
             }
             clines[clineidx++] = g_strdup (buf);
@@ -1077,7 +1077,7 @@ rfc2015_sign (const char *file, PrefsAccount *ac)
         goto failure;
     }
     if (err) {
-        g_message ("** gpgme_data_write failed: %s", gpgme_strerror (err));
+        debug_print ("gpgme_data_write failed: %s\n", gpgme_strerror (err));
         goto failure;
     }
 
@@ -1101,12 +1101,12 @@ rfc2015_sign (const char *file, PrefsAccount *ac)
     /* Write the rfc822 header and add new content lines */
     err = gpgme_data_rewind (header);
     if (err)
-        g_message ("** gpgme_data_rewind failed: %s", gpgme_strerror (err));
+        debug_print ("gpgme_data_rewind failed: %s\n", gpgme_strerror (err));
     while (!(err = gpgme_data_read (header, buf, BUFFSIZE, &nread))) {
         fwrite (buf, nread, 1, fp);
     }
     if (err != GPGME_EOF) {
-        g_message ("** gpgme_data_read failed: %s", gpgme_strerror (err));
+        debug_print ("gpgme_data_read failed: %s\n", gpgme_strerror (err));
         goto failure;
     }
     if (ferror (fp)) {
@@ -1126,7 +1126,7 @@ rfc2015_sign (const char *file, PrefsAccount *ac)
     fprintf (fp, "\r\n--%s\r\n", boundary);
     err = gpgme_data_rewind (plain);
     if (err) {
-        g_message ("** gpgme_data_rewind on plain failed: %s",
+        debug_print ("gpgme_data_rewind on plain failed: %s\n",
                    gpgme_strerror (err));
         goto failure;
     }
@@ -1134,7 +1134,7 @@ rfc2015_sign (const char *file, PrefsAccount *ac)
         fwrite (buf, nread, 1, fp);   
     }
     if (err != GPGME_EOF) {
-        g_message ("** gpgme_data_read failed: %s", gpgme_strerror (err));
+        debug_print ("gpgme_data_read failed: %s\n", gpgme_strerror (err));
         goto failure;
     }
 
@@ -1145,7 +1145,7 @@ rfc2015_sign (const char *file, PrefsAccount *ac)
 
     err = gpgme_data_rewind (sigdata);
     if (err) {
-        g_message ("** gpgme_data_rewind on sigdata failed: %s",
+        debug_print ("gpgme_data_rewind on sigdata failed: %s\n",
                    gpgme_strerror (err));
         goto failure;
     }
@@ -1154,7 +1154,7 @@ rfc2015_sign (const char *file, PrefsAccount *ac)
         fwrite (buf, nread, 1, fp);
     }
     if (err != GPGME_EOF) {
-        g_message ("** gpgme_data_read failed: %s", gpgme_strerror (err));
+        debug_print ("gpgme_data_read failed: %s\n", gpgme_strerror (err));
         goto failure;
     }
 

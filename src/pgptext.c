@@ -95,14 +95,14 @@ passphrase_cb (void *opaque, const char *desc, void *r_hd)
     }
 
     gpgmegtk_set_passphrase_grab (prefs_common.passphrase_grab);
-    g_message ("%% requesting passphrase for `%s': ", desc );
+    debug_print ("requesting passphrase for `%s': ", desc);
     pass = gpgmegtk_passphrase_mbox (desc);
     if (!pass) {
-        g_message ("%% cancel passphrase entry");
+        debug_print ("cancel passphrase entry\n");
         gpgme_cancel (ctx);
     }
     else
-        g_message ("%% sending passphrase");
+        debug_print ("sending passphrase\n");
 
     return pass;
 }
@@ -119,21 +119,21 @@ pgptext_decrypt (MimeInfo *partinfo, FILE *fp)
 
     err = gpgme_new (&ctx);
     if (err) {
-        g_message ("gpgme_new failed: %s", gpgme_strerror (err));
+        debug_print ("gpgme_new failed: %s\n", gpgme_strerror (err));
         goto leave;
     }
 
     err = gpgme_data_new_from_filepart (&cipher, NULL, fp,
 					partinfo->fpos, partinfo->size);
     if (err) {
-        g_message ("gpgme_data_new_from_filepart failed: %s",
-                   gpgme_strerror (err));
+        debug_print ("gpgme_data_new_from_filepart failed: %s\n",
+                     gpgme_strerror (err));
         goto leave;
     }
 
     err = gpgme_data_new (&plain);
     if (err) {
-        g_message ("gpgme_new failed: %s", gpgme_strerror (err));
+        debug_print ("gpgme_new failed: %s\n", gpgme_strerror (err));
         goto leave;
     }
 
@@ -147,12 +147,12 @@ pgptext_decrypt (MimeInfo *partinfo, FILE *fp)
 leave:
     gpgme_data_release (cipher);
     if (err) {
-        g_warning ("** decryption failed: %s", gpgme_strerror (err));
+        debug_print ("decryption failed: %s\n", gpgme_strerror (err));
         gpgme_data_release (plain);
         plain = NULL;
     }
     else
-        g_message ("** decryption succeeded");
+        debug_print ("decryption succeeded\n");
 
     gpgme_release (ctx);
     return plain;
@@ -305,7 +305,7 @@ void pgptext_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
 
     g_return_if_fail (mimeinfo->mime_type == MIME_TEXT);
 
-    g_message ("** text/plain with pgptext encountered");
+    debug_print ("text/plain with pgptext encountered\n");
 
     partinfo = procmime_scan_message(msginfo);
 		
@@ -350,7 +350,7 @@ void pgptext_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
 		
     err = gpgme_data_rewind (plain);
     if (err)
-        g_message ("** gpgme_data_rewind failed: %s", gpgme_strerror (err));
+        debug_print ("gpgme_data_rewind failed: %s\n", gpgme_strerror (err));
 
 		/* insert blank line to avoid some trouble... */
 		fputs ("\n", dstfp);
@@ -360,7 +360,7 @@ void pgptext_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
     }
 
     if (err != GPGME_EOF) {
-        g_warning ("** gpgme_data_read failed: %s", gpgme_strerror (err));
+        debug_print ("gpgme_data_read failed: %s\n", gpgme_strerror (err));
     }
 
     fclose (dstfp);
