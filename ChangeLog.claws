@@ -1,3 +1,9 @@
+2003-04-15 [paul]	0.8.11claws93
+
+	* src/prefs_common.[ch]
+	  src/summaryview.c
+	  	add new option '/Interface/Open next message on deletion'
+
 2003-04-15 [paul]	0.8.11claws92
 
 	* src/summaryview.[ch]

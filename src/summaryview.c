@@ -3094,7 +3094,7 @@ void summary_delete(SummaryView *summaryview)
 	if (!node)
 		node = summary_find_prev_msg(summaryview, sel_last);
 
-	if (node) {
+	if (node && prefs_common.open_on_delete) {
 		if (sel_last && node == gtkut_ctree_node_next(ctree, sel_last))
 			summary_step(summaryview, GTK_SCROLL_STEP_FORWARD);
 		else if (sel_last && node == GTK_CTREE_NODE_PREV(sel_last))
@@ -3105,7 +3105,10 @@ void summary_delete(SummaryView *summaryview)
 				 messageview_is_visible(summaryview->messageview),
 				 FALSE);
 	}
-
+	else {
+		summary_select_node(summaryview, node, FALSE, FALSE);
+	}
+	
 	if (prefs_common.immediate_exec || item->stype == F_TRASH) {
 		summary_execute(summaryview);
 		/* after deleting, the anchor may be at an invalid row
