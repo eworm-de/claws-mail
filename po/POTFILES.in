@@ -4,6 +4,7 @@ src/addressbook.c
 src/addrgather.c
 src/addrindex.c
 src/alertpanel.c
+src/browseldap.c
 src/common/intl.h
 src/common/md5.c
 src/common/nntp.c
