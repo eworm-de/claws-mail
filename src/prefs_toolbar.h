@@ -20,7 +20,7 @@
 #ifndef __PREFS_CUSTOM_TOOLBAR_H__
 #define __PREFS_CUSTOM_TOOLBAR_H__
 
-void prefs_toolbar_init();
-void prefs_toolbar_done();
+void prefs_toolbar_init		(void);
+void prefs_toolbar_done		(void);
 
 #endif /* __PREFS_CUSTOM_TOOLBAR_H__ */ 

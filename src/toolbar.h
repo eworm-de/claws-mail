@@ -145,6 +145,7 @@ enum {
 	A_DELETE,
 	A_EXECUTE,
 	A_GOTO_NEXT,
+	A_IGNORE_THREAD,
 
 	/* compose toolbar */
 	A_SEND,

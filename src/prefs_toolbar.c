@@ -679,7 +679,7 @@ static void prefs_toolbar_create(ToolbarPage *prefs_toolbar)
 	top_hbox = gtk_hbox_new(FALSE, 0);
 	gtk_box_pack_start(GTK_BOX(main_vbox), top_hbox, TRUE, TRUE, 0);
   
-	compose_frame = gtk_frame_new(_("Available toolbar items"));
+	compose_frame = gtk_frame_new(_("Available toolbar icons"));
 	gtk_box_pack_start(GTK_BOX(top_hbox), compose_frame, TRUE, TRUE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(compose_frame), 5);
 
@@ -865,7 +865,7 @@ ToolbarPage *prefs_toolbar_mainwindow;
 ToolbarPage *prefs_toolbar_composewindow;
 ToolbarPage *prefs_toolbar_messageview;
 
-void prefs_toolbar_init()
+void prefs_toolbar_init(void)
 {
 	ToolbarPage *page;
 
@@ -897,7 +897,7 @@ void prefs_toolbar_init()
 	prefs_toolbar_composewindow = page;
 }
 
-void prefs_toolbar_done()
+void prefs_toolbar_done(void)
 {
 	prefs_gtk_unregister_page((PrefsPage *) prefs_toolbar_mainwindow);
 	g_free(prefs_toolbar_mainwindow);

@@ -115,6 +115,9 @@ static void toolbar_forward_cb		   	(GtkWidget	*widget,
 static void toolbar_next_unread_cb	   	(GtkWidget	*widget,
 					    	 gpointer 	 data);
 
+static void toolbar_ignore_thread_cb	   	(GtkWidget	*widget,
+					    	 gpointer 	 data);
+
 static void toolbar_actions_execute_cb	   	(GtkWidget     	*widget,
 				  	    	 gpointer      	 data);
 
@@ -158,6 +161,7 @@ struct {
 	{ "A_DELETE",        N_("Delete Message")                       },
 	{ "A_EXECUTE",       N_("Execute")                              },
 	{ "A_GOTO_NEXT",     N_("Goto Next Message")                    },
+	{ "A_IGNORE_THREAD", N_("Ignore thread")			},
 
 	{ "A_SEND",          N_("Send Message")                         },
 	{ "A_SENDL",         N_("Put into queue folder and send later") },
@@ -278,31 +282,32 @@ GList *toolbar_get_action_items(ToolbarType source)
 	gint i = 0;
 	
 	if (source == TOOLBAR_MAIN) {
-		gint main_items[14] = { A_RECEIVE_ALL,   A_RECEIVE_CUR,   A_SEND_QUEUED,
-					A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER,  
-					A_REPLY_ALL,     A_REPLY_ML,      A_FORWARD,       
-					A_DELETE,        A_EXECUTE,       A_GOTO_NEXT,      
+		gint main_items[]   = { A_RECEIVE_ALL,   A_RECEIVE_CUR,   A_SEND_QUEUED,
+					A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER, 
+					A_REPLY_ALL,     A_REPLY_ML,      A_FORWARD, 
+					A_DELETE,        A_EXECUTE,       A_GOTO_NEXT, 
+					A_IGNORE_THREAD, 
 					A_ADDRBOOK, 	 A_SYL_ACTIONS };
 
-		for (i = 0; i < sizeof(main_items)/sizeof(main_items[0]); i++) 
+		for (i = 0; i < sizeof main_items / sizeof main_items[0]; i++) 
 			items = g_list_append(items, gettext(toolbar_text[main_items[i]].descr));
 	}
 	else if (source == TOOLBAR_COMPOSE) {
-		gint comp_items[10] = {	A_SEND,          A_SENDL,        A_DRAFT,
+		gint comp_items[] =   {	A_SEND,          A_SENDL,        A_DRAFT,
 					A_INSERT,        A_ATTACH,       A_SIG,
 					A_EXTEDITOR,     A_LINEWRAP,     A_ADDRBOOK,
 					A_SYL_ACTIONS };	
 
-		for (i = 0; i < sizeof(comp_items)/sizeof(comp_items[0]); i++) 
+		for (i = 0; i < sizeof comp_items / sizeof comp_items[0]; i++) 
 			items = g_list_append(items, gettext(toolbar_text[comp_items[i]].descr));
 	}
 	else if (source == TOOLBAR_MSGVIEW) {
-		gint msgv_items[10] = { A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER,
+		gint msgv_items[] =   { A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER,
 				        A_REPLY_ALL,     A_REPLY_ML,      A_FORWARD,
 				        A_DELETE,        A_GOTO_NEXT,	  A_ADDRBOOK,
 					A_SYL_ACTIONS };	
 
-		for (i = 0; i < sizeof(msgv_items)/sizeof(msgv_items[0]); i++) 
+		for (i = 0; i < sizeof msgv_items / sizeof msgv_items[0]; i++) 
 			items = g_list_append(items, gettext(toolbar_text[msgv_items[i]].descr));
 	}
 
@@ -1236,6 +1241,29 @@ static void toolbar_next_unread_cb(GtkWidget *widget, gpointer data)
 	}
 }
 
+static void toolbar_ignore_thread_cb(GtkWidget *widget, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
+	MessageView *msgview;
+
+	g_return_if_fail(toolbar_item != NULL);
+
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow *) toolbar_item->parent;
+		summary_toggle_ignore_thread(mainwin->summaryview);
+		break;
+	case TOOLBAR_MSGVIEW:
+		/* TODO: see toolbar_next_unread_cb() if you need
+		 * this in the message view */
+		break;
+	default:
+		debug_print("toolbar event not supported\n");
+		break;
+	}
+}
+
 static void toolbar_send_cb(GtkWidget *widget, gpointer data)
 {
 	compose_toolbar_cb(A_SEND, data);
@@ -1375,6 +1403,7 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 		{ A_DELETE,         	toolbar_delete_cb		},
 		{ A_EXECUTE,        	toolbar_exec_cb			},
 		{ A_GOTO_NEXT,      	toolbar_next_unread_cb		},
+		{ A_IGNORE_THREAD,	toolbar_ignore_thread_cb	},
 
 		{ A_SEND,		toolbar_send_cb       		},
 		{ A_SENDL,		toolbar_send_later_cb 		},
