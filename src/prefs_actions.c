@@ -48,6 +48,19 @@
 #include "procmsg.h"
 #include "gtkstext.h"
 
+						
+typedef enum {
+ACTION_NONE 		= 1 << 0,
+ACTION_PIPE_IN  	= 1 << 1,
+ACTION_PIPE_OUT 	= 1 << 2,
+ACTION_SINGLE	 	= 1 << 3,
+ACTION_MULTIPLE 	= 1 << 4,
+ACTION_ASYNC 		= 1 << 5,
+ACTION_OPEN_IN 		= 1 << 6,
+ACTION_HIDE_IN 		= 1 << 7,
+ACTION_ERROR 		= 1 << 8,
+} ActionsTypes;
+
 static struct Actions {
 	GtkWidget *window;
 
@@ -59,12 +72,47 @@ static struct Actions {
 	GtkWidget *actions_clist;
 } actions;
 
+typedef struct _Children Children;
+struct _Children {
+	GtkWidget 	*window;
+	GtkWidget 	*dialog;
+	GtkWidget 	*text;
+	GtkWidget 	*input_entry;
+	GtkWidget 	*input_hbox;
+	GtkWidget 	*abort_btn;
+	GtkWidget       *scrolledwin;
+
+	gchar 		*action;
+	gint 		 timer;
+	GSList 		*list;
+	gint		 nb;
+	gint		 open_in;
+	gboolean	 output;
+};
+
+typedef struct _ChildInfo ChildInfo;
+struct _ChildInfo {
+	gchar 		*cmd;
+	guint  		 type;
+	pid_t 		 pid;
+	gint 		 chld_in;
+	gint		 chld_out;
+	gint		 chld_err;
+	gint		 tag_in;
+	gint		 tag_out;
+	gint		 tag_err;
+	gint		 new_out;
+	GString		*output;
+	GtkWidget	*text;
+};
+
 /* widget creating functions */
 static void prefs_actions_create	(MainWindow *mainwin);
 static void prefs_actions_set_dialog	(void);
 static gint prefs_actions_clist_set_row	(gint row);
 
 /* callback functions */
+static void prefs_actions_help_cb	(GtkWidget *w, gpointer data);
 static void prefs_actions_register_cb	(GtkWidget *w, gpointer data);
 static void prefs_actions_substitute_cb	(GtkWidget *w, gpointer data);
 static void prefs_actions_delete_cb	(GtkWidget *w, gpointer data);
@@ -95,15 +143,42 @@ static void mainwin_actions_execute_cb 	(MainWindow	*mainwin,
 static void compose_actions_execute_cb	(Compose	*compose,
 					 guint		 action_nb,
 					 GtkWidget	*widget);
-static gboolean actions_check		(gchar *action);
+static guint get_action_type		(gchar *action);
 
-static void pipe_command		(gchar *action,
-					 GtkEditable *editable);
+static gboolean execute_actions		(gchar *action, 
+					 GtkWidget *window,
+					 GtkCTree *ctree, 
+					 GtkWidget *text);
 
-static void message_command		(gchar *action, 
-					 SummaryView *summaryview);
-static gint message_command_execute	(gchar *action, 
+static gchar *parse_action_cmd		(gchar *action,
+					 MsgInfo *msginfo,
+					 GtkCTree *ctree);
+static GString *parse_append_filename	(GString *cmd,
 					 MsgInfo *msginfo);
+
+ChildInfo *fork_child			(gchar *cmd,
+		      			 gint action_type,
+		      			 GtkWidget *text);
+
+static gint wait_for_children		(gpointer data);
+
+static void free_children		(Children *children);
+
+static void childinfo_close_pipes	(ChildInfo *child_info);
+
+static void create_io_dialog		(Children *children);
+
+static void update_io_dialog		(Children *children);
+
+static void hide_io_dialog_cb		(GtkWidget *widget,
+					 gpointer data);
+
+static void catch_output		(gpointer data,
+					 gint source,
+					 GdkInputCondition cond);
+static void catch_input			(gpointer data, 
+					 gint source,
+					 GdkInputCondition cond);
 
 void prefs_actions_open(MainWindow *mainwin)
 {
@@ -136,7 +211,6 @@ static void prefs_actions_create(MainWindow *mainwin)
 	GtkWidget *name_entry;
 	GtkWidget *cmd_label;
 	GtkWidget *cmd_entry;
-	GtkWidget *help_label;
 
 	GtkWidget *reg_hbox;
 	GtkWidget *btn_hbox;
@@ -148,6 +222,10 @@ static void prefs_actions_create(MainWindow *mainwin)
 	GtkWidget *cond_hbox;
 	GtkWidget *cond_scrolledwin;
 	GtkWidget *cond_clist;
+
+	GtkWidget *help_vbox;
+	GtkWidget *help_label;
+	GtkWidget *help_toggle;
 
 	GtkWidget *btn_vbox;
 	GtkWidget *up_btn;
@@ -162,7 +240,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
-	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
+	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, TRUE);
 
 	vbox = gtk_vbox_new (FALSE, 6);
 	gtk_widget_show (vbox);
@@ -174,6 +252,8 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_box_pack_end (GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default (ok_btn);
 					 
+	gtk_window_set_title (GTK_WINDOW(window),
+			      _("Actions setting"));
 	gtk_signal_connect (GTK_OBJECT(window), "delete_event",
 			    GTK_SIGNAL_FUNC(prefs_actions_deleted), NULL);
 	gtk_signal_connect (GTK_OBJECT(window), "key_press_event",
@@ -193,7 +273,6 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
 	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX(vbox1), hbox, TRUE, TRUE, 0);
 	
 	name_label = gtk_label_new(_("Menu name: "));
@@ -204,28 +283,42 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_widget_show(name_entry);
 	gtk_box_pack_start (GTK_BOX (hbox), name_entry, TRUE, TRUE, 0);
 
-	help_label = gtk_label_new (_("Use '/' in menu name to make submenus."));
-	gtk_misc_set_alignment(GTK_MISC(help_label), 0, 0.5);
-	gtk_widget_show (help_label);
-	gtk_box_pack_start (GTK_BOX (vbox1), help_label, TRUE, TRUE, 0);
-	
+	gtk_widget_show_all(hbox);
+
 	hbox = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX(vbox1), hbox, TRUE, TRUE, 0);
 		 
 	cmd_label = gtk_label_new(_("Command line: "));
-	gtk_widget_show(cmd_label);
 	gtk_box_pack_start (GTK_BOX (hbox), cmd_label, FALSE, FALSE, 0);
 
 	cmd_entry = gtk_entry_new();
-	gtk_widget_show(cmd_entry);
 	gtk_box_pack_start (GTK_BOX (hbox), cmd_entry, TRUE, TRUE, 0);
 
-	help_label = gtk_label_new (_("Prepend command with '|' to pipe selection through it.\nUse '%f' to apply the command to the message file."));
+	gtk_widget_show_all(hbox);
+
+	help_vbox = gtk_vbox_new(FALSE, 8);
+	gtk_box_pack_start (GTK_BOX (vbox1), help_vbox, TRUE, TRUE, 0);
+
+	help_label = gtk_label_new (_("Menu name:\n"
+				      " Use '/' in menu name to make submenus.\n"
+				      "Command line:\n"
+				      " Begin with:\n   '|' to send message "
+				      "body or selection "
+				      "to command\n   '>' to send user provided"
+				      " text to command\n   '*' to send user "
+				      "provided hidden text to command\n"
+				      " End with:\n   '|' to replace "
+				      "message body or selection with command "
+				      "output\n   '&' to"
+				      "run command asynchronously\n Use '%f' "
+				      "for message file name\n and '%F' for the"
+				      " list of the file names of selected "
+				      "messages."));
 	gtk_misc_set_alignment(GTK_MISC(help_label), 0, 0.5);
 	gtk_label_set_justify (GTK_LABEL(help_label), GTK_JUSTIFY_LEFT);
 	gtk_widget_show (help_label);
-	gtk_box_pack_start (GTK_BOX (vbox1), help_label, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (help_vbox), help_label, TRUE, TRUE, 0);
+	gtk_widget_hide(help_vbox);
 
 		/* register / substitute / delete */
 
@@ -238,7 +331,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_box_pack_start (GTK_BOX (reg_hbox), arrow, FALSE, FALSE, 0);
 	gtk_widget_set_usize (arrow, -1, 16);
 
-	btn_hbox = gtk_hbox_new (TRUE, 4);
+	btn_hbox = gtk_hbox_new (FALSE, 4);
 	gtk_widget_show (btn_hbox);
 	gtk_box_pack_start (GTK_BOX (reg_hbox), btn_hbox, FALSE, FALSE, 0);
 
@@ -260,6 +353,12 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_box_pack_start (GTK_BOX (btn_hbox), del_btn, FALSE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (del_btn), "clicked",
 			    GTK_SIGNAL_FUNC (prefs_actions_delete_cb), NULL);
+
+	help_toggle = gtk_toggle_button_new_with_label (_("Help on syntax"));
+	gtk_widget_show (help_toggle);
+	gtk_box_pack_end (GTK_BOX (btn_hbox), help_toggle, FALSE, TRUE, 0);
+	gtk_signal_connect (GTK_OBJECT (help_toggle), "toggled",
+			    GTK_SIGNAL_FUNC (prefs_actions_help_cb), help_vbox);
 
 	cond_hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (cond_hbox);
@@ -305,7 +404,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_signal_connect (GTK_OBJECT (down_btn), "clicked",
 			    GTK_SIGNAL_FUNC (prefs_actions_down), NULL);
 
-	gtk_widget_show_all(window);
+	gtk_widget_show(window);
 
 	actions.window = window;
 	actions.ok_btn = ok_btn;
@@ -314,6 +413,14 @@ static void prefs_actions_create(MainWindow *mainwin)
 	actions.cmd_entry  = cmd_entry;
 	
 	actions.actions_clist = cond_clist;
+}
+
+static void prefs_actions_help_cb(GtkWidget *w, gpointer data)
+{
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)))
+		gtk_widget_show(GTK_WIDGET(data));
+	else
+		gtk_widget_hide(GTK_WIDGET(data));
 }
 
 void prefs_actions_read_config()
@@ -343,7 +450,9 @@ void prefs_actions_read_config()
 	
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		g_strchomp(buf);
-		if (actions_check(buf))
+		act = strstr(buf, ": ");
+		if (act && act[2] && 
+		    get_action_type(&act[2]) != ACTION_ERROR)
 			prefs_common.actionslst = g_slist_append(
 							prefs_common.actionslst,
 							g_strdup(buf));
@@ -385,10 +494,121 @@ void prefs_actions_write_config()
 	}
 }
 
-static gboolean actions_check(gchar *action)
+static guint get_action_type(gchar *action)
 {
-	/* FIXME: make a real syntax checking function */
-	return TRUE;
+	gchar *p;
+	guint action_type = ACTION_NONE;
+	
+	g_return_val_if_fail(action,  ACTION_ERROR);
+	g_return_val_if_fail(*action, ACTION_ERROR);
+
+	p = action;
+
+	if (p[0] == '|') {
+		action_type |= ACTION_PIPE_IN;
+		p++;
+	} else if (p[0] == '>') {
+		action_type |= ACTION_OPEN_IN;
+		p++;
+	} else if (p[0] == '*') {
+		action_type |= ACTION_HIDE_IN;
+		p++;
+	}
+
+	if (p[0] == 0x00)
+		return ACTION_ERROR;
+
+	while (*p && action_type != ACTION_ERROR) {
+		if (p[0] == '%') {
+			switch (p[1]) {
+				case 'f': action_type |= ACTION_SINGLE;
+					  break;
+				case 'F': action_type |= ACTION_MULTIPLE;
+					  break;
+				default:  action_type  = ACTION_ERROR;
+					  break;
+			}
+		} else if (p[0] == '|') {
+			if (p[1] == 0x00)
+				action_type |= ACTION_PIPE_OUT;
+			else
+				action_type  = ACTION_ERROR;
+		} else if (p[0] == '&') {
+			if (p[1] == 0x00)
+				action_type |= ACTION_ASYNC;
+			else
+				action_type  = ACTION_ERROR;
+		}
+		p++;
+	}
+
+	return action_type;
+}
+
+static gchar *parse_action_cmd		(gchar *action,
+					 MsgInfo *msginfo,
+					 GtkCTree *ctree)
+{
+	GString *cmd;
+	gchar *p;
+	GList *cur;
+	MsgInfo *msg;
+	
+	p = action;
+	
+	if (p[0] == '|' || p[0] == '>' || p[0] == '*')
+		p++;
+
+	cmd = g_string_sized_new(strlen(action));
+
+	while (p[0] && p[0] != '|' && p[0] != '&') {
+		if (p[0] == '%' && p[1]) {
+			switch (p[1]) {
+			   case 'f': cmd = parse_append_filename(cmd, msginfo);
+				     p++;	
+				     break;
+			   case 'F':
+				     for (cur =GTK_CLIST(ctree)->selection;
+				          cur; cur = cur->next) {
+					msg = gtk_ctree_node_get_row_data(ctree,
+					      GTK_CTREE_NODE(cur->data));
+					cmd = parse_append_filename(cmd, msg);
+					cmd = g_string_append_c(cmd, ' ');
+				     }
+				     p++;
+				     break;
+			   default: cmd = g_string_append_c(cmd, p[0]);
+				    cmd = g_string_append_c(cmd, p[1]);
+				    p++;
+			}
+		} else {
+			cmd = g_string_append_c(cmd, p[0]);
+		}
+		p++;
+	}
+	if (!cmd->len) {
+		g_string_free(cmd, TRUE);
+		return NULL;
+	}
+
+	p = cmd->str;
+	g_string_free(cmd, FALSE);
+	return p;
+}
+
+static GString *parse_append_filename(GString *cmd, MsgInfo *msginfo)
+{
+	gchar *filename;
+
+	g_return_val_if_fail(msginfo, cmd);
+
+	filename = procmsg_get_message_file(msginfo);
+
+	cmd = g_string_append(cmd, filename);
+
+	g_free(filename);
+
+	return cmd;
 }
 
 static void prefs_actions_set_dialog	(void)
@@ -483,8 +703,9 @@ static gint prefs_actions_clist_set_row	(gint row)
 		return -1;
 	}
 
-	if (!actions_check(entry_text)) {
-		alertpanel_error(_("Command syntax error."));
+	if (get_action_type(entry_text) == ACTION_ERROR) {
+		alertpanel_error(_("The command\n%s\nhas a syntax error."), 
+				 entry_text);
 		return -1;
 	}
 	
@@ -680,15 +901,23 @@ static void update_actions_menu(GtkItemFactory *ifactory,
 	GtkWidget *menuitem;
 	gchar *menu_path;
 	GSList *cur;
-	gchar *buf;
-	gint sensitive;
+	gchar *action, *action_p;
+	GtkWidget *menu;
+	
 	GtkItemFactoryEntry ifentry = {
 		branch_path, NULL, NULL, 0, "<Branch>"};
-	sensitive = GTK_WIDGET_IS_SENSITIVE(gtk_item_factory_get_item(ifactory, branch_path));
-	gtk_item_factory_delete_item(ifactory, branch_path);
-	gtk_item_factory_create_item(ifactory, &ifentry, NULL, 1);
-	menuitem = gtk_item_factory_get_item(ifactory, branch_path);
-	gtk_widget_set_sensitive(menuitem, sensitive);
+	menuitem = gtk_item_factory_get_item(ifactory, branch_path);	
+	/* FIXME: is there a better way to remove unknown submenu items? */
+	/* Deleting and recreating the parent looses the translation */
+	menu = GTK_WIDGET(GTK_MENU_ITEM(menuitem)->submenu);
+	if (GTK_MENU_SHELL(menu)->children) {
+		GList *amenu, *alist;
+		for (amenu = (GTK_MENU_SHELL(menu)->children); amenu; ) {
+			alist = amenu->next;
+			gtk_widget_destroy(GTK_WIDGET(amenu->data));
+			amenu = alist;
+		}
+	}
 
 	ifentry.accelerator     = NULL;
 	ifentry.callback_action = 0;
@@ -696,19 +925,19 @@ static void update_actions_menu(GtkItemFactory *ifactory,
 	ifentry.item_type       = NULL;
 
 	for (cur = prefs_common.actionslst; cur; cur = cur->next) {
-		menu_path = (gchar *) cur->data;
-		if (actions_check(menu_path)) {
-			buf = g_strdup_printf("%s/%s", branch_path, menu_path);
-			menu_path = strstr(buf, ": ");
-			if (menu_path) {
-				*menu_path = 0x00;
-				menu_path = strchr(buf, '/');
-				ifentry.path = menu_path;
-				gtk_item_factory_create_item(ifactory, &ifentry,
-						data, 1);
-				}
+		action   = g_strdup((gchar *) cur->data);
+		action_p = strstr(action, ": ");
+		if (action_p && action_p[2] &&
+		    get_action_type(&action_p[2]) != ACTION_ERROR) {
+			action_p[0] = 0x00;
+			menu_path = g_strdup_printf("%s/%s", branch_path, 
+						    action);
+			ifentry.path = menu_path;
+			gtk_item_factory_create_item(ifactory, &ifentry, data,
+						     1);
 			g_free(menu_path);
 		}
+		g_free(action);
 		ifentry.callback_action++;	
 	}
 }
@@ -718,25 +947,29 @@ static void compose_actions_execute_cb	(Compose	*compose,
 					 GtkWidget	*widget)
 {
 	gchar *buf, *action;
-	
+	guint action_type;	
+
 	g_return_if_fail(action_nb < g_slist_length(prefs_common.actionslst));
 	
 	buf = (gchar *) g_slist_nth_data(prefs_common.actionslst, action_nb);
 	
 	g_return_if_fail(buf);
-
 	g_return_if_fail(action = strstr(buf, ": "));
 
 	/* Point to the beginning of the command-line */
 	action++;
 	action++;
 	
-	if (action[0] == '|')
-		pipe_command(&action[1], GTK_EDITABLE(compose->text));
-	else {
-		alertpanel_warning(_("The selected action is not a pipe action.\n You can only use pipe actions when composing a message."));
+	action_type = get_action_type(action);
+	if (action_type & ACTION_MULTIPLE ||
+	    action_type & ACTION_SINGLE   ) {		
+		alertpanel_warning(_("The selected action is not a pipe "
+				     "action.\n You can only use pipe actions "
+				     "when composing a message."));
 		return;
 	}
+
+	execute_actions(action, compose->window, NULL, compose->text);
 }
 
 static void mainwin_actions_execute_cb 	(MainWindow	*mainwin,
@@ -744,202 +977,601 @@ static void mainwin_actions_execute_cb 	(MainWindow	*mainwin,
 				 	 GtkWidget 	*widget)
 {
 	MessageView *messageview = mainwin->messageview;
-	GtkEditable *editable = NULL;
-	gchar *buf, *action;
+	GtkWidget   *text = NULL;
+	gchar 	    *buf,
+		    *action;
 	
 	g_return_if_fail (action_nb < g_slist_length(prefs_common.actionslst));
 
 	buf = (gchar *) g_slist_nth_data(prefs_common.actionslst, action_nb);
 	
 	g_return_if_fail(buf);
-
 	g_return_if_fail(action = strstr(buf, ": "));
-
-	switch (messageview->type) {
-		case MVIEW_TEXT:
-			if (messageview->textview && messageview->textview->text)
-				editable = GTK_EDITABLE(messageview->textview->text);
-			break;
-		case MVIEW_MIME:
-			if (messageview->mimeview && messageview->mimeview->type == MIMEVIEW_TEXT &&
-			    messageview->mimeview->textview && messageview->mimeview->textview->text)
-				editable = GTK_EDITABLE(messageview->mimeview->textview->text);
-			break;
-		default:
-			return;
-	}
-
-	if (!editable)
-		return;
 
 	/* Point to the beginning of the command-line */
 	action++;
 	action++;
-	
 
-	if (action[0] == '|')
-		pipe_command(&action[1], editable);
-	else 
-		message_command(action, mainwin->summaryview);
+	switch (messageview->type) {
+		case MVIEW_TEXT:
+			if (messageview->textview && 
+			    messageview->textview->text)
+				text = messageview->textview->text;
+			break;
+		case MVIEW_MIME:
+			if (messageview->mimeview &&
+			    messageview->mimeview->type == MIMEVIEW_TEXT &&
+			    messageview->mimeview->textview &&
+			    messageview->mimeview->textview->text)
+				text = messageview->mimeview->textview->text;
+			break;
+	}
+
+	execute_actions(action, mainwin->window,
+			GTK_CTREE(mainwin->summaryview->ctree), text);
 }
 
-static void pipe_command(gchar *action, GtkEditable *editable)
+static gboolean execute_actions(gchar *action, 
+				GtkWidget *window,
+				GtkCTree *ctree, 
+				GtkWidget *text)
 {
-	gchar *selection;
-	gint start =  0;
-	gint end   = gtk_stext_get_length(GTK_STEXT(editable));
-	gint orig_pos;
-	gint fd1[2], fd2[2];
-	pid_t pid;
-	gchar **cmdline;
+	GList *cur, *selection;
+	GSList *children_list = NULL;
+	gint is_ok  = TRUE;
+	gint selection_len;
+	Children *children;
+	ChildInfo *child_info;
+	gint action_type;
+	MsgInfo *msginfo;
+	gchar *cmd;
 
-	if (editable->has_selection) {
-		start = editable->selection_start_pos;
-		end   = editable->selection_end_pos;
+	g_return_val_if_fail(action && *action, FALSE);
+
+	action_type = get_action_type(action);
+
+	if (action_type == ACTION_ERROR)
+		return FALSE;         /* ERR: syntax error */
+
+	if (action_type & (ACTION_SINGLE | ACTION_MULTIPLE) && 
+	    !(ctree && GTK_CLIST(ctree)->selection))
+		return FALSE;         /* ERR: file command without selection */
+
+	if (ctree) {
+		selection = GTK_CLIST(ctree)->selection;
+		selection_len = g_list_length(selection);
+	}
+	
+	if ((action_type & (ACTION_PIPE_OUT | ACTION_PIPE_IN))) {
+		if (ctree && selection_len > 1)
+			return FALSE; /* ERR: pipe + multiple selection */
+		if (!text)
+			return FALSE; /* ERR: pipe and no displayed text */
+	}
+
+	if (!(action_type & ACTION_ASYNC) && window) {
+		gtk_widget_set_sensitive(window, FALSE);
+	}
+
+	children = g_new0(Children, 1);
+
+	if (action_type & ACTION_SINGLE) {
+		for (cur = selection; cur && is_ok == TRUE; cur = cur->next) {
+			msginfo = gtk_ctree_node_get_row_data(ctree,
+					GTK_CTREE_NODE(cur->data));
+			if (!msginfo) {
+				is_ok  = FALSE; /* ERR: msginfo missing */
+				break;
+			}
+			cmd = parse_action_cmd(action, msginfo, ctree);
+			if (!cmd) {
+				is_ok  = FALSE; /* ERR: command incorrect */
+				break;
+			}
+			if ((child_info = fork_child(cmd, action_type, text))) {
+				children_list = g_slist_append(children_list,
+							       child_info);
+				children->open_in = (selection_len == 1) ? 
+					            (action_type & 
+						     (ACTION_OPEN_IN |
+						      ACTION_HIDE_IN)) : 0;
+			}
+			g_free(cmd);
+		}
+	} else {
+		cmd = parse_action_cmd(action, NULL, ctree);
+		if (cmd) {
+			if ((child_info = fork_child(cmd, action_type, text))) {
+				children_list = g_slist_append(children_list,
+							       child_info);
+				children->open_in = action_type &
+						    (ACTION_OPEN_IN |
+						     ACTION_HIDE_IN);
+			}
+			g_free(cmd);
+		} else
+			is_ok  = FALSE;         /* ERR: command incorrect */
+	}
+
+	if (!children_list) {
+		 /* If not waiting for children, return */
+		g_free(children);
+		if (!(action_type & ACTION_ASYNC) && window) {
+			gtk_widget_set_sensitive(window, TRUE);
+		}
+	} else {
+		children->action  = g_strdup(action);
+		children->window  = window;
+		children->timer   = 10;
+		children->dialog  = NULL;
+		children->list    = children_list;
+		children->nb	  = g_slist_length(children_list);
+
+		gtk_timeout_add(1000, wait_for_children, children);
+	}
+	return is_ok ;
+}
+
+ChildInfo *fork_child(gchar *cmd,
+		      gint action_type,
+		      GtkWidget *text)
+{
+	gint chld_in[2], chld_out[2], chld_err[2];
+	gchar **cmdline;
+	gint start, end, is_selection;
+	gchar *selection;
+	pid_t pid;
+	ChildInfo *child_info;
+
+	if (action_type & ACTION_ASYNC) {
+		execute_command_line(cmd, TRUE);
+		return NULL; /* Asynchronous command */
+	}
+
+	if (pipe(chld_in) || pipe(chld_out) || pipe(chld_err)) {
+		alertpanel_error(_("Command could not started. Pipe creation"
+				   " failed.\n%s"), g_strerror(errno));
+		return NULL; /* Pipe error */
+	}
+
+	pid = fork();
+	if (pid == (pid_t) 0) {/* Child */
+		if (setpgid(0, 0))
+			perror("setpgid");
+		
+		if (action_type & 
+		    (ACTION_PIPE_IN | ACTION_OPEN_IN | ACTION_HIDE_IN)) {
+			close(fileno(stdin));
+			dup  (chld_in[0]);
+		}
+		close(chld_in[0]);
+		close(chld_in[1]);
+
+		close(fileno(stdout));
+		dup  (chld_out[1]);
+		close(chld_out[0]);
+		close(chld_out[1]);
+
+		close(fileno(stderr));
+		dup  (chld_err[1]);
+		close(chld_err[0]);
+		close(chld_err[1]);
+
+		close(ConnectionNumber(gdk_display));
+
+		cmdline = strsplit_with_quote(cmd, " ", 1024);
+
+		execvp(cmdline[0], cmdline);
+		g_strfreev(cmdline);
+
+		_exit(1);
+	} else if (pid < (pid_t) 0) {/* Fork error */
+		alertpanel_error(_("Could not fork to execute the following "
+				   "command:\n%s\n%s"), 
+				 cmd, g_strerror(errno));
+		return NULL; 
+	}
+	/* Parent */
+
+	close(chld_in[0]);
+	if (!(action_type & (ACTION_PIPE_IN | ACTION_OPEN_IN | ACTION_HIDE_IN)))
+		close(chld_in[1]);
+	close(chld_out[1]);
+	close(chld_err[1]);
+
+	child_info = g_new0(ChildInfo, 1);
+	
+	child_info->pid      = pid;
+	child_info->cmd      = g_strdup(cmd);
+	child_info->type     = action_type;
+	child_info->new_out  = FALSE;
+	child_info->output   = g_string_sized_new(0);
+	child_info->chld_in  = (action_type & (ACTION_PIPE_IN | ACTION_OPEN_IN
+				| ACTION_HIDE_IN))
+			       ? chld_in [1] : -1;
+	child_info->chld_out = chld_out[0];
+	child_info->chld_err = chld_err[0];
+	child_info->tag_in   = -1;
+	child_info->tag_out  = gdk_input_add(chld_out[0], GDK_INPUT_READ,
+					     catch_output, child_info);
+	child_info->tag_err  = gdk_input_add(chld_err[0], GDK_INPUT_READ,
+					     catch_output, child_info);
+
+	if (!(action_type & (ACTION_PIPE_IN | ACTION_PIPE_OUT)))
+		return child_info;
+
+	child_info->text     = text;
+
+	start = 0;
+	end   = gtk_stext_get_length(GTK_STEXT(text));
+
+	if (GTK_EDITABLE(text)->has_selection) {
+		start = GTK_EDITABLE(text)->selection_start_pos;
+		end   = GTK_EDITABLE(text)->selection_end_pos;
 		if (start > end) {
 			gint tmp;
 			tmp = start;
 			start = end;
 			end = tmp;
 		}
+		is_selection = TRUE;
 		if (start == end) {
-			start =  0;
-			end   = gtk_stext_get_length(GTK_STEXT(editable));
+			start = 0;
+			end   = gtk_stext_get_length(GTK_STEXT(text));
+			is_selection = FALSE;
 		}
 	}
 
+	selection = gtk_editable_get_chars(GTK_EDITABLE(text), start, end);
 
-	if (pipe(fd1)) {
-		alertpanel_error(_("Command could not started. Pipe creation failed.\n%s"), g_strerror(errno));
-		return;
+
+	if (action_type & ACTION_PIPE_IN) {
+		write(chld_in[1], selection, strlen(selection));
+		if (!(action_type & (ACTION_OPEN_IN | ACTION_HIDE_IN)))
+			close(chld_in[1]);
+		child_info->chld_in = -1; /* No more input */
 	}
-	if (pipe(fd2)) {
-		alertpanel_error(_("Command could not started. Pipe creation failed.\n%s"), g_strerror(errno));
-		return;
+	g_free(selection);
+
+	gtk_stext_freeze(GTK_STEXT(text));
+	if (action_type & ACTION_PIPE_OUT) {
+		gtk_stext_set_point(GTK_STEXT(text), start);
+		gtk_stext_forward_delete(GTK_STEXT(text), end - start);
 	}
 
-	pid = fork();
-	if (pid == (pid_t) 0) {
-		close(0);
-		dup(fd1[0]);
-		close(fd1[0]);
-		close(fd1[1]);
+	gtk_stext_thaw(GTK_STEXT(text));
 	
-		close(1);
-		dup(fd2[1]);
-		close(fd2[0]);
-		close(fd2[1]);
-		close(ConnectionNumber(gdk_display));
+	return child_info;
+}
+	
+static void kill_children_cb(GtkWidget *widget, gpointer data)
+{
+	GSList *cur;
+	Children *children = (Children *) data;
+	ChildInfo *child_info;
 
-		cmdline = strsplit_with_quote(action, " ", 1024);
-		execvp(cmdline[0], cmdline);
+	for (cur = children->list; cur; cur = cur->next) {
+		child_info = (ChildInfo *)(cur->data);
+		if (child_info->pid) 
+			kill(child_info->pid, SIGTERM);
+	}
+}
+
+static gint wait_for_children(gpointer data)
+{
+	gboolean new_output;
+	Children *children = (Children *) data;
+	ChildInfo *child_info;
+	GSList *cur;
+	gint nb = 0;
+	pid_t pid, wpid;
+
 		
-		perror("execvp");
-		g_strfreev(cmdline);
-
-		_exit(1);
-	} else if (pid < (pid_t) 0) {
-		alertpanel_error(_("Could not fork to execute command.\n%s"), g_strerror(errno));
-		return;
-	} else {
-		gchar buf[PREFSBUFSIZE];
-		gint c;
-		
-		buf[PREFSBUFSIZE - 1] = 0x00;
-
-		gtk_stext_freeze(GTK_STEXT(editable));
-		
-		selection = gtk_editable_get_chars(editable, start, end);
-
-		close(fd1[0]);
-		close(fd2[1]);
-
-		write(fd1[1], selection, strlen(selection));
-
-		close(fd1[1]);
-		close(fd2[1]);
-		
-		orig_pos = gtk_editable_get_position(editable);	
-
-		gtk_stext_set_point(GTK_STEXT(editable), start);
-		gtk_stext_forward_delete(GTK_STEXT(editable), end - start);
-
-		while (TRUE) {
-			c = read(fd2[0], buf, PREFSBUFSIZE - 1);
-			gtk_stext_insert(GTK_STEXT(editable), NULL, NULL, NULL, buf, c);
-			if (c == 0) break;
+	cur = children->list;
+	new_output = FALSE;
+	while (cur) {
+		child_info = (ChildInfo *) cur->data;
+		pid  = child_info->pid;
+		if (pid) {
+			wpid = waitpid(pid, NULL, WNOHANG);
+			if (wpid == pid) {
+				childinfo_close_pipes(child_info);
+				child_info->pid = 0;
+				children->nb--;
+				nb++;
+			}
 		}
-		close(fd2[0]);
-		/* FIXME: should we wait kindly as in message_command_execute 
-		   and blocking interactions? */
-		waitpid(0, NULL, 0); 
+		new_output |= child_info->new_out;
+		cur = cur->next;
+	}
 
-		end = gtk_stext_get_length(GTK_STEXT(editable));
-		if (end < orig_pos)
-			orig_pos = end;
+	if (children->timer)
+		children->timer--;
 
-		gtk_stext_thaw(GTK_STEXT(editable));
-		gtk_stext_set_point(GTK_STEXT(editable), orig_pos);
-		gtk_editable_set_position(editable, orig_pos);
+	if (!children->dialog && (new_output || children->timer == 0 || children->open_in))
+		create_io_dialog(children);
+
+	children->output |= new_output;
+
+	if (new_output || (children->dialog && nb))
+		update_io_dialog(children);
+
+	if (children->nb)
+		return TRUE;
+
+	if (!children->dialog) {
+		gtk_widget_set_sensitive(children->window, TRUE);
+		free_children(children);
+	} else if (!children->output) {
+		gtk_widget_destroy(children->dialog);
+	}
+	return FALSE;
+}
+
+static void send_input(GtkWidget *w, gpointer data)
+{
+	Children *children = (Children *) data;
+	ChildInfo *child_info = (ChildInfo *) children->list->data;
+	
+	child_info->tag_in = gdk_input_add(child_info->chld_in,
+					   GDK_INPUT_WRITE,
+					   catch_input, children);
+	gtk_widget_set_sensitive(children->input_hbox, FALSE);
+}
+
+static gint delete_io_dialog_cb(GtkWidget *w, GdkEvent *e, gpointer data)
+{
+	hide_io_dialog_cb(w, data);
+	return TRUE;
+}
+
+static void hide_io_dialog_cb(GtkWidget *w, gpointer data)
+{
+
+	Children *children = (Children *) data;
+
+	if (children->nb)
+		gtk_widget_hide(children->dialog);
+	else {
+		gtk_widget_set_sensitive(children->window, TRUE);
+		gtk_signal_disconnect_by_data(GTK_OBJECT(children->dialog),
+					      children);
+		gtk_widget_destroy(children->dialog);
+		free_children(children);
+	}
+}
+
+static void childinfo_close_pipes(ChildInfo *child_info)
+{
+	if (child_info->tag_in > 0)
+		gdk_input_remove(child_info->tag_in);
+	gdk_input_remove(child_info->tag_out);
+	gdk_input_remove(child_info->tag_err);
+
+	if (child_info->chld_in >= 0)
+		close(child_info->chld_in);
+	close(child_info->chld_out);
+	close(child_info->chld_err);
+}
+
+static void free_children(Children *children)
+{
+	GSList *cur;
+	ChildInfo *child_info;
+
+	g_free(children->action);
+	for (cur = children->list; cur;) {
+		child_info = (ChildInfo *) cur->data;
+		g_free(child_info->cmd);
+		g_string_free(child_info->output, TRUE);
+		children->list = g_slist_remove(children->list, child_info);
+		g_free(child_info);
+		cur = children->list;
+	}
+}	
+
+static void update_io_dialog(Children *children)
+{
+	GSList *cur;
+
+	if (!children->nb) {
+		gtk_widget_set_sensitive(children->abort_btn, FALSE);
+		if (children->input_hbox)
+			gtk_widget_set_sensitive(children->input_hbox, FALSE);
+			
+	}
+
+	if (children->output) {
+		GtkWidget *text = children->text;
+		gchar *caption;
+		ChildInfo *child_info;
+
+		gtk_widget_show(children->scrolledwin);
+		gtk_text_freeze(GTK_TEXT(text));
+		gtk_text_set_point(GTK_TEXT(text), 0);
+		gtk_text_forward_delete(GTK_TEXT(text), -1);
+		for (cur = children->list; cur; cur = cur->next)
+		{
+			child_info = (ChildInfo *) cur->data;
+			if (child_info->pid)
+				caption = g_strdup_printf(_("--- Running: %s\n")
+						    , child_info->cmd);
+			else
+				caption = g_strdup_printf(_("--- Ended: %s\n")
+						    , child_info->cmd);
+			
+			gtk_text_insert(GTK_TEXT(text), NULL, NULL, NULL,
+					 caption, -1);
+			gtk_text_insert(GTK_TEXT(text), NULL, NULL, NULL,
+					 child_info->output->str, -1);
+			g_free(caption);
+			child_info->new_out = FALSE;
+		}
+		gtk_text_thaw(GTK_TEXT(text));
 	}
 }
 	
-static void message_command(gchar *action, SummaryView *summaryview)
+	
+static void create_io_dialog(Children *children)
 {
-	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-	GList *cur;
-	MsgInfo *msginfo;
+	GtkWidget *dialog;
+	GtkWidget *entry;
+	GtkWidget *input_hbox;
+	GtkWidget *send_button;
+	GtkWidget *label;
+	GtkWidget *text;
+	GtkWidget *scrolledwin;
+	GtkWidget *hbox;
+	GtkWidget *abort_button;
+	GtkWidget *hide_button;
+	
+	dialog = gtk_dialog_new();
+	label = gtk_label_new(children->action);
+	gtk_misc_set_padding(GTK_MISC(label), 8, 8);
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), label, FALSE, 
+			   FALSE, 0);
 
-	main_window_cursor_wait(summaryview->mainwin);
-	/* Do no allow interaction, as these commmands can mess with the message files */
-	gtk_widget_set_sensitive(summaryview->mainwin->window, FALSE);
-	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next) {
-		msginfo = gtk_ctree_node_get_row_data(ctree, 
-						GTK_CTREE_NODE(cur->data));
-		if(message_command_execute(action, msginfo))
-			break;
+	gtk_window_set_title(GTK_WINDOW(dialog), _("Actions' input/output"));
+	gtk_signal_connect(GTK_OBJECT(dialog), "delete_event",
+			GTK_SIGNAL_FUNC(delete_io_dialog_cb), children);
+	gtk_signal_connect(GTK_OBJECT(dialog), "destroy",
+			GTK_SIGNAL_FUNC(hide_io_dialog_cb),
+			children);
+
+	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
+				       GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), scrolledwin, TRUE,
+			   TRUE, 0);
+	gtk_widget_set_usize(scrolledwin, 600, 200);
+	gtk_widget_hide(scrolledwin);
+
+	text = gtk_text_new(gtk_scrolled_window_get_hadjustment
+			    (GTK_SCROLLED_WINDOW(scrolledwin)),
+			    gtk_scrolled_window_get_vadjustment
+			    (GTK_SCROLLED_WINDOW(scrolledwin)));
+	gtk_text_set_editable(GTK_TEXT(text), FALSE);
+	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
+	gtk_widget_show(text);
+
+	if (children->open_in) {
+		input_hbox = gtk_hbox_new(FALSE, 8);
+		gtk_widget_show(input_hbox);
+
+		entry = gtk_entry_new();
+		gtk_signal_connect(GTK_OBJECT(entry), "activate",
+				   GTK_SIGNAL_FUNC(send_input), children);
+		gtk_box_pack_start(GTK_BOX(input_hbox), entry, TRUE, TRUE, 8);
+		if (children->open_in & ACTION_HIDE_IN)
+			gtk_entry_set_visibility(GTK_ENTRY(entry), FALSE);
+		gtk_widget_show(entry);
+
+		send_button = gtk_button_new_with_label(_("Send"));
+		gtk_signal_connect(GTK_OBJECT(send_button), "clicked",
+				   GTK_SIGNAL_FUNC(send_input), children);
+		gtk_box_pack_start(GTK_BOX(input_hbox), send_button, FALSE, 
+				   FALSE, 8);
+		gtk_widget_show(send_button);
+
+		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), 
+				input_hbox, FALSE, FALSE, 8);
 	}
-	main_window_cursor_normal(summaryview->mainwin);
-	gtk_widget_set_sensitive(summaryview->mainwin->window, TRUE);
+
+	hbox = gtk_hbox_new(TRUE, 0);
+	gtk_widget_show(hbox);
+
+	abort_button = gtk_button_new_with_label(_("Abort actions"));
+	gtk_signal_connect(GTK_OBJECT(abort_button), "clicked",
+			GTK_SIGNAL_FUNC(kill_children_cb), children);
+	gtk_box_pack_start(GTK_BOX(hbox), abort_button, TRUE, TRUE, 8);
+	gtk_widget_show(abort_button);
+
+	hide_button = gtk_button_new_with_label(_("Close window"));
+	gtk_signal_connect(GTK_OBJECT(hide_button), "clicked",
+			GTK_SIGNAL_FUNC(hide_io_dialog_cb), children);
+	gtk_box_pack_start(GTK_BOX(hbox), hide_button, TRUE, TRUE, 8);
+	gtk_widget_show(hide_button);
+	
+	gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), 
+			  hbox);
+
+	children->dialog      = dialog;
+	children->scrolledwin = scrolledwin;
+	children->text        = text;
+	children->input_hbox  = children->open_in ? input_hbox : NULL;
+	children->input_entry = children->open_in ? entry : NULL;
+	children->abort_btn   = abort_button;
+
+	gtk_widget_show(dialog);
 }
 
-static gint message_command_execute(gchar *action, MsgInfo *msginfo)
+static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 {
-	gchar *filename, *p;	
+	Children *children = (Children *) data;
+	ChildInfo *child_info = (ChildInfo *) children->list->data;
+	gchar *input;
+	gint c;
+
+	if (!(cond && GDK_INPUT_WRITE))
+		return;
+	
+	gdk_input_remove(child_info->tag_in);
+	child_info->tag_in = -1;
+
+	input = gtk_editable_get_chars(GTK_EDITABLE(children->input_entry), 0,
+				       -1);
+	c = write(child_info->chld_in, input, strlen(input));
+
+	g_free(input);
+
+	write(child_info->chld_in, "\n", 2);
+
+	gtk_entry_set_text(GTK_ENTRY(children->input_entry), "");
+	gtk_widget_set_sensitive(children->input_hbox, TRUE);
+}
+
+static void catch_output(gpointer data, gint source, GdkInputCondition cond)
+{
+	ChildInfo *child_info = (ChildInfo *) data;
+	gint c, i;
 	gchar buf[PREFSBUFSIZE];
-	pid_t pid;
-	gchar **cmdline;
 
-	filename = procmsg_get_message_file(msginfo);
-
-	if ((p = strchr(action, '%')) && p[1] == 'f' && !strchr(p + 2, '%')) {
-		p[1] = 's';
-		g_snprintf(buf, sizeof(buf) - 1, action, filename);
+	if (child_info->type & ACTION_PIPE_OUT
+	    && source == child_info->chld_out) {
+		gboolean is_selection = FALSE;
+		GtkWidget *text = child_info->text;
+		if (GTK_EDITABLE(text)->has_selection)
+			is_selection = TRUE;
+		gtk_stext_freeze(GTK_STEXT(text));
+		while (TRUE) {
+			c =read(source, buf, PREFSBUFSIZE - 1);
+			if (c == 0)
+				break;
+			gtk_stext_insert(GTK_STEXT(text), NULL, NULL, NULL,
+					 buf, c);
+		}
+		if (is_selection) {
+			/* Using the select_region draws things. Should not.
+			 * so we just change selection position and 
+			 * defere drawing when thawing. Hack?
+			 */
+		  	GTK_EDITABLE(text)->selection_end_pos = 
+					gtk_stext_get_point(GTK_STEXT(text));
+		}
+		gtk_stext_thaw(GTK_STEXT(child_info->text));
 	} else {
-		alertpanel_error(_("Syntax error in command line. Only one '%%' is alloawed, and it must be followed by 'f'."));
-		return -1;
+		while (TRUE) {
+			c = read(source, buf, PREFSBUFSIZE - 1);
+			if (c == 0) 
+				break;
+			if (source == child_info->chld_out) 
+				printf("stdout\n");
+			else
+				printf("stderr\n");
+			for (i = 0; i < c; i++)
+				child_info->output = g_string_append_c(
+						child_info->output, buf[i]);
+			child_info->new_out = TRUE;
+		}
 	}
-	
-	g_free(filename);
-	
-	pid = fork();
-	if (pid == (pid_t) 0) {
-		close(ConnectionNumber(gdk_display));
-
-		cmdline = strsplit_with_quote(buf, " ", 1024);
-		execvp(cmdline[0], cmdline);
-
-		perror("execvp");
-		g_strfreev(cmdline);
-	
-		_exit(1);
-	} else if (pid < (pid_t) 0) {
-		alertpanel_error(_("Could not fork to execute command.\n%s"), g_strerror(errno));
-		return -1;
-	} else {
-		while (!waitpid(0, NULL, WNOHANG))
-			while (gtk_events_pending())
-				gtk_main_iteration();
-	}
-	return 0;
 }

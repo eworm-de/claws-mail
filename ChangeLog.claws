@@ -1,3 +1,14 @@
+2002-02-12 [melvin]	0.7.0claws62
+
+	* src/prefs_actions.c
+		Children wait loop is not triggered with a timeout of 1s
+		Added %F which is replaced with the list of filenames 
+		of all selected messages (as suggested by Ricardo Mones Lestra)
+		Pipe syntax changed. Prefix with | to send selection, postfix
+		with | to retrieve output. Prefix with > or * to send
+		user definable input to the command (*: input is hidden)
+		Old pipe action should now be postfixed with |, too.
+
 2002-02-12 [carsten]	0.7.0claws61 (more 59.75)
 	* src/stock_pixmap.c
 		fixed a bug: if there's no theme directory don't
