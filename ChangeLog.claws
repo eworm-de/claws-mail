@@ -1,3 +1,8 @@
+2002-09-12 [colin]	0.8.2claws43
+
+	* src/compose.c
+		Fix bug #590825 (obey Follow-up: poster)
+
 2002-09-12 [colin]	0.8.2claws42
 
 	* src/procmime.c

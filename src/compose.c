@@ -1685,13 +1685,25 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 			compose_entry_append
 				(compose, msginfo->from ? msginfo->from : "",
 				 COMPOSE_TO);
-		else
-			compose_entry_append
-				(compose,
-				 compose->followup_to ? compose->followup_to
-				 : compose->newsgroups ? compose->newsgroups
-				 : "",
-				 COMPOSE_NEWSGROUPS);
+		else {
+			if (compose->followup_to && !strncmp(compose->followup_to,"poster",6)) {
+				compose_entry_append
+					(compose,
+					((compose->replyto && !ignore_replyto)
+				     	? compose->replyto
+				     	: (compose->mailinglist && !ignore_replyto)
+				     	? compose->mailinglist
+				     	: msginfo->from ? msginfo->from : ""),
+					COMPOSE_TO);				
+			} else {
+				compose_entry_append
+					(compose,
+					 compose->followup_to ? compose->followup_to
+					 : compose->newsgroups ? compose->newsgroups
+					 : "",
+					 COMPOSE_NEWSGROUPS);
+			}
+		}
 	}
 
 	if (msginfo->subject && *msginfo->subject) {
