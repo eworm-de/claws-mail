@@ -2714,7 +2714,7 @@ msgstr "/E_xtras/Gehe _zu/---"
 
 #: src/mainwindow.c:561
 msgid "/_Summary/Go _to/P_rev unread message"
-msgstr "/E_xtras/Gehe _zu/Nächste _ungelesene Nachricht"
+msgstr "/E_xtras/Gehe _zu/Vorherige _ungelesene Nachricht"
 
 #: src/mainwindow.c:563
 msgid "/_Summary/Go _to/N_ext unread message"

@@ -1,3 +1,8 @@
+2001-12-11 [christoph]	0.6.5claws76
+
+	* po/de.po
+		fixed wrong translation for prev. unread msg
+
 2001-12-11 [paul]	0.6.5claws75
 
 	* src/folder.[ch]
