@@ -1146,7 +1146,8 @@ gint procmsg_send_message_queue(const gchar *file)
 			g_free(encrypt_data);
 			return -1;
 		}
-			
+		
+		procmime_mimeinfo_free_all(mimeinfo);
 		rewind(fp);
 		filepos = 0;
     	}
