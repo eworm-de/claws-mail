@@ -34,7 +34,6 @@ typedef struct _SummaryColumnState	SummaryColumnState;
 #include "folderview.h"
 #include "headerview.h"
 #include "messageview.h"
-#include "headerwindow.h"
 #include "compose.h"
 #include "prefs_filter.h"
 #include "folder.h"
@@ -132,7 +131,6 @@ struct _SummaryView
 	FolderView   *folderview;
 	HeaderView   *headerview;
 	MessageView  *messageview;
-	HeaderWindow *headerwin;
 
 	FolderItem *folder_item;
 

@@ -58,7 +58,6 @@
 #include "foldersel.h"
 #include "procmsg.h"
 #include "procheader.h"
-#include "headerwindow.h"
 #include "sourcewindow.h"
 #include "prefs_common.h"
 #include "prefs_summary_column.h"
@@ -2370,11 +2369,6 @@ static void summary_display_msg_full(SummaryView *summaryview,
 		gtk_clist_thaw(GTK_CLIST(ctree));
 		summary_status_show(summaryview);
 	}
-
-#if 0
-	if (GTK_WIDGET_VISIBLE(summaryview->headerwin->window))
-		header_window_show(summaryview->headerwin, msginfo);
-#endif
 
 	summary_unlock(summaryview);
 }

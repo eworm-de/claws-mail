@@ -1067,8 +1067,8 @@ gchar **strsplit_with_quote(const gchar *str, const gchar *delim,
 			    gint max_tokens)
 {
 	GSList *string_list = NULL, *slist;
-	gchar **str_array, *s;
-	guint i, n = 1;
+	gchar **str_array, *s, *new_str;
+	guint i, n = 1, len;
 
 	g_return_val_if_fail(str != NULL, NULL);
 	g_return_val_if_fail(delim != NULL, NULL);
@@ -1081,13 +1081,15 @@ gchar **strsplit_with_quote(const gchar *str, const gchar *delim,
 		guint delimiter_len = strlen(delim);
 
 		do {
-			guint len;
-			gchar *new_str;
-
 			len = s - str;
-			new_str = g_new(gchar, len + 1);
-			strncpy(new_str, str, len);
-			new_str[len] = 0;
+			new_str = g_strndup(str, len);
+
+			if (new_str[0] == '\'' || new_str[0] == '\"') {
+				if (new_str[len - 1] == new_str[0]) {
+					new_str[len - 1] = '\0';
+					memmove(new_str, new_str + 1, len - 1);
+				}
+			}
 			string_list = g_slist_prepend(string_list, new_str);
 			n++;
 			str = s + delimiter_len;
@@ -1096,8 +1098,16 @@ gchar **strsplit_with_quote(const gchar *str, const gchar *delim,
 	}
 
 	if (*str) {
+		new_str = g_strdup(str);
+		if (new_str[0] == '\'' || new_str[0] == '\"') {
+			len = strlen(str);
+			if (new_str[len - 1] == new_str[0]) {
+				new_str[len - 1] = '\0';
+				memmove(new_str, new_str + 1, len - 1);
+			}
+		}
+		string_list = g_slist_prepend(string_list, new_str);
 		n++;
-		string_list = g_slist_prepend(string_list, g_strdup(str));
 	}
 
 	str_array = g_new(gchar*, n);
@@ -1856,6 +1866,8 @@ FILE *str_open_as_stream(const gchar *str)
 	}
 
 	len = strlen(str);
+	if (len == 0) return fp;
+
 	if (fwrite(str, len, 1, fp) != 1) {
 		FILE_OP_ERROR("str_open_as_stream", "fwrite");
 		fclose(fp);
@@ -1922,24 +1934,9 @@ gint execute_sync(gchar *const argv[])
 gint execute_command_line(const gchar *cmdline, gboolean async)
 {
 	gchar **argv;
-	gint i;
 	gint ret;
 
 	argv = strsplit_with_quote(cmdline, " ", 0);
-
-	for (i = 0; argv[i] != NULL; i++) {
-		gchar *str = argv[i];
-
-		if (str[0] == '\'' || str[0] == '\"') {
-			gint len;
-
-			len = strlen(str);
-			if (str[len - 1] == str[0]) {
-				str[len - 1] = '\0';
-				memmove(str, str + 1, len - 1);
-			}
-		}
-	}
 
 	if (async)
 		ret = execute_async(argv);

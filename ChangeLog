@@ -1,3 +1,31 @@
+2002-02-14
+
+	* src/utils.c: strsplit_with_quote(): remove quotation characters
+	  in the function (fix composer's external editor problem) (thanks
+	  to Stefaan A Eeckels).
+	* src/mainwindow.[ch]: made 'Show all header' toggle switch.
+	  main_window_menu_callback_block()
+	  main_window_menu_callback_unblock(): new.
+	  main_window_set_menu_sensitive(): set the toggle status of
+	  menu items.
+	  show_all_header_cb(): read the status of toggle menu item.
+	* src/mainwindow.[ch]: made 'Thread view' toggle switch.
+	* src/prefs_common.c: prefs_keybind_apply_clicked(): removed
+	  'Unthread view'.
+
+2002-02-13
+
+	* src/imap.c: imap_add_msg(): fixed a bug that didn't replace
+	  the path separator (thanks to Sergey Vlasov).
+	* src/gtkutils.c: gtkut_editable_get_selection(): return NULL
+	  if the length of selection is zero.
+	  Fixed the assertion.
+	* src/utils.c: str_open_as_stream(): return immediately if
+	  the length of str is zero.
+	* src/headerwindow.[ch]: removed.
+	* src/socket.[ch]
+	  src/inc.c: removed stale thread support codes.
+
 2002-02-12
 
 	* src/procmsg.c: procmsg_open_message(): modified so that it

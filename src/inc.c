@@ -96,10 +96,6 @@ static gint pop3_automaton_terminate	(SockInfo		*source,
 static GHashTable *inc_get_uidl_table	(PrefsAccount		*ac_prefs);
 static void inc_write_uidl_list		(Pop3State		*state);
 
-#if USE_THREADS
-static gint connection_check_cb		(Automaton	*atm);
-#endif
-
 static void inc_pop3_recv_func		(SockInfo	*sock,
 					 gint		 count,
 					 gint		 read_bytes,
@@ -600,11 +596,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	GTK_EVENTS_FLUSH();
 	statusbar_pop_all();
 
-#if USE_THREADS
-	if ((sockinfo = sock_connect_with_thread(server, port)) == NULL) {
-#else
 	if ((sockinfo = sock_connect(server, port)) == NULL) {
-#endif
 		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
 			    server, port);
 		if(!prefs_common.noerrorpanel) {
@@ -637,14 +629,9 @@ static IncState inc_pop3_session_do(IncSession *session)
 	log_verbosity_set(TRUE);
 	recv_set_ui_func(inc_pop3_recv_func, session);
 
-#if USE_THREADS
-	atm->timeout_tag = gtk_timeout_add
-		(TIMEOUT_ITV, (GtkFunction)connection_check_cb, atm);
-#else
 	atm->tag = sock_gdk_input_add(sockinfo,
 				      atm->state[atm->num].condition,
 				      automaton_input_cb, atm);
-#endif
 
 	while (!atm->terminated)
 		gtk_main_iteration();
@@ -652,9 +639,6 @@ static IncState inc_pop3_session_do(IncSession *session)
 	log_verbosity_set(FALSE);
 	recv_set_ui_func(NULL, NULL);
 
-#if USE_THREADS
-	/* pthread_join(sockinfo->connect_thr, NULL); */
-#endif
 	automaton_destroy(atm);
 
 	return pop3_state->inc_state;
@@ -740,44 +724,6 @@ static void inc_write_uidl_list(Pop3State *state)
 	if (fclose(fp) == EOF) FILE_OP_ERROR(path, "fclose");
 	g_free(path);
 }
-
-#if USE_THREADS
-static gint connection_check_cb(Automaton *atm)
-{
-	Pop3State *state = atm->data;
-	IncProgressDialog *inc_dialog = state->session->data;
-	SockInfo *sockinfo = state->sockinfo;
-
-	/* g_print("connection check\n"); */
-
-	if (sockinfo->state == CONN_LOOKUPFAILED ||
-	    sockinfo->state == CONN_FAILED) {
-		atm->timeout_tag = 0;
-		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
-			    sockinfo->hostname, sockinfo->port);
-		if(!prefs_common.noerrorpanel) {
-			if((prefs_common.recv_dialog_mode == RECV_DIALOG_ALWAYS) ||
-			    ((prefs_common.recv_dialog_mode == RECV_DIALOG_ACTIVE) && focus_window)) {
-				manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
-			}
-			alertpanel_error(_("Can't connect to POP3 server: %s:%d"),
-					 sockinfo->hostname, sockinfo->port);
-			manage_window_focus_out(inc_dialog->dialog->window, NULL, NULL);
-		}
-		pop3_automaton_terminate(sockinfo, atm);
-		state->sockinfo = NULL;
-		return FALSE;
-	} else if (sockinfo->state == CONN_ESTABLISHED) {
-		atm->timeout_tag = 0;
-		atm->tag = sock_gdk_input_add(sockinfo,
-					      atm->state[atm->num].condition,
-					      automaton_input_cb, atm);
-		return FALSE;
-	} else {
-		return TRUE;
-	}
-}
-#endif
 
 static void inc_pop3_recv_func(SockInfo *sock, gint count, gint read_bytes,
 			       gpointer data)
@@ -961,15 +907,6 @@ static void inc_cancel(GtkWidget *widget, gpointer data)
 	SockInfo *sockinfo = session->pop3_state->sockinfo;
 
 	if (!sockinfo || session->atm->terminated == TRUE) return;
-
-#if USE_THREADS
-	if (sockinfo->state == CONN_READY ||
-	    sockinfo->state == CONN_LOOKUPSUCCESS) {
-		pthread_cancel(sockinfo->connect_thr);
-		/* pthread_kill(sockinfo->connect_thr, SIGINT); */
-		g_print("connection was cancelled.\n");
-	}
-#endif
 
 	session->pop3_state->inc_state = INC_CANCEL;
 	pop3_automaton_terminate(sockinfo, session->atm);

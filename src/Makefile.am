@@ -23,6 +23,7 @@ sylpheed_SOURCES = \
 	compose.c compose.h \
 	gtkshruler.c gtkshruler.h \
 	gtksctree.c gtksctree.h \
+	gtkstext.c gtkstext.h \
 	menu.c menu.h \
 	stock_pixmap.c stock_pixmap.h \
 	prefs.c prefs.h \
@@ -66,7 +67,6 @@ sylpheed_SOURCES = \
 	filesel.c filesel.h \
 	foldersel.c foldersel.h \
 	statusbar.c statusbar.h \
-	headerwindow.c headerwindow.h \
 	logwindow.c logwindow.h \
 	sourcewindow.c sourcewindow.h \
 	manage_window.c manage_window.h \
@@ -114,7 +114,6 @@ sylpheed_SOURCES = \
 	simple-gettext.c \
 	manual.c manual.h \
 	stringtable.c stringtable.h \
-	gtkstext.c gtkstext.h \
 	scoring.c scoring.h \
 	prefs_folder_item.c prefs_folder_item.h \
 	matcher.c matcher.h \

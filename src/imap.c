@@ -597,12 +597,11 @@ gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 	g_return_val_if_fail(file != NULL, -1);
 
 	session = imap_session_get(folder);
-	if (!session)
-		return -1;
+	if (!session) return -1;
 
 	destdir = imap_get_real_path(IMAP_FOLDER(folder), dest->path);
 	ok = imap_cmd_append(SESSION(session)->sock, destdir, file);
-	g_free (destdir);
+	g_free(destdir);
 
 	if (ok != IMAP_SUCCESS) {
 		g_warning(_("can't append message %s\n"), file);

@@ -1,3 +1,11 @@
+2002-02-14 [paul]	0.7.1claws1
+
+	* sync with sylpheed 0.7.1cvs8
+		see ChangeLog entries 2002-02-13 and 2002-02-14
+
+	* README.claws
+		add some description of Actions and Pixmap Themes
+
 2002-02-13 [paul]	
 
 	* version 0.7.1claws release

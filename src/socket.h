@@ -27,10 +27,6 @@
 #include <glib.h>
 #include <gdk/gdk.h> /* ugly, just needed for the GdkInputCondition et al. */
 
-#if USE_THREADS
-#  include <pthread.h>
-#endif
-
 typedef struct _SockInfo	SockInfo;
 
 #if USE_SSL
@@ -59,10 +55,6 @@ struct _SockInfo
 	gushort port;
 	ConnectionState state;
 	gpointer data;
-#if USE_THREADS
-	pthread_t connect_thr;
-	pthread_mutex_t mutex;
-#endif
 #if USE_SSL
 	SSL *ssl;
 #endif
@@ -74,10 +66,6 @@ gboolean sock_is_nonblocking_mode	(SockInfo *sock);
 SockInfo *sock_connect_nb		(const gchar *hostname, gushort port);
 SockInfo *sock_connect			(const gchar *hostname, gushort port);
 SockInfo *sock_connect_cmd		(const gchar *hostname, const gchar *tunnelcmd);
-
-#if USE_THREADS
-SockInfo *sock_connect_with_thread	(const gchar *hostname, gushort port);
-#endif
 
 gint sock_printf	(SockInfo *sock, const gchar *format, ...)
 			 G_GNUC_PRINTF(2, 3);

@@ -254,13 +254,13 @@ gchar *gtkut_editable_get_selection(GtkEditable *editable)
 {
 	guint start_pos, end_pos;
 
-	g_return_if_fail(editable != NULL);
+	g_return_val_if_fail(editable != NULL, NULL);
 
 	if (!editable->has_selection) return NULL;
 
 	if (editable->selection_start_pos == editable->selection_end_pos)
 		return NULL;
-	
+
 	if (editable->selection_start_pos < editable->selection_end_pos) {
 		start_pos = editable->selection_start_pos;
 		end_pos = editable->selection_end_pos;

@@ -37,10 +37,6 @@
 #include <fcntl.h>
 #include <errno.h>
 
-#if USE_THREADS
-#  include <pthread.h>
-#endif
-
 #include "socket.h"
 #include "utils.h"
 #if USE_SSL
@@ -335,55 +331,6 @@ static SockInfo *sockinfo_from_fd(const gchar *hostname,
 
 	return sockinfo;
 }
-
-#if USE_THREADS
-static void sock_connect_thread(SockInfo *sockinfo)
-{
-#ifdef INET6
-	if ((sockinfo->sock = sock_connect_by_getaddrinfo
-		(sockinfo->hostname, sockinfo->port)) < 0)
-		pthread_exit((void *)1);
-#else
-	if (sock_connect_by_hostname(sockinfo->sock, sockinfo->hostname,
-				     sockinfo->port) < 0) {
-		if (errno != 0) perror("connect");
-		sockinfo->state = CONN_FAILED;
-		pthread_exit((void *)1);
-	}
-#endif /* INET6 */
-	sockinfo->state = CONN_ESTABLISHED;
-
-	pthread_exit(0);
-}
-
-SockInfo *sock_connect_with_thread(const gchar *hostname, gushort port)
-{
-	gint sock = 0;
-	SockInfo *sockinfo;
-
-#ifndef INET6
-	if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
-		perror("socket");
-		return NULL;
-	}
-#endif /* !INET6 */
-
-	sockinfo = g_new0(SockInfo, 1);
-	sockinfo->sock = sock;
-	sockinfo->hostname = g_strdup(hostname);
-	sockinfo->port = port;
-	sockinfo->state = CONN_READY;
-
-	pthread_create(&sockinfo->connect_thr, NULL,
-		       (void *)sock_connect_thread,
-		       sockinfo);
-	pthread_mutex_init(&sockinfo->mutex, NULL);
-	pthread_detach(sockinfo->connect_thr);
-
-	return sockinfo;
-}
-#endif
-
 
 gint sock_printf(SockInfo *sock, const gchar *format, ...)
 {

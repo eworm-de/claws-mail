@@ -1,3 +1,31 @@
+2002-02-14
+
+	* src/utils.c: strsplit_with_quote(): この関数中で引用文字を削除
+	  するようにした(メッセージ作成の外部エディタの問題を修正)
+	  (Stefaan A Eeckels さん thanks)。
+	* src/mainwindow.[ch]: 「全てのヘッダを表示」をトグルスイッチにした。
+	  main_window_menu_callback_block()
+	  main_window_menu_callback_unblock(): 新規。
+	  main_window_set_menu_sensitive(): メニューアイテムのトグル状態を
+	  セット。
+	  show_all_header_cb(): トグルメニューアイテムの状態を読むようにした。
+	* src/mainwindow.[ch]: 「スレッド表示」をトグルスイッチにした。
+	* src/prefs_common.c: prefs_keybind_apply_clicked(): 「スレッド解除」
+	  を削除。
+
+2002-02-13
+
+	* src/imap.c: imap_add_msg(): パス区切りを変換していなかったバグを
+	  修正(Sergey Vlasov さん thanks)。
+	* src/gtkutils.c: gtkut_editable_get_selection(): 選択部の長さが
+	  0 のときは NULL を返すようにした。
+	  アサーションを修正。
+	* src/utils.c: str_open_as_stream(): str の長さが 0 のときはすぐに
+	  戻るようにした。
+	* src/headerwindow.[ch]: 削除。
+	* src/socket.[ch]
+	  src/inc.c: 古いスレッド対応コードを削除。
+
 2002-02-12
 
 	* src/procmsg.c: procmsg_open_message(): デコードされたメッセージ
