@@ -61,8 +61,10 @@ foreach $rcline (@rclines) {
 	}
 }
 
-$browser[1]=~s#\?p#$ENV{'CommonProgramFiles'}\\..#;
-print("$browser[1]&\n");
- 
-system("$browser[1]&");
+if ($ENV{'COMSPEC'}!='') { # windoze
+	$browser[1]=~s#\?p#$ENV{'CommonProgramFiles'}\\..#;
+	system("start $browser[1]");
+} else {
+	system("$browser[1]&");
+}
 exit;

@@ -1638,15 +1638,25 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 	/* move messages */
 	for (cur = mlist ; cur != NULL ; cur = cur->next) {
 		MsgInfo * msginfo;
+#ifdef WIN32
+		gchar *p_path = g_locale_to_utf8(new_item->path, -1, NULL, NULL, NULL);
+#endif
 		cnt++;
 		if (cnt%500)
 			log_message(_("Moving %s to %s (%d%%)...\n"), src->name, 
+#ifdef WIN32
+					p_path,
+#else
 					new_item->path,
+#endif
 					100*cnt/g_slist_length(mlist));
 		msginfo = (MsgInfo *) cur->data;
 		folder_item_move_msg(new_item, msginfo);
 
 		procmsg_msginfo_free(msginfo);
+#ifdef WIN32
+		g_free(p_path);
+#endif
 	}
 	
 	/*copy prefs*/

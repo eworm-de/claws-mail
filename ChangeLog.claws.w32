@@ -1,3 +1,11 @@
+2003-03-16 [thorsten]	0.8.11claws11-2
+
+	* src/folder.c
+	  src/folderview.c
+		fix: utf8 conv. foldernames (for drag'n'drop)
+	* tools/multiwebsearch.pl
+		fix: browser start command for Win32
+
 2003-03-13 [thorsten]	0.8.11claws11-1
 
 	* src/mimeview.c

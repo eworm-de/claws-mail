@@ -1745,13 +1745,19 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	}
 
 	/* Open Folder */
+#ifdef WIN32
+	{
+		gchar *p_path=g_locale_to_utf8(item->path, -1, NULL, NULL, NULL);
+	    	buf = g_strdup_printf(_("Opening Folder %s..."), p_path ? 
+						p_path : "(null)");
+		g_free(p_path);
+	}
+#else
     	buf = g_strdup_printf(_("Opening Folder %s..."), item->path ? 
 					item->path : "(null)");
-	debug_print("%s\n", buf);
-#ifdef WIN32
-	locale_to_utf8(&buf);
-	STATUSBAR_PUSH(folderview->mainwin, buf);
 #endif
+	debug_print("%s\n", buf);
+	STATUSBAR_PUSH(folderview->mainwin, buf);
 	g_free(buf);
 
 	main_window_cursor_wait(folderview->mainwin);
@@ -2824,6 +2830,9 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		char *source;
 		
 		source = data->data + 17;
+#ifdef WIN32
+		source = g_locale_from_utf8(source, -1, NULL, NULL, NULL);
+#endif
 		if (gtk_clist_get_selection_info
 		    (GTK_CLIST(widget), x - 24, y - 24, &row, &column) == 0
 		    || *source == 0) {
@@ -2833,6 +2842,9 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		node = gtk_ctree_node_nth(GTK_CTREE(widget), row);
 		item = gtk_ctree_node_get_row_data(GTK_CTREE(widget), node);
 		src_item = folder_find_item_from_identifier(source);
+#ifdef WIN32
+		g_free(source);
+#endif
 
 		if (!item || !src_item || src_item->stype != F_NORMAL) {
 			gtk_drag_finish(drag_context, FALSE, FALSE, time);			
