@@ -1,3 +1,9 @@
+2003-04-30 [paul]	0.8.11claws128
+
+	* src/addrindex.c
+		fix bug where opening folder has massive slowdown when
+		using the 'Display sender using address book' option
+
 2003-04-30 [paul]	0.8.11claws127
 
 	* src/plugins/clamav/clamav_plugin.c

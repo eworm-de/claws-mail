@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=11
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws127
+EXTRA_VERSION=claws128
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -412,7 +412,7 @@ if test x"$ac_cv_enable_image_viewer_plugin" = xyes; then
 fi
 AM_CONDITIONAL(BUILD_IMAGE_VIEWER_PLUGIN, test x"$ac_cv_enable_image_viewer_plugin" = xyes)
 if test x"$ac_cv_enable_image_viewer_plugin" = xyes; then
-	PLUGINS="image $PLUGINS"
+	PLUGINS="image-viewer $PLUGINS"
 fi
 
 AC_ARG_ENABLE(dillo-viewer-plugin,
