@@ -154,13 +154,18 @@ void messageview_init(MessageView *messageview)
 	/*messageview_set_font(messageview);*/
 }
 
-static void notification_convert_header(gchar *dest, gint len, gchar *src,
+static void notification_convert_header(gchar *dest, gint len, 
+					const gchar *src_,
 					gint header_len)
 {
-	g_return_if_fail(src != NULL);
+	char *src;
+
+	g_return_if_fail(src_ != NULL);
 	g_return_if_fail(dest != NULL);
 
 	if (len < 1) return;
+
+	Xstrndup_a(src, src_, len, return);
 
 	remove_return(src);
 
