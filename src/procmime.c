@@ -677,8 +677,7 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 	if ((mimeinfo->type == MIMETYPE_TEXT) && !g_strcasecmp(mimeinfo->subtype, "html"))
 		base = "mimetmp.html";
 	else {
-		base = mimeinfo->filename ? mimeinfo->filename
-			: mimeinfo->name ? mimeinfo->name : "mimetmp";
+		base = mimeinfo->name ? mimeinfo->name : "mimetmp";
 		base = g_basename(base);
 		if (*base == '\0') base = "mimetmp";
 		Xstrdup_a(base, base, return NULL);

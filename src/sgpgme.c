@@ -113,7 +113,7 @@ gchar *sgpgme_sigstat_info_short(GpgmeCtx ctx, GpgmeSigStat status)
 			GPGME_ATTR_VALIDITY, 0);
 		
 		return g_strdup_printf(_("Valid signature by %s (Trust: %s)"),
-			gpgme_key_get_string_attr(key, GPGME_ATTR_USERID, NULL, 0),
+			gpgme_key_get_string_attr(key, GPGME_ATTR_NAME, NULL, 0),
 			get_validity_str(validity));
 	}
 	case GPGME_SIG_STAT_GOOD_EXP:

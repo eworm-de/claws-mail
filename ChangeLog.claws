@@ -1,3 +1,13 @@
+2003-10-26 [christoph]	0.9.6claws53
+
+	* src/pgpmime.c
+	* src/sgpgme.c
+		change display of signature info to use only name of
+		signer, otherwise the text gets too long.
+
+	* src/procmime.c
+		don't use MimeInfo's filename to generate tmp filename
+
 2003-10-25 [christoph]	0.9.6claws52
 
 	* src/procmime.c
