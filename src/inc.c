@@ -118,6 +118,10 @@ static void inc_all_spool(void);
 static void inc_autocheck_timer_set_interval	(guint		 interval);
 static gint inc_autocheck_func			(gpointer	 data);
 
+#define FOLDER_SUMMARY_MISMATCH(f, s) \
+	(f) && (s) ? ((s)->newmsgs != (f)->new) || ((f)->unread != (s)->unread) || ((f)->total != (s)->messages) \
+	: FALSE
+	
 /**
  * inc_finished:
  * @mainwin: Main window.
@@ -130,7 +134,7 @@ static gint inc_autocheck_func			(gpointer	 data);
 static void inc_finished(MainWindow *mainwin, gboolean new_messages)
 {
 	FolderItem *item;
-
+	
 	if (prefs_common.scan_all_after_inc)
 		folderview_update_all_node();
 
@@ -140,12 +144,16 @@ static void inc_finished(MainWindow *mainwin, gboolean new_messages)
 		item = cur_account && cur_account->inbox
 			? folder_find_item_from_path(cur_account->inbox)
 			: folder_get_default_inbox();
-		folderview_unselect(mainwin->folderview);
-		folderview_select(mainwin->folderview, item);
+		if (FOLDER_SUMMARY_MISMATCH(item, mainwin->summaryview)) {	
+			folderview_unselect(mainwin->folderview);
+			folderview_select(mainwin->folderview, item);
+		}	
 	} else {
 		item = mainwin->summaryview->folder_item;
-		folderview_unselect(mainwin->folderview);
-		folderview_select(mainwin->folderview, item);
+		if (FOLDER_SUMMARY_MISMATCH(item, mainwin->summaryview)) {
+			folderview_unselect(mainwin->folderview);
+			folderview_select(mainwin->folderview, item);
+		}	
 	}
 }
 
