@@ -2185,7 +2185,6 @@ static void compose_wrap_line_all(Compose *compose)
 			if (linewrap_quote) {
 				qlen = gtkut_text_str_compare
 					(text, cur_pos, tlen, qfmt);
-				is_new_line = FALSE;
 				if (qlen)
 					i_len = get_indent_length
 						(text, cur_pos, tlen);
