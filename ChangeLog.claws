@@ -1,3 +1,9 @@
+2004-08-12 [christoph]	0.9.12cvs60
+
+	* src/folderutils.c
+		fix bug that did not thaw folder updates when deleting
+		duplicates in empty folders
+
 2004-08-12 [colin]	0.9.12cvs59
 
 	* src/plugins/trayicon/trayicon.c
