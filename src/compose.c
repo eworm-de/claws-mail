@@ -7615,10 +7615,6 @@ static void compose_add_field_list( Compose *compose, GList *listAddress ) {
 	}
 }
 
-/*
- * End of Source.
- */
-
 void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list, 
 				    guint action)
 {
@@ -7654,3 +7650,7 @@ void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list,
 
 	g_free(body);
 }
+
+/*
+ * End of Source.
+ */
