@@ -3495,7 +3495,6 @@ gint g_int_compare(gconstpointer a, gconstpointer b)
 
 gchar *generate_msgid(const gchar *address, gchar *buf, gint len)
 {
-	/* steal from compose.c::compose_generate_msgid() */
 	struct tm *lt;
 	time_t t;
 	gchar *addr;

@@ -265,8 +265,6 @@ static void compose_convert_header		(gchar		*dest,
 						 gchar		*src,
 						 gint		 header_len,
 						 gboolean	 addr_field);
-static void compose_generate_msgid		(gchar		*buf,
-						 gint		 len);
 
 static void compose_attach_info_free		(AttachInfo	*ainfo);
 static void compose_attach_remove_selected	(Compose	*compose);
@@ -3252,7 +3250,7 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 
 	/* Resent-Message-ID */
 	if (compose->account->gen_msgid) {
-		compose_generate_msgid(buf, sizeof(buf));
+		generate_msgid(compose->account->address, buf, sizeof(buf));
 		fprintf(fp, "Resent-Message-ID: <%s>\n", buf);
 		compose->msgid = g_strdup(buf);
 	}
@@ -3928,7 +3926,7 @@ static gchar *compose_get_header(Compose *compose)
 
 	/* Message-ID */
 	if (compose->account->gen_msgid) {
-		compose_generate_msgid(buf, sizeof(buf));
+		generate_msgid(compose->account->address, buf, sizeof(buf));
 		g_string_sprintfa(header, "Message-ID: <%s>\n", buf);
 		compose->msgid = g_strdup(buf);
 	}
@@ -4094,28 +4092,6 @@ static void compose_convert_header(gchar *dest, gint len, gchar *src,
 	g_strchomp(src);
 
 	conv_encode_header(dest, len, src, header_len, addr_field);
-}
-
-static void compose_generate_msgid(gchar *buf, gint len)
-{
-	struct tm *lt;
-	time_t t;
-	gchar *addr;
-
-	t = time(NULL);
-	lt = localtime(&t);
-
-	addr = g_strconcat("@", get_domain_name(), NULL);
-
-	g_snprintf(buf, len, "%04d%02d%02d%02d%02d%02d.%08x%s",
-		   lt->tm_year + 1900, lt->tm_mon + 1,
-		   lt->tm_mday, lt->tm_hour,
-		   lt->tm_min, lt->tm_sec,
-		   (guint) rand(), addr);
-
-	debug_print("generated Message-ID: %s\n", buf);
-
-	g_free(addr);
 }
 
 static void compose_create_header_entry(Compose *compose) 
