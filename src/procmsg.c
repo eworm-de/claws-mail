@@ -1072,23 +1072,24 @@ gint procmsg_send_message_queue(const gchar *file)
 				mailval = send_message_smtp(&tmp_ac, to_list, fp);
 			}
 		}
+		if (mailval < 0) {
+            		alertpanel_error(_("Error occurred while sending the message to %s ."),
+                                 mailac ? mailac->smtp_server : smtpserver);
+		}
 	}
 
-	if(newsgroup_list) {
+	if(newsgroup_list && (newsval == 0)) {
 		Folder *folder;
 
 		debug_print(_("Sending message by news\n"));
 
 		folder = FOLDER(newsac->folder);
 
-		if(newsval == 0) {
-            		newsval = news_post(folder, tmp);
-            		if (newsval < 0) {
-                    		alertpanel_error(_("Error occurred while posting the message to %s ."),
-                                         newsac->nntp_server);
-            		}
-		}
-
+    		newsval = news_post(folder, tmp);
+    		if (newsval < 0) {
+            		alertpanel_error(_("Error occurred while posting the message to %s ."),
+                                 newsac->nntp_server);
+    		}
 	}
 
 	/* save message to outbox */
