@@ -1246,7 +1246,7 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 	}
 	if (hentry[H_X_MAILING_LIST].body != NULL) {
 		/* this is good enough to parse debian-devel */
-		char * buf = g_malloc(strlen(hentry[H_X_MAILING_LIST].body));
+		char * buf = g_malloc(strlen(hentry[H_X_MAILING_LIST].body) + 1);
 		g_return_val_if_fail(buf != NULL, -1 );
 		if (1 == sscanf(hentry[H_X_MAILING_LIST].body, "<%[^>]>", buf))
 			compose->mailinglist = g_strdup(buf);
@@ -1256,7 +1256,7 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 	}
 	if (hentry[H_X_BEENTHERE].body != NULL) {
 		/* this is good enough to parse the sylpheed-claws lists */
-		char * buf = g_malloc(strlen(hentry[H_X_BEENTHERE].body));
+		char * buf = g_malloc(strlen(hentry[H_X_BEENTHERE].body) + 1);
 		g_return_val_if_fail(buf != NULL, -1 );
 		if (1 == sscanf(hentry[H_X_BEENTHERE].body, "%[^>]", buf))
 			compose->mailinglist = g_strdup(buf);

@@ -3,6 +3,9 @@
 	* src/mainwindow.c, src/summaryview.c
 		fix 'Message/Reply to all', broken in last commit
 
+	* src/compose.c
+		fix X_BEENTHERE seg fault, thanks to Alfons
+
 2001-10-04 [paul] 	0.6.2claws18
 
 	* src/compose.[ch], src/mainwindow.c
