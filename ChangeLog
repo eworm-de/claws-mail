@@ -1,3 +1,16 @@
+2002-03-17
+
+	* src/imap.c: implemented locale encoding <-> modified utf-7
+	  conversion, and supported i18n of folder name (thanks to Suzuki
+	  Mio).
+	  imap_path_separator_subst(): handle the escape characters of
+	  modified utf-7.
+	  imap_modified_utf7_to_locale()
+	  imap_locale_to_modified_utf7(): new.
+	  imap_create_trash(): modified so that it create the Trash folder
+	  to the correct location when imap directory is specified.
+	  imap_get_real_path(): removed debug print.
+
 2002-03-14
 
 	* src/socket.c: implemented timeout for DNS lookup and connect().

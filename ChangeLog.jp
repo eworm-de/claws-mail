@@ -1,3 +1,15 @@
+2002-03-17
+
+	* src/imap.c: locale エンコーディング <-> 修正 utf-7 の変換を実装し、
+	  フォルダ名の国際化に対応(鈴木未央さん thanks)。
+	  imap_path_separator_subst(): 修正 utf-7 のエスケープ文字を扱える
+	  ようにした。
+	  imap_modified_utf7_to_locale()
+	  imap_locale_to_modified_utf7(): 新規。
+	  imap_create_trash(): imap ディレクトリが指定されているときに
+	  ごみ箱フォルダを正しい位置に作成するよう修正。
+	  imap_get_real_path(): デバッグ print を削除。
+
 2002-03-14
 
 	* src/socket.c: DNS lookup と connect() のタイムアウトを実装。

@@ -31,6 +31,9 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <time.h>
+#if HAVE_LIBJCONV
+#  include <jconv.h>
+#endif
 
 #include "intl.h"
 #include "imap.h"
@@ -80,7 +83,7 @@ static gint imap_scan_tree_recursive	(IMAPSession	*session,
 					 FolderItem	*item,
 					 IMAPNameSpace	*namespace);
 static GSList *imap_parse_list		(IMAPSession	*session,
-					 const gchar	*path);
+					 const gchar	*real_path);
 static gint imap_create_trash		(Folder		*folder);
 
 static gint imap_do_copy		(Folder		*folder,
@@ -250,6 +253,8 @@ static gchar *search_array_starts		(GPtrArray *array,
 static void imap_path_separator_subst		(gchar		*str,
 						 gchar		 separator);
 
+static gchar *imap_modified_utf7_to_locale	(const gchar	*mutf7_str);
+static gchar *imap_locale_to_modified_utf7	(const gchar	*from);
 
 Folder *imap_folder_new(const gchar *name, const gchar *path)
 {
@@ -1044,18 +1049,20 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item,
 	return IMAP_SUCCESS;
 }
 
-static GSList *imap_parse_list(IMAPSession *session, const gchar *path)
+static GSList *imap_parse_list(IMAPSession *session, const gchar *real_path)
 {
 	gchar buf[IMAPBUFSIZE];
 	gchar flags[256];
 	gchar separator[16];
 	gchar *p;
 	gchar *name;
+	gchar *loc_name, *loc_path;
 	GSList *item_list = NULL;
 	GString *str;
 	FolderItem *new_item;
 
-	debug_print("getting list of %s ...\n", *path ? path : "\"\"");
+	debug_print("getting list of %s ...\n",
+		    *real_path ? real_path : "\"\"");
 
 	str = g_string_new(NULL);
 
@@ -1097,14 +1104,16 @@ static GSList *imap_parse_list(IMAPSession *session, const gchar *path)
 			strncpy2(buf, p, sizeof(buf));
 		strtailchomp(buf, separator[0]);
 		if (buf[0] == '\0') continue;
-		if (!strcmp(buf, path)) continue;
+		if (!strcmp(buf, real_path)) continue;
 
 		if (separator[0] != '\0')
 			subst_char(buf, separator[0], '/');
 		name = g_basename(buf);
 		if (name[0] == '.') continue;
 
-		new_item = folder_item_new(name, buf);
+		loc_name = imap_modified_utf7_to_locale(name);
+		loc_path = imap_modified_utf7_to_locale(buf);
+		new_item = folder_item_new(loc_name, loc_path);
 		if (strcasestr(flags, "\\Noinferiors") != NULL)
 			new_item->no_sub = TRUE;
 		if (strcasestr(flags, "\\Noselect") != NULL)
@@ -1112,7 +1121,9 @@ static GSList *imap_parse_list(IMAPSession *session, const gchar *path)
 
 		item_list = g_slist_append(item_list, new_item);
 
-		debug_print("folder %s has been added.\n", buf);
+		debug_print("folder %s has been added.\n", loc_path);
+		g_free(loc_path);
+		g_free(loc_name);
 	}
 
 	g_string_free(str, TRUE);
@@ -1150,48 +1161,21 @@ gint imap_create_tree(Folder *folder)
 
 static gint imap_create_trash(Folder *folder)
 {
-	IMAPFolder *imapfolder = IMAP_FOLDER(folder);
 	FolderItem *item;
 	FolderItem *new_item;
-	gchar *trash_path;
-	gchar *imap_dir = "";
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(folder->node != NULL, -1);
 	g_return_val_if_fail(folder->node->data != NULL, -1);
 	g_return_val_if_fail(folder->account != NULL, -1);
 
-	if (folder->account->imap_dir && *folder->account->imap_dir) {
-		gchar *tmpdir;
-
-		Xstrdup_a(tmpdir, folder->account->imap_dir, return -1);
-		strtailchomp(tmpdir, '/');
-		Xalloca(imap_dir, strlen(tmpdir) + 2, return -1);
-		g_snprintf(imap_dir, strlen(tmpdir) + 2, "%s%c", tmpdir, '/');
-	}
-
-	if (imapfolder->namespace && imapfolder->namespace->data) {
-		IMAPNameSpace *namespace =
-			(IMAPNameSpace *)imapfolder->namespace->data;
-
-		if (*namespace->name != '\0') {
-			gchar *name;
-
-			Xstrdup_a(name, namespace->name, return -1);
-			subst_char(name, namespace->separator, '/');
-			trash_path = g_strconcat(name, imap_dir, "Trash", NULL);
-		} else
-			trash_path = g_strconcat(imap_dir, "Trash", NULL);
-	} else
-		trash_path = g_strconcat(imap_dir, "Trash", NULL);
-
 	item = FOLDER_ITEM(folder->node->data);
-	new_item = imap_create_folder(folder, item, trash_path);
+	new_item = imap_create_folder(folder, item, "Trash");
 
 	if (!new_item) {
 		gchar *path;
 
-		new_item = folder_item_new("Trash", trash_path);
+		new_item = folder_item_new("Trash", "Trash");
 		folder_item_append(item, new_item);
 
 		path = folder_item_get_path(new_item);
@@ -1205,15 +1189,13 @@ static gint imap_create_trash(Folder *folder)
 	new_item->stype = F_TRASH;
 	folder->trash = new_item;
 
-	g_free(trash_path);
-
 	return 0;
 }
 
 FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 			       const gchar *name)
 {
-	gchar *dirpath, *imappath;
+	gchar *dirpath, *imap_path;
 	IMAPSession *session;
 	IMAPNameSpace *namespace;
 	FolderItem *new_item;
@@ -1242,15 +1224,15 @@ FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	} else
 		dirpath = g_strdup(name);
 
-	Xstrdup_a(imappath, dirpath, {g_free(dirpath); return NULL;});
-	Xstrdup_a(new_name, name, {g_free(dirpath); return NULL;});
-	namespace = imap_find_namespace(IMAP_FOLDER(folder), imappath);
-	if (namespace && namespace->separator) {
-		imap_path_separator_subst(imappath, namespace->separator);
-		imap_path_separator_subst(new_name, namespace->separator);
-		strtailchomp(new_name, namespace->separator);
-	}
 	strtailchomp(dirpath, '/');
+	imap_path = imap_locale_to_modified_utf7(dirpath);
+	Xstrdup_a(new_name, name, {g_free(dirpath); return NULL;});
+	strtailchomp(new_name, '/');
+	namespace = imap_find_namespace(IMAP_FOLDER(folder), imap_path);
+	if (namespace && namespace->separator) {
+		imap_path_separator_subst(imap_path, namespace->separator);
+		subst_char(new_name, '/', namespace->separator);
+	}
 
 	if (strcmp(name, "INBOX") != 0) {
 		GPtrArray *argbuf;
@@ -1258,11 +1240,12 @@ FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 		gboolean exist = FALSE;
 
 		argbuf = g_ptr_array_new();
-		ok = imap_cmd_list(SESSION(session)->sock, NULL, imappath,
+		ok = imap_cmd_list(SESSION(session)->sock, NULL, imap_path,
 				   argbuf);
 		statusbar_pop_all();
 		if (ok != IMAP_SUCCESS) {
 			log_warning(_("can't create mailbox: LIST failed\n"));
+			g_free(imap_path);
 			g_free(dirpath);
 			g_ptr_array_free(argbuf, TRUE);
 			return NULL;
@@ -1279,10 +1262,11 @@ FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 		g_ptr_array_free(argbuf, TRUE);
 
 		if (!exist) {
-			ok = imap_cmd_create(SESSION(session)->sock, imappath);
+			ok = imap_cmd_create(SESSION(session)->sock, imap_path);
 			statusbar_pop_all();
 			if (ok != IMAP_SUCCESS) {
 				log_warning(_("can't create mailbox\n"));
+				g_free(imap_path);
 				g_free(dirpath);
 				return NULL;
 			}
@@ -1291,6 +1275,7 @@ FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 
 	new_item = folder_item_new(new_name, dirpath);
 	folder_item_append(parent, new_item);
+	g_free(imap_path);
 	g_free(dirpath);
 
 	dirpath = folder_item_get_path(new_item);
@@ -1614,7 +1599,7 @@ static gchar *imap_get_real_path(IMAPFolder *folder, const gchar *path)
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(path != NULL, NULL);
 
-	real_path = g_strdup(path);
+	real_path = imap_locale_to_modified_utf7(path);
 	namespace = imap_find_namespace(folder, path);
 	if (namespace && namespace->separator)
 		imap_path_separator_subst(real_path, namespace->separator);
@@ -2478,7 +2463,6 @@ static gint imap_cmd_expunge(SockInfo *sock)
 	return IMAP_SUCCESS;
 }
 
-
 static gint imap_cmd_ok(SockInfo *sock, GPtrArray *argbuf)
 {
 	gint ok;
@@ -2636,6 +2620,186 @@ static gchar *search_array_str(GPtrArray *array, gchar *str)
 
 static void imap_path_separator_subst(gchar *str, gchar separator)
 {
-	if (separator && separator != '/')
-		subst_char(str, '/', separator);
+	gchar *p;
+	gboolean in_escape = FALSE;
+
+	if (!separator || separator == '/') return;
+
+	for (p = str; *p != '\0'; p++) {
+		if (*p == '/' && !in_escape)
+			*p = separator;
+		else if (*p == '&' && *(p + 1) != '-' && !in_escape)
+			in_escape = TRUE;
+		else if (*p == '-' && in_escape)
+			in_escape = FALSE;
+	}
+}
+
+static gchar *imap_modified_utf7_to_locale(const gchar *mutf7_str)
+{
+#if !HAVE_LIBJCONV
+	return g_strdup(mutf7_str);
+#else
+	static iconv_t cd = (iconv_t)-1;
+	static gboolean iconv_ok = TRUE;
+	GString *norm_utf7;
+	gchar *norm_utf7_p;
+	size_t norm_utf7_len;
+	const gchar *p;
+	gchar *to_str, *to_p;
+	size_t to_len;
+	gboolean in_escape = FALSE;
+
+	if (!iconv_ok) return g_strdup(mutf7_str);
+
+	if (cd == (iconv_t)-1) {
+		cd = iconv_open(conv_get_current_charset_str(), "UTF-7");
+		if (cd == (iconv_t)-1) {
+			g_warning(_("iconv cannot convert UTF-7 to %s\n"),
+				  conv_get_current_charset_str());
+			iconv_ok = FALSE;
+			return g_strdup(mutf7_str);
+		}
+	}
+
+	norm_utf7 = g_string_new(NULL);
+
+	for (p = mutf7_str; *p != '\0'; p++) {
+		/* replace: '&'  -> '+',
+			    "&-" -> '&',
+			    escaped ','  -> '/' */
+		if (!in_escape && *p == '&') {
+			if (*(p + 1) != '-') {
+				g_string_append_c(norm_utf7, '+');
+				in_escape = TRUE;
+			} else {
+				g_string_append_c(norm_utf7, '&');
+				p++;
+			}
+		} else if (in_escape && *p == ',') {
+			g_string_append_c(norm_utf7, '/');
+		} else if (in_escape && *p == '-') {
+			g_string_append_c(norm_utf7, '-');
+			in_escape = FALSE;
+		} else {
+			g_string_append_c(norm_utf7, *p);
+		}
+	}
+
+	norm_utf7_p = norm_utf7->str;
+	norm_utf7_len = norm_utf7->len;
+	to_len = strlen(mutf7_str) * 5;
+	to_p = to_str = g_malloc(to_len + 1);
+
+	if (iconv(cd, &norm_utf7_p, &norm_utf7_len, &to_p, &to_len) == -1) {
+		g_warning(_("iconv cannot convert UTF-7 to %s\n"),
+			  conv_get_current_charset_str());
+		g_string_free(norm_utf7, TRUE);
+		g_free(to_str);
+		return g_strdup(mutf7_str);
+	}
+
+	/* second iconv() call for flushing */
+	iconv(cd, NULL, NULL, &to_p, &to_len);
+	g_string_free(norm_utf7, TRUE);
+	*to_p = '\0';
+
+	return to_str;
+#endif /* !HAVE_LIBJCONV */
+}
+
+static gchar *imap_locale_to_modified_utf7(const gchar *from)
+{
+#if !HAVE_LIBJCONV
+	return g_strdup(from);
+#else
+	static iconv_t cd = (iconv_t)-1;
+	static gboolean iconv_ok = TRUE;
+	gchar *norm_utf7, *norm_utf7_p;
+	size_t from_len, norm_utf7_len;
+	GString *to_str;
+	gchar *from_tmp, *to, *p;
+	gboolean in_escape = FALSE;
+
+	if (!iconv_ok) return g_strdup(from);
+
+	if (cd == (iconv_t)-1) {
+		cd = iconv_open("UTF-7", conv_get_current_charset_str());
+		if (cd == (iconv_t)-1) {
+			g_warning(_("iconv cannot convert %s to UTF-7\n"),
+				  conv_get_current_charset_str());
+			iconv_ok = FALSE;
+			return g_strdup(from);
+		}
+	}
+
+	Xstrdup_a(from_tmp, from, return g_strdup(from));
+	from_len = strlen(from);
+	norm_utf7_len = from_len * 5;
+	Xalloca(norm_utf7, norm_utf7_len + 1, return g_strdup(from));
+	norm_utf7_p = norm_utf7;
+
+#define IS_PRINT(ch) (isprint(ch) && isascii(ch))
+
+	while (from_len > 0) {
+		if (IS_PRINT(*from_tmp)) {
+			/* printable ascii char */
+			*norm_utf7_p = *from_tmp;
+			norm_utf7_p++;
+			from_tmp++;
+			from_len--;
+		} else {
+			size_t mblen;
+
+			/* unprintable char: convert to UTF-7 */
+			for (mblen = 0;
+			     !IS_PRINT(from_tmp[mblen]) && mblen < from_len;
+			     mblen++)
+				;
+			from_len -= mblen;
+			if (iconv(cd, &from_tmp, &mblen,
+				  &norm_utf7_p, &norm_utf7_len) == -1) {
+				g_warning(_("iconv cannot convert %s to UTF-7\n"),
+					  conv_get_current_charset_str());
+				return g_strdup(from);
+			}
+
+			/* second iconv() call for flushing */
+			iconv(cd, NULL, NULL, &norm_utf7_p, &norm_utf7_len);
+		}
+	}
+
+#undef IS_PRINT
+
+	*norm_utf7_p = '\0';
+	to_str = g_string_new(NULL);
+	for (p = norm_utf7; p < norm_utf7_p; p++) {
+		/* replace: '&' -> "&-",
+			    '+' -> '&',
+			    escaped '/' -> ',' */
+		if (!in_escape && *p == '&') {
+			g_string_append(to_str, "&-");
+		} else if (!in_escape && *p == '+') {
+			g_string_append_c(to_str, '&');
+			in_escape = TRUE;
+		} else if (in_escape && *p == '/') {
+			g_string_append_c(to_str, ',');
+		} else if (in_escape && *p == '-') {
+			in_escape = FALSE;
+			g_string_append_c(to_str, '-');
+		} else {
+			g_string_append_c(to_str, *p);
+		}
+	}
+
+	if (in_escape) {
+		in_escape = FALSE;
+		g_string_append_c(to_str, '-');
+	}
+
+	to = to_str->str;
+	g_string_free(to_str, FALSE);
+
+	return to;
+#endif
 }
