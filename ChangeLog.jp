@@ -1,3 +1,22 @@
+2003-09-17
+
+	* src/addressbook.c:
+	  addressbook_folder_load_person()
+	  addressbook_folder_load_group(): ループの後で ctree をソートする
+	  ようにした(一つのフォルダに多くのアドレスがある場合のパフォーマンス
+	  の問題を解決)(christian mock さん thanks)。
+
+2003-09-16
+
+	* src/folderview.c: folder_init(): コードを整理。
+	* src/summaryview.c: summary_init(): boldfont が正しくロードされたか
+	  どうかをチェック。
+	* src/grouplistdialog.c: delete_event に適切なコールバックを使用する
+	  ようにした(足永さん thanks)。
+	* src/imap.c: ゼロ長メッセージを許すようにした。
+	* src/recv.c: recv_bytes_write(): size == 0 の場合はすぐに戻るように
+	  した。
+
 2003-09-16
 
 	* src/folderview.c: folderview_init(): フォントが読み込めない場合は

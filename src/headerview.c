@@ -46,8 +46,6 @@
 #include "gtkutils.h"
 #include "utils.h"
 
-static GdkFont *boldfont;
-
 #define TR(str)	(prefs_common.trans_hdr ? gettext(str) : str)
 
 #if 0
@@ -133,6 +131,8 @@ HeaderView *headerview_create(void)
 
 void headerview_init(HeaderView *headerview)
 {
+	static GdkFont *boldfont = NULL;
+
 	if (!boldfont)
 		boldfont = gtkut_font_load(BOLD_FONT);
 

@@ -91,8 +91,6 @@
 #define SUMMARY_COL_LOCKED_WIDTH	13
 #define SUMMARY_COL_MIME_WIDTH		11
 
-static GdkFont *boldfont;
-static GdkFont *smallfont;
 
 static GtkStyle *bold_style;
 static GtkStyle *bold_marked_style;
@@ -722,6 +720,8 @@ SummaryView *summary_create(void)
 
 void summary_init(SummaryView *summaryview)
 {
+	static GdkFont *boldfont = NULL;
+	static GdkFont *smallfont = NULL;
 	GtkStyle *style;
 	GtkWidget *pixmap;
 
@@ -751,6 +751,21 @@ void summary_init(SummaryView *summaryview)
 	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_GPG_SIGNED,
 			 &gpgsignedxpm, &gpgsignedxpmmask);
 
+	if (!bold_style) {
+		bold_style = gtk_style_copy
+			(gtk_widget_get_style(summaryview->ctree));
+		if (!boldfont)
+			boldfont = gtkut_font_load(BOLD_FONT);
+		if (boldfont)
+			bold_style->font = boldfont;
+		bold_marked_style = gtk_style_copy(bold_style);
+		bold_marked_style->fg[GTK_STATE_NORMAL] =
+			summaryview->color_marked;
+		bold_deleted_style = gtk_style_copy(bold_style);
+		bold_deleted_style->fg[GTK_STATE_NORMAL] =
+			summaryview->color_dim;
+	}
+	
 	if (!small_style) {
 		small_style = gtk_style_copy
 			(gtk_widget_get_style(summaryview->ctree));
@@ -764,23 +779,11 @@ void summary_init(SummaryView *summaryview)
 		small_deleted_style->fg[GTK_STATE_NORMAL] =
 			summaryview->color_dim;
 	}
-	if (!bold_style) {
-		bold_style = gtk_style_copy
-			(gtk_widget_get_style(summaryview->ctree));
-		if (!boldfont)
-			boldfont = gtkut_font_load(BOLD_FONT);
-		bold_style->font = boldfont;
-		bold_marked_style = gtk_style_copy(bold_style);
-		bold_marked_style->fg[GTK_STATE_NORMAL] =
-			summaryview->color_marked;
-		bold_deleted_style = gtk_style_copy(bold_style);
-		bold_deleted_style->fg[GTK_STATE_NORMAL] =
-			summaryview->color_dim;
-	}
 
 	style = gtk_style_copy(gtk_widget_get_style
 				(summaryview->statlabel_folder));
-
+	if (smallfont)
+		style->font = smallfont;
 	gtk_widget_set_style(summaryview->statlabel_folder, style);
 	gtk_widget_set_style(summaryview->statlabel_select, style);
 	gtk_widget_set_style(summaryview->statlabel_msgs, style);

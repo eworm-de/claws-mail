@@ -2669,8 +2669,9 @@ static void addressbook_folder_load_group( GtkCTree *clist, ItemFolder *itemFold
 				      atci->iconXpmOpen, atci->maskXpmOpen,
 				      FALSE, FALSE);
 		gtk_ctree_node_set_row_data(clist, nodeGroup, group );
-		gtk_sctree_sort_node(clist, NULL);
 	}
+	gtk_sctree_sort_node(clist, NULL);
+
 	/* Free up the list */
 	mgu_clear_list( items );
 	g_list_free( items );

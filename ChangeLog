@@ -1,3 +1,21 @@
+2003-09-17
+
+	* src/addressbook.c:
+	  addressbook_folder_load_person()
+	  addressbook_folder_load_group(): sort the ctree after the end of
+	  the loop (fixes performance issue when many addresses are in one
+	  folder) (thanks to christian mock).
+
+2003-09-16
+
+	* src/folderview.c: folder_init(): code cleanup.
+	* src/summaryview.c: summary_init(): check if boldfont is
+	  successfully loaded.
+	* src/grouplistdialog.c: use proper callback for delete_event (thanks
+	  to Takuro Ashie).
+	* src/imap.c: allow zero-length messages.
+	* src/recv.c: recv_bytes_write(): return immediately if size == 0.
+
 2003-09-16
 
 	* src/folderview.c: folderview_init(): if font can't be loaded, fall

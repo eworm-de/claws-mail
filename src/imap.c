@@ -2147,7 +2147,7 @@ static gchar *imap_parse_atom(SockInfo *sock, gchar *src,
 
 		cur_pos = strchr_cpy(cur_pos + 1, '}', buf, sizeof(buf));
 		len = atoi(buf);
-		g_return_val_if_fail(len > 0, cur_pos);
+		g_return_val_if_fail(len >= 0, cur_pos);
 
 		g_string_truncate(str, 0);
 		cur_pos = str->str;
@@ -2190,7 +2190,7 @@ static gchar *imap_get_header(SockInfo *sock, gchar *cur_pos, gchar **headers,
 
 	cur_pos = strchr_cpy(cur_pos + 1, '}', buf, sizeof(buf));
 	len = atoi(buf);
-	g_return_val_if_fail(len > 0, cur_pos);
+	g_return_val_if_fail(len >= 0, cur_pos);
 
 	g_string_truncate(str, 0);
 	cur_pos = str->str;
@@ -2841,7 +2841,7 @@ static gint imap_cmd_fetch(IMAPSession *session, guint32 uid, const gchar *filen
 	cur_pos = strchr_cpy(cur_pos + 1, '}', size_str, sizeof(size_str));
 	RETURN_ERROR_IF_FAIL(cur_pos != NULL);
 	size_num = atol(size_str);
-	RETURN_ERROR_IF_FAIL(size_num > 0);
+	RETURN_ERROR_IF_FAIL(size_num >= 0);
 
 	RETURN_ERROR_IF_FAIL(*cur_pos == '\0');
 
