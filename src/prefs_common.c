@@ -82,6 +82,8 @@ static struct Send {
 	GtkWidget *checkbtn_queuemsg;
 
 	GtkWidget *optmenu_charset;
+	
+	GtkWidget *checkbtn_returnreceipt;
 } send;
 
 static struct Compose {
@@ -113,6 +115,8 @@ static struct Display {
 	GtkWidget *chkbtn_swapfrom;
 	GtkWidget *chkbtn_hscrollbar;
 	GtkWidget *chkbtn_useaddrbook;
+
+	GtkWidget *entry_datefmt;
 } display;
 
 static struct Message {
@@ -152,7 +156,6 @@ static struct Interface {
 	GtkWidget *checkbtn_cleanonexit;
 	GtkWidget *checkbtn_askonclean;
 	GtkWidget *checkbtn_warnqueued;
-	GtkWidget *checkbtn_returnreceipt;
 	GtkWidget *checkbtn_addaddrbyclick;
 } interface;
 
@@ -175,8 +178,6 @@ static GtkWidget *quote_desc_win;
 static GtkWidget *font_sel_win;
 static GtkWidget *quote_color_win;
 static GtkWidget *color_dialog;
-static GtkWidget *entry_datefmt;
-static GtkWidget *datefmt_sample;
 
 static void prefs_common_charset_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_common_charset_set_optmenu	      (PrefParam *pparam);
@@ -314,7 +315,7 @@ static PrefParam param[] = {
 	 &display.chkbtn_useaddrbook,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"date_format", "%y/%m/%d(%a) %H:%M", &prefs_common.date_format,
-	 P_STRING, &entry_datefmt,
+	 P_STRING, &display.entry_datefmt,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 	{"enable_thread", "TRUE", &prefs_common.enable_thread, P_BOOL,
@@ -513,7 +514,7 @@ static PrefParam param[] = {
 	 &interface.checkbtn_confonexit,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"send_return_receipt", "TRUE", &prefs_common.return_receipt, P_BOOL,
-	 &interface.checkbtn_returnreceipt,
+	 &send.checkbtn_returnreceipt,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"clean_trash_on_exit", "FALSE", &prefs_common.clean_on_exit, P_BOOL,
 	 &interface.checkbtn_cleanonexit,
@@ -870,6 +871,7 @@ static void prefs_send_create(void)
 	GtkWidget *optmenu;
 	GtkWidget *optmenu_menu;
 	GtkWidget *menuitem;
+	GtkWidget *checkbtn_returnreceipt;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -913,6 +915,8 @@ static void prefs_send_create(void)
 			   _("Save sent message to outbox"));
 	PACK_CHECK_BUTTON (vbox2, checkbtn_queuemsg,
 			   _("Queue message that failed to send"));
+	PACK_CHECK_BUTTON (vbox2, checkbtn_returnreceipt,
+			   _("Send return receipt on request"));
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -973,6 +977,7 @@ static void prefs_send_create(void)
 
 	send.checkbtn_savemsg  = checkbtn_savemsg;
 	send.checkbtn_queuemsg = checkbtn_queuemsg;
+	send.checkbtn_returnreceipt = checkbtn_returnreceipt;
 
 	send.optmenu_charset = optmenu;
 }
@@ -1131,22 +1136,22 @@ static void prefs_compose_create(void)
 	compose.checkbtn_wrapatsend  = checkbtn_wrapatsend;
 }
 
-
-/* alfons - nice ui for darko */
-
 static void date_format_ok_btn_clicked(GtkButton *button, GtkWidget **widget)
 {
-	gchar *text;
+	gchar	  *text;
+	GtkWidget *datefmt_sample = NULL;
 
 	g_return_if_fail(widget != NULL);
 	g_return_if_fail(*widget != NULL);
-	g_return_if_fail(entry_datefmt != NULL);
+	g_return_if_fail(display.entry_datefmt != NULL);
+
+	datefmt_sample = (GtkWidget *)gtk_object_get_data(GTK_OBJECT(*widget), "datefmt_sample");
 	g_return_if_fail(datefmt_sample != NULL);
 
 	text = gtk_editable_get_chars(GTK_EDITABLE(datefmt_sample), 0, -1);
 	g_free(prefs_common.date_format);
 	prefs_common.date_format = text;
-	gtk_entry_set_text(GTK_ENTRY(entry_datefmt), text);
+	gtk_entry_set_text(GTK_ENTRY(display.entry_datefmt), text);
 
 	gtk_widget_destroy(*widget);
 	*widget = NULL;
@@ -1188,14 +1193,17 @@ static void date_format_entry_on_change(GtkEditable *editable, GtkLabel *example
 
 static void date_format_select_row(GtkWidget *date_format_list, gint row,
 					gint column, GdkEventButton *event,
-					gpointer data)
+					GtkWidget *date_format)
 {
-	gint curs_pos;
-	gchar *format;
-	gchar *old_format;
-	gchar *new_format;
+	gint	  curs_pos;
+	gchar	  *format;
+	gchar	  *old_format;
+	gchar	  *new_format;
+	GtkWidget *datefmt_sample = (GtkWidget *) gtk_object_get_data(GTK_OBJECT(date_format), "datefmt_sample");
 
 	g_return_if_fail(date_format_list != NULL);
+	g_return_if_fail(date_format != NULL);
+	g_return_if_fail(datefmt_sample != NULL);
 
 	/* only on double click */
 	if (event->type != GDK_2BUTTON_PRESS)
@@ -1240,6 +1248,7 @@ static GtkWidget *create_date_format(GtkButton *button, void *data)
 	GtkWidget      *confirm_area;
 	GtkWidget      *ok_btn;
 	GtkWidget      *cancel_btn;
+	GtkWidget	   *datefmt_sample = NULL;
 
 	const struct  {
 		gchar *fmt;
@@ -1280,6 +1289,8 @@ static GtkWidget *create_date_format(GtkButton *button, void *data)
 	gtk_container_add(GTK_CONTAINER(date_format), vbox1);
 
 	scrolledwindow1 = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow1),
+			GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_widget_show(scrolledwindow1);
 	gtk_box_pack_start(GTK_BOX(vbox1), scrolledwindow1, TRUE, TRUE, 0);
 
@@ -1333,6 +1344,10 @@ static GtkWidget *create_date_format(GtkButton *button, void *data)
 	datefmt_sample = gtk_entry_new_with_max_length(300);
 	gtk_widget_show(datefmt_sample);
 	gtk_box_pack_start(GTK_BOX(hbox2), datefmt_sample, TRUE, TRUE, 40);
+	
+	/* we need the "sample" entry box; add it as data so callbacks can
+	 * get the entry box */
+	gtk_object_set_data(GTK_OBJECT(date_format), "datefmt_sample", datefmt_sample);
 
 	hbox1 = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(hbox1);
@@ -1343,7 +1358,7 @@ static GtkWidget *create_date_format(GtkButton *button, void *data)
 	gtk_box_pack_start(GTK_BOX(hbox1), label6, FALSE, TRUE, 0);
 	gtk_misc_set_padding(GTK_MISC(label6), 8, 0);
 
-	label7 = gtk_label_new(_("label7"));
+	label7 = gtk_label_new("");
 	gtk_widget_show(label7);
 	gtk_box_pack_start(GTK_BOX(hbox1), label7, TRUE, TRUE, 60);
 	gtk_label_set_justify(GTK_LABEL(label7), GTK_JUSTIFY_LEFT);
@@ -1384,7 +1399,7 @@ static GtkWidget *create_date_format(GtkButton *button, void *data)
 
 	gtk_signal_connect(GTK_OBJECT(date_format_list), "select_row",
 			   GTK_SIGNAL_FUNC(date_format_select_row),
-			   &datefmt_sample);
+			   date_format);
 
 	return date_format;
 }
@@ -1409,6 +1424,7 @@ static void prefs_display_create(void)
 	GtkWidget *label_datefmt_btn;
 	GtkWidget *button_dispitem;
 	GtkWidget *tmplabel, *tmpentry, *tmpbutton;
+	GtkWidget *entry_datefmt;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1563,6 +1579,7 @@ static void prefs_display_create(void)
 	display.chkbtn_swapfrom    = chkbtn_swapfrom;
 	display.chkbtn_hscrollbar  = chkbtn_hscrollbar;
 	display.chkbtn_useaddrbook = chkbtn_useaddrbook;
+	display.entry_datefmt      = entry_datefmt;
 }
 
 static void prefs_message_create(void)
@@ -1865,7 +1882,6 @@ static void prefs_interface_create(void)
 	GtkWidget *checkbtn_cleanonexit;
 	GtkWidget *checkbtn_askonclean;
 	GtkWidget *checkbtn_warnqueued;
-	GtkWidget *checkbtn_returnreceipt;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1912,9 +1928,6 @@ static void prefs_interface_create(void)
 		(vbox2, checkbtn_addaddrbyclick,
 		 _("Add address to destination when double-clicked"));
 
-	PACK_CHECK_BUTTON (vbox2, checkbtn_returnreceipt,
-			   _("Send return receipt on request"));
-
 	PACK_FRAME (vbox1, frame_exit, _("On exit"));
 
 	vbox_exit = gtk_vbox_new (FALSE, VSPACING_NARROW);
@@ -1947,7 +1960,6 @@ static void prefs_interface_create(void)
 	interface.checkbtn_cleanonexit    = checkbtn_cleanonexit;
 	interface.checkbtn_askonclean     = checkbtn_askonclean;
 	interface.checkbtn_warnqueued     = checkbtn_warnqueued;
-	interface.checkbtn_returnreceipt  = checkbtn_returnreceipt;
 }
 
 static void prefs_other_create(void)

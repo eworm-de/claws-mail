@@ -10,6 +10,10 @@
 
 2001-03-13 [alfons]
 
+	* src/prefs_common.c: 
+		moved return receipt check button to the Send tab. (prefs_send_create)
+		removed the date format ui related globals. (prefs_display_create)
+
 	0.4.67claws3
 	
 	* sync with sylpheed 0.4.67cvs5-6
