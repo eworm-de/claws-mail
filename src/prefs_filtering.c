@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto and the Sylpheed-Claws team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1487,7 +1487,7 @@ static void prefs_filtering_ok(void)
 		}
 		if (strcmp(filtering_str, str) != 0) {
                         val = alertpanel(_("Entry not saved"),
-       	                         _("The entry was not saved\nHave you really finished?"),
+       	                         _("The entry was not saved. Close anyway?"),
                	                 _("Yes"), _("No"), NULL);
                         if (G_ALERTDEFAULT != val) {
 				g_free(str);
