@@ -1,3 +1,8 @@
+2002-12-23 [paul]	0.8.6claws128
+
+	* src/quote_fmt_parse.y
+		fix typo and add licence header
+
 2002-12-23 [paul]	0.8.6claws127
 
 	* po/en_GB.po
