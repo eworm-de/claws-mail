@@ -45,14 +45,31 @@ struct _NNTPSockInfo
 
 #define NNTPBUFSIZE	8192
 
+#if USE_SSL
+NNTPSockInfo *nntp_open		(const gchar	*server,
+				 gushort	 port,
+				 gchar		*buf,
+				 gboolean use_ssl);
+#else
 NNTPSockInfo *nntp_open		(const gchar	*server,
 				 gushort	 port,
 				 gchar		*buf);
+#endif
+
+#if USE_SSL
+NNTPSockInfo *nntp_open_auth	(const gchar	*server,
+				 gushort	 port,
+				 gchar		*buf,
+				 const gchar	*userid,
+				 const gchar	*passwd,
+				 gboolean use_ssl);
+#else
 NNTPSockInfo *nntp_open_auth	(const gchar	*server,
 				 gushort	 port,
 				 gchar		*buf,
 				 const gchar	*userid,
 				 const gchar	*passwd);
+#endif
 void nntp_close			(NNTPSockInfo	*sock);
 gint nntp_group			(NNTPSockInfo	*sock,
 				 const gchar	*group,

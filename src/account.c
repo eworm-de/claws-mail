@@ -752,7 +752,8 @@ static gint account_clist_set_row(PrefsAccount *ac_prefs, gint row)
 			     ac_prefs->protocol == A_IMAP4 ?
 			     (ac_prefs->ssl_imap ? "IMAP4 (SSL)" : "IMAP4") :
 			     ac_prefs->protocol == A_LOCAL ? "Local" :
-			     ac_prefs->protocol == A_NNTP ? "NNTP"  :  "";
+			     ac_prefs->protocol == A_NNTP ? 
+				  (ac_prefs->ssl_nntp ? "NNTP (SSL)"  :  "NNTP") : "";
 #else
 	text[COL_PROTOCOL] = ac_prefs->protocol == A_POP3  ? "POP3" :
 			     ac_prefs->protocol == A_APOP  ? "POP3 (APOP)" :

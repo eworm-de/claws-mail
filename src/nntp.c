@@ -28,6 +28,7 @@
 #include "intl.h"
 #include "nntp.h"
 #include "socket.h"
+#include "ssl.h"
 #include "utils.h"
 
 static gint verbose = 1;
@@ -43,7 +44,11 @@ static gint nntp_gen_command	(NNTPSockInfo	*sock,
 				 const gchar	*format,
 				 ...);
 
+#if USE_SSL
+NNTPSockInfo *nntp_open(const gchar *server, gushort port, gchar *buf, gboolean use_ssl)
+#else
 NNTPSockInfo *nntp_open(const gchar *server, gushort port, gchar *buf)
+#endif
 {
 	SockInfo *sock;
 	NNTPSockInfo *nntp_sock;
@@ -53,6 +58,14 @@ NNTPSockInfo *nntp_open(const gchar *server, gushort port, gchar *buf)
 			    server, port);
 		return NULL;
 	}
+
+#if USE_SSL
+	if (use_ssl && !ssl_init_socket(sock)) {
+		 sock_close(sock);
+		 return NULL;
+	}
+#endif
+	
 	nntp_sock = g_new0(NNTPSockInfo, 1);
 	nntp_sock->sock = sock;
 
@@ -65,12 +78,22 @@ NNTPSockInfo *nntp_open(const gchar *server, gushort port, gchar *buf)
 	}
 }
 
+#if USE_SSL
+NNTPSockInfo *nntp_open_auth(const gchar *server, gushort port, gchar *buf,
+			     const gchar *userid, const gchar *passwd, gboolean use_ssl)
+#else
 NNTPSockInfo *nntp_open_auth(const gchar *server, gushort port, gchar *buf,
 			     const gchar *userid, const gchar *passwd)
+#endif
 {
 	NNTPSockInfo *sock;
 
+#if USE_SSL
+	sock = nntp_open(server, port, buf, use_ssl);
+#else
 	sock = nntp_open(server, port, buf);
+#endif
+
 	if (!sock) return NULL;
 
 	sock->userid = g_strdup(userid);

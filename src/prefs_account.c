@@ -141,6 +141,7 @@ static struct SSLPrefs {
 	GtkWidget *receive_frame;
 	GtkWidget *pop_chkbtn;
 	GtkWidget *imap_chkbtn;
+	GtkWidget *nntp_chkbtn;
 
 	GtkWidget *send_frame;
 	GtkWidget *smtp_nossl_radiobtn;
@@ -362,6 +363,8 @@ static PrefParam param[] = {
 	 &ssl.pop_chkbtn, prefs_set_data_from_toggle, prefs_set_toggle},
 	{"ssl_imap", "FALSE", &tmp_ac_prefs.ssl_imap, P_BOOL,
 	 &ssl.imap_chkbtn, prefs_set_data_from_toggle, prefs_set_toggle},
+	{"ssl_nntp", "FALSE", &tmp_ac_prefs.ssl_nntp, P_BOOL,
+	 &ssl.nntp_chkbtn, prefs_set_data_from_toggle, prefs_set_toggle},
 #endif /* USE_SSL */
 
 	/* Advanced */
@@ -1478,6 +1481,7 @@ static void prefs_account_ssl_create(void)
 	GtkWidget *vbox2;
 	GtkWidget *pop_chkbtn;
 	GtkWidget *imap_chkbtn;
+	GtkWidget *nntp_chkbtn;
 
 	GtkWidget *send_frame;
 	GtkWidget *vbox3;
@@ -1501,6 +1505,8 @@ static void prefs_account_ssl_create(void)
 			   _("Use SSL for POP3 connection"));
 	PACK_CHECK_BUTTON (vbox2, imap_chkbtn,
 			   _("Use SSL for IMAP4 connection"));
+	PACK_CHECK_BUTTON (vbox2, nntp_chkbtn,
+			   _("Use SSL for NNTP connection"));
 
 	PACK_FRAME (vbox1, send_frame, _("Send (SMTP)"));
 
@@ -1538,6 +1544,7 @@ static void prefs_account_ssl_create(void)
 	ssl.receive_frame = receive_frame;
 	ssl.pop_chkbtn    = pop_chkbtn;
 	ssl.imap_chkbtn   = imap_chkbtn;
+	ssl.nntp_chkbtn   = nntp_chkbtn;
 
 	ssl.send_frame                = send_frame;
 	ssl.smtp_nossl_radiobtn       = smtp_nossl_radiobtn;
@@ -1963,9 +1970,10 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(receive.imap_frame, FALSE);
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
 #if USE_SSL
-		gtk_widget_set_sensitive(ssl.receive_frame, FALSE);
+		gtk_widget_set_sensitive(ssl.receive_frame, TRUE);
 		gtk_widget_set_sensitive(ssl.pop_chkbtn, FALSE);
 		gtk_widget_set_sensitive(ssl.imap_chkbtn, FALSE);
+		gtk_widget_set_sensitive(ssl.nntp_chkbtn, TRUE);
 		gtk_widget_set_sensitive(ssl.send_frame, FALSE);
 #endif
 		gtk_widget_hide(advanced.popport_hbox);
@@ -2023,6 +2031,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(ssl.receive_frame, FALSE);
 		gtk_widget_set_sensitive(ssl.pop_chkbtn, FALSE);
 		gtk_widget_set_sensitive(ssl.imap_chkbtn, FALSE);
+		gtk_widget_set_sensitive(ssl.nntp_chkbtn, FALSE);
 		gtk_widget_set_sensitive(ssl.send_frame, TRUE);
 #endif
 		gtk_widget_hide(advanced.popport_hbox);
@@ -2082,6 +2091,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(ssl.receive_frame, TRUE);
 		gtk_widget_set_sensitive(ssl.pop_chkbtn, FALSE);
 		gtk_widget_set_sensitive(ssl.imap_chkbtn, TRUE);
+		gtk_widget_set_sensitive(ssl.nntp_chkbtn, FALSE);
 		gtk_widget_set_sensitive(ssl.send_frame, TRUE);
 #endif
 		gtk_widget_hide(advanced.popport_hbox);
@@ -2142,6 +2152,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(ssl.receive_frame, TRUE);
 		gtk_widget_set_sensitive(ssl.pop_chkbtn, TRUE);
 		gtk_widget_set_sensitive(ssl.imap_chkbtn, FALSE);
+		gtk_widget_set_sensitive(ssl.nntp_chkbtn, FALSE);
 		gtk_widget_set_sensitive(ssl.send_frame, TRUE);
 #endif
 		gtk_widget_show(advanced.popport_hbox);

@@ -94,6 +94,7 @@ struct _PrefsAccount
 	/* SSL */
 	gboolean ssl_pop;
 	gboolean ssl_imap;
+	gboolean ssl_nntp;
 	SSLSMTPType ssl_smtp;
 #endif /* USE_SSL */
 

@@ -49,15 +49,25 @@
 #include "alertpanel.h"
 
 #define NNTP_PORT	119
+#if USE_SSL
+#define NNTPS_PORT 563
+#endif
 
 static void news_folder_init		 (Folder	*folder,
 					  const gchar	*name,
 					  const gchar	*path);
 
+#if USE_SSL
+static Session *news_session_new	 (const gchar	*server,
+					  gushort	 port,
+					  const gchar	*userid,
+					  const gchar	*passwd, gboolean use_ssl);
+#else
 static Session *news_session_new	 (const gchar	*server,
 					  gushort	 port,
 					  const gchar	*userid,
 					  const gchar	*passwd);
+#endif
 
 static gint news_get_article_cmd	 (NNTPSession	*session,
 					  const gchar	*cmd,
@@ -120,8 +130,13 @@ static void news_folder_init(Folder *folder, const gchar *name,
 	folder->remove_msg   = news_remove_msg;
 }
 
+#if USE_SSL
+static Session *news_session_new(const gchar *server, gushort port,
+				 const gchar *userid, const gchar *passwd, gboolean use_ssl)
+#else
 static Session *news_session_new(const gchar *server, gushort port,
 				 const gchar *userid, const gchar *passwd)
+#endif
 {
 	gchar buf[NNTPBUFSIZE];
 	NNTPSession *session;
@@ -132,9 +147,18 @@ static Session *news_session_new(const gchar *server, gushort port,
 	log_message(_("creating NNTP connection to %s:%d ...\n"), server, port);
 
 	if (userid && passwd)
+#if USE_SSL
+		nntp_sock = nntp_open_auth(server, port, buf, userid, passwd, use_ssl);
+#else
 		nntp_sock = nntp_open_auth(server, port, buf, userid, passwd);
+#endif
 	else
+#if USE_SSL
+		nntp_sock = nntp_open(server, port, buf, use_ssl);
+#else
 		nntp_sock = nntp_open(server, port, buf);
+#endif
+
 	if (nntp_sock == NULL)
 		return NULL;
 
@@ -167,11 +191,22 @@ static Session *news_session_new_for_folder(Folder *folder)
 	PrefsAccount *ac;
 	const gchar *userid = NULL;
 	gchar *passwd = NULL;
+	int port;
 
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
 
 	ac = folder->account;
+
+#if USE_SSL
+	if (ac->set_nntpport) {
+		 port = ac->nntpport;
+	} else {
+		 port = ac->ssl_nntp ? NNTPS_PORT : NNTP_PORT;
+	}
+#else
+	port = ac->set_nntpport ? ac->nntpport : NNTP_PORT;
+#endif
 	if (ac->use_nntp_auth && ac->userid && ac->userid[0]) {
 		userid = ac->userid;
 		if (ac->passwd && ac->passwd[0])
@@ -181,9 +216,15 @@ static Session *news_session_new_for_folder(Folder *folder)
 							     userid);
 	}
 
+#if USE_SSL
 	session = news_session_new(ac->nntp_server,
-				   ac->set_nntpport ? ac->nntpport : NNTP_PORT,
+				   port, 
+				   userid, passwd, ac->ssl_nntp);
+#else
+	session = news_session_new(ac->nntp_server,
+				   port, 
 				   userid, passwd);
+#endif
 	g_free(passwd);
 
 	return session;
