@@ -589,6 +589,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 	MsgInfo *msginfo;
 	const gchar *msgid;
 	const gchar *subject;
+	GNode *found_subject;
 
 	root = g_node_new(NULL);
 	msgid_table = g_hash_table_new(g_str_hash, g_str_equal);
@@ -616,10 +617,20 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 			g_hash_table_insert(msgid_table, (gchar *)msgid, node);
 
 		subject = msginfo->subject;
-		if (subject_table_lookup(subject_table,
-					 (gchar *) subject) == NULL)
-			subject_table_insert(subject_table, (gchar *)subject,
+		found_subject = subject_table_lookup(subject_table,
+						     (gchar *) subject);
+		if (found_subject == NULL)
+			subject_table_insert(subject_table, (gchar *) subject,
 					     node);
+		else {
+			/* replace if msg in table is older than current one 
+			 * can add here more stuff.  */
+			if ( ((MsgInfo*)(found_subject->data))->date_t >
+			     ((MsgInfo*)(node->data))->date_t )  {
+				subject_table_remove(subject_table, (gchar *) subject);
+				subject_table_insert(subject_table, (gchar *) subject, node);
+			}	
+		}
 	}
 
 	/* complete the unfinished threads */
