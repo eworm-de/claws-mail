@@ -24,15 +24,23 @@
 
 typedef struct _SpamAssassinConfig SpamAssassinConfig;
 
+typedef enum {
+	SPAMASSASSIN_DISABLED            = 0,
+	SPAMASSASSIN_TRANSPORT_LOCALHOST = 1,
+	SPAMASSASSIN_TRANSPORT_TCP       = 2,
+	SPAMASSASSIN_TRANSPORT_UNIX      = 3,
+} SpamAssassinTransport;
+
 struct _SpamAssassinConfig
 {
-	gboolean	 enable;
-	gchar		*hostname;
-	guint 		 port;
-	gboolean 	 receive_spam;
-	gchar 		*save_folder;
-	guint 		 max_size;
-	guint 		 timeout;
+	SpamAssassinTransport	 transport;
+	gchar			*hostname;
+	guint 			 port;
+	gchar			*socket;
+	gboolean 		 receive_spam;
+	gchar 			*save_folder;
+	guint 			 max_size;
+	guint 			 timeout;
 };
 
 SpamAssassinConfig *spamassassin_get_config	(void);

@@ -80,11 +80,13 @@ static gchar *username = NULL;
 static SpamAssassinConfig config;
 
 static PrefParam param[] = {
-	{"enable", "FALSE", &config.enable, P_BOOL,
+	{"transport", "0", &config.transport, P_INT,
 	 NULL, NULL, NULL},
 	{"hostname", "localhost", &config.hostname, P_STRING,
 	 NULL, NULL, NULL},
 	{"port", "783", &config.port, P_INT,
+	 NULL, NULL, NULL},
+	{"socket", "", &config.socket, P_STRING,
 	 NULL, NULL, NULL},
 	{"receive_spam", "TRUE", &config.receive_spam, P_BOOL,
 	 NULL, NULL, NULL},
@@ -116,9 +118,23 @@ static gboolean msg_is_spam(FILE *fp)
 	gboolean is_spam = FALSE;
 
 	transport_init(&trans);
-	trans.type = TRANSPORT_TCP;
-	trans.hostname = config.hostname;
-	trans.port = config.port;
+	switch (config.transport) {
+	case SPAMASSASSIN_TRANSPORT_LOCALHOST:
+		trans.type = TRANSPORT_LOCALHOST;
+		trans.port = config.port;
+		break;
+	case SPAMASSASSIN_TRANSPORT_TCP:
+		trans.type = TRANSPORT_TCP;
+		trans.hostname = config.hostname;
+		trans.port = config.port;
+		break;
+	case SPAMASSASSIN_TRANSPORT_UNIX:
+		trans.type = TRANSPORT_UNIX;
+		trans.socketpath = config.socket;
+		break;
+	default:
+		return FALSE;
+	}
 
 	if (transport_setup(&trans, flags) != EX_OK) {
 		debug_print("failed to setup transport\n");
@@ -158,7 +174,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	int pid = 0;
 	int status;
 
-	if (!config.enable)
+	if (config.transport == SPAMASSASSIN_DISABLED)
 		return FALSE;
 
 	debug_print("Filtering message %d\n", msginfo->msgnum);

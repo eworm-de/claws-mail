@@ -1,3 +1,14 @@
+2003-10-04 [christoph]	0.9.6claws5
+
+	* src/prefs_toolbar.c
+	* src/gtk/prefswindow.c
+		remove widget_show_all for pages root widget
+
+	* src/plugins/spamassassin/spamassassin.[ch]
+	* src/plugins/spamassassin/spamassassin_gtk.c
+	* src/plugins/spamassassin/spamassassin_gtk.glade
+		add support for new libspamc transports
+
 2003-10-04 [christoph]	0.9.6claws4
 
 	* src/plugins/spamassassin/libspamc.[ch]
