@@ -305,7 +305,7 @@ gboolean matcherprop_match_execute(MatcherProp * prop, MsgInfo * info)
 		return FALSE;
 
 	retval = system(cmd);
-	debug_print(_("Command exit code: %i\n"), retval);
+	debug_print(_("Command exit code: %d\n"), retval);
 
 	return (retval == 0);
 }

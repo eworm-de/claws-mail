@@ -1616,7 +1616,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 			(folderview->mainwin,
 			 item->folder->type == F_NEWS ? 
 			 COMPOSEBUTTON_NEWS : COMPOSEBUTTON_MAIL);
-	 
+
 	if (item->path)
 		debug_print(_("Folder %s is selected\n"), item->path);
 
@@ -1633,8 +1633,14 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 			gdk_pointer_ungrab(GDK_CURRENT_TIME);
 	}
 
+	if((item->folder->type == F_IMAP) || (item->folder->type == F_NEWS)) {
+		folder_item_scan(item);
+	}
+
 	opened = summary_show(folderview->summaryview, item, FALSE);
 
+	folder_clean_cache_memory();
+	
 	if (!opened) {
 		gtkut_ctree_set_focus_row(ctree, folderview->opened);
 		gtk_ctree_select(ctree, folderview->opened);

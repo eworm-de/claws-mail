@@ -238,6 +238,10 @@ struct _PrefsCommon
 	gboolean ask_on_clean;
 	gboolean warn_queued_on_exit;
 	gboolean return_receipt;
+
+	/* Memory cache*/
+	gint cache_max_mem_usage;
+	gint cache_min_keep_time;
 	
 	/* boolean for work offline 
 	   stored here for use in inc.c */

@@ -105,6 +105,14 @@ static void news_delete_all_articles	 (FolderItem	*item);
 static gint news_remove_msg		 (Folder	*folder, 
 					  FolderItem	*item, 
 					  gint		 num);
+GSList *news_get_num_list		 (Folder 	*folder, 
+					  FolderItem 	*item);
+MsgInfo *news_fetch_msginfo		 (Folder 	*folder, 
+					  FolderItem 	*item,
+					  gint 		 num);
+GSList *news_fetch_msginfos		 (Folder 	*folder,
+					  FolderItem 	*item,
+					  GSList 	*msgnum_list);
 
 Folder *news_folder_new(const gchar *name, const gchar *path)
 {
@@ -128,10 +136,17 @@ static void news_folder_init(Folder *folder, const gchar *name,
 
 	folder->type = F_NEWS;
 
+/*
 	folder->get_msg_list = news_get_article_list;
+*/
 	folder->fetch_msg    = news_fetch_msg;
+/*
 	folder->scan         = news_scan_group;
+*/
 	folder->remove_msg   = news_remove_msg;
+	folder->get_num_list = news_get_num_list;
+	folder->fetch_msginfo = news_fetch_msginfo;
+	folder->fetch_msginfos = news_fetch_msginfos;
 }
 
 #if USE_SSL
@@ -850,7 +865,7 @@ static MsgInfo *news_parse_xover(const gchar *xover_str)
 	line_int = atoi(line);
 
 	/* set MsgInfo */
-	msginfo = g_new0(MsgInfo, 1);
+	msginfo = procmsg_msginfo_new();
 	msginfo->msgnum = num;
 	msginfo->size = size_int;
 
@@ -1002,4 +1017,251 @@ gint news_cancel_article(Folder * folder, MsgInfo * msginfo)
 	g_free(tmp);
 
 	return 0;
+}
+
+GSList *news_get_num_list(Folder *folder, FolderItem *item)
+{
+	NNTPSession *session;
+	gint i, ok, num, first, last;
+	GSList *msgnum_list = NULL;
+
+	session = news_session_get(folder);
+	g_return_val_if_fail(session != NULL, NULL);
+	g_return_val_if_fail(item != NULL, NULL);
+	g_return_val_if_fail(item->folder != NULL, NULL);
+	g_return_val_if_fail(item->folder->type == F_NEWS, NULL);
+
+	ok = news_select_group(session, item->path, &num, &first, &last);
+	if (ok != NN_SUCCESS) {
+		log_warning(_("can't set group: %s\n"), item->path);
+		return NULL;
+	}
+
+	if(last < first) {
+		log_warning(_("invalid article range: %d - %d\n"),
+			    first, last);
+		return NULL;
+	}
+
+	for(i = first; i <= last; i++) {
+		msgnum_list = g_slist_prepend(msgnum_list, GINT_TO_POINTER(i));
+	}
+
+	return msgnum_list;
+}
+
+#define READ_TO_LISTEND(hdr) \
+	while (!(buf[0] == '.' && buf[1] == '\r')) { \
+		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) { \
+			log_warning(_("error occurred while getting " hdr ".\n")); \
+			return msginfo; \
+		} \
+	}
+
+MsgInfo *news_fetch_msginfo(Folder *folder, FolderItem *item, gint num)
+{
+	NNTPSession *session;
+	MsgInfo *msginfo = NULL;
+	gchar buf[NNTPBUFSIZE];
+
+	session = news_session_get(folder);
+	g_return_val_if_fail(session != NULL, NULL);
+	g_return_val_if_fail(item != NULL, NULL);
+	g_return_val_if_fail(item->folder != NULL, NULL);
+	g_return_val_if_fail(item->folder->type == F_NEWS, NULL);
+
+	log_message(_("getting xover %d in %s...\n"),
+		    num, item->path);
+	if (nntp_xover(session->nntp_sock, num, num) != NN_SUCCESS) {
+		log_warning(_("can't get xover\n"));
+		return NULL;
+	}
+	
+	if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
+		log_warning(_("error occurred while getting xover.\n"));
+		return NULL;
+	}
+	
+	msginfo = news_parse_xover(buf);
+	if (!msginfo) {
+		log_warning(_("invalid xover line: %s\n"), buf);
+	}
+
+	READ_TO_LISTEND("xover");
+
+	if(!msginfo)
+		return NULL;
+	
+	msginfo->folder = item;
+	msginfo->flags.perm_flags = MSG_NEW|MSG_UNREAD;
+	msginfo->flags.tmp_flags = MSG_NEWS;
+	msginfo->newsgroups = g_strdup(item->path);
+
+	if (nntp_xhdr(session->nntp_sock, "to", num, num) != NN_SUCCESS) {
+		log_warning(_("can't get xhdr\n"));
+		return msginfo;
+	}
+
+	if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
+		log_warning(_("error occurred while getting xhdr.\n"));
+		return msginfo;
+	}
+
+	msginfo->to = news_parse_xhdr(buf, msginfo);
+
+	READ_TO_LISTEND("xhdr (to)");
+
+	if (nntp_xhdr(session->nntp_sock, "cc", num, num) != NN_SUCCESS) {
+		log_warning(_("can't get xhdr\n"));
+		return msginfo;
+	}
+
+	if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
+		log_warning(_("error occurred while getting xhdr.\n"));
+		return msginfo;
+	}
+
+	msginfo->cc = news_parse_xhdr(buf, msginfo);
+
+	READ_TO_LISTEND("xhdr (cc)");
+
+	return msginfo;
+}
+
+static GSList *news_fetch_msginfo_from_to(NNTPSession *session, FolderItem *item, guint begin, guint end)
+{
+	gchar buf[NNTPBUFSIZE];
+	GSList *newlist = NULL;
+	GSList *llast = NULL;
+	MsgInfo *msginfo;
+
+	g_return_val_if_fail(session != NULL, NULL);
+	g_return_val_if_fail(item != NULL, NULL);
+
+	log_message(_("getting xover %d - %d in %s...\n"),
+		    begin, end, item->path);
+	if (nntp_xover(session->nntp_sock, begin, end) != NN_SUCCESS) {
+		log_warning(_("can't get xover\n"));
+		return NULL;
+	}
+
+	for (;;) {
+		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
+			log_warning(_("error occurred while getting xover.\n"));
+			return newlist;
+		}
+
+		if (buf[0] == '.' && buf[1] == '\r') break;
+
+		msginfo = news_parse_xover(buf);
+		if (!msginfo) {
+			log_warning(_("invalid xover line: %s\n"), buf);
+			continue;
+		}
+
+		msginfo->folder = item;
+		msginfo->flags.perm_flags = MSG_NEW|MSG_UNREAD;
+		msginfo->flags.tmp_flags = MSG_NEWS;
+		msginfo->newsgroups = g_strdup(item->path);
+
+		if (!newlist)
+			llast = newlist = g_slist_append(newlist, msginfo);
+		else {
+			llast = g_slist_append(llast, msginfo);
+			llast = llast->next;
+		}
+	}
+
+	if (nntp_xhdr(session->nntp_sock, "to", begin, end) != NN_SUCCESS) {
+		log_warning(_("can't get xhdr\n"));
+		return newlist;
+	}
+
+	llast = newlist;
+
+	for (;;) {
+		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
+			log_warning(_("error occurred while getting xhdr.\n"));
+			return newlist;
+		}
+
+		if (buf[0] == '.' && buf[1] == '\r') break;
+		if (!llast) {
+			g_warning("llast == NULL\n");
+			continue;
+		}
+
+		msginfo = (MsgInfo *)llast->data;
+		msginfo->to = news_parse_xhdr(buf, msginfo);
+
+		llast = llast->next;
+	}
+
+	if (nntp_xhdr(session->nntp_sock, "cc", begin, end) != NN_SUCCESS) {
+		log_warning(_("can't get xhdr\n"));
+		return newlist;
+	}
+
+	llast = newlist;
+
+	for (;;) {
+		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
+			log_warning(_("error occurred while getting xhdr.\n"));
+			return newlist;
+		}
+
+		if (buf[0] == '.' && buf[1] == '\r') break;
+		if (!llast) {
+			g_warning("llast == NULL\n");
+			continue;
+		}
+
+		msginfo = (MsgInfo *)llast->data;
+		msginfo->cc = news_parse_xhdr(buf, msginfo);
+
+		llast = llast->next;
+	}
+
+	return newlist;
+}
+
+gint news_fetch_msgnum_sort(gconstpointer a, gconstpointer b)
+{
+	return (GPOINTER_TO_INT(a) - GPOINTER_TO_INT(b));
+}
+
+GSList *news_fetch_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
+{
+	NNTPSession *session;
+	GSList *elem, *msginfo_list = NULL, *tmp_msgnum_list, *tmp_msginfo_list;
+	guint first, last, next;
+	
+	g_return_val_if_fail(folder != NULL, NULL);
+	g_return_val_if_fail(folder->type == F_NEWS, NULL);
+	g_return_val_if_fail(msgnum_list != NULL, NULL);
+	g_return_val_if_fail(item != NULL, NULL);
+	
+	session = news_session_get(folder);
+	g_return_val_if_fail(session != NULL, NULL);
+
+	tmp_msgnum_list = g_slist_copy(msgnum_list);
+	tmp_msgnum_list = g_slist_sort(tmp_msgnum_list, news_fetch_msgnum_sort);
+
+	first = GPOINTER_TO_INT(tmp_msgnum_list->data);
+	last = first;
+	for(elem = g_slist_next(tmp_msgnum_list); elem != NULL; elem = g_slist_next(elem)) {
+		next = GPOINTER_TO_INT(elem->data);
+		if(next != (last + 1)) {
+			tmp_msginfo_list = news_fetch_msginfo_from_to(session, item, first, last);
+			msginfo_list = g_slist_concat(msginfo_list, tmp_msginfo_list);
+			first = next;
+		}
+		last = next;
+	}
+	tmp_msginfo_list = news_fetch_msginfo_from_to(session, item, first, last);
+	msginfo_list = g_slist_concat(msginfo_list, tmp_msginfo_list);
+
+	g_slist_free(tmp_msgnum_list);
+	
+	return msginfo_list;
 }

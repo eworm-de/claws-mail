@@ -789,7 +789,14 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 
 	main_window_cursor_wait(summaryview->mainwin);
 
+/*
 	mlist = item->folder->get_msg_list(item->folder, item, !update_cache);
+
+	!!! NEW !!!
+	USE LIST FROM CACHE, WILL NOT DISPLAY ANY MESSAGES DROPED
+	BY OTHER PROGRAMS TO THE FOLDER
+*/
+	mlist = folder_item_get_msg_list(item);
 
 	summary_processing(summaryview, mlist);
 
@@ -860,6 +867,12 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	summary_set_ctree_from_list(summaryview, mlist);
 
 	g_slist_free(mlist);
+
+	summaryview->folder_item->new    = summaryview->newmsgs;
+      	summaryview->folder_item->unread = summaryview->unread;
+      	summaryview->folder_item->total  = summaryview->messages;
+	folderview_update_msg_num(summaryview->folderview,
+				  summaryview->folderview->opened);
 
 	if (item->sort_key != SORT_BY_NONE)
 		summary_sort(summaryview, item->sort_key, item->sort_type);
@@ -1678,6 +1691,10 @@ static void summary_status_show(SummaryView *summaryview)
 		return;
 	}
 
+	summaryview->newmsgs	= summaryview->folder_item->new;
+      	summaryview->unread	= summaryview->folder_item->unread;
+      	summaryview->messages	= summaryview->folder_item->total;
+
 	rowlist = GTK_CLIST(summaryview->ctree)->selection;
 	for (cur = rowlist; cur != NULL; cur = cur->next) {
 		msginfo = gtk_ctree_node_get_row_data
@@ -1757,13 +1774,6 @@ static void summary_status_show(SummaryView *summaryview)
 	}
 	gtk_label_set(GTK_LABEL(summaryview->statlabel_msgs), str);
 	g_free(str);
-
-	summaryview->folder_item->new    = summaryview->newmsgs;
-	summaryview->folder_item->unread = summaryview->unread;
-	summaryview->folder_item->total  = summaryview->messages;
-
-	folderview_update_msg_num(summaryview->folderview,
-				  summaryview->folderview->opened);
 }
 
 static void summary_set_column_titles(SummaryView *summaryview)
@@ -2108,6 +2118,12 @@ gint summary_write_cache(SummaryView *summaryview)
 
 	if (!summaryview->folder_item || !summaryview->folder_item->path)
 		return -1;
+		
+	if (!summaryview->folder_item->cache)
+		return -1;
+	
+	folder_item_write_cache(summaryview->folder_item);
+	return 0;
 
 	if (summaryview->folder_item->folder->update_mark != NULL)
 		summaryview->folder_item->folder->update_mark(summaryview->folder_item->folder, summaryview->folder_item);
@@ -2338,19 +2354,16 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	}
 	g_free(filename);
 
+/* NOT NEEDED ANYMORE
 	if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->newmsgs--;
 	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->unread--;
-	if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags) || 
-	    MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-		MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
-		if (MSG_IS_IMAP(msginfo->flags))
-			imap_msg_unset_perm_flags(msginfo, MSG_NEW | MSG_UNREAD);
-		summary_set_row_marks(summaryview, row);
-		gtk_clist_thaw(GTK_CLIST(ctree));
-		summary_status_show(summaryview);
-	}
+*/
+	procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
+	summary_set_row_marks(summaryview, row);
+	gtk_clist_thaw(GTK_CLIST(ctree));
+	summary_status_show(summaryview);
 
 	flags = msginfo->flags;
 
@@ -2378,14 +2391,6 @@ static void summary_display_msg_full(SummaryView *summaryview,
 		gtkut_ctree_node_move_if_on_the_edge(ctree, row);
 	}
 
-	if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags) ||
-	    (MSG_IS_MIME(msginfo->flags) - MSG_IS_MIME(flags) != 0)) {
-		MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
-		CHANGE_FLAGS(msginfo);
-		summary_set_row_marks(summaryview, row);
-		gtk_clist_thaw(GTK_CLIST(ctree));
-		summary_status_show(summaryview);
-	}
 	summary_set_menu_sensitive(summaryview);
 	main_window_set_toolbar_sensitive(summaryview->mainwin);
 
@@ -2676,12 +2681,8 @@ static void summary_mark_row(SummaryView *summaryview, GtkCTreeNode *row)
 			folderview_update_item(msginfo->to_folder, 0);
 	}
 	msginfo->to_folder = NULL;
-	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_DELETED);
-	MSG_UNSET_TMP_FLAGS(msginfo->flags, MSG_MOVE | MSG_COPY);
-	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_MARKED);
-	if (MSG_IS_IMAP(msginfo->flags))
-		imap_msg_set_perm_flags(msginfo, MSG_MARKED);
-	CHANGE_FLAGS(msginfo);
+	procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, MSG_MOVE | MSG_COPY);
+	procmsg_msginfo_set_flags(msginfo, MSG_MARKED, 0);
 	summary_set_row_marks(summaryview, row);
 	debug_print(_("Message %s/%d is marked\n"), msginfo->folder->path, msginfo->msgnum);
 }
@@ -2710,12 +2711,8 @@ static void summary_lock_row(SummaryView *summaryview, GtkCTreeNode *row)
 			folderview_update_item(msginfo->to_folder, 0);
 	}
 	msginfo->to_folder = NULL;
-	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_DELETED);
-	MSG_UNSET_TMP_FLAGS(msginfo->flags, MSG_MOVE | MSG_COPY);
-	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_LOCKED);
-	if (MSG_IS_IMAP(msginfo->flags))
-		imap_msg_set_perm_flags(msginfo, MSG_LOCKED);
-	CHANGE_FLAGS(msginfo);
+	procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, MSG_MOVE | MSG_COPY);
+	procmsg_msginfo_set_flags(msginfo, MSG_LOCKED, 0);
 	summary_set_row_marks(summaryview, row);
 	debug_print(_("Message %d is locked\n"), msginfo->msgnum);
 }
@@ -2739,20 +2736,16 @@ static void summary_mark_row_as_read(SummaryView *summaryview,
 	MsgInfo *msginfo;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
+/* NOT NEEDED ANYMORE
 	if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->newmsgs--;
 	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->unread--;
-	if (MSG_IS_NEW(msginfo->flags) ||
-	    MSG_IS_UNREAD(msginfo->flags)) {
-		MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
-		if (MSG_IS_IMAP(msginfo->flags))
-			imap_msg_unset_perm_flags(msginfo, MSG_NEW | MSG_UNREAD);
-		CHANGE_FLAGS(msginfo);
-		summary_set_row_marks(summaryview, row);
-		debug_print(_("Message %d is marked as read\n"),
-			    msginfo->msgnum);
-	}
+*/
+	procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
+	summary_set_row_marks(summaryview, row);
+	debug_print(_("Message %d is marked as read\n"),
+		msginfo->msgnum);
 }
 
 void summary_mark_as_read(SummaryView *summaryview)
@@ -2796,22 +2789,18 @@ static void summary_mark_row_as_unread(SummaryView *summaryview,
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 	if (MSG_IS_DELETED(msginfo->flags)) {
 		msginfo->to_folder = NULL;
-		MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_DELETED);
+		procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, 0);
 		summaryview->deleted--;
 	}
-	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_REPLIED | MSG_FORWARDED);
-	if (MSG_IS_IMAP(msginfo->flags))
-		imap_msg_unset_perm_flags(msginfo, MSG_REPLIED);
-	if (!MSG_IS_UNREAD(msginfo->flags)) {
-		MSG_SET_PERM_FLAGS(msginfo->flags, MSG_UNREAD);
-		if (MSG_IS_IMAP(msginfo->flags))
-			imap_msg_set_perm_flags(msginfo, MSG_UNREAD);
+/* NOT NEEDED ANYMORE
+	if (!MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->unread++;
-		debug_print(_("Message %d is marked as unread\n"),
-			    msginfo->msgnum);
-	}
+*/
 
-	CHANGE_FLAGS(msginfo);
+	procmsg_msginfo_unset_flags(msginfo, MSG_REPLIED | MSG_FORWARDED, 0);
+	procmsg_msginfo_set_flags(msginfo, MSG_UNREAD, 0);
+	debug_print(_("Message %d is marked as unread\n"),
+		msginfo->msgnum);
 
 	summary_set_row_marks(summaryview, row);
 }
@@ -2906,12 +2895,8 @@ static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 			folderview_update_item(msginfo->to_folder, 0);
 	}
 	msginfo->to_folder = NULL;
-	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_MARKED);
-	if (MSG_IS_IMAP(msginfo->flags))
-		imap_msg_unset_perm_flags(msginfo, MSG_MARKED);
-	MSG_UNSET_TMP_FLAGS(msginfo->flags, MSG_MOVE | MSG_COPY);
-	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_DELETED);
-	CHANGE_FLAGS(msginfo);
+	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED, MSG_MOVE | MSG_COPY);
+	procmsg_msginfo_set_flags(msginfo, MSG_DELETED, 0);
 	summaryview->deleted++;
 
 	if (!prefs_common.immediate_exec && 
@@ -3038,11 +3023,7 @@ static void summary_unmark_row(SummaryView *summaryview, GtkCTreeNode *row)
 			folderview_update_item(msginfo->to_folder, 0);
 	}
 	msginfo->to_folder = NULL;
-	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_MARKED | MSG_DELETED);
-	if (MSG_IS_IMAP(msginfo->flags))
-		imap_msg_unset_perm_flags(msginfo, MSG_MARKED);
-	MSG_UNSET_TMP_FLAGS(msginfo->flags, MSG_MOVE | MSG_COPY);
-	CHANGE_FLAGS(msginfo);
+	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, MSG_MOVE | MSG_COPY);
 	summary_set_row_marks(summaryview, row);
 
 	debug_print(_("Message %s/%d is unmarked\n"),
@@ -3087,12 +3068,9 @@ static void summary_move_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 		if (!prefs_common.immediate_exec)
 			msginfo->to_folder->op_count--;
 	}
-	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_MARKED | MSG_DELETED);
-	if (MSG_IS_IMAP(msginfo->flags))
-		imap_msg_unset_perm_flags(msginfo, MSG_MARKED);
-	MSG_UNSET_TMP_FLAGS(msginfo->flags, MSG_COPY);
+	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, MSG_COPY);
 	if (!MSG_IS_MOVE(msginfo->flags)) {
-		MSG_SET_TMP_FLAGS(msginfo->flags, MSG_MOVE);
+		procmsg_msginfo_set_flags(msginfo, 0, MSG_MOVE);
 		summaryview->moved++;
 		changed = TRUE;
 	}
@@ -3179,12 +3157,9 @@ static void summary_copy_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 		if (!prefs_common.immediate_exec)
 			msginfo->to_folder->op_count--;
 	}
-	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_MARKED | MSG_DELETED);
-	if (MSG_IS_IMAP(msginfo->flags))
-		imap_msg_unset_perm_flags(msginfo, MSG_MARKED);
-	MSG_UNSET_TMP_FLAGS(msginfo->flags, MSG_MOVE);
+	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, MSG_MOVE);
 	if (!MSG_IS_COPY(msginfo->flags)) {
-		MSG_SET_TMP_FLAGS(msginfo->flags, MSG_COPY);
+		procmsg_msginfo_set_flags(msginfo, 0, MSG_COPY);
 		summaryview->copied++;
 		changed = TRUE;
 	}
@@ -3422,7 +3397,6 @@ static void summary_execute_move(SummaryView *summaryview)
 	if (summaryview->mlist) {
 		procmsg_move_messages(summaryview->mlist);
 
-		folder_item_scan_foreach(summaryview->folder_table);
 		folderview_update_item_foreach(summaryview->folder_table);
 
 		for (cur = summaryview->mlist; cur != NULL; cur = cur->next)
@@ -3431,6 +3405,7 @@ static void summary_execute_move(SummaryView *summaryview)
 		summaryview->mlist = NULL;
 	}
 
+	folderview_update_item(summaryview->folder_item, FALSE);
 	g_hash_table_destroy(summaryview->folder_table);
 	summaryview->folder_table = NULL;
 }
@@ -3476,7 +3451,7 @@ static void summary_execute_copy(SummaryView *summaryview)
 	if (summaryview->mlist) {
 		procmsg_copy_messages(summaryview->mlist);
 
-		folder_item_scan_foreach(summaryview->folder_table);
+		/* folder_item_scan_foreach(summaryview->folder_table); */
 		folderview_update_item_foreach(summaryview->folder_table);
 
 		g_slist_free(summaryview->mlist);
@@ -3506,7 +3481,7 @@ static void summary_execute_copy_func(GtkCTree *ctree, GtkCTreeNode *node,
 		summaryview->mlist =
 			g_slist_append(summaryview->mlist, msginfo);
 
-		MSG_UNSET_TMP_FLAGS(msginfo->flags, MSG_COPY);
+		procmsg_msginfo_unset_flags(msginfo, 0, MSG_COPY);
 		summary_set_row_marks(summaryview, node);
 	}
 }
@@ -3541,9 +3516,9 @@ static void summary_execute_delete(SummaryView *summaryview)
 	summaryview->mlist = NULL;
 
 	if ((summaryview->folder_item != trash) && (trash != NULL)) {
-		folder_item_scan(trash);
 		folderview_update_item(trash, FALSE);
 	}
+	folderview_update_item(summaryview->folder_item, FALSE);
 }
 
 static void summary_execute_delete_func(GtkCTree *ctree, GtkCTreeNode *node,
@@ -3795,7 +3770,7 @@ void summary_processing(SummaryView *summaryview, GSList * mlist)
 					  summaryview->folder_table);
 	}
 	
-	folder_item_scan_foreach(summaryview->folder_table);
+	/* folder_item_scan_foreach(summaryview->folder_table); */
 	folderview_update_item_foreach(summaryview->folder_table);
 	
 	g_hash_table_destroy(summaryview->folder_table);
@@ -3889,7 +3864,7 @@ void summary_filter(SummaryView *summaryview)
 
 		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 
-		folder_item_scan_foreach(summaryview->folder_table);
+		/* folder_item_scan_foreach(summaryview->folder_table); */
 		folderview_update_item_foreach(summaryview->folder_table);
 
 		g_hash_table_destroy(summaryview->folder_table);
@@ -4173,8 +4148,8 @@ void summary_set_colorlabel_color(GtkCTree *ctree, GtkCTreeNode *node,
 	gint color_index;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, node);
-	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_CLABEL_FLAG_MASK);
-	MSG_SET_COLORLABEL_VALUE(msginfo->flags, labelcolor);
+	procmsg_msginfo_unset_flags(msginfo, MSG_CLABEL_FLAG_MASK, 0);
+	procmsg_msginfo_set_flags(msginfo, MSG_COLORLABEL_TO_FLAGS(labelcolor), 0);
 
 	color_index = labelcolor == 0 ? -1 : (gint)labelcolor - 1;
 	ctree_style = gtk_widget_get_style(GTK_WIDGET(ctree));
@@ -4588,6 +4563,12 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		textview_scroll_one_line(summaryview->messageview->textview,
 					 (event->state & GDK_MOD1_MASK) != 0);
 		break;
+	case GDK_asterisk:	/* Mark */
+		summary_mark(summaryview);
+		break;
+	case GDK_exclam:	/* Mark as unread */
+		summary_mark_as_unread(summaryview);
+		break;
 	case GDK_Delete:
 		RETURN_IF_LOCKED();
 		BREAK_ON_MODIFIER_KEY();
@@ -4644,10 +4625,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	switch (column < 0 ? column : summaryview->col_state[column].type) {
 	case S_COL_MARK:
 		if (MSG_IS_MARKED(msginfo->flags)) {
-			MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_MARKED);
-			if (MSG_IS_IMAP(msginfo->flags))
-				imap_msg_unset_perm_flags(msginfo, MSG_MARKED);
-			CHANGE_FLAGS(msginfo);
+			procmsg_msginfo_unset_flags(msginfo, MSG_MARKED, 0);
 			summary_set_row_marks(summaryview, row);
 		} else
 			summary_mark_row(summaryview, row);
@@ -4664,8 +4642,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		break;
 	case S_COL_LOCKED:
 		if (MSG_IS_LOCKED(msginfo->flags)) {
-			MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_LOCKED);
-			CHANGE_FLAGS(msginfo);
+			procmsg_msginfo_unset_flags(msginfo, MSG_LOCKED, 0);
 			summary_set_row_marks(summaryview, row);
 		}
 		else
@@ -5076,13 +5053,13 @@ static void summary_ignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpoin
 	MsgInfo *msginfo;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
+/* NOT NEEDED ANYMORE
 	if (MSG_IS_NEW(msginfo->flags))
 		summaryview->newmsgs--;
 	if (MSG_IS_UNREAD(msginfo->flags))
 		summaryview->unread--;
-	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
-
-	CHANGE_FLAGS(msginfo);
+*/
+	procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 
 	summary_set_row_marks(summaryview, row);
 	debug_print(_("Message %d is marked as ignore thread\n"),
@@ -5108,14 +5085,14 @@ static void summary_unignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpo
 	MsgInfo *msginfo;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
+/* NOT NEEDED ANYMORE
 	if (MSG_IS_NEW(msginfo->flags))
 		summaryview->newmsgs++;
 	if (MSG_IS_UNREAD(msginfo->flags))
 		summaryview->unread++;
-	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
+*/
+	procmsg_msginfo_unset_flags(msginfo, MSG_IGNORE_THREAD, 0);
 
-	CHANGE_FLAGS(msginfo);
-		
 	summary_set_row_marks(summaryview, row);
 	debug_print(_("Message %d is marked as unignore thread\n"),
 	    msginfo->msgnum);
@@ -5148,6 +5125,7 @@ static gboolean processing_apply_func(GNode *node, gpointer data)
 		return FALSE;
 	processing = item->prefs->processing;
 
+
 	if (processing != NULL) {
 		gchar * buf;
 		GSList * mlist;
@@ -5158,9 +5136,11 @@ static gboolean processing_apply_func(GNode *node, gpointer data)
 		STATUSBAR_PUSH(summaryview->mainwin, buf);
 		g_free(buf);
 
+/*
 		mlist = item->folder->get_msg_list(item->folder, item,
 						   TRUE);
-		
+*/		
+		mlist = folder_item_get_msg_list(item);
 		for(cur = mlist ; cur != NULL ; cur = cur->next) {
 			MsgInfo * msginfo;
 			

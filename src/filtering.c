@@ -138,7 +138,6 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 			val = GPOINTER_TO_INT(g_hash_table_lookup
 					      (folder_table, dest_folder));
 			if (val == 0) {
-				folder_item_scan(dest_folder);
 				g_hash_table_insert(folder_table, dest_folder,
 						    GINT_TO_POINTER(1));
 			}
@@ -159,7 +158,6 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 			val = GPOINTER_TO_INT(g_hash_table_lookup
 					      (folder_table, dest_folder));
 			if (val == 0) {
-				folder_item_scan(dest_folder);
 				g_hash_table_insert(folder_table, dest_folder,
 						    GINT_TO_POINTER(1));
 			}

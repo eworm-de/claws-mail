@@ -3329,7 +3329,6 @@ static gint compose_remove_reedit_target(Compose *compose)
 	item = msginfo->folder;
 	g_return_val_if_fail(item != NULL, -1);
 
-	folder_item_scan(item);
 	if (procmsg_msg_exist(msginfo) &&
 	    (item->stype == F_DRAFT || item->stype == F_QUEUE)) {
 		if (folder_item_remove_msg(item, msginfo->msgnum) < 0) {
@@ -3548,8 +3547,6 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 				(compose->targetinfo->folder, TRUE);
 	}
 
-	procmsg_add_flags(queue, num, flag);
-	folder_item_scan(queue);
 	folderview_update_item(queue, TRUE);
 
 	if((msgnum != NULL) && (item != NULL)) {
@@ -6146,7 +6143,8 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	gint msgnum;
 	MsgFlags flag = {0, 0};
 	static gboolean lock = FALSE;
-
+	MsgInfo *newmsginfo;
+	
 	if (lock) return;
 
 	draft = account_get_special_folder(compose->account, F_DRAFT);
@@ -6163,7 +6161,6 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		return;
 	}
 
-	folder_item_scan(draft);
 	if ((msgnum = folder_item_add_msg(draft, tmp, TRUE)) < 0) {
 		unlink(tmp);
 		g_free(tmp);
@@ -6181,10 +6178,11 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 					       TRUE);
 	}
 
-	procmsg_add_flags(draft, msgnum, flag);
-	folder_item_scan(draft);
+	newmsginfo = folder_item_fetch_msginfo(draft, msgnum);
+	procmsg_msginfo_unset_flags(newmsginfo, ~0, ~0);
 	folderview_update_item(draft, TRUE);
-
+	procmsg_msginfo_free(newmsginfo);
+	
 	lock = FALSE;
 
 	/* 0: quit editing  1: keep editing */
@@ -6205,7 +6203,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 		g_free(path);
 
 		procmsg_msginfo_free(compose->targetinfo);
-		compose->targetinfo = g_new0(MsgInfo, 1);
+		compose->targetinfo = procmsg_msginfo_new();
 		compose->targetinfo->msgnum = msgnum;
 		compose->targetinfo->size = s.st_size;
 		compose->targetinfo->mtime = s.st_mtime;

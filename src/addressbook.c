@@ -431,11 +431,12 @@ void addressbook_open(Compose *target)
 		addressbook_load_tree();
 		gtk_ctree_select(GTK_CTREE(addrbook.ctree),
 				 GTK_CTREE_NODE(GTK_CLIST(addrbook.ctree)->row_list));
-	} else
+	}
+	else {
 		gtk_widget_hide(addrbook.window);
+	}
 
 	gtk_widget_show_all(addrbook.window);
-
 	addressbook_set_target_compose(target);
 }
 
@@ -458,7 +459,6 @@ void addressbook_destroy() {
 void addressbook_set_target_compose(Compose *target)
 {
 	addrbook.target_compose = target;
-
 	addressbook_button_set_sensitive();
 }
 

@@ -581,8 +581,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			/* get list of messages in processing */
 			processing = folder_get_default_processing();
 			folder_item_scan(processing);
-			folder = processing->folder;
-			msglist = folder->get_msg_list(folder, processing, FALSE);
+			msglist = folder_item_get_msg_list(processing);
 
 			/* process messages */
 			for(msglist_element = msglist; msglist_element != NULL; msglist_element = msglist_element->next) {
@@ -605,11 +604,8 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 		new_msgs += pop3_state->cur_total_num;
 
-		if (!prefs_common.scan_all_after_inc) {
-			folder_item_scan_foreach(pop3_state->folder_table);
-			folderview_update_item_foreach
-				(pop3_state->folder_table);
-		}
+		folderview_update_item_foreach
+			(pop3_state->folder_table);
 
 		if (pop3_state->error_val == PS_AUTHFAIL &&
 		    pop3_state->ac_prefs->tmp_pass) {
@@ -1036,7 +1032,6 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 	val = GPOINTER_TO_INT(g_hash_table_lookup
 			      (state->folder_table, dropfolder));
 	if (val == 0) {
-		folder_item_scan(dropfolder);
 		g_hash_table_insert(state->folder_table, dropfolder,
 				    GINT_TO_POINTER(1));
 	}
@@ -1191,12 +1186,10 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 		if (!prefs_common.scan_all_after_inc) {
 		g_hash_table_insert(folder_table, dest,
 				    GINT_TO_POINTER(1));
-			folder_item_scan_foreach(folder_table);
 			folderview_update_item_foreach(folder_table);
 		}
 		g_hash_table_destroy(folder_table);
 	} else if (!prefs_common.scan_all_after_inc) {
-		folder_item_scan(dest);
 		folderview_update_item(dest, FALSE);
 	}
 

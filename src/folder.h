@@ -36,6 +36,7 @@ typedef struct _FolderItem	FolderItem;
 #include "prefs_account.h"
 #include "session.h"
 #include "procmsg.h"
+#include "msgcache.h"
 
 #define FOLDER(obj)		((Folder *)obj)
 #define FOLDER_TYPE(obj)	(FOLDER(obj)->type)
@@ -101,6 +102,8 @@ typedef void (*FolderUIFunc)		(Folder		*folder,
 typedef void (*FolderDestroyNotify)	(Folder		*folder,
 					 FolderItem	*item,
 					 gpointer	 data);
+typedef void (*FolderItemFunc)		(FolderItem	*item,
+					 gpointer	 data);
 
 struct _Folder
 {
@@ -125,12 +128,20 @@ struct _Folder
 	GHashTable *newsart;
 
 	/* virtual functions */
+/*
 	GSList * (*get_msg_list)	(Folder		*folder,
 					 FolderItem	*item,
 					 gboolean	 use_cache);
+*/
 	gchar *  (*fetch_msg)		(Folder		*folder,
 					 FolderItem	*item,
 					 gint		 num);
+	MsgInfo *(*fetch_msginfo)	(Folder		*folder,
+					 FolderItem	*item,
+					 gint		 num);
+	GSList  *(*fetch_msginfos)	(Folder		*folder,
+					 FolderItem	*item,
+					 GSList		*msgnum_list);
 	gint     (*add_msg)		(Folder		*folder,
 					 FolderItem	*dest,
 					 const gchar	*file,
@@ -155,7 +166,8 @@ struct _Folder
 	gboolean (*is_msg_changed)	(Folder		*folder,
 					 FolderItem	*item,
 					 MsgInfo	*msginfo);
-	gint     (*scan)		(Folder		*folder,
+	gint     (*scan)		(Folder		*folder);
+	GSList	* (*get_num_list)	(Folder		*folder,
 					 FolderItem	*item);
 	void     (*scan_tree)		(Folder		*folder);
 
@@ -174,7 +186,8 @@ struct _Folder
 					 FolderItem	*item,
 					 MsgInfo        *info);
 	void     (*finished_copy)       (Folder * folder, FolderItem * item);
-	void     (*finished_remove)       (Folder * folder, FolderItem * item);
+	void     (*finished_remove)     (Folder * folder, FolderItem * item);
+	gboolean (*check_msgnum_validity) (Folder * folder, FolderItem * item);
 };
 
 struct _LocalFolder
@@ -213,6 +226,8 @@ struct _FolderItem
 	gint total;
 
 	gint last_num;
+
+	MsgCache *cache;
 
 	/* special flags */
 	guint no_sub         : 1; /* no child allowed?    */
@@ -282,6 +297,8 @@ GList *folder_get_list		(void);
 gint   folder_read_list		(void);
 void   folder_write_list	(void);
 void   folder_update_op_count		(void);
+void   folder_func_to_all_folders	(FolderItemFunc function,
+					 gpointer data);
 void   folder_count_total_msgs	(guint		*new,
 				 guint		*unread,
 				 guint		*total);
@@ -306,6 +323,9 @@ void folder_set_missing_folders		(void);
 gchar *folder_item_get_path		(FolderItem	*item);
 gint   folder_item_scan			(FolderItem	*item);
 void   folder_item_scan_foreach		(GHashTable	*table);
+MsgInfo *folder_item_fetch_msginfo	(FolderItem 	*item,
+					 gint		 num);
+GSList *folder_item_get_msg_list	(FolderItem 	*item);
 gchar *folder_item_fetch_msg		(FolderItem	*item,
 					 gint		 num);
 gint   folder_item_add_msg		(FolderItem	*dest,
@@ -337,5 +357,6 @@ const PersistPrefs *folder_get_persist_prefs
 					(GHashTable *pptable, const char *name);
 
 void folder_item_restore_persist_prefs	(FolderItem *item, GHashTable *pptable);
+void folder_clean_cache_memory		();
 
 #endif /* __FOLDER_H__ */
