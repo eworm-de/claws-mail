@@ -1,3 +1,12 @@
+2005-03-18 [paul]	1.0.3cvs3.1
+
+	* AUTHORS
+	* ChangeLog.claws
+	* configure.ac
+	* src/gtk/about.c
+	* src/pixmaps/sylpheed_logo.xpm
+		sync with HEAD
+
 2005-03-18 [colin]	1.0.3cvs2.6
 
 	* src/summaryview.c

@@ -63,10 +63,12 @@ void about_show(void)
 
 static void about_create(void)
 {
-	GtkWidget *vbox;
 	GtkWidget *pixmap;
 	GtkWidget *label;
-	GtkWidget *hbox;
+	GtkWidget *hbox1;
+	GtkWidget *hbox2;
+	GtkWidget *vbox1;
+ 	GtkWidget *vbox2;
 	GtkWidget *button;
 	GtkWidget *scrolledwin;
 	GtkWidget *text;
@@ -95,15 +97,47 @@ static void about_create(void)
 			 G_CALLBACK(key_pressed), NULL);
 	gtk_widget_realize(window);
 
-	vbox = gtk_vbox_new(FALSE, 6);
-	gtk_container_add(GTK_CONTAINER(window), vbox);
+	vbox1 = gtk_vbox_new(FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(window), vbox1);
+
+	hbox1 = gtk_hbox_new (FALSE, 0);
+  	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
 	pixmap = stock_pixmap_widget(window, STOCK_PIXMAP_SYLPHEED_LOGO);
-	gtk_box_pack_start(GTK_BOX(vbox), pixmap, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox1), pixmap, FALSE, FALSE, 0);
 
-	label = gtk_label_new("version "VERSION);
+  	vbox2 = gtk_vbox_new (FALSE, 6);
+  	gtk_box_pack_start (GTK_BOX (hbox1), vbox2, TRUE, FALSE, 0);
+	
+	label = gtk_label_new("Sylpheed-Claws\nversion "VERSION);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
-	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
+	gtk_box_pack_start(GTK_BOX(vbox2), label, TRUE, FALSE, 0);
+
+	hbox2 = gtk_hbox_new(FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox2), hbox2, FALSE, FALSE, 0);
+
+	button = gtk_button_new_with_label(" "HOMEPAGE_URI" ");
+	gtk_box_pack_start(GTK_BOX(hbox2), button, TRUE, FALSE, 0);
+	gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
+	g_signal_connect(G_OBJECT(button), "clicked",
+			 G_CALLBACK(about_uri_clicked), NULL);
+	buf[0] = ' ';
+	for (i = 1; i <= strlen(HOMEPAGE_URI); i++) buf[i] = '_';
+	strcpy(buf + i, " ");
+	gtk_label_set_pattern(GTK_LABEL(GTK_BIN(button)->child), buf);
+	cmap = gdk_window_get_colormap(window->window);
+	gdk_colormap_alloc_colors(cmap, uri_color, 2, FALSE, TRUE, success);
+	if (success[0] == TRUE && success[1] == TRUE) {
+		gtk_widget_ensure_style(GTK_BIN(button)->child);
+		style = gtk_style_copy
+			(gtk_widget_get_style(GTK_BIN(button)->child));
+		style->fg[GTK_STATE_NORMAL]   = uri_color[0];
+		style->fg[GTK_STATE_ACTIVE]   = uri_color[1];
+		style->fg[GTK_STATE_PRELIGHT] = uri_color[0];
+		gtk_widget_set_style(GTK_BIN(button)->child, style);
+	} else
+		g_warning("about_create(): color allocation failed.\n");
 
 #if HAVE_SYS_UTSNAME_H
 	uname(&utsbuf);
@@ -122,7 +156,7 @@ static void about_create(void)
 	label = gtk_label_new(buf);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_CENTER);
-	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox2), label, FALSE, FALSE, 0);
 
 	g_snprintf(buf, sizeof(buf),
 		   _("Compiled-in features:%s"),
@@ -160,44 +194,20 @@ static void about_create(void)
 
 	label = gtk_label_new(buf);
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
-	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
+	gtk_box_pack_start(GTK_BOX(vbox2), label, FALSE, FALSE, 0);
 
 	label = gtk_label_new
 		("Copyright (C) 1999-2005 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>");
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
-	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
-
-	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
-
-	button = gtk_button_new_with_label(" "HOMEPAGE_URI" ");
-	gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, FALSE, 0);
-	gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
-	g_signal_connect(G_OBJECT(button), "clicked",
-			 G_CALLBACK(about_uri_clicked), NULL);
-	buf[0] = ' ';
-	for (i = 1; i <= strlen(HOMEPAGE_URI); i++) buf[i] = '_';
-	strcpy(buf + i, " ");
-	gtk_label_set_pattern(GTK_LABEL(GTK_BIN(button)->child), buf);
-	cmap = gdk_window_get_colormap(window->window);
-	gdk_colormap_alloc_colors(cmap, uri_color, 2, FALSE, TRUE, success);
-	if (success[0] == TRUE && success[1] == TRUE) {
-		gtk_widget_ensure_style(GTK_BIN(button)->child);
-		style = gtk_style_copy
-			(gtk_widget_get_style(GTK_BIN(button)->child));
-		style->fg[GTK_STATE_NORMAL]   = uri_color[0];
-		style->fg[GTK_STATE_ACTIVE]   = uri_color[1];
-		style->fg[GTK_STATE_PRELIGHT] = uri_color[0];
-		gtk_widget_set_style(GTK_BIN(button)->child, style);
-	} else
-		g_warning("about_create(): color allocation failed.\n");
+	gtk_box_pack_start(GTK_BOX(vbox1), label, FALSE, FALSE, 4);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
 				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(scrolledwin),
 					    GTK_SHADOW_IN);
-	gtk_box_pack_start(GTK_BOX(vbox), scrolledwin, TRUE, TRUE, 0);
+	gtk_box_pack_start(GTK_BOX(vbox1), scrolledwin, TRUE, TRUE, 0);
 
 	text = gtk_text_view_new();
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), FALSE);
@@ -229,7 +239,7 @@ static void about_create(void)
 
 	gtkut_stock_button_set_create(&confirm_area, &ok_button, GTK_STOCK_OK,
 				      NULL, NULL, NULL, NULL);
-	gtk_box_pack_end(GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
+	gtk_box_pack_end(GTK_BOX(vbox1), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default(ok_button);
 	g_signal_connect_closure
 		(G_OBJECT(ok_button), "clicked",
