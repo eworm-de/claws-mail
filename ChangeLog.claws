@@ -1,3 +1,9 @@
+2005-03-20 [paul]	1.0.3cvs5
+
+	* src/compose.c
+		neglect Reply-To header if empty
+		Patch by Alfons
+
 2005-03-19 [holger]	1.0.3cvs4
 
 	* src/summaryview.c
