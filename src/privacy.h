@@ -33,6 +33,9 @@ typedef enum {
 
 #include "procmime.h"
 
+void privacy_register_system		(PrivacySystem *system);
+void privacy_unregister_system		(PrivacySystem *system);
+
 void privacy_free_privacydata		(PrivacyData *);
 
 gboolean privacy_mimeinfo_is_signed	(MimeInfo *);
@@ -45,16 +48,17 @@ gint privacy_decrypt			(MimeInfo *);
 #endif
 
 struct _PrivacySystem {
+	gchar		 *name;
+
 	void		 (*free_privacydata)	(PrivacyData *);
 
 	gboolean	 (*is_signed)		(MimeInfo *);
 	const gchar	*(*get_signer)		(MimeInfo *);
 	SignatureStatus	 (*check_signature)	(MimeInfo *);
 
-#if 0 /* NOT YET */
+	/* NOT YET */
 	gboolean	 (*is_encrypted)	(MimeInfo *);
 	MimeInfo	*(*decrypt)		(MimeInfo *);
-#endif
 };
 
 struct _PrivacyData {

@@ -46,6 +46,7 @@
 #include "select-keys.h"
 #include "sigstatus.h"
 #include "rfc2015.h"
+#include "alertpanel.h"
 
 #define DIM(v)     (sizeof(v)/sizeof((v)[0]))
 
@@ -1460,6 +1461,90 @@ failure:
     gpgme_data_release(text);
     gpgme_data_release(sigdata);
     return -1;
+}
+
+static gboolean rfc2015_is_signed(MimeInfo *mimeinfo)
+{
+	MimeInfo *parent;
+	MimeInfo *signature;
+	gchar *protocol;
+
+	g_return_val_if_fail(mimeinfo != NULL, FALSE);
+	
+	/* check parent */
+	parent = mimeinfo->parent;
+	if (parent == NULL)
+		return FALSE;
+	if ((parent->type != MIMETYPE_MULTIPART) ||
+	    g_strcasecmp(parent->subtype, "signed"))
+		return FALSE;
+	protocol = g_hash_table_lookup(parent->parameters, "protocol");
+	if ((protocol == NULL) || g_strcasecmp(protocol, "application/pgp-signature"))
+		return FALSE;
+
+	/* check if mimeinfo is the first child */
+	if (parent->children != mimeinfo)
+		return FALSE;
+
+	/* check signature */
+	signature = parent->children->next;
+	if (signature == NULL)
+		return FALSE;
+	if ((signature->type != MIMETYPE_APPLICATION) ||
+	    g_strcasecmp(signature->subtype, "pgp-signature"))
+		return FALSE;
+
+	return TRUE;
+}
+
+static void idle_function_for_gpgme(void)
+{
+	while (gtk_events_pending())
+		gtk_main_iteration();
+}
+
+static PrivacySystem rfc2015_system = {
+	"PGP/Mime",		/* name */
+
+	g_free,			/* free_privacydata */
+
+	rfc2015_is_signed,	/* is_signed(MimeInfo *) */
+	NULL,			/* get_signer(MimeInfo *) */
+	NULL,			/* check_signature(MimeInfo *) */
+
+	/* NOT YET */
+	NULL,			/* is_encrypted(MimeInfo *) */
+	NULL,			/* decrypt(MimeInfo *) */
+};
+
+void rfc2015_init()
+{
+	if (gpgme_engine_check_version(GPGME_PROTOCOL_OpenPGP) != 
+			GPGME_No_Error) {  /* Also does some gpgme init */
+		rfc2015_disable_all();
+		debug_print("gpgme_engine_version:\n%s\n",
+			    gpgme_get_engine_info());
+
+		if (prefs_common.gpg_warning) {
+			AlertValue val;
+
+			val = alertpanel_message_with_disable
+				(_("Warning"),
+				 _("GnuPG is not installed properly, or needs to be upgraded.\n"
+				   "OpenPGP support disabled."));
+			if (val & G_ALERTDISABLE)
+				prefs_common.gpg_warning = FALSE;
+		}
+	} else
+		privacy_register_system(&rfc2015_system);
+
+	gpgme_register_idle(idle_function_for_gpgme);
+}
+
+void rfc2015_done()
+{
+	privacy_unregister_system(&rfc2015_system);
+        gpgmegtk_free_passphrase();
 }
 
 #endif /* USE_GPGME */

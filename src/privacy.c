@@ -22,6 +22,18 @@
 #include "privacy.h"
 #include "procmime.h"
 
+static GSList *systems = NULL;
+
+void privacy_register_system(PrivacySystem *system)
+{
+	systems = g_slist_append(systems, system);
+}
+
+void privacy_unregister_system(PrivacySystem *system)
+{
+	systems = g_slist_remove(systems, system);
+}
+
 void privacy_free_privacydata(PrivacyData *privacydata)
 {
 	g_return_if_fail(privacydata != NULL);
@@ -31,10 +43,26 @@ void privacy_free_privacydata(PrivacyData *privacydata)
 
 gboolean privacy_mimeinfo_is_signed(MimeInfo *mimeinfo)
 {
-	g_return_val_if_fail(mimeinfo != NULL, NULL);
+	GSList *cur;
+	g_return_val_if_fail(mimeinfo != NULL, FALSE);
+
+	if (mimeinfo->privacy != NULL) {
+		PrivacySystem *system = mimeinfo->privacy->system;
+
+		if (system->is_signed != NULL)
+			return system->is_signed(mimeinfo);
+		else
+			return FALSE;
+	}
+
+	for(cur = systems; cur != NULL; cur = g_slist_next(cur)) {
+		PrivacySystem *system = (PrivacySystem *) cur->data;
+
+		if(system->is_signed != NULL && system->is_signed(mimeinfo))
+			return TRUE;			
+	}
 
 	return FALSE;
-	/* return mimeinfo->type == MIMETYPE_TEXT ? TRUE : FALSE; */
 }
 
 const gchar *privacy_get_signer(MimeInfo *mimeinfo)
@@ -46,7 +74,7 @@ const gchar *privacy_get_signer(MimeInfo *mimeinfo)
 
 gboolean privacy_mimeinfo_is_encrypted(MimeInfo *mimeinfo)
 {
-	g_return_val_if_fail(mimeinfo != NULL, NULL);
+	g_return_val_if_fail(mimeinfo != NULL, FALSE);
 
 	return FALSE;
 }

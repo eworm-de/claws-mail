@@ -1,3 +1,10 @@
+2003-10-10 [thorsten]	0.9.6claws14
+
+	* src/main.c
+	* src/privacy.[ch]
+	* src/rfc2015.[ch]
+		implement detection of signed message parts for rfc2015
+
 2003-10-10 [thorsten]	0.9.6claws13
 
 	* src/mimeview.c
