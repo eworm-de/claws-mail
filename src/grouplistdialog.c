@@ -38,6 +38,8 @@
 #include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkhbbox.h>
+#include <string.h>
+#include <fnmatch.h>
 
 #include "intl.h"
 #include "grouplistdialog.h"
@@ -65,7 +67,7 @@ static GSList *group_list;
 static Folder *news_folder;
 
 static void grouplist_dialog_create	(void);
-static void grouplist_dialog_set_list	(void);
+static void grouplist_dialog_set_list	(gchar * pattern);
 static void grouplist_clear		(void);
 static void grouplist_recv_func		(SockInfo	*sock,
 					 gint		 count,
@@ -104,7 +106,7 @@ gchar *grouplist_dialog(Folder *folder)
 	manage_window_set_transient(GTK_WINDOW(dialog));
 	GTK_EVENTS_FLUSH();
 
-	grouplist_dialog_set_list();
+	grouplist_dialog_set_list(NULL);
 
 	gtk_main();
 
@@ -120,7 +122,6 @@ gchar *grouplist_dialog(Folder *folder)
 	} else
 		str = NULL;
 
-	grouplist_clear();
 	GTK_EVENTS_FLUSH();
 
 	debug_print("return string = %s\n", str ? str : "(none)");
@@ -218,13 +219,18 @@ static void grouplist_dialog_create(void)
 	gtk_widget_show_all(GTK_DIALOG(dialog)->vbox);
 }
 
-static void grouplist_dialog_set_list(void)
+static void grouplist_dialog_set_list(gchar * pattern)
 {
 	GSList *cur;
 	gint row;
 
+	if (pattern == NULL)
+		pattern = "*";
+
 	if (locked) return;
 	locked = TRUE;
+
+	grouplist_clear();
 
 	recv_set_ui_func(grouplist_recv_func, NULL);
 	group_list = news_get_group_list(news_folder);
@@ -237,9 +243,12 @@ static void grouplist_dialog_set_list(void)
 
 	gtk_clist_freeze(GTK_CLIST(clist));
 	for (cur = group_list; cur != NULL ; cur = cur->next) {
-		row = gtk_clist_append(GTK_CLIST(clist),
-				       (gchar **)&(cur->data));
-		gtk_clist_set_row_data(GTK_CLIST(clist), row, cur->data);
+		if (fnmatch(pattern, cur->data, 0) == 0) {
+			row = gtk_clist_append(GTK_CLIST(clist),
+					       (gchar **)&(cur->data));
+			gtk_clist_set_row_data(GTK_CLIST(clist), row,
+					       cur->data);
+		}
 	}
 	gtk_clist_thaw(GTK_CLIST(clist));
 
@@ -278,12 +287,19 @@ static void cancel_clicked(GtkWidget *widget, gpointer data)
 }
 
 static void refresh_clicked(GtkWidget *widget, gpointer data)
-{ 
+{
+	gchar * str;
+ 
 	if (locked) return;
 
 	grouplist_clear();
 	news_remove_group_list(news_folder);
-	grouplist_dialog_set_list();
+
+	str = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
+	grouplist_dialog_set_list(str);
+	g_free(str);
+
+	grouplist_dialog_set_list(str);
 }
 
 static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
@@ -301,7 +317,28 @@ static void clist_selected(GtkCList *clist, gint row, gint column,
 	gtk_entry_set_text(GTK_ENTRY(entry), group ? group : "");
 }
 
+static gboolean match_string(gchar * str, gchar * expr)
+{
+}
+
 static void entry_activated(GtkEditable *editable)
 {
-	ok_clicked(NULL, NULL);
+	gchar * str;
+	gboolean update_list;
+
+	str = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
+
+	update_list = FALSE;
+
+	if (strchr(str, '*') != NULL)
+	  update_list = TRUE;
+
+	if (update_list) {
+		grouplist_dialog_set_list(str);
+		g_free(str);
+	}
+	else {
+		g_free(str);
+		ok_clicked(NULL, NULL);
+	}
 }
