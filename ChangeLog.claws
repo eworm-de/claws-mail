@@ -1,3 +1,10 @@
+2003-03-20 [paul]	0.8.11claws32
+
+	* src/prefs_account.c
+		Re-write 'Tunnel command to open connection' as
+		'Use command to communicate with server', and disable
+		it for all except IMAP accounts
+
 2003-03-20 [paul]	0.8.11claws31
 
 	* sync with 0.8.11cvs6
