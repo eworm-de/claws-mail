@@ -1,3 +1,8 @@
+2003-02-08 [melvin]	0.8.9claws48
+
+	* src/compose.c
+		Corrected and modified an alert message.
+
 2003-02-07 [paul]	0.8.9claws47
 
 	* src/folderview.c

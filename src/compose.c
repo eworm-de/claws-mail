@@ -2820,7 +2820,7 @@ gint compose_send(Compose *compose)
 	}
 
 	if (msgnum == 0) {
-		alertpanel_error(_("The message was queue but could not be send.\nUse \"Send queued messages\" from the main window to send it"));
+		alertpanel_error(_("The message was queued but could not be sent.\nUse \"Send queued messages\" from the main window to retry."));
 		return 0;
 	}
 	
