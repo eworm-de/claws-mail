@@ -210,4 +210,27 @@
 
 -----------------------------------------------------------------------
 
+* update-po
+
+  WHAT IT DOES
+  
+  This script is a message catalog translator's tool, it updates the .po 
+  files named on the command line.
+
+  HOW TO USE IT
+
+  This script needs to be copied to and run from the 'po' directory.
+  
+	./update-po lang.po lang2.po ...
+
+  to update one or more <yourlang>.po files from the sourcecode files
+  named in POTFILES.in. The old .po file is save in a .po.old file.
+
+  For example, when you want to update fr.po, run ./update-po fr.po, 
+  then edit fr.po to update your translation.
+
+  Author: Wilbert Berendsen <wilbert@oswf.org>
+
+-----------------------------------------------------------------------
+
 

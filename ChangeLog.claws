@@ -1,3 +1,11 @@
+2002-06-24 [paul]	0.7.8claws20
+
+	* tools/Makefile.am
+	  tools/README
+	  tools/update-po	** NEW FILE **
+		add script that eases the creation of *.po files
+		Submitted by Wilbert Berendsen <wilbert@oswf.org>
+
 2002-06-23 [alfons]	0.7.8claws19
 
 	* src/messageview.c
