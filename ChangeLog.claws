@@ -1,3 +1,12 @@
+2003-01-22 [paul]	0.8.8claws124
+
+	* po/bg.po
+		updated by George Danchev
+		
+	* src/folder.c
+		revert last commit [0.8.8claws111] as it breaks folder d'n'd
+		and folder deletion
+
 2003-01-21 [paul]	0.8.8claws123
 
 	* po/bg.po
