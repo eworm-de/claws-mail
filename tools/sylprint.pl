@@ -36,10 +36,10 @@ $a = 1;
 # get user config
 if (defined($ARGV[1]) && $ARGV[1] eq '-r') { $a++; }
 else {
-	@spp = split('/',$0);
-	delete $spp[(scalar @spp) - 1];
-	$spp = join('/',@spp);
-	$rcf="$spp/$rc";
+	@spp = split('/',$0); 
+	$spp[$#spp] = ''; 
+	$spp = join('/',@spp);  
+	$rcf="$spp$rc"; 
 	if (-x $rcf) { do $rcf; }
 	$rcf="$ENV{'HOME'}/.sylpheed/$rc";
 	if (-x $rcf) { do $rcf; }
