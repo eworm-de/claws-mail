@@ -1,3 +1,9 @@
+2001-12-23 [alfons]	0.6.6claws15
+
+	* src/stock_pixmap.[ch]
+	* src/summaryview.c
+		add the forgotten Claws' locked pixmap
+
 2001-12-23 [alfons]	0.6.6claws14
 
 	* src/filesel.c

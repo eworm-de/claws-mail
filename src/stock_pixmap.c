@@ -44,6 +44,7 @@
 #include "pixmaps/ldap.xpm"
 #include "pixmaps/linewrap.xpm"
 #include "pixmaps/mark.xpm"
+#include "pixmaps/locked.xpm"
 #include "pixmaps/new.xpm"
 #include "pixmaps/outbox.xpm"
 #include "pixmaps/replied.xpm"
@@ -102,6 +103,7 @@ static StockPixmapData pixmaps[] =
 	{ldap_xpm			, NULL, NULL},
 	{linewrap_xpm			, NULL, NULL},
 	{mark_xpm			, NULL, NULL},
+	{locked_xpm			, NULL, NULL},
 	{new_xpm			, NULL, NULL},
 	{outbox_xpm			, NULL, NULL},
 	{replied_xpm			, NULL, NULL},

@@ -539,6 +539,8 @@ void summary_init(SummaryView *summaryview)
 			 &forwardedxpm, &forwardedxpmmask);
 	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_CLIP,
 			 &clipxpm, &clipxpmmask);
+	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_LOCKED,
+			 &lockedxpm, &lockedxpmmask);
 
 	if (!small_style) {
 		small_style = gtk_style_copy
