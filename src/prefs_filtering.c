@@ -115,6 +115,8 @@ static void prefs_filtering_action_selection_changed(GtkList *list,
 						     gpointer user_data);
 					  
 static void prefs_filtering_reset_dialog(void);
+static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data);
+static gboolean prefs_filtering_delete_path_func(GNode *node, gpointer data);
 
 static FolderItem * cur_item = NULL;
 
@@ -610,7 +612,23 @@ static void prefs_filtering_update_hscrollbar(void)
 
 void prefs_filtering_rename_path(const gchar *old_path, const gchar *new_path)
 {
+	GList * cur;
+	gchar *paths[2] = {NULL, NULL};
+	paths[0] = (gchar*)old_path;
+	paths[1] = (gchar*)new_path;
+	for (cur = folder_get_list() ; cur != NULL ; cur = g_list_next(cur)) {
+		Folder *folder;
+		folder = (Folder *) cur->data;
+		g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
+				prefs_filtering_rename_path_func, paths);
+	}
+	prefs_filtering_rename_path_func(NULL, paths);
+}
+
+static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data)
+{
 	GSList *cur;
+	gchar *old_path, *new_path;
 	gchar *base;
 	gchar *prefix;
 	gchar *suffix;
@@ -619,14 +637,26 @@ void prefs_filtering_rename_path(const gchar *old_path, const gchar *new_path)
 	gint destlen;
 	gint prefixlen;
 	gint oldpathlen;
-
+	FolderItem *item;
+	
 	g_return_if_fail(old_path != NULL);
 	g_return_if_fail(new_path != NULL);
 
+	old_path = ((gchar **)data)[0];
+	new_path = ((gchar **)data)[1];
+
 	oldpathlen = strlen(old_path);
 	old_path_with_sep = g_strconcat(old_path,G_DIR_SEPARATOR_S,NULL);
+	if (node == NULL)
+		cur = global_processing;
+	else {
+		item = node->data;
+		if (!item || !item->prefs) 
+			return FALSE;
+		cur = item->prefs->processing;
+	}
 
-	for (cur = global_processing; cur != NULL; cur = cur->next) {
+	for (; cur != NULL; cur = cur->next) {
 		FilteringProp   *filtering = (FilteringProp *)cur->data;
 		FilteringAction *action = filtering->action;
 
@@ -681,23 +711,52 @@ void prefs_filtering_rename_path(const gchar *old_path, const gchar *new_path)
 	}
 	g_free(old_path_with_sep);
 	prefs_matcher_write_config();
+	return FALSE;
 }
 
 void prefs_filtering_delete_path(const gchar *path)
 {
-	GSList *cur;
+	GList * cur;
+	for (cur = folder_get_list() ; cur != NULL ; cur = g_list_next(cur)) {
+		Folder *folder;
+		folder = (Folder *) cur->data;
+		g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
+				prefs_filtering_delete_path_func, (gchar *)path);
+	}
+	prefs_filtering_delete_path_func(NULL, (gchar *)path);
+}
+
+static gboolean prefs_filtering_delete_path_func(GNode *node, gpointer data)
+{
+	GSList *cur, *orig;
 	GSList *next;
+	gchar *path = (gchar *)data;
 	gchar *suffix;
 	gint destlen;
 	gint prefixlen;
 	gint pathlen;
-
+	FolderItem *item;
+	
 	g_return_if_fail(path != NULL);
 
 	pathlen = strlen(path);
-	for (cur = global_processing; cur != NULL; cur = next) {
+	if (node == NULL)
+		cur = global_processing;
+	else {
+		item = node->data;
+		if (!item || !item->prefs)
+			return FALSE;
+		cur = item->prefs->processing;
+	}
+	orig = cur;
+	
+	for (; cur != NULL; cur = cur->next) {
 		FilteringProp *filtering = (FilteringProp *)cur->data;
-		FilteringAction *action = filtering->action;
+		FilteringAction *action;
+		if (!cur->data)
+			break;
+		
+		action = filtering->action;
 		next = cur->next;
 
 		if (!action->destination) continue;
@@ -713,6 +772,11 @@ void prefs_filtering_delete_path(const gchar *path)
 				global_processing = 
 					g_slist_remove(global_processing, filtering);
 			}
+		} else if (strcmp(action->destination, path) == 0) {
+			filteringprop_free(filtering);
+			orig = 
+				g_slist_remove(orig, filtering);
+
 		}
 	}
 

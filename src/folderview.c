@@ -2144,10 +2144,8 @@ static void folderview_delete_folder_cb(FolderView *folderview, guint action,
 		return;
 	}
 
-	if (FOLDER_TYPE(item->folder) == F_MH)
-		prefs_filtering_delete_path(old_path);
-	prefs_filtering_delete_path(old_id);
-	g_free(old_id);
+	/* if (FOLDER_TYPE(item->folder) == F_MH)
+		prefs_filtering_delete_path(old_path); */
 
 	if (folderview->opened == folderview->selected ||
 	    gtk_ctree_is_ancestor(ctree,
@@ -2159,6 +2157,10 @@ static void folderview_delete_folder_cb(FolderView *folderview, guint action,
 
 	gtk_ctree_remove_node(ctree, folderview->selected);
 	folder_write_list();
+
+	prefs_filtering_delete_path(old_id);
+	g_free(old_id);
+
 }
 
 static void folderview_remove_mailbox_cb(FolderView *folderview, guint action,

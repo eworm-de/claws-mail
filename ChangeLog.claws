@@ -1,3 +1,12 @@
+2002-11-09 [colin]	0.8.5claws105
+
+	* src/folderview.c
+		Fix prefs_filtering deletion for MH folders (same
+		reason as below)
+	* src/prefs_filtering.c
+		Fix prefs_filtering renaming and deletion for 
+		folder-based processing rules.	
+
 2002-11-09 [christoph]	0.8.5claws104
 
 	* src/compose.c
