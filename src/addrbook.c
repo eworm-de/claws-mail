@@ -987,48 +987,6 @@ static void addrbook_write_item_person_vis( gpointer key, gpointer value, gpoint
 }
 
 /*
-* Output all groups in folder.
-*/
-static void addrbook_write_folder_group( ItemFolder *parent, FILE *fp ) {
-	GList *nodeGrp = parent->listGroup;
-	GList *node;
-
-	while( nodeGrp ) {
-		ItemGroup *group = nodeGrp->data;
-		if( group ) {
-			addrbook_write_elem_s( fp, 1, AB_ELTAG_GROUP );
-			addrbook_write_attr( fp, AB_ATTAG_UID, ADDRITEM_ID(group) );
-			addrbook_write_attr( fp, AB_ATTAG_NAME, ADDRITEM_NAME(group) );
-			addrbook_write_attr( fp, AB_ATTAG_REMARKS, group->remarks );
-			fputs( " >\n", fp );
-
-			/* Output email address links */
-			addrbook_write_elem_s( fp, 2, AB_ELTAG_MEMBER_LIST );
-			fputs( ">\n", fp );
-			node = group->listEMail;
-			while ( node ) {
-				ItemEMail *email = node->data;
-				ItemPerson *person = ( ItemPerson * ) ADDRITEM_PARENT(email);
-				addrbook_write_elem_s( fp, 3, AB_ELTAG_MEMBER );
-				addrbook_write_attr( fp, AB_ATTAG_PID, ADDRITEM_ID(person) );
-				addrbook_write_attr( fp, AB_ATTAG_EID, ADDRITEM_ID(email) );
-				fputs( " />\n", fp );
-				node = g_list_next( node );
-			}
-			addrbook_write_elem_e( fp, 2, AB_ELTAG_MEMBER_LIST );
-			addrbook_write_elem_e( fp, 1, AB_ELTAG_GROUP );
-		}
-		nodeGrp = g_list_next( nodeGrp );
-	}
-	node = parent->listFolder;
-	while( node ) {
-		ItemFolder *folder = node->data;
-		addrbook_write_folder_group( folder, fp );
-		node = g_list_next( node );
-	}
-}
-
-/*
 * Write file hash table visitor function.
 */
 static void addrbook_write_item_group_vis( gpointer key, gpointer value, gpointer data ) {
@@ -1062,64 +1020,6 @@ static void addrbook_write_item_group_vis( gpointer key, gpointer value, gpointe
 			addrbook_write_elem_e( fp, 2, AB_ELTAG_MEMBER_LIST );
 			addrbook_write_elem_e( fp, 1, AB_ELTAG_GROUP );
 		}
-	}
-}
-
-/*
-* Output all folders in folder.
-*/
-static void addrbook_write_folder_folder( ItemFolder *parent, FILE *fp ) {
-	GList *nodeFold = parent->listFolder;
-	GList *node;
-
-	while( nodeFold ) {
-		ItemFolder *folder = nodeFold->data;
-		addrbook_write_folder_folder( folder, fp );
-		if( folder ) {
-			addrbook_write_elem_s( fp, 1, AB_ELTAG_FOLDER );
-			addrbook_write_attr( fp, AB_ATTAG_UID, ADDRITEM_ID(folder) );
-			addrbook_write_attr( fp, AB_ATTAG_NAME, ADDRITEM_NAME(folder) );
-			addrbook_write_attr( fp, AB_ATTAG_REMARKS, folder->remarks );
-			fputs( " >\n", fp );
-			addrbook_write_elem_s( fp, 2, AB_ELTAG_ITEM_LIST );
-			fputs( ">\n", fp );
-
-			/* Output persons */
-			node = folder->listPerson;
-			while ( node ) {
-				ItemPerson *item = node->data;
-				addrbook_write_elem_s( fp, 2, AB_ELTAG_ITEM );
-				addrbook_write_attr( fp, AB_ATTAG_TYPE,  AB_ATTAG_VAL_PERSON );
-				addrbook_write_attr( fp, AB_ATTAG_UID, ADDRITEM_ID(item ) );
-				fputs( " />\n", fp );
-				node = g_list_next( node );
-			}
-
-			/* Output groups */
-			node = folder->listGroup;
-			while ( node ) {
-				ItemGroup *item = node->data;
-				addrbook_write_elem_s( fp, 2, AB_ELTAG_ITEM );
-				addrbook_write_attr( fp, AB_ATTAG_TYPE, AB_ATTAG_VAL_GROUP );
-				addrbook_write_attr( fp, AB_ATTAG_UID, ADDRITEM_ID(item ) );
-				fputs( " />\n", fp );
-				node = g_list_next( node );
-			}
-
-			/* Output folders */
-			node = folder->listFolder;
-			while ( node ) {
-				ItemFolder *item = node->data;
-				addrbook_write_elem_s( fp, 2, AB_ELTAG_ITEM );
-				addrbook_write_attr( fp, AB_ATTAG_TYPE, AB_ATTAG_VAL_FOLDER );
-				addrbook_write_attr( fp, AB_ATTAG_UID, ADDRITEM_ID(item ) );
-				fputs( " />\n", fp );
-				node = g_list_next( node );
-			}
-			addrbook_write_elem_e( fp, 2, AB_ELTAG_ITEM_LIST );
-			addrbook_write_elem_e( fp, 1, AB_ELTAG_FOLDER );
-		}
-		nodeFold = g_list_next( nodeFold );
 	}
 }
 
@@ -1220,11 +1120,9 @@ gint addrbook_write_to( AddressBookFile *book, gchar *newFile ) {
 
 		/* Output all groups */
 		g_hash_table_foreach( book->addressCache->itemHash, addrbook_write_item_group_vis, fp );
-		/* addrbook_write_folder_group( book->rootFolder, fp ); */
 
 		/* Output all folders */
 		g_hash_table_foreach( book->addressCache->itemHash, addrbook_write_item_folder_vis, fp );
-		/* addrbook_write_folder_folder( book->rootFolder, fp ); */
 
 		addrbook_write_elem_e( fp, 0, AB_ELTAG_ADDRESS_BOOK );
 		book->retVal = MGU_SUCCESS;
@@ -1806,6 +1704,7 @@ GList *addrbook_get_bookfile_list( AddressBookFile *book ) {
 			if( strncmp( entry->d_name, ADDRBOOK_PREFIX, lenpre ) == 0 ) {
 				if( strncmp( (entry->d_name) + lennum, ADDRBOOK_SUFFIX, lensuf ) == 0 ) {
 					strncpy( numbuf, (entry->d_name) + lenpre, FILE_NUMDIGITS );
+					numbuf[ FILE_NUMDIGITS ] = '\0';
 					flg = TRUE;
 					for( i = 0; i < FILE_NUMDIGITS; i++ ) {
 						if( ! strchr( ADDRBOOK_DIGITS, numbuf[i] ) ) {
@@ -2053,9 +1952,6 @@ static gboolean addrbook_chkread_tree( AddressBookFile *book, XMLFile *file ) {
 			longjmp( book->jumper, 1 );
 		}
 		/* Get next tag (person, group or folder) */
-		if( xml_parse_next_tag( file ) ) {
-			longjmp( book->jumper, 1 );
-		}
 		if( xml_compare_tag( file, AB_ELTAG_PERSON ) ) {
 			addrbook_chkparse_person( book, file );
 		}
@@ -2064,10 +1960,6 @@ static gboolean addrbook_chkread_tree( AddressBookFile *book, XMLFile *file ) {
 		}
 		else if( xml_compare_tag( file, AB_ELTAG_FOLDER ) ) {
 			addrbook_chkparse_folder( book, file );
-		}
-		else {
-			/* Item not recognized */
-			retVal = FALSE;
 		}
 	}
 	return retVal;
