@@ -1,3 +1,9 @@
+2003-03-03 [oliver]	0.8.10claws75
+
+	* src/toolbar.c
+	* src/compose.c
+		removed commented code
+
 2003-03-03 [oliver]	0.8.10claws74
 
 	* src/toolbar.[ch]

@@ -870,8 +870,6 @@ void compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar *body)
 	default:
 		g_warning("compose_reply(): invalid Compose Mode: %d\n", mode);
 	}
-	
-	//summary_set_marks_selected(summaryview);
 }
 
 void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,

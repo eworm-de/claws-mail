@@ -1215,13 +1215,9 @@ static void toolbar_next_unread_cb(GtkWidget *widget, gpointer data)
 		
 	case TOOLBAR_MSGVIEW:
 		msgview = (MessageView*)toolbar_item->parent;
-/*
- * TODO: Check if summaryview stay in the same place when this message view was created 
- * if summary have other message select the next will be based on message selected in summaryview
- */
 		summary_select_next_unread(msgview->mainwin->summaryview);
 		
-		/** Now we need to update the messageview window */
+		/* Now we need to update the messageview window */
 		if (msgview->mainwin->summaryview->selected) {
 			GtkCTree *ctree = GTK_CTREE(msgview->mainwin->summaryview->ctree);
 			
