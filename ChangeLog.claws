@@ -1,3 +1,23 @@
+2003-02-12 [christoph]	0.8.10claws3
+
+	* configure.ac
+	* src/plugins/Makefile.am
+		use AM_CONDITIONAL to enable plugins, automake correctly
+		manages this when creating distdir
+
+2003-02-12 [christoph]	0.8.10claws2
+
+	* ac/spamassassin.m4
+	* src/plugins/spamassassin/Makefile.am
+		fix building SpamAssassin plugin without OpenSSL
+
+2003-02-12 [paul]	0.8.10claws1
+
+	* ac/Makefile.am
+	  src/Makefile.am
+	  src/plugins/Makefile.am
+	  	fix failure of 'make release'
+
 2003-02-12 [paul]	0.8.10claws
 
 	* 0.8.10claws released
@@ -31,8 +51,7 @@
 		matcherrc were added to global filtering
 		
 	(closes Debian Bug #180253 - Directory's filter-rules are merged with
-	 main filter-rules after removing directory
-	 http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=180253)
+	 main filter-rules after removing directory, http://bugs.debian.org/180253)
 	
 2003-02-11 [paul]	0.8.9claws53
 

@@ -149,6 +149,7 @@ EXTRA_DIST = \
 	pixmaps/exec.xpm \
 	pixmaps/folder.xpm \
 	pixmaps/forwarded.xpm \
+	pixmaps/gpg_signed.xpm \
 	pixmaps/group.xpm \
 	pixmaps/ignorethread.xpm \
 	pixmaps/inbox.xpm \
