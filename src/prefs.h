@@ -83,14 +83,20 @@ struct _PrefsDialog
 #define SET_NOTEBOOK_LABEL(notebook, str, page_num) \
 { \
 	GtkWidget *label; \
- \
+	gint i = page_num;	\
+  \
 	label = gtk_label_new (str); \
 	gtk_widget_show (label); \
 	gtk_notebook_set_tab_label \
 		(GTK_NOTEBOOK (notebook), \
 		 gtk_notebook_get_nth_page \
-			(GTK_NOTEBOOK (notebook), page_num), \
+			(GTK_NOTEBOOK (notebook), i), \
 		 label); \
+	gtk_notebook_set_menu_label_text \
+		(GTK_NOTEBOOK (notebook), \
+		 gtk_notebook_get_nth_page \
+			(GTK_NOTEBOOK (notebook), i), \
+		 str);\
 }
 
 #define PACK_CHECK_BUTTON(box, chkbtn, label) \

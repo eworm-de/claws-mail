@@ -468,7 +468,9 @@ void prefs_dialog_create(PrefsDialog *dialog)
 	gtk_container_set_border_width (GTK_CONTAINER (notebook), 2);
 	/* GTK_WIDGET_UNSET_FLAGS (notebook, GTK_CAN_FOCUS); */
 	gtk_notebook_set_scrollable (GTK_NOTEBOOK (notebook), TRUE);
-
+	
+	gtk_notebook_popup_enable (GTK_NOTEBOOK (notebook));
+	
 	gtkut_button_set_create(&confirm_area,
 				&ok_btn,	_("OK"),
 				&cancel_btn,	_("Cancel"),

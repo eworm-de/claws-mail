@@ -1,3 +1,10 @@
+2002-01-03 [melvin]	0.6.6claws36
+	
+	* src/prefs.[ch]
+		Added popup menu for common preferences and
+		account preferences (right click on tab displays
+				a menu of all tabs.)
+
 2002-01-02 [melvin]	0.6.6claws35
 
 	* src/gtkspell.[ch]
