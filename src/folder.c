@@ -400,13 +400,14 @@ FolderItem *folder_find_item_from_path(const gchar *path)
 
 Folder *folder_get_default_folder(void)
 {
-	return FOLDER(folder_list->data);
+	return folder_list ? FOLDER(folder_list->data) : NULL;
 }
 
 FolderItem *folder_get_default_inbox(void)
 {
 	Folder *folder;
 
+	if (!folder_list) return NULL;
 	folder = FOLDER(folder_list->data);
 	g_return_val_if_fail(folder != NULL, NULL);
 	return folder->inbox;
@@ -416,6 +417,7 @@ FolderItem *folder_get_default_outbox(void)
 {
 	Folder *folder;
 
+	if (!folder_list) return NULL;
 	folder = FOLDER(folder_list->data);
 	g_return_val_if_fail(folder != NULL, NULL);
 	return folder->outbox;
@@ -425,6 +427,7 @@ FolderItem *folder_get_default_draft(void)
 {
 	Folder *folder;
 
+	if (!folder_list) return NULL;
 	folder = FOLDER(folder_list->data);
 	g_return_val_if_fail(folder != NULL, NULL);
 	return folder->draft;
@@ -434,6 +437,7 @@ FolderItem *folder_get_default_queue(void)
 {
 	Folder *folder;
 
+	if (!folder_list) return NULL;
 	folder = FOLDER(folder_list->data);
 	g_return_val_if_fail(folder != NULL, NULL);
 	return folder->queue;
@@ -443,6 +447,7 @@ FolderItem *folder_get_default_trash(void)
 {
 	Folder *folder;
 
+	if (!folder_list) return NULL;
 	folder = FOLDER(folder_list->data);
 	g_return_val_if_fail(folder != NULL, NULL);
 	return folder->trash;

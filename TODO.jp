@@ -16,6 +16,8 @@ o 重要度 (Priority:, X-Priority:, X-MSMail-Priority:)
 o 受信確認 (Disposition-Notification-To:)
 o キーバインドのカスタマイズ
 o ツールバーのカスタマイズ
+o フォルダ毎の設定
+o RFC 2231 (MIME ファイル名のエンコーディング) 対応
 o 仮想フォルダ
 o SSL対応
 o GNOME対応

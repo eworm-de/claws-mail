@@ -708,11 +708,18 @@ void conv_unmime_header_overwrite(gchar *str)
 	cur_charset = conv_get_current_charset();
 
 #if HAVE_LIBJCONV
-	Xstrdup_a(buf, str, {return;});
+	Xstrdup_a(buf, str, return);
 	outlen = strlen(str) + 1;
 	UnMimeHeaderConv(buf, str, outlen);
-	if (cur_charset == C_EUC_JP)
-		conv_unreadable_eucjp(str);
+	if (cur_charset == C_EUC_JP) {
+		gchar *tmp;
+		gint len;
+
+		len = strlen(str) * 2 + 1;
+		Xalloca(tmp, len, return);
+		conv_jistodisp(tmp, len, str);
+		strncpy2(str, tmp, outlen);
+	}
 #else
 	if (cur_charset == C_EUC_JP) {
 		gchar *tmp;
@@ -736,13 +743,20 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 	gchar *buf;
 	CharSet cur_charset;
 
-	Xstrdup_a(buf, str, {return;});
+	Xstrdup_a(buf, str, return);
 	cur_charset = conv_get_current_charset();
 
 #if HAVE_LIBJCONV
 	UnMimeHeaderConv(buf, outbuf, outlen);
-	if (cur_charset == C_EUC_JP)
-		conv_unreadable_eucjp(outbuf);
+	if (cur_charset == C_EUC_JP) {
+		gchar *tmp;
+		gint len;
+
+		len = strlen(outbuf) * 2 + 1;
+		Xalloca(tmp, len, return);
+		conv_jistodisp(tmp, len, outbuf);
+		strncpy2(outbuf, tmp, outlen);
+	}
 #else
 	UnMimeHeader(buf);
 	if (cur_charset == C_EUC_JP) {

@@ -1,3 +1,25 @@
+2001-07-16
+
+	* src/inc.c: inc_pop3_recv_func(), inc_progress_update():
+	  display current size with human-readable format.
+	* src/grouplistdialog.c: grouplist_recv_func(): ditto.
+	* TODO
+	  TODO.jp: updated.
+
+2001-07-16
+
+	* src/codeconv.c:
+	  conv_unmime_header(), conv_unmime_header_overwrite(): workaround
+	  for raw-JIS code in header fields.
+	* src/folder.c:
+	  folder_get_default_folder()
+	  folder_get_default_inbox()
+	  folder_get_default_outbox()
+	  folder_get_default_draft()
+	  folder_get_default_queue()
+	  folder_get_default_trash(): fixed a bug that caused segfault
+	  if folder_list is NULL.
+
 2001-07-15
 
 	* README

@@ -16,6 +16,8 @@ o priority (Priority:, X-Priority:, X-MSMail-Priority:)
 o notification of reception (Disposition-Notification-To:)
 o customization of key bindings
 o customization of toolbar
+o configuration for each folders
+o RFC 2231 (MIME filename encoding) compliant
 o virtual folder
 o SSL support
 o GNOME support

@@ -797,15 +797,17 @@ static void inc_pop3_recv_func(SockInfo *sock, gint count, gint read_bytes,
 	IncProgressDialog *inc_dialog = session->data;
 	ProgressDialog *dialog = inc_dialog->dialog;
 	gint cur_total;
+	gchar *total_size;
 
 	cur_total = state->cur_total_bytes + read_bytes;
 	if (cur_total > state->total_bytes)
 		cur_total = state->total_bytes;
 
+	Xstrdup_a(total_size, to_human_readable(state->total_bytes), return);
 	g_snprintf(buf, sizeof(buf),
-		   _("Retrieving message (%d / %d) (%d / %d bytes)"),
+		   _("Retrieving message (%d / %d) (%s / %s)"),
 		   state->cur_msg, state->count,
-		   cur_total, state->total_bytes);
+		   to_human_readable(cur_total), total_size);
 	progress_dialog_set_label(dialog, buf);
 
 	progress_dialog_set_percentage
@@ -818,6 +820,7 @@ void inc_progress_update(Pop3State *state, Pop3Phase phase)
 	gchar buf[MSGBUFSIZE];
 	IncProgressDialog *inc_dialog = state->session->data;
 	ProgressDialog *dialog = inc_dialog->dialog;
+	gchar *total_size;
 
 	switch (phase) {
 	case POP3_GREETING_RECV:
@@ -852,10 +855,16 @@ void inc_progress_update(Pop3State *state, Pop3Phase phase)
 		break;
 	case POP3_RETR_SEND:
 	case POP3_RETR_RECV:
+		Xstrdup_a(total_size, to_human_readable(state->total_bytes), return);
 		g_snprintf(buf, sizeof(buf),
-			   _("Retrieving message (%d / %d) (%d / %d bytes)"),
+			   _("Retrieving message (%d / %d) (%s / %s)"),
 			   state->cur_msg, state->count,
-			   state->cur_total_bytes, state->total_bytes);
+			   to_human_readable(state->cur_total_bytes),
+			   total_size);
+		//g_snprintf(buf, sizeof(buf),
+		//	   _("Retrieving message (%d / %d) (%d / %d bytes)"),
+		//	   state->cur_msg, state->count,
+		//	   state->cur_total_bytes, state->total_bytes);
 		progress_dialog_set_label(dialog, buf);
 		progress_dialog_set_percentage
 			(dialog,

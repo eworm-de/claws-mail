@@ -257,8 +257,8 @@ static void grouplist_recv_func(SockInfo *sock, gint count, gint read_bytes,
 	gchar buf[BUFFSIZE];
 
 	g_snprintf(buf, sizeof(buf),
-		   _("%d newsgroups received (%d bytes read)"),
-		   count, read_bytes);
+		   _("%d newsgroups received (%s read)"),
+		   count, to_human_readable(read_bytes));
 	gtk_label_set_text(GTK_LABEL(status_label), buf);
 	GTK_EVENTS_FLUSH();
 }
