@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=5
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws63
+EXTRA_VERSION=claws64
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -291,7 +291,7 @@ else
 	AC_MSG_RESULT(no)
 fi
 
-dnl ASPELL is user for spell checking
+dnl GNU/Aspell is used for spell checking
 AC_ARG_ENABLE(aspell,
 	[  --enable-aspell         Enable GNU/aspell support [default=no]],
 	[ac_cv_enable_aspell=$enableval], [ac_cv_enable_aspell=no])

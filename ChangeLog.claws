@@ -1,3 +1,13 @@
+2002-10-31 [melvin]	0.8.5claws64
+
+	* ac/aspell.m4
+		Fixed --disable-aspell-test. Now --disable-aspell-test will 
+		not run any GNU/aspell test.  The dictionary path will
+		be by default /usr/local/lib/aspell/ unless --with-aspell-prefix
+		was given, in which case, it will be $prefix/lib/aspell/
+	* configure.in
+		Fixed typo in commentary (Aspell code).
+
 2002-10-31 [paul]	0.8.5claws63
 
 	* po/POTFILES.in
