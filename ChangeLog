@@ -1,3 +1,17 @@
+2003-03-05
+
+	* src/codeconv.c: conv_encode_header(): fixed a bug that spaces
+	  which is on the wrap boundary would be lost when encoding long
+	  non-ascii strings (thanks to Sergey Vlasov).
+	  Don't force wrapping within a long word until it reaches hard line
+	  length limit (998 characters) (workaround for the breakage of
+	  long address list with no spaces).
+
+2003-03-03
+
+	* src/prefs_account.c: fixed compile failure when using neither
+	  gpg or ssl.
+
 2003-03-03
 
 	* src/codeconv.c: fixed UTF-8 locale support.

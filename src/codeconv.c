@@ -1217,32 +1217,33 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 		unmime_header(outbuf, str);
 }
 
-#define MAX_LINELEN	76
-#define MIMESEP_BEGIN	"=?"
-#define MIMESEP_END	"?="
+#define MAX_LINELEN		76
+#define MAX_HARD_LINELEN	996
+#define MIMESEP_BEGIN		"=?"
+#define MIMESEP_END		"?="
 
 #define B64LEN(len)	((len) / 3 * 4 + ((len) % 3 ? 4 : 0))
 
-#define LBREAK_IF_REQUIRED(cond, plaintext)			\
-{								\
-	if (len - (destp - dest) < MAX_LINELEN + 2) {		\
-		*destp = '\0';					\
-		return;						\
-	}							\
-								\
-	if ((cond) && *srcp) {					\
-		if (destp > dest && left < MAX_LINELEN - 1) {	\
-			if (isspace(*(destp - 1)))		\
-				destp--;			\
-			else if (plaintext && isspace(*srcp))	\
-				srcp++;				\
-			if (*srcp) {				\
-				*destp++ = '\n';		\
-				*destp++ = ' ';			\
-				left = MAX_LINELEN - 1;		\
-			}					\
-		}						\
-	}							\
+#define LBREAK_IF_REQUIRED(cond, is_plain_text)				\
+{									\
+	if (len - (destp - dest) < MAX_LINELEN + 2) {			\
+		*destp = '\0';						\
+		return;							\
+	}								\
+									\
+	if ((cond) && *srcp) {						\
+		if (destp > dest && left < MAX_LINELEN - 1) {		\
+			if (isspace(*(destp - 1)))			\
+				destp--;				\
+			else if (is_plain_text && isspace(*srcp))	\
+				srcp++;					\
+			if (*srcp) {					\
+				*destp++ = '\n';			\
+				*destp++ = ' ';				\
+				left = MAX_LINELEN - 1;			\
+			}						\
+		}							\
+	}								\
 }
 
 void conv_encode_header(gchar *dest, gint len, const gchar *src,
@@ -1293,7 +1294,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 			word_len = get_next_word_len(srcp);
 			LBREAK_IF_REQUIRED(left < word_len, TRUE);
 			while (word_len > 0) {
-				LBREAK_IF_REQUIRED(left + 22 <= 0, TRUE);
+				LBREAK_IF_REQUIRED(left + (MAX_HARD_LINELEN - MAX_LINELEN) <= 0, TRUE)
 				*destp++ = *srcp++;
 				left--;
 				word_len--;
