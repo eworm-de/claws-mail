@@ -81,7 +81,7 @@ struct _PrefsCommon
 #if USE_PSPELL
 	gboolean enable_pspell;
 	gchar *pspell_path;
-	gchar *dictionary_path;
+	gchar *dictionary;
 #endif
         
 	/* Display */
