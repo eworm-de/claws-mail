@@ -73,6 +73,11 @@ Action scripts
   COMMAND: uudec %f&
   Decode and display uuencoded images using uudecode.
 
+* textviewer.sh
+  WORKS ON: current message part
+  COMMAND: textviewer.sh %p |
+  Attempt to view an attachment as plain text
+
 * More action examples can be found at
   http://melvin.hadasht.free.fr/home/sylpheed/actions/
 
