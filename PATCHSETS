@@ -172,5 +172,7 @@
 ( cvs diff -u -r 1.462 -r 1.463 src/compose.c; ) > 0.9.12cvs187.patchset
 ( cvs diff -u -r 1.97 -r 1.98 src/procmime.c; ) > 0.9.13cvs1.patchset
 ( cvs diff -u -r 1.122 -r 1.123 AUTHORS; cvs diff -u -r 1.122 -r 1.123 src/prefs_account.c; cvs diff -u -r 1.19 -r 1.20 src/common/smtp.c; cvs diff -u -r 1.9 -r 1.10 src/common/smtp.h; ) > 0.9.13cvs2.patchset
+( cvs diff -u -r 1.98 -r 1.99 src/procmime.c; ) > 0.9.13cvs3.patchset
 ( cvs diff -u -r 1.99 -r 1.100 src/procmime.c; ) > 0.9.13cvs4.patchset
+( cvs diff -u -r 1.25 -r 1.26 src/quote_fmt_parse.y ) > 0.9.13cvs5.patchset
 ( cvs diff -u -r 1.129 -r 1.130 src/textview.c; ) > 0.9.13cvs6.patchset
