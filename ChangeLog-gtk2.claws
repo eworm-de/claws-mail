@@ -1,3 +1,8 @@
+2004-09-28 [colin]	0.9.12cvs110.1
+
+	* src/folderview.c
+		Sync with HEAD (Contextual Empty trash menu)
+
 2004-09-28 [colin]	0.9.12cvs108.1
 
 	* src/addressbook.c

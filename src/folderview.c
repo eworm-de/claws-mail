@@ -178,6 +178,10 @@ static void mark_all_read_cb            (FolderView    *folderview,
                                          guint           action,
                                          GtkWidget      *widget);
 
+static void folderview_empty_trash_cb	(FolderView	*folderview,
+					 guint		 action,
+					 GtkWidget	*widget);
+
 static void folderview_search_cb	(FolderView	*folderview,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -232,8 +236,14 @@ static GtkItemFactoryEntry folderview_common_popup_entries[] =
 	{N_("/Mark all _read"),		NULL, mark_all_read_cb, 0, NULL},
 	{N_("/_Search folder..."),	NULL, folderview_search_cb, 0, NULL},
 	{N_("/_Properties..."),		NULL, folderview_property_cb, 0, NULL},
-	{N_("/_Processing..."),		NULL, folderview_processing_cb, 0, NULL},
+	{N_("/Pr_ocessing..."),		NULL, folderview_processing_cb, 0, NULL},
 };
+
+static GtkItemFactoryEntry folder_view_trash_popup_entries[] = {
+	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/Empty trash..."),		NULL, folderview_empty_trash_cb, 0, NULL},
+};
+
 
 GtkTargetEntry folderview_drag_types[] =
 {
@@ -1383,6 +1393,15 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 	if (fpopup->set_sensitivity != NULL)
 		fpopup->set_sensitivity(fpopup_factory, item);
 
+	if (item == folder->trash &&
+	    gtk_item_factory_get_item(fpopup_factory, "/Empty trash...") == NULL) {
+		gtk_item_factory_create_item(fpopup_factory, &folder_view_trash_popup_entries[0], folderview, 1);
+		gtk_item_factory_create_item(fpopup_factory, &folder_view_trash_popup_entries[1], folderview, 1);
+	} else {
+		gtk_item_factory_delete_entry(fpopup_factory, &folder_view_trash_popup_entries[0]);
+		gtk_item_factory_delete_entry(fpopup_factory, &folder_view_trash_popup_entries[1]);
+	}
+	
 #define SET_SENS(name, sens) \
 	menu_set_sensitive(fpopup_factory, name, sens)
 
@@ -1391,7 +1410,8 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 		 folderview->selected == folderview->opened);
 	SET_SENS("/Properties...", TRUE);
 	SET_SENS("/Processing...", item->node->parent != NULL);
-
+	if (item == folder->trash)
+		SET_SENS("/Empty trash...", folder_item_get_msg_list(item) != NULL);
 #undef SET_SENS
 
 	popup = gtk_item_factory_get_widget(fpopup_factory, fpopup->path);
@@ -1655,6 +1675,38 @@ void folderview_create_folder_node(FolderView *folderview, FolderItem *item)
 	folderview_sort_folders(folderview, folderview->selected, item->folder);
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
+}
+
+static void folderview_empty_trash_cb(FolderView *folderview, guint action,
+				      GtkWidget *widget)
+{
+	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	FolderItem *item;
+	GSList *mlist = NULL;
+	GSList *cur = NULL;
+	if (!folderview->selected) return;
+	
+	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(item->folder != NULL);
+	if (item != item->folder->trash) return;
+	
+	if (prefs_common.ask_on_clean) {
+		if (alertpanel(_("Empty trash"),
+			       _("Empty all messages in trash?"),
+			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
+			return;
+	}
+	
+	mlist = folder_item_get_msg_list(item);
+	
+	for (cur = mlist ; cur != NULL ; cur = cur->next) {
+		MsgInfo * msginfo = (MsgInfo *) cur->data;
+		partial_mark_for_delete(msginfo);
+		procmsg_msginfo_free(msginfo);
+	}
+
+	folder_item_remove_all_msg(item);
 }
 
 static void folderview_search_cb(FolderView *folderview, guint action,
