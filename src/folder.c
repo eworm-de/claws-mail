@@ -44,9 +44,6 @@
 #include "mbox_folder.h"
 #include "prefs_folder_item.h"
 
-#include <sys/stat.h>
-#include <sys/types.h>
-
 static GList *folder_list = NULL;
 
 static void folder_init		(Folder		*folder,
@@ -1574,7 +1571,6 @@ static void folder_create_processing_folder(void)
 	Folder	   *tmpparent;
 	FolderItem *tmpfolder;
 	gchar      *tmpname;
-	struct stat s;
 
 	tmpparent = folder_get_default_folder();
 	g_assert(tmpparent);

@@ -1,5 +1,8 @@
 2001-12-30 [alfons]	0.6.6claws31
 
+	* src/folder.c
+		remove unnecessary things someone put there
+
 	* src/mh.c
 	* src/folder.[ch]
 		make folder properties (like threading and sorting) persistent
