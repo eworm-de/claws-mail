@@ -1,3 +1,10 @@
+2002-10-12 [paul]
+
+	* tools/README
+		be more verbose in the description of
+		OOo2sylpheed.pl
+		
+
 2002-10-11 [colin]	0.8.5claws21
 
 	* src/mainwindow.c

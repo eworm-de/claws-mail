@@ -171,6 +171,9 @@
 
   HOW TO USE IT
   
+  Edit line 29 of the script so that it contains the correct path:
+  exec "/usr/local/bin/sylpheed --attach $ARGV";
+  
   Start up OpenOffice.org.
   Go to 'Tools/Options/OpenOffice.org/External Programs'
   Enter the path to this script in the 'Program' box
