@@ -1,3 +1,13 @@
+2003-01-05 [colin]	0.8.8claws49
+
+	* src/account.[ch]
+		Add account_get_reply_account function
+	* src/compose.c
+		Use account_get_reply_account function 
+	* src/summaryview.c
+		Basic reply-finder - click on the replied
+		icon gets you to the outbox using quick-search
+
 2003-01-05 [paul]	0.8.8claws48
 
 	* src/prefs_common.c

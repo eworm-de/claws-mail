@@ -980,3 +980,48 @@ static void account_list_set(void)
 	     row++)
 		account_list = g_list_append(account_list, ac_prefs);
 }
+
+/*!
+ *\brief	finds the PrefsAccounts which should be used to answer a mail
+ *
+ *\param	msginfo The message to be answered
+ *\param	reply_autosel Indicates whether reply account autoselection is on
+ *
+ *\return	PrefsAccount * the correct account, NULL if not found
+ */
+PrefsAccount *account_get_reply_account(MsgInfo *msginfo, gboolean reply_autosel)
+{
+	PrefsAccount *account = NULL;
+	/* select the account set in folderitem's property (if enabled) */
+	if (msginfo->folder->prefs && msginfo->folder->prefs->enable_default_account)
+		account = account_find_from_id(msginfo->folder->prefs->default_account);
+	
+	/* select the account for the whole folder (IMAP / NNTP) */
+	if (!account)
+		/* FIXME: this is not right, because folder may be nested. we should
+		 * ascend the tree until we find a parent with proper account 
+		 * information */
+		account = msginfo->folder->folder->account;
+
+	/* select account by to: and cc: header if enabled */
+	if (reply_autosel) {
+		if (!account && msginfo->to) {
+			gchar *to;
+			Xstrdup_a(to, msginfo->to, return);
+			extract_address(to);
+			account = account_find_from_address(to);
+		}
+		if (!account) {
+			gchar cc[BUFFSIZE];
+			if (!get_header_from_msginfo(msginfo, cc, sizeof(cc), "CC:")) { /* Found a CC header */
+				extract_address(cc);
+				account = account_find_from_address(cc);
+			}        
+		}
+	}
+
+	/* select current account */
+	if (!account) account = cur_account;
+	
+	return account;
+}

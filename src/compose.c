@@ -807,44 +807,15 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				  const gchar *body)
 {
 	Compose *compose;
-	PrefsAccount *account;
+	PrefsAccount *account = NULL;
 	PrefsAccount *reply_account;
 	GtkSText *text;
 
 	g_return_if_fail(msginfo != NULL);
 	g_return_if_fail(msginfo->folder != NULL);
 
-	account = NULL;
-	/* select the account set in folderitem's property (if enabled) */
-	if (msginfo->folder->prefs && msginfo->folder->prefs->enable_default_account)
-		account = account_find_from_id(msginfo->folder->prefs->default_account);
+	account = account_get_reply_account(msginfo, prefs_common.reply_account_autosel);
 	
-	/* select the account for the whole folder (IMAP / NNTP) */
-	if (!account)
-		/* FIXME: this is not right, because folder may be nested. we should
-		 * ascend the tree until we find a parent with proper account 
-		 * information */
-		account = msginfo->folder->folder->account;
-
-	/* select account by to: and cc: header if enabled */
-	if (prefs_common.reply_account_autosel) {
-		if (!account && msginfo->to) {
-			gchar *to;
-			Xstrdup_a(to, msginfo->to, return);
-			extract_address(to);
-			account = account_find_from_address(to);
-		}
-		if (!account) {
-			gchar cc[BUFFSIZE];
-			if (!get_header_from_msginfo(msginfo, cc, sizeof(cc), "CC:")) { /* Found a CC header */
-				extract_address(cc);
-				account = account_find_from_address(cc);
-			}        
-		}
-	}
-
-	/* select current account */
-	if (!account) account = cur_account;
 	g_return_if_fail(account != NULL);
 
 	if (ignore_replyto && account->protocol == A_NNTP &&

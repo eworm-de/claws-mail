@@ -386,6 +386,9 @@ static void news_flag_crosspost		(MsgInfo *msginfo);
 static void tog_searchbar_cb		(GtkWidget	*w,
 					 gpointer	 data);
 
+static void summary_find_answers	(SummaryView 	*summaryview, 
+					 MsgInfo	*msg);
+
 static gboolean summary_update_msg	(gpointer source, gpointer data);
 
 GtkTargetEntry summary_drag_types[1] =
@@ -4816,6 +4819,9 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 			 !MSG_IS_FORWARDED(msginfo->flags)) {
 			summary_mark_row_as_unread(summaryview, row);
 			summary_status_show(summaryview);
+		} else if (MSG_IS_REPLIED(msginfo->flags)) {
+			summary_find_answers(summaryview, msginfo);
+			return;
 		}
 		break;
 	case S_COL_LOCKED:
@@ -5429,7 +5435,8 @@ void summary_save_prefs_to_folderitem(SummaryView *summaryview, FolderItem *item
 	item->threaded = summaryview->threaded;
 }
 
-static gboolean summary_update_msg(gpointer source, gpointer data) {
+static gboolean summary_update_msg(gpointer source, gpointer data) 
+{
 	MsgInfoUpdate *msginfo_update = (MsgInfoUpdate *) source;
 	SummaryView *summaryview = (SummaryView *)data;
 	GtkCTreeNode *node;
@@ -5445,3 +5452,44 @@ static gboolean summary_update_msg(gpointer source, gpointer data) {
 	return FALSE;
 }
 
+static void summary_find_answers (SummaryView *summaryview, MsgInfo *msg)
+{
+	FolderItem *sent_folder = NULL;
+	PrefsAccount *account = NULL;
+	char *buf = NULL;
+	if (msg == NULL || msg->msgid == NULL)
+		return;
+	
+	account = account_get_reply_account(msg, prefs_common.reply_account_autosel);
+	if (account == NULL) 
+		return;
+	sent_folder = account_get_special_folder
+				(account, F_OUTBOX);
+	
+	buf = g_strdup_printf("I %s", msg->msgid);
+
+	/*if (summaryview->folder_item->prefs->save_copy_to_folder)
+		sent_folder = summaryview->folder_item;
+	
+	if (sent_folder == NULL && prefs_common.reply_account_autosel)
+		sent_folder = account_get_special_folder(
+			account_find_from_address(msg->to), F_OUTBOX);
+	
+	if (sent_folder == NULL)
+		sent_folder = account_get_special_folder(
+					summaryview->folder_item->folder->account, F_OUTBOX);
+	
+	if (sent_folder == NULL) {
+		debug_print("Can't find outgoing folder :(\n");
+		return;
+	}*/
+	
+	if (sent_folder != summaryview->folder_item) {
+		folderview_select(summaryview->mainwin->folderview, sent_folder);
+	}
+	
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(summaryview->toggle_search), TRUE);
+	gtk_entry_set_text(GTK_ENTRY(summaryview->search_string), buf);
+	g_free(buf);
+	summary_show(summaryview, summaryview->folder_item);
+}
