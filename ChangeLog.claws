@@ -1,3 +1,12 @@
+2003-08-30 [christoph]	0.9.4claws47
+
+	* src/compose.c
+	* src/folder_item_prefs.[ch]
+	* src/prefs_folder_item.c
+	* src/gtk/gtkaspell.[ch]
+		commit per folder dictionary patch by
+		Paul Evans <nerd@freeuk.com>
+
 2003-08-30 [christoph]	0.9.4claws46
 
 	* src/plugins/spamassassin/spamassassin_gtk.c

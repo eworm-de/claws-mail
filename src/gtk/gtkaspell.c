@@ -2112,30 +2112,26 @@ static gboolean cancel_menu_cb(GtkMenuShell *w, gpointer data)
 	
 }
 
-/* change_dict_cb() - Menu callback : change dict */
-static void change_dict_cb(GtkWidget *w, GtkAspell *gtkaspell)
+gboolean gtkaspell_change_dict(GtkAspell *gtkaspell, guchar *dictionary)
 {
 	Dictionary 	*dict;       
-	gchar		*fullname;
 	GtkAspeller 	*gtkaspeller;
 	gint 		 sug_mode;
-  
-        fullname = (gchar *) gtk_object_get_data(GTK_OBJECT(w), "dict_name");
-	
-	if (!strcmp2(fullname, _("None")))
-		return;
 
+	g_return_val_if_fail(gtkaspell, FALSE);
+	g_return_val_if_fail(dictionary, FALSE);
+  
 	sug_mode  = gtkaspell->default_sug_mode;
 
 	dict = g_new0(Dictionary, 1);
-	dict->fullname = g_strdup(fullname);
+	dict->fullname = g_strdup(dictionary);
 	dict->encoding = g_strdup(gtkaspell->gtkaspeller->dictionary->encoding);
 
 	if (gtkaspell->use_alternate && gtkaspell->alternate_speller &&
 	    dict == gtkaspell->alternate_speller->dictionary) {
 		use_alternate_dict(gtkaspell);
 		dictionary_delete(dict);
-		return;
+		return TRUE;
 	}
 	
 	gtkaspeller = gtkaspeller_new(dict);
@@ -2163,6 +2159,21 @@ static void change_dict_cb(GtkWidget *w, GtkAspell *gtkaspell)
 
 	if (gtkaspell->config_menu)
 		populate_submenu(gtkaspell, gtkaspell->config_menu);
+
+	return TRUE;	
+}
+
+/* change_dict_cb() - Menu callback : change dict */
+static void change_dict_cb(GtkWidget *w, GtkAspell *gtkaspell)
+{
+	gchar		*fullname;
+  
+        fullname = (gchar *) gtk_object_get_data(GTK_OBJECT(w), "dict_name");
+	
+	if (!strcmp2(fullname, _("None")))
+		return;
+
+	gtkaspell_change_dict(gtkaspell, fullname);
 }
 
 static void switch_to_alternate_cb(GtkWidget *w,

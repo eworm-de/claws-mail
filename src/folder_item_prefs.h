@@ -58,6 +58,10 @@ struct _FolderItemPrefs {
 	gint folder_chmod;
 	gboolean enable_default_account;
 	gint default_account;
+#if USE_ASPELL
+	gboolean enable_default_dictionary;
+	gchar *default_dictionary;
+#endif
 	gboolean save_copy_to_folder;
 	guint color;
 };

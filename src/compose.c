@@ -709,6 +709,13 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	text = GTK_STEXT(compose->text);
 	gtk_stext_freeze(text);
 
+#ifdef USE_ASPELL
+	if (item && item->prefs && item->prefs->enable_default_dictionary &&
+	    compose->gtkaspell) 
+		gtkaspell_change_dict(compose->gtkaspell, 
+		    item->prefs->default_dictionary);
+#endif
+
 	if (account->auto_sig)
 		compose_insert_sig(compose, FALSE);
 	gtk_editable_set_position(GTK_EDITABLE(text), 0);
@@ -958,6 +965,15 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
 	text = GTK_STEXT(compose->text);
 	gtk_stext_freeze(text);
+
+#ifdef USE_ASPELL
+	if (msginfo->folder && msginfo->folder->prefs && 
+	    msginfo->folder->prefs && 
+	    msginfo->folder->prefs->enable_default_dictionary &&
+	    compose->gtkaspell)
+		gtkaspell_change_dict(compose->gtkaspell, 
+		    msginfo->folder->prefs->default_dictionary);
+#endif
 
 	if (quote) {
 		gchar *qmark;
