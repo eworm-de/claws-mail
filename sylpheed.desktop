@@ -1,6 +1,6 @@
 [desktop Entry]
 Name=Sylpheed
-Comment=Hello World
+Comment=Sylpheed Mail
 Exec=sylpheed
 Icon=sylpheed.png
 Terminal=0

@@ -1,3 +1,14 @@
+2001-05-21 [alfons]
+
+	Minor things:
+
+	* configure.in: if gnome-config not found, "no" is displayed
+	
+	* sylpheed.desktop: "Hello World" is replaced with "Sylpheed Mail"
+
+	* src/textview.c: now also possible to add mail addresses by right
+	  clicking in the text view
+
 2001-05-20 [alfons]
 
 	Added installation of gnome specific things:

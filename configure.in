@@ -17,8 +17,8 @@ AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
 AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
 
 dnl GNOME installed?
-AC_PATH_PROG(GNOME_CONFIG, gnome-config, false)
-if test "$GNOME_CONFIG" != false; then
+AC_PATH_PROG(GNOME_CONFIG, gnome-config, no)
+if test "$GNOME_CONFIG" != no; then
 	gnomedir="`gnome-config --prefix`"
 	AC_SUBST(gnomedir)
 fi

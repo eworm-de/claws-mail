@@ -1256,8 +1256,22 @@ static void textview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 			if (current_pos >= uri->start &&
 			    current_pos <  uri->end) {
 				if (!g_strncasecmp(uri->uri, "mailto:", 7)) {
-					compose_new_with_recipient
-						(NULL, uri->uri + 7);
+					if (event->button == 3) {
+						gchar *fromname, *fromaddress;
+						/* extract url */
+						fromaddress = g_strdup(uri->uri + 7);
+						/* Hiroyuki: please put this function in utils.c! */
+						fromname = procheader_get_fromname(fromaddress);
+						extract_address(fromaddress);
+						g_message("adding from textview %s <%s>", fromname, fromaddress);
+						addressbook_add_contact_by_menu(NULL, fromname, fromaddress, NULL);
+						g_free(fromaddress);
+						g_free(fromname);
+					}
+					else {
+						compose_new_with_recipient
+							(NULL, uri->uri + 7);
+					}		
 				}						
 				else
 					open_uri(uri->uri,
