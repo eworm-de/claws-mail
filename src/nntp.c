@@ -269,19 +269,19 @@ gint nntp_ok(NNTPSockInfo *sock, gchar *argbuf)
 	gchar buf[NNTPBUFSIZE];
 
 	if ((ok = nntp_gen_recv(sock, buf, sizeof(buf))) == NN_SUCCESS) {
-		if (strlen(buf) < 4)
+		if (strlen(buf) < 3)
 			return NN_ERROR;
 
 		if ((buf[0] == '1' || buf[0] == '2' || buf[0] == '3') &&
-		    buf[3] == ' ') {
+		    (buf[3] == ' ' || buf[3] == '\0')) {
 			if (argbuf)
 				strcpy(argbuf, buf);
 
-			if (!strncmp(buf, "381 ", 4))
+			if (!strncmp(buf, "381", 3))
 				return NN_AUTHCONT;
 
 			return NN_SUCCESS;
-		} else if (!strncmp(buf, "480 ", 4))
+		} else if (!strncmp(buf, "480", 3))
 			return NN_AUTHREQ;
 		else
 			return NN_ERROR;

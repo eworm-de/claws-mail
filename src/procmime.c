@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -275,8 +275,7 @@ void procmime_scan_encoding(MimeInfo *mimeinfo, const gchar *encoding)
 {
 	gchar *buf;
 
-	Xalloca(buf, strlen(encoding) + 1, return);
-	strcpy(buf, encoding);
+	Xstrdup_a(buf, encoding, return);
 
 	g_free(mimeinfo->encoding);
 
@@ -301,8 +300,14 @@ void procmime_scan_content_type(MimeInfo *mimeinfo, const gchar *content_type)
 	gchar *delim, *p, *cnttype;
 	gchar *buf;
 
-	Xalloca(buf, strlen(content_type) + 1, return);
-	strcpy(buf, content_type);
+	if (conv_get_current_charset() == C_EUC_JP &&
+	    strchr(content_type, '\007')) {
+		gint len;
+		len = strlen(content_type) * 2 + 1;
+		Xalloca(buf, len, return);
+		conv_jistoeuc(buf, len, content_type);
+	} else
+		Xstrdup_a(buf, content_type, return);
 
 	g_free(mimeinfo->content_type);
 	g_free(mimeinfo->charset);
@@ -390,8 +395,14 @@ void procmime_scan_content_disposition(MimeInfo *mimeinfo,
 	gchar *delim, *p, *dispos;
 	gchar *buf;
 
-	Xalloca(buf, strlen(content_disposition) + 1, return);
-	strcpy(buf, content_disposition);
+	if (conv_get_current_charset() == C_EUC_JP &&
+	    strchr(content_disposition, '\007')) {
+		gint len;
+		len = strlen(content_disposition) * 2 + 1;
+		Xalloca(buf, len, return);
+		conv_jistoeuc(buf, len, content_disposition);
+	} else
+		Xstrdup_a(buf, content_disposition, return);
 
 	if ((delim = strchr(buf, ';'))) *delim = '\0';
 	mimeinfo->content_disposition = dispos = g_strdup(g_strstrip(buf));

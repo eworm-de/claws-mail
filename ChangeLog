@@ -1,3 +1,59 @@
+2001-07-25
+
+	* src/progressdialog.c: made the CList scrollable.
+	* src/inc.c: inc_start(): don't abort with non-fatal error.
+
+2001-07-24
+
+	* added English Sylpheed User's Manual by Paul Kater
+	  (paul@nlpagan.net) (thanks!).
+	* configure.in
+	  manual/Makefile.am
+	  src/mainwindow.c: added support for English manual.
+	* manual/en/sylpheed*.html: added English documentation.
+	* AUTHORS: updated.
+
+2001-07-23
+
+	* src/nntp.c: nntp_ok(): fixed the bug that didn't handle a response
+	  that didn't have any trailing messages.
+	* src/smtp.c: smtp_ok(): ditto.
+	* src/compose.c: compose_account_option_menu_create(): modified
+	  the style of the account option menu.
+
+2001-07-22
+
+	* src/prefs_customheader.c: prefs_custom_header_clist_set_row():
+	  remove return code from strings automatically.
+	  prefs_custom_header_create(): added "X-Face" to the default
+	  option.
+	* src/news.c: news_fetch_msg(), news_get_group_list()
+	  src/imap.c: imap_fetch_msg(): create the cache directory before
+	  writing.
+	* src/procmime.c:
+	  procmime_scan_content_type()
+	  procmime_scan_content_disposition(): convert JIS into EUC-JP
+	  before parsing.
+	* src/codeconv.c: conv_unmime_header(): cleaned up a bit.
+	* src/compose.c: don't append attachment headers if the attach
+	  pane is visible but the list is empty.
+	* src/recv.c: recv_bytes_write(): use g_malloc() instead of alloca().
+
+2001-07-18
+
+	* version 0.5.1
+
+2001-07-18
+
+	* src/compose.c: compose_quote_parse_fmt()
+	  src/prefs_common.c: prefs_quote_description_create(): added the
+	  symbol `%c' that allows to include Cc in reply format (thanks
+	  to Cyril Bellot).
+	* src/base64.[ch]
+	  src/procmime.c: procmime_decode_content(): applied the patch
+	  from Sergey Vlasov that allows to decode base64 data with
+	  unusual line length (not a multiple of 4) (thanks!).
+
 2001-07-17
 
 	* src/procmsg.[ch]: separated the permanent flags and temporary

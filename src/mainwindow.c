@@ -776,7 +776,6 @@ MainWindow *main_window_create(SeparateType type)
 	*/
 	main_window_set_thread_option(mainwin);
 
-	/* menu_set_sensitive(ifactory, "/Help/Manual/English", FALSE); */
 
 	/* set account selection menu */
 	ac_menu = gtk_item_factory_get_widget
@@ -799,17 +798,6 @@ MainWindow *main_window_create(SeparateType type)
 	messageview_init(messageview);
 	header_window_init(mainwin->headerwin);
 	log_window_init(mainwin->logwin);
-
-	{
-		GtkStyle *newstyle;
-
-		gtk_widget_ensure_style(folderview->ctree);
-		newstyle = gtk_widget_get_style(folderview->ctree);
-		newstyle = gtk_style_copy(newstyle);
-		gtk_widget_set_style(summaryview->ctree, newstyle);
-		gtk_widget_ensure_style(summaryview->ctree);
-		gtk_widget_realize(summaryview->ctree);
-	}
 
 	mainwin->cursor_count = 0;
 

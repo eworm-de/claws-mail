@@ -1,3 +1,59 @@
+2001-07-25
+
+	* src/progressdialog.c: CList をスクロール可能にした。
+	* src/inc.c: inc_start(): 致命的でないエラーで中断しないようにした。
+
+2001-07-24
+
+	* Paul Kater さん作の英語版 Sylpheed User's Manual (paul@nlpagan.net)
+	  を追加(thanks!)。
+	* configure.in
+	  manual/Makefile.am
+	  src/mainwindow.c: 英語版マニュアルに対応。
+	* manual/en/sylpheed*.html: 英語の文書を追加。
+	* AUTHORS: 更新。
+
+2001-07-23
+
+	* src/nntp.c: nntp_ok(): 後に続くメッセージを持たない応答を処理
+	  できないバグを修正。
+	* src/smtp.c: smtp_ok(): 同上。
+	* src/compose.c: compose_account_option_menu_create(): アカウント
+	  オプションメニューの表示形式を変更。
+
+2001-07-22
+
+	* src/prefs_customheader.c: prefs_custom_header_clist_set_row():
+	  文字列から改行コードを自動的に取り除くようにした。
+	  prefs_custom_header_create(): デフォルトの選択肢に "X-Face" を
+	  追加。
+	* src/news.c: news_fetch_msg(), news_get_group_list()
+	  src/imap.c: imap_fetch_msg(): 書き込みの前にキャッシュディレクトリ
+	  を作成するようにした。
+	* src/procmime.c:
+	  procmime_scan_content_type()
+	  procmime_scan_content_disposition(): パース前に JIS を EUC-JP
+	  に変換するようにした。
+	* src/codeconv.c: conv_unmime_header(): 少しコードを整理。
+	* src/compose.c: 添付ペインが表示されているがリストが空の場合は
+	  添付ヘッダを付けないようにした。
+	* src/recv.c: recv_bytes_write(): alloca() の代わりに g_malloc()
+	  を使用するようにした。
+
+2001-07-18
+
+	* version 0.5.1
+
+2001-07-18
+
+	* src/compose.c: compose_quote_parse_fmt()
+	  src/prefs_common.c: prefs_quote_description_create(): Cc を
+	  返信フォーマットに含める記号 `%c' を追加(Cyril Bellot さん thanks)。
+	* src/base64.[ch]
+	  src/procmime.c: procmime_decode_content(): 通常の行長(4の倍数)では
+	  ない base64 データをデコードできるようにする Sergey Vlasov さん
+	  からのパッチを適用(thanks!)。
+
 2001-07-17
 
 	* src/procmsg.[ch]: 永続フラグと一時フラグを2つの変数に分離し、

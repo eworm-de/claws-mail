@@ -145,7 +145,8 @@ gint smtp_ok(SockInfo *sock)
 			log_print("SMTP< %s\n", smtp_response);
 
 		if ((smtp_response[0] == '1' || smtp_response[0] == '2' ||
-		     smtp_response[0] == '3') && smtp_response[3] == ' ')
+		     smtp_response[0] == '3') &&
+		     (smtp_response[3] == ' ' || smtp_response[3] == '\0'))
 			return SM_OK;
 		else if (smtp_response[3] != '-')
 			return SM_ERROR;

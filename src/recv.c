@@ -165,14 +165,16 @@ gint recv_bytes_write(SockInfo *sock, glong size, FILE *fp)
 	glong count = 0;
 	gchar *prev, *cur;
 
-	Xalloca(buf, size, return -1);
+	buf = g_malloc(size);
 
 	do {
 		gint read_count;
 
 		read_count = sock_read(sock, buf + count, size - count);
-		if (read_count < 0)
+		if (read_count < 0) {
+			g_free(buf);
 			return -1;
+		}
 		count += read_count;
 	} while (count < size);
 
@@ -187,6 +189,7 @@ gint recv_bytes_write(SockInfo *sock, glong size, FILE *fp)
 		    fwrite("\n", sizeof(gchar), 1, fp) == EOF) {
 			perror("fwrite");
 			g_warning(_("Can't write to file.\n"));
+			g_free(buf);
 			return -1;
 		}
 
@@ -202,9 +205,11 @@ gint recv_bytes_write(SockInfo *sock, glong size, FILE *fp)
 					size - (prev - buf), fp) == EOF) {
 		perror("fwrite");
 		g_warning(_("Can't write to file.\n"));
+		g_free(buf);
 		return -1;
 	}
 
+	g_free(buf);
 	return 0;
 }
 

@@ -54,7 +54,7 @@ static struct CustomHdr {
 
 	GtkWidget *hdr_combo;
 	GtkWidget *hdr_entry;
-	GtkWidget *key_entry;
+	GtkWidget *val_entry;
 	GtkWidget *customhdr_clist;
 } customhdr;
 
@@ -99,9 +99,6 @@ static PrefsAccount *cur_ac = NULL;
 
 void prefs_custom_header_open(PrefsAccount *ac)
 {
-	if (prefs_rc_is_readonly(CUSTOM_HEADER_RC))
-		return;
-
 	if (!customhdr.window) {
 		prefs_custom_header_create();
 	}
@@ -131,8 +128,8 @@ static void prefs_custom_header_create(void)
 	GtkWidget *table1;
 	GtkWidget *hdr_label;
 	GtkWidget *hdr_combo;
-	GtkWidget *key_label;
-	GtkWidget *key_entry;
+	GtkWidget *val_label;
+	GtkWidget *val_entry;
 
 	GtkWidget *reg_hbox;
 	GtkWidget *btn_hbox;
@@ -210,20 +207,22 @@ static void prefs_custom_header_create(void)
 			  0, 0, 0);
 	gtk_widget_set_usize (hdr_combo, 150, -1);
 	gtkut_combo_set_items (GTK_COMBO (hdr_combo),
-			       "User-Agent", "X-Operating-System", NULL);
+			       "User-Agent", "X-Face", "X-Operating-System",
+			       NULL);
 
-	key_label = gtk_label_new (_("Value"));
-	gtk_widget_show (key_label);
-	gtk_table_attach (GTK_TABLE (table1), key_label, 1, 2, 0, 1,
+	val_label = gtk_label_new (_("Value"));
+	gtk_widget_show (val_label);
+	gtk_table_attach (GTK_TABLE (table1), val_label, 1, 2, 0, 1,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  0, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (key_label), 0, 0.5);
+	gtk_misc_set_alignment (GTK_MISC (val_label), 0, 0.5);
 	
-	key_entry = gtk_entry_new ();
-	gtk_widget_show (key_entry);
-	gtk_table_attach (GTK_TABLE (table1), key_entry, 1, 2, 1, 2,
+	val_entry = gtk_entry_new ();
+	gtk_widget_show (val_entry);
+	gtk_table_attach (GTK_TABLE (table1), val_entry, 1, 2, 1, 2,
 			  GTK_EXPAND | GTK_SHRINK | GTK_FILL,
 			  0, 0, 0);
+	gtk_widget_set_usize (val_entry, 200, -1);
 
 	/* add / delete */
 
@@ -260,7 +259,7 @@ static void prefs_custom_header_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox1), ch_hbox, TRUE, TRUE, 0);
 
 	ch_scrolledwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_set_usize (ch_scrolledwin, -1, 150);
+	gtk_widget_set_usize (ch_scrolledwin, -1, 200);
 	gtk_widget_show (ch_scrolledwin);
 	gtk_box_pack_start (GTK_BOX (ch_hbox), ch_scrolledwin, TRUE, TRUE, 0);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (ch_scrolledwin),
@@ -308,7 +307,7 @@ static void prefs_custom_header_create(void)
 
 	customhdr.hdr_combo  = hdr_combo;
 	customhdr.hdr_entry  = GTK_COMBO (hdr_combo)->entry;
-	customhdr.key_entry  = key_entry;
+	customhdr.val_entry  = val_entry;
 
 	customhdr.customhdr_clist   = customhdr_clist;
 }
@@ -499,10 +498,13 @@ static gint prefs_custom_header_clist_set_row(PrefsAccount *ac, gint row)
 	ch->account_id = ac->account_id;
 
 	ch->name = g_strdup(entry_text);
+	unfold_line(ch->name);
 
-	entry_text = gtk_entry_get_text(GTK_ENTRY(customhdr.key_entry));
-	if (entry_text[0] != '\0')
+	entry_text = gtk_entry_get_text(GTK_ENTRY(customhdr.val_entry));
+	if (entry_text[0] != '\0') {
 		ch->value = g_strdup(entry_text);
+		unfold_line(ch->value);
+	}
 
 	ch_str[0] = g_strdup_printf("%s: %s", ch->name,
 				    ch->value ? ch->value : "");
@@ -589,7 +591,7 @@ static void prefs_custom_header_select(GtkCList *clist, gint row, gint column,
 	if (!ch) ch = &default_ch;
 
 	ENTRY_SET_TEXT(customhdr.hdr_entry, ch->name);
-	ENTRY_SET_TEXT(customhdr.key_entry, ch->value);
+	ENTRY_SET_TEXT(customhdr.val_entry, ch->value);
 }
 
 #undef ENTRY_SET_TEXT

@@ -95,7 +95,7 @@ gint pop3_getauth_pass_recv(SockInfo *sock, gpointer data)
 	if (pop3_ok(sock, NULL) == PS_SUCCESS)
 		return POP3_GETRANGE_STAT_SEND;
 	else {
-		log_warning(_("error occurred on authorization\n"));
+		log_warning(_("error occurred on authentication\n"));
 		state->error_val = PS_AUTHFAIL;
 		return -1;
 	}
@@ -142,7 +142,7 @@ gint pop3_getauth_apop_recv(SockInfo *sock, gpointer data)
 	if (pop3_ok(sock, NULL) == PS_SUCCESS)
 		return POP3_GETRANGE_STAT_SEND;
 	else {
-		log_warning(_("error occurred on authorization\n"));
+		log_warning(_("error occurred on authentication\n"));
 		state->error_val = PS_AUTHFAIL;
 		return -1;
 	}

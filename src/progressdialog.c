@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,12 +22,12 @@
 #endif
 
 #include <glib.h>
-#include <gtk/gtk.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkprogressbar.h>
+#include <gtk/gtkscrolledwindow.h>
 #include <gtk/gtkbutton.h>
 
 #include "intl.h"
@@ -67,7 +67,7 @@ ProgressDialog *progress_dialog_create(void)
 	gtk_widget_show(vbox);
 
 	hbox = gtk_hbox_new(FALSE, 0);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, TRUE, TRUE, 8);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 8);
 	gtk_widget_show(hbox);
 
 	label = gtk_label_new("");
@@ -84,12 +84,12 @@ ProgressDialog *progress_dialog_create(void)
 	gtk_box_pack_start(GTK_BOX(vbox), progressbar, FALSE, FALSE, 0);
 	gtk_widget_show(progressbar);
 
-	scrolledwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_show (scrolledwin);
-	gtk_box_pack_start (GTK_BOX (vbox), scrolledwin, TRUE, TRUE, 0);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwin),
-					GTK_POLICY_AUTOMATIC,
-					GTK_POLICY_AUTOMATIC);
+	scrolledwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_widget_show(scrolledwin);
+	gtk_box_pack_start(GTK_BOX(vbox), scrolledwin, TRUE, TRUE, 0);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwin),
+				       GTK_POLICY_AUTOMATIC,
+				       GTK_POLICY_AUTOMATIC);
 
 	clist = gtk_clist_new_with_titles(3, text);
 	gtk_widget_show(clist);

@@ -1432,6 +1432,10 @@ static gchar *compose_quote_parse_fmt(Compose *compose, MsgInfo *msginfo,
 				str = msginfo->to;
 				sp++;
 				break;
+			case 'c':
+				str = msginfo->cc;
+				sp++;
+				break;
 			case 'i':
 				if (!msginfo->msgid) {sp++; break;}
 				Xalloca(str, strlen(msginfo->msgid) + 3,
@@ -3435,8 +3439,8 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 
 		if (ac == compose->account) def_menu = num;
 
-		name = g_strdup_printf("%s <%s> (%s)",
-				       ac->name, ac->address, ac->account_name);
+		name = g_strdup_printf("%s: %s <%s>",
+				       ac->account_name, ac->name, ac->address);
 		MENUITEM_ADD(menu, menuitem, name, ac);
 		g_free(name);
 		gtk_signal_connect(GTK_OBJECT(menuitem), "activate",

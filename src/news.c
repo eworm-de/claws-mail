@@ -250,7 +250,6 @@ gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	path = folder_item_get_path(item);
 	if (!is_dir_exist(path))
 		make_dir_hier(path);
-
 	filename = g_strconcat(path, G_DIR_SEPARATOR_S, itos(num), NULL);
 	g_free(path);
 
@@ -302,6 +301,8 @@ GSList *news_get_group_list(Folder *folder)
 	g_return_val_if_fail(folder->type == F_NEWS, NULL);
 
 	path = folder_item_get_path(FOLDER_ITEM(folder->node->data));
+	if (!is_dir_exist(path))
+		make_dir_hier(path);
 	filename = g_strconcat(path, G_DIR_SEPARATOR_S, NEWSGROUP_LIST, NULL);
 	g_free(path);
 
@@ -741,8 +742,6 @@ static void news_delete_all_articles(FolderItem *item)
 	debug_print(_("\tDeleting all cached articles... "));
 
 	dir = folder_item_get_path(item);
-	if (!is_dir_exist(dir))
-		make_dir_hier(dir);
 	remove_all_numbered_files(dir);
 	g_free(dir);
 

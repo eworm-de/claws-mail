@@ -725,7 +725,7 @@ void conv_unmime_header_overwrite(gchar *str)
 		gchar *tmp;
 		gint len;
 
-		Xstrdup_a(buf, str, {return;});
+		Xstrdup_a(buf, str, return);
 		outlen = strlen(str) + 1;
 		UnMimeHeader(buf);
 		len = strlen(buf) * 2 + 1;
@@ -743,33 +743,23 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 	gchar *buf;
 	CharSet cur_charset;
 
-	Xstrdup_a(buf, str, return);
 	cur_charset = conv_get_current_charset();
+	Xstrdup_a(buf, str, return);
 
 #if HAVE_LIBJCONV
 	UnMimeHeaderConv(buf, outbuf, outlen);
+#else
+	UnMimeHeader(buf);
+	strncpy2(outbuf, buf, outlen);
+#endif
 	if (cur_charset == C_EUC_JP) {
-		gchar *tmp;
 		gint len;
 
 		len = strlen(outbuf) * 2 + 1;
-		Xalloca(tmp, len, return);
-		conv_jistodisp(tmp, len, outbuf);
-		strncpy2(outbuf, tmp, outlen);
-	}
-#else
-	UnMimeHeader(buf);
-	if (cur_charset == C_EUC_JP) {
-		gchar *tmp;
-		gint len;
-
-		len = strlen(buf) * 2 + 1;
-		Xalloca(tmp, len, {strncpy2(outbuf, buf, outlen); return;});
-		conv_jistodisp(tmp, len, buf);
-		strncpy2(outbuf, tmp, outlen);
-	} else
+		Xalloca(buf, len, return);
+		conv_jistodisp(buf, len, outbuf);
 		strncpy2(outbuf, buf, outlen);
-#endif
+	}
 }
 
 #define MAX_ENCLEN	75

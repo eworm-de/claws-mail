@@ -394,6 +394,7 @@ static void inc_start(IncProgressDialog *inc_dialog)
 	Pop3State *pop3_state;
 	IncState inc_state;
 	gint num = 0;
+	gint error_num = 0;
 
 	while (inc_dialog->queue_list != NULL) {
 		session = inc_dialog->queue_list->data;
@@ -484,7 +485,8 @@ static void inc_start(IncProgressDialog *inc_dialog)
 
 		if (inc_state != INC_SUCCESS) {
 			inc_put_error(inc_state);
-			break;
+			error_num++;
+			if (inc_state == INC_NOSPACE) break;
 		}
 
 		inc_session_destroy(session);
@@ -493,6 +495,9 @@ static void inc_start(IncProgressDialog *inc_dialog)
 
 		num++;
 	}
+
+	if (error_num)
+		alertpanel_error(_("Some errors occured while getting mail."));
 
 	while (inc_dialog->queue_list != NULL) {
 		session = inc_dialog->queue_list->data;
