@@ -45,20 +45,6 @@ typedef enum
 	ENC_UNKNOWN
 } EncodingType;
 
-typedef enum
-{
-	MIME_TEXT,
-	MIME_TEXT_HTML,
-	MIME_MESSAGE_RFC822,
-	MIME_APPLICATION,
-	MIME_APPLICATION_OCTET_STREAM,
-	MIME_MULTIPART,
-	MIME_IMAGE,
-	MIME_AUDIO,
-	MIME_TEXT_ENRICHED,
-	MIME_UNKNOWN
-} ContentType;
-
 #include "procmsg.h"
 
 struct _MimeType
@@ -68,6 +54,18 @@ struct _MimeType
 
 	gchar *extension;
 };
+
+typedef enum
+{
+	MIMETYPE_TEXT,
+	MIMETYPE_IMAGE,
+	MIMETYPE_AUDIO,
+	MIMETYPE_VIDEO,
+	MIMETYPE_APPLICATION,
+	MIMETYPE_MESSAGE,
+	MIMETYPE_MULTIPART,
+	MIMETYPE_UNKNOWN,
+} MimeMediaType;
 
 /*
  * An example of MimeInfo structure:
@@ -91,40 +89,49 @@ struct _MimeInfo
 {
 	gchar *encoding;
 
-	EncodingType encoding_type;
-	ContentType  mime_type;
-
-	gchar *content_type;
 	gchar *charset;
 	gchar *name;
-	gchar *boundary;
 
 	gchar *content_disposition;
-	gchar *filename;
-	gchar *description;
-
-	glong fpos;
-	guint size;
 
 	MimeInfo *main;
-	MimeInfo *sub;
+
+	gint level;
+
+	/* Internal data */
+	gchar *filename;
+	gboolean tmpfile;
 
 	MimeInfo *next;
 	MimeInfo *parent;
 	MimeInfo *children;
 
-#if USE_GPGME
-	MimeInfo *plaintext;
-	gchar *plaintextfile;
+	/* --- NEW MIME STUFF --- */
+	/* Content-Type */
+	MimeMediaType 	 type;
+	gchar		*subtype;
+
+	GHashTable	*parameters;
+
+	/* Content-Transfer-Encoding */
+	EncodingType	 encoding_type;
+
+	/* Content-Description */
+	gchar		*description;
+
+	/* Content-ID */
+	gchar		*id;
+
+	guint		 offset;
+	guint		 length;
+
+	/* Privacy */
 	gchar *sigstatus;
 	gchar *sigstatus_full;
 	gboolean sig_ok;
 	gboolean sig_unknown;
 	gboolean sig_expired;
 	gboolean key_expired;
-#endif
-
-	gint level;
 };
 
 #define IS_BOUNDARY(s, bnd, len) \
@@ -160,11 +167,8 @@ void procmime_scan_subject              (MimeInfo       *mimeinfo,
 			                 const gchar    *subject);
 MimeInfo *procmime_scan_mime_header	(FILE		*fp);
 
-FILE *procmime_decode_content		(FILE		*outfp,
-					 FILE		*infp,
-					 MimeInfo	*mimeinfo);
+gboolean procmime_decode_content	(MimeInfo	*mimeinfo);
 gint procmime_get_part			(const gchar	*outfile,
-					 const gchar	*infile,
 					 MimeInfo	*mimeinfo);
 FILE *procmime_get_text_content		(MimeInfo	*mimeinfo,
 					 FILE		*infp);
@@ -180,7 +184,6 @@ gboolean procmime_find_string		(MsgInfo	*msginfo,
 
 gchar *procmime_get_tmp_file_name	(MimeInfo	*mimeinfo);
 
-ContentType procmime_scan_mime_type	(const gchar	*mime_type);
 gchar *procmime_get_mime_type		(const gchar	*filename);
 
 GList *procmime_get_mime_type_list	(void);
@@ -188,6 +191,9 @@ GList *procmime_get_mime_type_list	(void);
 EncodingType procmime_get_encoding_for_charset	(const gchar	*charset);
 EncodingType procmime_get_encoding_for_file	(const gchar	*file);
 const gchar *procmime_get_encoding_str		(EncodingType	 encoding);
+MimeInfo *procmime_scan_file			(gchar		*filename);
+MimeInfo *procmime_scan_queue_file		(gchar 		*filename);
+const gchar *procmime_get_type_str		(MimeMediaType 	 type);
 
 void renderer_read_config(void);
 void renderer_write_config(void);

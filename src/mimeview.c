@@ -414,8 +414,7 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 
 		partinfo = gtk_ctree_node_get_row_data(ctree, node);
 		if (partinfo &&
-		    (partinfo->mime_type == MIME_TEXT ||
-		     partinfo->mime_type == MIME_TEXT_HTML))
+		    (partinfo->type == MIMETYPE_TEXT))
 			break;
 	}
 	textview_show_message(mimeview->messageview->textview, mimeinfo, file);
@@ -472,48 +471,32 @@ static void mimeview_set_multipart_tree(MimeView *mimeview,
 
 	g_return_if_fail(mimeinfo != NULL);
 
-	if (mimeinfo->children)
-		mimeinfo = mimeinfo->children;
-
 	while (mimeinfo != NULL) {
 		node = mimeview_append_part(mimeview, mimeinfo, parent);
 
 		if (mimeinfo->children)
-			mimeview_set_multipart_tree(mimeview, mimeinfo, node);
-		else if (mimeinfo->sub &&
-			 mimeinfo->sub->mime_type != MIME_TEXT &&
-			 mimeinfo->sub->mime_type != MIME_TEXT_HTML)
-			mimeview_set_multipart_tree(mimeview, mimeinfo->sub,
-						    node);
+			mimeview_set_multipart_tree(mimeview, mimeinfo->children, node);
 		mimeinfo = mimeinfo->next;
 	}
 }
 
 static gchar *get_part_name(MimeInfo *partinfo)
 {
-#if USE_GPGME
-	if (partinfo->sigstatus)
-		return partinfo->sigstatus;
-	else
-#endif
-	if (partinfo->name)
-		return partinfo->name;
-	else if (partinfo->filename)
-		return partinfo->filename;
-	else if (partinfo->description)
-		return partinfo->description;
-	else
-		return "";
+	gchar *name;
+
+	name = g_hash_table_lookup(partinfo->parameters, "name");
+	if(name == NULL)
+		name = "";
+
+	return name;
 }
 
 static gchar *get_part_description(MimeInfo *partinfo)
 {
 	if (partinfo->description)
 		return partinfo->description;
-	else if (partinfo->name)
-		return partinfo->name;
-	else if (partinfo->filename)
-		return partinfo->filename;
+	else if (g_hash_table_lookup(partinfo->parameters, "name") != NULL)
+		return g_hash_table_lookup(partinfo->parameters, "name");
 	else
 		return "";
 }
@@ -524,11 +507,17 @@ static GtkCTreeNode *mimeview_append_part(MimeView *mimeview,
 {
 	GtkCTree *ctree = GTK_CTREE(mimeview->ctree);
 	GtkCTreeNode *node;
+	static gchar content_type[64];
 	gchar *str[N_MIMEVIEW_COLS];
 
-	str[COL_MIMETYPE] =
-		partinfo->content_type ? partinfo->content_type : "";
-	str[COL_SIZE] = to_human_readable(partinfo->size);
+	if (partinfo->type != MIMETYPE_UNKNOWN && partinfo->subtype) {
+		snprintf(content_type, 64, "%s/%s", procmime_get_type_str(partinfo->type), partinfo->subtype);
+	} else {
+		snprintf(content_type, 64, "UNKNOWN");
+	}
+
+	str[COL_MIMETYPE] = content_type;
+	str[COL_SIZE] = to_human_readable(partinfo->length);
 	if (prefs_common.attach_desc)
 		str[COL_NAME] = get_part_description(partinfo);
 	else
@@ -546,19 +535,10 @@ static void mimeview_show_message_part(MimeView *mimeview, MimeInfo *partinfo)
 {
 	FILE *fp;
 	const gchar *fname;
-#if USE_GPGME
-	MimeInfo *pi;
-#endif
 
 	if (!partinfo) return;
 
-#if USE_GPGME
-	for (pi = partinfo; pi && !pi->plaintextfile ; pi = pi->parent)
-		;
-	fname = pi ? pi->plaintextfile : mimeview->file;
-#else
 	fname = mimeview->file;
-#endif /* USE_GPGME */
 	if (!fname) return;
 
 	if ((fp = fopen(fname, "rb")) == NULL) {
@@ -566,7 +546,7 @@ static void mimeview_show_message_part(MimeView *mimeview, MimeInfo *partinfo)
 		return;
 	}
 
-	if (fseek(fp, partinfo->fpos, SEEK_SET) < 0) {
+	if (fseek(fp, partinfo->offset, SEEK_SET) < 0) {
 		FILE_OP_ERROR(mimeview->file, "fseek");
 		fclose(fp);
 		return;
@@ -633,11 +613,12 @@ static MimeViewer *get_viewer_for_mimeinfo(MimeView *mimeview, MimeInfo *partinf
 	gchar *content_type = NULL;
 	MimeViewer *viewer = NULL;
 
-	if ((partinfo->mime_type == MIME_APPLICATION_OCTET_STREAM) &&
+	if ((partinfo->type == MIMETYPE_APPLICATION) &&
+            (g_strcasecmp(partinfo->subtype, "octet-stream")) &&
 	    (partinfo->name != NULL)) {
 		content_type = procmime_get_mime_type(partinfo->name);
 	} else {
-		content_type = g_strdup(partinfo->content_type);
+		content_type = g_strdup_printf("%s/%s", procmime_get_type_str(partinfo->type), partinfo->subtype);
 	}
 
 	if (content_type != NULL) {
@@ -741,12 +722,10 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 	mimeview->textview->default_text = FALSE;
 	
 	if (!mimeview_show_part(mimeview, partinfo)) {
-		switch (partinfo->mime_type) {
-		case MIME_TEXT:
-		case MIME_TEXT_HTML:
-		case MIME_TEXT_ENRICHED:
-		case MIME_MESSAGE_RFC822:
-		case MIME_MULTIPART:
+		switch (partinfo->type) {
+		case MIMETYPE_TEXT:
+		case MIMETYPE_MESSAGE:
+		case MIMETYPE_MULTIPART:
 			mimeview_show_message_part(mimeview, partinfo);
 		
 			break;
@@ -754,8 +733,8 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 			mimeview->textview->default_text = TRUE;	
 			mimeview_change_view_type(mimeview, MIMEVIEW_TEXT);
 #if USE_GPGME
-			if (g_strcasecmp(partinfo->content_type,
-					 "application/pgp-signature") == 0)
+			if ((partinfo->type == MIMETYPE_APPLICATION) && 
+			    !g_strcasecmp(partinfo->subtype, "pgp-signature"))
 				textview_show_signature_part(mimeview->textview,
 							     partinfo);
 			else
@@ -811,19 +790,17 @@ static void part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 		/* call external program for image, audio or html */
 		mimeview_launch(mimeview);
 	} else if (event->button == 3) {
-		if (partinfo && (partinfo->mime_type == MIME_TEXT ||
-				 partinfo->mime_type == MIME_TEXT_HTML ||
-				 partinfo->mime_type == MIME_TEXT_ENRICHED ||
-				 partinfo->mime_type == MIME_MESSAGE_RFC822 ||
-				 partinfo->mime_type == MIME_IMAGE ||
-				 partinfo->mime_type == MIME_MULTIPART))
+		if (partinfo && (partinfo->type == MIMETYPE_TEXT ||
+				 partinfo->type == MIMETYPE_MESSAGE ||
+				 partinfo->type == MIMETYPE_IMAGE ||
+				 partinfo->type == MIMETYPE_MULTIPART))
 			menu_set_sensitive(mimeview->popupfactory,
 					   "/Display as text", FALSE);
 		else
 			menu_set_sensitive(mimeview->popupfactory,
 					   "/Display as text", TRUE);
 		if (partinfo &&
-		    partinfo->mime_type == MIME_APPLICATION_OCTET_STREAM)
+		    partinfo->type == MIMETYPE_APPLICATION)
 			menu_set_sensitive(mimeview->popupfactory,
 					   "/Open", FALSE);
 		else
@@ -842,7 +819,6 @@ static void part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 			       NULL, NULL, NULL, NULL,
 			       event->button, event->time);
 	}
-
 }
 
 
@@ -957,7 +933,7 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 	filename = g_strconcat(get_mime_tmp_dir(), G_DIR_SEPARATOR_S,
 			       filename, NULL);
 
-	if (procmime_get_part(filename, mimeview->file, partinfo) < 0)
+	if (procmime_get_part(filename, partinfo) < 0)
 		alertpanel_error
 			(_("Can't save the part of multipart message."));
 
@@ -1019,7 +995,7 @@ static void mimeview_save_all(MimeView *mimeview)
 		}
 		g_free(attachname);
 
-		if ((G_ALERTDEFAULT != aval) || (procmime_get_part(buf, mimeview->file, attachment) < 0))
+		if ((G_ALERTDEFAULT != aval) || (procmime_get_part(buf, attachment) < 0))
 			alertpanel_error(_("Can't save the part of multipart message."));
 		attachment = attachment->next;
 	}
@@ -1083,7 +1059,7 @@ static void mimeview_save_as(MimeView *mimeview)
 		if (G_ALERTDEFAULT != aval) return;
 	}
 
-	if (procmime_get_part(filename, mimeview->file, partinfo) < 0)
+	if (procmime_get_part(filename, partinfo) < 0)
 		alertpanel_error
 			(_("Can't save the part of multipart message."));
 }
@@ -1108,7 +1084,7 @@ static void mimeview_launch(MimeView *mimeview)
 
 	filename = procmime_get_tmp_file_name(partinfo);
 
-	if (procmime_get_part(filename, mimeview->file, partinfo) < 0)
+	if (procmime_get_part(filename, partinfo) < 0)
 		alertpanel_error
 			(_("Can't save the part of multipart message."));
 	else
@@ -1138,7 +1114,7 @@ static void mimeview_open_with(MimeView *mimeview)
 
 	filename = procmime_get_tmp_file_name(partinfo);
 
-	if (procmime_get_part(filename, mimeview->file, partinfo) < 0) {
+	if (procmime_get_part(filename, partinfo) < 0) {
 		alertpanel_error
 			(_("Can't save the part of multipart message."));
 		g_free(filename);
@@ -1183,20 +1159,24 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 	if (cmdline) {
 		cmd = cmdline;
 		def_cmd = NULL;
-	} else if (MIME_APPLICATION_OCTET_STREAM == partinfo->mime_type) {
+	} else if (MIMETYPE_APPLICATION == partinfo->type) {
 		return;
-	} else if (MIME_IMAGE == partinfo->mime_type) {
+	} else if (MIMETYPE_IMAGE == partinfo->type) {
 		cmd = prefs_common.mime_image_viewer;
 		def_cmd = default_image_cmdline;
-	} else if (MIME_AUDIO == partinfo->mime_type) {
+	} else if (MIMETYPE_AUDIO == partinfo->type) {
 		cmd = prefs_common.mime_audio_player;
 		def_cmd = default_audio_cmdline;
-	} else if (MIME_TEXT_HTML == partinfo->mime_type) {
+	} else if (MIMETYPE_TEXT == partinfo->type && !strcmp(partinfo->subtype, "html")) {
 		cmd = prefs_common.uri_cmd;
 		def_cmd = default_html_cmdline;
 	} else {
+		gchar *content_type;
+		
+		content_type = g_strdup_printf("%s/%s", procmime_get_type_str(partinfo->type), partinfo->subtype);
 		g_snprintf(m_buf, sizeof(m_buf), mime_cmdline,
-			   partinfo->content_type, "%s");
+			   content_type, "%s");
+		g_free(content_type);
 		cmd = m_buf;
 		def_cmd = NULL;
 	}
@@ -1247,8 +1227,8 @@ static void mimeview_update_signature_info(MimeView *mimeview)
 	partinfo = mimeview_get_selected_part(mimeview);
 	if (!partinfo) return;
 
-	if (g_strcasecmp(partinfo->content_type,
-			 "application/pgp-signature") == 0) {
+	if ((partinfo->type == MIMETYPE_APPLICATION) && 
+	    !g_strcasecmp(partinfo->subtype, "application/pgp-signature")) {
 		mimeview_change_view_type(mimeview, MIMEVIEW_TEXT);
 		textview_show_signature_part(mimeview->textview, partinfo);
 	}
@@ -1345,8 +1325,7 @@ static gboolean icon_clicked_cb (GtkWidget *button, GdkEventButton *event, MimeV
 
 static void icon_selected (MimeView *mimeview, gint num, MimeInfo *partinfo)
 {
-	if (num == 1 && (partinfo->mime_type == MIME_TEXT ||  
-			 partinfo->mime_type == MIME_TEXT_HTML))  {
+	if (num == 1 && (partinfo->type == MIMETYPE_TEXT)) {
 		gtk_notebook_set_page(GTK_NOTEBOOK(mimeview->notebook), 0);
 		/* don't set the ctree, as it will unload the plugin, and
 		 * we want to be able to switch quickly between the text
@@ -1497,20 +1476,22 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	gtk_object_set_data(GTK_OBJECT(button), "partinfo", 
 		mimeinfo);
 	
-	switch (mimeinfo->mime_type) {
+	switch (mimeinfo->type) {
 		
-	case MIME_TEXT:
-	case MIME_MESSAGE_RFC822:
+	case MIMETYPE_TEXT:
+		if (mimeinfo->subtype && !g_strcasecmp(mimeinfo->subtype, "html"))
+			stockp = STOCK_PIXMAP_MIME_TEXT_HTML;
+		else if  (mimeinfo->subtype && !g_strcasecmp(mimeinfo->subtype, "enriched"))
+			stockp = STOCK_PIXMAP_MIME_TEXT_ENRICHED;
+		else
+			stockp = STOCK_PIXMAP_MIME_TEXT_PLAIN;
+		break;
+	case MIMETYPE_MESSAGE:
 		stockp = STOCK_PIXMAP_MIME_TEXT_PLAIN;
 		break;
-	case MIME_TEXT_HTML:
-		stockp = STOCK_PIXMAP_MIME_TEXT_HTML;
-		break;
-	case MIME_APPLICATION:
+	case MIMETYPE_APPLICATION:
 #ifdef USE_GPGME	
-		if (mimeinfo->content_type
-			&&  g_strcasecmp(mimeinfo->content_type, 
-					 "application/pgp-signature")  == 0) {
+		if (mimeinfo->subtype && !g_strcasecmp(mimeinfo->subtype, "pgp-signature")) {
 			if (mimeinfo->sigstatus_full) {
 				desc = mimeinfo->sigstatus;
 				if (mimeinfo->sig_ok)
@@ -1525,20 +1506,18 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 			} else
 				stockp = STOCK_PIXMAP_MIME_GPG_SIGNED;
 		} else
+
 #endif	
+		if (mimeinfo->subtype && !g_strcasecmp(mimeinfo->subtype, "octet-stream"))
+			stockp = STOCK_PIXMAP_MIME_APPLICATION_OCTET_STREAM;
+		else
 			stockp = STOCK_PIXMAP_MIME_APPLICATION;
 		break;
-	case MIME_APPLICATION_OCTET_STREAM:
-		stockp = STOCK_PIXMAP_MIME_APPLICATION_OCTET_STREAM;
-		break;
-	case MIME_IMAGE:
+	case MIMETYPE_IMAGE:
 		stockp = STOCK_PIXMAP_MIME_IMAGE;
 		break;
-	case MIME_AUDIO:
+	case MIMETYPE_AUDIO:
 		stockp = STOCK_PIXMAP_MIME_AUDIO;
-		break;
-	case MIME_TEXT_ENRICHED:
-		stockp = STOCK_PIXMAP_MIME_TEXT_ENRICHED;
 		break;
 	default:
 		stockp = STOCK_PIXMAP_MIME_UNKNOWN;
@@ -1554,12 +1533,17 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 		else
 			desc = get_part_name(mimeinfo);
 	}
+
 	if (desc && *desc)
-		tip = g_strdup_printf("%s\n%s\n%s", desc, mimeinfo->content_type, 
-				to_human_readable(mimeinfo->size));
+		tip = g_strdup_printf("%s\n%s/%s\n%s", desc,
+				procmime_get_type_str(mimeinfo->type),
+				mimeinfo->subtype, 
+				to_human_readable(mimeinfo->length));
 	else 		
-		tip = g_strdup_printf("%s\n%s",	mimeinfo->content_type, 
-				to_human_readable(mimeinfo->size));
+		tip = g_strdup_printf("%s/%s\n%s",
+				procmime_get_type_str(mimeinfo->type),
+				mimeinfo->subtype, 
+				to_human_readable(mimeinfo->length));
 
 	gtk_tooltips_set_tip(mimeview->tooltips, button, tip, NULL);
 	g_free(tip);
@@ -1671,10 +1655,6 @@ static void icon_list_create(MimeView *mimeview, MimeInfo *mimeinfo)
 	while (mimeinfo != NULL) {
 		if (mimeinfo->children)
 			icon_list_create(mimeview, mimeinfo);
-		else if (mimeinfo->sub &&
-			 mimeinfo->sub->mime_type != MIME_TEXT &&
-			 mimeinfo->sub->mime_type != MIME_TEXT_HTML)
-			icon_list_create(mimeview, mimeinfo->sub);
 		else 
 			icon_list_append_icon(mimeview, mimeinfo);
 		mimeinfo = mimeinfo->next;

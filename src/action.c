@@ -372,7 +372,7 @@ static gboolean parse_append_msgpart(GString *cmd, MsgInfo *msginfo,
 	filename = procmsg_get_message_file_path(msginfo);
 	part_filename = procmime_get_tmp_file_name(partinfo);
 
-	ret = procmime_get_part(part_filename, filename, partinfo); 
+	ret = procmime_get_part(part_filename, partinfo);
 
 	if (single_part)
 		procmime_mimeinfo_free_all(partinfo);

@@ -28,6 +28,9 @@
 #include <string.h>
 #include <locale.h>
 #include <ctype.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include "intl.h"
 #include "procmime.h"
@@ -55,10 +58,20 @@ MimeInfo *procmime_mimeinfo_new(void)
 	MimeInfo *mimeinfo;
 
 	mimeinfo = g_new0(MimeInfo, 1);
-	mimeinfo->mime_type     = MIME_UNKNOWN;
+	mimeinfo->type     	= MIMETYPE_UNKNOWN;
 	mimeinfo->encoding_type = ENC_UNKNOWN;
 
+	mimeinfo->parameters = g_hash_table_new(g_str_hash, g_str_equal);
+
 	return mimeinfo;
+}
+
+static gboolean procmime_mimeinfo_parameters_destroy(gpointer key, gpointer value, gpointer user_data)
+{
+	g_free(key);
+	g_free(value);
+	
+	return TRUE;
 }
 
 void procmime_mimeinfo_free_all(MimeInfo *mimeinfo)
@@ -67,24 +80,23 @@ void procmime_mimeinfo_free_all(MimeInfo *mimeinfo)
 		MimeInfo *next;
 
 		g_free(mimeinfo->encoding);
-		g_free(mimeinfo->content_type);
 		g_free(mimeinfo->charset);
 		g_free(mimeinfo->name);
-		g_free(mimeinfo->boundary);
 		g_free(mimeinfo->content_disposition);
+		if(mimeinfo->tmpfile)
+			unlink(mimeinfo->filename);
 		g_free(mimeinfo->filename);
+
+		procmime_mimeinfo_free_all(mimeinfo->children);
+		g_free(mimeinfo->subtype);
 		g_free(mimeinfo->description);
-#if USE_GPGME
-		g_free(mimeinfo->plaintextfile);
+		g_free(mimeinfo->id);
+
 		g_free(mimeinfo->sigstatus);
 		g_free(mimeinfo->sigstatus_full);
-#endif
 
-		procmime_mimeinfo_free_all(mimeinfo->sub);
-		procmime_mimeinfo_free_all(mimeinfo->children);
-#if USE_GPGME
-		procmime_mimeinfo_free_all(mimeinfo->plaintext);
-#endif
+		g_hash_table_foreach_remove(mimeinfo->parameters, procmime_mimeinfo_parameters_destroy, NULL);
+		g_hash_table_destroy(mimeinfo->parameters);
 
 		next = mimeinfo->next;
 		g_free(mimeinfo);
@@ -143,8 +155,6 @@ MimeInfo *procmime_mimeinfo_next(MimeInfo *mimeinfo)
 
 	if (mimeinfo->children)
 		return mimeinfo->children;
-	if (mimeinfo->sub)
-		return mimeinfo->sub;
 	if (mimeinfo->next)
 		return mimeinfo->next;
 
@@ -168,373 +178,21 @@ MimeInfo *procmime_mimeinfo_next(MimeInfo *mimeinfo)
 	return NULL;
 }
 
-#if 0
-void procmime_dump_mimeinfo(MimeInfo *mimeinfo)
-{
-	gint i;
-
-	g_print("\n");
-
-	for (; mimeinfo != NULL; mimeinfo = procmime_mimeinfo_next(mimeinfo)) {
-		for (i = 0; i < mimeinfo->level; i++)
-			g_print("  ");
-		g_print("%s%s\n", mimeinfo->main ? "sub: " : "",
-			mimeinfo->content_type);
-	}
-}
-#endif
-
 MimeInfo *procmime_scan_message(MsgInfo *msginfo)
 {
-	FILE *fp;
+	gchar *filename;
 	MimeInfo *mimeinfo;
 
-	g_return_val_if_fail(msginfo != NULL, NULL);
-
-#if USE_GPGME
-	if ((fp = procmsg_open_message_decrypted(msginfo, &mimeinfo)) == NULL)
+	filename = procmsg_get_message_file(msginfo);
+	if(!filename)
 		return NULL;
-#else
-	if ((fp = procmsg_open_message(msginfo)) == NULL) return NULL;
-	mimeinfo = procmime_scan_mime_header(fp);
-#endif
-
-	if (mimeinfo) {
-		mimeinfo->size = get_left_file_size(fp);
-		if (mimeinfo->mime_type == MIME_MULTIPART ||
-		    mimeinfo->mime_type == MIME_MESSAGE_RFC822)
-			procmime_scan_multipart_message(mimeinfo, fp);
-	}
-
-	fclose(fp);
+	if (msginfo->folder->stype != F_QUEUE)
+		mimeinfo = procmime_scan_file(filename);
+	else
+		mimeinfo = procmime_scan_queue_file(filename);
+	g_free(filename);
 
 	return mimeinfo;
-}
-
-void procmime_scan_multipart_message(MimeInfo *mimeinfo, FILE *fp)
-{
-	gchar *p;
-	gchar *boundary;
-	gint boundary_len = 0;
-	gchar buf[BUFFSIZE];
-	glong fpos, prev_fpos;
-
-	g_return_if_fail(mimeinfo != NULL);
-	g_return_if_fail(mimeinfo->mime_type == MIME_MULTIPART ||
-			 mimeinfo->mime_type == MIME_MESSAGE_RFC822);
-
-	if (mimeinfo->mime_type == MIME_MULTIPART) {
-		g_return_if_fail(mimeinfo->boundary != NULL);
-		g_return_if_fail(mimeinfo->sub == NULL);
-	}
-	g_return_if_fail(fp != NULL);
-
-	boundary = mimeinfo->boundary;
-
-	if (boundary) {
-		boundary_len = strlen(boundary);
-
-		/* look for first boundary */
-		while ((p = fgets(buf, sizeof(buf), fp)) != NULL)
-			if (IS_BOUNDARY(buf, boundary, boundary_len)) break;
-		if (!p) return;
-	} else if (mimeinfo->parent && mimeinfo->parent->boundary) {
-		boundary = mimeinfo->parent->boundary;
-		boundary_len = strlen(boundary);
-	}
-
-	if ((fpos = ftell(fp)) < 0) {
-		perror("ftell");
-		return;
-	}
-
-	for (;;) {
-		MimeInfo *partinfo;
-		gboolean eom = FALSE;
-		gint len;
-
-		prev_fpos = fpos;
-		debug_print("prev_fpos: %ld\n", fpos);
-
-		if (mimeinfo->mime_type == MIME_MESSAGE_RFC822) {
-			MimeInfo *sub;
-
-			mimeinfo->sub = sub = procmime_scan_mime_header(fp);
-			if (!sub) break;
-
-			sub->level = mimeinfo->level + 1;
-			sub->parent = mimeinfo->parent;
-			sub->main = mimeinfo;
-
-			partinfo = sub;
-		} else {
-			partinfo = procmime_scan_mime_header(fp);
-			if (!partinfo) break;
-			procmime_mimeinfo_insert(mimeinfo, partinfo);
-			debug_print("content-type: %s\n",
-				    partinfo->content_type);
-		}
-
-		if (partinfo->mime_type == MIME_MULTIPART ||
-		    partinfo->mime_type == MIME_MESSAGE_RFC822) {
-			if (partinfo->level < 8)
-				procmime_scan_multipart_message(partinfo, fp);
-		}
-
-		/* look for next boundary */
-		buf[0] = '\0';
-		while ((p = fgets(buf, sizeof(buf), fp)) != NULL) {
-			if (IS_BOUNDARY(buf, boundary, boundary_len)) {
-				if (buf[2 + boundary_len]     == '-' &&
-				    buf[2 + boundary_len + 1] == '-')
-					eom = TRUE;
-				break;
-			}
-		}
-		if (p == NULL) {
-			/* broken MIME, or single part MIME message */
-			buf[0] = '\0';
-			eom = TRUE;
-		}
-		debug_print("boundary: %s\n", buf);
-
-		fpos = ftell(fp);
-		debug_print("fpos: %ld\n", fpos);
-
-		len = strlen(buf);
-		partinfo->size = fpos - prev_fpos - len;
-		debug_print("partinfo->size: %d\n", partinfo->size);
-		if (partinfo->sub && !partinfo->sub->sub &&
-		    !partinfo->sub->children) {
-			partinfo->sub->size =
-				fpos - partinfo->sub->fpos - strlen(buf);
-			debug_print("partinfo->sub->size: %d\n",
-				    partinfo->sub->size);
-		}
-
-		if (mimeinfo->mime_type == MIME_MESSAGE_RFC822) {
-			if (len > 0 && fseek(fp, fpos - len, SEEK_SET) < 0)
-				perror("fseek");
-			break;
-		}
-
-		if (eom) break;
-	}
-}
-
-void procmime_scan_encoding(MimeInfo *mimeinfo, const gchar *encoding)
-{
-	gchar *buf;
-
-	Xstrdup_a(buf, encoding, return);
-
-	g_free(mimeinfo->encoding);
-
-	mimeinfo->encoding = g_strdup(g_strstrip(buf));
-	if (!strcasecmp(buf, "7bit"))
-		mimeinfo->encoding_type = ENC_7BIT;
-	else if (!strcasecmp(buf, "8bit"))
-		mimeinfo->encoding_type = ENC_8BIT;
-	else if (!strcasecmp(buf, "quoted-printable"))
-		mimeinfo->encoding_type = ENC_QUOTED_PRINTABLE;
-	else if (!strcasecmp(buf, "base64"))
-		mimeinfo->encoding_type = ENC_BASE64;
-	else if (!strcasecmp(buf, "x-uuencode"))
-		mimeinfo->encoding_type = ENC_X_UUENCODE;
-	else
-		mimeinfo->encoding_type = ENC_UNKNOWN;
-
-}
-
-void procmime_scan_content_type(MimeInfo *mimeinfo, const gchar *content_type)
-{
-	gchar *delim, *p, *cnttype;
-	gchar *buf;
-
-	if (conv_get_current_charset() == C_EUC_JP &&
-	    strchr(content_type, '\033')) {
-		gint len;
-		len = strlen(content_type) * 2 + 1;
-		Xalloca(buf, len, return);
-		conv_jistoeuc(buf, len, content_type);
-	} else
-		Xstrdup_a(buf, content_type, return);
-
-	g_free(mimeinfo->content_type);
-	g_free(mimeinfo->charset);
-	/* g_free(mimeinfo->name); */
-	mimeinfo->content_type = NULL;
-	mimeinfo->charset      = NULL;
-	/* mimeinfo->name      = NULL; */
-
-	if ((delim = strchr(buf, ';'))) *delim = '\0';
-	mimeinfo->content_type = cnttype = g_strdup(g_strstrip(buf));
-
-	mimeinfo->mime_type = procmime_scan_mime_type(cnttype);
-
-	if (!delim) return;
-	p = delim + 1;
-
-	for (;;) {
-		gchar *eq;
-		gchar *attr, *value;
-
-		if ((delim = strchr(p, ';'))) *delim = '\0';
-
-		if (!(eq = strchr(p, '='))) break;
-
-		*eq = '\0';
-		attr = p;
-		g_strstrip(attr);
-		value = eq + 1;
-		g_strstrip(value);
-
-		if (*value == '"')
-			extract_quote(value, '"');
-		else {
-			eliminate_parenthesis(value, '(', ')');
-			g_strstrip(value);
-		}
-
-		if (*value) {
-			if (!strcasecmp(attr, "charset"))
-				mimeinfo->charset = g_strdup(value);
-			else if (!strcasecmp(attr, "name")) {
-				gchar *tmp;
-				size_t len;
-
-				len = strlen(value) + 1;
-				Xalloca(tmp, len, return);
-				conv_unmime_header(tmp, len, value, NULL);
-				g_free(mimeinfo->name);
-				/*pgp signatures should NOT have a name */
-				if (mimeinfo->content_type 
-				&&  strcasecmp(mimeinfo->content_type, "application/pgp-signature"))
-					mimeinfo->name = g_strdup(tmp);
-			} else if (!strcasecmp(attr, "boundary"))
-				mimeinfo->boundary = g_strdup(value);
-		}
-
-		if (!delim) break;
-		p = delim + 1;
-	}
-
-	if (mimeinfo->mime_type == MIME_MULTIPART && !mimeinfo->boundary)
-		mimeinfo->mime_type = MIME_TEXT;
-}
-
-void procmime_scan_content_disposition(MimeInfo *mimeinfo,
-				       const gchar *content_disposition)
-{
-	gchar *delim, *p, *dispos;
-	gchar *buf;
-
-	if (conv_get_current_charset() == C_EUC_JP &&
-	    strchr(content_disposition, '\033')) {
-		gint len;
-		len = strlen(content_disposition) * 2 + 1;
-		Xalloca(buf, len, return);
-		conv_jistoeuc(buf, len, content_disposition);
-	} else
-		Xstrdup_a(buf, content_disposition, return);
-
-	if ((delim = strchr(buf, ';'))) *delim = '\0';
-	mimeinfo->content_disposition = dispos = g_strdup(g_strstrip(buf));
-
-	if (!delim) return;
-	p = delim + 1;
-
-	for (;;) {
-		gchar *eq;
-		gchar *attr, *value;
-
-		if ((delim = strchr(p, ';'))) *delim = '\0';
-
-		if (!(eq = strchr(p, '='))) break;
-
-		*eq = '\0';
-		attr = p;
-		g_strstrip(attr);
-		value = eq + 1;
-		g_strstrip(value);
-
-		if (*value == '"')
-			extract_quote(value, '"');
-		else {
-			eliminate_parenthesis(value, '(', ')');
-			g_strstrip(value);
-		}
-
-		if (*value) {
-			if (!strcasecmp(attr, "filename")) {
-				gchar *tmp;
-				size_t len;
-
-				len = strlen(value) + 1;
-				Xalloca(tmp, len, return);
-				conv_unmime_header(tmp, len, value, NULL);
-				g_free(mimeinfo->filename);
-				/*pgp signatures should NOT have a name */
-				if (mimeinfo->content_type 
-				&&  strcasecmp(mimeinfo->content_type, "application/pgp-signature"))
-					mimeinfo->filename = g_strdup(tmp);
-				break;
-			}
-		}
-
-		if (!delim) break;
-		p = delim + 1;
-	}
-}
-
-void procmime_scan_content_description(MimeInfo *mimeinfo,
-				       const gchar *content_description)
-{
-	gchar *buf;
-
-	gchar *tmp;
-	size_t blen;
-
-	if (conv_get_current_charset() == C_EUC_JP &&
-	    strchr(content_description, '\033')) {
-		gint len;
-		len = strlen(content_description) * 2 + 1;
-		Xalloca(buf, len, return);
-		conv_jistoeuc(buf, len, content_description);
-	} else
-		Xstrdup_a(buf, content_description, return);
-	
-	blen = strlen(buf) + 1;
-	Xalloca(tmp, blen, return);
-	conv_unmime_header(tmp, blen, buf, NULL);
-	/*pgp signatures should NOT have a name */
-	if (mimeinfo->content_type 
-	&&  strcasecmp(mimeinfo->content_type, "application/pgp-signature"))
-		mimeinfo->description = g_strdup(tmp);
-}
-
-void procmime_scan_subject(MimeInfo *mimeinfo,
-			   const gchar *subject)
-{
-	gchar *buf;
-
-	gchar *tmp;
-	size_t blen;
-
-	if (conv_get_current_charset() == C_EUC_JP &&
-	    strchr(subject, '\033')) {
-		gint len;
-		len = strlen(subject) * 2 + 1;
-		Xalloca(buf, len, return);
-		conv_jistoeuc(buf, len, subject);
-	} else
-		Xstrdup_a(buf, subject, return);
-	
-	blen = strlen(buf) + 1;
-	Xalloca(tmp, blen, return);
-	conv_unmime_header(tmp, blen, buf, NULL);
-	g_free(mimeinfo->name);
-	mimeinfo->name = g_strdup(tmp);
 }
 
 enum
@@ -546,86 +204,38 @@ enum
 	H_SUBJECT              	    = 4
 };
 
-MimeInfo *procmime_scan_mime_header(FILE *fp)
+gboolean procmime_decode_content(MimeInfo *mimeinfo)
 {
-	static HeaderEntry hentry[] = {{"Content-Transfer-Encoding:",
-							  NULL, FALSE},
-				       {"Content-Type:", NULL, TRUE},
-				       {"Content-Disposition:",
-							  NULL, TRUE},
-				       {"Content-description:",
-							  NULL, TRUE},
-				       {"Subject:",
-							  NULL, TRUE},
-				       {NULL,		  NULL, FALSE}};
 	gchar buf[BUFFSIZE];
-	gint hnum;
-	HeaderEntry *hp;
-	MimeInfo *mimeinfo;
+	gint readend;
+	gchar *tmpfilename;
+	gchar *mimetmpdir;
+	FILE *outfp, *infp;
+	struct stat statbuf;
 
-	g_return_val_if_fail(fp != NULL, NULL);
+	g_return_val_if_fail(mimeinfo != NULL, FALSE);
 
-	mimeinfo = procmime_mimeinfo_new();
-	mimeinfo->mime_type = MIME_TEXT;
-	mimeinfo->encoding_type = ENC_7BIT;
-	mimeinfo->fpos = ftell(fp);
+	if(mimeinfo->encoding_type == ENC_BINARY)
+		return TRUE;
 
-	while ((hnum = procheader_get_one_field(buf, sizeof(buf), fp, hentry))
-	       != -1) {
-		hp = hentry + hnum;
-
-		if (H_CONTENT_TRANSFER_ENCODING == hnum) {
-			procmime_scan_encoding
-				(mimeinfo, buf + strlen(hp->name));
-		} else if (H_CONTENT_TYPE == hnum) {
-			procmime_scan_content_type
-				(mimeinfo, buf + strlen(hp->name));
-		} else if (H_CONTENT_DISPOSITION == hnum) {
-			procmime_scan_content_disposition
-				(mimeinfo, buf + strlen(hp->name));
-		} else if (H_CONTENT_DESCRIPTION == hnum) {
-			procmime_scan_content_description
-				(mimeinfo, buf + strlen(hp->name));
-		} else if (H_SUBJECT == hnum) {
-			procmime_scan_subject
-				(mimeinfo, buf + strlen(hp->name));
-		}
+	infp = fopen(mimeinfo->filename, "rb");
+	if(!infp) {
+		perror("fopen");
+		return FALSE;
 	}
+	fseek(infp, mimeinfo->offset, SEEK_SET);
 
-	if (!mimeinfo->content_type)
-		        mimeinfo->content_type = g_strdup("text/plain");
-
-	return mimeinfo;
-}
-
-FILE *procmime_decode_content(FILE *outfp, FILE *infp, MimeInfo *mimeinfo)
-{
-	gchar buf[BUFFSIZE];
-	gchar *boundary = NULL;
-	gint boundary_len = 0;
-	gboolean tmp_file = FALSE;
-
-	g_return_val_if_fail(infp != NULL, NULL);
-	g_return_val_if_fail(mimeinfo != NULL, NULL);
-
+	mimetmpdir = get_mime_tmp_dir();
+	outfp = get_tmpfile_in_dir(mimetmpdir, &tmpfilename);
 	if (!outfp) {
-		outfp = my_tmpfile();
-		if (!outfp) {
-			perror("tmpfile");
-			return NULL;
-		}
-		tmp_file = TRUE;
+		perror("tmpfile");
+		return FALSE;
 	}
 
-	if (mimeinfo->parent && mimeinfo->parent->boundary) {
-		boundary = mimeinfo->parent->boundary;
-		boundary_len = strlen(boundary);
-	}
+	readend = mimeinfo->offset + mimeinfo->length;
 
 	if (mimeinfo->encoding_type == ENC_QUOTED_PRINTABLE) {
-		while (fgets(buf, sizeof(buf), infp) != NULL &&
-		       (!boundary ||
-			!IS_BOUNDARY(buf, boundary, boundary_len))) {
+		while ((ftell(infp) < readend) && (fgets(buf, sizeof(buf), infp) != NULL)) {
 			gint len;
 			len = qp_decode_line(buf);
 			fwrite(buf, len, 1, outfp);
@@ -636,9 +246,7 @@ FILE *procmime_decode_content(FILE *outfp, FILE *infp, MimeInfo *mimeinfo)
 		Base64Decoder *decoder;
 
 		decoder = base64_decoder_new();
-		while (fgets(buf, sizeof(buf), infp) != NULL &&
-		       (!boundary ||
-			!IS_BOUNDARY(buf, boundary, boundary_len))) {
+		while ((ftell(infp) < readend) && (fgets(buf, sizeof(buf), infp) != NULL)) {
 			len = base64_decoder_decode(decoder, buf, outbuf);
 			if (len < 0) {
 				g_warning("Bad BASE64 content\n");
@@ -652,9 +260,7 @@ FILE *procmime_decode_content(FILE *outfp, FILE *infp, MimeInfo *mimeinfo)
 		gint len;
 		gboolean flag = FALSE;
 
-		while (fgets(buf, sizeof(buf), infp) != NULL &&
-		       (!boundary ||
-			!IS_BOUNDARY(buf, boundary, boundary_len))) {
+		while ((ftell(infp) < readend) && (fgets(buf, sizeof(buf), infp) != NULL)) {
 			if(!flag && strncmp(buf,"begin ", 6)) continue;
 
 			if (flag) {
@@ -669,33 +275,45 @@ FILE *procmime_decode_content(FILE *outfp, FILE *infp, MimeInfo *mimeinfo)
 				flag = TRUE;
 		}
 	} else {
-		while (fgets(buf, sizeof(buf), infp) != NULL &&
-		       (!boundary ||
-			!IS_BOUNDARY(buf, boundary, boundary_len))) {
+		while ((ftell(infp) < readend) && (fgets(buf, sizeof(buf), infp) != NULL)) {
 			fputs(buf, outfp);
 		}
 	}
 
-	if (tmp_file) rewind(outfp);
-	return outfp;
+	fclose(outfp);
+	fclose(infp);
+
+	stat(tmpfilename, &statbuf);
+	if(mimeinfo->tmpfile)
+		unlink(mimeinfo->filename);
+	g_free(mimeinfo->filename);
+	mimeinfo->filename = tmpfilename;
+	mimeinfo->tmpfile = TRUE;
+	mimeinfo->offset = 0;
+	mimeinfo->length = statbuf.st_size;
+	mimeinfo->encoding_type = ENC_BINARY;
+
+	return TRUE;
 }
 
-gint procmime_get_part(const gchar *outfile, const gchar *infile,
-		       MimeInfo *mimeinfo)
+gint procmime_get_part(const gchar *outfile, MimeInfo *mimeinfo)
 {
 	FILE *infp, *outfp;
 	gchar buf[BUFFSIZE];
+	gint restlength, readlength;
 
 	g_return_val_if_fail(outfile != NULL, -1);
-	g_return_val_if_fail(infile != NULL, -1);
 	g_return_val_if_fail(mimeinfo != NULL, -1);
 
-	if ((infp = fopen(infile, "rb")) == NULL) {
-		FILE_OP_ERROR(infile, "fopen");
+	if(mimeinfo->encoding_type != ENC_BINARY && !procmime_decode_content(mimeinfo))
+		return -1;
+
+	if ((infp = fopen(mimeinfo->filename, "rb")) == NULL) {
+		FILE_OP_ERROR(mimeinfo->filename, "fopen");
 		return -1;
 	}
-	if (fseek(infp, mimeinfo->fpos, SEEK_SET) < 0) {
-		FILE_OP_ERROR(infile, "fseek");
+	if (fseek(infp, mimeinfo->offset, SEEK_SET) < 0) {
+		FILE_OP_ERROR(mimeinfo->filename, "fseek");
 		fclose(infp);
 		return -1;
 	}
@@ -705,10 +323,12 @@ gint procmime_get_part(const gchar *outfile, const gchar *infile,
 		return -1;
 	}
 
-	while (fgets(buf, sizeof(buf), infp) != NULL)
-		if (buf[0] == '\r' || buf[0] == '\n') break;
+	restlength = mimeinfo->length;
 
-	procmime_decode_content(outfp, infp, mimeinfo);
+	while ((restlength > 0) && ((readlength = fread(buf, 1, restlength > BUFFSIZE ? BUFFSIZE : restlength, infp)) > 0)) {
+		fwrite(buf, 1, readlength, outfp);
+		restlength -= readlength;
+	}
 
 	fclose(infp);
 	if (fclose(outfp) == EOF) {
@@ -816,6 +436,9 @@ void renderer_write_config(void)
 
 FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 {
+	return NULL;
+
+#if 0	/* FIXME */
 	FILE *tmpfp, *outfp;
 	gchar *src_codeset;
 	gboolean conv_fail = FALSE;
@@ -925,12 +548,16 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 	rewind(outfp);
 
 	return outfp;
+#endif
 }
 
 /* search the first text part of (multipart) MIME message,
    decode, convert it and output to outfp. */
 FILE *procmime_get_first_text_content(MsgInfo *msginfo)
 {
+	return NULL;
+
+#if 0	/* FIXME */
 	FILE *infp, *outfp = NULL;
 	MimeInfo *mimeinfo, *partinfo;
 
@@ -962,12 +589,15 @@ FILE *procmime_get_first_text_content(MsgInfo *msginfo)
 	procmime_mimeinfo_free_all(mimeinfo);
 
 	return outfp;
+#endif
 }
 
 gboolean procmime_find_string_part(MimeInfo *mimeinfo, const gchar *filename,
 				   const gchar *str, gboolean case_sens)
 {
+	return FALSE;
 
+#if 0	/* FIXME */
 	FILE *infp, *outfp;
 	gchar buf[BUFFSIZE];
 	gchar *(* StrFindFunc) (const gchar *haystack, const gchar *needle);
@@ -1004,11 +634,15 @@ gboolean procmime_find_string_part(MimeInfo *mimeinfo, const gchar *filename,
 	fclose(outfp);
 
 	return FALSE;
+#endif
 }
 
 gboolean procmime_find_string(MsgInfo *msginfo, const gchar *str,
 			      gboolean case_sens)
 {
+	return FALSE;
+
+#if 0	/* FIXME */
 	MimeInfo *mimeinfo;
 	MimeInfo *partinfo;
 	gchar *filename;
@@ -1038,6 +672,7 @@ gboolean procmime_find_string(MsgInfo *msginfo, const gchar *str,
 	g_free(filename);
 
 	return found;
+#endif
 }
 
 gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
@@ -1051,7 +686,7 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 
 	g_snprintf(f_prefix, sizeof(f_prefix), "%08x.", id++);
 
-	if (MIME_TEXT_HTML == mimeinfo->mime_type)
+	if ((mimeinfo->type == MIMETYPE_TEXT) && !g_strcasecmp(mimeinfo->subtype, "html"))
 		base = "mimetmp.html";
 	else {
 		base = mimeinfo->filename ? mimeinfo->filename
@@ -1066,38 +701,6 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 			       f_prefix, base, NULL);
 
 	return filename;
-}
-
-ContentType procmime_scan_mime_type(const gchar *mime_type)
-{
-	ContentType type;
-
-	if (!strncasecmp(mime_type, "text/html", 9))
-		type = MIME_TEXT_HTML;
-	else if (!strncasecmp(mime_type, "text/enriched", 13))
-		type = MIME_TEXT_ENRICHED;
-	else if (!strncasecmp(mime_type, "text/", 5))
-		type = MIME_TEXT;
-	else if (!strncasecmp(mime_type, "message/rfc822", 14))
-		type = MIME_MESSAGE_RFC822;
-	else if (!strncasecmp(mime_type, "message/", 8))
-		type = MIME_TEXT;
-	else if (!strncasecmp(mime_type, "application/octet-stream", 24))
-		type = MIME_APPLICATION_OCTET_STREAM;
-	else if (!strncasecmp(mime_type, "application/", 12))
-		type = MIME_APPLICATION;
-	else if (!strncasecmp(mime_type, "multipart/", 10))
-		type = MIME_MULTIPART;
-	else if (!strncasecmp(mime_type, "image/", 6))
-		type = MIME_IMAGE;
-	else if (!strncasecmp(mime_type, "audio/", 6))
-		type = MIME_AUDIO;
-	else if (!strcasecmp(mime_type, "text"))
-		type = MIME_TEXT;
-	else
-		type = MIME_UNKNOWN;
-
-	return type;
 }
 
 static GList *mime_type_list = NULL;
@@ -1315,4 +918,334 @@ const gchar *procmime_get_encoding_str(EncodingType encoding)
 			return enc_table->str;
 	}
 	return NULL;
+}
+
+/* --- NEW MIME STUFF --- */
+struct TypeTable
+{
+	gchar *str;
+	MimeMediaType type;
+};
+
+static struct TypeTable mime_type_table[] = {
+	{"text", MIMETYPE_TEXT},
+	{"image", MIMETYPE_IMAGE},
+	{"audio", MIMETYPE_AUDIO},
+	{"video", MIMETYPE_VIDEO},
+	{"application", MIMETYPE_APPLICATION},
+	{"message", MIMETYPE_MESSAGE},
+	{"multipart", MIMETYPE_MULTIPART},
+	{NULL, 0},
+};
+
+const gchar *procmime_get_type_str(MimeMediaType type)
+{
+	struct TypeTable *type_table;
+	
+	for (type_table = mime_type_table; type_table->str != NULL; type_table++) {
+		if (type_table->type == type)
+			return type_table->str;
+	}
+	return NULL;
+}
+
+MimeInfo *procmime_parse_mimepart(MimeInfo *parent,
+				  gchar *content_type,
+				  gchar *content_encoding,
+				  gchar *content_description,
+				  gchar *content_id,
+				  FILE *fp,
+				  const gchar *filename,
+				  guint offset,
+				  guint length);
+
+void procmime_parse_message_rfc822(MimeInfo *mimeinfo, FILE *fp)
+{
+	HeaderEntry hentry[] = {{"Content-Type:",  NULL, TRUE},
+			        {"Content-Transfer-Encoding:",
+			  			   NULL, FALSE},
+				{"Content-Description:",
+						   NULL, TRUE},
+			        {"Content-ID:",
+						   NULL, TRUE},
+				{NULL,		   NULL, FALSE}};
+	guint content_start, i;
+
+	fseek(fp, mimeinfo->offset, SEEK_SET);
+	procheader_get_header_fields(fp, hentry);
+	content_start = ftell(fp);
+
+	mimeinfo->children = procmime_parse_mimepart(mimeinfo,
+						     hentry[0].body, hentry[1].body,
+						     hentry[2].body, hentry[3].body, 
+						     fp, mimeinfo->filename, content_start,
+						     mimeinfo->length - (content_start - mimeinfo->offset));
+	for (i = 0; i < 4; i++) {
+		g_free(hentry[i].body);
+		hentry[i].body = NULL;
+	}
+}
+
+void procmime_parse_multipart(MimeInfo *mimeinfo, FILE *fp)
+{
+	HeaderEntry hentry[] = {{"Content-Type:",  NULL, TRUE},
+			        {"Content-Transfer-Encoding:",
+			  			   NULL, FALSE},
+				{"Content-Description:",
+						   NULL, TRUE},
+			        {"Content-ID:",
+						   NULL, TRUE},
+				{NULL,		   NULL, FALSE}};
+	gchar *p;
+	gchar *boundary;
+	gint boundary_len = 0, lastoffset = -1, i;
+	gchar buf[BUFFSIZE];
+	MimeInfo *lastmimeinfo = NULL;
+
+	boundary = g_hash_table_lookup(mimeinfo->parameters, "boundary");
+	if(!boundary)
+		return;
+	boundary_len = strlen(boundary);
+
+	fseek(fp, mimeinfo->offset, SEEK_SET);
+	while ((p = fgets(buf, sizeof(buf), fp)) != NULL) {
+		if (ftell(fp) > (mimeinfo->offset + mimeinfo->length))
+			break;
+
+		if (IS_BOUNDARY(buf, boundary, boundary_len)) {
+			if(lastoffset != -1) {
+				MimeInfo *newmimeinfo = NULL;
+
+				newmimeinfo = procmime_parse_mimepart(mimeinfo,
+				                                      hentry[0].body, hentry[1].body,
+								      hentry[2].body, hentry[3].body, 
+								      fp, mimeinfo->filename, lastoffset,
+								      (ftell(fp) - strlen(buf)) - lastoffset);
+								      
+				if (lastmimeinfo == NULL)
+					mimeinfo->children = newmimeinfo;
+				else
+					lastmimeinfo->next = newmimeinfo;
+				lastmimeinfo = newmimeinfo;
+			}
+			
+			if (buf[2 + boundary_len]     == '-' &&
+			    buf[2 + boundary_len + 1] == '-')
+				break;
+
+			for (i = 0; i < 4; i++) {
+				g_free(hentry[i].body);
+				hentry[i].body = NULL;
+			}
+			procheader_get_header_fields(fp, hentry);
+			lastoffset = ftell(fp);
+		}
+	}
+}
+
+static void procmime_parse_content_type(const gchar *content_type, MimeInfo *mimeinfo)
+{
+	gchar **content_type_parts;
+	gchar **strarray;
+	gchar *str;
+	struct TypeTable *typetablearray;
+	
+	/* Split content type into parts and remove trailing
+	   and leading whitespaces from all strings */
+	content_type_parts = g_strsplit(content_type, ";", 0);
+	for (strarray = content_type_parts; *strarray != NULL; strarray++) {
+		g_strstrip(*strarray);
+	}
+
+	/* Get mimeinfo->type and mimeinfo->subtype */
+	mimeinfo->type = MIMETYPE_UNKNOWN;
+	str = content_type_parts[0];
+	for (typetablearray = mime_type_table; typetablearray->str != NULL; typetablearray++) {
+		if (g_strncasecmp(str, typetablearray->str, strlen(typetablearray->str)) == 0 &&
+		    str[strlen(typetablearray->str)] == '/') {
+			mimeinfo->type = typetablearray->type;
+			mimeinfo->subtype = g_strdup(str + strlen(typetablearray->str) + 1);
+			break;
+		}
+	}
+
+	/* Get mimeinfo->parmeters */
+	for (strarray = &content_type_parts[1]; *strarray != NULL; strarray++) {
+		gchar **parameters_parts;
+
+		parameters_parts = g_strsplit(*strarray, "=", 1);
+		g_strdown(parameters_parts[0]);
+		if(parameters_parts[1][0] == '"')
+			extract_quote(parameters_parts[1], '"');
+
+		g_hash_table_insert(mimeinfo->parameters,
+				    g_strdup(parameters_parts[0]),
+				    g_strdup(parameters_parts[1]));
+
+		g_strfreev(parameters_parts);
+	}
+
+	g_strfreev(content_type_parts);
+}
+
+static void procmime_parse_content_encoding(const gchar *content_encoding, MimeInfo *mimeinfo)
+{
+	struct EncodingTable *enc_table;
+	
+	for (enc_table = encoding_table; enc_table->str != NULL; enc_table++) {
+		if (g_strcasecmp(enc_table->str, content_encoding) == 0) {
+			mimeinfo->encoding_type = enc_table->enc_type;
+			return;
+		}
+	}
+	mimeinfo->encoding_type = ENC_UNKNOWN;
+	return;
+}
+
+MimeInfo *procmime_parse_mimepart(MimeInfo *parent,
+				  gchar *content_type,
+				  gchar *content_encoding,
+				  gchar *content_description,
+				  gchar *content_id,
+				  FILE *fp,
+				  const gchar *filename,
+				  guint offset,
+				  guint length)
+{
+	MimeInfo *mimeinfo;
+	guint oldpos;
+
+	g_return_val_if_fail(fp != NULL, NULL);
+
+	/* Create MimeInfo */
+	mimeinfo = procmime_mimeinfo_new();
+	mimeinfo->parent = parent;
+	mimeinfo->filename = g_strdup(filename);
+	mimeinfo->offset = offset;
+	mimeinfo->length = length;
+
+	if (content_type != NULL) {
+		procmime_parse_content_type(content_type, mimeinfo);
+	} else {
+		mimeinfo->type = MIMETYPE_TEXT;
+		mimeinfo->subtype = g_strdup("plain");
+		g_hash_table_insert(mimeinfo->parameters, g_strdup("charset"), g_strdup("us-ascii"));
+	}
+
+	if (content_encoding != NULL) {
+		procmime_parse_content_encoding(content_encoding, mimeinfo);
+	} else {
+		mimeinfo->encoding_type = ENC_7BIT;
+	}
+
+	if (content_description != NULL)
+		mimeinfo->description = g_strdup(content_description);
+	else
+		mimeinfo->description = NULL;
+
+	if (content_id != NULL)
+		mimeinfo->id = g_strdup(content_id);
+	else
+		mimeinfo->id = NULL;
+
+	oldpos = ftell(fp);
+	/* Call parser for mime type */
+	switch (mimeinfo->type) {
+		case MIMETYPE_MESSAGE:
+			if (g_strcasecmp(mimeinfo->subtype, "rfc822") == 0) {
+				procmime_parse_message_rfc822(mimeinfo, fp);
+			}
+			break;
+			
+		case MIMETYPE_MULTIPART:
+			procmime_parse_multipart(mimeinfo, fp);
+			break;
+			
+		default:
+			break;
+	}
+	fseek(fp, oldpos, SEEK_SET);
+
+	return mimeinfo;
+}
+
+static gchar *typenames[] = {
+    "text",
+    "image",
+    "audio",
+    "video",
+    "application",
+    "message",
+    "multipart",
+    "unknown",
+};
+
+static void output_mime_structure(MimeInfo *mimeinfo, int indent)
+{
+	int i;
+	
+	for(i = 0; i < indent; i++)
+		printf(" ");
+	printf("%s/%s (offset:%d length:%d encoding: %d)\n", typenames[mimeinfo->type], mimeinfo->subtype, mimeinfo->offset, mimeinfo->length, mimeinfo->encoding_type);
+
+	if(mimeinfo->children)
+		output_mime_structure(mimeinfo->children, indent + 4);
+	if(mimeinfo->next)
+		output_mime_structure(mimeinfo->next, indent);
+}
+
+MimeInfo *procmime_scan_fp(FILE *fp, const gchar *filename)
+{
+	MimeInfo *mimeinfo;
+	gint offset;
+	struct stat stat;
+
+	fstat(fileno(fp), &stat);
+	offset = ftell(fp);
+
+	mimeinfo = procmime_parse_mimepart(NULL, "message/rfc822", "binary", NULL, NULL, fp, filename, offset, stat.st_size - offset);
+	output_mime_structure(mimeinfo, 0);
+
+	return mimeinfo;
+}
+
+MimeInfo *procmime_scan_file(gchar *filename)
+{
+	FILE *fp;
+	MimeInfo *mimeinfo;
+
+	g_return_val_if_fail(filename != NULL, NULL);
+
+	/* Open file */
+	if((fp = fopen(filename, "rb")) == NULL)
+		return NULL;
+
+	mimeinfo = procmime_scan_fp(fp, filename);
+
+	fclose(fp);
+
+	return mimeinfo;
+}
+
+MimeInfo *procmime_scan_queue_file(gchar *filename)
+{
+	FILE *fp;
+	MimeInfo *mimeinfo;
+	gchar buf[BUFFSIZE];
+
+	g_return_val_if_fail(filename != NULL, NULL);
+
+	/* Open file */
+	if((fp = fopen(filename, "rb")) == NULL)
+		return NULL;
+
+	/* Skip queue header */
+	while (fgets(buf, sizeof(buf), fp) != NULL)
+		if (buf[0] == '\r' || buf[0] == '\n') break;
+
+	mimeinfo = procmime_scan_fp(fp, filename);
+
+	fclose(fp);
+
+	return mimeinfo;
 }

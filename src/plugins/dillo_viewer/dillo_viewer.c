@@ -80,7 +80,7 @@ static void dillo_show_mimepart(MimeViewer *_viewer,
 
 	viewer->filename = procmime_get_tmp_file_name(partinfo);
 	
-	if (!(procmime_get_part(viewer->filename, infile, partinfo) < 0)) {
+	if (!(procmime_get_part(viewer->filename, partinfo) < 0)) {
 		gchar *cmd;
 
 		if (viewer->socket)

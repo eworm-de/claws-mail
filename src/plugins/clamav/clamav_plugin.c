@@ -92,7 +92,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
 	infile = procmsg_get_message_file_path(msginfo);
 
-
     	if((ret = cl_loaddbdir(cl_retdbdir(), &root, &no))) {
 		debug_print("cl_loaddbdir: %s\n", cl_perror(ret));
 		exit(2);
@@ -111,14 +110,15 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
 	while (child != NULL) {
 		if(child->parent && child->parent->parent
-		&& !strcasecmp(child->parent->parent->content_type, "multipart/signed")
-		&& child->mime_type == MIME_TEXT) {
+		&& (child->parent->parent->type == MIMETYPE_MULTIPART)
+		&& !strcasecmp(child->parent->parent->subtype, "signed")
+		&& child->type == MIMETYPE_TEXT) {
 			/* this is the main text part of a signed message */
 			child = procmime_mimeinfo_next(child);
 			continue;
 		}
 		outfile = procmime_get_tmp_file_name(child);
-		if (procmime_get_part(outfile, infile, child) < 0)
+		if (procmime_get_part(outfile, child) < 0)
 			g_warning("Can't get the part of multipart message.");
 		else {
 			debug_print("Scanning %s\n", outfile);

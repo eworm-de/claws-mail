@@ -2785,6 +2785,16 @@ FILE *my_tmpfile(void)
 	return tmpfile();
 }
 
+FILE *get_tmpfile_in_dir(const gchar *dir, gchar **filename)
+{
+	int fd;
+	
+	*filename = g_strdup_printf("%s%csylpheed.XXXXXX", dir, G_DIR_SEPARATOR);
+	fd = mkstemp(*filename);
+
+	return fdopen(fd, "w+");
+}
+
 FILE *str_open_as_stream(const gchar *str)
 {
 	FILE *fp;
@@ -3391,16 +3401,6 @@ int subject_get_prefix_length(const gchar *subject)
 		return pos.rm_eo;
 	else
 		return 0;
-}
-
-FILE *get_tmpfile_in_dir(const gchar *dir, gchar **filename)
-{
-	int fd;
-	
-	*filename = g_strdup_printf("%s%csylpheed.XXXXXX", dir, G_DIR_SEPARATOR);
-	fd = mkstemp(*filename);
-
-	return fdopen(fd, "w+");
 }
 
 /* allow Mutt-like patterns in quick search */

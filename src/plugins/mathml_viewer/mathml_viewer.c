@@ -69,7 +69,7 @@ static void mathml_show_mimepart(MimeViewer *_viewer, const gchar *infile, MimeI
 
 	viewer->filename = procmime_get_tmp_file_name(partinfo);
 	
-	if (!(procmime_get_part(viewer->filename, infile, partinfo) < 0)) {
+	if (!(procmime_get_part(viewer->filename, partinfo) < 0)) {
 		gchar *uri;
 		
 		uri = g_strconcat("file://", viewer->filename, NULL);

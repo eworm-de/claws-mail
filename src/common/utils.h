@@ -380,6 +380,8 @@ gchar *get_outgoing_rfc2822_str	(FILE		*fp);
 gint change_file_mode_rw	(FILE		*fp,
 				 const gchar	*file);
 FILE *my_tmpfile		(void);
+FILE *get_tmpfile_in_dir	(const gchar 	*dir,
+				 gchar	       **filename);
 FILE *str_open_as_stream	(const gchar	*str);
 gint str_write_to_file		(const gchar	*str,
 				 const gchar	*file);

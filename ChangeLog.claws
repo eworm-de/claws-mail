@@ -1,3 +1,20 @@
+2003-10-09 [christoph]	0.9.6claws10
+
+	* src/action.c
+	* src/compose.c
+	* src/messageview.c
+	* src/mimeview.c
+	* src/procmime.[ch]
+	* src/procmsg.c
+	* src/rfc2015.c
+	* src/textview.c
+	* src/common/utils.[ch]
+	* src/plugins/clamav/clamav_plugin.c
+	* src/plugins/dillo_viewer/dillo_viewer.c
+	* src/plugins/image_viewer/viewer.c
+	* src/plugins/mathml_viewer/mathml_viewer.c
+		new mime parser (several things need fixing)
+
 2003-10-09 [paul]	0.9.6claws9
 
 	* src/imap.c
