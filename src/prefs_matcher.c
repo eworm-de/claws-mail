@@ -1582,7 +1582,7 @@ static void prefs_matcher_ok(void)
 		matcherprop = prefs_matcher_dialog_to_matcher();
 		if (matcherprop != NULL) {
 			str = matcherprop_to_string(matcherprop);
-			matcherprop_free(matcherprop); /* XXX: was a leak */
+			matcherprop_free(matcherprop);
 			if (strcmp(str, "all") != 0) {
 				model = gtk_tree_view_get_model(GTK_TREE_VIEW
 						(matcher.cond_list_view));

@@ -313,3 +313,4 @@
 ( cvs diff -u -r 1.61.2.19 -r 1.61.2.20 src/account.c; cvs diff -u -r 1.27.2.7 -r 1.27.2.8 src/addr_compl.c; cvs diff -u -r 1.26.2.8 -r 1.26.2.9 src/foldersel.c; cvs diff -u -r 1.25.2.8 -r 1.25.2.9 src/stock_pixmap.c; cvs diff -u -r 1.18.2.5 -r 1.18.2.6 src/stock_pixmap.h; ) > 0.9.13cvs27.2.patchset
 ( cvs diff -u -r 1.43.2.11 -r 1.43.2.12 src/prefs_matcher.c; ) > 0.9.13cvs27.3.patchset
 ( cvs diff -u -r 1.43.2.12 -r 1.43.2.13 src/prefs_matcher.c; ) > 0.9.13cvs27.4.patchset
+( cvs diff -u -r 1.43.2.13 -r 1.43.2.14 src/prefs_matcher.c; ) > 0.9.13cvs28.1.patchset
