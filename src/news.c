@@ -194,7 +194,8 @@ NNTPSession *news_session_get(Folder *folder)
 		rfolder->session = news_session_new_for_folder(folder);
 	}
 
-	rfolder->session->last_access_time = time(NULL);
+	if (rfolder->session)
+		rfolder->session->last_access_time = time(NULL);
 	statusbar_pop_all();
 	return NNTP_SESSION(rfolder->session);
 }

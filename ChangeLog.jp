@@ -1,3 +1,16 @@
+2001-11-18
+
+	* src/textview.c: textview_show_part(): ネストされたマルチパート
+	  テキストでヘッダを表示。
+
+2001-11-17
+
+	* src/imap.c: imap_session_get()
+	  src/news.c: news_session_get(): 再接続に失敗したときの segfault
+	  を修正。
+	* src/grouplistdialog.c: 余分なコードを削除し、パターンにマッチ
+	  しないノードを展開するようにした。
+
 2001-11-16
 
 	* src/compose.c: To:, Cc:, Bcc:, Newsgroups: のどれかが有効な

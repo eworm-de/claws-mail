@@ -297,11 +297,14 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	} else {
 		if (mimeinfo->mime_type == MIME_TEXT && mimeinfo->parent) {
 			glong fpos;
+			MimeInfo *parent = mimeinfo->parent;
+
+			while (parent->parent)
+				parent = parent->parent;
 
 			if ((fpos = ftell(fp)) < 0)
 				perror("ftell");
-			else if (fseek(fp, mimeinfo->parent->fpos, SEEK_SET)
-				 < 0)
+			else if (fseek(fp, parent->fpos, SEEK_SET) < 0)
 				perror("fseek");
 			else {
 				headers = textview_scan_header(textview, fp);

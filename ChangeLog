@@ -1,3 +1,16 @@
+2001-11-18
+
+	* src/textview.c: textview_show_part(): show headers on nested
+	  muitipart text.
+
+2001-11-17
+
+	* src/imap.c: imap_session_get()
+	  src/news.c: news_session_get(): fixed segfault when reconnection
+	  failed.
+	* src/grouplistdialog.c: removed redundant code, and expand nodes
+	  that doesn't match the pattern.
+
 2001-11-16
 
 	* src/compose.c: modified so that it sends message when any of

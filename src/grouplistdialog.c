@@ -70,7 +70,7 @@ static Folder *news_folder;
 static GSList *subscribed;
 
 static void grouplist_dialog_create	(void);
-static void grouplist_dialog_set_list	(gchar		*pattern,
+static void grouplist_dialog_set_list	(const gchar	*pattern,
 					 gboolean	 refresh);
 static void grouplist_search		(void);
 static void grouplist_clear		(void);
@@ -258,22 +258,17 @@ static void grouplist_dialog_create(void)
 	gtk_widget_show_all(GTK_DIALOG(dialog)->vbox);
 }
 
-static GHashTable *last_node_table;
 static GHashTable *branch_node_table;
 
 static void grouplist_hash_init(void)
 {
-	last_node_table = g_hash_table_new(g_str_hash, g_str_equal);
 	branch_node_table = g_hash_table_new(g_str_hash, g_str_equal);
 }
 
 static void grouplist_hash_done(void)
 {
 	hash_free_strings(branch_node_table);
-	hash_free_strings(last_node_table);
-
 	g_hash_table_destroy(branch_node_table);
-	g_hash_table_destroy(last_node_table);
 }
 
 static GtkCTreeNode *grouplist_hash_get_branch_node(const gchar *name)
@@ -287,26 +282,6 @@ static void grouplist_hash_set_branch_node(const gchar *name,
 	g_hash_table_insert(branch_node_table, g_strdup(name), node);
 }
 
-static GtkCTreeNode *grouplist_hash_get_last_node(const gchar *name)
-{
-	return g_hash_table_lookup(last_node_table, name);
-}
-
-static void grouplist_hash_set_last_node(const gchar *name,
-					 GtkCTreeNode *node)
-{
-	gchar *key;
-	gpointer value;
-
-	if (g_hash_table_lookup_extended(last_node_table, name,
-					 (gpointer *)&key, &value)) {
-		g_hash_table_remove(last_node_table, name);
-		g_free(key);
-	}
-
-	g_hash_table_insert(last_node_table, g_strdup(name), node);
-}
-
 static gchar *grouplist_get_parent_name(const gchar *name)
 {
 	gchar *p;
@@ -317,7 +292,8 @@ static gchar *grouplist_get_parent_name(const gchar *name)
 	return g_strndup(name, p - name);
 }
 
-static GtkCTreeNode *grouplist_create_parent(const gchar *name)
+static GtkCTreeNode *grouplist_create_parent(const gchar *name,
+					     const gchar *pattern)
 {
 	GtkCTreeNode *parent;
 	GtkCTreeNode *node;
@@ -332,14 +308,17 @@ static GtkCTreeNode *grouplist_create_parent(const gchar *name)
 	cols[1] = cols[2] = "";
 
 	parent_name = grouplist_get_parent_name(name);
-	parent = grouplist_create_parent(parent_name);
+	parent = grouplist_create_parent(parent_name, pattern);
 
-	node = grouplist_hash_get_last_node(parent_name);
+	node = parent ? GTK_CTREE_ROW(parent)->children
+		: GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 	node = gtk_ctree_insert_node(GTK_CTREE(ctree), parent, node,
 				     cols, 0, NULL, NULL, NULL, NULL,
 				     FALSE, FALSE);
+	if (parent && fnmatch(pattern, parent_name, 0) != 0)
+		gtk_ctree_expand(GTK_CTREE(ctree), parent);
 	gtk_ctree_node_set_selectable(GTK_CTREE(ctree), node, FALSE);
-	grouplist_hash_set_last_node(parent_name, node);
+
 	grouplist_hash_set_branch_node(name, node);
 
 	g_free(parent_name);
@@ -347,7 +326,8 @@ static GtkCTreeNode *grouplist_create_parent(const gchar *name)
 	return node;
 }
 
-static GtkCTreeNode *grouplist_create_branch(NewsGroupInfo *ginfo)
+static GtkCTreeNode *grouplist_create_branch(NewsGroupInfo *ginfo,
+					     const gchar *pattern)
 {
 	GtkCTreeNode *node;
 	GtkCTreeNode *parent;
@@ -374,7 +354,7 @@ static GtkCTreeNode *grouplist_create_branch(NewsGroupInfo *ginfo)
 		cols[2] = _("unknown");
 
 	parent_name = grouplist_get_parent_name(name);
-	parent = grouplist_create_parent(parent_name);
+	parent = grouplist_create_parent(parent_name, pattern);
 	node = grouplist_hash_get_branch_node(name);
 	if (node) {
 		gtk_ctree_set_node_info(GTK_CTREE(ctree), node, cols[0], 0,
@@ -382,23 +362,24 @@ static GtkCTreeNode *grouplist_create_branch(NewsGroupInfo *ginfo)
 		gtk_ctree_node_set_text(GTK_CTREE(ctree), node, 1, cols[1]);
 		gtk_ctree_node_set_text(GTK_CTREE(ctree), node, 2, cols[2]);
 	} else {
-		node = grouplist_hash_get_last_node(parent_name);
+		node = parent ? GTK_CTREE_ROW(parent)->children
+			: GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 		node = gtk_ctree_insert_node(GTK_CTREE(ctree), parent, node,
 					     cols, 0, NULL, NULL, NULL, NULL,
 					     TRUE, FALSE);
+		if (parent && fnmatch(pattern, parent_name, 0) != 0)
+			gtk_ctree_expand(GTK_CTREE(ctree), parent);
 	}
 	gtk_ctree_node_set_selectable(GTK_CTREE(ctree), node, TRUE);
 	if (node)
 		gtk_ctree_node_set_row_data(GTK_CTREE(ctree), node, ginfo);
-
-	grouplist_hash_set_last_node(parent_name, node);
 
 	g_free(parent_name);
 
 	return node;
 }
 
-static void grouplist_dialog_set_list(gchar *pattern, gboolean refresh)
+static void grouplist_dialog_set_list(const gchar *pattern, gboolean refresh)
 {
 	GSList *cur;
 	GtkCTreeNode *node;
@@ -443,7 +424,7 @@ static void grouplist_dialog_set_list(gchar *pattern, gboolean refresh)
 		NewsGroupInfo *ginfo = (NewsGroupInfo *)cur->data;
 
 		if (fnmatch(pattern, ginfo->name, 0) == 0) {
-			node = grouplist_create_branch(ginfo);
+			node = grouplist_create_branch(ginfo, pattern);
 			if (g_slist_find_custom(subscribed, ginfo->name,
 						(GCompareFunc)g_strcasecmp)
 			    != NULL)

@@ -289,7 +289,8 @@ static IMAPSession *imap_session_get(Folder *folder)
 					     IMAP_FOLDER(folder));
 	}
 
-	rfolder->session->last_access_time = time(NULL);
+	if (rfolder->session)
+		rfolder->session->last_access_time = time(NULL);
 	statusbar_pop_all();
 	return IMAP_SESSION(rfolder->session);
 }
