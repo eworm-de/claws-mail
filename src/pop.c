@@ -475,9 +475,14 @@ gint pop3_top_recv(SockInfo *sock, gpointer data)
 				   
 	if ( (write_val = recv_write_to_file(sock, filename)) < 0) {
 		state->error_val = (write_val == -1 ? PS_IOERR : PS_SOCKET);
+		g_free(path);
+		g_free(filename);
 		return -1;
 	}
-
+	
+	g_free(path);
+	g_free(filename);
+	
 	pop3_sd_state(state, POP3_TOP_RECV, &next_state);
 	
 	if (state->cur_msg < state->count) {
@@ -691,6 +696,7 @@ static void pop3_sd_new_header(Pop3State *state)
 		
 		state->ac_prefs->msg_list = g_slist_append(state->ac_prefs->msg_list, 
 							   new_msg);
+		debug_print("received ?: msg %i, received: %i\n",new_msg->index, new_msg->received); 
 	}
 }
 

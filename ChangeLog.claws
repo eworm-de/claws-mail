@@ -1,3 +1,8 @@
+2002-10-27 [oliver]	0.8.5claws56
+
+	* src/pop.c
+		plug leak in pop3_top_recv
+
 2002-10-26 [christoph]	0.8.5claws55
 
 	* src/folder.c
