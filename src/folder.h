@@ -278,6 +278,7 @@ FolderItem *folder_get_default_outbox	(void);
 FolderItem *folder_get_default_draft	(void);
 FolderItem *folder_get_default_queue	(void);
 FolderItem *folder_get_default_trash	(void);
+FolderItem *folder_get_default_processing (void);
 
 gchar *folder_item_get_path		(FolderItem	*item);
 void   folder_item_scan			(FolderItem	*item);

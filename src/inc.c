@@ -882,6 +882,7 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 	FolderItem *dropfolder;
 	gint val;
 	gint msgnum;
+	FolderItem *filtering_folder = folder_get_default_processing();
 
 	if (state->ac_prefs->inbox) {
 		inbox = folder_find_item_from_path(state->ac_prefs->inbox);
@@ -908,7 +909,7 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 			dropfolder = inbox;
 	} else {
 		/* new filtering */
-		dropfolder = inbox;
+		dropfolder = filtering_folder;
 	}
 
 	val = GPOINTER_TO_INT(g_hash_table_lookup

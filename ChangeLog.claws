@@ -1,3 +1,18 @@
+2001-12-05 [alfons]	0.6.5claws53
+
+	* src/inc.c
+	* src/folder.[ch]
+	* src/procmsg.c
+	* src/filtering.c
+		more revisions of filtering system
+		(last stable version is marked as LAST_STABLE)
+		
+		| NOTE 1): the filtering system now uses a local folder called
+		| .processing. if filtering fails, check this directory
+		| for missing messages.
+		|
+		| NOTE 2): help us find the filtering actions still missing
+
 2001-12-05 [paul]	0.6.5claws52
 
 	* src/mainwindow.c

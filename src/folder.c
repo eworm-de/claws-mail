@@ -1546,3 +1546,51 @@ FolderItem * folder_find_item_from_identifier(const gchar *identifier)
 			folder_item_find_func, d);
 	return d[1];
 }
+
+/* CLAWS: temporary local folder for filtering */
+
+static Folder *processing_folder;
+static FolderItem *processing_folder_item;
+
+static void folder_create_processing_folder(void)
+{
+#define PROCESSING_FOLDER ".processing"	
+	Folder	   *tmpparent;
+	FolderItem *tmpfolder;
+	gchar      *tmpname;
+
+	tmpparent = folder_get_default_folder();
+	g_assert(tmpparent);
+	debug_print("tmpparentroot %s\n", LOCAL_FOLDER(tmpparent)->rootpath);
+	tmpname = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
+			      LOCAL_FOLDER(tmpparent)->rootpath,
+			      G_DIR_SEPARATOR_S, PROCESSING_FOLDER,
+			      NULL);
+
+	processing_folder = folder_new(F_MH, "PROCESSING", LOCAL_FOLDER(tmpparent)->rootpath);
+	g_assert(processing_folder);
+			      
+	if (!is_dir_exist(tmpname)) {
+		debug_print("*TMP* creating %s\n", tmpname);
+		processing_folder_item = processing_folder->create_folder(processing_folder,
+									  processing_folder->node->data,
+									  PROCESSING_FOLDER);
+		g_assert(processing_folder_item);									  
+	}
+	else {
+		debug_print("*TMP* already created\n");
+		processing_folder_item = folder_item_new(".processing", ".processing");
+		g_assert(processing_folder_item);
+		folder_item_append(processing_folder->node->data, processing_folder_item);
+	}
+	g_free(tmpname);
+}
+
+FolderItem *folder_get_default_processing(void)
+{
+	if (!processing_folder_item) {
+		folder_create_processing_folder();
+	}
+	return processing_folder_item;
+}
+

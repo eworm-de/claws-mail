@@ -334,26 +334,12 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 			return FALSE;
 		}	
 
-		/* WRONG: can not update the mark, because the message has 
-		 * been moved. info pertains to original location. 
-		 * folder_item_move_msg() already updated the mark for the
-		 * destination folder.
-		info->flags = 0;
-		filteringaction_update_mark(info);
-		 */
 		if (folder_table) {
 			val = GPOINTER_TO_INT(g_hash_table_lookup
 					      (folder_table, dest_folder));
 			if (val == 0) {
 				folder_item_scan(dest_folder);
 				g_hash_table_insert(folder_table, dest_folder,
-						    GINT_TO_POINTER(1));
-			}
-			val = GPOINTER_TO_INT(g_hash_table_lookup
-					      (folder_table, info->folder));
-			if (val == 0) {
-				folder_item_scan(info->folder);
-				g_hash_table_insert(folder_table, info->folder,
 						    GINT_TO_POINTER(1));
 			}
 		}
@@ -365,10 +351,6 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 
 		if (!dest_folder)
 			return FALSE;
-
-		/* NOTE: the following call *will* update the mark file for
-		 * the destination folder. but the original message will
-		 * still be there in the inbox. */
 
 		if (folder_item_copy_msg(dest_folder, info) == -1)
 			return FALSE;
@@ -387,50 +369,29 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 	case MATCHACTION_DELETE:
 		if (folder_item_remove_msg(info->folder, info->msgnum) == -1)
 			return FALSE;
-
-		/* WRONG: can not update the mark. this would actually add
-		 * a bogus record to the mark file for the message's original 
-		 * folder. 
-		info->flags = 0;
-		filteringaction_update_mark(info);
-		 */
-
 		return TRUE;
 
 	case MATCHACTION_MARK:
 		MSG_SET_PERM_FLAGS(info->flags, MSG_MARKED);
-		filteringaction_update_mark(info);
-
-		CHANGE_FLAGS(info);
-
 		return TRUE;
 
 	case MATCHACTION_UNMARK:
 		MSG_UNSET_PERM_FLAGS(info->flags, MSG_MARKED);
-		filteringaction_update_mark(info);
-
-		CHANGE_FLAGS(info);
-
 		return TRUE;
 		
 	case MATCHACTION_MARK_AS_READ:
 		MSG_UNSET_PERM_FLAGS(info->flags, MSG_UNREAD | MSG_NEW);
-		filteringaction_update_mark(info);
-
-		CHANGE_FLAGS(info);
-
 		return TRUE;
 
 	case MATCHACTION_MARK_AS_UNREAD:
 		MSG_SET_PERM_FLAGS(info->flags, MSG_UNREAD | MSG_NEW);
-		filteringaction_update_mark(info);
-
-		CHANGE_FLAGS(info);
-		
+		return TRUE;
+	
+	case MATCHACTION_COLOR:
+		MSG_SET_COLORLABEL_VALUE(info->flags, action->labelcolor);
 		return TRUE;
 
 	case MATCHACTION_FORWARD:
-
 		account = account_find_from_id(action->account_id);
 		compose = compose_forward(account, info, FALSE);
 		if (compose->account->protocol == A_NNTP)
@@ -465,12 +426,10 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 			gtk_widget_destroy(compose->window);
 			return TRUE;
 		}
-
 		gtk_widget_destroy(compose->window);
 		return FALSE;
 
 	case MATCHACTION_BOUNCE:
-
 		account = account_find_from_id(action->account_id);
 		compose = compose_bounce(account, info);
 		if (compose->account->protocol == A_NNTP)
@@ -489,7 +448,6 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		return FALSE;
 
 	case MATCHACTION_EXECUTE:
-
 		cmd = matching_build_command(action->destination, info);
 		if (cmd == NULL)
 			return TRUE;
@@ -497,8 +455,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 			system(cmd);
 			g_free(cmd);
 		}
-
-		return TRUE;
+		return FALSE;
 
 	default:
 		return FALSE;
@@ -555,8 +512,10 @@ static gboolean filteringprop_apply(FilteringProp * filtering, MsgInfo * info,
 void filter_msginfo(GSList * filtering_list, MsgInfo * info,
 		    GHashTable *folder_table)
 {
-	GSList * l;
-
+	GSList		*l;
+	gboolean	 result;
+	FolderItem	*inbox;
+	
 	if (info == NULL) {
 		g_warning(_("msginfo is not set"));
 		return;
@@ -564,9 +523,31 @@ void filter_msginfo(GSList * filtering_list, MsgInfo * info,
 	
 	for(l = filtering_list ; l != NULL ; l = g_slist_next(l)) {
 		FilteringProp * filtering = (FilteringProp *) l->data;
-		
-		if (filteringprop_apply(filtering, info, folder_table))
+		if (TRUE == (result = filteringprop_apply(filtering, info, folder_table))) 
 			break;
+	}
+
+	/* drop in inbox too */
+	if (!result) {
+		gint val;
+
+		inbox = folder_get_default_inbox();
+		g_assert(inbox);
+		
+		if (folder_item_move_msg(inbox, info) == -1) {
+			debug_print(_("*** Could not drop message in inbox; still in .processing\n"));
+			return;
+		}	
+
+		if (folder_table) {
+			val = GPOINTER_TO_INT(g_hash_table_lookup
+					      (folder_table, inbox));
+			if (val == 0) {
+				folder_item_scan(inbox);
+				g_hash_table_insert(folder_table, inbox,
+						    GINT_TO_POINTER(1));
+			}
+		}
 	}
 }
 
