@@ -64,8 +64,8 @@ static GList *filesel_create(const gchar *title, const gchar *path, gboolean mul
 		char *filename = NULL;
 		char *realpath = strdup(path);
 		if ((filename = strrchr(path,'/')) != NULL) {
-			filename+=sizeof(char);
-			*(strrchr(realpath, '/')+sizeof(char)) = '\0';
+			filename++;
+			*(strrchr(realpath, '/')+1) = '\0';
 		} else {
 			filename = (char *) path;
 			free(realpath); 
