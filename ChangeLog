@@ -1,3 +1,8 @@
+2002-11-13
+
+	* src/textview.c: textview_add_part(): indicate signature status
+	  using different colors.
+
 2002-11-12
 
 	* src/folder.c: folder_write_list_recursive(): escape

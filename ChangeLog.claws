@@ -1,3 +1,11 @@
+2002-11-13 [paul]	0.8.5claws138
+
+	* sync with 0.8.5cvs24
+		see ChangeLog 2002-11-13
+		
+	* po/pt_BR.po
+		updated by Fabio Jr. Beneditto
+
 2002-11-13 [colin]	0.8.5claws137
 	
 	* src/msgcache.c

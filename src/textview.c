@@ -98,6 +98,29 @@ static GdkColor error_color = {
 };
 #endif
 
+#if USE_GPGME
+static GdkColor good_sig_color = {
+	(gulong)0,
+	(gushort)0,
+	(gushort)0xbfff,
+	(gushort)0
+};
+
+static GdkColor nocheck_sig_color = {
+	(gulong)0,
+	(gushort)0,
+	(gushort)0,
+	(gushort)0xcfff
+};
+
+static GdkColor bad_sig_color = {
+	(gulong)0,
+	(gushort)0xefff,
+	(gushort)0,
+	(gushort)0
+};
+#endif
+
 static GdkFont *text_sb_font;
 static GdkFont *text_mb_font;
 static gint text_sb_font_orig_ascent;
@@ -506,6 +529,15 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 		textview->msgfont = (GdkFont *)oldfont;
 		oldfont = NULL;
 		g_free(tmp);
+	} else if (mimeinfo->sigstatus) {
+		GdkColor *color;
+		if (!strcmp(mimeinfo->sigstatus, _("Good signature")))
+			color = &good_sig_color;
+		else if (!strcmp(mimeinfo->sigstatus, _("BAD signature")))
+			color = &bad_sig_color;
+		else
+			color = &nocheck_sig_color; 
+		gtk_stext_insert(text, NULL, color, NULL, buf, -1);
 	} else
 #endif
 	if (mimeinfo->mime_type != MIME_TEXT &&

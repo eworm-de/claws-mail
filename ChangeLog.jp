@@ -1,3 +1,7 @@
+2002-11-13
+
+	* src/textview.c: textview_add_part(): 署名の状態を異なる色で表示。
+
 2002-11-12
 
 	* src/folder.c: folder_write_list_recursive(): To/Cc/Bcc/Reply-To
