@@ -1,3 +1,8 @@
+2002-04-08 [paul]	0.7.4claws73
+
+	* sync with 0.7.4cvs33
+		see ChangeLog entry 200-04-08
+
 2002-04-07 [match]	0.7.4claws72
 
 	* src/addrharvest.[ch]
@@ -17,8 +22,8 @@
 
 	* src/esmtp.[ch]
 	  src/smtp.c
-		try to authenticate with CRAM-MD5 in SMTP when 
-		SMTP-AUTH enabled even if MTA doesn't issue this 
+		don't try to authenticate with CRAM-MD5 in SMTP when 
+		SMTP-AUTH enabled if MTA doesn't issue this 
 		auth-method in it's ehlo-response. bug item #531364,
 		patch item #938910. patch submitted by Colin Leroy 
 		<colin@colino.net>

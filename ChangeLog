@@ -1,3 +1,8 @@
+2002-04-08
+
+	* src/imap.c: imap_open(): show warning message if IMAP4 session
+	  can't be established.
+
 2002-04-06
 
 	* src/compose.c: made template able to be inserted into the current

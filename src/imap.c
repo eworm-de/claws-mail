@@ -1573,6 +1573,8 @@ static SockInfo *imap_open_tunnel(const gchar *server,
 	SockInfo *sock;
 
 	if ((sock = sock_connect_cmd(server, tunnelcmd)) == NULL)
+		log_warning(_("Can't establish IMAP4 session with: %s\n"),
+			    server);
 		return NULL;
 
 	return imap_init_sock(sock);
@@ -1596,6 +1598,8 @@ static SockInfo *imap_open(const gchar *server, gushort port)
 
 #if USE_SSL
 	if (use_ssl && !ssl_init_socket(sock)) {
+		log_warning(_("Can't establish IMAP4 session with: %s:%d\n"),
+			    server, port);
 		sock_close(sock);
 		return NULL;
 	}
@@ -1610,14 +1614,13 @@ static SockInfo *imap_init_sock(SockInfo *sock)
 	imap_cmd_count = 0;
 
 	if (imap_cmd_noop(sock) != IMAP_SUCCESS) {
+		log_warning(_("Can't establish IMAP4 session\n"));
 		sock_close(sock);
 		return NULL;
 	}
 
 	return sock;
 }
-
-
 
 #define THROW goto catch
 
