@@ -1,3 +1,8 @@
+2003-02-27
+
+	* src/codeconv.c: conv_codeset_strdup(): don't convert if current
+	  codeset is US-ASCII (or POSIX).
+
 2003-02-21
 
 	* src/codeconv.c: conv_iconv_strdup(): try to skip invalid characters

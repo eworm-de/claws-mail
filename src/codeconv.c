@@ -699,11 +699,8 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 #if HAVE_ICONV
 	if (!src_code)
 		src_code = conv_get_outgoing_charset_str();
-	if (!dest_code) {
+	if (!dest_code)
 		dest_code = conv_get_current_charset_str();
-		if (!strcasecmp(dest_code, CS_US_ASCII))
-			dest_code = CS_ISO_8859_1;
-	}
 
 	/* don't convert if current codeset is US-ASCII */
 	if (!strcasecmp(dest_code, CS_US_ASCII))
