@@ -1,6 +1,11 @@
-2001-05-08 [hoa]
+2001-05-09 [hoa]
 	* src/prefs_matcher.c
 		finished UI to define matching properties
+		added ok and cancel button
+	* src/prefs_filter.c
+		added ok and cancel button
+	* src/news.c
+		fixed some bug in xhdr parsing
 
 2001-05-08 [alfons]
 

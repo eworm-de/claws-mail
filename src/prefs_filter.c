@@ -49,7 +49,7 @@
 static struct Filter {
 	GtkWidget *window;
 
-	GtkWidget *close_btn;
+	GtkWidget *ok_btn;
 
 	GtkWidget *hdr_combo1;
 	GtkWidget *hdr_combo2;
@@ -114,7 +114,8 @@ static gint prefs_filter_deleted	(GtkWidget	*widget,
 static void prefs_filter_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
-static void prefs_filter_close		(void);
+static void prefs_filter_cancel		(void);
+static void prefs_filter_ok		(void);
 
 void prefs_filter_open(void)
 {
@@ -125,7 +126,7 @@ void prefs_filter_open(void)
 	}
 
 	manage_window_set_transient(GTK_WINDOW(filter.window));
-	gtk_widget_grab_focus(filter.close_btn);
+	gtk_widget_grab_focus(filter.ok_btn);
 
 	prefs_filter_set_dialog();
 
@@ -136,7 +137,8 @@ static void prefs_filter_create(void)
 {
 	GtkWidget *window;
 	GtkWidget *vbox;
-	GtkWidget *close_btn;
+	GtkWidget *ok_btn;
+	GtkWidget *cancel_btn;
 	GtkWidget *confirm_area;
 
 	GtkWidget *vbox1;
@@ -195,11 +197,19 @@ static void prefs_filter_create(void)
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (window), vbox);
 
+	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
+				&cancel_btn, _("Cancel"), NULL, NULL);
+	gtk_widget_show (confirm_area);
+	gtk_box_pack_end (GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
+	gtk_widget_grab_default (ok_btn);
+
+	/*
 	gtkut_button_set_create (&confirm_area, &close_btn, _("Close"),
 				 NULL, NULL, NULL, NULL);
 	gtk_widget_show (confirm_area);
 	gtk_box_pack_end (GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_widget_grab_default (close_btn);
+	*/
 
 	gtk_window_set_title (GTK_WINDOW(window),
 			      _("Filter setting"));
@@ -211,8 +221,10 @@ static void prefs_filter_create(void)
 			    GTK_SIGNAL_FUNC(manage_window_focus_in), NULL);
 	gtk_signal_connect (GTK_OBJECT(window), "focus_out_event",
 			    GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
-	gtk_signal_connect (GTK_OBJECT(close_btn), "clicked",
-			    GTK_SIGNAL_FUNC(prefs_filter_close), NULL);
+	gtk_signal_connect (GTK_OBJECT(ok_btn), "clicked",
+			    GTK_SIGNAL_FUNC(prefs_filter_ok), NULL);
+	gtk_signal_connect (GTK_OBJECT(cancel_btn), "clicked",
+			    GTK_SIGNAL_FUNC(prefs_filter_cancel), NULL);
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -444,7 +456,7 @@ static void prefs_filter_create(void)
 	gtk_widget_show_all(window);
 
 	filter.window    = window;
-	filter.close_btn = close_btn;
+	filter.ok_btn = ok_btn;
 
 	filter.hdr_combo1  = hdr_combo1;
 	filter.hdr_combo2  = hdr_combo2;
@@ -809,7 +821,7 @@ static void prefs_filter_notrecv_radio_button_toggled(void)
 static gint prefs_filter_deleted(GtkWidget *widget, GdkEventAny *event,
 				 gpointer data)
 {
-	prefs_filter_close();
+	prefs_filter_cancel();
 	return TRUE;
 }
 
@@ -817,12 +829,19 @@ static void prefs_filter_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				     gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
-		prefs_filter_close();
+		prefs_filter_cancel();
 }
 
-static void prefs_filter_close(void)
+static void prefs_filter_ok(void)
 {
 	prefs_filter_write_config();
+	gtk_widget_hide(filter.window);
+	inc_autocheck_timer_set();	
+}
+
+static void prefs_filter_cancel(void)
+{
+	prefs_filter_read_config();
 	gtk_widget_hide(filter.window);
 	inc_autocheck_timer_set();	
 }

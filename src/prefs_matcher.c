@@ -49,7 +49,7 @@
 static struct Matcher {
 	GtkWidget *window;
 
-	GtkWidget *close_btn;
+	GtkWidget *ok_btn;
 
 	GtkWidget *predicate_combo;
 	GtkWidget *header_combo;
@@ -161,7 +161,8 @@ static void prefs_matcher_select	(GtkCList	*clist,
 static void prefs_matcher_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
-static void prefs_matcher_close		(void);
+static void prefs_matcher_ok		(void);
+static void prefs_matcher_cancel		(void);
 static gint prefs_matcher_deleted(GtkWidget *widget, GdkEventAny *event,
 				  gpointer data);
 static void prefs_matcher_criteria_select(GtkList *list,
@@ -178,7 +179,7 @@ void prefs_matcher_open(MatcherList * matchers)
 	}
 
 	manage_window_set_transient(GTK_WINDOW(matcher.window));
-	gtk_widget_grab_focus(matcher.close_btn);
+	gtk_widget_grab_focus(matcher.ok_btn);
 
 	tmp_matchers = matchers;
 	prefs_matcher_set_dialog();
@@ -190,7 +191,8 @@ static void prefs_matcher_create(void)
 {
 	GtkWidget *window;
 	GtkWidget *vbox;
-	GtkWidget *close_btn;
+	GtkWidget *ok_btn;
+	GtkWidget *cancel_btn;
 	GtkWidget *confirm_area;
 
 	GtkWidget *vbox1;
@@ -250,11 +252,18 @@ static void prefs_matcher_create(void)
 	gtk_widget_show (vbox);
 	gtk_container_add (GTK_CONTAINER (window), vbox);
 
+	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
+				&cancel_btn, _("Cancel"), NULL, NULL);
+	gtk_widget_show (confirm_area);
+	gtk_box_pack_end (GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
+	gtk_widget_grab_default (ok_btn);
+
+	/*
 	gtkut_button_set_create (&confirm_area, &close_btn, _("Close"),
 				 NULL, NULL, NULL, NULL);
 	gtk_widget_show (confirm_area);
 	gtk_box_pack_end (GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
-	gtk_widget_grab_default (close_btn);
+	gtk_widget_grab_default (close_btn);*/
 
 	gtk_window_set_title (GTK_WINDOW(window),
 			      _("Condition setting"));
@@ -266,8 +275,10 @@ static void prefs_matcher_create(void)
 			    GTK_SIGNAL_FUNC(manage_window_focus_in), NULL);
 	gtk_signal_connect (GTK_OBJECT(window), "focus_out_event",
 			    GTK_SIGNAL_FUNC(manage_window_focus_out), NULL);
-	gtk_signal_connect (GTK_OBJECT(close_btn), "clicked",
-			    GTK_SIGNAL_FUNC(prefs_matcher_close), NULL);
+	gtk_signal_connect (GTK_OBJECT(ok_btn), "clicked",
+			    GTK_SIGNAL_FUNC(prefs_matcher_ok), NULL);
+	gtk_signal_connect (GTK_OBJECT(cancel_btn), "clicked",
+			    GTK_SIGNAL_FUNC(prefs_matcher_cancel), NULL);
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -499,7 +510,8 @@ static void prefs_matcher_create(void)
 	gtk_widget_show_all(window);
 
 	matcher.window    = window;
-	matcher.close_btn = close_btn;
+
+	matcher.ok_btn = ok_btn;
 
 	matcher.criteria_list = criteria_list;
 	matcher.header_combo = header_combo;
@@ -1094,10 +1106,15 @@ static void prefs_matcher_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				     gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
-		prefs_matcher_close();
+		prefs_matcher_cancel();
 }
 
-static void prefs_matcher_close(void)
+static void prefs_matcher_cancel(void)
+{
+	gtk_widget_hide(matcher.window);
+}
+
+static void prefs_matcher_ok(void)
 {
 	prefs_matcher_set_list();
 	gtk_widget_hide(matcher.window);
@@ -1106,6 +1123,6 @@ static void prefs_matcher_close(void)
 static gint prefs_matcher_deleted(GtkWidget *widget, GdkEventAny *event,
 				  gpointer data)
 {
-	prefs_matcher_close();
+	prefs_matcher_cancel();
 	return TRUE;
 }

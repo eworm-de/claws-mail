@@ -581,6 +581,7 @@ static gchar * news_parse_xhdr(const gchar *xover_str, MsgInfo * info)
 	gchar buf[NNTPBUFSIZE];
 	gchar *p;
 	gint num;
+	gchar * tmp;
 
 	p = strchr(xover_str, ' ');
 	if (!p)
@@ -593,7 +594,13 @@ static gchar * news_parse_xhdr(const gchar *xover_str, MsgInfo * info)
 	if (info->msgnum != num)
 		return NULL;
 
-	return g_strdup(p);
+	tmp = strchr(p, '\r');
+	if (!tmp) tmp = strchr(p, '\n');
+
+	if (tmp)
+		return g_strndup(p, tmp - p);
+	else
+		return g_strdup(p);
 }
 
 static GSList *news_delete_old_article(GSList *alist, gint first)
