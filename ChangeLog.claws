@@ -1,3 +1,9 @@
+2004-07-06 [paul]	0.9.12cvs10
+
+	* src/main.c
+		terminate cleanly on SIGHUP. Patch submitted by
+		Thomas Gilgin <thg@karate-muellheim.de>
+
 2004-07-05 [christoph]	0.9.12cvs9
 
 	* src/inc.c

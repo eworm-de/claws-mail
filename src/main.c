@@ -934,6 +934,9 @@ static void install_basic_sighandlers()
 #ifdef SIGINT
 	sigaddset(&mask, SIGINT);
 #endif
+#ifdef SIGHUP
+	sigaddset(&mask, SIGHUP);
+#endif
 
 	act.sa_handler = quit_signal_handler;
 	act.sa_mask    = mask;
@@ -944,6 +947,9 @@ static void install_basic_sighandlers()
 #endif
 #ifdef SIGINT
 	sigaction(SIGINT, &act, 0);
+#endif	
+#ifdef SIGHUP
+	sigaction(SIGHUP, &act, 0);
 #endif	
 
 	sigprocmask(SIG_UNBLOCK, &mask, 0);
