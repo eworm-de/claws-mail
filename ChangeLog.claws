@@ -1,3 +1,9 @@
+2004-09-02 [colin]	0.9.12cvs91
+
+	* src/gtk/menu.c
+		Add unduplicated menu entries (fixes bug 532)
+		Patch by Fabien Vantard
+
 2004-09-02 [colin]	0.9.12cvs90
 
 	* src/account.c
