@@ -40,6 +40,11 @@
 #
 # Change Log
 #
+# 2004-02-13
+#	- added support for perl and shell scripts, and recognize that
+#	  'file' will always return 'text' somewhere in its output for
+#	  files that, well, contain text
+#
 # 2004-01-25
 #	- added brief messages describing whats going on
 #
@@ -111,23 +116,20 @@ case "$1" in
 	*.rtf)	TYPE=RTF	;;
 	*.sxw)	TYPE=OOWRITER	;;
 	*.pdf)	TYPE=PDF	;;
+	*.sh)	TYPE=TEXT	;;
+	*.pl)	TYPE=TEXT	;;
 esac
 
 if [ "$TYPE" == "" ]	
 then
 	case $FILETYPE in 
-		"'diff'"*)	TYPE=TEXT	;;
+		*"text"*)	TYPE=TEXT	;;
 		gzip*)		TYPE=GZIP ;;
 		bzip2*)		TYPE=BZIP ;;
 		"POSIX tar archive"*)	TYPE=TAR	;;
 		"Zip "*) 	TYPE=ZIP  ;;
-		ASCII*)		TYPE=TEXT	;;
 		"Rich Text Format"*)	
 				TYPE=RTF  ;;
-		"smtp mail text"* | "RFC 822 mail text"*)	
-				TYPE=TEXT	;;
-		"Bourne shell script"* | "Bourne-Again shell script"*)
-				TYPE=TEXT	;;
 	esac
 fi
 
