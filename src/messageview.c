@@ -1064,8 +1064,10 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 	gchar *text = NULL;
 	if (!msginfo->planned_download) {
 		text = g_strdup_printf(_("This message has been partially "
-					 "retrieved; it is %dKB large."), 
-					 msginfo->total_size/1024);
+				 "retrieved; it is %s large."), 
+				 to_human_readable(
+				 	(off_t)(msginfo->total_size/1024)));
+
 		noticeview_set_text(noticeview, text);
 		g_free(text);
 		noticeview_set_button_text(noticeview, _("Mark for download"));
@@ -1075,9 +1077,11 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 		noticeview_show(noticeview);
 	} else {
 		text = g_strdup_printf(_("This message has been partially "
-					 "retrieved and is planned for "
-					 "download; it is %dKB large."), 
-					 msginfo->total_size/1024);
+				 "retrieved and is planned for "
+				 "download; it is %s large."), 
+				 to_human_readable(
+				 	(off_t)(msginfo->total_size/1024)));
+
 		noticeview_set_text(noticeview, text);
 		noticeview_set_button_text(noticeview, NULL);
 		g_free(text);

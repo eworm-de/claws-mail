@@ -502,8 +502,9 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 		&& smtp_session->max_message_size < 
 		   smtp_session->send_data_len) {
 			log_warning(_("Message is too big "
-				      "(Maximum size is %dKB)\n"),
-				      smtp_session->max_message_size / 1024);
+			      "(Maximum size is %s)\n"),
+			      to_human_readable(
+			       (off_t)(smtp_session->max_message_size / 1024)));
 			smtp_session->state = SMTP_ERROR;
 			smtp_session->error_val = SM_ERROR;
 			return -1;
