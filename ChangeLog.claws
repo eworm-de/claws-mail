@@ -1,3 +1,11 @@
+2002-12-20 [christoph]	0.8.6claws121
+
+	* src/common/utils.c
+	* src/summaryview.c
+		reimplement expand_search_string using GString to
+		prevent crashs caused by miscalculated string
+		lengths reported by Paul
+
 2002-12-20 [christoph]	0.8.6claws120
 
 	* src/summaryview.c

@@ -938,7 +938,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		MatcherList * tmp_list = NULL;
 		
 		if (search_type == S_SEARCH_EXTENDED) {
-			char *newstr;
+			char *newstr = NULL;
 
 			newstr = expand_search_string(search_string);
 			if (newstr) {
@@ -975,13 +975,12 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 				else
 					procmsg_msginfo_free(msginfo);
 			} else {
-				if (tmp_list != NULL && matcherlist_match(tmp_list, msginfo))
+				if ((tmp_list != NULL) && matcherlist_match(tmp_list, msginfo))
 					not_killed = g_slist_append(not_killed, msginfo);
 				else
 					procmsg_msginfo_free(msginfo);
 			}
 		}
-
 		if (search_type == S_SEARCH_EXTENDED && tmp_list != NULL) {
 			matcherlist_free(tmp_list);
 			tmp_list = NULL;
