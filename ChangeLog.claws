@@ -1,3 +1,8 @@
+2003-06-06 [thorsten]	0.9.0claws14
+
+	* src/folderview.c
+		possible use of uninitialized pointer while dragging
+
 2003-06-06 [paul]	0.9.0claws13
 
 	* src/compose.c
