@@ -328,6 +328,7 @@ void prefs_set_default(PrefParam *param)
 		switch (param[i].type) {
 		case P_STRING:
 		case P_PASSWORD:
+			g_free(*((gchar **)param[i].data));
 			if (param[i].defval != NULL) {
 				if (!strncasecmp(param[i].defval, "ENV_", 4))
 					*((gchar **)param[i].data) =
