@@ -229,14 +229,6 @@ static void summary_search_create(SummaryView *summaryview)
 
 #define GET_ENTRY(entry) gtk_entry_get_text(GTK_ENTRY(entry))
 
-#define SHOW_ERROR_MESSAGE(error) \
-{ \
-   if (error != NULL) { \
-      g_warning("%s\n", error->message); \
-      g_error_free(error); \
-   } \
-}
-
 static void summary_search_execute(GtkButton *button, gpointer data)
 {
 	SummaryView *summaryview = data;
@@ -253,11 +245,8 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 	gboolean   to_matched;
 	gboolean subj_matched;
 	gboolean body_matched;
-	const gchar *body_str;
-	wchar_t *wcs_hs, *fromwcs, *towcs, *subjwcs;
-	wchar_t *(* WCSFindFunc) (const wchar_t *haystack,
-				  const wchar_t *needle);
-	glong items_read, items_written;
+	const gchar *body_str, *from_str, *to_str, *subj_str;
+	char *(*findfunc) (const char *haystack, const char *needle);
 	GError *error = NULL;
 
 	if (summary_is_locked(summaryview)) return;
@@ -273,30 +262,13 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 		(GTK_TOGGLE_BUTTON(and_checkbtn));
 	
 	if (case_sens)
-#if HAVE_WCSSTR
-		WCSFindFunc = wcsstr;
-#else
-#if HAVE_WCSWCS
-		WCSFindFunc = wcswcs;
-#else
-		WCSFindFunc = wcscasestr;
-#endif
-#endif /* HAVE_WCSSTR */
+		findfunc = strstr;
 	else
-		WCSFindFunc = wcscasestr;
+		findfunc = strcasestr;
 
-	fromwcs = (wchar_t *)g_utf8_to_ucs4(GET_ENTRY(from_entry),
-					    -1, &items_read, &items_written,
-					    &error);
-	SHOW_ERROR_MESSAGE(error);
-	towcs   = (wchar_t *)g_utf8_to_ucs4(GET_ENTRY(to_entry),
-					    -1, &items_read, &items_written,
-					    &error);
-	SHOW_ERROR_MESSAGE(error);
-	subjwcs = (wchar_t *)g_utf8_to_ucs4(GET_ENTRY(subject_entry),
-					    -1, &items_read, &items_written,
-					    &error);
-	SHOW_ERROR_MESSAGE(error);
+	from_str = GET_ENTRY(from_entry);
+	to_str   = GET_ENTRY(to_entry);
+	subj_str = GET_ENTRY(subject_entry);
 	body_str = GET_ENTRY(body_entry);
 
 	if (search_all) {
@@ -369,39 +341,24 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 		
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
 
-		if (fromwcs && *fromwcs && msginfo->from) {
-			wcs_hs = (wchar_t *)g_utf8_to_ucs4(msginfo->from,
-							    -1, &items_read, &items_written,
-							    &error);
-			SHOW_ERROR_MESSAGE(error);
-			if (wcs_hs && WCSFindFunc(wcs_hs, fromwcs) != NULL)
+		if (from_str && *from_str && msginfo->from) {
+			if (findfunc(msginfo->from, from_str) != NULL)
 				from_matched = TRUE;
 			else
 				all_matched = FALSE;
-			g_free(wcs_hs);
 		}	
-		if (*towcs && msginfo->to) {
-			wcs_hs = (wchar_t *)g_utf8_to_ucs4(msginfo->to,
-							    -1, &items_read, &items_written,
-							    &error);
-			SHOW_ERROR_MESSAGE(error);
-			if (wcs_hs && WCSFindFunc(wcs_hs, towcs) != NULL)
+		if (to_str && *to_str && msginfo->to) {
+			if (findfunc(msginfo->to, to_str) != NULL)
 				to_matched = TRUE;
 			else
 				all_matched = FALSE;
-			g_free(wcs_hs);
-		}
-		if (subjwcs && *subjwcs && msginfo->subject) {
-			wcs_hs = (wchar_t *)g_utf8_to_ucs4(msginfo->subject,
-							    -1, &items_read, &items_written,
-							    &error);
-			SHOW_ERROR_MESSAGE(error);
-			if (wcs_hs && WCSFindFunc(wcs_hs, subjwcs) != NULL)
-				subj_matched = TRUE;
+		}	
+		if (subj_str && *subj_str && msginfo->subject) {
+			if (findfunc(msginfo->subject, subj_str) != NULL)
+				from_matched = TRUE;
 			else
 				all_matched = FALSE;
-			g_free(wcs_hs);
-		}
+		}	
 		if (body_str && *body_str) {
 			if (procmime_find_string(msginfo, body_str, case_sens))
 				body_matched = TRUE;
@@ -432,17 +389,13 @@ static void summary_search_execute(GtkButton *button, gpointer data)
 				break;
 			}
 		}
-
+skip:
 		node = backward ? gtkut_ctree_node_prev(ctree, node)
 				: gtkut_ctree_node_next(ctree, node);
 	}
 
 	if (*body_str)
 		main_window_cursor_normal(summaryview->mainwin);
-
-	g_free(fromwcs);
-	g_free(towcs);
-	g_free(subjwcs);
 
 	summary_unlock(summaryview);
 }
