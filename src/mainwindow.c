@@ -74,6 +74,7 @@
 #include "codeconv.h"
 #include "about.h"
 #include "manual.h"
+#include "prefs_templates.h"
 
 #define AC_LABEL_WIDTH	240
 
@@ -368,6 +369,10 @@ static void activate_compose_button (MainWindow *mainwin,
 				ToolbarStyle      style,
 				ComposeButtonType type);
 
+static void prefs_templates_open_cb(MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
+
 #define  SEPARATE_ACTION  667
 
 static GtkItemFactoryEntry mainwin_entries[] =
@@ -561,6 +566,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, prefs_scoring_open_cb, 0, NULL},
 	{N_("/_Configuration/_Filtering ..."),
 						NULL, prefs_filtering_open_cb, 0, NULL},
+	{N_("/_Configuration/_Templates ..."),
+						NULL, prefs_templates_open_cb, 0, NULL},
 	{N_("/_Configuration/_Preferences per account..."),
 						NULL, prefs_account_open_cb, 0, NULL},
 	{N_("/_Configuration/---"),		NULL, NULL, 0, "<Separator>"},
@@ -2680,3 +2687,8 @@ static void activate_compose_button (MainWindow *mainwin,
 	}
 }
 
+static void prefs_templates_open_cb(MainWindow *mainwin, guint action,
+				    GtkWidget *widget)
+{
+	prefs_templates_open();
+}

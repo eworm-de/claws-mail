@@ -98,6 +98,7 @@
 #include "gtkshruler.h"
 #include "folder.h"
 #include "addr_compl.h"
+#include "template_select.h"
 
 #if USE_GPGME
 #  include "rfc2015.h"
@@ -241,6 +242,10 @@ static void toolbar_linewrap_cb		(GtkWidget	*widget,
 					 gpointer	 data);
 static void toolbar_address_cb		(GtkWidget	*widget,
 					 gpointer	 data);
+static void template_select_cb		(gpointer	 daat,
+					 guint		 action,
+					 GtkWidget	*widget);
+
 
 static void select_account(Compose * compose, PrefsAccount * ac);
 static void account_activated		(GtkMenuItem	*menuitem,
@@ -448,6 +453,7 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Tool"),			NULL, NULL,	0, "<Branch>"},
 	{N_("/_Tool/Show _ruler"),	NULL, compose_toggle_ruler_cb,	0, "<ToggleItem>"},
 	{N_("/_Tool/_Address book"),	"<alt>A",	compose_address_cb, 0, NULL},
+	{N_("/_Tool/_Templates ..."),	NULL, template_select_cb, 0, NULL},
 	{N_("/_Help"),			NULL, NULL,	0, "<LastBranch>"},
 	{N_("/_Help/_About"),		NULL,		about_show,	0, NULL}
 };
@@ -481,6 +487,7 @@ Compose * compose_generic_new(PrefsAccount *account, const gchar *to, FolderItem
 
 	compose = compose_create(account);
 	compose->mode = COMPOSE_NEW;
+	compose->replyinfo = NULL;
 
 	if (prefs_common.auto_sig)
 		compose_insert_sig(compose);
@@ -602,6 +609,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
 	compose = compose_create(reply_account);
 	compose->mode = COMPOSE_REPLY;
+	compose->replyinfo = msginfo;
 
 
 	if (followup_and_reply_to) {
@@ -4885,4 +4893,63 @@ static gchar *compose_quote_fmt		(Compose	*compose,
 			(_("Message reply/forward format error."));
 
 	return quote_fmt_get_buffer();
+}
+
+static void template_apply_cb(gchar *s, gpointer data)
+{
+	Compose *compose = (Compose*)data;
+	GtkSText *text = GTK_STEXT(compose->text);
+	gchar *quote_str;
+	gchar *qmark;
+	gchar *parsed_text;
+	gchar *tmpl;
+	gchar *old_tmpl = s;
+
+	if(!s) return;
+	
+	if(compose->replyinfo=NULL) {
+	        gtk_stext_freeze(text);
+		gtk_stext_set_point(text, 0);
+		gtk_stext_forward_delete(text, gtk_stext_get_length(text));
+		gtk_stext_insert(text, NULL, NULL, NULL, s, -1);
+		gtk_stext_thaw(text);
+		g_free(old_tmpl);
+		return;
+	}
+
+	parsed_text = g_new(gchar, strlen(s)*2 + 1);
+	tmpl = parsed_text;
+	while(*s) {
+		if (*s == '\n') {
+			*parsed_text++ = '\\';
+			*parsed_text++ = 'n';
+			s++;
+		} else {
+			*parsed_text++ = *s++;
+		}
+	}
+	*parsed_text = '\0';
+
+	if (prefs_common.quotemark && *prefs_common.quotemark)
+		qmark = prefs_common.quotemark;
+	else
+		qmark = "> ";
+
+	quote_str = compose_quote_fmt(compose, compose->replyinfo, tmpl, qmark);
+	if (quote_str != NULL) {
+	        gtk_stext_freeze(text);
+		gtk_stext_set_point(text, 0);
+		gtk_stext_forward_delete(text, gtk_stext_get_length(text));
+		gtk_stext_insert(text, NULL, NULL, NULL, quote_str, -1);
+		gtk_stext_thaw(text);
+	}
+
+	g_free(old_tmpl);
+	g_free(tmpl);
+}
+
+static void template_select_cb(gpointer data, guint action,
+			       GtkWidget *widget)
+{
+	template_select(&template_apply_cb, data);
 }

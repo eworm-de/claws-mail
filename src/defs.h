@@ -61,6 +61,7 @@
 #define MARK_FILE		".sylpheed_mark"
 #define CACHE_VERSION		19
 #define MARK_VERSION		2
+#define TEMPLATES_DIR		"templates"
 
 #define DEFAULT_SIGNATURE	".signature"
 #define DEFAULT_INC_PATH	"/usr/bin/mh/inc"

@@ -120,6 +120,7 @@ struct _Compose
 	ComposeReplyMode mode;
 
 	MsgInfo *targetinfo;
+	MsgInfo *replyinfo;
 
 	gchar	*replyto;
 	gchar	*cc;

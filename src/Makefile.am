@@ -100,7 +100,11 @@ sylpheed_SOURCES = \
 	editldap_basedn.c editldap_basedn.h \
 	labelcolors.c labelcolors.h \
 	ssl.c ssl.h \
-	gtkspell.c gtkspell.h gtkxtext.h
+	gtkspell.c gtkspell.h gtkxtext.h \
+	template.c template.h \
+	prefs_templates.c prefs_templates.h \
+	template_select.c template_select.h
+
 
 EXTRA_DIST = \
 	quote_fmt_parse.h \
