@@ -943,15 +943,29 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 			 folderview_have_new_children(folderview, node));
 	}
 
-	gtk_ctree_node_set_foreground(ctree, node, NULL);
+	if (use_bold && boldfont)
+		style->font = boldfont;
+	else
+		style->font = normalfont;
 
-	if (use_bold && use_color)
-		style = bold_color_style;
-	else if (use_bold)
-		style = bold_style;
-	else if (use_color)
-		gtk_ctree_node_set_foreground(ctree, node,
-					      &folderview->color_new);
+	if (use_color) {
+		style->fg[GTK_STATE_NORMAL]   = folderview->color_new;
+		style->fg[GTK_STATE_SELECTED] = folderview->color_new;
+	} else {
+		if (item->op_count > 0) {
+			if (boldfont)
+				style->font = boldfont;
+			style->fg[GTK_STATE_NORMAL]   =
+				folderview->color_op;
+			style->fg[GTK_STATE_SELECTED] =
+				folderview->color_op;
+		} else {
+			style->fg[GTK_STATE_NORMAL] =
+				ctree_style->fg[GTK_STATE_NORMAL];
+			style->fg[GTK_STATE_SELECTED] =
+				ctree_style->fg[GTK_STATE_SELECTED];
+		}
+	}
 
 	gtk_ctree_node_set_row_style(ctree, node, style);
 

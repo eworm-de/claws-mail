@@ -1,3 +1,19 @@
+2001-08-17 [paul]
+
+	* configure.in
+		add pl to ALL_LINGUAS - sync with main branch
+
+	* po/de.po, po/es.po, po/nl.po, po/pt_BR.po
+		Updated. Translations by Jens Oberender, Ricardo Mones
+		Lastra, Alfons, and Fabio Junior Beneditto respectively.
+
+	* po/pl.po  ** NEW FILE **
+		sync with the main branch
+
+        * src/folderview.c
+		fix target folder colorizing and refresh problem
+
+
 2001-08-17 [christoph]
 
 	* src/mainwindow.c
@@ -10,7 +26,7 @@
 2001-08-16 [paul]
 
 	* configure.in
-		change to version 0.5.3claws
+		change to version 0.5.3claws1
 
 	* src/folder.h, src/folderview.[ch], src/gtkutils.[ch],
 	  src/inc.[ch], src/mainwindow.c, src/pop.c, src/prefs_account.c,
