@@ -461,8 +461,8 @@ static void imp_ldif_file_select( void ) {
 	gtk_grab_add( _imp_ldif_file_selector_.fileSelector );
 }
 
-static gint imp_ldif_delete_event( GtkWidget *widget, GdkEventAny *event, gboolean *cancelled ) {
-	*cancelled = TRUE;
+static gint imp_ldif_delete_event( GtkWidget *widget, GdkEventAny *event, gpointer data ) {
+	impldif_dlg.cancelled = TRUE;
 	gtk_main_quit();
 	return TRUE;
 }

@@ -510,6 +510,7 @@ void messageview_clear(MessageView *messageview)
 	messageview_change_view_type(messageview, MVIEW_TEXT);
 	headerview_clear(messageview->headerview);
 	textview_clear(messageview->textview);
+	imageview_clear(messageview->imageview);
 }
 
 void messageview_destroy(MessageView *messageview)

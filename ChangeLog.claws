@@ -1,3 +1,15 @@
+2002-01-23 [sergey]	0.7.0claws23
+
+	* src/importldif.c
+		Fixed segfault when closing LDIF import wizard with
+		the window manager.
+	* src/imageview.c
+	* src/imageview.h
+	* src/messageview.c
+	* src/mimeview.c
+		Fixed wrong scrolling position after switching between
+		text and image parts.
+
 2002-01-23 [paul]	0.7.0claws22
 
 	* sync with sylpheed 0.7.0cvs15

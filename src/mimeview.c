@@ -431,6 +431,9 @@ static void mimeview_show_image_part(MimeView *mimeview, MimeInfo *partinfo)
 			(_("Can't get the part of multipart message."));
 	else {
 		mimeview_change_view_type(mimeview, MIMEVIEW_IMAGE);
+		/* Workaround for the GTK+ bug with handling scroll adjustments
+		 * in GtkViewport */
+		imageview_clear(mimeview->imageview);
 		imageview_show_image(mimeview->imageview, partinfo, filename);
 		unlink(filename);
 	}
@@ -474,6 +477,7 @@ static void mimeview_clear(MimeView *mimeview)
 
 	gtk_clist_clear(clist);
 	textview_clear(mimeview->textview);
+	imageview_clear(mimeview->imageview);
 
 	mimeview->opened = NULL;
 

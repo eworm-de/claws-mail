@@ -152,6 +152,20 @@ void imageview_show_image(ImageView *imageview, MimeInfo *mimeinfo,
 #endif /* HAVE_GDK_IMLIB */
 #endif /* HAVE_GDK_PIXBUF */
 
+void imageview_clear(ImageView *imageview)
+{
+	GtkAdjustment *hadj, *vadj;
+
+	if (imageview->image)
+		gtk_pixmap_set(GTK_PIXMAP(imageview->image), NULL, NULL);
+	hadj = gtk_scrolled_window_get_hadjustment
+		(GTK_SCROLLED_WINDOW(imageview->scrolledwin));
+	gtk_adjustment_set_value(hadj, 0.0);
+	vadj = gtk_scrolled_window_get_vadjustment
+		(GTK_SCROLLED_WINDOW(imageview->scrolledwin));
+	gtk_adjustment_set_value(vadj, 0.0);
+}
+
 void imageview_destroy(ImageView *imageview)
 {
 	g_free(imageview);
