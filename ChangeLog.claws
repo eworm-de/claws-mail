@@ -1,3 +1,9 @@
+2004-11-08 [colin]	0.9.12cvs141
+
+	* src/textview.c
+		fix "colin@colino.net" <colin@colino.net> 
+		types of URIs
+
 2004-11-06 [colin]	0.9.12cvs140
 
 	* src/compose.c
