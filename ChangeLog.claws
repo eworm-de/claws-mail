@@ -1,3 +1,8 @@
+2004-01-31 [thorsten]	0.9.8claws60
+
+	* src/news.c
+		'dir' not initialized if group has no messages
+
 2004-01-29 [christoph]	0.9.8claws59
 
 	* src/customheader.[ch]
