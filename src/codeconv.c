@@ -26,11 +26,6 @@
 #include <ctype.h>
 #include <stdlib.h>
 
-#if (HAVE_WCTYPE_H && HAVE_WCHAR_H)
-#  include <wchar.h>
-#  include <wctype.h>
-#endif
-
 #if HAVE_LOCALE_H
 #  include <locale.h>
 #endif
@@ -540,9 +535,7 @@ CodeConverter *conv_code_converter_new(const gchar *charset)
 	CodeConverter *conv;
 
 	conv = g_new0(CodeConverter, 1);
-#if !HAVE_LIBJCONV
-	conv->code_conv_func = conv_get_code_conv_func(charset);
-#endif
+	conv->code_conv_func = conv_get_code_conv_func(charset, NULL);
 	conv->charset_str = g_strdup(charset);
 	conv->charset = conv_get_charset_from_str(charset);
 
@@ -559,14 +552,18 @@ gint conv_convert(CodeConverter *conv, gchar *outbuf, gint outlen,
 		  const gchar *inbuf)
 {
 #if HAVE_LIBJCONV
-	gchar *str;
-
-	str = conv_codeset_strdup(inbuf, conv->charset_str, NULL);
-	if (!str)
-		return -1;
+	if (conv->code_conv_func != conv_noconv)
+		conv->code_conv_func(outbuf, outlen, inbuf);
 	else {
-		strncpy2(outbuf, str, outlen);
-		g_free(str);
+		gchar *str;
+
+		str = conv_codeset_strdup(inbuf, conv->charset_str, NULL);
+		if (!str)
+			return -1;
+		else {
+			strncpy2(outbuf, str, outlen);
+			g_free(str);
+		}
 	}
 #else /* !HAVE_LIBJCONV */
 	conv->code_conv_func(outbuf, outlen, inbuf);
@@ -580,39 +577,31 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 {
 	gchar *buf;
 	size_t len;
+	CodeConvFunc conv_func;
 #if HAVE_LIBJCONV
 	gint actual_codeset;
 	const gchar *const *codesets;
 	gint n_codesets;
-#else /* !HAVE_LIBJCONV */
-	CharSet src_charset = C_AUTO, dest_charset = C_AUTO;
 #endif
 
-	if (!dest_codeset) {
-		CodeConvFunc func;
+	conv_func = conv_get_code_conv_func(src_codeset, dest_codeset);
+	if (conv_func != conv_noconv) {
+		len = (strlen(inbuf) + 1) * 3;
+		buf = g_malloc(len);
+		if (!buf) return NULL;
 
-		func = conv_get_code_conv_func(src_codeset);
-		if (func != conv_noconv) {
-			if (func == conv_jistodisp ||
-			    func == conv_sjistodisp ||
-			    func == conv_anytodisp)
-				len = strlen(inbuf) * 2 + 1;
-			else
-				len = strlen(inbuf) + 1;
-			buf = g_malloc(len);
-			if (!buf) return NULL;
-			func(buf, len, inbuf);
-			buf = g_realloc(buf, strlen(buf) + 1);
-			return buf;
-		}
+		conv_func(buf, len, inbuf);
+		return g_realloc(buf, strlen(buf) + 1);
 	}
 
+#if !HAVE_LIBJCONV
+	return g_strdup(inbuf);
+#else
 	/* don't convert if src and dest codeset are identical */
 	if (src_codeset && dest_codeset &&
 	    !strcasecmp(src_codeset, dest_codeset))
 		return g_strdup(inbuf);
 
-#if HAVE_LIBJCONV
 	if (src_codeset) {
 		codesets = &src_codeset;
 		n_codesets = 1;
@@ -638,71 +627,74 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 #endif /* 0 */
 		return NULL;
 	}
-#else /* !HAVE_LIBJCONV */
-	if (src_codeset) {
-		if (!strcasecmp(src_codeset, CS_EUC_JP) ||
-		    !strcasecmp(src_codeset, CS_EUCJP))
-			src_charset = C_EUC_JP;
-		else if (!strcasecmp(src_codeset, CS_SHIFT_JIS) ||
-			 !strcasecmp(src_codeset, "SHIFT-JIS") ||
-			 !strcasecmp(src_codeset, "SJIS"))
-			src_charset = C_SHIFT_JIS;
-		if (dest_codeset && !strcasecmp(dest_codeset, CS_ISO_2022_JP))
-			dest_charset = C_ISO_2022_JP;
-	}
-
-	if ((src_charset == C_EUC_JP || src_charset == C_SHIFT_JIS) &&
-	    dest_charset == C_ISO_2022_JP) {
-		len = (strlen(inbuf) + 1) * 3;
-		buf = g_malloc(len);
-		if (buf) {
-			if (src_charset == C_EUC_JP)
-				conv_euctojis(buf, len, inbuf);
-			else
-				conv_anytojis(buf, len, inbuf);
-			buf = g_realloc(buf, strlen(buf) + 1);
-		}
-	} else
-		buf = g_strdup(inbuf);
-
-	return buf;
-#endif /* !HAVE_LIBJCONV */
+#endif /* HAVE_LIBJCONV */
 }
 
-CodeConvFunc conv_get_code_conv_func(const gchar *charset)
+CodeConvFunc conv_get_code_conv_func(const gchar *src_charset_str,
+				     const gchar *dest_charset_str)
 {
-	CodeConvFunc code_conv;
-	CharSet cur_charset;
+	CodeConvFunc code_conv = conv_noconv;
+	CharSet src_charset;
+	CharSet dest_charset;
 
-	if (!charset) {
-		cur_charset = conv_get_current_charset();
-		if (cur_charset == C_EUC_JP || cur_charset == C_SHIFT_JIS)
+	if (!src_charset_str)
+		src_charset = conv_get_current_charset();
+	else
+		src_charset = conv_get_charset_from_str(src_charset_str);
+
+	/* auto detection mode */
+	if (!src_charset_str && !dest_charset_str) {
+		if (src_charset == C_EUC_JP || src_charset == C_SHIFT_JIS)
 			return conv_anytodisp;
 		else
 			return conv_noconv;
 	}
 
-	if (!strcasecmp(charset, CS_ISO_2022_JP) ||
-	    !strcasecmp(charset, CS_ISO_2022_JP_2))
-		code_conv = conv_jistodisp;
-	else if (!strcasecmp(charset, CS_US_ASCII))
-		code_conv = conv_ustodisp;
-	else if (!strncasecmp(charset, CS_ISO_8859_1, 10))
-		code_conv = conv_latintodisp;
+	dest_charset = conv_get_charset_from_str(dest_charset_str);
+
+	switch (src_charset) {
+	case C_ISO_2022_JP:
+	case C_ISO_2022_JP_2:
+		if (dest_charset == C_AUTO)
+			code_conv = conv_jistodisp;
+		else if (dest_charset == C_EUC_JP)
+			code_conv = conv_jistoeuc;
+		break;
+	case C_US_ASCII:
+		if (dest_charset == C_AUTO)
+			code_conv = conv_ustodisp;
+		break;
+	case C_ISO_8859_1:
 #if !HAVE_LIBJCONV
-	else if (!strncasecmp(charset, "ISO-8859-", 9))
-		code_conv = conv_latintodisp;
+	case C_ISO_8859_2:
+	case C_ISO_8859_4:
+	case C_ISO_8859_5:
+	case C_ISO_8859_7:
+	case C_ISO_8859_8:
+	case C_ISO_8859_9:
+	case C_ISO_8859_11:
+	case C_ISO_8859_13:
+	case C_ISO_8859_15:
 #endif
-	else if (!strcasecmp(charset, CS_SHIFT_JIS) ||
-		 !strcasecmp(charset, "SHIFT-JIS")  ||
-		 !strcasecmp(charset, "SJIS")       ||
-		 !strcasecmp(charset, "X-SJIS"))
-		code_conv = conv_sjistodisp;
-	else if (!strcasecmp(charset, CS_EUC_JP) ||
-		 !strcasecmp(charset, CS_EUCJP))
-		code_conv = conv_euctodisp;
-	else
-		code_conv = conv_noconv;
+		if (dest_charset == C_AUTO)
+			code_conv = conv_latintodisp;
+		break;
+	case C_SHIFT_JIS:
+		if (dest_charset == C_AUTO)
+			code_conv = conv_sjistodisp;
+		else if (dest_charset == C_EUC_JP)
+			code_conv = conv_sjistoeuc;
+		break;
+	case C_EUC_JP:
+		if (dest_charset == C_AUTO)
+			code_conv = conv_euctodisp;
+		else if (dest_charset == C_ISO_2022_JP ||
+			 dest_charset == C_ISO_2022_JP_2)
+			code_conv = conv_euctojis;
+		break;
+	default:
+		break;
+	}
 
 	return code_conv;
 }
@@ -734,6 +726,8 @@ static const struct {
 	{C_EUC_JP,		CS_EUC_JP},
 	{C_EUC_JP,		CS_EUCJP},
 	{C_SHIFT_JIS,		CS_SHIFT_JIS},
+	{C_SHIFT_JIS,		CS_SHIFT__JIS},
+	{C_SHIFT_JIS,		CS_SJIS},
 	{C_ISO_2022_KR,		CS_ISO_2022_KR},
 	{C_EUC_KR,		CS_EUC_KR},
 	{C_ISO_2022_CN,		CS_ISO_2022_CN},

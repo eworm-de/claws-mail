@@ -26,10 +26,6 @@
 
 #include <glib.h>
 
-#if HAVE_LIBJCONV
-#  include <jconv.h>
-#endif
-
 typedef struct _CodeConverter	CodeConverter;
 
 typedef enum
@@ -71,9 +67,7 @@ typedef void (*CodeConvFunc) (gchar *outbuf, gint outlen, const gchar *inbuf);
 
 struct _CodeConverter
 {
-#if !HAVE_LIBJCONV
 	CodeConvFunc code_conv_func;
-#endif
 	gchar *charset_str;
 	CharSet charset;
 };
@@ -102,6 +96,9 @@ struct _CodeConverter
 #define CS_EUC_JP		"EUC-JP"
 #define CS_EUCJP		"EUCJP"
 #define CS_SHIFT_JIS		"Shift_JIS"
+#define CS_SHIFT__JIS		"SHIFT-JIS"
+#define CS_SJIS			"SJIS"
+#define CS_X_SJIS		"X-SJIS"
 #define CS_ISO_2022_KR		"ISO-2022-KR"
 #define CS_EUC_KR		"EUC-KR"
 #define CS_ISO_2022_CN		"ISO-2022-CN"
@@ -138,11 +135,12 @@ gint conv_convert			(CodeConverter	*conv,
 					 gint		 outlen,
 					 const gchar	*inbuf);
 
-gchar *conv_codeset_strdup(const gchar *inbuf,
-			   const gchar *src_codeset,
-			   const gchar *dest_codeset);
+gchar *conv_codeset_strdup		(const gchar	*inbuf,
+					 const gchar	*src_codeset,
+					 const gchar	*dest_codeset);
 
-CodeConvFunc conv_get_code_conv_func(const gchar *charset);
+CodeConvFunc conv_get_code_conv_func	(const gchar	*src_charset_str,
+					 const gchar	*dest_charset_str);
 
 const gchar *conv_get_charset_str		(CharSet	 charset);
 CharSet conv_get_charset_from_str		(const gchar	*charset);

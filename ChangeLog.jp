@@ -1,3 +1,13 @@
+2003-01-08
+
+	* src/codeconv.[ch]: コードの整理と最適化。
+	  conv_code_converter_new()
+	  conv_convert(): libjconv 使用時に conv_get_code_conv_func() で
+	  得られる関数を使用するようにした。
+	  conv_codeset_strdup(): コードの整理。
+	  conv_get_code_conv_func(): 変換先文字コードの引数を追加し、一般化
+	  した。
+
 2003-01-06
 
 	* src/codeconv.c: LBREAK_IF_REQUIRED(): 文字が続く場合のみ改行する
