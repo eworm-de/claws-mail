@@ -69,6 +69,8 @@
 	}							\
 }
 
+typedef gchar * IMAPSet;
+
 struct _IMAPFolderItem
 {
 	FolderItem item;
@@ -170,8 +172,7 @@ static SockInfo *imap_init_sock(SockInfo *sock);
 #endif
 
 static gint imap_set_message_flags	(IMAPSession	*session,
-					 guint32	 first_uid,
-					 guint32	 last_uid,
+					 MsgNumberList	*numlist,
 					 IMAPFlags	 flag,
 					 gboolean	 is_set);
 static gint imap_select			(IMAPSession	*session,
@@ -215,7 +216,7 @@ static gint imap_greeting		(SockInfo	*sock,
 static void imap_get_capability		(Session	*session);
 static gboolean imap_has_capability	(IMAPSession	*session,
  					 const gchar	*cap);
-static const gchar *numberlist_to_imapset(MsgNumberList *list);
+static const IMAPSet numberlist_to_imapset(MsgNumberList *list);
 
 /* low-level IMAP4rev1 commands */
 static gint imap_cmd_login	(SockInfo	*sock,
@@ -257,7 +258,7 @@ static gint imap_cmd_rename	(SockInfo	*sock,
 static gint imap_cmd_delete	(SockInfo	*sock,
 				 const gchar	*folder);
 static gint imap_cmd_envelope	(SockInfo	*sock,
-				 MsgNumberList	*numlist);
+				 IMAPSet	 set);
 static gint imap_cmd_fetch	(SockInfo	*sock,
 				 guint32	 uid,
 				 const gchar	*filename);
@@ -270,8 +271,7 @@ static gint imap_cmd_copy	(IMAPSession	*session,
 				 const gchar	*destfolder,
 				 gint32		*new_uid);
 static gint imap_cmd_store	(SockInfo	*sock,
-				 guint32	 first_uid,
-				 guint32	 last_uid,
+				 IMAPSet	 set,
 				 gchar		*sub_cmd);
 static gint imap_cmd_expunge	(SockInfo	*sock);
 
@@ -709,10 +709,9 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 {
 	gchar *destdir;
 	IMAPSession *session;
-	IMAPFlags iflags = 0;
 	guint32 newuid = 0;
 	gint ok;
-    
+	
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, -1);
 	g_return_val_if_fail(dest != NULL, -1);
@@ -746,24 +745,14 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 	ok = imap_cmd_copy(session, msginfo->msgnum, destdir, &newuid);
 
 	if (ok == IMAP_SUCCESS && remove_source) {
-		imap_set_message_flags(session, msginfo->msgnum, msginfo->msgnum,
+		MsgNumberList numlist;
+
+		numlist.next = NULL;
+		numlist.data = GINT_TO_POINTER(msginfo->msgnum);
+		
+		imap_set_message_flags(session, &numlist,
 				       IMAP_FLAG_DELETED, TRUE);
 		ok = imap_cmd_expunge(SESSION(session)->sock);
-	}
-
-	/* get the dest folder to set the flags */
-	if (newuid) {
-		ok = imap_select(session, IMAP_FOLDER(folder), dest->path,
-				 NULL, NULL, NULL, NULL);
-		if (ok != IMAP_SUCCESS)		/* the folder disappeared? */
-		        return -1;
-
-		if (msginfo->flags.perm_flags & MSG_MARKED)  iflags |= IMAP_FLAG_FLAGGED;
-		if (msginfo->flags.perm_flags & MSG_REPLIED) iflags |= IMAP_FLAG_ANSWERED;
-		if (iflags)
-			if (imap_set_message_flags(session, newuid, newuid, iflags, TRUE)
-			    != IMAP_SUCCESS)
-				newuid = 0;
 	}
 
 	g_free(destdir);
@@ -802,7 +791,8 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 	gint ok;
 	IMAPSession *session;
 	gchar *dir;
-
+	MsgNumberList numlist;
+	
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, -1);
 	g_return_val_if_fail(item != NULL, -1);
@@ -815,9 +805,12 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 	if (ok != IMAP_SUCCESS)
 		return ok;
 
+	numlist.next = NULL;
+	numlist.data = GINT_TO_POINTER(uid);
+	
 	ok = imap_set_message_flags
 		(IMAP_SESSION(REMOTE_FOLDER(folder)->session),
-		 (guint32)uid, (guint32)uid, IMAP_FLAG_DELETED, TRUE);
+		&numlist, IMAP_FLAG_DELETED, TRUE);
 	if (ok != IMAP_SUCCESS) {
 		log_warning(_("can't set deleted flags: %d\n"), uid);
 		return ok;
@@ -1423,7 +1416,7 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 	g_return_val_if_fail(item->folder != NULL, NULL);
 	g_return_val_if_fail(FOLDER_CLASS(item->folder) == &imap_class, NULL);
 
-	if (imap_cmd_envelope(SESSION(session)->sock, numlist)
+	if (imap_cmd_envelope(SESSION(session)->sock, numberlist_to_imapset(numlist))
 	    != IMAP_SUCCESS) {
 		log_warning(_("can't get envelope\n"));
 		return NULL;
@@ -2003,8 +1996,7 @@ static MsgInfo *imap_parse_envelope(SockInfo *sock, FolderItem *item,
 }
 
 static gint imap_set_message_flags(IMAPSession *session,
-				   guint32 first_uid,
-				   guint32 last_uid,
+				   MsgNumberList *numlist,
 				   IMAPFlags flags,
 				   gboolean is_set)
 {
@@ -2024,7 +2016,7 @@ static gint imap_set_message_flags(IMAPSession *session,
 
 	g_string_append_c(buf, ')');
 
-	ok = imap_cmd_store(SESSION(session)->sock, first_uid, last_uid,
+	ok = imap_cmd_store(SESSION(session)->sock, numberlist_to_imapset(numlist),
 			    buf->str);
 	g_string_free(buf, TRUE);
 
@@ -2213,7 +2205,7 @@ static gboolean imap_has_capability(IMAPSession *session, const gchar *cap)
 	return FALSE;
 }
 
-static const gchar *numberlist_to_imapset(MsgNumberList *list)
+static const IMAPSet numberlist_to_imapset(MsgNumberList *list)
 {
 	static GString *imapset = NULL;
 	MsgNumberList *numlist, *elem;
@@ -2630,7 +2622,7 @@ static gint imap_cmd_copy(IMAPSession * session,
 	return ok;
 }
 
-gint imap_cmd_envelope(SockInfo *sock, MsgNumberList *numlist)
+gint imap_cmd_envelope(SockInfo *sock, IMAPSet set)
 {
 	static GString *header_fields = NULL;
 
@@ -2662,23 +2654,22 @@ gint imap_cmd_envelope(SockInfo *sock, MsgNumberList *numlist)
 	
 	imap_cmd_gen_send
 		(sock, "UID FETCH %s (UID FLAGS RFC822.SIZE BODY.PEEK[HEADER.FIELDS (%s)])",
-		 numberlist_to_imapset(numlist),
-		 header_fields->str);
+		 set, header_fields->str);
 
 	return IMAP_SUCCESS;
 }
 
-static gint imap_cmd_store(SockInfo *sock, guint32 first_uid, guint32 last_uid,
+static gint imap_cmd_store(SockInfo *sock, IMAPSet set,
 			   gchar *sub_cmd)
 {
 	gint ok;
 
-	imap_cmd_gen_send(sock, "UID STORE %d:%d %s",
-			  first_uid, last_uid, sub_cmd);
+	imap_cmd_gen_send(sock, "UID STORE %s %s",
+			  set, sub_cmd);
 
 	if ((ok = imap_cmd_ok(sock, NULL)) != IMAP_SUCCESS) {
-		log_warning(_("error while imap command: STORE %d:%d %s\n"),
-			    first_uid, last_uid, sub_cmd);
+		log_warning(_("error while imap command: STORE %s %s\n"),
+			    set, sub_cmd);
 		return ok;
 	}
 
@@ -3355,7 +3346,8 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 	IMAPSession *session;
 	IMAPFlags flags_set = 0, flags_unset = 0;
 	gint ok = IMAP_SUCCESS;
-
+	MsgNumberList numlist;
+	
 	g_return_if_fail(folder != NULL);
 	g_return_if_fail(folder->klass == &imap_class);
 	g_return_if_fail(item != NULL);
@@ -3385,15 +3377,16 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 	if ( MSG_IS_REPLIED(msginfo->flags) && !(newflags & MSG_REPLIED))
 		flags_set |= IMAP_FLAG_ANSWERED;
 
+	numlist.next = NULL;
+	numlist.data = GINT_TO_POINTER(msginfo->msgnum);
+	
 	if (flags_set) {
-		ok = imap_set_message_flags(session, msginfo->msgnum,
-					    msginfo->msgnum, flags_set, TRUE);
+		ok = imap_set_message_flags(session, &numlist, flags_set, TRUE);
 		if (ok != IMAP_SUCCESS) return;
 	}
 
 	if (flags_unset) {
-		ok = imap_set_message_flags(session, msginfo->msgnum,
-					    msginfo->msgnum, flags_unset, FALSE);
+		ok = imap_set_message_flags(session, &numlist, flags_unset, FALSE);
 		if (ok != IMAP_SUCCESS) return;
 	}
 
@@ -3401,4 +3394,3 @@ void imap_change_flags(Folder *folder, FolderItem *item, MsgInfo *msginfo, MsgPe
 
 	return;
 }
-

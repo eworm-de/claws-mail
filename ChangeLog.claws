@@ -1,3 +1,8 @@
+2003-04-06 [christoph]	0.8.11claws75
+
+	* src/imap.c
+		use IMAPSet for imap_cmd_store() and imap_cmd_envelope()
+
 2003-04-06 [christoph]	0.8.11claws74
 
 	* src/common/utils.[ch]
