@@ -1,3 +1,9 @@
+2002-12-29 [christoph]	0.8.8claws21
+
+	* src/folder.c
+		only check for IGNORED parent message when message is
+		not IGNORED itself
+
 2002-12-29 [alfons]	0.8.8claws20
 
 	* src/summaryview.c

@@ -1159,7 +1159,7 @@ gint folder_item_scan(FolderItem *item)
 					unreadcnt++;
 				if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 					unreadmarkedcnt++;
-				if (procmsg_msg_has_flagged_parent(msginfo, MSG_IGNORE_THREAD))
+				if (!MSG_IS_IGNORE_THREAD(msginfo->flags) && procmsg_msg_has_flagged_parent(msginfo, MSG_IGNORE_THREAD))
 					procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 			}
 			totalcnt++;
