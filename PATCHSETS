@@ -126,3 +126,4 @@
 ( cvs diff -u -r 1.382.2.40 -r 1.382.2.41 src/compose.c; cvs diff -u -r 1.65.2.11 -r 1.65.2.12 src/codeconv.c; ) > 0.9.12cvs66.3.patchset
 ( cvs diff -u -r 1.274.2.17 -r 1.274.2.18 src/mainwindow.c; cvs diff -u -r 1.94.2.29 -r 1.94.2.30 src/messageview.c; cvs diff -u -r 1.5.2.9 -r 1.5.2.10 src/gtk/menu.c; cvs diff -u -r 1.23.2.4 -r 1.23.2.5 src/plugins/spamassassin/spamassassin_gtk.c; ) > 0.9.12cvs66.4.patchset
 ( cvs diff -u -r 1.2504.2.14 -r 1.2504.2.15 ChangeLog.claws; cvs diff -u -r 1.382.2.41 -r 1.382.2.42 src/compose.c; cvs diff -u -r 1.274.2.18 -r 1.274.2.19 src/mainwindow.c; ) > 0.9.12cvs70.1.patchset
+( cvs diff -u -r 1.2504.2.15 -r 1.2504.2.16 ChangeLog.claws; cvs diff -u -r 1.382.2.42 -r 1.382.2.43 src/compose.c; cvs diff -u -r 1.395.2.27 -r 1.395.2.28 src/summaryview.c; cvs diff -u -r 1.43.2.8 -r 1.43.2.9 src/toolbar.c; ) > 0.9.12cvs74.1.patchset

@@ -4287,12 +4287,12 @@ static gboolean summary_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	if (!event) return FALSE;
 
 	if (event->button == 3) {
-		summaryview->display_msg = TRUE;
+		summaryview->display_msg = messageview_is_visible(summaryview->messageview);
 		/* right clicked */
 		gtk_menu_popup(GTK_MENU(summaryview->popupmenu), NULL, NULL,
 			       NULL, NULL, event->button, event->time);
 	} else if (event->button == 2) {
-		summaryview->display_msg = TRUE;
+		summaryview->display_msg = messageview_is_visible(summaryview->messageview);
 	} else if (event->button == 1) {
 		if (!prefs_common.emulate_emacs &&
 		    messageview_is_visible(summaryview->messageview))

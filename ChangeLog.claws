@@ -1,3 +1,27 @@
+2004-08-21 [colin]	0.9.12cvs74
+
+	* src/compose.c
+		Fix bug 576 (Duplicate auto-bcc on reedit)
+
+2004-08-21 [colin]	0.9.12cvs73
+
+	* src/toolbar.c
+		Grey out Redirect in the toolbar when selection is
+		multiple. Fixes bug 520
+
+2004-08-21 [colin]	0.9.12cvs72
+
+	* src/compose.c
+		Save Sign, Encrypt and Mode status when drafting or queuing
+		Fixes bug 502 (drafted message does not keep sign / encrypt 
+		state)
+
+2004-08-21 [colin]	0.9.12cvs71
+
+	* src/summaryview.c
+		Fix bug 494 (Messages are always opened in summary 
+		view when right clicked.) Also fixes bug 508.
+
 2004-08-21 [colin]	0.9.12cvs70
 
 	* src/compose.c
