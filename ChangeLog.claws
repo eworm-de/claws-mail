@@ -1,3 +1,11 @@
+2004-09-02 [colin]	0.9.12cvs88
+
+	* src/ldapquery.c
+		Fix freezes in LDAP, due to memory corruption
+		after deletion of a query (and not removing it
+		from the corresponding list of queries).
+		Very probably fixes bug 567 and bug 569
+
 2004-09-02 [colin]	0.9.12cvs87
 
 	* src/prefs_spelling.c

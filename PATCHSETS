@@ -70,3 +70,4 @@
 ( cvs diff -u -r 1.257 -r 1.258 src/folder.c; ) > 0.9.12cvs85.patchset
 ( cvs diff -u -r 1.70 -r 1.71 src/filtering.c; cvs diff -u -r 1.206 -r 1.207 src/imap.c; cvs diff -u -r 1.47 -r 1.48 src/prefs_matcher.c; cvs diff -u -r 1.35 -r 1.36 src/stock_pixmap.c; ) > 0.9.12cvs86.patchset
 ( cvs diff -u -r 1.6 -r 1.7 src/prefs_spelling.c; ) > 0.9.12cvs87.patchset
+( cvs diff -u -r 1.8 -r 1.9 src/ldapquery.c; ) > 0.9.12cvs88.patchset
