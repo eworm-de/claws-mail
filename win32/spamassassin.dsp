@@ -100,7 +100,7 @@ SOURCE=..\src\plugins\spamassassin\spamassassin.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\spamassassin.dll.def
+SOURCE=.\spamassassin.def
 # End Source File
 # Begin Source File
 

@@ -96,7 +96,7 @@ SOURCE=..\src\plugins\spamassassin\spamassassin_gtk.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\spamassassin_gtk.dll.def
+SOURCE=.\spamassassin_gtk.def
 # End Source File
 # End Group
 # Begin Group "Header-Dateien"

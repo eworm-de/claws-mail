@@ -96,7 +96,7 @@ SOURCE=..\src\plugins\demo\demo.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\demo.dll.def
+SOURCE=.\demo.def
 # End Source File
 # End Group
 # Begin Group "Header-Dateien"

@@ -1,3 +1,18 @@
+2003-01-24 [thorsten]	0.8.8claws127-1
+
+	* win32/Makefile
+	  win32/demo[_d].dsp
+	  win32/spamassassin[_d].dsp
+	  win32/spamassassin_gtk[_d].dsp
+	  win32/sylpheed[_d].dsp
+	  win32/demo[_d].dll.def		*** REMOVED ***
+	  win32/spamassassin[_d].dll.def	*** REMOVED ***
+	  win32/spamassassin_gtk[_d].dll.def	*** REMOVED ***
+	  win32/demo[_d].def			*** NEW FILE ***
+	  win32/spamassassin[_d].def		*** NEW FILE ***
+	  win32/spamassassin_gtk[_d].def	*** NEW FILE ***
+	  	remove ordinals and comments from dll defs
+
 2003-01-13 [thorsten]	0.8.8claws116-2
 
 	* src/mimeview.c

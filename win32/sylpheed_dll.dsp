@@ -640,7 +640,7 @@ SOURCE=..\src\common\sylpheed.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\sylpheed.dll.def
+SOURCE=.\sylpheed.def
 # End Source File
 # Begin Source File
 
