@@ -1245,7 +1245,6 @@ gint procmsg_send_message_queue(const gchar *file)
 	}
 	filepos = ftell(fp);
 
-	fseek(fp, filepos, SEEK_SET);
 	if (to_list) {
 		debug_print("Sending message by mail\n");
 		if(!from) {
@@ -1296,6 +1295,7 @@ gint procmsg_send_message_queue(const gchar *file)
 		}
 	}
 
+	fseek(fp, filepos, SEEK_SET);
 	if(newsgroup_list && (newsval == 0)) {
 		Folder *folder;
 		gchar *tmp = NULL;

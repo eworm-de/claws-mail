@@ -1,3 +1,11 @@
+2002-08-25 [alfons]	0.8.1claws119
+
+	* src/procmsg.c
+		fix bug that didn't send out correct headers to news server
+		when sending news article and email from queue (bug reported
+		and patch provided by Tim Mann; closes bug 
+		"[ 583196 ] 0.7.8claws can't post news")
+
 2002-08-25 [alfons]	0.8.1claws118
 
 	* src/selective_download.c
