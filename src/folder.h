@@ -143,6 +143,11 @@ struct _Folder
 					 const gchar	*name);
 	gint     (*remove_folder)	(Folder		*folder,
 					 FolderItem	*item);
+	void     (*update_mark)		(Folder		*folder,
+					 FolderItem	*item);
+	void     (*change_flags)	(Folder		*folder,
+					 FolderItem	*item,
+					 MsgInfo        *info);
 };
 
 struct _LocalFolder

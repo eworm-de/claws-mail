@@ -238,6 +238,7 @@ gchar *get_home_dir		(void);
 gchar *get_rc_dir		(void);
 gchar *get_news_cache_dir	(void);
 gchar *get_imap_cache_dir	(void);
+gchar *get_mbox_cache_dir	(void);
 gchar *get_mime_tmp_dir		(void);
 gchar *get_tmp_file		(void);
 gchar *get_domain_name		(void);

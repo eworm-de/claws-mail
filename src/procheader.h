@@ -63,6 +63,8 @@ void procheader_get_header_fields	(FILE		*fp,
 MsgInfo *procheader_parse		(const gchar	*file,
 					 MsgFlags	 flags,
 					 gboolean	 full);
+MsgInfo *procheader_file_parse(FILE * fp, MsgFlags flags,
+			       gboolean full);
 
 gchar *procheader_get_fromname		(const gchar	*str);
 

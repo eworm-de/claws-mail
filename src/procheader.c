@@ -348,12 +348,13 @@ gboolean procheader_headername_equal(char * hdr1, char * hdr2)
 
 	len1 = strlen(hdr1);
 	len2 = strlen(hdr2);
-	if ((hdr1[len1 - 1] == ':') || (hdr1[len1 - 1] == ' '))
+	if (hdr1[len1 - 1] == ':')
 		len1--;
-	if ((hdr2[len2 - 1] == ':') || (hdr2[len2 - 1] == ' '))
+	if (hdr2[len2 - 1] == ':')
 		len2--;
 	if (len1 != len2)
 		return 0;
+
 	return (g_strncasecmp(hdr1, hdr2, len1) == 0);
 }
 
@@ -427,12 +428,33 @@ enum
 	H_IN_REPLY_TO	= 8,
 	H_CONTENT_TYPE	= 9,
 	H_SEEN		= 10,
-	H_X_FACE	= 11,
-	H_DISPOSITION_NOTIFICATION_TO = 12,
-	H_RETURN_RECEIPT_TO = 13
+	H_STATUS        = 11,
+	H_X_STATUS      = 12,
+	H_X_FACE	= 13,
+	H_FROM_SPACE	= 14,
+	H_DISPOSITION_NOTIFICATION_TO = 15,
+	H_RETURN_RECEIPT_TO = 16
 };
 
 MsgInfo *procheader_parse(const gchar *file, MsgFlags flags, gboolean full)
+{
+	FILE *fp;
+	MsgInfo *msginfo;
+
+	if ((fp = fopen(file, "r")) == NULL) {
+		FILE_OP_ERROR(file, "fopen");
+		return NULL;
+	}
+
+	msginfo = procheader_file_parse(fp, flags, full);
+
+	fclose(fp);
+
+	return msginfo;
+}
+
+MsgInfo *procheader_file_parse(FILE * fp, MsgFlags flags,
+			       gboolean full)
 {
 	static HeaderEntry hentry_full[] = {{"Date:",		NULL, FALSE},
 					   {"From:",		NULL, TRUE},
@@ -445,7 +467,10 @@ MsgInfo *procheader_parse(const gchar *file, MsgFlags flags, gboolean full)
 					   {"In-Reply-To:",	NULL, FALSE},
 					   {"Content-Type:",	NULL, FALSE},
 					   {"Seen:",		NULL, FALSE},
+					   {"Status:",          NULL, FALSE},
+					   {"X-Status:",        NULL, FALSE},
 					   {"X-Face:",		NULL, FALSE},
+					   {"From ",		NULL, FALSE},
 					   {"Disposition-Notification-To:", NULL, FALSE},
 					   {"Return-Receipt-To:", NULL, FALSE},
 					   {NULL,		NULL, FALSE}};
@@ -461,9 +486,11 @@ MsgInfo *procheader_parse(const gchar *file, MsgFlags flags, gboolean full)
 					    {"In-Reply-To:",	NULL, FALSE},
 					    {"Content-Type:",	NULL, FALSE},
 					    {"Seen:",		NULL, FALSE},
+					    {"Status:",		NULL, FALSE},
+					    {"X-Status:",	NULL, FALSE},
+					    {"From ",		NULL, FALSE},
 					    {NULL,		NULL, FALSE}};
-
-	FILE *fp;
+	
 	MsgInfo *msginfo;
 	gchar buf[BUFFSIZE], tmp[BUFFSIZE];
 	gchar *reference = NULL;
@@ -474,10 +501,6 @@ MsgInfo *procheader_parse(const gchar *file, MsgFlags flags, gboolean full)
 
 	hentry = full ? hentry_full : hentry_short;
 
-	if ((fp = fopen(file, "r")) == NULL) {
-		FILE_OP_ERROR(file, "fopen");
-		return NULL;
-	}
 	if (MSG_IS_QUEUED(flags)) {
 		while (fgets(buf, sizeof(buf), fp) != NULL)
 			if (buf[0] == '\r' || buf[0] == '\n') break;
@@ -490,6 +513,7 @@ MsgInfo *procheader_parse(const gchar *file, MsgFlags flags, gboolean full)
 	while ((hnum = procheader_get_one_field(buf, sizeof(buf), fp, hentry))
 	       != -1) {
 		hp = buf + strlen(hentry[hnum].name);
+
 		while (*hp == ' ' || *hp == '\t') hp++;
 
 		switch (hnum) {
@@ -588,12 +612,26 @@ MsgInfo *procheader_parse(const gchar *file, MsgFlags flags, gboolean full)
 			if (msginfo->returnreceiptto) break;
 			msginfo->returnreceiptto = g_strdup(hp);
 			break;
+		case H_STATUS:
+			if (strchr(hp, 'R') != NULL)
+				MSG_UNSET_FLAGS(msginfo->flags, MSG_UNREAD);
+			if (strchr(hp, 'O') != NULL)
+				MSG_UNSET_FLAGS(msginfo->flags, MSG_NEW);
+			if (strchr(hp, 'U') != NULL)
+				MSG_SET_FLAGS(msginfo->flags, MSG_UNREAD);
+			break;
+		case H_X_STATUS:
+			if (strchr(hp, 'X') != NULL)
+				MSG_SET_FLAGS(msginfo->flags, MSG_MARKED);
+			break;
+		case H_FROM_SPACE:
+			if (msginfo->fromspace) break;
+			msginfo->fromspace = g_strdup(hp);
+			break;
 		default:
 		}
 	}
 	msginfo->inreplyto = reference;
-
-	fclose(fp);
 
 	return msginfo;
 }

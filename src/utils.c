@@ -1119,6 +1119,17 @@ gchar *get_imap_cache_dir(void)
 	return imap_cache_dir;
 }
 
+gchar *get_mbox_cache_dir(void)
+{
+	static gchar *mbox_cache_dir = NULL;
+
+	if (!mbox_cache_dir)
+		mbox_cache_dir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+					     MBOX_CACHE_DIR, NULL);
+
+	return mbox_cache_dir;
+}
+
 gchar *get_mime_tmp_dir(void)
 {
 	static gchar *mime_tmp_dir = NULL;

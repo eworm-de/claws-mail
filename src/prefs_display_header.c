@@ -401,7 +401,7 @@ void prefs_display_header_read_config(void)
 	}
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		g_strchomp(buf);
+		g_strdelimit(buf, "\r\n", '\0');
 		dp = display_header_prop_read_str(buf);
 		if (dp)
 			prefs_common.disphdr_list =

@@ -505,12 +505,14 @@ FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	imappath = g_strdup(dirpath);
 	/* imap_path_subst_slash_to_dot(imappath); */
 
-	ok = imap_create(SESSION(session)->sock, imappath);
-	if (ok != IMAP_SUCCESS) {
-		log_warning(_("can't create mailbox\n"));
-		g_free(imappath);
-		g_free(dirpath);
-		return NULL;
+	if (strcmp(name, "INBOX") != 0) {
+		ok = imap_create(SESSION(session)->sock, imappath);
+		if (ok != IMAP_SUCCESS) {
+			log_warning(_("can't create mailbox\n"));
+			g_free(imappath);
+			g_free(dirpath);
+			return NULL;
+		}
 	}
 
 	new_item = folder_item_new(name, dirpath);

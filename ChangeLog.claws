@@ -1,3 +1,31 @@
+2001-05-23 [hoa]
+
+	* src/Makefile.am
+		added mbox_folder.[ch]
+	* src/defs.h
+		mbox temporary folder
+	* src/folder.[ch]
+	* added src/mbox_folder.[ch]
+	* src/folderview.c
+	* src/procheader.[ch]
+		added mbox support
+	* src/mbox.c
+		bugfix for file incorporation filtering
+	* src/imap.c
+		enable creation of MBOX
+	* src/prefs_display_header.c
+		enable use of headers like "From "
+		something that should be fixed :
+			displaying of such headers add an extra space
+	* src/prefs_folder_item.c
+		don't create folders because it is not necessary
+	* src/procmsg.h
+		added data field to MsgInfo for mbox internal use
+	* src/summaryview.c
+		added some support for mbox
+	* src/utils.[ch]
+		added get_mbox_cache_dir() function
+
 2001-05-23 [hiroyuki]
 
 	* src/headerwindow.c

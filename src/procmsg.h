@@ -126,6 +126,7 @@ struct _MsgInfo
 	gchar *returnreceiptto;
 
 	gchar *references;
+	gchar *fromspace;
 
 	gint score;
 	gint threadscore;
@@ -133,6 +134,8 @@ struct _MsgInfo
 	/* used only for encrypted messages */
 	gchar *plaintext_file;
 	guint decryption_failed : 1;
+
+	void * data;
 };
 
 GHashTable *procmsg_msg_hash_table_create	(GSList		*mlist);

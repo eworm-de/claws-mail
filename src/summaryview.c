@@ -1518,6 +1518,9 @@ gint summary_write_cache(SummaryView *summaryview)
 	if (!summaryview->folder_item || !summaryview->folder_item->path)
 		return -1;
 
+	if (summaryview->folder_item->folder->update_mark != NULL)
+		summaryview->folder_item->folder->update_mark(summaryview->folder_item->folder, summaryview->folder_item);
+
 	cachefile = folder_item_get_cache_file(summaryview->folder_item);
 	g_return_val_if_fail(cachefile != NULL, -1);
 	if ((fps.cache_fp = fopen(cachefile, "w")) == NULL) {

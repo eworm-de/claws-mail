@@ -748,6 +748,8 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 			switch (item->folder->type) {
 			case F_MH:
 				name = " (MH)"; break;
+			case F_MBOX:
+				name = " (mbox)"; break;
 			case F_IMAP:
 				name = " (IMAP4)"; break;
 			case F_NEWS:

@@ -42,6 +42,7 @@
 #define NEWS_CACHE_DIR		"newscache"
 #define GROUPLIST_FILE		"grouplist"
 #define IMAP_CACHE_DIR		"imapcache"
+#define MBOX_CACHE_DIR		"mboxcache"
 #define MIME_TMP_DIR		"mimetmp"
 #define COMMON_RC		"sylpheedrc"
 #define ACCOUNT_RC		"accountrc"

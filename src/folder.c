@@ -33,12 +33,14 @@
 #include "imap.h"
 #include "news.h"
 #include "mh.h"
+#include "mbox_folder.h"
 #include "utils.h"
 #include "xml.h"
 #include "codeconv.h"
 #include "prefs.h"
 #include "account.h"
 #include "prefs_account.h"
+#include "mbox_folder.h"
 
 static GList *folder_list = NULL;
 
@@ -49,6 +51,7 @@ static void folder_init		(Folder		*folder,
 static void local_folder_destroy	(LocalFolder	*lfolder);
 static void remote_folder_destroy	(RemoteFolder	*rfolder);
 static void mh_folder_destroy		(MHFolder	*folder);
+static void mbox_folder_destroy		(MboxFolder	*folder);
 static void imap_folder_destroy		(IMAPFolder	*folder);
 static void news_folder_destroy		(NewsFolder	*folder);
 
@@ -65,6 +68,9 @@ Folder *folder_new(FolderType type, const gchar *name, const gchar *path)
 
 	name = name ? name : path;
 	switch (type) {
+	case F_MBOX:
+		folder = mbox_folder_new(name, path);
+		break;
 	case F_MH:
 		folder = mh_folder_new(name, path);
 		break;
@@ -94,8 +100,14 @@ Folder *mh_folder_new(const gchar *name, const gchar *path)
 
 Folder *mbox_folder_new(const gchar *name, const gchar *path)
 {
-	/* not yet implemented */
-	return NULL;
+	/* implementing */
+	Folder *folder;
+
+	folder = (Folder *)g_new0(MboxFolder, 1);
+	folder_init(folder, F_MBOX, name);
+	LOCAL_FOLDER(folder)->rootpath = g_strdup(path);
+
+	return folder;
 }
 
 Folder *maildir_folder_new(const gchar *name, const gchar *path)
@@ -214,6 +226,9 @@ void folder_destroy(Folder *folder)
 	case F_MH:
 		mh_folder_destroy(MH_FOLDER(folder));
 		break;
+	case F_MBOX:
+		mbox_folder_destroy(MBOX_FOLDER(folder));
+		break;
 	case F_IMAP:
 		imap_folder_destroy(IMAP_FOLDER(folder));
 		break;
@@ -246,11 +261,16 @@ void folder_add(Folder *folder)
 		cur_folder = FOLDER(cur->data);
 		if (folder->type == F_MH) {
 			if (cur_folder->type != F_MH) break;
+		} else if (folder->type == F_MBOX) {
+			if (cur_folder->type != F_MH &&
+			    cur_folder->type != F_MBOX) break;
 		} else if (folder->type == F_IMAP) {
 			if (cur_folder->type != F_MH &&
+			    cur_folder->type != F_MBOX &&
 			    cur_folder->type != F_IMAP) break;
 		} else if (folder->type == F_NEWS) {
 			if (cur_folder->type != F_MH &&
+			    cur_folder->type != F_MBOX &&
 			    cur_folder->type != F_IMAP &&
 			    cur_folder->type != F_NEWS) break;
 		}
@@ -417,6 +437,16 @@ gchar *folder_item_get_path(FolderItem *item)
 
 	if (FOLDER_TYPE(item->folder) == F_MH)
 		folder_path = g_strdup(LOCAL_FOLDER(item->folder)->rootpath);
+	else if (FOLDER_TYPE(item->folder) == F_MBOX) {
+		path = mbox_get_virtual_path(item);
+		if (path == NULL)
+			return NULL;
+		folder_path = g_strconcat(get_mbox_cache_dir(),
+					  G_DIR_SEPARATOR_S, path, NULL);
+		g_free(path);
+
+		return folder_path;
+	}
 	else if (FOLDER_TYPE(item->folder) == F_IMAP) {
 		g_return_val_if_fail(item->folder->account != NULL, NULL);
 		folder_path = g_strconcat(get_imap_cache_dir(),
@@ -463,6 +493,9 @@ void folder_item_scan(FolderItem *item)
 	g_return_if_fail(item != NULL);
 
 	folder = item->folder;
+
+	g_return_if_fail(folder->scan != NULL);
+
 	folder->scan(folder, item);
 }
 
@@ -484,6 +517,10 @@ gchar *folder_item_fetch_msg(FolderItem *item, gint num)
 	g_return_val_if_fail(item != NULL, NULL);
 
 	folder = item->folder;
+
+	g_return_val_if_fail(folder->scan != NULL, NULL);
+	g_return_val_if_fail(folder->fetch_msg != NULL, NULL);
+
 	if (item->last_num < 0) folder->scan(folder, item);
 
 	return folder->fetch_msg(folder, item, num);
@@ -497,13 +534,18 @@ gint folder_item_add_msg(FolderItem *dest, const gchar *file,
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(file != NULL, -1);
-	g_return_val_if_fail(dest->folder->add_msg != NULL, -1);
 
 	folder = dest->folder;
+
+	g_return_val_if_fail(folder->scan != NULL, -1);
+	g_return_val_if_fail(folder->add_msg != NULL, -1);
+
 	if (dest->last_num < 0) folder->scan(folder, dest);
 
 	num = folder->add_msg(folder, dest, file, remove_source);
 	if (num > 0) dest->last_num = num;
+
+	printf("%i\n", num);
 
 	return num;
 }
@@ -517,6 +559,10 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 	g_return_val_if_fail(msginfo != NULL, -1);
 
 	folder = dest->folder;
+
+	g_return_val_if_fail(folder->scan != NULL, -1);
+	g_return_val_if_fail(folder->move_msg != NULL, -1);
+
 	if (dest->last_num < 0) folder->scan(folder, dest);
 
 	num = folder->move_msg(folder, dest, msginfo);
@@ -534,6 +580,10 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 	g_return_val_if_fail(msglist != NULL, -1);
 
 	folder = dest->folder;
+
+	g_return_val_if_fail(folder->scan != NULL, -1);
+	g_return_val_if_fail(folder->move_msgs_with_dest != NULL, -1);
+
 	if (dest->last_num < 0) folder->scan(folder, dest);
 
 	num = folder->move_msgs_with_dest(folder, dest, msglist);
@@ -551,6 +601,10 @@ gint folder_item_copy_msg(FolderItem *dest, MsgInfo *msginfo)
 	g_return_val_if_fail(msginfo != NULL, -1);
 
 	folder = dest->folder;
+
+	g_return_val_if_fail(folder->scan != NULL, -1);
+	g_return_val_if_fail(folder->copy_msg != NULL, -1);
+
 	if (dest->last_num < 0) folder->scan(folder, dest);
 
 	num = folder->copy_msg(folder, dest, msginfo);
@@ -568,6 +622,10 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 	g_return_val_if_fail(msglist != NULL, -1);
 
 	folder = dest->folder;
+
+	g_return_val_if_fail(folder->scan != NULL, -1);
+	g_return_val_if_fail(folder->copy_msgs_with_dest != NULL, -1);
+
 	if (dest->last_num < 0) folder->scan(folder, dest);
 
 	num = folder->copy_msgs_with_dest(folder, dest, msglist);
@@ -583,6 +641,10 @@ gint folder_item_remove_msg(FolderItem *item, gint num)
 	g_return_val_if_fail(item != NULL, -1);
 
 	folder = item->folder;
+
+	g_return_val_if_fail(folder->scan != NULL, -1);
+	g_return_val_if_fail(folder->remove_msg != NULL, -1);
+
 	if (item->last_num < 0) folder->scan(folder, item);
 
 	return folder->remove_msg(folder, item, num);
@@ -593,6 +655,8 @@ gint folder_item_remove_all_msg(FolderItem *item)
 	Folder *folder;
 
 	g_return_val_if_fail(item != NULL, -1);
+	g_return_val_if_fail(folder->scan != NULL, -1);
+	g_return_val_if_fail(folder->remove_all_msg != NULL, -1);
 
 	folder = item->folder;
 	if (item->last_num < 0) folder->scan(folder, item);
@@ -607,6 +671,9 @@ gboolean folder_item_is_msg_changed(FolderItem *item, MsgInfo *msginfo)
 	g_return_val_if_fail(item != NULL, FALSE);
 
 	folder = item->folder;
+
+	g_return_val_if_fail(folder->is_msg_changed != NULL, -1);
+
 	return folder->is_msg_changed(folder, item, msginfo);
 }
 
@@ -699,9 +766,29 @@ static void folder_init(Folder *folder, FolderType type, const gchar *name)
 		folder->remove_folder       = imap_remove_folder;		
 		break;
 	case F_NEWS:
-		folder->get_msg_list = news_get_article_list;
-		folder->fetch_msg    = news_fetch_msg;
-		folder->scan         = news_scan_group;
+		folder->get_msg_list        = news_get_article_list;
+		folder->fetch_msg           = news_fetch_msg;
+		folder->scan                = news_scan_group;
+		break;
+	case F_MBOX:
+		folder->get_msg_list        = mbox_get_msg_list;
+		folder->fetch_msg           = mbox_fetch_msg;
+		folder->scan                = mbox_scan_folder;
+		folder->add_msg             = mbox_add_msg;
+		folder->remove_all_msg      = mbox_remove_all_msg;
+		folder->remove_msg          = mbox_remove_msg;
+		folder->update_mark         = mbox_update_mark;
+		folder->move_msg            = mbox_move_msg;
+		folder->move_msgs_with_dest = mbox_move_msgs_with_dest;
+
+		/*
+		folder->remove_msg          = mh_remove_msg;
+		folder->is_msg_changed      = mh_is_msg_changed;
+		folder->scan_tree           = mh_scan_tree;
+		folder->create_tree         = mh_create_tree;
+		folder->create_folder       = mh_create_folder;
+		folder->rename_folder       = mh_rename_folder;
+		folder->remove_folder       = mh_remove_folder;*/
 		break;
 	default:
 	}
@@ -736,6 +823,11 @@ static void remote_folder_destroy(RemoteFolder *rfolder)
 }
 
 static void mh_folder_destroy(MHFolder *folder)
+{
+	local_folder_destroy(LOCAL_FOLDER(folder));
+}
+
+static void mbox_folder_destroy(MboxFolder *folder)
 {
 	local_folder_destroy(LOCAL_FOLDER(folder));
 }

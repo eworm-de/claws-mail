@@ -222,11 +222,13 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox, GHashTable *folder_table)
 		} else
 			dropfolder = dest;
 
-		if (msgnum = folder_item_add_msg(dropfolder, tmp_file, TRUE) < 0) {
+		if ((msgnum = folder_item_add_msg(dropfolder, tmp_file, TRUE)) < 0) {
 			fclose(mbox_fp);
 			unlink(tmp_file);
 			return -1;
 		}
+
+		folder_item_scan(dropfolder);
 		
 		if (prefs_filtering != NULL) {
 			/* new filtering */
