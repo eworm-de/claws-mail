@@ -226,8 +226,8 @@ void mimeview_init(MimeView *mimeview)
 #if USE_GPGME
 static gboolean mimeview_is_signed(MimeView *mimeview)
 {
-	MimeInfo *partinfo;
-	MsgInfo *msginfo;
+	MimeInfo *partinfo = NULL;
+	MsgInfo *msginfo = NULL;
 
         debug_print("mimeview_is signed of %p\n", mimeview);
 
