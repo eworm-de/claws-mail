@@ -1039,7 +1039,6 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	menu_set_sensitive(ifactory, "/Reply to sender",	  sens);
 	menu_set_sensitive(ifactory, "/Reply to all",		  sens);
 	menu_set_sensitive(ifactory, "/Forward",		  TRUE);
-	menu_set_sensitive(ifactory, "/Forward as attachment",    TRUE);
 	menu_set_sensitive(ifactory, "/Bounce",	                  TRUE);
 
 	menu_set_sensitive(ifactory, "/Add sender to address book", sens);
