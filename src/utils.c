@@ -1969,6 +1969,24 @@ void get_rfc822_date(gchar *buf, gint len)
 		   day, dd, mon, yyyy, hh, mm, ss, tzoffset(&t));
 }
 
+static FILE *log_fp = NULL;
+
+void set_log_file(const gchar *filename)
+{
+	if (log_fp) return;
+	log_fp = fopen(filename, "w");
+	if (!log_fp)
+		FILE_OP_ERROR(filename, "fopen");
+}
+
+void close_log_file(void)
+{
+	if (log_fp) {
+		fclose(log_fp);
+		log_fp = NULL;
+	}
+}
+
 void debug_print(const gchar *format, ...)
 {
 	va_list args;
@@ -1994,6 +2012,10 @@ void log_print(const gchar *format, ...)
 
 	if (debug_mode) fputs(buf, stdout);
 	log_window_append(buf, LOG_NORMAL);
+	if (log_fp) {
+		fputs(buf, log_fp);
+		fflush(log_fp);
+	}
 	statusbar_puts_all(buf);
 }
 
@@ -2008,6 +2030,11 @@ void log_message(const gchar *format, ...)
 
 	if (debug_mode) g_message("%s", buf);
 	log_window_append(buf, LOG_MSG);
+	if (log_fp) {
+		fputs("message: ", log_fp);
+		fputs(buf, log_fp);
+		fflush(log_fp);
+	}
 }
 
 void log_warning(const gchar *format, ...)
@@ -2021,6 +2048,11 @@ void log_warning(const gchar *format, ...)
 
 	g_warning("%s", buf);
 	log_window_append(buf, LOG_WARN);
+	if (log_fp) {
+		fputs("*** warning: ", log_fp);
+		fputs(buf, log_fp);
+		fflush(log_fp);
+	}
 }
 
 void log_error(const gchar *format, ...)

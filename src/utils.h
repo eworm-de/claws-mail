@@ -292,10 +292,12 @@ void get_rfc822_date		(gchar		*buf,
 				 gint		 len);
 
 /* logging */
-void debug_print(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
-void log_print	(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
-void log_message(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
-void log_warning(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
-void log_error	(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
+void set_log_file	(const gchar *filename);
+void close_log_file	(void);
+void debug_print	(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
+void log_print		(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
+void log_message	(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
+void log_warning	(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
+void log_error		(const gchar *format, ...) G_GNUC_PRINTF(1, 2);
 
 #endif /* __UTILS_H__ */

@@ -1,3 +1,27 @@
+2001-06-25
+
+	* src/imap.c: imap_create_tree(): imap_create_folder() にローカル
+	  ファイルシステムのセパレータで区切られているパスを渡すようにした。
+	  imap_create_folder(): STATUS コマンドの代わりに LIST を使って
+	  フォルダの存在を調べるようにした。
+	  imap_cmd_list(): 新規。
+	  imap_query_password(): 新規。
+	  imap_session_new(): パスワードが設定されていなければ尋ねるように
+	  した。
+
+2001-06-24
+
+	* src/imap.c: imap_parse_envelope(): FETCH の結果を任意の順序で
+	  解析できるようにした。
+	  imap_parse_fetch_element(): 新規。 FETCH の結果の名前と値のペア
+	  を解析する。
+	  imap_parse_flags(): より柔軟性を持たせるために修正。
+	* src/utils.[ch]: set_log_file(): 新規。ロギングのために新しい
+	  ファイルを開く。
+	  close_log_file(): 新規。開いたログファイルを閉じる。
+	  log_print(), log_message(), log_warning(), log_error(): ログ
+	  ファイルにも出力するようにした。
+
 2001-06-22
 
 	* src/imap.c: imap_cmd_status(): 代入の前に "value" へのポインタを

@@ -1,3 +1,26 @@
+2001-06-25
+
+	* src/imap.c: imap_create_tree(): pass the path that is separated
+	  by the local filesystem separator to imap_create_folder().
+	  imap_create_folder(): examine the existence of folders using
+	  LIST command instead of STATUS.
+	  imap_cmd_list(): new.
+	  imap_query_password(): new.
+	  imap_session_new(): query password if it is not set.
+
+2001-06-24
+
+	* src/imap.c: imap_parse_envelope(): FETCH results can be parsed
+	  with arbitrary order.
+	  imap_parse_fetch_element(): new. it parses one pair of name and
+	  value of FETCH results.
+	  imap_parse_flags(): modified for more flexibility.
+	* src/utils.[ch]: set_log_file(): new. it opens a new file for
+	  logging.
+	  close_log_file(): new. it closes the opened log file.
+	  log_print(), log_message(), log_warning(), log_error(): also
+	  output to log file.
+
 2001-06-22
 
 	* src/imap.c: imap_cmd_status(): check the pointer to "value"

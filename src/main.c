@@ -196,6 +196,13 @@ int main(int argc, char *argv[])
 	MAKE_DIR_IF_NOT_EXIST(get_news_cache_dir());
 	MAKE_DIR_IF_NOT_EXIST(get_mime_tmp_dir());
 
+	if (is_file_exist(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log")) {
+		if (rename(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log",
+			   RC_DIR G_DIR_SEPARATOR_S "sylpheed.log.bak") < 0)
+			FILE_OP_ERROR("sylpheed.log", "rename");
+	}
+	set_log_file(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log");
+
 	if (is_file_exist(RC_DIR G_DIR_SEPARATOR_S "assortrc") &&
 	    !is_file_exist(RC_DIR G_DIR_SEPARATOR_S "filterrc")) {
 		if (rename(RC_DIR G_DIR_SEPARATOR_S "assortrc",
@@ -368,6 +375,8 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 
 	/* delete temporary files */
 	remove_all_files(get_mime_tmp_dir());
+
+	close_log_file();
 
 	/* delete unix domain socket */
 	gdk_input_remove(lock_socket_tag);
