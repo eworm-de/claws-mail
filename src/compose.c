@@ -1494,7 +1494,7 @@ void compose_toolbar_cb(gint action, gpointer data)
 		compose_ext_editor_cb(compose, 0, NULL);
 		break;
 	case A_LINEWRAP:
-		compose_wrap_line(compose);
+		compose_wrap_line_all(compose);
 		break;
 	case A_ADDRBOOK:
 		compose_address_cb(compose, 0, NULL);

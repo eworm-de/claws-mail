@@ -1,3 +1,11 @@
+2004-01-25 [darko]	0.9.8claws50
+
+	* src/compose.c
+		make "Wrap all long lines" toolbar button wrap all
+		long lines not just the current line
+		patch by I. Oshadi Jayawardena <ioj4 at yahoo.co.uk>
+
+
 2004-01-25 [alfons]	0.9.8claws49
 
 	* src/procmime.c
