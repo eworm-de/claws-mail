@@ -1141,6 +1141,9 @@ gint imap_close(Folder *folder, FolderItem *item)
 	if (!session) return -1;
 
 	if (session->mbox) {
+		if (strcmp(item->path, session->mbox))
+			return -1;
+
 		ok = imap_cmd_close(session);
 		if (ok != IMAP_SUCCESS)
 			log_warning(_("can't close folder\n"));

@@ -1,4 +1,12 @@
-2003-08-07 [hoa] 0.9.4claws7
+2003-08-07 [christoph]	0.9.4claws8
+
+	* configure.ac
+		fix bug in image viewer plugin part
+
+	* src/imap.c
+		don't execute close command if the folder item is not selected
+
+2003-08-07 [hoa]	0.9.4claws7
 
 	* src/filtering.[ch]
 	* src/matcher_parser.h

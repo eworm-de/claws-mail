@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=4
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=7
+EXTRA_VERSION=8
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}claws
 else
@@ -448,7 +448,7 @@ if test x"$ac_cv_enable_image_viewer_plugin" = xyes; then
 	elif test "$ac_cv_enable_imlib" = yes; then
 		PLUGINS="image-viewer(gdk_imlib) $PLUGINS"
 	else
-		$ac_cv_enable_image_viewer_plugin = no
+		ac_cv_enable_image_viewer_plugin=no
 	fi
 fi
 AM_CONDITIONAL(BUILD_IMAGE_VIEWER_PLUGIN, test x"$ac_cv_enable_image_viewer_plugin" = xyes)
