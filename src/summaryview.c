@@ -687,6 +687,7 @@ void summary_init(SummaryView *summaryview)
 	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_QUICKSEARCH);
 	gtk_container_add (GTK_CONTAINER(summaryview->toggle_search), pixmap);
 	gtk_widget_show(pixmap);
+	summaryview->quick_search_pixmap = pixmap;
 	
 	/* Init summaryview prefs */
 	summaryview->sort_key = SORT_BY_NONE;
@@ -5237,12 +5238,20 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_IGNORETHREAD, &ignorethreadxpm, &ignorethreadxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_CLIP_KEY, &clipkeyxpm, &clipkeyxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_KEY, &keyxpm, &keyxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_KEY, &keyxpm, &keyxpmmask);
 
 	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_DIR_OPEN);
 	gtk_box_pack_start(GTK_BOX(summaryview->hbox), pixmap, FALSE, FALSE, 4);
 	gtk_box_reorder_child(GTK_BOX(summaryview->hbox), pixmap, 1); /* search_toggle before */
 	gtk_widget_show(pixmap);
 	summaryview->folder_pixmap = pixmap; 
+
+	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_QUICKSEARCH);
+	gtk_container_remove (GTK_CONTAINER(summaryview->toggle_search), 
+			      summaryview->quick_search_pixmap);
+	gtk_container_add(GTK_CONTAINER(summaryview->toggle_search), pixmap);
+	gtk_widget_show(pixmap);
+	summaryview->quick_search_pixmap = pixmap;
 
 	folderview_unselect(summaryview->folderview);
 	folderview_select(summaryview->folderview, summaryview->folder_item);

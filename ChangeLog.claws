@@ -1,3 +1,11 @@
+2002-09-29 [colin]	0.8.3claws37
+
+	* src/mainwindow.[ch]
+		online/offline status pixmaps follow theme
+		changes
+	* src/summaryview.[ch]
+		quicksearch pixmap follows theme changes
+
 2002-09-29 [thorsten]	0.8.3claws36
 
 	* src/compose.c

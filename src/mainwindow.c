@@ -860,8 +860,8 @@ MainWindow *main_window_create(SeparateType type)
 	GtkWidget *statuslabel;
 	GtkWidget *ac_button;
 	GtkWidget *ac_label;
- 	GtkWidget *online_status;
-	GtkWidget *offline_status;
+ 	GtkWidget *online_pixmap;
+	GtkWidget *offline_pixmap;
 	GtkWidget *online_switch;
 	GtkWidget *offline_switch;
 
@@ -945,15 +945,15 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_widget_set_usize(progressbar, 120, 1);
 	gtk_box_pack_start(GTK_BOX(hbox_stat), progressbar, FALSE, FALSE, 0);
 
-	online_status = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_WORK_ONLINE);
-	offline_status = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_WORK_OFFLINE);
+	online_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_WORK_ONLINE);
+	offline_pixmap = stock_pixmap_widget(hbox_stat, STOCK_PIXMAP_WORK_OFFLINE);
 	online_switch = gtk_button_new ();
 	offline_switch = gtk_button_new ();
-	gtk_container_add (GTK_CONTAINER(online_switch), online_status);
+	gtk_container_add (GTK_CONTAINER(online_switch), online_pixmap);
 	gtk_button_set_relief (GTK_BUTTON(online_switch), GTK_RELIEF_NONE);
 	gtk_signal_connect (GTK_OBJECT(online_switch), "clicked", (GtkSignalFunc)online_switch_clicked, mainwin);
 	gtk_box_pack_start (GTK_BOX(hbox_stat), online_switch, FALSE, FALSE, 0);
-	gtk_container_add (GTK_CONTAINER(offline_switch), offline_status);
+	gtk_container_add (GTK_CONTAINER(offline_switch), offline_pixmap);
 	gtk_button_set_relief (GTK_BUTTON(offline_switch), GTK_RELIEF_NONE);
 	gtk_signal_connect (GTK_OBJECT(offline_switch), "clicked", (GtkSignalFunc)online_switch_clicked, mainwin);
 	gtk_box_pack_start (GTK_BOX(hbox_stat), offline_switch, FALSE, FALSE, 0);
@@ -1005,6 +1005,8 @@ MainWindow *main_window_create(SeparateType type)
 	
 	mainwin->online_switch     = online_switch;
 	mainwin->offline_switch    = offline_switch;
+	mainwin->online_pixmap	   = online_pixmap;
+	mainwin->offline_pixmap    = offline_pixmap;
 	
 	/* set context IDs for status bar */
 	mainwin->mainwin_cid = gtk_statusbar_get_context_id
@@ -1193,6 +1195,7 @@ void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
 {
 	GList *cur;
 	MainWindow *mainwin;
+	GtkWidget *pixmap;
 
 	for (cur = mainwin_list; cur != NULL; cur = cur->next) {
 		mainwin = (MainWindow *)cur->data;
@@ -1207,6 +1210,19 @@ void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
 			set_toolbar_style(mainwin);
 			folderview_reflect_prefs_pixmap_theme(mainwin->folderview);
 			summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
+
+			pixmap = stock_pixmap_widget(mainwin->hbox_stat, STOCK_PIXMAP_WORK_ONLINE);
+			gtk_container_remove(GTK_CONTAINER(mainwin->online_switch), 
+					     mainwin->online_pixmap);
+			gtk_container_add (GTK_CONTAINER(mainwin->online_switch), pixmap);
+			gtk_widget_show(pixmap);
+			mainwin->online_pixmap = pixmap;
+			pixmap = stock_pixmap_widget(mainwin->hbox_stat, STOCK_PIXMAP_WORK_OFFLINE);
+			gtk_container_remove(GTK_CONTAINER(mainwin->offline_switch), 
+					     mainwin->offline_pixmap);
+			gtk_container_add (GTK_CONTAINER(mainwin->offline_switch), pixmap);
+			gtk_widget_show(pixmap);
+			mainwin->offline_pixmap = pixmap;
 		}
 		
 		summary_redisplay_msg(mainwin->summaryview);
