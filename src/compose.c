@@ -5081,19 +5081,24 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 						  prefs_common.use_alternate,
 						  GTK_STEXT(text));
 			if (!gtkaspell) {
-				alertpanel_error(_("Spell checker could not be started.\n%s"), gtkaspellcheckers->error_message);
+				alertpanel_error(_("Spell checker could not "
+						"be started.\n%s"),
+						gtkaspell_checkers_strerror());
 				gtkaspell_checkers_reset_error();
 			} else {
 
 				GtkWidget *menuitem;
 
-				if (!gtkaspell_set_sug_mode(gtkaspell, prefs_common.aspell_sugmode)) {
-					debug_print("Aspell: could not set suggestion mode %s\n",
-				    	gtkaspellcheckers->error_message);
+				if (!gtkaspell_set_sug_mode(gtkaspell,
+						prefs_common.aspell_sugmode)) {
+					debug_print("Aspell: could not set "
+						    "suggestion mode %s\n",
+						    gtkaspell_checkers_strerror());
 					gtkaspell_checkers_reset_error();
 				}
 
-				menuitem = gtk_item_factory_get_item(ifactory, "/Spelling/Spelling Configuration");
+				menuitem = gtk_item_factory_get_item(ifactory,
+					"/Spelling/Spelling Configuration");
 				gtkaspell_populate_submenu(gtkaspell, menuitem);
 				menu_set_sensitive(ifactory, "/Spelling", TRUE);
 				}
