@@ -1,3 +1,17 @@
+2002-09-22 [paul]	0.8.3claws
+
+	*po/bg.po
+	 po/en_GB.po
+	 po/es.po
+	 po/it.po
+	 po/pl.po
+	 po/pt_BR.po
+	 po/sr.po
+	 	updated translations, submitted by George Danchev,
+		me, Ricardo Mones Lastra, Alessandro Maestri,
+		Witold Wladyslaw Wojciech Wilk, Fabio Jr.Beneditto 
+		and Urke MMI, respectively.	
+
 2002-09-22 [alfons]	0.8.2claws65
 
 	* src/procmsg.c
