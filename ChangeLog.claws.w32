@@ -1,9 +1,3 @@
-2005-01-18 [thorsten]	1.0.0cvs0.2
-
-	* src/pop.c
-	* src/pop.h
-		also revert cvs25 (29?), clean up later
-
 2005-01-17 [thorsten]	1.0.0cvs0.1
 
 	* AUTHORS
@@ -20,6 +14,12 @@
 	* po/sr.po
 	* src/prefs_toolbar.c
 		sync 1.0.0
+
+2005-01-18 [thorsten]	0.9.13cvs38.2
+
+	* src/pop.c
+	* src/pop.h
+		also revert cvs25 (29?), clean up later
 
 2005-01-17 [thorsten]	0.9.13cvs35.3
 
