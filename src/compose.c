@@ -4132,28 +4132,40 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	/* get special headers */
 	for (list = compose->header_list; list; list = list->next) {
     		ComposeHeaderEntry *headerentry;
-		gchar * headerentryname;
-		gchar * trans_headername;
-		gchar * headerentryvalue;
+		gchar * tmp;
+		gchar * headername;
+		gchar * headername_wcolon;
+		gchar * headername_trans;
+		gchar * headervalue;
 		gchar **string;
 		gboolean standard_header = FALSE;
 
 		headerentry = ((ComposeHeaderEntry *)list->data);
-		headerentryname = g_strdup(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(headerentry->combo)->entry)));
-		headerentryvalue = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
+		
+		tmp = g_strdup(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(headerentry->combo)->entry)));
+		if (!strstr(tmp,":")) {
+			headername_wcolon = g_strconcat(tmp,":",NULL);
+			headername = g_strdup(tmp);
+		} else {
+			headername_wcolon = g_strdup(tmp);
+			headername = g_strdup(strtok(tmp,":"));
+		}
+		g_free(tmp);
+		
+		headervalue = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
 		string = std_headers;
 		while (*string != NULL) {
-			if (!strstr(headerentryname,":"))
-				headerentryname = g_strconcat(headerentryname,":",NULL);
-			trans_headername = (prefs_common.trans_hdr ? gettext(*string) : *string);
-			if (!strcmp(trans_headername,headerentryname))
+			headername_trans = (prefs_common.trans_hdr ? gettext(*string) : *string);
+			if (!strcmp(headername_trans,headername_wcolon))
 				standard_header = TRUE;
 			string++;
 		}
-		if (!standard_header && !IS_IN_CUSTOM_HEADER(headerentryname))
-			fprintf(fp,"%s %s\n",headerentryname, headerentryvalue);
+		if (!standard_header && !IS_IN_CUSTOM_HEADER(headername))
+			fprintf(fp,"%s %s\n",headername_wcolon, headervalue);
 				
-		g_free(headerentryname);
+		g_free(headername);
+		g_free(headername_wcolon);
+		
 	}
 
 	/* separator between header and body */
