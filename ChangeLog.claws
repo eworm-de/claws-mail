@@ -1,4 +1,7 @@
 2001-11-11 [alfons]
+
+	* src/compose.c
+		:%s/GTK_TEXT/GTK_STEXT/g
 	
 	* src/compose.[ch]
 	* src/undo.[ch]

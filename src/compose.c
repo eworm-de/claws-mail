@@ -4285,7 +4285,7 @@ static void compose_template_apply(Compose *compose, const gchar *tmpl_str)
 
 	if (!tmpl_str) return;
 
-	gtk_stext_freeze(GTK_TEXT(compose->text));
+	gtk_stext_freeze(GTK_STEXT(compose->text));
 
 	if (compose->replyinfo == NULL) {
 		MsgInfo dummyinfo;
@@ -4306,7 +4306,7 @@ static void compose_template_apply(Compose *compose, const gchar *tmpl_str)
 	if (parsed_str && prefs_common.auto_sig)
 		compose_insert_sig(compose);
 
-	gtk_stext_thaw(GTK_TEXT(compose->text));
+	gtk_stext_thaw(GTK_STEXT(compose->text));
 }
 
 static void compose_destroy(Compose *compose)
