@@ -481,9 +481,6 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	if (!is_dir_exist(destdir))
 		make_dir_hier(destdir);
 
-	if ((fp = procmsg_open_mark_file(destdir, TRUE)) == NULL)
-		g_warning(_("Can't open mark file.\n"));
-
 	debug_print(_("Copying message %s%c%d to %s ...\n"),
 		    msginfo->folder->path, G_DIR_SEPARATOR,
 		    msginfo->msgnum, dest->path);
