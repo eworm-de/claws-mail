@@ -6,20 +6,24 @@ ServiceTypes=all/all
 
 [Desktop Action TarAndAttach]
 Name=Attach as Tar Archive
+Name[fr]=Joindre comme Archive Tar
 Icon=sylpheed
 Exec=SCRIPT_PATH tar %F
 
 [Desktop Action TarBzipAndAttach]
 Name=Attach as Bzipped Tar Archive
+Name[fr]=Joindre comme Archive Tar Bzippée
 Icon=sylpheed
 Exec=SCRIPT_PATH tar.bz2 %F
 
 [Desktop Action TarGzipAndAttach]
 Name=Attach as Gzipped Tar Archive
+Name[fr]=Joindre comme Archive Tar Gzippée
 Icon=sylpheed
 Exec=SCRIPT_PATH tar.gz %F
 
 [Desktop Action ZipAndAttach]
 Name=Attach as Zip Archive
+Name[fr]=Joindre comme Archive Zip
 Icon=sylpheed
 Exec=SCRIPT_PATH zip %F

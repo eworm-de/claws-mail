@@ -6,15 +6,18 @@ ServiceTypes=all/allfiles
 
 [Desktop Action AttachFiles]
 Name=Attach File(s)
+Name[fr]=Joindre le(s) Fichier(s)
 Icon=sylpheed
 Exec=SCRIPT_PATH attachfile %F
 
 [Desktop Action GZipAndAttach]
 Name=Attach as GZip File(s)
+Name[fr]=Joindre comme Fichier(s) GZip
 Icon=sylpheed
 Exec=SCRIPT_PATH gz %F
 
 [Desktop Action BZipAndAttach]
 Name=Attach as BZip File(s)
+Name[fr]=Joindre comme Fichier(s) Bzip
 Icon=sylpheed
 Exec=SCRIPT_PATH bz2 %F

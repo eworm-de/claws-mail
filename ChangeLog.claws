@@ -1,3 +1,9 @@
+2004-10-29 [paul]
+
+	* tools/kdeservicemenu/template_sylpheed-attach-files.desktop
+	* tools/kdeservicemenu/template_sylpheed-compress-attach.desktop
+		add French translations, submitted by Fabien Vantard
+
 2004-10-28 [christoph]	0.9.12cvs135
 
 	* doc/src/rfc2231.txt				** NEW **
