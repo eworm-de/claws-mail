@@ -823,6 +823,9 @@ static PrefParam param[] = {
 static void prefs_common_create		(void);
 static void prefs_receive_create	(void);
 static void prefs_send_create		(void);
+#ifdef USE_ASPELL
+static void prefs_spelling_create	(void);
+#endif
 static void prefs_compose_create	(void);
 static void prefs_quote_create		(void);
 static void prefs_display_create	(void);

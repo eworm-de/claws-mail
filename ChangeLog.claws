@@ -1,3 +1,8 @@
+2002-10-28 [melvin]	0.8.5claws58
+
+	* src/prefs_common.c
+		Readded a missing function declaration lost in 0.8.3claws34
+
 2002-10-28 [paul]	0.8.5claws57
 
 	* sync with 0.8.5cvs15
