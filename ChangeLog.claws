@@ -1,3 +1,9 @@
+2003-02-18 [paul]	0.8.10claws20
+
+	* src/mainwindow.c
+	  src/prefs_common.[ch]
+	  	make blue the default new mail colour
+
 2003-02-18 [paul]	0.8.10claws19
 
 	* sync with 0.8.10cvs14

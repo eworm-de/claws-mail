@@ -270,6 +270,7 @@ struct _PrefsCommon
 	gboolean ssl_ask_unknown_valid;
 #endif
 #endif
+
 	/* Memory cache*/
 	gint cache_max_mem_usage;
 	gint cache_min_keep_time;
@@ -279,7 +280,7 @@ struct _PrefsCommon
 	gboolean work_offline;
 	
 	gint summary_quicksearch_type;
-
+	gint color_new;
 };
 
 extern PrefsCommon prefs_common;

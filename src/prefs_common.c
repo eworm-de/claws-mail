@@ -836,6 +836,9 @@ static PrefParam param[] = {
 	{"cache_min_keep_time", "15", &prefs_common.cache_min_keep_time, P_INT,
 	 NULL, NULL, NULL},
 
+	{"color_new", "179", &prefs_common.color_new, P_INT,
+	 NULL, NULL, NULL},
+
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
