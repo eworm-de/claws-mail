@@ -2330,6 +2330,11 @@ void summary_step(SummaryView *summaryview, GtkScrollType type)
 
 	gtk_signal_emit_by_name(GTK_OBJECT(ctree), "scroll_vertical",
 				type, 0.0);
+	gtk_clist_select_row(GTK_CLIST(ctree), 
+			     gtkut_ctree_get_nth_from_node(
+					GTK_CTREE(ctree),
+					summaryview->selected),
+			     5);
 
 	if (summaryview->msg_is_toggled_on)
 		summary_display_msg(summaryview, summaryview->selected, FALSE);
@@ -2698,6 +2703,7 @@ void summary_delete(SummaryView *summaryview)
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	FolderItem *item = summaryview->folder_item;
 	GList *cur;
+	GtkCTreeNode *dsp_last, *sel_last;
 
 	if (!item || item->folder->type == F_NEWS) return;
 
@@ -2713,11 +2719,21 @@ void summary_delete(SummaryView *summaryview)
 		if (aval != G_ALERTDEFAULT) return;
 	}
 
+	/* next code sets current row focus right. if the last selection
+	 * is also the last displayed row, we need to scroll backwards. 
+	 * exception: if the last displayed row is an uncollapsed node,
+	 * we don't scroll back. */
+	dsp_last = gtk_ctree_node_nth(ctree, GTK_CLIST(ctree)->rows - 1);
+	sel_last = NULL;
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next) {
-		summary_delete_row(summaryview, GTK_CTREE_NODE(cur->data));
+		sel_last = GTK_CTREE_NODE(cur->data);
+		summary_delete_row(summaryview, GTK_CTREE_NODE(sel_last));
 	}
 
-	summary_step(summaryview, GTK_SCROLL_STEP_FORWARD);
+	if (dsp_last == sel_last && GTK_CTREE_ROW(sel_last)->expanded) 
+		summary_step(summaryview, GTK_SCROLL_STEP_BACKWARD);
+	else 	
+		summary_step(summaryview, GTK_SCROLL_STEP_FORWARD);
 
 	if (prefs_common.immediate_exec || item->stype == F_TRASH)
 		summary_execute(summaryview);
