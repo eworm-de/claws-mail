@@ -602,7 +602,7 @@ FILE *procmime_get_first_text_content(MsgInfo *msginfo)
 gboolean procmime_find_string_part(MimeInfo *mimeinfo, const gchar *filename,
 				   const gchar *str, gboolean case_sens)
 {
-	FILE *infp, *outfp;
+	FILE *outfp;
 	gchar buf[BUFFSIZE];
 	gchar *(* StrFindFunc) (const gchar *haystack, const gchar *needle);
 
@@ -1048,6 +1048,9 @@ static void procmime_parse_content_type(const gchar *content_type, MimeInfo *mim
 	gchar *str;
 	struct TypeTable *typetablearray;
 	
+	g_return_if_fail(content_type != NULL);
+	g_return_if_fail(mimeinfo != NULL);
+	
 	/* Split content type into parts and remove trailing
 	   and leading whitespaces from all strings */
 	content_type_parts = g_strsplit(content_type, ";", 0);
@@ -1058,6 +1061,10 @@ static void procmime_parse_content_type(const gchar *content_type, MimeInfo *mim
 	/* Get mimeinfo->type and mimeinfo->subtype */
 	mimeinfo->type = MIMETYPE_UNKNOWN;
 	str = content_type_parts[0];
+	if (str == NULL) {
+		g_strfreev(content_type_parts);
+		return;
+	}
 	for (typetablearray = mime_type_table; typetablearray->str != NULL; typetablearray++) {
 		if (g_strncasecmp(str, typetablearray->str, strlen(typetablearray->str)) == 0 &&
 		    str[strlen(typetablearray->str)] == '/') {

@@ -1,3 +1,8 @@
+2003-11-16 [christoph]	0.9.6claws77
+
+	* src/procmime.c
+		fix crash when parsing invalid Content-Type header
+
 2003-11-16 [christoph]	0.9.6claws76
 
 	* src/pgpmime.c
