@@ -91,4 +91,9 @@ gint xml_file_put_escape_str	(FILE		*fp,
 void xml_free_node		(XMLNode	*node);
 void xml_free_tree		(GNode		*node);
 
+void xml_free_tag		(XMLTag 	*tag);
+void xml_tag_add_attr		(XMLTag 	*tag,
+				 const gchar 	*name, 
+				 gchar 		*value);
+
 #endif /* __XML_H__ */

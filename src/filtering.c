@@ -34,7 +34,9 @@
 
 #define PREFSBUFSIZE		1024
 
-GSList * global_processing = NULL;
+GSList * pre_global_processing = NULL;
+GSList * post_global_processing = NULL;
+GSList * filtering_rules = NULL;
 
 static gboolean filtering_is_final_action(FilteringAction *filtering_action);
 
@@ -305,7 +307,11 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		return TRUE;
 
 	case MATCHACTION_STOP:
-                break;
+                return TRUE;
+
+	case MATCHACTION_HIDE:
+                info->hidden = TRUE;
+                return TRUE;
 
 	default:
 		break;
@@ -433,6 +439,7 @@ gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *act
 	case MATCHACTION_MARK_AS_READ:
 	case MATCHACTION_MARK_AS_UNREAD:
 	case MATCHACTION_STOP:
+	case MATCHACTION_HIDE:
 		g_snprintf(dest, destlen, "%s", command_str);
 		return dest;
 
@@ -491,7 +498,6 @@ gchar * filteringprop_to_string(FilteringProp * prop)
 	gchar *list_str;
 	gchar *action_list_str;
 	gchar *filtering_str;
-        GSList * tmp;
 
         action_list_str = filteringaction_list_to_string(prop->action_list);
 
@@ -547,8 +553,12 @@ void prefs_filtering_clear(void)
 				prefs_filtering_free_func, NULL);
 	}
 
-	prefs_filtering_free(global_processing);
-	global_processing = NULL;
+	prefs_filtering_free(filtering_rules);
+	filtering_rules = NULL;
+	prefs_filtering_free(pre_global_processing);
+	pre_global_processing = NULL;
+	prefs_filtering_free(post_global_processing);
+	post_global_processing = NULL;
 }
 
 void prefs_filtering_clear_folder(Folder *folder)

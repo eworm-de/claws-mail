@@ -110,7 +110,7 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHTYPE_REGEXP, "regexp"},
 
 	/* actions */
-	{MATCHACTION_SCORE, "score"},
+	{MATCHACTION_SCORE, "score"},    /* for backward compatibility */
 	{MATCHACTION_MOVE, "move"},
 	{MATCHACTION_COPY, "copy"},
 	{MATCHACTION_DELETE, "delete"},
@@ -128,6 +128,7 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHACTION_ADD_SCORE, "add_score"},
 	{MATCHACTION_SET_SCORE, "set_score"},
 	{MATCHACTION_STOP, "stop"},
+	{MATCHACTION_HIDE, "hide"},
 };
 
 /*!
@@ -1397,31 +1398,6 @@ gchar *matching_build_command(const gchar *cmd, MsgInfo *info)
 
 /* ************************************************************ */
 
-/*!
- *\brief	Write scoring list to file
- *
- *\param	fp File
- *\param	prefs_scoring List of scoring conditions
- */
-static void prefs_scoring_write(FILE *fp, GSList *prefs_scoring)
-{
-	GSList *cur;
-
-	for (cur = prefs_scoring; cur != NULL; cur = cur->next) {
-		gchar *scoring_str;
-		ScoringProp *prop;
-
-		prop = (ScoringProp *) cur->data;
-		scoring_str = scoringprop_to_string(prop);
-		if (fputs(scoring_str, fp) == EOF ||
-		    fputc('\n', fp) == EOF) {
-			FILE_OP_ERROR("scoring config", "fputs || fputc");
-			g_free(scoring_str);
-			return;
-		}
-		g_free(scoring_str);
-	}
-}
 
 /*!
  *\brief	Write filtering list to file
@@ -1466,36 +1442,23 @@ static gboolean prefs_matcher_write_func(GNode *node, gpointer data)
 	FolderItem *item;
 	FILE *fp = data;
 	gchar *id;
-	GSList *prefs_scoring;
 	GSList *prefs_filtering;
 
-	if (node != NULL) {
-		item = node->data;
-		/* prevent warning */
-		if (item->path == NULL)
-			return FALSE;
-		id = folder_item_get_identifier(item);
-		if (id == NULL)
-			return FALSE;
-		prefs_scoring = item->prefs->scoring;
-		prefs_filtering = item->prefs->processing;
-	}
-	else {
-		item = NULL;
-		id = g_strdup("global"); /* because it is g_freed */
-		prefs_scoring = global_scoring;
-		prefs_filtering = global_processing;
-	}
+        item = node->data;
+        /* prevent warning */
+        if (item->path == NULL)
+                return FALSE;
+        id = folder_item_get_identifier(item);
+        if (id == NULL)
+                return FALSE;
+        prefs_filtering = item->prefs->processing;
 
 #ifdef WIN32
 	locale_from_utf8(&id);
 #endif
-	if (prefs_filtering != NULL || prefs_scoring != NULL) {
+	if (prefs_filtering != NULL) {
 		fprintf(fp, "[%s]\n", id);
-
 		prefs_filtering_write(fp, prefs_filtering);
-		prefs_scoring_write(fp, prefs_scoring);
-
 		fputc('\n', fp);
 	}
 
@@ -1520,7 +1483,21 @@ static void prefs_matcher_save(FILE *fp)
 		g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
 				prefs_matcher_write_func, fp);
 	}
-	prefs_matcher_write_func(NULL, fp);
+        
+        /* pre global rules */
+        fprintf(fp, "[preglobal]\n");
+        prefs_filtering_write(fp, pre_global_processing);
+        fputc('\n', fp);
+
+        /* post global rules */
+        fprintf(fp, "[postglobal]\n");
+        prefs_filtering_write(fp, post_global_processing);
+        fputc('\n', fp);
+        
+        /* filtering rules */
+        fprintf(fp, "[filtering]\n");
+        prefs_filtering_write(fp, filtering_rules);
+        fputc('\n', fp);
 }
 
 /*!
@@ -1564,7 +1541,6 @@ void prefs_matcher_read_config(void)
 	FILE *f;
 
 	create_matchparser_hashtab();
-	prefs_scoring_clear();
 	prefs_filtering_clear();
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, MATCHER_RC, NULL);

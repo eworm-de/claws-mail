@@ -1,4 +1,4 @@
-SUBDIRS = ac po src man manual faq tools config intl
+SUBDIRS = ac po src tools config intl doc
 
 EXTRA_DIST = \
 	ChangeLog.claws \

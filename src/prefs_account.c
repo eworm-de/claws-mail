@@ -49,6 +49,7 @@
 #include "colorlabel.h"
 #include "smtp.h"
 #include "imap.h"
+#include "remotefolder.h"
 
 static gboolean cancelled;
 

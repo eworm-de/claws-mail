@@ -575,31 +575,6 @@ static void free_mem_rec_header(mem_rec_header **mem_rh) {
 }
 
 /* Shamelessly copied from JPilot (libplugin.c) */
-static int jpilot_free_db_list( GList **br_list ) {
-	GList *temp_list, *first;
-	buf_rec *br;
-
-	/* Go to first entry in the list */
-	first=NULL;
-	for( temp_list = *br_list; temp_list; temp_list = temp_list->prev ) {
-		first = temp_list;
-	}
-	for (temp_list = first; temp_list; temp_list = temp_list->next) {
-		if (temp_list->data) {
-			br=temp_list->data;
-			if (br->buf) {
-				free(br->buf);
-				temp_list->data=NULL;
-			}
-			free(br);
-		}
-	}
-	g_list_free(*br_list);
-	*br_list=NULL;
-	return 0;
-}
-
-/* Shamelessly copied from JPilot (libplugin.c) */
 /* Read file size */
 static int jpilot_get_info_size( FILE *in, int *size ) {
 	RawDBHeader rdbh;
@@ -1656,30 +1631,6 @@ GList *jpilot_get_list_folder( JPilotFile *pilotFile ) {
 GList *jpilot_get_all_persons( JPilotFile *pilotFile ) {
 	g_return_val_if_fail( pilotFile != NULL, NULL );
 	return addrcache_get_all_persons( pilotFile->addressCache );
-}
-
-/**
- * Check label list for specified label name.
- * \param ai Address info to check.
- * \param lblCheck Label name to check.
- * \return Index of label in address structure. <code>-1</code> if NULL/empty
- *         label name, <code>-2</code> if label not found.
-*/
-static gint jpilot_check_label( struct AddressAppInfo *ai, gchar *lblCheck ) {
-	gint i;
-	gchar *lblName;
-
-	if( lblCheck == NULL ) return -1;
-	if( strlen( lblCheck ) < 1 ) return -1;
-	for( i = 0; i < JPILOT_NUM_LABELS; i++ ) {
-		lblName = ai->labels[i];
-		if( lblName ) {
-			if( strlen( lblName ) ) {
-				if( g_strcasecmp( lblName, lblCheck ) == 0 ) return i;
-			}
-		}
-	}
-	return -2;
 }
 
 /**

@@ -360,6 +360,10 @@ SOURCE=..\src\ldif.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\localfolder.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\common\log.c
 # End Source File
 # Begin Source File
@@ -476,10 +480,6 @@ SOURCE=..\src\pop.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\privacy.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\common\prefs.c
 # End Source File
 # Begin Source File
@@ -528,10 +528,6 @@ SOURCE=..\src\prefs_matcher.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\prefs_scoring.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\prefs_spelling.c
 # End Source File
 # Begin Source File
@@ -549,6 +545,10 @@ SOURCE=..\src\prefs_toolbar.c
 # Begin Source File
 
 SOURCE=..\src\gtk\prefswindow.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\privacy.c
 # End Source File
 # Begin Source File
 
@@ -592,11 +592,11 @@ SOURCE=..\src\recv.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\rfc2015.c
+SOURCE=..\src\remotefolder.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\scoring.c
+SOURCE=..\src\rfc2015.c
 # End Source File
 # Begin Source File
 
@@ -612,11 +612,11 @@ SOURCE=..\src\common\session.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\sgpgme.c
+SOURCE=..\src\setup.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\setup.c
+SOURCE=..\src\sgpgme.c
 # End Source File
 # Begin Source File
 
@@ -996,6 +996,10 @@ SOURCE=..\src\ldif.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\localfolder.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\common\log.h
 # End Source File
 # Begin Source File
@@ -1096,10 +1100,6 @@ SOURCE=..\src\pop.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\privacy.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\common\prefs.h
 # End Source File
 # Begin Source File
@@ -1156,6 +1156,10 @@ SOURCE=..\src\gtk\prefswindow.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\privacy.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\procheader.h
 # End Source File
 # Begin Source File
@@ -1193,6 +1197,10 @@ SOURCE="..\src\common\quoted-printable.h"
 # Begin Source File
 
 SOURCE=..\src\recv.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\remotefolder.h
 # End Source File
 # Begin Source File
 

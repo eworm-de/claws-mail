@@ -262,6 +262,7 @@ OBJECTS= \
 	ldapserver.o \
 	ldaputil.o \
 	ldif.o \
+	localfolder.o \
 	log.o \
 	logwindow.o \
 	main.o \
@@ -304,7 +305,6 @@ OBJECTS= \
 	prefs_fonts.o \
 	prefs_gtk.o \
 	prefs_matcher.o \
-	prefs_scoring.o \
 	prefs_spelling.o \
 	prefs_summary_column.o \
 	prefs_template.o \
@@ -320,8 +320,8 @@ OBJECTS= \
 	quote_fmt_parse.o \
 	quoted-printable.o \
 	recv.o \
+	remotefolder.o \
 	rfc2015.o \
-	scoring.o \
 	select-keys.o \
 	send_message.o \
 	session.o \
@@ -602,6 +602,7 @@ ldapquery.o: 	ldapquery.c ldapquery.h
 ldapserver.o: 	ldapserver.c ldapserver.h
 ldaputil.o: 	ldaputil.c ldaputil.h
 ldif.o: 	ldif.c ldif.h
+localfolder.o:	localfolder.c localfolder.h
 log.o:	log.c log.h
 logwindow.o: 	logwindow.c logwindow.h
 main.o: 	main.c main.h
@@ -642,7 +643,6 @@ prefs_folder_item.o: 	prefs_folder_item.c prefs_folder_item.h
 prefs_fonts.o: 	prefs_fonts.c prefs_fonts.h
 prefs_gtk.o: 	prefs_gtk.c prefs_gtk.h
 prefs_matcher.o: 	prefs_matcher.c prefs_matcher.h
-prefs_scoring.o: 	prefs_scoring.c prefs_scoring.h
 prefs_spelling.o:	prefs_spelling.c prefs_spelling.h
 prefs_summary_column.o: 	prefs_summary_column.c prefs_summary_column.h
 prefs_template.o: 	prefs_template.c prefs_template.h
@@ -655,8 +655,8 @@ progressdialog.o: 	progressdialog.c progressdialog.h
 progressindicator.o: 	progressindicator.c progressindicator.h
 quote_fmt.o:	quote_fmt.c quote_fmt.h
 recv.o: 	recv.c recv.h
+remotefolder.o: 	remotefolder.c remotefolder.h
 rfc2015.o: 	rfc2015.c rfc2015.h
-scoring.o: 	scoring.c scoring.h
 select-keys.o: 	select-keys.c select-keys.h
 send_message.o:	send_message.c send_message.h
 session.o: 	session.c session.h

@@ -74,7 +74,6 @@
 #include "imap.h"
 #include "addressbook.h"
 #include "addr_compl.h"
-#include "scoring.h"
 #include "folder_item_prefs.h"
 #include "filtering.h"
 #include "string_match.h"
@@ -824,6 +823,7 @@ void summary_init(SummaryView *summaryview)
 
 }
 
+#if 0
 GtkCTreeNode * summary_find_next_important_score(SummaryView *summaryview,
 						 GtkCTreeNode *current_node)
 {
@@ -885,6 +885,7 @@ GtkCTreeNode * summary_find_prev_important_score(SummaryView *summaryview,
 	else
 		return best_node;
 }
+#endif
 
 #define CURRENTLY_DISPLAYED(m) \
 ( (m->msgnum == displayed_msgnum) \
@@ -900,6 +901,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	guint selected_msgnum = 0;
 	guint displayed_msgnum = 0;
 	GSList *cur;
+        GSList *not_killed;
 
 	if (summary_is_locked(summaryview)) return FALSE;
 
@@ -1000,19 +1002,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	BY OTHER PROGRAMS TO THE FOLDER
 */
 	mlist = folder_item_get_msg_list(item);
-#if 0
-	summary_processing(summaryview, mlist);
-#endif
-	for(cur = mlist ; cur != NULL ; cur = g_slist_next(cur)) {
-		MsgInfo * msginfo = (MsgInfo *) cur->data;
-
-		msginfo->score = score_message(global_scoring, msginfo);
-		if (msginfo->score != MAX_SCORE &&
-		    msginfo->score != MIN_SCORE) {
-			msginfo->score += score_message(item->prefs->scoring,
-							msginfo);
-		}
-	}
 
 	if (summaryview->folder_item->hide_read_msgs) {
 		GSList *not_killed;
@@ -1098,7 +1087,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		g_slist_free(mlist);
 		mlist = not_killed;
 	}
-	
+
+#if 0	
 	if ((global_scoring || item->prefs->scoring)) {
 		GSList *not_killed;
 		gint kill_score;
@@ -1118,6 +1108,18 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		g_slist_free(mlist);
 		mlist = not_killed;
 	}
+#endif
+        not_killed = NULL;
+        for(cur = mlist ; cur != NULL ; cur = g_slist_next(cur)) {
+                MsgInfo * msginfo = (MsgInfo *) cur->data;
+                
+                if (!msginfo->hidden)
+                        not_killed = g_slist_prepend(not_killed, msginfo);
+                else
+                        procmsg_msginfo_free(msginfo);
+        }
+        g_slist_free(mlist);
+        mlist = not_killed;
 
 	STATUSBAR_POP(summaryview->mainwin);
 
@@ -1155,10 +1157,12 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		}
 	} else {
 		/* select first unread message */
+#if 0
 		if (summaryview->sort_key == SORT_BY_SCORE)
 			node = summary_find_next_important_score(summaryview,
 								 NULL);
 		else
+#endif
 		node = summary_find_next_flagged_msg(summaryview, NULL,
 						     MSG_UNREAD, FALSE);
 		if (node == NULL && GTK_CLIST(ctree)->row_list != NULL) {
@@ -2818,6 +2822,7 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 		}
 			gtk_ctree_node_set_foreground
                         	(ctree, row, &summaryview->color_marked);
+#if 0
 	} else if ((global_scoring ||
 		  summaryview->folder_item->prefs->scoring) &&
 		 (msginfo->score >= summaryview->important_score) &&
@@ -2825,6 +2830,7 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 		gtk_ctree_node_set_text(ctree, row, S_COL_MARK, "!");
 		gtk_ctree_node_set_foreground(ctree, row,
 					      &summaryview->color_important);
+#endif
 	} else {
 		gtk_ctree_node_set_text(ctree, row, col_pos[S_COL_MARK], NULL);
 	}
@@ -4056,7 +4062,7 @@ void summary_collapse_threads(SummaryView *summaryview)
 
 void summary_filter(SummaryView *summaryview)
 {
-	if (!global_processing) {
+	if (!filtering_rules) {
 		alertpanel_error(_("No filter rules defined."));
 		return;
 	}
@@ -4071,7 +4077,7 @@ void summary_filter(SummaryView *summaryview)
 
 	gtk_clist_freeze(GTK_CLIST(summaryview->ctree));
 
-	if (global_processing == NULL) {
+	if (filtering_rules == NULL) {
 		gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree), NULL,
 					GTK_CTREE_FUNC(summary_filter_func),
 					summaryview);
@@ -4104,7 +4110,7 @@ void summary_filter(SummaryView *summaryview)
 	 * CLAWS: summary_show() only valid after having a lock. ideally
 	 * we want the lock to be context aware...  
 	 */
-	if (global_processing) {
+	if (filtering_rules) {
 		summary_show(summaryview, summaryview->folder_item);
 	}		
 }
@@ -4114,7 +4120,7 @@ static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
 {
 	MsgInfo *msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
 
-	filter_message_by_msginfo(global_processing, msginfo);
+	filter_message_by_msginfo(filtering_rules, msginfo);
 }
 
 void summary_filter_open(SummaryView *summaryview, PrefsFilterType type)
@@ -4122,7 +4128,8 @@ void summary_filter_open(SummaryView *summaryview, PrefsFilterType type)
 	MsgInfo *msginfo;
 	gchar *header = NULL;
 	gchar *key = NULL;
-
+	FolderItem * item;
+	
 	if (!summaryview->selected) return;
 
 	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
@@ -4133,7 +4140,16 @@ void summary_filter_open(SummaryView *summaryview, PrefsFilterType type)
 #ifdef WIN32
 	locale_to_utf8(&key);
 #endif
-	prefs_filtering_open(NULL, header, key);
+	
+	item = summaryview->folder_item;
+	if (item == NULL)
+		prefs_filtering_open(&pre_global_processing,
+				     _("Processing rules to apply before folder rules"),
+				     header, key);
+	else
+		prefs_filtering_open(&item->prefs->processing,
+				     _("Processing configuration"),
+				     header, key);
 
 	g_free(header);
 	g_free(key);
@@ -5416,6 +5432,7 @@ void summary_set_prefs_from_folderitem(SummaryView *summaryview, FolderItem *ite
 	summaryview->thread_collapsed = item->thread_collapsed;
 
 	/* Scoring */
+#if 0
 	if (global_scoring || item->prefs->scoring) {
 		summaryview->important_score = prefs_common.important_score;
 		if (item->prefs->important_score >
@@ -5423,6 +5440,7 @@ void summary_set_prefs_from_folderitem(SummaryView *summaryview, FolderItem *ite
 			summaryview->important_score =
 				item->prefs->important_score;
 	}
+#endif
 }
 
 void summary_save_prefs_to_folderitem(SummaryView *summaryview, FolderItem *item)

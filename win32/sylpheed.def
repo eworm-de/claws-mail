@@ -653,6 +653,7 @@ EXPORTS
 	filesel_select_file 
 	filesel_select_multiple_files 
 	filter_message_by_msginfo 
+	filtering_rules 
 	filteringaction_apply_action_list 
 	filteringaction_free 
 	filteringaction_list_to_string 
@@ -689,6 +690,8 @@ EXPORTS
 	folder_get_list 
 	folder_get_persist_prefs 
 	folder_get_status 
+	folder_get_xml 
+	folder_init 
 	folder_item_add_msg 
 	folder_item_add_msgs 
 	folder_item_append 
@@ -710,6 +713,7 @@ EXPORTS
 	folder_item_get_msginfo_by_msgid 
 	folder_item_get_name 
 	folder_item_get_path 
+	folder_item_get_xml 
 	folder_item_is_msg_changed 
 	folder_item_move_msg 
 	folder_item_move_msgs 
@@ -736,26 +740,24 @@ EXPORTS
 	folder_item_scan_foreach 
 	folder_item_scan_full 
 	folder_item_set_default_flags 
+	folder_item_set_xml 
 	folder_item_update 
 	folder_item_update_freeze 
 	folder_item_update_recursive 
 	folder_item_update_thaw 
 	folder_item_write_cache 
-	folder_local_folder_destroy 
-	folder_local_folder_init 
 	folder_new 
 	folder_persist_prefs_free 
 	folder_persist_prefs_new 
 	folder_read_list 
 	folder_register_class 
-	folder_remote_folder_destroy 
-	folder_remote_folder_init 
 	folder_scan_all_items 
 	folder_scan_tree 
 	folder_scan_tree_func 
 	folder_set_missing_folders 
 	folder_set_name 
 	folder_set_ui_func 
+	folder_set_xml 
 	folder_system_init 
 	folder_tree_destroy 
 	folder_tree_destroy_func 
@@ -822,8 +824,6 @@ EXPORTS
 	get_tmp_dir 
 	get_tmp_file 
 	get_tmpfile_in_dir 
-	global_processing 
-	global_scoring 
 	gpgmegtk_free_passphrase 
 	gpgmegtk_passphrase_cb 
 	gpgmegtk_recipient_selection 
@@ -1055,7 +1055,6 @@ EXPORTS
 	matcher_parser_get_cond 
 	matcher_parser_get_filtering 
 	matcher_parser_get_prop 
-	matcher_parser_get_scoring 
 	matcher_parser_init 
 	matcher_parser_init_buffer 
 	matcher_parser_load_buffer_state 
@@ -1266,6 +1265,8 @@ EXPORTS
 	pop3_session_new 
 	pop3_write_uidl_list 
 	popupmenu_create 
+	post_global_processing 
+	pre_global_processing 
 	prefs_account_free 
 	prefs_account_new 
 	prefs_account_open 
@@ -1330,11 +1331,6 @@ EXPORTS
 	prefs_read_config 
 	prefs_read_open 
 	prefs_save_config 
-	prefs_scoring_clear 
-	prefs_scoring_clear_folder 
-	prefs_scoring_free 
-	prefs_scoring_open 
-	prefs_scoring_open_with_scoring 
 	prefs_set_block_label 
 	prefs_set_data_from_dialog 
 	prefs_set_data_from_entry 
@@ -1531,12 +1527,6 @@ EXPORTS
 	rfc2015_secure_remove 
 	rfc2015_sign 
 	scan_mailto_url 
-	score_message 
-	scoringprop_copy 
-	scoringprop_free 
-	scoringprop_new 
-	scoringprop_score_message 
-	scoringprop_to_string 
 	send_message 
 	send_message_local 
 	send_message_smtp 
@@ -1689,8 +1679,6 @@ EXPORTS
 	summary_expand_threads 
 	summary_filter 
 	summary_filter_open 
-	summary_find_next_important_score 
-	summary_find_prev_important_score 
 	summary_get_msg_list 
 	summary_get_selected_msg_list 
 	summary_get_selection 
@@ -1863,6 +1851,7 @@ EXPORTS
 	wcscasestr 
 	wcsncasecmp 
 	wcsndup 
+	xml_attr_cmp_name 
 	xml_close_file 
 	xml_compare_tag 
 	xml_copy_attr 

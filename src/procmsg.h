@@ -151,9 +151,9 @@ typedef enum {
 	MSGINFO_UPDATE_DELETED = 1 << 1,
 } MsgInfoUpdateFlags;
 
-#include "folder.h"
 #include "procmime.h"
 #include "prefs_filtering.h"
+#include "folder.h"
 
 struct _MsgFlags
 {
@@ -202,6 +202,8 @@ struct _MsgInfo
 	/* used only for encrypted messages */
 	gchar *plaintext_file;
 	guint decryption_failed : 1;
+        
+        gint hidden;
 };
 
 struct _MsgFileInfo

@@ -3698,7 +3698,9 @@ static void addressbook_lup_clicked( GtkButton *button, gpointer data ) {
 /**
  * Browse address entry for highlighted entry.
  */
-static void addressbook_browse_entry_cb( void ) {
+#ifdef USE_LDAP
+static void addressbook_browse_entry_cb(void)
+{
 	GtkCTree *clist = GTK_CTREE(addrbook.clist);
 	AddressObject *obj;
 	AddressDataSource *ds;
@@ -3706,23 +3708,31 @@ static void addressbook_browse_entry_cb( void ) {
 	ItemPerson *person;
 	ItemEMail *email;
 
-	if( addrbook.listSelected == NULL ) return;
-	obj = gtk_ctree_node_get_row_data( clist, addrbook.listSelected );
-	g_return_if_fail(obj != NULL);
-
-	ds = addressbook_find_datasource( GTK_CTREE_NODE(addrbook.treeSelected) );
-	if( ds == NULL ) return;
+	if(addrbook.listSelected == NULL)
+		return;
+	
+	obj = gtk_ctree_node_get_row_data(clist, addrbook.listSelected);
+	if (obj == NULL)
+		return;
+	
+	ds = addressbook_find_datasource(GTK_CTREE_NODE(addrbook.treeSelected));
+	if(ds == NULL)
+		return;
+	
 	iface = ds->Xinterface;
-	if( ! iface->haveLibrary ) return;
-
+	if(iface->haveLibrary == NULL)
+		return;
+	
 	person = NULL;
-	if( obj->type == ADDR_ITEM_EMAIL ) {
+	if (obj->type == ADDR_ITEM_EMAIL) {
 		email = ( ItemEMail * ) obj;
-		if( email == NULL ) return;
-		person = ( ItemPerson * ) ADDRITEM_PARENT(email);
+		if (email == NULL)
+			return;
+		
+		person = (ItemPerson *) ADDRITEM_PARENT(email);
 	}
-	else if( obj->type == ADDR_ITEM_PERSON ) {
-		person = ( ItemPerson * ) obj;
+	else if (obj->type == ADDR_ITEM_PERSON) {
+		person = (ItemPerson *) obj;
 	}
 	else {
 		/* None of these */
@@ -3731,10 +3741,12 @@ static void addressbook_browse_entry_cb( void ) {
 
 	if( iface->type == ADDR_IF_LDAP ) {
 #ifdef USE_LDAP
-		browseldap_entry( ds, person->externalID );
+		browseldap_entry(ds, person->externalID);
 #endif
 	}
 }
+#endif
+
 
 /* **********************************************************************
 * Build lookup tables.

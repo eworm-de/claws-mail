@@ -209,7 +209,7 @@ void plugin_unload_all(const gchar *type)
 	}
 	g_slist_free(list);
 
-	cur = g_slist_find_custom(plugin_types, type, list_find_by_string);
+	cur = g_slist_find_custom(plugin_types, (gpointer) type, list_find_by_string);
 	if (cur) {
 		g_free(cur->data);
 		g_slist_remove(plugin_types, cur);

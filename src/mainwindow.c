@@ -62,7 +62,6 @@
 #include "prefs_common.h"
 #include "prefs_actions.h"
 #include "prefs_filtering.h"
-#include "prefs_scoring.h"
 #include "prefs_account.h"
 #include "prefs_summary_column.h"
 #include "prefs_template.h"
@@ -86,6 +85,8 @@
 #include "pluginwindow.h"
 #include "hooks.h"
 #include "progressindicator.h"
+#include "localfolder.h"
+#include "filtering.h"
 
 #define AC_LABEL_WIDTH	240
 
@@ -355,9 +356,15 @@ static void prefs_actions_open_cb	(MainWindow	*mainwin,
 static void prefs_account_open_cb	(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
-static void prefs_scoring_open_cb 	(MainWindow	*mainwin,
-				  	 guint		 action,
-				  	 GtkWidget	*widget);
+
+static void prefs_pre_processing_open_cb  (MainWindow	*mainwin,
+				  	   guint	 action,
+				  	   GtkWidget	*widget);
+
+static void prefs_post_processing_open_cb (MainWindow	*mainwin,
+				  	   guint	 action,
+				  	   GtkWidget	*widget);
+
 static void prefs_filtering_open_cb 	(MainWindow	*mainwin,
 				  	 guint		 action,
 				  	 GtkWidget	*widget);
@@ -707,8 +714,10 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Configuration/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Configuration/_Common preferences..."),
 						NULL, prefs_common_open_cb, 0, NULL},
-	{N_("/_Configuration/_Scoring..."),
-						NULL, prefs_scoring_open_cb, 0, NULL},
+	{N_("/_Configuration/Pre processing..."),
+						NULL, prefs_pre_processing_open_cb, 0, NULL},
+	{N_("/_Configuration/Post processing..."),
+						NULL, prefs_post_processing_open_cb, 0, NULL},
 	{N_("/_Configuration/_Filtering..."),
 						NULL, prefs_filtering_open_cb, 0, NULL},
 	{N_("/_Configuration/_Templates..."),	NULL, prefs_template_open_cb, 0, NULL},
@@ -2712,16 +2721,28 @@ static void prefs_common_open_cb(MainWindow *mainwin, guint action,
 	prefs_common_open();
 }
 
-static void prefs_scoring_open_cb(MainWindow *mainwin, guint action,
-				  GtkWidget *widget)
+static void prefs_pre_processing_open_cb(MainWindow *mainwin, guint action,
+				         GtkWidget *widget)
 {
-	prefs_scoring_open(NULL);
+	prefs_filtering_open(&pre_global_processing,
+			     _("Processing rules to apply before folder rules"),
+			     NULL, NULL);
+}
+
+static void prefs_post_processing_open_cb(MainWindow *mainwin, guint action,
+				          GtkWidget *widget)
+{
+	prefs_filtering_open(&post_global_processing,
+			     _("Processing rules to apply after folder rules"),
+			     NULL, NULL);
 }
 
 static void prefs_filtering_open_cb(MainWindow *mainwin, guint action,
 				    GtkWidget *widget)
 {
-	prefs_filtering_open(NULL, NULL, NULL);
+	prefs_filtering_open(&filtering_rules,
+			     _("Filtering configuration"),
+			     NULL, NULL);
 }
 
 static void prefs_template_open_cb(MainWindow *mainwin, guint action,

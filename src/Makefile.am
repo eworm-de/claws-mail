@@ -89,7 +89,6 @@ sylpheed_SOURCES = \
 	prefs_fonts.c \
 	prefs_gtk.c \
 	prefs_matcher.c \
-	prefs_scoring.c \
 	prefs_spelling.c \
 	prefs_summary_column.c \
 	prefs_template.c \
@@ -103,7 +102,6 @@ sylpheed_SOURCES = \
 	quote_fmt_parse.y \
 	recv.c \
 	rfc2015.c \
-	scoring.c \
 	select-keys.c \
 	send_message.c \
 	setup.c \
@@ -120,6 +118,8 @@ sylpheed_SOURCES = \
 	toolbar.c \
 	undo.c \
 	unmime.c \
+	localfolder.c \
+	remotefolder.c \
 	vcard.c
 
 sylpheedincludedir = $(pkgincludedir)
@@ -214,7 +214,6 @@ sylpheedinclude_HEADERS = \
 	prefs_fonts.h \
 	prefs_gtk.h \
 	prefs_matcher.h \
-	prefs_scoring.h \
 	prefs_spelling.h \
 	prefs_summary_column.h \
 	prefs_template.h \
@@ -228,7 +227,6 @@ sylpheedinclude_HEADERS = \
 	quote_fmt_parse.h \
 	recv.h \
 	rfc2015.h \
-	scoring.h \
 	select-keys.h \
 	send_message.h \
 	setup.h \
@@ -244,6 +242,8 @@ sylpheedinclude_HEADERS = \
 	toolbar.h \
 	undo.h \
 	unmime.h \
+	localfolder.h \
+	remotefolder.h \
 	vcard.h
 
 BUILT_SOURCES = \

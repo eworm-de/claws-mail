@@ -47,6 +47,7 @@
 #include "alertpanel.h"
 #include "procheader.h"
 #include "customheader.h"
+#include "remotefolder.h"
 
 typedef enum
 {
@@ -355,7 +356,7 @@ void account_add(void)
 		}
 
 		folder->account = ac_prefs;
-		ac_prefs->folder = REMOTE_FOLDER(folder);
+		ac_prefs->folder = folder;
 		folder_add(folder);
 		if (ac_prefs->protocol == A_IMAP4)
 			folder->klass->create_tree(folder);
@@ -438,7 +439,7 @@ void account_set_missing_folder(void)
 			}
 
 			folder->account = ap;
-			ap->folder = REMOTE_FOLDER(folder);
+			ap->folder = folder;
 			folder_add(folder);
 			if (ap->protocol == A_IMAP4)
 				folder->klass->create_tree(folder);
@@ -752,6 +753,11 @@ static void account_clone(void)
 
 	row = GPOINTER_TO_INT(clist->selection->data);
 	ac_prefs = gtk_clist_get_row_data(clist, row);
+
+	if (ac_prefs->protocol == A_IMAP4 || ac_prefs->protocol == A_NNTP) {
+		alertpanel_error(_("Accounts with remote folders cannot be cloned"));
+		return;
+	}
 	
 	ac_clon = prefs_account_new();
 	/* copy fields */

@@ -83,8 +83,6 @@ ExportLdifCtl *exportldif_create( void ) {
  * \return ctl Export control data.
  */
 void exportldif_free( ExportLdifCtl *ctl ) {
-	GList *node;
-
 	g_return_if_fail( ctl != NULL );
 
 	g_free( ctl->path );

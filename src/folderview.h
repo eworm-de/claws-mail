@@ -26,9 +26,9 @@ typedef struct _FolderView	FolderView;
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkctree.h>
 
-#include "folder.h"
 #include "mainwindow.h"
 #include "summaryview.h"
+#include "folder.h"
 
 struct _FolderView
 {

@@ -27,7 +27,6 @@
 #include "intl.h"
 #include "utils.h"
 #include "filtering.h"
-#include "scoring.h"
 #include "matcher.h"
 #include "matcher_parser.h"
 #include "matcher_parser_lex.h"
@@ -50,23 +49,18 @@ static GSList *action_list = NULL;
 static FilteringAction *action = NULL;
 
 static FilteringProp *filtering;
-static ScoringProp *scoring = NULL;
 
-static GSList **prefs_scoring = NULL;
 static GSList **prefs_filtering = NULL;
-
-#if 0
-static int matcher_parser_dialog = 0;
-#endif
+static int enable_compatibility = 0;
 
 enum {
-        MATCHER_PARSE_NONE,
+        MATCHER_PARSE_FILE,
         MATCHER_PARSE_NO_EOL,
         MATCHER_PARSE_CONDITION,
-        MATCHER_PARSE_FILTERING_OR_SCORING,
+        MATCHER_PARSE_FILTERING_ACTION,
 };
 
-static int matcher_parse_op = MATCHER_PARSE_NONE;
+static int matcher_parse_op = MATCHER_PARSE_FILE;
 
 
 /* ******************************************************************** */
@@ -76,6 +70,9 @@ void matcher_parser_start_parsing(FILE *f)
 	matcher_parserrestart(f);
 	matcher_parserparse();
 }
+
+ 
+void * matcher_parser_scan_string(const char * str);
  
 FilteringProp *matcher_parser_get_filtering(gchar *str)
 {
@@ -87,32 +84,13 @@ FilteringProp *matcher_parser_get_filtering(gchar *str)
 	matcher_parse_op = MATCHER_PARSE_NO_EOL;
 	matcher_parserrestart(NULL);
         matcher_parser_init();
-	bufstate = matcher_parser_scan_string(str);
+	bufstate = matcher_parser_scan_string((const char *) str);
         matcher_parser_switch_to_buffer(bufstate);
 	if (matcher_parserparse() != 0)
 		filtering = NULL;
-	matcher_parse_op = MATCHER_PARSE_NONE;
+	matcher_parse_op = MATCHER_PARSE_FILE;
 	matcher_parser_delete_buffer(bufstate);
 	return filtering;
-}
-
-ScoringProp *matcher_parser_get_scoring(gchar *str)
-{
-	void *bufstate;
-
-	/* bad coding to enable the sub-grammar matching
-	   in yacc */
-	matcher_parserlineno = 1;
-	matcher_parse_op = MATCHER_PARSE_NO_EOL;
-	matcher_parserrestart(NULL);
-        matcher_parser_init();
-	bufstate = matcher_parser_scan_string(str);
-        matcher_parser_switch_to_buffer(bufstate);
-	if (matcher_parserparse() != 0)
-		scoring = NULL;
-	matcher_parse_op = MATCHER_PARSE_NONE;
-	matcher_parser_delete_buffer(bufstate);
-	return scoring;
 }
 
 static gboolean check_quote_symetry(gchar *str)
@@ -151,7 +129,7 @@ MatcherList *matcher_parser_get_cond(gchar *str)
         matcher_parser_init();
 	bufstate = matcher_parser_scan_string(str);
 	matcher_parserparse();
-	matcher_parse_op = MATCHER_PARSE_NONE;
+	matcher_parse_op = MATCHER_PARSE_FILE;
 	matcher_parser_delete_buffer(bufstate);
 	return cond;
 }
@@ -168,12 +146,12 @@ GSList *matcher_parser_get_action_list(gchar *str)
 	/* bad coding to enable the sub-grammar matching
 	   in yacc */
 	matcher_parserlineno = 1;
-	matcher_parse_op = MATCHER_PARSE_FILTERING_OR_SCORING;
+	matcher_parse_op = MATCHER_PARSE_FILTERING_ACTION;
 	matcher_parserrestart(NULL);
         matcher_parser_init();
 	bufstate = matcher_parser_scan_string(str);
 	matcher_parserparse();
-	matcher_parse_op = MATCHER_PARSE_NONE;
+	matcher_parse_op = MATCHER_PARSE_FILE;
 	matcher_parser_delete_buffer(bufstate);
 	return action_list;
 }
@@ -216,7 +194,7 @@ void matcher_parsererror(char *str)
 		matchers_list = NULL;
 	}
 	cond = NULL;
-	g_warning("scoring / filtering parsing: %i: %s\n",
+	g_warning("filtering parsing: %i: %s\n",
 		  matcher_parserlineno, str);
 	error = 1;
 }
@@ -247,7 +225,8 @@ int matcher_parserwrap(void)
 %token MATCHER_NOT_MESSAGE  MATCHER_BODY_PART  MATCHER_NOT_BODY_PART
 %token MATCHER_TEST  MATCHER_NOT_TEST  MATCHER_MATCHCASE  MATCHER_MATCH
 %token MATCHER_REGEXPCASE  MATCHER_REGEXP  MATCHER_SCORE  MATCHER_MOVE
-%token MATCHER_COPY  MATCHER_DELETE  MATCHER_MARK  MATCHER_UNMARK MATCHER_LOCK MATCHER_UNLOCK
+%token MATCHER_COPY  MATCHER_DELETE  MATCHER_MARK  MATCHER_UNMARK
+%token MATCHER_LOCK MATCHER_UNLOCK
 %token MATCHER_EXECUTE
 %token MATCHER_MARK_AS_READ  MATCHER_MARK_AS_UNREAD  MATCHER_FORWARD
 %token MATCHER_FORWARD_AS_ATTACHMENT  MATCHER_EOL  MATCHER_STRING  
@@ -258,7 +237,7 @@ int matcher_parserwrap(void)
 %token MATCHER_COLORLABEL MATCHER_NOT_COLORLABEL
 %token MATCHER_IGNORE_THREAD MATCHER_NOT_IGNORE_THREAD
 %token MATCHER_ADD_SCORE MATCHER_SET_SCORE
-%token MATCHER_STOP
+%token MATCHER_STOP MATCHER_HIDE
 
 %start file
 
@@ -270,9 +249,8 @@ int matcher_parserwrap(void)
 
 file:
 {
-	if (matcher_parse_op == MATCHER_PARSE_NONE) {
-		prefs_scoring = &global_scoring;
-		prefs_filtering = &global_processing;
+	if (matcher_parse_op == MATCHER_PARSE_FILE) {
+		prefs_filtering = &pre_global_processing;
 	}
 }
 file_line_list;
@@ -299,17 +277,26 @@ MATCHER_SECTION MATCHER_EOL
 	gchar *folder = $1;
 	FolderItem *item = NULL;
 
-	if (matcher_parse_op == MATCHER_PARSE_NONE) {
+	if (matcher_parse_op == MATCHER_PARSE_FILE) {
+                enable_compatibility = 0;
 		if (!strcmp(folder, "global")) {
-			prefs_scoring = &global_scoring;
-			prefs_filtering = &global_processing;
-		} else {
+                        /* backward compatibility */
+                        enable_compatibility = 1;
+                }
+		else if (!strcmp(folder, "preglobal")) {
+			prefs_filtering = &pre_global_processing;
+                }
+		else if (!strcmp(folder, "postglobal")) {
+			prefs_filtering = &post_global_processing;
+                }
+		else if (!strcmp(folder, "filtering")) {
+                        prefs_filtering = &filtering_rules;
+		}
+                else {
 			item = folder_find_item_from_identifier(folder);
 			if (item != NULL) {
-				prefs_scoring = &item->prefs->scoring;
 				prefs_filtering = &item->prefs->processing;
 			} else {
-				prefs_scoring = NULL;
 				prefs_filtering = NULL;
 			}
 		}
@@ -318,8 +305,8 @@ MATCHER_SECTION MATCHER_EOL
 ;
 
 instruction:
-condition filtering_or_scoring MATCHER_EOL
-| condition filtering_or_scoring
+condition filtering MATCHER_EOL
+| condition filtering
 {
 	if (matcher_parse_op == MATCHER_PARSE_NO_EOL)
 		YYACCEPT;
@@ -339,7 +326,7 @@ condition filtering_or_scoring MATCHER_EOL
 }
 | filtering_action_list
 {
-	if (matcher_parse_op == MATCHER_PARSE_FILTERING_OR_SCORING)
+	if (matcher_parse_op == MATCHER_PARSE_FILTERING_ACTION)
 		YYACCEPT;
 	else {
 		matcher_parsererror("parse error");
@@ -349,27 +336,31 @@ condition filtering_or_scoring MATCHER_EOL
 | MATCHER_EOL
 ;
 
-filtering_or_scoring:
+filtering:
 filtering_action_list
 {
 	filtering = filteringprop_new(cond, action_list);
+        
+        if (enable_compatibility) {
+                prefs_filtering = &filtering_rules;
+                if (action_list != NULL) {
+                        FilteringAction * first_action;
+                        
+                        first_action = action_list->data;
+                        
+                        if (first_action->type == MATCHACTION_ADD_SCORE)
+                                prefs_filtering = &pre_global_processing;
+                }
+        }
+        
 	cond = NULL;
 	action_list = NULL;
-	if ((matcher_parse_op == MATCHER_PARSE_NONE) && (prefs_filtering != NULL)) {
+        
+	if ((matcher_parse_op == MATCHER_PARSE_FILE) &&
+            (prefs_filtering != NULL)) {
 		*prefs_filtering = g_slist_append(*prefs_filtering,
 						  filtering);
 		filtering = NULL;
-	}
-}
-| scoring_rule
-{
-	scoring = scoringprop_new(cond, score);
-	cond = NULL;
-	score = 0;
-	if ((matcher_parse_op == MATCHER_PARSE_NONE)
-            && (prefs_scoring != NULL)) {
-		*prefs_scoring = g_slist_append(*prefs_scoring, scoring);
-		scoring = NULL;
 	}
 }
 ;
@@ -1016,7 +1007,15 @@ MATCHER_EXECUTE MATCHER_STRING
 }
 | MATCHER_ADD_SCORE MATCHER_INTEGER
 {
-	gint action_type = MATCHACTION_ADD_SCORE;
+        gint score = 0;
+        
+        score = strtol($2, NULL, 10);
+	action = filteringaction_new(MATCHACTION_ADD_SCORE, 0,
+				     NULL, 0, score);
+}
+/* backward compatibility */
+| MATCHER_SCORE MATCHER_INTEGER
+{
         gint score = 0;
         
         score = strtol($2, NULL, 10);
@@ -1025,22 +1024,18 @@ MATCHER_EXECUTE MATCHER_STRING
 }
 | MATCHER_SET_SCORE MATCHER_INTEGER
 {
-	gint action_type = MATCHACTION_SET_SCORE;
         gint score = 0;
         
         score = strtol($2, NULL, 10);
 	action = filteringaction_new(MATCHACTION_SET_SCORE, 0,
 				     NULL, 0, score);
 }
+| MATCHER_HIDE
+{
+	action = filteringaction_new(MATCHACTION_HIDE, 0, NULL, 0, 0);
+}
 | MATCHER_STOP
 {
 	action = filteringaction_new(MATCHACTION_STOP, 0, NULL, 0, 0);
-}
-;
-
-scoring_rule:
-MATCHER_SCORE MATCHER_INTEGER
-{
-	score = strtol($2, NULL, 0);
 }
 ;

@@ -23,19 +23,9 @@
 #include <glib.h>
 #include <stdio.h>
 
-#include "folder.h"
-
-typedef struct _NewsFolder	NewsFolder;
 typedef struct _NewsGroupInfo	NewsGroupInfo;
 
-#define NEWS_FOLDER(obj)	((NewsFolder *)obj)
-
-struct _NewsFolder
-{
-	RemoteFolder rfolder;
-
-	gboolean use_auth;
-};
+#include "folder.h"
 
 struct _NewsGroupInfo
 {

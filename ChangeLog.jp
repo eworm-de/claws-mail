@@ -1,3 +1,20 @@
+2003-12-04
+
+	* src/codeconv.c: conv_get_code_conv_func(): src_charset と現在の
+	  文字コードが同一の場合、または現在の文字コードがマルチバイトで
+	  ある場合のみ conv_latintodisp を返す(KOI8-R locale 上での
+	  ISO-8859-5 の表示を修正)。
+
+2003-11-25
+
+	* autogen.sh: aclocal で m4 ディレクトリを含まないようにした。
+	* intl/libgnuintl.h: cvs から削除。
+	* po/.cvsignore: stamp-po と remove-potcdate.sed を追加。
+
+2003-11-24
+
+	* gettext-0.12.1 に移行。
+
 2003-11-21
 
 	* configure.in: struct dirent 中の d_type メンバのチェックを追加。

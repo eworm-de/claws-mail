@@ -58,6 +58,7 @@
 #include "utils.h"
 #include "inputdialog.h"
 #include "log.h"
+#include "remotefolder.h"
 
 typedef struct _IMAPFolder	IMAPFolder;
 typedef struct _IMAPSession	IMAPSession;
@@ -455,12 +456,16 @@ static FolderClass imap_class =
 	/* Folder functions */
 	imap_folder_new,
 	imap_folder_destroy,
+	NULL,
+	NULL,
 	imap_scan_tree,
 	imap_create_tree,
 
 	/* FolderItem functions */
 	imap_folder_item_new,
 	imap_folder_item_destroy,
+	NULL,
+	NULL,
 	imap_item_get_path,
 	imap_create_folder,
 	imap_rename_folder,

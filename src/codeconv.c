@@ -797,7 +797,9 @@ CodeConvFunc conv_get_code_conv_func(const gchar *src_charset_str,
 	case C_ISO_8859_13:
 	case C_ISO_8859_14:
 	case C_ISO_8859_15:
-		if (dest_charset == C_AUTO)
+		if (dest_charset == C_AUTO &&
+		    (conv_get_current_charset() == src_charset ||
+		     MB_CUR_MAX > 1))
 #ifndef WIN32 /* fall back to iconv */
 			code_conv = conv_latintodisp;
 #endif

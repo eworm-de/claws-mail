@@ -59,7 +59,6 @@
 #include "prefs_actions.h"
 #include "prefs_fonts.h"
 #include "prefs_spelling.h"
-#include "scoring.h"
 #include "prefs_display_header.h"
 #include "account.h"
 #include "procmsg.h"
@@ -369,7 +368,6 @@ int main(int argc, char *argv[])
 	folder_set_missing_folders();
 	folderview_set(folderview);
 
-	/* prefs_scoring_read_config(); */
 	prefs_matcher_read_config();
 
 	/* make one all-folder processing before using sylpheed */
