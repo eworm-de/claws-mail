@@ -28,18 +28,16 @@ typedef struct _PrefsPage PrefsPage;
 typedef void (*PrefsCreateWidgetFunc) (PrefsPage *, GtkWindow *window, gpointer);
 typedef void (*PrefsDestroyWidgetFunc) (PrefsPage *);
 typedef void (*PrefsSavePageFunc) (PrefsPage *);
-typedef void (*PrefsDestroyPageFunc) (PrefsPage *);
 
 struct _PrefsPage
 {
-	gchar *path;
-	gboolean page_open;
-	GtkWidget *widget;
+	gchar 			*path;
+	gboolean		 page_open;
+	GtkWidget		*widget;
 
-	PrefsCreateWidgetFunc create_widget;
-	PrefsDestroyWidgetFunc destroy_widget;
-	PrefsSavePageFunc save_page;
-	PrefsDestroyPageFunc destroy_page;
+	PrefsCreateWidgetFunc	 create_widget;
+	PrefsDestroyWidgetFunc	 destroy_widget;
+	PrefsSavePageFunc	 save_page;
 };
 
 void prefswindow_open			();

@@ -185,15 +185,10 @@ void prefs_toolbar_save(PrefsPage *_page)
 
 static void prefs_toolbar_destroy_widget(PrefsPage *_page)
 {
-	/* nothing here */
-}
-
-static void prefs_toolbar_destroy(PrefsPage *_page)
-{
 	ToolbarPage *prefs_toolbar = (ToolbarPage *) _page;
 
 	g_list_free(prefs_toolbar->combo_action_list);
-	g_free(_page);
+	prefs_toolbar->combo_action_list = NULL;
 }
 
 static void prefs_toolbar_set_displayed(ToolbarPage *prefs_toolbar)
@@ -874,30 +869,27 @@ void prefs_toolbar_init()
 	page->page.create_widget = prefs_toolbar_create_widget;
 	page->page.destroy_widget = prefs_toolbar_destroy_widget;
 	page->page.save_page = prefs_toolbar_save;
-	page->page.destroy_page = prefs_toolbar_destroy;
 	page->source = TOOLBAR_MAIN;
 	prefs_gtk_register_page((PrefsPage *) page);
 	prefs_toolbar_mainwindow = page;
-
-	page = g_new0(ToolbarPage, 1);
-	page->page.path = _("Customize Toolbars/Compose Window");
-	page->page.create_widget = prefs_toolbar_create_widget;
-	page->page.destroy_widget = prefs_toolbar_destroy_widget;
-	page->page.save_page = prefs_toolbar_save;
-	page->page.destroy_page = prefs_toolbar_destroy;
-	page->source = TOOLBAR_COMPOSE;
-	prefs_gtk_register_page((PrefsPage *) page);
-	prefs_toolbar_composewindow = page;
 
 	page = g_new0(ToolbarPage, 1);
 	page->page.path = _("Customize Toolbars/Message Window");
 	page->page.create_widget = prefs_toolbar_create_widget;
 	page->page.destroy_widget = prefs_toolbar_destroy_widget;
 	page->page.save_page = prefs_toolbar_save;
-	page->page.destroy_page = prefs_toolbar_destroy;
 	page->source = TOOLBAR_MSGVIEW;
 	prefs_gtk_register_page((PrefsPage *) page);
 	prefs_toolbar_messageview = page;
+
+	page = g_new0(ToolbarPage, 1);
+	page->page.path = _("Customize Toolbars/Compose Window");
+	page->page.create_widget = prefs_toolbar_create_widget;
+	page->page.destroy_widget = prefs_toolbar_destroy_widget;
+	page->page.save_page = prefs_toolbar_save;
+	page->source = TOOLBAR_COMPOSE;
+	prefs_gtk_register_page((PrefsPage *) page);
+	prefs_toolbar_composewindow = page;
 }
 
 void prefs_toolbar_done()
