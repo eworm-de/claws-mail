@@ -218,7 +218,7 @@ GSList *procmsg_read_cache		(FolderItem	*item,
 					 gboolean	 scan_file);
 void	procmsg_set_flags		(GSList		*mlist,
 					 FolderItem	*item);
-gint	procmsg_get_last_num_in_cache	(GSList		*mlist);
+gint	procmsg_get_last_num_in_msg_list(GSList		*mlist);
 void	procmsg_msg_list_free		(GSList		*mlist);
 void	procmsg_write_cache		(MsgInfo	*msginfo,
 					 FILE		*fp);

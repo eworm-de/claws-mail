@@ -563,7 +563,7 @@ GSList *imap_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 
 	if (!session) {
 		mlist = procmsg_read_cache(item, FALSE);
-		item->last_num = procmsg_get_last_num_in_cache(mlist);
+		item->last_num = procmsg_get_last_num_in_msg_list(mlist);
 		procmsg_set_flags(mlist, item);
 		statusbar_pop_all();
 		return mlist;
@@ -591,7 +591,7 @@ GSList *imap_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 
 		mlist = procmsg_read_cache(item, FALSE);
 		procmsg_set_flags(mlist, item);
-		cache_last = procmsg_get_last_num_in_cache(mlist);
+		cache_last = procmsg_get_last_num_in_msg_list(mlist);
 
 		/* calculating the range of envelope to get */
 		if (item->mtime != uid_validity) {

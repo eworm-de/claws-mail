@@ -334,13 +334,11 @@ void procmsg_set_flags(GSList *mlist, FolderItem *item)
 	g_hash_table_destroy(mark_table);
 }
 
-gint procmsg_get_last_num_in_cache(GSList *mlist)
+gint procmsg_get_last_num_in_msg_list(GSList *mlist)
 {
 	GSList *cur;
 	MsgInfo *msginfo;
 	gint last = 0;
-
-	if (mlist == NULL) return 0;
 
 	for (cur = mlist; cur != NULL; cur = cur->next) {
 		msginfo = (MsgInfo *)cur->data;
