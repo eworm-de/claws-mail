@@ -2,6 +2,11 @@
 
 	* src/compose.c: compose_wrap_line_all(): fixed character buffer
 	  initialization.
+	* src/utils.c:
+	  log_print()
+	  log_message()
+	  log_warning()
+	  log_error(): add time stamp to log messages.
 
 2002-07-31
 

@@ -2,6 +2,11 @@
 
 	* src/compose.c: compose_wrap_line_all(): 文字バッファの初期化を
 	  修正。
+	* src/utils.c:
+	  log_print()
+	  log_message()
+	  log_warning()
+	  log_error(): ログメッセージにタイムスタンプを追加。
 
 2002-07-31
 
