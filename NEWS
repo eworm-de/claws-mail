@@ -1,5 +1,23 @@
 Changes of Sylpheed
 
+* 0.9.2
+
+    * The bug that removed messages from server if "Don't receive" action is
+      specified by the filter rule has been fixed.
+    * The bug that caused abort when a button is double-clicked on some
+      dialogs has been fixed.
+    * A warning that was displayed when address book was empty has been fixed.
+
+* 0.9.1
+
+    * The bug in handling folder names which include '+' in IMAP4 modified
+      UTF-7 conversion has been fixed.
+    * The parsing of message/rfc822 parts in multipart messages has been
+      fixed.
+    * Several bugs of auto signature replacement has been fixed.
+    * A bug that didn't hide user string in the Action dialog has been fixed.
+    * Socket I/O timeout interval is now configurable.
+
 * 0.9.0
 
     * The multi-process network I/O has been implemented for POP3 and SMTP.
