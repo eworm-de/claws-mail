@@ -1,3 +1,10 @@
+2002-07-26 [christoph]	0.8.0claws15
+
+	* src/imap.[ch]
+		imap folder now remembers the last selected
+		folder and imap_fetch_msginfo skips selecting
+		the folder if it is already selected
+
 2002-07-26 [christoph]	0.8.0claws14
 
 	* src/folder.c

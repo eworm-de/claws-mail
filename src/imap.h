@@ -48,6 +48,8 @@ struct _IMAPFolder
 {
 	RemoteFolder rfolder;
 
+	gchar *selected_folder;
+	
 	/* list of IMAPNameSpace */
 	GList *ns_personal;
 	GList *ns_others;

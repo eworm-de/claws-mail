@@ -291,6 +291,8 @@ Folder *imap_folder_new(const gchar *name, const gchar *path)
 
 void imap_folder_destroy(IMAPFolder *folder)
 {
+	g_free(folder->selected_folder);
+	
 	folder_remote_folder_destroy(REMOTE_FOLDER(folder));
 }
 
@@ -299,7 +301,7 @@ static void imap_folder_init(Folder *folder, const gchar *name,
 {
 	folder->type = F_IMAP;
 
-	folder_remote_folder_init(folder, name, path);
+	folder_remote_folder_init((Folder *)folder, name, path);
 
 /*
 	folder->get_msg_list        = imap_get_msg_list;
@@ -325,6 +327,8 @@ static void imap_folder_init(Folder *folder, const gchar *name,
 
 	folder->get_num_list	      = imap_get_num_list;
 	folder->fetch_msginfo	      = imap_fetch_msginfo;
+	
+	((IMAPFolder *)folder)->selected_folder = NULL;
 }
 
 FolderItem *imap_folder_item_new()
@@ -391,6 +395,8 @@ static IMAPSession *imap_session_get(Folder *folder)
 			imap_parse_namespace(IMAP_SESSION(rfolder->session),
 					     IMAP_FOLDER(folder));
 			rfolder->session->last_access_time = time(NULL);
+			g_free(((IMAPFolder *)folder)->selected_folder);
+			((IMAPFolder *)folder)->selected_folder = NULL;
 			imap_reset_uid_lists(folder);
 		}
 		statusbar_pop_all();
@@ -421,6 +427,8 @@ static IMAPSession *imap_session_get(Folder *folder)
 		if (rfolder->session) {
 			imap_parse_namespace(IMAP_SESSION(rfolder->session),
 					     IMAP_FOLDER(folder));
+			g_free(((IMAPFolder *)folder)->selected_folder);
+			((IMAPFolder *)folder)->selected_folder = NULL;
 			imap_reset_uid_lists(folder);
 		}
 	}
@@ -2250,6 +2258,9 @@ static gint imap_select(IMAPSession *session, IMAPFolder *folder,
 		session->mbox = g_strdup(path);
 	g_free(real_path);
 
+	g_free(folder->selected_folder);
+	folder->selected_folder = g_strdup(path);
+	
 	return ok;
 }
 
@@ -3151,28 +3162,32 @@ GSList *imap_get_num_list(Folder *folder, FolderItem *_item)
 	return msgnum_list;
 }
 
-MsgInfo *imap_fetch_msginfo(Folder *folder, FolderItem *item, gint num)
+MsgInfo *imap_fetch_msginfo(Folder *_folder, FolderItem *item, gint num)
 {
+	IMAPFolder *folder = (IMAPFolder *)_folder;
 	gchar *tmp;
 	IMAPSession *session;
 	GString *str;
 	MsgInfo *msginfo;
-	gint ok, exists = 0, recent = 0, unseen = 0;
-	guint32 uid_validity = 0;
 	
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
 	g_return_val_if_fail(item->folder != NULL, NULL);
 	g_return_val_if_fail(item->folder->type == F_IMAP, NULL);
 
-	session = imap_session_get(folder);
+	session = imap_session_get(_folder);
 	g_return_val_if_fail(session != NULL, NULL);
 
-	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
-			 &exists, &recent, &unseen, &uid_validity);
-	if (ok != IMAP_SUCCESS)
-		return NULL;
-	
+	if(strcmp(folder->selected_folder, item->path) != 0) {
+		gint ok, exists = 0, recent = 0, unseen = 0;
+		guint32 uid_validity = 0;
+
+		ok = imap_select(session, IMAP_FOLDER(folder), item->path,
+				 &exists, &recent, &unseen, &uid_validity);
+		if (ok != IMAP_SUCCESS)
+			return NULL;
+	}
+		
 	if (imap_cmd_envelope(SESSION(session)->sock, num, num)
 	    != IMAP_SUCCESS) {
 		log_warning(_("can't get envelope\n"));
