@@ -524,7 +524,6 @@ static gboolean filteringprop_apply(FilteringProp * filtering, MsgInfo * info,
 					       folder_table))) {
 			action_str = filteringaction_to_string(buf, sizeof buf, filtering->action);
 			g_warning(_("action %s could not be applied"), action_str);
-			g_free(action_str);
 		}
 
 		switch(filtering->action->type) {
@@ -1066,10 +1065,6 @@ gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *act
 	case MATCHACTION_COLOR:
 		g_snprintf(dest, destlen, "%s %d", command_str, action->labelcolor);
 		return dest;  
-
-		g_snprintf(dest, destlen, "%s %d \"%s\"", command_str,
-			   action->account_id, action->destination);
-		return dest;
 
 	default:
 		return NULL;
