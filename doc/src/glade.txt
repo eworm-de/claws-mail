@@ -1,0 +1,40 @@
+Using glade to create interfaces for Sylpheed
+---------------------------------------------
+
+Sylpheed is not a glade project and so it cannot use the directory and
+file structure that is created by glade directly. Glade is only used to
+design the user interface and write most of the GTK code.
+
+To create a part of the Sylpheed user interface ,create a new window in
+glade and put all the widgets that you need into it. Glade always wants
+to have its glade file in the project directory where it creates the
+files, so its better to do this in a temporary directory. After saving
+the C source copy the GTK code from the create_<WINDOWNAME>() function to
+your own code in Sylpheed. Remove the code that is actually creating the
+window and the function call that adds the top widget to the window. Also
+remove all calls to gtk_widget_ref() and gtk_object_set_data_full(). To
+make it to replace the glade part it is probably better to leave the rest
+untouched. If you put the copied part at the beginning of your function
+you can keep the function calls and the variable declarations in one part.
+As it is done in other parts of Sylpheed, you can define a struct for
+your window that uses the widgets created by glade and remembers all of
+the widgets that you need using pointers in the struct. You can simply
+assign the widget pointers to your struct members after the glade block.
+
+To make glade's code match Sylpheed's coding style you can use the indent
+command with the -kr and -i8 parameters on the interface.c file before
+you copy the code.
+
+To make it easy to find which glade file contains the widget description
+for the code contained in a C file its probably good to copy the glade
+file from the temporary directory to a file with the same name as the
+C file with a ".glade" suffix instead of ".c". If you want to change an
+existing user interface you can either copy the glade file to a temporary
+directory or open it directly and change the project directory in glade
+to a temporary directory, because, otherwise, glade will write all its
+project stuff into the Sylpheed source directory. Don't forget to copy
+the modified file back after you saved your user interface in glade.
+
+If you want to use different composite widgets in one C file you should
+use multiple windows in glade to create them and then copy them one by
+one to your own code.
