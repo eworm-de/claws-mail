@@ -1,3 +1,8 @@
+2002-04-11
+
+	* COPYING: 再ライセンス("NO-VIRUS CLAUSE" の削除と OpenSSL に対する
+	  条項の追加)。
+
 2002-04-09
 
 	* src/prefs_account.c

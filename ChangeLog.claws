@@ -1,3 +1,9 @@
+2002-04-11 [paul]	0.7.4claws76
+
+	* COPYING 
+		re-licensed (removal of "NO-VIRUS CLAUSE" and addition of
+		the clause for OpenSSL). sync with sylpheed main
+
 2002-04-09 [melvin]	0.7.4claws75
 
 	* src/compose.c
