@@ -1,3 +1,12 @@
+2004-01-20 [paul]	0.9.8claws37
+
+	* src/prefs_fonts.c
+		demystify font settings
+		
+	* src/textview.c
+		use textview->msgfont for header->body in
+		textview_show_header()
+
 2004-01-20 [paul]	0.9.8claws36
 
 	* src/compose.c

@@ -1466,15 +1466,15 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 		     procheader_headername_equal(header->name,
 						 "X-Newsreader")) &&
 		    strstr(header->body, "Sylpheed") != NULL)
-			gtk_stext_insert(text, NULL, &emphasis_color, NULL,
+			gtk_stext_insert(text, textview->msgfont, &emphasis_color, NULL,
 					header->body, -1);
 		else if (prefs_common.enable_color) {
 			textview_make_clickable_parts(textview,
-						      NULL, NULL, &uri_color,
+						      textview->msgfont, NULL, &uri_color,
 						      header->body);
 		} else {
 			textview_make_clickable_parts(textview,
-						      NULL, NULL, NULL,
+						      textview->msgfont, NULL, NULL,
 						      header->body);
 		}
 		gtk_stext_insert(text, textview->msgfont, NULL, NULL, "\n", 1);
