@@ -173,3 +173,4 @@
 ( cvs diff -u -r 1.396.2.9 -r 1.396.2.10 ChangeLog; cvs diff -u -r 1.2504.2.21 -r 1.2504.2.22 ChangeLog.claws; cvs diff -u -r 1.391.2.9 -r 1.391.2.10 ChangeLog.jp; cvs diff -u -r 1.654.2.204 -r 1.654.2.205 configure.ac; cvs diff -u -r 1.149.2.14 -r 1.149.2.15 src/inc.c; ) > 0.9.12cvs102.1.patchset
 ( cvs diff -u -r 1.7.2.7 -r 1.7.2.8 src/plugins/image_viewer/viewer.c; ) > 0.9.12cvs102.2.patchset
 ( cvs diff -u -r 1.12.2.12 -r 1.12.2.13 src/action.c; ) > 0.9.12cvs102.3.patchset
+( cvs diff -u -r 1.4.2.1 -r 1.4.2.2 src/plugins/spamassassin/libspamc.c; cvs diff -u -r 1.4.2.1 -r 1.4.2.2 src/plugins/spamassassin/libspamc.h; cvs diff -u -r 1.3.2.1 -r 1.3.2.2 src/plugins/spamassassin/utils.c; cvs diff -u -r 1.3.2.1 -r 1.3.2.2 src/plugins/spamassassin/utils.h; ) > 0.9.12cvs103.1.patchset
