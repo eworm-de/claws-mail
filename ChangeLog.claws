@@ -1,3 +1,10 @@
+2002-08-14 [paul]	0.8.1claws58
+
+	* faq/es/sylpheed-faq.html
+	  faq/es/sylpheed-faq-[1-3].html
+	  faq/es/sylpheed-faq-4.html	 **NEW FILE **
+		update Spanish FAQ
+
 2002-08-13 [christoph]	0.8.1claws57
 
 	* src/procmsg.c
