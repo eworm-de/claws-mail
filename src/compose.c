@@ -3780,7 +3780,8 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	}
 	if (compose->use_encryption) {
 		if (rfc2015_encrypt(file, compose->to_list,
-				    compose->gnupg_mode) < 0) {
+				    compose->gnupg_mode,
+				    out_codeset) < 0) {
 			unlink(file);
 			return -1;
 		}

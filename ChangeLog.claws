@@ -1,3 +1,10 @@
+2004-08-23 [colin]	0.9.12cvs78
+
+	* src/rfc2015.c
+	* src/rfc2015.h
+	* src/compose.c
+		Fix (again) bug 197: inline encryption broken
+
 2004-08-23 [paul]
 
 	* po/zh_CN.po
