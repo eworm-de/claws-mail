@@ -1,3 +1,9 @@
+2001-09-18 [paul]
+
+	* configure.in
+		change to version 0.6.2claws1
+	* sync with sylpheed 0.6.2cvs1 
+
 2001-09-15 [christoph]
 
 	* src/mainwindow.c

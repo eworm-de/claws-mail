@@ -279,6 +279,8 @@ int main(int argc, char *argv[])
 
 	prefs_scoring_read_config();
 
+	addressbook_read_file();
+
 	inc_autocheck_timer_init(mainwin);
 
 	if (cmd.receive_all || prefs_common.chk_on_startup)

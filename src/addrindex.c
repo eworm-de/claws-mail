@@ -21,8 +21,15 @@
  * General functions for accessing address index file.
  */
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
+#include "defs.h"
+
 #include <glib.h>
 
+#include "intl.h"
 #include "mgutils.h"
 #include "addritem.h"
 #include "addrcache.h"

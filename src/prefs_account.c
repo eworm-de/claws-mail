@@ -527,7 +527,7 @@ PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs)
 	} else {
 		prefs_set_dialog(param);
 		gtk_window_set_title(GTK_WINDOW(dialog.window),
-				     _("Preferences for each account"));
+				     _("Account preferences"));
 		gtk_widget_show(dialog.apply_btn);
 	}
 

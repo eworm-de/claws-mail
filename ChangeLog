@@ -1,3 +1,17 @@
+2001-09-17
+
+	* src/mainwindow.c: ac_menu_popup_closed(): fixed the bug that
+	  caused segfault. Changed 'Preferences per account...' menu item.
+
+2001-09-17
+
+	* version 0.6.2
+
+2001-09-16
+
+	* src/addrindex.c: translate the "Common address" and "Personal
+	  address" from old addressbook.
+
 2001-09-12
 
 	* src/utils.c: get_quote_level(): some optimization and bugfixes.

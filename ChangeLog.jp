@@ -1,3 +1,17 @@
+2001-09-17
+
+	* src/mainwindow.c: ac_menu_popup_closed(): segfault を起こすバグ
+	  を修正。「アカウント毎の設定...」メニュー項目を変更。
+
+2001-09-17
+
+	* version 0.6.2
+
+2001-09-16
+
+	* src/addrindex.c: 旧形式のアドレス帳の「共有アドレス」と「個人用
+	  アドレス」を翻訳するようにした。
+
 2001-09-12
 
 	* src/utils.c: get_quote_level(): 最適化とバグ修正。

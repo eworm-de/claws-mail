@@ -558,7 +558,7 @@ static void addressbook_create(void)
 	clist = gtk_ctree_new_with_titles(N_COLS, 0, titles);
 	gtk_container_add(GTK_CONTAINER(clist_swin), clist);
 	gtk_clist_set_selection_mode(GTK_CLIST(clist), GTK_SELECTION_EXTENDED);
-	gtk_ctree_set_line_style(GTK_CTREE(clist), GTK_CTREE_LINES_DOTTED);
+	gtk_ctree_set_line_style(GTK_CTREE(clist), GTK_CTREE_LINES_NONE);
 	gtk_ctree_set_expander_style(GTK_CTREE(clist), GTK_CTREE_EXPANDER_SQUARE);
 	gtk_ctree_set_indent(GTK_CTREE(clist), CTREE_INDENT);
 	gtk_clist_set_column_width(GTK_CLIST(clist), COL_NAME,

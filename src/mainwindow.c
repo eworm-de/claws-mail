@@ -2075,6 +2075,7 @@ static void ac_menu_popup_closed(GtkMenuShell *menu_shell, gpointer data)
 	GtkWidget *button;
 
 	button = gtk_object_get_data(GTK_OBJECT(menu_shell), "menu_button");
+	if (!button) return;
 	gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
 	gtk_object_remove_data(GTK_OBJECT(mainwin->ac_menu), "menu_button");
 	manage_window_focus_in(mainwin->window, NULL, NULL);
