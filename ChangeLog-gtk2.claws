@@ -1,3 +1,12 @@
+2005-02-08 [colin]	1.0.1.1
+
+	* ChangeLog.claws
+	* po/pt_BR.po
+		Sync with HEAD
+	* configure.ac
+		Make default configuration directory 
+		be .sylpheed-gtk2
+
 2005-02-08 [colin]	1.0.0cvs29.1
 
 	* po/de.po

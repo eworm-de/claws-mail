@@ -362,3 +362,4 @@
 ( cvs diff -u -r 1.382.2.94 -r 1.382.2.95 src/compose.c; ) > 1.0.0cvs28.2.patchset
 ( cvs diff -u -r 1.382.2.95 -r 1.382.2.96 src/compose.c; ) > 1.0.0cvs28.3.patchset
 ( cvs diff -u -r 1.58.2.6 -r 1.58.2.7 po/de.po; cvs diff -u -r 1.60.2.7 -r 1.60.2.8 po/es.po; cvs diff -u -r 1.42.2.7 -r 1.42.2.8 po/fr.po; cvs diff -u -r 1.34.2.6 -r 1.34.2.7 po/it.po; cvs diff -u -r 1.2.2.8 -r 1.2.2.9 po/sk.po; cvs diff -u -r 1.17.2.8 -r 1.17.2.9 po/sr.po; ) > 1.0.0cvs29.1.patchset
+( cvs diff -u -r 1.2504.2.46 -r 1.2504.2.47 ChangeLog.claws; cvs diff -u -r 1.50.2.5 -r 1.50.2.6 po/pt_BR.po; ) > 1.0.1.1.patchset

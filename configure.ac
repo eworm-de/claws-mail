@@ -8,10 +8,10 @@ PACKAGE=sylpheed-claws
 dnl version number
 MAJOR_VERSION=1
 MINOR_VERSION=0
-MICRO_VERSION=0
+MICRO_VERSION=1
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=29
+EXTRA_VERSION=0
 EXTRA_RELEASE=
 EXTRA_GTK2_VERSION=.1
 
@@ -304,10 +304,10 @@ AC_ARG_WITH(passcrypt-key, [  --with-passcrypt-key=KEY     Key used to encode pa
 AC_SUBST(PASSCRYPT_KEY, $with_passcrypt_key)
 
 dnl RC dir (will be default at a certain point in time)
-AC_ARG_WITH(config-dir,    [  --with-config-dir=RCDIR      Local configuration dir (default: .sylpheed)],
-	      ac_cv_with_config_dir="$withval", ac_cv_with_config_dir=".sylpheed")
+AC_ARG_WITH(config-dir,    [  --with-config-dir=RCDIR      Local configuration dir (default: .sylpheed-gtk2)],
+	      ac_cv_with_config_dir="$withval", ac_cv_with_config_dir=".sylpheed-gtk2")
 if test x"$ac_cv_with_config_dir" = x""; then
-	ac_cv_with_config_dir=".sylpheed"
+	ac_cv_with_config_dir=".sylpheed-gtk2"
 fi 
 AC_DEFINE_UNQUOTED(CFG_RC_DIR, "$ac_cv_with_config_dir", Configuration directory)
 
