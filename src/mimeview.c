@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -150,7 +150,7 @@ MimeView *mimeview_create(void)
 	gtk_widget_set_usize(scrolledwin, -1, 80);
 
 	ctree = gtk_sctree_new_with_titles(N_MIMEVIEW_COLS, 0, titles);
-	gtk_clist_set_selection_mode(GTK_CLIST(ctree), GTK_SELECTION_BROWSE);//SINGLE);
+	gtk_clist_set_selection_mode(GTK_CLIST(ctree), GTK_SELECTION_BROWSE);
 	gtk_ctree_set_line_style(GTK_CTREE(ctree), GTK_CTREE_LINES_NONE);
 	gtk_clist_set_column_justification(GTK_CLIST(ctree), COL_SIZE,
 					   GTK_JUSTIFY_RIGHT);
@@ -476,6 +476,13 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 
 	partinfo = gtk_ctree_node_get_row_data(ctree, node);
 	if (!partinfo) return;
+
+	/* ungrab the mouse event */
+	if (GTK_WIDGET_HAS_GRAB(ctree)) {
+		gtk_grab_remove(GTK_WIDGET(ctree));
+		if (gdk_pointer_is_grabbed())
+			gdk_pointer_ungrab(GDK_CURRENT_TIME);
+	}
 
 	switch (partinfo->mime_type) {
 	case MIME_TEXT:

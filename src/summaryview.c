@@ -660,9 +660,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 			is_refresh = FALSE;
 	}
 
-#if 0
 	/* process the marks if any */
-	if (summaryview->deleted > 0 || summaryview->moved > 0) {
+	if (summaryview->moved > 0 || summaryview->copied > 0) {
 		AlertValue val;
 
 		val = alertpanel(_("Process mark"),
@@ -675,9 +674,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 		else
 			return FALSE;
 	} else
-#endif
-		if (!is_refresh)
-			summary_write_cache(summaryview);
+		summary_write_cache(summaryview);
 
 	gtk_clist_freeze(GTK_CLIST(ctree));
 

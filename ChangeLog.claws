@@ -1,3 +1,7 @@
+2001-06-03 [paul]
+
+        * sync with sylpheed 0.4.99cvs4
+
 2001-06-03 [alfons]
 
 	* src/headerwindow.c:

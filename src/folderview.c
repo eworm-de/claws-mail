@@ -1257,8 +1257,9 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 				gint column, FolderView *folderview)
 {
 	static gboolean can_select = TRUE;	/* exclusive lock */
+	gboolean opened;
 	FolderItem *item;
-	gchar * s = NULL;
+	GtkCTreeNode *prev_row;
 
 	folderview->selected = row;
 
@@ -1290,9 +1291,23 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	    !GTK_CTREE_ROW(folderview->opened)->children)
 		gtk_ctree_collapse(ctree, folderview->opened);
 
+	/* ungrab the mouse event */
+	if (GTK_WIDGET_HAS_GRAB(ctree)) {
+		gtk_grab_remove(GTK_WIDGET(ctree));
+		if (gdk_pointer_is_grabbed())
+			gdk_pointer_ungrab(GDK_CURRENT_TIME);
+	}
+
+	prev_row = folderview->opened;
 	folderview->opened = row;
 
-	summary_show(folderview->summaryview, item, FALSE);
+	opened = summary_show(folderview->summaryview, item, FALSE);
+
+	if (!opened) {
+		folderview->opened = prev_row;
+		gtk_ctree_select(ctree, prev_row);
+		gtkut_ctree_set_focus_row(ctree, prev_row);
+	}
 
 	can_select = TRUE;
 }

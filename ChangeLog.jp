@@ -1,3 +1,11 @@
+2001-06-02
+
+	* src/folderview.c: folderview_selected()
+	  src/mimeview.c: mimeview_selected(): マウスイベントの捕捉を解除
+	  するようにした。
+	* src/summaryview.c: summary_show(): マークが残っていれば処理する
+	  ようにした。
+
 2001-05-27
 
 	* src/passphrase.c: #if USE_GPGME で囲った。

@@ -1,3 +1,9 @@
+2001-06-02
+
+	* src/folderview.c: folderview_selected()
+	  src/mimeview.c: mimeview_selected(): ungrab the mouse event.
+	* src/summaryview.c: summary_show(): process the left marks if any.
+
 2001-05-27
 
 	* src/passphrase.c: enclosed with #if USE_GPGME.
