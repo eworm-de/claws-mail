@@ -1,3 +1,9 @@
+2003-02-13 [paul]	0.8.10claws8
+
+	* src/compose.c
+		make replies behave correctly, re: RFC 1036, Section 2.2.3,
+		paragraph 1
+
 2003-02-13 [paul]	0.8.10claws7
 
 	* src/compose.[ch]

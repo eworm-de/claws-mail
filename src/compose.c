@@ -1661,7 +1661,7 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 				 COMPOSE_TO);
 	} else {
 		if (to_sender || (compose->followup_to && 
-			strncmp(compose->followup_to, "poster\n", 7)))
+			!strncmp(compose->followup_to, "poster", 6)))
 			compose_entry_append
 				(compose, 
 				 ((compose->replyto && !to_sender)
@@ -1679,11 +1679,13 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 		
 			compose_entry_append
 				(compose,
+			 	 compose->followup_to ? compose->followup_to :
 			 	 compose->newsgroups ? compose->newsgroups : "",
 			 	 COMPOSE_NEWSGROUPS);
 		} else {
 			compose_entry_append
 				(compose,
+			 	 compose->followup_to ? compose->followup_to :
 			 	 compose->newsgroups ? compose->newsgroups : "",
 			 	 COMPOSE_NEWSGROUPS);
 		}
