@@ -328,6 +328,11 @@ FolderClass imap_class =
 	imap_check_msgnum_validity,
 };
 
+FolderClass *imap_get_class()
+{
+	return &imap_class;
+}
+
 Folder *imap_folder_new(const gchar *name, const gchar *path)
 {
 	Folder *folder;

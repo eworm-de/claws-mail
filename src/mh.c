@@ -142,6 +142,11 @@ FolderClass mh_class =
 	NULL,
 };
 
+FolderClass *mh_get_class()
+{
+	return &mh_class;
+}
+
 Folder *mh_folder_new(const gchar *name, const gchar *path)
 {
 	Folder *folder;

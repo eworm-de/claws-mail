@@ -1,3 +1,14 @@
+2003-03-12 [christoph]	0.8.11claws3
+
+	* src/folder.[ch]
+	* src/imap.[ch]
+	* src/main.c
+	* src/mbox_folder.[ch]
+	* src/mh.[ch]
+	* src/news.[ch]
+		o create a list of known folder classes in the folder system
+		o use folder class id strings for folder item identifiers
+
 2003-03-12 [christoph]	0.8.11claws2
 
 	* src/imap.c

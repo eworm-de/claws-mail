@@ -84,6 +84,11 @@ FolderClass mbox_class =
 	mbox_check_msgnum_validity,
 };
 
+FolderClass *mbox_get_class()
+{
+	return &mbox_class;
+}
+
 Folder *mbox_folder_new(const gchar *name, const gchar *path)
 {
 	Folder *folder;

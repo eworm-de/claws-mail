@@ -311,6 +311,8 @@ struct _FolderItemUpdateData
 	FolderItemUpdateFlags	 update_flags;
 };
 
+void	    folder_system_init		();
+void	    folder_register_class	(FolderClass	*class);
 Folder     *folder_new			(FolderType	 type,
 					 const gchar	*name,
 					 const gchar	*path);
@@ -357,7 +359,7 @@ void   folder_count_total_msgs	(guint		*new,
 
 Folder     *folder_find_from_path		(const gchar	*path);
 Folder     *folder_find_from_name		(const gchar	*name,
-						 FolderType	 type);
+						 FolderClass	*class);
 FolderItem *folder_find_item_from_path		(const gchar	*path);
 gchar      *folder_get_identifier		(Folder		*folder);
 gchar      *folder_item_get_identifier		(FolderItem	*item);

@@ -242,6 +242,7 @@ int main(int argc, char *argv[])
 
 	set_log_file(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log");
 
+	folder_system_init();
 	prefs_common_init();
 	prefs_common_read_config();
 

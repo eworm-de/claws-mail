@@ -59,6 +59,7 @@ struct _NewsGroupInfo
 	gchar type;
 };
 
+FolderClass *news_get_class		();
 Folder	*news_folder_new		(const gchar	*name,
 					 const gchar	*folder);
 void	 news_folder_destroy		(Folder		*folder);

@@ -74,6 +74,27 @@ static gboolean persist_prefs_free	(gpointer key, gpointer val, gpointer data);
 void folder_item_read_cache		(FolderItem *item);
 void folder_item_free_cache		(FolderItem *item);
 
+static GSList *classlist;
+
+void folder_system_init()
+{
+	folder_register_class(mh_get_class());
+	folder_register_class(imap_get_class());
+	folder_register_class(news_get_class());
+	folder_register_class(mbox_get_class());
+}
+
+GSList *folder_get_class_list()
+{
+	return classlist;
+}
+
+void folder_register_class(FolderClass *class)
+{
+	debug_print("registering folder class %s\n", class->idstr);
+	classlist = g_slist_append(classlist, class);
+}
+
 Folder *folder_new(FolderType type, const gchar *name, const gchar *path)
 {
 	Folder *folder = NULL;
@@ -540,14 +561,14 @@ Folder *folder_find_from_path(const gchar *path)
 	return NULL;
 }
 
-Folder *folder_find_from_name(const gchar *name, FolderType type)
+Folder *folder_find_from_name(const gchar *name, FolderClass *class)
 {
 	GList *list;
 	Folder *folder;
 
 	for (list = folder_list; list != NULL; list = list->next) {
 		folder = list->data;
-		if (FOLDER_TYPE(folder) == type && strcmp2(name, folder->name) == 0)
+		if (folder->class == class && strcmp2(name, folder->name) == 0)
 			return folder;
 	}
 
@@ -583,41 +604,18 @@ FolderItem *folder_find_item_from_path(const gchar *path)
 	return d[1];
 }
 
-static const struct {
-	gchar *str;
-	FolderType type;
-} type_str_table[] = {
-	{"#mh"     , F_MH},
-	{"#mbox"   , F_MBOX},
-	{"#maildir", F_MAILDIR},
-	{"#imap"   , F_IMAP},
-	{"#news"   , F_NEWS}
-};
-
-static gchar *folder_get_type_string(FolderType type)
+static FolderClass *folder_get_class_from_string(const gchar *str)
 {
-	gint i;
+	GSList *classlist;
 
-	for (i = 0; i < sizeof(type_str_table) / sizeof(type_str_table[0]);
-	     i++) {
-		if (type_str_table[i].type == type)
-			return type_str_table[i].str;
+	classlist = folder_get_class_list();
+	for (; classlist != NULL; classlist = g_slist_next(classlist)) {
+		FolderClass *class = (FolderClass *) classlist->data;
+		if (g_strcasecmp(class->idstr, &str[1]) == 0)
+			return class;
 	}
 
 	return NULL;
-}
-
-static FolderType folder_get_type_from_string(const gchar *str)
-{
-	gint i;
-
-	for (i = 0; i < sizeof(type_str_table) / sizeof(type_str_table[0]);
-	     i++) {
-		if (g_strcasecmp(type_str_table[i].str, str) == 0)
-			return type_str_table[i].type;
-	}
-
-	return F_UNKNOWN;
 }
 
 gchar *folder_get_identifier(Folder *folder)
@@ -626,8 +624,8 @@ gchar *folder_get_identifier(Folder *folder)
 
 	g_return_val_if_fail(folder != NULL, NULL);
 
-	type_str = folder_get_type_string(FOLDER_TYPE(folder));
-	return g_strconcat(type_str, "/", folder->name, NULL);
+	type_str = folder->class->idstr;
+	return g_strconcat("#", type_str, "/", folder->name, NULL);
 }
 
 gchar *folder_item_get_identifier(FolderItem *item)
@@ -653,7 +651,7 @@ FolderItem *folder_find_item_from_identifier(const gchar *identifier)
 	gchar *p;
 	gchar *name;
 	gchar *path;
-	FolderType type;
+	FolderClass *class;
 
 	g_return_val_if_fail(identifier != NULL, NULL);
 
@@ -667,8 +665,8 @@ FolderItem *folder_find_item_from_identifier(const gchar *identifier)
 		return folder_find_item_from_path(identifier);
 	*p = '\0';
 	p++;
-	type = folder_get_type_from_string(str);
-	if (type == F_UNKNOWN)
+	class = folder_get_class_from_string(str);
+	if (class == NULL)
 		return folder_find_item_from_path(identifier);
 
 	name = p;
@@ -678,7 +676,7 @@ FolderItem *folder_find_item_from_identifier(const gchar *identifier)
 	*p = '\0';
 	p++;
 
-	folder = folder_find_from_name(name, type);
+	folder = folder_find_from_name(name, class);
 	if (!folder)
 		return folder_find_item_from_path(identifier);
 

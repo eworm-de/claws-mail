@@ -140,6 +140,11 @@ FolderClass news_class =
 	NULL,
 };
 
+FolderClass *news_get_class()
+{
+	return &news_class;
+}
+
 Folder *news_folder_new(const gchar *name, const gchar *path)
 {
 	Folder *folder;
