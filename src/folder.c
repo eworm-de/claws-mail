@@ -2405,9 +2405,6 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 		}
 	}
 
-	if (folder->klass->finished_copy)
-	    	folder->klass->finished_copy(folder, dest);
-
 	g_relation_destroy(relation);
 	return lastnum;
 }
@@ -2541,9 +2538,6 @@ gint folder_item_remove_all_msg(FolderItem *item)
 	result = folder->klass->remove_all_msg(folder, item);
 
 	if (result == 0) {
-		if (folder->klass->finished_remove)
-			folder->klass->finished_remove(folder, item);
-
 		folder_item_free_cache(item);
 		item->cache = msgcache_new();
 

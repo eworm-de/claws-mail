@@ -1,3 +1,15 @@
+2004-03-02 [christoph]		0.9.9claws37
+
+	* src/folder.[ch]
+		o add more documentation for FolderClass
+		o remove usused FolderClass virtual functions
+
+	* src/imap.c
+	* src/mh.c
+	* src/news.c
+		change creation of FolderClass because static initializations
+		for structs suck in C89
+
 2004-03-01 [paul]
 
 	* sync with 0.9.10
@@ -187,7 +199,7 @@
 		fix crash when installing wrong theme and output an
 		error message
 
-2003-02-15 [christoph]	0.9.9claws16
+2003-02-16 [christoph]	0.9.9claws16
 
 	* src/compose.c
 	* src/stock_pixmap.[ch]
