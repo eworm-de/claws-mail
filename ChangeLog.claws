@@ -1,3 +1,10 @@
+2002-07-06 [melvin]	0.7.8claws52
+
+	* src/gtkspell.[ch]
+		Made them a bit closer to Sylpheed's coding style.
+		Removed old code.
+		Removed possible memory leaks when some errors occurs.
+
 2002-07-06 [melvin]	0.7.8claws51
 
 	* po/Makefile.in.in
