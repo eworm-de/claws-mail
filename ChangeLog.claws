@@ -1,3 +1,296 @@
+2003-06-21 [christoph]	0.9.0.claws52
+
+	update gettext stuff to version 0.12
+
+2003-06-19 [alfons]	0.9.0claws51
+
+	* src/common/log.c
+	* src/common/plugin.c
+		move defs.h before glib.h to prevent MIN/MAX redefs
+
+2003-06-19 [alfons]
+
+	* src/addressbook.c
+		translatable
+
+2003-06-19 [match]	0.9.0claws50
+
+	* src/addressbook.[ch]
+	* src/addrindex.[ch]
+	* src/addr_compl.[ch]
+	* src/editldap.[ch]
+	* src/editldap_basedn.[ch]
+	* src/addritem.[ch]
+	* src/ldapquery.h
+		re-implemented dynamic LDAP search. works without
+		slowdown on display sender with addressbook
+		option.
+	* src/addrbook.c
+		documented code.
+
+2003-06-19 [paul]	0.9.0claws49
+
+	* src/compose.c
+		fix Bug #136 'Nonprovided quotation marks crash claws'
+		patch submitted by Pawel Pêkala <c0rn@gazeta.pl>
+
+2003-06-19 [alfons]	0.9.0claws48
+
+	* src/prefs_common.[ch]
+	* src/procmsg.c
+		restrict threading by subject by checking thread for
+		age (prefs_common.thread_by_subject_max_age)
+
+2003-06-18 [christoph]	0.9.0claws47
+
+	* src/imap.c
+		fix memory leak in imap_cmd_fetch()
+
+2003-06-18 [christoph]	0.9.0claws46
+
+	* src/prefs_gtk.c
+		fix memory leak in prefs_set_default() when used multiple
+		times or after prefs have been read
+
+2003-06-18 [christoph]	0.9.0claws45
+
+	* src/common/plugin.c
+		fix memory leak in plugin_unload()
+
+2003-06-18 [christoph]	0.9.0claws44
+
+	* src/imap.c
+		fix memory leak in imap_cmd_ok()
+
+2003-06-18 [christoph]	0.9.0claws43
+
+	* src/folder.c
+		stop messages that are downloaded from POP3 and added to
+		an IMAP inbox from being filtered twice (first by POP3
+		and again when IMAP folder is scaned to get the UID of
+		the APPEND operation when no UIDPLUS is available)
+
+2003-06-18 [alfons]
+
+	* tools/Makefile.am
+		phoenix <- firebird	
+
+2003-06-18 [paul]
+
+	* tools/launch_phoenix		** REMOVED **
+	  tools/launch_firebird		** NEW **
+	  	renamed and edited to reflect the browser's name change from
+		'phoenix' to 'firebird'
+
+2003-06-18 [paul]	0.9.0claws42
+
+	* sync with 0.9.2cvs2
+		see ChangeLog 2003-06-16
+
+2003-06-17 [alfons]	0.9.0claws41
+
+	* src/procmsg.c
+		prevent threading problems when a node is an ancestor (parent / great parent),
+		which mostly happens with circular references (thanks to Phillipe Gramoullé
+		for finding an sample set of messages)
+
+2003-06-16 [christoph]	0.9.0claws40
+
+	* src/main.c
+		don't popup main window on --receive or --receive-all
+
+	* src/mainwindow.[ch]
+	* src/plugins/trayicon/trayicon.c
+		allow hiding of main window by clicking on the trayicon
+		(doesn't work correctly in seperate window mode and may
+		 cause unexpected GTK problems I couldn't find yet)
+
+	* src/common/ssl.c
+		remove incorrect warning
+
+2003-06-15 [alfons]	0.9.0claws39
+
+	* src/gtk/gtkstext.c
+		don't output debug text;
+		#ifdef out print_line() if not debugging (thanks to Martin Wicke
+		for pointing this out);
+
+2003-06-14 [alfons]	0.9.0claws38
+	
+	* src/messageview.c
+		remove printf() and make one if..else comply with coding style
+
+2003-06-14 [alfons]	0.9.0claws37
+
+	* AUTHORS
+		add Martin Wicke
+	* src/action.c
+	* src/messageview.[ch]
+	* src/summaryview.c
+		apply patch #754162 "Quoting messages filtered by actions" submitted
+		by Martin Wicke, which allows quoting message body changed by an
+		action (Thanks!).
+
+2003-06-13 [alfons]	0.9.0claws36
+
+	* src/utils.c
+		add several other subject reply prefixes (suggested by Christoph and Ivan Martinez)
+		use case insensitive regexp (suggested by Ivan Martinez)
+
+2003-06-13 [christoph]	0.9.0claws35
+
+	* configure.ac
+	* src/plugins/trayicon/Makefile.am
+	* src/plugins/trayicon/eggtrayicon.[ch]				** REMOVE **
+	* src/plugins/trayicon/trayicon.c
+	* src/plugins/trayicon/libeggtrayicon/.cvsignore		** NEW **
+	* src/plugins/trayicon/libeggtrayicon/Makefile.am		** NEW **
+	* src/plugins/trayicon/libeggtrayicon/eggtrayicon.[ch]		** NEW **
+	* src/plugins/trayicon/libeggtrayicon/gtk2-funcs.[ch]		** NEW **
+	* src/plugins/trayicon/libeggtrayicon/gtkplugxembed.[ch]	** NEW **
+	* src/plugins/trayicon/libeggtrayicon/xembed.h			** NEW **
+		replace my own EggTrayIcon backport with the backport
+		used by (l|x)mule and gabber.
+
+2003-06-13 [alfons]	0.9.0claws34
+
+	* AUTHORS
+	* src/common/utils.c
+		add Aw: to list of reply prefixes (thanks to Martin Zwickel)
+
+2003-06-13 [alfons]	0.9.0claws33
+
+	* src/compose.c
+		clean up a little bit
+
+2003-06-12 [alfons]	0.9.0claws32
+
+	* src/compose.c
+		const correctness fix
+
+	* src/common/sylpheed.[ch]
+		() -> (void)
+		prevent redef MIN/MAX
+		
+	* src/common/utils.[ch]
+		() -> (void)
+
+2003-06-12 [melvin]	0.9.0claws31
+
+	* src/compose.c
+		Updated to take into accounts changes in GtkAspell.
+
+2003-06-12 [alfons]	0.9.0claws30
+
+	* src/compose.c
+	* src/procmsg.c
+	* src/common/utils.[ch]
+		handle reply subject prefixes better (initial 
+		suggestion by Robert Story adapted and enhanced 
+		using regexps)
+
+2003-06-12 [melvin]	0.9.0claws29
+
+	* src/compose.c
+		Use new gtkaspell_checkers_strerror() to get the speller's
+		error message instead of accessing the (now private)
+		checkers structure.
+		Minor code clean up
+
+	* src/main.c
+		Use #ifdef instead of #if for USE_ASPELL
+		Use the new spell checkers init/quit functions 
+
+	* src/gtk/gtkaspell.c
+		Use #ifdef instead of #if for USE_ASPELL
+		Moved in the majority of GtkAspell structures that were
+		exported before by gtkaspell.h
+	
+	* src/gtk/gktaspell.h
+		Made gtkaspell.h contain only the necessary data to be
+		publicized by moving many structures to gtkaspell.c.
+		Enclosed all the declaration in a #ifdef USE_ASPELL #endif
+		gtkaspell_checkers_new(): replaced by...
+		gtkaspell_checkers_init(): new function for initialization
+		gtkaspell_checkers_delete(): replaced by...
+		gtkaspell_checkers_quit(): new function
+		gtkaspell_checkers_strerror(): new function that returns
+		the checker's last error message.
+		
+2003-06-11 [melvin]	0.9.0claws28
+
+	* po/POTFILES.in
+		Updated to take into account gtkaspell.c migration to
+		./src/gtk/ (Thanks to Ricardo Mones Lastra for reporting it)
+
+2003-06-10 [alfons]	0.9.0claws27
+
+	* src/filtering.[ch]
+	* src/folder.c
+	* src/matcher.c
+	* src/scoring.[ch]
+		- try fixing bug #18 (any brave testers?)
+		- add more robustness by refusing previously 
+		  unchecked NULL pointers 
+
+2003-06-10 [alfons]	0.9.0claws26
+
+	* src/procmsg.c
+		fix bug #176 by don't checking MsgInfos with a NULL msgid 
+
+2003-06-09 [alfons]	0.9.0claws25
+
+	* src/prefs_common.c
+		fix bug #163 "Icon switching doesnt work properly" by 
+		preventing early freeing of prefs_common.pixmap_theme_path.
+
+2003-06-09 [christoph]	0.9.0claws24
+
+	* src/gtk/gtkaspell.c
+		revert Thorsten's fix and add forgotten g_strdup for
+		aspell path (it should not be possible to alter the path a
+		GtkASpell uses from outside)
+
+2003-06-09 [thorsten]	0.9.0claws23
+
+	* src/gtk/gtkaspell.c
+		dont free prefs_common.aspell_path when closing compose
+
+2003-06-08 [colin]	0.9.0claws22
+
+	* src/plugins/spamassassin/spamassassin.c
+		fix prefs types
+
+2003-06-07 [christoph]	0.9.0claws21
+
+	* src/Makefile.am
+	* src/compose.c
+	* src/gtkaspell.[ch]		** REMOVE **
+	* src/gtk/Makefile.am
+	* src/gtk/gtkaspell.[ch]	** NEW **
+		o make gtkaspell independent from sylpheed's prefs
+		o move gtkaspell.[ch] to gtk directory
+
+2003-06-07 [christoph]	0.9.0claws20
+
+	* src/Makefile.am
+	* src/crash.c
+	* src/export.c
+	* src/filesel.[ch]		** REMOVE **
+	* src/folder.c
+	* src/main.[ch]
+	* src/common/sylpheed.[ch]
+	* src/gtk/Makefile.am
+	* src/gtk/filesel.[ch]		** NEW **
+	* src/gtk/pluginwindow.c
+	* src/gtk/sslcertwindow.c
+		move filesel.[ch] to gtk directory
+
+2003-06-07 [alfons]	0.9.0claws19
+
+	* src/filesel.c
+		make (multi) file selection dialog work again (Claws-only)
+
 2003-06-07 [thorsten]	0.9.0claws18
 
 	* po/de.po

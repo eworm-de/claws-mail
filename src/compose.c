@@ -972,7 +972,6 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
 	if (quote) {
 		gchar *qmark;
-		gchar *quote_str;
 
 		if (prefs_common.quotemark && *prefs_common.quotemark)
 			qmark = prefs_common.quotemark;
@@ -983,16 +982,15 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	{
 		gchar *p_body = g_strdup(body);
 		locale_from_utf8(&p_body);
-		
-		quote_str = compose_quote_fmt(compose, compose->replyinfo,
-					      prefs_common.quotefmt,
-					      qmark, p_body);
+		compose_quote_fmt(compose, compose->replyinfo,
+			          prefs_common.quotefmt,
+			          qmark, p_body);
 		g_free(p_body);
 	}
 #else
-		quote_str = compose_quote_fmt(compose, compose->replyinfo,
-					      prefs_common.quotefmt,
-					      qmark, body);
+		compose_quote_fmt(compose, compose->replyinfo,
+			          prefs_common.quotefmt,
+			          qmark, body);
 #endif
 	}
 
@@ -1082,40 +1080,38 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	text = GTK_STEXT(compose->text);
 	gtk_stext_freeze(text);
 
+	if (as_attach) {
+		gchar *msgfile;
 
-		if (as_attach) {
-			gchar *msgfile;
+		msgfile = procmsg_get_message_file_path(msginfo);
+		if (!is_file_exist(msgfile))
+			g_warning("%s: file not exist\n", msgfile);
+		else
+			compose_attach_append(compose, msgfile, msgfile,
+					      "message/rfc822");
 
-			msgfile = procmsg_get_message_file_path(msginfo);
-			if (!is_file_exist(msgfile))
-				g_warning("%s: file not exist\n", msgfile);
-			else
-				compose_attach_append(compose, msgfile, msgfile,
-						      "message/rfc822");
+		g_free(msgfile);
+	} else {
+		gchar *qmark;
+		MsgInfo *full_msginfo;
 
-			g_free(msgfile);
-		} else {
-			gchar *qmark;
-			gchar *quote_str;
-			MsgInfo *full_msginfo;
+		full_msginfo = procmsg_msginfo_get_full_info(msginfo);
+		if (!full_msginfo)
+			full_msginfo = procmsg_msginfo_copy(msginfo);
 
-			full_msginfo = procmsg_msginfo_get_full_info(msginfo);
-			if (!full_msginfo)
-				full_msginfo = procmsg_msginfo_copy(msginfo);
+		if (prefs_common.fw_quotemark &&
+		    *prefs_common.fw_quotemark)
+			qmark = prefs_common.fw_quotemark;
+		else
+			qmark = "> ";
 
-			if (prefs_common.fw_quotemark &&
-			    *prefs_common.fw_quotemark)
-				qmark = prefs_common.fw_quotemark;
-			else
-				qmark = "> ";
+		compose_quote_fmt(compose, full_msginfo,
+			          prefs_common.fw_quotefmt,
+			          qmark, body);
+		compose_attach_parts(compose, msginfo);
 
-			quote_str = compose_quote_fmt(compose, full_msginfo,
-						      prefs_common.fw_quotefmt,
-						      qmark, body);
-			compose_attach_parts(compose, msginfo);
-
-			procmsg_msginfo_free(full_msginfo);
-		}
+		procmsg_msginfo_free(full_msginfo);
+	}
 
 	if (account->auto_sig)
 		compose_insert_sig(compose, FALSE);
@@ -1733,7 +1729,7 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	gchar *buf;
 	gchar *p, *lastp;
 	gint len;
-	gchar *trimmed_body = body;
+	const gchar *trimmed_body = body;
 	
 	if (!msginfo)
 		msginfo = &dummyinfo;
@@ -1849,12 +1845,9 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	if (msginfo->subject && *msginfo->subject) {
 		gchar *buf, *buf2, *p;
 
-		buf = g_strdup(msginfo->subject);
-		while (!strncasecmp(buf, "Re:", 3)) {
-			p = buf + 3;
-			while (isspace(*p)) p++;
-			memmove(buf, p, strlen(p) + 1);
-		}
+		buf = p = g_strdup(msginfo->subject);
+		p += subject_get_reply_prefix_length(p);
+		memmove(buf, p, strlen(p) + 1);
 
 		buf2 = g_strdup_printf("Re: %s", buf);
 #ifdef WIN32
@@ -2513,6 +2506,10 @@ static guint get_indent_length(GtkSText *text, guint start_pos, guint text_len)
 	gchar cbuf[MB_LEN_MAX];
 	gboolean is_space;
 	gboolean is_indent;
+
+	if (prefs_common.quote_chars == NULL) {
+		return 0 ;
+	}
 
 	for (i = start_pos; i < text_len; i++) {
 		GET_CHAR(i, cbuf, ch_len);
@@ -3237,8 +3234,9 @@ gint compose_send(Compose *compose)
 }
 #endif
 
-static gboolean compose_use_attach(Compose *compose) {
-    return(gtk_clist_get_row_data(GTK_CLIST(compose->attach_clist), 0) != NULL);
+static gboolean compose_use_attach(Compose *compose) 
+{
+	return gtk_clist_get_row_data(GTK_CLIST(compose->attach_clist), 0) != NULL;
 }
 
 static gint compose_redirect_write_headers_from_headerlist(Compose *compose, 
@@ -5346,7 +5344,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	if (mode != COMPOSE_REDIRECT) {
         	if (prefs_common.enable_aspell && prefs_common.dictionary &&
 	    	    strcmp(prefs_common.dictionary, _("None"))) {
-			gtkaspell = gtkaspell_new((const gchar*)prefs_common.dictionary,
+			gtkaspell = gtkaspell_new(prefs_common.aspell_path,
+						  prefs_common.dictionary,
 #ifdef WIN32
 						  conv_X_get_current_iso_charset_str(),
 #else
@@ -5357,19 +5356,24 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 						  prefs_common.use_alternate,
 						  GTK_STEXT(text));
 			if (!gtkaspell) {
-				alertpanel_error(_("Spell checker could not be started.\n%s"), gtkaspellcheckers->error_message);
+				alertpanel_error(_("Spell checker could not "
+						"be started.\n%s"),
+						gtkaspell_checkers_strerror());
 				gtkaspell_checkers_reset_error();
 			} else {
 
 				GtkWidget *menuitem;
 
-				if (!gtkaspell_set_sug_mode(gtkaspell, prefs_common.aspell_sugmode)) {
-					debug_print("Aspell: could not set suggestion mode %s\n",
-				    	gtkaspellcheckers->error_message);
+				if (!gtkaspell_set_sug_mode(gtkaspell,
+						prefs_common.aspell_sugmode)) {
+					debug_print("Aspell: could not set "
+						    "suggestion mode %s\n",
+						    gtkaspell_checkers_strerror());
 					gtkaspell_checkers_reset_error();
 				}
 
-				menuitem = gtk_item_factory_get_item(ifactory, "/Spelling/Spelling Configuration");
+				menuitem = gtk_item_factory_get_item(ifactory,
+					"/Spelling/Spelling Configuration");
 				gtkaspell_populate_submenu(gtkaspell, menuitem);
 				menu_set_sensitive(ifactory, "/Spelling", TRUE);
 				}

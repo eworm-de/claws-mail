@@ -91,7 +91,6 @@
 #endif
 
 gchar *prog_version;
-gchar *startup_dir;
 #ifdef CRASH_DIALOG
 gchar *argv0;
 #endif
@@ -209,7 +208,6 @@ int main(int argc, char *argv[])
 	}
 
 	prog_version = PROG_VERSION;
-	startup_dir = g_get_current_dir();
 #ifdef CRASH_DIALOG
 	argv0 = g_strdup(argv[0]);
 #endif
@@ -336,11 +334,11 @@ int main(int argc, char *argv[])
 	gpgme_register_idle(idle_function_for_gpgme);
 #endif
 
-#if USE_ASPELL
+#ifdef USE_ASPELL
 #ifdef WIN32
 	w32_aspell_init();
 #endif
-	gtkaspellcheckers = gtkaspell_checkers_new();
+	gtkaspell_checkers_init();
 #endif
 	
 	sock_set_io_timeout(prefs_common.io_timeout_secs);
@@ -442,8 +440,8 @@ int main(int argc, char *argv[])
 
 	addressbook_destroy();
 
-#if USE_ASPELL       
-	gtkaspell_checkers_delete();
+#ifdef USE_ASPELL       
+	gtkaspell_checkers_quit();
 #endif
 	sylpheed_done();
 
@@ -497,7 +495,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 #else
 				if (*p != G_DIR_SEPARATOR)
 #endif
-					file = g_strconcat(startup_dir,
+					file = g_strconcat(sylpheed_get_startup_dir(),
 							   G_DIR_SEPARATOR_S,
 							   p, NULL);
 				else
@@ -893,10 +891,8 @@ static void lock_socket_input_cb(gpointer data,
 	if (!strncmp(buf, "popup", 5)) {
 		main_window_popup(mainwin);
 	} else if (!strncmp(buf, "receive_all", 11)) {
-		main_window_popup(mainwin);
 		inc_all_account_mail(mainwin, prefs_common.newmail_notify_manu);
 	} else if (!strncmp(buf, "receive", 7)) {
-		main_window_popup(mainwin);
 		inc_mail(mainwin, prefs_common.newmail_notify_manu);
 	} else if (!strncmp(buf, "compose_attach", 14)) {
 		GPtrArray *files;

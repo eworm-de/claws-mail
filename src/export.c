@@ -38,6 +38,7 @@
 #include <gtk/gtksignal.h>
 
 #include "intl.h"
+#include "sylpheed.h"
 #include "main.h"
 #include "inc.h"
 #include "mbox.h"
@@ -75,7 +76,7 @@ gint export_mbox(FolderItem *default_src)
 	else
 		gtk_widget_show(window);
 
-	change_dir(startup_dir);
+	change_dir(sylpheed_get_startup_dir());
 
 	if (default_src && default_src->path)
 		src_id = folder_item_get_identifier(default_src);

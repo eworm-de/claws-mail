@@ -43,8 +43,10 @@
 #include "addressbook.h"
 #include "addr_compl.h"
 #include "utils.h"
+#include <pthread.h>
 
-/* How it works:
+/*
+ * How it works:
  *
  * The address book is read into memory. We set up an address list
  * containing all address book entries. Next we make the completion
@@ -61,8 +63,14 @@
  * any of those words).
  */ 
 	
-/* address_entry - structure which refers to the original address entry in the
- * address book 
+/**
+ * Reference to address index.
+ */
+static AddressIndex *_addressIndex_ = NULL;
+
+/**
+ * address_entry - structure which refers to the original address entry in the
+ * address book .
  */
 typedef struct
 {
@@ -70,7 +78,8 @@ typedef struct
 	gchar *address;
 } address_entry;
 
-/* completion_entry - structure used to complete addresses, with a reference
+/**
+ * completion_entry - structure used to complete addresses, with a reference
  * the the real address information.
  */
 typedef struct
@@ -100,8 +109,9 @@ static gchar	   *g_completion_prefix;	/* last prefix. (this is cached here
 
 /*******************************************************************************/
 
-/* completion_func() - used by GTK to find the string data to be used for 
- * completion 
+/**
+ * Function used by GTK to find the string data to be used for completion.
+ * \param data Pointer to data being processed.
  */
 static gchar *completion_func(gpointer data)
 {
@@ -110,12 +120,18 @@ static gchar *completion_func(gpointer data)
 	return ((completion_entry *)data)->string;
 } 
 
+/**
+ * Initialize all completion index data.
+ */
 static void init_all(void)
 {
 	g_completion = g_completion_new(completion_func);
 	g_return_if_fail(g_completion != NULL);
 }
 
+/**
+ * Free up all completion index data.
+ */
 static void free_all(void)
 {
 	GList *walk;
@@ -143,6 +159,11 @@ static void free_all(void)
 	g_completion = NULL;
 }
 
+/**
+ * Append specified address entry to the index.
+ * \param str Index string value.
+ * \param ae  Entry containing address data.
+ */
 static void add_address1(const char *str, address_entry *ae)
 {
 	completion_entry *ce1;
@@ -155,8 +176,14 @@ static void add_address1(const char *str, address_entry *ae)
 	g_completion_list = g_list_prepend(g_completion_list, ce1);
 }
 
-/* add_address() - adds address to the completion list. this function looks
- * complicated, but it's only allocation checks.
+/**
+ * Adds address to the completion list. This function looks complicated, but
+ * it's only allocation checks. Each value will be included in the index.
+ * \param name    Recipient name.
+ * \param address EMail address.
+ * \param alias   Alias to append.
+ * \return <code>0</code> if entry appended successfully, or <code>-1</code>
+ *         if failure.
  */
 static gint add_address(const gchar *name, const gchar *address, const gchar *alias)
 {
@@ -171,7 +198,7 @@ static gint add_address(const gchar *name, const gchar *address, const gchar *al
 	ae->name    = g_strdup(name);
 	ae->address = g_strdup(address);		
 
-	g_address_list 	  = g_list_prepend(g_address_list,    ae);
+	g_address_list = g_list_prepend(g_address_list, ae);
 
 	add_address1(name, ae);
 	add_address1(address, ae);
@@ -180,16 +207,48 @@ static gint add_address(const gchar *name, const gchar *address, const gchar *al
 	return 0;
 }
 
-/* read_address_book()
+/**
+ * Read address book, creating all entries in the completion index.
  */ 
 static void read_address_book(void) {	
-	addressbook_load_completion( add_address );
+	addrindex_load_completion( _addressIndex_, add_address );
 	g_address_list = g_list_reverse(g_address_list);
 	g_completion_list = g_list_reverse(g_completion_list);
 }
 
-/* start_address_completion() - returns the number of addresses 
- * that should be matched for completion.
+/**
+ * Test whether there is a completion pending.
+ * \return <code>TRUE</code> if pending.
+ */
+static gboolean is_completion_pending(void)
+{
+	/* check if completion pending, i.e. we might satisfy a request for the next
+	 * or previous address */
+	 return g_completion_count;
+}
+
+/**
+ * Clear the completion cache.
+ */
+static void clear_completion_cache(void)
+{
+	if (is_completion_pending()) {
+		if (g_completion_prefix)
+			g_free(g_completion_prefix);
+
+		if (g_completion_addresses) {
+			g_slist_free(g_completion_addresses);
+			g_completion_addresses = NULL;
+		}
+
+		g_completion_count = g_completion_next = 0;
+	}
+}
+
+/**
+ * Prepare completion index. This function should be called prior to attempting
+ * address completion.
+ * \return The number of addresses in the completion list.
  */
 gint start_address_completion(void)
 {
@@ -208,12 +267,16 @@ gint start_address_completion(void)
 	return g_list_length(g_completion_list);
 }
 
-/* get_address_from_edit() - returns a possible address (or a part)
- * from an entry box. To make life easier, we only look at the last valid address 
- * component; address completion only works at the last string component in
- * the entry box. 
- */ 
-gchar *get_address_from_edit(GtkEntry *entry, gint *start_pos)
+/**
+ * Retrieve a possible address (or a part) from an entry box. To make life
+ * easier, we only look at the last valid address component; address
+ * completion only works at the last string component in the entry box.
+ *
+ * \param entry Address entry field.
+ * \param start_pos Address of start position of address.
+ * \return Possible address.
+ */
+static gchar *get_address_from_edit(GtkEntry *entry, gint *start_pos)
 {
 	const gchar *edit_text;
 	gint cur_pos;
@@ -282,23 +345,29 @@ gchar *get_address_from_edit(GtkEntry *entry, gint *start_pos)
 	return str;
 } 
 
-/* replace_address_in_edit() - replaces an incompleted address with a completed one.
+/**
+ * Replace an incompleted address with a completed one.
+ * \param entry     Address entry field.
+ * \param newtext   New text.
+ * \param start_pos Insertion point in entry field.
  */
-void replace_address_in_edit(GtkEntry *entry, const gchar *newtext,
+static void replace_address_in_edit(GtkEntry *entry, const gchar *newtext,
 			     gint start_pos)
 {
 	if (!newtext) return;
-
 	gtk_editable_delete_text(GTK_EDITABLE(entry), start_pos, -1);
 	gtk_editable_insert_text(GTK_EDITABLE(entry), newtext, strlen(newtext),
 				 &start_pos);
 	gtk_editable_set_position(GTK_EDITABLE(entry), -1);
 }
 
-/* complete_address() - tries to complete an addres, and returns the
- * number of addresses found. use get_complete_address() to get one.
- * returns zero if no match was found, otherwise the number of addresses,
- * with the original prefix at index 0. 
+/**
+ * Attempt to complete an address, and returns the number of addresses found.
+ * Use <code>get_complete_address()</code> to get an entry from the index.
+ *
+ * \param  str Search string to find.
+ * \return Zero if no match was found, otherwise the number of addresses; the
+ *         original prefix (search string) will appear at index 0. 
  */
 guint complete_address(const gchar *str)
 {
@@ -344,8 +413,11 @@ guint complete_address(const gchar *str)
 	return count;
 }
 
-/* get_complete_address() - returns a complete address. the returned
- * string should be freed 
+/**
+ * Return a complete address from the index.
+ * \param index Index of entry that was found (by the previous call to
+ *              <code>complete_address()</code>
+ * \return Completed address string; this should be freed when done.
  */
 gchar *get_complete_address(gint index)
 {
@@ -362,8 +434,7 @@ gchar *get_complete_address(gint index)
 			if (p != NULL) {
 				if (!p->name || p->name[0] == '\0')
 					address = g_strdup_printf(p->address);
-				else if (p->name[0] != '"' &&
-					 strpbrk(p->name, ",.[]<>") != NULL)
+				else if (strchr_with_skip_quote(p->name, '"', ','))
 					address = g_strdup_printf
 						("\"%s\" <%s>", p->name, p->address);
 				else
@@ -376,7 +447,11 @@ gchar *get_complete_address(gint index)
 	return address;
 }
 
-gchar *get_next_complete_address(void)
+/**
+ * Return the next complete address match from the completion index.
+ * \return Completed address string; this should be freed when done.
+ */
+static gchar *get_next_complete_address(void)
 {
 	if (is_completion_pending()) {
 		gchar *res;
@@ -391,7 +466,11 @@ gchar *get_next_complete_address(void)
 		return NULL;
 }
 
-gchar *get_prev_complete_address(void)
+/**
+ * Return the previous complete address match from the completion index.
+ * \return Completed address string; this should be freed when done.
+ */
+static gchar *get_prev_complete_address(void)
 {
 	if (is_completion_pending()) {
 		int n = g_completion_next - 2;
@@ -408,7 +487,11 @@ gchar *get_prev_complete_address(void)
 		return NULL;
 }
 
-guint get_completion_count(void)
+/**
+ * Return a count of the completed matches in the completion index.
+ * \return Number of matched entries.
+ */
+static guint get_completion_count(void)
 {
 	if (is_completion_pending())
 		return g_completion_count;
@@ -416,31 +499,11 @@ guint get_completion_count(void)
 		return 0;
 }
 
-/* should clear up anything after complete_address() */
-void clear_completion_cache(void)
-{
-	if (is_completion_pending()) {
-		if (g_completion_prefix)
-			g_free(g_completion_prefix);
-
-		if (g_completion_addresses) {
-			g_slist_free(g_completion_addresses);
-			g_completion_addresses = NULL;
-		}
-
-		g_completion_count = g_completion_next = 0;
-	}
-}
-
-gboolean is_completion_pending(void)
-{
-	/* check if completion pending, i.e. we might satisfy a request for the next
-	 * or previous address */
-	 return g_completion_count;
-}
-
-/* invalidate_address_completion() - should be called if address book
- * changed; 
+/**
+ * Invalidate address completion index. This function should be called whenever
+ * the address book changes. This forces data to be read into the completion
+ * data.
+ * \return Number of entries in index.
  */
 gint invalidate_address_completion(void)
 {
@@ -450,14 +513,18 @@ gint invalidate_address_completion(void)
 		free_all();
 		init_all();
 		read_address_book();
-		if (g_completion_list)
-			g_completion_add_items(g_completion, g_completion_list);
+		g_completion_add_items(g_completion, g_completion_list);
 		clear_completion_cache();
 	}
 
 	return g_list_length(g_completion_list);
 }
 
+/**
+ * Finished with completion index. This function should be called after
+ * matching addresses.
+ * \return Reference count.
+ */
 gint end_address_completion(void)
 {
 	clear_completion_cache();
@@ -470,14 +537,49 @@ gint end_address_completion(void)
 	return g_ref_count; 
 }
 
+/*
+ * Define the structure of the completion window.
+ */
+typedef struct _CompletionWindow CompletionWindow;
+struct _CompletionWindow {
+	gint      listCount;
+	gchar     *searchTerm;
+	GtkWidget *window;
+	GtkWidget *entry;
+	GtkWidget *clist;
+};
 
-/* address completion entry ui. the ui (completion list was inspired by galeon's
+/**
+ * Completion window.
+ */
+static CompletionWindow *_compWindow_ = NULL;
+
+/**
+ * Mutex to protect callback from multiple threads.
+ */
+static pthread_mutex_t _completionMutex_ = PTHREAD_MUTEX_INITIALIZER;
+
+/**
+ * Completion queue list.
+ */
+static GList *_displayQueue_ = NULL;
+
+/**
+ * Current query ID.
+ */
+static gint _queryID_ = 0;
+
+/**
+ * Completion idle ID.
+ */
+static gint _completionIdleID_ = 0;
+
+/*
+ * address completion entry ui. the ui (completion list was inspired by galeon's
  * auto completion list). remaining things powered by sylpheed's completion engine.
  */
 
-#define ENTRY_DATA_TAB_HOOK	"tab_hook"			/* used to lookup entry */
-#define WINDOW_DATA_COMPL_ENTRY	"compl_entry"	/* used to store entry for compl. window */
-#define WINDOW_DATA_COMPL_CLIST "compl_clist"	/* used to store clist for compl. window */
+#define ENTRY_DATA_TAB_HOOK	"tab_hook"	/* used to lookup entry */
 
 static void address_completion_mainwindow_set_focus	(GtkWindow   *window,
 							 GtkWidget   *widget,
@@ -494,38 +596,111 @@ static void completion_window_select_row(GtkCList	 *clist,
 					 gint		  row,
 					 gint		  col,
 					 GdkEvent	 *event,
-					 GtkWidget	**completion_window);
+					 CompletionWindow *compWin );
+
 static gboolean completion_window_button_press
 					(GtkWidget	 *widget,
 					 GdkEventButton  *event,
-					 GtkWidget	**completion_window);
+					 CompletionWindow *compWin );
+
 static gboolean completion_window_key_press
 					(GtkWidget	 *widget,
 					 GdkEventKey	 *event,
-					 GtkWidget	**completion_window);
+					 CompletionWindow *compWin );
+static void address_completion_create_completion_window( GtkEntry *entry_ );
 
+/**
+ * Create a completion window object.
+ * \return Initialized completion window.
+ */
+static CompletionWindow *addrcompl_create_window( void ) {
+	CompletionWindow *cw;
 
+	cw = g_new0( CompletionWindow, 1 );
+	cw->listCount = 0;
+	cw->searchTerm = NULL;
+	cw->window = NULL;
+	cw->entry = NULL;
+	cw->clist = NULL;
+
+	return cw;	
+}
+
+/**
+ * Destroy completion window.
+ * \param cw Window to destroy.
+ */
+static void addrcompl_destroy_window( CompletionWindow *cw ) {
+	/* Remove idler function... or application may not terminate */
+	if( _completionIdleID_ != 0 ) {
+		gtk_idle_remove( _completionIdleID_ );
+		_completionIdleID_ = 0;
+	}
+
+	/* Now destroy window */	
+	if( cw ) {
+		/* Clear references to widgets */
+		cw->entry = NULL;
+		cw->clist = NULL;
+
+		/* Free objects */
+		if( cw->window ) {
+			gtk_widget_hide( cw->window );
+			gtk_widget_destroy( cw->window );
+		}
+		cw->window = NULL;
+	}
+}
+
+/**
+ * Free up completion window.
+ * \param cw Window to free.
+ */
+static void addrcompl_free_window( CompletionWindow *cw ) {
+	if( cw ) {
+		addrcompl_destroy_window( cw );
+
+		g_free( cw->searchTerm );
+		cw->searchTerm = NULL;
+
+		/* Clear references */		
+		cw->listCount = 0;
+
+		/* Free object */		
+		g_free( cw );
+	}
+}
+
+/**
+ * Select specified row in list.
+ * \param clist List to process.
+ * \param row   Row to select.
+ */
 static void completion_window_advance_to_row(GtkCList *clist, gint row)
 {
 	g_return_if_fail(row < g_completion_count);
 	gtk_clist_select_row(clist, row, 0);
 }
 
+/**
+ * Advance selection to previous/next item in list.
+ * \param clist   List to process.
+ * \param forward Set to <i>TRUE</i> to select next or <i>FALSE</i> for
+ *                previous entry.
+ */
 static void completion_window_advance_selection(GtkCList *clist, gboolean forward)
 {
 	int row;
 
 	g_return_if_fail(clist != NULL);
-	g_return_if_fail(clist->selection != NULL);
 
-	row = GPOINTER_TO_INT(clist->selection->data);
-
-	row = forward ? (row + 1) % g_completion_count :
-			(row - 1) < 0 ? g_completion_count - 1 : row - 1;
-
-	gtk_clist_freeze(clist);
-	completion_window_advance_to_row(clist, row);					
-	gtk_clist_thaw(clist);
+	if( clist->selection ) {
+		row = GPOINTER_TO_INT(clist->selection->data);
+		row = forward ? ( row + 1 ) : ( row - 1 );
+		gtk_clist_freeze(clist);
+		gtk_clist_select_row(clist, row, 0);
+		gtk_clist_thaw(clist);
+	}
 }
 
 #if 0
@@ -559,27 +734,230 @@ static void completion_window_accept_selection(GtkWidget **window,
 }
 #endif
 
-/* completion_window_apply_selection() - apply the current selection in the
- * clist */
+/**
+ * Resize window to accommodate maximum number of address entries.
+ * \param cw Completion window.
+ */
+static void addrcompl_resize_window( CompletionWindow *cw ) {
+	GtkRequisition r;
+	gint x, y, width, height, depth;
+
+	/* Get current geometry of window */
+	gdk_window_get_geometry( cw->window->window, &x, &y, &width, &height, &depth );
+
+	gtk_widget_size_request( cw->clist, &r );
+	gtk_widget_set_usize( cw->window, width, r.height );
+	gtk_widget_show_all( cw->window );
+	gtk_widget_size_request( cw->clist, &r );
+
+	/* Adjust window height to available screen space */
+	if( ( y + r.height ) > gdk_screen_height() ) {
+		gtk_window_set_policy( GTK_WINDOW( cw->window ), TRUE, FALSE, FALSE );
+		gtk_widget_set_usize( cw->window, width, gdk_screen_height() - y );
+	}
+}
+
+/**
+ * Add an address the completion window address list.
+ * \param cw      Completion window.
+ * \param address Address to add.
+ */
+static void addrcompl_add_entry( CompletionWindow *cw, gchar *address ) {
+	gchar *text[] = { NULL, NULL };
+
+	/* printf( "\t\tAdding :%s\n", address ); */
+	text[0] = address;
+	gtk_clist_append( GTK_CLIST(cw->clist), text );
+	cw->listCount++;
+
+	/* Resize window */
+	addrcompl_resize_window( cw );
+	gtk_grab_add( cw->window );
+
+	if( cw->listCount == 1 ) {
+		/* Select first row for now */
+		gtk_clist_select_row( GTK_CLIST(cw->clist), 0, 0);
+	}
+	else if( cw->listCount == 2 ) {
+		/* Move off first row */
+		gtk_clist_select_row( GTK_CLIST(cw->clist), 1, 0);
+	}
+}
+
+/**
+ * Completion idle function. This function is called by the main (UI) thread
+ * during UI idle time while an address search is in progress. Items from the
+ * display queue are processed and appended to the address list.
+ *
+ * \param data Target completion window to receive email addresses.
+ * \return <i>TRUE</i> to ensure that idle event do not get ignored.
+ */
+static gboolean addrcompl_idle( gpointer data ) {
+	GList *node;
+	gchar *address;
+	CompletionWindow *cw;
+
+	/* Process all entries in display queue */
+	pthread_mutex_lock( & _completionMutex_ );
+	if( _displayQueue_ ) {
+		cw = data;
+		node = _displayQueue_;
+		while( node ) {
+			address = node->data;
+			/* printf( "address ::: %s :::\n", address ); */
+			addrcompl_add_entry( cw, address );
+			g_free( address );
+			node = g_list_next( node );
+		}
+		g_list_free( _displayQueue_ );
+		_displayQueue_ = NULL;
+	}
+	pthread_mutex_unlock( & _completionMutex_ );
+
+	return TRUE;
+}
+
+/**
+ * Callback entry point. The background thread (if any) appends the address
+ * list to the display queue.
+ * \param queryID    Query ID of search request.
+ * \param listEMail  List of zero of more email objects that met search
+ *                   criteria.
+ * \param target     Target object to received data.
+ */
+static gint addrcompl_callback(
+	gint queryID, GList *listEMail, gpointer target )
+{
+	GList *node;
+	gchar *address;
+
+	/* printf( "addrcompl_callback::queryID=%d\n", queryID ); */
+	pthread_mutex_lock( & _completionMutex_ );
+	if( queryID == _queryID_ ) {
+		/* Append contents to end of display queue */
+		node = listEMail;
+		while( node ) {
+			ItemEMail *email = node->data;
+			if( target ) {
+				address = addritem_format_email( email );
+				/* printf( "\temail/address ::%s::\n", address ); */
+				_displayQueue_ = g_list_append( _displayQueue_, address );
+			}
+			node = g_list_next( node );
+		}
+	}
+	pthread_mutex_unlock( & _completionMutex_ );
+	/* printf( "addrcompl_callback...done\n" ); */
+}
+
+/**
+ * Clear the display queue.
+ */
+static void addrcompl_clear_queue( void ) {
+	/* Clear out display queue */
+	pthread_mutex_lock( & _completionMutex_ );
+
+	g_list_free( _displayQueue_ );
+	_displayQueue_ = NULL;
+
+	pthread_mutex_unlock( & _completionMutex_ );
+}
+
+/**
+ * Add a single address entry into the display queue.
+ * \param address Address to append.
+ */
+static void addrcompl_add_queue( gchar *address ) {
+	pthread_mutex_lock( & _completionMutex_ );
+	_displayQueue_ = g_list_append( _displayQueue_, address );
+	pthread_mutex_unlock( & _completionMutex_ );
+}
+
+/**
+ * Load list with entries from local completion index.
+ * \param cw Completion window.
+ */
+static void addrcompl_load_local( CompletionWindow *cw ) {
+	guint count = 0;
+
+	for (count = 0; count < get_completion_count(); count++) {
+		gchar *address;
+
+		address = get_complete_address( count );
+		/* printf( "\taddress ::%s::\n", address ); */
+
+		/* Append contents to end of display queue */
+		addrcompl_add_queue( address );
+	}
+}
+
+/**
+ * Start the search.
+ */
+static void addrcompl_start_search( void ) {
+	gchar *searchTerm;
+
+	searchTerm = g_strdup( _compWindow_->searchTerm );
+
+	/* Setup the search */
+	_queryID_ = addrindex_setup_search(
+		_addressIndex_, searchTerm, _compWindow_, addrcompl_callback );
+	g_free( searchTerm );
+	/* printf( "addrcompl_start_search::queryID=%d\n", _queryID_ ); */
+
+	/* Load local stuff */
+	addrcompl_load_local( _compWindow_ );
+
+	/* Sit back and wait until something happens */
+	_completionIdleID_ =
+		gtk_idle_add( ( GtkFunction ) addrcompl_idle, _compWindow_ );
+	/* printf( "addrindex_start_search::queryID=%d\n", _queryID_ ); */
+
+	addrindex_start_search( _addressIndex_, _queryID_ );
+}
+
+/**
+ * Apply the current selection in the list to the entry field. Focus is also
+ * moved to the next widget so that Tab key works correctly.
+ * \param clist List to process.
+ * \param entry Address entry field.
+ */
 static void completion_window_apply_selection(GtkCList *clist, GtkEntry *entry)
 {
 	gchar *address = NULL, *text = NULL;
 	gint   cursor_pos, row;
+	GtkWidget *parent;
 
 	g_return_if_fail(clist != NULL);
 	g_return_if_fail(entry != NULL);
 	g_return_if_fail(clist->selection != NULL);
 
+	/* First remove the idler */
+	if( _completionIdleID_ != 0 ) {
+		gtk_idle_remove( _completionIdleID_ );
+		_completionIdleID_ = 0;
+	}
+
+	/* Process selected item */
 	row = GPOINTER_TO_INT(clist->selection->data);
 
 	address = get_address_from_edit(entry, &cursor_pos);
 	g_free(address);
 	gtk_clist_get_text(clist, row, 0, &text);
 	replace_address_in_edit(entry, text, cursor_pos);
+
+	/* Move focus to next widget */
+	parent = GTK_WIDGET(entry)->parent;
+	if( parent ) {
+		gtk_container_focus( GTK_CONTAINER(parent), GTK_DIR_TAB_FORWARD );
+	}
 }
 
-/* should be called when creating the main window containing address
- * completion entries */
+/**
+ * Start address completion. Should be called when creating the main window
+ * containing address completion entries.
+ * \param mainwindow Main window.
+ */
 void address_completion_start(GtkWidget *mainwindow)
 {
 	start_address_completion();
@@ -590,10 +968,16 @@ void address_completion_start(GtkWidget *mainwindow)
 			   mainwindow);
 }
 
-/* Need unique data to make unregistering signal handler possible for the auto
- * completed entry */
+/**
+ * Need unique data to make unregistering signal handler possible for the auto
+ * completed entry.
+ */
 #define COMPLETION_UNIQUE_DATA (GINT_TO_POINTER(0xfeefaa))
 
+/**
+ * Register specified entry widget for address completion.
+ * \param entry Address entry field.
+ */
 void address_completion_register_entry(GtkEntry *entry)
 {
 	g_return_if_fail(entry != NULL);
@@ -612,6 +996,10 @@ void address_completion_register_entry(GtkEntry *entry)
 				0); /* magic */
 }
 
+/**
+ * Unregister specified entry widget from address completion operations.
+ * \param entry Address entry field.
+ */
 void address_completion_unregister_entry(GtkEntry *entry)
 {
 	GtkObject *entry_obj;
@@ -632,10 +1020,12 @@ void address_completion_unregister_entry(GtkEntry *entry)
 		COMPLETION_UNIQUE_DATA);
 }
 
-/* should be called when main window with address completion entries
- * terminates.
- * NOTE: this function assumes that it is called upon destruction of
- * the window */
+/**
+ * End address completion. Should be called when main window with address
+ * completion entries terminates. NOTE: this function assumes that it is
+ * called upon destruction of the window.
+ * \param mainwindow Main window.
+ */
 void address_completion_end(GtkWidget *mainwindow)
 {
 	/* if address_completion_end() is really called on closing the window,
@@ -652,15 +1042,21 @@ static void address_completion_mainwindow_set_focus(GtkWindow *window,
 		clear_completion_cache();
 }
 
-/* watch for tabs in one of the address entries. if no tab then clear the
- * completion cache */
+/**
+ * Listener that watches for tab or other keystroke in address entry field.
+ * \param entry Address entry field.
+ * \param ev    Event object.
+ * \param data  User data.
+ * \return <i>TRUE</i>.
+ */
 static gboolean address_completion_entry_key_pressed(GtkEntry    *entry,
 						     GdkEventKey *ev,
 						     gpointer     data)
 {
 	if (ev->keyval == GDK_Tab) {
-		if (address_completion_complete_address_in_entry(entry, TRUE)) {
-			address_completion_create_completion_window(entry);
+		addrcompl_clear_queue();
+
+		if( address_completion_complete_address_in_entry( entry, TRUE ) ) {
 			/* route a void character to the default handler */
 			/* this is a dirty hack; we're actually changing a key
 			 * reported by the system. */
@@ -668,7 +1064,14 @@ static gboolean address_completion_entry_key_pressed(GtkEntry    *entry,
 			ev->state &= ~GDK_SHIFT_MASK;
 			gtk_signal_emit_stop_by_name(GTK_OBJECT(entry),
 						     "key_press_event");
-		} else {
+
+			/* Create window */			
+			address_completion_create_completion_window(entry);
+
+			/* Start remote queries */
+			addrcompl_start_search();
+		}
+		else {
 			/* old behaviour */
 		}
 	} else if (ev->keyval == GDK_Shift_L
@@ -687,174 +1090,168 @@ static gboolean address_completion_entry_key_pressed(GtkEntry    *entry,
 
 	return TRUE;
 }
-
-/* initialize the completion cache and put first completed string
- * in entry. this function used to do back cycling but this is not
- * currently used. since the address completion behaviour has been
- * changed regularly, we keep the feature in case someone changes
- * his / her mind again. :) */
+/**
+ * Initialize search term for address completion.
+ * \param entry Address entry field.
+ */
 static gboolean address_completion_complete_address_in_entry(GtkEntry *entry,
 							     gboolean  next)
 {
 	gint ncount, cursor_pos;
-	gchar *address, *new = NULL;
-	gboolean completed = FALSE;
+	gchar *searchTerm, *new = NULL;
 
 	g_return_val_if_fail(entry != NULL, FALSE);
 
 	if (!GTK_WIDGET_HAS_FOCUS(entry)) return FALSE;
 
 	/* get an address component from the cursor */
-	address = get_address_from_edit(entry, &cursor_pos);
-	if (!address) return FALSE;
+	searchTerm = get_address_from_edit( entry, &cursor_pos );
+	if( ! searchTerm ) return FALSE;
+	/* printf( "search for :::%s:::\n", searchTerm ); */
 
-	/* still something in the cache */
-	if (is_completion_pending()) {
-		new = next ? get_next_complete_address() :
-			get_prev_complete_address();
-	} else {
-		if (0 < (ncount = complete_address(address)))
-			new = get_next_complete_address();
+	/* Clear any existing search */
+	if( _compWindow_->searchTerm ) {
+		g_free( _compWindow_->searchTerm );
+	}
+	_compWindow_->searchTerm = g_strdup( searchTerm );
+
+	/* Perform search on local completion index */
+	ncount = complete_address( searchTerm );
+	if( 0 < ncount ) {
+		new = get_next_complete_address();
+		g_free( new );
 	}
 
-	if (new) {
-		/* prevent "change" signal */
-		/* replace_address_in_edit(entry, new, cursor_pos); */
-		g_free(new);
-		completed = TRUE;
+	/* Make sure that drop-down appears uniform! */
+	if( ncount == 0 ) {
+		addrcompl_add_queue( g_strdup( searchTerm ) );
 	}
+	g_free( searchTerm );
 
-	g_free(address);
-
-	return completed;
+	return TRUE;
 }
 
-static void address_completion_create_completion_window(GtkEntry *entry_)
+/**
+ * Create new address completion window for specified entry.
+ * \param entry_ Entry widget to associate with window.
+ */
+static void address_completion_create_completion_window( GtkEntry *entry_ )
 {
-	static GtkWidget *completion_window;
 	gint x, y, height, width, depth;
 	GtkWidget *scroll, *clist;
 	GtkRequisition r;
-	guint count = 0;
+	GtkWidget *window;
 	GtkWidget *entry = GTK_WIDGET(entry_);
 
-	if (completion_window) {
-		gtk_widget_destroy(completion_window);
-		completion_window = NULL;
-	}
+	/* Create new window and list */
+	window = gtk_window_new(GTK_WINDOW_POPUP);
+	clist  = gtk_clist_new(1);
+
+	/* Destroy any existing window */
+	addrcompl_destroy_window( _compWindow_ );
+
+	/* Create new object */
+	_compWindow_->window = window;
+	_compWindow_->entry = entry;
+	_compWindow_->clist = clist;
+	_compWindow_->listCount = 0;
 
 	scroll = gtk_scrolled_window_new(NULL, NULL);
-	clist  = gtk_clist_new(1);
-	gtk_clist_set_selection_mode(GTK_CLIST(clist), GTK_SELECTION_SINGLE);
-	
-	completion_window = gtk_window_new(GTK_WINDOW_POPUP);
-
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
 				       GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_container_add(GTK_CONTAINER(completion_window), scroll);
+	gtk_container_add(GTK_CONTAINER(window), scroll);
 	gtk_container_add(GTK_CONTAINER(scroll), clist);
+	gtk_clist_set_selection_mode(GTK_CLIST(clist), GTK_SELECTION_SINGLE);
 
-	/* set the unique data so we can always get back the entry and
-	 * clist window to which this completion window has been attached */
-	gtk_object_set_data(GTK_OBJECT(completion_window),
-			    WINDOW_DATA_COMPL_ENTRY, entry_);
-	gtk_object_set_data(GTK_OBJECT(completion_window),
-			    WINDOW_DATA_COMPL_CLIST, clist);
-
-	gtk_signal_connect(GTK_OBJECT(clist), "select_row",
-			   GTK_SIGNAL_FUNC(completion_window_select_row),
-			   &completion_window);
-
-	for (count = 0; count < get_completion_count(); count++) {
-		gchar *text[] = {NULL, NULL};
-
-		text[0] = get_complete_address(count);
-		gtk_clist_append(GTK_CLIST(clist), text);
-		g_free(text[0]);
-	}
-
+	/* Use entry widget to create initial window */
 	gdk_window_get_geometry(entry->window, &x, &y, &width, &height, &depth);
 	gdk_window_get_deskrelative_origin (entry->window, &x, &y);
 	y += height;
-	gtk_widget_set_uposition(completion_window, x, y);
+	gtk_widget_set_uposition(window, x, y);
 
-	gtk_widget_size_request(clist, &r);
-	gtk_widget_set_usize(completion_window, width, r.height);
-	gtk_widget_show_all(completion_window);
-	gtk_widget_size_request(clist, &r);
+	/* Resize window to fit initial (empty) address list */
+	gtk_widget_size_request( clist, &r );
+	gtk_widget_set_usize( window, width, r.height );
+	gtk_widget_show_all( window );
+	gtk_widget_size_request( clist, &r );
 
-	if ((y + r.height) > gdk_screen_height()) {
-		gtk_window_set_policy(GTK_WINDOW(completion_window),
-				      TRUE, FALSE, FALSE);
-		gtk_widget_set_usize(completion_window, width,
-				     gdk_screen_height () - y);
-	}
-
-	gtk_signal_connect(GTK_OBJECT(completion_window),
+	/* Setup handlers */
+	gtk_signal_connect(GTK_OBJECT(clist), "select_row",
+			   GTK_SIGNAL_FUNC(completion_window_select_row),
+			   _compWindow_ );
+	gtk_signal_connect(GTK_OBJECT(window),
 			   "button-press-event",
 			   GTK_SIGNAL_FUNC(completion_window_button_press),
-			   &completion_window);
-	gtk_signal_connect(GTK_OBJECT(completion_window),
+			   _compWindow_ );
+	gtk_signal_connect(GTK_OBJECT(window),
 			   "key-press-event",
 			   GTK_SIGNAL_FUNC(completion_window_key_press),
-			   &completion_window);
-	gdk_pointer_grab(completion_window->window, TRUE,
+			   _compWindow_ );
+	gdk_pointer_grab(window->window, TRUE,
 			 GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK |
 			 GDK_BUTTON_RELEASE_MASK,
 			 NULL, NULL, GDK_CURRENT_TIME);
-	gtk_grab_add(completion_window);
+	gtk_grab_add( window );
 
 	/* this gets rid of the irritating focus rectangle that doesn't
 	 * follow the selection */
 	GTK_WIDGET_UNSET_FLAGS(clist, GTK_CAN_FOCUS);
-	gtk_clist_select_row(GTK_CLIST(clist), 1, 0);
 }
 
-
-/* row selection sends completed address to entry.
- * note: event is NULL if selected by anything else than a mouse button. */
+/**
+ * Respond to select row event in clist object. selection sends completed
+ * address to entry. Note: event is NULL if selected by anything else than a
+ * mouse button.
+ * \param widget   Window object.
+ * \param event    Event.
+ * \param compWind Reference to completion window.
+ */
 static void completion_window_select_row(GtkCList *clist, gint row, gint col,
 					 GdkEvent *event,
-					 GtkWidget **completion_window)
+					 CompletionWindow *compWin )
 {
 	GtkEntry *entry;
 
-	g_return_if_fail(completion_window != NULL);
-	g_return_if_fail(*completion_window != NULL);
+	g_return_if_fail(compWin != NULL);
 
-	entry = GTK_ENTRY(gtk_object_get_data(GTK_OBJECT(*completion_window),
-					      WINDOW_DATA_COMPL_ENTRY));
+	entry = GTK_ENTRY(compWin->entry);
 	g_return_if_fail(entry != NULL);
 
-	completion_window_apply_selection(clist, entry);
-
+	/* Don't update unless user actually selects ! */
 	if (!event || event->type != GDK_BUTTON_RELEASE)
 		return;
 
+	/* User selected address by releasing the mouse in drop-down list*/
+	completion_window_apply_selection( clist, entry );
+
 	clear_completion_cache();
-	gtk_widget_destroy(*completion_window);
-	*completion_window = NULL;
+	addrcompl_destroy_window( _compWindow_ );
 }
 
-/* completion_window_button_press() - check is mouse click is anywhere
- * else (not in the completion window). in that case the completion
- * window is destroyed, and the original prefix is restored */
+/**
+ * Respond to button press in completion window. Check if mouse click is
+ * anywhere outside the completion window. In that case the completion
+ * window is destroyed, and the original searchTerm is restored.
+ *
+ * \param widget   Window object.
+ * \param event    Event.
+ * \param compWin  Reference to completion window.
+ */
 static gboolean completion_window_button_press(GtkWidget *widget,
 					       GdkEventButton *event,
-					       GtkWidget **completion_window)
+					       CompletionWindow *compWin )
 {
 	GtkWidget *event_widget, *entry;
-	gchar *prefix;
+	gchar *searchTerm;
 	gint cursor_pos;
 	gboolean restore = TRUE;
 
-	g_return_val_if_fail(completion_window != NULL, FALSE);
-	g_return_val_if_fail(*completion_window != NULL, FALSE);
+	g_return_val_if_fail(compWin != NULL, FALSE);
 
-	entry = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(*completion_window),
-					       WINDOW_DATA_COMPL_ENTRY));
+	entry = compWin->entry;
 	g_return_val_if_fail(entry != NULL, FALSE);
 
+	/* Test where mouse was clicked */
 	event_widget = gtk_get_event_widget((GdkEvent *)event);
 	if (event_widget != widget) {
 		while (event_widget) {
@@ -864,41 +1261,43 @@ static gboolean completion_window_button_press(GtkWidget *widget,
 				restore = FALSE;
 				break;
 			}
-		    event_widget = event_widget->parent;
+			event_widget = event_widget->parent;
 		}
 	}
 
 	if (restore) {
-		prefix = get_complete_address(0);
+		/* Clicked outside of completion window - restore */
+		searchTerm = _compWindow_->searchTerm;
 		g_free(get_address_from_edit(GTK_ENTRY(entry), &cursor_pos));
-		replace_address_in_edit(GTK_ENTRY(entry), prefix, cursor_pos);
-		g_free(prefix);
+		replace_address_in_edit(GTK_ENTRY(entry), searchTerm, cursor_pos);
 	}
 
 	clear_completion_cache();
-	gtk_widget_destroy(*completion_window);
-	*completion_window = NULL;
+	addrcompl_destroy_window( _compWindow_ );
 
 	return TRUE;
 }
 
+/**
+ * Respond to key press in completion window.
+ * \param widget   Window object.
+ * \param event    Event.
+ * \param compWind Reference to completion window.
+ */
 static gboolean completion_window_key_press(GtkWidget *widget,
 					    GdkEventKey *event,
-					    GtkWidget **completion_window)
+					    CompletionWindow *compWin )
 {
 	GdkEventKey tmp_event;
 	GtkWidget *entry;
-	gchar *prefix;
+	gchar *searchTerm;
 	gint cursor_pos;
 	GtkWidget *clist;
 
-	g_return_val_if_fail(completion_window != NULL, FALSE);
-	g_return_val_if_fail(*completion_window != NULL, FALSE);
+	g_return_val_if_fail(compWin != NULL, FALSE);
 
-	entry = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(*completion_window),
-					       WINDOW_DATA_COMPL_ENTRY));
-	clist = GTK_WIDGET(gtk_object_get_data(GTK_OBJECT(*completion_window),
-					       WINDOW_DATA_COMPL_CLIST));
+	entry = compWin->entry;
+	clist = compWin->clist;
 	g_return_val_if_fail(entry != NULL, FALSE);
 
 	/* allow keyboard navigation in the alternatives clist */
@@ -926,9 +1325,15 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 
 	/* look for presses that accept the selection */
 	if (event->keyval == GDK_Return || event->keyval == GDK_space) {
+		/* User selected address with a key press */
+
+		/* Display selected address in entry field */		
+		completion_window_apply_selection(
+			GTK_CLIST(clist), GTK_ENTRY(entry) );
+
+		/* Discard the window */
 		clear_completion_cache();
-		gtk_widget_destroy(*completion_window);
-		*completion_window = NULL;
+		addrcompl_destroy_window( _compWindow_ );
 		return FALSE;
 	}
 
@@ -946,12 +1351,10 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 		return FALSE;
 	}
 
-	/* other key, let's restore the prefix (orignal text) */
-	prefix = get_complete_address(0);
+	/* some other key, let's restore the searchTerm (orignal text) */
+	searchTerm = _compWindow_->searchTerm;
 	g_free(get_address_from_edit(GTK_ENTRY(entry), &cursor_pos));
-	replace_address_in_edit(GTK_ENTRY(entry), prefix, cursor_pos);
-	g_free(prefix);
-	clear_completion_cache();
+	replace_address_in_edit(GTK_ENTRY(entry), searchTerm, cursor_pos);
 
 	/* make sure anything we typed comes in the edit box */
 	tmp_event.type       = event->type;
@@ -965,8 +1368,52 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 	gtk_widget_event(entry, (GdkEvent *)&tmp_event);
 
 	/* and close the completion window */
-	gtk_widget_destroy(*completion_window);
-	*completion_window = NULL;
+	clear_completion_cache();
+	addrcompl_destroy_window( _compWindow_ );
 
 	return TRUE;
 }
+
+/*
+ * ============================================================================
+ * Publically accessible functions.
+ * ============================================================================
+ */
+
+/**
+ * Setup completion object.
+ * \param addrIndex Address index object.
+ */
+void addrcompl_initialize( AddressIndex *addrIndex ) {
+	g_return_if_fail( addrIndex != NULL );
+	_addressIndex_ = addrIndex;
+
+	/* printf( "addrcompl_initialize...\n" ); */
+	if( ! _compWindow_ ) {
+		_compWindow_ = addrcompl_create_window();
+	}
+	_queryID_ = 0;
+	_completionIdleID_ = 0;
+	/* printf( "addrcompl_initialize...done\n" ); */
+}
+
+/**
+ * Teardown completion object.
+ */
+void addrcompl_teardown( void ) {
+	/* printf( "addrcompl_teardown...\n" ); */
+	addrcompl_free_window( _compWindow_ );
+	_compWindow_ = NULL;
+	if( _displayQueue_ ) {
+		g_list_free( _displayQueue_ );
+	}
+	_displayQueue_ = NULL;
+	_completionIdleID_ = 0;
+	_addressIndex_ = NULL;
+	/* printf( "addrcompl_teardown...done\n" ); */
+}
+
+/*
+ * End of Source.
+ */
+

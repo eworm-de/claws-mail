@@ -75,6 +75,7 @@ static void folder_get_persist_prefs_recursive
 static gboolean persist_prefs_free	(gpointer key, gpointer val, gpointer data);
 void folder_item_read_cache		(FolderItem *item);
 void folder_item_free_cache		(FolderItem *item);
+gint folder_item_scan_full		(FolderItem *item, gboolean filtering);
 
 static GSList *classlist;
 
@@ -336,8 +337,8 @@ void folder_tree_destroy(Folder *folder)
 	g_return_if_fail(folder != NULL);
 	g_return_if_fail(folder->node != NULL);
 	
-	prefs_scoring_clear();
-	prefs_filtering_clear();
+	prefs_scoring_clear_folder(folder);
+	prefs_filtering_clear_folder(folder);
 
 	g_node_traverse(folder->node, G_POST_ORDER, G_TRAVERSE_ALL, -1, folder_tree_destroy_func, NULL);
 	if (folder->node)
@@ -445,7 +446,7 @@ gboolean folder_scan_tree_func(GNode *node, gpointer data)
 	FolderItem *item = (FolderItem *)node->data;
 	
 	folder_item_restore_persist_prefs(item, pptable);
-	folder_item_scan(item);
+	folder_item_scan_full(item, FALSE);
 
 	return FALSE;
 }
@@ -1035,7 +1036,7 @@ static gint folder_sort_folder_list(gconstpointer a, gconstpointer b)
 gint folder_item_open(FolderItem *item)
 {
 	if(((FOLDER_TYPE(item->folder) == F_IMAP) && !item->no_select) || (FOLDER_TYPE(item->folder) == F_NEWS)) {
-		folder_item_scan(item);
+		folder_item_scan_full(item, TRUE);
 	}
 
 	/* Processing */
@@ -1080,7 +1081,7 @@ void folder_item_close(FolderItem *item)
 	folder_item_update(item, F_ITEM_UPDATE_MSGCNT);
 }
 
-gint folder_item_scan(FolderItem *item)
+gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 {
 	Folder *folder;
 	GSList *folder_list = NULL, *cache_list = NULL;
@@ -1282,7 +1283,8 @@ gint folder_item_scan(FolderItem *item)
 			MsgInfo *msginfo = (MsgInfo *) elem->data;
 
 			msgcache_add_msg(item->cache, msginfo);
-			if ((item->stype == F_INBOX) &&
+			if ((filtering == TRUE) &&
+			    (item->stype == F_INBOX) &&
 			    (item->folder->account != NULL) && 
 			    (item->folder->account->filter_on_recv) &&
 			    procmsg_msginfo_filter(msginfo))
@@ -1333,6 +1335,26 @@ gint folder_item_scan(FolderItem *item)
 	folder_item_update(item, update_flags);
 
 	return 0;
+}
+
+gint folder_item_scan(FolderItem *item)
+{
+	return folder_item_scan_full(item, TRUE);
+}
+
+static gboolean folder_scan_all_items_func(GNode *node, gpointer data)
+{
+	FolderItem *item = node->data;
+
+	folder_item_scan(item);
+
+	return FALSE;
+}
+
+void folder_scan_all_items(Folder * folder)
+{
+	g_node_traverse(folder->node, G_PRE_ORDER,
+			G_TRAVERSE_ALL, -1, folder_scan_all_items_func, NULL);
 }
 
 static void folder_item_scan_foreach_func(gpointer key, gpointer val,
@@ -1435,7 +1457,7 @@ void folder_item_read_cache(FolderItem *item)
 	item->cache = msgcache_read_cache(item, cache_file);
 	if (!item->cache) {
 		item->cache = msgcache_new();
-		folder_item_scan(item);
+		folder_item_scan_full(item, TRUE);
 	}
 	msgcache_read_mark(item->cache, mark_file);
 	g_free(cache_file);
@@ -1682,7 +1704,7 @@ gint folder_item_add_msg(FolderItem *dest, const gchar *file,
 
                 dest->last_num = num;
         } else if (num == 0) {
-		folder_item_scan(dest);
+		folder_item_scan_full(dest, FALSE);
 		num = folder_item_get_msg_num_by_file(dest, file);
 	}
 
@@ -1949,7 +1971,7 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 				gchar *file;
 
 				if (!folderscan) {
-					folder_item_scan(dest);
+					folder_item_scan_full(dest, FALSE);
 					folderscan = TRUE;
 				}
 				file = folder_item_fetch_msg(msginfo->folder, msginfo->msgnum);
@@ -2100,7 +2122,7 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 				gchar *file;
 
 				if (!folderscan) {
-					folder_item_scan(dest);
+					folder_item_scan_full(dest, FALSE);
 					folderscan = TRUE;
 				}
 				file = folder_item_fetch_msg(msginfo->folder, msginfo->msgnum);

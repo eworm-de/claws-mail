@@ -66,6 +66,7 @@ void prefs_filtering_read_config(void);
 gchar * filteringprop_to_string(FilteringProp *prop);
 
 void prefs_filtering_clear(void);
+void prefs_filtering_clear_folder(Folder *folder);
 void prefs_filtering_free(GSList *prefs_filtering);
 
 FilteringProp * filteringprop_copy(FilteringProp *src);

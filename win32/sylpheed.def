@@ -174,6 +174,8 @@ EXPORTS
 	addrclip_paste_person_copy 
 	addrclip_paste_person_cut 
 	addrclip_set_index 
+	addrcompl_initialize 
+	addrcompl_teardown 
 	address_completion_end 
 	address_completion_register_entry 
 	address_completion_start 
@@ -239,15 +241,23 @@ EXPORTS
 	addrindex_get_datasource 
 	addrindex_get_interface 
 	addrindex_get_interface_list 
+	addrindex_get_loaded 
 	addrindex_index_add_datasource 
 	addrindex_index_remove_datasource 
+	addrindex_initialize 
+	addrindex_load_completion 
 	addrindex_print_index 
+	addrindex_read_all 
 	addrindex_read_data 
 	addrindex_save_all_books 
 	addrindex_save_data 
 	addrindex_set_dirty 
 	addrindex_set_file_name 
 	addrindex_set_file_path 
+	addrindex_setup_search 
+	addrindex_start_search 
+	addrindex_stop_search 
+	addrindex_teardown 
 	addrindex_write_to 
 	addritem_attrib_set_id 
 	addritem_attrib_set_name 
@@ -277,6 +287,7 @@ EXPORTS
 	addritem_folder_set_id 
 	addritem_folder_set_name 
 	addritem_folder_set_remarks 
+	addritem_format_email 
 	addritem_free_attribute 
 	addritem_free_item_email 
 	addritem_free_item_folder 
@@ -452,7 +463,6 @@ EXPORTS
 	change_dir 
 	change_file_mode_rw 
 	clean_quit 
-	clear_completion_cache 
 	close_log_file 
 	colorlabel_changed 
 	colorlabel_create_check_color_menu_item 
@@ -690,6 +700,7 @@ EXPORTS
 	folder_item_restore_persist_prefs 
 	folder_item_scan 
 	folder_item_scan_foreach 
+	folder_item_scan_full 
 	folder_item_set_default_flags 
 	folder_item_update 
 	folder_item_update_freeze 
@@ -705,6 +716,7 @@ EXPORTS
 	folder_register_class 
 	folder_remote_folder_destroy 
 	folder_remote_folder_init 
+	folder_scan_all_items 
 	folder_scan_tree 
 	folder_scan_tree_func 
 	folder_set_missing_folders 
@@ -744,12 +756,10 @@ EXPORTS
 ;	gai_strerrorA@4 
 ;	gai_strerrorW@4 
 	get_abbrev_newsgroup_name 
-	get_address_from_edit 
 	get_aspell_dict_info_list 
 	get_aspell_module_info_list 
 	get_command_output 
 	get_complete_address 
-	get_completion_count 
 	get_domain_name 
 	get_file_size 
 	get_file_size_as_crlf 
@@ -765,10 +775,8 @@ EXPORTS
 	get_mbs_len 
 	get_mime_tmp_dir 
 	get_news_cache_dir 
-	get_next_complete_address 
 	get_next_word_len 
 	get_outgoing_rfc2822_str 
-	get_prev_complete_address 
 	get_quote_level 
 	get_rc_dir 
 	get_rfc822_date 
@@ -837,9 +845,10 @@ EXPORTS
 	gtkaspell_check_all 
 	gtkaspell_check_backwards 
 	gtkaspell_check_forwards_go 
-	gtkaspell_checkers_delete 
-	gtkaspell_checkers_new 
+	gtkaspell_checkers_init 
+	gtkaspell_checkers_quit 
 	gtkaspell_checkers_reset_error 
+	gtkaspell_checkers_strerror 
 	gtkaspell_delete 
 	gtkaspell_dictionary_option_menu_new 
 	gtkaspell_free_dictionary_list 
@@ -855,7 +864,6 @@ EXPORTS
 	gtkaspell_sugmode_option_menu_new 
 	gtkaspell_sugmode_option_menu_set 
 	gtkaspell_uncheck_all 
-	gtkaspellcheckers 
 	gtkaspellconfig 
 	gtkut_account_menu_new 
 	gtkut_button_set_create 
@@ -931,7 +939,6 @@ EXPORTS
 	invalidate_address_completion 
 	io_timeout 
 	is_ascii_str 
-	is_completion_pending 
 	is_dir_exist 
 	is_file_entry_exist 
 	is_header_line 
@@ -983,6 +990,7 @@ EXPORTS
 	main_window_get_current_state 
 	main_window_get_position 
 	main_window_get_size 
+	main_window_hide 
 	main_window_lock 
 	main_window_popup 
 	main_window_reflect_prefs_all 
@@ -992,6 +1000,7 @@ EXPORTS
 	main_window_set_account_menu 
 	main_window_set_menu_sensitive 
 	main_window_set_summary_column 
+	main_window_show 
 	main_window_toggle_message_view 
 	main_window_toggle_work_offline 
 	main_window_unlock 
@@ -1257,6 +1266,7 @@ EXPORTS
 	prefs_file_close 
 	prefs_file_close_revert 
 	prefs_filtering_clear 
+	prefs_filtering_clear_folder 
 	prefs_filtering_delete_path 
 	prefs_filtering_free 
 	prefs_filtering_open 
@@ -1290,6 +1300,7 @@ EXPORTS
 	prefs_read_open 
 	prefs_save_config 
 	prefs_scoring_clear 
+	prefs_scoring_clear_folder 
 	prefs_scoring_free 
 	prefs_scoring_open 
 	prefs_scoring_open_with_scoring 
@@ -1460,7 +1471,6 @@ EXPORTS
 	remove_space 
 	renderer_read_config 
 	renderer_write_config 
-	replace_address_in_edit 
 	rfc2015_check_signature 
 	rfc2015_clearsign 
 	rfc2015_create_signers_list 
@@ -1551,7 +1561,6 @@ EXPORTS
 	sslcertwindow_show_cert 
 	start_address_completion 
 	start_mswin_helper 
-	startup_dir 
 	statusbar_create 
 	statusbar_pop_all 
 	statusbar_print 
@@ -1597,7 +1606,7 @@ EXPORTS
 	strtailchomp 
 	subject_compare 
 	subject_compare_for_sort 
-	subject_is_reply 
+	subject_get_reply_prefix_length 
 	subject_table_insert 
 	subject_table_lookup 
 	subject_table_remove 
@@ -1678,6 +1687,7 @@ EXPORTS
 	summary_unthread 
 	summary_view_source 
 	sylpheed_done 
+	sylpheed_get_startup_dir 
 	sylpheed_init 
 	template_clear_config 
 	template_free 

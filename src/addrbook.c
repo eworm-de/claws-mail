@@ -52,7 +52,10 @@
 
 #define ID_TIME_OFFSET            998000000
 
-/* Create new address book */
+/**
+ * Create new address book
+ * \return Address book.
+ */
 AddressBookFile *addrbook_create_book()
 {
 	AddressBookFile *book;
@@ -67,10 +70,15 @@ AddressBookFile *addrbook_create_book()
 	book->tempList = NULL;
 	book->tempHash = NULL;
 	book->addressCache->modified = TRUE;
+
 	return book;
 }
 
-/* Specify name to be used */
+/**
+ * Specify name to be used
+ * \param book  Address book.
+ * \param value Name.
+ */
 void addrbook_set_name(AddressBookFile *book, const gchar *value)
 {
 	g_return_if_fail(book != NULL);
@@ -83,6 +91,11 @@ gchar *addrbook_get_name(AddressBookFile *book)
 	return addrcache_get_name(book->addressCache);
 }
 
+/**
+ * Specify path to address book file.
+ * \param book  Address book.
+ * \param value Path.
+ */
 void addrbook_set_path(AddressBookFile *book, const gchar *value)
 {
 	g_return_if_fail(book != NULL);
@@ -90,6 +103,11 @@ void addrbook_set_path(AddressBookFile *book, const gchar *value)
 	addrcache_set_dirty(book->addressCache, TRUE);
 }
 
+/**
+ * Specify filename to be used
+ * \param book  Address book.
+ * \param value Filename.
+ */
 void addrbook_set_file(AddressBookFile *book, const gchar *value)
 {
 	g_return_if_fail(book != NULL);
@@ -103,6 +121,11 @@ gboolean addrbook_get_modified(AddressBookFile *book)
 	return book->addressCache->modified;
 }
 
+/**
+ * Specify book as modified.
+ * \param book  Address book.
+ * \param value Indicator.
+ */
 void addrbook_set_modified(AddressBookFile *book, const gboolean value)
 {
 	g_return_if_fail(book != NULL);
@@ -115,6 +138,11 @@ gboolean addrbook_get_accessed(AddressBookFile *book)
 	return book->addressCache->accessFlag;
 }
 
+/**
+ * Specify address book as accessed.
+ * \param book  Address book.
+ * \param value Value.
+ */
 void addrbook_set_accessed(AddressBookFile *book, const gboolean value)
 {
 	g_return_if_fail(book != NULL);
@@ -127,6 +155,11 @@ gboolean addrbook_get_read_flag(AddressBookFile *book)
 	return book->addressCache->dataRead;
 }
 
+/**
+ * Specify address book as read.
+ * \param book  Address book.
+ * \param value Value.
+ */
 void addrbook_set_read_flag(AddressBookFile *book, const gboolean value)
 {
 	g_return_if_fail(book != NULL);
@@ -163,13 +196,21 @@ gboolean addrbook_get_dirty(AddressBookFile *book)
 	return addrcache_get_dirty(book->addressCache);
 }
 
+/**
+ * Set address book as dirty (needs to be written to file).
+ * \param book  Address book.
+ * \param value Dirty flag.
+ */
 void addrbook_set_dirty(AddressBookFile *book, const gboolean value)
 {
 	g_return_if_fail(book != NULL);
 	addrcache_set_dirty(book->addressCache, value);
 }
 
-/* Empty address book */
+/**
+ * Empty address book contents.
+ * \param book Address book.
+ */
 void addrbook_empty_book(AddressBookFile *book)
 {
 	g_return_if_fail(book != NULL);
@@ -188,13 +229,15 @@ void addrbook_empty_book(AddressBookFile *book)
 	book->retVal = MGU_SUCCESS;
 }
 
-/* Free address book */
+/**
+ * Free address book.
+ * \param book Address book.
+ */
 void addrbook_free_book(AddressBookFile *book)
 {
 	g_return_if_fail(book != NULL);
 
 	/* Clear cache */
-	addrcache_clear(book->addressCache);
 	addrcache_free(book->addressCache);
 
 	/* Free up internal objects */
@@ -215,7 +258,11 @@ void addrbook_free_book(AddressBookFile *book)
 	g_free(book);
 }
 
-/* Print list of items */
+/**
+ * Print list of items.
+ * \param book   Address book.
+ * \param stream Output stream.
+ */
 void addrbook_print_item_list(GList *list, FILE *stream)
 {
 	GList *node = list;
@@ -233,7 +280,11 @@ void addrbook_print_item_list(GList *list, FILE *stream)
 	fprintf(stream, "\t---\n");
 }
 
-/* Print address book */
+/**
+ * Print address book header.
+ * \param book   Address book.
+ * \param stream Output stream.
+ */
 void addrbook_print_book(AddressBookFile *book, FILE *stream)
 {
 	g_return_if_fail(book != NULL);
@@ -245,7 +296,11 @@ void addrbook_print_book(AddressBookFile *book, FILE *stream)
 	addrcache_print(book->addressCache, stream);
 }
 
-/* Dump entire address book traversing folders */
+/**
+ * Dump entire address book traversing folders.
+ * \param book   Address book.
+ * \param stream Output stream.
+ */
 void addrbook_dump_book(AddressBookFile *book, FILE *stream)
 {
 	ItemFolder *folder;
@@ -257,31 +312,42 @@ void addrbook_dump_book(AddressBookFile *book, FILE *stream)
 	addritem_print_item_folder(folder, stream);
 }
 
-/* Remove group from address book.
-   param: group	Group to remove.
-   return: Group, or NULL if not found. 
-   Note that object should still be freed */
+/**
+ * Remove specified group from address book. Note that object should still
+ * be freed.
+ * Specify name to be used
+ * \param book  Address book.
+ * \param group Group to remove.
+ * \param value Name.
+ * \return Group, or NULL if not found. 
+ */
 ItemGroup *addrbook_remove_group(AddressBookFile *book, ItemGroup *group)
 {
 	g_return_val_if_fail(book != NULL, NULL);
 	return addrcache_remove_group(book->addressCache, group);
 }
 
-/* Remove specified person from address book.
-   param: person	Person to remove.
-  return: Person, or NULL if not found. 
-  Note that object should still be freed */
+/**
+ * Remove specified person from address book. Note that object should still
+ * be freed.
+ * \param  book   Address book.
+ * \param  person Person to remove.
+ * \return Person, or NULL if not found.
+ */
 ItemPerson *addrbook_remove_person(AddressBookFile *book, ItemPerson *person)
 {
 	g_return_val_if_fail(book != NULL, NULL);
 	return addrcache_remove_person(book->addressCache, person);
 }
 
-/* Remove email address in address book for specified person.
-   param: person	Person.
-          email		EMail to remove.
-  return: EMail object, or NULL if not found. 
-  Note that object should still be freed */
+/**
+ * Remove specified email address in address book for specified person.
+ * Note that object should still be freed.
+ * \param  book   Address book.
+ * \param  person Person.
+ * \param  email  EMail to remove.
+ * \return EMail object, or NULL if not found.
+ */
 ItemEMail *addrbook_person_remove_email(AddressBookFile *book,
 					ItemPerson *person, ItemEMail *email)
 {
@@ -289,7 +355,8 @@ ItemEMail *addrbook_person_remove_email(AddressBookFile *book,
 	return addrcache_person_remove_email(book->addressCache, person, email);
 }
 
-/* **********************************************************************
+/*
+* ***********************************************************************
 * Read/Write XML data file...
 * ===========================
 * Notes:
@@ -354,7 +421,12 @@ ItemEMail *addrbook_person_remove_email(AddressBookFile *book,
 #define AB_ATTAG_VAL_GROUP       "group"
 #define AB_ATTAG_VAL_FOLDER      "folder"
 
-/* Parse address item for person */
+/**
+ * Parse address item for person from XML file.
+ * \param book   Address book.
+ * \param file   XML file handle.
+ * \param person Person.
+ */
 static void addrbook_parse_address(AddressBookFile *book, XMLFile *file, 
 				   ItemPerson *person)
 {
@@ -397,7 +469,12 @@ static void addrbook_parse_address(AddressBookFile *book, XMLFile *file,
 	}
 }
 
-/* Parse email address list */
+/**
+ * Parse list of email address for person from XML file.
+ * \param book   Address book.
+ * \param file   XML file handle.
+ * \param person Person.
+ */
 static void addrbook_parse_addr_list(AddressBookFile *book, XMLFile *file, 
 				     ItemPerson *person)
 {
@@ -418,7 +495,12 @@ static void addrbook_parse_addr_list(AddressBookFile *book, XMLFile *file,
 	}
 }
 
-/* Parse attibute for person */
+/**
+ * Parse attribute for person from XML file.
+ * \param book   Address book.
+ * \param file   XML file handle.
+ * \param person Person.
+ */
 static void addrbook_parse_attribute(XMLFile *file, ItemPerson *person)
 {
 	GList *attr;
@@ -459,7 +541,12 @@ static void addrbook_parse_attribute(XMLFile *file, ItemPerson *person)
 	}
 }
 
-/* Parse attribute list */
+/**
+ * Parse list of attributes for person from XML file.
+ * \param book   Address book.
+ * \param file   XML file handle.
+ * \param person Person.
+ */
 static void addrbook_parse_attr_list(AddressBookFile *book, XMLFile *file, 
 				     ItemPerson *person)
 {
@@ -480,7 +567,11 @@ static void addrbook_parse_attr_list(AddressBookFile *book, XMLFile *file,
 	}
 }
 
-/* Parse person */
+/**
+ * Parse person from XML file.
+ * \param book Address book.
+ * \param file XML file handle.
+ */
 static void addrbook_parse_person(AddressBookFile *book, XMLFile *file)
 {
 	GList *attr;
@@ -529,13 +620,19 @@ static void addrbook_parse_person(AddressBookFile *book, XMLFile *file)
 	}
 }
 
-/* Parse group member */
+/**
+ * Parse group member from XML file.
+ * \param book  Address book.
+ * \param file  XML file handle.
+ * \param group Group.
+ */
 static void addrbook_parse_member(AddressBookFile *book, XMLFile *file, 
 				  ItemGroup *group)
 {
 	GList *attr;
 	gchar *name, *value;
-	gchar *pid = NULL, *eid = NULL;
+	gchar *eid = NULL;
+	/* gchar *pid = NULL; */
 	ItemEMail *email = NULL;
 
 	attr = xml_get_current_tag_attr(file);
@@ -546,10 +643,14 @@ static void addrbook_parse_member(AddressBookFile *book, XMLFile *file,
 		value = g_strdup(value);
 		locale_to_utf8(&value);
 #endif
+		/*
 		if (strcmp(name, AB_ATTAG_PID) == 0)
 			pid = g_strdup(value);
 		else if (strcmp(name, AB_ATTAG_EID) == 0)
 			eid = g_strdup(value);
+		*/
+		if( strcmp( name, AB_ATTAG_EID ) == 0 )
+			eid = g_strdup( value );
 		attr = g_list_next(attr);
 #ifdef WIN32
 		g_free(value);
@@ -569,7 +670,12 @@ static void addrbook_parse_member(AddressBookFile *book, XMLFile *file,
 	}
 }
 
-/* Parse group member list */
+/**
+ * Parse list of group members from XML file.
+ * \param book  Address book.
+ * \param file  XML file handle.
+ * \param group Group.
+ */
 static void addrbook_parse_member_list(AddressBookFile *book, XMLFile *file, 
 				       ItemGroup *group)
 {
@@ -594,7 +700,11 @@ static void addrbook_parse_member_list(AddressBookFile *book, XMLFile *file,
 	}
 }
 
-/* Parse group */
+/**
+ * Parse group object from XML file.
+ * \param book Address book.
+ * \param file XML file handle.
+ */
 static void addrbook_parse_group(AddressBookFile *book, XMLFile *file)
 {
 	GList *attr;
@@ -633,7 +743,12 @@ static void addrbook_parse_group(AddressBookFile *book, XMLFile *file)
 	}
 }
 
-/* Parse folder item */
+/**
+ * Parse folder item from XML file.
+ * \param book   Address book.
+ * \param file   XML file handle.
+ * \param folder Folder.
+ */
 static void addrbook_parse_folder_item(AddressBookFile *book, XMLFile *file, 
 				       ItemFolder *folder)
 {
@@ -664,7 +779,12 @@ static void addrbook_parse_folder_item(AddressBookFile *book, XMLFile *file,
 	}
 }
 
-/* Parse folder item list */
+/**
+ * Parse list of folder items from XML file.
+ * \param book   Address book.
+ * \param file   XML file handle.
+ * \param folder Folder.
+ */
 static void addrbook_parse_folder_list(AddressBookFile *book, XMLFile *file,
 				       ItemFolder *folder)
 {
@@ -689,7 +809,11 @@ static void addrbook_parse_folder_list(AddressBookFile *book, XMLFile *file,
 	}
 }
 
-/* Parse folder */
+/**
+ * Parse folder from XML file.
+ * \param book Address book.
+ * \param file XML file handle.
+ */
 static void addrbook_parse_folder(AddressBookFile *book, XMLFile *file) 
 {
 	GList *attr;
@@ -734,8 +858,13 @@ static void addrbook_parse_folder(AddressBookFile *book, XMLFile *file)
 	}
 }
 
-/* Parse address book.
-   Return: TRUE if data read successfully, FALSE if error reading data */
+/**
+ * Read address book (DOM) tree from file.
+ * \param  book Address book.
+ * \param  file XML file handle.
+ * \return <i>TRUE</i> if data read successfully, <i>FALSE</i> if error
+ *         reading data.
+ */
 static gboolean addrbook_read_tree(AddressBookFile *book, XMLFile *file)
 {
 	gboolean retVal;
@@ -787,7 +916,12 @@ static gboolean addrbook_read_tree(AddressBookFile *book, XMLFile *file)
 		return retVal;
 }
 
-/* Resolve folder items visitor function */
+/**
+ * Resolve folder items callback function.
+ * \param key   Table key.
+ * \param value Reference to object contained in folder.
+ * \param data  Reference to address book.
+ */
 static void addrbook_res_items_vis(gpointer key, gpointer value, gpointer data)
 {
 	AddressBookFile *book = data;
@@ -807,8 +941,11 @@ static void addrbook_res_items_vis(gpointer key, gpointer value, gpointer data)
 	}
 }
 
-/* Resolve folder items. Lists of UID's are replaced with pointers to 
-   data items */
+/**
+ * Resolve folder items. Lists of UID's are replaced with pointers to
+ * data items.
+ * \param  book Address book.
+ */
 static void addrbook_resolve_folder_items(AddressBookFile *book)
 {
 	GList *nodeFolder = NULL;
@@ -903,7 +1040,11 @@ static void addrbook_resolve_folder_items(AddressBookFile *book)
 	book->tempList = NULL;
 }
 
-/* Read address book file */
+/**
+ * Read address book.
+ * \param  book Address book.
+ * \return Status code.
+ */
 gint addrbook_read_data(AddressBookFile *book)
 {
 	XMLFile *file = NULL;
@@ -943,6 +1084,12 @@ gint addrbook_read_data(AddressBookFile *book)
 	return book->retVal;
 }
 
+/**
+ * Write start element to file.
+ * \param fp   File handle.
+ * \param lvl  Indent level.
+ * \param name Element name.
+ */
 static void addrbook_write_elem_s(FILE *fp, gint lvl, gchar *name)
 {
 	gint i;
@@ -952,6 +1099,12 @@ static void addrbook_write_elem_s(FILE *fp, gint lvl, gchar *name)
 	fputs(name, fp);
 }
 
+/**
+ * Write end element to file.
+ * \param fp   File handle.
+ * \param lvl  Indent level.
+ * \param name Element name.
+ */
 static void addrbook_write_elem_e(FILE *fp, gint lvl, gchar *name)
 {
 	gint i;
@@ -962,6 +1115,12 @@ static void addrbook_write_elem_e(FILE *fp, gint lvl, gchar *name)
 	fputs(">\n", fp);
 }
 
+/**
+ * Write attribute name/value pair to file.
+ * \param fp    File handle.
+ * \param name  Attribute name.
+ * \param value Attribute value.
+ */
 static void addrbook_write_attr(FILE *fp, gchar *name, gchar *value)
 {
 	fputs(" ", fp);
@@ -981,7 +1140,13 @@ static void addrbook_write_attr(FILE *fp, gchar *name, gchar *value)
 	fputs("\"", fp);
 }
 
-/* Write file hash table visitor function */
+/**
+ * Write person and associated addresses and attributes to file.
+ * file hash table visitor function.
+ * \param key   Table key.
+ * \param value Reference to person.
+ * \param data  File pointer.
+ */
 static void addrbook_write_item_person_vis(gpointer key, gpointer value, 
 					   gpointer data)
 {
@@ -1038,7 +1203,13 @@ static void addrbook_write_item_person_vis(gpointer key, gpointer value,
 	}
 }
 
-/* Write file hash table visitor function */
+/**
+ * Write group and associated references to addresses to file.
+ * file hash table visitor function.
+ * \param key   Table key.
+ * \param value Reference to group.
+ * \param data  File pointer.
+ */
 static void addrbook_write_item_group_vis(gpointer key, gpointer value, 
 					  gpointer data)
 {
@@ -1076,7 +1247,13 @@ static void addrbook_write_item_group_vis(gpointer key, gpointer value,
 	}
 }
 
-/* Write file hash table visitor function */
+/**
+ * Write folder and associated references to addresses to file.
+ * file hash table visitor function.
+ * \param key   Table key.
+ * \param value Reference to folder.
+ * \param data  File pointer.
+ */
 static void addrbook_write_item_folder_vis(gpointer key, gpointer value, 
 					   gpointer data)
 {
@@ -1135,8 +1312,12 @@ static void addrbook_write_item_folder_vis(gpointer key, gpointer value,
 	}
 }
 
-/* Output address book data to specified file.
-  return: Status code */
+/**
+ * Output address book data to specified file.
+ * \param  book Address book.
+ * \param  newFile Filename of new file (in book's filepath).
+ * \return Status code.
+ */
 gint addrbook_write_to(AddressBookFile *book, gchar *newFile)
 {
 	FILE *fp;
@@ -1195,8 +1376,11 @@ gint addrbook_write_to(AddressBookFile *book, gchar *newFile)
 	return book->retVal;
 }
 
-/* Output address book data to original file.
-   return: Status code */
+/**
+ * Output address book data to original file.
+ * \param  book Address book.
+ * \return Status code.
+ */
 gint addrbook_save_data(AddressBookFile *book)
 {
 	g_return_val_if_fail(book != NULL, -1);
@@ -1213,14 +1397,20 @@ gint addrbook_save_data(AddressBookFile *book)
 	return book->retVal;
 }
 
-/* **********************************************************************
-   Address book edit interface functions...
-   ***********************************************************************
-  Move person's email item.
-  param: book       Address book.
-         person     Person.
-         itemMove   Item to move.
-         itemTarget Target item before which to move item */
+/*
+ * **********************************************************************
+ * Address book edit interface functions.
+ * **********************************************************************
+ */
+
+/**
+ * Move email item within list of person's email items.
+ * \param  book       Address book.
+ * \param  person     Person.
+ * \param  itemMove   EMail item to move.
+ * \param  itemTarget EMail item to move before.
+ * \return Moved item.
+ */
 ItemEMail *addrbook_move_email_before(AddressBookFile *book, ItemPerson *person,
 				      ItemEMail *itemMove, ItemEMail *itemTarget)
 {
@@ -1234,11 +1424,14 @@ ItemEMail *addrbook_move_email_before(AddressBookFile *book, ItemPerson *person,
 	return email;
 }
 
-/* Move person's email item.
-   param: book       Address book.
-          person     Person.
-         itemMove   Item to move.
-         itemTarget Target item after which to move item */
+/**
+ * Move email item within list of person's email items.
+ * \param  book       Address book.
+ * \param  person     Person.
+ * \param  itemMove   EMail item to move.
+ * \param  itemTarget EMail item after which to move.
+ * \return Moved item.
+ */
 ItemEMail *addrbook_move_email_after(AddressBookFile *book, ItemPerson *person,
 				     ItemEMail *itemMove, ItemEMail *itemTarget)
 {
@@ -1252,7 +1445,13 @@ ItemEMail *addrbook_move_email_after(AddressBookFile *book, ItemPerson *person,
 	return email;
 }
 
-/* Hash table visitor function for deletion of hashtable entries */
+/**
+ * Hash table callback function for simple deletion of hashtable entries.
+ * \param  key   Table key (will be freed).
+ * \param  value Value stored in table.
+ * \param  data  User data.
+ * \return <i>TRUE</i> to indicate that entry freed.
+ */
 static gboolean addrbook_free_simple_hash_vis(gpointer *key, gpointer *value, 
 					      gpointer *data)
 {
@@ -1262,13 +1461,15 @@ static gboolean addrbook_free_simple_hash_vis(gpointer *key, gpointer *value,
 	return TRUE;
 }
 
-/* Update address book email list for specified person.
-   Enter: book      Address book.
-          person    Person to update.
-          listEMail List of new email addresses.
-  Note: The existing email addresses are replaced with the new addresses. Any references
-  to old addresses in the groups are re-linked to the new addresses. All old addresses
-  linked to the person are removed */
+/**
+ * Update address book email list for specified person. Note: The existing
+ * email addresses are replaced with the new addresses. Any references to
+ * old addresses in the groups are re-linked to the new addresses. All old
+ * addresses linked to the person are removed.
+ * \param book      Address book.
+ * \param person    Person to update.
+ * \param listEMail List of new email addresses.
+ */
 void addrbook_update_address_list(AddressBookFile *book, ItemPerson *person, 
 				  GList *listEMail)
 {
@@ -1415,13 +1616,17 @@ void addrbook_update_address_list(AddressBookFile *book, ItemPerson *person,
 
 }
 
-/* Add person and address data to address book.
-   Enter: book      Address book.
-          folder    Folder where to add person, or NULL for root folder.
-          listEMail New list of email addresses.
-   Return: Person added.
-   Note: A new person is created with specified list of email addresses. All objects inserted
-   into address book */
+/**
+ * Create person object and add person with specified address data to address
+ * book. Note: A new person is created with specified list of email addresses.
+ * All objects inserted into address book.
+ *
+ * \param  book      Address book.
+ * \param  folder    Parent folder where to add person, or <i>NULL</i> for
+ *                   root folder.
+ * \param  listEMail List of new email addresses to associate with person.
+ * \return Person object created.
+ */
 ItemPerson *addrbook_add_address_list(AddressBookFile *book, ItemFolder *folder,
 				      GList *listEMail)
 {
@@ -1449,7 +1654,12 @@ ItemPerson *addrbook_add_address_list(AddressBookFile *book, ItemFolder *folder,
 	return person;
 }
 
-/* Build available email list visitor function */
+/**
+ * Build available email list visitor function.
+ * \param  key   Table key.
+ * \param  value Value stored in table.
+ * \param  data  Reference to address book.
+ */
 static void addrbook_build_avail_email_vis(gpointer key, gpointer value, 
 					   gpointer data)
 {
@@ -1472,11 +1682,17 @@ static void addrbook_build_avail_email_vis(gpointer key, gpointer value,
 	}
 }
 
-/* Return link list of available email items (which have not already been linked to
-   groups). Note that the list contains references to items and should be g_free()
-   when done. Do *NOT* attempt to used the addrbook_free_xxx() functions... this will
-   destroy the addressbook data!
-   Return: List of items, or NULL if none */
+/**
+ * Return link list of available email items that have not already been linked
+ * to groups. Note that the list contains references to items and should be
+ * <code>g_free()</code> when done. Do <b>*NOT*</b> attempt to used the
+ * <code>addrbook_free_xxx()<code> functions... this will destroy the
+ * addressbook data!
+ *
+ * \param  book  Address book.
+ * \param  group Group to process.
+ * \return List of items, or <i>NULL</i> if none.
+ */
 GList *addrbook_get_available_email_list(AddressBookFile *book, ItemGroup *group)
 {
 	GList *list = NULL;
@@ -1511,13 +1727,17 @@ GList *addrbook_get_available_email_list(AddressBookFile *book, ItemGroup *group
 	return list;
 }
 
-/* Update address book email list for specified group.
-   Enter: book      Address book.
-          group     group to update.
-          listEMail New list of email addresses. This should *NOT* be g_free() when done.
-  Note: The existing email addresses are replaced with the new addresses. Any references
-  to old addresses in the groups are re-linked to the new addresses. All old addresses
-  linked to the person are removed */
+/**
+ * Update address book email list for specified group. Note: The existing email
+ * addresses are replaced with the new addresses. Any references to old addresses
+ * in the groups are re-linked to the new addresses. All old addresses linked to
+ * the person are removed.
+ *
+ * \param book      Address book.
+ * \param group     Group to process.
+ * \param listEMail List of email items. This should <b>*NOT*</b> be
+ *                  <code>g_free()</code> when done.
+ */
 void addrbook_update_group_list(AddressBookFile *book, ItemGroup *group, 
 				GList *listEMail)
 {
@@ -1535,14 +1755,19 @@ void addrbook_update_group_list(AddressBookFile *book, ItemGroup *group,
 	oldData = NULL;
 }
 
-/* Add group and email list to address book.
-   Enter: book      Address book.
-          folder    Parent folder, or NULL for root folder.
-          listEMail New list of email addresses. This should *NOT* be g_free() when done.
-   Return: Group object.
-   Note: The existing email addresses are replaced with the new addresses. Any references
-   to old addresses in the groups are re-linked to the new addresses. All old addresses
-   linked to the person are removed */
+/**
+ * Create group object and add with specifed list of email addresses to
+ * address book. Note: The existing email addresses are replaced with the new
+ * addresses. Any references to old addresses in the groups are re-linked to
+ * the new addresses. All old addresses linked to the person are removed.
+ *
+ * \param  book      Address book.
+ * \param  folder    Parent folder where to add group, or <i>NULL</i> for
+ *                   root folder.
+ * \param  listEMail List of email items. This should <b>*NOT*</b> be
+ *                  <code>g_free()</code> when done.
+ * \return Group object created.
+ */
 ItemGroup *addrbook_add_group_list(AddressBookFile *book, ItemFolder *folder,
 				   GList *listEMail)
 {
@@ -1560,10 +1785,14 @@ ItemGroup *addrbook_add_group_list(AddressBookFile *book, ItemFolder *folder,
 	return group;
 }
 
-/* Add new folder to address book.
-   Enter: book   Address book.
-          parent	Parent folder.
-   Return: Folder that was added. This should *NOT* be g_free() when done */
+/**
+ * Create a new folder and add to address book.
+ * \param  book   Address book.
+ * \param  folder Parent folder where to add folder, or <i>NULL</i> for
+ *                root folder.
+ * \return Folder that was created. This should <b>*NOT*</b> be
+ *         <code>g_free()</code> when done.
+ */
 ItemFolder *addrbook_add_new_folder(AddressBookFile *book, ItemFolder *parent)
 {
 	ItemFolder *folder = NULL;
@@ -1587,12 +1816,15 @@ ItemFolder *addrbook_add_new_folder(AddressBookFile *book, ItemFolder *parent)
 	return folder;
 }
 
-/* Update address book attribute list for specified person.
-   Enter: book       Address book.
-          person     Person to update.
-          listAttrib New list of attributes.
-   Note: The existing email addresses are replaced with the new addresses. All old attributes
-   linked to the person are removed */
+/**
+ * Update address book attribute list for specified person. Note: The existing
+ * attributes are replaced with the new addresses. All old attributes linked
+ * to the person are removed.
+ *
+ * \param book       Address book.
+ * \param person     Person to receive attributes.
+ * \param listAttrib New list of attributes.
+ */
 void addrbook_update_attrib_list(AddressBookFile *book, ItemPerson *person,
 				 GList *listAttrib)
 {
@@ -1623,13 +1855,13 @@ void addrbook_update_attrib_list(AddressBookFile *book, ItemPerson *person,
 	oldData = NULL;
 }
 
-/*
-* Add attribute data for person to address book.
-* Enter: book       Address book.
-*        person     New person object.
-*        listAttrib New list of attributes.
-* Note: Only attributes are inserted into address book.
-*/
+/**
+ * Add attribute data for specified person to address book. Note: Only
+ * attributes are inserted into address book.
+ * \param book       Address book.
+ * \param person     Person to receive attributes.
+ * \param listAttrib List of attributes.
+ */
 void addrbook_add_attrib_list( AddressBookFile *book, ItemPerson *person, GList *listAttrib ) {
 	GList *node;
 
@@ -1648,9 +1880,13 @@ void addrbook_add_attrib_list( AddressBookFile *book, ItemPerson *person, GList 
 	addrcache_set_dirty( book->addressCache, TRUE );
 }
 
-/* Return address book file for specified object.
-   Enter: aio Book item object.
-   Return: Address book, or NULL if not found */
+/*
+ * Return reference to address book file for specified object by traversing up
+ * address book heirarchy.
+ *
+ * \param aio Book item object.
+ * \return Address book, or <i>NULL</i> if not found.
+ */
 AddressBookFile *addrbook_item_get_bookfile(AddrItemObject *aio)
 {
 	AddressBookFile *book = NULL;
@@ -1674,9 +1910,14 @@ AddressBookFile *addrbook_item_get_bookfile(AddrItemObject *aio)
 	return book;
 }
 
-/* Remove folder from address book. Children are re-parented to parent folder.
-   param: folder Folder to remove.
-   return: Folder, or NULL if not found. Note that object should still be freed */
+/**
+ * Remove folder from address book. Children are re-parented to the parent
+ * folder.
+ * \param  book   Address book.
+ * \param  folder Folder to remove.
+ * \return Folder, or <i>NULL</i> if not found. Note that object should still
+ *         be freed.
+ */
 ItemFolder *addrbook_remove_folder(AddressBookFile *book, ItemFolder *folder)
 {
 	ItemFolder *f;
@@ -1687,9 +1928,13 @@ ItemFolder *addrbook_remove_folder(AddressBookFile *book, ItemFolder *folder)
 	return f;
 }
 
-/* Remove folder from address book. Children are deleted.
-   param: folder Folder to remove.
-   return: Folder, or NULL if not found. Note that object should still be freed */
+/**
+ * Remove folder from address book. Children are deleted.
+ * \param  book   Address book.
+ * \param  folder Folder to remove.
+ * \return Folder, or <i>NULL</i> if not found. Note that object should still
+ *         be freed.
+ */
 ItemFolder *addrbook_remove_folder_delete(AddressBookFile *book, 
 					  ItemFolder *folder)
 {
@@ -1704,9 +1949,11 @@ ItemFolder *addrbook_remove_folder_delete(AddressBookFile *book,
 #define WORK_BUFLEN     1024
 #define ADDRBOOK_DIGITS "0123456789"
 
-/* Return list of existing address book files.
-   Enter: book Address book file.
-   Return: File list */
+/**
+ * Return list of existing address book files.
+ * \param  book Address book.
+ * \return List of files (as strings).
+ */
 GList *addrbook_get_bookfile_list(AddressBookFile *book) {
 	gchar *adbookdir;
 	DIR *dp;
@@ -1757,9 +2004,17 @@ GList *addrbook_get_bookfile_list(AddressBookFile *book) {
 		strcat(buf, entry->d_name);
 		stat(buf, &statbuf);
 		if (S_IFREG & statbuf.st_mode) {
-			if (strncmp(entry->d_name, ADDRBOOK_PREFIX, lenpre) == 0) {
-				if (strncmp((entry->d_name) + lennum, ADDRBOOK_SUFFIX, lensuf) == 0) {
-					strncpy(numbuf, (entry->d_name) + lenpre, FILE_NUMDIGITS);
+			if (strncmp(
+				entry->d_name,
+				ADDRBOOK_PREFIX, lenpre) == 0)
+			{
+				if (strncmp(
+					(entry->d_name) + lennum,
+					ADDRBOOK_SUFFIX, lensuf) == 0)
+				{
+					strncpy(numbuf,
+						(entry->d_name) + lenpre,
+						FILE_NUMDIGITS);
 					numbuf[FILE_NUMDIGITS] = '\0';
 					flg = TRUE;
 					for(i = 0; i < FILE_NUMDIGITS; i++) {
@@ -1773,7 +2028,9 @@ GList *addrbook_get_bookfile_list(AddressBookFile *book) {
 						val = strtol(numbuf, &endptr, 10);
 						if (endptr  && val > -1) {
 							if (val > maxval) maxval = val;
-							fileList = g_list_append(fileList, g_strdup(entry->d_name));
+							fileList = g_list_append(
+								fileList,
+								g_strdup(entry->d_name));
 						}
 					}
 				}
@@ -1788,9 +2045,12 @@ GList *addrbook_get_bookfile_list(AddressBookFile *book) {
 	return fileList;
 }
 
-/* Return file name for specified file number.
-   Enter:  fileNum File number.
-   Return: File name, or NULL if file number too large. Should be g_free() when done */
+/**
+ * Return file name for specified file number.
+ * \param  fileNum File number.
+ * \return File name, or <i>NULL</i> if file number too large. Should be
+ *         <code>g_free()</code> when done.
+ */
 gchar *addrbook_gen_new_file_name(gint fileNum) {
 	gchar fmt[30];
 	gchar buf[WORK_BUFLEN];
@@ -1807,14 +2067,17 @@ gchar *addrbook_gen_new_file_name(gint fileNum) {
 	return g_strdup(buf);
 }
 
-/* **********************************************************************
-   Address book test functions...
-   **********************************************************************
-*/
-
 /*
-* Test email address list.
-*/
+ * **********************************************************************
+ * Address book test functions...
+ * **********************************************************************
+ */
+
+/**
+ * Attempt to parse list of email address from file.
+ * \param book Address book.
+ * \param file XML file handle.
+ */
 static void addrbook_chkparse_addr_list( AddressBookFile *book, XMLFile *file ){
 	guint prev_level;
 	GList *attr;
@@ -1832,7 +2095,11 @@ static void addrbook_chkparse_addr_list( AddressBookFile *book, XMLFile *file ){
 	}
 }
 
-/* Test user attributes for person */
+/**
+ * Attempt to parse attributes for person address from file.
+ * \param book Address book.
+ * \param file XML file handle.
+ */
 static void addrbook_chkparse_attribute(AddressBookFile *book, XMLFile *file)
 {
 	GList *attr;
@@ -1844,7 +2111,11 @@ static void addrbook_chkparse_attribute(AddressBookFile *book, XMLFile *file)
 	/* printf( "\t\tattrib value : %s\n", element ); */
 }
 
-/* Test attribute list */
+/**
+ * Attempt to parse list of attributes for person address from file.
+ * \param book Address book.
+ * \param file XML file handle.
+ */
 static void addrbook_chkparse_attr_list(AddressBookFile *book, XMLFile *file)
 {
 	guint prev_level;
@@ -1862,7 +2133,11 @@ static void addrbook_chkparse_attr_list(AddressBookFile *book, XMLFile *file)
 	}
 }
 
-/* Test person */
+/**
+ * Attempt to parse person from file.
+ * \param book Address book.
+ * \param file XML file handle.
+ */
 static void addrbook_chkparse_person(AddressBookFile *book, XMLFile *file)
 {
 	GList *attr;
@@ -1882,7 +2157,11 @@ static void addrbook_chkparse_person(AddressBookFile *book, XMLFile *file)
 		addrbook_chkparse_attr_list(book, file);
 }
 
-/* Test group member list */
+/**
+ * Attempt to parse list of members from file.
+ * \param book Address book.
+ * \param file XML file handle.
+ */
 static void addrbook_chkparse_member_list(AddressBookFile *book, XMLFile *file)
 {
 	GList *attr;
@@ -1908,7 +2187,11 @@ static void addrbook_chkparse_member_list(AddressBookFile *book, XMLFile *file)
 	}
 }
 
-/* Test group */
+/**
+ * Attempt to parse group from file.
+ * \param book Address book.
+ * \param file XML file handle.
+ */
 static void addrbook_chkparse_group(AddressBookFile *book, XMLFile *file)
 {
 	GList *attr;
@@ -1922,7 +2205,11 @@ static void addrbook_chkparse_group(AddressBookFile *book, XMLFile *file)
 		addrbook_chkparse_member_list(book, file);
 }
 
-/* Test folder item list */
+/**
+ * Attempt to parse list of folders from file.
+ * \param book Address book.
+ * \param file XML file handle.
+ */
 static void addrbook_chkparse_folder_list(AddressBookFile *book, XMLFile *file)
 {
 	GList *attr;
@@ -1948,7 +2235,11 @@ static void addrbook_chkparse_folder_list(AddressBookFile *book, XMLFile *file)
 	}
 }
 
-/* Test folder */
+/**
+ * Attempt to parse a folder from file.
+ * \param book Address book.
+ * \param file XML file handle.
+ */
 static void addrbook_chkparse_folder(AddressBookFile *book, XMLFile *file)
 {
 	GList *attr;
@@ -1962,7 +2253,11 @@ static void addrbook_chkparse_folder(AddressBookFile *book, XMLFile *file)
 		addrbook_chkparse_folder_list(book, file);
 }
 
-/* Test address book */
+/**
+ * Attempt to parse (DOM) tree from file.
+ * \param book Address book.
+ * \param file XML file handle.
+ */
 static gboolean addrbook_chkread_tree(AddressBookFile *book, XMLFile *file)
 {
 	GList *attr;
@@ -1999,10 +2294,12 @@ static gboolean addrbook_chkread_tree(AddressBookFile *book, XMLFile *file)
 	return retVal;
 }
 
-/* Test address book file by parsing contents.
-   Enter: book     Address book file to check.
-          fileName File name to check.
-   Return: MGU_SUCCESS if file appears to be valid format */
+/**
+ * Test address book file by parsing contents.
+ * \param  book     Address book.
+ * \param  fileName Filename of XML file.
+ * \return Status code <i>MGU_SUCCESS</i> if file appears to be valid format.
+ */
 gint addrbook_test_read_file(AddressBookFile *book, gchar *fileName)
 {
 	XMLFile *file = NULL;
@@ -2029,37 +2326,49 @@ gint addrbook_test_read_file(AddressBookFile *book, gchar *fileName)
 	return book->retVal;
 }
 
-/* Return link list of all persons in address book.  Note that the list contains
-   references to items. Do *NOT* attempt to use the addrbook_free_xxx() functions...
-   this will destroy the addressbook data!
-   Return: List of items, or NULL if none */
+/**
+ * Return link list of all persons in address book.  Note that the list
+ * contains references to items. Do <b>*NOT*</b> attempt to use the
+ * <code>addrbook_free_xxx()</code> functions... this will destroy the
+ * addressbook data!
+ * \param  book     Address book.
+ * \return List of persons, or NULL if none.
+ */
 GList *addrbook_get_all_persons(AddressBookFile *book)
 {
 	g_return_val_if_fail(book != NULL, NULL);
 	return addrcache_get_all_persons(book->addressCache);
 }
 
-/* Add person and address data to address book.
-   Enter: book      Address book.
-          folder    Folder where to add person, or NULL for root folder.
-          name      Common name.
-          address   EMail address.
-          remarks   Remarks.
-   Return: Person added. Do not *NOT* to use the addrbook_free_xxx() functions...
-   this will destroy the address book data */
+/**
+ * Add person and address data to address book.
+ * \param  book    Address book.
+ * \param  folder  Folder where to add person, or NULL for root folder.
+ * \param  name    Common name.
+ * \param  address EMail address.
+ * \param  remarks Remarks.
+ * \return Person added. Do not <b>*NOT*</b> to use the
+ *         <code>addrbook_free_xxx()</code> functions... this will destroy
+ *         the address book data.
+ */
 ItemPerson *addrbook_add_contact(AddressBookFile *book, ItemFolder *folder, 
 				 const gchar *name,const gchar *address, 
 				 const gchar *remarks)
 {
+	ItemPerson *person;
+
 	g_return_val_if_fail(book != NULL, NULL);
-	return addrcache_add_contact(book->addressCache, folder, name, address, 
-				     remarks);
+	person = addrcache_add_contact(
+			book->addressCache, folder, name, address, remarks );
+	return person;
 }
 
-/* Return file name for next address book file.
-   Enter:  book Address book.
-   Return: File name, or NULL if could not create. This should be g_free()
-           when done */
+/**
+ * Return file name for next address book file.
+ * \param  book Address book.
+ * \return File name, or <i>NULL</i> if could not create. This should be
+ *         <code>g_free()</code> when done.
+ */
 gchar *addrbook_guess_next_file(AddressBookFile *book)
 {
 	gchar *newFile = NULL;
@@ -2074,3 +2383,9 @@ gchar *addrbook_guess_next_file(AddressBookFile *book)
 	fileList = NULL;
 	return newFile;
 }
+
+/*
+* End of Source.
+*/
+
+

@@ -23,6 +23,7 @@
 #include <gtk/gtk.h>
 
 #include "plugin.h"
+#include "utils.h"
 #include "hooks.h"
 #include "folder.h"
 #include "mainwindow.h"
@@ -109,14 +110,12 @@ static gboolean click_cb(GtkWidget * widget,
 {
 	MainWindow *mainwin;
 
-/*
 	mainwin = mainwindow_get_mainwindow();
 	if (GTK_WIDGET_VISIBLE(GTK_WIDGET(mainwin->window))) {
-		gtk_widget_hide_all(mainwin->window);
+		main_window_hide(mainwin);
 	} else {
-		gtk_widget_show_all(mainwin->window);
+		main_window_show(mainwin);
         }
-*/
 	return TRUE;
 }
 
@@ -125,18 +124,22 @@ static void resize_cb(GtkWidget *widget, GtkAllocation *allocation)
 	update();
 }
 
-int plugin_init(gchar **error)
+static void create_trayicon(void);
+
+static void destroy_cb(GtkWidget *widget, gpointer *data)
+{
+	debug_print("Widget destroyed\n");
+
+	create_trayicon();
+}
+
+static void create_trayicon()
 {
 	GtkPacker *packer;
 
-	hook_id = hooks_register_hook (FOLDER_ITEM_UPDATE_HOOKLIST, folder_item_update_hook, NULL);
-	if (hook_id == -1) {
-		*error = g_strdup("Failed to register folder item update hook");
-		return -1;
-	}
-
         trayicon = egg_tray_icon_new("Sylpheed-Claws");
-/*        trayicon = gtk_window_new(GTK_WINDOW_TOPLEVEL); */
+//        trayicon = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_widget_realize(GTK_WIDGET(trayicon));
 	gtk_window_set_default_size(GTK_WINDOW(trayicon), 16, 16);
         gtk_container_set_border_width(GTK_CONTAINER(trayicon), 0);
 
@@ -155,8 +158,12 @@ int plugin_init(gchar **error)
         image = gtk_pixmap_new(nomail_pixmap, nomail_bitmap);
         gtk_packer_add_defaults(GTK_PACKER(packer), GTK_WIDGET(image), GTK_SIDE_TOP, GTK_ANCHOR_CENTER, GTK_PACK_EXPAND);
 
-	gtk_signal_connect(GTK_OBJECT(trayicon), "size_allocate", GTK_SIGNAL_FUNC(resize_cb), NULL);
-        gtk_signal_connect(GTK_OBJECT(eventbox), "button-press-event", GTK_SIGNAL_FUNC(click_cb), NULL);
+	gtk_signal_connect(GTK_OBJECT(trayicon), "destroy",
+                     GTK_SIGNAL_FUNC(destroy_cb), NULL);
+	gtk_signal_connect(GTK_OBJECT(trayicon), "size_allocate",
+		    GTK_SIGNAL_FUNC(resize_cb), NULL);
+	gtk_signal_connect(GTK_OBJECT(eventbox), "button-press-event",
+		    GTK_SIGNAL_FUNC(click_cb), NULL);
 
         tooltips = gtk_tooltips_new();
         gtk_tooltips_set_delay(tooltips, 1000);
@@ -165,6 +172,17 @@ int plugin_init(gchar **error)
         gtk_widget_show_all(GTK_WIDGET(trayicon));
 
 	update();
+}
+
+int plugin_init(gchar **error)
+{
+	hook_id = hooks_register_hook (FOLDER_ITEM_UPDATE_HOOKLIST, folder_item_update_hook, NULL);
+	if (hook_id == -1) {
+		*error = g_strdup("Failed to register folder item update hook");
+		return -1;
+	}
+
+	create_trayicon();
 
         return 0;
 }

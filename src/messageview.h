@@ -66,6 +66,9 @@ struct _MessageView
 
 	gboolean visible;
 
+	/* this message was filtered by an action */
+	gboolean filtered;
+  
 	/* From messageview_show */
 	gboolean all_headers;
 };

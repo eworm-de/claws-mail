@@ -236,7 +236,7 @@ SOURCE=..\src\exporthtml.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\filesel.c
+SOURCE=..\src\gtk\filesel.c
 # End Source File
 # Begin Source File
 
@@ -260,7 +260,7 @@ SOURCE=..\src\grouplistdialog.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\gtkaspell.c
+SOURCE=..\src\gtk\gtkaspell.c
 # End Source File
 # Begin Source File
 
@@ -848,7 +848,7 @@ SOURCE=..\src\exporthtml.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\filesel.h
+SOURCE=..\src\gtk\filesel.h
 # End Source File
 # Begin Source File
 
@@ -868,7 +868,7 @@ SOURCE=..\src\grouplistdialog.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\gtkaspell.h
+SOURCE=..\src\gtk\gtkaspell.h
 # End Source File
 # Begin Source File
 

@@ -21,6 +21,7 @@
 #  include "config.h"
 #endif
 
+#include "defs.h"
 #include <glib.h>
 
 #if HAVE_LOCALE_H
@@ -29,13 +30,13 @@
 
 #include "sylpheed.h"
 #include "intl.h"
-#include "defs.h"
 #include "utils.h"
 #include "ssl.h"
 #include "version.h"
 #include "plugin.h"
 
 static gboolean sylpheed_initialized = FALSE;
+static gchar *startup_dir;
 
 /**
  * Parse program parameters and remove all parameters
@@ -87,6 +88,8 @@ gboolean sylpheed_init(int *argc, char ***argv)
 	if (sylpheed_initialized)
 		return TRUE;
 
+	startup_dir = g_get_current_dir();
+
 	parse_parameter(argc, argv);
 
 	setlocale(LC_ALL, "");
@@ -121,11 +124,16 @@ gboolean sylpheed_init(int *argc, char ***argv)
 	return TRUE;
 }
 
-void sylpheed_done()
+void sylpheed_done(void)
 {
 	plugin_unload_all("Common");
 
 #if USE_OPENSSL
 	ssl_done();
 #endif
+}
+
+const gchar *sylpheed_get_startup_dir(void)
+{
+	return startup_dir;
 }

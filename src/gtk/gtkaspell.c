@@ -32,17 +32,25 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#ifndef WIN32
 #include <unistd.h>
+#endif
 #include <sys/types.h>
+#ifndef WIN32
 #include <sys/wait.h>
+#endif
 #include <signal.h>
 #include <ctype.h>
 #include <string.h>
 #include <errno.h>
+#ifndef WIN32
 #include <sys/time.h>
+#endif
 #include <fcntl.h>
 #include <time.h>
+#ifndef WIN32
 #include <dirent.h>
+#endif
 
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
@@ -51,7 +59,11 @@
 #include <gtk/gtkmenuitem.h>
 #include <gdk/gdkkeysyms.h>
 
+#ifdef WIN32
+#include "w32_aspell_init.h"
+#else
 #include <aspell.h>
+#endif
 
 #include "intl.h"
 #include "gtkstext.h"
@@ -412,7 +424,7 @@ void gtkaspell_delete(GtkAspell * gtkaspell)
 		free_suggestions_list(gtkaspell);
 
 	g_free((gchar *)gtkaspell->dictionary_path);
-
+	
 	debug_print("Aspell: deleting gtkaspell %0x\n", (guint) gtkaspell);
 
 	g_free(gtkaspell);
@@ -437,8 +449,19 @@ static void entry_insert_cb(GtkSText *gtktext,
 	 */
 
 	gtk_stext_freeze(gtktext);
+#ifdef WIN32
+	{
+		gsize newlen;
+		gchar *loctext;
+		loctext = g_locale_from_utf8(newtext, len, NULL, &newlen, NULL);
+		gtk_stext_backward_delete(GTK_STEXT(gtktext), newlen);
+		gtk_stext_insert(GTK_STEXT(gtktext), NULL, NULL, NULL, loctext, newlen);
+		g_free(loctext);
+	}
+#else
 	gtk_stext_backward_delete(GTK_STEXT(gtktext), len);
 	gtk_stext_insert(GTK_STEXT(gtktext), NULL, NULL, NULL, newtext, len);
+#endif
 	*ppos = gtk_stext_get_point(GTK_STEXT(gtktext));
 	       
 	if (iswordsep(newtext[0])) {
@@ -540,6 +563,9 @@ static GtkAspeller *gtkaspeller_new(Dictionary *dictionary)
 	g_return_val_if_fail(gtkaspellcheckers, NULL);
 
 	g_return_val_if_fail(dictionary, NULL);
+#ifdef WIN32
+	g_return_val_if_fail(w32_aspell_loaded(), NULL);
+#endif
 
 	if (dictionary->fullname == NULL)
 		gtkaspell_checkers_error_message(g_strdup(_("No dictionary selected.")));
@@ -550,6 +576,9 @@ static GtkAspeller *gtkaspeller_new(Dictionary *dictionary)
 		gchar *tmp;
 
 		tmp = strrchr(dictionary->fullname, G_DIR_SEPARATOR);
+#ifdef WIN32
+		if (!tmp) tmp = strrchr(dictionary->fullname, '/');
+#endif
 
 		if (tmp == NULL)
 			dictionary->dictname = dictionary->fullname;
@@ -865,7 +894,9 @@ static guchar get_text_index_whar(GtkAspell *gtkaspell, int pos)
 				      pos + 1);
 	if (text == NULL) 
 		return 0;
-
+#ifdef WIN32
+	locale_from_utf8(&text);
+#endif
 	a = (guchar) *text;
 
 	g_free(text);
@@ -963,6 +994,10 @@ static gboolean check_at(GtkAspell *gtkaspell, gint from_pos)
 	gint	      start, end;
 	unsigned char buf[GTKASPELLWORDSIZE];
 	GtkSText     *gtktext;
+#ifdef WIN32
+	unsigned char *locbuf;
+	gsize oldsize,newsize;
+#endif
 
 	g_return_val_if_fail(from_pos >= 0, FALSE);
     
@@ -1509,6 +1544,12 @@ GSList *gtkaspell_get_dictionary_list(const gchar *aspell_path, gint refresh)
 		gtkaspell_free_dictionary_list(gtkaspellcheckers->dictionary_list);
 	list = NULL;
 
+#ifdef WIN32
+	g_return_val_if_fail(w32_aspell_loaded(), NULL);
+	if (!aspell_path)
+		aspell_path = "";
+#endif /* WIN32 */
+
 	config = new_aspell_config();
 #if 0 
 	aspell_config_replace(config, "rem-all-word-list-path", "");
@@ -1744,6 +1785,9 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 	caption = g_strdup_printf(_("\"%s\" unknown in %s"), 
 				  (unsigned char*) l->data, 
 				  gtkaspell->gtkaspeller->dictionary->dictname);
+#ifdef WIN32
+	locale_to_utf8(&caption);
+#endif
 	item = gtk_menu_item_new_with_label(caption);
 	gtk_widget_show(item);
 	gtk_menu_append(GTK_MENU(menu), item);
@@ -1823,7 +1867,16 @@ static GtkMenu *make_sug_menu(GtkAspell *gtkaspell)
 							  curmenu);
 			}
 
+#ifdef WIN32
+			{
+				gchar *locdata = g_strdup((unsigned char*)l->data);
+				locale_to_utf8(&locdata);
+				item = gtk_menu_item_new_with_label(locdata);
+
+			}
+#else
 			item = gtk_menu_item_new_with_label((unsigned char*)l->data);
+#endif
 			gtk_widget_show(item);
 			gtk_menu_append(GTK_MENU(curmenu), item);
 			gtk_signal_connect(GTK_OBJECT(item), "activate",

@@ -1,19 +1,24 @@
+SUBDIRS = libeggtrayicon
+
 plugindir = $(pkglibdir)/plugins
 
 plugin_LTLIBRARIES = trayicon.la
 
 trayicon_la_SOURCES = \
-	trayicon.c \
-	eggtrayicon.c eggtrayicon.h
+	trayicon.c
 
 trayicon_la_LDFLAGS = \
-	-avoid-version -module \
-	$(GTK_LIBS)
+	-avoid-version -module
+
+trayicon_la_LIBADD = \
+	$(GTK_LIBS) \
+	libeggtrayicon/libeggtrayicon.la
 
 INCLUDES = \
 	-I../../ \
 	-I../../common \
-	-I../../gtk
+	-I../../gtk \
+	-Ilibeggtrayicon
 
 CPPFLAGS = \
 	$(GLIB_CFLAGS) \

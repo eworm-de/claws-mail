@@ -490,10 +490,9 @@ static void crash_handler(int sig)
 	static volatile unsigned long crashed_ = 0;
 
 	/*
-	 * let's hope startup_dir and argv0 aren't trashed.
+	 * let's hope argv0 aren't trashed.
 	 * both are defined in main.c.
 	 */
-	extern gchar *startup_dir;
 	extern gchar *argv0;
 
 
@@ -533,7 +532,7 @@ static void crash_handler(int sig)
 		args[3] = buf;
 		args[4] = NULL;
 
-		chdir(startup_dir);
+		chdir(sylpheed_get_startup_dir());
 		setgid(getgid());
 		setuid(getuid());
 		execvp(argv0, args);

@@ -28,8 +28,8 @@
 #include "intl.h"
 #include "plugin.h"
 
-#include "../filesel.h"
-#include "../alertpanel.h"
+#include "filesel.h"
+#include "alertpanel.h"
 
 typedef struct _PluginWindow
 {

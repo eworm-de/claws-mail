@@ -175,19 +175,20 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 			g_hash_table_insert(msgid_table, (gchar *)msgid, node);
 
 		if (prefs_common.thread_by_subject) {
-			subject = msginfo->subject;
-			found_subject = subject_table_lookup(subject_table,
-							     (gchar *) subject);
+			subject  = msginfo->subject;
+			subject += subject_get_reply_prefix_length(subject);
+			found_subject = subject_table_lookup_clean(subject_table,
+							           (gchar *) subject);
 			if (found_subject == NULL)
-				subject_table_insert(subject_table, (gchar *) subject,
-						     node);
+				subject_table_insert_clean(subject_table, (gchar *) subject,
+						           node);
 			else {
 				/* replace if msg in table is older than current one 
 				 * can add here more stuff. */
 				if ( ((MsgInfo*)(found_subject->data))->date_t >
 				     ((MsgInfo*)(node->data))->date_t )  {
-					subject_table_remove(subject_table, (gchar *) subject);
-					subject_table_insert(subject_table, (gchar *) subject, node);
+					subject_table_remove_clean(subject_table, (gchar *) subject);
+					subject_table_insert_clean(subject_table, (gchar *) subject, node);
 				}	
 			}
 		}
@@ -200,7 +201,10 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 		parent = NULL;
 		if (msginfo->inreplyto) 
 			parent = g_hash_table_lookup(msgid_table, msginfo->inreplyto);
-		if (parent && parent != node) {
+		/* node should not be the parent, and node should not be an ancestor
+		 * of parent (circular reference) */
+		if (parent && parent != node 
+		&& !g_node_is_ancestor(node, parent)) {
 			g_node_unlink(node);
 			g_node_insert_before
 				(parent, parent->children, node);
@@ -220,28 +224,28 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 		for (node = root->children; node != NULL; ) {
 			next = node->next;
 			msginfo = (MsgInfo *) node->data;
-			parent = NULL;
-			if (subject_is_reply(msginfo->subject)) {
-				parent = subject_table_lookup(subject_table,
-							      msginfo->subject);
-				/* the node may already be threaded by IN-REPLY-TO,
-				   so go up in the tree to find the parent node */
-				if (parent != NULL) {
-					if (g_node_is_ancestor(node, parent))
-						parent = NULL;
-					if (parent == node)
-						parent = NULL;
-				}
+			parent = subject_table_lookup(subject_table, msginfo->subject);
+			/* the node may already be threaded by IN-REPLY-TO,
+			   so go up in the tree to find the parent node */
+			if (parent != NULL) {
+				if (g_node_is_ancestor(node, parent))
+					parent = NULL;
+				if (parent == node)
+					parent = NULL;
+				/* check if the message should be added to this thread */
+				if (parent && abs(((MsgInfo *)parent->data)->date_t - msginfo->date_t) > 
+						prefs_common.thread_by_subject_max_age * 3600 * 24)
+					parent = NULL;
+			}
 
-				if (parent) {
-					g_node_unlink(node);
-					g_node_append(parent, node);
-					/* CLAWS: ignore thread */
-					if (MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-						g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, procmsg_ignore_node, NULL);
-					}
+			if (parent) {
+				g_node_unlink(node);
+				g_node_append(parent, node);
+				/* CLAWS: ignore thread */
+				if (MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
+					g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, procmsg_ignore_node, NULL);
 				}
-			}					
+			}
 			node = next;
 		}	
 	}
@@ -1141,7 +1145,12 @@ gint procmsg_send_message_queue(const gchar *file)
 			MsgInfo *msginfo;
 			
 			msginfo = folder_item_get_msginfo(item, atoi(tokens[1]));
-			if ((msginfo != NULL) && (strcmp(msginfo->msgid, tokens[2]) != 0)) {
+			
+			/*!< note that if the message has no msgid (maybe it was invalid), 
+			* we also refuse to do something with the reply to flag */
+			if ((msginfo != NULL) && 
+			    (msginfo->msgid != NULL) &&
+			    (strcmp(msginfo->msgid, tokens[2]) != 0)) {
 				procmsg_msginfo_free(msginfo);
 				msginfo = NULL;
 			}

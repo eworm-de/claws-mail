@@ -49,7 +49,10 @@ sylpheed_SOURCES = \
 	pine.c pine.h \
 	importpine.c importpine.h \
 	jpilot.c jpilot.h \
-	syldap.c syldap.h \
+	ldapctrl.c ldapctrl.h \
+	ldapquery.c ldapquery.h \
+	ldapserver.c ldapserver.h \
+	ldaputil.c ldaputil.h \
 	editbook.c editbook.h \
 	editgroup.c editgroup.h \
 	editaddress.c editaddress.h \
@@ -62,7 +65,6 @@ sylpheed_SOURCES = \
 	addrgather.c addrgather.h \
 	exporthtml.c exporthtml.h \
 	exphtmldlg.c exphtmldlg.h \
-	filesel.c filesel.h \
 	foldersel.c foldersel.h \
 	statusbar.c statusbar.h \
 	logwindow.c logwindow.h \
@@ -104,7 +106,6 @@ sylpheed_SOURCES = \
 	mbox_folder.c mbox_folder.h \
 	quote_fmt_lex.l quote_fmt_lex.h \
 	quote_fmt_parse.y quote_fmt.c quote_fmt.h \
-	gtkaspell.c gtkaspell.h \
 	matcher_parser_lex.l matcher_parser_lex.h \
 	matcher_parser_parse.y matcher_parser.h matcher_parser_parse.h \
 	string_match.h string_match.c \
@@ -198,7 +199,7 @@ INCLUDES = \
 	-Igtk \
 	-DG_LOG_DOMAIN=\"Sylpheed\" \
 	-I$(top_srcdir)/intl \
-        $(ASPELL_CFLAGS)    \
+	$(ASPELL_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(GPGME_CFLAGS) \
 	$(OPENSSL_CFLAGS) \

@@ -647,6 +647,7 @@ void matcherlist_free(MatcherList *cond)
 {
 	GSList *l;
 
+	g_return_if_fail(cond);
 	for (l = cond->matchers ; l != NULL ; l = g_slist_next(l)) {
 		matcherprop_free((MatcherProp *) l->data);
 	}

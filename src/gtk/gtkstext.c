@@ -487,7 +487,7 @@ static void gtk_stext_show_props (GtkSText* test,
 #define TEXT_SHOW_ADJ(text,adj,msg)
 #endif
 
-#define AHX_DEBUG
+/* #define AHX_DEBUG */
 #if defined(AHX_DEBUG)
 #	define XDEBUG(args) g_message args
 #else
@@ -4417,7 +4417,9 @@ static gint forward_display_row_fetcher(GtkSText *text,
 				__FILE__, __LINE__, data->start, data->end, lp->start.index, lp->end.index) );
 		data->lp = *lp;
 		data->completed = TRUE;
+#if defined(AHX_DEBUG)		
 		print_line(text, lp->start.index, lp->end.index);
+#endif		
 		return TRUE;
 	}
 	else if (range_intersect(data->start, data->end, lp->start.index, lp->end.index)) {

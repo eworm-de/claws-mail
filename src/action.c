@@ -529,7 +529,8 @@ static void message_actions_execute(MessageView *msgview, guint action_nb,
 	GtkWidget *text = NULL;
 	GdkFont *msgfont = NULL;
 	guint body_pos = 0;
-
+	ActionType action_type;
+	
 	g_return_if_fail(action_nb < g_slist_length(prefs_common.actions_list));
 
 	buf = (gchar *)g_slist_nth_data(prefs_common.actions_list, action_nb);
@@ -547,6 +548,11 @@ static void message_actions_execute(MessageView *msgview, guint action_nb,
 		body_pos = textview->body_pos;
 	}
 	partinfo = messageview_get_selected_mime_part(msgview);
+
+	/* this command will alter the message text */
+	action_type = action_get_type(action);
+	if (action_type & (ACTION_PIPE_OUT | ACTION_INSERT))
+		msgview->filtered = TRUE;
 
 	execute_actions(action, msg_list, text, msgfont, body_pos, partinfo);
 }

@@ -21,10 +21,11 @@
 #  include "config.h"
 #endif
 
+#include "defs.h"
+
 #include <stdio.h>
 #include <glib.h>
 
-#include "defs.h"
 #include "utils.h"
 #include "log.h"
 #include "hooks.h"
