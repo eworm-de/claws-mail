@@ -1,3 +1,10 @@
+2003-08-18 [luke]	0.9.4claws29
+	* src/mimeview.[ch]
+	* src/gtk/gtkvscrollbutton.[ch]
+		o removed gtk_vscrollbutton_reset() (reasons: reduce 
+		  dependencies; do it the GTK way; reduce code -14/+2 lines)
+		o removed horizontal separator between icons
+
 2003-08-17 [christoph]	0.9.4claws28
 
 	* src/procmsg.c

@@ -242,7 +242,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	
  	gtk_notebook_set_page(GTK_NOTEBOOK(notebook), 0);
 				
-	icon_vbox = gtk_vbox_new(FALSE,0);
+	icon_vbox = gtk_vbox_new(FALSE, 2);
 	icon_scroll = gtk_layout_new(NULL, NULL);
 	gtk_layout_put(GTK_LAYOUT(icon_scroll), icon_vbox, 0, 0);
 	scrollbutton = gtk_vscrollbutton_new(gtk_layout_get_vadjustment(GTK_LAYOUT(icon_scroll)));
@@ -303,7 +303,6 @@ MimeView *mimeview_create(MainWindow *mainwin)
 	mimeview->tooltips      = tooltips;
 	mimeview->oldsize       = 60;
 	mimeview->mime_toggle   = mime_toggle;
-	mimeview->scroll_button = scrollbutton;
 
 	mimeview->target_list	= gtk_target_list_new(mimeview_mime_types, 1); 
 	
@@ -714,7 +713,6 @@ static void mimeview_clear(MimeView *mimeview)
 	g_free(mimeview->file);
 	mimeview->file = NULL;
 
-	gtk_vscrollbutton_reset(GTK_VSCROLLBUTTON(mimeview->scroll_button));
 	icon_list_clear(mimeview);
 
 	if (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(mimeview->mime_toggle)))
@@ -1486,18 +1484,12 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	GtkWidget *pixmap;
 	GtkWidget *vbox;
 	GtkWidget *button;
-	GtkWidget *sep;
 	gchar *tip;
 	gchar *desc = NULL;
 	StockPixmap stockp;
 	
 	vbox = mimeview->icon_vbox;
 	mimeview->icon_count++;
-	if (mimeview->icon_count > 1) {
-		sep = gtk_hseparator_new();
-		gtk_widget_show(sep);
-		gtk_box_pack_start(GTK_BOX(vbox), sep, TRUE, TRUE, 3);
-	}
 	button = gtk_toggle_button_new();
 	gtk_button_set_relief(GTK_BUTTON(button), GTK_RELIEF_NONE);
 	gtk_object_set_data(GTK_OBJECT(button), "icon_number", 
@@ -1592,7 +1584,8 @@ static void icon_list_clear (MimeView *mimeview)
 	}
 	mimeview->icon_count = 0;
 	adj  = gtk_layout_get_vadjustment(GTK_LAYOUT(mimeview->icon_scroll));
-	adj->value = 0;
+	adj->value = adj->lower;
+	gtk_signal_emit_by_name(GTK_OBJECT (adj), "value_changed");
 }
 
 static void icon_list_toggle_by_mime_info(MimeView	*mimeview,
