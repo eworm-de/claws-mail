@@ -1,3 +1,8 @@
+2003-03-05 [christoph]	0.8.10claws83
+
+	* configure.ac
+		fix building with gnome when no prefix is set
+
 2003-03-05 [paul]	0.8.10claws82
 
 	* sync with 0.8.10cvs23
