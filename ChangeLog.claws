@@ -1,3 +1,8 @@
+2001-12-27 [melvin]	0.6.6claws27
+	
+	* src/compose.c
+		Simplify focus to subject entry code.
+
 2001-12-27 [darko]	0.6.6claws26
 
 	* src/filtering.c

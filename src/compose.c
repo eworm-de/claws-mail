@@ -426,10 +426,6 @@ void compose_headerentry_key_press_event_cb(GtkWidget	       *entry,
 					    GdkEventKey        *event,
 					    ComposeHeaderEntry *headerentry);
 
-gint compose_headerentry_key_press_event_tab_cb	(GtkWidget          *entry,
-						 GdkEventKey        *event,
-						 ComposeHeaderEntry *headerentry);
-
 static void compose_show_first_last_header(Compose *compose, gboolean show_first);
 
 static GtkItemFactoryEntry compose_popup_entries[] =
@@ -3815,7 +3811,6 @@ static void compose_create_header_entry(Compose *compose)
 
 	address_completion_register_entry(GTK_ENTRY(entry));
 
-        gtk_signal_connect(GTK_OBJECT(entry), "key-press-event", GTK_SIGNAL_FUNC(compose_headerentry_key_press_event_tab_cb), headerentry);
         headerentry->compose = compose;
         headerentry->combo = combo;
         headerentry->entry = entry;
@@ -6264,7 +6259,16 @@ void compose_headerentry_key_press_event_cb(GtkWidget *entry,
 			g_slist_remove(headerentry->compose->header_list,
 				       headerentry);
 		g_free(headerentry);
+	} else 	if (event->keyval == GDK_Tab) {
+		if (headerentry->compose->header_last == headerentry) {
+			/* Override default next focus, and give it to subject_entry
+			 * instead of notebook tabs
+			 */
+			gtk_signal_emit_stop_by_name(GTK_OBJECT(entry), "key-press-event"); 
+			gtk_widget_grab_focus(headerentry->compose->subject_entry);
+		}
 	}
+
 }
 
 void compose_headerentry_changed_cb(GtkWidget *entry,
@@ -6283,23 +6287,6 @@ void compose_headerentry_changed_cb(GtkWidget *entry,
 		compose_show_first_last_header(headerentry->compose, FALSE);
 		
 	}
-}
-
-gint compose_headerentry_key_press_event_tab_cb(GtkWidget 	   *entry,
-						GdkEventKey 	   *event,
-						ComposeHeaderEntry *headerentry)
-{
-	if (event->keyval == GDK_Tab) {
-		if (headerentry->compose->header_last == headerentry) {
-			/* Override default next focus, and give it to subject_entry
-			 * instead of notebook tabs
-			 */
-			gtk_signal_emit_stop_by_name(GTK_OBJECT(entry), "key-press-event"); 
-			gtk_widget_grab_focus(headerentry->compose->subject_entry);
-			return TRUE;
-		}
-	}
-	return FALSE;
 }
 
 static void compose_show_first_last_header(Compose *compose, gboolean show_first)
