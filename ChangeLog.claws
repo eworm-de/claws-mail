@@ -1,3 +1,8 @@
+2001-06-28 [alfons]
+
+	* po/nl.po
+		merge with sylpheed.pot and old nl.po; translations added.
+
 2001-06-28 [paul]
 
 	* more sync with sylpheed 0.5.0pre3
