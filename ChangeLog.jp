@@ -1,3 +1,13 @@
+2002-08-05
+
+	* src/textview.c: textview_scan_header(): メモリリークを修正
+	  (Alfons さん thanks)。
+
+2002-08-04
+
+	* src/prefs_actions.c: execute_actions(): create_io_dialog() を
+	  正しい条件ブロックに入れた。
+
 2002-08-01
 
 	* src/compose.c: compose_wrap_line_all(): 文字バッファの初期化を

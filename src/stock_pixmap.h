@@ -42,6 +42,7 @@ typedef enum
 	STOCK_PIXMAP_DIR_OPEN,
 	STOCK_PIXMAP_DIR_OPEN_HRM,
 	STOCK_PIXMAP_DOWN_ARROW,
+	STOCK_PIXMAP_UP_ARROW,
 	STOCK_PIXMAP_EDIT_EXTERN,
 	STOCK_PIXMAP_ERROR,
 	STOCK_PIXMAP_EXEC,
@@ -111,5 +112,7 @@ gint stock_pixmap_gdk		(GtkWidget	 *window,
 
 GList *stock_pixmap_themes_list_new	(void);
 void stock_pixmap_themes_list_free	(GList *list);
+gchar *stock_pixmap_get_name         (StockPixmap icon);
+StockPixmap stock_pixmap_get_icon    (gchar *file);
 
 #endif /* __STOCK_PIXMAP_H__ */
