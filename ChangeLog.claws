@@ -1,3 +1,11 @@
+2002-12-05 [paul]	0.8.6claws61
+
+	* sync with 0.8.6cvs16
+		see ChangeLog 2002-12-05
+		
+	* po/POTFILES.in
+		clean up
+
 2002-12-04 [christoph]	0.8.6claws60
 
 	* src/imap.[ch]

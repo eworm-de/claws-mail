@@ -256,6 +256,8 @@ gint send_message_local(const gchar *command, FILE *fp)
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		strretchomp(buf);
+		if (buf[0] == '.' && buf[1] == '\0')
+			fputc('.', pipefp);
 		fputs(buf, pipefp);
 		fputc('\n', pipefp);
 	}
