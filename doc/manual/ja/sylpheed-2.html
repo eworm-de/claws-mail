@@ -1,321 +1,116 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML>
 <HEAD>
- <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
- <TITLE>Sylpheed User's Manual: インストール</TITLE>
+ <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.21">
+ <TITLE>Sylpheed User's Manual: Sylpheedとは</TITLE>
  <LINK HREF="sylpheed-3.html" REL=next>
  <LINK HREF="sylpheed-1.html" REL=previous>
  <LINK HREF="sylpheed.html#toc2" REL=contents>
 </HEAD>
 <BODY>
-<A HREF="sylpheed-3.html">Next</A>
-<A HREF="sylpheed-1.html">Previous</A>
-<A HREF="sylpheed.html#toc2">Contents</A>
+<A HREF="sylpheed-3.html">次のページ</A>
+<A HREF="sylpheed-1.html">前のページ</A>
+<A HREF="sylpheed.html#toc2">目次へ</A>
 <HR>
-<H2><A NAME="s2">2. インストール</A></H2>
+<H2><A NAME="s2">2.</A> <A HREF="sylpheed.html#toc2">Sylpheedとは</A></H2>
 
-<P>
-<H2><A NAME="ss2.1">2.1 必要な環境</A>
+<H2><A NAME="ss2.1">2.1</A> <A HREF="sylpheed.html#toc2.1">Sylpheed とは</A>
 </H2>
 
-<P>このプログラムのコンパイル/実行には 
+<P>SylpheedはGUIツールキットにGTK+を使用した、
+X Window System上で動作する電子メールクライアント&amp;ニュースリーダーです。</P>
+<P>Sylpheedは以下のことを目標にして開発されています。
 <UL>
-<LI>Linux あるいは他の UNIX like OS </LI>
-<LI>GTK+ 1.2.6 以降</LI>
-<LI>GNU make</LI>
+<LI>軽快な動作</LI>
+<LI>美しく、洗練されたインタフェース </LI>
+<LI>容易な設定・操作</LI>
+<LI>豊富な機能</LI>
+<LI>CPU・メモリの消費を最小限に抑えて軽快に動作</LI>
+<LI>1フォルダ中に大量にメッセージが存在する場合(10000通以上)でも高速に処理</LI>
+<LI>シンプルで美しく、洗練されたインタフェースにより直観的な操作が可能</LI>
+<LI>他のメーラに近い操作が可能</LI>
+<LI>簡単な設定ですぐに使用可能</LI>
+<LI>メーラに必要とされる機能を完備</LI>
+<LI>日本語に完全対応し、国際化にも対応</LI>
+<LI>外部コマンドとの柔軟な連携が可能</LI>
+<LI>安定動作し、万一クラッシュした場合でも極力データを消失しない</LI>
+</UL>
+</P>
+
+<H2><A NAME="ss2.2">2.2</A> <A HREF="sylpheed.html#toc2.2">インタフェース</A>
+</H2>
+
+<P>外観やインタフェースは
+<UL>
+<LI>Outlook Express</LI>
+<LI>Becky!</LI>
+<LI>Datula</LI>
 </UL>
 
-が必要です。
-あれば便利なものは、
+といった、 Windowsでは定番のメーラを参考にしています。</P>
+<P>また、操作系はMewやWanderlust等の Emacs系メーラを参考にしており、キーボードのみによる操作が可能となっています。
+そのため、他のメーラに慣れている場合でもそれほど違和感なく移行できると思います。</P>
+
+<H2><A NAME="ss2.3">2.3</A> <A HREF="sylpheed.html#toc2.3">主な機能</A>
+</H2>
+
+<P>プロトコルは以下のものに対応しています。
 <UL>
-<LI>gettext</LI>
-<LI>imlibまたはgdk-pixbuf</LI>
-<LI>compface(faces)</LI>
+<LI>メール受信(POP3 (APOP対応))</LI>
+<LI>メール送信(SMTP (SMTP AUTH対応))</LI>
+<LI>メール受信(IMAP4rev1)</LI>
+<LI>ニュース購読/投稿 (NNTP)</LI>
 </UL>
 
-です。このマニュアルではgettextは入っているもので、
-localeはja_JP.*として記述してあります。
-<P>
-<H2><A NAME="ss2.2">2.2 動作確認されている環境</A>
-</H2>
-
-<P>以下のOS/Linux Distributionで動作が確認されています。
-他の環境で動作したという方は
-<A HREF="sylpheed-16.html#Sylpheed-ML">Sylpheed ML</A>で報告頂ければ幸いです。
+主な機能としては、以下があげられます。
 <UL>
-<LI>Debian GNU/Linux (woody) (glibc 2.1.3) (開発環境) </LI>
-<LI>Kondara MNU/Linux (glibc 2.1.x) </LI>
-<LI>Vine Linux 1.1 (glibc 2.0.x + libwcsmbs) </LI>
-<LI>Vine Linux 2.0 (glibc 2.1.x) </LI>
-<LI>Laser5 Linux 6.0 (glibc 2.1.x) </LI>
-<LI>Laser5 Linux 6.2 (glibc 2.1.x) </LI>
-<LI>TurboLinux 4.0 (glibc 2.0.7 + libwcsmbs) </LI>
-<LI>TurboLinux 6.0 (glibc 2.1.2) </LI>
-<LI>RedHat Linux 6.1 + Helix GNOME (glibc 2.1.x) </LI>
-<LI>RedHat Linux 6.2 (glibc 2.1.x) </LI>
-<LI>RedHat Linux 6.2J (glibc 2.1.x) </LI>
-<LI>LinuxPPC2000 + 雪風(日本語化 kit) </LI>
-<LI>Linux2000G (Intel, PowerPC) </LI>
-<LI>Linux for PPC Japanese Edition 2.0 (glibc 2.1.x) </LI>
-<LI>Linux MLD4 </LI>
-<LI>Plamo Linux 2.0 </LI>
-<LI>Linux Mandrake 7.0 </LI>
-<LI>Linux Mandrake 7.1 </LI>
-<LI>SuSE Linux 6.3 (glibc 2.1.2) </LI>
-<LI>SuSE Linux 6.4 </LI>
-<LI>SuSE Linux 7.0 </LI>
-<LI>OpenLinux 2.3 (glibc 2.1.1 -> 2.1.3) </LI>
-<LI>FreeBSD 3.2-RELEASE </LI>
-<LI>FreeBSD 3.4-RELEASE </LI>
-<LI>FreeBSD 4.0-RELEASE </LI>
-<LI>FreeBSD 4.1-RELEASE </LI>
-<LI>FreeBSD 5.0-CURRENT </LI>
-<LI>OpenBSD 2.7 </LI>
-<LI>Solaris 2.6 </LI>
-<LI>Solaris 7 </LI>
-<LI>IRIX 6.3 </LI>
-<LI>HP-UX 10.20 </LI>
-</UL>
-<P>しかし、環境によっては不安定な可能性があります。ライブラリはできるだけ新しいものをお使いください。
-<H2><A NAME="gen-inst"></A> <A NAME="ss2.3">2.3 基本的なinstall方法</A>
-</H2>
-
-<P>ここに示すのはUNIXならほぼ使えると思われるインストール方法です。
-しかし、OSの持っているファイル管理機構を壊す可能性があるので、
-当てはまるものが下にある場合は、それを利用することをお勧めします。
-<P>
-<H3>GTK+のインストール</H3>
-
-<P>
-<P>
-<H3>Sylpheedのコンパイルとインストール</H3>
-
-<P>まず、
-<A HREF="http://sylpheed.good-day.net/">http://sylpheed.good-day.net/</A>から
-sylpheedをダウンロードします。
-ダウンロードしたら、
-<BLOCKQUOTE><CODE>
-<PRE>
-bzip2 -dc sylpheed-(バージョン).tar.bz2 | tar xf - として解凍し、
-$ cd sylpheed-(バージョン)
-$ ./configure
-$ make
-$ su  
-Password: (パスワード入力)
-# make install
-</PRE>
-</CODE></BLOCKQUOTE>
-
-でインストール完了です。&nbsp;
-<P>
-<P>
-<H2><A NAME="ss2.4">2.4 rpmを使用したLinux Distributionへのインストール</A>
-</H2>
-
-<P>rpmを使用したディストリビュージョンには、
-<UL>
-<LI>Red Hat Linux</LI>
-<LI>Laser5 Linux</LI>
-<LI>Vine Linux</LI>
-<LI>Kondara MNU/Linux</LI>
+<LI>無制限の複数アカウント管理 </LI>
+<LI>スレッド表示</LI>
+<LI>フィルタリング</LI>
+<LI>MIMEによる添付ファイルの閲覧/送信(Base64, quoted-printable)</LI>
+<LI>アドレス帳 </LI>
+<LI>新着・未読管理</LI>
+<LI>送信待機</LI>
+<LI>テンプレート</LI>
+<LI>SSL対応 (--enable-ssl時)</LI>
 </UL>
 
-などを示します。
-<H3>一般的なインストール手順(最新版を利用する場合)</H3>
+他の便利な機能としては、以下があげられます。
+<UL>
+<LI>ML等でスレッドが切れているとき便利な「件名で寄せる」機能</LI>
+<LI>mbox ファイルのインポート</LI>
+<LI>クリッカブルURI</LI>
+<LI>外部エディタ対応</LI>
+<LI>X-Face対応 (compface使用時)</LI>
+<LI>IPv6 (--enable-ipv6時)</LI>
+<LI>UTF-8(Unicode)を含む多数の文字コードに対応</LI>
+<LI>画像表示機能を内蔵(gdk-pixbufあるいはimlib使用時)</LI>
+<LI>GnuPGによるメッセージ暗号化/署名(実験的)(gnupgおよびgpgme使用時)</LI>
+<LI>ユーザ定義ヘッダ</LI>
+<LI>自動改行 / ワードラップ</LI>
+<LI>HTMLのテキスト表示</LI>
+<LI>引用の深さの違いによる表示色の変更</LI>
+<LI>草稿</LI>
+<LI>印刷</LI>
+<LI>オフラインモード</LI>
+</UL>
+</P>
 
-<P>
-<H3>バイナリパッケージを用いる場合</H3>
-
-<P>
-<H3><A NAME="gtk-inst-bin"></A> gtk+のインストール/アップグレード</H3>
-
-<P>まず、gtk+のrpmが入ってるかどうかを確認します。
-<BLOCKQUOTE><CODE>
-<PRE>
-$ rpm -qa | grep gtk
-gtk+-1.2.6-1vl5
-(以下略)
-</PRE>
-</CODE></BLOCKQUOTE>
-
-のようにgtk+のrpmが既に入っていて、なおかつ1.2.6以上であれば大丈夫です。
-古い場合は、そのDistributionを配布しているサイト等からダウンロードし、
-<BLOCKQUOTE><CODE>
-<PRE>
-$ su
-Password: (パスワードを入力)
-# rpm -Uvh gtk+-(バージョン).i386.rpm
-</PRE>
-</CODE></BLOCKQUOTE>
-
-でバージョンアップしてください。
-<P>
-<H3>rpmのインストール</H3>
-
-<P>
-<A HREF="http://members.linuxstart.com/~sunnyone/mylinux/sylpheed.html">http://members.linuxstart.com/~sunnyone/mylinux/sylpheed.html</A>
-より、
-<P>sylpheed-(バージョン).i386.rpmをダウンロードします。そして、
-<BLOCKQUOTE><CODE>
-<PRE>
-$ su
-Password: (パスワードを入力)
-# rpm -Uvh sylpheed-(バージョン).i386.rpm
-</PRE>
-</CODE></BLOCKQUOTE>
-
-で完了です。
-なお、http://members.linuxstart.com/&nbsp;sunnyone/mylinux/sylpheed.htmlのrpmを使用する場合、
-`rpm -q glibc`と実行したときに、
-glibc-2.1.2-17vl2のように、glibc-2.1.x以降である必要があります。
-新しいバージョンの場合、gtk+以外にimlibのrpmが必要になる場合もあります。
-<P>
-<H3><A NAME="inst_from_srpm"></A> ソースパッケージを用いる場合</H3>
-
-<P>この方法は、上記のglibcのバージョンが低かった場合でも利用可能です。
-<H3><A NAME="gtk-inst-src"></A> gtk+のインストール/アップグレード</H3>
-
-<P>まず、gtk+のrpmが入ってるかどうかを確認します。
-<BLOCKQUOTE><CODE>
-<PRE>
-$ rpm -qa | grep gtk
-gtk+-1.2.6-1vl5
-gtk+-devel-1.2.6-1vl5
-(以下略)
-</PRE>
-</CODE></BLOCKQUOTE>
-
-のようにgtk+及びgtk+-develのpackageが既に入っていて、なおかつ1.2.6以上であれば大丈夫です。
-古い場合は、そのDistributionを配布しているサイト等からダウンロードし、
-<BLOCKQUOTE><CODE>
-<PRE>
-# rpm -Uvh gtk+-(バージョン)-?.i386.rpm gtk+-devel-(バージョン)-?.i386.rpm
-</PRE>
-</CODE></BLOCKQUOTE>
-
-でバージョンアップしてください。
-<P>
-<H3>rpmのrebuild &amp; install</H3>
-
-<P>そして、
-<A HREF="http://members.linuxstart.com/~sunnyone/mylinux/sylpheed.html">http://members.linuxstart.com/~sunnyone/mylinux/sylpheed.html</A>より、
-sylpheed-(バージョン).src.rpmをダウンロードします。
-次に下のコマンドを実行します。
-ただし、下記の方法ではコンパイルにもrootになるため少しだけ危険です。
-ならなくても良い環境を整えている方は、rpm --rebuildのためにsuは必要ありません。
-<BLOCKQUOTE><CODE>
-<PRE>
-$ su
-Password: (パスワードを入力)
-# rpm --rebuild sylpheed-(バージョン).src.rpm
-</PRE>
-</CODE></BLOCKQUOTE>
-
-とすればコンパイルが開始され、
-<BLOCKQUOTE><CODE>
-<PRE>
-(以上略)
-書き込み中: /usr/src/redhat/RPMS/i386/sylpheed-0.3.3-1.i386.rpm
-(以下略)
-</PRE>
-</CODE></BLOCKQUOTE>
-
-のようなメッセージ(書き込み中:がWrote: などになる場合もあります)が現れて、
-終了したら、上記に示されたファイル(sylpheed-(バージョン).i386.rpm)を
-<BLOCKQUOTE><CODE>
-<PRE>
-# rpm -Uvh /usr/src/redhat/RPMS/i386/sylpheed-(バージョン).i386.rpm
-</PRE>
-</CODE></BLOCKQUOTE>
-
-でインストール完了です。
-<P>
-<H3>Vine Linux 1.1あるいは1.0へのVine Plusを利用したインストール</H3>
-
-<P>
-<A HREF="#gtk-inst-bin">gtkのバージョン確認/インストール/アップグレード</A>を行ってください。
-gtk+の入手先には、
-<A HREF="ftp://ftp.jaist.ac.jp/pub/os/linux/Vine/VinePlus/1.1/">VinePlus</A><P>が利用可能です。Vine Plusを利用したインストールでは、gtk+-develのrpmは必要ありません。
-gtk+-develの部分は飛ばして考えてください。
-<P>次に上記サイトなどより、Vine Plusに含まれる
-sylpheed-(バージョン名)-?.i386.rpmをダウンロードし、
-<BLOCKQUOTE><CODE>
-<PRE>
-# rpm -Uvh sylpheed-(バージョン名)-?.i386.rpm
-</PRE>
-</CODE></BLOCKQUOTE>
-
-とすればインストール完了です。
-<P>なお、Vine Linux 1.1又は1.0標準だとフォントが少し大きいので、
-フォント指定の項も見ておくと良いでしょう。
-<P>
-<H3>Vine Linux 2.0へのVine Plusを利用したインストール</H3>
-
-<P>X Window Systemを選択してインストールされていれば、
-gtk+のバージョンの条件も既に満たしているので、
-<A HREF="http://members.linuxstart.com/~sunnyone/mylinux/sylpheed.html">http://members.linuxstart.com/~sunnyone/mylinux/sylpheed.html</A>
-あるいはVine Plus(2.0)からsylpheed-(バージョン名)-?.i386.rpmをダウンロードし、
-<BLOCKQUOTE><CODE>
-<PRE>
-# rpm -Uvh sylpheed-(バージョン名)-?.i386.rpm
-</PRE>
-</CODE></BLOCKQUOTE>
-
-で完了です。
-<P>なお、Vine2.0CRに付属しているVine PlusのCDに含まれるsylpheedのrpmはバージョンが古いので、
-なるべく最新版を入れるべきでしょう。
-<P>
-<H3>Vine Linux 2.1へのインストール</H3>
-
-<P>Vine Linux 2.1には既にSylpheedがインストールされていますが、
-新しいバージョンへはVine Linux 2.0と同じ方法を取ると良いと思います。
-Vine Plusにあれば使っても良いですし、
-もしもっと新しいバージョンを使用したい場合は
-<A HREF="#inst_from_srpm">ソースパッケージからのインストール</A>
-を使用すると良いと思います。
-<P>Vine Linux 2.0とVine Linux 2.1はあまり変化が無いので、
-libjconvを使いたいのでなければバイナリパッケージからのインストールも
-使用可能だと思われます。
-<H3>Kondara MNU/Linux 1.0および1.1へのインストール</H3>
-
-<P>Kondara MNU/LinuxにはKondara-Zooにsylpheedのrpmがありますので、それをダウンロードして、
-<BLOCKQUOTE><CODE>
-<PRE>
-# rpm -Uvh sylpheed-(バージョン名)-?.i586.rpm
-</PRE>
-</CODE></BLOCKQUOTE>
-
-とするか、mphを使って、
-<P>
-<BLOCKQUOTE><CODE>
-<PRE>
-# mph-get install sylpheed
-</PRE>
-</CODE></BLOCKQUOTE>
-
-で完了です。
-<P>
-<H2><A NAME="ss2.5">2.5 Debian GNU/Linuxへのインストール</A>
+<H2><A NAME="ss2.4">2.4</A> <A HREF="sylpheed.html#toc2.4">メッセージの管理方式</A>
 </H2>
 
-<P>Debian GNU/Linuxのwoody/potatoをお使いならば、
-Debian-JP(woody)に、packageがありますので、
-<BLOCKQUOTE><CODE>
-<PRE>
-# apt-get install sylpheed
-</PRE>
-</CODE></BLOCKQUOTE>
+<P>メッセージはMH形式で管理しており、他のMH形式を使用したメーラ(Mew等)と併用することが可能です。
+1ファイル1メールの形式のため、障害が発生した際にメールを失う危険性が少なくなっています。</P>
+<P>受信に外部プログラム(inc, imget等)の使用も可能です。</P>
 
-でインストールできます。
-古いバージョンならば、gtk+も古い場合がありますので、
-<A HREF="#gen-inst">基本的なinstall方法</A>を利用すると良いかと思われます。
-<P>
-<H2><A NAME="ss2.6">2.6 FreeBSDへのインストール</A>
+<H2><A NAME="ss2.5">2.5</A> <A HREF="sylpheed.html#toc2.5">実現予定の機能</A>
 </H2>
+
+<P>sylpheedに含まれるTODO.jpを参照してください。</P>
 
 <HR>
-<A HREF="sylpheed-3.html">Next</A>
-<A HREF="sylpheed-1.html">Previous</A>
-<A HREF="sylpheed.html#toc2">Contents</A>
+<A HREF="sylpheed-3.html">次のページ</A>
+<A HREF="sylpheed-1.html">前のページ</A>
+<A HREF="sylpheed.html#toc2">目次へ</A>
 </BODY>
 </HTML>

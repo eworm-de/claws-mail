@@ -334,7 +334,6 @@ EXTRA_DIST = \
 	pixmaps/privacy_emblem_warn.xpm \
 	pixmaps/properties.xpm \
 	pixmaps/quicksearch.xpm \
-	pixmaps/regular.xpm \
 	pixmaps/replied.xpm \
 	pixmaps/search.xpm \
 	pixmaps/sylpheed_logo.xpm \
