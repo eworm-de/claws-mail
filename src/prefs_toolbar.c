@@ -1136,7 +1136,7 @@ static gboolean set_list_selected(GtkTreeSelection *selector,
 	GtkTreeIter iter;
 	GtkTreeView *list_ico = GTK_TREE_VIEW(prefs_toolbar->list_view_icons);
 	GtkTreeView *list_set = GTK_TREE_VIEW(prefs_toolbar->list_view_set);
-	gchar *syl_act;
+	gchar *syl_act = toolbar_ret_descr_from_val(A_SYL_ACTIONS);
 	gchar *file, *icon_text, *descr;
 	GList *cur;
 	gint item_num;

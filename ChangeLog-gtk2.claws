@@ -1,3 +1,8 @@
+2005-03-20 [thorsten]	1.9.6cvs4
+
+	* src/prefs_toolbar.c
+		fix crash when selecting toolbar item (uninitialized pointer)
+
 2005-03-20 [thorsten]	1.9.6cvs3
 
 	* src/procmime.c

@@ -420,3 +420,4 @@
 ( cvs diff -u -r 1.395.2.60 -r 1.395.2.61 src/summaryview.c; cvs diff -u -r 1.68.2.5 -r 1.68.2.6 src/summaryview.h; ) > 1.9.6cvs1.patchset
 ( cvs diff -u -r 1.382.2.111 -r 1.382.2.112 src/compose.c; ) > 1.9.6cvs2.patchset
 ( cvs diff -u -r 1.49.2.36 -r 1.49.2.37 src/procmime.c; ) > 1.9.6cvs3.patchset
+( cvs diff -u -r 1.30.2.10 -r 1.30.2.11 src/prefs_toolbar.c; ) > 1.9.6cvs4.patchset
