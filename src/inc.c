@@ -186,6 +186,9 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 
 		if (prefs_common.inc_local)
 			new_msgs = inc_spool();
+
+		if (new_msgs <= 0)
+			new_msgs = 1;
 	} else {
 		if (prefs_common.inc_local)
 			new_msgs = inc_spool();
@@ -280,8 +283,11 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
 	inc_autocheck_timer_remove();
 	main_window_lock(mainwin);
 
-	if (prefs_common.inc_local)
+	if (prefs_common.inc_local) {
 		new_msgs = inc_spool();
+		if (new_msgs < 0)
+			new_msgs = 0;
+	}
 
 	list = account_get_list();
 	if (!list) {

@@ -1,3 +1,8 @@
+2002-07-26 [paul]	0.8.0claws16
+
+	* sync with 0.8.1cvs1
+		see ChangeLog 2002-07-26
+
 2002-07-26 [christoph]	0.8.0claws15
 
 	* src/imap.[ch]
