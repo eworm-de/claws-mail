@@ -1,3 +1,9 @@
+2003-09-27 [alfons]	0.9.5claws34
+
+	* src/action.c
+		o make progress bar not fill/expand when resizing dialog
+		o use default fixed text font for actions output
+
 2003-09-27 [paul]	0.9.5claws33
 
 	* src/prefs_common.[ch]
