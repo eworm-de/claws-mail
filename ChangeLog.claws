@@ -1,3 +1,31 @@
+2005-02-10 [paul]	1.0.1cvs4
+
+	* src/compose.c
+		sync with main, see ChangeLog 2005-02-10
+
+2005-02-10 [colin]	1.0.1cvs3
+
+	* src/mainwindow.c
+		dereference freed messageview,
+		and don't try to use it after free.
+		This caused occasional late segfaults
+		when quitting.
+
+2005-02-10 [colin]	1.0.1cvs2
+
+	* src/messageview.c
+		Don't display html with plugin automatically
+		(Dillo steals focus)
+
+2005-02-09 [colin]	1.0.1cvs1
+
+	* src/mimeview.c
+	* src/mimeview.h
+	* src/messageview.c
+		Display first relevant part using plugin
+		if not text/plain if possible (useful for 
+		vCalendar for example)
+
 2005-02-08 [paul]	1.0.1
 
 	1.0.1 released

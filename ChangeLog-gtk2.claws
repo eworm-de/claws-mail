@@ -1,3 +1,12 @@
+2005-02-10 [paul]	1.0.1cvs4.1
+
+	* ChangeLog
+	* ChangeLog.claws
+	* ChangeLog.jp
+	* configure.ac
+	* src/compose.c
+		sync with HEAD
+
 2005-02-10 [paul]	1.0.1cvs3.2
 
 	* AUTHORS
