@@ -1187,7 +1187,7 @@ gint addrindex_write_to( AddressIndex *addrIndex, const gchar *newFile ) {
 #ifdef DEV_STANDALONE
 		fclose( fp );
 #else
-		if( prefs_write_close( pfile ) < 0 ) {
+		if( prefs_file_close( pfile ) < 0 ) {
 			addrIndex->retVal = MGU_ERROR_WRITE;
 		}
 #endif

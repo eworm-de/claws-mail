@@ -417,7 +417,7 @@ void folder_write_list(void)
 
 	fputs("</folderlist>\n", pfile->fp);
 
-	if (prefs_write_close(pfile) < 0)
+	if (prefs_file_close(pfile) < 0)
 		g_warning("failed to write folder list.\n");
 }
 

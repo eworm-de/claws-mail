@@ -139,7 +139,7 @@ if (!(func)) \
 { \
 	g_warning("failed to write configuration to file\n"); \
 	if (orig_fp) fclose(orig_fp); \
-	prefs_write_close_revert(pfile); \
+	prefs_file_close_revert(pfile); \
 	g_free(rcpath); \
 	g_free(block_label); \
 	return; \
@@ -209,7 +209,7 @@ void prefs_save_config(PrefParam *param, const gchar *label,
 	}
 
 	if (orig_fp) fclose(orig_fp);
-	if (prefs_write_close(pfile) < 0)
+	if (prefs_file_close(pfile) < 0)
 		g_warning("failed to write configuration to file\n");
 	g_free(rcpath);
 

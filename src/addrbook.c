@@ -1113,7 +1113,7 @@ gint addrbook_write_to(AddressBookFile *book, gchar *newFile)
 #ifdef DEV_STANDALONE
 		fclose(fp);
 #else
-		if (prefs_write_close( pfile ) < 0)
+		if (prefs_file_close( pfile ) < 0)
 			book->retVal = MGU_ERROR_WRITE;
 #endif
 	}

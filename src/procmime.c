@@ -793,7 +793,7 @@ void renderer_write_config(void)
 			renderer->renderer);
 	}
 
-	if (prefs_write_close(pfile) < 0) {
+	if (prefs_file_close(pfile) < 0) {
 		g_warning("failed to write configuration to file\n");
 		return;
 	}

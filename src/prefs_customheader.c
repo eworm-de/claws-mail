@@ -396,7 +396,7 @@ void prefs_custom_header_write_config(PrefsAccount *ac)
 		if (fputs(chstr, pfile->fp) == EOF ||
 		    fputc('\n', pfile->fp) == EOF) {
 			FILE_OP_ERROR(rcpath, "fputs || fputc");
-			prefs_write_close_revert(pfile);
+			prefs_file_close_revert(pfile);
 			g_free(rcpath);
 			g_free(chstr);
 			return;
@@ -412,7 +412,7 @@ void prefs_custom_header_write_config(PrefsAccount *ac)
 		if (fputs(chstr, pfile->fp) == EOF ||
 		    fputc('\n', pfile->fp) == EOF) {
 			FILE_OP_ERROR(rcpath, "fputs || fputc");
-			prefs_write_close_revert(pfile);
+			prefs_file_close_revert(pfile);
 			g_free(rcpath);
 			g_free(chstr);
 			return;
@@ -428,7 +428,7 @@ void prefs_custom_header_write_config(PrefsAccount *ac)
  		all_hdrs = g_slist_remove(all_hdrs, ch);
  	}
 
-	if (prefs_write_close(pfile) < 0) {
+	if (prefs_file_close(pfile) < 0) {
 		g_warning("failed to write configuration to file\n");
 		return;
 	}

@@ -48,8 +48,9 @@ void plugin_save_list()
 	GSList *cur;
 	Plugin *plugin;
 
-	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, "pluginsrc", NULL);
-	if ((pfile = prefs_write_open(rcpath)) == NULL) {
+	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);
+	if ((pfile = prefs_write_open(rcpath)) == NULL ||
+	    (prefs_set_block_label(pfile, "Plugins") < 0)) {
 		g_warning("failed to write plugin list\n");
 		g_free(rcpath);
 		return;
@@ -61,7 +62,7 @@ void plugin_save_list()
 		fprintf(pfile->fp, "%s\n", plugin->filename);
 	}
 
-	if (prefs_write_close(pfile) < 0)
+	if (prefs_file_close(pfile) < 0)
 		g_warning("failed to write plugin list\n");
 
 	g_free(rcpath);	
@@ -139,23 +140,27 @@ void plugin_load_all()
 {
 	gchar *rcpath;
 	gchar buf[BUFFSIZE];
-	FILE *fp;
+	PrefFile *pfile;
+	gchar *error;
 
-	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, "pluginsrc", NULL);	
-	if ((fp = fopen(rcpath, "rb")) != NULL) {
-		gchar *error;
-
-		while(fgets(buf, sizeof(buf), fp) != NULL) {
-			g_strstrip(buf);
-			
-			if (plugin_load(buf, &error) < 0) {
-				debug_print("plugin loading error: %s\n", error);
-				g_free(error);
-			}
-		}
-
-		fclose(fp);
+	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMON_RC, NULL);	
+	if ((pfile = prefs_read_open(rcpath)) == NULL ||
+	    (prefs_set_block_label(pfile, "Plugins") < 0)) {
+		g_free(rcpath);
+		return;
 	}
+
+	while (fgets(buf, sizeof(buf), pfile->fp) != NULL) {
+		if (buf[0] == '[')
+			break;
+			
+		g_strstrip(buf);
+		if (plugin_load(buf, &error) < 0) {
+			debug_print("plugin loading error: %s\n", error);
+			g_free(error);
+		}							
+	}
+	prefs_file_close(pfile);
 
 	g_free(rcpath);
 }

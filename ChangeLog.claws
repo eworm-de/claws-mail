@@ -1,3 +1,27 @@
+2002-12-31 [christoph]	0.8.8claws27
+
+	* src/addrbook.c
+	* src/addrindex.c
+	* src/folder.c
+	* src/matcher.c
+	* src/prefs_account.c
+	* src/prefs_actions.c
+	* src/prefs_customheader.c
+	* src/prefs_display_header.c
+	* src/prefs_gtk.c
+	* src/procmime.c
+	* src/toolbar.c
+	* src/xmlprops.c
+	* src/common/prefs.[ch]
+		extend prefs file handling for reading and automatic handling
+		of blocks. When reading prefs_set_block_label will automatically
+		move on to the block. When writing it will copy all other blocks
+		automatically
+
+	* src/common/plugin.c
+		Now loading plugin filenames from [Plugins] block in
+		sylpheed rc file
+
 2002-12-30 [christoph]	0.8.8claws26
 
 	* src/common/hooks.[ch]

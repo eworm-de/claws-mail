@@ -520,7 +520,7 @@ void toolbar_save_config_file(ToolbarType source)
 
 		fprintf(fp, "</%s>\n", TOOLBAR_TAG_INDEX);	
 	
-		if (prefs_write_close (pfile) < 0 ) 
+		if (prefs_file_close (pfile) < 0 ) 
 			g_warning("failed to write toolbar configuration to file\n");
 	} else
 		g_warning("failed to open toolbar configuration file for writing\n");

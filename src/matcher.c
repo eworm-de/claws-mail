@@ -1288,7 +1288,7 @@ void prefs_matcher_write_config(void)
 
 	g_free(rcpath);
 
-	if (prefs_write_close(pfile) < 0) {
+	if (prefs_file_close(pfile) < 0) {
 		g_warning("failed to write configuration to file\n");
 		return;
 	}

@@ -425,7 +425,7 @@ void prefs_display_header_write_config(void)
 		if (fputs(dpstr, pfile->fp) == EOF ||
 		    fputc('\n', pfile->fp) == EOF) {
 			FILE_OP_ERROR(rcpath, "fputs || fputc");
-			prefs_write_close_revert(pfile);
+			prefs_file_close_revert(pfile);
 			g_free(rcpath);
 			g_free(dpstr);
 			return;
@@ -435,7 +435,7 @@ void prefs_display_header_write_config(void)
 
 	g_free(rcpath);
 
-	if (prefs_write_close(pfile) < 0) {
+	if (prefs_file_close(pfile) < 0) {
 		g_warning("failed to write configuration to file\n");
 		return;
 	}

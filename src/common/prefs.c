@@ -21,10 +21,34 @@
 #  include "config.h"
 #endif
 
+#include "defs.h"
+
 #include <glib.h>
 
 #include "prefs.h"
 #include "utils.h"
+
+PrefFile *prefs_read_open(const gchar *path)
+{
+	PrefFile *pfile;
+	gchar *tmppath;
+	FILE *fp;
+
+	g_return_val_if_fail(path != NULL, NULL);
+
+	if ((fp = fopen(path, "rb")) == NULL) {
+		FILE_OP_ERROR(tmppath, "fopen");
+		return NULL;
+	}
+
+	pfile = g_new(PrefFile, 1);
+	pfile->fp = fp;
+	pfile->orig_fp = NULL;
+	pfile->path = g_strdup(path);
+	pfile->writing = FALSE;
+
+	return pfile;
+}
 
 PrefFile *prefs_write_open(const gchar *path)
 {
@@ -53,23 +77,57 @@ PrefFile *prefs_write_open(const gchar *path)
 
 	pfile = g_new(PrefFile, 1);
 	pfile->fp = fp;
+	pfile->orig_fp = NULL;
 	pfile->path = g_strdup(path);
+	pfile->writing = TRUE;
 
 	return pfile;
 }
 
-gint prefs_write_close(PrefFile *pfile)
+gint prefs_file_close(PrefFile *pfile)
 {
-	FILE *fp;
+	FILE *fp, *orig_fp;
 	gchar *path;
 	gchar *tmppath;
 	gchar *bakpath = NULL;
+	gchar buf[BUFFSIZE];
 
 	g_return_val_if_fail(pfile != NULL, -1);
 
 	fp = pfile->fp;
+	orig_fp = pfile->orig_fp;
 	path = pfile->path;
 	g_free(pfile);
+
+	if (!pfile->writing) {
+		fclose(fp);
+		return 0;
+	}
+
+	if (orig_fp) {
+    		while (fgets(buf, sizeof(buf), orig_fp) != NULL) {
+			/* next block */
+			if (buf[0] == '[') {
+				if (fputs(buf, fp)  == EOF) {
+					g_warning("failed to write configuration to file\n");
+					fclose(orig_fp);
+					prefs_file_close_revert(pfile);
+				
+					return -1;
+				}
+				break;
+			}
+		}
+		
+		while (fgets(buf, sizeof(buf), orig_fp) != NULL)
+			if (fputs(buf, fp) == EOF) {
+				g_warning("failed to write configuration to file\n");
+				fclose(orig_fp);
+				prefs_file_close_revert(pfile);			
+				
+				return -1;
+			}
+	}
 
 	tmppath = g_strconcat(path, ".tmp", NULL);
 	if (fclose(fp) == EOF) {
@@ -107,16 +165,21 @@ gint prefs_write_close(PrefFile *pfile)
 	return 0;
 }
 
-gint prefs_write_close_revert(PrefFile *pfile)
+gint prefs_file_close_revert(PrefFile *pfile)
 {
 	gchar *tmppath;
 
 	g_return_val_if_fail(pfile != NULL, -1);
 
-	tmppath = g_strconcat(pfile->path, ".tmp", NULL);
+	if (pfile->orig_fp)
+		fclose(pfile->orig_fp);
+	if (pfile->writing)
+		tmppath = g_strconcat(pfile->path, ".tmp", NULL);
 	fclose(pfile->fp);
-	if (unlink(tmppath) < 0) FILE_OP_ERROR(tmppath, "unlink");
-	g_free(tmppath);
+	if (pfile->writing) {
+		if (unlink(tmppath) < 0) FILE_OP_ERROR(tmppath, "unlink");
+		g_free(tmppath);
+	}
 	g_free(pfile->path);
 	g_free(pfile);
 
@@ -144,4 +207,66 @@ gboolean prefs_rc_is_readonly(const gchar * rcfile)
 	g_free(rcpath);
 
 	return result;
+}
+
+gint prefs_set_block_label(PrefFile *pfile, const gchar *label)
+{
+	gchar *block_label;
+	gchar buf[BUFFSIZE];
+	
+	block_label = g_strdup_printf("[%s]", label);
+	if (!pfile->writing) {
+		while (fgets(buf, sizeof(buf), pfile->fp) != NULL) {
+			gint val;
+			
+			val = strncmp(buf, block_label, strlen(block_label));
+			if (val == 0) {
+				debug_print("Found %s\n", block_label);
+				break;
+			}
+		}
+	} else {
+		if ((pfile->orig_fp = fopen(pfile->path, "rb")) != NULL) {
+			gboolean block_matched = FALSE;
+
+			while (fgets(buf, sizeof(buf), pfile->orig_fp) != NULL) {
+				gint val;
+				
+				val = strncmp(buf, block_label, strlen(block_label));
+				if (val == 0) {
+					debug_print("Found %s\n", block_label);
+					block_matched = TRUE;
+					break;
+				} else {
+					if (fputs(buf, pfile->fp) == EOF) {
+						g_warning("failed to write configuration to file\n");
+						fclose(pfile->orig_fp);
+						prefs_file_close_revert(pfile);
+						g_free(block_label);
+						
+						return -1;
+					}
+				}
+			}
+			
+			if (!block_matched) {
+				fclose(pfile->orig_fp);
+				pfile->orig_fp = NULL;
+			}
+			
+			if (fputs(block_label, pfile->fp) == EOF ||
+			    fputc('\n', pfile->fp) == EOF) {
+				g_warning("failed to write configuration to file\n");
+				fclose(pfile->orig_fp);
+				prefs_file_close_revert(pfile);
+				g_free(block_label);
+						
+				return -1;
+			}
+		}
+	}
+
+	g_free(block_label);
+
+	return 0;
 }
