@@ -1,3 +1,13 @@
+2002-12-24 [alfons]	0.8.7claws3
+
+	* src/summaryview.c
+		summary_thread_build(): fix crash because of focus != selection 
+		after threading. when deleting the selection, gtk tries but fails 
+		to find the correct focusable element. we now force the selection
+		to be focused. this should solve the infamous bug reported by 
+		Jason Wojciechowski (bug "[ 633443 ] Crash on deleting messages"). 
+		a test case is available. 
+
 2002-12-24 [darko]	0.8.7claws2
 
 	* src/summaryview.c

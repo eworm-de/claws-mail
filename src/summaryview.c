@@ -3747,6 +3747,8 @@ void summary_thread_build(SummaryView *summaryview)
 		node = next;
 	}
 
+	gtkut_ctree_set_focus_row(ctree, summaryview->selected);
+
 	gtk_clist_thaw(GTK_CLIST(ctree));
 	gtk_signal_handler_unblock_by_func(GTK_OBJECT(ctree),
 					   summary_tree_expanded, summaryview);
