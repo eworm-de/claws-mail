@@ -480,7 +480,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/Send queued messa_ges"),
 						NULL, send_queue_cb, 0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/Compose a _new mail"),	"<alt>N", compose_mail_cb, 0, NULL},
+	{N_("/_Message/Compose a_n email message"),	"<alt>N", compose_mail_cb, 0, NULL},
 	{N_("/_Message/Compose a news message"),	NULL,	compose_news_cb, 0, NULL},
 	{N_("/_Message/_Reply"),		"<alt>R", 	reply_cb, COMPOSE_REPLY, NULL},
 	{N_("/_Message/Repl_y to sender"),	"<control><alt>R", reply_cb, COMPOSE_REPLY_TO_SENDER, NULL},
@@ -1413,6 +1413,7 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 #include "pixmaps/stock_mail_receive.xpm"
 #include "pixmaps/stock_mail_receive_all.xpm"
 #include "pixmaps/stock_mail_compose.xpm"
+#include "pixmaps/stock_news_compose.xpm"
 #include "pixmaps/stock_mail_reply.xpm"
 #include "pixmaps/stock_mail_reply_to_all.xpm"
 #include "pixmaps/stock_mail_reply_to_author.xpm"
@@ -1466,13 +1467,13 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	CREATE_TOOLBAR_ICON(stock_mail_receive_xpm);
 	get_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					  _("Get"),
-					  _("Incorporate new mail"),
+					  _("Get new mail from current account"),
 					  "Get",
 					  icon_wid, toolbar_inc_cb, mainwin);
 	CREATE_TOOLBAR_ICON(stock_mail_receive_all_xpm);
 	getall_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					     _("Get all"),
-					     _("Incorporate new mail of all accounts"),
+					     _("Get new mail from all accounts"),
 					     "Get all",
 					     icon_wid,
 					     toolbar_inc_all_cb,
@@ -1493,15 +1494,15 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 
 	CREATE_TOOLBAR_ICON(stock_mail_compose_xpm);
 	compose_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
-					      _("New mail"),
-					      _("Compose a new mail"),
+					      _("Compose email"),
+					      _("Compose an email message"),
 					      "New",
 					      icon_wid,
 					      toolbar_compose_mail_cb,
 					      mainwin);
-	CREATE_TOOLBAR_ICON(stock_mail_compose_xpm);
+	CREATE_TOOLBAR_ICON(stock_news_compose_xpm);
 	compose_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
-					      _("New news"),
+					      _("Compose news"),
 					      _("Compose a news message"),
 					      "New",
 					      icon_wid,

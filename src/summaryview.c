@@ -2125,7 +2125,7 @@ static void summary_mark_row_as_read(SummaryView *summaryview,
 		CHANGE_FLAGS(msginfo);
 		
 		summary_set_row_marks(summaryview, row);
-		debug_print(_("Message %d is marked as being read\n"),
+		debug_print(_("Message %d is marked as read\n"),
 			    msginfo->msgnum);
 	}
 }

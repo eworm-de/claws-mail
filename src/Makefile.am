@@ -117,6 +117,7 @@ EXTRA_DIST = \
 	pixmaps/stock_mail_receive_all.xpm \
 	pixmaps/stock_mail_send.xpm \
 	pixmaps/stock_mail_compose.xpm \
+        pixmaps/stock_news_compose.xpm \
 	pixmaps/stock_mail_reply.xpm \
 	pixmaps/stock_mail_reply_to_all.xpm \
 	pixmaps/stock_mail_reply_to_author.xpm \
