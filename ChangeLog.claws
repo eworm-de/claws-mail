@@ -2,6 +2,8 @@
 
 	* src/mh.c
 		fixed a memory leak in mh_fetch_msginfo
+		fixed crash when message header could not be
+		parsed
 
 2002-07-23 [paul]	0.8.0claws2
 
