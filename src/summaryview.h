@@ -262,4 +262,7 @@ void summary_toggle_show_read_messages (SummaryView *summaryview);
 void summary_toggle_view_real	(SummaryView	*summaryview);
 
 void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview);
+
+void summary_gather_address	( SummaryView *summaryview );
+
 #endif /* __SUMMARY_H__ */

@@ -174,4 +174,6 @@ GList *addritem_folder_get_group_list	( ItemFolder *folder );
 ItemEMail *addritem_move_email_before	( ItemPerson *person, ItemEMail *itemMove, ItemEMail *itemTarget );
 ItemEMail *addritem_move_email_after	( ItemPerson *person, ItemEMail *itemMove, ItemEMail *itemTarget );
 
+void addritem_parse_first_last		( ItemPerson *person );
+
 #endif /* __ADDRITEM_H__ */

@@ -41,7 +41,8 @@ static gchar *_headerCC_       = HEADER_CC;
 static gchar *_headerTo_       = HEADER_TO;
 
 #define ADDR_BUFFSIZE    1024
-#define MSG_BUFFSIZE     16384
+#define MSG_BUFFSIZE     2048
+#define MSGNUM_BUFFSIZE  32
 #define DFL_FOLDER_SIZE  20
 
 /* Noise strings included by some other E-Mail clients */
@@ -314,24 +315,12 @@ static void addrharvest_insert_cache(
 		newFolder = TRUE;	/* Folder is full */
 	}
 
-	if( newFolder ) {
-		cnt = 1 + ( entry->count / harvester->folderSize );
-		folderName = g_strdup_printf( "%s (%d)", entry->header, cnt );
-		folder = addritem_create_item_folder();
-		addritem_folder_set_name( folder, folderName );
-		addritem_folder_set_remarks( folder, "" );
-		addrcache_id_folder( cache, folder );
-		addrcache_add_folder( cache, folder );
-		entry->folder = folder;
-		g_free( folderName );
-	}
-
 	/* Insert address */
 	key = g_strdup( address );
 	g_strdown( key );
 	person = g_hash_table_lookup( harvester->dupTable, key );
 	if( person ) {
-		/* Use longest name */
+		/* Update existing person to use longest name */
 		value = ADDRITEM_NAME(person);
 		if( strlen( name ) > strlen( value ) ) {
 			addritem_person_set_common_name( person, name );
@@ -339,26 +328,42 @@ static void addrharvest_insert_cache(
 		g_free( key );
 	}
 	else {
+		/* Folder if required */
+		if( newFolder ) {
+			cnt = 1 + ( entry->count / harvester->folderSize );
+			folderName =g_strdup_printf( "%s (%d)",
+					entry->header, cnt );
+			folder = addritem_create_item_folder();
+			addritem_folder_set_name( folder, folderName );
+			addritem_folder_set_remarks( folder, "" );
+			addrcache_id_folder( cache, folder );
+			addrcache_add_folder( cache, folder );
+			entry->folder = folder;
+			g_free( folderName );
+		}
+
 		/* Insert entry */
 		person = addrcache_add_contact(
 				cache, folder, name, address, "" );
 		g_hash_table_insert( harvester->dupTable, key, person );
 		entry->count++;
 	}
+	addritem_parse_first_last( person );
 }
 
 /*
  * Remove specified string from name.
  * Enter: name Name.
- *        em   String to remove.
+ *        str  String to remove.
  */
-static void addrharvest_del_email( gchar *name, gchar *em ) {
+static void addrharvest_del_email( gchar *name, gchar *str ) {
 	gchar *p;
-	gint ilen;
+	gint lenn, lenr;
 
-	ilen = strlen( em );
-	while( p = strcasestr( name, em )  ) {
-		memmove( p, p + ilen, ilen + 1 );
+	lenr = strlen( str );
+	while( p = strcasestr( name, str )  ) {
+		lenn = strlen( p );
+		memmove( p, p + lenr, lenn );
 	}
 }
 
@@ -502,7 +507,7 @@ static void addrharvest_parse_address(
 	gchar buffer[ ADDR_BUFFSIZE + 2 ];
 	const gchar *bp;
 	const gchar *ep;
-	gchar *atCh, *email, *p;
+	gchar *atCh, *email, *name;
 	gint bufLen;
 
 	/* Search for an address */
@@ -519,13 +524,6 @@ static void addrharvest_parse_address(
 		buffer[ bufLen ] = '\0';
 		buffer[ bufLen + 1 ] = '\0';
 		buffer[ bufLen + 2 ] = '\0';
-
-		/* Make whitespace */
-		p = buffer;
-		while( *p ) {
-			if( *p == '\r' || *p == '\n' || *p == '\t' ) *p = ' ';
-			p++;
-		}
 
 		/* Extract address from buffer */
 		email = addrharvest_extract_address( buffer );
@@ -544,13 +542,113 @@ static void addrharvest_parse_address(
 			mgu_str_ltc2space( buffer, '(', ')' );
 			g_strstrip( buffer );
 
+			if( g_strcasecmp( buffer, email ) == 0 ) {
+				name = "";
+			}
+			else {
+				name = buffer;
+			}
+
 			/* Insert into address book */
 			addrharvest_insert_cache(
-				harvester, entry, cache, buffer, email );
+				harvester, entry, cache, name, email );
 			g_free( email );
 		}
 		hdrBuf = ep;
 	}
+}
+
+/*
+ * Test whether buffer contains a header that appears in header list.
+ * Enter: listHdr Header list.
+ *        buf     Header buffer.
+ * Return: TRUE if header in list.
+ */
+static gboolean addrharvest_check_hdr( GList *listHdr, gchar *buf ) {
+	gboolean retVal;
+	GList *node;
+	gchar *p, *hdr, *nhdr;
+	gint len;
+
+	retVal = FALSE;
+	p = strchr( buf, ':' );
+	if( p ) {
+		len = ( size_t ) ( p - buf );
+		hdr = g_strndup( buf, len );
+		node = listHdr;
+		while( node ) {
+			nhdr = node->data;
+			if( g_strcasecmp( nhdr, hdr ) == 0 ) {
+				retVal = TRUE;
+				break;
+			}
+			node = g_list_next( node );
+		}
+		g_free( hdr );
+	}
+	return retVal;
+}
+
+/*
+ * Read header into a linked list of lines.
+ * Enter:  fp      File to read.
+ *         listHdr List of header lines of interest.
+ *         done    End of headers or end of file reached.
+ * Return: Linked list of lines.
+ */
+static GSList *addrharvest_get_header( FILE *fp, GList *listHdr, gboolean *done ) {
+	GSList *list;
+	gchar buf[ MSG_BUFFSIZE + 2 ];
+	gint ch;
+	gboolean foundHdr;
+
+	list = NULL;
+
+	/* Read line */
+	if( fgets( buf, MSG_BUFFSIZE, fp ) == NULL ) {
+		*done = TRUE;
+		return list;
+	}
+
+	/* Test for end of headers */
+	if( buf[0] == '\r' || buf[0] == '\n' ) {
+		*done = TRUE;
+		return list;
+	}
+
+	/* Test whether required header */
+	foundHdr = addrharvest_check_hdr( listHdr, buf );
+
+	/* Read all header lines. Only add reqd ones to list */
+	while( TRUE ) {
+		gchar *p;
+
+		if( foundHdr ) {
+			p = g_strdup( buf );
+			list = g_slist_append( list, p );
+		}
+
+		/* Read first character */
+		ch = fgetc( fp );
+		if( ch == ' ' || ch == '\t' ) {
+			/* Continuation character - read into buffer */
+			if( fgets( buf, MSG_BUFFSIZE, fp ) == NULL ) {
+				break;
+			}
+		}
+		else {
+			if( ch == EOF ) {
+				*done = TRUE;
+			}
+			else {
+				/* Push back character for next header */
+				ungetc( ch, fp );
+			}
+			break;
+		}
+	}
+
+	return list;
 }
 
 /*
@@ -562,12 +660,14 @@ static void addrharvest_parse_address(
  */
 static gint addrharvest_readfile(
 		AddressHarvester *harvester, const gchar *fileName,
-		AddressCache *cache )
+		AddressCache *cache, GList *listHdr )
 {
 	gint retVal;
 	FILE *msgFile;
-	gchar buf[ MSG_BUFFSIZE ], tmp[ MSG_BUFFSIZE ];
+	gchar *buf, *addr, *p;
 	HeaderEntry *entry;
+	GSList *list;
+	gboolean done;
 
 	msgFile = fopen( fileName, "rb" );
 	if( ! msgFile ) {
@@ -576,27 +676,36 @@ static gint addrharvest_readfile(
 		return retVal;
 	}
 
-	for( ;; ) {
-		gint val;
-		gchar *p;
+	done = FALSE;
+	while( TRUE ) {
+		list = addrharvest_get_header( msgFile, listHdr, &done );
+		if( done ) break;
 
-		val = procheader_get_one_field(
-			buf, sizeof(buf), msgFile, NULL );
-		if( val == -1 ) {
-			break;
+		if( list == NULL ) {
+			continue;
 		}
-		conv_unmime_header( tmp, sizeof(tmp), buf, NULL );
-		if(( p = strchr( tmp, ':' ) ) != NULL ) {
-			const gchar *hdr;
 
+		buf = mgu_list_coalesce( list );
+		mgu_free_list( list );
+
+		if(( p = strchr( buf, ':' ) ) != NULL ) {
+			addr = p + 1;
 			*p = '\0';
-			hdr = p + 1;
-			entry = addrharvest_find( harvester, tmp );
+
+			entry = addrharvest_find( harvester, buf );
 			if( entry && entry->selected ) {
+				/* Sanitize control characters */
+				p = addr;
+				while( *p ) {
+					if( *p == '\r' || *p == '\n' || *p == '\t' )
+						*p = ' ';
+					p++;
+				}
 				addrharvest_parse_address(
-					harvester, entry, cache, hdr );
+					harvester, entry, cache, addr );
 			}
 		}
+		g_free( buf );
 	}
 
 	fclose( msgFile );
@@ -608,15 +717,21 @@ static gint addrharvest_readfile(
  * Read all files in specified directory into address book.
  * Enter:  harvester Harvester object.
  *         cache     Address cache to load.
+ *         msgList   List of message numbers, or NULL to process folder.
  * Return: Status.
  * ============================================================================
  */
-gint addrharvest_harvest( AddressHarvester *harvester, AddressCache *cache ) {
+gint addrharvest_harvest(
+	AddressHarvester *harvester, AddressCache *cache, GList *msgList )
+{
 	gint retVal;
 	DIR *dp;
 	struct dirent *d;
 	struct stat s;
 	gint num;
+	GList *node;
+	GList *listHdr;
+	gchar msgNum[ MSGNUM_BUFFSIZE ];
 
 	retVal = MGU_BAD_ARGS;
 	g_return_val_if_fail( harvester != NULL, retVal );
@@ -637,15 +752,47 @@ gint addrharvest_harvest( AddressHarvester *harvester, AddressCache *cache ) {
 		return retVal;
 	}
 
-	while( ( d = readdir( dp ) ) != NULL ) {
-		stat( d->d_name, &s );
-		if( S_ISREG( s.st_mode ) ) {
-			if( ( num = to_number( d->d_name ) ) >= 0 ) {
-				addrharvest_readfile(
-					harvester, d->d_name, cache );
+	/* Build list of headers of interest */
+	listHdr = NULL;
+	node = harvester->headerTable;
+	while( node ) {
+		HeaderEntry *entry;
+
+		entry = node->data;
+		if( entry->selected ) {
+			gchar *p;
+
+			p = g_strdup( entry->header );
+			g_strdown( p );
+			listHdr = g_list_append( listHdr, p );
+		}
+		node = g_list_next( node );
+	}
+
+	if( msgList == NULL ) {
+		/* Process directory */
+		while( ( d = readdir( dp ) ) != NULL ) {
+			stat( d->d_name, &s );
+			if( S_ISREG( s.st_mode ) ) {
+				if( ( num = to_number( d->d_name ) ) >= 0 ) {
+					addrharvest_readfile(
+						harvester, d->d_name, cache, listHdr );
+				}
 			}
 		}
 	}
+	else {
+		/* Process message list */
+		node = msgList;
+		while( node ) {
+			num = GPOINTER_TO_UINT( node->data );
+			sprintf( msgNum, "%d", num );
+			addrharvest_readfile(
+				harvester, msgNum, cache, listHdr );
+			node = g_list_next( node );
+		}
+	}
+	mgu_free_dlist( listHdr );
 
 	closedir( dp );
 

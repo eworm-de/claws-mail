@@ -104,6 +104,7 @@ static gchar *_harv_headerNames_[] = {
 	HEADER_CC,
 	HEADER_ERRORS_TO
 };
+static GList *_harv_messageList_;
 
 void addrgather_dlg_status_show( gchar *msg ) {
 	if( addrgather_dlg.statusbar != NULL ) {
@@ -187,7 +188,8 @@ static gboolean addrgather_dlg_harvest() {
 	g_free( name );
 
 	/* Harvest addresses */
-	addrharvest_harvest( harvester, abf->addressCache );
+	addrharvest_harvest(
+		harvester, abf->addressCache, _harv_messageList_ );
 	addrbook_save_data( abf );
 	_harv_addressBook_ = abf;
 
@@ -450,7 +452,6 @@ static void addrgather_dlg_create( void ) {
 	window = gtk_window_new( GTK_WINDOW_DIALOG );
 	gtk_widget_set_usize( window, 380, -1 );
 	gtk_container_set_border_width(GTK_CONTAINER(window), 0);
-	gtk_window_set_title( GTK_WINDOW(window), _("Gather E-Mail Addresses") );
 	gtk_window_set_position( GTK_WINDOW(window), GTK_WIN_POS_CENTER );
 	gtk_window_set_modal( GTK_WINDOW(window), TRUE );	
 	gtk_signal_connect( GTK_OBJECT(window), "delete_event",
@@ -509,17 +510,21 @@ static void addrgather_dlg_create( void ) {
 }
 
 /*
-* Gather addresses main window.
-* Enter: folderItem Source folder.
-*        addrIndex  Address index.
-* Return: Populated address book file, or NULL if none created.
-*/
-AddressBookFile *addrgather_dlg_execute( FolderItem *folderItem, AddressIndex *addrIndex ) {
+ * Gather addresses main window.
+ * Enter: folderItem Source folder.
+ *        addrIndex  Address index.
+ *        msgList    List of message numbers, or NULL to process folder.
+ * Return: Populated address book file, or NULL if none created.
+ */
+AddressBookFile *addrgather_dlg_execute(
+	FolderItem *folderItem, AddressIndex *addrIndex, GList *msgList )
+{
 	gboolean errFlag;
 	gint i;
 
 	_harv_addressIndex_ = addrIndex;
 	_harv_addressBook_ = NULL;
+	_harv_messageList_ = msgList;
 
 	/* Create dialog */
 	if( ! addrgather_dlg.window ) {
@@ -560,6 +565,14 @@ AddressBookFile *addrgather_dlg_execute( FolderItem *folderItem, AddressIndex *a
 		gtk_widget_grab_default( addrgather_dlg.btnCancel );
 	}
 
+	if( msgList ) {
+		gtk_window_set_title( GTK_WINDOW(addrgather_dlg.window),
+			_("Gather E-Mail Addresses - from Selected Messages") );
+	}
+	else {
+		gtk_window_set_title( GTK_WINDOW(addrgather_dlg.window),
+			_("Gather E-Mail Addresses - from Folder") );
+	}
 	addrgather_dlg_status_show( "" );
 	gtk_widget_show( addrgather_dlg.window );
 

@@ -61,7 +61,8 @@ gint addrharvest_get_count		( AddressHarvester* harvester,
 void addrharvest_print			( AddressHarvester *harvester,
 					  FILE *stream );
 gint addrharvest_harvest		( AddressHarvester *harvester,
-					  AddressCache *cache );
+					  AddressCache *cache,
+					  GList *msgList );
 gboolean addrharvest_check_header	( AddressHarvester *harvester );
 
 #endif /* __ADDRHARVEST_H__ */

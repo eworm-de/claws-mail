@@ -5292,6 +5292,23 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	folderview_select(summaryview->folderview, summaryview->folder_item);
 }
 
+/*
+ * Gather addresses for selected messages in summary view.
+ */
+void summary_gather_address( SummaryView *summaryview ) {
+	GtkCTree *ctree = GTK_CTREE( summaryview->ctree );
+	GList *cur;
+	GList *msgList;
+	MsgInfo *msginfo;
+
+	msgList = NULL;
+	for( cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next ) {
+		msginfo = gtk_ctree_node_get_row_data( ctree, GTK_CTREE_NODE(cur->data) );
+		msgList = g_list_append( msgList, GUINT_TO_POINTER( msginfo->msgnum ) );
+	}
+	addressbook_gather( summaryview->folder_item, msgList );
+	g_list_free( msgList );
+}
 
 /*
  * End of Source.

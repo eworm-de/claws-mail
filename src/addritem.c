@@ -1071,6 +1071,60 @@ ItemEMail *addritem_move_email_after( ItemPerson *person, ItemEMail *itemMove, I
 	return itemMove;
 }
 
+/**
+ * Parse first and last names for person from common name.
+ * Enter: person Person to process.
+ */
+void addritem_parse_first_last( ItemPerson *person ) {
+	gchar *name;
+	gchar *fName, *lName;
+	gchar *p;
+	gint len, i;
+
+	g_return_if_fail( person != NULL );
+
+	name = ADDRITEM_NAME(person);
+	if( name == NULL ) return;
+
+	fName = NULL;
+	lName = NULL;
+	p = strchr( name, ',' );
+	if( p ) {
+		len = ( size_t ) ( p - name );
+		lName = g_strndup( name, len );
+		fName = g_strdup( p + 1 );
+	}
+	else {
+		/* Other way around */
+		i = strlen( name );
+		while( i >= 0 ) {
+			if( name[i] == ' ' ) {
+				fName = g_strndup( name, i );
+				lName = g_strdup( &name[i] );
+				break;
+			}
+			i--;
+		}
+		if( fName == NULL ) {
+			fName = g_strdup( name );
+		}
+	}
+
+	if( person->firstName ) {
+		g_free( person->firstName );
+	}
+	person->firstName = fName;
+	if( person->firstName )
+		g_strstrip( person->firstName );
+
+	if( person->lastName ) {
+		g_free( person->lastName );
+	}
+	person->lastName = lName;
+	if( person->lastName )
+		g_strstrip( person->lastName );
+}
+
 /*
 * End of Source.
 */

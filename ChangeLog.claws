@@ -1,3 +1,18 @@
+2002-04-07 [match]	0.7.4claws72
+
+	* src/addrharvest.[ch]
+		fixed to read all addresses in header, regardless
+		of header size. improved name parsing. accommodate
+		harvest from folders and selected message.
+	* src/addritem.[ch]
+		included new address parsing function.
+	* src/addrgather.[ch]
+	* src/addressbook.[ch]
+	* src/summaryview.[ch]
+	* src/mainwindow.c
+		allow address harvest of folder as well as selected
+		messages.
+
 2002-04-07 [paul]	0.7.4claws71
 
 	* src/esmtp.[ch]
