@@ -141,6 +141,8 @@ gint strcmp2		(const gchar	*s1,
 gint path_cmp		(const gchar	*s1,
 			 const gchar	*s2);
 gchar *strretchomp	(gchar		*str);
+gchar *strtailchomp	(gchar		*str,
+			 gchar		 tail_char);
 gchar *strcasestr	(const gchar	*haystack,
 			 const gchar	*needle);
 gchar *strncpy2		(gchar		*dest,

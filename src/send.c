@@ -55,6 +55,7 @@ struct _SendProgressDialog
 {
 	ProgressDialog *dialog;
 	GList *queue_list;
+	gboolean cancelled;
 };
 
 static gint send_message_smtp	(GSList *to_list, const gchar *from,
@@ -97,9 +98,8 @@ gint send_message(const gchar *file, PrefsAccount *ac_prefs, GSList *to_list)
 		domain = ac_prefs->set_domain ? ac_prefs->domain : NULL;
 
 		val = send_message_smtp(to_list, ac_prefs->address,
-					ac_prefs->smtp_server, port,
-					domain, ac_prefs->userid,
-					ac_prefs->passwd,
+					ac_prefs->smtp_server, port, domain,
+                                        ac_prefs->userid, ac_prefs->passwd,
 					ac_prefs->use_smtp_auth, fp);
 	}
 
@@ -233,12 +233,21 @@ gint send_message_queue(const gchar *file)
 	return val;
 }
 
+#define EXIT_IF_CANCELLED() \
+{ \
+	if (dialog->cancelled) { \
+		sock_close(smtp_sock); \
+		send_progress_dialog_destroy(dialog); \
+		return -1; \
+	} \
+}
+
 #define SEND_EXIT_IF_ERROR(f, s) \
 { \
+	EXIT_IF_CANCELLED(); \
 	if (!(f)) { \
 		log_warning("Error occurred while %s\n", s); \
 		sock_close(smtp_sock); \
-		smtp_sock = NULL; \
 		send_progress_dialog_destroy(dialog); \
 		return -1; \
 	} \
@@ -246,12 +255,12 @@ gint send_message_queue(const gchar *file)
 
 #define SEND_EXIT_IF_NOTOK(f, s) \
 { \
+	EXIT_IF_CANCELLED(); \
 	if ((f) != SM_OK) { \
 		log_warning("Error occurred while %s\n", s); \
 		if (smtp_quit(smtp_sock) != SM_OK) \
 			log_warning("Error occurred while sending QUIT\n"); \
 		sock_close(smtp_sock); \
-		smtp_sock = NULL; \
 		send_progress_dialog_destroy(dialog); \
 		return -1; \
 	} \
@@ -263,7 +272,7 @@ static gint send_message_smtp(GSList *to_list, const gchar *from,
 			      const gchar *passwd, gboolean use_smtp_auth,
 			      FILE *fp)
 {
-	SockInfo *smtp_sock;
+	SockInfo *smtp_sock = NULL;
 	SendProgressDialog *dialog;
 	GtkCList *clist;
 	const gchar *text[3];
@@ -410,6 +419,7 @@ static SendProgressDialog *send_progress_dialog_create(void)
 
 	dialog->dialog = progress;
 	dialog->queue_list = NULL;
+	dialog->cancelled = FALSE;
 
 	return dialog;
 }
@@ -426,5 +436,5 @@ static void send_cancel(GtkWidget *widget, gpointer data)
 {
 	SendProgressDialog *dialog = data;
 
-	g_print("cancelled\n");
+	dialog->cancelled = TRUE;
 }

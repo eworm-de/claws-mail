@@ -1,3 +1,33 @@
+2001-06-15
+
+	* src/folderview.c:
+	  folderview_new_folder_cb()
+	  folderview_new_imap_folder_cb(): フォルダの作成に失敗したら
+	  エラーダイアログを表示するようにした。
+	  サブフォルダを含むフォルダを作成できるようにした。
+	* AUTHORS: claws ブランチから取込。全ての contributor を含んでいる。
+	* src/send.c: キャンセルを有効にした。
+	  EXIT_IF_CANCELLED(): 新規マクロ。
+	  SendProgressDialog に cancelled フラグを追加。
+	* src/utils.[ch]: strtailchomp(): 新規。末尾の指定した文字を取り除く。
+	* src/imap.c: imap_cmd_fetch(): MS Exchange 2000 サーバのための修正。
+
+2001-06-15
+
+	* src/imap.c: imap_create_tree(): 新規。 INBOX や Trash のような
+	  必要なフォルダを作成する。
+	  imap_do_copy(), imap_do_copy_msgs_with_dest(): COPY が失敗したら
+	  expunge しないようにした。
+	  imap_remove_all_msg(): exists == 0 ならすぐに return するように
+	  した。
+	* src/account.c: account_add(), account_set_missing_folder():
+	  folder->create_tree() を使用するようにした。
+
+2001-06-14
+
+	* src/imap.c: さらに namespace を実装。
+	* imap_find_namespace(), imap_path_separator_subst(): 新規。
+
 2001-06-13
 
 	* src/imap.c: imap_parse_namespace(), imap_cmd_namespace(): 新規。

@@ -190,6 +190,21 @@ gchar *strretchomp(gchar *str)
 	return str;
 }
 
+/* remove trailing character */
+gchar *strtailchomp(gchar *str, gchar tail_char)
+{
+	register gchar *s;
+
+	if (!*str) return str;
+	if (tail_char == '\0') return str;
+
+	for (s = str + strlen(str) - 1; s >= str && *s == tail_char; s--)
+		*s = '\0';
+
+	return str;
+}
+
+
 /* Similar to `strstr' but this function ignores the case of both strings.  */
 gchar *strcasestr(const gchar *haystack, const gchar *needle)
 {

@@ -932,6 +932,7 @@ static void folder_init(Folder *folder, FolderType type, const gchar *name)
 		folder->remove_msg          = imap_remove_msg;
 		folder->remove_all_msg      = imap_remove_all_msg;
 		folder->scan                = imap_scan_folder;
+		folder->create_tree         = imap_create_tree;
 		folder->create_folder       = imap_create_folder;
 		folder->remove_folder       = imap_remove_folder;
 		break;

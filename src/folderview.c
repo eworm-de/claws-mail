@@ -1678,6 +1678,7 @@ static void folderview_new_imap_folder_cb(FolderView *folderview, guint action,
 	FolderItem *item;
 	FolderItem *new_item;
 	gchar *new_folder;
+	gchar *p;
 
 	if (!folderview->selected) return;
 
@@ -1687,12 +1688,16 @@ static void folderview_new_imap_folder_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item->folder->type == F_IMAP);
 	g_return_if_fail(item->folder->account != NULL);
 
-	new_folder = input_dialog(_("New folder"),
-				  _("Input the name of new folder:"),
-				  _("NewFolder"));
+	new_folder = input_dialog
+		(_("New folder"),
+		 _("Input the name of new folder:\n"
+		   "(if you want to create a folder to store subfolders,\n"
+		   " append `/' at the end of the name)"),
+		 _("NewFolder"));
 	if (!new_folder) return;
 
-	if (strchr(new_folder, G_DIR_SEPARATOR) != NULL) {
+	if ((p = strchr(new_folder, G_DIR_SEPARATOR)) != NULL &&
+	    *(p + 1) != '\0') {
 		alertpanel_error(_("`%c' can't be included in folder name."),
 				 G_DIR_SEPARATOR);
 		g_free(new_folder);

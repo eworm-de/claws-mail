@@ -1,3 +1,34 @@
+2001-06-15
+
+	* src/folderview.c:
+	  folderview_new_folder_cb()
+	  folderview_new_imap_folder_cb(): show error dialog when creation
+	  of folder failed.
+	  Made it allow users to create a folder which contains subfolders.
+	* AUTHORS: incorporated from claws branch. It now contains all
+	  contributors.
+	* src/send.c: enabled cancellation.
+	  EXIT_IF_CANCELLED(): new macro.
+	  Added cancelled flag to SendProgressDialog.
+	* src/utils.[ch]: strtailchomp(): new. It removes the trailing
+	  specified character.
+	* src/imap.c: imap_cmd_fetch(): a fix for MS Exchange 2000 server.
+
+2001-06-15
+
+	* src/imap.c: imap_create_tree(): new. It creates required
+	  folders such as INBOX and Trash.
+	  imap_do_copy(), imap_do_copy_msgs_with_dest(): don't expunge
+	  if COPY failed.
+	  imap_remove_all_msg(): return immediately if exists == 0.
+	* src/account.c: account_add(), account_set_missing_folder():
+	  made them use folder->create_tree().
+
+2001-06-14
+
+	* src/imap.c: more namespace implementation.
+	  imap_find_namespace(), imap_path_separator_subst(): new.
+
 2001-06-13
 
 	* src/imap.c: imap_parse_namespace(), imap_cmd_namespace(): new.

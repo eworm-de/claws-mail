@@ -280,6 +280,8 @@ void account_add(void)
 		folder->account = ac_prefs;
 		ac_prefs->folder = REMOTE_FOLDER(folder);
 		folder_add(folder);
+		if (ac_prefs->protocol == A_IMAP4)
+			folder->create_tree(folder);
 		folderview_update_all();
 	}
 }
@@ -333,9 +335,12 @@ void account_set_missing_folder(void)
 				folder = folder_new(F_NEWS, ap->account_name,
 						    ap->nntp_server);
 			}
+
 			folder->account = ap;
 			ap->folder = REMOTE_FOLDER(folder);
 			folder_add(folder);
+			if (ap->protocol == A_IMAP4)
+				folder->create_tree(folder);
 		}
 	}
 }
