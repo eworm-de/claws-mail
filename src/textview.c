@@ -1989,6 +1989,7 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 
 		trimmed_uri = trim_string(uri->uri, 60);
 		/* hover or single click: display url in statusbar */
+
 		if (event->type == GDK_MOTION_NOTIFY
 		    || (event->type == GDK_BUTTON_PRESS && bevent->button == 1)) {
 			if (textview->messageview->mainwin) {
@@ -2001,7 +2002,7 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 		/* doubleclick: open compose / add address / browser */
 		if ((event->type == GDK_2BUTTON_PRESS && bevent->button == 1) ||
 			bevent->button == 2 || bevent->button == 3) {
-			if (!g_strncasecmp(uri->uri, "mailto:", 7))
+			if (!g_strncasecmp(uri->uri, "mailto:", 7)) {
 				if (bevent->button == 3) {
 					gchar *fromname, *fromaddress;
 						
@@ -2019,23 +2020,24 @@ static gboolean textview_uri_button_pressed(GtkTextTag *tag, GObject *obj,
 				} else {
 					PrefsAccount *account = NULL;
 
-						if (textview->messageview && textview->messageview->msginfo &&
-						    textview->messageview->msginfo->folder) {
-							FolderItem   *folder_item;
+					if (textview->messageview && textview->messageview->msginfo &&
+					    textview->messageview->msginfo->folder) {
+						FolderItem   *folder_item;
 
-							folder_item = textview->messageview->msginfo->folder;
-							if (folder_item->prefs && folder_item->prefs->enable_default_account)
-								account = account_find_from_id(folder_item->prefs->default_account);
-						}
-						compose_new(account, uri->uri + 7, NULL);
+						folder_item = textview->messageview->msginfo->folder;
+						if (folder_item->prefs && folder_item->prefs->enable_default_account)
+							account = account_find_from_id(folder_item->prefs->default_account);
 					}
+					compose_new(account, uri->uri + 7, NULL);
+				}
 			} else {
 				if (textview_uri_security_check(textview, uri) == TRUE) 
 					open_uri(uri->uri,
 						 prefs_common.uri_cmd);
 				return TRUE;
 			}
-			g_free(trimmed_uri);
+		}
+		g_free(trimmed_uri);
 	}
 
 	return FALSE;

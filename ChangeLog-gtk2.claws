@@ -1,3 +1,8 @@
+2004-07-03 [colin]	0.9.11cvs17.5
+
+	* src/textview.c
+		Fix mismerge which broke URI opening
+		
 2004-07-01 [colin]	0.9.11cvs17.4
 
 	* src/gtk/filesel.c
