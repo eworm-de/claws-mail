@@ -1375,8 +1375,9 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 {
 	Folder *folder;
-	FolderItem * item;
-	GSList * l;
+	FolderItem *item;
+	GSList *newmsgnums = NULL;
+	GSList *l, *l2;
 	gint num;
 
 	g_return_val_if_fail(dest != NULL, -1);
@@ -1387,17 +1388,34 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 	g_return_val_if_fail(folder->copy_msg != NULL, -1);
 	g_return_val_if_fail(folder->remove_msg != NULL, -1);
 
-	if (!dest->cache) folder_item_read_cache(dest);
-
+	/* 
+	 * Copy messages to destination folder and 
+	 * store new message numbers in newmsgnums
+	 */
 	item = NULL;
 	for(l = msglist ; l != NULL ; l = g_slist_next(l)) {
 		MsgInfo * msginfo = (MsgInfo *) l->data;
 
 		if (!item && msginfo->folder != NULL)
 			item = msginfo->folder;
-		if (!item->cache) folder_item_read_cache(dest);
 
 		num = folder->copy_msg(folder, dest, msginfo);
+		newmsgnums = g_slist_append(newmsgnums, GINT_TO_POINTER(num));
+	}
+
+	/* Read cache for dest folder */
+	if (!dest->cache) folder_item_read_cache(dest);
+	
+	/* 
+	 * Fetch new MsgInfos for new messages in dest folder,
+	 * add them to the msgcache and update folder message counts
+	 */
+	l2 = newmsgnums;
+	for(l = msglist; l != NULL; l = g_slist_next(l)) {
+		MsgInfo *msginfo = (MsgInfo *) l->data;
+
+		num = GPOINTER_TO_INT(l2->data);
+
 		if (num != -1) {
 			MsgInfo *newmsginfo;
 
@@ -1412,29 +1430,52 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 							     MSG_NEW|MSG_UNREAD|MSG_DELETED);
 				msgcache_add_msg(dest->cache, newmsginfo);
 
-				if (MSG_IS_NEW(msginfo->flags))
-					msginfo->folder->new--;
 				if (MSG_IS_NEW(newmsginfo->flags))
 					dest->new++;
-				if (MSG_IS_UNREAD(msginfo->flags))
-					msginfo->folder->unread--;
 				if (MSG_IS_UNREAD(newmsginfo->flags))
 					dest->unread++;
-				msginfo->folder->total--;
 				dest->total++;
 
 				procmsg_msginfo_free(newmsginfo);
 			}
+		}
+		l2 = g_slist_next(l2);
+	}
+
+	/*
+	 * Remove source messages from their folders if
+	 * copying was successfull and update folder
+	 * message counts
+	 */
+	l2 = newmsgnums;
+	for(l = msglist; l != NULL; l = g_slist_next(l)) {
+		MsgInfo *msginfo = (MsgInfo *) l->data;
+
+		num = GPOINTER_TO_INT(l2->data);
+		
+		if(num != -1) {
 			item->folder->remove_msg(item->folder,
 						 msginfo->folder,
 						 msginfo->msgnum);
+			if(!item->cache)
+				folder_item_read_cache(item);
 			msgcache_remove_msg(item->cache, msginfo->msgnum);
+
+			if (MSG_IS_NEW(msginfo->flags))
+				msginfo->folder->new--;
+			if (MSG_IS_UNREAD(msginfo->flags))
+				msginfo->folder->unread--;
+			msginfo->folder->total--;			
 		}
-    	}
+
+		l2 = g_slist_next(l2);
+	}
+
 
 	if (folder->finished_copy)
 		folder->finished_copy(folder, dest);
 
+	g_slist_free(newmsgnums);
 	return dest->last_num;
 }
 
@@ -1524,7 +1565,8 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 {
 	Folder *folder;
 	gint num;
-	GSList * l;
+	GSList *newmsgnums = NULL;
+	GSList *l, *l2;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
@@ -1533,12 +1575,30 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
  
 	g_return_val_if_fail(folder->copy_msg != NULL, -1);
 
-	if (!dest->cache) folder_item_read_cache(dest);
-
+	/* 
+	 * Copy messages to destination folder and 
+	 * store new message numbers in newmsgnums
+	 */
 	for(l = msglist ; l != NULL ; l = g_slist_next(l)) {
 		MsgInfo * msginfo = (MsgInfo *) l->data;
 
 		num = folder->copy_msg(folder, dest, msginfo);
+		newmsgnums = g_slist_append(newmsgnums, GINT_TO_POINTER(num));
+	}
+
+	/* Read cache for dest folder */
+	if (!dest->cache) folder_item_read_cache(dest);
+	
+	/* 
+	 * Fetch new MsgInfos for new messages in dest folder,
+	 * add them to the msgcache and update folder message counts
+	 */
+	l2 = newmsgnums;
+	for(l = msglist; l != NULL; l = g_slist_next(l)) {
+		MsgInfo *msginfo = (MsgInfo *) l->data;
+
+		num = GPOINTER_TO_INT(l2->data);
+
 		if (num != -1) {
 			MsgInfo *newmsginfo;
 
@@ -1562,11 +1622,13 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 				procmsg_msginfo_free(newmsginfo);
 			}
 		}
+		l2 = g_slist_next(l2);
 	}
-
+	
 	if (folder->finished_copy)
 		folder->finished_copy(folder, dest);
 
+	g_slist_free(newmsgnums);
 	return dest->last_num;
 }
 

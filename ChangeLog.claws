@@ -1,3 +1,10 @@
+2002-07-25 [christoph]	0.8.0claws11
+
+	* src/folder.c
+		don't mix copy, fetch_msginfo and remove
+		operations in folder item copy and move
+		operations
+
 2002-07-25 [christoph]	0.8.0claws10
 
 	* src/folderview.c
