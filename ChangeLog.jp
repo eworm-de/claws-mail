@@ -1,3 +1,23 @@
+2001-06-28
+
+	* src/folderview.[ch]:
+	  folderview_update_tree(): 新規。一つのフォルダツリーを更新する。
+	  folderview_update_tree_cb(): 新規。
+	  「フォルダツリーを更新」をポップアップメニューに追加し、表現を
+	  いくつか変更。
+
+2001-06-27
+
+	* src/imap.c: IMAP4 フォルダリストの自動スキャンを実装。
+	  imap_scan_tree(): 新規。 IMAP4 フォルダ全体をスキャンする。
+	  imap_scan_tree_recursive(): 新規。 IMAP4 フォルダツリーを
+	  トラバースする。
+	  imap_parse_list(): 新規。ローカルパスを IMAP4 パスに変換する。
+	* src/folder.h: no_sub と no_select を FolderItem に追加。
+	* src/folder.c: folder_tree_destroy(): 変数をいくつかリセットする
+	  ようにした。
+	* src/folderview.c: folderview_scan_tree_func(): IMAP4 に対応。
+
 2001-06-26
 
 	* src/imap.c: imap_parse_envelope(): 次の行に続く FETCH 応答を

@@ -109,6 +109,7 @@ gint imap_remove_all_msg		(Folder		*folder,
 
 void imap_scan_folder			(Folder		*folder,
 					 FolderItem	*item);
+void imap_scan_tree			(Folder		*folder);
 
 gint imap_create_tree			(Folder		*folder);
 

@@ -211,6 +211,9 @@ struct _FolderItem
 
 	gint last_num;
 
+	gboolean no_sub;
+	gboolean no_select;
+
 	FolderItem *parent;
 
 	Folder *folder;

@@ -1,3 +1,22 @@
+2001-06-28
+
+	* src/folderview.[ch]:
+	  folderview_update_tree(): new. It updates one folder tree.
+	  folderview_update_tree_cb(): new.
+	  Added "Update folder tree" to the popup menu, and modified some
+	  expressions.
+
+2001-06-27
+
+	* src/imap.c: implemented the autoscan of IMAP4 folder list.
+	  imap_scan_tree(): new. It scans the whole IMAP4 folder.
+	  imap_scan_tree_recursive(): new. It traverses the IMAP4 folder tree.
+	  imap_parse_list(): new. It parses the LIST response.
+	  imap_get_real_path(): new. It converts local path into IMAP4 path.
+	* src/folder.h: added no_sub and no_select to FolderItem.
+	* src/folder.c: folder_tree_destroy(): reset some variables.
+	* src/folderview.c: folderview_scan_tree_func(): supported IMAP4.
+
 2001-06-26
 
 	* src/imap.c: imap_parse_envelope(): fixed a bug that didn't

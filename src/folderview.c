@@ -147,6 +147,10 @@ static void folderview_col_resized	(GtkCList	*clist,
 					 gint		 width,
 					 FolderView	*folderview);
 
+static void folderview_update_tree_cb	(FolderView	*folderview,
+					 guint		 action,
+					 GtkWidget	*widget);
+
 static void folderview_new_folder_cb	(FolderView	*folderview,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -225,6 +229,7 @@ static GtkItemFactoryEntry folderview_mail_popup_entries[] =
 	{N_("/_Rename folder..."),	NULL, folderview_rename_folder_cb, 0, NULL},
 	{N_("/_Delete folder"),		NULL, folderview_delete_folder_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Update folder tree"),	NULL, folderview_update_tree_cb, 0, NULL},
 	{N_("/Remove _mailbox"),	NULL, folderview_remove_mailbox_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Property..."),		NULL, NULL, 0, NULL},
@@ -237,7 +242,8 @@ static GtkItemFactoryEntry folderview_imap_popup_entries[] =
 	{N_("/_Rename folder..."),	NULL, NULL, 0, NULL},
 	{N_("/_Delete folder"),		NULL, folderview_rm_imap_folder_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/Remove _IMAP4 server"),	NULL, folderview_rm_imap_server_cb, 0, NULL},
+	{N_("/_Update folder tree"),	NULL, folderview_update_tree_cb, 0, NULL},
+	{N_("/Remove _IMAP4 account"),	NULL, folderview_rm_imap_server_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Property..."),		NULL, NULL, 0, NULL},
 	{N_("/_Scoring..."),		NULL, folderview_scoring_cb, 0, NULL}
@@ -249,7 +255,7 @@ static GtkItemFactoryEntry folderview_news_popup_entries[] =
 					 NULL, folderview_new_news_group_cb, 0, NULL},
 	{N_("/_Remove newsgroup"),	 NULL, folderview_rm_news_group_cb, 0, NULL},
 	{N_("/---"),			 NULL, NULL, 0, "<Separator>"},
-	{N_("/Remove _news server"),	 NULL, folderview_rm_news_server_cb, 0, NULL},
+	{N_("/Remove _news account"),	 NULL, folderview_rm_news_server_cb, 0, NULL},
 	{N_("/---"),			 NULL, NULL, 0, "<Separator>"},
 	{N_("/_Property..."),		 NULL, NULL, 0, NULL},
 	{N_("/_Scoring..."),		NULL, folderview_scoring_cb, 0, NULL}
@@ -567,6 +573,16 @@ static void folderview_scan_tree_func(Folder *folder, FolderItem *item,
 				      gpointer data)
 {
 	GList *list;
+	gchar *rootpath;
+
+	if (folder->type == F_MH || folder->type == F_MBOX ||
+	    folder->type == F_MAILDIR)
+		rootpath = LOCAL_FOLDER(folder)->rootpath;
+	else if (folder->type == F_IMAP && folder->account &&
+		 folder->account->recv_server)
+		rootpath = folder->account->recv_server;
+	else
+		return;
 
 	for (list = folderview_list; list != NULL; list = list->next) {
 		FolderView *folderview = (FolderView *)list->data;
@@ -575,12 +591,11 @@ static void folderview_scan_tree_func(Folder *folder, FolderItem *item,
 
 		if (item->path)
 			str = g_strdup_printf(_("Scanning folder %s%c%s ..."),
-					      LOCAL_FOLDER(folder)->rootpath,
-					      G_DIR_SEPARATOR,
+					      rootpath, G_DIR_SEPARATOR,
 					      item->path);
 		else
 			str = g_strdup_printf(_("Scanning folder %s ..."),
-					      LOCAL_FOLDER(folder)->rootpath);
+					      rootpath);
 
 		STATUSBAR_PUSH(mainwin, str);
 		STATUSBAR_POP(mainwin);
@@ -609,6 +624,32 @@ static GtkWidget *label_window_create(const gchar *str)
 	gtk_widget_show_now(window);
 
 	return window;
+}
+
+void folderview_update_tree(Folder *folder)
+{
+	GList *list;
+	GtkWidget *window;
+
+	g_return_if_fail(folder != NULL);
+
+	if (!folder->scan_tree) return;
+
+	window = label_window_create(_("Updating folder tree..."));
+
+	folder_set_ui_func(folder, folderview_scan_tree_func, NULL);
+	folder->scan_tree(folder);
+	folder_set_ui_func(folder, NULL, NULL);
+
+	folder_write_list();
+
+	for (list = folderview_list; list != NULL; list = list->next) {
+		FolderView *folderview = (FolderView *)list->data;
+
+		folderview_set(folderview);
+	}
+
+	gtk_widget_destroy(window);
 }
 
 void folderview_update_all(void)
@@ -1135,6 +1176,8 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		menu_set_sensitive(folderview->mail_factory,
 				   "/Create new folder...", TRUE);
 		menu_set_sensitive(folderview->mail_factory,
+				   "/Update folder tree", TRUE);
+		menu_set_sensitive(folderview->mail_factory,
 				   "/Remove mailbox", TRUE);
 	} else if (folder->type == F_MH && item->stype != F_NORMAL) {
 		menu_set_sensitive(folderview->mail_factory,
@@ -1154,7 +1197,9 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		menu_set_sensitive(folderview->imap_factory,
 				   "/Create new folder...", TRUE);
 		menu_set_sensitive(folderview->imap_factory,
-				   "/Remove IMAP4 server", TRUE);
+				   "/Update folder tree", TRUE);
+		menu_set_sensitive(folderview->imap_factory,
+				   "/Remove IMAP4 account", TRUE);
 	} else if (folder->type == F_IMAP && item->stype != F_NORMAL) {
 		menu_set_sensitive(folderview->imap_factory,
 				   "/Create new folder...", TRUE);
@@ -1169,7 +1214,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		menu_set_sensitive(folderview->news_factory,
 				   "/Subscribe to newsgroup...", TRUE);
 		menu_set_sensitive(folderview->news_factory,
-				   "/Remove news server", TRUE);
+				   "/Remove news account", TRUE);
 	} else if (folder->type == F_NEWS) {
 		menu_set_sensitive(folderview->news_factory,
 				   "/Subscribe to newsgroup...", TRUE);
@@ -1375,6 +1420,23 @@ static GtkCTreeNode *folderview_find_by_name(GtkCTree *ctree,
 	}
 
 	return NULL;
+}
+
+static void folderview_update_tree_cb(FolderView *folderview, guint action,
+				      GtkWidget *widget)
+{
+	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	FolderItem *item;
+
+	if (!folderview->selected) return;
+
+	summary_show(folderview->summaryview, NULL, FALSE);
+
+	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
+	g_return_if_fail(item != NULL);
+	g_return_if_fail(item->folder != NULL);
+
+	folderview_update_tree(item->folder);
 }
 
 static void folderview_new_folder_cb(FolderView *folderview, guint action,
@@ -1718,8 +1780,13 @@ static void folderview_new_imap_folder_cb(FolderView *folderview, guint action,
 	}
 
 	new_item = item->folder->create_folder(item->folder, item, new_folder);
+	if (!new_item) {
+		alertpanel_error(_("Can't create the folder `%s'."),
+				 new_folder);
+		g_free(new_folder);
+		return;
+	}
 	g_free(new_folder);
-	if (!new_item) return;
 
 	gtk_clist_freeze(GTK_CLIST(ctree));
 
@@ -1795,9 +1862,9 @@ static void folderview_rm_imap_server_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item->folder->type == F_IMAP);
 	g_return_if_fail(item->folder->account != NULL);
 
-	message = g_strdup_printf(_("Really delete IMAP4 server `%s'?"),
+	message = g_strdup_printf(_("Really delete IMAP4 account `%s'?"),
 				  item->folder->name);
-	avalue = alertpanel(_("Delete IMAP4 server"), message,
+	avalue = alertpanel(_("Delete IMAP4 account"), message,
 			    _("Yes"), _("+No"), NULL);
 	g_free(message);
 
@@ -1926,9 +1993,9 @@ static void folderview_rm_news_server_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item->folder->type == F_NEWS);
 	g_return_if_fail(item->folder->account != NULL);
 
-	message = g_strdup_printf(_("Really delete news server `%s'?"),
+	message = g_strdup_printf(_("Really delete news account `%s'?"),
 				  item->folder->name);
-	avalue = alertpanel(_("Delete news server"), message,
+	avalue = alertpanel(_("Delete news account"), message,
 			    _("Yes"), _("+No"), NULL);
 	g_free(message);
 

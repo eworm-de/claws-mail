@@ -151,6 +151,8 @@ FolderItem *folder_item_new(const gchar *name, const gchar *path)
 	item->unread = 0;
 	item->total = 0;
 	item->last_num = -1;
+	item->no_sub = FALSE;
+	item->no_select = FALSE;
 	item->parent = NULL;
 	item->folder = NULL;
 	item->data = NULL;
@@ -247,6 +249,13 @@ void folder_tree_destroy(Folder *folder)
 {
 	/* TODO: destroy all FolderItem before */
 	g_node_destroy(folder->node);
+
+	folder->inbox = NULL;
+	folder->outbox = NULL;
+	folder->draft = NULL;
+	folder->queue = NULL;
+	folder->trash = NULL;
+	folder->node = NULL;
 }
 
 void folder_add(Folder *folder)
@@ -932,6 +941,7 @@ static void folder_init(Folder *folder, FolderType type, const gchar *name)
 		folder->remove_msg          = imap_remove_msg;
 		folder->remove_all_msg      = imap_remove_all_msg;
 		folder->scan                = imap_scan_folder;
+		folder->scan_tree           = imap_scan_tree;
 		folder->create_tree         = imap_create_tree;
 		folder->create_folder       = imap_create_folder;
 		folder->remove_folder       = imap_remove_folder;
