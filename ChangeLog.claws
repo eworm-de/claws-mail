@@ -1,4 +1,9 @@
-2003-09-11 [melvin]	0.9.4claws77
+2003-09-10 [paul]	0.9.4claws78
+
+	* src/Makefile.am
+		add missing files
+
+2003-09-10 [melvin]	0.9.4claws77
 
 	* po/fr.po
 		Updated French translations

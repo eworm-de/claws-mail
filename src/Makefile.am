@@ -153,8 +153,10 @@ sylpheedinclude_HEADERS = \
 	editvcard.h \
 	enriched.h \
 	exphtmldlg.h \
+	expldifdlg.h \
 	export.h \
 	exporthtml.h \
+	exportldif.h \
 	filtering.h \
 	folder.h \
 	folder_item_prefs.h \
@@ -245,6 +247,7 @@ BUILT_SOURCES = \
 
 EXTRA_DIST = \
 	pixmaps/address_book.xpm \
+	pixmaps/address_search.xpm \
 	pixmaps/address.xpm \
 	pixmaps/book.xpm \
 	pixmaps/category.xpm \
