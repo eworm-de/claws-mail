@@ -1,3 +1,22 @@
+2002-02-03 [melvin]	0.7.0claws45
+
+	* src/gtkspell.[ch]
+		Readded function to highlight all misspelled words.
+		Fixed bug where user-provided-words did not replace
+			correctly the misspelled word when using the mouse.
+		Fixed bug where checking a region selected from right to left did
+			not check the region at all.
+		Fixed bug where 'Check backwards' may not check at all.	
+		Fixed memory leaks where popup menus and accel_groups were not destroyed.
+		Fixed possible buffer overflow when checking for long strings (>1k).
+		Made cursor and scrollbar positions non changing after uncheck_all/check_all.
+		Accelerators code uses now gtk_widget_add_accel.
+		Removed and disabled obsolete and unfinished code.
+		Cleaning up.
+
+	* src/compose.c
+		Added menu item to Highlight all misspelled words.
+
 2002-02-01 [paul]	0.7.0claws44
 
 	* src/mainwindow.c

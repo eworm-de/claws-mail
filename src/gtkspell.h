@@ -41,15 +41,15 @@
 #define PSPELL_BADSPELLERMODE 3
 
 typedef struct _GtkPspellCheckers {
-	GSList *	checkers;
-	GSList *	dictionary_list;
-	gchar *		error_message;
+	GSList		*checkers;
+	GSList		*dictionary_list;
+	gchar		*error_message;
 } GtkPspellCheckers;
 
 typedef struct _Dictionary {
-	gchar *		fullname;
-	gchar *		dictname; /* dictname points into fullname */
-	gchar *		encoding;
+	gchar		*fullname;
+	gchar		*dictname; /* dictname points into fullname */
+	gchar		*encoding;
 } Dictionary;
 
 typedef struct _GtkPspeller {
@@ -64,33 +64,34 @@ typedef void (*ContCheckFunc)	(gpointer *gtkpspell);
 
 #define GTKPSPELLWORDSIZE 1024
 typedef struct _GtkPspell {
-	GtkPspeller *	gtkpspeller;
-	gchar 		theword[GTKPSPELLWORDSIZE];
-	gchar 		newword[GTKPSPELLWORDSIZE];
-	gint  		start_pos;
-	gint  		end_pos;
-        gint 		orig_pos;
-	gint		last_check_pos;
-	gboolean	misspelled;
-	gboolean	check_while_typing;
+	GtkPspeller	*gtkpspeller;
+	gchar 		 theword[GTKPSPELLWORDSIZE];
+	gint  		 start_pos;
+	gint  		 end_pos;
+        gint 		 orig_pos;
+	gint		 end_check_pos;
+	gboolean	 misspelled;
+	gboolean	 check_while_typing;
 
-	ContCheckFunc 	continue_check; 
+	ContCheckFunc 	 continue_check; 
+#if 0
+	Dictionary	*dict1;
+	Dictionary	*dict2;
 
-	Dictionary *	dict1;
-	Dictionary *	dict2;
+	GtkWidget	*gui;
+	gpointer	*compose;
+#endif
+	GtkWidget	*config_menu;
+	GtkWidget	*popup_config_menu;
+	GtkWidget	*sug_menu;
+	GtkWidget	*replace_entry;
 
-	GtkWidget *	gui;
-	gpointer *	compose;
-	
-	GtkWidget*	config_menu;
-	GtkWidget *	replace_entry;
+	gint		 default_sug_mode;
+	gint		 max_sug;
+	GList		*suggestions_list;
 
-	gint 		default_sug_mode;
-	gint  		max_sug;
-	GList *		suggestions_list;
-
-	GtkSText *	gtktext;
-	GdkColor 	highlight;
+	GtkSText	*gtktext;
+	GdkColor 	 highlight;
 } GtkPspell;
 
 typedef PspellConfig GtkPspellConfig;
@@ -101,10 +102,11 @@ GtkPspellCheckers*	gtkpspell_checkers_new		();
 
 GtkPspellCheckers*	gtkpspell_checkers_delete	();
 
-void 			gtkpspell_checkers_reset	();
+void 			gtkpspell_checkers_reset_error	();
 
 GtkPspell*		gtkpspell_new			(const gchar *dictionary, 
 							 const gchar *encoding,
+							 gint  misspelled_color,
 							 gboolean check_while_typing,  
 							 GtkSText *gtktext);
 
@@ -127,6 +129,7 @@ void 			gtkpspell_check_backwards	(GtkPspell *gtkpspell);
 
 void 			gtkpspell_check_all		(GtkPspell *gtkpspell);
 void 			gtkpspell_uncheck_all		(GtkPspell *gtkpspell);
+void 			gtkpspell_highlight_all		(GtkPspell *gtkpspell);
 
 void 			gtkpspell_populate_submenu	(GtkPspell *gtkpspell, 
 							 GtkWidget *menuitem);

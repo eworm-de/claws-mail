@@ -450,18 +450,16 @@ void compose_headerentry_key_press_event_cb(GtkWidget	       *entry,
 
 static void compose_show_first_last_header (Compose *compose, gboolean show_first);
 
-
 #if USE_PSPELL
 static void compose_check_all		   (Compose *compose);
+static void compose_highlight_all	   (Compose *compose);
 static void compose_check_backwards	   (Compose *compose);
-
 static void compose_check_forwards_go	   (Compose *compose);
 #endif
 
 static gboolean compose_send_control_enter (Compose *compose);
 static void text_activated		   (GtkWidget	*widget,
 					    Compose	*compose);
-
 
 static GtkItemFactoryEntry compose_popup_entries[] =
 {
@@ -568,11 +566,17 @@ static GtkItemFactoryEntry compose_entries[] =
 					"<control>X", compose_ext_editor_cb, 0, NULL},
 #if USE_PSPELL
 	{N_("/_Spelling"),		NULL, NULL, 0, "<Branch>"},
-	{N_("/_Spelling/Check all or selection"),NULL, compose_check_all, 0, NULL},
-	{N_("/_Spelling/Check backwards misspelled word"),	NULL, compose_check_backwards , 0, NULL},
-	{N_("/_Spelling/Forward to next misspelled word"),	NULL, compose_check_forwards_go, 0, NULL},
+	{N_("/_Spelling/_Check all or check selection"),
+					NULL, compose_check_all, 0, NULL},
+	{N_("/_Spelling/_Highlight all misspelled words"),
+					NULL, compose_highlight_all, 0, NULL},
+	{N_("/_Spelling/Check _backwards misspelled word"),
+					NULL, compose_check_backwards , 0, NULL},
+	{N_("/_Spelling/_Forward to next misspelled word"),
+					NULL, compose_check_forwards_go, 0, NULL},
 	{N_("/_Spelling/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Spelling/Spelling Configuration"),NULL, NULL, 0, "<Branch>"},
+	{N_("/_Spelling/_Spelling Configuration"),
+					NULL, NULL, 0, "<Branch>"},
 #endif
 #if 0 /* NEW COMPOSE GUI */
 	{N_("/_View"),			NULL, NULL, 0, "<Branch>"},
@@ -4655,16 +4659,22 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
         if (prefs_common.enable_pspell) {
 		gtkpspell = gtkpspell_new((const gchar*)prefs_common.dictionary,
 					  conv_get_current_charset_str(),
+					  prefs_common.misspelled_col,
 					  prefs_common.check_while_typing,
 					  GTK_STEXT(text));
 		if (!gtkpspell) {
 			alertpanel_error(_("Spell checker could not be started.\n%s"), gtkpspellcheckers->error_message);
-			gtkpspell_checkers_reset();
+			gtkpspell_checkers_reset_error();
 		} else {
 
 			GtkWidget *menuitem;
 
-			gtkpspell_set_sug_mode(gtkpspell, prefs_common.pspell_sugmode);
+			if (!gtkpspell_set_sug_mode(gtkpspell, prefs_common.pspell_sugmode)) {
+				debug_print(_("Pspell: could not set suggestion mode %s"),
+				    gtkpspellcheckers->error_message);
+				gtkpspell_checkers_reset_error();
+			}
+
 			menuitem = gtk_item_factory_get_item(ifactory, "/Spelling/Spelling Configuration");
 			gtkpspell_populate_submenu(gtkpspell, menuitem);
 			menu_set_sensitive(ifactory, "/Spelling", TRUE);
@@ -6645,6 +6655,12 @@ static void compose_check_all(Compose *compose)
 {
 	if (compose->gtkpspell)
 		gtkpspell_check_all(compose->gtkpspell);
+}
+
+static void compose_highlight_all(Compose *compose)
+{
+	if (compose->gtkpspell)
+		gtkpspell_highlight_all(compose->gtkpspell);
 }
 
 static void compose_check_backwards(Compose *compose)
