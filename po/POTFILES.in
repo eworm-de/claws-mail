@@ -43,7 +43,6 @@ src/logwindow.c
 src/main.c
 src/mainwindow.c
 src/matcher.c
-src/menu.c
 src/message_search.c
 src/messageview.c
 src/mimeview.c
