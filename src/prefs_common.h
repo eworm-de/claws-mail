@@ -64,9 +64,6 @@ struct _PrefsCommon
 	/* Receive */
 	gboolean use_extinc;
 	gchar *extinc_cmd;
-	gboolean inc_local;
-	gboolean filter_on_inc;
-	gchar *spool_path;
 	gboolean scan_all_after_inc;
 	gboolean autochk_newmail;
 	gint autochk_itv;
