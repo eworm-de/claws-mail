@@ -1,3 +1,7 @@
+2004-02-11 [luke]	0.9.9claws2
+	* src/mimeview.c
+		fix compilation of my previous commit without gpg enabled
+
 2004-02-10 [luke]	0.9.9claws1
 	* src/mimeview.c
 		add borders to icons to indicate the privacy status for
