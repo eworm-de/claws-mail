@@ -1,3 +1,9 @@
+2001-09-08
+
+	* src/prefs.[ch]
+	  src/prefs_common.c
+	  src/prefs_account.c: レイアウトを修正。
+
 2001-09-06
 
 	* src/Makefile.am: 残りの xpm を追加。

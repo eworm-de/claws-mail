@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,13 @@ typedef struct _PrefFile	PrefFile;
 typedef struct _PrefsDialog	PrefsDialog;
 
 #include "account.h"
+
+#define VSPACING		12
+#define VSPACING_NARROW		4
+#define VSPACING_NARROW_2	2
+#define VBOX_BORDER		16
+#define DEFAULT_ENTRY_WIDTH	80
+#define PREFSBUFSIZE		1024
 
 typedef enum
 {
@@ -106,6 +113,13 @@ struct _PrefsDialog
 	gtk_widget_show(frame); \
 	gtk_box_pack_start(GTK_BOX(box), frame, FALSE, TRUE, 0); \
 	gtk_frame_set_label_align(GTK_FRAME(frame), 0.01, 0.5); \
+}
+
+#define PACK_VSPACER(box, vbox, spacing) \
+{ \
+	vbox = gtk_vbox_new(FALSE, 0); \
+	gtk_widget_show(vbox); \
+	gtk_box_pack_start(GTK_BOX(box), vbox, FALSE, TRUE, spacing); \
 }
 
 #define SET_TOGGLE_SENSITIVITY(togglewid, targetwid) \

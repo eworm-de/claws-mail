@@ -1,3 +1,9 @@
+2001-09-08
+
+	* src/prefs.[ch]
+	  src/prefs_common.c
+	  src/prefs_account.c: modified the layout.
+
 2001-09-06
 
 	* src/Makefile.am: added extra xpm's.

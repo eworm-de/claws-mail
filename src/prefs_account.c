@@ -159,8 +159,8 @@ static void prefs_account_protocol_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_account_protocol_set_optmenu		(PrefParam *pparam);
 static void prefs_account_protocol_activated		(GtkMenuItem *menuitem);
 #if USE_GPGME || USE_SSL
-static void prefs_account_enum_set_data_from_radiobtn (PrefParam *pparam);
-static void prefs_account_enum_set_radiobtn		  (PrefParam *pparam);
+static void prefs_account_enum_set_data_from_radiobtn	(PrefParam *pparam);
+static void prefs_account_enum_set_radiobtn		(PrefParam *pparam);
 #endif /* USE_GPGME || USE_SSL */
 
 static void prefs_account_nntpauth_toggled(GtkToggleButton *button,
@@ -383,11 +383,6 @@ static void prefs_account_key_pressed		(GtkWidget	*widget,
 static void prefs_account_ok			(void);
 static gint prefs_account_apply			(void);
 static void prefs_account_cancel		(void);
-
-#define VSPACING		12
-#define VSPACING_NARROW		3
-#define BOX_BORDER		16
-#define DEFAULT_ENTRY_WIDTH	80
 
 void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 {
@@ -671,7 +666,7 @@ static void prefs_account_basic_create(void)
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox1), BOX_BORDER);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);
@@ -943,11 +938,11 @@ static void prefs_account_receive_create(void)
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox1), BOX_BORDER);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	PACK_FRAME (vbox1, frame1, _("POP3"));
 
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 	gtk_container_add (GTK_CONTAINER (frame1), vbox2);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
@@ -1017,11 +1012,11 @@ static void prefs_account_send_create(void)
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox1), BOX_BORDER);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	PACK_FRAME (vbox1, frame, _("Header"));
 
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 	gtk_container_add (GTK_CONTAINER (frame), vbox2);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
@@ -1052,7 +1047,7 @@ static void prefs_account_send_create(void)
 	gtk_widget_show (table);
 	gtk_container_add (GTK_CONTAINER (frame2), table);
 	gtk_container_set_border_width (GTK_CONTAINER (table), 8);
-	gtk_table_set_row_spacings (GTK_TABLE (table), VSPACING_NARROW);
+	gtk_table_set_row_spacings (GTK_TABLE (table), VSPACING_NARROW_2);
 	gtk_table_set_col_spacings (GTK_TABLE (table), 8);
 
 	autocc_chkbtn = gtk_check_button_new_with_label (_("Cc"));
@@ -1096,7 +1091,7 @@ static void prefs_account_send_create(void)
 
 	PACK_FRAME (vbox1, frame3, _("Authentication"));
 
-	vbox3 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	vbox3 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox3);
 	gtk_container_add (GTK_CONTAINER (frame3), vbox3);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox3), 8);
@@ -1132,7 +1127,7 @@ static void prefs_account_compose_create(void)
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox1), BOX_BORDER);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	hbox = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox);
@@ -1165,7 +1160,7 @@ static void prefs_account_privacy_create(void)
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox1), BOX_BORDER);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	PACK_FRAME (vbox1, frame1, _("Sign key"));
 
@@ -1246,11 +1241,11 @@ static void prefs_account_ssl_create(void)
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox1), BOX_BORDER);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
 	PACK_FRAME (vbox1, receive_frame, _("Receive"));
 
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 	gtk_container_add (GTK_CONTAINER (receive_frame), vbox2);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
@@ -1262,7 +1257,7 @@ static void prefs_account_ssl_create(void)
 
 	PACK_FRAME (vbox1, send_frame, _("Send (SMTP)"));
 
-	vbox3 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	vbox3 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox3);
 	gtk_container_add (GTK_CONTAINER (send_frame), vbox3);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox3), 8);
@@ -1341,9 +1336,9 @@ static void prefs_account_advanced_create(void)
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox1), BOX_BORDER);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW_2);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 

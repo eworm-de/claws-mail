@@ -630,13 +630,6 @@ static PrefParam param[] = {
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
-#define VSPACING		12
-#define VSPACING_NARROW		3
-
-#define VBOX_BORDER		16
-#define DEFAULT_ENTRY_WIDTH	80
-#define PREFSBUFSIZE		1024
-
 /* widget creating functions */
 static void prefs_common_create		(void);
 static void prefs_receive_create	(void);
@@ -900,7 +893,7 @@ static void prefs_receive_create(void)
 	gtk_widget_show (entry_spool);
 	gtk_box_pack_start (GTK_BOX (hbox), entry_spool, TRUE, TRUE, 0);
 
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
@@ -1040,7 +1033,7 @@ static void prefs_send_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), button_extsend, FALSE, FALSE, 0);
 #endif
 
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
@@ -1511,11 +1504,11 @@ static void prefs_display_create(void)
 	GtkWidget *chkbtn_useaddrbook;
 	GtkWidget *chkbtn_expand_thread;
 	GtkWidget *chkbtn_bold_unread;
+	GtkWidget *vbox3;
 	GtkWidget *hbox1;
 	GtkWidget *label_datefmt;
 	GtkWidget *button_datefmt;
 	GtkWidget *entry_datefmt;
-	GtkWidget *vbox3;
 	GtkWidget *button_dispitem;
 	GtkWidget *tmplabel, *tmpbutton, *tmpentry;
 
@@ -1610,7 +1603,7 @@ static void prefs_display_create(void)
 				GTK_SIGNAL_FUNC(prefs_font_select), tmpentry);
 	display.entry_boldfont = tmpentry;
 
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, TRUE, 0);
 
@@ -1625,7 +1618,7 @@ static void prefs_display_create(void)
 
 	PACK_FRAME(vbox1, frame_summary, _("Summary View"));
 
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 	gtk_container_add (GTK_CONTAINER (frame_summary), vbox2);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
@@ -1643,6 +1636,8 @@ static void prefs_display_create(void)
 	PACK_CHECK_BUTTON
 		(vbox2, chkbtn_bold_unread,
 		 _("Display unread messages with bold font"));
+
+	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -1663,10 +1658,7 @@ static void prefs_display_create(void)
 	gtk_signal_connect (GTK_OBJECT (button_datefmt), "clicked",
 			    GTK_SIGNAL_FUNC (date_format_create), NULL);
 
-	/* spacer */
-	vbox3 = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox3);
-	gtk_box_pack_start (GTK_BOX (vbox2), vbox3, FALSE, TRUE, 0);
+	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW);
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
@@ -1698,6 +1690,7 @@ static void prefs_message_create(void)
 {
 	GtkWidget *vbox1;
 	GtkWidget *vbox2;
+	GtkWidget *vbox3;
 	GtkWidget *hbox1;
 	GtkWidget *chkbtn_enablecol;
 	GtkWidget *button_edit_col;
@@ -1743,7 +1736,7 @@ static void prefs_message_create(void)
 
 	SET_TOGGLE_SENSITIVITY(chkbtn_enablecol, button_edit_col);
 
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
@@ -1769,6 +1762,8 @@ static void prefs_message_create(void)
 			    NULL);
 
 	SET_TOGGLE_SENSITIVITY(chkbtn_disphdr, button_edit_disphdr);
+
+	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW_2);
 
 	hbox1 = gtk_hbox_new (FALSE, 32);
 	gtk_widget_show (hbox1);
@@ -1801,7 +1796,7 @@ static void prefs_message_create(void)
 
 	PACK_FRAME(vbox1, frame_scr, _("Scroll"));
 
-	vbox_scr = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	vbox_scr = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox_scr);
 	gtk_container_add (GTK_CONTAINER (frame_scr), vbox_scr);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_scr), 8);
@@ -1874,7 +1869,7 @@ static void prefs_privacy_create(void)
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
@@ -2007,7 +2002,7 @@ static void prefs_interface_create(void)
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	vbox2 = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox2);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
 
@@ -2043,6 +2038,8 @@ static void prefs_interface_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 8);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 
+	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW);
+
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
@@ -2066,7 +2063,7 @@ static void prefs_interface_create(void)
 
 	PACK_FRAME (vbox1, frame_addr, _("Address book"));
 
-	vbox_addr = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	vbox_addr = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox_addr);
 	gtk_container_add (GTK_CONTAINER (frame_addr), vbox_addr);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_addr), 8);
@@ -2099,7 +2096,7 @@ static void prefs_interface_create(void)
 	/* On Exit */
 	PACK_FRAME (vbox1, frame_exit, _("On exit"));
 
-	vbox_exit = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	vbox_exit = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vbox_exit);
 	gtk_container_add (GTK_CONTAINER (frame_exit), vbox_exit);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_exit), 8);
