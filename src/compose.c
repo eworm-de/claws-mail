@@ -2602,6 +2602,9 @@ gint compose_send(Compose *compose)
 	FolderItem *folder;
 	gint val;
 
+	if (compose_check_entries(compose) == FALSE)
+		return -1;
+
 	val = compose_queue(compose, &msgnum, &folder);
 	if (val) {
 		alertpanel_error(_("Could not queue message for sending"));
