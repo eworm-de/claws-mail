@@ -139,33 +139,31 @@ static gint generic_get_one_field(gchar *buf, gint len, void *data,
 		if (buf[0] == '\r' || buf[0] == '\n') return -1;
 	}
 
-	/* remove trailing new line */
-	strretchomp(buf);
-
-#define UNFOLD_LINE() \
-	(!hentry || (hp && hp->unfold))
-
 	/* unfold line */
 	while (1) {
 		nexthead = peekchar(data);
 		/* ([*WSP CRLF] 1*WSP) */
 		if (nexthead == ' ' || nexthead == '\t') {
-			size_t buflen = strlen(buf);
+			size_t buflen;
+			/* trim previous trailing \n if requesting one header or
+			 * unfolding was requested */
+			if (!hentry || (hp && hp->unfold))
+				strretchomp(buf);
+
+			buflen = strlen(buf);
 			
 			/* concatenate next line */
 			if ((len - buflen) > 2) {
 				if (getline(buf + buflen, len - buflen, data) == NULL)
 					break;
-				/* trim trailing \n if requesting one header or
-				 * unfolding was requested */
-				if (UNFOLD_LINE())				 
-				    strretchomp(buf);
 			} else
 				break;
-		} else
+		} else {
+			/* remove trailing new line */
+			strretchomp(buf);
 			break;
+		}
 	}
-#undef UNFOLD_LINE	
 
 	return hnum;
 }
