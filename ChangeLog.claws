@@ -1,3 +1,10 @@
+2003-01-10 [christoph]	0.8.8claws77
+
+	* src/imap.[ch]
+		apply UIDPLUS IMAP extension support patch
+
+	Patch submitted by Simon 'corecode' Schubert
+
 2003-01-10 [paul]	0.8.8claws76
 
 	* src/folderview.c
