@@ -43,7 +43,6 @@ typedef struct _FontsPage
 	GtkWidget *window;		/* do not modify */
 
 	GtkWidget *entry_folderviewfont;
-	GtkWidget *entry_summaryviewfont;
 	GtkWidget *entry_messageviewfont;
 	GtkWidget *entry_boldfont;
 } FontsPage;
@@ -55,20 +54,19 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	GtkWidget *table;
 	GtkWidget *entry_folderviewfont;
-	GtkWidget *entry_summaryviewfont;
 	GtkWidget *entry_messageviewfont;
 	GtkWidget *entry_boldfont;
 	GtkWidget *tmplabel;
 	GtkWidget *vbox;
 	GtkWidget *hint_label;
 
-	table = gtk_table_new(8, 2, FALSE);
+	table = gtk_table_new(7, 2, FALSE);
 	gtk_widget_show(table);
 	gtk_container_set_border_width(GTK_CONTAINER(table), 8);
 	gtk_table_set_row_spacings(GTK_TABLE(table), 4);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
-	tmplabel = gtk_label_new (_("Folder List"));
+	tmplabel = gtk_label_new (_("Folder and Message Lists"));
 	gtk_widget_show (tmplabel);
 	gtk_table_attach (GTK_TABLE (table), tmplabel, 0, 1, 0, 1,
 			 (GtkAttachOptions) GTK_FILL,
@@ -82,23 +80,6 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 			      NULL);
 	gtk_widget_show (entry_folderviewfont);
 	gtk_table_attach (GTK_TABLE (table), entry_folderviewfont, 1, 2, 0, 1,
-			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-
-	tmplabel = gtk_label_new (_("Message List"));
-	gtk_widget_show (tmplabel);
-	gtk_table_attach (GTK_TABLE (table), tmplabel, 0, 1, 1, 2,
-			 (GtkAttachOptions) GTK_FILL,
-			 (GtkAttachOptions) (0), 0, 0);
-	gtk_label_set_justify(GTK_LABEL(tmplabel), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(tmplabel), 1, 0.5);
-
-	entry_summaryviewfont = gtk_font_button_new_with_font (prefs_common.smallfont);
-	g_object_set(G_OBJECT(entry_summaryviewfont), 
-			      "use-font", TRUE, 
-			      NULL);
-	gtk_widget_show (entry_summaryviewfont);
-	gtk_table_attach (GTK_TABLE (table), entry_summaryviewfont, 1, 2, 1, 2,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 
@@ -153,7 +134,6 @@ void prefs_fonts_create_widget(PrefsPage *_page, GtkWindow *window,
 
 	prefs_fonts->window		   = GTK_WIDGET(window);
 	prefs_fonts->entry_folderviewfont  = entry_folderviewfont;
-	prefs_fonts->entry_summaryviewfont = entry_summaryviewfont;
 	prefs_fonts->entry_messageviewfont = entry_messageviewfont;
 	prefs_fonts->entry_boldfont	   = entry_boldfont;
 
@@ -170,7 +150,7 @@ void prefs_fonts_save(PrefsPage *_page)
 		
 	g_free(prefs_common.smallfont);		
 	prefs_common.smallfont  = g_strdup(gtk_font_button_get_font_name
-		(GTK_FONT_BUTTON(fonts->entry_summaryviewfont)));
+		(GTK_FONT_BUTTON(fonts->entry_folderviewfont)));
 
 	g_free(prefs_common.textfont);		
 	prefs_common.textfont   = g_strdup(gtk_font_button_get_font_name

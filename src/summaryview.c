@@ -641,11 +641,21 @@ void summary_init(SummaryView *summaryview)
 	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_GPG_SIGNED,
 			 &gpgsignedxpm, &gpgsignedxpmmask);
 
+	font_desc = pango_font_description_from_string(NORMAL_FONT);
+	gtk_widget_modify_font(summaryview->ctree, font_desc);
+	pango_font_description_free(font_desc);
+
 	if (!bold_style) {
 		bold_style = gtk_style_copy
 			(gtk_widget_get_style(summaryview->ctree));
+		font_desc = pango_font_description_from_string(BOLD_FONT);
+		if (font_desc) {
+			pango_font_description_free(bold_style->font_desc);
+			bold_style->font_desc = font_desc;
+		}
+		
 		pango_font_description_set_weight
-			(bold_style->font_desc, PANGO_WEIGHT_BOLD);
+				(bold_style->font_desc, PANGO_WEIGHT_BOLD);
 		bold_marked_style = gtk_style_copy(bold_style);
 		bold_marked_style->fg[GTK_STATE_NORMAL] =
 			summaryview->color_marked;

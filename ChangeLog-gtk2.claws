@@ -1,3 +1,11 @@
+2005-03-17 [colin]	1.0.3cvs2.3
+
+	* src/prefs_fonts.c
+	* src/summaryview.c
+		Fix font bugs (both lists now officialy share 
+		the same font)
+		
+
 2005-03-17 [paul]	1.0.3cvs2.2
 
 	* src/gtk/pluginwindow.c
