@@ -110,6 +110,9 @@ static struct Compose {
 	GtkWidget *checkbtn_forward_account_autosel;
 	GtkWidget *checkbtn_reedit_account_autosel;
 
+	GtkWidget *spinbtn_undolevels;
+	GtkObject *spinbtn_undolevels_adj;
+
 	GtkWidget *spinbtn_linewrap;
 	GtkObject *spinbtn_linewrap_adj;
 	GtkWidget *checkbtn_wrapquote;
@@ -320,8 +323,12 @@ static PrefParam param[] = {
 	 &compose.checkbtn_autoextedit,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
+	{"undolevels", "50", &prefs_common.undolevels, P_INT,
+	 &compose.spinbtn_undolevels,
+	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
+
 	{"linewrap_length", "74", &prefs_common.linewrap_len, P_INT,
-	 &compose.spinbtn_linewrap,
+	&compose.spinbtn_linewrap,
 	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 	{"linewrap_quotation", "FALSE", &prefs_common.linewrap_quote, P_BOOL,
 	 &compose.checkbtn_wrapquote,
@@ -1359,7 +1366,12 @@ static void prefs_compose_create(void)
 	GtkWidget *checkbtn_forward_account_autosel;
 	GtkWidget *checkbtn_reedit_account_autosel;
 
-        GtkWidget *vbox_linewrap;
+	GtkWidget *hbox_undolevels;
+	GtkWidget *label_undolevels;
+	GtkObject *spinbtn_undolevels_adj;
+	GtkWidget *spinbtn_undolevels;
+
+	GtkWidget *vbox_linewrap;
 
  	GtkWidget *hbox3;
 	GtkWidget *hbox4;
@@ -1500,6 +1512,24 @@ static void prefs_compose_create(void)
 	PACK_CHECK_BUTTON (vbox1, checkbtn_block_cursor,
 			  _("Block cursor"));
 
+	PACK_VSPACER (vbox2, vbox3, VSPACING_NARROW_2);
+
+	hbox_undolevels = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox3);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox_undolevels, FALSE, FALSE, 0);
+
+	label_undolevels = gtk_label_new (_("Undo levels"));
+	gtk_widget_show (label_undolevels);
+	gtk_box_pack_start (GTK_BOX (hbox_undolevels), label_undolevels, FALSE, FALSE, 0);
+
+	spinbtn_undolevels_adj = gtk_adjustment_new (50, 0, 100, 1, 10, 10);
+	spinbtn_undolevels = gtk_spin_button_new
+		(GTK_ADJUSTMENT (spinbtn_undolevels_adj), 1, 0);
+	gtk_widget_show (spinbtn_undolevels);
+	gtk_box_pack_start (GTK_BOX (hbox_undolevels), spinbtn_undolevels, FALSE, FALSE, 0);
+	gtk_widget_set_usize (spinbtn_undolevels, 64, -1);
+	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_undolevels), TRUE);
+
 #if USE_PSPELL
 	/* spell checker defaults */			   
 	PACK_FRAME(vbox1, frame_spell, _("Global spelling checker settings"));
@@ -1567,6 +1597,9 @@ static void prefs_compose_create(void)
         compose.checkbtn_reply_account_autosel   = checkbtn_reply_account_autosel;
 	compose.checkbtn_forward_account_autosel = checkbtn_forward_account_autosel;
 	compose.checkbtn_reedit_account_autosel  = checkbtn_reedit_account_autosel;
+
+	compose.spinbtn_undolevels     = spinbtn_undolevels;
+	compose.spinbtn_undolevels_adj = spinbtn_undolevels_adj;
 
 	compose.spinbtn_linewrap     = spinbtn_linewrap;
 	compose.spinbtn_linewrap_adj = spinbtn_linewrap_adj;

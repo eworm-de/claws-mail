@@ -71,6 +71,7 @@ struct _PrefsCommon
 	/* Compose */
 	gboolean auto_sig;
 	gchar *sig_sep;
+	gint undolevels;
 	gint linewrap_len;
 	gboolean linewrap_quote;
 	gboolean linewrap_at_send;

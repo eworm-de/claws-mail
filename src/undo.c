@@ -26,6 +26,7 @@
 #include "undo.h"
 #include "utils.h"
 #include "gtkstext.h"
+#include "prefs_common.h"
 
 typedef struct _UndoInfo UndoInfo;
 
@@ -154,14 +155,13 @@ static void undo_check_size(UndoMain *undostruct)
 {
         gint n;
         UndoInfo *nth_undo;
-	gint undo_levels = 50;
 
-        if (undo_levels < 1)
+        if (prefs_common.undolevels < 1)
                 return;
 
         /* No need to check for the redo list size since the undo
            list gets freed on any call to compose_undo_add */
-        if (g_list_length(undostruct->undo) >= undo_levels && undo_levels > 0) {
+        if (g_list_length(undostruct->undo) >= prefs_common.undolevels && prefs_common.undolevels > 0) {
 		nth_undo = g_list_nth_data(undostruct->undo, g_list_length(undostruct->undo) - 1);
 		undostruct->undo = g_list_remove(undostruct->undo, nth_undo);
 		g_free (nth_undo->text);
@@ -502,10 +502,13 @@ void undo_insert_text_cb(GtkEditable *editable, gchar *new_text,
 {
 	guchar *text_to_insert;
 
-	text_to_insert = g_strndup(new_text, new_text_length);
-	undo_add(text_to_insert, *position, (*position + new_text_length), 
-		 UNDO_ACTION_INSERT, undostruct);
-	g_free (text_to_insert);
+        if (prefs_common.undolevels > 0){
+		text_to_insert = g_strndup(new_text, new_text_length);
+
+		undo_add(text_to_insert, *position, (*position + new_text_length),
+			 UNDO_ACTION_INSERT, undostruct);
+		g_free (text_to_insert);
+	}
 }
 
 void undo_delete_text_cb(GtkEditable *editable, gint start_pos,
@@ -513,20 +516,23 @@ void undo_delete_text_cb(GtkEditable *editable, gint start_pos,
 {
         guchar *text_to_delete;
 
-        if (start_pos == end_pos )
-		return;
-		
-        text_to_delete = gtk_editable_get_chars(GTK_EDITABLE(editable), 
+        if (prefs_common.undolevels > 0){
+        	if (start_pos == end_pos )
+			return;
+
+        	text_to_delete = gtk_editable_get_chars(GTK_EDITABLE(editable),
 						start_pos, end_pos);
-	undo_add(text_to_delete, start_pos, end_pos, UNDO_ACTION_DELETE, undostruct);
-	g_free (text_to_delete);
+		undo_add(text_to_delete, start_pos, end_pos, UNDO_ACTION_DELETE, undostruct);
+		g_free (text_to_delete);
+	}
 }
 
 void undo_paste_clipboard_cb (GtkEditable *editable, UndoMain *undostruct) 
 {
 	debug_print("befor Paste: %d\n", undostruct->paste);
-	if (undo_get_selection(editable, NULL, NULL)) 
-		undostruct->paste = TRUE;
+        if (prefs_common.undolevels > 0)
+		if (undo_get_selection(editable, NULL, NULL))
+			undostruct->paste = TRUE;
 	debug_print("after Paste: %d\n", undostruct->paste);
 }
 
