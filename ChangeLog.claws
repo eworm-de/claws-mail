@@ -1,3 +1,13 @@
+2003-05-06 [paul]	0.8.11claws142
+
+	* AUTHORS
+	  po/cs.po
+		updated Czech translation, submitted by 
+		Radek Vybiral <Radek.Vybiral@vsb.cz>
+		
+	* src/plugins/clamav/clamav_plugin_gtk.c
+		clean up
+
 2003-05-03 [alfons]	0.8.11claws141
 
 	* src/compose.[ch]
