@@ -1,3 +1,9 @@
+2003-09-19 [darko]	0.9.5claws20
+
+	* src/compose.c
+		don't ignore value of 'Save copy of outgoing messages to
+		this folder instead of Sent' in message redirect
+
 2003-09-17 [christoph]	0.9.5claws19
 
 	* src/compose.c

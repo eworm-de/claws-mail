@@ -1299,6 +1299,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	Compose *compose;
 	gchar *filename;
 	GtkItemFactory *ifactory;
+	FolderItem *item;
 
 	g_return_val_if_fail(msginfo != NULL, NULL);
 
@@ -1323,6 +1324,17 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 
 	compose->redirect_filename = filename;
 	
+	/* Set save folder */
+	item = msginfo->folder;
+	if (item && item->prefs && item->prefs->save_copy_to_folder) {
+		gchar *folderidentifier;
+
+    		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), prefs_common.savemsg);
+		folderidentifier = folder_item_get_identifier(item);
+		gtk_entry_set_text(GTK_ENTRY(compose->savemsg_entry), folderidentifier);
+		g_free(folderidentifier);
+	}
+
 	compose_attach_parts(compose, msginfo);
 
 	if (msginfo->subject)
