@@ -1,3 +1,8 @@
+2004-07-06 [colin]	0.9.12cvs12
+
+	* src/common/smtp.c [1.16]
+		Display maximum message size in the log
+
 2004-07-06 [paul]	0.9.12cvs11
 
 	* src/toolbar.c
