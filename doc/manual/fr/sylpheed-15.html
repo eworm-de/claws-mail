@@ -8,43 +8,39 @@
  <LINK HREF="sylpheed.html#toc15" REL=contents>
 </HEAD>
 <BODY>
-<A HREF="sylpheed-16.html">Next</A>
-<A HREF="sylpheed-14.html">Previous</A>
-<A HREF="sylpheed.html#toc15">Contents</A>
+<A HREF="sylpheed-16.html">Page suivante</A>
+<A HREF="sylpheed-14.html">Page précédente</A>
+<A HREF="sylpheed.html#toc15">Table des matières</A>
 <HR>
 <H2><A NAME="s15">15. NetNews</A></H2>
 
-<P>Qu'est ce que netnews ?
-<P>Netnews, aussi appelé Usenet, est une collection de « serveur de nouvelles » 
-qui contient beaucoup d'informations. News, comme s'est appelé en résumé, 
-peut être sur n'importe quoi. Sur la manière de faire votre propre vin, sur 
-les vieilles voitures et les radios. Vous donnez un nom et il y a probablement 
-un groupe de discussion à ce propos.
-<P>C'est ce que nous allons configurer ici. Accéder aux groupes de discussions. 
-Notez que c'est différent des courriers. Nous pouvons encore le comparer à une 
-liste de diffusion mais le concept est encore légèrement différent.
-<H2><A NAME="ss15.1">15.1 Ajouter et enlever des serveurs</A>
+<P>Qu'est ce que netnews&nbsp;?
+<P>Netnews, aussi appelé Usenet, est un ensemble de serveurs de nouvelles. Les netnews sont généralement appelés les news pour faire plus court, et sont un lieu de discussion sur un nombre quasi infini de thèmes.
+Par exemple, un groupe de discussion peut porter sur la manière de faire votre propre vin, et tel autre sur les vieilles voitures et les radios.  Pensez à un thème et il y a probablement un groupe de discussion le concernant.
+<P>C'est ce que nous allons configurer ici&nbsp;: l'accès aux groupes de discussions. 
+Notez que c'est différent des courriers. Nous pourrions aussi les comparer aux
+listes de diffusion mais le concept est encore légèrement différent.
+<H2><A NAME="ss15.1">15.1 Ajouter et enlever des serveurs de news</A>
 </H2>
 
 <P>
-<H3>Ajouter un nouveau serveur</H3>
+<H3>Ajouter un nouveau serveur de news</H3>
 
-<P>Pour ajouter un nouveau serveur, aller dans le menu de configuration et 
-sélectionnez l'option « Créer un nouveau compte ».
+<P>L'ajout  d'un nouveau serveur de groupes de discussions (de news) se fait par le menu <B>Configuration -> Création d'un nouveau compte...</B>.
 Ici, vous pouvez nommer les nouveaux comptes sur ce que vous aimez. C'est 
 important car vous pourrez identifier le compte plus tard.
 <P>Dans l'onglet BASE, dans le bloc « informations personnelles », vous pouvez 
 aussi entrer votre propre nom, votre adresse de courrier (pour que vous 
 puissiez répondre aux messages de nouvelles par courrier), optionnellement 
 votre organisation (si vous êtes dans une organisation).
-<P>Dans le block « information de serveur », vous sélectionnez le protocole 
-« News (NNTP) ». Oubliez « Inbox », qui n'importe pas dans cette 
+<P>Dans le bloc « information de serveur », vous sélectionnez le protocole 
+« News (NNTP) ». Oubliez « Inbox », qui ne nous intéresse pas pour cette 
 configuration. Ensuite, vous entrez le nom du serveur de nouvelles auquel 
 vous voulez vous connecter. Vous pouvez obtenir le nom de votre ISP, si vous 
 n'en avez pas encore.
 <P>Si vous avez besoin de vous connecter au serveur de nouvelles, validez la 
-boîte à « Ce serveur nécessite une authentification » et remplissez alors les 
-champs pour ID d'utilisateur et mot de passe.
+boîte « Ce serveur nécessite une authentification » et remplissez alors les 
+champs ID d'utilisateur et mot de passe.
 <P>L'étape suivante est d'aller dans l'onglet Envoi. Comme Recevoir est seulement 
 pour les courriers, il n'y a pas de besoin de faire quelque chose d'autre. 
 Vous ne pouvez même pas faire quoi que ce soit dans l'onglet Recevoir, dans 
@@ -66,7 +62,7 @@ groupe de discussion.
 <P>Finalement, dans l'onglet « Avancé », vous pouvez spécifier le port sur lequel 
 Sylpheed doit se connecter sur le serveur de nouvelles. C'est par défaut sur 
 119 et seulement dans de rares cas, vous aurez à le changer.
-<P>Maintenant, vous cliquez sur « OK » et le compte est créé ! Vous pouvez le 
+<P>Maintenant, cliquez sur « OK » et le compte est créé ! Vous pouvez le 
 vérifier en surveilllant la fenêtre de répertoire dans Sylpheed. Vous y verrez 
 un nouveau répertoire créé avec le nom du compte que vous avez entré et des 
 nouvelles derrière.
@@ -76,8 +72,8 @@ nouvelles derrière.
 <P>Si vous voulez effacer un compte de nouvelles, cliquez-droit sur le répertoire 
 de nouvelles et sélectionnez « Enlever le compte de nouvelles ». Après avoir 
 confirmé que vous voulez que ce soit fait, le compte et tous les fichiers liés 
-doivent être enlevés.
-<H2><A NAME="ss15.2">15.2 Souscrire et se déssouscrire d'un groupe de discussion</A>
+seront enlevés.
+<H2><A NAME="ss15.2">15.2 S'abonner et se désabonner d'un groupe de discussion</A>
 </H2>
 
 <P>Ok. C'est ici que le travail réel démarre. Vous devez d'abord laisser Sylpheed 
@@ -94,9 +90,9 @@ Maintenant, vous pouvez chercher un groupe qui est intéressant, par exemple
 comp.os.linux.networking. Cliquez sur le nom et sélectionnez OK. Le groupe 
 sera ajouté dans le répertoire de nouvelles comme un sous-répertoire. Ensuite, 
 lorsque vous cliquez sur le nom du nouveau sous-répertoire, Sylpheed se 
-connectera à un serveur de nouvelles et téléchargera les en-têtes (lignes de 
+connectera à un serveur de nouvelles et téléchargera les en-têtes (ligne du 
 sujet, dans le vocabulaire de courrier), pour votre ordinateur. Quelques 
-groupes ont des -grands- nombre d'articles, donc ceci peut prendre du temps !
+groupes ont des -grands- nombres d'articles, donc ceci peut prendre du temps !
 <P>
 <H2><A NAME="ss15.3">15.3 Lire les nouvelles</A>
 </H2>
@@ -121,14 +117,14 @@ Ce sont des programmes, images, etc. Souvent, ils sont postés comme des
 fichiers UUencode. Sylpheed ne décodera pas les fichiers UUencode au-dela de 
 la version 0.5.1. Vous avez besoin de sauvegarder ces articles sur le disques 
 comme fichiers séparés et utiliser un programme de décodage séparé comme juju, 
-pour décoder le texte. Un fichier UUencode regarde habituellement quelquechose 
+pour décoder le texte. Un fichier UUencode ressemble habituellement à quelquechose 
 comme ceci :
 <P>begin 666 sundown.jpg
 <P>après lequel vous trouverez des blocs de caractères bien formatés qui ne 
 semblent rien dire.
 <HR>
-<A HREF="sylpheed-16.html">Next</A>
-<A HREF="sylpheed-14.html">Previous</A>
-<A HREF="sylpheed.html#toc15">Contents</A>
+<A HREF="sylpheed-16.html">Page suivante</A>
+<A HREF="sylpheed-14.html">Page précédente</A>
+<A HREF="sylpheed.html#toc15">Table des matières</A>
 </BODY>
 </HTML>

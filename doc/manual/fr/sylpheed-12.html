@@ -8,9 +8,9 @@
  <LINK HREF="sylpheed.html#toc12" REL=contents>
 </HEAD>
 <BODY>
-<A HREF="sylpheed-13.html">Next</A>
-<A HREF="sylpheed-11.html">Previous</A>
-<A HREF="sylpheed.html#toc12">Contents</A>
+<A HREF="sylpheed-13.html">Page suivante</A>
+<A HREF="sylpheed-11.html">Page précédente</A>
+<A HREF="sylpheed.html#toc12">Table des matières</A>
 <HR>
 <H2><A NAME="s12">12. Filtrer les Messages</A></H2>
 
@@ -20,216 +20,172 @@
 <H2><A NAME="ss12.1">12.1 Filtrer les Messages</A>
 </H2>
 
-<P>Sylpheed fournit des filtres puissants pour permettre aux utilisteurs de 
-pré-trier les courriers entrants automatiquement basé sur un jeu de règles 
-définies par l'utilisateur. Comme exemple le plus simple, supposons que vous 
-travaillez dans la Acme Grommet Company et vous voulez que tous les courriers 
-de vos collègues soient dans une boîte aux lettres. Pour accomplir ceci, vous 
-voudrez configurer un filtre qui placera tous les courriers dont l'en-tête 
-"De" inclut la phrase "acmegrommet.com" dans une boîte aux lettres spécifique.
-<P>Sylpheed vous permet d'avoir plus de contrôle qu'une simple configuration ; 
-vous pouvez créer des filtres basés sur plusieurs variables, incluant un "Si 
-ceci AND cela" ou "Si le message contient ceci OR NOT contient cela", etc. 
-C'est très intéressant.
-<H3>Trouver le dialogue de configuration de filtre</H3>
+<P> Sylpheed dispose de filtres puissants pour
+permettre aux utilisateurs de trier les courriers reçus.  Ils sont basés sur un
+jeu de règles définies par l'utilisateur. En prenant un exemple simple,
+supposons que vous travaillez dans la World Company et que vous voulez
+que tous les courriers de vos collègues soient dans une boîte aux lettres
+particulière. Pour accomplir ceci, il suffit de configurer un filtre qui
+placera tous les courriers dont l'en-tête «&nbsp;De&nbsp;» contient le texte
+«&nbsp;worldcompany.com&nbsp;» dans cette boîte aux lettres.
+<P> 
+Sylpheed vous permet aussi d'écrire des filtres plus complexes que celui de
+l'exemple précédent&nbsp;: par exemple, vous pouvez créer des filtres basés sur
+plusieurs variables, incluant des conditions du type «&nbsp;SI ceci ET cela" ou "SI
+le message contient ceci OU NE contient PAS cela&nbsp;», etc.
+<H3>Configuration des filtres</H3>
 
-<P>Le dialogue de configuration de filtre est situé dans le menu de 
-Configuration, sous le titre "Configuration des Filtres". Vous pouvez aussi 
-l'utiliser pour établir des raccourcis claviers (voir les Raccourcis Claviers).
+<P>La fenêtre de configuration des filtres est activée par le menu
+<B>Configuration -> Options de filtrage...</B>.  Vous pouvez aussi utiliser
+un raccourci clavier (qui n'existe pas par défaut mais que vous pouvez créer, 
+voir le paragraphe «&nbsp;Comment modifier les raccourcis claviers&nbsp;» dans la
+section «&nbsp;FAQ&nbsp;»).
+<P>
+<P>
+<P>
 <P>
 <H3>Configurer les filtres</H3>
 
-<P>Opérateur(s) et instructions de traitement combinées pour créer des règles de 
-filtrage.
-<P>* Opérateurs
-La première option de configuration du dialogue établit d'abord l'opérateur, 
-la variable qui indiquera au filtre quel texte spécifique chercher pour 
-déclencher un filtre. Chaque filtre peut avoir jusqu'à deux opérateurs.
-<P>Chaque variable d'opérateur contient trois sections : en-tête, mot clé et 
+<P>Une règle de filtrage consiste en une condition associée à une action.
+<P>* Condition
+<P>La première partie de la fenêtre de configuration des filtres permet de créer une ou deux conditions qui indiquent au filtre quel texte chercher pour déclencher une action. Chaque filtre peut avoir jusqu'à deux conditions.
+<P>Chaque condition contient trois parties&nbsp;: en-tête, mot-clé et 
 prédicat.
-<P>L'en-tête est une fenêtre à déroulement qui définit dans quel en-tête de 
-message de Sylpheed le filtre doit chercher. Le choix va de Sujet à X-Mailer. 
-<P>Le mot clé est une boîte de texte dans laquelle vous pouvez entrer le texte 
-que va rechercher le filtre. 
-<P>Le prédicat vous permet de choisir de filtrer en fonction de ce que contient 
-l'opérateur ou ne contient pas l'opérateur, le texte que vous entrez dans le 
-champ de mots clé. 
-<P>Exemple: Créer un opérateur dans lequel le champ X-Mailer d'un message entrant 
-contient le mot 'Eudora'.
+<P>La liste déroulante <B>En-tête</B> permet de spécifier à quel en-tête du 
+message le filtre doit s'appliquer. Le choix va du sujet (<B>Subject</B>) au nom du client de messagerie (<B>X-Mailer</B>). 
+<P>Le champ <B>Mot-clé</B> permet de définir le texte recherché par le filtre. 
+<P>Le prédicat vous permet de choisir si le filtre doit s'activer si l'en-tête <B>contient</B> ou <B>ne contient pas</B> le mot-clé. 
+<P>Exemple&nbsp;: Créez une condition qui sera avérée si l'en-tête «&nbsp;X-Mailer&nbsp;» d'un message reçu contient le mot «&nbsp;Eudora&nbsp;»&nbsp;:
 <UL>
-<LI>Étape 1. Sous la boîte de déroulement de l'en-tête, sélectionnez 
-X-Mailer.</LI>
-<LI>Étape 2. Dans la boîte des mots clés, saisissez 'eudora' (insensible à 
-la casse)</LI>
-<LI>Étape 3. Déterminez la configuration du prédicat approprié. C'est par 
-défaut à "Contient".</LI>
+<LI>Étape 1. Dans la liste déroulante <B>En-tête</B>, sélectionnez 
+<B>X-Mailer</B>.</LI>
+<LI>Étape 2. Dans le champ <B>Mot-clé</B>, tapez <CODE>eudora</CODE> (insensible à 
+la casse).</LI>
+<LI>Étape 3. Sélectionnez le prédicat approprié. Il est par 
+défaut défini sur <B>contient</B>, ce qui convient à cet exemple.</LI>
 </UL>
 
-La configuration du second opérateur, qui est positionnée de manière identique à la première, permet aussi à l'utilisateur de sélectionner les configurations 
-AND/OR en déclarant les relations entre les deux opérateurs. 
-<P>Exemple : Créez un jeu d'opérateurs qui va traiter le courrier avec un en-tête 
-"De" de bob@acmegrommet.com AND un sujet "2001 Spring Grommet Collection"
+La configuration de la seconde condition, qui est structurée de la même manière que la première, permet à l'utilisateur de choisir une des deux relations logiques 
+<B>and</B> (et) ou <B>or</B> (ou) qui la combinera avec la première condition.
+<P>Exemple&nbsp;: Créez une règle qui va traiter tout courrier provenant de l'expéditeur
+«&nbsp;sylvestre@worldcompany.com&nbsp;» et ayant comme sujet «&nbsp;réunion world company&nbsp;»
 <UL>
-<LI>Étape 1. Dans la boîte de dialogue déroulante "En-tête", configurez le 
-premier jeu d'opérateur d'en-tête avec la sélection "De".</LI>
-<LI>Étape 2. Dans la boîte de texte "mots clé", saisissez 
-'bob@acmegrommet.com' (insensible à la casse)</LI>
-<LI>Étape 3. Laissez la configuration du "Prédicat" par défaut en, "Contient"</LI>
-<LI>Étape 4. Laissez le boîte "AND/OR" sur sa configuration par défaut, "AND"</LI>
-<LI>Étape 5. Dans la boîte de dialogue déroulante, configurez le second jeu 
-d'opérateur d'en-tête avec la sélection "Sujet".</LI>
-<LI>Étape 6. Dans la boîte de texte "mots clé", saisissez '2001 spring 
-grommet collection' (insensible à la casse)</LI>
-<LI>Étape 7. Laissez les configuration de "Prédicat" par défaut à "Contient"</LI>
+<LI>Étape 1. Dans la liste déroulante <B>En-tête</B>, choisissez l'en-tête de l'expéditeur, c'est-à-dire l'en-tête <B>From</B> (de).  </LI>
+<LI>Étape 2. Dans le champ <B>Mot-clé</B>, tapez 
+<CODE>sylvestre@worldcompany.com</CODE> (insensible à la casse).</LI>
+<LI>Étape 3. Laissez le <B>Prédicat</B> par défaut sur <B>contient</B>.</LI>
+<LI>Étape 4. Laissez le menu <B>and/or</B> (et/ou) dans son état par défaut <B>and</B> (et).</LI>
+<LI>Étape 5. Dans la liste déroulante de la seconde condition choisissez l'en-tête du sujet <B>Subject</B>.</LI>
+<LI>Étape 6. Dans le champ <B>Mot-clé</B>, saisissez <CODE>réunion world company</CODE> (insensible à la casse).</LI>
+<LI>Étape 7. Laissez le <B>Prédicat</B> par défaut sur <B>contient</B>.</LI>
 </UL>
-<H3>Traitement de message</H3>
+<H3>Traitement du message</H3>
 
-<P>Une fois que vous avez établi le(s) opérateur(s) qui determinent quels 
-messages seront traités, il est temps d'indiquer à Sylpheed quoi faire avec 
-les messages qui correspondent aux opérateurs(s). Vous pouvez choisir entre 
-deux configurations sélectionnées par des boutons : "Destination" et "Ne pas 
-Recevoir".
-<P>Sélectionner "Destinations" vous permettra de router le courrier dans une 
-boîte aux lettres que vous spécifiez.
-<P>Sélectionner "Ne pas Recevoir" informera Sylpheed de ne pas télécharger des 
-messages avec cet opérateur. Notez qu'avec "Ne pas Recevoir", Sylpheed laisse 
-le message sur votre serveur de courriers - il ne l'efface pas. 
-<P>Pour spécifier une boîte aux lettres vers laquelle vous voulez transférer les 
-messages, cliquez sur le bouton radio à gauche du mot "Destination" dans le 
-dialogue. (Actuellement, de manière à spécifier une boîte aux lettres, vous 
-devez avoir créé la boîte aux lettres avant d'activer le dialogue de 
-configuration du filtre.) Cliquer sur le bouton "Sélectionner" ouvrira une 
-fenêtre contenant tous les répertoires de courriers actuellement actifs avec 
-votre copie de Sylpheed. Sélectionnez la boîte aux lettres que vous souhaitez 
-soit (a) en double cliquant sur le nom de répertoire de courrier, soit (b) en 
-cliquant sur le nom de répertoire de courriers et en cliquant alors "OK".
 <P>
-<P>Pour spécifier que les messages ne sont pas retrouvés et pour quitter votre 
-serveur de courriers, cliquez sur le bouton radio sur la gauche des mots "Ne 
-pas Recevoir".
-<H3>Enregistrement de filtrage</H3>
+<P>Une fois que vous avez défini la (les) condition(s) qui détermine(nt) quels 
+messages sont à traiter, il faut indiquer à Sylpheed ce que vous 
+voulez en faire.  Vouz avez le choix entre deux options activables par les boutons
+<B>Destination</B> et <B>Ne pas Recevoir</B>.
+<P>La première option permet de placer le message dans un dossier existant.  Pour cela 
+cochez la case <B>Destination</B>. Notez
+que le dossier doit exister.  Cliquez ensuite sur le bouton <B>Choisir...</B>
+pour ouvrir une fenêtre contenant tous les dossiers actuellement
+actifs.  Sélectionnez le dossier désiré soit en-double cliquant sur son nom, soit en cliquant une fois sur nom puis en cliquant sur <B>Ok</B>.  
+<P>La seconde option, activée en cochant la case <B>Ne pas recevoir</B>, demandera à
+Sylpheed de ne pas télécharger les messages concernés. Notez qu'avec cette
+option, ces messages resteront sur le serveur de courriers et ils ne seront pas supprimés.
+<H3>Enregistrer une règle de filtrage</H3>
 
-<P>Maintenant que vous avez configuré les règles des opérateurs et des 
-traitements, tout ce qui vous reste à faire est de dire à Sylpheed de 
-sauvegarder les règles de filtrage complètes. Si vous sautez cette étape, le 
-filtrage ne fonctionnera pas.
-<P>La configuration "d'Enregistrement de Rfègles" possède trois options : 
-"Enregistrer", "Substituer" et "Effacer". 
+<P>
+<P>Une fois qu'une règle a été créée, il faut la sauvegarder dans la liste 
+des règles de filtrage qui se trouve dans la partie inférieure de la fenêtre.
+Si vous oubliez cette étape, le filtrage ne fonctionnera pas.  
+<P>
+<P>La liste des règles est gérée par l'intermédiaire de trois boutons permettant 
+d'<B>Enregistrer</B>, de <B>Remplacer</B> et de <B>Supprimer</B>. 
 <UL>
-<LI>"Enregistrer" sauve la règle de filtrage.</LI>
-<LI>"Substituer" modifie une règle de filtrage existante et enregistrée.</LI>
-<LI>"Effacer" enlèvera une règle de filtrage précédement enregistrée. </LI>
+<LI><B>Enregistrer</B>&nbsp;: permet d'enregistrer la règle de filtrage et de l'ajouter à la liste des filtres.</LI>
+<LI><B>Remplacer</B>&nbsp;: permet de remplacer la règle sélectionnée dans la liste des filtres par celle qui vient d'être créée.</LI>
+<LI><B>Supprimer</B>&nbsp;: permet d'effacer la règle de filtrage sélectionnée dans la liste des filtres. </LI>
 </UL>
 
-Exemple d'enregistrement d'une règle de filtrage : créez une règle de filtrage 
-qui déplace tous les courriers avec le sujet "manuel Sylpheed" dans le 
-répertoire de courrier (précédement créé) "Courrier du manuel Sylpheed".
+Exemple d'enregistrement d'une règle de filtrage&nbsp;: créez une règle de filtrage 
+qui déplace tous les courriers dont le sujet contient «&nbsp;manuel de Sylpheed&nbsp;» dans le 
+dossier des courriers (préalablement créé) «&nbsp;Courrier du manuel de Sylpheed&nbsp;».
 <UL>
-<LI>Étape 1. Dans la boîte de dialogue déroulante "En-tête", configurez le 
-premier jeu d'opérateur d'en-tête avec la sélection "Sujet".</LI>
-<LI>Étape 2. Dans la boîte de texte "mots clé", saisissez 'sylpheed manual' 
-(insensible à la casse)</LI>
-<LI>Étape 3. Laissez la configuration du "Prédicat" par défaut en, 
-"Contient". Laissez le second opérateur vide.</LI>
-<LI>Étape 4. Cliquez sur le bouton radio "Destinations" ; sélectionnez le 
-répertoire "courrier du manuel de Sylpheed"</LI>
-<LI>Étape 5. Cliquez sur "Enregistrer"</LI>
-<LI>Étape 6. Cliquez sur OK</LI>
+<LI>Étape 1. Dans la liste déroulante <B>En-tête</B>, sélectionnez
+<B>Subject</B> (sujet).</LI>
+<LI>Étape 2. Dans le champ <B>Mot-clé</B>, saisissez <CODE>manuel de Sylpheed</CODE>
+(insensible à la casse).</LI>
+<LI>Étape 3. Laissez le <B>Prédicat</B> par défaut (<B>contient</B>). 
+Laissez la seconde condition vide.</LI>
+<LI>Étape 4. Cliquez sur le bouton radio <B>Destination</B> et sélectionnez le 
+dossier «&nbsp;Courrier du manuel de Sylpheed&nbsp;».</LI>
+<LI>Étape 5. Cliquez sur <B>Enregistrer</B>.</LI>
+<LI>Étape 6. Cliquez sur <B>Fermer</B>.</LI>
 </UL>
  
-Exemple de substitution de règles de filtrage : modifiez une règle de filtrage 
-précédement créée qui déplace tous les courriers avec le sujet "manuel de 
-Sylpheed" pour trier les courriers non pas vers le répertoire de courrier 
-"courrier du manuel Sylpheed" mais plutôt vers le répertoire de courrier 
-"Questions sur Sylpheed"  
+Exemple de remplacement d'une règle de filtrage&nbsp;: modifiez la règle de filtrage 
+précédement créée qui déplace tous les courriers avec le sujet «&nbsp;manuel de 
+Sylpheed&nbsp;» pour qu'elle trie les courriers non plus vers le dossier 
+«&nbsp;Courrier du manuel de Sylpheed&nbsp;» mais plutôt vers le dossier (préalablement créé)
+«&nbsp;Questions sur Sylpheed&nbsp;»  
 <UL>
-<LI>Étape 1. Dans la boîte déroulante du jeu de premier opérateur, 
-sélectionnez Sujet.</LI>
-<LI>Étape 2. Dans la boîte de texte de mots clés, saisissez 'manuel 
-sylpheed' (insensible à la casse)</LI>
-<LI>Étape 3. Laissez la configuration du "Prédicat" par défaut en, 
-"Contient". Laissez le second opérateur vide.</LI>
-<LI>Étape 4. Cliquez sur le bouton radio "Destinations" ; sélectionnez le 
-répertoire "questions de Sylpheed"</LI>
-<LI>Étape 5. Cliquez sur "Substituer"</LI>
-<LI>Étape 6. Cliquez sur OK</LI>
+<LI>Étape 1. Dans la liste déroulante <B>En-tête</B>, 
+sélectionnez <B>Subjet</B>.</LI>
+<LI>Étape 2. Dans le champ <B>Mot-clé</B>, saisissez <CODE>manuel de
+sylpheed</CODE> (insensible à la casse).</LI>
+<LI>Étape 3. Gardez le <B>Prédicat</B> par défaut (<B>contient</B>).
+Laissez la seconde condition vide.</LI>
+<LI>Étape 4. Cliquez sur le bouton radio <B>Destination</B> et sélectionnez le 
+dossier <CODE>questions sur Sylpheed</CODE>.</LI>
+<LI>Étape 5. Cliquez sur <B>Remplacer</B>.</LI>
+<LI>Étape 6. Cliquez sur <B>Fermer</B>.</LI>
 </UL>
 
-Exemple d'effacement de règles de filtrage : enlevé la règle de filtrage 
-précédement créée qui réfère au Sujet:questions Sylpheed.
+Exemple de suppression de règles de filtrage&nbsp;: supprimez la règle de filtrage 
+précédement créée qui déplace certains courriers vers «&nbsp;questions sur Sylpheed&nbsp;».
 <UL>
-<LI>Étape 1. Dans la boîte de sélection des "règles d'enregistrement", 
-sélectionnez le filtre intitulé "Sujet:manuel Sylpheed: :::questions 
-Sylpheed:1:1:m"</LI>
-<LI>Étape 2. Cliquez sur le bouton "Effacer"</LI>
-<LI>Étape 3. Confirmez l'effacement en cliquant "Oui" dans la fenêtre qui 
-vous demande, "Voulez-vous réellement effacer cette règle ?</LI>
-<LI>Étape 4. Cliquez "OK"</LI>
+<LI>Étape 1. Dans la liste des règles de filtrages créées, 
+sélectionnez le filtre intitulé «&nbsp;Subjet:manuel de Sylpheed: :::questions sur
+Sylpheed:1:1:m&nbsp;».</LI>
+<LI>Étape 2. Cliquez sur le bouton <B>Suppression</B>.</LI>
+<LI>Étape 3. Confirmez la suppression en cliquant <B>Oui</B> dans la fenêtre qui vous demande confirmation.</LI>
+<LI>Étape 4. Cliquez <B>Fermer</B>.</LI>
 </UL>
-<H3>Ordre d'enregistrement des règles</H3>
+<H3>Ordre d'enregistrement des règles de filtrage</H3>
 
-<P>Un avertissement à propos de tout ceci : l'ordre dans lequel les règles de 
-filtrage sont créées peut défavorablement affecter l'intention de tri des 
-messages et cela doit être pris en considération lors de la création ou la 
-mise à jour des règles de filtrage. 
-<P>Par exemple, une règle de filtrage indiquant, "déplaçant tout contenant 'ABC' 
-dans la boîte aux lettres X" listée au-dessus d'une autre règle de filtrage 
-indiquant "Déplacez tout ce qui contient 'ABCDEF' vers la boîte aux lettres Y" 
-fera que le dernier de ces filtres ne fera pas le traitement. 
-<P>Pensez à la manière dont Sylpheed dscend la liste : d'abord, il dirait.."Hmm, 
-des messages avec ABC? Ah, il y en a un ! Déplaçons-le." Alors, il penserait, 
-"Okay, des messages avec ABCDEF?" Question à laquelle la réponse serait "non" 
-- que ABCDEF a déjà été filtré car il contient "ABC".
-<P>Sans intérêt.
-<P>De manière à  éviter ceci, vous devez vous assurer que la règle de filtrage la 
-plus complexe est traitée en premier, en la plaçant avant une règle similaire 
-pouvant entrer en conflit. 
-<P>Pour déplacer la règle de filtrage plus haut ou plus bas dans la boîte des 
-règles enregistrées, vous devriez vous déplacer et cliquez sur les boutons 
-"Haut" ou "Bas". Ceci "déplacera" la règle vers le haut ou vers le bas, 
-au-dessus ou au-dessous d'une règle de filtrage potentiellement conflictuelle.
+<P>Un avertissement à propos de l'ordre des règles de filtrage&nbsp;: l'ordre dans
+lequel ces règles sont arrangées est important et peut donner des
+résultats inattendus lors du filtrage des messages. Cela doit être pris en
+considération lors de la création ou la modification des règles de filtrage. 
+<P>Par exemple, une règle de filtrage indiquant «&nbsp;déplacer tout message dont le sujet contient 'ABC' dans le dossier X&nbsp;» et placée au-dessus d'une autre règle de filtrage indiquant «&nbsp;déplacer tout message dont le sujet contient 'ABCDEF' vers le dossier Y&nbsp;» fera que cette dernière ne sera pas traitée. 
+<P>En effet, Sylpheed traite les filtres dans l'ordre&nbsp;: d'abord il traitera la première et dirait «&nbsp;Hmm, des messages avec ABC&nbsp;? Ah, il y en a un&nbsp;! Déplaçons-le&nbsp;». Ensuite, il penserait «&nbsp;Bon, y-a-t-il maintenant des messages avec ABCDEF&nbsp;?&nbsp;». Question à laquelle la réponse sera «&nbsp;non&nbsp;» car un message contenant ABCDEF contient aussi ABC et donc il a déjà été traité par la première règle et déplacé. 
+<P>De manière à  éviter ceci, vous devez vous assurer que la règle de filtrage la plus complexe soit traitée en premier en la plaçant avant une règle similaire pouvant entrer en conflit avec elle. 
+<P>Pour déplacer une règle de filtrage plus haut ou plus bas dans la liste des règles enregistrées, cliquez sur les boutons «&nbsp;Plus haut&nbsp;» ou «&nbsp;Plus bas&nbsp;». Ceci déplacera la règle vers le haut ou vers le bas, au-dessus ou au-dessous d'une règle de filtrage potentiellement conflictuelle.
 <P>
-<H2><A NAME="ss12.2">12.2 Comment filtrer les Messages</A>
+<H2><A NAME="ss12.2">12.2 Quand est-ce que sont filtrés les messages</A>
 </H2>
 
-<P>Filtrer les messages peut être réalisé de différentes manières :
+<P>Le filtrage des messages peut être réalisé de différentes manières.
 <UL>
-<LI>Sylpheed filtre automatiquement les courriers entrants depuis les 
-serveurs POP.</LI>
-<LI>Si vous incorporez du courrier depuis une boîte aux lettres Unix, alors 
-dans les préférences communes (menu de Configuration), vous avez besoin de 
-contrôler la boîte appelée "Filtre sur incorporation". Vous trouvez cette 
-boîte dans l'onglet Recevoir dans l'espace "File locale".</LI>
-<LI>Vous pouvez aussi sélectionner l'option "Filtrer les messages" depuis le 
-menu Résumé.</LI>
+<LI>Sylpheed filtre automatiquement les courriers reçus des serveurs POP.</LI>
+<LI>Si vous incorporez du courrier depuis une boîte aux lettres Unix et si vous voulez y appliquer les filtres, alors cochez l'option <B>Filtrage à l'incorporation</B> dans l'onglet <B>Réception</B> de la fenêtre des <B>Préférences générales</B> (menu de <B>Configuration</B>).</LI>
+<LI>Vous pouvez aussi exécuter manuellement les filtres en sélectionnant le menu <B>Sommaire -> Filtrer les messages</B>.</LI>
 </UL>
 
-Veuillez noter que, au moment de l'écriture, Sylpheed NE possède PAS ENCORE de 
-filtrage de messages IMAP de validés.
+Veuillez noter qu'au moment de l'écriture de ce manuel, Sylpheed NE possède PAS ENCORE de fonction de filtrage des messages utilisable avec les serveurs IMAP.
 <P>
 <H2><A NAME="ss12.3">12.3 Filtrer les courriers avec Procmail</A>
 </H2>
 
-<P>Si vous sentez que Sylpheed n'a pas suffisamment d'options pour effectuer le 
-filtrage, alors vous pouvez chercher Sylpheed Claws qui possède plus d'options 
-pour le filtrage. Vous pouvez trouver la version Claws (la version plus 
-pointue, exprérimentale de Sylpheed) sylpheed-claws.sourceforge.net.
-<P>Une autre option, si vous ne voulez pas travailler avec une version 
-expérimentale de Sylpheed, est Procmail. Procmail est un programmme de 
-filtrage de courriers puissant qui est déclenché par l'agent de transport de 
-courrier (i.e. Sendmail, Postfix, Qmail). Procmail est appelé par défaut 
-depuis ces programmes après la réception de courriers.
-<P>Le truc de procmail est que le courier doit être filtré dans les répertoires 
-de courriers MH. Ce n'est tout de même pas difficile.
-<P>Normallement procmail déplace les courriers dans un format MBOX, c'est celui 
-des grands fichiers qui contient tous les courriers dans un répertoire. MH 
-utilise des fichiers séparés pour chaque courrier. Tout ce dont vous avez 
-besoin est de pointer la destination d'une règle procmail vers un 
-&lt;répertoire de destination&gt;/. C'est dans le "slash dot" que réside le 
-truc.
+<P>Si vous trouvez que Sylpheed n'a pas suffisamment d'options pour effectuer le filtrage, vous pouvez utiliser Sylpheed-Claws qui possède plus d'options pour le filtrage. Vous pouvez trouver la version Claws (la version la plus avancée et expérimentale de Sylpheed) à l'adresse 
+<A HREF="http://sylpheed-claws.sourceforge.net">http://sylpheed-claws.sourceforge.net</A>.
+<P>Si vous ne voulez pas utiliser une version expérimentale de Sylpheed, l'autre possibilité consiste à utiliser Procmail. Procmail est un puissant programmme de filtrage de courrier qui est exécuté par défaut après la réception des messages par l'agent de transport de courrier (MTA, par exemple&nbsp;: Sendmail, Postfix, Qmail...).
+<P>Pour utiliser Procmail avec Sylpheed, il faut lui notifier que les messages sont à mettre dans des dossiers MH.  En effet, Procmail range normalement les courriers dans un seul fichier au format MBOX.  Ce fichier contient tous les messages d'un même dossier. Par contre, le format MH utilisé par Sylpheed place chaque message dans un fichier séparé. Pour préciser cela à Procmail, il faut que le répertoire de destination d'une règle de Procmail finisse avec «&nbsp;/.&nbsp;», par exemple &lt;répertoire de destination&gt;/. C'est dans le «&nbsp;/.&nbsp;» que réside l'astuce. 
 <HR>
-<A HREF="sylpheed-13.html">Next</A>
-<A HREF="sylpheed-11.html">Previous</A>
-<A HREF="sylpheed.html#toc12">Contents</A>
+<A HREF="sylpheed-13.html">Page suivante</A>
+<A HREF="sylpheed-11.html">Page précédente</A>
+<A HREF="sylpheed.html#toc12">Table des matières</A>
 </BODY>
 </HTML>

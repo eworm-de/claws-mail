@@ -2,47 +2,47 @@
 <HTML>
 <HEAD>
  <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
- <TITLE>Guide de l'utilisateur Sylpheed: Vue des messages</TITLE>
+ <TITLE>Guide de l'utilisateur Sylpheed: Affichage des messages</TITLE>
  <LINK HREF="sylpheed-9.html" REL=next>
  <LINK HREF="sylpheed-7.html" REL=previous>
  <LINK HREF="sylpheed.html#toc8" REL=contents>
 </HEAD>
 <BODY>
-<A HREF="sylpheed-9.html">Next</A>
-<A HREF="sylpheed-7.html">Previous</A>
-<A HREF="sylpheed.html#toc8">Contents</A>
+<A HREF="sylpheed-9.html">Page suivante</A>
+<A HREF="sylpheed-7.html">Page précédente</A>
+<A HREF="sylpheed.html#toc8">Table des matières</A>
 <HR>
-<H2><A NAME="s8">8. Vue des messages</A></H2>
+<H2><A NAME="s8">8. Affichage des messages</A></H2>
 
 <H2><A NAME="ss8.1">8.1 Lire un message</A>
 </H2>
 
-<P>Lire un message est tout de même assez simple. Si vous avez une fenêtre message de visible, tout ce dont vous avez besoin de faire est de cliquer une fois sur le message que vous voulez lire et il apparaît dans la vue des messages. Lorsque vous double-cliquez sur le message, une fenêtre séparée sera ouverte, montrant le message. Vous pouvez fermer la fenêtre ouverte en pressant ESCape ou cliquant sur le bouton 'fermer'.
-<H2><A NAME="ss8.2">8.2 Vue des MIME Multiparties (Fichiers attachés)</A>
+<P>Il est facile d'afficher un message. Si vous avez une fenêtre de message visible, il suffit de cliquer une fois dans la vue du sommaire sur le message que vous voulez lire pour qu'il apparaisse dans la vue des messages. Si par contre vous double-cliquez sur le message, une fenêtre séparée montrant le message sera ouverte. Vous pouvez la fermer en pressant la touche «&nbsp;Echap&nbsp;» ou en cliquant sur l'icône de fermeture de la fenêtre.
+<H2><A NAME="ss8.2">8.2 Afficher les fichiers attachés en MIME (pièces jointes)</A>
 </H2>
 
-<P>Lorsqu'un message contient un attachement, vous pouvez avoir plusieurs options pour vusualiser les informations dans ce fichier. Sylpheed peut, lors de la compilation avec les bonnes bibliothèques, afficher des images "en interne". Ceci signifie que vous pouvez cliquer sur le nom de l'image et que vous pouvez la voir dans la partie basse de l'écran du message.
-<P>Comment fait-on pour voir qu'il y a un attachement avec le courrier ?
-<P>Ceci est montré avec une section supplémentaire qui apparaît entre la fenêtre de résumé et la vue du message. Dedans, vous pouvez voir les différentes parties d'un courrier. Qulques fois, vous ne pouvez pas voir le contenu d'un attachement directement. À ce moment, vous cliquer-droit sur le nom du fichier et sélectionnez "OUVRIR" dans le menu qui apparaît. Si cela ne fonctionne pas, cela signifie que l'extension du fichier n'est pas reconnue par les directives dans le fichier mailcap. Dans ce cas, vous pouvez toujours utiliser l'option "Sauvegarder comme..." dans le menu déroullant, sauvegarder le fichier sur le disque et ouvrir lz fichier avec le bon programme.
-<H2><A NAME="ss8.3">8.3 Étendre et fermer les files</A>
+<P>Lorsqu'un message contient des fichiers attachés (appelés aussi pièces jointes), leur liste apparaît dans une fenêtre entre la vue du sommaire et celle du message. Elle montre plus exactement les différentes parties du courrier. Si un fichier est une image et si Sylpheed a été compilé avec la bibliothèque adéquate (gdk-pixbuf ou imlib), il peut l'afficher en interne. Ceci signifie que lorsque vous cliquez sur le nom de l'image, elle sera affichée dans la vue du message.
+<P> S'il n'est pas possible de visualiser directement un certain fichier, cliquez avec le bouton 2 (droit) de la souris sur son nom et sélectionnez <B>Ouvrir</B> dans le menu qui apparaît. Si cela ne fonctionne pas, cela signifie que l'extension du fichier n'est pas reconnue par les directives dans le fichier <CODE>mailcap</CODE>. Dans ce cas, vous pouvez toujours utiliser l'option <B>Sauvegarder sous...</B> dans le menu déroulant pour sauvegarder le fichier sur le disque et l'ouvrir ensuite avec le bon programme à partir d'un terminal ou à partir d'un gestionnaire de fichiers.  Il existe aussi la possibilité d'utiliser l'option <B>Ouvrir avec...</B> pour ouvrir le fichier avec un programme dont vous indiquez le nom.
+<H2><A NAME="ss8.3">8.3 Ouvrir et fermer les fils de conversation</A>
 </H2>
 
-<P>Sylpheed offre l'option de voir les messages dans des files. Les files ne sont autre chose que des séries de courriers disposés par séquence logique. Supposez que 15 personnes vous ont envoyé un courrier appelé "Re: bananas". Vous ne pouvez pas spécialement savoir quel est le premier ou le dernier de la séquence.
-<P>En activant les files (menu résumé), Sylpheed tentera de montrer la séquence des couriers comme si elle avait été écrite/envoyée de premier au dernier.
-<P>Pour désactiver la vue des files, vous sélectionnez simplement la même option de menu et les courriers sont réaffichés dans l'ordre.
-<H2><A NAME="ss8.4">8.4 Opérations de message (Déplacer, Effacer, etc.)</A>
+<P>Sylpheed offre l'option de voir les messages d'une discussion organisés dans une arborescence appelée fil de conversation. Les fils de conversation ne sont autre que des séries de courriers arrangées en une séquence logique. Supposez qu'à partir d'un message initial dont le sujet était «&nbsp;bananes&nbsp;», une discussion a pris naissance et que quinze autres personnes ont répondu à ce message initial ou à d'autres réponses à ce même message. Il est difficile de voir quel message est la réponse à quel autre puisqu'ils ont tous le même sujet «&nbsp;Re&nbsp;: bananes&nbsp;».
+<P>En activant l'option <B>Vue -> Vue par fil de conversation</B>, Sylpheed tente d'organiser la séquence des courriers sous une arborescence montrant exactement quel message a obtenu quelles réponses.
+<P>Pour désactiver la vue par fil de conversation et revenir à une vue simple, désactivez la même option du menu et les courriers seront réaffichés dans l'ordre original.
+<H2><A NAME="ss8.4">8.4 Opérations sur les message (déplacer, supprimer, etc.)</A>
 </H2>
 
-<P>Sylpheed vous offre plusieurs manières de de gérer vos messages. Vous pouvez les déplacer vers de nouvelles boîtes aux lettres ou les effacer. Par le menu de message (allez voir cette section pour plus de détails) beaucoup d'options sont disponibles pour faire de vos courriers ce que vous souhaitez. L'avantage de déplacer les messages vers différentes boîtes aux lettres (allez aussi voir le Filtrage pour ceci, comme c'est décrit dans la section de menu de Configuration) est que vous gardez une vue d'ensemble de votre inbox. Supposez que vous collectionnez les courriers avec 8 sujets différents. Et que vous cherchez en cherchez un avec un sujet spécifique. Cela va vous donner beaucoup de travail pour tenter de trouver le bon message. Créez un nouveau répertoire de courrier pour chaque sujet et déplacez y les messages vous permettra d'économiser beaucoup de travail après coup.
+<P>Sylpheed permet d'arranger vos messages de plusieurs façons.  Ils peuvent être déplacés vers de nouvelles boîtes aux lettres ou bien être effacés.  Ces fonctions sont accessibles à partir du menu <B>Message</B> (voir cette section pour plus de détails). L'avantage de déplacer les messages vers différentes boîtes aux lettres est de permettre une meilleure organisation de votre correspondance. Supposez que vous recevez régulièrement des courriers concernant huit thèmes différents, et que vous en cherchez un à propos d'un thème particulier. Cela ne serait pas aisé car les messages peuvent traiter d'un même thème sans pour autant avoir le même texte dans le champ du sujet. Il faut donc un minimum d'organisation.  Il suffit de créer un nouveau dossier pour chaque thème et y déplacer les messages au fur et à mesure qu'ils arrivent (ce qui peut aussi se faire de manière automatique, voir l'option de <B>Filtrage</B> décrite dans la section du menu de <B>Configuration</B>). Cela vous permettra d'économiser beaucoup de temps après coup.
 <H2><A NAME="ss8.5">8.5 URL dans un Message</A>
 </H2>
 
-<P>De temps en temps, vous pouvez trouver une URL dans un message. Un URL est un lien vers un site web. Habituellement, il est montré dans la forme "http://www.quelquepart.quelquechose".
-<P>Si vous voulez visiter ce site web, vous avez seulement besoin de double cliquer sur l'URL et le navigateur par défaut que vous avez configuré (habituellement Netscape) activera et chargera le site web.
-<P>Dans les options de configuration, Sylpheed a une initialisation de couleur spécifique pour les URL donc vous pouvez facilement les activer. 
+<P>Dans certains messages, il arrive que l'auteur mentionne une URL.
+Une URL est un lien vers un site web. Habituellement, il est affiché sous la forme <CODE>http://www.quelquepart.quelquechose</CODE>.
+<P>Pour visiter ce site web, il suffit de double-cliquer ou cliquer avec le bouton 2 (droit) sur l'URL et le navigateur par défaut que vous avez configuré (habituellement Netscape) sera lancé et chargera le site web.
+<P>Dans les options de configuration, Sylpheed permet de choisir la couleur à utiliser pour les URL pour qu'ils soient facilement reconnaissables dans le message.
 <HR>
-<A HREF="sylpheed-9.html">Next</A>
-<A HREF="sylpheed-7.html">Previous</A>
-<A HREF="sylpheed.html#toc8">Contents</A>
+<A HREF="sylpheed-9.html">Page suivante</A>
+<A HREF="sylpheed-7.html">Page précédente</A>
+<A HREF="sylpheed.html#toc8">Table des matières</A>
 </BODY>
 </HTML>
