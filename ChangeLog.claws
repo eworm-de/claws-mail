@@ -1,3 +1,57 @@
+2004-05-21 [paul]	0.9.10claws67
+
+	* sync with 0.9.10cvs17
+		see ChangeLog 2004-05-21
+
+2004-05-20 [paul]	0.9.10claws66
+
+	* sync with 0.9.10cvs16
+		see ChangeLog 2004-05-19 and 2004-05-20
+
+2004-05-19 [alfons]	0.9.10claws65
+
+	* src/summaryview.h
+		on some platforms regoff_t is defined as off_t, so 
+		pull in sys/types.h
+
+2004-05-19 [paul]	0.9.10claws64
+
+	* sync with 0.9.10cvs13
+		see ChangeLog 2004-05-18
+
+2004-05-17 [christoph]	0.9.10claws63
+
+	* src/folder.c
+		search all folders when searching for default folders and
+		not return the special folder of the first folder
+
+2004-05-13 [alfons]	0.9.10claws62
+
+	* src/summaryview.c
+		add a better check to see if a message is a news message
+		(replaces the MSG_IS_NEWS() check removed in 0.9.9claws19)
+
+2004-05-13 [paul]	0.9.10claws61
+
+	* src/msgcache.c
+		sync with 0.9.10cvs12
+		see ChangeLog 2004-05-12
+
+2004-05-12 [alfons]	0.9.10claws60
+
+	* src/folderview.c
+		release lock in case of folder could not be opened 
+
+2004-05-11 [christoph]	0.9.10claws59
+
+	* src/inc.[ch]
+		remove unused folderview update stuff from inc.[ch]
+
+2004-05-11 [paul]	0.9.10claws58
+
+	* sync with 0.9.10cvs11
+		see ChangeLog 2004-05-10 and 2004-05-11
+
 2004-05-09 [christoph]	0.9.10claws57
 
 	* src/folderview.c

@@ -408,6 +408,22 @@ gchar *gtkut_editable_get_selection(GtkEditable *editable)
 		return NULL;
 }
 
+void gtkut_editable_disable_im(GtkEditable *editable)
+{
+	g_return_if_fail(editable != NULL);
+
+#if USE_XIM
+	if (editable->ic) {
+		gdk_ic_destroy(editable->ic);
+		editable->ic = NULL;
+	}
+	if (editable->ic_attr) {
+		gdk_ic_attr_destroy(editable->ic_attr);
+		editable->ic_attr = NULL;
+	}
+#endif
+}
+
 /*
  * Walk through the widget tree and disclaim the selection from all currently
  * realized GtkEditable widgets.

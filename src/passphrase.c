@@ -155,6 +155,9 @@ passphrase_mbox (const gchar *desc)
     
     gtk_widget_show_all(window);
 
+    /* don't use XIM on entering passphrase */
+    gtkut_editable_disable_im(GTK_EDITABLE(pass_entry));
+
     if (grab_all) {
 #ifdef GDK_WINDOWING_X11
         XGrabServer(GDK_DISPLAY());

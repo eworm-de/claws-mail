@@ -215,20 +215,28 @@ gint msgcache_get_memory_usage(MsgCache *cache)
 
 #define READ_CACHE_DATA_INT(n, fp) \
 { \
-	if (fread(&n, sizeof(n), 1, fp) != 1) { \
+	guint32 idata; \
+ \
+	if (fread(&idata, sizeof(idata), 1, fp) != 1) { \
 		g_warning("Cache data is corrupted\n"); \
 		procmsg_msginfo_free(msginfo); \
 		error = TRUE; \
 		break; \
-	} \
+	} else \
+		n = idata;\
 }
 
-#define WRITE_CACHE_DATA_INT(n, fp) \
-	fwrite(&n, sizeof(n), 1, fp)
+#define WRITE_CACHE_DATA_INT(n, fp)		\
+{						\
+	guint32 idata;				\
+						\
+	idata = (guint32)n;			\
+	fwrite(&idata, sizeof(idata), 1, fp);	\
+}
 
 #define WRITE_CACHE_DATA(data, fp) \
 { \
-	gint len; \
+	size_t len; \
 	if (data == NULL) \
 		len = 0; \
 	else \
@@ -297,7 +305,7 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str)
 {
 	gchar buf[BUFFSIZE];
 	gint ret = 0;
-	size_t len;
+	gint32 len;
 
 	if (fread(&len, sizeof(len), 1, fp) == 1) {
 		if (len < 0)

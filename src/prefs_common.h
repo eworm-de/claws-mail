@@ -77,7 +77,6 @@ struct _PrefsCommon
 
 	/* Send */
 	gboolean savemsg;
-	gboolean queue_msg;
 	SendDialogMode send_dialog_mode;
 	gchar *outgoing_charset;
 	TransferEncodingMethod encoding_method;

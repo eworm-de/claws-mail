@@ -32,6 +32,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <time.h>
+#include <sys/time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
@@ -94,10 +95,6 @@ static void inc_session_destroy		(IncSession		*session);
 static gint inc_start			(IncProgressDialog	*inc_dialog);
 static IncState inc_pop3_session_do	(IncSession		*session);
 
-static void inc_timer_start		(IncProgressDialog	*inc_dialog,
-					 IncSession		*inc_session);
-static void inc_timer_stop		(IncProgressDialog	*inc_dialog);
-
 static void inc_progress_dialog_update	(IncProgressDialog	*inc_dialog,
 					 IncSession		*inc_session);
 
@@ -108,8 +105,9 @@ static void inc_progress_dialog_set_progress
 					(IncProgressDialog	*inc_dialog,
 					 IncSession		*inc_session);
 
-static gint inc_progress_timer_func	(gpointer	 data);
-static gint inc_folder_timer_func	(gpointer	 data);
+static void inc_progress_dialog_update_periodic
+					(IncProgressDialog	*inc_dialog,
+					 IncSession		*inc_session);
 
 static gint inc_recv_data_progressive	(Session	*session,
 					 guint		 cur_len,
@@ -394,8 +392,8 @@ static IncProgressDialog *inc_progress_dialog_create(gboolean autocheck)
 	}
 
 	dialog->dialog = progress;
-	dialog->progress_timer_id = 0;
-	dialog->folder_timer_id = 0;
+	gettimeofday(&dialog->progress_tv, NULL);
+	gettimeofday(&dialog->folder_tv, NULL);
 	dialog->queue_list = NULL;
 	dialog->cur_row = 0;
 
@@ -467,9 +465,6 @@ static IncSession *inc_session_new(PrefsAccount *account)
 	session_set_recv_data_notify(session->session,
 				     inc_recv_data_finished, session);
 
-	session->folder_table = g_hash_table_new(NULL, NULL);
-	session->tmp_folder_table = g_hash_table_new(NULL, NULL);
-
 	return session;
 }
 
@@ -478,8 +473,6 @@ static void inc_session_destroy(IncSession *session)
 	g_return_if_fail(session != NULL);
 
 	session_destroy(session->session);
-	g_hash_table_destroy(session->folder_table);
-	g_hash_table_destroy(session->tmp_folder_table);
 	g_free(session);
 }
 
@@ -770,7 +763,6 @@ static IncState inc_pop3_session_do(IncSession *session)
 	       session->inc_state != INC_CANCEL)
 		gtk_main_iteration();
 
-	inc_timer_stop(inc_dialog);
 	statusbar_pop_all();
 
 	if (session->inc_state == INC_SUCCESS) {
@@ -807,33 +799,6 @@ static IncState inc_pop3_session_do(IncSession *session)
 	return session->inc_state;
 }
 
-static void inc_timer_start(IncProgressDialog *inc_dialog,
-			    IncSession *inc_session)
-{
-	if (inc_dialog->progress_timer_id == 0) {
-		inc_dialog->progress_timer_id =
-			gtk_timeout_add(PROGRESS_UPDATE_INTERVAL,
-					inc_progress_timer_func, inc_session);
-	}
-	if (inc_dialog->folder_timer_id == 0) {
-		inc_dialog->folder_timer_id =
-			gtk_timeout_add(FOLDER_UPDATE_INTERVAL,
-					inc_folder_timer_func, inc_session);
-	}
-}
-
-static void inc_timer_stop(IncProgressDialog *inc_dialog)
-{
-	if (inc_dialog->progress_timer_id) {
-		gtk_timeout_remove(inc_dialog->progress_timer_id);
-		inc_dialog->progress_timer_id = 0;
-	}
-	if (inc_dialog->folder_timer_id) {
-		gtk_timeout_remove(inc_dialog->folder_timer_id);
-		inc_dialog->folder_timer_id = 0;
-	}
-}
-
 static void inc_progress_dialog_update(IncProgressDialog *inc_dialog,
 				       IncSession *inc_session)
 {
@@ -844,7 +809,6 @@ static void inc_progress_dialog_update(IncProgressDialog *inc_dialog,
 static void inc_progress_dialog_set_label(IncProgressDialog *inc_dialog,
 					  IncSession *inc_session)
 {
-	gchar buf[MSGBUFSIZE];
 	ProgressDialog *dialog = inc_dialog->dialog;
 	Pop3Session *session;
 
@@ -883,12 +847,15 @@ static void inc_progress_dialog_set_label(IncProgressDialog *inc_dialog,
 	case POP3_RETR_RECV:
 		break;
 	case POP3_DELETE:
+#if 0
 		if (session->msg[session->cur_msg].recv_time <
 			session->current_time) {
+			gchar buf[MSGBUFSIZE];
 			g_snprintf(buf, sizeof(buf), _("Deleting message %d"),
 				   session->cur_msg);
 			progress_dialog_set_label(dialog, buf);
 		}
+#endif
 		break;
 	case POP3_LOGOUT:
 		progress_dialog_set_label(dialog, _("Quitting"));
@@ -912,7 +879,8 @@ static void inc_progress_dialog_set_progress(IncProgressDialog *inc_dialog,
 	cur_total = inc_session->cur_total_bytes;
 	total = pop3_session->total_bytes;
 	if (pop3_session->state == POP3_RETR ||
-	    pop3_session->state == POP3_RETR_RECV) {
+	    pop3_session->state == POP3_RETR_RECV ||
+	    pop3_session->state == POP3_DELETE) {
 		Xstrdup_a(total_size_str, to_human_readable(total), return);
 		g_snprintf(buf, sizeof(buf),
 			   _("Retrieving message (%d / %d) (%s / %s)"),
@@ -950,33 +918,28 @@ static gboolean hash_remove_func(gpointer key, gpointer value, gpointer data)
 	return TRUE;
 }
 
-static gint inc_progress_timer_func(gpointer data)
+static void inc_progress_dialog_update_periodic(IncProgressDialog *inc_dialog,
+						IncSession *inc_session)
 {
-	IncSession *inc_session = (IncSession *)data;
-	IncProgressDialog *inc_dialog;
+	struct timeval tv_cur;
+	struct timeval tv_result;
+	gint msec;
 
-	inc_dialog = (IncProgressDialog *)inc_session->data;
+	gettimeofday(&tv_cur, NULL);
 
-	inc_progress_dialog_update(inc_dialog, inc_session);
-
-	return TRUE;
-}
-
-static gint inc_folder_timer_func(gpointer data)
-{
-	IncSession *inc_session = (IncSession *)data;
-	IncProgressDialog *inc_dialog;
-
-	inc_dialog = (IncProgressDialog *)inc_session->data;
-
-	if (g_hash_table_size(inc_session->tmp_folder_table) > 0) {
-		folderview_update_item_foreach(inc_session->tmp_folder_table,
-					       FALSE);
-		g_hash_table_foreach_remove(inc_session->tmp_folder_table,
-					    hash_remove_func, NULL);
+	tv_result.tv_sec = tv_cur.tv_sec - inc_dialog->progress_tv.tv_sec;
+	tv_result.tv_usec = tv_cur.tv_usec - inc_dialog->progress_tv.tv_usec;
+	if (tv_result.tv_usec < 0) {
+		tv_result.tv_sec--;
+		tv_result.tv_usec += 1000000;
 	}
 
-	return TRUE;
+	msec = tv_result.tv_sec * 1000 + tv_result.tv_usec / 1000;
+	if (msec > PROGRESS_UPDATE_INTERVAL) {
+		inc_progress_dialog_update(inc_dialog, inc_session);
+		inc_dialog->progress_tv.tv_sec = tv_cur.tv_sec;
+		inc_dialog->progress_tv.tv_usec = tv_cur.tv_usec;
+	}
 }
 
 static gint inc_recv_data_progressive(Session *session, guint cur_len,
@@ -984,6 +947,7 @@ static gint inc_recv_data_progressive(Session *session, guint cur_len,
 {
 	IncSession *inc_session = (IncSession *)data;
 	Pop3Session *pop3_session = POP3_SESSION(session);
+	IncProgressDialog *inc_dialog;
 	gint cur_total;
 
 	g_return_val_if_fail(inc_session != NULL, -1);
@@ -1000,6 +964,9 @@ static gint inc_recv_data_progressive(Session *session, guint cur_len,
 		cur_total = pop3_session->total_bytes;
 	inc_session->cur_total_bytes = cur_total;
 
+	inc_dialog = (IncProgressDialog *)inc_session->data;
+	inc_progress_dialog_update_periodic(inc_dialog, inc_session);
+
 	return 0;
 }
 
@@ -1011,19 +978,11 @@ static gint inc_recv_data_finished(Session *session, guint len, gpointer data)
 	g_return_val_if_fail(inc_session != NULL, -1);
 
 	inc_dialog = (IncProgressDialog *)inc_session->data;
+
 	inc_recv_data_progressive(session, 0, 0, inc_session);
 
-	if (POP3_SESSION(session)->state == POP3_RETR) {
-		if (inc_dialog->progress_timer_id == 0) {
-			inc_timer_start(inc_dialog, inc_session);
-			inc_progress_dialog_update(inc_dialog, inc_session);
-		}
-	} else if (POP3_SESSION(session)->state == POP3_LOGOUT) {
+	if (POP3_SESSION(session)->state == POP3_LOGOUT) {
 		inc_progress_dialog_update(inc_dialog, inc_session);
-		if (inc_dialog->progress_timer_id) {
-			inc_folder_timer_func(data);
-			inc_timer_stop(inc_dialog);
-		}
 	}
 
 	return 0;
@@ -1050,17 +1009,9 @@ static gint inc_recv_message(Session *session, const gchar *msg, gpointer data)
 		break;
 	case POP3_RETR:
 		inc_recv_data_progressive(session, 0, 0, inc_session);
-		if (inc_dialog->progress_timer_id == 0) {
-			inc_timer_start(inc_dialog, inc_session);
-			inc_progress_dialog_update(inc_dialog, inc_session);
-		}
 		break;
 	case POP3_LOGOUT:
 		inc_progress_dialog_update(inc_dialog, inc_session);
-		if (inc_dialog->progress_timer_id) {
-			inc_folder_timer_func(data);
-			inc_timer_stop(inc_dialog);
-		}
 		break;
 	default:
 		break;
@@ -1074,7 +1025,6 @@ static gint inc_drop_message(Pop3Session *session, const gchar *file)
 	FolderItem *inbox;
 	FolderItem *dropfolder;
 	IncSession *inc_session = (IncSession *)(SESSION(session)->data);
-	IncProgressDialog *inc_dialog;
 	gint msgnum;
 	gint val;
 
@@ -1100,8 +1050,6 @@ static gint inc_drop_message(Pop3Session *session, const gchar *file)
 		unlink(file);
 		return -1;
 	}
-
-	inc_dialog = (IncProgressDialog *)inc_session->data;
 
 	return 0;
 }

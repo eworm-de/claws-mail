@@ -1,3 +1,58 @@
+2004-05-21
+
+	* src/smtp.c: RFC 2821 に準拠(Alfons さん thanks)。
+
+2004-05-20
+
+	* src/folderview.[ch]: スプリングローデッドフォルダを実装。
+
+2004-05-20
+
+	* src/folderview.c: folderview_button_pressed(): 開いているフォルダ
+	  が選択されたときのみ「メッセージを検索...」メニュー項目を有効に
+	  するようにした。
+
+2004-05-19
+
+	* src/compose.c
+	  src/prefs_common.[ch]: 「送信に失敗したメッセージを送信待ちに
+	  入れる」オプションを削除。
+
+2004-05-18
+
+	* src/summaryview.c: コンテキストメニューを整理。
+	* src/mainwindow.c: メニュー項目 '/メッセージ/再編集' の位置を変更。
+
+2004-05-12
+
+	* src/procmsg.[ch]: キャッシュデータの整数値の型を g(u)int32 に
+	  固定。
+
+2004-05-11
+
+	* src/nntp.c: nntp_get_article(): broken なニュースサーバのために
+	  応答のプロトコルエラーを無視するようにした(Davide Scola さん
+	  thanks)。
+
+2004-05-11
+
+	* src/gtkutils.[ch]: gtkut_editable_disable_im() を追加。
+	* src/passphrase.c: パスフレーズの入力時に XIM を無効にした。
+
+2004-05-11
+
+	* src/compose.c
+	  src/folderview.c
+	  src/inc.c
+	  src/prefs_display_header.c
+	  src/procmsg.h: AMD64 (とその他64-bitプラットフォーム)　のための
+	  修正(Hiroyuki Ikezoe さん thanks)。
+
+2004-05-10
+
+	* src/inc.[ch]: gtk_timeout_add() を使用せず、代わりに
+	  gettimeofday() を使用(稀にロックアップするのを防ぐため)。
+
 2004-03-19
 
 	* src/defs.h

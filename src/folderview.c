@@ -1389,7 +1389,8 @@ static gboolean folderview_button_pressed(GtkWidget *ctree, GdkEventButton *even
 	menu_set_sensitive(fpopup_factory, name, sens)
 
 	SET_SENS("/Mark all read", item->unread_msgs >= 1);
-	SET_SENS("/Search folder...", item->total_msgs >= 1);
+	SET_SENS("/Search folder...", item->total_msgs >= 1 && 
+		 folderview->selected == folderview->opened);
 	SET_SENS("/Properties...", TRUE);
 	SET_SENS("/Processing...", item->node->parent != NULL);
 
@@ -1526,6 +1527,9 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		STATUSBAR_POP(folderview->mainwin);
 
 		alertpanel_error(_("Folder could not be opened."));
+
+		folderview->open_folder = FALSE;
+		can_select = TRUE;
 
 		return;
         }

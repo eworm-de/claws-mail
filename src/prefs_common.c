@@ -85,7 +85,6 @@ static struct Receive {
 
 static struct Send {
 	GtkWidget *checkbtn_savemsg;
-	GtkWidget *checkbtn_queuemsg;
 	GtkWidget *optmenu_senddialog;
 
 	GtkWidget *optmenu_charset;
@@ -284,9 +283,6 @@ static PrefParam param[] = {
 	/* Send */
 	{"save_message", "TRUE", &prefs_common.savemsg, P_BOOL,
 	 &p_send.checkbtn_savemsg,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"queue_message", "FALSE", &prefs_common.queue_msg, P_BOOL,
-	 &p_send.checkbtn_queuemsg,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"send_dialog_mode", "0", &prefs_common.send_dialog_mode, P_ENUM,
 	 &p_send.optmenu_senddialog,
@@ -1228,7 +1224,6 @@ static void prefs_send_create(void)
 	GtkWidget *vbox2;
 	GtkWidget *hbox1;
 	GtkWidget *checkbtn_savemsg;
-	GtkWidget *checkbtn_queuemsg;
 	GtkWidget *label_outcharset;
 	GtkWidget *optmenu_charset;
 	GtkWidget *optmenu_menu;
@@ -1253,8 +1248,6 @@ static void prefs_send_create(void)
 
 	PACK_CHECK_BUTTON (vbox2, checkbtn_savemsg,
 			   _("Save sent messages to Sent folder"));
-	PACK_CHECK_BUTTON (vbox2, checkbtn_queuemsg,
-			   _("Queue messages that fail to send"));
 
 	hbox_senddialog = gtk_hbox_new (FALSE, 8);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox_senddialog, FALSE, FALSE, 0);
@@ -1373,7 +1366,6 @@ static void prefs_send_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 
 	p_send.checkbtn_savemsg  = checkbtn_savemsg;
-	p_send.checkbtn_queuemsg = checkbtn_queuemsg;
 	p_send.optmenu_senddialog = optmenu_senddialog;
 
 	p_send.optmenu_charset = optmenu_charset;

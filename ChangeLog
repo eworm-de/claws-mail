@@ -1,3 +1,57 @@
+2004-05-21
+
+	* src/smtp.c: comply with RFC 2821 (thanks to Alfons).
+
+2004-05-20
+
+	* src/folderview.[ch]: implemented spring-loaded folder.
+
+2004-05-20
+
+	* src/folderview.c: folderview_button_pressed(): enable menu item
+	  'Search messages...' only when opened folder is selected.
+
+2004-05-19
+
+	* src/compose.c
+	  src/prefs_common.[ch]: removed the option "Queue messages that fail
+	  to send".
+
+2004-05-18
+
+	* src/summaryview.c: cleaned up the context menu.
+	* src/mainwindow.c: changed the position of '/Message/Re-edit'
+	  menuitem.
+
+2004-05-12
+
+	* src/procmsg.[ch]: fixed the type of integer value in cache data
+	  to g(u)int32.
+
+2004-05-11
+
+	* src/nntp.c: nntp_get_article(): ignore the protocol error of
+	  response for some broken news servers (thanks to Davide Scola).
+
+2004-05-11
+
+	* src/gtkutils.[ch]: added gtkut_editable_disable_im().
+	* src/passphrase.c: disable XIM on entering passphrase.
+
+2004-05-11
+
+	* src/compose.c
+	  src/folderview.c
+	  src/inc.c
+	  src/prefs_display_header.c
+	  src/procmsg.h: fixed for AMD64 (and other 64-bit platforms)
+	  (thanks to Hiroyuki Ikezoe).
+
+2004-05-10
+
+	* src/inc.[ch]: don't use gtk_timeout_add(), instead use
+	  gettimeofday() (to prevent infrequent lockup).
+
 2004-03-19
 
 	* src/defs.h

@@ -193,9 +193,9 @@ gint nntp_get_article(NNTPSession *session, const gchar *cmd, gint num,
 	extract_parenthesis(buf, '<', '>');
 	if (buf[0] == '\0') {
 		log_warning(_("protocol error\n"));
-		return NN_PROTOCOL;
-	}
-	*msgid = g_strdup(buf);
+		*msgid = g_strdup("0");
+	} else
+		*msgid = g_strdup(buf);
 
 	return NN_SUCCESS;
 }

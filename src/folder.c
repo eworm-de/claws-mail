@@ -1220,52 +1220,92 @@ Folder *folder_get_default_folder(void)
 
 FolderItem *folder_get_default_inbox(void)
 {
-	Folder *folder;
+	GList *flist;
 
-	if (!folder_list) return NULL;
-	folder = FOLDER(folder_list->data);
-	g_return_val_if_fail(folder != NULL, NULL);
-	return folder->inbox;
+	for (flist = folder_list; flist != NULL; flist = g_list_next(flist)) {
+		Folder * folder = FOLDER(flist->data);
+
+		if (folder == NULL)
+			continue;
+		if (folder->inbox == NULL)
+			continue;
+
+		return folder->inbox;
+	}
+
+	return NULL;
 }
 
 FolderItem *folder_get_default_outbox(void)
 {
-	Folder *folder;
+	GList *flist;
 
-	if (!folder_list) return NULL;
-	folder = FOLDER(folder_list->data);
-	g_return_val_if_fail(folder != NULL, NULL);
-	return folder->outbox;
+	for (flist = folder_list; flist != NULL; flist = g_list_next(flist)) {
+		Folder * folder = FOLDER(flist->data);
+
+		if (folder == NULL)
+			continue;
+		if (folder->outbox == NULL)
+			continue;
+
+		return folder->outbox;
+	}
+
+	return NULL;
 }
 
 FolderItem *folder_get_default_draft(void)
 {
-	Folder *folder;
+	GList *flist;
 
-	if (!folder_list) return NULL;
-	folder = FOLDER(folder_list->data);
-	g_return_val_if_fail(folder != NULL, NULL);
-	return folder->draft;
+	for (flist = folder_list; flist != NULL; flist = g_list_next(flist)) {
+		Folder * folder = FOLDER(flist->data);
+
+		if (folder == NULL)
+			continue;
+		if (folder->draft == NULL)
+			continue;
+
+		return folder->draft;
+	}
+
+	return NULL;
 }
 
 FolderItem *folder_get_default_queue(void)
 {
-	Folder *folder;
+	GList *flist;
 
-	if (!folder_list) return NULL;
-	folder = FOLDER(folder_list->data);
-	g_return_val_if_fail(folder != NULL, NULL);
-	return folder->queue;
+	for (flist = folder_list; flist != NULL; flist = g_list_next(flist)) {
+		Folder * folder = FOLDER(flist->data);
+
+		if (folder == NULL)
+			continue;
+		if (folder->queue == NULL)
+			continue;
+
+		return folder->queue;
+	}
+
+	return NULL;
 }
 
 FolderItem *folder_get_default_trash(void)
 {
-	Folder *folder;
+	GList *flist;
 
-	if (!folder_list) return NULL;
-	folder = FOLDER(folder_list->data);
-	g_return_val_if_fail(folder != NULL, NULL);
-	return folder->trash;
+	for (flist = folder_list; flist != NULL; flist = g_list_next(flist)) {
+		Folder * folder = FOLDER(flist->data);
+
+		if (folder == NULL)
+			continue;
+		if (folder->trash == NULL)
+			continue;
+
+		return folder->trash;
+	}
+
+	return NULL;
 }
 
 #define CREATE_FOLDER_IF_NOT_EXIST(member, dir, type)		\
