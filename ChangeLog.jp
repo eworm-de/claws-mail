@@ -1,3 +1,17 @@
+2001-11-26
+
+	* src/compose.c: compose_wrap_line_all(): claws からさらにマージ。
+	  GET_CHAR(): GET_TEXT() を名称変更し、より一般化した。
+	  compose_wrap_line() と compose_wrap_line_all() を GET_CHAR() を
+	  使用するように修正。
+
+2001-11-25
+
+	* src/folder.[ch]
+	  src/main.c: 起動中の Sylpheed から新着、未読、合計メッセージ数
+	  を得る --status オプションを追加。
+	  prohibit_duplicate_launch(): '\n' を一度だけ出力。
+
 2001-11-23
 
 	* src/compose.c

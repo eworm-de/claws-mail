@@ -195,6 +195,7 @@ int main(int argc, char *argv[])
 	/* check and create unix domain socket */
 	lock_socket = prohibit_duplicate_launch();
 	if (lock_socket < 0) return 0;
+
 	if (cmd.status) {
 		puts("0 Sylpheed not running.\n");
 		return 0;
@@ -340,7 +341,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 		} else if (!strncmp(argv[i], "--version", 9)) {
 			puts("Sylpheed version " VERSION);
 			exit(0);
-		} else if (!strncmp(argv[i], "--status", 5)) {
+		} else if (!strncmp(argv[i], "--status", 8)) {
 			cmd.status = TRUE;
 		} else if (!strncmp(argv[i], "--help", 6)) {
 			g_print(_("Usage: %s [OPTION]...\n"),
@@ -349,6 +350,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 			puts(_("  --compose [address]    open composition window"));
 			puts(_("  --receive              receive new messages"));
 			puts(_("  --receive-all          receive new messages of all accounts"));
+			puts(_("  --status               show the total number of messages"));
 			puts(_("  --debug                debug mode"));
 			puts(_("  --help                 display this help and exit"));
 			puts(_("  --version              output version information and exit"));
@@ -482,9 +484,9 @@ static gint prohibit_duplicate_launch(void)
 	} else if (cmd.status) {
 		gchar buf[BUFFSIZE];
 
-		fd_write(uxsock, "status\n", 9);
+		fd_write(uxsock, "status\n", 7);
 		fd_gets(uxsock, buf, sizeof(buf));
-		puts(buf);
+		fputs(buf, stdout);
 	} else
 		fd_write(uxsock, "popup\n", 6);
 
@@ -514,13 +516,13 @@ static void lock_socket_input_cb(gpointer data,
 	} else if (!strncmp(buf, "compose", 7)) {
 		open_compose_new_with_recipient(buf + strlen("compose") + 1);
 	} else if (!strncmp(buf, "status", 6)) {
-		gchar buf[BUFFSIZE];
-		guint newmsgs, unreadmsgs, totalmsgs;
+		guint new, unread, total;
 
-		folder_count_total_msgs(&newmsgs, &unreadmsgs, &totalmsgs);
-		snprintf(buf, sizeof(buf), "%d %d %d\n", newmsgs, unreadmsgs, totalmsgs);
+		folder_count_total_msgs(&new, &unread, &total);
+		g_snprintf(buf, sizeof(buf), "%d %d %d\n", new, unread, total);
 		fd_write(sock, buf, strlen(buf));
 	}
+
 	fd_close(sock);
 }
 

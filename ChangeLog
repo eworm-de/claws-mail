@@ -1,3 +1,17 @@
+2001-11-26
+
+	* src/compose.c: compose_wrap_line_all(): more merging from claws.
+	  GET_CHAR(): renamed GET_TEXT() and made it more generic.
+	  Modified compose_wrap_line() and compose_wrap_line_all() to use
+	  GET_CHAR().
+
+2001-11-25
+
+	* src/folder.[ch]
+	  src/main.c: added --status option to get new, unread and total
+	  message count from a running Sylpheed (merged from claws).
+	  prohibit_duplicate_launch(): output '\n' only once.
+
 2001-11-23
 
 	* src/compose.c

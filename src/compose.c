@@ -749,11 +749,12 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
 	if (prefs_common.auto_sig)
 		compose_insert_sig(compose);
-	gtk_editable_set_position(GTK_EDITABLE(text), 0);
-	gtk_stext_set_point(text, 0);
 
 	if (quote && prefs_common.linewrap_quote)
 		compose_wrap_line_all(compose);
+
+	gtk_editable_set_position(GTK_EDITABLE(text), 0);
+	gtk_stext_set_point(text, 0);
 
 	gtk_stext_thaw(text);
 	gtk_widget_grab_focus(compose->text);
@@ -1911,6 +1912,16 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 	compose_attach_info(compose, ainfo, cnttype);
 }
 
+#define GET_CHAR(pos, buf, len)						     \
+{									     \
+	if (text->use_wchar)						     \
+		len = wctomb(buf, (wchar_t)GTK_STEXT_INDEX(text, (pos)));     \
+	else {								     \
+		buf[0] = GTK_STEXT_INDEX(text, (pos));			     \
+		len = 1;						     \
+	}								     \
+}
+
 static void compose_wrap_line(Compose *compose)
 {
 	GtkSText *text = GTK_STEXT(compose->text);
@@ -1923,13 +1934,6 @@ static void compose_wrap_line(Compose *compose)
 	gint line_pos, cur_pos;
 	gint line_len, cur_len;
 
-#define GET_STEXT(pos)                                                        \
-	if (text->use_wchar)                                                 \
-		ch_len = wctomb(cbuf, (wchar_t)GTK_STEXT_INDEX(text, (pos))); \
-	else {                                                               \
-		cbuf[0] = GTK_STEXT_INDEX(text, (pos));                       \
-		ch_len = 1;                                                  \
-	}
 
 	gtk_stext_freeze(text);
 
@@ -1937,11 +1941,11 @@ static void compose_wrap_line(Compose *compose)
 
 	/* check to see if the point is on the paragraph mark (empty line). */
 	cur_pos = gtk_stext_get_point(text);
-	GET_STEXT(cur_pos);
+	GET_CHAR(cur_pos, cbuf, ch_len);
 	if ((ch_len == 1 && *cbuf == '\n') || cur_pos == text_len) {
 		if (cur_pos == 0)
 			goto compose_end; /* on the paragraph mark */
-		GET_STEXT(cur_pos - 1);
+		GET_CHAR(cur_pos - 1, cbuf, ch_len);
 		if (ch_len == 1 && *cbuf == '\n')
 			goto compose_end; /* on the paragraph mark */
 	}
@@ -1949,7 +1953,7 @@ static void compose_wrap_line(Compose *compose)
 	/* find paragraph start. */
 	line_end = quoted = 0;
 	for (p_start = cur_pos; p_start >= 0; --p_start) {
-		GET_STEXT(p_start);
+		GET_CHAR(p_start, cbuf, ch_len);
 		if (ch_len == 1 && *cbuf == '\n') {
 			if (quoted)
 				goto compose_end; /* quoted part */
@@ -1973,7 +1977,7 @@ static void compose_wrap_line(Compose *compose)
 	/* find paragraph end. */
 	line_end = 0;
 	for (p_end = cur_pos; p_end < text_len; p_end++) {
-		GET_STEXT(p_end);
+		GET_CHAR(p_end, cbuf, ch_len);
 		if (ch_len == 1 && *cbuf == '\n') {
 			if (line_end) {
 				p_end -= 1;
@@ -2000,7 +2004,7 @@ static void compose_wrap_line(Compose *compose)
 	for (cur_pos = p_start; cur_pos < p_end; cur_pos++) {
 		guint space = 0;
 
-		GET_STEXT(cur_pos);
+		GET_CHAR(cur_pos, cbuf, ch_len);
 
 		if (ch_len < 0) {
 			cbuf[0] = '\0';
@@ -2014,7 +2018,7 @@ static void compose_wrap_line(Compose *compose)
 			guint replace = 0;
 			if (last_ch_len == 1 && !isspace(last_ch)) {
 				if (cur_pos + 1 < p_end) {
-					GET_STEXT(cur_pos + 1);
+					GET_CHAR(cur_pos + 1, cbuf, ch_len);
 					if (ch_len == 1 && !isspace(*cbuf))
 						replace = 1;
 				}
@@ -2045,7 +2049,7 @@ static void compose_wrap_line(Compose *compose)
 		    line_len > 0) {
 			gint tlen = ch_len;
 
-			GET_STEXT(line_pos - 1);
+			GET_CHAR(line_pos - 1, cbuf, ch_len);
 			if (ch_len == 1 && isspace(*cbuf)) {
 				gtk_stext_set_point(text, line_pos);
 				gtk_stext_backward_delete(text, 1);
@@ -2076,8 +2080,6 @@ static void compose_wrap_line(Compose *compose)
 
 compose_end:
 	gtk_stext_thaw(text);
-
-#undef GET_STEXT
 }
 
 /* return indent length */
@@ -2088,13 +2090,7 @@ static guint get_indent_length(GtkSText *text, guint start_pos, guint text_len)
 	gchar cbuf[MB_LEN_MAX];
 
 	for (i = start_pos; i < text_len; i++) {
-		if (text->use_wchar)
-			ch_len = wctomb
-				(cbuf, (wchar_t)GTK_STEXT_INDEX(text, i));
-		else {
-			cbuf[0] = GTK_STEXT_INDEX(text, i);
-			ch_len = 1;
-		}
+		GET_CHAR(i, cbuf, ch_len);
 		if (ch_len > 1)
 			break;
 		/* allow space, tab, > or | */
@@ -2121,8 +2117,7 @@ static guint ins_quote(GtkSText *text, guint quote_len, guint indent_len,
 			gtk_stext_insert(text, NULL, NULL, NULL, &ch, 1);
 		}
 		ins_len = indent_len;
-	}
-	else {
+	} else {
 		gtk_stext_insert(text, NULL, NULL, NULL, quote_fmt, quote_len);
 		ins_len = quote_len;
 	}
@@ -2135,8 +2130,8 @@ static guint ins_quote(GtkSText *text, guint quote_len, guint indent_len,
 /* Darko: used when I debug wrapping */
 void dump_text(GtkSText *text, int pos, int tlen, int breakoncr)
 {
-	int i;
-	char ch;
+	gint i;
+	gchar ch;
 
 	printf("%d [", pos);
 	for (i = pos; i < tlen; i++) {
@@ -2156,7 +2151,7 @@ static void compose_wrap_line_all(Compose *compose)
 	guint line_pos = 0, cur_pos = 0, p_pos = 0;
 	gint line_len = 0, cur_len = 0;
 	gint ch_len;
-	gint is_new_line = 1, do_delete = 0;
+	gboolean is_new_line = TRUE, do_delete = FALSE;
 	guint qlen = 0, i_len = 0;
 	guint linewrap_quote = prefs_common.linewrap_quote;
 	guint linewrap_len = prefs_common.linewrap_len;
@@ -2175,7 +2170,7 @@ static void compose_wrap_line_all(Compose *compose)
 		if (linewrap_quote && is_new_line) {
 			qlen = gtkut_text_str_compare
 				(text, cur_pos, tlen, qfmt);
-			is_new_line = 0;
+			is_new_line = FALSE;
 			if (qlen)
 				i_len = get_indent_length(text, cur_pos, tlen);
 			else
@@ -2187,14 +2182,7 @@ static void compose_wrap_line_all(Compose *compose)
 #endif
 		}
 
-		/* get character(s) at current position */
-		if (text->use_wchar)
-			ch_len = wctomb
-				(cbuf, (wchar_t)GTK_STEXT_INDEX(text, cur_pos));
-		else {
-			cbuf[0] = GTK_STEXT_INDEX(text, cur_pos);
-			ch_len = 1;
-		}
+		GET_CHAR(cur_pos, cbuf, ch_len);
 
 		/* fix line length for tabs */
 		if (ch_len == 1 && *cbuf == '\t') {
@@ -2230,30 +2218,17 @@ static void compose_wrap_line_all(Compose *compose)
 				ilen =  gtkut_text_str_compare_n
 					(text, cur_pos + 1, p_pos, i_len, tlen);
 				if (cur_pos + ilen < tlen) {
-					if (text->use_wchar)
-						clen = wctomb(cb, (wchar_t)GTK_STEXT_INDEX(text, cur_pos + ilen + 1));
-					else {
-						cb[0] = GTK_STEXT_INDEX(text,
-							    cur_pos + ilen + 1);
-						clen = 1;
-					}
+					GET_CHAR(cur_pos + ilen + 1, cb, clen);
 					/* no need to join the lines */
-					if ((clen == 1) && (cb[0] == '\n'))
-						do_delete = 0;
+					if (clen == 1 && cb[0] == '\n')
+						do_delete = FALSE;
 				}
-			}
 			/* if it's just newline skip it */
-			else if (do_delete && (cur_pos + 1 < tlen)) {
-				if (text->use_wchar)
-					clen = wctomb(cb, (wchar_t)GTK_STEXT_INDEX(text, cur_pos + 1));
-				else {
-					cb[0] = GTK_STEXT_INDEX(text,
-								cur_pos + 1);
-					clen = 1;
-				}
+			} else if (do_delete && (cur_pos + 1 < tlen)) {
+				GET_CHAR(cur_pos + 1, cb, clen);
 				/* no need to join the lines */
-				if ((clen == 1) && (cb[0] == '\n'))
-					do_delete = 0;
+				if (clen == 1 && cb[0] == '\n')
+					do_delete = FALSE;
 			}
 
 #ifdef WRAP_DEBUG
@@ -2287,13 +2262,7 @@ static void compose_wrap_line_all(Compose *compose)
 					}
 				}
 
-				if (text->use_wchar)
-					clen = wctomb
-						(cb, (wchar_t)GTK_STEXT_INDEX(text, cur_pos));
-				else {
-					cb[0] = GTK_STEXT_INDEX(text, cur_pos);
-					clen = 1;
-				}
+				GET_CHAR(cur_pos, cb, clen);
 
 				/* insert space if it's alphanumeric */
 				if ((cur_pos != line_pos) &&
@@ -2309,8 +2278,8 @@ static void compose_wrap_line_all(Compose *compose)
 				line_pos = cur_pos;
 				line_len = cur_len = 0;
 				qlen = 0;
-				do_delete = 0;
-				is_new_line = 1;
+				do_delete = FALSE;
+				is_new_line = TRUE;
 #ifdef WRAP_DEBUG
 				printf("after delete l_pos=");
 				dump_text(text, line_pos, tlen, 1);
@@ -2322,8 +2291,8 @@ static void compose_wrap_line_all(Compose *compose)
 			line_pos = cur_pos + 1;
 			line_len = cur_len = 0;
 			qlen = 0;
-			do_delete = 0;
-			is_new_line = 1;
+			do_delete = FALSE;
+			is_new_line = TRUE;
 			continue;
 		}
 
@@ -2356,13 +2325,9 @@ static void compose_wrap_line_all(Compose *compose)
 			printf("new line_pos=%d\n", line_pos);
 #endif
 
+			GET_CHAR(line_pos - 1, cbuf, clen);
+
 			/* if next character is space delete it */
-			if (text->use_wchar)
-				clen = wctomb(cbuf, (wchar_t)GTK_STEXT_INDEX(text, line_pos - 1));
-			else {
-				cbuf[0] = GTK_STEXT_INDEX(text, line_pos - 1);
-				clen = 1;
-			}
                         if (clen == 1 && isspace(*cbuf)) {
 				if (p_pos + i_len != line_pos ||
                             	    !gtkut_text_is_uri_string
@@ -2396,10 +2361,10 @@ static void compose_wrap_line_all(Compose *compose)
 			/* for loop will increase it */
 			cur_pos = line_pos - 1;
 			/* start over with current line */
-			is_new_line = 1;
+			is_new_line = TRUE;
 			line_len = 0;
 			cur_len = 0;
-			do_delete = 1;
+			do_delete = TRUE;
 #ifdef WRAP_DEBUG
 			printf("after CR insert ");
 			dump_text(text, line_pos, tlen, 1);
@@ -2441,85 +2406,7 @@ static void compose_wrap_line_all(Compose *compose)
 	gtk_stext_thaw(text);
 }
 
-#if 0
-static void compose_wrap_line_all(Compose *compose)
-{
-	GtkText *text = GTK_STEXT(compose->text);
-	guint text_len;
-	guint line_pos = 0, cur_pos = 0;
-	gint line_len = 0, cur_len = 0;
-	gint ch_len;
-	gchar cbuf[MB_LEN_MAX];
-
-	gtk_stext_freeze(text);
-
-	text_len = gtk_stext_get_length(text);
-
-	for (; cur_pos < text_len; cur_pos++) {
-		if (text->use_wchar)
-			ch_len = wctomb
-				(cbuf, (wchar_t)GTK_STEXT_INDEX(text, cur_pos));
-		else {
-			cbuf[0] = GTK_STEXT_INDEX(text, cur_pos);
-			ch_len = 1;
-		}
-
-		if (ch_len == 1 && *cbuf == '\n') {
-			line_pos = cur_pos + 1;
-			line_len = cur_len = 0;
-			continue;
-		}
-
-		if (ch_len < 0) {
-			cbuf[0] = '\0';
-			ch_len = 1;
-		}
-
-		if (ch_len == 1 && isspace(*cbuf)) {
-			line_pos = cur_pos + 1;
-			line_len = cur_len + ch_len;
-		}
-
-		if (cur_len + ch_len > prefs_common.linewrap_len &&
-		    line_len > 0) {
-			gint tlen;
-
-			if (text->use_wchar)
-				tlen = wctomb(cbuf, (wchar_t)GTK_STEXT_INDEX(text, line_pos - 1));
-			else {
-				cbuf[0] = GTK_STEXT_INDEX(text, line_pos - 1);
-				tlen = 1;
-			}
-			if (tlen == 1 && isspace(*cbuf)) {
-				gtk_stext_set_point(text, line_pos);
-				gtk_stext_backward_delete(text, 1);
-				text_len--;
-				cur_pos--;
-				line_pos--;
-				cur_len--;
-				line_len--;
-			}
-
-			gtk_stext_set_point(text, line_pos);
-			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
-			text_len++;
-			cur_pos++;
-			line_pos++;
-			cur_len = cur_len - line_len + ch_len;
-			line_len = 0;
-			continue;
-		}
-
-		if (ch_len > 1) {
-			line_pos = cur_pos + 1;
-			line_len = cur_len + ch_len;
-		}
-		cur_len += ch_len;
-	}
-
-	gtk_stext_thaw(text);
-}
-#endif
+#undef GET_CHAR
 
 static void compose_set_title(Compose *compose)
 {

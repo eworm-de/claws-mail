@@ -361,6 +361,42 @@ void folder_write_list(void)
 		g_warning("failed to write folder list.\n");
 }
 
+static void folder_count_total_msgs_func(GNode *node, guint *new,
+					 guint *unread, guint *total)
+{
+	g_return_if_fail(node != NULL);
+
+	if (node->data) {
+		FolderItem *item = FOLDER_ITEM(node->data);
+		*new += item->new;
+		*unread += item->unread;
+		*total += item->total;
+	}
+
+	if (node->children)
+		folder_count_total_msgs_func(node->children,
+					     new, unread, total);
+	if (node->next)
+		folder_count_total_msgs_func(node->next, new, unread, total);
+}
+
+void folder_count_total_msgs(guint *new, guint *unread, guint *total)
+{
+	GList *list;
+	Folder *folder;
+
+	*new = *unread = *total = 0;
+
+	debug_print(_("Counting total number of messages...\n"));
+
+	for (list = folder_list; list != NULL; list = list->next) {
+		folder = FOLDER(list->data);
+		folder_count_total_msgs_func(folder->node, new, unread, total);
+	}
+
+	return;
+}
+
 Folder *folder_find_from_path(const gchar *path)
 {
 	GList *list;
@@ -1498,42 +1534,4 @@ FolderItem * folder_find_item_from_identifier(const gchar *identifier)
 	g_node_traverse(folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
 			folder_item_find_func, d);
 	return d[1];
-}
-
-static void folder_count_total_newmsgs_func(const GNode *node, guint *newmsgs, 
-					    guint *unreadmsgs, guint *totalmsgs)
-{
-	if (node->data) {
-		FolderItem *item = node->data;
-		*newmsgs += item->new;
-		*unreadmsgs += item->unread;
-		*totalmsgs += item->total;
-	}
-	if (node->children)
-		folder_count_total_newmsgs_func(node->children, newmsgs, unreadmsgs, totalmsgs);
-	if (node->next)
-		folder_count_total_newmsgs_func(node->next, newmsgs, unreadmsgs, totalmsgs);
-}
-
-void folder_count_total_msgs(guint *newmsgs, guint *unreadmsgs, guint *totalmsgs)
-{
-	GList *list;
-	Folder *folder;
-
-	*newmsgs = 0;
-	*unreadmsgs = 0;
-	*totalmsgs = 0;
-
-	debug_print(_("Counting total number of messages...\n"));
-	list = folder_get_list();
-	for (; list != NULL; list = list->next) {
-		folder = FOLDER(list->data);
-		if (folder->node)
-			folder_count_total_newmsgs_func(folder->node, newmsgs, unreadmsgs, totalmsgs);
-	}
-	debug_print(_("  New: %d\n"), *newmsgs);
-	debug_print(_("  Unread: %d\n"), *unreadmsgs);
-	debug_print(_("  Total: %d\n"), *totalmsgs);
-
-	return;
 }
