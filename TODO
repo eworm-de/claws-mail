@@ -5,6 +5,7 @@ TODO
 
 o POP before SMTP
 o original icons and logos
+o improvements of addressbook
 o folder management enhancements
 o more robust IMAP4 response parser
 o enhancement of filtering
@@ -22,6 +23,7 @@ o plug-in faculty
 o mailing list manager
 o inline image display on multipart MIME
 o compressed folder
+o GTK+-2.x support
 o make the code cleaner
 o make the process faster
 o make the dubious English much decent :)
@@ -32,7 +34,6 @@ Partially implemented features
   (processing of time out, multi-threading etc.)
 . drag and drop
 . full internationalization
-. autowrap / wordwrap
 . PGP/GPG support
 . display of HTML messages (composition of HTML message is not scheduled :-P)
 . progress display of time-consuming processes
@@ -69,3 +70,4 @@ Implemented features
 * full-text search of messages (plain)
 * template function
 * regular expression support at filtering
+* autowrap / wordwrap

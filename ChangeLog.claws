@@ -1,10 +1,80 @@
-2002-08-24 [oliver]	0.8.2claws115
+2002-08-27 [melvin]	0.8.2claws
+
+	* po/fr.po
+		Updated French translations
+
+2002-08-27 [paul] 	0.8.2claws
+
+	* sync with 0.8.2 main release
+
+	* po/en_GB.po
+	  po/es.po
+	  po/it.po
+	  po/pl.po
+	  po/pt_BR.po
+	  po/sr.po
+		updated message catalogs submitted by
+		Ricardo Mones Lastra, Alessandro Maestri,
+		Witold Wladyslaw Wojciech Wilk, Fabio Jr.
+		Beneditto and Urke MMI	
+
+2002-08-27 [hoa]	0.8.1claws123
+
+	* src/mainwindow.[ch]
+	* src/summaryview.[ch]
+		removed the "filter setting" menu option.
+		add a "cancel a news message" menu option.
+
+2002-08-26 [martin]	0.8.1claws122
+
+	* ChangeLog.claws
+		changed string under 0.8.1claws79 changed by myself
+		i'm sorry alfons :(
+
+2002-08-26 [martin]	0.8.1claws121
+
+	* src/crash.c
+		added kill command to debuggerrc to start crash dialog
+
+2002-08-26 [paul]	0.8.1claws120
+
+	* sync with 0.8.1cvs31
+		see ChangeLog 2002-08-26
+
+2002-08-25 [alfons]	0.8.1claws119
+
+	* src/procmsg.c
+		fix bug that didn't send out correct headers to news server
+		when sending news article and email from queue (bug reported
+		and patch provided by Tim Mann; closes bug 
+		"[ 583196 ] 0.7.8claws can't post news")
+
+2002-08-25 [alfons]	0.8.1claws118
+
+	* src/selective_download.c
+		mark two strings as translatable
+		(thanks to Urke MMI for pointing this out)
+
+2002-08-25 [alfons]	0.8.1claws117
+
+	* src/summaryview.c
+		treat sent boxes as special and allow sorting them by addressee
+		(closes "[ 589418 ] Sent folder sorting misbehavior"
+		submitted by Steve Lamb)
+
+2002-08-24 [alfons]	0.8.1claws116
+
+	* src/matcher.c
+		fix memleak reported by Martin Kluge
+		(see: "[ 599677 ] Very small memory leak in 0.81claws115")
+
+2002-08-24 [oliver]	0.8.1claws115
 
 	* src/prefs_toolbar.c
 		o code cleanup as suggested by Alfons
 		o memleak fix
 
-2002-08-24 [alfons]	0.8.2claws114
+2002-08-24 [alfons]	0.8.1claws114
 
 	* src/summaryview.c
 		o fix another memory leak reported by Martin Kluge
@@ -12,7 +82,7 @@
 		o remove 'from' variable from 'summary_set_header()'; we can
 		  do with just 'to' 
 
-2002-08-24 [paul]	0.8.2claws113
+2002-08-24 [paul]	0.8.1claws113
 
 	* sync with 0.8.1cvs30
 		see ChangeLog 2002-08-23
@@ -229,7 +299,7 @@
 		o add "Set default" button
 		o align label and text + combo widgets
 
-2002-08-20 [hoa]	0.8.1claws84
+2002-08-20 [hoa]	0.8.1claws83bis
 
 	* src/imap.c
 		fixed a bug in imap_fetch_msginfo() in case there is no
