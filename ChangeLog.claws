@@ -1,3 +1,10 @@
+2001-07-30 [darko]
+
+        * src/mh.c
+        * src/prefs_folder_item.[hc]
+        * src/summaryview.c
+		shared folders support with a GUI
+
 2001-07-29 [paul]
 
 	0.5.1claws3

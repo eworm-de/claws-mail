@@ -45,6 +45,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 #include "intl.h"
 #include "main.h"
@@ -1943,6 +1944,8 @@ gint summary_write_cache(SummaryView *summaryview)
 	gchar *buf;
 	gchar *cachefile, *markfile;
 	GSList * cur;
+	gint filemode = 0;
+	PrefsFolderItem *prefs;
 
 	if (!summaryview->folder_item || !summaryview->folder_item->path)
 		return -1;
@@ -1959,6 +1962,20 @@ gint summary_write_cache(SummaryView *summaryview)
 	}
 	if (change_file_mode_rw(fps.cache_fp, cachefile) < 0)
 		FILE_OP_ERROR(cachefile, "chmod");
+
+	prefs = summaryview->folder_item->prefs;
+        if (prefs && prefs->enable_folder_chmod && prefs->folder_chmod) {
+		/* for cache file */
+		filemode = prefs->folder_chmod;
+		if (filemode & S_IRGRP) filemode |= S_IWGRP;
+		if (filemode & S_IROTH) filemode |= S_IWOTH;
+#if HAVE_FCHMOD
+		fchmod(fileno(fps.cache_fp), filemode);
+#else
+		chmod(cachefile, filemode);
+#endif
+        }
+
 	g_free(cachefile);
 
 	markfile = folder_item_get_mark_file(summaryview->folder_item);
@@ -1970,6 +1987,14 @@ gint summary_write_cache(SummaryView *summaryview)
 	}
 	if (change_file_mode_rw(fps.mark_fp, markfile) < 0)
 		FILE_OP_ERROR(markfile, "chmod");
+        if (prefs && prefs->enable_folder_chmod && prefs->folder_chmod) {
+#if HAVE_FCHMOD
+		fchmod(fileno(fps.mark_fp), filemode);
+#else
+		chmod(markfile, filemode);
+#endif
+        }
+
 	g_free(markfile);
 
 	buf = g_strdup_printf(_("Writing summary cache (%s)..."),

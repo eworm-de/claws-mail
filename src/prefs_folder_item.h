@@ -47,6 +47,8 @@ struct _PrefsFolderItem {
 	gboolean request_return_receipt;
 	gboolean enable_default_to;
 	gchar *default_to;
+	gboolean enable_folder_chmod;
+	gint folder_chmod;
 };
 
 typedef struct _PrefsFolderItem PrefsFolderItem;

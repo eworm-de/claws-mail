@@ -34,6 +34,8 @@ struct PrefsFolderItemDialog
 	GtkWidget *checkbtn_request_return_receipt;
 	GtkWidget *checkbtn_default_to;
 	GtkWidget *entry_default_to;
+	GtkWidget *checkbtn_folder_chmod;
+	GtkWidget *entry_folder_chmod;
 };
 
 static PrefParam param[] = {
@@ -63,6 +65,10 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"default_to", "", &tmp_prefs.default_to, P_STRING,
 	 NULL, NULL, NULL},
+	{"enable_folder_chmod", "", &tmp_prefs.enable_folder_chmod, P_BOOL,
+	 NULL, NULL, NULL},
+	{"folder_chmod", "", &tmp_prefs.folder_chmod, P_INT,
+	 NULL, NULL, NULL},
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
@@ -70,6 +76,8 @@ void prefs_folder_item_delete_cb(GtkWidget *widget, GdkEventAny *event, struct P
 void prefs_folder_item_cancel_cb(GtkWidget *widget, struct PrefsFolderItemDialog *dialog);
 void prefs_folder_item_ok_cb(GtkWidget *widget, struct PrefsFolderItemDialog *dialog);
 void prefs_folder_item_default_to_cb(GtkWidget *widget, struct PrefsFolderItemDialog *dialog);
+void prefs_folder_item_folder_chmod_cb(GtkWidget *widget, struct PrefsFolderItemDialog *dialog);
+gint prefs_folder_item_chmod_mode(gchar *folder_chmod);
 
 void prefs_folder_item_read_config(FolderItem * item)
 {
@@ -151,6 +159,8 @@ PrefsFolderItem * prefs_folder_item_new(void)
 	tmp_prefs.request_return_receipt = FALSE;
 	tmp_prefs.enable_default_to = FALSE;
 	tmp_prefs.default_to = NULL;
+	tmp_prefs.enable_folder_chmod = FALSE;
+	tmp_prefs.folder_chmod = 0;
 
 	* prefs = tmp_prefs;
 	
@@ -206,6 +216,8 @@ void prefs_folder_item_create(FolderItem *item) {
 	GtkWidget *checkbtn_request_return_receipt;
 	GtkWidget *checkbtn_default_to;
 	GtkWidget *entry_default_to;
+	GtkWidget *checkbtn_folder_chmod;
+	GtkWidget *entry_folder_chmod;
 
 	dialog = g_new0(struct PrefsFolderItemDialog, 1);
 	dialog->item = item;
@@ -262,10 +274,43 @@ void prefs_folder_item_create(FolderItem *item) {
 	gtk_editable_set_editable(GTK_EDITABLE(entry_default_to), item->prefs->enable_default_to);
 	gtk_entry_set_text(GTK_ENTRY(entry_default_to), item->prefs->default_to);
 
+	/* Folder chmod */
+	hbox = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show(hbox);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
+
+	PACK_CHECK_BUTTON(hbox, checkbtn_folder_chmod,
+			   _("Folder chmod: "));
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_folder_chmod), item->prefs->enable_folder_chmod);
+	gtk_signal_connect(GTK_OBJECT(checkbtn_folder_chmod), "toggled",
+			    GTK_SIGNAL_FUNC(prefs_folder_item_folder_chmod_cb), dialog);
+
+	entry_folder_chmod = gtk_entry_new();
+	gtk_widget_show(entry_folder_chmod);
+	gtk_box_pack_start(GTK_BOX(hbox), entry_folder_chmod, FALSE, FALSE, 0);
+	gtk_editable_set_editable(GTK_EDITABLE(entry_folder_chmod), item->prefs->enable_folder_chmod);
+	if (item->prefs->folder_chmod) {
+		gint tmp;
+		gint mult;
+		gint count = 0;
+		char buf[64]; /* plenty enough for an integer */
+
+		tmp = item->prefs->folder_chmod;
+		while (tmp && (count < sizeof(buf) - 1)) {
+			mult = tmp / 8;
+			buf[count++] = '0' + (tmp - mult * 8);
+			tmp /= 8;
+		}
+		buf[count] = '\0';
+		gtk_entry_set_text(GTK_ENTRY(entry_folder_chmod), buf);
+	}
+
 	dialog->window = window;
 	dialog->checkbtn_request_return_receipt = checkbtn_request_return_receipt;
 	dialog->checkbtn_default_to = checkbtn_default_to;
 	dialog->entry_default_to = entry_default_to;
+	dialog->checkbtn_folder_chmod = checkbtn_folder_chmod;
+	dialog->entry_folder_chmod = entry_folder_chmod;
 
 	gtk_widget_show(window);
 }
@@ -293,6 +338,11 @@ void prefs_folder_item_ok_cb(GtkWidget *widget, struct PrefsFolderItemDialog *di
 	g_free(prefs->default_to);
 	prefs->default_to = 
 	    gtk_editable_get_chars(GTK_EDITABLE(dialog->entry_default_to), 0, -1);
+	prefs->enable_folder_chmod = 
+	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->checkbtn_folder_chmod));
+	prefs->folder_chmod = prefs_folder_item_chmod_mode(
+		gtk_editable_get_chars(GTK_EDITABLE(dialog->entry_folder_chmod),
+				       0, -1));
 
 	prefs_folder_item_save_config(dialog->item);
 	prefs_folder_item_destroy(dialog);
@@ -301,4 +351,22 @@ void prefs_folder_item_ok_cb(GtkWidget *widget, struct PrefsFolderItemDialog *di
 void prefs_folder_item_default_to_cb(GtkWidget *widget, struct PrefsFolderItemDialog *dialog) {
 	gtk_editable_set_editable(GTK_EDITABLE(dialog->entry_default_to),
 	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->checkbtn_default_to)));
+}
+
+void prefs_folder_item_folder_chmod_cb(GtkWidget *widget, struct PrefsFolderItemDialog *dialog) {
+	gtk_editable_set_editable(GTK_EDITABLE(dialog->entry_folder_chmod),
+	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialog->checkbtn_folder_chmod)));
+}
+
+gint prefs_folder_item_chmod_mode(gchar *folder_chmod) {
+	gint newmode = 0;
+	gchar *tmp;
+
+	if (folder_chmod) {
+		newmode = strtol(folder_chmod, &tmp, 8);
+		if (!(*(folder_chmod) && !(*tmp)))
+			newmode = 0;
+	}
+
+	return newmode;
 }

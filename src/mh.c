@@ -183,6 +183,8 @@ gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	gchar *srcfile;
 	gchar *destfile;
 	FILE *fp;
+	gint filemode = 0;
+	PrefsFolderItem *prefs;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msginfo != NULL, -1);
@@ -196,6 +198,8 @@ gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 		mh_scan_folder(folder, dest);
 		if (dest->last_num < 0) return -1;
 	}
+
+	prefs = dest->prefs;
 
 	destdir = folder_item_get_path(dest);
 	if ((fp = procmsg_open_mark_file(destdir, TRUE)) == NULL)
@@ -216,6 +220,16 @@ gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 		return -1;
 	}
 
+	if (prefs && prefs->enable_folder_chmod && prefs->folder_chmod) {
+		if (chmod(destfile, prefs->folder_chmod) < 0)
+			FILE_OP_ERROR(destfile, "chmod");
+
+		/* for mark file */
+		filemode = prefs->folder_chmod;
+		if (filemode & S_IRGRP) filemode |= S_IWGRP;
+		if (filemode & S_IROTH) filemode |= S_IWOTH;
+	}
+
 	g_free(srcfile);
 	g_free(destfile);
 	dest->last_num++;
@@ -233,6 +247,19 @@ gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 					     MSG_NEW|MSG_UNREAD|MSG_DELETED);
 
 		procmsg_write_flags(&newmsginfo, fp);
+
+		if (filemode) {
+#if HAVE_FCHMOD
+			fchmod(fileno(fp), filemode);
+#else
+			markfile = folder_item_get_mark_file(dest);
+			if (markfile) {
+				chmod(markfile, filemode);
+				g_free(markfile);
+			}
+#endif
+		}
+
 		fclose(fp);
 	}
 
@@ -247,6 +274,7 @@ gint mh_move_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 	FILE *fp;
 	GSList *cur;
 	MsgInfo *msginfo;
+	PrefsFolderItem *prefs;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
@@ -255,6 +283,8 @@ gint mh_move_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 		mh_scan_folder(folder, dest);
 		if (dest->last_num < 0) return -1;
 	}
+
+	prefs = dest->prefs;
 
 	destdir = folder_item_get_path(dest);
 	if ((fp = procmsg_open_mark_file(destdir, TRUE)) == NULL)
@@ -314,6 +344,8 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	gchar *srcfile;
 	gchar *destfile;
 	FILE *fp;
+	gint filemode = 0;
+	PrefsFolderItem *prefs;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msginfo != NULL, -1);
@@ -327,6 +359,8 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 		mh_scan_folder(folder, dest);
 		if (dest->last_num < 0) return -1;
 	}
+
+	prefs = dest->prefs;
 
 	destdir = folder_item_get_path(dest);
 	if (!is_dir_exist(destdir))
@@ -359,6 +393,16 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 		return -1;
 	}
 
+	if (prefs && prefs->enable_folder_chmod && prefs->folder_chmod) {
+		if (chmod(destfile, prefs->folder_chmod) < 0)
+			FILE_OP_ERROR(destfile, "chmod");
+
+		/* for mark file */
+		filemode = prefs->folder_chmod;
+		if (filemode & S_IRGRP) filemode |= S_IWGRP;
+		if (filemode & S_IROTH) filemode |= S_IWOTH;
+	}
+
 	g_free(srcfile);
 	g_free(destfile);
 	dest->last_num++;
@@ -375,6 +419,19 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 			MSG_UNSET_PERM_FLAGS(newmsginfo.flags,
 					     MSG_NEW|MSG_UNREAD|MSG_DELETED);
 		procmsg_write_flags(&newmsginfo, fp);
+
+		if (filemode) {
+#if HAVE_FCHMOD
+			fchmod(fileno(fp), filemode);
+#else
+			markfile = folder_item_get_mark_file(dest);
+			if (markfile) {
+				chmod(markfile, filemode);
+				g_free(markfile);
+			}
+#endif
+		}
+
 		fclose(fp);
 	}
 
