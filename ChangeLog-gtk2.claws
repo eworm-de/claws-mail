@@ -1,6 +1,11 @@
 2004-07-18 [colin]	0.9.12cvs30.3
 
 	* src/compose.c
+		Also block text_inserted when inserting a file
+
+2004-07-18 [colin]	0.9.12cvs30.3
+
+	* src/compose.c
 		Fix smart wrapping (block text_inserted handler
 		while putting quotation to avoid wrap on input,
 		don't join lines if next is sig separator)

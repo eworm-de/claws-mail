@@ -2130,6 +2130,10 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 	mark = gtk_text_buffer_get_insert(buffer);
 	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
 
+	g_signal_handlers_block_by_func(G_OBJECT(buffer),
+					G_CALLBACK(text_inserted),
+					compose);
+
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		const gchar *cur_encoding = conv_get_current_charset_str();
 		gchar *str = conv_codeset_strdup(buf, cur_encoding, CS_UTF_8);
@@ -2148,6 +2152,10 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 
 		g_free (str);
 	}
+
+	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
+					  G_CALLBACK(text_inserted),
+					  compose);
 
 	fclose(fp);
 
