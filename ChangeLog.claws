@@ -1,3 +1,10 @@
+2001-12-04 [alfons]	0.6.5claws50
+
+	* src/mh.c
+		declare markfile in appropriate functions when
+		no fchmod() is found (thanks to Mark Heerdink <marc@koelkast.net>
+		for spotting this)
+
 2001-12-04 [paul]	0.6.5claws49
 
 	* sync with sylpheed 0.6.5cvs21

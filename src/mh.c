@@ -246,6 +246,8 @@ gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 #if HAVE_FCHMOD
 			fchmod(fileno(fp), filemode);
 #else
+			gchar *markfile;
+
 			markfile = folder_item_get_mark_file(dest);
 			if (markfile) {
 				chmod(markfile, filemode);
@@ -420,6 +422,8 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 #if HAVE_FCHMOD
 			fchmod(fileno(fp), filemode);
 #else
+			gchar *markfile;
+
 			markfile = folder_item_get_mark_file(dest);
 			if (markfile) {
 				chmod(markfile, filemode);
