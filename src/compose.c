@@ -91,7 +91,7 @@
 #include "procmime.h"
 #include "statusbar.h"
 #include "about.h"
-#include "base64.h"
+#include "common/base64.h"
 #include "codeconv.h"
 #include "utils.h"
 #include "gtkutils.h"

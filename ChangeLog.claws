@@ -1,3 +1,19 @@
+2002-11-30 [christoph]	0.8.6claws42
+
+	* src/Makefile.am
+	* src/base64.[ch]
+	* src/codeconv.c
+	* src/compose.c
+	* src/ldif.c
+	* src/pgptext.c
+	* src/procmime.c
+	* src/rfc2015.c
+	* src/smtp.c
+	* src/unmime.c
+	* src/common/Makefile.am
+	* src/common/base64.[ch]
+		move base64 en/decoder to common directory
+
 2002-11-30 [christoph]	0.8.6claws41
 
 	* src/common			** NEW **

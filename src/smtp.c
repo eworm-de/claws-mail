@@ -29,7 +29,7 @@
 #include "smtp.h"
 #include "socket.h"
 #include "md5.h"
-#include "base64.h"
+#include "common/base64.h"
 #include "utils.h"
 
 static gint verbose = 1;

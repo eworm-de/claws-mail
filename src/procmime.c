@@ -32,7 +32,7 @@
 #include "intl.h"
 #include "procmime.h"
 #include "procheader.h"
-#include "base64.h"
+#include "common/base64.h"
 #include "uuencode.h"
 #include "unmime.h"
 #include "html.h"

@@ -31,7 +31,7 @@
 #include "addritem.h"
 #include "addrcache.h"
 
-#include "base64.h"
+#include "common/base64.h"
 
 /*
 * Create new object.
