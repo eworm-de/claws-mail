@@ -1,3 +1,13 @@
+2004-12-03
+
+	* version 1.0.0beta4
+
+2004-12-03
+
+	* src/pixmaps/regular.xpm: 未使用のアイコンを削除。
+	* README
+	  README.jp: 更新。
+
 2004-12-02
 
 	* src/pop.c: pop3_write_msg_to_file(): 単体の CR を LF に変換しない

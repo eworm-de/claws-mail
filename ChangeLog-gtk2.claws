@@ -1,3 +1,46 @@
+2004-12-04 [paul]	0.9.12cvs182.1
+
+	* ChangeLog
+	* ChangeLog.claws
+	* ChangeLog.jp
+	* INSTALL
+	* NEWS
+	* README
+	* README.jp
+	* configure.ac
+	* doc/manual/ja/Makefile.am
+	* doc/manual/ja/sylpheed-1.html
+	* doc/manual/ja/sylpheed-10.html
+	* doc/manual/ja/sylpheed-11.html
+	* doc/manual/ja/sylpheed-12.html
+	* doc/manual/ja/sylpheed-13.html
+	* doc/manual/ja/sylpheed-14.html
+	* doc/manual/ja/sylpheed-15.html
+	* doc/manual/ja/sylpheed-16.html
+	* doc/manual/ja/sylpheed-17.html
+	* doc/manual/ja/sylpheed-18.html
+	* doc/manual/ja/sylpheed-19.html
+	* doc/manual/ja/sylpheed-2.html
+	* doc/manual/ja/sylpheed-20.html
+	* doc/manual/ja/sylpheed-3.html
+	* doc/manual/ja/sylpheed-4.html
+	* doc/manual/ja/sylpheed-5.html
+	* doc/manual/ja/sylpheed-6.html
+	* doc/manual/ja/sylpheed-7.html
+	* doc/manual/ja/sylpheed-8.html
+	* doc/manual/ja/sylpheed-9.html
+	* doc/manual/ja/sylpheed.html
+	* doc/manual/ja/sylpheed.sgml
+	* po/de.po
+	* src/Makefile.am
+	* src/compose.c
+	* src/procmime.c
+	* src/pixmaps/regular.xpm **REMOVED**
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/plugin.c
+	* src/plugins/pgpmime/prefs_gpg.c
+		sync with HEAD
+
 2004-12-03 [paul]	0.9.12cvs180.1
 
 	* ChangeLog

@@ -272,6 +272,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 	gchar *tmpfilename;
 	FILE *outfp, *infp;
 	struct stat statbuf;
+	gboolean tmp_file = FALSE;
 
 	EncodingType encoding = forced_encoding 
 				? forced_encoding
@@ -295,7 +296,7 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 		perror("tmpfile");
 		return FALSE;
 	}
-
+	tmp_file = TRUE;
 	readend = mimeinfo->offset + mimeinfo->length;
 
 	if (encoding == ENC_QUOTED_PRINTABLE) {
@@ -308,6 +309,19 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 		gchar outbuf[BUFFSIZE];
 		gint len;
 		Base64Decoder *decoder;
+		gboolean uncanonicalize = FALSE;
+		FILE *tmpfp = outfp;
+
+		if (mimeinfo->type == MIMETYPE_TEXT ||
+		    mimeinfo->type == MIMETYPE_MESSAGE) {
+			uncanonicalize = TRUE;
+			tmpfp = my_tmpfile();
+			if (!tmpfp) {
+				perror("tmpfile");
+				if (tmp_file) fclose(outfp);
+				return FALSE;
+			}
+		}
 
 		decoder = base64_decoder_new();
 		while ((ftell(infp) < readend) && (fgets(buf, sizeof(buf), infp) != NULL)) {
@@ -316,9 +330,18 @@ gboolean procmime_decode_content(MimeInfo *mimeinfo)
 				g_warning("Bad BASE64 content\n");
 				break;
 			}
-			fwrite(outbuf, sizeof(gchar), len, outfp);
+			fwrite(outbuf, sizeof(gchar), len, tmpfp);
 		}
 		base64_decoder_free(decoder);
+
+		if (uncanonicalize) {
+			rewind(tmpfp);
+			while (fgets(buf, sizeof(buf), tmpfp) != NULL) {
+				strcrchomp(buf);
+				fputs(buf, outfp);
+			}
+			fclose(tmpfp);
+		}
 	} else if (encoding == ENC_X_UUENCODE) {
 		gchar outbuf[BUFFSIZE];
 		gint len;
@@ -397,18 +420,41 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 
 	if (encoding == ENC_BASE64) {
 		gchar inbuf[B64_LINE_SIZE], outbuf[B64_BUFFSIZE];
+		FILE *tmp_fp = infp;
+		gchar *tmp_file = NULL;
+
+		if (mimeinfo->type == MIMETYPE_TEXT ||
+		    mimeinfo->type == MIMETYPE_MESSAGE) {
+			tmp_file = get_tmp_file();
+			if (canonicalize_file(mimeinfo->data.filename, tmp_file) < 0) {
+				g_free(tmp_file);
+				fclose(infp);
+			}
+			if ((tmp_fp = fopen(tmp_file, "rb")) == NULL) {
+				FILE_OP_ERROR(tmp_file, "fopen");
+				unlink(tmp_file);
+				g_free(tmp_file);
+				fclose(infp);
+			}
+		}
 
 		while ((len = fread(inbuf, sizeof(gchar),
-				    B64_LINE_SIZE, infp))
+				    B64_LINE_SIZE, tmp_fp))
 		       == B64_LINE_SIZE) {
 			base64_encode(outbuf, inbuf, B64_LINE_SIZE);
 			fputs(outbuf, outfp);
 			fputc('\n', outfp);
 		}
-		if (len > 0 && feof(infp)) {
+		if (len > 0 && feof(tmp_fp)) {
 			base64_encode(outbuf, inbuf, len);
 			fputs(outbuf, outfp);
 			fputc('\n', outfp);
+		}
+
+		if (tmp_file) {
+			fclose(tmp_fp);
+			unlink(tmp_file);
+			g_free(tmp_file);
 		}
 	} else if (encoding == ENC_QUOTED_PRINTABLE) {
 		gchar inbuf[BUFFSIZE], outbuf[BUFFSIZE * 4];

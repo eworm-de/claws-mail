@@ -418,9 +418,8 @@ static void compose_toggle_sign_cb	(gpointer	 data,
 static void compose_toggle_encrypt_cb	(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
-static void compose_set_privacy_system_cb(gpointer        data,
-                                        guint           action,
-                                        GtkWidget      *widget);
+static void compose_set_privacy_system_cb(GtkWidget      *widget,
+					  gpointer        data);
 static void compose_update_privacy_system_menu_item(Compose * compose);
 static void activate_privacy_system     (Compose *compose, 
                                          PrefsAccount *account);
@@ -638,7 +637,7 @@ static GtkItemFactoryEntry compose_entries[] =
 #endif
 	{N_("/_Options"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Options/Privacy System"),		NULL, NULL,   0, "<Branch>"},
-	{N_("/_Options/Privacy System/None"),	NULL, compose_set_privacy_system_cb,   0, "<RadioItem>"},
+	{N_("/_Options/Privacy System/None"),	NULL, NULL,   0, "<RadioItem>"},
 	{N_("/_Options/Si_gn"),   	NULL, compose_toggle_sign_cb   , 0, "<ToggleItem>"},
 	{N_("/_Options/_Encrypt"),	NULL, compose_toggle_encrypt_cb, 0, "<ToggleItem>"},
 	{N_("/_Options/---"),		NULL,		NULL,	0, "<Separator>"},
@@ -5188,14 +5187,17 @@ static void compose_update_priority_menu_item(Compose * compose)
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 }	
 
-static void compose_set_privacy_system_cb(gpointer data,
-				          guint action,
-				          GtkWidget *widget)
+static void compose_set_privacy_system_cb(GtkWidget *widget, gpointer data)
 {
 	Compose *compose = (Compose *) data;
 	gchar *systemid;
 	GtkItemFactory *ifactory;
 	gboolean can_sign = FALSE, can_encrypt = FALSE;
+
+	g_return_if_fail(GTK_IS_CHECK_MENU_ITEM(widget));
+
+	if (!GTK_CHECK_MENU_ITEM(widget)->active)
+		return;
 
 	systemid = g_object_get_data(G_OBJECT(widget), "privacy_system");
 	g_free(compose->privacy_system);
@@ -5206,6 +5208,8 @@ static void compose_set_privacy_system_cb(gpointer data,
 		can_sign = privacy_system_can_sign(systemid);
 		can_encrypt = privacy_system_can_encrypt(systemid);
 	}
+
+	debug_print("activated privacy system: %s\n", systemid != NULL ? systemid : "None");
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 	menu_set_sensitive(ifactory, "/Options/Sign", can_sign);
@@ -5291,18 +5295,18 @@ void compose_update_actions_menu(Compose *compose)
 void compose_update_privacy_systems_menu(Compose *compose)
 {
 	static gchar *branch_path = "/Options/Privacy System";
+	static gboolean connected = FALSE;
 	GtkItemFactory *ifactory;
 	GtkWidget *menuitem;
-	gchar *menu_path;
 	GSList *systems, *cur;
 	GList *amenu;
-	GtkItemFactoryEntry ifentry = {NULL, NULL, NULL, 0, "<Branch>"};
 	GtkWidget *widget;
+	GtkWidget *system_none;
+	GSList *group;
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 
 	/* remove old entries */
-	ifentry.path = branch_path;
 	menuitem = gtk_item_factory_get_widget(ifactory, branch_path);
 	g_return_if_fail(menuitem != NULL);
 
@@ -5313,26 +5317,29 @@ void compose_update_privacy_systems_menu(Compose *compose)
 		amenu = alist;
 	}
 
-	ifentry.accelerator     = NULL;
-	ifentry.callback_action = 0;
-	ifentry.callback        = compose_set_privacy_system_cb;
-	ifentry.item_type       = "/Options/Privacy System/None";
+	system_none = gtk_item_factory_get_widget(ifactory,
+		"/Options/Privacy System/None");
+	if (!connected) {
+		g_signal_connect(G_OBJECT(system_none), "activate",
+			G_CALLBACK(compose_set_privacy_system_cb), compose);
+		connected = TRUE;
+	}
 
 	systems = privacy_get_system_ids();
 	for (cur = systems; cur != NULL; cur = g_slist_next(cur)) {
 		gchar *systemid = cur->data;
 
-		menu_path = g_strdup_printf("%s/%s", branch_path,
-					    privacy_system_get_name(systemid));
-		ifentry.path = menu_path;
-		gtk_item_factory_create_item(ifactory, &ifentry, compose, 1);
-		widget = gtk_item_factory_get_widget(ifactory, menu_path);
-
+		group = gtk_radio_menu_item_get_group(GTK_RADIO_MENU_ITEM(system_none));
+		widget = gtk_radio_menu_item_new_with_label(group,
+			privacy_system_get_name(systemid));
 		g_object_set_data_full(G_OBJECT(widget), "privacy_system",
 				       g_strdup(systemid), g_free);
+		g_signal_connect(G_OBJECT(widget), "activate",
+			G_CALLBACK(compose_set_privacy_system_cb), compose);
 
+		gtk_menu_append(GTK_MENU(system_none->parent), widget);
+		gtk_widget_show(widget);
 		g_free(systemid);
-		g_free(menu_path);
 	}
 	g_slist_free(systems);
 }

@@ -206,8 +206,8 @@ sylpheedinclude_HEADERS = \
 	news.h \
 	news_gtk.h \
 	noticeview.h \
-	pine.h \
 	partial_download.h \
+	pine.h \
 	pop.h \
 	prefs_account.h \
 	prefs_actions.h \
@@ -272,6 +272,7 @@ EXTRA_DIST = \
 	pixmaps/continue.xpm \
 	pixmaps/deleted.xpm \
 	pixmaps/dir_close.xpm \
+	pixmaps/dir_noselect.xpm \
 	pixmaps/dir_open_hrm.xpm \
 	pixmaps/dir_open.xpm \
 	pixmaps/down_arrow.xpm \
@@ -336,7 +337,6 @@ EXTRA_DIST = \
 	pixmaps/privacy_emblem_warn.xpm \
 	pixmaps/properties.xpm \
 	pixmaps/quicksearch.xpm \
-	pixmaps/regular.xpm \
 	pixmaps/replied.xpm \
 	pixmaps/search.xpm \
 	pixmaps/sylpheed_icon.xpm \

@@ -1,5 +1,12 @@
 Changes of Sylpheed
 
+* 1.0.0beta4
+
+    * The Japanese manual has been updated.
+    * Some icons have been modified, and unused icons have been removed.
+    * The menu strings have been fixed.
+    * The workaround for invalid CR characters on POP3 has been made.
+
 * 1.0.0beta3
 
     * The Japanese JPilot address book has been supported.

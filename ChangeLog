@@ -1,3 +1,13 @@
+2004-12-03
+
+	* version 1.0.0beta4
+
+2004-12-03
+
+	* src/pixmaps/regular.xpm: removed unused icon.
+	* README
+	  README.jp: updated.
+
 2004-12-02
 
 	* src/pop.c: pop3_write_msg_to_file(): don't convert single CRs to

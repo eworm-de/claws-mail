@@ -83,10 +83,10 @@ Wanderlust 等の Emacs 系メーラを参考にしており、キーボードのみによる操作
 
 機能
 
-	o 無制限の複数アカウント管理
+	o 複数アカウント
 	o スレッド表示
-	o 振り分け機能
-	o MIME (添付)
+	o 強力なフィルタリング
+	o MIME (ファイルの添付)
 	o 統合 ニュースリーダー
 	o SMTP AUTH 対応
 	o CRAM-MD5 認証 (SMTP AUTH / IMAP4rev1)
@@ -113,10 +113,7 @@ Wanderlust 等の Emacs 系メーラを参考にしており、キーボードのみによる操作
 	o コマンドラインによるリモート操作
 	o フォルダ毎の設定
 	o LDAP, vCard, JPilot 対応
-	o ドラッグ & ドロップ (一部実装)
-
-その他
-
+	o ドラッグ & ドロップ
 	o autoconf, automake 対応
 	o gettext によるメッセージの国際化対応
 	o UTF-8 (Unicode) を含む多数の文字コードに対応

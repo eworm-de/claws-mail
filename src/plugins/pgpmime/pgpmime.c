@@ -419,7 +419,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	GpgmeData gpgtext, gpgsig;
 	guint len;
 	struct passphrase_cb_info_s info;
-  
+
 	memset (&info, 0, sizeof info);
 
 	/* remove content node from message */
@@ -453,6 +453,7 @@ gboolean pgpmime_sign(MimeInfo *mimeinfo, PrefsAccount *account)
 	gpgme_new(&ctx);
 	gpgme_set_textmode(ctx, 1);
 	gpgme_set_armor(ctx, 1);
+
 	if (!sgpgme_setup_signers(ctx, account)) {
 		gpgme_release(ctx);
 		return FALSE;
@@ -589,7 +590,7 @@ gboolean pgpmime_encrypt(MimeInfo *mimeinfo, const gchar *encrypt_data)
 
 static PrivacySystem pgpmime_system = {
 	"pgpmime",			/* id */
-	"PGP Mime",			/* name */
+	"PGP/MIME",			/* name */
 
 	pgpmime_free_privacydata,	/* free_privacydata */
 

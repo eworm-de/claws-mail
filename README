@@ -68,9 +68,9 @@ Supported protocols
 
 Features
 
-	o unlimited multiple account handling
+	o multiple accounts
 	o thread display
-	o filtering
+	o powerful filtering
 	o MIME (attachments)
 	o integrated News reader
 	o SMTP AUTH support
@@ -98,10 +98,7 @@ Features
 	o remote operation by command line
 	o per-folder configuration
 	o LDAP, vCard, and JPilot support
-	o drag & drop (partially implemented)
-
-Others
-
+	o Drag & Drop
 	o autoconf, automake support
 	o internationalization of messages by gettext
 	o support of many code sets, including UTF-8 (Unicode)
@@ -167,7 +164,7 @@ dialog, but there are a few parameters which don't have user interface
 (you don't have to modify them in normal use). You must edit
 ~/.sylpheed/sylpheedrc by an editor when Sylpheed is not running.
 
-allow_jisx0201_kana		allow JIS X 0201 Kana (hankaku kana) on
+allow_jisx0201_kana		allow JIS X 0201 Kana (half-width kana) on
 				sending.
 				0: off  1: on   [default: 0]
 bold_font			bold font used in folder, summary and text view

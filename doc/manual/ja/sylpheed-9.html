@@ -1,100 +1,52 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML>
 <HEAD>
- <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
- <TITLE>Sylpheed User's Manual: アドレス帳</TITLE>
+ <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.21">
+ <TITLE>Sylpheed User's Manual: メッセージの受信</TITLE>
  <LINK HREF="sylpheed-10.html" REL=next>
  <LINK HREF="sylpheed-8.html" REL=previous>
  <LINK HREF="sylpheed.html#toc9" REL=contents>
 </HEAD>
 <BODY>
-<A HREF="sylpheed-10.html">Next</A>
-<A HREF="sylpheed-8.html">Previous</A>
-<A HREF="sylpheed.html#toc9">Contents</A>
+<A HREF="sylpheed-10.html">次のページ</A>
+<A HREF="sylpheed-8.html">前のページ</A>
+<A HREF="sylpheed.html#toc9">目次へ</A>
 <HR>
-<H2><A NAME="s9">9. アドレス帳</A></H2>
+<H2><A NAME="receive-message"></A> <A NAME="s9">9.</A> <A HREF="sylpheed.html#toc9">メッセージの受信</A></H2>
 
-<P>アドレス帳は、
-<UL>
-<LI>Alt + aを押す</LI>
-<LI>メニューより"ツール＞アドレス帳"を選択する</LI>
-</UL>
 
-などの方法で起動することができます。
-<H2><A NAME="ss9.1">9.1 アドレスの登録・削除</A>
+<H2><A NAME="ss9.1">9.1</A> <A HREF="sylpheed.html#toc9.1">SylpheedのPOP受信機能を使う場合</A>
 </H2>
 
-<P>アドレス帳を開いた後、アドレスを登録したいフォルダを"共有アドレス"や
-"個人用アドレス"などが書かれたリストの中から選択します。
-その後、
-<UL>
-<LI>メニューより"ファイル＞新規アドレス"</LI>
-<LI>登録ボタンを押す</LI>
-<LI>Alt + nを押す</LI>
-<LI>アドレス表示部分でコンテキストメニューを出し、新規アドレスを選択</LI>
-</UL>
 
-のどれかをすることで登録ダイアログが現れるので、それぞれの項目を入力した後OKを押せば
-登録されます。
-<P>また登録されたアドレスを選択後、
-<UL>
-<LI>メニューより"ファイル＞編集"</LI>
-<LI>Alt + returnを押す</LI>
-<LI>コンテキストメニューを呼び出して編集を選択</LI>
-<LI>編集ボタンを押す</LI>
-</UL>
-
-のどれかをすれば編集ダイアログを表示でき、OKを押せば更新されます。
-<P>同じく登録されたアドレスを選択後、
-<UL>
-<LI>メニューより"ファイル＞削除"</LI>
-<LI>コンテキストメニューを出して削除を選択</LI>
-<LI>削除ボタンを押す</LI>
-</UL>
-
-のどれかをすればアドレス帳からそのアドレスを削除することができます。
-<H2><A NAME="ss9.2">9.2 フォルダとグループ</A>
-</H2>
-
-<P>フォルダとグループは中にアドレスを入れられるという点で同じですが、
-メール作成時にアドレス帳からグループを参照することにより、そのグループに登録された
-すべての人に送信することができるという機能の違いがあります。
-<P>フォルダあるいはグループを中に作りたいフォルダを選択後、
-<UL>
-<LI>メニューより"ファイル＞新規フォルダ"</LI>
-<LI>Alt + rを押す</LI>
-<LI>コンテキストメニューを出して新規フォルダを選択</LI>
-</UL>
-
-のどれかをすればフォルダを作成することができ、
-<UL>
-<LI>メニューより"ファイル＞新規グループ"</LI>
-<LI>Alt + gを押す</LI>
-<LI>コンテキストメニューを出して新規グループを選択</LI>
-</UL>
-
-のどれかをすればグループを作成することができます。
-<P>ただし、フォルダの中にフォルダやグループを作成することは可能ですが、
-グループの中にフォルダやグループを作成することはできません。
-<H2><A NAME="address-combo"></A> <A NAME="ss9.3">9.3 メッセージ作成ウィンドウとの連携</A>
-</H2>
+<H3>現在のアカウントを受信</H3>
 
 <P>
-<A HREF="sylpheed-8.html#message-create">メッセージの作成</A>画面で、
+<A HREF="sylpheed-8.html#Account-Config">アカウント設定</A>をしてから、
 <UL>
-<LI>メニューで"ツール＞アドレス帳"</LI>
-<LI>"アドレス"ボタンをクリック</LI>
+<LI>メニューの"メッセージ＞受信＞現在のアカウントから受信"を選択</LI>
+<LI>ツールバーの"受信"ボタンを押す</LI>
 </UL>
 
-することでアドレス帳画面を出すことができ、
-そこでアドレスやグループを選択して"宛先"(あるいは"To:"), "Cc:", "Bcc:"ボタンを押せば
-それぞれ宛先, Cc, Bccにアドレスが追加されます。
-<P>複数選択してボタンを押して同時にたくさん追加することも可能ですし、
-一度3つのどれかのボタンを押した後また別のアドレスを選択してボタンを押せば
-前に追加したアドレスの次に選択したアドレスが追加されます。
+のいずれかを行えば
+<A HREF="sylpheed-8.html#current-account">現在のアカウント</A>のメールをダウンロードできます。</P>
+<H3>全てのアカウントを受信</H3>
+
+<P>
+<UL>
+<LI>メニューの"メッセージ＞受信＞全アカウントから受信"を選択</LI>
+<LI>ツールバーの"全受信"をクリック</LI>
+</UL>
+
+のいずれかを行うことで
+<A HREF="sylpheed-8.html#Account-Config">アカウントの設定</A>で設定されたすべてのアカウントのメールを受信できます。</P>
+<H2><A NAME="ss9.2">9.2</A> <A HREF="sylpheed.html#toc9.2">fetchmailなどの外部プログラムを使用する場合</A>
+</H2>
+
+
 <HR>
-<A HREF="sylpheed-10.html">Next</A>
-<A HREF="sylpheed-8.html">Previous</A>
-<A HREF="sylpheed.html#toc9">Contents</A>
+<A HREF="sylpheed-10.html">次のページ</A>
+<A HREF="sylpheed-8.html">前のページ</A>
+<A HREF="sylpheed.html#toc9">目次へ</A>
 </BODY>
 </HTML>

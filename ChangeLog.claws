@@ -1,3 +1,51 @@
+2004-12-04 [paul]	0.9.12cvs182
+
+	* ChangeLog
+	* ChangeLog.jp
+	* INSTALL
+	* NEWS
+	* README
+	* README.jp
+	* doc/manual/ja/Makefile.am
+	* doc/manual/ja/sylpheed-1.html
+	* doc/manual/ja/sylpheed-10.html
+	* doc/manual/ja/sylpheed-11.html
+	* doc/manual/ja/sylpheed-12.html
+	* doc/manual/ja/sylpheed-13.html
+	* doc/manual/ja/sylpheed-14.html
+	* doc/manual/ja/sylpheed-15.html
+	* doc/manual/ja/sylpheed-16.html
+	* doc/manual/ja/sylpheed-17.html
+	* doc/manual/ja/sylpheed-18.html
+	* doc/manual/ja/sylpheed-19.html
+	* doc/manual/ja/sylpheed-2.html
+	* doc/manual/ja/sylpheed-20.html
+	* doc/manual/ja/sylpheed-3.html
+	* doc/manual/ja/sylpheed-4.html
+	* doc/manual/ja/sylpheed-5.html
+	* doc/manual/ja/sylpheed-6.html
+	* doc/manual/ja/sylpheed-7.html
+	* doc/manual/ja/sylpheed-8.html
+	* doc/manual/ja/sylpheed-9.html
+	* doc/manual/ja/sylpheed.html
+	* doc/manual/ja/sylpheed.sgml
+	* src/Makefile.am
+	* src/procmime.c
+	* src/pixmaps/regular.xpm **REMOVED**
+		sync with main 1.0.0beta4, including: "canonicalize text files
+		before encoding to BASE64, and uncanonicalize after decoding
+		to conform with RFC 2045" 
+
+2004-12-03 [christoph]	0.9.12cvs181
+
+	* src/compose.c
+		build the Privacy System menu without GtkItemFactory to
+		allow '/' in Privacy System names
+
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/plugin.c
+		Update description and change Privacy System name
+
 2004-12-03 [paul]
 
 	* src/pixmaps/dir_close.xpm
