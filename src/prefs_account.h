@@ -116,6 +116,7 @@ struct _PrefsAccount
 	gint size_limit;
 	gboolean filter_on_recv;
 	gchar *inbox;
+	gint max_articles;
 
 	/* selective Download */
 	gint   session;

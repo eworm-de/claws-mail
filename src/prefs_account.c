@@ -99,6 +99,11 @@ static struct Receive {
 	GtkWidget *inbox_btn;
 
 	GtkWidget *recvatgetall_chkbtn;
+
+	GtkWidget *frame_maxarticle;
+	GtkWidget *label_maxarticle;
+	GtkWidget *spinbtn_maxarticle;
+	GtkObject *spinbtn_maxarticle_adj;
 } receive;
 
 static struct Send {
@@ -311,6 +316,10 @@ static PrefParam param[] = {
 	{"receive_at_get_all", "TRUE", &tmp_ac_prefs.recv_at_getall, P_BOOL,
 	 &receive.recvatgetall_chkbtn,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	{"max_news_articles", "300", &tmp_ac_prefs.max_articles, P_INT,
+	 &receive.spinbtn_maxarticle,
+	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 
 	/* Send */
 	{"add_date", "TRUE", &tmp_ac_prefs.add_date, P_BOOL,
@@ -1105,6 +1114,12 @@ static void prefs_account_receive_create(void)
 	GtkWidget *inbox_btn;
 	GtkWidget *recvatgetall_chkbtn;
 
+	GtkWidget *hbox2;
+	GtkWidget *frame2;
+	GtkWidget *label_maxarticle;
+	GtkWidget *spinbtn_maxarticle;
+	GtkObject *spinbtn_maxarticle_adj;
+
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
@@ -1222,6 +1237,31 @@ static void prefs_account_receive_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
 	gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 
+	PACK_FRAME(vbox1, frame2, _("Maximum number of articles to download"));
+
+	hbox2 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox2);
+	gtk_container_add (GTK_CONTAINER (frame2), hbox2);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox2), 8);
+
+	spinbtn_maxarticle_adj =
+		gtk_adjustment_new (300, 0, 10000, 10, 100, 100);
+	spinbtn_maxarticle = gtk_spin_button_new
+		(GTK_ADJUSTMENT (spinbtn_maxarticle_adj), 10, 0);
+	gtk_widget_show (spinbtn_maxarticle);
+	gtk_box_pack_start (GTK_BOX (hbox2), spinbtn_maxarticle,
+			    FALSE, FALSE, 0);
+	gtk_widget_set_usize (spinbtn_maxarticle, 64, -1);
+	gtk_spin_button_set_numeric
+		(GTK_SPIN_BUTTON (spinbtn_maxarticle), TRUE);
+
+	label_maxarticle = gtk_label_new
+		(_("unlimited if 0 is specified"));
+	gtk_widget_show (label_maxarticle);
+	gtk_box_pack_start (GTK_BOX (hbox2), label_maxarticle, FALSE, FALSE, 0);
+	gtk_label_set_justify (GTK_LABEL (label_maxarticle), GTK_JUSTIFY_LEFT);
+
+
 	PACK_CHECK_BUTTON
 		(vbox1, recvatgetall_chkbtn,
 		 _("`Get all' checks for new messages on this account"));
@@ -1240,6 +1280,10 @@ static void prefs_account_receive_create(void)
 	receive.inbox_btn                = inbox_btn;
 
 	receive.recvatgetall_chkbtn      = recvatgetall_chkbtn;
+
+	receive.frame_maxarticle	= frame2;
+	receive.spinbtn_maxarticle     	= spinbtn_maxarticle;
+	receive.spinbtn_maxarticle_adj 	= spinbtn_maxarticle_adj;
 }
 
 static void prefs_account_send_create(void)
@@ -2394,9 +2438,9 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 
 		prefs_account_nntpauth_toggled
 			(GTK_TOGGLE_BUTTON(basic.nntpauth_chkbtn), NULL);
-		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
+		gtk_widget_hide(receive.pop3_frame);
+		gtk_widget_show(receive.frame_maxarticle);
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
-
 		/* update pop_before_smtp sensitivity */
 		gtk_toggle_button_set_active
 			(GTK_TOGGLE_BUTTON(p_send.pop_bfr_smtp_chkbtn), FALSE);
@@ -2464,8 +2508,9 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.pass_label, TRUE);
 		gtk_widget_set_sensitive(basic.uid_entry,  TRUE);
 		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
-		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
-		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, FALSE);
+		gtk_widget_hide(receive.pop3_frame);
+		gtk_widget_hide(receive.frame_maxarticle);
+		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
 		prefs_account_mailcmd_toggled
 			(GTK_TOGGLE_BUTTON(basic.mailcmd_chkbtn), NULL);
 
@@ -2539,7 +2584,8 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.pass_label, TRUE);
 		gtk_widget_set_sensitive(basic.uid_entry,  TRUE);
 		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
-		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
+		gtk_widget_hide(receive.pop3_frame);
+		gtk_widget_hide(receive.frame_maxarticle);
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
@@ -2616,7 +2662,10 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_set_sensitive(basic.uid_entry,  TRUE);
 		gtk_widget_set_sensitive(basic.pass_entry, TRUE);
 		gtk_widget_set_sensitive(receive.pop3_frame, TRUE);
+		gtk_widget_show(receive.pop3_frame);
+		gtk_widget_hide(receive.frame_maxarticle);
 		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, TRUE);
+
 		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
 		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
 

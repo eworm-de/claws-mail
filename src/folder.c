@@ -1071,13 +1071,13 @@ gint folder_item_scan(FolderItem *item)
 					if (folder_cur_num < cache_max_num)
 						break;
 					
-					if (prefs_common.max_articles == 0) {
+					if (folder->account->max_articles == 0) {
 						add = TRUE;
 					}
 
-					if (folder_max_num <= prefs_common.max_articles) {
+					if (folder_max_num <= folder->account->max_articles) {
 						add = TRUE;
-					} else if (folder_cur_num > (folder_max_num - prefs_common.max_articles)) {
+					} else if (folder_cur_num > (folder_max_num - folder->account->max_articles)) {
 						add = TRUE;
 					}
 					break;

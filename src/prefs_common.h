@@ -74,7 +74,6 @@ struct _PrefsCommon
  	gboolean newmail_notify_auto;
  	gboolean newmail_notify_manu;
  	gchar   *newmail_notify_cmd;
-	gint max_articles;
 
 	/* Send */
 	gboolean use_extsend;

@@ -1,3 +1,14 @@
+2003-02-19 [paul]	0.8.10claws28
+
+	* src/folder.c
+	  src/news.c
+	  src/prefs_account.[ch]
+	  src/prefs_common.[ch]
+	  	move 'Maximum number of articles to download' to
+		account prefs.
+		clean up account prefs gui a little by hiding entries
+		rather then greying out entries
+
 2003-02-19 [hiro]	0.8.10claws27
 
 	* src/common/utils.c
