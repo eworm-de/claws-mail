@@ -1847,6 +1847,9 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 
 			if (textview->cur_pos >= uri->start &&
 			    textview->cur_pos <= uri->end) {
+			    	gchar *trimmed_uri;
+				
+				trimmed_uri = trim_string(uri->uri, 60);
 				/* single click: display url in statusbar */
 				if (event->button == 1 && textview->last_buttonpress != GDK_2BUTTON_PRESS) {
 					if (textview->messageview->mainwin) {
@@ -1861,7 +1864,7 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 						textview->show_url_msgid = gtk_statusbar_push(
 								GTK_STATUSBAR(textview->messageview->mainwin->statusbar),
 								textview->messageview->mainwin->folderview_cid,
-								uri->uri);
+								trimmed_uri);
 						textview->show_url_timeout_tag = gtk_timeout_add( 4000, show_url_timeout_cb, textview );
 						gtkut_widget_wait_for_draw(textview->messageview->mainwin->hbox_stat);
 					}

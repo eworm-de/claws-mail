@@ -1,3 +1,11 @@
+2003-09-01 [paul]	0.9.4claws49
+
+	* src/textview.c
+		trim uri before sending to the statusbar
+		fixes Bug 275 'Clicking on long URL wrapped onto two lines
+		in the message window causes main S-C window to enlarge 
+		past screen edges'
+
 2003-09-01 [paul]	0.9.4claws48
 
 	* sync with 0.9.4cvs12
