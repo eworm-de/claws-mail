@@ -280,6 +280,7 @@ void subst_chars			(gchar		*str,
 					 gchar		*orig,
 					 gchar		 subst);
 void subst_for_filename			(gchar		*str);
+void subst_for_shellsafe_filename	(gchar		*str);
 gboolean is_header_line			(const gchar	*str);
 gboolean is_ascii_str			(const guchar	*str);
 gint get_quote_level			(const gchar	*str,
