@@ -1,3 +1,8 @@
+2002-07-21 [paul]	0.7.8claws86
+
+	* src/prefs_common.c
+		add browser command line for Galeon
+
 2002-07-21 [paul]	0.7.8claws85
 
 	* Makefile.am
