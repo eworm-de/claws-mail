@@ -1,3 +1,11 @@
+2001-07-28 [paul]
+
+	* tools/gif2xface.pl   **NEW FILE**
+	* tools/README
+		script to convert file.gif to file.xface for
+		use in a custom header.
+		(submitted by Ricardo Mones Lastra <mones@aic.uniovi.es>)
+
 2001-07-27 [alfons]
 	
 	* configure.in
@@ -517,7 +525,7 @@
 	* src/summaryview.[ch]
 		new right-click option: Label.
 		substitute for 'Mark-->Mark/Unmark', colours the line.
-		submitted by Satoshi Nagayasu
+		(submitted by Satoshi Nagayasu <snaga@snaga.org>)
 
 2001-07-01 [christoph]
 
@@ -552,7 +560,7 @@
 
 	* po/pt_BR.po
         	updated and completed, translations by Fabio
-                Junior Beneditto
+                Junior Beneditto <fjbeneditto@yahoo.com.br>
 
 2001-06-29 [alfons]
 

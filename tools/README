@@ -21,6 +21,43 @@
 
 -----------------------------------------------------------------------
 
+* gif2xface.pl
+
+  WHAT IT DOES
+
+  This perl script converts a monochrome (1 bit) 48x48 pixels GIF file
+  into an X-Face graphic suitable for inclusion into custom headers of
+  Sylpheed. An X-Face allows to quickly identify (or be identified as)
+  the sender of a mail message in a xface-capable MUA (like sylpheed).
+
+  HOW TO USE IT
+
+  After obtaining the desired image for your X-Face you should:
+    * scale it to 48x48 pixels (Image->Scale image on Gimp)
+    * down color depth to b/w (Image->Mode->Indexed selecting "Use
+      Black/White palette" and the desired dithering options (prior to
+      indexing doing Image->Colors->Threshold allows you to select the
+      b/w level if you don't want a dithered (dotty) image))
+    * save file as non-interlaced GIF
+  Then do:
+
+      ./gif2xface < filename.gif > filename.xface
+
+  In filename.xface will be the X-Face header ready to use.
+  You can add a custom header in Sylpheed through Configuration->
+  Preferences per account, "Send" tab, check "Add user-defined header"
+  then "Edit..." if you want to add it via Sylpheed interface, or do
+
+      echo "0:" `cat filename.xface` > ~/.sylpheed/customheaderrc
+
+  if you want to create the custom headers file yourself (Warning: this
+  method is valid only if you don't have any other custom header set or
+  they will be lost!).
+
+  Any problems, contact Ricardo Mones Lastra <mones@aic.uniovi.es>
+
+-----------------------------------------------------------------------
+
 * ldif-to-xml.py
 
   WHAT IT DOES
@@ -46,4 +83,3 @@
   Any problems, contact Rod Senra <rodrigo.senra@ic.unicamp.br>
 
 -----------------------------------------------------------------------
-
