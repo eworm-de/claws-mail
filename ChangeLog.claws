@@ -1,3 +1,10 @@
+2003-10-15 [paul]	0.9.6claws29
+
+	* src/messageview.c
+		workaround for buggy smtp servers. on sending a
+		return receipt strip the name part from the address
+		when creating headers
+		
 2003-10-15 [paul]	0.9.6claws28
 
 	* sync with 0.9.7 release

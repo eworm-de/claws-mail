@@ -517,7 +517,13 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		FILE_OP_ERROR(tmp, "chmod");
 		g_warning("can't change file mode\n");
 	}
-
+	
+	gchar *addr = g_strdup(to);
+	gchar *addrp;
+	
+	extract_address(addr);
+	addrp = addr;
+	
 	/* write queue headers */
 	fprintf(fp, "AF:\n");
 	fprintf(fp, "NF:0\n");
@@ -535,7 +541,9 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 	else
 		fprintf(fp, "SSV:\n");
 	fprintf(fp, "SSH:\n");
-	fprintf(fp, "R:<%s>\n", to);
+	fprintf(fp, "R:<%s>\n", addrp);
+	
+	g_free(addrp);
 	
 	/* check whether we need to save the message */
 	outbox = account_get_special_folder(account, F_OUTBOX); 
