@@ -1,3 +1,15 @@
+2001-06-22 [alfons]
+
+	Some minor things.
+
+	* src/pixmaps/stock_news_compose.xpm
+		added pixmap by Leandro
+	* src/prefs_common.c
+		tested built-in spelling checker of GCC 3.0 :)
+	* po/nl.po
+		merged dutch translation of sylpheed-main with
+		sylpheed.pot
+
 2001-06-22 [paul]
 
         Added tools directory and files.

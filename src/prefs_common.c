@@ -1197,7 +1197,7 @@ static void prefs_compose_create(void)
 			   _("Forward as attachment"));
 
 	PACK_CHECK_BUTTON (vbox1, checkbtn_reply_account_autoselect,
-			   _("Automatically select account for mail replys"));
+			   _("Automatically select account for mail replies"));
 
 	/*
 	compose.checkbtn_quote   = checkbtn_quote;
