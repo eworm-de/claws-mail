@@ -1,3 +1,8 @@
+2004-07-29 [colin]	0.9.12cvs39.4
+
+	* src/pop.c
+		Warning -> error
+
 2004-07-29 [colin]	0.9.12cvs39.3
 
 	* src/prefs_matcher.c
