@@ -2437,7 +2437,12 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	MsgFlags flags;
 	gchar *filename;
 
-	if (!new_window && summaryview->displayed == row) return;
+	if (!new_window)
+		if (summaryview->displayed == row)
+			return;
+		else
+			summaryview->messageview->filtered = FALSE;
+	
 	g_return_if_fail(row != NULL);
 
 	if (summary_is_locked(summaryview)) return;

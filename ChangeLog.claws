@@ -1,3 +1,14 @@
+2003-06-14 [alfons]	0.9.0claws37
+
+	* AUTHORS
+		add Martin Wicke
+	* src/action.c
+	* src/messageview.[ch]
+	* src/summaryview.c
+		apply patch #754162 "Quoting messages filtered by actions" submitted
+		by Martin Wicke, which allows quoting message body changed by an
+		action (Thanks!).
+
 2003-06-13 [alfons]	0.9.0claws36
 
 	* src/utils.c

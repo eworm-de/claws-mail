@@ -768,6 +768,7 @@ void messageview_clear(MessageView *messageview)
 	procmsg_msginfo_free(messageview->msginfo);
 	messageview->msginfo = NULL;
 	messageview_change_view_type(messageview, MVIEW_TEXT);
+	messageview->filtered = FALSE;
 	headerview_clear(messageview->headerview);
 	textview_clear(messageview->textview);
 	noticeview_hide(messageview->noticeview);
@@ -1117,10 +1118,9 @@ static PrefsAccount *select_account_from_list(GList *ac_list)
 	return account_find_from_id(account_id);
 }
 
-
 /* 
- * \brief return selected messageview text used by composing 
- * 	  to reply to selected text only
+ * \brief return selected messageview text, when nothing is 
+ * 	  selected and message was filtered, return complete text
  *
  * \param  pointer to Messageview 
  *
@@ -1129,20 +1129,34 @@ static PrefsAccount *select_account_from_list(GList *ac_list)
 gchar *messageview_get_selection(MessageView *msgview)
 {
 	gchar *text = NULL;
+	GtkEditable *edit = NULL;
+	gint body_pos = 0;
 	
 	g_return_val_if_fail(msgview != NULL, NULL);
 
-	text = gtkut_editable_get_selection
-		(GTK_EDITABLE(msgview->textview->text));
-	
-	if (!text && msgview->type == MVIEW_MIME
-	    && msgview->mimeview->type == MIMEVIEW_TEXT
-	    && msgview->mimeview->textview
-	    && !msgview->mimeview->textview->default_text) {
-		text = gtkut_editable_get_selection 
-			(GTK_EDITABLE(msgview->mimeview->textview->text));   
+	if (msgview->type == MVIEW_TEXT) {
+		edit = GTK_EDITABLE(msgview->textview->text);
+		body_pos = msgview->textview->body_pos;
+	}
+	else if (msgview->type == MVIEW_MIME
+		 && msgview->mimeview->type == MIMEVIEW_TEXT
+		 && msgview->mimeview->textview
+		 && !msgview->mimeview->textview->default_text) {
+		edit = GTK_EDITABLE(msgview->mimeview->textview->text);
+		body_pos = msgview->mimeview->textview->body_pos;
 	}
 
+	g_return_val_if_fail(edit != NULL, NULL);
+
+	printf("filtered: %d\n", msgview->filtered);
+	
+	if (edit->has_selection)
+		text = gtkut_editable_get_selection(edit);
+	else if (msgview->filtered) 
+		text = gtk_editable_get_chars (edit, body_pos, -1);
+	else
+		text = NULL;
+	
 	return text;
 }
 
