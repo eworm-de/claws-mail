@@ -1,3 +1,11 @@
+2004-07-06 [colin]	0.9.11cvs17.9
+
+	* src/gtk/quicksearch.c [1.1.2.3]
+		Add a Clear button
+	* commitHelper
+	* PATCHSETS
+		Add a script to help with cvs
+
 2004-07-03 [colin]	0.9.11cvs17.8
 
 	* src/plugins/imageviewer/viewer.c

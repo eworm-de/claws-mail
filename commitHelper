@@ -1,0 +1,59 @@
+#!/bin/sh
+head -15 configure.ac | grep VERSION > /tmp/commitTool.tmp
+source /tmp/commitTool.tmp
+EXTRA_VERSION=`echo $EXTRA_VERSION | awk -F'.' '{for (i=1;i<NF;i++){printf $i"."};printf $NF+1}'`
+nextsversion="${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}cvs${EXTRA_VERSION}"
+rm /tmp/commitTool.tmp
+
+IFS='
+'
+filelist=`cvs status $@ 2>/dev/null |grep ^File`
+
+for file in $filelist; do
+	merge=`echo $file | grep Merge`
+	modif=`echo $file | grep Locally`
+
+	if [ "$merge" != "" ]; then
+		echo $merge
+		echo You have to update first
+		exit
+	fi;
+	if [ "$modif" != "" ]; then
+		echo $modif
+	fi;
+done;
+patchset="("
+log=""
+files=`cvs diff -u $@ 2>/dev/null |grep ^Index`
+echo "--8<----------"
+log="`date +%Y-%m-%d` [`whoami`]\t$nextsversion\n\n"
+for line in $files; do
+	file=`echo $line | cut -d' ' -f2`
+	dir=`dirname $file`
+	filename=`basename $file`
+	cvsfile="$dir/CVS/Entries"
+	version=`grep $filename $cvsfile | cut -d'/' -f3`
+	nextversion=`echo $version | awk -F'.' '{for (i=1;i<NF;i++){printf $i"."};printf $NF+1}'`
+	
+	log="$log\t* $file [$nextversion]\n"
+	patchset="$patchset cvs diff -u -r $version -r $nextversion $file;\
+"
+done;
+patchset="$patchset ) > $nextsversion.patchset"
+log="$log\n"
+echo -e -n $log
+echo "--8<----------"
+if [ -f ChangeLog-gtk2.claws ]; then
+	chlog="ChangeLog-gtk2.claws"
+else
+	chlog="ChangeLog.claws"
+fi
+echo -n "Is it ok (write to $chlog) [y/N]?"
+read ans
+if [ "$ans" == "y" ]; then
+	mv $chlog $chlog.old
+	echo -e -n $log > $chlog
+	cat $chlog.old >> $chlog
+	rm $chlog.old
+	echo "$patchset" >> PATCHSETS
+fi

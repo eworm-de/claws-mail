@@ -202,6 +202,15 @@ static void search_description_cb(GtkWidget *widget)
 	description_window_create(&search_descr);
 };
 
+static gboolean clear_search_cb(GtkMenuItem *widget, gpointer data)
+{
+	QuickSearch *quicksearch = (QuickSearch *)data;
+	
+	quicksearch_set(quicksearch, prefs_common.summary_quicksearch_type, "");
+	
+	return TRUE;
+};
+
 /*
 static void summary_searchbar_focus_evt(GtkWidget *widget, GdkEventFocus *event,
 					SummaryView *summaryview)
@@ -227,6 +236,7 @@ QuickSearch *quicksearch_new()
 	GtkWidget *search_string_entry;
 	GtkWidget *search_hbbox;
 	GtkWidget *search_description;
+	GtkWidget *clear_search;
 	GtkWidget *menuitem;
 
 	quicksearch = g_new0(QuickSearch, 1);
@@ -271,14 +281,32 @@ QuickSearch *quicksearch_new()
 			prefs_common.summary_quicksearch_history);
 	gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(search_string_entry)->entry), "");
 	gtk_widget_show(search_string_entry);
+
+	search_hbbox = gtk_hbutton_box_new();
+	gtk_button_box_set_layout(GTK_BUTTON_BOX(search_hbbox), 	
+				  GTK_BUTTONBOX_START);
+
+	gtk_box_set_spacing(GTK_BOX(search_hbbox), 5);
 		
-	gtkut_button_set_create(&search_hbbox, &search_description, _("Extended Symbols"),
-				NULL, NULL, NULL, NULL);
+	clear_search = gtk_button_new_with_label(_("Clear"));
+	gtk_box_pack_start(GTK_BOX(search_hbbox), clear_search, 
+			   TRUE, TRUE, 0);
+	gtk_widget_set_size_request(clear_search, 120, -1);
+	
+	gtk_widget_show(clear_search);
+
+	search_description = gtk_button_new_with_label(_("Extended Symbols"));
+	gtk_box_pack_start(GTK_BOX(search_hbbox), search_description,
+			   TRUE, TRUE, 0);
+	gtk_widget_show(search_description);
+		
 	g_signal_connect(G_OBJECT(search_description), "clicked",
 			 G_CALLBACK(search_description_cb), NULL);
+	g_signal_connect(G_OBJECT(clear_search), "clicked",
+			 G_CALLBACK(clear_search_cb), quicksearch);
 	gtk_box_pack_start(GTK_BOX(hbox_search), search_hbbox, FALSE, FALSE, 2);				
 	gtk_widget_show(search_hbbox);
-
+	
 	gtk_signal_connect(GTK_OBJECT(GTK_COMBO(search_string_entry)->entry), 
 			   "key_press_event",
 			   GTK_SIGNAL_FUNC(searchbar_pressed),

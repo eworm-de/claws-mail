@@ -1,0 +1,1 @@
+( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/gtk/quicksearch.c; ) > 0.9.11cvs17.9.patchset
