@@ -1,3 +1,11 @@
+2002-06-07
+
+	* src/folder.c: folder_set_missing_folders(): fixed a bug that
+	  caused multiplication of special folders on startup if their
+	  types were changed.
+	* src/folderview.c: folderview_remove_mailbox_cb(): modified the
+	  label.
+
 2002-06-04
 
 	* src/compose.c: compose_reply(), compose_forward(): reverted the

@@ -2153,7 +2153,7 @@ static void folderview_remove_mailbox_cb(FolderView *folderview, guint action,
 	message = g_strdup_printf
 		(_("Really remove the mailbox `%s' ?\n"
 		   "(The messages are NOT deleted from the disk)"), name);
-	avalue = alertpanel(_("Remove folder"), message,
+	avalue = alertpanel(_("Remove mailbox"), message,
 			    _("Yes"), _("+No"), NULL);
 	g_free(message);
 	if (avalue != G_ALERTDEFAULT) return;
