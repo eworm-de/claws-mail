@@ -956,16 +956,15 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
 	if (quote) {
 		gchar *qmark;
-		gchar *quote_str;
 
 		if (prefs_common.quotemark && *prefs_common.quotemark)
 			qmark = prefs_common.quotemark;
 		else
 			qmark = "> ";
 
-		quote_str = compose_quote_fmt(compose, compose->replyinfo,
-					      prefs_common.quotefmt,
-					      qmark, body);
+		compose_quote_fmt(compose, compose->replyinfo,
+			          prefs_common.quotefmt,
+			          qmark, body);
 	}
 
 	if (account->auto_sig)
@@ -1043,40 +1042,38 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	text = GTK_STEXT(compose->text);
 	gtk_stext_freeze(text);
 
+	if (as_attach) {
+		gchar *msgfile;
 
-		if (as_attach) {
-			gchar *msgfile;
+		msgfile = procmsg_get_message_file_path(msginfo);
+		if (!is_file_exist(msgfile))
+			g_warning("%s: file not exist\n", msgfile);
+		else
+			compose_attach_append(compose, msgfile, msgfile,
+					      "message/rfc822");
 
-			msgfile = procmsg_get_message_file_path(msginfo);
-			if (!is_file_exist(msgfile))
-				g_warning("%s: file not exist\n", msgfile);
-			else
-				compose_attach_append(compose, msgfile, msgfile,
-						      "message/rfc822");
+		g_free(msgfile);
+	} else {
+		gchar *qmark;
+		MsgInfo *full_msginfo;
 
-			g_free(msgfile);
-		} else {
-			gchar *qmark;
-			gchar *quote_str;
-			MsgInfo *full_msginfo;
+		full_msginfo = procmsg_msginfo_get_full_info(msginfo);
+		if (!full_msginfo)
+			full_msginfo = procmsg_msginfo_copy(msginfo);
 
-			full_msginfo = procmsg_msginfo_get_full_info(msginfo);
-			if (!full_msginfo)
-				full_msginfo = procmsg_msginfo_copy(msginfo);
+		if (prefs_common.fw_quotemark &&
+		    *prefs_common.fw_quotemark)
+			qmark = prefs_common.fw_quotemark;
+		else
+			qmark = "> ";
 
-			if (prefs_common.fw_quotemark &&
-			    *prefs_common.fw_quotemark)
-				qmark = prefs_common.fw_quotemark;
-			else
-				qmark = "> ";
+		compose_quote_fmt(compose, full_msginfo,
+			          prefs_common.fw_quotefmt,
+			          qmark, body);
+		compose_attach_parts(compose, msginfo);
 
-			quote_str = compose_quote_fmt(compose, full_msginfo,
-						      prefs_common.fw_quotefmt,
-						      qmark, body);
-			compose_attach_parts(compose, msginfo);
-
-			procmsg_msginfo_free(full_msginfo);
-		}
+		procmsg_msginfo_free(full_msginfo);
+	}
 
 	if (account->auto_sig)
 		compose_insert_sig(compose, FALSE);
@@ -3091,8 +3088,9 @@ gint compose_send(Compose *compose)
 }
 #endif
 
-static gboolean compose_use_attach(Compose *compose) {
-    return(gtk_clist_get_row_data(GTK_CLIST(compose->attach_clist), 0) != NULL);
+static gboolean compose_use_attach(Compose *compose) 
+{
+	return gtk_clist_get_row_data(GTK_CLIST(compose->attach_clist), 0) != NULL;
 }
 
 static gint compose_redirect_write_headers_from_headerlist(Compose *compose, 
