@@ -48,6 +48,7 @@
 #include "inputdialog.h"
 #include "alertpanel.h"
 #include "log.h"
+#include "progressindicator.h"
 #if USE_OPENSSL
 #  include "ssl.h"
 #endif
@@ -899,6 +900,7 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 	GSList *newlist = NULL;
 	GSList *llast = NULL;
 	MsgInfo *msginfo;
+	guint count = 0, lines = (end - begin + 1) * 3;
 
 	g_return_val_if_fail(session != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
@@ -915,6 +917,9 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 			log_warning(_("error occurred while getting xover.\n"));
 			return newlist;
 		}
+		count++;
+		progressindicator_set_percentage
+			(PROGRESS_TYPE_NETWORK, session->fetch_base_percentage + ((gfloat) count / (gfloat) lines));
 
 		if (buf[0] == '.' && buf[1] == '\r') break;
 
@@ -949,6 +954,9 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 			log_warning(_("error occurred while getting xhdr.\n"));
 			return newlist;
 		}
+		count++;
+		progressindicator_set_percentage
+			(PROGRESS_TYPE_NETWORK, session->fetch_base_percentage + ((gfloat) count / (gfloat) lines));
 
 		if (buf[0] == '.' && buf[1] == '\r') break;
 		if (!llast) {
@@ -974,6 +982,9 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 			log_warning(_("error occurred while getting xhdr.\n"));
 			return newlist;
 		}
+		count++;
+		progressindicator_set_percentage
+			(PROGRESS_TYPE_NETWORK, session->fetch_base_percentage + ((gfloat) count / (gfloat) lines));
 
 		if (buf[0] == '.' && buf[1] == '\r') break;
 		if (!llast) {
@@ -1000,6 +1011,7 @@ GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 	NNTPSession *session;
 	GSList *elem, *msginfo_list = NULL, *tmp_msgnum_list, *tmp_msginfo_list;
 	guint first, last, next;
+	guint tofetch, fetched;
 	
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(folder->type == F_NEWS, NULL);
@@ -1012,13 +1024,19 @@ GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 	tmp_msgnum_list = g_slist_copy(msgnum_list);
 	tmp_msgnum_list = g_slist_sort(tmp_msgnum_list, news_fetch_msgnum_sort);
 
+	progressindicator_start(PROGRESS_TYPE_NETWORK);
+	tofetch = g_slist_length(tmp_msgnum_list);
+	fetched = 0;
+
 	first = GPOINTER_TO_INT(tmp_msgnum_list->data);
 	last = first;
 	for(elem = g_slist_next(tmp_msgnum_list); elem != NULL; elem = g_slist_next(elem)) {
 		next = GPOINTER_TO_INT(elem->data);
 		if(next != (last + 1)) {
+			session->fetch_base_percentage = (gfloat) fetched / (gfloat) tofetch;
 			tmp_msginfo_list = news_get_msginfos_for_range(session, item, first, last);
 			msginfo_list = g_slist_concat(msginfo_list, tmp_msginfo_list);
+			fetched = last - first + 1;
 			first = next;
 		}
 		last = next;
@@ -1028,5 +1046,7 @@ GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 
 	g_slist_free(tmp_msgnum_list);
 	
+	progressindicator_stop(PROGRESS_TYPE_NETWORK);
+
 	return msginfo_list;
 }

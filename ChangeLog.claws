@@ -1,3 +1,16 @@
+2003-03-03 [christoph]	0.8.10claws76
+
+	* src/mainwindow.[ch]
+	* src/common/Makefile.am
+	* src/common/progressindicator.[ch]
+		add UI independent progress indicator handling
+
+	* src/news.[ch]
+		use new progress indicator for message info fetching
+
+	* src/common/hooks.h
+		code cleanup
+
 2003-03-03 [oliver]	0.8.10claws75
 
 	* src/toolbar.c

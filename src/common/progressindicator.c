@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,20 +17,38 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef HOOKS_H
-#define HOOKS_H
-
 #include <glib.h>
 
-typedef gboolean (*SylpheedHookFunction)	(gpointer source,
-						 gpointer userdata);
+#include "hooks.h"
+#include "progressindicator.h"
 
-gint hooks_register_hook	(gchar			*hooklist_name,
-				 SylpheedHookFunction	 hook_func,
-				 gpointer		 userdata);
-void hooks_unregister_hook	(gchar			*hooklist_name,
-				 guint			 hook_id);
-gboolean hooks_invoke		(gchar			*hooklist_name,
-				 gpointer		 source);
+void progressindicator_start(ProgressType type)
+{
+	ProgressData data;
 
-#endif /* HOOKS_H */
+	data.cmd = PROGRESS_COMMAND_START;
+	data.type = type;
+
+	hooks_invoke(PROGRESSINDICATOR_HOOKLIST, &data);
+}
+
+void progressindicator_set_percentage(ProgressType type, gfloat percent)
+{
+	ProgressData data;
+
+	data.cmd = PROGRESS_COMMAND_SET_PERCENTAGE;
+	data.type = type;
+	data.value = percent;
+
+	hooks_invoke(PROGRESSINDICATOR_HOOKLIST, &data);
+}
+
+void progressindicator_stop(ProgressType type)
+{
+	ProgressData data;
+
+	data.cmd = PROGRESS_COMMAND_START;
+	data.type = type;
+
+	hooks_invoke(PROGRESSINDICATOR_HOOKLIST, &data);
+}

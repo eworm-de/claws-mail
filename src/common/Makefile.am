@@ -12,6 +12,7 @@ libsylpheedcommon_la_SOURCES = \
 	passcrypt.c passcrypt.h \
 	plugin.c plugin.h \
 	prefs.c prefs.h \
+	progressindicator.c progressindicator.h \
 	quoted-printable.c quoted-printable.h \
 	session.c session.h \
 	smtp.c smtp.h \

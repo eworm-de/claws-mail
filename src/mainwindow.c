@@ -85,6 +85,8 @@
 #include "sslcertwindow.h"
 #include "prefs_gtk.h"
 #include "pluginwindow.h"
+#include "hooks.h"
+#include "progressindicator.h"
 
 #define AC_LABEL_WIDTH	240
 
@@ -400,6 +402,8 @@ static gboolean mainwindow_focus_in_event	(GtkWidget	*widget,
 void main_window_reply_cb			(MainWindow 	*mainwin, 
 						 guint 		 action,
 						 GtkWidget 	*widget);
+gboolean mainwindow_progressindicator_hook	(gpointer 	 source,
+						 gpointer 	 userdata);
 #define  SEPARATE_ACTION 500 
 
 static GtkItemFactoryEntry mainwin_entries[] =
@@ -1008,6 +1012,9 @@ MainWindow *main_window_create(SeparateType type)
 	mainwin->lock_count = 0;
 	mainwin->menu_lock_count = 0;
 	mainwin->cursor_count = 0;
+
+	mainwin->progressindicator_hook =
+		hooks_register_hook(PROGRESSINDICATOR_HOOKLIST, mainwindow_progressindicator_hook, mainwin);
 
 	if (!watch_cursor)
 		watch_cursor = gdk_cursor_new(GDK_WATCH);
@@ -2737,6 +2744,25 @@ MainWindow *mainwindow_get_mainwindow(void)
 		return (MainWindow *)(mainwin_list->data);
 	else
 		return NULL;
+}
+
+gboolean mainwindow_progressindicator_hook(gpointer source, gpointer userdata)
+{
+	ProgressData *data = (ProgressData *) source;
+	MainWindow *mainwin = (MainWindow *) userdata;
+
+	switch (data->cmd) {
+	case PROGRESS_COMMAND_START:
+	case PROGRESS_COMMAND_STOP:
+		gtk_progress_set_percentage(GTK_PROGRESS(mainwin->progressbar), 0.0);
+		break;
+	case PROGRESS_COMMAND_SET_PERCENTAGE:
+		gtk_progress_set_percentage(GTK_PROGRESS(mainwin->progressbar), data->value);
+		break;		
+	}
+	while (gtk_events_pending()) gtk_main_iteration ();
+
+	return FALSE;
 }
 
 /*
