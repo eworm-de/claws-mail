@@ -210,7 +210,7 @@ int main(int argc, char *argv[])
 #endif
 
 #ifdef WIN32
-	{ // Initialize WinSock Library.
+	{ /* Initialize WinSock Library. */
 		WORD wVersionRequested = MAKEWORD(1, 1);
 		WSADATA	wsaData;
 		if (WSAStartup(wVersionRequested, &wsaData) != 0){
@@ -298,7 +298,7 @@ int main(int argc, char *argv[])
 	}
 
  #ifdef WIN32
-	//XXX:tm
+	/*XXX:tm */
  	prefs_common_init_config();
 	start_mswin_helper();
 
@@ -411,7 +411,7 @@ int main(int argc, char *argv[])
 	g_log_remove_handler(NULL, gtklog_hid);
 	g_log_remove_handler(NULL, gdklog_hid);
 
-	// De-Initialize WinSock Library.
+	/* De-Initialize WinSock Library. */
 	WSACleanup();
 #endif
 

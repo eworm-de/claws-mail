@@ -1803,7 +1803,7 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 
 	if (compose->replyto) {
 #ifdef WIN32
-//XXX:tm needed ?
+/*XXX:tm needed ? */
 		gchar *p_replyto;
 		p_replyto = g_strdup(compose->replyto);
 		locale_to_utf8(&p_replyto);
@@ -2158,7 +2158,7 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 	text[COL_MIMETYPE] = ainfo->content_type;
 	text[COL_SIZE] = to_human_readable(size);
 #ifdef WIN32
-//XXX:075
+/*XXX:075 */
 	{
 		gchar *p_name;
 		p_name = g_strdup(ainfo->name);
@@ -5395,7 +5395,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 
 	if (tmpl->subject && *tmpl->subject != '\0')
 #ifdef WIN32
-///XXX:tm tmpl really locale ?
+/*XXX:tm tmpl really locale ? */
 	{
 		gchar *p_subject;
 		p_subject = g_strdup( tmpl->subject );
@@ -5838,8 +5838,9 @@ static void compose_exec_ext_editor(Compose *compose)
 		   g_get_tmp_dir(), G_DIR_SEPARATOR, (gint)compose);
 
 #ifdef WIN32
-//XXX:tm ed1
-// instead of forking, create a gtk_timeout object for each external application
+/*XXX:tm ed1
+  instead of forking, create a gtk_timeout object for each external application
+*/
 	{
 #else
 	if (pipe(pipe_fds) < 0) {
@@ -5867,7 +5868,7 @@ static void compose_exec_ext_editor(Compose *compose)
 			gdk_input_add(pipe_fds[0], GDK_INPUT_READ,
 				      compose_input_cb, compose);
 #ifdef WIN32
-//XXX:tm ed2
+/*XXX:tm ed2 */
 	}	{
 #else
 	} else {	/* process-monitoring process */
@@ -5875,25 +5876,34 @@ static void compose_exec_ext_editor(Compose *compose)
 
 		pid_t pid_ed;
 
+#ifdef WIN32
+/*XXX:tm ed3 */
+#else
 		if (setpgid(0, 0))
 			perror("setpgid");
 
-#ifdef WIN32
-//XXX:tm ed3
-#else
 		/* close the read side of the pipe */
 		close(pipe_fds[0]);
 #endif
 
+#ifdef WIN32
+/*XXX:tm ed4 */
+		if (compose_write_body_to_file(compose, tmp) < 0) {
+			gchar *p_tmp = g_strdup_printf(_("Cannot write\n%s"),&tmp);
+			locale_from_utf8(&p_tmp);
+			g_warning(_("Write error"),p_tmp);
+			alertpanel_message(_("Write error"),p_tmp);
+			g_free(p_tmp);
+			_exit(1);
+		}
+
+		pid_ed = compose_exec_ext_editor_real(tmp,compose);
+#else
 		if (compose_write_body_to_file(compose, tmp) < 0) {
 			fd_write(pipe_fds[1], "2\n", 2);
 			_exit(1);
 		}
 
-#ifdef WIN32
-//XXX:tm ed4
-		pid_ed = compose_exec_ext_editor_real(tmp,compose);
-#else
 		pid_ed = compose_exec_ext_editor_real(tmp);
 		if (pid_ed < 0) {
 			fd_write(pipe_fds[1], "1\n", 2);
@@ -5909,7 +5919,7 @@ static void compose_exec_ext_editor(Compose *compose)
 #endif
 
 #ifdef WIN32
-//XXX:tm ed5
+/*XXX:tm ed5 */
 #else
 		_exit(0);
 #endif
@@ -5941,7 +5951,7 @@ static gint ext_editor_timeout_cb(Compose *compose) {
 #endif
 
 #ifdef WIN32
-//XXX:tm ed6a
+/*XXX:tm ed6a */
 static gint compose_exec_ext_editor_real(const gchar *file, Compose *compose)
 #else
 static gint compose_exec_ext_editor_real(const gchar *file)
@@ -5956,7 +5966,7 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 	g_return_val_if_fail(file != NULL, -1);
 
 #ifdef WIN32
-//XXX:tm ed6
+/*XXX:tm ed6 */
 #else
 	if ((pid = fork()) < 0) {
 		perror("fork");
@@ -5983,7 +5993,7 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 
 	cmdline = strsplit_with_quote(buf, " ", 1024);
 #ifdef WIN32
-//XXX:tm ed7
+/*XXX:tm ed7 */
 	{
 		gchar *fullname;
 		int hEditor;
@@ -5992,8 +6002,13 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 		if ((hEditor=spawnvp(P_NOWAIT, fullname, cmdline)) < 0) {
 			gint source;
 			GdkInputCondition condition;
+			gchar *p_buf = g_strdup_printf(_("Cannot execute\n%s"),&buf);
+			/* disable timeout */
 			compose_input_cb( compose , source , condition );
-			perror("spawnv");
+			locale_to_utf8(&p_buf);
+			g_warning(_("Exec error"),p_buf);
+			alertpanel_message(_("Exec error"),p_buf);
+			g_free(p_buf);
 			return -1;
 		}
 		compose->exteditor_pid = hEditor;
@@ -6008,7 +6023,7 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 	g_strfreev(cmdline);
 
 #ifdef WIN32
-//XXX:tm ed8
+/*XXX:tm ed8 */
 	return(1);
 #else
 	_exit(1);
@@ -6078,7 +6093,7 @@ static void compose_input_cb(gpointer data, gint source,
 	gdk_input_remove(compose->exteditor_tag);
 
 #ifdef WIN32
-//XXX:tm ed9
+/*XXX:tm ed9 */
 	buf[0]='0';
 	buf[1]='0';
 	buf[2]=0;
@@ -6671,7 +6686,7 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 		}
 	}
 #ifdef WIN32
-//XXX:075
+/*XXX:075 */
 	if (compose->window)
 #endif
 	gtk_widget_destroy(compose->window);

@@ -327,8 +327,10 @@ static void sd_clist_set_items()
 			row[1] = p_from;
 			row[2] = p_subject;
 
-			//g_free(p_from);
-			//g_free(p_subject);
+			/*
+			g_free(p_from);
+			g_free(p_subject);
+			*/
 		}
 #else
 		row[1] = items->from;

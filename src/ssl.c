@@ -122,7 +122,6 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 		if ((str = X509_NAME_oneline(X509_get_subject_name(server_cert), 0, 0)) != NULL) {
 			log_print(_("  Subject: %s\n"), str);
 #ifdef WIN32
-//XXX:tm
 			g_free(str);
 #else
 			free(str);
@@ -132,7 +131,6 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 		if ((str = X509_NAME_oneline(X509_get_issuer_name(server_cert), 0, 0)) != NULL) {
 			log_print(_("  Issuer: %s\n"), str);
 #ifdef WIN32
-//XXX:tm
 			g_free(str);
 #else
 			free(str);

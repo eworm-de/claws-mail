@@ -50,7 +50,6 @@ void automaton_input_cb(gpointer data, gint dummy_source,
 	Automaton *atm = (Automaton *)data;
 	SockInfo *sock;
 	gint next;
-//#ifndef WIN32
 	/* We get out sockinfo from the atm context and not from the
 	 * passed file descriptor because we can't map that one back
 	 * to the sockinfo */
@@ -81,5 +80,4 @@ void automaton_input_cb(gpointer data, gint dummy_source,
 	} else {
 		atm->terminate(sock, data);
 	}
-//#endif
 }

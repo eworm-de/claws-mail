@@ -60,7 +60,7 @@ void prefs_init_config(PrefParam *param)
 			if (value){
 				value = g_strdup(value);
 				locale_to_utf8(&value);
-				// g_free(param[i].defval);
+				/* g_free(param[i].defval); */
 				param[i].defval = g_strdup(value);
 				g_free(value);
 			}

@@ -273,12 +273,12 @@ static gboolean foldersel_gnode_func(GtkCTree *ctree, guint depth,
 			gchar *p_path;
 			p_path = g_strdup(p_item->path);
 			locale_to_utf8(&p_path);
-			// g_free(p_item->path);
+			/* g_free(p_item->path); */
 			p_item->path = g_strdup(p_path);
 			g_free(p_path);
 		}
 		gtk_ctree_node_set_row_data(ctree, cnode, p_item);
-		// g_free(p_item);
+		/* g_free(p_item); */
 	}
 #else
 	gtk_ctree_node_set_row_data(ctree, cnode, item);

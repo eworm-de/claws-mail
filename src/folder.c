@@ -81,8 +81,8 @@ Folder *folder_new(FolderType type, const gchar *name, const gchar *path)
  	Xpath = NULL;
  	if (path){
  		Xpath = g_strdup(path);
-//XXX:075
- 		// locale_from_utf8(&Xpath);
+/*XXX:075 */
+ 		/* locale_from_utf8(&Xpath); */
  	}
  #endif
  
@@ -245,8 +245,8 @@ FolderItem *folder_item_new(const gchar *name, const gchar *path)
 	}
 	if (path){
 		Xpath = g_strdup(path);
-//XXX:075
-		// locale_to_utf8(&Xpath);
+/*XXX:075 */
+		/* locale_to_utf8(&Xpath); */
 	}
 #endif
 

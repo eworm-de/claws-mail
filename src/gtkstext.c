@@ -1119,21 +1119,15 @@ gtk_stext_insert (GtkSText    *text,
 	  chars_nt[length] = 0;
 	}
 #ifdef WIN32
-	{
-/*
-//x:tm gtk_stext_insert (alt)
-callback on text change; input is locale (only ???)
-*/
-	  gchar *p_chars;
-	  int nWritten;
-	  int maxlen = (length+1)*2 ;
-	  p_chars = g_malloc(maxlen) ;   //neither g_new nor g_malloc really fill with 0 on w32
-	  memset( p_chars , 0 , maxlen );
-	  p_chars = g_locale_to_utf8( chars_nt , length , NULL , &nWritten , NULL );
-	  if (p_chars)
-		numwcs = gdk_mbstowcs (text->text.wc + text->gap_position, p_chars,
- 			     nWritten);
-	  g_free( p_chars );
+	{ 
+		int nWritten;
+		int maxlen = (length+1)*2 ;
+		gchar *p_chars = g_malloc0(maxlen);
+		p_chars = g_locale_to_utf8( chars_nt , length , NULL , &nWritten , NULL );
+		if (p_chars)
+			  numwcs = gdk_mbstowcs(text->text.wc + text->gap_position, 
+									p_chars, nWritten);
+		g_free( p_chars );
 	}
 #else
       numwcs = gdk_mbstowcs (text->text.wc + text->gap_position, chars_nt,
@@ -2145,13 +2139,6 @@ gtk_stext_insert_text    (GtkEditable       *editable,
   fore = property->flags & PROPERTY_FOREGROUND ? &property->fore_color : NULL; 
   back = property->flags & PROPERTY_BACKGROUND ? &property->back_color : NULL; 
 #ifdef WIN32
-/*
-//XXX:tm utf8->locale  
-//x:tm gtk_stext_insert_text (key_cb)
-callback on keyboard input; input is utf8 (only ???)
-input is passed to gtk_stext_insert(), which does loc->utf8 conversion
---> convert to local first
-*/
   {
 	gchar *p_new_text, ch;
 	int nWritten;
@@ -2425,7 +2412,7 @@ gtk_stext_key_press (GtkWidget   *widget,
 	  return_val = FALSE;
 
 #ifdef WIN32
-	  // ... (T^T)
+	  /* ... (T^T) */
 	  if (event->state & GDK_CONTROL_MASK)
 	    {
 	      if ((key >= 'A') && (key <= 'Z'))

@@ -565,8 +565,8 @@ gint fd_gets(gint fd, gchar *buf, gint len)
 		return -1;
 #ifdef WIN32
 	do {
-//XXX:tm try nonblock
 /*
+XXX:tm try nonblock
 MSKB Article ID: Q147714 
 Windows Sockets 2 Service Provider Interface Limitations
 Polling with recv(MSG_PEEK) to determine when a complete message 

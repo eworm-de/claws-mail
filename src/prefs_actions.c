@@ -1248,8 +1248,7 @@ ChildInfo *fork_child(gchar *cmd,
 		      GtkWidget *text,
 		      Children *children)
 {
-#if 0 def WIN32
-//XXX:tm
+#if 0 /* XXX:tm ifdef WIN32 */
 	return NULL;
 #else
 
@@ -1263,17 +1262,8 @@ ChildInfo *fork_child(gchar *cmd,
 
 	sync = !(action_type & ACTION_ASYNC);
 
-//XXX:TM1 <<<<<<< prefs_actions.c
-//XXX:TM1 	if (_pipe(chld_in) || pipe(chld_out) || pipe(chld_err) ||
-//XXX:TM1 	    pipe(chld_status)) {
-//XXX:TM1 		alertpanel_error(_("Command could not started. Pipe creation"
-//XXX:TM1 				   " failed.\n%s"), g_strerror(errno));
-//XXX:TM1 		return NULL; /* Pipe error */
-//XXX:TM1 	}
-//XXX:TM1 =======
 	chld_in[0] = chld_in[1] = chld_out[0] = chld_out[1] = chld_err[0]
 		= chld_err[1] = chld_status[0] = chld_status[1] = -1;
-//XXX:TM1 >>>>>>> 1.20
 	
 	if (sync)
 		if (pipe(chld_status) || pipe(chld_in) || pipe(chld_out)
@@ -1295,7 +1285,6 @@ ChildInfo *fork_child(gchar *cmd,
 
 	debug_print(_("Forking child and grandchild.\n"));
 
-//XXX:TM1 <<<<<<< prefs_actions.c
 #ifdef WIN32
 	{
 		SECURITY_ATTRIBUTES sa;
@@ -1321,42 +1310,29 @@ ChildInfo *fork_child(gchar *cmd,
 		si.dwFlags		= STARTF_USESTDHANDLES ;
 		si.cb			= sizeof(si);
 
-//		cmdline = strsplit_with_quote(cmd, " ", 1024);
-
 		if (! CreateProcess(
-			NULL,		// pointer to name of executable module
-			cmd,		// pointer to command line string
-			&sa,		// process security attributes
-			&sa,		// thread security attributes
-			TRUE,		// handle inheritance flag
-			0,			// creation flags
-			NULL,		// pointer to new environment block
-			NULL,		// pointer to current directory name
-			&si,		// pointer to STARTUPINFO
-			&pi			// pointer to PROCESS_INFORMATION
+			NULL,		/* pointer to name of executable module */
+			cmd,		/* pointer to command line string       */
+			&sa,		/* process security attributes          */
+			&sa,		/* thread security attributes           */
+			TRUE,		/* handle inheritance flag              */
+			0,		/* creation flags                       */
+			NULL,		/* pointer to new environment block     */
+			NULL,		/* pointer to current directory name    */
+			&si,		/* pointer to STARTUPINFO               */
+			&pi		/* pointer to PROCESS_INFORMATION       */
 			))
 		{ perror("CreateProcess"); }
 
-			write(chld_status[1], "0\n", 2);
-			close(chld_status[1]);
-
-//		execvp(cmdline[0], cmdline);
-//		perror("execvp");
-//		g_strfreev(cmdline);
+		write(chld_status[1], "0\n", 2);
+		close(chld_status[1]);
 	}
 #else
-//XXX:TM1 	pid_c = fork();
-//XXX:TM1 	if (pid_c == (pid_t) 0) {/* Child */
-//XXX:TM1 =======
 	pid = fork();
 	if (pid == (pid_t) 0) {/* Child */
-//XXX:TM1 >>>>>>> 1.20
 		if (setpgid(0, 0))
 			perror("setpgid");
-//#ifdef WIN32
-//#else
 		close(ConnectionNumber(gdk_display));
-//#endif
 
 		gch_pid = fork();
 

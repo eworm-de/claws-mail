@@ -281,7 +281,7 @@ static int free_passphrase(gpointer _unused)
 {
     if (lastPass != NULL) {
 #ifndef WIN32
-//XXX:075 add
+/*XXX:075 add */
         munlock(lastPass, strlen(lastPass));
 #endif
         g_free(lastPass);
@@ -319,7 +319,7 @@ gpgmegtk_passphrase_cb (void *opaque, const char *desc, void *r_hd)
         if (prefs_common.store_passphrase) {
             lastPass = g_strdup(pass);
 #ifndef WIN32
-//XXX:075 add
+/*XXX:075 add */
             if (mlock(lastPass, strlen(lastPass)) == -1)
                 g_message("%% locking passphrase failed");
 #endif

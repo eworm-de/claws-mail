@@ -391,7 +391,7 @@ Header * procheader_parse_header(gchar * buf)
 			p++;
 			while (*p == ' ' || *p == '\t') p++;
  #ifdef WIN32
- //XXX:tm
+ /*XXX:tm */
  				{
  					gchar *hdr = g_strdup("X-Face");
  					if (strcasecmp(header->name, hdr))

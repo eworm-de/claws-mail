@@ -2145,7 +2145,10 @@ gint execute_async(gchar *const argv[])
 	fullname = g_strdup(argv[0]);
 	strcpy(argv[0],g_path_get_basename (argv[0]));
 	if (spawnvp(P_NOWAIT, fullname, argv) < 0) {
-		perror("spawnv");
+		gchar *p_fullname = g_strdup_printf(_("Cannot execute\n%s"),fullname);
+		locale_to_utf8(&p_fullname);
+		g_warning(p_fullname);
+		g_free(p_fullname);
 		return -1;
 	}
 	g_free(fullname);
@@ -2188,7 +2191,10 @@ gint execute_sync(gchar *const argv[])
 	fullname = g_strdup(argv[0]);
 	strcpy(argv[0],g_path_get_basename (argv[0]));
 	if (spawnvp(P_WAIT, fullname, argv) < 0) {
-		perror("spawnv");
+		gchar *p_fullname = g_strdup_printf(_("Cannot execute\n%s"),fullname);
+		locale_to_utf8(&p_fullname);
+		g_warning(p_fullname);
+		g_free(p_fullname);
 		return -1;
 	}
 	g_free(fullname);
@@ -2347,7 +2353,7 @@ gint open_uri(const gchar *uri, const gchar *cmdline)
 	gchar *p;
 	gchar encoded_uri[BUFFSIZE];
  #ifdef WIN32
-	//XXX:tm
+	/*XXX:tm */
  	gchar *enc_encoded_uri;
  	gint uri_len;
  #endif
@@ -2811,7 +2817,7 @@ int Xrename(const char *oldpath, const char *newpath){
 	}
 	unlink(newpath);
 	ret = rename(oldpath, newpath);
-	// unlink(oldpath);
+	/* unlink(oldpath); */
 	return ret;
 }
 
@@ -2836,7 +2842,7 @@ void w32_log_handler(const gchar *log_domain,
 		p_msg = g_strdup(message);
 		locale_from_utf8(&p_msg);
 
-		// g_log_default_handler(log_domain, log_level, p_msg, user_data);
+		/* g_log_default_handler(log_domain, log_level, p_msg, user_data); */
 
 		if (!logfile)
 			logfile = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
@@ -2905,7 +2911,7 @@ static gint mswin_helper_timeout_cb(gpointer *data) {
 	return(TRUE);
 }
 
-//----------------------------------------------------------------------
+/*----------------------------------------------------------------------*/
 /* GTK_ENTRY(any_entry)->text returns a strange wchar_t under win:
  * every character (as int!) is followed by a \0 (also int).
  * A hexdump of 'ABC' looks like : 00.40 00.00 00.41 00.00 00.42 00.00
@@ -2922,6 +2928,6 @@ wchar_t  *gtkwcs2winwcs(wchar_t *gtkwcs) {
 	dest[i] = 0;
 	return( dest );
 }
-//----------------------------------------------------------------------
+/*----------------------------------------------------------------------*/
 
 #endif

@@ -414,7 +414,7 @@ static GtkCTreeNode *mimeview_append_part(MimeView *mimeview,
 	 	gchar *g_name = g_strdup( get_part_name(partinfo) );
 		locale_to_utf8(&g_name);
 	str[COL_NAME] = g_name;
-		//g_free(g_name);
+		/*g_free(g_name); */
 	}
 #else
 	str[COL_NAME] = get_part_name(partinfo);
@@ -846,7 +846,7 @@ static void mimeview_save_as(MimeView *mimeview)
 		gchar *p_defname = g_strdup(defname);
 		locale_to_utf8(&p_defname);
 	filename = filesel_select_file(_("Save as"), p_defname);
-		//g_free(p_defname);
+		/*g_free(p_defname); */
 	}
 #else
 	filename = filesel_select_file(_("Save as"), defname);
@@ -938,7 +938,7 @@ static void mimeview_open_with(MimeView *mimeview)
 		alertpanel_error
 			(_("Can't save the part of multipart message."));
 #ifdef WIN32
-		// g_free(filename);
+		/* g_free(filename); */
 #else
 		g_free(filename);
 #endif

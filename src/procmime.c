@@ -355,18 +355,23 @@ void procmime_scan_content_type(MimeInfo *mimeinfo, const gchar *content_type)
 #endif
 	    strchr(content_type, '\033')) {
 		gint len;
-// #ifdef WIN32
-// 				len = strlen(content_type) * 2;
-// 				buf = g_malloc(len);
-// #else
+/*
+#ifdef WIN32
+ 				len = strlen(content_type) * 2;
+ 				buf = g_malloc(len);
+#else
+*/
 		len = strlen(content_type) * 2 + 1;
 		Xalloca(buf, len, return);
-// #endif
-// #ifdef WIN32
-// 				conv_euctojis(buf, len, content_type);
-// 				// g_free(value);
-// 				content_type = g_strdup(buf);
-// #endif
+/*
+#endif
+#ifdef WIN32
+
+				conv_euctojis(buf, len, content_type);
+				// g_free(value);
+				content_type = g_strdup(buf);
+#endif
+*/
 		conv_jistoeuc(buf, len, content_type);
 	} else
 		Xstrdup_a(buf, content_type, return);
@@ -423,13 +428,13 @@ void procmime_scan_content_type(MimeInfo *mimeinfo, const gchar *content_type)
  #endif
  #ifdef WIN32
  				conv_euctojis(tmp, len, value);
- 				// g_free(value);
+ 				/* g_free(value); */
  				value = g_strdup(tmp);
  #endif
 				conv_unmime_header(tmp, len, value, NULL);
  				g_free(mimeinfo->filename);
  #if 0
- #ifdef WIN32 // MARK!!!!
+ #ifdef WIN32 /* // MARK!!!! */
  				locale_from_utf8(&tmp);
  #endif
  #endif
@@ -508,13 +513,13 @@ void procmime_scan_content_disposition(MimeInfo *mimeinfo,
 #endif
 #ifdef WIN32
 				conv_euctojis(tmp, len, value);
-				// g_free(value);
+				/* g_free(value); */
 				value = g_strdup(tmp);
 #endif
 				conv_unmime_header(tmp, len, value, NULL);
 				g_free(mimeinfo->filename);
 #if 0
-#ifdef WIN32 // MARK!!!!
+#ifdef WIN32 /* // MARK!!!! */
 				locale_from_utf8(&tmp);
 #endif
 #endif
@@ -943,7 +948,7 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 			if (str) {
 				fputs(str, outfp);
 #ifdef WIN32
-//XXX:tm ???
+/*XXX:tm ??? */
 #else
 				g_free(str);
 #endif
@@ -1144,8 +1149,9 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 			       f_prefix, base, NULL);
 
 #ifdef WIN32
-	//XXX:tm crash
-	//g_free(base);
+	/*XXX:tm crash
+	g_free(base);
+	*/
 #endif
 
 	return filename;

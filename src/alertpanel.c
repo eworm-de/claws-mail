@@ -138,7 +138,8 @@ void alertpanel_warning(const gchar *format, ...)
 
 void alertpanel_error(const gchar *format, ...)
 {
-#if 0 //def WIN32
+#if 0
+/* ifdef WIN32
 /* strings already seem to be utf8... any conversion leads to errors:
  * If no conversion is done, messages with german umlauts in args 
  * are displayed correctly. So disabled again.

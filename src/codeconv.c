@@ -339,7 +339,7 @@ gint conv_convert(CodeConverter *conv, gchar *outbuf, gint outlen,
 		return -1;
 	else {
 		strncpy2(outbuf, str, outlen);
-//XXX:tm		g_free(str);
+/*XXX:tm		g_free(str); */
 	}
 #else /* !HAVE_LIBJCONV */
 	conv->code_conv_func(outbuf, outlen, inbuf);

@@ -1679,7 +1679,7 @@ static void summary_update_status(SummaryView *summaryview)
 	     node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 		msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
 
-//XXX:tm crash after filter/move (msgingo==NULL)
+/*XXX:tm crash after filter/move (msgingo==NULL) */
 		if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 			summaryview->newmsgs++;
 		if (MSG_IS_UNREAD(msginfo->flags)&& !MSG_IS_IGNORE_THREAD(msginfo->flags))
@@ -1775,7 +1775,7 @@ static void summary_status_show(SummaryView *summaryview)
 	g_free(str);
 	g_free(sel);
 	g_free(del);
-#ifndef WIN32 // Why this code invoke some exception...?
+#ifndef WIN32 /* Why this code invoke some exception...? */
 	g_free(mv);
 #endif
 	g_free(cp);
@@ -2327,7 +2327,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 			locale_to_utf8(&p_fromname);
 	text[col_pos[S_COL_FROM]] = msginfo->fromname ? p_fromname :
 		_("(No From)");
-//			g_free(p_fromname);
+/*			g_free(p_fromname); */
 		}
 #else
 	text[col_pos[S_COL_FROM]] = msginfo->fromname ? msginfo->fromname :
@@ -2351,7 +2351,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 					p_to = g_strdup(to);
 					locale_to_utf8(&p_to);
 					text[col_pos[S_COL_FROM]] = p_to;
-//					g_free(p_to);
+					/* g_free(p_to); */
 				}
 #else
 				text[col_pos[S_COL_FROM]] = to;

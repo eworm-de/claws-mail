@@ -1255,7 +1255,7 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 	if (!textview->boldfont && prefs_common.boldfont)
 		FONTSET_LOAD(textview->boldfont, prefs_common.boldfont);
 	if (!spacingfont) {
-//		spacingfont = gdk_font_load(prefs_common.spacingfont);
+/*		spacingfont = gdk_font_load(prefs_common.spacingfont); */
 		FONTSET_LOAD(spacingfont, prefs_common.spacingfont);
 	}
 #else
