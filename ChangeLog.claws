@@ -1,3 +1,9 @@
+2003-02-09 [martin]	0.8.9claws50
+
+	* src/prefs_matcher.c
+		fix segfault in prefs_matcher_substitute_cb() when
+		no row is selected
+
 2003-02-09 [paul]	0.8.9claws49
 
 	* src/folderview.c

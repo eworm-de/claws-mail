@@ -1212,6 +1212,7 @@ static void prefs_matcher_substitute_cb(void)
 	gint row;
 	MatcherProp *matcherprop;
 
+	if (!clist->selection) return;
 	row = GPOINTER_TO_INT(clist->selection->data);
 	if (row == 0)
 		return;
