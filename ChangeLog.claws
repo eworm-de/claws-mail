@@ -1,6 +1,12 @@
+2001-11-14 [hoa] 0.6.5claws12
+
+	* src/compose.[ch]
+	* src/mainwindow.c
+	* src/summaryview.c
+		add "bounce mail" option
+
 2001-11-13 [christoph]	0.6.5claws11
 
-	* src/compose.c
 		Cleanup a mess i add before commiting
 
 2001-11-13 [hoa] 	0.6.5claws10

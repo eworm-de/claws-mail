@@ -384,6 +384,7 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/_Forward"),		NULL, summary_reply_cb, COMPOSE_FORWARD, NULL},
 	{N_("/Forward as a_ttachment"),
 					NULL, summary_reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
+	{N_("/Bounce"),	                NULL, summary_reply_cb, COMPOSE_BOUNCE, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/Re-_edit"),		NULL, summary_reedit,   0, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
@@ -1004,6 +1005,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	menu_set_sensitive(ifactory, "/Reply to all",		  sens);
 	menu_set_sensitive(ifactory, "/Forward",		  TRUE);
 	menu_set_sensitive(ifactory, "/Forward as attachment",    TRUE);
+	menu_set_sensitive(ifactory, "/Bounce",	                  TRUE);
 
 	menu_set_sensitive(ifactory, "/Add sender to address book", sens);
 
@@ -4283,6 +4285,9 @@ static void summary_reply_cb(SummaryView *summaryview, guint action,
 			compose_forward_multiple(NULL, msginfo_list);
 			g_slist_free(msginfo_list);
 		}			
+		break;
+	case COMPOSE_BOUNCE:
+		compose_bounce(NULL, msginfo);
 		break;
 	default:
 		g_warning("summary_reply_cb(): invalid action: %d\n", action);

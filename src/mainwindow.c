@@ -530,6 +530,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/_Forward"),		"<shift><alt>F", reply_cb, COMPOSE_FORWARD, NULL},
 	{N_("/_Message/Forward as a_ttachment"),
 						"<shift><control>F", reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
+	{N_("/_Message/Bounce"),		NULL, reply_cb, COMPOSE_BOUNCE, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Re-_edit"),		NULL, reedit_cb, 0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
@@ -2466,6 +2467,9 @@ static void reply_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 			g_slist_free(msginfo_list);
 		}			
 		break;
+	case COMPOSE_BOUNCE:
+			compose_bounce(NULL, msginfo);
+			break;
 	default:
 		g_warning("reply_cb(): invalid action type: %d\n", action);
 	}
