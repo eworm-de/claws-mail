@@ -3153,6 +3153,7 @@ gint execute_async(gchar *const argv[])
 	gint n,len=0;
 	gchar *fullname;
 	gchar **parsed_argv;
+	int process;
 
 	fullname = w32_parse_path(argv[0]);
 	len = strlen(fullname);
@@ -3170,15 +3171,17 @@ gint execute_async(gchar *const argv[])
 		}
 	}
 
-	if (spawnvp(P_NOWAIT, fullname, parsed_argv) < 0) {
+	if ((process = spawnvp(P_NOWAIT, fullname, parsed_argv)) < 0) {
 		gchar *p_fullname = g_strdup_printf(_("Cannot execute\n%s"),fullname);
 		locale_to_utf8(&p_fullname);
 		g_warning(p_fullname);
 		g_free(p_fullname);
 		return -1;
 	}
+	CloseHandle((HANDLE)process);
 
-	for(n=0; parsed_argv[n]; g_free(parsed_argv[n++]));
+	for (n = 0; parsed_argv[n]; g_free(parsed_argv[n++]))
+		;
 	g_free(parsed_argv);
 	g_free(fullname);
 #else
@@ -3219,6 +3222,7 @@ gint execute_sync(gchar *const argv[])
 	gint n,len=0;
 	gchar *fullname;
 	gchar **parsed_argv;
+	int process;
 
 	fullname = w32_parse_path(argv[0]);
 	len = strlen(fullname);
@@ -3236,7 +3240,7 @@ gint execute_sync(gchar *const argv[])
 		}
 	}
 
-	if (spawnvp(P_WAIT, fullname, parsed_argv) < 0) {
+	if ((process = spawnvp(P_WAIT, fullname, parsed_argv)) < 0) {
 		gchar *p_fullname = g_strdup_printf(_("Cannot execute\n%s"),fullname);
 		locale_to_utf8(&p_fullname);
 		g_warning(p_fullname);
@@ -3244,7 +3248,10 @@ gint execute_sync(gchar *const argv[])
 		return -1;
 	}
 
-	for(n=0; parsed_argv[n]; g_free(parsed_argv[n++]));
+	CloseHandle((HANDLE)process);
+
+	for (n = 0; parsed_argv[n]; g_free(parsed_argv[n++]))
+		;
 	g_free(parsed_argv);
 	g_free(fullname);
 #else

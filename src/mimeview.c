@@ -1120,7 +1120,7 @@ static void mimeview_save_as(MimeView *mimeview)
 }
 
 #ifdef WIN32
-static gchar *w32_get_open_cmd(filename)
+static gchar *w32_get_open_cmd(const gchar *filename)
 {
 	gchar *open_cmd;
 	if ( (open_cmd=g_strdup(w32_mailcap_lookup(filename)))==NULL) {

@@ -6299,23 +6299,16 @@ static void compose_exec_ext_editor(Compose *compose)
 
 #ifdef WIN32
 static gint ext_editor_timeout_cb(Compose *compose) {
-  gint result = TRUE;
-  int ExitCode;
-
-  /* Process killed ? */
-  if (compose->exteditor_pid < 0) return FALSE;
-
-  if (GetExitCodeProcess(compose->exteditor_pid,&ExitCode)) {
-  	  if (ExitCode != STILL_ACTIVE) {
-			/* Process terminated */
-			compose_input_cb( compose , -1, NULL );
-			return(FALSE);	/* stop timer */
-	  }
-	  else {	/* Process still active */
-	  }
-  } else {		/* Error GetExitCodeProcess */
-  }
-  return( result );
+	/* Process killed ? */
+	if (compose->exteditor_pid < 0) return FALSE;
+	
+	if ((WaitForSingleObject(compose->exteditor_pid, 0) != WAIT_TIMEOUT)) {
+		/* Process terminated */
+		CloseHandle(compose->exteditor_pid);
+		compose_input_cb( compose , -1, NULL );
+		return FALSE;	/* stop timer */
+	}
+	return TRUE;
 }
 #endif
 
@@ -6391,6 +6384,10 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 			g_free(p_buf);
 			return -1;
 		}
+
+		while (WaitForInputIdle(hEditor, 10) == WAIT_TIMEOUT)
+			;
+
 		compose->exteditor_pid = hEditor;
 		gtk_timeout_add( 50, ext_editor_timeout_cb, compose );
 
@@ -6418,9 +6415,10 @@ static gboolean compose_ext_editor_kill(Compose *compose)
 
 #ifdef WIN32
 	compose->exteditor_pid = -1 ;	/* reset state for ext_editor_timeout_cb */
-	if (TerminateProcess(pgid * -1,0))
+	if (TerminateProcess(pgid * -1,0)) {
+		CloseHandle(pgid * -1);
 		return TRUE;
-	else
+	} else
 		return FALSE;
 #else
 	ret = kill(pgid, 0);

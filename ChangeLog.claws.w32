@@ -1,4 +1,29 @@
-2004-01-25 [thorsten]	0.9.8claws59-1
+2004-02-01 [thorsten]	0.9.8claws59-5
+
+	* src/compose.c
+		fix: use WaitForInputIdle() before watching process
+		fix: use WaitForSingleObject() instead of GetExitCodeProcess()
+		(as suggested by Alfons)
+
+2004-02-01 [thorsten]	0.9.8claws59-4
+
+	* src/common/utils.c
+		fix res. leak: close process handle after execute_sync/async
+		(Patch by Alfons. Thanks)
+
+2004-02-01 [thorsten]	0.9.8claws59-3
+
+	* src/compose.c
+		fix res. leak: close process handle after ext. editor closed
+		fix: use usigned int for GetExitCodeProcess()
+		(Patches by Alfons. Thanks)
+
+2004-01-31 [thorsten]	0.9.8claws59-2
+
+	* src/mimeview.c
+		fix: missing type in function header
+
+2004-01-31 [thorsten]	0.9.8claws59-1
 
 	* src/compose.c
 		fix: invalid filehandle when closing external editor
