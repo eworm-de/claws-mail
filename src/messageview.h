@@ -43,7 +43,6 @@ typedef enum
 struct _MessageView
 {
 	GtkWidget *vbox;
-	GtkWidget *menubar;
 
 	MessageType type;
 	gboolean new_window;
@@ -52,6 +51,7 @@ struct _MessageView
 	/* Toolbar handlebox */
 	GtkWidget *handlebox;
 	Toolbar *toolbar;
+	GtkWidget *menubar;
 
 	HeaderView *headerview;
 	TextView *textview;
@@ -86,8 +86,8 @@ void messageview_copy_clipboard			(MessageView	*messageview);
 void messageview_select_all			(MessageView	*messageview);
 void messageview_set_position			(MessageView	*messageview,
 						 gint		 pos);
-void messageview_toggle_view_real(MessageView *messageview);
-
+void messageview_toggle_view_real		(MessageView 	*messageview);
+GList *messageview_get_msgview_list		(void);
 gboolean messageview_search_string		(MessageView	*messageview,
 						 const gchar	*str,
 						 gboolean	 case_sens);
@@ -97,4 +97,7 @@ gboolean messageview_search_string_backward	(MessageView	*messageview,
 
 gboolean messageview_is_visible			(MessageView	*messageview);
 
+void messageview_add_toolbar			(MessageView *msgview,
+						 GtkWidget *vbox);
+void messageview_reflect_prefs_pixmap_theme	(void);
 #endif /* __MESSAGEVIEW_H__ */

@@ -1,3 +1,12 @@
+2002-12-24 [oliver]	0.8.7claws6
+
+	* src/mainwindow.[ch]
+	* src/messageview.[ch]
+	* src/compose.[ch]
+	* src/inc.c
+	* src/summaryview.c
+		changes to use updated toolbar handling
+		
 2002-12-24 [oliver]	0.8.7claws5
 
 	* src/toolbar.[ch]

@@ -164,11 +164,6 @@ Compose *compose_generic_new			(PrefsAccount	*account,
 
 static Compose *compose_create			(PrefsAccount	*account,
 						 ComposeMode	 mode);
-static void compose_toolbar_create		(Compose	*compose,
-						 GtkWidget	*container);
-static void compose_toolbar_update              (Compose        *compose);
-static void compose_toolbar_set_sensitive       (Compose        *compose,
-						 gboolean	 sensitive);
 
 static GtkWidget *compose_account_option_menu_create
 						(Compose	*compose);
@@ -296,31 +291,8 @@ static void compose_update_priority_menu_item(Compose * compose);
 static gboolean compose_edit_size_alloc (GtkEditable	*widget,
 					 GtkAllocation	*allocation,
 					 GtkSHRuler	*shruler);
-
-static void toolbar_send_cb		(GtkWidget	*widget,
-					 gpointer	 data);
-static void toolbar_send_later_cb	(GtkWidget	*widget,
-					 gpointer	 data);
-static void toolbar_draft_cb		(GtkWidget	*widget,
-					 gpointer	 data);
-static void toolbar_insert_cb		(GtkWidget	*widget,
-					 gpointer	 data);
-static void toolbar_attach_cb		(GtkWidget	*widget,
-					 gpointer	 data);
-static void toolbar_sig_cb		(GtkWidget	*widget,
-					 gpointer	 data);
-static void toolbar_ext_editor_cb	(GtkWidget	*widget,
-					 gpointer	 data);
-static void toolbar_linewrap_cb		(GtkWidget	*widget,
-					 gpointer	 data);
-static void toolbar_address_cb		(GtkWidget	*widget,
-					 gpointer	 data);
-static void toolbar_compose_buttons_cb  (GtkWidget      *widget, 
-
-					 ToolbarItem    *item);
 static void account_activated		(GtkMenuItem	*menuitem,
 					 gpointer	 data);
-
 static void attach_selected		(GtkCList	*clist,
 					 gint		 row,
 					 gint		 column,
@@ -1376,6 +1348,46 @@ void compose_entry_select (Compose *compose, const gchar *mailto)
 			gtk_entry_select_region(entry, 0, -1);
 			gtk_widget_grab_focus(GTK_WIDGET(entry));
 		}
+	}
+}
+
+void compose_toolbar_cb(gint action, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	Compose *compose = (Compose*)toolbar_item->parent;
+	
+	g_return_if_fail(compose != NULL);
+
+	switch(action) {
+	case A_SEND:
+		compose_send_cb(compose, 0, NULL);
+		break;
+	case A_SENDL:
+		compose_send_later_cb(compose, 0, NULL);
+		break;
+	case A_DRAFT:
+		compose_draft_cb(compose, 0, NULL);
+		break;
+	case A_INSERT:
+		compose_insert_file_cb(compose, 0, NULL);
+		break;
+	case A_ATTACH:
+		compose_attach_cb(compose, 0, NULL);
+		break;
+	case A_SIG:
+		compose_insert_sig(compose);
+		break;
+	case A_EXTEDITOR:
+		compose_ext_editor_cb(compose, 0, NULL);
+		break;
+	case A_LINEWRAP:
+		compose_wrap_line(compose);
+		break;
+	case A_ADDRBOOK:
+		compose_address_cb(compose, 0, NULL);
+		break;
+	default:
+		break;
 	}
 }
 
@@ -4658,7 +4670,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	handlebox = gtk_handle_box_new();
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
 
-	compose_toolbar_create(compose, handlebox);
+	compose->toolbar = toolbar_create(TOOLBAR_COMPOSE, handlebox,
+					  (gpointer)compose);
 
 	vbox2 = gtk_vbox_new(FALSE, 2);
 	gtk_box_pack_start(GTK_BOX(vbox), vbox2, TRUE, TRUE, 0);
@@ -4993,228 +5006,10 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 #if USE_GPGME
 	activate_gnupg_mode(compose, account);
 #endif	
-
-	common_toolbar_set_style(compose, TOOLBAR_COMPOSE);
-
+	toolbar_set_style(compose->toolbar->toolbar, compose->handlebox, prefs_common.toolbar_style);
 	gtk_widget_show(window);
 	
 	return compose;
-}
-
-static void toolbar_compose_buttons_cb(GtkWidget   *widget, 
-				       ToolbarItem *item)
-{
-	struct {
-		gint   index;
-		void (*func)(GtkWidget *widget, gpointer data);
-	} compose_action[] = {
-		{ A_SEND,        toolbar_send_cb			},
-		{ A_SENDL,       toolbar_send_later_cb			},
-		{ A_DRAFT,       toolbar_draft_cb			},
-		{ A_INSERT,      toolbar_insert_cb			},
-		{ A_ATTACH,      toolbar_attach_cb			},
-		{ A_SIG,         toolbar_sig_cb				},
-		{ A_EXTEDITOR,   toolbar_ext_editor_cb			},
-		{ A_LINEWRAP,    toolbar_linewrap_cb			},
-		{ A_ADDRBOOK,    toolbar_address_cb		        },
-		{ A_SYL_ACTIONS, common_toolbar_actions_execute_cb	}};
-
-
-	gint num_items = sizeof(compose_action)/sizeof(compose_action[0]);
-	gint i;
-	for (i = 0; i < num_items; i++) {
-		
-		if (compose_action[i].index == item->index) {
-			if (item->index == A_SYL_ACTIONS)
-				compose_action[i].func(widget, (gpointer)item->parent);
-			else /* this won`t be necessary if everything is moved to toolbar.c */
-				compose_action[i].func(widget, (gpointer)item->parent->data);
-			break;
-		}
-	}
-}
-
-static void compose_toolbar_update(Compose *compose)
-{
-	gtk_container_remove(GTK_CONTAINER(compose->handlebox), 
-			     GTK_WIDGET(compose->toolbar->toolbar));
-	
-	compose->toolbar->toolbar       = NULL;
-	compose->toolbar->send_btn      = NULL;
-	compose->toolbar->sendl_btn     = NULL;
-	compose->toolbar->draft_btn     = NULL;
-	compose->toolbar->insert_btn    = NULL;
-	compose->toolbar->attach_btn    = NULL;
-	compose->toolbar->sig_btn       = NULL;	
-	compose->toolbar->exteditor_btn = NULL;	
-	compose->toolbar->linewrap_btn  = NULL;	
-	compose->toolbar->addrbook_btn  = NULL;	
-
-	TOOLBAR_DESTROY_ITEMS(compose->toolbar->item_list);	
-	TOOLBAR_DESTROY_ACTIONS(compose->toolbar->action_list);
-	compose_toolbar_create(compose, compose->handlebox);	
-}
-
-static void compose_toolbar_create(Compose   *compose, 
-				   GtkWidget *container)
-{
-	ToolbarItem *toolbar_item;
-
-	GtkWidget *toolbar;
-	GtkWidget *icon_wid  = NULL;
-	GtkWidget *item;
-	GtkTooltips *toolbar_tips;
-	ToolbarSylpheedActions *action_item;
-	GSList *cur;
-	GSList *toolbar_list;
- 	toolbar_tips = gtk_tooltips_new();
-	
-	toolbar_read_config_file(TOOLBAR_COMPOSE);
-	toolbar_list = toolbar_get_list(TOOLBAR_COMPOSE);
-
-	compose->toolbar = g_new0(Toolbar, 1); 
-	
-	toolbar = gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL,
-				  GTK_TOOLBAR_BOTH);
-	gtk_container_add(GTK_CONTAINER(container), toolbar);
-	gtk_container_set_border_width(GTK_CONTAINER(container), 2);
-	gtk_toolbar_set_button_relief(GTK_TOOLBAR(toolbar), GTK_RELIEF_NONE);
-	gtk_toolbar_set_space_style(GTK_TOOLBAR(toolbar),
-				    GTK_TOOLBAR_SPACE_LINE);
-	
-	for (cur = toolbar_list; cur != NULL; cur = cur->next) {
-
-		if (g_strcasecmp(((ToolbarItem*)cur->data)->file, SEPARATOR) == 0) {
-			gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
-			continue;
-		}
-		
-		toolbar_item = g_new0(ToolbarItem, 1); 
-		toolbar_item->file = g_strdup(((ToolbarItem*)cur->data)->file);
-		toolbar_item->text = g_strdup(((ToolbarItem*)cur->data)->text);
-		toolbar_item->index = ((ToolbarItem*)cur->data)->index;
-
-		toolbar_item->parent = g_new0(ToolbarParent, 1);
-		toolbar_item->parent->data = (gpointer)compose;
-		toolbar_item->parent->type = TOOLBAR_COMPOSE;
-
-		/* collect toolbar items in list to keep track */
-		compose->toolbar->item_list = g_slist_append(compose->toolbar->item_list, 
-							     toolbar_item);
-
-		icon_wid = stock_pixmap_widget(container, stock_pixmap_get_icon(toolbar_item->file));
-		item  = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
-						toolbar_item->text,
-						(""),
-						(""),
-						icon_wid, toolbar_compose_buttons_cb, 
-						toolbar_item);
-		
-		switch (toolbar_item->index) {
-		case A_SEND:
-			compose->toolbar->send_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     compose->toolbar->send_btn, 
-					     _("Send Message"), NULL);
-			break;
-		case A_SENDL:
-			compose->toolbar->sendl_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     compose->toolbar->sendl_btn,
-					     _("Put into queue folder and send later"), NULL);
-			break;
-		case A_DRAFT:
-			compose->toolbar->draft_btn = item; 
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     compose->toolbar->draft_btn,
-					     _("Save to draft folder"), NULL);
-			break;
-		case A_INSERT:
-			compose->toolbar->insert_btn = item; 
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     compose->toolbar->insert_btn,
-					     _("Insert file"), NULL);
-			break;
-		case A_ATTACH:
-			compose->toolbar->attach_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     compose->toolbar->attach_btn,
-					     _("Attach file"), NULL);
-			break;
-		case A_SIG:
-			compose->toolbar->sig_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     compose->toolbar->sig_btn,
-					     _("Insert signature"), NULL);
-			break;
-		case A_EXTEDITOR:
-			compose->toolbar->exteditor_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     compose->toolbar->exteditor_btn,
-					     _("Edit with external editor"), NULL);
-			break;
-		case A_LINEWRAP:
-			compose->toolbar->linewrap_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     compose->toolbar->linewrap_btn,
-					     _("Wrap all long lines"), NULL);
-			break;
-		case A_ADDRBOOK:
-			compose->toolbar->addrbook_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     compose->toolbar->addrbook_btn,
-					     _("Address book"), NULL);
-			break;
-		case A_SYL_ACTIONS:
-			action_item = g_new0(ToolbarSylpheedActions, 1);
-			action_item->widget = item;
-			action_item->name   = g_strdup(toolbar_item->text);
-
-			compose->toolbar->action_list = 
-				g_slist_append(compose->toolbar->action_list,
-					       action_item);
-
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     item,
-					     action_item->name, NULL);
-
-			gtk_widget_show(item);
-			break;
-		default:
-			break;
-		}
-	}
-
-	compose->toolbar->toolbar = toolbar;
-
-	gtk_widget_show_all(toolbar);
-}
-
-static void compose_toolbar_set_sensitive (Compose * compose, gboolean sensitive)
-{
-	GSList *items = compose->toolbar->action_list;
-	if (compose->toolbar->send_btn)
-		gtk_widget_set_sensitive(compose->toolbar->send_btn, sensitive);
-	if (compose->toolbar->sendl_btn)
-		gtk_widget_set_sensitive(compose->toolbar->sendl_btn, sensitive);
-	if (compose->toolbar->draft_btn )
-		gtk_widget_set_sensitive(compose->toolbar->draft_btn , sensitive);
-	if (compose->toolbar->insert_btn )
-		gtk_widget_set_sensitive(compose->toolbar->insert_btn , sensitive);
-	if (compose->toolbar->attach_btn)
-		gtk_widget_set_sensitive(compose->toolbar->attach_btn, sensitive);
-	if (compose->toolbar->sig_btn)
-		gtk_widget_set_sensitive(compose->toolbar->sig_btn, sensitive);
-	if (compose->toolbar->exteditor_btn)
-		gtk_widget_set_sensitive(compose->toolbar->exteditor_btn, sensitive);
-	if (compose->toolbar->linewrap_btn)
-		gtk_widget_set_sensitive(compose->toolbar->linewrap_btn, sensitive);
-	if (compose->toolbar->addrbook_btn)
-		gtk_widget_set_sensitive(compose->toolbar->addrbook_btn, sensitive);
-	for (; items != NULL; items = g_slist_next(items)) {
-		ToolbarSylpheedActions *item = (ToolbarSylpheedActions *)items->data;
-		gtk_widget_set_sensitive(item->widget, sensitive);
-	}
 }
 
 static GtkWidget *compose_account_option_menu_create(Compose *compose)
@@ -5379,8 +5174,7 @@ void compose_reflect_prefs_pixmap_theme(void)
 
 	for (cur = compose_list; cur != NULL; cur = cur->next) {
 		compose = (Compose *)cur->data;
-		compose_toolbar_update(compose);
-		common_toolbar_set_style(compose, TOOLBAR_COMPOSE);
+		toolbar_update(TOOLBAR_COMPOSE, compose);
 	}
 }
 
@@ -5491,8 +5285,7 @@ static void compose_destroy(Compose *compose)
 
 	gtk_widget_destroy(compose->paned);
 
-	TOOLBAR_DESTROY_ITEMS(compose->toolbar->item_list);
-	TOOLBAR_DESTROY_ACTIONS(compose->toolbar->action_list);
+	toolbar_destroy(compose->toolbar);
 	g_free(compose->toolbar);
 	g_free(compose);
 
@@ -6156,57 +5949,6 @@ static gboolean compose_edit_size_alloc(GtkEditable *widget,
 	return TRUE;
 }
 
-static void toolbar_send_cb(GtkWidget *widget, gpointer data)
-{
-	compose_send_cb(data, 0, NULL);
-}
-
-static void toolbar_send_later_cb(GtkWidget *widget, gpointer data)
-{
-	compose_send_later_cb(data, 0, NULL);
-}
-
-static void toolbar_draft_cb(GtkWidget *widget, gpointer data)
-{
-	compose_draft_cb(data, 0, NULL);
-}
-
-static void toolbar_insert_cb(GtkWidget *widget, gpointer data)
-{
-	compose_insert_file_cb(data, 0, NULL);
-}
-
-static void toolbar_attach_cb(GtkWidget *widget, gpointer data)
-{
-	compose_attach_cb(data, 0, NULL);
-}
-
-static void toolbar_sig_cb(GtkWidget *widget, gpointer data)
-{
-	Compose *compose = (Compose *)data;
-
-	compose_insert_sig(compose);
-}
-
-static void toolbar_ext_editor_cb(GtkWidget *widget, gpointer data)
-{
-	Compose *compose = (Compose *)data;
-
-	compose_exec_ext_editor(compose);
-}
-
-static void toolbar_linewrap_cb(GtkWidget *widget, gpointer data)
-{
-	Compose *compose = (Compose *)data;
-
-	compose_wrap_line(compose);
-}
-
-static void toolbar_address_cb(GtkWidget *widget, gpointer data)
-{
-	compose_address_cb(data, 0, NULL);
-}
-
 static void account_activated(GtkMenuItem *menuitem, gpointer data)
 {
 	Compose *compose = (Compose *)data;
@@ -6271,7 +6013,7 @@ static void attach_key_pressed(GtkWidget *widget, GdkEventKey *event,
 static void compose_allow_user_actions (Compose *compose, gboolean allow)
 {
 	GtkItemFactory *ifactory = gtk_item_factory_from_widget(compose->menubar);
-	compose_toolbar_set_sensitive(compose, allow);
+	toolbar_comp_set_sensitive(compose, allow);
 	menu_set_sensitive(ifactory, "/File", allow);
 	menu_set_sensitive(ifactory, "/Edit", allow);
 	menu_set_sensitive(ifactory, "/Spelling", allow);
