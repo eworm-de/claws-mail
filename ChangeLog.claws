@@ -1,3 +1,8 @@
+2002-11-15 [colin]	0.8.5claws157
+
+	* src/ssl_certificate.c
+		Check for missing parts in the certificates
+
 2002-11-15 [colin]	0.8.5claws156
 
 	* src/folderview.c
