@@ -4,7 +4,7 @@
 		Explicitly remove draft timeout to fix nasty race between 
 		compose_send_cb() (which destroys the compose window) and 
 		compose_defer_auto_save_draft() (which expects compose 
-		window to exist). Should fix Keith's and Fred Malton's
+		window to exist). Should fix Keith's and Fred Marton's
 		bug report (#128, "crash after complaining about character
 		set conversion")
 
