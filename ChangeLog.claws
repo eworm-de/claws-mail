@@ -1,3 +1,10 @@
+2003-07-04 [melvin]	0.9.0claws79
+
+	* src/gtk/gtkaspell.c
+		Fixed bug #184 "Entering non-ascii character deletes
+		previous char if spell checking enabled": this makes
+		the spell checking in multibytes (e.g. UTF-8)locales work.
+		
 2003-07-04 [christoph]	0.9.0claws78
 
 	* sync with 0.9.2cvs1

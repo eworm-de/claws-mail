@@ -426,6 +426,8 @@ static void entry_insert_cb(GtkSText *gtktext,
 			    guint *ppos, 
                             GtkAspell *gtkaspell) 
 {
+	size_t wlen;
+
 	g_return_if_fail(gtkaspell->gtkaspeller->checker);
 
 	if (!gtkaspell->check_while_typing)
@@ -437,7 +439,16 @@ static void entry_insert_cb(GtkSText *gtktext,
 	 */
 
 	gtk_stext_freeze(gtktext);
-	gtk_stext_backward_delete(GTK_STEXT(gtktext), len);
+	if (MB_CUR_MAX > 1) {
+		gchar *str;
+		Xstrndup_a(str, newtext, len, return);
+		wlen = mbstowcs(NULL, str, 0);
+		if (wlen < 0)
+			return;
+	} else
+		wlen = len;
+	
+	gtk_stext_backward_delete(GTK_STEXT(gtktext), wlen);
 	gtk_stext_insert(GTK_STEXT(gtktext), NULL, NULL, NULL, newtext, len);
 	*ppos = gtk_stext_get_point(GTK_STEXT(gtktext));
 	       
