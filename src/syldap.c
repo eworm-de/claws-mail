@@ -314,6 +314,7 @@ void syldap_print_short( SyldapServer *ldapServer, FILE *stream ) {
 	fprintf( stream, "  ret val: %d\n",   ldapServer->retVal );
 }
 
+#if 0
 /*
 * Build an address list entry and append to list of address items. Name is formatted
 * as it appears in the common name (cn) attribute.
@@ -341,6 +342,7 @@ static void syldap_build_items_cn( SyldapServer *ldapServer, GSList *listName, G
 		nodeName = g_slist_next( nodeName );
 	}
 }
+#endif
 
 /*
 * Build an address list entry and append to list of address items. Name is formatted

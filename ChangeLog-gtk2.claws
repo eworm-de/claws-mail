@@ -1,3 +1,16 @@
+2004-12-18 [paul]	0.9.13cvs21.1
+
+	* AUTHORS
+	* ChangeLog
+	* ChangeLog.claws
+	* ChangeLog.jp
+	* NEWS
+	* configure.ac
+	* src/action.c
+	* src/compose.c
+	* src/syldap.c
+		sync with HEAD
+
 2004-12-17 [martin]	0.9.13cvs17.2
 
 	* src/action.c

@@ -1,3 +1,38 @@
+2004-12-17
+
+	* src/action.c: parse_append_filename(): 全ての特殊文字を引用符なしに
+	  エスケープするようにした(IWAMOTO Kouichi さんと Yoichi Imai さん
+	  thanks)。
+	* AUTHORS: 更新。
+
+2004-12-16
+
+	* INSTALL
+	  INSTALL.jp: 動作確認リストを更新。
+
+2004-12-15
+
+	* version 1.0.0rc
+
+2004-12-15
+
+	* src/compose.c: compose_wrap_line_all_full(): 空白挿入のロジックを
+	  修正。
+
+2004-12-15
+
+	* manual/ja/sylpheed.sgml: 更新。
+
+2004-12-15
+
+	* src/addrbook.c
+	  src/addressbook.c
+	  src/addrindex.c
+	  src/jpilot.c
+	  src/ldif.c
+	  src/syldap.c
+	  src/vcard.c: '... defined but not used' の警告を除去。
+
 2004-12-13
 
 	* src/compose.c: compose_wrap_line_all_full(): 次の行の最初の文字が

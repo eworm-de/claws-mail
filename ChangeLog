@@ -1,3 +1,37 @@
+2004-12-17
+
+	* src/action.c: parse_append_filename(): escape all special characters
+	  without quote (thanks to IWAMOTO Kouichi and Yoichi Imai).
+	* AUTHORS: updated.
+
+2004-12-16
+
+	* INSTALL
+	  INSTALL.jp: updated the confirmation list.
+
+2004-12-15
+
+	* version 1.0.0rc
+
+2004-12-15
+
+	* src/compose.c: compose_wrap_line_all_full(): fixed the logic of
+	  space insertion.
+
+2004-12-15
+
+	* manual/ja/sylpheed.sgml: updated.
+
+2004-12-15
+
+	* src/addrbook.c
+	  src/addressbook.c
+	  src/addrindex.c
+	  src/jpilot.c
+	  src/ldif.c
+	  src/syldap.c
+	  src/vcard.c: removed '... defined but not used' warnings.
+
 2004-12-13
 
 	* src/compose.c: compose_wrap_line_all_full(): only insert space
