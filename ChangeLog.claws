@@ -1,3 +1,8 @@
+2003-03-10 [darko]	0.8.10claws105
+
+	* src/compose.c
+		code cleanup to make Hiro happy
+
 2003-03-10 [paul]	0.8.10claws104
 
 	* sync with 0.8.11cvs2
