@@ -90,7 +90,6 @@ AM_ICONV
 dnl for gettext
 ALL_LINGUAS="bg cs de el en_GB es fr hr hu it ja ko nl pl pt_BR ru sk sr sv zh_CN zh_TW.Big5"
 AM_GNU_GETTEXT([use-libtool])
-AM_GNU_GETTEXT_VERSION(0.12.1)
 dnl AC_CHECK_FUNC(gettext, AC_CHECK_LIB(intl, gettext))
 localedir='${prefix}/${DATADIRNAME}/locale'
 AC_SUBST(localedir)
