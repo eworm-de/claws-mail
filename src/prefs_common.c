@@ -104,6 +104,7 @@ static struct Compose {
 
 	GtkWidget * checkbtn_forward_as_attachment;
 	GtkWidget * checkbtn_reply_account_autoselect;
+	GtkWidget * checkbtn_smart_wrapping;
 } compose;
 
 static struct Display {
@@ -294,6 +295,9 @@ static PrefParam param[] = {
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"reply_account_autoselect", "TRUE", &prefs_common.reply_account_autoselect,
 	 P_BOOL, &compose.checkbtn_reply_account_autoselect,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+        {"smart_wrapping", "TRUE", &prefs_common.smart_wrapping,
+	 P_BOOL, &compose.checkbtn_smart_wrapping,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"show_ruler", "TRUE", &prefs_common.show_ruler, P_BOOL,
@@ -1069,6 +1073,7 @@ static void prefs_compose_create(void)
 
 	GtkWidget *checkbtn_forward_as_attachment;
 	GtkWidget *checkbtn_reply_account_autoselect;
+	GtkWidget *checkbtn_smart_wrapping;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1200,6 +1205,9 @@ static void prefs_compose_create(void)
 	PACK_CHECK_BUTTON (vbox1, checkbtn_reply_account_autoselect,
 			   _("Automatically select account for mail replies"));
 
+	PACK_CHECK_BUTTON (vbox1, checkbtn_smart_wrapping,
+			   _("Smart wrapping (EXPERIMENTAL)"));
+
 	/*
 	compose.checkbtn_quote   = checkbtn_quote;
 	compose.entry_quotemark  = entry_quotemark;
@@ -1217,6 +1225,8 @@ static void prefs_compose_create(void)
 		checkbtn_forward_as_attachment;
 	compose.checkbtn_reply_account_autoselect =
 		checkbtn_reply_account_autoselect;
+	compose.checkbtn_smart_wrapping = 
+		checkbtn_smart_wrapping;
 }
 
 static void date_format_ok_btn_clicked(GtkButton *button, GtkWidget **widget)

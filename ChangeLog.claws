@@ -1,4 +1,4 @@
-2001-07-08 [hoa]
+2001-07-09 [hoa]
 
 	* AUTHORS
 		changed my email address
@@ -13,6 +13,18 @@
 
 	* configure.in
 		fix incorrect description of --enable-ldap parameter
+
+	* src/prefs_common.[ch]
+	  src/compose.c
+		add experimental option "smart wrapping" which make the
+		compose editor auto wrap.
+		
+		| TODO: the problem with the buggy cursor handling is caused |
+		| by the GtkText. when deleting / backspacing text its       |
+		| wrapping algorithm does not take in account the previous   |
+		| line. should find a way to hack this in.                   |
+		| or should perhaps combine this with the word wrapping      |
+		| patch i wrote in january.                                  |
 
 	* src/about.c
 		show build parameters for LDAP and JPilot

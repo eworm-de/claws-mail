@@ -2963,8 +2963,10 @@ static Compose *compose_create(PrefsAccount *account)
 			    gtk_scrolled_window_get_vadjustment
 			    (GTK_SCROLLED_WINDOW(scrolledwin)));
 	gtk_stext_set_editable(GTK_STEXT(text), TRUE);
-	gtk_stext_set_word_wrap(GTK_STEXT(text), TRUE);
-	gtk_stext_set_wrap_rmargin(GTK_STEXT(text), prefs_common.linewrap_len);
+	if (prefs_common.smart_wrapping) {	
+		gtk_stext_set_word_wrap(GTK_STEXT(text), TRUE);
+		gtk_stext_set_wrap_rmargin(GTK_STEXT(text), prefs_common.linewrap_len);
+	}		
 
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
 

@@ -74,6 +74,7 @@ struct _PrefsCommon
 	gchar *fw_quotefmt;
 	gboolean forward_as_attachment;
 	gboolean reply_account_autoselect;
+	gboolean smart_wrapping;
 
 	/* Display */
 	gchar *widgetfont;
