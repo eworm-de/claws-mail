@@ -192,3 +192,4 @@
 ( cvs diff -u -r 1.1.4.6 -r 1.1.4.7 src/gtk/gtksctree.c; ) > 0.9.12cvs119.2.patchset
 ( cvs diff -u -r 1.1.4.7 -r 1.1.4.8 src/gtk/gtksctree.c; cvs diff -u -r 1.395.2.33 -r 1.395.2.34 src/summaryview.c; ) > 0.9.12cvs119.3.patchset
 ( cvs diff -u -r 1.654.2.225 -r 1.654.2.226 configure.ac; ) > 0.9.12cvs120.1.patchset
+( cvs diff -u -r 1.395.2.34 -r 1.395.2.35 src/summaryview.c; ) > 0.9.12cvs121.1.patchset
