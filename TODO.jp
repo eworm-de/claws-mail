@@ -7,6 +7,7 @@ o 振り分け処理の強化
 o アドレス帳の改良
 o POP before SMTP
 o オリジナルのアイコンとロゴ
+o より効率的な複数メッセージの SMTP 処理
 o より堅牢な IMAP4 応答パーサ
 o MH, mbox 以外の形式への対応 (Maildir 等)
 o 重要度 (Priority:, X-Priority:, X-MSMail-Priority:)

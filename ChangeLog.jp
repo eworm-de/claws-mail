@@ -1,3 +1,19 @@
+2004-05-20
+
+	* src/folderview.[ch]: スプリングローデッドフォルダを実装。
+
+2004-05-20
+
+	* src/folderview.c: folderview_button_pressed(): 開いているフォルダ
+	  が選択されたときのみ「メッセージを検索...」メニュー項目を有効に
+	  するようにした。
+
+2004-05-19
+
+	* src/compose.c
+	  src/prefs_common.[ch]: 「送信に失敗したメッセージを送信待ちに
+	  入れる」オプションを削除。
+
 2004-05-18
 
 	* src/summaryview.c: コンテキストメニューを整理。

@@ -3204,24 +3204,7 @@ gint compose_send(Compose *compose)
 		}
 	}
 
-	/* queue message if failed to send */
-	if (ok < 0) {
-		if (prefs_common.queue_msg) {
-			AlertValue val;
-
-			val = alertpanel
-				(_("Queueing"),
-				 _("Error occurred while sending the message.\n"
-				   "Put this message into queue folder?"),
-				 _("OK"), _("Cancel"), NULL);
-			if (G_ALERTDEFAULT == val) {
-				ok = compose_queue(compose, tmp);
-				if (ok < 0)
-					alertpanel_error(_("Can't queue the message."));
-			}
-		} else
-			alertpanel_error_log(_("Error occurred while sending the message."));
-	} else {
+	if (ok == 0) {
 		if (compose->mode == COMPOSE_REEDIT) {
 			compose_remove_reedit_target(compose);
 		}

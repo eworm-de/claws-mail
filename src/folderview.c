@@ -1380,7 +1380,8 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	menu_set_sensitive(fpopup_factory, name, sens)
 
 	SET_SENS("/Mark all read", item->unread_msgs >= 1);
-	SET_SENS("/Search folder...", item->total_msgs >= 1);
+	SET_SENS("/Search folder...", item->total_msgs >= 1 && 
+		 folderview->selected == folderview->opened);
 	SET_SENS("/Properties...", TRUE);
 	SET_SENS("/Processing...", item->node->parent != NULL);
 

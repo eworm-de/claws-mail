@@ -1,3 +1,18 @@
+2004-05-20
+
+	* src/folderview.[ch]: implemented spring-loaded folder.
+
+2004-05-20
+
+	* src/folderview.c: folderview_button_pressed(): enable menu item
+	  'Search messages...' only when opened folder is selected.
+
+2004-05-19
+
+	* src/compose.c
+	  src/prefs_common.[ch]: removed the option "Queue messages that fail
+	  to send".
+
 2004-05-18
 
 	* src/summaryview.c: cleaned up the context menu.
