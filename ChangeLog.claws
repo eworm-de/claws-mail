@@ -1,3 +1,10 @@
+2002-08-25 [alfons]	0.8.2claws117
+
+	* src/summaryview.c
+		treat sent boxes as special and allow sorting them by addressee
+		(closes "[ 589418 ] Sent folder sorting misbehavior"
+		submitted by Steve Lamb)
+
 2002-08-24 [alfons]	0.8.2claws116
 
 	* src/matcher.c
