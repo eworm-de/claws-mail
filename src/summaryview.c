@@ -5474,7 +5474,7 @@ static void summary_find_answers (SummaryView *summaryview, MsgInfo *msg)
 	sent_folder = account_get_special_folder
 				(account, F_OUTBOX);
 	
-	buf = g_strdup_printf("I %s", msg->msgid);
+	buf = g_strdup_printf("inreplyto matchcase \"%s\"", msg->msgid);
 
 	if (sent_folder != summaryview->folder_item) {
 		folderview_select(summaryview->mainwin->folderview, sent_folder);

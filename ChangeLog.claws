@@ -1,3 +1,9 @@
+2003-01-06 [colin]     0.8.8claws55
+	
+	* src/summaryview.c
+		We don't want regexp in the reply-finder, 
+		because MIDs can contain !,$,. and so on
+
 2003-01-06 [jens]     0.8.8claws54
 
 	* src/jpilot.c
