@@ -99,7 +99,7 @@ gint ldapqry_read_data_th	( LdapQuery *qry );
 void ldapqry_cancel		( LdapQuery *qry );
 void ldapqry_age		( LdapQuery *qry, gint maxAge );
 void ldapqry_delete_folder	( LdapQuery *qry );
-void ldapquery_remove_results	( LdapQuery *qry );
+gboolean ldapquery_remove_results( LdapQuery *qry );
 
 #endif	/* USE_LDAP */
 

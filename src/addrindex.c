@@ -2737,8 +2737,11 @@ void addrindex_remove_results( AddressDataSource *ds, ItemFolder *folder ) {
 	AddressCache *cache;
 	gint queryID = 0;
 
+	/* printf( "addrindex_remove_results/start\n" ); */
+
 	/* Test for folder */
 	if( folder->folderType != ADDRFOLDER_QUERY_RESULTS ) return;
+	/* printf( "folder name ::%s::\n", ADDRITEM_NAME(folder) ); */
 	adbase = ( AddrBookBase * ) ds->rawDataSource;
 	if( adbase == NULL ) return;
 	cache = adbase->addressCache;
@@ -2748,13 +2751,26 @@ void addrindex_remove_results( AddressDataSource *ds, ItemFolder *folder ) {
 
 	if( ds->type == ADDR_IF_LDAP ) {
 #ifdef USE_LDAP
-		LdapQuery  *qry;
+		LdapQuery *qry;
+		gboolean  delFlag;
 
 		qry = ( LdapQuery * ) folder->folderData;
 		queryID = ADDRQUERY_ID(qry);
-		ldapquery_remove_results( qry );
+		/* printf( "calling ldapquery_remove_results...queryID=%d\n", queryID ); */
+		delFlag = ldapquery_remove_results( qry );
+		/* printf( "calling ldapquery_remove_results...done\n" ); */
+		/*
+		if( delFlag ) {
+			printf( "delFlag IS-TRUE\n" );
+		}
+		else {
+			printf( "delFlag IS-FALSE\n" );
+			addressbook_clear_idler( queryID );
+		}
+		*/
 #endif
 	}
+	/* printf( "addrindex_remove_results/end\n" ); */
 
 	/* Delete query request */
 	if( queryID > 0 ) {
@@ -2816,9 +2832,9 @@ gboolean addrindex_load_completion(
 				nodeM = person->listEMail;
 
 				/* Figure out name to use */
-				sName = person->nickName;
+				sName = ADDRITEM_NAME(person);
 				if( sName == NULL || *sName == '\0' ) {
-					sName = ADDRITEM_NAME(person);
+					sName = person->nickName;
 				}
 
 				/* Process each E-Mail address */
@@ -2829,10 +2845,11 @@ gboolean addrindex_load_completion(
 					sAddress = email->address;
 					if( sAddress || *sAddress != '\0' ) {
 						sAlias = ADDRITEM_NAME(email);
-						if( sAlias && *sAlias != '\0' ) {
+						// if( sAlias && *sAlias != '\0' ) {
+						if( sFriendly == NULL || *sFriendly == '\0' ) {
 							sFriendly = sAlias;
 						}
-						( callBackFunc ) ( sFriendly, sAddress, sName );
+						( callBackFunc ) ( sFriendly, sAddress, sAlias );
 					}
 
 					nodeM = g_list_next( nodeM );

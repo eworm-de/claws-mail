@@ -225,6 +225,9 @@ Compose *compose_new			(PrefsAccount	*account,
 Compose *compose_new_with_folderitem	(PrefsAccount	*account,
 					 FolderItem	*item);
 
+Compose *compose_new_with_list		(PrefsAccount	*account,
+					 GList          *listAddress);
+
 void compose_reply_mode			(ComposeMode 	 mode, 
 					 GSList 	*msginfo_list, 
 					 gchar 		*body);

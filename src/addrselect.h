@@ -70,6 +70,7 @@ void addrselect_list_show		( AddrSelectList *asl,
 					  FILE *stream );
 void addrselect_list_print		( AddrSelectList *asl,
 					  FILE *stream );
+GList *addrselect_build_list		( AddrSelectList *asl );
 
 #endif /* __ADDR_SELECT_H__ */
 

@@ -1,3 +1,20 @@
+2003-02-15 [match]	0.9.9claws13
+
+	* src/ldapquery.[ch]
+	* src/ldapserver.h
+	* src/addrindex.[ch]
+		tweak threading calls.
+	* src/addr_compl.[ch]
+		add alias into completion list.
+	* src/addressbook.c
+		fix ldap browse.
+		improve context menu behavior.
+		change menu sequence.
+		add send mail from addressbook.
+	* src/addrselect.[ch]
+	* src/compose.[ch]
+		add send mail from addressbook.
+
 2003-02-15 [christoph]	0.9.9claws12
 
 	* src/folderutils.c
@@ -200,7 +217,7 @@
 
 2004-01-25 [paul]	0.9.8claws48
 
-	src/prefs_ext_prog.c
+	* src/prefs_ext_prog.c
 		apply Alfons' patch to check for NULL pointers
 		fixes bug #424
 

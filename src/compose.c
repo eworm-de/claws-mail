@@ -170,7 +170,8 @@ static GList *compose_list = NULL;
 Compose *compose_generic_new			(PrefsAccount	*account,
 						 const gchar	*to,
 						 FolderItem	*item,
-						 GPtrArray 	*attach_files);
+						 GPtrArray 	*attach_files,
+						 GList          *listAddress );
 
 static Compose *compose_create			(PrefsAccount	*account,
 						 ComposeMode	 mode);
@@ -298,6 +299,9 @@ static gint calc_cursor_xpos	(GtkSText	*text,
 static void compose_create_header_entry	(Compose *compose);
 static void compose_add_header_entry	(Compose *compose, gchar *header, gchar *text);
 static void compose_update_priority_menu_item(Compose * compose);
+
+static void compose_add_field_list	( Compose *compose,
+					  GList *listAddress );
 
 /* callback functions */
 
@@ -689,16 +693,21 @@ static GtkTargetEntry compose_mime_types[] =
 Compose *compose_new(PrefsAccount *account, const gchar *mailto,
 		     GPtrArray *attach_files)
 {
-	return compose_generic_new(account, mailto, NULL, attach_files);
+	return compose_generic_new(account, mailto, NULL, attach_files, NULL);
 }
 
 Compose *compose_new_with_folderitem(PrefsAccount *account, FolderItem *item)
 {
-	return compose_generic_new(account, NULL, item, NULL);
+	return compose_generic_new(account, NULL, item, NULL, NULL);
+}
+
+Compose *compose_new_with_list( PrefsAccount *account, GList *listAddress )
+{
+	return compose_generic_new( account, NULL, NULL, NULL, listAddress );
 }
 
 Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderItem *item,
-			     GPtrArray *attach_files)
+			     GPtrArray *attach_files, GList *listAddress )
 {
 	Compose *compose;
 	GtkSText *text;
@@ -754,6 +763,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 		 */
 		menu_set_sensitive(ifactory, "/Message/Request Return Receipt", FALSE); 
 	}
+	compose_add_field_list( compose, listAddress );
 
 	if (attach_files) {
 		gint i;
@@ -7287,4 +7297,22 @@ static void compose_check_forwards_go(Compose *compose)
 	}
 }
 #endif
+
+/**
+ * Add entry field for each address in list.
+ * \param compose     E-Mail composition object.
+ * \param listAddress List of (formatted) E-Mail addresses.
+ */
+static void compose_add_field_list( Compose *compose, GList *listAddress ) {
+	GList *node = listAddress;
+	while( node ) {
+		gchar *addr = node->data;
+		compose_entry_append( compose, addr, COMPOSE_TO );
+		node = g_list_next( node );
+	}
+}
+
+/*
+ * End of Source.
+ */
 
