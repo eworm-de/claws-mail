@@ -31,6 +31,7 @@ typedef struct _AttachInfo	AttachInfo;
 #include "procmime.h"
 #include "addressbook.h"
 #include "prefs_account.h"
+#include "undo.h"
 
 #ifdef USE_PSPELL
 #include "gtkspell.h"
@@ -179,6 +180,8 @@ struct _Compose
 	pid_t  exteditor_pid;
 	gint   exteditor_readdes;
 	gint   exteditor_tag;
+
+	UndoMain *undostruct;
 
 #if USE_PSPELL
         /* Pspell spell checker */

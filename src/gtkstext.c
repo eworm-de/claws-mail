@@ -21,17 +21,17 @@
  * Modified by the GTK+ Team and others 1997-1999.  See the AUTHORS
  * file for a list of people on the GTK+ Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
+ * GTK+ at ftp://ftp.gtk.org/pub/gtk/.
  */
 
 /*
- * Modified by the Sylpheed Team and others 2001. Interesting 
+ * Modified by the Sylpheed Team and others 2001. Interesting
  * parts are marked using comment block following this one.
  * This modification is based on the GtkText of GTK 1.2.10
  */
 
-/* SYLPHEED: 
- * comment here 
+/* SYLPHEED:
+ * comment here
  */
 
 #ifdef HAVE_CONFIG_H
@@ -47,7 +47,9 @@
 #include <gtk/gtksignal.h>
 #include <gtkstext.h>
 
-/* SYLPHEED: 
+#include "compose.h"
+
+/* SYLPHEED:
  * compile time settings 
  */
 #define INITIAL_BUFFER_SIZE      1024
@@ -495,7 +497,8 @@ static const GtkTextFunction control_keys[26] =
 {
   (GtkTextFunction)gtk_stext_move_beginning_of_line,    /* a */
   (GtkTextFunction)gtk_stext_move_backward_character,   /* b */
-  (GtkTextFunction)gtk_editable_copy_clipboard,        /* c */
+  NULL,						      /* c */
+/*  (GtkTextFunction)gtk_editable_copy_clipboard,        /* c */
   (GtkTextFunction)gtk_stext_delete_forward_character,  /* d */
   (GtkTextFunction)gtk_stext_move_end_of_line,          /* e */
   (GtkTextFunction)gtk_stext_move_forward_character,    /* f */
@@ -514,9 +517,11 @@ static const GtkTextFunction control_keys[26] =
   NULL,                                                /* s */
   NULL,                                                /* t */
   (GtkTextFunction)gtk_stext_delete_line,               /* u */
-  (GtkTextFunction)gtk_editable_paste_clipboard,       /* v */
+  NULL,						      /* v */
+/*  (GtkTextFunction)gtk_editable_paste_clipboard,       /* v */
   (GtkTextFunction)gtk_stext_delete_backward_word,      /* w */
-  (GtkTextFunction)gtk_editable_cut_clipboard,         /* x */
+  NULL,						     /* x */
+/*  (GtkTextFunction)gtk_editable_cut_clipboard,         /* x */
   NULL,                                                /* y */
   NULL,                                                /* z */
 };
