@@ -76,7 +76,6 @@ static gboolean free_func(GNode *node, gpointer data)
 	MimeInfo *mimeinfo = (MimeInfo *) node->data;
 
 	g_free(mimeinfo->encoding);
-	g_free(mimeinfo->charset);
 	g_free(mimeinfo->name);
 	g_free(mimeinfo->content_disposition);
 	if(mimeinfo->tmpfile)
@@ -209,6 +208,14 @@ enum
 	H_CONTENT_DESCRIPTION	    = 3,
 	H_SUBJECT              	    = 4
 };
+
+const gchar *procmime_mimeinfo_get_parameter(MimeInfo *mimeinfo, const gchar *name)
+{
+	g_return_val_if_fail(mimeinfo != NULL, NULL);
+	g_return_val_if_fail(name != NULL, NULL);
+	
+	return g_hash_table_lookup(mimeinfo->parameters, name);
+}
 
 gboolean procmime_decode_content(MimeInfo *mimeinfo)
 {
@@ -479,7 +486,8 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo)
 	}
 
 	src_codeset = prefs_common.force_charset
-		? prefs_common.force_charset : mimeinfo->charset;
+		? prefs_common.force_charset : 
+		procmime_mimeinfo_get_parameter(mimeinfo, "charset");
 
 	renderer = NULL;
 

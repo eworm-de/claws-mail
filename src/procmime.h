@@ -92,7 +92,6 @@ struct _MimeInfo
 {
 	gchar *encoding;
 
-	gchar *charset;
 	gchar *name;
 
 	gchar *content_disposition;
@@ -145,6 +144,9 @@ MimeInfo *procmime_mimeinfo_next	(MimeInfo	*mimeinfo);
 MimeInfo *procmime_scan_message		(MsgInfo	*msginfo);
 void procmime_scan_multipart_message	(MimeInfo	*mimeinfo,
 					 FILE		*fp);
+const gchar *procmime_mimeinfo_get_parameter
+					(MimeInfo	*mimeinfo,
+					 const gchar	*name);
 
 /* scan headers */
 

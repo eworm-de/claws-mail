@@ -327,8 +327,8 @@ void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 		charset = textview->messageview->forced_charset;
 	else if (prefs_common.force_charset)
 		charset = prefs_common.force_charset;
-	else if (mimeinfo->charset)
-		charset = mimeinfo->charset;
+	else
+		charset = procmime_mimeinfo_get_parameter(mimeinfo, "charset");
 
 	textview_set_font(textview, charset);
 	textview_clear(textview);
@@ -377,8 +377,8 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 		charset = textview->messageview->forced_charset;
 	else if (prefs_common.force_charset)
 		charset = prefs_common.force_charset;
-	else if (mimeinfo->charset)
-		charset = mimeinfo->charset;
+	else
+		charset = procmime_mimeinfo_get_parameter(mimeinfo, "charset");
 
 	textview_set_font(textview, charset);
 
@@ -454,8 +454,9 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo)
 			charset = textview->messageview->forced_charset;
 		else if (prefs_common.force_charset)
 			charset = prefs_common.force_charset;
-		else if (mimeinfo->charset)
-			charset = mimeinfo->charset;
+		else
+			charset = procmime_mimeinfo_get_parameter(mimeinfo, "charset");
+
 		textview_write_body(textview, mimeinfo, charset);
 	}
 

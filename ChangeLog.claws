@@ -1,3 +1,15 @@
+2003-10-21 [christoph]	0.9.6claws40
+
+	* src/procmime.[ch]
+	* src/textview.c
+		remove obsolete charset parameter in MimeInfo and fix
+		TextView to use the charset from the parameter hash table
+
+	* src/plugins/dillo_viewer/Makefile.am
+	* src/plugins/trayicon/Makefile.am
+		add OPENSSL_CFLAGS to fix building with using
+		--with-openssl-* parameters
+
 2003-10-21 [paul]	0.9.6claws39
 
 	* src/prefs_matcher.[ch]
