@@ -125,6 +125,7 @@ static void folder_init(Folder *folder, const gchar *name)
 	folder->get_num_list = NULL;
 	folder->ui_func = NULL;
 	folder->ui_func_data = NULL;
+	folder->change_flags = NULL;
 	folder->check_msgnum_validity = NULL;
 }
 

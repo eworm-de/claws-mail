@@ -105,14 +105,6 @@ void filteringprop_free(FilteringProp * prop)
   return value : return TRUE if the action could be applied
 */
 
-#define CHANGE_FLAGS(msginfo) \
-{ \
-if (msginfo->folder->folder->change_flags != NULL) \
-msginfo->folder->folder->change_flags(msginfo->folder->folder, \
-				      msginfo->folder, \
-				      msginfo); \
-}
-
 static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 {
 	FolderItem * dest_folder;

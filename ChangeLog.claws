@@ -1,3 +1,14 @@
+2002-10-14 [christoph]	0.8.5claws37
+
+	* src/compose.c
+	* src/filtering.c
+	* src/summaryview.c
+		remove calls to folder->change_flags that are now
+		done by procmsg flag functions (seems it is not
+		used by any foldertype anyway)
+	* src/folder.c
+		init folder->change_flags with NULL
+
 2002-10-14 [christoph]	0.8.5claws36
 
 	* src/folder.[ch]
