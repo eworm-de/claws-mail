@@ -1,3 +1,15 @@
+2005-02-08 [paul]	1.0.0cvs29
+
+	* po/de.po
+	* po/es.po
+	* po/fr.po
+	* po/it.po
+	* po/sk.po
+	* po/sr.po
+		updated by Thomas Gilgin, Ricardo Mones Lastra,
+		Fabien Vantard, Andrea Spadaccini, Andrej Kacian,
+		Aleksandar Urosevic
+
 2005-02-05 [paul]	1.0.0cvs28
 
 	* src/compose.c
