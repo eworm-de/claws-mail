@@ -1,3 +1,8 @@
+2001-10-17 [christoph]	0.6.3claws21
+
+	* src/compose.c
+		ignore empty or whitespace only header lines
+
 2001-10-17 [paul]	0.6.3claws20
 
 	* sync with sylpheed 0.6.3cvs7

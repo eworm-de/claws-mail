@@ -2550,14 +2550,16 @@ gboolean compose_check_for_valid_recipient(Compose *compose) {
 		gchar *header;
 		gchar *entry;
 		header = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(((compose_headerentry *)list->data)->combo)->entry));
-		entry = gtk_entry_get_text(GTK_ENTRY(((compose_headerentry *)list->data)->entry));
-		if(strlen(entry)) {
+		entry = gtk_editable_get_chars(GTK_EDITABLE(((compose_headerentry *)list->data)->entry), 0, -1);
+		g_strstrip(entry);
+		if(entry[0] != '\0') {
 			for(strptr = recipient_headers; *strptr != NULL; strptr++) {
 				if(!strcmp(header, (prefs_common.trans_hdr ? gettext(*strptr) : *strptr))) {
 					recipient_found = TRUE;
 				}
 			}
 		}
+		g_free(entry);
 	}
 	return recipient_found;
 }
@@ -3141,18 +3143,20 @@ static gint compose_write_headers_from_headerlist(Compose *compose,
 			str = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
 			Xstrdup_a(str, str, return -1);
 			g_strstrip(str);
-			if(list_append_func)
-				*dest_list = list_append_func(*dest_list, str);
-			compose_convert_header
-				(buf, sizeof(buf), str,
-				strlen(header) + 2);
-			if(first_address) {
-				fprintf(fp, "%s: ", header);
-				first_address = FALSE;
-			} else {
-				fprintf(fp, ", ");
+			if(str[0] != '\0') {
+				if(list_append_func)
+					*dest_list = list_append_func(*dest_list, str);
+				compose_convert_header
+					(buf, sizeof(buf), str,
+					strlen(header) + 2);
+				if(first_address) {
+					fprintf(fp, "%s: ", header);
+					first_address = FALSE;
+				} else {
+					fprintf(fp, ", ");
+				}
+				fprintf(fp, "%s", buf);
 			}
-			fprintf(fp, "%s", buf);
 		}
 	}
 	if(!first_address) {
