@@ -1,3 +1,9 @@
+2002-11-15 [colin]	0.8.5claws156
+
+	* src/folderview.c
+		Preventive fix (missing check) found by
+		Alfons
+
 2002-11-15 [paul]
 
 	* NEWS
