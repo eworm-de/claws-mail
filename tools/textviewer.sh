@@ -207,7 +207,7 @@ case $TYPE in
                 {
                         echo "Program 'xlhtml' for displaying Excel files not found" >&2
                         exit 1
-                };èÈ
+                };
                 which html2text > /dev/null 2>&1 || 
                 {
                         echo "Program 'html2text' for displaying Excel files not found" >&2
