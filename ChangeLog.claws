@@ -1,3 +1,11 @@
+2001-08-15 [paul]
+
+	* src/account.c
+		use Hiroyuki's 0.5.3 column scheme but also
+		include the enable/disable button.
+	* src/pixmaps/mark.xpm
+		add Hiroyuki's amended pixmap
+
 2001-08-13 [christoph]
 
 	* src/account.c
