@@ -1,4 +1,4 @@
-2003-02-17 [paul]       0.8.10claws18
+2003-02-17 [jens]       0.8.10claws18
 
         * src/common/md5.c
 		fixed a compile problem with gcc 3.3
