@@ -823,7 +823,7 @@ static void prefs_themes_create_widget(PrefsPage *page, GtkWindow *window, gpoin
 
 	hbox3 = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox3);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox3, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox3, FALSE, FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (hbox3), 5);
 
 	menu_themes = gtk_option_menu_new ();
