@@ -1,3 +1,8 @@
+2003-03-27 [christoph]	0.8.11claws58
+
+	* src/folder.c
+		fix handling of tmp_flags in flag copy function
+
 2003-03-27 [paul]	0.8.11claws57
 
 	* sync with 0.8.11cvs13

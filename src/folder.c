@@ -1501,14 +1501,17 @@ static gint folder_item_get_msg_num_by_file(FolderItem *dest, const gchar *file)
 
 static void copy_msginfo_flags(MsgInfo *source, MsgInfo *dest)
 {
-	MsgPermFlags newflags = 0;
+	MsgPermFlags perm_flags = 0;
+	MsgTmpFlags tmp_flags = 0;
 
 	/* create new flags */
 	if (source != NULL) {
 		/* copy original flags */
-		newflags = source->flags.perm_flags;
+		perm_flags = source->flags.perm_flags;
+		tmp_flags = source->flags.tmp_flags;
 	} else {
-		newflags = dest->flags.perm_flags;
+		perm_flags = dest->flags.perm_flags;
+		tmp_flags = dest->flags.tmp_flags;
 	}
 
 	/* remove new, unread and deleted in special folders */
@@ -1516,15 +1519,23 @@ static void copy_msginfo_flags(MsgInfo *source, MsgInfo *dest)
 	    dest->folder->stype == F_QUEUE  ||
 	    dest->folder->stype == F_DRAFT  ||
 	    dest->folder->stype == F_TRASH)
-		newflags &= ~(MSG_NEW | MSG_UNREAD | MSG_DELETED);
+		perm_flags &= ~(MSG_NEW | MSG_UNREAD | MSG_DELETED);
 
 	/* set ignore flag of ignored parent exists */
 	if (procmsg_msg_has_flagged_parent(dest, MSG_IGNORE_THREAD))
-		newflags |= MSG_IGNORE_THREAD;
+		perm_flags |= MSG_IGNORE_THREAD;
+
+	/* Unset tmp flags that should not be copied */
+	tmp_flags &= ~(MSG_MOVE | MSG_COPY);
+
 	/* unset flags that are set but should not */
-	procmsg_msginfo_unset_flags(dest, dest->flags.perm_flags & ~newflags, ~0);
+	procmsg_msginfo_unset_flags(dest,
+				    dest->flags.perm_flags & ~perm_flags,
+				    dest->flags.tmp_flags  & ~tmp_flags);
 	/* set new flags */
-	procmsg_msginfo_set_flags(dest, ~dest->flags.perm_flags & newflags, 0);
+	procmsg_msginfo_set_flags(dest,
+				  ~dest->flags.perm_flags & perm_flags,
+				  ~dest->flags.tmp_flags  & tmp_flags);
 
 	folder_item_update(dest->folder, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
 }
