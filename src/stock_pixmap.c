@@ -85,6 +85,9 @@
 #include "pixmaps/ignorethread.xpm"
 #include "pixmaps/work_online.xpm"
 #include "pixmaps/work_offline.xpm"
+#include "pixmaps/notice_warn.xpm"
+#include "pixmaps/notice_error.xpm"
+#include "pixmaps/notice_note.xpm"
 
 typedef struct _StockPixmapData	StockPixmapData;
 
@@ -172,6 +175,9 @@ static StockPixmapData pixmaps[] =
 	{vcard_xpm				, NULL, NULL, "vcard", "  "},
 	{work_online_xpm			, NULL, NULL, "work_online", "  "},
 	{work_offline_xpm			, NULL, NULL, "work_offline", "  "},
+	{notice_warn_xpm			, NULL, NULL, "notice_warn",  "  "},
+	{notice_error_xpm			, NULL, NULL, "notice_error",  "  "},
+	{notice_note_xpm			, NULL, NULL, "notice_note",  "  "},
 };
 
 /* return newly constructed GtkPixmap from GdkPixmap */

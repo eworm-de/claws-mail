@@ -95,6 +95,9 @@ typedef enum
 	STOCK_PIXMAP_VCARD,
 	STOCK_PIXMAP_WORK_ONLINE,
 	STOCK_PIXMAP_WORK_OFFLINE,
+	STOCK_PIXMAP_NOTICE_WARN,		/* small warning */
+	STOCK_PIXMAP_NOTICE_ERROR,		/* small error   */
+	STOCK_PIXMAP_NOTICE_NOTE,		/* small message */
 	
 	N_STOCK_PIXMAPS
 } StockPixmap;
