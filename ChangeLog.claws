@@ -1,3 +1,8 @@
+2001-06-19 [sergey]
+
+	* src/compose.c (compose_create): keep Bcc and Reply-To visible if
+	they are filled in from the account settings.
+
 2001-06-19 [paul]
 
         * more sync with sylpheed 0.5.0pre1

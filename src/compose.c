@@ -3092,6 +3092,10 @@ static Compose *compose_create(PrefsAccount *account)
 
 	compose_set_title(compose);
 
+	compose->use_bcc        = FALSE;
+	compose->use_replyto    = FALSE;
+	compose->use_followupto = FALSE;
+
 	/*
 	if (account->protocol != A_NNTP) {
 		menuitem = gtk_item_factory_get_item(ifactory, "/Message/To");
@@ -3105,6 +3109,7 @@ static Compose *compose_create(PrefsAccount *account)
 	}
 	*/
 	if (account->set_autocc && account->auto_cc) {
+		compose->use_cc = TRUE;
 		gtk_entry_set_text(GTK_ENTRY(cc_entry), account->auto_cc);
 		menuitem = gtk_item_factory_get_item(ifactory, "/Message/Cc");
 		gtk_check_menu_item_set_active
@@ -3112,6 +3117,7 @@ static Compose *compose_create(PrefsAccount *account)
 	}
 
 	if (account->set_autobcc) {
+		compose->use_bcc = TRUE;
 		menuitem = gtk_item_factory_get_item(ifactory, "/Message/Bcc");
 		gtk_check_menu_item_set_active
 			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
@@ -3120,6 +3126,7 @@ static Compose *compose_create(PrefsAccount *account)
 					   account->auto_bcc);
 	}
 	if (account->set_autoreplyto) {
+		compose->use_replyto = TRUE;
 		menuitem = gtk_item_factory_get_item(ifactory,
 						     "/Message/Reply to");
 		gtk_check_menu_item_set_active
@@ -3152,19 +3159,22 @@ static Compose *compose_create(PrefsAccount *account)
 	*/
 	compose->use_attach     = FALSE;
 
-	compose->use_bcc        = FALSE;
-	compose->use_replyto    = FALSE;
-	compose->use_followupto = FALSE;
-	gtk_widget_hide(bcc_hbox);
-	gtk_widget_hide(bcc_entry);
-	gtk_widget_hide(reply_hbox);
-	gtk_widget_hide(reply_entry);
-	gtk_widget_hide(followup_hbox);
-	gtk_widget_hide(followup_entry);
+	if (!compose->use_bcc) {
+		gtk_widget_hide(bcc_hbox);
+		gtk_widget_hide(bcc_entry);
+		gtk_table_set_row_spacing(GTK_TABLE(table), 4, 0);
+	}
+	if (!compose->use_replyto) {
+		gtk_widget_hide(reply_hbox);
+		gtk_widget_hide(reply_entry);
+		gtk_table_set_row_spacing(GTK_TABLE(table), 5, 0);
+	}
+	if (!compose->use_followupto) {
+		gtk_widget_hide(followup_hbox);
+		gtk_widget_hide(followup_entry);
+		gtk_table_set_row_spacing(GTK_TABLE(table), 6, 0);
+	}
 	gtk_widget_hide(ruler_hbox);
-	gtk_table_set_row_spacing(GTK_TABLE(table), 4, 0);
-	gtk_table_set_row_spacing(GTK_TABLE(table), 5, 0);
-	gtk_table_set_row_spacing(GTK_TABLE(table), 6, 0);
 
 
 	select_account(compose, account);
