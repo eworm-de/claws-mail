@@ -2799,7 +2799,8 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 	guint linewrap_len = prefs_common.linewrap_len;
 	gchar *qfmt = prefs_common.quotemark;
 	gchar cbuf[CHAR_BUF_SIZE];
-
+	GtkTextMark *cursor_mark = gtk_text_buffer_get_insert(textbuf);
+	
 	tlen = gtk_text_buffer_get_char_count(textbuf);
 
 	for (; cur_pos < tlen; cur_pos++) {
@@ -2881,8 +2882,20 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 				/* insert space if it's alphanumeric */
 				if ((cur_pos != line_pos) &&
 				    ((clen > 1) || isalnum((guchar)cb[0]))) {
+					GtkTextIter cursor_iter;
+					gboolean go_back = FALSE;
+					gtk_text_buffer_get_iter_at_mark(textbuf, &cursor_iter, cursor_mark);
+					if (gtk_text_iter_get_offset(&iter) ==
+						 gtk_text_iter_get_offset(&cursor_iter))
+						go_back = TRUE;
+					
 					gtk_text_buffer_insert(textbuf, &iter,
 							       " ", 1);
+					if (go_back) {
+						gtk_text_buffer_get_iter_at_mark(textbuf, &cursor_iter, cursor_mark);
+						gtk_text_iter_backward_chars(&cursor_iter, 1);
+						gtk_text_buffer_place_cursor(textbuf, &cursor_iter);
+					}
 					tlen++;
 				}
 
