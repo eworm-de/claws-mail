@@ -5029,7 +5029,7 @@ msgid ""
 "for the current locale will be used."
 msgstr ""
 "Wenn `Automatisch' gewählt ist, wird die optimale\n"
-"Codierung für die aktuellen Lokalisierungen verwendet"
+"Kodierung für die aktuellen Lokalisierungen verwendet"
 
 #: src/prefs_common.c:1455
 msgid "Transfer encoding"
@@ -5040,7 +5040,7 @@ msgid ""
 "Specify Content-Transfer-Encoding used when\n"
 "message body contains non-ASCII characters."
 msgstr ""
-"Wöhle Übertragungskodierung die verwendet wird\n"
+"Wähle Übertragungskodierung die verwendet wird\n"
 "wenn der Nachrichtenkörper nicht-ASCII Zeichen enthält."
 
 #: src/prefs_common.c:1608
