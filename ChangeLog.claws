@@ -1,3 +1,13 @@
+2003-09-27 [paul]	0.9.5claws32
+
+	* src/prefs_account.c
+		o make correction to gui text:
+		  'Local mailbox file' -> 'Local mailbox directory'
+		o give 'local_mbox' option a reasonable default value:
+		  '/var/mail'
+		o use 'DEFAULT_SENDMAIL_CMD' as default 'mail_command'
+		  value
+
 2003-09-26 [paul]	0.9.5claws31
 
 	* src/inc.c
