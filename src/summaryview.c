@@ -1024,9 +1024,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	if (strlen(gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(summaryview->search_string)->entry))) > 0) {
 		GSList *not_killed;
-		gint search_type = GPOINTER_TO_INT(gtk_object_get_user_data(
+		gint search_type = GPOINTER_TO_INT(g_object_get_data(
 				   GTK_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
-				   GTK_MENU(summaryview->search_type))))));
+				   GTK_MENU(summaryview->search_type)))), MENU_VAL_ID));
 		const gchar *search_string = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(summaryview->search_string)->entry));
 		gchar *searched_header = NULL;
 		MatcherList * tmp_list = NULL;
@@ -4584,8 +4584,9 @@ static gboolean summary_searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 		}
 	 	summary_show(summaryview, summaryview->folder_item);
 	 	gtk_signal_emit_stop_by_name(GTK_OBJECT(widget), "key_press_event");
+		return TRUE; 		
 	}
-	return TRUE; 		
+	return FALSE;
 }
 
 static gboolean summary_searchbar_focus_evt(GtkWidget *widget, GdkEventFocus *event,

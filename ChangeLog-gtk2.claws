@@ -1,3 +1,8 @@
+2004-05-22 [colin]	0.9.10claws68
+
+	* src/summaryview.c
+		Fix quicksearch
+
 2004-05-22 [paul]	0.9.10claws67
 
 	* sync with 0.9.10claws67 HEAD
