@@ -1182,6 +1182,7 @@ void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
 			activate_compose_button(mainwin, prefs_common.toolbar_style, mainwin->compose_btn_type);
 			folderview_reflect_prefs_pixmap_theme(mainwin->folderview);
 			summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
+			sd_reflect_prefs_pixmap_theme();
 		}
 		
 		if (prefs_common.immediate_exec)

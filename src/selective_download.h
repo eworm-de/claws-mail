@@ -45,5 +45,6 @@ struct _HeaderItems {
 };
 
 void selective_download(MainWindow *mainwin);
+void sd_reflect_prefs_pixmap_theme();
 
 #endif /* __SELECTIVE_DOWNLOAD_H__ */

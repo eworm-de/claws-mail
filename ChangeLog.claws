@@ -1,3 +1,14 @@
+2002-07-18 [paul]	0.7.8claws76
+
+	* src/mainwindow.c
+	  src/selective_download.[ch]
+		reflect theme changes, fix Gdk Warning when creating 
+		pixmap from NULL window, and minor clean up.
+		Patch submitted by Oliver Haertel <oha@users.sourceforge.net>
+
+	* po/en_GB.po
+		updated
+
 2002-07-17 [paul]	0.7.8claws75
 
 	* INSTALL[.jp]
