@@ -93,7 +93,6 @@ sylpheed_SOURCES = \
 	base64.c base64.h \
 	uuencode.c uuencode.h \
 	md5.c md5.h \
-	rfc822.c rfc822.h \
 	socket.c socket.h \
 	ssl.c ssl.h \
 	automaton.c automaton.h \

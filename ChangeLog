@@ -1,8 +1,28 @@
+2002-07-12
+
+	* src/base64.c: a minor fix for BASE64VAL() macro.
+
+2002-07-11
+
+	* src/base64.c: base64_decode(): fixed a buffer overrun bug.
+
+2002-07-11
+
+	* src/codeconv.c
+	  src/compose.c
+	  src/smtp.c
+	  src/unmime.c
+	  src/base64.[ch]: rewrote the BASE64 encode / decode routines.
+	  base64_encode(), base64_decode(): new.
+	* src/rfc822.[ch]: removed.
+	* COPYING
+	  src/about.c: removed the copyright notice for fetchmail.
+
 2002-07-10
 
 	* src/codeconv.c
 	  src/procmime.c
-	  src/unmime.[ch]: rewritten the MIME decode routines.
+	  src/unmime.[ch]: rewrote the MIME decode routines.
 	  unmime_header()
 	  unmime_quoted_printable_line(): new.
 	* src/procheader.c:

@@ -66,6 +66,7 @@ src/pine.c
 src/pop.c
 src/prefs.c
 src/prefs_account.c
+src/prefs_actions.c
 src/prefs_common.c
 src/prefs_customheader.c
 src/prefs_display_header.c
@@ -74,7 +75,6 @@ src/prefs_filtering.c
 src/prefs_folder_item.c
 src/prefs_matcher.c
 src/prefs_scoring.c
-src/prefs_actions.c
 src/prefs_summary_column.c
 src/prefs_template.c
 src/procheader.c
@@ -83,7 +83,6 @@ src/procmsg.c
 src/progressdialog.c
 src/quote_fmt.c
 src/recv.c
-src/rfc822.c
 src/rfc2015.c
 src/scoring.c
 src/select-keys.c

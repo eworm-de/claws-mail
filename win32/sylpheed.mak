@@ -141,7 +141,6 @@ CLEAN :
 	-@erase "$(INTDIR)\quote_fmt_parse.obj"
 	-@erase "$(INTDIR)\recv.obj"
 	-@erase "$(INTDIR)\rfc2015.obj"
-	-@erase "$(INTDIR)\rfc822.obj"
 	-@erase "$(INTDIR)\scoring.obj"
 	-@erase "$(INTDIR)\select-keys.obj"
 	-@erase "$(INTDIR)\selective_download.obj"
@@ -326,7 +325,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\quote_fmt_parse.obj" \
 	"$(INTDIR)\recv.obj" \
 	"$(INTDIR)\rfc2015.obj" \
-	"$(INTDIR)\rfc822.obj" \
 	"$(INTDIR)\scoring.obj" \
 	"$(INTDIR)\select-keys.obj" \
 	"$(INTDIR)\selective_download.obj" \
@@ -595,8 +593,6 @@ CLEAN :
 	-@erase "$(INTDIR)\recv.sbr"
 	-@erase "$(INTDIR)\rfc2015.obj"
 	-@erase "$(INTDIR)\rfc2015.sbr"
-	-@erase "$(INTDIR)\rfc822.obj"
-	-@erase "$(INTDIR)\rfc822.sbr"
 	-@erase "$(INTDIR)\scoring.obj"
 	-@erase "$(INTDIR)\scoring.sbr"
 	-@erase "$(INTDIR)\select-keys.obj"
@@ -810,7 +806,6 @@ BSC32_SBRS= \
 	"$(INTDIR)\quote_fmt_parse.sbr" \
 	"$(INTDIR)\recv.sbr" \
 	"$(INTDIR)\rfc2015.sbr" \
-	"$(INTDIR)\rfc822.sbr" \
 	"$(INTDIR)\scoring.sbr" \
 	"$(INTDIR)\select-keys.sbr" \
 	"$(INTDIR)\selective_download.sbr" \
@@ -953,7 +948,6 @@ LINK32_OBJS= \
 	"$(INTDIR)\quote_fmt_parse.obj" \
 	"$(INTDIR)\recv.obj" \
 	"$(INTDIR)\rfc2015.obj" \
-	"$(INTDIR)\rfc822.obj" \
 	"$(INTDIR)\scoring.obj" \
 	"$(INTDIR)\select-keys.obj" \
 	"$(INTDIR)\selective_download.obj" \
@@ -2882,24 +2876,6 @@ SOURCE=..\src\rfc2015.c
 
 
 "$(INTDIR)\rfc2015.obj"	"$(INTDIR)\rfc2015.sbr" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
-
-SOURCE=..\src\rfc822.c
-
-!IF  "$(CFG)" == "sylpheed - Win32 Release"
-
-
-"$(INTDIR)\rfc822.obj" : $(SOURCE) "$(INTDIR)"
-	$(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
-
-
-"$(INTDIR)\rfc822.obj"	"$(INTDIR)\rfc822.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

@@ -1,8 +1,28 @@
+2002-07-12
+
+	* src/base64.c: BASE64VAL() マクロのマイナーな修正。
+
+2002-07-11
+
+	* src/base64.c: base64_decode(): バッファオーバーランのバグを修正。
+
+2002-07-11
+
+	* src/codeconv.c
+	  src/compose.c
+	  src/smtp.c
+	  src/unmime.c
+	  src/base64.[ch]: BASE64 エンコード / デコードルーチンを書き直した。
+	  base64_encode(), base64_decode(): 新規。
+	* src/rfc822.[ch]: 削除。
+	* COPYING
+	  src/about.c: fetchmail の著作権表示を削除。
+
 2002-07-10
 
 	* src/codeconv.c
 	  src/procmime.c
-	  src/unmime.[ch]: MIME デコードルーチンを書き換えた。
+	  src/unmime.[ch]: MIME デコードルーチンを書き直した。
 	  unmime_header()
 	  unmime_quoted_printable_line(): 新規。
 	* src/procheader.c:

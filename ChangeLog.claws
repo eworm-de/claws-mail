@@ -1,3 +1,21 @@
+2002-07-12 [sergey]	0.7.8claws63
+
+	* src/rfc2015.c
+		applied (with some modifications) patch to set the
+		micalg parameter for signatures
+		(2001-08-28 Werner Koch <wk@gnupg.org>)
+
+2002-07-12 [sergey]	0.7.8claws62
+
+	* man/Makefile.am
+	* configure.in
+		fixed man page installation
+
+2002-07-12 [paul]	0.7.8claws61
+
+	* sync with 0.7.8cvs26
+		see ChangeLog 2002-07-11 and 2002-07-12
+
 2002-07-11 [christoph]	0.7.8claws60
 
 	* src/compose.c

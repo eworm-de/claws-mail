@@ -42,7 +42,7 @@ void unmime_header(gchar *out, const gchar *str)
 	const gchar *sp;
 	const gchar *eword_begin_p, *encoding_begin_p, *text_begin_p,
 		    *eword_end_p;
-	gchar *charset;
+	gchar charset[32];
 	gchar encoding;
 	gchar *conv_str;
 	gint len;
@@ -87,23 +87,18 @@ void unmime_header(gchar *out, const gchar *str)
 			}
 		}
 
-		charset = g_strndup(eword_begin_p + 2,
-				    encoding_begin_p - (eword_begin_p + 2));
+		len = MIN(sizeof(charset) - 1,
+			  encoding_begin_p - (eword_begin_p + 2));
+		memcpy(charset, eword_begin_p + 2, len);
+		charset[len] = '\0';
 		encoding = toupper(*(encoding_begin_p + 1));
 
 		if (encoding == 'B') {
-			gchar *encoded_text;
-
-			encoded_text =
-				g_strndup(text_begin_p + 1,
-					  eword_end_p - (text_begin_p + 1));
 			decoded_text = g_malloc
 				(eword_end_p - (text_begin_p + 1) + 1);
-
-			len = from64tobits(decoded_text, encoded_text);	//
+			len = base64_decode(decoded_text, text_begin_p + 1,
+					    eword_end_p - (text_begin_p + 1));
 			decoded_text[len] = '\0';
-
-			g_free(encoded_text);
 		} else if (encoding == 'Q') {
 			const gchar *ep = text_begin_p + 1;
 			gchar *dp;
@@ -132,7 +127,6 @@ void unmime_header(gchar *out, const gchar *str)
 			memcpy(outp, p, eword_end_p + 2 - p);
 			outp += eword_end_p + 2 - p;
 			p = eword_end_p + 2;
-			g_free(charset);
 			continue;
 		}
 
@@ -149,7 +143,6 @@ void unmime_header(gchar *out, const gchar *str)
 		outp += len;
 
 		g_free(decoded_text);
-		g_free(charset);
 
 		p = eword_end_p + 2;
 	}

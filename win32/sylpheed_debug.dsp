@@ -509,10 +509,6 @@ SOURCE=..\src\rfc2015.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\rfc822.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\scoring.c
 # End Source File
 # Begin Source File
@@ -989,10 +985,6 @@ SOURCE=..\src\rfc2015.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\rfc822.h
-# End Source File
-# Begin Source File
-
 SOURCE="..\src\select-keys.h"
 # End Source File
 # Begin Source File
@@ -1081,11 +1073,11 @@ SOURCE=..\src\vcard.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\w32_mailcap.h
+SOURCE=..\src\version.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\version.h
+SOURCE=..\src\w32_mailcap.h
 # End Source File
 # Begin Source File
 

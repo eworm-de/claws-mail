@@ -1227,7 +1227,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 				destp += mimehdr_begin_len;
 				line_len += mimehdr_begin_len;
 
-				to64frombits(destp, raw, raw_len);
+				base64_encode(destp, raw, raw_len);
 				line_len += strlen(destp);
 				destp += strlen(destp);
 
@@ -1427,7 +1427,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 				destp += mimehdr_begin_len;
 				line_len += mimehdr_begin_len;
 
-				to64frombits(destp, tmp_jis, strlen(tmp_jis));
+				base64_encode(destp, tmp_jis, strlen(tmp_jis));
 				line_len += strlen(destp);
 				destp += strlen(destp);
 
