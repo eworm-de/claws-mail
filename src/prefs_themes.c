@@ -459,7 +459,7 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 	AlertValue  val = 0;
 	ThemesData *tdata = prefs_themes_data;
 	
-	filename = filesel_select_file_open(_("Select theme folder"), NULL);
+	filename = filesel_select_file_open_folder(_("Select theme folder"), NULL);
 	if (filename == NULL) 
 		return;
 	

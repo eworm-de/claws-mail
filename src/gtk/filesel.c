@@ -44,12 +44,16 @@
 static gchar *last_selected_dir = NULL;
 static GList *filesel_create(const gchar *title, const gchar *path, 
 			     gboolean multiple_files,
-			     gboolean open)
+			     gboolean open, gboolean folder_mode)
 {
 	GSList *slist = NULL, *slist_orig = NULL;
 	GList *list = NULL;
 
-	gint action = (open == TRUE) ? GTK_FILE_CHOOSER_ACTION_OPEN:GTK_FILE_CHOOSER_ACTION_SAVE;
+	gint action = (open == TRUE) ? 
+			(folder_mode == TRUE ? GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER:
+					       GTK_FILE_CHOOSER_ACTION_OPEN):
+			GTK_FILE_CHOOSER_ACTION_SAVE;
+			
 	gchar * action_btn = (open == TRUE) ? GTK_STOCK_OPEN:GTK_STOCK_SAVE;
 	GtkWidget *chooser = gtk_file_chooser_dialog_new (title, NULL, action, 
 				GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
@@ -75,7 +79,8 @@ static GList *filesel_create(const gchar *title, const gchar *path,
 			realpath = strdup(get_home_dir());
 		}
 		gtk_file_chooser_set_current_folder(GTK_FILE_CHOOSER(chooser), realpath);
-		gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(chooser), filename);
+		if (action == GTK_FILE_CHOOSER_ACTION_SAVE)
+			gtk_file_chooser_set_current_name(GTK_FILE_CHOOSER(chooser), filename);
 		free(realpath);
 	} else {
 		if (!last_selected_dir)
@@ -121,7 +126,7 @@ static GList *filesel_create(const gchar *title, const gchar *path,
  */
 GList *filesel_select_multiple_files_open(const gchar *title)
 {
-	return filesel_create(title, NULL, TRUE, TRUE);
+	return filesel_create(title, NULL, TRUE, TRUE, FALSE);
 }
 
 /**
@@ -132,9 +137,9 @@ GList *filesel_select_multiple_files_open(const gchar *title)
  * @param path the optional path to save to
  */
 static gchar *filesel_select_file(const gchar *title, const gchar *path,
-				  gboolean open)
+				  gboolean open, gboolean folder_mode)
 {
-	GList * list = filesel_create(title, path, FALSE, open);
+	GList * list = filesel_create(title, path, FALSE, open, folder_mode);
 	gchar * result = NULL;
 	if (list) {
 		result = strdup(list->data);
@@ -144,10 +149,16 @@ static gchar *filesel_select_file(const gchar *title, const gchar *path,
 }
 gchar *filesel_select_file_open(const gchar *title, const gchar *path)
 {
-	return filesel_select_file (title, path, TRUE);
+	return filesel_select_file (title, path, TRUE, FALSE);
 }
 
 gchar *filesel_select_file_save(const gchar *title, const gchar *path)
 {
-	return filesel_select_file (title, path, FALSE);
+	return filesel_select_file (title, path, FALSE, FALSE);
 }
+
+gchar *filesel_select_file_open_folder(const gchar *title, const gchar *path)
+{
+	return filesel_select_file (title, path, TRUE, TRUE);
+}
+
