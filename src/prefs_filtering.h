@@ -24,6 +24,9 @@
 void prefs_scoring_read_config	(void);
 void prefs_scoring_write_config	(void);
 */
-void prefs_filtering_open(FolderItem * item);
+void prefs_filtering_open		(FolderItem * item);
+void prefs_filtering_rename_path	(const gchar	*old_path,
+				 	 const gchar	*new_path);
+void prefs_filtering_delete_path	(const gchar	*path);
 
 #endif /* __PREFS_FILTERING_H__ */

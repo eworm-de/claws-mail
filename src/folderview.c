@@ -1884,6 +1884,10 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 	g_free(new_folder);
 
 	prefs_filter_rename_path(old_path, new_path);
+
+	if (FOLDER_TYPE(item->folder) == F_MH) {
+		prefs_filtering_rename_path(old_path, new_path);
+	}
 	g_free(new_path);
 
 	gtk_clist_freeze(GTK_CLIST(ctree));
@@ -1992,6 +1996,9 @@ static void folderview_delete_folder_cb(FolderView *folderview, guint action,
 	}
 
 	prefs_filter_delete_path(old_path);
+
+	if (FOLDER_TYPE(item->folder) == F_MH)
+		prefs_filtering_delete_path(old_path);
 
 	if (folderview->opened == folderview->selected ||
 	    gtk_ctree_is_ancestor(ctree,

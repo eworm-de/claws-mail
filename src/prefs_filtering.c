@@ -601,6 +601,97 @@ static void prefs_filtering_update_hscrollbar(void)
 	gtk_clist_set_column_width(GTK_CLIST(filtering.cond_clist), 0, optwidth);
 }
 
+void prefs_filtering_rename_path(const gchar *old_path, const gchar *new_path)
+{
+	GSList *cur;
+	gchar *base;
+	gchar *prefix;
+	gchar *suffix;
+	gchar *dest_path;
+	gint destlen;
+	gint prefixlen;
+	gint oldpathlen;
+
+	g_return_if_fail(old_path != NULL);
+	g_return_if_fail(new_path != NULL);
+
+	oldpathlen = strlen(old_path);
+
+	for (cur = global_processing; cur != NULL; cur = cur->next) {
+		FilteringProp   *filtering = (FilteringProp *)cur->data;
+		FilteringAction *action = filtering->action;
+
+		if (!action->destination) continue;
+
+		destlen = strlen(action->destination);
+
+		if (destlen > oldpathlen) {
+			prefixlen = destlen - oldpathlen;
+			suffix = action->destination + prefixlen;
+
+			if (!strncmp(old_path, suffix, oldpathlen)) {
+				prefix = g_malloc0(prefixlen + 1);
+				strncpy2(prefix, action->destination, prefixlen);
+
+				base = suffix + oldpathlen;
+				while (*base == G_DIR_SEPARATOR) base++;
+				if (*base == '\0')
+					dest_path = g_strconcat(prefix,
+								G_DIR_SEPARATOR_S,
+								new_path, NULL);
+				else
+					dest_path = g_strconcat(prefix,
+								G_DIR_SEPARATOR_S,
+								new_path,
+								G_DIR_SEPARATOR_S,
+								base, NULL);
+
+				g_free(prefix);
+				g_free(action->destination);
+				action->destination = dest_path;
+			}
+		}
+	}
+
+	prefs_matcher_write_config();
+}
+
+void prefs_filtering_delete_path(const gchar *path)
+{
+	GSList *cur;
+	GSList *next;
+	gchar *suffix;
+	gint destlen;
+	gint prefixlen;
+	gint pathlen;
+
+	g_return_if_fail(path != NULL);
+
+	pathlen = strlen(path);
+	for (cur = global_processing; cur != NULL; cur = next) {
+		FilteringProp *filtering = (FilteringProp *)cur->data;
+		FilteringAction *action = filtering->action;
+		next = cur->next;
+
+		if (!action->destination) continue;
+
+		destlen = strlen(action->destination);
+
+		if (destlen > pathlen) {
+			prefixlen = destlen - pathlen;
+			suffix = action->destination + prefixlen;
+
+			if (suffix && !strncmp(path, suffix, pathlen)) {
+				filteringprop_free(filtering);
+				global_processing = 
+					g_slist_remove(global_processing, filtering);
+			}
+		}
+	}
+
+	prefs_matcher_write_config();
+}
+
 static void prefs_filtering_set_dialog(void)
 {
 	GtkCList *clist = GTK_CLIST(filtering.cond_clist);
