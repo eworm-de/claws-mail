@@ -92,6 +92,7 @@
 #include "statusbar.h"
 #include "about.h"
 #include "base64.h"
+#include "quoted-printable.h"
 #include "codeconv.h"
 #include "utils.h"
 #include "gtkutils.h"
@@ -3235,7 +3236,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 		if (!is_draft &&
 		    compose->use_signing && !compose->gnupg_mode &&
 		    encoding == ENC_8BIT)
-			encoding = ENC_BASE64;
+			encoding = ENC_QUOTED_PRINTABLE;
 #endif
 
 		src_codeset = conv_get_current_charset_str();
@@ -3347,6 +3348,22 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 			fputs(outbuf, fp);
 			fputc('\n', fp);
 		}
+	} else if (encoding == ENC_QUOTED_PRINTABLE) {
+		gchar *outbuf;
+		size_t outlen;
+
+		outbuf = g_malloc(len * 4);
+		qp_encode_line(outbuf, buf);
+		outlen = strlen(outbuf);
+		if (fwrite(outbuf, sizeof(gchar), outlen, fp) != outlen) {
+			FILE_OP_ERROR(file, "fwrite");
+			fclose(fp);
+			unlink(file);
+			g_free(outbuf);
+			g_free(buf);
+			return -1;
+		}
+		g_free(outbuf);
 	} else if (fwrite(buf, sizeof(gchar), len, fp) != len) {
 		FILE_OP_ERROR(file, "fwrite");
 		fclose(fp);
@@ -3723,19 +3740,8 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 		fprintf(fp, "Content-Transfer-Encoding: %s\n\n",
 			procmime_get_encoding_str(ainfo->encoding));
 
-		switch (ainfo->encoding) {
-
-		case ENC_7BIT:
-		case ENC_8BIT:
-			/* if (ainfo->encoding == ENC_7BIT) { */
-
-			while (fgets(buf, sizeof(buf), attach_fp) != NULL) {
-				strcrchomp(buf);
-				fputs(buf, fp);
-			}
-			break;
-			/* } else { */
-		case ENC_BASE64:
+		if (ainfo->encoding == ENC_BASE64) {
+			gchar inbuf[B64_LINE_SIZE], outbuf[B64_BUFFSIZE];
 
 			while ((len = fread(inbuf, sizeof(gchar),
 					    B64_LINE_SIZE, attach_fp))
@@ -3749,10 +3755,20 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 				fputs(outbuf, fp);
 				fputc('\n', fp);
 			}
-			break;
-		default:
-			debug_print("Tried to write attachment in unsupported encoding type\n");
-			break;
+		} else if (ainfo->encoding == ENC_QUOTED_PRINTABLE) {
+			gchar inbuf[BUFFSIZE], outbuf[BUFFSIZE * 4];
+
+			while (fgets(inbuf, sizeof(inbuf), attach_fp) != NULL) {
+				qp_encode_line(outbuf, inbuf);
+				fputs(outbuf, fp);
+			}
+		} else {
+			gchar buf[BUFFSIZE];
+
+			while (fgets(buf, sizeof(buf), attach_fp) != NULL) {
+				strcrchomp(buf);
+				fputs(buf, fp);
+			}
 		}
 
 		fclose(attach_fp);
@@ -5498,8 +5514,10 @@ static void compose_attach_property_create(gboolean *cancelled)
 #if 0
 	gtk_widget_set_sensitive(menuitem, FALSE);
 #endif
-	MENUITEM_ADD(optmenu_menu, menuitem, "quoted-printable", ENC_QUOTED_PRINTABLE);
-	gtk_widget_set_sensitive(menuitem, FALSE);
+	MENUITEM_ADD(optmenu_menu, menuitem, "quoted-printable",
+		     ENC_QUOTED_PRINTABLE);
+	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu), optmenu_menu);
+
 	MENUITEM_ADD(optmenu_menu, menuitem, "base64", ENC_BASE64);
 
 	gtk_option_menu_set_menu(GTK_OPTION_MENU(optmenu), optmenu_menu);

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1238,10 +1238,11 @@ EncodingType procmime_get_encoding_for_charset(const gchar *charset)
 	else if (!strncasecmp(charset, "ISO-2022-", 9) ||
 		 !strcasecmp(charset, "US-ASCII"))
 		return ENC_7BIT;
+	else if (!strncasecmp(charset, "ISO-8859-", 9) ||
+		 !strncasecmp(charset, "CP125", 5))
+		return ENC_QUOTED_PRINTABLE;
 	else
 		return ENC_8BIT;
-		/* return ENC_BASE64; */
-		/* return ENC_QUOTED_PRINTABLE; */
 }
 
 EncodingType procmime_get_encoding_for_file(const gchar *file)

@@ -1,3 +1,22 @@
+2003-01-15
+
+	* src/quoted-printable.[ch]: qp_encode_line(): fixed a bug if the
+	  line doesn't end with linebreak.
+
+2003-01-15
+
+	* implemented quoted-printable encoding.
+	* src/quoted-printable.[ch]: qp_encode_line(): new.
+	* src/compose.c:
+	  compose_write_to_file()
+	  compose_write_attach(): implemented quoted-printable encoding.
+	  compose_attach_property_create(): enabled quoted-printable menu
+	  item.
+	* src/procmime.c: procmime_get_encoding_for_charset(): return
+	  ENC_QUOTED_PRINTABLE for ISO-8859-* and CP125* charset.
+	* src/Makefile.am: added $(LIBICONV) to sylpheed_LDADD for libiconv
+	  support.
+
 2003-01-14
 
 	* src/folderview.c

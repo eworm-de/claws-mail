@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,66 @@
 
 static gboolean get_hex_value(guchar *out, gchar c1, gchar c2);
 static void get_hex_str(gchar *out, guchar ch);
+
+#define MAX_LINELEN	76
+
+#define IS_LBREAK(p) \
+	(*(p) == '\0' || *(p) == '\n' || (*(p) == '\r' && *((p) + 1) == '\n'))
+
+#define SOFT_LBREAK_IF_REQUIRED(n)					\
+	if (len + (n) > MAX_LINELEN ||					\
+	    (len + (n) == MAX_LINELEN && (!IS_LBREAK(inp + 1)))) {	\
+		*outp++ = '=';						\
+		*outp++ = '\n';						\
+		len = 0;						\
+	}
+
+void qp_encode_line(gchar *out, const guchar *in)
+{
+	const guchar *inp = in;
+	gchar *outp = out;
+	guchar ch;
+	gint len = 0;
+
+	while (*inp != '\0') {
+		ch = *inp;
+
+		if (IS_LBREAK(inp)) {
+			*outp++ = '\n';
+			len = 0;
+			inp++;
+		} else if (ch == '\t' || ch == ' ') {
+			if (IS_LBREAK(inp + 1)) {
+				SOFT_LBREAK_IF_REQUIRED(3);
+				*outp++ = '=';
+				get_hex_str(outp, ch);
+				outp += 2;
+				len += 3;
+				inp++;
+			} else {
+				SOFT_LBREAK_IF_REQUIRED(1);
+				*outp++ = *inp++;
+				len++;
+			}
+		} else if ((ch >= 33 && ch <= 60) || (ch >= 62 && ch <= 126)) {
+			SOFT_LBREAK_IF_REQUIRED(1);
+			*outp++ = *inp++;
+			len++;
+		} else {
+			SOFT_LBREAK_IF_REQUIRED(3);
+			*outp++ = '=';
+			get_hex_str(outp, ch);
+			outp += 2;
+			len += 3;
+			inp++;
+		}
+	}
+
+	if (len > 0)
+		*outp++ = '\n';
+
+	*outp = '\0';
+}
 
 gint qp_decode_line(gchar *str)
 {

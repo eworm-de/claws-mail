@@ -1,3 +1,23 @@
+2003-01-15
+
+	* src/quoted-printable.[ch]: qp_encode_line(): 行が改行で終わらない
+	  場合のバグを修正。
+
+2003-01-15
+
+	* quoted-printable 符号化を実装。
+	* src/quoted-printable.[ch]: qp_encode_line(): 新規。
+	* src/compose.c:
+	  compose_write_to_file()
+	  compose_write_attach(): quoted-printable 符号化を実装。
+	  compose_attach_property_create(): quoted-printable メニュー項目を
+	  有効にした。
+	* src/procmime.c: procmime_get_encoding_for_charset(): ISO-8859-*
+	  と CP125* 文字セットの場合は ENC_QUOTED_PRINTABLE を返すように
+	  した。
+	* src/Makefile.am: libiconv 対応のために sylpheed_LDADD に
+	  $(LIBICONV) を追加。
+
 2003-01-14
 
 	* src/folderview.c
