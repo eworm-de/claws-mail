@@ -1,3 +1,9 @@
+2002-05-21 [paul]	0.7.6claws9
+
+	* tools/Makefile.am
+		make sure all tools are chown'ed, (patch by
+		Alfons).
+
 2002-05-20 [alfons]	0.7.6claws8
 
 	* src/procheader.c
