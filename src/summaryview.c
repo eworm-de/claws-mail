@@ -2808,7 +2808,7 @@ static void summary_thread_func(GtkCTree *ctree, GtkCTreeNode *node,
 				gpointer data)
 {
 	MsgInfo *msginfo;
-	GtkCTreeNode *parent;
+	GtkCTreeNode *parent = NULL;
 	
 	SummaryView * summaryview = (SummaryView *) data;
 	GHashTable *msgid_table = summaryview->msgid_table;
@@ -2816,9 +2816,11 @@ static void summary_thread_func(GtkCTree *ctree, GtkCTreeNode *node,
 
 	msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
 
-	if (!msginfo || !msginfo->inreplyto) return;
+	if (!msginfo) return;
 
-	parent = g_hash_table_lookup(msgid_table, msginfo->inreplyto);
+	if(msginfo->inreplyto) {
+	    parent = g_hash_table_lookup(msgid_table, msginfo->inreplyto);
+	}
 	if (parent == NULL && msginfo->subject) {
 		parent = subject_table_lookup(subject_table, msginfo->subject);
 	}
