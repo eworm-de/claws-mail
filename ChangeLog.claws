@@ -1,4 +1,14 @@
-2003-01-°7 [melvin]	0.8.8claws64
+2003-01-07 [christoph]	0.8.8claws65
+
+	* src/folder.c
+		fix update for source folder when moving messages
+	* src/procmsg.[ch]
+	* src/summaryview.c
+		use function to set to_folder for message infos and
+		automatically update the op_count for old and new
+		folder
+
+2003-01-07 [melvin]	0.8.8claws64
 
 	* src/prefs_actions.c
 		Fixed bug where an '%p' Action on a displayed image crashed 

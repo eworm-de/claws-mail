@@ -659,6 +659,8 @@ void procmsg_move_messages(GSList *mlist)
 
 	if (!mlist) return;
 
+	folder_item_update_freeze();
+
 	for (cur = mlist; cur != NULL; cur = cur->next) {
 		msginfo = (MsgInfo *)cur->data;
 		if (!dest) {
@@ -673,12 +675,15 @@ void procmsg_move_messages(GSList *mlist)
 			dest = msginfo->to_folder;
 			movelist = g_slist_append(movelist, msginfo);
 		}
+		procmsg_msginfo_set_to_folder(msginfo, NULL);
 	}
 
 	if (movelist) {
 		folder_item_move_msgs_with_dest(dest, movelist);
 		g_slist_free(movelist);
 	}
+
+	folder_item_update_thaw();
 }
 
 void procmsg_copy_messages(GSList *mlist)
@@ -689,14 +694,7 @@ void procmsg_copy_messages(GSList *mlist)
 
 	if (!mlist) return;
 
-	/* 
-	
-	Horrible: Scanning 2 times for every copy!
-
-	hash = procmsg_to_folder_hash_table_create(mlist);
-	folder_item_scan_foreach(hash);
-	g_hash_table_destroy(hash);
-	*/
+	folder_item_update_freeze();
 
 	for (cur = mlist; cur != NULL; cur = cur->next) {
 		msginfo = (MsgInfo *)cur->data;
@@ -712,12 +710,15 @@ void procmsg_copy_messages(GSList *mlist)
 			dest = msginfo->to_folder;
 			copylist = g_slist_append(copylist, msginfo);
 		}
+		procmsg_msginfo_set_to_folder(msginfo, NULL);
 	}
 
 	if (copylist) {
 		folder_item_copy_msgs_with_dest(dest, copylist);
 		g_slist_free(copylist);
 	}
+
+	folder_item_update_thaw();
 }
 
 gchar *procmsg_get_message_file_path(MsgInfo *msginfo)
@@ -1114,11 +1115,11 @@ MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
 	full_msginfo->size = msginfo->size;
 	full_msginfo->mtime = msginfo->mtime;
 	full_msginfo->folder = msginfo->folder;
-	full_msginfo->to_folder = msginfo->to_folder;
 #if USE_GPGME
 	full_msginfo->plaintext_file = g_strdup(msginfo->plaintext_file);
 	full_msginfo->decryption_failed = msginfo->decryption_failed;
 #endif
+	procmsg_msginfo_set_to_folder(full_msginfo, msginfo->to_folder);
 
 	return full_msginfo;
 }
@@ -1130,6 +1131,11 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 	msginfo->refcnt--;
 	if (msginfo->refcnt > 0)
 		return;
+
+	if (msginfo->to_folder) {
+		msginfo->to_folder->op_count--;
+		folder_item_update(msginfo->to_folder, F_ITEM_UPDATE_MSGCNT);
+	}
 
 	g_free(msginfo->fromspace);
 	g_free(msginfo->references);
@@ -1706,5 +1712,24 @@ static void procmsg_update_unread_children(MsgInfo *info, gboolean newly_marked)
 			folder_item_update(info->folder, F_ITEM_UPDATE_MSGCNT);
 		}
 		procmsg_msginfo_free(tmp);
+	}
+}
+
+/**
+ * Set the destination folder for a copy or move operation
+ *
+ * \param msginfo The message which's destination folder is changed
+ * \param to_folder The destination folder for the operation
+ */
+void procmsg_msginfo_set_to_folder(MsgInfo *msginfo, FolderItem *to_folder)
+{
+	if(msginfo->to_folder != NULL) {
+		msginfo->to_folder->op_count--;
+		folder_item_update(msginfo->to_folder, F_ITEM_UPDATE_MSGCNT);
+	}
+	msginfo->to_folder = to_folder;
+	if(to_folder != NULL) {
+		to_folder->op_count++;
+		folder_item_update(msginfo->to_folder, F_ITEM_UPDATE_MSGCNT);
 	}
 }

@@ -2784,20 +2784,14 @@ static void summary_mark_row(SummaryView *summaryview, GtkCTreeNode *row)
 	if (MSG_IS_MOVE(msginfo->flags)) {
 		summaryview->moved--;
 		changed = TRUE;
-		msginfo->to_folder->op_count--;
-		if (msginfo->to_folder->op_count == 0)
-			folder_item_update(msginfo->to_folder, F_ITEM_UPDATE_MSGCNT);
 	}
 	if (MSG_IS_COPY(msginfo->flags)) {
 		summaryview->copied--;
 		changed = TRUE;
-		msginfo->to_folder->op_count--;
-		if (msginfo->to_folder->op_count == 0)
-			folder_item_update(msginfo->to_folder, F_ITEM_UPDATE_MSGCNT);
 	}
 	changed |= summary_update_unread_children (summaryview, msginfo, TRUE);
 
-	msginfo->to_folder = NULL;
+	procmsg_msginfo_set_to_folder(msginfo, NULL);
 	procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, MSG_MOVE | MSG_COPY);
 	procmsg_msginfo_set_flags(msginfo, MSG_MARKED, 0);
 	summary_set_row_marks(summaryview, row);
@@ -2822,12 +2816,7 @@ static void summary_lock_row(SummaryView *summaryview, GtkCTreeNode *row)
 		summaryview->copied--;
 		changed = TRUE;
 	}
-	if (changed && !prefs_common.immediate_exec) {
-		msginfo->to_folder->op_count--;
-		if (msginfo->to_folder->op_count == 0)
-			folder_item_update(msginfo->to_folder, F_ITEM_UPDATE_MSGCNT);
-	}
-	msginfo->to_folder = NULL;
+	procmsg_msginfo_set_to_folder(msginfo, NULL);
 	procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, MSG_MOVE | MSG_COPY);
 	procmsg_msginfo_set_flags(msginfo, MSG_LOCKED, 0);
 	summary_set_row_marks(summaryview, row);
@@ -2911,7 +2900,7 @@ static void summary_mark_row_as_unread(SummaryView *summaryview,
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 	if (MSG_IS_DELETED(msginfo->flags)) {
-		msginfo->to_folder = NULL;
+		procmsg_msginfo_set_to_folder(msginfo, NULL);
 		procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, 0);
 		summaryview->deleted--;
 	}
@@ -3010,20 +2999,14 @@ static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 	if (MSG_IS_MOVE(msginfo->flags)) {
 		summaryview->moved--;
 		changed = TRUE;
-		msginfo->to_folder->op_count--;
-		if (msginfo->to_folder->op_count == 0)
-			folder_item_update(msginfo->to_folder, F_ITEM_UPDATE_MSGCNT);
 	}
 	if (MSG_IS_COPY(msginfo->flags)) {
 		summaryview->copied--;
 		changed = TRUE;
-		msginfo->to_folder->op_count--;
-		if (msginfo->to_folder->op_count == 0)
-			folder_item_update(msginfo->to_folder, F_ITEM_UPDATE_MSGCNT);
 	}
 	changed |= summary_update_unread_children (summaryview, msginfo, FALSE);
 
-	msginfo->to_folder = NULL;
+	procmsg_msginfo_set_to_folder(msginfo, NULL);
 	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED, MSG_MOVE | MSG_COPY);
 	procmsg_msginfo_set_flags(msginfo, MSG_DELETED, 0);
 	summaryview->deleted++;
@@ -3176,26 +3159,16 @@ static void summary_unmark_row(SummaryView *summaryview, GtkCTreeNode *row)
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted--;
 	if (MSG_IS_MOVE(msginfo->flags)) {
-		if (!prefs_common.immediate_exec) {
-			msginfo->to_folder->op_count--;
-			if (msginfo->to_folder->op_count == 0)
-				folder_item_update(msginfo->to_folder, F_ITEM_UPDATE_MSGCNT);
-		}
 		summaryview->moved--;
 		changed = TRUE;
 	}
 	if (MSG_IS_COPY(msginfo->flags)) {
-		if (!prefs_common.immediate_exec) {
-			msginfo->to_folder->op_count--;
-			if (msginfo->to_folder->op_count == 0)
-				folder_item_update(msginfo->to_folder, F_ITEM_UPDATE_MSGCNT);
-		}
 		summaryview->copied--;
 		changed = TRUE;
 	}
 	changed |= summary_update_unread_children (summaryview, msginfo, FALSE);
 
-	msginfo->to_folder = NULL;
+	procmsg_msginfo_set_to_folder(msginfo, NULL);
 	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, MSG_MOVE | MSG_COPY);
 	summary_set_row_marks(summaryview, row);
 
@@ -3217,43 +3190,25 @@ void summary_unmark(SummaryView *summaryview)
 static void summary_move_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 				FolderItem *to_folder)
 {
-	gboolean changed = FALSE;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 
 	g_return_if_fail(to_folder != NULL);
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
-	if (MSG_IS_MOVE(msginfo->flags)) {
-		if (!prefs_common.immediate_exec) {
-			msginfo->to_folder->op_count--;
-			if (msginfo->to_folder->op_count == 0) {
-				folder_item_update(msginfo->to_folder, F_ITEM_UPDATE_MSGCNT);
-				changed = TRUE;
-			}
-		}
-	}
-	msginfo->to_folder = to_folder;
+	procmsg_msginfo_set_to_folder(msginfo, to_folder);
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted--;
 	if (MSG_IS_COPY(msginfo->flags)) {
 		summaryview->copied--;
-		if (!prefs_common.immediate_exec)
-			msginfo->to_folder->op_count--;
 	}
 	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, MSG_COPY);
 	if (!MSG_IS_MOVE(msginfo->flags)) {
 		procmsg_msginfo_set_flags(msginfo, 0, MSG_MOVE);
 		summaryview->moved++;
-		changed = TRUE;
 	}
 	if (!prefs_common.immediate_exec) {
 		summary_set_row_marks(summaryview, row);
-		if (changed) {
-			msginfo->to_folder->op_count++;
-			if (msginfo->to_folder->op_count == 1)
-				folder_item_update(msginfo->to_folder, F_ITEM_UPDATE_MSGCNT);
-		}
 	}
 
 	debug_print("Message %d is set to move to %s\n",
@@ -3312,42 +3267,25 @@ void summary_move_to(SummaryView *summaryview)
 static void summary_copy_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 				FolderItem *to_folder)
 {
-	gboolean changed = FALSE;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 
 	g_return_if_fail(to_folder != NULL);
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
-	if (MSG_IS_COPY(msginfo->flags)) {
-		if (!prefs_common.immediate_exec) {
-			msginfo->to_folder->op_count--;
-			if (msginfo->to_folder->op_count == 0) {
-				changed = TRUE;
-			}
-		}
-	}
-	msginfo->to_folder = to_folder;
+	procmsg_msginfo_set_to_folder(msginfo, to_folder);
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted--;
 	if (MSG_IS_MOVE(msginfo->flags)) {
 		summaryview->moved--;
-		if (!prefs_common.immediate_exec)
-			msginfo->to_folder->op_count--;
 	}
 	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, MSG_MOVE);
 	if (!MSG_IS_COPY(msginfo->flags)) {
 		procmsg_msginfo_set_flags(msginfo, 0, MSG_COPY);
 		summaryview->copied++;
-		changed = TRUE;
 	}
 	if (!prefs_common.immediate_exec) {
 		summary_set_row_marks(summaryview, row);
-		if (changed) {
-			msginfo->to_folder->op_count++;
-			if (msginfo->to_folder->op_count == 1)
-				folder_item_update(msginfo->to_folder, F_ITEM_UPDATE_MSGCNT);
-		}
 	}
 
 	debug_print("Message %d is set to copy to %s\n",
@@ -3630,10 +3568,6 @@ static void summary_execute_move_func(GtkCTree *ctree, GtkCTreeNode *node,
 	msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
 
 	if (msginfo && MSG_IS_MOVE(msginfo->flags) && msginfo->to_folder) {
-		if (!prefs_common.immediate_exec &&
-		    msginfo->to_folder->op_count > 0)
-                	msginfo->to_folder->op_count--;
-
 		summaryview->mlist =
 			g_slist_append(summaryview->mlist, msginfo);
 		gtk_ctree_node_set_row_data(ctree, node, NULL);
@@ -3671,10 +3605,6 @@ static void summary_execute_copy_func(GtkCTree *ctree, GtkCTreeNode *node,
 	msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
 
 	if (msginfo && MSG_IS_COPY(msginfo->flags) && msginfo->to_folder) {
-		if (!prefs_common.immediate_exec &&
-		    msginfo->to_folder->op_count > 0)
-                	msginfo->to_folder->op_count--;
-
 		summaryview->mlist =
 			g_slist_append(summaryview->mlist, msginfo);
 

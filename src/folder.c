@@ -1853,7 +1853,7 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 			if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 				msginfo->folder->unreadmarked--;
 			msginfo->folder->total--;			
-			folder_item_update(dest, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
+			folder_item_update(msginfo->folder, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
 		}
 
 		l2 = g_slist_next(l2);
