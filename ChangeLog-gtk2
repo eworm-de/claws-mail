@@ -1,3 +1,7 @@
+2003-12-06 Colin Leroy <colin@colino.net>
+	* src/summaryview.c
+		Fix quicksearch
+
 2003-12-05 Colin Leroy <colin@colino.net>
 	* src/summaryview.c
 		Fix going to next unread folder

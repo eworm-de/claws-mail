@@ -1023,9 +1023,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	if (strlen(gtk_entry_get_text(GTK_ENTRY(summaryview->search_string))) > 0) {
 		GSList *not_killed;
-		gint search_type = GPOINTER_TO_INT(gtk_object_get_user_data(
+		gint search_type = GPOINTER_TO_INT(g_object_get_data(
 				   GTK_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
-				   GTK_MENU(summaryview->search_type))))));
+				   GTK_MENU(summaryview->search_type)))), MENU_VAL_ID));
 		const gchar *search_string = gtk_entry_get_text(GTK_ENTRY(summaryview->search_string));
 		gchar *searched_header = NULL;
 		MatcherList * tmp_list = NULL;
@@ -4564,9 +4564,9 @@ static gboolean summary_searchbar_focus_evt(GtkWidget *widget, GdkEventFocus *ev
 static void summary_searchtype_changed(GtkMenuItem *widget, gpointer data)
 {
 	SummaryView *sw = (SummaryView *)data;
-	prefs_common.summary_quicksearch_type = GPOINTER_TO_INT(gtk_object_get_user_data(
+	prefs_common.summary_quicksearch_type = GPOINTER_TO_INT(g_object_get_data(
 				   GTK_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
-				   GTK_MENU(sw->search_type))))));
+				   GTK_MENU(sw->search_type)))), MENU_VAL_ID));
 
 	/* Show extended search description button, only when Extended is selected */
 	if (prefs_common.summary_quicksearch_type == S_SEARCH_EXTENDED) {
