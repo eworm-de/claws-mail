@@ -17,7 +17,6 @@
 
 win32 0.8.0claws+
 	o LDAP support
-	o aspell support
 	o fix addrbook crash (still there ?)
 	o review utf8 conversions for mem leaks
 
@@ -49,3 +48,12 @@ win32 0.8.0claws+
 	o improve the man page
 	o separate message catalogs from main dist
 	o separate manuals/faqs from main dist
+
+[melvin]
+
+	o Improve spell checker:
+		- allow dictionaries in non standard path
+		- make dictionary menu use menu factory to support 
+		accelerators that are remembered across Sylpheed sessions
+	o Fix bug in Actions where "&" actions will leave a zombie Sylpheed
+	processes

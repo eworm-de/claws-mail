@@ -28,6 +28,8 @@ struct _Template {
 	gchar *name;
 	gchar *subject;
 	gchar *to;
+	gchar *cc;
+	gchar *bcc;		
 	gchar *value;
 };
 

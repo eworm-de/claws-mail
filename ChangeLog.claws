@@ -1,3 +1,45 @@
+2002-10-12 [colin]	0.8.5claws26
+
+	* src/mainwindow.c
+		Fix folder-flicker when space-reading, introduced 
+		in claws22.
+
+2002-10-12 [colin]	0.8.5claws25
+
+	* src/compose.c
+		Save account address when saving as draft.
+		(closes bug 621838)
+
+2002-10-12 [colin]	0.8.5claws24
+
+	* src/summaryview.c
+		Fix the problem consisting of no message selected
+		after the last message in a folder has been moved.
+
+2002-10-12 [paul]	0.8.5claws23
+
+	* src/compose.c
+	  src/prefs_template.c
+	  src/template.[ch]
+	  	add Cc and Bcc to templates. Patch submitted by
+		John L. Males.
+
+2002-10-12 [colin]	0.8.5claws22
+
+	* src/folderview.c
+		Fix a bug after "Check for new messages":
+		If a folder was opened, it was still selected at
+		the end of the check, but displayed empty.
+	* src/mainwindow.c
+		Remove unnecessary check
+
+2002-10-12 [paul]
+
+	* tools/README
+		be more verbose in the description of
+		OOo2sylpheed.pl
+		
+
 2002-10-11 [colin]	0.8.5claws21
 
 	* src/mainwindow.c

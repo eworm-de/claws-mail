@@ -1874,6 +1874,12 @@ static void folderview_update_tree_cb(FolderView *folderview, guint action,
 		folderview_check_new(item->folder);
 	else
 		folderview_rescan_tree(item->folder);
+	
+	if (folderview->opened) {
+		item = gtk_ctree_node_get_row_data(ctree, folderview->opened);
+		if (item)
+			folderview_update_item(item, TRUE);
+	}
 }
 
 static void folderview_new_folder_cb(FolderView *folderview, guint action,
