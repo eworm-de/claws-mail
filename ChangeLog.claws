@@ -1,3 +1,33 @@
+2003-12-20 [melvin]	0.9.8claws6
+
+	* src/action.[ch]
+		Changed the interface for action_update_*_menu() so
+		action.c does not need to know the paths of the different
+		actions menu (mainwindow, message view and compose window). 
+
+	* src/compose.c
+		Tiny code cleanup to merge spell checker related code
+		compose_update_actions_menu(): new function to update
+		the actions menu. Use it in compose_create()
+
+	* src/compose.h
+		compose_update_actions_menu(): new function to update
+		the actions menu. Used also in prefs_actions.c.
+
+	* src/mainwindow.[ch]
+		main_window_update_actions_menu(): new function to update
+		the actions menu. Used in main_window_create() and in
+		prefs_actions.c
+
+	* src/messageview.[ch]
+		messageview_update_actions_menu(): new function to update
+		the actions menu. Used in messageview_add_toolbar() and in
+		prefs_actions.c
+		
+	* src/prefs_actions.c	
+		prefs_actions_ok(): fixed to update the actions menu of
+		the separate message view and the compose windows.
+
 2003-12-20 [luke]	0.9.8claws5
 	* src/procheader.c
 		fix unfolding/newline stripping for multiline fields

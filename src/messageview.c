@@ -338,6 +338,17 @@ GList *messageview_get_msgview_list(void)
 	return msgview_list;
 }
 
+void messageview_update_actions_menu(MessageView *msgview)
+{
+	GtkItemFactory *ifactory;
+
+	/* Messages opened in a new window do not have a menu bar */
+	if (msgview->menubar == NULL)
+		return;
+	ifactory = gtk_item_factory_from_widget(msgview->menubar);
+	action_update_msgview_menu(ifactory, "/Tools/Actions", msgview);
+}
+
 void messageview_add_toolbar(MessageView *msgview, GtkWidget *window) 
 {
  	GtkWidget *handlebox;
@@ -365,8 +376,7 @@ void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 	gtk_container_add(GTK_CONTAINER(vbox),
 			  GTK_WIDGET_PTR(msgview));
 
-	ifactory = gtk_item_factory_from_widget(menubar);
-	action_update_msgview_menu(ifactory, msgview);
+	messageview_update_actions_menu(msgview);
 
 	msgview_list = g_list_append(msgview_list, msgview);
 }
