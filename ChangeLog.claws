@@ -1,3 +1,13 @@
+2004-12-03 [christoph]	0.9.12cvs181
+
+	* src/compose.c
+		build the Privacy System menu without GtkItemFactory to
+		allow '/' in Privacy System names
+
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/plugin.c
+		Update description and change Privacy System name
+
 2004-12-03 [paul]
 
 	* src/pixmaps/dir_close.xpm

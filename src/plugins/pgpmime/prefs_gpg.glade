@@ -335,7 +335,7 @@
       <class>GtkFrame</class>
       <name>frame1</name>
       <label>Sign key</label>
-      <label_xalign>4.84288e-08</label_xalign>
+      <label_xalign>0</label_xalign>
       <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
       <child>
 	<padding>0</padding>
