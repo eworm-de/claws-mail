@@ -1,3 +1,11 @@
+2003-05-31 [christoph]	0.9.0claws9
+
+	* doc-src/rfc2683.txt
+	* src/imap.c
+		limit IMAP command length as recommended in RFC2683
+		(message number lists will be split into multiple imap
+		sets, the limit of 1000 octets is not a hard limit)
+
 2003-05-29 [alfons]	0.9.0claws8
 
 	* src/toolbar.[ch]

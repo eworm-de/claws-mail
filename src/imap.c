@@ -101,6 +101,7 @@ struct _IMAPNameSpace
 #define IMAP_ERROR	7
 
 #define IMAPBUFSIZE	8192
+#define IMAPCMDLIMIT	1000
 
 typedef enum
 {
@@ -195,7 +196,7 @@ static IMAPSession *imap_session_get	(Folder		*folder);
 
 static gint imap_scan_tree_recursive	(IMAPSession	*session,
 					 FolderItem	*item);
-static GSList *imap_parse_list		(Folder		*folder,
+static GSList *imap_parse_list		(IMAPFolder	*folder,
 					 IMAPSession	*session,
 					 const gchar	*real_path,
 					 gchar		*separator);
@@ -281,7 +282,8 @@ static gint imap_greeting		(IMAPSession	*session);
 static gboolean imap_has_capability	(IMAPSession	*session,
  					 const gchar	*cap);
 void imap_free_capabilities		(IMAPSession 	*session);
-static const IMAPSet numberlist_to_imapset(MsgNumberList *list);
+static const IMAPSet numberlist_to_imapset
+					(MsgNumberList *list);
 
 /* low-level IMAP4rev1 commands */
 static gint imap_cmd_login	(IMAPSession	*sock,
@@ -1045,7 +1047,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 		      wildcard_path);
 
 	strtailchomp(real_path, separator);
-	item_list = imap_parse_list(folder, session, real_path, NULL);
+	item_list = imap_parse_list(imapfolder, session, real_path, NULL);
 	g_free(real_path);
 
 	for (cur = item_list; cur != NULL; cur = cur->next) {
@@ -1085,7 +1087,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 	return IMAP_SUCCESS;
 }
 
-static GSList *imap_parse_list(Folder *folder, IMAPSession *session,
+static GSList *imap_parse_list(IMAPFolder *folder, IMAPSession *session,
 			       const gchar *real_path, gchar *separator)
 {
 	gchar buf[IMAPBUFSIZE];
@@ -1152,7 +1154,7 @@ static GSList *imap_parse_list(Folder *folder, IMAPSession *session,
 
 		loc_name = imap_modified_utf7_to_locale(name);
 		loc_path = imap_modified_utf7_to_locale(buf);
-		new_item = folder_item_new(folder, loc_name, loc_path);
+		new_item = folder_item_new(FOLDER(folder), loc_name, loc_path);
 		if (strcasestr(flags, "\\Noinferiors") != NULL)
 			new_item->no_sub = TRUE;
 		if (strcmp(buf, "INBOX") != 0 &&
@@ -1470,64 +1472,69 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 	GSList *llast = NULL;
 	GString *str;
 	MsgInfo *msginfo;
+	IMAPSet imapset;
 
 	g_return_val_if_fail(session != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
 	g_return_val_if_fail(item->folder != NULL, NULL);
 	g_return_val_if_fail(FOLDER_CLASS(item->folder) == &imap_class, NULL);
 
-	if (imap_cmd_envelope(session, numberlist_to_imapset(numlist))
-	    != IMAP_SUCCESS) {
-		log_warning(_("can't get envelope\n"));
-		return NULL;
-	}
-
-	str = g_string_new(NULL);
-
-	for (;;) {
-		if ((tmp = sock_getline(SESSION(session)->sock)) == NULL) {
-			log_warning(_("error occurred while getting envelope.\n"));
-			g_string_free(str, TRUE);
-			return newlist;
-		}
-		strretchomp(tmp);
-		if (tmp[0] != '*' || tmp[1] != ' ') {
-			log_print("IMAP4< %s\n", tmp);
-			g_free(tmp);
-			break;
-		}
-		if (strstr(tmp, "FETCH") == NULL) {
-			log_print("IMAP4< %s\n", tmp);
-			g_free(tmp);
+	imapset = numberlist_to_imapset(numlist);
+	while (imapset != NULL) {
+		if (imap_cmd_envelope(session, imapset)
+		    != IMAP_SUCCESS) {
+			log_warning(_("can't get envelope\n"));
 			continue;
 		}
-		log_print("IMAP4< %s\n", tmp);
-		g_string_assign(str, tmp);
-		g_free(tmp);
 
-		msginfo = imap_parse_envelope
-			(SESSION(session)->sock, item, str);
-		if (!msginfo) {
-			log_warning(_("can't parse envelope: %s\n"), str->str);
-			continue;
-		}
-		if (item->stype == F_QUEUE) {
-			MSG_SET_TMP_FLAGS(msginfo->flags, MSG_QUEUED);
-		} else if (item->stype == F_DRAFT) {
-			MSG_SET_TMP_FLAGS(msginfo->flags, MSG_DRAFT);
+		str = g_string_new(NULL);
+
+		for (;;) {
+			if ((tmp = sock_getline(SESSION(session)->sock)) == NULL) {
+				log_warning(_("error occurred while getting envelope.\n"));
+				g_string_free(str, TRUE);
+				break;
+			}
+			strretchomp(tmp);
+			if (tmp[0] != '*' || tmp[1] != ' ') {
+				log_print("IMAP4< %s\n", tmp);
+				g_free(tmp);
+				break;
+	    		}
+			if (strstr(tmp, "FETCH") == NULL) {
+				log_print("IMAP4< %s\n", tmp);
+				g_free(tmp);
+				continue;
+			}
+			log_print("IMAP4< %s\n", tmp);
+			g_string_assign(str, tmp);
+			g_free(tmp);
+
+			msginfo = imap_parse_envelope
+				(SESSION(session)->sock, item, str);
+			if (!msginfo) {
+				log_warning(_("can't parse envelope: %s\n"), str->str);
+				continue;
+			}
+			if (item->stype == F_QUEUE) {
+				MSG_SET_TMP_FLAGS(msginfo->flags, MSG_QUEUED);
+			} else if (item->stype == F_DRAFT) {
+				MSG_SET_TMP_FLAGS(msginfo->flags, MSG_DRAFT);
+			}
+
+			msginfo->folder = item;
+
+			if (!newlist)
+				llast = newlist = g_slist_append(newlist, msginfo);
+			else {
+				llast = g_slist_append(llast, msginfo);
+				llast = llast->next;
+			}
 		}
 
-		msginfo->folder = item;
-
-		if (!newlist)
-			llast = newlist = g_slist_append(newlist, msginfo);
-		else {
-			llast = g_slist_append(llast, msginfo);
-			llast = llast->next;
-		}
+		g_string_free(str, TRUE);
+		imapset = numberlist_to_imapset(NULL);
 	}
-
-	g_string_free(str, TRUE);
 
 	return newlist;
 }
@@ -1716,7 +1723,7 @@ static void imap_get_namespace_by_list(IMAPSession *session, IMAPFolder *folder)
 		return;
 
 	imap_gen_send(session, "LIST \"\" \"\"");
-	item_list = imap_parse_list(NULL, session, "", &separator);
+	item_list = imap_parse_list(folder, session, "", &separator);
 	for (cur = item_list; cur != NULL; cur = cur->next)
 		folder_item_destroy(FOLDER_ITEM(cur->data));
 	g_slist_free(item_list);
@@ -2045,6 +2052,7 @@ static gint imap_set_message_flags(IMAPSession *session,
 {
 	GString *buf;
 	gint ok;
+	IMAPSet imapset;
 
 	buf = g_string_new(is_set ? "+FLAGS (" : "-FLAGS (");
 
@@ -2059,8 +2067,12 @@ static gint imap_set_message_flags(IMAPSession *session,
 
 	g_string_append_c(buf, ')');
 
-	ok = imap_cmd_store(session, numberlist_to_imapset(numlist),
-			    buf->str);
+	imapset = numberlist_to_imapset(numlist);
+	while (imapset != NULL) {
+		ok = imap_cmd_store(session, imapset,
+				    buf->str);
+		imapset = numberlist_to_imapset(NULL);
+	}
 	g_string_free(buf, TRUE);
 
 	return ok;
@@ -2244,7 +2256,7 @@ void imap_free_capabilities(IMAPSession *session)
 static const IMAPSet numberlist_to_imapset(MsgNumberList *list)
 {
 	static GString *imapset = NULL;
-	MsgNumberList *numlist, *elem;
+	static MsgNumberList *numlist, *elem;
 	guint first, last, next;
 
 	if (imapset == NULL)
@@ -2252,13 +2264,19 @@ static const IMAPSet numberlist_to_imapset(MsgNumberList *list)
 	else
 		g_string_truncate(imapset, 0);
 
-	numlist = g_slist_copy(list);
-	numlist = g_slist_sort(numlist, g_int_compare);
+	if (list != NULL) {
+		g_slist_free(numlist);
+		numlist = g_slist_copy(list);
+		numlist = g_slist_sort(numlist, g_int_compare);
+	} else if (numlist == NULL) {
+		return NULL;
+	}
 
 	first = GPOINTER_TO_INT(numlist->data);
 	last = first;
 	for(elem = g_slist_next(numlist); elem != NULL; elem = g_slist_next(elem)) {
 		next = GPOINTER_TO_INT(elem->data);
+
 		if(next != (last + 1)) {
 			if (imapset->len > 0)
 				g_string_append(imapset, ",");
@@ -2267,18 +2285,34 @@ static const IMAPSet numberlist_to_imapset(MsgNumberList *list)
 			else
 				g_string_sprintfa(imapset, "%d:%d", first, last);
 
+			if (imapset->len > IMAPCMDLIMIT) {
+				last = 0;
+				break;
+			}
+
 			first = next;
 		}
 		last = next;
 	}
-	if (imapset->len > 0)
-		g_string_append(imapset, ",");
-	if (first == last)
-		g_string_sprintfa(imapset, "%d", first);
-	else
-		g_string_sprintfa(imapset, "%d:%d", first, last);
+	if (last != 0) {
+		if (imapset->len > 0)
+			g_string_append(imapset, ",");
+		if (first == last)
+			g_string_sprintfa(imapset, "%d", first);
+		else
+			g_string_sprintfa(imapset, "%d:%d", first, last);
 
-	g_slist_free(numlist);
+		g_slist_free(numlist);
+		numlist = NULL;
+	} else {
+		MsgNumberList *remaining;
+
+		remaining = elem->next;
+		remaining = g_slist_prepend(remaining, elem->data);
+		elem->next = NULL;
+		g_slist_free(numlist);
+		numlist = remaining;
+	}
 
 	return imapset->str;
 }
