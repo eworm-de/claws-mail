@@ -23,6 +23,8 @@
 
 #ifdef CRASH_DIALOG
 
+#include "defs.h"
+
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <stdio.h>

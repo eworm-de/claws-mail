@@ -1,3 +1,8 @@
+2003-08-16 [paul]	0.9.4claws26
+
+	* src/crash.c
+		add #include "defs.h"
+
 2003-08-16 [paul]	0.9.4claws25
 
 	* src/plugins/clamav/clamav_plugin.c
