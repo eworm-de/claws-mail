@@ -77,7 +77,7 @@ static void		 crash_cleanup_exit		(void);
 
 /***/
 
-static const gchar *DEBUG_SCRIPT = "bt\nq";
+static const gchar *DEBUG_SCRIPT = "bt\nkill\nq";
 
 /***/
 
