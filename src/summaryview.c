@@ -4135,6 +4135,14 @@ void summary_reply(SummaryView *summaryview, ComposeMode mode)
 	text = gtkut_editable_get_selection
 		(GTK_EDITABLE(summaryview->messageview->textview->text));
 
+	if (!text && summaryview->messageview->type == MVIEW_MIME
+	    && summaryview->messageview->mimeview->type == MIMEVIEW_TEXT
+	    && summaryview->messageview->mimeview->textview
+	    && !summaryview->messageview->mimeview->textview->default_text) {
+	 	text = gtkut_editable_get_selection (GTK_EDITABLE 
+			 (summaryview->messageview->mimeview->textview->text));   
+	}
+	
 	switch (mode) {
 	case COMPOSE_REPLY:
 		compose_reply(msginfo, prefs_common.reply_with_quote,

@@ -1,6 +1,9 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
+use strict;
 
 #  * Copyright 2002 Paul Mangan <claws@thewildbeast.co.uk>
+#  *
+#  * Reimplemented by Torsten Schoenfeld <kaffeetisch@web.de>
 #  *
 #  * This file is free software; you can redistribute it and/or modify it
 #  * under the terms of the GNU General Public License as published by
@@ -17,153 +20,143 @@
 #  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #  *
 
-chdir;
-chdir '.sylpheed' || die("You don't appear to have Sylpheed installed\n");
+chdir($ENV{ HOME } . "/.sylpheed") or die("You don't appear to have Sylpheed installed\n");
 
-open(FOLDERLIST, "<folderlist.xml") || die("Can't find folderlist.xml\n");
-@folderlist = <FOLDERLIST>;
+###############################################################################
+
+my $normal_headers = qr/^(?:Subject|From|To|Cc)$/;
+my $extra_headers = qr/^(?:Reply-To|Sender|List-Id|X-ML-Name|X-List|X-Sequence|X-Mailer)$/;
+
+my @new_filters = ("[global]\n");
+
+###############################################################################
+
+my $mailbox;
+
+open(FOLDERLIST, "<folderlist.xml") or die("Can't find 'folderlist.xml'\n");
+  while (<FOLDERLIST>) {
+    if (m/<folder type="mh" name="([^"]+)" path="[^"]+"/) {
+      $mailbox = $1;
+      last;
+    }
+  }
 close FOLDERLIST;
 
-foreach $folderlist (@folderlist) {
-	unless ($mailbox) {
-		if ($folderlist =~ m/<folder type="mh"/) {
-      			$folderlist =~ s/<folder type="mh" name="//;
-                	$folderlist =~ s/" path="[A-Z0-9]+"//ig;
-			$folderlist =~ s/ collapsed="1"//;
-			$folderlist =~ s/>\n//ig;
-			$folderlist =~ s/^ +//;
-                	$mailbox = $folderlist;
-        	}
-	}
-}
+###############################################################################
 
-open (FILTERRC, "<filterrc") || die("Can't find your old filter rules\n");
-@filterrc = <FILTERRC>;
-close FILTERRC;
+open(FILTERRC, "<filterrc") or die("Can't find your old filter rules ('filterrc')\n");
+  while (<FILTERRC>) {
+    chomp();
 
-if (!@filterrc) {
-	print "\nYou don't have any filter rules\n\n";
-	exit;
-}
+    my ($header_one,
+        $value_one,
+        $op,
+        $header_two,
+        $value_two,
+        $destination,
+        $mode_one,
+        $mode_two,
+        $action) = split(/\t/);
 
-$WRITE_THIS = "";
-$COUNT      = "0";
+    $action = $action eq "m" ? "move" : "delete";
+    $destination = $destination =~ m!^\#mh/! ?
+                     $destination :
+                     "#mh/$mailbox/$destination";
 
-if (-e "matcherrc") {
-	open (MATCHER, "<matcherrc") || die("Can't open matcherrc\n");
-	@matcherrc = <MATCHER>;
-	close MATCHER;
-		foreach $matcherrc (@matcherrc) {
-			$WRITE_THIS .= $matcherrc;
-		}
-	$WRITE_THIS .= "\n";
-}
+    my ($predicate_one,
+        $predicate_two,
+        $match_type_one,
+        $match_type_two,
+        $new_filter);
 
-$WRITE_THIS .= "[global]\n";
+    ###########################################################################
 
-foreach $filterrc (@filterrc) {
-	$COUNT++;
-	@split_lines = split("\t", $filterrc);
-	if ($split_lines[6] eq "0") {
-		$match_type = "matchcase";
-		$predicate_one = "~";
-	} elsif ($split_lines[6] eq "1") {
-		$match_type = "matchcase";
-		$predicate_one = "";
-	} elsif ($split_lines[6] eq "4") {
-		$match_type = "regexpcase";
-		$predicate_one = "~";
-	} elsif ($split_lines[6] eq "5") {
-		$match_type =  "regexpcase";
-		$predicate_one = "";
-	}
-	if ($split_lines[7] eq "0") {
-		$match_type = "matchcase";
-		$predicate_two = "~";
-	} elsif ($split_lines[7] eq "1") {
-		$match_type = "matchcase";
-		$predicate_two = "";
-	} elsif ($split_lines[7] eq "4") {
-		$match_type = "regexpcase";
-		$predicate_two = "~";
-	} elsif ($split_lines[7] eq "5") {
-		$match_type =  "regexpcase";
-		$predicate_two = "";
-	}
+    if ($mode_one % 2 == 0) {
+      $predicate_one = "~";
+    }
+    else {
+      $predicate_one = "";
+    }
 
-	if ($split_lines[2] eq "&") {
-		$operator = "&";
-		&sort_data;
-	}
-	elsif ($split_lines[2] eq "|") {
-		$operator = "|";
-		&sort_data;
-	} elsif ($split_lines[0] eq "To") {
-		$WRITE_THIS .= "$predicate_one"."to $match_type \"$split_lines[1]\"";
-	} elsif ($split_lines[0] eq "Reply-To") {
-		$WRITE_THIS .= "$predicate_one"."inreplyto $match_type \"$split_lines[1]\"";
-	} elsif ($split_lines[0] eq "Subject") {
-		$WRITE_THIS .= "$predicate_one"."subject $match_type \"$split_lines[1]\"";
-	} elsif ($split_lines[0] eq "From"){
-		$WRITE_THIS .= "$predicate_one"."from $match_type \"$split_lines[1]\"";
-	} elsif ($split_lines[0] eq "Sender" || $split_lines[0] eq "List-Id" || 
-		 $split_lines[0] eq "X-ML-Name" || $split_lines[0] eq "X-List" ||
-		 $split_lines[0] eq "X-Sequence" || $split_lines[0] eq "X-Mailer" ||
-		 $split_lines[0] eq "Cc") {
-		$WRITE_THIS .= "$predicate_one"."header \"$split_lines[0]\" $match_type \"$split_lines[1]\"";
-	}
-	if ($split_lines[8] eq "n\n") {
-		$WRITE_THIS .= " delete";
-	} elsif ($split_lines[8] eq "m\n"){
-		$WRITE_THIS .= " move \"\#mh/$mailbox/$split_lines[5]\"";
-	}
-	$WRITE_THIS .= "\n";
-	@split_lines = "";
-}
+    if ($mode_one <= 1) {
+      $match_type_one = "matchcase";
+    }
+    else {
+      $match_type_one = "regexpcase";
+    }
 
-open (MATCHERRC, ">matcherrc");
-print MATCHERRC $WRITE_THIS;
-close MATCHERRC;
+    ###########################################################################
 
-rename ("filterrc","filterrc.old");
+    if ($mode_two % 2 == 0) {
+      $predicate_two = "~";
+    }
+    else {
+      $predicate_two = "";
+    }
 
-print "\nYou have sucessfully converted $COUNT filtering rules\n\n";
-print "'filterrc' has been renamed 'filterrc.old'\n\n";
-exit;
+    if ($mode_two <= 1) {
+      $match_type_two = "matchcase";
+    }
+    else {
+      $match_type_two = "regexpcase";
+    }
 
-sub sort_data {
-	if ($split_lines[0] eq "To" && $split_lines[3] eq "Cc" && 
-	$split_lines[1] eq $split_lines[4]) {
-		$WRITE_THIS .= "$predicate_one"."to_or_cc $match_type \"$split_lines[1]\"";		
-	}
-	elsif ($split_lines[0] eq "To") {
-		$WRITE_THIS .= "$predicate_one"."to $match_type \"$split_lines[1]\" $operator ";
-	} elsif ($split_lines[0] eq "Reply-To") {
-		$WRITE_THIS .= "$predicate_one"."inreplyto $match_type \"$split_lines[1]\" $operator ";
-	} elsif ($split_lines[0] eq "Subject") {
-		$WRITE_THIS .= "$predicate_one"."subject $match_type \"$split_lines[1]\" $operator ";
-	} elsif ($split_lines[0] eq "From") {
-		$WRITE_THIS .= "$predicate_one"."from $match_type \"$split_lines[1]\" $operator ";
-	} elsif ($split_lines[0] eq "Sender" || $split_lines[0] eq "List-Id" || 
-		 $split_lines[0] eq "X-ML-Name" || $split_lines[0] eq "X-List" ||
-		 $split_lines[0] eq "X-Sequence" || $split_lines[0] eq "X-Mailer" ||
-		 $split_lines[0] eq "Cc") {
-		$WRITE_THIS .= "$predicate_one"."header \"$split_lines[0]\" $match_type \"$split_lines[1]\" $operator ";
-	}
+    ###########################################################################
 
-	if ($split_lines[3] eq "To") {
-		$WRITE_THIS .= "$predicate_two"."to $match_type \"$split_lines[4]\"";
-	} elsif ($split_lines[3] eq "Reply-To") {
-		$WRITE_THIS .= "$predicate_two"."inreplyto $match_type \"$split_lines[4]\"";
-	} elsif ($split_lines[3] eq "Subject") {
-		$WRITE_THIS .= "$predicate_two"."subject $match_type \"$split_lines[4]\"";
-	} elsif ($split_lines[3] eq "From") {
-		$WRITE_THIS .= "$predicate_two"."from $match_type \"$split_lines[4]\"";
-	} elsif ($split_lines[3] eq "Sender" || $split_lines[3] eq "List-Id" || 
-		 $split_lines[3] eq "X-ML-Name" || $split_lines[3] eq "X-List" ||
-		 $split_lines[3] eq "X-Sequence" || $split_lines[3] eq "X-Mailer" ||
-		 $split_lines[3] eq "Cc") {
-		$WRITE_THIS .= "$predicate_two"."header \"$split_lines[3]\" $match_type \"$split_lines[4]\"";
-	} 
+    if ($header_one eq "To" && $header_two eq "Cc" ||
+        $header_one eq "Cc" && $header_two eq "To" and
+        $value_one eq $value_two and
+        $mode_one eq $mode_two and
+        $op eq "|") {
+      if ($action eq "move") {
+        $new_filter = $predicate_one . qq(to_or_cc $match_type_one "$value_one" move "$destination"\n);
+      }
+      else {
+        $new_filter = $predicate_one . qq(to_or_cc $match_type_one "$value_one" delete\n);
+      }
+    }
+    else {
+      if ($header_one =~ m/$normal_headers/) {
+        $new_filter .= $predicate_one . lc($header_one) . qq( $match_type_one "$value_one");
+      }
+      elsif ($header_one =~ m/$extra_headers/) {
+        $new_filter .= $predicate_one . qq(header "$header_one" $match_type_one "$value_one");
+      }
 
-}
+      if ($op ne " ") {
+        if ($header_two =~ m/$normal_headers/) {
+          $new_filter .= qq( $op ) . $predicate_two . lc($header_two) . qq( $match_type_two "$value_two");
+        }
+        elsif ($header_two =~ m/$extra_headers/) {
+          $new_filter .= qq( $op ) . $predicate_two . qq(header "$header_two" $match_type_two "$value_two");
+        }
+      }
+
+      if (defined($new_filter)) {
+        if ($action eq "move") {
+          $new_filter .= qq( move "$destination"\n);
+        }
+        else {
+          $new_filter .= qq(delete\n);
+        }
+      }
+    }
+
+    ###########################################################################
+
+    push(@new_filters, $new_filter) if (defined($new_filter));
+  }
+close(FILTERRC);
+
+###############################################################################
+
+open(MATCHERRC, ">>matcherrc");
+  print MATCHERRC @new_filters;
+close(MATCHERRC);
+
+rename("filterrc", "filterrc.old");
+
+###############################################################################
+
+print "Converted $#new_filters filters\n";
+print "Renamed your old filter rules ('filterrc' to 'filterrc.old')\n";

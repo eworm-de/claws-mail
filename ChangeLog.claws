@@ -1,3 +1,24 @@
+2002-07-16 [paul]	0.7.8claws74
+
+	* tools/filter_conv.pl
+	  tools/README
+		replace conversion script with reimplemented version, 
+		submitted by Torsten Schoenfeld <kaffeetisch@web.de>
+
+2002-07-16 [colin]	0.7.8claws73
+
+	* src/summaryview.c
+		remove forgotten debug messages - sorry ;-)
+
+2002-07-16 [colin] 	0.7.8claws72
+
+	* src/mimeview.c
+	  src/summaryview.c
+	  src/textview.c
+	  src/textview.h
+		add the ability to select part of a text mime-part 
+		to reply.
+
 2002-07-15 [christoph]	0.7.8claws71
 
 	* src/folder.c
