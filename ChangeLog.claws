@@ -1,3 +1,8 @@
+2003-12-15 [alfons]	0.9.7claws44
+
+	* src/procheader.c
+		make sure we discard folding white space
+
 2003-12-15 [luke]	0.9.7claws43
         * src/textview.c
         * src/mimeview.c
