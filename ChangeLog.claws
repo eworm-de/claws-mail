@@ -1,3 +1,12 @@
+2002-08-30 [alfons]	0.8.2claws12
+
+	* AUTHORS
+		add Martin Kluge
+	* src/mh.c
+		apply memory leak plug patch by Martin Kluge
+		(closes "[ 602568 ] patch for 602441 little memory leak"
+		and "[ 602441 ] memoryleak in filtering 0.8.2claws9?")
+
 2002-08-30 [darko]	0.8.2claws11
 
 	* src/folderview.c

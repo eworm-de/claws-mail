@@ -620,19 +620,17 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 
 	prefs = dest->prefs;
 
-	destfile = mh_get_new_msg_filename(dest);
-	g_return_val_if_fail(destfile != NULL, -1);
-
-	debug_print("Copying message %s%c%d to %s ...\n",
-		    msginfo->folder->path, G_DIR_SEPARATOR,
-		    msginfo->msgnum, dest->path);
-
 	srcfile = procmsg_get_message_file(msginfo);
 	destfile = mh_get_new_msg_filename(dest);
-	if(!destfile) {
+	if (!destfile) {
 		g_free(srcfile);
 		return -1;
 	}
+	
+	debug_print("Copying message %s%c%d to %s ...\n",
+		    msginfo->folder->path, G_DIR_SEPARATOR,
+		    msginfo->msgnum, dest->path);
+	
 
 	if (copy_file(srcfile, destfile, TRUE) < 0) {
 		FILE_OP_ERROR(srcfile, "copy");
