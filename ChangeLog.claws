@@ -1,3 +1,8 @@
+2002-10-11 [melvin]	0.8.5claws17
+
+	* src/compose.c
+		Fixed memory leak from bug #622040 (thanks to Martin Kluge)
+
 2002-10-11 [thorsten]	0.8.5claws16 
 
 	* src/folderview.c

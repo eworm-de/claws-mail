@@ -7007,7 +7007,7 @@ static void text_inserted(GtkWidget *widget, const gchar *text,
 
 	
 	if (prefs_common.autosave && 
-	    EDITABLE_LENGTH(editable) % prefs_common.autosave_length == 0)
+	    gtk_stext_get_length(GTK_STEXT(widget)) % prefs_common.autosave_length == 0)
 		compose_draft_cb((gpointer)compose, 1, NULL);
 }
 
