@@ -1901,6 +1901,7 @@ void summary_mark(SummaryView *summaryview)
 		summary_mark_row(summaryview, GTK_CTREE_NODE(cur->data));
 
 	/* summary_step(summaryview, GTK_SCROLL_STEP_FORWARD); */
+	summary_status_show(summaryview);
 }
 
 static void summary_mark_row_as_read(SummaryView *summaryview,
