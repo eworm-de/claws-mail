@@ -1,3 +1,26 @@
+2003-07-20 [christoph]	0.9.3claws33
+
+	* src/compose.h
+	* src/folder.c
+	* src/folderview.h
+	* src/headerview.h
+	* src/prefs_filtering.h
+	* src/prefs_folder_item.[ch]
+	* src/procmime.h
+	* src/procmsg.h
+	* src/summaryview.h
+		clean up header mess
+		(always use 1. typedefs, 2. #includes, 3. structures)
+
+	* src/common/version.h.in
+		add casts for constants
+
+	* src/plugins/demo/demo.c
+		fix typo
+
+	* src/plugins/spamassassin/spamassassin.c
+		remove unused variable
+
 2003-07-20 [alfons]	0.9.3claws32
 
 	* src/mimeview.c

@@ -261,7 +261,7 @@ gint prefs_folder_item_get_sort_type(FolderItem * item)
 #define SAFE_STRING(str) \
 	(str) ? (str) : ""
 
-void prefs_folder_item_create(void *folderview, FolderItem *item) 
+void prefs_folder_item_create(FolderView *folderview, FolderItem *item) 
 {
 	struct PrefsFolderItemDialog *dialog;
 	guint rowcount;

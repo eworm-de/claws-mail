@@ -987,7 +987,7 @@ void folder_item_set_default_flags(FolderItem *dest, MsgFlags *flags)
 	} else {
 		flags->perm_flags = 0;
 	}
-	flags->tmp_flags = MSG_CACHED;
+	flags->tmp_flags = 0;
 	if (FOLDER_TYPE(dest->folder) == F_MH) {
 		if (dest->stype == F_QUEUE) {
 			MSG_SET_TMP_FLAGS(*flags, MSG_QUEUED);

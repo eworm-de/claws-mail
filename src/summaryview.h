@@ -32,15 +32,6 @@
 typedef struct _SummaryView		SummaryView;
 typedef struct _SummaryColumnState	SummaryColumnState;
 
-#include "mainwindow.h"
-#include "folderview.h"
-#include "headerview.h"
-#include "messageview.h"
-#include "compose.h"
-#include "folder.h"
-#include "gtksctree.h"
-#include "prefs_filtering.h"
-
 typedef enum
 {
 	S_COL_MARK,
@@ -78,6 +69,15 @@ typedef enum
 	S_SEARCH_TO,
 	S_SEARCH_EXTENDED
 } SummarySearchType;
+
+#include "mainwindow.h"
+#include "folderview.h"
+#include "headerview.h"
+#include "messageview.h"
+#include "compose.h"
+#include "folder.h"
+#include "gtksctree.h"
+#include "prefs_filtering.h"
 
 extern GtkTargetEntry summary_drag_types[1];
 

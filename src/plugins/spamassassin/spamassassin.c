@@ -93,7 +93,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	gboolean is_spam = FALSE;
 	FILE *fp = NULL;
 	struct message m;
-	gchar *oldlocale = NULL;
 	struct sockaddr addr;
 	int ret;
 

@@ -74,10 +74,6 @@ typedef enum
 	MSG_IGNORE_THREAD   = 1 << 10,   /* ignore threads */
 	MSG_LOCKED	    = 1 << 11,   /* msg is locked  */
 	MSG_RETRCPT_PENDING = 1 << 12,	 /* return receipt pending */
-
-	/* RESERVED */
-	MSG_RESERVED_CLAWS  = 1 << 30,	/* for sylpheed-claws */
-	MSG_RESERVED_MAIN   = 1 << 31	/* for sylpheed-main  */
 } MsgPermFlags;
 
 #define MSG_CLABEL_FLAG_MASK	(MSG_CLABEL_7)
@@ -95,8 +91,6 @@ typedef enum
 	MSG_SIGNED	= 1 << 21,
 
 	MSG_MIME	= 1 << 29,
-
-	MSG_CACHED	= 1 << 31
 } MsgTmpFlags;
 
 #define MSG_CACHED_FLAG_MASK	(MSG_MIME | MSG_ENCRYPTED | MSG_SIGNED)
@@ -150,6 +144,7 @@ typedef enum
 
 #include "folder.h"
 #include "procmime.h"
+#include "prefs_filtering.h"
 
 struct _MsgFlags
 {
@@ -157,7 +152,6 @@ struct _MsgFlags
 	MsgTmpFlags  tmp_flags;
 };
 
-#include "prefs_filtering.h"
 
 struct _MsgInfo
 {
@@ -284,4 +278,5 @@ void procmsg_update_unread_children	(MsgInfo 	*info,
 void procmsg_msginfo_set_to_folder	(MsgInfo 	*msginfo,
 					 FolderItem 	*to_folder);
 gboolean procmsg_msginfo_filter		(MsgInfo	*msginfo);
+
 #endif /* __PROCMSG_H__ */

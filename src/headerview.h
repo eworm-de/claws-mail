@@ -23,9 +23,9 @@
 #include <glib.h>
 #include <gtk/gtkwidget.h>
 
-#include "procmsg.h"
-
 typedef struct _HeaderView	HeaderView;
+
+#include "procmsg.h"
 
 struct _HeaderView
 {

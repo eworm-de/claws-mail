@@ -18,12 +18,15 @@
  */
 
 #ifndef PREFS_FOLDER_ITEM_H
-
 #define PREFS_FOLDER_ITEM_H
 
-#include "folder.h"
 #include <glib.h>
 #include <sys/types.h>
+
+typedef struct _PrefsFolderItem PrefsFolderItem;
+
+#include "folder.h"
+#include "folderview.h"
 
 struct _PrefsFolderItem {
 	gchar * directory;
@@ -60,11 +63,7 @@ struct _PrefsFolderItem {
 	guint color;
 };
 
-typedef struct _PrefsFolderItem PrefsFolderItem;
-
-/* CLAWS: due a messed up circular header references using 
- * void *. but this is *REALLY* a folderview */ 
-void prefs_folder_item_create (void *folderview, FolderItem *item); 
+void prefs_folder_item_create(FolderView *folderview, FolderItem *item); 
 
 void prefs_folder_item_read_config(FolderItem * item);
 void prefs_folder_item_save_config(FolderItem * item);
@@ -76,4 +75,4 @@ gint prefs_folder_item_get_sort_type(FolderItem * item);
 gint prefs_folder_item_get_sort_mode(FolderItem * item);
 void prefs_folder_item_copy_prefs(FolderItem * src, FolderItem * dest);
 
-#endif
+#endif /* PREFS_FOLDER_ITEM_H */
