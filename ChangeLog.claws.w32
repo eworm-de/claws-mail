@@ -1,3 +1,28 @@
+2005-01-29 [thorsten]	1.0.0cvs23.1
+
+	* AUTHORS
+	* ChangeLog
+	* ChangeLog.claws
+	* ChangeLog.jp
+	* PATCHSETS
+	* configure.ac
+	* src/compose.c
+	* src/compose.h
+	* src/folder.c
+	* src/folderview.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/mh.c
+	* src/procheader.c
+	* src/procmime.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/summaryview.c
+	* src/toolbar.c
+	* src/common/template.c
+	* src/common/utils.c
+		sync 1.0.0cvs23
+
 2005-01-29 [thorsten]	1.0.0cvs9.3
 
 	* src/common/socket.c

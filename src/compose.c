@@ -1439,7 +1439,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	ifactory = gtk_item_factory_from_widget(compose->popupmenu);
 	menu_set_sensitive(ifactory, "/Add...", FALSE);
 	menu_set_sensitive(ifactory, "/Remove", FALSE);
-	menu_set_sensitive(ifactory, "/Property...", FALSE);
+	menu_set_sensitive(ifactory, "/Properties...", FALSE);
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 	menu_set_sensitive(ifactory, "/Message/Save", FALSE);
@@ -7330,7 +7330,42 @@ static void compose_add_field_list( Compose *compose, GList *listAddress ) {
 	}
 }
 
+void compose_reply_from_messageview(MessageView *msgview, GSList *msginfo_list, 
+				    guint action)
+{
+	gchar *body;
+	GSList *new_msglist = NULL;
+	
+	g_return_if_fail(msgview != NULL);
+
+	g_return_if_fail(msginfo_list != NULL);
+
+ 	if (g_slist_length(msginfo_list) == 1) {
+ 		MimeInfo *mimeinfo = messageview_get_selected_mime_part(msgview);
+ 		MsgInfo *orig_msginfo = (MsgInfo *)msginfo_list->data;
+ 		
+ 		if (mimeinfo != NULL && mimeinfo->type == MIMETYPE_MESSAGE && 
+ 		    !g_strcasecmp(mimeinfo->subtype, "rfc822")) {
+ 	    		
+ 			MsgInfo *tmp_msginfo = procmsg_msginfo_new_from_mimeinfo(
+ 						orig_msginfo, mimeinfo);
+ 			if (tmp_msginfo != NULL) {
+ 				new_msglist = g_slist_append(NULL, tmp_msginfo);
+ 			} 
+ 		}
+ 	}
+
+	body = messageview_get_selection(msgview);
+
+	if (new_msglist) {
+		compose_reply_mode((ComposeMode)action, new_msglist, body);
+		g_slist_free(new_msglist);
+	} else
+		compose_reply_mode((ComposeMode)action, msginfo_list, body);
+
+	g_free(body);
+}
+
 /*
  * End of Source.
  */
-

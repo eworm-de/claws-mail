@@ -900,8 +900,12 @@ MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
 
 	if (msginfo == NULL) return NULL;
 
-	file = procmsg_get_message_file(msginfo);
-	if (!file) {
+	file = procmsg_get_message_file_path(msginfo);
+	if (!file || !is_file_exist(file)) {
+		g_free(file);
+		file = procmsg_get_message_file(msginfo);
+	}
+	if (!file || !is_file_exist(file)) {
 		g_warning("procmsg_msginfo_get_full_info(): can't get message file.\n");
 		return NULL;
 	}
@@ -1647,4 +1651,38 @@ gboolean procmsg_msginfo_filter(MsgInfo *msginfo)
 		return TRUE;
 
 	return FALSE;
+}
+
+MsgInfo *procmsg_msginfo_new_from_mimeinfo(MsgInfo *src_msginfo, MimeInfo *mimeinfo)
+{
+	MsgInfo *tmp_msginfo = NULL;
+	MsgFlags flags = {0, 0};
+	
+	
+	if (!mimeinfo || mimeinfo->type != MIMETYPE_MESSAGE ||
+	    g_strcasecmp(mimeinfo->subtype, "rfc822")) {
+		g_warning("procmsg_msginfo_new_from_mimeinfo(): unsuitable mimeinfo");
+		return NULL;
+	}
+		    
+	if (mimeinfo->content == MIMECONTENT_MEM) {
+		gchar *tmpfile = get_tmp_file();
+		str_write_to_file(mimeinfo->data.mem, tmpfile);
+		g_free(mimeinfo->data.mem);
+		mimeinfo->content == MIMECONTENT_FILE;
+		mimeinfo->data.filename = g_strdup(tmpfile);
+		g_free(tmpfile);
+	}
+
+	tmp_msginfo = procheader_parse_file(mimeinfo->data.filename,
+				flags, TRUE, FALSE);
+
+	if (tmp_msginfo != NULL) {
+		tmp_msginfo->folder = src_msginfo->folder;
+		tmp_msginfo->plaintext_file = g_strdup(mimeinfo->data.filename);
+	} else {
+		g_warning("procmsg_msginfo_new_from_mimeinfo(): Can't generate new msginfo");
+	}
+	
+	return tmp_msginfo;
 }

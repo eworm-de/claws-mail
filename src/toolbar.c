@@ -1831,7 +1831,6 @@ static void toolbar_reply(gpointer data, guint action)
 	MainWindow *mainwin;
 	MessageView *msgview;
 	GSList *msginfo_list = NULL;
-	gchar *body;
 
 	g_return_if_fail(toolbar_item != NULL);
 
@@ -1843,6 +1842,7 @@ static void toolbar_reply(gpointer data, guint action)
 		break;
 	case TOOLBAR_MSGVIEW:
 		msgview = (MessageView*)toolbar_item->parent;
+		g_return_if_fail(msgview != NULL);	
 		msginfo_list = g_slist_append(msginfo_list, msgview->msginfo);
 		break;
 	default:
@@ -1850,12 +1850,8 @@ static void toolbar_reply(gpointer data, guint action)
 	}
 
 	g_return_if_fail(msgview != NULL);
-	body = messageview_get_selection(msgview);
-
 	g_return_if_fail(msginfo_list != NULL);
-	compose_reply_mode((ComposeMode)action, msginfo_list, body);
-
-	g_free(body);
+	compose_reply_from_messageview(msgview, msginfo_list, action);
 	g_slist_free(msginfo_list);
 
 	/* TODO: update reply state ion summaryview */

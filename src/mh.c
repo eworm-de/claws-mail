@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -197,7 +197,7 @@ void mh_get_last_num(Folder *folder, FolderItem *item)
 	}
 
 	while ((d = readdir(dp)) != NULL) {
-		if ((num = to_number(d->d_name)) >= 0 &&
+		if ((num = to_number(d->d_name)) > 0 &&
 		    dirent_is_regular_file(d)) {
 			if (max < num)
 				max = num;
@@ -237,7 +237,7 @@ gint mh_get_num_list(Folder *folder, FolderItem *item, GSList **list, gboolean *
 	}
 
 	while ((d = readdir(dp)) != NULL) {
-		if ((num = to_number(d->d_name)) >= 0) {
+		if ((num = to_number(d->d_name)) > 0) {
 			*list = g_slist_prepend(*list, GINT_TO_POINTER(num));
 		   	nummsgs++;
 		}

@@ -999,6 +999,51 @@ static gboolean folderview_have_unread_children(FolderView *folderview,
 	return FALSE;
 }
 
+static gboolean folderview_search_matching_recursive(GtkCTree *ctree,
+						   GtkCTreeNode *node)
+{
+	FolderItem *item;
+
+	if (node) {
+		item = gtk_ctree_node_get_row_data(ctree, node);
+		if (item) {
+			if (item->search_match)
+				return TRUE;
+		}
+		node = GTK_CTREE_ROW(node)->children;
+	} else
+		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+
+	while (node) {
+		if (folderview_search_matching_recursive(ctree, node) == TRUE)
+			return TRUE;
+		node = GTK_CTREE_ROW(node)->sibling;
+	}
+
+	return FALSE;
+}
+
+static gboolean folderview_have_matching_children(FolderView *folderview,
+						GtkCTreeNode *node)
+{
+	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+
+	if (!node)
+		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+	if (!node)
+		return FALSE;
+
+	node = GTK_CTREE_ROW(node)->children;
+
+	while (node) {
+		if (folderview_search_matching_recursive(ctree, node) == TRUE)
+			return TRUE;
+		node = GTK_CTREE_ROW(node)->sibling;
+	}
+
+	return FALSE;
+}
+
 static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
@@ -1013,6 +1058,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	gchar *name;
 	gchar *str;
 	gboolean add_unread_mark;
+	gboolean add_sub_match_mark;
 	gboolean use_bold, use_color;
 
 	item = gtk_ctree_node_get_row_data(ctree, node);
@@ -1092,6 +1138,16 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	}
 	name = folder_item_get_name(item);
 
+	if (!GTK_CTREE_ROW(node)->expanded) {
+		add_unread_mark = folderview_have_unread_children(
+					folderview, node);
+		add_sub_match_mark = folderview_have_matching_children(
+					folderview, node);
+	} else {
+		add_unread_mark = FALSE;
+		add_sub_match_mark = FALSE;
+	}
+
 	if (item->search_match) {
 		if (!searchicon) {
 			stock_pixmap_gdk(folderview->ctree, STOCK_PIXMAP_QUICKSEARCH,
@@ -1101,12 +1157,6 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		mask = openmask = searchmask;
 	}
 
-	if (!GTK_CTREE_ROW(node)->expanded &&
-	    folderview_have_unread_children(folderview, node))
-		add_unread_mark = TRUE;
-	else
-		add_unread_mark = FALSE;
-
 	if (item->stype == F_QUEUE && item->total_msgs > 0 &&
 	    prefs_common.display_folder_unread) {
 		str = g_strdup_printf("%s (%d%s)", name, item->total_msgs,
@@ -1115,12 +1165,13 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 					xpm, mask, openxpm, openmask,
 					FALSE, GTK_CTREE_ROW(node)->expanded);
 		g_free(str);
-	} else if ((item->unread_msgs > 0 || add_unread_mark) &&
-		 prefs_common.display_folder_unread) {
+	} else if (((item->unread_msgs > 0 || add_unread_mark) &&
+		    prefs_common.display_folder_unread) 
+		   || add_sub_match_mark) {
 
 		if (item->unread_msgs > 0)
 			str = g_strdup_printf("%s (%d%s%s)", name, item->unread_msgs,
-					      add_unread_mark ? "+" : "", 
+					      add_unread_mark || add_sub_match_mark ? "+" : "", 
 				              item->unreadmarked_msgs > 0 ? "!":"");
 		else
 			str = g_strdup_printf("%s (+)", name);
@@ -1764,9 +1815,12 @@ static void folderview_empty_trash_cb(FolderView *folderview, guint action,
 	
 	for (cur = mlist ; cur != NULL ; cur = cur->next) {
 		MsgInfo * msginfo = (MsgInfo *) cur->data;
-		partial_mark_for_delete(msginfo);
-		procmsg_msginfo_free(msginfo);
+		/* is it partially received? (partial_recv isn't cached) */
+		if (msginfo->total_size != 0 && 
+		    msginfo->size != (off_t)msginfo->total_size)
+			partial_mark_for_delete(msginfo);
 	}
+	procmsg_msg_list_free(mlist);
 
 	folder_item_remove_all_msg(item);
 }
