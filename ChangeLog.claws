@@ -1,3 +1,8 @@
+2001-12-30 [alfons]	0.6.6claws33
+
+	* src/prefs_common.c
+		add #ifdef USE_PSPELLs that Melvin forgot		
+
 2001-12-30 [melvin]	0.6.6claws32
 	
 	* src/prefs_common.[ch]

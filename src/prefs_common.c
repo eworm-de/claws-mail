@@ -3047,9 +3047,11 @@ static void quote_color_set_dialog(GtkWidget *widget, gpointer data)
 	} else if(g_strcasecmp(type, "TGTFLD") == 0) {
 		title = _("Pick color for target folder");
 		rgbvalue = prefs_common.tgt_folder_col;
+#if USE_PSPELL		
 	} else if(g_strcasecmp(type, "Misspelled word") == 0) {
 		title = _("Pick color for misspelled word");
 		rgbvalue = prefs_common.misspelled_col;
+#endif		
 	} else {   /* Should never be called */
 		g_warning("Unrecognized datatype '%s' in quote_color_set_dialog\n", type);
 		return;
@@ -3117,9 +3119,11 @@ static void quote_colors_set_dialog_ok(GtkWidget *widget, gpointer data)
 		prefs_common.tgt_folder_col = rgbvalue;
 		set_button_bg_color(color_buttons.tgt_folder_btn, rgbvalue);
 		folderview_set_target_folder_color(prefs_common.tgt_folder_col);
+#if USE_PSPELL		
 	} else if (g_strcasecmp(type, "Misspelled word") == 0) {
 		prefs_common.misspelled_col = rgbvalue;
 		set_button_bg_color(color_buttons.misspelled_btn, rgbvalue);
+#endif		
 	} else
 		fprintf( stderr, "Unrecognized datatype '%s' in quote_color_set_dialog_ok\n", type );
 
