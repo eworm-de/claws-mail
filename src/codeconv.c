@@ -1100,6 +1100,11 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 
 	/* convert to wide-character string */
 	wsrcp = wsrc = strdup_mbstowcs(src);
+	if (!wsrc) {
+		g_warning("Can't convert string to wide characters.\n");
+		strncpy2(dest, src, len);
+		return;
+	}
 
 	mimehdr_len = strlen(mimehdr_init) + strlen(mimehdr_end) +
 		strlen(mimehdr_charset) + strlen(mimehdr_enctype);
@@ -1108,8 +1113,6 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 	line_len = header_len;
 	destp = dest;
 	*dest = '\0';
-
-	g_return_if_fail(wsrc != NULL);
 
 	while (*wsrcp) {
 		wchar_t *wp, *wtmp, *wtmpp;
@@ -1300,17 +1303,22 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 	gchar *mimehdr_end = "?=";
 	gchar *mimehdr_enctype = "?B?";
 	const gchar *mimehdr_charset;
+	gboolean do_conv = FALSE;
 
 	/* g_print("src = %s\n", src); */
 	mimehdr_charset = conv_get_outgoing_charset_str();
-	if (strcmp(mimehdr_charset, "ISO-2022-JP") != 0) {
-		/* currently only supports Japanese */
-		strncpy2(dest, src, len);
-		return;
-	}
+	if (strcmp(mimehdr_charset, "ISO-2022-JP") == 0)
+		do_conv = TRUE;
+	else if (strcmp(mimehdr_charset, "US-ASCII") == 0)
+		mimehdr_charset = "ISO-8859-1";
 
 	/* convert to wide-character string */
 	wsrcp = wsrc = strdup_mbstowcs(src);
+	if (!wsrc) {
+		g_warning("Can't convert string to wide characters.\n");
+		strncpy2(dest, src, len);
+		return;
+	}
 
 	mimehdr_len = strlen(mimehdr_init) + strlen(mimehdr_end) +
 		      strlen(mimehdr_charset) + strlen(mimehdr_enctype);
@@ -1319,8 +1327,6 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 	line_len = header_len;
 	destp = dest;
 	*dest = '\0';
-
-	g_return_if_fail(wsrc != NULL);
 
 	while (*wsrcp) {
 		wchar_t *wp, *wtmp, *wtmpp;
@@ -1372,7 +1378,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 				}
 
 				/* length of KI + KO */
-				if (prev_mbl == 1 && mbl == 2)
+				if (do_conv && prev_mbl == 1 && mbl == 2)
 					mb_seqlen += JIS_SEQLEN * 2;
 
 				if (str_is_non_ascii) {
@@ -1433,23 +1439,26 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 			}
 
 			if (str_is_non_ascii) {
-				gchar *tmp_jis;
+				gchar *raw;
 
-				tmp_jis = g_new(gchar, tlen + mb_seqlen + 1);
+				raw = g_new(gchar, tlen + mb_seqlen + 1);
+				if (do_conv)
 #ifdef WIN32
-				conv_anytojis(tmp_jis,
-					      tlen + mb_seqlen + 1, tmp);
+					conv_anytojis(raw, tlen + mb_seqlen + 1,
+						      tmp);
 #else
-				conv_euctojis(tmp_jis,
-					      tlen + mb_seqlen + 1, tmp);
+					conv_euctojis(raw, tlen + mb_seqlen + 1,
+						      tmp);
 #endif
+				else
+					strcpy(raw, tmp);
 				g_snprintf(destp, len - strlen(dest), "%s%s%s",
 					   mimehdr_init, mimehdr_charset,
 					   mimehdr_enctype);
 				destp += mimehdr_begin_len;
 				line_len += mimehdr_begin_len;
 
-				base64_encode(destp, tmp_jis, strlen(tmp_jis));
+				base64_encode(destp, raw, strlen(raw));
 				line_len += strlen(destp);
 				destp += strlen(destp);
 
@@ -1457,7 +1466,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 				destp += strlen(mimehdr_end);
 				line_len += strlen(mimehdr_end);
 
-				g_free(tmp_jis);
+				g_free(raw);
 			} else {
 				strcpy(destp, tmp);
 				line_len += strlen(destp);

@@ -1,3 +1,20 @@
+2002-11-12
+
+	* src/folder.c: folder_write_list_recursive(): escape
+	  To/Cc/Bcc/Reply-To strings.
+
+2002-11-11
+
+	* src/codeconv.c: conv_encode_header(): enabled B-encoding of
+	  headers on locales other than Japanese when not using libjconv.
+
+2002-11-11
+
+	* src/inc.[ch]: added INC_IO_ERROR to IncState. Also added its
+	  corresponding error message.
+	  inc_pop3_session_do(): set INC_IO_ERROR instead of INC_NOSPACE
+	  on PS_IOERR.
+
 2002-11-07
 
 	* src/prefs_account.[ch]: removed prefs_account_save_config() since

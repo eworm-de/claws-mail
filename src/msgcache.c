@@ -460,6 +460,8 @@ GSList *msgcache_get_msg_list(MsgCache *cache)
 
 	g_hash_table_foreach((GHashTable *)cache->msgnum_table, msgcache_get_msg_list_func, (gpointer)&msg_list);	
 	cache->last_access = time(NULL);
+	
+	msg_list = g_slist_reverse(msg_list);
 
 	return msg_list;
 }

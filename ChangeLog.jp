@@ -1,3 +1,20 @@
+2002-11-12
+
+	* src/folder.c: folder_write_list_recursive(): To/Cc/Bcc/Reply-To
+	  の文字列をエスケープするようにした。
+
+2002-11-11
+
+	* src/codeconv.c: conv_encode_header(): libjconv 未使用時に日本語
+	  以外の locale でヘッダの B-encoding を有効にした。
+
+2002-11-11
+
+	* src/inc.[ch]: INC_IO_ERROR を IncState に追加。それに対応する
+	  エラーメッセージも追加。
+	  inc_pop3_session_do(): PS_IOERR のとき INC_NOSPACE の代わりに
+	  INC_IO_ERROR をセット。
+
 2002-11-07
 
 	* src/prefs_account.[ch]: 使われていないため

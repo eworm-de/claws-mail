@@ -1,3 +1,112 @@
+2002-11-12 [colin] 	0.8.5claws134
+
+	* src/msgcache.c
+		Reverse last commit which had performance 
+		problems, but still reverse the list
+
+2002-11-12 [colin]	0.8.5claws133
+
+	* src/msgcache.c
+		Reverse list order
+
+2002-11-12 [melvin]	0.8.5claws132
+
+	* src/compose.c
+		Added a check for a NULL prefs_common.dictionary
+
+2002-11-12 [colin]	0.8.5claws131
+
+	* src/ssl_certificate.[ch]
+		Use FQDN hostname
+
+2002-11-12 [colin]	0.8.5claws130
+
+	* src/ssl_certificate.[ch]
+		Take connection port into account for 
+		checking certificates (a single hostname
+		could have multiple servers with multiple
+		certificates)
+	* src/ssl.c
+		Pass the port to ssl_certificate_check
+
+2002-11-12 [paul]	0.8.5claws129
+
+	* src/folder.c
+		fix a typo in last commit
+
+2002-11-12 [paul]	0.8.5claws128
+
+	* sync with 0.8.5cvs23
+		see ChangeLog entry 2002-11-12
+
+2002-11-11 [colin]	0.8.5claws127
+
+	* src/ssl_certificate.c
+		Cleaner messages
+		Don't popup, instead log error, if the 
+		corresponding pref is checked
+	* src/ssl_certificate.h
+		include <openssl/objects/h>
+
+2002-11-11 [colin]	0.8.5claws126
+
+	* src/ssl_certificate.h
+		_Really_ clean it
+
+2002-11-11 [colin]	0.8.5claws125
+	
+	* src/ssl_certificate.c
+		Fixed leak
+
+2002-11-11 [colin]	0.8.5claws124
+
+	* src/ssl.c
+		Cleaned a bit
+	* src/ssl_certificate.[ch]
+		Cleaned a bit (better use of SSL API)
+		(This will cause non-recognition of saved 
+		 certificates of claws12[23]...)
+
+2002-11-11 [paul]	0.8.5claws123
+	
+	* po/es.po
+		updated by Ricardo Mones Lastra
+
+2002-11-11 [colin]	0.8.5claws122
+
+	* src/ssl.c
+		Fix a typo
+
+2002-11-11 [colin]	0.8.5claws121
+
+	* src/ssl_certificate.[ch] ** NEW FILES **
+	* src/ssl.[ch]
+		Check SSL certificates presented to us
+	* src/Makefile.am
+		Add ssl_certificate.[ch]
+	* po/POTFILES.in
+		Add ssl_certificate.c
+
+2002-11-11 [paul]	0.8.5claws120
+
+	* sync with 0.8.5cvs22
+		see ChangeLog 2002-11-11
+
+2002-11-11 [paul]	0.8.5claws119
+
+	* sync with 0.8.5cvs21
+		see ChangeLog 2002-11-11
+
+2002-11-10 [jens]	0.8.5claws118
+
+	* src/folder.c
+	* src/folderview.c
+		corrected some typing
+	* po/de.po
+		updated german translation
+	* sylpheed.spec.in
+		cleaned up specfile and adjusted it for claws
+
 2002-11-10 [colin]	0.8.5claws117
 
 	* src/summaryview.c

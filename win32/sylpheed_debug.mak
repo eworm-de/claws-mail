@@ -25,10 +25,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-MTL=midl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 
 OUTDIR=.\Release
@@ -158,6 +154,7 @@ CLEAN :
 	-@erase "$(INTDIR)\socket.obj"
 	-@erase "$(INTDIR)\sourcewindow.obj"
 	-@erase "$(INTDIR)\ssl.obj"
+	-@erase "$(INTDIR)\ssl_certificate.obj"
 	-@erase "$(INTDIR)\statusbar.obj"
 	-@erase "$(INTDIR)\stock_pixmap.obj"
 	-@erase "$(INTDIR)\string_match.obj"
@@ -184,8 +181,42 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /ML /GX /O2 /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /Fp"$(INTDIR)\sylpheed_debug.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+MTL=midl.exe
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
+RSC=rc.exe
 RSC_PROJ=/l 0x411 /fo"$(INTDIR)\sylpheed.res" /d "NDEBUG" 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\sylpheed_debug.bsc" 
@@ -311,6 +342,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\socket.obj" \
 	"$(INTDIR)\sourcewindow.obj" \
 	"$(INTDIR)\ssl.obj" \
+	"$(INTDIR)\ssl_certificate.obj" \
 	"$(INTDIR)\statusbar.obj" \
 	"$(INTDIR)\stock_pixmap.obj" \
 	"$(INTDIR)\string_match.obj" \
@@ -595,6 +627,8 @@ CLEAN :
 	-@erase "$(INTDIR)\sourcewindow.sbr"
 	-@erase "$(INTDIR)\ssl.obj"
 	-@erase "$(INTDIR)\ssl.sbr"
+	-@erase "$(INTDIR)\ssl_certificate.obj"
+	-@erase "$(INTDIR)\ssl_certificate.sbr"
 	-@erase "$(INTDIR)\statusbar.obj"
 	-@erase "$(INTDIR)\statusbar.sbr"
 	-@erase "$(INTDIR)\stock_pixmap.obj"
@@ -644,8 +678,42 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /Gm /GX /ZI /Od /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /I "\dev\proj\aspell\interfaces\cc" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\sylpheed_debug.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+MTL=midl.exe
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
+RSC=rc.exe
 RSC_PROJ=/l 0x411 /fo"$(INTDIR)\sylpheed.res" /d "_DEBUG" 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\sylpheed_debug.bsc" 
@@ -767,6 +835,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\socket.sbr" \
 	"$(INTDIR)\sourcewindow.sbr" \
 	"$(INTDIR)\ssl.sbr" \
+	"$(INTDIR)\ssl_certificate.sbr" \
 	"$(INTDIR)\statusbar.sbr" \
 	"$(INTDIR)\stock_pixmap.sbr" \
 	"$(INTDIR)\string_match.sbr" \
@@ -912,6 +981,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\socket.obj" \
 	"$(INTDIR)\sourcewindow.obj" \
 	"$(INTDIR)\ssl.obj" \
+	"$(INTDIR)\ssl_certificate.obj" \
 	"$(INTDIR)\statusbar.obj" \
 	"$(INTDIR)\stock_pixmap.obj" \
 	"$(INTDIR)\string_match.obj" \
@@ -951,36 +1021,6 @@ LINK32_OBJS= \
 <<
 
 !ENDIF 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -3094,6 +3134,24 @@ SOURCE=..\src\ssl.c
 
 
 "$(INTDIR)\ssl.obj"	"$(INTDIR)\ssl.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=..\src\ssl_certificate.c
+
+!IF  "$(CFG)" == "sylpheed - Win32 Release"
+
+
+"$(INTDIR)\ssl_certificate.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
+
+
+"$(INTDIR)\ssl_certificate.obj"	"$(INTDIR)\ssl_certificate.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

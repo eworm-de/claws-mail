@@ -293,6 +293,7 @@ OBJECTS= \
 	socket.o \
 	sourcewindow.o \
 	ssl.o \
+	ssl_certificate.o \
 	statusbar.o \
 	stock_pixmap.o \
 	string_match.o \
@@ -471,6 +472,7 @@ smtp.o: 	smtp.c smtp.h
 socket.o: 	socket.c socket.h
 sourcewindow.o: 	sourcewindow.c sourcewindow.h
 ssl.o: 	ssl.c ssl.h
+ssl_certificate.o: 	ssl_certificate.c ssl_certificate.h
 statusbar.o: 	statusbar.c statusbar.h
 stock_pixmap.o: 	stock_pixmap.c stock_pixmap.h
 string_match.o:	string_match.c string_match.h 
