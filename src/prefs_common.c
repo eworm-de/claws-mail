@@ -216,6 +216,7 @@ static struct Interface {
 	GtkWidget *checkbtn_immedexec;
 	GtkWidget *checkbtn_addaddrbyclick;
 	GtkWidget *optmenu_recvdialog;
+	GtkWidget *optmenu_senddialog;
 	GtkWidget *checkbtn_no_recv_err_panel;
 	GtkWidget *checkbtn_close_recv_dialog;
  	GtkWidget *optmenu_nextunreadmsgdialog;
@@ -263,6 +264,8 @@ static void prefs_common_recv_dialog_newmail_notify_toggle_cb	(GtkWidget *w,
 								 gpointer data);
 static void prefs_common_recv_dialog_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_common_recv_dialog_set_optmenu(PrefParam *pparam);
+static void prefs_common_send_dialog_set_data_from_optmenu(PrefParam *pparam);
+static void prefs_common_send_dialog_set_optmenu(PrefParam *pparam);
 static void prefs_nextunreadmsgdialog_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_nextunreadmsgdialog_set_optmenu(PrefParam *pparam);
 
@@ -745,6 +748,10 @@ static PrefParam param[] = {
 	 &interface.optmenu_recvdialog,
 	 prefs_common_recv_dialog_set_data_from_optmenu,
 	 prefs_common_recv_dialog_set_optmenu},
+	{"send_dialog_mode", "0", &prefs_common.send_dialog_mode, P_ENUM,
+	 &interface.optmenu_senddialog,
+	 prefs_common_send_dialog_set_data_from_optmenu,
+	 prefs_common_send_dialog_set_optmenu},
 	{"no_receive_error_panel", "FALSE", &prefs_common.no_recv_err_panel,
 	 P_BOOL, &interface.checkbtn_no_recv_err_panel,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -2585,7 +2592,9 @@ static void prefs_interface_create(void)
 	GtkWidget *checkbtn_immedexec;
 	GtkWidget *hbox1;
 	GtkWidget *label;
+	GtkWidget *dialogs_table;
 	GtkWidget *optmenu_recvdialog;
+	GtkWidget *optmenu_senddialog;
 	GtkWidget *menu;
 	GtkWidget *menuitem;
 	GtkWidget *checkbtn_no_recv_err_panel;
@@ -2660,18 +2669,41 @@ static void prefs_interface_create(void)
 
 	PACK_VSPACER(vbox2, vbox3, VSPACING_NARROW);
 
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, FALSE, 0);
+	dialogs_table = gtk_table_new (2, 2, FALSE);
+	gtk_widget_show (dialogs_table);
+	gtk_container_add (GTK_CONTAINER (vbox2), dialogs_table);
+	gtk_container_set_border_width (GTK_CONTAINER (dialogs_table), 8);
+	gtk_table_set_row_spacings (GTK_TABLE (dialogs_table), VSPACING_NARROW);
+	gtk_table_set_col_spacings (GTK_TABLE (dialogs_table), 8);
+
+	label = gtk_label_new (_("Show send dialog"));
+	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
+	gtk_widget_show (label);
+	gtk_table_attach (GTK_TABLE (dialogs_table), label, 0, 1, 0, 1,
+			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+
+
+	optmenu_senddialog = gtk_option_menu_new ();
+	gtk_widget_show (optmenu_senddialog);
+	gtk_table_attach (GTK_TABLE (dialogs_table), optmenu_senddialog, 1, 2, 0, 1,
+			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	
+	menu = gtk_menu_new ();
+	MENUITEM_ADD (menu, menuitem, _("Always"), SEND_DIALOG_ALWAYS);
+	MENUITEM_ADD (menu, menuitem, _("Never"), SEND_DIALOG_NEVER);
+
+	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu_senddialog), menu);
 
 	label = gtk_label_new (_("Show receive dialog"));
+	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_widget_show (label);
-	gtk_box_pack_start (GTK_BOX (hbox1), label, FALSE, FALSE, 0);
+	gtk_table_attach (GTK_TABLE (dialogs_table), label, 0, 1, 1, 2,
+			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 
 	optmenu_recvdialog = gtk_option_menu_new ();
 	gtk_widget_show (optmenu_recvdialog);
-	gtk_box_pack_start (GTK_BOX (hbox1), optmenu_recvdialog,
-			    FALSE, FALSE, 0);
+	gtk_table_attach (GTK_TABLE (dialogs_table), optmenu_recvdialog, 1, 2, 1, 2,
+			  GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 
 	menu = gtk_menu_new ();
 	MENUITEM_ADD (menu, menuitem, _("Always"), RECV_DIALOG_ALWAYS);
@@ -2781,6 +2813,7 @@ static void prefs_interface_create(void)
 	interface.checkbtn_openinbox          = checkbtn_openinbox;
 	interface.checkbtn_immedexec          = checkbtn_immedexec;
 	interface.optmenu_recvdialog	      = optmenu_recvdialog;
+	interface.optmenu_senddialog	      = optmenu_senddialog;
 	interface.checkbtn_no_recv_err_panel  = checkbtn_no_recv_err_panel;
 	interface.checkbtn_close_recv_dialog  = checkbtn_close_recv_dialog;
 	interface.checkbtn_addaddrbyclick     = checkbtn_addaddrbyclick;
@@ -4098,6 +4131,40 @@ static void prefs_common_recv_dialog_set_optmenu(PrefParam *pparam)
 		break;
 	case RECV_DIALOG_NEVER:
 		gtk_option_menu_set_history(optmenu, 2);
+		break;
+	default:
+		break;
+	}
+
+	menu = gtk_option_menu_get_menu(optmenu);
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	gtk_menu_item_activate(GTK_MENU_ITEM(menuitem));
+}
+
+static void prefs_common_send_dialog_set_data_from_optmenu(PrefParam *pparam)
+{
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+
+	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(*pparam->widget));
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
+	*((SendDialogMode *)pparam->data) = GPOINTER_TO_INT
+		(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
+}
+
+static void prefs_common_send_dialog_set_optmenu(PrefParam *pparam)
+{
+	SendDialogMode mode = *((SendDialogMode *)pparam->data);
+	GtkOptionMenu *optmenu = GTK_OPTION_MENU(*pparam->widget);
+	GtkWidget *menu;
+	GtkWidget *menuitem;
+
+	switch (mode) {
+	case SEND_DIALOG_ALWAYS:
+		gtk_option_menu_set_history(optmenu, 0);
+		break;
+	case SEND_DIALOG_NEVER:
+		gtk_option_menu_set_history(optmenu, 1);
 		break;
 	default:
 		break;

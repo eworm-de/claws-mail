@@ -1,3 +1,10 @@
+2002-09-25 [colin]	0.8.3claws19
+
+	* src/prefs_common.[ch]
+		Add a preference to display send dialog or not
+	* src/send.c
+		Display send dialog according to preference
+
 2002-09-24 [colin]	0.8.3claws18
 
 	* src/compose.[ch]
