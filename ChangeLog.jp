@@ -1,3 +1,18 @@
+2004-06-23
+
+	* src/prefs_common.c: confirm_on_exit のデフォルトを FALSE にした。
+
+2004-06-23
+
+	* src/menu.[ch]: menu_set_active() を追加。
+	* src/compose.c: アカウントを選択するときに「表示/自動整形」モードを
+	  切り替えないようにした。
+
+2004-06-23
+
+	* src/compose.[ch]: メッセージ作成ウィンドウから自動整形を切り替え
+	  られるようにした。
+
 2004-06-17
 
 	* version 0.9.12

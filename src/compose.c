@@ -388,6 +388,10 @@ static void compose_key_press_cb	(GtkWidget	*widget,
 					 Compose	*compose);
 #endif
 
+static void compose_toggle_autowrap_cb	(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+
 #if 0
 static void compose_toggle_to_cb	(gpointer	 data,
 					 guint		 action,
@@ -610,6 +614,8 @@ static GtkItemFactoryEntry compose_entries[] =
 					"<control>L", compose_wrap_line, 0, NULL},
 	{N_("/_Edit/Wrap all long _lines"),
 					"<control><alt>L", compose_wrap_line_all, 0, NULL},
+	{N_("/_Edit/Aut_o wrapping"),	"<shift><control>L", compose_toggle_autowrap_cb, 0, "<ToggleItem>"},
+	{N_("/_Edit/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Edit/Edit with e_xternal editor"),
 					"<shift><control>X", compose_ext_editor_cb, 0, NULL},
 #if USE_ASPELL
@@ -753,7 +759,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			compose_entry_mark_default_to(compose, item->prefs->default_to);
 		}
 		if (item && item->ret_rcpt) {
-			menu_set_toggle(ifactory, "/Message/Request Return Receipt", TRUE);
+			menu_set_active(ifactory, "/Message/Request Return Receipt", TRUE);
 		}
 	} else {
 		if (mailto) {
@@ -957,7 +963,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	compose = compose_create(account, COMPOSE_REPLY);
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 
-	menu_set_toggle(ifactory, "/Message/Remove references", FALSE);
+	menu_set_active(ifactory, "/Message/Remove references", FALSE);
 	menu_set_sensitive(ifactory, "/Message/Remove references", TRUE);
 
 	compose->replyinfo = procmsg_msginfo_get_full_info(msginfo);
@@ -965,7 +971,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 		compose->replyinfo = procmsg_msginfo_copy(msginfo);
 
     	if (msginfo->folder && msginfo->folder->ret_rcpt)
-		menu_set_toggle(ifactory, "/Message/Request Return Receipt", TRUE);
+		menu_set_active(ifactory, "/Message/Request Return Receipt", TRUE);
 
 	/* Set save folder */
 	if (msginfo->folder && msginfo->folder->prefs && msginfo->folder->prefs->save_copy_to_folder) {
@@ -2124,13 +2130,9 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 #if 0 /* NEW COMPOSE GUI */
 	if (!compose->use_attach) {
 		GtkItemFactory *ifactory;
-		GtkWidget *menuitem;
 
 		ifactory = gtk_item_factory_from_widget(compose->menubar);
-		menuitem = gtk_item_factory_get_item(ifactory,
-						     "/View/Attachment");
-		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
-					       TRUE);
+		menu_set_active(ifactory, "/View/Attachment", TRUE);
 	}
 #endif
 	ainfo = g_new0(AttachInfo, 1);
@@ -2944,7 +2946,6 @@ compose_current_mail_account(void)
 static void compose_select_account(Compose *compose, PrefsAccount *account,
 				   gboolean init)
 {
-	GtkWidget *menuitem;
 	GtkItemFactory *ifactory;
 
 	g_return_if_fail(account != NULL);
@@ -2961,15 +2962,10 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 		gtk_table_set_row_spacing(GTK_TABLE(compose->table), 2, 4);
 		compose->use_newsgroups = TRUE;
 
-		menuitem = gtk_item_factory_get_item(ifactory, "/View/To");
-		gtk_check_menu_item_set_active
-			(GTK_CHECK_MENU_ITEM(menuitem), FALSE);
-		gtk_widget_set_sensitive(menuitem, TRUE);
-		menuitem = gtk_item_factory_get_item(ifactory, "/View/Cc");
-		gtk_check_menu_item_set_active
-			(GTK_CHECK_MENU_ITEM(menuitem), FALSE);
-		gtk_widget_set_sensitive(menuitem, TRUE);
-
+		menu_set_active(ifactory, "/View/To", FALSE);
+		menu_set_sensitive(ifactory, "/View/To", TRUE);
+		menu_set_active(ifactory, "/View/Cc", FALSE);
+		menu_set_sensitive(ifactory, "/View/Cc", TRUE);
 		menu_set_sensitive(ifactory, "/View/Followup to", TRUE);
 	} else {
 		gtk_widget_hide(compose->newsgroups_hbox);
@@ -2978,19 +2974,12 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 		gtk_widget_queue_resize(compose->table_vbox);
 		compose->use_newsgroups = FALSE;
 
-		menuitem = gtk_item_factory_get_item(ifactory, "/View/To");
-		gtk_check_menu_item_set_active
-			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
-		gtk_widget_set_sensitive(menuitem, FALSE);
-		menuitem = gtk_item_factory_get_item(ifactory, "/View/Cc");
-		gtk_check_menu_item_set_active
-			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
-		gtk_widget_set_sensitive(menuitem, FALSE);
-
-		menuitem = gtk_item_factory_get_item(ifactory, "/View/Followup to");
-		gtk_check_menu_item_set_active
-			(GTK_CHECK_MENU_ITEM(menuitem), FALSE);
-		gtk_widget_set_sensitive(menuitem, FALSE);
+		menu_set_active(ifactory, "/View/To", TRUE);
+		menu_set_sensitive(ifactory, "/View/To", FALSE);
+		menu_set_active(ifactory, "/View/Cc", TRUE);
+		menu_set_sensitive(ifactory, "/View/Cc", FALSE);
+		menu_set_active(ifactory, "/View/Followup to", FALSE);
+		menu_set_sensitive(ifactory, "/View/Followup to", FALSE);
 	}
 
 	if (account->set_autocc) {
@@ -3012,18 +3001,13 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 					  COMPOSE_ENTRY_REPLY_TO);
 	}
 
-	menuitem = gtk_item_factory_get_item(ifactory, "/View/Ruler");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
-				       prefs_common.show_ruler);
 #endif
 
 #if USE_GPGME
-	menuitem = gtk_item_factory_get_item(ifactory, "/Message/Sign");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
-				       account->default_sign);
-	menuitem = gtk_item_factory_get_item(ifactory, "/Message/Encrypt");
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
-				       account->default_encrypt);
+	if (account->default_sign)
+		menu_set_active(ifactory, "/Message/Sign", TRUE);
+	if (account->default_encrypt)
+		menu_set_active(ifactory, "/Message/Encrypt", TRUE);
 				       
 	activate_gnupg_mode(compose, account);		
 #endif /* USE_GPGME */
@@ -5197,6 +5181,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose->msgid       = NULL;
 	compose->boundary    = NULL;
 
+	compose->autowrap       = prefs_common.autowrap;
+
 #if USE_GPGME
 	compose->use_signing    = FALSE;
 	compose->use_encryption = FALSE;
@@ -5260,6 +5246,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	compose_select_account(compose, account, TRUE);
 
+	menu_set_active(ifactory, "/Edit/Auto wrapping", prefs_common.autowrap);
+	menu_set_active(ifactory, "/View/Ruler", prefs_common.show_ruler);
 	if (account->set_autocc && account->auto_cc && mode != COMPOSE_REEDIT)
 		compose_entry_append(compose, account->auto_cc, COMPOSE_CC);
 
@@ -6754,6 +6742,16 @@ static void compose_key_press_cb(GtkWidget *widget, GdkEventKey *event,
 }
 #endif
 
+static void compose_toggle_autowrap_cb(gpointer data, guint action,
+				       GtkWidget *widget)
+{
+	Compose *compose = (Compose *)data;
+
+	compose->autowrap = GTK_CHECK_MENU_ITEM(widget)->active;
+	if (compose->autowrap)
+		compose_wrap_line_all_full(compose, TRUE);
+}
+
 #if 0 /* NEW COMPOSE GUI */
 static void compose_toggle_to_cb(gpointer data, guint action,
 				 GtkWidget *widget)
@@ -7182,7 +7180,7 @@ static void text_inserted(GtkWidget *widget, const gchar *text,
 	} else
 		gtk_editable_insert_text(editable, text, length, position);
 
-	if (prefs_common.autowrap)
+	if (compose->autowrap)
 		compose_wrap_line_all_full(compose, TRUE);
 
 	gtk_signal_handler_unblock_by_func(GTK_OBJECT(widget),

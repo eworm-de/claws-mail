@@ -1,3 +1,18 @@
+2004-06-23
+
+	* src/prefs_common.c: made the default of confirm_on_exit FALSE.
+
+2004-06-23
+
+	* src/menu.[ch]: added menu_set_active().
+	* src/compose.c: don't change 'View/Auto wrapping' mode when selecting
+	  accounts.
+
+2004-06-23
+
+	* src/compose.[ch]: autowrap can be switchd on/off from the compose
+	  window.
+
 2004-06-17
 
 	* version 0.9.12

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,8 +26,8 @@
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenubar.h>
-#include <gtk/gtkitemfactory.h>
 #include <gtk/gtkcheckmenuitem.h>
+#include <gtk/gtkitemfactory.h>
 #include <gtk/gtkbutton.h>
 
 #include "intl.h"
@@ -200,25 +200,15 @@ void menu_set_sensitive_all(GtkMenuShell *menu_shell, gboolean sensitive)
 		gtk_widget_set_sensitive(GTK_WIDGET(cur->data), sensitive);
 }
 
-void menu_set_toggle(GtkItemFactory *ifactory, const gchar *path,
-			gboolean active)
+void menu_set_active(GtkItemFactory *ifactory, const gchar *path,
+		     gboolean is_active)
 {
 	GtkWidget *widget;
 
 	g_return_if_fail(ifactory != NULL);
 
 	widget = gtk_item_factory_get_item(ifactory, path);
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(widget), active);
-}
-
-void menu_toggle_toggle(GtkItemFactory *ifactory, const gchar *path)
-{
-	GtkWidget *widget;
-	
-	g_return_if_fail(ifactory != NULL);
-	
-	widget = gtk_item_factory_get_item(ifactory, path);
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), !((GTK_CHECK_MENU_ITEM(widget))->active));
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), is_active);
 }
 
 void menu_button_position(GtkMenu *menu, gint *x, gint *y, gpointer user_data)

@@ -1,3 +1,11 @@
+2004-06-25 [paul]	0.9.11cvs17
+
+	* sync with main 0.9.12cvs1
+		see ChangeLog 2004-06-23
+		
+	* src/gtk/menu.c
+		remove unused menu_toggle_toggle()
+
 2004-06-23 [christoph]	0.9.11cvs16
 
 	* src/folder.c

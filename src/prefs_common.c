@@ -728,7 +728,7 @@ static PrefParam param[] = {
 	 P_BOOL, &other.checkbtn_addaddrbyclick,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
-	{"confirm_on_exit", "TRUE", &prefs_common.confirm_on_exit, P_BOOL,
+	{"confirm_on_exit", "FALSE", &prefs_common.confirm_on_exit, P_BOOL,
 	 &other.checkbtn_confonexit,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"clean_trash_on_exit", "FALSE", &prefs_common.clean_on_exit, P_BOOL,
