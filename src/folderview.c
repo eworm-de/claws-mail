@@ -1259,7 +1259,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 		folderview_update_node(folderview, node);
 }
 
-#if !CLAWS
+#if !CLAWS /* keep it here for syncs */
 void folderview_update_item(FolderItem *item, gboolean update_summary)
 {
 	GList *list;
@@ -1308,34 +1308,24 @@ gboolean folderview_update_item_claws(gpointer source, gpointer data)
 	return FALSE;
 }
 
-typedef struct FolderItemUpdateParams {
-	FolderView	    *folderview;
-	FolderItemUpdateData data;
-} FolderItemUpdateParams;
-
 static void folderview_update_item_foreach_func(gpointer key, gpointer val,
 						gpointer data)
 {
-	FolderItemUpdateParams *fum = (FolderItemUpdateParams *)data;
-	fum->data.item = (FolderItem *)key; 
-	folderview_update_item_claws(&fum->data, fum->folderview);
+	/* CLAWS: share this joy with other hook functions ... */
+	folder_item_update((FolderItem *)key, 
+			   (FolderItemUpdateFlags)GPOINTER_TO_INT(data));
 }
 
 void folderview_update_item_foreach(GHashTable *table, gboolean update_summary)
 {
 	GList *list;
-
-	for (list = folderview_list; list != NULL; list = list->next) {
-		FolderItemUpdateParams data;
-		
-		data.folderview = (FolderView *)list->data;
-		/* FIXME: update_summary means update everything here? */
-		data.data.item = NULL;
-		data.data.update_flags = (update_summary 
-			? F_ITEM_UPDATE_CONTENT | F_ITEM_UPDATE_MSGCNT 
-			: 0);
-		g_hash_table_foreach(table, folderview_update_item_foreach_func, &data);
-	}
+	FolderItemUpdateFlags flags;
+	
+	flags = update_summary ?  F_ITEM_UPDATE_CONTENT | F_ITEM_UPDATE_MSGCNT
+		: 0;
+	for (list = folderview_list; list != NULL; list = list->next)
+		g_hash_table_foreach(table, folderview_update_item_foreach_func, 
+				     GINT_TO_POINTER(flags));
 }
 
 static gboolean folderview_gnode_func(GtkCTree *ctree, guint depth,

@@ -1,3 +1,9 @@
+2003-02-15 [alfons]	0.9.9claws15
+
+	* src/folderview.c
+		refine previous commit to make sure other hook functions
+		get their grab of the pie too
+
 2003-02-15 [alfons]	0.9.9claws14
 
 	* src/folderview.c
