@@ -503,6 +503,7 @@ static void addressbook_create(void)
 	gtk_window_set_title(GTK_WINDOW(window), _("Address book"));
 	gtk_widget_set_usize(window, ADDRESSBOOK_WIDTH, ADDRESSBOOK_HEIGHT);
 	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, TRUE);
+	gtk_window_set_wmclass(GTK_WINDOW(window), "addressbook", "Sylpheed");
 	gtk_widget_realize(window);
 
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
