@@ -26,6 +26,7 @@ src/folder.c
 src/foldersel.c
 src/folderview.c
 src/grouplistdialog.c
+src/gtkspell.c
 src/gtkutils.c
 src/headerview.c
 src/headerwindow.c
