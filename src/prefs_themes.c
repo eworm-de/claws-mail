@@ -368,7 +368,6 @@ static void prefs_themes_free_names(ThemesData *tdata)
 void prefs_themes_done(void)
 {
 	ThemesData *tdata = prefs_themes_data;
-	GList      *n;
 
 	debug_print("Finished prefereces for themes.\n");
 	
@@ -447,7 +446,6 @@ static void prefs_themes_btn_remove_clicked_cb(GtkWidget *widget, gpointer data)
 
 static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data)
 {
-	struct stat s;
 	gchar      *filename, *source;
 	gchar      *themeinfo, *themename;
 	gchar      *alert_title = NULL;

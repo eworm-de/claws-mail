@@ -439,7 +439,7 @@ static void action_update_menu(GtkItemFactory *ifactory,
 	GList *amenu;
 	GtkItemFactoryEntry ifentry = {NULL, NULL, NULL, 0, "<Branch>"};
 
-	ifentry.path = branch_path;
+	ifentry.path = g_strdup(branch_path);
 	menuitem = gtk_item_factory_get_widget(ifactory, branch_path);
 	g_return_if_fail(menuitem != NULL);
 
@@ -471,6 +471,8 @@ static void action_update_menu(GtkItemFactory *ifactory,
 		g_free(action);
 		ifentry.callback_action++;
 	}
+
+	g_free(ifentry.path);
 }
 
 static void compose_actions_execute_cb(Compose *compose, guint action_nb,

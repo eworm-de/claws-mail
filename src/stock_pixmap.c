@@ -465,6 +465,9 @@ static gboolean pixmap_with_overlay_expose_event_cb(GtkWidget *widget, GdkEventE
 			case OVERLAY_BOTTOM_RIGHT:
 				left = data->base_width + data->border_x * 2 - data->overlay_width;
 				break;
+
+			default:
+				break;
 		}
 		switch (data->position) {
 			case OVERLAY_TOP_LEFT:
@@ -483,6 +486,9 @@ static gboolean pixmap_with_overlay_expose_event_cb(GtkWidget *widget, GdkEventE
 			case OVERLAY_BOTTOM_CENTER:
 			case OVERLAY_BOTTOM_RIGHT:
 				top = data->base_height + data->border_y * 2 - data->overlay_height;
+				break;
+
+			default:
 				break;
 		}
 

@@ -81,8 +81,6 @@ static void	toolbar_style			(ToolbarType 	 type,
 						 guint 		 action, 
 						 gpointer 	 data);
 
-static GtkWidget *get_window_widget		(ToolbarType 	 type, 
-						 gpointer 	 data);
 static MainWindow *get_mainwin			(gpointer data);
 static void activate_compose_button 		(Toolbar	*toolbar,
 				     		 ToolbarStyle	 style,
@@ -149,9 +147,7 @@ static void toolbar_addrbook_cb   		(GtkWidget   	*widget,
 static void toolbar_check_spelling_cb  		(GtkWidget   	*widget, 
 					 	 gpointer     	 data);
 #endif
-static void toolbar_popup_cb			(gpointer 	 data, 
-					 	 guint 		 action, 
-					 	 GtkWidget 	*widget);
+
 struct {
 	gchar *index_str;
 	const gchar *descr;
@@ -938,11 +934,6 @@ static void toolbar_compose_cb(GtkWidget *widget, gpointer data)
 	}
 }
 
-static void toolbar_popup_cb(gpointer data, guint action, GtkWidget *widget)
-{
-	toolbar_reply(data, action);
-}
-
 
 /*
  * Reply Message
@@ -1211,26 +1202,6 @@ static MainWindow *get_mainwin(gpointer data)
 	return mainwin;
 }
 
-static GtkWidget *get_window_widget(ToolbarType type, gpointer data)
-{
-	MainWindow *mainwin;
-	MessageView *msgview;
-
-	switch (type) {
-	case TOOLBAR_MAIN:
-		mainwin = (MainWindow*)data;
-		return mainwin->window;
-		break;
-	case TOOLBAR_MSGVIEW:
-		msgview = (MessageView*)data;
-		return msgview->vbox;
-		break;
-	default:
-		break;
-	}
-	return NULL;
-}
-
 static void toolbar_buttons_cb(GtkWidget   *widget, 
 			       ToolbarItem *item)
 {
@@ -1298,7 +1269,6 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 	GtkWidget *icon_news;
 	GtkWidget *item;
 	GtkWidget *item_news;
-	GtkWidget *window_wid;
 
 	guint n_menu_entries;
 	ComboButton *reply_combo;

@@ -295,8 +295,6 @@ static void update_tree_cb(FolderView *folderview, guint action,
 static void remove_mailbox_cb(FolderView *folderview, guint action,
 			      GtkWidget *widget)
 {
-	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
-	GtkCTreeNode *node;
 	FolderItem *item;
 	gchar *name;
 	gchar *message;

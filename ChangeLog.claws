@@ -1,3 +1,22 @@
+2004-06-04 [christoph]	0.9.11cvs3
+
+	* src/account.c
+	* src/action.c
+	* src/addressbook.c
+	* src/addrindex.h
+	* src/folder.h
+	* src/folder_item_prefs.c
+	* src/inc.c
+	* src/main.c
+	* src/messageview.c
+	* src/mh_gtk.c
+	* src/prefs_themes.c
+	* src/procmime.c
+	* src/quote_fmt.h
+	* src/stock_pixmap.c
+	* src/toolbar.c
+		fix compiler warnings
+
 2004-06-03 [paul]	0.9.11cvs2
 
 	* src/msgcache.c

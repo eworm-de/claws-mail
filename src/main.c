@@ -76,6 +76,7 @@
 #include "mh_gtk.h"
 #include "imap_gtk.h"
 #include "news_gtk.h"
+#include "matcher.h"
 
 #if USE_GPGME
 #  include "sgpgme.h"
@@ -378,7 +379,6 @@ static void save_all_caches(FolderItem *item, gpointer data)
 static void exit_sylpheed(MainWindow *mainwin)
 {
 	gchar *filename;
-	GList *list, *cur;
 
 	debug_print("shutting down\n");
 

@@ -268,7 +268,7 @@ gint inc_account_mail(MainWindow *mainwin, PrefsAccount *account)
 		if (alertpanel(_("Offline warning"), 
 			       _("You're working offline. Override?"),
 			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
-		return;
+			return 0;
 
 	inc_autocheck_timer_remove();
 	main_window_lock(mainwin);
@@ -913,11 +913,6 @@ static void inc_progress_dialog_set_progress(IncProgressDialog *inc_dialog,
 	}
 }
 
-static gboolean hash_remove_func(gpointer key, gpointer value, gpointer data)
-{
-	return TRUE;
-}
-
 static void inc_progress_dialog_update_periodic(IncProgressDialog *inc_dialog,
 						IncSession *inc_session)
 {
@@ -1026,7 +1021,6 @@ static gint inc_drop_message(Pop3Session *session, const gchar *file)
 	FolderItem *dropfolder;
 	IncSession *inc_session = (IncSession *)(SESSION(session)->data);
 	gint msgnum;
-	gint val;
 
 	g_return_val_if_fail(inc_session != NULL, -1);
 
