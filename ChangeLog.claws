@@ -1,3 +1,10 @@
+2003-03-09 [melvin]	0.8.10claws103
+
+	* src/textview.c
+		textview_set_font(): fix for message display in
+	  	UTF-8 locales (thanks to Sergey Vlasov).
+		(was unintentionnaly reverted in 0.8.6claws6)	
+
 2003-03-08 [darko]	0.8.10claws102
 
 	* src/compose.c

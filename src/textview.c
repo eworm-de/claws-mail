@@ -1280,7 +1280,7 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 	/* In multi-byte mode, GtkSText can't display 8bit characters
 	   correctly, so it must be single-byte mode. */
 	if (MB_CUR_MAX > 1) {
-		if (codeset) {
+		if (codeset && conv_get_current_charset() != C_UTF_8) {
 			if (!g_strncasecmp(codeset, "ISO-8859-", 9) ||
 			    !g_strcasecmp(codeset, "BALTIC"))
 				use_fontset = FALSE;
