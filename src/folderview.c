@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2101,7 +2101,7 @@ static void folderview_new_news_group_cb(FolderView *folderview, guint action,
 		GNode *next = gnode->next;
 
 		item = FOLDER_ITEM(gnode->data);
-		if (g_slist_find_custom(new_subscr, item->name,
+		if (g_slist_find_custom(new_subscr, item->path,
 					(GCompareFunc)g_strcasecmp) != NULL) {
 			gnode = next;
 			continue;

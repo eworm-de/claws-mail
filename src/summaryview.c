@@ -61,6 +61,7 @@
 #include "sourcewindow.h"
 #include "prefs_common.h"
 #include "prefs_summary_column.h"
+#include "prefs_filter.h"
 #include "account.h"
 #include "compose.h"
 #include "utils.h"
@@ -3857,6 +3858,86 @@ static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
 	else 
 		filter_msginfo_move_or_delete(global_processing, msginfo,
 					      summaryview->folder_table);
+}
+
+void summary_filter_open(SummaryView *summaryview, PrefsFilterType type)
+{
+	static HeaderEntry hentry[] = {{"List-Id:",        NULL, FALSE},
+				       {"X-ML-Name:",      NULL, FALSE},
+				       {"X-List:",         NULL, FALSE},
+				       {"X-Mailing-list:", NULL, FALSE},
+				       {NULL,              NULL, FALSE}};
+	enum
+	{
+		H_LIST_ID        = 0,
+		H_X_ML_NAME      = 1,
+		H_X_LIST         = 2,
+		H_X_MAILING_LIST = 3
+	};
+
+	MsgInfo *msginfo;
+	gchar *header = NULL;
+	gchar *key = NULL;
+	FILE *fp;
+
+	if (!summaryview->selected) return;
+
+	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
+					      summaryview->selected);
+	if (!msginfo) return;
+
+	switch (type) {
+	case FILTER_BY_NONE:
+		break;
+	case FILTER_BY_AUTO:
+		if ((fp = procmsg_open_message(msginfo)) == NULL) return;
+		procheader_get_header_fields(fp, hentry);
+		fclose(fp);
+
+		if (hentry[H_LIST_ID].body != NULL) {
+			header = "List-Id";
+			Xstrdup_a(key, hentry[H_LIST_ID].body, );
+		} else if (hentry[H_X_ML_NAME].body != NULL) {
+			header = "X-ML-Name";
+			Xstrdup_a(key, hentry[H_X_ML_NAME].body, );
+		} else if (hentry[H_X_LIST].body != NULL) {
+			header = "X-List";
+			Xstrdup_a(key, hentry[H_X_LIST].body, );
+		} else if (hentry[H_X_MAILING_LIST].body != NULL) {
+			header = "X-Mailing-list";
+			Xstrdup_a(key, hentry[H_X_MAILING_LIST].body, );
+		} else if (msginfo->subject) {
+			header = "Subject";
+			key = msginfo->subject;
+		}
+
+		g_free(hentry[H_LIST_ID].body);
+		hentry[H_LIST_ID].body = NULL;
+		g_free(hentry[H_X_ML_NAME].body);
+		hentry[H_X_ML_NAME].body = NULL;
+		g_free(hentry[H_X_LIST].body);
+		hentry[H_X_LIST].body = NULL;
+		g_free(hentry[H_X_MAILING_LIST].body);
+		hentry[H_X_MAILING_LIST].body = NULL;
+
+		break;
+	case FILTER_BY_FROM:
+		header = "From";
+		key = msginfo->from;
+		break;
+	case FILTER_BY_TO:
+		header = "To";
+		key = msginfo->to;
+		break;
+	case FILTER_BY_SUBJECT:
+		header = "Subject";
+		key = msginfo->subject;
+		break;
+	default:
+		break;
+	}
+
+	prefs_filter_open(header, key);
 }
 
 /* color label */

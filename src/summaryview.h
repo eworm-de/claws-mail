@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ typedef struct _SummaryColumnState	SummaryColumnState;
 #include "headerview.h"
 #include "messageview.h"
 #include "headerwindow.h"
+#include "prefs_filter.h"
 #include "folder.h"
 #include "gtksctree.h"
 
@@ -195,6 +196,8 @@ void summary_thread_build	  (SummaryView		*summaryview);
 void summary_unthread		  (SummaryView		*summaryview);
 
 void summary_filter		  (SummaryView		*summaryview);
+void summary_filter_open	  (SummaryView		*summaryview,
+				   PrefsFilterType	 type);
 void summary_sort		  (SummaryView		*summaryview,
 				   SummarySortType	 type);
 

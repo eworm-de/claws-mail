@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,18 @@
 #ifndef __PREFS_FILTER_H__
 #define __PREFS_FILTER_H__
 
+typedef enum
+{
+	FILTER_BY_NONE,
+	FILTER_BY_AUTO,
+	FILTER_BY_FROM,
+	FILTER_BY_TO,
+	FILTER_BY_SUBJECT
+} PrefsFilterType;
+
 void prefs_filter_read_config	(void);
 void prefs_filter_write_config	(void);
-void prefs_filter_open		(void);
+void prefs_filter_open		(const gchar	*header,
+				 const gchar	*key);
 
 #endif /* __PREFS_FILTER_H__ */

@@ -61,8 +61,8 @@ static struct Filter {
 	GtkWidget *pred_combo2;
 	GtkWidget *pred_entry1;
 	GtkWidget *pred_entry2;
-	GtkWidget *op_combo;
-	GtkWidget *op_entry;
+	GtkWidget *cond_combo;
+	GtkWidget *cond_entry;
 
 	GtkWidget *dest_entry;
 	GtkWidget *regex_chkbtn;
@@ -84,7 +84,8 @@ static struct Filter {
 /* widget creating functions */
 static void prefs_filter_create		(void);
 
-static void prefs_filter_set_dialog	(void);
+static void prefs_filter_set_dialog	(const gchar	*header,
+					 const gchar	*key);
 static void prefs_filter_set_list	(void);
 static gint prefs_filter_clist_set_row	(gint	 row);
 
@@ -116,7 +117,7 @@ static void prefs_filter_key_pressed	(GtkWidget	*widget,
 static void prefs_filter_cancel		(void);
 static void prefs_filter_ok		(void);
 
-void prefs_filter_open(void)
+void prefs_filter_open(const gchar *header, const gchar *key)
 {
 	if (prefs_rc_is_readonly(FILTER_RC))
 		return;
@@ -130,7 +131,7 @@ void prefs_filter_open(void)
 	manage_window_set_transient(GTK_WINDOW(filter.window));
 	gtk_widget_grab_focus(filter.ok_btn);
 
-	prefs_filter_set_dialog();
+	prefs_filter_set_dialog(header, key);
 
 	gtk_widget_show(filter.window);
 }
@@ -145,9 +146,9 @@ static void prefs_filter_create(void)
 
 	GtkWidget *vbox1;
 	GtkWidget *table1;
-	GtkWidget *op_label;
-	GtkWidget *op_combo;
-	GtkWidget *op_entry;
+	GtkWidget *cond_label;
+	GtkWidget *cond_combo;
+	GtkWidget *cond_entry;
 	GtkWidget *hdr_label;
 	GtkWidget *hdr_combo1;
 	GtkWidget *hdr_combo2;
@@ -239,21 +240,21 @@ static void prefs_filter_create(void)
 	gtk_table_set_row_spacings (GTK_TABLE (table1), 8);
 	gtk_table_set_col_spacings (GTK_TABLE (table1), 8);
 
-	op_label = gtk_label_new (_("Operator"));
-	gtk_widget_show (op_label);
-	gtk_table_attach (GTK_TABLE (table1), op_label, 0, 1, 0, 1,
+	cond_label = gtk_label_new (_("Condition"));
+	gtk_widget_show (cond_label);
+	gtk_table_attach (GTK_TABLE (table1), cond_label, 0, 1, 0, 1,
 			  GTK_FILL, 0, 0, 0);
-	gtk_misc_set_alignment (GTK_MISC (op_label), 0, 0.5);
+	gtk_misc_set_alignment (GTK_MISC (cond_label), 0, 0.5);
 
-	op_combo = gtk_combo_new ();
-	gtk_widget_show (op_combo);
-	gtk_table_attach (GTK_TABLE (table1), op_combo, 0, 1, 2, 3,
+	cond_combo = gtk_combo_new ();
+	gtk_widget_show (cond_combo);
+	gtk_table_attach (GTK_TABLE (table1), cond_combo, 0, 1, 2, 3,
 			  0, 0, 0, 0);
-	gtk_widget_set_usize (op_combo, 52, -1);
-	gtkut_combo_set_items (GTK_COMBO (op_combo), "and", "or", NULL);
+	gtk_widget_set_usize (cond_combo, 52, -1);
+	gtkut_combo_set_items (GTK_COMBO (cond_combo), "and", "or", NULL);
 
-	op_entry = GTK_COMBO (op_combo)->entry;
-	gtk_entry_set_editable (GTK_ENTRY (op_entry), FALSE);
+	cond_entry = GTK_COMBO (cond_combo)->entry;
+	gtk_entry_set_editable (GTK_ENTRY (cond_entry), FALSE);
 
 	hdr_label = gtk_label_new (_("Header"));
 	gtk_widget_show (hdr_label);
@@ -475,8 +476,8 @@ static void prefs_filter_create(void)
 	filter.pred_combo2 = pred_combo2;
 	filter.pred_entry1 = pred_entry1;
 	filter.pred_entry2 = pred_entry2;
-	filter.op_combo    = op_combo;
-	filter.op_entry    = op_entry;
+	filter.cond_combo  = cond_combo;
+	filter.cond_entry  = cond_entry;
 
 	filter.dest_entry	= dest_entry;
 	filter.destsel_btn	= destsel_btn;
@@ -563,7 +564,7 @@ void prefs_filter_write_config(void)
 	}
 }
 
-static void prefs_filter_set_dialog(void)
+static void prefs_filter_set_dialog(const gchar *header, const gchar *key)
 {
 	GtkCList *clist = GTK_CLIST(filter.cond_clist);
 	GSList *cur;
@@ -589,6 +590,11 @@ static void prefs_filter_set_dialog(void)
 	}
 
 	gtk_clist_thaw(clist);
+
+	if (header && key) {
+		gtk_entry_set_text(GTK_ENTRY(filter.hdr_entry1), header);
+		gtk_entry_set_text(GTK_ENTRY(filter.key_entry1), key);
+	}
 }
 
 static void prefs_filter_set_list(void)
@@ -661,7 +667,7 @@ static gint prefs_filter_clist_set_row(gint row)
 	if (!strcmp(entry_text, _("contains")))
 		flt->flag2 |= FLT_CONTAIN;
 
-	GET_ENTRY(filter.op_entry);
+	GET_ENTRY(filter.cond_entry);
 	if (!strcmp(entry_text, "and"))
 		flt->cond = FLT_AND;
 	else
@@ -810,7 +816,7 @@ static void prefs_filter_select(GtkCList *clist, gint row, gint column,
 	gtk_toggle_button_set_active
 		(GTK_TOGGLE_BUTTON(filter.regex_chkbtn), is_regex);
 
-	gtk_entry_set_text(GTK_ENTRY(filter.op_entry),
+	gtk_entry_set_text(GTK_ENTRY(filter.cond_entry),
 			   flt->cond == FLT_OR ? "or" : "and");
 	if (flt->action == FLT_NOTRECV)
 		gtk_toggle_button_set_active

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2367,6 +2367,11 @@ static void compose_wrap_line_all(Compose *compose)
 				if (clen == 1 && cb[0] == '\n')
 					do_delete = FALSE;
 			}
+
+			/* skip delete if it is continuous URL */
+			if (do_delete && (line_pos - p_pos <= i_len) &&
+			    gtkut_stext_is_uri_string(text, line_pos, tlen))
+				do_delete = FALSE;
 
 #ifdef WRAP_DEBUG
 			printf("qlen=%d l_len=%d wrap_len=%d do_del=%d\n",

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -384,6 +384,10 @@ static void allsel_cb		 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 
+static void create_filter_cb	 (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
+
 static void prefs_common_open_cb (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -639,6 +643,15 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, add_address_cb, 0, NULL},
 	{N_("/_Tool/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tool/_Filter messages"),		NULL, filter_cb, 0, NULL},
+	{N_("/_Tool/_Create filter rule"),	NULL, NULL, 0, "<Branch>"},
+	{N_("/_Tool/_Create filter rule/_Automatically"),
+						NULL, create_filter_cb, FILTER_BY_AUTO, NULL},
+	{N_("/_Tool/_Create filter rule/by _From"),
+						NULL, create_filter_cb, FILTER_BY_FROM, NULL},
+	{N_("/_Tool/_Create filter rule/by _To"),
+						NULL, create_filter_cb, FILTER_BY_TO, NULL},
+	{N_("/_Tool/_Create filter rule/by _Subject"),
+						NULL, create_filter_cb, FILTER_BY_SUBJECT, NULL},
 	{N_("/_Tool/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tool/E_xecute"),			"x", execute_summary_cb, 0, NULL},
 	{N_("/_Tool/---"),			NULL, NULL, 0, "<Separator>"},
@@ -654,9 +667,9 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Configuration/_Filtering ..."),
 						NULL, prefs_filtering_open_cb, 0, NULL},
 	{N_("/_Configuration/_Template..."),	NULL, prefs_template_open_cb, 0, NULL},
+	{N_("/_Configuration/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Configuration/_Preferences for current account..."),
 						NULL, prefs_account_open_cb, 0, NULL},
-	{N_("/_Configuration/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Configuration/Create _new account..."),
 						NULL, new_account_cb, 0, NULL},
 	{N_("/_Configuration/_Edit accounts..."),
@@ -1495,6 +1508,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 
 		{"/Tool/Add sender to address book", M_SINGLE_TARGET_EXIST},
 		{"/Tool/Filter messages"           , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Tool/Create filter rule"        , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 		{"/Tool/Execute"                   , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
 
 		{"/Configuration", M_UNLOCKED},
@@ -2872,6 +2886,12 @@ static void allsel_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 		messageview_select_all(mainwin->messageview);
 }
 
+static void create_filter_cb(MainWindow *mainwin, guint action,
+			     GtkWidget *widget)
+{
+	summary_filter_open(mainwin->summaryview, (PrefsFilterType)action);
+}
+
 static void prefs_common_open_cb(MainWindow *mainwin, guint action,
 				 GtkWidget *widget)
 {
@@ -2881,7 +2901,7 @@ static void prefs_common_open_cb(MainWindow *mainwin, guint action,
 static void prefs_filter_open_cb(MainWindow *mainwin, guint action,
 				 GtkWidget *widget)
 {
-	prefs_filter_open();
+	prefs_filter_open(NULL, NULL);
 }
 
 static void prefs_scoring_open_cb(MainWindow *mainwin, guint action,

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,6 +58,8 @@
 	Xstrdup_a(fontstr, s, ); \
 	if ((p = strchr(fontstr, ',')) != NULL) *p = '\0'; \
 	font = gdk_font_load(fontstr); \
+	if (!font) \
+		g_warning("Couldn't load the font '%s'\n", fontstr); \
 }
 
 typedef struct _RemoteURI	RemoteURI;
@@ -173,19 +175,27 @@ TextView *textview_create(void)
 	gtk_widget_ensure_style(text_mb);
 	if (text_sb->style && text_sb->style->font->type == GDK_FONT_FONTSET) {
 		GtkStyle *style;
+		GdkFont *font;
 
-		style = gtk_style_copy(text_sb->style);
-		gdk_font_unref(style->font);
-		FONT_LOAD(style->font, NORMAL_FONT);
-		gtk_widget_set_style(text_sb, style);
+		FONT_LOAD(font, prefs_common.normalfont);
+		if (font) {
+			style = gtk_style_copy(text_sb->style);
+			gdk_font_unref(style->font);
+			style->font = font;
+			gtk_widget_set_style(text_sb, style);
+		}
 	}
 	if (text_mb->style && text_mb->style->font->type == GDK_FONT_FONT) {
 		GtkStyle *style;
+		GdkFont *font;
 
-		style = gtk_style_copy(text_mb->style);
-		gdk_font_unref(style->font);
-		style->font = gdk_fontset_load(NORMAL_FONT);
-		gtk_widget_set_style(text_mb, style);
+		font = gdk_fontset_load(prefs_common.normalfont);
+		if (font) {
+			style = gtk_style_copy(text_mb->style);
+			gdk_font_unref(style->font);
+			style->font = font;
+			gtk_widget_set_style(text_mb, style);
+		}
 	}
 	gtk_widget_ref(scrolledwin_sb);
 	gtk_widget_ref(scrolledwin_mb);

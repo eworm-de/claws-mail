@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,7 +122,7 @@ GSList *grouplist_dialog(Folder *folder)
 	subscribed = NULL;
 	for (node = folder->node->children; node != NULL; node = node->next) {
 		item = FOLDER_ITEM(node->data);
-		subscribed = g_slist_append(subscribed, g_strdup(item->name));
+		subscribed = g_slist_append(subscribed, g_strdup(item->path));
 	}
 
 	grouplist_dialog_set_list(NULL, TRUE);
@@ -141,7 +141,7 @@ GSList *grouplist_dialog(Folder *folder)
 		     node = node->next) {
 			item = FOLDER_ITEM(node->data);
 			subscribed = g_slist_append(subscribed,
-						    g_strdup(item->name));
+						    g_strdup(item->path));
 		}
 	}
 
