@@ -935,6 +935,7 @@ static void addressbook_button_set_sensitive(void)
 			bcc_sens = TRUE;
 	}
 
+	gtk_widget_set_sensitive(addrbook.lup_btn, FALSE);
 	gtk_widget_set_sensitive(addrbook.to_btn, to_sens);
 	gtk_widget_set_sensitive(addrbook.cc_btn, cc_sens);
 	gtk_widget_set_sensitive(addrbook.bcc_btn, bcc_sens);
