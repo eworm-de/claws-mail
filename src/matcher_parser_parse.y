@@ -28,41 +28,42 @@ static GSList ** prefs_filtering = NULL;
 
 static int matcher_parser_dialog = 0;
 
-/*
-void matcher_parser_init()
-{
-	prefs_filtering_clear();
-	prefs_scoring_clear();
-}
-*/
-
 FilteringProp * matcher_parser_get_filtering(gchar * str)
 {
+	void * bufstate;
+
 	matcher_parserlineno = 1;
 	matcher_parser_dialog = 1;
-	matcher_parser_scan_string(str);
+	bufstate = matcher_parser_scan_string(str);
 	matcher_parserparse();
 	matcher_parser_dialog = 0;
+	matcher_parser_delete_buffer(bufstate);
 	return filtering;
 }
 
 ScoringProp * matcher_parser_get_scoring(gchar * str)
 {
+	void * bufstate;
+
 	matcher_parserlineno = 1;
 	matcher_parser_dialog = 1;
-	matcher_parser_scan_string(str);
+	bufstate = matcher_parser_scan_string(str);
 	matcher_parserparse();
 	matcher_parser_dialog = 0;
+	matcher_parser_delete_buffer(bufstate);
 	return scoring;
 }
 
 MatcherList * matcher_parser_get_cond(gchar * str)
 {
+	void * bufstate;
+
 	matcher_parserlineno = 1;
 	matcher_parser_dialog = 1;
-	matcher_parser_scan_string(str);
+	bufstate = matcher_parser_scan_string(str);
 	matcher_parserparse();
 	matcher_parser_dialog = 0;
+	matcher_parser_delete_buffer(bufstate);
 	return cond;
 }
 
@@ -70,8 +71,6 @@ MatcherProp * matcher_parser_get_prop(gchar * str)
 {
 	MatcherList * list;
 	MatcherProp * prop;
-
-	printf("get matcher\n");
 
 	matcher_parserlineno = 1;
 	list = matcher_parser_get_cond(str);
@@ -88,8 +87,6 @@ MatcherProp * matcher_parser_get_prop(gchar * str)
 
 	g_slist_free(list->matchers);
 	g_free(list);
-
-	printf("prop: %p\n", prop);
 }
 
 void matcher_parsererror(char * str)
@@ -190,15 +187,19 @@ MATCHER_SECTION MATCHER_EOL
 ;
 
 instruction:
-condition filtering_or_scoring MATCHER_EOL
-| condition
+condition end_instr_opt
+| MATCHER_EOL
+;
+
+end_instr_opt:
+filtering_or_scoring MATCHER_EOL
+|
 {
 	if (!matcher_parser_dialog) {
 		yyerror("parse error");
 		return 1;
 	}
 }
-| MATCHER_EOL
 ;
 
 filtering_or_scoring:

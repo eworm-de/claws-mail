@@ -101,7 +101,9 @@ static void add_char(char ch)
 		yylval.str = string_buf;
 		return MATCHER_STRING;
 		}
-<string>.	add_char(yytext[0]);
+<string>.	{
+add_char(yytext[0]);
+}
 \[[^\[\]]*\]	{
 			BEGIN(0);
 			yylval.str = yytext + 1;

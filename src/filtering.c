@@ -647,9 +647,9 @@ void prefs_filtering_read_config(void)
 	}
 
 	matcher_parserlineno = 1;
-	matcher_parserin = fp;
+
+	matcher_parserrestart(fp);
 	if (matcher_parserparse() != 0) {
-		printf("%s\n", rcpath);
 		prefs_filtering_clear();
 	}
 	g_free(rcpath);

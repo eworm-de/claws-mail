@@ -301,9 +301,8 @@ void prefs_scoring_read_config(void)
 	}
 
 	matcher_parserlineno = 1;
-	matcher_parserin = fp;
+	matcher_parserrestart(fp);
 	if (matcher_parserparse() != 0) {
-		printf("%s\n", rcpath);
 		prefs_scoring_clear();
 	}
 	g_free(rcpath);

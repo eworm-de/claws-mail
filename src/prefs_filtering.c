@@ -573,7 +573,6 @@ static void prefs_filtering_set_list(void)
 	FilteringProp *prop;
 	GSList * cur;
 	gchar * filtering_str;
-	gchar * tmp;
 
 	for(cur = global_filtering ; cur != NULL ; cur = g_slist_next(cur))
 		filteringprop_free((FilteringProp *) cur->data);
@@ -663,7 +662,6 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(void)
 	gchar * cond_str;
 	FilteringProp * prop;
 	FilteringAction * action;
-	gchar * tmp;
 	gint list_id;
 	gint action_id;
 	gint action_type;
@@ -873,7 +871,6 @@ static void prefs_filtering_select(GtkCList *clist, gint row, gint column,
 				GdkEvent *event)
 {
 	FilteringProp * prop;
-	gchar * tmp;
 	gchar * filtering_str;
 
 	if (row == 0) {

@@ -441,7 +441,6 @@ static void prefs_scoring_set_list(void)
 	ScoringProp *prop;
 	GSList * cur;
 	gchar * scoring_str;
-	gchar * tmp;
 	GSList * prefs_scoring;
 
 	if (cur_item == NULL)
@@ -591,7 +590,6 @@ static void prefs_scoring_substitute_cb(void)
 	gchar * score_str;
 	ScoringProp * prop;
 	gint score;
-	gchar * tmp;
 
 	if (!clist->selection) return;
 
@@ -696,7 +694,6 @@ static void prefs_scoring_select(GtkCList *clist, gint row, gint column,
 				GdkEvent *event)
 {
 	ScoringProp * prop;
-	gchar * tmp;
 
 	gchar * scoring_str;
 

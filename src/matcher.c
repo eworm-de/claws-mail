@@ -1178,7 +1178,7 @@ gchar * matcherprop_to_string(MatcherProp * matcher)
 
 	count = 0;
 	for(p = matcher->expr; *p != 0 ; p++)
-		if (*p == '\"') count ++;
+		if ((*p == '\"') || (*p == '\\')) count ++;
 	
 	expr_str = g_new(char, strlen(matcher->expr) + count + 1);
 	
@@ -1187,7 +1187,7 @@ gchar * matcherprop_to_string(MatcherProp * matcher)
 		case '\"':
 		case '\\':
 			*out = '\\'; out++;
-			*out = '\"';
+			*out = *p;
 			break;
 		default:
 			*out = *p;

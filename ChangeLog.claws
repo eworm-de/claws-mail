@@ -1,3 +1,15 @@
+2001-07-08 [hoa]
+
+	* src/filtering.c
+	* src/mainwindow.c
+	* src/matcher.c
+	* src/matcher_parser_lex.l
+	* src/matcher_parser_parse.y
+	* src/prefs_filtering.c
+	* src/prefs_scoring.c
+	* src/scoring.c
+		bugfix of the config file parser
+
 2001-07-08 [alfons]
 
 	* src/Makefile.am
@@ -9,12 +21,9 @@
 	* src/.cvsignore
 		added new config file parser
 
-	* src/scoring.c
-	* src/scoring.h
-	* src/filtering.c
-	* src/filtering.h
-	* src/matcher.c
-	* src/matcher.h
+	* src/scoring.[ch]
+	* src/filtering.[ch]
+	* src/matcher.[ch]
 	* src/prefs_filtering.c
 	* src/prefs_matcher.c
 	* src/prefs_scoring.c

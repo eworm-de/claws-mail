@@ -1695,11 +1695,11 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 		mainwin);
 
 	gtk_signal_connect(GTK_OBJECT(compose_mail_btn), "clicked",
-		GTK_SIGNAL_FUNC(toolbar_compose_cb),
+		GTK_SIGNAL_FUNC(toolbar_compose_mail_cb),
 		mainwin);
 
 	gtk_signal_connect(GTK_OBJECT(compose_news_btn), "clicked",
-		GTK_SIGNAL_FUNC(toolbar_compose_cb),
+		GTK_SIGNAL_FUNC(toolbar_compose_news_cb),
 		mainwin);
 
 	mainwin->toolbar         = toolbar;
