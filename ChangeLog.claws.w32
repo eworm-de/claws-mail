@@ -1,3 +1,8 @@
+2002-07-05 [thorsten]	0.7.8claws48-2
+
+	* src/socket.c
+		fix:imap only worked using ssl
+
 2002-07-05 [thorsten]	0.7.8claws48-1
 
 	* win32/sylpheed.dsp

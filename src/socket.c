@@ -494,7 +494,11 @@ gint sock_read(SockInfo *sock, gchar *buf, gint len)
 
 gint fd_read(gint fd, gchar *buf, gint len)
 {
+#ifdef WIN32
+	return recv(fd, buf, len, 0);
+#else
 	return read(fd, buf, len);
+#endif
 }
 
 #if USE_SSL
