@@ -1,3 +1,9 @@
+2003-06-19 [alfons] 0.9.0claws51
+
+	* src/common/log.c
+	* src/common/plugin.c
+		move defs.h before glib.h to prevent MIN/MAX redefs
+
 2003-06-19 [alfons]
 
 	* src/addressbook.c

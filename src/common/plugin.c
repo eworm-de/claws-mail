@@ -19,11 +19,11 @@
 
 #include <stdio.h>
 
+#include "defs.h"
 #include <glib.h>
 #include <gmodule.h>
 
 #include "intl.h"
-#include "defs.h"
 #include "utils.h"
 #include "plugin.h"
 #include "prefs.h"
