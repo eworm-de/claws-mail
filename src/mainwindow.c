@@ -1042,6 +1042,12 @@ MainWindow *main_window_create(SeparateType type)
 	return mainwin;
 }
 
+void main_window_destroy(MainWindow *mainwin)
+{
+	/* TODO : destroy other component */
+	messageview_destroy(mainwin->messageview);
+}
+
 void main_window_cursor_wait(MainWindow *mainwin)
 {
 

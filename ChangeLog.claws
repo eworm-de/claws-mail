@@ -1,3 +1,12 @@
+2003-12-05 [hoa]	0.9.7claws22
+
+	* src/main.c
+	* src/mainwindow.[ch]
+	* src/mainwindow.h
+	        add destructor for mainwindow so that the last 
+		MimeInfo opened in messageview is destroyed when
+		exiting sylpheed.
+
 2003-12-05 [hoa]	0.9.7claws21
 
 	* src/filtering.[ch]
