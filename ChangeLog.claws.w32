@@ -1,3 +1,9 @@
+2003-07-17 [thorsten]	0.9.3claws-1
+
+	* src/common/utils.c
+		add: optionally read HomeDir from sylpheed.ini (installation
+		without registry access)
+
 2003-06-07 [thorsten]	0.9.0claws18-1
 
 	* src/send_message.c

@@ -64,6 +64,10 @@ static void hash_free_strings_func(gpointer key, gpointer value, gpointer data);
 
 #ifdef WIN32
 static GSList *tempfiles=NULL;
+
+static char *GetExeDir(void);
+static char *GetIniFileName(void);
+static char *GetIniHomeDir(void);
 #endif
 
 #ifdef WIN32
@@ -1546,11 +1550,15 @@ gint scan_mailto_url(const gchar *mailto, gchar **to, gchar **cc, gchar **bcc,
 gchar *get_home_dir(void)
 {
 #if HAVE_DOSISH_SYSTEM
-    static gchar *home_dir;
+    static gchar *home_dir = NULL;
     int i;
 
-    if (!home_dir) {
-        home_dir = read_w32_registry_string(NULL,
+    if (!home_dir || !*home_dir) {
+	if (GetIniHomeDir()) /* sylpheed.ini exists: override registry */
+		home_dir = g_strdup(GetIniHomeDir());
+	
+	if (!home_dir || !*home_dir)
+	        home_dir = read_w32_registry_string(NULL,
                                             "Software\\Sylpheed", "HomeDir" );
         if (!home_dir || !*home_dir) {
             if (getenv ("HOMEDRIVE") && getenv("HOMEPATH") || (getenv("HOME")) ) {
@@ -1560,7 +1568,7 @@ gchar *get_home_dir(void)
             }
             if (!home_dir || !*home_dir) 
 #ifdef WIN32
-					home_dir = get_installed_dir();
+			home_dir = get_installed_dir();
             if (!home_dir || !*home_dir) 
 #endif
                 	home_dir = g_strdup ("c:\\sylpheed");
@@ -3853,12 +3861,69 @@ gchar *w32_parse_path(gchar* const src)
 
 /* ------------------------------------------------------------------------- */
 
+/* return directory where sylpheed.exe got started */
+static char *GetExeDir(void) {
+	static char ExeDir[MAX_PATH] = {0};
+	char *dirptr;
+	int len;
+
+	if (*ExeDir) return ExeDir;
+
+	if (len = GetModuleFileName( NULL, ExeDir, sizeof(ExeDir))) {
+		for (dirptr = strrchr(ExeDir, '\\')-1;
+			*dirptr && *dirptr != '\\'; dirptr--);
+		*dirptr = NULL;
+		return ExeDir;
+	} else
+		return NULL;
+}
+
+/* return path+filename of sylpheed.ini */
+static char *GetIniFileName(void) {
+	static char IniFileName[MAX_PATH] = {0};
+
+	if (*IniFileName) return IniFileName;
+
+	if (GetExeDir()) {
+		sprintf(&IniFileName, "%s\\%s", GetExeDir(), "sylpheed.ini");
+		return IniFileName;
+	} else
+		return NULL;
+}
+
+/* return HomeDir defined in sylpheed.ini */
+static char *GetIniHomeDir(void) {
+	char *IniName = GetIniFileName();
+	static char IniHomeDir[MAX_PATH] = {0};
+	DWORD res;
+
+	if (*IniHomeDir) return IniHomeDir;
+	if (!GetIniFileName()) return NULL;
+
+	if (res = GetPrivateProfileString(
+		"Settings",		/* points to section name */
+		"HomeDir",		/* points to key name */
+		GetExeDir(),		/* points to default string */
+		IniHomeDir,		/* points to destination buffer */
+		sizeof(IniHomeDir),	/* size of destination buffer */
+		GetIniFileName()	/* points to initialization filename */
+	))
+		return IniHomeDir;
+	else
+		return NULL;
+}
+
 gchar *get_installed_dir(void)
 {
 	static gchar *installed_dir;
 	int i;
 
 	if (!installed_dir) {
+		if (GetIniFileName()) {
+			installed_dir = g_strdup(GetExeDir());
+			return installed_dir;
+		}
+
 		installed_dir = read_w32_registry_string(NULL,
 					"Software\\Sylpheed", "InstalledDir" );
 		if (!installed_dir || !*installed_dir)
