@@ -1,3 +1,9 @@
+2002-10-11 [colin]	0.8.5claws15 
+
+	* src/procheader.c
+		fix a segfault that happens if conv_unmime_header
+		fails (should be better to find out why it fails)
+
 2002-10-11 [christoph]	0.8.5claws14
 
 	* src/summaryview.c
