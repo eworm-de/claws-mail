@@ -105,6 +105,8 @@ static struct Compose {
 	GtkWidget *text_fw_quotefmt;
 
 	GtkWidget *checkbtn_autoextedit;
+
+	GtkWidget *checkbtn_reply_account_autosel;
 	GtkWidget *checkbtn_forward_account_autosel;
 	GtkWidget *checkbtn_reedit_account_autosel;
 
@@ -113,7 +115,6 @@ static struct Compose {
 	GtkWidget *checkbtn_wrapquote;
 	GtkWidget *checkbtn_wrapatsend;
 
-	GtkWidget *checkbtn_reply_account_autosel;
 	GtkWidget *checkbtn_quote;
 	GtkWidget * checkbtn_forward_as_attachment;
 	GtkWidget * checkbtn_smart_wrapping;
@@ -351,9 +352,19 @@ static PrefParam param[] = {
 	{"reply_with_quote", "TRUE", &prefs_common.reply_with_quote, P_BOOL,
 	 &compose.checkbtn_quote,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+
+	/* Account autoselection */
 	{"reply_account_autoselect", "TRUE",
 	 &prefs_common.reply_account_autosel, P_BOOL,
 	 &compose.checkbtn_reply_account_autosel,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"forward_account_autoselect", "TRUE",
+	 &prefs_common.forward_account_autosel, P_BOOL,
+	 &compose.checkbtn_forward_account_autosel,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"reedit_account_autoselect", "TRUE",
+	 &prefs_common.reedit_account_autosel, P_BOOL,
+	 &compose.checkbtn_reedit_account_autosel,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"show_ruler", "TRUE", &prefs_common.show_ruler, P_BOOL,
@@ -1330,14 +1341,15 @@ static void prefs_compose_create(void)
 	GtkWidget *entry_sigsep;
 
 	GtkWidget *frame_editor;
+	GtkWidget *hbox_editor;
+	GtkWidget *checkbtn_autoextedit;
+
 	GtkWidget *frame_autosel;
         GtkWidget *hbox_autosel;
         GtkWidget *vbox_autosel;
+	GtkWidget *checkbtn_reply_account_autosel;
 	GtkWidget *checkbtn_forward_account_autosel;
 	GtkWidget *checkbtn_reedit_account_autosel;
-
-	GtkWidget *hbox_editor;
-	GtkWidget *checkbtn_autoextedit;
 
         GtkWidget *vbox_linewrap;
 
@@ -1351,7 +1363,6 @@ static void prefs_compose_create(void)
 	GtkWidget *checkbtn_wrapatsend;
 
 	GtkWidget *frame_reply;
-	GtkWidget *checkbtn_reply_account_autosel;
 	GtkWidget *checkbtn_quote;
 	GtkWidget *checkbtn_forward_as_attachment;
 	GtkWidget *checkbtn_smart_wrapping;
@@ -1412,7 +1423,7 @@ static void prefs_compose_create(void)
 
 	gtk_widget_set_usize (entry_sigsep, 64, -1);
 
-        /* Automatic (Smart) Account Selection */
+        /* Account autoselection */
 	PACK_FRAME(vbox1, frame_autosel, _("Automatic Account Selection"));
 
 	hbox_autosel = gtk_hbox_new (FALSE, VSPACING_NARROW);
@@ -1544,9 +1555,10 @@ static void prefs_compose_create(void)
 	compose.entry_sigsep     = entry_sigsep;
 
 	compose.checkbtn_autoextedit = checkbtn_autoextedit;
-        compose.checkbtn_reply_account_autosel = checkbtn_reply_account_autosel;
+
+        compose.checkbtn_reply_account_autosel   = checkbtn_reply_account_autosel;
 	compose.checkbtn_forward_account_autosel = checkbtn_forward_account_autosel;
-	compose.checkbtn_reedit_account_autosel = checkbtn_reedit_account_autosel;
+	compose.checkbtn_reedit_account_autosel  = checkbtn_reedit_account_autosel;
 
 	compose.spinbtn_linewrap     = spinbtn_linewrap;
 	compose.spinbtn_linewrap_adj = spinbtn_linewrap_adj;
