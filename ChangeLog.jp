@@ -1,3 +1,15 @@
+2002-11-20
+
+	* SMTP の実装をリファクタリング。
+	* src/session.h: Session に ui_func を追加。
+	* src/smtp.[ch]: 接続ルーチンを smtp_session_new() から smtp_connect()
+	  に分離。
+	  smtp_ok() 以外の全ての関数の引数を SockInfo から SMTPSession
+	  に変更。
+	  各関数から UI コールバックを呼ぶようにした。
+	* src/send.c: send_message_smtp(): UI 更新のコードを
+	  send_progress_dialog_update() に分離。
+
 2002-11-18
 
 	* src/smtp.[ch]: smtp_from() から smtp_auth() を分離。
