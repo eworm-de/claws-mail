@@ -1,3 +1,9 @@
+2002-02-01 [paul]	0.7.0claws43
+
+	* src/main.c
+		add --send option to command line interface, sends all
+		queued mail. Patch submitted by Ricardo Mones Lastra.
+
 2002-01-31 [paul]	0.7.0claws42
 
 	* src/mainwindow.c
