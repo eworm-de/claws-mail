@@ -186,3 +186,4 @@
 ( cvs diff -u -r 1.17 -r 1.18 src/gtk/prefswindow.c; cvs diff -u -r 1.9 -r 1.10 src/gtk/pluginwindow.c; ) > 0.9.13cvs14.patchset
 ( cvs diff -u -r 1.8 -r 1.9 src/plugins/spamassassin/libspamc.c; ) > 0.9.13cvs15.patchset
 ( cvs diff -u -r 1.449 -r 1.450 ChangeLog; cvs diff -u -r 1.444 -r 1.445 ChangeLog.jp; cvs diff -u -r 1.18 -r 1.19 src/action.c; cvs diff -u -r 1.463 -r 1.464 src/compose.c; cvs diff -u -r 1.60 -r 1.61 src/common/utils.c; ) > 0.9.13cvs16.patchset
+( cvs diff -u -r 1.7 -r 1.8 src/gtk/gtkutils.c; cvs diff -u -r 1.6 -r 1.7 src/gtk/gtkutils.h; cvs diff -u -r 1.18 -r 1.19 src/gtk/prefswindow.c; ) > 0.9.13cvs17.patchset
