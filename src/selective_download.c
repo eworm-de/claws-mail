@@ -380,7 +380,7 @@ static void sd_window_create(MainWindow *mainwin)
 
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_object_set_data (GTK_OBJECT (window), "window", window);
-	gtk_window_set_title (GTK_WINDOW (window), _("Selective Download"));
+	gtk_window_set_title (GTK_WINDOW (window), _("Selective download"));
 	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 	gtk_window_set_default_size (GTK_WINDOW (window), 450, 250);
 	

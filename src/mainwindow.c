@@ -980,9 +980,9 @@ MainWindow *main_window_create(SeparateType type)
 #if 0 /* FIXED SEPARATE WINDOWS */
 	/* Message view and Folder tree are always shown at startup
 	 * make that in the menu visible */
-	menuitem = gtk_item_factory_get_item(ifactory, "/View/Message view");
+	menuitem = gtk_item_factory_get_item(ifactory, "/View/Separate Message View");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
-	menuitem = gtk_item_factory_get_item(ifactory, "/View/Folder tree");
+	menuitem = gtk_item_factory_get_item(ifactory, "/View/Separate Folder Tree");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 #endif	
 	/* set the check of the SEPARATE_xxx menu items. we also need the main window
@@ -1590,7 +1590,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Delete" 		  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 		{"/Message/Mark"   		  , M_TARGET_EXIST},
 
-		{"/Tools/Selective download"	    , M_HAVE_ACCOUNT|M_UNLOCKED},
+		{"/Tools/Selective download..."	    , M_HAVE_ACCOUNT|M_UNLOCKED},
 		{"/Tools/Add sender to address book", M_SINGLE_TARGET_EXIST},
 		{"/Tools/Gather addresses..."	    , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 		{"/Tools/Filter messages"           , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
@@ -1756,8 +1756,8 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 				     prefs_common.mainwin_height);
 		gtk_widget_show_all(vpaned);
 
-		menu_set_sensitive(ifactory, "/View/Message view", TRUE);
-		menu_set_sensitive(ifactory, "/View/Folder tree", TRUE);
+		menu_set_sensitive(ifactory, "/View/Separate Message View", TRUE);
+		menu_set_sensitive(ifactory, "/View/Separate Folder Tree", TRUE);
 		menu_set_sensitive(ifactory, "/View/Expand Summary View", TRUE);
 		menu_set_sensitive(ifactory, "/View/Expand Message View", TRUE);
 		menuitem = gtk_item_factory_get_widget(ifactory, "/View/Expand Message View");
@@ -1794,8 +1794,8 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		gtk_container_add(GTK_CONTAINER(folderwin),
 				  GTK_WIDGET_PTR(mainwin->folderview));
 
-		menu_set_sensitive(ifactory, "/View/Message view", TRUE);
-		menu_set_sensitive(ifactory, "/View/Folder tree", TRUE);
+		menu_set_sensitive(ifactory, "/View/Separate Message View", TRUE);
+		menu_set_sensitive(ifactory, "/View/Separate Folder Tree", TRUE);
 		
 		mainwin->win.sep_folder.folderwin = folderwin;
 		mainwin->win.sep_folder.vpaned    = vpaned;
@@ -1821,8 +1821,8 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		gtk_container_add(GTK_CONTAINER(messagewin),
 				  GTK_WIDGET_PTR(mainwin->messageview));
 	
-		menu_set_sensitive(ifactory, "/View/Message view", TRUE);
-		menu_set_sensitive(ifactory, "/View/Folder tree", TRUE);
+		menu_set_sensitive(ifactory, "/View/Separate Message View", TRUE);
+		menu_set_sensitive(ifactory, "/View/Separate Folder Tree", TRUE);
 		menu_set_sensitive(ifactory, "/View/Expand Summary View", FALSE);
 		menu_set_sensitive(ifactory, "/View/Expand Message View", FALSE);
 		
@@ -1846,8 +1846,8 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		gtk_container_add(GTK_CONTAINER(messagewin),
 				  GTK_WIDGET_PTR(mainwin->messageview));
 
-		menu_set_sensitive(ifactory, "/View/Message view", TRUE);
-		menu_set_sensitive(ifactory, "/View/Folder tree", TRUE);
+		menu_set_sensitive(ifactory, "/View/Separate Message View", TRUE);
+		menu_set_sensitive(ifactory, "/View/Separate Folder Tree", TRUE);
 	
 		mainwin->win.sep_both.folderwin = folderwin;
 		mainwin->win.sep_both.messagewin = messagewin;

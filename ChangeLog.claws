@@ -1,3 +1,9 @@
+2002-03-25 [paul]	0.7.4claws44
+
+	* src/mainwindow.c
+	  src/selective_download.c
+		correct a few menuitem labels
+
 2002-03-25 [christoph]	0.7.4claws43
 
 	* src/procmsg.c
