@@ -1053,6 +1053,16 @@ static void addressbook_to_clicked(GtkButton *button, gpointer data)
 	compose = addrbook.target_compose;
 	if( ! compose ) return;
 
+	/* Nothing selected, but maybe there is something in text entry */
+	if ( list == NULL ) {
+		addr = gtk_entry_get_text( GTK_ENTRY( addrbook.entry) );
+		if ( addr ) {
+			compose_entry_append(
+				compose, addr, (ComposeEntryType)data );
+		}
+	}
+
+	/* Select from address list */
 	list = addrselect_get_list( _addressSelect_ );
 	node = list;
 	while( node ) {

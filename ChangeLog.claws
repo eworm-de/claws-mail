@@ -1,3 +1,13 @@
+2002-06-11 [paul]	0.7.6claws39
+	
+	* src/prefs_account.c
+		correct a typo on the Receive tab
+
+2002-06-10 [match]	0.7.6claws38
+
+	* src/addressbook.c
+		Included address completion patch from Gustavo Noronha.
+
 2002-06-10 [paul]	0.7.6claws37
 
 	* src/inc.[ch]
