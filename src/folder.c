@@ -874,20 +874,30 @@ void folder_item_set_default_flags(FolderItem *dest, MsgFlags *flags)
 	}
 }
 
-typedef enum {
-    IN_CACHE  = 1 << 0,
-    IN_FOLDER = 1 << 1,
-} FolderScanInfo;
+static gint folder_sort_cache_list_by_msgnum(gconstpointer a, gconstpointer b)
+{
+	MsgInfo *msginfo_a = (MsgInfo *) a;
+	MsgInfo *msginfo_b = (MsgInfo *) b;
+
+	return (msginfo_a->msgnum - msginfo_b->msgnum);
+}
+
+static gint folder_sort_folder_list(gconstpointer a, gconstpointer b)
+{
+	guint gint_a = GPOINTER_TO_INT(a);
+	guint gint_b = GPOINTER_TO_INT(a);
+	
+	return (gint_a - gint_b);
+}
 
 gint folder_item_scan(FolderItem *item)
 {
 	Folder *folder;
-	GSList *folder_list, *cache_list, *elem, *new_list = NULL;
-	gint i;
-	guint min = 0xffffffff, max = 0, cache_max = 0;
-	FolderScanInfo *folderscaninfo;
+	GSList *folder_list, *cache_list, *folder_list_cur, *cache_list_cur, *new_list = NULL;
+	guint max = 0;
 	guint newcnt = 0, unreadcnt = 0, totalcnt = 0;
-	
+	guint cache_max_num, cache_cur_num, folder_cur_num, cache_max;
+
 	g_return_val_if_fail(item != NULL, -1);
 	if (item->path == NULL) return -1;
 
@@ -912,64 +922,42 @@ gint folder_item_scan(FolderItem *item)
 	}
 	folder_list = folder->get_num_list(item->folder, item);
 
-	/* Get min und max number in folder */
-	for (elem = cache_list; elem != NULL; elem = elem->next) {
-		MsgInfo *msginfo = (MsgInfo *)elem->data;
+	/* Sort both lists */
+    	cache_list = g_slist_sort(cache_list, folder_sort_cache_list_by_msgnum);
+	folder_list = g_slist_sort(folder_list, folder_sort_folder_list);
 
-		min = MIN(msginfo->msgnum, min);
-		max = MAX(msginfo->msgnum, max);
-	}
-	cache_max = max;
-	for (elem = folder_list; elem != NULL; elem = elem->next) {
-		guint num = GPOINTER_TO_INT(elem->data);
+	cache_list_cur = cache_list;
+	folder_list_cur = folder_list;
 
-		min = MIN(num, min);
-		max = MAX(num, max);
-	}
+	if (cache_list_cur != NULL) {
+		GSList *cache_list_last;
+	
+		cache_cur_num = ((MsgInfo *)cache_list_cur->data)->msgnum;
+		cache_list_last = g_slist_last(cache_list);
+		cache_max_num = ((MsgInfo *)cache_list_last->data)->msgnum;
+	} else
+		cache_cur_num = G_MAXINT;
 
-	debug_print("Folder message number range from %d to %d\n", min, max);
+	if (folder_list_cur != NULL)
+		folder_cur_num = GPOINTER_TO_INT(folder_list_cur->data);
+	else
+		folder_cur_num = G_MAXINT;
 
-	if (max == 0) {
-		for (elem = cache_list; elem != NULL; elem = elem->next) {
-			MsgInfo *msginfo = (MsgInfo *)elem->data;
-
-			procmsg_msginfo_free(msginfo);
-		}
-		g_slist_free(folder_list);
-		g_slist_free(cache_list);
-
-		return 0;
-	}
-
-	folderscaninfo = g_new0(FolderScanInfo, max - min + 1);
-
-	for (elem = folder_list; elem != NULL; elem = elem->next) {
-		guint num = GPOINTER_TO_INT(elem->data);
-
-		folderscaninfo[num - min] |= IN_FOLDER;
-	}
-	for (elem = cache_list; elem != NULL; elem = elem->next) {
-		MsgInfo *msginfo = (MsgInfo *)elem->data;
-
-		folderscaninfo[msginfo->msgnum - min] |= IN_CACHE;
-		procmsg_msginfo_free(msginfo);
-	}
-
-	for (i = max - min; i >= 0; i--) {
-		guint num;
-
-		num = i + min;
-		/* Add message to cache if in folder and not in cache */
-		if ( (folderscaninfo[i] & IN_FOLDER) && 
-		   !(folderscaninfo[i] & IN_CACHE)) {
+	while ((cache_cur_num != G_MAXINT) || (folder_cur_num != G_MAXINT)) {
+		printf("%d %d\n", cache_cur_num, folder_cur_num);
+		/*
+		 *  Message only exists in the folder
+		 *  Remember message for fetching
+		 */
+		if (folder_cur_num < cache_cur_num) {
 			gboolean add = FALSE;
 
 			switch(folder->type) {
 				case F_NEWS:
-					if ((num > cache_max) && 
+					if ((folder_cur_num > cache_max) && 
 					   ((prefs_common.max_articles == 0) ||
 					    (max < prefs_common.max_articles) ||
-					    (num > (max - prefs_common.max_articles)))) {
+					    (folder_cur_num > (max - prefs_common.max_articles)))) {
 						add = TRUE;
 					}
 					break;
@@ -979,28 +967,54 @@ gint folder_item_scan(FolderItem *item)
 			}
 			
 			if (add) {
-				new_list = g_slist_prepend(new_list, GINT_TO_POINTER(num));
-				debug_print("Remembered message %d for fetching\n", num);
+				new_list = g_slist_prepend(new_list, GINT_TO_POINTER(folder_cur_num));
+				debug_print("Remembered message %d for fetching\n", folder_cur_num);
 			}
+
+			/* Move to next folder number */
+			folder_list_cur = folder_list_cur->next;
+
+			if (folder_list_cur != NULL)
+				folder_cur_num = GPOINTER_TO_INT(folder_list_cur->data);
+			else
+				folder_cur_num = G_MAXINT;
+
+			continue;
 		}
-		/* Remove message from cache if not in folder and in cache */
-		if (!(folderscaninfo[i] & IN_FOLDER) && 
-		    (folderscaninfo[i] & IN_CACHE)) {
-			msgcache_remove_msg(item->cache, i + min);
-			debug_print("Removed message %d from cache.\n", num);
+
+		/*
+		 *  Message only exists in the cache
+		 *  Remove the message from the cache
+		 */
+		if (cache_cur_num < folder_cur_num) {
+			msgcache_remove_msg(item->cache, cache_cur_num);
+			debug_print("Removed message %d from cache.\n", cache_cur_num);
+
+			/* Move to next cache number */
+			cache_list_cur = cache_list_cur->next;
+
+			if (cache_list_cur != NULL)
+				cache_cur_num = ((MsgInfo *)cache_list_cur->data)->msgnum;
+			else
+				cache_cur_num = G_MAXINT;
+
+			continue;
 		}
-		/* Check if msginfo needs update if in cache and in folder */
-		if ((folderscaninfo[i] & IN_FOLDER) && 
-		   (folderscaninfo[i] & IN_CACHE)) {
+
+		/*
+		 *  Message number exists in folder and cache!
+		 *  Check if the message has been modified
+		 */
+		if (cache_cur_num == folder_cur_num) {
 			MsgInfo *msginfo;
 
-			msginfo = msgcache_get_msg(item->cache, num);
+			msginfo = msgcache_get_msg(item->cache, folder_cur_num);
 			if (folder->is_msg_changed && folder->is_msg_changed(folder, item, msginfo)) {
 				MsgInfo *newmsginfo;
 
 				msgcache_remove_msg(item->cache, msginfo->msgnum);
 
-				if (NULL != (newmsginfo = folder->fetch_msginfo(folder, item, num))) {
+				if (NULL != (newmsginfo = folder->fetch_msginfo(folder, item, folder_cur_num))) {
 					msgcache_add_msg(item->cache, newmsginfo);
 					if (MSG_IS_NEW(newmsginfo->flags) && !MSG_IS_IGNORE_THREAD(newmsginfo->flags))
 						newcnt++;
@@ -1009,7 +1023,7 @@ gint folder_item_scan(FolderItem *item)
 					procmsg_msginfo_free(newmsginfo);
 				}					
 
-				debug_print("Updated msginfo for message %d.\n", num);
+				debug_print("Updated msginfo for message %d.\n", folder_cur_num);
 			} else {
 				if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 					newcnt++;
@@ -1018,10 +1032,34 @@ gint folder_item_scan(FolderItem *item)
 			}
 			totalcnt++;
 			procmsg_msginfo_free(msginfo);
+
+			/* Move to next folder and cache number */
+			cache_list_cur = cache_list_cur->next;
+			folder_list_cur = folder_list_cur->next;
+
+			if (cache_list_cur != NULL)
+				cache_cur_num = ((MsgInfo *)cache_list_cur->data)->msgnum;
+			else
+				cache_cur_num = G_MAXINT;
+
+			if (folder_list_cur != NULL)
+				folder_cur_num = GPOINTER_TO_INT(folder_list_cur->data);
+			else
+				folder_cur_num = G_MAXINT;
+
+			continue;
 		}
 	}
 
+	for(cache_list_cur = cache_list; cache_list_cur != NULL; cache_list_cur = g_slist_next(cache_list_cur)) {
+		procmsg_msginfo_free((MsgInfo *) cache_list_cur->data);
+	}
+
+	g_slist_free(cache_list);
+	g_slist_free(folder_list);
+
 	if (folder->fetch_msginfos) {
+		GSList *elem;
 		GSList *newmsg_list;
 		MsgInfo *msginfo;
 		
@@ -1041,6 +1079,8 @@ gint folder_item_scan(FolderItem *item)
 			folderview_update_item(item, FALSE);
 		}
 	} else if (folder->fetch_msginfo) {
+		GSList *elem;
+	
 		for (elem = new_list; elem != NULL; elem = g_slist_next(elem)) {
 			MsgInfo *msginfo;
 			guint num;
@@ -1065,10 +1105,7 @@ gint folder_item_scan(FolderItem *item)
 	item->unread = unreadcnt;
 	item->total = totalcnt;
 	
-	g_slist_free(folder_list);
-	g_slist_free(cache_list);
 	g_slist_free(new_list);
-	g_free(folderscaninfo);
 
 	folderview_update_item(item, FALSE);
 

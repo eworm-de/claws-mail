@@ -1,3 +1,9 @@
+2002-09-10 [christoph]	0.8.2claws35
+
+	* src/folder.c
+		fix problem with too large message number range
+		causing a crash in folder_item_scan
+
 2002-09-10 [paul]	0.8.2claws34
 
 	* sync with 0.8.2cvs13
