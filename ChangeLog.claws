@@ -1,5 +1,15 @@
 2001-09-19 [melvin]
 
+	* src/gtkspell.c
+		fixed the post-right-click focus pb
+		fixed crash when 'Spell check all' after dict change 
+			and when cursor is at the end of the text
+		shift-right-click pops up config menu even on misspelled words.
+	* po/POTFILES.in
+		added gtkspell.c
+
+2001-09-19 [melvin]
+
 	* src/about.c
 		added pspell to compiled-in features list
 
