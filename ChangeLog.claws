@@ -1,3 +1,8 @@
+2004-08-07 [colin]	0.9.12cvs48
+
+	* src/prefs_folder_item.c
+		fix memory corruption in folderitem's prefs
+
 2004-08-06 [colin]	0.9.12cvs47
 
 	* src/compose.c

@@ -763,12 +763,12 @@ FolderItemGeneralPage folder_item_general_page;
 
 static void register_general_page()
 {
-	gchar *path[2];
+	static gchar *pfi_general_path[2];
 
-	path[0] = _("General");
-	path[1] = NULL;
+	pfi_general_path[0] = _("General");
+	pfi_general_path[1] = NULL;
 
-        folder_item_general_page.page.path = path;
+        folder_item_general_page.page.path = pfi_general_path;
         folder_item_general_page.page.create_widget = prefs_folder_item_general_create_widget_func;
         folder_item_general_page.page.destroy_widget = prefs_folder_item_general_destroy_widget_func;
         folder_item_general_page.page.save_page = prefs_folder_item_general_save_func;
@@ -780,12 +780,12 @@ FolderItemComposePage folder_item_compose_page;
 
 static void register_compose_page(void)
 {
-	gchar *path[2];
+	static gchar *pfi_compose_path[2];
 
-	path[0] = _("Compose");
-	path[1] = NULL;
+	pfi_compose_path[0] = _("Compose");
+	pfi_compose_path[1] = NULL;
 
-        folder_item_compose_page.page.path = path;
+        folder_item_compose_page.page.path = pfi_compose_path;
         folder_item_compose_page.page.create_widget = prefs_folder_item_compose_create_widget_func;
         folder_item_compose_page.page.destroy_widget = prefs_folder_item_compose_destroy_widget_func;
         folder_item_compose_page.page.save_page = prefs_folder_item_compose_save_func;
