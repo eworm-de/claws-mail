@@ -44,9 +44,10 @@ struct SpamAssassinPage
 	GtkWidget *enable;
 	GtkWidget *hostname;
 	GtkWidget *port;
-	GtkWidget *max_size;
 	GtkWidget *receive_spam;
 	GtkWidget *save_folder;
+	GtkWidget *max_size;
+	GtkWidget *timeout
 };
 
 static void foldersel_cb(GtkWidget *widget, gpointer data)
@@ -78,27 +79,32 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	GtkWidget *table1;
 	GtkWidget *label3;
 	GtkWidget *label4;
-	GtkWidget *label6;
-	GtkWidget *label8;
-	GtkWidget *label9;
 	GtkWidget *hbox1;
 	GtkWidget *hostname;
 	GtkWidget *label5;
 	GtkObject *port_adj;
 	GtkWidget *port;
 	GtkWidget *enable;
+	GtkWidget *label9;
 	GtkWidget *receive_spam;
+	GtkWidget *label8;
 	GtkWidget *save_folder;
 	GtkWidget *button4;
-	GtkWidget *label11;
+	GtkWidget *label6;
 	GtkWidget *hbox3;
 	GtkObject *max_size_adj;
 	GtkWidget *max_size;
+	GtkWidget *label11;
+	GtkWidget *label12;
+	GtkWidget *label13;
+	GtkWidget *hbox4;
+	GtkObject *timeout_adj;
+	GtkWidget *timeout;
 	GtkTooltips *tooltips;
 
 	tooltips = gtk_tooltips_new();
 
-	table1 = gtk_table_new(5, 3, FALSE);
+	table1 = gtk_table_new(6, 3, FALSE);
 	gtk_widget_show(table1);
 	gtk_container_set_border_width(GTK_CONTAINER(table1), 8);
 	gtk_table_set_row_spacings(GTK_TABLE(table1), 4);
@@ -117,28 +123,6 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label4), 0, 0.5);
-
-	label6 = gtk_label_new(_("Maximum Size"));
-	gtk_widget_show(label6);
-	gtk_table_attach(GTK_TABLE(table1), label6, 0, 1, 2, 3,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label6), 0, 0.5);
-
-	label8 = gtk_label_new(_("Save Folder"));
-	gtk_widget_show(label8);
-	gtk_table_attach(GTK_TABLE(table1), label8, 0, 1, 4, 5,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-	gtk_label_set_justify(GTK_LABEL(label8), GTK_JUSTIFY_LEFT);
-	gtk_misc_set_alignment(GTK_MISC(label8), 0, 0.5);
-
-	label9 = gtk_label_new(_("Save Spam"));
-	gtk_widget_show(label9);
-	gtk_table_attach(GTK_TABLE(table1), label9, 0, 1, 3, 4,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label9), 0, 0.5);
 
 	hbox1 = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(hbox1);
@@ -175,9 +159,16 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	gtk_tooltips_set_tip(tooltips, enable,
 			     _("Enable SpamAssassin filtering"), NULL);
 
+	label9 = gtk_label_new(_("Save Spam"));
+	gtk_widget_show(label9);
+	gtk_table_attach(GTK_TABLE(table1), label9, 0, 1, 2, 3,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+	gtk_misc_set_alignment(GTK_MISC(label9), 0, 0.5);
+
 	receive_spam = gtk_check_button_new_with_label("");
 	gtk_widget_show(receive_spam);
-	gtk_table_attach(GTK_TABLE(table1), receive_spam, 1, 2, 3, 4,
+	gtk_table_attach(GTK_TABLE(table1), receive_spam, 1, 2, 2, 3,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_tooltips_set_tip(tooltips, receive_spam,
@@ -185,9 +176,17 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 			     ("Save mails that where identified as spam to a folder"),
 			     NULL);
 
+	label8 = gtk_label_new(_("Save Folder"));
+	gtk_widget_show(label8);
+	gtk_table_attach(GTK_TABLE(table1), label8, 0, 1, 3, 4,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+	gtk_label_set_justify(GTK_LABEL(label8), GTK_JUSTIFY_LEFT);
+	gtk_misc_set_alignment(GTK_MISC(label8), 0, 0.5);
+
 	save_folder = gtk_entry_new();
 	gtk_widget_show(save_folder);
-	gtk_table_attach(GTK_TABLE(table1), save_folder, 1, 2, 4, 5,
+	gtk_table_attach(GTK_TABLE(table1), save_folder, 1, 2, 3, 4,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 	gtk_tooltips_set_tip(tooltips, save_folder,
@@ -197,20 +196,20 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 
 	button4 = gtk_button_new_with_label(_("..."));
 	gtk_widget_show(button4);
-	gtk_table_attach(GTK_TABLE(table1), button4, 2, 3, 4, 5,
+	gtk_table_attach(GTK_TABLE(table1), button4, 2, 3, 3, 4,
 			 (GtkAttachOptions) (GTK_SHRINK | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 
-	label11 = gtk_label_new(_("kB"));
-	gtk_widget_show(label11);
-	gtk_table_attach(GTK_TABLE(table1), label11, 2, 3, 2, 3,
+	label6 = gtk_label_new(_("Maximum Size"));
+	gtk_widget_show(label6);
+	gtk_table_attach(GTK_TABLE(table1), label6, 0, 1, 4, 5,
 			 (GtkAttachOptions) (GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
-	gtk_misc_set_alignment(GTK_MISC(label11), 0, 0.5);
+	gtk_misc_set_alignment(GTK_MISC(label6), 0, 0.5);
 
 	hbox3 = gtk_hbox_new(FALSE, 0);
 	gtk_widget_show(hbox3);
-	gtk_table_attach(GTK_TABLE(table1), hbox3, 1, 2, 2, 3,
+	gtk_table_attach(GTK_TABLE(table1), hbox3, 1, 2, 4, 5,
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (GTK_FILL), 0, 0);
 
@@ -224,6 +223,44 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 			     ("Maximum size a message is allowed to have to be checked"),
 			     NULL);
 	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(max_size), TRUE);
+
+	label11 = gtk_label_new(_("kB"));
+	gtk_widget_show(label11);
+	gtk_table_attach(GTK_TABLE(table1), label11, 2, 3, 4, 5,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+	gtk_misc_set_alignment(GTK_MISC(label11), 0, 0.5);
+
+	label12 = gtk_label_new(_("Timeout"));
+	gtk_widget_show(label12);
+	gtk_table_attach(GTK_TABLE(table1), label12, 0, 1, 5, 6,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+	gtk_misc_set_alignment(GTK_MISC(label12), 0, 0.5);
+
+	label13 = gtk_label_new(_("s"));
+	gtk_widget_show(label13);
+	gtk_table_attach(GTK_TABLE(table1), label13, 2, 3, 5, 6,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (0), 0, 0);
+	gtk_misc_set_alignment(GTK_MISC(label13), 0, 0.5);
+
+	hbox4 = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show(hbox4);
+	gtk_table_attach(GTK_TABLE(table1), hbox4, 1, 2, 5, 6,
+			 (GtkAttachOptions) (GTK_FILL),
+			 (GtkAttachOptions) (GTK_FILL), 0, 0);
+
+	timeout_adj = gtk_adjustment_new(30, 5, 300, 1, 1, 1);
+	timeout = gtk_spin_button_new(GTK_ADJUSTMENT(timeout_adj), 1, 0);
+	gtk_widget_show(timeout);
+	gtk_box_pack_end(GTK_BOX(hbox4), timeout, FALSE, TRUE, 0);
+	gtk_widget_set_usize(timeout, 64, -2);
+	gtk_tooltips_set_tip(tooltips, timeout,
+			     _
+			     ("Maximum time allowed for the spam check. After the time the check will be aborted and the message delivered as none spam."),
+			     NULL);
+	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(timeout), TRUE);
 	/*
 	 * END GLADE CODE
 	 */
@@ -236,17 +273,19 @@ static void spamassassin_create_widget_func(PrefsPage * _page,
 	if (config->hostname != NULL)
 		gtk_entry_set_text(GTK_ENTRY(hostname), config->hostname);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(port), (float) config->port);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(max_size), (float) config->max_size);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(receive_spam), config->receive_spam);
 	if (config->save_folder != NULL)
 		gtk_entry_set_text(GTK_ENTRY(save_folder), config->save_folder);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(max_size), (float) config->max_size);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(timeout), (float) config->timeout);
 	
 	page->enable = enable;
 	page->hostname = hostname;
 	page->port = port;
-	page->max_size = max_size;
 	page->receive_spam = receive_spam;
 	page->save_folder = save_folder;
+	page->max_size = max_size;
+	page->timeout = timeout;
 
 	page->page.widget = table1;
 }
@@ -275,15 +314,18 @@ static void spamassassin_save_func(PrefsPage *_page)
 	/* port */
 	config->port = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(page->port));
 
-	/* maxsize */
-	config->max_size = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(page->max_size));
-
 	/* receive_spam */
 	config->receive_spam = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->receive_spam));
 
 	/* save_folder */
 	g_free(config->save_folder);
 	config->save_folder = gtk_editable_get_chars(GTK_EDITABLE(page->save_folder), 0, -1);
+
+	/* max_size */
+	config->max_size = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(page->max_size));
+
+	/* timeout */
+	config->timeout = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(page->timeout));
 
 	spamassassin_save_config();
 }
