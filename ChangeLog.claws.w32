@@ -1,3 +1,10 @@
+2003-12-21 [thorsten]	0.9.8claws6-1
+
+	* src/prefs_filtering
+		fix: crash when moving folders
+	* src/common/utils.c
+		fix: take care of different path sep. in path_cmp()
+
 2003-12-19 [thorsten]	0.9.8claws5-1
 
 	* win32/utils/mk_translation.bat

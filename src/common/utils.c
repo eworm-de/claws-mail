@@ -254,6 +254,12 @@ gint path_cmp(const gchar *s1, const gchar *s2)
 
 	if (s1 == NULL || s2 == NULL) return -1;
 	if (*s1 == '\0' || *s2 == '\0') return -1;
+#ifdef WIN32
+	s1 = g_strdup(s1);
+	s2 = g_strdup(s2);
+	subst_char(s1, '/', G_DIR_SEPARATOR);
+	subst_char(s2, '/', G_DIR_SEPARATOR);
+#endif
 
 	len1 = strlen(s1);
 	len2 = strlen(s2);

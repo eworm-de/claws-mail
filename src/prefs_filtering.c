@@ -379,8 +379,8 @@ void prefs_filtering_rename_path(const gchar *old_path, const gchar *new_path)
 	GList * cur;
 	const gchar *paths[2] = {NULL, NULL};
 #ifdef WIN32
-	old_path = g_locale_from_utf8(paths[0], -1, NULL, NULL, NULL);
-	new_path = g_locale_from_utf8(paths[1], -1, NULL, NULL, NULL);
+	old_path = g_locale_from_utf8(old_path, -1, NULL, NULL, NULL);
+	new_path = g_locale_from_utf8(new_path, -1, NULL, NULL, NULL);
 #endif
 	paths[0] = old_path;
 	paths[1] = new_path;
