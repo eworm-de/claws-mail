@@ -1719,7 +1719,7 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 
 	if (strchr(name, imap_get_path_separator(IMAP_FOLDER(folder), item->path)) != NULL) {
 		g_warning(_("New folder name must not contain the namespace "
-			    "path seperator"));
+			    "path separator"));
 		return -1;
 	}
 
@@ -4103,9 +4103,10 @@ static gint imap_get_flags(Folder *folder, FolderItem *item,
 	GSList *sorted_list;
 	/*
 	GSList *new = NULL, *p_new;
+	GSList *deleted = NULL, *p_deleted;
 	*/
-	GSList *unseen = NULL, *answered = NULL, *flagged = NULL, *deleted = NULL;
-	GSList *p_unseen, *p_answered, *p_flagged, *p_deleted;
+	GSList *unseen = NULL, *answered = NULL, *flagged = NULL;
+	GSList *p_unseen, *p_answered, *p_flagged;
 	GSList *elem;
 	GSList *seq_list, *cur;
 	gboolean reverse_seen = FALSE;
@@ -4169,24 +4170,27 @@ static gint imap_get_flags(Folder *folder, FolderItem *item,
 	p_unseen = unseen;
 	p_answered = answered;
 	p_flagged = flagged;
+/*
 	p_deleted = deleted;
-	
+*/	
 	for (elem = sorted_list; elem != NULL; elem = g_slist_next(elem)) {
 		MsgInfo *msginfo;
 		MsgPermFlags flags;
+		gboolean wasnew;
 		
 		msginfo = (MsgInfo *) elem->data;
 		flags = msginfo->flags.perm_flags;
-		flags &= ~((reverse_seen ? 0 : MSG_UNREAD) | MSG_REPLIED | MSG_MARKED);
+		wasnew = (flags & MSG_NEW);
+		flags &= ~((reverse_seen ? 0 : MSG_UNREAD | MSG_NEW) | MSG_REPLIED | MSG_MARKED);
 		if (reverse_seen)
-			flags |= MSG_UNREAD;
+			flags |= MSG_UNREAD | (wasnew ? MSG_NEW : 0);
 		/*
 		if (gslist_find_next_num(&p_new, msginfo->msgnum) == msginfo->msgnum)
 			flags |= MSG_NEW;
 		*/
 		if (gslist_find_next_num(&p_unseen, msginfo->msgnum) == msginfo->msgnum) {
 			if (!reverse_seen) {
-				flags |= MSG_UNREAD;
+				flags |= MSG_UNREAD | (wasnew ? MSG_NEW : 0);
 			} else {
 				flags &= ~(MSG_UNREAD | MSG_NEW);
 			}
@@ -4203,7 +4207,7 @@ static gint imap_get_flags(Folder *folder, FolderItem *item,
 	}
 
 	imap_seq_set_free(seq_list);
-	g_slist_free(deleted);
+	/* g_slist_free(deleted); */
 	g_slist_free(flagged);
 	g_slist_free(answered);
 	g_slist_free(unseen);

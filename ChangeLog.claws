@@ -1,3 +1,17 @@
+2004-03-12 [christoph]	0.9.10claws9
+
+	* src/codeconv.c
+		add parameter check to conv_unmime_header_overwrite()
+
+	* src/imap.c
+		o fix spelling
+		o fix removing of NEW flag when UNREAD is unset
+
+	* src/procmime.c
+		decode MIME-headers
+
+	(Closes 437 i18n attachment display error.)
+
 2004-03-12 [paul]	0.9.10claws8
 
 	* po/it.po

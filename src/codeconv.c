@@ -1456,6 +1456,8 @@ void conv_unmime_header_overwrite(gchar *str)
 	gint buflen;
 	CharSet cur_charset;
 
+	g_return_if_fail(str != NULL);
+	
 	cur_charset = conv_get_current_charset();
 
 	if (cur_charset == C_EUC_JP) {

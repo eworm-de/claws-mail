@@ -995,6 +995,12 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 	fp = fopen(mimeinfo->filename, "rb");
 	fseek(fp, mimeinfo->offset, SEEK_SET);
 	procheader_get_header_fields(fp, hentry);
+	if (hentry[0].body != NULL)
+		conv_unmime_header_overwrite(hentry[0].body);
+	if (hentry[2].body != NULL)
+		conv_unmime_header_overwrite(hentry[2].body);
+	if (hentry[4].body != NULL)
+		conv_unmime_header_overwrite(hentry[4].body);
 	content_start = ftell(fp);
 	fclose(fp);
 
@@ -1079,6 +1085,12 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 				hentry[i].body = NULL;
 			}
 			procheader_get_header_fields(fp, hentry);
+			if (hentry[0].body != NULL)
+				conv_unmime_header_overwrite(hentry[0].body);
+			if (hentry[2].body != NULL)
+				conv_unmime_header_overwrite(hentry[2].body);
+			if (hentry[4].body != NULL)
+				conv_unmime_header_overwrite(hentry[4].body);
 			lastoffset = ftell(fp);
 		}
 	}
