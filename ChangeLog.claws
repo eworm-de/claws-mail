@@ -1,3 +1,11 @@
+2001-09-24 [melvin]
+	* src/gtkspell.[ch]
+		added 'Learn from mistakes' option
+		better handling of quotes in checked words
+		sorted dict list
+	* po/fr.po
+		small update for spell checking stuff
+
 2001-09-23 [alfons]
 	
 	* src/gtkspell.c
