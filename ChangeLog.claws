@@ -1,3 +1,8 @@
+2002-12-03 [paul]	0.8.6claws52
+
+	* sync with 0.8.6cvs15
+		see ChangeLog 2002-12-03
+
 2002-11-30 [christoph]	0.8.6claws51
 
 	* src/logwindow.[ch]

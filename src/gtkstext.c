@@ -1450,7 +1450,7 @@ gtk_stext_realize (GtkWidget *widget)
   gdk_gc_set_exposures (text->gc, TRUE);
   gdk_gc_set_foreground (text->gc, &widget->style->text[GTK_STATE_NORMAL]);
   
-#ifdef USE_GTKGDK_XIM
+#ifdef USE_XIM
   if (gdk_im_ready () && (editable->ic_attr = gdk_ic_attr_new ()) != NULL)
     {
       gint width, height;
@@ -1576,7 +1576,7 @@ gtk_stext_unrealize (GtkWidget *widget)
   
   text = GTK_STEXT (widget);
 
-#ifdef USE_GTKGDK_XIM
+#ifdef USE_XIM
   if (GTK_EDITABLE (widget)->ic)
     {
       gdk_ic_destroy (GTK_EDITABLE (widget)->ic);
@@ -1771,7 +1771,7 @@ gtk_stext_size_allocate (GtkWidget     *widget,
 			      MAX (1, (gint)widget->allocation.height - (gint)(widget->style->klass->ythickness +
 							   (gint)TEXT_BORDER_ROOM) * 2));
       
-#ifdef USE_GTKGDK_XIM
+#ifdef USE_XIM
       if (editable->ic && (gdk_ic_get_style (editable->ic) & GDK_IM_PREEDIT_POSITION))
 	{
 	  gint width, height;
@@ -2441,7 +2441,7 @@ gtk_stext_focus_in (GtkWidget     *widget,
   GTK_WIDGET_SET_FLAGS (widget, GTK_HAS_FOCUS);
   gtk_widget_draw_focus (widget);
   
-#ifdef USE_GTKGDK_XIM
+#ifdef USE_XIM
   if (GTK_EDITABLE(widget)->ic)
     gdk_im_begin (GTK_EDITABLE(widget)->ic, GTK_STEXT(widget)->text_area);
 #endif
@@ -2475,7 +2475,7 @@ gtk_stext_focus_out (GtkWidget     *widget,
   undraw_cursor (GTK_STEXT(widget), TRUE);
   GTK_STEXT(widget)->cursor_visible = FALSE;
   
-#ifdef USE_GTKGDK_XIM
+#ifdef USE_XIM
   gdk_im_end ();
 #endif
   
@@ -3972,7 +3972,7 @@ find_cursor_at_line (GtkSText* text, const LineParams* start_line, gint pixel_he
   else
     text->cursor_char = ch;
     
-#ifdef USE_GTKGDK_XIM
+#ifdef USE_XIM
   if (GTK_WIDGET_HAS_FOCUS(text) && gdk_im_ready() && editable->ic && 
       (gdk_ic_get_style (editable->ic) & GDK_IM_PREEDIT_POSITION))
     {

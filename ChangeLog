@@ -1,3 +1,18 @@
+2002-12-03
+
+	* autogen.sh: added 'libtoolize --force --copy' to override the
+	  current ltmain.sh.
+	* acconfig.h: removed.
+	* configure.in: increased minimal version of GPGME to 0.3.10.
+	  Fixed checking of XIM.
+	* ac/check-type.m4
+	  ac/gnupg-check-typedef.m4: added an argument for comment.
+
+2002-11-29
+
+	* src/imageview.[ch]: fixed conflicting declarations of
+	  imageview_show_image() (thanks to Thorsten Maerz).
+
 2002-11-28
 
 	* src/compose.c: compose_entry_append(): don't add ", " on subject
