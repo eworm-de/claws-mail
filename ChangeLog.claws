@@ -1,3 +1,17 @@
+2002-03-15 [alfons]	0.7.4claws10
+
+	* src/matcher.[ch]
+	* src/matcher_parser_parse.y
+	* src/matcher_parser_lex.l
+	* src/prefs_matcher.c
+		add filtering conditions message greater than, smaller 
+		than, and exactly matching a size in bytes
+		(does not work with delete from POP3 server yet)
+
+		this should also give others an idea what you should
+		do to add new criterions to claws filtering system
+		
+
 2002-03-15 [paul]	0.7.4claws9
 
 	* tools/filter_conv.pl

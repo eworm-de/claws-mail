@@ -56,6 +56,10 @@ static MatchParser matchparser_tab[] = {
 	{MATCHCRITERIA_SCORE_LOWER, "score_lower"},
 	{MATCHCRITERIA_SCORE_EQUAL, "score_equal"},
 
+	{MATCHCRITERIA_SIZE_GREATER, "size_greater"},
+	{MATCHCRITERIA_SIZE_SMALLER, "size_smaller"},
+	{MATCHCRITERIA_SIZE_EQUAL,   "size_equal"},
+
 	/* content have to be read */
 	{MATCHCRITERIA_HEADER, "header"},
 	{MATCHCRITERIA_NOT_HEADER, "~header"},
@@ -341,6 +345,15 @@ gboolean matcherprop_match(MatcherProp * prop, MsgInfo * info)
 		return info->score <= prop->value;
 	case MATCHCRITERIA_SCORE_EQUAL:
 		return info->score == prop->value;
+	case MATCHCRITERIA_SIZE_GREATER:
+		/* FIXME: info->size is an off_t */
+		return info->size > (off_t) prop->value;
+	case MATCHCRITERIA_SIZE_EQUAL:
+		/* FIXME: info->size is an off_t */
+		return info->size == (off_t) prop->value;
+	case MATCHCRITERIA_SIZE_SMALLER:
+		/* FIXME: info->size is an off_t */
+		return info->size <  (off_t) prop->value;
 	case MATCHCRITERIA_NEWSGROUPS:
 		return matcherprop_string_match(prop, info->newsgroups);
 	case MATCHCRITERIA_NOT_NEWSGROUPS:
@@ -727,6 +740,9 @@ gboolean matcherlist_match(MatcherList * matchers, MsgInfo * info)
 		case MATCHCRITERIA_SCORE_GREATER:
 		case MATCHCRITERIA_SCORE_LOWER:
 		case MATCHCRITERIA_SCORE_EQUAL:
+		case MATCHCRITERIA_SIZE_GREATER:
+		case MATCHCRITERIA_SIZE_SMALLER:
+		case MATCHCRITERIA_SIZE_EQUAL:
 		case MATCHCRITERIA_EXECUTE:
 		case MATCHCRITERIA_NOT_EXECUTE:
 			if (matcherprop_match(matcher, info)) {
@@ -783,8 +799,10 @@ gchar * matcherprop_to_string(MatcherProp * matcher)
 	case MATCHCRITERIA_SCORE_GREATER:
 	case MATCHCRITERIA_SCORE_LOWER:
 	case MATCHCRITERIA_SCORE_EQUAL:
+	case MATCHCRITERIA_SIZE_GREATER:
+	case MATCHCRITERIA_SIZE_SMALLER:
+	case MATCHCRITERIA_SIZE_EQUAL:
 		return g_strdup_printf("%s %i", criteria_str, matcher->value);
-		break;
 	case MATCHCRITERIA_ALL:
 	case MATCHCRITERIA_UNREAD:
 	case MATCHCRITERIA_NOT_UNREAD:

@@ -163,6 +163,7 @@ int matcher_parserwrap(void)
 %token MATCHER_FORWARD_AS_ATTACHMENT  MATCHER_EOL  MATCHER_STRING  
 %token MATCHER_OR MATCHER_AND  
 %token MATCHER_COLOR MATCHER_SCORE_EQUAL MATCHER_BOUNCE MATCHER_DELETE_ON_SERVER
+%token MATCHER_SIZE_GREATER MATCHER_SIZE_SMALLER MATCHER_SIZE_EQUAL
 
 %start file
 
@@ -598,6 +599,30 @@ MATCHER_ALL
 	gint value = 0;
 
 	criteria = MATCHCRITERIA_SCORE_EQUAL;
+	value = atoi($2);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
+}
+| MATCHER_SIZE_GREATER MATCHER_INTEGER 
+{
+	gint criteria = 0;
+	gint value    = 0;
+	criteria = MATCHCRITERIA_SIZE_GREATER;
+	value = atoi($2);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
+}
+| MATCHER_SIZE_SMALLER MATCHER_INTEGER
+{
+	gint criteria = 0;
+	gint value    = 0;
+	criteria = MATCHCRITERIA_SIZE_SMALLER;
+	value = atoi($2);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
+}
+| MATCHER_SIZE_EQUAL MATCHER_INTEGER
+{
+	gint criteria = 0;
+	gint value    = 0;
+	criteria = MATCHCRITERIA_SIZE_EQUAL;
 	value = atoi($2);
 	prop = matcherprop_new(criteria, NULL, 0, NULL, value);
 }

@@ -58,6 +58,9 @@ static void add_char(char ch)
 "score_greater"	return MATCHER_SCORE_GREATER;
 "score_lower"	return MATCHER_SCORE_LOWER;
 "score_equal"	return MATCHER_SCORE_EQUAL;
+"size_greater"  return MATCHER_SIZE_GREATER;
+"size_smaller"  return MATCHER_SIZE_SMALLER;
+"size_equal"    return MATCHER_SIZE_EQUAL;
 "header"	return MATCHER_HEADER;
 "~header"	return MATCHER_NOT_HEADER;
 "headers_part"	return MATCHER_HEADERS_PART;

@@ -108,7 +108,11 @@ enum {
 	CRITERIA_SCORE_LOWER = 22,
 	CRITERIA_SCORE_EQUAL = 23,
 
-	CRITERIA_EXECUTE = 24
+	CRITERIA_EXECUTE = 24,
+
+	CRITERIA_SIZE_GREATER = 25,
+	CRITERIA_SIZE_SMALLER = 26,
+	CRITERIA_SIZE_EQUAL   = 27
 };
 
 enum {
@@ -150,7 +154,10 @@ gchar * criteria_text [] = {
 	N_("Replied flag"), N_("Forwarded flag"),
 	N_("Score greater than"), N_("Score lower than"),
 	N_("Score equal to"),
-	N_("Execute")
+	N_("Execute"),
+	N_("Size greater than"), 
+	N_("Size smaller than"),
+	N_("Size exactly")
 };
 
 static gint get_sel_from_list(GtkList * list)
@@ -771,7 +778,12 @@ static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 	case MATCHCRITERIA_NOT_EXECUTE:
 	case MATCHCRITERIA_EXECUTE:
 		return CRITERIA_EXECUTE;
-		break;
+	case MATCHCRITERIA_SIZE_GREATER:
+		return CRITERIA_SIZE_GREATER;
+	case MATCHCRITERIA_SIZE_SMALLER:
+		return CRITERIA_SIZE_SMALLER;
+	case MATCHCRITERIA_SIZE_EQUAL:
+		return CRITERIA_SIZE_EQUAL;
 	default:
 		return -1;
 	}
@@ -830,6 +842,12 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 		return MATCHCRITERIA_MESSAGE;
 	case CRITERIA_EXECUTE:
 		return MATCHCRITERIA_EXECUTE;
+	case CRITERIA_SIZE_GREATER:
+		return MATCHCRITERIA_SIZE_GREATER;
+	case CRITERIA_SIZE_SMALLER:
+		return MATCHCRITERIA_SIZE_SMALLER;
+	case CRITERIA_SIZE_EQUAL:
+		return MATCHCRITERIA_SIZE_EQUAL;
 	default:
 		return -1;
 	}
@@ -990,6 +1008,9 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 	case CRITERIA_SCORE_GREATER:
 	case CRITERIA_SCORE_LOWER:
 	case CRITERIA_SCORE_EQUAL:
+	case CRITERIA_SIZE_GREATER:
+	case CRITERIA_SIZE_SMALLER:
+	case CRITERIA_SIZE_EQUAL:
 		value_str = gtk_entry_get_text(GTK_ENTRY(matcher.value_entry));
 
 		if (*value_str == '\0') {
@@ -1198,6 +1219,9 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 	case MATCHCRITERIA_SCORE_GREATER:
 	case MATCHCRITERIA_SCORE_LOWER:
 	case MATCHCRITERIA_SCORE_EQUAL:
+	case MATCHCRITERIA_SIZE_GREATER:
+	case MATCHCRITERIA_SIZE_SMALLER:
+	case MATCHCRITERIA_SIZE_EQUAL:
 		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), itos(prop->value));
 		break;
 
@@ -1325,6 +1349,9 @@ static void prefs_matcher_criteria_select(GtkList *list,
 	case CRITERIA_SCORE_GREATER:
 	case CRITERIA_SCORE_LOWER:
 	case CRITERIA_SCORE_EQUAL:
+	case CRITERIA_SIZE_GREATER:
+	case CRITERIA_SIZE_SMALLER:
+	case CRITERIA_SIZE_EQUAL:
 		gtk_widget_set_sensitive(matcher.header_combo, FALSE);
 		gtk_widget_set_sensitive(matcher.header_label, FALSE);
 		gtk_widget_set_sensitive(matcher.value_label, TRUE);
