@@ -732,6 +732,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	textview = GTK_TEXT_VIEW(compose->text);
 	textbuf = gtk_text_view_get_buffer(textview);
 
+	undo_block(compose->undostruct);
 #ifdef USE_ASPELL
 	if (item && item->prefs && item->prefs->enable_default_dictionary &&
 	    compose->gtkaspell) 
@@ -990,6 +991,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	textview = (GTK_TEXT_VIEW(compose->text));
 	textbuf = gtk_text_view_get_buffer(textview);
 	
+	undo_block(compose->undostruct);
 #ifdef USE_ASPELL
 	if (msginfo->folder && msginfo->folder->prefs && 
 	    msginfo->folder->prefs && 
@@ -2268,6 +2270,7 @@ static void compose_use_signing(Compose *compose, gboolean use_signing)
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 	menuitem = gtk_item_factory_get_item
 		(ifactory, "/Message/Sign");
+
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), 
 				       use_signing);
 	compose_update_gnupg_mode_menu_item(compose);
@@ -7255,7 +7258,6 @@ static void compose_toggle_autowrap_cb(gpointer data, guint action,
 				       GtkWidget *widget)
 {
 	Compose *compose = (Compose *)data;
-
 	compose->autowrap = GTK_CHECK_MENU_ITEM(widget)->active;
 	if (compose->autowrap)
 		compose_wrap_line_all_full(compose, TRUE);

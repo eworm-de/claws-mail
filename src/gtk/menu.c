@@ -136,6 +136,10 @@ void menu_set_active(GtkItemFactory *ifactory, const gchar *path,
 	g_return_if_fail(ifactory != NULL);
 
 	widget = gtk_item_factory_get_item(ifactory, path);
+	if (!GTK_IS_CHECK_MENU_ITEM(widget)) {
+		debug_print("%s not check_menu_item\n", path);
+		return;
+	}	
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(widget), is_active);
 }
 

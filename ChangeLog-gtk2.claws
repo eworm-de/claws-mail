@@ -1,3 +1,9 @@
+2004-07-18 [colin]	0.9.12cvs31.6
+
+	* src/compose.c
+	* src/gtk/menu.c
+		More glib-warning fixes
+
 2004-07-18 [colin]	0.9.12cvs31.5
 
 	* src/compose.c
