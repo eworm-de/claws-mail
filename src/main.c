@@ -752,10 +752,8 @@ static void lock_socket_input_cb(gpointer data,
 	if (!strncmp(buf, "popup", 5)) {
 		main_window_popup(mainwin);
 	} else if (!strncmp(buf, "receive_all", 11)) {
-		main_window_popup(mainwin);
 		inc_all_account_mail(mainwin, prefs_common.newmail_notify_manu);
 	} else if (!strncmp(buf, "receive", 7)) {
-		main_window_popup(mainwin);
 		inc_mail(mainwin, prefs_common.newmail_notify_manu);
 	} else if (!strncmp(buf, "compose_attach", 14)) {
 		GPtrArray *files;

@@ -29,7 +29,7 @@ win32 0.8.0claws+
 	o complete UIDPLUS IMAP support
 	o make summaryview display any list of messages,
 	  fix processing rules by score
-	o privacy api that is independent from the crpyto system
+	o privacy api that is independent from the crypto system
 	o rewrite mime message parsing (maybe required for privacy stuff)
 	o PEM support (S/MIME)
 	o add new messages to the summaryview without reloading the

@@ -1,3 +1,17 @@
+2003-06-16 [christoph]	0.9.0claws40
+
+	* src/main.c
+		don't popup main window on --receive or --receive-all
+
+	* src/mainwindow.[ch]
+	* src/plugins/trayicon/trayicon.c
+		allow hiding of main window by clicking on the trayicon
+		(doesn't work correctly in seperate window mode and may
+		 cause unexpected GTK problems I couldn't find yet)
+
+	* src/common/ssl.c
+		remove incorrect warning
+
 2003-06-15 [alfons]	0.9.0claws39
 
 	* src/gtk/gtkstext.c

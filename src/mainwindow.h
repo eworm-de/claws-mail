@@ -161,6 +161,8 @@ void main_window_add_mailbox		(MainWindow	*mainwin);
 void main_window_set_menu_sensitive	(MainWindow	*mainwin);
 
 
+void main_window_show			(MainWindow 	*mainwin);
+void main_window_hide			(MainWindow 	*mainwin);
 void main_window_popup			(MainWindow	*mainwin);
 
 void main_window_toolbar_set_compose_button	(MainWindow *mainwin, 

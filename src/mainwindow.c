@@ -1686,6 +1686,48 @@ void main_window_popup(MainWindow *mainwin)
 	}
 }
 
+void main_window_show(MainWindow *mainwin)
+{
+	gtk_widget_show(mainwin->window);
+	gtk_widget_show(mainwin->vbox_body);
+
+	switch (mainwin->type) {
+	case SEPARATE_FOLDER:
+		gtk_widget_show(mainwin->win.sep_folder.folderwin);
+		break;
+	case SEPARATE_MESSAGE:
+		gtk_widget_show(mainwin->win.sep_message.messagewin);
+		break;
+	case SEPARATE_BOTH:
+		gtk_widget_show(mainwin->win.sep_both.folderwin);
+		gtk_widget_show(mainwin->win.sep_both.messagewin);
+		break;
+	default:
+		break;
+	}
+}
+
+void main_window_hide(MainWindow *mainwin)
+{
+	gtk_widget_hide(mainwin->window);
+	gtk_widget_hide(mainwin->vbox_body);
+
+	switch (mainwin->type) {
+	case SEPARATE_FOLDER:
+		gtk_widget_hide(mainwin->win.sep_folder.folderwin);
+		break;
+	case SEPARATE_MESSAGE:
+		gtk_widget_hide(mainwin->win.sep_message.messagewin);
+		break;
+	case SEPARATE_BOTH:
+		gtk_widget_hide(mainwin->win.sep_both.folderwin);
+		gtk_widget_hide(mainwin->win.sep_both.messagewin);
+		break;
+	default:
+		break;
+	}
+}
+
 static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 {
 	GtkWidget *folderwin = NULL;

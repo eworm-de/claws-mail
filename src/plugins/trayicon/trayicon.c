@@ -108,16 +108,14 @@ static gboolean folder_item_update_hook(gpointer source, gpointer data)
 static gboolean click_cb(GtkWidget * widget,
 		         GdkEventButton * event, gpointer user_data)
 {
-/*
 	MainWindow *mainwin;
 
 	mainwin = mainwindow_get_mainwindow();
 	if (GTK_WIDGET_VISIBLE(GTK_WIDGET(mainwin->window))) {
-		gtk_widget_hide_all(mainwin->window);
+		main_window_hide(mainwin);
 	} else {
-		gtk_widget_show_all(mainwin->window);
+		main_window_show(mainwin);
         }
-*/
 	return TRUE;
 }
 

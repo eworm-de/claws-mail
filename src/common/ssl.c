@@ -50,15 +50,6 @@ void ssl_init(void)
 	/* Set default certificate paths */
 	SSL_CTX_set_default_verify_paths(ssl_ctx);
 	
-	/* this problem seems quite common */
-	cert_test = fopen (X509_get_default_cert_file(), "r");
-	if (cert_test != NULL)
-		fclose(cert_test);
-	else {
-		printf("ssl_init: warning, can't open %s\n", X509_get_default_cert_file());
-		printf("ssl_init: it means that certificates' signatures won't appear as Correct,\n");
-		printf("ssl_init: even if they should. Check your openssl install.\n");
-	}
 #if (OPENSSL_VERSION_NUMBER < 0x0090600fL)
 	SSL_CTX_set_verify_depth(ctx,1);
 #endif
