@@ -1,3 +1,9 @@
+2004-02-17 [alfons]	0.9.9claws22
+
+	* src/filtering.c
+		make MATCHACTION_STOP cancel filtering / processing;
+		clean up and document it to make it a little bit more clear;
+
 2004-02-17 [alfons]	0.9.9claws21
 
 	%X marks the cursor spot for reply quote format
