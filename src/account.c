@@ -606,7 +606,8 @@ static void account_edit_prefs(void)
 	row = GPOINTER_TO_INT(clist->selection->data);
 	ac_prefs = gtk_clist_get_row_data(clist, row);
 	prev_default = ac_prefs->is_default;
-	Xstrdup_a(ac_name, ac_prefs->account_name, return);
+	Xstrdup_a(ac_name, ac_prefs->account_name ? ac_prefs->account_name : "",
+		  return);
 
 	prefs_account_open(ac_prefs);
 
@@ -614,7 +615,7 @@ static void account_edit_prefs(void)
 		account_set_as_default(ac_prefs);
 
 	if ((ac_prefs->protocol == A_IMAP4 || ac_prefs->protocol == A_NNTP) &&
-	    ac_prefs->folder && strcmp(ac_name, ac_prefs->account_name) != 0) {
+	    ac_prefs->folder && strcmp2(ac_name, ac_prefs->account_name) != 0) {
 		folder_set_name(FOLDER(ac_prefs->folder),
 				ac_prefs->account_name);
 		folderview_rescan_all();

@@ -719,9 +719,11 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 		val = alertpanel(_("Process mark"),
 				 _("Some marks are left. Process it?"),
 				 _("Yes"), _("No"), _("Cancel"));
-		if (G_ALERTDEFAULT == val)
+		if (G_ALERTDEFAULT == val) {
+			summary_unlock(summaryview);
 			summary_execute(summaryview);
-		else if (G_ALERTALTERNATE == val)
+			summary_lock(summaryview);
+		} else if (G_ALERTALTERNATE == val)
 			summary_write_cache(summaryview);
 		else {
 			summary_unlock(summaryview);

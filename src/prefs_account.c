@@ -1838,6 +1838,10 @@ static gint prefs_account_apply(void)
 	protocol = GPOINTER_TO_INT
 		(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
 
+	if (*gtk_entry_get_text(GTK_ENTRY(basic.acname_entry)) == '\0') {
+		alertpanel_error(_("Account name is not entered."));
+		return -1;
+	}
 	if (*gtk_entry_get_text(GTK_ENTRY(basic.addr_entry)) == '\0') {
 		alertpanel_error(_("Mail address is not entered."));
 		return -1;

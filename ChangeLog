@@ -1,5 +1,14 @@
 2002-04-21
 
+	* src/summaryview.c: summary_show(): fixed a bug that didn't process
+	  the left marks.
+	* src/account.c: account_edit_prefs(): fixed a crash bug when account
+	  name was empty.
+	* src/prefs_account.c: prefs_account_apply(): display error dialog
+	  if account name is empty.
+
+2002-04-21
+
 	* src/mh.c: mh_get_new_msg_filename(): new. It returns the filename
 	  for new message.
 	  mh_add_msg()
