@@ -1,3 +1,10 @@
+2005-01-21 [colin]	1.0.0cvs5
+
+	* src/gtk/quicksearch.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+		Add option to recurse or not
+
 2005-01-21 [colin]	1.0.0cvs4
 
 	* src/folder.h

@@ -281,6 +281,7 @@ struct _PrefsCommon
 	
 	gint summary_quicksearch_type;
 	gint summary_quicksearch_sticky;
+	gint summary_quicksearch_recurse;
 	gulong color_new;
 	
 	GList *summary_quicksearch_history;
