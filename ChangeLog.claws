@@ -1,17 +1,22 @@
-2002-08-30 [alfons]	0.8.2claws16
+2002-08-31 [paul]	0.8.2claws17
+
+	* sync with 0.8.2cvs6
+		see ChangeLog 2002-08-30
+
+2002-08-31 [alfons]	0.8.2claws16
 
 	* src/folder.c
 		folder_destroy(): remove mailbox from folderlist even if it has
 		no destroy virtual
 
-2002-08-30 [alfons]	0.8.2claws15
+2002-08-31 [alfons]	0.8.2claws15
 
 	* src/folder.c
 		:%sno/if(/if (/gc
 		:%sno/for(/for (/gc
 		(being pedantic I know)
 
-2002-08-30 [alfons]	0.8.2claws14
+2002-08-31 [alfons]	0.8.2claws14
 
 	* src/folder.c
 		check for NULL pointers returned from folder->fetch_msginfo virtual

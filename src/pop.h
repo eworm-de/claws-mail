@@ -28,8 +28,10 @@
 #include <time.h>
 
 #include "socket.h"
+#include "prefs_account.h"
 
 typedef struct _Pop3MsgInfo	Pop3MsgInfo;
+typedef struct _Pop3State	Pop3State;
 
 typedef enum {
 	POP3_GREETING_RECV,
@@ -70,6 +72,39 @@ struct _Pop3MsgInfo
 	time_t recv_time;
 	guint received : 1;
 	guint deleted  : 1;
+};
+
+struct _Pop3State
+{
+	PrefsAccount *ac_prefs;
+
+	gchar *prev_folder;
+
+	SockInfo *sockinfo;
+
+	gchar *greeting;
+	gchar *user;
+	gchar *pass;
+	gint count;
+	gint new;
+	gint total_bytes;
+	gint cur_msg;
+	gint cur_total_num;
+	gint cur_total_bytes;
+	gint cur_total_recv_bytes;
+
+	Pop3MsgInfo *msg;
+
+	GHashTable *uidl_table;
+
+	gboolean uidl_is_valid;
+	gboolean cancelled;
+
+	time_t current_time;
+
+	gint error_val;
+
+	gpointer data;
 };
 
 #define POPBUFSIZE	512
@@ -124,5 +159,10 @@ gint pop3_delete_send		(SockInfo *sock, gpointer data);
 gint pop3_delete_recv		(SockInfo *sock, gpointer data);
 gint pop3_logout_send		(SockInfo *sock, gpointer data);
 gint pop3_logout_recv		(SockInfo *sock, gpointer data);
+
+Pop3State *pop3_state_new	(PrefsAccount	*account);
+void pop3_state_destroy		(Pop3State	*state);
+GHashTable *pop3_get_uidl_table	(PrefsAccount	*account);
+gint pop3_write_uidl_list	(Pop3State	*state);
 
 #endif /* __POP_H__ */
