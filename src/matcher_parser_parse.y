@@ -550,7 +550,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_COLORLABEL;
 	value = strtol($2, NULL, 10);
-	if (value < 1) value = 1;
+	if (value < 0) value = 0;
 	else if (value > MAX_COLORLABELS) value = MAX_COLORLABELS;
 	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
 }
@@ -561,7 +561,7 @@ MATCHER_ALL
 
 	criteria = MATCHCRITERIA_NOT_COLORLABEL;
 	value = strtol($2, NULL, 0);
-	if (value < 1) value = 1;
+	if (value < 0) value = 0;
 	else if (value > MAX_COLORLABELS) value = MAX_COLORLABELS;
 	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
 }

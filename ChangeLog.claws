@@ -1,3 +1,10 @@
+2003-10-27 [alfons]	0.9.6claws55
+
+	* src/matcher_parser_parse.y
+	* src/gtk/colorlabel.c
+		allow setting color label to 0 in filtering/processing rules
+		(should fix bug 336, "Can't create a filter condition "colorlabel 0"") 
+
 2003-10-26 [alfons]	0.9.6claws54
 
 	* src/summary_search.c
