@@ -2,6 +2,7 @@
 
 # textviewer.sh
 # Copyright 2003 Luke Plant <L.Plant.98@cantab.net>
+# and Johann Koenig <johann@mental-graffiti.com>
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -38,6 +39,12 @@
 ##############################################################################
 #
 # Change Log
+#
+# 2004-01-25
+#	- added brief messages describing whats going on
+#
+# 2004-01-23
+#	- added support for 'pdftotext,' from xpdf-utils debian package
 #
 # 2004-01-05
 #	- added matcher and action for OpenOffice Writer documents
@@ -95,14 +102,15 @@ case "$1" in
 	*.doc)	TYPE=MSWORD	;;
 	*.zip)	TYPE=ZIP	;;
 	*.tar.gz|*.tgz)	TYPE=TARGZ ;;
-	*.tar.bz)	TYPE=TARBZ ;;
+	*.tar.bz2|*.tar.bz)	TYPE=TARBZ ;;
 	*.gz)	TYPE=GZIP	;;
-	*.bz)	TYPE=BZIP	;;
+	*.bz2|*.bz)	TYPE=BZIP	;;
 	*.tar)	TYPE=TAR	;;
 	*.diff)	TYPE=TEXT	;;
 	*.txt)	TYPE=TEXT	;;
 	*.rtf)	TYPE=RTF	;;
 	*.sxw)	TYPE=OOWRITER	;;
+	*.pdf)	TYPE=PDF	;;
 esac
 
 if [ "$TYPE" == "" ]	
@@ -111,6 +119,7 @@ then
 		"'diff'"*)	TYPE=TEXT	;;
 		gzip*)		TYPE=GZIP ;;
 		bzip2*)		TYPE=BZIP ;;
+		"POSIX tar archive"*)	TYPE=TAR	;;
 		"Zip "*) 	TYPE=ZIP  ;;
 		ASCII*)		TYPE=TEXT	;;
 		"Rich Text Format"*)	
@@ -123,32 +132,36 @@ then
 fi
 
 case $TYPE in
-	TARGZ) 	echo -e "Tarball contents:\n" 		; 
+	TARGZ) 	echo -e "Gzip'd tarball contents:\n"	; 
 		tar -tzvf "$1"				;;
 
-	TARBZ)	echo -e "Tarball contents:\n" 		; 
+	TARBZ)	echo -e "Bzip'd tarball contents:\n" 	; 
 		tar -tjvf "$1"				;;
 
 	BZIP)	TMP=`mktemp "$1".temp.XXXXXXX` || exit 1;
 		bunzip2 -c "$1" > "$TMP"  || exit 1;
+		echo -e "Re-running \"$0\" on bunzip'd contents of \"$1\":\n";
 		"$0" "$TMP";
-		rm "$TMP"				;;
+		rm "$TMP"					;;
 
-        GZIP)   TMP=`mktemp "$1".temp.XXXXXXX` || exit 1;
-                gunzip -c "$1" > "$TMP"  || exit 1;
-                "$0" "$TMP";
-                rm "$TMP"                               ;;
+	GZIP)   TMP=`mktemp "$1".temp.XXXXXXX` || exit 1;
+		gunzip -c "$1" > "$TMP"  || exit 1;
+		echo "Re-running \"$0\" on gunzip'd contents of \"$1\":\n";
+		"$0" "$TMP";
+		rm "$TMP"					;;
 
 	TAR)	echo -e "Tar archive contents:\n" 	; 
 		tar -tvf "$1" 				;;
 
-	ZIP)	unzip -l "$1"				;;
+	ZIP)	echo -e "Zip file contents:\n"		;
+		unzip -l "$1"				;;
 
 	RTF)	which unrtf > /dev/null  2>&1 || 
 		{
 			echo "Program 'unrtf' for displaying RTF files not found" >&2
 			exit 1
 		};
+		echo -e "Displaying \"$1\" using \"unrtf\":\n";
 		unrtf -t text "$1" 2>/dev/null | egrep  -v '^### ' | fold -s -w 72  ;;
 
 	TEXT)	cat "$1"				;;
@@ -158,6 +171,7 @@ case $TYPE in
 			echo "Program 'antiword' for displaying MS Word files not found" >&2
 			exit 1 
 		};
+		echo -e "Displaying \"$1\" using \"antiword\":\n";
 		antiword -w 72 "$1" 				;;
 
 	OOWRITER) which ooo2txt > /dev/null 2>&1 ||
@@ -165,7 +179,16 @@ case $TYPE in
 			echo "Program 'ooo2txt' for converting OpenOffice Writer files not files not found" >&2
 			exit 1
 		};
+		echo -e "Displaying \"$1\" using \"ooo2txt\":\n";
 		ooo2txt "$1"					;;
+
+	PDF) which pdftotext > /dev/null 2>&1 ||
+		{
+			echo "Program 'pdftotext' for converting Adobe Portable Document Format to text not found" >&2
+			exit 1
+		};
+		echo -e "Displaying \"$1\" using \"pdftotext\":\n";
+		pdftotext "$1"	-				;;
 
 	*)	echo "Unsupported file type \"$FILETYPE\", cannot display.";;
 esac
