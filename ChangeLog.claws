@@ -1,3 +1,18 @@
+2002-11-21 [christoph]	0.8.5claws173
+
+	* src/crash.c
+	* src/filtering.c
+	* src/logwindow.c
+	* src/main.c
+	* src/matcher_parser_lex.[hl]
+	* src/mbox.c
+	* src/mbox_folder.[ch]
+	* src/prefs_filtering.c
+	* src/procheader.c
+	* src/quote_fmt_lex.l
+	* src/ssl.c
+		fix all warnings except the warnings in lex and yacc files
+
 2002-11-20 [christoph]	0.8.5claws172
 
 	* src/imap.c
