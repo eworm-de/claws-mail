@@ -430,16 +430,27 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 
 		if (mimeinfo->type == MIMETYPE_TEXT ||
 		    mimeinfo->type == MIMETYPE_MESSAGE) {
-			tmp_file = get_tmp_file();
-			if (canonicalize_file(mimeinfo->data.filename, tmp_file) < 0) {
-				g_free(tmp_file);
+		    	if (mimeinfo->content == MIMECONTENT_FILE) {
+				tmp_file = get_tmp_file();
+				if (canonicalize_file(mimeinfo->data.filename, tmp_file) < 0) {
+					g_free(tmp_file);
+					fclose(infp);
+					return FALSE;
+				}
+				if ((tmp_fp = fopen(tmp_file, "rb")) == NULL) {
+					FILE_OP_ERROR(tmp_file, "fopen");
+					unlink(tmp_file);
+					g_free(tmp_file);
+					fclose(infp);
+					return FALSE;
+				}
+			} else {
+				gchar *out = canonicalize_str(mimeinfo->data.mem);
 				fclose(infp);
-			}
-			if ((tmp_fp = fopen(tmp_file, "rb")) == NULL) {
-				FILE_OP_ERROR(tmp_file, "fopen");
-				unlink(tmp_file);
-				g_free(tmp_file);
-				fclose(infp);
+				tmp_fp = infp = str_open_as_stream(out);
+				g_free(out);
+				if (infp == NULL)
+					return FALSE;
 			}
 		}
 
@@ -460,7 +471,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 			fclose(tmp_fp);
 			unlink(tmp_file);
 			g_free(tmp_file);
-		}
+		} 
 	} else if (encoding == ENC_QUOTED_PRINTABLE) {
 		gchar inbuf[BUFFSIZE], outbuf[BUFFSIZE * 4];
 

@@ -40,6 +40,7 @@ static gint smtp_auth(SMTPSession *session);
 static gint smtp_starttls(SMTPSession *session);
 static gint smtp_auth_cram_md5(SMTPSession *session);
 static gint smtp_auth_login(SMTPSession *session);
+static gint smtp_auth_plain(SMTPSession *session);
 
 static gint smtp_ehlo(SMTPSession *session);
 static gint smtp_ehlo_recv(SMTPSession *session, const gchar *msg);
@@ -161,6 +162,10 @@ static gint smtp_auth(SMTPSession *session)
 		 (session->forced_auth_type == 0 &&
 		  (session->avail_auth_type & SMTPAUTH_LOGIN) != 0))
 		smtp_auth_login(session);
+	else if (session->forced_auth_type == SMTPAUTH_PLAIN ||
+		 (session->forced_auth_type == 0 &&
+		  (session->avail_auth_type & SMTPAUTH_PLAIN) != 0))
+		smtp_auth_plain(session);
 	else {
 		log_warning(_("SMTP AUTH not available\n"));
 		return SM_AUTHFAIL;
@@ -282,6 +287,8 @@ static gint smtp_ehlo_recv(SMTPSession *session, const gchar *msg)
 		if (*p == '-' || *p == ' ') p++;
 		if (g_strncasecmp(p, "AUTH", 4) == 0) {
 			p += 5;
+			if (strcasestr(p, "PLAIN"))
+				session->avail_auth_type |= SMTPAUTH_PLAIN;
 			if (strcasestr(p, "LOGIN"))
 				session->avail_auth_type |= SMTPAUTH_LOGIN;
 			if (strcasestr(p, "CRAM-MD5"))
@@ -321,6 +328,58 @@ static gint smtp_auth_cram_md5(SMTPSession *session)
 
 	session_send_msg(SESSION(session), SESSION_MSG_NORMAL, "AUTH CRAM-MD5");
 	log_print("ESMTP> AUTH CRAM-MD5\n");
+
+	return SM_OK;
+}
+
+static gint smtp_auth_plain(SMTPSession *session)
+{
+	gchar buf[MSGBUFSIZE];
+
+	/* 
+ 	 * +1      +1      +1
+	 * \0<user>\0<pass>\0 
+	 */
+	int b64len = (1 + strlen(session->user) + 1 + strlen(session->pass) + 1);
+	gchar *b64buf = g_malloc(b64len);
+
+	/* use the char *ptr to walk the base64 string with embedded \0 */
+	char  *a = b64buf;
+	int  b64cnt = 0;
+
+	session->state = SMTP_AUTH_PLAIN;
+	session->auth_type = SMTPAUTH_PLAIN;
+
+	memset(buf, 0, sizeof buf);
+
+	/*
+	 * have to construct the string bit by bit. sprintf can't do it in one.
+	 * first field is null, so string is \0<user>\0<password>
+	 */
+	*a = 0;
+	a++;
+
+	g_snprintf (a, b64len - 1, "%s", session->user);
+
+	b64cnt = strlen(session->user)+1;
+	a += b64cnt;
+
+	g_snprintf (a, b64len - b64cnt - 1, "%s", session->pass);
+	b64cnt += strlen(session->pass) + 1;	
+
+	/*
+	 * reuse the char *ptr to offset into the textbuf to meld
+	 * the plaintext ESMTP message and the base64 string value
+	 */
+	strcpy(buf, "AUTH PLAIN ");
+	a = buf + strlen(buf);
+	base64_encode(a, b64buf, b64cnt);
+
+	session_send_msg(SESSION(session), SESSION_MSG_NORMAL, buf);
+
+	log_print("ESMTP> [AUTH PLAIN]\n");
+
+	g_free(b64buf);
 
 	return SM_OK;
 }
@@ -439,6 +498,7 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 	case SMTP_EHLO:
 	case SMTP_STARTTLS:
 	case SMTP_AUTH:
+	case SMTP_AUTH_PLAIN:
 	case SMTP_AUTH_LOGIN_USER:
 	case SMTP_AUTH_LOGIN_PASS:
 	case SMTP_AUTH_CRAM_MD5:
@@ -554,6 +614,7 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 	case SMTP_AUTH_LOGIN_USER:
 		smtp_auth_login_user_recv(smtp_session, msg);
 		break;
+	case SMTP_AUTH_PLAIN:
 	case SMTP_AUTH_LOGIN_PASS:
 	case SMTP_AUTH_CRAM_MD5:
 		smtp_from(smtp_session);

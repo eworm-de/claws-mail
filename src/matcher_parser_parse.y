@@ -548,14 +548,14 @@ MATCHER_ALL
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_PARTIAL;
-	prop = matcherprop_new(criteria, NULL, MATCHTYPE_MATCH, "SC-Partially-Retrieved", 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_NOT_PARTIAL
 {
 	gint criteria = 0;
 
 	criteria = MATCHCRITERIA_NOT_PARTIAL;
-	prop = matcherprop_new(criteria, NULL, MATCHTYPE_MATCH, "SC-Partially-Retrieved", 0);
+	prop = matcherprop_new(criteria, NULL, 0, NULL, 0);
 }
 | MATCHER_COLORLABEL MATCHER_INTEGER
 {

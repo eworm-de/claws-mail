@@ -1,3 +1,75 @@
+2004-12-09 [colin]	0.9.13cvs10
+
+	* src/procmime.c
+		Fix procmime_encode_content doing horribly wrong
+		stuff when encoding to B64 from memory
+
+2004-12-08 [colin]	0.9.13cvs9
+
+	* src/gtk/colorlabel.c
+		Fix color label off-by-one
+		Patch by Alfons
+
+2004-12-08 [hoa]	0.9.13cvs8
+
+	* src/quote_fmt_parse.y
+		really fix buffer overflow
+
+2004-12-08 [colin]	0.9.13cvs7
+
+	* src/matcher_parser_parse.y
+	* src/msgcache.c
+	* src/prefs_matcher.c
+	* src/procheader.c
+	* src/matcher.c
+	* src/common/defs.h
+		Cache total_size and use that to speed up
+		'partial' match.
+		Add 'partial' to the list of useable stuff
+		in filtering
+
+2004-12-08 [paul]
+
+	* po/sr.po
+		updated by URKE MMI
+
+2004-12-08 [colin]	0.9.13cvs6
+
+	* src/textview.c
+		Fix possible boundary overrun in
+		get_email_part(). Patch by Alfons
+
+2004-12-08 [hoa]	0.9.13cvs5
+
+	* src/quote_fmt_parse.y
+		fix buffer overflow
+		http://bugs.gentoo.org/show_bug.cgi?id=67253
+
+2004-12-07 [thorsten]	0.9.13cvs4
+
+	* src/procmime.c
+		fix leak introduced with 0.9.13cvs1
+
+2004-12-07 [keith]	0.9.13cvs3
+
+	* src/procmime.c
+		Fix typo
+
+2004-12-07 [colin]	0.9.13cvs2
+
+	* AUTHORS
+	* src/prefs_account.c
+	* src/common/smtp.c
+	* src/common/smtp.h
+		Add SMTP PLAIN authentication. Patch by 
+		George Michaelson <ggm@apnic.net>
+
+2004-12-07 [thorsten]	0.9.13cvs1
+
+	* src/procmime.c
+		[Bug 650] reply button causes crash
+		Patch partly by David Relson
+
 2004-12-06 [paul]	0.9.13
 
 	0.9.13 released

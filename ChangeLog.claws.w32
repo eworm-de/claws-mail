@@ -1,3 +1,25 @@
+2004-12-09 [thorsten]	0.9.13cvs10.1
+
+	* AUTHORS
+	* ChangeLog.claws
+	* PATCHSETS
+	* configure.ac
+	* po/sr.po
+	* src/matcher.c
+	* src/matcher_parser_parse.y
+	* src/msgcache.c
+	* src/prefs_account.c
+	* src/prefs_matcher.c
+	* src/procheader.c
+	* src/procmime.c
+	* src/quote_fmt_parse.y
+	* src/textview.c
+	* src/common/defs.h
+	* src/common/smtp.c
+	* src/common/smtp.h
+	* src/gtk/colorlabel.c
+		sync 0.9.13.10
+
 2004-12-09 [thorsten]	0.9.13cvs0.2
 
 	* win32/utils/sylpheed-setup.iss.in

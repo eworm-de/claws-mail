@@ -282,12 +282,10 @@ GtkWidget *colorlabel_create_color_menu(void)
 	menu = gtk_menu_new();
 	gtk_object_set_data(GTK_OBJECT(menu), "label_color_menu", menu);
 
-#if 0
 	item = gtk_menu_item_new_with_label(_("None"));
 	gtk_menu_append(GTK_MENU(menu), item);
 	gtk_object_set_data(GTK_OBJECT(item), "color", GUINT_TO_POINTER(0));
 	gtk_widget_show(item);
-#endif
 
 	/* and the color items */
 	for (i = 0; i < LABEL_COLORS_ELEMS; i++) {
