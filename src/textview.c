@@ -1341,17 +1341,18 @@ gboolean textview_search_string(TextView *textview, const gchar *str,
 		if (text_len - pos < len) break;
 		if (gtkut_stext_match_string(text, pos, wcs, len, case_sens)
 		    == TRUE) {
+			gtk_widget_hide(GTK_WIDGET(textview->scrolledwin));
 			gtk_editable_set_position(GTK_EDITABLE(text),
 						  pos + len);
 			gtk_editable_select_region(GTK_EDITABLE(text),
 						   pos, pos + len);
+			gtk_widget_show(GTK_WIDGET(textview->scrolledwin));
 			textview_set_position(textview, pos + len);
 			found = TRUE;
 			break;
 		}
 		if (text_len - pos == len) break;
 	}
-
 	g_free(wcs);
 	return found;
 }

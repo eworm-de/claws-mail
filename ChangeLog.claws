@@ -1,4 +1,13 @@
-2002-03-16 [melvin]	0.7.4claws16
+2002-03-17 [melvin]	0.7.4claws17
+	
+	* src/textview.c
+		Worked around a gtktext 'bug': when searching for 
+		a text in a long message it was scrolling slowly
+		line by line until it hit the searched text.
+	* po/fr.po
+		Updated French translation
+
+2002-03-17 [melvin]	0.7.4claws16
 
 	* src/mainwindow.c
 	* src/compose.c
