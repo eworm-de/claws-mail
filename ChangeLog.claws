@@ -1,3 +1,8 @@
+2002-11-12 [colin]	0.8.5claws133
+
+	* src/msgcache.c
+		Reverse list order
+
 2002-11-12 [melvin]	0.8.5claws132
 
 	* src/compose.c

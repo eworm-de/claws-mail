@@ -449,7 +449,7 @@ static void msgcache_get_msg_list_func(gpointer key, gpointer value, gpointer us
 	GSList **listptr = user_data;
 	MsgInfo *msginfo = value;
 
-	*listptr = g_slist_prepend(*listptr, procmsg_msginfo_new_ref(msginfo));
+	*listptr = g_slist_append(*listptr, procmsg_msginfo_new_ref(msginfo));
 }
 
 GSList *msgcache_get_msg_list(MsgCache *cache)
