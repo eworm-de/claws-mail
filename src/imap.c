@@ -143,10 +143,6 @@ static gint imap_do_copy		(Folder		*folder,
 					 MsgInfo	*msginfo,
 					 gboolean	 remove_source);
 
-static GSList *imap_get_uncached_messages	(IMAPSession	*session,
-						 FolderItem	*item,
-						 guint32	 first_uid,
-						 guint32	 last_uid);
 static void imap_delete_all_cached_messages	(FolderItem	*item);
 
 #if USE_OPENSSL
@@ -219,6 +215,7 @@ static gint imap_greeting		(SockInfo	*sock,
 static void imap_get_capability		(Session	*session);
 static gboolean imap_has_capability	(IMAPSession	*session,
  					 const gchar	*cap);
+static const gchar *numberlist_to_imapset(MsgNumberList *list);
 
 /* low-level IMAP4rev1 commands */
 static gint imap_cmd_login	(SockInfo	*sock,
@@ -260,8 +257,7 @@ static gint imap_cmd_rename	(SockInfo	*sock,
 static gint imap_cmd_delete	(SockInfo	*sock,
 				 const gchar	*folder);
 static gint imap_cmd_envelope	(SockInfo	*sock,
-				 guint32	 first_uid,
-				 guint32	 last_uid);
+				 MsgNumberList	*numlist);
 static gint imap_cmd_fetch	(SockInfo	*sock,
 				 guint32	 uid,
 				 const gchar	*filename);
@@ -1414,7 +1410,7 @@ gint imap_remove_folder(Folder *folder, FolderItem *item)
 
 static GSList *imap_get_uncached_messages(IMAPSession *session,
 					  FolderItem *item,
-					  guint32 first_uid, guint32 last_uid)
+					  MsgNumberList *numlist)
 {
 	gchar *tmp;
 	GSList *newlist = NULL;
@@ -1426,9 +1422,8 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 	g_return_val_if_fail(item != NULL, NULL);
 	g_return_val_if_fail(item->folder != NULL, NULL);
 	g_return_val_if_fail(FOLDER_CLASS(item->folder) == &imap_class, NULL);
-	g_return_val_if_fail(first_uid <= last_uid, NULL);
 
-	if (imap_cmd_envelope(SESSION(session)->sock, first_uid, last_uid)
+	if (imap_cmd_envelope(SESSION(session)->sock, numlist)
 	    != IMAP_SUCCESS) {
 		log_warning(_("can't get envelope\n"));
 		return NULL;
@@ -2218,6 +2213,48 @@ static gboolean imap_has_capability(IMAPSession *session, const gchar *cap)
 	return FALSE;
 }
 
+static const gchar *numberlist_to_imapset(MsgNumberList *list)
+{
+	static GString *imapset = NULL;
+	MsgNumberList *numlist, *elem;
+	guint first, last, next;
+
+	if (imapset == NULL)
+		imapset = g_string_sized_new(256);
+	else
+		g_string_truncate(imapset, 0);
+
+	numlist = g_slist_copy(list);
+	numlist = g_slist_sort(numlist, g_int_compare);
+
+	first = GPOINTER_TO_INT(numlist->data);
+	last = first;
+	for(elem = g_slist_next(numlist); elem != NULL; elem = g_slist_next(elem)) {
+		next = GPOINTER_TO_INT(elem->data);
+		if(next != (last + 1)) {
+			if (imapset->len > 0)
+				g_string_append(imapset, ",");
+			if (first == last)
+				g_string_sprintfa(imapset, "%d", first);
+			else
+				g_string_sprintfa(imapset, "%d:%d", first, last);
+
+			first = next;
+		}
+		last = next;
+	}
+	if (imapset->len > 0)
+		g_string_append(imapset, ",");
+	if (first == last)
+		g_string_sprintfa(imapset, "%d", first);
+	else
+		g_string_sprintfa(imapset, "%d:%d", first, last);
+
+	g_slist_free(numlist);
+
+	return imapset->str;
+}
+
 static gint imap_cmd_noop(SockInfo *sock)
 {
 	imap_cmd_gen_send(sock, "NOOP");
@@ -2593,7 +2630,7 @@ static gint imap_cmd_copy(IMAPSession * session,
 	return ok;
 }
 
-gint imap_cmd_envelope(SockInfo *sock, guint32 first_uid, guint32 last_uid)
+gint imap_cmd_envelope(SockInfo *sock, MsgNumberList *numlist)
 {
 	static GString *header_fields = NULL;
 
@@ -2624,8 +2661,8 @@ gint imap_cmd_envelope(SockInfo *sock, guint32 first_uid, guint32 last_uid)
 	}
 	
 	imap_cmd_gen_send
-		(sock, "UID FETCH %d:%d (UID FLAGS RFC822.SIZE BODY.PEEK[HEADER.FIELDS (%s)])",
-		 first_uid, last_uid,
+		(sock, "UID FETCH %s (UID FLAGS RFC822.SIZE BODY.PEEK[HEADER.FIELDS (%s)])",
+		 numberlist_to_imapset(numlist),
 		 header_fields->str);
 
 	return IMAP_SUCCESS;
@@ -3196,16 +3233,11 @@ static MsgInfo *imap_parse_msg(const gchar *file, FolderItem *item)
 	return msginfo;
 }
 
-static int compare_uint(gconstpointer a, gconstpointer b)
-{
-	return a-b;
-}
-
 GSList *imap_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 {
 	IMAPSession *session;
-	GSList *sorted_list, *elem, *ret = NULL;
-	gint ok, startnum, lastnum;
+	MsgInfoList *ret = NULL;
+	gint ok;
 
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
@@ -3219,22 +3251,25 @@ GSList *imap_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 	if (ok != IMAP_SUCCESS)
 		return NULL;
 
-	sorted_list = g_slist_sort(g_slist_copy(msgnum_list), compare_uint);
+	if (!(item->stype == F_QUEUE || item->stype == F_DRAFT)) {
+		ret = g_slist_concat(ret,
+			imap_get_uncached_messages(
+			session, item, msgnum_list));
+	} else {
+		MsgNumberList *sorted_list, *elem;
+		gint startnum, lastnum;
 
-	startnum = lastnum = GPOINTER_TO_INT(sorted_list->data);
+ 		sorted_list = g_slist_sort(g_slist_copy(msgnum_list), g_int_compare);
 
-	for (elem = sorted_list;; elem = g_slist_next(elem)) {
-		guint num;
+		startnum = lastnum = GPOINTER_TO_INT(sorted_list->data);
 
-		if (elem)
-			num = GPOINTER_TO_INT(elem->data);
+		for (elem = sorted_list;; elem = g_slist_next(elem)) {
+			guint num;
 
-		if (num > lastnum + 1 || elem == NULL) {
-			if (!(item->stype == F_QUEUE || item->stype == F_DRAFT)) {
-				ret = g_slist_concat(ret,
-					imap_get_uncached_messages(
-						session, item, startnum, lastnum));
-			} else {
+			if (elem)
+				num = GPOINTER_TO_INT(elem->data);
+
+			if (num > lastnum + 1 || elem == NULL) {
 				int i;
 				for (i = startnum; i <= lastnum; ++i) {
 					gchar *file;
@@ -3249,59 +3284,34 @@ GSList *imap_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 						g_free(file);
 					}
 				}
+
+				if (elem == NULL)
+					break;
+
+				startnum = num;
 			}
-
-			if (elem == NULL)
-				break;
-
-			startnum = num;
+			lastnum = num;
 		}
-		lastnum = num;
-	}
 
-	g_slist_free(sorted_list);
+		g_slist_free(sorted_list);
+	}
 
 	return ret;
 }
 
 MsgInfo *imap_get_msginfo(Folder *folder, FolderItem *item, gint uid)
 {
-	IMAPSession *session;
-	MsgInfo *msginfo = NULL;
-	gint ok;
+	MsgInfo *msginfo;
+	MsgInfoList *msginfolist;
+	MsgNumberList numlist;
 
-	g_return_val_if_fail(folder != NULL, NULL);
-	g_return_val_if_fail(item != NULL, NULL);
+	numlist.next = NULL;
+	numlist.data = GINT_TO_POINTER(uid);
 
-	session = imap_session_get(folder);
-	g_return_val_if_fail(session != NULL, NULL);
+	msginfolist = imap_get_msginfos(folder, item, &numlist);
+	msginfo = msginfolist->data;
+	g_slist_free(msginfolist);
 
-	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
-			 NULL, NULL, NULL, NULL);
-	if (ok != IMAP_SUCCESS)
-		return NULL;
-
-	if (!(item->stype == F_QUEUE || item->stype == F_DRAFT)) {
-		GSList *list;
-
-		list = imap_get_uncached_messages(session, item, uid, uid);
-		if (list) {
-			msginfo = (MsgInfo *)list->data;
-			list->data = NULL;
-		}
-		procmsg_msg_list_free(list);
-	} else {
-		gchar *file;
-
-		file = imap_fetch_msg(folder, item, uid);
-		if (file != NULL) {
-			msginfo = imap_parse_msg(file, item);
-			if (msginfo != NULL)
-				msginfo->msgnum = uid;
-			g_free(file);
-		}
-	}
-	
 	return msginfo;
 }
 

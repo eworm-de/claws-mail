@@ -419,5 +419,6 @@ gchar * expand_search_string	(const gchar *str);
 
 guint g_stricase_hash	(gconstpointer gptr);
 gint g_stricase_equal	(gconstpointer gptr1, gconstpointer gptr2);
+gint g_int_compare	(gconstpointer a, gconstpointer b);
 
 #endif /* __UTILS_H__ */

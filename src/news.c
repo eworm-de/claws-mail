@@ -1006,11 +1006,6 @@ static GSList *news_get_msginfos_for_range(NNTPSession *session, FolderItem *ite
 	return newlist;
 }
 
-gint news_fetch_msgnum_sort(gconstpointer a, gconstpointer b)
-{
-	return (GPOINTER_TO_INT(a) - GPOINTER_TO_INT(b));
-}
-
 GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 {
 	NNTPSession *session;
@@ -1027,7 +1022,7 @@ GSList *news_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 	g_return_val_if_fail(session != NULL, NULL);
 
 	tmp_msgnum_list = g_slist_copy(msgnum_list);
-	tmp_msgnum_list = g_slist_sort(tmp_msgnum_list, news_fetch_msgnum_sort);
+	tmp_msgnum_list = g_slist_sort(tmp_msgnum_list, g_int_compare);
 
 	progressindicator_start(PROGRESS_TYPE_NETWORK);
 	tofetch = g_slist_length(tmp_msgnum_list);

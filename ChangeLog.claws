@@ -1,3 +1,15 @@
+2003-04-06 [christoph]	0.8.11claws74
+
+	* src/common/utils.[ch]
+		add g_int_compare() function for slist sorting
+
+	* src/imap.c
+		fetch all MsgInfos with one command in imap_get_msginfos()
+		using an imap set with a list of ranges
+
+	* src/news.c
+		use new g_int_compare() function
+
 2003-04-06 [thorsten]	0.8.11claws73
 
 	* src/mh.c

@@ -3446,3 +3446,7 @@ gint g_stricase_equal(gconstpointer gptr1, gconstpointer gptr2)
 	return !strcasecmp(str1, str2);
 }
 
+gint g_int_compare(gconstpointer a, gconstpointer b)
+{
+	return GPOINTER_TO_INT(a) - GPOINTER_TO_INT(b);
+}
