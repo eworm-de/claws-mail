@@ -1,3 +1,8 @@
+2002-06-10 [match]	0.7.6claws38
+
+	* src/addressbook.c
+		Included address completion patch from Gustavo Noronha.
+
 2002-06-10 [paul]	0.7.6claws37
 
 	* src/inc.[ch]
