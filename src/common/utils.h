@@ -458,6 +458,9 @@ gint quote_cmd_argument(gchar * result, guint size,
 			const gchar * path);
 GNode *g_node_map(GNode *node, GNodeMapFunc func, gpointer data);
 
+gboolean get_hex_value(guchar *out, gchar c1, gchar c2);
+void get_hex_str(gchar *out, guchar ch);
+
 #ifdef __cplusplus
 }
 #endif

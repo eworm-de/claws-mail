@@ -20,8 +20,7 @@
 #include <glib.h>
 #include <ctype.h>
 
-static gboolean get_hex_value(guchar *out, gchar c1, gchar c2);
-static void get_hex_str(gchar *out, guchar ch);
+#include "utils.h"
 
 #define MAX_LINELEN	76
 
@@ -181,51 +180,4 @@ void qp_q_encode(gchar *out, const guchar *in)
 	}
 
 	*outp = '\0';
-}
-
-#define HEX_TO_INT(val, hex)			\
-{						\
-	gchar c = hex;				\
-						\
-	if ('0' <= c && c <= '9') {		\
-		val = c - '0';			\
-	} else if ('a' <= c && c <= 'f') {	\
-		val = c - 'a' + 10;		\
-	} else if ('A' <= c && c <= 'F') {	\
-		val = c - 'A' + 10;		\
-	} else {				\
-		val = -1;			\
-	}					\
-}
-
-static gboolean get_hex_value(guchar *out, gchar c1, gchar c2)
-{
-	gint hi, lo;
-
-	HEX_TO_INT(hi, c1);
-	HEX_TO_INT(lo, c2);
-
-	if (hi == -1 || lo == -1)
-		return FALSE;
-
-	*out = (hi << 4) + lo;
-	return TRUE;
-}
-
-#define INT_TO_HEX(hex, val)		\
-{					\
-	if ((val) < 10)			\
-		hex = '0' + (val);	\
-	else				\
-		hex = 'A' + (val) - 10;	\
-}
-
-static void get_hex_str(gchar *out, guchar ch)
-{
-	gchar hex;
-
-	INT_TO_HEX(hex, ch >> 4);
-	*out++ = hex;
-	INT_TO_HEX(hex, ch & 0x0f);
-	*out++ = hex;
 }
