@@ -1,3 +1,7 @@
+2001-04-29 [sergey]
+
+	* configure.in: fixed wint_t typedef detection again
+
 2001-04-28 [hoa]
 
 	* src/prefs_account.[ch], added A_LOCAL_CMD

@@ -184,7 +184,16 @@ AC_TYPE_OFF_T
 AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 AC_STRUCT_TM
-AC_CHECK_TYPE(wint_t, unsigned int)
+
+dnl AC_CHECK_TYPE(wint_t, unsigned int) does not work because wint_t
+dnl may be defined only in wchar.h (this happens with gcc-2.96).
+dnl So we need to use this extended macro.
+sv_CHECK_TYPE(wint_t, unsigned int,
+[
+#if HAVE_WCHAR_H
+#include <wchar.h>
+#endif
+])
 
 GNUPG_CHECK_TYPEDEF(u32, HAVE_U32_TYPEDEF)
 AC_CHECK_SIZEOF(unsigned short, 2)
