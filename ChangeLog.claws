@@ -1,3 +1,11 @@
+2003-02-11 [alfons]	0.8.9claws55
+
+	* src/colorlabel.c
+		don't use pixmaps for label color rect but draw rectangles
+		so we can respect the color map of palette based visuals
+		(fixes the long time crashes on Suns - thanks to Andreas
+		Engel and Steve O'Hara-Smith for testing)
+
 2003-02-11 [christoph]	0.8.9claws54
 
 	* src/matcher_parser_parse.y
