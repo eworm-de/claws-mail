@@ -1,3 +1,46 @@
+2002-07-26 [melvin]	0.8.0claws17
+
+	* src/logwindow.c
+		Fixed a crash introduced in 0.8.0claws5 when log is 
+		cut under 80 characters.
+
+2002-07-26 [paul]	0.8.0claws16
+
+	* sync with 0.8.1cvs1
+		see ChangeLog 2002-07-26
+
+2002-07-26 [christoph]	0.8.0claws15
+
+	* src/imap.[ch]
+		imap folder now remembers the last selected
+		folder and imap_fetch_msginfo skips selecting
+		the folder if it is already selected
+
+2002-07-26 [christoph]	0.8.0claws14
+
+	* src/folder.c
+	* src/folderview.c
+	* src/imap.c
+		fix imap folder rescanning
+
+2002-07-25 [christoph]	0.8.0claws13
+
+	* src/filter.c
+	* src/folder.[ch]
+	* src/folderview.c
+	* src/imap.[ch]
+	* src/mainwindow.c
+	* src/mbox_folder.c
+	* src/mh.c
+	* src/news.c
+		implement imap uid cache and uid validity check
+
+2002-07-25 [alfons]	0.8.0claws12
+
+	* src/summaryview.c
+		fix a brown paper bag bug, and also add some more
+		checks
+
 2002-07-25 [christoph]	0.8.0claws11
 
 	* src/folder.c

@@ -1903,10 +1903,11 @@ void summary_sort(SummaryView *summaryview,
 		{
 			PrefsFolderItem *prefs = summaryview->folder_item->prefs;
 
-			if (prefs == NULL) 
-				cmp_func = (GtkCListCompareFunc)summary_cmp_by_subject;
-			else
+			if (prefs && prefs->enable_simplify_subject
+			&&  prefs->simplify_subject_regexp && prefs->simplify_subject_regexp[0])
 				cmp_func = (GtkCListCompareFunc)summary_cmp_by_simplified_subject;
+			else
+				cmp_func = (GtkCListCompareFunc)summary_cmp_by_subject;
 		}				
 		break;
 	case SORT_BY_SCORE:
@@ -4808,7 +4809,7 @@ static gint summary_cmp_by_simplified_subject
 	const SummaryView *sv = gtk_object_get_data(GTK_OBJECT(clist), "summaryview");
 	
 	g_return_val_if_fail(sv, -1);
-	g_return_val_if_fail(msginfo1 == NULL || msginfo2 == NULL, -1);
+	g_return_val_if_fail(msginfo1 != NULL && msginfo2 != NULL, -1);
 	
 	str1 = GTK_CELL_TEXT(r1->cell[sv->col_pos[S_COL_SUBJECT]])->text;
 	str2 = GTK_CELL_TEXT(r2->cell[sv->col_pos[S_COL_SUBJECT]])->text;

@@ -37,6 +37,7 @@
 typedef struct _IMAPFolder	IMAPFolder;
 typedef struct _IMAPSession	IMAPSession;
 typedef struct _IMAPNameSpace	IMAPNameSpace;
+typedef struct _IMAPFolderItem	IMAPFolderItem;
 
 #include "prefs_account.h"
 
@@ -47,6 +48,8 @@ struct _IMAPFolder
 {
 	RemoteFolder rfolder;
 
+	gchar *selected_folder;
+	
 	/* list of IMAPNameSpace */
 	GList *ns_personal;
 	GList *ns_others;
@@ -65,6 +68,14 @@ struct _IMAPNameSpace
 {
 	gchar *name;
 	gchar separator;
+};
+
+struct _IMAPFolderItem
+{
+	FolderItem item;
+
+	guint lastuid;
+	GSList *uid_list;
 };
 
 #define IMAP_SUCCESS	0
@@ -95,6 +106,9 @@ typedef enum
 Folder	*imap_folder_new		(const gchar	*name,
 					 const gchar	*path);
 void	 imap_folder_destroy		(IMAPFolder	*folder);
+
+FolderItem *imap_folder_item_new	();
+void imap_folder_item_destroy		(FolderItem *item);
 
 Session *imap_session_new		(const PrefsAccount *account);
 void imap_session_destroy		(IMAPSession	*session);

@@ -133,9 +133,9 @@ void mh_folder_destroy(MHFolder *folder)
 
 static void mh_folder_init(Folder *folder, const gchar *name, const gchar *path)
 {
-	folder_local_folder_init(folder, name, path);
-
 	folder->type = F_MH;
+
+	folder_local_folder_init(folder, name, path);
 
 /*
 	folder->get_msg_list        = mh_get_msg_list;
@@ -900,11 +900,11 @@ void mh_scan_tree(Folder *folder)
 		gchar *p_name;
 		p_name = g_strdup(folder->name);
 		locale_from_utf8(&p_name);
-		item = folder_item_new((p_name), NULL);
+		item = folder_item_new(folder, p_name, NULL);
 		g_free(p_name);
 	}
 #else
-	item = folder_item_new(folder->name, NULL);
+	item = folder_item_new(folder, folder->name, NULL);
 #endif
 	item->folder = folder;
 	folder->node = g_node_new(item);
@@ -984,7 +984,7 @@ FolderItem *mh_create_folder(Folder *folder, FolderItem *parent,
 				   NULL);
 	else
 		path = g_strdup(name);
-	new_item = folder_item_new(name, path);
+	new_item = folder_item_new(folder, name, path);
 	folder_item_append(parent, new_item);
 	g_free(path);
 
@@ -1279,7 +1279,7 @@ static void mh_scan_tree_recursive(FolderItem *item)
 				continue;
 			}
 
-			new_item = folder_item_new(d->d_name, entry);
+			new_item = folder_item_new(item->folder, d->d_name, entry);
 			folder_item_append(item, new_item);
 			if (!item->path) {
 				if (!strcmp(d->d_name, INBOX_DIR)) {

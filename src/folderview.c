@@ -1673,7 +1673,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 			gdk_pointer_ungrab(GDK_CURRENT_TIME);
 	}
 
-	if((item->folder->type == F_IMAP) || (item->folder->type == F_NEWS)) {
+	if(((item->folder->type == F_IMAP) && !item->no_select) || (item->folder->type == F_NEWS)) {
 		folder_item_scan(item);
 	}
 
@@ -2388,7 +2388,7 @@ static void folderview_new_news_group_cb(FolderView *folderview, guint action,
 					     FALSE, FALSE);
 		gtk_ctree_expand(ctree, servernode);
 
-		newitem = folder_item_new(name, name);
+		newitem = folder_item_new(folder, name, name);
 		folder_item_append(rootitem, newitem);
 		gtk_ctree_node_set_row_data(ctree, node, newitem);
 	}
