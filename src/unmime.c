@@ -131,7 +131,11 @@ void unmime_header(gchar *out, const gchar *str)
 		}
 
 		/* convert to locale encoding */
+#ifdef WIN32	/* XXX:tm	conv_codeset_strdup crash */
+		conv_str = g_strdup(decoded_text);
+#else
 		conv_str = conv_codeset_strdup(decoded_text, charset, NULL);
+#endif
 		if (conv_str) {
 			len = strlen(conv_str);
 			memcpy(outp, conv_str, len);

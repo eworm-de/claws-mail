@@ -941,7 +941,7 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 			if (str) {
 				fputs(str, outfp);
 #ifdef WIN32
-/*XXX:tm ??? */
+/* XXX:tm	conv_codeset_strdup crash */
 #else
 				g_free(str);
 #endif

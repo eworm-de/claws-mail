@@ -592,7 +592,9 @@ gint conv_convert(CodeConverter *conv, gchar *outbuf, gint outlen,
 		return -1;
 	else {
 		strncpy2(outbuf, str, outlen);
-/*XXX:tm		g_free(str); */
+#ifndef WIN32	/* XXX:tm	conv_codeset_strdup crash */
+		g_free(str);
+#endif
 	}
 #else /* !HAVE_LIBJCONV */
 	conv->code_conv_func(outbuf, outlen, inbuf);
