@@ -3169,12 +3169,6 @@ static gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item)
 
         lock = TRUE;
 	
-/*        if(!compose_check_for_valid_recipient(compose)) {
-                alertpanel_error(_("Recipient is not specified."));
-                lock = FALSE;
-                return -1;
-        } */
-									
 	if (compose_check_entries(compose) == FALSE) {
                 lock = FALSE;
                 return -1;
