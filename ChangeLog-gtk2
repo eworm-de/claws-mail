@@ -1,3 +1,9 @@
+2004-01-27 Thorsten Maerz <torte@netztorte.de>
+	* src/common/socket.c
+		Fix SSL receive
+	* src/compose.c
+		Fix clipboard menu hotkeys
+
 2004-01-25 Thorsten Maerz <torte@netztorte.de>
 	* src/gtk/gtkaspell.[ch]
 	  src/compose.c
