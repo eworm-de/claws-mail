@@ -361,6 +361,7 @@ static void scan_tree_func	 (Folder	*folder,
 				  gpointer	 data);
 				  
 static void activate_compose_button (MainWindow *mainwin,
+				ToolbarStyle      style,
 				ComposeButtonType type);
 
 #define  SEPARATE_ACTION  667
@@ -1462,6 +1463,8 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	GtkWidget *getall_btn;
 	GtkWidget *compose_mail_btn;
 	GtkWidget *compose_news_btn;
+	GtkWidget *compose_mail_btn_plain;
+	GtkWidget *compose_news_btn_plain;
 	GtkWidget *reply_btn;
 	GtkWidget *replyall_btn;
 	GtkWidget *replysender_btn;
@@ -1474,7 +1477,6 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	GtkWidget *next_btn;
 	GtkWidget *delete_btn;
 	GtkWidget *exec_btn;
-
 	GtkWidget *compose_type_btn;
 	GtkWidget *compose_type_arrow;
 	GtkWidget *compose_box;
@@ -1513,6 +1515,11 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 					   icon_wid,
 					   toolbar_send_cb,
 					   mainwin);
+
+	/* to implement Leandro's "combined" compose buttons, we create
+	 * two sets of compose buttons, one for normal (text + icon) 
+	 * toolbar, and one for both text-only and icon-only toolbar;
+	 * we switch between those sets. */
 
 	/* insert compose mail button widget */					   
 
@@ -1555,6 +1562,28 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	gtk_button_set_relief(GTK_BUTTON(compose_news_btn), GTK_RELIEF_NONE);
 	gtk_toolbar_append_widget(GTK_TOOLBAR(toolbar), compose_news_btn,
 		NULL, NULL);
+	
+	/* insert compose btn plain */
+	
+	CREATE_TOOLBAR_ICON(stock_mail_compose_xpm);
+	compose_mail_btn_plain = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
+					      _("Compose email"),
+					      _("Compose an email message"),
+					      "New",
+					      icon_wid,
+					      toolbar_compose_mail_cb,
+					      mainwin);
+
+	/* insert compose btn plain */
+
+	CREATE_TOOLBAR_ICON(stock_news_compose_xpm);
+	compose_news_btn_plain = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
+					      _("Compose news"),
+					      _("Compose a news message"),
+					      "New",
+					      icon_wid,
+					      toolbar_compose_news_cb,
+					      mainwin);
 
 	/* insert compose button type widget */
 	
@@ -1684,6 +1713,8 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	mainwin->getall_btn      = getall_btn;
 	mainwin->compose_mail_btn = compose_mail_btn;
 	mainwin->compose_news_btn = compose_news_btn;
+	mainwin->compose_mail_btn_plain = compose_mail_btn_plain;
+	mainwin->compose_news_btn_plain = compose_news_btn_plain;
 	mainwin->reply_btn       = reply_btn;
 	mainwin->replyall_btn    = replyall_btn;
 	mainwin->replysender_btn = replysender_btn;
@@ -1699,7 +1730,10 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 
 	gtk_widget_show_all(toolbar);
 
-	activate_compose_button(mainwin, COMPOSEBUTTON_MAIL);
+	/* activate Leandro menu system */
+	activate_compose_button(mainwin, 
+				prefs_common.toolbar_style,
+				mainwin->compose_btn_type);
 }
 
 /* callback functions */
@@ -1741,7 +1775,7 @@ static void toolbar_popup_compose_type_set(GtkWidget *widget, gpointer data)
 
 	mainwindow->compose_btn_type = compose_type;
 
-	activate_compose_button(mainwindow, mainwindow->compose_btn_type);
+	activate_compose_button(mainwindow, prefs_common.toolbar_style, mainwindow->compose_btn_type);
 }	
 
 static void toolbar_inc_cb	(GtkWidget	*widget,
@@ -2024,6 +2058,9 @@ static void toggle_message_cb(MainWindow *mainwin, guint action,
 static void toggle_toolbar_cb(MainWindow *mainwin, guint action,
 			      GtkWidget *widget)
 {
+	activate_compose_button(mainwin, (ToolbarStyle)action, 
+			mainwin->compose_btn_type);
+	
 	switch ((ToolbarStyle)action) {
 	case TOOLBAR_NONE:
 		gtk_widget_hide(mainwin->handlebox);
@@ -2534,12 +2571,29 @@ static void scan_tree_func(Folder *folder, FolderItem *item, gpointer data)
 }
 
 static void activate_compose_button (MainWindow *mainwin,
+				ToolbarStyle style,
 				ComposeButtonType type)
 {
-	gtk_widget_hide(type == COMPOSEBUTTON_NEWS ? mainwin->compose_mail_btn 
-		: mainwin->compose_news_btn);
-	gtk_widget_show(type == COMPOSEBUTTON_NEWS ? mainwin->compose_news_btn
-		: mainwin->compose_mail_btn);
-	mainwin->compose_btn_type = type;		
+	if (style == TOOLBAR_NONE) 
+		return;
+
+	if (style == TOOLBAR_BOTH) {	
+		gtk_widget_hide(mainwin->compose_mail_btn_plain);
+		gtk_widget_hide(mainwin->compose_news_btn_plain);
+		gtk_widget_hide(type == COMPOSEBUTTON_NEWS ? mainwin->compose_mail_btn 
+			: mainwin->compose_news_btn);
+		gtk_widget_show(type == COMPOSEBUTTON_NEWS ? mainwin->compose_news_btn
+			: mainwin->compose_mail_btn);
+		mainwin->compose_btn_type = type;	
+	}
+	else {
+		gtk_widget_hide(mainwin->compose_news_btn);
+		gtk_widget_hide(mainwin->compose_mail_btn);
+		gtk_widget_hide(type == COMPOSEBUTTON_NEWS ? mainwin->compose_mail_btn_plain 
+			: mainwin->compose_news_btn_plain);
+		gtk_widget_show(type == COMPOSEBUTTON_NEWS ? mainwin->compose_news_btn_plain
+			: mainwin->compose_mail_btn_plain);
+		mainwin->compose_btn_type = type;		
+	}
 }
 

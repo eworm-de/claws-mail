@@ -88,8 +88,10 @@ struct _MainWindow
 	GtkWidget *getall_btn;
 
 	/* compose button stuff */
-	GtkWidget *compose_mail_btn;
-	GtkWidget *compose_news_btn;
+	GtkWidget *compose_mail_btn;		/* a la Leandro */
+	GtkWidget *compose_news_btn;		/* a la Leandro */
+	GtkWidget *compose_mail_btn_plain;	/* plain (text/icon only) */
+	GtkWidget *compose_news_btn_plain;	/* plain (text/icon only) */
 	ComposeButtonType compose_btn_type;
 	
 	GtkWidget *reply_btn;

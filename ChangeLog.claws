@@ -1,8 +1,8 @@
 2001-06-24 [alfons]
 
 	* src/mainwindow.[ch]
-		Implemented Leandro's compose mail / news toolbar.
-		Note: icon/text only toolbars do not work yet.
+		Implemented Leandro's compose mail / news toolbar. Two
+		sets of buttons for different toolbar modes.
 
 2001-06-24 [paul]
 
