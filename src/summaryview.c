@@ -1768,14 +1768,16 @@ static void summary_set_column_titles(SummaryView *summaryview)
 		SORT_BY_FROM,
 		SORT_BY_DATE,
 		SORT_BY_SIZE,
-		SORT_BY_NUMBER
+		SORT_BY_NUMBER,
+		SORT_BY_SCORE,
+		SORT_BY_LOCKED
 	};
 
 	for (pos = 0; pos < N_SUMMARY_COLS; pos++) {
 		type = summaryview->col_state[pos].type;
 
-		single_char = (type == S_COL_MIME ||
-			       type == S_COL_MARK || type == S_COL_UNREAD);
+		/* CLAWS: mime and unread are single char headers */
+		single_char = (type == S_COL_MIME || type == S_COL_UNREAD);
 		justify = (type == S_COL_NUMBER || type == S_COL_SIZE)
 			? GTK_JUSTIFY_RIGHT : GTK_JUSTIFY_LEFT;
 
@@ -1788,6 +1790,11 @@ static void summary_set_column_titles(SummaryView *summaryview)
 				title = gettext(col_label[type]);
 			else
 				title = col_label[type];
+			break;
+		/* CLAWS: dummies for mark and locked headers */	
+		case S_COL_MARK:	
+		case S_COL_LOCKED:
+			title = "";
 			break;
 		default:
 			title = gettext(col_label[type]);
@@ -1804,8 +1811,17 @@ static void summary_set_column_titles(SummaryView *summaryview)
 			continue;
 		}
 
-		hbox = gtk_hbox_new(FALSE, 4);
-		label = gtk_label_new(title);
+		/* CLAWS: changed so that locked and mark headers
+		 * show a pixmap instead of single character */
+		hbox  = gtk_hbox_new(FALSE, 4);
+		
+		if (type == S_COL_LOCKED)
+			label = gtk_pixmap_new(lockedxpm, lockedxpmmask);
+		else if (type == S_COL_MARK) 
+			label = gtk_pixmap_new(markxpm, markxpmmask);
+		else 
+			label = gtk_label_new(title);
+		
 		if (justify == GTK_JUSTIFY_RIGHT)
 			gtk_box_pack_end(GTK_BOX(hbox), label,
 					 FALSE, FALSE, 0);
