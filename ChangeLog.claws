@@ -1,3 +1,10 @@
+2002-07-15 [martin]	0.7.8claws70
+
+	* src/summaryview.c
+		option "display recipient on 'From'..." now works
+		without the need of enabling the option
+		"display  sender  using  address  book".
+
 2002-07-15 [christoph]	0.7.8claws69
 
 	* src/summaryview.c

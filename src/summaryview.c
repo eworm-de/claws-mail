@@ -2259,14 +2259,20 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	    !MSG_IS_NEWS(msginfo->flags)) {
 		gchar *addr = NULL;
 
-		if (prefs_common.use_addr_book) {
-			Xstrdup_a(addr, msginfo->from, return);
-			extract_address(addr);
+		Xstrdup_a(addr, msginfo->from, return);
+		extract_address(addr);
 
+		if (prefs_common.use_addr_book) {
 			if (account_find_from_address(addr)) {
 				addr = summary_complete_address(msginfo->to);
 				g_free(to);
 				to   = g_strconcat("-->", addr == NULL ? msginfo->to : addr, NULL);
+				text[col_pos[S_COL_FROM]] = to;
+			}
+		} else {
+			if (cur_account && cur_account->address && !strcmp( addr, cur_account->address)) {
+				g_free(to);
+				to = g_strconcat("-->", msginfo->to, NULL);
 				text[col_pos[S_COL_FROM]] = to;
 			}
 		}
