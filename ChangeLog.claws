@@ -1,3 +1,8 @@
+2003-08-04 [match]	0.9.4claws3
+
+	* po/POTFILES.in
+		export of LDIF files.
+
 2003-08-04 [match]	0.9.4claws2
 
 	* src/ldif.[ch]

@@ -20,8 +20,10 @@ src/editldap.c
 src/editldap_basedn.c
 src/editvcard.c
 src/exphtmldlg.c
+src/expldifdlg.c
 src/export.c
 src/exporthtml.c
+src/exportldif.c
 src/folder.c
 src/foldersel.c
 src/folderview.c
@@ -42,6 +44,7 @@ src/importpine.c
 src/inc.c
 src/inputdialog.c
 src/logwindow.c
+src/ldif.c
 src/main.c
 src/mainwindow.c
 src/matcher.c
