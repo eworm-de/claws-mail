@@ -1,3 +1,9 @@
+2004-03-15 [paul]	0.9.10claws13
+
+	* folderview.c
+		fix folderview invisibility of newly subscribed
+		newsgroups
+
 2004-03-13 [paul]	0.9.10claws12
 
 	* src/compose.c

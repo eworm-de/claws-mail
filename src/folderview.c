@@ -2278,6 +2278,7 @@ static void folderview_new_news_group_cb(FolderView *folderview, guint action,
 					 GtkWidget *widget)
 {
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
+	gchar *text[N_FOLDER_COLS] = {NULL, "0", "0", "0"};
 	GtkCTreeNode *servernode, *node;
 	Folder *folder;
 	FolderItem *item;
@@ -2342,11 +2343,20 @@ static void folderview_new_news_group_cb(FolderView *folderview, guint action,
 		if (folder_find_child_item_by_name(rootitem, name) != NULL)
 			continue;
 
+		text[COL_FOLDER] = name;
+		node = gtk_ctree_insert_node(ctree, servernode, NULL, text,
+					     FOLDER_SPACING,
+					     folderxpm, folderxpmmask,
+					     folderopenxpm, folderopenxpmmask,
+					     FALSE, FALSE);
+		gtk_ctree_expand(ctree, servernode);
+
 		newitem = folder_item_new(folder, name, name);
 		folder_item_append(rootitem, newitem);
-		folderview_append_item(newitem);
+		gtk_ctree_node_set_row_data(ctree, node, newitem);
 	}
 
+	folderview_sort_folders(folderview, servernode, folder);
 	gtk_clist_thaw(GTK_CLIST(ctree));
 
 	slist_free_strings(new_subscr);
