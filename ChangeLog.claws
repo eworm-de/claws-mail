@@ -1,3 +1,9 @@
+2002-01-11 [christoph]	0.6.6claws47
+
+	* src/compose.c
+		select account from account ids if possible and
+		correctly set save folder for copy in reedit
+
 2002-01-10 [paul]	0.6.6claws46
 
 	* sync with sylpheed 0.7.0 release

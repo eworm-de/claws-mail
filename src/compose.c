@@ -1204,7 +1204,7 @@ Compose *compose_forward_multiple(PrefsAccount *account, GSList *msginfo_list)
 void compose_reedit(MsgInfo *msginfo)
 {
 	Compose *compose;
-	PrefsAccount *account;
+	PrefsAccount *account = NULL;
 	GtkSText *text;
 	FILE *fp;
 	gchar buf[BUFFSIZE];
@@ -1213,9 +1213,23 @@ void compose_reedit(MsgInfo *msginfo)
 	g_return_if_fail(msginfo->folder != NULL);
 
         if (msginfo->folder->stype == F_QUEUE) {
-		gchar account_address[BUFFSIZE];
-		if (!get_header_from_msginfo(msginfo, account_address, sizeof(account_address), "S:")) {
-			account = account_find_from_address(account_address);
+		gchar queueheader_buf[BUFFSIZE];
+		gint id;
+
+		/* Select Account from queue headers */
+		if (!get_header_from_msginfo(msginfo, queueheader_buf, 
+					     sizeof(queueheader_buf), "NAID:")) {
+			id = atoi(&queueheader_buf[5]);
+			account = account_find_from_id(id);
+		}
+		if (!account && !get_header_from_msginfo(msginfo, queueheader_buf, 
+		                                    sizeof(queueheader_buf), "MAID:")) {
+			id = atoi(&queueheader_buf[5]);
+			account = account_find_from_id(id);
+		}
+		if (!account && !get_header_from_msginfo(msginfo, queueheader_buf, 
+		                                                sizeof(queueheader_buf), "S:")) {
+			account = account_find_from_address(queueheader_buf);
 		}
 	} else 
 		account = msginfo->folder->folder->account;
@@ -1233,6 +1247,19 @@ void compose_reedit(MsgInfo *msginfo)
 	compose = compose_create(account, COMPOSE_REEDIT);
 	compose->targetinfo = procmsg_msginfo_copy(msginfo);
 
+        if (msginfo->folder->stype == F_QUEUE) {
+		gchar queueheader_buf[BUFFSIZE];
+
+		/* Set message save folder */
+		if (!get_header_from_msginfo(msginfo, queueheader_buf, sizeof(queueheader_buf), "SCF:")) {
+			gint startpos = 0;
+
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn), TRUE);
+			gtk_editable_delete_text(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
+			gtk_editable_insert_text(GTK_EDITABLE(compose->savemsg_entry), &queueheader_buf[4], strlen(&queueheader_buf[4]), &startpos);
+		}
+	}
+	
 	if (compose_parse_header(compose, msginfo) < 0) return;
 	compose_reedit_set_entry(compose, msginfo);
 
