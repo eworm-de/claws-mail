@@ -648,10 +648,10 @@ gint pop3_write_uidl_list(Pop3Session *session)
 
 	for (n = 1; n <= session->count; n++) {
 		msg = &session->msg[n];
-		if (msg->uidl && msg->received && !msg->deleted) {
+		if (msg->uidl && msg->received &&
+		    (!msg->deleted || session->state != POP3_DONE))
 			fprintf(fp, "%s\t%ld\t%d\n", 
 				msg->uidl, msg->recv_time, msg->partial_recv);
-		}
 	}
 
 	if (fclose(fp) == EOF) FILE_OP_ERROR(path, "fclose");
@@ -964,6 +964,7 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 		}
 		break;
 	case POP3_LOGOUT:
+		pop3_session->state = POP3_DONE;
 		session_disconnect(session);
 		break;
 	case POP3_ERROR:
