@@ -1,3 +1,9 @@
+2003-07-20 [alfons]	0.9.3claws32
+
+	* src/mimeview.c
+		o make icon buttons respond on left click
+		o minor cosmetic change
+
 2003-07-19 [luke]	0.9.3claws31
 
 	* src/mimeview.[ch]

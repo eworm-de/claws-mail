@@ -1281,18 +1281,20 @@ static gboolean icon_clicked_cb (GtkWidget *button, GdkEventButton *event, MimeV
 	GtkCTreeNode *node;
 	num = GPOINTER_TO_INT(gtk_object_get_data(GTK_OBJECT(button), "icon_number"));
 	partinfo = gtk_object_get_data(GTK_OBJECT(button), "partinfo");
-	if (num == 1 && (partinfo->mime_type == MIME_TEXT ||  
-			 partinfo->mime_type == MIME_TEXT_HTML))  {
-		gtk_notebook_set_page(GTK_NOTEBOOK(mimeview->notebook), 0);
-		/* don't set the ctree, as it will unload the plugin, and
-		 * we want to be able to switch quickly between the text
-		 * part and the attachment */
-	} else {
-		gtk_notebook_set_page(GTK_NOTEBOOK(mimeview->notebook), 1);
-		node = gtk_ctree_find_by_row_data(GTK_CTREE(mimeview->ctree), NULL, partinfo);
-		if (node)
-			gtk_ctree_select(GTK_CTREE(mimeview->ctree), node);
-	}
+	if (event->button == 1) {
+		if (num == 1 && (partinfo->mime_type == MIME_TEXT ||  
+				 partinfo->mime_type == MIME_TEXT_HTML))  {
+			gtk_notebook_set_page(GTK_NOTEBOOK(mimeview->notebook), 0);
+			/* don't set the ctree, as it will unload the plugin, and
+			 * we want to be able to switch quickly between the text
+			 * part and the attachment */
+		} else {
+			gtk_notebook_set_page(GTK_NOTEBOOK(mimeview->notebook), 1);
+			node = gtk_ctree_find_by_row_data(GTK_CTREE(mimeview->ctree), NULL, partinfo);
+			if (node)
+				gtk_ctree_select(GTK_CTREE(mimeview->ctree), node);
+		}
+	}		
 	part_button_pressed(mimeview, event, partinfo);
 	return TRUE;
 }
@@ -1435,7 +1437,9 @@ static void icon_scroll_size_allocate_cb(GtkWidget *widget,
 	gtk_layout_move(GTK_LAYOUT(mimeview->icon_scroll), mimeview->icon_vbox, 
 			(mainbox_size->width - vbox_size->width)/2, 0);
 	
-	gtk_layout_set_size(GTK_LAYOUT(mimeview->icon_scroll), GTK_LAYOUT(mimeview->icon_scroll)->width, MAX(vbox_size->height, layout_size->height));
+	gtk_layout_set_size(GTK_LAYOUT(mimeview->icon_scroll), 
+			    GTK_LAYOUT(mimeview->icon_scroll)->width, 
+			    MAX(vbox_size->height, layout_size->height));
 	adj->step_increment = 5;
 }
 
