@@ -470,8 +470,8 @@ mention it.
 		- select Sylpheed Actions Feature
 	 	- select "Dillo: dillo %p&" from drop down list
 		- choose an icon and click ok
-	
-* quick search
+
+* extended search in quick search
 ---------------------------------
     This feature allows one to define criteria that messages have
     to match in order to be displayed in the summary view pane.
