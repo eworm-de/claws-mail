@@ -62,7 +62,7 @@
 #include "stock_pixmap.h"
 #include "hooks.h"
 #include "filtering.h"
-#include "pop.h"
+#include "partial_download.h"
 
 static GList *messageview_list = NULL;
 
@@ -1071,9 +1071,9 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 	void  *button1_cb = NULL;
 	void  *button2_cb = NULL;
 
-	if (!pop3_msg_in_uidl_list(msginfo->account_server, msginfo->account_login,
-				   msginfo->partial_recv))
+	if (!partial_msg_in_uidl_list(msginfo))
 		return;
+
 	switch (msginfo->planned_download) {
 	case POP3_PARTIAL_DLOAD_UNKN:
 		text = g_strdup_printf(_("This message has been partially "
@@ -1125,7 +1125,7 @@ static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
 static void partial_recv_dload_clicked(NoticeView *noticeview, 
 				       MsgInfo *msginfo)
 {
-	if (pop3_mark_for_download(msginfo) == 0) {
+	if (partial_mark_for_download(msginfo) == 0) {
 		partial_recv_show(noticeview, msginfo);
 	}
 }
@@ -1133,7 +1133,7 @@ static void partial_recv_dload_clicked(NoticeView *noticeview,
 static void partial_recv_del_clicked(NoticeView *noticeview, 
 				       MsgInfo *msginfo)
 {
-	if (pop3_mark_for_delete(msginfo) == 0) {
+	if (partial_mark_for_delete(msginfo) == 0) {
 		partial_recv_show(noticeview, msginfo);
 	}
 }
@@ -1141,7 +1141,7 @@ static void partial_recv_del_clicked(NoticeView *noticeview,
 static void partial_recv_unmark_clicked(NoticeView *noticeview, 
 				       MsgInfo *msginfo)
 {
-	if (pop3_unmark(msginfo) == 0) {
+	if (partial_unmark(msginfo) == 0) {
 		partial_recv_show(noticeview, msginfo);
 	}
 }

@@ -27,7 +27,6 @@
 #include <glib.h>
 #include <time.h>
 
-#include "procmsg.h"
 #include "session.h"
 #include "prefs_account.h"
 
@@ -99,18 +98,6 @@ typedef enum {
 	RECV_TIME_KEEP     = 2
 } RecvTime;
 
-typedef enum {
-	POP3_PARTIAL_DLOAD_UNKN	= 0,
-	POP3_PARTIAL_DLOAD_DLOAD= 1,
-	POP3_PARTIAL_DLOAD_DELE = 2
-} PartialDownloadAction;
-
-typedef enum {
-	POP3_TOTALLY_RECEIVED	= 0,
-	POP3_PARTIALLY_RECEIVED = 1,
-	POP3_MUST_COMPLETE_RECV = 2
-} PartialDownloadStatus;
-
 struct _Pop3MsgInfo
 {
 	gint size;
@@ -168,11 +155,5 @@ struct _Pop3Session
 Session *pop3_session_new	(PrefsAccount	*account);
 void pop3_get_uidl_table	(PrefsAccount	*account, Pop3Session *session);
 gint pop3_write_uidl_list	(Pop3Session	*session);
-gint pop3_msg_in_uidl_list	(const gchar 	*server, 
-				 const gchar 	*login, 
-				 const gchar 	*uidl);
-int pop3_mark_for_download	(MsgInfo	*msginfo);
-int pop3_mark_for_delete	(MsgInfo	*msginfo);
-int pop3_unmark			(MsgInfo	*msginfo);
 
 #endif /* __POP_H__ */

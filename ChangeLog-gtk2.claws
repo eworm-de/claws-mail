@@ -1,3 +1,17 @@
+2004-07-14 [colin]	0.9.12cvs18.11
+
+	* src/folder.c
+	* src/messageview.c
+	* src/pop.c
+	* src/pop.h
+	* src/procmsg.c
+	* src/summaryview.c
+	* src/common/Makefile.am
+	* src/common/partial_download.c
+	* src/common/partial_download.h
+		Move partial-download related stuff to its
+		own file
+
 2004-07-14 [colin]	0.9.12cvs18.10
 
 	* src/send_message.c

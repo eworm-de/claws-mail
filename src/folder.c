@@ -48,7 +48,7 @@
 #include "log.h"
 #include "folder_item_prefs.h"
 #include "remotefolder.h"
-#include "pop.h"
+#include "partial_download.h"
 
 /* Dependecies to be removed ?! */
 #include "prefs_common.h"
@@ -2529,7 +2529,7 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 
 		if (msginfo->planned_download != 0) {
 			int old_planned = msginfo->planned_download;
-			pop3_unmark(msginfo);
+			partial_unmark(msginfo);
 			/* little hack to reenable after */
 			msginfo->planned_download = old_planned;
 		}
@@ -2593,11 +2593,11 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 
 			if (msginfo->planned_download 
 			    == POP3_PARTIAL_DLOAD_DELE) {
-				pop3_mark_for_delete(newmsginfo);
+				partial_mark_for_delete(newmsginfo);
 			}
 			if (msginfo->planned_download 
 			    == POP3_PARTIAL_DLOAD_DLOAD) {
-				pop3_mark_for_download(newmsginfo);
+				partial_mark_for_download(newmsginfo);
 			}
 			procmsg_msginfo_free(newmsginfo);
 
