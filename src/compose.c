@@ -2122,6 +2122,29 @@ compose_end:
 #undef GET_STEXT
 }
 
+/* return str length if text at start_pos matches str else return zero */
+static gint is_gtkstext_string(GtkSText *text, guint start_pos,
+			       guint text_len, gchar *str) {
+	gint is_str, i, str_len;
+	gchar str_ch;
+
+	is_str = 0;
+	if (str) {
+		str_len = strlen(str);
+		is_str = 1;
+		for (i = 0; (i < str_len) && (start_pos + i < text_len); i++) {
+			str_ch = GTK_STEXT_INDEX(text, start_pos + i);
+			if (*(str + i) != str_ch) {
+				break;
+			}
+		}
+		if (i == 0 || i < str_len)
+			is_str = 0;
+	}
+
+	return is_str ? str_len : 0;
+}
+
 static void compose_wrap_line_all(Compose *compose)
 {
 	GtkSText *text = GTK_STEXT(compose->text);
@@ -2129,13 +2152,25 @@ static void compose_wrap_line_all(Compose *compose)
 	guint line_pos = 0, cur_pos = 0;
 	gint line_len = 0, cur_len = 0;
 	gint ch_len;
+	gint is_new_line = 1;
+	guint quote_len = 0;
+	guint linewrap_quote = prefs_common.linewrap_quote;
+	gchar *quote_fmt = prefs_common.quotemark;
 	gchar cbuf[MB_CUR_MAX];
 
 	gtk_stext_freeze(text);
 
+	/* make text buffer contiguous */
+	gtk_stext_compact_buffer(text);
+
 	text_len = gtk_stext_get_length(text);
 
 	for (; cur_pos < text_len; cur_pos++) {
+		if (linewrap_quote && is_new_line) {
+			quote_len = is_gtkstext_string(text, cur_pos,
+						       text_len, quote_fmt);
+			is_new_line = 0;
+		}
 		if (text->use_wchar)
 			ch_len = wctomb
 				(cbuf, (wchar_t)GTK_STEXT_INDEX(text, cur_pos));
@@ -2147,6 +2182,8 @@ static void compose_wrap_line_all(Compose *compose)
 		if (ch_len == 1 && *cbuf == '\n') {
 			line_pos = cur_pos + 1;
 			line_len = cur_len = 0;
+			quote_len = 0;
+			is_new_line = 1;
 			continue;
 		}
 
@@ -2187,6 +2224,19 @@ static void compose_wrap_line_all(Compose *compose)
 			line_pos++;
 			cur_len = cur_len - line_len + ch_len;
 			line_len = 0;
+			if (linewrap_quote && quote_len) {
+				/* only if line is not already quoted */
+				if (!is_gtkstext_string(text, line_pos,
+						        text_len, quote_fmt)) {
+					gtk_stext_insert(text, NULL, NULL, NULL,
+						 	quote_fmt, quote_len);
+					gtk_stext_compact_buffer(text);
+					text_len += quote_len;
+					cur_pos += quote_len;
+					cur_len += quote_len;
+					line_len = quote_len;
+				}
+			}
 			continue;
 		}
 

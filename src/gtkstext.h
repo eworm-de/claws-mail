@@ -226,6 +226,7 @@ void       gtk_stext_set_point       (GtkSText       *text,
 guint      gtk_stext_get_point       (GtkSText       *text);
 guint      gtk_stext_get_length      (GtkSText       *text);
 void       gtk_stext_freeze          (GtkSText       *text);
+void       gtk_stext_compact_buffer  (GtkSText       *text);
 void       gtk_stext_thaw            (GtkSText       *text);
 void       gtk_stext_insert          (GtkSText       *text,
 				     GdkFont       *font,

@@ -1,3 +1,10 @@
+2001-10-04 [darko]	0.6.2claws17
+
+	* src/compose.c
+		better smart wrapping
+	* src/gtkstext.[hc]
+		a function to make text buffer contiguous
+
 2001-10-03 [paul]	0.6.2claws16
 
 	* sync with sylpheed 0.6.2cvs10

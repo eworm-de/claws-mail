@@ -1000,6 +1000,16 @@ gtk_stext_thaw (GtkSText *text)
 }
 
 void
+gtk_stext_compact_buffer (GtkSText    *text)
+{
+  GtkEditable *editable = GTK_EDITABLE (text);
+
+  g_return_if_fail (text != NULL);
+  g_return_if_fail (GTK_IS_STEXT (text));
+  move_gap (text, gtk_stext_get_length(text));
+}
+
+void
 gtk_stext_insert (GtkSText    *text,
 		 GdkFont    *font,
 		 GdkColor   *fore,
