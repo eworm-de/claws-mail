@@ -60,6 +60,7 @@
 #include "pixmaps/replied.xpm"
 #include "pixmaps/close.xpm"
 #include "pixmaps/down_arrow.xpm"
+#include "pixmaps/up_arrow.xpm"
 #include "pixmaps/exec.xpm"
 #include "pixmaps/mail.xpm"
 #include "pixmaps/mail_attach.xpm"
@@ -121,6 +122,7 @@ static StockPixmapData pixmaps[] =
 	{dir_open_xpm			, NULL, NULL, "dir_open", "  "},
 	{dir_open_hrm_xpm		, NULL, NULL, "dir_open_hrm", "  "},
 	{down_arrow_xpm			, NULL, NULL, "down_arrow", "  "},
+	{up_arrow_xpm			, NULL, NULL, "up_arrow", "  "},
 	{mail_compose_xpm		, NULL, NULL, "edit_extern", "  "},
 	{error_xpm				, NULL, NULL, "error", "  "},
 	{exec_xpm				, NULL, NULL, "exec", "  "},
@@ -322,3 +324,22 @@ void stock_pixmap_themes_list_free(GList *list)
 	g_list_free(list);		
 }
 
+gchar *stock_pixmap_get_name (StockPixmap icon)
+{
+	g_return_val_if_fail(icon >= 0 && icon < N_STOCK_PIXMAPS, NULL);
+	
+	return pixmaps[icon].file;
+
+}
+
+StockPixmap stock_pixmap_get_icon (gchar *file)
+{
+	gint i;
+	
+	for (i = 0; i < N_STOCK_PIXMAPS; i++) {
+		if (strcmp (pixmaps[i].file, file) == 0)
+			return i;
+	}
+	return -1;
+}
+	
