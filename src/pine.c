@@ -454,6 +454,10 @@ static ItemEMail *pine_insert_table(
 
 	g_return_if_fail( address != NULL );
 
+	/* create an entry with empty name if needed */
+	if ( name == NULL )
+		name = "";
+
 	/* Test whether address already in hash table */
 	key = g_strdup( address );
 	g_strdown( key );
