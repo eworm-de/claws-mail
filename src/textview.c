@@ -1792,7 +1792,7 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_End:
 	case GDK_Control_L:
 	case GDK_Control_R:
-		break;
+		return FALSE;
 	case GDK_space:
 		if (summaryview)
 			summary_pass_key_press_event(summaryview, event);

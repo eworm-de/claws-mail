@@ -1,3 +1,9 @@
+2005-01-04 [colin]	0.9.13cvs25.7
+
+	* src/textview.c
+		Make some keys work again
+		Patch by SungHyun Nam <namsh@kldp.org>
+
 2005-01-04 [colin]	0.9.13cvs25.6
 
 	* src/gtk/gtkshruler.c
