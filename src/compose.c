@@ -501,6 +501,8 @@ static gboolean compose_send_control_enter	(Compose	*compose);
 static gint compose_defer_auto_save_draft	(Compose	*compose);
 static PrefsAccount *compose_guess_forward_account_from_msginfo	(MsgInfo *msginfo);
 
+static void compose_close	(Compose *compose);
+
 static GtkItemFactoryEntry compose_popup_entries[] =
 {
 	{N_("/_Add..."),	NULL, compose_attach_cb, 0, NULL},
@@ -3307,7 +3309,7 @@ gint compose_send(Compose *compose)
 
 	if (prefs_common.send_dialog_mode != SEND_DIALOG_ALWAYS) {
 		compose->sending = FALSE;
-		gtk_widget_destroy(compose->window);
+		compose_close(compose);
 		/* No more compose access in the normal codepath 
 		 * after this point! */
 	}
@@ -3340,7 +3342,7 @@ gint compose_send(Compose *compose)
 		folder_item_remove_msg(folder, msgnum);
 		folder_item_scan(folder);
 		if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS)
-			gtk_widget_destroy(compose->window);
+			compose_close(compose);
 	} else {
 		alertpanel_error(_("The message was queued but could not be "
 				   "sent.\nUse \"Send queued messages\" from "
@@ -6271,7 +6273,8 @@ static void compose_send_later_cb(gpointer data, guint action,
 	gint val;
 
 	val = compose_queue_sub(compose, NULL, NULL, TRUE);
-	if (!val) gtk_widget_destroy(compose->window);
+	if (!val) 
+		compose_close(compose);
 }
 
 void compose_draft (gpointer data) 
@@ -6364,7 +6367,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	lock = FALSE;
 
 	if (action == COMPOSE_QUIT_EDITING)
-		gtk_widget_destroy(compose->window);
+		compose_close(compose);
 	else {
 		struct stat s;
 		gchar *path;
@@ -6500,7 +6503,7 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 		}
 	}
 
-	gtk_widget_destroy(compose->window);
+	compose_close(compose);
 }
 
 static void compose_address_cb(gpointer data, guint action, GtkWidget *widget)
@@ -7395,6 +7398,17 @@ static PrefsAccount *compose_guess_forward_account_from_msginfo(MsgInfo *msginfo
 	}
 	
 	return account;
+}
+
+static void compose_close(Compose *compose)
+{
+	gint x, y;
+
+	g_return_if_fail(compose);
+	gtkut_widget_get_uposition(compose->window, &x, &y);
+	prefs_common.compose_x = x;
+	prefs_common.compose_y = y;
+	gtk_widget_destroy(compose->window);
 }
 
 /**

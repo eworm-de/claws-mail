@@ -1,3 +1,8 @@
+2004-12-04 [colin]	0.9.12cvs183.1
+
+	* src/compose.c
+		Sync with HEAD (compose window position saving)
+
 2004-12-04 [paul]	0.9.12cvs182.3
 
 	* src/messageview.c
