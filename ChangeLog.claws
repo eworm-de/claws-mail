@@ -20,6 +20,7 @@
 		0 to tell the folder system it was appened but the UID is
 		unknown. Folder system now get's the UID by scaning the folder
 		and searching the cache for the Message-ID
+		(closes bug #29 Messages queued, but not sent)
 
 2003-01-25 [paul]	0.8.9claws1
 
