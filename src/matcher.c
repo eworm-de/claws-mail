@@ -328,6 +328,7 @@ gboolean matcherprop_match_execute(MatcherProp * prop, MsgInfo * info)
 	retval = system(cmd);
 	debug_print("Command exit code: %d\n", retval);
 
+	g_free(cmd);
 	return (retval == 0);
 }
 

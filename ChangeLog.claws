@@ -1,3 +1,9 @@
+2002-08-24 [alfons]	0.8.2claws116
+
+	* src/matcher.c
+		fix memleak reported by Martin Kluge
+		(see: "[ 599677 ] Very small memory leak in 0.81claws115")
+
 2002-08-24 [oliver]	0.8.2claws115
 
 	* src/prefs_toolbar.c
