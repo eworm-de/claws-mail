@@ -1,3 +1,8 @@
+2003-04-25 [alfons]	0.8.11claws111
+
+	* src/common/session.c
+		plug a memleak
+
 2003-04-25 [paul]	0.8.11claws110
 
 	* sync with 0.8.11cvs35

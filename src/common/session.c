@@ -355,6 +355,8 @@ gint session_send_msg(Session *session, SessionMsgType type, const gchar *msg)
 		size -= bytes_written;
 	}
 
+	g_free(str);
+
 	return 0;
 }
 
