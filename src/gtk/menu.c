@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,14 +51,12 @@ GtkWidget *menubar_create(GtkWidget *window, GtkItemFactoryEntry *entries,
 			  guint n_entries, const gchar *path, gpointer data)
 {
 	GtkItemFactory *factory;
-	GtkAccelGroup *accel_group;
 
-	accel_group = gtk_accel_group_new();
-	factory = gtk_item_factory_new(GTK_TYPE_MENU_BAR, path, accel_group);
+	factory = gtk_item_factory_new(GTK_TYPE_MENU_BAR, path, NULL);
 	gtk_item_factory_set_translate_func(factory, menu_translate,
 					    NULL, NULL);
 	gtk_item_factory_create_items(factory, n_entries, entries, data);
-	gtk_accel_group_attach(accel_group, GTK_OBJECT(window));
+	gtk_accel_group_attach(factory->accel_group, GTK_OBJECT(window));
 
 	return gtk_item_factory_get_widget(factory, path);
 }
@@ -98,6 +96,87 @@ static gchar *menu_translate(const gchar *path, gpointer data)
 	retval = gettext(path);
 
 	return retval;
+}
+
+static void factory_print_func(gpointer data, gchar *string)
+{
+	GString *out_str = data;
+
+	g_string_append(out_str, string);
+	g_string_append_c(out_str, '\n');
+}
+
+GString *menu_factory_get_rc(const gchar *path)
+{
+	GString *string;
+	GtkPatternSpec *pspec;
+	gchar pattern[256];
+
+	pspec = g_new(GtkPatternSpec, 1);
+	g_snprintf(pattern, sizeof(pattern), "%s*", path);
+	gtk_pattern_spec_init(pspec, pattern);
+	string = g_string_new("");
+	gtk_item_factory_dump_items(pspec, FALSE, factory_print_func,
+				    string);
+	gtk_pattern_spec_free_segs(pspec);
+
+	return string;
+}
+
+void menu_factory_clear_rc(const gchar *rc_str)
+{
+	GString *string;
+	gchar *p;
+	gchar *start, *end;
+	guint pos = 0;
+
+	string = g_string_new(rc_str);
+	while ((p = strstr(string->str + pos, "(menu-path \"")) != NULL) {
+		pos = p + 12 - string->str;
+		p = strchr(p + 12, '"');
+		if (!p) continue;
+		start = strchr(p + 1, '"');
+		if (!start) continue;
+		end = strchr(start + 1, '"');
+		if (!end) continue;
+		pos = start + 1 - string->str;
+		if (end > start + 1)
+			g_string_erase(string, pos, end - (start + 1));
+	}
+
+	gtk_item_factory_parse_rc_string(string->str);
+	g_string_free(string, TRUE);
+}
+
+void menu_factory_copy_rc(const gchar *src_path, const gchar *dest_path)
+{
+	GString *string;
+	gint src_path_len;
+	gint dest_path_len;
+	gchar *p;
+	guint pos = 0;
+
+	string = menu_factory_get_rc(src_path);
+	src_path_len = strlen(src_path);
+	dest_path_len = strlen(dest_path);
+
+	while ((p = strstr(string->str + pos, src_path)) != NULL) {
+		pos = p - string->str;
+		g_string_erase(string, pos, src_path_len);
+		g_string_insert(string, pos, dest_path);
+		pos += dest_path_len;
+	}
+
+	pos = 0;
+	while ((p = strchr(string->str + pos, ';')) != NULL) {
+		pos = p - string->str;
+		if (pos == 0 || *(p - 1) == '\n')
+			g_string_erase(string, pos, 1);
+	}
+
+	menu_factory_clear_rc(string->str);
+	gtk_item_factory_parse_rc_string(string->str);
+	g_string_free(string, TRUE);
 }
 
 void menu_set_sensitive(GtkItemFactory *ifactory, const gchar *path,

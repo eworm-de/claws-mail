@@ -1,3 +1,22 @@
+2003-04-04
+
+	* src/messageview.[ch]: 別ウィンドウのメッセージビューの文字コード
+	  強制指定をメインウィンドウから分離。
+	  textview_show_message()
+	  textview_show_part()
+	  textview_add_part(): 指定されていれば MessageView::forced_charset
+	  を使用。
+
+2003-04-03
+
+	* src/mainwindow.c: ファイルメニューを少し修正。
+	* src/menu.[ch]: item factory の rc 文字列を扱う関数を追加。
+	* src/messageview.[ch]: メニューを追加し、メインウィンドウのメニュー
+	  ショートカットを引き継ぐようにした。
+	  msginfo (表示時に複製される)を MessageView に追加。
+	* src/prefs_common.c: prefs_keybind_apply_clicked():
+	  menu_factory_clear_rc() を使用。
+
 2003-03-28
 
 	* send_message.c: send_message_smtp():

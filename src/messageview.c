@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@
 #include <gtk/gtkeditable.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtktext.h>
+#include <gtk/gtkmenu.h>
+#include <gtk/gtkmenuitem.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
@@ -33,23 +35,30 @@
 #include "intl.h"
 #include "main.h"
 #include "messageview.h"
+#include "message_search.h"
 #include "headerview.h"
 #include "summaryview.h"
 #include "textview.h"
 #include "mimeview.h"
+#include "menu.h"
+#include "about.h"
+#include "filesel.h"
+#include "sourcewindow.h"
+#include "addressbook.h"
+#include "alertpanel.h"
+#include "inputdialog.h"
+#include "manage_window.h"
 #include "procmsg.h"
 #include "procheader.h"
 #include "procmime.h"
+#include "account.h"
 #include "prefs_common.h"
+#include "prefs_account.h"
 #include "gtkutils.h"
 #include "utils.h"
 #include "rfc2015.h"
-#include "about.h"
-#include "account.h"
-#include "alertpanel.h"
 #include "send_message.h"
 #include "pgptext.h"
-#include "menu.h"
 #include "stock_pixmap.h"
 
 
@@ -67,23 +76,206 @@ static void return_receipt_show		(NoticeView     *noticeview,
 				         MsgInfo        *msginfo);	
 static void return_receipt_send_clicked (NoticeView	*noticeview, 
                                          MsgInfo        *msginfo);
+static void save_as_cb			(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void print_cb			(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void close_cb			(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void copy_cb			(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void allsel_cb			(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void search_cb			(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+
+static void set_charset_cb		(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void view_source_cb		(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void show_all_header_cb		(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+
+static void compose_cb			(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void reply_cb			(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void reedit_cb			(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
 
 static PrefsAccount *select_account_from_list
 					(GList		*ac_list);
+static void addressbook_open_cb		(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void add_address_cb		(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void create_filter_cb		(gpointer	 data,
+					 guint		 action,
+					 GtkWidget	*widget);
 
 static void messageview_menubar_cb	(MessageView 	*msgview,
 					 guint 		 action, 
 					 GtkWidget 	*widget);
-static void messageview_delete_cb	(MessageView 	*msgview, 
-					 guint 		 action, 
-					 GtkWidget 	*widget);					 
-static void messageview_close_cb	(gpointer	 data,
+static void about_cb			(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
 static void messageview_update		(MessageView *msgview);
 static void messageview_update_all	(MessageView *msgview);
 
 static GList *msgview_list = NULL;
+static GtkItemFactoryEntry msgview_entries[] =
+{
+	{N_("/_File"),			NULL, NULL, 0, "<Branch>"},
+	{N_("/_File/_Save as..."),	NULL, save_as_cb, 0, NULL},
+	{N_("/_File/_Print..."),	NULL, print_cb, 0, NULL},
+	{N_("/_File/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_File/_Close"),		NULL, close_cb, 0, NULL},
+
+	{N_("/_Edit"),			NULL, NULL, 0, "<Branch>"},
+	{N_("/_Edit/_Copy"),		NULL, copy_cb, 0, NULL},
+	{N_("/_Edit/Select _all"),	NULL, allsel_cb, 0, NULL},
+	{N_("/_Edit/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_Edit/_Find in current message..."),
+					NULL, search_cb, 0, NULL},
+
+	{N_("/_View"),			NULL, NULL, 0, "<Branch>"},
+
+#define CODESET_SEPARATOR \
+	{N_("/_View/_Code set/---"),	NULL, NULL, 0, "<Separator>"}
+#define CODESET_ACTION(action) \
+	NULL, set_charset_cb, action, "/View/Code set/Auto detect"
+
+	{N_("/_View/_Code set"),	NULL, NULL, 0, "<Branch>"},
+	{N_("/_View/_Code set/_Auto detect"),
+					NULL, set_charset_cb, C_AUTO, "<RadioItem>"},
+	CODESET_SEPARATOR,
+	{N_("/_View/_Code set/7bit ascii (US-ASC_II)"),
+	 CODESET_ACTION(C_US_ASCII)},
+
+#if HAVE_ICONV
+	{N_("/_View/_Code set/Unicode (_UTF-8)"),
+	 CODESET_ACTION(C_UTF_8)},
+	CODESET_SEPARATOR,
+#endif
+	{N_("/_View/_Code set/Western European (ISO-8859-_1)"),
+	 CODESET_ACTION(C_ISO_8859_1)},
+	{N_("/_View/_Code set/Western European (ISO-8859-15)"),
+	 CODESET_ACTION(C_ISO_8859_15)},
+	CODESET_SEPARATOR,
+#if HAVE_ICONV
+	{N_("/_View/_Code set/Central European (ISO-8859-_2)"),
+	 CODESET_ACTION(C_ISO_8859_2)},
+	CODESET_SEPARATOR,
+	{N_("/_View/_Code set/_Baltic (ISO-8859-13)"),
+	 CODESET_ACTION(C_ISO_8859_13)},
+	{N_("/_View/_Code set/Baltic (ISO-8859-_4)"),
+	 CODESET_ACTION(C_ISO_8859_4)},
+	CODESET_SEPARATOR,
+	{N_("/_View/_Code set/Greek (ISO-8859-_7)"),
+	 CODESET_ACTION(C_ISO_8859_7)},
+	CODESET_SEPARATOR,
+	{N_("/_View/_Code set/Turkish (ISO-8859-_9)"),
+	 CODESET_ACTION(C_ISO_8859_9)},
+	CODESET_SEPARATOR,
+	{N_("/_View/_Code set/Cyrillic (ISO-8859-_5)"),
+	 CODESET_ACTION(C_ISO_8859_5)},
+	{N_("/_View/_Code set/Cyrillic (KOI8-_R)"),
+	 CODESET_ACTION(C_KOI8_R)},
+	{N_("/_View/_Code set/Cyrillic (Windows-1251)"),
+	 CODESET_ACTION(C_CP1251)},
+	CODESET_SEPARATOR,
+#endif
+	{N_("/_View/_Code set/Japanese (ISO-2022-_JP)"),
+	 CODESET_ACTION(C_ISO_2022_JP)},
+#if HAVE_ICONV
+	{N_("/_View/_Code set/Japanese (ISO-2022-JP-2)"),
+	 CODESET_ACTION(C_ISO_2022_JP_2)},
+#endif
+	{N_("/_View/_Code set/Japanese (_EUC-JP)"),
+	 CODESET_ACTION(C_EUC_JP)},
+	{N_("/_View/_Code set/Japanese (_Shift__JIS)"),
+	 CODESET_ACTION(C_SHIFT_JIS)},
+#if HAVE_ICONV
+	CODESET_SEPARATOR,
+	{N_("/_View/_Code set/Simplified Chinese (_GB2312)"),
+	 CODESET_ACTION(C_GB2312)},
+	{N_("/_View/_Code set/Traditional Chinese (_Big5)"),
+	 CODESET_ACTION(C_BIG5)},
+	{N_("/_View/_Code set/Traditional Chinese (EUC-_TW)"),
+	 CODESET_ACTION(C_EUC_TW)},
+	{N_("/_View/_Code set/Chinese (ISO-2022-_CN)"),
+	 CODESET_ACTION(C_ISO_2022_CN)},
+	CODESET_SEPARATOR,
+	{N_("/_View/_Code set/Korean (EUC-_KR)"),
+	 CODESET_ACTION(C_EUC_KR)},
+	{N_("/_View/_Code set/Korean (ISO-2022-KR)"),
+	 CODESET_ACTION(C_ISO_2022_KR)},
+	CODESET_SEPARATOR,
+	{N_("/_View/_Code set/Thai (TIS-620)"),
+	 CODESET_ACTION(C_TIS_620)},
+	{N_("/_View/_Code set/Thai (Windows-874)"),
+	 CODESET_ACTION(C_WINDOWS_874)},
+#endif
+
+#undef CODESET_SEPARATOR
+#undef CODESET_ACTION
+
+	{N_("/_View/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/Mess_age source"),	NULL, view_source_cb, 0, NULL},
+	{N_("/_View/Show all _header"),	NULL, show_all_header_cb, 0, "<ToggleItem>"},
+
+	{N_("/_Message"),		NULL, NULL, 0, "<Branch>"},
+	{N_("/_Message/Compose _new message"),
+					NULL, compose_cb, 0, NULL},
+	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_Message/_Reply"),	NULL, reply_cb, COMPOSE_REPLY, NULL},
+	{N_("/_Message/Repl_y to/_all"),
+					NULL, reply_cb, COMPOSE_REPLY_TO_ALL, NULL},
+	{N_("/_Message/Repl_y to/_sender"),
+					NULL, reply_cb, COMPOSE_REPLY_TO_SENDER, NULL},
+	{N_("/_Message/Repl_y to/mailing _list"),
+					NULL, reply_cb, COMPOSE_REPLY_TO_LIST, NULL},
+	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_Message/_Forward"),	NULL, reply_cb, COMPOSE_FORWARD, NULL},
+	{N_("/_Message/For_ward as attachment"),
+					NULL, reply_cb, COMPOSE_FORWARD_AS_ATTACH, NULL},
+	{N_("/_Message/Redirec_t"),	NULL, reply_cb, COMPOSE_REDIRECT, NULL},
+	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_Message/Re-_edit"),	NULL, reedit_cb, 0, NULL},
+
+	{N_("/_Tools"),			NULL, NULL, 0, "<Branch>"},
+	{N_("/_Tools/_Address book"),	NULL, addressbook_open_cb, 0, NULL},
+	{N_("/_Tools/Add sender to address boo_k"),
+					NULL, add_address_cb, 0, NULL},
+	{N_("/_Tools/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_Tools/_Create filter rule"),
+					NULL, NULL, 0, "<Branch>"},
+	{N_("/_Tools/_Create filter rule/_Automatically"),
+					NULL, create_filter_cb, FILTER_BY_AUTO, NULL},
+	{N_("/_Tools/_Create filter rule/by _From"),
+					NULL, create_filter_cb, FILTER_BY_FROM, NULL},
+	{N_("/_Tools/_Create filter rule/by _To"),
+					NULL, create_filter_cb, FILTER_BY_TO, NULL},
+	{N_("/_Tools/_Create filter rule/by _Subject"),
+					NULL, create_filter_cb, FILTER_BY_SUBJECT, NULL},
+
+	{N_("/_Help"),			NULL, NULL, 0, "<Branch>"},
+	{N_("/_Help/_About"),		NULL, about_cb, 0, NULL}
+};
 
 MessageView *messageview_create(MainWindow *mainwin)
 {
@@ -136,30 +328,6 @@ MessageView *messageview_create(MainWindow *mainwin)
 	return messageview;
 }
 
-static GtkItemFactoryEntry messageview_entries[] =
-{
-	{N_("/_File"),				NULL, NULL, 0, "<Branch>"},
-	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_File/_Close"),			"<control>W", messageview_close_cb, 0, NULL},
-
-	{N_("/_Message"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Message/_Reply"),		"<control>R", 	messageview_menubar_cb, COMPOSE_REPLY, NULL},
-	{N_("/_Message/Repl_y to"),		NULL, NULL, 0, "<Branch>"},
-	{N_("/_Message/Repl_y to/_all"),	"<shift><control>R", messageview_menubar_cb, COMPOSE_REPLY_TO_ALL, NULL},
-	{N_("/_Message/Repl_y to/_sender"),	NULL, messageview_menubar_cb, COMPOSE_REPLY_TO_SENDER, NULL},
-	{N_("/_Message/Repl_y to/mailing _list"),
-						"<control>L", messageview_menubar_cb, COMPOSE_REPLY_TO_LIST, NULL},
-/*	{N_("/_Message/Follow-up and reply to"),NULL, messageview_menubar_cb, COMPOSE_FOLLOWUP_AND_REPLY_TO, NULL}, */
-	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_Forward"),		"<control><alt>F", messageview_menubar_cb, COMPOSE_FORWARD, NULL},
-	{N_("/_Message/Redirect"),		NULL, messageview_menubar_cb, COMPOSE_REDIRECT, NULL},
-	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_Delete"),		"<control>D", messageview_delete_cb,  0, NULL},
-	
-	{N_("/_Help"),				NULL, NULL, 0, "<Branch>"},
-	{N_("/_Help/_About"),			NULL, about_show, 0, NULL}
-};
-
 
 GList *messageview_get_msgview_list(void)
 {
@@ -177,8 +345,8 @@ void messageview_add_toolbar(MessageView *msgview, GtkWidget *window)
 	gtk_widget_show(vbox);
 	gtk_container_add(GTK_CONTAINER(window), vbox);	
 	
-	n_menu_entries = sizeof(messageview_entries) / sizeof(messageview_entries[0]);
-	menubar = menubar_create(window, messageview_entries,
+	n_menu_entries = sizeof(msgview_entries) / sizeof(msgview_entries[0]);
+	menubar = menubar_create(window, msgview_entries,
 				 n_menu_entries, "<MessageView>", msgview);
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 
@@ -499,10 +667,8 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	FILE *fp;
 	gchar *file;
 	MimeInfo *mimeinfo;
-	MsgInfo *tmpmsginfo;
 
 	g_return_if_fail(msginfo != NULL);
-	messageview->msginfo = msginfo;
 
 #if USE_GPGME
 	if ((fp = procmsg_open_message_decrypted(msginfo, &mimeinfo)) == NULL)
@@ -521,10 +687,11 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		return;
 	}
 
-	tmpmsginfo = procheader_parse_file(file, msginfo->flags, TRUE, TRUE);
-
-	headerview_show(messageview->headerview, tmpmsginfo);
-	procmsg_msginfo_free(tmpmsginfo);
+	if (messageview->msginfo != msginfo) {
+		procmsg_msginfo_free(messageview->msginfo);
+		messageview->msginfo = procmsg_msginfo_get_full_info(msginfo);
+	}
+	headerview_show(messageview->headerview, messageview->msginfo);
 
 	messageview->all_headers = all_headers;
 	textview_set_all_headers(messageview->textview, all_headers);
@@ -594,6 +761,8 @@ void messageview_reflect_prefs_pixmap_theme(void)
 
 void messageview_clear(MessageView *messageview)
 {
+	procmsg_msginfo_free(messageview->msginfo);
+	messageview->msginfo = NULL;
 	messageview_change_view_type(messageview, MVIEW_TEXT);
 	headerview_clear(messageview->headerview);
 	textview_clear(messageview->textview);
@@ -611,6 +780,7 @@ void messageview_destroy(MessageView *messageview)
 	mimeview_destroy(messageview->mimeview);
 	noticeview_destroy(messageview->noticeview);
 
+	procmsg_msginfo_free(messageview->msginfo);
 	toolbar_clear_list(TOOLBAR_MSGVIEW);
 	if (messageview->toolbar) {
 		toolbar_destroy(messageview->toolbar);
@@ -774,6 +944,38 @@ gboolean messageview_search_string_backward(MessageView *messageview,
 gboolean messageview_is_visible(MessageView *messageview)
 {
 	return messageview->visible;
+}
+
+void messageview_save_as(MessageView *messageview)
+{
+	gchar *filename = NULL;
+	MsgInfo *msginfo;
+	gchar *src, *dest;
+
+	if (!messageview->msginfo) return;
+	msginfo = messageview->msginfo;
+
+	if (msginfo->subject) {
+		Xstrdup_a(filename, msginfo->subject, return);
+		subst_for_filename(filename);
+	}
+	dest = filesel_select_file(_("Save as"), filename);
+	if (!dest) return;
+	if (is_file_exist(dest)) {
+		AlertValue aval;
+
+		aval = alertpanel(_("Overwrite"),
+				  _("Overwrite existing file?"),
+				  _("OK"), _("Cancel"), NULL);
+		if (G_ALERTDEFAULT != aval) return;
+	}
+
+	src = procmsg_get_message_file(msginfo);
+	if (copy_file(src, dest, TRUE) < 0) {
+		alertpanel_error(_("Can't save the file `%s'."),
+				 g_basename(dest));
+	}
+	g_free(src);
 }
 
 static void messageview_destroy_cb(GtkWidget *widget, MessageView *messageview)
@@ -955,9 +1157,249 @@ static void messageview_menubar_cb(MessageView *msgview, guint action, GtkWidget
 	g_slist_free(msginfo_list);
 }
 
-static void messageview_close_cb(gpointer data, guint action, GtkWidget *widget)
+static void save_as_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	MessageView *messageview = (MessageView *)data;
-	
+	messageview_save_as(messageview);
+}
+
+static void print_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	gchar *cmdline;
+	gchar *p;
+
+	if (!messageview->msginfo) return;
+
+	cmdline = input_dialog(_("Print"),
+			       _("Enter the print command line:\n"
+				 "(`%s' will be replaced with file name)"),
+			       prefs_common.print_cmd);
+	if (!cmdline) return;
+	if (!(p = strchr(cmdline, '%')) || *(p + 1) != 's' ||
+	    strchr(p + 2, '%')) {
+		alertpanel_error(_("Print command line is invalid:\n`%s'"),
+				 cmdline);
+		g_free(cmdline);
+		return;
+	}
+
+	procmsg_print_message(messageview->msginfo, cmdline);
+	g_free(cmdline);
+}
+
+static void close_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
 	gtk_widget_destroy(messageview->window);
+}
+
+static void copy_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	messageview_copy_clipboard(messageview);
+}
+
+static void allsel_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	messageview_select_all(messageview);
+}
+
+static void search_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	message_search(messageview);
+}
+
+static void set_charset_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	const gchar *charset;
+
+	if (GTK_CHECK_MENU_ITEM(widget)->active) {
+		charset = conv_get_charset_str((CharSet)action);
+		g_free(messageview->forced_charset);
+		messageview->forced_charset = g_strdup(charset);
+		messageview_show(messageview, messageview->msginfo, FALSE);
+	}
+}
+
+static void view_source_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	SourceWindow *srcwin;
+
+	if (!messageview->msginfo) return;
+
+	srcwin = source_window_create();
+	source_window_show_msg(srcwin, messageview->msginfo);
+	source_window_show(srcwin);
+}
+
+static void show_all_header_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	MsgInfo *msginfo = messageview->msginfo;
+
+	if (!msginfo) return;
+	messageview->msginfo = NULL;
+	messageview_show(messageview, msginfo,
+			 GTK_CHECK_MENU_ITEM(widget)->active);
+	procmsg_msginfo_free(msginfo);
+}
+
+static void compose_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	PrefsAccount *ac = NULL;
+	FolderItem *item = NULL;
+
+	if (messageview->msginfo)
+		item = messageview->msginfo->folder;
+
+	if (item) {
+		ac = account_find_from_item(item);
+		if (ac && ac->protocol == A_NNTP &&
+		    item->stype == F_NEWS) {
+			compose_new(ac, item->path, NULL);
+			return;
+		}
+	}
+
+	compose_new(ac, NULL, NULL);
+}
+
+static void reply_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	GSList *mlist = NULL;
+	MsgInfo *msginfo;
+	gchar *text = NULL;
+	ComposeMode mode = (ComposeMode)action;
+
+	msginfo = messageview->msginfo;
+	mlist = g_slist_append(NULL, msginfo);
+
+	text = gtkut_editable_get_selection
+		(GTK_EDITABLE(messageview->textview->text));
+	if (text && *text == '\0') {
+		g_free(text);
+		text = NULL;
+	}
+
+	switch (mode) {
+	case COMPOSE_REPLY:
+		compose_reply(msginfo, prefs_common.reply_with_quote,
+		    	      FALSE, prefs_common.default_reply_list, FALSE, text);
+		break;
+	case COMPOSE_REPLY_WITH_QUOTE:
+		compose_reply(msginfo, TRUE, FALSE, prefs_common.default_reply_list, FALSE, text);
+		break;
+	case COMPOSE_REPLY_WITHOUT_QUOTE:
+		compose_reply(msginfo, FALSE, FALSE, prefs_common.default_reply_list, FALSE, NULL);
+		break;
+	case COMPOSE_REPLY_TO_SENDER:
+		compose_reply(msginfo, prefs_common.reply_with_quote,
+			      FALSE, FALSE, TRUE, text);
+		break;
+	case COMPOSE_FOLLOWUP_AND_REPLY_TO:
+		compose_followup_and_reply_to(msginfo,
+					      prefs_common.reply_with_quote,
+					      FALSE, FALSE, text);
+		break;
+	case COMPOSE_REPLY_TO_SENDER_WITH_QUOTE:
+		compose_reply(msginfo, TRUE, FALSE, FALSE, TRUE, text);
+		break;
+	case COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE:
+		compose_reply(msginfo, FALSE, FALSE, FALSE, TRUE, NULL);
+		break;
+	case COMPOSE_REPLY_TO_ALL:
+		compose_reply(msginfo, prefs_common.reply_with_quote,
+			      TRUE, FALSE, FALSE, text);
+		break;
+	case COMPOSE_REPLY_TO_ALL_WITH_QUOTE:
+		compose_reply(msginfo, TRUE, TRUE, FALSE, FALSE, text);
+		break;
+	case COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE:
+		compose_reply(msginfo, FALSE, TRUE, FALSE, FALSE, NULL);
+		break;
+	case COMPOSE_REPLY_TO_LIST:
+		compose_reply(msginfo, prefs_common.reply_with_quote,
+			      FALSE, TRUE, FALSE, text);
+		break;
+	case COMPOSE_REPLY_TO_LIST_WITH_QUOTE:
+		compose_reply(msginfo, TRUE, FALSE, TRUE, FALSE, text);
+		break;
+	case COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE:
+		compose_reply(msginfo, FALSE, FALSE, TRUE, FALSE, NULL);
+		break;
+	case COMPOSE_FORWARD:
+		if (prefs_common.forward_as_attachment) {
+			compose_reply_mode(COMPOSE_FORWARD_AS_ATTACH, mlist, text);
+			return;
+		} else {
+			compose_reply_mode(COMPOSE_FORWARD_INLINE, mlist, text);
+			return;
+		}
+		break;
+	case COMPOSE_FORWARD_INLINE:
+		compose_forward(NULL, msginfo, FALSE, text);
+		break;
+	case COMPOSE_FORWARD_AS_ATTACH:
+		compose_forward_multiple(NULL, mlist);
+		break;
+	case COMPOSE_REDIRECT:
+		compose_redirect(NULL, msginfo);
+		break;
+	default:
+		g_warning("compose_reply(): invalid Compose Mode: %d\n", mode);
+	}
+
+	/* summary_set_marks_selected(summaryview); */
+	g_free(text);
+	g_slist_free(mlist);
+}
+
+static void reedit_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	MsgInfo *msginfo;
+
+	if (!messageview->msginfo) return;
+	msginfo = messageview->msginfo;
+	if (!msginfo->folder) return;
+	if (msginfo->folder->stype != F_OUTBOX &&
+	    msginfo->folder->stype != F_DRAFT &&
+	    msginfo->folder->stype != F_QUEUE) return;
+
+	compose_reedit(msginfo);
+}
+
+static void addressbook_open_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	addressbook_open(NULL);
+}
+
+static void add_address_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	MessageView *messageview = (MessageView *)data;
+	MsgInfo *msginfo;
+	gchar *from;
+
+	if (!messageview->msginfo) return;
+	msginfo = messageview->msginfo;
+	Xstrdup_a(from, msginfo->from, return);
+	eliminate_address_comment(from);
+	extract_address(from);
+	addressbook_add_contact(msginfo->fromname, from, NULL);
+}
+
+static void create_filter_cb(gpointer data, guint action, GtkWidget *widget)
+{
+}
+
+static void about_cb(gpointer data, guint action, GtkWidget *widget)
+{
+	about_show();
 }

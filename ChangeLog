@@ -1,3 +1,22 @@
+2003-04-04
+
+	* src/messageview.[ch]: separated the forced charset of message view
+	  in separate window from the main window.
+	  src/textview.c:
+	  textview_show_message()
+	  textview_show_part()
+	  textview_add_part(): use MessageView::forced_charset if specified.
+
+2003-04-03
+
+	* src/mainwindow.c: modified File menu a bit.
+	* src/menu.[ch]: added functions to handle item factory rc strings.
+	* src/messageview.[ch]: added a menu, and made it take over main
+	  window's menu shortcuts.
+	  added msginfo which is duplicated on display to MessageView.
+	* src/prefs_common.c: prefs_keybind_apply_clicked(): use
+	  menu_factory_clear_rc().
+
 2003-03-28
 
 	* send_message.c: send_message_smtp():

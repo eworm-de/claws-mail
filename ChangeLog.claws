@@ -1,3 +1,8 @@
+2003-04-05 [paul]	0.8.11claws71
+
+	* sync with 0.8.11cvs18
+		see ChangeLog 2003-04-03 and 2003-04-04
+
 2003-04-02 [christoph]	0.8.11claws70
 
 	* src/folder.[ch]
