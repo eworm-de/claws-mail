@@ -1,3 +1,10 @@
+2001-05-01 [hiroyuki]
+
+	* src/esmtp.c
+	  src/news.c
+	  src/nntp.c: changed sock_read() to sock_gets(), they've been left
+	  unsynched.
+
 2001-05-01 [hoa]
 	* src/Makefile.am added prefs_display_headers.[ch] headers_display.[ch]
 	* src/defs.h added HEADERS_DISPLAY_RC : name of the config file
@@ -37,7 +44,6 @@
 	* src/news.c (news_session_new_for_folder): set userid=NULL if
 	password dialog is cancelled.
 
->>>>>>> 1.29
 2001-04-30 [sergey]
 
 	* src/nntp.h (NNTPSockInfo): new type.

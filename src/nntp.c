@@ -289,7 +289,7 @@ static void nntp_gen_send(NNTPSockInfo *sock, const gchar *format, ...)
 
 static gint nntp_gen_recv(NNTPSockInfo *sock, gchar *buf, gint size)
 {
-	if (sock_read(sock->sock, buf, size) == -1)
+	if (sock_gets(sock->sock, buf, size) == -1)
 		return NN_SOCKET;
 
 	strretchomp(buf);

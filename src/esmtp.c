@@ -140,7 +140,7 @@ gint esmtp_auth(SockInfo *sock, SMTPAuthType authtype,
 
 gint esmtp_ok(SockInfo *sock)
 {
-	while (sock_read(sock, esmtp_response, sizeof(esmtp_response) - 1)
+	while (sock_gets(sock, esmtp_response, sizeof(esmtp_response) - 1)
 	       != -1) {
 		if (strlen(esmtp_response) < 4)
 			return SM_ERROR;

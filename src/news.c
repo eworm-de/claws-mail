@@ -376,7 +376,7 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 	}
 
 	for (;;) {
-		if (sock_read(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
+		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) {
 			log_warning(_("error occurred while getting xover.\n"));
 			return newlist;
 		}
