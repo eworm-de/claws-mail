@@ -1,3 +1,10 @@
+2002-10-04 [christoph]	0.8.3claws45
+
+	* src/inc.c
+		fix segfault caused by pop before smtp
+		call to inc_account_mail with NULL
+		pointer for mainwin
+
 2002-10-04 [paul]	0.8.3claws44
 
 	* configure.in
