@@ -199,6 +199,9 @@ static void spamassassin_create_widget_func(PrefsPage * _page)
 	gtk_misc_set_alignment(GTK_MISC(label11), 0, 0.5);
 	/* --------------------------------------------------------- */
 
+	gtk_widget_set_usize(GTK_WIDGET(port), 64, -1);
+	gtk_signal_connect(GTK_OBJECT(button4), "released", GTK_SIGNAL_FUNC(foldersel_cb), page);
+
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(enable), spamassassin_enable);
 	gtk_entry_set_text(GTK_ENTRY(hostname), spamassassin_hostname);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(port), (float) spamassassin_port);
@@ -214,8 +217,6 @@ static void spamassassin_create_widget_func(PrefsPage * _page)
 	page->save_folder = save_folder;
 
 	page->page.widget = table1;
-
-	gtk_signal_connect(GTK_OBJECT(button4), "released", GTK_SIGNAL_FUNC(foldersel_cb), page);
 }
 
 static void spamassassin_destroy_widget_func(PrefsPage *_page)

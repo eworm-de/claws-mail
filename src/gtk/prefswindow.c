@@ -178,7 +178,11 @@ void prefswindow_create()
 	prefswindow = g_new0(PrefsWindow, 1);
 
 	prefswindow->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_default_size(GTK_WINDOW(prefswindow->window), 400, 200);
+	gtk_window_set_title(GTK_WINDOW(prefswindow->window), _("Preferences"));
+	gtk_window_set_default_size(GTK_WINDOW(prefswindow->window), 600, 340);
+	gtk_window_position (GTK_WINDOW(prefswindow->window), GTK_WIN_POS_CENTER);
+	gtk_window_set_modal (GTK_WINDOW (prefswindow->window), TRUE);
+	gtk_window_set_policy (GTK_WINDOW(prefswindow->window), FALSE, TRUE, FALSE);
 	gtk_container_set_border_width(GTK_CONTAINER(prefswindow->window), 4);
 
 	prefswindow->table1 = gtk_table_new(2, 2, FALSE);
