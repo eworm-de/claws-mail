@@ -214,11 +214,11 @@ static Session *news_session_new(const gchar *server, gushort port,
 		return NULL;
 
 	session = g_new(NNTPSession, 1);
+	session_init(SESSION(session));
 	SESSION(session)->type             = SESSION_NEWS;
 	SESSION(session)->server           = g_strdup(server);
 	session->nntp_sock                 = nntp_sock;
 	SESSION(session)->sock             = nntp_sock->sock;
-	SESSION(session)->last_access_time = time(NULL);
 	SESSION(session)->data             = NULL;
 
 	SESSION(session)->destroy          = news_session_destroy;

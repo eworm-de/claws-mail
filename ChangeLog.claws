@@ -1,3 +1,8 @@
+2003-03-22 [christoph]	0.8.11claws40
+
+	* src/news.c
+		init news session to prevent crash when session is closed
+
 2003-03-22 [christoph]	0.8.11claws39
 
 	* src/imap.c
