@@ -1,3 +1,12 @@
+2005-01-03 [colin]	0.9.13cvs25.3
+
+	* src/compose.c
+	* src/prefs_gtk.c
+	* src/prefs_template.c
+	* src/textview.c
+		Empty text widgets with empty strings, not NULL char
+		Patch by SungHyun Nam <namsh@kldp_org>
+
 2005-01-03 [colin]	0.9.13cvs25.2
 
 	* src/main.c

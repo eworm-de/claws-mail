@@ -5399,7 +5399,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl,
 		compose_entry_append(compose, tmpl->bcc, COMPOSE_BCC);
 
 	if (replace)
-		gtk_text_buffer_set_text(buffer, "\0", 1);
+		gtk_text_buffer_set_text(buffer, "", 1);
 
 	mark = gtk_text_buffer_get_insert(buffer);
 	gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
@@ -6002,7 +6002,7 @@ static void compose_input_cb(gpointer data, gint source,
 		GtkTextView *text = GTK_TEXT_VIEW(compose->text);
 		GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
 
-		gtk_text_buffer_set_text(buffer, "\0", 1);
+		gtk_text_buffer_set_text(buffer, "", 1);
 		compose_insert_file(compose, compose->exteditor_file);
 		compose_changed_cb(NULL, compose);
 

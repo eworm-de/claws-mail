@@ -755,7 +755,7 @@ void prefs_set_text(PrefParam *pparam)
 
 		text = GTK_TEXT_VIEW(*pparam->widget);
 		buffer = gtk_text_view_get_buffer(text);
-		gtk_text_buffer_set_text(buffer, "\0", -1);
+		gtk_text_buffer_set_text(buffer, "", -1);
 		gtk_text_buffer_get_start_iter(buffer, &iter);
 		gtk_text_buffer_insert(buffer, &iter, buf, -1);
 		break;

@@ -1265,7 +1265,7 @@ void textview_clear(TextView *textview)
 	GtkTextBuffer *buffer;
 
 	buffer = gtk_text_view_get_buffer(text);
-	gtk_text_buffer_set_text(buffer, "\0", -1);
+	gtk_text_buffer_set_text(buffer, "", -1);
 
 	TEXTVIEW_STATUSBAR_POP(textview);
 	textview_uri_list_remove_all(textview->uri_list);

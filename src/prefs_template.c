@@ -401,7 +401,7 @@ static void prefs_template_select_cb(GtkCList *clist, gint row, gint column,
 			   tmpl->subject ? tmpl->subject : "");
 	
 	buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(templates.text_value));
-	gtk_text_buffer_set_text(buffer, "\0", -1);
+	gtk_text_buffer_set_text(buffer, "", -1);
 	gtk_text_buffer_get_start_iter(buffer, &iter);
 	gtk_text_buffer_insert(buffer, &iter, tmpl->value, -1);
 }
