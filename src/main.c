@@ -40,7 +40,6 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <signal.h>
-#include <execinfo.h>
 
 #if HAVE_LOCALE_H
 #  include <locale.h>

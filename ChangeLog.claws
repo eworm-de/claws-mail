@@ -1,10 +1,14 @@
+2002-08-11 [melvin]	0.8.1claws55
+
+	* src/main.c
+		removed unrequired "execinfo.h" header
+
 2002-08-12 [paul]	0.8.1claws54
 
 	* faq/en/sylpheed-faq.html
 	  faq/en/sylpheed-faq-[1-3].html
 	  faq/en/sylpheed-faq-4.html	 **NEW FILE **
 		update English FAQ
-	
 
 2002-08-12 [alfons]	0.8.1claws53
 
