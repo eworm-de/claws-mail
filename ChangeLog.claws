@@ -1,3 +1,10 @@
+2002-02-16 [alfons]	0.7.1claws8
+
+	* src/filesel.c
+		fix inadvertent free of NULL pointer which caused
+		sylpheed to crash when closing the save-as dialog
+		using the window close button
+
 2002-02-16 [carsten]	0.7.1claws7
 	* src/mainwindow.[ch]
 	  src/summaryview.c

@@ -101,7 +101,8 @@ gchar *filesel_select_file(const gchar *title, const gchar *file)
 		}
 	}
 
-	g_free(filesel_oldfilename);
+	if (filesel_oldfilename) 
+		g_free(filesel_oldfilename);
 
 	manage_window_focus_out(filesel, NULL, NULL);
 	gtk_widget_destroy(filesel);
@@ -224,7 +225,10 @@ static void filesel_cancel_cb(GtkWidget *widget, gpointer data)
 static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data)
 {
 	filesel_cancel_cb(NULL, NULL);
-	g_free(filesel_oldfilename);
+	if (filesel_oldfilename) {
+		g_free(filesel_oldfilename);
+		filesel_oldfilename = NULL;
+	}
 	return TRUE;
 }
 
