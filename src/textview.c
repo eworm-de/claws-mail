@@ -98,6 +98,7 @@ static GdkColor error_color = {
 
 
 static GdkCursor *hand_cursor = NULL;
+static GdkCursor *text_cursor = NULL;
 
 #define TEXTVIEW_STATUSBAR_PUSH(textview, str)					    \
 {									    \
@@ -242,6 +243,8 @@ TextView *textview_create(void)
 
 	if (!hand_cursor)
 		hand_cursor = gdk_cursor_new(GDK_HAND2);
+	if (!text_cursor)
+		text_cursor = gdk_cursor_new(GDK_XTERM);
 
 	g_signal_connect(G_OBJECT(text), "key_press_event",
 			 G_CALLBACK(textview_key_pressed),
@@ -1949,7 +1952,7 @@ static void textview_uri_update(TextView *textview, gint x, gint y)
 		
 		window = gtk_text_view_get_window(GTK_TEXT_VIEW(textview->text),
 						  GTK_TEXT_WINDOW_TEXT);
-		gdk_window_set_cursor(window, uri ? hand_cursor : NULL);
+		gdk_window_set_cursor(window, uri ? hand_cursor : text_cursor);
 
 		TEXTVIEW_STATUSBAR_POP(textview);
 
@@ -2000,21 +2003,33 @@ static RemoteURI *textview_get_uri_from_range(TextView *textview,
 					      GtkTextIter *start_iter,
 					      GtkTextIter *end_iter)
 {
-	gint start_pos, end_pos;
+	gint start_pos, end_pos, cur_pos;
 	RemoteURI *uri = NULL;
 	GSList *cur;
 
 	start_pos = gtk_text_iter_get_offset(start_iter);
 	end_pos = gtk_text_iter_get_offset(end_iter);
+	cur_pos = gtk_text_iter_get_offset(iter);
 
 	for (cur = textview->uri_list; cur != NULL; cur = cur->next) {
 		RemoteURI *uri_ = (RemoteURI *)cur->data;
-
 		if (start_pos == uri_->start &&
 		    end_pos ==  uri_->end) {
 			uri = uri_;
 			break;
-		}
+		} else if (start_pos == uri_->start ||
+			   end_pos == uri_->end) {
+			/* in case of contiguous links, textview_get_uri_range
+			 * returns a broader range (start of 1st link to end
+			 * of last link).
+			 * In that case, correct link is the one covering
+			 * current iter.
+			 */
+			if (uri_->start <= cur_pos && cur_pos <= uri_->end) {
+				uri = uri_;
+				break;
+			}
+		} 
 	}
 
 	return uri;

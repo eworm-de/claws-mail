@@ -218,3 +218,4 @@
 ( cvs diff -u -r 1.100.2.5 -r 1.100.2.6 AUTHORS; cvs diff -u -r 1.96.2.25 -r 1.96.2.26 src/textview.c; cvs diff -u -r 1.12.2.2 -r 1.12.2.3 src/textview.h; ) > 0.9.12cvs139.2.patchset
 ( cvs diff -u -r 1.382.2.59 -r 1.382.2.60 src/compose.c; ) > 0.9.12cvs140.1.patchset
 ( cvs diff -u -r 1.96.2.26 -r 1.96.2.27 src/textview.c; ) > 0.9.12cvs140.2.patchset
+( cvs diff -u -r 1.96.2.27 -r 1.96.2.28 src/textview.c; ) > 0.9.12cvs140.3.patchset
