@@ -24,6 +24,9 @@ if test "$GNOME_CONFIG" != no; then
 fi
 AM_CONDITIONAL(SYLPHEED_GNOME, test -d "$gnomedir")
 
+dnl Claws version
+AC_DEFINE(CLAWS, 1)
+
 dnl libtool versioning
 LT_RELEASE=$MAJOR_VERSION.$MINOR_VERSION
 LT_CURRENT=`expr $MICRO_VERSION - $INTERFACE_AGE`

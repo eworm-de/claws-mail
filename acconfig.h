@@ -35,3 +35,5 @@
 
 #undef PACKAGE
 #undef VERSION
+
+#undef CLAWS
