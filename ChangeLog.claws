@@ -1,3 +1,8 @@
+2002-01-26 [alfons]	0.7.0claws31
+
+	* src/import.c
+		let import dialog show the destination folder identifier
+
 2002-01-26 [melvin]	0.7.0claws30
 
 	* src/folderview.c

@@ -68,6 +68,7 @@ static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data);
 gint import_mbox(FolderItem *default_dest)
 {
 	gint ok = 0;
+	gchar *path;
 
 	if (!window)
 		import_create();
@@ -75,8 +76,12 @@ gint import_mbox(FolderItem *default_dest)
 		gtk_widget_show(window);
 
 	gtk_entry_set_text(GTK_ENTRY(file_entry), "");
-	if (default_dest && default_dest->path)
-		gtk_entry_set_text(GTK_ENTRY(dest_entry), default_dest->path);
+
+	if (default_dest) { 
+		path = folder_item_get_identifier(default_dest);
+		gtk_entry_set_text(GTK_ENTRY(dest_entry), path);
+		g_free(path);
+	}	
 	else
 		gtk_entry_set_text(GTK_ENTRY(dest_entry), "");
 	gtk_widget_grab_focus(file_entry);
