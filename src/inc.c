@@ -771,10 +771,13 @@ static GHashTable *inc_get_uidl_table(PrefsAccount *ac_prefs)
 	gchar *path;
 	FILE *fp;
 	gchar buf[IDLEN + 3];
+	GDate curdate;
+	gchar **data;
 
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			   "uidl-", ac_prefs->recv_server,
 			   "-", ac_prefs->userid, NULL);
+			   
 	if ((fp = fopen(path, "rb")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 		g_free(path);
@@ -784,28 +787,37 @@ static GHashTable *inc_get_uidl_table(PrefsAccount *ac_prefs)
 
 	table = g_hash_table_new(g_str_hash, g_str_equal);
 
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		gchar **data = NULL;
-		GDate *curdate = g_date_new();
+	g_date_clear(&curdate, 1);
 
-		g_date_set_time(curdate, time(NULL));	
+	/*
+	 * NOTE: g_date_set_time() has to be called inside this 
+	 * loop, because a day change may happen??? That right?
+	 */
+
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		strretchomp(buf);
 		
 		/* data[0] will contain uidl
-		   data[1] will contain day of retrieval */
-		if( strchr(buf, '\t') ) {
-			data = g_strsplit(buf,"\t",2);
-			snprintf(data[1], sizeof(data[1]), "%d", g_date_day_of_year(curdate) );
-		}
-		else {
-			data[0] = g_strdup(buf);
-			snprintf(data[1], sizeof(data[1]), "%d", g_date_day_of_year(curdate) );
-		}
-		g_hash_table_insert(table, g_strdup(data[0]), g_strdup(data[1]));
+		 * data[1] will contain day of retrieval */
+
+		/* 
+		 * FIXME: convoluted implementation. need to find
+		 * a better way to split the string.
+		 */
+		if (strchr(buf, '\t')) {
+			data = g_strsplit(buf, "\t", 2);
+			if (data) {
+				g_hash_table_insert(table, g_strdup(data[0]), g_strdup(data[1]));
+				g_strfreev(data);
+			}	
+		} else {
+			g_date_set_time(&curdate, time(NULL));	
+			g_hash_table_insert(table, g_strdup(buf), 
+					    g_strdup_printf("%d", g_date_day_of_year(&curdate)));
+		}			    
 	}
 
 	fclose(fp);
-
 	return table;
 }
 
@@ -814,10 +826,13 @@ static void inc_write_uidl_list(Pop3State *state)
 	gchar *path;
 	FILE *fp;
 	gint n;
-	GDate *curdate = g_date_new();
-	g_date_set_time(curdate, time(NULL));
-	if (!state->uidl_is_valid) return;
+	GDate curdate;
+	const char *sdate;
+	int tdate;
 
+	if (!state->uidl_is_valid)
+		return;
+	
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			   "uidl-", state->ac_prefs->recv_server,
 			   "-", state->user, NULL);
@@ -826,6 +841,8 @@ static void inc_write_uidl_list(Pop3State *state)
 		g_free(path);
 		return;
 	}
+
+	g_date_clear(&curdate, 1);
 
 	for (n = 1; n <= state->count; n++) {
 		if (state->msg[n].uidl && state->msg[n].received &&
@@ -838,33 +855,34 @@ static void inc_write_uidl_list(Pop3State *state)
 				FILE_OP_ERROR(path, "fputc");
 				break;
 			}
-			if(g_hash_table_lookup(state->uidl_table, state->msg[n].uidl ) != NULL) {
-				const char *sdate = g_hash_table_lookup(state->uidl_table, state->msg[n].uidl);
-				int tdate = g_date_day_of_year(curdate);
-				if(sdate != NULL)
-					tdate = atoi(sdate);
+			
+			/*
+			 * NOTE: need to set time to watch for day changes??
+			 */
+			g_date_set_time(&curdate, time(NULL));
 
-				if(fprintf(fp, "%3d", tdate) == EOF) {
+			if (NULL != (sdate = g_hash_table_lookup(state->uidl_table, state->msg[n].uidl))) {
+				tdate = sdate != NULL ? atoi(sdate) : g_date_day_of_year(&curdate);
+				if (fprintf(fp, "%3d", tdate) == EOF) {
 					FILE_OP_ERROR(path, "fprintf");
 					break;
 				}
 			} else {
-				if(fprintf(fp, "%d", g_date_day_of_year(curdate)) == EOF) {
+				if (fprintf(fp, "%d", g_date_day_of_year(&curdate)) == EOF) {
 					FILE_OP_ERROR(path, "fputs");
 					break;
 				}
-
 			}
 
 			if (fputc('\n', fp) == EOF) {
 				FILE_OP_ERROR(path, "fputc");
 				break;
 			}		
-			
 		}
 	}
 
-	if (fclose(fp) == EOF) FILE_OP_ERROR(path, "fclose");
+	if (fclose(fp) == EOF) 
+		FILE_OP_ERROR(path, "fclose");
 	g_free(path);
 }
 
