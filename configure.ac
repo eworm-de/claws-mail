@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=6
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=87
+EXTRA_VERSION=88
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}claws
 else
@@ -130,6 +130,19 @@ if test x"$use_threads" = xyes ; then
 	fi
 else
 	AC_MSG_RESULT(no)
+fi
+
+dnl Check for d_type member in struct dirent
+AC_MSG_CHECKING([whether struct dirent has d_type member])
+AC_CACHE_VAL(ac_cv_dirent_d_type,[
+	AC_TRY_COMPILE([#include <dirent.h>],
+		       [struct dirent d; d.d_type = DT_REG;],
+		       ac_cv_dirent_d_type=yes, ac_cv_dirent_d_type=no)
+])
+AC_MSG_RESULT($ac_cv_dirent_d_type)
+if test $ac_cv_dirent_d_type = yes; then
+	AC_DEFINE(HAVE_DIRENT_D_TYPE, 1,
+		  Define if `struct dirent' has `d_type' member.)
 fi
 
 dnl Checks for header files.

@@ -1,3 +1,8 @@
+2003-11-22 [paul]	0.9.6claws88
+
+	* sync with 0.9.7cvs5
+		see ChangeLog 2003-11-21
+
 2003-11-21 [paul]	0.9.6claws87
 
 	* src/mimeview.c

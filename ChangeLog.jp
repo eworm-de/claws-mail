@@ -1,3 +1,16 @@
+2003-11-21
+
+	* configure.in: struct dirent 中の d_type メンバのチェックを追加。
+	* src/mh.c: mh_scan_folder(): 利用可能な場合は d->d_type を使用。
+	  mh_get_uncached_msgs(): 余分な stat() を削除。
+	  mh_parse_msg(): 通常のファイルでない場合は NULL を返す。
+	  mh_scan_tree_recursive(): 利用可能な場合は d->d_type を使用。
+	* src/utils.[ch]:
+	  dirent_is_regular_file()
+	  dirent_is_directory(): 新規。利用可能な場合はエントリのタイプを
+	  判別するのに d->d_type を使用。
+	  remove_dir_recursive(): dirent_is_directory() を使用。
+
 2003-11-14
 
 	* src/folder.h: FolderItem に 'updated' フラグを追加。
