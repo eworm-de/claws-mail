@@ -4516,6 +4516,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 #endif
 	/* Organization */
 	if (compose->account->organization &&
+	    strlen(compose->account->organization) &&
 	    !IS_IN_CUSTOM_HEADER("Organization")) {
 		compose_convert_header(buf, sizeof(buf),
 				       compose->account->organization,
