@@ -2407,23 +2407,27 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 			text[col_pos[S_COL_DATE]] = g_strdup(p_date);
 			g_free(p_date);
 		}
+	} else if (msginfo->date)
+		text[col_pos[S_COL_DATE]] = g_strdup(msginfo->date);
+	else
+		text[col_pos[S_COL_DATE]] = g_strdup(_("(No Date)"));
 #else
 		text[col_pos[S_COL_DATE]] = date_modified;
-#endif
 	} else if (msginfo->date)
 		text[col_pos[S_COL_DATE]] = msginfo->date;
 	else
 		text[col_pos[S_COL_DATE]] = _("(No Date)");
+#endif
 
 #ifdef WIN32
-		{
-			gchar *p_fromname;
-			p_fromname = g_strdup(msginfo->fromname);
-			locale_to_utf8(&p_fromname);
-	text[col_pos[S_COL_FROM]] = msginfo->fromname ? p_fromname :
-		_("(No From)");
-/*			g_free(p_fromname); */
-		}
+	{
+		gchar *p_fromname;
+		p_fromname = g_strdup(msginfo->fromname);
+		locale_to_utf8(&p_fromname);
+		text[col_pos[S_COL_FROM]] = msginfo->fromname 
+			? p_fromname
+			: g_strdup(_("(No From)"));
+	}
 #else
 	text[col_pos[S_COL_FROM]] = msginfo->fromname ? msginfo->fromname :
 		_("(No From)");
@@ -2445,7 +2449,6 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 					p_to = g_strdup(to);
 					locale_to_utf8(&p_to);
 					text[col_pos[S_COL_FROM]] = p_to;
-					/* g_free(p_to); */
 				}
 #else
 				text[col_pos[S_COL_FROM]] = to;
@@ -2462,7 +2465,6 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 					p_to = g_strdup(to);
 					locale_to_utf8(&p_to);
 					text[col_pos[S_COL_FROM]] = p_to;
-					/* g_free(p_to); */
 				}
 #else
 				text[col_pos[S_COL_FROM]] = to;
@@ -2482,13 +2484,12 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 			g_free(to);
 			to = from;
 #ifdef WIN32
-				{
-					gchar *p_to;
-					p_to = g_strdup(to);
-					locale_to_utf8(&p_to);
-					text[col_pos[S_COL_FROM]] = p_to;
-					/* g_free(p_to); */
-				}
+			{
+				gchar *p_to;
+				p_to = g_strdup(to);
+				locale_to_utf8(&p_to);
+				text[col_pos[S_COL_FROM]] = p_to;
+			}
 #else
 			text[col_pos[S_COL_FROM]] = to;
 #endif
@@ -2505,23 +2506,22 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 			locale_to_utf8(&p_subject);
 			text[col_pos[S_COL_SUBJECT]] = p_subject;
 		} else
-			text[col_pos[S_COL_SUBJECT]] = _("(No Subject)");
+			text[col_pos[S_COL_SUBJECT]] = g_strdup(_("(No Subject)"));
+	else 
+		{
+			gchar *p_subject;
+			p_subject = g_strdup(msginfo->subject);
+			locale_to_utf8(&p_subject);
+			text[col_pos[S_COL_SUBJECT]] = p_subject 
+				? p_subject
+				: g_strdup(_("(No Subject)"));
+		}
 #else
 		text[col_pos[S_COL_SUBJECT]] = msginfo->subject ? 
 			string_remove_match(buf, BUFFSIZE, msginfo->subject, 
 					summaryview->simplify_subject_preg) : 
 			_("(No Subject)");
-#endif
 	else 
-#ifdef WIN32
-		{
-			gchar *p_subject;
-			p_subject = g_strdup(msginfo->subject);
-			locale_to_utf8(&p_subject);
-			text[col_pos[S_COL_SUBJECT]] = p_subject ? p_subject :
-			_("(No Subject)");
-		}
-#else
 		text[col_pos[S_COL_SUBJECT]] = msginfo->subject ? msginfo->subject :
 		_("(No Subject)");
 #endif

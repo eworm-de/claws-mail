@@ -1,3 +1,8 @@
+2003-11-30 [thorsten]	0.9.7claws9-1
+
+	* src/summaryview.c
+		fix: forgot some g_strdup in last commit
+
 2003-11-29 [thorsten]	0.9.7claws3-1
 
 	* src/summaryview.c
