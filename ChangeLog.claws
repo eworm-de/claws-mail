@@ -1,3 +1,12 @@
+2004-07-01 [paul]	0.9.12cvs6
+
+	* src/gtk/quicksearch.c
+		reveal hidden string in gui
+		
+	* src/compose.c
+		fix updating of gpg signing setting on 
+		switching accounts
+
 2004-06-30 [darko]	0.9.12cvs5
 
 	* src/common/utils.c

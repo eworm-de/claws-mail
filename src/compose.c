@@ -3006,8 +3006,12 @@ static void compose_select_account(Compose *compose, PrefsAccount *account,
 #if USE_GPGME
 	if (account->default_sign)
 		menu_set_active(ifactory, "/Message/Sign", TRUE);
+	else
+		menu_set_active(ifactory, "/Message/Sign", FALSE);
 	if (account->default_encrypt)
 		menu_set_active(ifactory, "/Message/Encrypt", TRUE);
+	else
+		menu_set_active(ifactory, "/Message/Encrypt", FALSE);
 				       
 	activate_gnupg_mode(compose, account);		
 #endif /* USE_GPGME */

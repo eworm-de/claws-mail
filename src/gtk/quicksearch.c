@@ -177,7 +177,7 @@ static gchar *search_descr_strings[] = {
 	"! or ~",	N_("logical NOT operator"),
 	"%",	 N_("case sensitive search"),
 	"",	 "" ,
-	"",	 N_("all filtering expressions are allowed"),
+	" ",	 N_("all filtering expressions are allowed"),
 	NULL,	 NULL 
 };
  
