@@ -1,3 +1,10 @@
+2003-11-25 [melvin]	0.9.6claws94
+
+	* po/fr.po
+		Updated French translations + typos fixes of older
+		translations (thanks to Fabien Vantard for pointing
+		to some of them)
+
 2003-11-25 [melvin]	0.9.6claws93
 
 	* src/editldap.c
