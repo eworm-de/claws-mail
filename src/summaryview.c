@@ -4436,27 +4436,6 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	case GDK_Escape:
 		gtk_widget_grab_focus(summaryview->folderview->ctree);
 		return TRUE;
-	case GDK_Up:
-	case GDK_Down:
-		if ((node = summaryview->selected) != NULL) {
-			GtkCTreeNode *next = NULL;
-			do {
-				next = (event->keyval == GDK_Down)
-					? gtkut_ctree_node_next(ctree, next ? next:node)
-					: gtkut_ctree_node_prev(ctree, next ? next:node);
-			} while (next && !gtk_ctree_is_viewable(ctree, next));
-
-			if (next) {
-				gtk_sctree_select_with_state
-					(GTK_SCTREE(ctree), next, event->state);
-				
-				/* Deprecated - what are the non-deprecated equivalents? */
-				if (gtk_ctree_node_is_visible(GTK_CTREE(ctree), next) != GTK_VISIBILITY_FULL)
-					gtk_ctree_node_moveto(GTK_CTREE(ctree), next, 0, 0, 0);
-				summaryview->selected = next;
-			}
-		}
-		return TRUE;
 	case GDK_Home:
 	case GDK_End:
 		if ((node = summaryview->selected) != NULL) {
