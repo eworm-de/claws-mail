@@ -1,3 +1,11 @@
+2002-08-17 [oliver]	0.8.1claws72
+
+	* src/prefs_toolbar.c
+		update toolbar on CANCEL
+		bug reported by Martin Kluge
+	* src/toolbar.c
+		toolbar_destroy memleak fixed		
+
 2002-08-17 [alfons]	0.8.1claws71
 
 	* src/toolbar.c

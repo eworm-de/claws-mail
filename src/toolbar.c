@@ -137,6 +137,10 @@ static void toolbar_forward_popup_closed_cb
 					(GtkMenuShell	*menu_shell,
 					 gpointer	 data);
 
+static void activate_compose_button     (MainToolbar       *toolbar,
+					 ToolbarStyle      style,
+					 ComposeButtonType type);
+
 static ToolbarAction t_action[] = 
 {
 	{ "A_RECEIVE_ALL",   N_("Receive Mail on all Accounts"),    toolbar_inc_all_cb        },
@@ -835,9 +839,10 @@ void toolbar_destroy(MainWindow *mainwin)
 	while (mainwin->toolbar->syl_action != NULL) {
 		syl_action = (ToolbarSylpheedActions*)mainwin->toolbar->syl_action->data;
 
+		mainwin->toolbar->syl_action = g_slist_remove(mainwin->toolbar->syl_action, syl_action);
 		if (syl_action->name)
 			g_free(syl_action->name);
-		mainwin->toolbar->syl_action = g_slist_remove(mainwin->toolbar->syl_action, syl_action);
+		g_free(syl_action);
 	}
 
 	g_slist_free(mainwin->toolbar->syl_action);
