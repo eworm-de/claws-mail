@@ -1,3 +1,10 @@
+2003-04-30 [paul]	0.8.11claws134
+
+	* src/addrindex.c
+		ok, this time a better fix for the bug where opening folder
+		has massive slowdown when using the 'Display sender using 
+		address book' option
+
 2003-04-30 [paul]	0.8.11claws133
 
 	* src/addrindex.c

@@ -1215,24 +1215,6 @@ static void addrindex_write_jpilot( FILE *fp,AddressDataSource *ds, gint lvl ) {
 	}
 }
 
-#else
-/*
- * Just read/write DOM fragments (preserve data found in file).
- */
-static AddressDataSource *addrindex_parse_jpilot( XMLFile *file ) {
-	AddressDataSource *ds;
-
-	ds = addrindex_create_datasource( ADDR_IF_JPILOT );
-	ds->rawDataSource = addrindex_read_fragment( file );
-	return ds;
-}
-
-static void addrindex_write_jpilot( FILE *fp, AddressDataSource *ds, gint lvl ) {
-	AddressIfFragment *fragment = ds->rawDataSource;
-	if( fragment ) {
-		addrindex_write_fragment( fp, fragment, lvl );
-	}
-}
 #endif
 
 #ifdef USE_LDAP
@@ -1449,25 +1431,6 @@ static void addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
 	addrindex_write_elem_e( fp, lvl, TAG_DS_LDAP );
 
 }
-
-#else
-/*
- * Just read/write DOM fragments (preserve data found in file).
- */
-static AddressDataSource *addrindex_parse_ldap( XMLFile *file ) {
-	AddressDataSource *ds;
-
-	ds = addrindex_create_datasource( ADDR_IF_LDAP );
-	ds->rawDataSource = addrindex_read_fragment( file );
-	return ds;
-}
-
-static void addrindex_write_ldap( FILE *fp, AddressDataSource *ds, gint lvl ) {
-	AddressIfFragment *fragment = ds->rawDataSource;
-	if( fragment ) {
-		addrindex_write_fragment( fp, fragment, lvl );
-	}
-}
 #endif
 
 /* **********************************************************************
@@ -1517,12 +1480,16 @@ static void addrindex_read_index( AddressIndex *addrIndex, XMLFile *file ) {
 				else if( addrIndex->lastType == ADDR_IF_VCARD ) {
 					ds = addrindex_parse_vcard( file );
 				}
+#ifdef USE_JPILOT
 				else if( addrIndex->lastType == ADDR_IF_JPILOT ) {
 					ds = addrindex_parse_jpilot( file );
 				}
+#endif
+#ifdef USE_LDAP
 				else if( addrIndex->lastType == ADDR_IF_LDAP ) {
 					ds = addrindex_parse_ldap( file );
 				}
+#endif
 				if( ds ) {
 					ds->interface = dsIFace;
 					addrindex_hash_add_cache( addrIndex, ds );
@@ -1632,12 +1599,16 @@ static void addrindex_write_index( AddressIndex *addrIndex, FILE *fp ) {
 					if( iface->type == ADDR_IF_VCARD ) {
 						addrindex_write_vcard( fp, ds, lvlItem );
 					}
+#ifdef USE_JPILOT
 					if( iface->type == ADDR_IF_JPILOT ) {
 						addrindex_write_jpilot( fp, ds, lvlItem );
 					}
+#endif
+#ifdef USE_LDAP
 					if( iface->type == ADDR_IF_LDAP ) {
 						addrindex_write_ldap( fp, ds, lvlItem );
 					}
+#endif
 				}
 				nodeDS = g_list_next( nodeDS );
 			}
