@@ -101,7 +101,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 {
 	MailFilteringData *mail_filtering_data = (MailFilteringData *) source;
 	MsgInfo *msginfo = mail_filtering_data->msginfo;
-	gboolean is_infected = FALSE;
 	MimeInfo *mimeinfo;
 
 	int ret, no;
@@ -115,6 +114,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
 	debug_print("Scanning message %d for viruses\n", msginfo->msgnum);
 
+	params.is_infected = FALSE;
 	params.root = NULL;
 
     	params.limits.maxfiles = 1000; /* max files */
@@ -134,7 +134,7 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
 	g_node_traverse(mimeinfo->node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, scan_func, &params);
 
-	if (is_infected) {
+	if (params.is_infected) {
 		if (config.clamav_recv_infected) {
 			FolderItem *clamav_save_folder;
 

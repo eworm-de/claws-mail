@@ -1,3 +1,8 @@
+2003-10-14 [christoph]	0.9.6claws27
+
+	* src/plugins/clamav/clamav_plugin.c
+		fix clamav plugin
+
 2003-10-14 [christoph]	0.9.6claws26
 
 	* src/compose.c
