@@ -4795,9 +4795,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 		new_style = gtk_style_copy(style);
 
 	if (prefs_common.textfont) {
-		CharSet charset;
-
-		charset = conv_get_current_charset();
 		if (MB_CUR_MAX == 1) {
 			gchar *fontstr, *p;
 

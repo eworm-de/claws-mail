@@ -1654,6 +1654,18 @@ gint change_dir(const gchar *dir)
 	return 0;
 }
 
+gint make_dir(const gchar *dir)
+{
+	if (mkdir(dir, S_IRWXU) < 0) {
+		FILE_OP_ERROR(dir, "mkdir");
+		return -1;
+	}
+	if (chmod(dir, S_IRWXU) < 0)
+		FILE_OP_ERROR(dir, "chmod");
+
+	return 0;
+}
+
 gint make_dir_hier(const gchar *dir)
 {
 	gchar *parent_dir;
@@ -1668,24 +1680,18 @@ gint make_dir_hier(const gchar *dir)
 		if (*parent_dir != '\0') {
 #endif
 			if (!is_dir_exist(parent_dir)) {
-				if (mkdir(parent_dir, S_IRWXU) < 0) {
-					FILE_OP_ERROR(parent_dir, "mkdir");
+				if (make_dir(parent_dir) < 0) {
 					g_free(parent_dir);
 					return -1;
 				}
-				if (chmod(parent_dir, S_IRWXU) < 0)
-					FILE_OP_ERROR(parent_dir, "chmod");
 			}
 		}
 		g_free(parent_dir);
 	}
+
 	if (!is_dir_exist(dir)) {
-		if (mkdir(dir, S_IRWXU) < 0) {
-			FILE_OP_ERROR(dir, "mkdir");
+		if (make_dir(dir) < 0)
 			return -1;
-		}
-		if (chmod(dir, S_IRWXU) < 0)
-			FILE_OP_ERROR(dir, "chmod");
 	}
 
 	return 0;
