@@ -1,3 +1,15 @@
+2001-11-11 [hoa]	0.6.5.claws6
+
+	* src/compose.[ch]
+		Insert signature at the end of the text.
+		Added undo patch but currently disabled
+
+	* src/procmsg.c
+		Threading by subject improved.
+
+	* added src/undo.[ch]
+		Undo module for compose dialog box.
+
 2001-11-11 [alfons]	0.6.5.claws5
 
 	* src/procmsg.c

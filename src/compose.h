@@ -179,6 +179,15 @@ struct _Compose
 	gint   exteditor_readdes;
 	gint   exteditor_tag;
 
+/* DINH V. Hoa - waiting for definitive version
+   of undo patch */
+#ifdef USE_UNDO_PATCH
+        GList *undo;
+        GList *redo;
+        gboolean undo_state;
+        gboolean redo_state;
+#endif
+
 #if USE_PSPELL
         /* Pspell spell checker */
         GtkPspell *gtkpspell;

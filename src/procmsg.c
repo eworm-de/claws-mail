@@ -568,17 +568,22 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 		msginfo = (MsgInfo *) node->data;
 		parent = NULL;
 		if (subject_is_reply(msginfo->subject)) {
-			if (NULL != (parent = subject_table_lookup(subject_table, msginfo->subject))) {
-				/* the node may already be threaded by IN-REPLY-TO, so go up in the 
-				 * tree to find the parent node */
-				for (; parent->parent && parent->parent != root; parent = parent->parent) 
-					;
-			}					
+			parent = subject_table_lookup(subject_table,
+						      msginfo->subject);
+			/* the node may already be threaded by IN-REPLY-TO,
+			   so go up in the tree to find the parent node */
+			if (parent != NULL) {
+				if (g_node_is_ancestor(node, parent))
+					parent = NULL;
+				if (parent == node)
+					parent = NULL;
+			}
+
+			if (parent) {
+				g_node_unlink(node);
+				g_node_append(parent, node);
+			}
 		}					
-		if (parent && parent != node) {
-			g_node_unlink(node);
-			g_node_append(parent, node);
-		}
 		node = next;
 	}		
 		
