@@ -1,3 +1,8 @@
+2003-12-15 [luke]	0.9.7claws43
+        * src/textview.c
+        * src/mimeview.c
+ 		o use "name" parameter if "filename" doesn't exist
+
 2003-12-14 [alfons]	0.9.7claws42
 
 	* src/summaryview.c
