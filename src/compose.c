@@ -3514,7 +3514,7 @@ static gint compose_redirect_write_to_file(Compose *compose, const gchar *file)
 		g_warning("can't change file mode\n");
 	}
 
-	while (procheader_get_one_field(buf, sizeof(buf), fp, NULL) != -1) {
+	while (procheader_get_one_field_asis(buf, sizeof(buf), fp) != -1) {
 		/* should filter returnpath, delivered-to */
 		if (g_strncasecmp(buf, "Return-Path:",
 				   strlen("Return-Path:")) == 0 ||

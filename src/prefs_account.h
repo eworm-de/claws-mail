@@ -32,7 +32,8 @@ typedef enum {
 	A_RPOP,
 	A_IMAP4,
 	A_NNTP,
-	A_LOCAL
+	A_LOCAL,
+	A_NONE,		/* SMTP only */
 } RecvProtocol;
 
 typedef enum {
@@ -40,7 +41,6 @@ typedef enum {
 	SIG_COMMAND,
 	SIG_DIRECT
 } SigType;
-
 
 #if USE_GPGME
 typedef enum {

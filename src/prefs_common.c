@@ -185,8 +185,6 @@ static struct Interface {
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
  	GtkWidget *optmenu_nextunreadmsgdialog;
-	GtkWidget *entry_pixmap_theme;
-	GtkWidget *combo_pixmap_theme;
 } Xinterface;
 
 static struct Other {
@@ -747,7 +745,7 @@ static PrefParam param[] = {
 
 	{"pixmap_theme_path", DEFAULT_PIXMAP_THEME, 
 	 &prefs_common.pixmap_theme_path, P_STRING,
-	 &Xinterface.entry_pixmap_theme,	prefs_set_data_from_entry, prefs_set_entry},
+	 NULL, NULL, NULL},
 
 	{"hover_timeout", "500", &prefs_common.hover_timeout, P_INT,
 	 NULL, NULL, NULL},
@@ -2198,12 +2196,6 @@ static void prefs_interface_create(void)
 	GtkWidget *hbox_nextunreadmsgdialog;
  	GtkWidget *optmenu_nextunreadmsgdialog;
 
-	GtkWidget *frame_pixmap_theme;
-	GtkWidget *vbox_pixmap_theme;
-	GtkWidget *entry_pixmap_theme;
-	GtkWidget *combo_pixmap_theme;
-	GList *avail_pixmap_themes = NULL;
-
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
@@ -2285,23 +2277,6 @@ static void prefs_interface_create(void)
 	gtk_signal_connect (GTK_OBJECT (button_keybind), "clicked",
 			    GTK_SIGNAL_FUNC (prefs_keybind_select), NULL);
 
- 	PACK_FRAME(vbox1, frame_pixmap_theme, _("Icon theme"));
- 	
- 	vbox_pixmap_theme = gtk_vbox_new(FALSE, 0);
- 	gtk_widget_show(vbox_pixmap_theme);
- 	gtk_container_add(GTK_CONTAINER(frame_pixmap_theme), vbox_pixmap_theme);
- 	gtk_container_set_border_width(GTK_CONTAINER(vbox_pixmap_theme), 8);
- 
-	avail_pixmap_themes = stock_pixmap_themes_list_new(); 
- 
- 	combo_pixmap_theme = gtk_combo_new ();
- 	gtk_widget_show (combo_pixmap_theme);
- 	gtk_box_pack_start (GTK_BOX (vbox_pixmap_theme), combo_pixmap_theme, TRUE, TRUE, 0);
- 	gtk_combo_set_popdown_strings(GTK_COMBO(combo_pixmap_theme), avail_pixmap_themes);
- 	entry_pixmap_theme = GTK_COMBO (combo_pixmap_theme)->entry;
-
-	stock_pixmap_themes_list_free(avail_pixmap_themes);
-
 	/* interface.checkbtn_emacs          = checkbtn_emacs; */
 	Xinterface.checkbtn_always_show_msg    = checkbtn_always_show_msg;
 	Xinterface.checkbtn_openunread         = checkbtn_openunread;
@@ -2310,8 +2285,6 @@ static void prefs_interface_create(void)
 	Xinterface.checkbtn_openinbox          = checkbtn_openinbox;
 	Xinterface.checkbtn_immedexec          = checkbtn_immedexec;
 	Xinterface.optmenu_nextunreadmsgdialog = optmenu_nextunreadmsgdialog;
-	Xinterface.combo_pixmap_theme	      = combo_pixmap_theme;
- 	Xinterface.entry_pixmap_theme	      = entry_pixmap_theme;
 }
 
 static void prefs_other_create(void)
@@ -3340,8 +3313,8 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/View/Show all headers\" \"<control>H\")\n"
 		"(menu-path \"<Main>/View/Update\" \"<control><alt>U\")\n"
 
-		"(menu-path \"<Main>/Message/Get new mail\" \"<control>I\")\n"
-		"(menu-path \"<Main>/Message/Get from all accounts\" \"<shift><control>I\")\n"
+		"(menu-path \"<Main>/Message/Receive/Get new mail\" \"<control>I\")\n"
+		"(menu-path \"<Main>/Message/Receive/Get from all accounts\" \"<shift><control>I\")\n"
 		"(menu-path \"<Main>/Message/Compose an email message\" \"<control>M\")\n"
 		"(menu-path \"<Main>/Message/Reply\" \"<control>R\")\n"
 		"(menu-path \"<Main>/Message/Reply to/all\" \"<shift><control>R\")\n"
@@ -3393,8 +3366,8 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/View/Show all headers\" \"<shift>H\")\n"
 		"(menu-path \"<Main>/View/Update\" \"<shift>S\")\n"
 
-		"(menu-path \"<Main>/Message/Get new mail\" \"<control>I\")\n"
-		"(menu-path \"<Main>/Message/Get from all accounts\" \"<shift><control>I\")\n"
+		"(menu-path \"<Main>/Message/Receive/Get new mail\" \"<control>I\")\n"
+		"(menu-path \"<Main>/Message/Receive/Get from all accounts\" \"<shift><control>I\")\n"
 		"(menu-path \"<Main>/Message/Compose an email message\" \"W\")\n"
 		"(menu-path \"<Main>/Message/Reply\" \"<control>R\")\n"
 		"(menu-path \"<Main>/Message/Reply to/all\" \"<shift>A\")\n"
@@ -3445,9 +3418,9 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/View/Show all headers\" \"<control>H\")\n"
 		"(menu-path \"<Main>/View/Update\" \"<control><alt>U\")\n"
 
-		"(menu-path \"<Main>/Message/Get new mail\" \"<control>I\")\n"
-		"(menu-path \"<Main>/Message/Get from all accounts\" \"<shift><control>I\")\n"
-		"(menu-path \"<Main>/Message/Compose new message\" \"M\")\n"
+		"(menu-path \"<Main>/Message/Receive/Get new mail\" \"<control>I\")\n"
+		"(menu-path \"<Main>/Message/Receive/Get from all accounts\" \"<shift><control>I\")\n"
+		"(menu-path \"<Main>/Message/Compose an email message\" \"M\")\n"
 		"(menu-path \"<Main>/Message/Reply\" \"R\")\n"
 		"(menu-path \"<Main>/Message/Reply to/all\" \"G\")\n"
 		"(menu-path \"<Main>/Message/Reply to/sender\" \"\")\n"
@@ -3498,8 +3471,8 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/View/Show all headers\" \"<control>H\")\n"
 		"(menu-path \"<Main>/View/Update\" \"<alt>U\")\n"
 
-		"(menu-path \"<Main>/Message/Get new mail\" \"<alt>I\")\n"
-		"(menu-path \"<Main>/Message/Get from all accounts\" \"<shift><alt>I\")\n"
+		"(menu-path \"<Main>/Message/Receive/Get new mail\" \"<alt>I\")\n"
+		"(menu-path \"<Main>/Message/Receive/Get from all accounts\" \"<shift><alt>I\")\n"
 		"(menu-path \"<Main>/Message/Compose an email message\" \"<alt>N\")\n"
 		"(menu-path \"<Main>/Message/Reply\" \"<alt>R\")\n"
 		"(menu-path \"<Main>/Message/Reply to/all\" \"<shift><alt>R\")\n"
@@ -3700,37 +3673,10 @@ static void prefs_common_ok(void)
 
 static void prefs_common_apply(void)
 {
-	gchar *entry_pixmap_theme_str;
-	gboolean update_pixmap_theme;
-	gchar *backup_theme_path;
 	MainWindow *mainwindow;
-	
-	entry_pixmap_theme_str = gtk_entry_get_text(GTK_ENTRY(Xinterface.entry_pixmap_theme));
-	if (entry_pixmap_theme_str && 
-		(strcmp(prefs_common.pixmap_theme_path, entry_pixmap_theme_str) != 0) )
-		update_pixmap_theme = TRUE;
-	else
-		update_pixmap_theme = FALSE;
 
-	/*!< FIXME: prefs_set_data_from_dialog() clears and frees all strings, 
-	 * but prefs_common.pixmap_theme_path is stored in the StockPixmapData
-	 * in stock_pixmap.c::pixmaps[].icon_path, and used when reflecting
-	 * the pixmap changes. Work around by saving the old one and freeing 
-	 * it later. */
-	backup_theme_path = prefs_common.pixmap_theme_path;
-	prefs_common.pixmap_theme_path = g_strdup(backup_theme_path);
 	prefs_set_data_from_dialog(param);
 	sock_set_io_timeout(prefs_common.io_timeout_secs);
-	
-	if (update_pixmap_theme) {
-		main_window_reflect_prefs_all_real(TRUE);
-		compose_reflect_prefs_pixmap_theme();
-	} else
-		main_window_reflect_prefs_all_real(FALSE);
-
-	/*!< FIXME: Now it's safe to delete the backup path */
-	g_free(backup_theme_path);
-
 	prefs_common_save_config();
 
 	mainwindow = mainwindow_get_mainwindow();

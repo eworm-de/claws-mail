@@ -308,6 +308,7 @@ OBJECTS= \
 	prefs_spelling.o \
 	prefs_summary_column.o \
 	prefs_template.o \
+	prefs_themes.o \
 	prefs_toolbar.o \
 	prefswindow.o \
 	procheader.o \
@@ -646,6 +647,7 @@ prefs_matcher.o: 	prefs_matcher.c prefs_matcher.h
 prefs_spelling.o:	prefs_spelling.c prefs_spelling.h
 prefs_summary_column.o: 	prefs_summary_column.c prefs_summary_column.h
 prefs_template.o: 	prefs_template.c prefs_template.h
+prefs_themes.o: 	prefs_themes.c prefs_themes.h
 prefs_toolbar.o: 	prefs_toolbar.c prefs_toolbar.h
 prefswindow.o: 	prefswindow.c prefswindow.h
 procheader.o: 	procheader.c procheader.h

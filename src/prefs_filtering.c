@@ -409,7 +409,6 @@ static void rename_path(GSList * filters,
 	gint destlen;
 	gint prefixlen;
 	gint oldpathlen;
-	FolderItem *item;
         GSList * action_cur;
         GSList * cur;
 
@@ -526,7 +525,6 @@ static void delete_path(GSList ** p_filters, const gchar * path)
 	gint destlen;
 	gint prefixlen;
 	gint pathlen;
-	FolderItem *item;
         GSList * action_cur;
 	GSList * cur;
         

@@ -1,3 +1,97 @@
+2003-12-30 [luke]	0.9.8claws14
+	* src/procheader.[ch]
+		o added procheader_get_one_field_asis() that does not do
+		  unfolding
+		o fix procheader_get_header_array_asis() to use the above,
+		  fixing ugliness of headers in textview
+
+	* src/compose.c
+		o don't unfold headers when redirecting.	
+
+2003-12-30 [paul]	0.9.8claws13
+
+	* po/POTFILES.in
+	  src/common/defs.h
+	  src/Makefile.am
+	  src/main.c
+	  src/prefs_common.c
+	  src/prefs_themes.[ch]	** NEW FILES **
+	  	redesign and move Icon Theme selector to
+		the new prefs window
+	  
+	* src/stock_pixmap.c
+		fix the old bug where icons are not always
+		updated when changing themes
+	
+	* src/summaryview.c
+		fix bug where the icons on the title row
+		of the summary view were not updated
+	
+	all patches submitted by Ricardo Mones Lastra
+
+2003-12-30 [hoa]	0.9.8claws12
+
+	* src/folder.c
+	        run preglobal and postglobal processing rules
+		even if the folder does not have any rules.
+
+2003-12-28 [paul]	0.9.8claws11
+
+	* ac/aspell.m4
+	  ac/check-type.m4
+	  ac/gnupg-check-typedef.m4
+	  ac/openssl.m4
+	  ac/spamassassin.m4
+	  	fix 'underquoted definition' warnings, patch submitted by
+		David Relson <relson@osagesoftware.com>
+		
+	* src/common/utils.c
+		subject_get_prefix_length(): add "Odp\\:" to reply prefixes,
+		patch submitted by Jan Alboszta <J.Alboszta@students.mimuw.edu.pl>
+
+2003-12-28 [paul]	0.9.8claws10
+
+	* sync with 0.9.8cvs1
+		see ChangeLog 2003-12-17
+
+2003-12-27 [christoph]	0.9.8claws9
+
+	* src/common/utils.[ch]
+		add g_node_map() to map a GNode into a new GNode
+		converting all node data's with a function
+
+	* src/account.c
+	* src/folder.[ch]
+	* src/folderview.c
+	* src/imap.c
+	* src/mainwindow.c
+	* src/summaryview.c
+		o use g_node_map() to convert XML <-> Folder
+		o remove redundant FolderItem->parent and
+		  replace it with folder_item_parent()
+
+2003-12-23 [christoph]	0.9.8claws8
+
+	* src/folder.[ch]
+	* src/folderview.c
+	* src/mainwindow.c
+	* src/procmsg.c
+		o use callback for notifications about added and
+		  destroyed folders
+		o rewrite folderlist saving (new functions to create
+		  folder from XML tree, and XML tree from folder)
+
+	* src/common/xml.[ch]
+		add function to save XML trees
+
+	* src/prefs_filtering.c
+		code cleanup
+
+2003-12-22 [christoph]	0.9.8claws7
+
+	* src/prefs_account.[ch]
+		add "SMTP only" accounts
+
 2003-12-20 [melvin]	0.9.8claws6
 
 	* src/action.[ch]

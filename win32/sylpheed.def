@@ -722,6 +722,7 @@ EXPORTS
 	folder_item_move_to 
 	folder_item_new 
 	folder_item_open 
+	folder_item_parent 
 	folder_item_prefs_copy_prefs 
 	folder_item_prefs_free 
 	folder_item_prefs_get_sort_mode 
@@ -795,6 +796,7 @@ EXPORTS
 	folderview_update_msg_num 
 	fromuutobits 
 	g_int_compare 
+	g_node_map 
 	g_stricase_equal 
 	g_stricase_hash 
 ;	gai_strerrorA@4 
@@ -960,6 +962,7 @@ EXPORTS
 	imp_mutt_status_show 
 	imp_pine_status_show 
 	import_mbox 
+	inc_account_mail 
 	inc_all_account_mail 
 	inc_all_account_mail_cb 
 	inc_autocheck_timer_init 
@@ -1361,6 +1364,9 @@ EXPORTS
 	prefs_summary_column_open 
 	prefs_summary_column_set_config 
 	prefs_template_open 
+	prefs_themes_done 
+	prefs_themes_icons 
+	prefs_themes_init 
 	prefs_toolbar_composewindow 
 	prefs_toolbar_create_widget 
 	prefs_toolbar_done 
@@ -1390,6 +1396,7 @@ EXPORTS
 	procheader_get_header_from_msginfo 
 	procheader_get_headernames 
 	procheader_get_one_field 
+	procheader_get_one_field_asis 
 	procheader_header_array_destroy 
 	procheader_header_free 
 	procheader_headername_equal 
@@ -1884,6 +1891,7 @@ EXPORTS
 	xml_tag_add_attr 
 	xml_truncate_buf 
 	xml_unescape_str 
+	xml_write_node 
 	xmlprops_clear 
 	xmlprops_create 
 	xmlprops_free 

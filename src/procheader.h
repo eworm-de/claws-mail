@@ -46,6 +46,9 @@ gint procheader_get_one_field		(gchar		*buf,
 					 gint		 len,
 					 FILE		*fp,
 					 HeaderEntry	 hentry[]);
+gint procheader_get_one_field_asis	(gchar		*buf,
+					 gint		 len,
+					 FILE		*fp);
 gchar *procheader_get_unfolded_line	(gchar		*buf,
 					 gint		 len,
 					 FILE		*fp);

@@ -177,6 +177,8 @@
 	perror(func); \
 }
 
+typedef gpointer (*GNodeMapFunc)	(gpointer nodedata, gpointer data);
+
 /* debug functions */
 void debug_set_mode		(gboolean mode);
 gboolean debug_get_mode		(void);
@@ -480,6 +482,7 @@ gchar *generate_mime_boundary	(const gchar *prefix);
 
 gint quote_cmd_argument(gchar * result, guint size,
 			const gchar * path);
+GNode *g_node_map(GNode *node, GNodeMapFunc func, gpointer data);
 
 #ifdef WIN32
 #undef isspace

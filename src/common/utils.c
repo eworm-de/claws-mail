@@ -3642,7 +3642,8 @@ int subject_get_prefix_length(const gchar *subject)
 		"Antwort\\:",			/* "Antwort:" (German Lotus Notes) */
 		"Res\\:",			/* "Res:" (Brazilian Outlook) */
 		"Fw\\:",			/* "Fw:" Forward */
-		"Enc\\:"			/* "Enc:" Forward (Brazilian Outlook) */
+		"Enc\\:",			/* "Enc:" Forward (Brazilian Outlook) */
+		"Odp\\:"			/* "Odp:" Re (Polish Outlook) */
 		/* add more */
 	};
 	const int PREFIXES = sizeof prefixes / sizeof prefixes[0];
@@ -3987,6 +3988,51 @@ gint quote_cmd_argument(gchar * result, guint size,
 	return 0;
 }
 
+typedef struct 
+{
+	GNode 		*parent;
+	GNodeMapFunc	 func;
+	gpointer	 data;
+} GNodeMapData;
+
+static void g_node_map_recursive(GNode *node, gpointer data)
+{
+	GNodeMapData *mapdata = (GNodeMapData *) data;
+	GNode *newnode;
+	GNodeMapData newmapdata;
+	gpointer newdata;
+
+	newdata = mapdata->func(node->data, mapdata->data);
+	if (newdata != NULL) {
+		newnode = g_node_new(newdata);
+		g_node_append(mapdata->parent, newnode);
+
+		newmapdata.parent = newnode;
+		newmapdata.func = mapdata->func;
+		newmapdata.data = mapdata->data;
+
+		g_node_children_foreach(node, G_TRAVERSE_ALL, g_node_map_recursive, &newmapdata);
+	}
+}
+
+GNode *g_node_map(GNode *node, GNodeMapFunc func, gpointer data)
+{
+	GNode *root;
+	GNodeMapData mapdata;
+
+	g_return_val_if_fail(node != NULL, NULL);
+	g_return_val_if_fail(func != NULL, NULL);
+
+	root = g_node_new(func(node->data, data));
+
+	mapdata.parent = root;
+	mapdata.func = func;
+	mapdata.data = data;
+
+	g_node_children_foreach(node, G_TRAVERSE_ALL, g_node_map_recursive, &mapdata);
+
+	return root;
+}
 
 #ifdef WIN32
 /* -------------------------------------------------------------------------

@@ -2,7 +2,7 @@ dnl ******************************
 dnl OpenSSL
 dnl ******************************
 
-AC_DEFUN(AM_PATH_OPENSSL,
+AC_DEFUN([AM_PATH_OPENSSL],
 [dnl
 	USE_OPENSSL=0
 

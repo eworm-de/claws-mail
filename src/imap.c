@@ -1381,7 +1381,7 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 		if (!strcmp(new_item->path, "INBOX")) {
 			new_item->stype = F_INBOX;
 			folder->inbox = new_item;
-		} else if (!item->parent || item->stype == F_INBOX) {
+		} else if (!folder_item_parent(item) || item->stype == F_INBOX) {
 			gchar *base;
 
 #ifdef WIN32
@@ -1661,7 +1661,7 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 	session = imap_session_get(folder);
 	if (!session) return NULL;
 
-	if (!parent->parent && strcmp(name, "INBOX") == 0)
+	if (!folder_item_parent(parent) && strcmp(name, "INBOX") == 0)
 		dirpath = g_strdup(name);
 	else if (parent->path)
 		dirpath = g_strconcat(parent->path, "/", name, NULL);

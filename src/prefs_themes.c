@@ -246,12 +246,26 @@ static void prefs_themes_foreach_file(const gchar *dirname, const FileFunc func,
 static gboolean prefs_themes_is_system_theme(const gchar *dirname)
 {
 	gint len;
+#ifdef WIN32
+	gchar	   *systemthemes;
+	gboolean   result;
+#endif
 	
 	g_return_val_if_fail(dirname != NULL, FALSE);
 
+#ifdef WIN32
+	systemthemes = g_strconcat(get_installed_dir(), G_DIR_SEPARATOR_S,
+				   PIXMAP_THEME_DIR, NULL);
+	len = strlen(systemthemes);
+	if (strlen(dirname) > len && 0 == strncmp(dirname, systemthemes, len)) 
+		result = TRUE;
+	g_free(systemthemes);
+	return result;
+#else
 	len = strlen(PACKAGE_DATA_DIR);
 	if (strlen(dirname) > len && 0 == strncmp(dirname, PACKAGE_DATA_DIR, len))
 		return TRUE;
+#endif
 	
 	return FALSE;
 }
@@ -458,6 +472,9 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 	filename = filesel_select_file(_("Select theme folder"), NULL);
 	if (filename == NULL) 
 		return;
+#ifdef WIN32
+	locale_from_utf8(&filename);
+#endif
 	
 	cinfo = g_new0(CopyInfo, 1);
 	source = g_dirname(filename);
@@ -479,9 +496,15 @@ static void prefs_themes_btn_install_clicked_cb(GtkWidget *widget, gpointer data
 				 _("Yes"), _("No"), _("Cancel"));
 		switch (val) {
 		case G_ALERTDEFAULT:
+#ifdef WIN32
+			cinfo->dest = g_strconcat(get_installed_dir(), G_DIR_SEPARATOR_S,
+						  PIXMAP_THEME_DIR, G_DIR_SEPARATOR_S, 
+						  themename, NULL);
+#else
 			cinfo->dest = g_strconcat(PACKAGE_DATA_DIR, G_DIR_SEPARATOR_S,
 						  PIXMAP_THEME_DIR, G_DIR_SEPARATOR_S, 
 						  themename, NULL);
+#endif
 			break;
 		case G_ALERTALTERNATE:
 			break;
@@ -562,11 +585,35 @@ static void prefs_themes_display_theme_info(ThemesData *tdata, const ThemeInfo *
 	ThemesPage *theme = tdata->page;
 	gchar *save_prefs_path;
 	gint   i;
+#ifdef WIN32
+	gchar *info_name = g_strdup(info->name);
+	gchar *info_author = g_strdup(info->author);
+	gchar *info_url = g_strdup(info->url);
+	gchar *info_status = g_strdup(info->status);
+
+	if (!g_utf8_validate(info_name,-1,NULL))
+		locale_to_utf8(&info_name);
+	if (!g_utf8_validate(info_author,-1,NULL))
+		locale_to_utf8(&info_author);
+	if (!g_utf8_validate(info_url,-1,NULL))
+		locale_to_utf8(&info_url);
+	if (!g_utf8_validate(info_status,-1,NULL))
+		locale_to_utf8(&info_status);
+	gtk_label_set_text(GTK_LABEL(theme->name), info_name);
+	gtk_label_set_text(GTK_LABEL(theme->author), info_author);
+	gtk_label_set_text(GTK_LABEL(theme->url), info_url);	
+	gtk_label_set_text(GTK_LABEL(theme->status), info_status);
+	g_free(info_name);
+	g_free(info_author);
+	g_free(info_url);
+	g_free(info_status);
+#else
 	
 	gtk_label_set_text(GTK_LABEL(theme->name), info->name);
 	gtk_label_set_text(GTK_LABEL(theme->author), info->author);
 	gtk_label_set_text(GTK_LABEL(theme->url), info->url);	
 	gtk_label_set_text(GTK_LABEL(theme->status), info->status);
+#endif
 
 	save_prefs_path = prefs_common.pixmap_theme_path;
 	prefs_common.pixmap_theme_path = tdata->displayed;

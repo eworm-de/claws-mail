@@ -540,6 +540,10 @@ SOURCE=..\src\prefs_template.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\prefs_themes.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\prefs_toolbar.c
 # End Source File
 # Begin Source File
@@ -1145,6 +1149,10 @@ SOURCE=..\src\prefs_summary_column.h
 # Begin Source File
 
 SOURCE=..\src\prefs_template.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\prefs_themes.h
 # End Source File
 # Begin Source File
 

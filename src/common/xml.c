@@ -559,3 +559,52 @@ void xml_tag_add_attr(XMLTag *tag, const gchar *name, gchar *value)
 
 	tag->attr = g_list_append(tag->attr, attr);
 }
+
+static void xml_write_node_recursive(GNode *node, FILE *fp)
+{
+	gint i, depth;
+	XMLTag *tag;
+	GList *cur;
+
+	g_return_if_fail(node != NULL);
+	g_return_if_fail(fp != NULL);
+
+	depth = g_node_depth(node) - 1;
+	for (i = 0; i < depth; i++)
+		fputs("    ", fp);
+	tag = ((XMLNode *) node->data)->tag;
+
+	fprintf(fp, "<%s", tag->tag);
+	for (cur = tag->attr; cur != NULL; cur = g_list_next(cur)) {
+		XMLAttr *attr = (XMLAttr *) cur->data;
+
+		fprintf(fp, " %s=\"", attr->name);
+		xml_file_put_escape_str(fp, attr->value);
+		fputs("\"", fp);
+	}
+
+	if (node->children) {
+		GNode *child;
+		fputs(">\n", fp);
+
+		child = node->children;
+		while (child) {
+			GNode *cur;
+
+			cur = child;
+			child = cur->next;
+			xml_write_node_recursive(cur, fp);
+		}
+
+		for (i = 0; i < depth; i++)
+			fputs("    ", fp);
+		fprintf(fp, "</%s>\n", tag->tag);
+	} else
+		fputs(" />\n", fp);
+}
+
+void xml_write_node(GNode *node, FILE *fp)
+{
+	xml_write_node_recursive(node, fp);
+}
+
