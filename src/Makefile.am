@@ -72,6 +72,7 @@ sylpheed_SOURCES = \
 	manual.c manual.h \
 	addr_compl.c addr_compl.h \
 	export.c export.h \
+	gtkstext.c gtkstext.h \
 	grouplist_dialog.c grouplist_dialog.h
 
 EXTRA_DIST = \
