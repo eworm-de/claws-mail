@@ -1,3 +1,9 @@
+2002-10-11 [colin]	0.8.5claws19
+
+	* src/mainwindow.c
+		revert 0.8.5claws6 changes as i couldn't get to
+		anything satisfying
+
 2002-10-11 [melvin]	0.8.5claws18
 
 	* src/compose.c
