@@ -1,3 +1,40 @@
+2002-01-18 [match]	0.7.0claws14
+
+	* src/addrclip.[ch]	** NEW FILE **
+	* src/addrselect.[ch]	** NEW FILE **
+	* src/adbookbase.h	** NEW FILE **
+		addressbook cut, copy and paste
+	* src/addrbook.[ch]
+	* src/addrcache.[ch]
+	* src/addressitem.h
+	* src/addrindex.[ch]
+	* src/addritem.[ch]
+	* src/importldif.c
+	* src/importmutt.c
+	* src/jpilot.[ch]
+	* src/syldap.[ch]
+	* src/vcard.[ch]
+	* src/jpilot.[ch]
+	* src/editbook.c
+	* src/editjpilot.c
+	* src/editldap.c
+	* src/editvcard.c
+		support for copy/paste
+	* src/addressbook.c
+		support for copy/paste
+		tidy up menu option processing
+		correct address list function arguments
+	* src/editaddress.c
+		sort user attributes
+	* src/ldif.h
+	* src/mutt.h
+		tidy up
+
+	* src/addrbook.[ch]
+	* src/addrbook.[ch]
+	* src/addrbook.[ch]
+		
+
 2002-01-18 [paul]	0.7.0claws13
 
 	* sync with sylpheed 0.7.0cvs8
