@@ -1289,6 +1289,8 @@ static void set_charset_cb(gpointer data, guint action, GtkWidget *widget)
 		charset = conv_get_charset_str((CharSet)action);
 		g_free(messageview->forced_charset);
 		messageview->forced_charset = g_strdup(charset);
+		procmime_force_charset(charset);
+		
 		messageview_show(messageview, messageview->msginfo, FALSE);
 	}
 }

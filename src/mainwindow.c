@@ -260,6 +260,10 @@ static void set_charset_cb		(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
 
+static void set_decode_cb		(MainWindow	*mainwin,
+					 guint		 action,
+					 GtkWidget	*widget);
+
 static void hide_read_messages   (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -613,6 +617,22 @@ static GtkItemFactoryEntry mainwin_entries[] =
 
 #undef CODESET_SEPARATOR
 #undef CODESET_ACTION
+
+#define DECODE_SEPARATOR \
+	{N_("/_View/Decode/---"),		NULL, NULL, 0, "<Separator>"}
+#define DECODE_ACTION(action) \
+	 NULL, set_decode_cb, action, "/View/Decode/Auto detect"
+	{N_("/_View/Decode"),		NULL, NULL, 0, "<Branch>"},
+	{N_("/_View/Decode/_Auto detect"),
+	 NULL, set_decode_cb, 0, "<RadioItem>"},
+	{N_("/_View/Decode/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_View/Decode/_8bit"), 		DECODE_ACTION(ENC_8BIT)},
+	{N_("/_View/Decode/_Quoted printable"),	DECODE_ACTION(ENC_QUOTED_PRINTABLE)},
+	{N_("/_View/Decode/_Base64"), 		DECODE_ACTION(ENC_BASE64)},
+	{N_("/_View/Decode/_Uuencode"),		DECODE_ACTION(ENC_X_UUENCODE)},
+
+#undef DECODE_SEPARATOR
+#undef DECODE_ACTION
 
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/Open in new _window"),	"<control><alt>N", open_msg_cb, 0, NULL},
@@ -2624,12 +2644,28 @@ static void set_charset_cb(MainWindow *mainwin, guint action,
 
 	if (GTK_CHECK_MENU_ITEM(widget)->active) {
 		str = conv_get_charset_str((CharSet)action);
-		g_free(prefs_common.force_charset);
-		prefs_common.force_charset = str ? g_strdup(str) : NULL;
-
+		
+		g_free(mainwin->messageview->forced_charset);
+		mainwin->messageview->forced_charset = str ? g_strdup(str) : NULL;
+		procmime_force_charset(str);
+		
 		summary_redisplay_msg(mainwin->summaryview);
 		
 		debug_print("forced charset: %s\n", str ? str : "Auto-Detect");
+	}
+}
+
+static void set_decode_cb(MainWindow *mainwin, guint action,
+			   GtkWidget *widget)
+{
+	const gchar *str;
+
+	if (GTK_CHECK_MENU_ITEM(widget)->active) {
+		procmime_force_encoding((EncodingType)action);
+
+		summary_redisplay_msg(mainwin->summaryview);
+		
+		debug_print("forced encoding: %d\n", action);
 	}
 }
 

@@ -30,6 +30,7 @@
 #include "summaryview.h"
 #include "codeconv.h"
 #include "textview.h"
+#include "procmime.h"
 
 typedef struct _PrefsCommon	PrefsCommon;
 
@@ -229,8 +230,6 @@ struct _PrefsCommon
 	gboolean enable_smooth_scroll;
 	gint scroll_step;
 	gboolean scroll_halfpage;
-
-	gchar *force_charset;
 
 	gboolean show_other_header;
 	GSList *disphdr_list;

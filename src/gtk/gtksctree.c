@@ -263,6 +263,7 @@ select_row (GtkSCTree *sctree, gint row, gint col, guint state)
 	} else
 		select_range (sctree, row);
 	
+	GTK_CLIST_GET_CLASS(sctree)->refresh(GTK_CLIST(sctree));
 	if (additive || range)
 		gtk_clist_thaw (GTK_CLIST (sctree));
 }

@@ -1,3 +1,15 @@
+2004-10-02 [colin]	0.9.12cvs119.1
+
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/prefs_common.h
+	* src/procmime.c
+	* src/procmime.h
+	* src/textview.c
+		Sync with HEAD
+	* src/gtk/gtksctree.c
+		Close bug #608
+
 2004-10-01 [colin]	0.9.12cvs118.1
 
 	* src/mimeview.c

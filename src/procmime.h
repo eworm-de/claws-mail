@@ -192,9 +192,10 @@ const gchar *procmime_get_encoding_str		(EncodingType	 encoding);
 MimeInfo *procmime_scan_file			(gchar		*filename);
 MimeInfo *procmime_scan_queue_file		(gchar 		*filename);
 const gchar *procmime_get_type_str		(MimeMediaType 	 type);
-gchar *procmime_get_content_type_str		(MimeMediaType type,
-						 const char *subtype);
-
+gchar *procmime_get_content_type_str		(MimeMediaType 	 type,
+						 const char 	*subtype);
+void procmime_force_charset			(const gchar 	*str);
+void procmime_force_encoding			(EncodingType	 encoding);
 void renderer_read_config(void);
 void renderer_write_config(void);
 
