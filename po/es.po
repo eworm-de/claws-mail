@@ -96,7 +96,7 @@ msgstr ""
 #: src/editvcard.c:239 src/export.c:185 src/foldersel.c:177
 #: src/grouplistdialog.c:244 src/import.c:189 src/importmutt.c:302
 #: src/inputdialog.c:189 src/main.c:382 src/main.c:390 src/mainwindow.c:2317
-#: src/messageview.c:349 src/mimeview.c:741 src/passphrase.c:119
+#: src/messageview.c:349 src/mimeview.c:743 src/passphrase.c:119
 #: src/prefs.c:473 src/prefs_common.c:2734 src/prefs_common.c:2891
 #: src/prefs_common.c:3199 src/prefs_customheader.c:157
 #: src/prefs_display_header.c:194 src/prefs_filter.c:201
@@ -802,7 +802,7 @@ msgstr "/_Herramientas/_Agenda de direcciones"
 msgid "/_Tool/_Template"
 msgstr "/_Herramientas/_Plantillas"
 
-#: src/compose.c:815 src/mimeview.c:431
+#: src/compose.c:815 src/mimeview.c:433
 msgid "Can't get the part of multipart message."
 msgstr "No se puede obtener la parte del mensaje multipartes."
 
@@ -3483,27 +3483,27 @@ msgstr "Creando visor de MIME...\n"
 msgid "Select \"Check signature\" to check"
 msgstr "Seleccione \"Verificar firma\" para verificar"
 
-#: src/mimeview.c:699 src/mimeview.c:747 src/mimeview.c:766 src/mimeview.c:790
+#: src/mimeview.c:701 src/mimeview.c:749 src/mimeview.c:768 src/mimeview.c:792
 msgid "Can't save the part of multipart message."
 msgstr "No se puede guardar la parte del mensaje multipartes."
 
-#: src/mimeview.c:733 src/summaryview.c:3163
+#: src/mimeview.c:735 src/summaryview.c:3163
 msgid "Save as"
 msgstr "Guardar como"
 
-#: src/mimeview.c:739 src/summaryview.c:3168
+#: src/mimeview.c:741 src/summaryview.c:3168
 msgid "Overwrite"
 msgstr "Sobreescribir"
 
-#: src/mimeview.c:740 src/summaryview.c:3169
+#: src/mimeview.c:742 src/summaryview.c:3169
 msgid "Overwrite existing file?"
 msgstr "¿Sobreescribir el fichero existente?"
 
-#: src/mimeview.c:800
+#: src/mimeview.c:802
 msgid "Open with"
 msgstr "Abrir con"
 
-#: src/mimeview.c:801
+#: src/mimeview.c:803
 #, c-format
 msgid ""
 "Enter the command line to open file:\n"
@@ -3512,7 +3512,7 @@ msgstr ""
 "Teclee el comando para abrir el fichero:\n"
 "(`%s' será sustituido por el fichero)"
 
-#: src/mimeview.c:856
+#: src/mimeview.c:858
 #, c-format
 msgid "MIME viewer command line is invalid: `%s'"
 msgstr "El comando del visor MIME no es válido: `%s'"
