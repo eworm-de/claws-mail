@@ -1315,7 +1315,7 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 	debug_print("Getting new messages from %s into %s...\n",
 		    mbox, dest->path);
 
-	msgs = proc_mbox(dest, tmp_mbox);
+	msgs = proc_mbox(dest, tmp_mbox, TRUE);
 
 	unlink(tmp_mbox);
 	if (msgs >= 0) empty_mbox(mbox);

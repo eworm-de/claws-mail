@@ -1,3 +1,11 @@
+2004-03-21 [alfons]	0.9.10claws26
+
+	* src/import.c
+	  src/inc.c
+	  src/mbox.[ch]
+		disable filters on import mbox (patch submitted
+		by Edgar Toernig)
+
 2004-03-21 [darko]	0.9.10claws25
 
 	* src/addr_compl.c
