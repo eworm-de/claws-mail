@@ -262,3 +262,4 @@
 ( cvs diff -u -r 1.20 -r 1.21 src/common/smtp.c; cvs diff -u -r 1.10 -r 1.11 src/common/smtp.h; ) > 1.0.1cvs22.patchset
 ( cvs diff -u -r 1.22 -r 1.23 po/ru.po; ) > 1.0.3cvs1.patchset
 ( cvs diff -u -r 1.18 -r 1.19 src/plugins/trayicon/trayicon.c; ) > 1.0.3cvs2.patchset
+( cvs diff -u -r 1.129 -r 1.130 AUTHORS; cvs diff -u -r 1.7 -r 1.8 src/gtk/about.c; cvs diff -u -r 1.1 -r 1.2 src/pixmaps/sylpheed_logo.xpm; ) > 1.0.3cvs3.patchset

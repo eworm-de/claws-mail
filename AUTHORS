@@ -18,7 +18,6 @@ claws-branch (http://sylpheed-claws.sourceforge.net)
 	Leandro A. F. Pereira 	<leandro@linuxmag.com.br>
 	Luke Plant 		<L.Plant.98@cantab.net>
 	Martin Schaaf		<mascha@ma-scha.de>
-	Jesper Schultz		<jesper@schultz-net.dk>
 	Carsten Schurig		<Carsten.Schurig@web.de>
 	Sergey Vlasov		<vsu@users.sourceforge.net>
 	Hiroyuki Yamamoto	<hiro-y@kcn.ne.jp>
@@ -72,6 +71,10 @@ user manuals
 application icon
 
 	WAKAI Kazunao		<silver@lacmhacarh.gr.jp>
+
+Sylpheed-Claws logo
+
+	Jesper Schultz		<jesper@schultz-net.dk>
 
 contributors (beside the above; based on Changelog)
 
