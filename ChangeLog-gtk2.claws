@@ -1,3 +1,8 @@
+2004-09-03 [colin]	0.9.12cvs93.1
+
+	* src/summaryview.c
+		Sync with HEAD (next/prev unread)
+
 2004-09-03 [colin]	0.9.12cvs92.1
 
 	* src/prefs_common.c
