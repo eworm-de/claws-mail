@@ -35,6 +35,7 @@ void	      account_save_config_all	(void);
 
 PrefsAccount *account_find_from_smtp_server	(const gchar	*address,
 						 const gchar	*smtp_server);
+PrefsAccount *account_find_mail_from_address	(const gchar	*address);
 PrefsAccount *account_find_from_id		(gint		 id);
 
 void	      account_set_menu		(void);

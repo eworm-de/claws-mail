@@ -153,6 +153,7 @@ static void compose_attach_append		(Compose	*compose,
 static void compose_wrap_line			(Compose	*compose);
 static void compose_set_title			(Compose	*compose);
 
+static PrefsAccount *compose_current_mail_account(void);
 /* static gint compose_send			(Compose	*compose); */
 static gint compose_write_to_file		(Compose	*compose,
 						 const gchar	*file,
@@ -468,6 +469,7 @@ void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
 {
 	Compose *compose;
 	PrefsAccount *account;
+	PrefsAccount *reply_account;
 	GtkSText *text;
 
 	g_return_if_fail(msginfo != NULL);
@@ -477,10 +479,20 @@ void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
 	if (!account) account = cur_account;
 	g_return_if_fail(account != NULL);
 
+	if (to_author && account->protocol == A_NNTP) {
+		reply_account =
+			account_find_mail_from_address(account->address);
+		if (!reply_account)
+			reply_account = compose_current_mail_account();
+		if (!reply_account)
+			return;
+	} else
+		reply_account = account;
+
 	MSG_UNSET_FLAGS(msginfo->flags, MSG_FORWARDED);
 	MSG_SET_FLAGS(msginfo->flags, MSG_REPLIED);
 
-	compose = compose_create(account);
+	compose = compose_create(reply_account);
 	compose->mode = COMPOSE_REPLY;
 
 	if (compose_parse_header(compose, msginfo) < 0) return;
@@ -1390,6 +1402,33 @@ static void compose_set_title(Compose *compose)
 	g_free(str);
 }
 
+/**
+ * compose_current_mail_account:
+ * 
+ * Find a current mail account (the currently selected account, or the
+ * default account, if a news account is currently selected).  If a
+ * mail account cannot be found, display an error message.
+ * 
+ * Return value: Mail account, or NULL if not found.
+ **/
+static PrefsAccount *
+compose_current_mail_account(void)
+{
+	PrefsAccount *ac;
+
+	if (cur_account && cur_account->protocol != A_NNTP)
+		ac = cur_account;
+	else {
+		ac = account_get_default();
+		if (!ac || ac->protocol == A_NNTP) {
+			alertpanel_error(_("Account for sending mail is not specified.\n"
+					   "Please select a mail account before sending."));
+			return NULL;
+		}
+	}
+	return ac;
+}
+
 gint compose_send(Compose *compose)
 {
 	gchar tmp[MAXPATHLEN + 1];
@@ -1438,13 +1477,9 @@ gint compose_send(Compose *compose)
 			ac = compose->account;
 		else if (compose->orig_account->protocol != A_NNTP)
 			ac = compose->orig_account;
-		else if (cur_account && cur_account->protocol != A_NNTP)
-			ac = cur_account;
 		else {
-			ac = account_get_default();
-			if (!ac || ac->protocol == A_NNTP) {
-				alertpanel_error(_("Account for sending mail is not specified.\n"
-						   "Please select a mail account before sending."));
+			ac = compose_current_mail_account();
+			if (!ac) {
 				unlink(tmp);
 				lock = FALSE;
 				return -1;

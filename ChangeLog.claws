@@ -4,8 +4,12 @@
 	COMPOSE_REPLY_TO_AUTHOR, COMPOSE_REPLY_TO_AUTHOR_WITH_QUOTE,
 	COMPOSE_REPLY_TO_AUTHOR_WITHOUT_QUOTE.
 
-	* src/compose.c (compose_reply): new argument to_author; all
-	callers changed.
+	* src/compose.c
+	(compose_send): move some code into a new function:
+	(compose_current_mail_account): new function.
+	(compose_reply): new argument to_author, all callers changed; if
+	to_author==TRUE and account->protocol==A_NNTP, find and use an
+	appropriate mail account for replying.
 	(compose_reply_set_entry): new argument to_author; ignore
 	compose->replyto if to_author==TRUE.
 
@@ -16,6 +20,8 @@
 	* src/summaryview.c: new command "Reply to author".
 	(summary_set_menu_sensitive): enable/disable it.
 	(summary_reply_cb): handle it.
+
+	* src/account.c (account_find_mail_from_address): new function.
 
 2001-05-18 [paul]
 
