@@ -1,3 +1,11 @@
+2003-05-01 [melvin]	0.8.11claws138
+
+	* src/plugins/dillo_viewer/dillo_prefs.[ch]
+	* src/plugins/dillo_viewer/dillo_viewer.c
+		Fixed bug where "Cancel" button from prefs issued
+		warnings.
+		Comply a little more to coding style
+
 2003-05-01 [paul]	0.8.11claws137
 
 	* sync with 0.8.11cvs38

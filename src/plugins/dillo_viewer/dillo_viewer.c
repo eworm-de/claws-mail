@@ -29,9 +29,9 @@
 
 #include "dillo_prefs.h"
 
-typedef struct _dilloViewer dilloViewer;
+typedef struct _DilloViewer DilloViewer;
 
-struct _dilloViewer
+struct _DilloViewer
 {
 	MimeViewer	 mimeviewer;
 	GtkWidget	*widget;	
@@ -43,7 +43,7 @@ static MimeViewerFactory dillo_viewer_factory;
 
 static GtkWidget *dillo_get_widget(MimeViewer *_viewer)
 {
-	dilloViewer *viewer = (dilloViewer *) _viewer;
+	DilloViewer *viewer = (DilloViewer *) _viewer;
 
 	debug_print("dillo_get_widget\n");
 
@@ -52,7 +52,7 @@ static GtkWidget *dillo_get_widget(MimeViewer *_viewer)
 
 static gboolean socket_destroy_cb(GtkObject *object, gpointer data)
 {
-	dilloViewer *viewer = (dilloViewer *) data;
+	DilloViewer *viewer = (DilloViewer *) data;
 	debug_print("Destroyed dillo socket %p\n", viewer->socket);
 	viewer->socket = NULL;
 	return FALSE;
@@ -62,7 +62,7 @@ static void dillo_show_mimepart(MimeViewer *_viewer,
 				const gchar *infile,
 				MimeInfo *partinfo)
 {
-	dilloViewer *viewer = (dilloViewer *) _viewer;
+	DilloViewer *viewer = (DilloViewer *) _viewer;
 
 	debug_print("dillo_show_mimepart\n");
 
@@ -102,7 +102,7 @@ static void dillo_show_mimepart(MimeViewer *_viewer,
 
 static void dillo_clear_viewer(MimeViewer *_viewer)
 {
-	dilloViewer *viewer = (dilloViewer *) _viewer;
+	DilloViewer *viewer = (DilloViewer *) _viewer;
 
 	debug_print("dillo_clear_viewer\n");
 	debug_print("Removing dillo socket %p\n", viewer->socket);
@@ -114,7 +114,7 @@ static void dillo_clear_viewer(MimeViewer *_viewer)
 
 static void dillo_destroy_viewer(MimeViewer *_viewer)
 {
-	dilloViewer *viewer = (dilloViewer *) _viewer;
+	DilloViewer *viewer = (DilloViewer *) _viewer;
 
 	debug_print("dillo_destroy_viewer\n");
 
@@ -126,11 +126,11 @@ static void dillo_destroy_viewer(MimeViewer *_viewer)
 
 static MimeViewer *dillo_viewer_create(void)
 {
-	dilloViewer *viewer;
+	DilloViewer *viewer;
 
 	debug_print("dillo_viewer_create\n");
 	
-	viewer = g_new0(dilloViewer, 1);
+	viewer = g_new0(DilloViewer, 1);
 	viewer->mimeviewer.factory = &dillo_viewer_factory;
 	viewer->mimeviewer.get_widget = dillo_get_widget;
 	viewer->mimeviewer.show_mimepart = dillo_show_mimepart;

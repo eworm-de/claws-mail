@@ -28,17 +28,17 @@
 
 #include <glib.h>
 
-typedef struct _DilloBrowserPrefs DilloBrowserPrefs_t;
+typedef struct _DilloBrowserPrefs	DilloBrowserPrefs;
 
 struct _DilloBrowserPrefs
 {
-        gboolean        local;   // local browsing
-        gboolean        full;    // use full window
+	gboolean local;   /**< local browsing */
+	gboolean full;    /**< use full window */
 };
 
-extern DilloBrowserPrefs_t dillo_prefs;
+extern DilloBrowserPrefs dillo_prefs;
 
-void dillo_prefs_init();
-void dillo_prefs_done();
+void dillo_prefs_init(void);
+void dillo_prefs_done(void);
 
 #endif

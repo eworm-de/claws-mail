@@ -42,9 +42,9 @@
 
 #define PREFS_BLOCK_NAME "Dillo"
 
-DilloBrowserPrefs_t dillo_prefs;
+DilloBrowserPrefs dillo_prefs;
 
-typedef struct _DilloBrowserPage DilloBrowserPage_t;
+typedef struct _DilloBrowserPage DilloBrowserPage;
 
 struct _DilloBrowserPage {
         PrefsPage page;
@@ -58,11 +58,13 @@ static PrefParam param[] = {
         {0,0,0,0,0,0,0}
 };
 
-DilloBrowserPage_t prefs_page;
+DilloBrowserPage prefs_page;
 
-static void create_dillo_prefs_page	(PrefsPage *, GtkWindow *, gpointer);
-static void destroy_dillo_prefs_page	(PrefsPage *);
-static void save_dillo_prefs		(PrefsPage *);
+static void create_dillo_prefs_page	(PrefsPage *page,
+					 GtkWindow *window,
+					 gpointer   data);
+static void destroy_dillo_prefs_page	(PrefsPage *page);
+static void save_dillo_prefs		(PrefsPage *page);
 
 void dillo_prefs_init(void)
 {
@@ -86,7 +88,7 @@ static void create_dillo_prefs_page(PrefsPage *page,
 				    GtkWindow *window,
                                     gpointer data)
 {
-        DilloBrowserPage_t *prefs_page = (DilloBrowserPage_t *) page;
+        DilloBrowserPage *prefs_page = (DilloBrowserPage *) page;
 
         GtkWidget *vbox;
         GtkWidget *local_checkbox;
@@ -104,12 +106,13 @@ static void create_dillo_prefs_page(PrefsPage *page,
         gtk_box_pack_start(GTK_BOX(vbox), local_checkbox, FALSE, FALSE, 0);
         gtk_widget_show(local_checkbox);
         
-	label = gtk_label_new("(You can always allow following links\n"
+	label = gtk_label_new("(You can still allow following links\n"
 			      "by reloading the page)");
         gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
         gtk_widget_show(label);
 
-        full_checkbox = gtk_check_button_new_with_label("Full Screen Mode");
+        full_checkbox = gtk_check_button_new_with_label
+				("Full Window Mode (Hide Controls)");
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(full_checkbox),
                                       dillo_prefs.full);
         gtk_box_pack_start(GTK_BOX(vbox), full_checkbox, FALSE, FALSE, 0);
@@ -122,16 +125,12 @@ static void create_dillo_prefs_page(PrefsPage *page,
 
 static void destroy_dillo_prefs_page(PrefsPage *page)
 {
-        DilloBrowserPage_t *prefs_page = (DilloBrowserPage_t *) page;
-
-        gtk_widget_destroy(GTK_WIDGET(prefs_page->local));
-        gtk_widget_destroy(GTK_WIDGET(prefs_page->full));
-        gtk_widget_destroy(GTK_WIDGET(prefs_page->page.widget));
+	/* Do nothing! */
 }
 
 static void save_dillo_prefs(PrefsPage *page)
 {
-        DilloBrowserPage_t *prefs_page = (DilloBrowserPage_t *) page;
+        DilloBrowserPage *prefs_page = (DilloBrowserPage *) page;
         PrefFile *pref_file;
         gchar *rc_file_path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
                                           COMMON_RC, NULL);
