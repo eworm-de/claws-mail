@@ -307,7 +307,13 @@ sig_status_full (GpgmeCtx ctx)
 						   _("Key fingerprint: %s\n"),
 						   fpr);
 		} else {
+			const char *key_id_str;
+			
 			sig_status_for_key (str, ctx, status, key, fpr);
+			key_id_str = gpgme_key_get_string_attr(key, 
+					   	GPGME_ATTR_KEYID, NULL, 0);
+			key_id_str += 8;
+			g_string_sprintfa (str, _("Key ID: %s\n"), key_id_str);
 			gpgme_key_unref (key);
 		}
 		g_string_append (str, "\n\n");
