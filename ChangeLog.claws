@@ -1,3 +1,8 @@
+2001-08-29 [christoph]
+
+	* src/summeryview.c
+		no bold font for ignored threads
+
 2001-08-29 [paul]
 
 	* configure.in

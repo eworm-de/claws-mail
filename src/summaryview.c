@@ -2328,7 +2328,7 @@ static gboolean summary_search_unread_recursive(GtkCTree *ctree,
 
 	if (node) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
-		if (msginfo && MSG_IS_UNREAD(msginfo->flags))
+		if (msginfo && MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 			return TRUE;
 		node = GTK_CTREE_ROW(node)->children;
 	} else
@@ -2396,7 +2396,7 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 	}
 
 	if (prefs_common.bold_unread &&
-	    (MSG_IS_UNREAD(flags) ||
+	    ((MSG_IS_UNREAD(flags) && !MSG_IS_IGNORE_THREAD(flags)) ||
 	     (!GTK_CTREE_ROW(row)->expanded &&
 	      GTK_CTREE_ROW(row)->children &&
 	      summary_have_unread_children(summaryview, row))))
