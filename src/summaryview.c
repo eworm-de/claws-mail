@@ -2074,6 +2074,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 {
 	static gchar date_modified[80];
 	static gchar *to = NULL;
+	static gchar *from = NULL;
 	static gchar col_score[11];
 	static gchar buf[BUFFSIZE];
 	gint *col_pos = summaryview->col_pos;
@@ -2127,16 +2128,10 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	 * the --> in sent boxes) was executed.
 	 */
 	if (text[col_pos[S_COL_FROM]] != to && prefs_common.use_addr_book && msginfo->from) {
-		gchar *from;
+		g_free(from);
 		from = summary_complete_address(msginfo->from);
-		if (from) {
-			/*
-			 * FIXME: this text[col_pos[S_COL_FROM]] should be freed
-			 * but may have been assigned _("No From"). Should be
-			 * freed??? 
-			 */
+		if (from)
 			text[col_pos[S_COL_FROM]] = from;
-		}	
 	}
 
 	if (summaryview->simplify_subject_preg != NULL)
