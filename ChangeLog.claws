@@ -1,3 +1,9 @@
+2001-10-26 [darko]	0.6.4claws9
+
+	* src/compose.c src/gtkstext.[ch]
+	* src/gtkstext.c
+		move is_url_string() and gtkstext_str_strcmp() to gtkstext.c
+
 2001-10-26 [paul]	0.6.4claws8
 
 	* src/html.c

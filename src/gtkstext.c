@@ -5072,6 +5072,47 @@ scroll_up (GtkSText* text, gint diff0)
     process_exposes (text);
 }
 
+/* return str length if text at start_pos matches str else return zero */
+guint gtkstext_str_strcmp(GtkSText *text, guint start_pos,
+			  guint text_len, gchar *str) {
+	guint is_str, i, str_len;
+	gchar str_ch;
+
+	is_str = 0;
+	if (str) {
+		str_len = strlen(str);
+		is_str = 1;
+		for (i = 0; (i < str_len) && (start_pos + i < text_len); i++) {
+			str_ch = GTK_STEXT_INDEX(text, start_pos + i);
+			if (*(str + i) != str_ch) {
+				break;
+			}
+		}
+		if (i == 0 || i < str_len)
+			is_str = 0;
+	}
+
+	return is_str ? str_len : 0;
+}
+
+/* return true if text at pos is URL */
+guint is_url_string(GtkSText *text, guint start_pos, guint text_len)
+{
+	guint len;
+
+	len = gtkstext_str_strcmp(text, start_pos, text_len, "ftp://");
+	if (len == 6)
+		return 1;
+	len = gtkstext_str_strcmp(text, start_pos, text_len, "http://");
+	if (len == 7)
+		return 1;
+	len = gtkstext_str_strcmp(text, start_pos, text_len, "https://");
+	if (len == 8)
+		return 1;
+
+	return 0;
+}
+
 /**********************************************************************/
 /*			      Display Code                            */
 /**********************************************************************/
