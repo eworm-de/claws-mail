@@ -1,3 +1,8 @@
+2002-03-11 [melvin]	0.7.3claws6
+
+	* po/fr.po
+		updated and corrected French translation
+
 2002-03-10 [hoa]	0.7.3claws5
 
 	* src/account.c
