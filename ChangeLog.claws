@@ -1,3 +1,12 @@
+2002-07-16 [colin] 	0.7.8claws72
+
+	* src/mimeview.c
+	  src/summaryview.c
+	  src/textview.c
+	  src/textview.h
+		add the ability to select part of a text mime-part 
+		to reply.
+
 2002-07-15 [christoph]	0.7.8claws71
 
 	* src/folder.c

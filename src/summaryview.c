@@ -4034,7 +4034,36 @@ void summary_reply(SummaryView *summaryview, ComposeMode mode)
 
 	text = gtkut_editable_get_selection
 		(GTK_EDITABLE(summaryview->messageview->textview->text));
-
+	/*
+		summaryview->displayed = row;
+		if (!messageview_is_visible(msgview))
+			main_window_toggle_message_view(summaryview->mainwin);
+		messageview_show(msgview, msginfo, all_headers);
+		if (msgview->type == MVIEW_TEXT ||
+		    (msgview->type == MVIEW_MIME &&*/
+	
+	if (!text) {
+		printf("summaryview->messageview->type(%d)==MVIEW_MIME:%d\n",
+			summaryview->messageview->type,
+			summaryview->messageview->type == MVIEW_MIME);
+		printf("summaryview->messageview->mimeview=%p\n",
+			summaryview->messageview->mimeview);
+		printf("summaryview->messageview->mimeview->textview=%p\n",
+			summaryview->messageview->mimeview->textview);
+		printf("summaryview->messageview->mimeview->textview->default_text=%d\n",
+			summaryview->messageview->mimeview->textview->default_text);
+		printf("summaryview->messageview->mimeview->type(%d)==MIMEVIEW_TEXT\n",
+			summaryview->messageview->mimeview->type,
+			summaryview->messageview->mimeview->type==MIMEVIEW_TEXT);
+	}
+	if (!text && summaryview->messageview->type == MVIEW_MIME
+	    && summaryview->messageview->mimeview->type==MIMEVIEW_TEXT
+	    && summaryview->messageview->mimeview->textview
+	    && !summaryview->messageview->mimeview->textview->default_text) {
+	 	text = gtkut_editable_get_selection (GTK_EDITABLE 
+			 (summaryview->messageview->mimeview->textview->text));   
+	}
+	
 	switch (mode) {
 	case COMPOSE_REPLY:
 		compose_reply(msginfo, prefs_common.reply_with_quote,

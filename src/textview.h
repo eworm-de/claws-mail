@@ -46,6 +46,7 @@ struct _TextView
 	GtkItemFactory *popup_factory;
 
 	gboolean text_is_mb;
+	gboolean default_text;
 
 	GSList *uri_list;
 	gint body_pos;

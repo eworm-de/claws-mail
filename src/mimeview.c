@@ -541,7 +541,9 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 		if (gdk_pointer_is_grabbed())
 			gdk_pointer_ungrab(GDK_CURRENT_TIME);
 	}
-
+	
+	mimeview->textview->default_text = FALSE;
+	
 	switch (partinfo->mime_type) {
 	case MIME_TEXT:
 	case MIME_TEXT_HTML:
@@ -549,9 +551,11 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 	case MIME_MESSAGE_RFC822:
 	case MIME_MULTIPART:
 		mimeview_show_message_part(mimeview, partinfo);
+		
 		break;
 #if (HAVE_GDK_PIXBUF || HAVE_GDK_IMLIB)
 	case MIME_IMAGE:
+		mimeview->textview->default_text = TRUE;	
 		if (prefs_common.display_img)
 			mimeview_show_image_part(mimeview, partinfo);
 		else {
@@ -561,6 +565,7 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 		break;
 #endif
 	default:
+		mimeview->textview->default_text = TRUE;	
 		mimeview_change_view_type(mimeview, MIMEVIEW_TEXT);
 #if USE_GPGME
 		if (g_strcasecmp(partinfo->content_type,

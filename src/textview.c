@@ -360,7 +360,7 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	if (!boundary && (mimeinfo->mime_type == MIME_TEXT || 
 			  mimeinfo->mime_type == MIME_TEXT_HTML || 
 			  mimeinfo->mime_type == MIME_TEXT_ENRICHED)) {
-	
+		
 		if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0)
 			perror("fseek");
 		headers = textview_scan_header(textview, fp);
@@ -504,7 +504,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 			charset = mimeinfo->charset;
 		textview_write_body(textview, mimeinfo, fp, charset);
 	}
-
+	
 	gtk_stext_thaw(text);
 }
 
@@ -542,7 +542,7 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 	textview_set_font(textview, NULL);
 	text = GTK_STEXT(textview->text);
 	textview_clear(textview);
-
+	
 	gtk_stext_freeze(text);
 
 	TEXT_INSERT(_("To save this part, pop up the context menu with "));
@@ -583,7 +583,7 @@ void textview_show_signature_part(TextView *textview, MimeInfo *partinfo)
 	} else {
 		TEXT_INSERT(partinfo->sigstatus_full);
 	}
-
+		
 	gtk_stext_thaw(text);
 }
 #endif /* USE_GPGME */
@@ -649,6 +649,7 @@ static void textview_show_html(TextView *textview, FILE *fp,
 		        textview_write_line(textview, str, NULL);
 	        }
 	}
+	
 	html_parser_destroy(parser);
 }
 
@@ -664,6 +665,7 @@ static void textview_show_ertf(TextView *textview, FILE *fp,
 	while ((str = ertf_parse(parser)) != NULL) {
 		textview_write_line(textview, str, NULL);
 	}
+	
 	ertf_parser_destroy(parser);
 }
 
