@@ -1,3 +1,8 @@
+2002-11-25 [paul]	0.8.6claws6
+
+	* sync with 0.8.6cvs3
+		see ChangeLog 2002-11-18
+
 2002-11-25 [colin]	0.8.6claws5
 
 	* src/gtkutils.[ch]

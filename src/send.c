@@ -415,14 +415,24 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 			   "connecting to server");
 #endif
 
+	if (user) {
+		progress_dialog_set_label(dialog->dialog,
+					  _("Authenticating..."));
+		gtk_clist_set_text(clist, 0, 2, _("Authenticating"));
+		GTK_EVENTS_FLUSH();
+
+		SEND_EXIT_IF_NOTOK(smtp_auth(SMTP_SESSION(session),
+					     ac_prefs->smtp_auth_type),
+				   "authenticating");
+	}
+
 	progress_dialog_set_label(dialog->dialog, _("Sending MAIL FROM..."));
 	statusbar_puts_all(_("Sending MAIL FROM..."));
 	gtk_clist_set_text(clist, 0, 2, _("Sending"));
 	GTK_EVENTS_FLUSH();
 
 	SEND_EXIT_IF_NOTOK
-		(smtp_from(SMTP_SESSION(session), ac_prefs->address,
-			   ac_prefs->smtp_auth_type),
+		(smtp_from(SMTP_SESSION(session), ac_prefs->address),
 		 "sending MAIL FROM");
 
 	progress_dialog_set_label(dialog->dialog, _("Sending RCPT TO..."));

@@ -80,8 +80,7 @@ Session *smtp_session_new	(const gchar	*server,
 void smtp_session_destroy	(Session	*session);
 
 gint smtp_from			(SMTPSession	*session,
-				 const gchar	*from,
-				 SMTPAuthType	 forced_auth_type);
+				 const gchar	*from);
 gint smtp_auth			(SMTPSession	*session,
 				 SMTPAuthType	 forced_auth_type);
 

@@ -1,3 +1,25 @@
+2002-11-18
+
+	* src/smtp.[ch]: smtp_from() から smtp_auth() を分離。
+	* src/send.c: send_message_smtp(): smtp_auth() を呼び出し、その状態
+	  をダイアログに表示。
+
+2002-11-18
+
+	* src/filter.c: strmatch_regex(): 拡張正規表現を使用(Fabien Devaux
+	  さん thanks)。
+	* src/main.c: main(): assortrc -> filterrc 移行のためのコードを
+	  削除。
+	* src/gtkutils.c: gtkut_font_load(): 現在の locale が C または
+	  POSIX の場合のみ gdk_font_load() を使用。
+	  gtkut_stext_is_uri_string(): URI 文字列に "www." を含むようにした。
+	* src/textview.c: textview_make_clickable_parts(): URI 文字列に
+	  "www." を含むようにした。
+
+2002-11-15
+
+	* version 0.8.6
+
 2002-11-13
 
 	* src/textview.c: textview_add_part(): 署名の状態を異なる色で表示。

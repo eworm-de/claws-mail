@@ -1,3 +1,25 @@
+2002-11-18
+
+	* src/smtp.[ch]: separated smtp_auth() from smtp_from().
+	* src/send.c: send_message_smtp(): call smtp_auth() and display
+	  the state to the dialog.
+
+2002-11-18
+
+	* src/filter.c: strmatch_regex(): use extended regex (thanks to
+	  Fabien Devaux).
+	* src/main.c: main(): removed the code for assortrc -> filterrc
+	  transition.
+	* src/gtkutils.c: gtkut_font_load(): only use gdk_font_load() if
+	  current locale is C or POSIX.
+	  gtkut_stext_is_uri_string(): include "www." for URI string.
+	* src/textview.c: textview_make_clickable_parts(): include "www."
+	  for URI string.
+
+2002-11-15
+
+	* version 0.8.6
+
 2002-11-13
 
 	* src/textview.c: textview_add_part(): indicate signature status

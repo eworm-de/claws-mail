@@ -147,18 +147,12 @@ void smtp_session_destroy(Session *session)
 	g_free(SMTP_SESSION(session)->pass);
 }
 
-gint smtp_from(SMTPSession *session, const gchar *from,
-	       SMTPAuthType forced_auth_type)
+gint smtp_from(SMTPSession *session, const gchar *from)
 {
 	gchar buf[MSGBUFSIZE];
 
 	g_return_val_if_fail(session != NULL, SM_ERROR);
 	g_return_val_if_fail(from != NULL, SM_ERROR);
-
-	if (session->user) {
-		if (smtp_auth(session, forced_auth_type) != SM_OK)
-			return SM_AUTHFAIL;
-	}
 
 	if (strchr(from, '<'))
 		g_snprintf(buf, sizeof(buf), "MAIL FROM: %s", from);

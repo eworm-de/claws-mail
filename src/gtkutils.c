@@ -86,7 +86,7 @@ GdkFont *gtkut_font_load(const gchar *fontset_name)
 
 	g_return_val_if_fail(fontset_name != NULL, NULL);
 
-	if (MB_CUR_MAX == 1)
+	if (conv_get_current_charset() == C_US_ASCII)
 		font = gtkut_font_load_from_fontset(fontset_name);
 	else
 		font = gdk_fontset_load(fontset_name);
@@ -432,9 +432,9 @@ guint gtkut_stext_str_compare(GtkSText *text, guint start_pos, guint text_len,
 gboolean gtkut_stext_is_uri_string(GtkSText *text,
 				   guint start_pos, guint text_len)
 {
-	if (gtkut_stext_str_compare(text, start_pos, text_len, "http://") ||
-	    gtkut_stext_str_compare(text, start_pos, text_len, "ftp://")  ||
-	    gtkut_stext_str_compare(text, start_pos, text_len, "https://")||
+	if (gtkut_stext_str_compare(text, start_pos, text_len, "http://")  ||
+	    gtkut_stext_str_compare(text, start_pos, text_len, "ftp://")   ||
+	    gtkut_stext_str_compare(text, start_pos, text_len, "https://") ||
 	    gtkut_stext_str_compare(text, start_pos, text_len, "www."))
 		return TRUE;
 
