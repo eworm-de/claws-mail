@@ -1085,7 +1085,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		memmove(buf, p, strlen(p) + 1);
 
 		buf2 = g_strdup_printf("Fw: %s", buf);
-#ifdef WI32
+#ifdef WIN32
 		locale_to_utf8(&buf2);
 #endif
 		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), buf2);

@@ -1,3 +1,13 @@
+2004-11-26 [thorsten]	0.9.12claws168-1
+
+	* src/compose.c
+		fix: sylpheed-claws-Patches-993292 ] [win32] 
+		Fix forwarding with subject containing umlauts
+		Patch by Thomas Gilgin
+
+	* src/gtk/pluginwindow.c
+		fix: Missing backslash for plugin directory
+
 2003-02-03 [thorsten]	0.9.9claws0-2
 
 	* src/main.c

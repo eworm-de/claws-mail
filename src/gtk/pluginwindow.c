@@ -119,7 +119,8 @@ static void load_cb(GtkButton *button, PluginWindow *pluginwindow)
 
 #ifdef WIN32
 	{
-		gchar *plugdir = g_strconcat(get_installed_dir(), W32_PLUGINDIR, NULL);
+		gchar *plugdir = g_strconcat(get_installed_dir(),
+			W32_PLUGINDIR, G_DIR_SEPARATOR_S, NULL);
 
 		file = filesel_select_file(_("Select Plugin to load"), plugdir);
 		g_free(plugdir);
