@@ -95,7 +95,6 @@ sylpheed_SOURCES = \
 	procheader.c \
 	procmime.c \
 	procmsg.c \
-	progressdialog.c \
 	quote_fmt.c \
 	quote_fmt_lex.l \
 	quote_fmt_parse.y \
@@ -217,7 +216,6 @@ sylpheedinclude_HEADERS = \
 	procheader.h \
 	procmime.h \
 	procmsg.h \
-	progressdialog.h \
 	quote_fmt.h \
 	quote_fmt_lex.h \
 	quote_fmt_parse.h \
