@@ -1,3 +1,18 @@
+2003-09-17 Takuro Ashie <ashie@homa.ne.jp>
+
+	* Convert character set and escape "text" attributes in toolbar setting
+	files.
+        * Fixed bug in button-press-event handling.
+
+2003-09-16 Thorsten Maerz <torte@netztorte.de>
+
+        * Fixed bug in key-press-event handling.
+
+2003-09-16 Takuro Ashie <ashie@homa.ne.jp>
+
+        * Enabled to compile tray-icon plugin (Ad-hoc).
+        * Avoid hang up bug of icon list in mime view (Ad-hoc).
+
 2003-09-14 Takuro Ashie <ashie@homa.ne.jp>
 
         * Enabled to compile on sylpheed-claws.

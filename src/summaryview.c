@@ -267,9 +267,9 @@ static gboolean summary_searchbar_pressed
 					(GtkWidget		*ctree,
 					 GdkEventKey		*event,
 					 SummaryView		*summaryview);
-static void summary_searchbar_focus_evt	(GtkWidget		*ctree,
-					 GdkEventFocus		*event,
-					 SummaryView		*summaryview);
+static gboolean summary_searchbar_focus_evt	(GtkWidget		*ctree,
+						 GdkEventFocus		*event,
+						 SummaryView		*summaryview);
 static void summary_searchtype_changed	(GtkMenuItem 		*widget, 
 					 gpointer 		 data);
 static void summary_open_row		(GtkSCTree		*sctree,
@@ -4549,10 +4549,10 @@ static gboolean summary_searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 {
 	if (event != NULL && event->keyval == GDK_Return)
 	 	summary_show(summaryview, summaryview->folder_item);
-	return TRUE; 		
+	return FALSE;
 }
 
-static void summary_searchbar_focus_evt(GtkWidget *widget, GdkEventFocus *event,
+static gboolean summary_searchbar_focus_evt(GtkWidget *widget, GdkEventFocus *event,
 				SummaryView *summaryview)
 {
 	if (event != NULL && event->in)
@@ -4563,6 +4563,8 @@ static void summary_searchbar_focus_evt(GtkWidget *widget, GdkEventFocus *event,
 		g_signal_handlers_unblock_by_func(G_OBJECT(summaryview->mainwin->window), 
 						  G_CALLBACK(mainwindow_key_pressed),
 						  summaryview->mainwin);
+
+	return FALSE;
 }
 
 static void summary_searchtype_changed(GtkMenuItem *widget, gpointer data)

@@ -526,15 +526,19 @@ void toolbar_save_config_file(ToolbarType source)
 		for (cur = toolbar_config[source].item_list; cur != NULL; cur = cur->next) {
 			ToolbarItem *toolbar_item = (ToolbarItem*) cur->data;
 			
-			if (toolbar_item->index != A_SEPARATOR) 
-				fprintf(fp, "\t<%s %s=\"%s\" %s=\"%s\" %s=\"%s\"/>\n",
+#warning FIXME_GTK2
+			if (toolbar_item->index != A_SEPARATOR) {
+				fprintf(fp, "\t<%s %s=\"%s\" %s=\"",
 					TOOLBAR_TAG_ITEM, 
 					TOOLBAR_ICON_FILE, toolbar_item->file,
-					TOOLBAR_ICON_TEXT, toolbar_item->text,
+					TOOLBAR_ICON_TEXT);
+				xml_file_put_escape_str(fp, toolbar_item->text);
+				fprintf(fp, "\" %s=\"%s\"/>\n",
 					TOOLBAR_ICON_ACTION, 
 					toolbar_ret_text_from_val(toolbar_item->index));
-			else 
+			} else {
 				fprintf(fp, "\t<%s/>\n", TOOLBAR_TAG_SEPARATOR); 
+			}
 		}
 
 		fprintf(fp, "</%s>\n", TOOLBAR_TAG_INDEX);	
@@ -870,20 +874,23 @@ static void toolbar_exec_cb(GtkWidget	*widget,
 
 
 /* popup callback functions */
-static void toolbar_reply_popup_cb(GtkWidget       *widget, 
-				   GdkEventButton  *event, 
-				   gpointer         data)
+static gboolean toolbar_reply_popup_cb(GtkWidget       *widget, 
+				       GdkEventButton  *event, 
+				       gpointer         data)
 {
 	Toolbar *toolbar_data = (Toolbar*)data;
 	
-	if (!event) return;
+	if (!event) return FALSE;
 	
 	if (event->button == 3) {
 		gtk_button_set_relief(GTK_BUTTON(widget), GTK_RELIEF_NORMAL);
 		gtk_menu_popup(GTK_MENU(toolbar_data->reply_popup), NULL, NULL,
 		       menu_button_position, widget,
 		       event->button, event->time);
+		return TRUE;
 	}
+
+	return FALSE;
 }
 
 static void toolbar_reply_popup_closed_cb(GtkMenuShell *menu_shell, gpointer data)
@@ -915,18 +922,21 @@ static void toolbar_reply_popup_closed_cb(GtkMenuShell *menu_shell, gpointer dat
 	manage_window_focus_in(window, NULL, NULL);
 }
 
-static void toolbar_reply_to_all_popup_cb(GtkWidget *widget, GdkEventButton *event, gpointer data)
+static gboolean toolbar_reply_to_all_popup_cb(GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
 	Toolbar *toolbar_data = (Toolbar*)data;
 	
-	if (!event) return;
+	if (!event) return FALSE;
 	
 	if (event->button == 3) {
 		gtk_button_set_relief(GTK_BUTTON(widget), GTK_RELIEF_NORMAL);
 		gtk_menu_popup(GTK_MENU(toolbar_data->replyall_popup), NULL, NULL,
 		       menu_button_position, widget,
 		       event->button, event->time);
+		return TRUE;
 	}
+
+	return FALSE;
 }
 
 static void toolbar_reply_to_all_popup_closed_cb(GtkMenuShell *menu_shell, gpointer data)
@@ -958,7 +968,7 @@ static void toolbar_reply_to_all_popup_closed_cb(GtkMenuShell *menu_shell, gpoin
 	manage_window_focus_in(window, NULL, NULL);
 }
 
-static void toolbar_reply_to_list_popup_cb(GtkWidget *widget, GdkEventButton *event, gpointer data)
+static gboolean toolbar_reply_to_list_popup_cb(GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
 	Toolbar *toolbar_data = (Toolbar*)data;
 
@@ -967,7 +977,10 @@ static void toolbar_reply_to_list_popup_cb(GtkWidget *widget, GdkEventButton *ev
 		gtk_menu_popup(GTK_MENU(toolbar_data->replylist_popup), NULL, NULL,
 		       menu_button_position, widget,
 		       event->button, event->time);
+		return TRUE;
 	}
+
+	return FALSE;
 }
 
 static void toolbar_reply_to_list_popup_closed_cb(GtkMenuShell *menu_shell, gpointer data)
@@ -997,7 +1010,7 @@ static void toolbar_reply_to_list_popup_closed_cb(GtkMenuShell *menu_shell, gpoi
 	manage_window_focus_in(window, NULL, NULL);
 }
 
-static void toolbar_reply_to_sender_popup_cb(GtkWidget *widget, GdkEventButton *event, gpointer data)
+static gboolean toolbar_reply_to_sender_popup_cb(GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
 	Toolbar *toolbar_data = (Toolbar*)data;
 
@@ -1006,7 +1019,10 @@ static void toolbar_reply_to_sender_popup_cb(GtkWidget *widget, GdkEventButton *
 		gtk_menu_popup(GTK_MENU(toolbar_data->replysender_popup), NULL, NULL,
 		       menu_button_position, widget,
 		       event->button, event->time);
+		return TRUE;
 	}
+
+	return FALSE;
 }
 
 static void toolbar_reply_to_sender_popup_closed_cb(GtkMenuShell *menu_shell, gpointer data)
@@ -1035,7 +1051,7 @@ static void toolbar_reply_to_sender_popup_closed_cb(GtkMenuShell *menu_shell, gp
 	manage_window_focus_in(window, NULL, NULL);
 }
 
-static void toolbar_forward_popup_cb(GtkWidget *widget, GdkEventButton *event, gpointer data)
+static gboolean toolbar_forward_popup_cb(GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
 	Toolbar *toolbar_data = (Toolbar*)data;
 
@@ -1044,7 +1060,10 @@ static void toolbar_forward_popup_cb(GtkWidget *widget, GdkEventButton *event, g
 		gtk_menu_popup(GTK_MENU(toolbar_data->fwd_popup), NULL, NULL,
 			       menu_button_position, widget,
 			       event->button, event->time);
+		return TRUE;
 	}
+
+	return FALSE;
 }
 
 static void toolbar_forward_popup_closed_cb (GtkMenuShell *menu_shell, 

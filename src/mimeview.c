@@ -138,7 +138,7 @@ static gboolean icon_list_select_by_number(MimeView	*mimeview,
 					   gint		 number);
 static void mime_toggle_button_cb 	(GtkWidget 	*button,
 					 MimeView 	*mimeview);
-static void part_button_pressed		(MimeView 	*mimeview, 
+static gboolean part_button_pressed	(MimeView 	*mimeview, 
 					 GdkEventButton *event, 
 					 MimeInfo 	*partinfo);
 static void icon_scroll_size_allocate_cb(GtkWidget 	*widget, 
@@ -804,13 +804,14 @@ static gint mimeview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 	return TRUE;
 }
 
-static void part_button_pressed(MimeView *mimeview, GdkEventButton *event, 
-				MimeInfo *partinfo)
+static gboolean part_button_pressed(MimeView *mimeview, GdkEventButton *event, 
+				    MimeInfo *partinfo)
 {
 	if (event->button == 2 ||
 	    (event->button == 1 && event->type == GDK_2BUTTON_PRESS)) {
 		/* call external program for image, audio or html */
 		mimeview_launch(mimeview);
+		return TRUE;
 	} else if (event->button == 3) {
 		if (partinfo && (partinfo->mime_type == MIME_TEXT ||
 				 partinfo->mime_type == MIME_TEXT_HTML ||
@@ -842,8 +843,10 @@ static void part_button_pressed(MimeView *mimeview, GdkEventButton *event,
 		gtk_menu_popup(GTK_MENU(mimeview->popupmenu),
 			       NULL, NULL, NULL, NULL,
 			       event->button, event->time);
+		return TRUE;
 	}
 
+	return FALSE;
 }
 
 
@@ -1345,7 +1348,7 @@ static gboolean icon_clicked_cb (GtkWidget *button, GdkEventButton *event, MimeV
 
 	part_button_pressed(mimeview, event, partinfo);
 
-	return TRUE;
+	return FALSE;
 }
 
 static void icon_selected (MimeView *mimeview, gint num, MimeInfo *partinfo)
@@ -1644,7 +1647,7 @@ static gboolean icon_list_select_by_number(MimeView	*mimeview,
 }
 
 static void icon_scroll_size_allocate_cb(GtkWidget *widget, 
-					GtkAllocation *size, MimeView *mimeview)
+					 GtkAllocation *size, MimeView *mimeview)
 {
 	GtkAllocation *mainbox_size;
 	GtkAllocation *vbox_size;
@@ -1657,9 +1660,12 @@ static void icon_scroll_size_allocate_cb(GtkWidget *widget,
 	vbox_size = &mimeview->icon_vbox->allocation;
 	layout_size = &mimeview->icon_scroll->allocation;
 	
+#warning FIXME_GTK2 /* this code cause hang up. */
+#if 0
 	/* centralise the vbox */
 	gtk_layout_move(GTK_LAYOUT(mimeview->icon_scroll), mimeview->icon_vbox, 
 			(mainbox_size->width - vbox_size->width)/2, 0);
+#endif
 	
 	gtk_layout_set_size(GTK_LAYOUT(mimeview->icon_scroll), 
 			    GTK_LAYOUT(mimeview->icon_scroll)->width, 

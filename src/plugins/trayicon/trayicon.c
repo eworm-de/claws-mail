@@ -138,7 +138,9 @@ static void destroy_cb(GtkWidget *widget, gpointer *data)
 
 static void create_trayicon()
 {
+#if 0
 	GtkPacker *packer;
+#endif
 
         trayicon = egg_tray_icon_new("Sylpheed-Claws");
 //        trayicon = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -154,12 +156,18 @@ static void create_trayicon()
         gtk_container_set_border_width(GTK_CONTAINER(eventbox), 0);
         gtk_container_add(GTK_CONTAINER(trayicon), GTK_WIDGET(eventbox));
 
+#warning FIXME_GTK2
+#if 0
 	packer = GTK_PACKER(gtk_packer_new());
         gtk_container_add(GTK_CONTAINER(eventbox), GTK_WIDGET(packer));
         gtk_container_set_border_width(GTK_CONTAINER(packer), 0);
 
         image = gtk_pixmap_new(nomail_pixmap, nomail_bitmap);
         gtk_packer_add_defaults(GTK_PACKER(packer), GTK_WIDGET(image), GTK_SIDE_TOP, GTK_ANCHOR_CENTER, GTK_PACK_EXPAND);
+#else
+        image = gtk_image_new_from_pixmap(nomail_pixmap, nomail_bitmap);
+        gtk_container_add(GTK_CONTAINER(eventbox), image);
+#endif
 
 	destroy_signal_id =
 	gtk_signal_connect(GTK_OBJECT(trayicon), "destroy",

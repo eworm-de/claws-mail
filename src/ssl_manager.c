@@ -77,7 +77,7 @@ void ssl_manager_create(void)
 	GtkWidget *ok_btn;
 	gchar *titles[2];
 
-	window = gtk_window_new (GTK_WINDOW_DIALOG);
+	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW(window),
 			      _("Saved SSL Certificates"));
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
