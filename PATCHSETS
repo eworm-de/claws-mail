@@ -254,3 +254,4 @@
 ( cvs diff -u -r 1.9 -r 1.10 src/quote_fmt_lex.l; cvs diff -u -r 1.28 -r 1.29 src/quote_fmt_parse.y; ) > 1.0.1cvs14.patchset
 ( cvs diff -u -r 1.476 -r 1.477 src/compose.c; ) > 1.0.1cvs15.patchset
 ( cvs diff -u -r 1.477 -r 1.478 src/compose.c; cvs diff -u -r 1.177 -r 1.178 src/procmsg.c; ) > 1.0.1cvs16.patchset
+( cvs diff -u -r 1.478 -r 1.479 src/compose.c; ) > 1.0.1cvs17.patchset
