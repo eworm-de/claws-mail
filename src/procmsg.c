@@ -22,6 +22,7 @@
 #include <glib.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 
 #include "intl.h"
 #include "main.h"
@@ -433,6 +434,8 @@ static GHashTable *procmsg_read_mark_file(const gchar *folder)
 	GHashTable *mark_table = NULL;
 	gint num;
 	MsgFlags flags;
+	gchar *msgfile;
+	struct stat s;
 
 	if ((fp = procmsg_open_mark_file(folder, FALSE)) == NULL)
 		return NULL;
@@ -441,11 +444,16 @@ static GHashTable *procmsg_read_mark_file(const gchar *folder)
 
 	while (fread(&num, sizeof(num), 1, fp) == 1) {
 		if (fread(&flags, sizeof(flags), 1, fp) != 1) break;
-		MSG_SET_FLAGS(flags, MSG_CACHED);
 
-		g_hash_table_insert(mark_table,
-				    GUINT_TO_POINTER(num),
-				    GUINT_TO_POINTER(flags));
+		msgfile = g_strdup_printf("%s%c%d", folder, G_DIR_SEPARATOR, num);
+		if(stat(msgfile, &s) == 0 && S_ISREG(s.st_mode)) {
+		    MSG_SET_FLAGS(flags, MSG_CACHED);
+
+		    g_hash_table_insert(mark_table,
+					GUINT_TO_POINTER(num),
+					GUINT_TO_POINTER(flags));
+		}
+		free(msgfile);
 	}
 
 	fclose(fp);
