@@ -1,3 +1,11 @@
+2001-11-12 [hiro]
+
+	* src/compose.c
+		compose_forward(): fixed a bug that forward quote mark
+		wasn't used.
+		removed unnecessary code.
+	* src/template_select.[ch]: removed.
+
 2001-11-11 [alfons]
 
 	* src/compose.c

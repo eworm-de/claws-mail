@@ -98,7 +98,6 @@
 #include "gtkshruler.h"
 #include "folder.h"
 #include "addr_compl.h"
-#include "template_select.h"
 #include "quote_fmt.h"
 #include "template.h"
 
@@ -249,9 +248,6 @@ static void toolbar_linewrap_cb		(GtkWidget	*widget,
 					 gpointer	 data);
 static void toolbar_address_cb		(GtkWidget	*widget,
 					 gpointer	 data);
-static void template_select_cb		(gpointer	 daat,
-					 guint		 action,
-					 GtkWidget	*widget);
 
 
 static void select_account(Compose * compose, PrefsAccount * ac);
@@ -1066,7 +1062,7 @@ Compose *compose_forward(PrefsAccount * account, MsgInfo *msginfo,
 		gchar *quote_str;
 
 		if (prefs_common.fw_quotemark && *prefs_common.fw_quotemark)
-			qmark = prefs_common.quotemark;
+			qmark = prefs_common.fw_quotemark;
 		else
 			qmark = "> ";
 
@@ -5680,65 +5676,6 @@ static void compose_toggle_return_receipt_cb(gpointer data, guint action,
 		compose->return_receipt = TRUE;
 	else
 		compose->return_receipt = FALSE;
-}
-
-static void template_apply_cb(gchar *s, gpointer data)
-{
-	Compose *compose = (Compose*)data;
-	GtkSText *text = GTK_STEXT(compose->text);
-	gchar *quote_str;
-	gchar *qmark;
-	gchar *parsed_text;
-	gchar *tmpl;
-	gchar *old_tmpl = s;
-
-	if(!s) return;
-	
-	if(compose->replyinfo == NULL) {
-	        gtk_stext_freeze(text);
-		gtk_stext_set_point(text, 0);
-		gtk_stext_forward_delete(text, gtk_stext_get_length(text));
-		gtk_stext_insert(text, NULL, NULL, NULL, s, -1);
-		gtk_stext_thaw(text);
-		g_free(old_tmpl);
-		return;
-	}
-
-	parsed_text = g_new(gchar, strlen(s)*2 + 1);
-	tmpl = parsed_text;
-	while(*s) {
-		if (*s == '\n') {
-			*parsed_text++ = '\\';
-			*parsed_text++ = 'n';
-			s++;
-		} else {
-			*parsed_text++ = *s++;
-		}
-	}
-	*parsed_text = '\0';
-
-	if (prefs_common.quotemark && *prefs_common.quotemark)
-		qmark = prefs_common.quotemark;
-	else
-		qmark = "> ";
-
-	quote_str = compose_quote_fmt(compose, compose->replyinfo, tmpl, qmark);
-	if (quote_str != NULL) {
-	        gtk_stext_freeze(text);
-		gtk_stext_set_point(text, 0);
-		gtk_stext_forward_delete(text, gtk_stext_get_length(text));
-		gtk_stext_insert(text, NULL, NULL, NULL, quote_str, -1);
-		gtk_stext_thaw(text);
-	}
-
-	g_free(old_tmpl);
-	g_free(tmpl);
-}
-
-static void template_select_cb(gpointer data, guint action,
-			       GtkWidget *widget)
-{
-	template_select(&template_apply_cb, data);
 }
 
 void compose_headerentry_key_press_event_cb(GtkWidget *entry, GdkEventKey *event, compose_headerentry *headerentry) {

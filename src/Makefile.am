@@ -119,8 +119,7 @@ sylpheed_SOURCES = \
 	mbox_folder.c mbox_folder.h \
 	quote_fmt_lex.l quote_fmt_lex.h \
 	quote_fmt_parse.y quote_fmt.h \
-	gtkspell.c gtkspell.h gtkxtext.h \
-	template_select.c template_select.h
+	gtkspell.c gtkspell.h gtkxtext.h
 
 BUILT_SOURCES = \
 	quote_fmt_lex.c \
