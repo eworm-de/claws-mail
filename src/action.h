@@ -41,6 +41,7 @@ typedef enum
 	ACTION_USER_STR		= 1 << 9,
 	ACTION_USER_HIDDEN_STR	= 1 << 10,
 	ACTION_SELECTION_STR	= 1 << 11,
+	ACTION_FILTERING_ACTION = 1 << 12,
 	ACTION_ERROR		= 1 << 30
 } ActionType;
 
