@@ -15,6 +15,12 @@
 /* Define if you want IPv6 support.  */
 #undef INET6
 
+/* Define if you want JPilot support in addressbook.  */
+#undef USE_JPILOT
+
+/* Define if you want LDAP support in addressbook.  */
+#undef USE_LDAP
+
 /* Define if we use GPGME to support OpenPGP */
 #undef USE_GPGME
 
