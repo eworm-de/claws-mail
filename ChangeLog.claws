@@ -1,3 +1,11 @@
+2002-08-13 [christoph]	0.8.1claws57
+
+	* src/procmsg.c
+		ignore thread fix that did not mark all
+		child nodes of a ignored thread as
+		ignored. Does not work perfectly yet,
+		but it is better now
+
 2002-08-13 [alfons]	0.8.1claws56
 
 	* src/crash.c

@@ -531,6 +531,13 @@ FILE *procmsg_open_mark_file(const gchar *folder, gboolean append)
 	return fp;
 }
 
+static gboolean procmsg_ignore_node(GNode *node, gpointer data)
+{
+	MsgInfo *msginfo = (MsgInfo *)node->data;
+	
+	procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
+}
+
 /* return the reversed thread tree */
 GNode *procmsg_get_thread_tree(GSList *mlist)
 {
@@ -597,7 +604,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 				(parent, parent->children, node);
 			/* CLAWS: ignore thread */
 			if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-				procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
+				g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, procmsg_ignore_node, NULL);
 			}
 		}
 		node = next;
@@ -628,13 +635,13 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 				g_node_append(parent, node);
 				/* CLAWS: ignore thread */
 				if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-					procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
+					g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, procmsg_ignore_node, NULL);
 				}
 			}
 		}					
 		node = next;
 	}		
-		
+
 	g_hash_table_destroy(subject_table);
 	g_hash_table_destroy(msgid_table);
 
