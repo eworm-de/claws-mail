@@ -1,3 +1,15 @@
+2002-09-20 [christoph]	0.8.2claws61
+
+	* src/procmime.h
+		added ENC_BINARY to EncodingType
+	* src/procmime.c
+		the string returned by procmime_get_encoding_str
+		should not depend on the order of values in the
+		EncodingType definition
+	* doc-src/rfc1806.txt	** NEW FILE **
+		Added rfc1806 about MIME Content-Disposition
+		Extension
+
 2002-09-19 [paul]	0.8.2claws60
 
 	* sync with 0.8.2cvs3
