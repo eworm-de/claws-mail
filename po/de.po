@@ -3268,11 +3268,11 @@ msgstr "/_Ansicht/_Zeigen oder Verstecken/_Statuszeile"
 
 #: src/mainwindow.c:456
 msgid "/_View/Separate f_older tree"
-msgstr "/_Ansicht/Seperater _Ablagebaum"
+msgstr "/_Ansicht/Separater _Ablagebaum"
 
 #: src/mainwindow.c:457
 msgid "/_View/Separate m_essage view"
-msgstr "/_Ansicht/Seperate _Nachrichtenansicht"
+msgstr "/_Ansicht/Separate _Nachrichtenansicht"
 
 #: src/mainwindow.c:459
 msgid "/_View/_Sort"
