@@ -2109,8 +2109,8 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 	if (cur_pos > gtk_text_buffer_get_char_count (buffer))
 		cur_pos = gtk_text_buffer_get_char_count (buffer);
 
-	gtk_text_buffer_get_iter_at_offset (buffer, &iter, cur_pos);
-	gtk_text_buffer_place_cursor (buffer, &iter);
+	gtk_text_buffer_get_iter_at_offset(buffer, &iter, cur_pos);
+	gtk_text_buffer_place_cursor(buffer, &iter);
 
 	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
 					G_CALLBACK(compose_changed_cb),
@@ -2122,6 +2122,7 @@ static gchar *compose_get_signature_str(Compose *compose)
 {
 	gchar *sig_body = NULL;
 	gchar *sig_str = NULL;
+	gchar *utf8_sig_str = NULL;
 
 	g_return_val_if_fail(compose->account != NULL, NULL);
 
@@ -2148,15 +2149,20 @@ static gchar *compose_get_signature_str(Compose *compose)
 		g_free(tmp);
 	}
 
-	if (compose->account->sig_sep)
+	if (compose->account->sig_sep) {
 		sig_str = g_strconcat("\n\n", compose->account->sig_sep, "\n", sig_body,
 				      NULL);
-	else
+		g_free(sig_body);
+	} else
 		sig_str = g_strconcat("\n\n", sig_body, NULL);
 
-	g_free(sig_body);
-	
-	return sig_str;
+	if (sig_str) {
+		utf8_sig_str = conv_codeset_strdup
+			(sig_str, conv_get_locale_charset_str(), CS_INTERNAL);
+		g_free(sig_str);
+	}
+
+	return utf8_sig_str;
 }
 
 static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *file)
@@ -2169,6 +2175,7 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 	gchar buf[BUFFSIZE];
 	gint len;
 	FILE *fp;
+	gboolean prev_autowrap;
 	gboolean badtxt = FALSE;
 
 	g_return_val_if_fail(file != NULL, COMPOSE_INSERT_NO_FILE);
@@ -2188,6 +2195,9 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 					compose);
 
 	cur_encoding = conv_get_locale_charset_str();
+
+	prev_autowrap = compose->autowrap;
+	compose->autowrap = FALSE;
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		gchar *str;
@@ -2211,6 +2221,9 @@ static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *fi
 	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
 					  G_CALLBACK(text_inserted),
 					  compose);
+	compose->autowrap = prev_autowrap;
+	if (compose->autowrap)
+		compose_wrap_all(compose);
 
 	fclose(fp);
 
@@ -2563,7 +2576,12 @@ static gboolean compose_get_line_break_pos(GtkTextBuffer *buffer,
 		wc = g_utf8_get_char(p);
 		if (i >= quote_len && !g_unichar_isspace(wc))
 			break;
-		col += g_unichar_iswide(wc) ? 2 : 1;
+		if (g_unichar_iswide(wc))
+			col += 2;
+		else if (*p == '\t')
+			col += 8;
+		else
+			col++;
 		p = g_utf8_next_char(p);
 	}
 
@@ -2589,7 +2607,12 @@ static gboolean compose_get_line_break_pos(GtkTextBuffer *buffer,
 		}
 
 		wc = g_utf8_get_char(p);
-		col += g_unichar_iswide(wc) ? 2 : 1;
+		if (g_unichar_iswide(wc))
+			col += 2;
+		else if (*p == '\t')
+			col += 8;
+		else
+			col++;
 		if (pos > 0 && col > max_col) {
 			do_break = TRUE;
 			break;
@@ -2649,6 +2672,7 @@ static gboolean compose_join_next_line(GtkTextBuffer *buffer,
 	gchar *next_quote_str;
 	gunichar wc1, wc2;
 	gint quote_len;
+	gboolean keep_cursor = FALSE;
 
 	if (!gtk_text_iter_forward_line(&iter_) ||
 	    gtk_text_iter_ends_line(&iter_))
@@ -2689,8 +2713,15 @@ static gboolean compose_join_next_line(GtkTextBuffer *buffer,
 		gtk_text_iter_forward_char(&cur);
 		next = cur;
 	}
-	if (!gtk_text_iter_equal(&prev, &next))
+	if (!gtk_text_iter_equal(&prev, &next)) {
+		GtkTextMark *mark;
+
+		mark = gtk_text_buffer_get_insert(buffer);
+		gtk_text_buffer_get_iter_at_mark(buffer, &cur, mark);
+		if (gtk_text_iter_equal(&prev, &cur))
+			keep_cursor = TRUE;
 		gtk_text_buffer_delete(buffer, &prev, &next);
+	}
 	iter_ = prev;
 
 	/* insert space if required */
@@ -2701,8 +2732,13 @@ static gboolean compose_join_next_line(GtkTextBuffer *buffer,
 	str = gtk_text_buffer_get_text(buffer, &prev, &next, FALSE);
 	pango_default_break(str, -1, NULL, attrs, 3);
 	if (!attrs[1].is_line_break ||
-	    (!g_unichar_iswide(wc1) || !g_unichar_iswide(wc2)))
+	    (!g_unichar_iswide(wc1) || !g_unichar_iswide(wc2))) {
 		gtk_text_buffer_insert(buffer, &iter_, " ", 1);
+		if (keep_cursor) {
+			gtk_text_iter_backward_char(&iter_);
+			gtk_text_buffer_place_cursor(buffer, &iter_);
+		}
+	}
 	g_free(str);
 
 	*iter = iter_;
@@ -2763,7 +2799,29 @@ static void compose_wrap_paragraph(Compose *compose, GtkTextIter *par_iter)
 		if (compose_get_line_break_pos(buffer, &iter, &break_pos,
 					       prefs_common.linewrap_len,
 					       quote_len)) {
+			GtkTextIter prev, next, cur;
+
 			gtk_text_buffer_insert(buffer, &break_pos, "\n", 1);
+
+			/* remove trailing spaces */
+			cur = break_pos;
+			gtk_text_iter_backward_char(&cur);
+			prev = next = cur;
+			while (!gtk_text_iter_starts_line(&cur)) {
+				gunichar wc;
+
+				gtk_text_iter_backward_char(&cur);
+				wc = gtk_text_iter_get_char(&cur);
+				if (!g_unichar_isspace(wc))
+					break;
+				prev = cur;
+			}
+			if (!gtk_text_iter_equal(&prev, &next)) {
+				gtk_text_buffer_delete(buffer, &prev, &next);
+				break_pos = next;
+				gtk_text_iter_forward_char(&break_pos);
+			}
+
 			if (quote_str)
 				gtk_text_buffer_insert(buffer, &break_pos,
 						       quote_str, -1);
@@ -6351,12 +6409,20 @@ static void compose_destroy_cb(GtkWidget *widget, Compose *compose)
 
 static void compose_undo_cb(Compose *compose)
 {
+	gboolean prev_autowrap = compose->autowrap;
+
+	compose->autowrap = FALSE;
 	undo_undo(compose->undostruct);
+	compose->autowrap = prev_autowrap;
 }
 
 static void compose_redo_cb(Compose *compose)
 {
+	gboolean prev_autowrap = compose->autowrap;
+	
+	compose->autowrap = FALSE;
 	undo_redo(compose->undostruct);
+	compose->autowrap = prev_autowrap;
 }
 
 static void entry_cut_clipboard(GtkWidget *entry)
@@ -6409,7 +6475,6 @@ static void entry_allsel(GtkWidget *entry)
 			"insert", &enditer);
 	}
 }
-
 
 static void compose_cut_cb(Compose *compose)
 {

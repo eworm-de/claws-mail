@@ -151,13 +151,29 @@ void gtkut_editable_disable_im		(GtkEditable	*editable);
 void gtkut_container_remove		(GtkContainer	*container,
 					 GtkWidget	*widget);
 
+gboolean gtkut_text_buffer_match_string	(GtkTextBuffer		*buffer,
+					 const GtkTextIter	*iter,
+					 gunichar		*wcs,
+					 gint			 len,
+					 gboolean		 case_sens);
+gboolean gtkut_text_buffer_find		(GtkTextBuffer		*buffer,
+					 const GtkTextIter	*iter,
+					 const gchar		*str,
+					 gboolean		 case_sens,
+					 GtkTextIter		*match_pos);
+gboolean gtkut_text_buffer_find_backward(GtkTextBuffer		*buffer,
+					 const GtkTextIter	*iter,
+					 const gchar		*str,
+					 gboolean		 case_sens,
+					 GtkTextIter		*match_pos);
+
+gchar *gtkut_text_view_get_selection	(GtkTextView	*textview);
 
 void gtkut_window_popup			(GtkWidget	*window);
 
 void gtkut_widget_get_uposition		(GtkWidget	*widget,
 					 gint		*px,
 					 gint		*py);
-void gtkut_widget_disable_theme_engine	(GtkWidget	*widget);
 void gtkut_widget_wait_for_draw		(GtkWidget	*widget);
 void gtkut_widget_init			(void);
 
@@ -171,23 +187,5 @@ GtkWidget *gtkut_account_menu_new	(GList			*ac_list,
 void gtkut_set_widget_bgcolor_rgb	(GtkWidget 	*widget,
 					 guint 		 rgbvalue);
 
-gboolean gtkut_text_buffer_match_string	(GtkTextBuffer	*text,
-					 gint		 pos,
-					 gunichar	*wcs,
-					 gint		 len,
-					 gboolean	 case_sens);
-guint gtkut_text_buffer_str_compare_n	(GtkTextBuffer	*text,
-					 guint		 pos1,
-					 guint		 pos2,
-					 guint		 len,
-					 guint		 text_len);
-guint gtkut_text_buffer_str_compare	(GtkTextBuffer	*text,
-					 guint		 start_pos,
-					 guint		 text_len,
-					 const gchar	*str);
-gboolean gtkut_text_buffer_is_uri_string(GtkTextBuffer	*text,
-					 guint		 start_pos,
-					 guint		 text_len);
-gchar *gtkut_text_view_get_selection	(GtkTextView	*textview);
 GtkWidget *gtkut_get_focused_child	(GtkContainer 	*parent);
 #endif /* __GTKUTILS_H__ */

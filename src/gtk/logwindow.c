@@ -105,8 +105,6 @@ void log_window_init(LogWindow *logwin)
 	gboolean success[3];
 	gint i;
 
-	gtkut_widget_disable_theme_engine(logwin->text);
-
 	logwin->msg_color   = color[0];
 	logwin->warn_color  = color[1];
 	logwin->error_color = color[2];
@@ -208,13 +206,13 @@ static gboolean log_window_append(gpointer source, gpointer data)
 						 tag, NULL);
 
 	gtk_text_buffer_get_start_iter(buffer, &iter);
-	gtk_text_buffer_place_cursor(buffer, &iter);
 
 	if (logwindow->clip)
 	       log_window_clip (GTK_WIDGET (text), logwindow->clip_length);
 
 	gtk_text_buffer_get_iter_at_offset(buffer, &iter, -1);
 	gtk_text_view_scroll_to_iter(text, &iter, 0, TRUE, 0, 0);
+	gtk_text_buffer_place_cursor(buffer, &iter);
 
 	return FALSE;
 }
@@ -239,14 +237,14 @@ static void log_window_clip(GtkWidget *textw, guint clip_length)
 	GtkTextBuffer *textbuf = gtk_text_view_get_buffer(textview);
 	GtkTextIter start_iter, end_iter;
 	
-	length = gtk_text_buffer_get_char_count (textbuf);
-	debug_print("Log window length: %u\n", length);
+	length = gtk_text_buffer_get_line_count(textbuf);
+	/* debug_print("Log window length: %u\n", length); */
 	
 	if (length > clip_length) {
 	        /* find the end of the first line after the cut off
 		 * point */
        	        point = length - clip_length;
-		gtk_text_buffer_get_iter_at_offset(textbuf, &end_iter, point);
+		gtk_text_buffer_get_iter_at_line(textbuf, &end_iter, point);
 		if (!gtk_text_iter_forward_to_line_end(&end_iter))
 			return;
 		gtk_text_buffer_get_start_iter(textbuf, &start_iter);

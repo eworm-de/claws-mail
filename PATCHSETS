@@ -400,3 +400,4 @@
 ( cvs diff -u -r 1.395.2.56 -r 1.395.2.57 src/summaryview.c; ) > 1.0.1cvs15.9.patchset
 ( cvs diff -u -r 1.94.2.46 -r 1.94.2.47 src/messageview.c; ) > 1.0.1cvs15.10.patchset
 ( cvs diff -u -r 1.1.2.4 -r 1.1.2.5 src/plugins/pgpmime/passphrase.c; ) > 1.0.1cvs15.11.patchset
+( cvs diff -u -r 1.17.2.11 -r 1.17.2.12 src/alertpanel.c; cvs diff -u -r 1.65.2.24 -r 1.65.2.25 src/codeconv.c; cvs diff -u -r 1.382.2.107 -r 1.382.2.108 src/compose.c; cvs diff -u -r 1.96.2.48 -r 1.96.2.49 src/textview.c; cvs diff -u -r 1.5.2.9 -r 1.5.2.10 src/gtk/gtkutils.c; cvs diff -u -r 1.4.2.7 -r 1.4.2.8 src/gtk/gtkutils.h; cvs diff -u -r 1.1.4.7 -r 1.1.4.8 src/gtk/logwindow.c; cvs diff -u -r 1.1.4.7 -r 1.1.4.8 src/gtk/progressdialog.c; ) > 1.0.1cvs15.12.patchset

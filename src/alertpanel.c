@@ -259,18 +259,15 @@ static void alertpanel_create(const gchar *title,
 	gtk_window_set_title(GTK_WINDOW(dialog), title);
 	gtk_window_set_resizable(GTK_WINDOW(dialog), FALSE);
 	gtk_dialog_set_has_separator (GTK_DIALOG (dialog), FALSE);
-	gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
 	
-	gtk_container_set_border_width
-		(GTK_CONTAINER(GTK_DIALOG(dialog)->action_area), 5);
 	gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+	gtk_dialog_set_has_separator(GTK_DIALOG(dialog), FALSE);
 	g_signal_connect(G_OBJECT(dialog), "delete_event",
 			 G_CALLBACK(alertpanel_deleted),
 			 (gpointer)G_ALERTOTHER);
 	g_signal_connect(G_OBJECT(dialog), "key_press_event",
 			 G_CALLBACK(alertpanel_close),
 			 (gpointer)G_ALERTOTHER);
-	gtk_widget_realize(dialog);
 
 	gtk_box_set_spacing (GTK_BOX (GTK_DIALOG (dialog)->vbox), 14);
 	hbox = gtk_hbox_new (FALSE, 12);
@@ -299,18 +296,20 @@ static void alertpanel_create(const gchar *title,
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
 	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+	gtk_label_set_line_wrap(GTK_LABEL(label), TRUE);
 	if (!font_desc) {
 		gint size;
 
-		size = pango_font_description_get_size(label->style->font_desc);
+		size = pango_font_description_get_size
+			(label->style->font_desc);
 		font_desc = pango_font_description_new();
-		pango_font_description_set_weight(font_desc, PANGO_WEIGHT_BOLD);
+		pango_font_description_set_weight
+			(font_desc, PANGO_WEIGHT_BOLD);
 		pango_font_description_set_size
-			(font_desc, size * PANGO_SCALE_X_LARGE);
+			(font_desc, size * PANGO_SCALE_LARGE);
 	}
 	if (font_desc)
 		gtk_widget_modify_font(label, font_desc);
-	gtk_widget_show(label);
 	g_free(title_full);
 	
 	label = gtk_label_new(message);
@@ -326,16 +325,20 @@ static void alertpanel_create(const gchar *title,
 	}
 	
 	if (can_disable) {
+		hbox = gtk_hbox_new(FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->vbox), hbox,
+				   FALSE, FALSE, 0);
+
 		disable_chkbtn = gtk_check_button_new_with_label
 			(_("Show this message next time"));
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(disable_chkbtn),
 					     TRUE);
-		gtk_box_pack_start(GTK_BOX(vbox), disable_chkbtn,
-				   FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(hbox), disable_chkbtn,
+				   FALSE, FALSE, 12);
 		g_signal_connect(G_OBJECT(disable_chkbtn), "toggled",
 				 G_CALLBACK(alertpanel_button_toggled),
 				 GUINT_TO_POINTER(G_ALERTDISABLE));
-	} 
+	}
 
 	/* for button(s) */
 	if (!button1_label)
@@ -350,7 +353,9 @@ static void alertpanel_create(const gchar *title,
 				      button2_label ? &button2 : NULL, label2,
 				      button3_label ? &button3 : NULL, label3);
 
-	gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dialog)->action_area), confirm_area, FALSE, FALSE, 12);
+	gtk_box_pack_end(GTK_BOX(GTK_DIALOG(dialog)->action_area),
+			 confirm_area, FALSE, FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(confirm_area), 5);
 	gtk_widget_grab_default(button1);
 	gtk_widget_grab_focus(button1);
 	if (button2_label && *button2_label == '+') {
@@ -399,7 +404,7 @@ static gint alertpanel_deleted(GtkWidget *widget, GdkEventAny *event,
 }
 
 static gboolean alertpanel_close(GtkWidget *widget, GdkEventAny *event,
-			     gpointer data)
+				 gpointer data)
 {
 	if (event->type == GDK_KEY_PRESS)
 		if (((GdkEventKey *)event)->keyval != GDK_Escape)

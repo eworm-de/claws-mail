@@ -1,3 +1,16 @@
+2005-02-25 [paul]	1.0.1cvs15.12
+
+	* src/alertpanel.c
+	* src/codeconv.c
+	* src/compose.c
+	* src/textview.c
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+	* src/gtk/logwindow.c
+	* src/gtk/progressdialog.c
+		sync with main (revision 127)
+		and fix logwindow clipping
+
 2005-02-24 [colin]	1.0.1cvs15.11
 
 	* src/plugins/pgpmime/passphrase.c
