@@ -564,7 +564,7 @@ static gint get_queued_message_num(void)
 	if (!queue) return -1;
 
 	folder_item_scan(queue);
-	return queue->total;
+	return queue->total_msgs;
 }
 
 static void save_all_caches(FolderItem *item, gpointer data)

@@ -4149,59 +4149,6 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Compose>/Edit/Advanced/Delete a word backward\" \"<control>W\")\n"
 		"(menu-path \"<Compose>/Edit/Advanced/Delete a word forward\" \"<alt>D\")";
 
-	static gchar *empty_menurc =
-		"(menu-path \"<Main>/File/Empty trash\" \"\")\n"
-		"(menu-path \"<Main>/File/Save as...\" \"\")\n"
-		"(menu-path \"<Main>/File/Print...\" \"\")\n"
-		"(menu-path \"<Main>/File/Exit\" \"\")\n"
-
-		"(menu-path \"<Main>/Edit/Copy\" \"\")\n"
-		"(menu-path \"<Main>/Edit/Select all\" \"\")\n"
-		"(menu-path \"<Main>/Edit/Find in current message...\" \"\")\n"
-		"(menu-path \"<Main>/Edit/Search folder...\" \"\")\n"
-
-		"(menu-path \"<Main>/View/Expand Summary View\" \"\")\n"
-		"(menu-path \"<Main>/View/Expand Message View\" \"\")\n"
-		"(menu-path \"<Main>/View/Thread view\" \"\")\n"
-		"(menu-path \"<Main>/View/Go to/Prev message\" \"\")\n"
-		"(menu-path \"<Main>/View/Go to/Next message\" \"\")\n"
-		"(menu-path \"<Main>/View/Go to/Prev unread message\" \"\")\n"
-		"(menu-path \"<Main>/View/Go to/Next unread message\" \"\")\n"
-		"(menu-path \"<Main>/View/Go to/Other folder...\" \"\")\n"
-		"(menu-path \"<Main>/View/Open in new window\" \"\")\n"
-		"(menu-path \"<Main>/View/View source\" \"\")\n"
-		"(menu-path \"<Main>/View/Show all headers\" \"\")\n"
-		"(menu-path \"<Main>/View/Update\" \"\")\n"
-
-		"(menu-path \"<Main>/Message/Get new mail\" \"\")\n"
-		"(menu-path \"<Main>/Message/Get from all accounts\" \"\")\n"
-		"(menu-path \"<Main>/Message/Compose an email message\" \"\")\n"
-		"(menu-path \"<Main>/Message/Reply\" \"\")\n"
-		"(menu-path \"<Main>/Message/Reply to/all\" \"\")\n"
-		"(menu-path \"<Main>/Message/Reply to/sender\" \"\")\n"
-		"(menu-path \"<Main>/Message/Reply to/mailing list\" \"\")\n"
-		"(menu-path \"<Main>/Message/Forward\" \"\")\n"
-		/* "(menu-path \"<Main>/Message/Forward as attachment\" \"\")\n" */
-		"(menu-path \"<Main>/Message/Move...\" \"\")\n"
-		"(menu-path \"<Main>/Message/Copy...\" \"\")\n"
-		"(menu-path \"<Main>/Message/Delete\" \"\")\n"
-		"(menu-path \"<Main>/Message/Mark/Mark\" \"\")\n"
-		"(menu-path \"<Main>/Message/Mark/Unmark\" \"\")\n"
-		"(menu-path \"<Main>/Message/Mark/Mark as unread\" \"\")\n"
-		"(menu-path \"<Main>/Message/Mark/Mark as read\" \"\")\n"
-
-		"(menu-path \"<Main>/Tools/Address book\" \"\")\n"
-		"(menu-path \"<Main>/Tools/Execute\" \"\")\n"
-		"(menu-path \"<Main>/Tools/Log window\" \"\")\n"
-
-		"(menu-path \"<Compose>/File/Close\" \"\")\n"
-		"(menu-path \"<Compose>/Edit/Select all\" \"\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Move a word backward\" \"\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Move a word forward\" \"\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Move to beginning of line\" \"\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Delete a word backward\" \"\")\n"
-		"(menu-path \"<Compose>/Edit/Advanced/Delete a word forward\" \"\")";
-
 	text = gtk_entry_get_text(entry);
 
 	if (!strcmp(text, _("Default")))
@@ -4215,7 +4162,7 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 	else
 		return;
 
-	gtk_item_factory_parse_rc_string(empty_menurc);
+	menu_factory_clear_rc(rc_str);
 	gtk_item_factory_parse_rc_string(rc_str);
 
 	gtk_widget_destroy(keybind.window);

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -123,22 +123,22 @@ static gint message_window_close_cb	(GtkWidget	*widget,
 					 GdkEventAny	*event,
 					 gpointer	 data);
 
-static void add_mailbox_cb	 (MainWindow	*mainwin,
+static void new_folder_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 static void add_mbox_cb 	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void update_folderview_cb (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void new_folder_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 static void rename_folder_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 static void delete_folder_cb	 (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
+static void update_folderview_cb (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
+static void add_mailbox_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 static void import_mbox_cb	 (MainWindow	*mainwin,
@@ -405,15 +405,16 @@ gboolean mainwindow_progressindicator_hook	(gpointer 	 source,
 static GtkItemFactoryEntry mainwin_entries[] =
 {
 	{N_("/_File"),				NULL, NULL, 0, "<Branch>"},
-	{N_("/_File/_Add mailbox..."),		NULL, add_mailbox_cb, 0, NULL},
-	{N_("/_File/_Add mbox mailbox..."),     NULL, add_mbox_cb, 0, NULL},
-	{N_("/_File/_Check for new messages in all folders"),
-						NULL, update_folderview_cb, 0, NULL},
 	{N_("/_File/_Folder"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Folder/Create _new folder..."),
 						NULL, new_folder_cb, 0, NULL},
 	{N_("/_File/_Folder/_Rename folder..."),NULL, rename_folder_cb, 0, NULL},
 	{N_("/_File/_Folder/_Delete folder"),	NULL, delete_folder_cb, 0, NULL},
+	{N_("/_File/_Folder/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_File/_Folder/_Check for new messages in all folders"),
+						NULL, update_folderview_cb, 0, NULL},
+	{N_("/_File/_Add mailbox..."),		NULL, add_mailbox_cb, 0, NULL},
+	{N_("/_File/_Add mbox mailbox..."),     NULL, add_mbox_cb, 0, NULL},
 	{N_("/_File/_Import mbox file..."),	NULL, import_mbox_cb, 0, NULL},
 	{N_("/_File/_Export to mbox file..."),	NULL, export_mbox_cb, 0, NULL},
 	{N_("/_File/Empty _trash"),		"<shift>D", empty_trash_cb, 0, NULL},
@@ -1368,7 +1369,7 @@ void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 
 	for (has_trash = 0, list = folder_get_list(); list != NULL; list = list->next) {
 		folder = FOLDER(list->data);
-		if (folder && folder->trash && folder->trash->total > 0)
+		if (folder && folder->trash && folder->trash->total_msgs > 0)
 			has_trash++;
 	}
 
@@ -1416,7 +1417,7 @@ void main_window_add_mailbox(MainWindow *mainwin)
 			    path);
 	g_free(path);
 
-	if (folder->class->create_tree(folder) < 0) {
+	if (folder->klass->create_tree(folder) < 0) {
 		alertpanel_error(_("Creation of the mailbox failed.\n"
 				   "Maybe some files already exist, or you don't have the permission to write there."));
 		folder_destroy(folder);
@@ -1453,7 +1454,7 @@ void main_window_add_mbox(MainWindow *mainwin)
 			    g_basename(path), path);
 	g_free(path);
 
-	if (folder->class->create_tree(folder) < 0) {
+	if (folder->klass->create_tree(folder) < 0) {
 		alertpanel_error(_("Creation of the mailbox failed."));
 		folder_destroy(folder);
 		return;
@@ -1510,7 +1511,7 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 	if (selection == SUMMARY_SELECTED_SINGLE)
 		state |= M_SINGLE_TARGET_EXIST;
 	if (mainwin->summaryview->folder_item &&
-	    mainwin->summaryview->folder_item->folder->class->type == F_NEWS)
+	    mainwin->summaryview->folder_item->folder->klass->type == F_NEWS)
 		state |= M_NEWS;
 	else
 		state |= M_NOT_NEWS;
@@ -1551,10 +1552,9 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		gchar *const entry;
 		SensitiveCond cond;
 	} entry[] = {
+		{"/File/Folder"                               , M_UNLOCKED},
 		{"/File/Add mailbox..."                       , M_UNLOCKED},
                 {"/File/Add mbox mailbox..."   		      , M_UNLOCKED},
-		{"/File/Check for new messages in all folders", M_UNLOCKED},
-		{"/File/Folder"                               , M_UNLOCKED},
 		{"/File/Import mbox file..."                  , M_UNLOCKED},
 		{"/File/Export to mbox file..."               , M_UNLOCKED},
 		{"/File/Empty trash"                          , M_UNLOCKED},

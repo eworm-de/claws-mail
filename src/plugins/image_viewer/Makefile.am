@@ -4,7 +4,8 @@ plugin_LTLIBRARIES = image_viewer.la
 
 image_viewer_la_SOURCES = \
 	plugin.c \
-	viewer.c viewer.h
+	viewer.c viewer.h \
+	viewerprefs.c viewerprefs.h
 
 image_viewer_la_LDFLAGS = \
 	-avoid-version -module \

@@ -22,6 +22,8 @@
 
 #include <stdio.h>
 
+#include <glib.h>
+
 typedef struct _PrefFile	PrefFile;
 
 struct _PrefFile {

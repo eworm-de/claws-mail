@@ -61,6 +61,13 @@
 #define NNTPS_PORT	563
 #endif
 
+static Folder *news_folder_new(const gchar * name, const gchar * folder);
+static void news_folder_destroy(Folder * folder);
+
+static gchar *news_fetch_msg(Folder * folder, FolderItem * item, gint num);
+
+static gint news_scan_group(Folder * folder, FolderItem * item);
+
 static void news_folder_init		 (Folder	*folder,
 					  const gchar	*name,
 					  const gchar	*path);
@@ -143,10 +150,6 @@ FolderClass news_class =
 	NULL,
 	NULL,
 	NULL,
-	news_remove_msg,
-	NULL,
-	NULL,
-	NULL,
 	NULL,
 };
 
@@ -160,7 +163,7 @@ Folder *news_folder_new(const gchar *name, const gchar *path)
 	Folder *folder;
 
 	folder = (Folder *)g_new0(NewsFolder, 1);
-	folder->class = &news_class;
+	folder->klass = &news_class;
 	news_folder_init(folder, name, path);
 
 	return folder;
@@ -348,7 +351,7 @@ gint news_scan_group(Folder *folder, FolderItem *item)
 	}
 
 	if (num == 0) {
-		item->new = item->unread = item->total = item->last_num = 0;
+		item->new_msgs = item->unread_msgs = item->total_msgs = item->last_num = 0;
 		return 0;
 	}
 

@@ -329,10 +329,13 @@ void textview_show_message(TextView *textview, MimeInfo *mimeinfo,
 		return;
 	}
 
-	if (prefs_common.force_charset)
+	if (textview->messageview->forced_charset)
+		charset = textview->messageview->forced_charset;
+	else if (prefs_common.force_charset)
 		charset = prefs_common.force_charset;
 	else if (mimeinfo->charset)
 		charset = mimeinfo->charset;
+
 	textview_set_font(textview, charset);
 	textview_clear(textview);
 
@@ -426,10 +429,13 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 		is_rfc822_part = TRUE;
 	}
 
-	if (prefs_common.force_charset)
+	if (textview->messageview->forced_charset)
+		charset = textview->messageview->forced_charset;
+	else if (prefs_common.force_charset)
 		charset = prefs_common.force_charset;
 	else if (mimeinfo->charset)
 		charset = mimeinfo->charset;
+
 	textview_set_font(textview, charset);
 
 	text = GTK_STEXT(textview->text);
@@ -551,7 +557,9 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 			gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
 		else if (prefs_common.display_header)
 			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
-		if (prefs_common.force_charset)
+		if (textview->messageview->forced_charset)
+			charset = textview->messageview->forced_charset;
+		else if (prefs_common.force_charset)
 			charset = prefs_common.force_charset;
 		else if (mimeinfo->charset)
 			charset = mimeinfo->charset;
@@ -959,7 +967,11 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 			&& (((bp_ + 1) < ep_)    && isalnum(*(bp_ + 1)))) {
 				/* hyphens are allowed, but only in
 				   between alnums */
+#ifdef WIN32
+			} else if (!ispunct((int)*bp_)) {
+#else
 			} else if (!ispunct(*bp_)) {
+#endif
 				/* but anything not being a punctiation
 				   is ok */
 			} else {

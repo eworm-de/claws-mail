@@ -26,6 +26,7 @@
 
 #include "mimeview.h"
 
-extern MimeViewerFactory image_viewer_factory;
+void image_viewer_init();
+void image_viewer_done();
 
 #endif

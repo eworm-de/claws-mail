@@ -124,9 +124,9 @@ void procmsg_msg_list_free(GSList *mlist)
 }
 
 struct MarkSum {
-	gint *new;
-	gint *unread;
-	gint *total;
+	gint *new_msgs;
+	gint *unread_msgs;
+	gint *total_msgs;
 	gint *min;
 	gint *max;
 	gint first;
@@ -459,7 +459,7 @@ void procmsg_empty_trash(void)
 
 	for (cur = folder_get_list(); cur != NULL; cur = cur->next) {
 		trash = FOLDER(cur->data)->trash;
-		if (trash && trash->total > 0)
+		if (trash && trash->total_msgs > 0)
 			folder_item_remove_all_msg(trash);
 	}
 }
@@ -1075,38 +1075,38 @@ gint procmsg_send_message_queue(const gchar *file)
 	return (newsval != 0 ? newsval : mailval);
 }
 
-static void update_folder_msg_counts(FolderItem *item, MsgInfo *msginfo, MsgPermFlags old)
+static void update_folder_msg_counts(FolderItem *item, MsgInfo *msginfo, MsgPermFlags old_flags)
 {
-	MsgPermFlags new = msginfo->flags.perm_flags;
+	MsgPermFlags new_flags = msginfo->flags.perm_flags;
 
 	/* NEW flag */
-	if (!(old & MSG_NEW) && (new & MSG_NEW)) {
-		item->new++;
+	if (!(old_flags & MSG_NEW) && (new_flags & MSG_NEW)) {
+		item->new_msgs++;
 	}
 
-	if ((old & MSG_NEW) && !(new & MSG_NEW)) {
-		item->new--;
+	if ((old_flags & MSG_NEW) && !(new_flags & MSG_NEW)) {
+		item->new_msgs--;
 	}
 
 	/* UNREAD flag */
-	if (!(old & MSG_UNREAD) && (new & MSG_UNREAD)) {
-		item->unread++;
+	if (!(old_flags & MSG_UNREAD) && (new_flags & MSG_UNREAD)) {
+		item->unread_msgs++;
 		if (procmsg_msg_has_marked_parent(msginfo))
-			item->unreadmarked++;
+			item->unreadmarked_msgs++;
 	}
 
-	if ((old & MSG_UNREAD) && !(new & MSG_UNREAD)) {
-		item->unread--;
+	if ((old_flags & MSG_UNREAD) && !(new_flags & MSG_UNREAD)) {
+		item->unread_msgs--;
 		if (procmsg_msg_has_marked_parent(msginfo))
-			item->unreadmarked--;
+			item->unreadmarked_msgs--;
 	}
 	
 	/* MARK flag */
-	if (!(old & MSG_MARKED) && (new & MSG_MARKED)) {
+	if (!(old_flags & MSG_MARKED) && (new_flags & MSG_MARKED)) {
 		procmsg_update_unread_children(msginfo, TRUE);
 	}
 
-	if ((old & MSG_MARKED) && !(new & MSG_MARKED)) {
+	if ((old_flags & MSG_MARKED) && !(new_flags & MSG_MARKED)) {
 		procmsg_update_unread_children(msginfo, FALSE);
 	}
 }
@@ -1307,9 +1307,9 @@ void procmsg_update_unread_children(MsgInfo *info, gboolean newly_marked)
 		MsgInfo *tmp = (MsgInfo *)cur->data;
 		if(MSG_IS_UNREAD(tmp->flags) && !MSG_IS_IGNORE_THREAD(tmp->flags)) {
 			if(newly_marked) 
-				info->folder->unreadmarked++;
+				info->folder->unreadmarked_msgs++;
 			else
-				info->folder->unreadmarked--;
+				info->folder->unreadmarked_msgs--;
 			folder_item_update(info->folder, F_ITEM_UPDATE_MSGCNT);
 		}
 		procmsg_msginfo_free(tmp);

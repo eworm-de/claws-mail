@@ -134,7 +134,7 @@ static void inc_notify_cmd		(gint new_msgs,
  					 gboolean notify);
 
 #define FOLDER_SUMMARY_MISMATCH(f, s) \
-	(f) && (s) ? ((s)->newmsgs != (f)->new) || ((f)->unread != (s)->unread) || ((f)->total != (s)->messages) \
+	(f) && (s) ? ((s)->newmsgs != (f)->new_msgs) || ((f)->unread_msgs != (s)->unread) || ((f)->total_msgs != (s)->messages) \
 	: FALSE
 	
 /**

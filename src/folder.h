@@ -34,9 +34,9 @@ typedef struct _FolderItem		FolderItem;
 typedef struct _FolderItemUpdateData	FolderItemUpdateData;
 
 #define FOLDER(obj)		((Folder *)obj)
-#define FOLDER_TYPE(obj)	(FOLDER(obj)->class->type)
+#define FOLDER_TYPE(obj)	(FOLDER(obj)->klass->type)
 
-#define FOLDER_CLASS(obj)	(FOLDER(obj)->class)
+#define FOLDER_CLASS(obj)	(FOLDER(obj)->klass)
 #define LOCAL_FOLDER(obj)	((LocalFolder *)obj)
 #define REMOTE_FOLDER(obj)	((RemoteFolder *)obj)
 
@@ -128,7 +128,7 @@ typedef void (*FolderItemFunc)		(FolderItem	*item,
 
 struct _Folder
 {
-	FolderClass *class;
+	FolderClass *klass;
 
 	gchar *name;
 	PrefsAccount *account;
@@ -158,9 +158,9 @@ struct _FolderClass
 	/* virtual functions */
 
 	/* Folder funtions */
-	Folder 		*(*new)			(const gchar	*name,
+	Folder 		*(*new_folder)		(const gchar	*name,
 						 const gchar	*path);
-	void     	(*destroy)		(Folder		*folder);
+	void     	(*destroy_folder)	(Folder		*folder);
 	void     	(*scan_tree)		(Folder		*folder);
 
 	gint     	(*create_tree)		(Folder		*folder);
@@ -195,7 +195,7 @@ struct _FolderClass
 						 gint		 num);
 	GSList  	*(*get_msginfos)	(Folder		*folder,
 						 FolderItem	*item,
-						 GSList		*msgnum_list);
+						 MsgNumberList	*msgnum_list);
 	gchar 		*(*fetch_msg)		(Folder		*folder,
 						 FolderItem	*item,
 						 gint		 num);
@@ -203,24 +203,12 @@ struct _FolderClass
 						 FolderItem	*dest,
 						 const gchar	*file,
 						gboolean	 remove_source);
-	gint    	(*move_msg)		(Folder		*folder,
-						 FolderItem	*dest,
-						 MsgInfo	*msginfo);
-	gint    	(*move_msgs_with_dest)	(Folder		*folder,
-						 FolderItem	*dest,
-						 GSList		*msglist);
 	gint    	(*copy_msg)		(Folder		*folder,
 						 FolderItem	*dest,
 						 MsgInfo	*msginfo);
-	gint    	(*copy_msgs_with_dest)	(Folder		*folder,
-						 FolderItem	*dest,
-						 GSList		*msglist);
 	gint    	(*remove_msg)		(Folder		*folder,
 						 FolderItem	*item,
 						 gint		 num);
-	gint    	(*remove_msgs)		(Folder		*folder,
-						 FolderItem	*item,
-						 GSList		*msglist);
 	gint    	(*remove_all_msg)	(Folder		*folder,
 						 FolderItem	*item);
 	gboolean	(*is_msg_changed)	(Folder		*folder,
@@ -262,10 +250,10 @@ struct _FolderItem
 
 	time_t mtime;
 
-	gint new;
-	gint unread;
-	gint total;
-	gint unreadmarked;
+	gint new_msgs;
+	gint unread_msgs;
+	gint total_msgs;
+	gint unreadmarked_msgs;
 
 	gint last_num;
 
@@ -323,7 +311,7 @@ struct _FolderItemUpdateData
 };
 
 void	    folder_system_init		();
-void	    folder_register_class	(FolderClass	*class);
+void	    folder_register_class	(FolderClass	*klass);
 Folder     *folder_new			(FolderClass	*type,
 					 const gchar	*name,
 					 const gchar	*path);
@@ -363,14 +351,14 @@ FolderItem *folder_create_folder(FolderItem	*parent, const gchar *name);
 void   folder_update_op_count		(void);
 void   folder_func_to_all_folders	(FolderItemFunc function,
 					 gpointer data);
-void   folder_count_total_msgs	(guint		*new,
-				 guint		*unread,
-				 guint		*unreadmarked,
-				 guint		*total);
+void   folder_count_total_msgs	(guint		*new_msgs,
+				 guint		*unread_msgs,
+				 guint		*unreadmarked_msgs,
+				 guint		*total_msgs);
 
 Folder     *folder_find_from_path		(const gchar	*path);
 Folder     *folder_find_from_name		(const gchar	*name,
-						 FolderClass	*class);
+						 FolderClass	*klass);
 FolderItem *folder_find_item_from_path		(const gchar	*path);
 FolderClass *folder_get_class_from_string	(const gchar 	*str);
 gchar      *folder_get_identifier		(Folder		*folder);

@@ -431,10 +431,14 @@ smtp_session->from = g_strdup_printf("%s", ac_prefs->address);
 
 static gint send_recv_message(Session *session, const gchar *msg, gpointer data)
 {
-	SMTPSession *smtp_session = SMTP_SESSION(session);
-	SendProgressDialog *dialog = (SendProgressDialog *)data;
+	SMTPSession *smtp_session;
+	SendProgressDialog *dialog; 
 	gchar buf[BUFFSIZE];
-	gchar *state_str = NULL;
+	gchar *state_str;
+
+	dialog = (SendProgressDialog *) data;
+	state_str = NULL;
+	smtp_session = SMTP_SESSION(session);
 
 	switch (smtp_session->state) {
 	case SMTP_READY:
@@ -494,14 +498,19 @@ static gint send_send_data_progressive(Session *session, guint cur_len,
 	progress_dialog_set_label(dialog->dialog, buf);
 	progress_dialog_set_percentage
 		(dialog->dialog, (gfloat)cur_len / (gfloat)total_len);
-
 	return 0;
 }
 
 static gint send_send_data_finished(Session *session, guint len, gpointer data)
 {
-	send_send_data_progressive(session, len, len, data);
-
+	SendProgressDialog *dialog = (SendProgressDialog *)data;
+	gchar buf[BUFFSIZE];
+	
+	g_snprintf(buf, sizeof(buf), _("Sending message (%d / %d bytes)"),
+		   len, len);
+	progress_dialog_set_label(dialog->dialog, buf);
+	progress_dialog_set_percentage
+		(dialog->dialog, (gfloat)len / (gfloat)len);
 	return 0;
 }
 

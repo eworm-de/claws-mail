@@ -1,3 +1,107 @@
+2003-04-06 [thorsten]	0.8.11claws73
+
+	* src/mh.c
+		corrected implementation of mh_folder_destroy()
+
+2003-04-05 [christoph]	0.8.11claws72
+
+	* src/account.c
+	* src/folder.[ch]
+	* src/folderview.c
+	* src/imap.c
+	* src/inc.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/mbox_folder.c
+	* src/mh.c
+	* src/mimeview.h
+	* src/msgcache.[ch]
+	* src/news.c
+	* src/procmime.h
+	* src/procmsg.[ch]
+	* src/setup.c
+	* src/gtk/gtkutils.c
+		o rename structure field names class and new to klass and
+		  new_msgs, to allow including files in C++
+		o add 'extern "C"' block to some header files
+		o add MsgInfoList and MsgNumberList as alias for GSList for
+		  developers to know what type of list is expected
+
+	* src/plugins/image_viewer/plugin.c
+	* src/plugins/image_viewer/viewer.[ch]
+	* src/plugins/image_viewer/viewerprefs.[ch]
+		rename function names to prevent conflicts
+
+2003-04-05 [paul]	0.8.11claws71
+
+	* sync with 0.8.11cvs18
+		see ChangeLog 2003-04-03 and 2003-04-04
+
+2003-04-02 [christoph]	0.8.11claws70
+
+	* src/folder.[ch]
+	* src/imap.[ch]
+	* src/mbox_folder.[ch]
+	* src/mh.[ch]
+	* src/news.[ch]
+		o Make all virtual folder functions private
+		o remove unused folder code
+
+	* src/common/socket.[ch]
+	* src/summaryview.c
+		fix warnings
+
+2003-03-30 [alfons]	0.8.11claws69
+
+	* src/send_message.c
+		remove two debug traces and see if people still report
+		errors
+
+2003-03-30 [alfons]	0.8.11claws68
+
+	* src/send_message.c
+	* src/commons/session.c
+		add more debug traces
+
+2003-03-30 [christoph]	0.8.11claws67
+
+	* src/folder.c
+		change processing folder name from .processing to processing
+
+	* src/common/ssl.c
+		disable SSL certificate check because it causes Xlib error
+		when the child process want's to open an GTK window
+
+2003-03-30 [christoph]	0.8.11claws66
+
+	* src/folder.c
+		don't use default folder for processing folder item because
+		it can be a non local folder
+
+	(fixes bug reported by Stephen Lewis <slewis@paradise.net.nz>)
+
+2003-03-30 [alfons]	0.8.11claws65
+
+	* src/send_message.c
+		try fixing crashes when sending messages: my gcc 2.95.4 seems 
+		to generate bad code for 'send_send_data_progressive': When
+		called from 'send_send_data_finished', the 'data' pointer is
+		cleared just before the assignment to the dialog pointer
+
+2003-03-29 [christoph]	0.8.11claws64
+
+	* src/common/prefs.h
+	* src/plugins/image_viewer/Makefile.am
+	* src/plugins/image_viewer/plugin.c
+	* src/plugins/image_viewer/viewer.[ch]
+	* src/plugins/image_viewer/viewerprefs.[ch]	** NEW **
+		add PrefsPage for ImageViewer
+
+2003-03-28 [thorsten]	0.8.11claws63
+
+	* src/common/session.c
+		added some comments
+
 2003-03-28 [paul]	0.8.11claws62
 
 	* sync with 0.8.11cvs16
