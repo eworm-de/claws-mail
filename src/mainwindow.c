@@ -606,7 +606,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/_Code set/Cyrillic (KOI8-_R)"),
 	 CODESET_ACTION(C_KOI8_R)},
 	{N_("/_View/_Code set/Cyrillic (Windows-1251)"),
-	 CODESET_ACTION(C_CP1251)},
+	 CODESET_ACTION(C_WINDOWS_1251)},
 	CODESET_SEPARATOR,
 #endif
 	{N_("/_View/_Code set/Japanese (ISO-2022-_JP)"),

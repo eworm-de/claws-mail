@@ -1,3 +1,10 @@
+2002-05-02 [sergey]	0.7.5claws8
+
+	* src/mainwindow.c (mainwin_entries),
+	  src/prefs_common.c (prefs_send_create()),
+	  src/codeconv.c (locale_table):
+	  	use charset name "Windows-1251" instead of "CP1251".
+
 2002-05-02 [colin]	0.7.5claws7
 	
 	* src/compose.c

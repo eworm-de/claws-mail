@@ -1323,7 +1323,7 @@ static void prefs_send_create(void)
 #endif
 	SET_MENUITEM(_("Cyrillic (KOI8-R)"),		 CS_KOI8_R);
 #if HAVE_LIBJCONV
-	SET_MENUITEM(_("Cyrillic (Windows-1251)"),	 CS_CP1251);
+	SET_MENUITEM(_("Cyrillic (Windows-1251)"),	 CS_WINDOWS_1251);
 	SET_MENUITEM(_("Cyrillic (KOI8-U)"),		 CS_KOI8_U);
 #endif
 	SET_MENUITEM(_("Japanese (ISO-2022-JP)"),	 CS_ISO_2022_JP);

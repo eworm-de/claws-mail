@@ -504,7 +504,7 @@ static const struct {
 	{"zh_TW"	, C_BIG5},
 
 	{"ru_RU.KOI8-R"	, C_KOI8_R},
-	{"ru_RU.CP1251"	, C_CP1251},
+	{"ru_RU.CP1251"	, C_WINDOWS_1251},
 
 	{"en_US"	, C_ISO_8859_1},
 	{"ca_ES"	, C_ISO_8859_1},
