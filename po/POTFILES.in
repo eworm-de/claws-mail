@@ -23,7 +23,9 @@ src/editjpilot.c
 src/editldap.c
 src/editldap_basedn.c
 src/editvcard.c
+src/exphtmldlg.c
 src/export.c
+src/exporthtml.c
 src/filesel.c
 src/filter.c
 src/folder.c
@@ -105,3 +107,4 @@ src/utils.c
 src/uuencode.c
 src/vcard.c
 src/xml.c
+src/xmlprops.c
