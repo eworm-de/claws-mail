@@ -6,9 +6,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed    \n"
-"POT-Creation-Date: 2003-02-06 14:53+0100\n"
+"POT-Creation-Date: 2003-02-12 01:28+0100\n"
 "PO-Revision-Date: 2002-03-11 16:15+0100\n"
-"Last-Translator: Thorsten Maerz <torte@netztorte.de>\n"
+"Last-Translator: Jens Oberender <j.obi@troja.net>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
@@ -174,11 +174,11 @@ msgstr "Wollen Sie diesen Account wirklich löschen?"
 #: src/account.c:737 src/addressbook.c:989 src/addressbook.c:2162
 #: src/compose.c:2798 src/compose.c:3280 src/compose.c:5727 src/compose.c:6033
 #: src/exphtmldlg.c:158 src/folderview.c:2170 src/folderview.c:2229
-#: src/folderview.c:2321 src/folderview.c:2456 src/folderview.c:2493
+#: src/folderview.c:2321 src/folderview.c:2456 src/folderview.c:2495
 #: src/inc.c:167 src/inc.c:298 src/mainwindow.c:1346 src/message_search.c:198
 #: src/prefs_actions.c:869 src/prefs_customheader.c:543
 #: src/prefs_filtering.c:1063 src/prefs_filtering.c:1491
-#: src/prefs_matcher.c:1663 src/prefs_scoring.c:632 src/prefs_scoring.c:769
+#: src/prefs_matcher.c:1664 src/prefs_scoring.c:632 src/prefs_scoring.c:769
 #: src/prefs_template.c:544 src/ssl_manager.c:271 src/summary_search.c:324
 #: src/summaryview.c:912 src/summaryview.c:1356 src/summaryview.c:1400
 #: src/summaryview.c:1443 src/summaryview.c:1467 src/summaryview.c:1499
@@ -189,7 +189,7 @@ msgstr "Ja"
 
 #: src/account.c:737 src/compose.c:3280 src/compose.c:5727
 #: src/folderview.c:2170 src/folderview.c:2229 src/folderview.c:2321
-#: src/folderview.c:2456 src/folderview.c:2493 src/ssl_manager.c:271
+#: src/folderview.c:2456 src/folderview.c:2495 src/ssl_manager.c:271
 msgid "+No"
 msgstr "+Nein"
 
@@ -416,19 +416,16 @@ msgid "Bad arguments"
 msgstr "Falsches Argument"
 
 #: src/addressbook.c:429 src/importldif.c:121
-#, fuzzy
 msgid "File not specified"
-msgstr "Nicht angegeben."
+msgstr "Datei nicht angegeben"
 
 #: src/addressbook.c:430 src/importldif.c:122
-#, fuzzy
 msgid "Error opening file"
-msgstr "Fehler beim importieren der Pine Datei"
+msgstr "Fehler beim öffnen Datei"
 
 #: src/addressbook.c:431 src/importldif.c:123
-#, fuzzy
 msgid "Error reading file"
-msgstr "Fehler beim lesen der LDIF Felder."
+msgstr "Fehler beim lesen der Datei"
 
 #: src/addressbook.c:432 src/importldif.c:124
 msgid "End of file encountered"
@@ -439,43 +436,36 @@ msgid "Error allocating memory"
 msgstr "Fehler bei Speicherbelegung"
 
 #: src/addressbook.c:434 src/importldif.c:126
-#, fuzzy
 msgid "Bad file format"
-msgstr "Datumsformat"
+msgstr "Schlechtes Dateiformat"
 
 #: src/addressbook.c:435 src/importldif.c:127
-#, fuzzy
 msgid "Error writing to file"
-msgstr "Fehler beim importieren der MUTT Datei"
+msgstr "Fehler beim schreiben der Datei"
 
 #: src/addressbook.c:436 src/importldif.c:128
-#, fuzzy
 msgid "Error opening directory"
-msgstr "lokales Mailboxverzeichnis"
+msgstr "Fehler beim öffnen des Verzeichnisses"
 
 #: src/addressbook.c:437 src/importldif.c:129
-#, fuzzy
 msgid "No path specified"
-msgstr "Nicht angegeben."
+msgstr "Kein Pfad angegeben"
 
 #: src/addressbook.c:447
-#, fuzzy
 msgid "Error connecting to LDAP server"
-msgstr "Verbinde mit POP3-Server: %s ..."
+msgstr "Fehler beim Verbinden mit dem LDAP Server"
 
 #: src/addressbook.c:448
 msgid "Error initializing LDAP"
 msgstr "Fehler beim LDAP Start"
 
 #: src/addressbook.c:449
-#, fuzzy
 msgid "Error binding to LDAP server"
-msgstr "Keine Verbindung zu LDAP SErver"
+msgstr "Fehler beim Binden an den LDAP Server"
 
 #: src/addressbook.c:450
-#, fuzzy
 msgid "Error searching LDAP database"
-msgstr "Fehler beim lesen der LDIF Felder."
+msgstr "Fehler beim Suchen in der LDAP Datenbank"
 
 #: src/addressbook.c:451
 msgid "Timeout performing LDAP operation"
@@ -548,7 +538,7 @@ msgstr "Adresse(n) wirklich löschen?"
 #: src/compose.c:6033 src/exphtmldlg.c:158 src/inc.c:167 src/inc.c:298
 #: src/mainwindow.c:1346 src/message_search.c:198 src/prefs_actions.c:869
 #: src/prefs_customheader.c:543 src/prefs_filtering.c:1063
-#: src/prefs_filtering.c:1491 src/prefs_matcher.c:1663 src/prefs_scoring.c:632
+#: src/prefs_filtering.c:1491 src/prefs_matcher.c:1664 src/prefs_scoring.c:632
 #: src/prefs_scoring.c:769 src/prefs_template.c:544 src/summary_search.c:324
 #: src/summaryview.c:912 src/summaryview.c:1356 src/summaryview.c:1400
 #: src/summaryview.c:1443 src/summaryview.c:1467 src/summaryview.c:1499
@@ -793,31 +783,31 @@ msgstr "Zeige Log"
 msgid "Show this message next time"
 msgstr "Zeige diese Nachricht das nächste mal an"
 
-#: src/colorlabel.c:44
+#: src/colorlabel.c:45
 msgid "Orange"
 msgstr "Orange"
 
-#: src/colorlabel.c:45
+#: src/colorlabel.c:46
 msgid "Red"
 msgstr "Rot"
 
-#: src/colorlabel.c:46
+#: src/colorlabel.c:47
 msgid "Pink"
 msgstr "Pink"
 
-#: src/colorlabel.c:47
+#: src/colorlabel.c:48
 msgid "Sky blue"
 msgstr "Himmelblau"
 
-#: src/colorlabel.c:48
+#: src/colorlabel.c:49
 msgid "Blue"
 msgstr "Blau"
 
-#: src/colorlabel.c:49
+#: src/colorlabel.c:50
 msgid "Green"
 msgstr "Grün"
 
-#: src/colorlabel.c:50
+#: src/colorlabel.c:51
 msgid "Brown"
 msgstr "Braun"
 
@@ -825,7 +815,7 @@ msgstr "Braun"
 #. * index of label_colors[] as data parameter. for the None color we
 #. * pass an invalid (high) value. also we attach a data pointer so we
 #. * can always get back the SummaryView pointer.
-#: src/colorlabel.c:280 src/compose.c:4925 src/exphtmldlg.c:450
+#: src/colorlabel.c:276 src/compose.c:4925 src/exphtmldlg.c:450
 #: src/gtkaspell.c:1421 src/gtkaspell.c:2021 src/summaryview.c:4376
 msgid "None"
 msgstr "Keine"
@@ -1349,11 +1339,12 @@ msgstr "Konnte Nachricht für das Senden nicht zwischenspeichern"
 
 #: src/compose.c:2823
 msgid ""
-"The message was queue but could not be send.\n"
-"Use \"Send queued messages\" from the main window to send it"
+"The message was queued but could not be sent.\n"
+"Use \"Send queued messages\" from the main window to retry."
 msgstr ""
-"Die Nachricht wurde zwischengespeichert aber nicht.\n"
-"gesendet. Benutzen Sie \"Nachricht/Sende wartende Nachrichten\"."
+"Die Nachricht wurde zwischengespeichert aber konnte nicht\n"
+"gesendet werden. Benutzen Sie \"Sende wartende Nachrichten\"\n"
+"aus dem Hauptmenu zum wiederholen."
 
 #: src/compose.c:2904 src/procmsg.c:1383
 #, c-format
@@ -1392,13 +1383,14 @@ msgstr ""
 "verbunden ist."
 
 #: src/compose.c:3276
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Can't convert the character encoding of the message from\n"
 "%s to %s.\n"
 "Send it anyway?"
 msgstr ""
-"Kann den Zeichensatz der Nachricht nicht konvertieren.\n"
+"Kann den Zeichensatz der Nachricht nicht konvertieren von\n"
+"%s nach %s.\n"
 "Trotzdem senden?"
 
 #: src/compose.c:3534
@@ -2276,34 +2268,34 @@ msgstr "Newsgroup `%s' wirklich löschen?"
 msgid "Delete newsgroup"
 msgstr "Newsgroup löschen"
 
-#: src/folderview.c:2491
+#: src/folderview.c:2493
 #, c-format
 msgid "Really delete news account `%s'?"
 msgstr "Newsaccount `%s' wirklich löschen?"
 
-#: src/folderview.c:2492
+#: src/folderview.c:2494
 msgid "Delete news account"
 msgstr "Newsaccount löschen"
 
-#: src/folderview.c:2588
+#: src/folderview.c:2591
 #, c-format
 msgid "Moving %s to %s..."
 msgstr "Verschiebe %s nach %s..."
 
-#: src/folderview.c:2618
+#: src/folderview.c:2621
 msgid "Source and destination are the same."
 msgstr "Ursprung und Ziel sind das Selbe."
 
-#: src/folderview.c:2621
+#: src/folderview.c:2624
 msgid "Can't move a folder to one of its children."
 msgstr "Eine Ablage kann nich in eines ihrer Kinder verschoben werden."
 
-#: src/folderview.c:2624
+#: src/folderview.c:2627
 msgid "Folder moving cannot be done between different mailboxes."
 msgstr ""
 "Ablagen können nicht zwischen verschiedenen Mailboxen verschoben werden"
 
-#: src/folderview.c:2627
+#: src/folderview.c:2630
 msgid "Move failed!"
 msgstr "Verschieben fehlgeschlagen!"
 
@@ -2369,9 +2361,8 @@ msgid "Abcdef"
 msgstr "Abcdef"
 
 #: src/gtk/pluginwindow.c:114
-#, fuzzy
 msgid "Select Plugin to load"
-msgstr "Ausgewähltes Download"
+msgstr "Wähle zu ladendes Plugin"
 
 #: src/gtk/pluginwindow.c:150 src/gtk/pluginwindow.c:176
 msgid "Plugins"
@@ -2390,9 +2381,8 @@ msgid "Unload Plugin"
 msgstr "Plugin entladen"
 
 #: src/gtk/prefswindow.c:184
-#, fuzzy
 msgid "Preferences"
-msgstr "Referenzen"
+msgstr "Einstellungen"
 
 #: src/gtk/prefswindow.c:260 src/prefs_gtk.c:381
 msgid "Apply"
@@ -3259,9 +3249,8 @@ msgid "/_View/_Sort/by _mark"
 msgstr "/_Ansicht/_Sortieren/nach _Markierung"
 
 #: src/mainwindow.c:466
-#, fuzzy
 msgid "/_View/_Sort/by _status"
-msgstr "/_Ansicht/_Sortieren/nach _Datum"
+msgstr "/_Ansicht/_Sortieren/nach _Status"
 
 #: src/mainwindow.c:467
 msgid "/_View/_Sort/by a_ttachment"
@@ -4217,9 +4206,8 @@ msgid "This server requires authentication"
 msgstr "Dieser Server benötigt Beglaubigung"
 
 #: src/prefs_account.c:941
-#, fuzzy
 msgid "Authenticate on connect"
-msgstr "Beglaubigungsmethode"
+msgstr "Beglaubigung beim Verbinden"
 
 #: src/prefs_account.c:986
 msgid "News server"
@@ -4369,7 +4357,7 @@ msgid "Automatically set the following addresses"
 msgstr "Setze automatisch folgende Adressen"
 
 #. to
-#: src/prefs_account.c:1466 src/prefs_matcher.c:143 src/prefs_matcher.c:1706
+#: src/prefs_account.c:1466 src/prefs_matcher.c:143 src/prefs_matcher.c:1707
 #: src/quote_fmt.c:49
 msgid "Cc"
 msgstr "Cc"
@@ -4697,79 +4685,64 @@ msgid "MENU NAME:"
 msgstr "MENÜ NAME"
 
 #: src/prefs_actions.c:1812
-#, fuzzy
 msgid "Use / in menu name to make submenus."
-msgstr "   Verwende / in Menu-Name um Untermenus zu erzeugen."
+msgstr "Verwende / im Menu-Name um Untermenus zu erzeugen."
 
 #: src/prefs_actions.c:1814
 msgid "COMMAND LINE:"
 msgstr "KOMMANDOZEILE:"
 
 #: src/prefs_actions.c:1815
-#, fuzzy
 msgid "Begin with:"
-msgstr "* beginnt mit:"
+msgstr "Beginnt mit:"
 
 #: src/prefs_actions.c:1816
-#, fuzzy
 msgid "to send message body or selection to command"
-msgstr "     | um Nachrichtenkörper oder Auswahl and Commando zu senden"
+msgstr "um Nachrichtenkörper oder Auswahl and Commando zu senden"
 
 #: src/prefs_actions.c:1817
-#, fuzzy
 msgid "to send user provided text to command"
-msgstr "     > um Texteingabe an das Commando zu senden"
+msgstr "um Texteingabe an das Commando zu senden"
 
 #: src/prefs_actions.c:1818
-#, fuzzy
 msgid "to send user provided hidden text to command"
-msgstr "     * um versteckte Texteingabe an das Commando zu senden"
+msgstr "um versteckte Texteingabe an das Commando zu senden"
 
 #: src/prefs_actions.c:1819
-#, fuzzy
 msgid "End with:"
-msgstr "* endet mit:"
+msgstr "endet mit:"
 
 #: src/prefs_actions.c:1820
-#, fuzzy
 msgid "to replace message body or selection with command output"
-msgstr ""
-"     | um den Nachrichtenkörper oder die Auswahl durch die Ausgabe des "
+msgstr "um den Nachrichtenkörper oder die Auswahl durch die Ausgabe des "
 "Commandos zu ersetzen"
 
 #: src/prefs_actions.c:1821
-#, fuzzy
 msgid "to insert command's output without replacing old text"
-msgstr ""
-"     > um die Ausgabe des Commandos einzufügen ohne den alten Text zu "
+msgstr "um die Ausgabe des Commandos einzufügen ohne den alten Text zu "
 "ersetzen"
 
 #: src/prefs_actions.c:1822
-#, fuzzy
 msgid "to run command asynchronously"
-msgstr "     & um das Commando asynchron laufen zu lassen"
+msgstr "um das Commando asynchron laufen zu lassen"
 
 #: src/prefs_actions.c:1823
-#, fuzzy
 msgid "Use:"
-msgstr "* Verwende:"
+msgstr "Verwende:"
 
 #: src/prefs_actions.c:1824
-#, fuzzy
 msgid "for message file name"
-msgstr "     %f für den Dateinamen der Nachricht"
+msgstr "für den Dateinamen der Nachricht"
 
 #: src/prefs_actions.c:1825
-#, fuzzy
 msgid "for the list of the file names of selected messages"
-msgstr "     %F für die Liste der Dateinamen der ausgewählten Nachrichten"
+msgstr "für die Liste der Dateinamen der ausgewählten Nachrichten"
 
 #: src/prefs_actions.c:1826
-#, fuzzy
 msgid "for the selected message MIME part."
-msgstr "     %p für den ausgewählten MIME-Teil der Nachricht."
+msgstr "für den ausgewählten MIME-Teil der Nachricht."
 
-#: src/prefs_actions.c:1834 src/prefs_matcher.c:1721 src/quote_fmt.c:75
+#: src/prefs_actions.c:1834 src/prefs_matcher.c:1722 src/quote_fmt.c:75
 msgid "Description of symbols"
 msgstr "Beschreibung der Symbole"
 
@@ -5217,7 +5190,7 @@ msgstr "Stelle Absender mittels Adressbuch dar"
 
 #: src/prefs_common.c:2329
 msgid "Thread using subject in addition to standard headers"
-msgstr ""
+msgstr "Threads mit Unterstützung des Betreffs zusätzlich zum Standardheader"
 
 #: src/prefs_common.c:2337 src/prefs_common.c:3270 src/prefs_common.c:3308
 msgid "Date format"
@@ -5785,7 +5758,7 @@ msgstr "Lösche Regel"
 msgid "Do you really want to delete this rule?"
 msgstr "Wollen Sie wirklich diese Regel löschen?"
 
-#: src/prefs_filtering.c:1489 src/prefs_matcher.c:1661 src/prefs_scoring.c:767
+#: src/prefs_filtering.c:1489 src/prefs_matcher.c:1662 src/prefs_scoring.c:767
 msgid "Entry not saved"
 msgstr "Eintrag nicht gespeichert"
 
@@ -5850,21 +5823,21 @@ msgid "All messages"
 msgstr "Alle Nachrichten"
 
 #. S_COL_MIME
-#: src/prefs_matcher.c:142 src/prefs_matcher.c:1703
+#: src/prefs_matcher.c:142 src/prefs_matcher.c:1704
 #: src/prefs_summary_column.c:70 src/quote_fmt.c:47
 #: src/selective_download.c:806 src/summaryview.c:465 src/summaryview.c:630
 msgid "Subject"
 msgstr "Betreff"
 
 #. S_COL_SUBJECT
-#: src/prefs_matcher.c:143 src/prefs_matcher.c:1704
+#: src/prefs_matcher.c:143 src/prefs_matcher.c:1705
 #: src/prefs_summary_column.c:71 src/quote_fmt.c:42
 #: src/selective_download.c:803 src/summaryview.c:466 src/summaryview.c:634
 msgid "From"
 msgstr "Von"
 
 #. subject
-#: src/prefs_matcher.c:143 src/prefs_matcher.c:1705 src/quote_fmt.c:48
+#: src/prefs_matcher.c:143 src/prefs_matcher.c:1706 src/quote_fmt.c:48
 #: src/summaryview.c:638
 msgid "To"
 msgstr "An:"
@@ -5874,7 +5847,7 @@ msgid "To or Cc"
 msgstr "To oder Cc"
 
 #. cc
-#: src/prefs_matcher.c:144 src/prefs_matcher.c:1709 src/quote_fmt.c:50
+#: src/prefs_matcher.c:144 src/prefs_matcher.c:1710 src/quote_fmt.c:50
 msgid "Newsgroups"
 msgstr "Newsgruppen"
 
@@ -5883,7 +5856,7 @@ msgid "In reply to"
 msgstr "In Antwort auf"
 
 #. newsgroups
-#: src/prefs_matcher.c:144 src/prefs_matcher.c:1710 src/quote_fmt.c:51
+#: src/prefs_matcher.c:144 src/prefs_matcher.c:1711 src/quote_fmt.c:51
 msgid "References"
 msgstr "Referenzen"
 
@@ -6021,7 +5994,7 @@ msgstr "Aktuelle Bedingungsregeln"
 msgid "Value is not set."
 msgstr "Wert ist nicht gesetzt."
 
-#: src/prefs_matcher.c:1662 src/prefs_scoring.c:768
+#: src/prefs_matcher.c:1663 src/prefs_scoring.c:768
 msgid ""
 "The entry was not saved\n"
 "Have you really finished?"
@@ -6030,29 +6003,29 @@ msgstr ""
 "Sind Sie wirklich fertig?"
 
 #. S_COL_FROM
-#: src/prefs_matcher.c:1707 src/prefs_summary_column.c:72 src/quote_fmt.c:41
+#: src/prefs_matcher.c:1708 src/prefs_summary_column.c:72 src/quote_fmt.c:41
 #: src/selective_download.c:809 src/summaryview.c:467
 msgid "Date"
 msgstr "Datum"
 
 #. references
-#: src/prefs_matcher.c:1708 src/quote_fmt.c:52
+#: src/prefs_matcher.c:1709 src/quote_fmt.c:52
 msgid "Message-ID"
 msgstr "Nachrichten-ID"
 
-#: src/prefs_matcher.c:1711
+#: src/prefs_matcher.c:1712
 msgid "Filename - should not be modified"
 msgstr "Dateiname - sollte nicht geändert werden"
 
-#: src/prefs_matcher.c:1712
+#: src/prefs_matcher.c:1713
 msgid "new line"
 msgstr "Neue Zeile"
 
-#: src/prefs_matcher.c:1713
+#: src/prefs_matcher.c:1714
 msgid "escape character for quotes"
 msgstr "Escape-Zeichen für Zitate"
 
-#: src/prefs_matcher.c:1714
+#: src/prefs_matcher.c:1715
 msgid "quote character"
 msgstr "Zitatzeichen"
 
@@ -7376,4 +7349,3 @@ msgstr "Zeilenumbruch"
 #: src/toolbar.c:2054
 msgid "Message already removed from folder."
 msgstr "Nachricht schon aus der Ablage gelöscht"
-
