@@ -167,7 +167,7 @@ void log_window_clear(GtkWidget *text)
 	gchar *str;
 	
 	length = gtk_text_get_length (GTK_TEXT (text));
-	debug_print(_("Log window length: %u"), length);
+	debug_print(_("Log window length: %u\n"), length);
 	
 	if (length > prefs_common.loglength) {
 	        /* find the end of the first line after the cut off
@@ -184,7 +184,7 @@ void log_window_clear(GtkWidget *text)
 		/* erase the text */
 		gtk_text_set_point (GTK_TEXT (text), 0);
 		if (!gtk_text_forward_delete (GTK_TEXT (text), point + 1))
-		        debug_print (_("Error clearing log"));
+		        debug_print (_("Error clearing log\n"));
 		gtk_text_thaw (GTK_TEXT (text));
 		gtk_text_set_point (GTK_TEXT (text),
 				    gtk_text_get_length (GTK_TEXT (text)));

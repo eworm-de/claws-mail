@@ -947,6 +947,7 @@ static GSList *news_delete_old_articles(GSList *alist, FolderItem *item,
 
 		cur = next;
 	}
+	debug_print(_("done.\n"));
 
 	return alist;
 }
@@ -1043,7 +1044,7 @@ GSList *news_get_num_list(Folder *folder, FolderItem *item)
 #define READ_TO_LISTEND(hdr) \
 	while (!(buf[0] == '.' && buf[1] == '\r')) { \
 		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) < 0) { \
-			log_warning(_("error occurred while getting " hdr ".\n")); \
+			log_warning(_("error occurred while getting %s.\n"), hdr); \
 			return msginfo; \
 		} \
 	}
