@@ -1,3 +1,15 @@
+2002-08-20 [oliver]	0.8.1claws84
+	
+	* src/mainwindow.c
+		remove toolbar_create_popups
+	* src/toolbar.[ch]
+		o remove toolbar_create_popups
+		o fix toolbar_set_sensitive 
+		  (Bug reports #596834 and #596832)	
+	* src/prefs_toolbar.c
+		o add "Set default" button
+		o align label and text + combo widgets
+
 2002-08-20 [hoa]	0.8.1claws84
 
 	* src/imap.c

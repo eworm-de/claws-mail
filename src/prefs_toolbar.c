@@ -66,6 +66,7 @@ static struct _Toolbar {
 	GtkWidget *combo_entry;
 	GtkWidget *combo_list;
 	GtkWidget *label_icon_text;
+	GtkWidget *label_action_sel;
 	GtkWidget *entry_icon_text;
 	GtkWidget *combo_syl_action;
 	GtkWidget *combo_syl_list;
@@ -133,6 +134,55 @@ void prefs_toolbar_close(void)
 	gtk_widget_hide(mtoolbar.window);
 }
 
+static void prefs_toolbar_set_displayed(void)
+{
+	GdkPixmap *xpm;
+	GdkBitmap *xpmmask;
+	gchar *activ[4];
+	GSList *cur;
+	GtkCList *clist_set = GTK_CLIST(mtoolbar.clist_set);
+
+	gtk_clist_clear(clist_set);
+	gtk_clist_freeze(clist_set);
+
+	/* set currently active toolbar entries */
+	for (cur = toolbar_list; cur != NULL; cur = cur->next) {
+		ToolbarItem *item = (ToolbarItem*) cur->data;
+	
+		if (g_strcasecmp(item->file, SEPARATOR) != 0) {
+			gint row_num;
+			StockPixmap icon = stock_pixmap_get_icon(item->file);
+			
+			stock_pixmap_gdk(mtoolbar.clist_set, icon,
+					  &xpm, &xpmmask);
+			activ[0] = g_strdup("");
+			activ[1] = g_strdup(item->file);
+			activ[2] = g_strdup(item->text);
+			activ[3] = g_strdup(toolbar_ret_descr_from_val(item->action));
+			row_num  = gtk_clist_append(clist_set, activ);
+			gtk_clist_set_pixmap(clist_set, 
+					      row_num, 0, xpm, xpmmask);
+
+		} else {
+			activ[0] = g_strdup(SEPARATOR_PIXMAP);
+			activ[1] = g_strdup(item->file);
+			activ[2] = g_strdup("");
+			activ[3] = g_strdup("");
+			gtk_clist_append(clist_set, activ);
+		}
+
+		g_free(activ[0]);
+		g_free(activ[1]);
+		g_free(activ[2]);
+		g_free(activ[3]);
+	}
+
+	gtk_clist_thaw(clist_set);
+	gtk_clist_columns_autosize(clist_set);
+	gtk_clist_set_row_height(clist_set, CELL_SPACING);
+	gtk_clist_select_row(clist_set, 0, 0);
+}
+
 static void prefs_toolbar_populate(void)
 {
 	gint i;
@@ -140,18 +190,13 @@ static void prefs_toolbar_populate(void)
 	GList *combo_action_items;
 	GList *syl_actions = NULL;
 	GtkCList *clist_icons = GTK_CLIST(mtoolbar.clist_icons);
-	GtkCList *clist_set   = GTK_CLIST(mtoolbar.clist_set);
 	GdkPixmap *xpm;
 	GdkBitmap *xpmmask;
 	gchar *avail[2];
-	gchar *activ[5] = {0};
 	gchar *act;
 	
 	gtk_clist_clear(clist_icons);
-	gtk_clist_clear(clist_set);
-
 	gtk_clist_freeze(clist_icons);
-	gtk_clist_freeze(clist_set);
 
 	/* set available icons */
 	avail[0] = g_strdup(SEPARATOR_PIXMAP);
@@ -195,49 +240,12 @@ static void prefs_toolbar_populate(void)
 		g_free(avail[1]);
  	}
 
-	/* set currently active toolbar entries */
-	for (cur = toolbar_list; cur != NULL; cur = cur->next) {
-		ToolbarItem *item = (ToolbarItem*) cur->data;
-	
-		if (g_strcasecmp(item->file, SEPARATOR) != 0) {
-			gint row_num;
-			StockPixmap icon = stock_pixmap_get_icon(item->file);
-			
-			stock_pixmap_gdk(mtoolbar.clist_set, icon,
-					  &xpm, &xpmmask);
-			activ[0] = g_strdup("");
-			activ[1] = g_strdup(item->file);
-			activ[2] = g_strdup(item->text);
-			activ[3] = g_strdup(toolbar_ret_descr_from_val(item->action));
-			row_num  = gtk_clist_append(clist_set, activ);
-			gtk_clist_set_pixmap(clist_set, 
-					      row_num, 0, xpm, xpmmask);
-
-		} else {
-			activ[0] = g_strdup(SEPARATOR_PIXMAP);
-			activ[1] = g_strdup(item->file);
-			activ[2] = g_strdup("");
-			activ[3] = g_strdup("");
-			gtk_clist_append(clist_set, activ);
-		}
-
-		g_free(activ[0]);
-		g_free(activ[1]);
-		g_free(activ[2]);
-		g_free(activ[3]);
-	}
-
 	gtk_clist_thaw(clist_icons);
-	gtk_clist_thaw(clist_set);
-
 	gtk_clist_columns_autosize(clist_icons);
-	gtk_clist_columns_autosize(clist_set);
-
 	gtk_clist_set_row_height(clist_icons, CELL_SPACING);
-	gtk_clist_set_row_height(clist_set, CELL_SPACING);
-
 	gtk_clist_select_row(clist_icons, 0, 0);
-	gtk_clist_select_row(clist_set, 0, 0);
+
+	prefs_toolbar_set_displayed();
 
 	toolbar_clear_list();
 }
@@ -298,8 +306,8 @@ static void prefs_toolbar_save(void)
 			
 		} while(gtk_clist_get_text(clist, row, 3, &entry));
 	}
+
 	toolbar_save_config_file();
-	toolbar_update();
 	main_window_reflect_prefs_all_real(TRUE);
 }
 
@@ -311,9 +319,15 @@ static void prefs_toolbar_ok(void)
 
 static void prefs_toolbar_cancel(void)
 {
-	toolbar_update();
 	main_window_reflect_prefs_all_real(TRUE);
 	prefs_toolbar_close();
+}
+
+static void prefs_toolbar_default(void)
+{
+	toolbar_clear_list();
+	toolbar_set_default_toolbar();
+	prefs_toolbar_set_displayed();
 }
 
 static void get_action_name(gchar *entry, gchar **menu)
@@ -344,10 +358,12 @@ static gint prefs_toolbar_register(void)
 
 	if (clist_icons->rows == 0) return -1; 
 
-	if (clist_icons->selection)
+	if (clist_icons->selection) {
 		if (clist_icons->selection->data) 
 			row_icons = GPOINTER_TO_INT(clist_icons->selection->data);
-	
+	} else
+		return -1;
+
 	gtk_clist_get_text(clist_icons, row_icons, 1, &item[1]);
 	item[3] = g_strdup(gtk_entry_get_text(GTK_ENTRY(mtoolbar.combo_entry)));
 	
@@ -408,14 +424,18 @@ static gint prefs_toolbar_substitute(void)
 	/* no rows or nothing selected */
 	if ((clist_set->rows == 0) || (clist_set->selection == 0)) return -1; 
 
-	if (clist_icons->selection)
+	if (clist_icons->selection) {
 		if (clist_icons->selection->data) 
 			row_icons = GPOINTER_TO_INT(clist_icons->selection->data);
-
-	if (clist_set->selection)
+	} else
+		return -1;
+	
+	if (clist_set->selection) {
 		if (clist_set->selection->data) 
 			row_set = GPOINTER_TO_INT(clist_set->selection->data);
-
+	} else
+		return -1;
+	
 	gtk_clist_get_text(clist_icons, row_icons, 1, &item[1]);
 	gtk_clist_get_text(clist_set, row_set, 3, &ac_set);
 	item[3] = g_strdup(gtk_entry_get_text(GTK_ENTRY(mtoolbar.combo_entry)));
@@ -468,10 +488,12 @@ static gint prefs_toolbar_delete(void)
 	gint row_set = 0;
 
 	if (clist_set->rows == 0) return -1; 
-	if (clist_set->selection)
+	if (clist_set->selection) {
 		if (clist_set->selection->data) 
 			row_set = GPOINTER_TO_INT(clist_set->selection->data);
-
+	} else
+		return -1;
+	
 	if (clist_set->row_list != NULL) {
 			
 		row_set = GPOINTER_TO_INT(clist_set->selection->data);
@@ -588,12 +610,15 @@ static void prefs_toolbar_selection_changed(GtkList *list,
 		if (prefs_common.actions_list == NULL) {
 		    gtk_widget_set_sensitive(mtoolbar.combo_syl_action, FALSE);
 		}
-		    
+
 	} else {
 		gtk_widget_hide(mtoolbar.combo_syl_action);
 		gtk_widget_show(mtoolbar.entry_icon_text);
 		gtk_label_set_text(GTK_LABEL(mtoolbar.label_icon_text), _("Toolbar text"));
 	}
+
+	gtk_misc_set_alignment(GTK_MISC(mtoolbar.label_icon_text), 1, 0.5);
+	gtk_widget_show(mtoolbar.label_icon_text);
 }
 
 static gint prefs_toolbar_key_pressed(GtkWidget *widget,
@@ -620,13 +645,13 @@ static void prefs_toolbar_create(void)
 	GtkWidget *subst_btn;
 	GtkWidget *del_btn;
 	GtkWidget *vbox_frame;
+	GtkWidget *table;
 	GtkWidget *scrolledwindow_clist_icon;
 	GtkWidget *clist_icons;
-	GtkWidget *hbox_icon_text;
 	GtkWidget *label_icon_text;
 	GtkWidget *entry_icon_text;
-	GtkWidget *hbox_action;
 	GtkWidget *label_action_sel;
+	GtkWidget *empty_label;
 	GtkWidget *combo_action;
 	GtkWidget *combo_entry;
 	GtkWidget *combo_list;
@@ -641,10 +666,11 @@ static void prefs_toolbar_create(void)
 	GtkWidget *btn_vbox;
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
-
+	
 	GtkWidget *confirm_area;
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
+	GtkWidget *default_btn;
 
 	gchar *titles[N_DISPLAYED_ITEMS_COLS];
 
@@ -694,40 +720,60 @@ static void prefs_toolbar_create(void)
 	gtk_clist_set_column_width(GTK_CLIST(clist_icons), 1, 200);
 	gtk_clist_column_titles_hide(GTK_CLIST(clist_icons));
 	gtk_widget_set_usize(clist_icons, 225, 108); 
+
+	table = gtk_table_new (2, 3, FALSE);
+	gtk_container_add (GTK_CONTAINER (vbox_frame), table);
+	gtk_container_set_border_width (GTK_CONTAINER (table), 8);
+	gtk_table_set_row_spacings (GTK_TABLE (table), 8);
+	gtk_table_set_col_spacings (GTK_TABLE (table), 8);
 	
 	/* icon description */
-	hbox_icon_text = gtk_hbox_new(FALSE, 5);
-	gtk_container_add(GTK_CONTAINER(vbox_frame), hbox_icon_text);
-	
 	label_icon_text = gtk_label_new("");
-	gtk_box_pack_start(GTK_BOX(hbox_icon_text), label_icon_text, FALSE, FALSE, 5);
-	
+	gtk_misc_set_alignment(GTK_MISC(label_icon_text), 0, 0.5);
+	gtk_widget_show (label_icon_text);
+	gtk_table_attach (GTK_TABLE (table), label_icon_text, 0, 1, 0, 1,
+			  (GtkAttachOptions) (GTK_FILL),
+			  (GtkAttachOptions) (0), 0, 0);
+
 	entry_icon_text = gtk_entry_new();
-	gtk_box_pack_start(GTK_BOX(hbox_icon_text), entry_icon_text, FALSE, FALSE, 0);
+	gtk_table_attach (GTK_TABLE (table), entry_icon_text, 1, 2, 0, 1,
+			  (GtkAttachOptions) (/*GTK_EXPAND | */GTK_FILL),
+			  (GtkAttachOptions) (0), 0, 0);
 
-	/* Sylpheed Action Combo Box */	
+	/* Sylpheed Action Combo Box */
 	combo_syl_action = gtk_combo_new();
-	gtk_box_pack_start(GTK_BOX(hbox_icon_text), combo_syl_action, FALSE, FALSE, 0);
-
 	combo_syl_list = GTK_COMBO(combo_syl_action)->list;
 	combo_syl_entry = GTK_COMBO(combo_syl_action)->entry;
 	gtk_entry_set_editable(GTK_ENTRY(combo_syl_entry), FALSE);
+	gtk_table_attach (GTK_TABLE (table), combo_syl_action, 1, 2, 0, 1,
+			  (GtkAttachOptions) (/*GTK_EXPAND | */GTK_FILL),
+			  (GtkAttachOptions) (0), 0, 0);
 
+	empty_label = gtk_label_new("");
+	gtk_table_attach (GTK_TABLE (table), empty_label, 2, 3, 0, 1,
+			  (GtkAttachOptions) (GTK_EXPAND),
+			  (GtkAttachOptions) (0), 0, 0);
 	/* available actions */
-	hbox_action = gtk_hbox_new(FALSE, 5);
-	gtk_container_add(GTK_CONTAINER(vbox_frame), hbox_action);
-	gtk_container_set_border_width(GTK_CONTAINER(hbox_action), 5);
-	
 	label_action_sel = gtk_label_new(_("Event executed on click"));
-	gtk_box_pack_start(GTK_BOX(hbox_action), label_action_sel, FALSE, FALSE, 0);
-	
+	gtk_misc_set_alignment(GTK_MISC(label_action_sel), 0, 0.5);
+	gtk_table_attach (GTK_TABLE (table), label_action_sel, 0, 1, 1, 2,
+			  (GtkAttachOptions) (GTK_FILL),
+			  (GtkAttachOptions) (0), 0, 0);
+
 	combo_action = gtk_combo_new();
-	gtk_box_pack_start(GTK_BOX(hbox_action), combo_action, FALSE, FALSE, 0);
+	gtk_table_attach (GTK_TABLE (table), combo_action, 1, 2, 1, 2,
+			  (GtkAttachOptions) (GTK_FILL),
+			  (GtkAttachOptions) (0), 0, 0);
 	
 	combo_list = GTK_COMBO(combo_action)->list;
 	combo_entry = GTK_COMBO(combo_action)->entry;
 	gtk_entry_set_editable(GTK_ENTRY(combo_entry), FALSE);
 	
+	empty_label = gtk_label_new("");
+	gtk_table_attach (GTK_TABLE (table), empty_label, 2, 3, 1, 2,
+			  (GtkAttachOptions) (GTK_EXPAND),
+			  (GtkAttachOptions) (0), 0, 0);
+
 	/* register / substitute / delete */
 	reg_hbox = gtk_hbox_new(FALSE, 4);
 	gtk_box_pack_start(GTK_BOX(main_vbox), reg_hbox, FALSE, FALSE, 0);
@@ -800,7 +846,7 @@ static void prefs_toolbar_create(void)
 	gtk_box_pack_start(GTK_BOX(btn_vbox), down_btn, FALSE, FALSE, 0);
 
 	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
-				&cancel_btn, _("Cancel"), NULL, NULL);
+				&cancel_btn, _("Cancel"), &default_btn, _("Set default"));
 	gtk_box_pack_end(GTK_BOX(main_vbox), confirm_area, FALSE, FALSE, 0);
 	gtk_container_set_border_width(GTK_CONTAINER(confirm_area), 5);
 	gtk_widget_grab_default(ok_btn);
@@ -809,6 +855,8 @@ static void prefs_toolbar_create(void)
 			   GTK_SIGNAL_FUNC(prefs_toolbar_ok), NULL);
 	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
 			   GTK_SIGNAL_FUNC(prefs_toolbar_cancel), NULL);
+	gtk_signal_connect(GTK_OBJECT(default_btn), "clicked",
+			   GTK_SIGNAL_FUNC(prefs_toolbar_default), NULL);
 	gtk_signal_connect(GTK_OBJECT(clist_set), "select_row",
 			   GTK_SIGNAL_FUNC(prefs_toolbar_select_row_set),
 			   NULL);
@@ -835,6 +883,7 @@ static void prefs_toolbar_create(void)
 	mtoolbar.combo_syl_entry  = combo_syl_entry;
 
 	mtoolbar.label_icon_text  = label_icon_text;
+	mtoolbar.label_action_sel = label_action_sel;
 
 	gtk_widget_show_all(window);
 }

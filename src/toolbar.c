@@ -108,15 +108,15 @@ static void toolbar_next_unread_cb	(GtkWidget	*widget,
 static void toolbar_actions_execute_cb	(GtkWidget	*widget,
 					 gpointer	 data);
 
-static void toolbar_reply_popup_cb	(GtkWidget	*widget,
-					 GdkEventButton *event,
-					 gpointer	 data);
-static void toolbar_reply_popup_closed_cb(GtkMenuShell	*menu_shell,
-					 gpointer	 data);
+static void toolbar_reply_popup_cb	       (GtkWidget	*widget,
+						GdkEventButton  *event,
+						gpointer	 data);
+static void toolbar_reply_popup_closed_cb      (GtkMenuShell	*menu_shell,
+						gpointer	 data);
 
-static void toolbar_reply_to_all_popup_cb(GtkWidget	*widget,
-					 GdkEventButton *event,
-					 gpointer	 data);
+static void toolbar_reply_to_all_popup_cb      (GtkWidget	*widget,
+						GdkEventButton  *event,
+						gpointer	 data);
 
 static void toolbar_reply_to_all_popup_closed_cb
 					(GtkMenuShell	*menu_shell,
@@ -140,7 +140,6 @@ static void toolbar_forward_popup_closed_cb
 static void activate_compose_button     (MainToolbar       *toolbar,
 					 ToolbarStyle      style,
 					 ComposeButtonType type);
-
 static ToolbarAction t_action[] = 
 {
 	{ "A_RECEIVE_ALL",   N_("Receive Mail on all Accounts"),    toolbar_inc_all_cb        },
@@ -700,23 +699,23 @@ void toolbar_set_sensitive(MainWindow *mainwin)
 {
 	SensitiveCond state;
 	gboolean sensitive;
-	guint no_items = g_slist_length(toolbar_list);
 	MainToolbar *toolbar = mainwin->toolbar;
 	GSList *cur;
-	gint i = 0;
-	gint total = 0;
-
-	struct {
+	GSList *entry_list = NULL;
+	
+	typedef struct _Entry Entry;
+	struct _Entry {
 		GtkWidget *widget;
 		SensitiveCond cond;
 		gboolean empty;
-	} entry[no_items + 1];
+	};
 
 #define SET_WIDGET_COND(w, c)     \
-{			       \
-        entry[total].widget = w; \
-	entry[total].cond   = c; \
-	total++;		       \
+{ \
+	Entry *e = g_new0(Entry, 1); \
+	e->widget = w; \
+	e->cond   = c; \
+	entry_list = g_slist_append(entry_list, e); \
 }
 
 	SET_WIDGET_COND(toolbar->get_btn, M_HAVE_ACCOUNT|M_UNLOCKED);
@@ -745,64 +744,28 @@ void toolbar_set_sensitive(MainWindow *mainwin)
 
 	state = main_window_get_current_state(mainwin);
 
-	for (i = 0; i < total; i++) {
-		
-		if (entry[i].widget == NULL) continue;
-		sensitive = ((entry[i].cond & state) == entry[i].cond);
-		gtk_widget_set_sensitive(entry[i].widget, sensitive);
+	for (cur = entry_list; cur != NULL; cur = cur->next) {
+		Entry *e = (Entry*) cur->data;
+
+		if (e->widget != NULL) {
+			sensitive = ((e->cond & state) == e->cond);
+			gtk_widget_set_sensitive(e->widget, sensitive);	
+		}
+	}
+	
+	while (entry_list != NULL) {
+		Entry *e = (Entry*) entry_list->data;
+
+		if (e)
+			g_free(e);
+		entry_list = g_slist_remove(entry_list, e);
 	}
 
+	g_slist_free(entry_list);
+
 	activate_compose_button(toolbar, 
-			prefs_common.toolbar_style,
-			toolbar->compose_btn_type);
-}
-
-void toolbar_popups_create(MainWindow *mainwin, GtkWidget *window)
-{
-	guint n_menu_entries;
-	GtkWidget *reply_popup;
-	GtkWidget *replyall_popup;
-	GtkWidget *replysender_popup;
-	GtkWidget *fwd_popup;
-
-	if (mainwin->toolbar != NULL)
-		g_free(mainwin->toolbar);
-
-	mainwin->toolbar = g_new0(MainToolbar, 1); 
-	
-	/* store mainwin localy */
-	mwin = mainwin;
-
-	n_menu_entries = sizeof(reply_popup_entries) /
-			sizeof(reply_popup_entries[0]);
-	reply_popup = popupmenu_create(window, reply_popup_entries, n_menu_entries,
-				      "<ReplyPopup>", mainwin);
-	gtk_signal_connect(GTK_OBJECT(reply_popup), "selection_done",
-			   GTK_SIGNAL_FUNC(toolbar_reply_popup_closed_cb), mainwin);
-	n_menu_entries = sizeof(replyall_popup_entries) /
-			sizeof(replyall_popup_entries[0]);
-	replyall_popup = popupmenu_create(window, replyall_popup_entries, n_menu_entries,
-				      "<ReplyAllPopup>", mainwin);
-	gtk_signal_connect(GTK_OBJECT(replyall_popup), "selection_done",
-			   GTK_SIGNAL_FUNC(toolbar_reply_to_all_popup_closed_cb), mainwin);
-	n_menu_entries = sizeof(replysender_popup_entries) /
-			sizeof(replysender_popup_entries[0]);
-	replysender_popup = popupmenu_create(window, replysender_popup_entries, n_menu_entries,
-				      "<ReplySenderPopup>", mainwin);
-	gtk_signal_connect(GTK_OBJECT(replysender_popup), "selection_done",
-			   GTK_SIGNAL_FUNC(toolbar_reply_to_sender_popup_closed_cb), mainwin);
-	/* create the popup menu for the forward button */
-	n_menu_entries = sizeof(fwd_popup_entries) /
-			sizeof(fwd_popup_entries[0]);
-	fwd_popup = popupmenu_create(window, fwd_popup_entries, n_menu_entries,
-				      "<ForwardPopup>", mainwin);
-	gtk_signal_connect(GTK_OBJECT(fwd_popup), "selection_done",
-			   GTK_SIGNAL_FUNC(toolbar_forward_popup_closed_cb), mainwin);
-
-	mainwin->toolbar->reply_popup       = reply_popup;
-	mainwin->toolbar->replyall_popup    = replyall_popup;
-	mainwin->toolbar->replysender_popup = replysender_popup;
-	mainwin->toolbar->fwd_popup         = fwd_popup;
+				prefs_common.toolbar_style,
+				toolbar->compose_btn_type);
 }
 
 void toolbar_update(void)
@@ -862,10 +825,25 @@ void toolbar_create(MainWindow *mainwin,
 	ToolbarSylpheedActions *syl_action;
 	GSList *cur;
 
+	guint n_menu_entries;
+	GtkWidget *reply_popup;
+	GtkWidget *replyall_popup;
+	GtkWidget *replysender_popup;
+	GtkWidget *fwd_popup;
+
  	toolbar_tips = gtk_tooltips_new();
 
-	toolbar_destroy(mainwin);
+	/* store mainwin localy */
+	mwin = mainwin;
+
+	if (mainwin->toolbar != NULL) {
+		toolbar_destroy(mainwin);
+		g_free(mainwin->toolbar);
+	}
+
 	toolbar_read_config_file();
+
+	mainwin->toolbar = g_new0(MainToolbar, 1); 
 
 	toolbar = gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL,
 				  GTK_TOOLBAR_BOTH);
@@ -875,8 +853,6 @@ void toolbar_create(MainWindow *mainwin,
 	gtk_toolbar_set_space_style(GTK_TOOLBAR(toolbar),
 				    GTK_TOOLBAR_SPACE_LINE);
 	
-	mainwin->toolbar->exec_btn = NULL;
-
 	for (cur = toolbar_list; cur != NULL; cur = cur->next) {
 		toolbar_item  = (ToolbarItem*) cur->data;
 		
@@ -889,7 +865,7 @@ void toolbar_create(MainWindow *mainwin,
 		icon_wid = stock_pixmap_widget(container, stock_pixmap_get_icon(toolbar_item->file));
 		item  = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 						toolbar_item->text,
-						toolbar_ret_descr_from_val(toolbar_item->action),
+						(""),
 						(""),
 						icon_wid, toolbar_actions_cb, 
 						toolbar_item);
@@ -939,6 +915,13 @@ void toolbar_create(MainWindow *mainwin,
 					   "button_press_event",
 					   GTK_SIGNAL_FUNC(toolbar_reply_popup_cb),
 					   mainwin);
+			n_menu_entries = sizeof(reply_popup_entries) /
+				sizeof(reply_popup_entries[0]);
+			reply_popup = popupmenu_create(mainwin->window, reply_popup_entries, n_menu_entries,
+						       "<ReplyPopup>", mainwin);
+			gtk_signal_connect(GTK_OBJECT(reply_popup), "selection_done",
+					   GTK_SIGNAL_FUNC(toolbar_reply_popup_closed_cb), mainwin);
+			mainwin->toolbar->reply_popup       = reply_popup;
 			break;
 		case A_REPLY_SENDER:
 			mainwin->toolbar->replysender_btn = item;
@@ -949,6 +932,14 @@ void toolbar_create(MainWindow *mainwin,
 					   "button_press_event",
 					   GTK_SIGNAL_FUNC(toolbar_reply_to_sender_popup_cb),
 					   mainwin);
+			n_menu_entries = sizeof(replysender_popup_entries) /
+				sizeof(replysender_popup_entries[0]);
+			replysender_popup = popupmenu_create(mainwin->window, 
+							     replysender_popup_entries, n_menu_entries,
+							     "<ReplySenderPopup>", mainwin);
+			gtk_signal_connect(GTK_OBJECT(replysender_popup), "selection_done",
+					   GTK_SIGNAL_FUNC(toolbar_reply_to_sender_popup_closed_cb), mainwin);
+			mainwin->toolbar->replysender_popup = replysender_popup;
 			break;
 		case A_REPLY_ALL:
 			mainwin->toolbar->replyall_btn = item;
@@ -959,6 +950,14 @@ void toolbar_create(MainWindow *mainwin,
 					   "button_press_event",
 					   GTK_SIGNAL_FUNC(toolbar_reply_to_all_popup_cb),
 					   mainwin);
+			n_menu_entries = sizeof(replyall_popup_entries) /
+				sizeof(replyall_popup_entries[0]);
+			replyall_popup = popupmenu_create(mainwin->window, 
+							  replyall_popup_entries, n_menu_entries,
+							  "<ReplyAllPopup>", mainwin);
+			gtk_signal_connect(GTK_OBJECT(replyall_popup), "selection_done",
+					   GTK_SIGNAL_FUNC(toolbar_reply_to_all_popup_closed_cb), mainwin);
+			mainwin->toolbar->replyall_popup    = replyall_popup;
 			break;
 		case A_FORWARD:
 			mainwin->toolbar->fwd_btn = item;
@@ -969,6 +968,14 @@ void toolbar_create(MainWindow *mainwin,
 					   "button_press_event",
 					   GTK_SIGNAL_FUNC(toolbar_forward_popup_cb),
 					   mainwin);
+			n_menu_entries = sizeof(fwd_popup_entries) /
+				sizeof(fwd_popup_entries[0]);
+			fwd_popup = popupmenu_create(mainwin->window, 
+						     fwd_popup_entries, n_menu_entries,
+						     "<ForwardPopup>", mainwin);
+			gtk_signal_connect(GTK_OBJECT(fwd_popup), "selection_done",
+					   GTK_SIGNAL_FUNC(toolbar_forward_popup_closed_cb), mainwin);
+			mainwin->toolbar->fwd_popup         = fwd_popup;
 			break;
 		case A_DELETE:
 			mainwin->toolbar->delete_btn = item;
@@ -978,9 +985,6 @@ void toolbar_create(MainWindow *mainwin,
 			break;
 		case A_EXECUTE:
 			mainwin->toolbar->exec_btn = item;
-			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-					     mainwin->toolbar->exec_btn,
-					   _("Execute"), NULL);
 			break;
 		case A_GOTO_NEXT:
 			mainwin->toolbar->next_btn = item;
@@ -1003,7 +1007,32 @@ void toolbar_create(MainWindow *mainwin,
 	}
 
 	mainwin->toolbar->toolbar = toolbar;
-	
+
+	/* we always create an exec button, if there isn't one yet 
+	   the user might decide to change prefs_common.immediate_exec 
+	   --> better be prepared 
+	*/
+	if (!mainwin->toolbar->exec_btn) {
+		toolbar_item = g_new0(ToolbarItem, 1);
+		toolbar_item->action = A_EXECUTE;
+		toolbar_item->file   = stock_pixmap_get_name(STOCK_PIXMAP_EXEC);
+		toolbar_item->text   = toolbar_ret_descr_from_val(A_EXECUTE);
+
+		icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_EXEC);
+		item = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
+					       toolbar_item->text,
+					       (""),
+					       (""),
+					       icon_wid, toolbar_actions_cb,
+					       toolbar_item);
+		mainwin->toolbar->exec_btn = item;
+		g_free(toolbar_item);
+	}
+
+	gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+			     mainwin->toolbar->exec_btn,
+			     _("Execute"), NULL);
+
 	activate_compose_button(mainwin->toolbar, 
 				prefs_common.toolbar_style, 
 				mainwin->toolbar->compose_btn_type);

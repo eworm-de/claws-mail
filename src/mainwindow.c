@@ -769,8 +769,7 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_widget_show(handlebox);
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
 
-	/* create the popup menus for the reply buttons specials */
-	toolbar_popups_create(mainwin, window);
+	/* create toolbar */
 	toolbar_create(mainwin, handlebox);
 
 	/* vbox that contains body */
