@@ -74,11 +74,6 @@ static struct Filtering {
 	gint current_action;
 } filtering;
 
-#define VSPACING		12
-#define VSPACING_NARROW		4
-#define DEFAULT_ENTRY_WIDTH	80
-#define PREFSBUFSIZE		1024
-
 /* widget creating functions */
 static void prefs_filtering_create		(void);
 

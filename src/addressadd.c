@@ -271,7 +271,7 @@ static void addressadd_create( void ) {
 	gtk_widget_show_all( window );
 
 	PIXMAP_CREATE( window, bookXpm, bookXpmMask, book_xpm );
-	PIXMAP_CREATE( window, folderXpm, folderXpmMask, DIRECTORY_OPEN_XPM );
+	PIXMAP_CREATE( window, folderXpm, folderXpmMask, dir_open_xpm );
 }
 
 static void addressadd_load_folder( GtkCTreeNode *parentNode, ItemFolder *parentFolder,

@@ -42,8 +42,11 @@
 #include "addressbook.h"
 #include "prefs_common.h"
 #include "addressitem.h"
+#include "mgutils.h"
 #include "syldap.h"
 #include "editldap_basedn.h"
+#include "manage_window.h"
+#include "gtkutils.h"
 
 #define ADDRESSBOOK_GUESS_LDAP_NAME	"MyServer"
 #define ADDRESSBOOK_GUESS_LDAP_SERVER	"localhost"
@@ -220,7 +223,7 @@ static void addressbook_edit_ldap_dialog_create( gboolean *cancelled ) {
 			   cancelled);
 
 	vbox = gtk_vbox_new( FALSE, 6 );
-	gtk_container_set_border_width(GTK_CONTAINER(vbox), BORDER_WIDTH);
+	//gtk_container_set_border_width(GTK_CONTAINER(vbox), BORDER_WIDTH);
 	gtk_widget_show( vbox );
 	gtk_container_add( GTK_CONTAINER( window ), vbox );
 
@@ -276,7 +279,7 @@ void addressbook_edit_ldap_page_basic( gint pageNum, gchar *pageLbl ) {
 	vbox = gtk_vbox_new( FALSE, 8 );
 	gtk_widget_show( vbox );
 	gtk_container_add( GTK_CONTAINER( ldapedit.notebook ), vbox );
-	gtk_container_set_border_width( GTK_CONTAINER (vbox), BORDER_WIDTH );
+	//gtk_container_set_border_width( GTK_CONTAINER (vbox), BORDER_WIDTH );
 
 	label = gtk_label_new( pageLbl );
 	gtk_widget_show( label );
@@ -368,7 +371,7 @@ void addressbook_edit_ldap_page_extended( gint pageNum, gchar *pageLbl ) {
 	vbox = gtk_vbox_new( FALSE, 8 );
 	gtk_widget_show( vbox );
 	gtk_container_add( GTK_CONTAINER( ldapedit.notebook ), vbox );
-	gtk_container_set_border_width( GTK_CONTAINER (vbox), BORDER_WIDTH );
+	//gtk_container_set_border_width( GTK_CONTAINER (vbox), BORDER_WIDTH );
 
 	label = gtk_label_new( pageLbl );
 	gtk_widget_show( label );
@@ -467,7 +470,7 @@ void edit_ldap_set_optmenu( GtkOptionMenu *optmenu, const gint value ) {
 	gint menuVal;
 	gint n = 0;
 
-	g_return_if_fail(menu != NULL);
+	g_return_if_fail(optmenu != NULL);
 
 	menu = gtk_option_menu_get_menu(optmenu);
 	for( cur = GTK_MENU_SHELL(menu)->children; cur != NULL; cur = cur->next ) {
@@ -485,7 +488,9 @@ void edit_ldap_set_optmenu( GtkOptionMenu *optmenu, const gint value ) {
 gint edit_ldap_get_optmenu( GtkOptionMenu *optmenu ) {
 	GtkWidget *menu;
 	GtkWidget *menuitem;
-	g_return_if_fail(menu != NULL);
+
+	g_return_val_if_fail(optmenu != NULL, -1);
+
 	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(optmenu));
 	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	return GPOINTER_TO_INT(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
@@ -494,7 +499,7 @@ gint edit_ldap_get_optmenu( GtkOptionMenu *optmenu ) {
 AdapterDSource *addressbook_edit_ldap( AddressIndex *addrIndex, AdapterDSource *ads ) {
 	static gboolean cancelled;
 	gchar *sName, *sHost, *sBase, *sBind, *sPass, *sCrit;
-	gint iPort, iMaxE, iTime, iMail, iName;
+	gint iPort, iMaxE, iTime;
 	AddressDataSource *ds = NULL;
 	SyldapServer *server = NULL;
 	gboolean fin;
@@ -592,4 +597,3 @@ AdapterDSource *addressbook_edit_ldap( AddressIndex *addrIndex, AdapterDSource *
 /*
 * End of Source.
 */
-

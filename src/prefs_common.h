@@ -42,7 +42,7 @@ struct _PrefsCommon
 {
 	/* Receive */
 	gboolean use_extinc;
-	gchar *extinc_path;
+	gchar *extinc_cmd;
 	gboolean inc_local;
 	gboolean filter_on_inc;
 	gchar *spool_path;
@@ -69,6 +69,7 @@ struct _PrefsCommon
 	gint linewrap_len;
 	gboolean linewrap_quote;
 	gboolean linewrap_at_send;
+	gboolean auto_exteditor;
 	gboolean reply_account_autosel;
 	gboolean forward_account_autosel;
 	gboolean reedit_account_autosel;

@@ -699,6 +699,20 @@ const gchar *conv_get_outgoing_charset_str(void)
 	return str ? str : "US-ASCII";
 }
 
+const gchar *conv_get_current_locale(void)
+{
+	gchar *cur_locale;
+
+	cur_locale = g_getenv("LC_ALL");
+	if (!cur_locale) cur_locale = g_getenv("LANG");
+	if (!cur_locale) cur_locale = setlocale(LC_CTYPE, NULL);
+
+	debug_print("current locale: %s\n",
+		    cur_locale ? cur_locale : "(none)");
+
+	return cur_locale;
+}
+
 void conv_unmime_header_overwrite(gchar *str)
 {
 	gchar *buf;

@@ -121,6 +121,7 @@ void addritem_person_set_first_name	( ItemPerson *person, const gchar *value );
 void addritem_person_set_last_name	( ItemPerson *person, const gchar *value );
 void addritem_person_set_nick_name	( ItemPerson *person, const gchar *value );
 void addritem_person_set_common_name	( ItemPerson *person, const gchar *value );
+void addritem_person_set_external_id	( ItemPerson *person, const gchar *value );
 void addritem_person_set_opened		( ItemPerson *person, const gboolean value );
 void addritem_free_item_person		( ItemPerson *person );
 void addritem_free_list_email		( GList *list );
@@ -171,5 +172,3 @@ ItemEMail *addritem_move_email_before	( ItemPerson *person, ItemEMail *itemMove,
 ItemEMail *addritem_move_email_after	( ItemPerson *person, ItemEMail *itemMove, ItemEMail *itemTarget );
 
 #endif /* __ADDRITEM_H__ */
-
-

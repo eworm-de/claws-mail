@@ -45,6 +45,8 @@
 #include "addressitem.h"
 #include "jpilot.h"
 #include "mgutils.h"
+#include "gtkutils.h"
+#include "manage_window.h"
 
 #define ADDRESSBOOK_GUESS_JPILOT "MyJPilot"
 #define JPILOT_NUM_CUSTOM_LABEL	4
@@ -151,7 +153,7 @@ static void edit_jpilot_read_check_box( JPilotFile *pilotFile ) {
 }
 
 static void edit_jpilot_file_check( void ) {
-	gint t;
+	gint t = -1;
 	gchar *sFile;
 	gchar *sMsg;
 	gboolean flg;

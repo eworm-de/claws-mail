@@ -56,18 +56,6 @@ static struct DisplayHeader {
 	GtkWidget *other_headers;
 } dispheader;
 
-/*
-   parameter name, default value, pointer to the prefs variable, data type,
-   pointer to the widget pointer,
-   pointer to the function for data setting,
-   pointer to the function for widget setting
- */
-
-#define VSPACING		12
-#define VSPACING_NARROW		4
-#define DEFAULT_ENTRY_WIDTH	80
-#define PREFSBUFSIZE		1024
-
 /* widget creating functions */
 static void prefs_display_header_create	(void);
 

@@ -276,6 +276,12 @@ static void mark_as_unread_cb		(MainWindow	*mainwin,
 static void mark_as_read_cb		(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
+static void mark_all_read_cb		(MainWindow	*mainwin,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void add_address_cb		(MainWindow	*mainwin,
+					 guint		 action,
+					 GtkWidget	*widget);
 
 static void set_charset_cb		(MainWindow	*mainwin,
 					 guint		 action,
@@ -314,27 +320,24 @@ static void next_cb		 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 
+static void prev_unread_cb	 (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
 static void next_unread_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
-
-static void next_marked_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-
 static void prev_marked_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
-
-static void next_labeled_cb	 (MainWindow	*mainwin,
+static void next_marked_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
-
-
 static void prev_labeled_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
-
+static void next_labeled_cb	 (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
 
 static void goto_folder_cb	 (MainWindow	*mainwin,
 				  guint		 action,
@@ -545,15 +548,25 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Summary/E_xecute"),		"<alt>X", execute_summary_cb, 0, NULL},
 	{N_("/_Summary/_Update"),		"<alt>U", update_summary_cb,  0, NULL},
 	{N_("/_Summary/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Summary/_Prev message"),		NULL, prev_cb, 0, NULL},
-	{N_("/_Summary/_Next message"),		NULL, next_cb, 0, NULL},
-	{N_("/_Summary/N_ext unread message"),	NULL, next_unread_cb, 0, NULL},
-	{N_("/_Summary/Prev marked message"),	NULL, prev_marked_cb, 0, NULL},
-	{N_("/_Summary/Next marked message"),	NULL, next_marked_cb, 0, NULL},
-	{N_("/_Summary/Prev labeled message"),	NULL, prev_labeled_cb, 0, NULL},
-	{N_("/_Summary/Next labeled message"),	NULL, next_labeled_cb, 0, NULL},
-	{N_("/_Summary/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Summary/_Go to other folder"),	"<alt>G", goto_folder_cb, 0, NULL},
+	{N_("/_Summary/Go _to"),		NULL, NULL, 0, "<Branch>"},
+	{N_("/_Summary/Go _to/_Prev message"),	NULL, prev_cb, 0, NULL},
+	{N_("/_Summary/Go _to/_Next message"),	NULL, next_cb, 0, NULL},
+	{N_("/_Summary/Go _to/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_Summary/Go _to/P_rev unread message"),
+						NULL, prev_unread_cb, 0, NULL},
+	{N_("/_Summary/Go _to/N_ext unread message"),
+						NULL, next_unread_cb, 0, NULL},
+	{N_("/_Summary/Go _to/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_Summary/Go _to/Prev _marked message"),
+						NULL, prev_marked_cb, 0, NULL},
+	{N_("/_Summary/Go _to/Next m_arked message"),
+						NULL, next_marked_cb, 0, NULL},
+	{N_("/_Summary/Go _to/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_Summary/Go _to/Prev _labeled message"),
+						NULL, prev_labeled_cb, 0, NULL},
+	{N_("/_Summary/Go _to/Next la_beled message"),
+						NULL, next_labeled_cb, 0, NULL},
+	{N_("/_Summary/_Go to other folder..."),"<alt>G", goto_folder_cb, 0, NULL},
 	{N_("/_Summary/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Summary/_Sort"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Summary/_Sort/Sort by _number"),	NULL, sort_summary_cb, SORT_BY_NUMBER, NULL},
@@ -561,8 +574,12 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Summary/_Sort/Sort by _date"),	NULL, sort_summary_cb, SORT_BY_DATE, NULL},
 	{N_("/_Summary/_Sort/Sort by _from"),	NULL, sort_summary_cb, SORT_BY_FROM, NULL},
 	{N_("/_Summary/_Sort/Sort by _subject"),NULL, sort_summary_cb, SORT_BY_SUBJECT, NULL},
-	{N_("/_Summary/_Sort/Sort by sco_re"),  NULL, sort_summary_cb, SORT_BY_SCORE, NULL},
-	{N_("/_Summary/_Sort/Sort by _label"),  NULL, sort_summary_cb, SORT_BY_LABEL, NULL},
+	{N_("/_Summary/_Sort/Sort by _color label"),
+						NULL, sort_summary_cb, SORT_BY_LABEL, NULL},
+	{N_("/_Summary/_Sort/Sort by _mark"),	NULL, sort_summary_cb, SORT_BY_MARK, NULL},
+	{N_("/_Summary/_Sort/Sort by _unread"),	NULL, sort_summary_cb, SORT_BY_UNREAD, NULL},
+	{N_("/_Summary/_Sort/Sort by a_ttachment"),
+						NULL, sort_summary_cb, SORT_BY_MIME, NULL},
 	{N_("/_Summary/_Sort/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Summary/_Sort/_Attract by subject"),
 						NULL, attract_by_subject_cb, 0, NULL},
@@ -1291,29 +1308,34 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/View/Show all header"      , M_SINGLE_TARGET_EXIST},
 		{"/View/View source"          , M_SINGLE_TARGET_EXIST},
 
-		{"/Message/Get new mail"          , M_HAVE_ACCOUNT|M_UNLOCKED},
-		{"/Message/Get from all accounts" , M_HAVE_ACCOUNT|M_UNLOCKED},
-		{"/Message/Compose new message"   , M_HAVE_ACCOUNT},
-		{"/Message/Reply"                 , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Message/Reply to sender"       , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Message/Follow-up and reply to", M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Message/Reply to all"          , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Message/Forward"               , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Message/Forward as attachment" , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
-		{"/Message/Open in new window"    , M_SINGLE_TARGET_EXIST},
+		{"/Message/Get new mail"         , M_HAVE_ACCOUNT|M_UNLOCKED},
+		{"/Message/Get from all accounts", M_HAVE_ACCOUNT|M_UNLOCKED},
+		{"/Message/Compose new message"  , M_HAVE_ACCOUNT},
+		{"/Message/Reply"                , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Message/Reply to sender"      , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Message/Reply to all"         , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Message/Forward"              , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Message/Forward as attachment", M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Message/Open in new window"   , M_SINGLE_TARGET_EXIST},
+		{"/Message/Re-edit", M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
 		{"/Message/Move...", M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Message/Copy...", M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Message/Delete" , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Message/Mark"   , M_TARGET_EXIST},
-		{"/Message/Re-edit", M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
+		{"/Message/Add sender to address book", M_SINGLE_TARGET_EXIST},
 
 		{"/Summary/Delete duplicated messages", M_MSG_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Summary/Filter messages"    , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Summary/Execute"            , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Summary/Prev message"       , M_MSG_EXIST},
-		{"/Summary/Next message"       , M_MSG_EXIST},
-		{"/Summary/Next unread message", M_MSG_EXIST},
-		{"/Summary/Sort"               , M_MSG_EXIST},
+		{"/Summary/Filter messages"           , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Summary/Execute"                   , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Summary/Go to"                     , M_MSG_EXIST},
+		{"/Summary/Go to/Prev message"        , M_MSG_EXIST},
+		{"/Summary/Go to/Next message"        , M_MSG_EXIST},
+		{"/Summary/Go to/Next unread message" , M_MSG_EXIST},
+		{"/Summary/Go to/Prev marked message" , M_MSG_EXIST},
+		{"/Summary/Go to/Next marked message" , M_MSG_EXIST},
+		{"/Summary/Go to/Prev labeled message", M_MSG_EXIST},
+		{"/Summary/Go to/Next labeled message", M_MSG_EXIST},
+		{"/Summary/Sort"                      , M_MSG_EXIST},
 
 		{"/Configuration", M_UNLOCKED},
 
@@ -2468,6 +2490,18 @@ static void mark_as_read_cb(MainWindow *mainwin, guint action,
 	summary_mark_as_read(mainwin->summaryview);
 }
 
+static void mark_all_read_cb(MainWindow *mainwin, guint action,
+			     GtkWidget *widget)
+{
+	summary_mark_all_read(mainwin->summaryview);
+}
+
+static void add_address_cb(MainWindow *mainwin, guint action,
+			   GtkWidget *widget)
+{
+	summary_add_address(mainwin->summaryview);
+}
+
 static void set_charset_cb(MainWindow *mainwin, guint action,
 			   GtkWidget *widget)
 {
@@ -2604,16 +2638,16 @@ static void next_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 	summary_step(mainwin->summaryview, GTK_SCROLL_STEP_FORWARD);
 }
 
+static void prev_unread_cb(MainWindow *mainwin, guint action,
+			   GtkWidget *widget)
+{
+	summary_select_prev_unread(mainwin->summaryview);
+}
+
 static void next_unread_cb(MainWindow *mainwin, guint action,
 			   GtkWidget *widget)
 {
 	summary_select_next_unread(mainwin->summaryview);
-}
-
-static void next_marked_cb(MainWindow *mainwin, guint action,
-			   GtkWidget *widget)
-{
-	summary_select_next_marked(mainwin->summaryview);
 }
 
 static void prev_marked_cb(MainWindow *mainwin, guint action,
@@ -2622,16 +2656,22 @@ static void prev_marked_cb(MainWindow *mainwin, guint action,
 	summary_select_prev_marked(mainwin->summaryview);
 }
 
-static void next_labeled_cb(MainWindow *mainwin, guint action,
+static void next_marked_cb(MainWindow *mainwin, guint action,
 			   GtkWidget *widget)
 {
-	summary_select_next_labeled(mainwin->summaryview);
+	summary_select_next_marked(mainwin->summaryview);
 }
 
 static void prev_labeled_cb(MainWindow *mainwin, guint action,
-			   GtkWidget *widget)
+			    GtkWidget *widget)
 {
 	summary_select_prev_labeled(mainwin->summaryview);
+}
+
+static void next_labeled_cb(MainWindow *mainwin, guint action,
+			    GtkWidget *widget)
+{
+	summary_select_next_labeled(mainwin->summaryview);
 }
 
 static void goto_folder_cb(MainWindow *mainwin, guint action,

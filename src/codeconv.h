@@ -141,6 +141,8 @@ const gchar *conv_get_current_charset_str	(void);
 CharSet conv_get_outgoing_charset		(void);
 const gchar *conv_get_outgoing_charset_str	(void);
 
+const gchar *conv_get_current_locale		(void);
+
 void conv_unmime_header_overwrite	(gchar		*str);
 void conv_unmime_header			(gchar		*outbuf,
 					 gint		 outlen,

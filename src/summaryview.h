@@ -61,7 +61,10 @@ typedef enum
 	SORT_BY_FROM,
 	SORT_BY_SUBJECT,
 	SORT_BY_SCORE,
-	SORT_BY_LABEL
+	SORT_BY_LABEL,
+	SORT_BY_MARK,
+	SORT_BY_UNREAD,
+	SORT_BY_MIME
 } SummarySortType;
 
 typedef enum
@@ -160,9 +163,12 @@ void summary_clear_all		  (SummaryView		*summaryview);
 
 SummarySelection summary_get_selection_type	(SummaryView	*summaryview);
 
+void summary_select_prev_unread	  (SummaryView		*summaryview);
 void summary_select_next_unread	  (SummaryView		*summaryview);
-void summary_select_next_marked   (SummaryView		*summaryview);
-void summary_select_prev_marked   (SummaryView		*summaryview);
+void summary_select_prev_marked	  (SummaryView		*summaryview);
+void summary_select_next_marked	  (SummaryView		*summaryview);
+void summary_select_prev_labeled  (SummaryView		*summaryview);
+void summary_select_next_labeled  (SummaryView		*summaryview);
 void summary_select_by_msgnum	  (SummaryView		*summaryview,
 				   guint		 msgnum);
 guint summary_get_current_msgnum  (SummaryView		*summaryview);
@@ -201,6 +207,8 @@ void summary_mark		  (SummaryView		*summaryview);
 void summary_unmark		  (SummaryView		*summaryview);
 void summary_mark_as_unread	  (SummaryView		*summaryview);
 void summary_mark_as_read	  (SummaryView		*summaryview);
+void summary_mark_all_read	  (SummaryView		*summaryview);
+void summary_add_address	  (SummaryView		*summaryview);
 void summary_select_all		  (SummaryView		*summaryview);
 void summary_unselect_all	  (SummaryView		*summaryview);
 

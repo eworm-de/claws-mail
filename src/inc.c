@@ -178,29 +178,13 @@ void inc_mail(MainWindow *mainwin)
 	summary_write_cache(mainwin->summaryview);
 	main_window_lock(mainwin);
 
-	if (prefs_common.use_extinc && prefs_common.extinc_path) {
-		gint pid;
-
+	if (prefs_common.use_extinc && prefs_common.extinc_cmd) {
 		/* external incorporating program */
-		if ((pid = fork()) < 0) {
-			perror("fork");
+		if (execute_command_line(prefs_common.extinc_cmd, FALSE) < 0) {
 			main_window_unlock(mainwin);
 			inc_autocheck_timer_set();
 			return;
 		}
-
-		if (pid == 0) {
-			execlp(prefs_common.extinc_path,
-			       g_basename(prefs_common.extinc_path),
-			       NULL);
-
-			/* this will be called when failed */
-			perror("exec");
-			_exit(1);
-		}
-
-		/* wait until child process is terminated */
-		waitpid(pid, NULL, 0);
 
 		if (prefs_common.inc_local)
 			new_msgs = inc_spool();
@@ -315,6 +299,7 @@ static IncProgressDialog *inc_progress_dialog_create(void)
 			   GTK_SIGNAL_FUNC(inc_cancel), dialog);
 	gtk_signal_connect(GTK_OBJECT(progress->window), "delete_event",
 			   GTK_SIGNAL_FUNC(gtk_true), NULL);
+	/* manage_window_set_transient(GTK_WINDOW(progress->window)); */
 
 	progress_dialog_set_value(progress, 0.0);
 

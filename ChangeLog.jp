@@ -1,8 +1,55 @@
+2001-09-12
+
+	* src/utils.c: get_quote_level(): 最適化とバグ修正。
+	* src/codeconv.[ch]: conv_get_current_locale(): 新規。
+	* src/editaddress.c: edit_person_page_basic(): 特定のロカールで
+	  姓・名の順序を交換。
+
+2001-09-11
+
+	* src/compose.c: 現在の段落を整形するようにする安松さんのパッチを
+	  適用(thanks!)。引用された段落を整形しないように修正。
+	  compose_create(): 再編集モードでエントリを自動的に埋めないように
+	  した。
+	* src/mainwindow.c
+	  src/summaryview.[ch]: 「全て読んだことにする」オプションを追加。
+	  summary_mark_all_read(): 新規。
+
+2001-09-10
+
+	* src/vcard.c
+	  src/mgutils.c
+	  src/syldap.c
+	  src/editldap.c
+	  src/editldap_basedn.c
+	  src/jpilot.c
+	  src/editjpilot.c: 全ての警告を除去。
+	* configure.in
+	  src/jpilot.[ch]: Debian システムで JPilot のヘッダファイルを
+	  検出できない問題を修正。
+	* src/mainwindow.c
+	  src/summaryview.[ch]: マーク、未読、添付、そしてカラーラベル
+	  によるソートができるようにした。前/次のフラグ付きメッセージ
+	  への移動ができるようにした。
+
+2001-09-09
+
+	* src/pixmaps/dir-close.xpm
+	  src/pixmaps/dir-open.xpm
+	  src/pixmaps/new.xpm
+	  src/pixmaps/unread.xpm: 色のバランスを修正。
+	* src/utils.[ch]: execute_sync(): 新規。
+	  execute_command_line(): 非同期モード用の引数を追加。
+	* src/inc.c: inc_mail(): execute_command_line() を使用。
+
 2001-09-08
 
 	* src/prefs.[ch]
-	  src/prefs_common.c
-	  src/prefs_account.c: レイアウトを修正。
+	  src/prefs_common.[ch]
+	  src/prefs_account.c: レイアウトを修正。外部エディタを自動的に
+	  起動するオプションを追加。
+	* src/compose.c: オプションが指定されていたら外部エディタを自動的
+	  に起動するようにした。
 
 2001-09-06
 

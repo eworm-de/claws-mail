@@ -834,7 +834,7 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 			return;
 	}
 
-	execute_command_line(buf);
+	execute_command_line(buf, TRUE);
 }
 
 #if USE_GPGME

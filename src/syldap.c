@@ -27,8 +27,9 @@
 
 #ifdef USE_LDAP
 
-#include <sys/time.h>
 #include <glib.h>
+#include <sys/time.h>
+#include <string.h>
 #include <ldap.h>
 #include <lber.h>
 #include <pthread.h>
@@ -191,19 +192,22 @@ void syldap_force_refresh( SyldapServer *ldapServer ) {
 }
 
 gint syldap_get_status( SyldapServer *ldapServer ) {
-	g_return_if_fail( ldapServer != NULL );
+	g_return_val_if_fail( ldapServer != NULL, -1 );
 	return ldapServer->retVal;
 }
+
 ItemFolder *syldap_get_root_folder( SyldapServer *ldapServer ) {
-	g_return_if_fail( ldapServer != NULL );
+	g_return_val_if_fail( ldapServer != NULL, NULL );
 	return addrcache_get_root_folder( ldapServer->addressCache );
 }
+
 gchar *syldap_get_name( SyldapServer *ldapServer ) {
-	g_return_if_fail( ldapServer != NULL );
+	g_return_val_if_fail( ldapServer != NULL, NULL );
 	return ldapServer->name;
 }
+
 gboolean syldap_get_accessed( SyldapServer *ldapServer ) {
-	g_return_if_fail( ldapServer != NULL );
+	g_return_val_if_fail( ldapServer != NULL, FALSE );
 	return ldapServer->accessFlag;
 }
 
@@ -256,8 +260,8 @@ void syldap_free( SyldapServer *ldapServer ) {
 * Display object to specified stream.
 */
 void syldap_print_data( SyldapServer *ldapServer, FILE *stream ) {
-	GSList *node;
 	g_return_if_fail( ldapServer != NULL );
+
 	fprintf( stream, "SyldapServer:\n" );
 	fprintf( stream, "     name: '%s'\n", ldapServer->name );
 	fprintf( stream, "host name: '%s'\n", ldapServer->hostName );
@@ -278,8 +282,8 @@ void syldap_print_data( SyldapServer *ldapServer, FILE *stream ) {
 * Display object to specified stream.
 */
 void syldap_print_short( SyldapServer *ldapServer, FILE *stream ) {
-	GSList *node;
 	g_return_if_fail( ldapServer != NULL );
+
 	fprintf( stream, "SyldapServer:\n" );
 	fprintf( stream, "     name: '%s'\n", ldapServer->name );
 	fprintf( stream, "host name: '%s'\n", ldapServer->hostName );
@@ -302,6 +306,7 @@ static void syldap_build_items_cn( SyldapServer *ldapServer, GSList *listName, G
 	ItemPerson *person;
 	ItemEMail *email;
 	GSList *nodeName = listName;
+
 	while( nodeName ) {
 		GSList *nodeAddress = listAddr;
 		person = addritem_create_item_person();
@@ -399,7 +404,8 @@ static void syldap_build_items_fl( SyldapServer *ldapServer, GSList *listAddr, G
 static GSList *syldap_add_list_values( LDAP *ld, LDAPMessage *entry, char *attr ) {
 	GSList *list = NULL;
 	gint i;
-	char **vals;
+	gchar **vals;
+
 	if( ( vals = ldap_get_values( ld, entry, attr ) ) != NULL ) {
 		for( i = 0; vals[i] != NULL; i++ ) {
 			// printf( "lv\t%s: %s\n", attr, vals[i] );
@@ -415,7 +421,8 @@ static GSList *syldap_add_list_values( LDAP *ld, LDAPMessage *entry, char *attr 
 */
 static GSList *syldap_add_single_value( LDAP *ld, LDAPMessage *entry, char *attr ) {
 	GSList *list = NULL;
-	char **vals;
+	gchar **vals;
+
 	if( ( vals = ldap_get_values( ld, entry, attr ) ) != NULL ) {
 		if( vals[0] != NULL ) {
 			// printf( "sv\t%s: %s\n", attr, vals[0] );
@@ -444,7 +451,8 @@ static void syldap_free_lists( GSList *listName, GSList *listAddr, GSList *listI
 * Return: TRUE if search criteria appear OK.
 */
 gboolean syldap_check_search( SyldapServer *ldapServer ) {
-	g_return_if_fail( ldapServer != NULL );
+	g_return_val_if_fail( ldapServer != NULL, FALSE );
+
 	ldapServer->retVal = MGU_LDAP_CRITERIA;
 
 	// Test search criteria
@@ -480,13 +488,13 @@ gint syldap_search( SyldapServer *ldapServer ) {
 	char *attribute;
 	gchar *criteria;
 	BerElement *ber;
-	int rc, cnt;
+	gint rc;
 	GSList *listName = NULL, *listAddress = NULL, *listID = NULL;
 	GSList *listFirst = NULL, *listLast = NULL, *listDN = NULL;
 	struct timeval timeout;
 	gboolean entriesFound = FALSE;
 
-	g_return_if_fail( ldapServer != NULL );
+	g_return_val_if_fail( ldapServer != NULL, -1 );
 
 	ldapServer->retVal = MGU_SUCCESS;
 	if( ! syldap_check_search( ldapServer ) ) {
@@ -622,7 +630,7 @@ gint syldap_search( SyldapServer *ldapServer ) {
 */
 // ============================================================================================
 gint syldap_read_data( SyldapServer *ldapServer ) {
-	g_return_if_fail( ldapServer != NULL );
+	g_return_val_if_fail( ldapServer != NULL, -1 );
 
 	ldapServer->accessFlag = FALSE;
 	pthread_detach( pthread_self() );
@@ -654,6 +662,7 @@ gint syldap_read_data( SyldapServer *ldapServer ) {
 // ============================================================================================
 void syldap_cancel_read( SyldapServer *ldapServer ) {
 	g_return_if_fail( ldapServer != NULL );
+
 	if( ldapServer->thread ) {
 		// printf( "thread cancelled\n" );
 		pthread_cancel( *ldapServer->thread );
@@ -671,7 +680,8 @@ void syldap_cancel_read( SyldapServer *ldapServer ) {
 // ============================================================================================
 gint syldap_read_data_th( SyldapServer *ldapServer ) {
 	pthread_t thread;
-	g_return_if_fail( ldapServer != NULL );
+
+	g_return_val_if_fail( ldapServer != NULL, -1 );
 
 	ldapServer->busyFlag = FALSE;
 	syldap_check_search( ldapServer );
@@ -687,7 +697,7 @@ gint syldap_read_data_th( SyldapServer *ldapServer ) {
 * Return link list of persons.
 */
 GList *syldap_get_list_person( SyldapServer *ldapServer ) {
-	g_return_if_fail( ldapServer != NULL );
+	g_return_val_if_fail( ldapServer != NULL, NULL );
 	return addrcache_get_list_person( ldapServer->addressCache );
 }
 
@@ -697,7 +707,7 @@ GList *syldap_get_list_person( SyldapServer *ldapServer ) {
 * Return: NULL.
 */
 GList *syldap_get_list_folder( SyldapServer *ldapServer ) {
-	g_return_if_fail( ldapServer != NULL );
+	g_return_val_if_fail( ldapServer != NULL, NULL );
 	return NULL;
 }
 
@@ -721,12 +731,12 @@ GList *syldap_get_list_folder( SyldapServer *ldapServer ) {
 GList *syldap_read_basedn_s( const gchar *host, const gint port, const gchar *bindDN, const gchar *bindPW, const gint tov ) {
 	GList *baseDN = NULL;
 	LDAP *ld;
-	int rc, i;
+	gint rc, i;
 	LDAPMessage *result, *e;
-	char *attribs[10];
+	gchar *attribs[10];
 	BerElement *ber;
-	char *attribute;
-	char **vals;
+	gchar *attribute;
+	gchar **vals;
 	struct timeval timeout;
 
 	if( host == NULL ) return baseDN;
@@ -844,12 +854,12 @@ GList *syldap_read_basedn_s( const gchar *host, const gint port, const gchar *bi
 GList *syldap_read_basedn( SyldapServer *ldapServer ) {
 	GList *baseDN = NULL;
 	LDAP *ld;
-	int rc, i;
+	gint rc, i;
 	LDAPMessage *result, *e;
-	char *attribs[10];
+	gchar *attribs[10];
 	BerElement *ber;
-	char *attribute;
-	char **vals;
+	gchar *attribute;
+	gchar **vals;
 	struct timeval timeout;
 
 	ldapServer->retVal = MGU_BAD_ARGS;
@@ -981,6 +991,7 @@ GList *syldap_read_basedn( SyldapServer *ldapServer ) {
 gboolean syldap_test_connect_s( const gchar *host, const gint port ) {
 	gboolean retVal = FALSE;
 	LDAP *ld;
+
 	if( host == NULL ) return retVal;
 	if( port < 1 ) return retVal;
 	if( ( ld = ldap_open( host, port ) ) != NULL ) {
@@ -1000,6 +1011,7 @@ gboolean syldap_test_connect_s( const gchar *host, const gint port ) {
 gboolean syldap_test_connect( SyldapServer *ldapServer ) {
 	gboolean retVal = FALSE;
 	LDAP *ld;
+
 	ldapServer->retVal = MGU_BAD_ARGS;
 	if( ldapServer == NULL ) return retVal;
 	if( ldapServer->hostName == NULL ) return retVal;

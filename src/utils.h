@@ -282,7 +282,9 @@ FILE *my_tmpfile		(void);
 
 /* process execution */
 gint execute_async		(gchar *const	 argv[]);
-gint execute_command_line	(const gchar	*cmdline);
+gint execute_sync		(gchar *const	 argv[]);
+gint execute_command_line	(const gchar	*cmdline,
+				 gboolean	 async);
 
 /* open URI with external browser */
 gint open_uri(const gchar *uri, const gchar *cmdline);

@@ -947,55 +947,45 @@ gboolean is_ascii_str(const guchar *str)
 
 gint get_quote_level(const gchar *str)
 {
-	size_t firstquotepos;
-	size_t lastquotepos = -1;
+	const gchar *first_pos;
+	const gchar *last_pos;
 	const gchar *p = str;
-	const gchar *pos;
-	gint quotelevel = -1;
-	gint i = 0;
+	gint quote_level = -1;
 
 	/* speed up line processing by only searching to the last '>' */
-	if ((pos = strchr(str, '>')) != NULL) {
-		firstquotepos = pos - str;
-		lastquotepos = strrchr(str, '>') - str + 1;
-
+	if ((first_pos = strchr(str, '>')) != NULL) {
 		/* skip a line if it contains a '<' before the initial '>' */
-		if (memchr(str, '<', pos - str) != NULL)
+		if (memchr(str, '<', first_pos - str) != NULL)
 			return -1;
+		last_pos = strrchr(first_pos, '>');
 	} else
 		return -1;
 
-	while (i < lastquotepos) {
-		while (i < lastquotepos) {
-			if (isspace(*p) || (*p == '\t')) {
+	while (p <= last_pos) {
+		while (p < last_pos) {
+			if (isspace(*p))
 				p++;
-				i++;
-			} else
+			else
 				break;
 		}
-		if (i >= lastquotepos)
-			break;
 
 		if (*p == '>')
-			quotelevel++;
-		else if ((*p != '-') && !isspace(*p) && (i < lastquotepos)) {
+			quote_level++;
+		else if (*p != '-' && !isspace(*p) && p <= last_pos) {
 			/* any characters are allowed except '-' and space */
-			while ((*p != '-') && (*p != '>') && !isspace(*p) &&
-			       (i < lastquotepos)) {
+			while (*p != '-' && *p != '>' && !isspace(*p) &&
+			       p < last_pos)
 				p++;
-				i++;
-			}
 			if (*p == '>')
-				quotelevel++;
-			else if ((i >= lastquotepos) || isspace(*p))
+				quote_level++;
+			else
 				break;
 		}
 
 		p++;
-		i++;
 	}
 
-	return quotelevel;
+	return quote_level;
 }
 
 GList *uri_list_extract_filenames(const gchar *uri_list)
@@ -1795,7 +1785,28 @@ gint execute_async(gchar *const argv[])
 	return 0;
 }
 
-gint execute_command_line(const gchar *cmdline)
+gint execute_sync(gchar *const argv[])
+{
+	pid_t pid;
+
+	if ((pid = fork()) < 0) {
+		perror("fork");
+		return -1;
+	}
+
+	if (pid == 0) {		/* child process */
+		execvp(argv[0], argv);
+
+		perror("execvp");
+		_exit(1);
+	}
+
+	waitpid(pid, NULL, 0);
+
+	return 0;
+}
+
+gint execute_command_line(const gchar *cmdline, gboolean async)
 {
 	gchar **argv;
 	gint i;
@@ -1817,7 +1828,10 @@ gint execute_command_line(const gchar *cmdline)
 		}
 	}
 
-	ret = execute_async(argv);
+	if (async)
+		ret = execute_async(argv);
+	else
+		ret = execute_sync(argv);
 	g_strfreev(argv);
 
 	return ret;
@@ -1842,7 +1856,7 @@ gint open_uri(const gchar *uri, const gchar *cmdline)
 		g_snprintf(buf, sizeof(buf), default_cmdline, uri);
 	}
 
-	execute_command_line(buf);
+	execute_command_line(buf, TRUE);
 
 	return 0;
 }

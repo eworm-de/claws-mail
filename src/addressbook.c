@@ -136,10 +136,10 @@ static GdkBitmap *categoryxpmmask;
 static GdkPixmap *ldapxpm;
 static GdkBitmap *ldapxpmmask;
 
-/* Message buffer  */
+/* Message buffer */
 static gchar addressbook_msgbuf[ ADDRESSBOOK_MSGBUF_SIZE ];
 
-/* Address list selection  */
+/* Address list selection */
 static GList *_addressListSelection_ = NULL;
 
 /* Address index file and interfaces */
@@ -153,7 +153,7 @@ static AddressBook_win addrbook;
 static GHashTable *_addressBookTypeHash_ = NULL;
 static GList *_addressBookTypeList_ = NULL;
 
-static void addressbook_create			( void );
+static void addressbook_create			(void);
 static gint addressbook_close			(void);
 static void addressbook_button_set_sensitive	(void);
 
@@ -244,24 +244,24 @@ static void addressbook_file_save_cb		(gpointer	 data,
 						 guint		 action,
 						 GtkWidget	*widget);
 
-/* Data source edit stuff  */
-static void addressbook_new_book_cb		( gpointer	data,
-	       					  guint		action,
-						  GtkWidget	*widget );
-static void addressbook_new_vcard_cb		( gpointer	data,
-	       					  guint		action,
-						  GtkWidget	*widget );
+/* Data source edit stuff */
+static void addressbook_new_book_cb		(gpointer	 data,
+	       					 guint		 action,
+						 GtkWidget	*widget);
+static void addressbook_new_vcard_cb		(gpointer	 data,
+	       					 guint		 action,
+						 GtkWidget	*widget);
 
 #ifdef USE_JPILOT
-static void addressbook_new_jpilot_cb		( gpointer	data,
-	       					  guint		action,
-						  GtkWidget	*widget );
+static void addressbook_new_jpilot_cb		(gpointer	 data,
+	       					 guint		 action,
+						 GtkWidget	*widget);
 #endif
 
 #ifdef USE_LDAP
-static void addressbook_new_ldap_cb		( gpointer	data,
-	       					  guint		action,
-						  GtkWidget	*widget );
+static void addressbook_new_ldap_cb		(gpointer	 data,
+	       					 guint		 action,
+						 GtkWidget	*widget);
 #endif
 
 static void addressbook_set_clist		(AddressObject	*obj);
@@ -280,20 +280,20 @@ static GtkCTreeNode *addressbook_node_add_folder
 						(GtkCTreeNode	*node,
 						AddressDataSource *ds,
 						ItemFolder	*itemFolder,
-						AddressObjectType otype );
+						AddressObjectType otype);
 static GtkCTreeNode *addressbook_node_add_group (GtkCTreeNode	*node,
 						AddressDataSource *ds,
-						ItemGroup	*itemGroup );
+						ItemGroup	*itemGroup);
 /* static GtkCTreeNode *addressbook_node_add_category
 						(GtkCTreeNode	*node,
 						 AddressDataSource *ds,
 						 ItemFolder	*itemFolder );  */
 static void addressbook_tree_remove_children	(GtkCTree	*ctree,
-						GtkCTreeNode	*parent );
+						GtkCTreeNode	*parent);
 static void addressbook_move_nodes_up		(GtkCTree	*ctree,
-						GtkCTreeNode	*node );
+						GtkCTreeNode	*node);
 static GtkCTreeNode *addressbook_find_group_node (GtkCTreeNode	*parent,
-						ItemGroup	*group );
+						ItemGroup	*group);
 
 static void addressbook_delete_object		(AddressObject	*obj);
 
@@ -306,34 +306,34 @@ static gint addressbook_list_compare_func	(GtkCList	*clist,
 /* static gint addressbook_obj_name_compare	(gconstpointer	 a,
 						 gconstpointer	 b);  */
 
-static void addressbook_book_show_message	( AddressBookFile *book );
-static void addressbook_vcard_show_message	( VCardFile *vcf );
+static void addressbook_book_show_message	(AddressBookFile *book);
+static void addressbook_vcard_show_message	(VCardFile *vcf);
 #ifdef USE_JPILOT
-static void addressbook_jpilot_show_message	( JPilotFile *jpf );
+static void addressbook_jpilot_show_message	(JPilotFile *jpf);
 #endif
 #ifdef USE_LDAP
-static void addressbook_ldap_show_message	( SyldapServer *server );
+static void addressbook_ldap_show_message	(SyldapServer *server);
 #endif
 
-/* LUT's and IF stuff  */
-static void addressbook_free_adapter		( GtkCTreeNode	*node );
-static void addressbook_free_child_adapters	( GtkCTreeNode	*node );
-AddressTypeControlItem *addrbookctl_lookup	( gint		ot );
-AddressTypeControlItem *addrbookctl_lookup_iface( AddressIfType	ifType );
+/* LUT's and IF stuff */
+static void addressbook_free_adapter		(GtkCTreeNode	*node);
+static void addressbook_free_child_adapters	(GtkCTreeNode	*node);
+AddressTypeControlItem *addrbookctl_lookup	(gint		 ot);
+AddressTypeControlItem *addrbookctl_lookup_iface(AddressIfType	 ifType);
 
-void addrbookctl_build_map			( GtkWidget	*window );
-void addrbookctl_build_iflist			( void );
-AdapterInterface *addrbookctl_find_interface	( AddressIfType	ifType );
-void addrbookctl_build_ifselect();
+void addrbookctl_build_map			(GtkWidget	*window);
+void addrbookctl_build_iflist			(void);
+AdapterInterface *addrbookctl_find_interface	(AddressIfType	 ifType);
+void addrbookctl_build_ifselect			(void);
 
-static void addrbookctl_free_interface		( AdapterInterface	*adapter );
-static void addrbookctl_free_datasource		( AdapterDSource	*adapter );
-static void addrbookctl_free_folder		( AdapterFolder	*adapter );
-static void addrbookctl_free_group		( AdapterGroup	*adapter );
+static void addrbookctl_free_interface		(AdapterInterface *adapter);
+static void addrbookctl_free_datasource		(AdapterDSource	  *adapter);
+static void addrbookctl_free_folder		(AdapterFolder	  *adapter);
+static void addrbookctl_free_group		(AdapterGroup	  *adapter);
 
-static void addressbook_list_select_clear	( void );
-static void addressbook_list_select_add		( AddressObject *obj );
-static void addressbook_list_select_remove	( AddressObject *obj );
+static void addressbook_list_select_clear	(void);
+static void addressbook_list_select_add		(AddressObject *obj);
+static void addressbook_list_select_remove	(AddressObject *obj);
 
 static GtkItemFactoryEntry addressbook_entries[] =
 {
@@ -426,10 +426,12 @@ Compose *addressbook_get_target_compose(void)
 	return addrbook.target_compose;
 }
 
-void addressbook_refresh( void ) {
-	if( addrbook.window ) {
-		if( addrbook.treeSelected ) {
-			gtk_ctree_select( GTK_CTREE(addrbook.ctree), addrbook.treeSelected );
+void addressbook_refresh(void)
+{
+	if (addrbook.window) {
+		if (addrbook.treeSelected) {
+			gtk_ctree_select(GTK_CTREE(addrbook.ctree),
+					 addrbook.treeSelected);
 		}
 	}
 	addressbook_export_to_file();
@@ -450,7 +452,8 @@ void addressbook_refresh( void ) {
 * In the tradition of MVC architecture, the data stores have been separated from the
 * GUI components. The addrindex.c file provides the interface to all data stores.
 */
-static void addressbook_create( void ) {
+static void addressbook_create(void)
+{
 	GtkWidget *window;
 	GtkWidget *vbox;
 	GtkWidget *menubar;
@@ -465,7 +468,6 @@ static void addressbook_create( void ) {
 	GtkWidget *label;
 	GtkWidget *entry;
 	GtkWidget *statusbar;
-	/* GtkWidget *hmbox;  */
 	GtkWidget *hbbox;
 	GtkWidget *hsbox;
 	GtkWidget *del_btn;
@@ -481,9 +483,6 @@ static void addressbook_create( void ) {
 	GtkItemFactory *menu_factory;
 	gint n_entries;
 	GList *nodeIf;
-	AdapterInterface *adapter;
-	AddressTypeControlItem *atci;
-	AddressInterface *iface;
 
 	gchar *titles[N_COLS] = {_("Name"), _("E-Mail address"), _("Remarks")};
 	gchar *text;
@@ -494,7 +493,6 @@ static void addressbook_create( void ) {
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Address book"));
 	gtk_widget_set_usize(window, ADDRESSBOOK_WIDTH, ADDRESSBOOK_HEIGHT);
-	gtk_container_set_border_width(GTK_CONTAINER(window), BORDER_WIDTH);
 	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, TRUE);
 	gtk_widget_realize(window);
 
@@ -527,7 +525,7 @@ static void addressbook_create( void ) {
 				       GTK_POLICY_ALWAYS);
 	gtk_widget_set_usize(ctree_swin, COL_FOLDER_WIDTH + 40, -1);
 
-	/* Address index  */
+	/* Address index */
 	ctree = gtk_ctree_new(1, 0);
 	gtk_container_add(GTK_CONTAINER(ctree_swin), ctree);
 	gtk_clist_set_selection_mode(GTK_CLIST(ctree), GTK_SELECTION_BROWSE);
@@ -556,7 +554,7 @@ static void addressbook_create( void ) {
 				       GTK_POLICY_ALWAYS);
 	gtk_box_pack_start(GTK_BOX(clist_vbox), clist_swin, TRUE, TRUE, 0);
 
-	/* Address list  */
+	/* Address list */
 	clist = gtk_ctree_new_with_titles(N_COLS, 0, titles);
 	gtk_container_add(GTK_CONTAINER(clist_swin), clist);
 	gtk_clist_set_selection_mode(GTK_CLIST(clist), GTK_SELECTION_EXTENDED);
@@ -666,22 +664,23 @@ static void addressbook_create( void ) {
 			   GTK_SIGNAL_FUNC(addressbook_to_clicked),
 			   GINT_TO_POINTER(COMPOSE_BCC));
 
-	/* Build icons for interface  */
+	/* Build icons for interface */
 	PIXMAP_CREATE( window, interfacexpm, interfacexpmmask, interface_xpm );
 
 	/* Build control tables */
-	addrbookctl_build_map( window );
+	addrbookctl_build_map(window);
 	addrbookctl_build_iflist();
 	addrbookctl_build_ifselect();
 
-	/* Add each interface into the tree as a root level folder  */
+	/* Add each interface into the tree as a root level folder */
 	nodeIf = _addressInterfaceList_;
 	while( nodeIf ) {
-		adapter = nodeIf->data;
-		nodeIf = g_list_next( nodeIf );
-		iface = adapter->interface;
-		if( iface->useInterface ) {
-			atci = adapter->atci;
+		AdapterInterface *adapter = nodeIf->data;
+		AddressInterface *iface = adapter->interface;
+		nodeIf = g_list_next(nodeIf);
+
+		if(iface->useInterface) {
+			AddressTypeControlItem *atci = adapter->atci;
 			text = atci->displayName;
 			adapter->treeNode =
 				gtk_ctree_insert_node( GTK_CTREE(ctree),
@@ -1109,7 +1108,7 @@ static void addressbook_tree_selected(GtkCTree *ctree, GtkCTreeNode *node,
 		ads = ADAPTER_DSOURCE(obj);
 		if( ads == NULL ) return;
 		ds = ads->dataSource;
-		if( ds == NULL ) return;
+		if( ds == NULL ) return;		
 
 		if( addrindex_ds_get_modify_flag( ds ) ) {
 			addrindex_ds_read_data( ds );
@@ -3006,9 +3005,9 @@ static void addressbook_lup_clicked( GtkButton *button, gpointer data ) {
 void addrbookctl_build_map( GtkWidget *window ) {
 	AddressTypeControlItem *atci;
 
-	/* Build icons */
-	PIXMAP_CREATE(window, folderxpm, folderxpmmask, DIRECTORY_CLOSE_XPM);
-	PIXMAP_CREATE(window, folderopenxpm, folderopenxpmmask, DIRECTORY_OPEN_XPM);
+	// Build icons
+	PIXMAP_CREATE(window, folderxpm, folderxpmmask, dir_close_xpm);
+	PIXMAP_CREATE(window, folderopenxpm, folderopenxpmmask, dir_open_xpm);
 	PIXMAP_CREATE(window, groupxpm, groupxpmmask, group_xpm);
 	PIXMAP_CREATE(window, vcardxpm, vcardxpmmask, vcard_xpm);
 	PIXMAP_CREATE(window, bookxpm, bookxpmmask, book_xpm);

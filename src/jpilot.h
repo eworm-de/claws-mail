@@ -26,11 +26,20 @@
 #ifndef __JPILOT_H__
 #define __JPILOT_H__
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #ifdef USE_JPILOT
 
-#include <stdio.h>
 #include <glib.h>
-#include <pi-address.h>
+#include <stdio.h>
+
+#ifdef HAVE_LIBPISOCK_PI_ADDRESS_H
+#  include <libpisock/pi-address.h>
+#else
+#  include <pi-address.h>
+#endif
 
 #include "addritem.h"
 #include "addrcache.h"

@@ -426,9 +426,8 @@ void folderview_init(FolderView *folderview)
 
 	PIXMAP_CREATE(ctree, inboxxpm, inboxxpmmask, inbox_xpm);
 	PIXMAP_CREATE(ctree, outboxxpm, outboxxpmmask, outbox_xpm);
-	PIXMAP_CREATE(ctree, folderxpm, folderxpmmask, DIRECTORY_CLOSE_XPM);
-	PIXMAP_CREATE(ctree, folderopenxpm, folderopenxpmmask,
-		      DIRECTORY_OPEN_XPM);
+	PIXMAP_CREATE(ctree, folderxpm, folderxpmmask, dir_close_xpm);
+	PIXMAP_CREATE(ctree, folderopenxpm, folderopenxpmmask, dir_open_xpm);
 	PIXMAP_CREATE(ctree, trashxpm, trashxpmmask, trash_xpm);
 
 	if (!normalfont)

@@ -81,11 +81,6 @@ static struct Filter {
    pointer to the function for widget setting
  */
 
-#define VSPACING		12
-#define VSPACING_NARROW		4
-#define DEFAULT_ENTRY_WIDTH	80
-#define PREFSBUFSIZE		1024
-
 /* widget creating functions */
 static void prefs_filter_create		(void);
 

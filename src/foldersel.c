@@ -193,9 +193,8 @@ static void foldersel_create(void)
 
 static void foldersel_init(void)
 {
-	PIXMAP_CREATE(ctree, folderxpm, folderxpmmask, DIRECTORY_CLOSE_XPM);
-	PIXMAP_CREATE(ctree, folderopenxpm, folderopenxpmmask,
-		      DIRECTORY_OPEN_XPM);
+	PIXMAP_CREATE(ctree, folderxpm, folderxpmmask, dir_close_xpm);
+	PIXMAP_CREATE(ctree, folderopenxpm, folderopenxpmmask, dir_open_xpm);
 }
 
 static gboolean foldersel_gnode_func(GtkCTree *ctree, guint depth,

@@ -8,7 +8,7 @@ MINOR_VERSION=6
 MICRO_VERSION=1
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws2
+EXTRA_VERSION=claws3
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl
@@ -152,6 +152,12 @@ if test "$ac_cv_enable_jpilot" = yes; then
 			 [ LIBS="$LIBS -lpisock"
 			   AC_DEFINE(USE_JPILOT) ],
 			 [ ac_cv_enable_jpilot=no ])
+	if test "$ac_cv_enable_jpilot" = no; then
+		AC_CHECK_HEADERS(libpisock/pi-args.h libpisock/pi-appinfo.h libpisock/pi-address.h,
+				 [ LIBS="$LIBS -lpisock"
+				   ac_cv_enable_jpilot=yes
+				   AC_DEFINE(USE_JPILOT) ])
+	fi
 	AC_MSG_CHECKING([whether jpilot is available])
 	AC_MSG_RESULT($ac_cv_enable_jpilot)
 else

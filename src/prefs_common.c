@@ -102,6 +102,7 @@ static struct Compose {
 	GtkWidget *entry_fw_quotemark;
 	GtkWidget *text_fw_quotefmt;
 
+	GtkWidget *checkbtn_autoextedit;
 	GtkWidget *checkbtn_reply_account_autosel;
 	GtkWidget *checkbtn_forward_account_autosel;
 	GtkWidget *checkbtn_reedit_account_autosel;
@@ -231,7 +232,7 @@ static PrefParam param[] = {
 	{"use_ext_inc", "FALSE", &prefs_common.use_extinc, P_BOOL,
 	 &receive.checkbtn_incext,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"ext_inc_path", DEFAULT_INC_PATH, &prefs_common.extinc_path, P_STRING,
+	{"ext_inc_path", DEFAULT_INC_PATH, &prefs_common.extinc_cmd, P_STRING,
 	 &receive.entry_incext,
 	 prefs_set_data_from_entry, prefs_set_entry},
 
@@ -305,6 +306,9 @@ static PrefParam param[] = {
 	{"signature_separator", "-- ", &prefs_common.sig_sep, P_STRING,
 	 &compose.entry_sigsep, prefs_set_data_from_entry, prefs_set_entry},
 
+	{"auto_ext_editor", "FALSE", &prefs_common.auto_exteditor, P_BOOL,
+	 &compose.checkbtn_autoextedit,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
         {"reply_account_autoselect", "TRUE",
 	 &prefs_common.reply_account_autosel, P_BOOL,
 	 &compose.checkbtn_reply_account_autosel,
@@ -1201,6 +1205,8 @@ static void prefs_compose_btn_ispell_path_clicked_cb(GtkWidget *widget,
 static void prefs_compose_create(void)
 {
 	GtkWidget *vbox1;
+        GtkWidget *vbox2;
+        GtkWidget *vbox3;
 
 	/*
 	GtkWidget *frame_quote;
@@ -1232,6 +1238,8 @@ static void prefs_compose_create(void)
 	GtkWidget *checkbtn_reply_account_autosel;
 	GtkWidget *checkbtn_forward_account_autosel;
 	GtkWidget *checkbtn_reedit_account_autosel;
+
+	GtkWidget *checkbtn_autoextedit;
 
         GtkWidget *vbox_linewrap;
 
@@ -1272,21 +1280,25 @@ static void prefs_compose_create(void)
 	gtk_container_add (GTK_CONTAINER (frame_quote), vbox_quote);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
 
-	PACK_CHECK_BUTTON (vbox_quote, checkbtn_quote,
-			   _("Quote message when replying"));
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
+	hbox1 = gtk_hbox_new (FALSE, 32);
 	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, FALSE, FALSE, 0);
+
+	hbox2 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox2);
+	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
 
 	label_quotemark = gtk_label_new (_("Quotation mark"));
 	gtk_widget_show (label_quotemark);
-	gtk_box_pack_start (GTK_BOX (hbox1), label_quotemark, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox2), label_quotemark, FALSE, FALSE, 0);
 
 	entry_quotemark = gtk_entry_new ();
 	gtk_widget_show (entry_quotemark);
-	gtk_box_pack_start (GTK_BOX (hbox1), entry_quotemark, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox2), entry_quotemark, FALSE, FALSE, 0);
 	gtk_widget_set_usize (entry_quotemark, 64, -1);
+
+	PACK_CHECK_BUTTON (hbox1, checkbtn_quote,
+			   _("Quote message when replying"));
 
 	hbox2 = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hbox2);
@@ -1367,7 +1379,16 @@ static void prefs_compose_create(void)
 	PACK_CHECK_BUTTON (hbox_autosel, checkbtn_reedit_account_autosel,
 			   _("when re-editing"));
 
-	/* line-wrapping */
+	vbox2 = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vbox2);
+	gtk_box_pack_start (GTK_BOX (vbox1), vbox2, FALSE, FALSE, 0);
+
+	PACK_CHECK_BUTTON (vbox2, checkbtn_autoextedit,
+			   _("Automatically launch the external editor"));
+
+	PACK_VSPACER (vbox2, vbox3, VSPACING_NARROW_2);
+
+        /* line-wrapping */
 	vbox_linewrap = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox_linewrap);
 	gtk_box_pack_start (GTK_BOX (vbox1), vbox_linewrap, FALSE, FALSE, 0);
@@ -1392,6 +1413,8 @@ static void prefs_compose_create(void)
 	label_linewrap = gtk_label_new (_("characters"));
 	gtk_widget_show (label_linewrap);
 	gtk_box_pack_start (GTK_BOX (hbox3), label_linewrap, FALSE, FALSE, 0);
+
+	PACK_VSPACER (vbox2, vbox3, VSPACING_NARROW_2);
 
 	hbox4 = gtk_hbox_new (FALSE, 32);
 	gtk_widget_show (hbox4);
@@ -1467,6 +1490,7 @@ static void prefs_compose_create(void)
 	compose.checkbtn_autosig = checkbtn_autosig;
 	compose.entry_sigsep     = entry_sigsep;
 
+	compose.checkbtn_autoextedit = checkbtn_autoextedit;
         compose.checkbtn_reply_account_autosel = checkbtn_reply_account_autosel;
 	compose.checkbtn_forward_account_autosel = checkbtn_forward_account_autosel;
 	compose.checkbtn_reedit_account_autosel = checkbtn_reedit_account_autosel;
@@ -2211,6 +2235,7 @@ static void prefs_other_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), exteditor_combo, TRUE, TRUE, 0);
 	gtkut_combo_set_items (GTK_COMBO (exteditor_combo),
 			       "gedit %s",
+			       "kedit %s",
 			       "mgedit --no-fork %s",
 			       "emacs %s",
 			       "xemacs %s",

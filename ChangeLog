@@ -1,8 +1,55 @@
+2001-09-12
+
+	* src/utils.c: get_quote_level(): some optimization and bugfixes.
+	* src/codeconv.[ch]: conv_get_current_locale(): new.
+	* src/editaddress.c: edit_person_page_basic(): reverse the order
+	  of first and last name on some locales.
+
+2001-09-11
+
+	* src/compose.c: applied the patch from Yasumatsu that reformats
+	  the current paragraph (thanks!). Modified so that it doesn't
+	  reformat quoted paragraphs.
+	  compose_create(): don't fill the entry automatically on reedit
+	  mode.
+	* src/mainwindow.c
+	  src/summaryview.[ch]: added the "Mark all read" option.
+	  summary_mark_all_read(): new.
+
+2001-09-10
+
+	* src/vcard.c
+	  src/mgutils.c
+	  src/syldap.c
+	  src/editldap.c
+	  src/editldap_basedn.c
+	  src/jpilot.c
+	  src/editjpilot.c: removed all warnings.
+	* configure.in
+	  src/jpilot.[ch]: fixed the problem that failed to detect JPilot
+	  header files on the Debian system.
+	* src/mainwindow.c
+	  src/summaryview.[ch]: enabled sorting by mark, unread, attachment,
+	  and color label. Enabled moving to next/prev flagged messages.
+
+2001-09-09
+
+	* src/pixmaps/dir-close.xpm
+	  src/pixmaps/dir-open.xpm
+	  src/pixmaps/new.xpm
+	  src/pixmaps/unread.xpm: modified the color balance.
+	* src/utils.[ch]: execute_sync(): new.
+	  execute_command_line(): added the arg for async mode.
+	* src/inc.c: inc_mail(): use execute_command_line().
+
 2001-09-08
 
 	* src/prefs.[ch]
-	  src/prefs_common.c
-	  src/prefs_account.c: modified the layout.
+	  src/prefs_common.[ch]
+	  src/prefs_account.c: modified the layout. Added the option to
+	  launch the external editor automatically.
+	* src/compose.c: launch the external editor automatically if the
+	  option is set.
 
 2001-09-06
 

@@ -157,29 +157,27 @@ static void summary_select_node		(SummaryView		*summaryview,
 static guint summary_get_msgnum		(SummaryView		*summaryview,
 					 GtkCTreeNode		*node);
 
-static GtkCTreeNode *summary_find_next_unread_msg
+static GtkCTreeNode *summary_find_prev_unread_msg
 					(SummaryView		*summaryview,
 					 GtkCTreeNode		*current_node);
-static GtkCTreeNode *summary_find_next_marked_msg
+static GtkCTreeNode *summary_find_next_unread_msg
 					(SummaryView		*summaryview,
 					 GtkCTreeNode		*current_node);
 static GtkCTreeNode *summary_find_prev_marked_msg
 					(SummaryView		*summaryview,
 					 GtkCTreeNode		*current_node);
-static GtkCTreeNode *summary_find_next_labeled_msg
+static GtkCTreeNode *summary_find_next_marked_msg
 					(SummaryView		*summaryview,
 					 GtkCTreeNode		*current_node);
 static GtkCTreeNode *summary_find_prev_labeled_msg
 					(SummaryView		*summaryview,
 					 GtkCTreeNode		*current_node);
+static GtkCTreeNode *summary_find_next_labeled_msg
+					(SummaryView		*summaryview,
+					 GtkCTreeNode		*current_node);
 static GtkCTreeNode *summary_find_msg_by_msgnum
 					(SummaryView		*summaryview,
 					 guint			 msgnum);
-#if 0
-static GtkCTreeNode *summary_find_prev_unread_msg
-					(SummaryView		*summaryview,
-					 GtkCTreeNode		*current_node);
-#endif
 
 static void summary_update_status	(SummaryView		*summaryview);
 
@@ -287,6 +285,16 @@ static void summary_show_all_header_cb	(SummaryView		*summaryview,
 					 guint			 action,
 					 GtkWidget		*widget);
 
+static void summary_add_address_cb	(SummaryView		*summaryview,
+					 guint			 action,
+					 GtkWidget		*widget);
+
+static void summary_mark_clicked	(GtkWidget		*button,
+					 SummaryView		*summaryview);
+static void summary_unread_clicked	(GtkWidget		*button,
+					 SummaryView		*summaryview);
+static void summary_mime_clicked	(GtkWidget		*button,
+					 SummaryView		*summaryview);
 static void summary_num_clicked		(GtkWidget		*button,
 					 SummaryView		*summaryview);
 static void summary_score_clicked       (GtkWidget *button,
@@ -298,8 +306,6 @@ static void summary_date_clicked	(GtkWidget		*button,
 static void summary_from_clicked	(GtkWidget		*button,
 					 SummaryView		*summaryview);
 static void summary_subject_clicked	(GtkWidget		*button,
-					 SummaryView		*summaryview);
-static void summary_mark_clicked	(GtkWidget		*button,
 					 SummaryView		*summaryview);
 
 static void summary_start_drag		(GtkWidget        *widget, 
@@ -313,12 +319,17 @@ static void summary_drag_data_get       (GtkWidget        *widget,
 					 guint             time,
 					 SummaryView      *summaryview);
 
-static void summary_add_address_cb	(SummaryView		*summaryview,
-					 guint			 action,
-					 GtkWidget		*widget);
-
 /* custom compare functions for sorting */
 
+static gint summary_cmp_by_mark		(GtkCList		*clist,
+					 gconstpointer		 ptr1,
+					 gconstpointer		 ptr2);
+static gint summary_cmp_by_unread	(GtkCList		*clist,
+					 gconstpointer		 ptr1,
+					 gconstpointer		 ptr2);
+static gint summary_cmp_by_mime		(GtkCList		*clist,
+					 gconstpointer		 ptr1,
+					 gconstpointer		 ptr2);
 static gint summary_cmp_by_num		(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
@@ -373,9 +384,7 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/_Mark/---"),		NULL, NULL,		0, "<Separator>"},
 	{N_("/_Mark/Mark as unr_ead"),	NULL, summary_mark_as_unread, 0, NULL},
 	{N_("/_Mark/Mark as rea_d"),	NULL, summary_mark_as_read, 0, NULL},
-#if MARK_ALL_READ	
 	{N_("/_Mark/Mark all read"),    NULL, summary_mark_all_read, 0, NULL},
-#endif	
 	{N_("/_Mark/Ignore thread"),	NULL, summary_ignore_thread, 0, NULL},
 	{N_("/_Mark/Unignore thread"),	NULL, summary_unignore_thread, 0, NULL},
 	{N_("/Color la_bel"),		NULL, NULL, 		0, NULL},
@@ -494,41 +503,24 @@ SummaryView *summary_create(void)
 				       GTK_CAN_FOCUS);
 
 	/* connect signal to the buttons for sorting */
-	gtk_signal_connect
-		(GTK_OBJECT(GTK_CLIST(ctree)->column[S_COL_NUMBER].button),
-		 "clicked",
-		 GTK_SIGNAL_FUNC(summary_num_clicked),
-		 summaryview);
-	gtk_signal_connect
-		(GTK_OBJECT(GTK_CLIST(ctree)->column[S_COL_SCORE].button),
-		 "clicked",
-		 GTK_SIGNAL_FUNC(summary_score_clicked),
-		 summaryview);
-	gtk_signal_connect
-		(GTK_OBJECT(GTK_CLIST(ctree)->column[S_COL_SIZE].button),
-		 "clicked",
-		 GTK_SIGNAL_FUNC(summary_size_clicked),
-		 summaryview);
-	gtk_signal_connect
-		(GTK_OBJECT(GTK_CLIST(ctree)->column[S_COL_DATE].button),
-		 "clicked",
-		 GTK_SIGNAL_FUNC(summary_date_clicked),
-		 summaryview);
-	gtk_signal_connect
-		(GTK_OBJECT(GTK_CLIST(ctree)->column[S_COL_FROM].button),
-		 "clicked",
-		 GTK_SIGNAL_FUNC(summary_from_clicked),
-		 summaryview);
-	gtk_signal_connect
-		(GTK_OBJECT(GTK_CLIST(ctree)->column[S_COL_SUBJECT].button),
-		 "clicked",
-		 GTK_SIGNAL_FUNC(summary_subject_clicked),
-		 summaryview);
-	gtk_signal_connect
-		(GTK_OBJECT(GTK_CLIST(ctree)->column[S_COL_MARK].button),
-		 "clicked",
-		 GTK_SIGNAL_FUNC(summary_mark_clicked),
-		 summaryview);
+#define CLIST_BUTTON_SIGNAL_CONNECT(col, func) \
+	gtk_signal_connect \
+		(GTK_OBJECT(GTK_CLIST(ctree)->column[col].button), \
+		 "clicked", \
+		 GTK_SIGNAL_FUNC(func), \
+		 summaryview)
+
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_MARK   , summary_mark_clicked);
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_UNREAD , summary_unread_clicked);
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_MIME   , summary_mime_clicked);
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_NUMBER , summary_num_clicked);
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SCORE  , summary_score_clicked);
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SIZE   , summary_size_clicked);
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_DATE   , summary_date_clicked);
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_FROM   , summary_from_clicked);
+	CLIST_BUTTON_SIGNAL_CONNECT(S_COL_SUBJECT, summary_subject_clicked);
+
+#undef CLIST_BUTTON_SIGNAL_CONNECT
 
 	/* create status label */
 	hbox = gtk_hbox_new(FALSE, 0);
@@ -629,7 +621,7 @@ void summary_init(SummaryView *summaryview)
 		      ignorethread_xpm);
 	PIXMAP_CREATE(summaryview->ctree, clipxpm, clipxpmmask, clip_xpm);
 	PIXMAP_CREATE(summaryview->hbox, folderxpm, folderxpmmask,
-		      DIRECTORY_OPEN_XPM);
+		      dir_open_xpm);
 
 	pixmap = gtk_pixmap_new(clipxpm, clipxpmmask);
 	gtk_clist_set_column_widget(GTK_CLIST(summaryview->ctree),
@@ -1064,9 +1056,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 
 	menu_set_sensitive(ifactory, "/Mark/Mark as unread", TRUE);
 	menu_set_sensitive(ifactory, "/Mark/Mark as read",   TRUE);
-#if MARK_ALL_READ
 	menu_set_sensitive(ifactory, "/Mark/Mark all read", TRUE);
-#endif
 	menu_set_sensitive(ifactory, "/Mark/Ignore thread",   TRUE);
 	menu_set_sensitive(ifactory, "/Mark/Unignore thread", TRUE);
 
@@ -1080,7 +1070,7 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	menu_set_sensitive(ifactory, "/Forward as attachment",    TRUE);
 
 	menu_set_sensitive(ifactory, "/Add sender to address book", sens);
-	
+
 	menu_set_sensitive(ifactory, "/Open in new window", sens);
 	menu_set_sensitive(ifactory, "/View source", sens);
 	menu_set_sensitive(ifactory, "/Show all header", sens);
@@ -1102,59 +1092,56 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	menu_set_sensitive(ifactory, "/Follow-up and reply to",	sens);
 }
 
-#if 0
-static void summary_set_add_sender_menu(SummaryView *summaryview)
+void summary_select_prev_unread(SummaryView *summaryview)
 {
-	GtkWidget *menu;
-	GtkWidget *submenu;
-	MsgInfo *msginfo;
-	gchar *from;
+	GtkCTreeNode *node;
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 
-	menu = gtk_item_factory_get_item(summaryview->popupfactory,
-					 "/Add sender to address book");
-	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
-					      summaryview->selected);
-	if (!msginfo || !msginfo->from) {
-		gtk_widget_set_sensitive(menu, FALSE);
-		submenu = gtk_menu_new();
-		gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu), submenu);
-		return;
+	node = summary_find_prev_unread_msg(summaryview, summaryview->selected);
+
+	if (!node) {
+		AlertValue val;
+
+		val = alertpanel(_("No more unread messages"),
+				 _("No unread message found. "
+				   "Search from the end?"),
+				 _("Yes"), _("No"), NULL);
+		if (val != G_ALERTDEFAULT) return;
+		node = summary_find_prev_unread_msg(summaryview, NULL);
 	}
 
-	gtk_widget_set_sensitive(menu, TRUE);
-	Xstrdup_a(from, msginfo->from, return);
-	eliminate_address_comment(from);
-	extract_address(from);
-	addressbook_add_submenu(menu, msginfo->fromname, from, NULL);
+	if (!node) {
+		alertpanel_notice(_("No unread messages."));
+	} else {
+		gtkut_ctree_expand_parent_all(ctree, node);
+		gtk_sctree_unselect_all(GTK_SCTREE(ctree));
+		gtk_sctree_select(GTK_SCTREE(ctree), node);
+		if (summaryview->displayed == node)
+			summaryview->displayed = NULL;
+		summary_display_msg(summaryview, node, FALSE);
+	}
 }
-#endif
 
 void summary_select_next_unread(SummaryView *summaryview)
 {
 	GtkCTreeNode *node;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 
-	node = summary_find_next_unread_msg(summaryview,
-					    summaryview->selected);
+	node = summary_find_next_unread_msg(summaryview, summaryview->selected);
 
 	if (node) {
 		gtkut_ctree_expand_parent_all(ctree, node);
 		gtk_sctree_unselect_all(GTK_SCTREE(ctree));
 		gtk_sctree_select(GTK_SCTREE(ctree), node);
-
-		/* BUGFIX: select next unread message 
-		 * REVERT: causes incorrect folder stats
-		 * gtk_ctree_node_moveto(ctree, node, -1, 0.5, 0.0); 
-		 */
-
 		if (summaryview->displayed == node)
 			summaryview->displayed = NULL;
 		summary_display_msg(summaryview, node, FALSE);
 	} else {
 		AlertValue val;
 
-		val = alertpanel(_("No unread message"),
-				 _("No unread message found. Go to next folder?"),
+		val = alertpanel(_("No more unread messages"),
+				 _("No unread message found. "
+				   "Go to next folder?"),
 				 _("Yes"), _("No"), NULL);
 		if (val == G_ALERTDEFAULT) {
 			if (gtk_signal_n_emissions_by_name
@@ -1167,43 +1154,12 @@ void summary_select_next_unread(SummaryView *summaryview)
 	}
 }
 
-void summary_select_next_marked(SummaryView *summaryview)
-{
-	GtkCTreeNode *node;
-	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-
-	node = summary_find_next_marked_msg(summaryview,
-					    summaryview->selected);
-
-	if (!node) {
-		AlertValue val;
-
-		val = alertpanel(_("No more marked messages"),
-				 _("No marked message found. "
-				   "Search from the beginning?"),
-				 _("Yes"), _("No"), NULL);
-		if (val != G_ALERTDEFAULT) return;
-		node = summary_find_next_marked_msg(summaryview,
-						    NULL);
-	}
-	if (!node) {
-		alertpanel_notice(_("No marked messages."));
-	} else {
-		gtk_sctree_unselect_all(GTK_SCTREE(ctree));
-		gtk_sctree_select(GTK_SCTREE(ctree), node);
-		if (summaryview->displayed == node)
-			summaryview->displayed = NULL;
-		summary_display_msg(summaryview, node, FALSE);
-	}
-}
-
 void summary_select_prev_marked(SummaryView *summaryview)
 {
 	GtkCTreeNode *node;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 
-	node = summary_find_prev_marked_msg(summaryview,
-					    summaryview->selected);
+	node = summary_find_prev_marked_msg(summaryview, summaryview->selected);
 
 	if (!node) {
 		AlertValue val;
@@ -1213,12 +1169,13 @@ void summary_select_prev_marked(SummaryView *summaryview)
 				   "Search from the end?"),
 				 _("Yes"), _("No"), NULL);
 		if (val != G_ALERTDEFAULT) return;
-		node = summary_find_prev_marked_msg(summaryview,
-						    NULL);
+		node = summary_find_prev_marked_msg(summaryview, NULL);
 	}
+
 	if (!node) {
 		alertpanel_notice(_("No marked messages."));
 	} else {
+		gtkut_ctree_expand_parent_all(ctree, node);
 		gtk_sctree_unselect_all(GTK_SCTREE(ctree));
 		gtk_sctree_select(GTK_SCTREE(ctree), node);
 		if (summaryview->displayed == node)
@@ -1227,28 +1184,28 @@ void summary_select_prev_marked(SummaryView *summaryview)
 	}
 }
 
-void summary_select_next_labeled(SummaryView *summaryview)
+void summary_select_next_marked(SummaryView *summaryview)
 {
 	GtkCTreeNode *node;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 
-	node = summary_find_next_labeled_msg(summaryview,
-					    summaryview->selected);
+	node = summary_find_next_marked_msg(summaryview, summaryview->selected);
 
 	if (!node) {
 		AlertValue val;
 
-		val = alertpanel(_("No more labeled messages"),
-				 _("No labeled message found. "
+		val = alertpanel(_("No more marked messages"),
+				 _("No marked message found. "
 				   "Search from the beginning?"),
 				 _("Yes"), _("No"), NULL);
 		if (val != G_ALERTDEFAULT) return;
-		node = summary_find_next_labeled_msg(summaryview,
-						    NULL);
+		node = summary_find_next_marked_msg(summaryview, NULL);
 	}
+
 	if (!node) {
-		alertpanel_notice(_("No labeled messages."));
+		alertpanel_notice(_("No marked messages."));
 	} else {
+		gtkut_ctree_expand_parent_all(ctree, node);
 		gtk_sctree_unselect_all(GTK_SCTREE(ctree));
 		gtk_sctree_select(GTK_SCTREE(ctree), node);
 		if (summaryview->displayed == node)
@@ -1262,8 +1219,7 @@ void summary_select_prev_labeled(SummaryView *summaryview)
 	GtkCTreeNode *node;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 
-	node = summary_find_prev_labeled_msg(summaryview,
-					    summaryview->selected);
+	node = summary_find_prev_labeled_msg(summaryview, summaryview->selected);
 
 	if (!node) {
 		AlertValue val;
@@ -1273,12 +1229,43 @@ void summary_select_prev_labeled(SummaryView *summaryview)
 				   "Search from the end?"),
 				 _("Yes"), _("No"), NULL);
 		if (val != G_ALERTDEFAULT) return;
-		node = summary_find_prev_labeled_msg(summaryview,
-						    NULL);
+		node = summary_find_prev_labeled_msg(summaryview, NULL);
 	}
+
 	if (!node) {
 		alertpanel_notice(_("No labeled messages."));
 	} else {
+		gtkut_ctree_expand_parent_all(ctree, node);
+		gtk_sctree_unselect_all(GTK_SCTREE(ctree));
+		gtk_sctree_select(GTK_SCTREE(ctree), node);
+		if (summaryview->displayed == node)
+			summaryview->displayed = NULL;
+		summary_display_msg(summaryview, node, FALSE);
+	}
+}
+
+void summary_select_next_labeled(SummaryView *summaryview)
+{
+	GtkCTreeNode *node;
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+
+	node = summary_find_next_labeled_msg(summaryview, summaryview->selected);
+
+	if (!node) {
+		AlertValue val;
+
+		val = alertpanel(_("No more labeled messages"),
+				 _("No labeled message found. "
+				   "Search from the beginning?"),
+				 _("Yes"), _("No"), NULL);
+		if (val != G_ALERTDEFAULT) return;
+		node = summary_find_next_labeled_msg(summaryview, NULL);
+	}
+
+	if (!node) {
+		alertpanel_notice(_("No labeled messages."));
+	} else {
+		gtkut_ctree_expand_parent_all(ctree, node);
 		gtk_sctree_unselect_all(GTK_SCTREE(ctree));
 		gtk_sctree_select(GTK_SCTREE(ctree), node);
 		if (summaryview->displayed == node)
@@ -1332,6 +1319,26 @@ static guint summary_get_msgnum(SummaryView *summaryview, GtkCTreeNode *node)
 	return msginfo->msgnum;
 }
 
+static GtkCTreeNode *summary_find_prev_unread_msg(SummaryView *summaryview,
+						  GtkCTreeNode *current_node)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GtkCTreeNode *node;
+	MsgInfo *msginfo;
+
+	if (current_node)
+		node = current_node;
+	else
+		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list_end);
+
+	for (; node != NULL; node = GTK_CTREE_NODE_PREV(node)) {
+		msginfo = gtk_ctree_node_get_row_data(ctree, node);
+		if (MSG_IS_UNREAD(msginfo->flags)) break;
+	}
+
+	return node;
+}
+
 static GtkCTreeNode *summary_find_next_unread_msg(SummaryView *summaryview,
 						  GtkCTreeNode *current_node)
 {
@@ -1346,27 +1353,7 @@ static GtkCTreeNode *summary_find_next_unread_msg(SummaryView *summaryview,
 
 	for (; node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
-		if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) break;
-	}
-
-	return node;
-}
-
-static GtkCTreeNode *summary_find_next_marked_msg(SummaryView *summaryview,
-						  GtkCTreeNode *current_node)
-{
-	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-	GtkCTreeNode *node;
-	MsgInfo *msginfo;
-
-	if (current_node)
-		node = GTK_CTREE_NODE_NEXT(current_node);
-	else
-		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
-
-	for (; node != NULL; node = GTK_CTREE_NODE_NEXT(node)) {
-		msginfo = gtk_ctree_node_get_row_data(ctree, node);
-		if (MSG_IS_MARKED(msginfo->flags)) break;
+		if (MSG_IS_UNREAD(msginfo->flags)) break;
 	}
 
 	return node;
@@ -1392,7 +1379,7 @@ static GtkCTreeNode *summary_find_prev_marked_msg(SummaryView *summaryview,
 	return node;
 }
 
-static GtkCTreeNode *summary_find_next_labeled_msg(SummaryView *summaryview,
+static GtkCTreeNode *summary_find_next_marked_msg(SummaryView *summaryview,
 						  GtkCTreeNode *current_node)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
@@ -1400,20 +1387,20 @@ static GtkCTreeNode *summary_find_next_labeled_msg(SummaryView *summaryview,
 	MsgInfo *msginfo;
 
 	if (current_node)
-		node = GTK_CTREE_NODE_NEXT(current_node);
+		node = gtkut_ctree_node_next(ctree, current_node);
 	else
 		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 
-	for (; node != NULL; node = GTK_CTREE_NODE_NEXT(node)) {
+	for (; node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
-                if (MSG_GET_COLORLABEL_VALUE(msginfo->flags) > 0) break;
+		if (MSG_IS_MARKED(msginfo->flags)) break;
 	}
 
 	return node;
 }
 
 static GtkCTreeNode *summary_find_prev_labeled_msg(SummaryView *summaryview,
-						  GtkCTreeNode *current_node)
+						   GtkCTreeNode *current_node)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCTreeNode *node;
@@ -1426,7 +1413,27 @@ static GtkCTreeNode *summary_find_prev_labeled_msg(SummaryView *summaryview,
 
 	for (; node != NULL; node = GTK_CTREE_NODE_PREV(node)) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
-                 if (MSG_GET_COLORLABEL_VALUE(msginfo->flags) > 0) break;
+		if (MSG_GET_COLORLABEL_VALUE(msginfo->flags) > 0) break;
+	}
+
+	return node;
+}
+
+static GtkCTreeNode *summary_find_next_labeled_msg(SummaryView *summaryview,
+						   GtkCTreeNode *current_node)
+{
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GtkCTreeNode *node;
+	MsgInfo *msginfo;
+
+	if (current_node)
+		node = gtkut_ctree_node_next(ctree, current_node);
+	else
+		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+
+	for (; node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
+		msginfo = gtk_ctree_node_get_row_data(ctree, node);
+		if (MSG_GET_COLORLABEL_VALUE(msginfo->flags) > 0) break;
 	}
 
 	return node;
@@ -1448,29 +1455,6 @@ static GtkCTreeNode *summary_find_msg_by_msgnum(SummaryView *summaryview,
 
 	return node;
 }
-
-#if 0
-static GtkCTreeNode *summary_find_prev_unread_msg(SummaryView *summaryview,
-						  GtkCTreeNode *current_node)
-{
-	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-	GtkCTreeNode *node;
-	MsgInfo *msginfo;
-
-	if (current_node)
-		node = current_node;
-		/*node = GTK_CTREE_NODE_PREV(current_node);*/
-	else
-		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list_end);
-
-	for (; node != NULL; node = GTK_CTREE_NODE_PREV(node)) {
-		msginfo = gtk_ctree_node_get_row_data(ctree, node);
-		if (MSG_IS_UNREAD(msginfo->flags)) break;
-	}
-
-	return node;
-}
-#endif
 
 static guint attract_hash_func(gconstpointer key)
 {
@@ -1721,6 +1705,15 @@ void summary_sort(SummaryView *summaryview, SummarySortType type)
 		return;
 
 	switch (type) {
+	case SORT_BY_MARK:
+		cmp_func = (GtkCListCompareFunc)summary_cmp_by_mark;
+		break;
+	case SORT_BY_UNREAD:
+		cmp_func = (GtkCListCompareFunc)summary_cmp_by_unread;
+		break;
+	case SORT_BY_MIME:
+		cmp_func = (GtkCListCompareFunc)summary_cmp_by_mime;
+		break;
 	case SORT_BY_NUMBER:
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_num;
 		break;
@@ -2558,14 +2551,25 @@ void summary_mark_as_read(SummaryView *summaryview)
 	summary_status_show(summaryview);
 }
 
-#if MARK_ALL_READ
-static void summary_mark_all_read(SummaryView *summaryview)
+void summary_mark_all_read(SummaryView *summaryview)
 {
-	summary_select_all(summaryview);
-	summary_mark_as_read(summaryview);
-	summary_unselect_all(summaryview);
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	GtkCList *clist = GTK_CLIST(summaryview->ctree);
+	GtkCTreeNode *node;
+
+	gtk_clist_freeze(clist);
+	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list); node != NULL;
+	     node = gtkut_ctree_node_next(ctree, node))
+		summary_mark_row_as_read(summaryview, node);
+	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list); node != NULL;
+	     node = gtkut_ctree_node_next(ctree, node)) {
+		if (!GTK_CTREE_ROW(node)->expanded)
+			summary_set_row_marks(summaryview, node);
+	}
+	gtk_clist_thaw(clist);
+
+	summary_status_show(summaryview);
 }
-#endif
 
 static void summary_mark_row_as_unread(SummaryView *summaryview,
 				       GtkCTreeNode *row)
@@ -2582,8 +2586,6 @@ static void summary_mark_row_as_unread(SummaryView *summaryview,
 	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_REPLIED | MSG_FORWARDED);
 	if (!MSG_IS_UNREAD(msginfo->flags)) {
 		MSG_SET_PERM_FLAGS(msginfo->flags, MSG_UNREAD);
-		gtk_ctree_node_set_pixmap(ctree, row, S_COL_UNREAD,
-					  unreadxpm, unreadxpmmask);
 		summaryview->unread++;
 		debug_print(_("Message %d is marked as unread\n"),
 			    msginfo->msgnum);
@@ -2922,6 +2924,21 @@ void summary_copy_to(SummaryView *summaryview)
 
 	to_folder = foldersel_folder_sel(NULL, NULL);
 	summary_copy_selected_to(summaryview, to_folder);
+}
+
+void summary_add_address(SummaryView *summaryview)
+{
+	MsgInfo *msginfo;
+	gchar *from;
+
+	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
+					      summaryview->selected);
+	if (!msginfo) return;
+
+	Xstrdup_a(from, msginfo->from, return);
+	eliminate_address_comment(from);
+	extract_address(from);
+	addressbook_add_contact(msginfo->fromname, from, NULL);
 }
 
 void summary_select_all(SummaryView *summaryview)
@@ -3991,7 +4008,7 @@ static void summary_reply_cb(SummaryView *summaryview, guint action,
 					      summaryview->selected);
 	if (!msginfo) return;
 
-	switch ((ComposeReplyMode)action) {
+	switch ((ComposeMode)action) {
 	case COMPOSE_REPLY:
 		compose_reply(msginfo, prefs_common.reply_with_quote,
 			      FALSE, FALSE);
@@ -4060,17 +4077,22 @@ static void summary_show_all_header_cb(SummaryView *summaryview,
 static void summary_add_address_cb(SummaryView *summaryview,
 				   guint action, GtkWidget *widget)
 {
-	MsgInfo *msginfo;
-	gchar *from;
+	summary_add_address(summaryview);
+}
 
-	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
-					      summaryview->selected);
-	if (!msginfo) return;
+static void summary_mark_clicked(GtkWidget *button, SummaryView *summaryview)
+{
+	summary_sort(summaryview, SORT_BY_MARK);
+}
 
-	Xstrdup_a(from, msginfo->from, return);
-	eliminate_address_comment(from);
-	extract_address(from);
-	addressbook_add_contact(msginfo->fromname, from, NULL);
+static void summary_unread_clicked(GtkWidget *button, SummaryView *summaryview)
+{
+	summary_sort(summaryview, SORT_BY_UNREAD);
+}
+
+static void summary_mime_clicked(GtkWidget *button, SummaryView *summaryview)
+{
+	summary_sort(summaryview, SORT_BY_MIME);
 }
 
 static void summary_num_clicked(GtkWidget *button, SummaryView *summaryview)
@@ -4103,12 +4125,6 @@ static void summary_subject_clicked(GtkWidget *button,
 				    SummaryView *summaryview)
 {
 	summary_sort(summaryview, SORT_BY_SUBJECT);
-}
-
-static void summary_mark_clicked(GtkWidget *button,
-				 SummaryView *summaryview)
-{
-	summary_sort(summaryview, SORT_BY_LABEL);
 }
 
 void summary_change_display_item(SummaryView *summaryview)
@@ -4195,6 +4211,33 @@ static void summary_drag_data_get(GtkWidget        *widget,
 
 /* custom compare functions for sorting */
 
+static gint summary_cmp_by_mark(GtkCList *clist,
+				gconstpointer ptr1, gconstpointer ptr2)
+{
+	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;
+	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
+
+	return MSG_IS_MARKED(msginfo1->flags) - MSG_IS_MARKED(msginfo2->flags);
+}
+
+static gint summary_cmp_by_unread(GtkCList *clist,
+				  gconstpointer ptr1, gconstpointer ptr2)
+{
+	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;
+	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
+
+	return MSG_IS_UNREAD(msginfo1->flags) - MSG_IS_UNREAD(msginfo2->flags);
+}
+
+static gint summary_cmp_by_mime(GtkCList *clist,
+				gconstpointer ptr1, gconstpointer ptr2)
+{
+	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;
+	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
+
+	return MSG_IS_MIME(msginfo1->flags) - MSG_IS_MIME(msginfo2->flags);
+}
+
 static gint summary_cmp_by_num(GtkCList *clist,
 			       gconstpointer ptr1, gconstpointer ptr2)
 {
@@ -4256,9 +4299,9 @@ static gint summary_cmp_by_label(GtkCList *clist,
 	MsgInfo *msginfo1 = ((GtkCListRow *)ptr1)->data;
 	MsgInfo *msginfo2 = ((GtkCListRow *)ptr2)->data;
 
-	return MSG_GET_COLORLABEL(msginfo1->flags) - MSG_GET_COLORLABEL(msginfo2->flags);
+	return MSG_GET_COLORLABEL(msginfo1->flags) -
+		MSG_GET_COLORLABEL(msginfo2->flags);
 }
-
 static gint summary_cmp_by_score(GtkCList *clist,
 				 gconstpointer ptr1, gconstpointer ptr2)
 {

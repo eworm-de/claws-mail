@@ -29,14 +29,23 @@
 
 #ifdef USE_JPILOT
 
+#include <glib.h>
 #include <time.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <dlfcn.h>
 
-#include <pi-args.h>
-#include <pi-appinfo.h>
-#include <pi-address.h>
+#ifdef HAVE_LIBPISOCK_PI_ARGS_H
+#  include <libpisock/pi-args.h>
+#  include <libpisock/pi-appinfo.h>
+#  include <libpisock/pi-address.h>
+#else
+#  include <pi-args.h>
+#  include <pi-appinfo.h>
+#  include <pi-address.h>
+#endif
 
 #include "mgutils.h"
 #include "addritem.h"
@@ -174,15 +183,15 @@ void jpilot_set_accessed( JPilotFile *pilotFile, const gboolean value ) {
 }
 
 gint jpilot_get_status( JPilotFile *pilotFile ) {
-	g_return_if_fail( pilotFile != NULL );
+	g_return_val_if_fail( pilotFile != NULL, -1 );
 	return pilotFile->retVal;
 }
 ItemFolder *jpilot_get_root_folder( JPilotFile *pilotFile ) {
-	g_return_if_fail( pilotFile != NULL );
+	g_return_val_if_fail( pilotFile != NULL, NULL );
 	return addrcache_get_root_folder( pilotFile->addressCache );
 }
 gchar *jpilot_get_name( JPilotFile *pilotFile ) {
-	g_return_if_fail( pilotFile != NULL );
+	g_return_val_if_fail( pilotFile != NULL, NULL );
 	return pilotFile->name;
 }
 
@@ -191,11 +200,11 @@ gchar *jpilot_get_name( JPilotFile *pilotFile ) {
 * Return: TRUE if file was modified.
 */
 gboolean jpilot_get_modified( JPilotFile *pilotFile ) {
-	g_return_if_fail( pilotFile != NULL );
+	g_return_val_if_fail( pilotFile != NULL, FALSE );
 	return addrcache_check_file( pilotFile->addressCache, pilotFile->path );
 }
 gboolean jpilot_get_accessed( JPilotFile *pilotFile ) {
-	g_return_if_fail( pilotFile != NULL );
+	g_return_val_if_fail( pilotFile != NULL, FALSE );
 	return pilotFile->accessFlag;
 }
 
@@ -204,7 +213,7 @@ gboolean jpilot_get_accessed( JPilotFile *pilotFile ) {
 * Return: TRUE if file was read.
 */
 gboolean jpilot_get_read_flag( JPilotFile *pilotFile ) {
-	g_return_if_fail( pilotFile != NULL );
+	g_return_val_if_fail( pilotFile != NULL, FALSE );
 	return pilotFile->addressCache->dataRead;
 }
 
@@ -213,6 +222,7 @@ gboolean jpilot_get_read_flag( JPilotFile *pilotFile ) {
 */
 void jpilot_clear_custom_labels( JPilotFile *pilotFile ) {
 	GList *node;
+
 	g_return_if_fail( pilotFile != NULL );
 
 	// Release custom labels
@@ -260,7 +270,9 @@ void jpilot_add_custom_label( JPilotFile *pilotFile, const gchar *labelName ) {
 GList *jpilot_get_custom_labels( JPilotFile *pilotFile ) {
 	GList *retVal = NULL;
 	GList *node;
-	g_return_if_fail( pilotFile != NULL );
+
+	g_return_val_if_fail( pilotFile != NULL, NULL );
+
 	node = pilotFile->customLabels;
 	while( node ) {
 		retVal = g_list_append( retVal, g_strdup( node->data ) );
@@ -304,7 +316,9 @@ void jpilot_force_refresh( JPilotFile *pilotFile ) {
 */
 void jpilot_print_file( JPilotFile *pilotFile, FILE *stream ) {
 	GList *node;
+
 	g_return_if_fail( pilotFile != NULL );
+
 	fprintf( stream, "JPilotFile:\n" );
 	fprintf( stream, "file spec: '%s'\n", pilotFile->path );
 	fprintf( stream, " metadata: %s\n", pilotFile->readMetadata ? "yes" : "no" );
@@ -312,7 +326,7 @@ void jpilot_print_file( JPilotFile *pilotFile, FILE *stream ) {
 
 	node = pilotFile->customLabels;
 	while( node ) {
-		fprintf( stream, "  c label: %s\n", node->data );
+		fprintf( stream, "  c label: %s\n", (gchar *)node->data );
 		node = g_list_next( node );
 	}
 
@@ -339,7 +353,7 @@ void jpilot_print_short( JPilotFile *pilotFile, FILE *stream ) {
 
 	node = pilotFile->customLabels;
 	while( node ) {
-		fprintf( stream, "  c label: %s\n", node->data );
+		fprintf( stream, "  c label: %s\n", (gchar *)node->data );
 		node = g_list_next( node );
 	}
 
@@ -373,6 +387,7 @@ time_t pilot_time_to_unix_time ( unsigned long raw_time ) {
 // Shamelessly copied from JPilot (libplugin.c)
 static int raw_header_to_header(RawDBHeader *rdbh, DBHeader *dbh) {
 	unsigned long temp;
+
 	strncpy(dbh->db_name, rdbh->db_name, 31);
 	dbh->db_name[31] = '\0';
 	dbh->flags = bytes_to_bin(rdbh->flags, 2);
@@ -575,14 +590,14 @@ static gint jpilot_get_file_info( JPilotFile *pilotFile, unsigned char **buf, in
 // jp_read_DB_files (from libplugin.c)
 static gint jpilot_read_file( JPilotFile *pilotFile ) {
 	FILE *in;
-	char *buf;
-	int num_records, recs_returned, i, num, r;
-	unsigned int offset, prev_offset, next_offset, rec_size;
-	int out_of_order;
-	long fpos;  /*file position indicator */
-	unsigned char attrib;
-	unsigned int unique_id;
-	gint cat_id;
+	gchar *buf;
+	gint num_records, recs_returned, i, num;
+	guint offset, prev_offset, next_offset, rec_size;
+	gint out_of_order;
+	glong fpos;  /*file position indicator */
+	guchar attrib;
+	guint unique_id;
+	gint cat_id = 0;
 	mem_rec_header *mem_rh, *temp_mem_rh, *last_mem_rh;
 	record_header rh;
 	RawDBHeader rdbh;
@@ -590,15 +605,15 @@ static gint jpilot_read_file( JPilotFile *pilotFile ) {
 	gint retVal;
 	struct Address addr;
 	struct AddressAppInfo *ai;
-	char **addrEnt;
-	int inum, k;
+	gchar **addrEnt;
+	gint inum, k;
 	gchar fullName[ FULLNAME_BUFSIZE ];
 	gchar bufEMail[ EMAIL_BUFSIZE ];
 	gchar* extID;
 	ItemPerson *person;
 	ItemEMail *email;
-	int *indPhoneLbl;
-	char *labelEntry;
+	gint *indPhoneLbl;
+	gchar *labelEntry;
 	GList *node;
 	ItemFolder *folderInd[ JPILOT_NUM_CATEG ];
 
@@ -713,7 +728,8 @@ static gint jpilot_read_file( JPilotFile *pilotFile ) {
 
 		// Now go load all records		
 		while(!feof(in)) {
-			struct CategoryAppInfo *cat = &	ai->category;
+			//struct CategoryAppInfo *cat = &ai->category;
+
 			fpos = ftell(in);
 			if (out_of_order) {
 				find_next_offset(mem_rh, fpos, &next_offset, &attrib, &unique_id);
@@ -775,7 +791,7 @@ static gint jpilot_read_file( JPilotFile *pilotFile ) {
 				// Add entry for each email address listed under phone labels.
 				indPhoneLbl = addr.phoneLabel;
 				for( k = 0; k < JPILOT_NUM_ADDR_PHONE; k++ ) {
-					int ind;
+					gint ind;
 					ind = indPhoneLbl[k];
 					/*
 					fprintf( stdout, "%d : %d : %20s : %s\n", k, ind,
@@ -860,7 +876,7 @@ static gint jpilot_read_metadata( JPilotFile *pilotFile ) {
 	unsigned char *buf;
 	int num;
 
-	g_return_if_fail( pilotFile != NULL );
+	g_return_val_if_fail( pilotFile != NULL, -1 );
 
 	pilotFile->readMetadata = FALSE;
 	addrcache_clear( pilotFile->addressCache );
@@ -896,7 +912,7 @@ static gboolean jpilot_setup_labels( JPilotFile *pilotFile ) {
 	struct AddressAppInfo *ai;
 	GList *node;
 
-	g_return_if_fail( pilotFile != NULL );
+	g_return_val_if_fail( pilotFile != NULL, -1 );
 
 	// Release indexes
 	node = pilotFile->labelInd;
@@ -933,7 +949,9 @@ static gboolean jpilot_setup_labels( JPilotFile *pilotFile ) {
 */
 GList *jpilot_load_label( JPilotFile *pilotFile, GList *labelList ) {
 	int i;
-	g_return_if_fail( pilotFile != NULL );
+
+	g_return_val_if_fail( pilotFile != NULL, NULL );
+
 	if( pilotFile->readMetadata ) {
 		struct AddressAppInfo *ai = & pilotFile->addrInfo;
 		for( i = 0; i < JPILOT_NUM_LABELS; i++ ) {
@@ -956,7 +974,9 @@ GList *jpilot_load_label( JPilotFile *pilotFile, GList *labelList ) {
 */
 gchar *jpilot_get_category_name( JPilotFile *pilotFile, gint catID ) {
 	gchar *catName = NULL;
-	g_return_if_fail( pilotFile != NULL );
+
+	g_return_val_if_fail( pilotFile != NULL, NULL );
+
 	if( pilotFile->readMetadata ) {
 		struct AddressAppInfo *ai = & pilotFile->addrInfo;
 		struct CategoryAppInfo *cat = &	ai->category;
@@ -974,8 +994,10 @@ gchar *jpilot_get_category_name( JPilotFile *pilotFile, gint catID ) {
 * Load list with character strings of phone label names.
 */
 GList *jpilot_load_phone_label( JPilotFile *pilotFile, GList *labelList ) {
-	int i;
-	g_return_if_fail( pilotFile != NULL );
+	gint i;
+
+	g_return_val_if_fail( pilotFile != NULL, NULL );
+
 	if( pilotFile->readMetadata ) {
 		struct AddressAppInfo *ai = & pilotFile->addrInfo;
 		for( i = 0; i < JPILOT_NUM_PHONELABELS; i++ ) {
@@ -996,8 +1018,9 @@ GList *jpilot_load_phone_label( JPilotFile *pilotFile, GList *labelList ) {
 * are loaded.
 */
 GList *jpilot_load_custom_label( JPilotFile *pilotFile, GList *labelList ) {
-	int i;
-	g_return_if_fail( pilotFile != NULL );
+	gint i;
+
+	g_return_val_if_fail( pilotFile != NULL, NULL );
 
 	if( pilotFile->readMetadata ) {
 		struct AddressAppInfo *ai = & pilotFile->addrInfo;
@@ -1020,8 +1043,10 @@ GList *jpilot_load_custom_label( JPilotFile *pilotFile, GList *labelList ) {
 */
 GList *jpilot_get_category_list( JPilotFile *pilotFile ) {
 	GList *catList = NULL;
-	int i;
-	g_return_if_fail( pilotFile != NULL );
+	gint i;
+
+	g_return_val_if_fail( pilotFile != NULL, NULL );
+
 	if( pilotFile->readMetadata ) {
 		struct AddressAppInfo *ai = & pilotFile->addrInfo;
 		struct CategoryAppInfo *cat = &	ai->category;
@@ -1045,6 +1070,7 @@ static void jpilot_build_category_list( JPilotFile *pilotFile ) {
 	struct AddressAppInfo *ai = & pilotFile->addrInfo;
 	struct CategoryAppInfo *cat = &	ai->category;
 	gint i;
+
 	for( i = 0; i < JPILOT_NUM_CATEG; i++ ) {
 		ItemFolder *folder = addritem_create_item_folder();
 		addritem_folder_set_name( folder, cat->name[i] );
@@ -1098,7 +1124,8 @@ static void jpilot_remove_empty( JPilotFile *pilotFile ) {
 */
 // ============================================================================================
 gint jpilot_read_data( JPilotFile *pilotFile ) {
-	g_return_if_fail( pilotFile != NULL );
+	g_return_val_if_fail( pilotFile != NULL, -1 );
+
 	pilotFile->retVal = MGU_SUCCESS;
 	pilotFile->accessFlag = FALSE;
 	if( addrcache_check_file( pilotFile->addressCache, pilotFile->path ) ) {
@@ -1123,7 +1150,7 @@ gint jpilot_read_data( JPilotFile *pilotFile ) {
 * Return link list of persons.
 */
 GList *jpilot_get_list_person( JPilotFile *pilotFile ) {
-	g_return_if_fail( pilotFile != NULL );
+	g_return_val_if_fail( pilotFile != NULL, NULL );
 	return addrcache_get_list_person( pilotFile->addressCache );
 }
 
@@ -1133,7 +1160,7 @@ GList *jpilot_get_list_person( JPilotFile *pilotFile ) {
 * Return: NULL.
 */
 GList *jpilot_get_list_folder( JPilotFile *pilotFile ) {
-	g_return_if_fail( pilotFile != NULL );
+	g_return_val_if_fail( pilotFile != NULL, NULL );
 	return addrcache_get_list_folder( pilotFile->addressCache );
 }
 
@@ -1144,7 +1171,7 @@ GList *jpilot_get_list_folder( JPilotFile *pilotFile ) {
 * Return: List of items, or NULL if none.
 */
 GList *jpilot_get_all_persons( JPilotFile *pilotFile ) {
-	g_return_if_fail( pilotFile != NULL );
+	g_return_val_if_fail( pilotFile != NULL, NULL );
 	return addrcache_get_all_persons( pilotFile->addressCache );
 }
 
@@ -1152,8 +1179,9 @@ GList *jpilot_get_all_persons( JPilotFile *pilotFile ) {
 * Check label list for specified label.
 */
 gint jpilot_check_label( struct AddressAppInfo *ai, gchar *lblCheck ) {
-	int i;
-	gchar	*lblName;
+	gint i;
+	gchar *lblName;
+
 	if( lblCheck == NULL ) return -1;
 	if( strlen( lblCheck ) < 1 ) return -1;
 	for( i = 0; i < JPILOT_NUM_LABELS; i++ ) {
@@ -1173,7 +1201,8 @@ gint jpilot_check_label( struct AddressAppInfo *ai, gchar *lblCheck ) {
 */
 gboolean jpilot_validate( const JPilotFile *pilotFile ) {
 	gboolean retVal;
-	g_return_if_fail( pilotFile != NULL );
+
+	g_return_val_if_fail( pilotFile != NULL, FALSE );
 
 	retVal = TRUE;
 	if( pilotFile->path ) {
@@ -1237,6 +1266,7 @@ gchar *jpilot_find_pilotdb( void ) {
 gint jpilot_test_read_file( const gchar *fileSpec ) {
 	JPilotFile *pilotFile;
 	gint retVal;
+
 	if( fileSpec ) {
 		pilotFile = jpilot_create_path( fileSpec );
 		retVal = jpilot_read_metadata( pilotFile );
@@ -1256,7 +1286,8 @@ gint jpilot_test_read_file( const gchar *fileSpec ) {
 gboolean jpilot_test_custom_label( JPilotFile *pilotFile, const gchar *labelName ) {
 	gboolean retVal;
 	GList *node;
-	g_return_if_fail( pilotFile != NULL );
+
+	g_return_val_if_fail( pilotFile != NULL, FALSE );
 
 	retVal = FALSE;
 	if( labelName ) {
@@ -1276,7 +1307,7 @@ gboolean jpilot_test_custom_label( JPilotFile *pilotFile, const gchar *labelName
 * Test whether pilot link library installed.
 * Return: TRUE if library available.
 */
-gboolean jpilot_test_pilot_lib() {
+gboolean jpilot_test_pilot_lib( void ) {
 	void *handle, *fun;
 
 	handle = dlopen( PILOT_LINK_LIB_NAME, RTLD_LAZY );
@@ -1305,5 +1336,3 @@ gboolean jpilot_test_pilot_lib() {
 /*
 * End of Source.
 */
-
-

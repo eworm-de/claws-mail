@@ -42,6 +42,9 @@
 #include "intl.h"
 #include "prefs_common.h"
 #include "syldap.h"
+#include "mgutils.h"
+#include "gtkutils.h"
+#include "manage_window.h"
 
 static struct _LDAPEdit_basedn {
 	GtkWidget *window;
@@ -94,7 +97,7 @@ static void edit_ldap_bdn_cancel( GtkWidget *widget, gboolean *cancelled ) {
 }
 
 static void edit_ldap_bdn_list_select( GtkCList *clist, gint row, gint column, GdkEvent *event, gpointer data ) {
-	gchar **text;
+	gchar **text = NULL;
 	if( gtk_clist_get_text( clist, row, 0, text ) ) {
 		if( *text ) {
 			gtk_entry_set_text(GTK_ENTRY(ldapedit_basedn.basedn_entry), *text );
@@ -112,25 +115,25 @@ static void edit_ldap_bdn_list_button( GtkCList *clist, GdkEventButton *event, g
 	}
 }
 
-static void edit_ldap_bdn_create() {
+static void edit_ldap_bdn_create(void) {
 	GtkWidget *window;
 	GtkWidget *vbox;
 	GtkWidget *table;
 	GtkWidget *label;
 	GtkWidget *host_label;
 	GtkWidget *port_label;
-	GtkWidget *basedn_label;
+	//GtkWidget *basedn_label;
 	GtkWidget *basedn_list;
 	GtkWidget *vlbox;
 	GtkWidget *lwindow;
 	GtkWidget *basedn_entry;
-	GtkWidget *hlbox;
+	//GtkWidget *hlbox;
 	GtkWidget *hbbox;
 	GtkWidget *hsep;
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
-	GtkWidget *check_btn;
-	GtkWidget *file_btn;
+	//GtkWidget *check_btn;
+	//GtkWidget *file_btn;
 	GtkWidget *hsbox;
 	GtkWidget *statusbar;
 	gint top;

@@ -2,7 +2,6 @@ src/about.c
 src/account.c
 src/addrbook.c
 src/addrcache.c
-src/address.c
 src/addressadd.c
 src/addressbook.c
 src/addrindex.c

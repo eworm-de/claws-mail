@@ -23,8 +23,9 @@
  * card information. Refer to RFC2426 for more information.
  */
 
-#include <sys/stat.h>
 #include <glib.h>
+#include <sys/stat.h>
+#include <string.h>
 
 #include "mgutils.h"
 #include "vcard.h"
@@ -78,11 +79,11 @@ void vcard_set_accessed( VCardFile *cardFile, const gboolean value ) {
 * Return: TRUE if file was modified.
 */
 gboolean vcard_get_modified( VCardFile *vcardFile ) {
-	g_return_if_fail( vcardFile != NULL );
+	g_return_val_if_fail( vcardFile != NULL, FALSE );
 	return addrcache_check_file( vcardFile->addressCache, vcardFile->path );
 }
 gboolean vcard_get_accessed( VCardFile *vcardFile ) {
-	g_return_if_fail( vcardFile != NULL );
+	g_return_val_if_fail( vcardFile != NULL, FALSE );
 	return addrcache_check_file( vcardFile->addressCache, vcardFile->path );
 }
 
@@ -91,7 +92,7 @@ gboolean vcard_get_accessed( VCardFile *vcardFile ) {
 * Return: TRUE if file was read.
 */
 gboolean vcard_get_read_flag( VCardFile *vcardFile ) {
-	g_return_if_fail( vcardFile != NULL );
+	g_return_val_if_fail( vcardFile != NULL, FALSE );
 	return vcardFile->addressCache->dataRead;
 }
 
@@ -100,16 +101,16 @@ gboolean vcard_get_read_flag( VCardFile *vcardFile ) {
 * Return: Status code.
 */
 gint vcard_get_status( VCardFile *cardFile ) {
-	g_return_if_fail( cardFile != NULL );
+	g_return_val_if_fail( cardFile != NULL, -1 );
 	return cardFile->retVal;
 }
 
 ItemFolder *vcard_get_root_folder( VCardFile *cardFile ) {
-	g_return_if_fail( cardFile != NULL );
+	g_return_val_if_fail( cardFile != NULL, NULL );
 	return addrcache_get_root_folder( cardFile->addressCache );
 }
 gchar *vcard_get_name( VCardFile *cardFile ) {
-	g_return_if_fail( cardFile != NULL );
+	g_return_val_if_fail( cardFile != NULL, NULL );
 	return cardFile->name;
 }
 
@@ -126,7 +127,7 @@ void vcard_force_refresh( VCardFile *cardFile ) {
 VCardFile *vcard_create_path( const gchar *path ) {
 	VCardFile *cardFile;
 	cardFile = vcard_create();
-	vcard_set_file(cardFile, path );
+	vcard_set_file(cardFile, path);
 	return cardFile;
 }
 
@@ -164,8 +165,8 @@ void vcard_free( VCardFile *cardFile ) {
 * Display object to specified stream.
 */
 void vcard_print_file( VCardFile *cardFile, FILE *stream ) {
-	GSList *node;
 	g_return_if_fail( cardFile != NULL );
+
 	fprintf( stream, "VCardFile:\n" );
 	fprintf( stream, "     name: '%s'\n", cardFile->name );
 	fprintf( stream, "file spec: '%s'\n", cardFile->path );
@@ -179,7 +180,7 @@ void vcard_print_file( VCardFile *cardFile, FILE *stream ) {
 * return: TRUE if file opened successfully.
 */
 static gint vcard_open_file( VCardFile* cardFile ) {
-	g_return_if_fail( cardFile != NULL );
+	g_return_val_if_fail( cardFile != NULL, -1 );
 
 	// fprintf( stdout, "Opening file\n" );
 	cardFile->addressCache->dataRead = FALSE;
@@ -238,7 +239,7 @@ static gchar *vcard_get_line( VCardFile *cardFile ) {
 
 	if (vcard_read_line( cardFile ) == NULL ) {
 		buf[0] = '\0';
-		return;
+		return NULL;
 	}
 
 	/* Copy into private buffer */
@@ -411,8 +412,8 @@ static void vcard_build_items( VCardFile *cardFile, GSList *listName, GSList *li
 // Unescape characters in quoted-printable string.
 static void vcard_unescape_qp( gchar *value ) {
 	gchar *ptr, *src, *dest;
-	int d, v;
-	char ch;
+	gint d, v = 0;
+	gchar ch;
 	gboolean gotch;
 	ptr = value;
 	while( *ptr ) {
@@ -461,9 +462,9 @@ static void vcard_unescape_qp( gchar *value ) {
 * it will generate duplicate address entries for each person listed.
 */
 static void vcard_read_file( VCardFile *cardFile ) {
-	gchar *tagtemp = NULL, *tagname = NULL, *tagvalue = NULL, *tagtype = NULL, *tagrest = NULL;
+	gchar *tagtemp = NULL, *tagname = NULL, *tagvalue = NULL, *tagtype = NULL;
 	GSList *listName = NULL, *listAddress = NULL, *listRemarks = NULL, *listID = NULL;
-	GSList *listQP = NULL;
+	//GSList *listQP = NULL;
 
 	for( ;; ) {
 		gchar *line =  vcard_get_line( cardFile );
@@ -542,7 +543,8 @@ static void vcard_read_file( VCardFile *cardFile ) {
 */
 // ============================================================================================
 gint vcard_read_data( VCardFile *cardFile ) {
-	g_return_if_fail( cardFile != NULL );
+	g_return_val_if_fail( cardFile != NULL, -1 );
+
 	cardFile->retVal = MGU_SUCCESS;
 	cardFile->accessFlag = FALSE;
 	if( addrcache_check_file( cardFile->addressCache, cardFile->path ) ) {
@@ -566,7 +568,7 @@ gint vcard_read_data( VCardFile *cardFile ) {
 * Return link list of persons.
 */
 GList *vcard_get_list_person( VCardFile *cardFile ) {
-	g_return_if_fail( cardFile != NULL );
+	g_return_val_if_fail( cardFile != NULL, NULL );
 	return addrcache_get_list_person( cardFile->addressCache );
 }
 
@@ -576,7 +578,7 @@ GList *vcard_get_list_person( VCardFile *cardFile ) {
 * Return: NULL.
 */
 GList *vcard_get_list_folder( VCardFile *cardFile ) {
-	g_return_if_fail( cardFile != NULL );
+	g_return_val_if_fail( cardFile != NULL, NULL );
 	return NULL;
 }
 
@@ -587,7 +589,7 @@ GList *vcard_get_list_folder( VCardFile *cardFile ) {
 * Return: List of items, or NULL if none.
 */
 GList *vcard_get_all_persons( VCardFile *cardFile ) {
-	g_return_if_fail( cardFile != NULL );
+	g_return_val_if_fail( cardFile != NULL, NULL );
 	return addrcache_get_all_persons( cardFile->addressCache );
 }
 
@@ -597,7 +599,8 @@ GList *vcard_get_all_persons( VCardFile *cardFile ) {
 */
 gboolean vcard_validate( const VCardFile *cardFile ) {
 	gboolean retVal;
-	g_return_if_fail( cardFile != NULL );
+
+	g_return_val_if_fail( cardFile != NULL, FALSE );
 
 	retVal = TRUE;
 	if( cardFile->path ) {
@@ -685,7 +688,7 @@ gchar *vcard_find_gnomecard( void ) {
 */
 gint vcard_test_read_file( const gchar *fileSpec ) {
 	gboolean haveStart;
-	gchar *tagtemp = NULL, *tagname = NULL, *tagvalue = NULL, *tagtype = NULL, *tagrest = NULL, *line;
+	gchar *tagtemp = NULL, *tagname = NULL, *tagvalue = NULL, *tagtype = NULL, *line;
 	VCardFile *cardFile;
 	gint retVal, lines;
 

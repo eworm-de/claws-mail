@@ -124,7 +124,8 @@ static GdkColor quote_color = {0, 0, 0, 0xbfff};
 
 static GList *compose_list = NULL;
 
-static Compose *compose_create			(PrefsAccount	*account);
+static Compose *compose_create			(PrefsAccount	*account,
+						 ComposeMode	 mode);
 static void compose_toolbar_create		(Compose	*compose,
 						 GtkWidget	*container);
 static GtkWidget *compose_account_option_menu_create
@@ -160,6 +161,7 @@ static void compose_attach_append_with_type(Compose *compose,
 					    const gchar *type,
 					    ContentType cnttype);
 static void compose_wrap_line			(Compose	*compose);
+static void compose_wrap_line_all		(Compose	*compose);
 static void compose_set_title			(Compose	*compose);
 
 static PrefsAccount *compose_current_mail_account(void);
@@ -409,54 +411,56 @@ static GtkItemFactoryEntry compose_popup_entries[] =
 static GtkItemFactoryEntry compose_entries[] =
 {
 	{N_("/_File"),				NULL, NULL, 0, "<Branch>"},
-	{N_("/_File/_Attach file"),		"<control>M", compose_attach_cb, 0, NULL},
+	{N_("/_File/_Attach file"),		"<control>M", compose_attach_cb,      0, NULL},
 	{N_("/_File/_Insert file"),		"<control>I", compose_insert_file_cb, 0, NULL},
-	{N_("/_File/Insert si_gnature"),	"<control>G", compose_insert_sig, 0, NULL},
+	{N_("/_File/Insert si_gnature"),	"<control>G", compose_insert_sig,     0, NULL},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Close"),			"<alt>W", compose_close_cb, 0, NULL},
 
-	{N_("/_Edit"),		   NULL,	 NULL,  0, "<Branch>"},
-	{N_("/_Edit/_Undo"),	   "<control>Z", NULL,	0, NULL},
-	{N_("/_Edit/_Redo"),	   "<control>Y", NULL,	0, NULL},
-	{N_("/_Edit/---"),	   NULL,	 NULL,	0, "<Separator>"},
+	{N_("/_Edit"),		   NULL, NULL, 0, "<Branch>"},
+	{N_("/_Edit/_Undo"),	   "<control>Z", NULL, 0, NULL},
+	{N_("/_Edit/_Redo"),	   "<control>Y", NULL, 0, NULL},
+	{N_("/_Edit/---"),	   NULL, NULL, 0, "<Separator>"},
 	{N_("/_Edit/Cu_t"),	   "<control>X", compose_cut_cb,    0, NULL},
 	{N_("/_Edit/_Copy"),	   "<control>C", compose_copy_cb,   0, NULL},
 	{N_("/_Edit/_Paste"),	   "<control>V", compose_paste_cb,  0, NULL},
 	{N_("/_Edit/Select _all"), "<control>A", compose_allsel_cb, 0, NULL},
-	{N_("/_Edit/---"),	   NULL,	 NULL,	0, "<Separator>"},
-	{N_("/_Edit/Wrap long _lines"), "<alt>L", compose_wrap_line, 0, NULL},
-	{N_("/_Edit/Edit with e_xternal editor"), "<alt>X",
-					compose_ext_editor_cb,	0, NULL},
+	{N_("/_Edit/---"),	   NULL, NULL, 0, "<Separator>"},
+	{N_("/_Edit/_Wrap current paragraph"), "<alt>L", compose_wrap_line, 0, NULL},
+	{N_("/_Edit/Wrap all long _lines"),
+			"<shift><alt>L", compose_wrap_line_all, 0, NULL},
+	{N_("/_Edit/Edit with e_xternal editor"),
+			"<alt>X", compose_ext_editor_cb, 0, NULL},
 
-	{N_("/_Message"),		NULL,		NULL,	0, "<Branch>"},
+	{N_("/_Message"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Message/_Send"),		"<shift><control>S",
 					compose_send_cb, 0, NULL},
 	{N_("/_Message/Send _later"),	"<shift><alt>S",
 					compose_send_later_cb,  0, NULL},
 	{N_("/_Message/Save to _draft folder"),
-					"<alt>D",	compose_draft_cb, 0, NULL},
-	{N_("/_Message/---"),		NULL,		NULL,	0, "<Separator>"},
-	{N_("/_Message/_To"),		NULL, compose_toggle_to_cb, 0, "<ToggleItem>"},
-	{N_("/_Message/_Cc"),		NULL, compose_toggle_cc_cb, 0, "<ToggleItem>"},
-	{N_("/_Message/_Bcc"),		NULL, compose_toggle_bcc_cb, 0, "<ToggleItem>"},
+					"<alt>D", compose_draft_cb, 0, NULL},
+	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_Message/_To"),		NULL, compose_toggle_to_cb     , 0, "<ToggleItem>"},
+	{N_("/_Message/_Cc"),		NULL, compose_toggle_cc_cb     , 0, "<ToggleItem>"},
+	{N_("/_Message/_Bcc"),		NULL, compose_toggle_bcc_cb    , 0, "<ToggleItem>"},
 	{N_("/_Message/_Reply to"),	NULL, compose_toggle_replyto_cb, 0, "<ToggleItem>"},
-	{N_("/_Message/---"),		NULL,		NULL,	0, "<Separator>"},
+	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/_Followup to"),	NULL, compose_toggle_followupto_cb, 0, "<ToggleItem>"},
-	{N_("/_Message/---"),		NULL,		NULL,	0, "<Separator>"},
+	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/_Attach"),	NULL, compose_toggle_attach_cb, 0, "<ToggleItem>"},
 #if USE_GPGME
-	{N_("/_Message/---"),		NULL,		NULL,	0, "<Separator>"},
-	{N_("/_Message/Si_gn"),   	NULL, compose_toggle_sign_cb, 0, "<ToggleItem>"},
+	{N_("/_Message/---"),		NULL, NULL, 0, "<Separator>"},
+	{N_("/_Message/Si_gn"),   	NULL, compose_toggle_sign_cb   , 0, "<ToggleItem>"},
 	{N_("/_Message/_Encrypt"),	NULL, compose_toggle_encrypt_cb, 0, "<ToggleItem>"},
 #endif /* USE_GPGME */
 	{N_("/_Message/---"),		NULL,		NULL,	0, "<Separator>"},
 	{N_("/_Message/_Request Return Receipt"),	NULL, compose_toggle_return_receipt_cb, 0, "<ToggleItem>"},
-	{N_("/_Tool"),			NULL, NULL,	0, "<Branch>"},
-	{N_("/_Tool/Show _ruler"),	NULL, compose_toggle_ruler_cb,	0, "<ToggleItem>"},
-	{N_("/_Tool/_Address book"),	"<alt>A",	compose_address_cb, 0, NULL},
+	{N_("/_Tool"),			NULL, NULL, 0, "<Branch>"},
+	{N_("/_Tool/Show _ruler"),	NULL, compose_toggle_ruler_cb, 0, "<ToggleItem>"},
+	{N_("/_Tool/_Address book"),	"<alt>A", compose_address_cb , 0, NULL},
 	{N_("/_Tool/_Templates ..."),	NULL, template_select_cb, 0, NULL},
-	{N_("/_Help"),			NULL, NULL,	0, "<LastBranch>"},
-	{N_("/_Help/_About"),		NULL,		about_show,	0, NULL}
+	{N_("/_Help"),			NULL, NULL, 0, "<LastBranch>"},
+	{N_("/_Help/_About"),		NULL, about_show, 0, NULL}
 };
 
 static GtkTargetEntry compose_mime_types[] =
@@ -486,8 +490,7 @@ Compose * compose_generic_new(PrefsAccount *account, const gchar *to, FolderItem
 	if (!account) account = cur_account;
 	g_return_val_if_fail(account != NULL, NULL);
 
-	compose = compose_create(account);
-	compose->mode = COMPOSE_NEW;
+	compose = compose_create(account, COMPOSE_NEW);
 	compose->replyinfo = NULL;
 
 	if (prefs_common.auto_sig)
@@ -520,7 +523,10 @@ Compose * compose_generic_new(PrefsAccount *account, const gchar *to, FolderItem
 			gtk_widget_grab_focus(compose->newsgroups_entry);
 	}
 
-	return compose;
+	if (prefs_common.auto_exteditor)
+		compose_exec_ext_editor(compose);
+
+        return compose;
 }
 
 #define CHANGE_FLAGS(msginfo) \
@@ -541,8 +547,7 @@ Compose * compose_new_followup_and_replyto(PrefsAccount *account,
 	g_return_val_if_fail(account != NULL, NULL);
 	g_return_val_if_fail(account->protocol != A_NNTP, NULL);
 
-	compose = compose_create(account);
-	compose->mode = COMPOSE_NEW;
+	compose = compose_create(account, COMPOSE_NEW);
 
 	if (prefs_common.auto_sig)
 		compose_insert_sig(compose);
@@ -616,8 +621,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
 	CHANGE_FLAGS(msginfo);
 
-	compose = compose_create(reply_account);
-	compose->mode = COMPOSE_REPLY;
+	compose = compose_create(account, COMPOSE_REPLY);
 	compose->replyinfo = msginfo;
 
 
@@ -681,6 +685,9 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
 	gtk_stext_thaw(text);
 	gtk_widget_grab_focus(compose->text);
+
+        if (prefs_common.auto_exteditor)
+		compose_exec_ext_editor(compose);
 }
 
 
@@ -947,8 +954,7 @@ Compose * compose_forward(PrefsAccount * account, MsgInfo *msginfo,
 	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_FORWARDED);
 	CHANGE_FLAGS(msginfo);
 
-	compose = compose_create(account);
-	compose->mode = COMPOSE_FORWARD;
+	compose = compose_create(account, COMPOSE_FORWARD);
 
 	if (msginfo->subject && *msginfo->subject) {
 		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), "Fw: ");
@@ -1010,7 +1016,10 @@ Compose * compose_forward(PrefsAccount * account, MsgInfo *msginfo,
 	else
 		gtk_widget_grab_focus(compose->newsgroups_entry);
 
-	return compose;
+	if (prefs_common.auto_exteditor)
+		compose_exec_ext_editor(compose);
+
+        return compose;
 }
 
 #undef INSERT_FW_HEADER
@@ -1039,8 +1048,7 @@ Compose * compose_forward_multiple(PrefsAccount * account,
 	}
 	g_return_val_if_fail(account != NULL, NULL);
 
-	compose = compose_create(account);
-	compose->mode = COMPOSE_FORWARD;
+	compose = compose_create(account, COMPOSE_FORWARD);
 
 	text = GTK_STEXT(compose->text);
 	gtk_stext_freeze(text);
@@ -1092,9 +1100,7 @@ void compose_reedit(MsgInfo *msginfo)
         if (!account) account = cur_account;
 	g_return_if_fail(account != NULL);
 
-	compose = compose_create(account);
-	compose->mode = COMPOSE_REEDIT;
-
+	compose = compose_create(account, COMPOSE_REEDIT);
 	compose->targetinfo = procmsg_msginfo_copy(msginfo);
 
 	if (compose_parse_header(compose, msginfo) < 0) return;
@@ -1114,6 +1120,9 @@ void compose_reedit(MsgInfo *msginfo)
 
 	gtk_stext_thaw(text);
 	gtk_widget_grab_focus(compose->text);
+
+        if (prefs_common.auto_exteditor)
+		compose_exec_ext_editor(compose);
 }
 
 GList *compose_get_compose_list(void)
@@ -1894,6 +1903,175 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 static void compose_wrap_line(Compose *compose)
 {
 	GtkSText *text = GTK_STEXT(compose->text);
+	gint ch_len, last_ch_len;
+	gchar cbuf[MB_CUR_MAX], last_ch;
+	guint text_len;
+	guint line_end;
+	guint quoted;
+	gint p_start, p_end;
+	gint line_pos, cur_pos;
+	gint line_len, cur_len;
+
+#define GET_STEXT(pos)                                                        \
+	if (text->use_wchar)                                                 \
+		ch_len = wctomb(cbuf, (wchar_t)GTK_STEXT_INDEX(text, (pos))); \
+	else {                                                               \
+		cbuf[0] = GTK_STEXT_INDEX(text, (pos));                       \
+		ch_len = 1;                                                  \
+	}
+
+	gtk_stext_freeze(text);
+
+	text_len = gtk_stext_get_length(text);
+
+	/* check to see if the point is on the paragraph mark (empty line). */
+	cur_pos = gtk_stext_get_point(text);
+	GET_STEXT(cur_pos);
+	if ((ch_len == 1 && *cbuf == '\n') || cur_pos == text_len) {
+		if (cur_pos == 0)
+			goto compose_end; /* on the paragraph mark */
+		GET_STEXT(cur_pos - 1);
+		if (ch_len == 1 && *cbuf == '\n')
+			goto compose_end; /* on the paragraph mark */
+	}
+
+	/* find paragraph start. */
+	line_end = quoted = 0;
+	for (p_start = cur_pos; p_start >= 0; --p_start) {
+		GET_STEXT(p_start);
+		if (ch_len == 1 && *cbuf == '\n') {
+			if (quoted)
+				goto compose_end; /* quoted part */
+			if (line_end) {
+				p_start += 2;
+				break;
+			}
+			line_end = 1;
+		} else {
+			if (ch_len == 1 && strchr(">:#", *cbuf))
+				quoted = 1;
+			else if (ch_len != 1 || !isspace(*cbuf))
+				quoted = 0;
+
+			line_end = 0;
+		}
+	}
+	if (p_start < 0)
+		p_start = 0;
+
+	/* find paragraph end. */
+	line_end = 0;
+	for (p_end = cur_pos; p_end < text_len; p_end++) {
+		GET_STEXT(p_end);
+		if (ch_len == 1 && *cbuf == '\n') {
+			if (line_end) {
+				p_end -= 1;
+				break;
+			}
+			line_end = 1;
+		} else {
+			if (line_end && ch_len == 1 && strchr(">:#", *cbuf))
+				goto compose_end; /* quoted part */
+
+			line_end = 0;
+		}
+	}
+	if (p_end >= text_len)
+		p_end = text_len;
+
+	if (p_start >= p_end)
+		goto compose_end;
+
+	line_len = cur_len = 0;
+	last_ch_len = 0;
+	last_ch = '\0';
+	line_pos = p_start;
+	for (cur_pos = p_start; cur_pos < p_end; cur_pos++) {
+		guint space = 0;
+
+		GET_STEXT(cur_pos);
+
+		if (ch_len < 0) {
+			cbuf[0] = '\0';
+			ch_len = 1;
+		}
+
+		if (ch_len == 1 && isspace(*cbuf))
+			space = 1;
+
+		if (ch_len == 1 && *cbuf == '\n') {
+			guint replace = 0;
+			if (last_ch_len == 1 && !isspace(last_ch)) {
+				if (cur_pos + 1 < p_end) {
+					GET_STEXT(cur_pos + 1);
+					if (ch_len == 1 && !isspace(*cbuf))
+						replace = 1;
+				}
+			}
+			gtk_stext_set_point(text, cur_pos + 1);
+			gtk_stext_backward_delete(text, 1);
+			if (replace) {
+				gtk_stext_set_point(text, cur_pos);
+				gtk_stext_insert(text, NULL, NULL, NULL, " ", 1);
+				space = 1;
+			}
+			else {
+				p_end--;
+				cur_pos--;
+				continue;
+			}
+		}
+
+		last_ch_len = ch_len;
+		last_ch = *cbuf;
+
+		if (space) {
+			line_pos = cur_pos + 1;
+			line_len = cur_len + ch_len;
+		}
+
+		if (cur_len + ch_len > prefs_common.linewrap_len &&
+		    line_len > 0) {
+			gint tlen = ch_len;
+
+			GET_STEXT(line_pos - 1);
+			if (ch_len == 1 && isspace(*cbuf)) {
+				gtk_stext_set_point(text, line_pos);
+				gtk_stext_backward_delete(text, 1);
+				p_end--;
+				cur_pos--;
+				line_pos--;
+				cur_len--;
+				line_len--;
+			}
+			ch_len = tlen;
+
+			gtk_stext_set_point(text, line_pos);
+			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
+			p_end++;
+			cur_pos++;
+			line_pos++;
+			cur_len = cur_len - line_len + ch_len;
+			line_len = 0;
+			continue;
+		}
+
+		if (ch_len > 1) {
+			line_pos = cur_pos + 1;
+			line_len = cur_len + ch_len;
+		}
+		cur_len += ch_len;
+	}
+
+compose_end:
+	gtk_stext_thaw(text);
+
+#undef GET_STEXT
+}
+
+static void compose_wrap_line_all(Compose *compose)
+{
+	GtkSText *text = GTK_STEXT(compose->text);
 	guint text_len;
 	guint line_pos = 0, cur_pos = 0;
 	gint line_len = 0, cur_len = 0;
@@ -2038,7 +2216,7 @@ gint compose_send(Compose *compose)
 		   get_rc_dir(), G_DIR_SEPARATOR, (gint)compose);
 
 	if (prefs_common.linewrap_at_send)
-		compose_wrap_line(compose);
+		compose_wrap_line_all(compose);
 
 	if (compose_write_to_file(compose, tmp, FALSE) < 0) {
 		lock = FALSE;
@@ -2894,7 +3072,7 @@ static void compose_add_entry_field(GtkWidget *table, GtkWidget **hbox,
 	(*count)++;
 }
 
-static Compose *compose_create(PrefsAccount *account)
+static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 {
 	Compose   *compose;
 	GtkWidget *window;
@@ -3295,7 +3473,7 @@ static Compose *compose_create(PrefsAccount *account)
 	compose->popupmenu    = popupmenu;
 	compose->popupfactory = popupfactory;
 
-	compose->mode = COMPOSE_NEW;
+	compose->mode = mode;
 
 	compose->replyto     = NULL;
 	compose->cc	     = NULL;
@@ -3341,7 +3519,7 @@ static Compose *compose_create(PrefsAccount *account)
 		gtk_widget_set_sensitive(menuitem, FALSE);
 	}
 	*/
-	if (account->set_autocc && account->auto_cc) {
+	if (account->set_autocc && account->auto_cc && mode != COMPOSE_REEDIT) {
 		compose->use_cc = TRUE;
 		gtk_entry_set_text(GTK_ENTRY(cc_entry), account->auto_cc);
 		menuitem = gtk_item_factory_get_item(ifactory, "/Message/Cc");
@@ -3354,7 +3532,7 @@ static Compose *compose_create(PrefsAccount *account)
 		menuitem = gtk_item_factory_get_item(ifactory, "/Message/Bcc");
 		gtk_check_menu_item_set_active
 			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
-		if (account->auto_bcc)
+		if (account->auto_bcc && mode != COMPOSE_REEDIT)
 			gtk_entry_set_text(GTK_ENTRY(bcc_entry),
 					   account->auto_bcc);
 	}
@@ -3364,7 +3542,7 @@ static Compose *compose_create(PrefsAccount *account)
 						     "/Message/Reply to");
 		gtk_check_menu_item_set_active
 			(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
-		if (account->auto_replyto)
+		if (account->auto_replyto && mode != COMPOSE_REEDIT)
 			gtk_entry_set_text(GTK_ENTRY(reply_entry),
 					   account->auto_replyto);
 	}
@@ -3522,7 +3700,7 @@ static void compose_toolbar_create(Compose *compose, GtkWidget *container)
 	CREATE_TOOLBAR_ICON(linewrap_xpm);
 	linewrap_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					       _("Linewrap"),
-					       _("Wrap long lines"),
+					       _("Wrap current paragraph"),
 					       "Linewrap",
 					       icon_wid,
 					       toolbar_linewrap_cb,
@@ -4437,7 +4615,7 @@ static void compose_send_later_cb(gpointer data, guint action,
 		   g_get_tmp_dir(), G_DIR_SEPARATOR, (gint)compose);
 
 	if (prefs_common.linewrap_at_send)
-		compose_wrap_line(compose);
+		compose_wrap_line_all(compose);
 
 	if (compose_write_to_file(compose, tmp, FALSE) < 0 ||
 	    compose_queue(compose, tmp) < 0) {

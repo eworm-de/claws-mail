@@ -34,12 +34,6 @@ typedef struct _AttachInfo	AttachInfo;
 
 typedef enum
 {
-	COMPOSE_MAIL,
-	COMPOSE_NEWS
-} ComposeMode;
-
-typedef enum
-{
 	COMPOSE_TO,
 	COMPOSE_CC,
 	COMPOSE_BCC,
@@ -62,7 +56,7 @@ typedef enum
 	COMPOSE_FORWARD_AS_ATTACH,
 	COMPOSE_NEW,
 	COMPOSE_REEDIT
-} ComposeReplyMode;
+} ComposeMode;
 
 struct _Compose
 {
@@ -117,7 +111,7 @@ struct _Compose
 
 	GtkItemFactory *popupfactory;
 
-	ComposeReplyMode mode;
+	ComposeMode mode;
 
 	MsgInfo *targetinfo;
 	MsgInfo *replyinfo;
