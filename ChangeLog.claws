@@ -1,3 +1,11 @@
+2004-09-07 [colin]	0.9.12cvs97
+
+	* src/inc.c
+		Change session error messages so that they
+		are a bit more helpful (the origin of the
+		error is not apparent if one isn't in 
+		front of Sylpheed when it happens).
+
 2004-09-06 [colin]	0.9.12cvs96
 
 	* src/toolbar.c
