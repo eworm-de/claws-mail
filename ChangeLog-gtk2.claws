@@ -1,3 +1,10 @@
+2004-07-18 [colin]	0.9.12cvs31.4
+
+	* src/codeconv.c
+		convert unencoded iso headers to utf8
+	(Fix Bug 538 Unencoded local characters in subject make it 
+	 disappear)
+
 2004-07-18 [colin]	0.9.12cvs31.3
 
 	* src/compose.c
