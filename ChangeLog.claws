@@ -1,3 +1,8 @@
+2002-09-22 [oliver]	0.8.3claws9
+	
+	* README.claws
+		explain custom toolbar
+
 2002-09-22 [oliver]	0.8.3claws8
 
 	* src/prefs_actions.[ch]

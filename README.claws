@@ -453,7 +453,24 @@ mention it.
       subject match "SPAM" delete_on_server
     Next time, you retrieve the headers using selective download,
     all messages that matched this criteria are marked.
+    NOTE: Selective download is a pop3 only feature and makes 
+	  no sense if used as a folder processing filter.
 
+* Custom toolbar
+----------------
+   Configuration->Custom toolbar lets you define the toolbar 
+   you want. The configuration dialog enables you to set an icon,
+   an appropriate text and map an action to it. Actions to choose
+   from are predefined. You may as well have your "Sylpheed Actions"
+   (refer to "user definable actions" above) on your toolbar. 
+   Example: 
+	* Configuration->Actions 
+		- add an entry "Dillo: dillo %p&"
+        * Configuration->Custom toolbar    
+		- select Sylpheed Actions Feature
+	 	- select "Dillo: dillo %p&" from drop down list
+		- choose an icon and click ok
+	
 
 
 4. How to contribute
