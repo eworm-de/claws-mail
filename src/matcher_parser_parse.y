@@ -257,7 +257,8 @@ int matcher_parserwrap(void)
 %token MATCHER_LOCKED MATCHER_NOT_LOCKED
 %token MATCHER_COLORLABEL MATCHER_NOT_COLORLABEL
 %token MATCHER_IGNORE_THREAD MATCHER_NOT_IGNORE_THREAD
-%token MATCHER_CHANGE_SCORE
+%token MATCHER_ADD_SCORE MATCHER_SET_SCORE
+%token MATCHER_STOP
 
 %start file
 
@@ -548,7 +549,7 @@ MATCHER_ALL
 	gint value = 0;
 
 	criteria = MATCHCRITERIA_COLORLABEL;
-	value = atoi($2);
+	value = strtol($2, NULL, 10);
 	if (value < 1) value = 1;
 	else if (value > MAX_COLORLABELS) value = MAX_COLORLABELS;
 	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
@@ -559,7 +560,7 @@ MATCHER_ALL
 	gint value = 0;
 
 	criteria = MATCHCRITERIA_NOT_COLORLABEL;
-	value = atoi($2);
+	value = strtol($2, NULL, 0);
 	if (value < 1) value = 1;
 	else if (value > MAX_COLORLABELS) value = MAX_COLORLABELS;
 	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
@@ -674,7 +675,7 @@ MATCHER_ALL
 	gint value = 0;
 
 	criteria = MATCHCRITERIA_AGE_GREATER;
-	value = atoi($2);
+	value = strtol($2, NULL, 0);
 	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_AGE_LOWER MATCHER_INTEGER
@@ -683,7 +684,7 @@ MATCHER_ALL
 	gint value = 0;
 
 	criteria = MATCHCRITERIA_AGE_LOWER;
-	value = atoi($2);
+	value = strtol($2, NULL, 0);
 	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_NEWSGROUPS match_type MATCHER_STRING
@@ -746,7 +747,7 @@ MATCHER_ALL
 	gint value = 0;
 
 	criteria = MATCHCRITERIA_SCORE_GREATER;
-	value = atoi($2);
+	value = strtol($2, NULL, 0);
 	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_SCORE_LOWER MATCHER_INTEGER
@@ -755,7 +756,7 @@ MATCHER_ALL
 	gint value = 0;
 
 	criteria = MATCHCRITERIA_SCORE_LOWER;
-	value = atoi($2);
+	value = strtol($2, NULL, 0);
 	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_SCORE_EQUAL MATCHER_INTEGER
@@ -764,7 +765,7 @@ MATCHER_ALL
 	gint value = 0;
 
 	criteria = MATCHCRITERIA_SCORE_EQUAL;
-	value = atoi($2);
+	value = strtol($2, NULL, 0);
 	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_SIZE_GREATER MATCHER_INTEGER 
@@ -772,7 +773,7 @@ MATCHER_ALL
 	gint criteria = 0;
 	gint value    = 0;
 	criteria = MATCHCRITERIA_SIZE_GREATER;
-	value = atoi($2);
+	value = strtol($2, NULL, 0);
 	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_SIZE_SMALLER MATCHER_INTEGER
@@ -780,7 +781,7 @@ MATCHER_ALL
 	gint criteria = 0;
 	gint value    = 0;
 	criteria = MATCHCRITERIA_SIZE_SMALLER;
-	value = atoi($2);
+	value = strtol($2, NULL, 0);
 	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_SIZE_EQUAL MATCHER_INTEGER
@@ -788,7 +789,7 @@ MATCHER_ALL
 	gint criteria = 0;
 	gint value    = 0;
 	criteria = MATCHCRITERIA_SIZE_EQUAL;
-	value = atoi($2);
+	value = strtol($2, NULL, 0);
 	prop = matcherprop_unquote_new(criteria, NULL, 0, NULL, value);
 }
 | MATCHER_HEADER MATCHER_STRING
@@ -899,7 +900,7 @@ MATCHER_EXECUTE MATCHER_STRING
 
 	action_type = MATCHACTION_EXECUTE;
 	cmd = $2;
-	action = filteringaction_new(action_type, 0, cmd, 0);
+	action = filteringaction_new(action_type, 0, cmd, 0, 0);
 }
 | MATCHER_MOVE MATCHER_STRING
 {
@@ -908,7 +909,7 @@ MATCHER_EXECUTE MATCHER_STRING
 
 	action_type = MATCHACTION_MOVE;
 	destination = $2;
-	action = filteringaction_new(action_type, 0, destination, 0);
+	action = filteringaction_new(action_type, 0, destination, 0, 0);
 }
 | MATCHER_COPY MATCHER_STRING
 {
@@ -917,56 +918,56 @@ MATCHER_EXECUTE MATCHER_STRING
 
 	action_type = MATCHACTION_COPY;
 	destination = $2;
-	action = filteringaction_new(action_type, 0, destination, 0);
+	action = filteringaction_new(action_type, 0, destination, 0, 0);
 }
 | MATCHER_DELETE
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_DELETE;
-	action = filteringaction_new(action_type, 0, NULL, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0);
 }
 | MATCHER_MARK
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_MARK;
-	action = filteringaction_new(action_type, 0, NULL, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0);
 }
 | MATCHER_UNMARK
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_UNMARK;
-	action = filteringaction_new(action_type, 0, NULL, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0);
 }
 | MATCHER_LOCK
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_LOCK;
-	action = filteringaction_new(action_type, 0, NULL, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0);
 }
 | MATCHER_UNLOCK
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_UNLOCK;
-	action = filteringaction_new(action_type, 0, NULL, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0);
 }
 | MATCHER_MARK_AS_READ
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_MARK_AS_READ;
-	action = filteringaction_new(action_type, 0, NULL, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0);
 }
 | MATCHER_MARK_AS_UNREAD
 {
 	gint action_type = 0;
 
 	action_type = MATCHACTION_MARK_AS_UNREAD;
-	action = filteringaction_new(action_type, 0, NULL, 0);
+	action = filteringaction_new(action_type, 0, NULL, 0, 0);
 }
 | MATCHER_FORWARD MATCHER_INTEGER MATCHER_STRING
 {
@@ -975,9 +976,10 @@ MATCHER_EXECUTE MATCHER_STRING
 	gint account_id = 0;
 
 	action_type = MATCHACTION_FORWARD;
-	account_id = atoi($2);
+	account_id = strtol($2, NULL, 10);
 	destination = $3;
-	action = filteringaction_new(action_type, account_id, destination, 0);
+	action = filteringaction_new(action_type,
+            account_id, destination, 0, 0);
 }
 | MATCHER_FORWARD_AS_ATTACHMENT MATCHER_INTEGER MATCHER_STRING
 {
@@ -986,9 +988,10 @@ MATCHER_EXECUTE MATCHER_STRING
 	gint account_id = 0;
 
 	action_type = MATCHACTION_FORWARD_AS_ATTACHMENT;
-	account_id = atoi($2);
+	account_id = strtol($2, NULL, 10);
 	destination = $3;
-	action = filteringaction_new(action_type, account_id, destination, 0);
+	action = filteringaction_new(action_type,
+            account_id, destination, 0, 0);
 }
 | MATCHER_REDIRECT MATCHER_INTEGER MATCHER_STRING
 {
@@ -997,9 +1000,10 @@ MATCHER_EXECUTE MATCHER_STRING
 	gint account_id = 0;
 
 	action_type = MATCHACTION_REDIRECT;
-	account_id = atoi($2);
+	account_id = strtol($2, NULL, 10);
 	destination = $3;
-	action = filteringaction_new(action_type, account_id, destination, 0);
+	action = filteringaction_new(action_type,
+            account_id, destination, 0, 0);
 }
 | MATCHER_COLOR MATCHER_INTEGER
 {
@@ -1007,35 +1011,36 @@ MATCHER_EXECUTE MATCHER_STRING
 	gint color = 0;
 
 	action_type = MATCHACTION_COLOR;
-	color = atoi($2);
-	action = filteringaction_new(action_type, 0, NULL, color);
+	color = strtol($2, NULL, 10);
+	action = filteringaction_new(action_type, 0, NULL, color, 0);
 }
-| MATCHER_CHANGE_SCORE MATCHER_STRING
+| MATCHER_ADD_SCORE MATCHER_INTEGER
 {
-	gint action_type = MATCHACTION_CHANGE_SCORE;
-	char *last_tok = NULL;
-	const gchar *first_tok;
-	long int chscore;
-	int change_type; /* -1 == decrement, 0 == assign, 1 == increment */	
-
-#define is_number(x) ( ((x) == '+') || ((x) == '-') || (isdigit((x))) ) 
-	/* find start */
-	for (first_tok = $2; *first_tok && !is_number(*first_tok); first_tok++)
-		;	     
-#undef is_number		
-	
-	chscore = strtol(first_tok, &last_tok, 10);
-	if (last_tok == first_tok || *last_tok == 0) 
-		chscore = 0;
-	change_type = *first_tok == '+' ? 1 : *first_tok == '-' ? -1 : 0;
-	action = filteringaction_new(MATCHACTION_CHANGE_SCORE, change_type,
-				     NULL, chscore);
+	gint action_type = MATCHACTION_ADD_SCORE;
+        gint score = 0;
+        
+        score = strtol($2, NULL, 10);
+	action = filteringaction_new(MATCHACTION_ADD_SCORE, 0,
+				     NULL, 0, score);
+}
+| MATCHER_SET_SCORE MATCHER_INTEGER
+{
+	gint action_type = MATCHACTION_SET_SCORE;
+        gint score = 0;
+        
+        score = strtol($2, NULL, 10);
+	action = filteringaction_new(MATCHACTION_SET_SCORE, 0,
+				     NULL, 0, score);
+}
+| MATCHER_STOP
+{
+	action = filteringaction_new(MATCHACTION_STOP, 0, NULL, 0, 0);
 }
 ;
 
 scoring_rule:
 MATCHER_SCORE MATCHER_INTEGER
 {
-	score = atoi($2);
+	score = strtol($2, NULL, 0);
 }
 ;

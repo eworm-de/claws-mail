@@ -119,7 +119,9 @@ enum {
 	MA_(FORWARD_AS_ATTACHMENT),
 	MA_(COLOR),
 	MA_(REDIRECT),
-	MA_(CHANGE_SCORE),
+	MA_(ADD_SCORE),
+	MA_(SET_SCORE),
+	MA_(STOP),
 	/* boolean operations */
 	MB_(OR),
 	MB_(AND)

@@ -1,3 +1,21 @@
+2003-10-12 [hoa]	0.9.6claws17
+
+	* src/filtering.c
+	* src/filtering.h
+	* src/matcher.c
+	* src/matcher.h
+	* src/matcher_parser_parse.y
+	* src/prefs_filtering_action.c
+		added "stop" action : stop applying the filtering rules.
+		added "set score" and "increase/decrease score" actions.
+		That two last action replace the "change_score" action
+		introduced by alfons in 0.8.8claws85.
+		"set score" is to set a given score to the message.
+		"increase/decrease score" will increase or decrease the
+		score if the given value is respectively positive or
+		negative. If someone find a some better name for this last
+		rule, it can be modified.
+
 2003-10-12 [paul]	0.9.6claws16
 
 	* AUTHORS

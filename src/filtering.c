@@ -53,16 +53,11 @@ static inline gint strlen_with_check(const gchar *expr, gint fline, const gchar 
 
 FilteringAction * filteringaction_new(int type, int account_id,
 				      gchar * destination,
-				      gint labelcolor)
+				      gint labelcolor, gint score)
 {
 	FilteringAction * action;
 
 	action = g_new0(FilteringAction, 1);
-
-	/* NOTE:
-	 * if type is MATCHACTION_CHANGE_SCORE, account_id = (-1, 0, 1) and
-	 * labelcolor = the score value change
-	 */
 
 	action->type = type;
 	action->account_id = account_id;
@@ -74,6 +69,7 @@ FilteringAction * filteringaction_new(int type, int account_id,
 		action->unesc_destination = NULL;
 	}
 	action->labelcolor = labelcolor;	
+        action->score = score;
 	return action;
 }
 
@@ -322,16 +318,16 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		}
 		return TRUE;
 
-	case MATCHACTION_CHANGE_SCORE:
-		/* NOTE:
-		 * action->account_id is 0 if just assignment, -1 if decrement
-		 * and 1 if increment by action->labelcolor 
-		 * action->labelcolor has the score value change
-		 */
-		info->score = action->account_id ==  1 ? info->score + action->labelcolor
-			    : action->account_id == -1 ? info->score - action->labelcolor
-			    : action->labelcolor; 
+	case MATCHACTION_SET_SCORE:
+		info->score = action->score;
 		return TRUE;
+
+	case MATCHACTION_ADD_SCORE:
+		info->score += action->score;
+		return TRUE;
+
+	case MATCHACTION_STOP:
+                break;
 
 	default:
 		break;
@@ -392,19 +388,8 @@ static gboolean filtering_is_final_action(FilteringAction *filtering_action)
 	switch(filtering_action->type) {
 	case MATCHACTION_MOVE:
 	case MATCHACTION_DELETE:
+	case MATCHACTION_STOP:
 		return TRUE; /* MsgInfo invalid for message */
-	case MATCHACTION_EXECUTE:
-	case MATCHACTION_COPY:
-	case MATCHACTION_MARK:
-	case MATCHACTION_UNMARK:
-	case MATCHACTION_LOCK:
-	case MATCHACTION_UNLOCK:
-	case MATCHACTION_MARK_AS_READ:
-	case MATCHACTION_MARK_AS_UNREAD:
-	case MATCHACTION_FORWARD:
-	case MATCHACTION_FORWARD_AS_ATTACHMENT:
-	case MATCHACTION_REDIRECT:
-		return FALSE; /* MsgInfo still valid for message */
 	default:
 		return FALSE;
 	}
@@ -469,6 +454,7 @@ gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *act
 	case MATCHACTION_UNLOCK:
 	case MATCHACTION_MARK_AS_READ:
 	case MATCHACTION_MARK_AS_UNREAD:
+	case MATCHACTION_STOP:
 		g_snprintf(dest, destlen, "%s", command_str);
 		return dest;
 
@@ -481,6 +467,12 @@ gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *act
 	case MATCHACTION_COLOR:
 		g_snprintf(dest, destlen, "%s %d", command_str, action->labelcolor);
 		return dest;  
+
+	case MATCHACTION_ADD_SCORE:
+	case MATCHACTION_SET_SCORE:
+		g_snprintf(dest, destlen, "%s %d", command_str, action->score);
+		return dest;  
+
 	default:
 		return NULL;
 	}
