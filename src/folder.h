@@ -153,18 +153,69 @@ struct _Folder
 
 struct _FolderClass
 {
+	/**
+	 * A numeric identifier for the FolderClass. Will be removed in the future
+	 */
 	FolderType  type;
+	/**
+	 * A string identifier for the FolderClass. Currently used in folderlist.xml.
+	 * Should be lowercase.
+	 */
 	gchar 	   *idstr;
+	/**
+	 * A string for the User Interface that identifies the FolderClass to the
+	 * user. Can be upper and lowercase unlike the idstr.
+	 */
 	gchar	   *uistr;
 
 	/* virtual functions */
 
 	/* Folder funtions */
+	/**
+	 * Create a new Folder of this FolderClass
+	 *
+	 * \param name Name of the new Folder
+	 * \param path Path of the new Folder
+	 * \return The new Folder, or NULL when creating the Folder failed
+	 */
 	Folder 		*(*new_folder)		(const gchar	*name,
 						 const gchar	*path);
+	/**
+	 * Destroy a Folder of this FolderClass, frees all resources allocated by
+         * the Folder
+	 *
+	 * \param folder The folder that should be destroyed.
+	 */
 	void     	(*destroy_folder)	(Folder		*folder);
+	/**
+	 * Set the Folder's internal settings from an XMLTag. Also sets the
+	 * parameters of the root-FolderItem of the Folder. If NULL
+	 * the default function of the basic FolderClass is used, so it
+	 * must not be NULL if one of the parent FolderClasses has a set_xml
+	 * function. In that case the parent FolderClass' set_xml function
+	 * can be used or it has to be called with the Folder and XMLTag by
+	 * the implementation.
+	 *
+	 * \param folder The Folder which's settings should be updated
+	 * \param tag The XMLTag containing the settings attributes
+	 */
 	void		 (*set_xml)		(Folder		*folder,
 						 XMLTag		*tag);
+	/**
+	 * Get an \c XMLTag for the settings of the Folder and the root-FolderItem
+	 * of the Folder. If \c NULL the default implementation for the basic
+	 * FolderClass will be used, so it must not be NULL if one of the
+	 * parent \c FolderClasses has it's own implementation for \c get_xml.
+	 * In that case the parent FolderClass' \c get_xml function can be
+	 * used or the \c XMLTag has to be fetched from the parent's \c get_xml
+	 * function and then the \c FolderClass specific attributes can be
+	 * added to it.
+	 *
+	 * \param Folder The \c Folder which's settings should be set in the
+	 *               \c XMLTag's attributes
+	 * \return XMLTag An \c XMLTag with attibutes containing the \c Folder's
+	 *                settings.
+	 */
 	XMLTag		*(*get_xml)		(Folder		*folder);
 	gint     	(*scan_tree)		(Folder		*folder);
 
@@ -222,9 +273,33 @@ struct _FolderClass
                                     		 FolderItem     *dest,
                                     		 GSList         *file_list,
                                     		 GRelation	*relation);
+	/**
+	 * Copy a message to a FolderItem
+	 *
+	 * \param folder The \c Folder of the destination FolderItem
+	 * \param dest The destination \c FolderItem for the message
+	 * \param msginfo The message that should be copied
+	 * \return The message number the copied message got, 0 if it is
+	 *         unknown because message numbers are assigned by an external
+	 *         system and not available after copying or a negative number
+	 *         if an error occuried
+	 */
 	gint    	(*copy_msg)		(Folder		*folder,
 						 FolderItem	*dest,
 						 MsgInfo	*msginfo);
+	/**
+	 * Copy multiple messages to a \c FolderItem. If \c NULL the folder system
+	 * will use \c copy_msg to copy messages one by one.
+	 *
+	 * \param folder The \c Folder of the destination FolderItem
+	 * \param dest The destination \c FolderItem for the message
+	 * \param msglist A list of \c MsgInfos which should be copied to dest
+	 * \param relation Insert tuples of (MsgInfo, new message number) to
+	 *                 provide feedback for the folder system which new
+	 *                 message number a \c MsgInfo has got in dest. Insert
+	 *                 0 for the message number of unknown.
+	 * \return 0 on success, a negative number otherwise
+	 */
 	gint    	(*copy_msgs)		(Folder		*folder,
 						 FolderItem	*dest,
 						 MsgInfoList	*msglist,
@@ -237,6 +312,21 @@ struct _FolderClass
 	gboolean	(*is_msg_changed)	(Folder		*folder,
 						 FolderItem	*item,
 						 MsgInfo	*msginfo);
+	/**
+	 * Update a message's flags in the folder data. If NULL only the
+	 * internal flag management will be used. The function has to set
+	 * \c msginfo->flags.perm_flags. It does not have to set the flags
+	 * that it got as \c newflags. If a flag can not be set in this
+	 * \c FolderClass the function can refuse to set it. Flags that are not
+	 * supported by the \c FolderClass should not be refused. They will be
+	 * managed by the internal cache in this case.
+	 *
+	 * \param folder The \c Folder of the message
+	 * \param item The \c FolderItem of the message
+	 * \param msginfo The \c MsgInfo for the message which's flags should be
+	 *                updated
+	 * \param newflags The flags the message should get
+	 */
 	void    	(*change_flags)		(Folder		*folder,
 						 FolderItem	*item,
 						 MsgInfo        *msginfo,
