@@ -223,7 +223,7 @@ int mailimf_ignore_field_parse(char * message, size_t length,
 static inline int
 mailmbox_fields_parse(char * str, size_t length,
 		      size_t * index,
-		      uint32_t * puid,
+		      guint * puid,
 		      size_t * phlen)
 {
   size_t cur_token;
@@ -300,7 +300,7 @@ mailmbox_single_parse(char * str, size_t length,
 		      size_t * pbody_len,
 		      size_t * psize,
 		      size_t * ppadding,
-		      uint32_t * puid)
+		      guint * puid)
 {
   size_t cur_token;
   size_t start;
@@ -311,7 +311,7 @@ mailmbox_single_parse(char * str, size_t length,
   size_t end;
   size_t next;
   size_t message_length;
-  uint32_t uid;
+  guint uid;
   int r;
 #if 0
   int in_mail_data;
@@ -581,14 +581,14 @@ mailmbox_parse_additionnal(struct mailmbox_folder * folder,
   size_t body_len;
   size_t size;
   size_t padding;
-  uint32_t uid;
+  guint uid;
   int r;
   int res;
 
-  uint32_t max_uid;
-  uint32_t first_index;
-  uint32_t i;
-  uint32_t j;
+  guint max_uid;
+  guint first_index;
+  guint i;
+  guint j;
 
   cur_token = * index;
 
@@ -742,7 +742,7 @@ mailmbox_parse_additionnal(struct mailmbox_folder * folder,
 
 static void flush_uid(struct mailmbox_folder * folder)
 {
-  uint32_t i;
+  guint i;
   
   for(i = 0 ; i < folder->tab->len ; i++) {
     struct mailmbox_msg_info * info;

@@ -70,13 +70,13 @@ struct mailmbox_folder {
   int no_uid;
 
   int changed;
-  uint32_t deleted_count;
+  guint deleted_count;
   
   char * mapping;
   size_t mapping_size;
 
-  uint32_t written_uid;
-  uint32_t max_uid;
+  guint written_uid;
+  guint max_uid;
 
   chash * hash;
   carray * tab;
@@ -87,8 +87,8 @@ void mailmbox_folder_free(struct mailmbox_folder * folder);
 
 
 struct mailmbox_msg_info {
-  uint32_t index;
-  uint32_t uid;
+  guint index;
+  guint uid;
   int written_uid;
   int deleted;
 
@@ -112,28 +112,16 @@ int mailmbox_msg_info_update(struct mailmbox_folder * folder,
 			     size_t headers, size_t headers_len,
 			     size_t body, size_t body_len,
 			     size_t size, size_t padding,
-			     uint32_t uid);
+			     guint uid);
 
 struct mailmbox_msg_info *
 mailmbox_msg_info_new(size_t start, size_t start_len,
 		      size_t headers, size_t headers_len,
 		      size_t body, size_t body_len,
 		      size_t size, size_t padding,
-		      uint32_t uid);
+		      guint uid);
 
 void mailmbox_msg_info_free(struct mailmbox_msg_info * info);
-
-#if 0
-struct mailmbox_msg_env {
-  uint32_t index;
-  struct mailimf_fields * fields;
-};
-
-struct mailmbox_msg_env *
-mailmbox_msg_env_new(uint32_t index, struct mailimf_fields * fields);
-
-void mailmbox_msg_env_free(struct mailmbox_msg_env * msg_env);
-#endif
 
 struct mailmbox_append_info {
   char * message;

@@ -33,6 +33,7 @@
  * SUCH DAMAGE.
  */
 
+#if 0
 #include <stdlib.h>
 #include <string.h>
 #include "carray.h"
@@ -137,3 +138,4 @@ void carray_free(carray * array) {
   free(array->array);
   free(array);
 }
+#endif

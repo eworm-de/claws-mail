@@ -1,5 +1,18 @@
+2003-10-21 [alfons]	0.9.6claws43
+
+	* src/carray.h
+		glib wrappers
+	* src/carray.c
+		disable
+	* src/mailmbox.[ch]
+	* src/mailmbox_folder.c
+	* src/mailmbox_parse.c
+	* src/mailmbox_types.[ch]
+		%s/uint32_t/guint
+
 2003-10-21 [luke]	0.9.6claws42
-        * src/stock_pixmaps.[ch]
+
+	* src/stock_pixmaps.[ch]
         * src/mimeview.c
         * src/pixmaps/mime_application_octet_stream.xpm         ** REMOVE **
         * src/pixmaps/messageview_text.xpm                      ** REMOVE **

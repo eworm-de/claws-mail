@@ -171,7 +171,7 @@ typedef struct _MBOXFolderItem	MBOXFolderItem;
 struct _MBOXFolderItem
 {
 	FolderItem item;
-        uint32_t old_max_uid;
+        guint old_max_uid;
         struct mailmbox_folder * mbox;
 };
 
@@ -188,12 +188,12 @@ static FolderItem *mailmbox_folder_item_new(Folder *folder)
 
 #define MAX_UID_FILE "max-uid"
 
-void read_max_uid_value(FolderItem *item, uint32_t * pmax_uid)
+void read_max_uid_value(FolderItem *item, guint * pmax_uid)
 {
         gchar * path;
         gchar * file;
         FILE * f;
-        uint32_t max_uid;
+        guint max_uid;
         size_t r;
         
 	path = folder_item_get_path(item);
@@ -215,7 +215,7 @@ void read_max_uid_value(FolderItem *item, uint32_t * pmax_uid)
         * pmax_uid = max_uid;
 }
 
-void write_max_uid_value(FolderItem *item, uint32_t max_uid)
+void write_max_uid_value(FolderItem *item, guint max_uid)
 {
         gchar * path;
         gchar * file;
@@ -313,7 +313,7 @@ static int mailmbox_item_sync(FolderItem *_item, int validate_uid)
         int r;
 
         if (item->mbox == NULL) {
-                uint32_t written_uid;
+                guint written_uid;
                 gchar * path;
                 
                 written_uid = 0;
@@ -368,7 +368,7 @@ static gint mailmbox_get_num_list(Folder *folder, FolderItem *item,
     GSList **list, gboolean *old_uids_valid)
 {
 	gint nummsgs = 0;
-        uint32_t i;
+        guint i;
         struct mailmbox_folder * mbox;
 
 	g_return_val_if_fail(item != NULL, -1);
@@ -451,7 +451,7 @@ static gchar *s_mailmbox_fetch_msg(Folder *folder, FolderItem *item, gint num)
         return NULL;
 }
 
-static MsgInfo *mailmbox_parse_msg(uint32_t uid,
+static MsgInfo *mailmbox_parse_msg(guint uid,
     char * data, size_t len, FolderItem *item)
 {
 	MsgInfo *msginfo;
@@ -763,7 +763,7 @@ static gint mailmbox_remove_all_msg(Folder *folder, FolderItem *item)
 {
         struct mailmbox_folder * mbox;
         int r;
-        uint32_t i;
+        guint i;
         
 	g_return_val_if_fail(item != NULL, -1);
         

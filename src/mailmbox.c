@@ -389,7 +389,7 @@ static inline size_t get_fixed_line_size(char * line, size_t length,
 }
 
 static size_t get_fixed_message_size(char * message, size_t size,
-				     uint32_t uid, int force_no_uid)
+				     guint uid, int force_no_uid)
 {
   size_t fixed_size;
   size_t cur_token;
@@ -398,7 +398,7 @@ static size_t get_fixed_message_size(char * message, size_t size,
   char * cur;
   int end;
   int r;
-  uint32_t tmp_uid;
+  guint tmp_uid;
 
   cur_token = 0;
 
@@ -498,7 +498,7 @@ static inline char * write_fixed_line(char * str,
 
 static char * write_fixed_message(char * str,
 				  char * message, size_t size,
-				  uint32_t uid, int force_no_uid)
+				  guint uid, int force_no_uid)
 {
   size_t fixed_size;
   size_t cur_token;
@@ -585,7 +585,7 @@ mailmbox_append_message_list_no_lock(struct mailmbox_folder * folder,
   int res;
   size_t old_size;
   char * str;
-  uint32_t i;
+  guint i;
   size_t from_size;
   size_t maxuid;
   size_t left;
@@ -784,7 +784,7 @@ mailmbox_append_message(struct mailmbox_folder * folder,
 /* ********************************************************************** */
 
 int mailmbox_fetch_msg_no_lock(struct mailmbox_folder * folder,
-			       uint32_t num, char ** result,
+			       guint num, char ** result,
 			       size_t * result_len)
 {
   struct mailmbox_msg_info * info;
@@ -819,7 +819,7 @@ int mailmbox_fetch_msg_no_lock(struct mailmbox_folder * folder,
 }
 
 int mailmbox_fetch_msg_headers_no_lock(struct mailmbox_folder * folder,
-				       uint32_t num, char ** result,
+				       guint num, char ** result,
 				       size_t * result_len)
 {
   struct mailmbox_msg_info * info;
@@ -854,7 +854,7 @@ int mailmbox_fetch_msg_headers_no_lock(struct mailmbox_folder * folder,
 }
 
 int mailmbox_fetch_msg(struct mailmbox_folder * folder,
-		       uint32_t num, char ** result,
+		       guint num, char ** result,
 		       size_t * result_len)
 {
   int res;
@@ -903,7 +903,7 @@ int mailmbox_fetch_msg(struct mailmbox_folder * folder,
 }
 
 int mailmbox_fetch_msg_headers(struct mailmbox_folder * folder,
-			       uint32_t num, char ** result,
+			       guint num, char ** result,
 			       size_t * result_len)
 {
   int res;
@@ -964,7 +964,7 @@ int mailmbox_copy_msg_list(struct mailmbox_folder * dest_folder,
   int r;
   int res;
   carray * append_tab;
-  uint32_t i;
+  guint i;
 
   r = mailmbox_validate_read_lock(src_folder);
   if (r != MAILMBOX_NO_ERROR) {
@@ -982,9 +982,9 @@ int mailmbox_copy_msg_list(struct mailmbox_folder * dest_folder,
     struct mailmbox_append_info * append_info;
     char * data;
     size_t len;
-    uint32_t uid;
+    guint uid;
 
-    uid = * ((uint32_t *) carray_get(tab, i));
+    uid = * ((guint *) carray_get(tab, i));
 
     r = mailmbox_fetch_msg_no_lock(src_folder, uid, &data, &len);
     if (r != MAILMBOX_NO_ERROR) {
@@ -1040,11 +1040,11 @@ int mailmbox_copy_msg_list(struct mailmbox_folder * dest_folder,
 
 int mailmbox_copy_msg(struct mailmbox_folder * dest_folder,
 		      struct mailmbox_folder * src_folder,
-		      uint32_t uid)
+		      guint uid)
 {
   carray * tab;
   int res;
-  uint32_t * puid;
+  guint * puid;
   int r;
 
   tab = carray_new(1);
@@ -1092,7 +1092,7 @@ static int mailmbox_expunge_to_file_no_lock(char * dest_filename, int dest_fd,
 
       if (!folder->no_uid) {
 	if (!info->written_uid) {
-	  uint32_t uid;
+	  guint uid;
 	  
 	  size += strlen(UID_HEADER " \r\n");
 	  
@@ -1257,7 +1257,7 @@ int mailmbox_expunge(struct mailmbox_folder * folder)
   return res;
 }
 
-int mailmbox_delete_msg(struct mailmbox_folder * folder, uint32_t uid)
+int mailmbox_delete_msg(struct mailmbox_folder * folder, guint uid)
 {
   struct mailmbox_msg_info * info;
   int res;
@@ -1313,7 +1313,7 @@ int mailmbox_delete_msg(struct mailmbox_folder * folder, uint32_t uid)
 int mailmbox_init(char * filename,
 		  int force_readonly,
 		  int force_no_uid,
-		  uint32_t default_written_uid,
+		  guint default_written_uid,
 		  struct mailmbox_folder ** result_folder)
 {
   struct mailmbox_folder * folder;

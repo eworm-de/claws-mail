@@ -36,64 +36,88 @@
 #ifndef CARRAY_H
 #define CARRAY_H
 
+#include <glib.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <inttypes.h>
 
-struct carray_s {
-  void ** array;
-  uint32_t len;
-  uint32_t max;
-};
-
-typedef struct carray_s carray;
+typedef GPtrArray carray;
 
 /* Creates a new array of pointers, with initsize preallocated cells */
-carray *   carray_new(uint32_t initsize);
+static inline carray *carray_new(guint initsize)
+{
+	carray *res = g_ptr_array_new();
+	gint n = (gint) initsize;
+	g_assert(n >= 0);
+	g_ptr_array_set_size(res, n);
+	return res;
+}
 
-/* Adds the pointer to data in the array.
-   Returns the index of the pointer in the array or -1 on error */
-int       carray_add(carray * array, void * data, uint32_t * index);
+static inline gint carray_add(carray *array, void *data, guint *index)
+{
+	g_ptr_array_add(array, data);
+	*index = array->len - 1;
+	return 0;
+}
 
-int carray_set_size(carray * array, uint32_t new_size);
+static inline gint carray_set_size(carray *array, guint new_size)
+{
+	gint n = (gint) new_size;
+	g_assert(n >= 0);
+	g_ptr_array_set_size(array, n);
+	return 0;
+}
 
-/* Removes the cell at this index position. Returns TRUE on success.
-   Order of elements in the array IS changed. */
-int       carray_delete(carray * array, uint32_t indx);
+static inline gint carray_delete(carray *array, guint indx)
+{
+	gint n = (gint) indx;
+	if (n < 0) return -1;
+	if (n >= array->len) return -1;
+	g_ptr_array_remove_index_fast(array, n);
+	return 0;
+}
 
-/* Removes the cell at this index position. Returns TRUE on success.
-   Order of elements in the array IS not changed. */
-int       carray_delete_slow(carray * array, uint32_t indx);
+static inline gint carray_delete_slow(carray *array, guint indx)
+{
+	gint n = (gint) indx;
+	if (n < 0) return -1;
+	return g_ptr_array_remove_index(array, n) ? 0 : -1;
+}
 
-/* remove without decreasing the size of the array */
-int carray_delete_fast(carray * array, uint32_t indx);
+static inline gint carray_delete_fast(carray *array, guint indx)
+{
+	gint n = (gint) indx;
+	if (n < 0) return -1;
+	g_ptr_array_index(array, n) = NULL;
+	return 0;
+}
 
-/* Some of the following routines can be implemented as macros to
-   be faster. If you don't want it, define NO_MACROS */
-#ifdef NO_MACROS
+static inline gint carray_free(carray *array)
+{
+	g_ptr_array_free(array, TRUE);
+}
 
-/* Returns the array itself */
-void **   carray_data(carray);
+static inline gpointer carray_get(carray *array, guint index)
+{
+	gint n = (gint) index;
+	if (n < 0) return NULL;
+	return g_ptr_array_index(array, n);
+}
 
-/* Returns the number of elements in the array */
-int       carray_count(carray);
+static inline carray_set(carray *array, guint index, gpointer value)
+{
+	gint n = (gint) index;
+	g_assert(n >= 0);
+	g_ptr_array_index(array, n) = value;
+}
 
-/* Returns the contents of one cell */
-void *    carray_get(carray array, int indx);
-
-/* Sets the contents of one cell */
-void      carray_set(carray array, int indx, void * value);
-
-#else
-#define   carray_data(a)         (a->array)
-#define   carray_count(a)        (a->len)
-#define   carray_get(a, indx)    (a->array[indx])
-#define   carray_set(a, indx, v) do { a->array[indx]=v; } while(0)
-#endif
-
-void carray_free(carray * array);
+static guint carray_count(carray *array)
+{
+	/* NOTE: We're hosed when len < 0, but that won't occur */
+	return (guint) array->len;
+}
 
 #ifdef __cplusplus
 }

@@ -53,7 +53,7 @@ int mailmbox_msg_info_update(struct mailmbox_folder * folder,
 			     size_t headers, size_t headers_len,
 			     size_t body, size_t body_len,
 			     size_t size, size_t padding,
-			     uint32_t uid)
+			     guint uid)
 {
   struct mailmbox_msg_info * info;
   int res;
@@ -65,7 +65,7 @@ int mailmbox_msg_info_update(struct mailmbox_folder * folder,
   key.len = sizeof(uid);
   r = chash_get(folder->hash, &key, &data);
   if (r < 0) {
-    uint32_t index;
+    guint index;
 
     info = mailmbox_msg_info_new(start, start_len, headers, headers_len,
 				 body, body_len, size, padding, uid);
@@ -126,7 +126,7 @@ mailmbox_msg_info_new(size_t start, size_t start_len,
 		      size_t headers, size_t headers_len,
 		      size_t body, size_t body_len,
 		      size_t size, size_t padding,
-		      uint32_t uid)
+		      guint uid)
 {
   struct mailmbox_msg_info * info;
 
@@ -167,7 +167,7 @@ void mailmbox_msg_info_free(struct mailmbox_msg_info * info)
 
 #if 0
 struct mailmbox_msg_env *
-mailmbox_msg_env_new(uint32_t index, struct mailimf_fields * fields)
+mailmbox_msg_env_new(guint index, struct mailimf_fields * fields)
 {
   struct mailmbox_msg_env * msg_env;
 
@@ -279,7 +279,7 @@ struct mailmbox_folder * mailmbox_folder_new(char * filename)
 
 void mailmbox_folder_free(struct mailmbox_folder * folder)
 {
-  uint32_t i;
+  guint i;
 
   for(i = 0 ; i < folder->tab->len ; i++) {
     struct mailmbox_msg_info * info;
