@@ -489,6 +489,8 @@ static gboolean compose_headerentry_button_pressed (GtkWidget *entry,
 
 static void compose_show_first_last_header (Compose *compose, gboolean show_first);
 
+static void compose_allow_user_actions (Compose *compose, gboolean allow);
+
 #if USE_ASPELL
 static void compose_check_all		   (Compose *compose);
 static void compose_highlight_all	   (Compose *compose);
@@ -3261,20 +3263,30 @@ gint compose_send(Compose *compose)
 {
 	gint msgnum;
 	FolderItem *folder;
-	gint val;
+	gint val = -1;
 	gchar *msgpath;
 
+	compose_allow_user_actions (compose, FALSE);
+	compose->sending = TRUE;
+
 	if (compose_check_entries(compose, TRUE) == FALSE)
-		return -1;
+		goto bail;
 
 	val = compose_queue(compose, &msgnum, &folder);
+
 	if (val) {
 		alertpanel_error(_("Could not queue message for sending"));
-		return -1;
+		goto bail;
 	}
 
+	compose->sending = FALSE;	
+	gtk_widget_destroy(compose->window);
+	/* No more compose access in the normal codepath after this point! */
+
 	if (msgnum == 0) {
-		alertpanel_error(_("The message was queued but could not be sent.\nUse \"Send queued messages\" from the main window to retry."));
+		alertpanel_error(_("The message was queued but could not be "
+				   "sent.\nUse \"Send queued messages\" from "
+				   "the main window to retry."));
 		return 0;
 	}
 	
@@ -3282,11 +3294,18 @@ gint compose_send(Compose *compose)
 	val = procmsg_send_message_queue(msgpath);
 	g_free(msgpath);
 
-	folder_item_remove_msg(folder, msgnum);
-	
-	folder_item_scan(folder);
+	if (val == 0) {
+		folder_item_remove_msg(folder, msgnum);
+		folder_item_scan(folder);
+	}
 
-	return val;
+	return 0;
+
+bail:
+	compose_allow_user_actions (compose, TRUE);
+	compose->sending = FALSE;
+
+	return -1;
 }
 
 #if 0 /* compose restructure */
@@ -6568,13 +6587,7 @@ static void compose_send_cb(gpointer data, guint action, GtkWidget *widget)
 		compose->draft_timeout_tag = -1;
 	}
 
-	compose_allow_user_actions (compose, FALSE);
-	compose->sending = TRUE;
-	val = compose_send(compose);
-	compose_allow_user_actions (compose, TRUE);
-	compose->sending = FALSE;
-
-	if (val == 0) gtk_widget_destroy(compose->window);
+	compose_send(compose);
 }
 
 static void compose_send_later_cb(gpointer data, guint action,
