@@ -4355,7 +4355,27 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				/* Deprecated - what are the non-deprecated equivalents? */
 				if (gtk_ctree_node_is_visible(GTK_CTREE(ctree), next) != GTK_VISIBILITY_FULL)
 					gtk_ctree_node_moveto(GTK_CTREE(ctree), next, 0, 0, 0);
-					
+				summaryview->selected = next;
+				return TRUE;
+			}
+		}
+		break;
+	case GDK_Home:
+	case GDK_End:
+		if ((node = summaryview->selected) != NULL) {
+			GtkCTreeNode *next = NULL;
+			next = (event->keyval == GDK_Home)
+					? gtk_ctree_node_nth(ctree, 0)
+					: gtk_ctree_node_nth(ctree, 
+						g_list_length(GTK_CLIST(ctree)->row_list)-1);
+			if (next) {
+				gtk_sctree_select_with_state
+					(GTK_SCTREE(ctree), next, event->state);
+
+				/* Deprecated - what are the non-deprecated equivalents? */
+				if (gtk_ctree_node_is_visible(GTK_CTREE(ctree), next) != GTK_VISIBILITY_FULL)
+					gtk_ctree_node_moveto(GTK_CTREE(ctree), next, 0, 0, 0);
+				summaryview->selected = next;
 				return TRUE;
 			}
 		}
@@ -4408,7 +4428,7 @@ static gboolean summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	default:
 		break;
 	}
-	return TRUE;
+	return FALSE;
 }
 
 static void quicksearch_execute_cb(QuickSearch *quicksearch, gpointer data)
