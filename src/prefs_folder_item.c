@@ -727,9 +727,6 @@ void prefs_folder_item_copy_prefs(FolderItem * src, FolderItem * dest)
 	tmp_prefs.enable_thread			= src->prefs->enable_thread;
 	tmp_prefs.kill_score			= src->prefs->kill_score;
 	tmp_prefs.important_score		= src->prefs->important_score;
-	/* FIXME!
-	tmp_prefs.scoring			= g_slist_copy(src->prefs->scoring); 
-	*/
 
 	prefs_matcher_read_config();
 	for (tmp = src->prefs->scoring; tmp != NULL && tmp->data != NULL;) {
