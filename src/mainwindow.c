@@ -488,10 +488,6 @@ static void scan_tree_func	 (Folder	*folder,
 				  FolderItem	*item,
 				  gpointer	 data);
 				  
-static void key_pressed (GtkWidget *widget, 
-				GdkEventKey *event,
-				gpointer data);
-
 static void toggle_work_offline_cb(MainWindow *mainwin, guint action, GtkWidget *widget);
 
 static void addr_harvest_cb	 ( MainWindow  *mainwin,
@@ -890,7 +886,7 @@ MainWindow *main_window_create(SeparateType type)
 			   GTK_SIGNAL_FUNC(main_window_close_cb), mainwin);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
 	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-				GTK_SIGNAL_FUNC(key_pressed), mainwin);
+				GTK_SIGNAL_FUNC(mainwindow_key_pressed), mainwin);
 
 	gtk_widget_realize(window);
 	gtk_widget_add_events(window, GDK_KEY_PRESS_MASK|GDK_KEY_RELEASE_MASK);
@@ -3507,7 +3503,8 @@ static void scan_tree_func(Folder *folder, FolderItem *item, gpointer data)
 #define BREAK_ON_MODIFIER_KEY() \
 	if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) != 0) break
 
-static void key_pressed (GtkWidget *widget, GdkEventKey *event,	gpointer data)
+void mainwindow_key_pressed (GtkWidget *widget, GdkEventKey *event,
+				    gpointer data)
 {
 	MainWindow *mainwin = (MainWindow*) data;
 	

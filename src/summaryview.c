@@ -266,6 +266,9 @@ static void summary_key_pressed		(GtkWidget		*ctree,
 static void summary_searchbar_pressed	(GtkWidget		*ctree,
 					 GdkEventKey		*event,
 					 SummaryView		*summaryview);
+static void summary_searchbar_focus_evt	(GtkWidget		*ctree,
+					 GdkEventFocus		*event,
+					 SummaryView		*summaryview);
 static void summary_searchtype_changed	(GtkMenuItem 		*widget, 
 					 gpointer 		 data);
 static void summary_open_row		(GtkSCTree		*sctree,
@@ -586,6 +589,14 @@ SummaryView *summary_create(void)
 
 	gtk_signal_connect(GTK_OBJECT(search_string), "key_press_event",
 			   GTK_SIGNAL_FUNC(summary_searchbar_pressed),
+			   summaryview);
+
+	gtk_signal_connect(GTK_OBJECT(search_string), "focus_in_event",
+			   GTK_SIGNAL_FUNC(summary_searchbar_focus_evt),
+			   summaryview);
+
+	gtk_signal_connect(GTK_OBJECT(search_string), "focus_out_event",
+			   GTK_SIGNAL_FUNC(summary_searchbar_focus_evt),
 			   summaryview);
 
   	gtk_signal_connect (GTK_OBJECT(toggle_search), "toggled",
@@ -4673,6 +4684,19 @@ static void summary_searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 {
 	if (event != NULL && event->keyval == GDK_Return)
 	 	summary_show(summaryview, summaryview->folder_item);
+}
+
+static void summary_searchbar_focus_evt(GtkWidget *widget, GdkEventFocus *event,
+				SummaryView *summaryview)
+{
+	if (event != NULL && event->in)
+		gtk_signal_handler_block_by_func(GTK_OBJECT(summaryview->mainwin->window), 
+						 GTK_SIGNAL_FUNC(mainwindow_key_pressed),
+                                         	 summaryview->mainwin);
+	else
+		gtk_signal_handler_unblock_by_func(GTK_OBJECT(summaryview->mainwin->window), 
+						   GTK_SIGNAL_FUNC(mainwindow_key_pressed),
+                                         	   summaryview->mainwin);
 }
 
 static void summary_searchtype_changed(GtkMenuItem *widget, gpointer data)

@@ -1,3 +1,13 @@
+2002-12-13 [colin]	0.8.6claws106
+
+	* src/summaryview.c
+		Disconnect sighandlers for mainwindow when
+		quicksearch has the focus
+		Fix bug #653231
+	* src/mainwindow.[ch]
+		Make key_pressed callback public, to be able
+		to disconnect it
+
 2002-12-13 [christoph]	0.8.6claws105
 
 	* src/mh.c
