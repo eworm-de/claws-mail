@@ -67,6 +67,9 @@ if [ "$ans" == "y" ]; then
 	rm $chlog.old
 	echo "$patchset" >> PATCHSETS
 	echo "editing $chlog configure.ac..."
+	if [ "$EDITOR" == "" ]; then
+		EDITOR=vi
+	fi;
 	$EDITOR $chlog configure.ac
 	echo running cvs commit $@ PATCHSETS $chlog configure.ac
 	cvs commit $@ PATCHSETS $chlog configure.ac

@@ -1,7 +1,7 @@
 Installation
 ============
 
-This program requires GTK+ 1.2.6 or higher to be compiled.
+This program requires GTK+ 2.4.0 or higher to be compiled.
 
 This program is developed on Debian GNU/Linux (woody/sid)
 (Linux 2.4.x + glibc 2.2), so it is possible not to work correctly

@@ -1,3 +1,10 @@
+2004-07-17 [colin]	0.9.12cvs30.1
+
+	* src/folder.h
+	* src/folderview.c
+	* src/summaryview.c
+		Sync with 0.9.12cvs30
+
 2004-07-17 [colin]	0.9.12cvs28.2
 
 	* src/mimeview.c
