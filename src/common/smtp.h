@@ -111,6 +111,7 @@ struct _SMTPSession
 
 	SMTPErrorValue error_val;
 	gchar *error_msg;
+	gboolean is_esmtp;
 };
 
 Session *smtp_session_new	(void);

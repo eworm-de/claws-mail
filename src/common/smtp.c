@@ -119,18 +119,29 @@ static void smtp_session_destroy(Session *session)
 static gint smtp_from(SMTPSession *session)
 {
 	gchar buf[MSGBUFSIZE];
+	gchar *mail_size = NULL;
 
 	g_return_val_if_fail(session->from != NULL, SM_ERROR);
 
 	session->state = SMTP_FROM;
+	
+	if (session->is_esmtp)
+		mail_size = g_strdup_printf(" SIZE=%d", session->send_data_len);
+	else
+		mail_size = g_strdup("");
+		
 
 	if (strchr(session->from, '<'))
-		g_snprintf(buf, sizeof(buf), "MAIL FROM:%s", session->from);
+		g_snprintf(buf, sizeof(buf), "MAIL FROM:%s%s", session->from,
+			   mail_size);
 	else
-		g_snprintf(buf, sizeof(buf), "MAIL FROM:<%s>", session->from);
+		g_snprintf(buf, sizeof(buf), "MAIL FROM:<%s>%s", session->from,
+			   mail_size);
+
+	g_free(mail_size);
 
 	session_send_msg(SESSION(session), SESSION_MSG_NORMAL, buf);
-	log_print("SMTP> %s\n", buf);
+	log_print("%sSMTP> %s\n", (session->is_esmtp?"E":""), buf);
 
 	return SM_OK;
 }
@@ -481,11 +492,14 @@ static gint smtp_session_recv_msg(Session *session, const gchar *msg)
 
 	switch (smtp_session->state) {
 	case SMTP_READY:
+		if (strstr(msg, "ESMTP"))
+			smtp_session->is_esmtp = TRUE;
 	case SMTP_CONNECTED:
 #if USE_OPENSSL
-		if (smtp_session->user || session->ssl_type != SSL_NONE)
+		if (smtp_session->user || session->ssl_type != SSL_NONE ||
+		    smtp_session->is_esmtp)
 #else
-		if (smtp_session->user)
+		if (smtp_session->user || smtp_session->is_esmtp)
 #endif
 			smtp_ehlo(smtp_session);
 		else
