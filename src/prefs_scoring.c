@@ -300,7 +300,7 @@ static void prefs_scoring_create(void)
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
 
-	title[0] = ("Registered rules");
+	title[0] = _("Registered rules");
 	cond_clist = gtk_clist_new_with_titles(1, title);
 	gtk_widget_show (cond_clist);
 	gtk_container_add (GTK_CONTAINER (cond_scrolledwin), cond_clist);
