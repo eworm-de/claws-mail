@@ -54,6 +54,13 @@ typedef enum
 	MIMETYPE_UNKNOWN,
 } MimeMediaType;
 
+typedef enum
+{
+	DISPOSITIONTYPE_INLINE,
+	DISPOSITIONTYPE_ATTACHMENT,
+	DISPOSITIONTYPE_UNKNOWN
+} DispositionType;
+
 #include <glib.h>
 #include <stdio.h>
 
@@ -94,8 +101,6 @@ struct _MimeInfo
 
 	gchar *name;
 
-	gchar *content_disposition;
-
 	/* Internal data */
 	gchar *filename;
 	gboolean tmpfile;
@@ -120,6 +125,9 @@ struct _MimeInfo
 
 	guint		 offset;
 	guint		 length;
+
+	/* Content-Disposition */
+	DispositionType	 disposition;
 
 	/* Privacy */
 	PrivacyData	*privacy;

@@ -394,25 +394,26 @@ static void mimeview_set_multipart_tree(MimeView *mimeview,
 	}
 }
 
-static gchar *get_part_name(MimeInfo *partinfo)
+static const gchar *get_part_name(MimeInfo *partinfo)
 {
-	gchar *name;
+	const gchar *name;
 
-	name = g_hash_table_lookup(partinfo->parameters, "name");
-	if(name == NULL)
-		name = "";
+	name = procmime_mimeinfo_get_parameter(partinfo, "filename");
+	if (name == NULL) {
+		name = procmime_mimeinfo_get_parameter(partinfo, "name");
+		if (name == NULL)
+			name = "";
+	}
 
 	return name;
 }
 
-static gchar *get_part_description(MimeInfo *partinfo)
+static const gchar *get_part_description(MimeInfo *partinfo)
 {
 	if (partinfo->description)
 		return partinfo->description;
-	else if (g_hash_table_lookup(partinfo->parameters, "name") != NULL)
-		return g_hash_table_lookup(partinfo->parameters, "name");
 	else
-		return "";
+		return get_part_name(partinfo);
 }
 
 static GtkCTreeNode *mimeview_append_part(MimeView *mimeview,
@@ -992,8 +993,7 @@ static void mimeview_save_all(MimeView *mimeview)
 	while (attachment != NULL) {
 		if (attachment->type != MIMETYPE_MESSAGE &&
 		    attachment->type != MIMETYPE_MULTIPART &&
-		    (procmime_mimeinfo_get_parameter(attachment, "name") ||
-		     procmime_mimeinfo_get_parameter(attachment, "filename"))) {
+		    attachment->disposition == DISPOSITIONTYPE_ATTACHMENT) {
 			static guint subst_cnt = 1;
 			gchar *attachdir;
 			gchar *attachname = g_strdup(get_part_name(attachment));
@@ -1069,7 +1069,7 @@ static void mimeview_save_as(MimeView *mimeview)
 	}			 
 	g_return_if_fail(partinfo != NULL);
 	
-	if ((partname = procmime_mimeinfo_get_parameter(partinfo, "name")) != NULL) {
+	if ((partname = get_part_name(partinfo)) != NULL) {
 		Xstrdup_a(defname, partname, return);
 		subst_for_filename(defname);
 	}
@@ -1412,7 +1412,7 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	GtkWidget *vbox;
 	GtkWidget *button;
 	gchar *tip;
-	gchar *desc = NULL;
+	const gchar *desc = NULL;
 	StockPixmap stockp;
 	
 	vbox = mimeview->icon_vbox;
