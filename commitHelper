@@ -26,7 +26,7 @@ rm /tmp/commitTool.tmp
 
 IFS='
 '
-filelist=`cvs status $@ 2>/dev/null |grep ^File`
+filelist=`cvs status $@ configure.ac 2>/dev/null |grep ^File`
 
 for file in $filelist; do
 	merge=`echo $file | grep Merge`
@@ -43,8 +43,7 @@ for file in $filelist; do
 done;
 patchset="("
 log=""
-files=`cvs diff -u $@ 2>/dev/null |grep ^Index`
-echo "--8<----------"
+files=`cvs diff -uN $@ 2>/dev/null |grep ^Index`
 name=`whoami`
 #change if your login isn't your name
 if [ "$name" == "claws" ]; then
@@ -68,14 +67,18 @@ for line in $files; do
 "
 done;
 patchset="$patchset ) > $nextsversion.patchset"
-echo -e -n $log
 
 if [ "$EDITOR" == "" ]; then
 	EDITOR=vi
 fi;
 
-echo -e "\n#please type in the changelog entry" > /tmp/logentry
+if [ -n "/tmp/logentry" ]; then
+	echo -e "\n#please type in the changelog entry" > /tmp/logentry
+fi;
 $EDITOR /tmp/logentry
+
+echo "--8<----------"
+echo -e -n $log
 grep -v "^#" /tmp/logentry |grep -v "^$" | sed "s/^/		/" > /tmp/log.tmp.$$ \
 && mv /tmp/log.tmp.$$ /tmp/logentry
 echo >> /tmp/logentry
@@ -115,5 +118,5 @@ if [ "$ans" == "y" ]; then
 		echo commiting recursively
 		cvs commit -m "`cat /tmp/logentry` "
 	fi;
+	rm -f /tmp/logentry
 fi
-rm -f /tmp/logentry
