@@ -3,6 +3,8 @@
 	* src/main.c: include rfc2015.h to avoid compiler warnings.
 	* src/alertpanel.c (alertpanel_message_with_disable): return 0 if
 	the panel is already on screen.
+	* src/prefs_customheader.c (prefs_custom_header_delete_cb): treat
+	closing the alert window by ESC as "No".
 
 2001-03-13 [alfons]
 

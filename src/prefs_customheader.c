@@ -540,7 +540,7 @@ static void prefs_custom_header_delete_cb(void)
 
 	if (alertpanel(_("Delete header"),
 		       _("Do you really want to delete this header?"),
-		       _("Yes"), _("No"), NULL) == G_ALERTALTERNATE)
+		       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
 		return;
 
 	ch = gtk_clist_get_row_data(clist, row);
