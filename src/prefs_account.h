@@ -37,7 +37,6 @@ typedef enum {
 	A_IMAP4,
 	A_NNTP,
 	A_LOCAL,
-	//	A_LOCAL_CMD
 } RecvProtocol;
 
 #if USE_GPGME

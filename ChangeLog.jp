@@ -1,3 +1,14 @@
+2001-05-13
+
+	* claws ブランチからカスタムヘッダ関連をマージ:
+	* src/customheader.[ch]
+	  src/prefs_customheader.[ch]: 新規。
+	* src/customheader.c: custom_header_read_str(): atoi() の代わりに
+	  strtol() を使用し、エラーをチェックするようにした。
+	* src/compose.c: IS_IN_CUSTOM_HEADER(): 新規マクロ。
+	  compose_write_headers(): ヘッダをユーザ定義のヘッダで置換する
+	  ようにした(いくつかの自動的に生成されるヘッダを除く)。
+
 2001-05-11
 
 	* src/inc.c: connection_check_cb(): 接続が確立しなかったときに

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@
 #define COMMON_RC		"sylpheedrc"
 #define ACCOUNT_RC		"accountrc"
 #define FILTER_RC		"filterrc"
-#define HEADERS_RC		"headersrc"
+#define CUSTOM_HEADER_RC	"customheaderrc"
 #define DISPLAY_HEADER_RC	"dispheaderrc"
 #define FOLDERITEM_RC           "folderitemrc"
 #define SCORING_RC              "scoringrc"
@@ -90,17 +90,8 @@
 #define FOLDER_SPACING			4
 #define COLOR_DIM			35000
 
-#if 0
-#define NORMAL_FONT	"-*-helvetica-medium-r-normal--12-*," \
-			"-*-*-medium-r-normal--12-*-*-*-*-*-*-*,*"
-#define BOLD_FONT	"-*-helvetica-bold-r-normal--12-*," \
-			"-*-*-bold-r-normal--12-*-*-*-*-*-*-*,*"
-#define SMALL_FONT	"-*-helvetica-medium-r-normal--10-*," \
-			"-*-*-medium-r-normal--10-*-*-*-*-*-*-*,*"
-#else
 #define NORMAL_FONT prefs_common.normalfont
 #define BOLD_FONT   prefs_common.boldfont
 #define SMALL_FONT	prefs_common.smallfont
-#endif
 
 #endif /* __DEFS_H__ */

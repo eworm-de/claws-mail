@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@
 
 #include <glib.h>
 #include <string.h>
-#include <strings.h>
 #include <stdlib.h>
 
 #include "intl.h"
@@ -31,69 +30,78 @@
 #include "utils.h"
 
 
-gchar * custom_header_get_str(CustomHeader *ch)
+gchar *custom_header_get_str(CustomHeader *ch)
 {
- 	return g_strdup_printf
- 		("%i:%s: %s", ch->account_id, ch->name, ch->value);
+	return g_strdup_printf("%i:%s: %s",
+			       ch->account_id, ch->name, ch->value);
 }
- 
-CustomHeader * custom_header_read_str(gchar * buf)
+
+CustomHeader *custom_header_read_str(const gchar *buf)
 {
- 	CustomHeader * ch;
- 	gchar * account_id_str;
- 	gchar * name;
- 	gchar * value;
- 	gchar * tmp;
- 
- 	Xalloca(tmp, strlen(buf) + 1, return NULL);
- 	strcpy(tmp, buf);
+	CustomHeader *ch;
+	gchar *account_id_str;
+	gint id;
+	gchar *name;
+	gchar *value;
+	gchar *tmp;
+
+	Xstrdup_a(tmp, buf, return NULL);
+	g_strstrip(tmp);
 
 	account_id_str = tmp;
 
- 	name = strchr(account_id_str, ':');
- 	if (!name)
- 		return NULL;
- 	else
- 		*name++ = '\0';
-
- 	while (*name == ' ')
- 		name ++;
- 	
- 	ch = g_new0(CustomHeader, 1);
-
- 	ch->account_id = atoi(account_id_str);
-	if (ch->account_id == 0) {
-		g_free(ch);
+	name = strchr(account_id_str, ':');
+	if (!name)
 		return NULL;
+	else {
+		gchar *endp;
+
+		*name++ = '\0';
+		id = strtol(account_id_str, &endp, 10);
+		if (*endp != '\0') return NULL;
 	}
 
- 	value = strchr(name, ':');
- 	if (!value)
-		{
-			g_free(ch);
-			return NULL;
-		}
- 	else
- 		*value++ = '\0';
- 
- 	ch->name = *name ? g_strdup(name) : NULL;
- 
- 	while (*value == ' ')
- 		value ++;
+	while (*name == ' ') name++;
 
- 	ch->value = *value ? g_strdup(value) : NULL;
+	ch = g_new0(CustomHeader, 1);
+	ch->account_id = id;
 
- 	return ch;
+	value = strchr(name, ':');
+	if (!value) {
+		g_free(ch);
+		return NULL;
+	} else
+		*value++ = '\0';
+
+	ch->name = *name ? g_strdup(name) : NULL;
+	while (*value == ' ') value++;
+	ch->value = *value ? g_strdup(value) : NULL;
+
+	return ch;
 }
- 
+
+CustomHeader *custom_header_find(GSList *header_list, const gchar *header)
+{
+	GSList *cur;
+	CustomHeader *chdr;
+
+	for (cur = header_list; cur != NULL; cur = cur->next) {
+		chdr = (CustomHeader *)cur->data;
+		if (!strcasecmp(chdr->name, header))
+			return chdr;
+	}
+
+	return NULL;
+}
+
 void custom_header_free(CustomHeader *ch)
 {
- 	if (!ch) return;
- 
+	if (!ch) return;
+
 	if (ch->name)
 		g_free(ch->name);
 	if (ch->value)
 		g_free(ch->value);
- 
- 	g_free(ch);
+
+	g_free(ch);
 }

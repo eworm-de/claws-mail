@@ -34,24 +34,21 @@
 #include "intl.h"
 #include "main.h"
 #include "prefs.h"
-#include "prefs_headers.h"
+#include "prefs_customheader.h"
 #include "prefs_common.h"
 #include "prefs_account.h"
 #include "mainwindow.h"
 #include "foldersel.h"
 #include "manage_window.h"
 #include "customheader.h"
+#include "folder.h"
 #include "utils.h"
 #include "gtkutils.h"
 #include "alertpanel.h"
-#include "folder.h"
 
 static struct Headers {
 	GtkWidget *window;
 
-	/*
-	GtkWidget *close_btn;
-	*/
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
 
@@ -61,34 +58,26 @@ static struct Headers {
 	GtkWidget *headers_clist;
 } headers;
 
-/*
-   parameter name, default value, pointer to the prefs variable, data type,
-   pointer to the widget pointer,
-   pointer to the function for data setting,
-   pointer to the function for widget setting
- */
-
 #define VSPACING		12
 #define VSPACING_NARROW		4
 #define DEFAULT_ENTRY_WIDTH	80
 #define PREFSBUFSIZE		1024
 
 /* widget creating functions */
-static void prefs_headers_create		(void);
+static void prefs_headers_create	(void);
 
-static void prefs_headers_set_dialog	(PrefsAccount * ac);
-static void prefs_headers_set_list	(PrefsAccount * ac);
-static gint prefs_headers_clist_set_row	(PrefsAccount * ac,
-					 gint	 row);
+static void prefs_headers_set_dialog	(PrefsAccount *ac);
+static void prefs_headers_set_list	(PrefsAccount *ac);
+static gint prefs_headers_clist_set_row	(PrefsAccount *ac,
+					 gint	       row);
 
 /* callback functions */
-static void prefs_headers_select_dest_cb	(void);
 static void prefs_headers_register_cb	(void);
 static void prefs_headers_substitute_cb	(void);
 static void prefs_headers_delete_cb	(void);
 static void prefs_headers_up		(void);
 static void prefs_headers_down		(void);
-static void prefs_headers_select		(GtkCList	*clist,
+static void prefs_headers_select	(GtkCList	*clist,
 					 gint		 row,
 					 gint		 column,
 					 GdkEvent	*event);
@@ -96,26 +85,21 @@ static void prefs_headers_select		(GtkCList	*clist,
 static void prefs_headers_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
-/*
-static void prefs_headers_close		(GtkButton	*button);
-*/
 static void prefs_headers_ok		(GtkButton	*button);
 static void prefs_headers_cancel	(GtkButton	*button);
-static gint prefs_headers_deleted(GtkWidget *widget, GdkEventAny *event,
-				  gpointer data);
+static gint prefs_headers_deleted	(GtkWidget	*widget,
+					 GdkEventAny	*event,
+					 gpointer	 data);
 
-static PrefsAccount * cur_ac = NULL;
+static PrefsAccount *cur_ac = NULL;
 
-void prefs_headers_open(PrefsAccount * ac)
+void prefs_headers_open(PrefsAccount *ac)
 {
 	if (!headers.window) {
 		prefs_headers_create();
 	}
 
 	manage_window_set_transient(GTK_WINDOW(headers.window));
-	/*
-	gtk_widget_grab_focus(headers.close_btn);
-	*/
 	gtk_widget_grab_focus(headers.ok_btn);
 
 	prefs_headers_set_dialog(ac);
@@ -130,7 +114,6 @@ static void prefs_headers_create(void)
 	GtkWidget *window;
 	GtkWidget *vbox;
 
-	/*	GtkWidget *close_btn; */
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
 
@@ -175,15 +158,8 @@ static void prefs_headers_create(void)
 
 	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
 				&cancel_btn, _("Cancel"), NULL, NULL);
-	/*
-	gtkut_button_set_create (&confirm_area, &close_btn, _("Close"),
-				 NULL, NULL, NULL, NULL);
-	*/
 	gtk_widget_show (confirm_area);
 	gtk_box_pack_end (GTK_BOX(vbox), confirm_area, FALSE, FALSE, 0);
-	/*
-	gtk_widget_grab_default (close_btn);
-	*/
 	gtk_widget_grab_default (ok_btn);
 
 	gtk_window_set_title (GTK_WINDOW(window),
@@ -321,21 +297,20 @@ static void prefs_headers_create(void)
 	gtk_signal_connect (GTK_OBJECT (down_btn), "clicked",
 			    GTK_SIGNAL_FUNC (prefs_headers_down), NULL);
 
-
 	gtk_widget_show_all(window);
 
-	headers.window    = window;
-	/*	headers.close_btn = close_btn; */
-	headers.ok_btn = ok_btn;
+	headers.window     = window;
+	headers.ok_btn     = ok_btn;
 	headers.cancel_btn = cancel_btn;
 
 	headers.hdr_combo  = hdr_combo;
 	headers.hdr_entry  = GTK_COMBO (hdr_combo)->entry;
 	headers.key_entry  = key_entry;
+
 	headers.headers_clist   = headers_clist;
 }
 
-void prefs_headers_read_config(PrefsAccount * ac)
+void prefs_headers_read_config(PrefsAccount *ac)
 {
 	gchar *rcpath;
 	FILE *fp;
@@ -344,7 +319,8 @@ void prefs_headers_read_config(PrefsAccount * ac)
 
 	debug_print(_("Reading headers configuration...\n"));
 
-	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, HEADERS_RC, NULL);
+	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+			     CUSTOM_HEADER_RC, NULL);
 	if ((fp = fopen(rcpath, "r")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(rcpath, "fopen");
 		g_free(rcpath);
@@ -353,29 +329,29 @@ void prefs_headers_read_config(PrefsAccount * ac)
 	}
 	g_free(rcpath);
 
- 	/* remove all previous headers list */
- 	while (ac->customhdr_list != NULL) {
- 		ch = (CustomHeader *)ac->customhdr_list->data;
- 		custom_header_free(ch);
- 		ac->customhdr_list = g_slist_remove(ac->customhdr_list, ch);
- 	}
- 
- 	while (fgets(buf, sizeof(buf), fp) != NULL) {
- 		g_strchomp(buf);
- 		ch = custom_header_read_str(buf);
- 		if (ch) {
-			if (ch->account_id == ac->account_id)
+	/* remove all previous headers list */
+	while (ac->customhdr_list != NULL) {
+		ch = (CustomHeader *)ac->customhdr_list->data;
+		custom_header_free(ch);
+		ac->customhdr_list = g_slist_remove(ac->customhdr_list, ch);
+	}
+
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		g_strchomp(buf);
+		ch = custom_header_read_str(buf);
+		if (ch) {
+			if (ch->account_id == ac->account_id) {
 				ac->customhdr_list =
 					g_slist_append(ac->customhdr_list, ch);
-			else
+			} else
 				custom_header_free(ch);
- 		}
- 	}
- 
- 	fclose(fp);
+		}
+	}
+
+	fclose(fp);
 }
 
-void prefs_headers_write_config(PrefsAccount * ac)
+void prefs_headers_write_config(PrefsAccount *ac)
 {
 	gchar *rcpath;
 	PrefFile *pfile;
@@ -388,12 +364,12 @@ void prefs_headers_write_config(PrefsAccount * ac)
 
 	debug_print(_("Writing headers configuration...\n"));
 
-	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, HEADERS_RC, NULL);
+	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+			     CUSTOM_HEADER_RC, NULL);
 
 	if ((fp = fopen(rcpath, "r")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(rcpath, "fopen");
-	}
-	else {
+	} else {
 		all_hdrs = NULL;
 
 		while (fgets(buf, sizeof(buf), fp) != NULL) {
@@ -463,7 +439,7 @@ void prefs_headers_write_config(PrefsAccount * ac)
 	}
 }
 
-static void prefs_headers_set_dialog(PrefsAccount * ac)
+static void prefs_headers_set_dialog(PrefsAccount *ac)
 {
 	GtkCList *clist = GTK_CLIST(headers.headers_clist);
 	GSList *cur;
@@ -490,7 +466,7 @@ static void prefs_headers_set_dialog(PrefsAccount * ac)
 	gtk_clist_thaw(clist);
 }
 
-static void prefs_headers_set_list(PrefsAccount * ac)
+static void prefs_headers_set_list(PrefsAccount *ac)
 {
 	gint row = 1;
 	CustomHeader *ch;
@@ -506,10 +482,7 @@ static void prefs_headers_set_list(PrefsAccount * ac)
 	}
 }
 
-#define GET_ENTRY(entry) \
-	entry_text = gtk_entry_get_text(GTK_ENTRY(entry))
-
-static gint prefs_headers_clist_set_row(PrefsAccount * ac, gint row)
+static gint prefs_headers_clist_set_row(PrefsAccount *ac, gint row)
 {
 	GtkCList *clist = GTK_CLIST(headers.headers_clist);
 	CustomHeader *ch;
@@ -518,7 +491,7 @@ static gint prefs_headers_clist_set_row(PrefsAccount * ac, gint row)
 
 	g_return_val_if_fail(row != 0, -1);
 
-	GET_ENTRY(headers.hdr_entry);
+	entry_text = gtk_entry_get_text(GTK_ENTRY(headers.hdr_entry));
 	if (entry_text[0] == '\0') {
 		alertpanel_error(_("Header name is not set."));
 		return -1;
@@ -530,7 +503,7 @@ static gint prefs_headers_clist_set_row(PrefsAccount * ac, gint row)
 
 	ch->name = g_strdup(entry_text);
 
-	GET_ENTRY(headers.key_entry);
+	entry_text = gtk_entry_get_text(GTK_ENTRY(headers.key_entry));
 	if (entry_text[0] != '\0')
 		ch->value = g_strdup(entry_text);
 
@@ -644,6 +617,8 @@ static void prefs_headers_select(GtkCList *clist, gint row, gint column,
  	ENTRY_SET_TEXT(headers.key_entry, ch->value);
 }
 
+#undef ENTRY_SET_TEXT
+
 static void prefs_headers_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				     gpointer data)
 {
@@ -659,9 +634,6 @@ static void prefs_headers_ok(GtkButton *button)
 
 static void prefs_headers_cancel(GtkButton *button)
 {
-	/*
-	prefs_headers_write_config(cur_ac); 
-	*/
 	prefs_headers_read_config(cur_ac); 
 	gtk_widget_hide(headers.window);
 }

@@ -99,8 +99,7 @@ static void filesel_create(const gchar *title)
 		 "clicked", GTK_SIGNAL_FUNC(filesel_cancel_cb),
 		 NULL);
 	gtk_signal_connect(GTK_OBJECT(filesel), "delete_event",
-			   GTK_SIGNAL_FUNC(delete_event),
-			   NULL);
+			   GTK_SIGNAL_FUNC(delete_event), NULL);
 	gtk_signal_connect(GTK_OBJECT(filesel), "key_press_event",
 			   GTK_SIGNAL_FUNC(key_pressed), NULL);
 	gtk_signal_connect(GTK_OBJECT(filesel), "focus_in_event",

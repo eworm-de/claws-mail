@@ -1,3 +1,15 @@
+2001-05-13
+
+	* merged the custom header stuff from claws branch:
+	* src/customheader.[ch]
+	  src/prefs_customheader.[ch]: new.
+	* src/customheader.c: custom_header_read_str(): use strtol() instead
+	  of atoi() and check errors.
+	  custom_header_find(): new function.
+	* src/compose.c: IS_IN_CUSTOM_HEADER(): new macro.
+	  compose_write_headers(): made it replace headers with user-defined
+	  headers except for some automatically generated headers.
+
 2001-05-11
 
 	* src/inc.c: connection_check_cb(): fixed a bug that caused

@@ -36,6 +36,7 @@
 #include "main.h"
 #include "prefs.h"
 #include "prefs_account.h"
+#include "prefs_customheader.h"
 #include "account.h"
 #include "mainwindow.h"
 #include "manage_window.h"
@@ -44,7 +45,6 @@
 #include "gtkutils.h"
 #include "utils.h"
 #include "alertpanel.h"
-#include "prefs_headers.h"
 
 static gboolean cancelled;
 
@@ -315,6 +315,8 @@ static void prefs_account_privacy_create	(void);
 #endif /* USE_GPGME */
 static void prefs_account_advanced_create	(void);
 
+static void prefs_account_edit_custom_header	(void);
+
 static gint prefs_account_deleted		(GtkWidget	*widget,
 						 GdkEventAny	*event,
 						 gpointer	 data);
@@ -325,7 +327,6 @@ static void prefs_account_ok			(void);
 static gint prefs_account_apply			(void);
 static void prefs_account_cancel		(void);
 
-static void prefs_account_customhdr_edit	(void);
 
 #define VSPACING		12
 #define VSPACING_NARROW		4
@@ -945,8 +946,6 @@ static void prefs_account_send_create(void)
 	gtk_widget_show (hbox);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
 
-	/* gtk_widget_set_sensitive(hbox, FALSE); */
-
 	PACK_CHECK_BUTTON (hbox, customhdr_chkbtn,
 			   _("Add user-defined header"));
 
@@ -954,6 +953,9 @@ static void prefs_account_send_create(void)
 	gtk_widget_show (customhdr_edit_btn);
 	gtk_box_pack_start (GTK_BOX (hbox), customhdr_edit_btn,
 			    FALSE, FALSE, 0);
+	gtk_signal_connect (GTK_OBJECT (customhdr_edit_btn), "clicked",
+			    GTK_SIGNAL_FUNC (prefs_account_edit_custom_header),
+			    NULL);
 
 	SET_TOGGLE_SENSITIVITY (customhdr_chkbtn, customhdr_edit_btn);
 
@@ -1017,10 +1019,6 @@ static void prefs_account_send_create(void)
 	PACK_CHECK_BUTTON (vbox3, pop_bfr_smtp_chkbtn,
 		_("Authenticate with POP3 before sending"));
 	gtk_widget_set_sensitive(pop_bfr_smtp_chkbtn, FALSE);
-
-	gtk_signal_connect(GTK_OBJECT(customhdr_edit_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_account_customhdr_edit),
-			   NULL);
 
 	send.date_chkbtn      = date_chkbtn;
 	send.msgid_chkbtn     = msgid_chkbtn;
@@ -1291,7 +1289,7 @@ static void prefs_account_cancel(void)
 	gtk_main_quit();
 }
 
-static void prefs_account_customhdr_edit(void)
+static void prefs_account_edit_custom_header(void)
 {
 	prefs_headers_open(&tmp_ac_prefs);
 }
