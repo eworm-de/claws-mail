@@ -1,3 +1,8 @@
+2004-08-07 [colin]	0.9.12cvs48.1
+
+	* src/prefs_folder_item.c
+		sync with HEAD 0.9.12cvs48
+
 2004-08-06 [colin]	0.9.12cvs47.1
 
 	* src/compose.c
