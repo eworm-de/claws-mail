@@ -1,3 +1,16 @@
+2004-07-07 [colin]	0.9.12cvs15
+
+	* src/prefs_common.c [1.225]
+	* src/prefs_common.h [1.112]
+		Add a hidden summary_quicksearch_sticky preference,
+		to allow the quicksearch bar to reset across folders
+	* src/summaryview.c [1.437]
+		Use this preference
+	* src/gtk/quicksearch.c [1.5]
+	* src/gtk/quicksearch.h [1.3]
+		Add this preference, fix focus when hitting Enter,
+		add handling of Esc key to reset
+
 2004-07-06 [colin]	0.9.12cvs14
 
 	* src/gtk/quicksearch.c [1.4]

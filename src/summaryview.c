@@ -787,6 +787,11 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	inc_lock();
 	summary_lock(summaryview);
 
+	if (!prefs_common.summary_quicksearch_sticky
+	 && !quicksearch_is_running(summaryview->quicksearch)) {
+		quicksearch_set(summaryview->quicksearch, prefs_common.summary_quicksearch_type, "");
+	}
+
 	/* STATUSBAR_POP(summaryview->mainwin); */
 
 	is_refresh = (item == summaryview->folder_item) ? TRUE : FALSE;

@@ -47,7 +47,10 @@ struct _QuickSearch
 
 	QuickSearchExecuteCallback	 callback;
 	gpointer			 callback_data;
+	gboolean			 running;
 };
+
+void quicksearch_set_running(QuickSearch *quicksearch, gboolean run);
 
 static void prepare_matcher(QuickSearch *quicksearch)
 {
@@ -88,6 +91,12 @@ static void prepare_matcher(QuickSearch *quicksearch)
 static gint searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 			      QuickSearch *quicksearch)
 {
+	if (event != NULL && event->keyval == GDK_Escape) {
+		quicksearch_set(quicksearch, prefs_common.summary_quicksearch_type, "");
+		gtk_widget_grab_focus(GTK_WIDGET(GTK_COMBO(quicksearch->search_string_entry)->entry));
+		return TRUE;
+	}
+
 	if (event != NULL && event->keyval == GDK_Return) {
 		gchar *search_string = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(quicksearch->search_string_entry)->entry));
 
@@ -101,9 +110,12 @@ static gint searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 
 		prepare_matcher(quicksearch);
 
+		quicksearch_set_running(quicksearch, TRUE);
 		if (quicksearch->callback != NULL)
 			quicksearch->callback(quicksearch, quicksearch->callback_data);
+		quicksearch_set_running(quicksearch, FALSE);
 	 	gtk_signal_emit_stop_by_name(GTK_OBJECT(widget), "key_press_event");
+		gtk_widget_grab_focus(GTK_WIDGET(GTK_COMBO(quicksearch->search_string_entry)->entry));
 	}
 
 	return TRUE; 		
@@ -127,8 +139,10 @@ static void searchtype_changed(GtkMenuItem *widget, gpointer data)
 
 	prepare_matcher(quicksearch);
 
+	quicksearch_set_running(quicksearch, TRUE);
 	if (quicksearch->callback != NULL)
 		quicksearch->callback(quicksearch, quicksearch->callback_data);
+	quicksearch_set_running(quicksearch, FALSE);
 }
 
 /*
@@ -277,12 +291,15 @@ QuickSearch *quicksearch_new()
 
 	gtk_box_set_spacing(GTK_BOX(search_hbbox), 5);
 
-	clear_search = gtk_button_new_with_label(_("Clear"));
-	gtk_box_pack_start(GTK_BOX(search_hbbox), clear_search,
-			   FALSE, FALSE, 0);
-	gtk_widget_set_usize(clear_search, 120, -1);
-	
-	gtk_widget_show(clear_search);
+	if (prefs_common.summary_quicksearch_sticky) {
+		clear_search = gtk_button_new_with_label(_("Clear"));
+		gtk_box_pack_start(GTK_BOX(search_hbbox), clear_search,
+				   FALSE, FALSE, 0);
+		gtk_widget_set_usize(clear_search, 120, -1);
+		gtk_signal_connect(GTK_OBJECT(clear_search), "clicked",
+				   GTK_SIGNAL_FUNC(clear_search_cb), quicksearch);
+		gtk_widget_show(clear_search);
+	}
 
 	search_description = gtk_button_new_with_label(_("Extended Symbols"));
 	gtk_box_pack_start(GTK_BOX(search_hbbox), search_description,
@@ -291,8 +308,7 @@ QuickSearch *quicksearch_new()
 
 	gtk_signal_connect(GTK_OBJECT(search_description), "clicked",
 			   GTK_SIGNAL_FUNC(search_description_cb), NULL);
-	gtk_signal_connect(GTK_OBJECT(clear_search), "clicked",
-			   GTK_SIGNAL_FUNC(clear_search_cb), quicksearch);
+	
 	gtk_box_pack_start(GTK_BOX(hbox_search), search_hbbox, FALSE, FALSE, 2);				
 	gtk_widget_show(search_hbbox);
 	if (prefs_common.summary_quicksearch_type == QUICK_SEARCH_EXTENDED)
@@ -324,6 +340,7 @@ QuickSearch *quicksearch_new()
 	quicksearch->search_description = search_description;
 	quicksearch->matcher_list = NULL;
 	quicksearch->active = FALSE;
+	quicksearch->running = FALSE;
 
 	return quicksearch;
 }
@@ -582,3 +599,14 @@ gchar *expand_search_string(const gchar *search_string)
 	g_string_free(matcherstr, FALSE);
 	return returnstr;
 }
+
+void quicksearch_set_running(QuickSearch *quicksearch, gboolean run)
+{
+	quicksearch->running = run;
+}
+
+gboolean quicksearch_is_running(QuickSearch *quicksearch) 
+{
+	return quicksearch->running;
+}
+

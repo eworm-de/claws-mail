@@ -291,6 +291,7 @@ struct _PrefsCommon
 	gboolean work_offline;
 	
 	gint summary_quicksearch_type;
+	gint summary_quicksearch_sticky;
 	gulong color_new;
 	
 	GList *summary_quicksearch_history;
