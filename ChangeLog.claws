@@ -1,3 +1,12 @@
+2005-01-27 [christoph]	1.0.0cvs20
+
+	* src/folder.c
+		use normal message remove function if a folder has no function
+		to remove all messages
+
+	* src/folderview.c
+		fix memory leak
+
 2005-01-27 [colin]	1.0.0cvs19
 
 	* src/procmime.c
