@@ -712,8 +712,21 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 			return FALSE;
 		}
    		folder_update_op_count();
-	} else
-		summary_write_cache(summaryview);
+	} else {
+		/* 
+		 * CLAWS: summary_show() is responsible for updating the caches. 
+		 * after filtering inc.c::inc_finished() forces the update of
+		 * the cache by indirectly calling summary_show() (by re-selecting
+		 * the currently selected mail folder).  
+		 * this collides with the new filtering system that may have set 
+		 * any message flag before calling summary_show(). 
+		 * we can prevent this cache-write by checking the opened member
+		 * of the folderview. if this is NULL, the folderview forced
+		 * an update of the summary view.
+		 */
+		if (summaryview->folderview->opened) 
+			summary_write_cache(summaryview);
+	}	
         
 	summaryview->folderview->opened = selected_node;
 
@@ -3766,10 +3779,19 @@ void summary_filter(SummaryView *summaryview)
 
 	summary_unlock(summaryview);
 
-	/* CLAWS: summary_show() only valid after having a lock. ideally
-	 * we want the lock to be context aware...  */
-	if (global_processing)
-		summary_show(summaryview, summaryview->folder_item, FALSE);
+	/* 
+	 * CLAWS: summary_show() only valid after having a lock. ideally
+	 * we want the lock to be context aware...  
+	 */
+	if (global_processing) {
+		/*
+		 * CLAWS: to prevent summary_show to write the cache,
+		 * we force an update of the summaryview in a special way,
+		 * like inc.c::inc_finished().
+		 */
+		folderview_unselect(summaryview->folderview);
+		folderview_select(summaryview->folderview, summaryview->folder_item);
+	}		
 }
 
 static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
