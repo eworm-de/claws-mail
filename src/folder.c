@@ -2625,7 +2625,7 @@ static void folder_create_processing_folder(void)
 										 PROCESSING_FOLDER_ITEM);
 	} else {
 		debug_print("*TMP* already created\n");
-		processing_folder_item = folder_item_new(processing_folder, ".processing", ".processing");
+		processing_folder_item = folder_item_new(processing_folder, PROCESSING_FOLDER_ITEM, PROCESSING_FOLDER_ITEM);
 		g_assert(processing_folder_item);
 		folder_item_append(processing_folder->node->data, processing_folder_item);
 	}
