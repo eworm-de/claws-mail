@@ -1,3 +1,9 @@
+2001-11-23 [alfons]	0.6.5claws31
+
+	* src/summaryview.[ch]
+		make lock work like mark
+		disallow deleting messages marked as locked
+
 2001-11-23 [alfons]	0.6.5claws30
 
 	* src/gtkstext.c

@@ -206,12 +206,12 @@ static void summary_set_row_marks	(SummaryView		*summaryview,
 /* message handling */
 static void summary_mark_row		(SummaryView		*summaryview,
 					 GtkCTreeNode		*row);
+static void summary_lock_row		(SummaryView		*summaryview,
+					 GtkCTreeNode		*row);
 static void summary_mark_row_as_read	(SummaryView		*summaryview,
 					 GtkCTreeNode		*row);
 static void summary_mark_row_as_unread	(SummaryView		*summaryview,
 					 GtkCTreeNode		*row);
-static void summary_mark_row_as_locked  (SummaryView *summaryview,
-				         GtkCTreeNode *row);
 static void summary_delete_row		(SummaryView		*summaryview,
 					 GtkCTreeNode		*row);
 static void summary_unmark_row		(SummaryView		*summaryview,
@@ -405,7 +405,6 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/_Mark/---"),		NULL, NULL,		0, "<Separator>"},
 	{N_("/_Mark/Mark as unr_ead"),	NULL, summary_mark_as_unread, 0, NULL},
 	{N_("/_Mark/Mark as rea_d"),	NULL, summary_mark_as_read, 0, NULL},
-	{N_("/_Mark/Mark as _locked"),	NULL, summary_mark_as_locked, 0, NULL},
 	{N_("/_Mark/Mark all read"),    NULL, summary_mark_all_read, 0, NULL},
 	{N_("/_Mark/Ignore thread"),	NULL, summary_ignore_thread, 0, NULL},
 	{N_("/_Mark/Unignore thread"),	NULL, summary_unignore_thread, 0, NULL},
@@ -436,7 +435,8 @@ static const gchar *const col_label[N_SUMMARY_COLS] = {
 	N_("Date"),	/* S_COL_DATE    */
 	N_("Size"),	/* S_COL_SIZE    */
 	N_("No."),	/* S_COL_NUMBER  */
-	N_("Score")	/* S_COL_SCORE   */
+	N_("Score"),	/* S_COL_SCORE   */
+	N_("L")		/* S_COL_LOCKED	 */
 };
 
 SummaryView *summary_create(void)
@@ -1001,7 +1001,6 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 
 	menu_set_sensitive(ifactory, "/Mark/Mark as unread", TRUE);
 	menu_set_sensitive(ifactory, "/Mark/Mark as read",   TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Mark as locked", TRUE);
 	menu_set_sensitive(ifactory, "/Mark/Mark all read", TRUE);
 	menu_set_sensitive(ifactory, "/Mark/Ignore thread",   TRUE);
 	menu_set_sensitive(ifactory, "/Mark/Unignore thread", TRUE);
@@ -1308,7 +1307,8 @@ static GtkCTreeNode *summary_find_prev_msg(SummaryView *summaryview,
 
 	for (; node != NULL; node = GTK_CTREE_NODE_PREV(node)) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
-		if (!MSG_IS_DELETED(msginfo->flags)) break;
+		if (!MSG_IS_DELETED(msginfo->flags))
+			break;
 	}
 
 	return node;
@@ -1328,7 +1328,8 @@ static GtkCTreeNode *summary_find_next_msg(SummaryView *summaryview,
 
 	for (; node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 		msginfo = gtk_ctree_node_get_row_data(ctree, node);
-		if (!MSG_IS_DELETED(msginfo->flags)) break;
+		if (!MSG_IS_DELETED(msginfo->flags))
+			break;
 	}
 
 	return node;
@@ -2564,6 +2565,38 @@ static void summary_mark_row(SummaryView *summaryview, GtkCTreeNode *row)
 	debug_print(_("Message %d is marked\n"), msginfo->msgnum);
 }
 
+static void summary_lock_row(SummaryView *summaryview, GtkCTreeNode *row)
+{
+	/* almost verbatim summary_mark_row(); may want a menu action? */
+	gboolean changed = FALSE;
+	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	MsgInfo *msginfo;
+
+	msginfo = gtk_ctree_node_get_row_data(ctree, row);
+	if (MSG_IS_DELETED(msginfo->flags))
+		summaryview->deleted--;
+	if (MSG_IS_MOVE(msginfo->flags)) {
+		summaryview->moved--;
+		changed = TRUE;
+	}
+	if (MSG_IS_COPY(msginfo->flags)) {
+		summaryview->copied--;
+		changed = TRUE;
+	}
+	if (changed && !prefs_common.immediate_exec) {
+		msginfo->to_folder->op_count--;
+		if (msginfo->to_folder->op_count == 0)
+			folderview_update_item(msginfo->to_folder, 0);
+	}
+	msginfo->to_folder = NULL;
+	MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_DELETED);
+	MSG_UNSET_TMP_FLAGS(msginfo->flags, MSG_MOVE | MSG_COPY);
+	MSG_SET_PERM_FLAGS(msginfo->flags, MSG_LOCKED);
+	CHANGE_FLAGS(msginfo);
+	summary_set_row_marks(summaryview, row);
+	debug_print(_("Message %d is locked\n"), msginfo->msgnum);
+}
+
 void summary_mark(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
@@ -2654,29 +2687,6 @@ static void summary_mark_row_as_unread(SummaryView *summaryview,
 	summary_set_row_marks(summaryview, row);
 }
 
-static void summary_mark_row_as_locked(SummaryView *summaryview,
-				       GtkCTreeNode *row)
-{
-	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-	MsgInfo *msginfo;
-
-	msginfo = gtk_ctree_node_get_row_data(ctree, row);
-	if (MSG_IS_DELETED(msginfo->flags)) {
-		msginfo->to_folder = NULL;
-		MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_DELETED);
-		summaryview->deleted--;
-	}
-	if (!MSG_IS_LOCKED(msginfo->flags)) {
-		MSG_SET_PERM_FLAGS(msginfo->flags, MSG_LOCKED);
-		debug_print(_("Message %d is marked as locked\n"),
-			    msginfo->msgnum);
-	}
-
-	CHANGE_FLAGS(msginfo);
-
-	summary_set_row_marks(summaryview, row);
-}
-
 void summary_mark_as_unread(SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
@@ -2689,18 +2699,6 @@ void summary_mark_as_unread(SummaryView *summaryview)
 	summary_status_show(summaryview);
 }
 
-void summary_mark_as_locked(SummaryView *summaryview)
-{
-	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-	GList *cur;
-
-	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
-		summary_mark_row_as_locked(summaryview,
-					   GTK_CTREE_NODE(cur->data));
-
-	summary_status_show(summaryview);
-}
-
 static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 {
 	gboolean changed = FALSE;
@@ -2708,6 +2706,8 @@ static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 	MsgInfo *msginfo;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
+
+	if (MSG_IS_LOCKED(msginfo->flags)) return;
 
 	if (MSG_IS_DELETED(msginfo->flags)) return;
 
@@ -4261,6 +4261,15 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 			summary_mark_row_as_unread(summaryview, row);
 			summary_status_show(summaryview);
 		}
+		break;
+	case S_COL_LOCKED:
+		if (MSG_IS_LOCKED(msginfo->flags)) {
+			MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_LOCKED);
+			CHANGE_FLAGS(msginfo);
+			summary_set_row_marks(summaryview, row);
+		}
+		else
+			summary_lock_row(summaryview, row);
 		break;
 	default:
 		break;
