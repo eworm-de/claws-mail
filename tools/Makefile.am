@@ -8,6 +8,7 @@ EXTRA_TOOLS = \
 	kmail2sylpheed.pl \
 	ldif-to-xml.py \
 	newscache_clean.pl \
+	outlook2sylpheed.pl \
 	sylpheed-switcher \
 	sylprint.pl \
 	sylprint.rc \
