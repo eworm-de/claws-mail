@@ -1,3 +1,12 @@
+2002-07-13 [paul]	0.7.8claws64
+
+	* man/sylpheed.1
+		change Sergey's email address to the sf address
+
+	* src/textview.c
+		increase show_url_timeout (more useful for long
+		urls)
+
 2002-07-12 [sergey]	0.7.8claws63
 
 	* src/rfc2015.c

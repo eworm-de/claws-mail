@@ -1742,7 +1742,7 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 								GTK_STATUSBAR(textview->messageview->mainwin->statusbar),
 								textview->messageview->mainwin->folderview_cid,
 								uri->uri);
-						textview->show_url_timeout_tag = gtk_timeout_add( 2000, show_url_timeout_cb, textview );
+						textview->show_url_timeout_tag = gtk_timeout_add( 4000, show_url_timeout_cb, textview );
 						gtkut_widget_wait_for_draw(textview->messageview->mainwin->hbox_stat);
 					}
 				} else
