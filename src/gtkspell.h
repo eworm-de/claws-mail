@@ -28,42 +28,47 @@
  *
  */
 
-#ifndef __gtkpspell_h__
-#define __gtkpspell_h__
-
-#include "gtkstext.h"
+#ifndef __GTKPSPELL_H__
+#define __GTKPSPELL_H__
 
 #include <gtk/gtkoptionmenu.h>
 #include <pspell/pspell.h>
+
+#include "gtkstext.h"
 
 #define PSPELL_FASTMODE       1
 #define PSPELL_NORMALMODE     2
 #define PSPELL_BADSPELLERMODE 3
 
-typedef struct _GtkPspellCheckers {
+#define GTKPSPELLWORDSIZE 1024
+
+typedef struct _GtkPspellCheckers
+{
 	GSList		*checkers;
 	GSList		*dictionary_list;
 	gchar		*error_message;
 } GtkPspellCheckers;
 
-typedef struct _Dictionary {
+typedef struct _Dictionary 
+{
 	gchar		*fullname;
 	gchar		*dictname; /* dictname points into fullname */
 	gchar		*encoding;
 } Dictionary;
 
-typedef struct _GtkPspeller {
-	Dictionary *	dictionary;
-	gint        	sug_mode;
-	gint        	ispell;
-	PspellConfig  *	config;
-	PspellManager *	checker;
+typedef struct _GtkPspeller
+{
+	Dictionary 	*dictionary;
+	gint        	 sug_mode;
+	gint        	 ispell;
+	PspellConfig	*config;
+	PspellManager	*checker;
 } GtkPspeller;
 
-typedef void (*ContCheckFunc)	(gpointer *gtkpspell);
+typedef void (*ContCheckFunc) (gpointer *gtkpspell);
 
-#define GTKPSPELLWORDSIZE 1024
-typedef struct _GtkPspell {
+typedef struct _GtkPspell
+{
 	GtkPspeller	*gtkpspeller;
 	GtkPspeller	*alternate_speller;
 	gchar 		 theword[GTKPSPELLWORDSIZE];
@@ -76,13 +81,7 @@ typedef struct _GtkPspell {
 	gboolean	 use_alternate;
 
 	ContCheckFunc 	 continue_check; 
-#if 0
-	Dictionary	*dict1;
-	Dictionary	*dict2;
 
-	GtkWidget	*gui;
-	gpointer	*compose;
-#endif
 	GtkWidget	*config_menu;
 	GtkWidget	*popup_config_menu;
 	GtkWidget	*sug_menu;
@@ -100,56 +99,40 @@ typedef PspellConfig GtkPspellConfig;
 
 extern GtkPspellCheckers *gtkpspellcheckers;
 
-GtkPspellCheckers*	gtkpspell_checkers_new		();
+GtkPspellCheckers* gtkpspell_checkers_new	(void);
+GtkPspellCheckers* gtkpspell_checkers_delete	(void);
+void gtkpspell_checkers_reset_error		(void);
 
-GtkPspellCheckers*	gtkpspell_checkers_delete	();
+GtkPspell* gtkpspell_new			(const gchar 	*dictionary, 
+						 const gchar 	*encoding,
+						 gint  		 misspelled_color,
+						 gboolean 	 check_while_typing,  
+						 gboolean 	 use_alternate,  
+						 GtkSText 	*gtktext);
+void gtkpspell_delete				(GtkPspell 	*gtkpspell); 
 
-void 			gtkpspell_checkers_reset_error	();
+guchar*	gtkpspell_get_dict			(GtkPspell 	*gtkpspell);
+guchar* gtkpspell_get_path			(GtkPspell 	*gtkpspell);
+gboolean gtkpspell_set_sug_mode			(GtkPspell 	*gtkpspell, 
+						 gint  		 themode);
+GSList*	gtkpspell_get_dictionary_list		(const char 	*pspell_path,
+						 gint 		 refresh);
 
-GtkPspell*		gtkpspell_new			(const gchar *dictionary, 
-							 const gchar *encoding,
-							 gint  misspelled_color,
-							 gboolean check_while_typing,  
-							 gboolean use_alternate,  
-							 GtkSText *gtktext);
+void gtkpspell_free_dictionary_list		(GSList 	*list);
 
-void 			gtkpspell_delete		(GtkPspell *gtkpspell); 
+void gtkpspell_check_forwards_go		(GtkPspell 	*gtkpspell);
+void gtkpspell_check_backwards			(GtkPspell 	*gtkpspell);
+void gtkpspell_check_all			(GtkPspell 	*gtkpspell);
+void gtkpspell_uncheck_all			(GtkPspell 	*gtkpspell);
+void gtkpspell_highlight_all			(GtkPspell	*gtkpspell);
 
-guchar*			gtkpspell_get_dict		(GtkPspell *gtkpspell);
+void gtkpspell_populate_submenu			(GtkPspell 	*gtkpspell, 
+						 GtkWidget 	*menuitem);
+GtkWidget* gtkpspell_dictionary_option_menu_new (const gchar 	*pspell_path);
+gchar* gtkpspell_get_dictionary_menu_active_item(GtkWidget 	*menu);
+GtkWidget* gtkpspell_sugmode_option_menu_new	(gint 		 sugmode);
+void gtkpspell_sugmode_option_menu_set		(GtkOptionMenu	*optmenu, 
+						 gint 		 sugmode);
+gint gtkpspell_get_sugmode_from_option_menu	(GtkOptionMenu	*optmenu);
 
-guchar*			gtkpspell_get_path		(GtkPspell *gtkpspell);
-
-gboolean 		gtkpspell_set_sug_mode		(GtkPspell *gtkpspell, 
-							 gint  themode);
-
-GSList*			gtkpspell_get_dictionary_list	(const char *pspell_path,
-							 gint refresh);
-
-void 			gtkpspell_free_dictionary_list	(GSList *list);
-
-void 			gtkpspell_check_forwards_go	(GtkPspell *gtkpspell);
-void 			gtkpspell_check_backwards	(GtkPspell *gtkpspell);
-
-void 			gtkpspell_check_all		(GtkPspell *gtkpspell);
-void 			gtkpspell_uncheck_all		(GtkPspell *gtkpspell);
-void 			gtkpspell_highlight_all		(GtkPspell *gtkpspell);
-
-void 			gtkpspell_populate_submenu	(GtkPspell *gtkpspell, 
-							 GtkWidget *menuitem);
-
-GtkWidget*		gtkpspell_dictionary_option_menu_new
-							(const gchar *pspell_path);
-gchar*			gtkpspell_get_dictionary_menu_active_item
-							(GtkWidget *menu);
-
-GtkWidget*		gtkpspell_sugmode_option_menu_new
-							(gint sugmode);
-
-void 			gtkpspell_sugmode_option_menu_set
-							(GtkOptionMenu *optmenu, 
-							 gint sugmode);
-
-gint 			gtkpspell_get_sugmode_from_option_menu	
-							(GtkOptionMenu *optmenu);
-
-#endif /* __gtkpspell_h__ */
+#endif /* __GTKPSPELL_H__ */
