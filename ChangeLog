@@ -1,3 +1,14 @@
+2001-07-06
+
+	* src/imap.c: imap_remove_folder(): select INBOX with EXAMINE before
+	  DELETE.
+	  imap_cmd_do_select(): new. It toggles between SELECT and EXAMINE
+	  according to the argument.
+	  imap_cmd_select(): use imap_cmd_do_select().
+	  imap_cmd_examine(): new.
+	* src/folderview.c: folderview_rm_imap_folder_cb(): select current
+	  folder again when removing failed.
+
 2001-07-05
 
 	* version 0.5.0pre4

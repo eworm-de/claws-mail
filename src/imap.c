@@ -143,7 +143,20 @@ static gint imap_cmd_list	(SockInfo	*sock,
 				 const gchar	*ref,
 				 const gchar	*mailbox,
 				 GPtrArray	*argbuf);
+static gint imap_cmd_do_select	(SockInfo	*sock,
+				 const gchar	*folder,
+				 gboolean	 examine,
+				 gint		*exists,
+				 gint		*recent,
+				 gint		*unseen,
+				 guint32	*uid_validity);
 static gint imap_cmd_select	(SockInfo	*sock,
+				 const gchar	*folder,
+				 gint		*exists,
+				 gint		*recent,
+				 gint		*unseen,
+				 guint32	*uid_validity);
+static gint imap_cmd_examine	(SockInfo	*sock,
 				 const gchar	*folder,
 				 gint		*exists,
 				 gint		*recent,
@@ -1070,6 +1083,8 @@ gint imap_remove_folder(Folder *folder, FolderItem *item)
 	gint ok;
 	IMAPSession *session;
 	gchar *path;
+	gint exists, recent, unseen;
+	guint32 uid_validity;
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(item != NULL, -1);
@@ -1079,6 +1094,15 @@ gint imap_remove_folder(Folder *folder, FolderItem *item)
 	if (!session) return -1;
 
 	path = imap_get_real_path(IMAP_FOLDER(folder), item->path);
+
+	ok = imap_cmd_examine(SESSION(session)->sock, "INBOX",
+			      &exists, &recent, &unseen, &uid_validity);
+	statusbar_pop_all();
+	if (ok != IMAP_SUCCESS) {
+		g_free(path);
+		return -1;
+	}
+
 	ok = imap_cmd_delete(SESSION(session)->sock, path);
 	statusbar_pop_all();
 	if (ok != IMAP_SUCCESS) {
@@ -1874,21 +1898,28 @@ static gint imap_cmd_list(SockInfo *sock, const gchar *ref,
 
 #define THROW goto catch
 
-static gint imap_cmd_select(SockInfo *sock, const gchar *folder,
-			    gint *exists, gint *recent, gint *unseen,
-			    guint32 *uid_validity)
+static gint imap_cmd_do_select(SockInfo *sock, const gchar *folder,
+			       gboolean examine,
+			       gint *exists, gint *recent, gint *unseen,
+			       guint32 *uid_validity)
 {
 	gint ok;
 	gchar *resp_str;
 	GPtrArray *argbuf;
+	gchar *select_cmd;
 
 	*exists = *recent = *unseen = *uid_validity = 0;
 	argbuf = g_ptr_array_new();
 
-	if (strchr(folder, ' ') != NULL)
-		imap_cmd_gen_send(sock, "SELECT \"%s\"", folder);
+	if (examine)
+		select_cmd = "EXAMINE";
 	else
-		imap_cmd_gen_send(sock, "SELECT %s", folder);
+		select_cmd = "SELECT";
+
+	if (strchr(folder, ' ') != NULL)
+		imap_cmd_gen_send(sock, "%s \"%s\"", select_cmd, folder);
+	else
+		imap_cmd_gen_send(sock, "%s %s", select_cmd, folder);
 
 	if ((ok = imap_cmd_ok(sock, argbuf)) != IMAP_SUCCESS) THROW;
 
@@ -1930,6 +1961,22 @@ catch:
 	g_ptr_array_free(argbuf, TRUE);
 
 	return ok;
+}
+
+static gint imap_cmd_select(SockInfo *sock, const gchar *folder,
+			    gint *exists, gint *recent, gint *unseen,
+			    guint32 *uid_validity)
+{
+	return imap_cmd_do_select(sock, folder, FALSE,
+				  exists, recent, unseen, uid_validity);
+}
+
+static gint imap_cmd_examine(SockInfo *sock, const gchar *folder,
+			     gint *exists, gint *recent, gint *unseen,
+			     guint32 *uid_validity)
+{
+	return imap_cmd_do_select(sock, folder, TRUE,
+				  exists, recent, unseen, uid_validity);
 }
 
 #undef THROW

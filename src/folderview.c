@@ -356,7 +356,6 @@ FolderView *folderview_create(void)
 	gtk_signal_connect(GTK_OBJECT(ctree), "tree_select_row",
 			   GTK_SIGNAL_FUNC(folderview_selected), folderview);
 
-
 	gtk_signal_connect_after(GTK_OBJECT(ctree), "tree_expand",
 				 GTK_SIGNAL_FUNC(folderview_tree_expanded),
 				 folderview);
@@ -830,12 +829,10 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 				name = " (News)"; break;
 			default:
 				name = "";
-				break;
 			}
 			name = g_strconcat(item->name, name, NULL);
 		} else
 			name = g_strdup(item->name);
-		break;			
 	}
 
 	if (!GTK_CTREE_ROW(node)->expanded &&
@@ -1300,7 +1297,6 @@ static void folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		BREAK_ON_MODIFIER_KEY();
 		summary_pass_key_press_event(folderview->summaryview, event);
 	default:
-		break;
 	}
 }
 
@@ -1398,7 +1394,6 @@ static void folderview_col_resized(GtkCList *clist, gint column, gint width,
 		prefs_common.folder_col_total = width;
 		break;
 	default:
-		break;
 	}
 }
 
@@ -1834,6 +1829,10 @@ static void folderview_rm_imap_folder_cb(FolderView *folderview, guint action,
 	if (item->folder->remove_folder(item->folder, item) < 0) {
 		alertpanel_error(_("Can't remove the folder `%s'."),
 				 item->path);
+		if (folderview->opened == folderview->selected)
+			summary_show(folderview->summaryview,
+				     folderview->summaryview->folder_item,
+				     FALSE);
 		return;
 	}
 
@@ -2051,7 +2050,6 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 				    acceptable = TRUE;
 				break;
 			default:
-				break;
 			}
 		}
 	}

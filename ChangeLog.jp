@@ -1,3 +1,14 @@
+2001-07-06
+
+	* src/imap.c: imap_remove_folder(): DELETE の前に EXAMINE で INBOX
+	  を選択するようにした。
+	  imap_cmd_do_select(): 新規。引数に応じて SELECT と EXAMINE を
+	  切り替える。
+	  imap_cmd_select(): imap_cmd_do_select() を使用するようにした。
+	  imap_cmd_examine(): 新規。
+	* src/folderview.c: folderview_rm_imap_folder_cb(): 削除に失敗したら
+	  現在のフォルダを再度選択するようにした。
+
 2001-07-05
 
 	* version 0.5.0pre4
