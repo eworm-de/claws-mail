@@ -2372,7 +2372,7 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 		fprintf(fp, "<folder type=\"%s\"", folder_type_str[folder->type]);
 		if (folder->name)
 			PUT_ESCAPE_STR(fp, "name", folder->name);
-		if ((folder->type == F_MH) || (folder->type == F_MBOX))
+		if (folder->type == F_MH || folder->type == F_MBOX)
 			PUT_ESCAPE_STR(fp, "path",
 				       LOCAL_FOLDER(folder)->rootpath);
 		if (item->collapsed && node->children)
