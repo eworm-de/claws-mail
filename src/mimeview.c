@@ -1245,17 +1245,19 @@ static gint icon_key_pressed(GtkWidget *button, GdkEventKey *event,
 	case GDK_n:
 	case GDK_N:
 		BREAK_ON_MODIFIER_KEY();
-		if (icon_list_select_by_number(mimeview, num + 1))
+		if (icon_list_select_by_number(mimeview, num + 1)) {
 			KEY_PRESS_EVENT_STOP();
 			return TRUE;
+		}
 		break;
 		
 	case GDK_p:
 	case GDK_P:
 		BREAK_ON_MODIFIER_KEY();
-		if (icon_list_select_by_number(mimeview, num - 1))
+		if (icon_list_select_by_number(mimeview, num - 1)) {
 			KEY_PRESS_EVENT_STOP();
 			return TRUE;
+		}
 		break;
 
 	case GDK_y:
