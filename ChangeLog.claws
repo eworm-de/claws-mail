@@ -1,3 +1,29 @@
+2004-08-10 [leroyc]	0.9.12cvs57
+
+	* src/main.c
+	* src/common/socket.c
+	* src/common/ssl.c
+	* src/common/sylpheed.c
+	* src/common/sylpheed.h
+		Put back the ssl connect nonblocking...
+		without the race condition
+
+2004-08-09 [colin]	0.9.12cvs56
+
+	* src/main.c
+	* src/common/ssl.c
+	* src/common/sylpheed.c
+	* src/common/sylpheed.h
+		Reverting previous commit, doesn't work 
+
+2004-08-09 [colin]	0.9.12cvs55
+
+	* src/main.c
+	* src/common/ssl.c
+	* src/common/sylpheed.c
+	* src/common/sylpheed.h
+		Make SSL_connect nonblocking, using a thread
+
 2004-08-09 [paul]       0.9.12cvs54
 
 	* po/POTFILES.in
