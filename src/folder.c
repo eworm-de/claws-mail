@@ -1192,6 +1192,9 @@ void folder_find_expired_caches(FolderItem *item, gpointer data)
 	if(item->cache == NULL)
 		return;
 
+	if(item->opened > 0)
+		return;
+
 	difftime = (gint) (time(NULL) - msgcache_get_last_access_time(item->cache));
 	expiretime = prefs_common.cache_min_keep_time * 60;
 	debug_print(_("Cache unused time: %d (Expire time: %d)\n"), difftime, expiretime);
@@ -1207,6 +1210,9 @@ void folder_item_free_cache(FolderItem *item)
 	if(item->cache == NULL)
 		return;
 	
+	if(item->opened > 0)
+		return;
+
 	folder_item_write_cache(item);
 	msgcache_destroy(item->cache);
 	item->cache = NULL;
@@ -1231,7 +1237,7 @@ void folder_clean_cache_memory()
 
 			debug_print(_("Freeing cache memory for %s\n"), item->path);
 			memusage -= msgcache_get_memory_usage(item->cache);
-			folder_item_free_cache(item);
+		        folder_item_free_cache(item);
 			listitem = listitem->next;
 		}
 		g_slist_free(folder_item_list);

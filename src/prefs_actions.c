@@ -1238,9 +1238,9 @@ static gboolean execute_actions(gchar *action, GtkWidget *window,
 					      catch_status, child_info);
 #endif
 		}
-	}
 
-	create_io_dialog(children);
+		create_io_dialog(children);
+	}
 
 	return is_ok;
 }

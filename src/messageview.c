@@ -339,7 +339,7 @@ static gint disposition_notification_send(MsgInfo * msginfo)
 		return -1;
 	}
 
-	to_list = address_list_append(NULL, msginfo->dispositionnotificationto);
+	to_list = address_list_append(NULL, to);
 	ok = send_message(tmp, cur_account, to_list);
 	
 	if (ok < 0) {

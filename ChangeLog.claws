@@ -1,3 +1,36 @@
+2002-08-04 [melvin]	0.8.1claws13
+
+	* src/gtkspell.c
+		fixed bug that could crash Sylpheed when highlighting
+		all misspelled words.
+
+2002-08-03 [melvin]	0.8.1claws12
+
+	* src/prefs_actions.c
+		removed unnecessary checks for NULL introduced in 0.8.1claws11.
+	* src/messageview.c
+		fixed bug where the Return Receipt was sent to
+		Delivery-Notification-To address even if it was not present
+
+2002-08-02 [alfons]	0.8.1claws11
+
+	* src/prefs_actions.c
+		o more check for NULLs
+		o put create_io_dialog() in right conditional block
+
+2002-08-02 [paul]	0.8.1claws10
+
+	* po/es.po
+		updated by Ricardo Mones Lastra
+
+2002-08-01 [christoph]	0.8.1claws9
+
+	* src/folder.c
+		don't free the cache of the opened
+		folder in the summaryview
+	* src/summaryview.c
+		don't unset flags, if it is not required
+
 2002-08-01 [paul]	0.8.1claws8
 
 	* sync with 0.8.1cvs8

@@ -2663,6 +2663,9 @@ static void summary_mark_row_as_read(SummaryView *summaryview,
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 
+	if(!MSG_IS_NEW(msginfo->flags) && !MSG_IS_UNREAD(msginfo->flags))
+		return;
+
 	if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->newmsgs--;
 	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
