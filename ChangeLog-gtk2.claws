@@ -1,3 +1,12 @@
+2005-02-23 [colin]	1.0.1cvs15.8
+
+	* src/summaryview.c
+		Really fix Bug 568 by removing useless
+		calls. summary_thread_init() now called
+		in summary_sort(). This should please
+		Alfons as it should be faster than 
+		previously.
+
 2005-02-23 [colin]	1.0.1cvs15.7
 
 	* src/compose.c

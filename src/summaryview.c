@@ -954,12 +954,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	   create the thread */
 	summary_set_ctree_from_list(summaryview, mlist);
 
-	g_slist_free(mlist);
 
-	if (summaryview->sort_key != SORT_BY_NONE) {
-		summary_sort(summaryview, summaryview->sort_key, summaryview->sort_type);
-		summary_thread_init(summaryview);
-	}
+	g_slist_free(mlist);
 
 	gtk_clist_thaw(GTK_CLIST(ctree));
 
@@ -2071,6 +2067,9 @@ void summary_sort(SummaryView *summaryview,
 
 		main_window_cursor_normal(summaryview->mainwin);
 
+		if (summaryview->threaded)
+			summary_thread_init(summaryview);
+
 		debug_print("done.\n");
 		STATUSBAR_POP(summaryview->mainwin);
 	}
@@ -2156,8 +2155,6 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 		}
 
 		g_node_destroy(root);
-
-		summary_thread_init(summaryview);
 	} else {
 		gchar *text[N_SUMMARY_COLS];
 		cur = mlist;
@@ -2205,6 +2202,8 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 		debug_print("\tsubject hash table size = %d\n",
 			    g_hash_table_size(subject_table));
 	}
+
+	summary_sort(summaryview, summaryview->sort_key, summaryview->sort_type);
 }
 
 static gchar *summary_complete_address(const gchar *addr)
