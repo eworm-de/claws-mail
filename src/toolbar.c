@@ -732,7 +732,7 @@ void toolbar_set_sensitive(MainWindow *mainwin)
 	SET_WIDGET_COND(toolbar->next_btn, M_MSG_EXIST);
 	SET_WIDGET_COND(toolbar->delete_btn,
 			M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED);
-	SET_WIDGET_COND(toolbar->exec_btn, M_MSG_EXIST|M_EXEC|M_UNLOCKED);
+	SET_WIDGET_COND(toolbar->exec_btn, M_DELAY_EXEC);
 
 	for (cur = toolbar->syl_action; cur != NULL;  cur = cur->next) {
 		ToolbarSylpheedActions *act = (ToolbarSylpheedActions*)cur->data;
@@ -985,6 +985,9 @@ void toolbar_create(MainWindow *mainwin,
 			break;
 		case A_EXECUTE:
 			mainwin->toolbar->exec_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     mainwin->toolbar->exec_btn,
+					   _("Execute"), NULL);
 			break;
 		case A_GOTO_NEXT:
 			mainwin->toolbar->next_btn = item;
@@ -1007,31 +1010,6 @@ void toolbar_create(MainWindow *mainwin,
 	}
 
 	mainwin->toolbar->toolbar = toolbar;
-
-	/* we always create an exec button, if there isn't one yet 
-	   the user might decide to change prefs_common.immediate_exec 
-	   --> better be prepared 
-	*/
-	if (!mainwin->toolbar->exec_btn) {
-		toolbar_item = g_new0(ToolbarItem, 1);
-		toolbar_item->action = A_EXECUTE;
-		toolbar_item->file   = stock_pixmap_get_name(STOCK_PIXMAP_EXEC);
-		toolbar_item->text   = toolbar_ret_descr_from_val(A_EXECUTE);
-
-		icon_wid = stock_pixmap_widget(container, STOCK_PIXMAP_EXEC);
-		item = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
-					       toolbar_item->text,
-					       (""),
-					       (""),
-					       icon_wid, toolbar_actions_cb,
-					       toolbar_item);
-		mainwin->toolbar->exec_btn = item;
-		g_free(toolbar_item);
-	}
-
-	gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
-			     mainwin->toolbar->exec_btn,
-			     _("Execute"), NULL);
 
 	activate_compose_button(mainwin->toolbar, 
 				prefs_common.toolbar_style, 

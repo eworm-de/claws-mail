@@ -1055,11 +1055,6 @@ void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
 			summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
 		}
 		
-		if (prefs_common.immediate_exec)
-			gtk_widget_hide(mainwin->toolbar->exec_btn);
-		else
-			gtk_widget_show(mainwin->toolbar->exec_btn);
-
 		summary_redisplay_msg(mainwin->summaryview);
 		headerview_set_visibility(mainwin->messageview->headerview,
 					  prefs_common.display_header_pane);
@@ -1420,6 +1415,10 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 		/*		if (item->folder->type != F_NEWS) */
 		state |= M_ALLOW_DELETE;
 
+		if (prefs_common.immediate_exec == 0
+		    && mainwin->lock_count == 0)
+			state |= M_DELAY_EXEC;
+
 		if ((selection == SUMMARY_NONE && item->hide_read_msgs)
 		    || selection != SUMMARY_NONE)
 			state |= M_HIDE_READ_MSG;	
@@ -1529,7 +1528,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Tools/Filter messages"           , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Tools/Create filter rule"        , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 		{"/Tools/Actions"                   , M_TARGET_EXIST|M_UNLOCKED},
-		{"/Tools/Execute"                   , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Tools/Execute"                   , M_DELAY_EXEC},
 		{"/Tools/Delete duplicated messages", M_MSG_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 
 		{"/Configuration", M_UNLOCKED},

@@ -1,3 +1,17 @@
+2002-08-23 [paul]	0.8.1claws107
+
+	* src/mainwindow.[ch]
+	  src/toolbar.c
+		give full control of display or non-display 
+		of the Execute icon to Custom toolbar settings.
+		add new sensitivity condition to maninwindow.h: 
+		M_DELAY_EXEC
+
+	* ChangeLog
+	  ChangeLog.jp
+	  NEWS
+		more sync with 0.8.1cvs29
+
 2002-08-23 [melvin]	0.8.1claws106
 
 	* src/alertpanel.c
