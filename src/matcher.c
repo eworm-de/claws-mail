@@ -948,6 +948,8 @@ gchar * matcherlist_to_string(MatcherList * matchers)
 	return result;
 }
 
+#define STRLEN_ZERO(s) ((s) ? strlen(s) : 0)
+#define STRLEN_DEFAULT(s,d) ((s) ? strlen(s) : STRLEN_ZERO(d))
 /* matching_build_command() - preferably cmd should be unescaped */
 gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 {
@@ -957,7 +959,16 @@ gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 	gchar * p;
 	gint size;
 
-	size = strlen(cmd) + 1;
+	gchar *no_subject    = _("(none)") ;
+	gchar *no_from       = _("(none)") ;
+	gchar *no_to         = _("(none)") ;
+	gchar *no_cc         = _("(none)") ;
+	gchar *no_date       = _("(none)") ;
+	gchar *no_msgid      = _("(none)") ;
+	gchar *no_newsgroups = _("(none)") ;
+	gchar *no_references = _("(none)") ;
+
+	size = STRLEN_ZERO(cmd) + 1;
 	while (*s != '\0') {
 		if (*s == '%') {
 			s++;
@@ -966,28 +977,28 @@ gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 				size -= 1;
 				break;
 			case 's': /* subject */
-				size += strlen(info->subject) - 2;
+				size += STRLEN_DEFAULT(info->subject, no_subject) - 2;
 				break;
 			case 'f': /* from */
-				size += strlen(info->from) - 2;
+				size += STRLEN_DEFAULT(info->from, no_from) - 2;
 				break;
 			case 't': /* to */
-				size += strlen(info->to) - 2;
+				size += STRLEN_DEFAULT(info->to, no_to) - 2;
 				break;
 			case 'c': /* cc */
-				size += strlen(info->cc) - 2;
+				size += STRLEN_DEFAULT(info->cc, no_cc) - 2;
 				break;
 			case 'd': /* date */
-				size += strlen(info->date) - 2;
+				size += STRLEN_DEFAULT(info->date, no_date) - 2;
 				break;
 			case 'i': /* message-id */
-				size += strlen(info->msgid) - 2;
+				size += STRLEN_DEFAULT(info->msgid, no_msgid) - 2;
 				break;
 			case 'n': /* newsgroups */
-				size += strlen(info->newsgroups) - 2;
+				size += STRLEN_DEFAULT(info->newsgroups, no_newsgroups) - 2;
 				break;
 			case 'r': /* references */
-				size += strlen(info->references) - 2;
+				size += STRLEN_DEFAULT(info->references, no_references) - 2;
 				break;
 			case 'F': /* file */
 				filename = folder_item_fetch_msg(info->folder,
@@ -1023,56 +1034,56 @@ gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 				if (info->subject != NULL)
 					strcpy(p, info->subject);
 				else
-					strcpy(p, _("(none)"));
+					strcpy(p, no_subject);
 				p += strlen(p);
 				break;
 			case 'f': /* from */
 				if (info->from != NULL)
 					strcpy(p, info->from);
 				else
-					strcpy(p, _("(none)"));
+					strcpy(p, no_from);
 				p += strlen(p);
 				break;
 			case 't': /* to */
 				if (info->to != NULL)
 					strcpy(p, info->to);
 				else
-					strcpy(p, _("(none)"));
+					strcpy(p, no_to);
 				p += strlen(p);
 				break;
 			case 'c': /* cc */
 				if (info->cc != NULL)
 					strcpy(p, info->cc);
 				else
-					strcpy(p, _("(none)"));
+					strcpy(p, no_cc);
 				p += strlen(p);
 				break;
 			case 'd': /* date */
 				if (info->date != NULL)
 					strcpy(p, info->date);
 				else
-					strcpy(p, _("(none)"));
+					strcpy(p, no_date);
 				p += strlen(p);
 				break;
 			case 'i': /* message-id */
 				if (info->msgid != NULL)
 					strcpy(p, info->msgid);
 				else
-					strcpy(p, _("(none)"));
+					strcpy(p, no_msgid);
 				p += strlen(p);
 				break;
 			case 'n': /* newsgroups */
 				if (info->newsgroups != NULL)
 					strcpy(p, info->newsgroups);
 				else
-					strcpy(p, _("(none)"));
+					strcpy(p, no_newsgroups);
 				p += strlen(p);
 				break;
 			case 'r': /* references */
 				if (info->references != NULL)
 					strcpy(p, info->references);
 				else
-					strcpy(p, _("(none)"));
+					strcpy(p, no_references);
 				p += strlen(p);
 				break;
 			case 'F': /* file */
@@ -1098,6 +1109,8 @@ gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 	debug_print("*** exec string \"%s\"\n", processed_cmd);
 	return processed_cmd;
 }
+#undef STRLEN_DEFAULT
+#undef STRLEN_ZERO
 
 /* ************************************************************ */
 
