@@ -1,10 +1,17 @@
 2001-06-27 [alfons]
 
-		* src/summaryview.c
-		* src/compose.[ch]
-		* src/mainwindow.c
-			if there are multiple messages selected, allow forwarding
-			them as attachments.
+	* src/summaryview.c
+		don't crash when removing parent node of messages
+		attracted by subject. this was caused by not deleting
+		the parent node from the subject line hash table.
+
+2001-06-27 [alfons]
+
+	* src/summaryview.c
+	* src/compose.[ch]
+	* src/mainwindow.c
+		if there are multiple messages selected, allow forwarding
+		them as attachments.
 
 2001-06-27 [paul]
 

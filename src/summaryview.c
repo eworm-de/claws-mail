@@ -2734,6 +2734,13 @@ static void summary_execute_delete_func(GtkCTree *ctree, GtkCTreeNode *node,
 						msginfo->msgid))
 			g_hash_table_remove(summaryview->msgid_table,
 					    msginfo->msgid);
+
+		if (msginfo->subject && 
+		    node == subject_table_lookup(summaryview->subject_table, 
+						msginfo->subject)) {
+			gchar *s = msginfo->subject + (g_strncasecmp(msginfo->subject, "Re: ", 4) == 0 ? 4 : 0);
+			g_hash_table_remove(summaryview->subject_table, s);
+		}			
 	}
 }
 
