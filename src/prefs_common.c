@@ -3576,9 +3576,9 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/Message/Mark/Mark as unread\" \"<shift>exclam\")\n"
 		"(menu-path \"<Main>/Message/Mark/Mark as read\" \"\")\n"
 
-		"(menu-path \"<Main>/Tool/Address book\" \"<shift><control>A\")\n"
-		"(menu-path \"<Main>/Tool/Execute\" \"X\")\n"
-		"(menu-path \"<Main>/Tool/Log window\" \"<control>L\")\n"
+		"(menu-path \"<Main>/Tools/Address book\" \"<shift><control>A\")\n"
+		"(menu-path \"<Main>/Tools/Execute\" \"X\")\n"
+		"(menu-path \"<Main>/Tools/Log window\" \"<control>L\")\n"
 
 		"(menu-path \"<Compose>/File/Close\" \"<control>W\")\n"
 		"(menu-path \"<Compose>/Edit/Select all\" \"<control>A\")\n"
@@ -3628,9 +3628,9 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/Message/Mark/Mark as unread\" \"<shift>exclam\")\n"
 		"(menu-path \"<Main>/Message/Mark/Mark as read\" \"<shift>R\")\n"
 
-		"(menu-path \"<Main>/Tool/Address book\" \"<shift><control>A\")\n"
-		"(menu-path \"<Main>/Tool/Execute\" \"X\")\n"
-		"(menu-path \"<Main>/Tool/Log window\" \"<control>L\")\n"
+		"(menu-path \"<Main>/Tools/Address book\" \"<shift><control>A\")\n"
+		"(menu-path \"<Main>/Tools/Execute\" \"X\")\n"
+		"(menu-path \"<Main>/Tools/Log window\" \"<control>L\")\n"
 
 		"(menu-path \"<Compose>/File/Close\" \"<alt>W\")\n"
 		"(menu-path \"<Compose>/Edit/Select all\" \"\")\n"
@@ -3679,9 +3679,9 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/Message/Mark/Mark as unread\" \"<shift>N\")\n"
 		"(menu-path \"<Main>/Message/Mark/Mark as read\" \"\")\n"
 
-		"(menu-path \"<Main>/Tool/Address book\" \"<shift><control>A\")\n"
-		"(menu-path \"<Main>/Tool/Execute\" \"X\")\n"
-		"(menu-path \"<Main>/Tool/Log window\" \"<control>L\")\n"
+		"(menu-path \"<Main>/Tools/Address book\" \"<shift><control>A\")\n"
+		"(menu-path \"<Main>/Tools/Execute\" \"X\")\n"
+		"(menu-path \"<Main>/Tools/Log window\" \"<control>L\")\n"
 
 		"(menu-path \"<Compose>/File/Close\" \"<alt>W\")\n"
 		"(menu-path \"<Compose>/Edit/Select all\" \"\")\n"
@@ -3731,9 +3731,9 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/Message/Mark/Mark as unread\" \"<shift>exclam\")\n"
 		"(menu-path \"<Main>/Message/Mark/Mark as read\" \"\")\n"
 
-		"(menu-path \"<Main>/Tool/Address book\" \"<alt>A\")\n"
-		"(menu-path \"<Main>/Tool/Execute\" \"<alt>X\")\n"
-		"(menu-path \"<Main>/Tool/Log window\" \"<alt>L\")\n"
+		"(menu-path \"<Main>/Tools/Address book\" \"<alt>A\")\n"
+		"(menu-path \"<Main>/Tools/Execute\" \"<alt>X\")\n"
+		"(menu-path \"<Main>/Tools/Log window\" \"<alt>L\")\n"
 
 		"(menu-path \"<Compose>/File/Close\" \"<alt>W\")\n"
 		"(menu-path \"<Compose>/Edit/Select all\" \"\")\n"
@@ -3783,9 +3783,9 @@ static void prefs_keybind_apply_clicked(GtkWidget *widget)
 		"(menu-path \"<Main>/Message/Mark/Mark as unread\" \"\")\n"
 		"(menu-path \"<Main>/Message/Mark/Mark as read\" \"\")\n"
 
-		"(menu-path \"<Main>/Tool/Address book\" \"\")\n"
-		"(menu-path \"<Main>/Tool/Execute\" \"\")\n"
-		"(menu-path \"<Main>/Tool/Log window\" \"\")\n"
+		"(menu-path \"<Main>/Tools/Address book\" \"\")\n"
+		"(menu-path \"<Main>/Tools/Execute\" \"\")\n"
+		"(menu-path \"<Main>/Tools/Log window\" \"\")\n"
 
 		"(menu-path \"<Compose>/File/Close\" \"\")\n"
 		"(menu-path \"<Compose>/Edit/Select all\" \"\")\n"

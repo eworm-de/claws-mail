@@ -1,3 +1,16 @@
+2002-03-22 [paul]	0.7.4claws33
+
+	* src/compose.c
+	  src/mainwindow.c
+	  src/prefs_actions.c
+	  src/prefs_common.c
+		rename 'Tool' to 'Tools'
+
+	* src/mainwindow.c
+		move 'Delete duplicated messages' from
+		'Message/' to 'Tools/'
+		re-arrange the order of 'Tools/' items
+
 2002-03-22 [paul]	0.7.4claws32
 
 	* src/addr_compl.c

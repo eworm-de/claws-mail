@@ -621,11 +621,11 @@ static GtkItemFactoryEntry compose_entries[] =
 #endif /* USE_GPGME */
 	{N_("/_Message/---"),		NULL,		NULL,	0, "<Separator>"},
 	{N_("/_Message/_Request Return Receipt"),	NULL, compose_toggle_return_receipt_cb, 0, "<ToggleItem>"},
-	{N_("/_Tool"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Tool/Show _ruler"),	NULL, compose_toggle_ruler_cb, 0, "<ToggleItem>"},
-	{N_("/_Tool/_Address book"),	"<shift><control>A", compose_address_cb , 0, NULL},
-	{N_("/_Tool/_Template"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_Tool/Actio_ns"),		NULL, NULL, 0, "<Branch>"},
+	{N_("/_Tools"),			NULL, NULL, 0, "<Branch>"},
+	{N_("/_Tools/Show _ruler"),	NULL, compose_toggle_ruler_cb, 0, "<ToggleItem>"},
+	{N_("/_Tools/_Address book"),	"<shift><control>A", compose_address_cb , 0, NULL},
+	{N_("/_Tools/_Template"),	NULL, NULL, 0, "<Branch>"},
+	{N_("/_Tools/Actio_ns"),	NULL, NULL, 0, "<Branch>"},
 	{N_("/_Help"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Help/_About"),		NULL, about_show, 0, NULL}
 };
@@ -681,7 +681,7 @@ Compose *compose_bounce(PrefsAccount *account, MsgInfo *msginfo)
 	menu_set_sensitive(ifactory, "/Message/Encrypt", FALSE);
 #endif
 	menu_set_sensitive(ifactory, "/Message/Request Return Receipt", FALSE);
-	menu_set_sensitive(ifactory, "/Tool/Template", FALSE);
+	menu_set_sensitive(ifactory, "/Tools/Template", FALSE);
 	
 	gtk_widget_set_sensitive(c->insert_btn, FALSE);
 	gtk_widget_set_sensitive(c->attach_btn, FALSE);
@@ -4407,7 +4407,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	menu_set_sensitive(ifactory, "/Edit/Undo", FALSE);
 	menu_set_sensitive(ifactory, "/Edit/Redo", FALSE);
 
-	tmpl_menu = gtk_item_factory_get_item(ifactory, "/Tool/Template");
+	tmpl_menu = gtk_item_factory_get_item(ifactory, "/Tools/Template");
 #if 0 /* NEW COMPOSE GUI */
 	gtk_widget_hide(bcc_hbox);
 	gtk_widget_hide(bcc_entry);
@@ -4435,7 +4435,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	}
 #endif
 
-	update_compose_actions_menu(ifactory, "/Tool/Actions", compose);
+	update_compose_actions_menu(ifactory, "/Tools/Actions", compose);
 
 
 	undostruct = undo_init(text);

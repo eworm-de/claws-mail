@@ -888,7 +888,7 @@ static void prefs_actions_ok		(GtkWidget *widget, gpointer data)
 void update_mainwin_actions_menu(GtkItemFactory *ifactory, 
 				 MainWindow *mainwin)
 {
-	update_actions_menu(ifactory, "/Tool/Actions", 
+	update_actions_menu(ifactory, "/Tools/Actions", 
 			    mainwin_actions_execute_cb, 
 			    mainwin);
 }
