@@ -5,6 +5,7 @@
 	* src/utils.c
 	* src/utils.h
 		implement cache cleanups for claws' folder system
+		(closes bug [ 595916 ] imapcache not cleaned up)
 
 2002-10-05 [melvin]	0.8.3claws47
 
