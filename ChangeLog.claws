@@ -1,3 +1,10 @@
+2002-07-06 [christoph]	0.7.8claws49
+
+	* src/folder.c
+	* src/mainwindow.c
+		fix folder_item_remove_all_msg and folderview
+		status for trash folders after emptying trash
+
 2002-07-05 [paul]	0.7.8claws48
 
 	* sync with 0.7.8cvs16

@@ -1436,7 +1436,7 @@ void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 
 	for (list = folder_get_list(); list != NULL; list = list->next) {
 		folder = list->data;
-		if (folder && folder->trash && folder->trash->total != 0) {
+		if (folder && folder->trash) {
 			folderview_update_item(folder->trash, TRUE);
 		}
 	}
