@@ -358,7 +358,7 @@ static PrefParam param[] = {
 	{"enable_pspell", "TRUE", &prefs_common.enable_pspell,
 	 P_BOOL, &spelling.checkbtn_enable_pspell,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"pspell_path", "/usr/local/share/pspell/", &prefs_common.pspell_path, 
+	{"pspell_path", PSPELL_PATH, &prefs_common.pspell_path, 
 	 P_STRING, &spelling.entry_pspell_path, 
 	 prefs_set_data_from_entry, prefs_set_entry},
 	{"dictionary",  "", &prefs_common.dictionary,

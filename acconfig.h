@@ -21,6 +21,9 @@
 /* Define if you use PSPELL to support spell checking */
 #undef USE_PSPELL
 
+/* Define PSPELL's default directory */
+#undef PSPELL_PATH
+
 /* Define if you use OpenSSL to support SSL */
 #undef USE_SSL
 
@@ -40,6 +43,3 @@
 #undef CLAWS
 
 #undef PACKAGE_DATA_DIR
-
-/* Has ispell path */
-#undef ISPELL_PATH

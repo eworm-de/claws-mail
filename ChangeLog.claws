@@ -1,3 +1,13 @@
+2002-02-17 [melvin]	0.7.1claws10
+
+	* acconfig.h
+	* configure.in
+		Added PSPELL_PATH macro and removed obsolete ISPELL_PATH
+	* src/prefs_common.c
+		Pspell data package directory no more hard coded but
+		set during configuration (PSPELL_PATH). (Thanks to 
+				Gustavo Noronha Silva.)
+
 2002-02-17 [melvin]	0.7.1claws9
 
 	* src/gtkspell.c
