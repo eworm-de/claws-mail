@@ -379,7 +379,7 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 #else /* !HAVE_LIBJCONV */
 	if (src_codeset) {
 		if (!strcasecmp(src_codeset, CS_EUC_JP) ||
-		    !strcasecmp(src_codeset, "EUCJP"))
+		    !strcasecmp(src_codeset, CS_EUCJP))
 			src_charset = C_EUC_JP;
 		else if (!strcasecmp(src_codeset, CS_SHIFT_JIS) ||
 			 !strcasecmp(src_codeset, "SHIFT-JIS") ||
@@ -435,7 +435,7 @@ CodeConvFunc conv_get_code_conv_func(const gchar *charset)
 		 !strcasecmp(charset, "X-SJIS"))
 		code_conv = conv_sjistodisp;
 	else if (!strcasecmp(charset, CS_EUC_JP) ||
-		 !strcasecmp(charset, "EUCJP"))
+		 !strcasecmp(charset, CS_EUCJP))
 		code_conv = conv_euctodisp;
 	else
 		code_conv = conv_noconv;
@@ -467,6 +467,7 @@ static const struct {
 	{C_ISO_2022_JP,		CS_ISO_2022_JP},
 	{C_ISO_2022_JP_2,	CS_ISO_2022_JP_2},
 	{C_EUC_JP,		CS_EUC_JP},
+	{C_EUC_JP,		CS_EUCJP},
 	{C_SHIFT_JIS,		CS_SHIFT_JIS},
 	{C_ISO_2022_KR,		CS_ISO_2022_KR},
 	{C_EUC_KR,		CS_EUC_KR},
@@ -883,6 +884,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 				    != 0) {
 					g_warning("can't convert\n");
 					tmpp[0] = '\0';
+					wtmpp++;
 					continue;
 				}
 				if (!str_ascii) {

@@ -96,6 +96,7 @@ struct _CodeConverter
 #define CS_ISO_2022_JP		"ISO-2022-JP"
 #define CS_ISO_2022_JP_2	"ISO-2022-JP-2"
 #define CS_EUC_JP		"EUC-JP"
+#define CS_EUCJP		"EUCJP"
 #define CS_SHIFT_JIS		"Shift_JIS"
 #define CS_ISO_2022_KR		"ISO-2022-KR"
 #define CS_EUC_KR		"EUC-KR"

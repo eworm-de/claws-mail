@@ -1,6 +1,16 @@
+2001-10-10
+
+	* src/utils.c: to_human_readable(): made a bit of optimization.
+	* src/summaryview.c: summary_delete(): fixed a focus problem.
+
 2001-10-09
 
 	* updated some autotool scripts.
+	* src/codeconv.c: conv_encode_header(): fixed a bug that caused
+	  infinite loop when failed to convert encoding.
+	* src/codeconv.[ch]: a fix for older version of libjconv
+	  (jconv_info_get_current_codeset() returned "EUCJP" instead of
+	  "EUC-JP".
 
 2001-10-08
 

@@ -1,6 +1,13 @@
+2001-10-10
+
+	* src/utils.c: to_human_readable(): 少し最適化。
+	* src/summaryview.c: summary_delete(): フォーカスの問題を修正。
+
 2001-10-09
 
 	* いくつかの autotool スクリプトを更新。
+	* src/codeconv.c: conv_encode_header(): エンコーディングの変換に
+	  失敗した場合に無限ループを起こすバグを修正。
 
 2001-10-08
 

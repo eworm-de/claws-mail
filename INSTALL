@@ -101,8 +101,8 @@ If you want to enable SSL support, append the option
 If you want to enable IPv6 support, append the option
 --enable-ipv6 after ./configure.
 
-If you want to enable GnuPG support, you need GPGME 0.2.1 or later, and
-GnuPG 1.0.4f or later. You can get them from the following location:
+If you want to enable GnuPG support, you need GPGME 0.2.3 or later, and
+GnuPG 1.0.6 or later. You can get them from the following location:
 
   ftp://ftp.gnupg.org/pub/gcrypt/alpha/gpgme/
   ftp://ftp.gnupg.org/pub/gcrypt/devel/

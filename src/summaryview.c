@@ -2698,7 +2698,7 @@ void summary_delete(SummaryView *summaryview)
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	FolderItem *item = summaryview->folder_item;
 	GList *cur;
-	GtkCTreeNode *dsp_last, *sel_last;
+	GtkCTreeNode *dsp_last, *sel_last = NULL;
 
 	if (!item || item->folder->type == F_NEWS) return;
 
@@ -2716,16 +2716,15 @@ void summary_delete(SummaryView *summaryview)
 
 	/* next code sets current row focus right. if the last selection
 	 * is also the last displayed row, we need to scroll backwards. 
-	 * exception: if the last displayed row is an uncollapsed node,
+	 * exception: if the last displayed row has children,
 	 * we don't scroll back. */
 	dsp_last = gtk_ctree_node_nth(ctree, GTK_CLIST(ctree)->rows - 1);
-	sel_last = NULL;
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next) {
 		sel_last = GTK_CTREE_NODE(cur->data);
-		summary_delete_row(summaryview, GTK_CTREE_NODE(sel_last));
+		summary_delete_row(summaryview, sel_last);
 	}
 
-	if (dsp_last == sel_last && GTK_CTREE_ROW(sel_last)->expanded) 
+	if (dsp_last == sel_last && !GTK_CTREE_ROW(sel_last)->children)
 		summary_step(summaryview, GTK_SCROLL_STEP_BACKWARD);
 	else 	
 		summary_step(summaryview, GTK_SCROLL_STEP_FORWARD);

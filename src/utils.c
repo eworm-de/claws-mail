@@ -136,24 +136,21 @@ gchar *itos(gint n)
 gchar *to_human_readable(off_t size)
 {
 	static gchar str[10];
-	gint count;
-	guint32 div = 1;
+	gint shift;
 
-	for (count = 0; count < 3; count++) {
-		if (size / div < 1024)
+	for (shift = 0; shift < 30; shift += 10) {
+		if (size >> shift < 1024)
 			break;
-		else
-			div *= 1024;
 	}
 
-	switch (count) {
-	case 0: g_snprintf(str, sizeof(str), "%dB",    (gint)size);   break;
-	case 1: g_snprintf(str, sizeof(str), "%.1fKB", (gfloat)size / div);
+	switch (shift) {
+	case 0 : g_snprintf(str, sizeof(str), "%dB",    (gint)size);   break;
+	case 10: g_snprintf(str, sizeof(str), "%.1fKB", (gfloat)size / (1 << 10));
 		break;
-	case 2: g_snprintf(str, sizeof(str), "%.2fMB", (gfloat)size / div);
+	case 20: g_snprintf(str, sizeof(str), "%.2fMB", (gfloat)size / (1 << 20));
 		break;
 	default:
-		g_snprintf(str, sizeof(str), "%.2fGB", (gfloat)size / div);
+		g_snprintf(str, sizeof(str), "%.2fGB", (gfloat)size / (1 << 30));
 		break;
 	}
 

@@ -101,7 +101,7 @@ SSL 対応を有効にしたい場合は、 ./configure の後に
 IPv6 対応を有効にしたい場合は、 ./configure の後に
 --enable-ipv6 オプションを追加してください。
 
-GnuPG 対応を有効にしたい場合は、 GPGME 0.2.1 以降と GnuPG 1.0.4f 以降が
+GnuPG 対応を有効にしたい場合は、 GPGME 0.2.3 以降と GnuPG 1.0.6 以降が
 必要です。以下の場所から取得できます:
 
   ftp://ftp.gnupg.org/pub/gcrypt/alpha/gpgme/
