@@ -127,10 +127,10 @@ Options for configure script
 
   --disable-compface  disable compface (X-Face) support
   --disable-ipv6      disable IPv6 support
-  --enable-ssl        SSL support (requires OpenSSL)
   --enable-gpgme      GnuPG support (requires GPGME and GnuPG)
   --enable-ldap       LDAP support
   --enable-jpilot     JPilot support
+  --enable-openssl        SSL support (requires OpenSSL)
 
 For other options, refer to ./configure --help .
 
