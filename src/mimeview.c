@@ -668,7 +668,7 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo)
 static void check_signature_cb(GtkWidget *widget, gpointer user_data)
 {
 	MimeView *mimeview = (MimeView *) user_data;
-	MimeInfo *mimeinfo = mimeview_get_selected_part(mimeview);
+	MimeInfo *mimeinfo = mimeview->siginfo;
 	
 	privacy_mimeinfo_check_signature(mimeinfo);
 	update_signature_noticeview(mimeview, mimeview->siginfo);
@@ -677,7 +677,6 @@ static void check_signature_cb(GtkWidget *widget, gpointer user_data)
 static void display_full_info_cb(GtkWidget *widget, gpointer user_data)
 {
 	MimeView *mimeview = (MimeView *) user_data;
-	MimeInfo *mimeinfo = mimeview_get_selected_part(mimeview);
 	gchar *siginfo;
 
 	siginfo = privacy_mimeinfo_sig_info_full(mimeview->siginfo);

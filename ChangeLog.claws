@@ -1,3 +1,9 @@
+2003-11-20 [christoph]	0.9.6claws83
+
+	* src/mimeinfo.c
+		use signed MimeInfo when checking the signature and not
+		the selected one
+
 2003-11-19 [alfons]	0.9.6claws82
 
 	* src/mainwindow.c
@@ -19,6 +25,7 @@
 		Urke MMI
 
 2003-11-19 [luke]	0.9.6claws80
+
 	* src/textview.c
 		revert my last commit until I get time to fix it
 
