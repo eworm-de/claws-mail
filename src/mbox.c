@@ -213,10 +213,9 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox)
 			return -1;
 		}
 
-		
 		msginfo = folder_item_get_msginfo(dropfolder, msgnum);
 		if (!procmsg_msginfo_filter(msginfo))
-			folder_item_move_msg(dropfolder, msginfo);
+			folder_item_move_msg(dest, msginfo);
 		procmsg_msginfo_free(msginfo);
 
 		msgs++;

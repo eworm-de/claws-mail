@@ -1,3 +1,12 @@
+2003-04-10 [christoph]	0.8.11claws83
+
+	* src/mbox.c
+		fix typo that did not move unfiltered mails to destination
+		folder
+
+	(closes Bug 115 Sylpheed 0.8.11claws81 does not deliver mail correctly
+	 when filtering from spool)
+
 2003-04-10 [christoph]	0.8.11claws82
 
 	* src/imap.c
