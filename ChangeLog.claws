@@ -3,6 +3,9 @@
 	* src/summaryview.c
 		fixed segfault that happend when the selected
 		message was removed while retrieving new messages.
+	* po/es.po
+		updated translation
+		(submitted by Ricardo Mones Lastra <mones@trasgu.aic.uniovi.es>)
 
 2001-07-22 [alfons]
 
