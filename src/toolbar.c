@@ -81,10 +81,7 @@ static void toolbar_inc_all_cb	        (GtkWidget	*widget,
 static void toolbar_send_cb	        (GtkWidget	*widget,
 				        gpointer	         data);
 
-static void toolbar_compose_news_cb	        (GtkWidget	*widget,
-				        gpointer	         data);
-
-static void toolbar_compose_mail_cb	        (GtkWidget	*widget,
+static void toolbar_compose_cb	        (GtkWidget	*widget,
 				        gpointer	         data);
 
 static void toolbar_reply_cb	        (GtkWidget	*widget,
@@ -142,7 +139,7 @@ static ToolbarAction t_action[] =
 	{ "A_RECEIVE_ALL",   N_("Receive Mail on all Accounts"),    toolbar_inc_all_cb               },
 	{ "A_RECEIVE_CUR",   N_("Receive Mail on current Account"), toolbar_inc_cb                   },
 	{ "A_SEND_QUEUD",    N_("Send Queud Message(s)"),           toolbar_send_cb                  },
-	{ "A_COMPOSE_EMAIL", N_("Compose Email"),                   toolbar_compose_mail_cb          },
+	{ "A_COMPOSE_EMAIL", N_("Compose Email"),                   toolbar_compose_cb               },
 	{ "A_REPLY_MESSAGE", N_("Reply to Message"),                toolbar_reply_cb                 },
 	{ "A_REPLY_SENDER",  N_("Reply to Sender"),                 toolbar_reply_to_sender_cb       },
 	{ "A_REPLY_ALL",     N_("Reply to All"),                    toolbar_reply_to_all_cb          },
@@ -152,7 +149,7 @@ static ToolbarAction t_action[] =
 	{ "A_GOTO_NEXT",     N_("Goto Next Message"),               toolbar_next_unread_cb           },
 	{ "A_SYL_ACTIONS",   N_("Sylpheed Actions Feature"),        toolbar_actions_execute_cb       },
 
-	{ "A_COMPOSE_NEWS",  N_("Compose News"),                    toolbar_compose_news_cb          },    
+	{ "A_COMPOSE_NEWS",  N_("Compose News"),                    toolbar_compose_cb               },    
 	{ "A_SEPARATOR",     SEPARATOR,                             NULL                             },
 };
 
@@ -501,20 +498,15 @@ static void toolbar_send_cb	(GtkWidget	*widget,
 	send_queue_cb(mainwin, 0, NULL);
 }
 
-static void toolbar_compose_news_cb	(GtkWidget	*widget,
+static void toolbar_compose_cb	(GtkWidget	*widget,
 				 gpointer	 data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
 
-	compose_news_cb(mainwin, 0, NULL);
-}
-
-static void toolbar_compose_mail_cb	(GtkWidget	*widget,
-				 gpointer	 data)
-{
-	MainWindow *mainwin = (MainWindow *)data;
-
-	compose_mail_cb(mainwin, 0, NULL);
+	if (mainwin->toolbar->compose_btn_type == COMPOSEBUTTON_NEWS) 
+		compose_news_cb(mainwin, 0, NULL);
+	else
+		compose_mail_cb(mainwin, 0, NULL);
 }
 
 static void toolbar_reply_cb(GtkWidget *widget, gpointer data)
@@ -676,9 +668,6 @@ static void activate_compose_button (MainToolbar *toolbar,
 				ToolbarStyle style,
 				ComposeButtonType type)
 {
-	if (style == TOOLBAR_NONE) 
-		return;
-
 	if ((!toolbar->compose_mail_btn) || (!toolbar->compose_news_btn))
 		return;
 
