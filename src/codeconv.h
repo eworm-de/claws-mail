@@ -119,7 +119,7 @@ void conv_unreadable_8bit(gchar *str);
 void conv_unreadable_latin(gchar *str);
 void conv_mb_alnum(gchar *str);
 
-CharSet conv_guess_encoding(const gchar *str);
+CharSet conv_guess_ja_encoding(const gchar *str);
 
 void conv_jistodisp  (gchar *outbuf, gint outlen, const gchar *inbuf);
 void conv_sjistodisp (gchar *outbuf, gint outlen, const gchar *inbuf);
@@ -127,6 +127,8 @@ void conv_euctodisp  (gchar *outbuf, gint outlen, const gchar *inbuf);
 void conv_ustodisp   (gchar *outbuf, gint outlen, const gchar *inbuf);
 void conv_latintodisp(gchar *outbuf, gint outlen, const gchar *inbuf);
 void conv_noconv     (gchar *outbuf, gint outlen, const gchar *inbuf);
+
+void conv_localetodisp(gchar *outbuf, gint outlen, const gchar *inbuf);
 
 CodeConverter *conv_code_converter_new	(const gchar	*charset);
 void conv_code_converter_destroy	(CodeConverter	*conv);

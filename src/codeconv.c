@@ -285,7 +285,7 @@ void conv_sjistoeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 
 void conv_anytoeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
-	switch (conv_guess_encoding(inbuf)) {
+	switch (conv_guess_ja_encoding(inbuf)) {
 	case C_ISO_2022_JP:
 		conv_jistoeuc(outbuf, outlen, inbuf);
 		break;
@@ -300,7 +300,7 @@ void conv_anytoeuc(gchar *outbuf, gint outlen, const gchar *inbuf)
 
 void conv_anytojis(gchar *outbuf, gint outlen, const gchar *inbuf)
 {
-	switch (conv_guess_encoding(inbuf)) {
+	switch (conv_guess_ja_encoding(inbuf)) {
 	case C_EUC_JP:
 		conv_euctojis(outbuf, outlen, inbuf);
 		break;
@@ -528,7 +528,7 @@ void conv_mb_alnum(gchar *str)
 	}
 }
 
-CharSet conv_guess_encoding(const gchar *str)
+CharSet conv_guess_ja_encoding(const gchar *str)
 {
 	const guchar *p = str;
 	CharSet guessed = C_US_ASCII;
@@ -611,6 +611,33 @@ void conv_noconv(gchar *outbuf, gint outlen, const gchar *inbuf)
 	strncpy2(outbuf, inbuf, outlen);
 }
 
+void conv_localetodisp(gchar *outbuf, gint outlen, const gchar *inbuf)
+{
+	strncpy2(outbuf, inbuf, outlen);
+
+	switch (conv_get_current_charset()) {
+	case C_US_ASCII:
+	case C_ISO_8859_1:
+	case C_ISO_8859_2:
+	case C_ISO_8859_4:
+	case C_ISO_8859_5:
+	case C_ISO_8859_7:
+	case C_ISO_8859_8:
+	case C_ISO_8859_9:
+	case C_ISO_8859_11:
+	case C_ISO_8859_13:
+	case C_ISO_8859_15:
+		conv_unreadable_latin(outbuf);
+		break;
+	case C_EUC_JP:
+		conv_unreadable_eucjp(outbuf);
+		break;
+	default:
+		conv_unreadable_8bit(outbuf);
+		break;
+	}
+}
+
 CodeConverter *conv_code_converter_new(const gchar *charset)
 {
 	CodeConverter *conv;
@@ -673,8 +700,11 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 #if HAVE_ICONV
 	if (!src_code)
 		src_code = conv_get_outgoing_charset_str();
-	if (!dest_code)
+	if (!dest_code) {
 		dest_code = conv_get_current_charset_str();
+		if (!strcasecmp(dest_code, CS_US_ASCII))
+			dest_code = CS_ISO_8859_1;
+	}
 
 	/* don't convert if current codeset is US-ASCII */
 	if (!strcasecmp(dest_code, CS_US_ASCII))
@@ -711,6 +741,9 @@ CodeConvFunc conv_get_code_conv_func(const gchar *src_charset_str,
 	}
 
 	dest_charset = conv_get_charset_from_str(dest_charset_str);
+
+	if (dest_charset == C_US_ASCII)
+		return conv_ustodisp;
 
 	switch (src_charset) {
 	case C_ISO_2022_JP:
