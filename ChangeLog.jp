@@ -1,3 +1,13 @@
+2001-07-03
+
+	* src/alertpanel.c: alertpanel_create(): メッセージが途切れるのを修正。
+	* src/rfc2015.c: rfc2015_decrypt_message(): content-type の大小文字
+	  問題を修正(この patch に関して Rene Rebe さん thanks)。
+	* src/codeconv.c: code_get_code_conv_func(): ISO-8859-1 の検出部を
+	  修正。
+	* src/prefs_common.c: prefs_send_create(): libjconv 未使用時に
+	  追加でいくつかの文字コードセットを指定できるようにした。
+
 2001-07-01
 
 	* version 0.5.0pre3

@@ -1,3 +1,13 @@
+2001-07-03
+
+	* src/alertpanel.c: alertpanel_create(): fixed truncated message.
+	* src/rfc2015.c: rfc2015_decrypt_message(): fixed the case problem
+	  of content-type (thanks to René Rebe for the patch).
+	* src/codeconv.c: code_get_code_conv_func(): fixed the ISO-8859-1
+	  detection.
+	* src/prefs_common.c: prefs_send_create(): made some more character
+	  sets specifiable when not using libjconv.
+
 2001-07-02
 
 	* updated gettext to 0.10.38.

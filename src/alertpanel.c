@@ -206,8 +206,8 @@ static void alertpanel_create(const gchar *title,
 			   hbox, TRUE, TRUE, 16);
 
 	/* title label */
-	//pixmapwid = create_pixmapwid(dialog, GNUstep_xpm);
-	//gtk_box_pack_start(GTK_BOX(hbox), pixmapwid, FALSE, FALSE, 16);
+	/* pixmapwid = create_pixmapwid(dialog, GNUstep_xpm); */
+	/* gtk_box_pack_start(GTK_BOX(hbox), pixmapwid, FALSE, FALSE, 16); */
 	label = gtk_label_new(title);
 	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 16);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
@@ -229,8 +229,8 @@ static void alertpanel_create(const gchar *title,
 
 	/* message label */
 	label = gtk_label_new(message);
-	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 32);
+	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
 
 	/* for button(s) */

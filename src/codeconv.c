@@ -414,10 +414,12 @@ CodeConvFunc conv_get_code_conv_func(const gchar *charset)
 		code_conv = conv_jistodisp;
 	else if (!strcasecmp(charset, CS_US_ASCII))
 		code_conv = conv_ustodisp;
+	else if (!strncasecmp(charset, CS_ISO_8859_1, 10))
+		code_conv = conv_latintodisp;
 #if !HAVE_LIBJCONV
 	else if (!strncasecmp(charset, "ISO-8859-", 9))
 		code_conv = conv_latintodisp;
-#endif /* !HAVE_LIBJCONV */
+#endif
 	else if (!strcasecmp(charset, CS_SHIFT_JIS) ||
 		 !strcasecmp(charset, "SHIFT-JIS")  ||
 		 !strcasecmp(charset, "SJIS")       ||
@@ -877,23 +879,21 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 							break;
 						}
 					}
-				} else {
-					if ((line_len + tlen + mbl +
-					     (*(wtmpp + 1) ? 0 : nspc) +
-					     (line_len > 1 ? 1 : 0))
-					    > MAX_LINELEN) {
-						g_free(raw_new);
-						if (1 + tlen + mbl +
-						    (*(wtmpp + 1) ? 0 : nspc)
-						    >= MAX_LINELEN) {
-							*tmpp = '\0';
-							break;
-						}
-						*destp++ = '\n';
-						*destp++ = ' ';
-						line_len = 1;
-						continue;
+				} else if ((line_len + tlen + mbl +
+					    (*(wtmpp + 1) ? 0 : nspc) +
+					    (line_len > 1 ? 1 : 0))
+					   > MAX_LINELEN) {
+					g_free(raw_new);
+					if (1 + tlen + mbl +
+					    (*(wtmpp + 1) ? 0 : nspc)
+					    >= MAX_LINELEN) {
+						*tmpp = '\0';
+						break;
 					}
+					*destp++ = '\n';
+					*destp++ = ' ';
+					line_len = 1;
+					continue;
 				}
 
 				tmpp += mbl;
@@ -1073,22 +1073,20 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 							break;
 						}
 					}
-				} else {
-					if ((line_len + tlen + mbl +
-					     (*(wtmpp + 1) ? 0 : nspc) +
-					     (line_len > 1 ? 1 : 0))
-					    > MAX_LINELEN) {
-						if (1 + tlen + mbl +
-						    (*(wtmpp + 1) ? 0 : nspc)
-						    >= MAX_LINELEN) {
-							*tmpp = '\0';
-							break;
-						}
-						*destp++ = '\n';
-						*destp++ = ' ';
-						line_len = 1;
-						continue;
+				} else if ((line_len + tlen + mbl +
+					    (*(wtmpp + 1) ? 0 : nspc) +
+					    (line_len > 1 ? 1 : 0))
+					   > MAX_LINELEN) {
+					if (1 + tlen + mbl +
+					    (*(wtmpp + 1) ? 0 : nspc)
+					    >= MAX_LINELEN) {
+						*tmpp = '\0';
+						break;
 					}
+					*destp++ = '\n';
+					*destp++ = ' ';
+					line_len = 1;
+					continue;
 				}
 
 				tmpp += mbl;

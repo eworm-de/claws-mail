@@ -985,7 +985,7 @@ static void prefs_send_create(void)
 	MENUITEM_ADD(optmenu_menu, menuitem, str, charset); \
 }
 
-	SET_MENUITEM(_("Automatic"),			 CS_AUTO);
+	SET_MENUITEM(_("Automatic (Recommended)"),	 CS_AUTO);
 	SET_MENUITEM(_("7bit ascii (US-ASCII)"),	 CS_US_ASCII);
 #if HAVE_LIBJCONV
 	SET_MENUITEM(_("Unicode (UTF-8)"),		 CS_UTF_8);

@@ -500,7 +500,7 @@ int rfc2015_is_encrypted (MimeInfo *mimeinfo)
 {
     if (!mimeinfo)
         return 0;
-    if (strcasecmp (mimeinfo->content_type, "multipart/encrypted"))
+    if (g_strcasecmp (mimeinfo->content_type, "multipart/encrypted"))
         return 0;
     /* fixme: we should schek the protocol parameter */
     return 1;
@@ -575,13 +575,13 @@ void rfc2015_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
     /* check that we have the 2 parts */
     n = found = 0;
     for (partinfo = mimeinfo->children; partinfo; partinfo = partinfo->next) {
-        if (++n == 1 && !strcmp (partinfo->content_type,
-				 "application/pgp-encrypted")) {
+        if (++n == 1 && !g_strcasecmp (partinfo->content_type,
+				       "application/pgp-encrypted")) {
             /* Fixme: check that the version is 1 */
             ver_okay = 1;
         }
-        else if (n == 2 && !strcmp (partinfo->content_type,
-				    "application/octet-stream")) {
+        else if (n == 2 && !g_strcasecmp (partinfo->content_type,
+					  "application/octet-stream")) {
             if (partinfo->next)
                 g_warning ("** oops: pgp_encrypted with more than 2 parts");
             break;
