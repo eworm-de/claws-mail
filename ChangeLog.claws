@@ -1,3 +1,13 @@
+2003-04-10 [christoph]	0.8.11claws82
+
+	* src/imap.c
+		use BODY.PEEK instead of BODY in in message fetch operation
+		to make sure the IMAP server does not set the \Seen flag for
+		messages. Sylpheed does that later itself, when the message
+		is opened in sylpheed
+
+	(closes Bug 111 Claws destroys unread marks)
+
 2003-04-09 [oliver]	0.8.11claws81
 	
 	* src/folder.c

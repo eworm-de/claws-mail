@@ -2466,7 +2466,7 @@ static gint imap_cmd_fetch(SockInfo *sock, guint32 uid, const gchar *filename)
 
 	g_return_val_if_fail(filename != NULL, IMAP_ERROR);
 
-	imap_cmd_gen_send(sock, "UID FETCH %d BODY[]", uid);
+	imap_cmd_gen_send(sock, "UID FETCH %d BODY.PEEK[]", uid);
 
 	while ((ok = imap_cmd_gen_recv(sock, &buf))
 	       == IMAP_SUCCESS) {
