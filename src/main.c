@@ -176,6 +176,14 @@ int main(int argc, char *argv[])
 
 	parse_cmd_opt(argc, argv);
 
+#ifdef CRASH_DIALOG
+	if (cmd.crash) {
+		crash_main(cmd.crash_params);
+		return 0;
+	}
+	crash_install_handlers();
+#endif
+
 	/* check and create unix domain socket */
 	lock_socket = prohibit_duplicate_launch();
 	if (lock_socket < 0) return 0;
@@ -187,14 +195,6 @@ int main(int argc, char *argv[])
 
 	gtk_set_locale();
 	gtk_init(&argc, &argv);
-
-#ifdef CRASH_DIALOG
-	if (cmd.crash) {
-		crash_main(cmd.crash_params);
-		return 0;
-	}
-	crash_install_handlers();
-#endif
 
 #if USE_THREADS || USE_LDAP
 	g_thread_init(NULL);

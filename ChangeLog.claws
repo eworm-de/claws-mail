@@ -1,3 +1,9 @@
+2002-12-10 [colin]	0.8.6claws93
+
+	* src/main.c
+		"Fix" "sylpheed already running" instead of
+		crash dialog appearing after a crash
+
 2002-12-10 [colin]	0.8.6claws92
 
 	* po/POTFILES.in
