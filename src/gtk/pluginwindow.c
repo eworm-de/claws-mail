@@ -130,7 +130,6 @@ static void load_cb(GtkButton *button, PluginWindow *pluginwindow)
 	}
 
 	set_plugin_list(pluginwindow);
-	g_free(file);
 }
 
 static gboolean pluginwindow_key_pressed(GtkWidget *widget, GdkEventKey *event,

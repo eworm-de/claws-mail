@@ -1,3 +1,9 @@
+2005-01-17 [thorsten]	1.0.0cvs1
+
+	* src/crash.c
+	* src/gtk/pluginwindow.c
+		return value of filesel should not be free()d
+
 2005-01-17 [paul]	1.0.0
 
 	* version 1.0.0 released
