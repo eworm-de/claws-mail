@@ -1,3 +1,13 @@
+2005-02-08 [colin]	1.0.0cvs29.1
+
+	* po/de.po
+	* po/es.po
+	* po/fr.po
+	* po/it.po
+	* po/sk.po
+	* po/sr.po
+		Sync translations with HEAD
+
 2005-02-06 [colin]	1.0.0cvs28.3
 
 	* src/compose.c
