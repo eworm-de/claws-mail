@@ -1,3 +1,9 @@
+2005-01-26 [paul]	1.0.0cvs15.2
+
+	* src/compose.c
+		compose_entries_set(): convert subject and body to
+		utf8 if necessary. patch by Felix Eckhofer
+
 2005-01-26 [paul]	1.0.0cvs15.1
 
 	* configure.ac

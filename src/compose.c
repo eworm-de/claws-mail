@@ -1595,6 +1595,8 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 	gchar *bcc = NULL;
 	gchar *subject = NULL;
 	gchar *body = NULL;
+	gchar *temp = NULL;
+	gint  len = 0;
 
 	scan_mailto_url(mailto, &to, &cc, &bcc, &subject, &body);
 
@@ -1605,7 +1607,13 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 	if (bcc)
 		compose_entry_append(compose, bcc, COMPOSE_BCC);
 	if (subject)
-		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), subject);
+		if (!g_utf8_validate (subject, -1, NULL)) {
+			temp = g_locale_to_utf8 (subject, -1, NULL, &len, NULL);
+			gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), temp);
+			g_free(temp);
+		} else {
+			gtk_entry_set_text(GTK_ENTRY(compose->subject_entry), subject);
+		}
 	if (body) {
 		GtkTextView *text = GTK_TEXT_VIEW(compose->text);
 		GtkTextBuffer *buffer = gtk_text_view_get_buffer(text);
@@ -1615,7 +1623,13 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 		mark = gtk_text_buffer_get_insert(buffer);
 		gtk_text_buffer_get_iter_at_mark(buffer, &iter, mark);
 
-		gtk_text_buffer_insert(buffer, &iter, body, -1);
+		if (!g_utf8_validate (body, -1, NULL)) {
+			temp = g_locale_to_utf8 (body, -1, NULL, &len, NULL);
+			gtk_text_buffer_insert(buffer, &iter, temp, -1);
+			g_free(temp);
+		} else {
+			gtk_text_buffer_insert(buffer, &iter, body, -1);
+		}
 		gtk_text_buffer_insert(buffer, &iter, "\n", 1);
 	}
 
