@@ -1504,7 +1504,6 @@ ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 	gtk_stext_thaw(GTK_STEXT(text));
 
 	return child_info;
-#endif
 }
 
 static void kill_children_cb(GtkWidget *widget, gpointer data)
