@@ -1,3 +1,13 @@
+2001-06-20 [reboot]
+
+	* src/summeryview.c
+		make building threads by subject work when
+		thread view is enabled
+		
+	* src/compose.c
+	* src/prefs_common.[ch]
+		automatically select account for mail replys
+
 2001-06-19 [sergey]
 
 	* src/compose.c (compose_create): keep Bcc and Reply-To visible if
