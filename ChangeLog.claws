@@ -1,3 +1,8 @@
+2002-12-27 [alfons]	0.8.8claws7
+
+	* src/prefs_matcher.[ch]
+		clean up
+
 2002-12-26 [alfons]	0.8.8claws6
 
 	* src/matcher.[ch]
