@@ -58,6 +58,8 @@ void procheader_header_list_destroy		(GSList		*hlist);
 void procheader_header_array_destroy		(GPtrArray	*harray);
 void procheader_header_free			(Header		*header);
 
+const HeaderEntry* procheader_get_headernames	(gboolean	full);
+
 void procheader_get_header_fields	(FILE		*fp,
 					 HeaderEntry	 hentry[]);
 MsgInfo *procheader_parse_file		(const gchar	*file,

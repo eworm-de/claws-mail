@@ -266,8 +266,7 @@ static gint imap_cmd_ok		(SockInfo	*sock,
 static void imap_cmd_gen_send	(SockInfo	*sock,
 				 const gchar	*format, ...);
 static gint imap_cmd_gen_recv	(SockInfo	*sock,
-				 gchar		*buf,
-				 gint		 size);
+				 gchar	       **buf);
 
 /* misc utility functions */
 static gchar *strchr_cpy			(const gchar	*src,
@@ -293,6 +292,9 @@ static gboolean imap_rename_folder_func		(GNode		*node,
 gint imap_get_num_list				(Folder 	*folder,
 						 FolderItem 	*item,
 						 GSList	       **list);
+GSList *imap_get_msginfos			(Folder		*folder,
+						 FolderItem	*item,
+						 GSList		*msgnum_list);
 MsgInfo *imap_get_msginfo 			(Folder 	*folder,
 						 FolderItem 	*item,
 						 gint 		 num);
@@ -360,6 +362,7 @@ static void imap_folder_init(Folder *folder, const gchar *name,
 
 	folder->get_num_list	      = imap_get_num_list;
 	folder->get_msginfo	      = imap_get_msginfo;
+	folder->get_msginfos	      = imap_get_msginfos;
 }
 
 static FolderItem *imap_folder_item_new(Folder *folder)
@@ -2180,7 +2183,7 @@ static gchar *imap_get_header(SockInfo *sock, gchar *cur_pos, gchar **headers,
 		g_free(nextline);
 	} while (block_len < len);
 
-	debug_print("IMAP4< [contents of RFC822.HEADER]\n");
+	debug_print("IMAP4< [contents of BODY.PEEK[HEADER.FIELDS (...)]]\n");
 
 	*headers = g_strndup(cur_pos, len);
 	cur_pos += len;
@@ -2289,10 +2292,24 @@ static MsgInfo *imap_parse_envelope(SockInfo *sock, FolderItem *item,
 		} else if (!strncmp(cur_pos, "RFC822.SIZE ", 12)) {
 			cur_pos += 12;
 			size = strtol(cur_pos, &cur_pos, 10);
-		} else if (!strncmp(cur_pos, "RFC822.HEADER ", 14)) {
+		} else if (!strncmp(cur_pos, "BODY[HEADER.FIELDS ", 19)) {
 			gchar *headers;
 
-			cur_pos += 14;
+			cur_pos += 19;
+			if (*cur_pos != '(') {
+				g_warning("*cur_pos != '('\n");
+				procmsg_msginfo_free(msginfo);
+				return NULL;
+			}
+			cur_pos++;
+			PARSE_ONE_ELEMENT(')');
+			if (*cur_pos != ']') {
+				g_warning("*cur_pos != ']'\n");
+				procmsg_msginfo_free(msginfo);
+				return NULL;
+			}
+			cur_pos++;
+
 			cur_pos = imap_get_header(sock, cur_pos, &headers,
 						  line_str);
 			msginfo = procheader_parse_str(headers, flags, FALSE, FALSE);
@@ -2795,7 +2812,7 @@ static gint imap_cmd_delete(SockInfo *sock, const gchar *folder)
 static gint imap_cmd_fetch(SockInfo *sock, guint32 uid, const gchar *filename)
 {
 	gint ok;
-	gchar buf[IMAPBUFSIZE];
+	gchar *buf;
 	gchar *cur_pos;
 	gchar size_str[32];
 	glong size_num;
@@ -2804,10 +2821,12 @@ static gint imap_cmd_fetch(SockInfo *sock, guint32 uid, const gchar *filename)
 
 	imap_cmd_gen_send(sock, "UID FETCH %d BODY[]", uid);
 
-	while ((ok = imap_cmd_gen_recv(sock, buf, sizeof(buf)))
+	while ((ok = imap_cmd_gen_recv(sock, &buf))
 	       == IMAP_SUCCESS) {
-		if (buf[0] != '*' || buf[1] != ' ')
+		if (buf[0] != '*' || buf[1] != ' ') {
+			g_free(buf);
 			return IMAP_ERROR;
+		}
 		if (strstr(buf, "FETCH") != NULL)
 			break;
 	}
@@ -2815,22 +2834,38 @@ static gint imap_cmd_fetch(SockInfo *sock, guint32 uid, const gchar *filename)
 		return ok;
 
 	cur_pos = strchr(buf, '{');
-	g_return_val_if_fail(cur_pos != NULL, IMAP_ERROR);
+	if (cur_pos == NULL) {
+		g_free(buf);
+		return IMAP_ERROR;
+	}
 	cur_pos = strchr_cpy(cur_pos + 1, '}', size_str, sizeof(size_str));
-	g_return_val_if_fail(cur_pos != NULL, IMAP_ERROR);
+	if (cur_pos == NULL) {
+		g_free(buf);
+		return IMAP_ERROR;
+	}
 	size_num = atol(size_str);
 
-	if (*cur_pos != '\0') return IMAP_ERROR;
-
-	if (recv_bytes_write_to_file(sock, size_num, filename) != 0)
+	if (*cur_pos != '\0') {
+		g_free(buf);
 		return IMAP_ERROR;
+	}
 
-	if (imap_cmd_gen_recv(sock, buf, sizeof(buf)) != IMAP_SUCCESS)
+	if (recv_bytes_write_to_file(sock, size_num, filename) != 0) {
+		g_free(buf);
 		return IMAP_ERROR;
+	}
 
-	if (buf[0] == '\0' || buf[strlen(buf) - 1] != ')')
+	if (imap_cmd_gen_recv(sock, &buf) != IMAP_SUCCESS) {
+		g_free(buf);
 		return IMAP_ERROR;
+	}
 
+	if (buf[0] == '\0' || buf[strlen(buf) - 1] != ')') {
+		g_free(buf);
+		return IMAP_ERROR;
+	}
+
+	g_free(buf);
 	ok = imap_cmd_ok(sock, NULL);
 
 	return ok;
@@ -2842,7 +2877,7 @@ static gint imap_cmd_append(SockInfo *sock, const gchar *destfolder,
 	gint ok;
 	gint size;
 	gchar *destfolder_;
-	gchar buf[BUFFSIZE];
+	gchar buf[BUFFSIZE], *imapbuf;
 	FILE *fp;
 
 	g_return_val_if_fail(file != NULL, IMAP_ERROR);
@@ -2855,12 +2890,14 @@ static gint imap_cmd_append(SockInfo *sock, const gchar *destfolder,
 	QUOTE_IF_REQUIRED(destfolder_, destfolder);
 	imap_cmd_gen_send(sock, "APPEND %s (\\Seen) {%d}", destfolder_, size);
 
-	ok = imap_cmd_gen_recv(sock, buf, sizeof(buf));
-	if (ok != IMAP_SUCCESS || buf[0] != '+' || buf[1] != ' ') {
+	ok = imap_cmd_gen_recv(sock, &imapbuf);
+	if (ok != IMAP_SUCCESS || imapbuf[0] != '+' || imapbuf[1] != ' ') {
 		log_warning(_("can't append %s to %s\n"), file, destfolder_);
+		g_free(imapbuf);
 		fclose(fp);
 		return IMAP_ERROR;
 	}
+	g_free(imapbuf);
 
 	log_print("IMAP4> %s\n", _("(sending file...)"));
 
@@ -2953,9 +2990,34 @@ static gint imap_cmd_copy(IMAPSession *session,
 
 gint imap_cmd_envelope(SockInfo *sock, guint32 first_uid, guint32 last_uid)
 {
+	static GString *header_fields = NULL;
+
+	if (header_fields == NULL) {
+		const HeaderEntry *headers, *elem;
+
+		headers = procheader_get_headernames(FALSE);
+		header_fields = g_string_new("");
+
+		for (elem = headers; elem->name != NULL; ++elem) {
+			gint namelen = strlen(elem->name);
+
+			while(namelen && (elem->name[namelen - 1] == ' ' ||
+				elem->name[namelen - 1] == ':'))
+				namelen--;
+			
+			if (namelen == 0)
+				continue;
+
+			g_string_sprintfa(header_fields, "%s%.*s",
+					header_fields->str[0] != '\0' ? " " : "",
+					namelen, elem->name);
+		}
+	}
+	
 	imap_cmd_gen_send
-		(sock, "UID FETCH %d:%d (UID FLAGS RFC822.SIZE RFC822.HEADER)",
-		 first_uid, last_uid);
+		(sock, "UID FETCH %d:%d (UID FLAGS RFC822.SIZE BODY.PEEK[HEADER.FIELDS (%s)])",
+		 first_uid, last_uid,
+		 header_fields->str);
 
 	return IMAP_SUCCESS;
 }
@@ -2993,11 +3055,11 @@ static gint imap_cmd_expunge(SockInfo *sock)
 static gint imap_cmd_ok(SockInfo *sock, GPtrArray *argbuf)
 {
 	gint ok;
-	gchar buf[IMAPBUFSIZE];
+	gchar *buf;
 	gint cmd_num;
 	gchar cmd_status[IMAPBUFSIZE];
 
-	while ((ok = imap_cmd_gen_recv(sock, buf, sizeof(buf)))
+	while ((ok = imap_cmd_gen_recv(sock, &buf))
 	       == IMAP_SUCCESS) {
 		if (buf[0] == '*' && buf[1] == ' ') {
 			if (argbuf)
@@ -3011,10 +3073,14 @@ static gint imap_cmd_ok(SockInfo *sock, GPtrArray *argbuf)
 			 !strcmp(cmd_status, "OK")) {
 			if (argbuf)
 				g_ptr_array_add(argbuf, g_strdup(buf));
+			g_free(buf);
 			return IMAP_SUCCESS;
-		} else
+		} else {
+			g_free(buf);
 			return IMAP_ERROR;
+		}
 	}
+	g_free(buf);
 
 	return ok;
 }
@@ -3042,14 +3108,14 @@ static void imap_cmd_gen_send(SockInfo *sock, const gchar *format, ...)
 	sock_write(sock, buf, strlen(buf));
 }
 
-static gint imap_cmd_gen_recv(SockInfo *sock, gchar *buf, gint size)
+static gint imap_cmd_gen_recv(SockInfo *sock, gchar **buf)
 {
-	if (sock_gets(sock, buf, size) == -1)
+	if ((*buf = sock_getline(sock)) == NULL)
 		return IMAP_SOCKET;
 
-	strretchomp(buf);
+	strretchomp(*buf);
 
-	log_print("IMAP4< %s\n", buf);
+	log_print("IMAP4< %s\n", *buf);
 
 	return IMAP_SUCCESS;
 }
@@ -3375,7 +3441,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 	if(item->lastuid) {
 		cmdbuf = g_strdup_printf("UID FETCH %d:* (UID)", (item->lastuid + 1));
 	} else {
-		cmdbuf = g_strdup("FETCH 1:* (UID)");
+		cmdbuf = g_strdup("UID SEARCH ALL");
 	}
 	imap_cmd_gen_send(SESSION(session)->sock, cmdbuf);
 	g_free(cmdbuf);
@@ -3391,17 +3457,33 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 	debug_print("Got %d uids from cache\n", g_slist_length(item->uid_list));
 	for(i = 0; i < argbuf->len; i++) {
 		int ret, msgidx, msgnum;
-	
-		if((ret = sscanf(g_ptr_array_index(argbuf, i), "%d FETCH (UID %d)", &msgidx, &msgnum)) == 2) {
-			if(msgnum > lastuid_old) {
-				*msgnum_list = g_slist_prepend(*msgnum_list, GINT_TO_POINTER(msgnum));
-				item->uid_list = g_slist_prepend(item->uid_list, GINT_TO_POINTER(msgnum));
-				nummsgs++;
 
-				if(msgnum > item->lastuid)
-					item->lastuid = msgnum;
-			}
+		if (!strncmp(g_ptr_array_index(argbuf, i), "SEARCH ", 7)) {
+			gchar **p, **list = g_strsplit(g_ptr_array_index(argbuf, i) + 7, " ", 0);
+
+			for (p = list; *p != NULL; ++p)
+				if (sscanf(*p, "%d", &msgnum) == 1 && msgnum > lastuid_old) {
+					*msgnum_list = g_slist_prepend(*msgnum_list, GINT_TO_POINTER(msgnum));
+					item->uid_list = g_slist_prepend(item->uid_list, GINT_TO_POINTER(msgnum));
+					nummsgs++;
+		
+					if(msgnum > item->lastuid)
+						item->lastuid = msgnum;
+				}
+
+			g_strfreev(list);
+				
+		} else if((ret = sscanf(g_ptr_array_index(argbuf, i),
+				"%d FETCH (UID %d)", &msgidx, &msgnum)) == 2 &&
+				msgnum > lastuid_old) {
+			*msgnum_list = g_slist_prepend(*msgnum_list, GINT_TO_POINTER(msgnum));
+			item->uid_list = g_slist_prepend(item->uid_list, GINT_TO_POINTER(msgnum));
+			nummsgs++;
+
+			if(msgnum > item->lastuid)
+				item->lastuid = msgnum;
 		}
+		
 	}
 
 	dir = folder_item_get_path((FolderItem *)item);
@@ -3440,6 +3522,73 @@ static MsgInfo *imap_parse_msg(const gchar *file, FolderItem *item)
 	return msginfo;
 }
 
+static int compare_uint(gconstpointer a, gconstpointer b)
+{
+	return a-b;
+}
+
+GSList *imap_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
+{
+	IMAPSession *session;
+	GSList *sorted_list, *elem, *ret = NULL;
+	gint ok, startnum, lastnum;
+
+	g_return_val_if_fail(folder != NULL, NULL);
+	g_return_val_if_fail(item != NULL, NULL);
+	g_return_val_if_fail(msgnum_list != NULL, NULL);
+
+	session = imap_session_get(folder);
+	g_return_val_if_fail(session != NULL, NULL);
+
+	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
+			 NULL, NULL, NULL, NULL);
+	if (ok != IMAP_SUCCESS)
+		return NULL;
+
+	sorted_list = g_slist_sort(g_slist_copy(msgnum_list), compare_uint);
+
+	startnum = lastnum = GPOINTER_TO_INT(sorted_list->data);
+
+	for (elem = sorted_list;; elem = g_slist_next(elem)) {
+		guint num;
+
+		if (elem)
+			num = GPOINTER_TO_INT(elem->data);
+
+		if (num > lastnum + 1 || elem == NULL) {
+			if (!(item->stype == F_QUEUE || item->stype == F_DRAFT)) {
+				ret = g_slist_concat(ret,
+					imap_get_uncached_messages(
+						session, item, startnum, lastnum));
+			} else {
+				int i;
+				for (i = startnum; i <= lastnum; ++i) {
+					gchar *file;
+			
+					file = imap_fetch_msg(folder, item, i);
+					if (file != NULL) {
+						MsgInfo *msginfo = imap_parse_msg(file, item);
+						if (msginfo != NULL) {
+							msginfo->msgnum = i;
+							ret = g_slist_append(ret, msginfo);
+						}
+						g_free(file);
+					}
+				}
+			}
+
+			if (elem == NULL)
+				break;
+
+			startnum = num;
+		}
+		lastnum = num;
+	}
+
+	g_slist_free(sorted_list);
+
+	return ret;
+}
 
 MsgInfo *imap_get_msginfo(Folder *folder, FolderItem *item, gint uid)
 {
