@@ -2134,6 +2134,9 @@ gint remove_all_files(const gchar *dir)
 		    !strcmp(d->d_name, ".."))
 			continue;
 
+#ifdef WIN32
+		change_file_mode_rw(NULL, d->d_name);
+#endif
 		if (unlink(d->d_name) < 0)
 			FILE_OP_ERROR(d->d_name, "unlink");
 	}
@@ -3091,9 +3094,10 @@ FILE *get_tmpfile_in_dir(const gchar *dir, gchar **filename)
 {
 	int fd;
 	
-#ifdef WIN32 /* XXX:tm */
+#ifdef WIN32
 	gchar *template=g_strdup_printf("%s%csylpheed.XXXXXX", dir, G_DIR_SEPARATOR);
 	fd = mkstemp_name(template, filename);
+	g_free(template);
 #else
 	*filename = g_strdup_printf("%s%csylpheed.XXXXXX", dir, G_DIR_SEPARATOR);
 	fd = mkstemp(*filename);
