@@ -354,8 +354,6 @@ static gint disposition_notification_queue(PrefsAccount * account,
 	}
 	g_free(tmp);
 
-	folder_update_item(queue, TRUE);
-
 	return 0;
 }
 

@@ -89,6 +89,7 @@
 #include "matcher.h"
 #include "matcher_parser.h"
 #include "hooks.h"
+#include "description_window.h"
 
 #define SUMMARY_COL_MARK_WIDTH		10
 #define SUMMARY_COL_UNREAD_WIDTH	13
@@ -389,6 +390,9 @@ static void news_flag_crosspost		(MsgInfo *msginfo);
 static void tog_searchbar_cb		(GtkWidget	*w,
 					 gpointer	 data);
 
+static void summary_find_answers	(SummaryView 	*summaryview, 
+					 MsgInfo	*msg);
+
 static gboolean summary_update_msg	(gpointer source, gpointer data);
 
 GtkTargetEntry summary_drag_types[1] =
@@ -398,30 +402,30 @@ GtkTargetEntry summary_drag_types[1] =
 
 static GtkItemFactoryEntry summary_popup_entries[] =
 {
-	{N_("/_Reply"),			NULL, summary_reply_cb,	COMPOSE_REPLY, NULL},
+	{N_("/_Reply"),			"<control>R", summary_reply_cb,	COMPOSE_REPLY, NULL},
 	{N_("/Repl_y to"),		NULL, NULL,		0, "<Branch>"},
-	{N_("/Repl_y to/_all"),		NULL, summary_reply_cb,	COMPOSE_REPLY_TO_ALL, NULL},
+	{N_("/Repl_y to/_all"),		"<shift><control>R", summary_reply_cb,	COMPOSE_REPLY_TO_ALL, NULL},
 	{N_("/Repl_y to/_sender"),	NULL, summary_reply_cb,	COMPOSE_REPLY_TO_SENDER, NULL},
 	{N_("/Repl_y to/mailing _list"),
-					NULL, summary_reply_cb,	COMPOSE_REPLY_TO_LIST, NULL},
+					"<control>L", summary_reply_cb,	COMPOSE_REPLY_TO_LIST, NULL},
 	{N_("/Follow-up and reply to"),	NULL, summary_reply_cb,	COMPOSE_FOLLOWUP_AND_REPLY_TO, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
-	{N_("/_Forward"),		NULL, summary_reply_cb, COMPOSE_FORWARD, NULL},
+	{N_("/_Forward"),		"<control><alt>F", summary_reply_cb, COMPOSE_FORWARD, NULL},
 	{N_("/Redirect"),	        NULL, summary_reply_cb, COMPOSE_REDIRECT, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/Re-_edit"),		NULL, summary_reedit,   0, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
-	{N_("/M_ove..."),		NULL, summary_move_to,	0, NULL},
-	{N_("/_Copy..."),		NULL, summary_copy_to,	0, NULL},
-	{N_("/_Delete"),		NULL, summary_delete,	0, NULL},
+	{N_("/M_ove..."),		"<control>O", summary_move_to,	0, NULL},
+	{N_("/_Copy..."),		"<shift><control>O", summary_copy_to,	0, NULL},
+	{N_("/_Delete"),		"<control>D", summary_delete,	0, NULL},
 	{N_("/Cancel a news message"),	NULL, summary_cancel,	0, NULL},
-	{N_("/E_xecute"),		NULL, summary_execute_cb,	0, NULL},
+	{N_("/E_xecute"),		"X", summary_execute_cb,	0, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_Mark"),			NULL, NULL,		0, "<Branch>"},
-	{N_("/_Mark/_Mark"),		NULL, summary_mark,	0, NULL},
-	{N_("/_Mark/_Unmark"),		NULL, summary_unmark,	0, NULL},
+	{N_("/_Mark/_Mark"),		"<shift>asterisk", summary_mark,	0, NULL},
+	{N_("/_Mark/_Unmark"),		"U", summary_unmark,	0, NULL},
 	{N_("/_Mark/---"),		NULL, NULL,		0, "<Separator>"},
-	{N_("/_Mark/Mark as unr_ead"),	NULL, summary_mark_as_unread, 0, NULL},
+	{N_("/_Mark/Mark as unr_ead"),	"<shift>exclam", summary_mark_as_unread, 0, NULL},
 	{N_("/_Mark/Mark as rea_d"),	NULL, summary_mark_as_read, 0, NULL},
 	{N_("/_Mark/Mark all read"),    NULL, summary_mark_all_read, 0, NULL},
 	{N_("/_Mark/Ignore thread"),	NULL, summary_ignore_thread, 0, NULL},
@@ -443,16 +447,16 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_View"),			NULL, NULL,		0, "<Branch>"},
 	{N_("/_View/Open in new _window"),
-					NULL, summary_open_msg,	0, NULL},
-	{N_("/_View/_Source"),		NULL, summary_view_source, 0, NULL},
-	{N_("/_View/All _header"),	NULL, summary_show_all_header_cb, 0, "<ToggleItem>"},
+					"<control><alt>N", summary_open_msg,	0, NULL},
+	{N_("/_View/_Source"),		"<control>U", summary_view_source, 0, NULL},
+	{N_("/_View/All _header"),	"<control>H", summary_show_all_header_cb, 0, "<ToggleItem>"},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
-	{N_("/_Save as..."),		NULL, summary_save_as,	0, NULL},
+	{N_("/_Save as..."),		"<control>S", summary_save_as,	0, NULL},
 	{N_("/_Print..."),		NULL, summary_print,	0, NULL},
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
-	{N_("/Select _all"),		NULL, summary_select_all, 0, NULL},
+	{N_("/Select _all"),		"<control>A", summary_select_all, 0, NULL},
 	{N_("/Select t_hread"),		NULL, summary_select_thread, 0, NULL}
-};
+};  /* see also list in menu_connect_identical_items() in menu.c if this changes */
 
 static const gchar *const col_label[N_SUMMARY_COLS] = {
 	N_("M"),	/* S_COL_MARK    */
@@ -465,6 +469,64 @@ static const gchar *const col_label[N_SUMMARY_COLS] = {
 	N_("No."),	/* S_COL_NUMBER  */
 	N_("Score"),	/* S_COL_SCORE   */
 	N_("L")		/* S_COL_LOCKED	 */
+};
+
+/*
+ * Strings describing how to use Extended Search
+ * 
+ * When adding new lines, remember to put 2 strings for each line
+ */
+static gchar *search_descr_strings[] = {
+	"a",	 N_("all messages"),
+	"ag #",  N_("messages whose age is greather than #"),
+	"al #",  N_("messages whose age is greather than #"),
+	"b S",	 N_("messages which contain S in the message body"),
+	"B S",	 N_("messages which contain S in the whole message"),
+	"c S",	 N_("messages carbon-copied to S"),
+	"C S",	 N_("message is either to: or cc: to S"),
+	"D",	 N_("deleted messages"), /** how I can filter deleted messages **/
+	"e S",	 N_("messages which contain S in the Sender field"),
+	"E S",	 N_("true if execute \"S\" succeeds"),
+	"f S",	 N_("messages originating from user S"),
+	"F",	 N_("forwarded messages"),
+	"h S",	 N_("messages which contain header S"),
+	"i S",	 N_("messages which contain S in Message-Id header"),
+	"I S",	 N_("messages which contain S in inreplyto header"),
+	"L",	 N_("locked messages"),
+	"n S",	 N_("messages which are in newsgroup S"),
+	"N",	 N_("new messages"),
+	"O",	 N_("old messages"),
+	"r",	 N_("messages which have been replied to"),
+	"R",	 N_("read messages"),
+	"s S",	 N_("messages which contain S in subject"),
+	"se #",  N_("messages whose score is equal to #"),
+	"sg #",  N_("messages whose score is greater than #"),
+	"sl #",  N_("messages whose score is lower than #"),
+	"Se #",  N_("messages whose size is equal to #"),
+	"Sg #",  N_("messages whose size is greater than #"),
+	"Ss #",  N_("messages whose size is smaller than #"),
+	"t S",	 N_("messages which have been sent to S"),
+	"T",	 N_("marked messages"),
+	"U",	 N_("unread messages"),
+	"x S",	 N_("messages which contain S in References header"),
+	"y S",	 N_("messages which contain S in X-Label header"),
+	 "",	 "" ,
+	"&",	 N_("logical AND operator"),
+	"|",	 N_("logical OR operator"),
+	"! or ~",	N_("logical NOT operator"),
+	"%",	 N_("case sensitive search"),
+	NULL,	 NULL 
+};
+ 
+static DescriptionWindow search_descr = {
+	NULL, 
+	2,
+	N_("Extended Search symbols"),
+	search_descr_strings
+};
+	
+static void search_description_cb (GtkWidget *widget) {
+	description_window_create(&search_descr);
 };
 
 SummaryView *summary_create(void)
@@ -486,6 +548,8 @@ SummaryView *summary_create(void)
 	GtkWidget *search_type_opt;
 	GtkWidget *search_type;
 	GtkWidget *search_string;
+	GtkWidget *search_hbbox;
+	GtkWidget *search_description;
 	GtkWidget *menuitem;
 	GtkWidget *toggle_search;
 	GtkTooltips *search_tip;
@@ -590,6 +654,12 @@ SummaryView *summary_create(void)
 	
 	gtk_box_pack_start(GTK_BOX(hbox_search), search_string, FALSE, FALSE, 2);
 	
+	gtkut_button_set_create(&search_hbbox, &search_description, _("Extended Symbols"),
+				NULL, NULL, NULL, NULL);
+	gtk_signal_connect(GTK_OBJECT(search_description), "clicked",
+			   GTK_SIGNAL_FUNC(search_description_cb), NULL);
+	gtk_box_pack_start(GTK_BOX(hbox_search), search_hbbox, FALSE, FALSE, 2);
+				
 	gtk_widget_show(search_string);
 	gtk_widget_show(hbox_search);
 
@@ -633,6 +703,7 @@ SummaryView *summary_create(void)
 	summaryview->search_type_opt = search_type_opt;
 	summaryview->search_type = search_type;
 	summaryview->search_string = search_string;
+	summaryview->search_description = search_description;
 	summaryview->msginfo_update_callback_id =
 		hooks_register_hook(MSGINFO_UPDATE_HOOKLIST, summary_update_msg, (gpointer) summaryview);
 
@@ -2240,8 +2311,6 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 
 		g_node_destroy(root);
 
-		folder_update_items_when_required(FALSE);
-
 		summary_thread_init(summaryview);
 	} else {
 		gchar *text[N_SUMMARY_COLS];
@@ -2476,7 +2545,6 @@ static void summary_display_msg_full(SummaryView *summaryview,
 		if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
 			procmsg_msginfo_unset_flags
 				(msginfo, MSG_NEW | MSG_UNREAD, 0);
-			folder_update_item(msginfo->folder, FALSE);
 			summary_set_row_marks(summaryview, row);
 			gtk_clist_thaw(GTK_CLIST(ctree));
 			summary_status_show(summaryview);
@@ -2813,20 +2881,14 @@ static void summary_mark_row(SummaryView *summaryview, GtkCTreeNode *row)
 	if (MSG_IS_MOVE(msginfo->flags)) {
 		summaryview->moved--;
 		changed = TRUE;
-		msginfo->to_folder->op_count--;
-		if (msginfo->to_folder->op_count == 0)
-			folder_update_item(msginfo->to_folder, FALSE);
 	}
 	if (MSG_IS_COPY(msginfo->flags)) {
 		summaryview->copied--;
 		changed = TRUE;
-		msginfo->to_folder->op_count--;
-		if (msginfo->to_folder->op_count == 0)
-			folder_update_item(msginfo->to_folder, FALSE);
 	}
 	changed |= summary_update_unread_children (summaryview, msginfo, TRUE);
 
-	msginfo->to_folder = NULL;
+	procmsg_msginfo_set_to_folder(msginfo, NULL);
 	procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, MSG_MOVE | MSG_COPY);
 	procmsg_msginfo_set_flags(msginfo, MSG_MARKED, 0);
 	summary_set_row_marks(summaryview, row);
@@ -2851,12 +2913,7 @@ static void summary_lock_row(SummaryView *summaryview, GtkCTreeNode *row)
 		summaryview->copied--;
 		changed = TRUE;
 	}
-	if (changed && !prefs_common.immediate_exec) {
-		msginfo->to_folder->op_count--;
-		if (msginfo->to_folder->op_count == 0)
-			folder_update_item(msginfo->to_folder, FALSE);
-	}
-	msginfo->to_folder = NULL;
+	procmsg_msginfo_set_to_folder(msginfo, NULL);
 	procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, MSG_MOVE | MSG_COPY);
 	procmsg_msginfo_set_flags(msginfo, MSG_LOCKED, 0);
 	summary_set_row_marks(summaryview, row);
@@ -2908,7 +2965,6 @@ void summary_mark_as_read(SummaryView *summaryview)
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
 		summary_mark_row_as_read(summaryview,
 					 GTK_CTREE_NODE(cur->data));
-	folder_update_items_when_required(FALSE);
 
 	summary_status_show(summaryview);
 }
@@ -2929,7 +2985,6 @@ void summary_mark_all_read(SummaryView *summaryview)
 			summary_set_row_marks(summaryview, node);
 	}
 	gtk_clist_thaw(clist);
-	folder_update_items_when_required(FALSE);
 
 	summary_status_show(summaryview);
 }
@@ -2942,7 +2997,7 @@ static void summary_mark_row_as_unread(SummaryView *summaryview,
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 	if (MSG_IS_DELETED(msginfo->flags)) {
-		msginfo->to_folder = NULL;
+		procmsg_msginfo_set_to_folder(msginfo, NULL);
 		procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, 0);
 		summaryview->deleted--;
 	}
@@ -2970,7 +3025,6 @@ void summary_mark_as_unread(SummaryView *summaryview)
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
 		summary_mark_row_as_unread(summaryview,
 					   GTK_CTREE_NODE(cur->data));
-	folder_update_items_when_required(FALSE);
 
 	summary_status_show(summaryview);
 }
@@ -3042,20 +3096,14 @@ static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 	if (MSG_IS_MOVE(msginfo->flags)) {
 		summaryview->moved--;
 		changed = TRUE;
-		msginfo->to_folder->op_count--;
-		if (msginfo->to_folder->op_count == 0)
-			folder_update_item(msginfo->to_folder, FALSE);
 	}
 	if (MSG_IS_COPY(msginfo->flags)) {
 		summaryview->copied--;
 		changed = TRUE;
-		msginfo->to_folder->op_count--;
-		if (msginfo->to_folder->op_count == 0)
-			folder_update_item(msginfo->to_folder, FALSE);
 	}
 	changed |= summary_update_unread_children (summaryview, msginfo, FALSE);
 
-	msginfo->to_folder = NULL;
+	procmsg_msginfo_set_to_folder(msginfo, NULL);
 	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED, MSG_MOVE | MSG_COPY);
 	procmsg_msginfo_set_flags(msginfo, MSG_DELETED, 0);
 	summaryview->deleted++;
@@ -3208,26 +3256,16 @@ static void summary_unmark_row(SummaryView *summaryview, GtkCTreeNode *row)
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted--;
 	if (MSG_IS_MOVE(msginfo->flags)) {
-		if (!prefs_common.immediate_exec) {
-			msginfo->to_folder->op_count--;
-			if (msginfo->to_folder->op_count == 0)
-				folder_update_item(msginfo->to_folder, FALSE);
-		}
 		summaryview->moved--;
 		changed = TRUE;
 	}
 	if (MSG_IS_COPY(msginfo->flags)) {
-		if (!prefs_common.immediate_exec) {
-			msginfo->to_folder->op_count--;
-			if (msginfo->to_folder->op_count == 0)
-				folder_update_item(msginfo->to_folder, FALSE);
-		}
 		summaryview->copied--;
 		changed = TRUE;
 	}
 	changed |= summary_update_unread_children (summaryview, msginfo, FALSE);
 
-	msginfo->to_folder = NULL;
+	procmsg_msginfo_set_to_folder(msginfo, NULL);
 	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, MSG_MOVE | MSG_COPY);
 	summary_set_row_marks(summaryview, row);
 
@@ -3249,43 +3287,25 @@ void summary_unmark(SummaryView *summaryview)
 static void summary_move_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 				FolderItem *to_folder)
 {
-	gboolean changed = FALSE;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 
 	g_return_if_fail(to_folder != NULL);
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
-	if (MSG_IS_MOVE(msginfo->flags)) {
-		if (!prefs_common.immediate_exec) {
-			msginfo->to_folder->op_count--;
-			if (msginfo->to_folder->op_count == 0) {
-				folder_update_item(msginfo->to_folder, FALSE);
-				changed = TRUE;
-			}
-		}
-	}
-	msginfo->to_folder = to_folder;
+	procmsg_msginfo_set_to_folder(msginfo, to_folder);
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted--;
 	if (MSG_IS_COPY(msginfo->flags)) {
 		summaryview->copied--;
-		if (!prefs_common.immediate_exec)
-			msginfo->to_folder->op_count--;
 	}
 	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, MSG_COPY);
 	if (!MSG_IS_MOVE(msginfo->flags)) {
 		procmsg_msginfo_set_flags(msginfo, 0, MSG_MOVE);
 		summaryview->moved++;
-		changed = TRUE;
 	}
 	if (!prefs_common.immediate_exec) {
 		summary_set_row_marks(summaryview, row);
-		if (changed) {
-			msginfo->to_folder->op_count++;
-			if (msginfo->to_folder->op_count == 1)
-				folder_update_item(msginfo->to_folder, FALSE);
-		}
 	}
 
 	debug_print("Message %d is set to move to %s\n",
@@ -3318,8 +3338,6 @@ void summary_move_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 		summary_execute(summaryview);
 	else {
 		summary_status_show(summaryview);
-
-		folder_update_item(to_folder, FALSE);
 	}
 	
 	if (!summaryview->selected) { /* this was the last message */
@@ -3346,43 +3364,25 @@ void summary_move_to(SummaryView *summaryview)
 static void summary_copy_row_to(SummaryView *summaryview, GtkCTreeNode *row,
 				FolderItem *to_folder)
 {
-	gboolean changed = FALSE;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 
 	g_return_if_fail(to_folder != NULL);
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
-	if (MSG_IS_COPY(msginfo->flags)) {
-		if (!prefs_common.immediate_exec) {
-			msginfo->to_folder->op_count--;
-			if (msginfo->to_folder->op_count == 0) {
-				folder_update_item(msginfo->to_folder, FALSE);
-				changed = TRUE;
-			}
-		}
-	}
-	msginfo->to_folder = to_folder;
+	procmsg_msginfo_set_to_folder(msginfo, to_folder);
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted--;
 	if (MSG_IS_MOVE(msginfo->flags)) {
 		summaryview->moved--;
-		if (!prefs_common.immediate_exec)
-			msginfo->to_folder->op_count--;
 	}
 	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, MSG_MOVE);
 	if (!MSG_IS_COPY(msginfo->flags)) {
 		procmsg_msginfo_set_flags(msginfo, 0, MSG_COPY);
 		summaryview->copied++;
-		changed = TRUE;
 	}
 	if (!prefs_common.immediate_exec) {
 		summary_set_row_marks(summaryview, row);
-		if (changed) {
-			msginfo->to_folder->op_count++;
-			if (msginfo->to_folder->op_count == 1)
-				folder_update_item(msginfo->to_folder, FALSE);
-		}
 	}
 
 	debug_print("Message %d is set to copy to %s\n",
@@ -3415,8 +3415,6 @@ void summary_copy_selected_to(SummaryView *summaryview, FolderItem *to_folder)
 		summary_execute(summaryview);
 	else {
 		summary_status_show(summaryview);
-
-		folder_update_item(to_folder, FALSE);
 	}
 }
 
@@ -3656,15 +3654,11 @@ static void summary_execute_move(SummaryView *summaryview)
 	if (summaryview->mlist) {
 		procmsg_move_messages(summaryview->mlist);
 
-		folder_update_items_when_required(FALSE);
-
 		for (cur = summaryview->mlist; cur != NULL; cur = cur->next)
 			procmsg_msginfo_free((MsgInfo *)cur->data);
 		g_slist_free(summaryview->mlist);
 		summaryview->mlist = NULL;
 	}
-
-	folder_update_item(summaryview->folder_item, FALSE);
 }
 
 static void summary_execute_move_func(GtkCTree *ctree, GtkCTreeNode *node,
@@ -3676,10 +3670,6 @@ static void summary_execute_move_func(GtkCTree *ctree, GtkCTreeNode *node,
 	msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
 
 	if (msginfo && MSG_IS_MOVE(msginfo->flags) && msginfo->to_folder) {
-		if (!prefs_common.immediate_exec &&
-		    msginfo->to_folder->op_count > 0)
-                	msginfo->to_folder->op_count--;
-
 		summaryview->mlist =
 			g_slist_append(summaryview->mlist, msginfo);
 		gtk_ctree_node_set_row_data(ctree, node, NULL);
@@ -3703,8 +3693,6 @@ static void summary_execute_copy(SummaryView *summaryview)
 	if (summaryview->mlist) {
 		procmsg_copy_messages(summaryview->mlist);
 
-		folder_update_items_when_required(FALSE);
-
 		g_slist_free(summaryview->mlist);
 		summaryview->mlist = NULL;
 	}
@@ -3719,10 +3707,6 @@ static void summary_execute_copy_func(GtkCTree *ctree, GtkCTreeNode *node,
 	msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
 
 	if (msginfo && MSG_IS_COPY(msginfo->flags) && msginfo->to_folder) {
-		if (!prefs_common.immediate_exec &&
-		    msginfo->to_folder->op_count > 0)
-                	msginfo->to_folder->op_count--;
-
 		summaryview->mlist =
 			g_slist_append(summaryview->mlist, msginfo);
 
@@ -3759,11 +3743,6 @@ static void summary_execute_delete(SummaryView *summaryview)
 
 	g_slist_free(summaryview->mlist);
 	summaryview->mlist = NULL;
-
-	if ((summaryview->folder_item != trash) && (trash != NULL)) {
-		folder_update_item(trash, FALSE);
-	}
-	folder_update_item(summaryview->folder_item, FALSE);
 }
 
 static void summary_execute_delete_func(GtkCTree *ctree, GtkCTreeNode *node,
@@ -4066,8 +4045,6 @@ void summary_filter(SummaryView *summaryview)
 					summaryview);
 
 		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
-
-		folder_update_items_when_required(FALSE);
 	}
 
 	debug_print("done.\n");
@@ -4694,6 +4671,7 @@ static void summary_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	if (!event) return;
 
 	if (event->button == 3) {
+		summaryview->display_msg = TRUE;
 		/* right clicked */
 		gtk_menu_popup(GTK_MENU(summaryview->popupmenu), NULL, NULL,
 			       NULL, NULL, event->button, event->time);
@@ -4823,6 +4801,13 @@ static void summary_searchtype_changed(GtkMenuItem *widget, gpointer data)
 				   GTK_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
 				   GTK_MENU(sw->search_type))))));
 
+	/* Show extended search description button, only when Extended is selected */
+	if (prefs_common.summary_quicksearch_type == S_SEARCH_EXTENDED) {
+		gtk_widget_show(sw->search_description);
+	} else {
+		gtk_widget_hide(sw->search_description);
+	}
+
 	if (gtk_entry_get_text(GTK_ENTRY(sw->search_string)))
 	 	summary_show(sw, sw->folder_item);
 }
@@ -4917,6 +4902,9 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 			 !MSG_IS_FORWARDED(msginfo->flags)) {
 			summary_mark_row_as_unread(summaryview, row);
 			summary_status_show(summaryview);
+		} else if (MSG_IS_REPLIED(msginfo->flags)) {
+			summary_find_answers(summaryview, msginfo);
+			return;
 		}
 		break;
 	case S_COL_LOCKED:
@@ -5248,7 +5236,6 @@ static void news_flag_crosspost(MsgInfo *msginfo)
 			debug_print(" <%s>", (gchar *)value);
 			if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
 				procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
-				folder_update_item(msginfo->folder, FALSE);
 				procmsg_msginfo_set_flags(msginfo, mff->account->crosspost_col, 0);
 			}
 			g_hash_table_remove(mff->newsart, key);
@@ -5288,7 +5275,6 @@ static void summary_ignore_thread(SummaryView *summaryview)
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next) {
 		gtk_ctree_pre_recursive(ctree, GTK_CTREE_NODE(cur->data), GTK_CTREE_FUNC(summary_ignore_thread_func), summaryview);
 	}
-	folder_update_items_when_required(FALSE);
 
 	summary_status_show(summaryview);
 }
@@ -5322,7 +5308,6 @@ static void summary_unignore_thread(SummaryView *summaryview)
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next) {
 		gtk_ctree_pre_recursive(ctree, GTK_CTREE_NODE(cur->data), GTK_CTREE_FUNC(summary_unignore_thread_func), summaryview);
 	}
-	folder_update_items_when_required(FALSE);
 
 	summary_status_show(summaryview);
 }
@@ -5530,7 +5515,8 @@ void summary_save_prefs_to_folderitem(SummaryView *summaryview, FolderItem *item
 	item->threaded = summaryview->threaded;
 }
 
-static gboolean summary_update_msg(gpointer source, gpointer data) {
+static gboolean summary_update_msg(gpointer source, gpointer data) 
+{
 	MsgInfoUpdate *msginfo_update = (MsgInfoUpdate *) source;
 	SummaryView *summaryview = (SummaryView *)data;
 	GtkCTreeNode *node;
@@ -5546,3 +5532,39 @@ static gboolean summary_update_msg(gpointer source, gpointer data) {
 	return FALSE;
 }
 
+/*!
+ *\brief	change summaryview to display your answer(s) to a message
+ *
+ *\param	summaryview The SummaryView ;)
+ *\param	msginfo The message for which answers are searched
+ *
+ */
+static void summary_find_answers (SummaryView *summaryview, MsgInfo *msg)
+{
+	FolderItem *sent_folder = NULL;
+	PrefsAccount *account = NULL;
+	GtkCTreeNode *node = NULL;
+	char *buf = NULL;
+	if (msg == NULL || msg->msgid == NULL)
+		return;
+	
+	account = account_get_reply_account(msg, prefs_common.reply_account_autosel);
+	if (account == NULL) 
+		return;
+	sent_folder = account_get_special_folder
+				(account, F_OUTBOX);
+	
+	buf = g_strdup_printf("inreplyto matchcase \"%s\"", msg->msgid);
+
+	if (sent_folder != summaryview->folder_item) {
+		folderview_select(summaryview->mainwin->folderview, sent_folder);
+	}
+	
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(summaryview->toggle_search), TRUE);
+	gtk_entry_set_text(GTK_ENTRY(summaryview->search_string), buf);
+	g_free(buf);
+	summary_show(summaryview, summaryview->folder_item);
+	node = gtk_ctree_node_nth(GTK_CTREE(summaryview->ctree), 0);
+	if (node)
+		summary_select_node(summaryview, node, TRUE, TRUE);
+}

@@ -180,6 +180,10 @@ SOURCE=..\src\customheader.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\gtk\description_window.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\displayheader.c
 # End Source File
 # Begin Source File
@@ -764,6 +768,10 @@ SOURCE=..\src\common\defs.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\gtk\description_window.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\displayheader.h
 # End Source File
 # Begin Source File
@@ -921,6 +929,10 @@ SOURCE=..\src\gtk\manage_window.h
 # Begin Source File
 
 SOURCE=..\src\manual.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\matcher.h
 # End Source File
 # Begin Source File
 

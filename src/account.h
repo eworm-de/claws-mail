@@ -60,5 +60,7 @@ FolderItem   *account_get_special_folder(PrefsAccount		*ac_prefs,
 					 SpecialFolderItemType	 type);
 
 void	      account_destroy		(PrefsAccount	*ac_prefs);
+PrefsAccount *account_get_reply_account	(MsgInfo 	*msginfo, 
+					 gboolean	 reply_autosel);
 
 #endif /* __ACCOUNT_H__ */

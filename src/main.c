@@ -748,9 +748,9 @@ static gint prohibit_duplicate_launch(void)
 	gchar *path;
 
 	path = NULL;
-	lock_sock = sock_connect("localhost", LOCK_PORT+1);
+	lock_sock = sock_connect("localhost", LOCK_PORT);
 	if (!lock_sock) {
-		return fd_open_lock_service(LOCK_PORT+1);
+		return fd_open_lock_service(LOCK_PORT);
 	}
 #else
 	gint uxsock;
@@ -954,13 +954,9 @@ static void send_queue(void)
 				alertpanel_error(_("Some errors occurred while sending queued messages."));
 			folder_item_scan(folder->queue);
 			if (prefs_common.savemsg && folder->outbox) {
-				folder_update_item(folder->outbox, TRUE);
 				if (folder->outbox == def_outbox)
 					def_outbox = NULL;
 			}
 		}
 	}
-
-	if (prefs_common.savemsg && def_outbox)
-		folder_update_item(def_outbox, TRUE);
 }

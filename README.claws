@@ -516,7 +516,7 @@ mention it.
     Sg       #          messages whose size is greater than #
     Ss       #          messages whose size is smaller than #
     t        S          messages which have been sent to S
-    T                   marked marked
+    T                   marked messages
     U                   unread messages
     x        S          messages which contain S in References header
     y        S          messages which contain S in X-Label header

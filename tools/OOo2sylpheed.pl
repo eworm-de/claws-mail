@@ -26,7 +26,7 @@ my $input = <>;
 $ARGV =~ s/^"attachment='file:\/\///;
 $ARGV =~ s/'"$//;
 $ARGV =~ s/%20/ /g;
-exec "/usr/local/bin/sylpheed --attach \"$ARGV\"";
+exec "sylpheed --attach \"$ARGV\"";
 ## change the line above to point to your sylpheed executable
 
 exit;

@@ -200,6 +200,7 @@ OBJECTS= \
 	compose.o \
 	conv.o \
 	customheader.o \
+	description_window.o \
 	displayheader.o \
 	editaddress.o \
 	editbook.o \
@@ -392,6 +393,7 @@ codeconv.o: 	codeconv.c codeconv.h
 colorlabel.o: 	colorlabel.c colorlabel.h
 compose.o: 	compose.c compose.h
 customheader.o: 	customheader.c customheader.h
+description_window.o:	description_window.c description_window.h
 displayheader.o: 	displayheader.c displayheader.h
 editaddress.o: 	editaddress.c editaddress.h
 editbook.o: 	editbook.c editbook.h

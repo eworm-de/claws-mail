@@ -332,7 +332,6 @@ void prefs_custom_header_read_config(PrefsAccount *ac)
 	}
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		g_strchomp(buf);
 		ch = custom_header_read_str(buf);
 		if (ch) {
 			if (ch->account_id == ac->account_id) {
@@ -368,7 +367,6 @@ void prefs_custom_header_write_config(PrefsAccount *ac)
 		all_hdrs = NULL;
 
 		while (fgets(buf, sizeof(buf), fp) != NULL) {
-			g_strchomp(buf);
 			ch = custom_header_read_str(buf);
 			if (ch) {
 				if (ch->account_id != ac->account_id)
@@ -492,11 +490,15 @@ static gint prefs_custom_header_clist_set_row(PrefsAccount *ac, gint row)
 
 	ch->name = g_strdup(entry_text);
 	unfold_line(ch->name);
+	g_strstrip(ch->name);
+	gtk_entry_set_text(GTK_ENTRY(customhdr.hdr_entry), ch->name);
 
 	entry_text = gtk_entry_get_text(GTK_ENTRY(customhdr.val_entry));
 	if (entry_text[0] != '\0') {
 		ch->value = g_strdup(entry_text);
 		unfold_line(ch->value);
+		g_strstrip(ch->value);
+		gtk_entry_set_text(GTK_ENTRY(customhdr.val_entry), ch->value);
 	}
 
 	ch_str[0] = g_strdup_printf("%s: %s", ch->name,

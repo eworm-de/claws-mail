@@ -57,6 +57,7 @@
 #include "procmsg.h"
 #include "gtkstext.h"
 #include "mimeview.h"
+#include "description_window.h"
 #include "textview.h"
 
 typedef enum
@@ -90,7 +91,6 @@ typedef struct _ChildInfo ChildInfo;
 
 struct _Children
 {
-	GtkWidget	*window;
 	GtkWidget	*dialog;
 	GtkWidget	*text;
 	GtkWidget	*input_entry;
@@ -165,19 +165,21 @@ static void update_actions_menu		(GtkItemFactory	*ifactory,
 					 gchar		*branch_path,
 					 gpointer	 callback,
 					 gpointer	 data);
-static void mainwin_actions_execute_cb 	(MainWindow	*mainwin,
-					 guint		 action_nb,
-					 GtkWidget 	*widget);
 static void compose_actions_execute_cb	(Compose	*compose,
 					 guint		 action_nb,
 					 GtkWidget	*widget);
+static void mainwin_actions_execute_cb 	(MainWindow	*mainwin,
+					 guint		 action_nb,
+					 GtkWidget 	*widget);
 static void msgview_actions_execute_cb	(MessageView 	*msgview, 
 					 guint		 action_nb,
 				       	 GtkWidget 	*widget);
+static void message_actions_execute	(MessageView	*msgview,
+					 guint		 action_nb,
+				    	 GtkCTree	*ctree);
 static guint get_action_type		(gchar		*action);
 
 static gboolean execute_actions		(gchar		*action, 
-					 GtkWidget	*window,
 					 GtkCTree	*ctree, 
 					 GtkWidget	*text,
 					 GdkFont 	*msgfont,
@@ -236,6 +238,7 @@ static void catch_status		(gpointer		 data,
 					 GdkInputCondition	 cond);
 #endif
 
+
 void prefs_actions_open(MainWindow *mainwin)
 {
 #if 0
@@ -283,9 +286,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 	GtkWidget *cond_scrolledwin;
 	GtkWidget *cond_clist;
 
-	GtkWidget *help_vbox;
-	GtkWidget *help_label;
-	GtkWidget *help_toggle;
+	GtkWidget *help_button;
 
 	GtkWidget *btn_vbox;
 	GtkWidget *up_btn;
@@ -352,30 +353,6 @@ static void prefs_actions_create(MainWindow *mainwin)
 
 	gtk_widget_show_all(entry_vbox);
 
-	help_vbox = gtk_vbox_new(FALSE, 8);
-	gtk_box_pack_start(GTK_BOX(vbox1), help_vbox, FALSE, FALSE, 0);
-
-	help_label = gtk_label_new
-		(_("Menu name:\n"
-		   " Use / in menu name to make submenus.\n"
-		   "Command line:\n"
-		   " Begin with:\n"
-		   "   | to send message body or selection to command\n"
-		   "   > to send user provided text to command\n"
-		   "   * to send user provided hidden text to command\n"
-		   " End with:\n"
-		   "   | to replace message body or selection with command output\n"
-		   "   > to insert command's output without replacing old text\n"
-		   "   & to run command asynchronously\n"
-		   " Use %f for message file name\n"
-		   "   %F for the list of the file names of selected messages\n"
-		   "   %p for the selected message MIME part."));
-	gtk_misc_set_alignment(GTK_MISC(help_label), 0, 0.5);
-	gtk_label_set_justify(GTK_LABEL(help_label), GTK_JUSTIFY_LEFT);
-	gtk_widget_show(help_label);
-	gtk_box_pack_start(GTK_BOX(help_vbox), help_label, FALSE, FALSE, 0);
-	gtk_widget_hide(help_vbox);
-
 	/* register / substitute / delete */
 
 	reg_hbox = gtk_hbox_new(FALSE, 4);
@@ -410,11 +387,11 @@ static void prefs_actions_create(MainWindow *mainwin)
 	gtk_signal_connect(GTK_OBJECT(del_btn), "clicked",
 			   GTK_SIGNAL_FUNC(prefs_actions_delete_cb), NULL);
 
-	help_toggle = gtk_toggle_button_new_with_label(_(" Syntax help "));
-	gtk_widget_show(help_toggle);
-	gtk_box_pack_end(GTK_BOX(reg_hbox), help_toggle, FALSE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(help_toggle), "toggled",
-			   GTK_SIGNAL_FUNC(prefs_actions_help_cb), help_vbox);
+	help_button = gtk_button_new_with_label(_(" Syntax help "));
+	gtk_widget_show(help_button);
+	gtk_box_pack_end(GTK_BOX(reg_hbox), help_button, FALSE, FALSE, 0);
+	gtk_signal_connect(GTK_OBJECT(help_button), "clicked",
+			   GTK_SIGNAL_FUNC(prefs_actions_help_cb), NULL);
 
 	cond_hbox = gtk_hbox_new(FALSE, 8);
 	gtk_widget_show(cond_hbox);
@@ -471,13 +448,6 @@ static void prefs_actions_create(MainWindow *mainwin)
 	actions.actions_clist = cond_clist;
 }
 
-static void prefs_actions_help_cb(GtkWidget *w, gpointer data)
-{
-	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)))
-		gtk_widget_show(GTK_WIDGET(data));
-	else
-		gtk_widget_hide(GTK_WIDGET(data));
-}
 
 void prefs_actions_read_config(void)
 {
@@ -1124,59 +1094,33 @@ static void compose_actions_execute_cb(Compose *compose, guint action_nb,
 		return;
 	}
 
-	execute_actions(action, compose->window, NULL, compose->text, NULL, 0,
-			NULL);
+	execute_actions(action, NULL, compose->text, NULL, 0, NULL);
 }
 
 static void mainwin_actions_execute_cb(MainWindow *mainwin, guint action_nb,
 				       GtkWidget *widget)
 {
-	MessageView *messageview = mainwin->messageview;
-	TextView    *textview = NULL;
-	gchar 	    *buf,
-		    *action;
-	MimeView    *mimeview = NULL;
-
-	g_return_if_fail(action_nb < g_slist_length(prefs_common.actions_list));
-
-	buf = (gchar *)g_slist_nth_data(prefs_common.actions_list, action_nb);
-
-	g_return_if_fail(buf);
-	g_return_if_fail(action = strstr(buf, ": "));
-
-	/* Point to the beginning of the command-line */
-	action += 2;
-
-	switch (messageview->type) {
-	case MVIEW_TEXT:
-		if (messageview->textview && messageview->textview->text)
-			textview = messageview->textview;
-		break;
-	case MVIEW_MIME:
-		if (messageview->mimeview) {
-			mimeview = messageview->mimeview;
-			if (messageview->mimeview->type == MIMEVIEW_TEXT &&
-					messageview->mimeview->textview &&
-					messageview->mimeview->textview->text)
-				textview = messageview->mimeview->textview;
-		} 
-		break;
-	}
-
-	execute_actions(action, mainwin->window,
-			GTK_CTREE(mainwin->summaryview->ctree), textview->text,
-			textview->msgfont, textview->body_pos, mimeview);
+	message_actions_execute(mainwin->messageview, action_nb,
+				GTK_CTREE(mainwin->summaryview->ctree));
 }
 
-/* FIXME: Code duplication mainwindow_actions_execute_cb
- */
 static void msgview_actions_execute_cb(MessageView *msgview, guint action_nb,
 				       GtkWidget *widget)
+{
+	message_actions_execute(msgview, action_nb, NULL);
+	
+}
+
+static void message_actions_execute(MessageView *msgview, guint action_nb,
+				    GtkCTree *ctree)
 {
 	TextView    *textview = NULL;
 	gchar 	    *buf,
 		    *action;
 	MimeView    *mimeview = NULL;
+	GdkFont	    *msgfont  = NULL;
+	guint        body_pos = 0;
+	GtkWidget   *text     = NULL;
 
 	g_return_if_fail(action_nb < g_slist_length(prefs_common.actions_list));
 
@@ -1204,14 +1148,21 @@ static void msgview_actions_execute_cb(MessageView *msgview, guint action_nb,
 		break;
 	}
 
-	execute_actions(action, msgview->window, NULL, textview->text,
-			textview->msgfont, textview->body_pos, mimeview);
+	if (textview) {
+		text     = textview->text;
+		msgfont  = textview->msgfont;
+		body_pos = textview->body_pos;
+	}
+	
+	execute_actions(action, ctree, text, msgfont, body_pos, mimeview);
 }
 
-static gboolean execute_actions(gchar *action, GtkWidget *window,
-				GtkCTree *ctree, GtkWidget *text, 
-				GdkFont *msgfont, gint body_pos,
-				MimeView *mimeview)
+static gboolean execute_actions(gchar 	  *action, 
+				GtkCTree  *ctree,
+				GtkWidget *text, 
+				GdkFont   *msgfont,
+				gint 	   body_pos,
+				MimeView  *mimeview)
 {
 	GList *cur, *selection = NULL;
 	GSList *children_list = NULL;
@@ -1302,7 +1253,6 @@ static gboolean execute_actions(gchar *action, GtkWidget *window,
 		GSList *cur;
 
 		children->action  = g_strdup(action);
-		children->window  = window;
 		children->dialog  = NULL;
 		children->list    = children_list;
 		children->nb	  = g_slist_length(children_list);
@@ -2007,4 +1957,42 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 	}
 #endif
 	wait_for_children(child_info->children);
+}
+
+/*
+ * Strings describing action format strings
+ * 
+ * When adding new lines, remember to put one string for each line
+ */
+static gchar *actions_desc_strings[] = {
+	N_("Menu name:"),
+	N_("   Use / in menu name to make submenus."),
+	"",
+	N_("Command line:"),
+	N_("   Begin with:"),
+	N_("     | to send message body or selection to command"),
+	N_("     > to send user provided text to command"),
+	N_("     * to send user provided hidden text to command"),
+	N_(" End with:"),
+	N_("     | to replace message body or selection with command output"),
+	N_("     > to insert command's output without replacing old text"),
+	N_("     & to run command asynchronously"),
+	N_(" Use %f for message file name"),
+	N_("     %F for the list of the file names of selected messages"),
+	N_("     %p for the selected message MIME part."),
+	NULL
+};
+
+
+static DescriptionWindow actions_desc_win = { 
+        NULL, 
+        1,
+        N_("Description of symbols"),
+        actions_desc_strings
+};
+
+
+static void prefs_actions_help_cb(GtkWidget *w, gpointer data)
+{
+	description_window_create(&actions_desc_win);
 }

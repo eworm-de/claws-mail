@@ -1285,8 +1285,6 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 
 	gtk_ctree_node_set_row_style(ctree, node, style);
 
-	item->need_update = FALSE;
-
 	if ((node = gtkut_ctree_find_collapsed_parent(ctree, node)) != NULL)
 		folderview_update_node(folderview, node);
 }
@@ -1306,8 +1304,9 @@ gboolean folderview_update_item(gpointer source, gpointer data)
 
 	node = gtk_ctree_find_by_row_data(ctree, NULL, update_info->item);
 	if (node) {
-		folderview_update_node(folderview, node);
-		if (update_info->content_change && folderview->opened == node)
+		if (update_info->update_flags & F_ITEM_UPDATE_MSGCNT)
+			folderview_update_node(folderview, node);
+		if ((update_info->update_flags & F_ITEM_UPDATE_CONTENT) && (folderview->opened == node))
 			summary_show(folderview->summaryview, update_info->item);
 	}
 	
@@ -1879,12 +1878,6 @@ static void folderview_update_tree_cb(FolderView *folderview, guint action,
 		folderview_check_new(item->folder);
 	else
 		folderview_rescan_tree(item->folder);
-	
-	if (folderview->opened) {
-		item = gtk_ctree_node_get_row_data(ctree, folderview->opened);
-		if (item)
-			folder_update_item(item, TRUE);
-	}
 }
 
 void folderview_create_folder_node_recursive(FolderView *folderview, FolderItem *item)
@@ -2663,8 +2656,6 @@ static void folderview_move_to(FolderView *folderview, FolderItem *from_folder,
 			debug_print("can't remove src node: is null\n");
 
 		folderview_create_folder_node_recursive(folderview, new_folder);
-		folder_update_item(from_parent, TRUE);
-		folder_update_item_recursive(new_folder, TRUE); 
 		folderview_sort_folders(folderview, 
 			gtk_ctree_find_by_row_data(GTK_CTREE(folderview->ctree), 
 				NULL, new_folder->parent), new_folder->folder);

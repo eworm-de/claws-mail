@@ -1,6 +1,7 @@
 
+--------------------------------------------------------------------------------
 Contents of the tools directory:
------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
 Action scripts:
   gpg-sign-syl                  Clear-sign current selection
@@ -8,9 +9,9 @@ Action scripts:
   uudec                         Decode and display uuencoded images
 
 Addressbook conversion:
-  eud2gc.py                     Convert Eudora addressbook to Gnomecard
-  kmail2sylpheed.pl             Import a Kmail addressbook
-  kmail2sylpheed_v2.pl          Import an exported Kmail addressbook csv file
+  eud2gc.py                     Convert Eudora address book to Gnomecard
+  kmail2sylpheed.pl             Import a Kmail address book (KDE2)
+  kmail2sylpheed_v2.pl          Import a Kmail address book (KDE3)
   outlook2sylpheed.pl           Import an Outlook generated contact list
   tb2sylpheed                   Import The Bat! address books
 
@@ -18,21 +19,23 @@ Mailbox conversion:
   calypso_convert.pl            Import mbox files with attachments from Calypso
 
 Other tools:
-  gif2xface.pl                  Convert a 48x48 GIF file to an X-Face header
-  OOo2sylpheed.pl               Send documents from OpenOffice.org
-  sylprint.pl                   Printing engine, explained in README.sylprint
-
-Sylpheed specific tools:
   filter_conv.pl                Convert old-style filters to new filtering
   newscache_clean.pl            Clean up news directory
+  OOo2sylpheed.pl               Send documents from OpenOffice.org
   sylpheed-switcher             Run either sylpheed or claws (separate configs)
+  sylprint.pl                   Printing engine, explained in README.sylprint
   update-po                     Update the .po files named on the command line.
 
+Extra tools:
+  gif2xface.pl                  Convert a 48x48 GIF file to an X-Face header
+  launch_phoenix		Open URLs in Phoenix
 
+--------------------------------------------------------------------------------
 Detailed Descriptions:
------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
-Action scripts:
+Action scripts
+--------------
 
 * gpg-sign-syl
   WORKS ON: selection, whole message
@@ -53,355 +56,348 @@ Action scripts:
 * More action examples can be found at
   http://melvin.hadasht.free.fr/home/sylpheed/actions/
 
------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
-* calypso_convert.pl
-
-  WHAT IT DOES
-
-  This perl script imports mbox files that are exported by Calypso.
-  It recreates the folder structure by scanning the "X-CalypsoFolder"
-  header and reincludes the attachments referenced in the
-  "X-CalypsoHtmlBody" "X-CalypsoAccount" "X-Attachment" headers.
-  
-  HOW TO USE IT
-
-  Export the Calypso mailbox by selecting "Save to archive" and check
-  the "Save attachments" box.
-  Edit the script to set following variables (at the top of the file):
-    $mboxdir  : path to the exported mbox, e.g. 'Archive' or '.'
-    $mboxfile : name of exported mbox, e.g. 'mail.txt'
-    $outdir   : name of the MH folder to create, e.g. 'Calypso'
-  Run the script using
-    perl calypso_convert.pl
-  Finally, import that folder by either selecting "New mailbox" or
-  moving it into your existing directory and recreate the folder
-  structure manually (contentmenu from folderview).
-
-  Any questions, comments or problems, contact Thorsten Maerz <torte@netztorte.de>
-
------------------------------------------------------------------------
+Address book conversion
+-----------------------
 
 * eud2gc.py
 
   WHAT IT DOES
-
-  This python-script is a quick hack to convert an Eudora (v.3?) addressbook
-  to vCard (GnomeCard) format.
-
-  HOW TO USE IT
-
-  You may do whatever you want with it! (Also regarding copying)
-
-  However, the script is intended to use like this:
-
-  			eud2gc.py <Eudora-addressbook-file> <Gnomecard-file>
-
-  Be careful not to overwrite your original GnomeCard.gcrd!
-  (But of course you might want to add the converted stuff to it)
-
-  Copyleft some time long ago (around 1999?) by Jeroen Versteeg
-  (j.m.versteeg@student.utwente.nl)
-
------------------------------------------------------------------------
-
-* filter_conv.pl
-
-  WHAT IT DOES
-
-  This perl script provides easy conversion of your filtering rules
-  form sylpheed's old filter system to the new filtering system used
-  in sylpheed-claws. It reads '~/.sylpheed/filterrc' and outputs 
-  '~/.sylpheed/matcherrc'.
-  
-  HOW TO USE IT
-
-  Issue the following command from the 'tools' directory:
-
-        perl filter_conv.pl
-
-  That's it, the new filtering system is now implemented with your
-  previous rules applied.
-
-  Any problems, contact Torsten Schoenfeld <kaffeetisch@web.de>
-
------------------------------------------------------------------------
-
-* gif2xface.pl
-
-  WHAT IT DOES
-
-  This perl script converts a monochrome (1 bit) 48x48 pixels GIF file
-  into an X-Face graphic suitable for inclusion into custom headers of
-  Sylpheed. An X-Face allows to quickly identify (or be identified as)
-  the sender of a mail message in a xface-capable MUA (like sylpheed).
+	This python-script is a quick hack to convert an Eudora (v.3?)
+	addressbook to vCard (GnomeCard) format.
 
   HOW TO USE IT
+	You may do whatever you want with it! (Also regarding copying)
+	However, the script is intended to use like this:
 
-  After obtaining the desired image for your X-Face you should:
-    * scale it to 48x48 pixels (Image->Scale image on Gimp)
-    * down color depth to b/w (Image->Mode->Indexed selecting "Use
-      Black/White palette" and the desired dithering options (prior to
-      indexing doing Image->Colors->Threshold allows you to select the
-      b/w level if you don't want a dithered (dotty) image))
-    * save file as non-interlaced GIF
-  Then do:
+		eud2gc.py <Eudora-addressbook-file> <Gnomecard-file>
 
-      ./gif2xface < filename.gif > filename.xface
+  	Be careful not to overwrite your original GnomeCard.gcrd!
+  	(But of course you might want to add the converted stuff to it)
 
-  In filename.xface will be the X-Face header ready to use.
-  You can add a custom header in Sylpheed through Configuration->
-  Preferences per account, "Send" tab, check "Add user-defined header"
-  then "Edit..." if you want to add it via Sylpheed interface, or do
-
-      echo "0:" `cat filename.xface` > ~/.sylpheed/customheaderrc
-
-  if you want to create the custom headers file yourself (Warning: this
-  method is valid only if you don't have any other custom header set or
-  they will be lost!).
-
-  Any problems, contact Ricardo Mones Lastra <mones@aic.uniovi.es>
-
------------------------------------------------------------------------
+  Contact: Jeroen Versteeg <j.m.versteeg@student.utwente.nl>
 
 * kmail2sylpheed.pl
 
   WHAT IT DOES
-
-  This perl script will convert an exported Kmail addressbook into a
-  Sylpheed addressbook. If your version of Kmail is 1.37 or greater
-  and/or your version of KAddressBook is 3.1beta1 or greater, or
-  this script mixes up your definitions and their related data, use
-  'kmail2sylpheed_v2.pl' instead.
+	This perl script will convert an exported Kmail addressbook into a
+  	Sylpheed addressbook. If your version of Kmail is 1.37 or greater
+  	and/or your version of KAddressBook is 3.1beta1 or greater, or
+  	this script mixes up your definitions and their related data, use
+  	'kmail2sylpheed_v2.pl' instead.
 
   HOW TO USE IT
+	(You must run sylpheed at least once before running this script.)
 
-  (You must run sylpheed at least once before running this script.)
+	In Kmail's Address book choose '/File/Export List'. This will export
+  	your Kmail address book data to a *.csv file.
 
-  In Kmail's Addressbook choose '/File/Export List'. This will export
-  your Kmail addressbook data to a *.csv file.
+  	If Sylpheed is running, close it.
 
-  If Sylpheed is running, close it.
-
-  From the command line, execute the following:
+  	From the command line, execute the following:
  
-	perl kmail2sylpheed.pl --kmailfile=/path/to/addressbook.csv
+		perl kmail2sylpheed.pl --kmailfile=/path/to/addressbook.csv
 
-  Your Kmail addressbook data will now be contained in Sylpheed's
-  addressbook, under the name 'Kmail Address Book'.
+  	Your Kmail address book data will now be contained in Sylpheed's
+  	address book, under the name 'Kmail Address Book'.
 
-  Any questions, comments or problems, contact Paul <claws@thewildbeast.co.uk>  
-
------------------------------------------------------------------------
+  Contact: Paul Mangan <claws@thewildbeast.co.uk>
+    
 
 * kmail2sylpheed_v2.pl
 
   This script has been tested with Kmail 1.4.7 and KAddressBook 3.1beta1
 
   WHAT IT DOES
-
-  This perl script will convert a Kmail addressbook that has been
-  exported in csv format into a Sylpheed addressbook.
+	This perl script will convert a Kmail address book that has been
+  	exported in csv format into a Sylpheed address book.
 
   HOW TO USE IT
-
-  (You must run sylpheed at least once before running this script.)
+	(You must run sylpheed at least once before running this script.)
   
-  Open Kmail's Addressbook, /File/Address Book
-  In Kmail's Addressbook choose '/File/Export/Export List...'. This 
-  will allow you to export your Kmail addressbook data to a *.csv file.
+  	Open Kmail's Addressbook, /File/Address Book
+  	In Kmail's Addressbook choose '/File/Export/Export List...'. This 
+  	will allow you to export your Kmail addressbook data to a *.csv file.
 
-  If Sylpheed is running, close it.
+  	If Sylpheed is running, close it.
 
-  From the command line, execute the following:
+  	From the command line, execute the following:
  
-	perl kmail2sylpheed_v2.pl --kmailfile=/path/to/addressbook.csv
+		perl kmail2sylpheed_v2.pl --kmailfile=/path/to/addressbook.csv
 	
-  You can also use --help to see usage instructions.
+  	You can also use --help to see usage instructions.
 
-  Your Kmail addressbook data will now be contained in Sylpheed's
-  addressbook, under the name 'Kmail address book'.
+  	Your Kmail addressbook data will now be contained in Sylpheed's
+  	addressbook, under the name 'Kmail address book'.
 
-  Any questions, comments or problems, contact Paul <claws@thewildbeast.co.uk>  
+  Contact: Paul Mangan <claws@thewildbeast.co.uk>  
 
------------------------------------------------------------------------
-
-* newscache_clean.pl
-
-  WHAT IT DOES AND WHY IT DOES IT
-
-  This perl script cleans up in '$HOME/.sylpheed/newscache'. Currently
-  the newscache becomes littered with old directories and files - when
-  you subscribe to a newsgroup a sub-directory gets created for it in
-  ~/.sylpheed/newscache/[nntpserver], should you unsubscribe from the 
-  group the sub-directory does not get deleted. Until this is done 
-  internally this script will take care of some tidying up.
-  
-  This script removes directory trees of nntp servers that you no longer
-  have an account for. Where an account exists it removes directories
-  and files of those groups to which you are no longer subscribed.
-
-  HOW TO USE IT
-
-  Issue the following command from the 'tools' directory:
-  
-  	perl newscache_clean.pl
-        
-  This script uses the File::Path module, if you don't already have it
-  installed, you can find it at the CPAN search site <http://search.cpan.org>
-
-  Any questions, comments or problems, contact Paul <claws@thewildbeast.co.uk>
-
------------------------------------------------------------------------
-
-* OOo2sylpheed.pl
-
-  WHAT IT DOES
-  
-  This perl script enables OpenOffice.org to send documents to sylpheed
-  as attachments.
-
-  HOW TO USE IT
-  
-  Edit line 29 of the script so that it contains the correct path:
-  exec "/usr/local/bin/sylpheed --attach $ARGV";
-  
-  Start up OpenOffice.org.
-  Go to 'Tools/Options/OpenOffice.org/External Programs'
-  Enter the path to this script in the 'Program' box
-  or select it by clicking on the '...' button.
-
-  You can then use 'File/Send/Document as email' to launch sylpheed
-  (if not already launched) and open a new compose window with the
-  document attached.
-
-  Tested with OpenOffice.org version 1.0
-  Any questions, comments or problems, contact Paul <claws@thewildbeast.co.uk>
-
------------------------------------------------------------------------
 
 * outlook2sylpheed.pl
 
   WHAT IT DOES
-  
-  This perl script converts an Outlook generated contact list into a 
-  Sylpheed XML address book.
+  	This perl script converts an Outlook generated contact list into a 
+  	Sylpheed XML address book.
 
   HOW TO USE IT
-  
-  You must export Outlook Express contact list as TXT file, choosing
-  only "Name" and "Address" fields to export.
+  	You must export Outlook Express contact list as TXT file, choosing
+  	only "Name" and "Address" fields to export.
 
-  You must exit Sylpheed before converting the contact list.
+  	You must exit Sylpheed before converting the contact list.
 
-  From the command line, execute the following:
+  	From the command line, execute the following:
 
-	outlook2sylpheed.pl fullpathname
+		outlook2sylpheed.pl fullpathname
 
-  BUGS
+  LIMITATIONS
+	Only works with fields described above. If you have more complex
+  	examples send them to me, and I'll try to enhance the script.
 
-  Only works with fields described above. If you have more complex
-  examples send them to me, and I'll try to enhance the script.
+  Contact: Ricardo Mones Lastra <mones@aic.uniovi.es>
 
-  Any questions, comments or problems, contact 
-  Ricardo Mones Lastra <mones@aic.uniovi.es>
-
------------------------------------------------------------------------
-
-* sylpheed-switcher
-
-  WHAT IT DOES
-  
-  This perl script is for users who like to move between the main
-  sylpheed branch and the claws branch. Because of some differences
-  between the stored options it is better IMO to use two separate
-  '.sylpheed' directory trees. Doing that manually could prove to
-  be tiresome, and so I've written this script to automate the task.
-
-  The first time you run this script you enter the full paths,
-  including the executable itself, to both the main version of
-  sylpheed and the claws version. This information is then stored
-  in a file in your $HOME directory called '.sylpheed-switcher'
-
-  During this initial set-up, your '~/.sylpheed' directory
-  is copied to '~/.sylpheed-main' and '~/.sylpheed-claws'.
-  
-  When you run sylpheed via this script, your '~/.sylpheed' directory
-  is deleted and replaced with a symbolic link to either ~/.sylpheed-main'
-  or '~/sylpheed-claws', depending on the option you choose.
-  (On subsequent usage the symbolic link is deleted and replaced with
-  a new symbolic link).
-
-  HOW TO USE IT
-  
-  Initial set-up
-  Enter the full paths to the executable, including the executable itself,
-  example:
-  
- 	./sylpheed-switcher --claws-path=/usr/local/bin/sylpheed --main-path=
-        /usr/bin/sylpheed
-        
-  After the initial set-up, use the following:
-  
-  	./sylpheed-switcher --claws	(to run sylpheed-claws)
-        ./sylpheed-switcher --main	(to run sylpheed main)
-        
-  Additionally you can append --debug to run in debug mode.
-  Use --help for more info.  	
- 
-  This script uses the File::Path and Getopt::Long modules, if you don't already 
-  have them installed, you can find them at the CPAN search site 
-  <http://search.cpan.org>
-
-  Any questions, comments or problems, contact Paul <claws@thewildbeast.co.uk>
-
------------------------------------------------------------------------
 
 * tb2sylpheed
 
   WHAT IT DOES
-  
-  This perl script will convert an addressbook exported from The Bat! into 
-  a Sylpheed addressbook.
+  	This perl script will convert an address book exported from The Bat! 
+	into a Sylpheed address book.
 
   HOW TO USE IT
+	(You must run sylpheed at least once before running this script.)
 
-  (You must run sylpheed at least once before running this script.)
+  	If Sylpheed is running, close it.
 
-  If Sylpheed is running, close it.
+  	Export The Bat! Address Book to CSV file format with all fields 
+  	selected to YES and then start:
 
-  Export The Bat! Address Book to CSV file format with all fields 
-  selected to YES and then start:
-
-  tb2sylpheed --tbfile=/full/path/to/thebat/addressbook.csv
+  		tb2sylpheed --tbfile=/full/path/to/thebat/addressbook.csv
  
-  The Bat! addressbook data will now be contained in Sylpheed's
-  addressbook, under the name 'The Bat! Address Book'.
+  	The Bat! addressbook data will now be contained in Sylpheed's
+  	addressbook, under the name 'The Bat! Address Book'.
 
-  Any questions, comments or problems, contact Urke MMI <urke@gmx.net>  
+  Contact: Urke MMI <urke@gmx.net>  
 
------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
+Mailbox conversion
+------------------
+
+* calypso_convert.pl
+
+  WHAT IT DOES
+	This perl script imports mbox files that are exported by Calypso.
+  	It recreates the folder structure by scanning the "X-CalypsoFolder"
+  	header and reincludes the attachments referenced in the
+  	"X-CalypsoHtmlBody" "X-CalypsoAccount" "X-Attachment" headers.
+  
+  HOW TO USE IT
+	Export the Calypso mailbox by selecting "Save to archive" and check
+  	the "Save attachments" box.
+	
+  	Edit the script to set following variables (at the top of the file):
+ 	   $mboxdir  : path to the exported mbox, e.g. 'Archive' or '.'
+ 	   $mboxfile : name of exported mbox, e.g. 'mail.txt'
+ 	   $outdir   : name of the MH folder to create, e.g. 'Calypso'
+	   
+ 	 Run the script using
+	 
+    		perl calypso_convert.pl
+		
+  	Finally, import that folder by either selecting "New mailbox" or
+  	moving it into your existing directory and recreate the folder
+  	structure manually (contentmenu from folderview).
+
+  Contact: Thorsten Maerz <torte@netztorte.de>
+
+--------------------------------------------------------------------------------
+
+Other tools
+-----------
+
+* filter_conv.pl
+
+  WHAT IT DOES
+	This perl script provides easy conversion of your filtering rules
+  	form sylpheed's old filter system to the new filtering system used
+  	in sylpheed-claws. It reads '~/.sylpheed/filterrc' and outputs 
+  	'~/.sylpheed/matcherrc'.
+  
+  HOW TO USE IT
+	Issue the following command from the 'tools' directory:
+
+        perl filter_conv.pl
+
+  	That's it, the new filtering system is now implemented with your
+  	previous rules applied.
+
+  Contact: Paul Mangan <claws@thewildbeast.co.uk>
+  
+
+* newscache_clean.pl
+
+  WHAT IT DOES AND WHY IT DOES IT
+	This perl script cleans up in '$HOME/.sylpheed/newscache'. Currently
+  	the newscache becomes littered with old directories and files - when
+  	you subscribe to a newsgroup a sub-directory gets created for it in
+  	~/.sylpheed/newscache/[nntpserver], should you unsubscribe from the 
+  	group the sub-directory does not get deleted. Until this is done 
+  	internally this script will take care of some tidying up.
+  
+  	This script removes directory trees of nntp servers that you no longer
+  	have an account for. Where an account exists it removes directories
+  	and files of those groups to which you are no longer subscribed.
+
+  HOW TO USE IT
+	Issue the following command from the 'tools' directory:
+  
+  		perl newscache_clean.pl
+        
+  	This script uses the File::Path module, if you don't already have it
+  	installed, you can find it at the CPAN search site 
+	<http://search.cpan.org>
+
+  Contact: Paul Mangan <claws@thewildbeast.co.uk>
+
+
+* OOo2sylpheed.pl
+
+  WHAT IT DOES
+  	This perl script enables OpenOffice.org to send documents to sylpheed
+  	as attachments.
+
+  HOW TO USE IT
+  	Start up OpenOffice.org.
+  	Go to 'Tools/Options/OpenOffice.org/External Programs'
+  	Enter the path to OOo2sylpheed.pl in the 'Program' box
+  	or select it by clicking on the '...' button.
+
+  	You can then use 'File/Send/Document as email' to launch sylpheed
+  	(if not already launched) and open a new compose window with the
+  	document attached.
+
+  	Tested with OpenOffice.org version 1.0
+  
+  Contact: Paul Mangan <claws@thewildbeast.co.uk>
+
+
+* sylpheed-switcher
+
+  WHAT IT DOES
+  	This perl script is for users who like to move between the main
+  	sylpheed branch and the claws branch. Because of some differences
+  	between the stored options it is better IMO to use two separate
+  	'.sylpheed' directory trees. Doing that manually could prove to
+  	be tiresome, and so I've written this script to automate the task.
+
+  	The first time you run this script you enter the full paths,
+  	including the executable itself, to both the main version of
+  	sylpheed and the claws version. This information is then stored
+  	in a file in your $HOME directory called '.sylpheed-switcher'
+
+  	During this initial set-up, your '~/.sylpheed' directory
+  	is copied to '~/.sylpheed-main' and '~/.sylpheed-claws'.
+  
+  	When you run sylpheed via this script, your '~/.sylpheed' directory
+  	is deleted and replaced with a symbolic link to either 
+	~/.sylpheed-main' or '~/sylpheed-claws', depending on the option you 
+	choose. (On subsequent usage the symbolic link is deleted and replaced 
+	with a new symbolic link).
+
+  HOW TO USE IT
+  	Initial set-up
+  	Enter the full paths to the executable, including the executable itself,
+  	example:
+  
+ 		./sylpheed-switcher --claws-path=/usr/local/bin/sylpheed 
+		--main-path=/usr/bin/sylpheed
+        
+  	After the initial set-up, use the following:
+  
+  		./sylpheed-switcher --claws	(to run sylpheed-claws)
+        	./sylpheed-switcher --main	(to run sylpheed main)
+        
+  	Additionally you can append --debug to run in debug mode.
+  	Use --help for more info.  	
+ 
+  	This script uses the File::Path and Getopt::Long modules, if you don't
+	already have them installed, you can find them at the CPAN search site 
+  	<http://search.cpan.org>
+
+  Contact: Paul Mangan <claws@thewildbeast.co.uk>
+
+
 * update-po
 
   WHAT IT DOES
-  
-  This script is a message catalog translator's tool, it updates the .po 
-  files named on the command line.
+  	This script is a message catalog translator's tool, it updates the .po 
+  	files named on the command line.
 
   HOW TO USE IT
-
-  This script needs to be copied to and run from the 'po' directory.
+	This script needs to be copied to and run from the 'po' directory.
   
-	./update-po lang.po lang2.po ...
+		./update-po lang.po lang2.po ...
 
-  to update one or more <yourlang>.po files from the sourcecode files
-  named in POTFILES.in. The old .po file is save in a .po.old file.
+  	to update one or more <yourlang>.po files from the sourcecode files
+ 	 named in POTFILES.in. The old .po file is save in a .po.old file.
 
-  For example, when you want to update fr.po, run ./update-po fr.po, 
-  then edit fr.po to update your translation.
+  	For example, when you want to update fr.po, run ./update-po fr.po, 
+  	then edit fr.po to update your translation.
 
-  Author: Wilbert Berendsen <wilbert@oswf.org>
+  Contact: Wilbert Berendsen <wilbert@oswf.org>
 
------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
+Extra tools
+-----------
+
+* gif2xface.pl
+
+  WHAT IT DOES
+	This perl script converts a monochrome (1 bit) 48x48 pixels GIF file
+  	into an X-Face graphic suitable for inclusion into custom headers of
+  	Sylpheed. An X-Face allows to quickly identify (or be identified as)
+  	the sender of a mail message in a xface-capable MUA (like sylpheed).
+
+  HOW TO USE IT
+	After obtaining the desired image for your X-Face you should:
+    	  * scale it to 48x48 pixels (Image->Scale image on Gimp)
+    	  * down color depth to b/w (Image->Mode->Indexed selecting "Use
+      	    Black/White palette" and the desired dithering options (prior to
+      	    indexing doing Image->Colors->Threshold allows you to select the
+      	    b/w level if you don't want a dithered (dotty) image))
+    	  * save file as non-interlaced GIF
+  	Then do:
+
+      		./gif2xface < filename.gif > filename.xface
+
+  	In filename.xface will be the X-Face header ready to use.
+  	You can add a custom header in Sylpheed through Configuration->
+  	Preferences per account, "Send" tab, check "Add user-defined header"
+  	then "Edit..." if you want to add it via Sylpheed interface, or do
+
+      		echo "0:" `cat filename.xface` > ~/.sylpheed/customheaderrc
+
+  	if you want to create the custom headers file yourself (Warning: this
+  	method is valid only if you don't have any other custom header set or
+  	they will be lost!).
+
+  Contact: Ricardo Mones Lastra <mones@aic.uniovi.es>
 
 
+* launch_phoenix
+
+  WHAT IT DOES
+  	Check for a running phoenix process and and open a new tab with a 
+  	given URL, or execute phoenix with that URL
+  
+  HOW TO USE IT  
+  	In Common Preferences move to the 'Other' tab and enter the
+  	following in the 'Web browser' box
+  
+  	launch_phoenix '%s'
+  
+  Contact: Mohammed Sameer <Uniball@linux-egypt.org>
+
+
+--------------------------------------------------------------------------------

@@ -824,44 +824,15 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				  const gchar *body)
 {
 	Compose *compose;
-	PrefsAccount *account;
+	PrefsAccount *account = NULL;
 	PrefsAccount *reply_account;
 	GtkSText *text;
 
 	g_return_if_fail(msginfo != NULL);
 	g_return_if_fail(msginfo->folder != NULL);
 
-	account = NULL;
-	/* select the account set in folderitem's property (if enabled) */
-	if (msginfo->folder->prefs && msginfo->folder->prefs->enable_default_account)
-		account = account_find_from_id(msginfo->folder->prefs->default_account);
+	account = account_get_reply_account(msginfo, prefs_common.reply_account_autosel);
 	
-	/* select the account for the whole folder (IMAP / NNTP) */
-	if (!account)
-		/* FIXME: this is not right, because folder may be nested. we should
-		 * ascend the tree until we find a parent with proper account 
-		 * information */
-		account = msginfo->folder->folder->account;
-
-	/* select account by to: and cc: header if enabled */
-	if (prefs_common.reply_account_autosel) {
-		if (!account && msginfo->to) {
-			gchar *to;
-			Xstrdup_a(to, msginfo->to, return);
-			extract_address(to);
-			account = account_find_from_address(to);
-		}
-		if (!account) {
-			gchar cc[BUFFSIZE];
-			if (!get_header_from_msginfo(msginfo, cc, sizeof(cc), "CC:")) { /* Found a CC header */
-				extract_address(cc);
-				account = account_find_from_address(cc);
-			}        
-		}
-	}
-
-	/* select current account */
-	if (!account) account = cur_account;
 	g_return_if_fail(account != NULL);
 
 	if (ignore_replyto && account->protocol == A_NNTP &&
@@ -3031,7 +3002,6 @@ gint compose_send(Compose *compose)
 	g_free(msgpath);
 
 	folder_item_remove_msg(folder, msgnum);
-	folder_update_item(folder, TRUE);
 
 	return val;
 }
@@ -3132,9 +3102,6 @@ gint compose_send(Compose *compose)
 	} else {
 		if (compose->mode == COMPOSE_REEDIT) {
 			compose_remove_reedit_target(compose);
-			if (compose->targetinfo)
-				folder_update_item
-					(compose->targetinfo->folder, TRUE);
 		}
 		/* save message to outbox */
 		if (prefs_common.savemsg) {
@@ -3145,8 +3112,6 @@ gint compose_send(Compose *compose)
 			if (procmsg_save_to_outbox(outbox, tmp, FALSE) < 0)
 				alertpanel_error
 					(_("Can't save the message to Sent."));
-			else
-				folder_update_item(outbox, TRUE);
 		}
 	}
 
@@ -3699,7 +3664,6 @@ void compose_remove_draft(Compose *compose)
 
 	if (procmsg_msg_exist(msginfo)) {
 		folder_item_remove_msg(drafts, msginfo->msgnum);
-		folder_update_item(drafts, TRUE);
 	}
 
 }
@@ -3909,13 +3873,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 
 	if (compose->mode == COMPOSE_REEDIT) {
 		compose_remove_reedit_target(compose);
-		if (compose->targetinfo &&
-		    compose->targetinfo->folder != queue)
-			folder_update_item
-				(compose->targetinfo->folder, TRUE);
 	}
-
-	folder_update_item(queue, TRUE);
 
 	if ((msgnum != NULL) && (item != NULL)) {
 		*msgnum = num;
@@ -4483,7 +4441,7 @@ static void compose_convert_header(gchar *dest, gint len, gchar *src,
 
 	if (len < 1) return;
 
-	remove_return(src);
+	g_strchomp(src);
 
 	conv_encode_header(dest, len, src, header_len);
 }
@@ -6517,17 +6475,12 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 
 	if (compose->mode == COMPOSE_REEDIT) {
 		compose_remove_reedit_target(compose);
-		if (compose->targetinfo &&
-		    compose->targetinfo->folder != draft)
-			folder_update_item(compose->targetinfo->folder,
-					       TRUE);
 	}
 
 	newmsginfo = folder_item_get_msginfo(draft, msgnum);
 	if (newmsginfo) {
 		procmsg_msginfo_unset_flags(newmsginfo, ~0, ~0);
 		procmsg_msginfo_set_flags(newmsginfo, 0, MSG_DRAFT);
-		folder_update_item(draft, TRUE);
 		procmsg_msginfo_free(newmsginfo);
 	}
 	

@@ -1,3 +1,225 @@
+2003-01-08 [darko]
+
+	* README.claws, src/summaryview.c
+	  	fix description for marked messages
+
+2003-01-08 [paul]
+
+	* tools/Makefile.am
+	  tools/launch_phoenix	** NEW FILE **
+	  	add script that enables using Phoenix as the default
+		web browser. 
+		Submitted by Mohammed Sameer <Uniball@linux-egypt.org>
+		
+	* tools/OOo2sylpheed.pl
+		remove full path to sylpheed executable, just 'sylpheed'
+		will do
+		
+	* tools/README
+		add launch_phoenix informtion and re-arrange and compress
+		the data a little
+
+2003-01-07 [christoph]	0.8.8claws65
+
+	* src/folder.c
+		fix update for source folder when moving messages
+	* src/procmsg.[ch]
+	* src/summaryview.c
+		use function to set to_folder for message infos and
+		automatically update the op_count for old and new
+		folder
+
+2003-01-07 [melvin]	0.8.8claws64
+
+	* src/prefs_actions.c
+		Fixed bug where an '%p' Action on a displayed image crashed 
+			Sylpheed
+		Code clean up (get rid of duplicated code and removed unnecessary 
+				structure member)
+
+2003-01-07 [christoph]	0.8.8claws63
+
+	* src/compose.c
+	* src/folder.[ch]
+	* src/folderview.c
+	* src/import.c
+	* src/inc.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/prefs_folder_item.c
+	* src/procmsg.c
+	* src/summaryview.c
+	* src/toolbar.c
+		o remove all folder update triggering from the UI code. The folder
+		  system should know much better when a folder needs an update.
+		o to prevent multiple updates in a row the folder updates can be
+		  frozen for some time.
+
+		Note: - Please verify that no updates are missing
+		      - Check where freeze/thaws should be added
+
+2003-01-07 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.8claws62
+
+	* src/prefs_actions.c
+		don't translate empty strings
+
+2003-01-06 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.8claws61
+
+	* src/prefs_actions.c
+		mark strings for gettext
+	* src/prefs_matcher.c
+		use new description window for Execute action and
+		match condition in Filtering
+
+2003-01-06 [alfons]	0.8.8claws60
+
+	keep myself inspired to re-organize matcher part 8; 
+	yes, more to come (I need to move out the descriptive
+	text for actions to matcher.c, or at least make it not
+	depend on the wicked ordering)
+
+	* src/prefs_matcher.c
+		add documentation so others may comprehend the
+		UI part of the conditions
+		
+2003-01-06 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.8claws59
+
+	* src/prefs_actions.c
+		use new description window for syntax help
+	* src/gtk/description_window.c
+		fix display of descriptions with column count != 2
+
+2003-01-06 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.8claws58
+
+	* src/quote_fmt.c
+	* src/summaryview.[ch]
+	* src/gtk/Makefile.am
+	* src/gtk/description_window.[ch]	** NEW **
+		use a generic window to display syntax descriptions
+		currently used in quote_fmt and summaryview (new description
+		for extended quick search)
+
+2003-01-06 [paul]	0.8.8claws57
+
+	* sync with 0.8.8cvs1
+		see ChangeLog 2003-01-06
+
+2003-01-06 [christoph]	0.8.8claws56
+
+	* src/mainwindow.c
+	* src/prefs_gtk.[ch]
+	* src/gtk/prefswindow.[ch]
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		o remove page management from prefswindow, pages
+		  will be an argument to prefswindow_open
+		o prefswindow_open gets a datapointer that is
+		  passed to the widget_create function to allow
+		  creation of prefswindow for specific items
+
+2003-01-06 [colin]     	0.8.8claws55
+	
+	* src/summaryview.c
+		We don't want regexp in the reply-finder, 
+		because MIDs can contain !,$,. and so on
+
+2003-01-06 [jens]     	0.8.8claws54
+
+	* src/jpilot.c
+		fixed a wrong free in jpilot_read_db_files
+
+2003-01-06 [alfons]     0.8.8claws53
+
+	re-organize matcher part 8; more to come
+       
+        * src/matcher.c
+                matcherprop_to_string(): put g_free()s before the
+                switch-case break to fix memleaks                
+
+2003-01-06 [colin]	0.8.8claws52
+
+	* src/summaryview.c
+		cleanup & reply-finder now displays the first 
+		matching message
+
+2003-01-05 [alfons]	0.8.8claws51
+
+	re-organize matcher part 7; more to come
+
+	* src/matcher.[ch]
+		fixes for constant correctness;
+		more documentation;
+
+2003-01-05 [alfons]	0.8.8claws50
+
+	re-organize matcher part 6; more to come
+	
+	* src/matcher.[ch]
+		fixes for constant correctness;
+		more documentation;
+	* src/filtering.c
+		fix for constant correctness
+
+2003-01-05 [colin]	0.8.8claws49
+
+	* src/account.[ch]
+		Add account_get_reply_account function
+	* src/compose.c
+		Use account_get_reply_account function 
+	* src/summaryview.c
+		Basic reply-finder - click on the replied
+		icon gets you to the outbox using quick-search
+
+2003-01-05 [paul]	0.8.8claws48
+
+	* src/prefs_common.c
+		small change to English
+		
+	* src/prefs_filtering.c
+		prefs_filtering_action_select(): improve logic and uniformity
+		of gui
+
+2003-01-05 [alfons]	0.8.8claws47
+
+	fine tune solution to focus problems (bug #7)
+
+	* src/mainwindow.c
+		mainwindow_focus_in_event(): remove grab event check
+	* src/summaryview.c
+		summary_button_pressed(): move selection on right-click
+		too. we can't possibly move the selection back after
+		canceling a dialog, because gtk's incomplete focus 
+		management. whether this is a good solution, only time
+		will tell.
+
+2003-01-05 [christoph]	0.8.8claws46
+
+	* src/imap.c
+		fix crash when no imap connection could be established
+
+2003-01-05 [paul]	0.8.8claws45
+
+	* src/mainwindow.c
+	  src/sumamryview.c
+	  src/gtk/menu.[ch]
+	  	fix bug 605957 'shortcuts in popup-menu'
+		make user-defined shortcuts work
+		show shortcuts that are already defined
+		in the main menu
+		Patch submitted by Luke Plant
+
+2003-01-05 [alfons]	0.8.8claws44
+
+	* src/mainwindow.c
+		focus_in_event handler should not select summary view row 
+		when another window (menu, dialog) grabbed for events 
+		(bug #7, "[0.8.8claws42] Message summary focus") 
+
+2003-01-04 [christoph]	0.8.8claws43
+
+	* src/procmsg.c
+		update save folder after adding the sent message
+
 2003-01-02 [christoph]	0.8.8claws42
 
 	* src/common/plugin.c
@@ -1382,25 +1604,25 @@
 		see ChangeLog 2002-11-28 (no sync needed
 		for src/compose.c)
 
-2002-11-28 [Ivan Francolin Martinez (ivanfm@sourceforge.net)]	0.8.6claws31
+2002-11-28 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.6claws31
 	
 	* src/mainwindow.[ch]
 		add patch by Ivan F. Martinez introducing messageview Toolbar
 		some changes and committed by oliver	
 
-2002-11-28 [Ivan Francolin Martinez (ivanfm@sourceforge.net)]	0.8.6claws30
+2002-11-28 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.6claws30
 
 	* src/messageview.[ch]
 		add patch by Ivan F. Martinez introducing messageview Toolbar
 		some changes and committed by oliver	
 
-2002-11-28 [Ivan Francolin Martinez (ivanfm@sourceforge.net)]	0.8.6claws29
+2002-11-28 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.6claws29
 
 	* src/compose.[ch]
 		add patch by Ivan F. Martinez introducing messageview Toolbar
 		some changes and committed by oliver	
 
-2002-11-28 [Ivan Francolin Martinez (ivanfm@sourceforge.net)]	0.8.6claws28
+2002-11-28 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.6claws28
 	
 	* src/toolbar.[ch]
 		add patch by Ivan F. Martinez introducing messageview Toolbar

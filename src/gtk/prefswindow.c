@@ -28,8 +28,6 @@
 #include "prefswindow.h"
 #include "../gtkutils.h"
 
-GSList *prefs_pages = NULL;
-
 typedef struct _PrefsWindow PrefsWindow;
 
 struct _PrefsWindow
@@ -47,17 +45,10 @@ struct _PrefsWindow
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
 	GtkWidget *apply_btn;
+
+	gpointer   data;
+	GSList	  *prefs_pages;
 };
-
-void prefswindow_register_page(PrefsPage *page)
-{
-	prefs_pages = g_slist_append(prefs_pages, page);
-}
-
-void prefswindow_unregister_page(PrefsPage *page)
-{
-	prefs_pages = g_slist_remove(prefs_pages, page);
-}
 
 static gboolean ctree_select_row(GtkCTree *ctree, GList *node, gint column, gpointer user_data)
 {
@@ -82,7 +73,7 @@ static gboolean ctree_select_row(GtkCTree *ctree, GList *node, gint column, gpoi
 	}
 
 	if (!page->page_open) {
-		page->create_widget(page);
+		page->create_widget(page, prefswindow->data);
 		gtk_widget_ref(page->widget);
 		gtk_widget_show_all(page->widget);
 		page->page_open = TRUE;
@@ -101,7 +92,7 @@ static gboolean ctree_select_row(GtkCTree *ctree, GList *node, gint column, gpoi
 	return FALSE;
 }
 
-static void save_all_pages()
+static void save_all_pages(GSList *prefs_pages)
 {
 	GSList *cur;
 
@@ -114,7 +105,7 @@ static void save_all_pages()
 	}
 }
 
-static void close_all_pages()
+static void close_all_pages(GSList *prefs_pages)
 {
 	GSList *cur;
 
@@ -131,16 +122,19 @@ static void close_all_pages()
 
 static void apply_button_released(GtkButton *button, gpointer user_data)
 {
-	save_all_pages();
+	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
+
+	save_all_pages(prefswindow->prefs_pages);
 }
 
 static void ok_button_released(GtkButton *button, gpointer user_data)
 {
 	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
 
-	save_all_pages();
+	save_all_pages(prefswindow->prefs_pages);
 	gtk_widget_destroy(prefswindow->window);
-	close_all_pages();
+	close_all_pages(prefswindow->prefs_pages);
+	g_slist_free(prefswindow->prefs_pages);
 	g_free(prefswindow);
 }
 
@@ -149,7 +143,8 @@ static void cancel_button_released(GtkButton *button, gpointer user_data)
 	PrefsWindow *prefswindow = (PrefsWindow *) user_data;
 
 	gtk_widget_destroy(prefswindow->window);
-	close_all_pages();
+	close_all_pages(prefswindow->prefs_pages);
+	g_slist_free(prefswindow->prefs_pages);
 	g_free(prefswindow);
 }
 
@@ -173,7 +168,7 @@ static gboolean find_child_by_name(GtkCTree *ctree, GtkCTreeNode *node, struct n
 	return FALSE;
 }
 
-void prefswindow_create()
+void prefswindow_open(GSList *prefs_pages, gpointer data)
 {
 	static gchar *titles [] = {"Page Index"};
 	GSList *cur;
@@ -181,6 +176,9 @@ void prefswindow_create()
 	PrefsWindow *prefswindow;
 
 	prefswindow = g_new0(PrefsWindow, 1);
+
+	prefswindow->data = data;
+	prefswindow->prefs_pages = g_slist_copy(prefs_pages);
 
 	prefswindow->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(prefswindow->window), _("Preferences"));
@@ -268,15 +266,4 @@ void prefswindow_create()
 	gtk_signal_connect(GTK_OBJECT(prefswindow->apply_btn), "released", GTK_SIGNAL_FUNC(apply_button_released), prefswindow);
 
 	gtk_widget_show_all(prefswindow->window);
-}
-
-void prefswindow_destroy_all_pages()
-{
-	GSList *cur;
-
-	for (cur = prefs_pages; cur != NULL; cur = g_slist_next(cur)) {
-		PrefsPage *page = (PrefsPage *) cur->data;
-
-		page->destroy_page(page);
-	}
 }

@@ -59,6 +59,7 @@ CLEAN :
 	-@erase "$(INTDIR)\compose.obj"
 	-@erase "$(INTDIR)\conv.obj"
 	-@erase "$(INTDIR)\customheader.obj"
+	-@erase "$(INTDIR)\description_window.obj"
 	-@erase "$(INTDIR)\displayheader.obj"
 	-@erase "$(INTDIR)\editaddress.obj"
 	-@erase "$(INTDIR)\editbook.obj"
@@ -257,6 +258,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\compose.obj" \
 	"$(INTDIR)\conv.obj" \
 	"$(INTDIR)\customheader.obj" \
+	"$(INTDIR)\description_window.obj" \
 	"$(INTDIR)\displayheader.obj" \
 	"$(INTDIR)\editaddress.obj" \
 	"$(INTDIR)\editbook.obj" \
@@ -458,6 +460,8 @@ CLEAN :
 	-@erase "$(INTDIR)\conv.sbr"
 	-@erase "$(INTDIR)\customheader.obj"
 	-@erase "$(INTDIR)\customheader.sbr"
+	-@erase "$(INTDIR)\description_window.obj"
+	-@erase "$(INTDIR)\description_window.sbr"
 	-@erase "$(INTDIR)\displayheader.obj"
 	-@erase "$(INTDIR)\displayheader.sbr"
 	-@erase "$(INTDIR)\editaddress.obj"
@@ -781,6 +785,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\compose.sbr" \
 	"$(INTDIR)\conv.sbr" \
 	"$(INTDIR)\customheader.sbr" \
+	"$(INTDIR)\description_window.sbr" \
 	"$(INTDIR)\displayheader.sbr" \
 	"$(INTDIR)\editaddress.sbr" \
 	"$(INTDIR)\editbook.sbr" \
@@ -937,6 +942,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\compose.obj" \
 	"$(INTDIR)\conv.obj" \
 	"$(INTDIR)\customheader.obj" \
+	"$(INTDIR)\description_window.obj" \
 	"$(INTDIR)\displayheader.obj" \
 	"$(INTDIR)\editaddress.obj" \
 	"$(INTDIR)\editbook.obj" \
@@ -1486,6 +1492,24 @@ SOURCE=..\src\customheader.c
 
 
 "$(INTDIR)\customheader.obj"	"$(INTDIR)\customheader.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=..\src\gtk\description_window.c
+
+!IF  "$(CFG)" == "sylpheed - Win32 Release"
+
+
+"$(INTDIR)\description_window.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
+
+
+"$(INTDIR)\description_window.obj"	"$(INTDIR)\description_window.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

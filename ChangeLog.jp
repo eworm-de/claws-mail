@@ -1,3 +1,13 @@
+2003-01-06
+
+	* src/codeconv.c: LBREAK_IF_REQUIRED(): 文字が続く場合のみ改行する
+	  ようにした。
+	* src/compose.c: compose_convert_header(): 末尾の空白を削除。
+	* src/customheader.c: custom_header_read_str(): 名前と値の空白を
+	  削除。
+	* src/prefs_customheader.c: prefs_custom_header_clist_set_row():
+	  名前と値の空白を削除。
+
 2002-12-25
 
 	* version 0.8.8

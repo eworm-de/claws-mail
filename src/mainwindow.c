@@ -84,7 +84,7 @@
 #include "selective_download.h"
 #include "ssl_manager.h"
 #include "sslcertwindow.h"
-#include "prefswindow.h"
+#include "prefs_gtk.h"
 #include "pluginwindow.h"
 
 #define AC_LABEL_WIDTH	240
@@ -973,6 +973,20 @@ MainWindow *main_window_create(SeparateType type)
 	/* create actions menu */
 	update_mainwin_actions_menu(ifactory, mainwin);
 
+	/* attach accel groups to main window */
+#define	ADD_MENU_ACCEL_GROUP_TO_WINDOW(menu,win)	\
+	gtk_window_add_accel_group			\
+		(GTK_WINDOW(win), 			\
+		 gtk_item_factory_from_widget(menu)->accel_group)		 
+	
+	ADD_MENU_ACCEL_GROUP_TO_WINDOW(summaryview->popupmenu,mainwin->window);
+	
+	/* connect the accelerators for equivalent 
+	   menu items in different menus             */
+	menu_connect_identical_items();
+
+
+	
 	/* show main window */
 	gtk_widget_set_uposition(mainwin->window,
 				 prefs_common.mainwin_x,
@@ -1347,13 +1361,6 @@ void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 	}
 
 	procmsg_empty_trash();
-
-	for (list = folder_get_list(); list != NULL; list = list->next) {
-		folder = list->data;
-		if (folder && folder->trash) {
-			folder_update_item(folder->trash, TRUE);
-		}
-	}
 
 	if (mainwin->summaryview->folder_item &&
 	    mainwin->summaryview->folder_item->stype == F_TRASH)
@@ -2609,7 +2616,7 @@ static void account_menu_cb(GtkMenuItem	*menuitem, gpointer data)
 
 static void prefs_open_cb(GtkMenuItem *menuitem, gpointer data)
 {
-	prefswindow_create();
+	prefs_gtk_open();
 }
 
 static void plugins_open_cb(GtkMenuItem *menuitem, gpointer data)

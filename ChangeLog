@@ -1,3 +1,13 @@
+2003-01-06
+
+	* src/codeconv.c: LBREAK_IF_REQUIRED(): break line only if some
+	  characters follow.
+	* src/compose.c: compose_convert_header(): remove trailing spaces.
+	* src/customheader.c: custom_header_read_str(): strip the spaces
+	  of name and value.
+	* src/prefs_customheader.c: prefs_custom_header_clist_set_row():
+	  strip the spaces of name and value.
+
 2002-12-25
 
 	* version 0.8.8

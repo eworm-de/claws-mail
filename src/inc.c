@@ -161,11 +161,6 @@ static void inc_finished(MainWindow *mainwin, gboolean new_messages)
 			folderview_unselect(mainwin->folderview);
 			folderview_select(mainwin->folderview, item);
 		}	
-	} else if (prefs_common.scan_all_after_inc) {
-		item = mainwin->summaryview->folder_item;
-		if (FOLDER_SUMMARY_MISMATCH(item, mainwin->summaryview)) {
-			folder_update_item(item, TRUE);
-		}	
 	}
 }
 
@@ -259,9 +254,6 @@ static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 	case A_IMAP4:
 	case A_NNTP:
 		folderview_check_new(FOLDER(account->folder));
-		if (!prefs_common.scan_all_after_inc && item != NULL &&
-		    FOLDER(account->folder) == item->folder)
-			folder_update_item(item, TRUE);
 		return 1;
 
 	case A_POP3:
@@ -337,9 +329,6 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
 			FolderItem *item = mainwin->summaryview->folder_item;
 
 			folderview_check_new(FOLDER(account->folder));
-			if (!prefs_common.scan_all_after_inc && item != NULL &&
-			    FOLDER(account->folder) == item->folder)
-				folder_update_item(item, TRUE);
 		}
 	}
 
@@ -625,11 +614,6 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 
 		new_msgs += pop3_state->cur_total_num;
-
-		if (!prefs_common.scan_all_after_inc) {
-			folder_update_items_when_required
-				 (!prefs_common.open_inbox_on_inc);
-		}
 
 		if (pop3_state->error_val == PS_AUTHFAIL &&
 		    pop3_state->ac_prefs->tmp_pass) {
@@ -1189,13 +1173,6 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 	unlink(tmp_mbox);
 	if (msgs >= 0) empty_mbox(mbox);
 	unlock_mbox(mbox, lockfd, LOCK_FLOCK);
-
-	if (!prefs_common.scan_all_after_inc) {
-		folder_update_items_when_required
-			(!prefs_common.open_inbox_on_inc);
-	} else if (!prefs_common.scan_all_after_inc) {
-		folder_update_item(dest, TRUE);
-	}
 
 	return msgs;
 }

@@ -34,6 +34,7 @@ typedef struct _PrefsDialog	PrefsDialog;
 
 #include "prefs.h"
 #include "account.h"
+#include "gtk/prefswindow.h"
 
 #define VSPACING		10
 #define VSPACING_NARROW		4
@@ -166,5 +167,9 @@ void prefs_set_data_from_toggle	(PrefParam	*pparam);
 void prefs_set_toggle		(PrefParam	*pparam);
 void prefs_set_data_from_spinbtn(PrefParam	*pparam);
 void prefs_set_spinbtn		(PrefParam	*pparam);
+
+void prefs_gtk_open		();
+void prefs_gtk_register_page	(PrefsPage 	*page);
+void prefs_gtk_unregister_page	(PrefsPage 	*page);
 
 #endif /* __PREFS_H__ */

@@ -424,11 +424,9 @@ static IMAPSession *imap_session_get(Folder *folder)
 	} else {
 		imap_reset_uid_lists(folder);
 		session = imap_session_new(folder->account);
-		session->last_access_time = time(NULL);
 	}
-	if(!session) {
+	if(session == NULL)
 		return NULL;
-	}
 
 	/* Make sure session is authenticated */
 	if (!IMAP_SESSION(session)->authenticated)

@@ -1078,8 +1078,7 @@ void folder_item_close(FolderItem *item)
 
 	folder_item_write_cache(item);
 	
-	folder_update_item(item, FALSE);
-
+	folder_item_update(item, F_ITEM_UPDATE_MSGCNT);
 }
 
 gint folder_item_scan(FolderItem *item)
@@ -1088,7 +1087,7 @@ gint folder_item_scan(FolderItem *item)
 	GSList *folder_list = NULL, *cache_list = NULL, *folder_list_cur, *cache_list_cur, *new_list = NULL;
 	guint newcnt = 0, unreadcnt = 0, totalcnt = 0, unreadmarkedcnt = 0;
 	guint cache_max_num, folder_max_num, cache_cur_num, folder_cur_num;
-	gboolean contentchange = FALSE;
+	gboolean update_flags = 0;
     
 	g_return_val_if_fail(item != NULL, -1);
 	if (item->path == NULL) return -1;
@@ -1188,8 +1187,6 @@ gint folder_item_scan(FolderItem *item)
 			else
 				folder_cur_num = G_MAXINT;
 
-			contentchange = TRUE;
-
 			continue;
 		}
 
@@ -1209,7 +1206,7 @@ gint folder_item_scan(FolderItem *item)
 			else
 				cache_cur_num = G_MAXINT;
 
-			contentchange = TRUE;
+			update_flags |= F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT;
 
 			continue;
 		}
@@ -1268,7 +1265,7 @@ gint folder_item_scan(FolderItem *item)
 			else
 				folder_cur_num = G_MAXINT;
 
-			contentchange = TRUE;
+			update_flags |= F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT;
 
 			continue;
 		}
@@ -1301,6 +1298,8 @@ gint folder_item_scan(FolderItem *item)
 					procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 				totalcnt++;
 				procmsg_msginfo_free(msginfo);
+
+				update_flags |= F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT;
 			}
 			g_slist_free(newmsg_list);
 		}
@@ -1327,6 +1326,8 @@ gint folder_item_scan(FolderItem *item)
 				procmsg_msginfo_free(msginfo);
 				debug_print("Added newly found message %d to cache.\n", num);
 			}
+
+			update_flags |= F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT;
 		}
 	}
 
@@ -1336,7 +1337,7 @@ gint folder_item_scan(FolderItem *item)
 	item->unreadmarked = unreadmarkedcnt;
 	g_slist_free(new_list);
 
-	folder_update_item(item, contentchange);
+	folder_item_update(item, update_flags);
 
 	return 0;
 }
@@ -1581,7 +1582,7 @@ gint folder_item_add_msg(FolderItem *dest, const gchar *file,
 			if (procmsg_msg_has_flagged_parent(msginfo, MSG_IGNORE_THREAD))
 				procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 			dest->total++;
-			dest->need_update = TRUE;
+			folder_item_update(dest, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
 
             		msgcache_add_msg(dest->cache, msginfo);
 
@@ -1795,7 +1796,7 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 			if (procmsg_msg_has_flagged_parent(newmsginfo, MSG_IGNORE_THREAD))
 				procmsg_msginfo_set_flags(newmsginfo, MSG_IGNORE_THREAD, 0);
 			dest->total++;
-			dest->need_update = TRUE;
+			folder_item_update(dest, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
 
 			procmsg_msginfo_free(newmsginfo);
 		}
@@ -1813,7 +1814,7 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 			if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 				msginfo->folder->unreadmarked--;
 			msginfo->folder->total--;
-			msginfo->folder->need_update = TRUE;
+			folder_item_update(dest, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
 		}
 	}
 	
@@ -1910,7 +1911,7 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 				if (procmsg_msg_has_flagged_parent(newmsginfo, MSG_IGNORE_THREAD))
 					procmsg_msginfo_set_flags(newmsginfo, MSG_IGNORE_THREAD, 0);
 				dest->total++;
-				dest->need_update = TRUE;
+				folder_item_update(dest, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
 
 				procmsg_msginfo_free(newmsginfo);
 			}
@@ -1944,7 +1945,7 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 			if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 				msginfo->folder->unreadmarked--;
 			msginfo->folder->total--;			
-			msginfo->folder->need_update = TRUE;
+			folder_item_update(msginfo->folder, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
 		}
 
 		l2 = g_slist_next(l2);
@@ -2014,7 +2015,7 @@ gint folder_item_copy_msg(FolderItem *dest, MsgInfo *msginfo)
 			if (procmsg_msg_has_flagged_parent(newmsginfo, MSG_IGNORE_THREAD))
 				procmsg_msginfo_set_flags(newmsginfo, MSG_IGNORE_THREAD, 0);
 			dest->total++;
-			dest->need_update = TRUE;
+			folder_item_update(dest, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
 
 			procmsg_msginfo_free(newmsginfo);
 		}			
@@ -2107,7 +2108,7 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 				if (procmsg_msg_has_flagged_parent(newmsginfo, MSG_IGNORE_THREAD))
 					procmsg_msginfo_set_flags(newmsginfo, MSG_IGNORE_THREAD, 0);
 				dest->total++;
-				dest->need_update = TRUE;
+				folder_item_update(dest, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
 
 				procmsg_msginfo_free(newmsginfo);
 			}
@@ -2147,7 +2148,7 @@ gint folder_item_remove_msg(FolderItem *item, gint num)
 		msgcache_remove_msg(item->cache, num);
 	}
 	item->total--;
-	item->need_update = TRUE;
+	folder_item_update(item, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
 
 	return ret;
 }
@@ -2206,7 +2207,7 @@ gint folder_item_remove_all_msg(FolderItem *item)
 		item->unread = 0;
 		item->unreadmarked = 0;
 		item->total = 0;
-		item->need_update = TRUE;
+		folder_item_update(item, F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
 	}
 
 	return result;
@@ -2625,7 +2626,7 @@ static void folder_update_op_count_rec(GNode *node)
 	if (g_node_depth(node) > 0) {
 		if (fitem->op_count > 0) {
 			fitem->op_count = 0;
-			folder_update_item(fitem, FALSE);
+			folder_item_update(fitem, F_ITEM_UPDATE_MSGCNT);
 		}
 		if (node->children) {
 			GNode *child;
@@ -2842,8 +2843,9 @@ void folder_item_apply_processing(FolderItem *item)
 	if (processing_list == NULL)
 		return;
 
+	folder_item_update_freeze();
+
 	mlist = folder_item_get_msg_list(item);
-	
 	for (cur = mlist ; cur != NULL ; cur = cur->next) {
 		MsgInfo * msginfo;
 
@@ -2851,62 +2853,80 @@ void folder_item_apply_processing(FolderItem *item)
 		filter_message_by_msginfo(processing_list, msginfo);
 		procmsg_msginfo_free(msginfo);
 	}
-	
-	folder_update_items_when_required(FALSE);
-
 	g_slist_free(mlist);
+
+	folder_item_update_thaw();
 }
 
 /*
- *  Callback handling for FolderItem content changes
+ *  functions for handling FolderItem content changes
  */
-void folder_update_item(FolderItem *item, gboolean contentchange)
+static gint folder_item_update_freeze_cnt = 0;
+
+/**
+ * Notify the folder system about changes to a folder. If the
+ * update system is not frozen the FOLDER_ITEM_UPDATE_HOOKLIST will
+ * be invoked, otherwise the changes will be remebered until
+ * the folder system is thawed.
+ *
+ * \param item The FolderItem that was changed
+ * \param update_flags Type of changed that was made
+ */
+void folder_item_update(FolderItem *item, FolderItemUpdateFlags update_flags)
 {
-	FolderItemUpdateData source;
+	if (folder_item_update_freeze_cnt == 0) {
+		FolderItemUpdateData source;
 	
-	source.item = item;
-	source.content_change = contentchange;
-	hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &source);
-}
-
-static void folder_update_item_func(FolderItem *item, gpointer contentchange)
-{
-	FolderItemUpdateData source;
-
-	if (item->need_update) {
 		source.item = item;
-		source.content_change = GPOINTER_TO_INT(contentchange);
-		hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &source);
-
-		item->need_update = FALSE;
+		source.update_flags = update_flags;
+    		hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &source);
+	} else {
+		item->update_flags |= update_flags;
 	}
 }
 
-void folder_update_items_when_required(gboolean contentchange)
-{
-	folder_func_to_all_folders(folder_update_item_func, GINT_TO_POINTER(contentchange));
-}
-
-void folder_update_item_recursive(FolderItem *item, gboolean update_summary)
+void folder_item_update_recursive(FolderItem *item, FolderItemUpdateFlags update_flags)
 {
 	GNode *node = item->folder->node;	
-	FolderItemUpdateData source;
 
 	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
 	node = node->children;
 
-	source.item = item;
-	source.content_change = update_summary;	
-	hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &source);
+	folder_item_update(item, update_flags);
 	while (node != NULL) {
 		if (node && node->data) {
 			FolderItem *next_item = (FolderItem*) node->data;
 
-			source.item = next_item;
-			source.content_change = update_summary;	
-			hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &source);
+			folder_item_update(next_item, update_flags);
 		}
 		node = node->next;
+	}
+}
+
+void folder_item_update_freeze()
+{
+	folder_item_update_freeze_cnt++;
+}
+
+static void folder_item_update_func(FolderItem *item, gpointer data)
+{
+	FolderItemUpdateData source;
+    
+	if (item->update_flags) {
+		source.item = item;
+		source.update_flags = item->update_flags;
+		hooks_invoke(FOLDER_ITEM_UPDATE_HOOKLIST, &source);				
+		item->update_flags = 0;
+	}
+}
+
+void folder_item_update_thaw()
+{
+	if (folder_item_update_freeze_cnt > 0)
+		folder_item_update_freeze_cnt--;
+	if (folder_item_update_freeze_cnt == 0) {
+		/* Update all folders */
+		folder_func_to_all_folders(folder_item_update_func, NULL);
 	}
 }
 

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,6 @@ CustomHeader *custom_header_read_str(const gchar *buf)
 	gchar *tmp;
 
 	Xstrdup_a(tmp, buf, return NULL);
-	g_strstrip(tmp);
 
 	account_id_str = tmp;
 
@@ -61,17 +60,17 @@ CustomHeader *custom_header_read_str(const gchar *buf)
 		if (*endp != '\0') return NULL;
 	}
 
-	while (*name == ' ') name++;
-
 	value = strchr(name, ':');
 	if (!value) return NULL;
 
 	*value++ = '\0';
 
+	g_strstrip(name);
+	g_strstrip(value);
+
 	ch = g_new0(CustomHeader, 1);
 	ch->account_id = id;
 	ch->name = *name ? g_strdup(name) : NULL;
-	while (*value == ' ') value++;
 	ch->value = *value ? g_strdup(value) : NULL;
 
 	return ch;
