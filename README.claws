@@ -285,11 +285,19 @@ are hardly noticeable, but deserve mentioning:
   a. Requirements
   ---------------
 
-  The spell checker in sylpheed requires the new GNU/aspell library
+  Note:
+  As for version 0.8.3 (and cvs version 0.8.2claws3), Sylpheed-Claws uses
+  the new GNU/aspell 0.50 for spell checking instead of the obsolete pspell
+  and old aspell 0.33.x.  You will need to upgrade your system.  See
+  http://www.gnu.org/software/aspell for instructions on how to do this.
+
+  The spell checker in Sylpheed requires the new GNU/aspell library
   (http://www.gnu.org/software/aspell), version 0.50 or newer.
 
   You also need the dictionaries. Check GNU/aspell home page for how
   to download and install them.
+  
+  NB: The old dictionaries used by the old aspell will not work.
 
   b. Configuring Sylpheed
   -----------------------
@@ -306,14 +314,17 @@ are hardly noticeable, but deserve mentioning:
 
   ./configure --enable-aspell --with-aspell-prefix=/foo/bar
 
-  If ./configure cannot find the includes or libraries of aspell,
-  check first where these are located, and add either following options:
+  Using the '--with-aspell-prefix=PREFIX' option will let the configure
+  script look for includes and libraries in PREFIX/include and PREFIX/lib.
+
+  You can also specify manualle the includes and libraries path by using
+  either following options:
 
   --with-aspell-includes=/foo/bar/include
 
-  or 
+  and/or 
 
-  --with-aspell-libs=/foo/bar/lib
+  --with-aspell-libs=/rab/oof/lib
 
   as appropriate.
 
@@ -325,13 +336,15 @@ are hardly noticeable, but deserve mentioning:
   c. Usage
   --------
 
-  NOTE: if you upgraded from 0.8.1claws or earlier, please reselect 
-  your default dictionary in the preferences.
+  NOTE: if you upgraded from Sylpheed-Claws 0.8.2 (or cvs version 0.8.2claws2) 
+  or earlier, please check if the dictionary path was updated in the
+  Configuration -> Common Preferences -> Spell Checker menu.  If not, update
+  accordingly as explained below.
 
   After successful compiling, you need to tell Sylpheed where your
   dictionaries reside. The configure script should have found it,
   but in case it did not, run 'aspell config dict-dir' on the
-  shell to get their path.
+  shell to get the path to the dictionaries.
 
   Then run Sylpheed and go to Configuration -> Common preferences ->
   Spell Checker.  Check the box 'Enable spell checker' and
@@ -343,14 +356,14 @@ are hardly noticeable, but deserve mentioning:
   When composing, misspelled words are highlighted.  Click on any
   highlighted word with the right mouse button to get a list of
   suggestions.  The first entry of the menu just displays the unknown
-  word.  Selecting "Accept in this session" (or hitting MOD1-Space, 
-  where MOD1 is usually the ALT key), will ignore this word and accept
-  it in this message.  Selecting the next entry "Add to dictionary", which
-  is bound to MOD1-Enter combination will add the unknown word to the
-  dictionary to learn it.  The next entries are the suggested words. 
+  word.  Selecting 'Accept in this session' (or hitting MOD1-Space, 
+  where MOD1 is usually the ALT key) will ignore this word and accept
+  it in this message.  Selecting the next entry, "Add to dictionary", which
+  is bound to MOD1-Enter combination, will add the unknown word to your
+  personal dictionary to learn it.  The next entries are the suggested words. 
   The first 15 suggestions can be accessed by typing one of the first letters
   of Latin alphabet (if this does not suit your language, please send
-  a mail to melvin.hadasht@free.fr). Aspell has a 'learn from mistake'
+  a mail to melvin.hadasht@free.fr).  Aspell has a 'learn from mistake'
   function that can be used by pressing the MOD1 key and selecting the 
   suggestion (with the keyboard or with the mouse).  See GNU/aspell manual
   §6.3 for an explanation of this feature (also called 'replacement storing'). 
@@ -363,24 +376,24 @@ are hardly noticeable, but deserve mentioning:
   misktakes feature.
 
   Spell checking can also be done using keyboard shortcuts.  In the
-  "Edit" menu of the compose window, there are two menus "Check backwards
-  misspelled word" and "Forward to next misspelled word".  Add to them 
-  appropriate keyboard shortcuts.  "Check backwards misspelled word" 
+  'Edit' menu of the compose window, there are two menus 'Check backwards
+  misspelled word' and 'Forward to next misspelled word'.  Add to them 
+  appropriate keyboard shortcuts.  'Check backwards misspelled word' 
   checks backwards from cursor position for the first misspelled word.
   If it finds one, it displays the suggestions lists which can be handled
   with the keyboard as described before. When the suggestion menu is 
   closed, the cursor returns to its original position to be able to 
-  continue editing.  The "Forward to next misspelled word" do the same 
+  continue editing.  The 'Forward to next misspelled word' do the same 
   thing in the other direction but moves the cursor at the end of the
   misspelled word.  This way, you can spell check easily a whole message
-  starting from its beginning and using the "Forward to next misspelled
-  word" keyboard short cut.
+  starting from its beginning and using the 'Forward to next misspelled
+  word' keyboard short cut.
   
 
   d. Known problems
   -----------------
 
-    No known problems as the time of this writing.
+    No known problems as the time of this writing (0.8.2claws3).
 
 * simplify subject string
 -----------------------------------
