@@ -1,3 +1,13 @@
+2002-11-07 [colin]	0.8.5claws81
+
+	* src/folder.[ch]
+		Add folder_item_move_to() function to move a 
+		folderitem into another one (updates matcher etc)
+	* src/folderview.c
+		Add folder drag'n drop (context menu to come)
+		[Should be dataloss free, but Please backup before 
+		 trying !]
+
 2002-11-06 [colin]	0.8.5claws80
 
 	* src/mh.c

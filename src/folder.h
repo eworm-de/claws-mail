@@ -352,6 +352,8 @@ gchar *folder_item_fetch_msg		(FolderItem	*item,
 gint   folder_item_add_msg		(FolderItem	*dest,
 					 const gchar	*file,
 					 gboolean	 remove_source);
+gint   folder_item_move_to		(FolderItem	*src,
+					 FolderItem	*dest);
 gint   folder_item_move_msg		(FolderItem	*dest,
 					 MsgInfo	*msginfo);
 gint   folder_item_move_msgs_with_dest	(FolderItem	*dest,
@@ -370,7 +372,6 @@ gboolean folder_item_is_msg_changed	(FolderItem	*item,
 gchar *folder_item_get_cache_file	(FolderItem	*item);
 gchar *folder_item_get_mark_file	(FolderItem	*item);
 gchar * folder_item_get_identifier(FolderItem * item);
-FolderItem * folder_find_item_from_identifier(const gchar *identifier);
 
 GHashTable *folder_persist_prefs_new	(Folder *folder);
 void folder_persist_prefs_free		(GHashTable *pptable);
