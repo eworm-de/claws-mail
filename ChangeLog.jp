@@ -1,3 +1,14 @@
+2002-05-02
+
+	* src/compose.c: compose_write_headers(): 必要であれば自分のアドレス
+	  を引用符で囲むようにした。コードの整理。 Newsgroups と Cc を
+	  カスタムヘッダで上書きしないようにした。
+	* src/imap.c: imap_add_msg(): 追加したメッセージの UID を返すように
+	  した。
+	* src/compose.c: compose_queue(): queue フォルダの存在をチェック。
+	* src/imap.c: QUOTE_IF_REQUIRED(): その他の IMAP スペシャルキャラクタ
+	  も引用符で囲むようにした。
+
 2002-04-25
 
 	* src/utils.[ch]: trim_string(): 新規。指定した長さより長い文字を

@@ -1,3 +1,13 @@
+2002-05-02
+
+	* src/compose.c: compose_write_headers(): quote self address name
+	  if required. Some code cleanups. Don't override Newsgroups and
+	  Cc with custom headers.
+	* src/imap.c: imap_add_msg(): return UID for appended message.
+	* src/compose.c: compose_queue(): check if queue folder exists.
+	* src/imap.c: QUOTE_IF_REQUIRED(): quote also other IMAP special
+	  characters.
+
 2002-04-25
 
 	* src/utils.[ch]: trim_string(): new. It trim characters longer than
