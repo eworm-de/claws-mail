@@ -1,3 +1,9 @@
+2002-10-14 [melvin]	0.8.5claws35
+
+	* src/compose.c
+		Added a test to not run the spell checker if no default
+		dictionary is available. No dialog is displayed though.
+
 2002-10-14 [melvin]	0.8.5claws34
 
 	* src/gtkaspell.c
