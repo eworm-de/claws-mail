@@ -976,8 +976,7 @@ static void mimeview_view_file(const gchar *filename, MimeInfo *partinfo,
 {
 	static gchar *default_image_cmdline = "display '%s'";
 	static gchar *default_audio_cmdline = "play '%s'";
-	static gchar *default_html_cmdline =
-		"netscape -remote 'openURL(%s,raise)'";
+	static gchar *default_html_cmdline = DEFAULT_BROWSER_CMD;
 	static gchar *mime_cmdline = "metamail -d -b -x -c %s '%s'";
 	gchar buf[1024];
 	gchar m_buf[1024];

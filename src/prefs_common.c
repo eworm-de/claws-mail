@@ -779,7 +779,7 @@ static PrefParam param[] = {
 	 &interface.entry_pixmap_theme,	prefs_set_data_from_entry, prefs_set_entry},
 	
 	/* Other */
-	{"uri_open_command", "netscape -remote 'openURL(%s,raise)'",
+	{"uri_open_command", DEFAULT_BROWSER_CMD,
 	 &prefs_common.uri_cmd, P_STRING,
 	 &other.uri_entry, prefs_set_data_from_entry, prefs_set_entry},
 	{"print_command", "lpr %s", &prefs_common.print_cmd, P_STRING,
@@ -2890,11 +2890,13 @@ static void prefs_other_create(void)
 	gtk_table_attach (GTK_TABLE (ext_table), uri_combo, 1, 2, 0, 1,
 			  GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtkut_combo_set_items (GTK_COMBO (uri_combo),
+			       DEFAULT_BROWSER_CMD,
+			       "galeon --new-tab '%s'",
 			       "galeon '%s'",
 			       "mozilla -remote 'openurl(%s,new-window)'",
-			       "netscape -remote 'openURL(%s,raise)'",
+			       "netscape -remote 'openURL(%s, new-window)'",
 			       "netscape '%s'",
-			       "gnome-moz-remote --raise --newwin '%s'",
+			       "gnome-moz-remote --newwin '%s'",
 			       "kfmclient openURL '%s'",
 			       "opera -newwindow '%s'",
 			       "kterm -e w3m '%s'",

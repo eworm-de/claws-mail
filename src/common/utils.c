@@ -2751,7 +2751,6 @@ void decode_uri(gchar *decoded_uri, const gchar *encoded_uri)
 
 gint open_uri(const gchar *uri, const gchar *cmdline)
 {
-	static gchar *default_cmdline = "netscape -remote openURL(%s,raise)";
 	gchar buf[BUFFSIZE];
 	gchar *p;
 	gchar encoded_uri[BUFFSIZE];
@@ -2769,7 +2768,7 @@ gint open_uri(const gchar *uri, const gchar *cmdline)
 		if (cmdline)
 			g_warning("Open URI command line is invalid: `%s'",
 				  cmdline);
-		g_snprintf(buf, sizeof(buf), default_cmdline, encoded_uri);
+		g_snprintf(buf, sizeof(buf), DEFAULT_BROWSER_CMD, encoded_uri);
 	}
 	
 	execute_command_line(buf, TRUE);
