@@ -2535,7 +2535,7 @@ msgstr "Sposto il messaggio %s%c%d in %s ...\n"
 #: src/imap.c:686 src/imap.c:739 src/mh.c:489 src/mh.c:617
 #, c-format
 msgid "Copying message %s%c%d to %s ...\n"
-msgstr "Copio in %s il messaggio %s%c%d ...\n"
+msgstr ""
 
 #: src/imap.c:887
 #, c-format
