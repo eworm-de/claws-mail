@@ -163,6 +163,6 @@ const gchar *plugin_name()
 
 const gchar *plugin_desc()
 {
-	return "This plugin allows to render HTML mail using the Dillo "
+	return "This plugin renders HTML mail using the Dillo "
 		"web browser.";
 }
