@@ -137,7 +137,7 @@ typedef enum
 
 #define QUOTE_IF_REQUIRED(out, str)				\
 {								\
-	if (*str != '"' && strpbrk(str, " \t(){}%*") != NULL) {	\
+	if (*str != '"' && strpbrk(str, " \t(){}[]%*") != NULL) {	\
 		gchar *__tmp;					\
 		gint len;					\
 								\

@@ -1,3 +1,10 @@
+2005-03-30 [colin]	1.9.6cvs15
+
+	* src/imap.c
+		Fix handling of imap folders containing [] in 
+		their name. Thanks to Nahuel Angelinetti for
+		the detailed bugreport.
+
 2005-03-30 [colin]	1.9.6cvs14
 
 	* src/common/utils.h
