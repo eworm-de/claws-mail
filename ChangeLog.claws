@@ -1,3 +1,8 @@
+2001-12-07 [christoph]	0.6.5claws61
+
+	* src/compose.c
+		fix another header translation problem
+
 2001-12-07 [alfons]	0.6.5claws60
 
 	* src/mbox.c

@@ -4451,10 +4451,11 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 				   account->auto_replyto);
 #endif
 	}
+
 	if (account->protocol != A_NNTP) {
-		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry), _("To:"));
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry), prefs_common.trans_hdr ? _("To:") : "To:");
 	} else {
-		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry), _("Newsgroups:"));
+		gtk_entry_set_text(GTK_ENTRY(GTK_COMBO(compose->header_last->combo)->entry), prefs_common.trans_hdr ? _("Newsgroups:") : "Newsgroups:");
 	}
 
 	menuitem = gtk_item_factory_get_item(ifactory, "/Tool/Show ruler");
