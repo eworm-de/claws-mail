@@ -1,6 +1,139 @@
-2002-08-11 alfons	0.8.1claws52
+2002-08-17 [alfons]	0.8.1claws71
 
-	* src/claws.c
+	* src/toolbar.c
+		plug another memleak reported by Martin Kluge
+
+2002-08-16 [alfons]	0.8.1claws70
+
+	* src/crash.c
+		use execvp() correctly (suggested by wwp; thanks!)
+
+2002-08-16 [alfons]	0.8.1claws69
+
+	* src/gtksctree.c
+		plug memory leak reported by Kim Schultz & Martin Kluge
+
+2002-08-16 [paul]	0.8.1claws68
+
+	* po/es.po
+		updated by Ricardo Mones Lastra
+
+2002-08-16 [paul]	0.8.1claws67
+
+	* src/toolbar.h
+		fix bug where 'Compose News' icon showed wrong
+		tooltip
+
+2002-08-16 [paul]	0.8.1claws66
+
+	* sync with 0.8.1cvs24
+		see ChangeLog 2002-08-16
+
+	* po/it.po
+		updated by Alessandro Maestri
+
+2002-08-15 [paul]	0.8.1claws65
+
+	* po/sr.po
+		updated by Urke MMI
+
+2002-08-15 [paul]	0.8.1claws64
+
+	* src/*.c
+		don't translate debug info
+
+	* src/matcher.[ch]
+		add copyright info
+
+2002-08-15 [paul]	0.8.1claws63
+
+	* src/prefs_toolbar.c
+		fix bug where clicking 'OK' creates an icon & text
+		toolbar regardless of prefs
+
+2002-08-14 [alfons]	0.8.1claws62
+
+	* src/main.c
+		add global var that has the full argv[0]
+	* src/crash.c
+		o execvp the correct sylpheed by using argv0
+		  and setting the correct work dir
+		o other tweaks  
+
+2002-08-14 [oliver]	0.8.1claws61
+	
+	* enable/disable Toolbar Action Buttons 
+	* code cleanups
+	* src/mainwindow.c
+	* src/toolbar.[ch]	
+	* src/prefs_toolbar.c	
+
+2002-08-14 [melvin]	0.8.1claws60
+
+	* po/fr.po
+		Updated French translations
+
+2002-08-14 [melvin]	0.8.1claws59
+
+	* src/crash.c
+		Made bug report not translatable
+	* src/exporthtml.c
+		Fixed exporthtml_build_filespec() return value
+	* src/foldersel.c
+		Fixed incorrect include file
+	* src/gtkspell.c
+	* src/prefs_actions.c
+	* src/prefs_toolbar.c
+		Made debug info not translatable
+	* src/mutt.c
+	* src/quote_fmt.c
+		Added missing includes
+	* src/prefs_common.c
+		Fixed typo
+
+2002-08-14 [paul]	0.8.1claws58
+
+	* faq/es/sylpheed-faq.html
+	  faq/es/sylpheed-faq-[1-3].html
+	  faq/es/sylpheed-faq-4.html	 **NEW FILE **
+		update Spanish FAQ
+
+2002-08-13 [christoph]	0.8.1claws57
+
+	* src/procmsg.c
+		ignore thread fix that did not mark all
+		child nodes of a ignored thread as
+		ignored. Does not work perfectly yet,
+		but it is better now
+
+2002-08-13 [alfons]	0.8.1claws56
+
+	* src/crash.c
+		o implement 'save crash log'
+		o some tweaks
+
+2002-08-13 [melvin]	0.8.1claws55
+
+	* src/main.c
+		removed unrequired "execinfo.h" header
+
+2002-08-12 [paul]	0.8.1claws54
+
+	* faq/en/sylpheed-faq.html
+	  faq/en/sylpheed-faq-[1-3].html
+	  faq/en/sylpheed-faq-4.html	 **NEW FILE **
+		update English FAQ
+
+2002-08-12 [alfons]	0.8.1claws53
+
+	* po/POTFILES.in
+		add crash.c to translatables
+	* src/crash.c
+		bring in Leandro's crash dialog
+
+2002-08-11 [alfons]	0.8.1claws52
+
+	* src/crash.c
 		clean up some warnings
 
 2002-08-11 [alfons]	0.8.1claws51

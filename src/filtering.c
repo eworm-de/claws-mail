@@ -334,7 +334,7 @@ static void filter_msginfo(GSList * filtering_list, FolderItem *inbox,
 	if ((final && !applied) || !final) {
 		if (inbox != info->folder) {
 			if (folder_item_move_msg(inbox, info) == -1) {
-				debug_print(_("*** Could not drop message in inbox; check .processing\n"));
+				debug_print("*** Could not drop message in inbox; check .processing\n");
 				return;
 			}	
 			if (folder_table) {

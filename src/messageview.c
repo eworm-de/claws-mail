@@ -78,7 +78,7 @@ MessageView *messageview_create(void)
 	MimeView *mimeview;
 	NoticeView *noticeview;
 
-	debug_print(_("Creating message view...\n"));
+	debug_print("Creating message view...\n");
 	messageview = g_new0(MessageView, 1);
 
 	messageview->type = MVIEW_TEXT;
@@ -203,7 +203,7 @@ static gint disposition_notification_queue(PrefsAccount * account,
 	gchar buf[BUFFSIZE];
 	gint num;
 
-	debug_print(_("queueing message...\n"));
+	debug_print("queueing message...\n");
 	g_return_val_if_fail(account != NULL, -1);
 
 	tmp = g_strdup_printf("%s%cqueue.%d", g_get_tmp_dir(),

@@ -1040,7 +1040,7 @@ void exporthtml_process(
  * Build full export file specification.
  * Enter:  ctl  Export control data.
  */
-static void *exporthtml_build_filespec( ExportHtmlCtl *ctl ) {
+static void exporthtml_build_filespec( ExportHtmlCtl *ctl ) {
 	gchar *fileSpec;
 
 	fileSpec = g_strconcat(

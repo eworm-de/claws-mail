@@ -660,7 +660,7 @@ gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint uid)
 	g_free(path);
  
 	if (is_file_exist(filename)) {
-		debug_print(_("message %d has been already cached.\n"), uid);
+		debug_print("message %d has been already cached.\n", uid);
 		return filename;
 	}
 
@@ -679,7 +679,7 @@ gchar *imap_fetch_msg(Folder *folder, FolderItem *item, gint uid)
 		return NULL;
 	}
 
-	debug_print(_("getting message %d...\n"), uid);
+	debug_print("getting message %d...\n", uid);
 	ok = imap_cmd_fetch(SESSION(session)->sock, (guint32)uid, filename);
 
 	statusbar_pop_all();
@@ -767,11 +767,11 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 	destdir = imap_get_real_path(IMAP_FOLDER(folder), dest->path);
 
 	if (remove_source)
-		debug_print(_("Moving message %s%c%d to %s ...\n"),
+		debug_print("Moving message %s%c%d to %s ...\n",
 			    msginfo->folder->path, G_DIR_SEPARATOR,
 			    msginfo->msgnum, destdir);
 	else
-		debug_print(_("Copying message %s%c%d to %s ...\n"),
+		debug_print("Copying message %s%c%d to %s ...\n",
 			    msginfo->folder->path, G_DIR_SEPARATOR,
 			    msginfo->msgnum, destdir);
 
@@ -820,11 +820,11 @@ static gint imap_do_copy_msgs_with_dest(Folder *folder, FolderItem *dest,
 		}
 
 		if (remove_source)
-			debug_print(_("Moving message %s%c%d to %s ...\n"),
+			debug_print("Moving message %s%c%d to %s ...\n",
 				    msginfo->folder->path, G_DIR_SEPARATOR,
 				    msginfo->msgnum, destdir);
 		else
-			debug_print(_("Copying message %s%c%d to %s ...\n"),
+			debug_print("Copying message %s%c%d to %s ...\n",
 				    msginfo->folder->path, G_DIR_SEPARATOR,
 				    msginfo->msgnum, destdir);
 
@@ -1657,7 +1657,7 @@ static GSList *imap_delete_cached_messages(GSList *mlist, FolderItem *item,
 	g_return_val_if_fail(item->folder != NULL, mlist);
 	g_return_val_if_fail(item->folder->type == F_IMAP, mlist);
 
-	debug_print(_("Deleting cached messages %u - %u ... "),
+	debug_print("Deleting cached messages %u - %u ... ",
 		    first_uid, last_uid);
 
 	dir = folder_item_get_path(item);
@@ -1677,7 +1677,7 @@ static GSList *imap_delete_cached_messages(GSList *mlist, FolderItem *item,
 		cur = next;
 	}
 
-	debug_print(_("done.\n"));
+	debug_print("done.\n");
 
 	return mlist;
 }
@@ -1690,13 +1690,13 @@ static void imap_delete_all_cached_messages(FolderItem *item)
 	g_return_if_fail(item->folder != NULL);
 	g_return_if_fail(item->folder->type == F_IMAP);
 
-	debug_print(_("Deleting all cached messages...\n"));
+	debug_print("Deleting all cached messages...\n");
 
 	dir = folder_item_get_path(item);
 	remove_all_numbered_files(dir);
 	g_free(dir);
 
-	debug_print(_("done.\n"));
+	debug_print("done.\n");
 }
 
 #if USE_SSL

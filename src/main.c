@@ -46,9 +46,6 @@
 #include <time.h>
 #include <sys/types.h>
 #include <signal.h>
-#ifndef WIN32
-#include <execinfo.h>
-#endif
 
 #if HAVE_LOCALE_H
 #  include <locale.h>
@@ -99,6 +96,7 @@
 
 gchar *prog_version;
 gchar *startup_dir;
+gchar *argv0;
 #ifdef _DEBUG   /* WIN32 */
 gboolean debug_mode = TRUE ;
 #else
@@ -210,6 +208,7 @@ int main(int argc, char *argv[])
 
 	prog_version = PROG_VERSION;
 	startup_dir = g_get_current_dir();
+	argv0 = g_strdup(argv[0]);
 
 	parse_cmd_opt(argc, argv);
 
@@ -574,7 +573,7 @@ static void initial_processing(FolderItem *item, gpointer data)
 	
 	folder_item_apply_processing(item);
 
-	debug_print(_("done.\n"));
+	debug_print("done.\n");
 	STATUSBAR_POP(mainwin);
 	main_window_cursor_normal(mainwin);
 }
@@ -688,7 +687,7 @@ static gint prohibit_duplicate_launch(void)
 
 	/* remote command mode */
 
-	debug_print(_("another Sylpheed is already running.\n"));
+	debug_print("another Sylpheed is already running.\n");
 
 	if (cmd.receive_all)
 #ifdef WIN32

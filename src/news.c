@@ -350,7 +350,7 @@ gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	g_free(path);
 
 	if (is_file_exist(filename)) {
-		debug_print(_("article %d has been already cached.\n"), num);
+		debug_print("article %d has been already cached.\n", num);
 		return filename;
 	}
 
@@ -368,7 +368,7 @@ gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 		return NULL;
 	}
 
-	debug_print(_("getting article %d...\n"), num);
+	debug_print("getting article %d...\n", num);
 	ok = news_get_article(NNTP_SESSION(REMOTE_FOLDER(folder)->session),
 			      num, filename);
 	statusbar_pop_all();
@@ -726,7 +726,7 @@ static GSList *news_get_uncached_articles(NNTPSession *session,
 	else if (last < cache_last)
 		begin = first;
 	else if (last == cache_last) {
-		debug_print(_("no new articles.\n"));
+		debug_print("no new articles.\n");
 		return NULL;
 	} else
 		begin = cache_last + 1;

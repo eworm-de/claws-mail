@@ -292,7 +292,7 @@ static void prefs_matcher_create(void)
 
 	gchar *title[1];
 
-	debug_print(_("Creating matcher setting window...\n"));
+	debug_print("Creating matcher setting window...\n");
 
 	window = gtk_window_new (GTK_WINDOW_DIALOG);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);

@@ -116,7 +116,7 @@ void account_read_config_all(void)
 	gchar buf[PREFSBUFSIZE];
 	PrefsAccount *ac_prefs;
 
-	debug_print(_("Reading all config for each account...\n"));
+	debug_print("Reading all config for each account...\n");
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, ACCOUNT_RC, NULL);
 	if ((fp = fopen(rcpath, "rb")) == NULL) {
@@ -131,7 +131,7 @@ void account_read_config_all(void)
 			strretchomp(buf);
 			memmove(buf, buf + 1, strlen(buf));
 			buf[strlen(buf) - 1] = '\0';
-			debug_print(_("Found label: %s\n"), buf);
+			debug_print("Found label: %s\n", buf);
 			ac_label_list = g_slist_append(ac_label_list,
 						       g_strdup(buf));
 		}
@@ -284,7 +284,7 @@ void account_edit_open(void)
 		return;
 	}
 
-	debug_print(_("Opening account edit window...\n"));
+	debug_print("Opening account edit window...\n");
 
 	if (!edit_account.window)
 		account_edit_create();
@@ -481,7 +481,7 @@ static void account_edit_create(void)
 	GtkWidget *hbbox;
 	GtkWidget *close_btn;
 
-	debug_print(_("Creating account edit window...\n"));
+	debug_print("Creating account edit window...\n");
 
 	window = gtk_window_new (GTK_WINDOW_DIALOG);
 	gtk_widget_set_usize (window, 500, 320);
@@ -645,7 +645,7 @@ static void account_edit_prefs(void)
 	    ac_prefs->folder && strcmp2(ac_name, ac_prefs->account_name) != 0) {
 		folder_set_name(FOLDER(ac_prefs->folder),
 				ac_prefs->account_name);
-		folderview_rescan_all();
+		folderview_set_all();
 	}
 
 	account_clist_set();
@@ -690,12 +690,12 @@ static void account_delete(void)
 	ac_prefs = gtk_clist_get_row_data(clist, row);
 	if (ac_prefs->folder) {
 		folder_destroy(FOLDER(ac_prefs->folder));
-		folderview_rescan_all();
+		folderview_set_all();
 	}
 	account_destroy(ac_prefs);
 	account_clist_set();
 
-	debug_print(_("Removing deleted account references for all the folders...\n"));
+	debug_print("Removing deleted account references for all the folders...\n");
 	list = folder_get_list();
 	for (; list != NULL; list = list->next) {
 		folder = FOLDER(list->data);

@@ -45,7 +45,7 @@ ImageView *imageview_create(void)
 	ImageView *imageview;
 	GtkWidget *scrolledwin;
 
-	debug_print(_("Creating image view...\n"));
+	debug_print("Creating image view...\n");
 	imageview = g_new0(ImageView, 1);
 
 	scrolledwin = gtk_scrolled_window_new(NULL, NULL);

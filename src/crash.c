@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2002 by the Sylpheed Claws Team and  Hiroyuki Yamamoto
+ * Copyright (C) 2002 by the Sylpheed Claws Team and Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>
+#	include <config.h>
 #endif
 
 #include <glib.h>
@@ -26,87 +26,177 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <time.h>
 
 #include <errno.h>
 #include <fcntl.h>
 
+#if HAVE_SYS_UTSNAME_H
+#	include <sys/utsname.h>
+#endif
+
+#if defined(__GNU_LIBRARY__)
+#	include <gnu/libc-version.h>
+#endif
+
 #include "intl.h"
 #include "crash.h"
 #include "utils.h"
-#include "prefs.h"
+#include "filesel.h"
+#include "version.h"
 
-static void crash_handler			(int sig);
-static gboolean is_crash_dialog_allowed		(void);
-static void crash_debug				(unsigned long crash_pid, GString *string);
-static gboolean crash_create_debugger_file	(void);
+#if 0
+#include "gtkutils.h"
+#include "pixmaps/notice_error.xpm"
+#endif
+
+/*
+ * NOTE 1: the crash dialog is called when sylpheed is not 
+ * initialized, so do not assume settings are available.
+ * for example, loading / creating pixmaps seems not 
+ * to be possible.
+ */
+
+static void		 crash_handler			(int sig);
+static gboolean		 is_crash_dialog_allowed	(void);
+static void		 crash_debug			(unsigned long crash_pid, 
+							 gchar   *exe_image,
+							 GString *debug_output);
+static gboolean		 crash_create_debugger_file	(void);
+static void		 crash_save_crash_log		(GtkButton *, const gchar *);
+
+static const gchar	*get_compiled_in_features	(void);
+static const gchar	*get_lib_version		(void);
+static const gchar	*get_operating_system		(void);
+
+
+/***/
 
 static const gchar *DEBUG_SCRIPT = "bt full\nq";
 
 /***/
 
-GtkWidget *crash_dialog_new (const gchar *text, const gchar *debug_output)
+/*
+ *\brief	(can't get pixmap working, so discarding it)
+ */
+static GtkWidget *crash_dialog_new(const gchar *text, const gchar *debug_output)
 {
 	GtkWidget *window1;
 	GtkWidget *vbox1;
+	GtkWidget *hbox1;
 	GtkWidget *label1;
+	GtkWidget *frame1;
 	GtkWidget *scrolledwindow1;
 	GtkWidget *text1;
-	GtkWidget *hbuttonbox1;
-	GtkWidget *close;
+	GtkWidget *hbuttonbox3;
+	GtkWidget *hbuttonbox4;
 	GtkWidget *button3;
+	GtkWidget *button4;
+	GtkWidget *button5;
+	GtkWidget *pixwid;
+	GdkPixmap *pix;
+	GdkBitmap *msk;
+	gchar	  *crash_report;
 
 	window1 = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_object_set_data(GTK_OBJECT(window1), "window1", window1);
-	gtk_window_set_title(GTK_WINDOW(window1), _("Sylpheed Claws - It Bites!"));
+	gtk_container_set_border_width(GTK_CONTAINER(window1), 5);
+	gtk_window_set_title(GTK_WINDOW(window1), _("Sylpheed has crashed"));
+	gtk_window_set_position(GTK_WINDOW(window1), GTK_WIN_POS_CENTER);
+	gtk_window_set_modal(GTK_WINDOW(window1), TRUE);
+	gtk_window_set_default_size(GTK_WINDOW(window1), 460, 272);
 
-	vbox1 = gtk_vbox_new(FALSE, 0);
+
+	vbox1 = gtk_vbox_new(FALSE, 2);
 	gtk_widget_show(vbox1);
 	gtk_container_add(GTK_CONTAINER(window1), vbox1);
-	gtk_container_set_border_width(GTK_CONTAINER (vbox1), 1);
 
-	label1 = gtk_label_new(text);
+	hbox1 = gtk_hbox_new(FALSE, 4);
+	gtk_widget_show(hbox1);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox1, FALSE, TRUE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 4);
+
+#if 0
+	PIXMAP_CREATE(window1, pix, msk, notice_error_xpm);
+	pixwid = gtk_pixmap_new(pix, msk);
+	gtk_widget_show(pixwid);
+	gtk_box_pack_start(GTK_BOX(hbox1), pixwid, TRUE, TRUE, 0);
+#endif	
+
+	label1 = gtk_label_new
+	    (g_strdup_printf(_("%s.\nPlease file a bug report and include the information below."), text));
 	gtk_widget_show(label1);
-	gtk_box_pack_start(GTK_BOX(vbox1), label1, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox1), label1, TRUE, TRUE, 0);
+	gtk_misc_set_alignment(GTK_MISC(label1), 7.45058e-09, 0.5);
+
+	frame1 = gtk_frame_new(_("Debug log"));
+	gtk_widget_show(frame1);
+	gtk_box_pack_start(GTK_BOX(vbox1), frame1, TRUE, TRUE, 0);
 
 	scrolledwindow1 = gtk_scrolled_window_new(NULL, NULL);
 	gtk_widget_show(scrolledwindow1);
-	gtk_box_pack_start(GTK_BOX(vbox1), scrolledwindow1, TRUE, TRUE, 0);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow1), 
+	gtk_container_add(GTK_CONTAINER(frame1), scrolledwindow1);
+	gtk_container_set_border_width(GTK_CONTAINER(scrolledwindow1), 3);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrolledwindow1),
 				       GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 
 	text1 = gtk_text_new(NULL, NULL);
-	gtk_text_insert(GTK_TEXT(text1), NULL, NULL, NULL, 
-			debug_output, strlen(debug_output));
+	gtk_text_set_editable(GTK_TEXT(text1), FALSE);
 	gtk_widget_show(text1);
-	gtk_container_add(GTK_CONTAINER (scrolledwindow1), text1);
+	gtk_container_add(GTK_CONTAINER(scrolledwindow1), text1);
 	
-	hbuttonbox1 = gtk_hbutton_box_new();
-	gtk_widget_show(hbuttonbox1);
-	gtk_box_pack_start(GTK_BOX(vbox1), hbuttonbox1, FALSE, TRUE, 0);
-	gtk_button_box_set_child_ipadding(GTK_BUTTON_BOX (hbuttonbox1), 5, -1);
+	crash_report = g_strdup_printf(
+		"Sylpheed version %s\nGTK+ version %d.%d.%d\nFeatures:%s\nOperating system: %s\nC Library: %s\n--\n%s",
+		VERSION,
+		gtk_major_version, gtk_minor_version, gtk_micro_version,
+		get_compiled_in_features(),
+		get_operating_system(),
+		get_lib_version(),
+		debug_output);
 
-	close = gtk_button_new_with_label(_("Close"));
-	gtk_widget_show(close);
-	gtk_container_add(GTK_CONTAINER(hbuttonbox1), close);
-	GTK_WIDGET_SET_FLAGS(close, GTK_CAN_DEFAULT);
+	gtk_text_insert(GTK_TEXT(text1), NULL, NULL, NULL, crash_report, -1);
 
-	button3 = gtk_button_new_with_label(_("Save..."));
+	hbuttonbox3 = gtk_hbutton_box_new();
+	gtk_widget_show(hbuttonbox3);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbuttonbox3, FALSE, FALSE, 0);
+
+	hbuttonbox4 = gtk_hbutton_box_new();
+	gtk_widget_show(hbuttonbox4);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbuttonbox4, FALSE, FALSE, 0);
+
+	button3 = gtk_button_new_with_label(_("Close"));
 	gtk_widget_show(button3);
-	gtk_container_add(GTK_CONTAINER(hbuttonbox1), button3);
+	gtk_container_add(GTK_CONTAINER(hbuttonbox4), button3);
 	GTK_WIDGET_SET_FLAGS(button3, GTK_CAN_DEFAULT);
 
+	button4 = gtk_button_new_with_label(_("Save..."));
+	gtk_widget_show(button4);
+	gtk_container_add(GTK_CONTAINER(hbuttonbox4), button4);
+	GTK_WIDGET_SET_FLAGS(button4, GTK_CAN_DEFAULT);
+
+	button5 = gtk_button_new_with_label(_("Create bug report"));
+	gtk_widget_show(button5);
+	gtk_container_add(GTK_CONTAINER(hbuttonbox4), button5);
+	GTK_WIDGET_SET_FLAGS(button5, GTK_CAN_DEFAULT);
+	
 	gtk_signal_connect(GTK_OBJECT(window1), "delete_event",
 			   GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
-	gtk_signal_connect(GTK_OBJECT(close),   "clicked",
+	gtk_signal_connect(GTK_OBJECT(button3),   "clicked",
 			   GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
+	gtk_signal_connect(GTK_OBJECT(button4), "clicked",
+			   GTK_SIGNAL_FUNC(crash_save_crash_log),
+			   crash_report);
 
 	gtk_widget_show(window1);
+
 	gtk_main();
 	return window1;
 }
 
 /***/
 
+/*
+ *\brief	install crash handlers
+ */
 void crash_install_handlers(void)
 {
 #if HAVE_GDB
@@ -152,16 +242,17 @@ void crash_main(const char *arg)
 	gchar **tokens;
 	unsigned long pid;
 	GString *output;
+	extern gchar *startup_dir;
 
 	crash_create_debugger_file();
 	tokens = g_strsplit(arg, ",", 0);
 
 	pid = atol(tokens[0]);
-	text = g_strdup_printf("Sylpheed process (%lx) received signal %ld",
+	text = g_strdup_printf(_("Sylpheed process (%ld) received signal %ld"),
 			       pid, atol(tokens[1]));
 
-	output = g_string_new("DEBUG LOG\n");     
-	crash_debug(pid, output);
+	output = g_string_new("");     
+	crash_debug(pid, tokens[2], output);
 	crash_dialog_new(text, output->str);
 	g_string_free(output, TRUE);
 	g_free(text);
@@ -176,20 +267,37 @@ void crash_main(const char *arg)
  */
 static gboolean crash_create_debugger_file(void)
 {
-	PrefFile *pf;
 	gchar *filespec = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, DEBUGGERRC, NULL);
-
-	pf = prefs_write_open(filespec);
+	
+	str_write_to_file(DEBUG_SCRIPT, filespec);
 	g_free(filespec);
-	if (pf) 
-		fprintf(pf->fp, DEBUG_SCRIPT);
-	prefs_write_close(pf);	
+}
+
+/*
+ *\brief	saves crash log to a file
+ */
+static void crash_save_crash_log(GtkButton *button, const gchar *text)
+{
+	time_t timer;
+	struct tm *lt;
+	char buf[100];
+	gchar *filename;
+
+	timer = time(NULL);
+	lt = localtime(&timer);
+	strftime(buf, sizeof buf, "sylpheed-crash-log-%y-%m-%d-%H-%M-%S.txt", lt);
+	if (NULL != (filename = filesel_select_file(_("Save crash information"), buf))
+	&&  *filename)
+		str_write_to_file(text, filename);
+	g_free(filename);	
 }
 
 /*
  *\brief	launches debugger and attaches it to crashed sylpheed
  */
-static void crash_debug(unsigned long crash_pid, GString *string)
+static void crash_debug(unsigned long crash_pid, 
+			gchar *exe_image,
+			GString *debug_output)
 {
 	int choutput[2];
 	pid_t pid;
@@ -197,7 +305,7 @@ static void crash_debug(unsigned long crash_pid, GString *string)
 	pipe(choutput);
 
 	if (0 == (pid = fork())) {
-		char *argp[9];
+		char *argp[10];
 		char **argptr = argp;
 		gchar *filespec = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, DEBUGGERRC, NULL);
 
@@ -207,13 +315,14 @@ static void crash_debug(unsigned long crash_pid, GString *string)
 		/*
 		 * setup debugger to attach to crashed sylpheed
 		 */
+		*argptr++ = "gdb"; 
 		*argptr++ = "--nw";
 		*argptr++ = "--nx";
 		*argptr++ = "--quiet";
 		*argptr++ = "--batch";
-		*argptr++ = "--command";
-		*argptr++ = g_strdup_printf("%s", filespec);
-		*argptr++ = "sylpheed"; /* program file name */
+		*argptr++ = "-x";
+		*argptr++ = filespec;
+		*argptr++ = exe_image;
 		*argptr++ = g_strdup_printf("%d", crash_pid);
 		*argptr   = NULL;
 
@@ -244,7 +353,7 @@ static void crash_debug(unsigned long crash_pid, GString *string)
 			r = read(choutput[0], buf, sizeof buf - 1);
 			if (r > 0) {
 				buf[r] = 0;
-				g_string_append(string, buf);
+				g_string_append(debug_output, buf);
 			}
 		} while (r > 0);
 		
@@ -258,16 +367,93 @@ static void crash_debug(unsigned long crash_pid, GString *string)
 	}
 }
 
+/***/
+
 /*
- *\brief	checks KDE, GNOME and Sylpheed specific variables
- *		to see if the crash dialog is allowed (because some
+ *\brief	features
+ */
+static const gchar *get_compiled_in_features(void)
+{
+	return g_strdup_printf("%s",
+#if HAVE_GDK_IMLIB
+		   " gdk_imlib"
+#endif
+#if HAVE_GDK_PIXBUF
+		   " gdk-pixbuf"
+#endif
+#if USE_THREADS
+		   " gthread"
+#endif
+#if INET6
+		   " IPv6"
+#endif
+#if HAVE_LIBCOMPFACE
+		   " libcompface"
+#endif
+#if HAVE_LIBJCONV
+		   " libjconv"
+#endif
+#if USE_GPGME
+		   " GPGME"
+#endif
+#if USE_SSL
+		   " SSL"
+#endif
+#if USE_LDAP
+		   " LDAP"
+#endif
+#if USE_JPILOT
+		   " JPilot"
+#endif
+#if USE_PSPELL
+		   " pspell"
+#endif
+	"");
+}
+
+/***/
+
+/*
+ *\brief	library version
+ */
+static const gchar *get_lib_version(void)
+{
+#if defined(__GNU_LIBRARY__)
+	return g_strdup_printf("GNU libc %s", gnu_get_libc_version());
+#else
+	return g_strdup(_("Unknown"));
+#endif
+}
+
+/***/
+
+/*
+ *\brief	operating system
+ */
+static const gchar *get_operating_system(void)
+{
+#if HAVE_SYS_UTSNAME_H
+	struct utsname utsbuf;
+	uname(&utsbuf);
+	return g_strdup_printf("%s %s (%s)",
+			       utsbuf.sysname,
+			       utsbuf.release,
+			       utsbuf.machine);
+#else
+	return g_strdup(_("Unknown"));
+	
+#endif
+}
+
+/***/
+
+/*
+ *\brief	see if the crash dialog is allowed (because some
  *		developers may prefer to run sylpheed under gdb...)
  */
 static gboolean is_crash_dialog_allowed(void)
 {
-	return getenv("KDE_DEBUG") || 
-	       !getenv("GNOME_DISABLE_CRASH_DIALOG") ||
-	       !getenv("SYLPHEED_NO_CRASH");
+	return !getenv("SYLPHEED_NO_CRASH");
 }
 
 /*
@@ -280,11 +466,18 @@ static void crash_handler(int sig)
 	static volatile unsigned long crashed_ = 0;
 
 	/*
+	 * let's hope startup_dir and argv0 aren't trashed.
+	 * both are defined in main.c.
+	 */
+	extern gchar *startup_dir;
+	extern gchar *argv0;
+
+
+	/*
 	 * besides guarding entrancy it's probably also better 
 	 * to mask off signals
 	 */
-	if (crashed_) 
-		return;
+	if (crashed_) return;
 
 	crashed_++;
 
@@ -294,27 +487,28 @@ static void crash_handler(int sig)
 	gdk_pointer_ungrab(GDK_CURRENT_TIME);
 	gdk_keyboard_ungrab(GDK_CURRENT_TIME);
 	gdk_flush();
-	 
+
+
 	if (0 == (pid = fork())) {
 		char buf[50];
-		char *args[4];
+		char *args[5];
 	
 		/*
 		 * probably also some other parameters (like GTK+ ones).
+		 * also we pass the full startup dir and the real command
+		 * line typed in (argv0)
 		 */
-		args[0] = "--debug";
-		args[1] = "--crash";
-		sprintf(buf, "%ld,%d", getppid(), sig);
-		args[2] = buf;
-		args[3] = NULL;
+		args[0] = argv0; 
+		args[1] = "--debug";
+		args[2] = "--crash";
+		sprintf(buf, "%ld,%d,%s", getppid(), sig, argv0);
+		args[3] = buf;
+		args[4] = NULL;
 
+		chdir(startup_dir);
 		setgid(getgid());
 		setuid(getuid());
-#if 0		
-		execvp("/alfons/Projects/sylpheed-claws/src/sylpheed", args);
-#else
-		execvp("sylpheed", args);
-#endif
+		execvp(argv0, args);
 	} else {
 		waitpid(pid, NULL, 0);
 		_exit(253);

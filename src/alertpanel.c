@@ -239,7 +239,7 @@ static void alertpanel_create(const gchar *title,
 	const gchar *label2;
 	const gchar *label3;
 
-	debug_print(_("Creating alert panel dialog...\n"));
+	debug_print("Creating alert panel dialog...\n");
 
 	dialog = gtk_dialog_new();
 	gtk_window_set_title(GTK_WINDOW(dialog), title);

@@ -181,7 +181,7 @@ TextView *textview_create(void)
 	GtkWidget *text_sb;
 	GtkWidget *text_mb;
 
-	debug_print(_("Creating text view...\n"));
+	debug_print("Creating text view...\n");
 	textview = g_new0(TextView, 1);
 
 	scrolledwin_sb = gtk_scrolled_window_new(NULL, NULL);

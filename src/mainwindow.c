@@ -400,7 +400,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_File"),				NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Add mailbox..."),		NULL, add_mailbox_cb, 0, NULL},
 	{N_("/_File/_Add mbox mailbox..."),     NULL, add_mbox_cb, 0, NULL},
-	{N_("/_File/_Check for new mails in all folders"),
+	{N_("/_File/_Check for new messages in all folders"),
 						NULL, update_folderview_cb, 0, NULL},
 	{N_("/_File/_Folder"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_File/_Folder/Create _new folder..."),
@@ -725,7 +725,7 @@ MainWindow *main_window_create(SeparateType type)
 
 	static GdkGeometry geometry;
 
-	debug_print(_("Creating main window...\n"));
+	debug_print("Creating main window...\n");
 	mainwin = g_new0(MainWindow, 1);
 
 	/* main window */
@@ -771,8 +771,6 @@ MainWindow *main_window_create(SeparateType type)
 
 	/* create the popup menus for the reply buttons specials */
 	toolbar_popups_create(mainwin, window);
-			   
-	//main_window_toolbar_create(mainwin, handlebox);
 	toolbar_create(mainwin, handlebox);
 
 	/* vbox that contains body */
@@ -890,7 +888,7 @@ MainWindow *main_window_create(SeparateType type)
 			g_warning(_("MainWindow: color allocation %d failed\n"), i);
 	}
 
-	debug_print(_("done.\n"));
+	debug_print("done.\n");
 
 	messageview->visible = TRUE;
 
@@ -1044,11 +1042,7 @@ void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
 
 		/* pixmap themes */
 		if (pixmap_theme_changed) {
-			gtk_container_remove(GTK_CONTAINER(mainwin->handlebox), 
-					     GTK_WIDGET(mainwin->toolbar->toolbar));
-
-			mainwin->toolbar->toolbar = NULL;
-			toolbar_create(mainwin, mainwin->handlebox);
+			toolbar_update();
 			set_toolbar_style(mainwin);
 			folderview_reflect_prefs_pixmap_theme(mainwin->folderview);
 			summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
@@ -1139,7 +1133,7 @@ void main_window_separation_change(MainWindow *mainwin, SeparateType type)
 	GtkWidget *summary_wid = GTK_WIDGET_PTR(mainwin->summaryview);
 	GtkWidget *message_wid = GTK_WIDGET_PTR(mainwin->messageview);
 
-	debug_print(_("Changing window separation type from %d to %d\n"),
+	debug_print("Changing window separation type from %d to %d\n",
 		    mainwin->type, type);
 
 	if (mainwin->type == type) return;
@@ -1277,7 +1271,7 @@ void main_window_get_position(MainWindow *mainwin)
 	prefs_common.mainwin_x = x;
 	prefs_common.mainwin_y = y;
 
-	debug_print(_("window position: x = %d, y = %d\n"), x, y);
+	debug_print("window position: x = %d, y = %d\n", x, y);
 }
 
 void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
@@ -1472,18 +1466,19 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		gchar *const entry;
 		SensitiveCond cond;
 	} entry[] = {
-		{"/File/Add mailbox..."        , M_UNLOCKED},
-                {"/File/Add mbox mailbox..."   , M_UNLOCKED},
-		{"/File/Check for new mails in all folders", M_UNLOCKED},
-		{"/File/Folder"                , M_UNLOCKED},
-		{"/File/Import mbox file..."   , M_UNLOCKED},
-		{"/File/Export to mbox file...", M_UNLOCKED},
-		{"/File/Empty trash"           , M_UNLOCKED},
-		{"/File/Work offline"	       , M_UNLOCKED},
+		{"/File/Add mailbox..."                       , M_UNLOCKED},
+                {"/File/Add mbox mailbox..."   		      , M_UNLOCKED},
+		{"/File/Check for new messages in all folders", M_UNLOCKED},
+		{"/File/Folder"                               , M_UNLOCKED},
+		{"/File/Import mbox file..."                  , M_UNLOCKED},
+		{"/File/Export to mbox file..."               , M_UNLOCKED},
+		{"/File/Empty trash"                          , M_UNLOCKED},
+		{"/File/Work offline"	       		      , M_UNLOCKED},
+
 		{"/File/Save as...", M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 		{"/File/Print..."  , M_TARGET_EXIST|M_UNLOCKED},
-		/* {"/File/Close", M_UNLOCKED}, */
-		{"/File/Exit" , M_UNLOCKED},
+		/* {"/File/Close"  , M_UNLOCKED}, */
+		{"/File/Exit"      , M_UNLOCKED},
 
 		{"/Edit/Select thread"		   , M_SINGLE_TARGET_EXIST},
 		{"/View/Sort"                      , M_EXEC},
@@ -1672,7 +1667,7 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 	GtkItemFactory *ifactory = mainwin->menu_factory;
 	GtkWidget *menuitem;
 
-	debug_print(_("Setting widgets..."));
+	debug_print("Setting widgets...");
 
 	/* create separated window(s) if needed */
 	if (type & SEPARATE_FOLDER) {
@@ -1861,7 +1856,7 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 				       ((type & SEPARATE_MESSAGE) != 0));
 
-	debug_print(_("done.\n"));
+	debug_print("done.\n");
 }
 
 #if 0
@@ -2386,7 +2381,7 @@ static void set_charset_cb(MainWindow *mainwin, guint action,
 
 	summary_redisplay_msg(mainwin->summaryview);
 
-	debug_print(_("forced charset: %s\n"), str ? str : "Auto-Detect");
+	debug_print("forced charset: %s\n", str ? str : "Auto-Detect");
 }
 
 static void hide_read_messages (MainWindow *mainwin, guint action,

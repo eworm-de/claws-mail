@@ -152,7 +152,7 @@ MimeView *mimeview_create(void)
 	gint n_entries;
 	gint i;
 
-	debug_print(_("Creating MIME view...\n"));
+	debug_print("Creating MIME view...\n");
 	mimeview = g_new0(MimeView, 1);
 
 	titles[COL_MIMETYPE] = _("MIME Type");

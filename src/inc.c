@@ -158,11 +158,10 @@ static void inc_finished(MainWindow *mainwin, gboolean new_messages)
 			folderview_unselect(mainwin->folderview);
 			folderview_select(mainwin->folderview, item);
 		}	
-	} else {
+	} else if (prefs_common.scan_all_after_inc) {
 		item = mainwin->summaryview->folder_item;
 		if (FOLDER_SUMMARY_MISMATCH(item, mainwin->summaryview)) {
-			folderview_unselect(mainwin->folderview);
-			folderview_select(mainwin->folderview, item);
+			folderview_update_item(item, TRUE);
 		}	
 	}
 }
@@ -615,7 +614,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		new_msgs += pop3_state->cur_total_num;
 
 		folderview_update_item_foreach
-			(pop3_state->folder_table);
+			(pop3_state->folder_table, TRUE);
 
 		if (pop3_state->error_val == PS_AUTHFAIL &&
 		    pop3_state->ac_prefs->tmp_pass) {
@@ -690,7 +689,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 		pop3_logout_send        , pop3_logout_recv
 	};
 
-	debug_print(_("getting new messages of account %s...\n"),
+	debug_print("getting new messages of account %s...\n",
 		    pop3_state->ac_prefs->account_name);
 
 	atm = automaton_create(N_POP3_PHASE);
@@ -1042,6 +1041,10 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 	val = GPOINTER_TO_INT(g_hash_table_lookup
 			      (state->folder_table, dropfolder));
 	if (val == 0) {
+		folder_item_scan(dropfolder);
+		/* force updating */
+		if (FOLDER_IS_LOCAL(dropfolder->folder))
+			dropfolder->mtime = 0;
 		g_hash_table_insert(state->folder_table, dropfolder,
 				    GINT_TO_POINTER(1));
 	}
@@ -1162,7 +1165,7 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 	g_return_val_if_fail(mbox != NULL, -1);
 
 	if (!is_file_exist(mbox) || (size = get_file_size(mbox)) == 0) {
-		debug_print(_("no messages in local mailbox.\n"));
+		debug_print("no messages in local mailbox.\n");
 		return 0;
 	} else if (size < 0)
 		return -1;
@@ -1178,7 +1181,7 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 		return -1;
 	}
 
-	debug_print(_("Getting new messages from %s into %s...\n"),
+	debug_print("Getting new messages from %s into %s...\n",
 		    mbox, dest->path);
 
 	if (prefs_common.filter_on_inc)
@@ -1193,11 +1196,11 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 		if (!prefs_common.scan_all_after_inc) {
 		g_hash_table_insert(folder_table, dest,
 				    GINT_TO_POINTER(1));
-			folderview_update_item_foreach(folder_table);
+			folderview_update_item_foreach(folder_table, TRUE);
 		}
 		g_hash_table_destroy(folder_table);
 	} else if (!prefs_common.scan_all_after_inc) {
-		folderview_update_item(dest, FALSE);
+		folderview_update_item(dest, TRUE);
 	}
 
 	return msgs;

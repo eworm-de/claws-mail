@@ -52,7 +52,7 @@ ProgressDialog *progress_dialog_create(void)
 	text[1] = _("Account");
 	text[2] = _("Status");
 
-	debug_print(_("Creating progress dialog...\n"));
+	debug_print("Creating progress dialog...\n");
 	progress = g_new0(ProgressDialog, 1);
 
 	window = gtk_window_new(GTK_WINDOW_DIALOG);

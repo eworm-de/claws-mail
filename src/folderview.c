@@ -341,7 +341,7 @@ FolderView *folderview_create(void)
 	gint n_entries;
 	gint i;
 
-	debug_print(_("Creating folder view...\n"));
+	debug_print("Creating folder view...\n");
 	folderview = g_new0(FolderView, 1);
 
 	titles[COL_FOLDER] = _("Folder");
@@ -579,7 +579,7 @@ void folderview_set(FolderView *folderview)
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	MainWindow *mainwin = folderview->mainwin;
 
-	debug_print(_("Setting folder info...\n"));
+	debug_print("Setting folder info...\n");
 	STATUSBAR_PUSH(mainwin, _("Setting folder info..."));
 
 	main_window_cursor_wait(mainwin);
@@ -820,10 +820,18 @@ static GtkWidget *label_window_create(const gchar *str)
 void folderview_rescan_tree(Folder *folder)
 {
 	GtkWidget *window;
+	AlertValue avalue;
 
 	g_return_if_fail(folder != NULL);
 
 	if (!folder->scan_tree) return;
+
+	avalue = alertpanel
+		(_("Rescan folder tree"),
+		 _("All previous settings for each folders will be lost.\n"
+		   "Continue?"),
+		 _("Yes"), _("No"), NULL);
+	if (avalue != G_ALERTDEFAULT) return;
 
 	inc_lock();
 	window = label_window_create(_("Rescanning folder tree..."));
@@ -841,6 +849,7 @@ void folderview_rescan_tree(Folder *folder)
 	inc_unlock();
 }
 
+#if 0
 void folderview_rescan_all(void)
 {
 	GList *list;
@@ -872,6 +881,7 @@ void folderview_rescan_all(void)
 	gtk_widget_destroy(window);
 	inc_unlock();
 }
+#endif
 
 void folderview_check_new(Folder *folder)
 {
@@ -913,13 +923,18 @@ void folderview_check_new(Folder *folder)
 	folder_write_list();
 }
 
-void folderview_check_new_all()
+void folderview_check_new_all(void)
 {
 	GList *list;
 	GtkWidget *window;
+	FolderView *folderview;
+
+	folderview = (FolderView *)folderview_list->data;
 
 	inc_lock();
-	window = label_window_create(_("Checking all folders for new messages..."));
+	main_window_lock(folderview->mainwin);
+	window = label_window_create
+		(_("Checking for new messages in all folders..."));
 
 	list = folder_get_list();
 	for (; list != NULL; list = list->next) {
@@ -932,6 +947,7 @@ void folderview_check_new_all()
 	folderview_set_all();
 
 	gtk_widget_destroy(window);
+	main_window_unlock(folderview->mainwin);
 	inc_unlock();
 }
 
@@ -1268,12 +1284,13 @@ void folderview_update_item(FolderItem *item, gboolean update_summary)
 static void folderview_update_item_foreach_func(gpointer key, gpointer val,
 						gpointer data)
 {
-	folderview_update_item((FolderItem *)key, FALSE);
+	folderview_update_item((FolderItem *)key, (gboolean)data);
 }
 
-void folderview_update_item_foreach(GHashTable *table)
+void folderview_update_item_foreach(GHashTable *table, gboolean update_summary)
 {
-	g_hash_table_foreach(table, folderview_update_item_foreach_func, NULL);
+	g_hash_table_foreach(table, folderview_update_item_foreach_func,
+			     (gpointer)update_summary);
 }
 
 static gboolean folderview_gnode_func(GtkCTree *ctree, guint depth,
@@ -1681,7 +1698,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 			 COMPOSEBUTTON_NEWS : COMPOSEBUTTON_MAIL);
 
 	if (item->path)
-		debug_print(_("Folder %s is selected\n"), item->path);
+		debug_print("Folder %s is selected\n", item->path);
 
 	if (!GTK_CTREE_ROW(row)->children)
 		gtk_ctree_expand(ctree, row);
@@ -1713,7 +1730,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	
 		folder_item_apply_processing(item);
 
-		debug_print(_("done.\n"));
+		debug_print("done.\n");
 		STATUSBAR_POP(folderview->mainwin);
 		main_window_cursor_normal(folderview->mainwin);
 	}

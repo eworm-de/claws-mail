@@ -41,16 +41,16 @@ void ssl_init(void)
 
 	ssl_ctx_SSLv23 = SSL_CTX_new(SSLv23_client_method());
 	if (ssl_ctx_SSLv23 == NULL) {
-		debug_print(_("SSLv23 not available\n"));
+		debug_print("SSLv23 not available\n");
 	} else {
-		debug_print(_("SSLv23 available\n"));
+		debug_print("SSLv23 available\n");
 	}
 
 	ssl_ctx_TLSv1 = SSL_CTX_new(TLSv1_client_method());
 	if (ssl_ctx_TLSv1 == NULL) {
-		debug_print(_("TLSv1 not available\n"));
+		debug_print("TLSv1 not available\n");
 	} else {
-		debug_print(_("TLSv1 available\n"));
+		debug_print("TLSv1 available\n");
 	}
 }
 

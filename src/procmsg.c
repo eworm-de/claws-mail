@@ -202,19 +202,19 @@ GSList *procmsg_read_cache(FolderItem *item, gboolean scan_file)
 	}
 	cache_file = folder_item_get_cache_file(item);
 	if ((fp = fopen(cache_file, "rb")) == NULL) {
-		debug_print(_("\tNo cache file\n"));
+		debug_print("\tNo cache file\n");
 		g_free(cache_file);
 		return NULL;
 	}
 	setvbuf(fp, file_buf, _IOFBF, sizeof(file_buf));
 	g_free(cache_file);
 
-	debug_print(_("\tReading summary cache...\n"));
+	debug_print("\tReading summary cache...\n");
 
 	/* compare cache version */
 	if (fread(&ver, sizeof(ver), 1, fp) != 1 ||
 	    CACHE_VERSION != ver) {
-		debug_print(_("Cache version is different. Discarding it.\n"));
+		debug_print("Cache version is different. Discarding it.\n");
 		fclose(fp);
 		return NULL;
 	}
@@ -262,7 +262,7 @@ GSList *procmsg_read_cache(FolderItem *item, gboolean scan_file)
 	}
 
 	fclose(fp);
-	debug_print(_("done.\n"));
+	debug_print("done.\n");
 
 	return mlist;
 }
@@ -284,7 +284,7 @@ void procmsg_set_flags(GSList *mlist, FolderItem *item)
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 
-	debug_print(_("\tMarking the messages...\n"));
+	debug_print("\tMarking the messages...\n");
 
 	markdir = folder_item_get_path(item);
 	if (!is_dir_exist(markdir))
@@ -326,9 +326,9 @@ void procmsg_set_flags(GSList *mlist, FolderItem *item)
 
 	item->last_num = lastnum;
 
-	debug_print(_("done.\n"));
+	debug_print("done.\n");
 	if (newmsg)
-		debug_print(_("\t%d new message(s)\n"), newmsg);
+		debug_print("\t%d new message(s)\n", newmsg);
 
 	hash_free_value_mem(mark_table);
 	g_hash_table_destroy(mark_table);
@@ -497,10 +497,10 @@ FILE *procmsg_open_mark_file(const gchar *folder, gboolean append)
 	markfile = g_strconcat(folder, G_DIR_SEPARATOR_S, MARK_FILE, NULL);
 
 	if ((fp = fopen(markfile, "rb")) == NULL)
-		debug_print(_("Mark file not found.\n"));
+		debug_print("Mark file not found.\n");
 	else if (fread(&ver, sizeof(ver), 1, fp) != 1 || MARK_VERSION != ver) {
-		debug_print(_("Mark version is different (%d != %d). "
-			      "Discarding it.\n"), ver, MARK_VERSION);
+		debug_print("Mark version is different (%d != %d). "
+			      "Discarding it.\n", ver, MARK_VERSION);
 		fclose(fp);
 		fp = NULL;
 	}
@@ -529,6 +529,13 @@ FILE *procmsg_open_mark_file(const gchar *folder, gboolean append)
 
 	g_free(markfile);
 	return fp;
+}
+
+static gboolean procmsg_ignore_node(GNode *node, gpointer data)
+{
+	MsgInfo *msginfo = (MsgInfo *)node->data;
+	
+	procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 }
 
 /* return the reversed thread tree */
@@ -597,7 +604,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 				(parent, parent->children, node);
 			/* CLAWS: ignore thread */
 			if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-				procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
+				g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, procmsg_ignore_node, NULL);
 			}
 		}
 		node = next;
@@ -628,13 +635,13 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 				g_node_append(parent, node);
 				/* CLAWS: ignore thread */
 				if(MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-					procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
+					g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, procmsg_ignore_node, NULL);
 				}
 			}
 		}					
 		node = next;
 	}		
-		
+
 	g_hash_table_destroy(subject_table);
 	g_hash_table_destroy(msgid_table);
 
@@ -1242,7 +1249,7 @@ gint procmsg_send_message_queue(const gchar *file)
 
 	fseek(fp, filepos, SEEK_SET);
 	if (to_list) {
-		debug_print(_("Sending message by mail\n"));
+		debug_print("Sending message by mail\n");
 		if(!from) {
 			g_warning(_("Queued message header is broken.\n"));
 			mailval = -1;
@@ -1319,7 +1326,7 @@ gint procmsg_send_message_queue(const gchar *file)
 			fclose(tmpfp);
 
 			if(newsval == 0) {
-				debug_print(_("Sending message by news\n"));
+				debug_print("Sending message by news\n");
 
 				folder = FOLDER(newsac->folder);
 
@@ -1346,7 +1353,7 @@ gint procmsg_send_message_queue(const gchar *file)
 	if (mailval == 0 && newsval == 0 && savecopyfolder) {
 		FolderItem *outbox;
 
-		debug_print(_("saving sent message...\n"));
+		debug_print("saving sent message...\n");
 
 		outbox = folder_find_item_from_identifier(savecopyfolder);
 		if(!outbox)
@@ -1403,7 +1410,7 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 	gboolean changed = FALSE;
 	FolderItem *item = msginfo->folder;
 
-	debug_print(_("Setting flags for message %d in folder %s\n"), msginfo->msgnum, item->path);
+	debug_print("Setting flags for message %d in folder %s\n", msginfo->msgnum, item->path);
 
 	/* if new flag is set */
 	if((perm_flags & MSG_NEW) && !MSG_IS_NEW(msginfo->flags) &&
@@ -1449,7 +1456,7 @@ void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgT
 	gboolean changed = FALSE;
 	FolderItem *item = msginfo->folder;
 	
-	debug_print(_("Unsetting flags for message %d in folder %s\n"), msginfo->msgnum, item->path);
+	debug_print("Unsetting flags for message %d in folder %s\n", msginfo->msgnum, item->path);
 
 	/* if new flag is unset */
 	if((perm_flags & MSG_NEW) && MSG_IS_NEW(msginfo->flags) &&

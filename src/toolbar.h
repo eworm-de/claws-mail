@@ -38,13 +38,13 @@ typedef enum
 	A_DELETE,
 	A_EXECUTE,
 	A_GOTO_NEXT,
-	A_SYL_ACTIONS, 
+	A_SYL_ACTIONS,
+	A_COMPOSE_NEWS, 
 	
 	N_ACTION_VAL
 } CTActionVal;
 
-#define A_COMPOSE_NEWS N_ACTION_VAL + 1
-#define A_SEPARATOR    N_ACTION_VAL + 2
+#define A_SEPARATOR    N_ACTION_VAL + 1
 
 
 typedef struct _ToolbarAction ToolbarAction;
@@ -127,6 +127,7 @@ void      toolbar_save_config_file         (void);
 void      toolbar_read_config_file         (void);
 void      toolbar_set_default_toolbar      (void);
 void      toolbar_clear_list               (void);
+void      toolbar_update                   (void);
 void      toolbar_destroy                  (MainWindow         *mainwin);
 
 gint      toolbar_ret_val_from_descr       (gchar              *descr);

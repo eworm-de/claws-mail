@@ -1014,7 +1014,7 @@ static void prefs_common_create(void)
 {
 	gint page = 0;
 
-	debug_print(_("Creating common preferences window...\n"));
+	debug_print("Creating common preferences window...\n");
 
 	prefs_dialog_create(&dialog);
 	gtk_window_set_title (GTK_WINDOW(dialog.window),
@@ -1229,7 +1229,7 @@ static void prefs_receive_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox_newmail_notify, FALSE, 
 			    FALSE, 0);
 
-	label_newmail_notify_cmd = gtk_label_new (_("Command  to execute:\n"
+	label_newmail_notify_cmd = gtk_label_new (_("Command to execute:\n"
 						    "(use %d as number of new "
 						    "mails)"));
 	gtk_label_set_justify(GTK_LABEL(label_newmail_notify_cmd), 

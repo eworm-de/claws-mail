@@ -84,7 +84,7 @@ void prefs_read_config(PrefParam *param, const gchar *label,
 	g_return_if_fail(label != NULL);
 	g_return_if_fail(rcfile != NULL);
 
-	debug_print(_("Reading configuration...\n"));
+	debug_print("Reading configuration...\n");
 
 	prefs_set_default(param);
 
@@ -104,7 +104,7 @@ void prefs_read_config(PrefParam *param, const gchar *label,
 
 		val = strncmp(buf, block_label, strlen(block_label));
 		if (val == 0) {
-			debug_print(_("Found %s\n"), block_label);
+			debug_print("Found %s\n", block_label);
 			break;
 		}
 	}
@@ -118,7 +118,7 @@ void prefs_read_config(PrefParam *param, const gchar *label,
 		prefs_config_parse_one_line(param, buf);
 	}
 
-	debug_print(_("Finished reading configuration.\n"));
+	debug_print("Finished reading configuration.\n");
 	fclose(fp);
 }
 
@@ -223,7 +223,7 @@ void prefs_save_config(PrefParam *param, const gchar *label,
 
 			val = strncmp(buf, block_label, strlen(block_label));
 			if (val == 0) {
-				debug_print(_("Found %s\n"), block_label);
+				debug_print("Found %s\n", block_label);
 				block_matched = TRUE;
 				break;
 			} else
@@ -256,7 +256,7 @@ void prefs_save_config(PrefParam *param, const gchar *label,
 		g_warning(_("failed to write configuration to file\n"));
 	g_free(rcpath);
 
-	debug_print(_("Configuration is saved.\n"));
+	debug_print("Configuration is saved.\n");
 }
 
 gint prefs_write_param(PrefParam *param, FILE *fp)
