@@ -196,7 +196,9 @@ EXTRA_DIST = \
 	pixmaps/jpilot.xpm \
 	pixmaps/ldap.xpm \
 	pixmaps/vcard.xpm \
-	pixmaps/locked.xpm
+	pixmaps/locked.xpm \
+	pixmaps/work_offline.xpm \
+	pixmaps/work_online.xpm
 
 INCLUDES = \
 	-DG_LOG_DOMAIN=\"Sylpheed\" \
