@@ -1,3 +1,8 @@
+2003-10-09 [paul]	0.9.6claws9
+
+	* src/imap.c
+		a little more sync with 0.9.6cvs2 and a tidy up
+
 2003-10-08 [paul]	0.9.6claws8
 
 	* sync with 0.9.6cvs2
