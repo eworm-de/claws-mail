@@ -1,8 +1,13 @@
+2003-02-25 [thorsten]	0.8.10claws46-1
+
+	* src/socket.c
+		fix: close pop3 socket
+
 2003-02-23 [thorsten]	0.8.10claws43-5
 
-	* mainwindow.c
+	* src/mainwindow.c
 		fix: utf8 conv.: avoid mh duplicates
-	* alertpanel.c
+	* src/alertpanel.c
 		fix: utf8 validate final message
 
 2003-02-23 [thorsten]	0.8.10claws43-4
