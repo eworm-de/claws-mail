@@ -503,6 +503,7 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 	switch (partinfo->mime_type) {
 	case MIME_TEXT:
 	case MIME_TEXT_HTML:
+	case MIME_TEXT_ENRICHED:
 	case MIME_MESSAGE_RFC822:
 	case MIME_MULTIPART:
 		mimeview_show_message_part(mimeview, partinfo);
@@ -572,6 +573,7 @@ static void mimeview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 			(GTK_CTREE(mimeview->ctree), mimeview->opened);
 		if (partinfo && (partinfo->mime_type == MIME_TEXT ||
 				 partinfo->mime_type == MIME_TEXT_HTML ||
+				 partinfo->mime_type == MIME_TEXT_ENRICHED ||
 				 partinfo->mime_type == MIME_MESSAGE_RFC822 ||
 				 partinfo->mime_type == MIME_IMAGE ||
 				 partinfo->mime_type == MIME_MULTIPART))
