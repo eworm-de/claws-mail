@@ -1,3 +1,8 @@
+2004-11-11 [colin]	0.9.12cvs144.2
+
+	* src/textview.c
+		Fix URI range selection (patch by Alfons)
+
 2004-11-09 [colin]	0.9.12cvs144.1
 
 	* ChangeLog.claws
