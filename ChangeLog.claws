@@ -1,3 +1,11 @@
+2002-12-29 [christoph]	0.8.8claws23
+
+	* src/Makefile.am
+	* src/menu.[ch]			** REMOVE **
+	* src/gtk/Makefile.am
+	* src/gtk/menu.[ch]		** NEW **
+		move menu files to gtk directory
+
 2002-12-29 [match]	0.8.8claws22
 
 	* src/addressbook.c
