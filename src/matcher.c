@@ -728,6 +728,9 @@ static gboolean matcherprop_match_one_header(MatcherProp * matcher,
 			procheader_header_free(header);
 			return result;
 		}
+		else {
+			procheader_header_free(header);
+		}
 		break;
 	case MATCHING_HEADERS_PART:
 	case MATCHING_MESSAGE:

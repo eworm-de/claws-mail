@@ -307,11 +307,13 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 
 	/* display attached RFC822 single text message */
 	if (mimeinfo->parent && mimeinfo->mime_type == MIME_MESSAGE_RFC822) {
+		if (headers) procheader_header_array_destroy(headers);
 		if (!mimeinfo->sub || mimeinfo->sub->children) return;
 		headers = textview_scan_header(textview, fp);
 		mimeinfo = mimeinfo->sub;
 	} else if (!mimeinfo->parent &&
 		   mimeinfo->mime_type == MIME_MESSAGE_RFC822) {
+		if (headers) procheader_header_array_destroy(headers);   
 		if (!mimeinfo->sub) return;
 		headers = textview_scan_header(textview, fp);
 		mimeinfo = mimeinfo->sub;
