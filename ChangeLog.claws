@@ -1,3 +1,11 @@
+2003-02-15 [christoph]	0.8.10claws13
+
+	* src/imap.c
+		fix bug that stopped scanning of folders when an
+		IMAP folder was empty
+
+	(closes bug 46 stop scan messages in folders after empty folder)
+
 2003-02-15 [paul]
 
 	* tools/Makefile.am
