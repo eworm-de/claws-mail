@@ -80,6 +80,8 @@ struct _MainWindow
 	GtkWidget *vbox;
 	GtkWidget *menubar;
 
+	GtkItemFactory *menu_factory;
+
 	/* toolbar */
 	GtkWidget *handlebox;
 	GtkWidget *toolbar;

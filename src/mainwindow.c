@@ -244,12 +244,6 @@ static void toggle_toolbar_cb	 (MainWindow	*mainwin,
 static void toggle_statusbar_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
-static void toggle_expand_summaryview_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void toggle_expand_messageview_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
 static void separate_widget_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -469,10 +463,6 @@ static void activate_compose_button (MainWindow *mainwin,
 				ToolbarStyle      style,
 				ComposeButtonType type);
 
-static void menuitem_expandsummaryview_statechanged (GtkWidget *widget,
-				GtkStateType state,
-				gpointer data);
-
 static void key_pressed (GtkWidget *widget, 
 				GdkEventKey *event,
 				gpointer data);
@@ -542,8 +532,6 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/Separate f_older tree"),	NULL, separate_widget_cb, SEPARATE_FOLDER, "<ToggleItem>"},
 	{N_("/_View/Separate m_essage view"),	NULL, separate_widget_cb, SEPARATE_MESSAGE, "<ToggleItem>"},
-	{N_("/_View/E_xpand Summary View"),	"V", toggle_expand_summaryview_cb, 0, "<ToggleItem>"},
-	{N_("/_View/Ex_pand Message View"),	"<shift>V", toggle_expand_messageview_cb, 0, "<ToggleItem>"},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Sort"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/_Sort/by _number"),		NULL, sort_summary_cb, SORT_BY_NUMBER, "<RadioItem>"},
@@ -977,23 +965,25 @@ MainWindow *main_window_create(SeparateType type)
 
 	messageview->mainwin     = mainwin;
 
-	mainwin->window      = window;
-	mainwin->vbox        = vbox;
-	mainwin->menubar     = menubar;
-	mainwin->handlebox   = handlebox;
-	mainwin->vbox_body   = vbox_body;
-	mainwin->hbox_stat   = hbox_stat;
-	mainwin->statusbar   = statusbar;
-	mainwin->progressbar = progressbar;
-	mainwin->statuslabel = statuslabel;
-	mainwin->ac_button   = ac_button;
-	mainwin->ac_label    = ac_label;
-	mainwin->reply_popup = reply_popup;
-	mainwin->replyall_popup = replyall_popup;
+	mainwin->window       = window;
+	mainwin->vbox         = vbox;
+	mainwin->menubar      = menubar;
+	mainwin->menu_factory = ifactory;
+	mainwin->handlebox    = handlebox;
+	mainwin->vbox_body    = vbox_body;
+	mainwin->hbox_stat    = hbox_stat;
+	mainwin->statusbar    = statusbar;
+	mainwin->progressbar  = progressbar;
+	mainwin->statuslabel  = statuslabel;
+	mainwin->ac_button    = ac_button;
+	mainwin->ac_label     = ac_label;
+	
+	mainwin->reply_popup       = reply_popup;
+	mainwin->replyall_popup    = replyall_popup;
 	mainwin->replysender_popup = replysender_popup;
-	mainwin->fwd_popup = fwd_popup;
-	mainwin->online_switch = online_switch;
-	mainwin->offline_switch = offline_switch;
+	mainwin->fwd_popup         = fwd_popup;
+	mainwin->online_switch     = online_switch;
+	mainwin->offline_switch    = offline_switch;
 	
 	/* set context IDs for status bar */
 	mainwin->mainwin_cid = gtk_statusbar_get_context_id
@@ -1039,7 +1029,6 @@ MainWindow *main_window_create(SeparateType type)
 	main_window_set_widgets(mainwin, type);
 
 	/* set menu items */
-	ifactory = gtk_item_factory_from_widget(menubar);
 	menuitem = gtk_item_factory_get_item
 		(ifactory, "/View/Code set/Auto detect");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
@@ -1186,8 +1175,7 @@ void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
 		main_window_set_toolbar_sensitive(mainwin);
 
 		/* pixmap themes */
-		if (pixmap_theme_changed)
-		{
+		if (pixmap_theme_changed) {
 			gtk_container_remove(GTK_CONTAINER(mainwin->handlebox), GTK_WIDGET(mainwin->toolbar));
 			mainwin->toolbar = NULL;
 			main_window_toolbar_create(mainwin, mainwin->handlebox);
@@ -1667,7 +1655,7 @@ void main_window_set_toolbar_sensitive(MainWindow *mainwin)
 
 void main_window_set_menu_sensitive(MainWindow *mainwin)
 {
-	GtkItemFactory *ifactory;
+	GtkItemFactory *ifactory = mainwin->menu_factory;
 	SensitiveCond state;
 	gboolean sensitive;
 	GtkWidget *menuitem;
@@ -1740,7 +1728,6 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{NULL, 0}
 	};
 
-	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
 	state = main_window_get_current_state(mainwin);
 
 	for (i = 0; entry[i].entry != NULL; i++) {
@@ -1875,7 +1862,7 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 	GtkWidget *hpaned;
 	GtkWidget *vpaned;
 	GtkWidget *vbox_body = mainwin->vbox_body;
-	GtkItemFactory *ifactory=gtk_item_factory_from_widget(mainwin->menubar);
+	GtkItemFactory *ifactory = mainwin->menu_factory;
 	GtkWidget *menuitem;
 
 	debug_print(_("Setting widgets..."));
@@ -2034,7 +2021,6 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 	mainwin->type = type;
 
 	mainwin->messageview->visible = TRUE;
-	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
 
 	/* toggle menu state */
 	menuitem = gtk_item_factory_get_item
@@ -2553,12 +2539,10 @@ static gint folder_window_close_cb(GtkWidget *widget, GdkEventAny *event,
 				   gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
-	GtkItemFactory *ifactory;
 	GtkWidget *menuitem;
 
-	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
 	menuitem = gtk_item_factory_get_item
-		(ifactory, "/View/Show or hide/Folder tree");
+		(mainwin->menu_factory, "/View/Show or hide/Folder tree");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), FALSE);
 
 	return TRUE;
@@ -2568,12 +2552,10 @@ static gint message_window_close_cb(GtkWidget *widget, GdkEventAny *event,
 				    gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
-	GtkItemFactory *ifactory;
 	GtkWidget *menuitem;
-	
-	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
+
 	menuitem = gtk_item_factory_get_item
-		(ifactory, "/View/Show or hide/Message view");
+		(mainwin->menu_factory, "/View/Show or hide/Message view");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), FALSE);
 
 	return TRUE;
@@ -2682,6 +2664,7 @@ static void toggle_folder_cb(MainWindow *mainwin, guint action,
 #endif
 		break;
 	case SEPARATE_FOLDER:
+		debug_print("separate folder\n");
 		if (active)
 			gtk_widget_show(mainwin->win.sep_folder.folderwin);
 		else
@@ -2762,18 +2745,6 @@ static void separate_widget_cb(MainWindow *mainwin, guint action,
 
 	prefs_common.sep_folder = (type & SEPARATE_FOLDER)  != 0;
 	prefs_common.sep_msg    = (type & SEPARATE_MESSAGE) != 0;
-}
-
-static void toggle_expand_summaryview_cb(MainWindow *mainwin, guint action,	GtkWidget *widget)
-{
-	summary_toggle_view(mainwin->summaryview);
-}
-
-static void toggle_expand_messageview_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
-{
-#if 0
-	messageview_toggle_view(mainwin->messageview);
-#endif
 }
 
 static void toggle_work_offline_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
@@ -3046,12 +3017,8 @@ static void hide_read_messages (MainWindow *mainwin, guint action,
 
 static void thread_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
-	GtkItemFactory *ifactory;
-
 	if (mainwin->menu_lock_count) return;
 	if (!mainwin->summaryview->folder_item) return;
-
-	ifactory = gtk_item_factory_from_widget(widget);
 
 	if (GTK_CHECK_MENU_ITEM(widget)->active) {
 		summary_thread_build(mainwin->summaryview);
@@ -3084,14 +3051,12 @@ static void sort_summary_cb(MainWindow *mainwin, guint action,
 			    GtkWidget *widget)
 {
 	FolderItem *item = mainwin->summaryview->folder_item;
-	GtkItemFactory *ifactory;
 	GtkWidget *menuitem;
 
 	if (mainwin->menu_lock_count) return;
 	if (item) {
-		ifactory = gtk_item_factory_from_widget(mainwin->menubar);
 		menuitem = gtk_item_factory_get_item
-			(ifactory, "/View/Sort/Ascending");
+			(mainwin->menu_factory, "/View/Sort/Ascending");
 		summary_sort(mainwin->summaryview, (FolderSortKey)action,
 			     GTK_CHECK_MENU_ITEM(menuitem)->active
 			     ? SORT_ASCENDING : SORT_DESCENDING);
@@ -3354,15 +3319,6 @@ void main_window_toolbar_set_compose_button(MainWindow *mainwin, ComposeButtonTy
 		activate_compose_button(mainwin, 
 					prefs_common.toolbar_style,
 					compose_btn_type);
-}
-
-static void menuitem_expandsummaryview_statechanged (GtkWidget *widget, GtkStateType state, gpointer data)
-{
-	MainWindow *mainwin = (MainWindow*) data;
-	
-	if (!mainwin) return;
-		
-	gtk_widget_set_sensitive(GTK_WIDGET(mainwin->summaryview->toggle_arrow), GTK_WIDGET_IS_SENSITIVE(widget));
 }
 
 #define BREAK_ON_MODIFIER_KEY() \
