@@ -1305,9 +1305,9 @@ static void compose_entries_set(Compose *compose, const gchar *mailto)
 	if (bcc)
 		compose_entry_append(compose, bcc, COMPOSE_BCC);
 	if (body) {
-		gtk_text_insert(GTK_TEXT(compose->text),
+		gtk_stext_insert(GTK_STEXT(compose->text),
 				NULL, NULL, NULL, body, -1);
-		gtk_text_insert(GTK_TEXT(compose->text),
+		gtk_stext_insert(GTK_STEXT(compose->text),
 				NULL, NULL, NULL, "\n", 1);
 	}
 }

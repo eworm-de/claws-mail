@@ -1,3 +1,8 @@
+2001-11-20 [hiro]
+
+	* src/compose.c
+		GTK_TEXT -> GTK_STEXT
+
 2001-11-20 [hiro]	0.6.5claws24
 
 	* src/compose.[ch]
