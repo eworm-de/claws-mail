@@ -2571,6 +2571,15 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 				g_print("after delete l_pos=");
 				dump_text(text, line_pos, tlen, 1);
 #endif
+				/* move beginning of line if we are on LF */
+				clen = 1;
+				GET_CHAR(line_pos, cbuf, clen);
+				if (*cbuf == '\n')
+					line_pos++;
+#ifdef WRAP_DEBUG
+				g_print("new line_pos=%d\n", line_pos);
+#endif
+
 				continue;
 			}
 

@@ -1,3 +1,10 @@
+2003-03-08 [darko]	0.8.10claws102
+
+	* src/compose.c
+		fix infinite loop in wrapping as reported
+		by happycactus
+		obsoletes patch #696482
+
 2003-03-08 [christoph]	0.8.10claws101
 
 	* src/imap.c
