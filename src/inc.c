@@ -592,13 +592,8 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		if (pop3_session->error_val == PS_AUTHFAIL) {
 			if(!prefs_common.no_recv_err_panel) {
 				if((prefs_common.recv_dialog_mode == RECV_DIALOG_ALWAYS) ||
-				    ((prefs_common.recv_dialog_mode == RECV_DIALOG_MANUAL) && focus_window)) {
+				    ((prefs_common.recv_dialog_mode == RECV_DIALOG_MANUAL) && focus_window))
 					manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
-				}
-				alertpanel_error
-					(_("Authorization for %s on %s failed"),
-					 pop3_session->user,
-					 pop3_session->ac_prefs->recv_server);
 			}
 		}
 

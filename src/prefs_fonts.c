@@ -95,7 +95,6 @@ static void prefs_font_select(GtkButton *button, GtkEntry *entry)
 	         "clicked",
 		 GTK_SIGNAL_FUNC(prefs_font_selection_ok),
 		 entry);
-	printf("%i\n", font_sel_conn_id);
 
 	font_name = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
 	gtk_font_selection_dialog_set_font_name(GTK_FONT_SELECTION_DIALOG(font_sel_win), font_name);
