@@ -1,10 +1,10 @@
-.TH "Sylpheed" "1" "" "Hiroyuki Yamamoto" ""
+.TH "Sylpheed-Claws" "1" "" "Hiroyuki Yamamoto & the Sylpheed-Claws team" ""
 .SH "NAME"
 .LP 
-Sylpheed \- a GTK+ based fast e\-mail and news client
+Sylpheed\-Claws \- a GTK+ based fast e\-mail and news client
 .SH "DESCRIPTION"
 .TP 
-Sylpheed is an e\-mail client (and news reader) based on GTK+, running on X Window System, and aiming for
+Sylpheed\-Claws is an e\-mail client (and news reader) based on GTK+, running on X Window System, and aiming for
 .br 
 * Quick response
 .br 
@@ -79,6 +79,8 @@ o automake + autoconf support
 o internationalization of messages by gettext
 .br 
 o support of many code sets, including UTF\-8 (Unicode) (when using libjconv)
+.br 
+o support for plugins
 \fR
 .LP 
 This list is not complete.
@@ -109,6 +111,8 @@ This list is not complete.
 \fB \-\-help\fR
 .br 
 \fB \-\-version\fR
+.br 
+\fB \-\-config\-dir\fR
 .SH "FILES"
 .LP 
 .TP 
@@ -124,8 +128,20 @@ Manual files in HTML format
 $PREFIX/share/sylpheed/faq
 FAQ files in HTML format
 .TP 
+$PREFIX/share/sylpheed/themes
+Global themes directory
+.TP 
+$PREFIX/lib/sylpheed/plugins
+Directory for plugins
+.TP 
+$PREFIX/include/sylpheed
+Directory for header files
+.TP 
 $HOME/.sylpheed 
-User's configuration files directory
+Default directory for user's configuration files directory
+.TP 
+$HOME/.sylpheed/themes
+User's themes directory
 .TP 
 $HOME/.sylpheed/accountrc
 Configuration for account(s)
@@ -142,8 +158,8 @@ Configuration for custom headers for sending mail
 $HOME/.sylpheed/dispheaderrc
 Configuration for custom display of headers in message view
 .TP 
-$HOME/.sylpheed/filterrc
-Filter function configuration
+$HOME/.sylpheed/matcherrc
+Filtering and Processing function configuration
 .TP 
 $HOME/.sylpheed/folderlist.xml
 Folder hierachy listing
@@ -210,11 +226,13 @@ Start sylpheed in (or switch to, if already running) online mode
 Start sylpheed in (or switch to, if already running) offline mode
 .TP 
 \fB\-\-help\fR
-.br 
 display the help message and exit
 .TP 
 \fB\-\-version\fR
 display version number and exit
+.TP 
+\fB\-\-config\-dir\fR
+display the CONFIG\-DIR and exit
 .SH "INSTALLATION"
 .LP 
 This program requires GTK+ 1.2.6 or higher to be compiled.
@@ -235,7 +253,7 @@ Password: [Enter password]
 .br 
 # make install
 .LP 
-See INSTALL from the source distribution package for full installation instructions.
+Refer to ./configure \-\-help for further information.
 .SH "AUTHORS"
 .LP 
 .TP 
@@ -262,6 +280,8 @@ Thorsten Maerz		<torte@netztorte.de>
 .br 
 Paul Mangan		<claws@thewildbeast.co.uk>
 .br 
+Luke Plant		<L.Plant.98@cantab.net>
+.br 
 Martin Schaaf		<mascha@ma\-scha.de>
 .br 
 Carsten Schurig     <Carsten.Schurig@web.de>
@@ -270,10 +290,7 @@ Sergey Vlasov		<vsu@users.sourceforge.net>
 .br 
 Hiroyuki Yamamoto	<hiro\-y@kcn.ne.jp>
 .TP 
-sylpheed\-w32 (http://www.gnupg.org/cvs\-access.html)
-Werner Koch		<wk@gnupg.org>
-.TP 
-sylpheed\-claws\-w32 (http://claws\-w32.sourceforge.net)
+sylpheed\-claws\-w32
 Thorsten Maerz		<torte@netztorte.de>\fR
 
 
@@ -284,10 +301,7 @@ Sylpheed Homepage
 <http://sylpheed.good\-day.net>
 .TP 
 Sylpheed\-Claws Homepage
-<http://www.sf.net/sylpheed\-claws>
-.TP 
-Sylpheed Win32
-<http://www.gnupg.org/cvs\-access.html>
+<http://sylpheed\-claws.sf.net>
 .TP 
 Sylpheed\-Claws Win32 Homepage
-<http://www.sf.net/claws\-w32>
+<http://sylpheed\-claws.sf.net/win32>
