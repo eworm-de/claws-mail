@@ -94,6 +94,14 @@ gboolean debug_mode = FALSE;
 static gint lock_socket = -1;
 static gint lock_socket_tag = 0;
 
+typedef enum 
+{
+	ONLINE_MODE_DONT_CHANGE,
+ 	ONLINE_MODE_ONLINE,
+	ONLINE_MODE_OFFLINE
+} OnlineMode;
+
+
 static struct Cmd {
 	gboolean receive;
 	gboolean receive_all;
@@ -103,8 +111,7 @@ static struct Cmd {
 	gboolean status;
 	gboolean send;
 	gboolean crash;
-	gboolean online;
-	gboolean offline;
+	int online_mode;
 	gchar   *crash_params;
 } cmd;
 
@@ -358,9 +365,9 @@ int main(int argc, char *argv[])
 	if (cmd.send)
 		send_queue();
 
-	if (cmd.offline)
+	if (cmd.online_mode == ONLINE_MODE_OFFLINE)
 		main_window_toggle_work_offline(mainwin, TRUE);
-	if (cmd.online)
+	if (cmd.online_mode == ONLINE_MODE_ONLINE)
 		main_window_toggle_work_offline(mainwin, FALSE);
 	
 	gtk_main();
@@ -422,9 +429,9 @@ static void parse_cmd_opt(int argc, char *argv[])
 		} else if (!strncmp(argv[i], "--status", 8)) {
 			cmd.status = TRUE;
 		} else if (!strncmp(argv[i], "--online", 8)) {
-			cmd.online = TRUE;
+			cmd.online_mode = ONLINE_MODE_ONLINE;
 		} else if (!strncmp(argv[i], "--offline", 9)) {
-			cmd.offline = TRUE;
+			cmd.online_mode = ONLINE_MODE_OFFLINE;
 		} else if (!strncmp(argv[i], "--help", 6)) {
 			g_print(_("Usage: %s [OPTION]...\n"),
 				g_basename(argv[0]));
@@ -666,9 +673,9 @@ static gint prohibit_duplicate_launch(void)
 		g_free(compose_str);
 	} else if (cmd.send) {
 		fd_write(uxsock, "send\n", 5);
-	} else if (cmd.online) {
+	} else if (cmd.online_mode == ONLINE_MODE_ONLINE) {
 		fd_write(uxsock, "online\n", 6);
-	} else if (cmd.offline) {
+	} else if (cmd.online_mode == ONLINE_MODE_OFFLINE) {
 		fd_write(uxsock, "offline\n", 7);
 	} else if (cmd.status) {
 		gchar buf[BUFFSIZE];
