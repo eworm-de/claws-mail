@@ -1913,12 +1913,23 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 
 		break;
 	case SEPARATE_BOTH:
+		messageview_add_toolbar(mainwin->messageview, messagewin);
+		msgview_ifactory = gtk_item_factory_from_widget(mainwin->messageview->menubar);
+		menu_set_sensitive(msgview_ifactory, "/File/Close", FALSE);
+
 		gtk_box_pack_start(GTK_BOX(vbox_body),
 				   GTK_WIDGET_PTR(mainwin->summaryview),
 				   TRUE, TRUE, 0);
-
+		
 		mainwin->win.sep_both.folderwin = folderwin;
 		mainwin->win.sep_both.messagewin = messagewin;
+		
+		gtk_widget_realize(messagewin);
+		gtk_widget_show_all(GTK_WIDGET_PTR(mainwin->messageview));
+		gtk_widget_show_all(messagewin);
+		toolbar_set_style(mainwin->messageview->toolbar->toolbar, 
+				  mainwin->messageview->handlebox, 
+				  prefs_common.toolbar_style);		
 
 		break;
 	}
