@@ -2858,7 +2858,7 @@ static gint imap_cmd_search(IMAPSession *session, const gchar *criteria,
 		for (p = strlist; *p != NULL; ++p) {
 			guint msgnum;
 
-			if (sscanf(*p, "%d", &msgnum) == 1)
+			if (sscanf(*p, "%u", &msgnum) == 1)
 				*list = g_slist_append(*list, GINT_TO_POINTER(msgnum));
 		}
 		g_strfreev(strlist);
@@ -2942,7 +2942,7 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 	gint size;
 	gchar *destfolder_;
 	gchar *flag_str;
-	guint32 new_uid_;
+	unsigned int new_uid_;
 	gchar *ret = NULL;
 	gchar buf[BUFFSIZE];
 	FILE *fp;
@@ -3022,13 +3022,13 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 static MsgNumberList *imapset_to_numlist(IMAPSet imapset)
 {
 	gchar **ranges, **range;
-	guint32 low, high;
+	unsigned int low, high;
 	MsgNumberList *uids = NULL;
 	
 	ranges = g_strsplit(imapset, ",", 0);
 	for (range = ranges; *range != NULL; range++) {
 		printf("%s\n", *range);
-		if(sscanf(*range, "%u:%u", &low, &high) == 1)
+		if (sscanf(*range, "%u:%u", &low, &high) == 1)
 			uids = g_slist_prepend(uids, GINT_TO_POINTER(low));
 		else {
 			int i;
