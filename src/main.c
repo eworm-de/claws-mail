@@ -274,11 +274,8 @@ int main(int argc, char *argv[])
 	
 	sock_set_io_timeout(prefs_common.io_timeout_secs);
 
-	prefs_common_save_config();
 	prefs_actions_read_config();
-	prefs_actions_write_config();
 	prefs_display_header_read_config();
-	prefs_display_header_write_config();
 	/* prefs_filtering_read_config(); */
 	addressbook_read_file();
 	renderer_read_config();
@@ -296,7 +293,6 @@ int main(int argc, char *argv[])
 					mainwin);
 
 	account_read_config_all();
-	account_save_config_all();
 
 	if (folder_read_list() < 0) {
 		setup(mainwin);

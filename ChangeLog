@@ -1,3 +1,52 @@
+2003-07-25
+
+	* src/main.c: main(): don't save config files on startup.
+
+2003-07-25
+
+	* src/imap.c:
+	  imap_get_msg_list(): removed redundant UID SEARCH ALL when not
+	  using cache.
+	  Unset MSG_NEW flag if \Seen is set.
+	  imap_get_uncached_messages(): fetch all messages if both first_uid
+	  and last_uid is 0.
+
+2003-07-24
+
+	* src/imap.c: revamped the implementation so that it always
+	  exactly reflects the state of IMAP4 servers.
+	  imap_get_msg_list(): examine the state of messages using
+	  UID SEARCH commands.
+	  imap_delete_cached_message(): removes single message cache.
+	  imap_get_uid(): removed.
+	  imap_cmd_search(): new. It issues UID SEARCH command and returns
+	  an array of UIDs.
+	  imap_cmd_gen_recv(): made the length of strings unrestricted.
+	  imap_get_uid_table(): returns a hash table from UID array.
+
+2003-07-24
+
+	* src/folder.[ch]
+	  src/imap.[ch]
+	  src/mh.[ch]
+	  src/news.[ch]: added Folder::close() method.
+	* src/summaryview.c: summary_clear_list(): call folder_item_close().
+
+2003-07-23
+
+	* flags are now taken over when copying messages into IMAP folders
+	  from others.
+	* src/imap.[ch]
+	  src/mh.[ch]
+	  imap_add_msg()
+	  imap_add_msgs()
+	  mh_add_msg()
+	  mh_add_msgs(): flags can be also specified when adding files.
+	* src/folder.[ch]: added assertions for virtual functions.
+	* src/procmsg.[ch]: procmsg_get_message_file_list(): return the list
+	  of MsgFileInfo.
+	  procmsg_message_file_list_free(): new.
+
 2003-07-23
 
 	* src/procmsg.h: changed MsgPermFlags and MsgTmpFlags from enum to

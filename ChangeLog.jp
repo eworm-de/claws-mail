@@ -1,3 +1,52 @@
+2003-07-25
+
+	* src/main.c: main(): 起動時に設定ファイルを保存しないようにした。
+
+2003-07-25
+
+	* src/imap.c:
+	  imap_get_msg_list(): キャッシュ未使用のときの冗長な UID SEARCH ALL
+	  を除去。
+	  \Seen がセットされていたら MSG_NEW フラグを解除。
+	  imap_get_uncached_messages(): first_uid と last_uid が両方とも 0
+	  の場合は全てのメッセージを取得。
+
+2003-07-24
+
+	* src/imap.c: IMAP4 サーバの状態を常に正確に反映するように実装を改良。
+	  imap_get_msg_list(): UID SEARCH コマンドを使用してメッセージの
+	  状態を調べるようにした。
+	  imap_delete_cached_message(): 単一のメッセージキャッシュを削除する。
+	  imap_get_uid(): 削除。
+	  imap_cmd_search(): 新規。 UID SEARCH コマンドを発行し、 UID の配列
+	  を返す。
+	  imap_cmd_gen_recv(): 文字列長を無制限にした。
+	  imap_get_uid_table(): UID 配列からハッシュテーブルを返す。
+
+2003-07-24
+
+	* src/folder.[ch]
+	  src/imap.[ch]
+	  src/mh.[ch]
+	  src/news.[ch]: Folder::close() メソッドを追加。
+	* src/summaryview.c: summary_clear_list(): folder_item_close() を
+	  呼ぶようにした。
+
+2003-07-23
+
+	* メッセージを他のフォルダから IMAP フォルダにコピーしたときフラグを
+	  引き継ぐようにした。
+	* src/imap.[ch]
+	  src/mh.[ch]
+	  imap_add_msg()
+	  imap_add_msgs()
+	  mh_add_msg()
+	  mh_add_msgs(): ファイルを追加するときにフラグも指定できるようにした。
+	* src/folder.[ch]: 仮想関数に assertion を追加。
+	* src/procmsg.[ch]: procmsg_get_message_file_list(): MsgFileInfo
+	  のリストを返すようにした。
+	  procmsg_message_file_list_free(): 新規。
+
 2003-07-23
 
 	* src/procmsg.h: 移植性のため MsgPermFlags と MsgTmpFlags を enum

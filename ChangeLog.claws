@@ -1,3 +1,8 @@
+2003-07-25 [paul]	0.9.3claws51
+
+	* partial sync with 0.9.3cvs21 [src/main.c]
+		see ChangeLog 2003-07-25
+
 2003-07-24 [paul]	0.9.3claws50
 
 	* tools/maildir2sylpheed.pl
