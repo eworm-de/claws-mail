@@ -2292,13 +2292,13 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	PrefsFolderItem *prefs = summaryview->folder_item->prefs;
 	gint *col_pos = summaryview->col_pos;
 
-	text[col_pos[S_COL_SCORE]]  = NULL;
 	text[col_pos[S_COL_MARK]]   = NULL;
 	text[col_pos[S_COL_UNREAD]] = NULL;
 	text[col_pos[S_COL_MIME]]   = NULL;
 	text[col_pos[S_COL_LOCKED]] = NULL;
 	text[col_pos[S_COL_NUMBER]] = itos(msginfo->msgnum);
 	text[col_pos[S_COL_SIZE]]   = to_human_readable(msginfo->size);
+	text[col_pos[S_COL_SCORE]]  = itos_buf(col_score, msginfo->score);
 
 	if (msginfo->date_t) {
 		procheader_date_get_localtime(date_modified,

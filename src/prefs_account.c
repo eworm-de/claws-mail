@@ -1529,7 +1529,7 @@ static void prefs_account_ascii_armored_warning(GtkWidget* widget,
 				  GINT_TO_POINTER (btn1_data));		\
 									\
 	CREATE_RADIO_BUTTON(box, btn2, btn1, btn2_label, btn2_data);	\
-	CREATE_RADIO_BUTTON(box, btn3, btn1, btn3_label, btn2_data);	\
+	CREATE_RADIO_BUTTON(box, btn3, btn1, btn3_label, btn3_data);	\
 }
 
 static void prefs_account_ssl_create(void)
