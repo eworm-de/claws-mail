@@ -33,6 +33,8 @@
 typedef struct _SummaryView		SummaryView;
 typedef struct _SummaryColumnState	SummaryColumnState;
 
+#define MAIL_MANUAL_FILTERING_HOOKLIST "mail_manual_filtering_hooklist"
+
 typedef enum
 {
 	S_COL_MARK,

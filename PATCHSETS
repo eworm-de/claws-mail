@@ -417,3 +417,4 @@
 ( cvs diff -u -r 1.26.2.12 -r 1.26.2.13 src/foldersel.c; ) > 1.0.3cvs2.5.patchset
 ( cvs diff -u -r 1.395.2.59 -r 1.395.2.60 src/summaryview.c; ) > 1.0.3cvs2.6.patchset
 ( cvs diff -u -r 1.100.2.13 -r 1.100.2.14 AUTHORS; cvs diff -u -r 1.2504.2.53 -r 1.2504.2.54 ChangeLog.claws; cvs diff -u -r 1.654.2.451 -r 1.654.2.452 configure.ac; cvs diff -u -r 1.4.2.7 -r 1.4.2.8 src/gtk/about.c; cvs diff -u -r 1.1 -r 1.2 src/pixmaps/sylpheed_logo.xpm; ) > 1.0.3cvs3.1.patchset
+( cvs diff -u -r 1.395.2.60 -r 1.395.2.61 src/summaryview.c; cvs diff -u -r 1.68.2.5 -r 1.68.2.6 src/summaryview.h; ) > 1.9.6cvs1.patchset

@@ -1,3 +1,9 @@
+2005-03-19 [holger]	1.9.6cvs1
+
+	* src/summaryview.c
+	* src/summaryview.h
+		Sync with HEAD
+
 2005-03-18 [paul]	1.9.6
 
 	initial GTK2 release
