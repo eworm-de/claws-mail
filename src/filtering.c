@@ -355,21 +355,26 @@ static void filter_msginfo(GSList * filtering_list, FolderItem *inbox,
  *\param	info message
  *\param	ftable table with changed folders after call
  */
-void filter_message_by_msginfo(GSList *flist, MsgInfo *info, GHashTable *ftable)
+void filter_message_by_msginfo_with_inbox(GSList *flist, MsgInfo *info, GHashTable *ftable, FolderItem *def_inbox)
 {
 	FolderItem *inbox;
 
-	if (info->folder == NULL) {
+	if ((def_inbox == NULL)) {
 		debug_print("using default inbox as final destination!\n");
-		inbox = folder_get_default_inbox(); 
+		inbox = folder_get_default_inbox();
 	} else
-		inbox = info->folder;
+		inbox = def_inbox;
 
 	/*
 	 * message is already in a folder. the filtering code will
 	 * handle duplicate moves and copies.
 	 */
-	filter_msginfo(flist, inbox,  info, ftable);
+	filter_msginfo(flist, inbox, info, ftable);
+}
+
+void filter_message_by_msginfo(GSList *flist, MsgInfo *info, GHashTable *ftable)
+{
+	filter_message_by_msginfo_with_inbox(flist, info, ftable, info->folder);
 }
 
 /*!

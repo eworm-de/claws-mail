@@ -1,13 +1,15 @@
 %{
+#include "defs.h"
+
+#include <glib.h>
+
+#include "intl.h"
+#include "utils.h"
 #include "filtering.h"
 #include "scoring.h"
 #include "matcher.h"
 #include "matcher_parser.h"
 #include "matcher_parser_lex.h"
-#include "intl.h"
-#include <glib.h>
-#include "defs.h"
-#include "utils.h"
 
 static gint error = 0;
 static gint bool_op = 0;

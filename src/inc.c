@@ -504,6 +504,47 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 		statusbar_pop_all();
 
+		/* CLAWS: perform filtering actions on dropped message */
+		if (global_processing != NULL) {
+			FolderItem *processing, *inbox;
+			Folder *folder;
+			MsgInfo *msginfo;
+			GSList *msglist, *msglist_element;
+
+			/* CLAWS: get default inbox (perhaps per account) */
+			if (pop3_state->ac_prefs->inbox) {
+				/* CLAWS: get destination folder / mailbox */
+				inbox = folder_find_item_from_identifier(pop3_state->ac_prefs->inbox);
+				if (!inbox)
+					inbox = folder_get_default_inbox();
+			} else
+				inbox = folder_get_default_inbox();
+
+			/* get list of messages in processing */
+			processing = folder_get_default_processing();
+			folder_item_scan(processing);
+			folder = processing->folder;
+			msglist = folder->get_msg_list(folder, processing, FALSE);
+
+			/* process messages */
+			for(msglist_element = msglist; msglist_element != NULL; msglist_element = msglist_element->next) {
+				msginfo = (MsgInfo *) msglist_element->data;
+				/* filter if enabled in prefs or move to inbox if not */
+				if(pop3_state->ac_prefs->filter_on_recv) {
+					filter_message_by_msginfo_with_inbox(global_processing, msginfo,
+						    			     pop3_state->folder_table,
+									     inbox);
+				} else {
+					folder_item_move_msg(inbox, msginfo);
+					g_hash_table_insert(pop3_state->folder_table, inbox,
+							    GINT_TO_POINTER(1));
+				}
+				procmsg_msginfo_free(msginfo);
+			}
+			g_slist_free(msglist);
+		}
+
+
 		new_msgs += pop3_state->cur_total_num;
 
 		if (!prefs_common.scan_all_after_inc) {
@@ -921,13 +962,6 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 	if ((msgnum = folder_item_add_msg(dropfolder, file, TRUE)) < 0) {
 		unlink(file);
 		return -1;
-	}
-
-	/* CLAWS: perform filtering actions on dropped message */
-	if (global_processing != NULL) { 
-		if (state->ac_prefs->filter_on_recv)
-			filter_message(global_processing, inbox, msgnum,
-				       state->folder_table);
 	}
 
 	return 0;

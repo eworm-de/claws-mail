@@ -1,3 +1,18 @@
+2002-02-15 [christoph]	0.7.2claws14
+
+	* src/filtering.[ch]
+	* src/inc.c
+		do filtering stuff after all messages have been received
+		  1. drop all messages to .processing
+		  2. scan processing folder for messages
+		  3. filter messages or move to inbox
+		this will also find old messages left in processing after
+		a crash or something like that and we get a real msginfo
+		from folder->get_msg_list and do not have to create our
+		own in filter_message
+	* src/matcher_parser_parse.y
+		remove MIX/MAX warning (reordered includes)
+
 2002-02-25 [paul]	0.7.2claws13
 
 	* sync with sylpheed 0.7.2cvs15
