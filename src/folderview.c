@@ -830,6 +830,7 @@ void folderview_rescan_all(void)
 	for (; list != NULL; list = list->next) {
 		Folder *folder = list->data;
 
+		if (!folder->scan_tree) continue;
 		folder_set_ui_func(folder, folderview_scan_tree_func, NULL);
 		folder->scan_tree(folder);
 		folder_set_ui_func(folder, NULL, NULL);
