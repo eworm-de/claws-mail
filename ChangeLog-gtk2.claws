@@ -1,3 +1,9 @@
+2004-07-19 [colin]	0.9.12cvs33.5
+
+	* src/action.c
+		Action output fix
+		Patch by Alfons
+
 2004-07-19 [colin]	0.9.12cvs33.4
 
 	* src/compose.c

@@ -1072,14 +1072,13 @@ static void update_io_dialog(Children *children)
 		ChildInfo *child_info;
 		GtkTextBuffer *textbuf;
 		GtkTextIter iter, start_iter, end_iter;
-		GdkFont *font;
 
-		font = g_object_get_data(G_OBJECT(children->dialog), 
-					 "s_txtfont");
 		gtk_widget_show(children->scrolledwin);
-		textbuf = gtk_text_view_get_buffer (GTK_TEXT_VIEW(text));
-		gtk_text_buffer_get_start_iter (textbuf, &start_iter);
-		gtk_text_buffer_get_end_iter (textbuf, &end_iter);
+		textbuf = gtk_text_view_get_buffer(GTK_TEXT_VIEW(text));
+		gtk_text_buffer_get_start_iter(textbuf, &start_iter);
+		gtk_text_buffer_get_end_iter(textbuf, &end_iter);
+		gtk_text_buffer_delete(textbuf, &start_iter, &end_iter);
+		gtk_text_buffer_get_start_iter(textbuf, &start_iter);
 		iter = start_iter;
 		for (cur = children->list; cur; cur = cur->next) {
 			child_info = (ChildInfo *)cur->data;
@@ -1116,7 +1115,7 @@ static void create_io_dialog(Children *children)
 	GtkWidget *progress_bar = NULL;
 	GtkWidget *abort_button;
 	GtkWidget *close_button;
-	GdkFont   *output_font;
+	PangoFontDescription *text_font;
 
 	debug_print("Creating action IO dialog\n");
 
@@ -1150,6 +1149,13 @@ static void create_io_dialog(Children *children)
 	gtk_widget_hide(scrolledwin);
 
 	text = gtk_text_view_new();
+	if (prefs_common.textfont) {
+		if (NULL != (text_font = pango_font_description_from_string
+				(prefs_common.textfont))) {
+			gtk_widget_modify_font(text, text_font);
+			pango_font_description_free(text_font);
+		}			
+	}			
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), FALSE);
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
 	gtk_widget_show(text);
