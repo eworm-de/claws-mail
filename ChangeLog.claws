@@ -1,3 +1,37 @@
+2005-03-25 [paul]
+
+	* tools/Makefile.am
+	* tools/README
+	* tools/acroread2sylpheed.pl
+		add script to send pdfs as attachments from Adobe Reader 7
+
+2005-03-21 [holger]	1.0.3cvs7
+
+	* src/plugins/spamassassin/spamassassin.c
+		Don't leave hook registered when plugin init
+		failed.
+
+2005-03-20 [colin]	1.0.3cvs6
+
+	* src/common/plugin.c
+		Check that plugin isn't already loaded
+	* src/procheader.c
+		Fix buffer overflow (security issue)
+		Both patches by Alfons
+
+2005-03-20 [paul]	1.0.3cvs5
+
+	* src/compose.c
+		neglect Reply-To header if empty
+		Patch by Alfons
+
+2005-03-19 [holger]	1.0.3cvs4
+
+	* src/summaryview.c
+	* src/summaryview.h
+		Add plugin hook for manual filtering invocation,
+		remove some dead code.
+
 2005-03-18 [paul]	1.0.3cvs3
 
 	* AUTHORS
@@ -50,6 +84,8 @@
 	* src/procmime.c
 		sync with main 1.0.3
 		see ChangeLog 2005-02-28, 2005-03-02, and 2005-03-04
+		fix buffer overflow, CAN-2005-0667, see
+		http://secunia.com/advisories/14491/
 
 2005-02-27 [paul]	1.0.1cvs20
 

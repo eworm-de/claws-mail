@@ -1,3 +1,11 @@
+2005-03-24 [paul]
+
+	* tools/Makefile.am
+	* tools/README
+	* tools/acroread2sylpheed.pl
+		sync with HEAD (add script to send pdfs as
+		attachments from Adobe Reader 7)
+
 2005-03-21 [paul]	1.9.6cvs9
 
 	* configure.ac

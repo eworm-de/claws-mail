@@ -26,6 +26,7 @@ Mailbox conversion:
   maildir2sylpheed.pl		Convert a maildir mailbox to MH format
 
 Other tools:
+  acroread2sylpheed.pl		Send PDFs from Adobe Reader 7
   filter_conv.pl                Convert old-style filters to new filtering
   nautilus2sylpheed.sh		Send files from Nautilus
   OOo2sylpheed.pl               Send documents from OpenOffice.org
@@ -365,6 +366,26 @@ Mailbox conversion
 
 Other tools
 -----------
+
+* acroread2sylpheed.pl
+
+  WHAT IT DOES
+  	This perl script enables Adobe Reader 7 to send documents to sylpheed
+  	as attachments.
+
+  HOW TO USE IT
+  	Make sure that the script is executable (chmod +x acroread2sylpheed.pl)
+	Start up Adobe Reader 7 (acroread)
+	Go to /Edit/Preferences/SendMail
+	Select any email client except 'System Mail (mail)'
+	Enter the path to this script in the alternate location box  
+
+  	You can then use 'File/Email' or the Email toolbar button to launch
+	sylpheed (if not already launched) and open a new compose window with
+	the PDF attached.
+  
+  Contact: Paul Mangan <claws@thewildbeast.co.uk>
+
 
 * filter_conv.pl
 
