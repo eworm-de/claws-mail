@@ -1,7 +1,11 @@
-2002-08-10 [paul]	0.8.1claws48
+2002-08-11 [paul]	0.8.1claws48
 
-	* src/prefs_toolbar.c
-		re-work the UI
+	* src/prefs_common.c
+	  src/prefs_toolbar.c
+		rename 'Pixmap' -> 'Icon'
+
+	* src/toolbar.[ch]
+		rename  'A_SEND_QUEUD' -> 'A_SEND_QUEUED'
 
 2002-08-10 [paul]	0.8.1claws47
 

@@ -2700,7 +2700,7 @@ static void prefs_interface_create(void)
 	gtk_signal_connect (GTK_OBJECT (button_keybind), "clicked",
 			    GTK_SIGNAL_FUNC (prefs_keybind_select), NULL);
 
- 	PACK_FRAME(vbox1, frame_pixmap_theme, _("Pixmap theme"));
+ 	PACK_FRAME(vbox1, frame_pixmap_theme, _("Icon theme"));
  	
  	vbox_pixmap_theme = gtk_vbox_new(FALSE, 0);
  	gtk_widget_show(vbox_pixmap_theme);

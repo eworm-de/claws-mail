@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001 Hiroyuki Yamamoto
+ * Copyright (C) 2002 Hiroyuki Yamamoto & the Sylpheed-Claws team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@
 
 typedef enum
 {
-	COL_PIXMAP	= 0,
+	COL_ICON	= 0,
 	COL_FILENAME	= 1,
 	COL_TEXT	= 2,
 	COL_EVENT	= 3
@@ -592,7 +592,7 @@ static void prefs_toolbar_selection_changed(GtkList *list,
 	} else {
 		gtk_widget_hide (mtoolbar.combo_syl_action);
 		gtk_widget_show (mtoolbar.entry_icon_text);
-		gtk_label_set_text (GTK_LABEL(mtoolbar.label_icon_text), _("Toolbar text (shown below Pixmap)"));
+		gtk_label_set_text (GTK_LABEL(mtoolbar.label_icon_text), _("Toolbar text"));
 	}
 }
 
@@ -775,15 +775,15 @@ static void prefs_toolbar_create(void)
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow_clist_icon), 
 					GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-	titles[COL_PIXMAP]   = _("Pixmap");
+	titles[COL_ICON]     = _("Icon");
 	titles[COL_FILENAME] = _("File name");
-	titles[COL_TEXT]     = _("Pixmap text");
+	titles[COL_TEXT]     = _("Icon text");
 	titles[COL_EVENT]    = _("Mapped event");
 	
 	clist_set = gtk_clist_new_with_titles (N_DISPLAYED_ITEMS_COLS, titles);
 	gtk_widget_show (clist_set);
 	gtk_container_add (GTK_CONTAINER (scrolledwindow_clist_set), clist_set);
-	gtk_clist_set_column_width (GTK_CLIST(clist_set), COL_PIXMAP  , 80);
+	gtk_clist_set_column_width (GTK_CLIST(clist_set), COL_ICON    , 80);
 	gtk_clist_set_column_width (GTK_CLIST(clist_set), COL_FILENAME, 80);
 	gtk_clist_set_column_width (GTK_CLIST(clist_set), COL_TEXT    , 80);
 	gtk_clist_set_column_width (GTK_CLIST(clist_set), COL_EVENT   , 80);
