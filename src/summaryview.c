@@ -3695,7 +3695,7 @@ void summary_thread_build(SummaryView *summaryview)
 
 	while (node) {
 		next = GTK_CTREE_NODE_NEXT(node);
-		if (!summaryview->folder_item->thread_collapsed)
+		if (!summaryview->thread_collapsed)
 			gtk_ctree_expand(ctree, node);
 		if (prefs_common.bold_unread &&
 		    GTK_CTREE_ROW(node)->children)
@@ -3724,7 +3724,7 @@ static void summary_thread_init(SummaryView *summaryview)
 	GtkCTreeNode *node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 	GtkCTreeNode *next;
 
-	if (!summaryview->folder_item->thread_collapsed) {
+	if (!summaryview->thread_collapsed) {
 		while (node) {
 			next = GTK_CTREE_ROW(node)->sibling;
 			if (GTK_CTREE_ROW(node)->children)

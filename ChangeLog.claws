@@ -1,3 +1,9 @@
+2003-01-25 [paul]	0.8.9claws6
+
+	* src/summaryview.c
+		summary_thread_build{}, summary_thread_init{}: remove 
+		unneeded reference to summaryview->folder_item
+
 2003-01-25 [christoph]	0.8.9claws5
 
 	* src/gtk/description_window.c
