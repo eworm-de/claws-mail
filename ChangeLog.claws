@@ -1,5 +1,10 @@
 2001-07-15 [alfons]
 
+	* src/addr_compl.[ch], src/prefs_filtering.c
+		make "filtering pref dialog's destination entry" an
+		"address completable entry", if filter destination is 
+		an email address
+
 	0.5.1claws2
 	
 	sync with Hiroyuki's 0.5.0cvs2-3

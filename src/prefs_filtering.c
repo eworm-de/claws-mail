@@ -46,6 +46,7 @@
 #include "alertpanel.h"
 #include "folder.h"
 #include "filtering.h"
+#include "addr_compl.h"
 
 static struct Filtering {
 	GtkWidget *window;
@@ -63,6 +64,9 @@ static struct Filtering {
 	GtkWidget *exec_btn;
 
 	GtkWidget *cond_clist;
+
+	/* need this to make address completion entry work */
+	gint current_action;
 } filtering;
 
 #define VSPACING		12
@@ -101,8 +105,11 @@ static void prefs_filtering_condition_define	(void);
 static gint prefs_filtering_clist_set_row(gint row, FilteringProp * prop);
 static void prefs_filtering_select_dest(void);
 static void prefs_filtering_action_select(GtkList *list,
-					  GtkWidget *widget,
+					  GtkWidget *widget, 
 					  gpointer user_data);
+static void prefs_filtering_action_selection_changed(GtkList *list,
+						     gpointer user_data);
+					  
 static void prefs_filtering_reset_dialog(void);
 
 enum {
@@ -123,6 +130,9 @@ static gint get_sel_from_list(GtkList * list)
 	gint row = 0;
 	void * sel;
 	GList * child;
+
+	if (list->selection == NULL)
+		return -1;
 
 	sel = list->selection->data;
 	for(child = list->children ; child != NULL ;
@@ -217,6 +227,16 @@ void prefs_filtering_open(void)
 	prefs_filtering_set_dialog();
 
 	gtk_widget_show(filtering.window);
+
+	start_address_completion();
+}
+
+/* prefs_filtering_close() - just to have one common exit point */
+static void prefs_filtering_close(void)
+{
+	end_address_completion();
+	
+	gtk_widget_hide(filtering.window);
 }
 
 static void prefs_filtering_create(void)
@@ -361,6 +381,10 @@ static void prefs_filtering_create(void)
 	gtk_signal_connect (GTK_OBJECT (action_list), "select-child",
 			    GTK_SIGNAL_FUNC (prefs_filtering_action_select),
 			    NULL);
+
+	gtk_signal_connect(GTK_OBJECT(action_list), "selection-changed",
+			   GTK_SIGNAL_FUNC(prefs_filtering_action_selection_changed),
+			   NULL);
 
 	/* accounts */
 
@@ -912,6 +936,27 @@ static void prefs_filtering_select_dest(void)
 	g_free(path);
 }
 
+static void prefs_filtering_action_selection_changed(GtkList *list,
+						     gpointer user_data)
+{
+	gint value;
+
+	value = get_sel_from_list(GTK_LIST(filtering.action_list));
+
+	if (filtering.current_action != value) {
+		if (filtering.current_action == ACTION_FORWARD 
+		||  filtering.current_action == ACTION_FORWARD_AS_ATTACHMENT) {
+			debug_print("unregistering address completion entry\n");
+			address_completion_unregister_entry(GTK_ENTRY(filtering.dest_entry));
+		}
+		if (value == ACTION_FORWARD || value == ACTION_FORWARD_AS_ATTACHMENT) {
+			debug_print("registering address completion entry\n");
+			address_completion_register_entry(GTK_ENTRY(filtering.dest_entry));
+		}
+		filtering.current_action = value;
+	}
+}
+
 static void prefs_filtering_action_select(GtkList *list,
 					  GtkWidget *widget,
 					  gpointer user_data)
@@ -1022,11 +1067,11 @@ static void prefs_filtering_ok(void)
 {
 	prefs_filtering_set_list();
 	prefs_filtering_write_config();
-	gtk_widget_hide(filtering.window);
+	prefs_filtering_close();
 }
 
 static void prefs_filtering_cancel(void)
 {
 	prefs_filtering_read_config();
-	gtk_widget_hide(filtering.window);
+	prefs_filtering_close();
 }

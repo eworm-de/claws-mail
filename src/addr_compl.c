@@ -598,6 +598,10 @@ void address_completion_start(GtkWidget *mainwindow)
 			   mainwindow);
 }
 
+/* Need unique data to make unregistering signal handler possible for the auto
+ * completed entry */
+#define COMPLETION_UNIQUE_DATA (GINT_TO_POINTER(0xfeefaa))
+
 void address_completion_register_entry(GtkEntry *entry)
 {
 	g_return_if_fail(entry != NULL);
@@ -610,14 +614,36 @@ void address_completion_register_entry(GtkEntry *entry)
 	gtk_signal_connect_full(GTK_OBJECT(entry), "key_press_event",
 				GTK_SIGNAL_FUNC(address_completion_entry_key_pressed),
 				NULL,
-				NULL,
+				COMPLETION_UNIQUE_DATA,
 				NULL,
 				0,
 				0); /* magic */
 }
 
+void address_completion_unregister_entry(GtkEntry *entry)
+{
+	GtkObject *entry_obj;
+
+	g_return_if_fail(entry != NULL);
+	g_return_if_fail(GTK_IS_ENTRY(entry));
+
+	entry_obj = gtk_object_get_data(GTK_OBJECT(entry), ENTRY_DATA_TAB_HOOK);
+	g_return_if_fail(entry_obj);
+	g_return_if_fail(entry_obj == GTK_OBJECT(entry));
+
+	/* has the hooked property? */
+	gtk_object_set_data(GTK_OBJECT(entry), ENTRY_DATA_TAB_HOOK, NULL);
+
+	/* remove the hook */
+	gtk_signal_disconnect_by_func(GTK_OBJECT(entry), 
+		GTK_SIGNAL_FUNC(address_completion_entry_key_pressed),
+		COMPLETION_UNIQUE_DATA);
+}
+
 /* should be called when main window with address completion entries
- * terminates */
+ * terminates.
+ * NOTE: this function assumes that it is called upon destruction of
+ * the window */
 void address_completion_end(GtkWidget *mainwindow)
 {
 	/* if address_completion_end() is really called on closing the window,

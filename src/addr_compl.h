@@ -48,6 +48,7 @@ gint end_address_completion		(void);
 
 void address_completion_start	(GtkWidget *mainwindow);
 void address_completion_register_entry	(GtkEntry *entry);
+void address_completion_unregister_entry (GtkEntry *entry);
 void address_completion_end	(GtkWidget *mainwindow);
 
 #endif /* __ADDR_COMPL_H__ */
