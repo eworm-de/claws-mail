@@ -1,3 +1,18 @@
+2001-01-25 [paul]	0.8.9claws1
+
+	* codeconv.c
+		conv_encode_header():  fix bug when long headers with 8-bit
+		characters are used, so that the encoded words are wrapped.
+		If the space in the original text falls on the wrap boundary,
+		it can be lost.
+		Patch by Sergey Vlasov.
+		
+	* folderview.c
+		 fix bug where a change to the sorting method or thread view
+		 of a folder's messages is lost if simpify-subject is set and
+		 toggled on or off.
+		 Patch by Luke Plant.
+
 2001-01-24 [paul]	0.8.9claws
 
 	* sylpheed-0.8.9claws released
