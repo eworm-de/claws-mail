@@ -1,3 +1,12 @@
+2003-02-03 [thorsten]	0.9.9claws0-1
+
+	* src/compose.c
+	  src/w32_aspell_init.h
+	  src/common/utils.h
+		fix: MinGW didn't compile
+	* win32/utils/mk_translation.bat
+		workaround: msgfmt created broken translations
+
 2003-02-03 [alfons]
 
 	* win32/pubobj.c

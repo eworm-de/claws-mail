@@ -505,7 +505,7 @@ void unlink_tempfiles(void);
 
 /* timer needed for socket(gdk_input) */
 int start_mswin_helper(void);
-void stop_mswin_helper(void);
+void stop_mswin_helper(int tag);
 static gint mswin_helper_timeout_cb(gpointer *data);
 
 wchar_t  *gtkwcs2winwcs(wchar_t *gtkwcs);

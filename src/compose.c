@@ -6311,7 +6311,7 @@ static gint ext_editor_timeout_cb(Compose *compose) {
 	if ((WaitForSingleObject(compose->exteditor_pid, 0) != WAIT_TIMEOUT)) {
 		/* Process terminated */
 		CloseHandle(compose->exteditor_pid);
-		compose_input_cb( compose , -1, NULL );
+		compose_input_cb( compose , -1, 0 );
 		return FALSE;	/* stop timer */
 	}
 	return TRUE;
@@ -6383,7 +6383,7 @@ static gint compose_exec_ext_editor_real(const gchar *file)
 		if ((hEditor=spawnvp(P_NOWAIT, fullname, parsed_cmdline)) < 0) {
 			gchar *p_buf = g_strdup_printf(_("Cannot execute\n%s"),&buf);
 			/* disable timeout */
-			compose_input_cb( compose, -1, NULL );
+			compose_input_cb( compose, -1, 0 );
 			locale_to_utf8(&p_buf);
 			g_warning(_("Exec error"),p_buf);
 			alertpanel_message(_("Exec error"),p_buf);

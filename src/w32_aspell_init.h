@@ -661,10 +661,14 @@ typedef void (__cdecl * taspell_string_pair_enumeration_assign)(struct AspellStr
 
 /* typedefs */
 
-#ifdef W32_ASPELL_INIT
-#define W32_ASPELL_DECLARE(nam) __declspec(dllexport) t##nam nam ;
-#else
-#define W32_ASPELL_DECLARE(nam) __declspec(dllimport) t##nam nam ;
+#ifdef _MSC_VER
+# ifdef W32_ASPELL_INIT
+#  define W32_ASPELL_DECLARE(nam) __declspec(dllexport) t##nam nam ;
+# else
+#  define W32_ASPELL_DECLARE(nam) __declspec(dllimport) t##nam nam ;
+# endif /* W32_ASPELL_INIT */
+#else /* ! _MSC_VER */
+# define W32_ASPELL_DECLARE(nam) t##nam nam ;
 #endif
 
 W32_ASPELL_DECLARE( aspell_mutable_container_add                                          )

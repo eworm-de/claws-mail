@@ -16,17 +16,28 @@ if not exist locale\%1 mkdir locale\%1
 if not exist locale\%1\LC_MESSAGES mkdir locale\%1\LC_MESSAGES
 rem *** utf8 translation ***
 SET CONTENTTYPE=^.Content-Type: text\/plain; charset=
-copy ..\..\po\%1.po
+copy ..\..\po\%1.po > NUL
 echo @echo off > mk_%1.bat
 echo set PATH=apps;%%PATH%% >> mk_%1.bat
 rem *** extract orig. encoding ***
 sed -n -e "/%CONTENTTYPE%/ {s/.*=/iconv -f /;s/\\\\.*/ -t utf-8 %1.po/;p;} " %1.po >> mk_%1.bat
-rem *** modifiy "charset=XXX" line in *.po ***
+
+rem new gettext weirdness: bg el ja ko zh* need (correct) "charset=utf-8"
+rem while others need local charset declared (though file is utf-8 as well)
+rem let's hope for better times...
+call mk_%1.bat > %1-utf8.po
+rem *** make .mo ***
+apps\msgfmt -o locale\%1\LC_MESSAGES\sylpheed.mo %1-utf8.po 2>NUL
+if not ERRORLEVEL 1 goto CLEANUP
+
+echo gettext workaround required...
 call mk_%1.bat > %1-utf8.po.in
+rem *** modifiy "charset=XXX" line in *.po ***
 sed -e "/%CONTENTTYPE%/ { s#=.*#=utf-8\\\\n""#; }" %1-utf8.po.in > %1-utf8.po
-del %1-utf8.po.in
 rem *** make .mo ***
 apps\msgfmt -o locale\%1\LC_MESSAGES\sylpheed.mo %1-utf8.po
-del %1.po %1-utf8.po mk_%1.bat
+del %1-utf8.po.in
 
+:CLEANUP
+del %1.po %1-utf8.po mk_%1.bat
 :end
