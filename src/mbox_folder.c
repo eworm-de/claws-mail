@@ -58,6 +58,7 @@ FolderClass mbox_class =
 {
 	F_MBOX,
 	"mbox",
+	"MBOX",
 
 	/* Folder functions */
 	mbox_folder_new,

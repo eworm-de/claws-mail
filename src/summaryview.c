@@ -1941,6 +1941,7 @@ static void summary_status_show(SummaryView *summaryview)
 	guint n_selected = 0;
 	off_t sel_size = 0;
 	MsgInfo *msginfo;
+	gchar *name;
 
 	if (!summaryview->folder_item) {
 		gtk_label_set(GTK_LABEL(summaryview->statlabel_folder), "");
@@ -1962,21 +1963,9 @@ static void summary_status_show(SummaryView *summaryview)
 		}
 	}
 
-	if (FOLDER_TYPE(summaryview->folder_item->folder) == F_NEWS) {
-		if (summaryview->folder_item->path != NULL) {
-			gchar *group;
-			group = get_abbrev_newsgroup_name
-				(g_basename(summaryview->folder_item->path),
-				 prefs_common.ng_abbrev_len);
-			gtk_label_set(GTK_LABEL(summaryview->statlabel_folder), group);
-			g_free(group);
-		} else {
-			gtk_label_set(GTK_LABEL(summaryview->statlabel_folder), "");
-		}
-	} else {
-		gtk_label_set(GTK_LABEL(summaryview->statlabel_folder),
-			      summaryview->folder_item->path);
-	}
+	name = folder_item_get_name(summaryview->folder_item);
+	gtk_label_set(GTK_LABEL(summaryview->statlabel_folder), name);
+	g_free(name);
 
 	if (summaryview->deleted)
 		del = g_strdup_printf(_("%d deleted"), summaryview->deleted);

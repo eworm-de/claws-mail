@@ -391,19 +391,10 @@ static void prefs_scoring_set_dialog(ScoringProp * cond)
 		cur_important_score = prefs_common.important_score;
 		gtk_widget_show(scoring.kill_score_label);
 		gtk_widget_show(scoring.kill_score_entry);
-	}
-	else {
+	} else {
 		prefs_scoring = cur_item->prefs->scoring;
 		cur_kill_score = cur_item->prefs->kill_score;
 		cur_important_score = cur_item->prefs->important_score;
-		if (FOLDER_TYPE(cur_item->folder) != F_NEWS) {
-			gtk_widget_hide(scoring.kill_score_label);
-			gtk_widget_hide(scoring.kill_score_entry);
-		}
-		else {
-			gtk_widget_show(scoring.kill_score_label);
-			gtk_widget_show(scoring.kill_score_entry);
-		}
 	}
 
 	for(cur = prefs_scoring ; cur != NULL ;

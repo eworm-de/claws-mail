@@ -302,6 +302,7 @@ FolderClass imap_class =
 {
 	F_IMAP,
 	"imap",
+	"IMAP4",
 
 	/* Folder functions */
 	imap_folder_new,

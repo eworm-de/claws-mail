@@ -229,40 +229,7 @@ static gboolean foldersel_gnode_func(GtkCTree *ctree, guint depth,
 	FolderItem *item = FOLDER_ITEM(gnode->data);
 	gchar *name;
 
-	switch (item->stype) {
-	case F_INBOX:
-		name = _("Inbox");
-		break;
-	case F_OUTBOX:
-		name = _("Sent");
-		break;
-	case F_QUEUE:
-		name = _("Queue");
-		break;
-	case F_TRASH:
-		name = _("Trash");
-		break;
-	case F_DRAFT:
-		name = _("Drafts");
-		break;
-	default:
-		name = item->name;
-
-		if (!item->parent) {
-			switch (FOLDER_TYPE(item->folder)) {
-			case F_MBOX:
-				Xstrcat_a(name, name, " (MBOX)", ); break;
-			case F_MH:
-				Xstrcat_a(name, name, " (MH)", ); break;
-			case F_IMAP:
-				Xstrcat_a(name, name, " (IMAP4)", ); break;
-			case F_NEWS:
-				Xstrcat_a(name, name, " (News)", ); break;
-			default:
-				break;
-			}
-		}
-	}
+	name = folder_item_get_name(item);
 
 	gtk_ctree_node_set_row_data(ctree, cnode, item);
 	gtk_ctree_set_node_info(ctree, cnode, name,
@@ -270,6 +237,8 @@ static gboolean foldersel_gnode_func(GtkCTree *ctree, guint depth,
 				folderxpm, folderxpmmask,
 				folderopenxpm, folderopenxpmmask,
 				FALSE, FALSE);
+
+	g_free(name);
 
 	return TRUE;
 }

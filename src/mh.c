@@ -119,6 +119,7 @@ FolderClass mh_class =
 {
 	F_MH,
 	"mh",
+	"MH",
 
 	/* Folder functions */
 	mh_folder_new,

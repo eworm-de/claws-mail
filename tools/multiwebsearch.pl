@@ -60,5 +60,9 @@ foreach $rcline (@rclines) {
 		$browser[1] =~ s/%s/$url$what/;
 	}
 }
+
+$browser[1]=~s#\?p#$ENV{'CommonProgramFiles'}\\..#;
+print("$browser[1]&\n");
+ 
 system("$browser[1]&");
 exit;

@@ -114,6 +114,7 @@ FolderClass news_class =
 {
 	F_NEWS,
 	"news",
+	"News",
 
 	/* Folder functions */
 	news_folder_new,

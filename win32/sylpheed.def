@@ -661,6 +661,7 @@ EXPORTS
 	folder_item_get_msg_list 
 	folder_item_get_msginfo 
 	folder_item_get_msginfo_by_msgid 
+	folder_item_get_name 
 	folder_item_get_path 
 	folder_item_is_msg_changed 
 	folder_item_move_msg 

@@ -153,6 +153,7 @@ struct _FolderClass
 {
 	FolderType  type;
 	gchar 	   *idstr;
+	gchar	   *uistr;
 
 	/* virtual functions */
 
@@ -374,6 +375,7 @@ FolderClass *folder_get_class_from_string	(const gchar 	*str);
 gchar      *folder_get_identifier		(Folder		*folder);
 gchar      *folder_item_get_identifier		(FolderItem	*item);
 FolderItem *folder_find_item_from_identifier	(const gchar	*identifier);
+gchar 	   *folder_item_get_name		(FolderItem 	*item);
 
 Folder     *folder_get_default_folder	(void);
 FolderItem *folder_get_default_inbox	(void);
