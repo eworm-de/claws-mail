@@ -1,4 +1,12 @@
-2003-01-10 [paul]	0.8..8claws74
+2003-01-10 [christoph]	0.8.8claws75
+
+	* src/folder.c
+		don't accept 0 as a valid uid returned by copy and move
+		functions. 0 means the message was copied or moved but the
+		new uid could not be fetched. It is not an error condition
+		for the copy or move operation.
+
+2003-01-10 [paul]	0.8.8claws74
 
 	* src/prefs_filtering.c
 		change English used in Alert when entry is not
