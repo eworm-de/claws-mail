@@ -98,6 +98,11 @@ gint prefs_folder_item_chmod_mode		(gchar *folder_chmod);
 
 static void folder_color_set_dialog(GtkWidget *widget, gpointer data);
 
+static void enable_processing_btn_cb		(GtkWidget *button, 
+						 gpointer data);
+static void newmailcheck_btn_cb			(GtkWidget *button, 
+						 gpointer data);
+
 #define SAFE_STRING(str) \
 	(str) ? (str) : ""
 
@@ -119,7 +124,9 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	GtkWidget *folder_color;
 	GtkWidget *folder_color_btn;
 	GtkWidget *checkbtn_enable_processing;
+	GtkWidget *enable_processing_sub_btn;
 	GtkWidget *checkbtn_newmailcheck;
+	GtkWidget *newmailcheck_sub_btn;
 
 	page->item	   = item;
 
@@ -200,23 +207,49 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	/* Enable processing at startup */
 	checkbtn_enable_processing = gtk_check_button_new_with_label(_("Process at startup"));
 	gtk_widget_show(checkbtn_enable_processing);
-	gtk_table_attach(GTK_TABLE(table), checkbtn_enable_processing, 0, 2, 
+	gtk_table_attach(GTK_TABLE(table), checkbtn_enable_processing, 0, 1, 
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_enable_processing), 
 				     item->prefs->enable_processing);
+
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show(hbox);
+	gtk_table_attach_defaults(GTK_TABLE(table), hbox, 1, 2, 
+				  rowcount, rowcount + 1);
+
+	enable_processing_sub_btn = gtk_button_new_with_label(_("Apply to sub folders"));
+	gtk_widget_show(enable_processing_sub_btn);
+  	gtk_box_pack_start (GTK_BOX(hbox), enable_processing_sub_btn, FALSE, FALSE, 0);
+
+	gtk_signal_connect(GTK_OBJECT(enable_processing_sub_btn), "clicked",
+			   GTK_SIGNAL_FUNC(enable_processing_btn_cb),
+			   page);
 
 	rowcount++;
 
 	/* Check folder for new mail */
 	checkbtn_newmailcheck = gtk_check_button_new_with_label(_("Scan for new mail"));
 	gtk_widget_show(checkbtn_newmailcheck);
-	gtk_table_attach(GTK_TABLE(table), checkbtn_newmailcheck, 0, 2,
+	gtk_table_attach(GTK_TABLE(table), checkbtn_newmailcheck, 0, 1,
 					 rowcount, rowcount+1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
 	
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbtn_newmailcheck),
 								 item->prefs->newmailcheck);
 	
+	hbox = gtk_hbox_new(FALSE, 0);
+	gtk_widget_show(hbox);
+	gtk_table_attach_defaults(GTK_TABLE(table), hbox, 1, 2, 
+				  rowcount, rowcount + 1);
+
+	newmailcheck_sub_btn = gtk_button_new_with_label(_("Apply to sub folders"));
+	gtk_widget_show(newmailcheck_sub_btn);
+  	gtk_box_pack_start (GTK_BOX(hbox), newmailcheck_sub_btn, FALSE, FALSE, 0);
+
+	gtk_signal_connect(GTK_OBJECT(newmailcheck_sub_btn), "clicked",
+			   GTK_SIGNAL_FUNC(newmailcheck_btn_cb),
+			   page);
+
 	rowcount++;
 
 	page->table = table;
@@ -554,6 +587,40 @@ static void folder_color_set_dialog(GtkWidget *widget, gpointer data)
 					     page->folder_color);
 	gtkut_set_widget_bgcolor_rgb(page->folder_color_btn, rgbcolor);
 	page->folder_color = rgbcolor;
+}
+
+static gboolean set_enable_processing_func(GNode *node, gpointer data)
+{
+	FolderItem *item = (FolderItem *) node->data;
+	g_return_val_if_fail(item != NULL, TRUE);
+	item->prefs->enable_processing = GPOINTER_TO_INT(data);
+	folder_item_prefs_save_config(item);
+	return FALSE;
+}
+
+static void enable_processing_btn_cb (GtkWidget *button, gpointer data)
+{
+	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) data;
+	g_node_traverse(page->item->node, G_IN_ORDER, G_TRAVERSE_ALL,
+			-1, set_enable_processing_func, 
+			GINT_TO_POINTER(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_enable_processing))));
+}
+
+static gboolean set_newmailcheck_func(GNode *node, gpointer data)
+{
+	FolderItem *item = (FolderItem *) node->data;
+	g_return_val_if_fail(item != NULL, TRUE);
+	item->prefs->newmailcheck = GPOINTER_TO_INT(data);
+	folder_item_prefs_save_config(item);
+	return FALSE;
+}
+
+static void newmailcheck_btn_cb (GtkWidget *button, gpointer data)
+{
+	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) data;
+	g_node_traverse(page->item->node, G_IN_ORDER, G_TRAVERSE_ALL,
+			-1, set_newmailcheck_func, 
+			GINT_TO_POINTER(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(page->checkbtn_newmailcheck))));
 }
 
 struct FolderItemGeneralPage folder_item_general_page;
