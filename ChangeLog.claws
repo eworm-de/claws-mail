@@ -1,3 +1,9 @@
+2002-11-28 [Ivan Francolin Martinez (ivanfm@sourceforge.net)]	0.8.6claws28
+	
+	* src/toolbar.[ch]
+		add patch by Ivan F. Martinez introducing messageview Toolbar
+		some changes and committed by oliver
+
 2002-11-28 [oliver]	0.8.6claws27
 	
 	* src/prefs_toolbar.[ch]
