@@ -376,7 +376,8 @@ gchar *get_complete_address(gint index)
 			if (p != NULL) {
 				if (!p->name || p->name[0] == '\0')
 					address = g_strdup_printf(p->address);
-				else if (strchr_with_skip_quote(p->name, '"', ','))
+				else if (p->name[0] != '"' &&
+					 strpbrk(p->name, ",.[]<>") != NULL)
 					address = g_strdup_printf
 						("\"%s\" <%s>", p->name, p->address);
 				else

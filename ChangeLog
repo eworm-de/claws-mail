@@ -1,3 +1,20 @@
+2003-05-15
+
+	* src/imap.c:
+	  imap_parse_atom()
+	  imap_get_header()
+	  imap_cmd_fetch(): check for data size that servers return (fixes
+	  vulnerability found in BugTraq).
+
+2003-05-14
+
+	* src/addr_compl.c: get_complete_address()
+	  src/addressbook.c: addressbook_format_address()
+	  src/compose.c: QUOTE_IF_REQUIRED(): quote if name contains
+	  characters that is not defined in atext (RFC 2822, 3.2.4. Atom).
+	* src/main.c: main(): set colormap and visual to solve color problem
+	  in Solaris (thanks to Markus Schwarzenberg).
+
 2003-05-12
 
 	* version 0.9.0pre1

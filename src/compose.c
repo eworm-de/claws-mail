@@ -3946,8 +3946,7 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 
 #define QUOTE_IF_REQUIRED(out, str)			\
 {							\
-	if (*str != '"' && (strchr(str, ',')		\
-			|| strchr(str, '.'))) {		\
+	if (*str != '"' && strpbrk(str, ",.[]<>")) {	\
 		gchar *__tmp;				\
 		gint len;				\
 							\
