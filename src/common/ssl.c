@@ -27,10 +27,23 @@
 
 #include <glib.h>
 
+#include "sylpheed.h"
 #include "intl.h"
 #include "utils.h"
 #include "ssl.h"
 #include "ssl_certificate.h"
+
+#ifdef USE_PTHREAD
+#include <pthread.h>
+#endif
+
+#ifdef USE_PTHREAD
+typedef struct _thread_data {
+	SSL *ssl;
+	gboolean done;
+} thread_data;
+#endif
+
 
 static SSL_CTX *ssl_ctx;
 
@@ -60,6 +73,52 @@ void ssl_done(void)
 		return;
 	
 	SSL_CTX_free(ssl_ctx);
+}
+
+#ifdef USE_PTHREAD
+void *SSL_connect_thread(void *data)
+{
+	thread_data *td = (thread_data *)data;
+	int result = SSL_connect(td->ssl);
+	td->done = TRUE; /* let the caller thread join() */
+	return GINT_TO_POINTER(result);
+}
+#endif
+
+gint SSL_connect_nb(SSL *ssl)
+{
+#ifdef USE_PTHREAD
+	thread_data *td = g_new0(thread_data, 1);
+	pthread_t pt;
+	void *res = NULL;
+	
+	td->ssl  = ssl;
+	td->done = FALSE;
+	
+	/* try to create a thread to initialize the SSL connection,
+	 * fallback to blocking method in case of problem 
+	 */
+	if (pthread_create(&pt, PTHREAD_CREATE_JOINABLE, 
+			SSL_connect_thread, td) != 0)
+		return SSL_connect(ssl);
+	
+	debug_print("waiting for SSL_connect thread...\n");
+	while(!td->done) {
+		/* don't let the interface freeze while waiting */
+		sylpheed_do_idle();
+	}
+
+	/* get the thread's return value and clean its resources */
+	pthread_join(pt, &res);
+	g_free(td);
+
+	debug_print("SSL_connect thread returned %d\n", 
+			GINT_TO_POINTER(res));
+	
+	return GPOINTER_TO_INT(res);
+#else
+	return SSL_connect(ssl);
+#endif
 }
 
 gboolean ssl_init_socket(SockInfo *sockinfo)
@@ -92,7 +151,7 @@ gboolean ssl_init_socket_with_method(SockInfo *sockinfo, SSLMethod method)
 	}
 
 	SSL_set_fd(ssl, sockinfo->sock);
-	if (SSL_connect(ssl) == -1) {
+	if (SSL_connect_nb(ssl) == -1) {
 		g_warning(_("SSL connect failed (%s)\n"),
 			    ERR_error_string(ERR_get_error(), NULL));
 		SSL_free(ssl);
