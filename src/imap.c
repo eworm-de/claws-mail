@@ -242,9 +242,10 @@ static gint imap_cmd_search	(SockInfo	*sock,
 static gint imap_cmd_fetch	(SockInfo	*sock,
 				 guint32	 uid,
 				 const gchar	*filename);
-static gint imap_cmd_append	(SockInfo	*sock,
+static gint imap_cmd_append	(IMAPSession	*session,
 				 const gchar	*destfolder,
-				 const gchar	*file);
+				 const gchar	*file,
+				 gint32		*newuid);
 static gint imap_cmd_copy	(IMAPSession	*session,
 				 gint32		msgnum,
 				 const gchar	*destfolder,
@@ -668,7 +669,7 @@ gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 {
 	gchar *destdir;
 	IMAPSession *session;
-	gint ok;
+	gint ok, newuid;
 
 	g_return_val_if_fail(folder != NULL, -1);
 	g_return_val_if_fail(dest != NULL, -1);
@@ -678,7 +679,7 @@ gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 	if (!session) return -1;
 
 	destdir = imap_get_real_path(IMAP_FOLDER(folder), dest->path);
-	ok = imap_cmd_append(SESSION(session)->sock, destdir, file);
+	ok = imap_cmd_append(session, destdir, file, &newuid);
 	g_free(destdir);
 
 	if (ok != IMAP_SUCCESS) {
@@ -691,7 +692,7 @@ gint imap_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 			FILE_OP_ERROR(file, "unlink");
 	}
 
-	return 0;
+	return newuid;
 }
 
 static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
@@ -700,8 +701,7 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 	gchar *destdir;
 	IMAPSession *session;
 	IMAPFlags iflags = 0;
-	gint messages, recent, unseen;
-	guint32 newuid = 0, uid_validity;
+	guint32 newuid = 0;
 	gint ok;
     
 	g_return_val_if_fail(folder != NULL, -1);
@@ -715,17 +715,6 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 	if (msginfo->folder == dest) {
 		g_warning("the src folder is identical to the dest.\n");
 		return -1;
-	}
-
-	/* if we don't have UIDPLUS we get UID-NEXT and hope that the
-	   message really gets this uid */
-	if (!imap_has_capability(session, "UIDPLUS")) {
-		ok = imap_status(session, IMAP_FOLDER(folder), dest->path,
-				 &messages, &recent, &newuid, &uid_validity, &unseen);
-		if (ok != IMAP_SUCCESS) {
-			g_warning("can't copy message\n");
-			return -1;
-		}
 	}
 
 	destdir = imap_get_real_path(IMAP_FOLDER(folder), dest->path);
@@ -2756,14 +2745,16 @@ static gint imap_cmd_fetch(SockInfo *sock, guint32 uid, const gchar *filename)
 	return ok;
 }
 
-static gint imap_cmd_append(SockInfo *sock, const gchar *destfolder,
-			    const gchar *file)
+static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
+			    const gchar *file, gint32 *new_uid)
 {
 	gint ok;
-	gint size;
+	gint size, newuid;
 	gchar *destfolder_;
 	gchar buf[BUFFSIZE], *imapbuf;
 	FILE *fp;
+	GPtrArray *reply;
+	gchar *okmsginfo;
 
 	g_return_val_if_fail(file != NULL, IMAP_ERROR);
 
@@ -2773,9 +2764,9 @@ static gint imap_cmd_append(SockInfo *sock, const gchar *destfolder,
 		return -1;
 	}
 	QUOTE_IF_REQUIRED(destfolder_, destfolder);
-	imap_cmd_gen_send(sock, "APPEND %s (\\Seen) {%d}", destfolder_, size);
+	imap_cmd_gen_send(SESSION(session)->sock, "APPEND %s (\\Seen) {%d}", destfolder_, size);
 
-	ok = imap_cmd_gen_recv(sock, &imapbuf);
+	ok = imap_cmd_gen_recv(SESSION(session)->sock, &imapbuf);
 	if (ok != IMAP_SUCCESS || imapbuf[0] != '+' || imapbuf[1] != ' ') {
 		log_warning(_("can't append %s to %s\n"), file, destfolder_);
 		g_free(imapbuf);
@@ -2788,9 +2779,9 @@ static gint imap_cmd_append(SockInfo *sock, const gchar *destfolder,
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		strretchomp(buf);
-		if (sock_puts(sock, buf) < 0) {
+		if (sock_puts(SESSION(session)->sock, buf) < 0) {
 			fclose(fp);
-			sock_close(sock);
+			sock_close(SESSION(session)->sock);
 			return -1;
 		}
 	}
@@ -2798,51 +2789,37 @@ static gint imap_cmd_append(SockInfo *sock, const gchar *destfolder,
 	if (ferror(fp)) {
 		FILE_OP_ERROR(file, "fgets");
 		fclose(fp);
-		sock_close(sock);
+		sock_close(SESSION(session)->sock);
 		return -1;
 	}
 
-	sock_puts(sock, "");
+	sock_puts(SESSION(session)->sock, "");
 
 	fclose(fp);
-	return imap_cmd_ok(sock, NULL);
+
+	reply = g_ptr_array_new();
+
+	*new_uid = 0;
+	ok = imap_cmd_ok(SESSION(session)->sock, reply);
+	if (ok != IMAP_SUCCESS)
+		log_warning(_("can't append message to %s\n"), destfolder_);
+	else if (
+	    (new_uid != NULL) && 
+	    (imap_has_capability(session, "UIDPLUS") && reply->len > 0) &&
+	    ((okmsginfo = g_ptr_array_index(reply, reply->len - 1)) != NULL) &&
+	    (sscanf(okmsginfo, "%*u OK [APPENDUID %*u %u]", &newuid) == 1)) {
+		*new_uid = newuid;
+	}
+
+	ptr_array_free_strings(reply);
+	g_ptr_array_free(reply, TRUE);
+	return ok;
 }
 
-#if 0
-static void imap_uidplus_copy(IMAPSession *session, MsgInfo *msginfo,
-    				const gchar *destfolder, const gchar *okmsginfo)
-{
-	unsigned int olduid, newuid;
-	IMAPFlags iflags = 0;
 
-	if (okmsginfo == NULL)
-		return;
-
-	if (sscanf(okmsginfo, "%*u OK [COPYUID %*llu %u %u]", &olduid, &newuid) != 2)
-		return;
-
-	if (olduid != msginfo->msgnum)	/* this should NEVER happen */
-		return;
-
-	if (imap_select(session, IMAP_FOLDER(msginfo->folder->folder), destfolder,
-		        NULL, NULL, NULL, NULL) != IMAP_SUCCESS)
-		return;
-
-	if (msginfo->flags.perm_flags & MSG_MARKED)  iflags |= IMAP_FLAG_FLAGGED;
-	if (msginfo->flags.perm_flags & MSG_REPLIED) iflags |= IMAP_FLAG_ANSWERED;
-	if (iflags)
-		imap_set_message_flags(session, newuid, newuid, iflags, TRUE);
-
-	if (msginfo->flags.perm_flags & MSG_UNREAD)
-		imap_set_message_flags(session, newuid, newuid, IMAP_FLAG_SEEN, FALSE);
-
-	imap_select(session, IMAP_FOLDER(msginfo->folder->folder), msginfo->folder->path,
-	    	    NULL, NULL, NULL, NULL);
-}
-#endif
-
-static gint imap_cmd_copy(IMAPSession *session,
-    gint32 msgnum, const gchar *destfolder, gint32 *new_uid)
+static gint imap_cmd_copy(IMAPSession * session,
+			  gint32 msgnum,
+			  const gchar * destfolder, gint32 * new_uid)
 {
 	gint ok;
 	gint32 olduid, newuid;
@@ -2859,6 +2836,7 @@ static gint imap_cmd_copy(IMAPSession *session,
 
 	reply = g_ptr_array_new();
 
+	*new_uid = 0;
 	ok = imap_cmd_ok(SESSION(session)->sock, reply);
 	if (ok != IMAP_SUCCESS)
 		log_warning(_("can't copy %d to %s\n"), msgnum, destfolder_);

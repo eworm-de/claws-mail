@@ -1,3 +1,9 @@
+2003-03-17 [christoph]	0.8.11claws22
+
+	* src/imap.c
+		o remove UID guessing from copy code
+		o support UIDPLUS extension for APPEND command
+
 2003-03-17 [paul]	0.8.11claws21
 
 	* src/gtk/about.c
