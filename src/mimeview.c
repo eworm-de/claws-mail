@@ -508,11 +508,29 @@ static MimeViewer *get_viewer_for_content_type(MimeView *mimeview, const gchar *
 	return viewer;
 }
 
+static MimeViewer *get_viewer_for_mimeinfo(MimeView *mimeview, MimeInfo *partinfo)
+{
+	gchar *content_type = NULL;
+	MimeViewer *viewer;
+
+	if ((partinfo->mime_type == MIME_APPLICATION_OCTET_STREAM) &&
+	    (partinfo->name != NULL)) {
+		content_type = procmime_get_mime_type(partinfo->name);
+	} else {
+		content_type = g_strdup(partinfo->content_type);
+	}
+
+	viewer = get_viewer_for_content_type(mimeview, content_type);
+	g_free(content_type);
+
+	return viewer;
+}
+
 static gboolean mimeview_show_part(MimeView *mimeview, MimeInfo *partinfo)
 {
 	MimeViewer *viewer;
 	
-	viewer = get_viewer_for_content_type(mimeview, partinfo->content_type);
+	viewer = get_viewer_for_mimeinfo(mimeview, partinfo);
 	if (viewer == NULL) {
 		if (mimeview->mimeviewer != NULL)
 			mimeview->mimeviewer->clear_viewer(mimeview->mimeviewer);

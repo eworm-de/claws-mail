@@ -1,4 +1,12 @@
-2003-03-25 [christop]	0.8.11claws47
+2003-03-25 [christoph]	0.8.11claws48
+
+	* src/mimeview.c
+	* src/procmime.c
+		remove mime type guessing from mime parser and use
+		name based mime types in viewer lookup for mime type
+		application/octet-stream
+
+2003-03-25 [christoph]	0.8.11claws47
 
 	* doc-src/readme.txt
 	* doc-src/rfc2554.txt
