@@ -23,6 +23,9 @@
 
 #include "defs.h"
 
+#include <sys/types.h>
+#include <sys/wait.h>
+
 #include <glib.h>
 
 #if HAVE_LOCALE_H
@@ -65,6 +68,11 @@
 #include <pwd.h>
 #endif
 
+enum {
+    CHILD_RUNNING = 1 << 0,
+    TIMEOUT_RUNNING = 1 << 1,
+};
+
 static guint hook_id;
 static int flags = SPAMC_RAW_MODE | SPAMC_SAFE_FALLBACK | SPAMC_CHECK_ONLY;
 static gchar *username = NULL;
@@ -88,20 +96,22 @@ static PrefParam param[] = {
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}
 };
 
-static gboolean mail_filtering_hook(gpointer source, gpointer data)
+gboolean timeout_func(gpointer data)
 {
-	MailFilteringData *mail_filtering_data = (MailFilteringData *) source;
-	MsgInfo *msginfo = mail_filtering_data->msginfo;
-	gboolean is_spam = FALSE;
-	FILE *fp = NULL;
-	struct message m;
+	gint *running = (gint *) data;
+
+	if (*running & CHILD_RUNNING)
+		return TRUE;
+
+	*running &= ~TIMEOUT_RUNNING;
+	return FALSE;
+}
+
+static gboolean msg_is_spam(FILE *fp)
+{
 	struct sockaddr addr;
-	int ret;
-
-	if (!config.enable)
-		return FALSE;
-
-	debug_print("Filtering message %d\n", msginfo->msgnum);
+	struct message m;
+	gboolean is_spam = FALSE;
 
 	if (lookup_host(config.hostname, config.port, &addr) != EX_OK) {
 		debug_print("failed to look up spamd host\n");
@@ -112,21 +122,14 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	m.max_len = config.max_size * 1024;
 	m.timeout = 30;
 
-	if ((fp = procmsg_open_message(msginfo)) == NULL) {
-		debug_print("failed to open message file\n");
-		return FALSE;
-	}
-
 	if (message_read(fileno(fp), flags, &m) != EX_OK) {
 		debug_print("failed to read message\n");
-		fclose(fp);
 		message_cleanup(&m);
 		return FALSE;
 	}
 
-	if ((ret = message_filter(&addr, username, flags, &m)) != EX_OK) {
+	if (message_filter(&addr, username, flags, &m) != EX_OK) {
 		debug_print("filtering the message failed\n");
-		fclose(fp);
 		message_cleanup(&m);
 		return FALSE;
 	}
@@ -135,6 +138,54 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		is_spam = TRUE;
 
 	message_cleanup(&m);
+
+	return is_spam;
+}
+
+static gboolean mail_filtering_hook(gpointer source, gpointer data)
+{
+	MailFilteringData *mail_filtering_data = (MailFilteringData *) source;
+	MsgInfo *msginfo = mail_filtering_data->msginfo;
+	gboolean is_spam = FALSE;
+	FILE *fp = NULL;
+	int pid = 0;
+	int status;
+
+	if (!config.enable)
+		return FALSE;
+
+	debug_print("Filtering message %d\n", msginfo->msgnum);
+
+	if ((fp = procmsg_open_message(msginfo)) == NULL) {
+		debug_print("failed to open message file\n");
+		return FALSE;
+	}
+
+	pid = fork();
+	if (pid == 0) {
+		_exit(msg_is_spam(fp) ? 1 : 0);
+	} else {
+		gint running = 0;
+
+		running |= CHILD_RUNNING;
+
+		g_timeout_add(1000, timeout_func, &running);
+		running |= TIMEOUT_RUNNING;
+
+		while(running & CHILD_RUNNING) {
+			waitpid(pid, &status, WNOHANG);
+			if (WIFEXITED(status)) {
+				running &= ~CHILD_RUNNING;
+			}
+	    
+			g_main_iteration(TRUE);
+    		}
+
+		while (running & TIMEOUT_RUNNING)
+			g_main_iteration(TRUE);
+	}
+        is_spam = WEXITSTATUS(status) == 1 ? TRUE : FALSE;
+
 	fclose(fp);
 
 	if (is_spam) {
