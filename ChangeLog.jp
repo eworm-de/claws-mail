@@ -1,4 +1,12 @@
+2001-06-26
+
+	* src/imap.c: imap_parse_envelope(): 次の行に続く FETCH 応答を
+	  解析できなかったバグを修正。
+	  imap_parse_fetch_element(): 削除。
+
 2001-06-25
+
+	* version 0.5.0pre2
 
 	* src/imap.c: imap_create_tree(): imap_create_folder() にローカル
 	  ファイルシステムのセパレータで区切られているパスを渡すようにした。

@@ -1,4 +1,12 @@
+2001-06-26
+
+	* src/imap.c: imap_parse_envelope(): fixed a bug that didn't
+	  parse the FETCH response that continues to the next line.
+	  imap_parse_fetch_element(): removed.
+
 2001-06-25
+
+	* version 0.5.0pre2
 
 	* src/imap.c: imap_create_tree(): pass the path that is separated
 	  by the local filesystem separator to imap_create_folder().

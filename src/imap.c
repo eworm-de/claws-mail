@@ -44,14 +44,6 @@
 
 #define IMAP4_PORT	143
 
-typedef struct _FetchElement	FetchElement;
-
-struct _FetchElement
-{
-	gchar *name;
-	gchar *value;
-};
-
 static GList *session_list = NULL;
 
 static gint imap_cmd_count = 0;
@@ -125,8 +117,6 @@ static gchar *imap_parse_address	(SockInfo	*sock,
 					 gchar	       **out_fromname_str,
 					 gchar		*orig_buf);
 static MsgFlags imap_parse_flags	(const gchar	*flag_str);
-static gchar *imap_parse_fetch_element	(const gchar	*str,
-					 FetchElement	*element);
 static MsgInfo *imap_parse_envelope	(SockInfo	*sock,
 					 gchar		*line_str);
 
@@ -1213,50 +1203,6 @@ static MsgFlags imap_parse_flags(const gchar *flag_str)
 	return flags;
 }
 
-static gchar *imap_parse_fetch_element(const gchar *str, FetchElement *element)
-{
-	const gchar *name;
-	const gchar *name_end;
-	const gchar *value;
-	const gchar *value_end;
-	gint in_brace = 0;
-	gboolean in_quote = FALSE;
-
-	name = str;
-	while (*name == ' ') name++;
-	name_end = name;
-	while (*name_end != '\0' && *name_end != ' ' && *name_end != ')')
-		name_end++;
-	g_return_val_if_fail(name != name_end, NULL);
-	g_return_val_if_fail(*name_end != '\0', NULL);
-	g_return_val_if_fail(*name_end != ')', NULL);
-
-	value = name_end;
-	while (*value == ' ') value++;
-	value_end = value;
-	while (*value_end != '\0') {
-		if (*value_end == ' ' && in_brace == 0)
-			break;
-		else if (*value_end == '(' && !in_quote)
-			in_brace++;
-		else if (*value_end == ')' && !in_quote) {
-			if (in_brace > 0)
-				in_brace--;
-			else
-				break;
-		} else if (*value_end == '"')
-			in_quote ^= TRUE;
-
-		value_end++;
-	}
-	g_return_val_if_fail(value != value_end, NULL);
-
-	element->name = g_strndup(name, name_end - name);
-	element->value = g_strndup(value, value_end - value);
-
-	return (gchar *)value_end;
-}
-
 static MsgInfo *imap_parse_envelope(SockInfo *sock, gchar *line_str)
 {
 	MsgInfo *msginfo;
@@ -1279,7 +1225,6 @@ static MsgInfo *imap_parse_envelope(SockInfo *sock, gchar *line_str)
 	gchar *msgid = NULL;
 	MsgFlags flags = 0;
 	gint n_element = 0;
-	FetchElement element = {NULL, NULL};
 
 	g_return_val_if_fail(line_str != NULL, NULL);
 	g_return_val_if_fail(line_str[0] == '*' && line_str[1] == ' ', NULL);
@@ -1302,40 +1247,39 @@ static MsgInfo *imap_parse_envelope(SockInfo *sock, gchar *line_str)
 	cur_pos++;
 
 	while (n_element < 4) {
-		cur_pos = imap_parse_fetch_element(cur_pos, &element);
-		g_return_val_if_fail(cur_pos != NULL, NULL);
+		while (*cur_pos == ' ') cur_pos++;
 
-		if (!strcmp(element.name, "UID")) {
-			uid = strtoul(element.value, NULL, 10);
-		} else if (!strcmp(element.name, "FLAGS")) {
-			flags = imap_parse_flags(element.value);
-		} else if (!strcmp(element.name, "RFC822.SIZE")) {
-			size = atoi(element.value);
-		} else if (!strcmp(element.name, "ENVELOPE")) {
-			gchar *p;
-
-			Xstrdup_a(p, element.value,
-				  {g_free(element.name); g_free(element.value);
-				   return NULL;});
-			g_free(element.name);
-			g_free(element.value);
-			element.name = element.value = NULL;
-
-			g_return_val_if_fail(*p == '(', NULL);
-			p = imap_parse_atom(sock, p + 1, buf, NULL);
+		if (!strncmp(cur_pos, "UID ", 4)) {
+			cur_pos += 4;
+			uid = strtoul(cur_pos, &cur_pos, 10);
+		} else if (!strncmp(cur_pos, "FLAGS ", 6)) {
+			cur_pos += 6;
+			g_return_val_if_fail(*cur_pos == '(', NULL);
+			cur_pos++;
+			PARSE_ONE_ELEMENT(')');
+			flags = imap_parse_flags(buf);
+		} else if (!strncmp(cur_pos, "RFC822.SIZE ", 12)) {
+			cur_pos += 12;
+			size = strtol(cur_pos, &cur_pos, 10);
+		} else if (!strncmp(cur_pos, "ENVELOPE ", 9)) {
+			cur_pos += 9;
+			g_return_val_if_fail(*cur_pos == '(', NULL);
+			cur_pos = imap_parse_atom
+				(sock, cur_pos + 1, buf, line_str);
 			Xstrdup_a(date, buf, return NULL);
 			date_t = procheader_date_parse(NULL, date, 0);
 
-			p = imap_parse_atom(sock, p, buf, NULL);
+			cur_pos = imap_parse_atom
+				(sock, cur_pos, buf, line_str);
 			if (buf[0] != '\0') {
 				conv_unmime_header(tmp, sizeof(tmp), buf, NULL);
 				Xstrdup_a(subject, tmp, return NULL);
 			}
 
-			g_return_val_if_fail(*p == ' ', NULL);
-			p = imap_parse_address(sock, p + 1,
-					       &tmp_from, &tmp_fromname,
-					       line_str);
+			g_return_val_if_fail(*cur_pos == ' ', NULL);
+			cur_pos = imap_parse_address(sock, cur_pos + 1,
+						     &tmp_from, &tmp_fromname,
+						     line_str);
 			Xstrdup_a(from, tmp_from,
 				  {g_free(tmp_from); g_free(tmp_fromname);
 				   return NULL;});
@@ -1347,17 +1291,18 @@ static MsgInfo *imap_parse_envelope(SockInfo *sock, gchar *line_str)
 
 #define SKIP_ONE_ELEMENT() \
 { \
-	g_return_val_if_fail(*p == ' ', NULL); \
-	p = imap_parse_address(sock, p + 1, NULL, NULL, NULL); \
+	g_return_val_if_fail(*cur_pos == ' ', NULL); \
+	cur_pos = imap_parse_address(sock, cur_pos + 1, NULL, NULL, \
+				     line_str); \
 }
 
 			/* skip sender and reply-to */
 			SKIP_ONE_ELEMENT();
 			SKIP_ONE_ELEMENT();
 
-			g_return_val_if_fail(*p == ' ', NULL);
-			p = imap_parse_address(sock, p + 1, &tmp_to, NULL,
-					       NULL);
+			g_return_val_if_fail(*cur_pos == ' ', NULL);
+			cur_pos = imap_parse_address(sock, cur_pos + 1,
+						     &tmp_to, NULL, line_str);
 			Xstrdup_a(to, tmp_to, {g_free(tmp_to); return NULL;});
 			g_free(tmp_to);
 
@@ -1367,8 +1312,8 @@ static MsgInfo *imap_parse_envelope(SockInfo *sock, gchar *line_str)
 
 #undef SKIP_ONE_ELEMENT
 
-			g_return_val_if_fail(*p == ' ', NULL);
-			p = imap_parse_atom(sock, p, buf, NULL);
+			g_return_val_if_fail(*cur_pos == ' ', NULL);
+			cur_pos = imap_parse_atom(sock, cur_pos, buf, line_str);
 			if (buf[0] != '\0') {
 				eliminate_parenthesis(buf, '(', ')');
 				extract_parenthesis(buf, '<', '>');
@@ -1376,24 +1321,21 @@ static MsgInfo *imap_parse_envelope(SockInfo *sock, gchar *line_str)
 				Xstrdup_a(inreplyto, buf, return NULL);
 			}
 
-			g_return_val_if_fail(*p == ' ', NULL);
-			p = imap_parse_atom(sock, p, buf, NULL);
+			g_return_val_if_fail(*cur_pos == ' ', NULL);
+			cur_pos = imap_parse_atom(sock, cur_pos, buf, line_str);
 			if (buf[0] != '\0') {
 				extract_parenthesis(buf, '<', '>');
 				remove_space(buf);
 				Xstrdup_a(msgid, buf, return NULL);
 			}
 
-			g_return_val_if_fail(*p == ')', NULL);
+			g_return_val_if_fail(*cur_pos == ')', NULL);
+			cur_pos++;
 		} else {
-			g_warning("invalid element: %s\n", buf);
-			g_free(element.name);
-			g_free(element.value);
+			g_warning("invalid FETCH response: %s\n", cur_pos);
 			break;
 		}
 
-		g_free(element.name);
-		g_free(element.value);
 		if (*cur_pos == '\0' || *cur_pos == ')') break;
 		n_element++;
 	}
@@ -1918,7 +1860,7 @@ static gchar *strchr_cpy(const gchar *src, gchar ch, gchar *dest, gint len)
 
 	dest[0] = '\0';
 	tmp = strchr(src, ch);
-	if (!tmp || tmp == src)
+	if (!tmp)
 		return NULL;
 
 	memcpy(dest, src, MIN(tmp - src, len - 1));
