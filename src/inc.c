@@ -549,7 +549,8 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			gtk_clist_set_text(clist, num, 2, _("Locked"));
 			break;
 		case INC_ERROR:
-		case INC_NOSPACE:
+		case INC_NO_SPACE:
+		case INC_IO_ERROR:
 		case INC_SOCKET_ERROR:
 			gtk_clist_set_pixmap(clist, num, 0, errorxpm, errorxpmmask);
 			gtk_clist_set_text(clist, num, 2, _("Error"));
@@ -630,7 +631,8 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 		if (inc_state != INC_SUCCESS && inc_state != INC_CANCEL) {
 			error_num++;
-			if (inc_state == INC_NOSPACE || inc_state == INC_SOCKET_ERROR) {
+			if (inc_state == INC_NO_SPACE ||
+			    inc_state == INC_IO_ERROR) {
 				inc_put_error(inc_state);
 				break;
 			}
@@ -824,7 +826,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 		session->inc_state = INC_AUTH_FAILED;
 		break;
 	case PS_IOERR:
-		session->inc_state = INC_NOSPACE;
+		session->inc_state = INC_IO_ERROR;
 		break;
 	case PS_SOCKET:
 		session->inc_state = INC_SOCKET_ERROR;
@@ -1017,8 +1019,11 @@ static void inc_put_error(IncState istate)
 			alertpanel_error
 				(_("Error occurred while processing mail."));
 		break;
-	case INC_NOSPACE:
+	case INC_NO_SPACE:
 		alertpanel_error(_("No disk space left."));
+		break;
+	case INC_IO_ERROR:
+		alertpanel_error(_("Can't write file."));
 		break;
 	case INC_SOCKET_ERROR:
 		alertpanel_error(_("Socket error."));
