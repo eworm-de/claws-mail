@@ -44,13 +44,15 @@
 #include "utils.h"
 #include "alertpanel.h"
 
+#include "pixmaps/mark.xpm"
+
 typedef enum
 {
 	COL_DEFAULT	= 0,
-	COL_NAME	= 1,
-	COL_PROTOCOL	= 2,
-	COL_SERVER	= 3,
-        COL_GETALL      = 4
+	COL_GETALL	= 1,
+	COL_NAME	= 2,
+	COL_PROTOCOL	= 3,
+	COL_SERVER	= 4
 } EditAccountColumnPos;
 
 # define N_EDIT_ACCOUNT_COLS	5
@@ -66,6 +68,9 @@ static struct EditAccount {
 	GtkWidget *clist;
 	GtkWidget *close_btn;
 } edit_account;
+
+static GdkPixmap *markxpm;
+static GdkBitmap *markxpmmask;
 
 static void account_edit_create		(void);
 
@@ -426,6 +431,7 @@ static void account_edit_create(void)
 			    GTK_SIGNAL_FUNC (manage_window_focus_in), NULL);
 	gtk_signal_connect (GTK_OBJECT (window), "focus_out_event",
 			    GTK_SIGNAL_FUNC (manage_window_focus_out), NULL);
+	gtk_widget_realize(window);
 
 	vbox = gtk_vbox_new (FALSE, 12);
 	gtk_widget_show (vbox);
@@ -443,20 +449,20 @@ static void account_edit_create(void)
 					GTK_POLICY_AUTOMATIC,
 					GTK_POLICY_AUTOMATIC);
 
-	titles[COL_DEFAULT]  = "";
+	titles[COL_DEFAULT]  = "D";
+	titles[COL_GETALL]   = "G";
 	titles[COL_NAME]     = _("Name");
 	titles[COL_PROTOCOL] = _("Protocol");
 	titles[COL_SERVER]   = _("Server");
-        titles[COL_GETALL]   = _("Get all");
 
 	clist = gtk_clist_new_with_titles (N_EDIT_ACCOUNT_COLS, titles);
 	gtk_widget_show (clist);
 	gtk_container_add (GTK_CONTAINER (scrolledwin), clist);
-	gtk_clist_set_column_width (GTK_CLIST(clist), COL_DEFAULT , 16);
+	gtk_clist_set_column_width (GTK_CLIST(clist), COL_DEFAULT , 10);
+	gtk_clist_set_column_width (GTK_CLIST(clist), COL_GETALL  , 10);
 	gtk_clist_set_column_width (GTK_CLIST(clist), COL_NAME    , 100);
 	gtk_clist_set_column_width (GTK_CLIST(clist), COL_PROTOCOL, 70);
 	gtk_clist_set_column_width (GTK_CLIST(clist), COL_SERVER  , 100);
-	gtk_clist_set_column_width (GTK_CLIST(clist), COL_GETALL  , 20);
 	gtk_clist_set_selection_mode (GTK_CLIST(clist), GTK_SELECTION_BROWSE);
 
 	for (i = 0; i < N_EDIT_ACCOUNT_COLS; i++)
@@ -529,6 +535,8 @@ static void account_edit_create(void)
 	gtk_signal_connect (GTK_OBJECT (close_btn), "clicked",
 			    GTK_SIGNAL_FUNC (account_edit_close),
 			    NULL);
+
+	PIXMAP_CREATE(clist, markxpm, markxpmmask, mark_xpm);
 
 	edit_account.window    = window;
 	edit_account.clist     = clist;
@@ -699,6 +707,9 @@ static gint account_clist_set_row(PrefsAccount *ac_prefs, gint row)
 	gchar *text[N_EDIT_ACCOUNT_COLS];
 
 	text[COL_DEFAULT] = ac_prefs->is_default ? "*" : "";
+	text[COL_GETALL] = (ac_prefs->protocol == A_POP3 ||
+			    ac_prefs->protocol == A_APOP) &&
+			    ac_prefs->recv_at_getall ? "*" : "";
 	text[COL_NAME] = ac_prefs->account_name;
 #if !USE_SSL
 	text[COL_PROTOCOL] = ac_prefs->protocol == A_POP3  ? "POP3"  :
@@ -716,24 +727,22 @@ static gint account_clist_set_row(PrefsAccount *ac_prefs, gint row)
 	text[COL_SERVER] = ac_prefs->protocol == A_NNTP
 		? ac_prefs->nntp_server : ac_prefs->recv_server;
 
-  	if ((ac_prefs->protocol != A_POP3) && (ac_prefs->protocol != A_APOP)) {
-	text[COL_GETALL] = ac_prefs->recv_at_getall == 1  ? _("No")  :
-	                   ac_prefs->recv_at_getall == 0  ? _("No")   : "";
-        }
-        else {
-	text[COL_GETALL] = ac_prefs->recv_at_getall == 1  ? _("Yes")  :
-	                   ac_prefs->recv_at_getall == 0  ? _("No")   : "";
-	}
-
 	if (row < 0)
 		row = gtk_clist_append(clist, text);
 	else {
 		gtk_clist_set_text(clist, row, COL_DEFAULT, text[COL_DEFAULT]);
+		gtk_clist_set_text(clist, row, COL_GETALL, text[COL_GETALL]);
 		gtk_clist_set_text(clist, row, COL_NAME, text[COL_NAME]);
 		gtk_clist_set_text(clist, row, COL_PROTOCOL, text[COL_PROTOCOL]);
 		gtk_clist_set_text(clist, row, COL_SERVER, text[COL_SERVER]);
-		gtk_clist_set_text(clist, row, COL_GETALL, text[COL_GETALL]);
 	}
+
+	if (*text[COL_DEFAULT])
+		gtk_clist_set_pixmap(clist, row, COL_DEFAULT,
+				     markxpm, markxpmmask);
+	if (*text[COL_GETALL])
+		gtk_clist_set_pixmap(clist, row, COL_GETALL,
+				     markxpm, markxpmmask);
 
 	gtk_clist_set_row_data(clist, row, ac_prefs);
 
