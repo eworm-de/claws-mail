@@ -1,3 +1,20 @@
+2004-01-17 [keith]	0.9.8claws33
+	* src/compose.c
+	  src/prefs_common.c
+	  src/prefs_common.h
+		store position of compose window in prefs
+
+2004-01-17 [thorsten]	0.9.8claws32
+
+	* src/gtk/gtkvscrollbutton.c
+		ensure scrollbutton resize event on different gtk versions
+
+2004-01-15 [alfons]	0.9.8claws31
+	
+	* src/summaryview.c
+		keep MSG_REPLIED and MSG_FORWARDED even when marking a
+		message as read
+
 2004-01-12 [christoph]	0.9.8claws30
 
 	* src/procmime.c

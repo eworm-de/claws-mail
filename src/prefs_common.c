@@ -620,7 +620,10 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"compose_height", "560", &prefs_common.compose_height, P_INT,
 	 NULL, NULL, NULL},
-
+	{"compose_x", "0", &prefs_common.compose_x, P_INT,
+	 NULL, NULL, NULL},
+	{"compose_y", "0", &prefs_common.compose_y, P_INT,
+	 NULL, NULL, NULL},
 	/* Message */
 	{"enable_color", "TRUE", &prefs_common.enable_color, P_BOOL,
 	 &message.chkbtn_enablecol,

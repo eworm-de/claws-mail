@@ -203,6 +203,8 @@ struct _PrefsCommon
 
 	gint compose_width;
 	gint compose_height;
+	gint compose_x;
+	gint compose_y;
 
 	/* Message */
 	gboolean enable_color;

@@ -5217,7 +5217,8 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	}
 	gtk_window_set_geometry_hints(GTK_WINDOW(window), NULL,
 				      &geometry, GDK_HINT_MAX_SIZE);
-
+	gtk_widget_set_uposition(window, prefs_common.compose_x, 
+		prefs_common.compose_y);
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
 			   GTK_SIGNAL_FUNC(compose_delete_cb), compose);
 	gtk_signal_connect(GTK_OBJECT(window), "destroy",
@@ -6972,7 +6973,13 @@ static void compose_insert_sig_cb(gpointer data, guint action,
 static gint compose_delete_cb(GtkWidget *widget, GdkEventAny *event,
 			      gpointer data)
 {
+	gint x, y;
 	Compose *compose = (Compose *)data;
+
+	gtkut_widget_get_uposition(widget, &x, &y);
+	prefs_common.compose_x = x;
+	prefs_common.compose_y = y;
+
 	if (compose->sending)
 		return TRUE;
 	compose_close_cb(compose, 0, NULL);
@@ -6983,7 +6990,7 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	Compose *compose = (Compose *)data;
 	AlertValue val;
-	
+    
 	if (compose->exteditor_tag != -1) {
 		if (!compose_ext_editor_kill(compose))
 			return;
