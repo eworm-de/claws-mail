@@ -1,21 +1,28 @@
+2001-10-31 [christoph]	0.6.4claws18
+
+	* src/prefs_account.c
+		fixed mess in account settings dialog
+	* src/prefs_folder_item.c
+		added label with folder path to dialog
+
 2001-10-31 [match]	0.6.4claws17
 
-		* src/vcard.c
-			fix memory leak.
-		* src/addrbook.c
-			fix generation of spurious address book file names.
-			remove redundant functions.
-		* po/POTFILES.in
-			added missing file names.
+	* src/vcard.c
+		fix memory leak.
+	* src/addrbook.c
+		fix generation of spurious address book file names.
+		remove redundant functions.
+	* po/POTFILES.in
+		added missing file names.
 
 2001-10-30 [paul]	0.6.4claws16
 
-		* sync with sylpheed 0.6.4cvs6
-			see ChangeLog entries 2001-10-26 to 2001-10-30
+	* sync with sylpheed 0.6.4cvs6
+		see ChangeLog entries 2001-10-26 to 2001-10-30
 
-		* tools/filter_conv.pl
-			read folderlist.xml to discover whether the top-level
-			folder is called 'Mailbox' or 'Mail' 
+	* tools/filter_conv.pl
+		read folderlist.xml to discover whether the top-level
+		folder is called 'Mailbox' or 'Mail' 
 
 2001-10-29 [paul]	0.6.4claws15
 

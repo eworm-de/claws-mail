@@ -233,20 +233,20 @@ gint prefs_folder_item_get_sort_type(FolderItem * item)
 void prefs_folder_item_create(FolderItem *item) {
 	struct PrefsFolderItemDialog *dialog;
 	guint rowcount;
+	gchar *folder_identifier, *infotext;
 
 	GtkWidget *window;
 	GtkWidget *table;
+	GtkWidget *infolabel;
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
 	GtkWidget *confirm_area;
-	GtkWidget *hbox;
 	
 	GtkWidget *checkbtn_request_return_receipt;
 	GtkWidget *checkbtn_default_to;
 	GtkWidget *entry_default_to;
 	GtkWidget *checkbtn_folder_chmod;
 	GtkWidget *entry_folder_chmod;
-	GtkWidget *hbox2;
 	GtkWidget *checkbtn_enable_default_account;
 	GtkWidget *optmenu_default_account;
 	GtkWidget *optmenu_default_account_menu;
@@ -258,6 +258,7 @@ void prefs_folder_item_create(FolderItem *item) {
 	GtkWidget *menu;
 	GtkWidget *menuitem;
 	gint account_index, index;
+
 	dialog = g_new0(struct PrefsFolderItemDialog, 1);
 	dialog->item = item;
 
@@ -281,6 +282,14 @@ void prefs_folder_item_create(FolderItem *item) {
 	gtk_table_set_row_spacings(GTK_TABLE(table), VSPACING_NARROW);
 	gtk_container_add(GTK_CONTAINER (window), table);
 	rowcount = 0;
+
+	/* Label */
+	folder_identifier = folder_item_get_identifier(item);
+	infotext = g_strconcat(_("Folder Property for "), folder_identifier, NULL);
+	infolabel = gtk_label_new(infotext);
+	gtk_table_attach(GTK_TABLE(table), infolabel, 0, 2, rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
+	gtk_widget_show(infolabel);
+	rowcount++;
 
 	/* Request Return Receipt */
 	checkbtn_request_return_receipt = gtk_check_button_new_with_label(_("Request Return Receipt"));
@@ -392,6 +401,8 @@ void prefs_folder_item_create(FolderItem *item) {
 	dialog->entry_folder_chmod = entry_folder_chmod;
 	dialog->checkbtn_enable_default_account = checkbtn_enable_default_account;
 	dialog->optmenu_default_account = optmenu_default_account;
+
+	g_free(infotext);
 
 	gtk_widget_show(window);
 }

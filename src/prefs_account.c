@@ -1088,6 +1088,11 @@ static void prefs_account_send_create(void)
 
 	PACK_CHECK_BUTTON (vbox3, smtp_auth_chkbtn,
 		_("SMTP Authentication (SMTP AUTH)"));
+
+	smtp_auth_hbox = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (smtp_auth_hbox);
+	gtk_box_pack_start (GTK_BOX (vbox3), smtp_auth_hbox, FALSE, FALSE, 0);
+
 	label = gtk_label_new ("");
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (smtp_auth_hbox), label, FALSE, FALSE, 0);
@@ -1130,6 +1135,8 @@ static void prefs_account_send_create(void)
 	send.customhdr_chkbtn = customhdr_chkbtn;
 
 	send.smtp_auth_chkbtn    = smtp_auth_chkbtn;
+	send.smtp_userid_entry   = smtp_userid_entry;
+	send.smtp_passwd_entry   = smtp_passwd_entry;
 	send.pop_bfr_smtp_chkbtn = pop_bfr_smtp_chkbtn;
 }
 
