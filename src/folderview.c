@@ -269,7 +269,7 @@ static GtkItemFactoryEntry folderview_mbox_popup_entries[] =
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/Remove _mailbox"),	NULL, folderview_remove_mailbox_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Property..."),		NULL, NULL, 0, NULL},
+	{N_("/_Properties..."),		NULL, NULL, 0, NULL},
 	{N_("/_Processing..."),		NULL, folderview_processing_cb, 0, NULL},
 	{N_("/_Scoring..."),		NULL, folderview_scoring_cb, 0, NULL}
 };
@@ -289,7 +289,7 @@ static GtkItemFactoryEntry folderview_mail_popup_entries[] =
 	{N_("/Remove _mailbox"),	NULL, folderview_remove_mailbox_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Search folder..."),	NULL, folderview_search_cb, 0, NULL},
-	{N_("/_Property..."),		NULL, folderview_property_cb, 0, NULL},
+	{N_("/_Properties..."),		NULL, folderview_property_cb, 0, NULL},
 	{N_("/_Processing..."),		NULL, folderview_processing_cb, 0, NULL},
 	{N_("/S_coring..."),		NULL, folderview_scoring_cb, 0, NULL}
 };
@@ -309,7 +309,7 @@ static GtkItemFactoryEntry folderview_imap_popup_entries[] =
 	{N_("/Remove _IMAP4 account"),	NULL, folderview_rm_imap_server_cb, 0, NULL},
 	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Search folder..."),	NULL, folderview_search_cb, 0, NULL},
-	{N_("/_Property..."),		NULL, folderview_property_cb, 0, NULL},
+	{N_("/_Properties..."),		NULL, folderview_property_cb, 0, NULL},
 	{N_("/_Processing..."),		NULL, folderview_processing_cb, 0, NULL},
 	{N_("/S_coring..."),		NULL, folderview_scoring_cb, 0, NULL}
 };
@@ -325,7 +325,7 @@ static GtkItemFactoryEntry folderview_news_popup_entries[] =
 	{N_("/Remove _news account"),	 NULL, folderview_rm_news_server_cb, 0, NULL},
 	{N_("/---"),			 NULL, NULL, 0, "<Separator>"},
 	{N_("/_Search folder..."),	 NULL, folderview_search_cb, 0, NULL},
-	{N_("/_Property..."),		 NULL, folderview_property_cb, 0, NULL},
+	{N_("/_Properties..."),		 NULL, folderview_property_cb, 0, NULL},
 	{N_("/_Processing..."),		 NULL, folderview_processing_cb, 0, NULL},
 	{N_("/S_coring..."),		NULL, folderview_scoring_cb, 0, NULL}
 };
@@ -1570,7 +1570,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		SET_SENS(mail_factory, "/Rebuild folder tree", rescan_tree);
 		SET_SENS(mail_factory, "/Remove mailbox", remove_tree);
 		SET_SENS(mail_factory, "/Search folder...", search_folder);
-		SET_SENS(mail_factory, "/Property...", folder_property);
+		SET_SENS(mail_factory, "/Properties...", folder_property);
 		SET_SENS(mail_factory, "/Processing...", folder_processing);
 		SET_SENS(mail_factory, "/Scoring...", folder_scoring);
 	} else if (FOLDER_TYPE(folder) == F_IMAP) {
@@ -1584,7 +1584,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		SET_SENS(imap_factory, "/Rebuild folder tree", rescan_tree);
 		SET_SENS(imap_factory, "/Remove IMAP4 account", remove_tree);
 		SET_SENS(imap_factory, "/Search folder...", search_folder);
-		SET_SENS(imap_factory, "/Property...", folder_property);
+		SET_SENS(imap_factory, "/Properties...", folder_property);
 		SET_SENS(imap_factory, "/Processing...", folder_processing);
 		SET_SENS(imap_factory, "/Scoring...", folder_scoring);
 	} else if (FOLDER_TYPE(folder) == F_NEWS) {
@@ -1598,7 +1598,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 #endif
 		SET_SENS(news_factory, "/Remove news account", remove_tree);
 		SET_SENS(news_factory, "/Search folder...", search_folder);
-		SET_SENS(news_factory, "/Property...", folder_property);
+		SET_SENS(news_factory, "/Properties...", folder_property);
 		SET_SENS(news_factory, "/Processing...", folder_processing);
 		SET_SENS(news_factory, "/Scoring...", folder_scoring);
 	} else if (FOLDER_TYPE(folder) == F_MBOX) {
@@ -1607,7 +1607,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		SET_SENS(mbox_factory, "/Create new folder...", new_folder);
 		SET_SENS(mbox_factory, "/Rename folder...", rename_folder);
 		SET_SENS(mbox_factory, "/Delete folder", delete_folder);
-		SET_SENS(news_factory, "/Property...", folder_property);
+		SET_SENS(news_factory, "/Properties...", folder_property);
 		SET_SENS(mbox_factory, "/Processing...", folder_processing);
 		SET_SENS(mbox_factory, "/Scoring...", folder_scoring);
 	} else

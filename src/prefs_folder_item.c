@@ -303,7 +303,7 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 	/* Window */
 	window = gtk_window_new (GTK_WINDOW_DIALOG);
 	gtk_window_set_title (GTK_WINDOW(window),
-			      _("Folder Property"));
+			      _("Folder Properties"));
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 	gtk_window_set_policy (GTK_WINDOW (window), FALSE, TRUE, FALSE);
@@ -320,7 +320,7 @@ void prefs_folder_item_create(void *folderview, FolderItem *item)
 
 	/* Label */
 	folder_identifier = folder_item_get_identifier(item);
-	infotext = g_strconcat(_("Folder Property for "), folder_identifier, NULL);
+	infotext = g_strconcat(_("Folder Properties for "), folder_identifier, NULL);
 	infolabel = gtk_label_new(infotext);
 	gtk_table_attach(GTK_TABLE(table), infolabel, 0, 2, rowcount, 
 			 rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_SHRINK, 0, 0);
