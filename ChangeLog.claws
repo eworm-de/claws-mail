@@ -1,3 +1,7 @@
+2003-03-18 [match]	0.8.11claws28
+	* src/editgroup.h
+		remove case sensitive comparison (closes bug 80).
+
 2003-03-18 [christoph]	0.8.11claws27
 
 	* src/imap.c
