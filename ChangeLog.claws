@@ -1,3 +1,14 @@
+2001-12-23 [alfons]	0.6.6claws11
+
+	* src/mainwindow.c
+		fix bug introduced by submission included in 0.6.5claws52.
+		ideally this submission should clean the trash if any trash
+		folder has a message. however, the hasTrash variable was
+		set to false whenever a trash folder was empty (discarding
+		a previously found *filled* trash folder.)
+
+		also edited the code a little bit and made it more safe.
+
 2001-12-22 [alfons]	0.6.6claws10
 
 	* src/imap.c

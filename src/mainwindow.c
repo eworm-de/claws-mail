@@ -1201,21 +1201,17 @@ void main_window_get_position(MainWindow *mainwin)
 void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 {
 	GList *list;
-	gboolean hasTrash = 0;
+	guint has_trash;
+	Folder *folder;
 
-	for (list = folder_get_list(); list != NULL; list = list->next) {
-		Folder *folder;
-
-		folder = list->data;
-		if (folder->trash) {
-			hasTrash = (folder->trash->total > 0);
-		}
+	for (has_trash = 0, list = folder_get_list(); list != NULL; list = list->next) {
+		folder = FOLDER(list->data);
+		if (folder && folder->trash && folder->trash->total > 0)
+			has_trash++;
 	}
 
-	if (!hasTrash) {
-	  return;
-	}
- 
+	if (!has_trash) return;
+	
 	if (confirm) {
 		if (alertpanel(_("Empty trash"),
 			       _("Empty all messages in trash?"),
@@ -1227,10 +1223,8 @@ void main_window_empty_trash(MainWindow *mainwin, gboolean confirm)
 	procmsg_empty_trash();
 
 	for (list = folder_get_list(); list != NULL; list = list->next) {
-		Folder *folder;
-
 		folder = list->data;
-		if (folder->trash && folder->trash->total != 0) {
+		if (folder && folder->trash && folder->trash->total != 0) {
 			folder_item_scan(folder->trash);
 			folderview_update_item(folder->trash, TRUE);
 		}
