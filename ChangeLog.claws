@@ -1,3 +1,10 @@
+2004-06-30 [darko]	0.9.12cvs4
+
+	* src/common/utils.c
+		allow all filtering expressions in quicksearch
+
+	(Closes Bug 519 filtering expr. in quicksearch)
+
 2004-06-30 [christoph]	0.9.12cvs3
 
 	* configure.ac

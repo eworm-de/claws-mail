@@ -3528,7 +3528,7 @@ gchar *expand_search_string(const gchar *search_string)
 		/* skip all white spaces */
 		while (*cmd_start && isspace((guchar)*cmd_start))
 			cmd_start++;
-        cmd_end = cmd_start;
+		cmd_end = cmd_start;
 
 		/* extract a command */
 		while (*cmd_end && !isspace((guchar)*cmd_end))
@@ -3574,8 +3574,9 @@ gchar *expand_search_string(const gchar *search_string)
 					break;
 
 				/* extract a parameter, allow quotes */
-                while (*cmd_end && isspace((guchar)*cmd_end))
-			      cmd_end++;
+				while (*cmd_end && isspace((guchar)*cmd_end))
+					cmd_end++;
+
 				cmd_start = cmd_end;
 				if (*cmd_start == '"') {
 					term_char = '"';
@@ -3625,7 +3626,12 @@ gchar *expand_search_string(const gchar *search_string)
 	}
 
 	g_free(copy_str);
-	returnstr = matcherstr->str;
+
+	/* return search string if no match is found to allow 
+	   all available filtering expressions in quicksearch */
+	if (matcherstr->len > 0) returnstr = matcherstr->str;
+	else returnstr = g_strdup(search_string);
+
 	g_string_free(matcherstr, FALSE);
 	return returnstr;
 }
