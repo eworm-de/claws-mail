@@ -74,6 +74,7 @@ void prefs_filtering_free(GSList *prefs_filtering);
 
 FilteringProp * filteringprop_copy(FilteringProp *src);
 
+extern GSList * filtering_rules;
 extern GSList * global_processing;
 
 #endif

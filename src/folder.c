@@ -43,7 +43,6 @@
 #include "prefs_gtk.h"
 #include "account.h"
 #include "filtering.h"
-#include "scoring.h"
 #include "procheader.h"
 #include "hooks.h"
 #include "log.h"
@@ -511,7 +510,6 @@ void folder_tree_destroy(Folder *folder)
 
 	node = folder->node;
 	
-	prefs_scoring_clear_folder(folder);
 	prefs_filtering_clear_folder(folder);
 
 	if (node != NULL) {
@@ -2878,7 +2876,17 @@ void folder_item_apply_processing(FolderItem *item)
 		MsgInfo * msginfo;
 
 		msginfo = (MsgInfo *) cur->data;
+                
+                /* reset parameters that can be modified by processing */
+                msginfo->hidden = 0;
+                msginfo->score = 0;
+                
+                /* apply global rules */
+		filter_message_by_msginfo(global_processing, msginfo);
+                
+                /* apply rules of the folder */
 		filter_message_by_msginfo(processing_list, msginfo);
+                
 		procmsg_msginfo_free(msginfo);
 	}
 	g_slist_free(mlist);

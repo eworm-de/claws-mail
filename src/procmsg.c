@@ -1505,8 +1505,8 @@ gboolean procmsg_msginfo_filter(MsgInfo *msginfo)
 		return TRUE;
 
 	/* filter if enabled in prefs or move to inbox if not */
-	if((global_processing != NULL) &&
-	   filter_message_by_msginfo(global_processing, msginfo))
+	if((filtering_rules != NULL) &&
+	   filter_message_by_msginfo(filtering_rules, msginfo))
 		return TRUE;
 
 	return FALSE;

@@ -55,7 +55,6 @@
 #include "prefs_common.h"
 #include "prefs_account.h"
 #include "prefs_filtering.h"
-#include "prefs_scoring.h"
 #include "prefs_folder_item.h"
 #include "account.h"
 #include "folder.h"
@@ -273,8 +272,6 @@ gboolean folderview_update_folder	 (gpointer 	    source,
 gboolean folderview_update_item		 (gpointer 	    source,
 					  gpointer	    data);
 
-static void folderview_scoring_cb(FolderView *folderview, guint action,
-				  GtkWidget *widget);
 static void folderview_processing_cb(FolderView *folderview, guint action,
 				     GtkWidget *widget);
 static void folderview_move_to(FolderView *folderview, FolderItem *from_folder,
@@ -315,7 +312,6 @@ static GtkItemFactoryEntry folderview_mail_popup_entries[] =
 	{N_("/_Search folder..."),	NULL, folderview_search_cb, 0, NULL},
 	{N_("/_Properties..."),		NULL, folderview_property_cb, 0, NULL},
 	{N_("/_Processing..."),		NULL, folderview_processing_cb, 0, NULL},
-	{N_("/S_coring..."),		NULL, folderview_scoring_cb, 0, NULL}
 };
 
 static GtkItemFactoryEntry folderview_imap_popup_entries[] =
@@ -336,7 +332,6 @@ static GtkItemFactoryEntry folderview_imap_popup_entries[] =
 	{N_("/_Search folder..."),	NULL, folderview_search_cb, 0, NULL},
 	{N_("/_Properties..."),		NULL, folderview_property_cb, 0, NULL},
 	{N_("/_Processing..."),		NULL, folderview_processing_cb, 0, NULL},
-	{N_("/S_coring..."),		NULL, folderview_scoring_cb, 0, NULL}
 };
 
 static GtkItemFactoryEntry folderview_news_popup_entries[] =
@@ -355,7 +350,6 @@ static GtkItemFactoryEntry folderview_news_popup_entries[] =
 	{N_("/_Search folder..."),	NULL, folderview_search_cb, 0, NULL},
 	{N_("/_Properties..."),		NULL, folderview_property_cb, 0, NULL},
 	{N_("/_Processing..."),		NULL, folderview_processing_cb, 0, NULL},
-	{N_("/S_coring..."),		NULL, folderview_scoring_cb, 0, NULL}
 };
 
 GtkTargetEntry folderview_drag_types[] =
@@ -2614,21 +2608,6 @@ static gint folderview_compare_name(gconstpointer a, gconstpointer b)
 	return strcmp2(g_basename(item->path), name);
 }
 
-static void folderview_scoring_cb(FolderView *folderview, guint action,
-				   GtkWidget *widget)
-{
-	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
-	FolderItem *item;
-
-	if (!folderview->selected) return;
-
-	item = gtk_ctree_node_get_row_data(ctree, folderview->selected);
-	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->folder != NULL);
-
-	prefs_scoring_open(item);
-}
-
 static void folderview_processing_cb(FolderView *folderview, guint action,
 				     GtkWidget *widget)
 {
@@ -2641,7 +2620,7 @@ static void folderview_processing_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 
-	prefs_filtering_open(item, NULL, NULL);
+	prefs_filtering_open(&item->prefs->processing, NULL, NULL);
 }
 
 void folderview_set_target_folder_color(gint color_op) 

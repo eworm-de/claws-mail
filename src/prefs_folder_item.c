@@ -38,7 +38,6 @@
 #include "utils.h"
 #include "addr_compl.h"
 #include "prefs_common.h"
-#include "prefs_scoring.h"
 #include "gtkutils.h"
 #include "filtering.h"
 #include "folder_item_prefs.h"

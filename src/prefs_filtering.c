@@ -101,27 +101,9 @@ static void prefs_filtering_reset_dialog	(void);
 static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data);
 static gboolean prefs_filtering_delete_path_func(GNode *node, gpointer data);
 
-static FolderItem * cur_item = NULL; /* folder (if dialog opened for processing) */
+static GSList ** p_processing_list = NULL;
 
-typedef enum Action_ {
-	ACTION_MOVE,
-	ACTION_COPY,
-	ACTION_DELETE,
-	ACTION_MARK,
-	ACTION_UNMARK,
-	ACTION_LOCK,
-	ACTION_UNLOCK,
-	ACTION_MARK_AS_READ,
-	ACTION_MARK_AS_UNREAD,
-	ACTION_FORWARD,
-	ACTION_FORWARD_AS_ATTACHMENT,
-	ACTION_REDIRECT,
-	ACTION_EXECUTE,
-	ACTION_COLOR,
-	/* add other action constants */
-} Action;
-
-void prefs_filtering_open(FolderItem * item,
+void prefs_filtering_open(GSList ** p_processing,
 			  const gchar *header,
 			  const gchar *key)
 {
@@ -139,9 +121,10 @@ void prefs_filtering_open(FolderItem * item,
 	manage_window_set_transient(GTK_WINDOW(filtering.window));
 	gtk_widget_grab_focus(filtering.ok_btn);
 
-	cur_item = item;
-
 	esckey = matcher_escape_str(key);
+
+        p_processing_list = p_processing;
+        
 	prefs_filtering_set_dialog(header, esckey);
 	g_free(esckey);
 
@@ -592,10 +575,7 @@ static void prefs_filtering_set_dialog(const gchar *header, const gchar *key)
 	row = gtk_clist_append(clist, cond_str);
 	gtk_clist_set_row_data(clist, row, NULL);
 
-	if (cur_item == NULL)
-		prefs_filtering = global_processing;
-	else
-		prefs_filtering = cur_item->prefs->processing;
+        prefs_filtering = * p_processing_list;
 
 	for(cur = prefs_filtering ; cur != NULL ; cur = g_slist_next(cur)) {
 		FilteringProp * prop = (FilteringProp *) cur->data;
@@ -636,10 +616,7 @@ static void prefs_filtering_set_list(void)
 	gchar * filtering_str;
 	GSList * prefs_filtering;
 
-	if (cur_item == NULL)
-		prefs_filtering = global_processing;
-	else
-		prefs_filtering = cur_item->prefs->processing;
+        prefs_filtering = * p_processing_list;
 
 	for(cur = prefs_filtering ; cur != NULL ; cur = g_slist_next(cur))
 		filteringprop_free((FilteringProp *) cur->data);
@@ -657,10 +634,7 @@ static void prefs_filtering_set_list(void)
 		row++;
 	}
 
-	if (cur_item == NULL)
-		global_processing = prefs_filtering;
-	else
-		cur_item->prefs->processing = prefs_filtering;
+        * p_processing_list = prefs_filtering;
 }
 
 static gint prefs_filtering_clist_set_row(gint row, FilteringProp * prop)
