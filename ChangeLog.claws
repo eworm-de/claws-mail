@@ -1,3 +1,9 @@
+2004-02-12 [alfons]	0.9.9claws5
+
+	* src/plugins/clamav/clamav_plugin.c
+		don't exit(2) on libclamav init error - show a warning.
+		(tested by damaging a clamav database file.)
+
 2004-02-12 [paul]	0.9.9claws4
 
 	* sync with 0.9.9cvs4
