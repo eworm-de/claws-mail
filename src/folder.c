@@ -984,6 +984,9 @@ gchar *folder_item_get_path(FolderItem *item)
 					  G_DIR_SEPARATOR_S, itempath, NULL);
 		g_free(itempath);
 	}
+#ifdef WIN32
+	subst_char(path, '/', G_DIR_SEPARATOR);
+#endif
 	return path;
 }
 
@@ -1716,7 +1719,15 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 
 	/* move messages */
 	debug_print("Moving %s to %s\n", src->path, dest->path);
+#ifdef WIN32
+	{
+		gchar *p_path = g_strdup(src->path);
+		subst_char(p_path, '/', G_DIR_SEPARATOR);
+		new_item = folder_create_folder(dest, g_basename(p_path));
+	}
+#else
 	new_item = folder_create_folder(dest, g_basename(src->path));
+#endif
 	if (new_item == NULL) {
 		printf("Can't create folder\n");
 		return NULL;

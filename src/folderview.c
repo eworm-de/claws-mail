@@ -1988,6 +1988,7 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 	g_free(name_);
 #ifdef WIN32
 	p_path = g_strdup(item->path);
+	subst_char(p_path, '/', G_DIR_SEPARATOR);
 	locale_to_utf8(&p_path);
 #endif
 	message = g_strdup_printf(_("Input new name for `%s':"), name);
@@ -2030,7 +2031,9 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 		g_free(new_folder);
 		return;
 	}
+#ifndef WIN32 /* why ? g_free(new_folder) frees item->path...  */
 	g_free(new_folder);
+#endif
 
 	/* if (FOLDER_TYPE(item->folder) == F_MH)
 		prefs_filtering_rename_path(old_path, item->path); */

@@ -1,3 +1,12 @@
+2003-05-19 [thorsten]	0.8.11claws161-1
+
+	* src/folder.c
+	  src/folderview.c
+	  	fix: path separator issues when moving folders
+	* src/imap.c
+		fix: IMAP now working without SSL (trailing 0x0a)
+		fix: path separator issues when moving/naming folders
+
 2003-05-18 [thorsten]	0.8.11claws157-1
 
 	* src/common/session.c
