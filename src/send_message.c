@@ -360,7 +360,6 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list, FILE *fp)
 	}
 
 	smtp_session->from = g_strdup(ac_prefs->address);
-smtp_session->from = g_strdup_printf("%s", ac_prefs->address);
 	smtp_session->to_list = to_list;
 	smtp_session->cur_to = to_list;
 	smtp_session->send_data = get_outgoing_rfc2822_str(fp);

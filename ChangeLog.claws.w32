@@ -1,3 +1,12 @@
+2003-06-07 [thorsten]	0.9.0claws18-1
+
+	* src/send_message.c
+		remove debugging dirt
+	* win32/config.h
+		rearrange compile options
+	* win32/utils/sylpheed.setup.iss.in
+		include homepage in distribution
+
 2003-06-04 [thorsten]	0.9.0claws11-1
 
 	* src/folder.c

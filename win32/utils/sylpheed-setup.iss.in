@@ -61,6 +61,8 @@ Source: "@PAKDIR@\bin\libgobject-2.0-0.dll";  DestDir: "{app}\bin";             
 Source: "@PAKDIR@\bin\libgtk-0.dll";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite; Components: gtk
 Source: "@PAKDIR@\bin\libintl-1.dll";         DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite; Components: gtk
 
+Source: "@PAKDIR@\Readme.html";               DestDir: "{app}";                       CopyMode: alwaysoverwrite
+Source: "@PAKDIR@\Readme.txt";                DestDir: "{app}";                       CopyMode: alwaysoverwrite
 Source: "@PAKDIR@\doc\*.*";                   DestDir: "{app}\doc";                   CopyMode: alwaysoverwrite
 Source: "@PAKDIR@\doc\faq\*.*";               DestDir: "{app}\doc\faq";               CopyMode: alwaysoverwrite; Flags: recursesubdirs; Components: help
 Source: "@PAKDIR@\doc\manual\*.*";            DestDir: "{app}\doc\manual";            CopyMode: alwaysoverwrite; Flags: recursesubdirs; Components: help
@@ -95,6 +97,8 @@ Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\Sylpheed-Claws"; F
 
 Name: "{group}\Sylpheed-Claws";                                 Filename: "{app}\bin\sylpheed.exe"
 Name: "{group}\Uninstall Sylpheed for Win32";                   Filename: "{uninstallexe}"
+Name: "{group}\Win32-Readme (html)";                            Filename: "{app}\Readme.html";
+Name: "{group}\Win32-Readme (text)";                            Filename: "{app}\Readme.txt";
 Name: "{group}\Sylpheed-FAQ";                                   Filename: "{app}\doc\faq\en\sylpheed-faq.html";         Components: help;
 Name: "{group}\Sylpheed-Manual";                                Filename: "{app}\doc\manual\en\sylpheed.html";          Components: help;
 
