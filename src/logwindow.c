@@ -142,6 +142,7 @@ void log_window_append(const gchar *str, LogType type)
 		color = &logwindow->msg_color;
 		break;
 	default:
+		break;
 	}
 
 	if (head) gtk_text_insert(text, NULL, color, NULL, head, -1);

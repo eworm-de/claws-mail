@@ -118,7 +118,7 @@ static void textview_add_part		(TextView	*textview,
 static void textview_write_body		(TextView	*textview,
 					 MimeInfo	*mimeinfo,
 					 FILE		*fp,
-					 CodeConverter	*conv);
+					 const gchar	*charset);
 static void textview_show_html		(TextView	*textview,
 					 FILE		*fp,
 					 CodeConverter	*conv);
@@ -345,7 +345,6 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	gint boundary_len = 0;
 	const gchar *charset = NULL;
 	GPtrArray *headers = NULL;
-	CodeConverter *conv;
 
 	g_return_if_fail(mimeinfo != NULL);
 	g_return_if_fail(fp != NULL);
@@ -425,9 +424,7 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 		textview->body_pos = gtk_stext_get_length(text);
 	}
 
-	conv = conv_code_converter_new(charset);
-	textview_write_body(textview, mimeinfo, fp, conv);
-	conv_code_converter_destroy(conv);
+	textview_write_body(textview, mimeinfo, fp, charset);
 
 	gtk_stext_thaw(text);
 }
@@ -440,12 +437,17 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	gint boundary_len = 0;
 	const gchar *charset = NULL;
 	GPtrArray *headers = NULL;
-	CodeConverter *conv;
 
 	g_return_if_fail(mimeinfo != NULL);
 	g_return_if_fail(fp != NULL);
 
 	if (mimeinfo->mime_type == MIME_MULTIPART) return;
+
+	if (!mimeinfo->parent &&
+	    mimeinfo->mime_type != MIME_TEXT &&
+	    mimeinfo->mime_type != MIME_TEXT_HTML &&
+	    mimeinfo->mime_type != MIME_TEXT_ENRICHED)
+		return;
 
 	if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0) {
 		perror("fseek");
@@ -496,9 +498,7 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 			charset = prefs_common.force_charset;
 		else if (mimeinfo->charset)
 			charset = mimeinfo->charset;
-		conv = conv_code_converter_new(charset);
-		textview_write_body(textview, mimeinfo, fp, conv);
-		conv_code_converter_destroy(conv);
+		textview_write_body(textview, mimeinfo, fp, charset);
 	}
 
 	gtk_stext_thaw(text);
@@ -562,10 +562,13 @@ void textview_show_signature_part(TextView *textview, MimeInfo *partinfo)
 #undef TEXT_INSERT
 
 static void textview_write_body(TextView *textview, MimeInfo *mimeinfo,
-				FILE *fp, CodeConverter *conv)
+				FILE *fp, const gchar *charset)
 {
 	FILE *tmpfp;
 	gchar buf[BUFFSIZE];
+	CodeConverter *conv;
+
+	conv = conv_code_converter_new(charset);
 
 	tmpfp = procmime_decode_content(NULL, fp, mimeinfo);
 	if (tmpfp) {
@@ -578,6 +581,8 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo,
 				textview_write_line(textview, buf, conv);
 		fclose(tmpfp);
 	}
+
+	conv_code_converter_destroy(conv);
 }
 
 static void textview_show_html(TextView *textview, FILE *fp,

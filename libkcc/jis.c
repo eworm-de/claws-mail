@@ -1,5 +1,7 @@
 #include "libkcc.h"
 
+#include <string.h>
+
 extern enum mode outmode;
 extern char shiftout[], shiftin[];
 extern bool nogaiji;

@@ -21,8 +21,9 @@
  * General functions for create common address book entries.
  */
 
-#include <stdio.h>
 #include <glib.h>
+#include <stdio.h>
+#include <string.h>
 
 #include "mgutils.h"
 

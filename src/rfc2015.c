@@ -336,14 +336,14 @@ leave:
 }
 
 static const char *
-passphrase_cb (void *opaque, const char *desc, void *r_hd)
+passphrase_cb (void *opaque, const char *desc, void **r_hd)
 {
     struct passphrase_cb_info_s *info = opaque;
     GpgmeCtx ctx = info ? info->c : NULL;
     const char *pass;
 
     if (!desc) {
-        /* FIXME: cleanup by looking at *r_hd */
+        /* FIXME: cleanup by looking at **r_hd */
         return NULL;
     }
 

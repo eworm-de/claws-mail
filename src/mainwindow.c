@@ -262,6 +262,9 @@ static void inc_mail_cb			(MainWindow	*mainwin,
 static void inc_all_account_mail_cb	(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
+static void inc_cancel_cb		(MainWindow	*mainwin,
+					 guint		 action,
+					 GtkWidget	*widget);
 
 static void send_queue_cb		(MainWindow	*mainwin,
 					 guint		 action,
@@ -632,9 +635,9 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/Get new ma_il"),		"<control>I",	inc_mail_cb, 0, NULL},
 	{N_("/_Message/Get from _all accounts"),
 						"<shift><control>I", inc_all_account_mail_cb, 0, NULL},
+	{N_("/_Message/Cancel receivin_g"),	NULL, inc_cancel_cb, 0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/Send queued messa_ges"),
-						NULL, send_queue_cb, 0, NULL},
+	{N_("/_Message/_Send queued messages"), NULL, send_queue_cb, 0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Compose a_n email message"),	"<control>M", compose_mail_cb, 0, NULL},
 	{N_("/_Message/Compose a news message"),	NULL,	compose_news_cb, 0, NULL},
@@ -1413,9 +1416,10 @@ typedef enum
 	M_THREADED	      = 1 << 7,
 	M_UNTHREADED	      = 1 << 8,
 	M_ALLOW_DELETE	      = 1 << 9,
-	M_NEWS                = 1 << 10,
-	M_HAVE_NEWS_ACCOUNT   = 1 << 11,
-	M_HIDE_READ_MSG	      = 1 << 12
+	M_INC_ACTIVE	      = 1 << 10,
+	M_NEWS                = 1 << 11,
+	M_HAVE_NEWS_ACCOUNT   = 1 << 12,
+	M_HIDE_READ_MSG	      = 1 << 13
 } SensitiveCond;
 
 static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
@@ -1466,6 +1470,9 @@ static SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 			break;
 		}
 	}
+
+	if (inc_is_active())
+		state |= M_INC_ACTIVE;
 
 	return state;
 }
@@ -1563,6 +1570,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 
 		{"/Message/Get new mail"          , M_HAVE_ACCOUNT|M_UNLOCKED},
 		{"/Message/Get from all accounts" , M_HAVE_ACCOUNT|M_UNLOCKED},
+		{"/Message/Cancel receiving"      , M_INC_ACTIVE},
 		{"/Message/Compose a news message", M_HAVE_NEWS_ACCOUNT},
 		{"/Message/Reply"                 , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
 		{"/Message/Reply to sender"       , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
@@ -2546,6 +2554,11 @@ static void inc_all_account_mail_cb(MainWindow *mainwin, guint action,
 				    GtkWidget *widget)
 {
 	inc_all_account_mail(mainwin, prefs_common.newmail_notify_manu);
+}
+
+static void inc_cancel_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
+{
+	inc_cancel_all();
 }
 
 static void send_queue_cb(MainWindow *mainwin, guint action, GtkWidget *widget)

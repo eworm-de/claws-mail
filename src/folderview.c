@@ -1665,6 +1665,7 @@ static void folderview_col_resized(GtkCList *clist, gint column, gint width,
 		prefs_common.folder_col_total = width;
 		break;
 	default:
+		break;
 	}
 }
 

@@ -21,8 +21,9 @@
  * General primitive address item objects.
  */
 
-#include <stdio.h>
 #include <glib.h>
+#include <stdio.h>
+#include <string.h>
 
 #include "addritem.h"
 #include "mgutils.h"

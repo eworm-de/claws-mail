@@ -66,6 +66,8 @@
 #include "filtering.h"
 #include "selective_download.h"
 
+static GList *inc_dialog_list = NULL;
+
 static guint inc_lock_count = 0;
 
 static GdkPixmap *currentxpm;
@@ -104,7 +106,7 @@ static gboolean inc_pop3_recv_func	(SockInfo	*sock,
 
 static void inc_put_error		(IncState	 istate);
 
-static void inc_cancel			(GtkWidget	*widget,
+static void inc_cancel_cb		(GtkWidget	*widget,
 					 gpointer	 data);
 
 static gint inc_spool			(void);
@@ -226,6 +228,9 @@ static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 	text[2] = _("Standby");
 	gtk_clist_append(GTK_CLIST(inc_dialog->dialog->clist), text);
 
+	main_window_set_toolbar_sensitive(mainwin);
+	main_window_set_menu_sensitive(mainwin);
+
 	return inc_start(inc_dialog);
 }
 
@@ -296,6 +301,9 @@ void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
 		gtk_clist_append(GTK_CLIST(inc_dialog->dialog->clist), text);
 	}
 
+	main_window_set_toolbar_sensitive(mainwin);
+	main_window_set_menu_sensitive(mainwin);
+
 	new_msgs += inc_start(inc_dialog);
 
 	inc_finished(mainwin, new_msgs > 0);
@@ -315,7 +323,7 @@ static IncProgressDialog *inc_progress_dialog_create(void)
 	gtk_window_set_title(GTK_WINDOW(progress->window),
 			     _("Retrieving new messages"));
 	gtk_signal_connect(GTK_OBJECT(progress->cancel_btn), "clicked",
-			   GTK_SIGNAL_FUNC(inc_cancel), dialog);
+			   GTK_SIGNAL_FUNC(inc_cancel_cb), dialog);
 	gtk_signal_connect(GTK_OBJECT(progress->window), "delete_event",
 			   GTK_SIGNAL_FUNC(gtk_true), NULL);
 	/* manage_window_set_transient(GTK_WINDOW(progress->window)); */
@@ -339,6 +347,8 @@ static IncProgressDialog *inc_progress_dialog_create(void)
 	dialog->dialog = progress;
 	dialog->queue_list = NULL;
 
+	inc_dialog_list = g_list_append(inc_dialog_list, dialog);
+
 	return dialog;
 }
 
@@ -353,6 +363,8 @@ static void inc_progress_dialog_clear(IncProgressDialog *inc_dialog)
 static void inc_progress_dialog_destroy(IncProgressDialog *inc_dialog)
 {
 	g_return_if_fail(inc_dialog != NULL);
+
+	inc_dialog_list = g_list_remove(inc_dialog_list, inc_dialog);
 
 	gtk_progress_bar_update
 		(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar), 0.0);
@@ -992,17 +1004,39 @@ static void inc_put_error(IncState istate)
 	}
 }
 
-static void inc_cancel(GtkWidget *widget, gpointer data)
+static void inc_cancel(IncProgressDialog *dialog)
 {
-	IncProgressDialog *dialog = data;
-	IncSession *session = dialog->queue_list->data;
-	SockInfo *sockinfo = session->pop3_state->sockinfo;
+	IncSession *session;
+	SockInfo *sockinfo;
+
+	g_return_if_fail(dialog != NULL);
+
+	session = dialog->queue_list->data;
+	sockinfo = session->pop3_state->sockinfo;
 
 	if (!sockinfo || session->atm->terminated == TRUE) return;
 
 	session->pop3_state->inc_state = INC_CANCEL;
 	pop3_automaton_terminate(sockinfo, session->atm);
 	session->pop3_state->sockinfo = NULL;
+}
+
+gboolean inc_is_active(void)
+{
+	return (inc_dialog_list != NULL);
+}
+
+void inc_cancel_all(void)
+{
+	GList *cur;
+
+	for (cur = inc_dialog_list; cur != NULL; cur = cur->next)
+		inc_cancel((IncProgressDialog *)cur->data);
+}
+
+static void inc_cancel_cb(GtkWidget *widget, gpointer data)
+{
+	inc_cancel((IncProgressDialog *)data);
 }
 
 static gint inc_spool(void)

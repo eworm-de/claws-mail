@@ -66,10 +66,12 @@ o Caldera OpenDesktop 2.4
 o Caldera Workstation 3.1
 o Conectiva Linux 4.0
 o Conectiva Linux 5.0
+o Conectiva Linux 7.0
 o Vector Linux 1.5
 o Yellow Dog Linux 2.0 (glibc 2.2.1)
 o Yellow Dog Linux 2.1 (PowerPC)
 o ASP Linux 7.2 (glibc 2.2.4)
+o Redmond Linux (Lycoris)
 
 BSD
 
@@ -106,16 +108,20 @@ o HP-UX 11.0
 o HP-UX 11i
 o Tru64 Unix 5.0 (OSF1 V5.0)
 o SCO UnixWare 7
-o Mac OS X 10.1.2 (Darwin 5.2) + XDarwin (has locale problem)
+o Mac OS X 10.1.3 (Darwin 5.3) + XDarwin (without XLocale support) + libxpg4
 
 Others
 
-o Windows (cygwin + GTK+ for win32) (unstable)
+o Windows (cygwin + GTK+ for win32) (in progress)
 
 Build it
 ========
 
-For installation, just type:
+Please make sure that gtk-devel and glib-devel (or similar) packages are
+installed before the compilation (you may also require flex (lex) and bison
+(yacc)).
+
+To compile and install, just type:
 
 % ./configure
 % make

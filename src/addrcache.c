@@ -21,9 +21,10 @@
  * Functions to maintain address cache.
  */
 
-#include <stdio.h>
-#include <sys/stat.h>
 #include <glib.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
 
 #include "mgutils.h"
 #include "addritem.h"

@@ -715,6 +715,7 @@ static gint mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		mimeview_launch(mimeview);
 		return TRUE;
 	default:
+		break;
 	}
 
 	if (!mimeview->messageview->mainwin) return FALSE;

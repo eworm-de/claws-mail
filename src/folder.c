@@ -1059,8 +1059,7 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	case F_DRAFT:  folder->draft  = item; break;
 	case F_QUEUE:  folder->queue  = item; break;
 	case F_TRASH:  folder->trash  = item; break;
-	default:
-		break;
+	default:       break;
 	}
 
 	prefs_folder_item_read_config(item);

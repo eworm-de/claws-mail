@@ -3886,6 +3886,7 @@ static void prefs_common_recv_dialog_set_optmenu(PrefParam *pparam)
 		gtk_option_menu_set_history(optmenu, 2);
 		break;
 	default:
+		break;
 	}
 
 	menu = gtk_option_menu_get_menu(optmenu);

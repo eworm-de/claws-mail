@@ -1,3 +1,8 @@
+2002-03-07 [paul]	0.7.3claws1
+
+	* sync with sylpheed 0.7.3cvs4
+		see ChangeLog entries  2002-03-06 and 2002-03-07
+
 2002-03-07 [melvin]	0.7.2claws34
 
 	* src/selective_download.c

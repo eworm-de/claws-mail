@@ -22,8 +22,9 @@
  * files).
  */
 
-#include <sys/stat.h>
 #include <glib.h>
+#include <string.h>
+#include <sys/stat.h>
 
 #include "mgutils.h"
 #include "ldif.h"

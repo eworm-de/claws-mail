@@ -1,3 +1,38 @@
+2002-03-07
+
+	* manual/en/sylpheed*.html: updated to the latest version.
+	* libkcc/jis.c
+	  src/addrcache.c
+	  src/addritem.c
+	  src/ldif.c
+	  src/mgutils.c: include string.h to remove warning about strlen()
+	  etc.
+	* src/folder.c
+	  src/folderview.c
+	  src/inc.c
+	  src/logwindow.c
+	  src/mainwindow.c
+	  src/mimeview.c
+	  src/prefs.c
+	  src/prefs_common.c
+	  src/procheader.c
+	  src/send.c
+	  src/session.c
+	  src/sigstatus.c
+	  src/summaryview.c: added break to the last label of switch to
+	  prevent the 'deprecated use of label at end of compound statement'
+	  warning at gcc-3.0.
+	* src/rfc2015.c: passphrase_cb(): fixed the type of r_hd.
+
+2002-03-06
+
+	* src/inc.[ch]: preserve the pointer to IncProgressDialog to the
+	  static list.
+	  inc_cancel_all(): new. It cancels the all current incorporation.
+	* src/mainwindow.c: added 'Cancel receiving' menu.
+	* src/textview.c: a minor fix for single-part MIME messages, and
+	  a bit of cleanup for textview_write_body().
+
 2002-03-05
 
 	* src/inc.c: inc_write_uidl_list(): fixed a bug that lost UIDL

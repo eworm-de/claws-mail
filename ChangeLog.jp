@@ -1,3 +1,38 @@
+2002-03-07
+
+	* manual/en/sylpheed*.html: 最新版に更新。
+	* libkcc/jis.c
+	  src/addrcache.c
+	  src/addritem.c
+	  src/ldif.c
+	  src/mgutils.c: string.h を include して strlen() 等の warning
+	  を取り除いた。
+	* src/folder.c
+	  src/folderview.c
+	  src/inc.c
+	  src/logwindow.c
+	  src/mainwindow.c
+	  src/mimeview.c
+	  src/prefs.c
+	  src/prefs_common.c
+	  src/procheader.c
+	  src/send.c
+	  src/session.c
+	  src/sigstatus.c
+	  src/summaryview.c: gcc-3.0 で 'deprecated use of label at end of
+	  compound statement' の warning を避けるために switch の最後の
+	  ラベルに break を追加。
+	* src/rfc2015.c: passphrase_cb(): r_hd の型を修正。
+
+2002-03-06
+
+	* src/inc.[ch]: IncProgressDialog へのポインタを静的なリストに
+	  保存するようにした。
+	  inc_cancel_all(): 新規。全ての現在の受信をキャンセルする。
+	* src/mainwindow.c: 「受信を中止」メニューを追加。
+	* src/textview.c: シングルパート MIME メッセージのためのマイナー
+	  な修正と、 textview_write_body() を少し整理。
+
 2002-03-05
 
 	* src/inc.c: inc_write_uidl_list(): UIDL コマンドを発行する前に

@@ -152,6 +152,7 @@ gint send_message_queue(const gchar *file)
 			ac = account_find_from_id(atoi(p));
 			break;
 		default:
+			break;
 		}
 	}
 
