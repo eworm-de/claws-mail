@@ -1,3 +1,10 @@
+2003-01-16 [colin]	0.8.8claws107
+
+	* src/procmsg.c
+		Changed encryption test to re-ask passphrase
+		if an encrypted message hasn't been decrypted
+		Fixes bug #5
+
 2003-01-16 [christoph]	0.8.8claws106
 
 	* src/prefs_gtk.c
