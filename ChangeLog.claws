@@ -1,3 +1,8 @@
+2001-12-01 [paul]
+
+	* more sync with sylpheed 0.6.5cvs19
+        	see ChangeLog entry 2001-11-29
+
 2001-11-30 [paul]	0.6.5claws46
 	
         * src/compose.c

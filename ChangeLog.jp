@@ -1,3 +1,7 @@
+2001-11-29
+
+	* src/prefs_template.c: ヘッダのラベルにコロンを追加。
+
 2001-11-28
 
 	* src/src/compose.c

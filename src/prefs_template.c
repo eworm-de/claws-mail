@@ -154,8 +154,8 @@ static void prefs_template_window_create(void)
 	gtk_widget_show(vbox_hdr);
 	gtk_box_pack_start(GTK_BOX(vbox1), vbox_hdr, FALSE, FALSE, 0);
 
-	ADD_ENTRY(vbox_hdr, entry_to, _("To"));
-	ADD_ENTRY(vbox_hdr, entry_subject, _("Subject"));
+	ADD_ENTRY(vbox_hdr, entry_to, _("To:"));
+	ADD_ENTRY(vbox_hdr, entry_subject, _("Subject:"));
 
 #undef ADD_ENTRY
 
