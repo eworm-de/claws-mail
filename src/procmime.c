@@ -920,11 +920,11 @@ gchar *procmime_get_mime_type(const gchar *filename)
 	}
 
 	base = g_path_get_basename(filename);
-	p = strrchr(base, '.');
+	if ((p = strrchr(base, '.')) != NULL)
+		Xstrdup_a(ext, p + 1, p = NULL );
 	g_free(base);
 	if (!p) return NULL;
 
-	Xstrdup_a(ext, p + 1, return NULL);
 	g_strdown(ext);
 	mime_type = g_hash_table_lookup(mime_type_table, ext);
 	if (mime_type) {

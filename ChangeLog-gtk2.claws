@@ -1,3 +1,8 @@
+2005-03-20 [thorsten]	1.9.6cvs3
+
+	* src/procmime.c
+		fix mimetype detection (referenced free()d string)
+
 2005-03-20 [paul]	1.9.6cvs2
 
 	* src/compose.c
