@@ -1,3 +1,13 @@
+2001-08-24 [christoph]
+
+	* src/compose.c
+		set request return receipt when replying
+		if it is set is the folder prefs of the
+		message
+	* src/inc.c
+		disable final error popup if popups are
+		disabled in config (again)
+
 2001-08-23 [paul]
 
 	* configure.in

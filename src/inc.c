@@ -537,7 +537,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 	/* gtk_label_set_text(GTK_LABEL(inc_dialog->mainwin->statuslabel), "");  */
 
-	if (error_num) {
+	if (error_num && !prefs_common.noerrorpanel) {
 		if (inc_dialog->show_dialog)
 			manage_window_focus_in(inc_dialog->dialog->window,
 					       NULL, NULL);

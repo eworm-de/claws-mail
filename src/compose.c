@@ -619,6 +619,13 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 		compose->use_to = TRUE;
 	}
 
+    	if(msginfo->folder && msginfo->folder->prefs->request_return_receipt) {
+		GtkItemFactory *ifactory;
+	
+		ifactory = gtk_item_factory_from_widget(compose->menubar);
+		menu_set_toggle(ifactory, "/Message/Request Return Receipt", TRUE);
+	}
+
 	if (compose_parse_header(compose, msginfo) < 0) return;
 	compose_reply_set_entry(compose, msginfo, to_all, ignore_replyto,
 				followup_and_reply_to);
