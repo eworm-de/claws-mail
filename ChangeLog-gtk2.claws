@@ -1,3 +1,13 @@
+2005-01-04 [colin]	0.9.13cvs25.9
+
+	* src/compose.c
+		Fix Show Ruler menuitem
+	* src/prefs_template.c
+		Convert to GTK2
+	* src/common/utils.c
+		Make auto pointer stuff handles NULLs
+		Patches by Alfons.
+
 2005-01-04 [colin]	0.9.13cvs25.8
 
 	* src/compose.c

@@ -4793,6 +4793,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	GtkItemFactory *ifactory;
 	GtkWidget *tmpl_menu;
 	gint n_entries;
+	GtkWidget *menuitem;
 
 #if USE_ASPELL
         GtkAspell * gtkaspell = NULL;
@@ -5127,7 +5128,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	if (mode != COMPOSE_REDIRECT)
 		compose_set_template_menu(compose);
 	else {
-		GtkWidget *menuitem;
 		menuitem = gtk_item_factory_get_item(ifactory, "/Tools/Template");
 		menu_set_sensitive(ifactory, "/Tools/Template", FALSE);
 	}
@@ -5136,6 +5136,10 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	if (!prefs_common.show_ruler)
 		gtk_widget_hide(ruler_hbox);
+		
+	menuitem = gtk_item_factory_get_item(ifactory, "/Tools/Show ruler");
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
+				       prefs_common.show_ruler);
 
 	/* Priority */
 	compose->priority = PRIORITY_NORMAL;

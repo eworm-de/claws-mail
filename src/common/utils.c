@@ -3822,8 +3822,14 @@ typedef struct AutoPointer {
  */
 GAuto *g_auto_pointer_new(gpointer p)
 {
-	AutoPointerRef *ref = g_new0(AutoPointerRef, 1);
-	AutoPointer    *ptr = g_new0(AutoPointer, 1);
+	AutoPointerRef *ref;
+	AutoPointer    *ptr;
+	
+	if (p == NULL) 
+		return NULL;
+
+	ref = g_new0(AutoPointerRef, 1);
+	ptr = g_new0(AutoPointer, 1);
 
 	ref->pointer = p;
 	ref->free = g_free;
@@ -3842,15 +3848,21 @@ GAuto *g_auto_pointer_new(gpointer p)
  *		free the guarded pointer
  */
 GAuto *g_auto_pointer_new_with_free(gpointer p, GFreeFunc free_)
-{	
-	AutoPointer *aptr = g_auto_pointer_new(p);
+{
+	AutoPointer *aptr;
+	
+	if (p == NULL)
+		return NULL;
 
+	aptr = g_auto_pointer_new(p);
 	aptr->ref->free = free_;
 	return aptr; 
 }
 
 gpointer g_auto_pointer_get_ptr(GAuto *auto_ptr)
 {
+	if (auto_ptr == NULL) 
+		return NULL;
 	return ((AutoPointer *) auto_ptr)->ptr; 
 }
 
@@ -3866,9 +3878,16 @@ gpointer g_auto_pointer_get_ptr(GAuto *auto_ptr)
  */
 GAuto *g_auto_pointer_copy(GAuto *auto_ptr)
 {
-	AutoPointer	*ptr = auto_ptr;
-	AutoPointerRef	*ref = ptr->ref;
-	AutoPointer	*newp = g_new0(AutoPointer, 1);
+	AutoPointer	*ptr;
+	AutoPointerRef	*ref;
+	AutoPointer	*newp;
+
+	if (auto_ptr == NULL) 
+		return NULL;
+
+	ptr = auto_ptr;
+	ref = ptr->ref;
+	newp = g_new0(AutoPointer, 1);
 
 	newp->ref = ref;
 	newp->ptr = ref->pointer;
@@ -3884,8 +3903,14 @@ GAuto *g_auto_pointer_copy(GAuto *auto_ptr)
  */
 void g_auto_pointer_free(GAuto *auto_ptr)
 {
-	AutoPointer	*ptr = auto_ptr;
-	AutoPointerRef	*ref = ptr->ref;
+	AutoPointer	*ptr;
+	AutoPointerRef	*ref;
+	
+	if (auto_ptr == NULL)
+		return;
+
+	ptr = auto_ptr;
+	ref = ptr->ref;
 
 	if (--(ref->cnt) == 0) {
 		G_PRINT_REF ("XXXX FREE(%lx) -- REF (%d)\n", ref->pointer, ref->cnt);
