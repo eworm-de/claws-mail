@@ -411,6 +411,7 @@ leave:
 
     g_free (partinfo->sigstatus);
     partinfo->sigstatus = g_strdup (result);
+    partinfo->sig_ok = (status == GPGME_SIG_STAT_GOOD);
 
     gpgme_data_release (sig);
     gpgme_data_release (text);

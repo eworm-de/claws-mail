@@ -94,7 +94,18 @@
 #include "pixmaps/drafts_close.xpm"
 #include "pixmaps/drafts_open.xpm"
 #include "pixmaps/messageview_text.xpm"
-                  
+#include "pixmaps/mime_text_plain.xpm"
+#include "pixmaps/mime_text_html.xpm"
+#include "pixmaps/mime_application.xpm"
+#include "pixmaps/mime_application_octect_stream.xpm"
+#include "pixmaps/mime_image.xpm"
+#include "pixmaps/mime_audio.xpm"
+#include "pixmaps/mime_text_enriched.xpm"
+#include "pixmaps/mime_unknown.xpm"
+#include "pixmaps/mime_gpg_signed.xpm"
+#include "pixmaps/mime_gpg_passed.xpm"
+#include "pixmaps/mime_gpg_failed.xpm"                  
+
 typedef struct _StockPixmapData	StockPixmapData;
 
 struct _StockPixmapData
@@ -189,6 +200,17 @@ static StockPixmapData pixmaps[] =
 	{drafts_close_xpm			, NULL, NULL, "drafts_close", "  "},
 	{drafts_open_xpm			, NULL, NULL, "drafts_open", "  "},
 	{messageview_text_xpm			, NULL, NULL, "messageview_text", "  "},
+	{mime_text_plain_xpm			, NULL, NULL, "mime_text_plain", "  "},
+	{mime_text_html_xpm			, NULL, NULL, "mime_text_html", "  "},
+	{mime_application_xpm			, NULL, NULL, "mime_application", "  "},
+	{mime_application_octect_stream_xpm	, NULL, NULL, "mime_application_octect_stream", "  "},
+	{mime_image_xpm				, NULL, NULL, "mime_image", "  "},
+	{mime_audio_xpm				, NULL, NULL, "mime_audio", "  "},
+	{mime_text_enriched_xpm			, NULL, NULL, "mime_text_enriched", "  "},
+	{mime_unknown_xpm			, NULL, NULL, "mime_unknown", "  "},	
+	{mime_gpg_signed_xpm			, NULL, NULL, "mime_gpg_signed", "  "},
+	{mime_gpg_passed_xpm			, NULL, NULL, "mime_gpg_passed", "  "},
+	{mime_gpg_failed_xpm			, NULL, NULL, "mime_gpg_failed", "  "},	
 	{sylpheed_logo_xpm			, NULL, NULL, "sylpheed_logo", "  "},
 };
 

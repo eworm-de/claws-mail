@@ -172,6 +172,17 @@ EXTRA_DIST = \
 	pixmaps/mail.xpm \
 	pixmaps/mark.xpm \
 	pixmaps/messageview_text.xpm \
+	pixmaps/mime_application_octect_stream.xpm \
+	pixmaps/mime_application.xpm \
+	pixmaps/mime_audio.xpm \
+	pixmaps/mime_gpg_failed.xpm \
+	pixmaps/mime_gpg_passed.xpm \
+	pixmaps/mime_gpg_signed.xpm \
+	pixmaps/mime_image.xpm \
+	pixmaps/mime_text_enriched.xpm \
+	pixmaps/mime_text_html.xpm \
+	pixmaps/mime_text_plain.xpm \
+	pixmaps/mime_unknown.xpm \
 	pixmaps/news_compose.xpm \
 	pixmaps/new.xpm \
 	pixmaps/notice_error.xpm \

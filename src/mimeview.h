@@ -28,6 +28,7 @@ extern "C" {
 #include <gdk/gdk.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkctree.h>
+#include <gtk/gtktooltips.h>
 
 typedef struct _MimeView		MimeView;
 typedef struct _MimeViewerFactory 	MimeViewerFactory;
@@ -45,13 +46,16 @@ typedef enum
 
 struct _MimeView
 {
+	GtkWidget *paned;
 	GtkWidget *notebook;
 	GtkWidget *vbox;
-
-	GtkWidget *paned;
 	GtkWidget *scrolledwin;
 	GtkWidget *ctree;
 	GtkWidget *mime_notebook;
+	GtkWidget *ctree_mainbox;
+	GtkWidget *icon_scroll;
+	GtkWidget *icon_vbox;
+	GtkWidget *icon_mainbox;
 
 	MimeViewType type;
 
@@ -72,6 +76,11 @@ struct _MimeView
 	GSList *viewers;
 
 	GtkTargetList *target_list; /* DnD */
+
+	gint icon_count;
+	MainWindow *mainwin;
+	GtkTooltips *tooltips;
+	gint oldsize;
 };
 
 struct _MimeViewerFactory
@@ -102,6 +111,7 @@ void mimeview_show_message	(MimeView	*mimeview,
 				 MimeInfo	*mimeinfo,
 				 const gchar	*file);
 void mimeview_destroy		(MimeView	*mimeview);
+void mimeview_update		(MimeView 	*mimeview);
 
 MimeInfo *mimeview_get_selected_part	(MimeView	*mimeview);
 
@@ -113,6 +123,7 @@ void mimeview_pass_key_press_event	(MimeView	*mimeview,
 
 void mimeview_register_viewer_factory	(MimeViewerFactory *factory);
 void mimeview_unregister_viewer_factory	(MimeViewerFactory *factory);
+
 
 #ifdef __cplusplus
 }

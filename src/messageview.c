@@ -759,6 +759,7 @@ void messageview_reflect_prefs_pixmap_theme(void)
 	for (cur = msgview_list; cur != NULL; cur = cur->next) {
 		msgview = (MessageView*)cur->data;
 		toolbar_update(TOOLBAR_MSGVIEW, msgview);
+		mimeview_update(msgview->mimeview);
 	}
 }
 

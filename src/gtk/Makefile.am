@@ -14,7 +14,8 @@ libsylpheedgtk_la_SOURCES = \
 	menu.c menu.h \
 	pluginwindow.c pluginwindow.h \
 	prefswindow.c prefswindow.h \
-	sslcertwindow.c sslcertwindow.h
+	sslcertwindow.c sslcertwindow.h \
+	gtkvscrollbutton.c gtkvscrollbutton.h
 
 CPPFLAGS = \
 	-I../common \

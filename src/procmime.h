@@ -118,6 +118,7 @@ struct _MimeInfo
 	gchar *plaintextfile;
 	gchar *sigstatus;
 	gchar *sigstatus_full;
+	gboolean sig_ok;
 #endif
 
 	gint level;
