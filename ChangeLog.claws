@@ -1,3 +1,9 @@
+2004-10-01 [colin]	0.9.12cvs118
+
+	* src/mimeview.c
+		Better fix for Save all: skip multipart mails' first 
+		text part
+
 2004-10-01 [colin]	0.9.12cvs117
 
 	* src/mimeview.c

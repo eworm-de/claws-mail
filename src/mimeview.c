@@ -1067,10 +1067,19 @@ static void mimeview_save_all(MimeView *mimeview)
 	if (dirname[strlen(dirname)-1] == G_DIR_SEPARATOR)
 		dirname[strlen(dirname)-1] = '\0';
 
+	/* Skip the first part, that is sometimes DISPOSITIONTYPE_UNKNOWN */
+	if (partinfo && partinfo->type == MIMETYPE_MESSAGE)
+		partinfo = procmime_mimeinfo_next(partinfo);
+	if (partinfo && partinfo->type == MIMETYPE_MULTIPART) {
+		partinfo = procmime_mimeinfo_next(partinfo);
+		if (partinfo && partinfo->type == MIMETYPE_TEXT)
+			partinfo = procmime_mimeinfo_next(partinfo);
+	}
+
 	while (partinfo != NULL) {
 		if (partinfo->type != MIMETYPE_MESSAGE &&
 		    partinfo->type != MIMETYPE_MULTIPART &&
-		    partinfo->disposition == DISPOSITIONTYPE_ATTACHMENT) {
+		    partinfo->disposition != DISPOSITIONTYPE_INLINE) {
 			gchar *filename = mimeview_get_filename_for_part
 				(partinfo, dirname, number++);
 
