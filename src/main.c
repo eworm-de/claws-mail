@@ -229,8 +229,6 @@ int main(int argc, char *argv[])
 	gtk_rc_parse(userrc);
 	g_free(userrc);
 
-	gtk_rc_parse("./gtkrc");
-
 	userrc = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, MENU_RC, NULL);
 	gtk_item_factory_parse_rc(userrc);
 	g_free(userrc);

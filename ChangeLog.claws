@@ -1,3 +1,10 @@
+2004-08-09 [paul]       0.9.12cvs54
+
+	* po/POTFILES.in
+		reflect new location of sgpgme.c
+	* src/main.c
+		sync with main, see ChangeLog 2004-08-09
+
 2004-08-08 [christoph]	0.9.12cvs53
 
 	* src/folderutils.c
