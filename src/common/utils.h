@@ -545,6 +545,9 @@ wchar_t  *gtkwcs2winwcs(wchar_t *gtkwcs);
 
 gchar *w32_get_exec_dir();
 gchar *w32_move_to_exec_dir(const gchar *filename);
+
+int strip_all_cr(const char *buf, int length);
+
 #endif
 
 #ifdef __cplusplus

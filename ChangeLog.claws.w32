@@ -1,3 +1,11 @@
+2005-01-30 [thorsten]	1.0.0cvs23.3
+
+	* src/action.c
+	* src/common/utils.c
+	* src/common/utils.h
+		chg: improved CR stripping from buffer
+		Thanks to Thomas Gilgin and Alfons Hoogervorst for the patch.
+
 2005-01-29 [thorsten]	1.0.0cvs23.2
 
 	* src/action.c
