@@ -1,3 +1,13 @@
+2004-10-29 [paul]	0.9.12cvs135.1
+
+	* configure.ac
+	* doc/src/rfc2231.txt
+	* src/procmime.c
+	* src/common/quoted-printable.c
+	* src/common/utils.c
+	* src/common/utils.h
+		sync with HEAD
+
 2004-10-27 [paul]	0.9.12cvs134.1
 
 	* configure.ac

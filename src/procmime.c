@@ -1239,54 +1239,160 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 	fclose(fp);
 }
 
-static void add_to_mimeinfo_parameters(gchar **parts, GHashTable *table)
+static void parse_parameters(const gchar *parameters, GHashTable *table)
 {
-	gchar **strarray;
+	gchar *params, *param, *next;
+	GSList *convlist = NULL, *concatlist = NULL, *cur;
 
-	for (strarray = parts; *strarray != NULL; strarray++) {
-		gchar **parameters_parts;
+	params = g_strdup(parameters);
+	param = params;
+	next = params;
+	for (; next != NULL; param = next) {
+		gchar *attribute, *value, *tmp;
+		gint len;
+		gboolean convert = FALSE;
 
-		parameters_parts = g_strsplit(*strarray, "=", 2);
-		if ((parameters_parts[0] != NULL) && (parameters_parts[1] != NULL)) {
-			gchar *firstspace;
-
-			g_strstrip(parameters_parts[0]);
-			g_strstrip(parameters_parts[1]);
-			g_strdown(parameters_parts[0]);
-			if (parameters_parts[1][0] == '"')
-				extract_quote(parameters_parts[1], '"');
-			else if ((firstspace = strchr(parameters_parts[1], ' ')) != NULL)
-				*firstspace = '\0';
-			if (g_hash_table_lookup(table, parameters_parts[0]) == NULL)
-				g_hash_table_insert(table,
-						    g_strdup(parameters_parts[0]),
-						    g_strdup(parameters_parts[1]));
+		next = strchr_with_skip_quote(param, '"', ';');
+		if (next != NULL) {
+			next[0] = '\0';
+			next++;
 		}
-		g_strfreev(parameters_parts);
+
+		g_strstrip(param);
+
+		attribute = param;
+		value = strchr(attribute, '=');
+		if (value == NULL)
+			continue;
+
+		value[0] = '\0';
+		value++;
+
+		g_strdown(attribute);
+
+		len = strlen(attribute);
+		if (attribute[len - 1] == '*') {
+			gchar *srcpos, *dstpos, *endpos;
+
+			convert = TRUE;
+			attribute[len - 1] = '\0';
+
+			srcpos = value;
+			dstpos = value;
+			endpos = value + strlen(value);
+			while (srcpos < endpos) {
+				if (*srcpos != '%')
+					*dstpos = *srcpos;
+				else {
+					guchar dstvalue;
+
+					if (!get_hex_value(&dstvalue, srcpos[1], srcpos[2]))
+						*dstpos = '?';
+					else
+						*dstpos = dstvalue;
+					srcpos += 2;
+				}
+				srcpos++;
+				dstpos++;
+			}
+			*dstpos = '\0';
+		} else {
+			if (value[0] == '"')
+				extract_quote(value, '"');
+			else if ((tmp = strchr(value, ' ')) != NULL)
+				*tmp = '\0';
+		}
+
+		if (strrchr(attribute, '*') != NULL) {
+			gchar *tmpattr;
+
+			tmpattr = g_strdup(attribute);
+			tmp = strrchr(tmpattr, '*');
+			tmp[0] = '\0';
+
+			if ((tmp[1] == '0') && (tmp[2] == '\0') && 
+			    (g_slist_find_custom(concatlist, attribute, g_str_equal) == NULL))
+				concatlist = g_slist_prepend(concatlist, g_strdup(tmpattr));
+
+			if (convert && (g_slist_find_custom(convlist, attribute, g_str_equal) == NULL))
+				convlist = g_slist_prepend(convlist, g_strdup(tmpattr));
+
+			g_free(tmpattr);
+		} else if (convert) {
+			if (g_slist_find_custom(convlist, attribute, g_str_equal) == NULL)
+				convlist = g_slist_prepend(convlist, g_strdup(attribute));
+		}
+
+		if (g_hash_table_lookup(table, attribute) == NULL)
+			g_hash_table_insert(table, g_strdup(attribute), g_strdup(value));
 	}
+
+	for (cur = concatlist; cur != NULL; cur = g_slist_next(cur)) {
+		gchar *attribute, *attrwnum, *partvalue;
+		gint n = 0;
+		GString *value;
+
+		attribute = (gchar *) cur->data;
+		value = g_string_sized_new(64);
+
+		attrwnum = g_strdup_printf("%s*%d", attribute, n);
+		while ((partvalue = g_hash_table_lookup(table, attrwnum)) != NULL) {
+			g_string_append(value, partvalue);
+
+			g_free(attrwnum);
+			n++;
+			attrwnum = g_strdup_printf("%s*%d", attribute, n);
+		}
+		g_free(attrwnum);
+
+		g_hash_table_insert(table, g_strdup(attribute), g_strdup(value->str));
+		g_string_free(value, TRUE);
+	}
+	slist_free_strings(concatlist);
+	g_slist_free(concatlist);
+
+	for (cur = convlist; cur != NULL; cur = g_slist_next(cur)) {
+		gchar *attribute, *key, *value;
+		gchar *charset, *lang, *oldvalue, *newvalue;
+
+		attribute = (gchar *) cur->data;
+		if (!g_hash_table_lookup_extended(table, attribute, (gpointer *) &key, (gpointer *) &value))
+			continue;
+
+		charset = value;
+		lang = strchr(charset, '\'');
+		if (lang == NULL)
+			continue;
+		lang[0] = '\0';
+		lang++;
+		oldvalue = strchr(lang, '\'');
+		if (oldvalue == NULL)
+			continue;
+		oldvalue[0] = '\0';
+		oldvalue++;
+
+		newvalue = conv_codeset_strdup(oldvalue, charset, conv_get_current_charset_str());
+
+		g_hash_table_remove(table, attribute);
+		g_free(key);
+		g_free(value);
+
+		g_hash_table_insert(table, g_strdup(attribute), newvalue);
+	}
+	slist_free_strings(convlist);
+	g_slist_free(convlist);
+
+	g_free(params);
 }	
 
 static void procmime_parse_content_type(const gchar *content_type, MimeInfo *mimeinfo)
 {
-	gchar **content_type_parts;
-	gchar **strarray;
-	gchar *str;
-	
 	g_return_if_fail(content_type != NULL);
 	g_return_if_fail(mimeinfo != NULL);
 
-	/* Split content type into parts and remove trailing
-	   and leading whitespaces from all strings */
-	content_type_parts = g_strsplit(content_type, ";", 0);
-	for (strarray = content_type_parts; *strarray != NULL; strarray++) {
-		g_strstrip(*strarray);
-	}
-
-	/* Get mimeinfo->type and mimeinfo->subtype */
-	str = content_type_parts[0];
 	/* RFC 2045, page 13 says that the mime subtype is MANDATORY;
 	 * if it's not available we use the default Content-Type */
-	if ((str == NULL) || (str[0] == '\0') || (strchr(str, '/') == NULL)) {
+	if ((content_type[0] == '\0') || (strchr(content_type, '/') == NULL)) {
 		mimeinfo->type = MIMETYPE_TEXT;
 		mimeinfo->subtype = g_strdup("plain");
 		if (g_hash_table_lookup(mimeinfo->typeparameters,
@@ -1295,54 +1401,52 @@ static void procmime_parse_content_type(const gchar *content_type, MimeInfo *mim
 					    g_strdup("charset"),
 					    g_strdup("us-ascii"));
 	} else {
-		gchar *type, *subtype;
+		gchar *type, *subtype, *params;
 
-		type = g_strdup(str);
+		type = g_strdup(content_type);
 		subtype = strchr(type, '/') + 1;
 		*(subtype - 1) = '\0';
+		if ((params = strchr(subtype, ';')) != NULL) {
+			params[0] = '\0';
+			params++;
+		}
 
 		mimeinfo->type = procmime_get_media_type(type);
 		mimeinfo->subtype = g_strdup(subtype);
 
+		/* Get mimeinfo->typeparameters */
+		if (params != NULL)
+			parse_parameters(params, mimeinfo->typeparameters);
+
 		g_free(type);
-
-		/* Get mimeinfo->parmeters */
-		add_to_mimeinfo_parameters(&content_type_parts[1], mimeinfo->typeparameters);
 	}
-
-	g_strfreev(content_type_parts);
 }
 
 static void procmime_parse_content_disposition(const gchar *content_disposition, MimeInfo *mimeinfo)
 {
-	gchar **content_disp_parts;
-	gchar **strarray;
-	gchar *str;
+	gchar *tmp, *params;
 
 	g_return_if_fail(content_disposition != NULL);
 	g_return_if_fail(mimeinfo != NULL);
 
-	/* Split into parts and remove trailing
-	   and leading whitespaces from all strings */
-	content_disp_parts = g_strsplit(content_disposition, ";", 0);
-	for (strarray = content_disp_parts; *strarray != NULL; strarray++) {
-		g_strstrip(*strarray);
- 	}
-	/* Get mimeinfo->disposition */
-	str = content_disp_parts[0];
-	if (str == NULL) {
-		g_strfreev(content_disp_parts);
-		return;
-	}
-	if (!g_ascii_strcasecmp(str, "inline")) 
+	tmp = g_strdup(content_disposition);
+	if ((params = strchr(tmp, ';')) != NULL) {
+		params[0] = '\0';
+		params++;
+	}	
+	g_strstrip(tmp);
+
+	if (!g_ascii_strcasecmp(tmp, "inline")) 
 		mimeinfo->disposition = DISPOSITIONTYPE_INLINE;
-	else if (!g_ascii_strcasecmp(str, "attachment"))
+	else if (!g_ascii_strcasecmp(tmp, "attachment"))
 		mimeinfo->disposition = DISPOSITIONTYPE_ATTACHMENT;
 	else
 		mimeinfo->disposition = DISPOSITIONTYPE_ATTACHMENT;
 	
-	add_to_mimeinfo_parameters(&content_disp_parts[1], mimeinfo->dispositionparameters);
-	g_strfreev(content_disp_parts);
+	if (params != NULL)
+		parse_parameters(params, mimeinfo->dispositionparameters);
+
+	g_free(tmp);
 }
 
 
@@ -1518,7 +1622,7 @@ MimeInfo *procmime_scan_queue_file(const gchar *filename)
 typedef enum {
     ENC_AS_TOKEN,
     ENC_AS_QUOTED_STRING,
-    ENC_AS_ENCODED_WORD,
+    ENC_AS_EXTENDED,
 } EncodeAs;
 
 static void write_parameters(gpointer key, gpointer value, gpointer user_data)
@@ -1532,7 +1636,7 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 
 	for (valpos = val; *valpos != 0; valpos++) {
 		if (!IS_ASCII(*valpos)) {
-			encas = ENC_AS_ENCODED_WORD;
+			encas = ENC_AS_EXTENDED;
 			break;
 		}
 	    
@@ -1574,7 +1678,7 @@ static void write_parameters(gpointer key, gpointer value, gpointer user_data)
 		fprintf(fp, "\"%s\"", val);
 		break;
 
-	case ENC_AS_ENCODED_WORD:
+	case ENC_AS_EXTENDED:
 		/* FIXME: not yet handled */
 		fprintf(fp, "%s", val);
 		break;
