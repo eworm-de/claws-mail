@@ -1,3 +1,8 @@
+2004-11-08 [colin]	0.9.12cvs142.2
+
+	* src/compose.c
+		Don't wrap when Edit/Auto wrapping is disabled
+
 2004-11-08 [colin]	0.9.12cvs142.1
 
 	* src/textview.c

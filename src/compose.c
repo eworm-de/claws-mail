@@ -7222,7 +7222,7 @@ static void text_inserted(GtkTextBuffer *buffer, GtkTextIter *iter,
 	} else
 		gtk_text_buffer_insert(buffer, iter, text, len);
 
-	if (prefs_common.autowrap)
+	if (compose->autowrap)
 		compose_wrap_line_all_full(compose, TRUE);
 
 	g_signal_handlers_unblock_by_func(G_OBJECT(buffer),
