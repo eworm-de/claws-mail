@@ -1,3 +1,10 @@
+2002-02-07
+
+	* src/procmsg.c: procmsg_open_message(): fetch message if the cache
+	  doesn't exist.
+	* src/foldersel.[ch]: foldersel_folder_sel(): added an argument
+	  that specifies the folder selection type.
+
 2002-02-06
 
 	* src/imap.c: imap_copy_msgs_with_dest(): fixed a bug on traversing
@@ -8,6 +15,10 @@
 	* src/addr_compl.c: get_complete_address(): add "" around the
 	  display name if it contains comma.
 	  get_address_from_edit(): handle the quotation character correctly.
+	* src/addr_compl.c: get_complete_address()
+	  src/addressbook.c: addressbook_format_address(): fixed a bug that
+	  caused wrong text processing if the display name is empty.
+	* updated NEWS.
 
 2002-02-05
 

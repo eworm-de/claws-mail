@@ -3138,7 +3138,8 @@ void summary_move_to(SummaryView *summaryview)
 	if (!summaryview->folder_item ||
 	    summaryview->folder_item->folder->type == F_NEWS) return;
 
-	to_folder = foldersel_folder_sel(NULL, NULL);
+	to_folder = foldersel_folder_sel(summaryview->folder_item->folder,
+					 FOLDER_SEL_MOVE, NULL);
 	summary_move_selected_to(summaryview, to_folder);
 }
 
@@ -3228,7 +3229,8 @@ void summary_copy_to(SummaryView *summaryview)
 
 	if (!summaryview->folder_item) return;
 
-	to_folder = foldersel_folder_sel(NULL, NULL);
+	to_folder = foldersel_folder_sel(summaryview->folder_item->folder,
+					 FOLDER_SEL_COPY, NULL);
 	summary_copy_selected_to(summaryview, to_folder);
 }
 

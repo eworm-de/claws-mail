@@ -1,3 +1,9 @@
+2002-02-07 [paul]	0.7.0claws56
+
+	* sync with sylpheed 0.7.0cvs38
+		see ChangeLog entries 2002-02-06 {last 2 entries) and
+		2002-02-07
+
 2002-02-07 [darko]	0.7.0claws55
 
 	* src/gtkutils.[ch]

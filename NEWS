@@ -1,5 +1,38 @@
 Changes of Sylpheed
 
+* 0.7.1
+
+    * Message copy between different type of folders has been enabled.
+    * Multiple message forwarding has been enabled.
+    * Most of key bindings became customizable.
+    * The default menu shortcuts have been modified so that Ctrl is used
+      as the modifier key.
+    * Quick menu shortcut changer has been implemented.
+    * Quick filter rule creation has been implemented.
+    * "Show all header" now displays the headers in the current message
+      view.
+    * File save dialog has been improved.
+    * Mac OS X (Darwin) has been supported.
+    * Ctrl-Enter now works on the composition window.
+    * Crash in mark processing on 64bit architecture has been fixed.
+    * Crash when some fonts couldn't be loaded has been fixed.
+    * Some address completion bugs have been fixed.
+    * Some many other bugs have been fixed.
+
+* 0.7.0
+
+    * Undo / redo function has been implemented.
+    * Regular expression has been supported in filtering.
+    * LDIF file import has been improved.
+    * The cursor on composition window blinks now.
+    * The feature to keep editing after saving to draft has been added.
+    * The position of Subject entry on composition window has been moved
+      to the last.
+    * The menu items have been reorganized.
+    * WMCLASS is set for some windows.
+    * A bug that causes infinite loop at line-wrapping has been fixed.
+    * Some bugfixes for template, addressbook and IMAP4 have been made.
+
 * 0.6.6
 
     * The newsgroup subscription dialog has been enhanced.

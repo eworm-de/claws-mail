@@ -65,7 +65,9 @@ static gboolean cancelled;
 
 static void foldersel_create	(void);
 static void foldersel_init	(void);
-static void foldersel_set_tree	(Folder		*cur_folder);
+static void foldersel_set_tree	(Folder			*cur_folder,
+				 FolderSelectionType	 type);
+
 static void foldersel_selected	(GtkCList	*clist,
 				 gint		 row,
 				 gint		 column,
@@ -85,6 +87,7 @@ static void key_pressed		(GtkWidget	*widget,
 				 gpointer	 data);
 
 FolderItem *foldersel_folder_sel(Folder *cur_folder,
+				 FolderSelectionType type,
 				 const gchar *default_folder)
 {
 	GtkCTreeNode *node;
@@ -96,7 +99,7 @@ FolderItem *foldersel_folder_sel(Folder *cur_folder,
 		gtk_widget_show(window);
 	manage_window_set_transient(GTK_WINDOW(window));
 
-	foldersel_set_tree(cur_folder);
+	foldersel_set_tree(cur_folder, type);
 
 	if (folder_item) {
 		node = gtk_ctree_find_by_row_data
@@ -286,7 +289,7 @@ static void foldersel_expand_func(GtkCTree *ctree, GtkCTreeNode *node,
 	} \
 }
 
-static void foldersel_set_tree(Folder *cur_folder)
+static void foldersel_set_tree(Folder *cur_folder, FolderSelectionType type)
 {
 	Folder *folder;
 	GtkCTreeNode *node;
@@ -302,11 +305,14 @@ static void foldersel_set_tree(Folder *cur_folder)
 		folder = FOLDER(list->data);
 		g_return_if_fail(folder != NULL);
 
-		if (folder->type == F_NEWS) continue;
-		if (cur_folder) {
-			if (cur_folder->type != folder->type) continue;
-			if (cur_folder->type == F_IMAP) {
-				if (cur_folder->account != folder->account)
+		if (type != FOLDER_SEL_ALL) {
+			if (folder->type == F_NEWS)
+				continue;
+			if (type == FOLDER_SEL_MOVE && cur_folder) {
+				if (cur_folder->type != folder->type)
+					continue;
+				if (cur_folder->type == F_IMAP &&
+				    cur_folder != folder)
 					continue;
 			}
 		}

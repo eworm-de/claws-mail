@@ -233,7 +233,7 @@ static void import_destsel_cb(GtkWidget *widget, gpointer data)
 	FolderItem *dest;
 	gchar *path;
 
-	dest = foldersel_folder_sel(NULL, NULL);
+	dest = foldersel_folder_sel(NULL, FOLDER_SEL_COPY, NULL);
 	if (!dest)
 		 return;
 	path = folder_item_get_identifier(dest);

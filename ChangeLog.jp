@@ -1,3 +1,10 @@
+2002-02-07
+
+	* src/procmsg.c: procmsg_open_message(): キャッシュが存在しない
+	  場合はメッセージを取得するようにした。
+	* src/foldersel.[ch]: foldersel_folder_sel(): フォルダ選択の
+	  タイプを指定する引数を追加。
+
 2002-02-06
 
 	* src/imap.c: imap_copy_msgs_with_dest(): リストのトラバース時の
@@ -8,6 +15,10 @@
 	* src/addr_compl.c: get_complete_address(): 表示名にカンマが含まれて
 	  いれば "" を追加するようにした。
 	  get_address_from_edit(): 引用文字を正しく扱うようにした。
+	* src/addr_compl.c: get_complete_address()
+	  src/addressbook.c: addressbook_format_address(): 表示名が空の
+	  場合にテキスト処理を誤るバグを修正。
+	* NEWS を更新。
 
 2002-02-05
 

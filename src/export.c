@@ -223,7 +223,7 @@ static void export_srcsel_cb(GtkWidget *widget, gpointer data)
 {
 	FolderItem *src;
 
-	src = foldersel_folder_sel(NULL, NULL);
+	src = foldersel_folder_sel(NULL, FOLDER_SEL_ALL, NULL);
 	if (src && src->path)
 		gtk_entry_set_text(GTK_ENTRY(src_entry), src->path);
 }

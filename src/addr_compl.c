@@ -220,11 +220,13 @@ gchar *get_address_from_edit(GtkEntry *entry, gint *start_pos)
 	wchar_t *wp;
 	wchar_t rfc_mail_sep;
 	wchar_t quote;
+	wchar_t lt;
 	gboolean in_quote = FALSE;
 	gchar *str;
 
 	if (mbtowc(&rfc_mail_sep, ",", 1) < 0) return NULL;
 	if (mbtowc(&quote, "\"", 1) < 0) return NULL;
+	if (mbtowc(&lt, "<", 1) < 0) return NULL;
 
 	edit_text = gtk_entry_get_text(entry);
 	if (edit_text == NULL) return NULL;
@@ -248,7 +250,8 @@ gchar *get_address_from_edit(GtkEntry *entry, gint *start_pos)
 		return NULL;
 	}
 
-#define IS_VALID_CHAR(x)	(iswalnum(x) || (x) == quote || ((x) > 0x7f))
+#define IS_VALID_CHAR(x) \
+	(iswalnum(x) || (x) == quote || (x) == lt || ((x) > 0x7f))
 
 	/* now scan back until we hit a valid character */
 	for (; *wp && !IS_VALID_CHAR(*wp); wp++)
@@ -345,7 +348,9 @@ gchar *get_complete_address(gint index)
 			p = (address_entry *)g_slist_nth_data
 				(g_completion_addresses, index - 1);
 			if (p != NULL) {
-				if (strchr_with_skip_quote(p->name, '"', ','))
+				if (!p->name || p->name[0] == '\0')
+					address = g_strdup_printf(p->address);
+				else if (strchr_with_skip_quote(p->name, '"', ','))
 					address = g_strdup_printf
 						("\"%s\" <%s>", p->name, p->address);
 				else
