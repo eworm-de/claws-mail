@@ -6914,8 +6914,11 @@ static void compose_grab_focus_before_cb(GtkWidget *widget, Compose *compose)
 {
 	gchar *str = NULL;
 	GtkClipboard *clip = gtk_clipboard_get(gdk_atom_intern("PRIMARY", FALSE));
-	if (cliptext)
+	if (cliptext) {
 		g_free(cliptext);
+		cliptext = NULL;
+	}
+
 	if (gtk_clipboard_wait_is_text_available(clip))
 		cliptext = gtk_clipboard_wait_for_text(clip);
 }
