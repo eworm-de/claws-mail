@@ -888,7 +888,7 @@ static void prefs_actions_ok		(GtkWidget *widget, gpointer data)
 void update_mainwin_actions_menu(GtkItemFactory *ifactory, 
 				 MainWindow *mainwin)
 {
-	update_actions_menu(ifactory, "/Edit/Actions", 
+	update_actions_menu(ifactory, "/Tool/Actions", 
 			    mainwin_actions_execute_cb, 
 			    mainwin);
 }
@@ -914,8 +914,10 @@ static void update_actions_menu(GtkItemFactory *ifactory,
 	GtkWidget *menu;
 	
 	GtkItemFactoryEntry ifentry = {
-		branch_path, NULL, NULL, 0, "<Branch>"};
+		NULL, NULL, NULL, 0, "<Branch>"};
+	ifentry.path = branch_path;
 	menuitem = gtk_item_factory_get_item(ifactory, branch_path);	
+	g_return_if_fail(menuitem);
 	/* FIXME: is there a better way to remove unknown submenu items? */
 	/* Deleting and recreating the parent looses the translation */
 	menu = GTK_WIDGET(GTK_MENU_ITEM(menuitem)->submenu);
@@ -1435,6 +1437,7 @@ static void update_io_dialog(Children *children)
 	if (!children->nb) {
 		gtk_widget_set_sensitive(children->abort_btn, FALSE);
 		gtk_widget_set_sensitive(children->hide_btn, TRUE);
+		gtk_widget_set_sensitive(children->window, TRUE);
 		if (children->input_hbox)
 			gtk_widget_set_sensitive(children->input_hbox, FALSE);
 	}

@@ -1,3 +1,14 @@
+2002-03-16 [melvin]	0.7.4claws16
+
+	* src/mainwindow.c
+	* src/compose.c
+	* src/prefs_actions.c
+		Moved "Edit/Actions" to "Tool/Actions"
+		Made mainwindow/compose window sensitive as soon as
+		no child process is running anymore even if the io dialog
+		is open.
+		Fixed a struct being initialized with a non constant char*
+
 2002-03-16 [christoph]	0.7.4claws15
 
 	* configure.in

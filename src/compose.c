@@ -568,8 +568,6 @@ static GtkItemFactoryEntry compose_entries[] =
 					"<control><alt>L", compose_wrap_line_all, 0, NULL},
 	{N_("/_Edit/Edit with e_xternal editor"),
 					"<shift><control>X", compose_ext_editor_cb, 0, NULL},
-	{N_("/_Edit/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Edit/Actio_ns"),		NULL, NULL, 0, "<Branch>"},
 #if USE_PSPELL
 	{N_("/_Spelling"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Spelling/_Check all or check selection"),
@@ -629,6 +627,7 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Tool/Show _ruler"),	NULL, compose_toggle_ruler_cb, 0, "<ToggleItem>"},
 	{N_("/_Tool/_Address book"),	"<shift><control>A", compose_address_cb , 0, NULL},
 	{N_("/_Tool/_Template"),	NULL, NULL, 0, "<Branch>"},
+	{N_("/_Tool/Actio_ns"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Help"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Help/_About"),		NULL, about_show, 0, NULL}
 };
@@ -4472,7 +4471,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	}
 #endif
 
-	update_compose_actions_menu(ifactory, "/Edit/Actions", compose);
+	update_compose_actions_menu(ifactory, "/Tool/Actions", compose);
 
 
 	undostruct = undo_init(text);
