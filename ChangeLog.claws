@@ -1,3 +1,18 @@
+2003-06-19 [match]	0.9.0claws50
+
+	* src/addressbook.[ch]
+	* src/addrindex.[ch]
+	* src/addr_compl.[ch]
+	* src/editldap.[ch]
+	* src/editldap_basedn.[ch]
+	* src/addritem.[ch]
+	* src/ldapquery.h
+		re-implemented dynamic LDAP search. works without
+		slowdown on display sender with addressbook
+		option.
+	* src/addrbook.c
+		documented code.
+
 2003-06-19 [paul]	0.9.0claws49
 
 	* src/compose.c

@@ -49,7 +49,10 @@ sylpheed_SOURCES = \
 	pine.c pine.h \
 	importpine.c importpine.h \
 	jpilot.c jpilot.h \
-	syldap.c syldap.h \
+	ldapctrl.c ldapctrl.h \
+	ldapquery.c ldapquery.h \
+	ldapserver.c ldapserver.h \
+	ldaputil.c ldaputil.h \
 	editbook.c editbook.h \
 	editgroup.c editgroup.h \
 	editaddress.c editaddress.h \

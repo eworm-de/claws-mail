@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2002 Match Grun
+ * Copyright (C) 2001-2003 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 #include <glib.h>
 #include "addritem.h"
 #include "addrcache.h"
+#include "addrquery.h"
 
 #define ADDRESSBOOK_MAX_IFACE  4
 #define ADDRESSBOOK_INDEX_FILE "addrbook--index.xml"
@@ -56,6 +57,8 @@ struct _AddressIndex {
 	gboolean dirtyFlag;
 	GList *interfaceList;
 	GHashTable *hashCache;
+	gboolean loadedFlag;
+	GList *searchOrder;
 };
 
 typedef struct _AddressInterface AddressInterface;
@@ -82,6 +85,10 @@ struct _AddressInterface {
 	GList *(*getAllGroups)( void * );
 	gchar *(*getName)( void * );
 	void (*setAccessFlag)( void *, void * );
+	gboolean externalQuery;
+	gint searchOrder;
+	void (*startSearch)( void * );
+	void (*stopSearch)( void * );
 };
 
 typedef struct _AddressDataSource AddressDataSource;
@@ -99,6 +106,8 @@ void addrindex_set_file_name		( AddressIndex *addrIndex,
 					  const gchar *value );
 void addrindex_set_dirty		( AddressIndex *addrIndex,
 					  const gboolean value );
+gboolean addrindex_get_loaded		( AddressIndex *addrIndex );
+
 GList *addrindex_get_interface_list	( AddressIndex *addrIndex );
 void addrindex_free_index		( AddressIndex *addrIndex );
 void addrindex_print_index		( AddressIndex *addrIndex, FILE *stream );
@@ -143,6 +152,22 @@ void addrindex_ds_set_access_flag	( AddressDataSource *ds,
 gboolean addrindex_ds_get_readonly	( AddressDataSource *ds );
 GList *addrindex_ds_get_all_persons	( AddressDataSource *ds );
 GList *addrindex_ds_get_all_groups	( AddressDataSource *ds );
+
+/* Search support */
+gint addrindex_setup_search	( AddressIndex *addrIndex,
+				  const gchar *searchTerm,
+				  const gpointer target,
+				  AddrSearchCallbackFunc callBack );
+gboolean addrindex_start_search	( AddressIndex *addrIndex,
+				  const gint queryID );
+void addrindex_stop_search	( AddressIndex *addrIndex,
+				  const gint queryID );
+
+void addrindex_read_all		( AddressIndex *addrIndex );
+gboolean addrindex_load_completion(
+		AddressIndex *addrIndex,
+		gint (*callBackFunc)
+			( const gchar *, const gchar *, const gchar * ) );
 
 #endif /* __ADDRINDEX_H__ */
 
