@@ -1,3 +1,10 @@
+2005-01-17 [thorsten]	0.9.13cvs35.2
+
+	* src/pop.c
+	* src/pop.h
+		workaround: revert 0.9.13cvs29 that truncated messages for
+		some users
+
 2005-01-16 [thorsten]	0.9.13cvs35.1
 
 	* AUTHORS
