@@ -1,3 +1,9 @@
+2003-11-21 [alfons]	0.9.6claws84
+
+	* src/main.c
+		no mail incorporation allowed with --offline param.
+		fixes bug #374, "--offline ignored"
+		
 2003-11-20 [christoph]	0.9.6claws83
 
 	* src/mimeinfo.c
