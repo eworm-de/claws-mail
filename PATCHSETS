@@ -61,3 +61,4 @@
 ( cvs diff -u -r 1.15 -r 1.16 src/plugins/trayicon/trayicon.c; ) > 0.9.12cvs76.patchset
 ( cvs diff -u -r 1.205 -r 1.206 src/imap.c; ) > 0.9.12cvs77.patchset
 ( cvs diff -u -r 1.41 -r 1.42 src/rfc2015.c; cvs diff -u -r 1.8 -r 1.9 src/rfc2015.h; cvs diff -u -r 1.438 -r 1.439 src/compose.c; ) > 0.9.12cvs78.patchset
+( cvs diff -u -r 1.439 -r 1.440 src/compose.c; ) > 0.9.12cvs79.patchset
