@@ -1,3 +1,8 @@
+2003-07-15 [alfons]	0.9.3claws9
+
+	* src/main.c
+		make --config-dir do something useful
+
 2003-07-15 [alfons]	0.9.3claws8
 
 	* src/procmsg.c
