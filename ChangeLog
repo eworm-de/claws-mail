@@ -1,3 +1,29 @@
+2003-12-06
+
+	* src/mainwindow.[ch]: added online switch button to the statusbar,
+	  and "/File/Work offline" in the menu.
+	* src/pixmaps/offline.xpm
+	  src/pixmaps/online.xpm: new (borrowed from
+	  themes/classic/communicator/icons/ in Mozilla).
+	* src/stock_pixmap.[ch]: added online.xpm and offline.xpm.
+	* src/textview.[ch]: textview_show_error(): new.
+	* src/summaryview.c: summary_display_msg_full(): update marks only
+	  if messages are displayed.
+	* src/prefs_common.[ch]: added PrefsCommon::online_mode.
+	* src/news.c: news_session_get()
+	  src/imap.c: imap_session_get(): return NULL when in offline mode.
+	* src/messageview.[ch]: messageview_show(): return status whether
+	  messages are successfully displayed. Display error messages in
+	  the view when failed.
+	* src/procmsg.c:
+	  procmsg_get_message_file()
+	  procmsg_open_message(): don't output warnings when fetch failed.
+
+2003-12-04
+
+	* src/html.c: html_get_tag(): support attributes which don't have
+	  values.
+
 2003-12-04
 
 	* src/codeconv.c: conv_get_code_conv_func(): return conv_latintodisp

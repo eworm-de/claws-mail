@@ -641,16 +641,19 @@ static MimeInfo *find_encrypted_part(MimeInfo *rootinfo)
 	return encinfo;
 }
 
-void messageview_show(MessageView *messageview, MsgInfo *msginfo,
+gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		      gboolean all_headers)
 {
 	gchar *file;
 	MimeInfo *mimeinfo, *encinfo;
 
-	g_return_if_fail(msginfo != NULL);
+	g_return_val_if_fail(msginfo != NULL, -1);
 
 	mimeinfo = procmime_scan_message(msginfo);
-	g_return_if_fail(mimeinfo != NULL);
+	if (!mimeinfo) {
+		textview_show_error(messageview->mimeview->textview);
+		return -1;
+	}
 
 	while ((encinfo = find_encrypted_part(mimeinfo)) != NULL) {
 		debug_print("decrypting message part\n");
@@ -662,7 +665,8 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	if (!file) {
 		g_warning("can't get message file path.\n");
 		procmime_mimeinfo_free_all(mimeinfo);
-		return;
+		textview_show_error(messageview->mimeview->textview);
+		return -1;
 	}
 
 	if (messageview->msginfo != msginfo) {
@@ -684,6 +688,8 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		noticeview_hide(messageview->noticeview);
 
 	g_free(file);
+
+	return 0;
 }
 
 void messageview_reflect_prefs_pixmap_theme(void)

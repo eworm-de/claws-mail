@@ -1,3 +1,63 @@
+2003-12-06 [paul]	0.9.7claws28
+
+	* src/procheader.c
+		add Alfons' patch to trim line feeds
+
+2003-12-06 [paul]	0.9.7claws27
+
+	* partial sync with 0.9.7cvs8
+		leaving claws' online/offline more or less intact
+		see ChangeLog 2003-12-04 and 2003-12-06
+
+2003-12-05 [christoph]	0.9.7claws26
+
+	* src/messageview.c
+	* src/privacy.[ch]
+		revert pirvacy API changes
+
+2003-12-05 [alfons]	0.9.7claws25
+
+	* src/matcher.[ch]
+		clean up my old cruft
+
+2003-12-05 [alfons]	0.9.7claws24
+
+	* src/matcher.c
+		fix comparison buglet ;-) and make `test` matcher
+		work again
+
+2003-12-05 [alfons]	0.9.7claws23
+
+	* src/prefs_folder_item.c
+		K&R 2nd Ed., page 241 (function parameter identifiers
+		starting with an underscore are kind of insulting)
+
+2003-12-05 [hoa]	0.9.7claws22
+
+	* src/main.c
+	* src/mainwindow.[ch]
+	* src/mainwindow.h
+	        add destructor for mainwindow so that the last 
+		MimeInfo opened in messageview is destroyed when
+		exiting sylpheed.
+
+2003-12-05 [hoa]	0.9.7claws21
+
+	* src/filtering.[ch]
+	* src/matcher.[ch]
+	* src/matcher_parser_lex.l
+	* src/matcher_parser_parse.y
+	* src/prefs_actions.c
+	* src/prefs_filtering.c
+	* src/common/utils.[ch]
+	        quote arguments before giving them to command line.
+		fixed quote of string in matcher/processing/filtering rules.
+
+	* src/messageview.c
+	* src/privacy.[ch]
+	        allows decryption to return a new whole 
+		MIME message structure.
+
 2003-12-04 [hoa]	0.9.7claws20
 
 	* src/filtering.[ch]

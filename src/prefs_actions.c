@@ -621,6 +621,7 @@ static void prefs_actions_ok(GtkWidget *widget, gpointer data)
 {
 	GtkItemFactory *ifactory;
 	MainWindow *mainwin = (MainWindow *)data;
+	GtkItemFactoryEntry ifentry = {NULL, NULL, NULL, 0, "<Branch>"};
 
 	prefs_actions_write_config();
 	ifactory = gtk_item_factory_from_widget(mainwin->menubar);

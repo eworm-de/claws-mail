@@ -53,6 +53,7 @@
 #include "log.h"
 #include "progressindicator.h"
 #include "remotefolder.h"
+#include "alertpanel.h"
 #if USE_OPENSSL
 #  include "ssl.h"
 #endif
@@ -283,6 +284,11 @@ static NNTPSession *news_session_get(Folder *folder)
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
+
+	if (prefs_common.work_offline) {
+		g_print("offline mode\n");
+		return NULL;
+	}
 
 	if (!rfolder->session) {
 		rfolder->session = news_session_new_for_folder(folder);

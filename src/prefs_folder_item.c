@@ -100,11 +100,11 @@ static void folder_color_set_dialog(GtkWidget *widget, gpointer data);
 #define SAFE_STRING(str) \
 	(str) ? (str) : ""
 
-void prefs_folder_item_general_create_widget_func(PrefsPage * _page,
+void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 						   GtkWindow * window,
                                 		   gpointer data)
 {
-	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) _page;
+	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) page_;
 	FolderItem *item = (FolderItem *) data;
 	guint rowcount;
 
@@ -217,15 +217,15 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * _page,
 	page->page.widget = table;
 }
 
-void prefs_folder_item_general_destroy_widget_func(PrefsPage *_page) 
+void prefs_folder_item_general_destroy_widget_func(PrefsPage *page_) 
 {
-	/* struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) _page; */
+	/* struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) page_; */
 }
 
-void prefs_folder_item_general_save_func(PrefsPage *_page) 
+void prefs_folder_item_general_save_func(PrefsPage *page_) 
 {
 	gchar *buf;
-	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) _page;
+	struct FolderItemGeneralPage *page = (struct FolderItemGeneralPage *) page_;
 	FolderItemPrefs *prefs = page->item->prefs;
 
 	g_return_if_fail(prefs != NULL);
@@ -262,11 +262,11 @@ void prefs_folder_item_general_save_func(PrefsPage *_page)
 	folder_item_prefs_save_config(page->item);
 }
 
-void prefs_folder_item_compose_create_widget_func(PrefsPage * _page,
+void prefs_folder_item_compose_create_widget_func(PrefsPage * page_,
 						   GtkWindow * window,
                                 		   gpointer data)
 {
-	struct FolderItemComposePage *page = (struct FolderItemComposePage *) _page;
+	struct FolderItemComposePage *page = (struct FolderItemComposePage *) page_;
 	FolderItem *item = (FolderItem *) data;
 	guint rowcount;
 
@@ -461,18 +461,18 @@ void prefs_folder_item_compose_create_widget_func(PrefsPage * _page,
 	page->page.widget = table;
 }
 
-void prefs_folder_item_compose_destroy_widget_func(PrefsPage *_page) 
+void prefs_folder_item_compose_destroy_widget_func(PrefsPage *page_) 
 {
-	struct FolderItemComposePage *page = (struct FolderItemComposePage *) _page;
+	struct FolderItemComposePage *page = (struct FolderItemComposePage *) page_;
 
 	address_completion_unregister_entry(GTK_ENTRY(page->entry_default_to));
 	address_completion_unregister_entry(GTK_ENTRY(page->entry_default_reply_to));
 	address_completion_end(page->window);
 }
 
-void prefs_folder_item_compose_save_func(PrefsPage *_page) 
+void prefs_folder_item_compose_save_func(PrefsPage *page_) 
 {
-	struct FolderItemComposePage *page = (struct FolderItemComposePage *) _page;
+	struct FolderItemComposePage *page = (struct FolderItemComposePage *) page_;
 	FolderItemPrefs *prefs = page->item->prefs;
 	GtkWidget *menu;
 	GtkWidget *menuitem;
@@ -553,7 +553,7 @@ static void register_general_page()
 
 struct FolderItemComposePage folder_item_compose_page;
 
-static void register_compose_page()
+static void register_compose_page(void)
 {
         folder_item_compose_page.page.path = _("Compose");
         folder_item_compose_page.page.create_widget = prefs_folder_item_compose_create_widget_func;

@@ -23,7 +23,7 @@
 #include <glib.h>
 #include <gtk/gtkwidget.h>
 
-typedef struct _MessageView		MessageView;
+typedef struct _MessageView	MessageView;
 
 #include "mainwindow.h"
 #include "headerview.h"
@@ -71,7 +71,7 @@ MessageView *messageview_create			(MainWindow	*mainwin);
 MessageView *messageview_create_with_new_window	(MainWindow	*mainwin);
 
 void messageview_init				(MessageView	*messageview);
-void messageview_show				(MessageView	*messageview,
+gint messageview_show				(MessageView	*messageview,
 						 MsgInfo	*msginfo,
 						 gboolean	 all_headers);
 void messageview_clear				(MessageView	*messageview);

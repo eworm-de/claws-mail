@@ -3917,6 +3917,64 @@ gchar *generate_msgid(const gchar *address, gchar *buf, gint len)
 	return buf;
 }
 
+
+/*
+   quote_cmd_argument()
+   
+   return a quoted string safely usable in argument of a command.
+   
+   code is extracted and adapted from etPan! project -- DINH V. Hoà.
+*/
+
+gint quote_cmd_argument(gchar * result, guint size,
+			const gchar * path)
+{
+	const gchar * p;
+	gchar * result_p;
+	guint remaining;
+
+	result_p = result;
+	remaining = size;
+
+	for(p = path ; * p != '\0' ; p ++) {
+
+		if (isalnum(* p) || (* p == '/')) {
+			if (remaining > 0) {
+				* result_p = * p;
+				result_p ++; 
+				remaining --;
+			}
+			else {
+				result[size - 1] = '\0';
+				return -1;
+			}
+		}
+		else { 
+			if (remaining >= 2) {
+				* result_p = '\\';
+				result_p ++; 
+				* result_p = * p;
+				result_p ++; 
+				remaining -= 2;
+			}
+			else {
+				result[size - 1] = '\0';
+				return -1;
+			}
+		}
+	}
+	if (remaining > 0) {
+		* result_p = '\0';
+	}
+	else {
+		result[size - 1] = '\0';
+		return -1;
+	}
+  
+	return 0;
+}
+
+
 #ifdef WIN32
 /* -------------------------------------------------------------------------
  * w32_parse_path - substitute placesholders with directory names

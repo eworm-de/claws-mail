@@ -2543,6 +2543,7 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 	MsgFlags flags;
+	gint val;
 
 	if (!new_window) {
 		if (summaryview->displayed == row)
@@ -2561,7 +2562,28 @@ static void summary_display_msg_full(SummaryView *summaryview,
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 
-	if (new_window || !prefs_common.mark_as_read_on_new_window) {
+	if (new_window) {
+		MessageView *msgview;
+
+		msgview = messageview_create_with_new_window(summaryview->mainwin);
+		val = messageview_show(msgview, msginfo, all_headers);
+	} else {
+		MessageView *msgview;
+
+		msgview = summaryview->messageview;
+
+		summaryview->displayed = row;
+		if (!messageview_is_visible(msgview))
+			main_window_toggle_message_view(summaryview->mainwin);
+		val = messageview_show(msgview, msginfo, all_headers);
+		if (GTK_CLIST(msgview->mimeview->ctree)->row_list == NULL)
+			gtk_widget_grab_focus(summaryview->ctree);
+		GTK_EVENTS_FLUSH();
+		gtkut_ctree_node_move_if_on_the_edge(ctree, row);
+	}
+
+	if (val == 0 &&
+	    (new_window || !prefs_common.mark_as_read_on_new_window)) {
 		if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags) 
 		&& procmsg_msg_has_marked_parent(msginfo))
 			summaryview->unreadmarked--;
@@ -2574,26 +2596,6 @@ static void summary_display_msg_full(SummaryView *summaryview,
 			
 			flags = msginfo->flags;
 		}
-	}
-
-	if (new_window) {
-		MessageView *msgview;
-
-		msgview = messageview_create_with_new_window(summaryview->mainwin);
-		messageview_show(msgview, msginfo, all_headers);
-	} else {
-		MessageView *msgview;
-
-		msgview = summaryview->messageview;
-
-		summaryview->displayed = row;
-		if (!messageview_is_visible(msgview))
-			main_window_toggle_message_view(summaryview->mainwin);
-		messageview_show(msgview, msginfo, all_headers);
-		if (GTK_CLIST(msgview->mimeview->ctree)->row_list == NULL)
-			gtk_widget_grab_focus(summaryview->ctree);
-		GTK_EVENTS_FLUSH();
-		gtkut_ctree_node_move_if_on_the_edge(ctree, row);
 	}
 
 	summary_set_menu_sensitive(summaryview);

@@ -401,7 +401,7 @@ gchar *procmsg_get_message_file(MsgInfo *msginfo)
 
 	filename = folder_item_fetch_msg(msginfo->folder, msginfo->msgnum);
 	if (!filename)
-		g_warning("can't fetch message %d\n", msginfo->msgnum);
+		debug_print("can't fetch message %d\n", msginfo->msgnum);
 
 	return filename;
 }
@@ -463,7 +463,8 @@ FILE *procmsg_open_message(MsgInfo *msginfo)
 	if (!is_file_exist(file)) {
 		g_free(file);
 		file = procmsg_get_message_file(msginfo);
-		g_return_val_if_fail(file != NULL, NULL);
+		if (!file)
+			return NULL;
 	}
 
 	if ((fp = fopen(file, "rb")) == NULL) {

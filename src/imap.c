@@ -56,9 +56,11 @@
 #include "md5.h"
 #include "base64.h"
 #include "utils.h"
+#include "prefs_common.h"
 #include "inputdialog.h"
 #include "log.h"
 #include "remotefolder.h"
+#include "alertpanel.h"
 
 typedef struct _IMAPFolder	IMAPFolder;
 typedef struct _IMAPSession	IMAPSession;
@@ -625,6 +627,9 @@ static IMAPSession *imap_session_get(Folder *folder)
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &imap_class, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
+	
+	if (prefs_common.work_offline)
+		return NULL;
 
 	/* Make sure we have a session */
 	if (rfolder->session != NULL) {

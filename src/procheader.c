@@ -134,8 +134,9 @@ static gint generic_get_one_field(gchar *buf, gint len, void *data,
 			if ((len - buflen) > 2) {
 				if (getline(buf + buflen, len - buflen, data) == NULL)
 					break;
-
-				if (hp && hp->unfold)
+				/* trim trailing \n if requesting one header or
+				 * unfolding was requested */
+				if (!hentry || (hp && hp->unfold))
 				    strretchomp(buf);
 			} else
 				break;

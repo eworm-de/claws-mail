@@ -436,6 +436,8 @@ int main(int argc, char *argv[])
 	static_mainwindow = mainwin;
 	gtk_main();
 
+	main_window_destroy(mainwin);
+	
 	plugin_unload_all("GTK");
 
 	prefs_toolbar_done();

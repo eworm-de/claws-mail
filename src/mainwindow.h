@@ -136,6 +136,8 @@ struct _MainWindow
 
 MainWindow *main_window_create		(SeparateType	 type);
 
+void main_window_destroy                (MainWindow *mainwin);
+
 void main_window_cursor_wait		(MainWindow	*mainwin);
 void main_window_cursor_normal		(MainWindow	*mainwin);
 

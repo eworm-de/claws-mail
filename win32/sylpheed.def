@@ -746,11 +746,17 @@ EXPORTS
 	folder_item_update_recursive 
 	folder_item_update_thaw 
 	folder_item_write_cache 
+	folder_local_folder_destroy 
+	folder_local_folder_init 
+	folder_local_get_xml 
+	folder_local_set_xml 
 	folder_new 
 	folder_persist_prefs_free 
 	folder_persist_prefs_new 
 	folder_read_list 
 	folder_register_class 
+	folder_remote_folder_destroy 
+	folder_remote_folder_init 
 	folder_scan_all_items 
 	folder_scan_tree 
 	folder_scan_tree_func 
@@ -1012,6 +1018,7 @@ EXPORTS
 	main_window_create 
 	main_window_cursor_normal 
 	main_window_cursor_wait 
+	main_window_destroy 
 	main_window_destroy_all 
 	main_window_empty_trash 
 	main_window_get_current_state 
@@ -1047,7 +1054,6 @@ EXPORTS
 	manage_window_unmap 
 	manual_available 
 	manual_open 
-	matcher_escape_str 
 	matcher_parser_create_buffer 
 	matcher_parser_delete_buffer 
 	matcher_parser_flush_buffer 
@@ -1076,7 +1082,7 @@ EXPORTS
 	matcher_parserrestart 
 	matcher_parsertext 
 	matcher_parserwrap 
-	matcher_unescape_str 
+	matcher_quote_str 
 	matcherlist_free 
 	matcherlist_match 
 	matcherlist_match_file 
@@ -1087,7 +1093,6 @@ EXPORTS
 	matcherprop_match 
 	matcherprop_new 
 	matcherprop_to_string 
-	matcherprop_unquote_new 
 	matching_build_command 
 	mc_entry 
 	md5_final 
@@ -1478,6 +1483,7 @@ EXPORTS
 	qryreq_print 
 	qryreq_set_search_term 
 	qryreq_set_search_type 
+	quote_cmd_argument 
 	quote_fmt_create_buffer 
 	quote_fmt_delete_buffer 
 	quote_fmt_flush_buffer 
@@ -1756,6 +1762,7 @@ EXPORTS
 	textview_set_font 
 	textview_set_position 
 	textview_set_text 
+	textview_show_error 
 	textview_show_message 
 	textview_show_mime_part 
 	textview_show_part 
@@ -1858,6 +1865,7 @@ EXPORTS
 	xml_copy_tag 
 	xml_file_put_escape_str 
 	xml_free_node 
+	xml_free_tag 
 	xml_free_tree 
 	xml_get_current_tag 
 	xml_get_current_tag_attr 
@@ -1869,6 +1877,7 @@ EXPORTS
 	xml_pop_tag 
 	xml_push_tag 
 	xml_read_line 
+	xml_tag_add_attr 
 	xml_truncate_buf 
 	xml_unescape_str 
 	xmlprops_clear 
