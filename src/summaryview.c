@@ -4273,7 +4273,7 @@ void summary_set_colorlabel_color(GtkCTree *ctree, GtkCTreeNode *node,
 	gtk_ctree_node_set_row_style(ctree, node, style);
 }
 
-static void summary_set_row_colorlable(SummaryView *summaryview, GtkCTreeNode *row, guint labelcolor)
+static void summary_set_row_colorlabel(SummaryView *summaryview, GtkCTreeNode *row, guint labelcolor)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
@@ -4293,7 +4293,7 @@ void summary_set_colorlabel(SummaryView *summaryview, guint labelcolor,
 	main_window_cursor_wait(summaryview->mainwin);
 	folder_item_update_freeze();
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
-		summary_set_row_colorlable(summaryview,
+		summary_set_row_colorlabel(summaryview,
 					   GTK_CTREE_NODE(cur->data), labelcolor);
 	folder_item_update_thaw();
 	main_window_cursor_normal(summaryview->mainwin);
