@@ -1,3 +1,9 @@
+2005-01-25 [paul]	1.0.0cvs14.1
+
+	* configure.ac
+	* src/compose.c
+		sync with HEAD
+
 2005-01-24 [colin]	1.0.0cvs13.1
 
 	* src/summaryview.c
