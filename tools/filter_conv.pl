@@ -41,27 +41,26 @@ $WRITE_THIS = "";
 $COUNT      = "0";
 
 foreach $input_file (@input_file) {
-$COUNT++;
-@split_lines = split("\t", $input_file);
-if (($split_lines[3]) && ($split_lines[0] eq "To")) {
-$WRITE_THIS .= "to_or_cc match \"$split_lines[1]\"";
-} elsif ($split_lines[0] eq "To") {
-$WRITE_THIS .= "to match \"$split_lines[1]\"";
-} elsif ($split_lines[0] eq "Reply-To") {
-$WRITE_THIS .= "inreplyto match \"$split_lines[1]\"";
-} elsif ($split_lines[0] eq "Subject") {
-$WRITE_THIS .= "subject match \"$split_lines[1]\"";
-} elsif (($split_lines[0] eq "From") || ($split_lines[0] eq "Sender")){
-$WRITE_THIS .= "from match \"$split_lines[1]\"";
-}
-if (!$split_lines[5]) {
-$WRITE_THIS .= " delete";
-} elsif ($split_lines[8] == "m"){
-$WRITE_THIS .= " move \"\#mh/$mailbox/$split_lines[5]\"";
-}
-$WRITE_THIS .= "\n";
-
-@split_lines = "";
+	$COUNT++;
+	@split_lines = split("\t", $input_file);
+	if (($split_lines[3]) && ($split_lines[0] eq "To")) {
+		$WRITE_THIS .= "to_or_cc match \"$split_lines[1]\"";
+	} elsif ($split_lines[0] eq "To") {
+		$WRITE_THIS .= "to match \"$split_lines[1]\"";
+	} elsif ($split_lines[0] eq "Reply-To") {
+		$WRITE_THIS .= "inreplyto match \"$split_lines[1]\"";
+	} elsif ($split_lines[0] eq "Subject") {
+		$WRITE_THIS .= "subject match \"$split_lines[1]\"";
+	} elsif (($split_lines[0] eq "From") || ($split_lines[0] eq "Sender")){
+		$WRITE_THIS .= "from match \"$split_lines[1]\"";
+	}
+	if (!$split_lines[5]) {
+		$WRITE_THIS .= " delete";
+	} elsif ($split_lines[8] == "m"){
+		$WRITE_THIS .= " move \"\#mh/$mailbox/$split_lines[5]\"";
+	}
+	$WRITE_THIS .= "\n";
+	@split_lines = "";
 }
 
 open (FILTERINGRC, ">filteringrc");
