@@ -1,3 +1,10 @@
+2001-01-25 [alfons]	0.7.0claws27
+
+	* src/folderview.c 
+		assimilate Ricardo's patch that shows pixmaps instead of
+		plain "new" and "unread" texts in the folder view column
+		headers 
+
 2002-01-25 [paul]	0.7.0claws26
 
 	* src/Makefile.am

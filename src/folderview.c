@@ -112,6 +112,10 @@ static GdkPixmap *trashxpm;
 static GdkBitmap *trashxpmmask;
 static GdkPixmap *trashhrmxpm;
 static GdkBitmap *trashhrmxpmmask;
+static GdkPixmap *newxpm;
+static GdkBitmap *newxpmmask;
+static GdkPixmap *unreadxpm;
+static GdkBitmap *unreadxpmmask;
 
 static void folderview_select_node	 (FolderView	*folderview,
 					  GtkCTreeNode	*node);
@@ -323,12 +327,15 @@ FolderView *folderview_create(void)
 			     prefs_common.folderview_height);
 
 	ctree = gtk_ctree_new_with_titles(N_FOLDER_COLS, COL_FOLDER, titles);
+	
 	gtk_container_add(GTK_CONTAINER(scrolledwin), ctree);
 	gtk_clist_set_selection_mode(GTK_CLIST(ctree), GTK_SELECTION_BROWSE);
+#ifndef CLAWS /* text instead of pixmaps */
 	gtk_clist_set_column_justification(GTK_CLIST(ctree), COL_NEW,
 					   GTK_JUSTIFY_RIGHT);
 	gtk_clist_set_column_justification(GTK_CLIST(ctree), COL_UNREAD,
 					   GTK_JUSTIFY_RIGHT);
+#endif					   
 	gtk_clist_set_column_justification(GTK_CLIST(ctree), COL_TOTAL,
 					   GTK_JUSTIFY_RIGHT);
 	gtk_clist_set_column_width(GTK_CLIST(ctree), COL_FOLDER,
@@ -447,6 +454,10 @@ FolderView *folderview_create(void)
 void folderview_init(FolderView *folderview)
 {
 	GtkWidget *ctree = folderview->ctree;
+	GtkWidget *label_new;
+	GtkWidget *label_unread;
+	GtkWidget *hbox_new;
+	GtkWidget *hbox_unread;
 
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_INBOX, &inboxxpm, &inboxxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_OUTBOX,
@@ -465,6 +476,29 @@ void folderview_init(FolderView *folderview)
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_TRASH_HRM, 
 			 &trashhrmxpm, &trashhrmxpmmask);
 
+	/* CLAWS: titles for "New" and "Unread" show new & unread pixmaps
+	 * instead text (text overflows making them unreadable and ugly) */
+        stock_pixmap_gdk(ctree, STOCK_PIXMAP_NEW,
+			 &newxpm, &newxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_UNREAD,
+			 &unreadxpm, &unreadxpmmask);
+		
+	label_new = gtk_pixmap_new(newxpm, newxpmmask);
+	label_unread = gtk_pixmap_new(unreadxpm, unreadxpmmask);
+
+	hbox_new = gtk_hbox_new(FALSE, 4);
+	hbox_unread = gtk_hbox_new(FALSE, 4);
+
+	/* left justified */
+	gtk_box_pack_start(GTK_BOX(hbox_new),label_new,FALSE,FALSE,0);
+	gtk_box_pack_start(GTK_BOX(hbox_unread),label_unread,FALSE,FALSE,0);
+
+	gtk_widget_show_all(hbox_new);
+	gtk_widget_show_all(hbox_unread);
+
+	gtk_clist_set_column_widget(GTK_CLIST(ctree),COL_NEW,hbox_new);
+	gtk_clist_set_column_widget(GTK_CLIST(ctree),COL_UNREAD,hbox_unread);
+			
 
 
 	if (!normalfont)
