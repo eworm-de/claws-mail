@@ -111,3 +111,4 @@
 ( cvs diff -u -r 1.115.2.13 -r 1.115.2.14 src/main.c; cvs diff -u -r 1.9.2.4 -r 1.9.2.5 src/common/ssl.c; cvs diff -u -r 1.7.2.1 -r 1.7.2.2 src/common/sylpheed.c; cvs diff -u -r 1.5 -r 1.6 src/common/sylpheed.h; ) > 0.9.12cvs55.1.patchset
 ( cvs diff -u -r 1.4.2.2 -r 1.4.2.3 autogen.sh; cvs diff -u -r 1.654.2.140 -r 1.654.2.141 configure.ac; cvs diff -u -r -1.1.2.1 -r -1.1.2.2 po/poconv.sh; ) > 0.9.12cvs55.2.patchset
 ( cvs diff -u -r 1.654.2.141 -r 1.654.2.142 configure.ac; cvs diff -u -r 1.155.2.8 -r 1.155.2.9 src/Makefile.am; cvs diff -u -r 1.24.2.3 -r 1.24.2.4 src/common/Makefile.am; ) > 0.9.12cvs55.3.patchset
+( cvs diff -u -r 1.13.2.7 -r 1.13.2.8 src/common/socket.c; ) > 0.9.12cvs55.4.patchset

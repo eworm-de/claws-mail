@@ -623,6 +623,9 @@ static gboolean sock_connect_async_cb(GIOChannel *source,
 	gint len;
 	SockInfo *sockinfo;
 
+	if (conn_data->io_tag == 0 && conn_data->channel == NULL)
+		return FALSE;
+
 	fd = g_io_channel_unix_get_fd(source);
 
 	conn_data->io_tag = 0;
