@@ -99,9 +99,12 @@ static struct Compose {
 	GtkWidget *checkbtn_autosig;
 	GtkWidget *entry_sigsep;
 
-	GtkWidget *checkbtn_reply_account_autosel;
 	GtkWidget *entry_fw_quotemark;
 	GtkWidget *text_fw_quotefmt;
+
+	GtkWidget *checkbtn_reply_account_autosel;
+	GtkWidget *checkbtn_forward_account_autosel;
+	GtkWidget *checkbtn_reedit_account_autosel;
 
 	GtkWidget *spinbtn_linewrap;
 	GtkObject *spinbtn_linewrap_adj;
@@ -301,9 +304,17 @@ static PrefParam param[] = {
 	{"signature_separator", "-- ", &prefs_common.sig_sep, P_STRING,
 	 &compose.entry_sigsep, prefs_set_data_from_entry, prefs_set_entry},
 
-	{"reply_account_autoselect", "TRUE",
+        {"reply_account_autoselect", "TRUE",
 	 &prefs_common.reply_account_autosel, P_BOOL,
 	 &compose.checkbtn_reply_account_autosel,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+       {"forward_account_autoselect", "TRUE",
+	 &prefs_common.forward_account_autosel, P_BOOL,
+	 &compose.checkbtn_forward_account_autosel,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+       {"reedit_account_autoselect", "TRUE",
+	 &prefs_common.reedit_account_autosel, P_BOOL,
+	 &compose.checkbtn_reedit_account_autosel,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"linewrap_length", "74", &prefs_common.linewrap_len, P_INT,
@@ -1222,11 +1233,18 @@ static void prefs_compose_create(void)
 	GtkWidget *label_sigsep;
 	GtkWidget *entry_sigsep;
 
+	GtkWidget *frame_autosel;
+        GtkWidget *hbox_autosel;
+        GtkWidget *vbox_autosel;
 	GtkWidget *checkbtn_reply_account_autosel;
-	GtkWidget *vbox_linewrap;
+	GtkWidget *checkbtn_forward_account_autosel;
+	GtkWidget *checkbtn_reedit_account_autosel;
 
-	GtkWidget *hbox3;
+        GtkWidget *vbox_linewrap;
+
+ 	GtkWidget *hbox3;
 	GtkWidget *hbox4;
+	GtkWidget *hbox5;
 	GtkWidget *label_linewrap;
 	GtkObject *spinbtn_linewrap_adj;
 	GtkWidget *spinbtn_linewrap;
@@ -1341,6 +1359,21 @@ static void prefs_compose_create(void)
 
 	gtk_widget_set_usize (entry_sigsep, 64, -1);
 
+        /* Automatic (Smart) Account Selection */
+	PACK_FRAME(vbox1, frame_autosel, _("Automatic Account Selection"));
+
+	hbox_autosel = gtk_hbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (hbox_autosel);
+	gtk_container_add (GTK_CONTAINER (frame_autosel), hbox_autosel);
+	gtk_container_set_border_width (GTK_CONTAINER (hbox_autosel), 8);
+
+        PACK_CHECK_BUTTON (hbox_autosel, checkbtn_reply_account_autosel,
+			   _("when replying"));
+	PACK_CHECK_BUTTON (hbox_autosel, checkbtn_forward_account_autosel,
+			   _("when forwarding"));
+	PACK_CHECK_BUTTON (hbox_autosel, checkbtn_reedit_account_autosel,
+			   _("when re-editing"));
+
 	/* line-wrapping */
 	vbox_linewrap = gtk_vbox_new (FALSE, VSPACING_NARROW);
 	gtk_widget_show (vbox_linewrap);
@@ -1377,9 +1410,6 @@ static void prefs_compose_create(void)
 
 	PACK_CHECK_BUTTON (vbox1, checkbtn_forward_as_attachment,
 			   _("Forward as attachment"));
-
-	PACK_CHECK_BUTTON (vbox1, checkbtn_reply_account_autosel,
-			   _("Automatically select account for mail replies"));
 
 	PACK_CHECK_BUTTON (vbox1, checkbtn_smart_wrapping,
 			   _("Smart wrapping (EXPERIMENTAL)"));
@@ -1436,7 +1466,7 @@ static void prefs_compose_create(void)
 	gtk_box_pack_start(GTK_BOX(hbox_dictionary_path), optmenu_dictionary_path, FALSE, FALSE, 0);
 	gtk_widget_set_sensitive(optmenu_dictionary_path, prefs_common.enable_ispell);
 
-	/*
+       /*
 	compose.checkbtn_quote   = checkbtn_quote;
 	compose.entry_quotemark  = entry_quotemark;
 	compose.text_quotefmt    = text_quotefmt;
@@ -1444,7 +1474,9 @@ static void prefs_compose_create(void)
 	compose.checkbtn_autosig = checkbtn_autosig;
 	compose.entry_sigsep     = entry_sigsep;
 
-	compose.checkbtn_reply_account_autosel = checkbtn_reply_account_autosel;
+        compose.checkbtn_reply_account_autosel = checkbtn_reply_account_autosel;
+	compose.checkbtn_forward_account_autosel = checkbtn_forward_account_autosel;
+	compose.checkbtn_reedit_account_autosel = checkbtn_reedit_account_autosel;
 
 	compose.spinbtn_linewrap     = spinbtn_linewrap;
 	compose.spinbtn_linewrap_adj = spinbtn_linewrap_adj;

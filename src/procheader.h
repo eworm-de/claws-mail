@@ -79,4 +79,7 @@ Header * procheader_parse_header        (gchar * buf);
 gboolean procheader_headername_equal    (char * hdr1, char * hdr2);
 void procheader_header_free             (Header * header);
 
+/* Added by Mel Hadasht on 27 Aug 2001 */
+/* Get a header from msginfo */
+gint get_header_from_msginfo(MsgInfo *msginfo, gchar *buf, gint len,gchar *header);
 #endif /* __PROCHEADER_H__ */

@@ -1,3 +1,10 @@
+2001-08-30 [paul]
+
+	* src/account.c, src/compose.c, src/prefs_common.[ch]
+	* src/procheader.[ch] src/utils.[ch]
+		Enhanced automatic account selection on replies
+		Submitted by Melvin Hadasht <melvin.hadasht@free.fr>
+
 2001-08-29 [christoph]
 
 	* src/summeryview.c

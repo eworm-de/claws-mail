@@ -779,3 +779,28 @@ void procheader_date_get_localtime(gchar *dest, gint len, const time_t timer)
 	else
 		strftime(dest, len, default_format, lt);
 }
+
+gint get_header_from_msginfo(MsgInfo *msginfo, gchar *buf, gint len,gchar *header)
+{
+       gchar *file;
+       FILE *fp;
+       HeaderEntry hentry[]={{header,NULL,TRUE},
+                                    {NULL,NULL,FALSE}};
+       gint val;
+       g_return_if_fail(msginfo != NULL);
+       file = procmsg_get_message_file_path(msginfo);
+       if ((fp = fopen(file, "r")) == NULL) {
+               FILE_OP_ERROR(file, "fopen");
+               g_free(file);
+               return;
+        }
+       val=procheader_get_one_field(buf,len, fp, hentry);
+     	if (fclose(fp) == EOF) {
+		FILE_OP_ERROR(file, "fclose");
+		unlink(file);
+		return -1;
+	}
+       if (val == -1)
+          return -1;
+       return 0;
+}

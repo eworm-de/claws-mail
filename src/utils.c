@@ -168,7 +168,17 @@ gint strcmp2(const gchar *s1, const gchar *s2)
 	else
 		return strcmp(s1, s2);
 }
-
+/* strstr with NULL-checking */
+gint strstr2(const gchar *s1, const gchar *s2)
+{
+	if (s1 == NULL || s2 == NULL)
+		return -1;
+	else
+		if( strstr(s1, s2) !=NULL) 
+                return 0;
+                else 
+                return -1;
+}
 /* compare paths */
 gint path_cmp(const gchar *s1, const gchar *s2)
 {

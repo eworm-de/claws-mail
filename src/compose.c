@@ -589,6 +589,14 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 		extract_address(to);
 		account = account_find_from_address(to);
 	}
+        if(!account&& prefs_common.reply_account_autosel) {
+               	gchar cc[BUFFSIZE];
+		if(!get_header_from_msginfo(msginfo,cc,sizeof(cc),"CC:")){ /* Found a CC header */
+		        extract_address(cc);
+		        account = account_find_from_address(cc);
+                }        
+	}
+
 	if (!account) account = cur_account;
 	g_return_if_fail(account != NULL);
 
@@ -909,7 +917,23 @@ Compose * compose_forward(PrefsAccount * account, MsgInfo *msginfo,
 	g_return_val_if_fail(msginfo != NULL, NULL);
 	g_return_val_if_fail(msginfo->folder != NULL, NULL);
 
-	if (account == NULL) {
+	account = msginfo->folder->folder->account;
+        if (!account && msginfo->to && prefs_common.forward_account_autosel) {
+		gchar *to;
+		Xstrdup_a(to, msginfo->to, return);
+		extract_address(to);
+		account = account_find_from_address(to);
+	}
+
+        if(!account&& prefs_common.forward_account_autosel) {
+               	gchar cc[BUFFSIZE];
+		if(!get_header_from_msginfo(msginfo,cc,sizeof(cc),"CC:")){ /* Found a CC header */
+		        extract_address(cc);
+		        account = account_find_from_address(cc);
+                }
+	}
+
+        if (account == NULL) {
 		account = cur_account;
 		/*
 		account = msginfo->folder->folder->account;
@@ -1004,7 +1028,7 @@ Compose * compose_forward_multiple(PrefsAccount * account,
 		if ( ((MsgInfo *)msginfo->data)->folder == NULL )
 			return NULL;
 	}
-	
+
 	if (account == NULL) {
 		account = cur_account;
 		/*
@@ -1055,8 +1079,14 @@ void compose_reedit(MsgInfo *msginfo)
 	g_return_if_fail(msginfo != NULL);
 	g_return_if_fail(msginfo->folder != NULL);
 
-	account = msginfo->folder->folder->account;
-	if (!account) account = cur_account;
+        if(!account&& prefs_common.reedit_account_autosel) {
+               	gchar from[BUFFSIZE];
+		if(!get_header_from_msginfo(msginfo,from,sizeof(from),"FROM:")){ /* Found a FROM header */
+		        extract_address(from);
+		        account = account_find_from_address(from);
+                }
+	}
+        if (!account) account = cur_account;
 	g_return_if_fail(account != NULL);
 
 	compose = compose_create(account);

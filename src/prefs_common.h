@@ -70,6 +70,8 @@ struct _PrefsCommon
 	gboolean linewrap_quote;
 	gboolean linewrap_at_send;
 	gboolean reply_account_autosel;
+	gboolean forward_account_autosel;
+	gboolean reedit_account_autosel;
 	gboolean show_ruler;
 	gchar *fw_quotemark;
 	gchar *fw_quotefmt;
