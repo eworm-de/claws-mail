@@ -177,7 +177,7 @@ static gint smtp_auth_recv(SMTPSession *session, const gchar *msg)
 	case SMTPAUTH_CRAM_MD5:
 		session->state = SMTP_AUTH_CRAM_MD5;
 
-		if (!strncmp(buf, "334 ", 4)) {
+		if (!strncmp(msg, "334 ", 4)) {
 			gchar *response;
 			gchar *response64;
 			gchar *challenge;
@@ -185,7 +185,7 @@ static gint smtp_auth_recv(SMTPSession *session, const gchar *msg)
 			guchar hexdigest[33];
 
 			challenge = g_malloc(strlen(buf + 4) + 1);
-			challengelen = base64_decode(challenge, buf + 4, -1);
+			challengelen = base64_decode(challenge, msg + 4, -1);
 			challenge[challengelen] = '\0';
 			log_print("ESMTP< [Decoded: %s]\n", challenge);
 

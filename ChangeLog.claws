@@ -1,3 +1,11 @@
+2003-03-20 [christoph]	0.8.11claws33
+
+	* src/folder.c
+		remove NEW and UNREAD flag in special folders when scanning
+		
+	* src/common/smtp.c
+		fix ESMTP AUTH CRAM-MD5
+
 2003-03-20 [paul]	0.8.11claws32
 
 	* src/prefs_account.c

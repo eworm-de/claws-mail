@@ -1229,6 +1229,12 @@ gint folder_item_scan(FolderItem *item)
 			procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
 			procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 		}
+		if ((item->stype == F_OUTBOX ||
+		     item->stype == F_QUEUE  ||
+		     item->stype == F_DRAFT  ||
+		     item->stype == F_TRASH) &&
+		    (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)))
+			procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
 		if (MSG_IS_NEW(msginfo->flags))
 			newcnt++;
 		if (MSG_IS_UNREAD(msginfo->flags))
