@@ -149,6 +149,10 @@ void menu_button_position(GtkMenu *menu, gint *x, gint *y, gboolean *push_in,
         GtkWidget *widget;
         gint wheight;
         gint wx, wy;
+	GtkRequisition mreq;
+	GdkScreen *screen;
+	GdkRectangle monitor;
+	gint monitor_num;
 
 	g_return_if_fail(x && y);
  	g_return_if_fail(GTK_IS_BUTTON(user_data));
@@ -159,9 +163,18 @@ void menu_button_position(GtkMenu *menu, gint *x, gint *y, gboolean *push_in,
         wheight = widget->requisition.height;
         wx = widget->allocation.x;
         wy = widget->allocation.y;
-         
-        *y = *y + wy + wheight;
+        
+	gtk_widget_size_request(GTK_WIDGET(menu), &mreq);
+	screen = gtk_widget_get_screen (widget);
+	monitor_num = gdk_screen_get_monitor_at_point (screen, *x, *y);
+	gdk_screen_get_monitor_geometry (screen, monitor_num, 
+					 &monitor);
+
         *x = *x + wx;
+        *y = *y + wy + wheight;
+	
+	if (*y + mreq.height >= monitor.height)
+		*y -= mreq.height;
 }
 
 gint menu_find_option_menu_index(GtkOptionMenu *optmenu, gpointer data,

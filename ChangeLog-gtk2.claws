@@ -1,3 +1,12 @@
+2004-07-26 [colin]	0.9.12cvs33.25
+
+	* src/gtk/menu.c
+		Move popup menu up if necessary (fixes 
+		account selector)
+	* src/mainwindow.c
+		Set account selector's button height to
+		minimum
+
 2004-07-26 [colin]	0.9.12cvs33.24
 
 	* src/alertpanel.c

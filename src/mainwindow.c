@@ -911,7 +911,7 @@ MainWindow *main_window_create(SeparateType type)
 			     ac_button, _("Select account"), NULL);
 	gtk_button_set_relief(GTK_BUTTON(ac_button), GTK_RELIEF_NONE);
 	GTK_WIDGET_UNSET_FLAGS(ac_button, GTK_CAN_FOCUS);
-	gtk_widget_set_size_request(ac_button, -1, 1);
+	gtk_widget_set_size_request(ac_button, -1, 0);
 	gtk_box_pack_end(GTK_BOX(hbox_stat), ac_button, FALSE, FALSE, 0);
 	g_signal_connect(G_OBJECT(ac_button), "button_press_event",
 			 G_CALLBACK(ac_label_button_pressed), mainwin);
