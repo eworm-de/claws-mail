@@ -88,6 +88,7 @@ static gint pop3_session_recv_data_finished	(Session	*session,
 						 guchar		*data,
 						 guint		 len);
 
+
 static gint pop3_greeting_recv(Pop3Session *session, const gchar *msg)
 {
 	session->state = POP3_GREETING;
@@ -426,6 +427,8 @@ GHashTable *pop3_get_uidl_table(PrefsAccount *ac_prefs)
 	time_t recv_time;
 	time_t now;
 
+	table = g_hash_table_new(g_str_hash, g_str_equal);
+
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			   "uidl", G_DIR_SEPARATOR_S, ac_prefs->recv_server,
 			   "-", ac_prefs->userid, NULL);
@@ -438,12 +441,10 @@ GHashTable *pop3_get_uidl_table(PrefsAccount *ac_prefs)
 		if ((fp = fopen(path, "rb")) == NULL) {
 			if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 			g_free(path);
-			return NULL;
+			return table;
 		}
 	}
 	g_free(path);
-
-	table = g_hash_table_new(g_str_hash, g_str_equal);
 
 	now = time(NULL);
 

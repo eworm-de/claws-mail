@@ -1,3 +1,17 @@
+2003-06-16
+
+	* src/pop3.c: pop3_get_uidl_table(): return empty hash table even if
+	  UIDL list is not found (fixes inability of initial retrieval).
+
+2003-06-10
+
+	* src/main.c: added the option '--status-full' which shows the status
+	  of each folder specified. The option '--status' also takes
+	  following arguments for folders (thanks to Yuri Arapov).
+	* src/folder.[ch]: folder_get_status(): new. it takes the array of
+	  folders as the argument and returns their status.
+	  folder_count_total_msgs(): removed.
+
 2003-06-06
 
 	* src/filesel.c

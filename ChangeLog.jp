@@ -1,3 +1,18 @@
+2003-06-16
+
+	* src/pop.c: pop3_get_uidl_table(): UIDL リストが見つからなかった場合
+	  でも空のハッシュテーブルを返すようにした(初回にメッセージを取得
+	  出来ないバグを修正)。
+
+2003-06-10
+
+	* src/main.c: 指定した各フォルダのステータスを表示するオプション
+	  '--status-full' を追加。オプション '--status' も続く引数でフォルダ
+	  を指定可能(Yuri Arapov さん thanks)。
+	* src/folder.[ch]: folder_get_status(): 新規。フォルダの配列を引数
+	  として受け取り、それらのステータスを返す。
+	  folder_count_total_msgs(): 削除。
+
 2003-06-06
 
 	* src/filesel.c
