@@ -1,3 +1,9 @@
+2003-09-02 [alfons]	0.9.4claws55
+
+	* src/gtk/filesel.c
+		remember last used dir when attaching multiple files (should fix
+		bug #290, "Attach File does not remember directory")
+
 2003-09-01 [paul]	0.9.4claws54
 
 	* po/es.po

@@ -156,6 +156,15 @@ GList *filesel_select_multiple_files(const gchar *title, const gchar *file)
 			fname = gtk_file_selection_get_filename(GTK_FILE_SELECTION(filesel));
 			list = g_list_append(list, g_strdup(fname));
 		}
+		/* store dir of first entry */
+		if (NULL != (fname = list->data) && *fname) {
+			gchar *dir;
+			if (NULL != (dir = g_dirname(fname))) {
+				g_free(cwd);
+				cwd = g_strconcat(dir, G_DIR_SEPARATOR_S, NULL);
+				g_free(dir); 
+			}
+		}
 	}
 
 	manage_window_focus_out(filesel, NULL, NULL);
