@@ -1,3 +1,9 @@
+2004-03-09 [alfons]	0.9.10claws1
+
+	* src/matcher.c
+		we're not using yywrap, but we may, so close yyin instead
+		of initial FILE *
+
 2004-03-08 [paul]	0.9.10claws
 
 	* 0.9.10claws released

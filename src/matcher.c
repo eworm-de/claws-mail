@@ -1457,7 +1457,7 @@ void prefs_matcher_read_config(void)
 
 	if (f != NULL) {
 		matcher_parser_start_parsing(f);
-		fclose(f);
+		fclose(matcher_parserin);
 	}
 	else {
 		/* previous version compatibily */
