@@ -1,3 +1,9 @@
+2002-11-08 [paul]	0.8.5claws91
+
+	* src/compose.[ch]
+		re-implement GnuPG 'on-the-fly' mode selection,
+		disallow mixed-mode
+
 2002-11-08 [colin]	0.8.5claws90
 
 	* src/folderview.c

@@ -170,8 +170,7 @@ struct _Compose
 	gboolean use_signing;
 	gboolean use_encryption;
 	
-	gint sigmode;
-	gint encmode;
+	gint gnupg_mode;
 
 	gboolean modified;
 
