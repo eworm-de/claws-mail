@@ -8,7 +8,7 @@ MINOR_VERSION=8
 MICRO_VERSION=1
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws16
+EXTRA_VERSION=claws17
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -313,9 +313,7 @@ LDFLAGS_SAVE="$LDFLAGS"
 CFLAGS="$CFLAGS `$GLIB_CONFIG --cflags` `gtk-config --cflags`"
 LDFLAGS="$LIBS `$GLIB_CONFIG --libs` `gtk-config --libs`"
 AC_CACHE_VAL(ac_cv_use_gtkgdk_xim, [
-	AC_TRY_COMPILE([#include <gtk/gtk.h>
-			#include <gdk/gdk.h>],
-			[extern gint gdk_im_open(void); gdk_im_open();],
+	AC_TRY_LINK_FUNC([ gdk_ic_attr_new ],
 			 ac_cv_use_gtkgdk_xim=yes, ac_cv_use_gtkgdk_xim=no)
 	])
 AC_MSG_RESULT($ac_cv_use_gtkgdk_xim)
