@@ -52,6 +52,7 @@
 #include "pgptext.h"
 #include "menu.h"
 #include "stock_pixmap.h"
+#include "foldersel.h"
 
 static void messageview_change_view_type(MessageView	*messageview,
 					 MessageType	 type);
@@ -642,63 +643,41 @@ void messageview_delete(MessageView *msgview)
 	MsgInfo *msginfo = (MsgInfo*)msgview->msginfo;
 	SummaryView *summaryview = (SummaryView*)msgview->mainwin->summaryview;
 	FolderItem *trash = folder_get_default_trash();
+	GSList *msg_list;
 
 	g_return_if_fail(msginfo != NULL);
-	g_return_if_fail(trash != NULL);
-
-	if (!procmsg_msg_exist(msginfo)) {
+	g_return_if_fail(trash   != NULL);
+	
+	msg_list = folder_item_get_msg_list(msginfo->folder);
+	
+	if (msg_list == NULL) {
 		alertpanel_error(_("Message already removed from folder."));
-		messageview_update_all(msgview);
 		return;
 	}
+	
+	for (; msg_list != NULL; msg_list = msg_list->next) {
+		MsgInfo *msginfo_list = (MsgInfo*)msg_list->data;
+		
+		if (msginfo->msgnum == msginfo_list->msgnum) {
 
-	if (MSG_IS_MOVE(msginfo->flags)) {
-		alertpanel_error(_("Message already moved to Trash Folder."));
-		messageview_update_all(msgview);
-		return;
+			if (prefs_common.immediate_exec)
+				folder_item_move_msg(trash, msginfo);
+			else {
+				procmsg_msginfo_set_to_folder(msginfo, trash);
+				procmsg_msginfo_set_flags(msginfo, MSG_DELETED, 0);
+				/* NOTE: does not update to next message in summaryview
+				 */
+			}
+				
+			messageview_update_all(msgview);
+			break;
+		}
 	}
-
-	if (MSG_IS_LOCKED(msginfo->flags)) {
-		alertpanel_error(_("Message is locked."));
-		messageview_update_all(msgview);
-		return;
-	}
-
-	/* TODO: move summaryview's check_permission somewhere sane 
-	 * (maybe MSG_IS_NOT_AUTHOR ????) 
-	 */
-	if(msginfo->folder->folder->type == F_NEWS) {
-		alertpanel_error(_("Deleting News not implemented."));	
-		return;
-	}
-
-	/* set moved Flags 
-	 * deleting them is no option since this garbles our 
-	 * msgview->msginfo pointer
-	 */
-	procmsg_msginfo_set_to_folder(msginfo, trash);
-	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, MSG_COPY);
-	if (!MSG_IS_MOVE(msginfo->flags)) {
-		procmsg_msginfo_set_flags(msginfo, 0, MSG_MOVE);
-	}
-
-	/* if messageview holds message which is also in 
-	 * currently active summaryview --> update summaryview
-	 * if not: folderview_selected updates summaryview (summary_show) 
-	 * and deletes messages marked for deletion
-	 */
-	if (g_strcasecmp(summaryview->folder_item->path, msginfo->folder->path) == 0) {
-		//summary_show(summaryview, summaryview->folder_item);
-		//if (prefs_common.immediate_exec)
-		//	summary_execute(summaryview); 
-		summary_delete(summaryview);
-	} 
-	messageview_update_all(msgview);
 }
 
 /*	
  * scan List of MessageViews checking whether there are any Views holding messages 
- * which need to be updated because another view has deleted the one this MessagView holds
+ * which need to be updated (another view might have deleted the one this MessagView holds)
  */
 static void messageview_update_all(MessageView *msgview)
 {
@@ -708,19 +687,19 @@ static void messageview_update_all(MessageView *msgview)
 	g_return_if_fail(msginfo != NULL);
 
 	for (cur = msgview_list; cur != NULL; cur = cur->next) {
-		MessageView *msgview_list = (MessageView*)cur->data;
+		MessageView *msgview = (MessageView*)cur->data;
 		MsgInfo *msginfo_list = (MsgInfo*)msgview->msginfo;
+		
+		g_return_if_fail(msginfo != NULL);
 
-		if (msginfo->msgnum == msginfo_list->msgnum &&
-		    g_strcasecmp(msginfo->folder->path, msginfo_list->folder->path) == 0)
-			messageview_update(msgview_list);
+		if (msginfo->msgnum == msginfo_list->msgnum)
+			messageview_update(msgview);
 	}
-
 }
 
 /* 
  * \brief update messageview with currently selected message in summaryview
- *
+ *        leave unchanged if summaryview is empty
  * \param pointer to MessageView
  */	
 static void messageview_update(MessageView *msgview)
@@ -738,13 +717,6 @@ static void messageview_update(MessageView *msgview)
 		messageview_show(msgview, msginfo, 
 				 msgview->all_headers);
 	} 
-	
-	/*
-	else {
-		toolbar_destroy(msgview->toolbar);
-		gtk_widget_destroy(msgview->window);
-	}	
-	*/
 }
 
 void messageview_quote_color_set(void)

@@ -1,3 +1,11 @@
+2003-03-06 [christoph]	0.8.10claws87
+	
+	* src/folderview.c 
+		remove changes introduced inclaws74
+	* src/messageview.c
+		another attempt to sanely delete and update
+		messages deleted in separate messageview
+
 2003-03-05 [christoph]	0.8.10claws86
 
 	* src/summaryview.c

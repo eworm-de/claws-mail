@@ -1760,10 +1760,6 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	summary_set_prefs_from_folderitem(folderview->summaryview, item);
 	opened = summary_show(folderview->summaryview, item);
 	
-	/* messageview could have deleted messages in this folder */
-	if (prefs_common.immediate_exec)
-		summary_execute(folderview->summaryview);
-
 	folder_clean_cache_memory();
 
 	if (!opened) {
