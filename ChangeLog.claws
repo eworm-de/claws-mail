@@ -1,3 +1,9 @@
+2003-08-29 [paul]	0.9.4claws41
+
+	* src/prefs_filtering.c
+		add 'Top' and 'Bottom' buttons, based on changes in
+		src/prefs_filter.c in 0.9.4cvs11.
+
 2003-08-27 [christoph]	0.9.4claws40
 
 	* src/folderview.c

@@ -1,3 +1,11 @@
+2003-08-28
+
+	* src/imap.c: imap_scan_tree_recursive(): fixed compile error.
+
+2003-08-27
+
+	* src/prefs_filter.c: added 'Top' and 'Bottom' button.
+
 2003-08-26
 
 	* src/folder.[ch]: folder_item_remove_children(): new. It removes

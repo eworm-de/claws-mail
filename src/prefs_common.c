@@ -2116,9 +2116,9 @@ static void prefs_message_create(void)
 
 	PACK_CHECK_BUTTON (hbox1, chkbtn_enablecol,
 			   _("Enable coloration of message"));
-	gtk_signal_connect (GTK_OBJECT (chkbtn_enablecol), "toggled",
-						GTK_SIGNAL_FUNC (prefs_enable_message_color_toggled),
-						NULL);
+	gtk_signal_connect(GTK_OBJECT(chkbtn_enablecol), "toggled",
+			   GTK_SIGNAL_FUNC(prefs_enable_message_color_toggled),
+			   NULL);
 
 	button_edit_col = gtk_button_new_with_label (_(" Edit... "));
 	gtk_widget_show (button_edit_col);
