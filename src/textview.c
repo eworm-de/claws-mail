@@ -45,6 +45,7 @@
 #include "gtkutils.h"
 #include "procmime.h"
 #include "html.h"
+#include "enriched.h"
 #include "compose.h"
 #include "addressbook.h"
 #include "displayheader.h"
@@ -97,6 +98,9 @@ static GdkColor error_color = {
 
 static GdkFont *spacingfont;
 
+static void textview_show_ertf		(TextView	*textview,
+					 FILE		*fp,
+					 CodeConverter	*conv);
 static void textview_show_html		(TextView	*textview,
 					 FILE		*fp,
 					 CodeConverter	*conv);
@@ -290,7 +294,8 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 		boundary_len = strlen(boundary);
 	}
 
-	if (!boundary && mimeinfo->mime_type == MIME_TEXT) {
+	if (!boundary && (mimeinfo->mime_type == MIME_TEXT || mimeinfo->mime_type == MIME_TEXT_HTML || mimeinfo->mime_type == MIME_TEXT_ENRICHED)) {
+	
 		if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0)
 			perror("fseek");
 		headers = textview_scan_header(textview, fp);
@@ -360,6 +365,8 @@ void textview_show_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 	if (tmpfp) {
 		if (mimeinfo->mime_type == MIME_TEXT_HTML)
 			textview_show_html(textview, tmpfp, conv);
+		else if (mimeinfo->mime_type == MIME_TEXT_ENRICHED)
+			textview_show_ertf(textview, tmpfp, conv);
 		else
 			while (fgets(buf, sizeof(buf), tmpfp) != NULL)
 				textview_write_line(textview, buf, conv);
@@ -464,6 +471,22 @@ static void textview_show_html(TextView *textview, FILE *fp,
 	        }
 	}
 	html_parser_destroy(parser);
+}
+
+static void textview_show_ertf(TextView *textview, FILE *fp,
+			       CodeConverter *conv)
+{
+	ERTFParser *parser;
+	gchar *str;
+	gchar* url = NULL;
+
+	parser = ertf_parser_new(fp, conv);
+	g_return_if_fail(parser != NULL);
+
+	while ((str = ertf_parse(parser)) != NULL) {
+		textview_write_line(textview, str, NULL);
+	}
+	ertf_parser_destroy(parser);
 }
 
 /* get_uri_part() - retrieves a URI starting from scanpos.
