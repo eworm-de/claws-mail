@@ -1,3 +1,8 @@
+2002-09-18 [christoph]	0.8.2claws57
+
+	* src/pine.c
+		fix handling of fgetc return value
+
 2002-09-17 [alfons]	0.8.2claws56
 	
 	* src/summaryview.c
