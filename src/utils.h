@@ -262,8 +262,8 @@ gint change_dir			(const gchar	*dir);
 gint make_dir_hier		(const gchar	*dir);
 gint remove_all_files		(const gchar	*dir);
 gint remove_numbered_files	(const gchar	*dir,
-				 gint		 first,
-				 gint		 last);
+				 guint		 first,
+				 guint		 last);
 gint remove_all_numbered_files	(const gchar	*dir);
 gint remove_dir_recursive	(const gchar	*dir);
 gint copy_file			(const gchar	*src,

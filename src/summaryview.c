@@ -781,7 +781,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 			   GTK_SIGNAL_FUNC (summary_drag_data_get),
 			   summaryview);
 
-	gtk_clist_thaw(GTK_CLIST(ctree));
+        gtk_clist_thaw(GTK_CLIST(ctree));
 
 	/* sort before */
 	sort_mode = prefs_folder_item_get_sort_mode(item);
@@ -1563,6 +1563,8 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 			msginfo = (MsgInfo *)mlist->data;
 			parent = NULL;
 
+			summary_set_header(text, msginfo);
+
 			/* search parent node for threading */
 			if (msginfo->inreplyto && *msginfo->inreplyto) {
 				parent = g_hash_table_lookup
@@ -1572,8 +1574,6 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 				parent = subject_table_lookup
 					(subject_table, msginfo->subject);
 			}
-
-			summary_set_header(text, msginfo);
 
 			node = gtk_ctree_insert_node
 				(ctree, parent, NULL, text, 2,
@@ -1862,6 +1862,21 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 	}
 	g_free(filename);
 
+	if (MSG_IS_NEW(msginfo->flags))
+		summaryview->newmsgs--;
+	if (MSG_IS_UNREAD(msginfo->flags))
+		summaryview->unread--;
+	if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
+		MSG_UNSET_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
+
+		CHANGE_FLAGS(msginfo);
+
+		summary_set_row_marks(summaryview, row);
+		gtk_clist_thaw(GTK_CLIST(ctree));
+		summary_status_show(summaryview);
+	}
+
+	if (GTK_WIDGET_VISIBLE(summaryview->headerwin->window))
 	if (new_window) {
 		MessageView *msgview;
 
@@ -1884,21 +1899,6 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row,
 		gtkut_ctree_node_move_if_on_the_edge(ctree, row);
 	}
 
-	if (MSG_IS_NEW(msginfo->flags))
-		summaryview->newmsgs--;
-	if (MSG_IS_UNREAD(msginfo->flags))
-		summaryview->unread--;
-	if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
-		MSG_UNSET_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
-
-		CHANGE_FLAGS(msginfo);
-		
-		summary_set_row_marks(summaryview, row);
-		gtk_clist_thaw(GTK_CLIST(ctree));
-		summary_status_show(summaryview);
-	}
-
-	if (GTK_WIDGET_VISIBLE(summaryview->headerwin->window))
 		header_window_show(summaryview->headerwin, msginfo);
 
 	lock = FALSE;
@@ -2583,9 +2583,6 @@ void summary_execute(SummaryView *summaryview)
 	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
 
 	gtk_clist_thaw(clist);
-
-	if (summaryview->folder_item->folder->type == F_IMAP)
-		summary_show(summaryview, summaryview->folder_item, FALSE);
 }
 
 static void summary_execute_move(SummaryView *summaryview)
@@ -3037,10 +3034,7 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		return;
 	case GDK_D:		/* Empty trash */
 		BREAK_ON_MODIFIER_KEY();
-		if (gtk_signal_n_emissions_by_name
-			(GTK_OBJECT(ctree), "key_press_event") > 0)
-			gtk_signal_emit_stop_by_name(GTK_OBJECT(ctree),
-						     "key_press_event");
+		KEY_PRESS_EVENT_STOP();
 		main_window_empty_trash(summaryview->mainwin, TRUE);
 		return;
 	case GDK_Q:		/* Quit */

@@ -1,3 +1,19 @@
+2001-06-20
+
+	* version 0.5.0pre1
+
+	* src/imap.c
+	  imap_get_msg_list()
+	  imap_cmd_envelope()
+	  imap_cmd_fetch()
+	  imap_cmd_copy()
+	  imap_cmd_store(): 連番の代わりに UID を使用するようにした。
+	  imap_set_article_flags() を imap_set_message_flags() に名称変更。
+	* src/summaryview.c: summary_execute(): 現在のフォルダが IMAP4
+	  でもサマリを更新しないようにした。
+	* src/utils.[ch]: remove_numbered_files(): 引数の型を gint から
+	  guint にした。
+
 2001-06-19
 
 	* src/imap.c: imap_cmd_login(), imap_cmd_select(), imap_cmd_status(),

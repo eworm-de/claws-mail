@@ -82,7 +82,7 @@ GSList *imap_get_msg_list		(Folder		*folder,
 					 gboolean	 use_cache);
 gchar *imap_fetch_msg			(Folder		*folder,
 					 FolderItem	*item,
-					 gint		 num);
+					 gint		 uid);
 gint imap_add_msg			(Folder		*folder,
 					 FolderItem	*dest,
 					 const gchar	*file,
@@ -103,7 +103,7 @@ gint imap_copy_msgs_with_dest		(Folder		*folder,
 
 gint imap_remove_msg			(Folder		*folder,
 					 FolderItem	*item,
-					 gint		 num);
+					 gint		 uid);
 gint imap_remove_all_msg		(Folder		*folder,
 					 FolderItem	*item);
 

@@ -1,3 +1,19 @@
+2001-06-20
+
+	* version 0.5.0pre1
+
+	* src/imap.c:
+	  imap_get_msg_list()
+	  imap_cmd_envelope()
+	  imap_cmd_fetch()
+	  imap_cmd_copy()
+	  imap_cmd_store(): use UID instead of sequential number.
+	  Renamed imap_set_article_flags() to imap_set_message_flags().
+	* src/summaryview.c: summary_execute(): don't update summary
+	  even if current folder is IMAP4.
+	* src/utils.[ch]: remove_numbered_files(): changed the type of
+	  arguments from gint to guint.
+
 2001-06-19
 
 	* src/imap.c: imap_cmd_login(), imap_cmd_select(), imap_cmd_status(),
