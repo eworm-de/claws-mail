@@ -629,6 +629,9 @@ static Pop3ErrorValue pop3_ok(Pop3Session *session, const gchar *msg)
 		    strstr(msg + 4, "wait")) {
 			log_warning(_("mailbox is locked\n"));
 			ok = PS_LOCKBUSY;
+		} else if (strcasestr(msg + 4, "timeout")) {
+			log_warning(_("session timeout\n"));
+			ok = PS_ERROR;
 		} else {
 			switch (session->state) {
 #if USE_OPENSSL
