@@ -59,6 +59,9 @@ struct _PrefsCommon
 	gint autochk_itv;
 	gboolean chk_on_startup;
 	gboolean noerrorpanel;
+ 	gboolean newmail_notify_auto;
+ 	gboolean newmail_notify_manu;
+ 	gchar   *newmail_notify_cmd;
 	gint max_articles;
 
 	/* Send */

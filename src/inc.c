@@ -115,6 +115,9 @@ static void inc_all_spool(void);
 static void inc_autocheck_timer_set_interval	(guint		 interval);
 static gint inc_autocheck_func			(gpointer	 data);
 
+static void inc_notify_cmd		(gint new_msgs, 
+ 					 gboolean notify);
+
 #define FOLDER_SUMMARY_MISMATCH(f, s) \
 	(f) && (s) ? ((s)->newmsgs != (f)->new) || ((f)->unread != (s)->unread) || ((f)->total != (s)->messages) \
 	: FALSE
@@ -154,7 +157,7 @@ static void inc_finished(MainWindow *mainwin, gboolean new_messages)
 	}
 }
 
-void inc_mail(MainWindow *mainwin)
+void inc_mail(MainWindow *mainwin, gboolean notify)
 {
 	gint new_msgs = 0;
 
@@ -183,6 +186,7 @@ void inc_mail(MainWindow *mainwin)
 
 	inc_finished(mainwin, new_msgs > 0);
 	main_window_unlock(mainwin);
+ 	inc_notify_cmd(new_msgs, notify);
 	inc_autocheck_timer_set();
 }
 
@@ -225,7 +229,7 @@ static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 	return inc_start(inc_dialog);
 }
 
-void inc_all_account_mail(MainWindow *mainwin)
+void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
 {
 	GList *list, *queue_list = NULL;
 	IncProgressDialog *inc_dialog;
@@ -244,6 +248,7 @@ void inc_all_account_mail(MainWindow *mainwin)
 	if (!list) {
 		inc_finished(mainwin, new_msgs > 0);
 		main_window_unlock(mainwin);
+ 		inc_notify_cmd(new_msgs, notify);
 		inc_autocheck_timer_set();
 		return;
 	}
@@ -271,6 +276,7 @@ void inc_all_account_mail(MainWindow *mainwin)
 	if (!queue_list) {
 		inc_finished(mainwin, new_msgs > 0);
 		main_window_unlock(mainwin);
+ 		inc_notify_cmd(new_msgs, notify);
 		inc_autocheck_timer_set();
 		return;
 	}
@@ -294,6 +300,7 @@ void inc_all_account_mail(MainWindow *mainwin)
 
 	inc_finished(mainwin, new_msgs > 0);
 	main_window_unlock(mainwin);
+ 	inc_notify_cmd(new_msgs, notify);
 	inc_autocheck_timer_set();
 }
 
@@ -1111,6 +1118,26 @@ void inc_unlock(void)
 static guint autocheck_timer = 0;
 static gpointer autocheck_data = NULL;
 
+static void inc_notify_cmd(gint new_msgs, gboolean notify)
+{
+
+	gchar *buf;
+
+	if (!(new_msgs && notify && prefs_common.newmail_notify_cmd &&
+	    *prefs_common.newmail_notify_cmd))
+		     return;
+	if ((buf = strchr(prefs_common.newmail_notify_cmd, '%')) &&
+		buf[1] == 'd' && !strchr(&buf[1], '%'))
+		buf = g_strdup_printf(prefs_common.newmail_notify_cmd, 
+				      new_msgs);
+	else
+		buf = g_strdup(prefs_common.newmail_notify_cmd);
+
+	system(buf);
+
+	g_free(buf);
+}
+ 
 void inc_autocheck_timer_init(MainWindow *mainwin)
 {
 	autocheck_data = mainwin;
@@ -1152,7 +1179,7 @@ static gint inc_autocheck_func(gpointer data)
 		return FALSE;
 	}
 
-	inc_all_account_mail(mainwin);
+ 	inc_all_account_mail(mainwin, prefs_common.newmail_notify_auto);
 
 	return FALSE;
 }

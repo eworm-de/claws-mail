@@ -82,6 +82,11 @@ static struct Receive {
 	GtkWidget *checkbtn_scan_after_inc;
 
 
+	GtkWidget *checkbtn_newmail_auto;
+	GtkWidget *checkbtn_newmail_manu;
+	GtkWidget *entry_newmail_notify_cmd;
+	GtkWidget *hbox_newmail_notify;
+
 	GtkWidget *spinbtn_maxarticle;
 	GtkObject *spinbtn_maxarticle_adj;
 } receive;
@@ -243,6 +248,8 @@ static void prefs_common_default_signkey_set_data_from_optmenu
 							(PrefParam *pparam);
 static void prefs_common_default_signkey_set_optmenu	(PrefParam *pparam);
 #endif
+static void prefs_common_recv_dialog_newmail_notify_toggle_cb	(GtkWidget *w,
+								 gpointer data);
 static void prefs_common_recv_dialog_set_data_from_optmenu(PrefParam *pparam);
 static void prefs_common_recv_dialog_set_optmenu(PrefParam *pparam);
 static void prefs_nextunreadmsgdialog_set_data_from_optmenu(PrefParam *pparam);
@@ -297,6 +304,16 @@ static PrefParam param[] = {
 	{"scan_all_after_inc", "FALSE", &prefs_common.scan_all_after_inc,
 	 P_BOOL, &receive.checkbtn_scan_after_inc,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"newmail_notify_manu", "FALSE", &prefs_common.newmail_notify_manu,
+	 P_BOOL, &receive.checkbtn_newmail_manu,
+ 	 prefs_set_data_from_toggle, prefs_set_toggle},
+ 	{"newmail_notify_auto", "FALSE", &prefs_common.newmail_notify_auto,
+	P_BOOL, &receive.checkbtn_newmail_auto,
+ 	 prefs_set_data_from_toggle, prefs_set_toggle},
+ 	{"newmail_notify_cmd", "", &prefs_common.newmail_notify_cmd, P_STRING,
+ 	 &receive.entry_newmail_notify_cmd,
+ 	 prefs_set_data_from_entry, prefs_set_entry},
+ 
 	{"max_news_articles", "300", &prefs_common.max_articles, P_INT,
 	 &receive.spinbtn_maxarticle,
 	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
@@ -968,6 +985,13 @@ static void prefs_receive_create(void)
 	GtkWidget *checkbtn_scan_after_inc;
 
 
+	GtkWidget *frame_newmail;
+	GtkWidget *hbox_newmail_notify;
+	GtkWidget *checkbtn_newmail_auto;
+	GtkWidget *checkbtn_newmail_manu;
+	GtkWidget *entry_newmail_notify_cmd;
+	GtkWidget *label_newmail_notify_cmd;
+
 	GtkWidget *frame_news;
 	GtkWidget *label_maxarticle;
 	GtkWidget *spinbtn_maxarticle;
@@ -1077,6 +1101,51 @@ static void prefs_receive_create(void)
 	PACK_CHECK_BUTTON (vbox2, checkbtn_scan_after_inc,
 			   _("Update all local folders after incorporation"));
 
+	
+	PACK_FRAME(vbox1, frame_newmail, _("Run command when new mail "
+					   "arrives"));
+	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox2);
+	gtk_container_add (GTK_CONTAINER (frame_newmail), vbox2);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
+
+	hbox = gtk_hbox_new (TRUE, 8);
+	gtk_widget_show (hbox);
+	PACK_CHECK_BUTTON (hbox, checkbtn_newmail_auto,
+			   _("after autochecking"));
+	PACK_CHECK_BUTTON (hbox, checkbtn_newmail_manu,
+			   _("after manual checking"));
+	gtk_box_pack_start (GTK_BOX(vbox2), hbox, FALSE, FALSE, 0);
+	gtk_signal_connect(GTK_OBJECT(checkbtn_newmail_auto), "toggled",
+			   GTK_SIGNAL_FUNC(prefs_common_recv_dialog_newmail_notify_toggle_cb),
+			   NULL);
+	gtk_signal_connect(GTK_OBJECT(checkbtn_newmail_manu), "toggled",
+			   GTK_SIGNAL_FUNC(prefs_common_recv_dialog_newmail_notify_toggle_cb),
+			   NULL);
+
+	hbox_newmail_notify = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox_newmail_notify, FALSE, 
+			    FALSE, 0);
+
+	label_newmail_notify_cmd = gtk_label_new (_("Command  to execute:\n"
+						    "(use %d as number of new "
+						    "mails)"));
+	gtk_label_set_justify(GTK_LABEL(label_newmail_notify_cmd), 
+			      GTK_JUSTIFY_RIGHT);
+	gtk_widget_show (label_newmail_notify_cmd);
+	gtk_box_pack_start (GTK_BOX (hbox_newmail_notify), 
+			    label_newmail_notify_cmd, FALSE, FALSE, 0);
+
+	entry_newmail_notify_cmd = gtk_entry_new ();
+	gtk_widget_show (entry_newmail_notify_cmd);
+	gtk_box_pack_start (GTK_BOX (hbox_newmail_notify), 
+			    entry_newmail_notify_cmd, TRUE, TRUE, 0);
+
+	gtk_widget_set_sensitive(hbox_newmail_notify, 
+				 prefs_common.newmail_notify_auto || 
+				 prefs_common.newmail_notify_manu);
+
 	PACK_FRAME(vbox1, frame_news, _("News"));
 
 	hbox = gtk_hbox_new (FALSE, 8);
@@ -1118,6 +1187,11 @@ static void prefs_receive_create(void)
 	receive.checkbtn_noerrorpanel = checkbtn_noerrorpanel;
 	receive.checkbtn_scan_after_inc = checkbtn_scan_after_inc;
 
+
+	receive.checkbtn_newmail_auto  = checkbtn_newmail_auto;
+	receive.checkbtn_newmail_manu  = checkbtn_newmail_manu;
+	receive.hbox_newmail_notify    = hbox_newmail_notify;
+	receive.entry_newmail_notify_cmd = entry_newmail_notify_cmd;
 
 	receive.spinbtn_maxarticle     = spinbtn_maxarticle;
 	receive.spinbtn_maxarticle_adj = spinbtn_maxarticle_adj;
@@ -1267,6 +1341,17 @@ static void prefs_send_create(void)
 	send.optmenu_charset = optmenu;
 }
 
+static void prefs_common_recv_dialog_newmail_notify_toggle_cb(GtkWidget *w, gpointer data)
+{
+	gboolean toggled;
+
+	toggled = gtk_toggle_button_get_active
+			(GTK_TOGGLE_BUTTON(receive.checkbtn_newmail_manu)) ||
+		  gtk_toggle_button_get_active
+			(GTK_TOGGLE_BUTTON(receive.checkbtn_newmail_auto));
+	gtk_widget_set_sensitive(receive.hbox_newmail_notify, toggled);
+}
+
 #if USE_PSPELL
 static void prefs_dictionary_set_data_from_optmenu(PrefParam *param)
 {
@@ -1333,8 +1418,6 @@ static void prefs_speller_sugmode_set_data_from_optmenu(PrefParam *param)
 static void prefs_speller_sugmode_set_optmenu(PrefParam *pparam)
 {
 	GtkOptionMenu *optmenu = GTK_OPTION_MENU(*pparam->widget);
-	GtkWidget *menu;
-	GtkWidget *menuitem;
 	gint sugmode;
 
 	g_return_if_fail(optmenu != NULL);
@@ -1408,7 +1491,6 @@ static void prefs_spelling_create()
 {
 	GtkWidget *vbox1;
 	GtkWidget *frame_spell;
-	GtkWidget *hbox_spell;
 	GtkWidget *vbox_spell;
 	GtkWidget *hbox_pspell_path;
 	GtkWidget *checkbtn_enable_pspell;
@@ -1424,10 +1506,7 @@ static void prefs_spelling_create()
 	GtkWidget *help_label;
 	GtkWidget *checkbtn_check_while_typing;
 	GtkWidget *color_label;
-	GtkWidget *hbox_col;
 	GtkWidget *col_align;
-	GtkWidget *hline;
-
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);

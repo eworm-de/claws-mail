@@ -309,9 +309,9 @@ int main(int argc, char *argv[])
 	signal(SIGPIPE, SIG_IGN);
 
 	if (cmd.receive_all || prefs_common.chk_on_startup)
-		inc_all_account_mail(mainwin);
+		inc_all_account_mail(mainwin, prefs_common.newmail_notify_manu);
 	else if (cmd.receive)
-		inc_mail(mainwin);
+		inc_mail(mainwin, prefs_common.newmail_notify_manu);
 	else
 		gtk_widget_grab_focus(folderview->ctree);
 
@@ -528,10 +528,10 @@ static void lock_socket_input_cb(gpointer data,
 		main_window_popup(mainwin);
 	} else if (!strncmp(buf, "receive_all", 11)){
 		main_window_popup(mainwin);
-		inc_all_account_mail(mainwin);
+		inc_all_account_mail(mainwin, prefs_common.newmail_notify_manu);
 	} else if (!strncmp(buf, "receive", 7)){
 		main_window_popup(mainwin);
-		inc_mail(mainwin);
+		inc_mail(mainwin, prefs_common.newmail_notify_manu);
 	} else if (!strncmp(buf, "compose", 7)) {
 		open_compose_new_with_recipient(buf + strlen("compose") + 1);
 	} else if (!strncmp(buf, "send", 4)) {

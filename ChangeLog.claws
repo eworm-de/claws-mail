@@ -1,3 +1,11 @@
+2002-03-02 [melvin]	0.7.2claws26
+
+	* src/inc.[ch]
+	* src/main.c
+	* src/mainwindow.c
+	* src/prefs_common.[ch]
+		Added user definable notification on new mail arrival.
+
 2002-03-02 [melvin]	0.7.2claws25
 
 	* src/quote_fmt.c

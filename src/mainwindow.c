@@ -397,7 +397,6 @@ static void allsel_cb		 (MainWindow	*mainwin,
 static void selthread_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
-
 static void create_filter_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -2533,13 +2532,13 @@ static void sel_download_cb(MainWindow *mainwin, guint action,
 
 static void inc_mail_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 {
-	inc_mail(mainwin);
+	inc_mail(mainwin, prefs_common.newmail_notify_manu);
 }
 
 static void inc_all_account_mail_cb(MainWindow *mainwin, guint action,
 				    GtkWidget *widget)
 {
-	inc_all_account_mail(mainwin);
+	inc_all_account_mail(mainwin, prefs_common.newmail_notify_manu);
 }
 
 static void send_queue_cb(MainWindow *mainwin, guint action, GtkWidget *widget)

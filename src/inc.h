@@ -98,8 +98,10 @@ struct _Pop3State
 
 #define TIMEOUT_ITV	200
 
-void inc_mail			(MainWindow	*mainwin);
-void inc_all_account_mail	(MainWindow	*mainwin);
+void inc_mail			(MainWindow	*mainwin,
+				 gboolean notify);
+void inc_all_account_mail	(MainWindow	*mainwin,
+				 gboolean notify);
 gint inc_selective_download     (MainWindow	*mainwin, 
 				 gint           session_type);
 void inc_progress_update	(Pop3State	*state,
