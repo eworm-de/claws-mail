@@ -85,8 +85,6 @@ struct _PrefsCommon
 	TransferEncodingMethod encoding_method;
 
 	/* Compose */
-	gboolean auto_sig;
-	gchar *sig_sep;
 	gint undolevels;
 	gint linewrap_len;
 	gboolean linewrap_quote;

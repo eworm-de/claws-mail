@@ -140,7 +140,9 @@ struct _PrefsAccount
 	GSList *customhdr_list;
 
 	/* Compose */
-	gchar *sig_path;
+	gchar    *sig_path;
+	gboolean  auto_sig;
+	gchar 	 *sig_sep;
 	gboolean  set_autocc;
 	gchar    *auto_cc;
 	gboolean  set_autobcc;
