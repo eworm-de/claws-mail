@@ -756,7 +756,7 @@ void extract_address(gchar *str)
 	g_strstrip(str);
 }
 
-GSList *address_list_append(GSList *addr_list, const gchar *str)
+static GSList *address_list_append_real(GSList *addr_list, const gchar *str, gboolean removecomments)
 {
 	gchar *work;
 	gchar *workp;
@@ -765,7 +765,8 @@ GSList *address_list_append(GSList *addr_list, const gchar *str)
 
 	Xstrdup_a(work, str, return addr_list);
 
-	eliminate_address_comment(work);
+	if (removecomments)
+		eliminate_address_comment(work);
 	workp = work;
 
 	while (workp && *workp) {
@@ -777,7 +778,7 @@ GSList *address_list_append(GSList *addr_list, const gchar *str)
 		} else
 			next = NULL;
 
-		if (strchr_with_skip_quote(workp, '"', '<'))
+		if (removecomments && strchr_with_skip_quote(workp, '"', '<'))
 			extract_parenthesis_with_skip_quote
 				(workp, '"', '<', '>');
 
@@ -789,6 +790,16 @@ GSList *address_list_append(GSList *addr_list, const gchar *str)
 	}
 
 	return addr_list;
+}
+
+GSList *address_list_append(GSList *addr_list, const gchar *str)
+{
+	return address_list_append_real(addr_list, str, TRUE);
+}
+
+GSList *address_list_append_with_comments(GSList *addr_list, const gchar *str)
+{
+	return address_list_append_real(addr_list, str, FALSE);
 }
 
 GSList *references_list_append(GSList *msgid_list, const gchar *str)

@@ -2002,7 +2002,7 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 		folder->finished_copy(folder, dest);
 
 	g_slist_free(newmsgnums);
-	return dest->last_num;
+	return lastnum;
 }
 
 gint folder_item_remove_msg(FolderItem *item, gint num)

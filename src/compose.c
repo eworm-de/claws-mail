@@ -1806,9 +1806,9 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	}
 
 	if (replyto && from)
-		cc_list = address_list_append(cc_list, from);
-	cc_list = address_list_append(cc_list, msginfo->to);
-	cc_list = address_list_append(cc_list, compose->cc);
+		cc_list = address_list_append_with_comments(cc_list, from);
+	cc_list = address_list_append_with_comments(cc_list, msginfo->to);
+	cc_list = address_list_append_with_comments(cc_list, compose->cc);
 
 	to_table = g_hash_table_new(g_str_hash, g_str_equal);
 	if (replyto)

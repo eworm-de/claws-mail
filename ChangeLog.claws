@@ -1,3 +1,15 @@
+2003-03-05 [christoph]	0.8.10claws85
+
+	* src/compose.c
+	* src/common/utils.[ch]
+		don't strip address comments when building Cc lists
+
+	(closes Bug 47 Replying to message strips name part of e-mail addresses
+	 of Cc: lines)
+
+	* src/folder.c
+		fix return value of copy function
+
 2003-03-05 [christoph]	0.8.10claws84
 
 	* src/imap.c
