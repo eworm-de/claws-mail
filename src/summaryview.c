@@ -5452,10 +5452,18 @@ static gboolean summary_update_msg(gpointer source, gpointer data)
 	return FALSE;
 }
 
+/*!
+ *\brief	change summaryview to display your answer(s) to a message
+ *
+ *\param	summaryview The SummaryView ;)
+ *\param	msginfo The message for which answers are searched
+ *
+ */
 static void summary_find_answers (SummaryView *summaryview, MsgInfo *msg)
 {
 	FolderItem *sent_folder = NULL;
 	PrefsAccount *account = NULL;
+	GtkCTreeNode *node = NULL;
 	char *buf = NULL;
 	if (msg == NULL || msg->msgid == NULL)
 		return;
@@ -5468,22 +5476,6 @@ static void summary_find_answers (SummaryView *summaryview, MsgInfo *msg)
 	
 	buf = g_strdup_printf("I %s", msg->msgid);
 
-	/*if (summaryview->folder_item->prefs->save_copy_to_folder)
-		sent_folder = summaryview->folder_item;
-	
-	if (sent_folder == NULL && prefs_common.reply_account_autosel)
-		sent_folder = account_get_special_folder(
-			account_find_from_address(msg->to), F_OUTBOX);
-	
-	if (sent_folder == NULL)
-		sent_folder = account_get_special_folder(
-					summaryview->folder_item->folder->account, F_OUTBOX);
-	
-	if (sent_folder == NULL) {
-		debug_print("Can't find outgoing folder :(\n");
-		return;
-	}*/
-	
 	if (sent_folder != summaryview->folder_item) {
 		folderview_select(summaryview->mainwin->folderview, sent_folder);
 	}
@@ -5492,4 +5484,7 @@ static void summary_find_answers (SummaryView *summaryview, MsgInfo *msg)
 	gtk_entry_set_text(GTK_ENTRY(summaryview->search_string), buf);
 	g_free(buf);
 	summary_show(summaryview, summaryview->folder_item);
+	node = gtk_ctree_node_nth(GTK_CTREE(summaryview->ctree), 0);
+	if (node)
+		summary_select_node(summaryview, node, TRUE, TRUE);
 }
