@@ -1,3 +1,76 @@
+2004-08-27
+
+	* src/prefs_filter.c: 新規ルールが追加されたら自動スクロールする
+	  ようにした。
+	  ルールがダブルクリックされたら編集ダイアログを開くようにした。
+	  prefs_filter_copy_cb(): 実装。
+	* src/prefs_filter_edit.c: アクション「ルールの評価を停止」を実装。
+
+2004-08-26
+
+	* src/filter.[ch]
+	  src/inc.c
+	  src/mbox.c
+	  src/prefs_filter_edit.c
+	  src/summaryview.c: FilterResult を FilterInfo に改名し、メンバに
+	  account を追加。
+	  command test, size, age, account, on-receive 条件を実装。
+	* src/mh.c
+	  src/procheader.c: procheader_parse_file(): ファイルサイズと
+	  タイムスタンプも得るようにした。
+	* src/utils.c:
+	  execute_async()
+	  execute_sync()
+	  execute_command_line(): 終了ステータスを返すようにした。
+
+2004-08-26
+
+	* src/filter.[ch]
+	  src/inc.c: 実行した全てのアクションタイプを保存。
+	  filter_rule_rename_dest_path(): 新システムに合わせて修正。
+	  filter_rule_delete_action_by_dest_path(): パスにマッチする
+	  アクションを削除。
+	* src/mbox.c: proc_mbox(): FLT_ACTION_NOT_RECEIVE を無視するように
+	  した。
+	* src/prefs_filter.c: prefs_filter_delete_path(): 新システムに
+	  合わせて修正。
+	* src/summaryview.c:
+	  summary_filter()
+	  summary_filter_func(): 新システムに合わせて修正。
+
+2004-08-25
+
+	* src/filter.[ch]: メッセージ本文へのマッチを実装。
+	* src/procmime.[ch]:
+	  procmime_find_string_part()
+	  procmime_find_string(): マッチング関数ポインタを受け取るようにした。
+	* src/procmsg.[ch]: file_path (一時メッセージのみに使用)を MsgInfo
+	  に追加。
+	  procmsg_msginfo_copy()
+	  procmsg_msginfo_free(): 残りのメンバを扱うようにした。
+	* src/summary_search.c: procmime_find_string() のための修正。
+	* src/summaryview.c: filter_apply_local() -> filter_apply_msginfo().
+	* src/utils.[ch]: 文字列マッチ用関数を追加。
+	* src/compose.c
+	  src/undo.c: 余分なデバッグメッセージを削除。
+
+2004-08-24
+
+	* 新フィルタリングシステムを実装(現在進行中)。
+	* src/defs.h
+	  src/filter.[ch]: フィルタリングの XML データの読み書きを実装。
+	* src/prefs_filter.[ch]
+	  src/prefs_filter_edit.[ch]: 新フィルタリングシステムの UI を実装。
+	* src/inc.c
+	  src/main.c
+	  src/mbox.c
+	  src/pop.c
+	  src/summaryview.c: 新フィルタリングシステムに合わせて修正。
+	* src/menu.h: MENUITEM_ADD(): label が NULL の場合セパレータを作成
+	  するようにした。
+	* src/procheader.[ch]: ユーティリティ関数を追加。
+	* src/utils.c: open_uri(): 警告メッセージを修正。
+
 2004-08-09
 
 	* src/main.c: "./gtkrc" をパースしないようにした。

@@ -1,3 +1,15 @@
+2004-08-27 [paul]	0.9.12cvs83
+
+	* src/mh.c
+	* src/procheader.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/common/utils.c
+	* src/gtk/menu.h
+		sync with main 0.9.12cvs6, see ChangeLog
+		2004-08-24, 2004-08-25, 2004-08-26
+
+
 2004-08-26 [paul]
 
 	* po/ja.po

@@ -203,7 +203,6 @@ struct _MsgInfo
 
 	/* used only for encrypted messages */
 	gchar *plaintext_file;
-	guint decryption_failed : 1;
         
         gint hidden;
 	

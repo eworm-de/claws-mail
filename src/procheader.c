@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2003 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <sys/stat.h>
 
 #include "intl.h"
 #include "procheader.h"
@@ -465,8 +466,16 @@ void procheader_get_header_fields(FILE *fp, HeaderEntry hentry[])
 MsgInfo *procheader_parse_file(const gchar *file, MsgFlags flags,
 			       gboolean full, gboolean decrypted)
 {
+	struct stat s;
 	FILE *fp;
 	MsgInfo *msginfo;
+
+	if (stat(file, &s) < 0) {
+		FILE_OP_ERROR(file, "stat");
+		return NULL;
+	}
+	if (!S_ISREG(s.st_mode))
+		return NULL;
 
 	if ((fp = fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
@@ -475,6 +484,12 @@ MsgInfo *procheader_parse_file(const gchar *file, MsgFlags flags,
 
 	msginfo = procheader_parse_stream(fp, flags, full, decrypted);
 	fclose(fp);
+
+	if (msginfo) {
+		msginfo->size = s.st_size;
+		msginfo->mtime = s.st_mtime;
+	}
+
 	return msginfo;
 }
 

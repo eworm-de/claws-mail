@@ -27,13 +27,18 @@
 #include <gtk/gtkmenushell.h>
 #include <gtk/gtkoptionmenu.h>
 
-#define MENUITEM_ADD(menu, menuitem, label, data) \
-{ \
-	menuitem = gtk_menu_item_new_with_label(label); \
-	gtk_widget_show(menuitem); \
-	gtk_menu_append(GTK_MENU(menu), menuitem); \
-	if (data) \
-		gtk_object_set_user_data(GTK_OBJECT(menuitem), \
+#define MENUITEM_ADD(menu, menuitem, label, data)		 \
+{								 \
+	if (label)						 \
+		menuitem = gtk_menu_item_new_with_label(label);	 \
+	else {							 \
+		menuitem = gtk_menu_item_new();			 \
+		gtk_widget_set_sensitive(menuitem, FALSE);	 \
+	}							 \
+	gtk_widget_show(menuitem);				 \
+	gtk_menu_append(GTK_MENU(menu), menuitem);		 \
+	if (data)						 \
+		gtk_object_set_user_data(GTK_OBJECT(menuitem),	 \
 					 GINT_TO_POINTER(data)); \
 }
 

@@ -65,3 +65,4 @@
 ( cvs diff -u -r 1.256 -r 1.257 src/folder.c; ) > 0.9.12cvs80.patchset
 ( cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/pgpmime.c; cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/sgpgme.c; cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/sgpgme.h; ) > 0.9.12cvs81.patchset
 ( cvs diff -u -r 1.2 -r 1.3 src/plugins/pgpmime/pgpmime.c; ) > 0.9.12cvs82.patchset
+( cvs diff -u -r 1.441 -r 1.442 ChangeLog; cvs diff -u -r 1.436 -r 1.437 ChangeLog.jp; cvs diff -u -r 1.85 -r 1.86 src/mh.c; cvs diff -u -r 1.58 -r 1.59 src/procheader.c; cvs diff -u -r 1.165 -r 1.166 src/procmsg.c; cvs diff -u -r 1.69 -r 1.70 src/procmsg.h; cvs diff -u -r 1.51 -r 1.52 src/common/utils.c; cvs diff -u -r 1.7 -r 1.8 src/gtk/menu.h; ) > 0.9.12cvs83.patchset
