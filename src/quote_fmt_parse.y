@@ -498,7 +498,7 @@ insert:
 			FILE *file;
 			char buffer[256];
 
-			if(file = popen($3, "rb")) {
+			if(file = popen($3, "r")) {
 				while(fgets(buffer, sizeof(buffer), file)) {
 					INSERT(buffer);
 				}
