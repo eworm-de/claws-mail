@@ -1,3 +1,9 @@
+2005-01-21 [colin]	1.0.0cvs6
+
+	* src/summaryview.c
+		Don't clear quicksearch if recursion is on,
+		even if !sticky
+
 2005-01-21 [colin]	1.0.0cvs5
 
 	* src/gtk/quicksearch.c

@@ -790,6 +790,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	summary_lock(summaryview);
 
 	if (!prefs_common.summary_quicksearch_sticky
+	 && !prefs_common.summary_quicksearch_recurse
 	 && !quicksearch_is_running(summaryview->quicksearch)) {
 		quicksearch_set(summaryview->quicksearch, prefs_common.summary_quicksearch_type, "");
 	}
