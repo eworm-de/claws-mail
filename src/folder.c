@@ -1500,7 +1500,7 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 FolderItem *folder_item_move_to(FolderItem *src, FolderItem *dest)
 {
 	FolderItem *tmp = dest->parent;
-	char * srcpath, * dstpath;
+	char * src_identifier, * dst_identifier, * new_identifier;
 	char * phys_srcpath, * phys_dstpath;
 	GNode *src_node;
 	
@@ -1514,25 +1514,25 @@ FolderItem *folder_item_move_to(FolderItem *src, FolderItem *dest)
 	
 	tmp = src->parent;
 	
-	srcpath = folder_item_get_identifier(src);
-	dstpath = folder_item_get_identifier(dest);
+	src_identifier = folder_item_get_identifier(src);
+	dst_identifier = folder_item_get_identifier(dest);
 	
-	if(dstpath == NULL && dest->folder && dest->parent == NULL) {
+	if(dst_identifier == NULL && dest->folder && dest->parent == NULL) {
 		/* dest can be a root folder */
-		dstpath = folder_get_identifier(dest->folder);
+		dst_identifier = folder_get_identifier(dest->folder);
 	}
-	if (srcpath == NULL || dstpath == NULL) {
+	if (src_identifier == NULL || dst_identifier == NULL) {
 		printf("Can't get identifiers\n");
 		return NULL;
 	}
 
 	phys_srcpath = folder_item_get_path(src);
-	phys_dstpath = g_strconcat(folder_item_get_path(dest),G_DIR_SEPARATOR_S,g_basename(srcpath),NULL);
+	phys_dstpath = g_strconcat(folder_item_get_path(dest),G_DIR_SEPARATOR_S,g_basename(phys_srcpath),NULL);
 
 	if (src->parent == dest) {
 		alertpanel_error(_("Source and destination are the same."));
-		g_free(srcpath);
-		g_free(dstpath);
+		g_free(src_identifier);
+		g_free(dst_identifier);
 		g_free(phys_srcpath);
 		g_free(phys_dstpath);
 		return NULL;
@@ -1553,15 +1553,14 @@ FolderItem *folder_item_move_to(FolderItem *src, FolderItem *dest)
 	/* not to much worry if remove fails, move has been done */
 	
 	debug_print("updating rules ....\n");
-	prefs_filtering_rename_path(srcpath, g_strconcat(dstpath, 
-						G_DIR_SEPARATOR_S, 
-						g_basename(srcpath), 
-						NULL));
+	new_identifier = g_strconcat(dst_identifier, G_DIR_SEPARATOR_S, g_basename(phys_srcpath), NULL);
+	prefs_filtering_rename_path(src_identifier, new_identifier);
 
 	folder_write_list();
 
-	g_free(srcpath);
-	g_free(dstpath);
+	g_free(src_identifier);
+	g_free(dst_identifier);
+	g_free(new_identifier);
 	g_free(phys_srcpath);
 	g_free(phys_dstpath);
 
