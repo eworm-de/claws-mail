@@ -58,6 +58,7 @@ MimeInfo *procmime_mimeinfo_new(void)
 	mimeinfo = g_new0(MimeInfo, 1);
 	mimeinfo->type     	= MIMETYPE_UNKNOWN;
 	mimeinfo->encoding_type = ENC_UNKNOWN;
+	mimeinfo->disposition	= DISPOSITIONTYPE_UNKNOWN;
 
 	mimeinfo->parameters = g_hash_table_new(g_str_hash, g_str_equal);
 	mimeinfo->node       = g_node_new(mimeinfo);
@@ -77,9 +78,6 @@ static gboolean free_func(GNode *node, gpointer data)
 {
 	MimeInfo *mimeinfo = (MimeInfo *) node->data;
 
-	g_free(mimeinfo->encoding);
-	g_free(mimeinfo->name);
-	g_free(mimeinfo->content_disposition);
 	if(mimeinfo->tmpfile)
 		unlink(mimeinfo->filename);
 	g_free(mimeinfo->filename);
@@ -680,13 +678,19 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 	if ((mimeinfo->type == MIMETYPE_TEXT) && !g_strcasecmp(mimeinfo->subtype, "html"))
 		base = "mimetmp.html";
 	else {
-		base = mimeinfo->name ? mimeinfo->name : "mimetmp";
+		const gchar *basetmp;
+
+		basetmp = procmime_mimeinfo_get_parameter(mimeinfo, "filename");
+		if (basetmp == NULL)
+			basetmp = procmime_mimeinfo_get_parameter(mimeinfo, "name");
+		if (basetmp == NULL)
+			basetmp = "mimetmp";
 #ifdef WIN32
 		{
 			gchar *p, *end;
 			int len;
 
-			base = g_strdup(base);
+			base = g_strdup(basetmp);
 			if ( g_utf8_validate(base, strlen(base), &end) )
 				locale_from_utf8(&base);
 
@@ -704,7 +708,7 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 			g_free(p);
 		}
 #else
-		base = g_basename(base);
+		base = g_basename(basetmp);
 #endif
 		if (*base == '\0') base = "mimetmp";
 		Xstrdup_a(base, base, return NULL);
@@ -995,6 +999,7 @@ void procmime_parse_mimepart(MimeInfo *parent,
 			     gchar *content_encoding,
 			     gchar *content_description,
 			     gchar *content_id,
+			     gchar *content_disposition,
 			     const gchar *filename,
 			     guint offset,
 			     guint length);
@@ -1008,6 +1013,8 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 						   NULL, TRUE},
 			        {"Content-ID:",
 						   NULL, TRUE},
+				{"Content-Disposition:",
+				                   NULL, TRUE},
 				{NULL,		   NULL, FALSE}};
 	guint content_start, i;
 	FILE *fp;
@@ -1026,9 +1033,10 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 	procmime_parse_mimepart(mimeinfo,
 			        hentry[0].body, hentry[1].body,
 				hentry[2].body, hentry[3].body, 
+				hentry[4].body, 
 				mimeinfo->filename, content_start,
 				mimeinfo->length - (content_start - mimeinfo->offset));
-	for (i = 0; i < 4; i++) {
+	for (i = 0; i < (sizeof hentry / sizeof hentry[0]); i++) {
 		g_free(hentry[i].body);
 		hentry[i].body = NULL;
 	}
@@ -1043,6 +1051,8 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 						   NULL, TRUE},
 			        {"Content-ID:",
 						   NULL, TRUE},
+				{"Content-Disposition:",
+				                   NULL, TRUE},
 				{NULL,		   NULL, FALSE}};
 	gchar *p;
 	gchar *boundary;
@@ -1071,6 +1081,7 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 				procmime_parse_mimepart(mimeinfo,
 				                        hentry[0].body, hentry[1].body,
 							hentry[2].body, hentry[3].body, 
+							hentry[4].body, 
 							mimeinfo->filename, lastoffset,
 							(ftell(fp) - strlen(buf)) - lastoffset);
 			}
@@ -1079,7 +1090,7 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 			    buf[2 + boundary_len + 1] == '-')
 				break;
 
-			for (i = 0; i < 4; i++) {
+			for (i = 0; i < (sizeof hentry / sizeof hentry[0]) ; i++) {
 				g_free(hentry[i].body);
 				hentry[i].body = NULL;
 			}
@@ -1087,12 +1098,44 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 			lastoffset = ftell(fp);
 		}
 	}
-	for (i = 0; i < 4; i++) {
+	for (i = 0; i < (sizeof hentry / sizeof hentry[0]); i++) {
 		g_free(hentry[i].body);
 		hentry[i].body = NULL;
 	}
 	fclose(fp);
 }
+
+static void add_to_mimeinfo_parameters(gchar **parts, MimeInfo *mimeinfo)
+{
+	gchar **strarray;
+
+	for (strarray = parts; *strarray != NULL; strarray++) {
+		gchar **parameters_parts;
+
+#ifdef WIN32 /* GLIB-2 */
+		parameters_parts = g_strsplit(*strarray, "=", 2);
+#else
+		parameters_parts = g_strsplit(*strarray, "=", 1);
+#endif
+		if ((parameters_parts[0] != NULL) && (parameters_parts[1] != NULL)) {
+			gchar *firstspace;
+
+			g_strstrip(parameters_parts[0]);
+			g_strstrip(parameters_parts[1]);
+			g_strdown(parameters_parts[0]);
+			if(parameters_parts[1][0] == '"')
+				extract_quote(parameters_parts[1], '"');
+			else if ((firstspace = strchr(parameters_parts[1], ' ')) != NULL)
+				*firstspace = '\0';
+			if(g_hash_table_lookup(mimeinfo->parameters,
+					       parameters_parts[0]) == NULL)
+				g_hash_table_insert(mimeinfo->parameters,
+						    g_strdup(parameters_parts[0]),
+						    g_strdup(parameters_parts[1]));
+		}
+		g_strfreev(parameters_parts);
+	}
+}	
 
 static void procmime_parse_content_type(const gchar *content_type, MimeInfo *mimeinfo)
 {
@@ -1128,28 +1171,42 @@ static void procmime_parse_content_type(const gchar *content_type, MimeInfo *mim
 	}
 
 	/* Get mimeinfo->parmeters */
-	for (strarray = &content_type_parts[1]; *strarray != NULL; strarray++) {
-		gchar **parameters_parts;
-
-#ifdef WIN32 /* GLIB-2 */
-		parameters_parts = g_strsplit(*strarray, "=", 2);
-#else
-		parameters_parts = g_strsplit(*strarray, "=", 1);
-#endif
-		if ((parameters_parts[0] != NULL) && (parameters_parts[1] != NULL)) {
-			g_strdown(parameters_parts[0]);
-			if(parameters_parts[1][0] == '"')
-				extract_quote(parameters_parts[1], '"');
-
-			g_hash_table_insert(mimeinfo->parameters,
-					    g_strdup(parameters_parts[0]),
-					    g_strdup(parameters_parts[1]));
-		}
-		g_strfreev(parameters_parts);
-	}
-
+	add_to_mimeinfo_parameters(&content_type_parts[1], mimeinfo);
 	g_strfreev(content_type_parts);
 }
+
+static void procmime_parse_content_disposition(const gchar *content_disposition, MimeInfo *mimeinfo)
+{
+	gchar **content_disp_parts;
+	gchar **strarray;
+	gchar *str;
+
+	g_return_if_fail(content_disposition != NULL);
+	g_return_if_fail(mimeinfo != NULL);
+
+	/* Split into parts and remove trailing
+	   and leading whitespaces from all strings */
+	content_disp_parts = g_strsplit(content_disposition, ";", 0);
+	for (strarray = content_disp_parts; *strarray != NULL; strarray++) {
+		g_strstrip(*strarray);
+ 	}
+	/* Get mimeinfo->disposition */
+	str = content_disp_parts[0];
+	if (str == NULL) {
+		g_strfreev(content_disp_parts);
+		return;
+	}
+	if (!g_strcasecmp(str, "inline")) 
+		mimeinfo->disposition = DISPOSITIONTYPE_INLINE;
+	else if (!g_strcasecmp(str, "attachment"))
+		mimeinfo->disposition = DISPOSITIONTYPE_ATTACHMENT;
+	else
+		mimeinfo->disposition = DISPOSITIONTYPE_ATTACHMENT;
+	
+	add_to_mimeinfo_parameters(&content_disp_parts[1], mimeinfo);
+	g_strfreev(content_disp_parts);
+}
+
 
 static void procmime_parse_content_encoding(const gchar *content_encoding, MimeInfo *mimeinfo)
 {
@@ -1170,6 +1227,7 @@ void procmime_parse_mimepart(MimeInfo *parent,
 			     gchar *content_encoding,
 			     gchar *content_description,
 			     gchar *content_id,
+			     gchar *content_disposition,
 			     const gchar *filename,
 			     guint offset,
 			     guint length)
@@ -1207,6 +1265,11 @@ void procmime_parse_mimepart(MimeInfo *parent,
 		mimeinfo->id = g_strdup(content_id);
 	else
 		mimeinfo->id = NULL;
+
+	if (content_disposition != NULL) 
+		procmime_parse_content_disposition(content_disposition, mimeinfo);
+	else
+		mimeinfo->disposition = DISPOSITIONTYPE_UNKNOWN;
 
 	/* Call parser for mime type */
 	switch (mimeinfo->type) {

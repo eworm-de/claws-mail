@@ -398,25 +398,25 @@ static void mimeview_set_multipart_tree(MimeView *mimeview,
 	}
 }
 
-static gchar *get_part_name(MimeInfo *partinfo)
+static const gchar *get_part_name(MimeInfo *partinfo)
 {
-	gchar *name;
+	const gchar *name;
 
-	name = g_hash_table_lookup(partinfo->parameters, "name");
-	if(name == NULL)
+	name = procmime_mimeinfo_get_parameter(partinfo, "filename");
+	if (name == NULL)
+		name = procmime_mimeinfo_get_parameter(partinfo, "name");
+	if (name == NULL)
 		name = "";
 
 	return name;
 }
 
-static gchar *get_part_description(MimeInfo *partinfo)
+static const gchar *get_part_description(MimeInfo *partinfo)
 {
 	if (partinfo->description)
 		return partinfo->description;
-	else if (g_hash_table_lookup(partinfo->parameters, "name") != NULL)
-		return g_hash_table_lookup(partinfo->parameters, "name");
 	else
-		return "";
+		return get_part_name(partinfo);
 }
 
 static GtkCTreeNode *mimeview_append_part(MimeView *mimeview,
@@ -448,9 +448,9 @@ static GtkCTreeNode *mimeview_append_part(MimeView *mimeview,
 	}
 #else
 	if (prefs_common.attach_desc)
-		str[COL_NAME] = get_part_description(partinfo);
+		str[COL_NAME] = (gchar *) get_part_description(partinfo);
 	else
-		str[COL_NAME] = get_part_name(partinfo);
+		str[COL_NAME] = (gchar *) get_part_name(partinfo);
 #endif
 
 	node = gtk_ctree_insert_node(ctree, parent, NULL, str, 0,
@@ -778,7 +778,7 @@ static void mimeview_start_drag(GtkWidget *widget, gint button,
 	g_return_if_fail(mimeview != NULL);
 
 	partinfo = mimeview_get_selected_part(mimeview);
-	if (partinfo->filename == NULL && partinfo->name == NULL) return;
+	if (partinfo->disposition == DISPOSITIONTYPE_INLINE) return;
 
 	context = gtk_drag_begin(widget, mimeview->target_list,
 				 GDK_ACTION_COPY, button, event);
@@ -949,10 +949,8 @@ static void mimeview_drag_data_get(GtkWidget	    *widget,
 
 	partinfo = mimeview_get_selected_part(mimeview);
 	if (!partinfo) return;
-	if (!partinfo->filename && !partinfo->name) return;
 
-	filename = partinfo->filename ? partinfo->filename : partinfo->name;
-	filename = g_basename(filename);
+	filename = g_basename(get_part_name(partinfo));
 	if (*filename == '\0') return;
 
 	filename = g_strconcat(get_mime_tmp_dir(), G_DIR_SEPARATOR_S,
@@ -1009,8 +1007,7 @@ static void mimeview_save_all(MimeView *mimeview)
 	while (attachment != NULL) {
 		if (attachment->type != MIMETYPE_MESSAGE &&
 		    attachment->type != MIMETYPE_MULTIPART &&
-		    (procmime_mimeinfo_get_parameter(attachment, "name") ||
-		     procmime_mimeinfo_get_parameter(attachment, "filename"))) {
+		    attachment->disposition != DISPOSITIONTYPE_INLINE) {
 			static guint subst_cnt = 1;
 			gchar *attachdir;
 			gchar *attachname = g_strdup(get_part_name(attachment));
@@ -1086,7 +1083,7 @@ static void mimeview_save_as(MimeView *mimeview)
 	}			 
 	g_return_if_fail(partinfo != NULL);
 	
-	if ((partname = procmime_mimeinfo_get_parameter(partinfo, "name")) != NULL) {
+	if ((partname = get_part_name(partinfo)) != NULL) {
 		Xstrdup_a(defname, partname, return);
 		subst_for_filename(defname);
 	}
@@ -1488,7 +1485,7 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	GtkWidget *vbox;
 	GtkWidget *button;
 	gchar *tip;
-	gchar *desc = NULL;
+	const gchar *desc = NULL;
 	StockPixmap stockp;
 	
 	vbox = mimeview->icon_vbox;

@@ -81,6 +81,9 @@ struct _Toolbar {
 	GtkWidget *exteditor_btn;
 	GtkWidget *linewrap_btn;
 	GtkWidget *addrbook_btn;
+#ifdef USE_ASPELL
+	GtkWidget *spellcheck_btn;
+#endif
 
 	GSList    *action_list;
 	GSList    *item_list;
@@ -158,6 +161,9 @@ enum {
 	A_EXTEDITOR,
 	A_LINEWRAP,
 	A_ADDRBOOK,
+#ifdef USE_ASPELL
+	A_CHECK_SPELLING,
+#endif
 
 	/* common items */
 	A_SYL_ACTIONS,

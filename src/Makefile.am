@@ -258,6 +258,7 @@ EXTRA_DIST = \
 	pixmaps/category.xpm \
 	pixmaps/checkbox_off.xpm \
 	pixmaps/checkbox_on.xpm \
+	pixmaps/check_spelling.xpm \
 	pixmaps/clipkey.xpm \
 	pixmaps/clip.xpm \
 	pixmaps/close.xpm \

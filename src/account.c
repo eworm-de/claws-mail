@@ -46,6 +46,7 @@
 #include "utils.h"
 #include "alertpanel.h"
 #include "procheader.h"
+#include "customheader.h"
 
 typedef enum
 {
@@ -81,6 +82,7 @@ static void account_edit_create		(void);
 
 static void account_edit_prefs		(void);
 static void account_delete		(void);
+static void account_clone		(void);
 
 static void account_up			(void);
 static void account_down		(void);
@@ -88,6 +90,10 @@ static void account_down		(void);
 static void account_set_default		(void);
 
 static void account_edit_close		(void);
+
+static gint account_clone_event		(GtkWidget	*widget,
+					 GdkEventAny	*event,
+					 gpointer	 data);
 static gint account_delete_event	(GtkWidget	*widget,
 					 GdkEventAny	*event,
 					 gpointer	 data);
@@ -539,6 +545,7 @@ static void account_edit_create(void)
 	GtkWidget *add_btn;
 	GtkWidget *edit_btn;
 	GtkWidget *del_btn;
+	GtkWidget *clone_btn;
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
 
@@ -550,7 +557,7 @@ static void account_edit_create(void)
 	debug_print("Creating account edit window...\n");
 
 	window = gtk_window_new (GTK_WINDOW_DIALOG);
-	gtk_widget_set_usize (window, 500, 320);
+	gtk_widget_set_usize (window, 500, 350);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_window_set_title (GTK_WINDOW (window), _("Edit accounts"));
 	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
@@ -639,6 +646,12 @@ static void account_edit_create(void)
 	gtk_signal_connect (GTK_OBJECT(del_btn), "clicked",
 			    GTK_SIGNAL_FUNC (account_delete), NULL);
 
+	clone_btn = gtk_button_new_with_label (_(" Clone "));
+	gtk_widget_show (clone_btn);
+	gtk_box_pack_start (GTK_BOX (vbox2), clone_btn, FALSE, FALSE, 4);
+	gtk_signal_connect (GTK_OBJECT(clone_btn), "clicked",
+			    GTK_SIGNAL_FUNC (account_clone), NULL);
+	
 	down_btn = gtk_button_new_with_label (_("Down"));
 	gtk_widget_show (down_btn);
 	gtk_box_pack_end (GTK_BOX (vbox2), down_btn, FALSE, FALSE, 4);
@@ -722,6 +735,157 @@ static gboolean account_delete_references_func(GNode *node, gpointer data)
 
 	return FALSE;
 }
+
+	
+#define ACP_FDUP(fld) ac_clon->fld = ((ac_prefs->fld) != NULL)?\
+				     g_strdup(ac_prefs->fld): NULL
+#define ACP_FASSIGN(fld) ac_clon->fld = ac_prefs->fld
+static void account_clone(void)
+{
+	GtkCList *clist = GTK_CLIST(edit_account.clist);
+	gint row;
+	PrefsAccount *ac_prefs, *ac_clon;
+	GSList *hdrs = NULL;
+	CustomHeader *cch = NULL, *ch = NULL;
+
+	if (!clist->selection) return;
+
+	row = GPOINTER_TO_INT(clist->selection->data);
+	ac_prefs = gtk_clist_get_row_data(clist, row);
+	
+	ac_clon = prefs_account_new();
+	/* copy fields */
+	ac_clon->account_name = g_strdup_printf(_("Cloned %s"), 
+						ac_prefs->account_name);
+	/* personal */
+	ACP_FDUP(name);
+	ACP_FDUP(address);
+	ACP_FDUP(organization);
+
+	/* server */
+	ACP_FASSIGN(protocol);
+	ACP_FDUP(recv_server);
+	ACP_FDUP(smtp_server);
+	ACP_FDUP(nntp_server);
+	ACP_FASSIGN(use_nntp_auth);
+	ACP_FASSIGN(use_nntp_auth_onconnect);
+	ACP_FDUP(userid);
+	ACP_FDUP(passwd);
+
+	ACP_FDUP(local_mbox);
+	ACP_FASSIGN(use_mail_command);
+	ACP_FDUP(mail_command);
+	
+#if USE_OPENSSL
+	ACP_FASSIGN(ssl_pop);
+	ACP_FASSIGN(ssl_imap);
+	ACP_FASSIGN(ssl_nntp);
+	ACP_FASSIGN(ssl_smtp);
+	ACP_FASSIGN(use_nonblocking_ssl);
+#endif /* USE_OPENSSL */
+	
+	ac_clon->tmp_pass = NULL;
+
+	/* receive */
+	ACP_FASSIGN(rmmail);
+	ACP_FASSIGN(msg_leave_time);
+	ACP_FASSIGN(getall);
+	ACP_FASSIGN(recv_at_getall);
+	ACP_FASSIGN(sd_rmmail_on_download);
+	ACP_FASSIGN(sd_filter_on_recv);
+	ACP_FASSIGN(enable_size_limit);
+	ACP_FASSIGN(size_limit);
+	ACP_FASSIGN(filter_on_recv);
+	ACP_FDUP(inbox);
+	ACP_FASSIGN(max_articles);
+
+	ACP_FASSIGN(imap_auth_type);
+
+	/* send */
+	ACP_FASSIGN(add_date);
+	ACP_FASSIGN(gen_msgid);
+	ACP_FASSIGN(add_customhdr);
+	ACP_FASSIGN(use_smtp_auth);
+	ACP_FASSIGN(smtp_auth_type);
+	ACP_FDUP(smtp_userid);
+	ACP_FDUP(smtp_passwd);
+
+	ac_clon->tmp_smtp_pass = NULL;
+
+	ACP_FASSIGN(pop_before_smtp);
+	ACP_FASSIGN(pop_before_smtp_timeout);
+	ACP_FASSIGN(last_pop_login_time);
+
+	ac_clon->customhdr_list = NULL;
+	hdrs = ac_prefs->customhdr_list;
+	while (hdrs != NULL) {
+		ch = (CustomHeader *)hdrs->data;
+
+		cch = g_new0(CustomHeader, 1);
+		cch->account_id = ac_clon->account_id;	
+		cch->name = (ch->name != NULL) ? g_strdup(ch->name) : NULL;
+		cch->value = (ch->value != NULL) ? g_strdup(ch->value) : NULL;
+		
+		ac_clon->customhdr_list = g_slist_append(ac_clon->customhdr_list, cch);
+		
+		hdrs = g_slist_next(hdrs);
+	}
+
+	/* compose */
+        ACP_FASSIGN(sig_type);
+        ACP_FDUP(sig_path);
+        ACP_FASSIGN(auto_sig);
+        ACP_FDUP(sig_sep);
+        ACP_FASSIGN(set_autocc);
+        ACP_FDUP(auto_cc);
+        ACP_FASSIGN(set_autobcc);
+        ACP_FDUP(auto_bcc);
+        ACP_FASSIGN(set_autoreplyto);
+        ACP_FDUP(auto_replyto);
+
+#if USE_GPGME
+        /* privacy */
+        ACP_FASSIGN(default_encrypt);
+        ACP_FASSIGN(default_sign);
+        ACP_FASSIGN(default_gnupg_mode);
+        ACP_FASSIGN(sign_key);
+        ACP_FDUP(sign_key_id);
+#endif /* USE_GPGME */
+	
+        /* advanced */
+        ACP_FASSIGN(set_smtpport);
+        ACP_FASSIGN(smtpport);
+        ACP_FASSIGN(set_popport);
+        ACP_FASSIGN(popport);
+        ACP_FASSIGN(set_imapport);
+        ACP_FASSIGN(imapport);
+        ACP_FASSIGN(set_nntpport);
+        ACP_FASSIGN(nntpport);
+        ACP_FASSIGN(set_domain);
+        ACP_FDUP(domain);
+        ACP_FASSIGN(mark_crosspost_read);
+        ACP_FASSIGN(crosspost_col);
+
+        ACP_FASSIGN(set_tunnelcmd);
+        ACP_FDUP(tunnelcmd);
+
+        ACP_FDUP(imap_dir);
+
+        ACP_FASSIGN(set_sent_folder);
+        ACP_FDUP(sent_folder);
+        ACP_FASSIGN(set_draft_folder);
+        ACP_FDUP(draft_folder);
+        ACP_FASSIGN(set_trash_folder);
+        ACP_FDUP(trash_folder);
+	/* don't want two default accounts */
+	ac_clon->is_default = FALSE;
+	ACP_FASSIGN(folder);
+
+	account_list = g_list_append(account_list, ac_clon);
+	account_clist_set();
+}
+#undef ACP_FDUP
+#undef ACP_FASSIGN
 
 static void account_delete(void)
 {
@@ -818,6 +982,13 @@ static void account_edit_close(void)
 	gtk_widget_hide(edit_account.window);
 
 	inc_unlock();
+}
+
+static gint account_clone_event(GtkWidget *widget, GdkEventAny *event,
+				 gpointer data)
+{
+	account_clone();
+	return TRUE;
 }
 
 static gint account_delete_event(GtkWidget *widget, GdkEventAny *event,

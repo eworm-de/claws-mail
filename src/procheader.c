@@ -121,6 +121,9 @@ static gint generic_get_one_field(gchar *buf, gint len, void *data,
 		if (buf[0] == '\r' || buf[0] == '\n') return -1;
 	}
 
+	/* remove trailing new line */
+	strretchomp(buf);
+
 	/* unfold line */
 	while (1) {
 		nexthead = peekchar(data);
@@ -139,9 +142,6 @@ static gint generic_get_one_field(gchar *buf, gint len, void *data,
 		} else
 			break;
 	}
-
-	/* remove trailing new line */
-	strretchomp(buf);
 
 	return hnum;
 }

@@ -51,6 +51,7 @@
 #include "displayheader.h"
 #include "account.h"
 #include "mimeview.h"
+#include "alertpanel.h"
 
 typedef struct _RemoteURI	RemoteURI;
 
@@ -1832,6 +1833,70 @@ static gint show_url_timeout_cb(gpointer data)
 		return FALSE;
 }
 
+/*!
+ *\brief    Check to see if a web URL has been disguised as a different
+ *          URL (possible with HTML email).
+ *
+ *\param    uri The uri to check
+ *
+ *\param    textview The TextView the URL is contained in
+ *
+ *\return   gboolean TRUE if the URL is ok, or if the user chose to open
+ *          it anyway, otherwise FALSE          
+ */
+static gboolean uri_security_check(RemoteURI *uri, TextView *textview) 
+{
+	gchar *clicked_str;
+	gboolean retval = TRUE;
+
+	if (g_strncasecmp(uri->uri, "http:", 5) &&
+	    g_strncasecmp(uri->uri, "https:", 6) &&
+	    g_strncasecmp(uri->uri, "www.", 4)) 
+		return retval;
+
+	clicked_str = gtk_editable_get_chars(GTK_EDITABLE(textview->text),
+					     uri->start,
+					     uri->end);
+	if (clicked_str == NULL)
+		return TRUE;
+
+	if (strcmp(clicked_str, uri->uri) &&
+	    (!g_strncasecmp(clicked_str, "http:",  5) ||
+	     !g_strncasecmp(clicked_str, "https:", 6) ||
+	     !g_strncasecmp(clicked_str, "www.",   4))) {
+		gchar *str;
+		retval = FALSE;
+
+		/* allow uri->uri    == http://somewhere.com
+		   and   clicked_str ==        somewhere.com */
+		str = g_strconcat("http://", clicked_str, NULL);
+
+		if (!g_strcasecmp(str, uri->uri))
+			retval = TRUE;
+		g_free(str);
+	}
+
+	if (retval == FALSE) {
+		gchar *msg = NULL;
+		AlertValue resp;
+
+		msg = g_strdup_printf(_("The real URL (%s) is different from\n"
+					"the apparent URL (%s).  \n"
+					"Open it anyway?"),
+					uri->uri, clicked_str);
+		resp = alertpanel(_("Warning"), 
+				  msg,
+				  _("Yes"), 
+				  _("No"),
+				  NULL);
+		g_free(msg);
+		if (resp == G_ALERTDEFAULT)
+			retval = TRUE;
+	} 
+	g_free(clicked_str);
+	return retval;
+}
+
 static gint textview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 				    TextView *textview)
 {
@@ -1924,8 +1989,9 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 						compose_new(account, uri->uri + 7, NULL);
 					}
 				} else {
-					open_uri(uri->uri,
-						 prefs_common.uri_cmd);
+					if (uri_security_check(uri, textview) == TRUE) 
+						open_uri(uri->uri,
+							 prefs_common.uri_cmd);
 				}
 				g_free(trimmed_uri);
 			}

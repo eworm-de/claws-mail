@@ -147,7 +147,10 @@ static void toolbar_linewrap_cb			(GtkWidget	*widget,
 					 	 gpointer	 data);
 static void toolbar_addrbook_cb   		(GtkWidget   	*widget, 
 					 	 gpointer     	 data);
-
+#ifdef USE_ASPELL
+static void toolbar_check_spelling_cb  		(GtkWidget   	*widget, 
+					 	 gpointer     	 data);
+#endif
 static void toolbar_popup_cb			(gpointer 	 data, 
 					 	 guint 		 action, 
 					 	 GtkWidget 	*widget);
@@ -180,7 +183,9 @@ struct {
 	{ "A_EXTEDITOR",     N_("Edit with external editor")            },
 	{ "A_LINEWRAP",      N_("Wrap all long lines")                  }, 
 	{ "A_ADDRBOOK",      N_("Address book")                         },
-
+#ifdef USE_ASPELL
+	{ "A_CHECK_SPELLING",N_("Check spelling")                       },
+#endif
 	{ "A_SYL_ACTIONS",   N_("Sylpheed Actions Feature")             }, 
 	{ "A_SEPARATOR",     "Separator"				}
 };
@@ -310,6 +315,9 @@ GList *toolbar_get_action_items(ToolbarType source)
 		gint comp_items[] =   {	A_SEND,          A_SENDL,        A_DRAFT,
 					A_INSERT,        A_ATTACH,       A_SIG,
 					A_EXTEDITOR,     A_LINEWRAP,     A_ADDRBOOK,
+#ifdef USE_ASPELL
+					A_CHECK_SPELLING, 
+#endif
 					A_SYL_ACTIONS };	
 
 		for (i = 0; i < sizeof comp_items / sizeof comp_items[0]; i++) 
@@ -1355,6 +1363,12 @@ static void toolbar_linewrap_cb(GtkWidget *widget, gpointer data)
 	compose_toolbar_cb(A_LINEWRAP, data);
 }
 
+#ifdef USE_ASPELL
+static void toolbar_check_spelling_cb(GtkWidget *widget, gpointer data)
+{
+	compose_toolbar_cb(A_CHECK_SPELLING, data);
+}
+#endif
 /*
  * Execute actions from toolbar
  */
@@ -1466,7 +1480,9 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 		{ A_EXTEDITOR,		toolbar_ext_editor_cb 		},
 		{ A_LINEWRAP,		toolbar_linewrap_cb   		},
 		{ A_ADDRBOOK,		toolbar_addrbook_cb		},
-
+#ifdef USE_ASPELL
+		{ A_CHECK_SPELLING,     toolbar_check_spelling_cb       },
+#endif
 		{ A_SYL_ACTIONS,	toolbar_actions_execute_cb	}
 	};
 
@@ -1770,6 +1786,14 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 					     toolbar_data->addrbook_btn,
 					     _("Address book"), NULL);
 			break;
+#ifdef USE_ASPELL
+		case A_CHECK_SPELLING:
+			toolbar_data->spellcheck_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     toolbar_data->spellcheck_btn,
+					     _("Check spelling"), NULL);
+			break;
+#endif
 
 		case A_SYL_ACTIONS:
 			action_item = g_new0(ToolbarSylpheedActions, 1);
@@ -1964,6 +1988,10 @@ void toolbar_comp_set_sensitive(gpointer data, gboolean sensitive)
 		gtk_widget_set_sensitive(compose->toolbar->linewrap_btn, sensitive);
 	if (compose->toolbar->addrbook_btn)
 		gtk_widget_set_sensitive(compose->toolbar->addrbook_btn, sensitive);
+#ifdef USE_ASPELL
+	if (compose->toolbar->spellcheck_btn)
+		gtk_widget_set_sensitive(compose->toolbar->spellcheck_btn, sensitive);
+#endif
 	for (; items != NULL; items = g_slist_next(items)) {
 		ToolbarSylpheedActions *item = (ToolbarSylpheedActions *)items->data;
 		gtk_widget_set_sensitive(item->widget, sensitive);
@@ -1999,6 +2027,9 @@ void toolbar_init(Toolbar * toolbar) {
 	toolbar->exteditor_btn    = NULL;	
 	toolbar->linewrap_btn     = NULL;	
 	toolbar->addrbook_btn     = NULL;	
+#ifdef USE_ASPELL
+	toolbar->spellcheck_btn   = NULL;
+#endif
 
 	toolbar_destroy(toolbar);
 }
