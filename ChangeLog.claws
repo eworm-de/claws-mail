@@ -1,3 +1,9 @@
+2004-08-07 [christoph]	0.9.12cvs51
+
+	* src/folder.c
+		disable immediate folder change notification on opened folders
+		until SummaryView can handle it quickly
+
 2004-08-07 [colin]	0.9.12cvs50
 
 	* src/pop.c
