@@ -30,4 +30,4 @@ gint qp_get_q_encoding_len	(const guchar	*str);
 void qp_q_encode		(gchar		*out,
 				 const guchar	*in);
 
-#endif /* __UNMIME_H__ */
+#endif /* __QUOTED_PRINTABLE_H__ */
