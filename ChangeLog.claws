@@ -1,3 +1,58 @@
+2002-12-23 [paul]	0.8.7claws
+
+	* Santa-Claws released
+	
+	* po/ru.po
+		squeeze in an updated Russian translation.
+		Submitted by Ruslan N. Balkin <baron@voices.ru>
+
+2002-12-23 [paul]	0.8.6claws129
+
+	* po/pl.po
+		updated by Witold Wladyslaw Wojciech Wilk
+
+2002-12-23 [paul]	0.8.6claws128
+
+	* src/quote_fmt_parse.y
+		fix typo and add licence header
+
+2002-12-23 [paul]	0.8.6claws127
+
+	* po/en_GB.po
+		updated
+
+2002-12-23 [paul]	0.8.6claws126
+
+	* po/it.po
+		updated translation, submitted by Alessandro Maestri
+		
+2002-12-23 [paul]	0.8.6claws125
+
+	* src/quote_fmt_parse.y
+		fix signature-stripping on replies bug. match
+		'-- \n' and not '-- '.
+
+2002-12-22 [paul]	0.8.6claws124
+
+	* po/bg.po
+	  po/es.po
+	  po/sr.po
+	  	updated translations. submitted by George Danchev,
+		Ricardo Mones Lastra, and Urke MMI respectively
+
+2002-12-21 [paul]	0.8.6claws123
+
+	* src/addrbook.c
+		fix coding style
+
+2002-12-21 [paul]	0.8.6claws122
+
+	* src/addrbook.c
+		fix bug [643638] where if a person is in one or more
+		addressbook groups editing that person's email 
+		address results in removal from those groups.
+		Patch submitted by Luke Plant.
+
 2002-12-20 [christoph]	0.8.6claws121
 
 	* src/common/utils.c

@@ -3,7 +3,7 @@
 
 [Setup]
 AppName=Sylpheed-Claws
-AppVerName=Sylpheed-0.8.6-Claws121 (Win32)
+AppVerName=Sylpheed-0.8.7-Claws (Win32)
 AppPublisher=The friendly Sylpheed hackers
 AppPublisherURL=http://claws-w32.sourceforge.net
 AppSupportURL=http://claws-w32.sourceforge.net
@@ -12,13 +12,13 @@ DefaultDirName={code:GetInstalledDir}
 DefaultGroupName=Sylpheed-Claws
 AllowNoIcons=yes
 ;AlwaysCreateUninstallIcon=yes
-LicenseFile=D:\_pak\Sylpheed.086.claws\doc\COPYING
-InfoAfterFile=D:\_pak\Sylpheed.086.claws\doc\README
+LicenseFile=D:\_pak\Sylpheed.087.claws\doc\COPYING
+InfoAfterFile=D:\_pak\Sylpheed.087.claws\doc\README
 ; uncomment the following line if you want your installation to run on NT 3.51 too.
 ; MinVersion=4,3.51
 DisableStartupPrompt  =yes
-OutputBaseFilename    =Sylpheed-0.8.6-Claws
-Compression=none
+OutputBaseFilename    =Sylpheed-0.8.7
+;Compression=none
 
 [Types]
 Name: "full";                   Description: "Full installation"
@@ -41,32 +41,32 @@ Name: "reg_sylpheed";           Description: "Create Sylpheed &registry key (rec
 Name: "reg_defaultmailer";      Description: "Set Sylpheed default &mailer for mailto: links";  GroupDescription: "Registry settings:"; Components: settings;
 
 [Files]
-Source: "D:\_pak\Sylpheed.086.claws\bin\sylpheed.exe";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
-Source: "D:\_pak\Sylpheed.086.claws\bin\fnmatch.dll";           DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
-Source: "D:\_pak\Sylpheed.086.claws\bin\libcompface.dll";       DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
-Source: "D:\_pak\Sylpheed.086.claws\bin\libkcc.dll";            DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
-Source: "D:\_pak\Sylpheed.086.claws\bin\regex.dll";             DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
-Source: "D:\_pak\Sylpheed.086.claws\bin\w32lib.dll";            DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
-Source: "D:\_pak\Sylpheed.086.claws\bin\iconv.dll";             DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
+Source: "D:\_pak\Sylpheed.087.claws\bin\sylpheed.exe";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
+Source: "D:\_pak\Sylpheed.087.claws\bin\fnmatch.dll";           DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
+Source: "D:\_pak\Sylpheed.087.claws\bin\libcompface.dll";       DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
+Source: "D:\_pak\Sylpheed.087.claws\bin\libkcc.dll";            DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
+Source: "D:\_pak\Sylpheed.087.claws\bin\regex.dll";             DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
+Source: "D:\_pak\Sylpheed.087.claws\bin\w32lib.dll";            DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
+Source: "D:\_pak\Sylpheed.087.claws\bin\iconv.dll";             DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 
-Source: "D:\_pak\Sylpheed.086.claws\bin\gspawn-win32-helper.exe";  DestDir: "{app}\bin";                CopyMode: alwaysoverwrite; Components: gtk
-Source: "D:\_pak\Sylpheed.086.claws\bin\libgthread-2.0-0.dll";  DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite; Components: gtk
-Source: "D:\_pak\Sylpheed.086.claws\bin\libgdk-0.dll";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite; Components: gtk
-Source: "D:\_pak\Sylpheed.086.claws\bin\libglib-2.0-0.dll";     DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite; Components: gtk
-Source: "D:\_pak\Sylpheed.086.claws\bin\libgmodule-2.0-0.dll";  DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite; Components: gtk
-Source: "D:\_pak\Sylpheed.086.claws\bin\libgobject-2.0-0.dll";  DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite; Components: gtk
-Source: "D:\_pak\Sylpheed.086.claws\bin\libgtk-0.dll";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite; Components: gtk
-Source: "D:\_pak\Sylpheed.086.claws\bin\libintl-1.dll";         DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite; Components: gtk
+Source: "D:\_pak\Sylpheed.087.claws\bin\gspawn-win32-helper.exe";  DestDir: "{app}\bin";                CopyMode: alwaysoverwrite; Components: gtk
+Source: "D:\_pak\Sylpheed.087.claws\bin\libgthread-2.0-0.dll";  DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite; Components: gtk
+Source: "D:\_pak\Sylpheed.087.claws\bin\libgdk-0.dll";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite; Components: gtk
+Source: "D:\_pak\Sylpheed.087.claws\bin\libglib-2.0-0.dll";     DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite; Components: gtk
+Source: "D:\_pak\Sylpheed.087.claws\bin\libgmodule-2.0-0.dll";  DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite; Components: gtk
+Source: "D:\_pak\Sylpheed.087.claws\bin\libgobject-2.0-0.dll";  DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite; Components: gtk
+Source: "D:\_pak\Sylpheed.087.claws\bin\libgtk-0.dll";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite; Components: gtk
+Source: "D:\_pak\Sylpheed.087.claws\bin\libintl-1.dll";         DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite; Components: gtk
 
-Source: "D:\_pak\Sylpheed.086.claws\doc\*.*";                   DestDir: "{app}\doc";                   CopyMode: alwaysoverwrite
-Source: "D:\_pak\Sylpheed.086.claws\doc\faq\*.*";               DestDir: "{app}\doc\faq";               CopyMode: alwaysoverwrite; Flags: recursesubdirs; Components: help
-Source: "D:\_pak\Sylpheed.086.claws\doc\manual\*.*";            DestDir: "{app}\doc\manual";            CopyMode: alwaysoverwrite; Flags: recursesubdirs; Components: help
-Source: "D:\_pak\Sylpheed.086.claws\etc\*.*";                   DestDir: "{app}\etc";                   CopyMode: alwaysoverwrite; Flags: recursesubdirs
-Source: "D:\_pak\Sylpheed.086.claws\locale\*.*";                DestDir: "{app}\locale";                CopyMode: alwaysoverwrite; Flags: recursesubdirs
-Source: "D:\_pak\Sylpheed.086.claws\themes\*.*";                DestDir: "{app}\themes";                CopyMode: alwaysoverwrite; Flags: recursesubdirs; Components: themes
+Source: "D:\_pak\Sylpheed.087.claws\doc\*.*";                   DestDir: "{app}\doc";                   CopyMode: alwaysoverwrite
+Source: "D:\_pak\Sylpheed.087.claws\doc\faq\*.*";               DestDir: "{app}\doc\faq";               CopyMode: alwaysoverwrite; Flags: recursesubdirs; Components: help
+Source: "D:\_pak\Sylpheed.087.claws\doc\manual\*.*";            DestDir: "{app}\doc\manual";            CopyMode: alwaysoverwrite; Flags: recursesubdirs; Components: help
+Source: "D:\_pak\Sylpheed.087.claws\etc\*.*";                   DestDir: "{app}\etc";                   CopyMode: alwaysoverwrite; Flags: recursesubdirs
+Source: "D:\_pak\Sylpheed.087.claws\locale\*.*";                DestDir: "{app}\locale";                CopyMode: alwaysoverwrite; Flags: recursesubdirs
+Source: "D:\_pak\Sylpheed.087.claws\themes\*.*";                DestDir: "{app}\themes";                CopyMode: alwaysoverwrite; Flags: recursesubdirs; Components: themes
 ; Claws specific
-Source: "D:\_pak\Sylpheed.086.claws\bin\libeay32.dll";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
-Source: "D:\_pak\Sylpheed.086.claws\bin\ssleay32.dll";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
+Source: "D:\_pak\Sylpheed.087.claws\bin\libeay32.dll";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
+Source: "D:\_pak\Sylpheed.087.claws\bin\ssleay32.dll";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 
 [INI]
 Filename: "{app}\doc\gtk-w32.url";                              Section: "InternetShortcut"; Key: "URL"; String: "http://www.gimp.org/~tml/gimp/win32/"

@@ -15,9 +15,10 @@ echo Processing %1 ...
 if not exist locale\%1 mkdir locale\%1
 if not exist locale\%1\LC_MESSAGES mkdir locale\%1\LC_MESSAGES
 rem *** utf8 translation ***
-SET CONTENTTYPE=^\.Content-Type: text\/plain; charset=
+SET CONTENTTYPE=^.Content-Type: text\/plain; charset=
 copy ..\..\po\%1.po
-echo PATH=apps;%%PATH%% > mk_%1.bat
+echo @echo off > mk_%1.bat
+echo set PATH=apps;%%PATH%% >> mk_%1.bat
 sed -n -e "/%CONTENTTYPE%/ {s/.*=/iconv -f /;s/\\\\.*/ -t utf-8 %1.po/;p;} " %1.po >> mk_%1.bat
 call mk_%1.bat > %1-utf8.po
 rem *** make .mo ***
