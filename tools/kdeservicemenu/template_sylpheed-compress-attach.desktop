@@ -1,7 +1,10 @@
 [Desktop Entry]
 Actions=TarAndAttach;TarBzipAndAttach;TarGzipAndAttach;ZipAndAttach;
 Encoding=UTF8
+Name=Sylpheed compress and attach files/dirs
+Comment=kde service menu for compressing and attaching files/dirs to Sylpheed
 X-KDE-Submenu=Sylpheed
+X-KDE-Priority=TopLevel
 ServiceTypes=all/all
 
 [Desktop Action TarAndAttach]

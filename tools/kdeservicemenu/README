@@ -1,5 +1,5 @@
 sylpheed-kdeservicemenu.pl 
-Version: 1.1
+Version: 1.2
 Sylpheed servicemenu for Konqueror
 
 FILES
@@ -15,14 +15,14 @@ Enables attaching files from Konqueror to a new compose window
 or compression of files/directories and then attaching of
 the archive to a new compose window.
 
-Adds the following menu items to Konqueror's 'Actions' menu:
-/Actions/Sylpheed/Attach file(s)
-/Actions/Sylpheed/Attach as GZip File(s)
-/Actions/Sylpheed/Attach as BZip File(s)
-/Actions/Sylpheed/Attach as Tar Archive
-/Actions/Sylpheed/Attach as Bzipped Tar Archive
-/Actions/Sylpheed/Attach as Gzipped Tar Archive
-/Actions/Sylpheed/Attach as Zip Archive
+Adds the following right-click menu item to Konqueror:
+/Sylpheed/Attach file(s)
+/Sylpheed/Attach as GZip File(s)
+/Sylpheed/Attach as BZip File(s)
+/Sylpheed/Attach as Tar Archive
+/Sylpheed/Attach as Bzipped Tar Archive
+/Sylpheed/Attach as Gzipped Tar Archive
+/Sylpheed/Attach as Zip Archive
 
 All outputted files are created in /tmp
 Original files are preserved when creating [FILE].gz and [FILE].bz2

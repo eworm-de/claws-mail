@@ -27,7 +27,7 @@ Mailbox conversion:
 
 Other tools:
   filter_conv.pl                Convert old-style filters to new filtering
-  newscache_clean.pl            Clean up news directory
+  nautilus2sylpheed.sh		Send files from Nautilus
   OOo2sylpheed.pl               Send documents from OpenOffice.org
   sylpheed-switcher             Run either sylpheed or claws (separate configs)
   sylprint.pl                   Printing engine, explained in README.sylprint
@@ -35,7 +35,6 @@ Other tools:
 
 Extra tools:
   gif2xface.pl                  Convert a 48x48 GIF file to an X-Face header
-  launch_firebird		Open URLs in mozilla-firebird
 
 --------------------------------------------------------------------------------
 Detailed Descriptions:
@@ -371,9 +370,9 @@ Other tools
 
   WHAT IT DOES
 	This perl script provides easy conversion of your filtering rules
-  	form sylpheed's old filter system to the new filtering system used
-  	in sylpheed-claws. It reads '~/.sylpheed/filterrc' and outputs 
-  	'~/.sylpheed/matcherrc'.
+  	form sylpheed's old filter system (pre version 0.9.99) to the new
+	filtering system used in sylpheed-claws.
+	It reads '~/.sylpheed/filterrc' and outputs '~/.sylpheed/matcherrc'.
   
   HOW TO USE IT
 	Issue the following command from the 'tools' directory:
@@ -386,30 +385,18 @@ Other tools
   Contact: Paul Mangan <claws@thewildbeast.co.uk>
   
 
-* newscache_clean.pl
+* nautilus2sylpheed.sh
 
-  WHAT IT DOES AND WHY IT DOES IT
-	This perl script cleans up in '$HOME/.sylpheed/newscache'. Currently
-  	the newscache becomes littered with old directories and files - when
-  	you subscribe to a newsgroup a sub-directory gets created for it in
-  	~/.sylpheed/newscache/[nntpserver], should you unsubscribe from the 
-  	group the sub-directory does not get deleted. Until this is done 
-  	internally this script will take care of some tidying up.
-  
-  	This script removes directory trees of nntp servers that you no longer
-  	have an account for. Where an account exists it removes directories
-  	and files of those groups to which you are no longer subscribed.
+  WHAT IT DOES
+	This script will recursively attach a number of selected 
+	files/directories from Nautilus to a new blank e-mail.
 
   HOW TO USE IT
-	Issue the following command from the 'tools' directory:
-  
-  		perl newscache_clean.pl
-        
-  	This script uses the File::Path module, if you don't already have it
-  	installed, you can find it at the CPAN search site 
-	<http://search.cpan.org>
-
-  Contact: Paul Mangan <claws@thewildbeast.co.uk>
+  	Copy the script to $HOME/.gnome2/nautilus-scripts, chmod u+x, 
+	and restart nautilus (killall -9 nautilus). You will now have 
+	a right-click menu item: '/Scripts/nautilus2sylpheed.sh'
+	
+  Contact: Reza Pakdel <hrpakdel@cpsc.ucalgary.ca>
 
 
 * OOo2sylpheed.pl
@@ -546,21 +533,5 @@ Extra tools
   	they will be lost!).
 
   Contact: Ricardo Mones Lastra <mones@aic.uniovi.es>
-
-
-* launch_firebird
-
-  WHAT IT DOES
-  	Check for a running mozilla-firebird process and and open a new tab 
-	with a given URL, or execute mozilla-firebird with that URL
-  
-  HOW TO USE IT  
-  	In Common Preferences move to the 'Other' tab and enter the
-  	following in the 'Web browser' box
-  
-  	launch_firebird '%s'
-  
-  Contact: Mohammed Sameer <Uniball@linux-egypt.org>
-
 
 --------------------------------------------------------------------------------

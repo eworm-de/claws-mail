@@ -1,3 +1,53 @@
+2004-12-06 [colin]	0.9.12cvs187
+
+	* src/compose.c
+		X-Sylpheed-Gnupg-Mode -> X-Sylpheed-Privacy-System
+
+2004-12-06 [paul]	0.9.12cvs186
+
+	* INSTALL
+	* README.claws
+		updated
+	* po/es.po
+	* po/fr.po
+	* po/it.po
+	* po/ja.po
+	* po/pt_BR.po
+	* po/zh_CN.po
+		updated by Ricardo Mones Lastra, Fabien Vantard, Andrea 
+		Spadaccini, Rui Hirokawa, Frederico Goncalves Guimaraes,
+		and Yang Guilong
+
+2004-12-05 [paul]	0.9.12cvs185
+
+	* INSTALL
+	* Makefile.am
+	* README.claws
+		update
+	* TODO.claws 	**REMOVED**
+		removed, use the wiki instead
+	* tools/Makefile.am
+	* tools/README
+		remove newscache_conv.pl from the release package
+		and notes as it is broken and not currently maintained
+	* tools/filter_conv.pl
+		use --config-dir to find claws' config dir
+	* tools/kdeservicemenu/README
+	* tools/kdeservicemenu/template_sylpheed-attach-files.desktop
+	* tools/kdeservicemenu/template_sylpheed-compress-attach.desktop
+		make a top-level menu entry
+
+2004-12-04 [paul]	0.9.12cvs184
+
+	* src/addrharvest.c
+		conv_unmime_header_overwrite(name)
+
+2004-12-04 [colin]	0.9.12cvs183
+
+	* src/compose.c
+		Fix saving of compose window position
+		when sending mail. Patch by Alfons.
+
 2004-12-04 [paul]	0.9.12cvs182
 
 	* ChangeLog

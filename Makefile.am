@@ -2,11 +2,9 @@ SUBDIRS = m4 po src tools config intl doc
 
 EXTRA_DIST = \
 	ChangeLog.claws \
-	ChangeLog.jp \
 	ChangeLog-gtk2.claws \
 	ChangeLog-gtk2.jp \
 	README.claws \
-	README.jp \
 	sylpheed-128x128.png \
 	sylpheed-64x64.png \
 	sylpheed-claws.pc.in \
@@ -14,9 +12,6 @@ EXTRA_DIST = \
 	sylpheed.png \
 	sylpheed.spec \
 	sylpheed.spec.in \
-	TODO \
-	TODO.claws \
-	TODO.jp \
 	TODO-gtk2 \
 	TODO-gtk2.jp \
 	autogen.sh 

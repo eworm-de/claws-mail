@@ -6325,7 +6325,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 	fprintf(fp, "X-Sylpheed-Sign:%d\n", compose->use_signing);
 	fprintf(fp, "X-Sylpheed-Encrypt:%d\n", compose->use_encryption);
-	fprintf(fp, "X-Sylpheed-Gnupg-Mode:%s\n", compose->privacy_system);
+	fprintf(fp, "X-Sylpheed-Privacy-System:%s\n", compose->privacy_system);
 	fprintf(fp, "\n");
 
 	if (compose_write_to_file(compose, fp, COMPOSE_WRITE_FOR_STORE) < 0) {

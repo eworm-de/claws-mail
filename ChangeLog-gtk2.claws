@@ -1,3 +1,40 @@
+2004-12-06 [colin]	0.9.12cvs187.1
+
+	* ChangeLog.claws
+	* INSTALL
+	* Makefile.am
+	* README.claws
+	* TODO.claws
+	* configure.ac
+	* po/bg.po
+	* po/cs.po
+	* po/el.po
+	* po/en_GB.po
+	* po/es.po
+	* po/fr.po
+	* po/hr.po
+	* po/hu.po
+	* po/it.po
+	* po/ja.po
+	* po/ko.po
+	* po/nl.po
+	* po/pl.po
+	* po/pt_BR.po
+	* po/ru.po
+	* po/sk.po
+	* po/sr.po
+	* po/sv.po
+	* po/zh_CN.po
+	* po/zh_TW.Big5.po
+	* src/compose.c
+	* tools/Makefile.am
+	* tools/README
+	* tools/filter_conv.pl
+	* tools/kdeservicemenu/README
+	* tools/kdeservicemenu/template_sylpheed-attach-files.desktop
+	* tools/kdeservicemenu/template_sylpheed-compress-attach.desktop
+		Sync with HEAD
+
 2004-12-04 [colin]	0.9.12cvs183.1
 
 	* src/compose.c
