@@ -1,3 +1,16 @@
+2003-10-21 [luke]	0.9.6claws42
+        * src/stock_pixmaps.[ch]
+        * src/mimeview.c
+        * src/pixmaps/mime_application_octet_stream.xpm         ** REMOVE **
+        * src/pixmaps/messageview_text.xpm                      ** REMOVE **
+                o remove mime_application_octet_stream.xpm icon (it was never
+                  really needed)
+                o remove redundant icon messageview_text.xpm
+
+        * src/mainwindow.c
+                fix visibility of signature noticeview when toggling 'separate
+                message view'
+
 2003-10-21 [christoph]	0.9.6claws41
 
 	* src/procmime.c

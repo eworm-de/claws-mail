@@ -1386,10 +1386,7 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 		stockp = STOCK_PIXMAP_MIME_MESSAGE;
 		break;
 	case MIMETYPE_APPLICATION:
-		if (mimeinfo->subtype && !g_strcasecmp(mimeinfo->subtype, "octet-stream"))
-			stockp = STOCK_PIXMAP_MIME_APPLICATION_OCTET_STREAM;
-		else
-			stockp = STOCK_PIXMAP_MIME_APPLICATION;
+		stockp = STOCK_PIXMAP_MIME_APPLICATION;
 		break;
 	case MIMETYPE_IMAGE:
 		stockp = STOCK_PIXMAP_MIME_IMAGE;

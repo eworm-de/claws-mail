@@ -93,11 +93,9 @@
 #include "pixmaps/gpg_signed.xpm"
 #include "pixmaps/drafts_close.xpm"
 #include "pixmaps/drafts_open.xpm"
-#include "pixmaps/messageview_text.xpm"
 #include "pixmaps/mime_text_plain.xpm"
 #include "pixmaps/mime_text_html.xpm"
 #include "pixmaps/mime_application.xpm"
-#include "pixmaps/mime_application_octet_stream.xpm"
 #include "pixmaps/mime_image.xpm"
 #include "pixmaps/mime_audio.xpm"
 #include "pixmaps/mime_text_enriched.xpm"
@@ -205,11 +203,9 @@ static StockPixmapData pixmaps[] =
 	{gpg_signed_xpm				, NULL, NULL, "gpg_signed", "  "},
 	{drafts_close_xpm			, NULL, NULL, "drafts_close", "  "},
 	{drafts_open_xpm			, NULL, NULL, "drafts_open", "  "},
-	{messageview_text_xpm			, NULL, NULL, "messageview_text", "  "},
 	{mime_text_plain_xpm			, NULL, NULL, "mime_text_plain", "  "},
 	{mime_text_html_xpm			, NULL, NULL, "mime_text_html", "  "},
 	{mime_application_xpm			, NULL, NULL, "mime_application", "  "},
-	{mime_application_octet_stream_xpm	, NULL, NULL, "mime_application_octet_stream", "  "},
 	{mime_image_xpm				, NULL, NULL, "mime_image", "  "},
 	{mime_audio_xpm				, NULL, NULL, "mime_audio", "  "},
 	{mime_text_enriched_xpm			, NULL, NULL, "mime_text_enriched", "  "},

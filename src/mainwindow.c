@@ -1971,6 +1971,8 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 	 * and mimeview icon list/ctree lose track of their visibility states */
 	if (!noticeview_is_visible(mainwin->messageview->noticeview)) 
 		gtk_widget_hide(GTK_WIDGET_PTR(mainwin->messageview->noticeview));
+	if (!noticeview_is_visible(mainwin->messageview->mimeview->siginfoview)) 
+		gtk_widget_hide(GTK_WIDGET_PTR(mainwin->messageview->mimeview->siginfoview));
 	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(mainwin->messageview->mimeview->mime_toggle)))
 		gtk_widget_hide(mainwin->messageview->mimeview->icon_mainbox);
 	else 
