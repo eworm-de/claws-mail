@@ -1,3 +1,9 @@
+2002-07-15 [christoph]	0.7.8claws69
+
+	* src/summaryview.c
+		removed setting folder status from summaryview.
+		folder.c should update all message counts correctly.
+	
 2002-07-15 [paul]	0.7.8claws68
 
 	* po/pt_BR.po

@@ -864,9 +864,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 
 	g_slist_free(mlist);
 
-	summaryview->folder_item->new    = summaryview->newmsgs;
-      	summaryview->folder_item->unread = summaryview->unread;
-      	summaryview->folder_item->total  = summaryview->messages;
 	folderview_update_msg_num(summaryview->folderview,
 				  summaryview->folderview->opened);
 
@@ -1690,10 +1687,6 @@ static void summary_status_show(SummaryView *summaryview)
 		gtk_label_set(GTK_LABEL(summaryview->statlabel_msgs),   "");
 		return;
 	}
-
-	summaryview->newmsgs	= summaryview->folder_item->new;
-      	summaryview->unread	= summaryview->folder_item->unread;
-      	summaryview->messages	= summaryview->folder_item->total;
 
 	rowlist = GTK_CLIST(summaryview->ctree)->selection;
 	for (cur = rowlist; cur != NULL; cur = cur->next) {
