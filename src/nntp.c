@@ -303,7 +303,7 @@ gint nntp_list(SockInfo *sock)
 	nntp_gen_send(sock, "LIST");
 
 	if ((ok = nntp_ok(sock, buf)) != NN_SUCCESS)
-		return NN_ERROR;
+		return ok;
 
 	if (verbose)
 		log_print("NNTP< %s\n", buf);
