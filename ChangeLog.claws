@@ -1,3 +1,8 @@
+2003-10-10 [thorsten]	0.9.6claws13
+
+	* src/mimeview.c
+		fix typo
+
 2003-10-10 [christoph]	0.9.6claws12
 
 	* src/stock_pixmap.[ch]

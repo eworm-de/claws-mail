@@ -427,9 +427,9 @@ static GtkCTreeNode *mimeview_append_part(MimeView *mimeview,
 	gchar *str[N_MIMEVIEW_COLS];
 
 	if (partinfo->type != MIMETYPE_UNKNOWN && partinfo->subtype) {
-		snprintf(content_type, 64, "%s/%s", procmime_get_type_str(partinfo->type), partinfo->subtype);
+		g_snprintf(content_type, 64, "%s/%s", procmime_get_type_str(partinfo->type), partinfo->subtype);
 	} else {
-		snprintf(content_type, 64, "UNKNOWN");
+		g_snprintf(content_type, 64, "UNKNOWN");
 	}
 
 	str[COL_MIMETYPE] = content_type;
