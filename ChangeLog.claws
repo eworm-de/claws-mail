@@ -1,3 +1,8 @@
+2004-01-20 [keith]	0.9.8claws38
+
+	* configure.ac
+		Revert AM_CONFIG_HEADER to AC_CONFIG_HEADER
+
 2004-01-20 [paul]	0.9.8claws37
 
 	* src/prefs_fonts.c
