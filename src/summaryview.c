@@ -3717,7 +3717,7 @@ void summary_thread_build(SummaryView *summaryview)
 						     msginfo->inreplyto);
 		}
 
-		if (parent == NULL) {
+		if (prefs_common.thread_by_subject && parent == NULL) {
 			parent = subject_table_lookup
 				(summaryview->subject_table,
 				 msginfo->subject);

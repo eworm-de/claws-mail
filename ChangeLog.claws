@@ -1,3 +1,10 @@
+2003-02-04 [colin]	0.8.9claws41
+
+	* src/prefs_common.[ch]
+	  src/procmsg.c
+	  src/summaryview.c
+	  	Add an option to disable threading by subject
+
 2003-02-04 [christoph]	0.8.9claws40
 
 	* src/inc.c
