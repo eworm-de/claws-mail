@@ -91,7 +91,6 @@ struct _MainWindow
 	GtkWidget *compose_mail_btn;
 	GtkWidget *compose_news_btn;
 	ComposeButtonType compose_btn_type;
-	GtkWidget *compose_popup;
 	
 	/* for the reply buttons */
 	GtkWidget *reply_btn;

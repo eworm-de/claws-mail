@@ -122,9 +122,6 @@ static void toolbar_compose_news_cb	(GtkWidget	*widget,
 					 gpointer	 data);
 static void toolbar_compose_mail_cb	(GtkWidget	*widget,
 					 gpointer	 data);
-static void toolbar_compose_popup_cb	(GtkWidget	*widget,
-					 GdkEventButton *event,
-					 gpointer	 data);
 static void toolbar_reply_cb		(GtkWidget	*widget,
 					 gpointer	 data);
 static void toolbar_reply_popup_cb	(GtkWidget	*widget,
@@ -646,11 +643,6 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Help/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Help/_About"),			NULL, about_show, 0, NULL}
 };
-static GtkItemFactoryEntry compose_popup_entries[] =
-{
-	{N_("/Compose an _email message"), NULL, compose_mail_cb, 0, NULL},
-	{N_("/Compose a _news message"), NULL, compose_news_cb, 0, NULL}
-};
 static GtkItemFactoryEntry reply_popup_entries[] =
 {
 	{N_("/Reply with _quote"), NULL, reply_cb, COMPOSE_REPLY_WITH_QUOTE, NULL},
@@ -739,11 +731,6 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_widget_show(handlebox);
 	gtk_box_pack_start(GTK_BOX(vbox), handlebox, FALSE, FALSE, 0);
 
-	/* create the popup menu for the compose button */
-	n_menu_entries = sizeof(compose_popup_entries) /
-			sizeof(compose_popup_entries[0]);
-	compose_popup = popupmenu_create(window, compose_popup_entries, n_menu_entries,
-				      "<ComposePopup>", mainwin);
 	/* create the popup menus for the reply buttons specials */
 	n_menu_entries = sizeof(reply_popup_entries) /
 			sizeof(reply_popup_entries[0]);
@@ -826,7 +813,6 @@ MainWindow *main_window_create(SeparateType type)
 	mainwin->statuslabel = statuslabel;
 	mainwin->ac_button   = ac_button;
 	mainwin->ac_label    = ac_label;
-	mainwin->compose_popup = compose_popup;
 	mainwin->reply_popup = reply_popup;
 	mainwin->replyall_popup = replyall_popup;
 	mainwin->replysender_popup = replysender_popup;
@@ -1478,15 +1464,6 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 
 		{NULL, 0}
 	};
-
-	/* the Email/News popup in the toolbar */
-	static const struct {
-		gchar *const entry;
-		SensitiveCond cond;
-	} entry_compose_popup[] = {
-		{"/Compose a news message", M_HAVE_NEWS_ACCOUNT},
-		{NULL, 0}
-	};
 	
 	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
 	state = main_window_get_current_state(mainwin);
@@ -1495,15 +1472,6 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		sensitive = ((entry[i].cond & state) == entry[i].cond);
 		menu_set_sensitive(ifactory, entry[i].entry, sensitive);
 	}
-
-	/* the Email/News popup in the toolbar */
-	ifactory = gtk_item_factory_from_widget(mainwin->compose_popup);
-
-	for (i = 0; entry_compose_popup[i].entry != NULL; i++) {
-		sensitive = ((entry_compose_popup[i].cond & state) == entry_compose_popup[i].cond);
-		menu_set_sensitive(ifactory, entry_compose_popup[i].entry, sensitive);
-	}
-
 }
 
 void main_window_popup(MainWindow *mainwin)
@@ -1805,7 +1773,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	CREATE_TOOLBAR_ICON(stock_mail_compose_xpm);
 	compose_mail_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					      _("Email"),
-					      _("Compose an email message - Right button: more options"),
+					      _("Compose an email message"),
 					      "New",
 					      icon_wid,
 					      toolbar_compose_mail_cb,
@@ -1816,7 +1784,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	CREATE_TOOLBAR_ICON(stock_news_compose_xpm);
 	compose_news_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
 					      _("News"),
-					      _("Compose a news message - Right button: more options"),
+					      _("Compose a news message"),
 					      "New",
 					      icon_wid,
 					      toolbar_compose_news_cb,
@@ -1921,14 +1889,6 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 			   mainwin);
 	*/
 
-	gtk_signal_connect(GTK_OBJECT(compose_mail_btn), "button_press_event",
-		GTK_SIGNAL_FUNC(toolbar_compose_popup_cb),
-		mainwin);
-
-	gtk_signal_connect(GTK_OBJECT(compose_news_btn), "button_press_event",
-		GTK_SIGNAL_FUNC(toolbar_compose_popup_cb),
-		mainwin);
-
 	gtk_signal_connect(GTK_OBJECT(reply_btn), "button_press_event",
 		GTK_SIGNAL_FUNC(toolbar_reply_popup_cb),
 		mainwin);
@@ -1968,16 +1928,6 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 }
 
 /* callback functions */
-static void toolbar_compose_popup_cb(GtkWidget *widget, GdkEventButton *event, gpointer data)
-{
-	MainWindow *mainwindow = (MainWindow *) data;
-	
-	if (!event) return;
-
-	if (event->button == 3)
-		gtk_menu_popup(GTK_MENU(mainwindow->compose_popup), NULL, NULL, NULL,	NULL, 1, 0);
-}
-
 static void toolbar_reply_popup_cb(GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
 	MainWindow *mainwindow = (MainWindow *) data;

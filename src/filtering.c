@@ -450,12 +450,12 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 	case MATCHACTION_EXECUTE:
 		cmd = matching_build_command(action->destination, info);
 		if (cmd == NULL)
-			return TRUE;
+			return FALSE;
 		else {
 			system(cmd);
 			g_free(cmd);
 		}
-		return FALSE;
+		return TRUE;
 
 	default:
 		return FALSE;
