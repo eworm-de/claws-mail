@@ -1,3 +1,13 @@
+2003-11-26 [paul]	0.9.6claws96
+
+	* po/es.po
+	  po/ja.po
+	  po/pl.po
+	  po/sk.po
+	  po/sr.po
+	  	update translations. submitted by Ricardo Mones Lastra,
+		Rui Hirokawa, Emil Nowak, Andrej Kacian, and Urke MMI
+
 2003-11-25 [christoph]	0.9.6claws95
 
 	* src/procmime.c
