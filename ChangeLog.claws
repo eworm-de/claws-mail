@@ -1,5 +1,8 @@
 2001-06-21 [alfons]
 
+	* src/compose.c
+		made the ruler correctly appear and disappear.
+
 	* src/Makefile.am
 		removed Hoa's work-in-progress-stuff (interesting!) so 
 		claws compiles ok.

@@ -3182,8 +3182,9 @@ static Compose *compose_create(PrefsAccount *account)
 		gtk_widget_hide(followup_entry);
 		gtk_table_set_row_spacing(GTK_TABLE(table), 6, 0);
 	}
-	gtk_widget_hide(ruler_hbox);
 
+	if (!prefs_common.show_ruler)
+		gtk_widget_hide(ruler_hbox);
 
 	select_account(compose, account);
 
