@@ -81,7 +81,7 @@ void menu_set_sensitive(GtkItemFactory *ifactory, const gchar *path,
 
 	widget = gtk_item_factory_get_item(ifactory, path);
 	if(widget == NULL) {
-		debug_print(_("unknown menu entry %s"), path);
+		debug_print(_("unknown menu entry %s\n"), path);
 		return;
 	}
 	gtk_widget_set_sensitive(widget, sensitive);

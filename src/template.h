@@ -27,9 +27,6 @@ struct _Template {
 
 typedef struct _Template Template;
 
-#define LOG_MESSAGE \
-	debug_mode == 0 ? (debug_mode == debug_mode) : (void)debug_print 
-
 void template_free (Template *tmpl);
 void template_clear_config (GSList *tmpl_list);
 GSList* template_read_config (void);

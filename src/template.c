@@ -36,7 +36,7 @@ static GSList* template_load(GSList *tmpl_list, gchar *filename)
 	char buf[32000];
 	gint bytes_read;
 
-	LOG_MESSAGE(_("%s:%d loading template from %s\n"), __FILE__, __LINE__, filename);
+	debug_print(_("%s:%d loading template from %s\n"), __FILE__, __LINE__, filename);
 
 	if ((fp = fopen(filename, "r")) == NULL) {
 		FILE_OP_ERROR(filename, "fopen");
@@ -48,7 +48,7 @@ static GSList* template_load(GSList *tmpl_list, gchar *filename)
 	if (fgets(buf, sizeof(buf), fp) == NULL) {
 		FILE_OP_ERROR(filename, "fgets");
 		g_free(tmpl);
-		LOG_MESSAGE(_("%s:%d exiting\n"), __FILE__, __LINE__);
+		debug_print(_("%s:%d exiting\n"), __FILE__, __LINE__);
 		return tmpl_list;
 	}
 	tmpl->name = g_strdup(g_strstrip(buf));
@@ -95,7 +95,7 @@ GSList* template_read_config(void)
 	GSList *tmpl_list = NULL;
 
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, TEMPLATES_DIR, NULL);
-	LOG_MESSAGE(_("%s:%d reading templates dir %s\n"), __FILE__, __LINE__, path);
+	debug_print(_("%s:%d reading templates dir %s\n"), __FILE__, __LINE__, path);
 
 	if ((dp = opendir(path)) == NULL) {
 		FILE_OP_ERROR(path, "opendir");
@@ -104,10 +104,10 @@ GSList* template_read_config(void)
 
 	while ((de = readdir(dp)) != NULL) {
 		filename = g_strconcat(path, G_DIR_SEPARATOR_S, de->d_name, NULL);
-		LOG_MESSAGE(_("%s:%d found file %s\n"), __FILE__, __LINE__, filename);
+		debug_print(_("%s:%d found file %s\n"), __FILE__, __LINE__, filename);
 
 		if (stat(filename, &s) != 0 || !S_ISREG(s.st_mode) ) {
-			LOG_MESSAGE(_("%s:%d %s is not an ordinary file\n"), 
+			debug_print(_("%s:%d %s is not an ordinary file\n"), 
 			            __FILE__, __LINE__, filename);
 			continue;
 		}
@@ -134,7 +134,7 @@ void template_write_config(GSList *tmpl_list)
 
 	if (!is_dir_exist(path)) {
 		if (is_file_exist(path)) {
-			LOG_MESSAGE(_("%s:%d file %s allready exists\n"), 
+			debug_print(_("%s:%d file %s allready exists\n"), 
 			            __FILE__, __LINE__, filename);
 			g_free(path);
 			return;
@@ -160,7 +160,7 @@ void template_write_config(GSList *tmpl_list)
 			return;
 		}
 
-		LOG_MESSAGE(_("%s:%d writing template \"%s\" to %s\n"), 
+		debug_print(_("%s:%d writing template \"%s\" to %s\n"), 
 		            __FILE__, __LINE__, tmpl->name, filename);
 		fputs(tmpl->name, fp);
 		fputs("\n", fp);

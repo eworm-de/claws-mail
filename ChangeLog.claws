@@ -1,3 +1,17 @@
+2001-09-18 [christoph]
+
+	* src/addr_compl.c
+	* src/template.[ch]
+		replace LOG_MESSAGE with debug_print
+	* src/compose.[ch]
+		gui improvements
+	* src/menu.c
+		added newline after debug message
+	* src/utils.h
+		using __VA_ARGS__ for debug_print macro
+	* tools/.cvsignore
+		ignore Makefile and Makefile.in
+
 2001-09-18 [paul]
 
 	* configure.in

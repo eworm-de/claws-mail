@@ -46,9 +46,6 @@
 #include "addressbook.h"
 #include "main.h"
 
-#define LOG_MESSAGE \
-	debug_mode == 0 ? (debug_mode == debug_mode) : debug_print 
-
 /* How it works:
  *
  * The address book is read into memory. We set up an address list
@@ -205,7 +202,7 @@ gint start_address_completion(void)
 			g_completion_add_items(g_completion, g_completion_list);
 	}
 	g_ref_count++;
-	LOG_MESSAGE("start_address_completion ref count %d\n", g_ref_count);
+	debug_print("start_address_completion ref count %d\n", g_ref_count);
 
 	return g_list_length(g_completion_list);
 }
@@ -422,7 +419,7 @@ gint invalidate_address_completion(void)
 {
 	if (g_ref_count) {
 		/* simply the same as start_address_completion() */
-		LOG_MESSAGE("Invalidation request for address completion\n");
+		debug_print("Invalidation request for address completion\n");
 		free_all();
 		init_all();
 		read_address_book();
@@ -440,7 +437,7 @@ gint end_address_completion(void)
 	if (0 == --g_ref_count)
 		free_all();
 
-	LOG_MESSAGE("end_address_completion ref count %d\n", g_ref_count);
+	debug_print("end_address_completion ref count %d\n", g_ref_count);
 
 	return g_ref_count; 
 }

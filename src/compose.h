@@ -37,7 +37,9 @@ typedef enum
 	COMPOSE_TO,
 	COMPOSE_CC,
 	COMPOSE_BCC,
-	COMPOSE_NEWSGROUPS
+	COMPOSE_REPLYTO,
+	COMPOSE_NEWSGROUPS,
+	COMPOSE_FOLLOWUPTO
 } ComposeEntryType;
 
 typedef enum
@@ -57,6 +59,13 @@ typedef enum
 	COMPOSE_NEW,
 	COMPOSE_REEDIT
 } ComposeMode;
+
+typedef struct {
+	guint headernum;
+	Compose *compose;
+	GtkWidget *combo;
+	GtkWidget *entry;
+} compose_headerentry;
 
 struct _Compose
 {
@@ -80,11 +89,14 @@ struct _Compose
 
 	GtkWidget *table_vbox;
 	GtkWidget *table;
+/*
 	GtkWidget *to_hbox;
 	GtkWidget *to_entry;
 	GtkWidget *newsgroups_hbox;
 	GtkWidget *newsgroups_entry;
+*/
 	GtkWidget *subject_entry;
+/*
 	GtkWidget *cc_hbox;
 	GtkWidget *cc_entry;
 	GtkWidget *bcc_hbox;
@@ -93,7 +105,7 @@ struct _Compose
 	GtkWidget *reply_entry;
 	GtkWidget *followup_hbox;
 	GtkWidget *followup_entry;
-
+*/
 	GtkWidget *paned;
 
 	GtkWidget *attach_scrwin;
@@ -115,6 +127,11 @@ struct _Compose
 
 	MsgInfo *targetinfo;
 	MsgInfo *replyinfo;
+
+	GtkWidget *header_table;
+	GSList *header_list;
+	guint header_nextrow;
+	compose_headerentry *header_last;
 
 	gchar	*replyto;
 	gchar	*cc;

@@ -117,7 +117,7 @@
 	perror(func); \
 }
 
-#define debug_print(format, data...) debug_print_real(__FILE__, __LINE__, format , ##data)
+#define debug_print(format, ...) debug_print_real(__FILE__, __LINE__, format , ##__VA_ARGS__)
 
 /* for macro expansion */
 #define Str(x)	#x
