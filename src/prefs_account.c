@@ -2533,7 +2533,7 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 
 		/* update pop_before_smtp sensitivity */
 		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_chkbtn, TRUE);
-		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_tm_entry, FALSE);
+		pop_bfr_smtp_tm_set_sens(NULL, NULL);
 		
 		if (!tmp_ac_prefs.account_name) {
 			gtk_toggle_button_set_active
