@@ -924,8 +924,12 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 
 		if (node == NULL && GTK_CLIST(ctree)->row_list != NULL)
 			node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list_end);
-		summary_select_node(summaryview, node,
-				    prefs_common.open_unread_on_enter);
+		if (prefs_common.open_unread_on_enter) {
+			summary_unlock(summaryview);
+			summary_select_node(summaryview, node, TRUE);
+			summary_lock(summaryview);
+		} else
+			summary_select_node(summaryview, node, FALSE);
 	}
 
 	summary_status_show(summaryview);

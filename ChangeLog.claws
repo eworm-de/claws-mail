@@ -1,3 +1,15 @@
+2001-10-06 [paul]	0.6.2claws21
+
+	* po/pt_BR.po
+		updated translation, contains some fixes and new
+		translations, submitted by Gustavo Noronha Silva
+		<kov@debian.org>
+
+	* src/prefs_common.c
+		change 'each' to 'every' - fix dubious English
+
+	* sync with sylpheed 0.6.2cvs11
+
 2001-10-05 [alfons]	0.6.2claws20
 
 	* src/mainwindow.[ch], src/folderview.c

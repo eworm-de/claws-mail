@@ -1,5 +1,17 @@
 Changes of Sylpheed
 
+* 0.6.3
+
+    * Message body text search has been implemented.
+    * The text part of nested multipart message, or HTML only message
+      is now correctly quoted on replying.
+    * The status of threading is now preserved for each folders.
+    * User name and password of IMAP4 account which include spaces are now
+      handled correctly.
+    * Workaround for 8bit characters conversion failure on C locale when
+      using libjconv has been made.
+    * Some bugs that caused crashes have been fixed.
+
 * 0.6.2
 
     * The new addressbook has been implemented (Match Grun).

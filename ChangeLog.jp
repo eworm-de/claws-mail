@@ -1,3 +1,9 @@
+2001-10-05
+
+	* src/summaryview.c: summary_show(): 「フォルダに入ったときに未読
+	  メッセージを開く」オプションが ON になっていてもメッセージを
+	  表示しないバグを修正。
+
 2001-10-03
 
 	* src/procmime.c: procmime_get_text_content(): HTML に対応。

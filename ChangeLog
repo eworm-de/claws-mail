@@ -1,3 +1,9 @@
+2001-10-05
+
+	* src/summaryview.c: summary_show(): fixed a bug that didn't show
+	  message even if the 'open unread message on entering folder'
+	  option was turned on.
+
 2001-10-03
 
 	* src/procmime.c: procmime_get_text_content(): supported HTML.
