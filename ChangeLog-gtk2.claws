@@ -1,3 +1,10 @@
+2004-07-18 [colin]	0.9.12cvs31.5
+
+	* src/compose.c
+		Fix trashing the primary clipboard when moving 
+		around with tab
+	(Fix Bug 536 Unintuitive: "To:" copied to clipboard)
+
 2004-07-18 [colin]	0.9.12cvs31.4
 
 	* src/codeconv.c

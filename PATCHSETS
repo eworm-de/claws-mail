@@ -41,3 +41,4 @@
 ( cvs diff -u -r 1.96.2.11 -r 1.96.2.12 src/textview.c; ) > 0.9.12cvs31.2.patchset
 ( cvs diff -u -r 1.382.2.23 -r 1.382.2.24 src/compose.c; ) > 0.9.12cvs31.3.patchset
 ( cvs diff -u -r 1.65.2.6 -r 1.65.2.7 src/codeconv.c; ) > 0.9.12cvs31.4.patchset
+( cvs diff -u -r 1.382.2.24 -r 1.382.2.25 src/compose.c; ) > 0.9.12cvs31.5.patchset
