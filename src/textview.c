@@ -1821,11 +1821,11 @@ static gboolean uri_security_check(RemoteURI *uri, TextView *textview)
 	    (!g_strncasecmp(clicked_str, "http:",  5) ||
 	     !g_strncasecmp(clicked_str, "https:", 6) ||
 	     !g_strncasecmp(clicked_str, "www.",   4))) {
+		gchar *str;
 		retval = FALSE;
 
 		/* allow uri->uri    == http://somewhere.com
 		   and   clicked_str ==        somewhere.com */
-		gchar *str;
 		str = g_strconcat("http://", clicked_str, NULL);
 
 		if (!g_strcasecmp(str, uri->uri))
