@@ -1,3 +1,35 @@
+2003-01-18 [melvin]	0.8.8claws116
+
+	* src/prefs_actions.c
+		Removed syntax limitation of only one '&' at the end of command.
+			Now actions that contain '>/dev/null 2>&1' are possible.
+
+2003-01-18 [melvin]	0.8.8claws115
+
+	* src/prefs_actions.c
+		Actions IO dialog: when the action ends
+		the "Close" button now has focus and [Escape] closes the
+		window.
+
+2003-01-18 [christoph]	0.8.8claws114
+
+	* src/procmsg.c
+		o add debug output when MsgInfos are really freed
+		o free GSLists in procmsg_find_children and
+		  procmsg_update_unread_children
+
+2003-01-18 [christoph]	0.8.8claws113
+
+	* src/mainwindow.c
+		reorder Configuration menu
+
+2003-01-18 [christoph]	0.8.8claws112
+
+	* src/compose.c
+		fix applying templates to forwarded messages
+
+	Patch submitted by Ivan Francolin Martinez <ivanfm@users.sourceforge.net>
+
 2003-01-17 [christoph]	0.8.8claws111
 
 	* src/folder.c

@@ -1135,6 +1135,8 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 	if (msginfo->refcnt > 0)
 		return;
 
+	debug_print("freeing msginfo %d is %s\n", msginfo->msgnum, msginfo->folder ? msginfo->folder->path : "(nil)");
+
 	if (msginfo->to_folder) {
 		msginfo->to_folder->op_count--;
 		folder_item_update(msginfo->to_folder, F_ITEM_UPDATE_MSGCNT);
@@ -1695,7 +1697,7 @@ GSList *procmsg_find_children (MsgInfo *info)
 {
 	GSList *children = NULL;
 	GSList *all, *cur;
-	
+
 	g_return_val_if_fail(info!=NULL, NULL);
 	if (info->msgid == NULL)
 		return NULL;
@@ -1712,7 +1714,8 @@ GSList *procmsg_find_children (MsgInfo *info)
 		if (tmp && tmp != info)
 			procmsg_msginfo_free(tmp);
 	}
-	
+	g_slist_free(all);
+
 	return children;
 }
 
@@ -1731,6 +1734,7 @@ static void procmsg_update_unread_children(MsgInfo *info, gboolean newly_marked)
 		}
 		procmsg_msginfo_free(tmp);
 	}
+	g_slist_free(children);
 }
 
 /**
