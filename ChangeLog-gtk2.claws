@@ -1,3 +1,9 @@
+2005-01-04 [colin]	0.9.13cvs25.8
+
+	* src/compose.c
+		Move the attachment list to gtk2
+		Patch by Alfons.
+
 2005-01-04 [colin]	0.9.13cvs25.7
 
 	* src/textview.c

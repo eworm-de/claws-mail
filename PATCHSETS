@@ -307,3 +307,4 @@
 ( cvs diff -u -r 1.382.2.82 -r 1.382.2.83 src/compose.c; ) > 0.9.13cvs25.5.patchset
 ( cvs diff -u -r 1.1.4.2 -r 1.1.4.3 src/gtk/gtkshruler.c; ) > 0.9.13cvs25.6.patchset
 ( cvs diff -u -r 1.96.2.38 -r 1.96.2.39 src/textview.c; ) > 0.9.13cvs25.7.patchset
+( cvs diff -u -r 1.382.2.83 -r 1.382.2.84 src/compose.c; ) > 0.9.13cvs25.8.patchset
