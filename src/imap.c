@@ -3206,9 +3206,16 @@ MsgInfo *imap_fetch_msginfo(Folder *_folder, FolderItem *item, gint num)
 	g_string_assign(str, tmp);
 	g_free(tmp);
 
-	msginfo = imap_parse_envelope(SESSION(session)->sock, item, str);
-	if (!msginfo) {
-		log_warning(_("can't parse envelope: %s\n"), str->str);
+	if (str->str[0] == '*') {
+		msginfo = imap_parse_envelope(SESSION(session)->sock,
+					      item, str);
+		if (!msginfo) {
+			log_warning(_("can't parse envelope: %s\n"), str->str);
+		}
+	}
+	else {
+		g_string_free(str, TRUE);
+		return NULL;
 	}
 
 	tmp = NULL;
@@ -3216,7 +3223,7 @@ MsgInfo *imap_fetch_msginfo(Folder *_folder, FolderItem *item, gint num)
 		g_free(tmp);
 		tmp = sock_getline(SESSION(session)->sock);
 	} while (!(tmp == NULL || tmp[0] != '*' || tmp[1] != ' '));
-	
+
 	msginfo->folder = item;
 
 	g_string_free(str, TRUE);

@@ -1,3 +1,11 @@
+2002-07-26 [hoa]	0.8.0claws20
+
+	* src/folder.c
+		Fixed a condition in folder_item_destroy()
+
+	* src/imap.c
+		Fixed an error in IMAP protocol
+
 2002-07-26 [alfons]	0.8.0claws19
 
 	* src/folder.c
