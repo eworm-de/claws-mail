@@ -1,3 +1,9 @@
+2003-01-08 [alfons]	0.8.8claws69
+	
+	* src/addressadd.c
+		apply patch by Kim Schulz to fix build breakage
+		because of missing variable
+
 2003-01-08 [paul]	0.8.8claws68
 
 	* sync with 0.8.8cvs2

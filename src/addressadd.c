@@ -346,7 +346,7 @@ static void addressadd_load_data( AddressIndex *addrIndex ) {
 gboolean addressadd_selection( AddressIndex *addrIndex, const gchar *name, const gchar *address, const gchar *remarks ) {
 	gboolean retVal = FALSE;
 	ItemPerson *person = NULL;
-
+	FolderInfo *fi = NULL;
 	addressadd_cancelled = FALSE;
 	if( ! addressadd_dlg.window ) addressadd_create();
 	gtk_widget_grab_focus(addressadd_dlg.ok_btn);
@@ -379,7 +379,7 @@ gboolean addressadd_selection( AddressIndex *addrIndex, const gchar *name, const
 			returned_name = gtk_editable_get_chars( GTK_EDITABLE(addressadd_dlg.entry_name), 0, -1 );
 			returned_remarks = gtk_editable_get_chars( GTK_EDITABLE(addressadd_dlg.entry_remarks), 0, -1 );
 
-			FolderInfo *fi = addressadd_dlg.fiSelected;
+			fi = addressadd_dlg.fiSelected;
 			
 			person = addrbook_add_contact( fi->book, fi->folder, 
 							returned_name, 
