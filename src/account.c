@@ -270,13 +270,13 @@ PrefsAccount *account_find_from_item(FolderItem *item)
 
 	ac = item->account;
 	if (!ac) {
-		FolderItem *cur_item = item->parent;
+		FolderItem *cur_item = folder_item_parent(item);
 		while (cur_item != NULL) {
 			if (cur_item->account && cur_item->apply_sub) {
 				ac = cur_item->account;
 				break;
 			}				
-			cur_item = cur_item->parent;
+			cur_item = folder_item_parent(cur_item);
 		}
 	}
 	if (!ac)

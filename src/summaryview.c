@@ -953,7 +953,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 	summary_set_column_titles(summaryview);
 
 	buf = NULL;
-	if (!item || !item->path || !item->parent || item->no_select) {
+	if (!item || !item->path || !folder_item_parent(item) || item->no_select) {
 		g_free(buf);
 		debug_print("empty folder\n\n");
 		summary_set_hide_read_msgs_menu(summaryview, FALSE);

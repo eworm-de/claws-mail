@@ -1528,7 +1528,7 @@ SensitiveCond main_window_get_current_state(MainWindow *mainwin)
 		state |= M_UNLOCKED;
 	if (selection != SUMMARY_NONE)
 		state |= M_MSG_EXIST;
-	if (item && item->path && item->parent && !item->no_select) {
+	if (item && item->path && folder_item_parent(item) && !item->no_select) {
 		state |= M_EXEC;
 		/*		if (item->folder->type != F_NEWS) */
 		state |= M_ALLOW_DELETE;

@@ -1,3 +1,19 @@
+2003-12-27 [christoph]	0.9.8claws9
+
+	* src/common/utils.[ch]
+		add g_node_map() to map a GNode into a new GNode
+		converting all node data's with a function
+
+	* src/account.c
+	* src/folder.[ch]
+	* src/folderview.c
+	* src/imap.c
+	* src/mainwindow.c
+	* src/summaryview.c
+		o use g_node_map() to convert XML <-> Folder
+		o remove redundant FolderItem->parent and
+		  replace it with folder_item_parent()
+
 2003-12-23 [christoph]	0.9.8claws8
 
 	* src/folder.[ch]

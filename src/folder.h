@@ -279,8 +279,6 @@ struct _FolderItem
 
 	GNode *node;
 
-	FolderItem *parent;
-
 	Folder *folder;
 
 	PrefsAccount *account;
@@ -340,6 +338,7 @@ void        folder_item_append		(FolderItem	*parent,
 void        folder_item_remove		(FolderItem	*item);
 void        folder_item_remove_children	(FolderItem	*item);
 void        folder_item_destroy		(FolderItem	*item);
+FolderItem *folder_item_parent		(FolderItem	*item);
 
 void 	    folder_item_set_xml		(Folder		 *folder,
 					 FolderItem	 *item,
