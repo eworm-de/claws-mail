@@ -1,3 +1,13 @@
+2004-07-13 [colin]	0.9.12cvs18.5
+
+	* src/matcher.c
+	* src/matcher.h
+	* src/matcher_parser_parse.y
+	* src/prefs_matcher.c
+	* src/gtk/quicksearch.c
+		Add 'partial' ('p') match string to find partially
+		downloaded messages
+
 2004-07-13 [colin]	0.9.12cvs18.4
 
 	* src/pop.c

@@ -88,6 +88,8 @@ static const MatchParser matchparser_tab[] = {
 	{MATCHCRITERIA_SCORE_GREATER, "score_greater"},
 	{MATCHCRITERIA_SCORE_LOWER, "score_lower"},
 	{MATCHCRITERIA_SCORE_EQUAL, "score_equal"},
+	{MATCHCRITERIA_PARTIAL, "partial"},
+	{MATCHCRITERIA_NOT_PARTIAL, "~partial"},
 
 	{MATCHCRITERIA_SIZE_GREATER, "size_greater"},
 	{MATCHCRITERIA_SIZE_SMALLER, "size_smaller"},
@@ -601,6 +603,10 @@ static gboolean matcherprop_match_one_header(MatcherProp *matcher,
 	case MATCHCRITERIA_NOT_MESSAGE:
 	case MATCHCRITERIA_NOT_HEADERS_PART:
 		return !matcherprop_string_match(matcher, buf);
+	case MATCHCRITERIA_PARTIAL:
+		return matcherprop_string_match(matcher, buf);
+	case MATCHCRITERIA_NOT_PARTIAL:
+		return !matcherprop_string_match(matcher, buf);
 	}
 	return FALSE;
 }
@@ -621,6 +627,8 @@ static gboolean matcherprop_criteria_headers(const MatcherProp *matcher)
 	case MATCHCRITERIA_NOT_HEADER:
 	case MATCHCRITERIA_HEADERS_PART:
 	case MATCHCRITERIA_NOT_HEADERS_PART:
+	case MATCHCRITERIA_PARTIAL:
+	case MATCHCRITERIA_NOT_PARTIAL:
 		return TRUE;
 	default:
 		return FALSE;

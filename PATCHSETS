@@ -18,3 +18,4 @@
 ( cvs diff -u -r 1.1.2.5 -r 1.1.2.6 src/gtk/quicksearch.c; ) > 0.9.12cvs18.2.patchset
 ( cvs diff -u -r 1.213.2.7 -r 1.213.2.8 src/folder.c; cvs diff -u -r 1.94.2.18 -r 1.94.2.19 src/messageview.c; cvs diff -u -r 1.16.2.5 -r 1.16.2.6 src/msgcache.c; cvs diff -u -r 1.56.2.12 -r 1.56.2.13 src/pop.c; cvs diff -u -r 1.17.2.9 -r 1.17.2.10 src/pop.h; cvs diff -u -r 1.47.2.6 -r 1.47.2.7 src/procheader.c; cvs diff -u -r 1.9.2.4 -r 1.9.2.5 src/common/defs.h; ) > 0.9.12cvs18.3.patchset
 ( cvs diff -u -r 1.56.2.13 -r 1.56.2.14 src/pop.c; ) > 0.9.12cvs18.4.patchset
+( cvs diff -u -r 1.75.2.2 -r 1.75.2.3 src/matcher.c; cvs diff -u -r 1.39.2.3 -r 1.39.2.4 src/matcher.h; cvs diff -u -r 1.25.2.3 -r 1.25.2.4 src/matcher_parser_parse.y; cvs diff -u -r 1.43.2.5 -r 1.43.2.6 src/prefs_matcher.c; cvs diff -u -r 1.1.2.6 -r 1.1.2.7 src/gtk/quicksearch.c; ) > 0.9.12cvs18.5.patchset

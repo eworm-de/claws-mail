@@ -197,6 +197,7 @@ static gchar *search_descr_strings[] = {
 	"x S",	 N_("messages which contain S in References header"),
 	"X cmd", N_("messages returning 0 when passed to command"),
 	"y S",	 N_("messages which contain S in X-Label header"),
+	"p",	 N_("uncomplete messages (not entirely downloaded)"),
 	"",	 "" ,
 	"&",	 N_("logical AND operator"),
 	"|",	 N_("logical OR operator"),
@@ -497,6 +498,7 @@ gchar *expand_search_string(const gchar *search_string)
 		{ "y",	"header \"X-Label\"",		1,	TRUE,	TRUE  },
 		{ "&",	"&",				0,	FALSE,	FALSE },
 		{ "|",	"|",				0,	FALSE,	FALSE },
+		{ "p",	"partial",			0,	FALSE, 	FALSE },
 		{ NULL,	NULL,				0,	FALSE,	FALSE }
 	};
 
