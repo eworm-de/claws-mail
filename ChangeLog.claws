@@ -1,3 +1,8 @@
+2003-01-24 [match]	0.8.9claws4
+
+	* src/vcard.c
+		fixed bug with Quoted-Printable
+
 2003-01-25 [paul]	0.8.9claws3
 
 	* src/folder.[ch]
