@@ -176,6 +176,7 @@ INCLUDES = \
 	$(GTK_CFLAGS) \
 	$(GDK_IMLIB_CFLAGS) \
 	$(GDK_PIXBUF_CFLAGS) \
+        $(PSPELL_CFLAGS)    \
 	-I$(includedir)
 
 sylpheed_LDADD = \
@@ -184,13 +185,15 @@ sylpheed_LDADD = \
 	$(GTK_LIBS) \
 	$(GDK_IMLIB_LIBS) \
 	$(GDK_PIXBUF_LIBS) \
-	$(GPGME_LIBS)
+	$(GPGME_LIBS) \
+        $(PSPELL_LIBS)
 
 CPPFLAGS = \
 	-DLOCALEDIR=\""$(localedir)"\" \
 	-DMANUALDIR=\""$(manualdir)"\" \
 	-DHOST_ALIAS=\""$(host_alias)"\" \
-	-DSYSCONFDIR=\""$(sysconfdir)"\"
+	-DSYSCONFDIR=\""$(sysconfdir)"\" \
+        -DPSPELL_PATH=\""$(PSPELL_PATH)"\"
 
 YFLAGS = -d
 
@@ -199,4 +202,3 @@ BUILT_SOURCES = \
 	quote_fmt_lex.c \
 	quote_fmt_parse.c \
 	quote_fmt_parse.h
-	

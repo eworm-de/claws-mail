@@ -32,6 +32,10 @@ typedef struct _AttachInfo	AttachInfo;
 #include "addressbook.h"
 #include "prefs_account.h"
 
+#ifdef USE_PSPELL
+#include "gtkspell.h"
+#endif
+
 typedef enum
 {
 	COMPOSE_TO,
@@ -170,6 +174,11 @@ struct _Compose
 	pid_t  exteditor_pid;
 	gint   exteditor_readdes;
 	gint   exteditor_tag;
+
+#if USE_PSPELL
+        /* Pspell spell checker */
+        GtkPspell *gtkpspell;
+#endif
 };
 
 struct _AttachInfo

@@ -298,6 +298,10 @@ int main(int argc, char *argv[])
 
 	gtk_main();
 
+#if USE_PSPELL       
+	gtkpspell_finished(gtkpspellconfig);
+#endif
+
 	return 0;
 }
 

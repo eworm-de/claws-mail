@@ -3333,6 +3333,10 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	gint count = 0;
 	gint i;
 
+#if USE_PSPELL
+        GtkPspell * gtkpspell = NULL;
+#endif
+
 	g_return_val_if_fail(account != NULL, NULL);
 
 	debug_print(_("Creating compose window...\n"));
@@ -3570,7 +3574,18 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	gtk_signal_connect(GTK_OBJECT(text), "drag_data_received",
 			   GTK_SIGNAL_FUNC(compose_insert_drag_received_cb),
 			   compose);
-
+#if USE_PSPELL
+        if (prefs_common.enable_pspell) {
+		gtkpspell = gtkpspell_new_with_config(gtkpspellconfig,
+						      prefs_common.pspell_path,
+						      prefs_common.dictionary_path,
+						      PSPELL_FASTMODE,NULL);
+		if (gtkpspell == NULL)
+			prefs_common.enable_pspell = FALSE;
+		else
+			gtkpspell_attach(gtkpspell, GTK_STEXT(text));
+        }
+#endif
 	gtk_widget_show_all(vbox);
 
 	/* pane between attach clist and text */
@@ -3749,6 +3764,11 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose->use_replyto    = FALSE;
 	compose->use_followupto = FALSE;
 */
+
+#if USE_PSPELL
+        compose->gtkpspell      = gtkpspell;
+#endif
+
 	/*
 	if (account->protocol != A_NNTP) {
 		menuitem = gtk_item_factory_get_item(ifactory, "/Message/To");
@@ -4992,7 +5012,12 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 			return;
 		}
 	}
-
+#if USE_PSPELL
+        if (compose->gtkpspell) {
+	        gtkpspell_detach(compose->gtkpspell);
+		compose->gtkpspell = gtkpspell_delete(compose->gtkpspell);
+        }
+#endif
 	gtk_widget_destroy(compose->window);
 }
 
