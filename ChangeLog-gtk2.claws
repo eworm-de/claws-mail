@@ -1,3 +1,9 @@
+2004-08-26 [colin]	0.9.12cvs82.3
+
+	* src/main.c
+	* src/wizard.c
+		Fix account folders duplication
+
 2004-08-25 [colin]	0.9.12cvs82.2
 
 	* src/wizard.c

@@ -351,15 +351,17 @@ int main(int argc, char *argv[])
 					lock_socket_input_cb,
 					mainwin);
 
+	account_read_config_all();
+
 	if (folder_read_list() < 0) {
-		run_wizard(mainwin, TRUE);
+		if (!run_wizard(mainwin, TRUE))
+			exit(1);
 		folder_write_list();
 	}
-	
-	account_read_config_all();
-	
+
 	if (!account_get_list()) {
-		run_wizard(mainwin, FALSE);
+		if (!run_wizard(mainwin, FALSE))
+			exit(1);
 		account_read_config_all();
 		if(!account_get_list())
 			exit_sylpheed(mainwin);

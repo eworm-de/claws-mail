@@ -44,6 +44,7 @@
 #include "intl.h"
 #include "utils.h"
 #include "gtk/menu.h"
+#include "account.h"
 #include "prefs_account.h"
 #include "mainwindow.h"
 #include "stock_pixmap.h"
@@ -88,6 +89,8 @@ typedef struct
 	
 	gboolean create_mailbox;
 	gboolean finished;
+	gboolean result;
+
 } WizardWindow;
 
 static void wizard_write_config(WizardWindow *wizard)
@@ -139,6 +142,7 @@ static void wizard_write_config(WizardWindow *wizard)
 	account_list = g_list_append(account_list, prefs_account);
 	prefs_account_write_config_all(account_list);
 	prefs_account_free(prefs_account);
+	account_read_config_all();
 }
 
 static GtkWidget* create_page (WizardWindow *wizard, const char * title)
@@ -398,12 +402,14 @@ wizard_response_cb (GtkDialog * dialog, int response, gpointer data)
 	if (response == CANCEL)
 	{
 		wizard->finished = TRUE;
+		wizard->result = FALSE;
 		gtk_widget_destroy (GTK_WIDGET(dialog));
 	}
 	else if (response == FINISHED)
 	{
 		wizard_write_config(wizard);
 		wizard->finished = TRUE;
+		wizard->result = TRUE;
 		gtk_widget_destroy (GTK_WIDGET(dialog));
 	}
 	else
@@ -438,7 +444,8 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 	GtkWidget *page;
 	GtkWidget *widget;
 	gchar     *text;
-	GSList     *cur;
+	GSList    *cur;
+	gboolean   result;
 	
 	wizard->mainwin = mainwin;
 	wizard->create_mailbox = create_mailbox;
@@ -532,10 +539,12 @@ gboolean run_wizard(MainWindow *mainwin, gboolean create_mailbox) {
 	while (!wizard->finished)
 		gtk_main_iteration();
 
+	result = wizard->result;
+	
 	GTK_EVENTS_FLUSH();
 
 	gtk_widget_show(mainwin->window);
 	g_free(wizard);
 
-	return TRUE;
+	return result;
 }
