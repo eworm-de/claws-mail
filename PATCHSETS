@@ -323,3 +323,4 @@
 ( cvs diff -u -r 1.30.2.7 -r 1.30.2.8 src/prefs_toolbar.c; ) > 0.9.13cvs33.2.patchset
 ( cvs diff -u -r 1.396.2.19 -r 1.396.2.20 ChangeLog; cvs diff -u -r 1.391.2.19 -r 1.391.2.20 ChangeLog.jp; cvs diff -u -r 1.2504.2.42 -r 1.2504.2.43 ChangeLog.claws; ) > 0.9.13cvs36.1.patchset
 ( cvs diff -u -r 1.382.2.85 -r 1.382.2.86 src/compose.c; ) > 0.9.13cvs36.2.patchset
+( cvs diff -u -r 1.30.2.8 -r 1.30.2.9 src/prefs_toolbar.c; cvs diff -u -r 1.4.2.6 -r 1.4.2.7 src/prefs_fonts.c; cvs diff -u -r 1.60.2.9 -r 1.60.2.10 src/prefs_actions.c; ) > 0.9.13cvs36.3.patchset
