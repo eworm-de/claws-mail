@@ -1,3 +1,16 @@
+2002-02-07 [darko]	0.7.0claws54
+
+	* src/compose.[ch]
+	* src/filtering.c
+	* src/gtkutils.[ch]
+	* src/prefs_template.c
+	* src/quote_fmt.h
+	* src/quote_fmt_parse.y
+	* src/summaryview.c
+	* src/utils.[ch]
+		When replying or forwarding an email don't quote the entire
+		mail body but use the part of the message text that is selected
+
 2002-02-06 [melvin]	0.7.0claws53
 
 	* src/prefs_common.[ch]

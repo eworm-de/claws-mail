@@ -433,7 +433,7 @@ static gint prefs_template_clist_set_row(gint row)
 		MsgInfo dummyinfo;
 
 		memset(&dummyinfo, 0, sizeof(MsgInfo));
-		quote_fmt_init(&dummyinfo, NULL);
+		quote_fmt_init(&dummyinfo, NULL, NULL);
 		quote_fmt_scan_string(value);
 		quote_fmt_parse();
 		parsed_buf = quote_fmt_get_buffer();

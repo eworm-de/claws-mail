@@ -1842,6 +1842,22 @@ FILE *my_tmpfile(void)
 	return tmpfile();
 }
 
+gchar *write_buffer_to_file(const gchar *buf, guint bufsize)
+{
+	FILE *fp;
+	gchar *tmp_file = NULL;
+
+	tmp_file = get_tmp_file();
+	fp = fopen(tmp_file, "w");
+	if (fp) {
+		fwrite(buf, 1, bufsize, fp);
+		fclose(fp);
+	}
+	else tmp_file = NULL;
+
+	return tmp_file;
+}
+
 gint execute_async(gchar *const argv[])
 {
 	pid_t pid;

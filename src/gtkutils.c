@@ -486,4 +486,24 @@ void gtkut_widget_set_composer_icon(GtkWidget *widget)
 	gdk_window_set_icon(widget->window, NULL, xpm, bmp);	
 }
 
+const gchar *gtkut_get_selection(GtkWidget *widget)
+{
+	gchar *seltext = NULL;
+	guint start_pos, end_pos;
+	GtkEditable *editable = (GtkEditable *) widget;
 
+	if (editable->has_selection) {
+		if (editable->selection_start_pos < editable->selection_end_pos) {
+			start_pos = editable->selection_start_pos;
+			end_pos = editable->selection_end_pos;
+		}
+		else {
+			start_pos = editable->selection_end_pos;
+			end_pos = editable->selection_start_pos;
+		}
+
+		seltext = gtk_editable_get_chars(editable, start_pos, end_pos);
+	}
+
+	return seltext;
+}

@@ -3966,46 +3966,53 @@ void summary_reply(SummaryView *summaryview, ComposeMode mode)
 	GtkWidget *widget;
 	MsgInfo *msginfo;
 	GList  *sel = GTK_CLIST(summaryview->ctree)->selection;
+	gchar *seltext = NULL;
 
 	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
 					      summaryview->selected);
 	if (!msginfo) return;
 
+	if (summaryview && summaryview->messageview  &&
+	    summaryview->messageview->textview       &&
+	    summaryview->messageview->textview->text)
+		seltext = (gchar *) gtkut_get_selection(
+				summaryview->messageview->textview->text);
+
 	switch (mode) {
 	case COMPOSE_REPLY:
 		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      FALSE, FALSE);
+			      FALSE, FALSE, seltext);
 		break;
 	case COMPOSE_REPLY_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, FALSE, FALSE);
+		compose_reply(msginfo, TRUE, FALSE, FALSE, seltext);
 		break;
 	case COMPOSE_REPLY_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, FALSE, FALSE);
+		compose_reply(msginfo, FALSE, FALSE, FALSE, seltext);
 		break;
 	case COMPOSE_REPLY_TO_SENDER:
 		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      FALSE, TRUE);
+			      FALSE, TRUE, seltext);
 		break;
 	case COMPOSE_FOLLOWUP_AND_REPLY_TO:
 		compose_followup_and_reply_to(msginfo,
 					      prefs_common.reply_with_quote,
-					      FALSE, TRUE);
+					      FALSE, TRUE, seltext);
 		break;
 	case COMPOSE_REPLY_TO_SENDER_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, FALSE, TRUE);
+		compose_reply(msginfo, TRUE, FALSE, TRUE, seltext);
 		break;
 	case COMPOSE_REPLY_TO_SENDER_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, FALSE, TRUE);
+		compose_reply(msginfo, FALSE, FALSE, TRUE, seltext);
 		break;
 	case COMPOSE_REPLY_TO_ALL:
 		compose_reply(msginfo, prefs_common.reply_with_quote,
-			      TRUE, TRUE);
+			      TRUE, TRUE, seltext);
 		break;
 	case COMPOSE_REPLY_TO_ALL_WITH_QUOTE:
-		compose_reply(msginfo, TRUE, TRUE, TRUE);
+		compose_reply(msginfo, TRUE, TRUE, TRUE, seltext);
 		break;
 	case COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE:
-		compose_reply(msginfo, FALSE, TRUE, TRUE);
+		compose_reply(msginfo, FALSE, TRUE, TRUE, seltext);
 		break;
 	case COMPOSE_FORWARD:
 		if (prefs_common.forward_as_attachment) {
@@ -4018,7 +4025,7 @@ void summary_reply(SummaryView *summaryview, ComposeMode mode)
 		break;
 	case COMPOSE_FORWARD_INLINE:
 		if (!sel->next) {
-			compose_forward(NULL, msginfo, FALSE);
+			compose_forward(NULL, msginfo, FALSE, seltext);
 			break;
 		}
 		/* if (sel->next) FALL THROUGH */
@@ -4041,6 +4048,9 @@ void summary_reply(SummaryView *summaryview, ComposeMode mode)
 	}
 
 	summary_set_marks_selected(summaryview);
+
+	if (seltext)
+		g_free((gchar *) seltext);
 }
 
 /* color label */

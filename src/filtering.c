@@ -193,7 +193,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 
 	case MATCHACTION_FORWARD:
 		account = account_find_from_id(action->account_id);
-		compose = compose_forward(account, info, FALSE);
+		compose = compose_forward(account, info, FALSE, NULL);
 		if (compose->account->protocol == A_NNTP)
 			compose_entry_append(compose, action->destination,
 					     COMPOSE_NEWSGROUPS);
@@ -213,7 +213,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 	case MATCHACTION_FORWARD_AS_ATTACHMENT:
 
 		account = account_find_from_id(action->account_id);
-		compose = compose_forward(account, info, TRUE);
+		compose = compose_forward(account, info, TRUE, NULL);
 		if (compose->account->protocol == A_NNTP)
 			compose_entry_append(compose, action->destination,
 					     COMPOSE_NEWSGROUPS);

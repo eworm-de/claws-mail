@@ -219,14 +219,17 @@ Compose *compose_new_with_folderitem	(PrefsAccount	*account,
 void compose_followup_and_reply_to	(MsgInfo	*msginfo,
 					 gboolean	 quote,
 					 gboolean	 to_all,
-					 gboolean	 ignore_replyto);
+					 gboolean	 ignore_replyto,
+					 const gchar	*seltext);
 void compose_reply			(MsgInfo	*msginfo,
 					 gboolean	 quote,
 					 gboolean	 to_all,
-					 gboolean	 ignore_replyto);
+					 gboolean	 ignore_replyto,
+					 const gchar	*seltext);
 Compose *compose_forward		(PrefsAccount *account,
 					 MsgInfo	*msginfo,
-					 gboolean	 as_attach);
+					 gboolean	 as_attach,
+					 const gchar	*seltext);
 Compose *compose_forward_multiple	(PrefsAccount	*account, 
 					 GSList		*msginfo_list);
 Compose *compose_bounce			(PrefsAccount	*account,

@@ -172,7 +172,8 @@ static gchar *compose_parse_references		(const gchar	*ref,
 static gchar *compose_quote_fmt			(Compose	*compose,
 						 MsgInfo	*msginfo,
 						 const gchar	*fmt,
-						 const gchar	*qmark);
+						 const gchar	*qmark,
+						 const gchar	*seltext);
 
 static void compose_reply_set_entry		(Compose	*compose,
 						 MsgInfo	*msginfo,
@@ -441,7 +442,8 @@ static void compose_attach_parts	(Compose	*compose,
 static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				  gboolean to_all,
 				  gboolean ignore_replyto,
-				  gboolean followup_and_reply_to);
+				  gboolean followup_and_reply_to,
+				  const gchar *seltext);
 
 void compose_headerentry_changed_cb	   (GtkWidget	       *entry,
 					    ComposeHeaderEntry *headerentry);
@@ -664,7 +666,7 @@ Compose *compose_bounce(PrefsAccount *account, MsgInfo *msginfo)
 				   msginfo->subject);
 	gtk_editable_set_editable(GTK_EDITABLE(c->subject_entry), FALSE);
 
-	compose_quote_fmt(c, msginfo, "%M", NULL);
+	compose_quote_fmt(c, msginfo, "%M", NULL, NULL);
 	gtk_editable_set_editable(GTK_EDITABLE(c->text), FALSE);
 
 	ifactory = gtk_item_factory_from_widget(c->popupmenu);
@@ -797,22 +799,26 @@ Compose *compose_new_followup_and_replyto(PrefsAccount *account,
 */
 
 void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
-		   gboolean ignore_replyto)
+		   gboolean ignore_replyto, const gchar *seltext)
 {
-	compose_generic_reply(msginfo, quote, to_all, ignore_replyto, FALSE);
+	compose_generic_reply(msginfo, quote, to_all, ignore_replyto, FALSE,
+			      seltext);
 }
 
 void compose_followup_and_reply_to(MsgInfo *msginfo, gboolean quote,
 				   gboolean to_all,
-				   gboolean ignore_replyto)
+				   gboolean ignore_replyto,
+				   const gchar *seltext)
 {
-	compose_generic_reply(msginfo, quote, to_all, ignore_replyto, TRUE);
+	compose_generic_reply(msginfo, quote, to_all, ignore_replyto, TRUE,
+			      seltext);
 }
 
 static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				  gboolean to_all,
 				  gboolean ignore_replyto,
-				  gboolean followup_and_reply_to)
+				  gboolean followup_and_reply_to,
+				  const gchar *seltext)
 {
 	Compose *compose;
 	PrefsAccount *account;
@@ -919,7 +925,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
 		quote_str = compose_quote_fmt(compose, msginfo,
 					      prefs_common.quotefmt,
-					      qmark);
+					      qmark, seltext);
 	}
 
 	if (prefs_common.auto_sig)
@@ -934,7 +940,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	gtk_stext_thaw(text);
 	gtk_widget_grab_focus(compose->text);
 
-        if (prefs_common.auto_exteditor)
+	if (prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
 }
 
@@ -1160,7 +1166,7 @@ if (msginfo->var && *msginfo->var) { \
 }
 
 Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
-			 gboolean as_attach)
+			 gboolean as_attach, const gchar *seltext)
 {
 	Compose *compose;
 	/*	PrefsAccount *account; */
@@ -1232,7 +1238,8 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 			qmark = "> ";
 
 		quote_str = compose_quote_fmt(compose, msginfo,
-					      prefs_common.fw_quotefmt, qmark);
+					      prefs_common.fw_quotefmt, qmark,
+					      seltext);
 		compose_attach_parts(compose, msginfo);
 	}
 
@@ -1702,7 +1709,8 @@ static gchar *compose_parse_references(const gchar *ref, const gchar *msgid)
 }
 
 static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
-				const gchar *fmt, const gchar *qmark)
+				const gchar *fmt, const gchar *qmark,
+				const gchar *seltext)
 {
 	GtkSText *text = GTK_STEXT(compose->text);
 	gchar *quote_str = NULL;
@@ -1711,7 +1719,7 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	gint len;
 
 	if (qmark != NULL) {
-		quote_fmt_init(msginfo, NULL);
+		quote_fmt_init(msginfo, NULL, NULL);
 		quote_fmt_scan_string(qmark);
 		quote_fmt_parse();
 
@@ -1723,7 +1731,7 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	}
 
 	if (fmt && *fmt != '\0') {
-		quote_fmt_init(msginfo, quote_str);
+		quote_fmt_init(msginfo, quote_str, seltext);
 		quote_fmt_scan_string(fmt);
 		quote_fmt_parse();
 
@@ -5028,7 +5036,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl)
 
 		memset(&dummyinfo, 0, sizeof(MsgInfo));
 		parsed_str = compose_quote_fmt(compose, &dummyinfo,
-					       tmpl->value, NULL);
+					       tmpl->value, NULL, NULL);
 	} else {
 		if (prefs_common.quotemark && *prefs_common.quotemark)
 			qmark = prefs_common.quotemark;
@@ -5036,7 +5044,7 @@ static void compose_template_apply(Compose *compose, Template *tmpl)
 			qmark = "> ";
 
 		parsed_str = compose_quote_fmt(compose, compose->replyinfo,
-					       tmpl->value, qmark);
+					       tmpl->value, qmark, NULL);
 	}
 
 	if (parsed_str && prefs_common.auto_sig)

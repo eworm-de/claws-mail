@@ -23,6 +23,7 @@ int yylex(void);
 
 static MsgInfo *msginfo = NULL;
 static gboolean *visible = NULL;
+static gchar *seltext = NULL;
 static gint maxsize = 0;
 static gint stacksize = 0;
 
@@ -93,10 +94,12 @@ gchar *quote_fmt_get_buffer(void)
 		add_buffer(tmp); \
 	}
 
-void quote_fmt_init(MsgInfo *info, gchar *my_quote_str)
+void quote_fmt_init(MsgInfo *info, gchar *my_quote_str,
+		    const gchar *selectiontext)
 {
 	quote_str = my_quote_str;
 	msginfo = info;
+	seltext = (gchar *) selectiontext;
 	stacksize = 0;
 	add_visibility(TRUE);
 	if (buffer != NULL)
@@ -261,7 +264,10 @@ special:
 	}
 	| SHOW_MESSAGE
 	{
-		if (msginfo->folder) {
+		if (seltext) {
+			INSERT(seltext);
+		}
+		else if (msginfo->folder) {
 			gchar buf[BUFFSIZE];
 			FILE *fp;
 
@@ -279,12 +285,22 @@ special:
 	}
 	| SHOW_QUOTED_MESSAGE
 	{
-		if (msginfo->folder) {
+		gchar *tmp_file = NULL;
+
+		if (seltext)
+			tmp_file = write_buffer_to_file(seltext,
+							strlen(seltext));
+
+		if (msginfo->folder || tmp_file) {
 			gchar buf[BUFFSIZE];
 			FILE *fp;
 
-			if ((fp = procmime_get_first_text_content(msginfo))
-			    == NULL)
+			if (tmp_file)
+				fp = fopen(tmp_file, "r");
+			else
+				fp = procmime_get_first_text_content(msginfo);
+
+			if (fp == NULL)
 				g_warning(_("Can't get text part\n"));
 			else {
 				while (fgets(buf, sizeof(buf), fp) != NULL) {
@@ -296,15 +312,28 @@ special:
 				fclose(fp);
 			}
 		}
+
+		if (tmp_file)
+			unlink(tmp_file);
 	}
 	| SHOW_MESSAGE_NO_SIGNATURE
 	{
+		gchar *tmp_file = NULL;
+
+		if (seltext)
+			tmp_file = write_buffer_to_file(seltext,
+							strlen(seltext));
+
 		if (msginfo->folder) {
 			gchar buf[BUFFSIZE];
 			FILE *fp;
 
-			if ((fp = procmime_get_first_text_content(msginfo))
-			    == NULL)
+			if (tmp_file)
+				fp = fopen(tmp_file, "r");
+			else
+				fp = procmime_get_first_text_content(msginfo);
+
+			if (fp == NULL)
 				g_warning(_("Can't get text part\n"));
 			else {
 				while (fgets(buf, sizeof(buf), fp) != NULL) {
@@ -316,15 +345,28 @@ special:
 				fclose(fp);
 			}
 		}
+
+		if (tmp_file)
+			unlink(tmp_file);
 	}
 	| SHOW_QUOTED_MESSAGE_NO_SIGNATURE
 	{
-		if (msginfo->folder) {
+		gchar *tmp_file = NULL;
+
+		if (seltext)
+			tmp_file = write_buffer_to_file(seltext,
+							strlen(seltext));
+
+		if (msginfo->folder || tmp_file) {
 			gchar buf[BUFFSIZE];
 			FILE *fp;
 
-			if ((fp = procmime_get_first_text_content(msginfo))
-			    == NULL)
+			if (tmp_file)
+				fp = fopen(tmp_file, "r");
+			else
+				fp = procmime_get_first_text_content(msginfo);
+
+			if (fp == NULL)
 				g_warning(_("Can't get text part\n"));
 			else {
 				while (fgets(buf, sizeof(buf), fp) != NULL) {
@@ -338,6 +380,9 @@ special:
 				fclose(fp);
 			}
 		}
+
+		if (tmp_file)
+			unlink(tmp_file);
 	}
 	| SHOW_BACKSLASH
 	{
