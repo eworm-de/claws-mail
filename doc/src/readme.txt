@@ -8,3 +8,4 @@ rfc2047.txt	MIME 3
 rfc2048.txt	MIME 4
 rfc2049.txt	MIME 5
 rfc2060.txt	IMAP4
+rfc2015.txt	MIME Security with Pretty Good Privacy (PGP)
