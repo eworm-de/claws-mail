@@ -1,3 +1,8 @@
+2001-07-27 [christoph]
+
+	* src/filtering.c
+		code cleanup (MIN / MAX warning, needed casting)
+
 2001-07-27 [alfons]
 
 	* procheader.c
@@ -21,6 +26,7 @@
 	* src/send.c
 		SMTP over SSL (untested, feedback requested)
 		IMAP over SSL
+
 	* src/ssl.c
 		code cleanup
 

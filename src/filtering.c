@@ -33,6 +33,7 @@
  * right after a call to folder_item_add_msg(). 
  */ 
 
+#include "defs.h"
 #include <ctype.h>
 #include <string.h>
 #include <stdlib.h>
@@ -41,7 +42,6 @@
 #include <stdio.h>
 #include "intl.h"
 #include "utils.h"
-#include "defs.h"
 #include "procheader.h"
 #include "matcher.h"
 #include "filtering.h"
@@ -287,7 +287,7 @@ static gchar * filteringaction_execute_command(gchar * cmd, MsgInfo * info)
 				break;
 			case 'F': /* file */
 				if (MSG_IS_FILTERING(info->flags))
-					filename = g_strdup(info->folder);
+					filename = g_strdup((gchar *)info->folder);
 				else
 					filename = folder_item_fetch_msg(info->folder, info->msgnum);
 				
@@ -1081,7 +1081,7 @@ void filter_incoming_message(FolderItem *default_folder, const gchar *file_name,
 	/* let matcher know that this is a message that has no
 	 * valid body data yet. */
 	MSG_SET_TMP_FLAGS(msginfo->flags, MSG_FILTERING);
-	msginfo->folder = g_strdup(file_name);
+	msginfo->folder = (FolderItem *) g_strdup(file_name); /* actually storing a pointer to a string */
 	msginfo->msgnum = 0;
 
 	filter_incoming_msginfo(default_folder, msginfo, folder_table);
