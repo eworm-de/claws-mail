@@ -1,3 +1,9 @@
+2003-05-21 [paul]	0.8.11claws172
+
+	* src/summaryview.c
+		fix discrepency between open_unread_on_enter
+		and always_show_msg
+
 2003-05-21 [paul]	0.8.11claws171
 
 	* sync with 0.9.0cvs6
