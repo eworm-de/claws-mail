@@ -1512,7 +1512,7 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 
 	if (global_scoring || summaryview->folder_item->prefs->scoring) {
 		summaryview->important_score = prefs_common.important_score;
-		if (summaryview->folder_item->prefs->important_score <
+		if (summaryview->folder_item->prefs->important_score >
 		    summaryview->important_score)
 			summaryview->important_score =
 				summaryview->folder_item->prefs->important_score;

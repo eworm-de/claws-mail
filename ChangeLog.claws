@@ -1,3 +1,16 @@
+2001-06-13 [hoa]
+
+	* src/compose.c
+	* src/prefs_account.c
+
+		SMTP server can be defined in the news account
+		mime type of attachment are kept.
+
+	* src/summaryview.c
+
+		now choose the highest important score between default
+		and important score of folder.
+
 2001-06-09 [alfons]
 	
 	* src/prefs_common.c: 

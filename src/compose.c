@@ -152,6 +152,10 @@ static void compose_insert_file			(Compose	*compose,
 static void compose_attach_append		(Compose	*compose,
 						 const gchar	*file,
 						 ContentType	 cnttype);
+static void compose_attach_append_with_type(Compose *compose,
+					    const gchar *file,
+					    const gchar *type,
+					    ContentType cnttype);
 static void compose_wrap_line			(Compose	*compose);
 static void compose_set_title			(Compose	*compose);
 
@@ -572,12 +576,23 @@ static gchar *procmime_get_file_name(MimeInfo *mimeinfo)
 	base = mimeinfo->filename ? mimeinfo->filename
 		: mimeinfo->name ? mimeinfo->name : NULL;
 
-	if (MIME_TEXT_HTML == mimeinfo->mime_type && base == NULL)
-		base = "mimetmp.html";
+	if (MIME_TEXT_HTML == mimeinfo->mime_type && base == NULL){
+		filename = g_strdup_printf("%s%smimetmp%i.html",
+					   get_mime_tmp_dir(),
+					   G_DIR_SEPARATOR_S,
+					   mimeinfo);
+		return filename;
+	}
 	else {
-		base = base ? base : "mimetmp";
+		base = base ? base : "";
 		base = g_basename(base);
-		if (*base == '\0') base = "mimetmp";
+		if (*base == '\0') {
+			filename = g_strdup_printf("%s%smimetmp%i",
+						   get_mime_tmp_dir(),
+						   G_DIR_SEPARATOR_S,
+						   mimeinfo);
+			return filename;
+		}
 	}
 
 	filename = g_strconcat(get_mime_tmp_dir(), G_DIR_SEPARATOR_S,
@@ -725,8 +740,9 @@ static void compose_attach_parts(Compose * compose,
 		{
 			filename = mime_extract_file(source, mimeinfo);
 
-			compose_attach_append(compose, filename,
-					      mimeinfo->mime_type);
+			compose_attach_append_with_type(compose, filename,
+							mimeinfo->content_type,
+							mimeinfo->mime_type);
 
 			g_free(filename);
 		}
@@ -735,8 +751,9 @@ static void compose_attach_parts(Compose * compose,
 		{
 			filename = mime_extract_file(source, mimeinfo->sub);
 
-			compose_attach_append(compose, filename,
-					      mimeinfo->sub->mime_type);
+			compose_attach_append_with_type(compose, filename,
+							mimeinfo->content_type,
+							mimeinfo->sub->mime_type);
 
 			g_free(filename);
 		}
@@ -748,8 +765,9 @@ static void compose_attach_parts(Compose * compose,
 		while (child) {
 			filename = mime_extract_file(source, child);
 
-			compose_attach_append(compose, filename,
-					      child->mime_type);
+			compose_attach_append_with_type(compose, filename,
+							child->content_type,
+							child->mime_type);
 
 			g_free(filename);
 
@@ -1499,6 +1517,73 @@ static void compose_insert_file(Compose *compose, const gchar *file)
 	fclose(fp);
 }
 
+static void compose_attach_info(Compose * compose, AttachInfo * ainfo,
+				ContentType cnttype)
+{
+	gchar *text[N_ATTACH_COLS];
+	gint row;
+
+	text[COL_MIMETYPE] = ainfo->content_type;
+	text[COL_SIZE] = to_human_readable(ainfo->size);
+	text[COL_NAME] = ainfo->name;
+
+	row = gtk_clist_append(GTK_CLIST(compose->attach_clist), text);
+	gtk_clist_set_row_data(GTK_CLIST(compose->attach_clist), row, ainfo);
+
+	if (cnttype != MIME_MESSAGE_RFC822)
+		compose_changed_cb(NULL, compose);
+}
+
+static void compose_attach_append_with_type(Compose *compose,
+					    const gchar *file,
+					    const gchar *type,
+					    ContentType cnttype)
+{
+	AttachInfo *ainfo;
+	off_t size;
+
+	if (!is_file_exist(file)) {
+		g_warning(_("File %s doesn't exist\n"), file);
+		return;
+	}
+	if ((size = get_file_size(file)) < 0) {
+		g_warning(_("Can't get file size of %s\n"), file);
+		return;
+	}
+	if (size == 0) {
+		alertpanel_notice(_("File %s is empty\n"), file);
+		return;
+	}
+
+	if (!compose->use_attach) {
+		GtkItemFactory *ifactory;
+		GtkWidget *menuitem;
+
+		ifactory = gtk_item_factory_from_widget(compose->menubar);
+		menuitem = gtk_item_factory_get_item(ifactory,
+						     "/Message/Attach");
+		gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
+					       TRUE);
+	}
+
+	ainfo = g_new0(AttachInfo, 1);
+	ainfo->file = g_strdup(file);
+
+	if (cnttype == MIME_MESSAGE_RFC822) {
+		ainfo->encoding = ENC_7BIT;
+		ainfo->name = g_strdup_printf(_("Message: %s"),
+					      g_basename(file));
+	} else {
+		ainfo->encoding = ENC_BASE64;
+		ainfo->name = g_strdup(g_basename(file));
+	}
+
+	ainfo->content_type = g_strdup(type);
+	ainfo->size = size;
+
+	compose_attach_info(compose, ainfo, cnttype);
+}
+
 static void compose_attach_append(Compose *compose, const gchar *file,
 				  ContentType cnttype)
 {
@@ -1549,15 +1634,7 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 	}
 	ainfo->size = size;
 
-	text[COL_MIMETYPE] = ainfo->content_type;
-	text[COL_SIZE] = to_human_readable(size);
-	text[COL_NAME] = ainfo->name;
-
-	row = gtk_clist_append(GTK_CLIST(compose->attach_clist), text);
-	gtk_clist_set_row_data(GTK_CLIST(compose->attach_clist), row, ainfo);
-
-	if (cnttype != MIME_MESSAGE_RFC822)
-		compose_changed_cb(NULL, compose);
+	compose_attach_info(compose, ainfo, cnttype);
 }
 
 static void compose_wrap_line(Compose *compose)
@@ -1724,6 +1801,7 @@ gint compose_send(Compose *compose)
 	if (compose->to_list) {
 		PrefsAccount *ac;
 
+		/*
 		if (compose->account->protocol != A_NNTP)
 			ac = compose->account;
 		else if (compose->orig_account->protocol != A_NNTP)
@@ -1736,6 +1814,9 @@ gint compose_send(Compose *compose)
 				return -1;
 			}
 		}
+		*/
+		ac = compose->account;
+
 		ok = send_message(tmp, ac, compose->to_list);
 		statusbar_pop_all();
 	}
