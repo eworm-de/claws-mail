@@ -31,7 +31,7 @@ o RedHat Linux 5.2 (glibc 2.0.7)
 o RedHat Linux 6.0
 o RedHat Linux 6.1 + Helix GNOME (glibc 2.1.x)
 o RedHat Linux 6.2 / 6.2J (glibc 2.1.x)
-o RedHat Linux 7.0 / 7.0J / 7.1 / 7.2 / 7.3
+o RedHat Linux 7.0 / 7.0J / 7.1 / 7.2 / 7.3 / 8.0
 o LinuxPPC2000 + Yukikaze(Japanization kit)
 o Linux2000G (Intel / PPC)
 o HOLON Linux 2.0 (Intel / PPC)
@@ -41,11 +41,10 @@ o LinuxPPC Q4 2000 (glibc 2.1.x)
 o Linux MLD4
 o Linux MLD5
 o Plamo Linux 2.0 / 2.1 / 2.2.x / 3.0
-o Slackware 7.0 / 7.1 / 8.0 / 8.1
+o Slackware 7.0 / 7.1 / 8.0 / 8.1 / 9.0
 o Linux Mandrake 7.0 / 7.1 / 7.2 / 8.0 / 8.1 / 9.0
-o SuSE Linux 6.3 (glibc 2.1.2)
-o SuSE Linux 6.4
-o SuSE Linux 7.0 / 7.1 / 7.2 / 7.3
+o SuSE Linux 6.3 (glibc 2.1.2) / 6.4
+o SuSE Linux 7.0 / 7.1 / 7.2 / 7.3 / 8.0 / 8.1
 o OpenLinux 2.3 (glibc 2.1.1 -> 2.1.3)
 o Caldera OpenDesktop 2.4
 o Caldera Workstation 3.1
@@ -115,7 +114,9 @@ Sylpheed supports US-ASCII, ISO-8859-1, and EUC-JP by default.
 If your system supports iconv() API, other character set / encoding
 (such as UTF-8, KOI8-R, and GB2312) will be also supported.
 
-GnuPG (>= 1.2.0) and GPGME (>= 0.3.10) are required for GnuPG (PGP) support.
+GnuPG (>= 1.2.0) and GPGME (>= 0.3.10) are required for GnuPG (PGP) support
+(GPGME 0.4.x is not supported yet).
+
 You can get GnuPG and GPGME from the following location:
 
   ftp://ftp.gnupg.org/pub/gcrypt/alpha/gpgme/
@@ -124,15 +125,12 @@ You can get GnuPG and GPGME from the following location:
 Options for configure script
 ============================
 
-  --disable-compface  		disable compface (X-Face) support
-  --enable-openssl    		SSL support (requires OpenSSL)
-  --enable-ipv6       		IPv6 support
-  --enable-gpgme      		GnuPG support (requires GPGME and GnuPG)
-  --enable-ldap       		LDAP support
-  --enable-jpilot     		JPilot support
-  --enable-aspell     		Aspell support
-  --enable-spamassassin-plugin	SpamAssassin support
-  --enable-crash-dialog		GDB support
+  --disable-compface  disable compface (X-Face) support
+  --enable-ssl        SSL support (requires OpenSSL)
+  --enable-ipv6       IPv6 support
+  --enable-gpgme      GnuPG support (requires GPGME and GnuPG)
+  --enable-ldap       LDAP support
+  --enable-jpilot     JPilot support
 
 For other options, refer to ./configure --help .
 
