@@ -1,3 +1,13 @@
+2002-05-24 [paul]	0.7.6claws14
+
+	* src/compose.c
+		fix memory leak in 
+		compose_redirect_write_headers_from_headerlist()
+		add Subject and Resent-Message-ID to
+		compose_redirect_write_headers()
+		Received, Subject, and X-UIDL are filtered out in 
+		compose_redirect_write_to_file()
+
 2002-05-23 [paul]	0.7.6claws13
 
 	* src/compose.[ch]
