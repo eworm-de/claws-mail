@@ -1,3 +1,10 @@
+2003-07-02
+
+	* src/socket.[ch]: sock_add_watch(): 新規。 SSL をオリジナルの watch
+	  関数で監視する(SSL でない場合は g_io_add_watch() を使用)。
+	* src/session.[ch]: 以前の対処を削除し、 g_io_add_watch() を
+	  sock_add_watch() で置き換えた。
+
 2003-07-01
 
 	* src/socket.[ch]: ソケットに未処理のデータが存在する場合 TRUE を

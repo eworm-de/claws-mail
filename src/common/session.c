@@ -42,19 +42,16 @@ static gint session_connect_cb		(SockInfo	*sock,
 					 gpointer	 data);
 static gint session_close		(Session	*session);
 
-static gboolean session_read_msg_idle_cb	(gpointer	 data);
-static gboolean session_read_data_idle_cb	(gpointer	 data);
-
-static gboolean session_read_msg_cb	(GIOChannel	*source,
+static gboolean session_read_msg_cb	(SockInfo	*source,
 					 GIOCondition	 condition,
 					 gpointer	 data);
-static gboolean session_read_data_cb	(GIOChannel	*source,
+static gboolean session_read_data_cb	(SockInfo	*source,
 					 GIOCondition	 condition,
 					 gpointer	 data);
-static gboolean session_write_msg_cb	(GIOChannel	*source,
+static gboolean session_write_msg_cb	(SockInfo	*source,
 					 GIOCondition	 condition,
 					 gpointer	 data);
-static gboolean session_write_data_cb	(GIOChannel	*source,
+static gboolean session_write_data_cb	(SockInfo	*source,
 					 GIOCondition	 condition,
 					 gpointer	 data);
 
@@ -75,7 +72,6 @@ void session_init(Session *session)
 
 	session->conn_id = 0;
 
-	session->sock_ch = NULL;
 	session->io_tag = 0;
 
 	session->read_buf = g_string_sized_new(1024);
@@ -139,13 +135,12 @@ static gint session_connect_cb(SockInfo *sock, gpointer data)
 	}
 #endif
 
-	debug_print("session: child: connected\n");
+	sock_set_nonblocking_mode(sock, TRUE);
 
 	debug_print("session: connected\n");
 
 	session->state = SESSION_RECV;
-	session->sock_ch = g_io_channel_unix_new(sock->sock);
-	session->io_tag = g_io_add_watch(session->sock_ch, G_IO_IN,
+	session->io_tag = sock_add_watch(session->sock, G_IO_IN,
 					 session_read_msg_cb,
 					 session);
 
@@ -248,11 +243,6 @@ static gint session_close(Session *session)
 		session->io_tag = 0;
 	}
 
-	if (session->sock_ch) {
-		g_io_channel_unref(session->sock_ch);
-		session->sock_ch = NULL;
-	}
-
 	if (session->sock) {
 		sock_close(session->sock);
 		session->sock = NULL;
@@ -299,10 +289,10 @@ gint session_send_msg(Session *session, SessionMsgType type, const gchar *msg)
 	session->write_buf_p = session->write_buf;
 	session->write_buf_len = strlen(msg) + 2;
 
-	ret = session_write_msg_cb(session->sock_ch, G_IO_OUT, session);
+	ret = session_write_msg_cb(session->sock, G_IO_OUT, session);
 
 	if (ret == TRUE)
-		session->io_tag = g_io_add_watch(session->sock_ch, G_IO_OUT,
+		session->io_tag = sock_add_watch(session->sock, G_IO_OUT,
 						 session_write_msg_cb, session);
 	else if (session->state == SESSION_ERROR)
 		return -1;
@@ -316,27 +306,10 @@ gint session_recv_msg(Session *session)
 
 	session->state = SESSION_RECV;
 
-	if (sock_has_pending_data(session->sock))
-		g_idle_add(session_read_msg_idle_cb, session);
-	else
-		session->io_tag = g_io_add_watch(session->sock_ch, G_IO_IN,
-						 session_read_msg_cb, session);
+	session->io_tag = sock_add_watch(session->sock, G_IO_IN,
+					 session_read_msg_cb, session);
 
 	return 0;
-}
-
-static gboolean session_read_msg_idle_cb(gpointer data)
-{
-	Session *session = SESSION(data);
-	gboolean ret;
-
-	ret = session_read_msg_cb(session->sock_ch, G_IO_IN, data);
-
-	if (ret == TRUE)
-		session->io_tag = g_io_add_watch(session->sock_ch, G_IO_IN,
-						 session_read_msg_cb, session);
-
-	return FALSE;
 }
 
 /*!
@@ -365,10 +338,10 @@ gint session_send_data(Session *session, const guchar *data, guint size)
 	session->write_buf_len = size;
 	gettimeofday(&session->tv_prev, NULL);
 
-	ret = session_write_data_cb(session->sock_ch, G_IO_OUT, session);
+	ret = session_write_data_cb(session->sock, G_IO_OUT, session);
 
 	if (ret == TRUE)
-		session->io_tag = g_io_add_watch(session->sock_ch, G_IO_OUT,
+		session->io_tag = sock_add_watch(session->sock, G_IO_OUT,
 						 session_write_data_cb,
 						 session);
 	else if (session->state == SESSION_ERROR)
@@ -387,30 +360,13 @@ gint session_recv_data(Session *session, guint size, const gchar *terminator)
 	session->read_data_terminator = g_strdup(terminator);
 	gettimeofday(&session->tv_prev, NULL);
 
-	if (sock_has_pending_data(session->sock))
-		g_idle_add(session_read_data_idle_cb, session);
-	else
-		session->io_tag = g_io_add_watch(session->sock_ch, G_IO_IN,
-						 session_read_data_cb, session);
+	session->io_tag = sock_add_watch(session->sock, G_IO_IN,
+					 session_read_data_cb, session);
 
 	return 0;
 }
 
-static gboolean session_read_data_idle_cb(gpointer data)
-{
-	Session *session = SESSION(data);
-	gboolean ret;
-
-	ret = session_read_data_cb(session->sock_ch, G_IO_IN, data);
-
-	if (ret == TRUE)
-		session->io_tag = g_io_add_watch(session->sock_ch, G_IO_IN,
-						 session_read_data_cb, session);
-
-	return FALSE;
-}
-
-static gboolean session_read_msg_cb(GIOChannel *source, GIOCondition condition,
+static gboolean session_read_msg_cb(SockInfo *source, GIOCondition condition,
 				    gpointer data)
 {
 	Session *session = SESSION(data);
@@ -487,7 +443,7 @@ static gboolean session_read_msg_cb(GIOChannel *source, GIOCondition condition,
 	return FALSE;
 }
 
-static gboolean session_read_data_cb(GIOChannel	*source, GIOCondition condition,
+static gboolean session_read_data_cb(SockInfo *source, GIOCondition condition,
 				     gpointer data)
 {
 	Session *session = SESSION(data);
@@ -514,8 +470,6 @@ static gboolean session_read_data_cb(GIOChannel	*source, GIOCondition condition,
 			return FALSE;
 		}
 	}
-
-	g_print("session_read_data_cb(): read %d bytes\n", read_len);
 
 	data_buf = session->read_data_buf;
 
@@ -619,7 +573,7 @@ static gint session_write_buf(Session *session)
 	return 0;
 }
 
-static gboolean session_write_msg_cb(GIOChannel *source, GIOCondition condition,
+static gboolean session_write_msg_cb(SockInfo *source, GIOCondition condition,
 				     gpointer data)
 {
 	Session *session = SESSION(data);
@@ -648,7 +602,7 @@ static gboolean session_write_msg_cb(GIOChannel *source, GIOCondition condition,
 	return FALSE;
 }
 
-static gboolean session_write_data_cb(GIOChannel *source,
+static gboolean session_write_data_cb(SockInfo *source,
 				      GIOCondition condition, gpointer data)
 {
 	Session *session = SESSION(data);

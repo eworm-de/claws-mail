@@ -45,29 +45,34 @@ typedef enum
 
 typedef gint (*SockConnectFunc)		(SockInfo	*sock,
 					 gpointer	 data);
+typedef gboolean (*SockFunc)		(SockInfo	*sock,
+					 GIOCondition	 condition,
+					 gpointer	 data);
 
 struct _SockInfo
 {
-#if USE_GIO
-	GIOChannel *channel;
-	gchar *buf;
-	gint buflen;
-#else
 	gint sock;
+#if USE_OPENSSL
+	SSL *ssl;
 #endif
+	GIOChannel *sock_ch;
+
 	gchar *hostname;
 	gushort port;
 	ConnectionState state;
 	gpointer data;
-#if USE_OPENSSL
-	SSL *ssl;
-#endif
+
+	SockFunc callback;
+	GIOCondition condition;
 };
 
 gint sock_set_io_timeout		(guint sec);
 
 gint sock_set_nonblocking_mode		(SockInfo *sock, gboolean nonblock);
 gboolean sock_is_nonblocking_mode	(SockInfo *sock);
+
+guint sock_add_watch			(SockInfo *sock, GIOCondition condition,
+					 SockFunc func, gpointer data);
 
 gboolean sock_has_pending_data		(SockInfo *sock);
 
@@ -79,6 +84,7 @@ gint sock_connect_async			(const gchar *hostname, gushort port,
 					 SockConnectFunc func, gpointer data);
 gint sock_connect_async_cancel		(gint id);
 
+/* Basic I/O functions */
 gint sock_printf	(SockInfo *sock, const gchar *format, ...)
 			 G_GNUC_PRINTF(2, 3);
 gint sock_read		(SockInfo *sock, gchar *buf, gint len);

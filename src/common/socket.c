@@ -96,6 +96,24 @@ static guint io_timeout = 60;
 
 static GList *sock_connect_data_list = NULL;
 
+static gboolean sock_prepare		(gpointer	 source_data,
+					 GTimeVal	*current_time,
+					 gint		*timeout,
+					 gpointer	 data);
+static gboolean sock_check		(gpointer	 source_data,
+					 GTimeVal	*current_time,
+					 gpointer	 user_data);
+static gboolean sock_dispatch		(gpointer	 source_data,
+					 GTimeVal	*current_time,
+					 gpointer	 user_data);
+
+GSourceFuncs sock_watch_funcs = {
+	sock_prepare,
+	sock_check,
+	sock_dispatch,
+	NULL
+};
+
 static gint sock_connect_with_timeout	(gint			 sock,
 					 const struct sockaddr	*serv_addr,
 					 gint			 addrlen,
@@ -230,7 +248,6 @@ gint sock_set_nonblocking_mode(SockInfo *sock, gboolean nonblock)
 	return set_nonblocking_mode(sock->sock, nonblock);
 }
 
-
 static gboolean is_nonblocking_mode(gint fd)
 {
 	gint flags;
@@ -249,6 +266,75 @@ gboolean sock_is_nonblocking_mode(SockInfo *sock)
 	g_return_val_if_fail(sock != NULL, FALSE);
 
 	return is_nonblocking_mode(sock->sock);
+}
+
+
+static gboolean sock_prepare(gpointer source_data, GTimeVal *current_time,
+			     gint *timeout, gpointer data)
+{
+	*timeout = 1;
+	return FALSE;
+}
+
+static gboolean sock_check(gpointer source_data, GTimeVal *current_time,
+			   gpointer user_data)
+{
+	SockInfo *sock = (SockInfo *)source_data;
+	struct timeval timeout = {0, 0};
+	fd_set fds;
+
+#if USE_OPENSSL
+	if (sock->ssl) {
+		if (sock->condition & G_IO_IN) {
+			if (SSL_pending(sock->ssl) > 0) {
+				g_print("SSL has pending data\n");
+				return TRUE;
+			}
+		}
+	}
+#endif
+
+	FD_ZERO(&fds);
+	FD_SET(sock->sock, &fds);
+
+	select(sock->sock + 1,
+	       (sock->condition & G_IO_IN)  ? &fds : NULL,
+	       (sock->condition & G_IO_OUT) ? &fds : NULL,
+	       NULL, &timeout);
+
+	return FD_ISSET(sock->sock, &fds) != 0;
+}
+
+static gboolean sock_dispatch(gpointer source_data, GTimeVal *current_time,
+			      gpointer user_data)
+{
+	SockInfo *sock = (SockInfo *)source_data;
+
+	return sock->callback(sock, sock->condition, user_data);
+}
+
+static gboolean sock_watch_cb(GIOChannel *source, GIOCondition condition,
+			      gpointer data)
+{
+	SockInfo *sock = (SockInfo *)data;
+
+	return sock->callback(sock, condition, sock->data);
+}
+
+guint sock_add_watch(SockInfo *sock, GIOCondition condition, SockFunc func,
+		     gpointer data)
+{
+	sock->callback = func;
+	sock->condition = condition;
+	sock->data = data;
+
+#if USE_OPENSSL
+	if (sock->ssl)
+		return g_source_add(G_PRIORITY_DEFAULT, FALSE,
+				    &sock_watch_funcs, sock, data, NULL);
+#endif
+
+	return g_io_add_watch(sock->sock_ch, condition, sock_watch_cb, sock);
 }
 
 gboolean sock_has_pending_data(SockInfo *sock)
@@ -562,6 +648,7 @@ static gboolean sock_connect_async_cb(GIOChannel *source,
 
 	sockinfo = g_new0(SockInfo, 1);
 	sockinfo->sock = fd;
+	sockinfo->sock_ch = g_io_channel_unix_new(fd);
 	sockinfo->hostname = g_strdup(conn_data->hostname);
 	sockinfo->port = conn_data->port;
 	sockinfo->state = CONN_ESTABLISHED;
@@ -918,6 +1005,7 @@ static SockInfo *sockinfo_from_fd(const gchar *hostname,
 
 	sockinfo = g_new0(SockInfo, 1);
 	sockinfo->sock = sock;
+	sockinfo->sock_ch = g_io_channel_unix_new(sock);
 	sockinfo->hostname = g_strdup(hostname);
 	sockinfo->port = port;
 	sockinfo->state = CONN_ESTABLISHED;
@@ -1286,6 +1374,9 @@ gint sock_close(SockInfo *sock)
 
 	if (!sock)
 		return 0;
+
+	if (sock->sock_ch)
+		g_io_channel_unref(sock->sock_ch);
 
 #if USE_OPENSSL
 	if (sock->ssl)

@@ -102,8 +102,6 @@ struct _Session
 
 	gint conn_id;
 
-	/* I/O channel for socket */
-	GIOChannel *sock_ch;
 	gint io_tag;
 
 	GString *read_buf;

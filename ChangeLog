@@ -1,3 +1,10 @@
+2003-07-02
+
+	* src/socket.[ch]: sock_add_watch(): new. It monitors SSL by original
+	  watch functions (otherwise uses g_io_add_watch()).
+	* src/session.[ch]: removed previous workarounds, and replaced
+	  g_io_add_watch() with sock_add_watch().
+
 2003-07-01
 
 	* src/socket.[ch]: added sock_has_pending_data() which returns TRUE
