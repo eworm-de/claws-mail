@@ -1,3 +1,8 @@
+2003-02-18 [paul]	0.8.10claws25
+
+	* src/select-keys.c
+		add a 'List all keys' button to key selection dialog
+
 2003-02-18 [colin]	0.8.10claws24
 	
 	* src/stock_pixmap.c

@@ -84,6 +84,7 @@ static gint delete_event_cb (GtkWidget *widget,
                              GdkEventAny *event, gpointer data);
 static void key_pressed_cb (GtkWidget *widget,
                             GdkEventKey *event, gpointer data);
+static void showall_btn_cb (GtkWidget *widget, gpointer data);
 static void select_btn_cb (GtkWidget *widget, gpointer data);
 static void cancel_btn_cb (GtkWidget *widget, gpointer data);
 static void other_btn_cb (GtkWidget *widget, gpointer data);
@@ -262,6 +263,7 @@ create_dialog (struct select_keys_s *sk)
     GtkWidget *clist;
     GtkWidget *label;
     GtkWidget *select_btn, *cancel_btn, *other_btn;
+    GtkWidget *showall_btn;
     const char *titles[N_COL_TITLES];
 
     g_assert (!sk->window);
@@ -317,6 +319,13 @@ create_dialog (struct select_keys_s *sk)
 
     hbox = gtk_hbox_new (FALSE, 8);
     gtk_box_pack_end (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+
+    showall_btn = gtk_button_new_with_label (_(" List all keys "));
+    gtk_widget_show (showall_btn);
+    gtk_box_pack_start (GTK_BOX (hbox), showall_btn, FALSE, FALSE, 0);
+
+    gtk_signal_connect (GTK_OBJECT (showall_btn), "clicked",
+                        GTK_SIGNAL_FUNC (showall_btn_cb), sk);
 
     gtkut_button_set_create (&bbox, 
                              &select_btn, _("Select"),
@@ -451,6 +460,18 @@ other_btn_cb (GtkWidget *widget, gpointer data)
     g_free (uid);
 }
 
+static void
+showall_btn_cb (GtkWidget *widget, gpointer data)
+{
+    struct select_keys_s *sk = data;
+    char *uid;
+
+    g_return_if_fail (sk);
+    uid = "";
+	
+    fill_clist (sk, uid);
+    update_progress (sk, 0, sk->pattern);
+}
 
 static gint 
 cmp_attr (gconstpointer pa, gconstpointer pb, GpgmeAttr attr)
