@@ -1,3 +1,13 @@
+2004-12-05 [thorsten]	0.9.12cvs176.2
+
+	* win32/utils/mk_installer.bat
+	* win32/utils/mk_translation.bat
+		chg: new naming convention (PACKAGE, EXTRA_WIN32_VERSION)
+	* win32/utils/sylpheed-setup.iss.in
+		chg: new naming convention
+		chg: add .txt to doc files on distribution
+		chg: remove obsolete matcher conversion
+
 2004-11-29 [thorsten]	0.9.12cvs176.1
 
 	* ChangeLog.claws

@@ -3,7 +3,7 @@
 
 [Setup]
 AppName=Sylpheed-Claws
-AppVerName=Sylpheed-@VERSION@ Win32
+AppVerName=Sylpheed-Claws @VERSION@ Win32
 AppPublisher=The friendly Sylpheed hackers
 AppPublisherURL=http://claws-w32.sourceforge.net
 AppSupportURL=http://claws-w32.sourceforge.net
@@ -12,12 +12,12 @@ DefaultDirName={code:GetInstalledDir}
 DefaultGroupName=Sylpheed-Claws
 AllowNoIcons=yes
 ;AlwaysCreateUninstallIcon=yes
-LicenseFile=@PAKDIR@\doc\COPYING
-InfoAfterFile=@PAKDIR@\doc\README
+LicenseFile=@PAKDIR@\doc\COPYING.txt
+InfoAfterFile=@PAKDIR@\doc\README.txt
 ; uncomment the following line if you want your installation to run on NT 3.51 too.
 ; MinVersion=4,3.51
 DisableStartupPrompt  =yes
-OutputBaseFilename    =sylpheed-@VERSION@
+OutputBaseFilename    =sylpheed-claws-@VERSION@
 ;Compression=none
 Compression=bzip/9
 
@@ -42,7 +42,6 @@ Name: "reg_sylpheed";           Description: "Create Sylpheed &registry key (rec
 Name: "reg_defaultmailer";      Description: "Set Sylpheed default &mailer for mailto: links";  GroupDescription: "Registry settings:"; Components: settings;
 
 [Files]
-Source: "@PAKDIR@\bin\matcher_convert.exe";   DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 Source: "@PAKDIR@\bin\sylpheed.exe";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 Source: "@PAKDIR@\bin\sylpheed.dll";          DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
 Source: "@PAKDIR@\bin\fnmatch.dll";           DestDir: "{app}\bin";                   CopyMode: alwaysoverwrite;
@@ -254,18 +253,6 @@ begin
   Result := ProgSet;
 end;
 
-procedure ConvertMatcher();
-var matcherrc:string;
-    res:integer;
-begin
-  matcherrc:=SylpheedHomeDir+'\.sylpheed\matcherrc';
-  if FileExists(matcherrc)
-  and not FileExists(matcherrc+'.sav')
-  then InstExec(ExpandConstant('{app}')+'\bin\matcher_convert.exe',
-                '"'+matcherrc+'" "'+matcherrc+'.sav"',
-                '',true,false,SW_SHOWNORMAL,res);
-end;
-
 function InitializeSetup(): Boolean;
 var version,
     uninst    :string;
@@ -340,13 +327,6 @@ begin
   { insert home-dir query between install-dir and components page }
   if CurPage = wpSelectDir
   then Result := SelectHomeDir(SylpheedHomeDir)
-  else
-  if CurPage = wpFinished
-  then
-  begin
-    ConvertMatcher();
-    Result := true;
-  end
   else Result := true;
 end;
 
