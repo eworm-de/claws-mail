@@ -3201,13 +3201,15 @@ static void set_charset_cb(MainWindow *mainwin, guint action,
 {
 	const gchar *str;
 
-	str = conv_get_charset_str((CharSet)action);
-	g_free(prefs_common.force_charset);
-	prefs_common.force_charset = str ? g_strdup(str) : NULL;
+	if (GTK_CHECK_MENU_ITEM(widget)->active) {
+		str = conv_get_charset_str((CharSet)action);
+		g_free(prefs_common.force_charset);
+		prefs_common.force_charset = str ? g_strdup(str) : NULL;
 
-	summary_redisplay_msg(mainwin->summaryview);
-
-	debug_print("forced charset: %s\n", str ? str : "Auto-Detect");
+		summary_redisplay_msg(mainwin->summaryview);
+		
+		debug_print("forced charset: %s\n", str ? str : "Auto-Detect");
+	}
 }
 
 static void hide_read_messages (MainWindow *mainwin, guint action,
@@ -3258,7 +3260,8 @@ static void sort_summary_cb(MainWindow *mainwin, guint action,
 	GtkWidget *menuitem;
 
 	if (mainwin->menu_lock_count) return;
-	if (item) {
+
+	if (GTK_CHECK_MENU_ITEM(widget)->active && item) {
 		menuitem = gtk_item_factory_get_item
 			(mainwin->menu_factory, "/View/Sort/Ascending");
 		summary_sort(mainwin->summaryview, (FolderSortKey)action,
@@ -3273,7 +3276,8 @@ static void sort_summary_type_cb(MainWindow *mainwin, guint action,
 	FolderItem *item = mainwin->summaryview->folder_item;
 
 	if (mainwin->menu_lock_count) return;
-	if (item)
+
+	if (GTK_CHECK_MENU_ITEM(widget)->active && item)
 		summary_sort(mainwin->summaryview,
 			     item->sort_key, (FolderSortType)action);
 }

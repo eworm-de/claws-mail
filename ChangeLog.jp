@@ -1,5 +1,13 @@
 2002-12-18
 
+	* src/mainwindow.c:
+	  set_charset_cb()
+	  sort_summary_cb()
+	  sort_summary_type_cb(): メニュー項目をチェック解除したときの
+	  不要な処理を防ぐようにした。
+
+2002-12-18
+
 	* src/main.c: X なしでリモート操作を可能にするために gtk_init()
 	  の前にコマンドラインオプションを処理するようにした(Ruslan N.
 	  Balkin さん thanks)。

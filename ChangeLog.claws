@@ -1,3 +1,8 @@
+2002-12-18 [paul]	0.8.6claws116
+
+	* sync with 0.8.6cvs23
+		see ChangeLog 2002-12-18
+
 2002-12-18 [paul]	0.8.6claws115
 
 	* src/Makefile.am

@@ -1,5 +1,13 @@
 2002-12-18
 
+	* src/mainwindow.c:
+	  set_charset_cb()
+	  sort_summary_cb()
+	  sort_summary_type_cb(): prevent unwanted processing on unchecking
+	  menu items.
+
+2002-12-18
+
 	* src/main.c: process command line option before gtk_init() to
 	  enable remote operation without X (thanks to Ruslan N. Balkin).
 	* src/codeconv.c: conv_encode_header(): fixed a potential buffer
