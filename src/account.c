@@ -766,8 +766,10 @@ static void account_up(void)
 	if (!clist->selection) return;
 
 	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row > 0)
+	if (row > 0) {
 		gtk_clist_row_move(clist, row, row - 1);
+		account_list_set();
+	}
 }
 
 static void account_down(void)
@@ -778,8 +780,11 @@ static void account_down(void)
 	if (!clist->selection) return;
 
 	row = GPOINTER_TO_INT(clist->selection->data);
-	if (row < clist->rows - 1)
+	if (row < clist->rows - 1) {
 		gtk_clist_row_move(clist, row, row + 1);
+		account_list_set();
+	}
+
 }
 
 static void account_set_default(void)

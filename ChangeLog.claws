@@ -1,3 +1,9 @@
+2002-12-09 [paul]	0.8.6claws88
+
+	* src/account.c
+		fix bug [649746] edit accounts: move account reverted
+		Patch submitted by Luke Plant <lukeplant@users.sourceforge.net>
+
 2002-12-09 [colin]	0.8.6claws87
 
 	* src/ssl_certificate.c
