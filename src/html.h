@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,8 @@ typedef enum
 } HTMLState;
 
 typedef struct _HTMLParser	HTMLParser;
+typedef struct _HTMLAttr	HTMLAttr;
+typedef struct _HTMLTag		HTMLTag;
 
 struct _HTMLParser
 {
@@ -57,10 +59,24 @@ struct _HTMLParser
 
 	HTMLState state;
 
+	gchar *href;
+
 	gboolean newline;
 	gboolean empty_line;
 	gboolean space;
 	gboolean pre;
+};
+
+struct _HTMLAttr
+{
+	gchar *name;
+	gchar *value;
+};
+
+struct _HTMLTag
+{
+	gchar *name;
+	GList *attr;
 };
 
 HTMLParser *html_parser_new	(FILE		*fp,

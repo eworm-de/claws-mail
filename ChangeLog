@@ -1,3 +1,32 @@
+2003-03-12
+
+	* src/textview.c: textview_button_pressed(): corrected the range of
+	  URI link.
+	* src/compose.c: compose_wrap_line_all_full(): treat UTF-8 characters
+	  represented with more than 2 bytes as 2 character width and 2 bytes
+	  one as a single character width as a workaround for wrapping problem.
+
+2003-03-12
+
+	* src/utils.c: subject_compare_for_sort(): allow null strings (fixes
+	  summary sorting).
+
+2003-03-11
+
+	* implemented HTML link correctly.
+	* src/html.[ch]: HTMLAttr, HTMLTag: new structure for attributes /
+	  tags.
+	  html_get_tag(): new. It parses tag and returns HTMLTag object.
+	  html_parse_tag(): also parses <a> tags and 'href' attributes.
+	* src/textview.c: textview_write_link(): new. It creates link string.
+
+2003-03-10
+
+	* src/compose.c: compose_wrap_line_all_full(): fixed an infinite
+	  loop / crash bug (thanks to Darko Koruga).
+	  compose_write_to_file(): put correct charset element when
+	  conversion failed but want to send anyway.
+
 2003-03-10
 
 	* src/headerview.c: headerview_show()
