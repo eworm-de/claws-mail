@@ -1584,10 +1584,14 @@ static void prefs_account_cancel(void)
 static void prefs_account_select_inbox_cb(void)
 {
 	FolderItem *item;
+	gchar      *path;
 
 	item = foldersel_folder_sel(NULL, NULL);
-	if (item)
-		gtk_entry_set_text(GTK_ENTRY(receive.inbox_entry), item->path);
+	if (item) {
+		path = folder_item_get_identifier(item);
+		gtk_entry_set_text(GTK_ENTRY(receive.inbox_entry), path);
+		g_free(path);
+	}	
 }
 
 static void prefs_account_edit_custom_header(void)

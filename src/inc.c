@@ -882,9 +882,10 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 	gint val;
 	gint msgnum;
 
-	/* get default inbox (perhaps per account) */
+	/* CLAWS: get default inbox (perhaps per account) */
 	if (state->ac_prefs->inbox) {
-		inbox = folder_find_item_from_path(state->ac_prefs->inbox);
+		/* CLAWS: get destination folder / mailbox */
+		inbox = folder_find_item_from_identifier(state->ac_prefs->inbox);
 		if (!inbox)
 			inbox = folder_get_default_inbox();
 	} else
@@ -894,8 +895,8 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 		return -1;
 	}
 
+	/* CLAWS: claws uses a global .processing folder for the filtering. */
 	if (global_processing == NULL) {
-		/* old filtering */
 		if (state->ac_prefs->filter_on_recv) {
 			dropfolder =
 				filter_get_dest_folder(prefs_common.fltlist, file);
@@ -907,7 +908,6 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 		} else
 			dropfolder = inbox;
 	} else {
-		/* CLAWS: new filtering */
 		dropfolder = folder_get_default_processing();
 	}
 

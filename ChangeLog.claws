@@ -1,3 +1,10 @@
+2001-12-26 [alfons]	0.6.6claws23
+
+	* src/prefs_account.c
+	* src/inc.c
+		allow default inbox to reside in another mailbox (only
+		works for POP3 accounts)
+
 2001-12-26 [alfons]	0.6.6claws22
 	
 	* src/textview.c
