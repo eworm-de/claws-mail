@@ -52,7 +52,6 @@ struct _FlagInfo
 
 static GHashTable *procmsg_read_mark_file	(const gchar	*folder);
 void   procmsg_msginfo_write_flags		(MsgInfo 	*msginfo);
-static void procmsg_update_unread_children (MsgInfo *info, gboolean newly_marked);
 
 GHashTable *procmsg_msg_hash_table_create(GSList *mlist)
 {
@@ -1693,33 +1692,53 @@ gboolean procmsg_msg_has_marked_parent(MsgInfo *info)
 }
 
 
-GSList *procmsg_find_children (MsgInfo *info)
+GSList *procmsg_find_children_func(MsgInfo *info, 
+				   GSList *children, GSList *all)
 {
-	GSList *children = NULL;
-	GSList *all, *cur;
+	GSList *cur;
 
-	g_return_val_if_fail(info!=NULL, NULL);
+	g_return_val_if_fail(info!=NULL, children);
 	if (info->msgid == NULL)
-		return NULL;
-	all = folder_item_get_msg_list(info->folder);
+		return children;
+
 	for (cur = all; cur != NULL; cur = g_slist_next(cur)) {
 		MsgInfo *tmp = (MsgInfo *)cur->data;
 		if (tmp->inreplyto && !strcmp(tmp->inreplyto, info->msgid)) {
-			GSList *grand_children;
-			children = g_slist_prepend(children, tmp);
-			grand_children = procmsg_find_children(tmp);
-			children = slist_concat_unique(children, grand_children);
-			g_slist_free(grand_children);
+			/* Check if message is already in the list */
+			if ((children == NULL) || 
+			    (g_slist_index(children, tmp) == -1)) {
+				children = g_slist_prepend(children,
+						procmsg_msginfo_new_ref(tmp));
+				children = procmsg_find_children_func(tmp, 
+							children, 
+							all);
+			}
 		}
-		if (tmp && tmp != info)
-			procmsg_msginfo_free(tmp);
+	}
+	return children;
+}
+
+GSList *procmsg_find_children (MsgInfo *info)
+{
+	GSList *children;
+	GSList *all, *cur;
+
+	g_return_val_if_fail(info!=NULL, NULL);
+	all = folder_item_get_msg_list(info->folder);
+	children = procmsg_find_children_func(info, NULL, all);
+	if (children != NULL) {
+		for (cur = all; cur != NULL; cur = g_slist_next(cur)) {
+			/* this will not free the used pointers
+			   created with procmsg_msginfo_new_ref */
+			procmsg_msginfo_free((MsgInfo *)cur->data);
+		}
 	}
 	g_slist_free(all);
 
 	return children;
 }
 
-static void procmsg_update_unread_children(MsgInfo *info, gboolean newly_marked)
+void procmsg_update_unread_children(MsgInfo *info, gboolean newly_marked)
 {
 	GSList *children = procmsg_find_children(info);
 	GSList *cur;

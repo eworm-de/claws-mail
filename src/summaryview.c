@@ -2850,43 +2850,19 @@ void summary_set_marks_selected(SummaryView *summaryview)
 		summary_set_row_marks(summaryview, GTK_CTREE_NODE(cur->data));
 }
 
-static gboolean summary_update_unread_children (SummaryView *summaryview, MsgInfo *info, gboolean newly_marked)
-{
-	GSList *children = procmsg_find_children(info);
-	GSList *cur;
-	gboolean changed = FALSE;
-	for (cur = children; cur != NULL; cur = g_slist_next(cur)) {
-		MsgInfo *tmp = (MsgInfo *)cur->data;
-		if(MSG_IS_UNREAD(tmp->flags) && !MSG_IS_IGNORE_THREAD(tmp->flags)) {
-			if(newly_marked) 
-				summaryview->unreadmarked++;
-			else
-				summaryview->unreadmarked--;
-			changed = TRUE;
-		}
-		procmsg_msginfo_free(tmp);
-	}
-	return changed;
-}
-
 static void summary_mark_row(SummaryView *summaryview, GtkCTreeNode *row)
 {
-	gboolean changed = FALSE;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted--;
-	if (MSG_IS_MOVE(msginfo->flags)) {
+	if (MSG_IS_MOVE(msginfo->flags))
 		summaryview->moved--;
-		changed = TRUE;
-	}
-	if (MSG_IS_COPY(msginfo->flags)) {
+	if (MSG_IS_COPY(msginfo->flags))
 		summaryview->copied--;
-		changed = TRUE;
-	}
-	changed |= summary_update_unread_children (summaryview, msginfo, TRUE);
+	procmsg_update_unread_children (msginfo, TRUE);
 
 	procmsg_msginfo_set_to_folder(msginfo, NULL);
 	procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, MSG_MOVE | MSG_COPY);
@@ -3080,7 +3056,6 @@ static gboolean check_permission(SummaryView *summaryview, MsgInfo * msginfo)
 
 static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 {
-	gboolean changed = FALSE;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 
@@ -3093,15 +3068,11 @@ static void summary_delete_row(SummaryView *summaryview, GtkCTreeNode *row)
 
 	if (MSG_IS_DELETED(msginfo->flags)) return;
 
-	if (MSG_IS_MOVE(msginfo->flags)) {
+	if (MSG_IS_MOVE(msginfo->flags))
 		summaryview->moved--;
-		changed = TRUE;
-	}
-	if (MSG_IS_COPY(msginfo->flags)) {
+	if (MSG_IS_COPY(msginfo->flags))
 		summaryview->copied--;
-		changed = TRUE;
-	}
-	changed |= summary_update_unread_children (summaryview, msginfo, FALSE);
+	procmsg_update_unread_children (msginfo, FALSE);
 
 	procmsg_msginfo_set_to_folder(msginfo, NULL);
 	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED, MSG_MOVE | MSG_COPY);
@@ -3250,22 +3221,17 @@ static void summary_delete_duplicated_func(GtkCTree *ctree, GtkCTreeNode *node,
 
 static void summary_unmark_row(SummaryView *summaryview, GtkCTreeNode *row)
 {
-	gboolean changed = FALSE;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted--;
-	if (MSG_IS_MOVE(msginfo->flags)) {
+	if (MSG_IS_MOVE(msginfo->flags))
 		summaryview->moved--;
-		changed = TRUE;
-	}
-	if (MSG_IS_COPY(msginfo->flags)) {
+	if (MSG_IS_COPY(msginfo->flags))
 		summaryview->copied--;
-		changed = TRUE;
-	}
-	changed |= summary_update_unread_children (summaryview, msginfo, FALSE);
+	procmsg_update_unread_children (msginfo, FALSE);
 
 	procmsg_msginfo_set_to_folder(msginfo, NULL);
 	procmsg_msginfo_unset_flags(msginfo, MSG_MARKED | MSG_DELETED, MSG_MOVE | MSG_COPY);

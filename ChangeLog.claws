@@ -1,3 +1,40 @@
+2003-01-19 [alfons]	0.8.8claws122
+		
+	* src/mimeview.c
+		mimeview_save_as(): we might as well show the file name for
+		the single case "Save As" too
+
+2003-01-19 [alfons]	0.8.8claws121
+
+	* src/crash.c
+		change bug tracker URL to bugzilla URL
+
+2003-01-19 [alfons]	0.8.8claws120
+
+	* src/mimeview.c
+		mimeview_save_all(): display name of file before overwriting;
+		continue saving all, even when one overwrite was cancelled
+
+2003-01-19 [christoph]	0.8.8claws119
+
+	* src/summaryview.c
+	* src/procmsg.[ch]
+		fix wrong usage of procmsg_find_children in summaryview
+		by using procmsg_update_unread_children instead of
+		summaryview_update_unread_children
+
+2003-01-19 [christoph]	0.8.8claws118
+
+	* src/procmsg.c
+		fix infinite loop in procmsg_find_children
+
+	Patch submitted by Ivan F. Martinez <ivanfm@users.sourceforge.net>
+
+2003-01-19 [paul]	0.8.8claws117
+
+	* po/pt_BR.po
+		updated by Ivan Francolin Martinez
+
 2003-01-18 [melvin]	0.8.8claws116
 
 	* src/prefs_actions.c

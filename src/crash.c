@@ -312,7 +312,7 @@ static void crash_save_crash_log(GtkButton *button, const gchar *text)
  */
 static void crash_create_bug_report(GtkButton *button, const gchar *data)
 {
-	open_uri("http://sourceforge.net/tracker/?func=add&group_id=25528&atid=384598",
+	open_uri("http://sylpheed-claws.sourceforge.net/cgi-bin/bugzilla/enter_bug.cgi",
 		 prefs_common.uri_cmd);
 }
 
