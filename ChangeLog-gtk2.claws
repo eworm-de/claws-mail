@@ -1,3 +1,9 @@
+2004-09-09 [colin]	0.9.12cvs99.2
+
+	* src/action.c
+		Fix progress bar (displaying "Completed %v/%u")
+		Patch by Alfons.
+
 2004-09-08 [colin]	0.9.12cvs99.1
 
 	* src/account.c
