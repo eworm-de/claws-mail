@@ -1,3 +1,9 @@
+2004-12-08 [hoa]	0.9.13cvs5
+
+	* src/quote_fmt_parse.y
+		fix buffer overflow
+		http://bugs.gentoo.org/show_bug.cgi?id=67253
+
 2004-12-07 [thorsten]	0.9.13cvs4
 
 	* src/procmime.c
