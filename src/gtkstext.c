@@ -4219,9 +4219,9 @@ static void move_cursor_to_display_row_start(GtkSText *text)
 }
 
 /* dumb */
-static gboolean range_intersect(gint x1, gint x2, gint y1, gint y2)
+static gboolean range_intersect(guint x1, guint x2, guint y1, guint y2)
 {
-	gint tmp;
+	guint tmp;
 	if (x1 > x2) { tmp = x1; x1 = x2; x2 = tmp; }
 	if (y1 > y2) { tmp = y1; y1 = y2; y1 = tmp; }
 	if (y1 < x1) { tmp = x1; x1 = y1; y1 = tmp; tmp = x2; x2 = y2; y2 = tmp; }

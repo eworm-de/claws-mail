@@ -1,6 +1,7 @@
 2001-05-06 [alfons]
 
-	* src/gtkstext.c: bug in cursor up navigation fixed
+	* src/gtkstext.c: bug in cursor up navigation fixed,
+		fixed another unsigned / signed comparison (we're getting there :-)
 
 2001-05-06 [hoa]
 
