@@ -1262,6 +1262,33 @@ EncodingType procmime_get_encoding_for_charset(const gchar *charset)
 		/* return ENC_QUOTED_PRINTABLE; */
 }
 
+EncodingType procmime_get_encoding_for_file(const gchar *file)
+{
+	FILE *fp;
+	guchar buf[BUFSIZ];
+	size_t len;
+
+	if ((fp = fopen(file, "rb")) == NULL) {
+		FILE_OP_ERROR(file, "fopen");
+		return ENC_UNKNOWN;
+	}
+
+	while ((len = fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
+		guchar *p;
+		gint i;
+
+		for (p = buf, i = 0; i < len; p++, i++) {
+			if (*p & 0x80) {
+				fclose(fp);
+				return ENC_BASE64;
+			}
+		}
+	}
+
+	fclose(fp);
+	return ENC_7BIT;
+}
+
 const gchar *procmime_get_encoding_str(EncodingType encoding)
 {
 	static const gchar *encoding_str[] = {

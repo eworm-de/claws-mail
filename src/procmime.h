@@ -177,6 +177,7 @@ gchar *procmime_get_mime_type		(const gchar	*filename);
 GList *procmime_get_mime_type_list	(void);
 
 EncodingType procmime_get_encoding_for_charset	(const gchar	*charset);
+EncodingType procmime_get_encoding_for_file	(const gchar	*file);
 const gchar *procmime_get_encoding_str		(EncodingType	 encoding);
 
 void renderer_read_config(void);

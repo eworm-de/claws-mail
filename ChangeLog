@@ -1,3 +1,14 @@
+2002-06-19
+
+	* src/compose.c: if the Content-Type of a file is text/*, check
+	  its content and set the optimal Content-Transfer-Encoding (thanks
+	  to Yoichi Yuasa).
+
+2002-06-18
+
+	* src/textview.c: textview_key_pressed(): pass key press event to
+	  main window to activate menu shortcuts (thanks to Alfons).
+
 2002-06-18
 
 	* src/folder.c: folder_build_tree(): use strtoul() instead of atoi()

@@ -1966,16 +1966,24 @@ static void compose_attach_append(Compose *compose, const gchar *file,
 				(_("Message: %s"),
 				 g_basename(filename ? filename : file));
 		} else {
-			ainfo->encoding = ENC_BASE64;
+			if (!g_strncasecmp(content_type, "text", 4))
+				ainfo->encoding =
+					procmime_get_encoding_for_file(file);
+			else
+				ainfo->encoding = ENC_BASE64;
 			ainfo->name = g_strdup
 				(g_basename(filename ? filename : file));
 		}
 	} else {
 		ainfo->content_type = procmime_get_mime_type(file);
-		if (!ainfo->content_type)
+		if (!ainfo->content_type) {
 			ainfo->content_type =
 				g_strdup("application/octet-stream");
-		ainfo->encoding = ENC_BASE64;
+			ainfo->encoding = ENC_BASE64;
+		} else if (!g_strncasecmp(ainfo->content_type, "text", 4))
+			ainfo->encoding = procmime_get_encoding_for_file(file);
+		else
+			ainfo->encoding = ENC_BASE64;
 		ainfo->name = g_strdup(g_basename(filename ? filename : file));	
 	}
 	ainfo->size = size;
