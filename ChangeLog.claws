@@ -1,3 +1,10 @@
+2003-12-19 [christoph]	0.9.8claws4
+
+	* src/summaryview.c
+		o code cleanup
+		o use subject_compare_for_sort() when comparing
+		  simplified subjects
+
 2003-12-19 [christoph]	0.9.8claws3
 
 	* src/msgcache.c
