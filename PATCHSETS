@@ -133,3 +133,4 @@
 ( cvs diff -u -r 1.49.2.3 -r 1.49.2.4 src/prefs_account.h; ) > 0.9.12cvs77.2.patchset
 ( cvs diff -u -r 1.382.2.43 -r 1.382.2.44 src/compose.c; ) > 0.9.12cvs77.3.patchset
 ( cvs diff -u -r 1.30.2.1 -r 1.30.2.2 src/rfc2015.c; cvs diff -u -r 1.7.2.1 -r 1.7.2.2 src/rfc2015.h; ) > 0.9.12cvs78.1.patchset
+( cvs diff -u -r 1.382.2.44 -r 1.382.2.45 src/compose.c; ) > 0.9.12cvs79.1.patchset

@@ -248,8 +248,7 @@ static gint compose_queue_sub			(Compose	*compose,
 						 gboolean	check_subject);
 static void compose_write_attach		(Compose	*compose,
 						 FILE		*fp);
-static gint compose_write_headers		(Compose	*compose,
-						 FILE		*fp,
+static gchar *compose_get_header		(Compose	*compose,
 						 const gchar	*charset,
 						 EncodingType	 encoding,
 						 gboolean	 is_draft);
@@ -3578,6 +3577,7 @@ static gint compose_redirect_write_to_file(Compose *compose, const gchar *file)
 	FILE *fdest;
 	size_t len;
 	gchar buf[BUFFSIZE];
+	gchar *header;
 
 	if ((fp = fopen(compose->redirect_filename, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
@@ -3741,6 +3741,7 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	const gchar *out_codeset;
 	EncodingType encoding;
 	gboolean already_encoded = FALSE;
+	gchar *header;
 
 	if ((fp = fopen(file, "wb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
@@ -3844,14 +3845,16 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 #endif
 
 	/* write headers */
-	if (compose_write_headers
-		(compose, fp, out_codeset, encoding, is_draft) < 0) {
+	header = compose_get_header(compose, out_codeset, encoding, is_draft);
+	if (header == NULL || fwrite(header, sizeof(gchar), strlen(header), fp) < strlen(header)) {
 		g_warning("can't write headers\n");
 		fclose(fp);
 		/* unlink(file); */
+		g_free(header);
 		g_free(buf);
 		return -1;
 	}
+	g_free(header);
 
 	if (compose_use_attach(compose)) {
 #if USE_GPGME
@@ -4348,101 +4351,94 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 	fprintf(fp, "\n--%s--\n", compose->boundary);
 }
 
-#define QUOTE_IF_REQUIRED(out, str)			\
-{							\
-	if (*str != '"' && strpbrk(str, ",.[]<>")) {	\
-		gchar *__tmp;				\
-		gint len;				\
-							\
-		len = strlen(str) + 3;			\
-		Xalloca(__tmp, len, return -1);		\
-		g_snprintf(__tmp, len, "\"%s\"", str);	\
-		out = __tmp;				\
-	} else {					\
-		Xstrdup_a(out, str, return -1);		\
-	}						\
-}
-  
-#define PUT_RECIPIENT_HEADER(header, str)				      \
-{									      \
-	if (*str != '\0') {						      \
-		gchar *dest;						      \
-		Xstrdup_a(dest, str, return -1);			      \
-		g_strstrip(dest);					      \
-		if (*dest != '\0') {					      \
-			compose->to_list = address_list_append		      \
-				(compose->to_list, dest);		      \
-			compose_convert_header				      \
-				(buf, sizeof(buf), dest, strlen(header) + 2,  \
-				 TRUE);					      \
-			fprintf(fp, "%s: %s\n", header, buf);		      \
-		}							      \
-	}								      \
+#define QUOTE_IF_REQUIRED(out, str)					\
+{									\
+	if (*str != '"' && strpbrk(str, ",.[]<>")) {			\
+		gchar *__tmp;						\
+		gint len;						\
+									\
+		len = strlen(str) + 3;					\
+		if ((__tmp = alloca(len)) == NULL) {			\
+			g_warning("can't allocate memory\n");		\
+			g_string_free(header, TRUE);			\
+			return NULL;					\
+		}							\
+		g_snprintf(__tmp, len, "\"%s\"", str);			\
+		out = __tmp;						\
+	} else {							\
+		gchar *__tmp;						\
+									\
+		if ((__tmp = alloca(strlen(str) + 1)) == NULL) {	\
+			g_warning("can't allocate memory\n");		\
+			g_string_free(header, TRUE);			\
+			return NULL;					\
+		} else 							\
+			strcpy(__tmp, str);				\
+									\
+		out = __tmp;						\
+	}								\
 }
 
 #define IS_IN_CUSTOM_HEADER(header) \
 	(compose->account->add_customhdr && \
 	 custom_header_find(compose->account->customhdr_list, header) != NULL)
 
-static gint compose_write_headers_from_headerlist(Compose *compose, 
-						  FILE *fp, 
-						  const gchar *header,
-						  const gchar *seperator)
+static void compose_add_headerfield_from_headerlist(Compose *compose, 
+						    GString *header, 
+					            const gchar *fieldname,
+					            const gchar *seperator)
 {
-	gchar *str, *header_w_colon, *trans_hdr;
-	gboolean write_header = FALSE;
+	gchar *str, *fieldname_w_colon, *trans_fieldname;
+	gboolean add_field = FALSE;
 	GSList *list;
 	ComposeHeaderEntry *headerentry;
 	const gchar * headerentryname;
-	GString *headerstr;
+	GString *fieldstr;
 
-	if (IS_IN_CUSTOM_HEADER(header)) {
-		return 0;
-	}
+	if (IS_IN_CUSTOM_HEADER(fieldname))
+		return;
 
-	debug_print("Writing %s-header\n", header);
+	debug_print("Adding %s-fields\n", fieldname);
 
-	headerstr = g_string_sized_new(64);
+	fieldstr = g_string_sized_new(64);
 
-	header_w_colon = g_strconcat(header, ":", NULL);
-	trans_hdr = (prefs_common.trans_hdr ? gettext(header_w_colon) : header_w_colon);
+	fieldname_w_colon = g_strconcat(fieldname, ":", NULL);
+	trans_fieldname = (prefs_common.trans_hdr ? gettext(fieldname_w_colon) : fieldname_w_colon);
 
 	for (list = compose->header_list; list; list = list->next) {
     		headerentry = ((ComposeHeaderEntry *)list->data);
 		headerentryname = gtk_entry_get_text(GTK_ENTRY(GTK_COMBO(headerentry->combo)->entry));
 
-		if (!g_strcasecmp(trans_hdr, headerentryname)) {
-			const gchar *entstr = gtk_entry_get_text(GTK_ENTRY(headerentry->entry));
-			Xstrdup_a(str, entstr, return -1);
+		if (!g_strcasecmp(trans_fieldname, headerentryname)) {
+			str = gtk_editable_get_chars(GTK_EDITABLE(headerentry->entry), 0, -1);
 			g_strstrip(str);
 			if (str[0] != '\0') {
-				if (write_header)
-					g_string_append(headerstr, seperator);
-				g_string_append(headerstr, str);
-				write_header = TRUE;
+				if (add_field)
+					g_string_append(fieldstr, seperator);
+				g_string_append(fieldstr, str);
+				add_field = TRUE;
 			}
 		}
 	}
-	if (write_header) {
+	if (add_field) {
 		gchar *buf;
 
-		buf = g_new0(gchar, headerstr->len * 4 + 256);
+		buf = g_new0(gchar, fieldstr->len * 4 + 256);
 		compose_convert_header
-			(buf, headerstr->len * 4  + 256, headerstr->str,
-			strlen(header) + 2, TRUE);
-		fprintf(fp, "%s: %s\n", header, buf);
+			(buf, fieldstr->len * 4  + 256, fieldstr->str,
+			strlen(fieldname) + 2, TRUE);
+		g_string_sprintfa(header, "%s: %s\n", fieldname, buf);
 		g_free(buf);
 	}
 
-	g_free(header_w_colon);
-	g_string_free(headerstr, TRUE);
+	g_free(fieldname_w_colon);
+	g_string_free(fieldstr, TRUE);
 
-	return(0);
+	return;
 }
 
-static gint compose_write_headers(Compose *compose, FILE *fp,
-				  const gchar *charset, EncodingType encoding,
-				  gboolean is_draft)
+static gchar *compose_get_header(Compose *compose, const gchar *charset,
+				 EncodingType encoding, gboolean is_draft)
 {
 	gchar buf[BUFFSIZE];
 	const gchar *entry_str;
@@ -4450,37 +4446,39 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	gchar *name;
 	GSList *list;
 	gchar *std_headers[] = {"To:", "Cc:", "Bcc:", "Newsgroups:", "Reply-To:", "Followup-To:", NULL};
+	GString *header;
 
 	/* struct utsname utsbuf; */
 
-	g_return_val_if_fail(fp != NULL, -1);
-	g_return_val_if_fail(charset != NULL, -1);
-	g_return_val_if_fail(compose->account != NULL, -1);
-	g_return_val_if_fail(compose->account->address != NULL, -1);
+	g_return_val_if_fail(charset != NULL, NULL);
+	g_return_val_if_fail(compose->account != NULL, NULL);
+	g_return_val_if_fail(compose->account->address != NULL, NULL);
+
+	header = g_string_sized_new(64);
 
 	/* Save draft infos */
 	if (is_draft) {
-		fprintf(fp, "X-Sylpheed-Account-Id:%d\n", compose->account->account_id);
-		fprintf(fp, "S:%s\n", compose->account->address);
+		g_string_sprintfa(header, "X-Sylpheed-Account-Id:%d\n", compose->account->account_id);
+		g_string_sprintfa(header, "S:%s\n", compose->account->address);
 		if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(compose->savemsg_checkbtn))) {
 			gchar *savefolderid;
 
 			savefolderid = gtk_editable_get_chars(GTK_EDITABLE(compose->savemsg_entry), 0, -1);
-			fprintf(fp, "SCF:%s\n", savefolderid);
+			g_string_sprintfa(header, "SCF:%s\n", savefolderid);
 			g_free(savefolderid);
 		}
 #ifdef USE_GPGME
-		fprintf(fp, "X-Sylpheed-Sign:%d\n", compose->use_signing);
-		fprintf(fp, "X-Sylpheed-Encrypt:%d\n", compose->use_encryption);
-		fprintf(fp, "X-Sylpheed-Gnupg-Mode:%d\n", compose->gnupg_mode);
+		g_string_sprintfa(header, "X-Sylpheed-Sign:%d\n", compose->use_signing);
+		g_string_sprintfa(header, "X-Sylpheed-Encrypt:%d\n", compose->use_encryption);
+		g_string_sprintfa(header, "X-Sylpheed-Gnupg-Mode:%d\n", compose->gnupg_mode);
 #endif
-		fprintf(fp, "\n");
+		g_string_sprintfa(header, "\n");
 	}
 
 	/* Date */
 	if (compose->account->add_date) {
 		get_rfc822_date(buf, sizeof(buf));
-		fprintf(fp, "Date: %s\n", buf);
+		g_string_sprintfa(header, "Date: %s\n", buf);
 	}
 
 	/* From */
@@ -4489,122 +4487,64 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 			(buf, sizeof(buf), compose->account->name,
 			 strlen("From: "), TRUE);
 		QUOTE_IF_REQUIRED(name, buf);
-		fprintf(fp, "From: %s <%s>\n",
+		g_string_sprintfa(header, "From: %s <%s>\n",
 			name, compose->account->address);
 	} else
-		fprintf(fp, "From: %s\n", compose->account->address);
+		g_string_sprintfa(header, "From: %s\n", compose->account->address);
 	
 	/* To */
-	compose_write_headers_from_headerlist(compose, fp, "To", ", ");
-#if 0 /* NEW COMPOSE GUI */
-	if (compose->use_to) {
-		entry_str = gtk_entry_get_text(GTK_ENTRY(compose->to_entry));
-		PUT_RECIPIENT_HEADER("To", entry_str);
-	}
-#endif
+	compose_add_headerfield_from_headerlist(compose, header, "To", ", ");
 
 	/* Newsgroups */
-	compose_write_headers_from_headerlist(compose, fp, "Newsgroups", ",");
-#if 0 /* NEW COMPOSE GUI */
-	if (compose->use_newsgroups) {
-		entry_str = gtk_entry_get_text(GTK_ENTRY(compose->newsgroups_entry));
-		if (*entry_str != '\0') {
-			Xstrdup_a(str, entry_str, return -1);
-			g_strstrip(str);
-			remove_space(str);
-			if (*str != '\0') {
-				compose->newsgroup_list =
-					newsgroup_list_append
-						(compose->newsgroup_list, str);
-				compose_convert_header(buf, sizeof(buf), str,
-						       strlen("Newsgroups: "),
-						       TRUE);
-				fprintf(fp, "Newsgroups: %s\n", buf);
-			}
-		}
-	}
-#endif
+	compose_add_headerfield_from_headerlist(compose, header, "Newsgroups", ",");
+
 	/* Cc */
-	compose_write_headers_from_headerlist(compose, fp, "Cc", ", ");
-#if 0 /* NEW COMPOSE GUI */
-	if (compose->use_cc) {
-		str = gtk_entry_get_text(GTK_ENTRY(compose->cc_entry));
-		PUT_RECIPIENT_HEADER("Cc", str);
-	}
-#endif
+	compose_add_headerfield_from_headerlist(compose, header, "Cc", ", ");
+
 	/* Bcc */
-	compose_write_headers_from_headerlist(compose, fp, "Bcc", ", ");
-#if 0 /* NEW COMPOSE GUI */
-	if (compose->use_bcc) {
-		str = gtk_entry_get_text(GTK_ENTRY(compose->bcc_entry));
-		PUT_RECIPIENT_HEADER("Bcc", str);
-	}
-#endif
+	compose_add_headerfield_from_headerlist(compose, header, "Bcc", ", ");
 
 	/* Subject */
-	entry_str = gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
-	if (*entry_str != '\0' && !IS_IN_CUSTOM_HEADER("Subject")) {
-		Xstrdup_a(str, entry_str, return -1);
+	str = gtk_entry_get_text(GTK_ENTRY(compose->subject_entry));
+	if (*str != '\0' && !IS_IN_CUSTOM_HEADER("Subject")) {
+		gchar *tmpstr;
+
+		tmpstr = g_strdup(str);
+		if (tmpstr == NULL) {
+			g_string_free(header, TRUE);
+			return NULL;
+		}
 		g_strstrip(str);
 		if (*str != '\0') {
 			compose_convert_header(buf, sizeof(buf), str,
 					       strlen("Subject: "), FALSE);
-			fprintf(fp, "Subject: %s\n", buf);
+			g_string_sprintfa(header, "Subject: %s\n", buf);
 		}
 	}
 
 	/* Message-ID */
 	if (compose->account->gen_msgid) {
 		compose_generate_msgid(buf, sizeof(buf));
-		fprintf(fp, "Message-ID: <%s>\n", buf);
+		g_string_sprintfa(header, "Message-ID: <%s>\n", buf);
 		compose->msgid = g_strdup(buf);
 	}
 
 	if (compose->remove_references == FALSE) {
 		/* In-Reply-To */
 		if (compose->inreplyto && compose->to_list)
-			fprintf(fp, "In-Reply-To: <%s>\n", compose->inreplyto);
+			g_string_sprintfa(header, "In-Reply-To: <%s>\n", compose->inreplyto);
 	
 		/* References */
 		if (compose->references)
-			fprintf(fp, "References: %s\n", compose->references);
+			g_string_sprintfa(header, "References: %s\n", compose->references);
 	}
 
 	/* Followup-To */
-	compose_write_headers_from_headerlist(compose, fp, "Followup-To", ",");
-#if 0 /* NEW COMPOSE GUI */
-	if (compose->use_followupto && !IS_IN_CUSTOM_HEADER("Followup-To")) {
-		entry_str = gtk_entry_get_text(GTK_ENTRY(compose->followup_entry));
-		if (*entry_str != '\0') {
-			Xstrdup_a(str, entry_str, return -1);
-			g_strstrip(str);
-			remove_space(str);
-			if (*str != '\0') {
-				compose_convert_header(buf, sizeof(buf), str,
-						       strlen("Followup-To: "),
-						       TRUE);
-				fprintf(fp, "Followup-To: %s\n", buf);
-			}
-		}
-	}
-#endif
+	compose_add_headerfield_from_headerlist(compose, header, "Followup-To", ",");
+
 	/* Reply-To */
-	compose_write_headers_from_headerlist(compose, fp, "Reply-To", ", ");
-#if 0 /* NEW COMPOSE GUI */
-	if (compose->use_replyto && !IS_IN_CUSTOM_HEADER("Reply-To")) {
-		entry_str = gtk_entry_get_text(GTK_ENTRY(compose->reply_entry));
-		if (*entry_str != '\0') {
-			Xstrdup_a(str, entry_str, return -1);
-			g_strstrip(str);
-			if (*str != '\0') {
-				compose_convert_header(buf, sizeof(buf), str,
-						       strlen("Reply-To: "),
-						       TRUE);
-				fprintf(fp, "Reply-To: %s\n", buf);
-			}
-		}
-	}
-#endif
+	compose_add_headerfield_from_headerlist(compose, header, "Reply-To", ", ");
+
 	/* Organization */
 	if (compose->account->organization &&
 	    strlen(compose->account->organization) &&
@@ -4612,21 +4552,21 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		compose_convert_header(buf, sizeof(buf),
 				       compose->account->organization,
 				       strlen("Organization: "), FALSE);
-		fprintf(fp, "Organization: %s\n", buf);
+		g_string_sprintfa(header, "Organization: %s\n", buf);
 	}
 
 	/* Program version and system info */
 	/* uname(&utsbuf); */
 	if (g_slist_length(compose->to_list) && !IS_IN_CUSTOM_HEADER("X-Mailer") &&
 	    !compose->newsgroup_list) {
-		fprintf(fp, "X-Mailer: %s (GTK+ %d.%d.%d; %s)\n",
+		g_string_sprintfa(header, "X-Mailer: %s (GTK+ %d.%d.%d; %s)\n",
 			prog_version,
 			gtk_major_version, gtk_minor_version, gtk_micro_version,
 			TARGET_ALIAS);
 			/* utsbuf.sysname, utsbuf.release, utsbuf.machine); */
 	}
 	if (g_slist_length(compose->newsgroup_list) && !IS_IN_CUSTOM_HEADER("X-Newsreader")) {
-		fprintf(fp, "X-Newsreader: %s (GTK+ %d.%d.%d; %s)\n",
+		g_string_sprintfa(header, "X-Newsreader: %s (GTK+ %d.%d.%d; %s)\n",
 			prog_version,
 			gtk_major_version, gtk_minor_version, gtk_micro_version,
 			TARGET_ALIAS);
@@ -4646,41 +4586,41 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 					(buf, sizeof(buf),
 					 chdr->value ? chdr->value : "",
 					 strlen(chdr->name) + 2, FALSE);
-				fprintf(fp, "%s: %s\n", chdr->name, buf);
+				g_string_sprintfa(header, "%s: %s\n", chdr->name, buf);
 			}
 		}
 	}
 
 	/* MIME */
-	fprintf(fp, "Mime-Version: 1.0\n");
+	g_string_sprintfa(header, "Mime-Version: 1.0\n");
 	if (compose_use_attach(compose)) {
 		compose->boundary = generate_mime_boundary(NULL);
-		fprintf(fp,
+		g_string_sprintfa(header,
 			"Content-Type: multipart/mixed;\n"
 			" boundary=\"%s\"\n", compose->boundary);
 	} else {
-		fprintf(fp, "Content-Type: text/plain; charset=%s\n", charset);
+		g_string_sprintfa(header, "Content-Type: text/plain; charset=%s\n", charset);
 #if USE_GPGME
 		if (compose->use_signing && !compose->gnupg_mode)
-			fprintf(fp, "Content-Disposition: inline\n");
+			g_string_sprintfa(header, "Content-Disposition: inline\n");
 #endif
-		fprintf(fp, "Content-Transfer-Encoding: %s\n",
+		g_string_sprintfa(header, "Content-Transfer-Encoding: %s\n",
 			procmime_get_encoding_str(encoding));
 	}
 
 	/* PRIORITY */
 	switch (compose->priority) {
-		case PRIORITY_HIGHEST: fprintf(fp, "Importance: high\n"
+		case PRIORITY_HIGHEST: g_string_sprintfa(header, "Importance: high\n"
 						   "X-Priority: 1 (Highest)\n");
 			break;
-		case PRIORITY_HIGH: fprintf(fp, "Importance: high\n"
+		case PRIORITY_HIGH: g_string_sprintfa(header, "Importance: high\n"
 						"X-Priority: 2 (High)\n");
 			break;
 		case PRIORITY_NORMAL: break;
-		case PRIORITY_LOW: fprintf(fp, "Importance: low\n"
+		case PRIORITY_LOW: g_string_sprintfa(header, "Importance: low\n"
 					       "X-Priority: 4 (Low)\n");
 			break;
-		case PRIORITY_LOWEST: fprintf(fp, "Importance: low\n"
+		case PRIORITY_LOWEST: g_string_sprintfa(header, "Importance: low\n"
 						  "X-Priority: 5 (Lowest)\n");
 			break;
 		default: debug_print("compose: priority unknown : %d\n",
@@ -4696,9 +4636,9 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 						       compose->account->name, 
 						       strlen("Disposition-Notification-To: "),
 						       TRUE);
-				fprintf(fp, "Disposition-Notification-To: %s <%s>\n", buf, compose->account->address);
+				g_string_sprintfa(header, "Disposition-Notification-To: %s <%s>\n", buf, compose->account->address);
 			} else
-				fprintf(fp, "Disposition-Notification-To: %s\n", compose->account->address);
+				g_string_sprintfa(header, "Disposition-Notification-To: %s\n", compose->account->address);
 		}
 	}
 
@@ -4742,16 +4682,19 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 			string++;
 		}
 		if (!standard_header && !IS_IN_CUSTOM_HEADER(headername))
-			fprintf(fp, "%s %s\n", headername_wcolon, headervalue);
+			g_string_sprintfa(header, "%s %s\n", headername_wcolon, headervalue);
 				
 		g_free(headername);
 		g_free(headername_wcolon);		
 	}
 
 	/* separator between header and body */
-	fputs("\n", fp);
+	g_string_sprintfa(header, "\n");
 
-	return 0;
+	str = header->str;
+	g_string_free(header, FALSE);
+
+	return str;
 }
 
 #undef IS_IN_CUSTOM_HEADER
@@ -6644,7 +6587,6 @@ static void compose_allow_user_actions (Compose *compose, gboolean allow)
 static void compose_send_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	Compose *compose = (Compose *)data;
-	gint val;
 	
 	if (prefs_common.work_offline)
 		if (alertpanel(_("Offline warning"), 

@@ -1,3 +1,8 @@
+2004-08-23 [colin]	0.9.12cvs79.1
+
+	* src/compose.c
+		Sync with HEAD 0.9.12cvs79
+
 2004-08-23 [colin]	0.9.12cvs78.1
 
 	* src/rfc2015.c
