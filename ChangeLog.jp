@@ -1,3 +1,20 @@
+2002-05-29
+
+	* src/pop.[ch]
+	  src/inc.c
+	  src/prefs_account.[ch]: POP3 で STLS コマンドを有効にした。
+	* src/account.c: account_clist_set_row(): TLS の設定を表示。
+
+2002-05-28
+
+	* src/compose.c: compose_send_later_cb(): 「リダイレクト」機能に
+	  対応。
+	* src/imap.[ch]
+	  src/ssl.h
+	  src/prefs_account.[ch]: IMAP4 で STARTTLS コマンドを有効にした。
+	* src/send.c
+	  src/smtp.[ch]: SSLSMTPType の代わりに SSLType を使用。
+
 2002-05-28
 
 	* src/utils.[ch]: make_dir(): mkdir() と chmod() のラッパー。

@@ -319,7 +319,7 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 
 #if USE_SSL
 	port = ac_prefs->set_smtpport ? ac_prefs->smtpport :
-		ac_prefs->ssl_smtp == SSL_SMTP_TUNNEL ? SSMTP_PORT : SMTP_PORT;
+		ac_prefs->ssl_smtp == SSL_TUNNEL ? SSMTP_PORT : SMTP_PORT;
 #else
 	port = ac_prefs->set_smtpport ? ac_prefs->smtpport : SMTP_PORT;
 #endif

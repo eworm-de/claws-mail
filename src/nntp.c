@@ -45,7 +45,7 @@ static gint nntp_gen_command	(NNTPSockInfo	*sock,
 				 ...);
 
 #if USE_SSL
-NNTPSockInfo *nntp_open(const gchar *server, gushort port, gchar *buf, gboolean use_ssl)
+NNTPSockInfo *nntp_open(const gchar *server, gushort port, gchar *buf, SSLType ssl_type)
 #else
 NNTPSockInfo *nntp_open(const gchar *server, gushort port, gchar *buf)
 #endif
@@ -60,7 +60,7 @@ NNTPSockInfo *nntp_open(const gchar *server, gushort port, gchar *buf)
 	}
 
 #if USE_SSL
-	if (use_ssl && !ssl_init_socket(sock)) {
+	if (ssl_type && !ssl_init_socket(sock)) {
 		 sock_close(sock);
 		 return NULL;
 	}
@@ -80,7 +80,7 @@ NNTPSockInfo *nntp_open(const gchar *server, gushort port, gchar *buf)
 
 #if USE_SSL
 NNTPSockInfo *nntp_open_auth(const gchar *server, gushort port, gchar *buf,
-			     const gchar *userid, const gchar *passwd, gboolean use_ssl)
+			     const gchar *userid, const gchar *passwd, SSLType ssl_type)
 #else
 NNTPSockInfo *nntp_open_auth(const gchar *server, gushort port, gchar *buf,
 			     const gchar *userid, const gchar *passwd)
@@ -89,7 +89,7 @@ NNTPSockInfo *nntp_open_auth(const gchar *server, gushort port, gchar *buf,
 	NNTPSockInfo *sock;
 
 #if USE_SSL
-	sock = nntp_open(server, port, buf, use_ssl);
+	sock = nntp_open(server, port, buf, ssl_type);
 #else
 	sock = nntp_open(server, port, buf);
 #endif

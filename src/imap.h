@@ -27,6 +27,9 @@
 #include <glib.h>
 #include <time.h>
 
+#if USE_SSL
+#  include "ssl.h"
+#endif
 #include "folder.h"
 #include "session.h"
 #include "procmsg.h"

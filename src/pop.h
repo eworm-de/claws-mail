@@ -20,6 +20,10 @@
 #ifndef __POP_H__
 #define __POP_H__
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include <glib.h>
 
 #include "socket.h"
@@ -28,6 +32,10 @@ typedef struct _Pop3MsgInfo	Pop3MsgInfo;
 
 typedef enum {
 	POP3_GREETING_RECV,
+#if USE_SSL
+	POP3_STLS_SEND,
+	POP3_STLS_RECV,
+#endif
 	POP3_GETAUTH_USER_SEND,
 	POP3_GETAUTH_USER_RECV,
 	POP3_GETAUTH_PASS_SEND,
@@ -94,6 +102,10 @@ gint pop3_getauth_pass_send	(SockInfo *sock, gpointer data);
 gint pop3_getauth_pass_recv	(SockInfo *sock, gpointer data);
 gint pop3_getauth_apop_send	(SockInfo *sock, gpointer data);
 gint pop3_getauth_apop_recv	(SockInfo *sock, gpointer data);
+#if USE_SSL
+gint pop3_stls_send		(SockInfo *sock, gpointer data);
+gint pop3_stls_recv		(SockInfo *sock, gpointer data);
+#endif
 gint pop3_getrange_stat_send	(SockInfo *sock, gpointer data);
 gint pop3_getrange_stat_recv	(SockInfo *sock, gpointer data);
 gint pop3_getrange_last_send	(SockInfo *sock, gpointer data);

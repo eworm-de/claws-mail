@@ -1,3 +1,12 @@
+2002-05-29 [paul]	0.7.6claws24
+
+	* sync with 0.7.6cvs18
+		see ChangeLog 2002-05-28 and 2002-05-29
+
+	* src/news.c
+	  src/nntp.[ch]
+		sync with above 
+
 2002-05-28 [paul]	0.7.6claws23
 
 	* sync with 0.7.6cvs16

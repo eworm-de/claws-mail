@@ -37,6 +37,9 @@
 #include "inc.h"
 #include "recv.h"
 #include "selective_download.h"
+#if USE_SSL
+#  include "ssl.h"
+#endif
 
 #define LOOKUP_NEXT_MSG() \
 	for (;;) { \
@@ -74,6 +77,12 @@ gint pop3_greeting_recv(SockInfo *sock, gpointer data)
 	gchar buf[POPBUFSIZE];
 
 	if (pop3_ok(sock, buf) == PS_SUCCESS) {
+#if USE_SSL
+		if (state->ac_prefs->ssl_pop == SSL_STARTTLS) {
+			state->greeting = g_strdup(buf);
+			return POP3_STLS_SEND;
+		}
+#endif
 		if (state->ac_prefs->protocol == A_APOP) {
 			state->greeting = g_strdup(buf);
 			return POP3_GETAUTH_APOP_SEND;
@@ -82,6 +91,36 @@ gint pop3_greeting_recv(SockInfo *sock, gpointer data)
 	} else
 		return -1;
 }
+
+#if USE_SSL
+gint pop3_stls_send(SockInfo *sock, gpointer data)
+{
+	pop3_gen_send(sock, "STLS");
+
+	return POP3_STLS_RECV;
+}
+
+gint pop3_stls_recv(SockInfo *sock, gpointer data)
+{
+	Pop3State *state = (Pop3State *)data;
+	gint ok;
+
+	if ((ok = pop3_ok(sock, NULL)) == PS_SUCCESS) {
+		if (!ssl_init_socket_with_method(sock, SSL_METHOD_TLSv1))
+			return -1;
+		if (state->ac_prefs->protocol == A_APOP) {
+			return POP3_GETAUTH_APOP_SEND;
+		} else
+			return POP3_GETAUTH_USER_SEND;
+	} else if (ok == PS_PROTOCOL) {
+		log_warning(_("can't start TLS session\n"));
+		state->error_val = PS_PROTOCOL;
+		state->inc_state = INC_ERROR;
+		return POP3_LOGOUT_SEND;
+	} else
+		return -1;
+}
+#endif /* USE_SSL */
 
 gint pop3_getauth_user_send(SockInfo *sock, gpointer data)
 {

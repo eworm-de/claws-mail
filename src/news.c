@@ -50,6 +50,7 @@
 
 #define NNTP_PORT	119
 #if USE_SSL
+#include "ssl.h"
 #define NNTPS_PORT 563
 #endif
 
@@ -61,7 +62,7 @@ static void news_folder_init		 (Folder	*folder,
 static Session *news_session_new	 (const gchar	*server,
 					  gushort	 port,
 					  const gchar	*userid,
-					  const gchar	*passwd, gboolean use_ssl);
+					  const gchar	*passwd, SSLType ssl_type);
 #else
 static Session *news_session_new	 (const gchar	*server,
 					  gushort	 port,
@@ -132,7 +133,7 @@ static void news_folder_init(Folder *folder, const gchar *name,
 
 #if USE_SSL
 static Session *news_session_new(const gchar *server, gushort port,
-				 const gchar *userid, const gchar *passwd, gboolean use_ssl)
+				 const gchar *userid, const gchar *passwd, SSLType ssl_type)
 #else
 static Session *news_session_new(const gchar *server, gushort port,
 				 const gchar *userid, const gchar *passwd)
@@ -148,13 +149,13 @@ static Session *news_session_new(const gchar *server, gushort port,
 
 	if (userid && passwd)
 #if USE_SSL
-		nntp_sock = nntp_open_auth(server, port, buf, userid, passwd, use_ssl);
+		nntp_sock = nntp_open_auth(server, port, buf, userid, passwd, ssl_type);
 #else
 		nntp_sock = nntp_open_auth(server, port, buf, userid, passwd);
 #endif
 	else
 #if USE_SSL
-		nntp_sock = nntp_open(server, port, buf, use_ssl);
+		nntp_sock = nntp_open(server, port, buf, ssl_type);
 #else
 		nntp_sock = nntp_open(server, port, buf);
 #endif
