@@ -1,3 +1,9 @@
+2003-01-02 [thorsten]	0.8.8claws37
+
+	* src/procmsg.c
+		detect loops across several messages
+		as suggested by Christoph Hohmann
+
 2003-01-01 [match]	0.8.8claws36
 
 	* src/addrindex.c
