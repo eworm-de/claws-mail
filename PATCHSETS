@@ -55,3 +55,4 @@
 ( cvs diff -u -r 1.204.2.15 -r 1.204.2.16 src/prefs_common.c; ) > 0.9.12cvs32.5.patchset
 ( cvs diff -u -r 1.395.2.21 -r 1.395.2.22 src/summaryview.c; ) > 0.9.12cvs32.6.patchset
 ( cvs diff -u -r 1.87.2.8 -r 1.87.2.9 src/folder.h; cvs diff -u -r 1.207.2.9 -r 1.207.2.10 src/folderview.c; cvs diff -u -r 1.395.2.22 -r 1.395.2.23 src/summaryview.c; ) > 0.9.12cvs33.1.patchset
+( cvs diff -u -r 1.94.2.21 -r 1.94.2.22 src/messageview.c; cvs diff -u -r 1.96.2.13 -r 1.96.2.14 src/textview.c; ) > 0.9.12cvs33.2.patchset

@@ -1,3 +1,11 @@
+2004-07-19 [colin]	0.9.12cvs33.2
+
+	* src/messageview.c
+	* src/textview.c
+		Fix messageview remembering the previous
+		scroll position when loading a new message
+		Patch by Alfons
+
 2004-07-19 [colin]	0.9.12cvs33.1
 
 	* src/folder.h

@@ -725,6 +725,7 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	textview_set_all_headers(messageview->mimeview->textview, all_headers);
 
 	mimeview_show_message(messageview->mimeview, mimeinfo, file);
+	messageview_set_position(messageview, 0);
 
 	if (messageview->msginfo->partial_recv)
 		partial_recv_show(messageview->noticeview, 
