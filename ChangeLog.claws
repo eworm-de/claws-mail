@@ -1,3 +1,8 @@
+2003-10-22 [alfons]	0.9.6claws44
+	
+	* src/carray.h
+		inline carray_count() 
+
 2003-10-21 [alfons]	0.9.6claws43
 
 	* src/carray.h

@@ -113,7 +113,7 @@ static inline carray_set(carray *array, guint index, gpointer value)
 	g_ptr_array_index(array, n) = value;
 }
 
-static guint carray_count(carray *array)
+static inline guint carray_count(carray *array)
 {
 	/* NOTE: We're hosed when len < 0, but that won't occur */
 	return (guint) array->len;
