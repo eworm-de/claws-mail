@@ -17,20 +17,19 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __HEADERS_H__
-#define __HEADERS_H__
+#ifndef __HEADERS_DISPLAY_H__
+#define __HEADERS_DISPLAY_H__
 
-struct _CustomHeader
+struct _HeaderDisplayProp
 {
-	gchar *account_name;
 	gchar *name;
-	gchar *value;
+	int hidden;
 };
 
-typedef struct _CustomHeader CustomHeader;
+typedef struct _HeaderDisplayProp HeaderDisplayProp;
 
-gchar * custom_header_get_str(CustomHeader *ch);
-CustomHeader * custom_header_read_str(gchar * buf);
-void custom_header_free(CustomHeader *ch);
+gchar * header_display_prop_get_str(HeaderDisplayProp *dp);
+HeaderDisplayProp * header_display_prop_read_str(gchar * buf);
+void header_display_prop_free(HeaderDisplayProp *dp);
 
-#endif /* __HEADERS_H__ */
+#endif /* __DISPLAY_H__ */

@@ -17,20 +17,52 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __HEADERS_H__
-#define __HEADERS_H__
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
 
-struct _CustomHeader
+#include <glib.h>
+#include <string.h>
+#include <strings.h>
+#include <stdlib.h>
+
+#include "intl.h"
+#include "headers_display.h"
+#include "utils.h"
+
+
+gchar * header_display_prop_get_str(HeaderDisplayProp *dp)
 {
-	gchar *account_name;
-	gchar *name;
-	gchar *value;
-};
+ 	return g_strdup_printf
+ 		("%s%s", dp->hidden?"-":"", dp->name);
+}
+ 
+HeaderDisplayProp * header_display_prop_read_str(gchar * buf)
+{
+ 	HeaderDisplayProp * dp;
 
-typedef struct _CustomHeader CustomHeader;
+	dp = g_new0(HeaderDisplayProp, 1);
 
-gchar * custom_header_get_str(CustomHeader *ch);
-CustomHeader * custom_header_read_str(gchar * buf);
-void custom_header_free(CustomHeader *ch);
+	dp->hidden = 0;
+	if (*buf == '-') {
+		dp->hidden = 1;
+		buf ++;
+	}
+	if (*buf == 0) {
+		g_free(dp);
+		return NULL;
+	}
+	dp->name = g_strdup(buf);
 
-#endif /* __HEADERS_H__ */
+	return dp;
+}
+ 
+void header_display_prop_free(HeaderDisplayProp *dp)
+{
+ 	if (!dp) return;
+ 
+	if (dp->name)
+		g_free(dp->name);
+ 
+ 	g_free(dp);
+}

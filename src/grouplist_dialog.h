@@ -17,12 +17,12 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __INPUTDIALOG_H__
-#define __INPUTDIALOG_H__
+#ifndef __GROUPLISTDIALOG_H__
+#define __GROUPLISTDIALOG_H__
 
 #include <glib.h>
 #include "folder.h"
 
 gchar *grouplist_dialog			(FolderItem * item);
 
-#endif /* __INPUTDIALOG_H__ */
+#endif /* __GROUPLISTDIALOG_H__ */

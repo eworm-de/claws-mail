@@ -1,3 +1,22 @@
+2001-05-01 [hoa]
+	* src/Makefile.am added prefs_display_headers.[ch] headers_display.[ch]
+	* src/defs.h added HEADERS_DISPLAY_RC : name of the config file
+		for displaying of headers
+	* src/grouplist_dialog.[ch] minor changes to remove warnings
+	* src/prefs_display_headers.[ch] dialog to choose the
+	headers to display in the mail viewer.
+	* src/headers.h correction of #define
+	* src/headers_display.[ch] configuration for displaying of headers.
+	* src/main.c read config of displaying of headers
+	* src/prefs_common.c add a button to access the config dialog
+		for displaying of headers
+	* src/prefs_display_headers.[ch] dialog for configuration for
+		displaying of the headers.
+	* src/prefs_headers.c cleaning of code
+	* src/procheader.c comments added to code
+	* src/textview.c changes to reorder the headers depending
+		on the config for displaying of headers
+
 2001-04-30 [alfons]
 
 	0.4.65claws7
@@ -18,6 +37,7 @@
 	* src/news.c (news_session_new_for_folder): set userid=NULL if
 	password dialog is cancelled.
 
+>>>>>>> 1.29
 2001-04-30 [sergey]
 
 	* src/nntp.h (NNTPSockInfo): new type.

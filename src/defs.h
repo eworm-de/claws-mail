@@ -47,6 +47,7 @@
 #define ACCOUNT_RC		"accountrc"
 #define FILTER_RC		"filterrc"
 #define HEADERS_RC		"headersrc"
+#define HEADERS_DISPLAY_RC	"headersdisplayrc"
 #define MENU_RC			"menurc"
 #define ADDRESS_BOOK		"addressbook.xml"
 #define MANUAL_HTML_INDEX	"sylpheed.html"

@@ -36,6 +36,13 @@
 
 #define BUFFSIZE	8192
 
+/*
+  procheader_get_one_field
+  - reads fp and puts the header and the corresponding content into buf
+    if one of these is one of hentry table.
+  - if hentry is NULL, ignores no headers
+ */
+
 gint procheader_get_one_field(gchar *buf, gint len, FILE *fp,
 			      HeaderEntry hentry[])
 {

@@ -47,6 +47,8 @@
 #include "html.h"
 #include "compose.h"
 #include "addressbook.h"
+#include "headers_display.h"
+#include "prefs_display_headers.h"
 
 #define FONT_LOAD(font, s) \
 { \
@@ -931,8 +933,25 @@ enum
 	H_ORGANIZATION	= 11,
 };
 
+static gboolean hdrequal(char * hdr1, char * hdr2)
+{
+	int len1;
+	int len2;
+
+	len1 = strlen(hdr1);
+	len2 = strlen(hdr2);
+	if (hdr1[len1 - 1] == ':')
+		len1--;
+	if (hdr2[len2 - 1] == ':')
+		len2--;
+	if (len1 != len2)
+		return 0;
+	return (strncasecmp(hdr1, hdr2, len1) == 0);
+}
+
 static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 {
+	/*
 	static HeaderEntry hentry[] = {{"Date:",         NULL, FALSE},
 				       {"From:",         NULL, TRUE},
 				       {"To:",	         NULL, FALSE},
@@ -946,10 +965,15 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 				       {"User-Agent:",   NULL, TRUE},
 				       {"Organization:", NULL, TRUE},
 				       {NULL,	         NULL, FALSE}};
+	*/
 	gchar buf[BUFFSIZE], tmp[BUFFSIZE];
 	gint hnum;
 	HeaderEntry *hp;
 	GPtrArray *headers;
+	GSList * l;
+
+	int i;
+	GPtrArray *sorted_headers;
 
 	g_return_val_if_fail(fp != NULL, NULL);
 
@@ -961,6 +985,7 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 
 	headers = g_ptr_array_new();
 
+	/*
 	while ((hnum = procheader_get_one_field(buf, sizeof(buf), fp, hentry))
 	       != -1) {
 		Header *header;
@@ -975,8 +1000,59 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 
 		g_ptr_array_add(headers, header);
 	}
+	*/
+	//	while (procheader_get_unfolded_line(buf, sizeof(buf), fp) != NULL) {
+	while (procheader_get_one_field(buf, sizeof(buf), fp, NULL) != -1) {
+		gchar * p;
+		Header *header;
 
-	return headers;
+		if (*buf == ':') continue;
+		for (p = buf; *p && *p != ' '; p++) {
+			if (*p == ':') {
+				header = g_new(Header, 1);
+				header->name = g_strndup(buf, p - buf + 1);
+				p++;
+				/* while (*p == ' ' || *p == '\t') p++; */
+				conv_unmime_header(tmp, sizeof(tmp), p, NULL);
+				header->body = g_strdup(tmp);
+
+				g_ptr_array_add(headers, header);
+				break;
+			}
+		}
+	}
+
+	sorted_headers = g_ptr_array_new();
+	for(l = prefs_display_headers ; l != NULL ; l = g_slist_next(l)) {
+		HeaderDisplayProp * dp = (HeaderDisplayProp *) l->data;
+		for(i = 0 ; i < headers->len ; i++) {
+			Header * header = g_ptr_array_index(headers, i);
+			if (hdrequal(header->name, dp->name)) {
+				if (dp->hidden) {
+					g_ptr_array_remove_index(headers, i);
+					g_free(header->body);
+					g_free(header->name);
+					g_free(header);
+					i--;
+				}
+				else {
+					g_ptr_array_add(sorted_headers,
+							header);
+					g_ptr_array_remove_index(headers, i);
+					i--;
+				}
+			}
+		}
+	}
+
+	for(i = 0 ; i < headers->len ; i++) {
+		Header * header = g_ptr_array_index(headers, i);
+		g_ptr_array_add(sorted_headers, header);
+	}
+
+	g_ptr_array_free(headers, TRUE);
+	
+	return sorted_headers;
 }
 
 static void textview_show_header(TextView *textview, GPtrArray *headers)

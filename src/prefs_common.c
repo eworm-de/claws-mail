@@ -47,6 +47,7 @@
 #include "gtkutils.h"
 #include "alertpanel.h"
 #include "folder.h"
+#include "prefs_display_headers.h"
 
 PrefsCommon prefs_common;
 
@@ -1285,6 +1286,7 @@ static void prefs_display_create(void)
 	GtkWidget *label_datefmt;
 	GtkWidget *entry_datefmt;
 	GtkWidget *button_dispitem;
+	GtkWidget *button_headers_display;
 
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
@@ -1367,6 +1369,19 @@ static void prefs_display_create(void)
 	gtk_box_pack_start (GTK_BOX (hbox1), button_dispitem, FALSE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (button_dispitem), "clicked",
 			    GTK_SIGNAL_FUNC (prefs_summary_display_item_set),
+			    NULL);
+
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox2), hbox1, FALSE, TRUE, 0);
+
+	button_headers_display = gtk_button_new_with_label
+		(_(" Set displaying of headers... "));
+	gtk_widget_show (button_headers_display);
+	gtk_box_pack_start (GTK_BOX (hbox1), button_headers_display, FALSE,
+			    TRUE, 0);
+	gtk_signal_connect (GTK_OBJECT (button_headers_display), "clicked",
+			    GTK_SIGNAL_FUNC (prefs_display_headers_open),
 			    NULL);
 
 	display.entry_textfont	= entry_textfont;

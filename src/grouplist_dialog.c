@@ -206,7 +206,8 @@ static void grouplist_dialog_set_list(void)
 	gtk_clist_clear(GTK_CLIST(group_clist));
 	for(elt = group_list; elt != NULL ; elt = elt->next)
 	  {
-	    row = gtk_clist_append(GTK_CLIST(group_clist), &(elt->data));
+	    row = gtk_clist_append(GTK_CLIST(group_clist),
+				   (void *) &(elt->data));
 	    gtk_clist_set_row_data(GTK_CLIST(group_clist), row, elt->data);
 	  }
 
