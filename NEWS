@@ -1,5 +1,12 @@
 Changes of Sylpheed
 
+* 1.0.0
+
+    * The first official release.
+    * The escaping of special characters in action commands has been
+      modified.
+    * The crash on deleting a remote account has been fixed.
+
 * 1.0.0rc
 
     * The IMAP4 parser has been fixed for 64-bit platforms.

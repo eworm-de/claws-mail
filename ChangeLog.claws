@@ -1,3 +1,12 @@
+2004-12-30 [paul]	0.9.13cvs22
+
+	* ChangeLog
+	* ChangeLog.jp
+	* NEWS
+	* src/account.c
+		sync with main 1.0.0.
+		see ChangeLog 2004-12-22
+
 2004-12-18 [paul]	0.9.13cvs21
 
 	* AUTHORS
