@@ -1,3 +1,9 @@
+2002-07-31 [alfons]	0.8.1claws5
+
+	* src/main.c
+		check folder item and its path for NULL on
+		initial processing
+
 2002-07-31 [christoph]	0.8.1claws4
 
 	* src/folder.c

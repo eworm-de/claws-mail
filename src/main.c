@@ -436,8 +436,12 @@ static void initial_processing(FolderItem *item, gpointer data)
 {
 	MainWindow *mainwin = (MainWindow *)data;
 	gchar *buf;
-		
-	buf = g_strdup_printf(_("Processing (%s)..."), item->path);
+
+	g_return_if_fail(item);
+	buf = g_strdup_printf(_("Processing (%s)..."), 
+			      item->path 
+			      ? item->path 
+			      : _("top level folder"));
 	debug_print("%s\n", buf);
 	STATUSBAR_PUSH(mainwin, buf);
 	g_free(buf);
