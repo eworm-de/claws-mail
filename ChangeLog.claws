@@ -1,4 +1,9 @@
-2003-04-21 [melvin]
+2003-04-21 [melvin]	0.8.11claws104
+
+	* src/plugins/dillo_viewer/README
+		Improved slightly the text.
+
+2003-04-21 [melvin]	0.8.11claws103
 
 	* src/plugins/dillo_viewer/README *** NEW ***
 		Added a README file for the Dillo plugin
