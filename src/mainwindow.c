@@ -238,6 +238,9 @@ static void toolbar_reply_cb	        (GtkWidget	*widget,
 static void toolbar_reply_to_all_cb	(GtkWidget	*widget,
 				         gpointer	 data);
 
+static void toolbar_reply_to_list_cb	(GtkWidget	*widget,
+				         gpointer	 data);
+
 static void toolbar_reply_to_sender_cb	(GtkWidget	*widget,
 					 gpointer	 data);
 
@@ -265,6 +268,14 @@ static void toolbar_reply_to_all_popup_cb      (GtkWidget	*widget,
 						gpointer	 data);
 
 static void toolbar_reply_to_all_popup_closed_cb
+					(GtkMenuShell	*menu_shell,
+					 gpointer	 data);
+
+static void toolbar_reply_to_list_popup_cb       (GtkWidget	*widget,
+						GdkEventButton  *event,
+						gpointer	 data);
+
+static void toolbar_reply_to_list_popup_closed_cb
 					(GtkMenuShell	*menu_shell,
 					 gpointer	 data);
 
@@ -821,6 +832,11 @@ static GtkItemFactoryEntry replyall_popup_entries[] =
 {
 	{N_("/Reply to all with _quote"), "<shift>A", reply_cb, COMPOSE_REPLY_TO_ALL_WITH_QUOTE, NULL},
 	{N_("/_Reply to all without quote"), "a", reply_cb, COMPOSE_REPLY_TO_ALL_WITHOUT_QUOTE, NULL}
+};
+static GtkItemFactoryEntry replylist_popup_entries[] =
+{
+	{N_("/Reply to list with _quote"), "<shift>A", reply_cb, COMPOSE_REPLY_TO_LIST_WITH_QUOTE, NULL},
+	{N_("/_Reply to list without quote"), "a", reply_cb, COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE, NULL}
 };
 static GtkItemFactoryEntry replysender_popup_entries[] =
 {
@@ -2316,6 +2332,16 @@ static void toolbar_reply_to_all_cb(GtkWidget   *widget,
 		 NULL);
 }
 
+static void toolbar_reply_to_list_cb(GtkWidget   *widget, 
+				    gpointer     data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+
+	reply_cb(mainwin, 
+		 prefs_common.reply_with_quote ? COMPOSE_REPLY_TO_LIST_WITH_QUOTE 
+		 : COMPOSE_REPLY_TO_LIST_WITHOUT_QUOTE, 
+		 NULL);
+}
 
 static void toolbar_reply_to_sender_cb(GtkWidget   *widget, 
 				       gpointer     data)
@@ -2410,6 +2436,28 @@ static void toolbar_reply_to_all_popup_closed_cb(GtkMenuShell *menu_shell, gpoin
 	manage_window_focus_in(mainwin->window, NULL, NULL);
 }
 
+static void toolbar_reply_to_list_popup_cb(GtkWidget *widget, GdkEventButton *event, gpointer data)
+{
+	MainWindow *mainwindow = (MainWindow *) data;
+	
+	if (!event) return;
+
+	if (event->button == 3) {
+		gtk_button_set_relief(GTK_BUTTON(widget), GTK_RELIEF_NORMAL);
+		gtk_menu_popup(GTK_MENU(mainwindow->toolbar->replylist_popup), NULL, NULL,
+		       menu_button_position, widget,
+		       event->button, event->time);
+	}
+}
+
+static void toolbar_reply_to_list_popup_closed_cb(GtkMenuShell *menu_shell, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+
+	gtk_button_set_relief(GTK_BUTTON(mainwin->toolbar->replylist_btn), GTK_RELIEF_NONE);
+	manage_window_focus_in(mainwin->window, NULL, NULL);
+}
+
 static void toolbar_reply_to_sender_popup_cb(GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
 	MainWindow *mainwindow = (MainWindow *) data;
@@ -2492,6 +2540,7 @@ static void toolbar_buttons_cb(GtkWidget         *widget,
 		{ A_REPLY_MESSAGE,  toolbar_reply_cb           },
 		{ A_REPLY_SENDER,   toolbar_reply_to_sender_cb },
 		{ A_REPLY_ALL,      toolbar_reply_to_all_cb    },
+		{ A_REPLY_ML,       toolbar_reply_to_list_cb   },
 		{ A_FORWARD,        toolbar_forward_cb         },
 		{ A_DELETE,         toolbar_delete_cb          },
 		{ A_EXECUTE,        toolbar_exec_cb            },
@@ -2552,6 +2601,8 @@ void toolbar_set_sensitive(MainWindow *mainwin)
 			M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST);
 	SET_WIDGET_COND(toolbar->replyall_btn,
 			M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST);
+	SET_WIDGET_COND(toolbar->replylist_btn,
+			M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST);
 	SET_WIDGET_COND(toolbar->replysender_btn,
 			M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST);
 	SET_WIDGET_COND(toolbar->fwd_btn, M_HAVE_ACCOUNT|M_TARGET_EXIST);
@@ -2608,6 +2659,7 @@ static void toolbar_update(MainWindow *mainwin)
 	mainwin->toolbar->compose_news_btn = NULL;
 	mainwin->toolbar->reply_btn        = NULL;	
 	mainwin->toolbar->replyall_btn     = NULL;	
+	mainwin->toolbar->replylist_btn     = NULL;	
 	mainwin->toolbar->replysender_btn  = NULL;	
 	mainwin->toolbar->fwd_btn    = NULL;	
 	mainwin->toolbar->delete_btn = NULL;	
@@ -2639,6 +2691,7 @@ static void toolbar_create(MainWindow *mainwin,
 	guint n_menu_entries;
 	GtkWidget *reply_popup;
 	GtkWidget *replyall_popup;
+	GtkWidget *replylist_popup;
 	GtkWidget *replysender_popup;
 	GtkWidget *fwd_popup;
 
@@ -2778,6 +2831,24 @@ static void toolbar_create(MainWindow *mainwin,
 			gtk_signal_connect(GTK_OBJECT(replyall_popup), "selection_done",
 					   GTK_SIGNAL_FUNC(toolbar_reply_to_all_popup_closed_cb), mainwin);
 			mainwin->toolbar->replyall_popup    = replyall_popup;
+			break;
+		case A_REPLY_ML:
+			mainwin->toolbar->replylist_btn = item;
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips), 
+					     mainwin->toolbar->replylist_btn,
+					   _("Reply to Mailing-list"), NULL);
+			gtk_signal_connect(GTK_OBJECT(mainwin->toolbar->replylist_btn), 
+					   "button_press_event",
+					   GTK_SIGNAL_FUNC(toolbar_reply_to_list_popup_cb),
+					   mainwin);
+			n_menu_entries = sizeof(replylist_popup_entries) /
+				sizeof(replylist_popup_entries[0]);
+			replylist_popup = popupmenu_create(mainwin->window, 
+							  replylist_popup_entries, n_menu_entries,
+							  "<ReplyMlPopup>", mainwin);
+			gtk_signal_connect(GTK_OBJECT(replylist_popup), "selection_done",
+					   GTK_SIGNAL_FUNC(toolbar_reply_to_list_popup_closed_cb), mainwin);
+			mainwin->toolbar->replylist_popup    = replylist_popup;
 			break;
 		case A_FORWARD:
 			mainwin->toolbar->fwd_btn = item;

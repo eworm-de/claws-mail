@@ -85,6 +85,7 @@ static ToolbarText toolbar_text [] = {
 	{ "A_REPLY_MESSAGE", N_("Reply to Message")                     },
 	{ "A_REPLY_SENDER",  N_("Reply to Sender")                      },
 	{ "A_REPLY_ALL",     N_("Reply to All")                         },
+	{ "A_REPLY_ML",      N_("Reply to Mailing-list")                },
 	{ "A_FORWARD",       N_("Forward Message")                      }, 
 	{ "A_DELETE",        N_("Delete Message")                       },
 	{ "A_EXECUTE",       N_("Execute")                              },
@@ -173,10 +174,11 @@ GList *toolbar_get_action_items(Toolbar source)
 	gint i = 0;
 	
 	if (source == TOOLBAR_MAIN) {
-		gint main_items[12] = { A_RECEIVE_ALL,   A_RECEIVE_CUR,   A_SEND_QUEUED,
+		gint main_items[13] = { A_RECEIVE_ALL,   A_RECEIVE_CUR,   A_SEND_QUEUED,
 					A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER,  
-					A_REPLY_ALL,     A_FORWARD,       A_DELETE,        
-					A_EXECUTE,      A_GOTO_NEXT,      A_SYL_ACTIONS };
+					A_REPLY_ALL,     A_REPLY_ML,      A_FORWARD,       
+					A_DELETE,        A_EXECUTE,       A_GOTO_NEXT,      
+					A_SYL_ACTIONS };
 
 		for (i = 0; i < sizeof(main_items)/sizeof(main_items[0]); i++) 
 			items = g_list_append(items, toolbar_text[main_items[i]].descr);

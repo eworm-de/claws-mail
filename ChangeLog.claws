@@ -1,3 +1,9 @@
+2002-09-26 [colin]	0.8.3claws27
+
+	* src/toolbar.[ch]
+	  src/mainwindow.[ch]
+		Add "Reply to Mailing-list" to the toolbar
+
 2002-09-26 [christoph]	0.8.3claws26
 
 	* src/summaryview.c

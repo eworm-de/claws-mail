@@ -154,6 +154,7 @@ struct _MainToolbar {
 	GtkWidget *reply_btn;
 	GtkWidget *replysender_btn;
 	GtkWidget *replyall_btn;
+	GtkWidget *replylist_btn;
 
 	GtkWidget *fwd_btn;
 
@@ -166,6 +167,7 @@ struct _MainToolbar {
 	/* for the reply buttons */
 	GtkWidget *reply_popup;
 	GtkWidget *replyall_popup;
+	GtkWidget *replylist_popup;
 	GtkWidget *replysender_popup;
 	
 	/* the forward button similar to the reply buttons*/
