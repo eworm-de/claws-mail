@@ -66,6 +66,7 @@ src/prefs_customheader.c
 src/prefs_display_header.c
 src/prefs_filter.c
 src/prefs_filtering.c
+src/prefs_folder_item.c
 src/prefs_matcher.c
 src/prefs_scoring.c
 src/prefs_actions.c
