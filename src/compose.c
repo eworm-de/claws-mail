@@ -62,6 +62,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <errno.h>
+#include <libgen.h>
 
 #if (HAVE_WCTYPE_H && HAVE_WCHAR_H)
 #  include <wchar.h>
@@ -149,6 +150,14 @@ typedef enum
 	PRIORITY_LOWEST
 } PriorityLevel;
 
+typedef enum
+{
+	COMPOSE_INSERT_SUCCESS,
+	COMPOSE_INSERT_READ_ERROR,
+	COMPOSE_INSERT_INVALID_CHARACTER,
+	COMPOSE_INSERT_NO_FILE
+} ComposeInsertResult;
+
 #define B64_LINE_SIZE		57
 #define B64_BUFFSIZE		77
 
@@ -199,7 +208,7 @@ static void compose_reedit_set_entry		(Compose	*compose,
 static void compose_insert_sig			(Compose	*compose,
 						 gboolean	 replace);
 static gchar *compose_get_signature_str		(Compose	*compose);
-static void compose_insert_file			(Compose	*compose,
+static ComposeInsertResult compose_insert_file	(Compose	*compose,
 						 const gchar	*file);
 static void compose_attach_append		(Compose	*compose,
 						 const gchar	*file,
@@ -2022,18 +2031,19 @@ static gchar *compose_get_signature_str(Compose *compose)
 	return sig_str;
 }
 
-static void compose_insert_file(Compose *compose, const gchar *file)
+static ComposeInsertResult compose_insert_file(Compose *compose, const gchar *file)
 {
 	GtkSText *text = GTK_STEXT(compose->text);
 	gchar buf[BUFFSIZE];
 	gint len;
 	FILE *fp;
+	gboolean badtxt = FALSE;
 
-	g_return_if_fail(file != NULL);
+	g_return_val_if_fail(file != NULL, COMPOSE_INSERT_NO_FILE);
 
 	if ((fp = fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
-		return;
+		return COMPOSE_INSERT_READ_ERROR;
 	}
 
 	gtk_stext_freeze(text);
@@ -2047,12 +2057,19 @@ static void compose_insert_file(Compose *compose, const gchar *file)
 			while (--len >= 0)
 				if (buf[len] == '\r') buf[len] = '\n';
 		}
+		if (mbstowcs(NULL, buf, 0) == -1)
+			badtxt = TRUE;
 		gtk_stext_insert(text, NULL, NULL, NULL, buf, -1);
 	}
 
 	gtk_stext_thaw(text);
 
 	fclose(fp);
+
+	if (badtxt)
+		return COMPOSE_INSERT_INVALID_CHARACTER;
+	else 
+		return COMPOSE_INSERT_SUCCESS;
 }
 
 static void compose_attach_append(Compose *compose, const gchar *file,
@@ -6422,7 +6439,19 @@ static void compose_insert_file_cb(gpointer data, guint action,
 
 		for ( tmp = file_list; tmp; tmp = tmp->next) {
 			gchar *file = (gchar *) tmp->data;
-			compose_insert_file(compose, file);
+			gchar *filedup = g_strdup(file);
+			gchar *shortfile;
+			ComposeInsertResult res;
+
+			res = compose_insert_file(compose, file);
+			shortfile = basename(filedup);
+			if (res == COMPOSE_INSERT_READ_ERROR) {
+				alertpanel_error(_("File '%s' could not be read."), shortfile);
+			} else if (res == COMPOSE_INSERT_INVALID_CHARACTER) {
+				alertpanel_error(_("File '%s' contained invalid characters\n"
+						   "for the current encoding, insertion may be incorrect."), shortfile);
+			}
+			g_free(filedup);
 			g_free(file);
 		}
 		g_list_free(file_list);
