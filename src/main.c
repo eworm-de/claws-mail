@@ -115,6 +115,7 @@ static gchar *get_socket_name		(void);
 static void open_compose_new_with_recipient	(const gchar	*address);
 
 static void send_queue			(void);
+static void initial_processing		(FolderItem *item, gpointer data);
 
 #if 0
 /* for gettext */
@@ -298,8 +299,9 @@ int main(int argc, char *argv[])
 
 	/* prefs_scoring_read_config(); */
 	prefs_matcher_read_config();
+
 	/* make one all-folder processing before using sylpheed */
-	processing_apply(mainwin->summaryview);
+	folder_func_to_all_folders(initial_processing, (gpointer *)mainwin);
 
 	addressbook_read_file();
 
@@ -398,6 +400,25 @@ static void save_all_caches(FolderItem *item, gpointer data)
 	folder_item_write_cache(item);
 }
 
+static void initial_processing(FolderItem *item, gpointer data)
+{
+	MainWindow *mainwin = (MainWindow *)data;
+	gchar *buf;
+		
+	buf = g_strdup_printf(_("Processing (%s)..."), item->path);
+	debug_print("%s\n", buf);
+	STATUSBAR_PUSH(mainwin, buf);
+	g_free(buf);
+
+	main_window_cursor_wait(mainwin);
+	
+	folder_item_apply_processing(item);
+
+	debug_print(_("done.\n"));
+	STATUSBAR_POP(mainwin);
+	main_window_cursor_normal(mainwin);
+}
+
 void app_will_exit(GtkWidget *widget, gpointer data)
 {
 	MainWindow *mainwin = data;
@@ -430,7 +451,6 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 
 	/* save all state before exiting */
 	folder_write_list();
-	summary_write_cache(mainwin->summaryview);
 	folder_func_to_all_folders(save_all_caches, NULL);
 
 	main_window_get_size(mainwin);

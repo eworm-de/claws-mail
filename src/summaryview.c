@@ -84,19 +84,6 @@
 #include "filtering.h"
 #include "string_match.h"
 
-#define STATUSBAR_PUSH(mainwin, str) \
-{ \
-	gtk_statusbar_push(GTK_STATUSBAR(mainwin->statusbar), \
-			   mainwin->summaryview_cid, str); \
-	gtkut_widget_wait_for_draw(mainwin->hbox_stat); \
-}
-
-#define STATUSBAR_POP(mainwin) \
-{ \
-	gtk_statusbar_pop(GTK_STATUSBAR(mainwin->statusbar), \
-			  mainwin->summaryview_cid); \
-}
-
 #define SUMMARY_COL_MARK_WIDTH		10
 #define SUMMARY_COL_UNREAD_WIDTH	13
 #define SUMMARY_COL_LOCKED_WIDTH	13
@@ -141,9 +128,6 @@ static void summary_free_msginfo_func	(GtkCTree		*ctree,
 					 GtkCTreeNode		*node,
 					 gpointer		 data);
 static void summary_set_marks_func	(GtkCTree		*ctree,
-					 GtkCTreeNode		*node,
-					 gpointer		 data);
-static void summary_write_cache_func	(GtkCTree		*ctree,
 					 GtkCTreeNode		*node,
 					 gpointer		 data);
 
@@ -247,7 +231,9 @@ static void summary_unthread_for_exec_func	(GtkCTree	*ctree,
 void summary_simplify_subject(SummaryView *summaryview, gchar * rexp,
 			      GSList * mlist);
 
+#if 0
 void summary_processing(SummaryView *summaryview, GSList * mlist);
+#endif
 static void summary_filter_func		(GtkCTree		*ctree,
 					 GtkCTreeNode		*node,
 					 gpointer		 data);
@@ -722,30 +708,16 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 			summary_unlock(summaryview);
 			summary_execute(summaryview);
 			summary_lock(summaryview);
-		} else if (G_ALERTALTERNATE == val)
-			summary_write_cache(summaryview);
-		else {
+		} else if (G_ALERTALTERNATE == val) {
+			/* DO NOTHING */
+		} else {
 			summary_unlock(summaryview);
 			inc_unlock();
 			return FALSE;
 		}
    		folder_update_op_count();
-	} else {
-		/* 
-		 * CLAWS: summary_show() is responsible for updating the caches. 
-		 * after filtering inc.c::inc_finished() forces the update of
-		 * the cache by indirectly calling summary_show() (by re-selecting
-		 * the currently selected mail folder).  
-		 * this collides with the new filtering system that may have set 
-		 * any message flag before calling summary_show(). 
-		 * we can prevent this cache-write by checking the opened member
-		 * of the folderview. if this is NULL, the folderview forced
-		 * an update of the summary view.
-		 */
-		if (summaryview->folderview->opened) 
-			summary_write_cache(summaryview);
-	}	
-        
+	}
+	
 	summaryview->folderview->opened = selected_node;
 
 	gtk_clist_freeze(GTK_CLIST(ctree));
@@ -794,9 +766,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	BY OTHER PROGRAMS TO THE FOLDER
 */
 	mlist = folder_item_get_msg_list(item);
-
+#if 0
 	summary_processing(summaryview, mlist);
-
+#endif
 	for(cur = mlist ; cur != NULL ; cur = g_slist_next(cur)) {
 		MsgInfo * msginfo = (MsgInfo *) cur->data;
 
@@ -807,8 +779,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 							msginfo);
 		}
 	}
-
-	summaryview->killed_messages = NULL;
 
 	if (summaryview->folder_item->hide_read_msgs) {
 		GSList *not_killed;
@@ -824,8 +794,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 			     && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 			    not_killed = g_slist_append(not_killed, msginfo);
 			else
-				summaryview->killed_messages = 
-					g_slist_append(summaryview->killed_messages, msginfo);
+				procmsg_msginfo_free(msginfo);
 		}
 		g_slist_free(mlist);
 		mlist = not_killed;
@@ -833,8 +802,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 		summary_set_hide_read_msgs_menu(summaryview, FALSE);
 	}
 
-	if ((global_scoring || item->prefs->scoring) &&
-	    (item->folder->type == F_NEWS)) {
+	if ((global_scoring || item->prefs->scoring)) {
 		GSList *not_killed;
 		gint kill_score;
 
@@ -845,12 +813,10 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 		for(cur = mlist ; cur != NULL ; cur = g_slist_next(cur)) {
 			MsgInfo * msginfo = (MsgInfo *) cur->data;
 
-			if (MSG_IS_NEWS(msginfo->flags) &&
-			    (msginfo->score <= kill_score))
-				summaryview->killed_messages = g_slist_append(summaryview->killed_messages, msginfo);
+			if (msginfo->score > kill_score)
+				not_killed = g_slist_append(not_killed, msginfo);
 			else
-				not_killed = g_slist_append(not_killed,
-							    msginfo);
+				procmsg_msginfo_free(msginfo);
 		}
 		g_slist_free(mlist);
 		mlist = not_killed;
@@ -869,8 +835,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 
 	if (item->sort_key != SORT_BY_NONE)
 		summary_sort(summaryview, item->sort_key, item->sort_type);
-
-	summary_write_cache(summaryview);
 
 	gtk_signal_handler_unblock_by_data(GTK_OBJECT(ctree), summaryview);
 
@@ -935,18 +899,8 @@ void summary_clear_list(SummaryView *summaryview)
 {
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
 	gint optimal_width;
-	GSList * cur;
 
 	gtk_clist_freeze(clist);
-
-	for(cur = summaryview->killed_messages ; cur != NULL ; 
-	    cur = g_slist_next(cur)) {
-		MsgInfo * msginfo = (MsgInfo *) cur->data;
-
-		procmsg_msginfo_free(msginfo);
-	}
-	g_slist_free(summaryview->killed_messages);
-	summaryview->killed_messages = NULL;
 
 	gtk_ctree_pre_recursive(GTK_CTREE(summaryview->ctree),
 				NULL, summary_free_msginfo_func, NULL);
@@ -2087,120 +2041,6 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 		debug_print("\tsubject hash table size = %d\n",
 			    g_hash_table_size(subject_table));
 	}
-}
-
-struct wcachefp
-{
-	FILE *cache_fp;
-	FILE *mark_fp;
-};
-
-gint summary_write_cache(SummaryView *summaryview)
-{
-	struct wcachefp fps;
-	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-	gint ver = CACHE_VERSION;
-	gchar *buf;
-	gchar *cachefile, *markfile;
-	GSList *cur;
-	gint filemode = 0;
-	PrefsFolderItem *prefs;
-
-	if (!summaryview->folder_item || !summaryview->folder_item->path)
-		return -1;
-		
-	if (!summaryview->folder_item->cache)
-		return -1;
-	
-	folder_item_write_cache(summaryview->folder_item);
-	return 0;
-
-	if (summaryview->folder_item->folder->update_mark != NULL)
-		summaryview->folder_item->folder->update_mark(summaryview->folder_item->folder, summaryview->folder_item);
-
-	cachefile = folder_item_get_cache_file(summaryview->folder_item);
-	g_return_val_if_fail(cachefile != NULL, -1);
-	if ((fps.cache_fp = fopen(cachefile, "wb")) == NULL) {
-		FILE_OP_ERROR(cachefile, "fopen");
-		g_free(cachefile);
-		return -1;
-	}
-	if (change_file_mode_rw(fps.cache_fp, cachefile) < 0)
-		FILE_OP_ERROR(cachefile, "chmod");
-
-	prefs = summaryview->folder_item->prefs;
-        if (prefs && prefs->enable_folder_chmod && prefs->folder_chmod) {
-		/* for cache file */
-		filemode = prefs->folder_chmod;
-		if (filemode & S_IRGRP) filemode |= S_IWGRP;
-		if (filemode & S_IROTH) filemode |= S_IWOTH;
-#if HAVE_FCHMOD
-		fchmod(fileno(fps.cache_fp), filemode);
-#else
-		chmod(cachefile, filemode);
-#endif
-        }
-
-	g_free(cachefile);
-
-	markfile = folder_item_get_mark_file(summaryview->folder_item);
-	if ((fps.mark_fp = fopen(markfile, "wb")) == NULL) {
-		FILE_OP_ERROR(markfile, "fopen");
-		fclose(fps.cache_fp);
-		g_free(markfile);
-		return -1;
-	}
-	if (change_file_mode_rw(fps.mark_fp, markfile) < 0)
-		FILE_OP_ERROR(markfile, "chmod");
-        if (prefs && prefs->enable_folder_chmod && prefs->folder_chmod) {
-#if HAVE_FCHMOD
-		fchmod(fileno(fps.mark_fp), filemode);
-#else
-		chmod(markfile, filemode);
-#endif
-        }
-
-	g_free(markfile);
-
-	buf = g_strdup_printf(_("Writing summary cache (%s)..."),
-			      summaryview->folder_item->path);
-	debug_print(buf);
-	STATUSBAR_PUSH(summaryview->mainwin, buf);
-	g_free(buf);
-
-	WRITE_CACHE_DATA_INT(ver, fps.cache_fp);
-	ver = MARK_VERSION;
-	WRITE_CACHE_DATA_INT(ver, fps.mark_fp);
-
-	gtk_ctree_pre_recursive(ctree, NULL, summary_write_cache_func, &fps);
-
-	for (cur = summaryview->killed_messages; cur != NULL; cur = cur->next) {
-		MsgInfo *msginfo = (MsgInfo *)cur->data;
-		procmsg_write_cache(msginfo, fps.cache_fp);
-		procmsg_write_flags(msginfo, fps.mark_fp);
-	}
-
-	procmsg_flush_mark_queue(summaryview->folder_item, fps.mark_fp);
-
-	fclose(fps.cache_fp);
-	fclose(fps.mark_fp);
-
-	debug_print(_("done.\n"));
-	STATUSBAR_POP(summaryview->mainwin);
-
-	return 0;
-}
-
-static void summary_write_cache_func(GtkCTree *ctree, GtkCTreeNode *node,
-				     gpointer data)
-{
-	struct wcachefp *fps = data;
-	MsgInfo *msginfo = gtk_ctree_node_get_row_data(ctree, node);
-
-	if (msginfo == NULL) return;
-
-	procmsg_write_cache(msginfo, fps->cache_fp);
-	procmsg_write_flags(msginfo, fps->mark_fp);
 }
 
 static gchar *summary_complete_address(const gchar *addr)
@@ -3365,8 +3205,6 @@ gboolean summary_execute(SummaryView *summaryview)
 	summary_update_status(summaryview);
 	summary_status_show(summaryview);
 
-	summary_write_cache(summaryview);
-
 	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
 
 	gtk_clist_thaw(clist);
@@ -3727,61 +3565,6 @@ static void summary_unthread_for_exec_func(GtkCTree *ctree, GtkCTreeNode *node,
 		gtk_ctree_move(ctree, child, NULL, sibling);
 		child = next_child;
 	}
-}
-
-void summary_processing(SummaryView *summaryview, GSList * mlist)
-{
-	GSList * processing_list;
-	FolderItem * folder_item;
-	GSList * cur;
-	gchar * buf;
-
-	folder_item = summaryview->folder_item;
-	if (folder_item == NULL)
-		return;
-
-	processing_list = folder_item->prefs->processing;
-
-	if (processing_list == NULL)
-		return;
-
-	summary_lock(summaryview);
-	
-	buf = g_strdup_printf(_("Processing (%s)..."), folder_item->path);
-	debug_print(buf);
-	STATUSBAR_PUSH(summaryview->mainwin, buf);
-	g_free(buf);
-
-	main_window_cursor_wait(summaryview->mainwin);
-
-	summaryview->folder_table = g_hash_table_new(NULL, NULL);
-
-	for(cur = mlist ; cur != NULL ; cur = cur->next) {
-		MsgInfo * msginfo;
-
-		msginfo = (MsgInfo *) cur->data;
-		filter_message_by_msginfo(processing_list, msginfo,
-					  summaryview->folder_table);
-	}
-	
-	/* folder_item_scan_foreach(summaryview->folder_table); */
-	folderview_update_item_foreach(summaryview->folder_table);
-	
-	g_hash_table_destroy(summaryview->folder_table);
-	summaryview->folder_table = NULL;
-	
-	if (prefs_common.immediate_exec) {
-		summary_unlock(summaryview);
-		summary_execute(summaryview);
-		summary_lock(summaryview);
-	} else
-		summary_status_show(summaryview);
-
-	debug_print(_("done.\n"));
-	STATUSBAR_POP(summaryview->mainwin);
-	main_window_cursor_normal(summaryview->mainwin);
-
-	summary_unlock(summaryview);
 }
 
 void summary_expand_threads(SummaryView *summaryview)
@@ -4441,10 +4224,6 @@ void summary_set_column_order(SummaryView *summaryview)
 
 	item = summaryview->folder_item;
 
-	summary_lock(summaryview);
-	summary_write_cache(summaryview);
-	summary_unlock(summaryview);
-	
 	summary_clear_all(summaryview);
 	gtk_widget_destroy(summaryview->ctree);
 
@@ -5072,6 +4851,7 @@ static void summary_unignore_thread(SummaryView *summaryview)
 	summary_status_show(summaryview);
 }
 
+#if 0 /* OLD PROCESSING */
 static gboolean processing_apply_func(GNode *node, gpointer data)
 {
 	FolderItem *item;
@@ -5132,6 +4912,7 @@ void processing_apply(SummaryView * summaryview)
 				processing_apply_func, summaryview);
 	}
 }
+#endif
 
 void summary_toggle_show_read_messages(SummaryView *summaryview)
 {
@@ -5210,8 +4991,6 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	gtk_box_reorder_child(GTK_BOX(summaryview->hbox), pixmap, 0);
 	gtk_widget_show(pixmap);
 	summaryview->folder_pixmap = pixmap; 
-
-	summary_write_cache(summaryview);
 
 	folderview_unselect(summaryview->folderview);
 	folderview_select(summaryview->folderview, summaryview->folder_item);

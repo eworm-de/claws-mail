@@ -85,19 +85,6 @@
 
 #define AC_LABEL_WIDTH	240
 
-#define STATUSBAR_PUSH(mainwin, str) \
-{ \
-	gtk_statusbar_push(GTK_STATUSBAR(mainwin->statusbar), \
-			   mainwin->mainwin_cid, str); \
-	gtkut_widget_wait_for_draw(mainwin->hbox_stat); \
-}
-
-#define STATUSBAR_POP(mainwin) \
-{ \
-	gtk_statusbar_pop(GTK_STATUSBAR(mainwin->statusbar), \
-			  mainwin->mainwin_cid); \
-}
-
 /* list of all instantiated MainWindow */
 static GList *mainwin_list = NULL;
 

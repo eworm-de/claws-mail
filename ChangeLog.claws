@@ -1,3 +1,27 @@
+2002-07-23 [christoph]	0.8.0claws6
+
+	* src/folder.c
+        * src/folder.h
+	* src/summaryview.c
+	* src/summaryview.h
+	* src/main.c
+		o separate processing and summaryview
+		o removed summary_write_cache from summaryview
+		o removed summaryview->killed_messages, because we don't have
+		  to keep a list of killed messages anymore. New cache will
+		  keep the hidden messages in cache anyway
+	* src/folderview.c
+	* src/inc.c
+	* src/selective_download.c
+		o removed unnecessary summary_write_cache calls
+	* src/procmsg.c
+		o don't set ignore thread flag in procmsg_get_thread_tree
+		  if it is already set
+	* src/mainwindow.c
+	* src/statusbar.h
+		o moved STATUSBAR_PUSH/POP to statusbar.h because
+		  they are used in different files
+
 2002-07-23 [melvin]	0.8.0claws5
 
 	* src/addressbook.c

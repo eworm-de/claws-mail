@@ -2222,3 +2222,34 @@ static gboolean persist_prefs_free(gpointer key, gpointer val, gpointer data)
 	return TRUE;	
 }
 
+void folder_item_apply_processing(FolderItem *item)
+{
+	GSList *processing_list;
+	GSList *mlist, *cur;
+	GHashTable *folder_table;
+	
+	g_return_if_fail(item != NULL);
+	
+	processing_list = item->prefs->processing;
+	if (processing_list == NULL)
+		return;
+	folder_table = g_hash_table_new(NULL, NULL);
+
+	mlist = folder_item_get_msg_list(item);
+	
+	for(cur = mlist ; cur != NULL ; cur = cur->next) {
+		MsgInfo * msginfo;
+
+		msginfo = (MsgInfo *) cur->data;
+		filter_message_by_msginfo(processing_list, msginfo,
+					  folder_table);
+		procmsg_msginfo_free(msginfo);
+	}
+	
+	/* folder_item_scan_foreach(summaryview->folder_table); */
+	folderview_update_item_foreach(folder_table);
+
+	g_slist_free(mlist);
+	
+	g_hash_table_destroy(folder_table);
+}

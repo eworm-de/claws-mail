@@ -364,4 +364,6 @@ void folder_clean_cache_memory		();
 void folder_item_write_cache		(FolderItem *item);
 void folder_item_set_default_flags	(FolderItem *dest, MsgFlags *flags);
 
+void folder_item_apply_processing	(FolderItem *item);
+
 #endif /* __FOLDER_H__ */
