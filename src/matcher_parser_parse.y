@@ -51,15 +51,16 @@ static FilteringAction *action = NULL;
 static FilteringProp *filtering;
 
 static GSList **prefs_filtering = NULL;
+static int enable_compatibility = 0;
 
 enum {
-        MATCHER_PARSE_NONE,
+        MATCHER_PARSE_FILE,
         MATCHER_PARSE_NO_EOL,
         MATCHER_PARSE_CONDITION,
         MATCHER_PARSE_FILTERING_ACTION,
 };
 
-static int matcher_parse_op = MATCHER_PARSE_NONE;
+static int matcher_parse_op = MATCHER_PARSE_FILE;
 
 
 /* ******************************************************************** */
@@ -87,7 +88,7 @@ FilteringProp *matcher_parser_get_filtering(gchar *str)
         matcher_parser_switch_to_buffer(bufstate);
 	if (matcher_parserparse() != 0)
 		filtering = NULL;
-	matcher_parse_op = MATCHER_PARSE_NONE;
+	matcher_parse_op = MATCHER_PARSE_FILE;
 	matcher_parser_delete_buffer(bufstate);
 	return filtering;
 }
@@ -128,7 +129,7 @@ MatcherList *matcher_parser_get_cond(gchar *str)
         matcher_parser_init();
 	bufstate = matcher_parser_scan_string(str);
 	matcher_parserparse();
-	matcher_parse_op = MATCHER_PARSE_NONE;
+	matcher_parse_op = MATCHER_PARSE_FILE;
 	matcher_parser_delete_buffer(bufstate);
 	return cond;
 }
@@ -150,7 +151,7 @@ GSList *matcher_parser_get_action_list(gchar *str)
         matcher_parser_init();
 	bufstate = matcher_parser_scan_string(str);
 	matcher_parserparse();
-	matcher_parse_op = MATCHER_PARSE_NONE;
+	matcher_parse_op = MATCHER_PARSE_FILE;
 	matcher_parser_delete_buffer(bufstate);
 	return action_list;
 }
@@ -248,8 +249,8 @@ int matcher_parserwrap(void)
 
 file:
 {
-	if (matcher_parse_op == MATCHER_PARSE_NONE) {
-		prefs_filtering = &global_processing;
+	if (matcher_parse_op == MATCHER_PARSE_FILE) {
+		prefs_filtering = &pre_global_processing;
 	}
 }
 file_line_list;
@@ -276,9 +277,17 @@ MATCHER_SECTION MATCHER_EOL
 	gchar *folder = $1;
 	FolderItem *item = NULL;
 
-	if (matcher_parse_op == MATCHER_PARSE_NONE) {
+	if (matcher_parse_op == MATCHER_PARSE_FILE) {
+                enable_compatibility = 0;
 		if (!strcmp(folder, "global")) {
-			prefs_filtering = &global_processing;
+                        /* backward compatibility */
+                        enable_compatibility = 1;
+                }
+		else if (!strcmp(folder, "preglobal")) {
+			prefs_filtering = &pre_global_processing;
+                }
+		else if (!strcmp(folder, "postglobal")) {
+			prefs_filtering = &post_global_processing;
                 }
 		else if (!strcmp(folder, "filtering")) {
                         prefs_filtering = &filtering_rules;
@@ -331,9 +340,23 @@ filtering:
 filtering_action_list
 {
 	filtering = filteringprop_new(cond, action_list);
+        
+        if (enable_compatibility) {
+                prefs_filtering = &filtering_rules;
+                if (action_list != NULL) {
+                        FilteringAction * first_action;
+                        
+                        first_action = action_list->data;
+                        
+                        if (first_action->type == MATCHACTION_ADD_SCORE)
+                                prefs_filtering = &pre_global_processing;
+                }
+        }
+        
 	cond = NULL;
 	action_list = NULL;
-	if ((matcher_parse_op == MATCHER_PARSE_NONE) &&
+        
+	if ((matcher_parse_op == MATCHER_PARSE_FILE) &&
             (prefs_filtering != NULL)) {
 		*prefs_filtering = g_slist_append(*prefs_filtering,
 						  filtering);

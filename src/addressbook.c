@@ -3686,6 +3686,59 @@ static void addressbook_lup_clicked( GtkButton *button, gpointer data ) {
 	g_free( searchTerm );
 }
 
+/**
+ * Browse address entry for highlighted entry.
+ */
+#ifdef USE_LDAP
+static void addressbook_browse_entry_cb(void)
+{
+	GtkCTree *clist = GTK_CTREE(addrbook.clist);
+	AddressObject *obj;
+	AddressDataSource *ds;
+	AddressInterface *iface;
+	ItemPerson *person;
+	ItemEMail *email;
+
+	if(addrbook.listSelected == NULL)
+		return;
+	
+	obj = gtk_ctree_node_get_row_data(clist, addrbook.listSelected);
+	if (obj == NULL)
+		return;
+	
+	ds = addressbook_find_datasource(GTK_CTREE_NODE(addrbook.treeSelected));
+	if(ds == NULL)
+		return;
+	
+	iface = ds->interface;
+	if(iface->haveLibrary == NULL)
+		return;
+	
+	person = NULL;
+	if (obj->type == ADDR_ITEM_EMAIL) {
+		email = ( ItemEMail * ) obj;
+		if (email == NULL)
+			return;
+		
+		person = (ItemPerson *) ADDRITEM_PARENT(email);
+	}
+	else if (obj->type == ADDR_ITEM_PERSON) {
+		person = (ItemPerson *) obj;
+	}
+	else {
+		/* None of these */
+		return;
+	}
+
+	if( iface->type == ADDR_IF_LDAP ) {
+#ifdef USE_LDAP
+		browseldap_entry(ds, person->externalID);
+#endif
+	}
+}
+#endif
+
+
 /* **********************************************************************
 * Build lookup tables.
 * ***********************************************************************

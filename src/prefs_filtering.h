@@ -39,8 +39,9 @@ typedef enum
 #include "folder.h"
 
 void prefs_filtering_open(GSList ** p_processing,
-                          const gchar *header,
-                          const gchar *key);
+			  const gchar * title,
+			  const gchar *header,
+			  const gchar *key);
 
 void prefs_filtering_rename_path	(const gchar	*old_path,
 				 	 const gchar	*new_path);

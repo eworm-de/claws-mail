@@ -34,7 +34,8 @@
 
 #define PREFSBUFSIZE		1024
 
-GSList * global_processing = NULL;
+GSList * pre_global_processing = NULL;
+GSList * post_global_processing = NULL;
 GSList * filtering_rules = NULL;
 
 static gboolean filtering_is_final_action(FilteringAction *filtering_action);
@@ -550,8 +551,10 @@ void prefs_filtering_clear(void)
 
 	prefs_filtering_free(filtering_rules);
 	filtering_rules = NULL;
-	prefs_filtering_free(global_processing);
-	global_processing = NULL;
+	prefs_filtering_free(pre_global_processing);
+	pre_global_processing = NULL;
+	prefs_filtering_free(post_global_processing);
+	post_global_processing = NULL;
 }
 
 void prefs_filtering_clear_folder(Folder *folder)

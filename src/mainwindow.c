@@ -357,9 +357,13 @@ static void prefs_account_open_cb	(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
 
-static void prefs_processing_open_cb 	(MainWindow	*mainwin,
-				  	 guint		 action,
-				  	 GtkWidget	*widget);
+static void prefs_pre_processing_open_cb  (MainWindow	*mainwin,
+				  	   guint	 action,
+				  	   GtkWidget	*widget);
+
+static void prefs_post_processing_open_cb (MainWindow	*mainwin,
+				  	   guint	 action,
+				  	   GtkWidget	*widget);
 
 static void prefs_filtering_open_cb 	(MainWindow	*mainwin,
 				  	 guint		 action,
@@ -691,8 +695,10 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Configuration/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Configuration/_Common preferences..."),
 						NULL, prefs_common_open_cb, 0, NULL},
-	{N_("/_Configuration/Processing..."),
-						NULL, prefs_processing_open_cb, 0, NULL},
+	{N_("/_Configuration/Pre processing..."),
+						NULL, prefs_pre_processing_open_cb, 0, NULL},
+	{N_("/_Configuration/Post processing..."),
+						NULL, prefs_post_processing_open_cb, 0, NULL},
 	{N_("/_Configuration/_Filtering..."),
 						NULL, prefs_filtering_open_cb, 0, NULL},
 	{N_("/_Configuration/_Templates..."),	NULL, prefs_template_open_cb, 0, NULL},
@@ -2676,16 +2682,28 @@ static void prefs_common_open_cb(MainWindow *mainwin, guint action,
 	prefs_common_open();
 }
 
-static void prefs_processing_open_cb(MainWindow *mainwin, guint action,
-				  GtkWidget *widget)
+static void prefs_pre_processing_open_cb(MainWindow *mainwin, guint action,
+				         GtkWidget *widget)
 {
-	prefs_filtering_open(&global_processing, NULL, NULL);
+	prefs_filtering_open(&pre_global_processing,
+			     _("Processing rules to apply before folder rules"),
+			     NULL, NULL);
+}
+
+static void prefs_post_processing_open_cb(MainWindow *mainwin, guint action,
+				          GtkWidget *widget)
+{
+	prefs_filtering_open(&post_global_processing,
+			     _("Processing rules to apply after folder rules"),
+			     NULL, NULL);
 }
 
 static void prefs_filtering_open_cb(MainWindow *mainwin, guint action,
 				    GtkWidget *widget)
 {
-	prefs_filtering_open(&filtering_rules, NULL, NULL);
+	prefs_filtering_open(&filtering_rules,
+			     _("Filtering configuration"),
+			     NULL, NULL);
 }
 
 static void prefs_template_open_cb(MainWindow *mainwin, guint action,

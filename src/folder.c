@@ -2881,11 +2881,14 @@ void folder_item_apply_processing(FolderItem *item)
                 msginfo->hidden = 0;
                 msginfo->score = 0;
                 
-                /* apply global rules */
-		filter_message_by_msginfo(global_processing, msginfo);
+                /* apply pre global rules */
+		filter_message_by_msginfo(pre_global_processing, msginfo);
                 
                 /* apply rules of the folder */
 		filter_message_by_msginfo(processing_list, msginfo);
+
+                /* apply post global rules */
+		filter_message_by_msginfo(post_global_processing, msginfo);
                 
 		procmsg_msginfo_free(msginfo);
 	}

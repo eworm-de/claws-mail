@@ -1449,9 +1449,14 @@ static void prefs_matcher_save(FILE *fp)
 				prefs_matcher_write_func, fp);
 	}
         
-        /* global rules */
-        fprintf(fp, "[global]\n");
-        prefs_filtering_write(fp, global_processing);
+        /* pre global rules */
+        fprintf(fp, "[preglobal]\n");
+        prefs_filtering_write(fp, pre_global_processing);
+        fputc('\n', fp);
+
+        /* post global rules */
+        fprintf(fp, "[postglobal]\n");
+        prefs_filtering_write(fp, post_global_processing);
         fputc('\n', fp);
         
         /* filtering rules */

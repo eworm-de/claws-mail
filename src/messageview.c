@@ -61,6 +61,7 @@
 #include "send_message.h"
 #include "stock_pixmap.h"
 #include "hooks.h"
+#include "filtering.h"
 
 static GList *messageview_list = NULL;
 
@@ -1302,12 +1303,22 @@ static void create_filter_cb(gpointer data, guint action, GtkWidget *widget)
 	MessageView *messageview = (MessageView *)data;
 	gchar *header = NULL;
 	gchar *key = NULL;
-
+	FolderItem * item;
+	
 	if (!messageview->msginfo) return;
 
 	procmsg_get_filter_keyword(messageview->msginfo, &header, &key,
 				   (PrefsFilterType)action);
-	prefs_filtering_open(NULL, header, key);
+	
+	item = messageview->msginfo->folder;
+	if (item == NULL)
+		prefs_filtering_open(&pre_global_processing,
+				     _("Processing rules to apply before folder rules"),
+				     header, key);
+	else
+		prefs_filtering_open(&item->prefs->processing,
+				     _("Processing configuration"),
+				     header, key);
 
 	g_free(header);
 	g_free(key);

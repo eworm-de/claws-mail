@@ -1,3 +1,26 @@
+2003-12-04 [hoa]	0.9.7claws20
+
+	* src/filtering.[ch]
+	* src/folder.c
+	* src/mainwindow.c
+	* src/matcher.c
+	* src/matcher_parser_parse.y
+	* src/folderview.c
+	        global rules to run before folder specific rules.
+	        global rules to run after folder specific rules.
+		
+	* src/messageview.c
+	        fixed quick addition of rules.
+	
+	* src/prefs_filtering.[ch]
+	* src/summaryview.c
+	        we can now customize the title for the dialog.
+		updated case where we rename of delete folders.
+
+	* src/addressbook.c
+	        got back the function addressbook_browse_entry_cb()
+		that is needed in case we compiled with LDAP support.
+
 2003-12-04 [paul]	0.9.7claws19
 
 	* sync with 0.9.7cvs6

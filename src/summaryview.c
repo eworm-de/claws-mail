@@ -4018,7 +4018,8 @@ void summary_filter_open(SummaryView *summaryview, PrefsFilterType type)
 	MsgInfo *msginfo;
 	gchar *header = NULL;
 	gchar *key = NULL;
-
+	FolderItem * item;
+	
 	if (!summaryview->selected) return;
 
 	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
@@ -4026,7 +4027,16 @@ void summary_filter_open(SummaryView *summaryview, PrefsFilterType type)
 	if (!msginfo) return;
 
 	procmsg_get_filter_keyword(msginfo, &header, &key, type);
-	prefs_filtering_open(NULL, header, key);
+	
+	item = summaryview->folder_item;
+	if (item == NULL)
+		prefs_filtering_open(&pre_global_processing,
+				     _("Processing rules to apply before folder rules"),
+				     header, key);
+	else
+		prefs_filtering_open(&item->prefs->processing,
+				     _("Processing configuration"),
+				     header, key);
 
 	g_free(header);
 	g_free(key);

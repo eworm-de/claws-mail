@@ -2620,7 +2620,8 @@ static void folderview_processing_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 
-	prefs_filtering_open(&item->prefs->processing, NULL, NULL);
+	prefs_filtering_open(&item->prefs->processing,
+			     _("Processing configuration"), NULL, NULL);
 }
 
 void folderview_set_target_folder_color(gint color_op) 
