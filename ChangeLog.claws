@@ -1,3 +1,21 @@
+2003-10-20 [paul]	0.9.6claws35
+
+	* src/pixmaps/mime_gpg_expired.xpm	** REMOVED **
+	  src/pixmaps/mime_gpg_failed.xpm	** REMOVED **
+	  src/pixmaps/mime_gpg_passed.xpm	** REMOVED **
+	  src/pixmaps/mime_gpg_signed.xpm	** REMOVED **
+	  src/pixmaps/mime_gpg_unknown.xpm	** REMOVED **
+	  src/pixmaps/privacy_expired.xpm	** NEW FILE **
+	  src/pixmaps/privacy_failed.xpm	** NEW FILE **
+	  src/pixmaps/privacy_passed.xpm	** NEW FILE **
+	  src/pixmaps/privacy_signed.xpm	** NEW FILE **
+	  src/pixmaps/privacy_unknown.xpm	** NEW FILE **
+	  src/pixmaps/privacy_warn.xpm		** NEW FILE **
+	  src/mimeview.c
+	  src/stock_pixmap.[ch]
+	  	replace mime_gpg_*.xpm icons with new privacy_*.xpm
+		icons. add privacy_warn.xpm icon
+
 2003-10-20 [hoa]  0.9.6claws34
 
 	* src/folder_item_prefs.[ch]

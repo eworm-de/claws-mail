@@ -102,11 +102,12 @@
 #include "pixmaps/mime_audio.xpm"
 #include "pixmaps/mime_text_enriched.xpm"
 #include "pixmaps/mime_unknown.xpm"
-#include "pixmaps/mime_gpg_signed.xpm"
-#include "pixmaps/mime_gpg_passed.xpm"
-#include "pixmaps/mime_gpg_failed.xpm"
-#include "pixmaps/mime_gpg_unknown.xpm"
-#include "pixmaps/mime_gpg_expired.xpm"                  
+#include "pixmaps/privacy_signed.xpm"
+#include "pixmaps/privacy_passed.xpm"
+#include "pixmaps/privacy_failed.xpm"
+#include "pixmaps/privacy_unknown.xpm"
+#include "pixmaps/privacy_expired.xpm"
+#include "pixmaps/privacy_warn.xpm"                 
 #include "pixmaps/mime_message.xpm"                  
 #include "pixmaps/address_search.xpm"
 
@@ -213,11 +214,12 @@ static StockPixmapData pixmaps[] =
 	{mime_audio_xpm				, NULL, NULL, "mime_audio", "  "},
 	{mime_text_enriched_xpm			, NULL, NULL, "mime_text_enriched", "  "},
 	{mime_unknown_xpm			, NULL, NULL, "mime_unknown", "  "},	
-	{mime_gpg_signed_xpm			, NULL, NULL, "mime_gpg_signed", "  "},
-	{mime_gpg_passed_xpm			, NULL, NULL, "mime_gpg_passed", "  "},
-	{mime_gpg_failed_xpm			, NULL, NULL, "mime_gpg_failed", "  "},	
-	{mime_gpg_unknown_xpm			, NULL, NULL, "mime_gpg_unknown", "  "},
-	{mime_gpg_expired_xpm			, NULL, NULL, "mime_gpg_expired", "  "},
+	{privacy_signed_xpm			, NULL, NULL, "privacy_signed", "  "},
+	{privacy_passed_xpm			, NULL, NULL, "privacy_passed", "  "},
+	{privacy_failed_xpm			, NULL, NULL, "privacy_failed", "  "},	
+	{privacy_unknown_xpm			, NULL, NULL, "privacy_unknown", "  "},
+	{privacy_expired_xpm			, NULL, NULL, "privacy_expired", "  "},
+	{privacy_warn_xpm			, NULL, NULL, "privacy_warn", "  "},
 	{mime_message_xpm			, NULL, NULL, "mime_message", "  "},
 	{sylpheed_logo_xpm			, NULL, NULL, "sylpheed_logo", "  "},
 };

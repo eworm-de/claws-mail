@@ -630,25 +630,25 @@ static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo)
 			text = _("This part of the message has been signed");
 			button_text = _("Check");
 			func = check_signature_cb;
-			icon = STOCK_PIXMAP_MIME_GPG_SIGNED;
+			icon = STOCK_PIXMAP_PRIVACY_SIGNED;
 			break;
 		case SIGNATURE_OK:
-			text = _("Signature is ok");
-			icon = STOCK_PIXMAP_MIME_GPG_PASSED;
+			text = _("Signature is valid");
+			icon = STOCK_PIXMAP_PRIVACY_PASSED;
 			break;
 		case SIGNATURE_WARN:
 			text = _("Signature is ok");
-			icon = STOCK_PIXMAP_NOTICE_WARN;
+			icon = STOCK_PIXMAP_PRIVACY_WARN;
 			break;
 		case SIGNATURE_INVALID:
 			text = _("The signature of this part is invalid");
-			icon = STOCK_PIXMAP_MIME_GPG_FAILED;
+			icon = STOCK_PIXMAP_PRIVACY_FAILED;
 			break;
 		case SIGNATURE_CHECK_FAILED:
-			text = _("Checking the signature failed");
+			text = _("Signature check failed");
 			button_text = _("Check again");
 			func = check_signature_cb;
-			icon = STOCK_PIXMAP_MIME_GPG_UNKNOWN;
+			icon = STOCK_PIXMAP_PRIVACY_UNKNOWN;
 		default:
 			break;
 		}
