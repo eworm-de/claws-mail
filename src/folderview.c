@@ -243,7 +243,7 @@ static GtkItemFactoryEntry folderview_common_popup_entries[] =
 };
 
 static GtkItemFactoryEntry folder_view_trash_popup_entries[] = {
-	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/------"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/Empty trash..."),		NULL, folderview_empty_trash_cb, 0, NULL},
 };
 
