@@ -137,8 +137,11 @@ static Session *news_session_new_for_folder(Folder *folder)
 		userid = ac->userid;
 		if (ac->passwd && ac->passwd[0])
 			passwd = g_strdup(ac->passwd);
-		else
+		else {
 			passwd = news_query_password(ac->nntp_server, userid);
+			if (!passwd)
+				userid = NULL;
+		}
 	} else {
 		userid = passwd = NULL;
 	}

@@ -41,6 +41,7 @@ struct _NNTPSockInfo
 	SockInfo *sock;
 	gchar *userid;
 	gchar *passwd;
+	gboolean auth_failed;
 };
 
 NNTPSockInfo *nntp_open(const gchar *server, gushort port, gchar *buf);

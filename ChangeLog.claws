@@ -1,5 +1,17 @@
 2001-04-30 [sergey]
 
+	* src/nntp.h (NNTPSockInfo): new field auth_failed.
+
+	* src/nntp.c (nntp_mode): return NN_AUTHREQ if sock->auth_failed
+	is set to force reconnection after authentication failure.
+	(nntp_gen_command): set sock->auth_failed on authentication
+	failure, or if sock->userid and sock->passwd are not set.
+
+	* src/news.c (news_session_new_for_folder): set userid=NULL if
+	password dialog is cancelled.
+
+2001-04-30 [sergey]
+
 	* src/nntp.h (NNTPSockInfo): new type.
 
 	* src/nntp.c: all functions updated to use NNTPSockInfo instead of

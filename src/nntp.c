@@ -232,6 +232,9 @@ gint nntp_mode(NNTPSockInfo *sock, gboolean stream)
 {
 	gint ok;
 
+	if (sock->auth_failed)
+		return NN_AUTHREQ; /* force reconnection */
+
 	ok = nntp_gen_command(sock, NULL, "MODE %s",
 			      stream ? "STREAM" : "READER");
 
@@ -310,15 +313,21 @@ static gint nntp_gen_command(NNTPSockInfo *sock, gchar *argbuf,
 
 	nntp_gen_send(sock, "%s", buf);
 	ok = nntp_ok(sock, argbuf);
-	if (ok == NN_AUTHREQ && sock->userid && sock->passwd) {
+	if (ok == NN_AUTHREQ) {
+		if (!sock->userid || !sock->passwd) {
+			sock->auth_failed = TRUE;
+			return ok;
+		}
 		nntp_gen_send(sock, "AUTHINFO USER %s", sock->userid);
 		ok = nntp_ok(sock, NULL);
 		if (ok == NN_AUTHCONT) {
 			nntp_gen_send(sock, "AUTHINFO PASS %s", sock->passwd);
 			ok = nntp_ok(sock, NULL);
 		}
-		if (ok != NN_SUCCESS)
+		if (ok != NN_SUCCESS) {
+			sock->auth_failed = TRUE;
 			return ok;
+		}
 		nntp_gen_send(sock, "%s", buf);
 		ok = nntp_ok(sock, argbuf);
 	}
