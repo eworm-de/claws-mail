@@ -1,7 +1,21 @@
 2001-04-24
 
-	* updated all .cvsignores to really ignore things that could
-	  be unintentionally committed by a recursive commit. [alfons]
+    0.4.65claws5
+
+	* configure.in
+	  src/gtkstext.[ch]
+	  src/compose.c
+	  src/Makefile.am
+	  
+	  added gtkstext with configure.in patch by Hiroyuki which
+	  should fix the XIM detection [alfons]
+
+	* more clean up of cvs [alfons]
+
+		 * removed all Makefile.in files to attic.
+
+		 * updated all .cvsignores to really ignore things that could
+		   be unintentionally committed by a recursive commit.
 
 2001-04-21
 
