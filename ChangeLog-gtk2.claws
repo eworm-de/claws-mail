@@ -1,3 +1,9 @@
+2004-07-18 [colin]	0.9.12cvs31.11
+
+	* src/pop.c
+		Don't let partial messages get deleted
+		even with "dowload all"
+		(0.9.12cvs31.8 fix extension)
 2004-07-18 [colin]	0.9.12cvs31.10
 
 	* src/gtk/logwindow.c
