@@ -1447,15 +1447,9 @@ void summary_select_next_unread(SummaryView *summaryview)
  			}
 
 			if (val == G_ALERTDEFAULT) {
-#warning FIXME_GTK2
-#if 0
-				if (gtk_signal_n_emissions_by_name
-					(GTK_OBJECT(ctree), "key_press_event") > 0)
-						gtk_signal_emit_stop_by_name
-							(GTK_OBJECT(ctree),
+				gtk_signal_emit_stop_by_name(GTK_OBJECT(ctree),
 							 "key_press_event");
 				folderview_select_next_unread(summaryview->folderview);
-#endif
 				return;
 			} 
 			else

@@ -1,3 +1,16 @@
+2003-12-05 Colin Leroy <colin@colino.net>
+	* src/summaryview.c
+		Fix going to next unread folder
+
+2003-12-05 Colin Leroy <colin@colino.net>
+	* src/crash.c
+		Fix gtk2 compilation
+	* src/session.c
+		Remove iotag source handler at disconnection
+	* src/socket.[ch] 
+		Remove source handler when closing socket 
+		(fixes another seg)
+
 2003-12-04 Colin Leroy <colin@colino.net>
 	* src/compose.c
 	  src/prefs_account.c
