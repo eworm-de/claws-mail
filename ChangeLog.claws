@@ -1,3 +1,8 @@
+2003-03-21 [colin]	0.8.11claws36
+
+	* src/folderview.c
+		Fix counts in drag and dropped subfolders
+
 2003-03-21 [colin]	0.8.11claws35
 
 	* src/folder.c 
