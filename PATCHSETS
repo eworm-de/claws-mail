@@ -114,3 +114,4 @@
 ( cvs diff -u -r 1.13.2.7 -r 1.13.2.8 src/common/socket.c; ) > 0.9.12cvs55.4.patchset
 ( cvs diff -u -r 1.15.2.6 -r 1.15.2.7 src/summary_search.c; ) > 0.9.12cvs57.2.patchset
 ( cvs diff -u -r 1.3.12.4 -r 1.3.12.5 src/message_search.c; cvs diff -u -r 1.15.2.7 -r 1.15.2.8 src/summary_search.c; cvs diff -u -r 1.96.2.15 -r 1.96.2.16 src/textview.c; ) > 0.9.12cvs57.3.patchset
+( cvs diff -u -r 1.96.2.16 -r 1.96.2.17 src/textview.c; ) > 0.9.12cvs57.4.patchset

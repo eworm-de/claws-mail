@@ -1504,7 +1504,7 @@ gboolean textview_search_string(TextView *textview, const gchar *str,
 		text = strdup(gtk_text_buffer_get_text(buffer, &iter, 
 						       &real_end, FALSE));
 		
-		while (!found && i++ < strlen(text)) {
+		while (!found && i++ < strlen(text) - 1) {
 			found = (strncasecmp(text+i, str, strlen(str)) == 0);
 		}
 		
@@ -1570,7 +1570,7 @@ gboolean textview_search_string_backward(TextView *textview, const gchar *str,
 		text = strdup(gtk_text_buffer_get_text(buffer, &real_start, 
 						       &iter, FALSE));
 
-		while (!found && i-- >= 0) {
+		while (!found && i-- > 0) {
 			found = (strncasecmp(text+i, str, strlen(str)) == 0);
 		}
 				

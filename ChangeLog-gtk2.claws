@@ -1,3 +1,8 @@
+2004-08-11 [colin]	0.9.12cvs57.4
+
+	* src/textview.c
+		Fix off-by-one
+
 2004-08-11 [colin]	0.9.12cvs57.3
 
 	* src/message_search.c
