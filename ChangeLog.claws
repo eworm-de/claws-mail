@@ -1,3 +1,15 @@
+2003-07-24 [paul]	0.9.3claws48
+
+	* src/plugins/demo/demo.c
+	  src/prefs_account.c
+	  	small changes to the English
+		
+	* src/pixmaps/mime_application_octect_stream.xpm	** REMOVED **
+	  src/pixmaps/mime_application_octet_stream.xpm		** NEW FILE **
+	  src/Makefile.am
+	  src/stock_pixmap.c
+	  	rename the misspelled icon
+
 2003-07-23 [alfons]	0.9.3claws47
 
 	* src/mimeview.c

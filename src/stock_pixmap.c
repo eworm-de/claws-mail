@@ -97,7 +97,7 @@
 #include "pixmaps/mime_text_plain.xpm"
 #include "pixmaps/mime_text_html.xpm"
 #include "pixmaps/mime_application.xpm"
-#include "pixmaps/mime_application_octect_stream.xpm"
+#include "pixmaps/mime_application_octet_stream.xpm"
 #include "pixmaps/mime_image.xpm"
 #include "pixmaps/mime_audio.xpm"
 #include "pixmaps/mime_text_enriched.xpm"
@@ -205,7 +205,7 @@ static StockPixmapData pixmaps[] =
 	{mime_text_plain_xpm			, NULL, NULL, "mime_text_plain", "  "},
 	{mime_text_html_xpm			, NULL, NULL, "mime_text_html", "  "},
 	{mime_application_xpm			, NULL, NULL, "mime_application", "  "},
-	{mime_application_octect_stream_xpm	, NULL, NULL, "mime_application_octect_stream", "  "},
+	{mime_application_octet_stream_xpm	, NULL, NULL, "mime_application_octet_stream", "  "},
 	{mime_image_xpm				, NULL, NULL, "mime_image", "  "},
 	{mime_audio_xpm				, NULL, NULL, "mime_audio", "  "},
 	{mime_text_enriched_xpm			, NULL, NULL, "mime_text_enriched", "  "},

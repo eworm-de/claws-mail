@@ -1930,7 +1930,7 @@ static void prefs_account_ssl_create(void)
 	gtk_widget_set_usize (hbox_spc, 16, -1);
 
 	label = gtk_label_new
-		(_("(Turn this off if you have problems in SSL connection)"));
+		(_("(Turn this off if you have SSL connection problems)"));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 

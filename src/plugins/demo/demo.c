@@ -39,7 +39,7 @@ static guint hook_id;
 gint plugin_init(gchar **error)
 {
 	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
-		*error = g_strdup("Your sylpheed version is newer then the version the plugin was build with");
+		*error = g_strdup("Your sylpheed version is newer then the version the plugin was built with");
 		return -1;
 	}
 
