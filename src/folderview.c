@@ -594,11 +594,19 @@ void folderview_update_msg_num(FolderView *folderview, GtkCTreeNode *row,
 
 	item = gtk_ctree_node_get_row_data(ctree, row);
 	if (!item) return;
+
+	/* CLAWS: don't know why but this always seems to be true
+	 * when deleting messages. Somewhere claws does a folder
+	 * scan which sets all new, unread & total to the correct
+	 * values. It then enters this function, but leaves it
+	 * because new, unread and total are the same... */
+#ifndef CLAWS	 
 	if (prev_row     == row    &&
 	    item->new    == new    &&
 	    item->unread == unread &&
-	    item->total  == total)
+	    item->total  == total) 
 		return;
+#endif		
 
 	prev_row = row;
 

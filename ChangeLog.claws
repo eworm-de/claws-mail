@@ -1,3 +1,11 @@
+2001-12-07 [alfons]	0.6.5claws63
+
+	* src/folderview.c 
+		work around problem of not correctly updating folder stats
+		when deleting messages. there's some folder scanning evil
+		going so the folderview_update_msg_num() does not work
+		correctly. need to investigate this.
+
 2001-12-08 [paul]	0.6.5claws62
 
 	* sync with sylpheed 0.6.5cvs23
