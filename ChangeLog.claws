@@ -1,3 +1,14 @@
+2001-09-21 [melvin]
+
+	* src/gtkspell.[ch]
+		fixed bug when compose window is under another window
+	* src/prefs_common.[ch] src/compose.c
+		changed 'dictionary_path' to 'dictionary' to be consistent
+		dropped PSPELL_PATH macro (hard coded default to /usr/local/share/pspell)
+	* ac/pspell.m4 src/Makefile.am 
+		dropped PSPELL_PATH macro
+	* po/fr.po
+		updated translations
 2001-09-21 [christoph]
 
 	* src/compose.c
