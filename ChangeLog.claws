@@ -1,3 +1,12 @@
+2003-03-05 [christoph]	0.8.10claws86
+
+	* src/summaryview.c
+		check if "From" matches any account's address if
+		addressbook completion of addresses is disabled too
+
+	(closes Bug 70 "Display recipient in from" doesn't check
+	 folder's default account)
+
 2003-03-05 [christoph]	0.8.10claws85
 
 	* src/compose.c
