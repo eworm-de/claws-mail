@@ -1582,6 +1582,7 @@ static void prefs_account_send_create(void)
 	optmenu_menu = gtk_menu_new ();
 
 	MENUITEM_ADD (optmenu_menu, menuitem, _("Automatic"), 0);
+	MENUITEM_ADD (optmenu_menu, menuitem, "PLAIN", SMTPAUTH_PLAIN);
 	MENUITEM_ADD (optmenu_menu, menuitem, "LOGIN", SMTPAUTH_LOGIN);
 	MENUITEM_ADD (optmenu_menu, menuitem, "CRAM-MD5", SMTPAUTH_CRAM_MD5);
 	MENUITEM_ADD (optmenu_menu, menuitem, "DIGEST-MD5", SMTPAUTH_DIGEST_MD5);

@@ -1,3 +1,14 @@
+2004-12-07 [colin]	0.9.13cvs2.1
+
+	* ChangeLog.claws
+	* AUTHORS
+	* po/sk.po
+	* src/procmime.c
+	* src/prefs_account.c
+	* src/common/smtp.c
+	* src/common/smtp.h
+		Sync with HEAD
+
 2004-12-06 [colin]	0.9.12cvs187.1
 
 	* ChangeLog.claws
