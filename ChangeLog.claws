@@ -1,3 +1,8 @@
+2002-11-09 [colin]	0.8.5claws101
+
+	* src/folder.c
+		One more fix for processing rules
+
 2002-11-08 [colin] 	0.8.5claws100
 	
 	* src/matcher.c

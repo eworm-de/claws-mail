@@ -1544,12 +1544,6 @@ FolderItem *folder_item_move_to(FolderItem *src, FolderItem *dest)
 	}
 	
 	/* update rules */
-	debug_print("updating rules ....\n");
-	prefs_filtering_rename_path(srcpath, g_strconcat(dstpath, 
-						G_DIR_SEPARATOR_S, 
-						g_basename(srcpath), 
-						NULL));
-
 	src->folder->remove_folder(src->folder, src);
 	src_node = g_node_find(src->folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, src);
 	if (src_node) 
@@ -1558,6 +1552,12 @@ FolderItem *folder_item_move_to(FolderItem *src, FolderItem *dest)
 		debug_print("can't remove node: is null !\n");
 	/* not to much worry if remove fails, move has been done */
 	
+	debug_print("updating rules ....\n");
+	prefs_filtering_rename_path(srcpath, g_strconcat(dstpath, 
+						G_DIR_SEPARATOR_S, 
+						g_basename(srcpath), 
+						NULL));
+
 	folder_write_list();
 
 	g_free(srcpath);
