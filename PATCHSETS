@@ -156,3 +156,4 @@
 ( cvs diff -u -r 1.28.2.2 -r 1.28.2.3 src/addrindex.c; ) > 0.9.12cvs89.1.patchset
 ( cvs diff -u -r 1.61.2.8 -r 1.61.2.10 src/account.c; ) > 0.9.12cvs90.1.patchset
 ( cvs diff -u -r 1.5.2.10 -r 1.5.2.11 src/gtk/menu.c; ) > 0.9.12cvs91.1.patchset
+( cvs diff -u -r 1.1.4.4 -r 1.1.4.5 src/common/xml.c; ) > 0.9.12cvs91.2.patchset

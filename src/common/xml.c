@@ -263,30 +263,27 @@ gint xml_parse_next_tag(XMLFile *file)
 		g_strchomp(attr_name);
 		xml_unescape_str(attr_value);
 
-#warning FIXME_GTK2
-		utf8attr_name  = conv_codeset_strdup
+		if (!g_utf8_validate(attr_name, -1, NULL))
+			utf8attr_name  = conv_codeset_strdup
 					(attr_name,
 					 conv_get_current_charset_str(),
 					 CS_UTF_8);
-		utf8attr_value = conv_codeset_strdup
+		else
+			utf8attr_name = g_strdup(attr_name);
+		
+		if (!g_utf8_validate(attr_value, -1, NULL))
+			utf8attr_value = conv_codeset_strdup
 					(attr_value,
 					 conv_get_current_charset_str(),
 					 CS_UTF_8);
-		if (!utf8attr_name) {
-			g_warning("xml_parse_next_tag(): "
-				  "faild to convert character set of attr_name\n");
-			utf8attr_name = g_strdup(attr_name);
-		}
-		if (!utf8attr_value) {
-			g_warning("xml_parse_next_tag(): "
-				  "faild to convert character set of attr_value\n");
+		else
 			utf8attr_value = g_strdup(attr_value);
-		}
-		
+					
 		attr = xml_attr_new(utf8attr_name, utf8attr_value);
 		xml_tag_add_attr(tag, attr);
 
 		g_free(utf8attr_name);
+		g_free(utf8attr_value);
 	}
 
 	return 0;
