@@ -878,6 +878,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		gchar *searched_header = NULL;
 		
 		not_killed = NULL;
+		g_strdown(search_string);
+
 		for(cur = mlist ; cur != NULL ; cur = g_slist_next(cur)) {
 			MsgInfo * msginfo = (MsgInfo *) cur->data;
 			switch (search_type) {
@@ -894,6 +896,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 					printf("bug in search_type (=%d)\n",search_type);
 			}
 			
+			g_strdown(searched_header);
 			if (searched_header != NULL
 			    && strstr(searched_header, search_string) != NULL)
 				not_killed = g_slist_append(not_killed, msginfo);
