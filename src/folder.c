@@ -1486,6 +1486,89 @@ gint folder_item_close(FolderItem *item)
 	return folder->klass->close(folder, item);
 }
 
+static void msginfo_set_mime_flags(GNode *node, gpointer data)
+{
+	MsgInfo *msginfo = data;
+	MimeInfo *mimeinfo = node->data;
+
+	if (mimeinfo->disposition == DISPOSITIONTYPE_ATTACHMENT) {
+		MSG_SET_TMP_FLAGS(msginfo->flags, MSG_HAS_ATTACHMENT);
+	} else if (mimeinfo->disposition == DISPOSITIONTYPE_UNKNOWN && 
+		 mimeinfo->type != MIMETYPE_TEXT &&
+		 mimeinfo->type != MIMETYPE_MULTIPART) {
+		MSG_SET_TMP_FLAGS(msginfo->flags, MSG_HAS_ATTACHMENT)
+	}
+
+	/* don't descend below top level message for signed and encrypted info */
+	if (mimeinfo->type == MIMETYPE_MESSAGE)
+		return;
+
+	if (privacy_mimeinfo_is_signed(mimeinfo)) {
+		MSG_SET_TMP_FLAGS(msginfo->flags, MSG_SIGNED);
+	}
+
+	if (privacy_mimeinfo_is_encrypted(mimeinfo)) {
+		MSG_SET_TMP_FLAGS(msginfo->flags, MSG_ENCRYPTED);
+	} else {
+		/* searching inside encrypted parts doesn't really make sense */
+		g_node_children_foreach(mimeinfo->node, G_TRAVERSE_ALL, msginfo_set_mime_flags, msginfo);
+	}
+}
+
+static MsgInfoList *get_msginfos(FolderItem *item, MsgNumberList *numlist)
+{
+	MsgInfoList *msglist = NULL;
+	Folder *folder = item->folder;
+	MsgInfoList *elem;
+
+	if (folder->klass->get_msginfos != NULL)
+		msglist = folder->klass->get_msginfos(folder, item, numlist);
+	else {
+		MsgNumberList *elem;
+
+		for (elem = numlist; elem != NULL; elem = g_slist_next(elem)) {
+			MsgInfo *msginfo;
+			guint num;
+
+			num = GPOINTER_TO_INT(elem->data);
+			msginfo = folder->klass->get_msginfo(folder, item, num);
+			if (msginfo != NULL)
+				msglist = g_slist_prepend(msglist, msginfo);
+		}		
+	}
+
+	for (elem = msglist; elem != NULL; elem = g_slist_next(elem)) {
+		MsgInfo *msginfo = elem->data;
+
+		if (MSG_IS_MULTIPART(msginfo->flags)) {
+			MimeInfo *mimeinfo;
+
+			mimeinfo = procmime_scan_message(msginfo);
+			g_node_children_foreach(mimeinfo->node, G_TRAVERSE_ALL, msginfo_set_mime_flags, msginfo);
+			procmime_mimeinfo_free_all(mimeinfo);
+			/* check for attachments */
+		}
+	}
+
+	return msglist;
+}
+
+static MsgInfo *get_msginfo(FolderItem *item, guint num)
+{
+	MsgNumberList numlist;
+	MsgInfoList *msglist;
+	MsgInfo *msginfo = NULL;
+
+	numlist.data = GINT_TO_POINTER(num);
+	numlist.next = NULL;
+	msglist = get_msginfos(item, &numlist);
+	if (msglist != NULL)
+		msginfo = procmsg_msginfo_new_ref(msglist->data);
+	procmsg_msg_list_free(msglist);
+
+	return msginfo;
+}
+
 gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 {
 	Folder *folder;
@@ -1660,23 +1743,7 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	g_slist_free(folder_list);
 
 	if (new_list != NULL) {
-		if (folder->klass->get_msginfos) {
-			newmsg_list = folder->klass->get_msginfos(folder, item, new_list);
-		} else if (folder->klass->get_msginfo) {
-			GSList *elem;
-	
-			for (elem = new_list; elem != NULL; elem = g_slist_next(elem)) {
-				MsgInfo *msginfo;
-				guint num;
-
-				num = GPOINTER_TO_INT(elem->data);
-				msginfo = folder->klass->get_msginfo(folder, item, num);
-				if (msginfo != NULL) {
-					newmsg_list = g_slist_prepend(newmsg_list, msginfo);
-					debug_print("Added newly found message %d to cache.\n", num);
-				}
-			}
-		}
+		newmsg_list = get_msginfos(item, new_list);
 		g_slist_free(new_list);
 	}
 
@@ -1964,7 +2031,7 @@ void folder_item_write_cache(FolderItem *item)
 MsgInfo *folder_item_get_msginfo(FolderItem *item, gint num)
 {
 	Folder *folder;
-	MsgInfo *msginfo;
+	MsgInfo *msginfo = NULL;
 	
 	g_return_val_if_fail(item != NULL, NULL);
 	
@@ -1975,8 +2042,8 @@ MsgInfo *folder_item_get_msginfo(FolderItem *item, gint num)
 	if ((msginfo = msgcache_get_msg(item->cache, num)) != NULL)
 		return msginfo;
 	
-	g_return_val_if_fail(folder->klass->get_msginfo, NULL);
-	if ((msginfo = folder->klass->get_msginfo(folder, item, num)) != NULL) {
+	msginfo = get_msginfo(item, num);
+	if (msginfo != NULL) {
 		msgcache_add_msg(item->cache, msginfo);
 		return msginfo;
 	}
@@ -2275,7 +2342,7 @@ gint folder_item_add_msgs(FolderItem *dest, GSList *file_list,
 				continue;
 
 			if (!folderscan && 
-			    ((newmsginfo = folder->klass->get_msginfo(folder, dest, num)) != NULL)) {
+			    ((newmsginfo = get_msginfo(dest, num)) != NULL)) {
 				add_msginfo_to_cache(dest, newmsginfo, NULL);
 				procmsg_msginfo_free(newmsginfo);
 			} else if ((newmsginfo = msgcache_get_msg(dest->cache, num)) != NULL) {
@@ -2507,7 +2574,7 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
 					}
 				}
 			} else {
-				newmsginfo = folder->klass->get_msginfo(folder, dest, num);
+				newmsginfo = get_msginfo(dest, num);
 				if (newmsginfo != NULL) {
 					add_msginfo_to_cache(dest, newmsginfo, msginfo);
 					procmsg_msginfo_free(newmsginfo);

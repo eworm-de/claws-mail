@@ -1,3 +1,13 @@
+2004-06-23 [christoph]	0.9.11cvs16
+
+	* src/folder.c
+	* src/procheader.c
+	* src/procmsg.h
+	* src/summaryview.c
+		scan the mime structure of multipart mails for correct
+		attachment, encryped and signed (with privacy API) part
+		detection
+
 2004-06-22 [paul]
 
 	* po/ru.po

@@ -2607,13 +2607,13 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 	if (MSG_IS_SIGNED(flags)) {
 		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
 					  gpgsignedxpm, gpgsignedxpmmask);
-	} else if (MSG_IS_MIME(flags) && MSG_IS_ENCRYPTED(flags)) {
+	} else if (MSG_IS_WITH_ATTACHMENT(flags) && MSG_IS_ENCRYPTED(flags)) {
 		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
 					  clipkeyxpm, clipkeyxpmmask);
 	} else if (MSG_IS_ENCRYPTED(flags)) {
 		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
 					  keyxpm, keyxpmmask);
-	} else if (MSG_IS_MIME(flags)) {
+	} else if (MSG_IS_WITH_ATTACHMENT(flags)) {
 		gtk_ctree_node_set_pixmap(ctree, row, col_pos[S_COL_MIME],
 					  clipxpm, clipxpmmask);
 	} else {
@@ -4698,7 +4698,7 @@ CMP_FUNC_DEF(summary_cmp_by_mark,
 CMP_FUNC_DEF(summary_cmp_by_status,
 	     MSG_IS_UNREAD(msginfo1->flags) - MSG_IS_UNREAD(msginfo2->flags))
 CMP_FUNC_DEF(summary_cmp_by_mime,
-	     MSG_IS_MIME(msginfo1->flags) - MSG_IS_MIME(msginfo2->flags))
+	     MSG_IS_WITH_ATTACHMENT(msginfo1->flags) - MSG_IS_WITH_ATTACHMENT(msginfo2->flags))
 CMP_FUNC_DEF(summary_cmp_by_label,
 	     MSG_GET_COLORLABEL(msginfo1->flags) -
 	     MSG_GET_COLORLABEL(msginfo2->flags))
