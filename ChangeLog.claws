@@ -1,3 +1,27 @@
+2002-06-15 [paul]	0.7.8claws
+
+	* release of 0.7.8claws
+
+2002-06-15 [paul]	0.7.7claws
+
+	* po/pt_BR.po
+		updated by Fabio Junior Beneditto
+
+2002-06-14 [paul]	0.7.6claws49
+
+	* po/es.po
+		updated by Ricardo Mones Lastra
+
+2002-06-14 [paul]	0.7.6claws48
+
+	* po/nl.po
+		updated translation by Wilbert Berendsen
+
+2002-06-14 [melvin]	0.7.6claws47
+
+	* po/fr.po
+		Updated French translation
+
 2002-06-13 [paul]	0.7.6claws46
 
 	* src/filesel.c
