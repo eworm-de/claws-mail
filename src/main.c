@@ -23,8 +23,6 @@
 
 #include "defs.h"
 
-#include <features.h>
-
 #include <glib.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkrc.h>
@@ -258,6 +256,7 @@ int main(int argc, char *argv[])
 #endif
 		return 0;
 	}
+
 	if (cmd.status || cmd.status_full) {
 		puts("0 Sylpheed not running.");
 		lock_socket_remove();
