@@ -1,3 +1,8 @@
+2002-05-12 [paul]	0.7.5claws24
+
+	* src/summaryview.c
+		reverse last commit, bug already fixed in 0.7.5claws3
+
 2002-05-12 [netztorte]	0.7.5claws23
 
 	* src/summaryview.c
