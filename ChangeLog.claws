@@ -1,4 +1,11 @@
+2001-12-09 [christoph]	0.6.5claws69
+
+	* src/summaryview.c
+		set pointer to string in LOCKED column to NULL
+		(might fix bug #490800)
+
 2001-12-09 [carsten]	0.6.5claws68
+
 	* po/de.po
 		resolved some cluttered menu shortcuts 
 		('creating new email' and 'creating news message'

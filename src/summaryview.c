@@ -2138,6 +2138,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	text[col_pos[S_COL_MARK]]   = NULL;
 	text[col_pos[S_COL_UNREAD]] = NULL;
 	text[col_pos[S_COL_MIME]]   = NULL;
+	text[col_pos[S_COL_LOCKED]] = NULL;
 	text[col_pos[S_COL_NUMBER]] = itos(msginfo->msgnum);
 	text[col_pos[S_COL_SIZE]]   = to_human_readable(msginfo->size);
 
