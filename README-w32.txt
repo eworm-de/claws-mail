@@ -44,6 +44,7 @@ to the link section below.
     gpgme                       (gpgme-dev-20020921.zip)
     openssl                     (claws_w32_ssl_dev_020415.zip)
     libcrypt			(crypt-2.2.5-lib.zip)
+    pthreads			(pthreads-2002-11-04.exe)
 * unix build tools (diff,patch,msgfmt,grep,sed,bison,flex,cvs)
     unix-tools                  (unix-tools.zip)
 
@@ -52,8 +53,8 @@ to the link section below.
 --------------------------
 
   1. Create \dev.
-  2. Extract glib-dev, gtk+-dev, libiconv-dev, libintl. libcrypt,
-     directly into \dev (this creates \dev\lib, \dev\include, etc.).
+  2. Extract glib-dev, gtk+-dev, libiconv-dev, libintl, libcrypt,
+     pthreads directly into \dev (this creates \dev\lib, \dev\include, etc.).
   3. Extract or checkout the sources into \dev\lib\proj\sylpheed-claws.
   4. Extract fnmatch, libcompface, regex, w32lib to \dev\proj
      (creates \dev\proj\fnmatch, etc.).
@@ -63,7 +64,7 @@ to the link section below.
 4. The resulting directory tree:
 --------------------------------
 
-\-dev                      (Gtk+ libs and libcrypt below \dev)
+\-dev                      (Gtk+ libs, libcrypt, pthreads below \dev)
   +---bin
   +---include
   |   +---openssl          (extract openssl-dev to \ )
