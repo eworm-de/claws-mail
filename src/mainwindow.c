@@ -392,6 +392,10 @@ static void addr_harvest_msg_cb	 ( MainWindow  *mainwin,
 				   guint       action,
 				   GtkWidget   *widget );
 
+static gboolean mainwindow_focus_in_event	(GtkWidget	*widget, 
+						 GdkEventFocus	*focus,
+						 gpointer	 data);
+
 #define  SEPARATE_ACTION 500 
 
 static GtkItemFactoryEntry mainwin_entries[] =
@@ -752,6 +756,9 @@ MainWindow *main_window_create(SeparateType type)
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
 			   GTK_SIGNAL_FUNC(main_window_close_cb), mainwin);
 	MANAGE_WINDOW_SIGNALS_CONNECT(window);
+	gtk_signal_connect(GTK_OBJECT(window), "focus_in_event",
+			   GTK_SIGNAL_FUNC(mainwindow_focus_in_event),
+			   mainwin);
 	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
 				GTK_SIGNAL_FUNC(mainwindow_key_pressed), mainwin);
 
@@ -2613,6 +2620,19 @@ static void scan_tree_func(Folder *folder, FolderItem *item, gpointer data)
 	STATUSBAR_PUSH(mainwin, str);
 	STATUSBAR_POP(mainwin);
 	g_free(str);
+}
+
+static gboolean mainwindow_focus_in_event(GtkWidget *widget, GdkEventFocus *focus,
+					  gpointer data)
+{
+	SummaryView *summary;
+
+	g_return_val_if_fail(data, FALSE);
+	summary = ((MainWindow *)data)->summaryview;
+	g_return_val_if_fail(summary, FALSE);
+	if (summary->selected != summary->displayed)
+		summary_select_node(summary, summary->displayed, FALSE, TRUE);
+	return FALSE;
 }
 
 #define BREAK_ON_MODIFIER_KEY() \

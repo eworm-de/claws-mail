@@ -1,3 +1,11 @@
+2002-12-29 [alfons]	0.8.8claws25
+
+	* src/mainwindow.c
+		when moving focus from a message view to the main 
+		window, don't forget to select the summary node
+		of the displayed message. should fix "[ 659103 ] 
+		focus-follows-mouse confuses sylpheed"
+
 2002-12-29 [christoph]	0.8.8claws24
 
 	* src/Makefile.am
