@@ -72,6 +72,7 @@
 #include "filter.h"
 #include "folder.h"
 #include "addressbook.h"
+#include "addr_compl.h"
 #include "scoring.h"
 
 #include "pixmaps/dir-open.xpm"
@@ -1395,6 +1396,9 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	msgid_table = g_hash_table_new(g_str_hash, g_str_equal);
 	summaryview->msgid_table = msgid_table;
 
+	if (prefs_common.use_addr_book)
+		start_address_completion();
+
 	if (prefs_common.enable_thread) {
 		for (; mlist != NULL; mlist = mlist->next) {
 			msginfo = (MsgInfo *)mlist->data;
@@ -1452,6 +1456,9 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 		gtk_clist_set_column_width(GTK_CLIST(ctree), S_COL_SUBJECT,
 					   optimal_width);
 	}
+
+	if (prefs_common.use_addr_book)
+		end_address_completion();
 
 	debug_print(_("done.\n"));
 	STATUSBAR_POP(summaryview->mainwin);
@@ -1536,6 +1543,7 @@ static void summary_set_header(gchar *text[], MsgInfo *msginfo)
 {
 	static gchar date_modified[80];
 	static gchar *to = NULL;
+	static gchar *from_name = NULL;
 	static gchar col_number[11];
 	static gchar col_score[11];
 
@@ -1569,6 +1577,24 @@ static void summary_set_header(gchar *text[], MsgInfo *msginfo)
 			g_free(to);
 			to = g_strconcat("-->", msginfo->to, NULL);
 			text[S_COL_FROM] = to;
+		}
+	}
+
+	if ((text[S_COL_FROM] != to) && prefs_common.use_addr_book &&
+	    msginfo->from) {
+		gint count;
+		gchar *from;
+  
+		Xalloca(from, strlen(msginfo->from) + 1, return);
+		strcpy(from, msginfo->from);
+		extract_address(from);
+		count = complete_address(from);
+		if (count > 1) {
+			g_free(from_name);
+			from = get_complete_address(1);
+			from_name = procheader_get_fromname(from);
+			g_free(from);
+			text[S_COL_FROM] = from_name;
 		}
 	}
 

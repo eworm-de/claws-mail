@@ -73,6 +73,7 @@ struct _PrefsCommon
 	gboolean enable_thread;
 	gboolean enable_hscrollbar;
 	gboolean swap_from;
+	gboolean use_addr_book;
 	gchar *date_format;
 
 	/* Filtering */

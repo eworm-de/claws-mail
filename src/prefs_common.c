@@ -107,6 +107,7 @@ static struct Display {
 
 	GtkWidget *chkbtn_swapfrom;
 	GtkWidget *chkbtn_hscrollbar;
+	GtkWidget *chkbtn_useaddrbook;
 } display;
 
 static struct Message {
@@ -290,6 +291,9 @@ static PrefParam param[] = {
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"enable_hscrollbar", "TRUE", &prefs_common.enable_hscrollbar, P_BOOL,
 	 &display.chkbtn_hscrollbar,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"use_address_book", "TRUE", &prefs_common.use_addr_book, P_BOOL,
+	 &display.chkbtn_useaddrbook,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"date_format", "%y/%m/%d(%a) %H:%M", &prefs_common.date_format,
 	 P_STRING, &entry_datefmt,
@@ -1310,6 +1314,7 @@ static void prefs_display_create(void)
 	GtkWidget *vbox2;
 	GtkWidget *chkbtn_swapfrom;
 	GtkWidget *chkbtn_hscrollbar;
+	GtkWidget *chkbtn_useaddrbook;
 	GtkWidget *hbox1;
 	GtkWidget *label_datefmt;
 	GtkWidget *button_dispitem;
@@ -1369,6 +1374,9 @@ static void prefs_display_create(void)
 		(vbox2, chkbtn_swapfrom,
 		 _("Display recipient on `From' column if sender is yourself"));
 	PACK_CHECK_BUTTON
+		(vbox2, chkbtn_useaddrbook,
+		 _("Display sender using address book"));
+	PACK_CHECK_BUTTON
 		(vbox2, chkbtn_hscrollbar, _("Enable horizontal scroll bar"));
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
@@ -1403,8 +1411,9 @@ static void prefs_display_create(void)
 	display.chkbtn_folder_unread = chkbtn_folder_unread;
 	display.chkbtn_transhdr   = chkbtn_transhdr;
 
-	display.chkbtn_swapfrom   = chkbtn_swapfrom;
-	display.chkbtn_hscrollbar = chkbtn_hscrollbar;
+	display.chkbtn_swapfrom    = chkbtn_swapfrom;
+	display.chkbtn_hscrollbar  = chkbtn_hscrollbar;
+	display.chkbtn_useaddrbook = chkbtn_useaddrbook;
 }
 
 static void prefs_message_create(void)

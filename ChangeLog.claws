@@ -1,3 +1,10 @@
+2001-05-07 [darko]
+
+	* src/prefs_common.[ch]: added option to enable/disable
+	  looking up sender name in address book for summary pane
+	* src/summaryview.c: look up sender in the address book
+	  by using Alfons' address completion code
+
 2001-05-07 [hiroyuki]
 
 	* src/inc.h
