@@ -1,3 +1,10 @@
+2002-04-25
+
+	* src/utils.[ch]: trim_string(): 新規。指定した長さより長い文字を
+	  切り詰め、 "..." を追加する。
+	* src/folderview.c: ダイアログを表示するときフォルダ名を切り詰める
+	  ようにした。
+
 2002-04-23
 
 	* src/imap.c: imap_create_folder(): root の INBOX フォルダにプレ
@@ -12,7 +19,7 @@
 
 2002-04-21
 
-	* sylpheed*.png: 若井さんによる新しい app アイコンを追加(thanks!)。
+	* sylpheed*.png: 若居さんによる新しい app アイコンを追加(thanks!)。
 
 2002-04-21
 
