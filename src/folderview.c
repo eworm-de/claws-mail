@@ -1253,6 +1253,8 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 				update_tree = rescan_tree = TRUE;
 			else if (item->stype == F_NORMAL)
 				rename_folder = delete_folder = folder_property = folder_scoring = TRUE;
+			else if (item->stype == F_INBOX)
+				folder_property = folder_scoring = TRUE;
 		} else if (FOLDER_TYPE(folder) == F_NEWS) {
 			if (item->parent != NULL)
 				delete_folder = folder_scoring = TRUE;

@@ -1,3 +1,13 @@
+2001-11-18 [hoa]	0.6.4claws20
+
+	* src/folderview.c
+		enable property and scoring options when right
+		click on "inbox"
+
+	* src/summaryview.c
+		fixed bug when nickname were displayed using
+		the address book.
+
 2001-11-02 [darko]	0.6.4claws19
 
 	* src/compose.c

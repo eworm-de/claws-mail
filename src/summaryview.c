@@ -2093,7 +2093,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 		}
 	}
 
-	if ((text[S_COL_FROM] != to) && prefs_common.use_addr_book &&
+	if ((text[col_pos[S_COL_FROM]] != to) && prefs_common.use_addr_book &&
 	    msginfo->from) {
 		gint count;
 		gchar *from;
@@ -2108,7 +2108,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 				from = get_complete_address(1);
 				from_name = procheader_get_fromname(from);
 				g_free(from);
-				text[S_COL_FROM] = from_name;
+				text[col_pos[S_COL_FROM]] = from_name;
 			}
 		}
 	}
