@@ -1514,7 +1514,7 @@ void procmsg_msginfo_set_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgTmp
 
 	}
 
-	if (MSG_IS_IMAP(msginfo->flags))
+	if (msginfo->folder->folder->type == F_IMAP)
 		imap_msg_set_perm_flags(msginfo, perm_flags);
 
 	msginfo->flags.perm_flags |= perm_flags;
@@ -1580,7 +1580,7 @@ void procmsg_msginfo_unset_flags(MsgInfo *msginfo, MsgPermFlags perm_flags, MsgT
 
 	}
 
-	if (MSG_IS_IMAP(msginfo->flags))
+	if (msginfo->folder->folder->type == F_IMAP)
 		imap_msg_unset_perm_flags(msginfo, perm_flags);
 
 	msginfo->flags.perm_flags &= ~perm_flags;
