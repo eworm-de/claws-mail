@@ -191,9 +191,8 @@ static void toggle_toolbar_cb	 (MainWindow	*mainwin,
 static void toggle_statusbar_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
-static void separate_widget_cb	 (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
+				  
+static void separate_widget_cb(GtkCheckMenuItem *checkitem, guint action);				   
 
 static void addressbook_open_cb	(MainWindow	*mainwin,
 				 guint		 action,
@@ -346,6 +345,8 @@ static void scan_tree_func	 (Folder	*folder,
 				  FolderItem	*item,
 				  gpointer	 data);
 
+#define  SEPARATE_ACTION  667
+
 static GtkItemFactoryEntry mainwin_entries[] =
 {
 	{N_("/_File"),				NULL, NULL, 0, "<Branch>"},
@@ -382,8 +383,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_View/_Toolbar/_Non-display"),	NULL, toggle_toolbar_cb, TOOLBAR_NONE, "/View/Toolbar/Icon and text"},
 	{N_("/_View/_Status bar"),		NULL, toggle_statusbar_cb, 0, "<ToggleItem>"},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/Separate f_older tree"),	NULL, separate_widget_cb, SEPARATE_FOLDER, "<ToggleItem>"},
-	{N_("/_View/Separate m_essage view"),	NULL, separate_widget_cb, SEPARATE_MESSAGE, "<ToggleItem>"},
+	{N_("/_View/Separate f_older tree"),	NULL, NULL, SEPARATE_ACTION + SEPARATE_FOLDER, "<ToggleItem>"},
+	{N_("/_View/Separate m_essage view"),	NULL, NULL, SEPARATE_ACTION + SEPARATE_MESSAGE, "<ToggleItem>"},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Code set"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/_Code set/_Auto detect"),
@@ -599,6 +600,7 @@ MainWindow *main_window_create(SeparateType type)
 	n_menu_entries = sizeof(mainwin_entries) / sizeof(mainwin_entries[0]);
 	menubar = menubar_create(window, mainwin_entries, 
 				 n_menu_entries, "<Main>", mainwin);
+
 	gtk_widget_show(menubar);
 	gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, TRUE, 0);
 
@@ -731,6 +733,22 @@ MainWindow *main_window_create(SeparateType type)
 	menuitem = gtk_item_factory_get_item(ifactory, "/View/Status bar");
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem),
 				       prefs_common.show_statusbar);
+
+	/* set the check of the SEPARATE_xxx menu items. we also need the main window
+	 * as a property and pass the action type to the callback */
+	menuitem = gtk_item_factory_get_widget_by_action(ifactory, SEPARATE_ACTION + SEPARATE_FOLDER);
+	g_assert(menuitem);
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), type & SEPARATE_FOLDER);
+	gtk_object_set_data(GTK_OBJECT(menuitem), "mainwindow", mainwin);
+	gtk_signal_connect(GTK_OBJECT(menuitem), "toggled", GTK_SIGNAL_FUNC(separate_widget_cb), 
+					   GUINT_TO_POINTER(SEPARATE_FOLDER));
+
+	menuitem = gtk_item_factory_get_widget_by_action(ifactory, SEPARATE_ACTION + SEPARATE_MESSAGE);
+	g_assert(menuitem);
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), type & SEPARATE_MESSAGE);
+	gtk_object_set_data(GTK_OBJECT(menuitem), "mainwindow", mainwin);
+	gtk_signal_connect(GTK_OBJECT(menuitem), "toggled", GTK_SIGNAL_FUNC(separate_widget_cb), 
+					   GUINT_TO_POINTER(SEPARATE_MESSAGE));
 
 	menu_set_sensitive(ifactory, "/Summary/Thread view",
 			   prefs_common.enable_thread ? FALSE : TRUE);
@@ -1802,10 +1820,13 @@ static void toggle_statusbar_cb(MainWindow *mainwin, guint action,
 	}
 }
 
-static void separate_widget_cb(MainWindow *mainwin, guint action,
-			       GtkWidget *widget)
+static void separate_widget_cb(GtkCheckMenuItem *checkitem, guint action)				   
 {
+	MainWindow *mainwin;
 	SeparateType type;
+
+	mainwin = (MainWindow *) gtk_object_get_data(GTK_OBJECT(checkitem), "mainwindow");
+	g_return_if_fail(mainwin != NULL);
 
 	type = mainwin->type ^ action;
 	main_window_separation_change(mainwin, type);

@@ -506,11 +506,17 @@ static void prefs_filtering_create(void)
 	filtering.cond_clist   = cond_clist;
 }
 
+static void prefs_filtering_update_hscrollbar(void)
+{
+	gint optwidth = gtk_clist_optimal_column_width(GTK_CLIST(filtering.cond_clist), 0);
+	gtk_clist_set_column_width(GTK_CLIST(filtering.cond_clist), 0, optwidth);
+}
+
 static void prefs_filtering_set_dialog(void)
 {
 	GtkCList *clist = GTK_CLIST(filtering.cond_clist);
 	GSList *cur;
-
+	
 	gtk_clist_freeze(clist);
 	gtk_clist_clear(clist);
 
@@ -521,6 +527,7 @@ static void prefs_filtering_set_dialog(void)
 		prefs_filtering_clist_set_row(-1, prop);
 	}
 
+	prefs_filtering_update_hscrollbar();
 	gtk_clist_thaw(clist);
 
 	prefs_filtering_reset_dialog();
@@ -693,6 +700,8 @@ static void prefs_filtering_register_cb(void)
 	prefs_filtering_clist_set_row(-1, prop);
 
 	filteringprop_free(prop);
+	
+	prefs_filtering_update_hscrollbar();
 }
 
 static void prefs_filtering_substitute_cb(void)
@@ -712,6 +721,8 @@ static void prefs_filtering_substitute_cb(void)
 	prefs_filtering_clist_set_row(row, prop);
 
 	filteringprop_free(prop);
+	
+	prefs_filtering_update_hscrollbar();
 }
 
 static void prefs_filtering_delete_cb(void)
@@ -729,6 +740,8 @@ static void prefs_filtering_delete_cb(void)
 		return;
 
 	gtk_clist_remove(clist, row);
+
+	prefs_filtering_update_hscrollbar();
 }
 
 static void prefs_filtering_up(void)

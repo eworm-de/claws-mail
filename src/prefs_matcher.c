@@ -614,6 +614,12 @@ static void prefs_matcher_reset_condition(void)
 	gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), "");
 }
 
+static void prefs_matcher_update_hscrollbar(void)
+{
+	gint optwidth = gtk_clist_optimal_column_width(GTK_CLIST(matcher.cond_clist), 0);
+	gtk_clist_set_column_width(GTK_CLIST(matcher.cond_clist), 0, optwidth);
+}
+
 static void prefs_matcher_set_dialog(MatcherList * matchers)
 {
 	GtkCList *clist = GTK_CLIST(matcher.cond_clist);
@@ -634,6 +640,8 @@ static void prefs_matcher_set_dialog(MatcherList * matchers)
 
 		bool_op = matchers->bool_and;
 	}
+	
+	prefs_matcher_update_hscrollbar();
 
 	gtk_clist_thaw(clist);
 
@@ -1002,6 +1010,7 @@ static void prefs_matcher_register_cb(void)
 	matcherprop_free(matcherprop);
 
 	prefs_matcher_reset_condition();
+	prefs_matcher_update_hscrollbar();
 }
 
 static void prefs_matcher_substitute_cb(void)
@@ -1023,6 +1032,8 @@ static void prefs_matcher_substitute_cb(void)
 	matcherprop_free(matcherprop);
 
 	prefs_matcher_reset_condition();
+	
+	prefs_matcher_update_hscrollbar();
 }
 
 static void prefs_matcher_delete_cb(void)
@@ -1036,6 +1047,8 @@ static void prefs_matcher_delete_cb(void)
 		return;
 
 	gtk_clist_remove(clist, row);
+	
+	prefs_matcher_update_hscrollbar();
 }
 
 static void prefs_matcher_up(void)

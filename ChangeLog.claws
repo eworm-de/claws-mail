@@ -1,3 +1,28 @@
+2001-05-26 [alfons]
+
+	Minor GUI fixes adding horizontal scrollbars to Hoa's matcher dialogs,
+	and fixing the persistence troubles when using separate windows.
+
+	* src/mainwindow.c:
+	
+	    Added #define SEPARATE_ACTION used in the gtk item factory for 
+	    the SEPARATE_FOLDER and SEPARATE_MESSAGE items, so we can
+		use gtk_item_factory_get_widget_by_action() to get the items.
+		
+	    Removed separate_widget_cb from the gtk item factory data	
+	  
+	    (mainwindow_create): connect separate_widget_cb() to check
+	    menu item "toggled" signal. also passing a MainWindow pointer
+		as object data for both check menu items.
+		
+	    (separate_widget_cb): definition of separate_widget_cb() to match
+	    GtkCheckMenuItem's "toggled" signal. Now get the pointer to the main 
+		window using gtk_object_get_data(). The type of window separation 
+		(SEPARATE_MESSAGE or SEPARATE_FOLDER) is passed as the signal's data
+	
+	* src/prefs_filtering.c,
+	  src/prefs_matcher.c: added horizontal scrollbars
+
 2001-05-25 [darko]
 
 	* src/headerview.c
