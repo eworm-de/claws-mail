@@ -1,3 +1,9 @@
+2002-12-03 [sergey]	0.8.6claws54
+
+	* src/send.c
+		send_message_local(): removed first-dot escaping
+		(SMTP-only, not needed for sending through pipe)
+
 2002-12-03 [paul]	0.8.6claws53
 
 	* po/POTFILES.in
