@@ -682,6 +682,8 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 {
 	gchar *destdir;
 	IMAPSession *session;
+	gint messages, recent, unseen;
+	guint32 uid_next, uid_validity;
 	gint ok;
 
 	g_return_val_if_fail(folder != NULL, -1);
@@ -694,6 +696,14 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 
 	if (msginfo->folder == dest) {
 		g_warning(_("the src folder is identical to the dest.\n"));
+		return -1;
+	}
+
+	ok = imap_status(session, IMAP_FOLDER(folder), dest->path,
+			 &messages, &recent, &uid_next, &uid_validity, &unseen);
+	statusbar_pop_all();
+	if (ok != IMAP_SUCCESS) {
+		g_warning(_("can't copy message\n"));
 		return -1;
 	}
 
@@ -720,7 +730,7 @@ static gint imap_do_copy(Folder *folder, FolderItem *dest, MsgInfo *msginfo,
 	statusbar_pop_all();
 
 	if (ok == IMAP_SUCCESS)
-		return 0;
+		return uid_next;
 	else
 		return -1;
 }
@@ -802,9 +812,12 @@ gint imap_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	ret = imap_add_msg(folder, dest, srcfile, FALSE);
 	g_free(srcfile);
 
-	if (ret != -1)
-		ret = folder_item_remove_msg(msginfo->folder, msginfo->msgnum);
-
+	if (ret != -1) {
+		if(folder_item_remove_msg(msginfo->folder, msginfo->msgnum)) {
+			ret = -1;
+		}
+	}
+		
 	return ret;
 }
 
@@ -3064,6 +3077,9 @@ MsgInfo *imap_fetch_msginfo (Folder *folder, FolderItem *item, gint num)
 	IMAPSession *session;
 	GString *str;
 	MsgInfo *msginfo;
+	gint ok, exists = 0, recent = 0, unseen = 0;
+	guint32 uid_validity = 0;
+	guint32 uid = 0;
 	
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
@@ -3073,6 +3089,11 @@ MsgInfo *imap_fetch_msginfo (Folder *folder, FolderItem *item, gint num)
 	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, NULL);
 
+	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
+			 &exists, &recent, &unseen, &uid_validity);
+	if (ok != IMAP_SUCCESS)
+		return NULL;
+	
 	if (imap_cmd_envelope(SESSION(session)->sock, num, num)
 	    != IMAP_SUCCESS) {
 		log_warning(_("can't get envelope\n"));

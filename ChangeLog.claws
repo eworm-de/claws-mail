@@ -1,6 +1,8 @@
 2002-06-30 [christoph]	0.7.8claws36
 
 	* merge new cache branch
+	* src/imap.c
+	    fix new cache imap copy bug
 
 2002-06-29 [paul]	0.7.8claws35
 
