@@ -996,22 +996,22 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 	g_return_val_if_fail(msginfo->folder != NULL, NULL);
 
 	account = msginfo->folder->folder->account;
-        if (!account && msginfo->to && prefs_common.forward_account_autosel) {
+	if (!account && msginfo->to && prefs_common.forward_account_autosel) {
 		gchar *to;
 		Xstrdup_a(to, msginfo->to, return NULL);
 		extract_address(to);
 		account = account_find_from_address(to);
 	}
 
-        if(!account && prefs_common.forward_account_autosel) {
-               	gchar cc[BUFFSIZE];
+	if(!account && prefs_common.forward_account_autosel) {
+		gchar cc[BUFFSIZE];
 		if(!get_header_from_msginfo(msginfo,cc,sizeof(cc),"CC:")){ /* Found a CC header */
 		        extract_address(cc);
 		        account = account_find_from_address(cc);
                 }
 	}
 
-        if (account == NULL) {
+	if (account == NULL) {
 		account = cur_account;
 		/*
 		account = msginfo->folder->folder->account;
@@ -4107,6 +4107,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, FALSE);
 	gtk_widget_set_usize(window, -1, prefs_common.compose_height);
+	gtk_window_set_wmclass(GTK_WINDOW(window), "compose window", "Sylpheed");
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
 			   GTK_SIGNAL_FUNC(compose_delete_cb), compose);
 	gtk_signal_connect(GTK_OBJECT(window), "destroy",

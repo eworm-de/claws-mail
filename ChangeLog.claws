@@ -1,3 +1,16 @@
+2001-12-09 [carsten]	0.6.5claws68
+	* po/de.po
+		resolved some cluttered menu shortcuts 
+		('creating new email' and 'creating news message'
+		hade the same)
+	* src/compose.c
+		wmclass now distinc from main window
+	* src/mainwindow.c
+	  src/mainwindow.h
+	  	email/news and forward button functionality similar
+		to the reply buttons; removed the ugly dropdown arrows
+		and use instead the right mouse button
+
 2001-12-09 [paul]	0.6.5claws67
 
 	* src/imap.c
