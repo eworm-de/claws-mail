@@ -1,4 +1,14 @@
-2001-01-05 [alfons]	0.6.6claws38
+2002-01-06 [melvin]	0.6.6claws39
+
+	* src/mainwindow.c
+	* src/summaryview.c
+		Fixed crash introduced in 0.6.6claws38 by the menu
+		reorganisation (Hide read messages)
+	
+	* ChangeLog.claws 
+		Fixed typo (we are now in 2002, alfons ;) )
+
+2002-01-05 [alfons]	0.6.6claws38
 
 	* sync with sylpheed 0.6.6cvs10-17
 		(last stuff marked as LAST_STABLE)

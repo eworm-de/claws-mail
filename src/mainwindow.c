@@ -476,6 +476,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, attract_by_subject_cb, 0, NULL},
 	{N_("/_View/Th_read view"),		"<control>T",	     thread_cb, 0, NULL},
 	{N_("/_View/U_nthread view"),		"<shift><control>T", thread_cb, 1, NULL},
+	{N_("/_View/_Hide read messages"),	NULL, hide_read_messages, 0, "<ToggleItem>"},
 	{N_("/_View/Set display _item..."),	NULL, set_display_item_cb, 0, NULL},
 	{N_("/_View/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/_Code set"),		NULL, NULL, 0, "<Branch>"},

@@ -4942,7 +4942,7 @@ static void summary_set_hide_read_msgs_menu (SummaryView *summaryview,
  	GtkWidget *widget;
  
  	widget = gtk_item_factory_get_item(gtk_item_factory_from_widget(summaryview->mainwin->menubar),
- 					   "/Summary/Hide read messages");
+ 					   "/View/Hide read messages");
  	gtk_object_set_data(GTK_OBJECT(widget), "dont_toggle",
  			    GINT_TO_POINTER(1));
  	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM(widget), action);
