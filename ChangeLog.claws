@@ -1,3 +1,10 @@
+2001-12-10 [alfons]	0.6.5claws73
+
+	* src/matcher.c
+		add more control characters
+	* src/matcher_parser_lex.l
+		make escaping / unescaping work again
+
 2001-12-10 [alfons]	0.6.5claws72
 
 	* src/imap.c
