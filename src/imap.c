@@ -1095,7 +1095,18 @@ static gint imap_scan_tree_recursive(IMAPSession *session, FolderItem *item)
 		} else if (!item->parent || item->stype == F_INBOX) {
 			gchar *base;
 
+#ifdef WIN32
+			base = g_strrstr(new_item->path, "/");
+			if (!base)
+				base = new_item->path;
+			else {
+				base++;
+				if (!*base)
+					base = new_item->path;
+			}
+#else
 			base = g_basename(new_item->path);
+#endif
 
 			if (!folder->outbox && !strcasecmp(base, "Sent")) {
 				new_item->stype = F_OUTBOX;
@@ -1180,7 +1191,18 @@ static GSList *imap_parse_list(IMAPSession *session, const gchar *real_path)
 
 		if (separator[0] != '\0')
 			subst_char(buf, separator[0], '/');
+#ifdef WIN32
+		name = g_strrstr(buf, "/");
+		if (!name)
+			name = buf;
+		else {
+			name++;
+			if (!*name)
+				name = buf;
+		}
+#else
 		name = g_basename(buf);
+#endif
 		if (name[0] == '.') continue;
 
 		loc_name = imap_modified_utf7_to_locale(name);
