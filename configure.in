@@ -1,6 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.50)
 AC_INIT(src/main.c)
+AC_CONFIG_AUX_DIR(config)
 
 PACKAGE=sylpheed
 
@@ -10,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=5
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws
+EXTRA_VERSION=claws1
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -394,6 +395,7 @@ manual/es/Makefile
 manual/fr/Makefile
 manual/ja/Makefile
 tools/Makefile
+config/Makefile
 ])
 
 dnl Output the configuration summary

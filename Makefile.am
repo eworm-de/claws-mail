@@ -1,4 +1,4 @@
-SUBDIRS = ac po intl src man manual faq tools
+SUBDIRS = ac po intl src man manual faq tools config
 
 EXTRA_DIST = \
 	ChangeLog.jp \
