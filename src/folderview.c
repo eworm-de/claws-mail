@@ -2325,8 +2325,8 @@ static void folderview_new_news_group_cb(FolderView *folderview, guint action,
 			folderview->opened = NULL;
 		}
 
-		folder_item_remove(item);
 		gtk_ctree_remove_node(ctree, node);
+		folder_item_remove(item);
 
 		gnode = next;
 	}
