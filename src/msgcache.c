@@ -28,6 +28,13 @@
 #include "utils.h"
 #include "procmsg.h"
 
+typedef enum
+{
+	DATA_READ,
+	DATA_WRITE,
+	DATA_APPEND
+} DataOpenMode;
+
 struct _MsgCache {
 	GHashTable	*msgnum_table;
 	GHashTable	*msgid_table;
@@ -128,293 +135,6 @@ void msgcache_update_msg(MsgCache *cache, MsgInfo *msginfo)
 	return;
 }
 
-static gint msgcache_read_cache_data_str(FILE *fp, gchar **str)
-{
-	gchar buf[BUFFSIZE];
-	gint ret = 0;
-	size_t len;
-
-	if (fread(&len, sizeof(len), 1, fp) == 1) {
-		if (len < 0)
-			ret = -1;
-		else {
-			gchar *tmp = NULL;
-
-			while (len > 0) {
-				size_t size = MIN(len, BUFFSIZE - 1);
-
-				if (fread(buf, size, 1, fp) != 1) {
-					ret = -1;
-					if (tmp) g_free(tmp);
-					*str = NULL;
-					break;
-				}
-
-				buf[size] = '\0';
-				if (tmp) {
-					*str = g_strconcat(tmp, buf, NULL);
-					g_free(tmp);
-					tmp = *str;
-				} else
-					tmp = *str = g_strdup(buf);
-
-				len -= size;
-			}
-		}
-	} else
-		ret = -1;
-
-	if (ret < 0)
-		g_warning("Cache data is corrupted\n");
-
-	return ret;
-}
-
-
-#define READ_CACHE_DATA(data, fp) \
-{ \
-	if (msgcache_read_cache_data_str(fp, &data) < 0) { \
-		procmsg_msginfo_free(msginfo); \
-		error = TRUE; \
-		break; \
-	} \
-}
-
-#define READ_CACHE_DATA_INT(n, fp) \
-{ \
-	if (fread(&n, sizeof(n), 1, fp) != 1) { \
-		g_warning("Cache data is corrupted\n"); \
-		procmsg_msginfo_free(msginfo); \
-		error = TRUE; \
-		break; \
-	} \
-}
-
-MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
-{
-	MsgCache *cache;
-	FILE *fp;
-	MsgInfo *msginfo;
-	MsgTmpFlags tmp_flags = 0;
-	gchar file_buf[BUFFSIZE];
-	gint ver;
-	guint num;
-	gboolean error = FALSE;
-
-	g_return_val_if_fail(cache_file != NULL, NULL);
-	g_return_val_if_fail(item != NULL, NULL);
-
-	if ((fp = fopen(cache_file, "rb")) == NULL) {
-		debug_print("\tNo cache file\n");
-		return NULL;
-	}
-	setvbuf(fp, file_buf, _IOFBF, sizeof(file_buf));
-
-	debug_print("\tReading message cache from %s...\n", cache_file);
-
-	/* compare cache version */
-	if (fread(&ver, sizeof(ver), 1, fp) != 1 ||
-	    CACHE_VERSION != ver) {
-		debug_print("Cache version is different. Discarding it.\n");
-		fclose(fp);
-		return NULL;
-	}
-
-	if (item->stype == F_QUEUE) {
-		tmp_flags |= MSG_QUEUED;
-	} else if (item->stype == F_DRAFT) {
-		tmp_flags |= MSG_DRAFT;
-	}
-
-	cache = msgcache_new();
-
-	g_hash_table_freeze(cache->msgnum_table);
-
-	while (fread(&num, sizeof(num), 1, fp) == 1) {
-		msginfo = procmsg_msginfo_new();
-		msginfo->msgnum = num;
-		READ_CACHE_DATA_INT(msginfo->size, fp);
-		READ_CACHE_DATA_INT(msginfo->mtime, fp);
-		READ_CACHE_DATA_INT(msginfo->date_t, fp);
-		READ_CACHE_DATA_INT(msginfo->flags.tmp_flags, fp);
-
-		READ_CACHE_DATA(msginfo->fromname, fp);
-
-		READ_CACHE_DATA(msginfo->date, fp);
-		READ_CACHE_DATA(msginfo->from, fp);
-		READ_CACHE_DATA(msginfo->to, fp);
-		READ_CACHE_DATA(msginfo->cc, fp);
-		READ_CACHE_DATA(msginfo->newsgroups, fp);
-		READ_CACHE_DATA(msginfo->subject, fp);
-		READ_CACHE_DATA(msginfo->msgid, fp);
-		READ_CACHE_DATA(msginfo->inreplyto, fp);
-		READ_CACHE_DATA(msginfo->references, fp);
-		READ_CACHE_DATA(msginfo->xref, fp);
-
-		msginfo->folder = item;
-		msginfo->flags.tmp_flags |= tmp_flags;
-
-		g_hash_table_insert(cache->msgnum_table, &msginfo->msgnum, msginfo);
-		if(msginfo->msgid)
-			g_hash_table_insert(cache->msgid_table, msginfo->msgid, msginfo);
-		cache->memusage += procmsg_msginfo_memusage(msginfo);
-	}
-	fclose(fp);
-
-	if(error) {
-		g_hash_table_thaw(cache->msgnum_table);
-		msgcache_destroy(cache);
-		return NULL;
-	}
-
-	cache->last_access = time(NULL);
-	g_hash_table_thaw(cache->msgnum_table);
-
-	debug_print("done. (%d items read)\n", g_hash_table_size(cache->msgnum_table));
-	debug_print("Cache size: %d messages, %d byte\n", g_hash_table_size(cache->msgnum_table), cache->memusage);
-
-	return cache;
-}
-
-void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
-{
-	FILE *fp;
-	MsgInfo *msginfo;
-	MsgPermFlags perm_flags;
-	gint ver;
-	guint num;
-
-	if ((fp = fopen(mark_file, "rb")) == NULL) {
-		debug_print("Mark file not found.\n");
-		return;
-	} else if (fread(&ver, sizeof(ver), 1, fp) != 1 || MARK_VERSION != ver) {
-		debug_print("Mark version is different (%d != %d). "
-			      "Discarding it.\n", ver, MARK_VERSION);
-	} else {
-		debug_print("\tReading message marks from %s...\n", mark_file);
-
-		while (fread(&num, sizeof(num), 1, fp) == 1) {
-			if (fread(&perm_flags, sizeof(perm_flags), 1, fp) != 1) break;
-
-			msginfo = g_hash_table_lookup(cache->msgnum_table, &num);
-			if(msginfo) {
-				msginfo->flags.perm_flags = perm_flags;
-			}
-		}
-	}
-	fclose(fp);
-}
-
-#define WRITE_CACHE_DATA_INT(n, fp) \
-	fwrite(&n, sizeof(n), 1, fp)
-
-#define WRITE_CACHE_DATA(data, fp) \
-{ \
-	gint len; \
-	if (data == NULL) \
-		len = 0; \
-	else \
-		len = strlen(data); \
-	WRITE_CACHE_DATA_INT(len, fp); \
-	if (len > 0) { \
-		fwrite(data, len, 1, fp); \
-	} \
-}
-
-void msgcache_write_cache(MsgInfo *msginfo, FILE *fp)
-{
-	MsgTmpFlags flags = msginfo->flags.tmp_flags & MSG_CACHED_FLAG_MASK;
-
-	WRITE_CACHE_DATA_INT(msginfo->msgnum, fp);
-	WRITE_CACHE_DATA_INT(msginfo->size, fp);
-	WRITE_CACHE_DATA_INT(msginfo->mtime, fp);
-	WRITE_CACHE_DATA_INT(msginfo->date_t, fp);
-	WRITE_CACHE_DATA_INT(flags, fp);
-
-	WRITE_CACHE_DATA(msginfo->fromname, fp);
-
-	WRITE_CACHE_DATA(msginfo->date, fp);
-	WRITE_CACHE_DATA(msginfo->from, fp);
-	WRITE_CACHE_DATA(msginfo->to, fp);
-	WRITE_CACHE_DATA(msginfo->cc, fp);
-	WRITE_CACHE_DATA(msginfo->newsgroups, fp);
-	WRITE_CACHE_DATA(msginfo->subject, fp);
-	WRITE_CACHE_DATA(msginfo->msgid, fp);
-	WRITE_CACHE_DATA(msginfo->inreplyto, fp);
-	WRITE_CACHE_DATA(msginfo->references, fp);
-	WRITE_CACHE_DATA(msginfo->xref, fp);
-}
-
-static void msgcache_write_flags(MsgInfo *msginfo, FILE *fp)
-{
-	MsgPermFlags flags = msginfo->flags.perm_flags;
-
-	WRITE_CACHE_DATA_INT(msginfo->msgnum, fp);
-	WRITE_CACHE_DATA_INT(flags, fp);
-}
-
-struct write_fps
-{
-	FILE *cache_fp;
-	FILE *mark_fp;
-};
-
-static void msgcache_write_func(gpointer key, gpointer value, gpointer user_data)
-{
-	MsgInfo *msginfo;
-	struct write_fps *write_fps;
-
-	msginfo = (MsgInfo *)value;
-	write_fps = user_data;
-
-	msgcache_write_cache(msginfo, write_fps->cache_fp);
-	msgcache_write_flags(msginfo, write_fps->mark_fp);
-}
-
-gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *cache)
-{
-	FILE *fp;
-	struct write_fps write_fps;
-	gint ver;
-
-	g_return_val_if_fail(cache_file != NULL, -1);
-	g_return_val_if_fail(mark_file != NULL, -1);
-	g_return_val_if_fail(cache != NULL, -1);
-
-	debug_print("\tWriting message cache to %s and %s...\n", cache_file, mark_file);
-
-	if ((fp = fopen(cache_file, "wb")) == NULL) {
-		FILE_OP_ERROR(cache_file, "fopen");
-		return -1;
-	}
-	if (change_file_mode_rw(fp, cache_file) < 0)
-		FILE_OP_ERROR(cache_file, "chmod");
-
-	ver = CACHE_VERSION;
-	WRITE_CACHE_DATA_INT(ver, fp);	
-	write_fps.cache_fp = fp;
-
-	if ((fp = fopen(mark_file, "wb")) == NULL) {
-		FILE_OP_ERROR(mark_file, "fopen");
-		fclose(write_fps.cache_fp);
-		return -1;
-	}
-
-	ver = MARK_VERSION;
-	WRITE_CACHE_DATA_INT(ver, fp);
-	write_fps.mark_fp = fp;
-
-	g_hash_table_foreach(cache->msgnum_table, msgcache_write_func, (gpointer)&write_fps);
-
-	fclose(write_fps.cache_fp);
-	fclose(write_fps.mark_fp);
-
-	cache->last_access = time(NULL);
-
-	debug_print("done.\n");
-	return 0;
-}
-
 MsgInfo *msgcache_get_msg(MsgCache *cache, guint num)
 {
 	MsgInfo *msginfo;
@@ -479,3 +199,323 @@ gint msgcache_get_memory_usage(MsgCache *cache)
 
 	return cache->memusage;
 }
+
+/*
+ *  Cache saving functions
+ */
+
+#define READ_CACHE_DATA(data, fp) \
+{ \
+	if (msgcache_read_cache_data_str(fp, &data) < 0) { \
+		procmsg_msginfo_free(msginfo); \
+		error = TRUE; \
+		break; \
+	} \
+}
+
+#define READ_CACHE_DATA_INT(n, fp) \
+{ \
+	if (fread(&n, sizeof(n), 1, fp) != 1) { \
+		g_warning("Cache data is corrupted\n"); \
+		procmsg_msginfo_free(msginfo); \
+		error = TRUE; \
+		break; \
+	} \
+}
+
+#define WRITE_CACHE_DATA_INT(n, fp) \
+	fwrite(&n, sizeof(n), 1, fp)
+
+#define WRITE_CACHE_DATA(data, fp) \
+{ \
+	gint len; \
+	if (data == NULL) \
+		len = 0; \
+	else \
+		len = strlen(data); \
+	WRITE_CACHE_DATA_INT(len, fp); \
+	if (len > 0) { \
+		fwrite(data, len, 1, fp); \
+	} \
+}
+
+static FILE *msgcache_open_data_file(const gchar *file, gint version,
+				     DataOpenMode mode,
+				     gchar *buf, size_t buf_size)
+{
+	FILE *fp;
+	gint data_ver;
+
+	g_return_val_if_fail(file != NULL, NULL);
+
+	if (mode == DATA_WRITE) {
+		if ((fp = fopen(file, "wb")) == NULL) {
+			FILE_OP_ERROR(file, "fopen");
+			return NULL;
+		}
+		if (change_file_mode_rw(fp, file) < 0)
+			FILE_OP_ERROR(file, "chmod");
+
+		WRITE_CACHE_DATA_INT(version, fp);
+		return fp;
+	}
+
+	/* check version */
+	if ((fp = fopen(file, "rb")) == NULL)
+		debug_print("Mark/Cache file not found\n");
+	else {
+		if (buf && buf_size > 0)
+			setvbuf(fp, buf, _IOFBF, buf_size);
+		if (fread(&data_ver, sizeof(data_ver), 1, fp) != 1 ||
+			 version != data_ver) {
+			debug_print("Mark/Cache version is different (%d != %d). "
+				    "Discarding it.\n", data_ver, version);
+			fclose(fp);
+			fp = NULL;
+		}
+	}
+
+	if (mode == DATA_READ)
+		return fp;
+
+	if (fp) {
+		/* reopen with append mode */
+		fclose(fp);
+		if ((fp = fopen(file, "ab")) == NULL)
+			FILE_OP_ERROR(file, "fopen");
+	} else {
+		/* open with overwrite mode if mark file doesn't exist or
+		   version is different */
+		fp = msgcache_open_data_file(file, version, DATA_WRITE, buf,
+					    buf_size);
+	}
+
+	return fp;
+}
+
+static gint msgcache_read_cache_data_str(FILE *fp, gchar **str)
+{
+	gchar buf[BUFFSIZE];
+	gint ret = 0;
+	size_t len;
+
+	if (fread(&len, sizeof(len), 1, fp) == 1) {
+		if (len < 0)
+			ret = -1;
+		else {
+			gchar *tmp = NULL;
+
+			while (len > 0) {
+				size_t size = MIN(len, BUFFSIZE - 1);
+
+				if (fread(buf, size, 1, fp) != 1) {
+					ret = -1;
+					if (tmp) g_free(tmp);
+					*str = NULL;
+					break;
+				}
+
+				buf[size] = '\0';
+				if (tmp) {
+					*str = g_strconcat(tmp, buf, NULL);
+					g_free(tmp);
+					tmp = *str;
+				} else
+					tmp = *str = g_strdup(buf);
+
+				len -= size;
+			}
+		}
+	} else
+		ret = -1;
+
+	if (ret < 0)
+		g_warning("Cache data is corrupted\n");
+
+	return ret;
+}
+
+MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
+{
+	MsgCache *cache;
+	FILE *fp;
+	MsgInfo *msginfo;
+	MsgTmpFlags tmp_flags = 0;
+	gchar file_buf[BUFFSIZE];
+	guint num;
+	gboolean error = FALSE;
+
+	g_return_val_if_fail(cache_file != NULL, NULL);
+	g_return_val_if_fail(item != NULL, NULL);
+
+	if ((fp = msgcache_open_data_file
+		(cache_file, CACHE_VERSION, DATA_READ, file_buf, sizeof(file_buf))) == NULL)
+		return NULL;
+
+	debug_print("\tReading message cache from %s...\n", cache_file);
+
+	if (item->stype == F_QUEUE) {
+		tmp_flags |= MSG_QUEUED;
+	} else if (item->stype == F_DRAFT) {
+		tmp_flags |= MSG_DRAFT;
+	}
+
+	cache = msgcache_new();
+
+	g_hash_table_freeze(cache->msgnum_table);
+
+	while (fread(&num, sizeof(num), 1, fp) == 1) {
+		msginfo = procmsg_msginfo_new();
+		msginfo->msgnum = num;
+		READ_CACHE_DATA_INT(msginfo->size, fp);
+		READ_CACHE_DATA_INT(msginfo->mtime, fp);
+		READ_CACHE_DATA_INT(msginfo->date_t, fp);
+		READ_CACHE_DATA_INT(msginfo->flags.tmp_flags, fp);
+
+		READ_CACHE_DATA(msginfo->fromname, fp);
+
+		READ_CACHE_DATA(msginfo->date, fp);
+		READ_CACHE_DATA(msginfo->from, fp);
+		READ_CACHE_DATA(msginfo->to, fp);
+		READ_CACHE_DATA(msginfo->cc, fp);
+		READ_CACHE_DATA(msginfo->newsgroups, fp);
+		READ_CACHE_DATA(msginfo->subject, fp);
+		READ_CACHE_DATA(msginfo->msgid, fp);
+		READ_CACHE_DATA(msginfo->inreplyto, fp);
+		READ_CACHE_DATA(msginfo->references, fp);
+		READ_CACHE_DATA(msginfo->xref, fp);
+
+		msginfo->folder = item;
+		msginfo->flags.tmp_flags |= tmp_flags;
+
+		g_hash_table_insert(cache->msgnum_table, &msginfo->msgnum, msginfo);
+		if(msginfo->msgid)
+			g_hash_table_insert(cache->msgid_table, msginfo->msgid, msginfo);
+		cache->memusage += procmsg_msginfo_memusage(msginfo);
+	}
+	fclose(fp);
+
+	if(error) {
+		g_hash_table_thaw(cache->msgnum_table);
+		msgcache_destroy(cache);
+		return NULL;
+	}
+
+	cache->last_access = time(NULL);
+	g_hash_table_thaw(cache->msgnum_table);
+
+	debug_print("done. (%d items read)\n", g_hash_table_size(cache->msgnum_table));
+	debug_print("Cache size: %d messages, %d byte\n", g_hash_table_size(cache->msgnum_table), cache->memusage);
+
+	return cache;
+}
+
+void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
+{
+	FILE *fp;
+	MsgInfo *msginfo;
+	MsgPermFlags perm_flags;
+	guint num;
+
+	if ((fp = msgcache_open_data_file(mark_file, MARK_VERSION, DATA_READ, NULL, 0)) == NULL)
+		return;
+
+	debug_print("\tReading message marks from %s...\n", mark_file);
+
+	while (fread(&num, sizeof(num), 1, fp) == 1) {
+		if (fread(&perm_flags, sizeof(perm_flags), 1, fp) != 1) break;
+
+		msginfo = g_hash_table_lookup(cache->msgnum_table, &num);
+		if(msginfo) {
+			msginfo->flags.perm_flags = perm_flags;
+		}
+	}
+	fclose(fp);
+}
+
+void msgcache_write_cache(MsgInfo *msginfo, FILE *fp)
+{
+	MsgTmpFlags flags = msginfo->flags.tmp_flags & MSG_CACHED_FLAG_MASK;
+
+	WRITE_CACHE_DATA_INT(msginfo->msgnum, fp);
+	WRITE_CACHE_DATA_INT(msginfo->size, fp);
+	WRITE_CACHE_DATA_INT(msginfo->mtime, fp);
+	WRITE_CACHE_DATA_INT(msginfo->date_t, fp);
+	WRITE_CACHE_DATA_INT(flags, fp);
+
+	WRITE_CACHE_DATA(msginfo->fromname, fp);
+
+	WRITE_CACHE_DATA(msginfo->date, fp);
+	WRITE_CACHE_DATA(msginfo->from, fp);
+	WRITE_CACHE_DATA(msginfo->to, fp);
+	WRITE_CACHE_DATA(msginfo->cc, fp);
+	WRITE_CACHE_DATA(msginfo->newsgroups, fp);
+	WRITE_CACHE_DATA(msginfo->subject, fp);
+	WRITE_CACHE_DATA(msginfo->msgid, fp);
+	WRITE_CACHE_DATA(msginfo->inreplyto, fp);
+	WRITE_CACHE_DATA(msginfo->references, fp);
+	WRITE_CACHE_DATA(msginfo->xref, fp);
+}
+
+static void msgcache_write_flags(MsgInfo *msginfo, FILE *fp)
+{
+	MsgPermFlags flags = msginfo->flags.perm_flags;
+
+	WRITE_CACHE_DATA_INT(msginfo->msgnum, fp);
+	WRITE_CACHE_DATA_INT(flags, fp);
+}
+
+struct write_fps
+{
+	FILE *cache_fp;
+	FILE *mark_fp;
+};
+
+static void msgcache_write_func(gpointer key, gpointer value, gpointer user_data)
+{
+	MsgInfo *msginfo;
+	struct write_fps *write_fps;
+
+	msginfo = (MsgInfo *)value;
+	write_fps = user_data;
+
+	msgcache_write_cache(msginfo, write_fps->cache_fp);
+	msgcache_write_flags(msginfo, write_fps->mark_fp);
+}
+
+gint msgcache_write(const gchar *cache_file, const gchar *mark_file, MsgCache *cache)
+{
+	struct write_fps write_fps;
+
+	g_return_val_if_fail(cache_file != NULL, -1);
+	g_return_val_if_fail(mark_file != NULL, -1);
+	g_return_val_if_fail(cache != NULL, -1);
+
+	write_fps.cache_fp = msgcache_open_data_file(cache_file, CACHE_VERSION,
+		DATA_WRITE, NULL, 0);
+	if (write_fps.cache_fp == NULL)
+		return -1;
+
+	write_fps.mark_fp = msgcache_open_data_file(mark_file, MARK_VERSION,
+		DATA_WRITE, NULL, 0);
+	if (write_fps.mark_fp == NULL) {
+		fclose(write_fps.cache_fp);
+		return -1;
+	}
+
+	debug_print("\tWriting message cache to %s and %s...\n", cache_file, mark_file);
+
+	if (change_file_mode_rw(write_fps.cache_fp, cache_file) < 0)
+		FILE_OP_ERROR(cache_file, "chmod");
+
+	g_hash_table_foreach(cache->msgnum_table, msgcache_write_func, (gpointer)&write_fps);
+
+	fclose(write_fps.cache_fp);
+	fclose(write_fps.mark_fp);
+
+	cache->last_access = time(NULL);
+
+	debug_print("done.\n");
+	return 0;
+}
+

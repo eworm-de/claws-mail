@@ -1,3 +1,8 @@
+2003-12-19 [christoph]	0.9.8claws3
+
+	* src/msgcache.c
+		more syncing with 0.8.9a
+
 2003-12-19 [christoph]	0.9.8claws2
 
 	* src/folder.c
