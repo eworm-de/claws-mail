@@ -186,6 +186,7 @@ static void summary_update_status	(SummaryView		*summaryview);
 
 /* display functions */
 static void summary_status_show		(SummaryView		*summaryview);
+static void summary_set_column_titles	(SummaryView		*summaryview);
 static void summary_set_ctree_from_list	(SummaryView		*summaryview,
 					 GSList			*mlist);
 static void summary_set_header		(SummaryView		*summaryview,
@@ -537,11 +538,6 @@ void summary_init(SummaryView *summaryview)
 	PIXMAP_CREATE(summaryview->hbox, folderxpm, folderxpmmask,
 		      dir_open_xpm);
 
-	pixmap = gtk_pixmap_new(clipxpm, clipxpmmask);
-	gtk_clist_set_column_widget(GTK_CLIST(summaryview->ctree),
-				    summaryview->col_pos[S_COL_MIME], pixmap);
-	gtk_widget_show(pixmap);
-
 	if (!small_style) {
 		small_style = gtk_style_copy
 			(gtk_widget_get_style(summaryview->ctree));
@@ -582,6 +578,7 @@ void summary_init(SummaryView *summaryview)
 	gtk_widget_show(pixmap);
 
 	summary_clear_list(summaryview);
+	summary_set_column_titles(summaryview);
 	summary_colorlabel_menu_create(summaryview);
 	summary_set_menu_sensitive(summaryview);
 
@@ -712,6 +709,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	gtk_clist_freeze(GTK_CLIST(ctree));
 
 	summary_clear_list(summaryview);
+	summary_set_column_titles(summaryview);
 	summary_set_menu_sensitive(summaryview);
 	if (!is_refresh)
 		messageview_clear(summaryview->messageview);
@@ -848,9 +846,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	}
 
 	summary_status_show(summaryview);
-
 	summary_set_menu_sensitive(summaryview);
-
 	main_window_set_toolbar_sensitive(summaryview->mainwin);
 
 	debug_print("\n");
@@ -1703,6 +1699,89 @@ static void summary_status_show(SummaryView *summaryview)
 				  summaryview->messages);
 }
 
+static void summary_set_column_titles(SummaryView *summaryview)
+{
+	GtkCList *clist = GTK_CLIST(summaryview->ctree);
+	GtkWidget *hbox;
+	GtkWidget *label;
+	GtkWidget *arrow;
+	gint pos;
+	const gchar *title;
+	SummaryColumnType type;
+	gboolean single_char;
+	GtkJustification justify;
+
+	static SummarySortType sort_by[N_SUMMARY_COLS] = {
+		SORT_BY_MARK,
+		SORT_BY_UNREAD,
+		SORT_BY_MIME,
+		SORT_BY_SUBJECT,
+		SORT_BY_FROM,
+		SORT_BY_DATE,
+		SORT_BY_SIZE,
+		SORT_BY_NUMBER
+	};
+
+	for (pos = 0; pos < N_SUMMARY_COLS; pos++) {
+		type = summaryview->col_state[pos].type;
+
+		single_char = (type == S_COL_MIME ||
+			       type == S_COL_MARK || type == S_COL_UNREAD);
+		justify = (type == S_COL_NUMBER || type == S_COL_SIZE)
+			? GTK_JUSTIFY_RIGHT : GTK_JUSTIFY_LEFT;
+
+		switch (type) {
+		case S_COL_SUBJECT:
+		case S_COL_FROM:
+		case S_COL_DATE:
+		case S_COL_NUMBER:
+			if (prefs_common.trans_hdr)
+				title = gettext(col_label[type]);
+			else
+				title = col_label[type];
+			break;
+		default:
+			title = gettext(col_label[type]);
+		}
+
+		if (type == S_COL_MIME) {
+			label = gtk_pixmap_new(clipxpm, clipxpmmask);
+			gtk_widget_show(label);
+			gtk_clist_set_column_widget(clist, pos, label);
+			continue;
+		}
+		if (single_char) {
+			gtk_clist_set_column_title(clist, pos, title);
+			continue;
+		}
+
+		hbox = gtk_hbox_new(FALSE, 4);
+		label = gtk_label_new(title);
+		if (justify == GTK_JUSTIFY_RIGHT)
+			gtk_box_pack_end(GTK_BOX(hbox), label,
+					 FALSE, FALSE, 0);
+		else
+			gtk_box_pack_start(GTK_BOX(hbox), label,
+					   FALSE, FALSE, 0);
+
+		if (summaryview->sort_mode == sort_by[type]) {
+			arrow = gtk_arrow_new
+				(summaryview->sort_type == GTK_SORT_ASCENDING
+				 ? GTK_ARROW_DOWN : GTK_ARROW_UP,
+				 GTK_SHADOW_IN);
+			if (justify == GTK_JUSTIFY_RIGHT)
+				gtk_box_pack_start(GTK_BOX(hbox), arrow,
+						   FALSE, FALSE, 0);
+			else
+				gtk_box_pack_end(GTK_BOX(hbox), arrow,
+						 FALSE, FALSE, 0);
+		}
+
+		gtk_widget_show_all(hbox);
+		gtk_clist_set_column_widget(clist, pos, hbox);
+	}
+}
+
 void summary_sort(SummaryView *summaryview, SummarySortType type)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
@@ -1764,11 +1843,11 @@ void summary_sort(SummaryView *summaryview, SummarySortType type)
 	gtk_clist_set_sort_type(clist, summaryview->sort_type);
 	summaryview->sort_mode = type;
 
+	summary_set_column_titles(summaryview);
+
 	gtk_ctree_sort_node(ctree, NULL);
 
 	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
-	/*gtkut_ctree_set_focus_row(ctree, summaryview->selected);*/
-
 	prefs_folder_item_set_config(summaryview->folder_item,
 				     summaryview->sort_type,
 				     summaryview->sort_mode);
@@ -3679,35 +3758,22 @@ static GtkWidget *summary_ctree_create(SummaryView *summaryview)
 	GtkWidget *ctree;
 	gint *col_pos = summaryview->col_pos;
 	SummaryColumnState *col_state;
-	const gchar *titles[N_SUMMARY_COLS];
+	gchar *titles[N_SUMMARY_COLS];
 	SummaryColumnType type;
 	gint pos;
+
+	memset(titles, 0, sizeof(titles));
 
 	col_state = prefs_summary_column_get_config();
 	for (pos = 0; pos < N_SUMMARY_COLS; pos++) {
 		summaryview->col_state[pos] = col_state[pos];
 		type = col_state[pos].type;
 		col_pos[type] = pos;
-
-		switch (type) {
-		case S_COL_NUMBER:
-		case S_COL_DATE:
-		case S_COL_FROM:
-		case S_COL_SUBJECT:
-		case S_COL_SCORE:
-			if (prefs_common.trans_hdr)
-				titles[pos] = gettext(col_label[type]);
-			else
-				titles[pos] = col_label[type];
-			break;
-		default:
-			titles[pos] = gettext(col_label[type]);
-		}
 	}
 	col_state = summaryview->col_state;
 
 	ctree = gtk_sctree_new_with_titles
-		(N_SUMMARY_COLS, col_pos[S_COL_SUBJECT], (gchar **)titles);
+		(N_SUMMARY_COLS, col_pos[S_COL_SUBJECT], titles);
 
 	gtk_clist_set_selection_mode(GTK_CLIST(ctree), GTK_SELECTION_EXTENDED);
 	gtk_clist_set_column_justification(GTK_CLIST(ctree), col_pos[S_COL_MARK],
@@ -3981,7 +4047,6 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		summary_step(summaryview, GTK_SCROLL_STEP_FORWARD);
 		break;
 	case GDK_BackSpace:	/* Page up */
-	case GDK_Delete:
 		textview_scroll_page(summaryview->messageview->textview, TRUE);
 		break;
 	case GDK_p:		/* Prev */
@@ -4015,6 +4080,7 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		summary_mark_as_unread(summaryview);
 		break;
 	case GDK_d:		/* Delete */
+	case GDK_Delete:
 		RETURN_IF_LOCKED();
 		BREAK_ON_MODIFIER_KEY();
 		summary_delete(summaryview);

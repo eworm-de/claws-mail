@@ -99,12 +99,12 @@
 #include "folder.h"
 #include "addr_compl.h"
 #include "template_select.h"
+#include "quote_fmt.h"
+#include "template.h"
 
 #if USE_GPGME
 #  include "rfc2015.h"
 #endif
-
-#include "quote_fmt.h"
 
 typedef enum
 {
@@ -130,18 +130,19 @@ static void compose_toolbar_create		(Compose	*compose,
 						 GtkWidget	*container);
 static GtkWidget *compose_account_option_menu_create
 						(Compose	*compose);
+static void compose_set_template_menu		(Compose	*compose);
 static void compose_destroy			(Compose	*compose);
 
 static gint compose_parse_header		(Compose	*compose,
 						 MsgInfo	*msginfo);
 static gchar *compose_parse_references		(const gchar	*ref,
 						 const gchar	*msgid);
-static void compose_quote_file			(Compose	*compose,
+
+static gchar *compose_quote_fmt			(Compose	*compose,
 						 MsgInfo	*msginfo,
-						 FILE		*fp);
-static gchar *compose_quote_parse_fmt		(Compose	*compose,
-						 MsgInfo	*msginfo,
-						 const gchar	*fmt);
+						 const gchar	*fmt,
+						 const gchar	*qmark);
+
 static void compose_reply_set_entry		(Compose	*compose,
 						 MsgInfo	*msginfo,
 						 gboolean	 to_all,
@@ -290,9 +291,12 @@ static void compose_insert_file_cb	(gpointer	 data,
 static void compose_close_cb		(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
+
 static void compose_address_cb		(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
+static void compose_template_activate_cb(GtkWidget	*widget,
+					 gpointer	 data);
 
 static void compose_ext_editor_cb	(gpointer	 data,
 					 guint		 action,
@@ -389,11 +393,6 @@ static void followupto_activated	(GtkWidget	*widget,
 static void compose_attach_parts(Compose * compose,
 				 MsgInfo * msginfo);
 
-static gchar *compose_quote_fmt		(Compose	*compose,
-					 MsgInfo	*msginfo,
-					 const gchar	*fmt,
-					 const gchar    * qmark);
-
 static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				  gboolean to_all,
 				  gboolean ignore_replyto,
@@ -469,7 +468,7 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Tool"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tool/Show _ruler"),	NULL, compose_toggle_ruler_cb, 0, "<ToggleItem>"},
 	{N_("/_Tool/_Address book"),	"<alt>A", compose_address_cb , 0, NULL},
-	{N_("/_Tool/_Templates ..."),	NULL, template_select_cb, 0, NULL},
+	{N_("/_Tool/_Template"),	NULL, NULL, 0, "<Branch>"},
 	{N_("/_Help"),			NULL, NULL, 0, "<LastBranch>"},
 	{N_("/_Help/_About"),		NULL, about_show, 0, NULL}
 };
@@ -724,7 +723,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	CHANGE_FLAGS(msginfo);
 
 	compose = compose_create(account, COMPOSE_REPLY);
-	compose->replyinfo = msginfo;
+	compose->replyinfo = procmsg_msginfo_copy(msginfo);
 
 #if 0 /* NEW COMPOSE GUI */
 	if (followup_and_reply_to) {
@@ -749,35 +748,17 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	gtk_stext_freeze(text);
 
 	if (quote) {
-		FILE *fp;
+		gchar *qmark;
 		gchar *quote_str;
 
-		if ((fp = procmime_get_first_text_content(msginfo)) == NULL)
-			g_warning(_("Can't get text part\n"));
-		else {
-			gchar * qmark;
+		if (prefs_common.quotemark && *prefs_common.quotemark)
+			qmark = prefs_common.quotemark;
+		else
+			qmark = "> ";
 
-			if (prefs_common.quotemark && *prefs_common.quotemark)
-				qmark = prefs_common.quotemark;
-			else
-				qmark = "> ";
-
-			quote_str = compose_quote_fmt(compose, msginfo,
-						      prefs_common.quotefmt,
-						      qmark);
-
-			/*
-			quote_str = compose_quote_parse_fmt
-				(compose, msginfo, prefs_common.quotefmt);
-			*/
-
-			if (quote_str != NULL)
-				gtk_stext_insert(text, NULL, NULL, NULL,
-						 quote_str, -1);
-			/*			g_free(quote_str); */
-			/* compose_quote_file(compose, msginfo, fp); */
-			fclose(fp);
-		}
+		quote_str = compose_quote_fmt(compose, msginfo,
+					      prefs_common.quotefmt,
+					      qmark);
 	}
 
 	if (prefs_common.auto_sig)
@@ -1025,8 +1006,6 @@ Compose *compose_forward(PrefsAccount * account, MsgInfo *msginfo,
 	Compose *compose;
 	/*	PrefsAccount *account; */
 	GtkSText *text;
-	FILE *fp;
-	gchar buf[BUFFSIZE];
 
 	g_return_val_if_fail(msginfo != NULL, NULL);
 	g_return_val_if_fail(msginfo->folder != NULL, NULL);
@@ -1083,30 +1062,16 @@ Compose *compose_forward(PrefsAccount * account, MsgInfo *msginfo,
 
 		g_free(msgfile);
 	} else {
-		FILE *fp;
+		gchar *qmark;
 		gchar *quote_str;
-		if ((fp = procmime_get_first_text_content(msginfo)) == NULL)
-			g_warning(_("Can't get text part\n"));
-		else {
-			gchar * qmark;
 
-			if (prefs_common.fw_quotemark &&
-			    *prefs_common.fw_quotemark)
-				qmark = prefs_common.fw_quotemark;
-			else
-				qmark = "> ";
+		if (prefs_common.fw_quotemark && *prefs_common.fw_quotemark)
+			qmark = prefs_common.quotemark;
+		else
+			qmark = "> ";
 
-			quote_str = compose_quote_fmt(compose, msginfo,
-						      prefs_common.fw_quotefmt,
-						      qmark);
-
-			if (quote_str != NULL)
-				gtk_stext_insert(text, NULL, NULL, NULL,
-						 quote_str, -1);
-
-			fclose(fp);
-		}
-
+		quote_str = compose_quote_fmt(compose, msginfo,
+					      prefs_common.fw_quotefmt, qmark);
 		compose_attach_parts(compose, msginfo);
 	}
 
@@ -1460,269 +1425,55 @@ static gchar *compose_parse_references(const gchar *ref, const gchar *msgid)
 	return new_ref_str;
 }
 
-/*
-static void compose_quote_file(Compose *compose, MsgInfo *msginfo, FILE *fp)
+static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
+				const gchar *fmt, const gchar *qmark)
 {
 	GtkSText *text = GTK_STEXT(compose->text);
-	gchar *qmark;
-	gchar *quote_str;
-	GdkColor *qcolor = NULL;
-	gchar buf[BUFFSIZE];
-	gint qlen;
-	gchar *linep, *cur, *leftp;
-	gint line_len, cur_len;
-	gint wrap_len;
-	gint str_len;
-	gint ch_len;
+	gchar *quote_str = NULL;
+	gchar *buf;
+	gchar *p, *lastp;
+	gint len;
 
-	// if (prefs_common.enable_color) qcolor = &quote_color;
-	if (prefs_common.quotemark && *prefs_common.quotemark)
-		qmark = prefs_common.quotemark;
-	else
-		qmark = "> ";
-	quote_str = compose_quote_parse_fmt(compose, msginfo, qmark);
-	g_return_if_fail(quote_str != NULL);
-	qlen = strlen(quote_str);
+	if (qmark != NULL) {
+		quote_fmt_init(msginfo, NULL);
+		quote_fmt_scan_string(qmark);
+		quote_fmt_parse();
 
-	if (!prefs_common.linewrap_quote ||
-	    prefs_common.linewrap_len <= qlen) {
-		while (fgets(buf, sizeof(buf), fp) != NULL) {
-			gtk_stext_insert(text, NULL, qcolor, NULL,
-					quote_str, -1);
-			gtk_stext_insert(text, NULL, qcolor, NULL, buf, -1);
-		}
-		g_free(quote_str);
-		return;
+		buf = quote_fmt_get_buffer();
+		if (buf == NULL)
+			alertpanel_error(_("Quote mark format error."));
+		else
+			Xstrdup_a(quote_str, buf, return NULL)
 	}
 
-	wrap_len = prefs_common.linewrap_len - qlen;
+	quote_fmt_init(msginfo, quote_str);
+	quote_fmt_scan_string(fmt);
+	quote_fmt_parse();
 
-	while (fgets(buf, sizeof(buf), fp) != NULL) {
-		strretchomp(buf);
-		str_len = strlen(buf);
-
-		if (str_len <= wrap_len) {
-			gtk_stext_insert(text, NULL, qcolor, NULL,
-					quote_str, -1);
-			gtk_stext_insert(text, NULL, qcolor, NULL, buf, -1);
-			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
-			continue;
-		}
-
-		linep = cur = leftp = buf;
-		line_len = cur_len = 0;
-
-		while (*cur != '\0') {
-			ch_len = mblen(cur, MB_CUR_MAX);
-			if (ch_len < 0) ch_len = 1;
-
-			if (ch_len == 1 && isspace(*cur)) {
-				linep = cur + ch_len;
-				line_len = cur_len + ch_len;
-			}
-
-			if (cur_len + ch_len > wrap_len && line_len > 0) {
-				gtk_stext_insert(text, NULL, qcolor, NULL,
-						quote_str, -1);
-
-				if (isspace(*(linep - 1)))
-					gtk_stext_insert(text, NULL,
-							qcolor, NULL,
-							leftp, line_len - 1);
-				else
-					gtk_stext_insert(text, NULL,
-							qcolor, NULL,
-							leftp, line_len);
-				gtk_stext_insert(text, NULL, NULL, NULL,
-						"\n", 1);
-
-				leftp = linep;
-				cur_len = cur_len - line_len + ch_len;
-				line_len = 0;
-				cur += ch_len;
-				continue;
-			}
-
-			if (ch_len > 1) {
-				linep = cur + ch_len;
-				line_len = cur_len + ch_len;
-			}
-			cur_len += ch_len;
-			cur += ch_len;
-		}
-
-		if (*leftp) {
-			gtk_stext_insert(text, NULL, qcolor, NULL,
-					quote_str, -1);
-			gtk_stext_insert(text, NULL, qcolor, NULL, leftp, -1);
-			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
-		}
+	buf = quote_fmt_get_buffer();
+	if (buf == NULL) {
+		alertpanel_error(_("Message reply/forward format error."));
+		return NULL;
 	}
 
-	g_free(quote_str);
+	gtk_stext_freeze(text);
+	gtk_stext_set_point(text, 0);
+	gtk_stext_forward_delete(text, gtk_stext_get_length(text));
+
+	for (p = buf; *p != '\0'; ) {
+		lastp = strchr(p, '\n');
+		len = lastp ? lastp - p + 1 : -1;
+		gtk_stext_insert(text, NULL, NULL, NULL, p, len);
+		if (lastp)
+			p = lastp + 1;
+		else
+			break;
+	}
+
+	gtk_stext_thaw(text);
+
+	return buf;
 }
-*/
-
-/*
-static gchar *compose_quote_parse_fmt(Compose *compose, MsgInfo *msginfo,
-				      const gchar *fmt)
-{
-	gchar *ext_str;
-	size_t buf_len = 1024;
-	size_t ext_len = 0;
-	gchar *str;
-	gchar *mbs;
-	wchar_t *wcsfmt;
-	wchar_t *sp;
-	gchar tmp[3];
-
-	if (!fmt || *fmt == '\0') return 0;
-
-	Xalloca(mbs, sizeof(wchar_t) + 1, return 0);
-	Xalloca(wcsfmt, (strlen(fmt) + 1) * sizeof(wchar_t), return 0);
-	mbstowcs(wcsfmt, fmt, strlen(fmt) + 1);
-	sp = wcsfmt;
-
-	ext_str = g_malloc(sizeof(gchar) * buf_len);
-	g_return_val_if_fail(ext_str != NULL, NULL);
-
-	while (*sp) {
-		gint len;
-
-		len = wctomb(mbs, *sp);
-		mbs[len] = '\0';
-
-		if (*mbs == '%') {
-			gchar *p;
-
-			wctomb(mbs, *(++sp));
-			str = NULL;
-
-			switch (*mbs) {
-			case 'd':
-				str = msginfo->date;
-				sp++;
-				break;
-			case 'f':
-				str = msginfo->from;
-				sp++;
-				break;
-			case 'I':
-				if (!msginfo->fromname) {sp++; break;}
-				p = msginfo->fromname;
-				tmp[0] = tmp[1] = tmp[2] = '\0';
-
-				if (*p && isalnum(*p))
-					tmp[0] = toupper(*p);
-				else {
-					sp++;
-					break;
-				}
-
-				while (*p) {
-					while (*p && !isspace(*p)) p++;
-					while (*p && isspace(*p)) p++;
-					if (*p && isalnum(*p))
-						tmp[1] = toupper(*p);
-				}
-
-				if (tmp[1]) str = tmp;
-				sp++;
-				break;
-			case 'n':
-				str = msginfo->fromname;
-				sp++;
-				break;
-			case 'N':
-				if (!msginfo->fromname) {sp++; break;}
-				Xstrdup_a(str, msginfo->fromname,
-					  {sp++; break;});
-				p = str;
-				while (*p && !isspace(*p)) p++;
-				*p = '\0';
-				sp++;
-				break;
-			case 's':
-				str = msginfo->subject;
-				sp++;
-				break;
-			case 't':
-				str = msginfo->to;
-				sp++;
-				break;
-			case 'c':
-				str = msginfo->cc;
-				sp++;
-				break;
-			case 'i':
-				if (!msginfo->msgid) {sp++; break;}
-				Xalloca(str, strlen(msginfo->msgid) + 3,
-					{sp++; break;});
-				g_snprintf(str, strlen(msginfo->msgid) + 3,
-					   "<%s>", msginfo->msgid);
-				sp++;
-				break;
-			case '%':
-				str = "%";
-				sp++;
-				break;
-			default:
-				break;
-			}
-
-			if (str) {
-				while (ext_len + strlen(str) + 1 > buf_len)
-					buf_len += 1024;
-				ext_str = g_realloc(ext_str,
-						    sizeof(gchar) * buf_len);
-				g_return_val_if_fail(ext_str != NULL, NULL);
-				strcpy(ext_str + ext_len, str);
-				ext_len += strlen(str);
-			}
-		} else if (*mbs == '\\') {
-			wctomb(mbs, *(++sp));
-			str = NULL;
-
-			switch (*mbs) {
-			case 'n':
-				str = "\n";
-				break;
-			case 't':
-				str = "\t";
-				break;
-			case '\\':
-				str = "\\";
-				break;
-			default:
-				break;
-			}
-
-			if (str) {
-				while (ext_len + strlen(str) + 1 > buf_len)
-					buf_len += 1024;
-				ext_str = g_realloc(ext_str,
-						    sizeof(gchar) * buf_len);
-				g_return_val_if_fail(ext_str != NULL, NULL);
-				strcpy(ext_str + ext_len, str);
-				ext_len += strlen(str);
-				sp++;
-			}
-		} else {
-			while (ext_len + len + 1 > buf_len) buf_len += 1024;
-			ext_str = g_realloc(ext_str, sizeof(gchar) * buf_len);
-			g_return_val_if_fail(ext_str != NULL, NULL);
-			strcpy(ext_str + ext_len, mbs);
-			ext_len += len;
-			sp++;
-		}
-	}
-
-	if (ext_str)
-		ext_str = g_realloc(ext_str, strlen(ext_str) + 1);
-
-	return ext_str;
-}
-*/
 
 static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 				    gboolean to_all, gboolean ignore_replyto,
@@ -3204,12 +2955,7 @@ static void compose_write_attach(Compose *compose, FILE *fp)
 			gchar buf[BUFFSIZE];
 
 			while (fgets(buf, sizeof(buf), attach_fp) != NULL) {
-				len = strlen(buf);
-				if (len > 1 && buf[len - 1] == '\n' &&
-				    buf[len - 2] == '\r') {
-					buf[len - 2] = '\n';
-					buf[len - 1] = '\0';
-				}
+				strcrchomp(buf);
 				fputs(buf, fp);
 			}
 		} else {
@@ -3765,6 +3511,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	GtkWidget *menuitem;
 	GtkItemFactory *popupfactory;
 	GtkItemFactory *ifactory;
+	GtkWidget *tmpl_menu;
 	gint n_entries;
 	gint count = 0;
 	gint i;
@@ -4089,6 +3836,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	menu_set_sensitive(ifactory, "/Edit/Undo", FALSE);
 	menu_set_sensitive(ifactory, "/Edit/Redo", FALSE);
 
+	tmpl_menu = gtk_item_factory_get_item(ifactory, "/Tool/Template");
 #if 0 /* NEW COMPOSE GUI */
 	if (account->protocol == A_NNTP) {
 		gtk_widget_hide(to_hbox);
@@ -4170,7 +3918,12 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose->popupmenu    = popupmenu;
 	compose->popupfactory = popupfactory;
 
+	compose->tmpl_menu = tmpl_menu;
+
 	compose->mode = mode;
+
+	compose->targetinfo = NULL;
+	compose->replyinfo  = NULL;
 
 	compose->replyto     = NULL;
 	compose->mailinglist = NULL;
@@ -4277,6 +4030,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 #endif /* USE_GPGME */
 
 	addressbook_set_target_compose(compose);
+	compose_set_template_menu(compose);
 
 	compose_list = g_list_append(compose_list, compose);
 
@@ -4487,6 +4241,74 @@ static GtkWidget *compose_account_option_menu_create(Compose *compose)
 	return hbox;
 }
 
+static void compose_set_template_menu(Compose *compose)
+{
+	GSList *tmpl_list, *cur;
+	GtkWidget *menu;
+	GtkWidget *item;
+
+	tmpl_list = template_get_config();
+
+	menu = gtk_menu_new();
+
+	for (cur = tmpl_list; cur != NULL; cur = cur->next) {
+		Template *tmpl = (Template *)cur->data;
+
+		item = gtk_menu_item_new_with_label(tmpl->name);
+		gtk_menu_append(GTK_MENU(menu), item);
+		gtk_signal_connect(GTK_OBJECT(item), "activate",
+				   GTK_SIGNAL_FUNC(compose_template_activate_cb),
+				   compose);
+		gtk_object_set_data(GTK_OBJECT(item), "template", tmpl);
+		gtk_widget_show(item);
+	}
+
+	gtk_widget_show(menu);
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(compose->tmpl_menu), menu);
+}
+
+void compose_reflect_prefs_all(void)
+{
+	GList *cur;
+	Compose *compose;
+
+	for (cur = compose_list; cur != NULL; cur = cur->next) {
+		compose = (Compose *)cur->data;
+		compose_set_template_menu(compose);
+	}
+}
+
+static void compose_template_apply(Compose *compose, const gchar *tmpl_str)
+{
+	gchar *qmark;
+	gchar *parsed_str;
+
+	if (!tmpl_str) return;
+
+	gtk_stext_freeze(GTK_TEXT(compose->text));
+
+	if (compose->replyinfo == NULL) {
+		MsgInfo dummyinfo;
+
+		memset(&dummyinfo, 0, sizeof(MsgInfo));
+		parsed_str = compose_quote_fmt(compose, &dummyinfo, tmpl_str,
+					       NULL);
+	} else {
+		if (prefs_common.quotemark && *prefs_common.quotemark)
+			qmark = prefs_common.quotemark;
+		else
+			qmark = "> ";
+
+		parsed_str = compose_quote_fmt(compose, compose->replyinfo, tmpl_str,
+					       qmark);
+	}
+
+	if (parsed_str && prefs_common.auto_sig)
+		compose_insert_sig(compose);
+
+	gtk_stext_thaw(GTK_TEXT(compose->text));
+}
+
 static void compose_destroy(Compose *compose)
 {
 	gint row;
@@ -4505,6 +4327,7 @@ static void compose_destroy(Compose *compose)
 	g_slist_free(compose->header_list);
 
 	procmsg_msginfo_free(compose->targetinfo);
+	procmsg_msginfo_free(compose->replyinfo);
 
 	g_free(compose->replyto);
 	g_free(compose->cc);
@@ -5478,6 +5301,17 @@ static void compose_address_cb(gpointer data, guint action, GtkWidget *widget)
 	addressbook_open(compose);
 }
 
+static void compose_template_activate_cb(GtkWidget *widget, gpointer data)
+{
+	Compose *compose = (Compose *)data;
+	Template *tmpl;
+
+	tmpl = gtk_object_get_data(GTK_OBJECT(widget), "template");
+	g_return_if_fail(tmpl != NULL);
+
+	compose_template_apply(compose, tmpl->value);
+}
+
 static void compose_ext_editor_cb(gpointer data, guint action,
 				  GtkWidget *widget)
 {
@@ -5846,42 +5680,6 @@ static void compose_toggle_return_receipt_cb(gpointer data, guint action,
 		compose->return_receipt = TRUE;
 	else
 		compose->return_receipt = FALSE;
-}
-
-static gchar *compose_quote_fmt		(Compose	*compose,
-					 MsgInfo	*msginfo,
-					 const gchar	*fmt,
-					 const gchar    *qmark)
-{
-	gchar * quote_str = NULL;
-
-	if (qmark != NULL) {
-		gchar * p;
-
-		quote_fmt_init(msginfo, NULL);
-		quote_fmt_scan_string(qmark);
-		quote_fmtparse();
-
-		p = quote_fmt_get_buffer();
-		if (p == NULL) {
-			alertpanel_error
-				(_("Quote mark format error."));
-		}
-		else {
-			quote_str = alloca(strlen(p) + 1);
-			strcpy(quote_str, p);
-		}
-	}
-
-	quote_fmt_init(msginfo, quote_str);
-	quote_fmt_scan_string(fmt);
-	quote_fmtparse();
-
-	if (quote_fmt_get_buffer() == NULL)
-		alertpanel_error
-			(_("Message reply/forward format error."));
-
-	return quote_fmt_get_buffer();
 }
 
 static void template_apply_cb(gchar *s, gpointer data)

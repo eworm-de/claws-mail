@@ -64,6 +64,7 @@
 #include "prefs_account.h"
 #include "prefs_folder_item.h"
 #include "prefs_summary_column.h"
+#include "prefs_template.h"
 #include "account.h"
 #include "addressbook.h"
 #include "headerwindow.h"
@@ -77,7 +78,6 @@
 #include "codeconv.h"
 #include "about.h"
 #include "manual.h"
-#include "prefs_templates.h"
 #include "version.h"
 
 #define AC_LABEL_WIDTH	240
@@ -371,6 +371,9 @@ static void prefs_filtering_open_cb (MainWindow	*mainwin,
 static void prefs_account_open_cb(MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
+static void prefs_template_open_cb	(MainWindow	*mainwin,
+					 guint		 action,
+					 GtkWidget	*widget);
 static void new_account_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -389,10 +392,6 @@ static void scan_tree_func	 (Folder	*folder,
 static void activate_compose_button (MainWindow *mainwin,
 				ToolbarStyle      style,
 				ComposeButtonType type);
-
-static void prefs_templates_open_cb(MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
 
 #define  SEPARATE_ACTION  667
 
@@ -607,9 +606,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, prefs_scoring_open_cb, 0, NULL},
 	{N_("/_Configuration/_Filtering ..."),
 						NULL, prefs_filtering_open_cb, 0, NULL},
-	{N_("/_Configuration/_Templates ..."),
-						NULL, prefs_templates_open_cb, 0, NULL},
-	{N_("/_Configuration/_Preferences per account..."),
+	{N_("/_Configuration/_Template..."),	NULL, prefs_template_open_cb, 0, NULL},
+	{N_("/_Configuration/_Preferences for current account..."),
 						NULL, prefs_account_open_cb, 0, NULL},
 	{N_("/_Configuration/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_Configuration/Create _new account..."),
@@ -2723,6 +2721,12 @@ static void prefs_filtering_open_cb(MainWindow *mainwin, guint action,
 	prefs_filtering_open();
 }
 
+static void prefs_template_open_cb(MainWindow *mainwin, guint action,
+				   GtkWidget *widget)
+{
+	prefs_template_open();
+}
+
 static void prefs_account_open_cb(MainWindow *mainwin, guint action,
 				  GtkWidget *widget)
 {
@@ -2811,10 +2815,4 @@ void main_window_toolbar_set_compose_button(MainWindow *mainwin, ComposeButtonTy
 		activate_compose_button(mainwin, 
 					prefs_common.toolbar_style,
 					compose_btn_type);
-}
-
-static void prefs_templates_open_cb(MainWindow *mainwin, guint action,
-				    GtkWidget *widget)
-{
-	prefs_templates_open();
 }

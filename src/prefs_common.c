@@ -32,6 +32,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <errno.h>
 
 #include "intl.h"
 #include "main.h"
@@ -97,9 +98,6 @@ static struct Send {
 } send;
 
 static struct Compose {
-	GtkWidget *checkbtn_quote;
-	GtkWidget *entry_quotemark;
-	GtkWidget *text_quotefmt;
 	GtkWidget *checkbtn_autosig;
 	GtkWidget *entry_sigsep;
 
@@ -107,7 +105,6 @@ static struct Compose {
 	GtkWidget *text_fw_quotefmt;
 
 	GtkWidget *checkbtn_autoextedit;
-	GtkWidget *checkbtn_reply_account_autosel;
 	GtkWidget *checkbtn_forward_account_autosel;
 	GtkWidget *checkbtn_reedit_account_autosel;
 
@@ -116,6 +113,8 @@ static struct Compose {
 	GtkWidget *checkbtn_wrapquote;
 	GtkWidget *checkbtn_wrapatsend;
 
+	GtkWidget *checkbtn_reply_account_autosel;
+	GtkWidget *checkbtn_quote;
 	GtkWidget * checkbtn_forward_as_attachment;
 	GtkWidget * checkbtn_smart_wrapping;
 	GtkWidget * checkbtn_block_cursor;
@@ -129,6 +128,14 @@ static struct Compose {
 #endif
 
 } compose;
+
+static struct Quote {
+	GtkWidget *entry_quotemark;
+	GtkWidget *text_quotefmt;
+
+	GtkWidget *entry_fw_quotemark;
+	GtkWidget *text_fw_quotefmt;
+} quote;
 
 static struct Display {
 	GtkWidget *entry_textfont;
@@ -301,21 +308,6 @@ static PrefParam param[] = {
 	 prefs_common_charset_set_optmenu},
 
 	/* Compose */
-	{"reply_with_quote", "TRUE", &prefs_common.reply_with_quote, P_BOOL,
-	 &compose.checkbtn_quote,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-	{"quote_mark", "> ", &prefs_common.quotemark, P_STRING,
-	 &compose.entry_quotemark, prefs_set_data_from_entry, prefs_set_entry},
-	{"quote_format", "On %d\\n%f wrote:\\n\\n%Q",
-
-	 &prefs_common.quotefmt, P_STRING, &compose.text_quotefmt,
-	 prefs_set_data_from_text, prefs_set_text},
-	{"fw_quote_mark", "> ", &prefs_common.fw_quotemark, P_STRING,
-	 &compose.entry_fw_quotemark, prefs_set_data_from_entry, prefs_set_entry},
-	{"fw_quote_format", "----------  Forwarded message ----------\\n?d(Date: %d\\n)?f(From: %f\\n)?t(To: %t\\n)?c(Cc: %c\\n)?n(Newsgroups: %n\\n)?s(Subject: %s\\n)\\n%Q",
-	 &prefs_common.fw_quotefmt, P_STRING, &compose.text_fw_quotefmt,
-	 prefs_set_data_from_text, prefs_set_text},
-
 	{"auto_signature", "TRUE", &prefs_common.auto_sig, P_BOOL,
 	 &compose.checkbtn_autosig,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -324,18 +316,6 @@ static PrefParam param[] = {
 
 	{"auto_ext_editor", "FALSE", &prefs_common.auto_exteditor, P_BOOL,
 	 &compose.checkbtn_autoextedit,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-        {"reply_account_autoselect", "TRUE",
-	 &prefs_common.reply_account_autosel, P_BOOL,
-	 &compose.checkbtn_reply_account_autosel,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-       {"forward_account_autoselect", "TRUE",
-	 &prefs_common.forward_account_autosel, P_BOOL,
-	 &compose.checkbtn_forward_account_autosel,
-	 prefs_set_data_from_toggle, prefs_set_toggle},
-       {"reedit_account_autoselect", "TRUE",
-	 &prefs_common.reedit_account_autosel, P_BOOL,
-	 &compose.checkbtn_reedit_account_autosel,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	{"linewrap_length", "74", &prefs_common.linewrap_len, P_INT,
@@ -368,8 +348,33 @@ static PrefParam param[] = {
 	 P_STRING, &compose.optmenu_dictionary, 
 	 prefs_dictionary_set_data_from_optmenu, prefs_dictionary_set_optmenu },
 #endif
+	{"reply_with_quote", "TRUE", &prefs_common.reply_with_quote, P_BOOL,
+	 &compose.checkbtn_quote,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+	{"reply_account_autoselect", "TRUE",
+	 &prefs_common.reply_account_autosel, P_BOOL,
+	 &compose.checkbtn_reply_account_autosel,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
+
 	{"show_ruler", "TRUE", &prefs_common.show_ruler, P_BOOL,
 	 NULL, NULL, NULL},
+
+	/* Quote */
+	{"reply_quote_mark", "> ", &prefs_common.quotemark, P_STRING,
+	 &quote.entry_quotemark, prefs_set_data_from_entry, prefs_set_entry},
+	{"reply_quote_format", "On %d\\n%f wrote:\\n\\n%Q",
+	 &prefs_common.quotefmt, P_STRING, &quote.text_quotefmt,
+	 prefs_set_data_from_text, prefs_set_text},
+
+	{"fw_quote_mark", "> ", &prefs_common.fw_quotemark, P_STRING,
+	 &quote.entry_fw_quotemark,
+	 prefs_set_data_from_entry, prefs_set_entry},
+	{"fw_quote_format",
+	 "\\n\\nBegin forwarded message:\\n\\n"
+	 "?d(Date: %d\\n)?f(From: %f\\n)?t(To: %t\\n)?c(Cc: %c\\n)"
+	 "?n(Newsgroups: %n\\n)?s(Subject: %s\\n)\\n\\n%M",
+	 &prefs_common.fw_quotefmt, P_STRING, &quote.text_fw_quotefmt,
+	 prefs_set_data_from_text, prefs_set_text},
 
 	/* Display */
 	{"widget_font", NULL, &prefs_common.widgetfont, P_STRING,
@@ -585,6 +590,8 @@ static PrefParam param[] = {
 	 &prefs_common.mime_image_viewer, P_STRING, NULL, NULL, NULL},
 	{"mime_audio_player", "play '%s'",
 	 &prefs_common.mime_audio_player, P_STRING, NULL, NULL, NULL},
+	{"mime_open_command", "gedit '%s'",
+	 &prefs_common.mime_open_cmd, P_STRING, NULL, NULL, NULL},
 
 #if USE_GPGME
 	/* Privacy */
@@ -688,6 +695,7 @@ static void prefs_common_create		(void);
 static void prefs_receive_create	(void);
 static void prefs_send_create		(void);
 static void prefs_compose_create	(void);
+static void prefs_quote_create		(void);
 static void prefs_display_create	(void);
 static void prefs_message_create	(void);
 #if USE_GPGME
@@ -716,8 +724,11 @@ static void date_format_select_row		(GtkWidget	*date_format_list,
 static GtkWidget *date_format_create		(GtkButton	*button,
 						 void		*data);
 
-static void prefs_quote_description		(void);
 static void prefs_quote_description_create	(void);
+static void prefs_quote_description_key_pressed	(GtkWidget	*widget,
+						 GdkEventKey	*event,
+						 gpointer	 data);
+
 static void prefs_quote_colors_dialog		(void);
 static void prefs_quote_colors_dialog_create	(void);
 static void prefs_quote_colors_key_pressed	(GtkWidget	*widget,
@@ -754,9 +765,6 @@ static void prefs_common_ok		(void);
 static void prefs_common_apply		(void);
 static void prefs_common_cancel		(void);
 
-static void compose_prefs_fmt_open(void);
-static void compose_prefs_fmt_create(void);
-
 void prefs_common_init() {
 	prefs_common.fltlist = NULL;
 	prefs_common.disphdr_list = NULL;
@@ -764,12 +772,56 @@ void prefs_common_init() {
 
 void prefs_common_read_config(void)
 {
+	FILE *fp;
+	gchar *path;
+	gchar buf[PREFSBUFSIZE];
+
 	prefs_read_config(param, "Common", COMMON_RC);
+
+	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMAND_HISTORY,
+			   NULL);
+	if ((fp = fopen(path, "r")) == NULL) {
+		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
+		g_free(path);
+		return;
+	}
+	g_free(path);
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		g_strstrip(buf);
+		if (buf[0] == '\0') continue;
+		prefs_common.mime_open_cmd_history =
+			add_history(prefs_common.mime_open_cmd_history, buf);
+	}
+	fclose(fp);
+
+	prefs_common.mime_open_cmd_history =
+		g_list_reverse(prefs_common.mime_open_cmd_history);
 }
 
 void prefs_common_save_config(void)
 {
+	GList *cur;
+	FILE *fp;
+	gchar *path;
+
 	prefs_save_config(param, "Common", COMMON_RC);
+
+	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, COMMAND_HISTORY,
+			   NULL);
+	if ((fp = fopen(path, "w")) == NULL) {
+		FILE_OP_ERROR(path, "fopen");
+		g_free(path);
+		return;
+	}
+
+	for (cur = prefs_common.mime_open_cmd_history;
+	     cur != NULL; cur = cur->next) {
+		fputs((gchar *)cur->data, fp);
+		fputc('\n', fp);
+	}
+
+	fclose(fp);
+	g_free(path);
 }
 
 void prefs_common_open(void)
@@ -824,6 +876,8 @@ static void prefs_common_create(void)
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Send"),      page++);
 	prefs_compose_create();
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Compose"),   page++);
+	prefs_quote_create();
+	SET_NOTEBOOK_LABEL(dialog.notebook, _("Quote"),   page++);
 	prefs_display_create();
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Display"),   page++);
 	prefs_message_create();
@@ -836,8 +890,6 @@ static void prefs_common_create(void)
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Interface"), page++);
 	prefs_other_create();
 	SET_NOTEBOOK_LABEL(dialog.notebook, _("Other"),     page++);
-
-	compose_prefs_fmt_create();
 
 	gtk_widget_show_all(dialog.window);
 }
@@ -903,11 +955,13 @@ static void prefs_receive_create(void)
 	entry_incext = gtk_entry_new ();
 	gtk_widget_show (entry_incext);
 	gtk_box_pack_start (GTK_BOX (hbox), entry_incext, TRUE, TRUE, 0);
+
 #if 0
 	button_incext = gtk_button_new_with_label ("... ");
 	gtk_widget_show (button_incext);
 	gtk_box_pack_start (GTK_BOX (hbox), button_incext, FALSE, FALSE, 0);
 #endif
+
 	PACK_FRAME(vbox1, frame_spool, _("Local spool"));
 
 	vbox2 = gtk_vbox_new (FALSE, VSPACING_NARROW);
@@ -976,7 +1030,6 @@ static void prefs_receive_create(void)
 			   _("No error popup on receive error"));
 	PACK_CHECK_BUTTON (vbox2, checkbtn_scan_after_inc,
 			   _("Update all local folders after incorporation"));
-
 
 	PACK_FRAME(vbox1, frame_news, _("News"));
 
@@ -1266,21 +1319,6 @@ static void prefs_compose_create(void)
 	GtkWidget *vbox1;
         GtkWidget *vbox2;
         GtkWidget *vbox3;
-
-	/*
-	GtkWidget *frame_quote;
-	GtkWidget *vbox_quote;
-	GtkWidget *checkbtn_quote;
-	GtkWidget *hbox1;
-	GtkWidget *label_quotemark;
-	GtkWidget *entry_quotemark;
-	GtkWidget *hbox2;
-	GtkWidget *label_quotefmt;
-	GtkWidget *btn_quotedesc;
-	GtkWidget *scrolledwin_quotefmt;
-	GtkWidget *text_quotefmt;
-*/
-
 	GtkWidget *hbox1;
 	GtkWidget *hbox2;
 	GtkWidget *btn_quotefmt;
@@ -1291,13 +1329,14 @@ static void prefs_compose_create(void)
 	GtkWidget *label_sigsep;
 	GtkWidget *entry_sigsep;
 
+	GtkWidget *frame_editor;
 	GtkWidget *frame_autosel;
         GtkWidget *hbox_autosel;
         GtkWidget *vbox_autosel;
-	GtkWidget *checkbtn_reply_account_autosel;
 	GtkWidget *checkbtn_forward_account_autosel;
 	GtkWidget *checkbtn_reedit_account_autosel;
 
+	GtkWidget *hbox_editor;
 	GtkWidget *checkbtn_autoextedit;
 
         GtkWidget *vbox_linewrap;
@@ -1311,6 +1350,9 @@ static void prefs_compose_create(void)
 	GtkWidget *checkbtn_wrapquote;
 	GtkWidget *checkbtn_wrapatsend;
 
+	GtkWidget *frame_reply;
+	GtkWidget *checkbtn_reply_account_autosel;
+	GtkWidget *checkbtn_quote;
 	GtkWidget *checkbtn_forward_as_attachment;
 	GtkWidget *checkbtn_smart_wrapping;
 	GtkWidget *checkbtn_block_cursor;
@@ -1333,74 +1375,19 @@ static void prefs_compose_create(void)
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
 
-	/*
-	PACK_FRAME(vbox1, frame_quote, _("Quotation"));
 
-	vbox_quote = gtk_vbox_new (FALSE, VSPACING_NARROW);
-	gtk_widget_show (vbox_quote);
-	gtk_container_add (GTK_CONTAINER (frame_quote), vbox_quote);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
 
 	hbox1 = gtk_hbox_new (FALSE, 32);
 	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, FALSE, FALSE, 0);
 
 	hbox2 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox2);
 	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
 
-	label_quotemark = gtk_label_new (_("Quotation mark"));
-	gtk_widget_show (label_quotemark);
-	gtk_box_pack_start (GTK_BOX (hbox2), label_quotemark, FALSE, FALSE, 0);
-
-	entry_quotemark = gtk_entry_new ();
-	gtk_widget_show (entry_quotemark);
-	gtk_box_pack_start (GTK_BOX (hbox2), entry_quotemark, FALSE, FALSE, 0);
-	gtk_widget_set_usize (entry_quotemark, 64, -1);
-
-	PACK_CHECK_BUTTON (hbox1, checkbtn_quote,
-			   _("Quote message when replying"));
-
-	hbox2 = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hbox2);
-	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox2, TRUE, TRUE, 0);
-
-	label_quotefmt = gtk_label_new (_("Quotation format:"));
-	gtk_widget_show (label_quotefmt);
-	gtk_box_pack_start (GTK_BOX (hbox2), label_quotefmt, FALSE, FALSE, 0);
-
-	btn_quotedesc =
-		gtk_button_new_with_label (_(" Description of symbols "));
-
-	gtk_widget_show (btn_quotedesc);
-	gtk_box_pack_end (GTK_BOX (hbox2), btn_quotedesc, FALSE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(btn_quotedesc), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_quote_description), NULL);
-
-
-	scrolledwin_quotefmt = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_show (scrolledwin_quotefmt);
-	gtk_box_pack_start (GTK_BOX (vbox_quote), scrolledwin_quotefmt, TRUE, TRUE, 0);
-	gtk_scrolled_window_set_policy
-		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt),
-		 GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
-
-	text_quotefmt = gtk_text_new (NULL, NULL);
-	gtk_widget_show (text_quotefmt);
-	gtk_container_add(GTK_CONTAINER(scrolledwin_quotefmt), text_quotefmt);
-	gtk_text_set_editable (GTK_TEXT (text_quotefmt), TRUE);
-	gtk_widget_set_usize(text_quotefmt, -1, 60);
-	*/
 
 	hbox1 = gtk_hbox_new (FALSE, 32);
 	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
-
-	btn_quotefmt = gtk_button_new_with_label (_(" Quote format "));
-	gtk_widget_show (btn_quotefmt);
-	gtk_box_pack_start (GTK_BOX (hbox1), btn_quotefmt, FALSE, FALSE, 0);
-	gtk_signal_connect(GTK_OBJECT(btn_quotefmt), "clicked",
-			   GTK_SIGNAL_FUNC(compose_prefs_fmt_open), NULL);
 
 	PACK_FRAME(vbox1, frame_sig, _("Signature"));
 
@@ -1579,6 +1566,125 @@ static void prefs_compose_create(void)
 	compose.btn_pspell_path	       = btn_pspell_path;
 	compose.optmenu_dictionary     = optmenu_dictionary;
 #endif
+}
+
+static void prefs_quote_create(void)
+{
+	GtkWidget *vbox1;
+	GtkWidget *frame_quote;
+	GtkWidget *vbox_quote;
+	GtkWidget *hbox1;
+	GtkWidget *hbox2;
+	GtkWidget *label_quotemark;
+	GtkWidget *entry_quotemark;
+	GtkWidget *scrolledwin_quotefmt;
+	GtkWidget *text_quotefmt;
+
+	GtkWidget *entry_fw_quotemark;
+	GtkWidget *text_fw_quotefmt;
+
+	GtkWidget *btn_quotedesc;
+
+	vbox1 = gtk_vbox_new (FALSE, VSPACING);
+	gtk_widget_show (vbox1);
+	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox1), VBOX_BORDER);
+
+	/* reply */
+
+	PACK_FRAME (vbox1, frame_quote, _("Reply format"));
+
+	vbox_quote = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox_quote);
+	gtk_container_add (GTK_CONTAINER (frame_quote), vbox_quote);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
+
+	hbox1 = gtk_hbox_new (FALSE, 32);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, FALSE, FALSE, 0);
+
+	hbox2 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox2);
+	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
+
+	label_quotemark = gtk_label_new (_("Quotation mark"));
+	gtk_widget_show (label_quotemark);
+	gtk_box_pack_start (GTK_BOX (hbox2), label_quotemark, FALSE, FALSE, 0);
+
+	entry_quotemark = gtk_entry_new ();
+	gtk_widget_show (entry_quotemark);
+	gtk_box_pack_start (GTK_BOX (hbox2), entry_quotemark, FALSE, FALSE, 0);
+	gtk_widget_set_usize (entry_quotemark, 64, -1);
+
+	scrolledwin_quotefmt = gtk_scrolled_window_new (NULL, NULL);
+	gtk_widget_show (scrolledwin_quotefmt);
+	gtk_box_pack_start (GTK_BOX (vbox_quote), scrolledwin_quotefmt, TRUE, TRUE, 0);
+	gtk_scrolled_window_set_policy
+		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt),
+		 GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+
+	text_quotefmt = gtk_text_new (NULL, NULL);
+	gtk_widget_show (text_quotefmt);
+	gtk_container_add(GTK_CONTAINER(scrolledwin_quotefmt), text_quotefmt);
+	gtk_text_set_editable (GTK_TEXT (text_quotefmt), TRUE);
+	gtk_widget_set_usize(text_quotefmt, -1, 60);
+
+	/* forward */
+
+	PACK_FRAME (vbox1, frame_quote, _("Forward format"));
+
+	vbox_quote = gtk_vbox_new (FALSE, VSPACING_NARROW);
+	gtk_widget_show (vbox_quote);
+	gtk_container_add (GTK_CONTAINER (frame_quote), vbox_quote);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox_quote), 8);
+
+	hbox1 = gtk_hbox_new (FALSE, 32);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, FALSE, FALSE, 0);
+
+	hbox2 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox2);
+	gtk_box_pack_start (GTK_BOX (hbox1), hbox2, FALSE, FALSE, 0);
+
+	label_quotemark = gtk_label_new (_("Quotation mark"));
+	gtk_widget_show (label_quotemark);
+	gtk_box_pack_start (GTK_BOX (hbox2), label_quotemark, FALSE, FALSE, 0);
+
+	entry_fw_quotemark = gtk_entry_new ();
+	gtk_widget_show (entry_fw_quotemark);
+	gtk_box_pack_start (GTK_BOX (hbox2), entry_fw_quotemark,
+			    FALSE, FALSE, 0);
+	gtk_widget_set_usize (entry_fw_quotemark, 64, -1);
+
+	scrolledwin_quotefmt = gtk_scrolled_window_new (NULL, NULL);
+	gtk_widget_show (scrolledwin_quotefmt);
+	gtk_box_pack_start (GTK_BOX (vbox_quote), scrolledwin_quotefmt, TRUE, TRUE, 0);
+	gtk_scrolled_window_set_policy
+		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt),
+		 GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+
+	text_fw_quotefmt = gtk_text_new (NULL, NULL);
+	gtk_widget_show (text_fw_quotefmt);
+	gtk_container_add(GTK_CONTAINER(scrolledwin_quotefmt),
+			  text_fw_quotefmt);
+	gtk_text_set_editable (GTK_TEXT (text_fw_quotefmt), TRUE);
+	gtk_widget_set_usize(text_fw_quotefmt, -1, 60);
+
+	hbox1 = gtk_hbox_new (FALSE, 32);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
+
+	btn_quotedesc =
+		gtk_button_new_with_label (_(" Description of symbols "));
+	gtk_widget_show (btn_quotedesc);
+	gtk_box_pack_start (GTK_BOX (hbox1), btn_quotedesc, FALSE, FALSE, 0);
+	gtk_signal_connect(GTK_OBJECT(btn_quotedesc), "clicked",
+			   GTK_SIGNAL_FUNC(prefs_quote_description), NULL);
+
+	quote.entry_quotemark    = entry_quotemark;
+	quote.text_quotefmt      = text_quotefmt;
+	quote.entry_fw_quotemark = entry_fw_quotemark;
+	quote.text_fw_quotefmt   = text_fw_quotefmt;
 }
 
 static void prefs_display_create(void)
@@ -2952,11 +3058,12 @@ static void prefs_recycle_colors_toggled(GtkWidget *widget)
 	prefs_common.recycle_quote_colors = is_active;
 }
 
-static void prefs_quote_description(void)
+void prefs_quote_description(void)
 {
 	if (!quote_desc_win)
 		prefs_quote_description_create();
 
+	manage_window_set_transient(GTK_WINDOW(quote_desc_win));
 	gtk_widget_show(quote_desc_win);
 	gtk_main();
 	gtk_widget_hide(quote_desc_win);
@@ -2988,10 +3095,10 @@ static void prefs_quote_description_create(void)
 		("SYMBOL\n\n"
                  "%d\n"		/* date */
 		 "%f\n"		/* from */
-		 "%N\n"		/* full name */
-		 "%F\n"		/* first name */
-		 "%I\n"		/* sender's initial */
-		 "%s\n"		/* subject line */
+		 "%N\n"		/* full name of sender */
+		 "%F\n"		/* first name of sender */
+		 "%I\n"		/* initial of sender */
+		 "%s\n"		/* subject */
 		 "%t\n"		/* to */
 		 "%c\n"		/* cc */
 		 "%n\n"		/* newsgroups */
@@ -2999,13 +3106,13 @@ static void prefs_quote_description_create(void)
 		 "%r\n"		/* references */
 		 "\n"
 		 "%x\n"
-		 "?x(expr)\n"
+		 "?x(expr)\n"	/* condition */
 		 "\n"
-		 "%M\n"
-		 "%Q\n"
-		 "%m\n"
-		 "%q\n"
-		 "%%");
+		 "%M\n"		/* message body */
+		 "%Q\n"		/* quoted message body */
+		 "%m\n"		/* message body without signature */
+		 "%q\n"		/* quoted message body without signature */
+		 "%%");		/* literal percent */
 
 	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
@@ -3031,7 +3138,7 @@ static void prefs_quote_description_create(void)
 		   "Quoted message body\n"
 		   "Message body without signature\n"
 		   "Quoted message body without signature\n"
-		   "%"));
+		   "Literal %"));
 
 	gtk_box_pack_start(GTK_BOX(hbox), label, TRUE, TRUE, 0);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
@@ -3042,12 +3149,23 @@ static void prefs_quote_description_create(void)
 
 	gtk_widget_grab_default(ok_btn);
 	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-				  GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
-
+			   GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
+	gtk_signal_connect
+		(GTK_OBJECT(quote_desc_win), "key_press_event",
+		 GTK_SIGNAL_FUNC(prefs_quote_description_key_pressed),
+		 NULL);
 	gtk_signal_connect(GTK_OBJECT(quote_desc_win), "delete_event",
-					  GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
+			   GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
 
 	gtk_widget_show_all(vbox);
+}
+
+static void prefs_quote_description_key_pressed(GtkWidget *widget,
+						GdkEventKey *event,
+						gpointer data)
+{
+	if (event && event->keyval == GDK_Escape)
+		gtk_main_quit();
 }
 
 static void prefs_font_select(GtkButton *button, GtkEntry *entry)
@@ -3286,156 +3404,6 @@ static void compose_prefs_key_pressed(GtkWidget *widget, GdkEventKey *event);
 static gint compose_prefs_delete_event(GtkWidget *widget, GdkEventAny *event);
 static void compose_prefs_close(GtkWidget *widget);
 static void compose_prefs_fmt_create(void);
-
-static void compose_prefs_fmt_open(void)
-{
-	if (composeprefs.window == NULL)
-		compose_prefs_fmt_create();
-	gtk_widget_show(composeprefs.window);
-}
-
-
-static void compose_prefs_fmt_create(void)
-{
-	GtkWidget *window;
-	GtkWidget *close_btn;
-
-	GtkWidget *frame_quote;
-	GtkWidget *vbox_quote;
-	GtkWidget *hbox1;
-	GtkWidget *checkbtn_quote;
-	GtkWidget *label_quotemark;
-	GtkWidget *entry_quotemark;
-	GtkWidget *scrolledwin_quotefmt;
-	GtkWidget *text_quotefmt;
-	GtkWidget *label_quotefmt;
-	GtkWidget *btn_quotedesc;
-
-	GtkWidget *label_fw_quotemark;
-	GtkWidget *entry_fw_quotemark;
-	GtkWidget *label_fw_quotefmt;
-	GtkWidget *text_fw_quotefmt;
-
-	window = gtk_window_new(GTK_WINDOW_DIALOG);
-	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
-	gtk_window_set_title(GTK_WINDOW(window), _("Compose Preferences"));
-	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
-	gtk_window_set_policy(GTK_WINDOW(window), FALSE, FALSE, FALSE);
-	gtk_signal_connect(GTK_OBJECT(window), "delete_event",
-			   GTK_SIGNAL_FUNC(compose_prefs_delete_event),
-			   NULL);
-	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
-			   GTK_SIGNAL_FUNC(compose_prefs_key_pressed),
-			   NULL);
-
-	vbox_quote = gtk_vbox_new(FALSE, 8);
-	gtk_container_add(GTK_CONTAINER(window), vbox_quote);
-
-	PACK_CHECK_BUTTON (vbox_quote, checkbtn_quote,
-			   _("Quote message when replying"));
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, TRUE, TRUE, 0);
-
-	label_quotemark = gtk_label_new (_("Quotation mark"));
-	gtk_widget_show (label_quotemark);
-	gtk_box_pack_start (GTK_BOX (hbox1), label_quotemark, FALSE, FALSE, 0);
-
-	entry_quotemark = gtk_entry_new ();
-	gtk_widget_show (entry_quotemark);
-	gtk_box_pack_start (GTK_BOX (hbox1), entry_quotemark, FALSE, FALSE, 0);
-	gtk_widget_set_usize (entry_quotemark, 64, -1);
-
-	hbox1 = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, TRUE, TRUE, 0);
-
-	label_quotefmt = gtk_label_new (_("Quotation format:"));
-	gtk_widget_show (label_quotefmt);
-	gtk_box_pack_start (GTK_BOX (hbox1), label_quotefmt, FALSE, FALSE, 0);
-
-	scrolledwin_quotefmt = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_show (scrolledwin_quotefmt);
-	gtk_box_pack_start (GTK_BOX (vbox_quote), scrolledwin_quotefmt, TRUE, TRUE, 0);
-	gtk_scrolled_window_set_policy
-		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt),
-		 GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
-
-	text_quotefmt = gtk_text_new (NULL, NULL);
-	gtk_widget_show (text_quotefmt);
-	gtk_container_add(GTK_CONTAINER(scrolledwin_quotefmt), text_quotefmt);
-	gtk_text_set_editable (GTK_TEXT (text_quotefmt), TRUE);
-	gtk_widget_set_usize(text_quotefmt, 400, 60);
-
-	hbox1 = gtk_hbox_new (FALSE, 8);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, TRUE, TRUE, 0);
-
-	label_fw_quotemark = gtk_label_new (_("Forward quotation mark"));
-	gtk_widget_show (label_fw_quotemark);
-	gtk_box_pack_start (GTK_BOX (hbox1), label_fw_quotemark, FALSE, FALSE, 0);
-
-	entry_fw_quotemark = gtk_entry_new ();
-	gtk_widget_show (entry_fw_quotemark);
-	gtk_box_pack_start (GTK_BOX (hbox1), entry_fw_quotemark, FALSE, FALSE, 0);
-	gtk_widget_set_usize (entry_fw_quotemark, 64, -1);
-
-	hbox1 = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, TRUE, TRUE, 0);
-
-	label_fw_quotefmt = gtk_label_new (_("Forward format:"));
-	gtk_widget_show (label_fw_quotefmt);
-	gtk_box_pack_start (GTK_BOX (hbox1), label_fw_quotefmt, FALSE, FALSE, 0);
-
-	scrolledwin_quotefmt = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_show (scrolledwin_quotefmt);
-	gtk_box_pack_start (GTK_BOX (vbox_quote), scrolledwin_quotefmt, TRUE, TRUE, 0);
-	gtk_scrolled_window_set_policy
-		(GTK_SCROLLED_WINDOW (scrolledwin_quotefmt),
-		 GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
-
-	text_fw_quotefmt = gtk_text_new (NULL, NULL);
-	gtk_widget_show (text_fw_quotefmt);
-	gtk_container_add(GTK_CONTAINER(scrolledwin_quotefmt), text_fw_quotefmt);
-	gtk_text_set_editable (GTK_TEXT (text_fw_quotefmt), TRUE);
-	gtk_widget_set_usize(text_fw_quotefmt, 400, 60);
-
-	hbox1 = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hbox1);
-	gtk_box_pack_start (GTK_BOX (vbox_quote), hbox1, FALSE, FALSE, 0);
-
-	btn_quotedesc =
-		gtk_button_new_with_label (_(" Description of symbols "));
-	gtk_widget_show (btn_quotedesc);
-	gtk_box_pack_start (GTK_BOX (hbox1), btn_quotedesc,
-			    FALSE, FALSE, 0);
-
-	gtk_signal_connect(GTK_OBJECT(btn_quotedesc), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_quote_description), NULL);
-
-
-	gtkut_button_set_create(&hbox1, &close_btn, _("Close"),
-				NULL, NULL, NULL, NULL);
-	gtk_box_pack_end(GTK_BOX(vbox_quote), hbox1, FALSE, FALSE, 0);
-	gtk_widget_grab_default(close_btn);
-
-	gtk_signal_connect(GTK_OBJECT(close_btn), "clicked",
-			   GTK_SIGNAL_FUNC(compose_prefs_close), NULL);
-
-	gtk_widget_show_all(vbox_quote);
-
-	composeprefs.window = window;
-	composeprefs.close_btn = close_btn;
-
-	compose.checkbtn_quote = checkbtn_quote;
-	compose.entry_quotemark = entry_quotemark;
-	compose.text_quotefmt = text_quotefmt;
-	compose.entry_fw_quotemark = entry_fw_quotemark;
-	compose.text_fw_quotefmt = text_fw_quotefmt;
-}
 
 static void compose_prefs_close(GtkWidget *widget)
 {

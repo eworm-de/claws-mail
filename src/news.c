@@ -711,8 +711,7 @@ static MsgInfo *news_parse_xover(const gchar *xover_str)
 	gint num, size_int, line_int;
 	gchar *xover_buf;
 
-	Xalloca(xover_buf, strlen(xover_str) + 1, return NULL);
-	strcpy(xover_buf, xover_str);
+	Xstrdup_a(xover_buf, xover_str, return NULL);
 
 	PARSE_ONE_PARAM(subject, xover_buf);
 	PARSE_ONE_PARAM(sender, subject);

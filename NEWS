@@ -1,5 +1,18 @@
 Changes of Sylpheed
 
+* 0.6.5
+
+    * The template function has been implemented.
+    * The quotation format parser has been enhanced.
+    * The forwarding format has become customizable.
+    * The "Open with..." dialog on the MIME view now retains command history.
+    * An arrow mark is put on the column of the sorting target.
+    * The Delete key now deletes messages.
+    * The password for SMTP AUTH is asked now when not specified.
+    * The mime.types file is searched from several directories now.
+    * The preferences dialogs have been sorted out a bit.
+    * Some bugs have been fixed.
+
 * 0.6.4
 
     * The performance of summary display on large number of messages

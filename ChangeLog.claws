@@ -1,3 +1,9 @@
+2001-11-07 [paul] 	0.6.4claws31
+
+	* sync with sylpheed 0.6.4cvs18
+		see ChangeLog entries 2001-10-30 to 2001-11-07
+		prefs_templates.[ch] renamed prefs_template.[ch]
+
 2001-11-06 [alfons]
 	
 	* src/utils.h

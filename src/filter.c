@@ -189,8 +189,7 @@ Filter *filter_read_str(const gchar *str)
 	gchar *name1, *body1, *op, *name2, *body2, *dest;
 	gchar *flag1 = NULL, *flag2 = NULL, *action = NULL;
 
-	Xalloca(tmp, strlen(str) + 1, return NULL);
-	strcpy(tmp, str);
+	Xstrdup_a(tmp, str, return NULL);
 
 	name1 = tmp;
 	PARSE_ONE_PARAM(body1, name1);

@@ -31,9 +31,11 @@ sylpheed_SOURCES = \
 	prefs_display_header.c prefs_display_header.h \
 	prefs_customheader.c prefs_customheader.h \
 	prefs_summary_column.c prefs_summary_column.h \
+	prefs_template.c prefs_template.h \
 	account.c account.h \
 	displayheader.c displayheader.h \
 	customheader.c customheader.h \
+	template.c template.h \
 	addressbook.c addressbook.h \
 	addr_compl.c addr_compl.h \
 	addressitem.h \
@@ -118,10 +120,12 @@ sylpheed_SOURCES = \
 	quote_fmt_lex.l quote_fmt_lex.h \
 	quote_fmt_parse.y quote_fmt.h \
 	gtkspell.c gtkspell.h gtkxtext.h \
-	template.c template.h \
-	prefs_templates.c prefs_templates.h \
 	template_select.c template_select.h
 
+BUILT_SOURCES = \
+	quote_fmt_lex.c \
+	quote_fmt_parse.c \
+	quote_fmt_parse.h
 
 EXTRA_DIST = \
 	quote_fmt_parse.h \
@@ -135,6 +139,8 @@ EXTRA_DIST = \
 	pixmaps/group.xpm \
 	pixmaps/inbox.xpm \
 	pixmaps/mark.xpm \
+	pixmaps/checkbox_on.xpm \
+	pixmaps/checkbox_off.xpm \
 	pixmaps/new.xpm \
 	pixmaps/outbox.xpm \
 	pixmaps/regular.xpm \
@@ -202,9 +208,3 @@ CPPFLAGS = \
 	-DSYSCONFDIR=\""$(sysconfdir)"\"
 
 YFLAGS = -d
-
-
-BUILT_SOURCES = \
-	quote_fmt_lex.c \
-	quote_fmt_parse.c \
-	quote_fmt_parse.h

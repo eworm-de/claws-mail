@@ -153,15 +153,9 @@ gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 				   dest->last_num + 1);
 
 	if (link(file, destfile) < 0) {
-		if (EXDEV == errno) {
-			if (copy_file(file, destfile) < 0) {
-				g_warning(_("can't copy message %s to %s\n"),
-					  file, destfile);
-				g_free(destfile);
-				return -1;
-			}
-		} else {
-			FILE_OP_ERROR(file, "link");
+		if (copy_file(file, destfile) < 0) {
+			g_warning(_("can't copy message %s to %s\n"),
+				  file, destfile);
 			g_free(destfile);
 			return -1;
 		}

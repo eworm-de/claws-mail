@@ -659,8 +659,7 @@ gchar *procheader_get_fromname(const gchar *str)
 {
 	gchar *tmp, *name;
 
-	Xalloca(tmp, strlen(str) + 1, return NULL);
-	strcpy(tmp, str);
+	Xstrdup_a(tmp, str, return NULL);
 
 	if (*tmp == '\"') {
 		extract_quote(tmp, '\"');

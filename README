@@ -58,6 +58,7 @@ Currently implemented features are:
 	o message queueing
 	o automatic mail checking
 	o draft message function
+	o template function
 	o line-wrapping
 	o clickable URI
 	o XML-based address book
@@ -85,6 +86,24 @@ See INSTALL for installation instructions.
 
 Usage
 =====
+
+Preparation before running
+--------------------------
+
+If you want to use characters other than English (aka US-ASCII),
+you must specify some environmental variables related to locale.
+For example:
+
+% export LANG=de_DE	(sh, bash etc.)
+
+or
+
+% setenv LANG de_DE	(csh, tcsh etc.)
+
+(replace de_DE to appropriate locale name)
+
+If you don't want translated messages, set LC_MESSAGES to "C"
+(and unset LC_ALL if specified).
 
 How to run
 ----------
@@ -156,5 +175,5 @@ To update to the newest source tree, run the command:
 
 on the top directory of the source tree.
 
---
+-- 
 Hiroyuki Yamamoto <hiro-y@kcn.ne.jp>

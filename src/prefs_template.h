@@ -1,6 +1,6 @@
 /*
- * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Sylpheed templates subsystem 
+ * Copyright (C) 2001 Alexander Barinov
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,20 +17,9 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __INPUTDIALOG_H__
-#define __INPUTDIALOG_H__
+#ifndef __PREFS_TEMPLATES_H__
+#define __PREFS_TEMPLATES_H__
 
-#include <glib.h>
+void prefs_template_open(void);
 
-gchar *input_dialog			(const gchar	*title,
-					 const gchar	*message,
-					 const gchar	*default_string);
-gchar *input_dialog_with_invisible	(const gchar	*title,
-					 const gchar	*message,
-					 const gchar	*default_string);
-gchar *input_dialog_combo		(const gchar	*title,
-					 const gchar	*message,
-					 const gchar	*default_string,
-					 GList		*list);
-
-#endif /* __INPUTDIALOG_H__ */
+#endif /* __PREFS_TEMPLATES_H__ */

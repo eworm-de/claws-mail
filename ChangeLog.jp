@@ -1,3 +1,123 @@
+2001-11-06
+
+	* src/template.c: テンプレートファイルのフォーマットを RFC2822
+	  ライクに変更。
+	* src/compose.c: compose_template_apply(): 文字列を挿入している
+	  間テキストウィジェットを freeze するようにした。
+
+2001-11-05
+
+	* po/POTFILES.in: src/template_select.c を削除。
+	* src/summaryview.c: summary_set_header()
+	  src/address.c: address_parse_str()
+	  src/filter.c: filter_read_str()
+	  src/news.c: news_parse_xover()
+	  src/procheader.c: procheader_get_fromname()
+	  src/utils.c: subject_compare():
+	  Xalloca() + strcpy() を Xstrdup_a() で置換。
+	* src/inputdialog.[ch]: combo モードを追加。
+	  input_dialog_combo(): 新規。
+	* src/prefs_common.[ch]: MIME オープンコマンドの設定を追加。
+	  prefs_common_{read, save}_config(): コマンドヒストリの読み書き。
+	* src/mimeview.c: mimeview_open_with(): combo 入力ダイアログを使用。
+	* src/utils.[ch]: add_history(): ヒストリリスト管理関数。
+
+2001-11-04
+
+	* src/compose.c: テンプレートをメニューから選択するようにした。
+	  compose_set_template_menu(): 新規。
+	  compose_reflect_prefs_all(): 新規。
+	  compose_template_apply(): 新規。パースするためにダミーの MsgInfo
+	  を使用。
+	* src/template.[ch]: テンプレートリストを static なヒープに保存。
+	  template_get_config(): 新規。
+	  template_set_config(): 新規。
+	* src/prefs_template.c: テンプレートリストをグローバルな領域に保存
+	  しないようにした。
+	* src/template_select.[ch]: 削除。
+	* src/quote_fmt_parse.y: メッセージを引用するときに folderitem を
+	  チェック。
+	* src/mh.c: mh_add_msg(): link() が失敗したときは常にファイルを
+	  コピーするようにした(大城さん thanks)。
+
+2001-11-03
+
+	* src/utils.[ch]: get_template_dir(): 新規。
+	* src/template.c: get_template_dir() を使用。
+
+2001-11-02
+
+	* src/prefs_template.c: ダイアログのレイアウトを修正。
+	  記号の説明ボタンを追加。
+	* src/summaryview.c: ソート対象のカラムに矢印マークを表示。
+	  summary_set_column_titles(): 新規。
+	* INSTALL
+	  INSTALL.jp
+	  README
+	  README.jp
+	  TODO
+	  TODO.jp: ドキュメントを更新。
+
+2001-11-02
+
+	* src/Makefile.am: checkbox_{on, off}.xpm が抜けていたので追加。
+	* src/textview.c: textview_key_pressed()
+	  src/mimeview.c: mimeview_key_pressed()
+	  src/summaryview.c: summary_key_pressed(): Delete キーでメッセージ
+	  を削除するようにした。
+
+2001-11-01
+
+	* src/socket.c: ssl_gets(): SSL_read() が 0 を返したときに無限
+	  ループに陥るバグを修正。
+	* src/utils.[ch]: strcrchomp(): 新規。文字列の末尾から CR を除去
+	  する。
+	* src/quote_fmt_parse.y: メッセージ挿入時に CRLF を LF に変換。
+	  警告を抑制するために yylex() のプロトタイプを追加。
+	* テンプレート機能をマージ。
+	* src/prefs_template.[ch]
+	  src/template.[ch]
+	  src/template_select.[ch]: 新規。
+	  prefs_templates_* -> prefs_template_* に名称変更。
+	* src/compose.c: テンプレートメニューを追加。 replyinfo を Compose
+	  に追加。
+	* src/mainwindow.c: テンプレート設定メニューを追加。
+	* src/quote_fmt_lex.l: タブと改行文字をそのまま出力するようにした。
+	* src/prefs_common.c: 引用フォーマットの設定名を
+	  'reply_quote_{mark, format}' と 'fw_quote_{mark, format}' に変更。
+
+2001-10-31
+
+	* src/prefs_common.[ch]: 引用タブを追加し、引用設定を作成タブから
+	  移動。
+	* 新引用フォーマットパーサをマージ。
+	* src/quote_fmt_lex.h
+	  src/quote_fmt.h
+	  src/quote_fmt_lex.l
+	  src/quote_fmt_parse.y: 引用フォーマットパーサ用新規ファイル。
+	* configure.in: lex と yacc のチェックを追加。
+	* src/compose.c: compose_quote_file(), compose_quote_parse_fmt():
+	  削除。
+	  compose_quote_fmt(): 新規。
+	* src/prefs_common.[ch]: 引用タブに転送フォーマットの設定を追加。
+	  引用記号の説明ダイアログを更新。
+	* src/quote_fmt_parse.y: テキストパートが取得できなくてもファイルを
+	  読み込もうとするバグを修正。
+
+2001-10-31
+
+	* src/pixmaps/checkbox_off.xpm
+	  src/pixmaps/checkbox_on.xpm: 新規。
+	* src/account.c: 「全受信」のステータスをチェックボックスの pixmap
+	  で表示するようにした。
+
+2001-10-30
+
+	* src/send.c: コードの整理。たくさんの引数の代わりにアカウント
+	  設定構造体を渡すようにした。
+	  SMTP AUTH のパスワードが指定されていない場合は尋ねるようにした。
+	  (Mio さん thanks)。
+
 2001-10-30
 
 	* src/procheader.c: procheader_parse(): In-Reply-To: ヘッダの

@@ -624,7 +624,6 @@ static void mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		}
 		break;
 	case GDK_BackSpace:
-	case GDK_Delete:
 		textview_scroll_page(mimeview->textview, TRUE);
 		return;
 	case GDK_Return:
@@ -773,6 +772,7 @@ static void mimeview_open_with(MimeView *mimeview)
 {
 	MimeInfo *partinfo;
 	gchar *filename;
+	gchar *cmd;
 
 	if (!mimeview->opened) return;
 	if (!mimeview->file) return;
@@ -783,21 +783,29 @@ static void mimeview_open_with(MimeView *mimeview)
 
 	filename = procmime_get_tmp_file_name(partinfo);
 
-	if (procmime_get_part(filename, mimeview->file, partinfo) < 0)
+	if (procmime_get_part(filename, mimeview->file, partinfo) < 0) {
 		alertpanel_error
 			(_("Can't save the part of multipart message."));
-	else {
-		gchar *cmd;
+		g_free(filename);
+		return;
+	}
 
-		cmd = input_dialog
-			(_("Open with"),
-			 _("Enter the command line to open file:\n"
-			   "(`%s' will be replaced with file name)"),
-			 "gedit '%s'");
-		if (cmd) {
-			mimeview_view_file(filename, partinfo, cmd);
-			g_free(cmd);
-		}
+	if (!prefs_common.mime_open_cmd_history)
+		prefs_common.mime_open_cmd_history =
+			add_history(NULL, prefs_common.mime_open_cmd);
+
+	cmd = input_dialog_combo
+		(_("Open with"),
+		 _("Enter the command line to open file:\n"
+		   "(`%s' will be replaced with file name)"),
+		 prefs_common.mime_open_cmd,
+		 prefs_common.mime_open_cmd_history);
+	if (cmd) {
+		mimeview_view_file(filename, partinfo, cmd);
+		g_free(prefs_common.mime_open_cmd);
+		prefs_common.mime_open_cmd = cmd;
+		prefs_common.mime_open_cmd_history =
+			add_history(prefs_common.mime_open_cmd_history, cmd);
 	}
 
 	g_free(filename);

@@ -20,16 +20,22 @@
 #ifndef __TEMPLATE_H__
 #define __TEMPLATE_H__
 
+#include <glib.h>
+
+typedef struct _Template	Template;
+
 struct _Template {
 	gchar *name;
 	gchar *value;
 };
 
-typedef struct _Template Template;
+void template_free		(Template	*tmpl);
+void template_clear_config	(GSList		*tmpl_list);
 
-void template_free (Template *tmpl);
-void template_clear_config (GSList *tmpl_list);
-GSList* template_read_config (void);
-void template_write_config (GSList *tmpl_list);
+GSList *template_read_config	(void);
+void template_write_config	(GSList		*tmpl_list);
+
+GSList *template_get_config	(void);
+void template_set_config	(GSList		*tmpl_list);
 
 #endif /* __TEMPLATE_H__ */

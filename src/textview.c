@@ -806,7 +806,6 @@ static void textview_write_line(TextView *textview, const gchar *str,
 {
 	GtkText *text = GTK_TEXT(textview->text);
 	gchar buf[BUFFSIZE];
-	size_t len;
 	GdkColor *fg_color;
 	gint quotelevel = -1;
 
@@ -821,11 +820,7 @@ static void textview_write_line(TextView *textview, const gchar *str,
 		return;
 	}
 
-	len = strlen(buf);
-	if (len > 1 && buf[len - 1] == '\n' && buf[len - 2] == '\r') {
-		buf[len - 2] = '\n';
-		buf[len - 1] = '\0';
-	}
+	strcrchomp(buf);
 	if (prefs_common.conv_mb_alnum) conv_mb_alnum(buf);
 	fg_color = NULL;
 
@@ -1397,7 +1392,6 @@ static void textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 			textview_scroll_page(textview, FALSE);
 		break;
 	case GDK_BackSpace:
-	case GDK_Delete:
 		textview_scroll_page(textview, TRUE);
 		break;
 	case GDK_Return:

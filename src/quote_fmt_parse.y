@@ -2,9 +2,8 @@
 
 #include "defs.h"
 
-#include <ctype.h>
-#include <gtk/gtk.h>
 #include <glib.h>
+#include <ctype.h>
 
 #include "procmsg.h"
 #include "procmime.h"
@@ -20,20 +19,22 @@ flex quote_fmt.l
 bison -p quote_fmt quote_fmt.y
 */
 
-static MsgInfo * msginfo = NULL;
-static gboolean * visible = NULL;
+int yylex(void);
+
+static MsgInfo *msginfo = NULL;
+static gboolean *visible = NULL;
 static gint maxsize = 0;
 static gint stacksize = 0;
 
-static gchar * buffer = NULL;
+static gchar *buffer = NULL;
 static gint bufmax = 0;
 static gint bufsize = 0;
-static gchar * quote_str = NULL;
+static gchar *quote_str = NULL;
 static gint error = 0;
 
 static void add_visibility(gboolean val)
 {
-	stacksize ++;
+	stacksize++;
 	if (maxsize < stacksize) {
 		maxsize += 128;
 		visible = g_realloc(visible, maxsize * sizeof(gboolean));
@@ -44,16 +45,16 @@ static void add_visibility(gboolean val)
 	visible[stacksize - 1] = val;
 }
 
-static void remove_visibility()
+static void remove_visibility(void)
 {
-	stacksize --;
+	stacksize--;
 }
 
-
-static void add_buffer(gchar * s)
+static void add_buffer(gchar *s)
 {
-	gint len = strlen(s);
-	
+	gint len;
+
+	len = strlen(s);
 	if (bufsize + len + 1 > bufmax) {
 		if (bufmax == 0)
 			bufmax = 128;
@@ -65,14 +66,14 @@ static void add_buffer(gchar * s)
 	bufsize += len;
 }
 
-static void flush_buffer()
+static void flush_buffer(void)
 {
 	if (buffer != NULL)
-		*buffer = 0;
+		*buffer = '\0';
 	bufsize = 0;
 }
 
-gchar * quote_fmt_get_buffer()
+gchar *quote_fmt_get_buffer(void)
 {
 	if (error != 0)
 		return NULL;
@@ -92,7 +93,7 @@ gchar * quote_fmt_get_buffer()
 		add_buffer(tmp); \
 	}
 
-void quote_fmt_init(MsgInfo * info, gchar * my_quote_str)
+void quote_fmt_init(MsgInfo *info, gchar *my_quote_str)
 {
 	quote_str = my_quote_str;
 	msginfo = info;
@@ -104,7 +105,7 @@ void quote_fmt_init(MsgInfo * info, gchar * my_quote_str)
 	error = 0;
 }
 
-void quote_fmterror(char * str)
+void quote_fmterror(char *str)
 {
 	g_warning(_("Error %s\n"), str);
 	error = 1;
@@ -189,8 +190,8 @@ special:
 	| SHOW_FIRST_NAME
 	{
 		if (msginfo->fromname) {
-			gchar * p;
-			gchar * str;
+			gchar *p;
+			gchar *str;
 
 			str = alloca(strlen(msginfo->fromname) + 1);
 			if (str != NULL) {
@@ -207,8 +208,8 @@ special:
 #define MAX_SENDER_INITIAL 20
 		if (msginfo->fromname) {
 			gchar tmp[MAX_SENDER_INITIAL];
-			gchar * p;	
-			gchar * cur;
+			gchar *p;
+			gchar *cur;
 			gint len = 0;
 
 			p = msginfo->fromname;
@@ -216,12 +217,11 @@ special:
 			while (*p) {
 				if (*p && isalnum(*p)) {
 					*cur = toupper(*p);
-						cur ++;
-					len ++;
+						cur++;
+					len++;
 					if (len >= MAX_SENDER_INITIAL - 1)
 						break;
-				}
-				else
+				} else
 					break;
 				while (*p && !isseparator(*p)) p++;
 				while (*p && isseparator(*p)) p++;
@@ -256,64 +256,88 @@ special:
 	}
 	| SHOW_REFERENCES
 	{
-		if (msginfo->references)
-			INSERT(msginfo->references);
+		/* if (msginfo->references)
+			INSERT(msginfo->references); */
 	}
 	| SHOW_MESSAGE
 	{
-		gchar buf[BUFFSIZE];
-		FILE * fp;
+		if (msginfo->folder) {
+			gchar buf[BUFFSIZE];
+			FILE *fp;
 
-		if ((fp = procmime_get_first_text_content(msginfo)) == NULL)
-			g_warning(_("Can't get text part\n"));
-		while (fgets(buf, sizeof(buf), fp) != NULL) {
-			INSERT(buf);
+			if ((fp = procmime_get_first_text_content(msginfo))
+			    == NULL)
+				g_warning(_("Can't get text part\n"));
+			else {
+				while (fgets(buf, sizeof(buf), fp) != NULL) {
+					strcrchomp(buf);
+					INSERT(buf);
+				}
+				fclose(fp);
+			}
 		}
-		fclose(fp);
 	}
 	| SHOW_QUOTED_MESSAGE
 	{
-		gchar buf[BUFFSIZE];
-		FILE * fp;
+		if (msginfo->folder) {
+			gchar buf[BUFFSIZE];
+			FILE *fp;
 
-		if ((fp = procmime_get_first_text_content(msginfo)) == NULL)
-			g_warning(_("Can't get text part\n"));
-		while (fgets(buf, sizeof(buf), fp) != NULL) {
-			if (quote_str)
-				INSERT(quote_str);
-			INSERT(buf);
+			if ((fp = procmime_get_first_text_content(msginfo))
+			    == NULL)
+				g_warning(_("Can't get text part\n"));
+			else {
+				while (fgets(buf, sizeof(buf), fp) != NULL) {
+					strcrchomp(buf);
+					if (quote_str)
+						INSERT(quote_str);
+					INSERT(buf);
+				}
+				fclose(fp);
+			}
 		}
-		fclose(fp);
 	}
 	| SHOW_MESSAGE_NO_SIGNATURE
 	{
-		gchar buf[BUFFSIZE];
-		FILE * fp;
+		if (msginfo->folder) {
+			gchar buf[BUFFSIZE];
+			FILE *fp;
 
-		if ((fp = procmime_get_first_text_content(msginfo)) == NULL)
-			g_warning(_("Can't get text part\n"));
-		while (fgets(buf, sizeof(buf), fp) != NULL) {
-			if (strncmp(buf, "-- ", 3) == 0)
-				break;
-			INSERT(buf);
+			if ((fp = procmime_get_first_text_content(msginfo))
+			    == NULL)
+				g_warning(_("Can't get text part\n"));
+			else {
+				while (fgets(buf, sizeof(buf), fp) != NULL) {
+					strcrchomp(buf);
+					if (strncmp(buf, "-- ", 3) == 0)
+						break;
+					INSERT(buf);
+				}
+				fclose(fp);
+			}
 		}
-		fclose(fp);
 	}
 	| SHOW_QUOTED_MESSAGE_NO_SIGNATURE
 	{
-		gchar buf[BUFFSIZE];
-		FILE * fp;
+		if (msginfo->folder) {
+			gchar buf[BUFFSIZE];
+			FILE *fp;
 
-		if ((fp = procmime_get_first_text_content(msginfo)) == NULL)
-			g_warning(_("Can't get text part\n"));
-		while (fgets(buf, sizeof(buf), fp) != NULL) {
-			if (strncmp(buf, "-- ", 3) == 0)
-				break;
-			if (quote_str)
-				INSERT(quote_str);
-			INSERT(buf);
+			if ((fp = procmime_get_first_text_content(msginfo))
+			    == NULL)
+				g_warning(_("Can't get text part\n"));
+			else {
+				while (fgets(buf, sizeof(buf), fp) != NULL) {
+					strcrchomp(buf);
+					if (strncmp(buf, "-- ", 3) == 0)
+						break;
+					if (quote_str)
+						INSERT(quote_str);
+					INSERT(buf);
+				}
+				fclose(fp);
+			}
 		}
-		fclose(fp);
 	}
 	| SHOW_BACKSLASH
 	{
@@ -407,7 +431,7 @@ query:
 	}
 	| QUERY_REFERENCES
 	{
-		add_visibility(msginfo->references != NULL);
+		/* add_visibility(msginfo->references != NULL); */
 	}
 	OPARENT quote_fmt CPARENT
 	{

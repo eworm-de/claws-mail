@@ -66,7 +66,8 @@ src/prefs_filter.c
 src/prefs_filtering.c
 src/prefs_matcher.c
 src/prefs_scoring.c
-src/prefs_templates.c
+src/prefs_summary_column.c
+src/prefs_template.c
 src/procheader.c
 src/procmime.c
 src/procmsg.c
@@ -88,6 +89,7 @@ src/statusbar.c
 src/summary_search.c
 src/summaryview.c
 src/syldap.c
+src/template.c
 src/textview.c
 src/unmime.c
 src/utils.c

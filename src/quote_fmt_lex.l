@@ -9,9 +9,9 @@
 %%
 
 "%d" /* date */ return SHOW_DATE;
-"%f" /* From */ return SHOW_FROM;
-"%N" /* Full name */ return SHOW_FULLNAME;
-"%F" /* firt name */ return SHOW_FIRST_NAME;
+"%f" /* from */ return SHOW_FROM;
+"%N" /* full name */ return SHOW_FULLNAME;
+"%F" /* first name */ return SHOW_FIRST_NAME;
 "%I" /* initial of sender */ return SHOW_SENDER_INITIAL;
 "%s" /* subject */ return SHOW_SUBJECT;
 "%t" /* to */ return SHOW_TO;
@@ -25,8 +25,8 @@
 "%q" /* quoted message with no signature */ return SHOW_QUOTED_MESSAGE_NO_SIGNATURE;
 "%%" /* % */ return SHOW_PERCENT;
 "\\\\" /* \ */ return SHOW_BACKSLASH;
-"\\t" /* tab */ return SHOW_TAB;
-"\\n" /* retour à la ligne */ return SHOW_EOL;
+"\\t"|"\t" /* tab */ return SHOW_TAB;
+"\\n"|"\n" /* return */ return SHOW_EOL;
 "\\?" /* ? */ return SHOW_QUESTION_MARK;
 "\\(" return SHOW_OPARENT;
 "\\)" return SHOW_CPARENT;

@@ -1,3 +1,118 @@
+2001-11-06
+
+	* src/template.c: changed the format of template file to
+	  RFC2822-like.
+	* src/compose.c: compose_template_apply(): freeze the text widget
+	  while inserting strings.
+
+2001-11-05
+
+	* po/POTFILES.in: removed src/template_select.c.
+	* src/summaryview.c: summary_set_header()
+	  src/address.c: address_parse_str()
+	  src/filter.c: filter_read_str()
+	  src/news.c: news_parse_xover()
+	  src/procheader.c: procheader_get_fromname()
+	  src/utils.c: subject_compare():
+	  replaced Xalloca() + strcpy() with Xstrdup_a().
+	* src/inputdialog.[ch]: added combo mode.
+	  input_dialog_combo(): new.
+	* src/prefs_common.[ch]: added MIME open command setting.
+	  prefs_common_{read, save}_config(): read / write command history.
+	* src/mimeview.c: mimeview_open_with(): use combo input dialog.
+	* src/utils.[ch]: add_history(): history list management function.
+
+2001-11-04
+
+	* src/compose.c: select templates from the menu.
+	  compose_set_template_menu(): new.
+	  compose_reflect_prefs_all(): new.
+	  compose_template_apply(): new. Use dummy MsgInfo for parsing.
+	* src/template.[ch]: store template list to the static heap.
+	  template_get_config(): new.
+	  template_set_config(): new.
+	* src/prefs_template.c: don't store template list to the global area.
+	* src/template_select.[ch]: removed.
+	* src/quote_fmt_parse.y: check folderitem when quoting messages.
+	* src/mh.c: mh_add_msg(): try to copy file whenever link() failed
+	  (thanks to OSHIRO Naoki).
+
+2001-11-03
+
+	* src/utils.[ch]: get_template_dir(): new.
+	* src/template.c: use get_template_dir().
+
+2001-11-02
+
+	* src/prefs_template.c: modified the dialog layout.
+	  Added symbol description button.
+	* src/summaryview.c: show an arrow mark to the column of the sort
+	  target.
+	  summary_set_column_titles(): new.
+	* INSTALL
+	  INSTALL.jp
+	  README
+	  README.jp
+	  TODO
+	  TODO.jp: updated the documents.
+
+2001-11-02
+
+	* src/Makefile.am: add missing checkbox_{on, off}.xpm.
+	* src/textview.c: textview_key_pressed()
+	  src/mimeview.c: mimeview_key_pressed()
+	  src/summaryview.c: summary_key_pressed(): delete messages with
+	  Delete key.
+
+2001-11-01
+
+	* src/socket.c: ssl_gets(): fixed a bug that caused infinite loop
+	  when SSL_read() returned 0.
+	* src/utils.[ch]: strcrchomp(): new. It removes CR from the tail
+	  of strings.
+	* src/quote_fmt_parse.y: convert CRLF to LF when inserting messages.
+	  Add prototype of yylex() to suppress the warning.
+	* merged the template function.
+	* src/prefs_template.[ch]
+	  src/template.[ch]
+	  src/template_select.[ch]: new.
+	  Renamed prefs_templates_* -> prefs_template_*.
+	* src/compose.c: added template menu. Added replyinfo to Compose.
+	* src/mainwindow.c: added template setting menu.
+	* src/quote_fmt_lex.l: output literal tab and return as is.
+	* src/prefs_common.c: changed the pref. name of quote format to
+	  'reply_quote_{mark, format}' and 'fw_quote_{mark, format}'.
+
+2001-10-31
+
+	* src/prefs_common.[ch]: added Quote tab, and moved the quote
+	  setting from Compose tab.
+	* merged the new quote format parser.
+	* src/quote_fmt_lex.h
+	  src/quote_fmt.h
+	  src/quote_fmt_lex.l
+	  src/quote_fmt_parse.y: new files for quote format parser.
+	* configure.in: added checks for lex and yacc.
+	* src/compose.c: compose_quote_file(), compose_quote_parse_fmt():
+	  removed.
+	  compose_quote_fmt(): new.
+	* src/prefs_common.[ch]: added forward format setting to the
+	  Quote tab. Updated the quote description dialog.
+	* src/quote_fmt_parse.y: fixed bugs that tried to read file even
+	  if they couldn't get text part.
+
+2001-10-31
+
+	* src/pixmaps/checkbox_off.xpm
+	  src/pixmaps/checkbox_on.xpm: new.
+	* src/account.c: display `get all' status with the checkbox pixmaps.
+
+2001-10-30
+
+	* src/send.c: code cleanup. Pass account prefs structure instead
+	  of many arguments.
+	  Query password for SMTP AUTH if not specified (thanks to Mio).
+
 2001-10-30
 
 	* src/procheader.c: procheader_parse(): fixed a bug that didn't

@@ -211,6 +211,21 @@ gchar *strtailchomp(gchar *str, gchar tail_char)
 	return str;
 }
 
+/* remove CR (carriage return) */
+gchar *strcrchomp(gchar *str)
+{
+	register gchar *s;
+
+	if (!*str) return str;
+
+	s = str + strlen(str) - 1;
+	if (*s == '\n' && s > str && *(s - 1) == '\r') {
+		*(s - 1) = '\n';
+		*s = '\0';
+	}
+
+	return str;
+}
 
 /* Similar to `strstr' but this function ignores the case of both strings.  */
 gchar *strcasestr(const gchar *haystack, const gchar *needle)
@@ -494,10 +509,8 @@ gint subject_compare(const gchar *s1, const gchar *s2)
 	if (!s1 || !s2) return -1;
 	if (!*s1 || !*s2) return -1;
 
-	Xalloca(str1, strlen(s1) + 1, return -1);
-	Xalloca(str2, strlen(s2) + 1, return -1);
-	strcpy(str1, s1);
-	strcpy(str2, s2);
+	Xstrdup_a(str1, s1, return -1);
+	Xstrdup_a(str2, s2, return -1);
 
 	trim_subject(str1);
 	trim_subject(str2);
@@ -845,6 +858,31 @@ GSList *newsgroup_list_append(GSList *group_list, const gchar *str)
 	return group_list;
 }
 
+GList *add_history(GList *list, const gchar *str)
+{
+	GList *old;
+
+	g_return_val_if_fail(str != NULL, list);
+
+	old = g_list_find_custom(list, (gpointer)str, (GCompareFunc)strcmp2);
+	if (old) {
+		g_free(old->data);
+		list = g_list_remove(list, old->data);
+	} else if (g_list_length(list) >= MAX_HISTORY_SIZE) {
+		GList *last;
+
+		last = g_list_last(list);
+		if (last) {
+			g_free(last->data);
+			g_list_remove(list, last->data);
+		}
+	}
+
+	list = g_list_prepend(list, g_strdup(str));
+
+	return list;
+}
+
 void remove_return(gchar *str)
 {
 	register gchar *p = str;
@@ -1176,6 +1214,17 @@ gchar *get_mime_tmp_dir(void)
 					   MIME_TMP_DIR, NULL);
 
 	return mime_tmp_dir;
+}
+
+gchar *get_template_dir(void)
+{
+	static gchar *template_dir = NULL;
+
+	if (!template_dir)
+		template_dir = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+					   TEMPLATE_DIR, NULL);
+
+	return template_dir;
 }
 
 gchar *get_tmp_file(void)

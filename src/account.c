@@ -46,6 +46,8 @@
 #include "alertpanel.h"
 
 #include "pixmaps/mark.xpm"
+#include "pixmaps/checkbox_on.xpm"
+#include "pixmaps/checkbox_off.xpm"
 
 typedef enum
 {
@@ -72,6 +74,10 @@ static struct EditAccount {
 
 static GdkPixmap *markxpm;
 static GdkBitmap *markxpmmask;
+static GdkPixmap *checkboxonxpm;
+static GdkPixmap *checkboxonxpmmask;
+static GdkPixmap *checkboxoffxpm;
+static GdkPixmap *checkboxoffxpmmask;
 
 static void account_edit_create		(void);
 
@@ -418,8 +424,8 @@ static void account_edit_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
 	label = gtk_label_new
-		(_("New messages will be checked in this order. Click in the 'G' column\n"
-		   "to enable message retrieval by `Get all' for that account."));
+		(_("New messages will be checked in this order. Check the boxes\n"
+		   "on the `G' column to enable message retrieval by `Get all'."));
 	gtk_widget_show (label);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 4);
 	gtk_label_set_justify(GTK_LABEL(label), GTK_JUSTIFY_LEFT);
@@ -446,10 +452,14 @@ static void account_edit_create(void)
 	gtk_widget_show (clist);
 	gtk_container_add (GTK_CONTAINER (scrolledwin), clist);
 	gtk_clist_set_column_width (GTK_CLIST(clist), COL_DEFAULT , 10);
-	gtk_clist_set_column_width (GTK_CLIST(clist), COL_GETALL  , 10);
+	gtk_clist_set_column_width (GTK_CLIST(clist), COL_GETALL  , 11);
 	gtk_clist_set_column_width (GTK_CLIST(clist), COL_NAME    , 100);
 	gtk_clist_set_column_width (GTK_CLIST(clist), COL_PROTOCOL, 100);
 	gtk_clist_set_column_width (GTK_CLIST(clist), COL_SERVER  , 100);
+	gtk_clist_set_column_justification (GTK_CLIST(clist), COL_DEFAULT,
+					    GTK_JUSTIFY_CENTER);
+	gtk_clist_set_column_justification (GTK_CLIST(clist), COL_GETALL,
+					    GTK_JUSTIFY_CENTER);
 	gtk_clist_set_selection_mode (GTK_CLIST(clist), GTK_SELECTION_BROWSE);
 
 	for (i = 0; i < N_EDIT_ACCOUNT_COLS; i++)
@@ -518,6 +528,9 @@ static void account_edit_create(void)
 			    NULL);
 
 	PIXMAP_CREATE(clist, markxpm, markxpmmask, mark_xpm);
+	PIXMAP_CREATE(clist, checkboxonxpm, checkboxonxpmmask, checkbox_on_xpm);
+	PIXMAP_CREATE(clist, checkboxoffxpm, checkboxoffxpmmask,
+		      checkbox_off_xpm);
 
 	edit_account.window    = window;
 	edit_account.clist     = clist;
@@ -708,12 +721,12 @@ static gint account_clist_set_row(PrefsAccount *ac_prefs, gint row)
 {
 	GtkCList *clist = GTK_CLIST(edit_account.clist);
 	gchar *text[N_EDIT_ACCOUNT_COLS];
+	gboolean has_getallbox;
+	gboolean getall;
 
-	text[COL_DEFAULT] = ac_prefs->is_default ? "*" : "";
-	text[COL_GETALL] = (ac_prefs->protocol == A_POP3 ||
-			    ac_prefs->protocol == A_APOP) &&
-			    ac_prefs->recv_at_getall ? "*" : "";
-	text[COL_NAME] = ac_prefs->account_name;
+	text[COL_DEFAULT] = "";
+	text[COL_GETALL]  = "";
+	text[COL_NAME]    = ac_prefs->account_name;
 #if USE_SSL
 	text[COL_PROTOCOL] = ac_prefs->protocol == A_POP3 ?
 			     (ac_prefs->ssl_pop ? "POP3 (SSL)" : "POP3") :
@@ -744,12 +757,19 @@ static gint account_clist_set_row(PrefsAccount *ac_prefs, gint row)
 		gtk_clist_set_text(clist, row, COL_SERVER, text[COL_SERVER]);
 	}
 
-	if (*text[COL_DEFAULT])
+	has_getallbox = (ac_prefs->protocol == A_POP3 ||
+			 ac_prefs->protocol == A_APOP);
+	getall = has_getallbox && ac_prefs->recv_at_getall;
+
+	if (ac_prefs->is_default)
 		gtk_clist_set_pixmap(clist, row, COL_DEFAULT,
 				     markxpm, markxpmmask);
-	if (*text[COL_GETALL])
+	if (getall)
 		gtk_clist_set_pixmap(clist, row, COL_GETALL,
-				     markxpm, markxpmmask);
+				     checkboxonxpm, checkboxonxpmmask);
+	else if (has_getallbox)
+		gtk_clist_set_pixmap(clist, row, COL_GETALL,
+				     checkboxoffxpm, checkboxoffxpmmask);
 
 	gtk_clist_set_row_data(clist, row, ac_prefs);
 

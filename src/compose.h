@@ -127,6 +127,8 @@ struct _Compose
 
 	GtkItemFactory *popupfactory;
 
+	GtkWidget *tmpl_menu;
+
 	ComposeMode mode;
 
 	MsgInfo *targetinfo;
@@ -222,5 +224,6 @@ void compose_entry_append	(Compose	  *compose,
 				 const gchar	  *address,
 				 ComposeEntryType  type);
 gint compose_send(Compose *compose);
+void compose_reflect_prefs_all	(void);
 
 #endif /* __COMPOSE_H__ */

@@ -150,6 +150,7 @@ gint path_cmp		(const gchar	*s1,
 gchar *strretchomp	(gchar		*str);
 gchar *strtailchomp	(gchar		*str,
 			 gchar		 tail_char);
+gchar *strcrchomp	(gchar		*str);
 gchar *strcasestr	(const gchar	*haystack,
 			 const gchar	*needle);
 gchar *strncpy2		(gchar		*dest,
@@ -227,12 +228,17 @@ gchar *strrchr_with_skip_quote		(const gchar	*str,
 					 gint		 quote_chr,
 					 gint		 c);
 void extract_address			(gchar		*str);
+
 GSList *address_list_append		(GSList		*addr_list,
 					 const gchar	*str);
 GSList *references_list_append		(GSList		*msgid_list,
 					 const gchar	*str);
 GSList *newsgroup_list_append		(GSList		*group_list,
 					 const gchar	*str);
+
+GList *add_history			(GList		*list,
+					 const gchar	*str);
+
 void remove_return			(gchar		*str);
 void remove_space			(gchar		*str);
 void unfold_line			(gchar		*str);
@@ -256,6 +262,7 @@ gchar *get_news_cache_dir	(void);
 gchar *get_imap_cache_dir	(void);
 gchar *get_mbox_cache_dir	(void);
 gchar *get_mime_tmp_dir		(void);
+gchar *get_template_dir		(void);
 gchar *get_tmp_file		(void);
 gchar *get_domain_name		(void);
 

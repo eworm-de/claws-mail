@@ -6,7 +6,6 @@ TODO
 o POP before SMTP
 o original icons and logos
 o autosave
-o template function
 o speed-up of filtering
 o regular expression support at filtering
 o support for some formats other than MH and mbox (ex. Maildir)
@@ -68,3 +67,4 @@ Implemented features
 * SSL support
 * LDAP support
 * full-text search of messages (plain)
+* template function

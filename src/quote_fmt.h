@@ -1,9 +1,12 @@
-#ifndef QUOTE_FMT_H
+#ifndef __QUOTE_FMT_H__
 
-#define QUOTE_FMT_H
+#define __QUOTE_FMT_H__
 
-gchar * quote_fmt_get_buffer();
-void quote_fmt_init(MsgInfo * info, gchar * my_quote_str);
-int quote_fmtparse(void);
+#define quote_fmt_parse	quote_fmtparse
 
-#endif
+gchar *quote_fmt_get_buffer(void);
+void quote_fmt_init(MsgInfo *info, gchar *my_quote_str);
+gint quote_fmtparse(void);
+void quote_fmt_scan_string(const gchar *str);
+
+#endif /* __QUOTE_FMT_H__ */

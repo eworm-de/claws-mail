@@ -76,6 +76,7 @@ Wanderlust 等の Emacs 系メーラを参考にしており、キーボードのみによる操作
 	o 送信待機機能
 	o 自動メールチェック機能
 	o 草稿機能
+	o テンプレート機能
 	o 自動改行機能
 	o クリッカブル URI
 	o XML ベースのアドレス帳
@@ -110,16 +111,16 @@ Wanderlust 等の Emacs 系メーラを参考にしており、キーボードのみによる操作
 環境変数を指定しなければなりません(日本語 Linux ディストリビューション
 の場合は大抵すでに設定されています)。例えば、
 
-% export LANG=ja_JP.eucJP
+% export LANG=ja_JP.eucJP	(sh, bash etc.)
 
 または
 
-% setenv LANG ja_JP.eucJP
+% setenv LANG ja_JP.eucJP	(csh, tcsh etc.)
 
 (ja_JP.eucJP は適切なロカール名に置き換えてください。)
 
-翻訳されたメッセージの方が良ければ、 LANG と同様に LC_MESSAGES も指定して
-ください。
+翻訳されたメッセージが必要なければ、 LC_MESSAGES を "C" に指定して
+ください(LC_ALL が指定されていれば外してください)。
 
 起動方法
 --------

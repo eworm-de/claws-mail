@@ -69,9 +69,6 @@ struct _PrefsCommon
 	gchar *outgoing_charset;
 
 	/* Compose */
-	gboolean reply_with_quote;
-	gchar *quotemark;
-	gchar *quotefmt;
 	gboolean auto_sig;
 	gchar *sig_sep;
 	gint linewrap_len;
@@ -82,6 +79,11 @@ struct _PrefsCommon
 	gboolean forward_account_autosel;
 	gboolean reedit_account_autosel;
 	gboolean show_ruler;
+
+	/* Quote */
+	gboolean reply_with_quote;
+	gchar *quotemark;
+	gchar *quotefmt;
 	gchar *fw_quotemark;
 	gchar *fw_quotefmt;
 	gboolean forward_as_attachment;
@@ -176,6 +178,9 @@ struct _PrefsCommon
 	/* MIME viewer */
 	gchar *mime_image_viewer;
 	gchar *mime_audio_player;
+	gchar *mime_open_cmd;
+
+	GList *mime_open_cmd_history;
 
 	/* Privacy */
 	gboolean default_encrypt;
@@ -217,6 +222,6 @@ void prefs_common_read_config	(void);
 void prefs_common_save_config	(void);
 void prefs_common_open		(void);
 
-void prefs_summary_display_item_set	(void);
+void prefs_quote_description	(void);
 
 #endif /* __PREFS_COMMON_H__ */
