@@ -165,7 +165,7 @@ static void addrindex_build_if_list( AddressIndex *addrIndex ) {
 	addrIndex->interfaceList = g_list_append( addrIndex->interfaceList, iface );
 	ADDRITEM_PARENT(iface) = ADDRITEM_OBJECT(addrIndex);
 
-	iface = addrindex_create_interface( ADDR_IF_VCARD, "V-Card", TAG_IF_VCARD, TAG_DS_VCARD );
+	iface = addrindex_create_interface( ADDR_IF_VCARD, "vCard", TAG_IF_VCARD, TAG_DS_VCARD );
 	iface->getModifyFlag = ( void * ) vcard_get_modified;
 	iface->getAccessFlag = ( void * ) vcard_get_accessed;
 	iface->getReadFlag   = ( void * ) vcard_get_read_flag;

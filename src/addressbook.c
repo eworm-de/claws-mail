@@ -346,7 +346,7 @@ static GtkItemFactoryEntry addressbook_entries[] =
 {
 	{N_("/_File"),			NULL,		NULL, 0, "<Branch>"},
 	{N_("/_File/New _Book"),	"<alt>B",	addressbook_new_book_cb,        0, NULL},
-	{N_("/_File/New _V-Card"),	"<alt>D",	addressbook_new_vcard_cb,       0, NULL},
+	{N_("/_File/New _vCard"),	"<alt>D",	addressbook_new_vcard_cb,       0, NULL},
 #ifdef USE_JPILOT
 	{N_("/_File/New _J-Pilot"),	"<alt>J",	addressbook_new_jpilot_cb,      0, NULL},
 #endif
@@ -381,7 +381,7 @@ static GtkItemFactoryEntry addressbook_entries[] =
 	{N_("/_Edit/_Paste"),		"<ctl>V",	NULL,                           0, NULL},
 	{N_("/_Tools"),			NULL,		NULL, 0, "<Branch>"},
 	{N_("/_Tools/Import _Mozilla"),	NULL,           NULL,				0, NULL},
-	{N_("/_Tools/Import _V-Card"),	NULL,           NULL,				0, NULL},
+	{N_("/_Tools/Import _vCard"),	NULL,           NULL,				0, NULL},
 	{N_("/_Tools/---"),		NULL,		NULL, 0, "<Separator>"},
 	{N_("/_Tools/Export _LDIF"),	NULL,           NULL,				0, NULL},
 	{N_("/_Tools/Export V-_Card"),	NULL,           NULL,				0, NULL},
@@ -1005,7 +1005,7 @@ static void addressbook_to_clicked(GtkButton *button, gpointer data)
 
 static void addressbook_menubar_set_sensitive( gboolean sensitive ) {
 	menu_set_sensitive( addrbook.menu_factory, "/File/New Book",    sensitive );
-	menu_set_sensitive( addrbook.menu_factory, "/File/New V-Card",  sensitive );
+	menu_set_sensitive( addrbook.menu_factory, "/File/New vCard",  sensitive );
 #ifdef USE_JPILOT
 	menu_set_sensitive( addrbook.menu_factory, "/File/New J-Pilot", sensitive );
 #endif
@@ -3128,19 +3128,19 @@ void addrbookctl_build_map( GtkWidget *window ) {
 	g_hash_table_insert( _addressBookTypeHash_, &atci->objectType, atci );
 	_addressBookTypeList_ = g_list_append( _addressBookTypeList_, atci );
 
-	/* V-Card */
+	/* vCard */
 	atci = g_new0( AddressTypeControlItem, 1 );
 	atci->objectType = ADDR_VCARD;
 	atci->interfaceType = ADDR_IF_VCARD;
 	atci->showInTree = TRUE;
 	atci->treeExpand = TRUE;
 	atci->treeLeaf = TRUE;
-	atci->displayName = _( "V-Card" );
+	atci->displayName = _( "vCard" );
 	atci->iconXpm = vcardxpm;
 	atci->maskXpm = vcardxpmmask;
 	atci->iconXpmOpen = vcardxpm;
 	atci->maskXpmOpen = vcardxpmmask;
-	atci->menuCommand = "/File/New V-Card";
+	atci->menuCommand = "/File/New vCard";
 	g_hash_table_insert( _addressBookTypeHash_, &atci->objectType, atci );
 	_addressBookTypeList_ = g_list_append( _addressBookTypeList_, atci );
 

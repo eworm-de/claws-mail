@@ -70,7 +70,7 @@ typedef struct {
 	Compose *compose;
 	GtkWidget *combo;
 	GtkWidget *entry;
-} compose_headerentry;
+} ComposeHeaderEntry;
 
 struct _Compose
 {
@@ -136,9 +136,9 @@ struct _Compose
 	MsgInfo *replyinfo;
 
 	GtkWidget *header_table;
-	GSList *header_list;
-	guint header_nextrow;
-	compose_headerentry *header_last;
+	GSList    *header_list;
+	guint	   header_nextrow;
+	ComposeHeaderEntry *header_last;
 
 	gchar	*replyto;
 	gchar	*cc;
@@ -185,7 +185,7 @@ struct _Compose
         GtkPspell *gtkpspell;
 #endif
 
-	gchar * bounce_filename;
+	gchar *bounce_filename;
 };
 
 struct _AttachInfo
@@ -197,37 +197,39 @@ struct _AttachInfo
 	off_t size;
 };
 
-Compose * compose_new		(PrefsAccount	*account);
+Compose *compose_new			(PrefsAccount	*account);
 
-Compose * compose_new_with_recipient	(PrefsAccount	*account,
+Compose *compose_new_with_recipient	(PrefsAccount	*account,
 					 const gchar	*to);
 
-Compose * compose_new_with_folderitem	(PrefsAccount	*account,
+Compose *compose_new_with_folderitem	(PrefsAccount	*account,
 					 FolderItem	*item);
 
-void compose_followup_and_reply_to (MsgInfo	*msginfo,
-				    gboolean	 quote,
-				    gboolean	 to_all,
-				    gboolean	 ignore_replyto);
-void compose_reply		(MsgInfo	*msginfo,
-				 gboolean	 quote,
-				 gboolean	 to_all,
-				 gboolean	 ignore_replyto);
-Compose * compose_forward	(PrefsAccount *account,
-				 MsgInfo	*msginfo,
-				 gboolean	 as_attach);
-Compose * compose_forward_multiple(PrefsAccount * account, 
-			  GSList *msginfo_list);
-Compose * compose_bounce(PrefsAccount *account, MsgInfo *msginfo);
-			  
-void compose_reedit		(MsgInfo	*msginfo);
+void compose_followup_and_reply_to	(MsgInfo	*msginfo,
+					 gboolean	 quote,
+					 gboolean	 to_all,
+					 gboolean	 ignore_replyto);
+void compose_reply			(MsgInfo	*msginfo,
+					 gboolean	 quote,
+					 gboolean	 to_all,
+					 gboolean	 ignore_replyto);
+Compose *compose_forward		(PrefsAccount *account,
+					 MsgInfo	*msginfo,
+					 gboolean	 as_attach);
+Compose *compose_forward_multiple	(PrefsAccount	*account, 
+					 GSList		*msginfo_list);
+Compose *compose_bounce			(PrefsAccount	*account,
+					 MsgInfo	*msginfo);
+void compose_reedit			(MsgInfo	*msginfo);
 
-GList *compose_get_compose_list	(void);
+GList *compose_get_compose_list		(void);
 
-void compose_entry_append	(Compose	  *compose,
-				 const gchar	  *address,
-				 ComposeEntryType  type);
-gint compose_send(Compose *compose);
-void compose_reflect_prefs_all	(void);
+void compose_entry_append		(Compose	  *compose,
+					 const gchar	  *address,
+					 ComposeEntryType  type);
+
+gint compose_send			(Compose	  *compose);
+
+void compose_reflect_prefs_all		(void);
 
 #endif /* __COMPOSE_H__ */
