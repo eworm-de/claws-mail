@@ -27,7 +27,7 @@
 #include "matcher.h"
 #include "intl.h"
 #include "matcher_parser.h"
-#include "prefs.h"
+#include "prefs_gtk.h"
 
 struct _MatchParser {
 	gint id;

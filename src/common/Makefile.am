@@ -1,14 +1,14 @@
 noinst_LTLIBRARIES = libsylpheedcommon.la
 
 libsylpheedcommon_la_SOURCES = \
-	intl.h \
-	defs.h \
-	version.h \
 	base64.c base64.h \
+	defs.h \
 	hooks.c hooks.h \
+	intl.h \
 	log.c log.h \
 	md5.c md5.h \
 	nntp.c nntp.h \
+	prefs.c prefs.h \
 	quoted-printable.c quoted-printable.h \
 	session.c session.h \
 	smtp.c smtp.h \
@@ -18,6 +18,7 @@ libsylpheedcommon_la_SOURCES = \
 	sylpheed.c sylpheed.h \
 	template.c template.h \
 	utils.c utils.h \
+	version.h \
 	uuencode.c uuencode.h
 
 INCLUDES = \

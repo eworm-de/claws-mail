@@ -35,3 +35,6 @@ gtkstext.[ch]		gtk/gtkstext.[ch]	ok
 gtkshruler.[ch]		gtk/gtkshruler.[ch]	ok
 
 manage_window.[ch]	gtk/manage_window.[ch]	ok
+
+prefs.[ch]		common/prefs.[ch]	
+			prefs_gtk.[ch]		not completed

@@ -33,7 +33,7 @@
 #include "summaryview.h"
 #include "menu.h"
 #include "account.h"
-#include "prefs.h"
+#include "prefs_gtk.h"
 #include "manage_window.h"
 #include "utils.h"
 #include "addr_compl.h"

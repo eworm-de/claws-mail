@@ -1,3 +1,32 @@
+2002-12-25 [christoph]	0.8.7claws8
+
+	* src/Makefile.am
+	* src/account.[ch]
+	* src/addrbook.c
+	* src/addressbook.c
+	* src/addrindex.c
+	* src/filtering.c
+	* src/folder.c
+	* src/matcher.c
+	* src/prefs.[ch]		** REMOVE **
+	* src/prefs_account.c
+	* src/prefs_actions.c
+	* src/prefs_common.c
+	* src/prefs_customheader.c
+	* src/prefs_display_header.c
+	* src/prefs_filtering.c
+	* src/prefs_folder_item.c
+	* src/prefs_gtk.[ch]		** NEW **
+	* src/prefs_matcher.c
+	* src/prefs_scoring.c
+	* src/prefs_summary_column.c
+	* src/procmime.c
+	* src/selective_download.c
+	* src/toolbar.c
+	* src/common/Makefile.am
+	* src/common/prefs.[ch]		** NEW **
+		split prefs.[ch] into prefs_gtk.[ch] and common/prefs.[ch]
+
 2002-12-24 [alfons]	0.8.7claws7
 
 	* src/summaryview.c
@@ -197,17 +226,17 @@
 2002-12-13 [christoph]	0.8.6claws109
 
 	* src/Makefile.am
-	* src/manage_window.[ch]
+	* src/manage_window.[ch] 	** REMOVE **
 	* src/gtk/Makefile.am
-	* src/gtk/manage_window.[ch]
+	* src/gtk/manage_window.[ch] 	** NEW **
 		move manage_window files to gtk directory
 
 2002-12-13 [christoph]	0.8.6claws108
 
 	* src/Makefile.am
-	* src/gtkshruler.[ch]
+	* src/gtkshruler.[ch]		** REMOVE **
 	* src/gtk/Makefile.am
-	* src/gtk/gtkshruler.[ch]
+	* src/gtk/gtkshruler.[ch]	** NEW **
 		move gtkshruler files to gtk directory
 
 2002-12-13 [christoph]	0.8.6claws107

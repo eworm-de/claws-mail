@@ -22,7 +22,7 @@
 
 #include <glib.h>
 
-#include "prefs.h"
+#include "prefs_gtk.h"
 #include "prefs_account.h"
 #include "folder.h"
 

@@ -35,7 +35,7 @@
 #include "folderview.h"
 #include "folder.h"
 #include "account.h"
-#include "prefs.h"
+#include "prefs_gtk.h"
 #include "prefs_account.h"
 #include "prefs_folder_item.h"
 #include "compose.h"

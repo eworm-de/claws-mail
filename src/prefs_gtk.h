@@ -17,8 +17,8 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __PREFS_H__
-#define __PREFS_H__
+#ifndef __PREFS_GTK_H__
+#define __PREFS_GTK_H__
 
 #include <glib.h>
 #include <gtk/gtkwidget.h>
@@ -30,9 +30,9 @@
 #include <stdio.h>
 
 typedef struct _PrefParam	PrefParam;
-typedef struct _PrefFile	PrefFile;
 typedef struct _PrefsDialog	PrefsDialog;
 
+#include "prefs.h"
 #include "account.h"
 
 #define VSPACING		10
@@ -63,11 +63,6 @@ struct _PrefParam {
 	GtkWidget    **widget;
 	DataSetFunc    data_set_func;
 	WidgetSetFunc  widget_set_func;
-};
-
-struct _PrefFile {
-	FILE *fp;
-	gchar *path;
 };
 
 struct _PrefsDialog 
@@ -171,7 +166,5 @@ void prefs_set_data_from_toggle	(PrefParam	*pparam);
 void prefs_set_toggle		(PrefParam	*pparam);
 void prefs_set_data_from_spinbtn(PrefParam	*pparam);
 void prefs_set_spinbtn		(PrefParam	*pparam);
-gboolean prefs_is_readonly(const gchar * path);
-gboolean prefs_rc_is_readonly(const gchar * rcfile);
 
 #endif /* __PREFS_H__ */

@@ -32,7 +32,7 @@
 
 #include "intl.h"
 #include "main.h"
-#include "prefs.h"
+#include "prefs_gtk.h"
 #include "account.h"
 #include "mainwindow.h"
 #include "manage_window.h"

@@ -41,7 +41,7 @@
 #include "utils.h"
 #include "xml.h"
 #include "mgutils.h"
-#include "prefs.h"
+#include "prefs_gtk.h"
 #include "codeconv.h"
 #include "stock_pixmap.h"
 #include "manage_window.h"

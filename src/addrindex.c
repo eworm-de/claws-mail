@@ -38,7 +38,7 @@
 #include "xml.h"
 
 #ifndef DEV_STANDALONE
-#include "prefs.h"
+#include "prefs_gtk.h"
 #include "codeconv.h"
 #endif
 

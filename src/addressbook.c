@@ -54,7 +54,7 @@
 #include "menu.h"
 #include "stock_pixmap.h"
 #include "xml.h"
-#include "prefs.h"
+#include "prefs_gtk.h"
 #include "procmime.h"
 #include "utils.h"
 #include "gtkutils.h"
