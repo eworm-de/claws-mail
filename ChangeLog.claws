@@ -1,3 +1,9 @@
+2004-08-31 [colin]	0.9.12cvs85
+
+	* src/folder.c
+		Fix memory corruption when entering procmsg_msginfo_free()
+		with unitialized msginfo. Thanks Valgrind.
+
 2004-08-29 [colin]	0.9.12cvs79
 
 	* src/mimeview.c

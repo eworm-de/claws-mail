@@ -2621,7 +2621,7 @@ static gint do_copy_msgs(FolderItem *dest, GSList *msglist, gboolean remove_sour
                 g_tuples_destroy(tuples);
 
 		if (num >= 0) {
-			MsgInfo *newmsginfo;
+			MsgInfo *newmsginfo = NULL;
 
 			if (folderscan) {
 				if (msginfo->msgid != NULL) {
