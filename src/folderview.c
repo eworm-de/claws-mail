@@ -769,6 +769,9 @@ static void folderview_scan_tree_func(Folder *folder, FolderItem *item,
 	else if (folder->type == F_IMAP && folder->account &&
 		 folder->account->recv_server)
 		rootpath = folder->account->recv_server;
+	else if (folder->type == F_NEWS && folder->account &&
+		 folder->account->nntp_server)
+		rootpath = folder->account->nntp_server;
 	else
 		return;
 
@@ -2507,17 +2510,10 @@ static void folderview_property_cb(FolderView *folderview, guint action,
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 
-#if CLAWS
-	prefs_folder_item_create(folderview, item);
-#else
-	/*
-	 * CLAWS: wait till Hiro has completed his stuff
-	 */
 	if (item->parent == NULL && item->folder->account)
 		account_open(item->folder->account);
 	else
-		prefs_folder_item_open(item);
-#endif	
+		prefs_folder_item_create(folderview, item);
 }
 
 static void folderview_recollapse_nodes(FolderView *folderview, GtkCTreeNode *node)

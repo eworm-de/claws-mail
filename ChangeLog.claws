@@ -1,3 +1,9 @@
+2003-01-10 [paul]	0.8.8claws76
+
+	* src/folderview.c
+		a sync from main which fixes the news account folders'
+		Properties bug
+
 2003-01-10 [christoph]	0.8.8claws75
 
 	* src/folder.c
