@@ -1,3 +1,10 @@
+2003-09-03 [paul]	0.9.4claws56
+
+	* src/plugins/clamav/clamav_plugin_gtk.c
+		gui tweaks: replace a label with a tooltip, modify the
+		text, use gtk_check_button_new(); instead of
+		gtk_check_button_new_with_label("");
+
 2003-09-02 [alfons]	0.9.4claws55
 
 	* src/gtk/filesel.c

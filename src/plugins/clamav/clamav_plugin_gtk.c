@@ -83,7 +83,7 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
   	GtkWidget *label6;
   	GtkWidget *save_folder;
   	GtkWidget *save_folder_select;
-	GtkWidget *label7;
+	GtkTooltips *save_folder_tip;
 
   	table = gtk_table_new (6, 3, FALSE);
 	gtk_widget_show(table);
@@ -98,20 +98,20 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 	gtk_label_set_justify(GTK_LABEL(label1), GTK_JUSTIFY_LEFT);
   	gtk_misc_set_alignment (GTK_MISC (label1), 0, 0.5);
 
-  	enable_clamav = gtk_check_button_new_with_label ("");
+  	enable_clamav = gtk_check_button_new();
 	gtk_widget_show (enable_clamav);
   	gtk_table_attach (GTK_TABLE (table), enable_clamav, 1, 2, 0, 1,
                     	  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     	  (GtkAttachOptions) (0), 0, 0);
 
-  	label2 = gtk_label_new(_("Enable archive content scanning"));
+  	label2 = gtk_label_new(_("Scan archive contents"));
 	gtk_widget_show (label2);
   	gtk_table_attach (GTK_TABLE (table), label2, 0, 1, 1, 2,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 2, 4);
   	gtk_misc_set_alignment (GTK_MISC (label2), 0, 0.5);
 
-  	enable_arc = gtk_check_button_new_with_label ("");
+  	enable_arc = gtk_check_button_new();
 	gtk_widget_show (enable_arc);
   	gtk_table_attach (GTK_TABLE (table), enable_arc, 1, 2, 1, 2,
                     	  (GtkAttachOptions) (GTK_FILL),
@@ -139,14 +139,14 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
 	gtk_widget_show (label4);
   	gtk_box_pack_start (GTK_BOX (hbox1), label4, FALSE, FALSE, 0);
 
-  	label5 = gtk_label_new(_("Receive infected messages"));
+  	label5 = gtk_label_new(_("Save infected messages"));
 	gtk_widget_show (label5);
  	gtk_table_attach (GTK_TABLE (table), label5, 0, 1, 5, 6,
                     	  (GtkAttachOptions) (GTK_FILL),
                     	  (GtkAttachOptions) (0), 2, 4);
   	gtk_misc_set_alignment (GTK_MISC (label5), 0, 0.5);
 
-  	recv_infected = gtk_check_button_new_with_label ("");
+  	recv_infected = gtk_check_button_new();
 	gtk_widget_show (recv_infected);
   	gtk_table_attach (GTK_TABLE (table), recv_infected, 1, 2, 5, 6,
                     	  (GtkAttachOptions) (GTK_FILL),
@@ -159,27 +159,25 @@ static void clamav_create_widget_func(PrefsPage * _page, GtkWindow *window, gpoi
                     	  (GtkAttachOptions) (0), 2, 4);
   	gtk_misc_set_alignment (GTK_MISC (label6), 0, 0.5);
 
+	save_folder_tip = gtk_tooltips_new();
   	save_folder = gtk_entry_new ();
 	gtk_widget_show (save_folder);
   	gtk_table_attach (GTK_TABLE (table), save_folder, 1, 2, 6, 7,
                     	  (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     	  (GtkAttachOptions) (0), 0, 0);
+	gtk_tooltips_set_tip(save_folder_tip, save_folder,
+			     _("Leave empty to use the default trash folder"),
+			     NULL);
 
   	save_folder_select = gtk_button_new_with_label (" ... ");
 	gtk_widget_show (save_folder_select);
   	gtk_table_attach (GTK_TABLE (table), save_folder_select, 2, 3, 6, 7,
                     	  (GtkAttachOptions) (0),
                     	  (GtkAttachOptions) (0), 0, 0);
+	gtk_tooltips_set_tip(save_folder_tip, save_folder_select,
+			     _("Leave empty to use the default trash folder"),
+			     NULL);
 
-	label7 =
-	    gtk_label_new(_("Leave empty to use the default trash folder"));
-	gtk_widget_show(label7);
-	gtk_table_attach(GTK_TABLE(table), label7, 1, 2, 7, 8,
-			 (GtkAttachOptions) (GTK_FILL),
-			 (GtkAttachOptions) (0), 0, 0);
-	gtk_label_set_justify(GTK_LABEL(label7), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC(label7), 1, 0.5);
-	
 	config = clamav_get_config();
 
 	gtk_signal_connect(GTK_OBJECT(save_folder_select), "released", GTK_SIGNAL_FUNC(foldersel_cb), page);
