@@ -5,7 +5,9 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
-#include <errno.h>
+#ifndef WIN32
+# include <errno.h>
+#endif
 #include "jconv.h"
 
 #define DEBUG_DO(x)

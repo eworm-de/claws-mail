@@ -97,6 +97,7 @@ Name: "{group}\links\Sylpheed-patches";                         Filename: "{app}
 [Registry]
 Root: HKCU; Subkey: "Software\Sylpheed";                        Flags: uninsdeletekey; Tasks: reg_sylpheed
 Root: HKCU; Subkey: "Software\Sylpheed";                                                        ValueType: string;      ValueName: "InstalledDir";      ValueData: "{app}";             Tasks: reg_sylpheed
+Root: HKCU; Subkey: "Software\Sylpheed";                                                        ValueType: string;      ValueName: "HomeDir";           ValueData: "{userappdata}";             Tasks: reg_sylpheed
 
 Root: HKCR; Subkey: "mailto";                                   Flags: uninsclearvalue; Tasks: reg_defaultmailer
 Root: HKCR; Subkey: "mailto";                                                                   ValueType: string;      ValueName: "";                  ValueData: "URL:MailTo-Protocol";                       Flags: uninsclearvalue; Tasks: reg_defaultmailer

@@ -1,3 +1,20 @@
+2002-09-23 [thorsten]	0.7.8claws92-1
+
+	* libjconv/conv.c
+	  src/mgutils.c
+	  src/prefs_actions.c
+	  src/utils.[ch]
+	  win32/sylpheed.dsp
+	  win32/sylpheed.mak
+	  win32/sylpheed_debug.dsp
+	  win32/sylpheed_debug.mak
+	  	actions: use msvcrt instead of libc to allow pipes,
+		non-pipe actions now working
+	* win32/utils/sylpheed-setup.iss
+		changed default HomeDir
+	* src/procmime.c
+		crashfix
+
 2002-07-19 [thorsten]	0.7.8claws74-3
 
 	* src/mimeview.c

@@ -357,6 +357,7 @@ wchar_t *wcsncpy (wchar_t *dest, const wchar_t *src, size_t n)
 }
 #endif
 
+#ifndef WIN32	/* MSVCRT */
 /* Duplicate S, returning an identical malloc'd string. */
 wchar_t *wcsdup(const wchar_t *s)
 {
@@ -370,6 +371,7 @@ wchar_t *wcsdup(const wchar_t *s)
 
 	return new_str;
 }
+#endif
 
 /* Duplicate no more than N wide-characters of S,
    returning an identical malloc'd string. */
@@ -2999,33 +3001,13 @@ void locale_from_utf8(gchar **buf){
 	}
 }
 
-/* Win2000/XP Problem :
- * All POP3 receiving functions from inc.c dont continue
- * until the application gets triggered by external events 
- * (e.g. mouse/keybd). Background scans simply time out.
- * A quick fix is creating a permanent dummy timer
- */
-
-gboolean isW2K(void) {
-	return TRUE;
-/*
-	DWORD dwVersion,dwWindowsMajorVersion;
-	dwVersion = GetVersion();
- 
-	dwWindowsMajorVersion =  (DWORD)(LOBYTE(LOWORD(dwVersion)));
-	return( (dwVersion < 0x80000000) 
-		&& (dwWindowsMajorVersion > 4) );
-*/
-}
-
+/* glib otherwise gets stuck on pop3 */
 void start_mswin_helper(void) {
-	if (isW2K())
-		mswin_helper_timeout_tag = gtk_timeout_add( 1, mswin_helper_timeout_cb, NULL );
+	mswin_helper_timeout_tag = gtk_timeout_add( 1, mswin_helper_timeout_cb, NULL );
 }
 
 void stop_mswin_helper(void) {
-	if (isW2K())
-		gtk_timeout_remove( mswin_helper_timeout_tag );
+	gtk_timeout_remove( mswin_helper_timeout_tag );
 }
 
 static gint mswin_helper_timeout_cb(gpointer *data) {

@@ -208,6 +208,17 @@ static void update_io_dialog		(Children	*children);
 static void hide_io_dialog_cb		(GtkWidget	*widget,
 					 gpointer	 data);
 
+#ifdef WIN32
+static gboolean catch_output		(GIOChannel		 *channel,
+					 GIOCondition		 cond,
+					 gpointer		 data);
+static gboolean catch_input		(GIOChannel		 *channel,
+					 GIOCondition		 cond,
+					 gpointer		 data);
+static gboolean catch_status		(GIOChannel		 *channel,
+					 GIOCondition		 cond,
+					 gpointer		 data);
+#else
 static void catch_output		(gpointer		 data,
 					 gint			 source,
 					 GdkInputCondition	 cond);
@@ -217,6 +228,7 @@ static void catch_input			(gpointer		 data,
 static void catch_status		(gpointer		 data,
 					 gint			 source,
 					 GdkInputCondition	 cond);
+#endif
 
 void prefs_actions_open(MainWindow *mainwin)
 {
@@ -1211,6 +1223,9 @@ static gboolean execute_actions(gchar *action, GtkWidget *window,
 		g_free(children);
 		if (!(action_type & ACTION_ASYNC) && window) {
 			gtk_widget_set_sensitive(window, TRUE);
+#ifdef WIN32
+			return is_ok;
+#endif
 		}
 	} else {
 		GSList *cur;
@@ -1224,9 +1239,15 @@ static gboolean execute_actions(gchar *action, GtkWidget *window,
 		for (cur = children_list; cur; cur = cur->next) {
 			child_info = (ChildInfo *) cur->data;
 			child_info->tag_status = 
+#ifdef WIN32
+				g_io_add_watch(g_io_channel_unix_new( child_info->chld_status ),
+					      G_IO_IN | G_IO_PRI | G_IO_ERR | G_IO_HUP,
+					      catch_status, child_info);
+#else
 				gdk_input_add(child_info->chld_status,
 					      GDK_INPUT_READ,
 					      catch_status, child_info);
+#endif
 		}
 		children->timer = children->open_in ? 0 :
 				  gtk_timeout_add(WAIT_LAP, wait_for_children,
@@ -1318,6 +1339,7 @@ ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 			))
 		{ perror("CreateProcess"); }
 
+		pid = pi.dwProcessId;
 		write(chld_status[1], "0\n", 2);
 		close(chld_status[1]);
 	}
@@ -1425,11 +1447,19 @@ ChildInfo *fork_child(gchar *cmd, gint action_type, GtkWidget *text,
 	child_info->chld_err    = chld_err[0];
 	child_info->chld_status = chld_status[0];
 	child_info->tag_in      = -1;
+#ifdef WIN32
+	child_info->tag_out     = g_io_add_watch(g_io_channel_unix_new( chld_out[0] ),
+						 G_IO_IN | G_IO_PRI | G_IO_ERR | G_IO_HUP,
+						 catch_output, child_info);
+	child_info->tag_err     = g_io_add_watch(g_io_channel_unix_new( chld_err[0] ),
+						 G_IO_IN | G_IO_PRI | G_IO_ERR | G_IO_HUP,
+						 catch_output, child_info);
+#else
 	child_info->tag_out     = gdk_input_add(chld_out[0], GDK_INPUT_READ,
 						catch_output, child_info);
 	child_info->tag_err     = gdk_input_add(chld_err[0], GDK_INPUT_READ,
 						catch_output, child_info);
-
+#endif
 	if (!(action_type & (ACTION_PIPE_IN | ACTION_PIPE_OUT)))
 		return child_info;
 
@@ -1541,9 +1571,15 @@ static void send_input(GtkWidget *w, gpointer data)
 	Children *children = (Children *) data;
 	ChildInfo *child_info = (ChildInfo *) children->list->data;
 
+#ifdef WIN32
+	g_io_add_watch(g_io_channel_unix_new(child_info->chld_in ),
+					     G_IO_OUT | G_IO_PRI | G_IO_ERR | G_IO_HUP,
+					     catch_input, children);
+#else
 	child_info->tag_in = gdk_input_add(child_info->chld_in,
 					   GDK_INPUT_WRITE,
 					   catch_input, children);
+#endif
 	gtk_widget_set_sensitive(children->input_hbox, FALSE);
 }
 
@@ -1569,10 +1605,12 @@ static void hide_io_dialog_cb(GtkWidget *w, gpointer data)
 
 static void childinfo_close_pipes(ChildInfo *child_info)
 {
+#ifndef WIN32
 	if (child_info->tag_in > 0)
 		gdk_input_remove(child_info->tag_in);
 	gdk_input_remove(child_info->tag_out);
 	gdk_input_remove(child_info->tag_err);
+#endif
 
 	if (child_info->chld_in >= 0)
 		close(child_info->chld_in);
@@ -1745,15 +1783,22 @@ static void create_io_dialog(Children *children)
 	gtk_widget_show(dialog);
 }
 
+#ifdef WIN32
+static gboolean catch_status(GIOChannel *channel, GIOCondition cond, gpointer data)
+#else
 static void catch_status(gpointer data, gint source, GdkInputCondition cond)
+#endif
 {
 	ChildInfo *child_info = (ChildInfo *)data;
 	gchar buf;
 	gint c;
 
+#ifdef WIN32
+	g_io_channel_read(channel, &buf, 1, &c);
+#else
 	gdk_input_remove(child_info->tag_status);
-
 	c = read(source, &buf, 1);
+#endif
 	debug_print(_("Child returned %c\n"), buf);
 
 	waitpid(-child_info->pid, NULL, 0);
@@ -1761,9 +1806,16 @@ static void catch_status(gpointer data, gint source, GdkInputCondition cond)
 	child_info->pid = 0;
 
 	wait_for_children(child_info->children);
+#ifdef WIN32
+	return FALSE;
+#endif
 }
 	
+#ifdef WIN32
+static gboolean catch_input(GIOChannel *channel, GIOCondition cond, gpointer data)
+#else
 static void catch_input(gpointer data, gint source, GdkInputCondition cond)
+#endif
 {
 	Children *children = (Children *)data;
 	ChildInfo *child_info = (ChildInfo *)children->list->data;
@@ -1772,9 +1824,15 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 
 	debug_print(_("Sending input to grand child.\n"));
 	if (!(cond && GDK_INPUT_WRITE))
+#ifdef WIN32
+		return FALSE;
+#else
 		return;
+#endif
 
+#ifndef WIN32
 	gdk_input_remove(child_info->tag_in);
+#endif
 	child_info->tag_in = -1;
 
 	input = gtk_editable_get_chars(GTK_EDITABLE(children->input_entry),
@@ -1788,13 +1846,23 @@ static void catch_input(gpointer data, gint source, GdkInputCondition cond)
 	gtk_entry_set_text(GTK_ENTRY(children->input_entry), "");
 	gtk_widget_set_sensitive(children->input_hbox, TRUE);
 	debug_print(_("Input to grand child sent.\n"));
+#ifdef WIN32
+	return FALSE;
+#endif
 }
 
+#ifdef WIN32
+static gboolean catch_output(GIOChannel *channel, GIOCondition cond, gpointer data)
+#else
 static void catch_output(gpointer data, gint source, GdkInputCondition cond)
+#endif
 {
 	ChildInfo *child_info = (ChildInfo *)data;
 	gint c, i;
 	gchar buf[PREFSBUFSIZE];
+#ifdef WIN32
+	gint source = g_io_channel_unix_get_fd(channel);
+#endif
 
 	debug_print(_("Catching grand child's output.\n"));
 	if (child_info->type & ACTION_PIPE_OUT
@@ -1828,4 +1896,7 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 		if (c > 0)
 			child_info->new_out = TRUE;
 	}
+#ifdef WIN32
+	return FALSE;
+#endif
 }

@@ -182,7 +182,7 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /ML /W3 /GX /O2 /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /Fp"$(INTDIR)\sylpheed.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /Fp"$(INTDIR)\sylpheed.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
 RSC_PROJ=/l 0x411 /fo"$(INTDIR)\sylpheed.res" /d "NDEBUG" 
 BSC32=bscmake.exe
@@ -190,7 +190,7 @@ BSC32_FLAGS=/nologo /o"$(OUTDIR)\sylpheed.bsc"
 BSC32_SBRS= \
 	
 LINK32=link.exe
-LINK32_FLAGS=wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /incremental:no /pdb:"$(OUTDIR)\sylpheed.pdb" /machine:I386 /out:"$(OUTDIR)\sylpheed.exe" 
+LINK32_FLAGS=wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:windows /incremental:no /pdb:"$(OUTDIR)\sylpheed.pdb" /machine:I386 /nodefaultlib:"libc.lib" /nodefaultlib:"libcd.lib" /nodefaultlib:"libcmt.lib" /nodefaultlib:"libcmtd.lib" /out:"$(OUTDIR)\sylpheed.exe" 
 LINK32_OBJS= \
 	"$(INTDIR)\about.obj" \
 	"$(INTDIR)\account.obj" \
@@ -271,6 +271,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\mutt.obj" \
 	"$(INTDIR)\news.obj" \
 	"$(INTDIR)\nntp.obj" \
+	"$(INTDIR)\noticeview.obj" \
 	"$(INTDIR)\passphrase.obj" \
 	"$(INTDIR)\pine.obj" \
 	"$(INTDIR)\pop.obj" \
@@ -337,8 +338,7 @@ LINK32_OBJS= \
 	"..\..\regex\regex.lib" \
 	"..\..\fnmatch\fnmatch.lib" \
 	"..\..\..\lib\libeay32.lib" \
-	"..\..\..\lib\ssleay32.lib" \
-	"$(INTDIR)\noticeview.obj"
+	"..\..\..\lib\ssleay32.lib"
 
 "$(OUTDIR)\sylpheed.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -721,6 +721,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mutt.sbr" \
 	"$(INTDIR)\news.sbr" \
 	"$(INTDIR)\nntp.sbr" \
+	"$(INTDIR)\noticeview.sbr" \
 	"$(INTDIR)\passphrase.sbr" \
 	"$(INTDIR)\pine.sbr" \
 	"$(INTDIR)\pop.sbr" \
@@ -774,8 +775,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\vcard.sbr" \
 	"$(INTDIR)\w32_mailcap.sbr" \
 	"$(INTDIR)\xml.sbr" \
-	"$(INTDIR)\xmlprops.sbr" \
-	"$(INTDIR)\noticeview.sbr"
+	"$(INTDIR)\xmlprops.sbr"
 
 "$(OUTDIR)\sylpheed.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -864,6 +864,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\mutt.obj" \
 	"$(INTDIR)\news.obj" \
 	"$(INTDIR)\nntp.obj" \
+	"$(INTDIR)\noticeview.obj" \
 	"$(INTDIR)\passphrase.obj" \
 	"$(INTDIR)\pine.obj" \
 	"$(INTDIR)\pop.obj" \
@@ -930,8 +931,7 @@ LINK32_OBJS= \
 	"..\..\regex\regex.lib" \
 	"..\..\fnmatch\fnmatch.lib" \
 	"..\..\..\lib\libeay32.lib" \
-	"..\..\..\lib\ssleay32.lib" \
-	"$(INTDIR)\noticeview.obj"
+	"..\..\..\lib\ssleay32.lib"
 
 "$(OUTDIR)\sylpheed_d.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<

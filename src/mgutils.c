@@ -23,6 +23,9 @@
 
 #include <glib.h>
 #include <stdio.h>
+#ifdef WIN32
+# include <stdlib.h>
+#endif
 #include <string.h>
 #include <ctype.h>
 

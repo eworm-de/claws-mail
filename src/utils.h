@@ -203,7 +203,9 @@ wchar_t *wcsncpy	(wchar_t       *dest,
 			 size_t		n);
 #endif
 
+#ifndef WIN32	/* MSVCRT */
 wchar_t *wcsdup			(const wchar_t *s);
+#endif
 wchar_t *wcsndup		(const wchar_t *s,
 				 size_t		n);
 wchar_t *strdup_mbstowcs	(const gchar   *s);
