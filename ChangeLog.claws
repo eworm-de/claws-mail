@@ -1,6 +1,12 @@
+2002-08-21 [darko]	0.8.1claws93
+
+	* src/procmsg.c
+		don't reset tmp flags for messages copied
+		to sent folder
+
 2002-08-21 [colin]	0.8.1claws92
 	
-	*src/prefs_filtering.c
+	* src/prefs_filtering.c
 		fix renaming rules on folder rename 
 		when folder is not a leaf folder
 
