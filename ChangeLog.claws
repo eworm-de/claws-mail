@@ -1,3 +1,15 @@
+2002-09-17 [christoph]	0.8.2claws54
+
+	* src/folder.c
+		initialize max values for cache and folder
+		when cache or folder is empty
+
+2002-09-15 [colin]	0.8.2claws53
+
+	* src/compose.c
+		Fix a leak (thanks Alfons!) and cleaned
+		variables names for custom headers
+
 2002-09-15 [colin]	0.8.2claws52
 
 	* src/compose.c

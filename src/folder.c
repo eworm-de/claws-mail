@@ -1027,8 +1027,10 @@ gint folder_item_scan(FolderItem *item)
 		cache_cur_num = ((MsgInfo *)cache_list_cur->data)->msgnum;
 		cache_list_last = g_slist_last(cache_list);
 		cache_max_num = ((MsgInfo *)cache_list_last->data)->msgnum;
-	} else
+	} else {
 		cache_cur_num = G_MAXINT;
+		cache_max_num = 0;
+	}
 
 	if (folder_list_cur != NULL) {
 		GSList *folder_list_last;
@@ -1036,8 +1038,10 @@ gint folder_item_scan(FolderItem *item)
 		folder_cur_num = GPOINTER_TO_INT(folder_list_cur->data);
 		folder_list_last = g_slist_last(folder_list);
 		folder_max_num = GPOINTER_TO_INT(folder_list_last->data);
-	} else
+	} else {
 		folder_cur_num = G_MAXINT;
+		folder_max_num = 0;
+	}
 
 	while ((cache_cur_num != G_MAXINT) || (folder_cur_num != G_MAXINT)) {
 		/*
