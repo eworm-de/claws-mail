@@ -269,7 +269,6 @@ void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data)
 		int i;
 		struct name_search name_search;
 		PrefsTreeNode *prefsnode;
-
 		for (i = 0; page->path[i] != NULL; i++) {
 			part = page->path[i];
 			name_search.text = part;

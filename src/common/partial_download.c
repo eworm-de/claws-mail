@@ -103,7 +103,7 @@ int partial_msg_in_uidl_list(MsgInfo *msginfo)
 		recv_time = RECV_TIME_NONE;
 		partial_recv = POP3_TOTALLY_RECEIVED;
 		
-		if (sscanf(buf, "%s\t%ld\t%s", uidl, &recv_time, &tmp) < 2) {
+		if (sscanf(buf, "%s\t%ld\t%s", uidl, &recv_time, tmp) < 2) {
 			if (sscanf(buf, "%s", uidl) != 1)
 				continue;
 			else {
@@ -184,7 +184,7 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 		sprintf(partial_recv,"0");
 		
 		if (sscanf(buf, "%s\t%ld\t%s", 
-			   uidl, &recv_time, &partial_recv) < 2) {
+			   uidl, &recv_time, partial_recv) < 2) {
 			if (sscanf(buf, "%s", uidl) != 1)
 				continue;
 			else {
@@ -347,7 +347,7 @@ gchar *partial_get_filename(const gchar *server, const gchar *login,
 		recv_time = RECV_TIME_NONE;
 		partial_recv = POP3_TOTALLY_RECEIVED;
 		
-		if (sscanf(buf, "%s\t%ld\t%s", uidl, &recv_time, &tmp) < 2) {
+		if (sscanf(buf, "%s\t%ld\t%s", uidl, &recv_time, tmp) < 2) {
 			if (sscanf(buf, "%s", uidl) != 1)
 				continue;
 			else {

@@ -1096,8 +1096,8 @@ gchar *folder_get_identifier(Folder *folder)
 
 gchar *folder_item_get_identifier(FolderItem *item)
 {
-	gchar *id;
-	gchar *folder_id;
+	gchar *id = NULL;
+	gchar *folder_id = NULL;
 
 	g_return_val_if_fail(item != NULL, NULL);
 	g_return_val_if_fail(item->path != NULL, NULL);
