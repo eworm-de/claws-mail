@@ -1,3 +1,10 @@
+2002-07-03 [christoph]	0.7.8claws45
+
+	* src/imap.c
+		better IMAP uid fetching using 'FETCH 1:* (UID)'
+	* src/msgcache.c
+		add missing return in msgcache_write
+
 2002-07-02 [thorsten]	0.7.8claws44
 
 	* src/jpilot.c
