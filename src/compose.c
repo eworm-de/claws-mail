@@ -167,6 +167,8 @@ static Compose *compose_create			(PrefsAccount	*account,
 static void compose_toolbar_create		(Compose	*compose,
 						 GtkWidget	*container);
 static void compose_toolbar_update              (Compose        *compose);
+static void compose_toolbar_set_sensitive       (Compose        *compose,
+						 gboolean	 sensitive);
 
 static GtkWidget *compose_account_option_menu_create
 						(Compose	*compose);
@@ -5209,6 +5211,33 @@ static void compose_toolbar_create(Compose   *compose,
 	gtk_widget_show_all(toolbar);
 }
 
+static void compose_toolbar_set_sensitive (Compose * compose, gboolean sensitive)
+{
+	GSList *items = compose->toolbar->t_action_list;
+	if (compose->toolbar->send_btn)
+		gtk_widget_set_sensitive(compose->toolbar->send_btn, sensitive);
+	if (compose->toolbar->sendl_btn)
+		gtk_widget_set_sensitive(compose->toolbar->sendl_btn, sensitive);
+	if (compose->toolbar->draft_btn )
+		gtk_widget_set_sensitive(compose->toolbar->draft_btn , sensitive);
+	if (compose->toolbar->insert_btn )
+		gtk_widget_set_sensitive(compose->toolbar->insert_btn , sensitive);
+	if (compose->toolbar->attach_btn)
+		gtk_widget_set_sensitive(compose->toolbar->attach_btn, sensitive);
+	if (compose->toolbar->sig_btn)
+		gtk_widget_set_sensitive(compose->toolbar->sig_btn, sensitive);
+	if (compose->toolbar->exteditor_btn)
+		gtk_widget_set_sensitive(compose->toolbar->exteditor_btn, sensitive);
+	if (compose->toolbar->linewrap_btn)
+		gtk_widget_set_sensitive(compose->toolbar->linewrap_btn, sensitive);
+	if (compose->toolbar->addrbook_btn)
+		gtk_widget_set_sensitive(compose->toolbar->addrbook_btn, sensitive);
+	for (; items != NULL; items = g_slist_next(items)) {
+		ToolbarSylpheedActions *item = (ToolbarSylpheedActions *)items->data;
+		gtk_widget_set_sensitive(item->widget, sensitive);
+	}
+}
+
 static GtkWidget *compose_account_option_menu_create(Compose *compose)
 {
 	GList *accounts;
@@ -6226,6 +6255,17 @@ static void attach_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	}
 }
 
+static void compose_allow_user_actions (Compose *compose, gboolean allow)
+{
+	GtkItemFactory *ifactory = gtk_item_factory_from_widget(compose->menubar);
+	compose_toolbar_set_sensitive(compose, allow);
+	menu_set_sensitive(ifactory, "/File", allow);
+	menu_set_sensitive(ifactory, "/Edit", allow);
+	menu_set_sensitive(ifactory, "/Message", allow);
+	menu_set_sensitive(ifactory, "/Tools", allow);
+	menu_set_sensitive(ifactory, "/Help", allow);
+}
+
 static void compose_send_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	Compose *compose = (Compose *)data;
@@ -6235,9 +6275,13 @@ static void compose_send_cb(gpointer data, guint action, GtkWidget *widget)
 		if (alertpanel(_("Offline warning"), 
 			       _("You're working offline. Override?"),
 			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
-		return;
-
+			return;
+	
+	compose_allow_user_actions (compose, FALSE);
+	compose->sending = TRUE;
 	val = compose_send(compose);
+	compose_allow_user_actions (compose, TRUE);
+	compose->sending = FALSE;
 
 	if (val == 0) gtk_widget_destroy(compose->window);
 }
@@ -6375,7 +6419,10 @@ static void compose_insert_file_cb(gpointer data, guint action,
 static gint compose_delete_cb(GtkWidget *widget, GdkEventAny *event,
 			      gpointer data)
 {
-	compose_close_cb(data, 0, NULL);
+	Compose *compose = (Compose *)data;
+	if (compose->sending)
+		return TRUE;
+	compose_close_cb(compose, 0, NULL);
 	return TRUE;
 }
 
@@ -6449,6 +6496,8 @@ static void compose_ext_editor_cb(gpointer data, guint action,
 
 static void compose_destroy_cb(GtkWidget *widget, Compose *compose)
 {
+	if (compose->sending)
+		return;
 	compose_destroy(compose);
 }
 

@@ -1,3 +1,8 @@
+2002-09-24 [colin]	0.8.3claws18
+
+	* src/compose.[ch]
+		Disable user actions when sending
+
 2002-09-24 [colin]	0.8.3claws17
 
 	* src/procmime.c
