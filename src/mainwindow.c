@@ -438,7 +438,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_File/Change folder order"),	NULL, foldersort_cb,  0, NULL},
 	{N_("/_File/_Import mbox file..."),	NULL, import_mbox_cb, 0, NULL},
 	{N_("/_File/_Export to mbox file..."),	NULL, export_mbox_cb, 0, NULL},
-	{N_("/_File/Empty all Trash folders"),	"<shift>D", empty_trash_cb, 0, NULL},
+	{N_("/_File/Empty all _Trash folders"),	"<shift>D", empty_trash_cb, 0, NULL},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Save as..."),		"<control>S", save_as_cb, 0, NULL},
 	{N_("/_File/_Print..."),		NULL, print_cb, 0, NULL},
