@@ -226,7 +226,6 @@ void       gtk_stext_set_point       (GtkSText       *text,
 guint      gtk_stext_get_point       (GtkSText       *text);
 guint      gtk_stext_get_length      (GtkSText       *text);
 void       gtk_stext_freeze          (GtkSText       *text);
-void       gtk_stext_compact_buffer  (GtkSText       *text);
 void       gtk_stext_thaw            (GtkSText       *text);
 void       gtk_stext_insert          (GtkSText       *text,
 				     GdkFont       *font,
@@ -241,7 +240,8 @@ gint       gtk_stext_forward_delete  (GtkSText       *text,
 
 /* SYLPHEED
  */
-void	   gtk_stext_set_blink (GtkSText *text, gboolean blinking_on);
+void	   gtk_stext_set_blink		(GtkSText *text, gboolean blinking_on);
+void       gtk_stext_compact_buffer	(GtkSText *text);
 
 /* Set the rmargin for the stext. if rmargin is 0, then reset to old 
  * behaviour */

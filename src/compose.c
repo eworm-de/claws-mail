@@ -2149,9 +2149,9 @@ compose_end:
 }
 
 /* return str length if text at start_pos matches str else return zero */
-static gint is_gtkstext_string(GtkSText *text, guint start_pos,
-			       guint text_len, gchar *str) {
-	gint is_str, i, str_len;
+static guint gtkstext_str_strcmp(GtkSText *text, guint start_pos,
+			         guint text_len, gchar *str) {
+	guint is_str, i, str_len;
 	gchar str_ch;
 
 	is_str = 0;
@@ -2171,16 +2171,85 @@ static gint is_gtkstext_string(GtkSText *text, guint start_pos,
 	return is_str ? str_len : 0;
 }
 
+/* return indent length */
+static guint get_indent_length(GtkSText *text, guint start_pos,
+			       guint text_len) {
+	gint indent_len = 0;
+	gint i, ch_len;
+	gchar cbuf[MB_CUR_MAX];
+
+	for (i = start_pos; i < text_len; i++) {
+		if (text->use_wchar)
+			ch_len = wctomb
+				(cbuf, (wchar_t)GTK_STEXT_INDEX(text, i));
+		else {
+			cbuf[0] = GTK_STEXT_INDEX(text, i);
+			ch_len = 1;
+		}
+		if (ch_len > 1)
+			break;
+		/* allow space, tab, > or | */
+		if (cbuf[0] != ' ' && cbuf[0] != '\t' &&
+		    cbuf[0] != '>' && cbuf[0] != '|')
+			break;
+		indent_len++;
+	}
+
+	return indent_len;
+}
+
+/* insert quotation string when line was wrapped, we know these
+   are single byte characters */
+static guint insert_quote(GtkSText *text, guint quote_len, guint indent_len,
+			  guint prev_line_pos, guint text_len,
+			  gchar *quote_fmt) {
+	guint i, ins_len;
+	gchar ch;
+
+	if (indent_len) {
+		for (i = 0; i < indent_len; i++) {
+			ch = GTK_STEXT_INDEX(text, prev_line_pos + i);
+			gtk_stext_insert(text, NULL, NULL, NULL, &ch, 1);
+		}
+		ins_len = indent_len;
+	}
+	else {
+		gtk_stext_insert(text, NULL, NULL, NULL, quote_fmt, quote_len);
+		ins_len = quote_len;
+	}
+
+	return ins_len;
+}
+
+/* compare gtkstext string at pos1 with string at pos2 for equality
+   (max. len chars) - we treat characters as single byte */
+static gint gtkstext_strncmp(GtkSText *text, guint pos1, guint pos2, guint len,
+			     guint tlen)
+{
+	guint i = 0;
+	gchar ch1, ch2;
+
+	for (; (i < len) && (pos1 + i < tlen) && (pos2 + i < tlen); i++) {
+		ch1 = GTK_STEXT_INDEX(text, pos1 + i);
+		ch2 = GTK_STEXT_INDEX(text, pos2 + i);
+		if (ch1 != ch2)
+			break;
+	}
+
+	return i;
+}
+
 static void compose_wrap_line_all(Compose *compose)
 {
 	GtkSText *text = GTK_STEXT(compose->text);
 	guint text_len;
-	guint line_pos = 0, cur_pos = 0;
+	guint line_pos = 0, cur_pos = 0, prev_line_pos = 0;
 	gint line_len = 0, cur_len = 0;
 	gint ch_len;
-	gint is_new_line = 1;
-	guint quote_len = 0;
+	gint is_new_line = 1, do_delete = 0;
+	guint quote_len = 0, indent_len = 0;
 	guint linewrap_quote = prefs_common.linewrap_quote;
+	guint linewrap_len = prefs_common.linewrap_len;
 	gchar *quote_fmt = prefs_common.quotemark;
 	gchar cbuf[MB_LEN_MAX];
 
@@ -2193,9 +2262,16 @@ static void compose_wrap_line_all(Compose *compose)
 
 	for (; cur_pos < text_len; cur_pos++) {
 		if (linewrap_quote && is_new_line) {
-			quote_len = is_gtkstext_string(text, cur_pos,
-						       text_len, quote_fmt);
+			quote_len = gtkstext_str_strcmp(text, cur_pos,
+						        text_len, quote_fmt);
 			is_new_line = 0;
+			if (quote_len) {
+				indent_len = get_indent_length(text, cur_pos,
+							       text_len);
+			}
+			else
+				indent_len = 0;
+			prev_line_pos = cur_pos;
 		}
 		if (text->use_wchar)
 			ch_len = wctomb
@@ -2206,9 +2282,90 @@ static void compose_wrap_line_all(Compose *compose)
 		}
 
 		if (ch_len == 1 && *cbuf == '\n') {
+			gint clen;
+			guint ilen;
+			gchar cb[MB_CUR_MAX];
+
+			/* if it's just quotation + newline skip it */
+			if (indent_len && (cur_pos + 1 < text_len)) {
+				ilen =  gtkstext_strncmp(text,
+							 cur_pos + 1,
+							 prev_line_pos,
+							 indent_len,
+							 text_len);
+				if (cur_pos + ilen < text_len) {
+					if (text->use_wchar)
+						clen = wctomb
+							(cb, (wchar_t)GTK_STEXT_INDEX(text, cur_pos + ilen + 1));
+					else {
+						cb[0] = GTK_STEXT_INDEX(text,
+							    cur_pos + ilen + 1);
+						clen = 1;
+					}
+					if ((clen == 1) && (cb[0] == '\n'))
+						do_delete = 0;
+				}
+			}
+
+			/* should we delete to perform smart wrapping */
+			if (quote_len && line_len < linewrap_len && do_delete) {
+				/* get rid of newline */
+				gtk_stext_set_point(text, cur_pos);
+				gtk_stext_forward_delete(text, 1);
+
+				/* if text starts with quote_fmt or with
+				   indent string, delete them */
+				if (indent_len) {
+					ilen =  gtkstext_strncmp(text, cur_pos,
+								 prev_line_pos,
+								 indent_len,
+								 text_len);
+					if (ilen) {
+						gtk_stext_forward_delete(text,
+									 ilen);
+						text_len -= ilen;
+					}
+				}
+				else if (quote_len) {
+					if (gtkstext_str_strcmp(text, cur_pos,
+							        text_len,
+							        quote_fmt)) {
+						gtk_stext_forward_delete(text,
+								 quote_len);
+						text_len-=quote_len;
+					}
+				}
+
+				if (text->use_wchar)
+					clen = wctomb
+						(cb, (wchar_t)GTK_STEXT_INDEX(text, cur_pos));
+				else {
+					cb[0] = GTK_STEXT_INDEX(text, cur_pos);
+					clen = 1;
+				}
+				/* insert space if it's alphanumeric */
+				if ((cur_pos != line_pos) &&
+				    ((clen > 1) || isalnum(cb[0]))) {
+					gtk_stext_insert(text, NULL, NULL,
+							 NULL, " ", 1);
+					gtk_stext_compact_buffer(text);
+					text_len++;
+				}
+
+				/* and start over with current line */
+				cur_pos = prev_line_pos - 1;
+				line_pos = cur_pos;
+				line_len = cur_len = 0;
+				quote_len = 0;
+				do_delete = 0;
+				is_new_line = 1;
+				continue;
+			}
+
 			line_pos = cur_pos + 1;
 			line_len = cur_len = 0;
 			quote_len = 0;
+			do_delete = 0;
 			is_new_line = 1;
 			continue;
 		}
@@ -2223,8 +2380,7 @@ static void compose_wrap_line_all(Compose *compose)
 			line_len = cur_len + ch_len;
 		}
 
-		if (cur_len + ch_len > prefs_common.linewrap_len &&
-		    line_len > 0) {
+		if (cur_len + ch_len > linewrap_len && line_len > 0) {
 			gint tlen;
 
 			if (text->use_wchar)
@@ -2245,6 +2401,7 @@ static void compose_wrap_line_all(Compose *compose)
 
 			gtk_stext_set_point(text, line_pos);
 			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
+			gtk_stext_compact_buffer(text);
 			text_len++;
 			cur_pos++;
 			line_pos++;
@@ -2252,15 +2409,25 @@ static void compose_wrap_line_all(Compose *compose)
 			line_len = 0;
 			if (linewrap_quote && quote_len) {
 				/* only if line is not already quoted */
-				if (!is_gtkstext_string(text, line_pos,
-						        text_len, quote_fmt)) {
-					gtk_stext_insert(text, NULL, NULL, NULL,
-						 	quote_fmt, quote_len);
+				if (!gtkstext_str_strcmp(text, line_pos,
+						         text_len, quote_fmt)) {
+					guint i_len;
+
+					i_len = insert_quote(text, quote_len,
+							     indent_len,
+							     prev_line_pos,
+							     text_len,
+							     quote_fmt);
+
 					gtk_stext_compact_buffer(text);
-					text_len += quote_len;
-					cur_pos += quote_len;
-					cur_len += quote_len;
-					line_len = quote_len;
+					text_len += i_len;
+					/* for loop above will increase it */
+					cur_pos = line_pos - 1;
+					cur_len = 0;
+					line_len = 0;
+					/* start over with current line */
+					is_new_line = 1;
+					do_delete = 1;
 				}
 			}
 			continue;

@@ -1,3 +1,10 @@
+2001-10-09 [darko]	0.6.3claws2
+
+	* src/gtkstext.[ch]
+		new name and mark with Sylpheed comment
+	* src/compose.c
+		smart quotation wrapping a-la VIM
+
 2001-10-08 [paul]	0.6.3claws1
 
 	* sync with sylpheed 0.6.3 release

@@ -999,6 +999,7 @@ gtk_stext_thaw (GtkSText *text)
   draw_cursor (text, FALSE);
 }
 
+/* SYLPHEED */
 void
 gtk_stext_compact_buffer (GtkSText    *text)
 {
