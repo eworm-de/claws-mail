@@ -369,7 +369,7 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 {
 	FILE *infp, *outfp;
 	gint len;
-	gchar *tmpfilename, *tmpout;
+	gchar *tmpfilename;
 	struct stat statbuf;
 
 	if (mimeinfo->encoding_type != ENC_UNKNOWN &&
@@ -385,27 +385,15 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 		return FALSE;
 	}
 
-	if (mimeinfo->content == MIMECONTENT_MEM) {
-		infp = get_tmpfile_in_dir(get_mime_tmp_dir(), &tmpout);
-		if (infp)
-			fclose(infp);
-		else
+	if (mimeinfo->content == MIMECONTENT_FILE) {
+		if ((infp = fopen(mimeinfo->data.filename, "rb")) == NULL) {
+			g_warning("Can't open file %s\n", mimeinfo->data.filename);
 			return FALSE;
-
-		str_write_to_file(mimeinfo->data.mem, tmpout);
-		g_free(mimeinfo->data.mem);
-		mimeinfo->tmp = TRUE;
-		mimeinfo->data.filename = tmpout;
-	}
-
-	if ((infp = fopen(mimeinfo->data.filename, "rb")) == NULL) {
-		g_warning("Can't open file %s\n", mimeinfo->data.filename);
-		if (mimeinfo->content == MIMECONTENT_MEM) {
-			unlink(mimeinfo->data.filename);
-			g_free(mimeinfo->data.filename);
-			mimeinfo->data.filename = NULL;
 		}
-		return FALSE;
+	} else if (mimeinfo->content == MIMECONTENT_MEM) {
+		infp = str_open_as_stream(mimeinfo->data.mem);
+		if (infp == NULL)
+			return FALSE;
 	}
 
 	if (encoding == ENC_BASE64) {
@@ -442,16 +430,22 @@ gboolean procmime_encode_content(MimeInfo *mimeinfo, EncodingType encoding)
 	fclose(outfp);
 	fclose(infp);
 
+	if (mimeinfo->content == MIMECONTENT_FILE) {
+		if (mimeinfo->tmp && (mimeinfo->data.filename != NULL))
+			unlink(mimeinfo->data.filename);
+		g_free(mimeinfo->data.filename);
+	} else if (mimeinfo->content == MIMECONTENT_MEM) {
+		if (mimeinfo->tmp && (mimeinfo->data.mem != NULL))
+			g_free(mimeinfo->data.mem);
+	}
+
 	stat(tmpfilename, &statbuf);
-	if (mimeinfo->tmp && (mimeinfo->data.filename != NULL))
-		unlink(mimeinfo->data.filename);
-	g_free(mimeinfo->data.filename);
+	mimeinfo->content = MIMECONTENT_FILE;
 	mimeinfo->data.filename = tmpfilename;
 	mimeinfo->tmp = TRUE;
 	mimeinfo->offset = 0;
 	mimeinfo->length = statbuf.st_size;
 	mimeinfo->encoding_type = encoding;
-	mimeinfo->content = MIMECONTENT_FILE;
 
 	return TRUE;
 }
