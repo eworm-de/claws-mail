@@ -1,3 +1,8 @@
+2004-09-27 [colin]	0.9.12cvs104.1
+
+	* src/main.c
+		Sync with HEAD (revert 0.9.12cvs101)
+
 2004-09-24 [colin]	0.9.12cvs103.2
 
 	* src/wizard.c

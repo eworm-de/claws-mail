@@ -495,10 +495,10 @@ static void exit_sylpheed(MainWindow *mainwin)
 
 	lock_socket_remove();
 
-	plugin_unload_all("GTK2");
-
 	main_window_destroy(mainwin);
 	
+	plugin_unload_all("GTK2");
+
 	prefs_toolbar_done();
 
 	addressbook_destroy();
