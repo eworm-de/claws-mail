@@ -1,3 +1,13 @@
+2004-06-28 [paul]	0.9.12
+
+	* Sylpheed-Claws 0.9.12 released
+
+	* po/es.po
+	  po/fr.po
+	  po/sk.po
+	  	updated by Ricardo Mones Lastra, Fabien Vantard,
+		Andrej Kacian
+
 2004-06-27 [paul]	0.9.11cvs19
 
 	* src/common/ssl.c
