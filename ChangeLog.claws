@@ -1,3 +1,9 @@
+2003-03-22 [christoph]	0.8.11claws42
+
+	* src/plugins/trayicon/trayicon.c
+		fix setting the transparent area when the window size
+		is forced by the system tray
+
 2003-03-22 [christoph]	0.8.11claws41
 
 	* src/plugins/trayicon/gnome-mail.xpm		** REMOVE **

@@ -55,25 +55,7 @@ typedef enum
 	TRAYICON_NOTHING,
 } TrayIconType;
 
-static gboolean mainwin_hidden = FALSE;
-
-static gboolean click_cb(GtkWidget * widget,
-			 GdkEventButton * event, gpointer user_data)
-{
-/*
-	MainWindow *mainwin;
-
-	mainwin = mainwindow_get_mainwindow();
-	if (mainwin_hidden) {
-		gtk_widget_show(mainwin->window);
-		mainwin_hidden = FALSE;
-	} else {
-		gtk_widget_hide(mainwin->window);
-		mainwin_hidden = TRUE;
-        }
-*/
-	return TRUE;
-}
+/* static gboolean mainwin_hidden = FALSE; */
 
 static void set_trayicon_pixmap(TrayIconType icontype)
 {
@@ -97,7 +79,7 @@ static void set_trayicon_pixmap(TrayIconType icontype)
 	}
 
 	gtk_pixmap_set(GTK_PIXMAP(image), pixmap, bitmap);
-	gtk_widget_shape_combine_mask(trayicon, bitmap, 0, 3);
+	gtk_widget_shape_combine_mask(GTK_WIDGET(trayicon), bitmap, GTK_WIDGET(image)->allocation.x, GTK_WIDGET(image)->allocation.y);
 }
 
 static void update()
@@ -112,17 +94,43 @@ static void update()
 	g_free(buf);
 
 	set_trayicon_pixmap(new > 0 ? TRAYICON_NEW : (unread > 0 ? TRAYICON_UNREAD : TRAYICON_NOTHING));
+}
+
+static gboolean folder_item_update_hook(gpointer source, gpointer data)
+{
+	update();
 
 	return FALSE;
 }
 
-static gboolean folder_item_update_hook(gpointer source, gpointer data)
+static gboolean click_cb(GtkWidget * widget,
+		         GdkEventButton * event, gpointer user_data)
+{
+/*
+	MainWindow *mainwin;
+
+	mainwin = mainwindow_get_mainwindow();
+	if (mainwin_hidden) {
+		gtk_widget_show(mainwin->window);
+		mainwin_hidden = FALSE;
+	} else {
+		gtk_widget_hide(mainwin->window);
+		mainwin_hidden = TRUE;
+        }
+*/
+
+	return TRUE;
+}
+
+static void resize_cb(GtkWidget *widget, GtkAllocation *allocation)
 {
 	update();
 }
 
 int plugin_init(gchar **error)
 {
+	GtkPacker *packer;
+
 	hook_id = hooks_register_hook (FOLDER_ITEM_UPDATE_HOOKLIST, folder_item_update_hook, NULL);
 	if (hook_id == -1) {
 		*error = g_strdup("Failed to register folder item update hook");
@@ -130,22 +138,26 @@ int plugin_init(gchar **error)
 	}
 
         trayicon = egg_tray_icon_new("Sylpheed-Claws");
-	gtk_widget_set_usize(GTK_WIDGET(trayicon), 16, 16);
+//        trayicon = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_default_size(GTK_WINDOW(trayicon), 16, 16);
         gtk_container_set_border_width(GTK_CONTAINER(trayicon), 0);
 
         PIXMAP_CREATE(GTK_WIDGET(trayicon), nomail_pixmap, nomail_bitmap, nomail_xpm);
         PIXMAP_CREATE(GTK_WIDGET(trayicon), unreadmail_pixmap, unreadmail_bitmap, unreadmail_xpm);
         PIXMAP_CREATE(GTK_WIDGET(trayicon), newmail_pixmap, newmail_bitmap, newmail_xpm);
 
-	printf("%p\n", nomail_bitmap->user_data);
-    
         eventbox = gtk_event_box_new();
-        gtk_container_set_border_width(eventbox, 0);
+        gtk_container_set_border_width(GTK_CONTAINER(eventbox), 0);
         gtk_container_add(GTK_CONTAINER(trayicon), GTK_WIDGET(eventbox));
 
-        image = gtk_pixmap_new (nomail_pixmap, nomail_bitmap);
-        gtk_container_add(GTK_CONTAINER(eventbox), GTK_WIDGET(image));
+	packer = GTK_PACKER(gtk_packer_new());
+        gtk_container_add(GTK_CONTAINER(eventbox), GTK_WIDGET(packer));
+        gtk_container_set_border_width(GTK_CONTAINER(packer), 0);
 
+        image = gtk_pixmap_new(nomail_pixmap, nomail_bitmap);
+        gtk_packer_add_defaults(GTK_PACKER(packer), GTK_WIDGET(image), GTK_SIDE_TOP, GTK_ANCHOR_CENTER, GTK_PACK_EXPAND);
+
+	gtk_signal_connect(GTK_OBJECT(trayicon), "size_allocate", GTK_SIGNAL_FUNC(resize_cb), NULL);
         gtk_signal_connect(GTK_OBJECT(eventbox), "button-press-event", GTK_SIGNAL_FUNC(click_cb), NULL);
 
         tooltips = gtk_tooltips_new();
