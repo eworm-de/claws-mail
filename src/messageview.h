@@ -40,8 +40,6 @@ struct _MessageView
 
 	gboolean new_window;
 	GtkWidget *window;
-	GtkWidget *window_vbox;
-	GtkWidget *body_vbox;
 
 	/* Toolbar handlebox */
 	GtkWidget *handlebox;
