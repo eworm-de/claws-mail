@@ -7,6 +7,9 @@
 	  src/procmsg.c
 	  	fix quote reply format for newsgroups reply bug
 		(thanks to Hoa)
+		
+	* po/en_GB.po
+		updated
 
 2002-10-07 [paul]	0.8.3claws53
 
