@@ -4,6 +4,11 @@
 # aka another mbox -> MH conversion tool
 # 29 April 2003  
 # Fred Marton <Fred.Marton@uni-bayreuth.de>
+# 
+# Fixed (hopefully) to account for From lines
+# that are of various length and that might have
+# time zone info at the end
+# 20 January 2004
 #
 # Note: Running this with the -w flag generates the following warnings:
 # Scalar value @word[1] better written as $word[1] at /path/to/convert_mbox.pl line 54
@@ -30,7 +35,7 @@
 
 # check for both arguments
 &usage if ($#ARGV < 1);
-$mbox =  $ARGV[0];
+$mbox = $ARGV[0];
 $mh = $ARGV[1];
 # check to make sure there isn't something named MH already
 if (-e $mh) {
@@ -47,9 +52,11 @@ while ($line = <IN>) {
 # check for the beginning of an e-mail
    @word = split(/ +/m,$line);
 # some lines might start with "From ", so check
-# to see if the seventh word is a year
-   chomp($word[6]);
-   $year = $word[6];
+# to see if the [second-to-]last word is a year
+   @word2 = split(/:/,$line);
+   chomp($word2[$#word2]);
+   @word3 = split(/ /,$word2[2]);
+   $year = @word3[1];
 # ignore the MAILER-DAEMON message from pine
    if (@word[1] ne "MAILER-DAEMON") {
 # start a new file, assuming $year is > 1970
