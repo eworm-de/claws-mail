@@ -1,3 +1,12 @@
+2003-05-29 [alfons]	0.9.0claws8
+
+	* src/toolbar.[ch]
+		add print button (calling summary_print());
+		fine tune setting tooltip text;
+		(if someone needs other buttons, please take these 
+		commits as a guide, instead of bothering us - also
+		see 0.8.11claws150) 
+
 2003-05-29 [darko]	0.9.0claws7
 
 	* src/compose.c

@@ -118,6 +118,9 @@ static void toolbar_next_unread_cb	   	(GtkWidget	*widget,
 static void toolbar_ignore_thread_cb	   	(GtkWidget	*widget,
 					    	 gpointer 	 data);
 
+static void toolbar_print_cb			(GtkWidget	*widget,
+					    	 gpointer 	 data);
+
 static void toolbar_actions_execute_cb	   	(GtkWidget     	*widget,
 				  	    	 gpointer      	 data);
 
@@ -162,6 +165,7 @@ struct {
 	{ "A_EXECUTE",       N_("Execute")                              },
 	{ "A_GOTO_NEXT",     N_("Goto Next Message")                    },
 	{ "A_IGNORE_THREAD", N_("Ignore thread")			},
+	{ "A_PRINT",	     N_("Print")				},
 
 	{ "A_SEND",          N_("Send Message")                         },
 	{ "A_SENDL",         N_("Put into queue folder and send later") },
@@ -286,11 +290,17 @@ GList *toolbar_get_action_items(ToolbarType source)
 					A_COMPOSE_EMAIL, A_REPLY_MESSAGE, A_REPLY_SENDER, 
 					A_REPLY_ALL,     A_REPLY_ML,      A_FORWARD, 
 					A_DELETE,        A_EXECUTE,       A_GOTO_NEXT, 
-					A_IGNORE_THREAD, 
+					A_IGNORE_THREAD, A_PRINT,  
 					A_ADDRBOOK, 	 A_SYL_ACTIONS };
 
-		for (i = 0; i < sizeof main_items / sizeof main_items[0]; i++) 
+		for (i = 0; i < sizeof main_items / sizeof main_items[0]; i++)  {
 			items = g_list_append(items, gettext(toolbar_text[main_items[i]].descr));
+			if (main_items[i] == A_PRINT) {
+				g_print("$$$ descr %s, trans %s\n",
+					toolbar_text[main_items[i]].descr,
+					gettext(toolbar_text[main_items[i]].descr));
+			}
+		}	
 	}
 	else if (source == TOOLBAR_COMPOSE) {
 		gint comp_items[] =   {	A_SEND,          A_SENDL,        A_DRAFT,
@@ -1264,6 +1274,29 @@ static void toolbar_ignore_thread_cb(GtkWidget *widget, gpointer data)
 	}
 }
 
+static void toolbar_print_cb(GtkWidget *widget, gpointer data)
+{
+	ToolbarItem *toolbar_item = (ToolbarItem*)data;
+	MainWindow *mainwin;
+	MessageView *msgview;
+
+	g_return_if_fail(toolbar_item != NULL);
+
+	switch (toolbar_item->type) {
+	case TOOLBAR_MAIN:
+		mainwin = (MainWindow *) toolbar_item->parent;
+		summary_print(mainwin->summaryview);
+		break;
+	case TOOLBAR_MSGVIEW:
+		/* TODO: see toolbar_next_unread_cb() if you need
+		 * this in the message view */
+		break;
+	default:
+		debug_print("toolbar event not supported\n");
+		break;
+	}
+}
+
 static void toolbar_send_cb(GtkWidget *widget, gpointer data)
 {
 	compose_toolbar_cb(A_SEND, data);
@@ -1404,6 +1437,7 @@ static void toolbar_buttons_cb(GtkWidget   *widget,
 		{ A_EXECUTE,        	toolbar_exec_cb			},
 		{ A_GOTO_NEXT,      	toolbar_next_unread_cb		},
 		{ A_IGNORE_THREAD,	toolbar_ignore_thread_cb	},
+		{ A_PRINT,		toolbar_print_cb		},
 
 		{ A_SEND,		toolbar_send_cb       		},
 		{ A_SENDL,		toolbar_send_later_cb 		},
@@ -1735,6 +1769,12 @@ Toolbar *toolbar_create(ToolbarType 	 type,
 			gtk_widget_show(item);
 			break;
 		default:
+			/* find and set the tool tip text */
+			gtk_tooltips_set_tip(GTK_TOOLTIPS(toolbar_tips),
+					     item,
+					     toolbar_ret_descr_from_val
+						(toolbar_item->index),
+					     NULL);
 			break;
 		}
 
