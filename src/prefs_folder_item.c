@@ -31,6 +31,9 @@ void prefs_folder_item_read_config(FolderItem * item)
 	gchar * path;
 
 	path = folder_item_get_path(item);
+	if (!is_dir_exist(path))
+		make_dir_hier(path);
+
 	prefs_read_config(param, path, FOLDERITEM_RC);
 	g_free(path);
 
@@ -44,6 +47,9 @@ void prefs_folder_item_save_config(FolderItem * item)
 	tmp_prefs = * item->prefs;
 
 	path = folder_item_get_path(item);
+	if (!is_dir_exist(path))
+		make_dir_hier(path);
+
 	prefs_save_config(param, path, FOLDERITEM_RC);
 	g_free(path);
 }

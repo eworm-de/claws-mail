@@ -804,6 +804,10 @@ void main_window_reflect_prefs_all(void)
 			gtk_widget_set_sensitive(mainwin->get_btn,    FALSE);
 			gtk_widget_set_sensitive(mainwin->getall_btn, FALSE);
 		}
+		if (prefs_common.immediate_exec)
+			gtk_widget_hide(mainwin->exec_btn);
+		else
+			gtk_widget_show(mainwin->exec_btn);
 
 		summary_change_display_item(mainwin->summaryview);
 		summary_redisplay_msg(mainwin->summaryview);
@@ -1339,8 +1343,10 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	GtkWidget *replyall_btn;
 	GtkWidget *fwd_btn;
 	GtkWidget *send_btn;
+	/*
 	GtkWidget *prefs_btn;
 	GtkWidget *account_btn;
+	*/
 	GtkWidget *next_btn;
 	GtkWidget *delete_btn;
 	GtkWidget *exec_btn;
@@ -1445,6 +1451,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 					   toolbar_next_unread_cb,
 					   mainwin);
 
+	/*
 	gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
 
 	CREATE_TOOLBAR_ICON(stock_preferences_xpm);
@@ -1466,6 +1473,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	gtk_signal_connect(GTK_OBJECT(account_btn), "button_press_event",
 			   GTK_SIGNAL_FUNC(toolbar_account_button_pressed),
 			   mainwin);
+	*/
 
 	mainwin->toolbar      = toolbar;
 	mainwin->get_btn      = get_btn;
@@ -1475,8 +1483,10 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	mainwin->replyall_btn = replyall_btn;
 	mainwin->fwd_btn      = fwd_btn;
 	mainwin->send_btn     = send_btn;
+	/*
 	mainwin->prefs_btn    = prefs_btn;
 	mainwin->account_btn  = account_btn;
+	*/
 	mainwin->next_btn     = next_btn;
 	mainwin->delete_btn   = delete_btn;
 	mainwin->exec_btn     = exec_btn;
@@ -1849,10 +1859,10 @@ static void reply_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 		compose_reply(msginfo, prefs_common.reply_with_quote, TRUE);
 		break;
 	case COMPOSE_FORWARD:
-		compose_forward(msginfo, FALSE);
+		compose_forward(NULL, msginfo, FALSE);
 		break;
 	case COMPOSE_FORWARD_AS_ATTACH:
-		compose_forward(msginfo, TRUE);
+		compose_forward(NULL, msginfo, TRUE);
 		break;
 	default:
 		compose_reply(msginfo, prefs_common.reply_with_quote, FALSE);

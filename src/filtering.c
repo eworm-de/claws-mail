@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <gtk/gtk.h>
 #include <stdio.h>
 #include "intl.h"
 #include "utils.h"
@@ -10,6 +11,7 @@
 #include "matcher.h"
 #include "filtering.h"
 #include "prefs.h"
+#include "compose.h"
 
 #define PREFSBUFSIZE		1024
 
@@ -174,6 +176,9 @@ static gboolean filteringaction_update_mark(MsgInfo * info)
 	FILE * fp;
 
 	dest_path = folder_item_get_path(info->folder);
+	if (!is_dir_exist(dest_path))
+		make_dir_hier(dest_path);
+
 	if (dest_path == NULL) {
 		g_warning(_("Can't open mark file.\n"));
 		return FALSE;
@@ -201,6 +206,8 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 {
 	FolderItem * dest_folder;
 	gint val;
+	Compose * compose;
+	PrefsAccount * account;
 
 	switch(action->type) {
 	case MATCHING_ACTION_MOVE:
@@ -284,10 +291,42 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 
 	case MATCHING_ACTION_FORWARD:
 
+		account = account_find_from_id(action->account_id);
+		compose = compose_forward(account, info, FALSE);
+		if (compose->account->protocol == A_NNTP)
+			compose_entry_append(compose, action->destination,
+					     COMPOSE_NEWSGROUPS);
+		else
+			compose_entry_append(compose, action->destination,
+					     COMPOSE_TO);
+
+		val = compose_send(compose);
+		if (val == 0) {
+			gtk_widget_destroy(compose->window);
+			return TRUE;
+		}
+
+		gtk_widget_destroy(compose->window);
 		return FALSE;
 
 	case MATCHING_ACTION_FORWARD_AS_ATTACHMENT:
 
+		account = account_find_from_id(action->account_id);
+		compose = compose_forward(account, info, TRUE);
+		if (compose->account->protocol == A_NNTP)
+			compose_entry_append(compose, action->destination,
+					     COMPOSE_NEWSGROUPS);
+		else
+			compose_entry_append(compose, action->destination,
+					     COMPOSE_TO);
+
+		val = compose_send(compose);
+		if (val == 0) {
+			gtk_widget_destroy(compose->window);
+			return TRUE;
+		}
+
+		gtk_widget_destroy(compose->window);
 		return FALSE;
 
 	default:

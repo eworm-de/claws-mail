@@ -281,6 +281,9 @@ void procmsg_set_flags(GSList *mlist, FolderItem *item)
 	debug_print(_("\tMarking the messages..."));
 
 	markdir = folder_item_get_path(item);
+	if (!is_dir_exist(markdir))
+		make_dir_hier(markdir);
+
 	mark_table = procmsg_read_mark_file(markdir);
 	g_free(markdir);
 
@@ -560,6 +563,7 @@ gchar *procmsg_get_message_file_path(MsgInfo *msginfo)
 		file = g_strdup(msginfo->plaintext_file);
 	else {
 		path = folder_item_get_path(msginfo->folder);
+
 		file = g_strconcat(path, G_DIR_SEPARATOR_S,
 				   itos(msginfo->msgnum), NULL);
 		g_free(path);

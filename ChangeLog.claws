@@ -1,3 +1,27 @@
+2001-05-18 [hoa]
+
+	* src/compose.[ch]
+	* src/filtering.c
+	* src/summaryview.c
+		new filtering action : forward and forward as attachment
+
+	* src/main.c
+		no need for $DISPLAY when we run sylpheed --help
+		call to parse_cmd_opt() is moved
+
+	* src/mainwindow.[ch]
+		execute button is hidden when immediate execute
+		is chosen
+
+	* src/mh.c
+	* src/news.c
+	* src/prefs_folder_item.c
+	* src/procmsg.c
+		better handling of missing directories
+
+	* src/summaryview.c
+		reedit is enabled is outbox
+
 2001-05-17 [hoa]
 
 	* src/filtering.c

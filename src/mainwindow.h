@@ -85,8 +85,10 @@ struct _MainWindow
 	GtkWidget *replyall_btn;
 	GtkWidget *fwd_btn;
 	GtkWidget *send_btn;
+	/*
 	GtkWidget *prefs_btn;
 	GtkWidget *account_btn;
+	*/
 	GtkWidget *next_btn;
 	GtkWidget *delete_btn;
 	GtkWidget *exec_btn;

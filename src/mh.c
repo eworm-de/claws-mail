@@ -69,6 +69,7 @@ GSList *mh_get_msg_list(Folder *folder, FolderItem *item, gboolean use_cache)
 	g_return_val_if_fail(item != NULL, NULL);
 
 	path = folder_item_get_path(item);
+
 	if (stat(path, &s) < 0) {
 		FILE_OP_ERROR(path, "stat");
 	} else {
@@ -120,6 +121,7 @@ gchar *mh_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	g_return_val_if_fail(num > 0 && num <= item->last_num, NULL);
 
 	path = folder_item_get_path(item);
+
 	file = g_strconcat(path, G_DIR_SEPARATOR_S, itos(num), NULL);
 	g_free(path);
 	if (!is_file_exist(file)) {
@@ -146,6 +148,9 @@ gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 
 	destpath = folder_item_get_path(dest);
 	g_return_val_if_fail(destpath != NULL, -1);
+	if (!is_dir_exist(destpath))
+		make_dir_hier(destpath);
+
 	destfile = g_strdup_printf("%s%c%d", destpath, G_DIR_SEPARATOR,
 				   dest->last_num + 1);
 
@@ -195,6 +200,10 @@ gint mh_move_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	}
 
 	destdir = folder_item_get_path(dest);
+
+	if (!is_dir_exist(destdir))
+		make_dir_hier(destdir);
+
 	if ((fp = procmsg_open_mark_file(destdir, TRUE)) == NULL)
 		g_warning(_("Can't open mark file.\n"));
 
@@ -272,6 +281,9 @@ gint mh_move_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 	}
 
 	destdir = folder_item_get_path(dest);
+	if (!is_dir_exist(destdir))
+		make_dir_hier(destdir);
+
 	if ((fp = procmsg_open_mark_file(destdir, TRUE)) == NULL)
 		g_warning(_("Can't open mark file.\n"));
 
@@ -360,6 +372,9 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	}
 
 	destdir = folder_item_get_path(dest);
+	if (!is_dir_exist(destdir))
+		make_dir_hier(destdir);
+
 	if ((fp = procmsg_open_mark_file(destdir, TRUE)) == NULL)
 		g_warning(_("Can't open mark file.\n"));
 
@@ -427,6 +442,9 @@ gint mh_copy_msgs_with_dest(Folder *folder, FolderItem *dest, GSList *msglist)
 	}
 
 	destdir = folder_item_get_path(dest);
+	if (!is_dir_exist(destdir))
+		make_dir_hier(destdir);
+
 	if ((fp = procmsg_open_mark_file(destdir, TRUE)) == NULL)
 		g_warning(_("Can't open mark file.\n"));
 
@@ -677,6 +695,9 @@ FolderItem *mh_create_folder(Folder *folder, FolderItem *parent,
 	g_return_val_if_fail(name != NULL, NULL);
 
 	path = folder_item_get_path(parent);
+	if (!is_dir_exist(path))
+		make_dir_hier(path);
+
 	fullpath = g_strconcat(path, G_DIR_SEPARATOR_S, name, NULL);
 	g_free(path);
 
@@ -716,6 +737,9 @@ gint mh_rename_folder(Folder *folder, FolderItem *item, const gchar *name)
 	g_return_val_if_fail(name != NULL, -1);
 
 	oldpath = folder_item_get_path(item);
+	if (!is_dir_exist(oldpath))
+		make_dir_hier(oldpath);
+
 	dirname = g_dirname(oldpath);
 	newpath = g_strconcat(dirname, G_DIR_SEPARATOR_S, name, NULL);
 	g_free(dirname);

@@ -235,6 +235,9 @@ gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	g_return_val_if_fail(item != NULL, NULL);
 
 	path = folder_item_get_path(item);
+	if (!is_dir_exist(path))
+		make_dir_hier(path);
+
 	filename = g_strconcat(path, G_DIR_SEPARATOR_S, itos(num), NULL);
 	g_free(path);
 
@@ -643,6 +646,9 @@ static void news_delete_all_article(FolderItem *item)
 	gchar *file;
 
 	dir = folder_item_get_path(item);
+	if (!is_dir_exist(dir))
+		make_dir_hier(dir);
+
 	if ((dp = opendir(dir)) == NULL) {
 		FILE_OP_ERROR(dir, "opendir");
 		g_free(dir);
@@ -749,6 +755,9 @@ void news_reset_group_list(FolderItem *item)
 
 	debug_print(_("\tDeleting cached group list... "));
 	path = folder_item_get_path(item);
+	if (!is_dir_exist(path))
+		make_dir_hier(path);
+
 	filename = g_strconcat(path, G_DIR_SEPARATOR_S, GROUPLIST_FILE, NULL);
 	g_free(path);
 	if (remove(filename) != 0)

@@ -844,7 +844,8 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	menu_set_sensitive(ifactory, "/Open in new window", sens);
 	menu_set_sensitive(ifactory, "/View source", sens);
 	menu_set_sensitive(ifactory, "/Show all header", sens);
-	if (summaryview->folder_item->stype == F_DRAFT)
+	if ((summaryview->folder_item->stype == F_DRAFT) ||
+	    (summaryview->folder_item->stype == F_OUTBOX))
 		menu_set_sensitive(ifactory, "/Reedit", sens);
 
 	menu_set_sensitive(ifactory, "/Save as...", sens);
@@ -3020,10 +3021,10 @@ static void summary_reply_cb(SummaryView *summaryview, guint action,
 		compose_reply(msginfo, FALSE, TRUE);
 		break;
 	case COMPOSE_FORWARD:
-		compose_forward(msginfo, FALSE);
+		compose_forward(NULL, msginfo, FALSE);
 		break;
 	case COMPOSE_FORWARD_AS_ATTACH:
-		compose_forward(msginfo, TRUE);
+		compose_forward(NULL, msginfo, TRUE);
 		break;
 	default:
 		compose_reply(msginfo, prefs_common.reply_with_quote, FALSE);

@@ -139,6 +139,8 @@ int main(int argc, char *argv[])
 	bindtextdomain(PACKAGE, LOCALEDIR);
 	textdomain(PACKAGE);
 
+	parse_cmd_opt(argc, argv);
+
 	gtk_set_locale();
 	gtk_init(&argc, &argv);
 
@@ -176,7 +178,7 @@ int main(int argc, char *argv[])
 	prog_version = PROG_VERSION;
 	startup_dir = g_get_current_dir();
 
-	parse_cmd_opt(argc, argv);
+	/*	parse_cmd_opt(argc, argv); */
 
 	CHDIR_RETURN_VAL_IF_FAIL(get_home_dir(), 1);
 

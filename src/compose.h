@@ -42,7 +42,8 @@ typedef enum
 {
 	COMPOSE_TO,
 	COMPOSE_CC,
-	COMPOSE_BCC
+	COMPOSE_BCC,
+	COMPOSE_NEWSGROUPS
 } ComposeEntryType;
 
 typedef enum
@@ -164,15 +165,16 @@ struct _AttachInfo
 	off_t size;
 };
 
-void compose_new		(PrefsAccount	*account);
+Compose * compose_new		(PrefsAccount	*account);
 
-void compose_new_with_recipient	(PrefsAccount	*account,
-				 const gchar	*to);
+Compose * compose_new_with_recipient	(PrefsAccount	*account,
+					 const gchar	*to);
 
 void compose_reply		(MsgInfo	*msginfo,
 				 gboolean	 quote,
 				 gboolean	 to_all);
-void compose_forward		(MsgInfo	*msginfo,
+Compose * compose_forward	(PrefsAccount *account,
+				 MsgInfo	*msginfo,
 				 gboolean	 as_attach);
 void compose_reedit		(MsgInfo	*msginfo);
 
@@ -181,5 +183,6 @@ GList *compose_get_compose_list	(void);
 void compose_entry_append	(Compose	  *compose,
 				 const gchar	  *address,
 				 ComposeEntryType  type);
+gint compose_send(Compose *compose);
 
 #endif /* __COMPOSE_H__ */

@@ -152,7 +152,7 @@ static void compose_attach_append		(Compose	*compose,
 static void compose_wrap_line			(Compose	*compose);
 static void compose_set_title			(Compose	*compose);
 
-static gint compose_send			(Compose	*compose);
+/* static gint compose_send			(Compose	*compose); */
 static gint compose_write_to_file		(Compose	*compose,
 						 const gchar	*file,
 						 gboolean	 is_draft);
@@ -430,12 +430,12 @@ static GtkTargetEntry compose_mime_types[] =
 	{"text/uri-list", 0, 0}
 };
 
-void compose_new(PrefsAccount *account)
+Compose * compose_new(PrefsAccount *account)
 {
-	compose_new_with_recipient(account, NULL);
+	return compose_new_with_recipient(account, NULL);
 }
 
-void compose_new_with_recipient(PrefsAccount *account, const gchar *to)
+Compose * compose_new_with_recipient(PrefsAccount *account, const gchar *to)
 {
 	Compose *compose;
 
@@ -458,6 +458,8 @@ void compose_new_with_recipient(PrefsAccount *account, const gchar *to)
 			gtk_widget_grab_focus(compose->to_entry);
 	} else
 		gtk_widget_grab_focus(compose->newsgroups_entry);
+
+	return compose;
 }
 
 void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all)
@@ -517,10 +519,11 @@ if (msginfo->var && *msginfo->var) { \
 	gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1); \
 }
 
-void compose_forward(MsgInfo *msginfo, gboolean as_attach)
+Compose * compose_forward(PrefsAccount * account, MsgInfo *msginfo,
+			  gboolean as_attach)
 {
 	Compose *compose;
-	PrefsAccount *account;
+	/*	PrefsAccount *account; */
 	GtkSText *text;
 	FILE *fp;
 	gchar buf[BUFFSIZE];
@@ -528,8 +531,10 @@ void compose_forward(MsgInfo *msginfo, gboolean as_attach)
 	g_return_if_fail(msginfo != NULL);
 	g_return_if_fail(msginfo->folder != NULL);
 
-	account = msginfo->folder->folder->account;
-	if (!account) account = cur_account;
+	if (account == NULL) {
+		account = msginfo->folder->folder->account;
+		if (!account) account = cur_account;
+	}
 	g_return_if_fail(account != NULL);
 
 	MSG_UNSET_FLAGS(msginfo->flags, MSG_REPLIED);
@@ -590,6 +595,8 @@ void compose_forward(MsgInfo *msginfo, gboolean as_attach)
 		gtk_widget_grab_focus(compose->to_entry);
 	else
 		gtk_widget_grab_focus(compose->newsgroups_entry);
+
+	return compose;
 }
 
 #undef INSERT_FW_HEADER
@@ -650,6 +657,9 @@ void compose_entry_append(Compose *compose, const gchar *address,
 		break;
 	case COMPOSE_BCC:
 		entry = GTK_ENTRY(compose->bcc_entry);
+		break;
+	case COMPOSE_NEWSGROUPS:
+		entry = GTK_ENTRY(compose->newsgroups_entry);
 		break;
 	case COMPOSE_TO:
 	default:
@@ -1377,7 +1387,7 @@ static void compose_set_title(Compose *compose)
 	g_free(str);
 }
 
-static gint compose_send(Compose *compose)
+gint compose_send(Compose *compose)
 {
 	gchar tmp[MAXPATHLEN + 1];
 	gchar *to, *newsgroups;
@@ -1671,6 +1681,9 @@ static gint compose_save_to_outbox(Compose *compose, const gchar *file)
 	}
 
 	path = folder_item_get_path(outbox);
+	if (!is_dir_exist(path))
+		make_dir_hier(path);
+
 	if ((fp = procmsg_open_mark_file(path, TRUE)) == NULL)
 		g_warning(_("can't open mark file\n"));
 	else {
@@ -1778,6 +1791,9 @@ static gint compose_queue(Compose *compose, const gchar *file)
 	g_free(tmp);
 
 	queue_path = folder_item_get_path(queue);
+	if (!is_dir_exist(queue_path))
+		make_dir_hier(queue_path);
+
 	if ((fp = procmsg_open_mark_file(queue_path, TRUE)) == NULL)
 		g_warning(_("can't open mark file\n"));
 	else {
