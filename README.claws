@@ -1,6 +1,23 @@
+README.claws
+------------
 
-What is Sylpheed Claws?
-----------------------
+Summary:
+
+1. What is Sylpheed Claws?
+2. Switching to Claws
+3. Things Claws does different
+   * auto address replacement in summary view
+   * manual selection of MIME types for attachments
+   * sharing mail folders
+   * default to address for folders
+   * threading mode per folder
+   * quotation wrapping
+   * spell checking (with installation instructions)
+4. How to contribute
+5. How to request features
+
+1. What is Sylpheed Claws?
+--------------------------
 
 Sylpheed Claws is a bleeding edge branch of Sylpheed, a light weight mail 
 user agent for UNIX. Features in this branch may (or may not) end up in 
@@ -14,8 +31,8 @@ For brevity Sylpheed Claws is referred to as Claws, and Sylpheed as either
 Sylpheed or Main.
 
 
-Switching to Claws
-------------------
+2. Switching to Claws
+---------------------
 
 From the user perspective Claws is just a fancy Sylpheed, so it uses the
 same sylpheed setting files located in ~/.sylpheed.
@@ -54,8 +71,8 @@ There are some things that frequently come up when switching to Claws:
 
 
 
-Things Claws does different
----------------------------
+3. Things Claws does different
+------------------------------
 
 Claws does a lot of things different. Here a quick run-down of things that
 are hardly noticable, but deserve mentioning:
@@ -89,17 +106,6 @@ are hardly noticable, but deserve mentioning:
   Folders can have their own threading and sorting mode. Just select a 
   folder, and set their threading and sorting mode.
 
-* spell checking
-  Spell checking using pspell library (http://pspell.sourceforge.net)
-  can can be compiled in. You must have dictionaries available. You can
-  use aspell (http://aspell.sourceforge.net) or ispell dictionaries. For
-  the former, you have to install aspell. For the latter, you have to
-  install the pspell-ispell module (see pspell home page) in addition
-  to ispell.  Spell checking can then enabled in Configuration |Common
-  Preferences | Compose. Use the file selector and select any file in
-  the directory where the dictionaries (*.pwli) are. Do not simply enter
-  the path in the text entry. You can select the default dictionary.
-  When composing, use the right-button click.
 
 * quotation wrapping
   Quotation is wrapped like VIM would wrap it (at least that was the
@@ -107,12 +113,131 @@ are hardly noticable, but deserve mentioning:
   make sure Wrap quotation is enabled. The text is automatically
   wrapped when you reply to an e-mail if this feature is enabled.
 
+* Spell checker for Sylpheed-Claws
+  
+  a. Requirements
+  b. Configuration and installation
+  c. Usage
+  d. Known problems
+
+  a. Requirements
+  ---------------
+
+  The spell checker in sylpheed requires the Portable Spell Checker
+  Interface Library pspell (http://pspell.sourceforge.net), version
+  0.12.2 or newer.
+
+  You will need also the actual spell checker.  There are two alternatives:
+
+     i) ispell (http://fmg-www.cs.ucla.edu/fmg-members/geoff/ispell.html),
+        which is found on quasi every distribution.  You have then to
+        install the pspell-ispell module found at the pspell site.
+
+    ii) aspell (http://aspell.sourceforge.net).  This spell checker
+        must be installed after installing pspell.  The version tested
+        is .33.7 alpha. It has three different suggestion modes (fast
+        -default- , normal, bad spellers), has the ability to learn
+        from mistakes (default). 
+
+  And, last but not least, do not forget to install the dictionaries. Check
+  the corresponding spell checker home page for more information on this.
+
+  b. Configuring Sylpheed
+  -----------------------
+
+  Spell checking is enabled if you configure sylpheed appropriately. Add
+  the option '--enable-pspell' when configuring. E.g.:
+
+  ./configure --enable-pspell
+
+  The configure script needs 'pspell-config' in your path.  If it is
+  in weird places, use '--with-pspell-prefix' to tell the path to
+  pspell-config.  E.g., if pspell-config is really
+  /foo/bar/pspell-config, then use:
+
+  ./configure --enable-pspell --with-pspell-prefix=/foo/bar
+
+  If you have problems with not found includes or libraries, check
+  first where these are located, and add either options:
+
+  --with-pspell-includes=/foo/bar/include
+
+  or 
+
+  --with-pspell-libs=/foo/bar/lib
+
+  as appropriate.
+
+  Configure script summarizes the options compiled in. Check that
+  configure lists 'Pspell = yes'.
+
+  Then proceed as usual, with 'make' and 'make install'.
+
+  c. Usage
+  --------
+
+  After successful compiling, you need to tell sylpheed where your
+  dictionaries reside.  First run 'pspell-config pkgdatadir' on the
+  shell to get their path.
+
+  Then run sylpheed and go to Configuration -> Common preferences ->
+  Compose.  Check the box 'Enable spell checker (EXPERIMENTAL)' and
+  use the file selector ('...' button) to select the path where the
+  dictionaries reside.  Within the file selector, go to that directory
+  and select *any* file in the file lists.  Click ok. You should then
+  be able to select your default dictionary.
+
+  When composing, misspelled words are highlighted.  Click on any
+  highlighted word with the right mouse button to get a list of
+  suggestions.  You can also accept the highlighted word to the
+  session dictionary (equivalent to an 'ignore' option of other spell
+  checker), or you can add it to you personal dictionary.
+
+  If you click with the right mouse button everywhere else, or if you
+  shift-right-click even on a misspelled word, you get the
+  configuration  menu.  'Check all' highlights all misspelled words.
+  With this menu, you can also change the dictionary while editing.
+  You can change the suggestion mode and toggle the learn from
+  misktakes 'feature' (useful only with aspell).
+
+  d. Known problems
+  -----------------
+
+    i) libtool
+
+    The only real known problems until now are configuration and
+    compilation problems  due to libtool interaction with pspell. 
+
+    If you do not compile pspell/aspell/pspell-ispell yourself, you
+    need to install them with their devel packages.
+
+    Pspell work with dynamic linking of libraries and thus uses the
+    libltdl library of libtool.  If you have weird problems when
+    configuring showing 'libtool', chances are the libtool used when
+    compiling the pspell package is not compatible with what you have
+    on your system.  The best solution, is to install the latest
+    libtool AND compile yourself pspell package.  I can't help more
+    than that in this issue.
+
+    After successfully compiled and used sylpheed with spell checking,
+    the same problem can appear if you upgrade your libtool to a
+    version which libltdl is incompatible to your older one.    The
+    symptoms are a crash when starting to compose.  Disabling spell
+    checking avoids the problem. The solution should be to recompile pspell.
+
+    ii) New installed ispell dictionary are not detected
+
+    Installing a new ispell dictionary needs an additional step. Go
+    to the 'pkgdatadir' and run 'make-ispell-pwli'.  You may need to
+    su root.
+
+
 There are a lot more options. If you find one, don't hesitate to
 mention it.
 
 
-How to contribute
------------------
+4. How to contribute
+--------------------
 
 Sylpheed Main: 
 
@@ -140,8 +265,8 @@ a long time to stabilize, send a mail to Paul Mangan. We can probably
 arrange access to the Claws branch.
 
 
-How to request features
------------------------
+5. How to request features
+--------------------------
 
 Ask around in both Sylpheed ML and Sylpheed Claws Users ML. Note
 that some developers may already thought about your feature, may
