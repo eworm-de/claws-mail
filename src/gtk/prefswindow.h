@@ -28,6 +28,8 @@ typedef struct _PrefsPage PrefsPage;
 typedef void (*PrefsCreateWidgetFunc) (PrefsPage *, GtkWindow *window, gpointer);
 typedef void (*PrefsDestroyWidgetFunc) (PrefsPage *);
 typedef void (*PrefsSavePageFunc) (PrefsPage *);
+typedef gboolean (*PrefsCanClosePageFunc) (PrefsPage *);
+
 
 struct _PrefsPage
 {
@@ -39,6 +41,7 @@ struct _PrefsPage
 	PrefsCreateWidgetFunc	  create_widget;
 	PrefsDestroyWidgetFunc	  destroy_widget;
 	PrefsSavePageFunc	  save_page;
+	PrefsCanClosePageFunc	  can_close;
 };
 
 void prefswindow_open_full		(const gchar *title, 

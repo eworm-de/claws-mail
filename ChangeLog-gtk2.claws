@@ -1,3 +1,13 @@
+2005-02-25 [paul]	1.0.1cvs19.1
+
+	* ChangeLog.claws
+	* configure.ac
+	* src/prefs_account.c
+	* src/prefs_folder_item.c
+	* src/gtk/prefswindow.c
+	* src/gtk/prefswindow.h
+		sync with HEAD
+
 2005-02-25 [paul]	1.0.1cvs15.12
 
 	* src/alertpanel.c
