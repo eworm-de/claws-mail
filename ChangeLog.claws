@@ -1,3 +1,9 @@
+2003-07-27 [paul]	0.9.3claws60
+
+	* src/procmsg.c
+		re-commit changes from 0.9.3claws58 -
+		accidently removed in 0.9.3claws59
+
 2003-07-27 [paul]	0.9.3claws59
 
 	* src/procmsg.[ch]

@@ -889,21 +889,11 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 
 MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
 {
-#if 0
 	MsgInfo *full_msginfo;
 	gchar *file;
-#endif
 
 	if (msginfo == NULL) return NULL;
 
-	/* 
-	 * In Claws we simply return a new reference to the same msginfo.
-	 * otherwise the new msginfo has wrong flags and causes incorrect
-	 * msgcounts... TODO: fill in data from full_msginfo into msginfo,
-	 * we can then keep the new data in the cache
-         */
-	return procmsg_msginfo_new_ref(msginfo);
-#if 0
 	file = procmsg_get_message_file(msginfo);
 	if (!file) {
 		g_warning("procmsg_msginfo_get_full_info(): can't get message file.\n");
@@ -914,6 +904,20 @@ MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
 	g_free(file);
 	if (!full_msginfo) return NULL;
 
+	/* CLAWS: make sure we add the missing members; see: 
+	 * procheader.c::procheader_get_headernames() */
+	if (!msginfo->xface)
+		msginfo->xface = g_strdup(full_msginfo->xface);
+	if (!msginfo->dispositionnotificationto)
+		msginfo->dispositionnotificationto = 
+			g_strdup(full_msginfo->dispositionnotificationto);
+	if (!msginfo->returnreceiptto)
+		msginfo->returnreceiptto = g_strdup
+			(full_msginfo->returnreceiptto);
+	procmsg_msginfo_free(full_msginfo);
+
+	return procmsg_msginfo_new_ref(msginfo);
+#if 0
 	full_msginfo->msgnum = msginfo->msgnum;
 	full_msginfo->size = msginfo->size;
 	full_msginfo->mtime = msginfo->mtime;
