@@ -987,8 +987,87 @@ static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
 	return MGU_SUCCESS;
 }
 
+/*
+ * Parse buffer containing multiple e-mail addresses into a linked list of
+ * addresses. Separator characters are " ,;|" and control characters. Address
+ * is only extracted if it contains an "at" (@) character.
+ * Enter: buf Buffer
+ * Return: List of strings.
+ */
+static GList *jpilot_parse_email( gchar *buf ) {
+	GList *list;
+	gchar *p, *st, *em;
+	gchar lch;
+	gint len;
+	gboolean valid, done;
+
+	valid = done = FALSE;
+	lch = ' ';
+	list = NULL;
+	p = st = buf;
+	while( ! done ) {
+		if( *p == ' ' || *p == ',' || *p == ';' || *p == '|' || *p < 32 ) {
+			if( *p == '\0' ) {
+				done = TRUE;
+			}
+			else {
+				*p = ' ';
+			}
+
+			if( *p == lch ) {
+				st++;
+			}
+			else {
+				len = p - st;
+				if( len > 0 ) {
+					if( valid ) {
+						em = g_strndup( st, len );
+						list = g_list_append( list, em );
+					}
+					st = p;
+					++st;
+					valid = FALSE;
+				}
+			}
+		}
+		if( *p == '@' ) valid = TRUE;
+		lch = *p;
+		++p;
+	}
+
+	return list;	
+}
+
 #define FULLNAME_BUFSIZE	256
 #define EMAIL_BUFSIZE		256
+
+/*
+ * Process a single label entry field, parsing multiple e-mail address entries.
+ * Enter: pilotFile  JPilot control data.
+ *        labelEntry Label entry data.
+ *        person     Person.
+ */
+static void jpilot_parse_label( JPilotFile *pilotFile, gchar *labelEntry, ItemPerson *person ) {
+	gchar buffer[ EMAIL_BUFSIZE ];
+	ItemEMail *email;
+	GList *list, *node;
+
+	if( labelEntry ) {
+		*buffer = '\0';
+		strcpy( buffer, labelEntry );
+		node = list = jpilot_parse_email( buffer );
+		while( node ) {
+			email = addritem_create_item_email();
+			addritem_email_set_address( email, node->data );
+			addrcache_id_email( pilotFile->addressCache, email );
+			addrcache_person_add_email( pilotFile->addressCache, person, email );
+			node = g_list_next( node );
+		}
+		mgu_free_dlist( list );
+		list = NULL;
+	}
+}
+	
 /*
  * Unpack address, building new data inside cache.
  */
@@ -1000,9 +1079,7 @@ static void jpilot_load_address( JPilotFile *pilotFile, buf_rec *buf, ItemFolder
 	guint unique_id;
 	guchar attrib;
 	gchar fullName[ FULLNAME_BUFSIZE ];
-	gchar bufEMail[ EMAIL_BUFSIZE ];
 	ItemPerson *person;
-	ItemEMail *email;
 	gint *indPhoneLbl;
 	gchar *labelEntry;
 	GList *node;
@@ -1017,7 +1094,7 @@ static void jpilot_load_address( JPilotFile *pilotFile, buf_rec *buf, ItemFolder
 		unique_id = buf->unique_id;
 		cat_id = attrib & 0x0F;
 
-		*fullName = *bufEMail = '\0';
+		*fullName = '\0';
 		if( addrEnt[ IND_LABEL_FIRSTNAME ] ) {
 			strcat( fullName, addrEnt[ IND_LABEL_FIRSTNAME ] );
 		}
@@ -1054,17 +1131,7 @@ static void jpilot_load_address( JPilotFile *pilotFile, buf_rec *buf, ItemFolder
 			*/
 			if( indPhoneLbl[k] == IND_PHONE_EMAIL ) {
 				labelEntry = addrEnt[ OFFSET_PHONE_LABEL + k ];
-				if( labelEntry ) {
-					strcpy( bufEMail, labelEntry );
-					g_strchug( bufEMail );
-					g_strchomp( bufEMail );
-
-					email = addritem_create_item_email();
-					addritem_email_set_address( email, bufEMail );
-					addrcache_id_email( pilotFile->addressCache, email );
-					addrcache_person_add_email
-						( pilotFile->addressCache, person, email );
-				}
+				jpilot_parse_label( pilotFile, labelEntry, person );
 			}
 		}
 
@@ -1079,18 +1146,7 @@ static void jpilot_load_address( JPilotFile *pilotFile, buf_rec *buf, ItemFolder
 				* addrEnt[ind] );
 				*/
 				labelEntry = addrEnt[ind];
-				if( labelEntry ) {
-					strcpy( bufEMail, labelEntry );
-					g_strchug( bufEMail );
-					g_strchomp( bufEMail );
-
-					email = addritem_create_item_email();
-					addritem_email_set_address( email, bufEMail );
-					addritem_email_set_remarks( email, ai->labels[ind] );
-					addrcache_id_email( pilotFile->addressCache, email );
-					addrcache_person_add_email
-						( pilotFile->addressCache, person, email );
-				}
+				jpilot_parse_label( pilotFile, labelEntry, person );
 			}
 
 			node = g_list_next( node );
