@@ -1,3 +1,8 @@
+2004-11-29 [colin]	0.9.12cvs174.1
+
+	* src/pop.c
+		Sync with HEAD (format string fix)
+
 2004-11-26 [colin]	0.9.12cvs173.1
 
 	* src/common/smtp.c
