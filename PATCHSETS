@@ -304,3 +304,4 @@
 ( cvs diff -u -r 1.115.2.25 -r 1.115.2.26 src/main.c; cvs diff -u -r 1.100.2.9 -r 1.100.2.10 AUTHORS; ) > 0.9.13cvs25.2.patchset
 ( cvs diff -u -r 1.382.2.81 -r 1.382.2.82 src/compose.c; cvs diff -u -r 1.10.2.8 -r 1.10.2.9 src/prefs_gtk.c; cvs diff -u -r 1.12.2.4 -r 1.12.2.5 src/prefs_template.c; cvs diff -u -r 1.96.2.37 -r 1.96.2.38 src/textview.c; ) > 0.9.13cvs25.3.patchset
 ( cvs diff -u -r 1.36.2.18 -r 1.36.2.19 src/common/utils.c; cvs diff -u -r 1.20.2.12 -r 1.20.2.13 src/common/utils.h; cvs diff -u -r 1.12.2.13 -r 1.12.2.14 src/gtk/prefswindow.c; ) > 0.9.13cvs25.4.patchset
+( cvs diff -u -r 1.382.2.82 -r 1.382.2.83 src/compose.c; ) > 0.9.13cvs25.5.patchset
