@@ -258,16 +258,6 @@ static void ssl_manager_list_view_insert_cert(GtkWidget *list_view,
 				   SSL_MANAGER_CERT, cert,
 				   -1);
 	} else {
-		/* change existing */
-		gchar *old_host, *old_port;
-
-		gtk_tree_model_get(GTK_TREE_MODEL(list_store), row_iter,
-				   SSL_MANAGER_HOST, &old_host,
-				   SSL_MANAGER_PORT, &old_port,
-				   -1);
-		
-		g_free(old_host);				
-		g_free(old_port);				
 		gtk_list_store_set(list_store, row_iter,
 				   SSL_MANAGER_HOST, host,
 				   SSL_MANAGER_PORT, port,
