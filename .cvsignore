@@ -1,5 +1,6 @@
 config.log
 config.h
+config.h.in
 config.cache
 libtool
 config.status
@@ -9,4 +10,7 @@ sylpheed.spec
 configure
 Makefile.in
 aclocal.m4
+stamp-h
 stamp-h.in
+tags
+TAGS
