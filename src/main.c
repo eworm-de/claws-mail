@@ -252,9 +252,9 @@ int main(int argc, char *argv[])
 	sgpgme_init();
 	pgpmime_init();
 #endif
-	prefs_ext_prog_init();
 	prefs_themes_init();
 	prefs_fonts_init();
+	prefs_ext_prog_init();
 #ifdef USE_ASPELL
 	gtkaspell_checkers_init();
 	prefs_spelling_init();
@@ -426,9 +426,9 @@ static void exit_sylpheed(MainWindow *mainwin)
 	pgpmime_done();
 	sgpgme_done();
 #endif
-	prefs_ext_prog_done();
 	prefs_themes_done();
 	prefs_fonts_done();
+	prefs_ext_prog_done();
 #ifdef USE_ASPELL       
 	prefs_spelling_done();
 	gtkaspell_checkers_quit();

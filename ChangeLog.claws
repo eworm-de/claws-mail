@@ -1,3 +1,10 @@
+2004-01-10 [paul]	0.9.8claws26
+
+	* src/main.c
+	  src/prefs_ext_prog.c
+	  src/plugins/clamav/clamav_plugin_gtk.c
+	  	minor gui fixes
+
 2004-01-09 [christoph]	0.9.8claws25
 
 	* src/Makefile.am

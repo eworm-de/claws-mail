@@ -112,7 +112,7 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_table_set_col_spacings(GTK_TABLE(table2), 8);
 	
 	gtk_table_attach(GTK_TABLE (table), table2, 0, 1, 1, 2,
-                    	 (GtkAttachOptions) (GTK_FILL),
+                    	 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 0);
 			 
 	uri_label = gtk_label_new (_("Web browser"));
@@ -176,6 +176,7 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtkut_combo_set_items (GTK_COMBO (exteditor_combo),
 			       "gedit %s",
 			       "kedit %s",
+			       "nedit %s",
 			       "mgedit --no-fork %s",
 			       "emacs %s",
 			       "xemacs %s",
