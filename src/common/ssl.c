@@ -21,7 +21,7 @@
 #  include "config.h"
 #endif
 
-#if USE_SSL
+#if USE_OPENSSL
 
 #include "defs.h"
 
@@ -133,4 +133,4 @@ void ssl_done_socket(SockInfo *sockinfo)
 	}
 }
 
-#endif /* USE_SSL */
+#endif /* USE_OPENSSL */

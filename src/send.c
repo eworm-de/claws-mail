@@ -353,7 +353,7 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 	size = get_left_file_size(fp);
 	if (size < 0) return -1;
 
-#if USE_SSL
+#if USE_OPENSSL
 	port = ac_prefs->set_smtpport ? ac_prefs->smtpport :
 		ac_prefs->ssl_smtp == SSL_TUNNEL ? SSMTP_PORT : SMTP_PORT;
 #else
@@ -412,7 +412,7 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 	session->data = dialog;
 	session->ui_func = (SessionUIFunc)send_progress_dialog_update;
 
-#if USE_SSL
+#if USE_OPENSSL
 	SEND_EXIT_IF_NOTOK
 		(smtp_connect(SMTP_SESSION(session), ac_prefs->smtp_server,
 			      port, domain, user, pass, ac_prefs->ssl_smtp),

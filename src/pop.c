@@ -40,7 +40,7 @@
 #include "recv.h"
 #include "selective_download.h"
 #include "log.h"
-#if USE_SSL
+#if USE_OPENSSL
 #  include "ssl.h"
 #endif
 
@@ -99,7 +99,7 @@ gint pop3_greeting_recv(SockInfo *sock, gpointer data)
 
 	if ((ok = pop3_ok(sock, buf)) == PS_SUCCESS) {
 		state->greeting = g_strdup(buf);
-#if USE_SSL
+#if USE_OPENSSL
 		if (state->ac_prefs->ssl_pop == SSL_STARTTLS)
 			return POP3_STLS_SEND;
 #endif
@@ -113,7 +113,7 @@ gint pop3_greeting_recv(SockInfo *sock, gpointer data)
 	}
 }
 
-#if USE_SSL
+#if USE_OPENSSL
 gint pop3_stls_send(SockInfo *sock, gpointer data)
 {
 	pop3_gen_send(sock, "STLS");
@@ -144,7 +144,7 @@ gint pop3_stls_recv(SockInfo *sock, gpointer data)
 		return -1;
 	}
 }
-#endif /* USE_SSL */
+#endif /* USE_OPENSSL */
 
 gint pop3_getauth_user_send(SockInfo *sock, gpointer data)
 {

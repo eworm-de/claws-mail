@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999,2000 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,36 +17,49 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __SSL_CERTIFICATE_H__
-#define __SSL_CERTIFICATE_H__
-
 #ifdef HAVE_CONFIG_H
 #  include "config.h"
 #endif
 
-#if USE_OPENSSL
-
-#include <openssl/ssl.h>
-#include <openssl/objects.h>
 #include <glib.h>
 
-typedef struct _SSLCertificate SSLCertificate;
+#if HAVE_LOCALE_H
+#  include <locale.h>
+#endif
 
-struct _SSLCertificate
+#include "sylpheed.h"
+#include "intl.h"
+#include "defs.h"
+#include "utils.h"
+#include "ssl.h"
+#include "version.h"
+
+static gboolean sylpheed_initialized = FALSE;
+
+gboolean sylpheed_init(int *argc, char ***argv)
 {
-	X509 *x509_cert;
-	gchar *host;
-	gushort port;
-};
+	if (sylpheed_initialized)
+		return TRUE;
 
-SSLCertificate *ssl_certificate_find (gchar *host, gushort port);
-SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, gboolean lookup);
-gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port);
-char* ssl_certificate_to_string(SSLCertificate *cert);
-void ssl_certificate_destroy(SSLCertificate *cert);
-void ssl_certificate_delete_from_disk(SSLCertificate *cert);
-char * readable_fingerprint(unsigned char *src, int len);
-char *ssl_certificate_check_signer (X509 *cert);
+	setlocale(LC_ALL, "");
+	bindtextdomain(PACKAGE, LOCALEDIR);
+	textdomain(PACKAGE);
 
-#endif /* USE_OPENSSL */
-#endif /* SSL_CERTIFICATE_H */
+	/* backup if old rc file exists */
+	if (is_file_exist(RC_DIR)) {
+		if (rename(RC_DIR, RC_DIR ".bak") < 0) {
+			FILE_OP_ERROR(RC_DIR, "rename");
+			return FALSE;
+		}
+	}
+
+#if USE_OPENSSL
+	ssl_init();
+#endif
+
+	srandom((gint)time(NULL));
+
+	sylpheed_initialized = TRUE;
+
+	return TRUE;
+}

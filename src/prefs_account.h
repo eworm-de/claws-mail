@@ -94,12 +94,12 @@ struct _PrefsAccount
 	gboolean use_mail_command;
 	gchar * mail_command;
 
-#if USE_SSL
+#if USE_OPENSSL
 	SSLType ssl_pop;
 	SSLType ssl_imap;
 	SSLType ssl_nntp;
 	SSLType ssl_smtp;
-#endif /* USE_SSL */
+#endif /* USE_OPENSSL */
 
 	/* Temporarily preserved password */
 	gchar *tmp_pass;

@@ -8,12 +8,18 @@ libsylpheedcommon_la_SOURCES = \
 	nntp.c nntp.h \
 	socket.c socket.h \
 	ssl.c ssl.h \
+	sylpheed.c sylpheed.h \
 	template.c template.h \
 	utils.c utils.h \
 	uuencode.c uuencode.h
 
 INCLUDES = \
-	$(GLIB_CFLAGS)
+	$(GLIB_CFLAGS) \
+	$(OPENSSL_CFLAGS)
+
+CPPFLAGS = \
+	-DLOCALEDIR=\""$(localedir)"\"
 
 libsylpheedcommon_la_LIBADD = \
-	$(GLIB_LIBS)
+	$(GLIB_LIBS) \
+	$(OPENSSL_LIBS)

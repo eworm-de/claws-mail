@@ -21,7 +21,7 @@
 #  include "config.h"
 #endif
 
-#if USE_SSL
+#if USE_OPENSSL
 
 #include <openssl/ssl.h>
 #include <glib.h>
@@ -434,4 +434,4 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 	return TRUE;
 }
 
-#endif /* USE_SSL */
+#endif /* USE_OPENSSL */

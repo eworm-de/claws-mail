@@ -29,7 +29,7 @@
 
 typedef struct _SockInfo	SockInfo;
 
-#if USE_SSL
+#if USE_OPENSSL
 #  include "ssl.h"
 #endif
 
@@ -55,7 +55,7 @@ struct _SockInfo
 	gushort port;
 	ConnectionState state;
 	gpointer data;
-#if USE_SSL
+#if USE_OPENSSL
 	SSL *ssl;
 #endif
 };
@@ -95,7 +95,7 @@ gchar *fd_getline	(gint sock);
 gint fd_close		(gint sock);
 
 /* Functions for SSL */
-#if USE_SSL
+#if USE_OPENSSL
 gint ssl_read(SSL *ssl, gchar *buf, gint len);
 gint ssl_write(SSL *ssl, const gchar *buf, gint len);
 gint ssl_gets(SSL *ssl, gchar *buf, gint len);

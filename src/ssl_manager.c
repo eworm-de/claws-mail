@@ -20,7 +20,7 @@
 #  include "config.h"
 #endif
 
-#ifdef USE_SSL
+#ifdef USE_OPENSSL
 #include <gtk/gtkwidget.h>
 #include <glib.h>
 #include <sys/types.h>

@@ -33,7 +33,19 @@ static FILE *log_fp = NULL;
 
 void set_log_file(const gchar *filename)
 {
-	if (log_fp) return;
+	if (log_fp)
+		return;
+
+	/* backup old logfile if existing */
+	if (is_file_exist(filename)) {
+		gchar *backupname;
+		
+		backupname = g_strconcat(filename, ".bak", NULL);
+		if (rename(filename, backupname) < 0)
+			FILE_OP_ERROR(filename, "rename");
+		g_free(backupname);
+	}
+
 	log_fp = fopen(filename, "wb");
 	if (!log_fp)
 		FILE_OP_ERROR(filename, "fopen");

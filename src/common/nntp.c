@@ -30,7 +30,7 @@
 #include "socket.h"
 #include "utils.h"
 #include "log.h"
-#if USE_SSL
+#if USE_OPENSSL
 #  include "ssl.h"
 #endif
 
@@ -47,7 +47,7 @@ static gint nntp_gen_command	(NNTPSockInfo	*sock,
 				 const gchar	*format,
 				 ...);
 
-#if USE_SSL
+#if USE_OPENSSL
 NNTPSockInfo *nntp_open(const gchar *server, gushort port, gchar *buf,
 			SSLType ssl_type)
 #else
@@ -63,7 +63,7 @@ NNTPSockInfo *nntp_open(const gchar *server, gushort port, gchar *buf)
 		return NULL;
 	}
 
-#if USE_SSL
+#if USE_OPENSSL
 	if (ssl_type == SSL_TUNNEL && !ssl_init_socket(sock)) {
 		sock_close(sock);
 		return NULL;
@@ -82,7 +82,7 @@ NNTPSockInfo *nntp_open(const gchar *server, gushort port, gchar *buf)
 	}
 }
 
-#if USE_SSL
+#if USE_OPENSSL
 NNTPSockInfo *nntp_open_auth(const gchar *server, gushort port, gchar *buf,
 			     const gchar *userid, const gchar *passwd,
 			     SSLType ssl_type)
@@ -93,7 +93,7 @@ NNTPSockInfo *nntp_open_auth(const gchar *server, gushort port, gchar *buf,
 {
 	NNTPSockInfo *sock;
 
-#if USE_SSL
+#if USE_OPENSSL
 	sock = nntp_open(server, port, buf, ssl_type);
 #else
 	sock = nntp_open(server, port, buf);

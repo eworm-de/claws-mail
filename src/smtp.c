@@ -79,7 +79,7 @@ void smtp_session_destroy(Session *session)
 	g_free(SMTP_SESSION(session)->pass);
 }
 
-#if USE_SSL
+#if USE_OPENSSL
 gint smtp_connect(SMTPSession *session, const gchar *server, gushort port,
 		  const gchar *domain, const gchar *user, const gchar *pass,
 		  SSLType ssl_type)
@@ -96,7 +96,7 @@ gint smtp_connect(SMTPSession *session, const gchar *server, gushort port,
 	g_return_val_if_fail(session != NULL, SM_ERROR);
 	g_return_val_if_fail(server != NULL, SM_ERROR);
 
-#if USE_SSL
+#if USE_OPENSSL
 	use_esmtp = user != NULL || ssl_type == SSL_STARTTLS;
 #else
 	use_esmtp = user != NULL;
@@ -114,7 +114,7 @@ gint smtp_connect(SMTPSession *session, const gchar *server, gushort port,
 		return SM_ERROR;
 	}
 
-#if USE_SSL
+#if USE_OPENSSL
 	if (ssl_type == SSL_TUNNEL && !ssl_init_socket(sock)) {
 		log_warning(_("SSL connection failed"));
 		sock_close(sock);
@@ -144,7 +144,7 @@ gint smtp_connect(SMTPSession *session, const gchar *server, gushort port,
 		return val;
 	}
 
-#if USE_SSL
+#if USE_OPENSSL
 	if (ssl_type == SSL_STARTTLS) {
 		val = smtp_starttls(session);
 		if (val != SM_OK) {

@@ -27,7 +27,7 @@
 #include <glib.h>
 
 #include "socket.h"
-#if USE_SSL
+#if USE_OPENSSL
 #  include "ssl.h"
 #endif
 #include "session.h"
@@ -83,7 +83,7 @@ struct _SMTPSession
 Session *smtp_session_new	(void);
 void smtp_session_destroy	(Session	*session);
 
-#if USE_SSL
+#if USE_OPENSSL
 gint smtp_connect		(SMTPSession	*session,
 				 const gchar	*server,
 				 gushort	 port,

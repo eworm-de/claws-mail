@@ -48,12 +48,12 @@
 #include "inputdialog.h"
 #include "alertpanel.h"
 #include "log.h"
-#if USE_SSL
+#if USE_OPENSSL
 #  include "ssl.h"
 #endif
 
 #define NNTP_PORT	119
-#if USE_SSL
+#if USE_OPENSSL
 #define NNTPS_PORT	563
 #endif
 
@@ -61,7 +61,7 @@ static void news_folder_init		 (Folder	*folder,
 					  const gchar	*name,
 					  const gchar	*path);
 
-#if USE_SSL
+#if USE_OPENSSL
 static Session *news_session_new	 (const gchar	*server,
 					  gushort	 port,
 					  const gchar	*userid,
@@ -161,7 +161,7 @@ static void news_folder_init(Folder *folder, const gchar *name,
 	folder->get_msginfos = news_get_msginfos;
 }
 
-#if USE_SSL
+#if USE_OPENSSL
 static Session *news_session_new(const gchar *server, gushort port,
 				 const gchar *userid, const gchar *passwd,
 				 SSLType ssl_type)
@@ -178,7 +178,7 @@ static Session *news_session_new(const gchar *server, gushort port,
 
 	log_message(_("creating NNTP connection to %s:%d ...\n"), server, port);
 
-#if USE_SSL
+#if USE_OPENSSL
 	if (userid && passwd)
 		nntp_sock = nntp_open_auth(server, port, buf, userid, passwd,
 					   ssl_type);
@@ -241,7 +241,7 @@ static Session *news_session_new_for_folder(Folder *folder)
 							     userid);
 	}
 
-#if USE_SSL
+#if USE_OPENSSL
 	port = ac->set_nntpport ? ac->nntpport
 		: ac->ssl_nntp ? NNTPS_PORT : NNTP_PORT;
 	session = news_session_new(ac->nntp_server, port, userid, passwd,

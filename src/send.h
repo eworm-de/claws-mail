@@ -25,7 +25,7 @@
 #include "prefs_account.h"
 
 #define SMTP_PORT	25
-#if USE_SSL
+#if USE_OPENSSL
 #define SSMTP_PORT	465
 #endif
 

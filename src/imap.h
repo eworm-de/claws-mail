@@ -27,7 +27,7 @@
 #include <glib.h>
 #include <time.h>
 
-#if USE_SSL
+#if USE_OPENSSL
 #  include "ssl.h"
 #endif
 #include "folder.h"

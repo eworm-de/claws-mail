@@ -51,7 +51,7 @@
 #include "log.h"
 
 #define IMAP4_PORT	143
-#if USE_SSL
+#if USE_OPENSSL
 #define IMAPS_PORT	993
 #endif
 
@@ -123,7 +123,7 @@ static GSList *imap_delete_cached_messages	(GSList		*mlist,
 						 guint32	 last_uid);
 static void imap_delete_all_cached_messages	(FolderItem	*item);
 
-#if USE_SSL
+#if USE_OPENSSL
 static SockInfo *imap_open		(const gchar	*server,
 					 gushort	 port,
 					 SSLType	 ssl_type);
@@ -132,7 +132,7 @@ static SockInfo *imap_open		(const gchar	*server,
 					 gushort	 port);
 #endif
 
-#if USE_SSL
+#if USE_OPENSSL
 static SockInfo *imap_open_tunnel(const gchar *server,
 				  const gchar *tunnelcmd,
 				  SSLType ssl_type);
@@ -141,7 +141,7 @@ static SockInfo *imap_open_tunnel(const gchar *server,
 				  const gchar *tunnelcmd);
 #endif
 
-#if USE_SSL
+#if USE_OPENSSL
 static SockInfo *imap_init_sock(SockInfo *sock, SSLType	 ssl_type);
 #else
 static SockInfo *imap_init_sock(SockInfo *sock);
@@ -402,7 +402,7 @@ static IMAPSession *imap_session_get(Folder *folder)
 	g_return_val_if_fail(folder->type == F_IMAP, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
 
-#if USE_SSL
+#if USE_OPENSSL
 	port = folder->account->set_imapport ? folder->account->imapport
 		: folder->account->ssl_imap == SSL_TUNNEL
 		? IMAPS_PORT : IMAP4_PORT;
@@ -480,7 +480,7 @@ Session *imap_session_new(const PrefsAccount *account)
 	gushort port;
 	gboolean is_preauth;
 
-#ifdef USE_SSL
+#ifdef USE_OPENSSL
 	/* FIXME: IMAP over SSL only... */ 
 	SSLType ssl_type;
 
@@ -494,7 +494,7 @@ Session *imap_session_new(const PrefsAccount *account)
 
 	if (account->set_tunnelcmd) {
 		log_message(_("creating tunneled IMAP4 connection\n"));
-#if USE_SSL
+#if USE_OPENSSL
 		if ((imap_sock = imap_open_tunnel(account->recv_server, 
 						  account->tunnelcmd,
 						  ssl_type)) == NULL)
@@ -509,7 +509,7 @@ Session *imap_session_new(const PrefsAccount *account)
 		log_message(_("creating IMAP4 connection to %s:%d ...\n"),
 			    account->recv_server, port);
 		
-#if USE_SSL
+#if USE_OPENSSL
 		if ((imap_sock = imap_open(account->recv_server, port,
 					   ssl_type)) == NULL)
 #else
@@ -1804,7 +1804,7 @@ static void imap_delete_all_cached_messages(FolderItem *item)
 	debug_print("done.\n");
 }
 
-#if USE_SSL
+#if USE_OPENSSL
 static SockInfo *imap_open_tunnel(const gchar *server,
 			   const gchar *tunnelcmd,
 			   SSLType ssl_type)
@@ -1819,7 +1819,7 @@ static SockInfo *imap_open_tunnel(const gchar *server,
 		log_warning(_("Can't establish IMAP4 session with: %s\n"),
 			    server);
 		return NULL;
-#if USE_SSL
+#if USE_OPENSSL
 	return imap_init_sock(sock, ssl_type);
 #else
 	return imap_init_sock(sock);
@@ -1827,7 +1827,7 @@ static SockInfo *imap_open_tunnel(const gchar *server,
 }
 
 
-#if USE_SSL
+#if USE_OPENSSL
 static SockInfo *imap_open(const gchar *server, gushort port,
 			   SSLType ssl_type)
 #else
@@ -1842,7 +1842,7 @@ static SockInfo *imap_open(const gchar *server, gushort port)
 		return NULL;
 	}
 
-#if USE_SSL
+#if USE_OPENSSL
 	if (ssl_type == SSL_TUNNEL && !ssl_init_socket(sock)) {
 		log_warning(_("Can't establish IMAP4 session with: %s:%d\n"),
 			    server, port);
@@ -1855,14 +1855,14 @@ static SockInfo *imap_open(const gchar *server, gushort port)
 #endif
 }
 
-#if USE_SSL
+#if USE_OPENSSL
 static SockInfo *imap_init_sock(SockInfo *sock, SSLType ssl_type)
 #else
 static SockInfo *imap_init_sock(SockInfo *sock)
 #endif
 {
 	imap_cmd_count = 0;
-#if USE_SSL
+#if USE_OPENSSL
 	if (ssl_type == SSL_STARTTLS) {
 		gint ok;
 

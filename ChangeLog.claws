@@ -1,5 +1,37 @@
 2002-12-08 [christoph]	0.8.6claws75
 
+	* src/Makefile.am
+	* src/about.c
+	* src/account.c
+	* src/crash.c
+	* src/esmtp.h
+	* src/imap.[ch]
+	* src/inc.c
+	* src/main.c
+	* src/mainwindow.c
+	* src/news.c
+	* src/pop.[ch]
+	* src/prefs_account.[ch]
+	* src/prefs_common.[ch]
+	* src/send.[ch]
+	* src/smtp.[ch]
+	* src/ssl_certificate.[ch]
+	* src/ssl_manager.[ch]
+	* src/common/Makefile.am
+	* src/common/log.c
+	* src/common/nntp.[ch]
+	* src/common/socket.[ch]
+	* src/common/ssl.[ch]
+	* src/gtk/sslcertwindow.c
+	* ac/openssl.m4
+		use new autoconf script to detect OpenSSL with extra parameters
+		to specify the location of libs and includes, also remove USE_SSL
+		to USE_OPENSSL
+
+	* src/common/sylpheed.[ch]
+	* src/common/version.h.in
+		start seperation of common code initialization seperated from gui
+
 	* src/summaryview.c
 		The function that is called when a color lable changes
 		should not change the color lable again

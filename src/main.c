@@ -41,15 +41,12 @@
 #include <sys/types.h>
 #include <signal.h>
 
-#if HAVE_LOCALE_H
-#  include <locale.h>
-#endif
-
 #if USE_GPGME
 #  include <gpgme.h>
 #  include "passphrase.h"
 #endif
 
+#include "sylpheed.h"
 #include "intl.h"
 #include "main.h"
 #include "mainwindow.h"
@@ -78,7 +75,7 @@
 #if USE_GPGME
 #  include "rfc2015.h"
 #endif
-#if USE_SSL
+#if USE_OPENSSL
 #  include "ssl.h"
 #endif
 
@@ -88,7 +85,6 @@
 
 gchar *prog_version;
 gchar *startup_dir;
-gchar *argv0;
 
 static gint lock_socket = -1;
 static gint lock_socket_tag = 0;
@@ -165,13 +161,12 @@ int main(int argc, char *argv[])
 	MainWindow *mainwin;
 	FolderView *folderview;
 
-	setlocale(LC_ALL, "");
-	bindtextdomain(PACKAGE, LOCALEDIR);
-	textdomain(PACKAGE);
+	if(!sylpheed_init(&argc, &argv)) {
+		return 0;
+	}
 
 	prog_version = PROG_VERSION;
 	startup_dir = g_get_current_dir();
-	argv0 = g_strdup(argv[0]);
 
 	parse_cmd_opt(argc, argv);
 
@@ -207,12 +202,6 @@ int main(int argc, char *argv[])
 	gtk_widget_push_colormap(gdk_imlib_get_colormap());
 #endif
 
-#if USE_SSL
-	ssl_init();
-#endif
-
-	srandom((gint)time(NULL));
-
 	/* parse gtkrc files */
 	userrc = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S, ".gtkrc",
 			     NULL);
@@ -234,11 +223,6 @@ int main(int argc, char *argv[])
 
 	CHDIR_RETURN_VAL_IF_FAIL(get_home_dir(), 1);
 
-	/* backup if old rc file exists */
-	if (is_file_exist(RC_DIR)) {
-		if (rename(RC_DIR, RC_DIR ".bak") < 0)
-			FILE_OP_ERROR(RC_DIR, "rename");
-	}
 	MAKE_DIR_IF_NOT_EXIST(RC_DIR);
 	MAKE_DIR_IF_NOT_EXIST(get_imap_cache_dir());
 	MAKE_DIR_IF_NOT_EXIST(get_news_cache_dir());
@@ -246,11 +230,6 @@ int main(int argc, char *argv[])
 	MAKE_DIR_IF_NOT_EXIST(get_tmp_dir());
 	MAKE_DIR_IF_NOT_EXIST(RC_DIR G_DIR_SEPARATOR_S "uidl");
 
-	if (is_file_exist(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log")) {
-		if (rename(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log",
-			   RC_DIR G_DIR_SEPARATOR_S "sylpheed.log.bak") < 0)
-			FILE_OP_ERROR("sylpheed.log", "rename");
-	}
 	set_log_file(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log");
 
 	prefs_common_init();
@@ -605,7 +584,7 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 	if (!cmd.crash)
 		unlink(get_crashfile_name());
 
-#if USE_SSL
+#if USE_OPENSSL
 	ssl_done();
 #endif
 

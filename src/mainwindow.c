@@ -464,7 +464,7 @@ static void prefs_scoring_open_cb 	(MainWindow	*mainwin,
 static void prefs_filtering_open_cb 	(MainWindow	*mainwin,
 				  	 guint		 action,
 				  	 GtkWidget	*widget);
-#ifdef USE_SSL
+#ifdef USE_OPENSSL
 static void ssl_manager_open_cb 	(MainWindow	*mainwin,
 				  	 guint		 action,
 				  	 GtkWidget	*widget);
@@ -762,7 +762,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 						NULL, delete_duplicated_cb,   0, NULL},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/E_xecute"),		"X", execute_summary_cb, 0, NULL},
-#ifdef USE_SSL
+#ifdef USE_OPENSSL
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/SSL certi_ficates..."),	
 						NULL, ssl_manager_open_cb, 0, NULL},
@@ -3447,7 +3447,7 @@ static void prefs_actions_open_cb(MainWindow *mainwin, guint action,
 {
 	prefs_actions_open(mainwin);
 }
-#ifdef USE_SSL
+#ifdef USE_OPENSSL
 static void ssl_manager_open_cb(MainWindow *mainwin, guint action,
 				  GtkWidget *widget)
 {

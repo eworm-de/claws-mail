@@ -237,7 +237,7 @@ static struct Other {
 	GtkWidget *checkbtn_warnqueued;
         GtkWidget *checkbtn_cliplog;
         GtkWidget *loglength_entry;
-#ifdef USE_SSL
+#ifdef USE_OPENSSL
 	GtkWidget *checkbtn_ssl_ask_unknown_valid;
 #endif
 } other;
@@ -801,7 +801,7 @@ static PrefParam param[] = {
 	{"warn_queued_on_exit", "TRUE", &prefs_common.warn_queued_on_exit,
 	 P_BOOL, &other.checkbtn_warnqueued,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
-#ifdef USE_SSL
+#ifdef USE_OPENSSL
 	{"ssl_ask_unknown_valid", "TRUE", &prefs_common.ssl_ask_unknown_valid,
 	 P_BOOL, &other.checkbtn_ssl_ask_unknown_valid,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -2849,7 +2849,7 @@ static void prefs_other_create(void)
 	GtkWidget *checkbtn_cleanonexit;
 	GtkWidget *checkbtn_askonclean;
 	GtkWidget *checkbtn_warnqueued;
-#ifdef USE_SSL	
+#ifdef USE_OPENSSL
 	GtkWidget *frame_ssl;
 	GtkWidget *vbox_ssl;
 	GtkWidget *hbox_ssl;
@@ -2963,7 +2963,7 @@ static void prefs_other_create(void)
 			    FALSE, TRUE, 0);
 	SET_TOGGLE_SENSITIVITY(checkbtn_cliplog, loglength_entry);
 
-#ifdef USE_SSL
+#ifdef USE_OPENSSL
 	/* SSL */
 	PACK_FRAME (vbox1, frame_ssl, _("Security"));
 
@@ -3019,7 +3019,7 @@ static void prefs_other_create(void)
 	other.checkbtn_askonclean  = checkbtn_askonclean;
 	other.checkbtn_warnqueued  = checkbtn_warnqueued;
 	
-#ifdef USE_SSL
+#ifdef USE_OPENSSL
 	other.checkbtn_ssl_ask_unknown_valid = checkbtn_ssl_ask_unknown_valid;
 #endif
 }

@@ -21,7 +21,7 @@
 #  include "config.h"
 #endif
 
-#if USE_SSL
+#if USE_OPENSSL
 
 #include <openssl/ssl.h>
 #include <glib.h>

@@ -221,6 +221,7 @@ INCLUDES = \
 	$(GDK_IMLIB_CFLAGS) \
 	$(GDK_PIXBUF_CFLAGS) \
 	$(GPGME_CFLAGS) \
+	$(OPENSSL_CFLAGS) \
 	-I$(includedir)
 
 sylpheed_LDADD = \
@@ -231,7 +232,8 @@ sylpheed_LDADD = \
 	$(GDK_IMLIB_LIBS) \
 	$(GDK_PIXBUF_LIBS) \
 	$(GPGME_LIBS) \
-	$(LDAP_LIBS)
+	$(LDAP_LIBS) \
+	$(OPENSSL_LIBS)
 
 CPPFLAGS = \
 	-DLOCALEDIR=\""$(localedir)"\" \

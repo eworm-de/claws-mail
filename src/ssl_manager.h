@@ -19,7 +19,7 @@
 
 #ifndef SSL_MANAGER_H
 #define SSL_MANAGER_H
-#ifdef USE_SSL
+#ifdef USE_OPENSSL
 #include "mainwindow.h"
 
 void ssl_manager_create (void); 

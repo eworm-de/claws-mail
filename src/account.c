@@ -872,7 +872,7 @@ static gint account_clist_set_row(PrefsAccount *ac_prefs, gint row)
 	text[COL_DEFAULT] = "";
 	text[COL_GETALL]  = "";
 	text[COL_NAME]    = ac_prefs->account_name;
-#if USE_SSL
+#if USE_OPENSSL
 	text[COL_PROTOCOL] = ac_prefs->protocol == A_POP3 ?
 			     (ac_prefs->ssl_pop == SSL_TUNNEL ?
 			      "POP3 (SSL)" :

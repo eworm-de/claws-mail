@@ -696,7 +696,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	gchar *buf;
 	static AtmHandler handlers[] = {
 		pop3_greeting_recv      ,
-#if USE_SSL
+#if USE_OPENSSL
 		pop3_stls_send          , pop3_stls_recv,
 #endif
 		pop3_getauth_user_send  , pop3_getauth_user_recv,
@@ -740,7 +740,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	atm->num = POP3_GREETING_RECV;
 
 	server = pop3_state->ac_prefs->recv_server;
-#if USE_SSL
+#if USE_OPENSSL
 	port = pop3_state->ac_prefs->set_popport ?
 		pop3_state->ac_prefs->popport :
 		pop3_state->ac_prefs->ssl_pop == SSL_TUNNEL ? 995 : 110;
@@ -774,7 +774,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 		return INC_CONNECT_ERROR;
 	}
 
-#if USE_SSL
+#if USE_OPENSSL
 	if (pop3_state->ac_prefs->ssl_pop == SSL_TUNNEL &&
 	    !ssl_init_socket(sockinfo)) {
 		pop3_automaton_terminate(sockinfo, atm);

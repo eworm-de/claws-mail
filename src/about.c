@@ -145,7 +145,7 @@ static void about_create(void)
 #if USE_GPGME
 		   " GnuPG"
 #endif
-#if USE_SSL
+#if USE_OPENSSL
 		   " OpenSSL"
 #endif
 #if USE_LDAP
