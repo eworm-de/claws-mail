@@ -2156,48 +2156,6 @@ compose_end:
 	gtk_stext_thaw(text);
 }
 
-/* return indent length */
-static guint get_indent_length(GtkSText *text, guint start_pos, guint text_len)
-{
-	gint indent_len = 0;
-	gint i, ch_len;
-	gchar cbuf[MB_LEN_MAX];
-
-	for (i = start_pos; i < text_len; i++) {
-		GET_CHAR(i, cbuf, ch_len);
-		if (ch_len > 1)
-			break;
-		/* allow space, tab, >, |, : or # */
-		if (!strchr(" \t>|:#", *cbuf))
-			break;
-		indent_len++;
-	}
-
-	return indent_len;
-}
-
-/* insert quotation string when line was wrapped */
-static guint ins_quote(GtkSText *text, guint quote_len, guint indent_len,
-		       guint prev_line_pos, guint text_len,
-		       gchar *quote_fmt)
-{
-	guint i, ins_len;
-	gchar ch;
-
-	if (indent_len) {
-		for (i = 0; i < indent_len; i++) {
-			ch = GTK_STEXT_INDEX(text, prev_line_pos + i);
-			gtk_stext_insert(text, NULL, NULL, NULL, &ch, 1);
-		}
-		ins_len = indent_len;
-	} else {
-		gtk_stext_insert(text, NULL, NULL, NULL, quote_fmt, quote_len);
-		ins_len = quote_len;
-	}
-
-	return ins_len;
-}
-
 #undef WRAP_DEBUG
 #ifdef WRAP_DEBUG
 /* Darko: used when I debug wrapping */
@@ -2217,6 +2175,123 @@ void dump_text(GtkSText *text, int pos, int tlen, int breakoncr)
 }
 #endif
 
+typedef enum {
+	WAIT_FOR_SPACETAB,
+	WAIT_FOR_INDENTCHAR,
+	WAIT_FOR_INDENTCHARORSPACETAB
+} IndentStates;
+
+#define INDCHARS   ">|:#"
+#define SPACECHARS " \t"
+
+/* return indent length, we allow:
+   > followed by spaces/tabs
+   | followed by spaces/tabs
+   uppercase characters immediately followed by >,
+   and the repeating sequences of the above */
+/* return indent length */
+static guint get_indent_length(GtkSText *text, guint start_pos, guint text_len)
+{
+	guint i_len = 0;
+	guint i, ch_len, alnum_cnt = 0;
+	IndentStates state = WAIT_FOR_INDENTCHAR;
+	gchar cb[MB_LEN_MAX];
+	gboolean is_space;
+	gboolean is_indent;
+
+	for (i = start_pos; i < text_len; i++) {
+		GET_CHAR(i, cb, ch_len);
+		if (ch_len > 1)
+			break;
+
+		if (cb[0] == '\n')
+			break;
+
+		is_indent = strchr(INDCHARS, cb[0]) ? TRUE : FALSE;
+		is_space = strchr(SPACECHARS, cb[0]) ? TRUE : FALSE;
+
+		switch (state) {
+		case WAIT_FOR_SPACETAB:
+			if (is_space == FALSE)
+				goto out;
+			state = WAIT_FOR_INDENTCHARORSPACETAB;
+			break;
+		case WAIT_FOR_INDENTCHARORSPACETAB:
+			if (is_indent == FALSE && is_space == FALSE &&
+			    !isupper(cb[0]))
+				goto out;
+			if (is_space == TRUE) {
+				alnum_cnt = 0;
+				state = WAIT_FOR_INDENTCHARORSPACETAB;
+			} else if (is_indent == TRUE) {
+				alnum_cnt = 0;
+				state = WAIT_FOR_SPACETAB;
+			} else {
+				alnum_cnt++;
+				state = WAIT_FOR_INDENTCHAR;
+				break;
+			}
+			break;
+		case WAIT_FOR_INDENTCHAR:
+			if (is_indent == FALSE && !isupper(cb[0]))
+				goto out;
+			if (is_indent == TRUE) {
+				alnum_cnt = 0;
+				state = WAIT_FOR_SPACETAB;
+			} else {
+				alnum_cnt++;
+			}
+			break;
+		}
+
+		i_len++;
+	}
+
+out:
+	if ((i_len > 0) && (state == WAIT_FOR_INDENTCHAR))
+		i_len -= alnum_cnt;
+
+	return i_len;
+}
+
+/* insert quotation string when line was wrapped */
+static guint ins_quote(GtkSText *text, guint indent_len,
+		       guint prev_line_pos, guint text_len,
+		       gchar *quote_fmt)
+{
+	guint i, ins_len;
+	gchar ch;
+
+	if (indent_len) {
+		for (i = 0; i < indent_len; i++) {
+			ch = GTK_STEXT_INDEX(text, prev_line_pos + i);
+			gtk_stext_insert(text, NULL, NULL, NULL, &ch, 1);
+		}
+		ins_len = indent_len;
+	}
+
+	return ins_len;
+}
+
+/* check if we should join the next line */
+static gboolean join_next_line(GtkSText *text, guint start_pos, guint tlen,
+			       guint prev_ilen)
+{
+	guint indent_len, ch_len;
+	gboolean do_join = FALSE;
+	gchar cbuf[MB_LEN_MAX];
+
+	indent_len = get_indent_length(text, start_pos, tlen);
+
+	if ((indent_len > 0) && (indent_len == prev_ilen)) {
+		GET_CHAR(start_pos + indent_len, cbuf, ch_len);
+		if (ch_len == 1 && (cbuf[0] != '\n'))
+			do_join = TRUE;
+	}
+
+	return do_join;
+}
+
 static void compose_wrap_line_all(Compose *compose)
 {
 	GtkSText *text = GTK_STEXT(compose->text);
@@ -2225,7 +2300,7 @@ static void compose_wrap_line_all(Compose *compose)
 	gint line_len = 0, cur_len = 0;
 	gint ch_len;
 	gboolean is_new_line = TRUE, do_delete = FALSE;
-	guint qlen = 0, i_len = 0;
+	guint i_len = 0;
 	gboolean linewrap_quote = TRUE;
 	guint linewrap_len = prefs_common.linewrap_len;
 	gchar *qfmt = prefs_common.quotemark;
@@ -2241,19 +2316,13 @@ static void compose_wrap_line_all(Compose *compose)
 	for (; cur_pos < tlen; cur_pos++) {
 		/* mark position of new line - needed for quotation wrap */
 		if (is_new_line) {
-			if (linewrap_quote) {
-				qlen = gtkut_stext_str_compare
-					(text, cur_pos, tlen, qfmt);
-				if (qlen)
-					i_len = get_indent_length
-						(text, cur_pos, tlen);
-				else
-					i_len = 0;
-			}
+			if (linewrap_quote)
+				i_len = get_indent_length(text, cur_pos, tlen);
+
 			is_new_line = FALSE;
 			p_pos = cur_pos;
 #ifdef WRAP_DEBUG
-			printf("new line i_len=%d qlen=%d p_pos=", i_len, qlen);
+			printf("new line i_len=%d p_pos=", i_len);
 			dump_text(text, p_pos, tlen, 1);
 #endif
 		}
@@ -2284,28 +2353,18 @@ static void compose_wrap_line_all(Compose *compose)
 			guint ilen;
 			gchar cb[MB_CUR_MAX];
 
+			/* should we join the next line */
+			if ((i_len != cur_len) && do_delete &&
+			    join_next_line(text, cur_pos + 1, tlen, i_len))
+				do_delete = TRUE;
+			else
+				do_delete = FALSE;
+
 #ifdef WRAP_DEBUG
-			printf("found CR at %d next line is ", cur_pos);
+			printf("found CR at %d do_del is %d next line is ",
+			       cur_pos, do_delete);
 			dump_text(text, cur_pos + 1, tlen, 1);
 #endif
-			/* if it's just quotation + newline skip it */
-			if (i_len && (cur_pos + 1 < tlen)) {
-				/* check if text at new line matches indent */
-				ilen =  gtkut_stext_str_compare_n
-					(text, cur_pos + 1, p_pos, i_len, tlen);
-				if (cur_pos + ilen < tlen) {
-					GET_CHAR(cur_pos + ilen + 1, cb, clen);
-					/* no need to join the lines */
-					if (clen == 1 && cb[0] == '\n')
-						do_delete = FALSE;
-				}
-			/* if it's just newline skip it */
-			} else if (do_delete && (cur_pos + 1 < tlen)) {
-				GET_CHAR(cur_pos + 1, cb, clen);
-				/* no need to join the lines */
-				if (clen == 1 && cb[0] == '\n')
-					do_delete = FALSE;
-			}
 
 			/* skip delete if it is continuous URL */
 			if (do_delete && (line_pos - p_pos <= i_len) &&
@@ -2313,8 +2372,8 @@ static void compose_wrap_line_all(Compose *compose)
 				do_delete = FALSE;
 
 #ifdef WRAP_DEBUG
-			printf("qlen=%d l_len=%d wrap_len=%d do_del=%d\n",
-				qlen, line_len, linewrap_len, do_delete);
+			printf("l_len=%d wrap_len=%d do_del=%d\n",
+				line_len, linewrap_len, do_delete);
 #endif
 			/* should we delete to perform smart wrapping */
 			if (line_len < linewrap_len && do_delete) {
@@ -2334,13 +2393,6 @@ static void compose_wrap_line_all(Compose *compose)
 							(text, ilen);
 						tlen -= ilen;
 					}
-				} else if (qlen) {
-					if (gtkut_stext_str_compare
-					    (text, cur_pos, tlen, qfmt)) {
-						gtk_stext_forward_delete
-							(text, qlen);
-						tlen -= qlen;
-					}
 				}
 
 				GET_CHAR(cur_pos, cb, clen);
@@ -2358,7 +2410,6 @@ static void compose_wrap_line_all(Compose *compose)
 				cur_pos = p_pos - 1;
 				line_pos = cur_pos;
 				line_len = cur_len = 0;
-				qlen = 0;
 				do_delete = FALSE;
 				is_new_line = TRUE;
 #ifdef WRAP_DEBUG
@@ -2371,7 +2422,6 @@ static void compose_wrap_line_all(Compose *compose)
 			/* mark new line beginning */
 			line_pos = cur_pos + 1;
 			line_len = cur_len = 0;
-			qlen = 0;
 			do_delete = FALSE;
 			is_new_line = TRUE;
 			continue;
@@ -2445,7 +2495,10 @@ static void compose_wrap_line_all(Compose *compose)
 			is_new_line = TRUE;
 			line_len = 0;
 			cur_len = 0;
-			do_delete = TRUE;
+			if (i_len)
+				do_delete = TRUE;
+			else
+				do_delete = FALSE;
 #ifdef WRAP_DEBUG
 			printf("after CR insert ");
 			dump_text(text, line_pos, tlen, 1);
@@ -2453,7 +2506,7 @@ static void compose_wrap_line_all(Compose *compose)
 #endif
 
 			/* should we insert quotation ? */
-			if (linewrap_quote && qlen) {
+			if (linewrap_quote && i_len) {
 				/* only if line is not already quoted  */
 				if (!gtkut_stext_str_compare
 					(text, line_pos, tlen, qfmt)) {
@@ -2461,8 +2514,8 @@ static void compose_wrap_line_all(Compose *compose)
 
 					if (line_pos - p_pos > i_len) {
 						ins_len = ins_quote
-							(text, qlen, i_len,
-							 p_pos, tlen, qfmt);
+							(text, i_len, p_pos,
+							 tlen, qfmt);
 
 						/* gtk_stext_compact_buffer(text); */
 						tlen += ins_len;

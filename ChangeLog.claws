@@ -1,3 +1,10 @@
+2002-04-02 [darko]	0.7.4claws59
+
+	* src/compoce.c
+		wrap on send improvements, it now recognizes quoted
+		initials as part of the quotation string, and it
+		does not join lines separated by CR
+
 2002-04-01 [match]	0.7.4claws58
 
 	* src/mgutils.[ch]
