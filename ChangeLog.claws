@@ -1,3 +1,24 @@
+2003-05-22 [paul]	0.8.11claws175
+
+	* src/Makefile.am
+	  src/addrbook.[ch]
+	  src/addrcache.[ch]
+	  src/addr_compl.[ch]
+	  src/adressbook.[ch]
+	  src/addrindex.[ch]
+	  src/addritem.[ch]
+	  src/editaddress.c
+	  src/editgroup.c
+	  src/editldap_basedn.c
+	  src/editldap.c
+	  src/jpilot.c
+	  src/vcard.c
+	  	revert to get ldap into it previous working state
+		
+	* po/zh_TW.Big5.po
+		new Taiwanese translation,
+		submitted by Tsu-Fan Cheng <tscheng@ic.sunysb.edu>
+
 2003-05-22 [christoph]	0.8.11claws174
 
 	* src/plugins/spamassassin/libspamc.[ch]
