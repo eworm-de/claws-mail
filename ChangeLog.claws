@@ -1,3 +1,9 @@
+2003-02-13 [alfons]	0.9.9claws7
+
+	* src/common/utils.c
+		fix wrong type of argument for ctype functions (pass unsigned
+		char instead of signed char)
+
 2004-02-12 [alfons]	0.9.9claws6
 
 	* src/compose.[ch]
@@ -17,14 +23,17 @@
 		see ChangeLog 2004-02-04, 2004-02-05, and 2004-02-06
 
 2004-02-11 [luke]	0.9.9claws3
+
 	* src/mimeview.c
 		remove redundant check introduced in 0.9.9claws1
 
 2004-02-11 [luke]	0.9.9claws2
+
 	* src/mimeview.c
 		fix compilation of my previous commit without gpg enabled
 
 2004-02-10 [luke]	0.9.9claws1
+
 	* src/mimeview.c
 		add borders to icons to indicate the privacy status for
 		the message part (unknown/bad/good)
