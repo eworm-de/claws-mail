@@ -41,6 +41,9 @@
 #	include <gnu/libc-version.h>
 #endif
 
+#ifdef SIGTERM
+#include "main.h"
+#endif
 #include "intl.h"
 #include "crash.h"
 #include "utils.h"
@@ -113,6 +116,11 @@ void crash_install_handlers(void)
 #ifdef SIGABRT
 	signal(SIGABRT, crash_handler);
 	sigaddset(&mask, SIGABRT);
+#endif
+
+#ifdef SIGTERM
+	signal(SIGTERM, crash_handler);
+	sigaddset(&mask, SIGTERM);
 #endif
 
 	sigprocmask(SIG_UNBLOCK, &mask, 0);
@@ -502,6 +510,12 @@ static void crash_handler(int sig)
 	if (crashed_) return;
 
 	crashed_++;
+
+#ifdef SIGTERM
+	if(sig == SIGTERM) {
+		clean_quit();
+	}
+#endif
 
 	/*
 	 * gnome ungrabs focus, and flushes gdk. mmmh, good idea.

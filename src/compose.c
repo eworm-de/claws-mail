@@ -6269,6 +6269,11 @@ static void compose_send_later_cb(gpointer data, guint action,
 	if (!val) gtk_widget_destroy(compose->window);
 }
 
+void compose_draft (gpointer data) 
+{
+	compose_draft_cb(data, 0, NULL);	
+}
+
 static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 {
 	Compose *compose = (Compose *)data;

@@ -28,5 +28,6 @@ extern gchar *startup_dir;
 extern gboolean debug_mode;
 
 void app_will_exit	(GtkWidget *widget, gpointer data);
+void clean_quit		(void);
 
 #endif /* __MAIN_H__ */

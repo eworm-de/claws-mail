@@ -158,6 +158,7 @@ _("File `%s' already exists.\n"
 	} \
 }
 
+static MainWindow *static_mainwindow;
 int main(int argc, char *argv[])
 {
 	gchar *userrc;
@@ -370,6 +371,7 @@ int main(int argc, char *argv[])
 	if (cmd.online_mode == ONLINE_MODE_ONLINE)
 		main_window_toggle_work_offline(mainwin, FALSE);
 	
+	static_mainwindow = mainwin;
 	gtk_main();
 
 	addressbook_destroy();
@@ -503,6 +505,28 @@ static void initial_processing(FolderItem *item, gpointer data)
 	debug_print("done.\n");
 	STATUSBAR_POP(mainwin);
 	main_window_cursor_normal(mainwin);
+}
+
+void clean_quit(void)	
+{
+	GList * compose_list = compose_get_compose_list();
+	GList * elem = NULL;
+	if(compose_list) {
+		for (elem = compose_list; elem != NULL && elem->data != NULL; elem = elem->next) {
+			Compose *c = (Compose*)elem->data;
+			compose_draft(c);
+		}
+	}
+	if (prefs_common.warn_queued_on_exit)
+	{	/* disable the popup */ 
+		prefs_common.warn_queued_on_exit = FALSE;	
+		app_will_exit(NULL, static_mainwindow);
+		prefs_common.warn_queued_on_exit = TRUE;
+		prefs_common_save_config();
+	} else {
+		app_will_exit(NULL, static_mainwindow);
+	}
+	exit(0);
 }
 
 void app_will_exit(GtkWidget *widget, gpointer data)
