@@ -1,4 +1,5 @@
 EXTRA_TOOLS = \
+	OOo2sylpheed.pl \
 	calypso_convert.pl \
 	eud2gc.py \
 	filter_conv.pl \
