@@ -923,6 +923,7 @@ gint imap_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list,
 static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest, 
 			      MsgInfoList *msglist, GRelation *relation)
 {
+	FolderItem *src;
 	gchar *destdir;
 	GSList *seq_list, *cur;
 	MsgInfo *msginfo;
@@ -939,7 +940,9 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 	if (!session) return -1;
 
 	msginfo = (MsgInfo *)msglist->data;
-	if (msginfo->folder == dest) {
+
+	src = msginfo->folder;
+	if (src == dest) {
 		g_warning("the src folder is identical to the dest.\n");
 		return -1;
 	}
@@ -958,7 +961,7 @@ static gint imap_do_copy_msgs(Folder *folder, FolderItem *dest,
 		gchar *seq_set = (gchar *)cur->data;
 
 		debug_print("Copying message %s%c[%s] to %s ...\n",
-			    msginfo->folder->path, G_DIR_SEPARATOR,
+			    src->path, G_DIR_SEPARATOR,
 			    seq_set, destdir);
 
 		ok = imap_cmd_copy(session, seq_set, destdir, uid_mapping);
@@ -1083,8 +1086,6 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 
 gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 {
-        gint exists, recent, unseen;
-        guint32 uid_validity;
 	gint ok;
 	IMAPSession *session;
 	gchar *dir;
@@ -1096,17 +1097,14 @@ gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 	if (!session) return -1;
 
 	ok = imap_select(session, IMAP_FOLDER(folder), item->path,
-			 &exists, &recent, &unseen, &uid_validity);
+			 NULL, NULL, NULL, NULL);
 	if (ok != IMAP_SUCCESS)
 		return ok;
-	if (exists == 0)
-		return IMAP_SUCCESS;
 
-	imap_gen_send(session,
-		      "STORE 1:%d +FLAGS.SILENT (\\Deleted)", exists);
+	imap_gen_send(session, "STORE 1:* +FLAGS.SILENT (\\Deleted)");
 	ok = imap_cmd_ok(session, NULL);
 	if (ok != IMAP_SUCCESS) {
-		log_warning(_("can't set deleted flags: 1:%d\n"), exists);
+		log_warning(_("can't set deleted flags: 1:*\n"));
 		return ok;
 	}
 

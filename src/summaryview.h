@@ -146,10 +146,7 @@ struct _SummaryView
 	regex_t *simplify_subject_preg;
 
 	/* current message status */
-	gint   newmsgs;
-	gint   unread;
 	gint   unreadmarked;
-	gint   messages;
 	off_t  total_size;
 	gint   deleted;
 	gint   moved;

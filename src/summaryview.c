@@ -1092,9 +1092,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	STATUSBAR_POP(summaryview->mainwin);
 
-	/* set ctree and hash table from the msginfo list
-	   creating thread, and count the number of messages */
-	
+	/* set ctree and hash table from the msginfo list, and
+	   create the thread */
 	summary_set_ctree_from_list(summaryview, mlist);
 
 	g_slist_free(mlist);
@@ -1182,12 +1181,11 @@ void summary_clear_list(SummaryView *summaryview)
 
 	summaryview->display_msg = FALSE;
 
-	summaryview->selected  = NULL;
+	summaryview->selected = NULL;
 	summaryview->displayed = NULL;
-	summaryview->newmsgs   = summaryview->unread     = 0;
-	summaryview->messages  = summaryview->total_size = 0;
-	summaryview->deleted   = summaryview->moved      = 0;
-	summaryview->copied    = 0;
+	summaryview->total_size = 0;
+	summaryview->deleted = summaryview->moved = 0;
+	summaryview->copied = 0;
 	if (summaryview->msgid_table) {
 		g_hash_table_destroy(summaryview->msgid_table);
 		summaryview->msgid_table = NULL;
@@ -1876,10 +1874,6 @@ static void summary_set_marks_func(GtkCTree *ctree, GtkCTreeNode *node,
  	if (MSG_IS_NEWS(msginfo->flags))
  		news_flag_crosspost(msginfo);
 
-	if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-		summaryview->newmsgs++;
-	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-		summaryview->unread++;
 	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)
 	&& procmsg_msg_has_marked_parent(msginfo))
 		summaryview->unreadmarked++;
@@ -1887,7 +1881,6 @@ static void summary_set_marks_func(GtkCTree *ctree, GtkCTreeNode *node,
 	if (MSG_IS_DELETED(msginfo->flags))
 		summaryview->deleted++;
 
-	summaryview->messages++;
 	summaryview->total_size += msginfo->size;
 
 	summary_set_row_marks(summaryview, node);
@@ -1899,18 +1892,13 @@ static void summary_update_status(SummaryView *summaryview)
 	GtkCTreeNode *node;
 	MsgInfo *msginfo;
 
-	summaryview->newmsgs = summaryview->unread =
-	summaryview->messages = summaryview->total_size =
+	summaryview->total_size =
 	summaryview->deleted = summaryview->moved = summaryview->copied = 0;
 
 	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 	     node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
 		msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
 
-		if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-			summaryview->newmsgs++;
-		if (MSG_IS_UNREAD(msginfo->flags)&& !MSG_IS_IGNORE_THREAD(msginfo->flags))
-			summaryview->unread++;
 		if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)
 		&& procmsg_msg_has_marked_parent(msginfo))
 			summaryview->unreadmarked++;
@@ -1920,7 +1908,6 @@ static void summary_update_status(SummaryView *summaryview)
 			summaryview->moved++;
 		if (MSG_IS_COPY(msginfo->flags))
 			summaryview->copied++;
-		summaryview->messages++;
 		summaryview->total_size += msginfo->size;
 	}
 }
@@ -2007,11 +1994,11 @@ static void summary_status_show(SummaryView *summaryview)
 	g_free(itstr);
 
 	str = g_strdup_printf(_("%d new, %d unread, %d total (%s)"),
-			      summaryview->newmsgs,
-			      summaryview->unread,
-			      summaryview->messages,
-			      to_human_readable(summaryview->total_size));
 
+				      summaryview->folder_item->new_msgs,
+				      summaryview->folder_item->unread_msgs,
+				      summaryview->folder_item->total_msgs,
+				      to_human_readable(summaryview->total_size));
 	gtk_label_set(GTK_LABEL(summaryview->statlabel_msgs), str);
 	g_free(str);
 }
@@ -2457,10 +2444,6 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 
 	if (new_window || !prefs_common.mark_as_read_on_new_window) {
-		if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-			summaryview->newmsgs--;
-		if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-			summaryview->unread--;
 		if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags) 
 		&& procmsg_msg_has_marked_parent(msginfo))
 			summaryview->unreadmarked--;
@@ -2856,10 +2839,6 @@ static void summary_mark_row_as_read(SummaryView *summaryview,
 	if(!(MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)))
 		return;
 
-	if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-		summaryview->newmsgs--;
-	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-		summaryview->unread--;
 	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)
 	&& procmsg_msg_has_marked_parent(msginfo))
 		summaryview->unreadmarked--;
@@ -2941,9 +2920,6 @@ static void summary_mark_row_as_unread(SummaryView *summaryview,
 		procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, 0);
 		summaryview->deleted--;
 	}
-
-	if (!MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-		summaryview->unread++;
 
 	if (!MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)
 	&& procmsg_msg_has_marked_parent(msginfo))
@@ -3380,7 +3356,9 @@ void summary_add_address(SummaryView *summaryview)
 
 void summary_select_all(SummaryView *summaryview)
 {
-	if (summaryview->messages >= 500) {
+	if (!summaryview->folder_item) return;
+
+	if (summaryview->folder_item->total_msgs >= 500) {
 		STATUSBAR_PUSH(summaryview->mainwin,
 			       _("Selecting all messages..."));
 		main_window_cursor_wait(summaryview->mainwin);
@@ -3388,7 +3366,7 @@ void summary_select_all(SummaryView *summaryview)
 
 	gtk_clist_select_all(GTK_CLIST(summaryview->ctree));
 
-	if (summaryview->messages >= 500) {
+	if (summaryview->folder_item->total_msgs >= 500) {
 		STATUSBAR_POP(summaryview->mainwin);
 		main_window_cursor_normal(summaryview->mainwin);
 	}
@@ -5070,10 +5048,6 @@ static void summary_ignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpoin
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 
-	if (MSG_IS_NEW(msginfo->flags))
-		summaryview->newmsgs--;
-	if (MSG_IS_UNREAD(msginfo->flags))
-		summaryview->unread--;
 	if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 		summaryview->unreadmarked--;
 
@@ -5109,10 +5083,6 @@ static void summary_unignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpo
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 
-	if (MSG_IS_NEW(msginfo->flags))
-		summaryview->newmsgs++;
-	if (MSG_IS_UNREAD(msginfo->flags))
-		summaryview->unread++;
 	if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
 		summaryview->unreadmarked++;
 

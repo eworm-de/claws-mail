@@ -128,10 +128,6 @@ static gint inc_autocheck_func			(gpointer	 data);
 
 static void inc_notify_cmd		(gint new_msgs, 
  					 gboolean notify);
-
-#define FOLDER_SUMMARY_MISMATCH(f, s) \
-	(f) && (s) ? ((s)->newmsgs != (f)->new_msgs) || ((f)->unread_msgs != (s)->unread) || ((f)->total_msgs != (s)->messages) \
-	: FALSE
 	
 /**
  * inc_finished:
@@ -155,10 +151,6 @@ static void inc_finished(MainWindow *mainwin, gboolean new_messages)
 		item = cur_account && cur_account->inbox
 			? folder_find_item_from_identifier(cur_account->inbox)
 			: folder_get_default_inbox();
-		if (FOLDER_SUMMARY_MISMATCH(item, mainwin->summaryview)) {	
-			folderview_unselect(mainwin->folderview);
-			folderview_select(mainwin->folderview, item);
-		}	
 	}
 }
 

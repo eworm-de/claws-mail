@@ -1,3 +1,14 @@
+2003-07-31
+
+	* minor code cleanups for the folder system.
+	* src/compose.c: compose_queue(), compose_draft_cb(): code cleanup.
+	* src/folder.c: code cleanups.
+	* src/imap.c
+	  src/mh.c: calculate message numbers inside the functions.
+	* src/procmsg.c: procmsg_set_flags(): calculate message numbers.
+	* src/summaryview.[ch]: don't calculate and preserve message numbers
+	  inside SummaryView,
+
 2003-07-30
 
 	* src/folder.[ch]

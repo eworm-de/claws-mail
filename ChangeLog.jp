@@ -1,3 +1,14 @@
+2003-07-31
+
+	* フォルダシステムのコードを少し整理。
+	* src/compose.c: compose_queue(), compose_draft_cb(): コードの整理。
+	* src/folder.c: コードの整理。
+	* src/imap.c
+	  src/mh.c: 関数内でメッセージ数を計算。
+	* src/procmsg.c: procmsg_set_flags(): メッセージ数を計算。
+	* src/summaryview.[ch]: SummaryView 内でメッセージ数を計算・保持
+	  しないようにした。
+
 2003-07-30
 
 	* src/folder.[ch]
