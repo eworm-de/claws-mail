@@ -1,3 +1,9 @@
+2003-01-28 [paul]	0.8.9claws19
+
+	* po/POTFILES.in
+		update to reflect changes. 
+		thanks to Ricardo Mones Lastra
+
 2003-01-27 [christoph]	0.8.9claws18
 
 	* ac/openssl.m4
