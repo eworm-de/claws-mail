@@ -55,6 +55,14 @@ AlertValue alertpanel_with_widget	(const gchar *title,
 				  	 const gchar *button3_label,
 				  	 GtkWidget *widget);
 
+AlertValue alertpanel_with_type	(const gchar *title,
+				 const gchar *message,
+				 const gchar *button1_label,
+				 const gchar *button2_label,
+				 const gchar *button3_label,
+				 GtkWidget   *widget,
+				 gint         alert_type);
+
 AlertValue alertpanel_message_with_disable	(const gchar	*title,
 						 const gchar	*message,
 						 gint		 alert_type);

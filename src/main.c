@@ -649,7 +649,7 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 	MainWindow *mainwin = data;
 	
 	if (compose_get_compose_list()) {
-		gint val = alertpanel(_("Notice"),
+		gint val = alertpanel(_("Really quit?"),
 			       _("Composing message exists."),
 			       _("Draft them"), _("Discard them"), _("Don't quit"));
 		switch (val) {

@@ -3732,8 +3732,8 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 			msg = g_strdup_printf(_("Can't convert the character encoding of the message from\n"
 						"%s to %s.\n"
 						"Send it anyway?"), src_codeset, out_codeset);
-			aval = alertpanel
-				(_("Error"), msg, _("Yes"), _("+No"), NULL);
+			aval = alertpanel_with_type
+				(_("Error"), msg, _("Yes"), _("+No"), NULL, NULL, ALERT_ERROR);
 			g_free(msg);
 
 			if (aval != G_ALERTDEFAULT) {

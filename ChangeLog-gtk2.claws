@@ -1,3 +1,21 @@
+2004-07-28 [colin]	0.9.12cvs37.3
+
+	* src/alertpanel.c
+	* src/alertpanel.h
+		Add a way to specify panel type for specific
+		panels (alertpanel())
+	* src/account.c
+	* src/addressbook.c
+	* src/compose.c
+	* src/expldifdlg.c
+	* src/main.c
+	* src/messageview.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/gtk/sslcertwindow.c
+		Fix alertpanel()s so that their icon match
+		their real type
+
 2004-07-28 [paul]	0.9.12cvs37.2
 
 	* src/addr_compl.c

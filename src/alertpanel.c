@@ -73,17 +73,9 @@ AlertValue alertpanel(const gchar *title,
 		      const gchar *button2_label,
 		      const gchar *button3_label)
 {
-	if (alertpanel_is_open)
-		return -1;
-	else
-		alertpanel_is_open = TRUE;
-
-	alertpanel_create(title, message, button1_label, button2_label,
-			  button3_label, FALSE, NULL, ALERT_QUESTION);
-	alertpanel_show();
-
-	debug_print("return value = %d\n", value);
-	return value;
+	return alertpanel_with_type(title, message, button1_label,
+				    button2_label, button3_label,
+				    NULL, ALERT_QUESTION);
 }
 
 AlertValue alertpanel_with_widget(const gchar *title,
@@ -93,12 +85,26 @@ AlertValue alertpanel_with_widget(const gchar *title,
 				  const gchar *button3_label,
 				  GtkWidget *widget)
 {
+	return alertpanel_with_type(title, message, button1_label,
+				    button2_label, button3_label,
+				    widget, ALERT_QUESTION);
+}
+
+AlertValue alertpanel_with_type(const gchar *title,
+				const gchar *message,
+				const gchar *button1_label,
+				const gchar *button2_label,
+				const gchar *button3_label,
+				GtkWidget   *widget,
+				gint         alert_type)
+{
 	if (alertpanel_is_open)
 		return -1;
 	else
 		alertpanel_is_open = TRUE;
-	alertpanel_create(title, message, button1_label, button2_label, 
-			  button3_label, FALSE, widget, ALERT_QUESTION);
+	
+	alertpanel_create(title, message, button1_label, button2_label,
+			  button3_label, FALSE, widget, alert_type);
 	alertpanel_show();
 
 	debug_print("return value = %d\n", value);

@@ -306,8 +306,9 @@ void account_edit_open(void)
 	inc_lock();
 
 	if (compose_get_compose_list()) {
-		alertpanel_notice(_("Some composing windows are open.\n"
-				    "Please close all the composing windows before editing the accounts."));
+		alertpanel_error(_("Some composing windows are open.\n"
+				    "Please close all the composing "
+				    "windows before editing the accounts."));
 		inc_unlock();
 		return;
 	}
