@@ -1103,8 +1103,6 @@ void gtkpspell_highlight_all(GtkPspell *gtkpspell)
 
 	len = gtk_stext_get_length(gtktext);
 
-	gtk_stext_freeze(gtktext);
-
 	origpos = gtk_editable_get_position(GTK_EDITABLE(gtktext));
 
 /*	gtk_editable_set_position(GTK_EDITABLE(gtktext), 0);*/
@@ -1119,7 +1117,6 @@ void gtkpspell_highlight_all(GtkPspell *gtkpspell)
 		if (pos > 0)
 			check_at(gtkpspell, pos - 1);
 	}
-	gtk_stext_thaw(gtktext);
 	gtk_editable_set_position(GTK_EDITABLE(gtktext), origpos);
 	gtk_stext_set_point(GTK_STEXT(gtktext), origpos);
 	gtk_adjustment_set_value(gtktext->vadj, adj_value);
