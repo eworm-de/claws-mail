@@ -116,7 +116,11 @@ MAJOR_VERSION=$(shell grep ^MAJOR_VERSION= $(CONFIGURE_AC)|sed -e "s/.*=//" -)
 MINOR_VERSION=$(shell grep ^MINOR_VERSION= $(CONFIGURE_AC)|sed -e "s/.*=//" -)
 MICRO_VERSION=$(shell grep ^MICRO_VERSION= $(CONFIGURE_AC)|sed -e "s/.*=//" -)
 EXTRA_VERSION=$(shell grep ^EXTRA_VERSION= $(CONFIGURE_AC)|sed -e "s/.*=//" -)
-VERSION=$(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)$(EXTRA_VERSION)
+ifeq ($(EXTRA_VERSION),0)
+  VERSION=$(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)claws
+else
+  VERSION=$(MAJOR_VERSION).$(MINOR_VERSION).$(MICRO_VERSION)claws$(EXTRA_VERSION)
+endif
 
 ### password encryption
 
@@ -230,6 +234,7 @@ OBJECTS= \
 	filesel.o \
 	filtering.o \
 	folder.o \
+	folder_item_prefs.o \
 	foldersel.o \
 	folderview.o \
 	grouplistdialog.o \
@@ -238,6 +243,7 @@ OBJECTS= \
 	gtkshruler.o \
 	gtkstext.o \
 	gtkutils.o \
+	gtkvscrollbutton.o \
 	headerview.o \
 	hooks.o \
 	html.o \
@@ -452,7 +458,8 @@ $(RESOURCE).o: $(RESOURCE).rc
 
 $(VERSION_H): $(CONFIGURE_AC) $(VERSION_H_IN)
 	echo Version: $(PACKAGE) $(VERSION)
-	$(SED) -e "s/@PACKAGE@/$(PACKAGE)/;s/@VERSION@/$(VERSION)/;" $(VERSION_H_IN) > $@
+	$(SED) -e "s/@PACKAGE@/$(PACKAGE)/;s/@VERSION@/$(VERSION)/;s/@MAJOR_VERSION@/$(MAJOR_VERSION)/;s/@MINOR_VERSION@/$(MINOR_VERSION)/;s/@MICRO_VERSION@/$(MICRO_VERSION)/;s/@EXTRA_VERSION@/$(EXTRA_VERSION)/;" \
+	           $(VERSION_H_IN) > $@
 
 ### password encryption
 
@@ -538,6 +545,7 @@ exporthtml.o: 	exporthtml.c exporthtml.h
 filesel.o: 	filesel.c filesel.h
 filtering.o: 	filtering.c filtering.h
 folder.o: 	folder.c folder.h
+folder_item_prefs.o: 	folder_item_prefs.c folder_item_prefs.h
 foldersel.o: 	foldersel.c foldersel.h
 folderview.o: 	folderview.c folderview.h
 grouplistdialog.o: 	grouplistdialog.c grouplistdialog.h
@@ -546,6 +554,7 @@ gtksctree.o: 	gtksctree.c gtksctree.h
 gtkshruler.o: 	gtkshruler.c gtkshruler.h
 gtkstext.o: 	gtkstext.c gtkstext.h
 gtkutils.o: 	gtkutils.c gtkutils.h
+gtkvscrollbutton.o: 	gtkvscrollbutton.c gtkvscrollbutton.h
 headerview.o: 	headerview.c headerview.h
 hooks.o:	hooks.c hooks.h
 html.o: 	html.c html.h

@@ -87,13 +87,12 @@ static void prefs_filtering_set_dialog	(const gchar *header,
 static void prefs_filtering_set_list	(void);
 
 /* callback functions */
-/* static void prefs_filtering_select_dest_cb	(void); */
 static void prefs_filtering_register_cb	(void);
 static void prefs_filtering_substitute_cb	(void);
 static void prefs_filtering_delete_cb	(void);
 static void prefs_filtering_up		(void);
-static void prefs_filtering_down		(void);
-static void prefs_filtering_select		(GtkCList	*clist,
+static void prefs_filtering_down	(void);
+static void prefs_filtering_select	(GtkCList	*clist,
 					 gint		 row,
 					 gint		 column,
 					 GdkEvent	*event);
@@ -104,38 +103,71 @@ static gint prefs_filtering_deleted	(GtkWidget	*widget,
 static void prefs_filtering_key_pressed	(GtkWidget	*widget,
 					 GdkEventKey	*event,
 					 gpointer	 data);
-static void prefs_filtering_cancel		(void);
+static void prefs_filtering_cancel	(void);
 static void prefs_filtering_ok		(void);
 
 static void prefs_filtering_condition_define	(void);
-static gint prefs_filtering_clist_set_row(gint row, FilteringProp * prop);
-static void prefs_filtering_select_dest(void);
-static void prefs_filtering_action_select(GtkList *list,
-					  GtkWidget *widget, 
-					  gpointer user_data);
+static gint prefs_filtering_clist_set_row	(gint row, FilteringProp * prop);
+static void prefs_filtering_select_dest		(void);
+static void prefs_filtering_action_select	(GtkList *list,
+						 GtkWidget *widget, 
+						 gpointer user_data);
+
 static void prefs_filtering_action_selection_changed(GtkList *list,
 						     gpointer user_data);
 					  
-static void prefs_filtering_reset_dialog(void);
+static void prefs_filtering_reset_dialog	(void);
 static gboolean prefs_filtering_rename_path_func(GNode *node, gpointer data);
 static gboolean prefs_filtering_delete_path_func(GNode *node, gpointer data);
 
-static FolderItem * cur_item = NULL;
+static FolderItem * cur_item = NULL; /* folder (if dialog opened for processing) */
 
-enum {
-	ACTION_MOVE = 0,
-	ACTION_COPY = 1,
-	ACTION_DELETE = 2,
-	ACTION_MARK = 3,
-	ACTION_UNMARK = 4,
-	ACTION_MARK_AS_READ = 5,
-	ACTION_MARK_AS_UNREAD = 6,
-	ACTION_FORWARD = 7,
-	ACTION_FORWARD_AS_ATTACHMENT = 8,
-	ACTION_REDIRECT = 9,
-	ACTION_EXECUTE = 10,
-	ACTION_COLOR = 11,
+typedef enum Action_ {
+	ACTION_MOVE,
+	ACTION_COPY,
+	ACTION_DELETE,
+	ACTION_MARK,
+	ACTION_UNMARK,
+	ACTION_LOCK,
+	ACTION_UNLOCK,
+	ACTION_MARK_AS_READ,
+	ACTION_MARK_AS_UNREAD,
+	ACTION_FORWARD,
+	ACTION_FORWARD_AS_ATTACHMENT,
+	ACTION_REDIRECT,
+	ACTION_EXECUTE,
+	ACTION_COLOR,
+	/* add other action constants */
+} Action;
+
+static struct {
+	gchar *text;
+	Action action;
+} action_text [] = {
+	{ N_("Move"),			ACTION_MOVE	}, 	
+	{ N_("Copy"),			ACTION_COPY	},
+	{ N_("Delete"),			ACTION_DELETE	},
+	{ N_("Mark"),			ACTION_MARK	},
+	{ N_("Unmark"),			ACTION_UNMARK   },
+	{ N_("Lock"),			ACTION_LOCK	},
+	{ N_("Unlock"),			ACTION_UNLOCK	},
+	{ N_("Mark as read"),		ACTION_MARK_AS_READ },
+	{ N_("Mark as unread"),		ACTION_MARK_AS_UNREAD },
+	{ N_("Forward"),		ACTION_FORWARD  },
+	{ N_("Forward as attachment"),	ACTION_FORWARD_AS_ATTACHMENT },
+	{ N_("Redirect"),		ACTION_REDIRECT },
+	{ N_("Execute"),		ACTION_EXECUTE	},
+	{ N_("Color"),			ACTION_COLOR	}
 };
+
+static const gchar *get_action_text(Action action)
+{
+	int n;
+	for (n = 0; n < sizeof action_text / sizeof action_text[0]; n++)
+		if (action_text[n].action == action)
+			return action_text[n].text;
+	return "";			
+}
 
 static gint get_sel_from_list(GtkList * list)
 {
@@ -188,9 +220,9 @@ static gint get_list_id_from_account_id(gint account_id)
 	return 0;
 }
 
-static gint prefs_filtering_get_matching_from_action(gint action_id)
+static gint prefs_filtering_get_matching_from_action(Action action_id)
 {
-	switch(action_id) {
+	switch (action_id) {
 	case ACTION_MOVE:
 		return MATCHACTION_MOVE;
 	case ACTION_COPY:
@@ -201,6 +233,10 @@ static gint prefs_filtering_get_matching_from_action(gint action_id)
 		return MATCHACTION_MARK;
 	case ACTION_UNMARK:
 		return MATCHACTION_UNMARK;
+	case ACTION_LOCK:
+		return MATCHACTION_LOCK;
+	case ACTION_UNLOCK:
+		return MATCHACTION_UNLOCK;
 	case ACTION_MARK_AS_READ:
 		return MATCHACTION_MARK_AS_READ;
 	case ACTION_MARK_AS_UNREAD:
@@ -219,21 +255,6 @@ static gint prefs_filtering_get_matching_from_action(gint action_id)
 		return -1;
 	}
 }
-
-static gchar * action_text [] = {
-	N_("Move"),	
-	N_("Copy"), 
-	N_("Delete"),
-	N_("Mark"), 
-	N_("Unmark"), 
-	N_("Mark as read"), 
-	N_("Mark as unread"),
-	N_("Forward"), 
-	N_("Forward as attachment"), 
-	N_("Redirect"), 
-	N_("Execute"),
-	N_("Color"),
-};
 
 void prefs_filtering_open(FolderItem * item,
 			  const gchar *header,
@@ -368,7 +389,7 @@ static void prefs_filtering_create(void)
 	gtk_box_pack_start (GTK_BOX (vbox1), cond_label, FALSE, FALSE, 0);
 
 	hbox1 = gtk_hbox_new (FALSE, VSPACING);
-	gtk_widget_show (vbox1);
+	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
@@ -384,7 +405,7 @@ static void prefs_filtering_create(void)
 			    NULL);
 
 	hbox1 = gtk_hbox_new (FALSE, VSPACING);
-	gtk_widget_show (vbox1);
+	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
@@ -399,12 +420,9 @@ static void prefs_filtering_create(void)
 			       FALSE);
 
 	combo_items = NULL;
-
-	for(i = 0 ; i < (gint) (sizeof(action_text) / sizeof(gchar *)) ;
-	    i++) {
-		combo_items = g_list_append(combo_items,
-					    (gpointer) _(action_text[i]));
-	}
+	for (i = 0; i < sizeof action_text / sizeof action_text[0]; i++)
+		combo_items = g_list_append
+			(combo_items, (gpointer) _(action_text[i].text));
 	gtk_combo_set_popdown_strings(GTK_COMBO(action_combo), combo_items);
 
 	g_list_free(combo_items);
@@ -423,7 +441,7 @@ static void prefs_filtering_create(void)
 	/* accounts */
 
 	hbox1 = gtk_hbox_new (FALSE, VSPACING);
-	gtk_widget_show (vbox1);
+	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
@@ -463,7 +481,7 @@ static void prefs_filtering_create(void)
 	/* destination */
 
 	hbox1 = gtk_hbox_new (FALSE, VSPACING);
-	gtk_widget_show (vbox1);
+	gtk_widget_show (hbox1);
 	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox1), 2);
 
@@ -983,7 +1001,7 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(gboolean alert)
 	FilteringProp * prop;
 	FilteringAction * action;
 	gint list_id;
-	gint action_id;
+	Action action_id;
 	gint action_type;
 	gint account_id;
 	gchar * destination;
@@ -1141,10 +1159,10 @@ static void prefs_filtering_down(void)
 	}
 }
 
-static void prefs_filtering_select_set(FilteringProp * prop)
+static void prefs_filtering_select_set(FilteringProp *prop)
 {
-	FilteringAction * action;
-	gchar * matcher_str;
+	FilteringAction *action;
+	gchar *matcher_str;
 	gint list_id;
 
 	prefs_filtering_reset_dialog();
@@ -1184,6 +1202,14 @@ static void prefs_filtering_select_set(FilteringProp * prop)
 	case MATCHACTION_UNMARK:
 		gtk_list_select_item(GTK_LIST(filtering.action_list),
 				     ACTION_UNMARK);
+		break;
+	case MATCHACTION_LOCK:
+		gtk_list_select_item(GTK_LIST(filtering.action_list),
+				     ACTION_LOCK);
+		break;
+	case MATCHACTION_UNLOCK:
+		gtk_list_select_item(GTK_LIST(filtering.action_list),
+				     ACTION_UNLOCK);
 		break;
 	case MATCHACTION_MARK_AS_READ:
 		gtk_list_select_item(GTK_LIST(filtering.action_list),
@@ -1293,9 +1319,9 @@ static void prefs_filtering_action_select(GtkList *list,
 					  GtkWidget *widget,
 					  gpointer user_data)
 {
-	gint value;
+	Action value;
 
-	value = get_sel_from_list(GTK_LIST(filtering.action_list));
+	value = (Action) get_sel_from_list(GTK_LIST(filtering.action_list));
 
 	switch (value) {
 	case ACTION_MOVE:
@@ -1347,53 +1373,10 @@ static void prefs_filtering_action_select(GtkList *list,
 		gtk_widget_hide(filtering.color_label);
 		break;
 	case ACTION_MARK:
-		gtk_widget_show(filtering.account_label);
-		gtk_widget_set_sensitive(filtering.account_label, FALSE);
-		gtk_widget_set_sensitive(filtering.account_combo, FALSE);
-		gtk_widget_show(filtering.dest_entry);
-		gtk_widget_set_sensitive(filtering.dest_entry, FALSE);
-		gtk_widget_show(filtering.dest_btn);
-		gtk_widget_set_sensitive(filtering.dest_btn, FALSE);
-		gtk_widget_show(filtering.dest_label);
-		gtk_widget_set_sensitive(filtering.dest_label, FALSE);
-		gtk_widget_hide(filtering.recip_label);
-		gtk_widget_hide(filtering.exec_label);
-		gtk_widget_hide(filtering.exec_btn);
-		gtk_widget_hide(filtering.color_optmenu);
-		gtk_widget_hide(filtering.color_label);
-		break;
 	case ACTION_UNMARK:
-		gtk_widget_show(filtering.account_label);
-		gtk_widget_set_sensitive(filtering.account_label, FALSE);
-		gtk_widget_set_sensitive(filtering.account_combo, FALSE);
-		gtk_widget_show(filtering.dest_entry);
-		gtk_widget_set_sensitive(filtering.dest_entry, FALSE);
-		gtk_widget_show(filtering.dest_btn);
-		gtk_widget_set_sensitive(filtering.dest_btn, FALSE);
-		gtk_widget_show(filtering.dest_label);
-		gtk_widget_set_sensitive(filtering.dest_label, FALSE);
-		gtk_widget_hide(filtering.recip_label);
-		gtk_widget_hide(filtering.exec_label);
-		gtk_widget_hide(filtering.exec_btn);
-		gtk_widget_hide(filtering.color_optmenu);
-		gtk_widget_hide(filtering.color_label);
-		break;
+	case ACTION_LOCK:
+	case ACTION_UNLOCK:
 	case ACTION_MARK_AS_READ:
-		gtk_widget_show(filtering.account_label);
-		gtk_widget_set_sensitive(filtering.account_label, FALSE);
-		gtk_widget_set_sensitive(filtering.account_combo, FALSE);
-		gtk_widget_show(filtering.dest_entry);
-		gtk_widget_set_sensitive(filtering.dest_entry, FALSE);
-		gtk_widget_show(filtering.dest_btn);
-		gtk_widget_set_sensitive(filtering.dest_btn, FALSE);
-		gtk_widget_show(filtering.dest_label);
-		gtk_widget_set_sensitive(filtering.dest_label, FALSE);
-		gtk_widget_hide(filtering.recip_label);
-		gtk_widget_hide(filtering.exec_label);
-		gtk_widget_hide(filtering.exec_btn);
-		gtk_widget_hide(filtering.color_optmenu);
-		gtk_widget_hide(filtering.color_label);
-		break;
 	case ACTION_MARK_AS_UNREAD:
 		gtk_widget_show(filtering.account_label);
 		gtk_widget_set_sensitive(filtering.account_label, FALSE);

@@ -223,7 +223,8 @@ void inc_mail(MainWindow *mainwin, gboolean notify)
 
 void inc_pop_before_smtp(PrefsAccount *acc)
 {
-	inc_account_mail(acc, NULL);
+	/* FIXME: assumes to attach to first main window */
+	inc_account_mail(acc, mainwindow_get_mainwindow());
 }
 
 static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
@@ -585,6 +586,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		case INC_NO_SPACE:
 		case INC_IO_ERROR:
 		case INC_SOCKET_ERROR:
+		case INC_EOF:
 			SET_PIXMAP_AND_TEXT(errorxpm, errorxpmmask, _("Error"));
 			break;
 		case INC_CANCEL:
@@ -744,6 +746,9 @@ static IncState inc_pop3_session_do(IncSession *session)
 		pop3_session->ac_prefs->popport :
 		pop3_session->ac_prefs->ssl_pop == SSL_TUNNEL ? 995 : 110;
 	SESSION(pop3_session)->ssl_type = pop3_session->ac_prefs->ssl_pop;
+	if (pop3_session->ac_prefs->ssl_pop != SSL_NONE)
+		SESSION(pop3_session)->nonblocking =
+			pop3_session->ac_prefs->use_nonblocking_ssl;
 #else
 	port = pop3_session->ac_prefs->set_popport ?
 		pop3_session->ac_prefs->popport : 110;
@@ -754,8 +759,6 @@ static IncState inc_pop3_session_do(IncSession *session)
 
 	progress_dialog_set_label(inc_dialog->dialog, buf);
 	g_free(buf);
-	GTK_EVENTS_FLUSH();
-
 
 	if (session_connect(SESSION(pop3_session), server, port) < 0) {
 		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
@@ -774,8 +777,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 		return INC_CONNECT_ERROR;
 	}
 
-	while (SESSION(pop3_session)->state != SESSION_DISCONNECTED &&
-	       SESSION(pop3_session)->state != SESSION_ERROR &&
+	while (session_is_connected(SESSION(pop3_session)) &&
 	       session->inc_state != INC_CANCEL)
 		gtk_main_iteration();
 
@@ -789,7 +791,9 @@ static IncState inc_pop3_session_do(IncSession *session)
 					session->inc_state = INC_CONNECT_ERROR;
 				else
 					session->inc_state = INC_ERROR;
-			} else
+			} else if (SESSION(pop3_session)->state == SESSION_EOF)
+				session->inc_state = INC_EOF;
+			else
 				session->inc_state = INC_SUCCESS;
 			break;
 		case PS_AUTHFAIL:
@@ -918,7 +922,6 @@ static gint inc_recv_data_progressive(Session *session, guint cur_len,
 		gtk_progress_bar_update
 			(GTK_PROGRESS_BAR(inc_dialog->mainwin->progressbar),
 			 (gfloat)cur_total / (gfloat)pop3_session->total_bytes);
-	GTK_EVENTS_FLUSH();
 
 	return 0;
 }
@@ -944,6 +947,7 @@ static gint inc_recv_data_finished(Session *session, guint len, gpointer data)
 				(pop3_session->cur_total_recv_bytes));
 	gtk_clist_set_text(GTK_CLIST(inc_dialog->dialog->clist),
 			   inc_dialog->cur_row, 2, msg);
+	g_free(msg);			   
 
 	return 0;
 }
@@ -983,7 +987,7 @@ gint inc_drop_message(const gchar *file, Pop3Session *session)
 	dropfolder = folder_get_default_processing();
 
 	/* add msg file to drop folder */
-	if ((msgnum = folder_item_add_msg(dropfolder, file, TRUE)) < 0) {
+	if ((msgnum = folder_item_add_msg(dropfolder, file, NULL, TRUE)) < 0) {
 		unlink(file);
 		return -1;
 	}
@@ -993,50 +997,83 @@ gint inc_drop_message(const gchar *file, Pop3Session *session)
 
 static void inc_put_error(IncState istate, const gchar *msg)
 {
+	gchar *log_msg = NULL;
+	gchar *err_msg = NULL;
+	gboolean fatal_error = FALSE;
+
 	switch (istate) {
 	case INC_CONNECT_ERROR:
+		log_msg = _("Connection failed.");
 		if (prefs_common.no_recv_err_panel)
 			break;
-		alertpanel_error(_("Connection failed."));
+		err_msg = g_strdup(log_msg);
 		break;
 	case INC_ERROR:
+		log_msg = _("Error occurred while processing mail.");
 		if (prefs_common.no_recv_err_panel)
 			break;
 		if (msg)
-			alertpanel_error(_("Error occurred while processing mail:\n%s"), msg);
+			err_msg = g_strdup_printf
+				(_("Error occurred while processing mail:\n%s"),
+				 msg);
 		else
-			alertpanel_error(_("Error occurred while processing mail."));
+			err_msg = g_strdup(log_msg);
 		break;
 	case INC_NO_SPACE:
-		alertpanel_error(_("No disk space left."));
+		log_msg = _("No disk space left.");
+		err_msg = g_strdup(log_msg);
+		fatal_error = TRUE;
 		break;
 	case INC_IO_ERROR:
-		alertpanel_error(_("Can't write file."));
+		log_msg = _("Can't write file.");
+		err_msg = g_strdup(log_msg);
+		fatal_error = TRUE;
 		break;
 	case INC_SOCKET_ERROR:
+		log_msg = _("Socket error.");
 		if (prefs_common.no_recv_err_panel)
 			break;
-		alertpanel_error(_("Socket error."));
+		err_msg = g_strdup(log_msg);
+		break;
+	case INC_EOF:
+		log_msg = _("Connection closed by the remote host.");
+		if (prefs_common.no_recv_err_panel)
+			break;
+		err_msg = g_strdup(log_msg);
 		break;
 	case INC_LOCKED:
+		log_msg = _("Mailbox is locked.");
 		if (prefs_common.no_recv_err_panel)
 			break;
 		if (msg)
-			alertpanel_error(_("Mailbox is locked:\n%s"), msg);
+			err_msg = g_strdup_printf(_("Mailbox is locked:\n%s"),
+						  msg);
 		else
-			alertpanel_error(_("Mailbox is locked."));
+			err_msg = g_strdup(log_msg);
 		break;
 	case INC_AUTH_FAILED:
+		log_msg = _("Authentication failed.");
 		if (prefs_common.no_recv_err_panel)
 			break;
 		if (msg)
-			alertpanel_error(_("Authentication failed:\n%s"),
-					 msg);
+			err_msg = g_strdup_printf
+				(_("Authentication failed:\n%s"), msg);
 		else
-			alertpanel_error(_("Authentication failed."));
+			err_msg = g_strdup(log_msg);
 		break;
 	default:
 		break;
+	}
+
+	if (log_msg) {
+		if (fatal_error)
+			log_error("%s\n", log_msg);
+		else
+			log_warning("%s\n", log_msg);
+	}
+	if (err_msg) {
+		alertpanel_error_log(err_msg);
+		g_free(err_msg);
 	}
 }
 

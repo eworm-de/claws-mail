@@ -137,16 +137,31 @@ static gboolean procmsg_ignore_node(GNode *node, gpointer data)
 	return FALSE;
 }
 
+/* CLAWS subject threading:
+  
+  in the first round it inserts subject lines in a hash 
+  table. a duplicate subject line replaces the one in
+  the table only if its older. (this round should actually 
+  create a list of all duplicate subject lines)
+
+  the second round finishes the threads by attaching
+  duplicate subject lines to the one found in the
+  hash table. as soon as a subject line is found that
+  is too old, that one becomes the new parent for
+  the next iteration. (this fails when a parent arrived
+  later than its child.)
+*/  
+
 /* return the reversed thread tree */
 GNode *procmsg_get_thread_tree(GSList *mlist)
 {
 	GNode *root, *parent, *node, *next, *last;
+	GNode *prev; /* CLAWS */
 	GHashTable *msgid_table;
 	GHashTable *subject_table;
 	MsgInfo *msginfo;
 	const gchar *msgid;
 	const gchar *subject;
-	GNode *found_subject;
 
 	root = g_node_new(NULL);
 	msgid_table = g_hash_table_new(g_str_hash, g_str_equal);
@@ -174,70 +189,74 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 		    g_hash_table_lookup(msgid_table, msgid) == NULL)
 			g_hash_table_insert(msgid_table, (gchar *)msgid, node);
 
+		/* CLAWS: add subject to table (without prefix) */
 		if (prefs_common.thread_by_subject) {
+			GNode *found_subject = NULL;
+			
 			subject  = msginfo->subject;
-			subject += subject_get_reply_prefix_length(subject);
-			found_subject = subject_table_lookup_clean(subject_table,
-							           (gchar *) subject);
-			if (found_subject == NULL)
+			subject += subject_get_prefix_length(subject);
+			found_subject = subject_table_lookup_clean
+					(subject_table, (gchar *) subject);
+									   
+			if (found_subject == NULL) 
 				subject_table_insert_clean(subject_table, (gchar *) subject,
 						           node);
-			else {
+			else if ( ((MsgInfo*)(found_subject->data))->date_t > 
+                                  ((MsgInfo*)(node->data))->date_t )  {
 				/* replace if msg in table is older than current one 
-				 * can add here more stuff. */
-                                if ( ((MsgInfo*)(found_subject->data))->date_t > 
-                                     ((MsgInfo*)(node->data))->date_t )  {
-					subject_table_remove_clean(subject_table, (gchar *) subject);
-					subject_table_insert_clean(subject_table, (gchar *) subject, node);
-				} 
+				   TODO: should create a list of messages with same subject */
+				subject_table_remove_clean(subject_table, (gchar *) subject);
+				subject_table_insert_clean(subject_table, (gchar *) subject, node);
 			}
 		}
 	}
 
 	/* complete the unfinished threads */
 	for (node = root->children; node != NULL; ) {
+		prev = node->prev;	/* CLAWS: need the last node */
+		parent = NULL;
 		next = node->next;
 		msginfo = (MsgInfo *)node->data;
-		parent = NULL;
-		if (msginfo->inreplyto) 
+		if (msginfo->inreplyto) { 
 			parent = g_hash_table_lookup(msgid_table, msginfo->inreplyto);
-		/* node should not be the parent, and node should not be an ancestor
-		 * of parent (circular reference) */
-		if (parent && parent != node 
-		&& !g_node_is_ancestor(node, parent)) {
-			g_node_unlink(node);
-			g_node_insert_before
-				(parent, parent->children, node);
-			/* CLAWS: ignore thread */
-			if (MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags)) {
-				g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, procmsg_ignore_node, NULL);
-			}
+			/* node should not be the parent, and node should not 
+			   be an ancestor of parent (circular reference) */
+			if (parent && parent != node && 
+			    !g_node_is_ancestor(node, parent)) {
+				g_node_unlink(node);
+				g_node_insert_before
+					(parent, parent->children, node);
+				/* CLAWS: ignore thread */
+				if (MSG_IS_IGNORE_THREAD(((MsgInfo *)parent->data)->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
+					g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, procmsg_ignore_node, NULL);
+			}				
 		}
-		last = node; /* CLAWS: need to have the last one for subject threading */
+		last = (next == NULL) ? prev : node;
 		node = next;
 	}
 
-	/* CLAWS: now see if the first level (below root) still has some nodes that can be
-	 * threaded by subject line. we need to handle this in a special way to prevent
-	 * circular reference from a node that has already been threaded by IN-REPLY-TO
-	 * but is also in the subject line hash table */
 	if (prefs_common.thread_by_subject) {
 		for (node = last; node && node != NULL;) {
 			next = node->prev;
 			msginfo = (MsgInfo *) node->data;
-			subject = msginfo->subject + subject_get_reply_prefix_length(msginfo->subject);
-			parent = subject_table_lookup_clean(subject_table, (gchar *) subject);
+			subject = msginfo->subject + subject_get_prefix_length(msginfo->subject);
 			
-			/* the node may already be threaded by IN-REPLY-TO,
-			   so go up in the tree to find the parent node */
+			/* may not parentize if parent was delivered after childs */
+			if (subject != msginfo->subject)
+				parent = subject_table_lookup_clean(subject_table, (gchar *) subject);
+			else
+				parent = NULL; 
+			
+			/* the node may already be threaded by IN-REPLY-TO, so go up in the tree to 
+			   find the parent node */
 			if (parent != NULL) {
 				if (g_node_is_ancestor(node, parent))
 					parent = NULL;
 				if (parent == node)
 					parent = NULL;
-				/* Make new thread parent if too old compared to previous one; probably
-				 * breaks ignoring threads for subject threading. This still isn't
-				 * accurate because the tree isn't sorted by date. */	
+				/* make new thread parent if too old compared to previous one; probably
+				   breaks ignoring threads for subject threading. not accurate because
+				   the tree isn't sorted by date. */
 				if (parent && abs(difftime(msginfo->date_t, ((MsgInfo *)parent->data)->date_t)) >
 						prefs_common.thread_by_subject_max_age * 3600 * 24) {
 					subject_table_remove_clean(subject_table, (gchar *) subject);
@@ -245,7 +264,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 					parent = NULL;
 				}
 			}
-
+			
 			if (parent) {
 				g_node_unlink(node);
 				g_node_append(parent, node);
@@ -254,6 +273,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 					g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, procmsg_ignore_node, NULL);
 				}
 			}
+
 			node = next;
 		}	
 	}
@@ -360,6 +380,50 @@ gchar *procmsg_get_message_file(MsgInfo *msginfo)
 		g_warning("can't fetch message %d\n", msginfo->msgnum);
 
 	return filename;
+}
+
+GSList *procmsg_get_message_file_list(GSList *mlist)
+{
+        GSList *file_list = NULL;
+        MsgInfo *msginfo;
+        MsgFileInfo *fileinfo;
+        gchar *file;
+
+        while (mlist != NULL) {
+                msginfo = (MsgInfo *)mlist->data;
+                file = procmsg_get_message_file(msginfo);
+                if (!file) {
+                        procmsg_message_file_list_free(file_list);
+                        return NULL;
+                }
+                fileinfo = g_new(MsgFileInfo, 1);
+		fileinfo->msginfo = procmsg_msginfo_new_ref(msginfo);
+                fileinfo->file = file;
+                fileinfo->flags = g_new(MsgFlags, 1);
+                *fileinfo->flags = msginfo->flags;
+                file_list = g_slist_prepend(file_list, fileinfo);
+                mlist = mlist->next;
+        }
+
+        file_list = g_slist_reverse(file_list);
+
+        return file_list;
+}
+
+void procmsg_message_file_list_free(MsgInfoList *file_list)
+{
+	GSList *cur;
+	MsgFileInfo *fileinfo;
+
+	for (cur = file_list; cur != NULL; cur = cur->next) {
+		fileinfo = (MsgFileInfo *)cur->data;
+		procmsg_msginfo_free(fileinfo->msginfo);
+		g_free(fileinfo->file);
+		g_free(fileinfo->flags);
+		g_free(fileinfo);
+	}
+
+	g_slist_free(file_list);
 }
 
 FILE *procmsg_open_message(MsgInfo *msginfo)
@@ -666,7 +730,7 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 			    gboolean is_queued)
 {
 	gint num;
-	MsgInfo *msginfo;
+	MsgInfo *msginfo, *tmp_msginfo;
 
 	debug_print("saving sent message...\n");
 
@@ -685,23 +749,30 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 			return -1;
 
 		folder_item_scan(outbox);
-		if ((num = folder_item_add_msg(outbox, tmp, TRUE)) < 0) {
+		if ((num = folder_item_add_msg(outbox, tmp, NULL, TRUE)) < 0) {
 			g_warning("can't save message\n");
 			unlink(tmp);
 			return -1;
 		}
 	} else {
 		folder_item_scan(outbox);
-		if ((num = folder_item_add_msg(outbox, file, FALSE)) < 0) {
+		if ((num = folder_item_add_msg(outbox, file, NULL, FALSE)) < 0) {
 			g_warning("can't save message\n");
 			return -1;
 		}
 		return -1;
 	}
-	msginfo = folder_item_get_msginfo(outbox, num);
+	msginfo = folder_item_get_msginfo(outbox, num);		/* refcnt++ */
+	tmp_msginfo = procmsg_msginfo_get_full_info(msginfo);	/* refcnt++ */ 
 	if (msginfo != NULL) {
-	    procmsg_msginfo_unset_flags(msginfo, ~0, 0);
-	    procmsg_msginfo_free(msginfo);
+		procmsg_msginfo_unset_flags(msginfo, ~0, 0);
+		procmsg_msginfo_free(msginfo);			/* refcnt-- */
+		/* tmp_msginfo == msginfo */
+		if (tmp_msginfo && (msginfo->dispositionnotificationto || 
+		    msginfo->returnreceiptto)) {
+			procmsg_msginfo_set_flags(msginfo, MSG_RETRCPT_SENT, 0); 
+			procmsg_msginfo_free(msginfo);		/* refcnt-- */
+		}	
 	}
 	folder_item_update(outbox, TRUE);
 
@@ -852,6 +923,20 @@ MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
 	g_free(file);
 	if (!full_msginfo) return NULL;
 
+	/* CLAWS: make sure we add the missing members; see: 
+	 * procheader.c::procheader_get_headernames() */
+	if (!msginfo->xface)
+		msginfo->xface = g_strdup(full_msginfo->xface);
+	if (!msginfo->dispositionnotificationto)
+		msginfo->dispositionnotificationto = 
+			g_strdup(full_msginfo->dispositionnotificationto);
+	if (!msginfo->returnreceiptto)
+		msginfo->returnreceiptto = g_strdup
+			(full_msginfo->returnreceiptto);
+	procmsg_msginfo_free(full_msginfo);
+
+	return procmsg_msginfo_new_ref(msginfo);
+#if 0
 	full_msginfo->msgnum = msginfo->msgnum;
 	full_msginfo->size = msginfo->size;
 	full_msginfo->mtime = msginfo->mtime;
@@ -863,6 +948,7 @@ MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
 	procmsg_msginfo_set_to_folder(full_msginfo, msginfo->to_folder);
 
 	return full_msginfo;
+#endif
 }
 
 void procmsg_msginfo_free(MsgInfo *msginfo)

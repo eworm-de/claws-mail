@@ -1,7 +1,191 @@
+2003-07-28
+
+	* src/imap.c: imap_get_flag_str(): バッファオーバーランを修正。
+
+2003-07-25
+
+	* version 0.9.4
+
+2003-07-25
+
+	* src/main.c: main(): 起動時に設定ファイルを保存しないようにした。
+
+2003-07-25
+
+	* src/imap.c:
+	  imap_get_msg_list(): キャッシュ未使用のときの冗長な UID SEARCH ALL
+	  を除去。
+	  \Seen がセットされていたら MSG_NEW フラグを解除。
+	  imap_get_uncached_messages(): first_uid と last_uid が両方とも 0
+	  の場合は全てのメッセージを取得。
+
+2003-07-24
+
+	* src/imap.c: IMAP4 サーバの状態を常に正確に反映するように実装を改良。
+	  imap_get_msg_list(): UID SEARCH コマンドを使用してメッセージの
+	  状態を調べるようにした。
+	  imap_delete_cached_message(): 単一のメッセージキャッシュを削除する。
+	  imap_get_uid(): 削除。
+	  imap_cmd_search(): 新規。 UID SEARCH コマンドを発行し、 UID の配列
+	  を返す。
+	  imap_cmd_gen_recv(): 文字列長を無制限にした。
+	  imap_get_uid_table(): UID 配列からハッシュテーブルを返す。
+
+2003-07-24
+
+	* src/folder.[ch]
+	  src/imap.[ch]
+	  src/mh.[ch]
+	  src/news.[ch]: Folder::close() メソッドを追加。
+	* src/summaryview.c: summary_clear_list(): folder_item_close() を
+	  呼ぶようにした。
+
+2003-07-23
+
+	* メッセージを他のフォルダから IMAP フォルダにコピーしたときフラグを
+	  引き継ぐようにした。
+	* src/imap.[ch]
+	  src/mh.[ch]
+	  imap_add_msg()
+	  imap_add_msgs()
+	  mh_add_msg()
+	  mh_add_msgs(): ファイルを追加するときにフラグも指定できるようにした。
+	* src/folder.[ch]: 仮想関数に assertion を追加。
+	* src/procmsg.[ch]: procmsg_get_message_file_list(): MsgFileInfo
+	  のリストを返すようにした。
+	  procmsg_message_file_list_free(): 新規。
+
+2003-07-23
+
+	* src/procmsg.h: 移植性のため MsgPermFlags と MsgTmpFlags を enum
+	  から guint32 に変更(Alfons さん thanks)。
+	* src/imap.c: imap_add_msgs(): 冗長な unlink() を削除。
+
+2003-07-22
+
+	* src/session.[ch]:
+	  session_read_msg_cb()
+	  session_read_data_cb(): リモートホストによって接続を切断された場合
+	  に無限ループに陥るバグを修正(今井さん thanks)。
+	  SessionState に SESSION_EOF を追加。
+	  session_is_connected(): 新規。
+	* src/inc.[ch]: inc_put_error()
+	  src/send_message.c: send_put_error(): ログメッセージも共に出力。
+
+2003-07-18
+
+	* IMAP4 のさらなる最適化。
+	* src/folder.[ch]: 複数のファイルをフォルダに追加するメソッド
+	  add_msgs() を追加。
+	  FolderItem 操作の冗長な scan() を削除。
+	* src/imap.[ch]: Folder::add_msgs() を実装し、他の Folder
+	  インスタンスからの移動・コピーを最適化。
+	* src/mh.[ch]: Folder::add_msgs() を実装し、コードを整理。
+	  mh_fetch_msg(): 必要であればフォルダをスキャン。
+	* src/procmsg.[ch]: procmsg_get_message_file_list(): メッセージリスト
+	  からファイルのリストを返す。
+	* src/summaryview.c: 削除・移動・コピー操作で MSG_MARKED フラグを
+	  削除しないようにした。
+	  summary_display_msg_full(): 冗長なメッセージの取得を削除。
+
+2003-07-17
+
+	* コマンドを発行するときにシーケンスセットを使用して IMAP4 の
+	  移動/コピー/削除/マーク操作を最適化(claws の実装を整理して適用)。
+	* src/imap.[ch]:
+	  imap_set_message_flags()
+	  imap_cmd_envelope()
+	  imap_cmd_copy()
+	  imap_cmd_store(): UID 番号の代わりにシーケンスセット文字列を
+	  受け取るようにした。
+	  imap_do_copy_msgs_with_dest(): シーケンスセットを使用して最適化。
+	  imap_cmd_fetch(): BODY の代わりに BODY.PEEK を使用。
+	  imap_remove_all_msg()
+	  imap_set_message_flags(): FLAGS の代わりに FLAGS.SILENT を使用。
+	* src/compose.c
+	  src/summaryview.c: 各メッセージ毎にコマンドを発行するのではなく
+	  imap_msg_list_{set,unset}_perm_flags() を使用するようにした。
+
+2003-07-15
+
+	* src/inc.c
+	  src/prefs_account.[ch]
+	  src/send_message.c
+	  src/session.[ch]: 非ブロッキング SSL を有効/無効にするオプションを
+	  追加。
+
+2003-07-15
+
+	* src/compose.c: compose_attach_append(): message/rfc822 ファイルを
+	  添付するときにメッセージの件名を表示。
+
+2003-07-14
+
+	* src/session.[ch]:
+	  session_recv_msg()
+	  session_recv_data()
+	  session_read_msg_cb()
+	  session_read_data_cb(): sock_peek() を削除し、ユーザ空間でメッセージ
+	  をバッファリングして最適化(今回は正しく実装)。
+
+2003-07-11
+
+	* src/session.c: メッセージの後のデータ受信を正しく扱えなかったため、
+	  前の変更を元に戻した。
+
+2003-07-11
+
+	* src/session.c
+	  session_recv_msg()
+	  session_read_msg_cb(): sock_peek() を削除し、ユーザ空間でメッセージ
+	  をバッファリングして最適化。
+
+2003-07-11
+
+	* src/imap.[ch]: リファクタリング。
+	  SockInfo を引数にもつ全ての関数を IMAPSession をとるように変更。
+	  imap_cmd_count をインスタンス変数: IMAPSession::cmd_count にした。
+	  imap_open(): TCP (または SSL)コネクションのみを確立するようにした。
+	  imap_session_new(): グリーティングと認証をここで処理。
+
+2003-07-10
+
+	* src/imap.[ch]: CRAM-MD5 認証を実装し、コードを整理。
+	* src/prefs_account.[ch]: 受信タブに IMAP4 認証方式のオプション
+	  メニューを追加し、他のプロトコルのフレームを隠すようにした。
+
+2003-07-10
+
+	* src/mainwindow.c: send_queue_cb(): エラーが起こった場合はフォルダ
+	  を2重にスキャンしないようにした。
+	* src/procmsg.c: procmsg_send_queue(): 送信したメッセージ数を返す
+	  ようにした。
+
+2003-07-09
+
+	* src/mainwindow.c:
+	  main_window_set_toolbar_sensitive()
+	  main_window_set_menu_sensitive(): メール受信中のファイル操作の
+	  ロックを除去。
+
+2003-07-09
+
+	* src/folder.[ch]: folder_item_remove_msg(): メッセージ番号の代わりに
+	  MsgInfo を引数にとるようにした。
+	* src/imap.[ch]: imap_remove_msg(): imap_remove_msgs() を使用して
+	  再実装。
+	* src/mh.[ch]: mh_do_move(): mh_do_move_msgs_with_dest() を使用して
+	  再実装。
+	  mh_copy_msg(): mh_copy_msgs_with_dest() を使用して再実装。
+	* src/procmsg.c: procmsg_send_queue(): メッセージリストを使用する
+	  ように修正。
+
 2003-07-08
 
 	* src/rfc2015.c: rfc2015_is_encrypted(): 警告を抑えるために
 	  MimeInfo::mime_type をチェック。
+	* src/logwindow.c: log_window_append(): 行を削除するときに上に
+	  スクロールしないようにした。
 
 2003-07-07
 

@@ -156,14 +156,18 @@ void manual_open(ManualType type)
 
 		case MANUAL_MANUAL_SYLDOC:
 			lang_str = get_syldoc_language();
-			uri = g_strconcat("http://sylpheeddoc.sourceforge.net/", lang_str, "/manual/manual.html", NULL);
+			uri = g_strconcat(SYLDOC_URI, lang_str, SYLDOC_MANUAL_HTML_INDEX, NULL);
 			g_free(lang_str);
 			break;
 
 		case MANUAL_FAQ_SYLDOC:
 			lang_str = get_syldoc_language();
-			uri = g_strconcat("http://sylpheeddoc.sourceforge.net/", lang_str, "/faq/faq.html", NULL);
+			uri = g_strconcat(SYLDOC_URI, lang_str, SYLDOC_FAQ_HTML_INDEX, NULL);
 			g_free(lang_str);
+			break;
+
+		case MANUAL_FAQ_CLAWS:
+			uri = g_strconcat(CLAWS_FAQ_URI, NULL);
 			break;
 
 		default:

@@ -54,6 +54,7 @@ typedef enum {
 	SESSION_READY,
 	SESSION_SEND,
 	SESSION_RECV,
+	SESSION_EOF,
 	SESSION_ERROR,
 	SESSION_DISCONNECTED
 } SessionState;
@@ -99,6 +100,8 @@ struct _Session
 	SSLType ssl_type;
 #endif
 
+	gboolean nonblocking;
+
 	SessionState state;
 
 	time_t last_access_time;
@@ -108,7 +111,15 @@ struct _Session
 
 	gint io_tag;
 
+#ifdef WIN32 /* 093claws19 not synced */
 	GString *read_buf;
+#else
+	gchar read_buf[SESSION_BUFFSIZE];
+	gchar *read_buf_p;
+	gint read_buf_len;
+
+	GString *read_msg_buf;
+#endif
 	GByteArray *read_data_buf;
 	gchar *read_data_terminator;
 
@@ -144,12 +155,13 @@ struct _Session
 	gpointer send_data_notify_data;
 };
 
-void session_init	(Session	*session);
-gint session_connect	(Session	*session,
-			 const gchar	*server,
-			 gushort	 port);
-gint session_disconnect	(Session	*session);
-void session_destroy	(Session	*session);
+void session_init		(Session	*session);
+gint session_connect		(Session	*session,
+				 const gchar	*server,
+				 gushort	 port);
+gint session_disconnect		(Session	*session);
+void session_destroy		(Session	*session);
+gboolean session_is_connected	(Session	*session);
 
 void session_set_recv_message_notify	(Session	*session,
 					 RecvMsgNotify	 notify_func,

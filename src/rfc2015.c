@@ -428,6 +428,10 @@ leave:
 
     g_free (partinfo->sigstatus);
     partinfo->sigstatus = g_strdup (result);
+    partinfo->sig_ok = (status == GPGME_SIG_STAT_GOOD);
+    partinfo->sig_unknown = (status == GPGME_SIG_STAT_NOKEY);
+    partinfo->sig_expired = (status == GPGME_SIG_STAT_GOOD_EXP);
+    partinfo->key_expired = (status == GPGME_SIG_STAT_GOOD_EXPKEY);
 
     gpgme_data_release (sig);
     gpgme_data_release (text);

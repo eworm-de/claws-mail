@@ -26,6 +26,8 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
+#include "common/sylpheed.h"
+#include "common/version.h"
 #include "intl.h"
 #include "plugin.h"
 #include "utils.h"
@@ -227,6 +229,16 @@ static struct ClamAvPage clamav_page;
 
 gint plugin_init(gchar **error)
 {
+	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
+		*error = g_strdup("Your sylpheed version is newer than the version the plugin was built with");
+		return -1;
+	}
+
+	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
+		*error = g_strdup("Your sylpheed version is too old");
+		return -1;
+	}
+
 	clamav_page.page.path = _("Filtering/Clam AntiVirus");
 	clamav_page.page.create_widget = clamav_create_widget_func;
 	clamav_page.page.destroy_widget = clamav_destroy_widget_func;

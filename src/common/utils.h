@@ -452,7 +452,7 @@ void * subject_table_lookup(GHashTable *subject_table, gchar * subject);
 void subject_table_insert(GHashTable *subject_table, gchar * subject,
 			  void * data);
 void subject_table_remove(GHashTable *subject_table, gchar * subject);
-gint subject_get_reply_prefix_length (const gchar *subject);
+gint subject_get_prefix_length (const gchar *subject);
 
 /* The following macros have the same preconditions as the cleanless
  * functions above, but work with clean subjects (subject lines already
@@ -484,6 +484,8 @@ gchar * expand_search_string	(const gchar *str);
 guint g_stricase_hash	(gconstpointer gptr);
 gint g_stricase_equal	(gconstpointer gptr1, gconstpointer gptr2);
 gint g_int_compare	(gconstpointer a, gconstpointer b);
+
+gchar *generate_msgid	(const gchar *address, gchar *buf, gint len);
 
 #ifdef WIN32
 #undef isspace

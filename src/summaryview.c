@@ -75,7 +75,7 @@
 #include "addressbook.h"
 #include "addr_compl.h"
 #include "scoring.h"
-#include "prefs_folder_item.h"
+#include "folder_item_prefs.h"
 #include "filtering.h"
 #include "string_match.h"
 #include "toolbar.h"
@@ -254,7 +254,7 @@ static void summary_colorlabel_menu_create(SummaryView	*summaryview);
 static GtkWidget *summary_ctree_create	(SummaryView	*summaryview);
 
 /* callback functions */
-static void summary_toggle_pressed	(GtkWidget		*eventbox,
+static gint summary_toggle_pressed	(GtkWidget		*eventbox,
 					 GdkEventButton		*event,
 					 SummaryView		*summaryview);
 static void summary_button_pressed	(GtkWidget		*ctree,
@@ -263,7 +263,7 @@ static void summary_button_pressed	(GtkWidget		*ctree,
 static void summary_button_released	(GtkWidget		*ctree,
 					 GdkEventButton		*event,
 					 SummaryView		*summaryview);
-static void summary_key_pressed		(GtkWidget		*ctree,
+static gint summary_key_pressed		(GtkWidget		*ctree,
 					 GdkEventKey		*event,
 					 SummaryView		*summaryview);
 static gint summary_searchbar_pressed	(GtkWidget		*ctree,
@@ -526,7 +526,8 @@ static DescriptionWindow search_descr = {
 	search_descr_strings
 };
 	
-static void search_description_cb (GtkWidget *widget) {
+static void search_description_cb(GtkWidget *widget)
+{
 	description_window_create(&search_descr);
 };
 
@@ -707,6 +708,8 @@ SummaryView *summary_create(void)
 	summaryview->search_description = search_description;
 	summaryview->msginfo_update_callback_id =
 		hooks_register_hook(MSGINFO_UPDATE_HOOKLIST, summary_update_msg, (gpointer) summaryview);
+
+	summaryview->target_list = gtk_target_list_new(summary_drag_types, 1);
 
 	/* CLAWS: need this to get the SummaryView * from
 	 * the CList */
@@ -1276,15 +1279,32 @@ SummarySelection summary_get_selection_type(SummaryView *summaryview)
 GSList *summary_get_selected_msg_list(SummaryView *summaryview)
 {
 	GSList *mlist = NULL;
-	GList *row_list;
 	GList *cur;
 	MsgInfo *msginfo;
 
-	row_list = GTK_CLIST(summaryview->ctree)->selection;
-	for (cur = row_list; cur != NULL; cur = cur->next) {
-		msginfo = gtk_ctree_node_get_row_data
-			(GTK_CTREE(summaryview->ctree),
-			 GTK_CTREE_NODE(cur->data));
+	for (cur = GTK_CLIST(summaryview->ctree)->selection; cur != NULL;
+	     cur = cur->next) {
+		msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(cur->data);
+		mlist = g_slist_prepend(mlist, msginfo);
+	}
+
+	mlist = g_slist_reverse(mlist);
+
+	return mlist;
+}
+
+GSList *summary_get_msg_list(SummaryView *summaryview)
+{
+	GSList *mlist = NULL;
+	GtkCTree *ctree;
+	GtkCTreeNode *node;
+	MsgInfo *msginfo;
+
+	ctree = GTK_CTREE(summaryview->ctree);
+
+	for (node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
+	     node != NULL; node = gtkut_ctree_node_next(ctree, node)) {
+		msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
 		mlist = g_slist_prepend(mlist, msginfo);
 	}
 
@@ -1296,85 +1316,68 @@ GSList *summary_get_selected_msg_list(SummaryView *summaryview)
 static void summary_set_menu_sensitive(SummaryView *summaryview)
 {
 	GtkItemFactory *ifactory = summaryview->popupfactory;
-	SummarySelection selection;
+	SensitiveCond state;
+	gboolean sensitive;
 	GtkWidget *menuitem;
-	gboolean sens;
+	gint i;
 
-	selection = summary_get_selection_type(summaryview);
+	static const struct {
+		gchar *const entry;
+		SensitiveCond cond;
+	} entry[] = {
+		{"/Reply"			, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Reply to"			, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Reply to/all"		, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Reply to/sender"             , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Reply to/mailing list"       , M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+		{"/Follow-up and reply to"	, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST|M_NEWS},
+
+		{"/Forward"			, M_HAVE_ACCOUNT|M_TARGET_EXIST},
+        	{"/Redirect"			, M_HAVE_ACCOUNT|M_SINGLE_TARGET_EXIST},
+
+		{"/Re-edit"			, M_HAVE_ACCOUNT|M_ALLOW_REEDIT},
+
+		{"/Move..."			, M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
+		{"/Copy..."			, M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
+		{"/Delete"			, M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NOT_NEWS},
+		{"/Cancel a news message"	, M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED|M_NEWS},
+		{"/Execute"			, M_DELAY_EXEC},
+
+		{"/Mark"			, M_TARGET_EXIST},
+		{"/Mark/Mark"   		, M_TARGET_EXIST},
+		{"/Mark/Unmark"   		, M_TARGET_EXIST},
+		{"/Mark/Mark as unread"   	, M_TARGET_EXIST},
+		{"/Mark/Mark all read"   	, M_TARGET_EXIST},
+		{"/Mark/Ignore thread"   	, M_TARGET_EXIST},
+		{"/Mark/Lock"   		, M_TARGET_EXIST},
+		{"/Mark/Unlock"   		, M_TARGET_EXIST},
+		{"/Color label"			, M_TARGET_EXIST},
+
+		{"/Add sender to address book"	, M_SINGLE_TARGET_EXIST},
+		{"/Create filter rule"		, M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+
+		{"/View"			, M_SINGLE_TARGET_EXIST},
+		{"/View/Open in new window"     , M_SINGLE_TARGET_EXIST},
+		{"/View/Source"			, M_SINGLE_TARGET_EXIST},
+		{"/View/All header"		, M_SINGLE_TARGET_EXIST},
+
+		{"/Save as..."			, M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+		{"/Print..."			, M_TARGET_EXIST|M_UNLOCKED},
+
+		{"/Select thread"		, M_SINGLE_TARGET_EXIST},
+
+		{NULL, 0}
+	};
+
 	main_window_set_menu_sensitive(summaryview->mainwin);
 
-	if (selection == SUMMARY_NONE) {
-		GtkWidget *submenu;
+	state = main_window_get_current_state(summaryview->mainwin);
 
-		submenu = gtk_item_factory_get_widget
-			(summaryview->popupfactory, "/Mark");
-		menu_set_insensitive_all(GTK_MENU_SHELL(submenu));
-		menu_set_insensitive_all
-			(GTK_MENU_SHELL(summaryview->popupmenu));
-		return;
+	for (i = 0; entry[i].entry != NULL; i++) {
+		sensitive = ((entry[i].cond & state) == entry[i].cond);
+		menu_set_sensitive(ifactory, entry[i].entry, sensitive);
 	}
 
-	if (FOLDER_TYPE(summaryview->folder_item->folder) != F_NEWS)
-		menu_set_sensitive(ifactory, "/Move...", TRUE);
-	else
-		menu_set_sensitive(ifactory, "/Move...", FALSE);
-
-#if 0
-	menu_set_sensitive(ifactory, "/Delete", TRUE);
-#endif
-	menu_set_sensitive(ifactory, "/Copy...", TRUE);
-	menu_set_sensitive(ifactory, "/Execute", TRUE);
-
-	menu_set_sensitive(ifactory, "/Mark", TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Mark",   TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Unmark", TRUE);
-
-	menu_set_sensitive(ifactory, "/Mark/Mark as unread", TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Mark as read",   TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Mark all read", TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Ignore thread",   TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Unignore thread", TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Lock", TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Unlock", TRUE);
-
-	menu_set_sensitive(ifactory, "/Color label", TRUE);
-
-	sens = (selection == SUMMARY_SELECTED_MULTIPLE) ? FALSE : TRUE;
-	menu_set_sensitive(ifactory, "/Reply",			  sens);
-	menu_set_sensitive(ifactory, "/Reply to",		  sens);
-	menu_set_sensitive(ifactory, "/Reply to/all",		  sens);
-	menu_set_sensitive(ifactory, "/Reply to/sender",	  sens);
-	menu_set_sensitive(ifactory, "/Reply to/mailing list",	  sens);
-	menu_set_sensitive(ifactory, "/Forward",		  TRUE);
-	menu_set_sensitive(ifactory, "/Redirect",		  sens);
-
-	menu_set_sensitive(ifactory, "/Add sender to address book", sens);
-	menu_set_sensitive(ifactory, "/Create filter rule",         sens);
-
-	menu_set_sensitive(ifactory, "/View", sens);
-	menu_set_sensitive(ifactory, "/View/Open in new window", sens);
-	menu_set_sensitive(ifactory, "/View/Source", sens);
-	menu_set_sensitive(ifactory, "/View/All header", sens);
-	if (summaryview->folder_item->stype == F_OUTBOX ||
-	    summaryview->folder_item->stype == F_DRAFT  ||
-	    summaryview->folder_item->stype == F_QUEUE)
-		menu_set_sensitive(ifactory, "/Re-edit", sens);
-	else
-		menu_set_sensitive(ifactory, "/Re-edit", FALSE);
-
-	menu_set_sensitive(ifactory, "/Save as...", TRUE);
-	menu_set_sensitive(ifactory, "/Print...",   TRUE);
-
-	menu_set_sensitive(ifactory, "/Select all", TRUE);
-	menu_set_sensitive(ifactory, "/Select thread", sens);
-	if (summaryview->folder_item->folder->account)
-		sens = summaryview->folder_item->folder->account->protocol
-			== A_NNTP;
-	else
-		sens = FALSE;
-	menu_set_sensitive(ifactory, "/Follow-up and reply to",	sens);
-	menu_set_sensitive(ifactory, "/Cancel a news message", sens);
-	menu_set_sensitive(ifactory, "/Delete", !sens);
 
 	summary_lock(summaryview);
 	menuitem = gtk_item_factory_get_widget(ifactory, "/View/All header");
@@ -2536,7 +2539,6 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 	MsgFlags flags;
-	gchar *filename;
 
 	if (!new_window) {
 		if (summaryview->displayed == row)
@@ -2554,13 +2556,6 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	GTK_EVENTS_FLUSH();
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
-
-	filename = procmsg_get_message_file(msginfo);
-	if (!filename) {
-		summary_unlock(summaryview);
-		return;
-	}
-	g_free(filename);
 
 	if (new_window || !prefs_common.mark_as_read_on_new_window) {
 		if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
@@ -2828,8 +2823,7 @@ static void summary_set_row_marks(SummaryView *summaryview, GtkCTreeNode *row)
 		}
 			gtk_ctree_node_set_foreground
                         	(ctree, row, &summaryview->color_marked);
-	}
-	else if ((global_scoring ||
+	} else if ((global_scoring ||
 		  summaryview->folder_item->prefs->scoring) &&
 		 (msginfo->score >= summaryview->important_score) &&
 		 (MSG_IS_MARKED(msginfo->flags) || MSG_IS_MOVE(msginfo->flags) || MSG_IS_COPY(msginfo->flags))) {
@@ -3274,10 +3268,12 @@ static void summary_delete_duplicated_func(GtkCTree *ctree, GtkCTreeNode *node,
 					   SummaryView *summaryview)
 {
 	GtkCTreeNode *found;
-	MsgInfo *msginfo = GTK_CTREE_ROW(node)->row.data;
+	MsgInfo *msginfo;
 	MsgInfo *dup_msginfo;
+
+	msginfo = GTKUT_CTREE_NODE_GET_ROW_DATA(node);
 	
-	if (!msginfo->msgid || !*msginfo->msgid) return;
+	if (!msginfo || !msginfo->msgid || !*msginfo->msgid) return;
 
 	found = g_hash_table_lookup(summaryview->msgid_table, msginfo->msgid);
 	
@@ -3730,7 +3726,7 @@ static void summary_execute_move_func(GtkCTree *ctree, GtkCTreeNode *node,
 
 	if (msginfo && MSG_IS_MOVE(msginfo->flags) && msginfo->to_folder) {
 		summaryview->mlist =
-			g_slist_append(summaryview->mlist, msginfo);
+			g_slist_prepend(summaryview->mlist, msginfo);
 		gtk_ctree_node_set_row_data(ctree, node, NULL);
 
 		if (msginfo->msgid && *msginfo->msgid &&
@@ -3750,6 +3746,7 @@ static void summary_execute_copy(SummaryView *summaryview)
 				summaryview);
 
 	if (summaryview->mlist) {
+		summaryview->mlist = g_slist_reverse(summaryview->mlist);
 		procmsg_copy_messages(summaryview->mlist);
 
 		g_slist_free(summaryview->mlist);
@@ -3767,7 +3764,7 @@ static void summary_execute_copy_func(GtkCTree *ctree, GtkCTreeNode *node,
 
 	if (msginfo && MSG_IS_COPY(msginfo->flags) && msginfo->to_folder) {
 		summaryview->mlist =
-			g_slist_append(summaryview->mlist, msginfo);
+			g_slist_prepend(summaryview->mlist, msginfo);
 
 		procmsg_msginfo_unset_flags(msginfo, 0, MSG_COPY);
 		summary_set_row_marks(summaryview, node);
@@ -4516,12 +4513,12 @@ void summary_set_column_order(SummaryView *summaryview)
 
 /* callback functions */
 
-static void summary_toggle_pressed(GtkWidget *eventbox, GdkEventButton *event,
+static gint summary_toggle_pressed(GtkWidget *eventbox, GdkEventButton *event,
 				   SummaryView *summaryview)
 {
-	if (!event) return;
-
-	summary_toggle_view(summaryview);
+	if (event)  
+		summary_toggle_view(summaryview);
+	return TRUE;
 }
 
 static void summary_button_pressed(GtkWidget *ctree, GdkEventButton *event,
@@ -4557,9 +4554,9 @@ void summary_pass_key_press_event(SummaryView *summaryview, GdkEventKey *event)
 	if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) != 0) break
 
 #define RETURN_IF_LOCKED() \
-	if (summaryview->mainwin->lock_count) return
+	if (summaryview->mainwin->lock_count) return TRUE
 
-static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
+static gint summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				SummaryView *summaryview)
 {
 	GtkCTree *ctree = GTK_CTREE(widget);
@@ -4567,14 +4564,14 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	MessageView *messageview;
 	TextView *textview;
 
-	if (summary_is_locked(summaryview)) return;
-	if (!event) return;
+	if (summary_is_locked(summaryview)) return TRUE;
+	if (!event) return TRUE;
 
 	switch (event->keyval) {
 	case GDK_Left:		/* Move focus */
 	case GDK_Escape:
 		gtk_widget_grab_focus(summaryview->folderview->ctree);
-		return;
+		return TRUE;
 	default:
 		break;
 	}
@@ -4584,7 +4581,7 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		if (node)
 			gtk_sctree_select(GTK_SCTREE(ctree), node);
 		else
-			return;
+			return TRUE;
 	}
 
 	messageview = summaryview->messageview;
@@ -4597,13 +4594,17 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 	switch (event->keyval) {
 	case GDK_space:		/* Page down or go to the next */
-		if (summaryview->displayed != summaryview->selected) {
-			summary_display_msg(summaryview,
-					    summaryview->selected);
-			break;
-		}
-		if (!textview_scroll_page(textview, FALSE))
-			summary_select_next_unread(summaryview);
+		if (event->state & GDK_SHIFT_MASK) 
+			textview_scroll_page(textview, TRUE);
+		else {
+			if (summaryview->displayed != summaryview->selected) {
+				summary_display_msg(summaryview,
+						    summaryview->selected);
+				break;
+			}
+			if (!textview_scroll_page(textview, FALSE))
+				summary_select_next_unread(summaryview);
+		}				
 		break;
 	case GDK_BackSpace:	/* Page up */
 		textview_scroll_page(textview, TRUE);
@@ -4631,6 +4632,7 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	default:
 		break;
 	}
+	return TRUE;
 }
 
 static gint summary_searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
@@ -4750,10 +4752,15 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 
 	switch (column < 0 ? column : summaryview->col_state[column].type) {
 	case S_COL_MARK:
-		if (MSG_IS_MARKED(msginfo->flags)) {
-			summary_unmark_row(summaryview, row);
-		} else
-			summary_mark_row(summaryview, row);
+		if (!MSG_IS_DELETED(msginfo->flags) &&
+		    !MSG_IS_MOVE(msginfo->flags) &&
+		    !MSG_IS_COPY(msginfo->flags)) {
+			if (MSG_IS_MARKED(msginfo->flags)) {
+				summary_unmark_row(summaryview, row);
+			} else {
+				summary_mark_row(summaryview, row);
+			}
+		}
 		break;
 	case S_COL_STATUS:
 		if (MSG_IS_UNREAD(msginfo->flags)) {
@@ -4940,7 +4947,6 @@ static void summary_locked_clicked(GtkWidget *button,
 static void summary_start_drag(GtkWidget *widget, gint button, GdkEvent *event,
 			       SummaryView *summaryview)
 {
-	GtkTargetList *list;
 	GdkDragContext *context;
 
 	g_return_if_fail(summaryview != NULL);
@@ -4948,9 +4954,7 @@ static void summary_start_drag(GtkWidget *widget, gint button, GdkEvent *event,
 	g_return_if_fail(summaryview->folder_item->folder != NULL);
 	if (summaryview->selected == NULL) return;
 
-	list = gtk_target_list_new(summary_drag_types, 1);
-
-	context = gtk_drag_begin(widget, list,
+	context = gtk_drag_begin(widget, summaryview->target_list,
 				 GDK_ACTION_MOVE|GDK_ACTION_COPY|GDK_ACTION_DEFAULT, button, event);
 	gtk_drag_set_icon_default(context);
 }
@@ -5094,7 +5098,7 @@ static gint summary_cmp_by_subject(GtkCList *clist,			 \
  static gint summary_cmp_by_simplified_subject
 	(GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
 {
-	const PrefsFolderItem *prefs;
+	const FolderItemPrefs *prefs;
 	const gchar *str1, *str2;
 	const GtkCListRow *r1 = (const GtkCListRow *) ptr1;
 	const GtkCListRow *r2 = (const GtkCListRow *) ptr2;

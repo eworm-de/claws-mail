@@ -822,6 +822,9 @@ static PrefParam param[] = {
 	{"pixmap_theme_path", DEFAULT_PIXMAP_THEME, 
 	 &prefs_common.pixmap_theme_path, P_STRING,
 	 &Xinterface.entry_pixmap_theme,	prefs_set_data_from_entry, prefs_set_entry},
+
+	{"hover_timeout", "500", &prefs_common.hover_timeout, P_INT,
+	 NULL, NULL, NULL},
 	
 	/* Other */
 	{"uri_open_command", DEFAULT_BROWSER_CMD,

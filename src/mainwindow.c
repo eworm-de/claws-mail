@@ -64,7 +64,6 @@
 #include "prefs_filtering.h"
 #include "prefs_scoring.h"
 #include "prefs_account.h"
-#include "prefs_folder_item.h"
 #include "prefs_summary_column.h"
 #include "prefs_template.h"
 #include "action.h"
@@ -414,8 +413,9 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_File/_Folder/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_File/_Folder/_Check for new messages in all folders"),
 						NULL, update_folderview_cb, 0, NULL},
-	{N_("/_File/_Add mailbox..."),		NULL, add_mailbox_cb, 0, NULL},
-	{N_("/_File/_Add mbox mailbox..."),     NULL, add_mbox_cb, 0, NULL},
+	{N_("/_File/_Add mailbox"),		NULL, NULL, 0, "<Branch>"},
+	{N_("/_File/_Add mailbox/MH..."),	NULL, add_mailbox_cb, 0, NULL},
+	{N_("/_File/_Add mailbox/mbox..."),     NULL, add_mbox_cb, 0, NULL},
 	{N_("/_File/_Import mbox file..."),	NULL, import_mbox_cb, 0, NULL},
 	{N_("/_File/_Export to mbox file..."),	NULL, export_mbox_cb, 0, NULL},
 	{N_("/_File/Empty _trash"),		"<shift>D", empty_trash_cb, 0, NULL},
@@ -717,6 +717,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Help/_FAQ (Local)"),		NULL, manual_open_cb, MANUAL_FAQ_LOCAL, NULL},
 	{N_("/_Help/_FAQ (Sylpheed Doc Homepage)"),
 						NULL, manual_open_cb, MANUAL_FAQ_SYLDOC, NULL},
+	{N_("/_Help/_Claws FAQ (Claws Documentation)"),
+						NULL, manual_open_cb, MANUAL_FAQ_CLAWS, NULL},
 	{N_("/_Help/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Help/_About"),			NULL, about_show, 0, NULL}
 };
@@ -1565,9 +1567,10 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		SensitiveCond cond;
 	} entry[] = {
 		{"/File/Folder"                               , M_UNLOCKED},
-		{"/File/Add mailbox..."                       , M_UNLOCKED},
-                {"/File/Add mbox mailbox..."   		      , M_UNLOCKED},
-		{"/File/Import mbox file..."                  , M_UNLOCKED},
+		{"/File/Add mailbox"                          , M_UNLOCKED},
+
+                {"/File/Add mailbox/MH..."   		      , M_UNLOCKED},
+		{"/File/Add mailbox/mbox..."                  , M_UNLOCKED},
 		{"/File/Export to mbox file..."               , M_UNLOCKED},
 		{"/File/Empty trash"                          , M_UNLOCKED},
 		{"/File/Work offline"	       		      , M_UNLOCKED},
@@ -1587,9 +1590,7 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/View/Go to/Prev message"        , M_MSG_EXIST},
 		{"/View/Go to/Next message"        , M_MSG_EXIST},
 		{"/View/Go to/Prev unread message" , M_MSG_EXIST},
-		{"/View/Go to/Next unread message" , M_MSG_EXIST},
 		{"/View/Go to/Prev new message"    , M_MSG_EXIST},
-		{"/View/Go to/Next new message"    , M_MSG_EXIST},
 		{"/View/Go to/Prev marked message" , M_MSG_EXIST},
 		{"/View/Go to/Next marked message" , M_MSG_EXIST},
 		{"/View/Go to/Prev labeled message", M_MSG_EXIST},
@@ -1845,10 +1846,6 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 				     prefs_common.mainwin_height);
 		gtk_widget_show_all(vpaned);
 
-		/* CLAWS: previous "gtk_widget_show_all" makes noticeview
-		 * lose track of its visibility state */
-		if (!noticeview_is_visible(mainwin->messageview->noticeview)) 
-			gtk_widget_hide(GTK_WIDGET_PTR(mainwin->messageview->noticeview));
 
 		mainwin->win.sep_none.hpaned = hpaned;
 		mainwin->win.sep_none.vpaned = vpaned;
@@ -1890,11 +1887,6 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 
 		gtk_widget_show_all(folderwin);
 		
-		/* CLAWS: previous "gtk_widget_show_all" makes noticeview
-		 * lose track of its visibility state */
-		if (!noticeview_is_visible(mainwin->messageview->noticeview)) 
-			gtk_widget_hide(GTK_WIDGET_PTR(mainwin->messageview->noticeview));
-		
 		/* remove headerview if not in prefs */
 		headerview_set_visibility(mainwin->messageview->headerview,
 					  prefs_common.display_header_pane);
@@ -1926,10 +1918,6 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 
 		gtk_widget_show_all(messagewin);
 		
-		/* CLAWS: previous "gtk_widget_show_all" makes noticeview
-		 * lose track of its visibility state */
-		if (!noticeview_is_visible(mainwin->messageview->noticeview)) 
-			gtk_widget_hide(GTK_WIDGET_PTR(mainwin->messageview->noticeview));
 		break;
 	case SEPARATE_BOTH:
 		gtk_box_pack_start(GTK_BOX(vbox_body),
@@ -1952,12 +1940,17 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		gtk_widget_show_all(folderwin);
 		gtk_widget_show_all(messagewin);
 
-		/* CLAWS: previous "gtk_widget_show_all" makes noticeview
-		 * lose track of its visibility state */
-		if (!noticeview_is_visible(mainwin->messageview->noticeview)) 
-			gtk_widget_hide(GTK_WIDGET_PTR(mainwin->messageview->noticeview));
 		break;
 	}
+
+	/* CLAWS: previous "gtk_widget_show_all" makes noticeview
+	 * and mimeview icon list/ctree lose track of their visibility states */
+	if (!noticeview_is_visible(mainwin->messageview->noticeview)) 
+		gtk_widget_hide(GTK_WIDGET_PTR(mainwin->messageview->noticeview));
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(mainwin->messageview->mimeview->mime_toggle)))
+		gtk_widget_hide(mainwin->messageview->mimeview->icon_mainbox);
+	else 
+		gtk_widget_hide(mainwin->messageview->mimeview->ctree_mainbox);
 
 	/* rehide quick search if necessary */
 	if (!prefs_common.show_searchbar)

@@ -20,6 +20,8 @@
 #ifndef __PREFS_FILTERING_H__
 #define __PREFS_FILTERING_H__
 
+#include <glib.h>
+
 /*
 void prefs_scoring_read_config	(void);
 void prefs_scoring_write_config	(void);

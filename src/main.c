@@ -146,6 +146,8 @@ static void open_compose_new		(const gchar	*address,
 
 static void send_queue			(void);
 static void initial_processing		(FolderItem *item, gpointer data);
+static void quit_signal_handler         (int sig);
+static void install_basic_sighandlers   (void);
 
 #if 0
 /* for gettext */
@@ -226,6 +228,7 @@ int main(int argc, char *argv[])
 	}
 	crash_install_handlers();
 #endif
+	install_basic_sighandlers();
 
 #ifdef WIN32
 	{ /* Initialize WinSock Library. */
@@ -346,11 +349,8 @@ int main(int argc, char *argv[])
 	
 	sock_set_io_timeout(prefs_common.io_timeout_secs);
 
-	prefs_common_save_config();
 	prefs_actions_read_config();
-	prefs_actions_write_config();
 	prefs_display_header_read_config();
-	prefs_display_header_write_config();
 	/* prefs_filtering_read_config(); */
 	addressbook_read_file();
 	renderer_read_config();
@@ -368,7 +368,6 @@ int main(int argc, char *argv[])
 					mainwin);
 
 	account_read_config_all();
-	account_save_config_all();
 
 	if (folder_read_list() < 0) {
 		setup(mainwin);
@@ -568,6 +567,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 			puts(_("  --debug                debug mode"));
 			puts(_("  --help                 display this help and exit"));
 			puts(_("  --version              output version information and exit"));
+			puts(_("  --config-dir           output configuration directory"));
 
 			exit(1);
 #ifndef WIN32
@@ -576,6 +576,9 @@ static void parse_cmd_opt(int argc, char *argv[])
 			cmd.crash_params = g_strdup(argv[i + 1]);
 			i++;
 #endif
+		} else if (!strncmp(argv[i], "--config-dir", sizeof "--config-dir" - 1)) {
+			puts(RC_DIR);
+			exit(0);
 		}
 		
 	}
@@ -1040,4 +1043,40 @@ static void send_queue(void)
 			}
 		}
 	}
+}
+
+static void quit_signal_handler(int sig)
+{
+	debug_print("Quitting on signal %d\n", sig);
+	clean_quit();
+}
+
+static void install_basic_sighandlers()
+{
+#ifndef WIN32
+	sigset_t    mask;
+	struct sigaction act;
+
+	sigemptyset(&mask);
+
+#ifdef SIGTERM
+	sigaddset(&mask, SIGTERM);
+#endif
+#ifdef SIGINT
+	sigaddset(&mask, SIGINT);
+#endif
+
+	act.sa_handler = quit_signal_handler;
+	act.sa_mask    = mask;
+	act.sa_flags   = 0;
+
+#ifdef SIGTERM
+	sigaction(SIGTERM, &act, 0);
+#endif
+#ifdef SIGINT
+	sigaction(SIGINT, &act, 0);
+#endif	
+
+	sigprocmask(SIG_UNBLOCK, &mask, 0);
+#endif
 }

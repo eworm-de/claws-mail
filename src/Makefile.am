@@ -34,6 +34,7 @@ sylpheed_SOURCES = \
 	addressbook.c addressbook.h \
 	addr_compl.c addr_compl.h \
 	addressitem.h \
+	addrquery.h \
 	adbookbase.h \
 	addritem.c addritem.h \
 	addrcache.c addrcache.h \
@@ -113,7 +114,8 @@ sylpheed_SOURCES = \
 	noticeview.h noticeview.c \
 	toolbar.c toolbar.h \
 	prefs_toolbar.c prefs_toolbar.h \
-	crash.c crash.h
+	crash.c crash.h \
+	folder_item_prefs.c folder_item_prefs.h
 
 BUILT_SOURCES = \
 	quote_fmt_lex.c \
@@ -171,6 +173,19 @@ EXTRA_DIST = \
 	pixmaps/mail.xpm \
 	pixmaps/mark.xpm \
 	pixmaps/messageview_text.xpm \
+	pixmaps/mime_application_octet_stream.xpm \
+	pixmaps/mime_application.xpm \
+	pixmaps/mime_audio.xpm \
+	pixmaps/mime_gpg_expired.xpm \
+	pixmaps/mime_gpg_failed.xpm \
+	pixmaps/mime_gpg_passed.xpm \
+	pixmaps/mime_gpg_signed.xpm \
+	pixmaps/mime_gpg_unknown.xpm \
+	pixmaps/mime_image.xpm \
+	pixmaps/mime_text_enriched.xpm \
+	pixmaps/mime_text_html.xpm \
+	pixmaps/mime_text_plain.xpm \
+	pixmaps/mime_unknown.xpm \
 	pixmaps/news_compose.xpm \
 	pixmaps/new.xpm \
 	pixmaps/notice_error.xpm \
@@ -198,20 +213,15 @@ EXTRA_DIST = \
 INCLUDES = \
 	-Icommon \
 	-Igtk \
-	-DG_LOG_DOMAIN=\"Sylpheed\" \
 	-I$(top_srcdir)/intl \
-	$(ASPELL_CFLAGS) \
-	$(GTK_CFLAGS) \
-	$(GPGME_CFLAGS) \
-	$(OPENSSL_CFLAGS) \
 	-I$(includedir)
 
 sylpheed_LDFLAGS = \
 	-export-dynamic
 
 sylpheed_LDADD = \
-	$(ASPELL_LIBS) \
 	gtk/libsylpheedgtk.la \
+	$(ASPELL_LIBS) \
 	$(INTLLIBS) \
 	$(GTK_LIBS) \
 	$(GPGME_LIBS) \
@@ -219,11 +229,16 @@ sylpheed_LDADD = \
 	$(OPENSSL_LIBS) \
 	$(LIBICONV)
 
-CPPFLAGS = \
+AM_CPPFLAGS = \
+	-DG_LOG_DOMAIN=\"Sylpheed\" \
 	-DLOCALEDIR=\""$(localedir)"\" \
 	-DMANUALDIR=\""$(manualdir)"\" \
 	-DFAQDIR=\""$(faqdir)"\" \
 	-DTARGET_ALIAS=\""$(target_triplet)"\" \
-	-DSYSCONFDIR=\""$(sysconfdir)"\"
+	-DSYSCONFDIR=\""$(sysconfdir)"\" \
+	$(ASPELL_CFLAGS) \
+	$(GTK_CFLAGS) \
+	$(GPGME_CFLAGS) \
+	$(OPENSSL_CFLAGS)
 
-YFLAGS = -d
+AM_YFLAGS = -d

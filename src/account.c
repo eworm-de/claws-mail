@@ -37,7 +37,7 @@
 #include "account.h"
 #include "prefs_gtk.h"
 #include "prefs_account.h"
-#include "prefs_folder_item.h"
+#include "folder_item_prefs.h"
 #include "compose.h"
 #include "manage_window.h"
 #include "stock_pixmap.h"
@@ -718,7 +718,7 @@ static gboolean account_delete_references_func(GNode *node, gpointer data)
 	
 	item->prefs->enable_default_account = FALSE;
 	item->prefs->default_account = 0;
-	prefs_folder_item_save_config(item);
+	folder_item_prefs_save_config(item);
 
 	return FALSE;
 }

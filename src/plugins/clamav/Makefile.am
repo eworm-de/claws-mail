@@ -23,7 +23,7 @@ INCLUDES = \
 	-I../../gtk \
 	-I$(CLAMAV_LIBS)
 
-CPPFLAGS = \
+AM_CPPFLAGS = \
 	$(ASPELL_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS)

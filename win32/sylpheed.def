@@ -668,15 +668,18 @@ EXPORTS
 	folder_get_persist_prefs 
 	folder_get_status 
 	folder_item_add_msg 
+	folder_item_add_msgs 
 	folder_item_append 
 	folder_item_apply_processing 
 	folder_item_change_msg_flags 
 	folder_item_close 
+	folder_item_compose_page 
 	folder_item_copy_msg 
 	folder_item_copy_msgs_with_dest 
 	folder_item_destroy 
 	folder_item_fetch_msg 
 	folder_item_free_cache 
+	folder_item_general_page 
 	folder_item_get_cache_file 
 	folder_item_get_identifier 
 	folder_item_get_mark_file 
@@ -692,6 +695,14 @@ EXPORTS
 	folder_item_move_to 
 	folder_item_new 
 	folder_item_open 
+	folder_item_prefs_copy_prefs 
+	folder_item_prefs_free 
+	folder_item_prefs_get_sort_mode 
+	folder_item_prefs_get_sort_type 
+	folder_item_prefs_new 
+	folder_item_prefs_read_config 
+	folder_item_prefs_save_config 
+	folder_item_prefs_set_config 
 	folder_item_read_cache 
 	folder_item_remove 
 	folder_item_remove_all_msg 
@@ -756,6 +767,7 @@ EXPORTS
 	g_stricase_hash 
 ;	gai_strerrorA@4 
 ;	gai_strerrorW@4 
+	generate_msgid 
 	get_abbrev_newsgroup_name 
 	get_address_info_async_thread 
 	get_aspell_dict_info_list 
@@ -844,6 +856,9 @@ EXPORTS
 	gtk_stext_str_compare 
 	gtk_stext_str_compare_n 
 	gtk_stext_thaw 
+	gtk_vscrollbutton_get_type 
+	gtk_vscrollbutton_new 
+	gtk_vscrollbutton_reset 
 	gtkaspell_check_all 
 	gtkaspell_check_backwards 
 	gtkaspell_check_forwards_go 
@@ -907,7 +922,6 @@ EXPORTS
 	headerview_init 
 	headerview_set_visibility 
 	headerview_show 
-	hooklist_table 
 	hooks_get_hooklist 
 	hooks_invoke 
 	hooks_register_hook 
@@ -1140,6 +1154,7 @@ EXPORTS
 	mimeview_register_viewer_factory 
 	mimeview_show_message 
 	mimeview_unregister_viewer_factory 
+	mimeview_update 
 	mimeviewer_factories 
 	mimeviews 
 	mkstemp 
@@ -1273,20 +1288,16 @@ EXPORTS
 	prefs_filtering_free 
 	prefs_filtering_open 
 	prefs_filtering_rename_path 
-	prefs_folder_item_cancel_cb 
 	prefs_folder_item_chmod_mode 
-	prefs_folder_item_copy_prefs 
-	prefs_folder_item_create 
-	prefs_folder_item_delete_cb 
-	prefs_folder_item_destroy 
-	prefs_folder_item_free 
-	prefs_folder_item_get_sort_mode 
-	prefs_folder_item_get_sort_type 
-	prefs_folder_item_new 
-	prefs_folder_item_ok_cb 
-	prefs_folder_item_read_config 
-	prefs_folder_item_save_config 
-	prefs_folder_item_set_config 
+	prefs_folder_item_compose_create_widget_func 
+	prefs_folder_item_compose_destroy_widget_func 
+	prefs_folder_item_compose_save_func 
+	prefs_folder_item_general_create_widget_func 
+	prefs_folder_item_general_destroy_widget_func 
+	prefs_folder_item_general_save_func 
+	prefs_folder_item_open 
+	prefs_folder_item_register_page 
+	prefs_folder_item_unregister_page 
 	prefs_free 
 	prefs_gtk_open 
 	prefs_gtk_register_page 
@@ -1387,8 +1398,10 @@ EXPORTS
 	procmsg_get_filter_keyword 
 	procmsg_get_last_num_in_msg_list 
 	procmsg_get_message_file 
+	procmsg_get_message_file_list 
 	procmsg_get_message_file_path 
 	procmsg_get_thread_tree 
+	procmsg_message_file_list_free 
 	procmsg_move_messages 
 	procmsg_msg_exist 
 	procmsg_msg_has_flagged_parent 
@@ -1500,6 +1513,7 @@ EXPORTS
 	session_destroy 
 	session_disconnect 
 	session_init 
+	session_is_connected 
 	session_recv_data 
 	session_recv_msg 
 	session_send_data 
@@ -1611,7 +1625,7 @@ EXPORTS
 	strtailchomp 
 	subject_compare 
 	subject_compare_for_sort 
-	subject_get_reply_prefix_length 
+	subject_get_prefix_length 
 	subject_table_insert 
 	subject_table_lookup 
 	subject_table_remove 
@@ -1637,6 +1651,7 @@ EXPORTS
 	summary_filter_open 
 	summary_find_next_important_score 
 	summary_find_prev_important_score 
+	summary_get_msg_list 
 	summary_get_selected_msg_list 
 	summary_get_selection 
 	summary_get_selection_type 
@@ -1693,6 +1708,7 @@ EXPORTS
 	summary_view_source 
 	sylpheed_done 
 	sylpheed_get_startup_dir 
+	sylpheed_get_version 
 	sylpheed_init 
 	template_clear_config 
 	template_free 

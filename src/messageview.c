@@ -441,103 +441,18 @@ static void notification_convert_header(gchar *dest, gint len,
 		conv_encode_header(dest, len, src, header_len, FALSE);
 }
 
-static gint disposition_notification_queue(PrefsAccount * account,
-					   gchar * to, const gchar *file)
-{
-	FolderItem *queue;
-	gchar *tmp;
-	FILE *fp, *src_fp;
-	gchar buf[BUFFSIZE];
-	gint num;
-
-	debug_print("queueing message...\n");
-	g_return_val_if_fail(account != NULL, -1);
-
-	tmp = g_strdup_printf("%s%cqueue.%d", g_get_tmp_dir(),
-			      G_DIR_SEPARATOR, (gint)file);
-	if ((fp = fopen(tmp, "wb")) == NULL) {
-		FILE_OP_ERROR(tmp, "fopen");
-		g_free(tmp);
-		return -1;
-	}
-	if ((src_fp = fopen(file, "rb")) == NULL) {
-		FILE_OP_ERROR(file, "fopen");
-		fclose(fp);
-		unlink(tmp);
-		g_free(tmp);
-		return -1;
-	}
-	if (change_file_mode_rw(fp, tmp) < 0) {
-		FILE_OP_ERROR(tmp, "chmod");
-		g_warning("can't change file mode\n");
-	}
-
-	/* queueing variables */
-	fprintf(fp, "AF:\n");
-	fprintf(fp, "NF:0\n");
-	fprintf(fp, "PS:10\n");
-	fprintf(fp, "SRH:1\n");
-	fprintf(fp, "SFN:\n");
-	fprintf(fp, "DSR:\n");
-	fprintf(fp, "MID:\n");
-	fprintf(fp, "CFG:\n");
-	fprintf(fp, "PT:0\n");
-	fprintf(fp, "S:%s\n", account->address);
-	fprintf(fp, "RQ:\n");
-	if (account->smtp_server)
-		fprintf(fp, "SSV:%s\n", account->smtp_server);
-	else
-		fprintf(fp, "SSV:\n");
-	if (account->nntp_server)
-		fprintf(fp, "NSV:%s\n", account->nntp_server);
-	else
-		fprintf(fp, "NSV:\n");
-	fprintf(fp, "SSH:\n");
-	fprintf(fp, "R:<%s>", to);
-	fprintf(fp, "\n");
-	fprintf(fp, "\n");
-
-	while (fgets(buf, sizeof(buf), src_fp) != NULL) {
-		if (fputs(buf, fp) == EOF) {
-			FILE_OP_ERROR(tmp, "fputs");
-			fclose(fp);
-			fclose(src_fp);
-			unlink(tmp);
-			g_free(tmp);
-			return -1;
-		}
-	}
-
-	fclose(src_fp);
-	if (fclose(fp) == EOF) {
-		FILE_OP_ERROR(tmp, "fclose");
-		unlink(tmp);
-		g_free(tmp);
-		return -1;
-	}
-
-	queue = folder_get_default_queue();
-	if ((num = folder_item_add_msg(queue, tmp, TRUE)) < 0) {
-		g_warning("can't queue the message\n");
-		unlink(tmp);
-		g_free(tmp);
-		return -1;
-	}
-	g_free(tmp);
-
-	return 0;
-}
-
 static gint disposition_notification_send(MsgInfo *msginfo)
 {
 	gchar buf[BUFFSIZE];
 	gchar tmp[MAXPATHLEN + 1];
 	FILE *fp;
-	GSList *to_list;
 	GList *ac_list;
 	PrefsAccount *account;
 	gint ok;
 	gchar *to;
+	FolderItem *queue, *outbox;
+	gint num;
+	gchar *path;
 
 	if ((!msginfo->returnreceiptto) && 
 	    (!msginfo->dispositionnotificationto)) 
@@ -575,6 +490,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 				   "receipt."), to, buf);
 		val = alertpanel(_("Warning"), message, _("Send"),
 				_("+Don't Send"), NULL);
+		g_free(message);				
 		if (val != G_ALERTDEFAULT)
 			return -1;
 	}
@@ -616,6 +532,37 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		g_warning("can't change file mode\n");
 	}
 
+	/* write queue headers */
+	fprintf(fp, "AF:\n");
+	fprintf(fp, "NF:0\n");
+	fprintf(fp, "PS:10\n");
+	fprintf(fp, "SRH:1\n");
+	fprintf(fp, "SFN:\n");
+	fprintf(fp, "DSR:\n");
+	fprintf(fp, "MID:\n");
+	fprintf(fp, "CFG:\n");
+	fprintf(fp, "PT:0\n");
+	fprintf(fp, "S:%s\n", account->address);
+	fprintf(fp, "RQ:\n");
+	if (account->smtp_server)
+		fprintf(fp, "SSV:%s\n", account->smtp_server);
+	else
+		fprintf(fp, "SSV:\n");
+	fprintf(fp, "SSH:\n");
+	fprintf(fp, "R:<%s>\n", to);
+	
+	/* check whether we need to save the message */
+	outbox = account_get_special_folder(account, F_OUTBOX); 
+	if (folder_get_default_outbox() == outbox && !prefs_common.savemsg)
+		outbox = NULL;
+	if (outbox) {
+		path = folder_item_get_identifier(outbox);
+		fprintf(fp, "SCF:%s\n", path);
+		g_free(path);
+	}		
+
+	fprintf(fp, "\n");
+	
 	/* Date */
 	get_rfc822_date(buf, sizeof(buf));
 	fprintf(fp, "Date: %s\n", buf);
@@ -636,34 +583,36 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 				    strlen("Subject: "));
 	fprintf(fp, "Subject: Disposition notification: %s\n", buf);
 
+	/* Message ID */
+	generate_msgid(account->address, buf, sizeof buf);
+	fprintf(fp, "Message-Id: <%s>\n", buf);
+
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmp, "fclose");
 		unlink(tmp);
 		return -1;
 	}
 
-	to_list = address_list_append(NULL, to);
-	ok = send_message(tmp, account, to_list);
-	
-	if (ok < 0) {
-		if (prefs_common.queue_msg) {
-			AlertValue val;
-			
-			val = alertpanel
-				(_("Queueing"),
-				 _("Error occurred while sending the notification.\n"
-				   "Put this notification into queue folder?"),
-				 _("OK"), _("Cancel"), NULL);
-			if (G_ALERTDEFAULT == val) {
-				ok = disposition_notification_queue(account, to, tmp);
-				if (ok < 0)
-					alertpanel_error(_("Can't queue the notification."));
-			}
-		} else
-			alertpanel_error_log(_("Error occurred while sending the notification."));
+	/* put it in queue */
+	queue = account_get_special_folder(account, F_QUEUE);
+	if (!queue) queue = folder_get_default_queue();
+	if (!queue) {
+		g_warning("can't find queue folder\n");
+		unlink(tmp);
+		return -1;
 	}
-
-	if (unlink(tmp) < 0) FILE_OP_ERROR(tmp, "unlink");
+	folder_item_scan(queue);
+	if ((num = folder_item_add_msg(queue, tmp, NULL, TRUE)) < 0) {
+		g_warning("can't queue the message\n");
+		unlink(tmp);
+		return -1;
+	}
+	
+	/* send it */
+	path = folder_item_fetch_msg(queue, num);
+	ok = procmsg_send_message_queue(path);
+	g_free(path);
+	folder_item_remove_msg(queue, num);
 
 	return ok;
 }
@@ -710,7 +659,9 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 		procmime_mimeinfo_free_all(mimeinfo);
 	}
 
-	if (MSG_IS_RETRCPT_PENDING(messageview->msginfo->flags))
+	if ((messageview->msginfo->dispositionnotificationto || 
+	     messageview->msginfo->returnreceiptto) &&
+	    !MSG_IS_RETRCPT_SENT(messageview->msginfo->flags))
 		return_receipt_show(messageview->noticeview, messageview->msginfo);
 	else 
 		noticeview_hide(messageview->noticeview);
@@ -723,6 +674,7 @@ static void messageview_change_view_type(MessageView *messageview,
 {
 	TextView *textview = messageview->textview;
 	MimeView *mimeview = messageview->mimeview;
+	gboolean hadfocus  = GTK_WIDGET_HAS_FOCUS(textview->text);
 
 	if (messageview->type == type) return;
 
@@ -747,6 +699,7 @@ static void messageview_change_view_type(MessageView *messageview,
 				   GTK_WIDGET_PTR(textview), TRUE, TRUE, 0);
 	} else
 		return;
+	if (hadfocus) gtk_widget_grab_focus(textview->text);
 
 	messageview->type = type;
 }
@@ -759,6 +712,7 @@ void messageview_reflect_prefs_pixmap_theme(void)
 	for (cur = msgview_list; cur != NULL; cur = cur->next) {
 		msgview = (MessageView*)cur->data;
 		toolbar_update(TOOLBAR_MSGVIEW, msgview);
+		mimeview_update(msgview->mimeview);
 	}
 }
 
@@ -804,7 +758,6 @@ void messageview_destroy(MessageView *messageview)
 void messageview_delete(MessageView *msgview)
 {
 	MsgInfo *msginfo = (MsgInfo*)msgview->msginfo;
-	SummaryView *summaryview = (SummaryView*)msgview->mainwin->summaryview;
 	FolderItem *trash = folder_get_default_trash();
 	GSList *msg_list;
 
@@ -1076,7 +1029,7 @@ static void return_receipt_send_clicked(NoticeView *noticeview, MsgInfo *msginfo
 	tmpmsginfo->msgnum = msginfo->msgnum;
 
 	if (disposition_notification_send(tmpmsginfo) >= 0) {
-		procmsg_msginfo_unset_flags(msginfo, MSG_RETRCPT_PENDING, 0);
+		procmsg_msginfo_set_flags(msginfo, MSG_RETRCPT_SENT, 0);
 		noticeview_hide(noticeview);
 	}		
 

@@ -1,6 +1,779 @@
+2003-08-04 [paul]	0.9.4claws
+
+	* version 0.9.4claws
+
+2003-08-04 [paul]	0.9.3claws97
+
+	* po/es.po
+		update Spanish translation. Submitted by Ricardo
+		Mones Lastra.
+
+2003-08-03 [paul]	0.9.3claws96
+
+	* po/hr.po
+	  po/sr.po
+	  	update Croatian and Serbian translations. Submitted by
+		Dragan and Urke MMI respectively
+
+2003-08-03 [alfons]	0.9.3claws95
+
+	* src/summaryview.c
+		mark flag has precedence over important flag - seems
+		to have been changed in sync of 0.9.3claws45. this fixes
+		a regression where messages that were scored as important
+		don't show their mark flags. (using the same column for
+		both importance as mark flags is the real problem
+		ofcourse)
+
+2003-08-03 [melvin]	0.9.3claws94
+
+	* po/fr.po
+		Updated French translations.
+
+2003-08-03 [melvin]	0.9.3claws93
+
+	* src/Makefile.am
+		Fixed typo introduced after 0.9.3claws92 
+		that prevented compilation
+		Updated to use AM_CPPFLAGS and AM_YFLAGS instead of
+		CPPFLAGS and YFLAGS to allow user setting these.
+	* src/common/Makefile.am
+	* src/gtk/Makefile.am
+	* src/plugins/clamav/Makefile.am
+	* src/plugins/demo/Makefile.am
+	* src/plugins/dillo_viewer/Makefile.am
+	* src/plugins/image_viewer/Makefile.am
+	* src/plugins/mathml_viewer/Makefile.am
+	* src/plugins/spamassassin/Makefile.am
+	* src/plugins/trayicon/Makefile.am
+	* src/plugins/trayicon/libeggtrayicon/Makefile.am
+		Updated to use AM_CPPFLAGS and AM_YFLAGS instead of
+		CPPFLAGS and YFLAGS to allow user setting these.
+
+2003-08-02 [christoph]	0.9.3claws92
+
+	* configure.ac
+		o rearrange plugin tests
+		o add test for clamav.h to ClamAV tests
+
+2003-08-02 [luke]	0.9.3claws91
+
+	* src/mimeview.c
+		o fixed appearance of icon list when toggling back from the 
+		  ctree
+		o toggling of icons using the keyboard works correctly
+		o fixed all other keyboard shortcuts to work when icons are
+		  active
+	
+	* src/messageview.c
+		o fixed bug 4 - focus lost when changing messageview view type
+	
+2003-08-02 [christoph]	0.9.3claws90
+
+	* src/common/hooks.c
+		fix crash when pointer stored in hash table could get invalid
+		when a plugin is unloaded
+
+2003-08-01 [christoph]	0.9.3claws89
+
+	* configure.ac
+		o try to build all plugins (except spamassassin) by default
+		o don't build a plugin if a dependency check fails
+
+	* src/common/hooks.c
+		fix warning
+
+2003-08-01 [match]	0.9.3claws88
+
+	* src/importldif.c
+		allow single click field selection. document code.
+
+2003-08-01 [christoph]	0.9.3claws87
+
+	* src/plugins/clamav/clamav_plugin.c
+	* src/plugins/clamav/clamav_plugin_gtk.c
+	* src/plugins/dillo_viewer/dillo_viewer.c
+	* src/plugins/image_viewer/plugin.c
+	* src/plugins/mathml_viewer/mathml_viewer.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+	* src/plugins/trayicon/trayicon.c
+		add version check to all plugins
+
+2003-08-01 [hoa]	0.9.3claws86
+
+	* src/prefs_filtering.c
+		fixed a cosmetic bug, during creation of dialog box,
+		wrong widgets were shown after creation.
+
+2003-08-01 [luke]	0.9.3claws85
+
+	* src/mainwindow.c
+		o fixed visibility of icons/mimeview after toggling separate
+		  message/folder view (factored out some similar code too).
+
+
+2003-07-31 [alfons]	0.9.3claws84
+
+	* src/mimeview.c
+		tweak icon box UI a bit more, now allowing right-clicks actions
+		getting the relevant mime data too; should fix #250, "Can't save 
+		attachments sometimes".
+
+2003-07-30 [alfons]	0.9.3claws83
+
+	* src/compose.c
+		don't do auto-save-draft inside key press handler, but rather
+		schedule it half of a second later; should fix #67, "autosave 
+		make re-rediting message crazy"
+
+2003-07-30 [christoph]	0.9.3claws82
+
+	* src/plugins/trayicon/trayicon.c
+		process pending events before unloading the plugin
+
+	(closes Bug 196 Unloading Trayicon plugin crashes Sylpheed-Claws)
+
+2003-07-30 [alfons]	0.9.3claws81
+
+	* src/common/hooks.c
+		parameter 2 of g_hook_destroy() should really be a hook id
+
+2003-07-30 [alfons]	0.9.3claws80
+
+	* src/common/plugin.c
+		fix a possibly harmful function signature mismatch 
+		for plugin_done
+
+2003-07-30 [alfons]	0.9.3claws79
+
+	* src/common/hooks[.ch]
+		const correctness
+
+2003-07-30 [darko]	0.9.3claws78
+
+	* src/summaryview.c
+		make it compile again
+
+2003-07-30 [luke]	0.9.3claws77
+
+	* src/crash.c
+	* src/main.c
+        	o added/moved signal handlers for SIGTERM (normal kill command) 
+		  and SIGINT (ctl-c) to be used even without 
+		  --enable-crash-dialog, fixing bug 166
+
+	* src/summaryview.c
+		o rewrote menu sensitivity code as per mainwindow.c, fixing 
+		  bug 227
+
+	* src/mainwindow.c
+		o changed sensitivity condition for 'Next new' and 'Next 
+		  unread', fixing bug 8
+
+2003-07-29 [alfons]	0.9.3claws76
+
+	* src/common/utils.[ch]
+		add generate_msgid()
+	* src/messageview.c
+		save ack'ed RRR; fixes #205, "return receipt is not saved in
+		sent folder".
+
+2003-07-29 [alfons]	0.9.3claws75
+
+	* src/messageview.c
+		fix a memleak (claws-only)
+
+2003-07-29 [alfons]	0.9.3claws74
+
+	* src/mimeview.[ch]
+	* src/gtk/gtkvscrollbutton.[ch]
+		fix UI glitch where mime icon toolbox' scroll position is not 
+		reset after switching to another message
+		
+
+2003-07-29 [paul]	0.9.3claws73
+
+	* src/prefs_folder_item.c
+		split the prefs into 2 separate pages
+
+2003-07-29 [paul]	0.9.3claws72
+
+	* src/compose.c
+		prepend "\n\n" to a signature without a separator too
+
+2003-07-29 [paul]	0.9.3claws71
+
+	* src/compose.c
+		fix bug where changing to an account without an auto-sig
+		from an initial account without an auto-sig would insert 
+		2 blank lines at the cursor point
+		fix bug where changing to an account with an auto-sig
+		from an initial account without an auto-sig would insert
+		the sig at the cursor point
+
+2003-07-29 [paul]	0.9.3claws70
+
+	* src/folderview.c
+		use the colour from the folder pref unless the folder
+		has new messages
+
+2003-07-29 [alfons]	0.9.3claws69
+
+	* src/procmsg.[ch]
+	* src/messageview.c
+	* src/procheader.c
+		rewrite return receipt request work a little bit (the former 
+		implementation presumably depended too much on the UI setting
+		flags). (we're losing the old pending flag.) 
+
+2003-07-28 [christoph]	0.9.3claws68
+
+	* src/folder.c
+	* src/imap.c
+	* src/mh.c
+	* src/procmsg.[ch]
+		fix copy to IMAP folder from other folder
+
+2003-07-28 [christoph]	0.9.3claws67
+
+	* src/procmsg.c
+		fix sync of procmsg_get_message_file_list
+
+2003-07-28 [christoph]	0.9.3claws66
+
+	* sync with 0.9.3cvs14
+		see ChangeLog 2003-07-18
+	* sync with 0.9.3cvs17
+		see ChangeLog 2003-07-23
+
+	(closes Bug 234 segmentation fault after sending out mail via
+	 smtp(auth))
+
+2003-07-28 [paul]	0.9.3claws65
+
+	* po/es.po
+		update Spanish translation, submitted by Ricardo Mones
+		Lastra
+
+2003-07-28 [christoph]	0.9.3claws64
+
+	* src/folder.[ch]
+	* src/imap.c
+	* src/mh.c
+		return new message numbers as a GRelation instead of a GSList
+		that has to be in the same order as the input list. A list
+		would make it hard for IMAP to optimize oepration by sorting
+		the input list. The returned list would have to be reordered
+		to match the same order that input list has.
+
+	* src/gtk/gtkaspell.c
+		fix missing return value, could cause a crash when garbage is
+		on the stack that is used as the expected return value
+
+2003-07-28 [paul]	0.9.3claws63
+
+	* sync with 0.9.4cvs1
+		see ChangeLog 2003-07-28
+
+2003-07-27 [alfons]	0.9.3claws62
+
+	* src/mimeview.c
+		tweak it more to make icon list act like a check button group
+
+2003-07-27 [christoph]	0.9.3claws61
+
+	* sync with 0.9.3cvs20
+		see ChangeLog 2003-07-25
+
+2003-07-27 [paul]	0.9.3claws60
+
+	* src/procmsg.c
+		re-commit changes from 0.9.3claws58 -
+		accidently removed in 0.9.3claws59
+
+2003-07-27 [paul]	0.9.3claws59
+
+	* src/procmsg.[ch]
+		a sync from 0.9.3cvs17
+		see ChangeLog 2003-07-23
+
+2003-07-27 [alfons]	0.9.3claws58
+
+	* src/procmsg.c
+		add missing header members to MsgInfo; fixes the problem of 
+		not displaying X-Faces, as noticed by Ricardo Mones
+
+2003-07-26 [christoph]	0.9.3claws57
+
+	* sync with 0.9.3cvs18
+		see ChangeLog 2003-07-24
+
+2003-07-26 [christoph]	0.9.3claws56
+
+	* sync with 0.9.3cvs17
+		see ChangeLog 2003-07-23
+
+2003-07-26 [christoph]	0.9.3claws55
+
+	* src/folder.[ch]
+	* src/imap.c
+	* src/mbox_folder.c
+	* src/mh.c
+	* src/news.c
+		add support for copy function that copy multiple messages
+		(not implemented yet)
+
+	* src/summaryview.c
+		add missing return value
+
+2003-07-26 [paul]	0.9.3claws54
+
+	* tools/multiwebsearch.pl
+		do whitespace substitution before passing the string
+		to the browser. fixes bug with browsers that don't
+		do whitespace conversion themselves.
+
+2003-07-25 [christoph]	0.9.3claws53
+
+	* src/folder.[ch]
+	* src/imap.c
+	* src/mh.c
+		rewrite adding of multiple messages to a folder for
+		claws' folder system
+
+2003-07-25 [luke]	0.9.3claws52
+
+	* src/mimeview.c
+		o icon toggles set correctly on leaving ctree mimeview
+
+2003-07-25 [paul]	0.9.3claws51
+
+	* partial sync with 0.9.3cvs21 [src/main.c]
+		see ChangeLog 2003-07-25
+
+2003-07-24 [paul]	0.9.3claws50
+
+	* tools/maildir2sylpheed.pl
+		fix typo
+
+2003-07-24 [paul]	0.9.3claws49
+
+	* src/mimeview.c
+		increase the gutter size of paned so that the panes
+		can be resized
+		
+	* src/plugins/demo/demo.c
+		squeeze in another typo fix
+
+2003-07-24 [paul]	0.9.3claws48
+
+	* src/plugins/demo/demo.c
+	  src/prefs_account.c
+	  	small changes to the English
+		
+	* src/pixmaps/mime_application_octect_stream.xpm	** REMOVED **
+	  src/pixmaps/mime_application_octet_stream.xpm		** NEW FILE **
+	  src/Makefile.am
+	  src/stock_pixmap.c
+	  	rename the misspelled icon
+
+2003-07-23 [alfons]	0.9.3claws47
+
+	* src/mimeview.c
+		make icon list look like a list of toggles
+
+2003-07-23 [luke]	0.9.3claws46
+
+	* src/pixmaps/mimeview_gpg_expired.xpm
+	* src/pixmaps/mimeview_gpg_failed.xpm
+	* src/pixmaps/mimeview_gpg_passed.xpm
+	* src/pixmaps/mimeview_text_html.xpm
+	* src/pixmaps/mimeview_image.xpm
+		o all icons the same size
+
+	* src/mimeview.[ch]
+		o mimeview ctree arranged vertically above the viewer
+		o icons changed to buttons
+		o can use keyboard to select an icon (Enter)
+		o resize icon list to width of icons
+
+	*  src/gtk/gtkvscrollbutton.c
+		o sensitivity of buttons reacts to position
+
+2003-07-23 [christoph]	0.9.3claws45
+
+	* sync with 0.9.3cvs14 (incomplete)
+		see ChangeLog 2003-07-17
+
+2003-07-23 [alfons]	0.9.3claws44
+
+	* src/folder.c
+	* src/procmsg.h
+		sync with my local tree to restore some claws-only things
+
+2003-07-23 [paul]	0.9.3claws43
+
+	* src/pixmaps/mime_gpg_expired.xpm	** NEW FILE **
+	  src/pixmaps/mime_gpg_unknown.xpm	** NEW FILE **
+	  src/Makefile.am
+	  src/mimeview.c
+	  src/procmime.h
+	  src/rfc2015.c
+	  src/stock_pixmap.[ch]
+	  	indicate missing keys and expired sigs/keys
+		in mime view column
+
+2003-07-23 [paul]	0.9.3claws42
+
+	* src/compose.c
+		Redirect fixes: enable automatic account selection and
+		do not append signature to message on changing account
+		fixes Bug[s] #248
+
+2003-07-23 [paul]	0.9.3claws41
+
+	* sync with 0.9.3cvs16
+		see ChangeLog 2003-07-23
+
+2003-07-23 [alfons]	0.9.3claws40
+
+	* src/inc.c
+		give progress dialog a main window, and give it the first 
+		one (presumably the only one). fixes bug #247, "segfault on 
+		pop-before-smtp" 
+
+2003-07-22 [alfons]	0.9.3claws39
+
+	* src/summaryview.c
+		shift-space scrolls up
+
+2003-07-22 [paul]	0.9.3claws38
+
+	* sync with 0.9.3cvs15
+		see ChangeLog 2003-07-22
+
+2003-07-20 [alfons]	0.9.3claws37
+
+	* src/compose.c
+		put menu inside #ifdef USE_ASPELL..#endif
+
+2003-07-20 [christoph]	0.9.3claws36
+
+	* src/procmsg.c
+		fix wrong flags in MsgInfo returned by
+		procmsg_msginfo_get_full_info()
+
+	(closes Bug 221 Deleting messages from the Message View gives incorrect
+	 new/unread message counts in the folder view)
+
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		add gettext macro for prefs page title
+
+2003-07-20 [paul]	0.9.3claws35
+
+	* src/mimeview.c
+		redraw icon list on signature check
+
+2003-07-20 [christoph]	0.9.3claws34
+
+	* src/Makefile.am
+	* src/account.c
+	* src/folder.[ch]
+	* src/folder_item_prefs.[ch]		** NEW **
+	* src/folderview.c
+	* src/mainwindow.c
+	* src/mh.c
+	* src/prefs_gtk.c
+	* src/prefs_scoring.c
+	* src/summaryview.c
+	* src/prefs_folder_item.[ch]
+		o seperate FolderItemPrefs (formerly PrefsFolderItem) and the
+		  Properties dialog
+		o use prefswindow for folder properties
+
+	* src/gtk/prefswindow.[ch]
+		change implementation to use an invisible notebook instead
+		of unparenting widgets
+
+2003-07-20 [christoph]	0.9.3claws33
+
+	* src/compose.h
+	* src/folder.c
+	* src/folderview.h
+	* src/headerview.h
+	* src/prefs_filtering.h
+	* src/prefs_folder_item.[ch]
+	* src/procmime.h
+	* src/procmsg.h
+	* src/summaryview.h
+		clean up header mess
+		(always use 1. typedefs, 2. #includes, 3. structures)
+
+	* src/common/version.h.in
+		add casts for constants
+
+	* src/plugins/demo/demo.c
+		fix typo
+
+	* src/plugins/spamassassin/spamassassin.c
+		remove unused variable
+
+2003-07-20 [alfons]	0.9.3claws32
+
+	* src/mimeview.c
+		o make icon buttons respond on left click
+		o minor cosmetic change
+
+2003-07-19 [luke]	0.9.3claws31
+
+	* src/mimeview.[ch]
+	* src/gtk/gtkvscrollbutton.c
+	* src/messageview.c
+		o improved mimeview behaviour when selecting a new message
+		o plus code cleanups to remove compile warnings
+
+
+2003-07-19 [alfons]	0.9.3claws30
+
+	* src/procmsg.c
+	* src/compose.c
+	* src/common/utils.[ch]
+		subject_get_reply_prefix_length() <- subject_get_prefix_length()
+
+2003-07-19 [alfons]	0.9.3claws29
+
+	* src/prefs_folder_item.c
+		reinit "legacy" tmp_prefs, so we don't free nor use invalid 
+		string pointers
+
+2003-07-19 [luke]	0.9.3claws28
+
+	* src/messageview.c
+	* src/mimeview.[ch]
+	* src/procmime.h
+	* src/rfc2015.c
+	* src/stock_pixmap.[ch]
+	* src/gtk/Makefile.am
+	* src/Makefile.am
+	* src/gtk/gtkvscrollbutton.[ch]  	** NEW **
+	* src/pixmaps/mime_*.xpm         	** NEW **
+		o mimeview rearrangement with a new icon shortcut bar
+	
+2003-07-19 [alfons]	0.9.3claws27
+
+	* src/folderview.c
+		o plug leaking nodes_to_recollapse
+		o add folderview_recollapse_all_nodes() (not used yet)
+
+2003-07-19 [alfons]	0.9.3claws26
+
+	* src/compose.c
+	* src/common/utils.c
+		honour #240 "Better SUBJECT handling" by cleaning the prefix
+		for both forwarding as replying
+
+2003-07-18 [christoph]	0.9.3claws25
+
+	* configure.ac
+	* src/common/sylpheed.[ch]
+	* src/common/version.h.in
+		add version in numeric form to allow easy comparison
+
+	* src/plugins/demo/demo.c
+		add version check
+		- sylpheed version > plugin version => never allowed, sylpheed
+		  could contain unknown API changes
+		- sylpheed version < minimum version required => don't load,
+		  API required not available (if linking does not fail)
+
+2003-07-18 [alfons]	0.9.3claws24
+	
+	* src/common/plugin.[ch]
+		const correctness
+
+2003-07-18 [christoph]	0.9.3claws23
+
+	* src/common/hooks.c
+		fix crash when hooks where unregisted
+
+	* src/plugins/trayicon/trayicon.c
+		unregister detroy signal before destroying the widget
+		(still crashes when the plugin is unloaded)
+
+2003-07-18 [alfons]	0.9.3claws22
+	
+	* src/folderview.c
+		delay expanding folder tree during drags until timeout triggered
+		(needs perhaps some tweaking, so testing is welcome)
+
+2003-07-17 [alfons]	0.9.3claws21
+
+	* src/folderview.c
+		clean up cruft
+
+2003-07-17 [christoph]	0.9.3claws20
+
+	* src/common/session.c
+		fix opening of SSL connections
+
+	* src/plugins/image_viewer/Makefile.am
+		add OPENSSL_CFLAGS (we should find a better solution to remove
+		this dependencies if they are not required)
+
+	* src/plugins/spamassassin/spamassassin.c
+		remove setlocale workaround (fixed in libspamc)
+
+	(closes Bug Bug 184 Entering non-ascii character deletes previous char
+	 if spell checking enabled)
+
+2003-07-17 [alfons]	0.9.3claws19
+
+	* src/common/hooks.[ch]
+	* src/plugins/clamav/clamav_plugin.c
+	* src/plugins/spamassassin/spamassassin.c
+	* src/plugins/trayicon/trayicon.c
+		fix signedness muck 
+
+2003-07-17 [alfons]	0.9.3claws18
+
+	* src/procmime.c
+		plug memleak
+
+2003-07-17 [alfons]	0.9.3claws17
+
+	* src/inc.c
+		plug memleak
+
+2003-07-17 [paul]	0.9.3claws16
+
+	* src/common/defs.h
+	  src/mainwindow.c
+	  src/manual.[ch]
+	  	add link to the Claws site's FAQ page, after the suggestion
+		and patch by Fred Marton <Fred.Marton@uni-bayreuth.de>
+		Move url strings to defs.h
+		
+	* src/mainwindow.c
+		fix typo to prevent "unknown menu entry" warnings
+
+2003-07-17 [alfons]	0.9.3claws15
+
+	* src/folderview.[ch]
+	* src/summaryview.[ch]
+	* src/mimeview.[ch]
+		plug DnD leaks 
+
+2003-07-17 [paul]	0.9.3claws14
+
+	* src/inc.c
+		remove two instances of 'GTK_EVENTS_FLUSH' because
+		they are unnecessary and probably cause a stack overflow
+
+2003-07-16 [christoph]	0.9.3claws13
+
+	* src/mimeview.[ch]
+		use an invisible GTK notebook to switch between viewers
+		instead of reparenting widgets
+
+2003-07-16 [christoph]	0.9.3claws12
+
+	* src/folder.c
+		move folder_item_update_freeze() to correct place in
+		folder_item_scan_full()
+
+2003-07-16 [paul]	0.9.3claws11
+
+	* sync with 0.9.3cvs12
+		see ChangeLog 2003-07-14 and 2003-07-15
+
+2003-07-16 [christoph]	0.9.3claws10
+
+	* src/imap.[ch]
+	* src/prefs_account.[ch]
+		sync IMAP CRAM-MD5 authentication with sylpheed-main
+
+2003-07-15 [alfons]	0.9.3claws9
+
+	* src/main.c
+		make --config-dir do something useful
+
+2003-07-15 [alfons]	0.9.3claws8
+
+	* src/procmsg.c
+		o fix a bug where 'last' didn't really point to the last message
+		  in the top level list of children, but to the last threaded
+		  message. 
+		
+		o clean up and make it easier to sync
+
+2003-07-15 [alfons]	0.9.3claws7
+
+	* src/mainwindow.c
+		make correct menu items sensitive	
+
+2003-07-14 [alfons]	0.9.3claws6
+
+	* src/procmsg.c
+		tune the threader so it will not subject-thread any message
+		without a subject prefix (this will not thread correctly if 
+		a parent is delivered after their childs, but it looks 
+		better right now)
+
+2003-07-13 [christoph]	0.9.3claws5
+
+	* src/mainwindow.c
+		group "Add mailbox *..." menu items in submenu
+
+2003-07-13 [alfons]	0.9.3claws4
+
+	* src/summaryview.c
+		correct summary_toggle_pressed() signature and make sure
+		signal is not passed on
+
+2003-07-13 [alfons]	0.9.3claws3
+
+	* src/summaryview.c
+		o for now don't pass on keys when they we're handled by 
+		  ctree::key_press_event
+		o clean up
+
+2003-07-13 [alfons]	0.9.3claws2
+	
+	* src/main.c
+		add command line option "--config-dir" to get the current 
+		configuration dir
+
+2003-07-12 [alfons]	0.9.3claws1
+
+	* src/matcher.[ch]
+	* src/matcher_parser_parse.y
+	* src/prefs_filtering.c
+	* src/filtering.c
+		add "Lock" filter action to lock messages;
+
+	* src/filtering.c	
+		remove debug_print()	
+	* src/prefs_filtering.c
+		re-organize matcher part 9: 
+		make action text entries easily extendible;
+		merge widget selection for ACTION_MARK, ACTION_UNMARK, ACTION_LOCK,
+		ACTION_UNLOCK, ACTION_MARK_AS_READ, ACTION_MARK_AS_UNREAD
+
+2003-07-12 [paul]
+
+	* tools/README
+		update old information and add missing
+		information
+
 2003-07-12 [paul]	0.9.3claws
 
 	* 0.9.3claws released
+	
+2003-07-12 [paul]	0.9.0claws103
+
+	* src/Makefile.am
+		add addrquery.h
 
 2003-07-12 [melvin]	0.9.0claws102
 

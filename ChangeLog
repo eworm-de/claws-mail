@@ -1,7 +1,193 @@
+2003-07-28
+
+	* src/imap.c: imap_get_flag_str(): fixed a buffer overrun.
+
+2003-07-25
+
+	* version 0.9.4
+
+2003-07-25
+
+	* src/main.c: main(): don't save config files on startup.
+
+2003-07-25
+
+	* src/imap.c:
+	  imap_get_msg_list(): removed redundant UID SEARCH ALL when not
+	  using cache.
+	  Unset MSG_NEW flag if \Seen is set.
+	  imap_get_uncached_messages(): fetch all messages if both first_uid
+	  and last_uid is 0.
+
+2003-07-24
+
+	* src/imap.c: revamped the implementation so that it always
+	  exactly reflects the state of IMAP4 servers.
+	  imap_get_msg_list(): examine the state of messages using
+	  UID SEARCH commands.
+	  imap_delete_cached_message(): removes single message cache.
+	  imap_get_uid(): removed.
+	  imap_cmd_search(): new. It issues UID SEARCH command and returns
+	  an array of UIDs.
+	  imap_cmd_gen_recv(): made the length of strings unrestricted.
+	  imap_get_uid_table(): returns a hash table from UID array.
+
+2003-07-24
+
+	* src/folder.[ch]
+	  src/imap.[ch]
+	  src/mh.[ch]
+	  src/news.[ch]: added Folder::close() method.
+	* src/summaryview.c: summary_clear_list(): call folder_item_close().
+
+2003-07-23
+
+	* flags are now taken over when copying messages into IMAP folders
+	  from others.
+	* src/imap.[ch]
+	  src/mh.[ch]
+	  imap_add_msg()
+	  imap_add_msgs()
+	  mh_add_msg()
+	  mh_add_msgs(): flags can be also specified when adding files.
+	* src/folder.[ch]: added assertions for virtual functions.
+	* src/procmsg.[ch]: procmsg_get_message_file_list(): return the list
+	  of MsgFileInfo.
+	  procmsg_message_file_list_free(): new.
+
+2003-07-23
+
+	* src/procmsg.h: changed MsgPermFlags and MsgTmpFlags from enum to
+	  guint32 for portability (thanks to Alfons).
+	* src/imap.c: imap_add_msgs(): removed redundant unlink().
+
+2003-07-22
+
+	* src/session.[ch]:
+	  session_read_msg_cb()
+	  session_read_data_cb(): fixed a bug that ran into infinite loop
+	  if connection was closed by remote host (thanks to Yoichi Imai).
+	  Added SESSION_EOF state to SessionState.
+	  session_is_connected(): new.
+	* src/inc.[ch]: inc_put_error()
+	  src/send_message.c: send_put_error(): also put log messages.
+
+2003-07-18
+
+	* more optimization of IMAP4.
+	* src/folder.[ch]: added a method add_msgs() that adds multiple files
+	  to a folder.
+	  Removed redundant scan() for the operations of FolderItem.
+	* src/imap.[ch]: implemented Folder::add_msgs() and optimized move
+	  and copy from other Folder instances.
+	* src/mh.[ch]: implemented Folder::add_msgs() and cleaned up the code.
+	  mh_fetch_msg(): scan folder if required.
+	* src/procmsg.[ch]: procmsg_get_message_file_list(): returns file
+	  list from message list.
+	* src/summaryview.c: don't remove MSG_MARKED flags on
+	  delete/move/copy operation.
+	  summary_display_msg_full(): removed redundant message fetching.
+
+2003-07-17
+
+	* optimized move/copy/delete/mark operations of IMAP4 by using
+	  sequence set when issuing commands (adopted claws' implementation
+	  with cleaning it up).
+	* src/imap.[ch]:
+	  imap_set_message_flags()
+	  imap_cmd_envelope()
+	  imap_cmd_copy()
+	  imap_cmd_store(): take sequence set string instead of UID number.
+	  imap_do_copy_msgs_with_dest(): optimized by using sequence set.
+	  imap_cmd_fetch(): use BODY.PEEK instead of BODY.
+	  imap_remove_all_msg()
+	  imap_set_message_flags(): use FLAGS.SILENT instead of FLAGS.
+	* src/compose.c
+	  src/summaryview.c: use imap_msg_list_{set,unset}_perm_flags()
+	  instead of issuing commands for each message.
+
+2003-07-15
+
+	* src/inc.c
+	  src/prefs_account.[ch]
+	  src/send_message.c
+	  src/session.[ch]: added an option to enable/disable non-blocking
+	  SSL.
+
+2003-07-15
+
+	* src/compose.c: compose_attach_append(): display message's subject
+	  when attaching message/rfc822 file.
+
+2003-07-14
+
+	* src/session.[ch]:
+	  session_recv_msg()
+	  session_recv_data()
+	  session_read_msg_cb()
+	  session_read_data_cb(): optimized by removing sock_peek() and
+	  buffering received data in user space (correctly implemented
+	  this time).
+
+2003-07-11
+
+	* src/session.c: reverted the previous change because it couldn't
+	  handle data receiving after messages correctly.
+
+2003-07-11
+
+	* src/session.c:
+	  session_recv_msg()
+	  session_read_msg_cb(): optimized by removing sock_peek() and
+	  buffering messages in user space.
+
+2003-07-11
+
+	* src/imap.[ch]: refactored.
+	  Changed all functions that have SockInfo arguments to take
+	  IMAPSession.
+	  Made imap_cmd_count an instance variable: IMAPSession::cmd_count.
+	  imap_open(): only establish TCP (or SSL) connection.
+	  imap_session_new(): process greeting and authentication here.
+
+2003-07-10
+
+	* src/imap.[ch]: implemented CRAM-MD5 authentication, and made code
+	  cleanups.
+	* src/prefs_account.[ch]: added option menu for IMAP4 authentication
+	  type in Receive tab, and hide other protocols' frames.
+
+2003-07-10
+
+	* src/mainwindow.c: send_queue_cb(): don't scan folder twice if
+	  error occurred.
+	* src/procmsg.c: procmsg_send_queue(): return number of sent
+	  messages.
+
+2003-07-09
+
+	* src/mainwindow.c:
+	  main_window_set_toolbar_sensitive()
+	  main_window_set_menu_sensitive(): removed the locking of file
+	  operations while receiving mail.
+
+2003-07-09
+
+	* src/folder.[ch]: folder_item_remove_msg(): take MsgInfo as an
+	  argument instead of message number.
+	* src/imap.[ch]: imap_remove_msg(): reimplemented using
+	  imap_remove_msgs().
+	* src/mh.[ch]: mh_do_move(): reimplemented using
+	  mh_do_move_msgs_with_dest().
+	  mh_copy_msg(): reimplemented using mh_copy_msgs_with_dest().
+	* src/procmsg.c: procmsg_send_queue(): modified to use message list.
+
 2003-07-08
 
 	* src/rfc2015.c: rfc2015_is_encrypted(): check MimeInfo::mime_type
 	  to suppress some warnings.
+	* src/logwindow.c: log_window_append(): don't scroll up when trimming
+	  lines.
 
 2003-07-07
 

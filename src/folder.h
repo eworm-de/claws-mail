@@ -132,7 +132,7 @@ typedef void (*FolderDestroyNotify)	(Folder		*folder,
 typedef void (*FolderItemFunc)		(FolderItem	*item,
 					 gpointer	 data);
 
-#include "prefs_folder_item.h"
+#include "folder_item_prefs.h"
 
 #include "prefs_account.h"
 #include "session.h"
@@ -192,6 +192,8 @@ struct _FolderClass
 						 const gchar	*name);
 	gint     	(*remove_folder)	(Folder		*folder,
 						 FolderItem	*item);
+	gint		(*close)		(Folder		*folder,
+						 FolderItem	*item);
 	gint	 	(*get_num_list)		(Folder		*folder,
 						 FolderItem	*item,
 						 GSList	       **list);
@@ -217,10 +219,18 @@ struct _FolderClass
 	gint     	(*add_msg)		(Folder		*folder,
 						 FolderItem	*dest,
 						 const gchar	*file,
-						gboolean	 remove_source);
+						 MsgFlags	*flags);
+	gint     	(*add_msgs)             (Folder         *folder,
+                                    		 FolderItem     *dest,
+                                    		 GSList         *file_list,
+                                    		 GRelation	*relation);
 	gint    	(*copy_msg)		(Folder		*folder,
 						 FolderItem	*dest,
 						 MsgInfo	*msginfo);
+	gint    	(*copy_msgs)		(Folder		*folder,
+						 FolderItem	*dest,
+						 MsgInfoList	*msglist,
+                                    		 GRelation	*relation);
 	gint    	(*remove_msg)		(Folder		*folder,
 						 FolderItem	*item,
 						 gint		 num);
@@ -306,7 +316,7 @@ struct _FolderItem
  	int n_child;
  #endif
 
-	PrefsFolderItem * prefs;
+	FolderItemPrefs * prefs;
 };
 
 typedef struct {
@@ -405,7 +415,7 @@ void folder_unref_account_all		(PrefsAccount	*account);
 gchar *folder_item_get_path		(FolderItem	*item);
 
 gint   folder_item_open			(FolderItem	*item);
-void   folder_item_close		(FolderItem	*item);
+gint   folder_item_close		(FolderItem	*item);
 gint   folder_item_scan			(FolderItem	*item);
 void   folder_item_scan_foreach		(GHashTable	*table);
 MsgInfo *folder_item_get_msginfo	(FolderItem 	*item,
@@ -417,7 +427,11 @@ gchar *folder_item_fetch_msg		(FolderItem	*item,
 					 gint		 num);
 gint   folder_item_add_msg		(FolderItem	*dest,
 					 const gchar	*file,
+					 MsgFlags	*flags,
 					 gboolean	 remove_source);
+gint   folder_item_add_msgs             (FolderItem     *dest,
+                                         GSList         *file_list,
+                                         gboolean        remove_source);
 gint   folder_item_move_to		(FolderItem	*src,
 					 FolderItem	*dest,
 					 FolderItem    **new_item);
@@ -441,7 +455,7 @@ gboolean folder_item_is_msg_changed	(FolderItem	*item,
 					 MsgInfo	*msginfo);
 gchar *folder_item_get_cache_file	(FolderItem	*item);
 gchar *folder_item_get_mark_file	(FolderItem	*item);
-gchar * folder_item_get_identifier(FolderItem * item);
+gchar * folder_item_get_identifier	(FolderItem * item);
 
 GHashTable *folder_persist_prefs_new	(Folder *folder);
 void folder_persist_prefs_free		(GHashTable *pptable);

@@ -111,6 +111,8 @@ enum {
 	MA_(DELETE),
 	MA_(MARK),
 	MA_(UNMARK),
+	MA_(LOCK),
+	MA_(UNLOCK),
 	MA_(MARK_AS_READ),
 	MA_(MARK_AS_UNREAD),
 	MA_(FORWARD),

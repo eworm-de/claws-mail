@@ -20,12 +20,12 @@
 #ifndef __COMPOSE_H__
 #define __COMPOSE_H__
 
+typedef struct _Compose		Compose;
+typedef struct _AttachInfo	AttachInfo;
+
 #include <glib.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkitemfactory.h>
-
-typedef struct _Compose		Compose;
-typedef struct _AttachInfo	AttachInfo;
 
 #include "procmsg.h"
 #include "procmime.h"

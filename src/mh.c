@@ -60,7 +60,10 @@ static MsgInfo *mh_get_msginfo(Folder * folder,
 			       FolderItem * item, gint num);
 static gint mh_add_msg(Folder * folder,
 		       FolderItem * dest,
-		       const gchar * file, gboolean remove_source);
+		       const gchar * file,
+		       MsgFlags * flags);
+static gint mh_add_msgs(Folder * folder,
+		 FolderItem * dest, GSList * file_list, GRelation *relation);
 static gint mh_copy_msg(Folder * folder,
 			FolderItem * dest, MsgInfo * msginfo);
 static gint mh_remove_msg(Folder * folder, FolderItem * item, gint num);
@@ -107,6 +110,7 @@ FolderClass mh_class =
 	mh_create_folder,
 	mh_rename_folder,
 	mh_remove_folder,
+	NULL,
 	mh_get_num_list,
 	NULL,
 	NULL,
@@ -118,7 +122,9 @@ FolderClass mh_class =
 	NULL,
 	mh_fetch_msg,
 	mh_add_msg,
+	mh_add_msgs,
 	mh_copy_msg,
+	NULL,
 	mh_remove_msg,
 	mh_remove_all_msg,
 	mh_is_msg_changed,
@@ -312,38 +318,59 @@ gchar *mh_get_new_msg_filename(FolderItem *dest)
 	procmsg_write_flags(&newmsginfo, fp); \
 }
 
-gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
-		gboolean remove_source)
+gint mh_add_msg(Folder *folder, FolderItem *dest, const gchar *file, MsgFlags *flags)
 {
+	gint ret;
+	GSList file_list;
+	MsgFileInfo fileinfo;
+
+	g_return_val_if_fail(file != NULL, -1);
+
+	fileinfo.msginfo = NULL;
+	fileinfo.file = (gchar *)file;
+	fileinfo.flags = flags;
+	file_list.data = &fileinfo;
+	file_list.next = NULL;
+
+        ret = mh_add_msgs(folder, dest, &file_list, NULL);
+	return ret;
+} 
+ 
+gint mh_add_msgs(Folder *folder, FolderItem *dest, GSList *file_list, 
+                 GRelation *relation)
+{ 
 	gchar *destfile;
+	GSList *cur;
+	MsgFileInfo *fileinfo;
 
 	g_return_val_if_fail(dest != NULL, -1);
-	g_return_val_if_fail(file != NULL, -1);
+	g_return_val_if_fail(file_list != NULL, -1);
 
 	if (dest->last_num < 0) {
 		mh_get_last_num(folder, dest);
 		if (dest->last_num < 0) return -1;
 	}
 
-	destfile = mh_get_new_msg_filename(dest);
-	g_return_val_if_fail(destfile != NULL, -1);
+	for (cur = file_list; cur != NULL; cur = cur->next) {
+		fileinfo = (MsgFileInfo *)cur->data;
 
-	if (link(file, destfile) < 0) {
-		if (copy_file(file, destfile, TRUE) < 0) {
-			g_warning("can't copy message %s to %s\n",
-				  file, destfile);
-			g_free(destfile);
-			return -1;
+		destfile = mh_get_new_msg_filename(dest);
+		if (destfile == NULL) return -1;
+
+		if (link(fileinfo->file, destfile) < 0) {
+			if (copy_file(fileinfo->file, destfile, TRUE) < 0) {
+				g_warning(_("can't copy message %s to %s\n"),
+					  fileinfo->file, destfile);
+				g_free(destfile);
+				return -1;
+			}
 		}
+		if (relation != NULL)
+			g_relation_insert(relation, fileinfo, GINT_TO_POINTER(dest->last_num + 1));
+		g_free(destfile);
+		dest->last_num++;
 	}
 
-	if (remove_source) {
-		if (unlink(file) < 0)
-			FILE_OP_ERROR(file, "unlink");
-	}
-
-	g_free(destfile);
-	dest->last_num++;
 	return dest->last_num;
 }
 
@@ -352,7 +379,7 @@ gint mh_copy_msg(Folder *folder, FolderItem *dest, MsgInfo *msginfo)
 	gchar *srcfile;
 	gchar *destfile;
 	gint filemode = 0;
-	PrefsFolderItem *prefs;
+	FolderItemPrefs *prefs;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msginfo != NULL, -1);

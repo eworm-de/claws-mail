@@ -23,11 +23,12 @@
 
 #include <glib.h>
 
+#include "utils.h"
 #include "hooks.h"
 
-GHashTable *hooklist_table;
+static GHashTable *hooklist_table;
 
-GHookList *hooks_get_hooklist(gchar *hooklist_name)
+GHookList *hooks_get_hooklist(const gchar *hooklist_name)
 {
 	GHookList *hooklist;
 
@@ -41,26 +42,26 @@ GHookList *hooks_get_hooklist(gchar *hooklist_name)
 printf("new hooklist '%s'\n",hooklist_name);
 	hooklist = g_new0(GHookList, 1);
 	g_hook_list_init(hooklist, sizeof(GHook));
-	g_hash_table_insert(hooklist_table, hooklist_name, hooklist);
+	g_hash_table_insert(hooklist_table, g_strdup(hooklist_name), hooklist);
 	
 	return hooklist;
 }
 
-gint hooks_register_hook(gchar *hooklist_name,
-			 SylpheedHookFunction hook_func,
-			 gpointer userdata)
+guint hooks_register_hook(const gchar *hooklist_name,
+			  SylpheedHookFunction hook_func,
+			  gpointer userdata)
 {
 	GHookList *hooklist;
 	GHook *hook;
 
-	g_return_val_if_fail(hooklist_name != NULL, -1);
-	g_return_val_if_fail(hook_func != NULL, -1);
+	g_return_val_if_fail(hooklist_name != NULL, (guint)-1);
+	g_return_val_if_fail(hook_func != NULL, (guint)-1);
 	
 	hooklist = hooks_get_hooklist(hooklist_name);
-	g_return_val_if_fail(hooklist != NULL, -1);
+	g_return_val_if_fail(hooklist != NULL, (guint)-1);
 
 	hook = g_hook_alloc(hooklist);
-	g_return_val_if_fail(hook != NULL, -1);
+	g_return_val_if_fail(hook != NULL, (guint)-1);
 
 	hook->func = hook_func;
 	hook->data = userdata;
@@ -68,10 +69,12 @@ gint hooks_register_hook(gchar *hooklist_name,
 	g_hook_append(hooklist, hook);
 printf("new hook '%s' %d\n", hooklist_name, hook->hook_id );
 
+	debug_print("registed new hook for '%s' as id %d\n", hooklist_name, hook->hook_id);
+
 	return hook->hook_id;
 }
 
-void hooks_unregister_hook(gchar *hooklist_name,
+void hooks_unregister_hook(const gchar *hooklist_name,
 			   guint hook_id)
 {
 	GHookList *hooklist;
@@ -85,7 +88,9 @@ void hooks_unregister_hook(gchar *hooklist_name,
 	hook = g_hook_get(hooklist, hook_id);
 	g_return_if_fail(hook != NULL);
 
-	g_hook_destroy_link(hooklist, hook);
+	debug_print("unregisted hook %d in '%s'\n", hook->hook_id, hooklist_name);
+
+	g_hook_destroy(hooklist, hook_id);
 }
 
 struct MarshalData
@@ -105,7 +110,7 @@ static void hooks_marshal(GHook *hook, gpointer data)
 	}
 }
 
-gboolean hooks_invoke(gchar *hooklist_name,
+gboolean hooks_invoke(const gchar *hooklist_name,
 		  gpointer source)
 {
 	GHookList *hooklist;

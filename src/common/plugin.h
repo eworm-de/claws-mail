@@ -34,8 +34,8 @@ const gchar *plugin_desc	(void);
 gint plugin_load		(const gchar	 *filename,
 				 gchar		**error);
 void plugin_unload		(Plugin		 *plugin);
-void plugin_load_all		(gchar		*type);
-void plugin_unload_all		(gchar		*type);
+void plugin_load_all		(const gchar	 *type);
+void plugin_unload_all		(const gchar	 *type);
 void plugin_save_list		(void);
 
 GSList *plugin_get_list		(void);

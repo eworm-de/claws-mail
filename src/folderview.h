@@ -20,14 +20,13 @@
 #ifndef __FOLDERVIEW_H__
 #define __FOLDERVIEW_H__
 
+typedef struct _FolderView	FolderView;
+
 #include <glib.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkctree.h>
 
 #include "folder.h"
-
-typedef struct _FolderView	FolderView;
-
 #include "mainwindow.h"
 #include "summaryview.h"
 
@@ -59,8 +58,13 @@ struct _FolderView
 	gint folder_update_callback_id;
 	gint folder_item_update_callback_id;
 	
-	/* for drag and drop */
+	/* DND states */
 	GSList *nodes_to_recollapse;
+	guint   drag_timer;		/* timer id */
+	FolderItem *drag_item;		/* dragged item */
+	GtkCTreeNode *drag_node;	/* drag node */
+	
+	GtkTargetList *target_list; /* DnD */
 };
 
 FolderView *folderview_create		(void);
@@ -85,4 +89,5 @@ void folderview_delete_folder		(FolderView	*folderview);
 void folderview_set_target_folder_color (gint		color_op);
 
 void folderview_reflect_prefs_pixmap_theme	(FolderView *folderview);
+
 #endif /* __FOLDERVIEW_H__ */

@@ -46,7 +46,7 @@ static gchar *mbox_fetch_msg(Folder * folder, FolderItem * item, gint num);
 
 static void mbox_scan_folder(Folder * folder, FolderItem * item);
 static gint mbox_add_msg(Folder * folder, FolderItem * dest,
-			 const gchar * file, gboolean remove_source);
+			 const gchar * file, MsgFlags *flags);
 
 static gint mbox_remove_all_msg(Folder * folder, FolderItem * item);
 static gint mbox_remove_msg(Folder * folder, FolderItem * item, gint num);
@@ -95,6 +95,7 @@ FolderClass mbox_class =
 	mbox_create_folder,
 	mbox_rename_folder,
 	mbox_remove_folder,
+	NULL,
 	mbox_get_num_list,
 	NULL,
 	NULL,
@@ -106,7 +107,9 @@ FolderClass mbox_class =
 	NULL,
 	mbox_fetch_msg,
 	mbox_add_msg,
+	NULL,
 	mbox_copy_msg,
+	NULL,
 	mbox_remove_msg,
 	mbox_remove_all_msg,
 	NULL,
@@ -1355,7 +1358,7 @@ gchar *mbox_fetch_msg(Folder *folder, FolderItem *item, gint num)
 }
 
 gint mbox_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
-		  gboolean remove_source)
+		  MsgFlags *flags)
 {
 	FILE * src_fp;
 	FILE * dest_fp;
@@ -1463,11 +1466,6 @@ gint mbox_add_msg(Folder *folder, FolderItem *dest, const gchar *file,
 		ftruncate(fileno(dest_fp), old_size);
 		g_free(mbox_path);
 		return -1;
-	}
-
-	if (remove_source) {
-		if (unlink(file) < 0)
-			FILE_OP_ERROR(file, "unlink");
 	}
 
 	g_free(mbox_path);

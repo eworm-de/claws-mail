@@ -46,6 +46,7 @@ typedef enum
 	INC_NO_SPACE,
 	INC_IO_ERROR,
 	INC_SOCKET_ERROR,
+	INC_EOF,
 	INC_CANCEL
 } IncState;
 

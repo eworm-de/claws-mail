@@ -15,6 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ * TODO (Win32): Sync rev. 1.21 (2003/07/16 11:53:42)
+ * 	- uidl rx hangs waiting for next data (if data>bufsize)
+ * 	- no callback after rx'ing list reply
  */
 
 #ifdef HAVE_CONFIG_H
@@ -133,17 +137,19 @@ static gint session_connect_cb(SockInfo *sock, gpointer data)
 	session->sock = sock;
 
 #if USE_OPENSSL
-	sock_set_nonblocking_mode(sock, FALSE);
-	if (session->ssl_type == SSL_TUNNEL && !ssl_init_socket(sock)) {
-		g_warning("can't initialize SSL.");
-		session->state = SESSION_ERROR;
-		return -1;
+	if (session->ssl_type == SSL_TUNNEL) {
+		sock_set_nonblocking_mode(sock, FALSE);
+		if (!ssl_init_socket(sock)) {
+			g_warning("can't initialize SSL.");
+			session->state = SESSION_ERROR;
+			return -1;
+		}
 	}
 #endif
 
 	sock_set_nonblocking_mode(sock, TRUE);
 
-	debug_print("session: connected\n");
+	debug_print("session (%p): connected\n", session);
 
 	session->state = SESSION_RECV;
 	session->io_tag = sock_add_watch(session->sock, G_IO_IN,
@@ -179,8 +185,6 @@ void session_destroy(Session *session)
 	g_return_if_fail(session != NULL);
 	g_return_if_fail(session->destroy != NULL);
 
-	debug_print("session: session_destroy()\n");
-
 	session_close(session);
 	session->destroy(session);
 	g_free(session->server);
@@ -188,7 +192,17 @@ void session_destroy(Session *session)
 	g_byte_array_free(session->read_data_buf, TRUE);
 	g_free(session->read_data_terminator);
 	g_free(session->write_buf);
+
+	debug_print("session (%p): destroyed\n", session);
+
 	g_free(session);
+}
+
+gboolean session_is_connected(Session *session)
+{
+	return (session->state == SESSION_READY ||
+		session->state == SESSION_SEND ||
+		session->state == SESSION_RECV);
 }
 
 void session_set_recv_message_notify(Session *session,
@@ -241,8 +255,6 @@ static gint session_close(Session *session)
 {
 	g_return_val_if_fail(session != NULL, -1);
 
-	debug_print("session_close\n");
-
 	if (session->conn_id > 0) {
 		sock_connect_async_cancel(session->conn_id);
 		session->conn_id = 0;
@@ -258,6 +270,8 @@ static gint session_close(Session *session)
 		session->sock = NULL;
 		session->state = SESSION_DISCONNECTED;
 	}
+
+	debug_print("session (%p): closed\n", session);
 
 	return 0;
 }

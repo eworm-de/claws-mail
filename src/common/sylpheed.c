@@ -92,6 +92,8 @@ gboolean sylpheed_init(int *argc, char ***argv)
 
 	parse_parameter(argc, argv);
 
+	debug_print("Starting sylpheed version %08x\n", VERSION_NUMERIC);
+
 	setlocale(LC_ALL, "");
 #ifdef WIN32
 	locale_dir = g_strconcat(get_installed_dir(), G_DIR_SEPARATOR_S,
@@ -136,4 +138,9 @@ void sylpheed_done(void)
 const gchar *sylpheed_get_startup_dir(void)
 {
 	return startup_dir;
+}
+
+guint sylpheed_get_version(void)
+{
+	return VERSION_NUMERIC;
 }

@@ -248,6 +248,10 @@ SOURCE=..\src\folder.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\folder_item_prefs.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\foldersel.c
 # End Source File
 # Begin Source File
@@ -277,6 +281,10 @@ SOURCE=..\src\gtk\gtkstext.c
 # Begin Source File
 
 SOURCE=..\src\gtk\gtkutils.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\gtk\gtkvscrollbutton.c
 # End Source File
 # Begin Source File
 
@@ -744,10 +752,6 @@ SOURCE=..\src\addrcindex.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\addrquery.h
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\addressadd.h
 # End Source File
 # Begin Source File
@@ -765,6 +769,10 @@ SOURCE=..\src\addrindex.h
 # Begin Source File
 
 SOURCE=..\src\addritem.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\addrquery.h
 # End Source File
 # Begin Source File
 
@@ -856,6 +864,10 @@ SOURCE=..\src\folder.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\folder_item_prefs.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\foldersel.h
 # End Source File
 # Begin Source File
@@ -885,6 +897,10 @@ SOURCE=..\src\gtk\gtkstext.h
 # Begin Source File
 
 SOURCE=..\src\gtk\gtkutils.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\gtk\gtkvscrollbutton.h
 # End Source File
 # Begin Source File
 

@@ -32,36 +32,34 @@
 
 typedef struct _MsgInfo			MsgInfo;
 typedef struct _MsgFlags		MsgFlags;
+typedef struct _MsgFileInfo     	MsgFileInfo;
 typedef struct _MsgInfoUpdate 		MsgInfoUpdate;
 typedef struct _MailFilteringData	MailFilteringData;
 
 typedef GSList MsgInfoList;
 typedef GSList MsgNumberList;
 
-typedef enum
-{
-	MSG_NEW		= 1 << 0,
-	MSG_UNREAD	= 1 << 1,
-	MSG_MARKED	= 1 << 2,
-	MSG_DELETED	= 1 << 3,
-	MSG_REPLIED	= 1 << 4,
-	MSG_FORWARDED	= 1 << 5,
-	
-	MSG_REALLY_DELETED = 1 << 6,		/* mbox stuff */
+#define MSG_NEW			(1U << 0)
+#define MSG_UNREAD		(1U << 1)
+#define MSG_MARKED		(1U << 2)
+#define MSG_DELETED		(1U << 3)
+#define MSG_REPLIED		(1U << 4)
+#define MSG_FORWARDED		(1U << 5)
+#define MSG_REALLY_DELETED	(1U << 6)		/* mbox stuff */
 
 #define MSG_CLABEL_SBIT	(7)		/* start bit of color label */
 #define MAKE_MSG_CLABEL(h, m, l)	(((h) << (MSG_CLABEL_SBIT + 2)) | \
 					 ((m) << (MSG_CLABEL_SBIT + 1)) | \
 					 ((l) << (MSG_CLABEL_SBIT + 0)))
 
-	MSG_CLABEL_NONE = MAKE_MSG_CLABEL(0, 0, 0),
-	MSG_CLABEL_1    = MAKE_MSG_CLABEL(0, 0, 1),
-	MSG_CLABEL_2    = MAKE_MSG_CLABEL(0, 1, 0),
-	MSG_CLABEL_3    = MAKE_MSG_CLABEL(0, 1, 1),
-	MSG_CLABEL_4    = MAKE_MSG_CLABEL(1, 0, 0),
-	MSG_CLABEL_5    = MAKE_MSG_CLABEL(1, 0, 1),
-	MSG_CLABEL_6    = MAKE_MSG_CLABEL(1, 1, 0),
-	MSG_CLABEL_7    = MAKE_MSG_CLABEL(1, 1, 1),
+#define MSG_CLABEL_NONE		MAKE_MSG_CLABEL(0U, 0U, 0U)
+#define MSG_CLABEL_1		MAKE_MSG_CLABEL(0U, 0U, 1U)
+#define MSG_CLABEL_2		MAKE_MSG_CLABEL(0U, 1U, 0U)
+#define MSG_CLABEL_3		MAKE_MSG_CLABEL(0U, 1U, 1U)
+#define MSG_CLABEL_4		MAKE_MSG_CLABEL(1U, 0U, 0U)
+#define MSG_CLABEL_5		MAKE_MSG_CLABEL(1U, 0U, 1U)
+#define MSG_CLABEL_6		MAKE_MSG_CLABEL(1U, 1U, 0U)
+#define MSG_CLABEL_7		MAKE_MSG_CLABEL(1U, 1U, 1U)
 
 #define MSG_CLABEL_ORANGE	MSG_CLABEL_1
 #define MSG_CLABEL_RED		MSG_CLABEL_2
@@ -71,33 +69,30 @@ typedef enum
 #define MSG_CLABEL_GREEN	MSG_CLABEL_6
 #define MSG_CLABEL_BROWN	MSG_CLABEL_7
 
-	MSG_IGNORE_THREAD   = 1 << 10,   /* ignore threads */
-	MSG_LOCKED	    = 1 << 11,   /* msg is locked  */
-	MSG_RETRCPT_PENDING = 1 << 12,	 /* return receipt pending */
+#define MSG_IGNORE_THREAD	(1U << 10)   /* ignore threads */
+#define MSG_LOCKED		(1U << 11)   /* msg is locked  */
+#define MSG_RETRCPT_SENT	(1U << 12)   /* new one */ 
+					 	
+/* RESERVED */
+#define	MSG_RESERVED_CLAWS	(1U << 30)   /* for sylpheed-claws */
+#define	MSG_RESERVED		(1U << 31)
 
-	/* RESERVED */
-	MSG_RESERVED_CLAWS  = 1 << 30,	/* for sylpheed-claws */
-	MSG_RESERVED_MAIN   = 1 << 31	/* for sylpheed-main  */
-} MsgPermFlags;
+typedef guint32 MsgPermFlags;
 
 #define MSG_CLABEL_FLAG_MASK	(MSG_CLABEL_7)
 
-typedef enum
-{
-	MSG_MOVE	= 1 << 0,
-	MSG_COPY	= 1 << 1,
+#define MSG_MOVE		(1U << 0)
+#define MSG_COPY		(1U << 1)
+#define MSG_QUEUED		(1U << 16)
+#define MSG_DRAFT		(1U << 17)
+#define MSG_ENCRYPTED		(1U << 18)
+#define MSG_IMAP		(1U << 19)
+#define MSG_NEWS		(1U << 20)
+#define MSG_SIGNED		(1U << 21)
+#define MSG_MIME		(1U << 29)
+#define MSG_CACHED		(1U << 31)
 
-	MSG_QUEUED	= 1 << 16,
-	MSG_DRAFT	= 1 << 17,
-	MSG_ENCRYPTED   = 1 << 18,
-	MSG_IMAP	= 1 << 19,
-	MSG_NEWS	= 1 << 20,
-	MSG_SIGNED	= 1 << 21,
-
-	MSG_MIME	= 1 << 29,
-
-	MSG_CACHED	= 1 << 31
-} MsgTmpFlags;
+typedef guint32 MsgTmpFlags;
 
 #define MSG_CACHED_FLAG_MASK	(MSG_MIME | MSG_ENCRYPTED | MSG_SIGNED)
 
@@ -144,12 +139,14 @@ typedef enum
 #define MSG_IS_REALLY_DELETED(msg)	(((msg).perm_flags & MSG_REALLY_DELETED) != 0)
 #define MSG_IS_IGNORE_THREAD(msg)	(((msg).perm_flags & MSG_IGNORE_THREAD) != 0)
 #define MSG_IS_RETRCPT_PENDING(msg)	(((msg).perm_flags & MSG_RETRCPT_PENDING) != 0)
+#define MSG_IS_RETRCPT_SENT(msg)	(((msg).perm_flags & MSG_RETRCPT_SENT) != 0)
 
 #define MSGINFO_UPDATE_HOOKLIST "msginfo_update"
 #define MAIL_FILTERING_HOOKLIST "mail_filtering_hooklist"
 
 #include "folder.h"
 #include "procmime.h"
+#include "prefs_filtering.h"
 
 struct _MsgFlags
 {
@@ -157,7 +154,6 @@ struct _MsgFlags
 	MsgTmpFlags  tmp_flags;
 };
 
-#include "prefs_filtering.h"
 
 struct _MsgInfo
 {
@@ -201,6 +197,13 @@ struct _MsgInfo
 	guint decryption_failed : 1;
 };
 
+struct _MsgFileInfo
+{
+	MsgInfo *msginfo;
+        gchar *file;
+        MsgFlags *flags;
+};
+
 struct _MsgInfoUpdate {
 	MsgInfo	*msginfo;
 };
@@ -234,6 +237,8 @@ void	procmsg_copy_messages		(GSList		*mlist);
 
 gchar  *procmsg_get_message_file_path	(MsgInfo	*msginfo);
 gchar  *procmsg_get_message_file	(MsgInfo	*msginfo);
+GSList *procmsg_get_message_file_list	(MsgInfoList	*mlist);
+void	procmsg_message_file_list_free	(MsgInfoList	*file_list);
 FILE   *procmsg_open_message		(MsgInfo	*msginfo);
 #if USE_GPGME
 FILE   *procmsg_open_message_decrypted	(MsgInfo	*msginfo,
@@ -284,4 +289,5 @@ void procmsg_update_unread_children	(MsgInfo 	*info,
 void procmsg_msginfo_set_to_folder	(MsgInfo 	*msginfo,
 					 FolderItem 	*to_folder);
 gboolean procmsg_msginfo_filter		(MsgInfo	*msginfo);
+
 #endif /* __PROCMSG_H__ */

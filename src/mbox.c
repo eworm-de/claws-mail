@@ -214,7 +214,7 @@ gint proc_mbox(FolderItem *dest, const gchar *mbox)
 
 		dropfolder = folder_get_default_processing();
 			
-		if ((msgnum = folder_item_add_msg(dropfolder, tmp_file, TRUE)) < 0) {
+		if ((msgnum = folder_item_add_msg(dropfolder, tmp_file, NULL, TRUE)) < 0) {
 			fclose(mbox_fp);
 			unlink(tmp_file);
 			g_free(tmp_file);

@@ -18,62 +18,20 @@
  */
 
 #ifndef PREFS_FOLDER_ITEM_H
-
 #define PREFS_FOLDER_ITEM_H
 
-#include "folder.h"
 #include <glib.h>
 #include <sys/types.h>
 
-struct _PrefsFolderItem {
-	gchar * directory;
+#include "folder.h"
+#include "folderview.h"
+#include "folder_item_prefs.h"
+#include "prefswindow.h"
 
-	gboolean sort_by_number;
-	gboolean sort_by_size;
-	gboolean sort_by_date;
-	gboolean sort_by_from;
-	gboolean sort_by_subject;
-	gboolean sort_by_score;
+void prefs_folder_item_create(FolderView *folderview, FolderItem *item); 
 
-	gboolean sort_descending;
+void prefs_folder_item_open		(FolderItem 	*item);
+void prefs_folder_item_register_page	(PrefsPage 	*page);
+void prefs_folder_item_unregister_page	(PrefsPage 	*page);
 
-	gboolean enable_thread;
-
-	gint kill_score;
-	gint important_score;
-
-	GSList * scoring;
-	GSList * processing;
-
-	gboolean request_return_receipt;
-	gboolean enable_default_to;
-	gchar *default_to;
-	gboolean enable_default_reply_to;
-	gchar *default_reply_to;
-	gboolean enable_simplify_subject;
-	gchar *simplify_subject_regexp;
-	gboolean enable_folder_chmod;
-	gint folder_chmod;
-	gboolean enable_default_account;
-	gint default_account;
-	gboolean save_copy_to_folder;
-	guint color;
-};
-
-typedef struct _PrefsFolderItem PrefsFolderItem;
-
-/* CLAWS: due a messed up circular header references using 
- * void *. but this is *REALLY* a folderview */ 
-void prefs_folder_item_create (void *folderview, FolderItem *item); 
-
-void prefs_folder_item_read_config(FolderItem * item);
-void prefs_folder_item_save_config(FolderItem * item);
-void prefs_folder_item_set_config(FolderItem * item,
-				  int sort_type, gint sort_mode);
-PrefsFolderItem * prefs_folder_item_new(void);
-void prefs_folder_item_free(PrefsFolderItem * prefs);
-gint prefs_folder_item_get_sort_type(FolderItem * item);
-gint prefs_folder_item_get_sort_mode(FolderItem * item);
-void prefs_folder_item_copy_prefs(FolderItem * src, FolderItem * dest);
-
-#endif
+#endif /* PREFS_FOLDER_ITEM_H */

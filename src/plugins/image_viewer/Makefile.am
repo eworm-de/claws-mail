@@ -18,9 +18,10 @@ INCLUDES = \
 	-I../../common \
 	-I../../gtk
 
-CPPFLAGS = \
+AM_CPPFLAGS = \
 	$(ASPELL_CFLAGS) \
 	$(GLIB_CFLAGS) \
 	$(GTK_CFLAGS) \
 	$(GDK_IMLIB_CFLAGS) \
-	$(GDK_PIXBUF_CFLAGS)
+	$(GDK_PIXBUF_CFLAGS) \
+	$(OPENSSL_CFLAGS)

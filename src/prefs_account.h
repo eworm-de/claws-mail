@@ -92,6 +92,7 @@ struct _PrefsAccount
 	SSLType ssl_imap;
 	SSLType ssl_nntp;
 	SSLType ssl_smtp;
+	gboolean use_nonblocking_ssl;
 #endif /* USE_OPENSSL */
 
 	/* Temporarily preserved password */
@@ -109,6 +110,8 @@ struct _PrefsAccount
 	gboolean filter_on_recv;
 	gchar *inbox;
 	gint max_articles;
+
+	gint imap_auth_type;
 
 	/* Send */
 	gboolean add_date;

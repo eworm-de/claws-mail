@@ -29,6 +29,8 @@
 #  include <locale.h>
 #endif
 
+#include "common/sylpheed.h"
+#include "common/version.h"
 #include "plugin.h"
 #include "common/utils.h"
 #include "hooks.h"
@@ -63,7 +65,7 @@
 #include <pwd.h>
 #endif
 
-static gint hook_id;
+static guint hook_id;
 static int flags = SPAMC_RAW_MODE | SPAMC_SAFE_FALLBACK | SPAMC_CHECK_ONLY;
 static gchar *username = NULL;
 
@@ -93,7 +95,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 	gboolean is_spam = FALSE;
 	FILE *fp = NULL;
 	struct message m;
-	gchar *oldlocale = NULL;
 	struct sockaddr addr;
 	int ret;
 
@@ -101,10 +102,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 		return FALSE;
 
 	debug_print("Filtering message %d\n", msginfo->msgnum);
-
-	/* remember old locale and set it to C */
-	Xstrdup_a(oldlocale, setlocale(LC_ALL, NULL), return FALSE);
-	setlocale(LC_ALL, "C");
 
 	if (lookup_host(config.hostname, config.port, &addr) != EX_OK) {
 		debug_print("failed to look up spamd host\n");
@@ -139,7 +136,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
 	message_cleanup(&m);
 	fclose(fp);
-	setlocale(LC_ALL, oldlocale);
 
 	if (is_spam) {
 		debug_print("message is spam\n");
@@ -194,6 +190,16 @@ void spamassassin_save_config(void)
 
 gint plugin_init(gchar **error)
 {
+	if ((sylpheed_get_version() > VERSION_NUMERIC)) {
+		*error = g_strdup("Your sylpheed version is newer than the version the plugin was built with");
+		return -1;
+	}
+
+	if ((sylpheed_get_version() < MAKE_NUMERIC_VERSION(0, 9, 3, 86))) {
+		*error = g_strdup("Your sylpheed version is too old");
+		return -1;
+	}
+
 	hook_id = hooks_register_hook(MAIL_FILTERING_HOOKLIST, mail_filtering_hook, NULL);
 	if (hook_id == -1) {
 		*error = g_strdup("Failed to register mail filtering hook");

@@ -34,8 +34,6 @@ extern "C" {
 typedef struct _MimeType	MimeType;
 typedef struct _MimeInfo	MimeInfo;
 
-#include "procmsg.h"
-
 typedef enum
 {
 	ENC_7BIT,
@@ -61,6 +59,8 @@ typedef enum
 	MIME_TEXT_ENRICHED,
 	MIME_UNKNOWN
 } ContentType;
+
+#include "procmsg.h"
 
 struct _MimeType
 {
@@ -119,6 +119,10 @@ struct _MimeInfo
 	gchar *plaintextfile;
 	gchar *sigstatus;
 	gchar *sigstatus_full;
+	gboolean sig_ok;
+	gboolean sig_unknown;
+	gboolean sig_expired;
+	gboolean key_expired;
 #endif
 
 	gint level;

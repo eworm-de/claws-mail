@@ -255,6 +255,7 @@ struct _PrefsCommon
 	NextUnreadMsgDialogShow next_unread_msg_dialog;
 	gboolean add_address_by_click;
 	gchar *pixmap_theme_path;
+	int hover_timeout; /* msecs mouse hover timeout */
 
 	/* Other */
 	gchar *uri_cmd;

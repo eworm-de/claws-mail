@@ -8,11 +8,15 @@ PACKAGE=sylpheed
 dnl version number
 MAJOR_VERSION=0
 MINOR_VERSION=9
-MICRO_VERSION=3
+MICRO_VERSION=4
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws
-VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
+EXTRA_VERSION=0
+if test $EXTRA_VERSION -eq 0; then
+    VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}claws
+else
+    VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}claws${EXTRA_VERSION}
+fi
 
 dnl set $target
 AC_CANONICAL_SYSTEM
@@ -23,6 +27,10 @@ dnl AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
 dnl AC_DEFINE_UNQUOTED(VERSION, "$VERSION")
 AC_SUBST(PACKAGE)
 AC_SUBST(VERSION)
+AC_SUBST(MAJOR_VERSION)
+AC_SUBST(MINOR_VERSION)
+AC_SUBST(MICRO_VERSION)
+AC_SUBST(EXTRA_VERSION)
 
 dnl GNOME installed?
 AC_PATH_PROG(GNOME_CONFIG, gnome-config, no)
@@ -377,35 +385,42 @@ dnl *************************
 
 PLUGINS=""
 
+dnl --- Trayicon ---
 AC_ARG_ENABLE(trayicon-plugin,
 	[  --enable-trayicon-plugin   System Tray Icon [default=no]],
-	[ac_cv_enable_trayicon_plugin=$enableval], [ac_cv_enable_trayicon_plugin=no])
-AM_CONDITIONAL(BUILD_TRAYICON_PLUGIN, test x"$ac_cv_enable_trayicon_plugin" = xyes)
+	[ac_cv_enable_trayicon_plugin=$enableval], [ac_cv_enable_trayicon_plugin=yes])
 if test x"$ac_cv_enable_trayicon_plugin" = xyes; then
 	PLUGINS="trayicon $PLUGINS"
 fi
+AM_CONDITIONAL(BUILD_TRAYICON_PLUGIN, test x"$ac_cv_enable_trayicon_plugin" = xyes)
 
+dnl --- SpamAssassin ---
 AC_ARG_ENABLE(spamassassin-plugin,
 	[  --enable-spamassassin-plugin    Build SpamAssassin plugin [default=no]],
 	[ac_cv_enable_spamassassin_plugin=$enableval], [ac_cv_enable_spamassassin_plugin=no])
-AM_CONDITIONAL(BUILD_SPAMASSASSIN_PLUGIN, test x"$ac_cv_enable_spamassassin_plugin" = xyes)
 if test x"$ac_cv_enable_spamassassin_plugin" = xyes; then
 	AC_SPAMASSASSIN
 	PLUGINS="spamassassin $PLUGINS"
 fi
+AM_CONDITIONAL(BUILD_SPAMASSASSIN_PLUGIN, test x"$ac_cv_enable_spamassassin_plugin" = xyes)
 
+dnl --- MathML Viewer ---
 AC_ARG_ENABLE(mathml-viewer-plugin,
 	[  --enable-mathml-viewer-plugin    Build MathML-Viewer plugin [default=no]],
-	[ac_cv_enable_mathml_viewer_plugin=$enableval], [ac_cv_enable_mathml_viewer_plugin=no])
-AM_CONDITIONAL(BUILD_MATHML_VIEWER_PLUGIN, test x"$ac_cv_enable_mathml_viewer_plugin" = xyes)
+	[ac_cv_enable_mathml_viewer_plugin=$enableval], [ac_cv_enable_mathml_viewer_plugin=yes])
 if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
-	PKG_CHECK_MODULES(GTK_MATH_VIEW, gtkmathview >= 0.4.2)
-	AC_SUBST(GTK_MATH_VIEW_CFLAGS)
-	AC_SUBST(GTK_MATH_VIEW_LIBS)
+	PKG_CHECK_MODULES(GTK_MATH_VIEW, gtkmathview >= 0.4.2, :, ac_cv_enable_mathml_viewer_plugin=no)
 
-	PLUGINS="mathml-viewer $PLUGINS"
+	if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
+		AC_SUBST(GTK_MATH_VIEW_CFLAGS)
+		AC_SUBST(GTK_MATH_VIEW_LIBS)
+
+		PLUGINS="mathml-viewer $PLUGINS"
+	fi
 fi
+AM_CONDITIONAL(BUILD_MATHML_VIEWER_PLUGIN, test x"$ac_cv_enable_mathml_viewer_plugin" = xyes)
 
+dnl --- Image Viewer ---
 AC_ARG_ENABLE(image-viewer-plugin,
 	[  --disable-image-viewer-plugin   Do not build image viewer plugin],
 	[ac_cv_enable_image_viewer_plugin=$enableval], [ac_cv_enable_image_viewer_plugin=yes])
@@ -427,50 +442,52 @@ if test x"$ac_cv_enable_image_viewer_plugin" = xyes; then
 			AC_DEFINE(HAVE_GDK_IMLIB, 1, Define if you use gdk_imlib to support image viewer),
 			[ac_cv_enable_imlib=no])
 	fi
-	if test x"$ac_cv_enable_gdk_pixbuf" = xno -a x"$ac_cv_enable_imlib" = xno; then
-		$ac_cv_enable_image_viewer_plugin = no
-	fi
-fi
-AM_CONDITIONAL(BUILD_IMAGE_VIEWER_PLUGIN, test x"$ac_cv_enable_image_viewer_plugin" = xyes)
-if test x"$ac_cv_enable_image_viewer_plugin" = xyes; then
+
 	if test "$ac_cv_enable_gdk_pixbuf" = yes; then
 		PLUGINS="image-viewer(gdk-pixbuf) $PLUGINS"
 	elif test "$ac_cv_enable_imlib" = yes; then
 		PLUGINS="image-viewer(gdk_imlib) $PLUGINS"
+	else
+		$ac_cv_enable_image_viewer_plugin = no
 	fi
 fi
+AM_CONDITIONAL(BUILD_IMAGE_VIEWER_PLUGIN, test x"$ac_cv_enable_image_viewer_plugin" = xyes)
 
+dnl --- Dillo Viewer ---
 AC_ARG_ENABLE(dillo-viewer-plugin,
 	[  --enable-dillo-viewer-plugin   Build Dillo plugin for html mail rendering [default=no]],
-	[ac_cv_enable_dillo_viewer_plugin=$enableval], [ac_cv_enable_dillo_viewer_plugin=no])
-AM_CONDITIONAL(BUILD_DILLO_VIEWER_PLUGIN, test x"$ac_cv_enable_dillo_viewer_plugin" = xyes)
+	[ac_cv_enable_dillo_viewer_plugin=$enableval], [ac_cv_enable_dillo_viewer_plugin=yes])
 if test x"$ac_cv_enable_dillo_viewer_plugin" = xyes; then
 	PLUGINS="dillo-viewer $PLUGINS"
 fi
+AM_CONDITIONAL(BUILD_DILLO_VIEWER_PLUGIN, test x"$ac_cv_enable_dillo_viewer_plugin" = xyes)
 
+dnl --- Demo ---
 AC_ARG_ENABLE(demo-plugin,
 	[  --enable-demo-plugin    Build demo plugin [default=no]],
 	[ac_cv_enable_demo_plugin=$enableval], [ac_cv_enable_demo_plugin=no])
-AM_CONDITIONAL(BUILD_DEMO_PLUGIN, test x"$ac_cv_enable_demo_plugin" = xyes)
 if test x"$ac_cv_enable_demo_plugin" = xyes; then
 	PLUGINS="demo $PLUGINS"
 fi
+AM_CONDITIONAL(BUILD_DEMO_PLUGIN, test x"$ac_cv_enable_demo_plugin" = xyes)
 
+dnl --- ClamAV ---
 AC_ARG_ENABLE(clamav-plugin,
 	[  --enable-clamav-plugin    Build Clam AntiVirus plugin [default=no]],
-	[ac_cv_enable_clamav_plugin=$enableval], [ac_cv_enable_clamav_plugin=no])
-AM_CONDITIONAL(BUILD_CLAMAV_PLUGIN, test x"$ac_cv_enable_clamav_plugin" = xyes)
+	[ac_cv_enable_clamav_plugin=$enableval], [ac_cv_enable_clamav_plugin=yes])
 if test x"$ac_cv_enable_clamav_plugin" = xyes; then
-	AC_CHECK_LIB(clamav, cl_scanfile, clamav_lib=-lclamav)
-	if test -z "${clamav_lib}"
-	then
-		AC_MSG_ERROR(clamav library not found)
-	fi
-	CLAMAV_LIBS="${clamav_lib}"
-	AC_SUBST(CLAMAV_LIBS)
+	AC_CHECK_LIB(clamav, cl_scanfile, clamav_lib=-lclamav, ac_cv_enable_clamav_plugin=no)
+	AC_CHECK_HEADERS(clamav.h, :, ac_cv_enable_clamav_plugin=no)
+	if test x"$ac_cv_enable_clamav_plugin" = xyes; then
+		CLAMAV_LIBS="${clamav_lib}"
+		AC_SUBST(CLAMAV_LIBS)
 
-	PLUGINS="clamav $PLUGINS"
+		PLUGINS="clamav $PLUGINS"
+	else
+		AC_MSG_NOTICE(clamav library not found, will not build clamav plugin)
+	fi
 fi
+AM_CONDITIONAL(BUILD_CLAMAV_PLUGIN, test x"$ac_cv_enable_clamav_plugin" = xyes)
 
 dnl ****************************
 dnl ** Final configure output **
