@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,8 +28,10 @@
 #include "intl.h"
 #include "nntp.h"
 #include "socket.h"
-#include "ssl.h"
 #include "utils.h"
+#if USE_SSL
+#  include "ssl.h"
+#endif
 
 static gint verbose = 1;
 
@@ -45,7 +47,8 @@ static gint nntp_gen_command	(NNTPSockInfo	*sock,
 				 ...);
 
 #if USE_SSL
-NNTPSockInfo *nntp_open(const gchar *server, gushort port, gchar *buf, SSLType ssl_type)
+NNTPSockInfo *nntp_open(const gchar *server, gushort port, gchar *buf,
+			SSLType ssl_type)
 #else
 NNTPSockInfo *nntp_open(const gchar *server, gushort port, gchar *buf)
 #endif
@@ -60,12 +63,12 @@ NNTPSockInfo *nntp_open(const gchar *server, gushort port, gchar *buf)
 	}
 
 #if USE_SSL
-	if (ssl_type && !ssl_init_socket(sock)) {
-		 sock_close(sock);
-		 return NULL;
+	if (ssl_type == SSL_TUNNEL && !ssl_init_socket(sock)) {
+		sock_close(sock);
+		return NULL;
 	}
 #endif
-	
+
 	nntp_sock = g_new0(NNTPSockInfo, 1);
 	nntp_sock->sock = sock;
 
@@ -80,7 +83,8 @@ NNTPSockInfo *nntp_open(const gchar *server, gushort port, gchar *buf)
 
 #if USE_SSL
 NNTPSockInfo *nntp_open_auth(const gchar *server, gushort port, gchar *buf,
-			     const gchar *userid, const gchar *passwd, SSLType ssl_type)
+			     const gchar *userid, const gchar *passwd,
+			     SSLType ssl_type)
 #else
 NNTPSockInfo *nntp_open_auth(const gchar *server, gushort port, gchar *buf,
 			     const gchar *userid, const gchar *passwd)
@@ -122,10 +126,11 @@ gint nntp_group(NNTPSockInfo *sock, const gchar *group,
 	ok = nntp_gen_command(sock, buf, "GROUP %s", group);
 
 	if (ok != NN_SUCCESS) {
-		ok = nntp_gen_command(sock, buf, "MODE READER");
+		ok = nntp_mode(sock, FALSE);
 		if (ok == NN_SUCCESS)
 			ok = nntp_gen_command(sock, buf, "GROUP %s", group);
-	}	
+	}
+
 	if (ok != NN_SUCCESS)
 		return ok;
 

@@ -140,15 +140,14 @@ static struct SSLPrefs {
 	GtkWidget *pop_ssltunnel_radiobtn;
 	GtkWidget *pop_starttls_radiobtn;
 
-	GtkWidget *nntp_frame;
-	GtkWidget *nntp_nossl_radiobtn;
-	GtkWidget *nntp_ssltunnel_radiobtn;
-	GtkWidget *nntp_starttls_radiobtn;
-
 	GtkWidget *imap_frame;
 	GtkWidget *imap_nossl_radiobtn;
 	GtkWidget *imap_ssltunnel_radiobtn;
 	GtkWidget *imap_starttls_radiobtn;
+
+	GtkWidget *nntp_frame;
+	GtkWidget *nntp_nossl_radiobtn;
+	GtkWidget *nntp_ssltunnel_radiobtn;
 
 	GtkWidget *send_frame;
 	GtkWidget *smtp_nossl_radiobtn;
@@ -343,7 +342,6 @@ static PrefParam param[] = {
 
 	{"auto_replyto", NULL, &tmp_ac_prefs.auto_replyto, P_STRING,
 	 &compose.autoreplyto_entry,
-
 	 prefs_set_data_from_entry, prefs_set_entry},
 
 #if USE_GPGME
@@ -376,15 +374,14 @@ static PrefParam param[] = {
 	 &ssl.imap_nossl_radiobtn,
 	 prefs_account_enum_set_data_from_radiobtn,
 	 prefs_account_enum_set_radiobtn},
+	{"ssl_nntp", "0", &tmp_ac_prefs.ssl_nntp, P_ENUM,
+	 &ssl.nntp_nossl_radiobtn,
+	 prefs_account_enum_set_data_from_radiobtn,
+	 prefs_account_enum_set_radiobtn},
 	{"ssl_smtp", "0", &tmp_ac_prefs.ssl_smtp, P_ENUM,
 	 &ssl.smtp_nossl_radiobtn,
 	 prefs_account_enum_set_data_from_radiobtn,
 	 prefs_account_enum_set_radiobtn},
-	{"ssl_nntp", "FALSE", &tmp_ac_prefs.ssl_nntp, P_BOOL,
-	 &ssl.nntp_nossl_radiobtn,
-	prefs_account_enum_set_data_from_radiobtn,
-	 prefs_account_enum_set_radiobtn},
-
 #endif /* USE_SSL */
 
 	/* Advanced */
@@ -1492,6 +1489,16 @@ static void prefs_account_ascii_armored_warning(GtkWidget* widget,
 
 #if USE_SSL
 
+#define CREATE_RADIO_BUTTON(box, btn, btn_p, label, data)		\
+{									\
+	btn = gtk_radio_button_new_with_label_from_widget		\
+		(GTK_RADIO_BUTTON (btn_p), label);			\
+	gtk_widget_show (btn);						\
+	gtk_box_pack_start (GTK_BOX (box), btn, FALSE, FALSE, 0);	\
+	gtk_object_set_user_data (GTK_OBJECT (btn),			\
+				  GINT_TO_POINTER (data));		\
+}
+
 #define CREATE_RADIO_BUTTONS(box,					\
 			     btn1, btn1_label, btn1_data,		\
 			     btn2, btn2_label, btn2_data,		\
@@ -1503,19 +1510,8 @@ static void prefs_account_ascii_armored_warning(GtkWidget* widget,
 	gtk_object_set_user_data (GTK_OBJECT (btn1),			\
 				  GINT_TO_POINTER (btn1_data));		\
 									\
-	btn2 = gtk_radio_button_new_with_label_from_widget		\
-		(GTK_RADIO_BUTTON (btn1), btn2_label);			\
-	gtk_widget_show (btn2);						\
-	gtk_box_pack_start (GTK_BOX (box), btn2, FALSE, FALSE, 0);	\
-	gtk_object_set_user_data (GTK_OBJECT (btn2),			\
-				  GINT_TO_POINTER (btn2_data));		\
-									\
-	btn3 = gtk_radio_button_new_with_label_from_widget		\
-		(GTK_RADIO_BUTTON (btn1), btn3_label);			\
-	gtk_widget_show (btn3);						\
-	gtk_box_pack_start (GTK_BOX (box), btn3, FALSE, FALSE, 0);	\
-	gtk_object_set_user_data (GTK_OBJECT (btn3),			\
-				  GINT_TO_POINTER (btn3_data));		\
+	CREATE_RADIO_BUTTON(box, btn2, btn1, btn2_label, btn2_data);	\
+	CREATE_RADIO_BUTTON(box, btn3, btn1, btn3_label, btn2_data);	\
 }
 
 static void prefs_account_ssl_create(void)
@@ -1538,7 +1534,6 @@ static void prefs_account_ssl_create(void)
 	GtkWidget *vbox4;
 	GtkWidget *nntp_nossl_radiobtn;
 	GtkWidget *nntp_ssltunnel_radiobtn;
-	GtkWidget *nntp_starttls_radiobtn;
 
 	GtkWidget *send_frame;
 	GtkWidget *vbox5;
@@ -1591,16 +1586,16 @@ static void prefs_account_ssl_create(void)
 	gtk_container_add (GTK_CONTAINER (nntp_frame), vbox4);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox4), 8);
 
-	CREATE_RADIO_BUTTONS(vbox4,
-			     nntp_nossl_radiobtn,
-			     _("Don't use SSL"),
-			     SSL_NONE,
-			     nntp_ssltunnel_radiobtn,
-			     _("Use SSL for NNTP connection"),
-			     SSL_TUNNEL,
-			     nntp_starttls_radiobtn,
-			     _("Use STARTTLS command to start SSL session"),
-			     SSL_STARTTLS);
+	nntp_nossl_radiobtn =
+		gtk_radio_button_new_with_label (NULL, _("Don't use SSL"));
+	gtk_widget_show (nntp_nossl_radiobtn);
+	gtk_box_pack_start (GTK_BOX (vbox4), nntp_nossl_radiobtn,
+			    FALSE, FALSE, 0);
+	gtk_object_set_user_data (GTK_OBJECT (nntp_nossl_radiobtn),
+				  GINT_TO_POINTER (SSL_NONE));
+
+	CREATE_RADIO_BUTTON(vbox4, nntp_ssltunnel_radiobtn, nntp_nossl_radiobtn,
+			    _("Use SSL for NNTP connection"), SSL_TUNNEL);
 
 	PACK_FRAME (vbox1, send_frame, _("Send (SMTP)"));
 	vbox5 = gtk_vbox_new (FALSE, 0);
@@ -1632,7 +1627,6 @@ static void prefs_account_ssl_create(void)
 	ssl.nntp_frame              = nntp_frame;
 	ssl.nntp_nossl_radiobtn     = nntp_nossl_radiobtn;
 	ssl.nntp_ssltunnel_radiobtn = nntp_ssltunnel_radiobtn;
-	ssl.nntp_starttls_radiobtn  = nntp_starttls_radiobtn;
 
 	ssl.send_frame              = send_frame;
 	ssl.smtp_nossl_radiobtn     = smtp_nossl_radiobtn;
@@ -1641,6 +1635,7 @@ static void prefs_account_ssl_create(void)
 }
 
 #undef CREATE_RADIO_BUTTONS
+#undef CREATE_RADIO_BUTTON
 #endif /* USE_SSL */
 
 static void crosspost_color_toggled(void)
@@ -2163,17 +2158,17 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		}
 
 #if USE_SSL
-		gtk_widget_set_sensitive(ssl.pop_frame, FALSE);
-		gtk_widget_set_sensitive(ssl.imap_frame, FALSE);
-		gtk_widget_set_sensitive(ssl.nntp_frame, TRUE);
-		gtk_widget_set_sensitive(ssl.send_frame, TRUE);
+		gtk_widget_hide(ssl.pop_frame);
+		gtk_widget_hide(ssl.imap_frame);
+		gtk_widget_show(ssl.nntp_frame);
+		gtk_widget_hide(ssl.send_frame);
 #endif
 		gtk_widget_hide(advanced.popport_hbox);
 		gtk_widget_hide(advanced.imapport_hbox);
 		gtk_widget_show(advanced.nntpport_hbox);
 		gtk_widget_show(advanced.crosspost_chkbtn);
 		gtk_widget_show(advanced.crosspost_colormenu);
-		gtk_widget_set_sensitive(advanced.imap_frame, FALSE);
+		gtk_widget_hide(advanced.imap_frame);
 		break;
 	case A_LOCAL:
 		gtk_widget_hide(basic.nntpserv_label);
@@ -2226,17 +2221,17 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		}
 
 #if USE_SSL
-		gtk_widget_set_sensitive(ssl.pop_frame, FALSE);
-		gtk_widget_set_sensitive(ssl.imap_frame, FALSE);
-		gtk_widget_set_sensitive(ssl.nntp_frame, FALSE);
-		gtk_widget_set_sensitive(ssl.send_frame, TRUE);
+		gtk_widget_hide(ssl.pop_frame);
+		gtk_widget_hide(ssl.imap_frame);
+		gtk_widget_hide(ssl.nntp_frame);
+		gtk_widget_show(ssl.send_frame);
 #endif
 		gtk_widget_hide(advanced.popport_hbox);
 		gtk_widget_hide(advanced.imapport_hbox);
 		gtk_widget_hide(advanced.nntpport_hbox);
 		gtk_widget_hide(advanced.crosspost_chkbtn);
 		gtk_widget_hide(advanced.crosspost_colormenu);
-		gtk_widget_set_sensitive(advanced.imap_frame, FALSE);
+		gtk_widget_hide(advanced.imap_frame);
 		break;
 	case A_IMAP4:
 		gtk_widget_hide(basic.nntpserv_label);
@@ -2291,17 +2286,17 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		}
 
 #if USE_SSL
-		gtk_widget_set_sensitive(ssl.pop_frame, FALSE);
-		gtk_widget_set_sensitive(ssl.imap_frame, TRUE);
-		gtk_widget_set_sensitive(ssl.nntp_frame, FALSE);
-		gtk_widget_set_sensitive(ssl.send_frame, TRUE);
+		gtk_widget_hide(ssl.pop_frame);
+		gtk_widget_show(ssl.imap_frame);
+		gtk_widget_hide(ssl.nntp_frame);
+		gtk_widget_show(ssl.send_frame);
 #endif
 		gtk_widget_hide(advanced.popport_hbox);
 		gtk_widget_show(advanced.imapport_hbox);
 		gtk_widget_hide(advanced.nntpport_hbox);
 		gtk_widget_hide(advanced.crosspost_chkbtn);
 		gtk_widget_hide(advanced.crosspost_colormenu);
-		gtk_widget_set_sensitive(advanced.imap_frame, TRUE);
+		gtk_widget_show(advanced.imap_frame);
 		break;
 	case A_POP3:
 	default:
@@ -2357,17 +2352,17 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		}
 
 #if USE_SSL
-		gtk_widget_set_sensitive(ssl.pop_frame, TRUE);
-		gtk_widget_set_sensitive(ssl.imap_frame, FALSE);
-		gtk_widget_set_sensitive(ssl.nntp_frame, FALSE);
-		gtk_widget_set_sensitive(ssl.send_frame, TRUE);
+		gtk_widget_show(ssl.pop_frame);
+		gtk_widget_hide(ssl.imap_frame);
+		gtk_widget_hide(ssl.nntp_frame);
+		gtk_widget_show(ssl.send_frame);
 #endif
 		gtk_widget_show(advanced.popport_hbox);
 		gtk_widget_hide(advanced.imapport_hbox);
 		gtk_widget_hide(advanced.nntpport_hbox);
 		gtk_widget_hide(advanced.crosspost_chkbtn);
 		gtk_widget_hide(advanced.crosspost_colormenu);
-		gtk_widget_set_sensitive(advanced.imap_frame, FALSE);
+		gtk_widget_hide(advanced.imap_frame);
 		break;
 	}
 

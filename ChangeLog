@@ -1,3 +1,23 @@
+2002-05-30
+
+	* src/account.c
+	  src/news.[ch]
+	  src/nntp.[ch]
+	  src/prefs_account.[ch]: enabled NNTP over SSL.
+	* src/nntp.c: nntp_group(): issue MODE READER command and retry
+	  when GROUP command once failed (this seems to avoid problems on
+	  some broken news servers).
+
+2002-05-30
+
+	* faq/it/*.html: corrected DOS linebreaks.
+	* faq/*/*.html: changed ">" to &quot;.
+
+2002-05-29
+
+	* src/prefs_account.c: prefs_account_protocol_activated(): hide
+	  unnecessary frames in SSL tab.
+
 2002-05-29
 
 	* src/pop.[ch]

@@ -1,3 +1,23 @@
+2002-05-30
+
+	* src/account.c
+	  src/news.[ch]
+	  src/nntp.[ch]
+	  src/prefs_account.[ch]: SSL 上の NNTP を有効にした。
+	* src/nntp.c: nntp_group(): GROUP コマンドが一度失敗したときに
+	  MODE READER コマンドを発行して再試行するようにした(broken な
+	  ニュースサーバでの問題を回避できるらしい)。
+
+2002-05-30
+
+	* faq/it/*.html: DOS 改行を修正。
+	* faq/*/*.html: ">" を &quot; に変更。
+
+2002-05-29
+
+	* src/prefs_account.c: prefs_account_protocol_activated(): SSL タブ
+	  の不要なフレームを隠すようにした。
+
 2002-05-29
 
 	* src/pop.[ch]
