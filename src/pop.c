@@ -346,7 +346,7 @@ static gboolean should_delete(const char *uidl, gpointer data)
 
 	/* remove \r\n */
 	tuidl  = g_strndup(uidl, strlen(uidl) - 2);
-	answer = g_strsplit(uidl, " ", 2);
+	answer = g_strsplit(tuidl, " ", 2);
 	id     = atoi(answer[0]);
 
 	if (NULL != (sdate = g_hash_table_lookup(state->uidl_table, answer[1]))) {
