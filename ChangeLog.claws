@@ -1,3 +1,9 @@
+2002-11-23 [alfons]	0.8.5claws181
+
+	* src/imap.c
+		tiny memory leak found by browsing Dimitar's 
+		valgrind report
+
 2002-11-23 [paul]	0.8.5claws180
 
 	* po/it.po

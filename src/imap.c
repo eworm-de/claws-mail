@@ -1966,6 +1966,7 @@ static void imap_parse_namespace(IMAPSession *session, IMAPFolder *folder)
 	if (str_array[0] && str_array[1] && str_array[2])
 		folder->ns_shared = imap_parse_namespace_str(str_array[2]);
 	g_strfreev(str_array);
+	g_free(ns_str);
 	return;
 }
 
