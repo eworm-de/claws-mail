@@ -3931,6 +3931,8 @@ void summary_filter(SummaryView *summaryview)
 
 	summary_lock(summaryview);
 
+	folder_item_update_freeze();
+	
 	debug_print("filtering...");
 	STATUSBAR_PUSH(summaryview->mainwin, _("Filtering..."));
 	main_window_cursor_wait(summaryview->mainwin);
@@ -3959,6 +3961,7 @@ void summary_filter(SummaryView *summaryview)
 		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 	}
 
+	folder_item_update_thaw();
 	debug_print("done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
 	main_window_cursor_normal(summaryview->mainwin);

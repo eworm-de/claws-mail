@@ -1,3 +1,9 @@
+2003-02-21 [colin]	0.8.10claws38
+
+	* src/summaryview.c
+		Freeze/thaw folderItem updates when filtering messages 
+		via Tools/Filter messages
+
 2003-02-21 [paul]	0.8.10claws37
 
 	* src/compose.c
