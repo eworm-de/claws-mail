@@ -1,3 +1,9 @@
+2002-07-21 [paul]	0.7.8claws85
+
+	* Makefile.am
+		fix 'EXTRA_DIST': remove README.README, add TODO
+		and TODO.claws
+
 2002-07-21 [alfons]	0.7.8claws84
 
 	* src/gtkstext.c
