@@ -1609,6 +1609,7 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 	};
 
 	FILE *fp;
+	gchar buf[BUFFSIZE];
 
 	g_return_val_if_fail(msginfo != NULL, -1);
 
@@ -1617,13 +1618,16 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 	fclose(fp);
 
 	if (hentry[H_REPLY_TO].body != NULL) {
-		conv_unmime_header_overwrite(hentry[H_REPLY_TO].body);
-		compose->replyto = hentry[H_REPLY_TO].body;
+		conv_unmime_header(buf, sizeof(buf), hentry[H_REPLY_TO].body,
+				   NULL);
+		compose->replyto = g_strdup(buf);
+		g_free(hentry[H_REPLY_TO].body);
 		hentry[H_REPLY_TO].body = NULL;
 	}
 	if (hentry[H_CC].body != NULL) {
-		conv_unmime_header_overwrite(hentry[H_CC].body);
-		compose->cc = hentry[H_CC].body;
+		conv_unmime_header(buf, sizeof(buf), hentry[H_CC].body, NULL);
+		compose->cc = g_strdup(buf);
+		g_free(hentry[H_CC].body);
 		hentry[H_CC].body = NULL;
 	}
 	if (hentry[H_REFERENCES].body != NULL) {
@@ -1638,20 +1642,22 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 	}
 	if (hentry[H_BCC].body != NULL) {
 		if (compose->mode == COMPOSE_REEDIT) {
-			conv_unmime_header_overwrite(hentry[H_BCC].body);
-			compose->bcc = hentry[H_BCC].body;
-		} else
-			g_free(hentry[H_BCC].body);
+			conv_unmime_header
+				(buf, sizeof(buf), hentry[H_BCC].body, NULL);
+			compose->bcc = g_strdup(buf);
+		}
+		g_free(hentry[H_BCC].body);
 		hentry[H_BCC].body = NULL;
 	}
 	if (hentry[H_NEWSGROUPS].body != NULL) {
-		conv_unmime_header_overwrite(hentry[H_NEWSGROUPS].body);
 		compose->newsgroups = hentry[H_NEWSGROUPS].body;
 		hentry[H_NEWSGROUPS].body = NULL;
 	}
 	if (hentry[H_FOLLOWUP_TO].body != NULL) {
-		conv_unmime_header_overwrite(hentry[H_FOLLOWUP_TO].body);
-		compose->followup_to = hentry[H_FOLLOWUP_TO].body;
+		conv_unmime_header
+			(buf, sizeof(buf), hentry[H_FOLLOWUP_TO].body, NULL);
+		compose->followup_to = g_strdup(buf);
+		g_free(hentry[H_FOLLOWUP_TO].body);
 		hentry[H_FOLLOWUP_TO].body = NULL;
 	}
 	if (hentry[H_LIST_POST].body != NULL) {
@@ -1687,13 +1693,17 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 			compose->priority =  priority;
 		}
  
-	if (compose->mode == COMPOSE_REEDIT && msginfo->inreplyto)
-		compose->inreplyto = g_strdup(msginfo->inreplyto);
-	else if (compose->mode != COMPOSE_REEDIT &&
-		 msginfo->msgid && *msginfo->msgid) {
+	if (compose->mode == COMPOSE_REEDIT) {
+		if (msginfo->inreplyto && *msginfo->inreplyto)
+			compose->inreplyto = g_strdup(msginfo->inreplyto);
+		return 0;
+	}
+
+	if (msginfo->msgid && *msginfo->msgid)
 		compose->inreplyto = g_strdup(msginfo->msgid);
 
-		if (!compose->references) {
+	if (!compose->references) {
+		if (msginfo->msgid && *msginfo->msgid) {
 			if (msginfo->inreplyto && *msginfo->inreplyto)
 				compose->references =
 					g_strdup_printf("<%s>\n\t<%s>",
@@ -1703,6 +1713,10 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 				compose->references =
 					g_strconcat("<", msginfo->msgid, ">",
 						    NULL);
+		} else if (msginfo->inreplyto && *msginfo->inreplyto) {
+			compose->references =
+				g_strconcat("<", msginfo->inreplyto, ">",
+					    NULL);
 		}
 	}
 
@@ -5309,7 +5323,9 @@ static void compose_destroy(Compose *compose)
 	prefs_common.compose_width = compose->scrolledwin->allocation.width;
 	prefs_common.compose_height = compose->window->allocation.height;
 
-	gtk_widget_destroy(compose->paned);
+	if (!compose->paned->parent)
+		gtk_widget_destroy(compose->paned);
+	gtk_widget_destroy(compose->popupmenu);
 
 	toolbar_destroy(compose->toolbar);
 	g_free(compose->toolbar);

@@ -513,6 +513,7 @@ static void addrharvest_parse_address(
 		AddressCache *cache, const gchar *hdrBuf )
 {
 	gchar buffer[ ADDR_BUFFSIZE + 2 ];
+	gchar buf[ADDR_BUFFSIZE];
 	const gchar *bp;
 	const gchar *ep;
 	gchar *atCh, *email, *name;
@@ -555,7 +556,8 @@ static void addrharvest_parse_address(
 			}
 			else {
 				name = buffer;
-				conv_unmime_header_overwrite(name);
+				conv_unmime_header(buf, sizeof(buf), name,
+				NULL);
 			}
 
 			/* Insert into address book */

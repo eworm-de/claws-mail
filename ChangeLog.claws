@@ -1,3 +1,15 @@
+2005-03-04 [paul]	1.0.1cvs21
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/addrharvest.c
+	* src/codeconv.c
+	* src/codeconv.h
+	* src/compose.c
+	* src/procmime.c
+		sync with main 1.0.3
+		see ChangeLog 2005-02-28, 2005-03-02, and 2005-03-04
+
 2005-02-27 [paul]	1.0.1cvs20
 
 	* src/messageview.c
