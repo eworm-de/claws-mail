@@ -37,6 +37,7 @@
 #include "addrindex.h"
 #include "xml.h"
 #include "addrquery.h"
+#include "addr_compl.h"
 
 #ifndef DEV_STANDALONE
 #include "prefs_gtk.h"
@@ -311,7 +312,7 @@ static void addrindex_build_if_list( AddressIndex *addrIndex ) {
  * Free DOM fragment.
  * \param fragment Fragment to free.
  */
-static addrindex_free_fragment( AddressIfFragment *fragment ) {
+static void addrindex_free_fragment( AddressIfFragment *fragment ) {
 	GList *node;
 
 	/* Free children */
@@ -1550,7 +1551,6 @@ static gint addrindex_search_order_compare( gconstpointer ptrA, gconstpointer pt
  * \param addrIndex Address index object.
  */
 static void addrindex_build_search_order( AddressIndex *addrIndex ) {
-	AddressInterface *iface;
 	GList *nodeIf;
 
 	/* Clear existing list */
@@ -2318,8 +2318,10 @@ gint addrindex_ds_read_data( AddressDataSource *ds ) {
 	iface = ds->interface;
 	if( iface == NULL ) return retVal;
 	if( iface->getReadData ) {
+		/*
 		gchar *name = ( iface->getName ) ( ds->rawDataSource );
-		/* printf( "addrindex_ds_read_data...reading:::%s:::\n", name ); */
+		printf( "addrindex_ds_read_data...reading:::%s:::\n", name );
+		*/
 		retVal = ( iface->getReadData ) ( ds->rawDataSource );
 	}
 	return retVal;
@@ -2767,7 +2769,6 @@ gboolean addrindex_load_completion(
 		gint (*callBackFunc) ( const gchar *, const gchar *, const gchar * ) )
 {
 	AddressDataSource *ds;
-	AddressInterface *iface;
 	GList *nodeIf, *nodeDS;
 	GList *listP, *nodeP;
 	GList *nodeM;

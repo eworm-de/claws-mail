@@ -62,8 +62,6 @@ static void news_folder_destroy(Folder * folder);
 
 static gchar *news_fetch_msg(Folder * folder, FolderItem * item, gint num);
 
-static gint news_scan_group(Folder * folder, FolderItem * item);
-
 static void news_folder_init		 (Folder	*folder,
 					  const gchar	*name,
 					  const gchar	*path);
@@ -97,9 +95,6 @@ static gint news_select_group		 (NNTPSession	*session,
 static MsgInfo *news_parse_xover	 (const gchar	*xover_str);
 static gchar *news_parse_xhdr		 (const gchar	*xhdr_str,
 					  MsgInfo	*msginfo);
-static gint news_remove_msg		 (Folder	*folder, 
-					  FolderItem	*item, 
-					  gint		 num);
 gint news_get_num_list		 	 (Folder 	*folder, 
 					  FolderItem 	*item,
 					  GSList       **list);
@@ -328,62 +323,6 @@ gchar *news_fetch_msg(Folder *folder, FolderItem *item, gint num)
 	return filename;
 }
 
-gint news_scan_group(Folder *folder, FolderItem *item)
-{
-	NNTPSession *session;
-	gint num = 0, first = 0, last = 0;
-	gint ok;
-
-	g_return_val_if_fail(folder != NULL, -1);
-	g_return_val_if_fail(item != NULL, -1);
-
-	session = news_session_get(folder);
-	if (!session) return -1;
-
-	ok = news_select_group(session, item->path, &num, &first, &last);
-	if (ok != NN_SUCCESS) {
-		log_warning("can't set group: %s\n", item->path);
-		return -1;
-	}
-
-	if (num == 0) {
-		item->new_msgs = item->unread_msgs = item->total_msgs = item->last_num = 0;
-		return 0;
-	}
-
-/*
-	path = folder_item_get_path(item);
-	if (path && is_dir_exist(path)) {
-		procmsg_get_mark_sum(path, &new, &unread, &total, &min, &max,
-				     first);
-	}
-	g_free(path);
-
-	if (max < first || last < min)
-		new = unread = total = num;
-	else {
-		if (min < first)
-			min = first;
-
-		if (last < max)
-			max = last;
-		else if (max < last) {
-			new += last - max;
-			unread += last - max;
-		}
-
-		if (new > num) new = num;
-		if (unread > num) unread = num;
-	}
-
-	item->new = new;
-	item->unread = unread;
-	item->total = num;
-	item->last_num = last;
-*/
-	return 0;
-}
-
 static NewsGroupInfo *news_group_info_new(const gchar *name,
 					  gint first, gint last, gchar type)
 {
@@ -579,19 +518,6 @@ static gint news_get_article_cmd(NNTPSession *session, const gchar *cmd,
 	}
 
 	return 0;
-}
-
-static gint news_remove_msg(Folder *folder, FolderItem *item, gint num)
-{
-	gchar * dir;
-	gint r;
-
-	dir = folder_item_get_path(item);
-	debug_print("news_remove_msg: removing msg %d in %s\n",num,dir);
-	r = remove_numbered_files(dir, num, num);
-	g_free(dir);
-
-	return r;
 }
 
 static gint news_get_article(NNTPSession *session, gint num, gchar *filename)

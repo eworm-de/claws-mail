@@ -1255,7 +1255,6 @@ static void toolbar_ignore_thread_cb(GtkWidget *widget, gpointer data)
 {
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
 	MainWindow *mainwin;
-	MessageView *msgview;
 
 	g_return_if_fail(toolbar_item != NULL);
 
@@ -1278,7 +1277,6 @@ static void toolbar_print_cb(GtkWidget *widget, gpointer data)
 {
 	ToolbarItem *toolbar_item = (ToolbarItem*)data;
 	MainWindow *mainwin;
-	MessageView *msgview;
 
 	g_return_if_fail(toolbar_item != NULL);
 

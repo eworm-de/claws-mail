@@ -912,8 +912,6 @@ gint inc_drop_message(const gchar *file, Pop3Session *session)
 	FolderItem *inbox;
 	FolderItem *dropfolder;
 	gint msgnum;
-	IncSession *inc_session = (IncSession *)(SESSION(session)->data);
-	gint val;
 
 	if (session->ac_prefs->inbox) {
 		inbox = folder_find_item_from_identifier

@@ -466,27 +466,6 @@ static gchar *get_next_complete_address(void)
 }
 
 /**
- * Return the previous complete address match from the completion index.
- * \return Completed address string; this should be freed when done.
- */
-static gchar *get_prev_complete_address(void)
-{
-	if (is_completion_pending()) {
-		int n = g_completion_next - 2;
-
-		/* real previous */
-		n = (n + (g_completion_count * 5)) % g_completion_count;
-
-		/* real next */
-		g_completion_next = n + 1;
-		if (g_completion_next >=  g_completion_count)
-			g_completion_next = 0;
-		return get_complete_address(n);
-	} else
-		return NULL;
-}
-
-/**
  * Return a count of the completed matches in the completion index.
  * \return Number of matched entries.
  */
@@ -671,17 +650,6 @@ static void addrcompl_free_window( CompletionWindow *cw ) {
 }
 
 /**
- * Select specified row in list.
- * \param clist List to process.
- * \param row   Row to select.
- */
-static void completion_window_advance_to_row(GtkCList *clist, gint row)
-{
-	g_return_if_fail(row < g_completion_count);
-	gtk_clist_select_row(clist, row, 0);
-}
-
-/**
  * Advance selection to previous/next item in list.
  * \param clist   List to process.
  * \param forward Set to <i>TRUE</i> to select next or <i>FALSE</i> for
@@ -847,6 +815,8 @@ static gint addrcompl_callback(
 	}
 	pthread_mutex_unlock( & _completionMutex_ );
 	/* printf( "addrcompl_callback...done\n" ); */
+
+	return 0;
 }
 
 /**

@@ -1,3 +1,14 @@
+2003-06-25 [christoph]	0.9.0claws61
+
+	* src/addr_compl.[ch]
+	* src/addrindex.[ch]
+	* src/folderview.c
+	* src/inc.c
+	* src/news.c
+	* src/summaryview.c
+	* src/toolbar.c
+		fix warnings
+
 2003-06-25 [leandro]	0.9.0claws60
 
 	* src/compose.c

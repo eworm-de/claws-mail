@@ -2571,7 +2571,7 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 					  FolderView     *folderview)
 {
 	gint row, column;
-	FolderItem *item, *src_item = 0;
+	FolderItem *item, *src_item = NULL;
 	GtkCTreeNode *node = NULL;
 	gboolean acceptable = FALSE;
 	gint height = folderview->ctree->allocation.height;

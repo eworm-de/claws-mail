@@ -2827,7 +2827,6 @@ static void summary_lock_row(SummaryView *summaryview, GtkCTreeNode *row)
 
 static void summary_unlock_row(SummaryView *summaryview, GtkCTreeNode *row)
 {
-	gboolean changed = FALSE;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
 
