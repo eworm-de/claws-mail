@@ -1570,6 +1570,10 @@ static void mime_toggle_button_cb (GtkWidget *button, MimeView *mimeview)
 		gtk_box_pack_start(GTK_BOX(mimeview->icon_mainbox), 
 				   button, FALSE, FALSE, 0);
 		gtk_box_reorder_child(GTK_BOX(button->parent), button, 0);
+		if (mimeview->opened)
+			icon_list_toggle_by_mime_info
+				(mimeview, gtk_ctree_node_get_row_data(GTK_CTREE(mimeview->ctree), 
+								       mimeview->opened));
 
 	}
 	gtk_widget_grab_focus(button);

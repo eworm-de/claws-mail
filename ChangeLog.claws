@@ -1,3 +1,8 @@
+2003-07-25 [luke]	0.9.3claws52
+
+	* src/mimeview.c
+		o icon toggles set correctly on leaving ctree mimeview
+
 2003-07-25 [paul]	0.9.3claws51
 
 	* partial sync with 0.9.3cvs21 [src/main.c]
