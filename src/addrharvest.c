@@ -514,6 +514,7 @@ static void addrharvest_parse_address(
 		AddressCache *cache, const gchar *hdrBuf )
 {
 	gchar buffer[ ADDR_BUFFSIZE + 2 ];
+	gchar buf[ADDR_BUFFSIZE];
 	const gchar *bp;
 	const gchar *ep;
 	gchar *atCh, *email, *name;
@@ -555,10 +556,9 @@ static void addrharvest_parse_address(
 				name = "";
 			}
 			else {
-                                gchar *tmp = conv_unmime_header(buffer, NULL);
-                                strncpy2(buffer, tmp, sizeof buffer);
-                                name = buffer;
-                                g_free(tmp);
+				name = buffer;
+				conv_unmime_header(buf, sizeof(buf), name,
+				NULL);
 			}
 
 			/* Insert into address book */

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -166,7 +166,7 @@ gint procheader_get_one_field_asis(gchar *buf, size_t len, FILE *fp)
 }
 
 #if 0
-gchar *procheader_get_unfolded_line(gchar *buf, gint len, FILE *fp)
+gchar *procheader_get_unfolded_line(gchar *buf, size_t len, FILE *fp)
 {
 	gboolean folded = FALSE;
 	gint nexthead;
@@ -190,12 +190,12 @@ gchar *procheader_get_unfolded_line(gchar *buf, gint len, FILE *fp)
 		else if (nexthead == EOF)
 			break;
 		else if (folded == TRUE) {
-			if (nexthead == '\r' || nexthead == '\n') {
+			if ((len - (bufp - buf)) <= 2) break;
+
+			if (nexthead == '\n') {
 				folded = FALSE;
 				continue;
 			}
-
-			if ((len - (bufp - buf)) <= 2) break;
 
 			/* replace return code on the tail end
 			   with space */
@@ -808,6 +808,10 @@ static gint procheader_scan_date_string(const gchar *str,
 			weekday, day, month, year, hh, mm, ss);
 	if (result == 7) return 0;
 
+	result = sscanf(str, "%d %9s %d %2d:%2d:%2d",
+			day, month, year, hh, mm, ss);
+	if (result == 6) return 0;
+
 	*ss = 0;
 	result = sscanf(str, "%10s %d %9s %d %2d:%2d %5s",
 			weekday, day, month, year, hh, mm, zone);
@@ -816,6 +820,15 @@ static gint procheader_scan_date_string(const gchar *str,
 	result = sscanf(str, "%d %9s %d %2d:%2d %5s",
 			day, month, year, hh, mm, zone);
 	if (result == 6) return 0;
+
+	*zone = '\0';
+	result = sscanf(str, "%10s %d %9s %d %2d:%2d",
+			weekday, day, month, year, hh, mm);
+	if (result == 6) return 0;
+
+	result = sscanf(str, "%d %9s %d %2d:%2d",
+			day, month, year, hh, mm);
+	if (result == 5) return 0;
 
 	return -1;
 }

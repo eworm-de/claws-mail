@@ -504,8 +504,9 @@ static void addrgather_dlg_create( void ) {
 	gtk_box_pack_start( GTK_BOX(hsbox), statusbar, TRUE, TRUE, BORDER_WIDTH );
 
 	/* Button panel */
-	gtkut_button_set_create( &hbbox, &btnOk, _("OK"),
-		&btnCancel, _("Cancel"), NULL, NULL );
+	gtkut_stock_button_set_create(&hbbox, &btnOk, GTK_STOCK_OK,
+				      &btnCancel, GTK_STOCK_CANCEL,
+				      NULL, NULL );
 	gtk_box_pack_end( GTK_BOX(vbox), hbbox, FALSE, FALSE, 0 );
 	gtk_container_set_border_width( GTK_CONTAINER(hbbox), 0 );
 

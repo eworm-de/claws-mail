@@ -22,12 +22,14 @@
 
 #if USE_GPGME
 
-#include <string.h>
-#include <sys/types.h>
-#include <sys/mman.h>
 #include <glib.h>
 #include <glib/gi18n.h>
+#include <gdk/gdktypes.h>
 #include <gdk/gdkkeysyms.h>
+#include <gdk/gdkdisplay.h>
+#ifdef GDK_WINDOWING_X11
+#  include <gdk/gdkx.h>
+#endif /* GDK_WINDOWING_X11 */
 #include <gtk/gtkmain.h>
 #include <gtk/gtkwidget.h>
 #include <gtk/gtkwindow.h>
@@ -39,9 +41,9 @@
 #include <gtk/gtkbutton.h>
 #include <gtk/gtkfilesel.h>
 #include <gtk/gtksignal.h>
-#ifdef GDK_WINDOWING_X11
-#include <gdk/gdkx.h>  /* GDK_DISPLAY() */
-#endif /* GDK_WINDOWING_X11 */
+#include <string.h>
+#include <sys/types.h>
+#include <sys/mman.h>
 
 #include "passphrase.h"
 #include "prefs_common.h"
@@ -49,7 +51,7 @@
 #include "utils.h"
 #include "prefs_gpg.h"
 
-static int grab_all = 0;
+static gboolean grab_all = FALSE;
 
 static gboolean pass_ack;
 static gchar *last_pass = NULL;
@@ -66,14 +68,9 @@ static gchar* passphrase_mbox (const gchar *desc);
 static GtkWidget *create_description (const gchar *desc);
 
 void
-gpgmegtk_set_passphrase_grab (gint yes)
+gpgmegtk_set_passphrase_grab(gint yes)
 {
-#warning "passphrase grab does not work"	
-#if 0
     grab_all = yes;
-#else
-    grab_all = FALSE;
-#endif
 }
 
 static gchar*
@@ -129,40 +126,37 @@ passphrase_mbox (const gchar *desc)
     g_signal_connect(G_OBJECT(cancel_button), "clicked",
 		     G_CALLBACK(passphrase_cancel_cb), NULL);
 
-    if (grab_all)
-        g_object_set (G_OBJECT(window), "type", GTK_WINDOW_POPUP, NULL);
     gtk_window_set_position (GTK_WINDOW(window), GTK_WIN_POS_CENTER);
     if (grab_all)   
         gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
     
     gtk_widget_show_all(window);
 
-    /* don't use XIM on entering passphrase */
-    gtkut_editable_disable_im(GTK_EDITABLE(pass_entry));
-
     if (grab_all) {
+        /* make sure that window is viewable
+	 * FIXME: this is still not enough */
+        gtk_widget_show_now(window);
+	gdk_flush();
 #ifdef GDK_WINDOWING_X11
-        XGrabServer(GDK_DISPLAY());
+	gdk_x11_display_grab(gdk_display_get_default());
 #endif /* GDK_WINDOWING_X11 */
-        if ( grab_result = gdk_pointer_grab ( window->window, TRUE, 0,
-                                NULL, NULL, GDK_CURRENT_TIME)) {
+        if (gdk_pointer_grab(window->window, TRUE, 0,
+                             window->window, NULL, GDK_CURRENT_TIME)) {
 #ifdef GDK_WINDOWING_X11
-            XUngrabServer ( GDK_DISPLAY() );
+            gdk_x11_display_ungrab(gdk_display_get_default());
 #endif /* GDK_WINDOWING_X11 */
-            g_warning ("OOPS: Could not grab mouse (grab status %d)\n",
-	    		grab_result);
-            gtk_widget_destroy (window);
+            g_warning("OOPS: Could not grab mouse\n");
+            gtk_widget_destroy(window);
             return NULL;
         }
-        if ( grab_result = gdk_keyboard_grab( window->window, FALSE, 
-						GDK_CURRENT_TIME )) {
-            gdk_pointer_ungrab (GDK_CURRENT_TIME);
+        if (gdk_keyboard_grab(window->window, FALSE, GDK_CURRENT_TIME)) {
+            gdk_display_pointer_ungrab(gdk_display_get_default(),
+			 	       GDK_CURRENT_TIME);
 #ifdef GDK_WINDOWING_X11
-            XUngrabServer ( GDK_DISPLAY() );
+            gdk_x11_display_ungrab(gdk_display_get_default());
 #endif /* GDK_WINDOWING_X11 */
-            g_warning ("OOPS: Could not grab keyboard (grab status %d)\n",
-	    		grab_result);
-            gtk_widget_destroy (window);
+            g_warning("OOPS: Could not grab keyboard\n");
+            gtk_widget_destroy(window);
             return NULL;
         }
     }
@@ -170,11 +164,12 @@ passphrase_mbox (const gchar *desc)
     gtk_main();
 
     if (grab_all) {
+        gdk_display_keyboard_ungrab(gdk_display_get_default(),
+				    GDK_CURRENT_TIME);
+        gdk_display_pointer_ungrab(gdk_display_get_default(), GDK_CURRENT_TIME);
 #ifdef GDK_WINDOWING_X11
-        XUngrabServer (GDK_DISPLAY());
+        gdk_x11_display_ungrab(gdk_display_get_default());
 #endif /* GDK_WINDOWING_X11 */
-        gdk_pointer_ungrab (GDK_CURRENT_TIME);
-        gdk_keyboard_ungrab (GDK_CURRENT_TIME);
         gdk_flush();
     }
 

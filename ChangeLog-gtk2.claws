@@ -1,3 +1,61 @@
+2005-03-30 [paul]	1.9.6cvs12
+
+	partial sync with main:
+
+	* src/action.c
+		create_io_dialog(): use user-defined text font
+		(thanks to Alfons), and modified its appearance.
+	* src/addrgather.c
+	* src/addrharvest.c
+	* src/browseldap.c
+		replace old code
+	* src/compose.c
+		don't join (presumably) itemized lines on line-wrapping
+		fixed wrapping of quote when auto-wrapping is enabled
+		compose_destroy(): destroy paned only if it's not
+		attached to window. Fixed memory leak of popup menu.
+	* src/exphtmldlg.c
+	* src/expldifdlg.c
+		replace old code
+	* src/html.c
+	* src/html.h
+	* src/importmutt.c
+	* src/importpine.c
+		replace old code
+	* src/main.c
+		removed redundant code
+	* src/mainwindow.c
+		changed 'Code set' (which is rather incorrect)
+		in the menu to 'Character encoding'
+		main_window_set_widgets(): request size first
+		to prevent window size becoming wrong
+		fixed remembering of the state of the visibility
+		of MessageView
+	* src/messageview.c
+		changed 'Code set' (which is rather incorrect)
+		in the menu to 'Character encoding'
+	* src/prefs_common.c
+	* src/prefs_common.h
+		added an option whether to render HTML as text or not
+		added separators to outgoing encoding menu
+	* src/procheader.c
+		procheader_scan_date_string(): support header
+		like: "[Tue,] 01 Feb 2005 09:57[:00]"
+	* src/summaryview.c
+	* src/summaryview.h
+		minor code cleanup
+	* src/textview.c
+		textview_show_html(): force output of newline
+		added an option whether to render HTML as text or not
+	* src/common/utils.c
+		strncpy2(): optimized based on Alfons' code
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+		removed non-used code
+	* src/plugins/pgpmime/passphrase.c
+		partially fixed grab input of passphrase dialog
+		Confine pointer to window
+
 2005-03-30 [colin]	1.9.6cvs11
 
 	* src/msgcache.c

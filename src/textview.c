@@ -694,7 +694,8 @@ static void textview_write_body(TextView *textview, MimeInfo *mimeinfo)
 
 	procmime_decode_content(mimeinfo);
 
-	if (!g_ascii_strcasecmp(mimeinfo->subtype, "html")) {
+	if (!g_ascii_strcasecmp(mimeinfo->subtype, "html") &&
+	    prefs_common.render_html) {
 		gchar *filename;
 		
 		filename = procmime_get_tmp_file_name(mimeinfo);
@@ -758,6 +759,7 @@ static void textview_show_html(TextView *textview, FILE *fp,
 	        } else
 		        textview_write_line(textview, str, NULL);
 	}
+	textview_write_line(textview, "\n", NULL);
 	html_parser_destroy(parser);
 }
 

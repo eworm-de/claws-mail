@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2004 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2005 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkcontainer.h>
-#include <gtk/gtkeditable.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtktext.h>
 #include <gtk/gtkmenu.h>
@@ -166,95 +165,95 @@ static GtkItemFactoryEntry msgview_entries[] =
 
 	{N_("/_View"),			NULL, NULL, 0, "<Branch>"},
 
-#define CODESET_SEPARATOR \
-	{N_("/_View/_Code set/---"),	NULL, NULL, 0, "<Separator>"}
-#define CODESET_ACTION(action) \
-	NULL, set_charset_cb, action, "/View/Code set/Auto detect"
+#define ENC_SEPARATOR \
+	{N_("/_View/Character _encoding/---"),	NULL, NULL, 0, "<Separator>"}
+#define ENC_ACTION(action) \
+	NULL, set_charset_cb, action, "/View/Character encoding/Auto detect"
 
-	{N_("/_View/_Code set"),	NULL, NULL, 0, "<Branch>"},
-	{N_("/_View/_Code set/_Auto detect"),
+	{N_("/_View/Character _encoding"),	NULL, NULL, 0, "<Branch>"},
+	{N_("/_View/Character _encoding/_Auto detect"),
 					NULL, set_charset_cb, C_AUTO, "<RadioItem>"},
-	CODESET_SEPARATOR,
-	{N_("/_View/_Code set/7bit ascii (US-ASC_II)"),
-	 CODESET_ACTION(C_US_ASCII)},
+	ENC_SEPARATOR,
+	{N_("/_View/Character _encoding/7bit ascii (US-ASC_II)"),
+	 ENC_ACTION(C_US_ASCII)},
 
-	{N_("/_View/_Code set/Unicode (_UTF-8)"),
-	 CODESET_ACTION(C_UTF_8)},
-	CODESET_SEPARATOR,
-	{N_("/_View/_Code set/Western European (ISO-8859-_1)"),
-	 CODESET_ACTION(C_ISO_8859_1)},
-	{N_("/_View/_Code set/Western European (ISO-8859-15)"),
-	 CODESET_ACTION(C_ISO_8859_15)},
-	CODESET_SEPARATOR,
-	{N_("/_View/_Code set/Central European (ISO-8859-_2)"),
-	 CODESET_ACTION(C_ISO_8859_2)},
-	CODESET_SEPARATOR,
-	{N_("/_View/_Code set/_Baltic (ISO-8859-13)"),
-	 CODESET_ACTION(C_ISO_8859_13)},
-	{N_("/_View/_Code set/Baltic (ISO-8859-_4)"),
-	 CODESET_ACTION(C_ISO_8859_4)},
-	CODESET_SEPARATOR,
-	{N_("/_View/_Code set/Greek (ISO-8859-_7)"),
-	 CODESET_ACTION(C_ISO_8859_7)},
-	CODESET_SEPARATOR,
-	{N_("/_View/_Code set/Turkish (ISO-8859-_9)"),
-	 CODESET_ACTION(C_ISO_8859_9)},
-	CODESET_SEPARATOR,
-	{N_("/_View/_Code set/Cyrillic (ISO-8859-_5)"),
-	 CODESET_ACTION(C_ISO_8859_5)},
-	{N_("/_View/_Code set/Cyrillic (KOI8-_R)"),
-	 CODESET_ACTION(C_KOI8_R)},
-	{N_("/_View/_Code set/Cyrillic (KOI8-U)"),
-	 CODESET_ACTION(C_KOI8_U)},
-	{N_("/_View/_Code set/Cyrillic (Windows-1251)"),
-	 CODESET_ACTION(C_CP1251)},
-	CODESET_SEPARATOR,
-	{N_("/_View/_Code set/Japanese (ISO-2022-_JP)"),
-	 CODESET_ACTION(C_ISO_2022_JP)},
-	{N_("/_View/_Code set/Japanese (ISO-2022-JP-2)"),
-	 CODESET_ACTION(C_ISO_2022_JP_2)},
-	{N_("/_View/_Code set/Japanese (_EUC-JP)"),
-	 CODESET_ACTION(C_EUC_JP)},
-	{N_("/_View/_Code set/Japanese (_Shift__JIS)"),
-	 CODESET_ACTION(C_SHIFT_JIS)},
-	CODESET_SEPARATOR,
-	{N_("/_View/_Code set/Simplified Chinese (_GB2312)"),
-	 CODESET_ACTION(C_GB2312)},
-	{N_("/_View/_Code set/Traditional Chinese (_Big5)"),
-	 CODESET_ACTION(C_BIG5)},
-	{N_("/_View/_Code set/Traditional Chinese (EUC-_TW)"),
-	 CODESET_ACTION(C_EUC_TW)},
-	{N_("/_View/_Code set/Chinese (ISO-2022-_CN)"),
-	 CODESET_ACTION(C_ISO_2022_CN)},
-	CODESET_SEPARATOR,
-	{N_("/_View/_Code set/Korean (EUC-_KR)"),
-	 CODESET_ACTION(C_EUC_KR)},
-	{N_("/_View/_Code set/Korean (ISO-2022-KR)"),
-	 CODESET_ACTION(C_ISO_2022_KR)},
-	CODESET_SEPARATOR,
-	{N_("/_View/_Code set/Thai (TIS-620)"),
-	 CODESET_ACTION(C_TIS_620)},
-	{N_("/_View/_Code set/Thai (Windows-874)"),
-	 CODESET_ACTION(C_WINDOWS_874)},
+	{N_("/_View/Character _encoding/Unicode (_UTF-8)"),
+	 ENC_ACTION(C_UTF_8)},
+	ENC_SEPARATOR,
+	{N_("/_View/Character _encoding/Western European (ISO-8859-_1)"),
+	 ENC_ACTION(C_ISO_8859_1)},
+	{N_("/_View/Character _encoding/Western European (ISO-8859-15)"),
+	 ENC_ACTION(C_ISO_8859_15)},
+	ENC_SEPARATOR,
+	{N_("/_View/Character _encoding/Central European (ISO-8859-_2)"),
+	 ENC_ACTION(C_ISO_8859_2)},
+	ENC_SEPARATOR,
+	{N_("/_View/Character _encoding/_Baltic (ISO-8859-13)"),
+	 ENC_ACTION(C_ISO_8859_13)},
+	{N_("/_View/Character _encoding/Baltic (ISO-8859-_4)"),
+	 ENC_ACTION(C_ISO_8859_4)},
+	ENC_SEPARATOR,
+	{N_("/_View/Character _encoding/Greek (ISO-8859-_7)"),
+	 ENC_ACTION(C_ISO_8859_7)},
+	ENC_SEPARATOR,
+	{N_("/_View/Character _encoding/Turkish (ISO-8859-_9)"),
+	 ENC_ACTION(C_ISO_8859_9)},
+	ENC_SEPARATOR,
+	{N_("/_View/Character _encoding/Cyrillic (ISO-8859-_5)"),
+	 ENC_ACTION(C_ISO_8859_5)},
+	{N_("/_View/Character _encoding/Cyrillic (KOI8-_R)"),
+	 ENC_ACTION(C_KOI8_R)},
+	{N_("/_View/Character _encoding/Cyrillic (KOI8-U)"),
+	 ENC_ACTION(C_KOI8_U)},
+	{N_("/_View/Character _encoding/Cyrillic (Windows-1251)"),
+	 ENC_ACTION(C_CP1251)},
+	ENC_SEPARATOR,
+	{N_("/_View/Character _encoding/Japanese (ISO-2022-_JP)"),
+	 ENC_ACTION(C_ISO_2022_JP)},
+	{N_("/_View/Character _encoding/Japanese (ISO-2022-JP-2)"),
+	 ENC_ACTION(C_ISO_2022_JP_2)},
+	{N_("/_View/Character _encoding/Japanese (_EUC-JP)"),
+	 ENC_ACTION(C_EUC_JP)},
+	{N_("/_View/Character _encoding/Japanese (_Shift__JIS)"),
+	 ENC_ACTION(C_SHIFT_JIS)},
+	ENC_SEPARATOR,
+	{N_("/_View/Character _encoding/Simplified Chinese (_GB2312)"),
+	 ENC_ACTION(C_GB2312)},
+	{N_("/_View/Character _encoding/Traditional Chinese (_Big5)"),
+	 ENC_ACTION(C_BIG5)},
+	{N_("/_View/Character _encoding/Traditional Chinese (EUC-_TW)"),
+	 ENC_ACTION(C_EUC_TW)},
+	{N_("/_View/Character _encoding/Chinese (ISO-2022-_CN)"),
+	 ENC_ACTION(C_ISO_2022_CN)},
+	ENC_SEPARATOR,
+	{N_("/_View/Character _encoding/Korean (EUC-_KR)"),
+	 ENC_ACTION(C_EUC_KR)},
+	{N_("/_View/Character _encoding/Korean (ISO-2022-KR)"),
+	 ENC_ACTION(C_ISO_2022_KR)},
+	ENC_SEPARATOR,
+	{N_("/_View/Character _encoding/Thai (TIS-620)"),
+	 ENC_ACTION(C_TIS_620)},
+	{N_("/_View/Character _encoding/Thai (Windows-874)"),
+	 ENC_ACTION(C_WINDOWS_874)},
 
-#undef CODESET_SEPARATOR
-#undef CODESET_ACTION
+#undef ENC_SEPARATOR
+#undef ENC_ACTION
 
-#define DECODE_SEPARATOR \
+#define DEC_SEPARATOR \
 	{N_("/_View/Decode/---"),		NULL, NULL, 0, "<Separator>"}
-#define DECODE_ACTION(action) \
+#define DEC_ACTION(action) \
 	 NULL, set_decode_cb, action, "/View/Decode/Auto detect"
 	{N_("/_View/Decode"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_View/Decode/_Auto detect"),
 	 NULL, set_decode_cb, 0, "<RadioItem>"},
 	{N_("/_View/Decode/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_View/Decode/_8bit"), 		DECODE_ACTION(ENC_8BIT)},
-	{N_("/_View/Decode/_Quoted printable"),	DECODE_ACTION(ENC_QUOTED_PRINTABLE)},
-	{N_("/_View/Decode/_Base64"), 		DECODE_ACTION(ENC_BASE64)},
-	{N_("/_View/Decode/_Uuencode"),		DECODE_ACTION(ENC_X_UUENCODE)},
+	{N_("/_View/Decode/_8bit"), 		DEC_ACTION(ENC_8BIT)},
+	{N_("/_View/Decode/_Quoted printable"),	DEC_ACTION(ENC_QUOTED_PRINTABLE)},
+	{N_("/_View/Decode/_Base64"), 		DEC_ACTION(ENC_BASE64)},
+	{N_("/_View/Decode/_Uuencode"),		DEC_ACTION(ENC_X_UUENCODE)},
 
-#undef DECODE_SEPARATOR
-#undef DECODE_ACTION
+#undef DEC_SEPARATOR
+#undef DEC_ACTION
 
 	{N_("/_View/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/_View/Mess_age source"),	NULL, view_source_cb, 0, NULL},
@@ -920,28 +919,17 @@ void messageview_copy_clipboard(MessageView *messageview)
 void messageview_select_all(MessageView *messageview)
 {
 	TextView *text;
-	GtkTextView *edit = NULL;
-	GtkTextBuffer *textbuf;
-	gint body_pos = 0;
-	GtkTextIter start, end;
-	
-	g_return_if_fail(messageview != NULL);
 
 	text = messageview_get_current_textview(messageview);
-	g_return_if_fail(text != NULL);
+	if (text) {
+		GtkTextView *textview = GTK_TEXT_VIEW(text->text);
+		GtkTextBuffer *buffer;
+		GtkTextIter start, end;
 
-	edit = GTK_TEXT_VIEW(text->text);
-	g_return_if_fail(edit != NULL);
-
-	textbuf = gtk_text_view_get_buffer(edit);
-	g_return_if_fail(textbuf != NULL);
-
-	gtk_text_buffer_get_bounds(textbuf, &start, &end);
-	
-	gtk_text_buffer_move_mark_by_name(textbuf, 
-		"selection_bound", &start);
-	gtk_text_buffer_move_mark_by_name(textbuf, 
-		"insert", &end);
+		buffer = gtk_text_view_get_buffer(textview);
+		gtk_text_buffer_get_bounds(buffer, &start, &end);
+		gtk_text_buffer_select_range(buffer, &start, &end);
+	}
 }
 
 void messageview_set_position(MessageView *messageview, gint pos)

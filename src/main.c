@@ -150,12 +150,6 @@ static void quit_signal_handler         (int sig);
 static void install_basic_sighandlers   (void);
 static void exit_sylpheed		(MainWindow *mainwin);
 
-#if 0
-/* for gettext */
-_("File `%s' already exists.\n"
-  "Can't create folder.")
-#endif
-
 #define MAKE_DIR_IF_NOT_EXIST(dir) \
 { \
 	if (!is_dir_exist(dir)) { \
