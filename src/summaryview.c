@@ -2187,7 +2187,6 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 {
 	static gchar date_modified[80];
 	static gchar *to = NULL;
-	static gchar *from = NULL;
 	static gchar col_score[11];
 	static gchar buf[BUFFSIZE];
 	gint *col_pos = summaryview->col_pos;
@@ -2225,6 +2224,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 				g_free(to);
 				to   = g_strconcat("-->", addr == NULL ? msginfo->to : addr, NULL);
 				text[col_pos[S_COL_FROM]] = to;
+				g_free(addr);
 			}
 		} else {
 			if (cur_account && cur_account->address && !strcmp( addr, cur_account->address)) {
@@ -2241,10 +2241,12 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	 * the --> in sent boxes) was executed.
 	 */
 	if (text[col_pos[S_COL_FROM]] != to && prefs_common.use_addr_book && msginfo->from) {
-		g_free(from);
-		from = summary_complete_address(msginfo->from);
-		if (from)
-			text[col_pos[S_COL_FROM]] = from;
+		gchar *from = summary_complete_address(msginfo->from);
+		if (from) {
+			g_free(to);
+			to = from;
+			text[col_pos[S_COL_FROM]] = to;
+		}			
 	}
 
 	if (summaryview->simplify_subject_preg != NULL)

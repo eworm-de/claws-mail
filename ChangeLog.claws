@@ -1,3 +1,11 @@
+2002-08-24 [alfons]	0.8.2claws114
+
+	* src/summaryview.c
+		o fix another memory leak reported by Martin Kluge
+		  (see "[ 599568 ] Small Memory Leak")
+		o remove 'from' variable from 'summary_set_header()'; we can
+		  do with just 'to' 
+
 2002-08-24 [paul]	0.8.2claws113
 
 	* sync with 0.8.1cvs30
