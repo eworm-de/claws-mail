@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto and the Sylpheed-Claws Team
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto and the Sylpheed-Claws Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,7 +82,7 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"max_size", "250", &spamassassin_max_size, P_USHORT,
 	 NULL, NULL, NULL},
-	{"receive_spam", "250", &spamassassin_receive_spam, P_BOOL,
+	{"receive_spam", "TRUE", &spamassassin_receive_spam, P_BOOL,
 	 NULL, NULL, NULL},
 	{"save_folder", NULL, &spamassassin_save_folder, P_STRING,
 	 NULL, NULL, NULL},
@@ -255,6 +255,6 @@ const gchar *plugin_desc()
 	       "\n"
 	       "This plugin only contains the actual function for filtering "
 	       "and deleting or moving the message. You probably want to load "
-	       "a User Interface plugin too. Otherwise you would have to "
+	       "a User Interface plugin too, otherwise you will have to "
 	       "manually write the plugin configuration.\n";
 }

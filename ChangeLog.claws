@@ -1,3 +1,47 @@
+2003-01-23 [colin]	0.8.8claws127
+
+	* src/compose.c
+		Fix drafted and queued news articles re-edition
+
+2003-01-23 [melvin]	0.8.8claws126
+
+	* po/fr.po
+		Updated French translations
+
+2003-01-23 [colin]	0.8.8claws125
+
+	* src/inc.c
+		Fix "Connecting to..." status message
+
+2003-01-22 [paul]	0.8.8claws124
+
+	* po/bg.po
+		updated by George Danchev
+		
+	* src/folder.c
+		revert last commit [0.8.8claws111] as it breaks folder d'n'd
+		and folder deletion
+
+2003-01-21 [paul]	0.8.8claws123
+
+	* po/bg.po
+		updated by George Danchev
+		
+	* src/about.c
+		its now 2003
+		
+	* src/toolbar.c
+		don't translate 'Separator'
+		
+	* src/plugins/spamassassin/Makefile.am
+		add aspell to CPPFLAGS
+		
+	* src/plugins/spamassassin/spamassassin.c
+	  src/plugins/spamassassin/spamassassin_gtk.c
+	  	set correct default for spamassassin_receive_spam
+	  	slightly re-word descriptions and some
+		other minor changes
+
 2003-01-19 [alfons]	0.8.8claws122
 		
 	* src/mimeview.c

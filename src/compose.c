@@ -1518,6 +1518,7 @@ static gint compose_parse_header(Compose *compose, MsgInfo *msginfo)
 		hentry[H_BCC].body = NULL;
 	}
 	if (hentry[H_NEWSGROUPS].body != NULL) {
+		conv_unmime_header_overwrite(hentry[H_NEWSGROUPS].body);
 		compose->newsgroups = hentry[H_NEWSGROUPS].body;
 		hentry[H_NEWSGROUPS].body = NULL;
 	}
@@ -1839,6 +1840,27 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	}
 }
 
+#ifdef WIN32
+#define SET_ENTRY(entry, str) \
+{ \
+	if (str && *str) { \
+  		gchar *p_str = g_strdup(str); \
+		locale_to_utf8(&p_str); \
+		gtk_entry_set_text(GTK_ENTRY(compose->entry), p_str); \
+		g_free(p_str); \
+	} \
+}
+
+#define SET_ADDRESS(type, str) \
+{ \
+	if (str && *str) { \
+  		gchar *p_str = g_strdup(str); \
+		locale_to_utf8(&p_str); \
+		compose_entry_append(compose, p_str, type); \
+		g_free(p_str); \
+	} \
+}
+#else
 #define SET_ENTRY(entry, str) \
 { \
 	if (str && *str) \
@@ -1850,45 +1872,19 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	if (str && *str) \
 		compose_entry_append(compose, str, type); \
 }
+#endif
 
 static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 {
 	g_return_if_fail(msginfo != NULL);
 
-#ifdef WIN32
-	{
-		gchar *p_subject, *p_to, *p_cc, *p_bcc, *p_replyto;
-		p_subject = g_strdup(msginfo->subject);
-		p_to = g_strdup(msginfo->to);
-		p_cc = g_strdup(compose->cc);
-		p_bcc = g_strdup(compose->bcc);
-		p_replyto = g_strdup(compose->replyto);
-
-		locale_to_utf8(&p_subject);
-		locale_to_utf8(&p_to);
-		locale_to_utf8(&p_cc);
-		locale_to_utf8(&p_bcc);
-		locale_to_utf8(&p_replyto);
-
-		SET_ENTRY(subject_entry, p_subject);
-		SET_ADDRESS(COMPOSE_TO, p_to);
-		SET_ADDRESS(COMPOSE_CC, p_cc);
-		SET_ADDRESS(COMPOSE_BCC, p_bcc);
-		SET_ADDRESS(COMPOSE_REPLYTO, p_replyto);
-
-		g_free(p_subject);
-		g_free(p_to);
-		g_free(p_cc);
-		g_free(p_bcc);
-		g_free(p_replyto);
-	}
-#else
 	SET_ENTRY(subject_entry, msginfo->subject);
 	SET_ADDRESS(COMPOSE_TO, msginfo->to);
 	SET_ADDRESS(COMPOSE_CC, compose->cc);
 	SET_ADDRESS(COMPOSE_BCC, compose->bcc);
 	SET_ADDRESS(COMPOSE_REPLYTO, compose->replyto);
-#endif
+	SET_ADDRESS(COMPOSE_NEWSGROUPS, compose->newsgroups);
+	SET_ADDRESS(COMPOSE_FOLLOWUPTO, compose->followup_to);
 
 	compose_update_priority_menu_item(compose);
 #if USE_GPGME	
