@@ -55,6 +55,8 @@ typedef struct _FolderItemUpdateData	FolderItemUpdateData;
 
 #define FOLDER_ITEM(obj)	((FolderItem *)obj)
 
+#define FOLDER_ITEM_UPDATE_HOOKLIST "folder_item_update"
+
 typedef enum
 {
 	F_MH,

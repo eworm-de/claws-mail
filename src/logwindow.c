@@ -35,15 +35,17 @@
 #include "utils.h"
 #include "gtkutils.h"
 #include "prefs_common.h"
-
-static LogWindow *logwindow;
+#include "log.h"
+#include "hooks.h"
 
 static void hide_cb	(GtkWidget	*widget,
 			 LogWindow	*logwin);
 static void key_pressed	(GtkWidget	*widget,
 			 GdkEventKey	*event,
 			 LogWindow	*logwin);
-void log_window_clear(GtkWidget *text);
+void log_window_append	(gpointer 	 source,
+			 gpointer   	 data);
+void log_window_clear	(GtkWidget 	*text);
 
 LogWindow *log_window_create(void)
 {
@@ -85,8 +87,7 @@ LogWindow *log_window_create(void)
 	logwin->window = window;
 	logwin->scrolledwin = scrolledwin;
 	logwin->text = text;
-
-	logwindow = logwin;
+	logwin->hook_id = hooks_register_hook(LOG_APPEND_TEXT_HOOKLIST, log_window_append, logwin);
 
 	return logwin;
 }
@@ -134,19 +135,24 @@ void log_window_show(LogWindow *logwin)
 	gtk_widget_show(logwin->window);
 }
 
-void log_window_append(const gchar *str, LogType type)
+void log_window_append(gpointer source, gpointer data)
 {
+	LogText *logtext = (LogText *) source;
+	LogWindow *logwindow = (LogWindow *) data;
 	GtkText *text;
 	GdkColor *color = NULL;
 	gchar *head = NULL;
 
+	g_return_if_fail(logtext != NULL);
+	g_return_if_fail(logtext->text != NULL);
 	g_return_if_fail(logwindow != NULL);
+
 	if (prefs_common.cliplog && !prefs_common.loglength)
 		return;
 
 	text = GTK_TEXT(logwindow->text);
 
-	switch (type) {
+	switch (logtext->type) {
 	case LOG_MSG:
 		color = &logwindow->msg_color;
 		head = "* ";
@@ -164,7 +170,7 @@ void log_window_append(const gchar *str, LogType type)
 	}
 
 	if (head) gtk_text_insert(text, NULL, color, NULL, head, -1);
-	gtk_text_insert(text, NULL, color, NULL, str, -1);
+	gtk_text_insert(text, NULL, color, NULL, logtext->text, -1);
 	if (prefs_common.cliplog)
 	       log_window_clear (GTK_WIDGET (text));
 }
