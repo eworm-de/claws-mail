@@ -947,7 +947,7 @@ static void prefs_filtering_condition_define(void)
 /* register / substitute delete buttons */
 
 
-static FilteringProp * prefs_filtering_dialog_to_filtering(void)
+static FilteringProp * prefs_filtering_dialog_to_filtering(gboolean alert)
 {
 	MatcherList * cond;
 	gchar * cond_str;
@@ -962,7 +962,7 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(void)
 	
 	cond_str = gtk_entry_get_text(GTK_ENTRY(filtering.cond_entry));
 	if (*cond_str == '\0') {
-		alertpanel_error(_("Condition string is empty."));
+		if(alert == TRUE) alertpanel_error(_("Condition string is empty."));
 		return NULL;
 	}
 
@@ -980,7 +980,7 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(void)
 	case ACTION_EXECUTE:
 		destination = gtk_entry_get_text(GTK_ENTRY(filtering.dest_entry));
 		if (*destination == '\0') {
-			alertpanel_error(_("Destination is not set."));
+			if(alert == TRUE) alertpanel_error(_("Destination is not set."));
 			return NULL;
 		}
 		break;
@@ -1002,7 +1002,7 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(void)
 	cond = matcher_parser_get_cond(cond_str);
 
 	if (cond == NULL) {
-		alertpanel_error(_("Condition string is not valid."));
+		if(alert == TRUE) alertpanel_error(_("Condition string is not valid."));
 		filteringaction_free(action);
 		return NULL;
 	}
@@ -1016,7 +1016,7 @@ static void prefs_filtering_register_cb(void)
 {
 	FilteringProp * prop;
 	
-	prop = prefs_filtering_dialog_to_filtering();
+	prop = prefs_filtering_dialog_to_filtering(TRUE);
 	if (prop == NULL)
 		return;
 	prefs_filtering_clist_set_row(-1, prop);
@@ -1037,7 +1037,7 @@ static void prefs_filtering_substitute_cb(void)
 	row = GPOINTER_TO_INT(clist->selection->data);
 	if (row == 0) return;
 
-	prop = prefs_filtering_dialog_to_filtering();
+	prop = prefs_filtering_dialog_to_filtering(TRUE);
 	if (prop == NULL)
 		return;
 	prefs_filtering_clist_set_row(row, prop);
@@ -1420,6 +1420,31 @@ static void prefs_filtering_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 static void prefs_filtering_ok(void)
 {
+	FilteringProp * prop;
+	gchar * str;
+	gchar * filtering_str;
+	gint row = 1;
+        AlertValue val;
+	
+	prop = prefs_filtering_dialog_to_filtering(FALSE);
+	if (prop != NULL) {
+		str = filteringprop_to_string(prop);
+		while (gtk_clist_get_text(GTK_CLIST(filtering.cond_clist),
+					  row, 0, &filtering_str)) {
+			if (strcmp(filtering_str, str) == 0) break;
+			row++;
+		}
+		if (strcmp(filtering_str, str) != 0) {
+                        val = alertpanel(_("Entry not registered"),
+       	                         _("The entry was not registered\nAre you really finish?"),
+               	                 _("Yes"), _("No"), NULL);
+                        if (G_ALERTDEFAULT != val) {
+				g_free(str);
+				return;
+                        }
+		}
+		g_free(str);
+	}
 	prefs_filtering_set_list();
 	prefs_matcher_write_config();
 	prefs_filtering_close();

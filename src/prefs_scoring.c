@@ -730,6 +730,50 @@ static void prefs_scoring_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 static void prefs_scoring_ok(void)
 {
+	MatcherList * cond;
+	gchar * cond_str;
+	gchar * score_str;
+	gchar * scoring_str;
+	gchar * str;
+	ScoringProp * prop;
+	gint score;
+	gint row = 1;
+        AlertValue val;
+
+	cond_str = gtk_entry_get_text(GTK_ENTRY(scoring.cond_entry));
+	score_str = gtk_entry_get_text(GTK_ENTRY(scoring.score_entry));
+	if (*cond_str != '\0' && *score_str != '\0') {
+		score = atoi(score_str);
+		cond = matcher_parser_get_cond(cond_str);
+
+		if (cond == NULL) {
+			prefs_common_save_config();
+			prefs_scoring_set_list();
+			prefs_matcher_write_config();
+			if (cur_item != NULL)
+				prefs_folder_item_save_config(cur_item);
+			gtk_widget_hide(scoring.window);
+			inc_unlock();
+			return;
+		}
+		prop = scoringprop_new(cond, score);
+		str = scoringprop_to_string(prop);
+		while (gtk_clist_get_text(GTK_CLIST(scoring.cond_clist),
+				  row, 0, &scoring_str)) {
+			if (strcmp(scoring_str, str) == 0) break;
+			row++;
+		}
+                if (strcmp(scoring_str, str) != 0) {
+                        val = alertpanel(_("Entry not registered"),
+                                 _("The entry was not registered\nAre you really finish?"),
+                                 _("Yes"), _("No"), NULL);
+                        if (G_ALERTDEFAULT != val) {
+                                g_free(str);
+                                return;
+                        }
+                }
+		g_free(str);
+	}
 	prefs_common_save_config();
 	prefs_scoring_set_list();
 	prefs_matcher_write_config();
