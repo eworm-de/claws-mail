@@ -1,3 +1,8 @@
+2002-11-27 [colin]	0.8.6claws24
+
+	* man/sylpheed.1
+		A few updates to command-line parameters
+
 2002-11-27 [colin]	0.8.6claws23
 
 	* src/prefs_filtering.c
