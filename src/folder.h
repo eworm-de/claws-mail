@@ -698,6 +698,7 @@ Folder     *folder_find_from_path		(const gchar	*path);
 Folder     *folder_find_from_name		(const gchar	*name,
 						 FolderClass	*klass);
 FolderItem *folder_find_item_from_path		(const gchar	*path);
+FolderItem *folder_find_item_from_phys_path	(const gchar 	*path);
 FolderClass *folder_get_class_from_string	(const gchar 	*str);
 FolderItem *folder_find_child_item_by_name	(FolderItem	*item,
 						 const gchar	*name);

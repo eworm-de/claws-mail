@@ -120,7 +120,8 @@ static gint inc_recv_message		(Session	*session,
 					 const gchar	*msg,
 					 gpointer	 data);
 static gint inc_drop_message		(Pop3Session	*session,
-					 const gchar	*file);
+					 const gchar	*file,
+					 gboolean	 update_file);
 
 static void inc_put_error		(IncState	 istate,
 					 const gchar	*msg);
@@ -1039,7 +1040,7 @@ static gint inc_recv_message(Session *session, const gchar *msg, gpointer data)
 	return 0;
 }
 
-static gint inc_drop_message(Pop3Session *session, const gchar *file)
+static gint inc_drop_message(Pop3Session *session, const gchar *file, gboolean update_file)
 {
 	FolderItem *inbox;
 	FolderItem *dropfolder;
@@ -1064,11 +1065,24 @@ static gint inc_drop_message(Pop3Session *session, const gchar *file)
 	dropfolder = folder_get_default_processing();
 
 	/* add msg file to drop folder */
-	if ((msgnum = folder_item_add_msg(dropfolder, file, NULL, TRUE)) < 0) {
+	if ((msgnum = folder_item_add_msg(dropfolder, file, NULL, !update_file)) < 0) {
 		unlink(file);
 		return -1;
 	}
-
+	if (update_file) {
+		gchar *path = strdup(file);
+		gchar *snum = strrchr(file, G_DIR_SEPARATOR)+1;
+		int num = atoi(snum);
+		FolderItem *item = NULL;
+		
+		*(strrchr(path, G_DIR_SEPARATOR))='\0';
+		item = folder_find_item_from_phys_path(path);
+		
+		if (item) {
+			folder_item_remove_msg(item, num);
+		} 
+		g_free(path);
+	}
 	return 0;
 }
 

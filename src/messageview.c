@@ -62,6 +62,7 @@
 #include "stock_pixmap.h"
 #include "hooks.h"
 #include "filtering.h"
+#include "pop.h"
 
 static GList *messageview_list = NULL;
 
@@ -76,6 +77,10 @@ static gboolean key_pressed		(GtkWidget	*widget,
 static void return_receipt_show		(NoticeView     *noticeview, 
 				         MsgInfo        *msginfo);	
 static void return_receipt_send_clicked (NoticeView	*noticeview, 
+                                         MsgInfo        *msginfo);
+static void partial_recv_show		(NoticeView     *noticeview, 
+				         MsgInfo        *msginfo);	
+static void partial_recv_dload_clicked (NoticeView	*noticeview, 
                                          MsgInfo        *msginfo);
 static void save_as_cb			(gpointer	 data,
 					 guint		 action,
@@ -717,7 +722,9 @@ gint messageview_show(MessageView *messageview, MsgInfo *msginfo,
 
 	mimeview_show_message(messageview->mimeview, mimeinfo, file);
 
-	if ((messageview->msginfo->dispositionnotificationto || 
+	if (messageview->msginfo->partial_recv)
+		partial_recv_show(messageview->noticeview, messageview->msginfo);
+	else if ((messageview->msginfo->dispositionnotificationto || 
 	     messageview->msginfo->returnreceiptto) &&
 	    !MSG_IS_RETRCPT_SENT(messageview->msginfo->flags))
 		return_receipt_show(messageview->noticeview, messageview->msginfo);
@@ -1045,6 +1052,54 @@ static void return_receipt_send_clicked(NoticeView *noticeview, MsgInfo *msginfo
 		procmsg_msginfo_set_flags(msginfo, MSG_RETRCPT_SENT, 0);
 		noticeview_hide(noticeview);
 	}		
+
+	procmsg_msginfo_free(tmpmsginfo);
+	g_free(file);
+}
+
+static void partial_recv_show(NoticeView *noticeview, MsgInfo *msginfo)
+{
+	gchar *text = NULL;
+	if (!msginfo->planned_download) {
+		text = g_strdup_printf(_("This message has been partially retrieved; it is %dKB large."), 
+				msginfo->total_size/1024);
+		noticeview_set_text(noticeview, text);
+		g_free(text);
+		noticeview_set_button_text(noticeview, _("Mark for download"));
+		noticeview_set_button_press_callback(noticeview,
+					     GTK_SIGNAL_FUNC(partial_recv_dload_clicked),
+					     (gpointer) msginfo);
+		noticeview_show(noticeview);
+	} else {
+		text = g_strdup_printf(_("This message has been partially retrieved and is planned for download; it is %dKB large."), 
+				msginfo->total_size/1024);
+		noticeview_set_text(noticeview, text);
+		noticeview_set_button_text(noticeview, NULL);
+		g_free(text);
+		noticeview_show(noticeview);
+	}
+}
+
+static void partial_recv_dload_clicked(NoticeView *noticeview, MsgInfo *msginfo)
+{
+	MsgInfo *tmpmsginfo;
+	gchar *file;
+
+	file = procmsg_get_message_file_path(msginfo);
+	if (!file) {
+		g_warning("can't get message file path.\n");
+		return;
+	}
+
+	tmpmsginfo = procheader_parse_file(file, msginfo->flags, TRUE, TRUE);
+	tmpmsginfo->folder = msginfo->folder;
+	tmpmsginfo->msgnum = msginfo->msgnum;
+
+	if (pop3_mark_for_download(tmpmsginfo->account_server, tmpmsginfo->account_login, 
+				tmpmsginfo->partial_recv, file) == 0) {
+		msginfo->planned_download = 1;
+		partial_recv_show(noticeview, msginfo);
+	}
 
 	procmsg_msginfo_free(tmpmsginfo);
 	g_free(file);

@@ -1,3 +1,17 @@
+2004-07-08 [colin]	0.9.11cvs17.10
+
+	* src/folder.c [1.213.2.6]
+	* src/folder.h [1.87.2.6]
+	* src/inc.c [1.149.2.7]
+	* src/messageview.c [1.94.2.8]
+	* src/procheader.c [1.47.2.6]
+	* src/procmsg.c [1.150.2.4]
+	* src/procmsg.h [1.60.2.5]
+	* src/pop.c [1.56.2.4]
+	* src/pop.h [1.17.2.3]
+		Let too big messages get downloaded, but truncated
+		Add a button to download them completely
+		
 2004-07-06 [colin]	0.9.11cvs17.9
 
 	* src/gtk/quicksearch.c [1.1.2.3]

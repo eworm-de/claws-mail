@@ -78,7 +78,8 @@ static void pop3_session_destroy	(Session	*session);
 
 static gint pop3_write_msg_to_file	(const gchar	*file,
 					 const gchar	*data,
-					 guint		 len);
+					 guint		 len,
+					 const gchar 	*prefix);
 
 static Pop3State pop3_lookup_next	(Pop3Session	*session);
 static Pop3ErrorValue pop3_ok		(Pop3Session	*session,
@@ -90,6 +91,7 @@ static gint pop3_session_recv_data_finished	(Session	*session,
 						 guchar		*data,
 						 guint		 len);
 
+static gchar *pop3_get_filename_for_partial_mail(Pop3Session *session, gchar *muidl);
 
 static gint pop3_greeting_recv(Pop3Session *session, const gchar *msg)
 {
@@ -236,6 +238,7 @@ static gint pop3_getrange_uidl_recv(Pop3Session *session, const gchar *data,
 	gint buf_len;
 	gint num;
 	time_t recv_time;
+	gint partial_recv;
 	const gchar *p = data;
 	const gchar *lastp = data + len;
 	const gchar *newline;
@@ -260,9 +263,13 @@ static gint pop3_getrange_uidl_recv(Pop3Session *session, const gchar *data,
 		recv_time = (time_t)g_hash_table_lookup(session->uidl_table, id);
 		session->msg[num].recv_time = recv_time;
 
-		if (!session->ac_prefs->getall && recv_time != RECV_TIME_NONE)
-			session->msg[num].received = TRUE;
+		partial_recv = (gint)g_hash_table_lookup(session->partial_recv_table, id);
 
+		if (!session->ac_prefs->getall && recv_time != RECV_TIME_NONE) {
+			session->msg[num].received = (partial_recv != 2);
+			session->msg[num].partial_recv = partial_recv;
+
+		}
 		if (!session->new_msg_exist &&
 		    (session->ac_prefs->getall || recv_time == RECV_TIME_NONE ||
 		     session->ac_prefs->rmmail)) {
@@ -335,7 +342,7 @@ static gint pop3_retr_recv(Pop3Session *session, const gchar *data, guint len)
 
 	file = get_tmp_file();
 	if (pop3_write_msg_to_file(file, mail_receive_data.data,
-		strlen(mail_receive_data.data)) < 0) {
+		strlen(mail_receive_data.data), NULL) < 0) {
 		g_free(file);
 		g_free(mail_receive_data.data);
 		session->error_val = PS_IOERR;
@@ -343,8 +350,78 @@ static gint pop3_retr_recv(Pop3Session *session, const gchar *data, guint len)
 	}
 	g_free(mail_receive_data.data);
 
+	if (session->msg[session->cur_msg].partial_recv == 2) {
+		gchar *old_file = pop3_get_filename_for_partial_mail(session, session->msg[session->cur_msg].uidl);
+		unlink(old_file);
+		rename(file, old_file);
+		g_free(file);
+		file = old_file;
+		/* drop_ok: 0: success 1: don't receive -1: error */
+		drop_ok = session->drop_message(session, file, TRUE);
+	} else {
+		/* drop_ok: 0: success 1: don't receive -1: error */
+		drop_ok = session->drop_message(session, file, FALSE);
+	}
+	g_free(file);
+	if (drop_ok < 0) {
+		session->error_val = PS_IOERR;
+		return -1;
+	}
+	
+stats:
+	session->cur_total_bytes += session->msg[session->cur_msg].size;
+	session->cur_total_recv_bytes += session->msg[session->cur_msg].size;
+	session->cur_total_num++;
+
+	session->msg[session->cur_msg].received = TRUE;
+	session->msg[session->cur_msg].partial_recv = FALSE;
+
+	session->msg[session->cur_msg].recv_time =
+		drop_ok == 1 ? RECV_TIME_KEEP : session->current_time;
+
+	return PS_SUCCESS;
+}
+
+static gint pop3_top_send(Pop3Session *session)
+{
+	session->state = POP3_TOP;
+	pop3_gen_send(session, "TOP %d 10", session->cur_msg);
+	return PS_SUCCESS;
+}
+
+static gint pop3_top_recv(Pop3Session *session, const gchar *data, guint len)
+{
+	gchar *file;
+	gint drop_ok;
+	MailReceiveData mail_receive_data;
+	gchar *partial_notice = NULL;
+	
+	mail_receive_data.session = session;
+	mail_receive_data.data = g_strndup(data, len);
+	hooks_invoke(MAIL_RECEIVE_HOOKLIST, &mail_receive_data);
+
+	partial_notice = g_strdup_printf("SC-Partially-Retrieved: %s\n"
+					 "SC-Account-Server: %s\n"
+					 "SC-Account-Login: %s\n"
+					 "SC-Message-Size: %d",
+					 session->msg[session->cur_msg].uidl,
+					 session->ac_prefs->recv_server,
+			   		 session->ac_prefs->userid,
+					 session->msg[session->cur_msg].size);
+	file = get_tmp_file();
+	if (pop3_write_msg_to_file(file, mail_receive_data.data,
+		strlen(mail_receive_data.data), partial_notice) < 0) {
+		g_free(file);
+		g_free(mail_receive_data.data);
+		session->error_val = PS_IOERR;
+		g_free(partial_notice);
+		return -1;
+	}
+	g_free(mail_receive_data.data);
+	g_free(partial_notice);
+
 	/* drop_ok: 0: success 1: don't receive -1: error */
-	drop_ok = session->drop_message(session, file);
+	drop_ok = session->drop_message(session, file, FALSE);
 	g_free(file);
 	if (drop_ok < 0) {
 		session->error_val = PS_IOERR;
@@ -356,6 +433,7 @@ static gint pop3_retr_recv(Pop3Session *session, const gchar *data, guint len)
 	session->cur_total_num++;
 
 	session->msg[session->cur_msg].received = TRUE;
+	session->msg[session->cur_msg].partial_recv = TRUE;
 	session->msg[session->cur_msg].recv_time =
 		drop_ok == 1 ? RECV_TIME_KEEP : session->current_time;
 
@@ -420,7 +498,7 @@ Session *pop3_session_new(PrefsAccount *account)
 	session->state = POP3_READY;
 	session->ac_prefs = account;
 	session->pop_before_smtp = FALSE;
-	session->uidl_table = pop3_get_uidl_table(account);
+	pop3_get_uidl_table(account, session);
 	session->current_time = time(NULL);
 	session->error_val = PS_SUCCESS;
 	session->error_msg = NULL;
@@ -444,23 +522,31 @@ static void pop3_session_destroy(Session *session)
 		g_hash_table_destroy(pop3_session->uidl_table);
 	}
 
+	if (pop3_session->partial_recv_table) {
+		hash_free_strings(pop3_session->partial_recv_table);
+		g_hash_table_destroy(pop3_session->partial_recv_table);
+	}
+
 	g_free(pop3_session->greeting);
 	g_free(pop3_session->user);
 	g_free(pop3_session->pass);
 	g_free(pop3_session->error_msg);
 }
 
-GHashTable *pop3_get_uidl_table(PrefsAccount *ac_prefs)
+GHashTable *pop3_get_uidl_table(PrefsAccount *ac_prefs, Pop3Session *session)
 {
 	GHashTable *table;
+	GHashTable *partial_recv_table;
 	gchar *path;
 	FILE *fp;
 	gchar buf[POPBUFSIZE];
 	gchar uidl[POPBUFSIZE];
 	time_t recv_time;
 	time_t now;
-
+	gint partial_recv;
+	
 	table = g_hash_table_new(g_str_hash, g_str_equal);
+	partial_recv_table = g_hash_table_new(g_str_hash, g_str_equal);
 
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
 			   "uidl", G_DIR_SEPARATOR_S, ac_prefs->recv_server,
@@ -474,6 +560,8 @@ GHashTable *pop3_get_uidl_table(PrefsAccount *ac_prefs)
 		if ((fp = fopen(path, "rb")) == NULL) {
 			if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 			g_free(path);
+			session->uidl_table = table;
+			session->partial_recv_table = partial_recv_table;
 			return table;
 		}
 	}
@@ -482,22 +570,185 @@ GHashTable *pop3_get_uidl_table(PrefsAccount *ac_prefs)
 	now = time(NULL);
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		gchar tmp[POPBUFSIZE];
 		strretchomp(buf);
 		recv_time = RECV_TIME_NONE;
-		if (sscanf(buf, "%s\t%ld", uidl, &recv_time) != 2) {
+		partial_recv = 0;
+		
+		if (sscanf(buf, "%s\t%ld\t%s", uidl, &recv_time, &tmp) < 2) {
 			if (sscanf(buf, "%s", uidl) != 1)
 				continue;
-			else
+			else {
 				recv_time = now;
+			}
 		}
 		if (recv_time == RECV_TIME_NONE)
 			recv_time = RECV_TIME_RECEIVED;
 		g_hash_table_insert(table, g_strdup(uidl),
 				    GINT_TO_POINTER(recv_time));
+		if (strlen(tmp) == 1)
+			partial_recv = atoi(tmp);
+		else
+			partial_recv = 2;
+
+		g_hash_table_insert(partial_recv_table, g_strdup(uidl),
+				    GINT_TO_POINTER(partial_recv));
 	}
 
 	fclose(fp);
+	session->uidl_table = table;
+	session->partial_recv_table = partial_recv_table;
+	
 	return table;
+}
+
+static gchar *pop3_get_filename_for_partial_mail(Pop3Session *session, gchar *muidl)
+{
+	gchar *path;
+	gchar *result = NULL;
+	FILE *fp;
+	gchar buf[POPBUFSIZE];
+	gchar uidl[POPBUFSIZE];
+	time_t recv_time;
+	time_t now;
+	gint partial_recv;
+	
+	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+			   "uidl", G_DIR_SEPARATOR_S, session->ac_prefs->recv_server,
+			   "-", session->ac_prefs->userid, NULL);
+	if ((fp = fopen(path, "rb")) == NULL) {
+		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
+		g_free(path);
+		path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+				   "uidl-", session->ac_prefs->recv_server,
+				   "-", session->ac_prefs->userid, NULL);
+		if ((fp = fopen(path, "rb")) == NULL) {
+			if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
+			g_free(path);
+			return result;
+		}
+	}
+	g_free(path);
+
+	now = time(NULL);
+
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		gchar tmp[POPBUFSIZE];
+		strretchomp(buf);
+		recv_time = RECV_TIME_NONE;
+		partial_recv = 0;
+		
+		if (sscanf(buf, "%s\t%ld\t%s", uidl, &recv_time, &tmp) < 2) {
+			if (sscanf(buf, "%s", uidl) != 1)
+				continue;
+			else {
+				recv_time = now;
+			}
+		}
+		if (!strcmp(muidl, uidl)) {
+			result = strdup(tmp);
+			break;
+		}
+	}
+
+	fclose(fp);
+	
+	return result;
+}
+
+int pop3_mark_for_download(const gchar *server, const gchar *login, const gchar *muidl, const gchar *filename)
+{
+	gchar *path;
+	gchar *pathnew;
+	FILE *fp;
+	FILE *fpnew;
+	gchar buf[POPBUFSIZE];
+	gchar uidl[POPBUFSIZE];
+	time_t recv_time;
+	time_t now;
+	int len;
+	gchar partial_recv[POPBUFSIZE];
+	
+
+	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+			   "uidl", G_DIR_SEPARATOR_S, server,
+			   "-", login, NULL);
+	if ((fp = fopen(path, "rb")) == NULL) {
+		perror("fopen1");
+		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
+		g_free(path);
+		path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+				   "uidl-", server,
+				   "-", login, NULL);
+		if ((fp = fopen(path, "rb")) == NULL) {
+			if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
+			g_free(path);
+		}
+		return -1;
+	}
+
+	pathnew = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+			   "uidl", G_DIR_SEPARATOR_S, server,
+			   "-", login, ".new", NULL);
+	if ((fpnew = fopen(pathnew, "wb")) == NULL) {
+		perror("fopen2");
+		fclose(fp);
+		g_free(pathnew);
+		return -1;	
+	}
+	
+	now = time(NULL);
+
+	while (fgets(buf, sizeof(buf), fp) != NULL) {
+		strretchomp(buf);
+		recv_time = RECV_TIME_NONE;
+		sprintf(partial_recv,"0");
+		
+		if (sscanf(buf, "%s\t%ld\t%s", uidl, &recv_time, &partial_recv) < 2) {
+			if (sscanf(buf, "%s", uidl) != 1)
+				continue;
+			else {
+				recv_time = now;
+			}
+		}
+		if (strcmp(muidl, uidl)) {
+			fprintf(fpnew, "%s\t%ld\t%s\n", uidl, recv_time, partial_recv);
+		} else {
+			fprintf(fpnew, "%s\t%ld\t%s\n", uidl, recv_time, filename);
+		}
+	}
+	fclose(fpnew);
+	fclose(fp);
+
+	unlink(path);
+	rename(pathnew, path);
+		
+	g_free(path);
+	g_free(pathnew);
+	
+	if ((fp = fopen(filename,"rb")) == NULL) {
+		perror("fopen3");
+		return -1;
+	}
+	pathnew = g_strdup_printf("%s.new", filename);
+	if ((fpnew = fopen(pathnew, "wb")) == NULL) {
+		perror("fopen4");
+		fclose(fp);
+		g_free(pathnew);
+		return -1;
+	}
+	
+	fprintf(fpnew, "SC-Marked-For-Download: 1\n");
+	while ((len = fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
+		fprintf(fpnew, "%s", buf);
+	}
+	fclose(fpnew);
+	fclose(fp);
+	unlink(filename);
+	rename(pathnew, filename);
+	
+	g_free(pathnew);
+	return 0;
 }
 
 gint pop3_write_uidl_list(Pop3Session *session)
@@ -521,8 +772,9 @@ gint pop3_write_uidl_list(Pop3Session *session)
 
 	for (n = 1; n <= session->count; n++) {
 		msg = &session->msg[n];
-		if (msg->uidl && msg->received && !msg->deleted)
-			fprintf(fp, "%s\t%ld\n", msg->uidl, msg->recv_time);
+		if (msg->uidl && msg->received && !msg->deleted) {
+			fprintf(fp, "%s\t%ld\t%d\n", msg->uidl, msg->recv_time, msg->partial_recv);
+		}
 	}
 
 	if (fclose(fp) == EOF) FILE_OP_ERROR(path, "fclose");
@@ -532,7 +784,7 @@ gint pop3_write_uidl_list(Pop3Session *session)
 }
 
 static gint pop3_write_msg_to_file(const gchar *file, const gchar *data,
-				   guint len)
+				   guint len, const gchar *prefix)
 {
 	FILE *fp;
 	const gchar *prev, *cur;
@@ -547,6 +799,11 @@ static gint pop3_write_msg_to_file(const gchar *file, const gchar *data,
 	if (change_file_mode_rw(fp, file) < 0)
 		FILE_OP_ERROR(file, "chmod");
 
+	if (prefix != NULL) {
+		fprintf(fp, prefix);
+		fprintf(fp, "\n");
+	}
+	
 	/* +------------------+----------------+--------------------------+ *
 	 * ^data              ^prev            ^cur             data+len-1^ */
 
@@ -632,11 +889,19 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
 			return POP3_DELETE;
 		}
 
-		if (size_limit_over)
+		if (size_limit_over) {
 			log_message
 				(_("POP3: Skipping message %d (%d bytes)\n"),
 				   session->cur_msg, size);
 
+			if (!msg->received && msg->partial_recv != 2) {
+				pop3_top_send(session);
+				return POP3_TOP;
+			} else if (msg->partial_recv == 2) {
+				break;
+			}
+		}
+		
 		if (size == 0 || msg->received || size_limit_over) {
 			session->cur_total_bytes += size;
 			if (session->cur_msg == session->count) {
@@ -799,6 +1064,10 @@ static gint pop3_session_recv_msg(Session *session, const gchar *msg)
 		pop3_session->state = POP3_RETR_RECV;
 		session_recv_data(session, 0, ".\r\n");
 		break;
+	case POP3_TOP:
+		pop3_session->state = POP3_TOP_RECV;
+		session_recv_data(session, 0, ".\r\n");
+		break;
 	case POP3_DELETE:
 		pop3_delete_recv(pop3_session);
 		if (pop3_session->cur_msg == pop3_session->count)
@@ -855,6 +1124,18 @@ static gint pop3_session_recv_data_finished(Session *session, guchar *data,
 		    != RECV_TIME_KEEP)
 			pop3_delete_send(pop3_session);
 		else if (pop3_session->cur_msg == pop3_session->count)
+			pop3_logout_send(pop3_session);
+		else {
+			pop3_session->cur_msg++;
+			if (pop3_lookup_next(pop3_session) == POP3_ERROR)
+				return -1;
+		}
+		break;
+	case POP3_TOP_RECV:
+		if (pop3_top_recv(pop3_session, data, len) < 0)
+			return -1;
+
+		if (pop3_session->cur_msg == pop3_session->count)
 			pop3_logout_send(pop3_session);
 		else {
 			pop3_session->cur_msg++;

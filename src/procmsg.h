@@ -206,6 +206,13 @@ struct _MsgInfo
 	guint decryption_failed : 1;
         
         gint hidden;
+	
+	/* used only for partially received messages */
+	gchar *partial_recv;
+	gint total_size;
+	gchar *account_server;
+	gchar *account_login;
+	gint planned_download;
 };
 
 struct _MsgFileInfo

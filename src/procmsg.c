@@ -895,6 +895,17 @@ MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
 	if (!msginfo->returnreceiptto)
 		msginfo->returnreceiptto = g_strdup
 			(full_msginfo->returnreceiptto);
+	if (!msginfo->partial_recv && full_msginfo->partial_recv)
+		msginfo->partial_recv = g_strdup
+			(full_msginfo->partial_recv);
+	msginfo->total_size = full_msginfo->total_size;
+	if (!msginfo->account_server && full_msginfo->account_server)
+		msginfo->account_server = g_strdup
+			(full_msginfo->account_server);
+	if (!msginfo->account_login && full_msginfo->account_login)
+		msginfo->account_login = g_strdup
+			(full_msginfo->account_login);
+	msginfo->planned_download = full_msginfo->planned_download;
 	procmsg_msginfo_free(full_msginfo);
 
 	return procmsg_msginfo_new_ref(msginfo);
