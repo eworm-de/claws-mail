@@ -3692,6 +3692,7 @@ static gint get_list_of_uids(Folder *folder, IMAPFolderItem *item, GSList **msgn
 	GSList *uidlist, *elem;
 	gchar *cmd_buf;
 
+	*msgnum_list = NULL;
 	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, -1);
 

@@ -1,3 +1,8 @@
+2004-03-21 [alfons]	0.9.10claws28
+
+	* src/imap.c
+		NULL output pointer parameter
+
 2004-03-21 [alfons]	0.9.10claws27
 
 	* src/addrindex.[ch]
