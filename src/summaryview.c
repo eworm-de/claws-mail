@@ -2317,9 +2317,9 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	g_free(filename);
 
 	if (new_window || !prefs_common.mark_as_read_on_new_window) {
-		if (MSG_IS_NEW(msginfo->flags) && MSG_IS_IGNORE_THREAD(msginfo->flags))
+		if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 			summaryview->newmsgs--;
-		if (MSG_IS_UNREAD(msginfo->flags) && MSG_IS_IGNORE_THREAD(msginfo->flags))
+		if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 			summaryview->unread--;
 		if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
 			procmsg_msginfo_unset_flags

@@ -1,3 +1,8 @@
+2002-09-26 [christoph]	0.8.3claws26
+
+	* src/summaryview.c
+		Fix wrong message counts in summaryview status
+
 2002-09-26 [paul]	0.8.3claws25
 
 	* sync with 0.8.3cvs7
