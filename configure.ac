@@ -535,7 +535,7 @@ AC_ARG_ENABLE(pgpmime-plugin,
 	[  --disable-pgpmime-plugin           Do not build PGP/MIME plugin],
 	[ac_cv_enable_pgpmime_plugin=$enableval], [ac_cv_enable_pgpmime_plugin=yes])
 if test x"$ac_cv_enable_gpgme" = xyes -a x"$ac_cv_enable_pgpmime_plugin" = xyes; then
-	PLUGINS="pgpmime pgpinline $PLUGINS"
+	PLUGINS="pgpmime $PLUGINS"
 fi
 AM_CONDITIONAL(BUILD_PGPMIME_PLUGIN, test x"$ac_cv_enable_pgpmime_plugin" = xyes)
 
@@ -643,7 +643,6 @@ src/plugins/trayicon/Makefile
 src/plugins/trayicon/libeggtrayicon/Makefile
 src/plugins/clamav/Makefile
 src/plugins/pgpmime/Makefile
-src/plugins/pgpinline/Makefile
 doc/Makefile
 doc/faq/Makefile
 doc/faq/de/Makefile
