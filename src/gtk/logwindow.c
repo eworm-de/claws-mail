@@ -212,6 +212,9 @@ static gboolean log_window_append(gpointer source, gpointer data)
 	if (logwindow->clip)
 	       log_window_clip (GTK_WIDGET (text), logwindow->clip_length);
 
+	gtk_text_buffer_get_iter_at_offset(buffer, &iter, -1);
+	gtk_text_view_scroll_to_iter(text, &iter, 0, TRUE, 0, 0);
+
 	return FALSE;
 }
 
