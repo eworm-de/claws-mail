@@ -1,3 +1,10 @@
+2004-12-10 [colin]	0.9.13cvs12
+
+	* src/messageview.c
+		Fix logic error
+	* src/mainwindow.c
+		Fix corruptions when de-separating messageview
+
 2004-12-10 [paul]	0.9.13cvs11
 
 	* src/prefs_themes.c
