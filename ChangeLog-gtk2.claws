@@ -1,3 +1,10 @@
+2004-08-25 [colin]	0.9.12cvs81.1
+
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/sgpgme.c
+	* src/plugins/pgpmime/sgpgme.h
+		Sync with HEAD.
+
 2004-08-24 [colin]	0.9.12cvs80.3
 
 	* src/wizard.c

@@ -239,18 +239,15 @@ GpgmeData sgpgme_data_from_mimeinfo(MimeInfo *mimeinfo)
 	return data;
 }
 
-GpgmeData sgpgme_decrypt(GpgmeData cipher)
+GpgmeData sgpgme_decrypt_verify(GpgmeData cipher, GpgmeSigStat *status, GpgmeCtx ctx)
 {
-	GpgmeCtx ctx;
 	struct passphrase_cb_info_s info;
 	GpgmeData plain;
 	GpgmeError err;
+	GpgmeSigStat sigstat;
 
 	memset (&info, 0, sizeof info);
 	
-	if (gpgme_new(&ctx) != GPGME_No_Error)
-		return NULL;
-
 	if (gpgme_data_new(&plain) != GPGME_No_Error) {
 		gpgme_release(ctx);
 		return NULL;
@@ -261,8 +258,7 @@ GpgmeData sgpgme_decrypt(GpgmeData cipher)
         	gpgme_set_passphrase_cb (ctx, gpgmegtk_passphrase_cb, &info);
     	}
 
-	err = gpgme_op_decrypt(ctx, cipher, plain);
-	gpgme_release(ctx);
+	err = gpgme_op_decrypt_verify(ctx, cipher, plain, status);
 
 	if (err != GPGME_No_Error) {
 		gpgmegtk_free_passphrase();

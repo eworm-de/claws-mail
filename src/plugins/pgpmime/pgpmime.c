@@ -144,6 +144,9 @@ static gint pgpmime_check_signature(MimeInfo *mimeinfo)
 	g_return_val_if_fail(fp != NULL, SIGNATURE_INVALID);
 	
 	boundary = g_hash_table_lookup(parent->parameters, "boundary");
+	if (!boundary)
+		return 0;
+
 	boundary_len = strlen(boundary);
 	while (fgets(buf, sizeof(buf), fp) != NULL)
 		if (IS_BOUNDARY(buf, boundary, boundary_len))
@@ -243,13 +246,21 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 	gint nread;
 	gchar *fname;
 	gchar buf[BUFFSIZE];
+	GpgmeSigStat sigstat = 0;
+	PrivacyDataPGP *data = NULL;
+	GpgmeCtx ctx;
+	
+	if (gpgme_new(&ctx) != GPGME_No_Error)
+		return NULL;
+
 	
 	g_return_val_if_fail(pgpmime_is_encrypted(mimeinfo), NULL);
 	
 	encinfo = (MimeInfo *) g_node_nth_child(mimeinfo->node, 1)->data;
 
 	cipher = sgpgme_data_from_mimeinfo(encinfo);
-	plain = sgpgme_decrypt(cipher);
+	plain = sgpgme_decrypt_verify(cipher, &sigstat, ctx);
+
 	gpgme_data_release(cipher);
 	if (plain == NULL)
 		return NULL;
@@ -286,6 +297,22 @@ static MimeInfo *pgpmime_decrypt(MimeInfo *mimeinfo)
 	procmime_mimeinfo_free_all(parseinfo);
 
 	decinfo->tmpfile = TRUE;
+
+	if (sigstat != GPGME_SIG_STAT_NONE) {
+		if (decinfo->privacy != NULL) {
+			data = (PrivacyDataPGP *) decinfo->privacy;
+		} else {
+			data = pgpmime_new_privacydata();
+			decinfo->privacy = (PrivacyData *) data;	
+		}
+		data->done_sigtest = TRUE;
+		data->is_signed = TRUE;
+		data->sigstatus = sigstat;
+		if (data->ctx)
+			gpgme_release(data->ctx);
+		data->ctx = ctx;
+	}
+
 	
 	return decinfo;
 }
