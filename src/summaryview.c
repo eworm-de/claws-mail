@@ -869,17 +869,21 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 #ifdef WIN32
 	{
-		gchar *p_path;
+		gchar *p_path, *p;
 
 		p_path = g_strdup(item->path);
 		locale_to_utf8(&p_path);
 		buf = g_strdup_printf(_("Scanning folder (%s)..."), p_path);
+		p = g_strdup(buf);
+		locale_from_utf8(&p);
+		debug_print("%s\n", p);
 		g_free(p_path);
+		g_free(p);
 	}
 #else
 	buf = g_strdup_printf(_("Scanning folder (%s)..."), item->path);
-#endif
 	debug_print("%s\n", buf);
+#endif
 	STATUSBAR_PUSH(summaryview->mainwin, buf);
 	g_free(buf);
 

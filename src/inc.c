@@ -711,8 +711,17 @@ static IncState inc_pop3_session_do(IncSession *session)
 		pop3_logout_send        , pop3_logout_recv
 	};
 
+#ifdef WIN32
+	gchar *p;
+	p = g_strdup (pop3_state->ac_prefs->account_name);
+	locale_from_utf8(&p);
+	debug_print("getting new messages of account %s...\n",
+		    p);
+	g_free(p);
+#else
 	debug_print("getting new messages of account %s...\n",
 		    pop3_state->ac_prefs->account_name);
+#endif
 
 	pop3_state->ac_prefs->last_pop_login_time = time(NULL);
 	atm = automaton_create(N_POP3_PHASE);

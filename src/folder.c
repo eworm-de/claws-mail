@@ -1380,6 +1380,9 @@ void folder_item_write_cache(FolderItem *item)
 		return;
 
 	id = folder_item_get_identifier(item);
+#ifdef WIN32
+	locale_from_utf8(&id);
+#endif
 	debug_print("Save cache for folder %s\n", id);
 	g_free(id);
 
