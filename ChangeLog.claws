@@ -1,3 +1,16 @@
+2002-11-15 [christoph]	0.8.5claws160
+
+	* src/compose.c
+	* src/folder.[ch]
+	* src/imap.c
+	* src/mbox_folder.c
+	* src/mh.c
+	* src/news.c
+	* src/procmsg.c
+	* src/summaryview.c
+		replace claws' fetch_msginfo with main's get_msginfo
+		(use main's implementation where possible)
+
 2002-11-15 [colin]	0.8.5claws159
 
 	* src/ssl_certificate.c

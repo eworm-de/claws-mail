@@ -150,10 +150,10 @@ struct _Folder
 	gchar *  (*fetch_msg)		(Folder		*folder,
 					 FolderItem	*item,
 					 gint		 num);
-	MsgInfo *(*fetch_msginfo)	(Folder		*folder,
+	MsgInfo * (*get_msginfo)	(Folder		*folder,
 					 FolderItem	*item,
 					 gint		 num);
-	GSList  *(*fetch_msginfos)	(Folder		*folder,
+	GSList  * (*get_msginfos)	(Folder		*folder,
 					 FolderItem	*item,
 					 GSList		*msgnum_list);
 	gint     (*add_msg)		(Folder		*folder,
@@ -355,9 +355,9 @@ gint   folder_item_open			(FolderItem	*item);
 void   folder_item_close		(FolderItem	*item);
 gint   folder_item_scan			(FolderItem	*item);
 void   folder_item_scan_foreach		(GHashTable	*table);
-MsgInfo *folder_item_fetch_msginfo	(FolderItem 	*item,
+MsgInfo *folder_item_get_msginfo	(FolderItem 	*item,
 					 gint		 num);
-MsgInfo *folder_item_fetch_msginfo_by_id(FolderItem 	*item,
+MsgInfo *folder_item_get_msginfo_by_msgid(FolderItem 	*item,
 					 const gchar 	*msgid);
 GSList *folder_item_get_msg_list	(FolderItem 	*item);
 gchar *folder_item_fetch_msg		(FolderItem	*item,

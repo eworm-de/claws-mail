@@ -286,7 +286,7 @@ static gboolean imap_rename_folder_func		(GNode		*node,
 gint imap_get_num_list				(Folder 	*folder,
 						 FolderItem 	*item,
 						 GSList	       **list);
-MsgInfo *imap_fetch_msginfo 			(Folder 	*folder,
+MsgInfo *imap_get_msginfo 			(Folder 	*folder,
 						 FolderItem 	*item,
 						 gint 		 num);
 gboolean imap_check_msgnum_validity		(Folder 	*folder,
@@ -348,7 +348,7 @@ static void imap_folder_init(Folder *folder, const gchar *name,
 	folder->check_msgnum_validity = imap_check_msgnum_validity;
 
 	folder->get_num_list	      = imap_get_num_list;
-	folder->fetch_msginfo	      = imap_fetch_msginfo;
+	folder->get_msginfo	      = imap_get_msginfo;
 	
 	((IMAPFolder *)folder)->selected_folder = NULL;
 }
@@ -3291,7 +3291,7 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 	return nummsgs;
 }
 
-MsgInfo *imap_fetch_msginfo(Folder *_folder, FolderItem *item, gint num)
+MsgInfo *imap_get_msginfo(Folder *_folder, FolderItem *item, gint num)
 {
 	IMAPFolder *folder = (IMAPFolder *)_folder;
 	gchar *tmp;

@@ -955,7 +955,7 @@ gint procmsg_save_to_outbox(FolderItem *outbox, const gchar *file,
 		}
 		return -1;
 	}
-	msginfo = folder_item_fetch_msginfo(outbox, num);
+	msginfo = folder_item_get_msginfo(outbox, num);
 	if (msginfo != NULL) {
 	    procmsg_msginfo_unset_flags(msginfo, ~0, 0);
 	    procmsg_msginfo_free(msginfo);
@@ -1395,14 +1395,14 @@ gint procmsg_send_message_queue(const gchar *file)
 		if (item != NULL) {
 			MsgInfo *msginfo;
 			
-			msginfo = folder_item_fetch_msginfo(item, atoi(tokens[1]));
+			msginfo = folder_item_get_msginfo(item, atoi(tokens[1]));
 			if ((msginfo != NULL) && (strcmp(msginfo->msgid, tokens[2]) != 0)) {
 				procmsg_msginfo_free(msginfo);
 				msginfo = NULL;
 			}
 			
 			if (msginfo == NULL) {
-				msginfo = folder_item_fetch_msginfo_by_id(item, tokens[2]);
+				msginfo = folder_item_get_msginfo_by_msgid(item, tokens[2]);
 			}
 			
 			if (msginfo != NULL) {

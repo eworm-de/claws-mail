@@ -46,7 +46,7 @@ static gboolean mbox_purge_deleted(gchar * mbox);
 static gchar * mbox_get_new_path(FolderItem * parent, gchar * name);
 static gchar * mbox_get_folderitem_name(gchar * name);
 
-MsgInfo *mbox_fetch_msginfo(Folder *folder, FolderItem *item, gint num);
+MsgInfo *mbox_get_msginfo(Folder *folder, FolderItem *item, gint num);
 gint mbox_get_num_list(Folder *folder, FolderItem *item, GSList **list);
 gboolean mbox_check_msgnum_validity(Folder *folder, FolderItem *item);
 
@@ -75,7 +75,7 @@ static void mbox_folder_init(Folder *folder, const gchar *name, const gchar *pat
 	folder->get_msg_list        = mbox_get_msg_list;
 */
 	folder->fetch_msg           = mbox_fetch_msg;
-	folder->fetch_msginfo	    = mbox_fetch_msginfo;
+	folder->get_msginfo	    = mbox_get_msginfo;
 	folder->add_msg             = mbox_add_msg;
 	folder->copy_msg            = mbox_copy_msg;
 	folder->remove_msg          = mbox_remove_msg;
@@ -2306,7 +2306,7 @@ gint mbox_get_num_list(Folder *folder, FolderItem *item, GSList **mlist)
 	return nummsgs;
 }
 
-MsgInfo *mbox_fetch_msginfo(Folder *folder, FolderItem *item, gint num)
+MsgInfo *mbox_get_msginfo(Folder *folder, FolderItem *item, gint num)
 {
 	gchar *mbox_path;
 	struct _message *msg;
