@@ -212,6 +212,11 @@ menu.
 </H2>
 
 <P>A.   Just press Alt-U or select "update" from the summary menu.
+<H2><A NAME="ss1.27">1.27 Q27  Why can't I use gvim as external editor?</A>
+</H2>
+
+<P>A.   If one wishes to use gvim as an external editor it's necessary to start it with the no-fork option -f, i.e. in the configuration dialog box you need to enter  "gvim -f %s". If not the editor forks and open up a separate file and when one quits the editor the changes are lost and don't show up in the composer window.
+<P>(Thanks, Ed Collins!)
 <HR>
 <A HREF="sylpheed-faq-2.html">Next</A>
 Previous

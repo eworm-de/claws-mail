@@ -42,6 +42,7 @@ ask you where you want to store your mailboxes. The
 default is &lt;homedir&gt;/Mail. You can change this to
 anything you like as long as it is a valid directory
 name.
+<P>Please note: When Sylpheed is executed for the first time, it automatically creates the configuration files under $HOME/.sylpheed/, and asks you the location of mailbox. The default is $HOME/Mail. If some files which are non-MH format already exist on the directory, you will have to specify another location.
 <H2><A NAME="ss2.3">2.3 Q03  How do I set up an account?</A>
 </H2>
 
@@ -126,6 +127,13 @@ When that completes successfully, there is a "privacy" section in the Common pre
 
 <P>A. In case this happens, you can easily fix that by adding the following to /etc/mime.types:
 <P><CODE>image/gif              gif</CODE>
+<H2><A NAME="ss2.17">2.17 Q17 How can I make Sylpheed notify me when new mail arrives?</A>
+</H2>
+
+<P>A. For this you can do several things:
+<P>* Look at the Sylpheed patch page at http://www.teledix.net/sylpheed/ for a new mail patch.
+<P>* Download Gkrellm or a similar program that is able to notify you of new incoming mail. Gkrellm is available at http://www.gkrellm.net
+<P>
 <HR>
 <A HREF="sylpheed-faq-3.html">Next</A>
 <A HREF="sylpheed-faq-1.html">Previous</A>
