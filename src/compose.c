@@ -889,16 +889,11 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 		reply_account = account;
 
 	compose = compose_create(account, COMPOSE_REPLY);
-	compose->replyinfo = procmsg_msginfo_new_ref(msginfo);
 
-#if 0 /* NEW COMPOSE GUI */
-	if (followup_and_reply_to) {
-		gtk_widget_show(compose->to_hbox);
-		gtk_widget_show(compose->to_entry);
-		gtk_table_set_row_spacing(GTK_TABLE(compose->table), 1, 4);
-		compose->use_to = TRUE;
-	}
-#endif
+	compose->replyinfo = procmsg_msginfo_get_full_info(msginfo);
+	if (!compose->replyinfo)
+		compose->replyinfo = procmsg_msginfo_copy(msginfo);
+
     	if (msginfo->folder && msginfo->folder->ret_rcpt) {
 		GtkItemFactory *ifactory;
 	
@@ -933,7 +928,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 		else
 			qmark = "> ";
 
-		quote_str = compose_quote_fmt(compose, msginfo,
+		quote_str = compose_quote_fmt(compose, compose->replyinfo,
 					      prefs_common.quotefmt,
 					      qmark, body);
 	}
@@ -1030,6 +1025,11 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 		} else {
 			gchar *qmark;
 			gchar *quote_str;
+			MsgInfo *full_msginfo;
+
+			full_msginfo = procmsg_msginfo_get_full_info(msginfo);
+			if (!full_msginfo)
+				full_msginfo = procmsg_msginfo_copy(msginfo);
 
 			if (prefs_common.fw_quotemark &&
 			    *prefs_common.fw_quotemark)
@@ -1041,6 +1041,8 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 						      prefs_common.fw_quotefmt,
 						      qmark, body);
 			compose_attach_parts(compose, msginfo);
+
+			procmsg_msginfo_free(full_msginfo);
 		}
 
 	if (prefs_common.auto_sig)
@@ -2672,6 +2674,7 @@ static void compose_select_account(Compose *compose, PrefsAccount *account)
 		gtk_widget_show(compose->newsgroups_hbox);
 		gtk_widget_show(compose->newsgroups_entry);
 		gtk_table_set_row_spacing(GTK_TABLE(compose->table), 2, 4);
+		compose->use_newsgroups = TRUE;
 
 		menuitem = gtk_item_factory_get_item(ifactory, "/View/To");
 		gtk_check_menu_item_set_active
@@ -2688,6 +2691,7 @@ static void compose_select_account(Compose *compose, PrefsAccount *account)
 		gtk_widget_hide(compose->newsgroups_entry);
 		gtk_table_set_row_spacing(GTK_TABLE(compose->table), 2, 0);
 		gtk_widget_queue_resize(compose->table_vbox);
+		compose->use_newsgroups = FALSE;
 
 		menuitem = gtk_item_factory_get_item(ifactory, "/View/To");
 		gtk_check_menu_item_set_active
@@ -2847,7 +2851,6 @@ gint compose_send(Compose *compose)
 	if (lock) return 1;
 
 	g_return_val_if_fail(compose->account != NULL, -1);
-	g_return_val_if_fail(compose->orig_account != NULL, -1);
 
 	lock = TRUE;
 
@@ -2881,13 +2884,17 @@ gint compose_send(Compose *compose)
 #if 0 /* NEW COMPOSE GUI */
 		if (compose->account->protocol != A_NNTP)
 			ac = compose->account;
-		else if (compose->orig_account->protocol != A_NNTP)
-			ac = compose->orig_account;
-		else if (cur_account && cur_account->protocol != A_NNTP)
-			ac = cur_account;
 		else {
-			ac = compose_current_mail_account();
+			ac = account_find_from_address(compose->account->address);
 			if (!ac) {
+				if (cur_account && cur_account->protocol != A_NNTP)
+					ac = cur_account;
+				else
+					ac = account_get_default();
+			}
+			if (!ac || ac->protocol == A_NNTP) {
+				alertpanel_error(_("Account for sending mail is not specified.\n"
+						   "Please select a mail account before sending."));
 				unlink(tmp);
 				lock = FALSE;
 				return -1;
@@ -2901,14 +2908,7 @@ gint compose_send(Compose *compose)
 	}
 
 	if (ok == 0 && compose->newsgroup_list) {
-		Folder *folder;
-
-		if (compose->account->protocol == A_NNTP)
-			folder = FOLDER(compose->account->folder);
-		else
-			folder = FOLDER(compose->orig_account->folder);
-
-		ok = news_post(folder, tmp);
+		ok = news_post(FOLDER(compose->account->folder), tmp);
 		if (ok < 0) {
 			alertpanel_error(_("Error occurred while posting the message to %s ."),
 					 compose->account->nntp_server);
@@ -3516,7 +3516,6 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	
 	debug_print("queueing message...\n");
 	g_return_val_if_fail(compose->account != NULL, -1);
-        g_return_val_if_fail(compose->orig_account != NULL, -1);
 
         lock = TRUE;
 	
@@ -3534,8 +3533,6 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	if (compose->to_list) {
     		if (compose->account->protocol != A_NNTP)
             		mailac = compose->account;
-		else if (compose->orig_account->protocol != A_NNTP)
-	    		mailac = compose->orig_account;
 		else if (cur_account && cur_account->protocol != A_NNTP)
 	    		mailac = cur_account;
 		else if (!(mailac = compose_current_mail_account())) {
@@ -3548,7 +3545,7 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	if (compose->newsgroup_list) {
                 if (compose->account->protocol == A_NNTP)
                         newsac = compose->account;
-                else if (!(newsac = compose->orig_account) || (newsac->protocol != A_NNTP)) {
+                else if (!newsac->protocol != A_NNTP) {
 			lock = FALSE;
 			alertpanel_error(_("No account for posting news available!"));
 			return -1;
@@ -3624,12 +3621,13 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 		fprintf(fp, "NSV:\n");
 	fprintf(fp, "SSH:\n");
 	/* write recepient list */
-	fprintf(fp, "R:");
 	if (compose->to_list) {
-		fprintf(fp, "<%s>", (gchar *)compose->to_list->data);
-		for (cur = compose->to_list->next; cur != NULL; cur = cur->next)
+		fprintf(fp, "R:<%s>", (gchar *)compose->to_list->data);
+		for (cur = compose->to_list->next; cur != NULL;
+		     cur = cur->next)
 			fprintf(fp, ",<%s>", (gchar *)cur->data);
-	}
+		fprintf(fp, "\n");
+	} else
 	fprintf(fp, "\n");
 	/* write newsgroup list */
 	fprintf(fp, "NG:");
@@ -3946,18 +3944,20 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	/* Newsgroups */
 	compose_write_headers_from_headerlist(compose, fp, "Newsgroups");
 #if 0 /* NEW COMPOSE GUI */
-	str = gtk_entry_get_text(GTK_ENTRY(compose->newsgroups_entry));
-	if (*str != '\0') {
-		Xstrdup_a(str, str, return -1);
-		g_strstrip(str);
-		remove_space(str);
+	if (compose->use_newsgroups) {
+		str = gtk_entry_get_text(GTK_ENTRY(compose->newsgroups_entry));
 		if (*str != '\0') {
-			compose->newsgroup_list =
-				newsgroup_list_append(compose->newsgroup_list,
-						      str);
-			compose_convert_header(buf, sizeof(buf), str,
-					       strlen("Newsgroups: "));
-			fprintf(fp, "Newsgroups: %s\n", buf);
+			Xstrdup_a(str, str, return -1);
+			g_strstrip(str);
+			remove_space(str);
+			if (*str != '\0') {
+				compose->newsgroup_list =
+					newsgroup_list_append
+						(compose->newsgroup_list, str);
+				compose_convert_header(buf, sizeof(buf), str,
+						       strlen("Newsgroups: "));
+				fprintf(fp, "Newsgroups: %s\n", buf);
+			}
 		}
 	}
 #endif
@@ -4634,7 +4634,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	titles[COL_NAME]     = _("Name");
 
 	compose->account = account;
-	compose->orig_account = account;
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, FALSE);

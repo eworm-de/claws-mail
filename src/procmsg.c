@@ -1085,6 +1085,37 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 	return newmsginfo;
 }
 
+MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
+{
+	MsgInfo *full_msginfo;
+	gchar *file;
+
+	if (msginfo == NULL) return NULL;
+
+	file = procmsg_get_message_file(msginfo);
+	if (!file) {
+		g_warning("procmsg_msginfo_get_full_info(): can't get message file.\n");
+		return NULL;
+	}
+
+	full_msginfo = procheader_parse_file(file, msginfo->flags, TRUE, FALSE);
+	g_free(file);
+	if (!full_msginfo) return NULL;
+
+	full_msginfo->msgnum = msginfo->msgnum;
+	full_msginfo->size = msginfo->size;
+	full_msginfo->mtime = msginfo->mtime;
+	full_msginfo->folder = msginfo->folder;
+	full_msginfo->to_folder = msginfo->to_folder;
+#if USE_GPGME
+	full_msginfo->plaintext_file = g_strdup(msginfo->plaintext_file);
+	full_msginfo->decryption_failed = msginfo->decryption_failed;
+#endif
+
+	/* return full_msginfo;*/
+	return procmsg_msginfo_new_ref(msginfo);
+}
+
 void procmsg_msginfo_free(MsgInfo *msginfo)
 {
 	if (msginfo == NULL) return;

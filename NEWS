@@ -1,5 +1,15 @@
 Changes of Sylpheed
 
+* 0.8.5
+
+    * Many fatal errors which will lead to crash in message catalogs have
+      been fixed.
+    * Cc header is now correctly recognized on reply and forwarding.
+    * A problem of refresh of summary on IMAP4 and News folder has been fixed.
+    * A bug of changing accounts on composition window has been fixed.
+    * The LDAP library detection of configure script has been fixed again.
+    * Queueing of news messages has been enabled.
+
 * 0.8.4
 
     * The 'Select thread' function is added.

@@ -585,7 +585,6 @@ void news_remove_group_list_cache(Folder *folder)
 
 gint news_post(Folder *folder, const gchar *file)
 {
-	NNTPSession *session;
 	FILE *fp;
 	gint ok;
 
@@ -593,23 +592,37 @@ gint news_post(Folder *folder, const gchar *file)
 	g_return_val_if_fail(folder->type == F_NEWS, -1);
 	g_return_val_if_fail(file != NULL, -1);
 
-	session = news_session_get(folder);
-	if (!session) return -1;
-
 	if ((fp = fopen(file, "rb")) == NULL) {
 		FILE_OP_ERROR(file, "fopen");
 		return -1;
 	}
+
+	ok = news_post_stream(folder, fp);
+
+	fclose(fp);
+
+	statusbar_pop_all();
+
+	return ok;
+}
+
+gint news_post_stream(Folder *folder, FILE *fp)
+{
+	NNTPSession *session;
+	gint ok;
+
+	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(folder->type == F_NEWS, -1);
+	g_return_val_if_fail(fp != NULL, -1);
+
+	session = news_session_get(folder);
+	if (!session) return -1;
 
 	ok = nntp_post(session->nntp_sock, fp);
 	if (ok != NN_SUCCESS) {
 		log_warning(_("can't post article.\n"));
 		return -1;
 	}
-
-	fclose(fp);
-
-	statusbar_pop_all();
 
 	return 0;
 }

@@ -21,6 +21,7 @@
 #define __NEWS_H__
 
 #include <glib.h>
+#include <stdio.h>
 
 #include "folder.h"
 #include "session.h"
