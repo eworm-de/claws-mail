@@ -760,7 +760,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	STATUSBAR_POP(summaryview->mainwin);
 
 	is_refresh = (!prefs_common.open_inbox_on_inc &&
-		      item == summaryview->folder_item) ? TRUE : FALSE;
+		      item == summaryview->folder_item &&
+		      update_cache == FALSE) ? TRUE : FALSE;
 	if (is_refresh) {
 		selected_msgnum = summary_get_msgnum(summaryview,
 						     summaryview->selected);
@@ -3859,7 +3860,9 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 static void summary_open_row(GtkSCTree *sctree, SummaryView *summaryview)
 {
-	if (summaryview->folder_item->stype == F_DRAFT)
+	if (summaryview->folder_item->stype == F_DRAFT  ||
+	    summaryview->folder_item->stype == F_OUTBOX ||
+            summaryview->folder_item->stype == F_QUEUE)
 		summary_reedit(summaryview);
 	else
 		summary_open_msg(summaryview);

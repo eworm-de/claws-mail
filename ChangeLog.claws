@@ -11,6 +11,9 @@
 	* po/POTFILES.in
 		add 'src/prefs_templates.c'
 
+	* src/compose.c, src/summaryview.c
+		fix segfault on 'Re_edit'		
+
 2001-08-30 [alfons]
 
 	* configure.in, Makefile.am
