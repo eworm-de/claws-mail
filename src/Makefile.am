@@ -113,7 +113,6 @@ sylpheed_SOURCES = \
 	ssl_manager.c \
 	statusbar.c \
 	stock_pixmap.c \
-	string_match.c \
 	summary_search.c \
 	summaryview.c \
 	textview.c \
@@ -239,7 +238,6 @@ sylpheedinclude_HEADERS = \
 	ssl_manager.h \
 	statusbar.h \
 	stock_pixmap.h \
-	string_match.h \
 	summary_search.h \
 	summaryview.h \
 	textview.h \
