@@ -1,3 +1,8 @@
+2004-11-22 [paul]	0.9.12cvs160
+
+	* src/prefs_themes.c
+		fix oversized GtkFrames
+
 2004-11-19 [paul]	0.9.12cvs159
 
 	* src/prefs_common.c
