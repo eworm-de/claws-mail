@@ -1,3 +1,10 @@
+2002-02-19 [christoph]	0.7.2claws1
+
+	* src/codeconv.c
+		return unconverted text if conde conversion is not possible
+		when libjconv is used.
+		(patch submitted by "Simon 'corecode' Schubert")
+
 2002-02-19 [paul]	
 
 	* version 0.7.2claws release
@@ -887,7 +894,7 @@
 	* src/compose.c
 		clean up account preference poison in rfc2015,
 		and preparation to fix double sign bug 
-		(patch submitted by Simon 'corecode' Schubert) 
+		(patch submitted by Simon 'corecode' Schubert)
 
 2002-01-07 [christoph]	0.6.6claws43
 

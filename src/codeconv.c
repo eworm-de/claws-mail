@@ -375,7 +375,7 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 	    == 0)
 		return buf;
 	else
-		return NULL;
+		return g_strdup(inbuf);
 #else /* !HAVE_LIBJCONV */
 	if (src_codeset) {
 		if (!strcasecmp(src_codeset, CS_EUC_JP) ||
