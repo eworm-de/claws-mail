@@ -118,6 +118,25 @@ typedef enum
 
 #define N_ATTACH_COLS		3
 
+typedef enum
+{
+	COMPOSE_CALL_GTK_STEXT_MOVE_BEGINNING_OF_LINE,
+	COMPOSE_CALL_GTK_STEXT_MOVE_FORWARD_CHARACTER,
+	COMPOSE_CALL_GTK_STEXT_MOVE_BACKWARD_CHARACTER,
+	COMPOSE_CALL_GTK_STEXT_MOVE_FORWARD_WORD,
+	COMPOSE_CALL_GTK_STEXT_MOVE_BACKWARD_WORD,
+	COMPOSE_CALL_GTK_STEXT_MOVE_END_OF_LINE,
+	COMPOSE_CALL_GTK_STEXT_MOVE_NEXT_LINE,
+	COMPOSE_CALL_GTK_STEXT_MOVE_PREVIOUS_LINE,
+	COMPOSE_CALL_GTK_STEXT_DELETE_FORWARD_CHARACTER,
+	COMPOSE_CALL_GTK_STEXT_DELETE_BACKWARD_CHARACTER,
+	COMPOSE_CALL_GTK_STEXT_DELETE_FORWARD_WORD,
+	COMPOSE_CALL_GTK_STEXT_DELETE_BACKWARD_WORD,
+	COMPOSE_CALL_GTK_STEXT_DELETE_LINE,
+	COMPOSE_CALL_GTK_STEXT_DELETE_LINE_N,
+	COMPOSE_CALL_GTK_STEXT_DELETE_TO_LINE_END
+} ComposeCallGtkSTextAction;
+
 #define B64_LINE_SIZE		57
 #define B64_BUFFSIZE		77
 
@@ -330,25 +349,8 @@ static void compose_copy_cb		(Compose	*compose);
 static void compose_paste_cb		(Compose	*compose);
 static void compose_allsel_cb		(Compose	*compose);
 
-typedef enum {
-	COMPOSE_CALL_GTK_STEXT_MOVE_BEGINNING_OF_LINE,
-	COMPOSE_CALL_GTK_STEXT_MOVE_FORWARD_CHARACTER,
-	COMPOSE_CALL_GTK_STEXT_MOVE_BACKWARD_CHARACTER,
-	COMPOSE_CALL_GTK_STEXT_MOVE_FORWARD_WORD,
-	COMPOSE_CALL_GTK_STEXT_MOVE_BACKWARD_WORD,
-	COMPOSE_CALL_GTK_STEXT_MOVE_END_OF_LINE,
-	COMPOSE_CALL_GTK_STEXT_MOVE_NEXT_LINE,
-	COMPOSE_CALL_GTK_STEXT_MOVE_PREVIOUS_LINE,
-	COMPOSE_CALL_GTK_STEXT_DELETE_FORWARD_CHARACTER,
-	COMPOSE_CALL_GTK_STEXT_DELETE_BACKWARD_CHARACTER,
-	COMPOSE_CALL_GTK_STEXT_DELETE_FORWARD_WORD,
-	COMPOSE_CALL_GTK_STEXT_DELETE_BACKWARD_WORD,
-	COMPOSE_CALL_GTK_STEXT_DELETE_LINE,
-	COMPOSE_CALL_GTK_STEXT_DELETE_LINE_N,
-	COMPOSE_CALL_GTK_STEXT_DELETE_TO_LINE_END
-} ComposeCallGtkStextAction;
-
-static void compose_gtk_stext_action_cb	(Compose *compose, ComposeCallGtkStextAction action);
+static void compose_gtk_stext_action_cb	(Compose		   *compose,
+					 ComposeCallGtkSTextAction  action);
 
 static void compose_grab_focus_cb	(GtkWidget	*widget,
 					 Compose	*compose);
@@ -448,12 +450,13 @@ void compose_headerentry_key_press_event_cb(GtkWidget	       *entry,
 
 static void compose_show_first_last_header (Compose *compose, gboolean show_first);
 
-static void compose_ctl_enter_send_shortcut_cb(GtkWidget *w, Compose *compose);
 
 static void compose_check_backwards(Compose *compose);
 
 static void compose_check_forwards_go(Compose *compose);
 
+static void text_activated		(GtkWidget	*widget,
+					 Compose	*compose);
 
 
 static GtkItemFactoryEntry compose_popup_entries[] =
@@ -471,7 +474,7 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_File/_Insert file"),		"<control>I", compose_insert_file_cb, 0, NULL},
 	{N_("/_File/Insert si_gnature"),	"<control>G", compose_insert_sig,     0, NULL},
 	{N_("/_File/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_File/_Close"),			"<control>Q", compose_close_cb, 0, NULL},
+	{N_("/_File/_Close"),			"<control>W", compose_close_cb, 0, NULL},
 
 	{N_("/_Edit"),			NULL, NULL, 0, "<Branch>"},
 	{N_("/_Edit/_Undo"),		"<control>Z", compose_undo_cb, 0, NULL},
@@ -481,23 +484,77 @@ static GtkItemFactoryEntry compose_entries[] =
 	{N_("/_Edit/_Copy"),		"<control>C", compose_copy_cb,   0, NULL},
 	{N_("/_Edit/_Paste"),		"<control>V", compose_paste_cb,  0, NULL},
 	{N_("/_Edit/Select _all"),	"<control>A", compose_allsel_cb, 0, NULL},
-	{N_("/_Edit/A_dvanced"),	NULL, NULL, 0,
-		"<Branch>"},
-	{N_("/_Edit/A_dvanced/Move a character backward"),	"<control>B", compose_gtk_stext_action_cb, COMPOSE_CALL_GTK_STEXT_MOVE_BACKWARD_CHARACTER, NULL},
-	{N_("/_Edit/A_dvanced/Move a character forward"),	"<control>F", compose_gtk_stext_action_cb, COMPOSE_CALL_GTK_STEXT_MOVE_FORWARD_CHARACTER, NULL},
-	{N_("/_Edit/A_dvanced/Move a word backward"),	"<alt>B", compose_gtk_stext_action_cb, COMPOSE_CALL_GTK_STEXT_MOVE_BACKWARD_WORD, NULL},
-	{N_("/_Edit/A_dvanced/Move a word forward"),	"<alt>F", compose_gtk_stext_action_cb, COMPOSE_CALL_GTK_STEXT_MOVE_FORWARD_WORD, NULL},
-	{N_("/_Edit/A_dvanced/Move to beginning of line"),	NULL, compose_gtk_stext_action_cb, COMPOSE_CALL_GTK_STEXT_MOVE_BEGINNING_OF_LINE, NULL},
-	{N_("/_Edit/A_dvanced/Move to end of line"),	"<control>E", compose_gtk_stext_action_cb, COMPOSE_CALL_GTK_STEXT_MOVE_END_OF_LINE, NULL},
-	{N_("/_Edit/A_dvanced/Move to next line"),	"<control>N", compose_gtk_stext_action_cb, COMPOSE_CALL_GTK_STEXT_MOVE_NEXT_LINE, NULL},
-	{N_("/_Edit/A_dvanced/Move to previous line"),	"<control>P", compose_gtk_stext_action_cb, COMPOSE_CALL_GTK_STEXT_MOVE_PREVIOUS_LINE, NULL},
-	{N_("/_Edit/A_dvanced/Delete a character backward"),	"<control>H", compose_gtk_stext_action_cb, COMPOSE_CALL_GTK_STEXT_DELETE_BACKWARD_CHARACTER, NULL},
-	{N_("/_Edit/A_dvanced/Delete a character forward"),	"<control>D", compose_gtk_stext_action_cb, COMPOSE_CALL_GTK_STEXT_DELETE_FORWARD_CHARACTER, NULL},
-	{N_("/_Edit/A_dvanced/Delete a word backward"),	"<control>w", compose_gtk_stext_action_cb, COMPOSE_CALL_GTK_STEXT_DELETE_BACKWARD_WORD, NULL},
-	{N_("/_Edit/A_dvanced/Delete a word forward"),	"<alt>D", compose_gtk_stext_action_cb, COMPOSE_CALL_GTK_STEXT_DELETE_FORWARD_WORD, NULL},
-	{N_("/_Edit/A_dvanced/Delete line"),	"<control>U", compose_gtk_stext_action_cb, COMPOSE_CALL_GTK_STEXT_DELETE_LINE, NULL},
-	{N_("/_Edit/A_dvanced/Delete line+"),	NULL, compose_gtk_stext_action_cb, COMPOSE_CALL_GTK_STEXT_DELETE_LINE_N, NULL},
-	{N_("/_Edit/A_dvanced/Delete to end of line"),	"<control>K", compose_gtk_stext_action_cb, COMPOSE_CALL_GTK_STEXT_DELETE_TO_LINE_END, NULL},
+	{N_("/_Edit/A_dvanced"),	NULL, NULL, 0, "<Branch>"},
+	{N_("/_Edit/A_dvanced/Move a character backward"),
+					"<control>B",
+					compose_gtk_stext_action_cb,
+					COMPOSE_CALL_GTK_STEXT_MOVE_BACKWARD_CHARACTER,
+					NULL},
+	{N_("/_Edit/A_dvanced/Move a character forward"),
+					"<control>F",
+					compose_gtk_stext_action_cb,
+					COMPOSE_CALL_GTK_STEXT_MOVE_FORWARD_CHARACTER,
+					NULL},
+	{N_("/_Edit/A_dvanced/Move a word backward"),
+					NULL, /* "<alt>B" */
+					compose_gtk_stext_action_cb,
+					COMPOSE_CALL_GTK_STEXT_MOVE_BACKWARD_WORD,
+					NULL},
+	{N_("/_Edit/A_dvanced/Move a word forward"),
+					NULL, /* "<alt>F" */
+					compose_gtk_stext_action_cb,
+					COMPOSE_CALL_GTK_STEXT_MOVE_FORWARD_WORD,
+					NULL},
+	{N_("/_Edit/A_dvanced/Move to beginning of line"),
+					NULL, /* "<control>A" */
+					compose_gtk_stext_action_cb,
+					COMPOSE_CALL_GTK_STEXT_MOVE_BEGINNING_OF_LINE,
+					NULL},
+	{N_("/_Edit/A_dvanced/Move to end of line"),
+					"<control>E",
+					compose_gtk_stext_action_cb,
+					COMPOSE_CALL_GTK_STEXT_MOVE_END_OF_LINE,
+					NULL},
+	{N_("/_Edit/A_dvanced/Move to previous line"),
+					"<control>P",
+					compose_gtk_stext_action_cb,
+					COMPOSE_CALL_GTK_STEXT_MOVE_PREVIOUS_LINE,
+					NULL},
+	{N_("/_Edit/A_dvanced/Move to next line"),
+					"<control>N",
+					compose_gtk_stext_action_cb,
+					COMPOSE_CALL_GTK_STEXT_MOVE_NEXT_LINE,
+					NULL},
+	{N_("/_Edit/A_dvanced/Delete a character backward"),
+					"<control>H",
+					compose_gtk_stext_action_cb,
+					COMPOSE_CALL_GTK_STEXT_DELETE_BACKWARD_CHARACTER,
+					NULL},
+	{N_("/_Edit/A_dvanced/Delete a character forward"),
+					"<control>D",
+					compose_gtk_stext_action_cb,
+					COMPOSE_CALL_GTK_STEXT_DELETE_FORWARD_CHARACTER,
+					NULL},
+	{N_("/_Edit/A_dvanced/Delete a word backward"),
+					NULL, /* "<control>W" */
+					compose_gtk_stext_action_cb,
+					COMPOSE_CALL_GTK_STEXT_DELETE_BACKWARD_WORD,
+					NULL},
+	{N_("/_Edit/A_dvanced/Delete a word forward"),
+					"<alt>D",
+					compose_gtk_stext_action_cb,
+					COMPOSE_CALL_GTK_STEXT_DELETE_FORWARD_WORD,
+					NULL},
+	{N_("/_Edit/A_dvanced/Delete line"),
+					"<control>U",
+					compose_gtk_stext_action_cb,
+					COMPOSE_CALL_GTK_STEXT_DELETE_LINE,
+					NULL},
+	{N_("/_Edit/A_dvanced/Delete to end of line"),
+					"<control>K",
+					compose_gtk_stext_action_cb,
+					COMPOSE_CALL_GTK_STEXT_DELETE_TO_LINE_END,
+					NULL},
 	{N_("/_Edit/---"),		NULL, NULL, 0, "<Separator>"},
 #if USE_PSPELL
 	{N_("/_Edit/Check backwards misspelled word"),	"<control>;", compose_check_backwards , 0, NULL},
@@ -3947,7 +4004,7 @@ static void compose_create_header_entry(Compose *compose)
 
         gtk_signal_connect(GTK_OBJECT(entry), "key-press-event", GTK_SIGNAL_FUNC(compose_headerentry_key_press_event_cb), headerentry);
     	gtk_signal_connect(GTK_OBJECT(entry), "changed", GTK_SIGNAL_FUNC(compose_headerentry_changed_cb), headerentry);
-    	gtk_signal_connect(GTK_OBJECT(entry), "activate", GTK_SIGNAL_FUNC(compose_ctl_enter_send_shortcut_cb), compose);
+    	gtk_signal_connect(GTK_OBJECT(entry), "activate", GTK_SIGNAL_FUNC(text_activated), compose);
 
 	address_completion_register_entry(GTK_ENTRY(entry));
 
@@ -4347,7 +4404,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	subject_entry = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(subject), subject_entry, TRUE, TRUE, 2);
-    	gtk_signal_connect(GTK_OBJECT(subject_entry), "activate", GTK_SIGNAL_FUNC(compose_ctl_enter_send_shortcut_cb), compose);
+    	gtk_signal_connect(GTK_OBJECT(subject_entry), "activate", GTK_SIGNAL_FUNC(text_activated), compose);
 	gtk_widget_show(subject_entry);
 	compose->subject_entry = subject_entry;
 	gtk_container_add(GTK_CONTAINER(subject_frame), subject);
@@ -4399,7 +4456,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	gtk_signal_connect(GTK_OBJECT(text), "grab_focus",
 			   GTK_SIGNAL_FUNC(compose_grab_focus_cb), compose);
 	gtk_signal_connect(GTK_OBJECT(text), "activate",
-			   GTK_SIGNAL_FUNC(compose_ctl_enter_send_shortcut_cb), compose);
+			   GTK_SIGNAL_FUNC(text_activated), compose);
 	gtk_signal_connect_after(GTK_OBJECT(text), "button_press_event",
 				 GTK_SIGNAL_FUNC(compose_button_press_cb),
 				 edit_vbox);
@@ -6101,7 +6158,7 @@ static void compose_move_beginning_of_line_cb(Compose *compose)
 		gtk_stext_move_beginning_of_line(GTK_STEXT(compose->focused_editable));
 }
 
-static void compose_gtk_stext_action_cb	(Compose *compose, ComposeCallGtkStextAction action)
+static void compose_gtk_stext_action_cb(Compose *compose, ComposeCallGtkSTextAction action)
 {
 	if (!(compose->focused_editable && GTK_WIDGET_HAS_FOCUS(compose->focused_editable))) return;
 		
@@ -6543,25 +6600,38 @@ static void compose_show_first_last_header(Compose *compose, gboolean show_first
 	gtk_adjustment_set_value(vadj, (show_first ? vadj->lower : vadj->upper));
 }
 
-static void compose_ctl_enter_send_shortcut_cb(GtkWidget *w, Compose *compose)
+static void text_activated(GtkWidget *widget, Compose *compose)
 {
+	compose_send_control_enter(compose);
+}
+
+static gboolean compose_send_control_enter(Compose *compose)
+{
+	GdkEvent *ev;
+	GdkEventKey *kev;
 	GtkItemFactory *ifactory;
-	GtkAccelEntry  *accel;
-	GtkWidget      *send_button;
+	GtkAccelEntry *accel;
+	GtkWidget *send_menu;
 	GSList *list;
-	GdkEventKey *e= (GdkEventKey *) gtk_get_current_event();
-	
-	if (e->type != GDK_KEY_PRESS || 
-	    !( e->keyval == GDK_Return && e->state & GDK_CONTROL_MASK) )
-		return;
+
+	ev = gtk_get_current_event();
+	if (ev->type != GDK_KEY_PRESS) return FALSE;
+
+	kev = (GdkEventKey *)ev;
+	if (!(kev->keyval == GDK_Return && (kev->state & GDK_CONTROL_MASK)))
+		return FALSE;
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
-	send_button = gtk_item_factory_get_widget(ifactory, "/Message/Send");
-	list = gtk_accel_group_entries_from_object(GTK_OBJECT(send_button));
-	accel = (GtkAccelEntry *) list->data;
-	if (accel->accelerator_key == GDK_Return && 
-	    accel->accelerator_mods == GDK_CONTROL_MASK)
+	send_menu = gtk_item_factory_get_widget(ifactory, "/Message/Send");
+	list = gtk_accel_group_entries_from_object(GTK_OBJECT(send_menu));
+	accel = (GtkAccelEntry *)list->data;
+	if (accel->accelerator_key == kev->keyval &&
+	    accel->accelerator_mods == kev->state) {
 		compose_send_cb(compose, 0, NULL);
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 #if USE_PSPELL

@@ -1,3 +1,42 @@
+2002-01-23
+
+	* src/compose.c
+	  src/gtkstext.[ch]: GtkSText 中のハードコードされているショート
+	  カットを削除し、カスタマイズ可能にした。
+
+2002-01-22
+
+	* src/compose.c: 以前動作していなかった 'Ctrl-Enter' と
+	  'Ctrl-(修飾キー)-Enter' ショートカットを有効にした。
+	* src/gtkstext.c: いくつかの Emacs キーバインドを無効にした。
+	  gtk_stext_key_press(): カーソルの消滅を防ぐために Shift-Enter
+	  が押されたときは選択部を伸長しないようにした。
+	* src/summaryview.c: summary_select_next_unread(): 始めから未読
+	  メッセージを再検索するボタンをダイアログに追加。
+	* src/folderview.c: folderview_key_pressed(): 空フォルダ上で
+	  スペースキーが押されたら次の未読フォルダへ移動するようにした。
+	  行を選択する前に CTree のフォーカスを移動するようにした。
+
+2002-01-21
+
+	* src/defs.h: modified the XLFD of default fonts.
+	* src/textview.c: textview_create(): フォントを読み込めない場合
+	  segfault を起こすバグを修正。
+	* src/folderview.c
+	  src/grouplistdialog.c: 購読グループを path で比較。
+	* src/prefs_filter.c: 「演算子」を「条件」に変更。
+
+2002-01-20
+
+	* src/compose.c: compose_wrap_line_all(): URL が改行マージンより
+	  長いときのクラッシュを修正。
+	* src/mainwindow.c
+	  src/prefs_filter.[ch]
+	  src/summaryview.[ch]: Luca Rosellini さんのパッチに基づいて
+	  「振り分けルールを作成」機能を追加。
+	* src/summaryview.c: summary_filter_open(): X-List と X-Mailing-list
+	  を自動検出するヘッダに追加。
+
 2002-01-18
 
 	* configure.in: Mac OS X (Darwin) に対応。

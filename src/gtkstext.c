@@ -21,11 +21,11 @@
  * Modified by the GTK+ Team and others 1997-1999.  See the AUTHORS
  * file for a list of people on the GTK+ Team.  See the ChangeLog
  * files for a list of changes.  These files are distributed with
- * GTK+ at ftp://ftp.gtk.org/pub/gtk/.
+ * GTK+ at ftp://ftp.gtk.org/pub/gtk/. 
  */
 
 /*
- * Modified by the Sylpheed Team and others 2001. Interesting
+ * Modified by the Sylpheed Team and others 2001-2002. Interesting
  * parts are marked using comment block following this one.
  * This modification is based on the GtkText of GTK 1.2.10
  */
@@ -35,7 +35,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#	include "config.h"
+#  include "config.h"
 #endif
 
 #include <ctype.h>
@@ -45,9 +45,22 @@
 #include <gtk/gtkmain.h>
 #include <gtk/gtkselection.h>
 #include <gtk/gtksignal.h>
-#include <gtkstext.h>
 
 #include "compose.h"
+#include "gtkstext.h"
+
+
+/* line_arrow.xbm */
+#define line_arrow_width 6
+#define line_arrow_height 9
+static unsigned char line_arrow_bits[] = {
+   0x00, 0x00, 0x04, 0x0c, 0x18, 0x3f, 0x18, 0x0c, 0x04};
+
+/* line-wrap.xbm */
+#define line_wrap_width 6
+#define line_wrap_height 9
+static unsigned char line_wrap_bits[] = {
+  0x1e, 0x3e, 0x30, 0x30, 0x39, 0x1f, 0x0f, 0x0f, 0x1f, };
 
 /* SYLPHEED:
  * compile time settings 
@@ -70,8 +83,6 @@
 #define KEY_SCROLL_PIXELS        10
 #define SCROLL_TIME              100
 #define FREEZE_LENGTH            1024        
-
-
 /* Freeze text when inserting or deleting more than this many characters */
 
 /* SYLPHEED:
@@ -128,7 +139,7 @@ enum {
   ARG_WORD_WRAP
 };
 
-typedef struct _TextProperty		  TextProperty;
+typedef struct _TextProperty          TextProperty;
 typedef struct _TabStopMark           TabStopMark;
 typedef struct _PrevTabCont           PrevTabCont;
 typedef struct _FetchLinesData        FetchLinesData;
@@ -223,67 +234,67 @@ struct _LineParams
 };
 
 
-static void  gtk_stext_class_init     (GtkSTextClass   *klass);
-static void  gtk_stext_set_arg        (GtkObject      *object,
+static void  gtk_stext_class_init    (GtkSTextClass   *klass);
+static void  gtk_stext_set_arg       (GtkObject      *object,
 				      GtkArg         *arg,
 				      guint           arg_id);
-static void  gtk_stext_get_arg        (GtkObject      *object,
+static void  gtk_stext_get_arg       (GtkObject      *object,
 				      GtkArg         *arg,
 				      guint           arg_id);
-static void  gtk_stext_init           (GtkSText        *text);
-static void  gtk_stext_destroy        (GtkObject      *object);
-static void  gtk_stext_finalize       (GtkObject      *object);
-static void  gtk_stext_realize        (GtkWidget      *widget);
-static void  gtk_stext_unrealize      (GtkWidget      *widget);
-static void  gtk_stext_style_set	     (GtkWidget      *widget,
+static void  gtk_stext_init          (GtkSText        *text);
+static void  gtk_stext_destroy       (GtkObject      *object);
+static void  gtk_stext_finalize      (GtkObject      *object);
+static void  gtk_stext_realize       (GtkWidget      *widget);
+static void  gtk_stext_unrealize     (GtkWidget      *widget);
+static void  gtk_stext_style_set     (GtkWidget      *widget,
 				      GtkStyle       *previous_style);
-static void  gtk_stext_state_changed  (GtkWidget      *widget,
+static void  gtk_stext_state_changed (GtkWidget      *widget,
 				      GtkStateType    previous_state);
-static void  gtk_stext_draw_focus     (GtkWidget      *widget);
-static void  gtk_stext_size_request   (GtkWidget      *widget,
+static void  gtk_stext_draw_focus    (GtkWidget      *widget);
+static void  gtk_stext_size_request  (GtkWidget      *widget,
 				      GtkRequisition *requisition);
-static void  gtk_stext_size_allocate  (GtkWidget      *widget,
+static void  gtk_stext_size_allocate (GtkWidget      *widget,
 				      GtkAllocation  *allocation);
-static void  gtk_stext_adjustment     (GtkAdjustment  *adjustment,
+static void  gtk_stext_adjustment    (GtkAdjustment  *adjustment,
 				      GtkSText        *text);
-static void  gtk_stext_disconnect     (GtkAdjustment  *adjustment,
+static void  gtk_stext_disconnect    (GtkAdjustment  *adjustment,
 				      GtkSText        *text);
 
-static void gtk_stext_insert_text       (GtkEditable       *editable,
+static void gtk_stext_insert_text      (GtkEditable       *editable,
 					const gchar       *new_text,
 					gint               new_text_length,
 					gint               *position);
-static void gtk_stext_delete_text       (GtkEditable        *editable,
+static void gtk_stext_delete_text      (GtkEditable        *editable,
 					gint               start_pos,
 					gint               end_pos);
-static void gtk_stext_update_text       (GtkEditable       *editable,
+static void gtk_stext_update_text      (GtkEditable       *editable,
 					gint               start_pos,
 					gint               end_pos);
-static gchar *gtk_stext_get_chars       (GtkEditable       *editable,
+static gchar *gtk_stext_get_chars      (GtkEditable       *editable,
 					gint               start,
 					gint               end);
-static void gtk_stext_set_selection     (GtkEditable       *editable,
+static void gtk_stext_set_selection    (GtkEditable       *editable,
 					gint               start,
 					gint               end);
-static void gtk_stext_real_set_editable (GtkEditable       *editable,
+static void gtk_stext_real_set_editable(GtkEditable       *editable,
 					gboolean           is_editable);
 
 /* Event handlers */
-static void  gtk_stext_draw              (GtkWidget         *widget,
+static void  gtk_stext_draw             (GtkWidget         *widget,
 					 GdkRectangle      *area);
-static gint  gtk_stext_expose            (GtkWidget         *widget,
+static gint  gtk_stext_expose           (GtkWidget         *widget,
 					 GdkEventExpose    *event);
-static gint  gtk_stext_button_press      (GtkWidget         *widget,
+static gint  gtk_stext_button_press     (GtkWidget         *widget,
 					 GdkEventButton    *event);
-static gint  gtk_stext_button_release    (GtkWidget         *widget,
+static gint  gtk_stext_button_release   (GtkWidget         *widget,
 					 GdkEventButton    *event);
-static gint  gtk_stext_motion_notify     (GtkWidget         *widget,
+static gint  gtk_stext_motion_notify    (GtkWidget         *widget,
 					 GdkEventMotion    *event);
-static gint  gtk_stext_key_press         (GtkWidget         *widget,
+static gint  gtk_stext_key_press        (GtkWidget         *widget,
 					 GdkEventKey       *event);
-static gint  gtk_stext_focus_in          (GtkWidget         *widget,
+static gint  gtk_stext_focus_in         (GtkWidget         *widget,
 					 GdkEventFocus     *event);
-static gint  gtk_stext_focus_out         (GtkWidget         *widget,
+static gint  gtk_stext_focus_out        (GtkWidget         *widget,
 				         GdkEventFocus     *event);
 
 static void move_gap (GtkSText* text, guint index);
@@ -404,7 +415,8 @@ static void gtk_stext_kill_line           (GtkEditable *editable,
 					  gint         direction);
 
 /* To be removed */
-/*static void gtk_stext_move_forward_character    (GtkSText          *text);
+#if 0
+static void gtk_stext_move_forward_character    (GtkSText          *text);
 static void gtk_stext_move_backward_character   (GtkSText          *text);
 static void gtk_stext_move_forward_word         (GtkSText          *text);
 static void gtk_stext_move_backward_word        (GtkSText          *text);
@@ -418,15 +430,15 @@ static void gtk_stext_delete_backward_character (GtkSText          *text);
 static void gtk_stext_delete_forward_word       (GtkSText          *text);
 static void gtk_stext_delete_backward_word      (GtkSText          *text);
 static void gtk_stext_delete_line               (GtkSText          *text);
-static void gtk_stext_delete_to_line_end        (GtkSText          *text);*/
+static void gtk_stext_delete_to_line_end        (GtkSText          *text);
+#endif
 static void gtk_stext_select_word               (GtkSText          *text,
 						guint32           time);
 static void gtk_stext_select_line               (GtkSText          *text,
 						guint32           time);
 
 static void gtk_stext_set_position  (GtkEditable       *editable,
-				    gint               position);
-
+				     gint               position);
 
 /* SYLPHEED:
  * cursor timer
@@ -493,47 +505,45 @@ static GMemChunk  *text_property_chunk = NULL;
 static GtkWidgetClass *parent_class = NULL;
 
 
+#if 0
 static const GtkTextFunction control_keys[26] =
 {
-  NULL,/*(GtkTextFunction)gtk_stext_move_beginning_of_line,    /* a */
-  NULL,/*(GtkTextFunction)gtk_stext_move_backward_character,   /* b */
-  NULL,						      /* c */
-/*  (GtkTextFunction)gtk_editable_copy_clipboard,        /* c */
-  NULL,/*(GtkTextFunction)gtk_stext_delete_forward_character,  /* d */
-  NULL,/*(GtkTextFunction)gtk_stext_move_end_of_line,          /* e */
-  NULL,/*(GtkTextFunction)gtk_stext_move_forward_character,    /* f */
+  (GtkTextFunction)gtk_stext_move_beginning_of_line,   /* a */
+  (GtkTextFunction)gtk_stext_move_backward_character,  /* b */
+  (GtkTextFunction)gtk_editable_copy_clipboard,        /* c */
+  (GtkTextFunction)gtk_stext_delete_forward_character, /* d */
+  (GtkTextFunction)gtk_stext_move_end_of_line,         /* e */
+  (GtkTextFunction)gtk_stext_move_forward_character,   /* f */
   NULL,                                                /* g */
-  NULL,/*(GtkTextFunction)gtk_stext_delete_backward_character, /* h */
+  (GtkTextFunction)gtk_stext_delete_backward_character,/* h */
   NULL,                                                /* i */
   NULL,                                                /* j */
-  NULL,/*(GtkTextFunction)gtk_stext_delete_to_line_end,        /* k */
+  (GtkTextFunction)gtk_stext_delete_to_line_end,       /* k */
   NULL,                                                /* l */
   NULL,                                                /* m */
-  NULL,/*(GtkTextFunction)gtk_stext_move_next_line,            /* n */
+  (GtkTextFunction)gtk_stext_move_next_line,           /* n */
   NULL,                                                /* o */
-  NULL,/*(GtkTextFunction)gtk_stext_move_previous_line,        /* p */
+  (GtkTextFunction)gtk_stext_move_previous_line,       /* p */
   NULL,                                                /* q */
   NULL,                                                /* r */
   NULL,                                                /* s */
   NULL,                                                /* t */
-  NULL,/*(GtkTextFunction)gtk_stext_delete_line,               /* u */
-  NULL,						      /* v */
-/*  (GtkTextFunction)gtk_editable_paste_clipboard,       /* v */
-  NULL,/*(GtkTextFunction)gtk_stext_delete_backward_word,      /* w */
-  NULL,						     /* x */
-/*  (GtkTextFunction)gtk_editable_cut_clipboard,         /* x */
+  (GtkTextFunction)gtk_stext_delete_line,              /* u */
+  (GtkTextFunction)gtk_editable_paste_clipboard,       /* v */
+  (GtkTextFunction)gtk_stext_delete_backward_word,     /* w */
+  (GtkTextFunction)gtk_editable_cut_clipboard,         /* x */
   NULL,                                                /* y */
   NULL,                                                /* z */
 };
 
 static const GtkTextFunction alt_keys[26] =
 {
-  NULL,                                                /* a */
-  NULL,/*(GtkTextFunction)gtk_stext_move_backward_word,        /* b */
-  NULL,                                                /* c */
-  NULL,/*(GtkTextFunction)gtk_stext_delete_forward_word,       /* d */
+  NULL,                                           /* a */
+  (GtkTextFunction)gtk_stext_move_backward_word,  /* b */
+  NULL,                                           /* c */
+  (GtkTextFunction)gtk_stext_delete_forward_word, /* d */
   NULL,                                           /* e */
-  NULL,/*(GtkTextFunction)gtk_stext_move_forward_word,         /* f */
+  (GtkTextFunction)gtk_stext_move_forward_word,   /* f */
   NULL,                                           /* g */
   NULL,                                           /* h */
   NULL,                                           /* i */
@@ -555,19 +565,8 @@ static const GtkTextFunction alt_keys[26] =
   NULL,                                           /* y */
   NULL,                                           /* z */
 };
+#endif
 
-
-/* line_arrow.xbm */
-#define line_arrow_width 6
-#define line_arrow_height 9
-static unsigned char line_arrow_bits[] = {
-   0x00, 0x00, 0x04, 0x0c, 0x18, 0x3f, 0x18, 0x0c, 0x04};
-
-/* line-wrap.xbm */  
-#define line_wrap_width 6
-#define line_wrap_height 9
-static unsigned char line_wrap_bits[] = {
-  0x1e, 0x3e, 0x30, 0x30, 0x39, 0x1f, 0x0f, 0x0f, 0x1f, };
 
 /**********************************************************************/
 /*			        Widget Crap                           */
@@ -783,7 +782,7 @@ gtk_stext_init (GtkSText *text)
   text->button = 0;
   
   text->current_font = NULL;
-
+  
   /* SYLPHEED:
    * timer for blinking cursor
    */
@@ -822,10 +821,12 @@ gtk_stext_new (GtkAdjustment *hadj,
 
   /* SYLPHEED:
    * force widget name to be GtkText so it silently adapts
-   * the GtkText widget's style... 
+   * the GtkText widget's style...
    */
-  gtk_widget_set_name(text, "GtkText");			
-  gtk_widget_ensure_style(text);
+#if 0
+  gtk_widget_set_name (text, "GtkText");
+  gtk_widget_ensure_style (text);
+#endif
 
   return text;
 }
@@ -1423,10 +1424,10 @@ gtk_stext_realize (GtkWidget *widget)
   attributes.y = (widget->style->klass->ythickness + TEXT_BORDER_ROOM);
   attributes.width = MAX (1, (gint)widget->allocation.width - (gint)attributes.x * 2);
   attributes.height = MAX (1, (gint)widget->allocation.height - (gint)attributes.y * 2);
-  
+
   attributes.cursor = gdk_cursor_new (GDK_XTERM);
   attributes_mask |= GDK_WA_CURSOR;
-
+  
   text->text_area = gdk_window_new (widget->window, &attributes, attributes_mask);
   gdk_window_set_user_data (text->text_area, text);
 
@@ -1628,25 +1629,25 @@ clear_focus_area (GtkSText *text, gint area_x, gint area_y, gint area_width, gin
   gint xthick = TEXT_BORDER_ROOM + widget->style->klass->xthickness;
   
   gint width, height;
- 
+
   if (area_width == 0 || area_height == 0)
     return;
   
-   if (widget->style->bg_pixmap[GTK_STATE_NORMAL])
-     {
-       gdk_window_get_size (widget->style->bg_pixmap[GTK_STATE_NORMAL], &width, &height);
- 
-       gdk_gc_set_ts_origin (text->bg_gc,
-                           (- (gint)text->first_onscreen_hor_pixel + xthick) % width,
-                           (- (gint)text->first_onscreen_ver_pixel + ythick) % height);
- 
-       gc = text->bg_gc;
-     }
-   else
-     gc = widget->style->bg_gc[widget->state];
-  
-  
-   gdk_draw_rectangle (GTK_WIDGET (text)->window, gc, TRUE,
+  if (widget->style->bg_pixmap[GTK_STATE_NORMAL])
+    {
+      gdk_window_get_size (widget->style->bg_pixmap[GTK_STATE_NORMAL], &width, &height);
+      
+      gdk_gc_set_ts_origin (text->bg_gc,
+			    (- (gint)text->first_onscreen_hor_pixel + xthick) % width,
+			    (- (gint)text->first_onscreen_ver_pixel + ythick) % height);
+
+      gc = text->bg_gc;
+    }
+  else
+    gc = widget->style->bg_gc[widget->state];
+
+
+  gdk_draw_rectangle (GTK_WIDGET (text)->window, gc, TRUE,
 		      area_x, area_y, area_width, area_height);
 }
 
@@ -1705,11 +1706,11 @@ gtk_stext_draw_focus (GtkWidget *widget)
       /* top rect */
       clear_focus_area (text, x, y, width, yextra);
       /* left rect */
-      clear_focus_area (text, x, y + yextra,
-                       xextra, y + height - 2 * yextra);
+      clear_focus_area (text, x, y + yextra, 
+			xextra, y + height - 2 * yextra);
       /* right rect */
-      clear_focus_area (text, x + width - xextra, y + yextra,
-                       xextra, height - 2 * ythick);
+      clear_focus_area (text, x + width - xextra, y + yextra, 
+			xextra, height - 2 * ythick);
       /* bottom rect */
       clear_focus_area (text, x, x + height - yextra, width, yextra);
     }
@@ -2178,7 +2179,8 @@ gtk_stext_key_press (GtkWidget   *widget,
       
       text->point = find_mark (text, text->cursor_mark.index);
       
-      extend_selection = event->state & GDK_SHIFT_MASK;
+      extend_selection = (event->state & GDK_SHIFT_MASK) &&
+			 (event->keyval != GDK_Return);
       extend_start = FALSE;
       
       if (extend_selection)
@@ -2340,7 +2342,8 @@ gtk_stext_key_press (GtkWidget   *widget,
 	  
 	default:
 	  return_val = FALSE;
-	  
+
+#if 0
 	  if (event->state & GDK_CONTROL_MASK)
 	    {
 	      if ((key >= 'A') && (key <= 'Z'))
@@ -2368,6 +2371,10 @@ gtk_stext_key_press (GtkWidget   *widget,
 	      break;
 	    }
 	  else if (event->length > 0)
+#endif
+	  if (!(event->state & GDK_CONTROL_MASK) &&
+	      !(event->state & GDK_MOD1_MASK)    &&
+	       (event->length > 0))
 	    {
 	      extend_selection = FALSE;
 	      
@@ -2451,12 +2458,12 @@ gtk_stext_focus_out (GtkWidget     *widget,
   
   GTK_WIDGET_UNSET_FLAGS (widget, GTK_HAS_FOCUS);
   gtk_widget_draw_focus (widget);
- 
+  
   /* SYLPHEED:
    * should disable blink before undrawing the cursor - disabling blink
    * redraws the cursor.
    */
-  gtk_stext_disable_blink(GTK_STEXT(widget));
+  gtk_stext_disable_blink (GTK_STEXT(widget));
   undraw_cursor (GTK_STEXT(widget), TRUE);
   GTK_STEXT(widget)->cursor_visible = FALSE;
   
@@ -4453,25 +4460,25 @@ gtk_stext_move_cursor (GtkEditable *editable,
     }
 }
 
-/*static*/ void
+void
 gtk_stext_move_forward_character (GtkSText *text)
 {
   move_cursor_hor (text, 1);
 }
 
-/*static*/ void
+void
 gtk_stext_move_backward_character (GtkSText *text)
 {
   move_cursor_hor (text, -1);
 }
 
-/*static*/ void
+void
 gtk_stext_move_next_line (GtkSText *text)
 {
   move_cursor_ver (text, 1);
 }
 
-/*static*/ void
+void
 gtk_stext_move_previous_line (GtkSText *text)
 {
   move_cursor_ver (text, -1);
@@ -4493,7 +4500,7 @@ gtk_stext_move_word (GtkEditable *editable,
     }
 }
 
-/*static*/ void
+void
 gtk_stext_move_forward_word (GtkSText *text)
 {
   text->cursor_virtual_x = 0;
@@ -4525,7 +4532,7 @@ gtk_stext_move_forward_word (GtkSText *text)
   draw_cursor (text, FALSE);
 }
 
-/*static*/ void
+void
 gtk_stext_move_backward_word (GtkSText *text)
 {
   text->cursor_virtual_x = 0;
@@ -4605,14 +4612,14 @@ gtk_stext_move_to_column (GtkEditable *editable,
   draw_cursor (text, FALSE);
 }
 
-/*static*/ void
+void
 gtk_stext_move_beginning_of_line (GtkSText *text)
 {
   gtk_stext_move_to_column (GTK_EDITABLE (text), 0);
   
 }
 
-/*static*/ void
+void
 gtk_stext_move_end_of_line (GtkSText *text)
 {
   gtk_stext_move_to_column (GTK_EDITABLE (text), -1);
@@ -4643,13 +4650,13 @@ gtk_stext_kill_char (GtkEditable *editable,
     }
 }
 
-/*static*/ void
+void
 gtk_stext_delete_forward_character (GtkSText *text)
 {
   gtk_stext_kill_char (GTK_EDITABLE (text), 1);
 }
 
-/*static*/ void
+void
 gtk_stext_delete_backward_character (GtkSText *text)
 {
   gtk_stext_kill_char (GTK_EDITABLE (text), -1);
@@ -4677,13 +4684,13 @@ gtk_stext_kill_word (GtkEditable *editable,
     }
 }
 
-/*static*/ void
+void
 gtk_stext_delete_forward_word (GtkSText *text)
 {
   gtk_stext_kill_word (GTK_EDITABLE (text), 1);
 }
 
-/*static*/ void
+void
 gtk_stext_delete_backward_word (GtkSText *text)
 {
   gtk_stext_kill_word (GTK_EDITABLE (text), -1);
@@ -4706,14 +4713,14 @@ gtk_stext_kill_line (GtkEditable *editable,
     }
 }
 
-/*static*/ void
+void
 gtk_stext_delete_line (GtkSText *text)
 {
   gtk_stext_move_to_column (GTK_EDITABLE (text), 0);
   gtk_stext_kill_line (GTK_EDITABLE (text), 1);
 }
 
-/*static*/ void
+void
 gtk_stext_delete_to_line_end (GtkSText *text)
 {
   gtk_stext_kill_line (GTK_EDITABLE (text), 1);

@@ -1,3 +1,43 @@
+2002-01-23
+
+	* src/compose.c
+	  src/gtkstext.[ch]: removed the hardcoded shortcuts in GtkSText,
+	  and made them customizable.
+
+2002-01-22
+
+	* src/compose.c: enabled 'Ctrl-Enter' or
+	  'Ctrl-(other modifier keys)-Enter' shortcut that didn't work
+	  before.
+	* src/gtkstext.c: disabled some Emacs key bindings.
+	  gtk_stext_key_press(): don't extend selection when Shift-Enter
+	  is pressed to prevent the disapperance of cursor.
+	* src/summaryview.c: summary_select_next_unread(): added the button
+	  to search unread message again from the beginning to the dialog.
+	* src/folderview.c: folderview_key_pressed(): go to next unread
+	  folder if space key is pressed on the empty folder.
+	  Move CTree focus before selecting row.
+
+2002-01-21
+
+	* src/defs.h: modified the XLFD of default fonts.
+	* src/textview.c: textview_create(): fixed a bug that caused
+	  segfault if font couldn't be loaded.
+	* src/folderview.c
+	  src/grouplistdialog.c: compare subscribed groups with path.
+	* src/prefs_filter.c: changed 'Operator' to 'Condition'.
+
+2002-01-20
+
+	* src/compose.c: compose_wrap_line_all(): fixed wrapping crash
+	  when URL is wider than wrapping margin.
+	* src/mainwindow.c
+	  src/prefs_filter.[ch]
+	  src/summaryview.[ch]: added "Create filter rule" function based
+	  on the patch from Luca Rosellini.
+	* src/summaryview.c: summary_filter_open(): added X-List and
+	  X-Mailing-list to the automatically detected headers.
+
 2002-01-18
 
 	* configure.in: support Mac OS X (Darwin).

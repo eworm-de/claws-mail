@@ -1,3 +1,8 @@
+2002-01-23 [paul]	0.7.0claws22
+
+	* sync with sylpheed 0.7.0cvs15
+		see ChangeLog entries 2002-01-22 and 2002-01-23
+
 2002-01-21 [melvin]	0.7.0claws21
 
 	* src/prefs_scoring.c

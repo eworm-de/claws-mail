@@ -544,8 +544,8 @@ static void folderview_select_node(FolderView *folderview, GtkCTreeNode *node)
 	g_return_if_fail(node != NULL);
 
 	folderview->open_folder = TRUE;
-	gtk_ctree_select(ctree, node);
 	gtkut_ctree_set_focus_row(ctree, node);
+	gtk_ctree_select(ctree, node);
 	if (folderview->summaryview->messages > 0)
 		gtk_widget_grab_focus(folderview->summaryview->ctree);
 	else
@@ -1411,9 +1411,9 @@ static void folderview_button_released(GtkWidget *ctree, GdkEventButton *event,
 
 	if (event->button == 1 && folderview->open_folder == FALSE &&
 	    folderview->opened != NULL) {
-		gtk_ctree_select(GTK_CTREE(ctree), folderview->opened);
 		gtkut_ctree_set_focus_row(GTK_CTREE(ctree),
 					  folderview->opened);
+		gtk_ctree_select(GTK_CTREE(ctree), folderview->opened);
 	}
 }
 
@@ -1427,10 +1427,19 @@ static void folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 
 	switch (event->keyval) {
 	case GDK_Return:
-	case GDK_space:
 		if (folderview->selected) {
 			folderview_select_node(folderview,
 					       folderview->selected);
+		}
+		break;
+	case GDK_space:
+		if (folderview->selected) {
+			if (folderview->opened == folderview->selected &&
+			    folderview->summaryview->messages == 0)
+				folderview_select_next_unread(folderview);
+			else
+				folderview_select_node(folderview,
+						       folderview->selected);
 		}
 		break;
 	case GDK_v:
@@ -1463,8 +1472,8 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	}
 
 	if (!can_select) {
-		gtk_ctree_select(ctree, folderview->opened);
 		gtkut_ctree_set_focus_row(ctree, folderview->opened);
+		gtk_ctree_select(ctree, folderview->opened);
 		return;
 	}
 
@@ -1502,8 +1511,8 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	opened = summary_show(folderview->summaryview, item, FALSE);
 
 	if (!opened) {
-		gtk_ctree_select(ctree, folderview->opened);
 		gtkut_ctree_set_focus_row(ctree, folderview->opened);
+		gtk_ctree_select(ctree, folderview->opened);
 	} else
 		folderview->opened = row;
 
@@ -1538,9 +1547,9 @@ static void folderview_popup_close(GtkMenuShell *menu_shell,
 {
 	if (!folderview->opened) return;
 
-	gtk_ctree_select(GTK_CTREE(folderview->ctree), folderview->opened);
 	gtkut_ctree_set_focus_row(GTK_CTREE(folderview->ctree),
 				  folderview->opened);
+	gtk_ctree_select(GTK_CTREE(folderview->ctree), folderview->opened);
 }
 
 static void folderview_col_resized(GtkCList *clist, gint column, gint width,
