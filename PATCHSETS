@@ -398,3 +398,4 @@
 ( cvs diff -u -r 1.382.2.106 -r 1.382.2.107 src/compose.c; ) > 1.0.1cvs15.7.patchset
 ( cvs diff -u -r 1.395.2.55 -r 1.395.2.56 src/summaryview.c; ) > 1.0.1cvs15.8.patchset
 ( cvs diff -u -r 1.395.2.56 -r 1.395.2.57 src/summaryview.c; ) > 1.0.1cvs15.9.patchset
+( cvs diff -u -r 1.94.2.46 -r 1.94.2.47 src/messageview.c; ) > 1.0.1cvs15.10.patchset
