@@ -1,3 +1,8 @@
+2002-11-17 [oliver]	0.8.5claws163
+
+	* src/toolbar.c
+		make toolbar's on click events translatable
+
 2002-11-15 [colin]	0.8.5claws162
 
 	* src/summaryview.c

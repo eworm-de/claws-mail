@@ -71,11 +71,15 @@ static gchar *toolbar_ret_text_from_val      (gint            val);
 static void   toolbar_set_default_main       (void);
 static void   toolbar_set_default_compose    (void);
 
-
+struct ToolbarText 
+{
+	gchar *index_str;
+	const gchar *descr;
+};
 /* 
  *  Text Database linked to enumarated values in toolbar.h 
  */
-static ToolbarText toolbar_text [] = {
+static struct ToolbarText toolbar_text [] = {
 	
 	{ "A_RECEIVE_ALL",   N_("Receive Mail on all Accounts")         },
 	{ "A_RECEIVE_CUR",   N_("Receive Mail on current Account")      },
@@ -107,7 +111,7 @@ static ToolbarText toolbar_text [] = {
 
 /* struct holds configuration files and a list of
  * currently active toolbar items 
- * TOOLBAR_MAIN and TOOLBAR_COMPOSE give as an index
+ * TOOLBAR_MAIN and TOOLBAR_COMPOSE give us an index
  */
 static ToolbarConfig toolbar_config[2] = {
 	{ "toolbar_main.xml",    NULL},
@@ -119,7 +123,7 @@ gint toolbar_ret_val_from_descr(const gchar *descr)
 	gint i;
 
 	for (i = 0; i < N_ACTION_VAL; i++) {
-		if (g_strcasecmp(toolbar_text[i].descr, descr) == 0)
+		if (g_strcasecmp(gettext(toolbar_text[i].descr), descr) == 0)
 				return i;
 	}
 	
@@ -130,7 +134,7 @@ gchar *toolbar_ret_descr_from_val(gint val)
 {
 	g_return_val_if_fail(val >=0 && val < N_ACTION_VAL, NULL);
 
-	return toolbar_text[val].descr;
+	return gettext(toolbar_text[val].descr);
 }
 
 static gint toolbar_ret_val_from_text(const gchar *text)
@@ -181,7 +185,7 @@ GList *toolbar_get_action_items(Toolbar source)
 					A_SYL_ACTIONS };
 
 		for (i = 0; i < sizeof(main_items)/sizeof(main_items[0]); i++) 
-			items = g_list_append(items, toolbar_text[main_items[i]].descr);
+			items = g_list_append(items, gettext(toolbar_text[main_items[i]].descr));
 	}
 	else if (source == TOOLBAR_COMPOSE) {
 		gint comp_items[10] = {	A_SEND,          A_SENDL,        A_DRAFT,
@@ -190,7 +194,7 @@ GList *toolbar_get_action_items(Toolbar source)
 					A_SYL_ACTIONS };	
 
 		for (i = 0; i < sizeof(comp_items)/sizeof(comp_items[0]); i++) 
-			items = g_list_append(items, toolbar_text[comp_items[i]].descr);
+			items = g_list_append(items, gettext(toolbar_text[comp_items[i]].descr));
 	}
 
 	return items;
