@@ -32,17 +32,19 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#ifndef WIN32
 #include <unistd.h>
-#include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/time.h>
+#include <dirent.h>
+#endif
+#include <sys/types.h>
 #include <signal.h>
 #include <ctype.h>
 #include <string.h>
 #include <errno.h>
-#include <sys/time.h>
 #include <fcntl.h>
 #include <time.h>
-#include <dirent.h>
 
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
@@ -371,8 +373,19 @@ static void entry_insert_cb(GtkSText *gtktext,
 	 */
 
 	gtk_stext_freeze(gtktext);
+#ifdef WIN32
+	{
+		gsize newlen;
+		gchar *loctext;
+		loctext = g_locale_from_utf8(newtext, len, NULL, &newlen, NULL);
+		gtk_stext_backward_delete(GTK_STEXT(gtktext), newlen);
+		gtk_stext_insert(GTK_STEXT(gtktext), NULL, NULL, NULL, loctext, newlen);
+		g_free(loctext);
+	}
+#else
 	gtk_stext_backward_delete(GTK_STEXT(gtktext), len);
 	gtk_stext_insert(GTK_STEXT(gtktext), NULL, NULL, NULL, newtext, len);
+#endif
 	*ppos = gtk_stext_get_point(GTK_STEXT(gtktext));
 	       
 	if (iswordsep(newtext[0])) {
@@ -419,7 +432,9 @@ static void entry_delete_cb(GtkSText *gtktext,
 	gtk_stext_set_point(gtktext, origpos);
 	/* this is to *UNDO* the selection, in case they were holding shift
          * while hitting backspace. */
+#ifndef WIN32 /* why does this result in an invalid mark? */
 	gtk_editable_select_region(GTK_EDITABLE(gtktext), origpos, origpos);
+#endif
 }
 
 /* ok, this is pretty wacky:
@@ -484,6 +499,9 @@ static GtkAspeller *gtkaspeller_new(Dictionary *dictionary)
 		gchar *tmp;
 
 		tmp = strrchr(dictionary->fullname, G_DIR_SEPARATOR);
+#ifdef WIN32
+	if (!tmp) tmp = strrchr(dictionary->fullname, '/');
+#endif
 
 		if (tmp == NULL)
 			dictionary->dictname = dictionary->fullname;
@@ -539,6 +557,10 @@ static GtkAspeller *gtkaspeller_real_new(Dictionary *dict)
 	if (!set_dictionary(config, dict))
 		return NULL;
 	
+#ifdef WIN32
+	aspell_config_replace(config, "prefix", prefs_common.aspell_prefix);
+	aspell_config_replace(config, "data-dir", prefs_common.aspell_data_path);
+#endif /* WIN32 */
 	ret = new_aspell_speller(config);
 	delete_aspell_config(config);
 
@@ -800,7 +822,9 @@ static guchar get_text_index_whar(GtkAspell *gtkaspell, int pos)
 				      pos + 1);
 	if (text == NULL) 
 		return 0;
-
+#ifdef WIN32
+	locale_from_utf8(&text);
+#endif
 	a = (guchar) *text;
 
 	g_free(text);
@@ -898,6 +922,10 @@ static gboolean check_at(GtkAspell *gtkaspell, gint from_pos)
 	gint	      start, end;
 	unsigned char buf[GTKASPELLWORDSIZE];
 	GtkSText     *gtktext;
+#ifdef WIN32
+	unsigned char *locbuf;
+	gsize oldsize,newsize;
+#endif
 
 	g_return_val_if_fail(from_pos >= 0, FALSE);
     
@@ -1459,6 +1487,10 @@ GSList *gtkaspell_get_dictionary_list(const gchar *aspell_path, gint refresh)
 		return gtkaspellcheckers->dictionary_list; 
 	}
 #endif
+#ifdef WIN32
+	aspell_config_replace(config, "prefix", prefs_common.aspell_prefix);
+	aspell_config_replace(config, "data-dir", prefs_common.aspell_data_path);
+#endif /* WIN32 */
 	aspell_config_replace(config, "dict-dir", aspell_path);
 	if (aspell_config_error_number(config) != 0) {
 		gtkaspellcheckers->error_message = g_strdup(

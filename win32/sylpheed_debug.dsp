@@ -42,8 +42,8 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W1 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /W1 /GX /O2 /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /YX /FD /c
+# ADD BASE CPP /nologo /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /GX /O2 /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x411 /d "NDEBUG"
@@ -68,8 +68,8 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W1 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /MD /W1 /Gm /GX /ZI /Od /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /FR /YX /FD /GZ /c
+# ADD BASE CPP /nologo /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
+# ADD CPP /nologo /MD /Gm /GX /ZI /Od /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /I "\dev\proj\aspell\interfaces\cc" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x411 /d "_DEBUG"
@@ -254,6 +254,10 @@ SOURCE=..\src\folderview.c
 # Begin Source File
 
 SOURCE=..\src\grouplistdialog.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\gtkaspell.c
 # End Source File
 # Begin Source File
 
@@ -629,6 +633,10 @@ SOURCE=..\src\vcard.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\w32_aspell_init.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\w32_mailcap.c
 # End Source File
 # Begin Source File
@@ -786,6 +794,10 @@ SOURCE=..\src\folderview.h
 # Begin Source File
 
 SOURCE=..\src\grouplistdialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\gtkaspell.h
 # End Source File
 # Begin Source File
 
@@ -1098,6 +1110,10 @@ SOURCE=..\src\vcard.h
 # Begin Source File
 
 SOURCE=..\src\version.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\w32_aspell_init.h
 # End Source File
 # Begin Source File
 

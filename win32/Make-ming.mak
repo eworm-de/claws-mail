@@ -269,6 +269,7 @@ OBJECTS= \
 	utils.o \
 	uuencode.o \
 	vcard.o \
+	w32_aspell_init.o \
 	w32_mailcap.o \
 	xml.o \
 	xmlprops.o \
@@ -422,6 +423,7 @@ quote_fmt.o:	quote_fmt.c quote_fmt.h
 quote_fmt_lex.o:	quote_fmt_lex.c quote_fmt_lex.h
 quote_fmt_parse.o: 	quote_fmt_parse.c quote_fmt_parse.h
 # win32 additions
+w32_aspell_init.o:	w32_aspell_init.c w32_aspell_init.h
 w32_mailcap.o:	w32_mailcap.c w32_mailcap.h
 # libjconv
 compat.o:	compat.c jconv.h

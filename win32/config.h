@@ -28,10 +28,14 @@
 #define USE_GPGME 1
 
 /* Define if you use PSPELL to support spell checking */
-/* #undef USE_PSPELL */
+#define USE_ASPELL 1
 
 /* Define PSPELL's default directory */
-/* #undef PSPELL_PATH */
+#define ASPELL_PATH "c:/aspell/dict/"
+#define ASPELL_PREFIX "c:/aspell"
+#define ASPELL_DATA_PATH "c:/aspell/data"
+#define ASPELL_COMMON_LIB "c:/aspell/bin/aspell-common-0-50-2.dll"
+#define ASPELL_LIB "c:/aspell/bin/aspell-15.dll"
 
 /* Define if you use OpenSSL to support SSL */
 #define USE_SSL 1

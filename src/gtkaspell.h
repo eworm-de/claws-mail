@@ -33,7 +33,11 @@
 #define __GTKASPELL_H__
 
 #include <gtk/gtkoptionmenu.h>
+#ifdef WIN32
+#include "w32_aspell_init.h"
+#else
 #include <aspell.h>
+#endif
 
 #include "gtkstext.h"
 

@@ -360,6 +360,9 @@ int main(int argc, char *argv[])
 #endif
 
 #if USE_ASPELL
+#ifdef WIN32
+	w32_aspell_init();
+#endif
 	gtkaspellcheckers = gtkaspell_checkers_new();
 #endif
 	

@@ -69,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /W3 /Gm /GX /ZI /Od /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /I "\dev\proj\aspell\interfaces\cc" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x411 /d "_DEBUG"
@@ -253,6 +253,10 @@ SOURCE=..\src\folderview.c
 # Begin Source File
 
 SOURCE=..\src\grouplistdialog.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\gtkaspell.c
 # End Source File
 # Begin Source File
 
@@ -628,6 +632,10 @@ SOURCE=..\src\vcard.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\w32_aspell_init.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\w32_mailcap.c
 # End Source File
 # Begin Source File
@@ -785,6 +793,10 @@ SOURCE=..\src\folderview.h
 # Begin Source File
 
 SOURCE=..\src\grouplistdialog.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\gtkaspell.h
 # End Source File
 # Begin Source File
 
@@ -1097,6 +1109,10 @@ SOURCE=..\src\vcard.h
 # Begin Source File
 
 SOURCE=..\src\version.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\w32_aspell_init.h
 # End Source File
 # Begin Source File
 

@@ -25,10 +25,6 @@ NULL=
 NULL=nul
 !ENDIF 
 
-CPP=cl.exe
-MTL=midl.exe
-RSC=rc.exe
-
 !IF  "$(CFG)" == "sylpheed - Win32 Release"
 
 OUTDIR=.\Release
@@ -82,6 +78,7 @@ CLEAN :
 	-@erase "$(INTDIR)\foldersel.obj"
 	-@erase "$(INTDIR)\folderview.obj"
 	-@erase "$(INTDIR)\grouplistdialog.obj"
+	-@erase "$(INTDIR)\gtkaspell.obj"
 	-@erase "$(INTDIR)\gtksctree.obj"
 	-@erase "$(INTDIR)\gtkshruler.obj"
 	-@erase "$(INTDIR)\gtkstext.obj"
@@ -176,6 +173,7 @@ CLEAN :
 	-@erase "$(INTDIR)\uuencode.obj"
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vcard.obj"
+	-@erase "$(INTDIR)\w32_aspell_init.obj"
 	-@erase "$(INTDIR)\w32_mailcap.obj"
 	-@erase "$(INTDIR)\xml.obj"
 	-@erase "$(INTDIR)\xmlprops.obj"
@@ -184,8 +182,42 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
+CPP=cl.exe
 CPP_PROJ=/nologo /MD /W3 /GX /O2 /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /Fp"$(INTDIR)\sylpheed.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+MTL=midl.exe
 MTL_PROJ=/nologo /D "NDEBUG" /mktyplib203 /win32 
+RSC=rc.exe
 RSC_PROJ=/l 0x411 /fo"$(INTDIR)\sylpheed.res" /d "NDEBUG" 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\sylpheed.bsc" 
@@ -235,6 +267,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\foldersel.obj" \
 	"$(INTDIR)\folderview.obj" \
 	"$(INTDIR)\grouplistdialog.obj" \
+	"$(INTDIR)\gtkaspell.obj" \
 	"$(INTDIR)\gtksctree.obj" \
 	"$(INTDIR)\gtkshruler.obj" \
 	"$(INTDIR)\gtkstext.obj" \
@@ -290,6 +323,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\prefs_scoring.obj" \
 	"$(INTDIR)\prefs_summary_column.obj" \
 	"$(INTDIR)\prefs_template.obj" \
+	"$(INTDIR)\prefs_toolbar.obj" \
 	"$(INTDIR)\procheader.obj" \
 	"$(INTDIR)\procmime.obj" \
 	"$(INTDIR)\procmsg.obj" \
@@ -320,11 +354,13 @@ LINK32_OBJS= \
 	"$(INTDIR)\syldap.obj" \
 	"$(INTDIR)\template.obj" \
 	"$(INTDIR)\textview.obj" \
+	"$(INTDIR)\toolbar.obj" \
 	"$(INTDIR)\undo.obj" \
 	"$(INTDIR)\unmime.obj" \
 	"$(INTDIR)\utils.obj" \
 	"$(INTDIR)\uuencode.obj" \
 	"$(INTDIR)\vcard.obj" \
+	"$(INTDIR)\w32_aspell_init.obj" \
 	"$(INTDIR)\w32_mailcap.obj" \
 	"$(INTDIR)\xml.obj" \
 	"$(INTDIR)\xmlprops.obj" \
@@ -340,9 +376,7 @@ LINK32_OBJS= \
 	"..\..\regex\regex.lib" \
 	"..\..\fnmatch\fnmatch.lib" \
 	"..\..\..\lib\libeay32.lib" \
-	"..\..\..\lib\ssleay32.lib" \
-	"$(INTDIR)\toolbar.obj" \
-	"$(INTDIR)\prefs_toolbar.obj"
+	"..\..\..\lib\ssleay32.lib"
 
 "$(OUTDIR)\sylpheed.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -443,6 +477,8 @@ CLEAN :
 	-@erase "$(INTDIR)\folderview.sbr"
 	-@erase "$(INTDIR)\grouplistdialog.obj"
 	-@erase "$(INTDIR)\grouplistdialog.sbr"
+	-@erase "$(INTDIR)\gtkaspell.obj"
+	-@erase "$(INTDIR)\gtkaspell.sbr"
 	-@erase "$(INTDIR)\gtksctree.obj"
 	-@erase "$(INTDIR)\gtksctree.sbr"
 	-@erase "$(INTDIR)\gtkshruler.obj"
@@ -630,6 +666,8 @@ CLEAN :
 	-@erase "$(INTDIR)\vc60.pdb"
 	-@erase "$(INTDIR)\vcard.obj"
 	-@erase "$(INTDIR)\vcard.sbr"
+	-@erase "$(INTDIR)\w32_aspell_init.obj"
+	-@erase "$(INTDIR)\w32_aspell_init.sbr"
 	-@erase "$(INTDIR)\w32_mailcap.obj"
 	-@erase "$(INTDIR)\w32_mailcap.sbr"
 	-@erase "$(INTDIR)\xml.obj"
@@ -644,8 +682,42 @@ CLEAN :
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
 
-CPP_PROJ=/nologo /MLd /W3 /Gm /GX /ZI /Od /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\sylpheed.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+CPP=cl.exe
+CPP_PROJ=/nologo /MLd /W3 /Gm /GX /ZI /Od /I "..\win32" /I "\dev\include" /I "\dev\include\glib-2.0" /I "\dev\lib\glib-2.0\include" /I "\dev\include\gdk" /I "\dev\include\gtk" /I "\dev\lib\gtk+\include" /I "\dev\proj\fnmatch\src\posix" /I "\dev\proj\libcompface\src" /I "..\libjconv" /I "\dev\proj\regex\src" /I "\dev\proj\w32lib\src" /I "\dev\proj\gpgme\gpgme" /I "\dev\proj\aspell\interfaces\cc" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "HAVE_CONFIG_H" /FR"$(INTDIR)\\" /Fp"$(INTDIR)\sylpheed.pch" /YX /Fo"$(INTDIR)\\" /Fd"$(INTDIR)\\" /FD /GZ /c 
+
+.c{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.obj::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.c{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cpp{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+.cxx{$(INTDIR)}.sbr::
+   $(CPP) @<<
+   $(CPP_PROJ) $< 
+<<
+
+MTL=midl.exe
 MTL_PROJ=/nologo /D "_DEBUG" /mktyplib203 /win32 
+RSC=rc.exe
 RSC_PROJ=/l 0x411 /fo"$(INTDIR)\sylpheed.res" /d "_DEBUG" 
 BSC32=bscmake.exe
 BSC32_FLAGS=/nologo /o"$(OUTDIR)\sylpheed.bsc" 
@@ -691,6 +763,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\foldersel.sbr" \
 	"$(INTDIR)\folderview.sbr" \
 	"$(INTDIR)\grouplistdialog.sbr" \
+	"$(INTDIR)\gtkaspell.sbr" \
 	"$(INTDIR)\gtksctree.sbr" \
 	"$(INTDIR)\gtkshruler.sbr" \
 	"$(INTDIR)\gtkstext.sbr" \
@@ -746,6 +819,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\prefs_scoring.sbr" \
 	"$(INTDIR)\prefs_summary_column.sbr" \
 	"$(INTDIR)\prefs_template.sbr" \
+	"$(INTDIR)\prefs_toolbar.sbr" \
 	"$(INTDIR)\procheader.sbr" \
 	"$(INTDIR)\procmime.sbr" \
 	"$(INTDIR)\procmsg.sbr" \
@@ -776,16 +850,16 @@ BSC32_SBRS= \
 	"$(INTDIR)\syldap.sbr" \
 	"$(INTDIR)\template.sbr" \
 	"$(INTDIR)\textview.sbr" \
+	"$(INTDIR)\toolbar.sbr" \
 	"$(INTDIR)\undo.sbr" \
 	"$(INTDIR)\unmime.sbr" \
 	"$(INTDIR)\utils.sbr" \
 	"$(INTDIR)\uuencode.sbr" \
 	"$(INTDIR)\vcard.sbr" \
+	"$(INTDIR)\w32_aspell_init.sbr" \
 	"$(INTDIR)\w32_mailcap.sbr" \
 	"$(INTDIR)\xml.sbr" \
-	"$(INTDIR)\xmlprops.sbr" \
-	"$(INTDIR)\toolbar.sbr" \
-	"$(INTDIR)\prefs_toolbar.sbr"
+	"$(INTDIR)\xmlprops.sbr"
 
 "$(OUTDIR)\sylpheed.bsc" : "$(OUTDIR)" $(BSC32_SBRS)
     $(BSC32) @<<
@@ -836,6 +910,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\foldersel.obj" \
 	"$(INTDIR)\folderview.obj" \
 	"$(INTDIR)\grouplistdialog.obj" \
+	"$(INTDIR)\gtkaspell.obj" \
 	"$(INTDIR)\gtksctree.obj" \
 	"$(INTDIR)\gtkshruler.obj" \
 	"$(INTDIR)\gtkstext.obj" \
@@ -891,6 +966,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\prefs_scoring.obj" \
 	"$(INTDIR)\prefs_summary_column.obj" \
 	"$(INTDIR)\prefs_template.obj" \
+	"$(INTDIR)\prefs_toolbar.obj" \
 	"$(INTDIR)\procheader.obj" \
 	"$(INTDIR)\procmime.obj" \
 	"$(INTDIR)\procmsg.obj" \
@@ -921,11 +997,13 @@ LINK32_OBJS= \
 	"$(INTDIR)\syldap.obj" \
 	"$(INTDIR)\template.obj" \
 	"$(INTDIR)\textview.obj" \
+	"$(INTDIR)\toolbar.obj" \
 	"$(INTDIR)\undo.obj" \
 	"$(INTDIR)\unmime.obj" \
 	"$(INTDIR)\utils.obj" \
 	"$(INTDIR)\uuencode.obj" \
 	"$(INTDIR)\vcard.obj" \
+	"$(INTDIR)\w32_aspell_init.obj" \
 	"$(INTDIR)\w32_mailcap.obj" \
 	"$(INTDIR)\xml.obj" \
 	"$(INTDIR)\xmlprops.obj" \
@@ -941,9 +1019,7 @@ LINK32_OBJS= \
 	"..\..\regex\regex.lib" \
 	"..\..\fnmatch\fnmatch.lib" \
 	"..\..\..\lib\libeay32.lib" \
-	"..\..\..\lib\ssleay32.lib" \
-	"$(INTDIR)\toolbar.obj" \
-	"$(INTDIR)\prefs_toolbar.obj"
+	"..\..\..\lib\ssleay32.lib"
 
 "$(OUTDIR)\sylpheed_d.exe" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -951,36 +1027,6 @@ LINK32_OBJS= \
 <<
 
 !ENDIF 
-
-.c{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.obj::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.c{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cpp{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
-
-.cxx{$(INTDIR)}.sbr::
-   $(CPP) @<<
-   $(CPP_PROJ) $< 
-<<
 
 
 !IF "$(NO_EXTERNAL_DEPS)" != "1"
@@ -1726,6 +1772,24 @@ SOURCE=..\src\grouplistdialog.c
 
 
 "$(INTDIR)\grouplistdialog.obj"	"$(INTDIR)\grouplistdialog.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=..\src\gtkaspell.c
+
+!IF  "$(CFG)" == "sylpheed - Win32 Release"
+
+
+"$(INTDIR)\gtkaspell.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
+
+
+"$(INTDIR)\gtkaspell.obj"	"$(INTDIR)\gtkaspell.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -3388,6 +3452,24 @@ SOURCE=..\src\vcard.c
 
 
 "$(INTDIR)\vcard.obj"	"$(INTDIR)\vcard.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=..\src\w32_aspell_init.c
+
+!IF  "$(CFG)" == "sylpheed - Win32 Release"
+
+
+"$(INTDIR)\w32_aspell_init.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
+
+
+"$(INTDIR)\w32_aspell_init.obj"	"$(INTDIR)\w32_aspell_init.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

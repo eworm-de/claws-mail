@@ -1,3 +1,17 @@
+2002-10-12 [thorsten]	0.8.5claws21-1
+
+	* src/main.c
+	  src/gtkaspell.[ch]
+	  src/prefs_common.[ch]
+	  src/w32_aspell_init.[ch]	*** NEW FILE ***
+	  win32/config.h
+	  win32/sylpheed.ds[pw]
+	  win32/sylpheed.mak
+	  win32/sylpheed_debug.ds[pw]
+	  win32/sylpheed_debug.mak
+	  win32/make-ming.mak
+		add: GNU ASpell-0.50 support
+
 2002-09-29 [thorsten]	0.8.3claws32-1
 
 	* src/prefs_folder_item.[ch]
