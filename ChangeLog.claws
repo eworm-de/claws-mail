@@ -1,3 +1,13 @@
+2004-12-16 [paul]	0.9.13cvs19
+
+	* ChangeLog
+	* ChangeLog.jp
+	* NEWS
+	* src/compose.c
+	* src/syldap.c
+		sync with main 1.0.0rc
+		see ChangeLog 2004-12-15
+
 2004-12-14 [colin]	0.9.13cvs18
 
 	* src/gtk/prefswindow.c

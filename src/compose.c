@@ -2768,7 +2768,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 
 					GET_CHAR(cur_pos - 1, cb_prev,
 						 clen_prev);
-					if (clen_prev != clen ||
+					if ((clen_prev != clen && clen > 1) ||
 					    (clen == 1 &&
 					     !isspace((guchar)cb[0]))) {
 						gtk_stext_insert
