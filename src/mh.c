@@ -115,6 +115,7 @@ FolderClass mh_class =
 	mh_add_msg,
 	mh_add_msgs,
 	mh_copy_msg,
+	NULL,
 	mh_remove_msg,
 	mh_remove_all_msg,
 	mh_is_msg_changed,

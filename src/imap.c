@@ -433,6 +433,7 @@ FolderClass imap_class =
 	imap_add_msg,
 	NULL,
 	imap_copy_msg,
+	NULL,
 	imap_remove_msg,
 	imap_remove_all_msg,
 	imap_is_msg_changed,

@@ -1,3 +1,16 @@
+2003-07-26 [christoph]	0.9.3claws55
+
+	* src/folder.[ch]
+	* src/imap.c
+	* src/mbox_folder.c
+	* src/mh.c
+	* src/news.c
+		add support for copy function that copy multiple messages
+		(not implemented yet)
+
+	* src/summaryview.c
+		add missing return value
+
 2003-07-26 [paul]	0.9.3claws54
 
 	* tools/multiwebsearch.pl

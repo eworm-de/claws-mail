@@ -2056,14 +2056,15 @@ gint folder_item_copy_msg(FolderItem *dest, MsgInfo *msginfo)
 
 gint folder_item_copy_msg(FolderItem *dest, MsgInfo *msginfo)
 {
-	GSList *list = NULL;
-	gint ret;
+	GSList msglist;
 
-	list = g_slist_append(list, msginfo);
-	ret = folder_item_copy_msgs_with_dest(dest, list);
-	g_slist_free(list);
+	g_return_val_if_fail(dest != NULL, -1);
+	g_return_val_if_fail(msginfo != NULL, -1);
+    
+	msglist.data = msginfo;
+	msglist.next = NULL;
 	
-	return ret;
+	return folder_item_copy_msgs_with_dest(dest, &msglist);
 }
 
 /*
@@ -2101,15 +2102,22 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
  
 	g_return_val_if_fail(folder->klass->copy_msg != NULL, -1);
 
-	/* 
+	/*
 	 * Copy messages to destination folder and 
 	 * store new message numbers in newmsgnums
 	 */
-	for (l = msglist ; l != NULL ; l = g_slist_next(l)) {
-		MsgInfo * msginfo = (MsgInfo *) l->data;
+	if (folder->klass->copy_msgs != NULL) {
+		if (folder->klass->copy_msgs(folder, dest, msglist, &newmsgnums) < 0) {
+			g_slist_free(newmsgnums);
+			return -1;
+		}
+	} else {
+		for (l = msglist ; l != NULL ; l = g_slist_next(l)) {
+			MsgInfo * msginfo = (MsgInfo *) l->data;
 
-		num = folder->klass->copy_msg(folder, dest, msginfo);
-		newmsgnums = g_slist_append(newmsgnums, GINT_TO_POINTER(num));
+			num = folder->klass->copy_msg(folder, dest, msginfo);
+			newmsgnums = g_slist_append(newmsgnums, GINT_TO_POINTER(num));
+		}
 	}
 
 	/* Read cache for dest folder */

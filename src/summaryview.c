@@ -4465,7 +4465,7 @@ void summary_pass_key_press_event(SummaryView *summaryview, GdkEventKey *event)
 	if ((event->state & (GDK_MOD1_MASK|GDK_CONTROL_MASK)) != 0) break
 
 #define RETURN_IF_LOCKED() \
-	if (summaryview->mainwin->lock_count) return
+	if (summaryview->mainwin->lock_count) return TRUE
 
 static gint summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				SummaryView *summaryview)

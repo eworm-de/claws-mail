@@ -224,6 +224,10 @@ struct _FolderClass
 	gint    	(*copy_msg)		(Folder		*folder,
 						 FolderItem	*dest,
 						 MsgInfo	*msginfo);
+	gint    	(*copy_msgs)		(Folder		*folder,
+						 FolderItem	*dest,
+						 MsgInfoList	*msglist,
+                                    		 MsgNumberList **newnum_list);
 	gint    	(*remove_msg)		(Folder		*folder,
 						 FolderItem	*item,
 						 gint		 num);
