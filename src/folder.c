@@ -1547,7 +1547,7 @@ FolderItem *folder_item_move_to(FolderItem *src, FolderItem *dest)
 	if (src_node) 
 		g_node_destroy(src_node);
 	else
-		printf("can't remove node: is null !\n");
+		debug_print("can't remove node: is null !\n");
 	/* not to much worry if remove fails, move has been done */
 	
 	folder_write_list();

@@ -1,3 +1,10 @@
+2002-11-08 [colin]	0.8.5claws97
+	
+	* src/folderview.c
+		Sort after move
+	* src/folder.c 
+		Change a printf to debug_print
+
 2002-11-08 [colin]	0.8.5claws96
 
 	* src/folder.c
