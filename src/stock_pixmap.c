@@ -107,6 +107,11 @@
 #include "pixmaps/privacy_unknown.xpm"
 #include "pixmaps/privacy_expired.xpm"
 #include "pixmaps/privacy_warn.xpm"                 
+#include "pixmaps/privacy_emblem_encrypted.xpm"
+#include "pixmaps/privacy_emblem_signed.xpm"
+#include "pixmaps/privacy_emblem_passed.xpm"
+#include "pixmaps/privacy_emblem_failed.xpm"
+#include "pixmaps/privacy_emblem_warn.xpm"
 #include "pixmaps/mime_message.xpm"                  
 #include "pixmaps/address_search.xpm"
 #include "pixmaps/check_spelling.xpm"
@@ -120,6 +125,23 @@ struct _StockPixmapData
 	GdkBitmap *mask;
 	gchar *file;
 	gchar *icon_path;
+};
+
+typedef struct _OverlayData OverlayData;
+
+struct _OverlayData
+{
+	GdkPixmap *base_pixmap;
+	GdkBitmap *base_mask;
+	GdkPixmap *overlay_pixmap;
+	GdkBitmap *overlay_mask;
+	guint base_height;
+	guint base_width;
+	guint overlay_height;
+	guint overlay_width;
+	OverlayPosition position;
+	gint border_x;
+	gint border_y;
 };
 
 static void stock_pixmap_find_themes_in_dir(GList **list, const gchar *dirname);
@@ -219,6 +241,11 @@ static StockPixmapData pixmaps[] =
 	{privacy_unknown_xpm			, NULL, NULL, "privacy_unknown", NULL},
 	{privacy_expired_xpm			, NULL, NULL, "privacy_expired", NULL},
 	{privacy_warn_xpm			, NULL, NULL, "privacy_warn", NULL},
+	{privacy_emblem_encrypted_xpm		, NULL, NULL, "privacy_emblem_encrypted", NULL},
+	{privacy_emblem_signed_xpm		, NULL, NULL, "privacy_emblem_signed", NULL},
+	{privacy_emblem_passed_xpm		, NULL, NULL, "privacy_emblem_passed", NULL},
+	{privacy_emblem_failed_xpm		, NULL, NULL, "privacy_emblem_failed", NULL},	
+	{privacy_emblem_warn_xpm		, NULL, NULL, "privacy_emblem_warn", NULL},
 	{mime_message_xpm			, NULL, NULL, "mime_message", NULL},
 	{sylpheed_logo_xpm			, NULL, NULL, "sylpheed_logo", NULL},
 };
@@ -386,4 +413,163 @@ StockPixmap stock_pixmap_get_icon (gchar *file)
 			return i;
 	}
 	return -1;
+}
+
+static gboolean pixmap_with_overlay_expose_event_cb(GtkWidget *widget, GdkEventExpose *expose,
+						    OverlayData *data) 
+{
+	GdkDrawable *drawable = widget->window;	
+	GdkGC *gc_pix;
+	gint left;
+	gint top;
+
+	g_return_val_if_fail(data->base_pixmap != NULL, FALSE);
+	g_return_val_if_fail(data->base_mask != NULL, FALSE);
+
+	gc_pix = gdk_gc_new((GdkWindow *)drawable);
+						 
+	gdk_window_clear_area (drawable, expose->area.x, expose->area.y,
+			       expose->area.width, expose->area.height);
+
+	gdk_gc_set_tile(gc_pix, data->base_pixmap);
+	gdk_gc_set_ts_origin(gc_pix, data->border_x, data->border_y);
+	gdk_gc_set_clip_mask(gc_pix, data->base_mask);
+	gdk_gc_set_clip_origin(gc_pix, data->border_x, data->border_y);
+	gdk_gc_set_fill(gc_pix, GDK_TILED);
+
+	gdk_draw_rectangle(drawable, gc_pix, TRUE, data->border_x, data->border_y, 
+			   data->base_width, data->base_height);
+
+	if (data->position != OVERLAY_NONE) {
+		g_return_val_if_fail(data->overlay_pixmap != NULL, FALSE);
+		g_return_val_if_fail(data->overlay_mask != NULL, FALSE);
+
+		gdk_gc_set_tile(gc_pix, data->overlay_pixmap);
+		gdk_gc_set_clip_mask(gc_pix, data->overlay_mask);
+
+		switch (data->position) {
+			case OVERLAY_TOP_LEFT:
+			case OVERLAY_MID_LEFT:
+			case OVERLAY_BOTTOM_LEFT:
+				left = 0;
+				break;
+
+			case OVERLAY_TOP_CENTER:
+			case OVERLAY_MID_CENTER:
+			case OVERLAY_BOTTOM_CENTER:
+				left = (data->base_width + data->border_x * 2  - data->overlay_width)/2;
+				break;
+
+			case OVERLAY_TOP_RIGHT:
+			case OVERLAY_MID_RIGHT:
+			case OVERLAY_BOTTOM_RIGHT:
+				left = data->base_width + data->border_x * 2 - data->overlay_width;
+				break;
+		}
+		switch (data->position) {
+			case OVERLAY_TOP_LEFT:
+			case OVERLAY_TOP_CENTER:
+			case OVERLAY_TOP_RIGHT:
+				top = 0;
+				break;
+
+			case OVERLAY_MID_LEFT:
+			case OVERLAY_MID_CENTER:
+			case OVERLAY_MID_RIGHT:
+				top = (data->base_height + data->border_y * 2  - data->overlay_height)/2;
+				break;
+					
+			case OVERLAY_BOTTOM_LEFT:
+			case OVERLAY_BOTTOM_CENTER:
+			case OVERLAY_BOTTOM_RIGHT:
+				top = data->base_height + data->border_y * 2 - data->overlay_height;
+				break;
+		}
+
+		gdk_gc_set_ts_origin(gc_pix, left, top);
+		gdk_gc_set_clip_origin(gc_pix, left, top);
+		gdk_gc_set_fill(gc_pix, GDK_TILED);
+		gdk_draw_rectangle(drawable, gc_pix, TRUE, left, top, 
+				   data->overlay_width, data->overlay_height);
+	}
+	gdk_gc_destroy(gc_pix);
+	
+	return TRUE;
+}
+
+static void pixmap_with_overlay_destroy_cb(GtkObject *object, OverlayData *data) 
+{
+	gdk_pixmap_unref(data->base_pixmap);
+	gdk_pixmap_unref(data->base_mask);
+	if (data->position != OVERLAY_NONE) {
+		gdk_pixmap_unref(data->overlay_pixmap);
+		gdk_pixmap_unref(data->overlay_mask);
+	}
+	g_free(data);
+}
+
+/**
+ * \brief Get a widget showing one icon with another overlaid on top of it.
+ *
+ * The base icon is always centralised, the other icon can be positioned.
+ * The overlay icon is ignored if pos=OVERLAY_NONE is used
+ *
+ * \param window   top-level window widget
+ * \param icon	   the base icon
+ * \param overlay  the icon to overlay
+ * \param pos      how to align the overlay widget, or OVERLAY_NONE for no overlay
+ * \param border_x size of the border around the base icon (left and right)
+ * \param border_y size of the border around the base icon (top and bottom)
+ */
+GtkWidget *stock_pixmap_widget_with_overlay(GtkWidget *window, StockPixmap icon,
+					    StockPixmap overlay, OverlayPosition pos,
+					    gint border_x, gint border_y)
+{
+	GdkPixmap *stock_pixmap;
+	GdkBitmap *stock_mask;
+	GtkWidget *widget;
+	GtkWidget *stock_wid;
+	OverlayData *data;
+	
+	data = g_new0(OverlayData, 1);
+
+	stock_wid = stock_pixmap_widget(window, icon);
+	gtk_pixmap_get(GTK_PIXMAP(stock_wid), &stock_pixmap, &stock_mask);
+	gdk_pixmap_ref(stock_pixmap);
+	gdk_pixmap_ref(stock_mask);
+	data->base_pixmap = stock_pixmap;
+	data->base_mask   = stock_mask;
+	data->base_height = stock_wid->requisition.height;
+	data->base_width  = stock_wid->requisition.width;
+	gtk_widget_destroy(stock_wid);
+
+	if (pos == OVERLAY_NONE) {
+		data->overlay_pixmap = NULL;
+		data->overlay_mask   = NULL;
+	} else {
+		stock_wid = stock_pixmap_widget(window, overlay);
+		gtk_pixmap_get(GTK_PIXMAP(stock_wid), &stock_pixmap, &stock_mask);
+		gdk_pixmap_ref(stock_pixmap);
+		gdk_pixmap_ref(stock_mask);
+		data->overlay_pixmap = stock_pixmap;
+		data->overlay_mask   = stock_mask;
+		data->overlay_height = stock_wid->requisition.height;
+		data->overlay_width  = stock_wid->requisition.width;
+
+		gtk_widget_destroy(stock_wid);
+	}
+	
+	data->position = pos;
+	data->border_x = border_x;
+	data->border_y = border_y;
+
+	widget = gtk_drawing_area_new();
+	gtk_drawing_area_size(GTK_DRAWING_AREA(widget), data->base_width + border_x * 2, 
+			      data->base_height + border_y * 2);
+	gtk_signal_connect(GTK_OBJECT(widget), "expose_event", 
+			   GTK_SIGNAL_FUNC(pixmap_with_overlay_expose_event_cb), data);
+	gtk_signal_connect(GTK_OBJECT(widget), "destroy",
+			   GTK_SIGNAL_FUNC(pixmap_with_overlay_destroy_cb), data);
+	return widget;
+
 }

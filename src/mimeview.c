@@ -1470,157 +1470,20 @@ static void toggle_icon(GtkToggleButton *button, MimeView *mimeview)
 	}
 }
 
-static GdkColor nocheck_sig_color = {
-	(gulong)0,
-	(gushort)0,
-	(gushort)0,
-	(gushort)0xcfff
-};
-
-static GdkColor good_sig_color = {
-	(gulong)0,
-	(gushort)0,
-	(gushort)0xbfff,
-	(gushort)0
-};
-
-static GdkColor bad_sig_color = {
-	(gulong)0,
-	(gushort)0xffff,
-	(gushort)0,
-	(gushort)0
-};
-
-#define COLOR_BORDER 3
-
-static gboolean icon_drawing_area_expose_event_cb (GtkWidget *widget, GdkEventExpose *expose,
-						   gpointer data) 
-{
-	GdkColor *color = (GdkColor *)data;
-	GdkDrawable *drawable = widget->window;	
-	GdkGC *gc_pix;
-	GdkPixmap *stock_pixmap;
-	GdkBitmap *stock_mask;
-
-	stock_pixmap = (GdkPixmap *)gtk_object_get_data(GTK_OBJECT(widget), "pixmap");
-	stock_mask   = (GdkBitmap *)gtk_object_get_data(GTK_OBJECT(widget), "mask");
-	
-	g_return_val_if_fail(stock_pixmap != NULL, FALSE);
-	g_return_val_if_fail(stock_mask != NULL, FALSE);
-
-	gc_pix = gdk_gc_new((GdkWindow *)drawable);
-						 
-	gdk_window_clear_area (drawable, expose->area.x, expose->area.y,
-			       expose->area.width, expose->area.height);
-
-	if (color != NULL) {
-		gdk_gc_set_foreground(gc_pix, color);
-		if (color == &good_sig_color) {
-			gdk_draw_rectangle(drawable, gc_pix, TRUE, 0 , 0, 
-					   widget->allocation.width,
-					   widget->allocation.height);
-		} else {
-			gdk_gc_set_line_attributes(gc_pix, COLOR_BORDER - 1, GDK_LINE_ON_OFF_DASH, 
-						   GDK_CAP_BUTT, GDK_JOIN_MITER);
-			gdk_draw_rectangle(drawable, gc_pix, FALSE, 1 , 1, 
-					   widget->allocation.width - 2,
-					   widget->allocation.height - 2);
-		}
-	}
-
-#define LEFT COLOR_BORDER + widget->allocation.width - widget->requisition.width
-#define TOP  COLOR_BORDER + widget->allocation.height - widget->requisition.height   
-
-	gdk_gc_set_tile(gc_pix, stock_pixmap);
-	gdk_gc_set_ts_origin(gc_pix, LEFT, TOP);
-	gdk_gc_set_clip_mask(gc_pix, stock_mask);
-	gdk_gc_set_clip_origin(gc_pix, LEFT, TOP);
-	gdk_gc_set_fill(gc_pix, GDK_TILED);
-	gdk_draw_rectangle(drawable, gc_pix, TRUE, LEFT, TOP, 
-			   widget->requisition.width - COLOR_BORDER * 2,
-			   widget->requisition.height - COLOR_BORDER * 2);
-
-	gdk_gc_destroy(gc_pix);
-	
-	return TRUE;
-
-}
-
-static GtkWidget* icon_stock_pixmap_with_privacy (GtkWidget *window, StockPixmap icon,
-						  MimeInfo *mimeinfo)
-{
-	GdkPixmap *stock_pixmap;
-	GdkBitmap *stock_mask;
-	GtkWidget *widget;
-	GtkWidget *stock_wid;
-	GdkColor *color = NULL;
-	MimeInfo *siginfo;
-	gboolean is_signed = FALSE;
-	gint height;
-	gint width;
-
-	siginfo = mimeinfo;
-	while (siginfo != NULL) {
-		if (privacy_mimeinfo_is_signed(siginfo)) {
-			is_signed = TRUE;
-			break;
-		}
-		siginfo = procmime_mimeinfo_parent(siginfo);
-	}
-	
-	stock_wid = stock_pixmap_widget(window, icon);
-	gtk_pixmap_get(GTK_PIXMAP(stock_wid), &stock_pixmap, &stock_mask);
-	height = stock_wid->requisition.height;
-	width  = stock_wid->requisition.width;
-	gdk_pixmap_ref(stock_pixmap);
-	gdk_pixmap_ref(stock_mask);
-	gtk_widget_destroy(stock_wid);
-
-	widget = gtk_drawing_area_new();
-	gtk_drawing_area_size(GTK_DRAWING_AREA(widget), 
-			      width + COLOR_BORDER * 2, 
-			      height +  COLOR_BORDER * 2);
-	gtk_object_set_data_full(GTK_OBJECT(widget), "pixmap", stock_pixmap,
-				 (GtkDestroyNotify)gdk_pixmap_unref);
-	gtk_object_set_data_full(GTK_OBJECT(widget), "mask", stock_mask,
-				 (GtkDestroyNotify)gdk_pixmap_unref);
-
-	if (is_signed) {
-		switch (privacy_mimeinfo_get_sig_status(siginfo)) {
-		case SIGNATURE_UNCHECKED:
-			color = &nocheck_sig_color;
-			break;
-		case SIGNATURE_OK:
-			color = &good_sig_color;
-			break;
-		default:
-			color = &bad_sig_color;
-			break;
-		}
-		if (!color->pixel) 
-			gdk_colormap_alloc_color(gtk_widget_get_colormap(widget),
-						 color, FALSE, TRUE);
-	} else {
-		color = NULL;
-	}
-	gtk_signal_connect(GTK_OBJECT(widget), "expose_event", 
-			   GTK_SIGNAL_FUNC
-			   	(icon_drawing_area_expose_event_cb),
-			   color);
-	return widget;
-}
-
-#undef COLOR_BORDER
-
 static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo) 
 {
 	GtkWidget *pixmap;
 	GtkWidget *vbox;
 	GtkWidget *button;
 	gchar *tip;
+	gchar *tiptmp;
 	const gchar *desc = NULL; 
+	gchar *sigshort = NULL;
 	gchar *content_type;
 	StockPixmap stockp;
+	MimeInfo *partinfo;
+	MimeInfo *siginfo = NULL;
+	MimeInfo *encrypted = NULL;
 	
 	vbox = mimeview->icon_vbox;
 	mimeview->icon_count++;
@@ -1658,8 +1521,47 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 		break;
 	}
 	
-	pixmap = icon_stock_pixmap_with_privacy(mimeview->mainwin->window, stockp,
-							mimeinfo);
+	partinfo = mimeinfo;
+	while (partinfo != NULL) {
+		if (privacy_mimeinfo_is_signed(partinfo)) {
+			siginfo = partinfo;
+			break;
+		}
+		if (privacy_mimeinfo_is_encrypted(partinfo)) {
+			encrypted = partinfo;
+			break;
+		}
+		partinfo = procmime_mimeinfo_parent(partinfo);
+	}	
+
+	if (siginfo != NULL) {
+		switch (privacy_mimeinfo_get_sig_status(siginfo)) {
+		case SIGNATURE_UNCHECKED:
+		case SIGNATURE_CHECK_FAILED:
+			pixmap = stock_pixmap_widget_with_overlay(mimeview->mainwin->window, stockp,
+			    STOCK_PIXMAP_PRIVACY_EMBLEM_SIGNED, OVERLAY_BOTTOM_RIGHT, 6, 3);
+			break;
+		case SIGNATURE_OK:
+			pixmap = stock_pixmap_widget_with_overlay(mimeview->mainwin->window, stockp,
+			    STOCK_PIXMAP_PRIVACY_EMBLEM_PASSED, OVERLAY_BOTTOM_RIGHT, 6, 3);
+			break;
+		case SIGNATURE_WARN:
+			pixmap = stock_pixmap_widget_with_overlay(mimeview->mainwin->window, stockp,
+			    STOCK_PIXMAP_PRIVACY_EMBLEM_WARN, OVERLAY_BOTTOM_RIGHT, 6, 3);
+			break;
+		case SIGNATURE_INVALID:
+			pixmap = stock_pixmap_widget_with_overlay(mimeview->mainwin->window, stockp,
+			    STOCK_PIXMAP_PRIVACY_EMBLEM_FAILED, OVERLAY_BOTTOM_RIGHT, 6, 3);
+			break;
+		}
+		sigshort = privacy_mimeinfo_sig_info_short(siginfo);
+	} else if (encrypted != NULL) {
+			pixmap = stock_pixmap_widget_with_overlay(mimeview->mainwin->window, stockp,
+			    STOCK_PIXMAP_PRIVACY_EMBLEM_ENCRYPTED, OVERLAY_BOTTOM_RIGHT, 6, 3);		
+	} else {
+		pixmap = stock_pixmap_widget_with_overlay(mimeview->mainwin->window, stockp, 0,
+							  OVERLAY_NONE, 6, 3);
+	}
 	gtk_container_add(GTK_CONTAINER(button), pixmap);
 	
 	if (!desc) {
@@ -1672,14 +1574,20 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	content_type = procmime_get_content_type_str(mimeinfo->type,
 						     mimeinfo->subtype);
 
-	if (desc && *desc)
-		tip = g_strdup_printf("%s\n%s\n%s", desc, content_type, 
-				      to_human_readable(mimeinfo->length));
-	else 		
-		tip = g_strdup_printf("%s\n%s", content_type,
-				      to_human_readable(mimeinfo->length));
-	
+	tip = g_strjoin("\n", content_type,
+			to_human_readable(mimeinfo->length), NULL);
 	g_free(content_type);
+	if (desc && *desc) {
+		tiptmp = g_strjoin("\n", desc, tip, NULL);
+		g_free(tip);
+		tip = tiptmp;
+	}
+	if (sigshort && *sigshort) {
+		tiptmp = g_strjoin("\n", tip, sigshort, NULL);
+		g_free(tip);
+		tip = tiptmp;
+	}
+	g_free(sigshort);
 
 	gtk_tooltips_set_tip(mimeview->tooltips, button, tip, NULL);
 	g_free(tip);

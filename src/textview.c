@@ -99,27 +99,6 @@ static GdkColor error_color = {
 };
 #endif
 
-static GdkColor good_sig_color = {
-	(gulong)0,
-	(gushort)0,
-	(gushort)0xbfff,
-	(gushort)0
-};
-
-static GdkColor nocheck_sig_color = {
-	(gulong)0,
-	(gushort)0,
-	(gushort)0,
-	(gushort)0xcfff
-};
-
-static GdkColor bad_sig_color = {
-	(gulong)0,
-	(gushort)0xefff,
-	(gushort)0,
-	(gushort)0
-};
-
 static GdkFont *text_sb_font;
 static GdkFont *text_mb_font;
 static gint text_sb_font_orig_ascent;
