@@ -58,11 +58,6 @@ static char *content_names[] = {
     NULL
 };
 
-static char *mime_version_name[] = {
-    "Mime-Version",
-    NULL
-};
-
 /* stolen from rfc2015.c */
 static int
 gpg_name_cmp(const char *a, const char *b)
@@ -108,7 +103,7 @@ pgptext_decrypt (MimeInfo *partinfo, FILE *fp)
 
     if (!getenv("GPG_AGENT_INFO")) {
         info.c = ctx;
-        gpgme_set_passphrase_cb (ctx, gpgmegtk_passphrase_cb, &info);
+        gpgme_set_passphrase_cb (ctx, gpgmegtk_passphrase_cb, (void *)&info);
     } 
 
     err = gpgme_op_decrypt (ctx, cipher, plain);
@@ -158,6 +153,7 @@ headerp(char *p, char **names)
 
 MimeInfo * pgptext_find_signature (MimeInfo *mimeinfo)
 {
+	return NULL;
 }
 
 gboolean pgptext_has_signature (MimeInfo *mimeinfo)
@@ -187,23 +183,23 @@ int pgptext_is_encrypted (MimeInfo *mimeinfo, MsgInfo *msginfo)
 	gchar *check_begin_pgp_msg = "-----BEGIN PGP MESSAGE-----\n";
 	gchar *check_end_pgp_msg = "-----END PGP MESSAGE-----\n";
 	
-	g_return_if_fail(msginfo != NULL);
+	g_return_val_if_fail(msginfo != NULL, 0);
 	
 	if (!mimeinfo)
 		return 0;
 	
-	if ((fp = procmsg_open_message(msginfo)) == NULL) return;
+	if ((fp = procmsg_open_message(msginfo)) == NULL) return 0;
 	mimeinfo = procmime_scan_mime_header(fp);
 	fclose(fp);
-	if (!mimeinfo) return;
+	if (!mimeinfo) return 0;
 
 	file = procmsg_get_message_file_path(msginfo);
-	g_return_if_fail(file != NULL);
+	g_return_val_if_fail(file != NULL, 0);
 
 	if (mimeinfo->mime_type != MIME_TEXT) {
 		if ((fp = fopen(file, "rb")) == NULL) {
 			FILE_OP_ERROR(file, "fopen");
-			return;
+			return 0;
 		}
 		/* skip headers */
 		if (mimeinfo->mime_type == MIME_MULTIPART) {
@@ -228,7 +224,7 @@ int pgptext_is_encrypted (MimeInfo *mimeinfo, MsgInfo *msginfo)
 	} else {
 		if ((fp = fopen(file, "rb")) == NULL) {
 			FILE_OP_ERROR(file, "fopen");
-			return;
+			return 0;
 		}
 		/* skip headers */
 		if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0)
@@ -264,8 +260,6 @@ void pgptext_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
 {
     static int id;
     MimeInfo *partinfo;
-    int n, found;
-    int ver_okay=0;
     char *fname;
     GpgmeData plain;
     FILE *dstfp;
@@ -342,10 +336,12 @@ void pgptext_decrypt_message (MsgInfo *msginfo, MimeInfo *mimeinfo, FILE *fp)
 
 int pgptext_encrypt (const char *file, GSList *recp_list)
 {
+	return 0;
 }
 
 int pgptext_sign (const char *file, PrefsAccount *ac)
 {
+	return 0;
 }
 
 #endif	/* USE_GPGME */

@@ -44,6 +44,8 @@
 #include "addrcache.h"
 #include "addressitem.h"
 #include "exporthtml.h"
+#include "utils.h"
+#include "manage_window.h"
 
 #define PAGE_FILE_INFO             0
 #define PAGE_FORMAT                1

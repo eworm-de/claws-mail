@@ -58,7 +58,6 @@ struct _PrefsCommon
 	gboolean autochk_newmail;
 	gint autochk_itv;
 	gboolean chk_on_startup;
-	gboolean noerrorpanel;
  	gboolean newmail_notify_auto;
  	gboolean newmail_notify_manu;
  	gchar   *newmail_notify_cmd;
@@ -225,6 +224,7 @@ struct _PrefsCommon
 	gboolean open_inbox_on_inc;
 	gboolean immediate_exec;
 	RecvDialogMode recv_dialog_mode;
+	gboolean no_recv_err_panel;
 	NextUnreadMsgDialogShow next_unread_msg_dialog;
 	gboolean add_address_by_click;
 	gchar *pixmap_theme_path;

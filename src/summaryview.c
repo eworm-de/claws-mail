@@ -65,6 +65,7 @@
 #include "prefs_common.h"
 #include "prefs_summary_column.h"
 #include "prefs_filter.h"
+#include "prefs_filtering.h"
 #include "account.h"
 #include "compose.h"
 #include "utils.h"
@@ -379,7 +380,6 @@ static gint summary_cmp_by_label	(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
 
-static void news_process_crossposted  	(MsgInfo *msginfo);
 static void news_flag_crosspost		(MsgInfo *msginfo);
 
 GtkTargetEntry summary_drag_types[1] =
@@ -709,9 +709,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 	guint displayed_msgnum = 0;
 	GtkCTreeNode *selected_node = summaryview->folderview->selected;
 	GSList *cur;
-	gint sort_mode;
-	gint sort_type;
-        static gboolean locked = FALSE;
 
 	if (summary_is_locked(summaryview)) return FALSE;
 
@@ -843,7 +840,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 
 	if (summaryview->folder_item->hide_read_msgs) {
 		GSList *not_killed;
-		gint kill_score;
 		
 		summary_set_hide_read_msgs_menu(summaryview, TRUE);
 		not_killed = NULL;
@@ -932,7 +928,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 		}
 	} else {
 		/* select first unread message */
-		if (sort_mode == SORT_BY_SCORE)
+		if (item->sort_key == SORT_BY_SCORE)
 			node = summary_find_next_important_score(summaryview,
 								 NULL);
 		else
@@ -1156,7 +1152,7 @@ void summary_select_prev_unread(SummaryView *summaryview)
 		(summaryview, summaryview->selected, MSG_UNREAD, FALSE);
 
 	if (!node) {
-		AlertValue val;
+		AlertValue val = 0;
 
  		switch (prefs_common.next_unread_msg_dialog) {
  			case NEXTUNREADMSGDIALOG_ALWAYS:
@@ -1200,7 +1196,7 @@ void summary_select_next_unread(SummaryView *summaryview)
 		node = summary_find_next_flagged_msg
 			(summaryview, NULL, MSG_UNREAD, FALSE);
 		if (node == NULL) {
-			AlertValue val;
+			AlertValue val = 0;
 
  			switch (prefs_common.next_unread_msg_dialog) {
  				case NEXTUNREADMSGDIALOG_ALWAYS:
@@ -2043,14 +2039,11 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
-	MsgInfo *parentinfo;
-	MsgInfo *cur_msginfo;
-	GtkCTreeNode *node = NULL;
+		GtkCTreeNode *node = NULL;
 	GHashTable *msgid_table;
 	GHashTable *subject_table;
 	GSList * cur;
-	GtkCTreeNode *cur_parent;
-
+	
 	if (!mlist) return;
 
 	debug_print(_("\tSetting summary from message data..."));
@@ -2298,8 +2291,6 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 {
 	static gchar date_modified[80];
 	static gchar *to = NULL;
-	static gchar *from_name = NULL;
-	static gchar col_number[11];
 	static gchar col_score[11];
 	static gchar buf[BUFFSIZE];
 	PrefsFolderItem *prefs = summaryview->folder_item->prefs;
@@ -3838,7 +3829,6 @@ void summary_processing(SummaryView *summaryview, GSList * mlist)
 	GSList * processing_list;
 	FolderItem * folder_item;
 	GSList * cur;
-	gchar * id;
 	gchar * buf;
 
 	folder_item = summaryview->folder_item;
@@ -4130,7 +4120,6 @@ void summary_filter_open(SummaryView *summaryview, PrefsFilterType type)
 
 void summary_reply(SummaryView *summaryview, ComposeMode mode)
 {
-	GtkWidget *widget;
 	GList *sel = GTK_CLIST(summaryview->ctree)->selection;
 	MsgInfo *msginfo;
 	gchar *text;
@@ -4180,10 +4169,10 @@ void summary_reply(SummaryView *summaryview, ComposeMode mode)
 		break;
 	case COMPOSE_FORWARD:
 		if (prefs_common.forward_as_attachment) {
-			summary_reply_cb(summaryview, COMPOSE_FORWARD_AS_ATTACH, widget);
+			summary_reply_cb(summaryview, COMPOSE_FORWARD_AS_ATTACH, NULL);
 			return;
 		} else {
-			summary_reply_cb(summaryview, COMPOSE_FORWARD_INLINE, widget);
+			summary_reply_cb(summaryview, COMPOSE_FORWARD_INLINE, NULL);
 			return;
 		}
 		break;
@@ -5033,7 +5022,6 @@ static void news_flag_crosspost(MsgInfo *msginfo)
 	GString *line;
 	gpointer key;
 	gpointer value;
-	MsgPermFlags flags;
 	Folder *mff = msginfo->folder->folder;
 
 	if (mff->account->mark_crosspost_read && MSG_IS_NEWS(msginfo->flags)) {
@@ -5042,51 +5030,16 @@ static void news_flag_crosspost(MsgInfo *msginfo)
 		debug_print(_("nfcp: checking <%s>"), line->str);
 		if (mff->newsart && 
 		    g_hash_table_lookup_extended(mff->newsart, line->str, &key, &value)) {
-			debug_print(_(" <%s>"), value);
+			debug_print(_(" <%s>"), (gchar *)value);
 			if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
-				MSG_UNSET_PERM_FLAGS(msginfo->flags, MSG_NEW | MSG_UNREAD);
-				MSG_SET_COLORLABEL_VALUE(msginfo->flags, mff->account->crosspost_col);
+				procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
+				procmsg_msginfo_set_flags(msginfo, mff->account->crosspost_col, 0);
 			}
 			g_hash_table_remove(mff->newsart, key);
 			g_free(key);
 		}
 		g_string_free(line, TRUE);
 		debug_print(_("\n"));
-	}
-}
-
-static void news_process_crossposted(MsgInfo *msginfo)
-{
-	gchar **crossref;
-	gchar **crp;
-	gchar *cp;
-	gint cnt;
-	static char *read = "read";
-	Folder *mff = msginfo->folder->folder;
-
-	/* Get the Xref: line */
-	if (msginfo->xref) {
-		/* Retrieve the cross-posted groups and message ids */
-		/* Format of Xref is Xref: server message:id message:id ... */
-		crossref = g_strsplit(msginfo->xref, " ", 1024);
-		for (crp = crossref+2, cnt = 0; *crp; crp++, cnt++) {
-			if ((cp = strchr(*crp, ':'))) {
-				*cp = '\0';
-				if (!strcmp(*crp, msginfo->folder->path)) continue;
-				*cp = ':';
-
-				/* On first pass, create a GHashTable to hold the list of
-				 * article numbers per newsgroup that have been read. */
-				if (!mff->newsart) {
-					mff->newsart = g_hash_table_new(g_str_hash, g_str_equal);
-				}
-				/* When a summary is selected, the articles for that
-				 * newsgroup are marked based on this entry */
-				g_hash_table_insert(mff->newsart, g_strdup(*crp), read);
-				debug_print(_("Cross-reference %d: Hash <%s>\n"), cnt, *crp);
-			}
-		}
-		g_strfreev(crossref);
 	}
 }
 
@@ -5117,13 +5070,11 @@ static gint summary_cmp_by_locked(GtkCList *clist,
 
 static void summary_select_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpointer data)
 {
-	SummaryView *summaryview = (SummaryView *) data;
 	MsgInfo *msginfo;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
 	gtk_ctree_select(GTK_CTREE(ctree), row);	
-	debug_print(_("Message %d selected\n"),
-	    msginfo->msgnum);
+	debug_print(_("Message %d selected\n"), msginfo->msgnum);
 }
 
 /* select current thread */
@@ -5325,24 +5276,22 @@ static void summaryview_subject_filter_init(PrefsFolderItem *prefs)
 
 void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 {
-	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
-	GtkCList *clist = GTK_CLIST(summaryview->ctree);
-	GtkCTreeNode *node;
+	GtkWidget *ctree = summaryview->ctree;
 	GtkWidget *pixmap; 
 
 	gtk_widget_destroy(summaryview->folder_pixmap);
 
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_MARK, &markxpm, &markxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_DELETED, &deletedxpm, &deletedxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_NEW, &newxpm, &newxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_UNREAD, &unreadxpm, &unreadxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_REPLIED, &repliedxpm, &repliedxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_FORWARDED, &forwardedxpm, &forwardedxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_CLIP, &clipxpm, &clipxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_LOCKED, &lockedxpm, &lockedxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_IGNORETHREAD, &ignorethreadxpm, &ignorethreadxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_CLIP_KEY, &clipkeyxpm, &clipkeyxpmmask);
-	stock_pixmap_gdk(summaryview->ctree, STOCK_PIXMAP_KEY, &keyxpm, &keyxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_MARK, &markxpm, &markxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DELETED, &deletedxpm, &deletedxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_NEW, &newxpm, &newxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_UNREAD, &unreadxpm, &unreadxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_REPLIED, &repliedxpm, &repliedxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_FORWARDED, &forwardedxpm, &forwardedxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_CLIP, &clipxpm, &clipxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_LOCKED, &lockedxpm, &lockedxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_IGNORETHREAD, &ignorethreadxpm, &ignorethreadxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_CLIP_KEY, &clipkeyxpm, &clipkeyxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_KEY, &keyxpm, &keyxpmmask);
 
 	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_DIR_OPEN);
 	gtk_box_pack_start(GTK_BOX(summaryview->hbox), pixmap, FALSE, FALSE, 4);

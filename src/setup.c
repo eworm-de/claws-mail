@@ -68,7 +68,7 @@ void setup(MainWindow *mainwin)
 
 	folder_add(folder);
 	folder_set_ui_func(folder, scan_tree_func, mainwin);
-	folder->scan_tree(folder);
+	folder_scan_tree(folder);
 	folder_set_ui_func(folder, NULL, NULL);
 }
 

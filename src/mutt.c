@@ -204,7 +204,7 @@ struct _Mutt_ParsedRec_ {
  * Free data record.
  * Enter: rec Data record.
  */
-static mutt_free_rec( Mutt_ParsedRec *rec ) {
+static void mutt_free_rec( Mutt_ParsedRec *rec ) {
 	if( rec ) {
 		g_free( rec->address );
 		g_free( rec->name );

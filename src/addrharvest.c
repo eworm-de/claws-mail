@@ -69,7 +69,7 @@ struct _HeaderEntry {
  * Enter: harvester Harvester object.
  *        name      Header name.
  */
-static void *addrharvest_build_entry(
+static void addrharvest_build_entry(
 		AddressHarvester* harvester, gchar *name )
 {
 	HeaderEntry *entry;
@@ -80,12 +80,6 @@ static void *addrharvest_build_entry(
 	entry->folder = NULL;
 	entry->count = 0;
 	harvester->headerTable = g_list_append( harvester->headerTable, entry );
-}
-
-static void addrharvest_print_hdrentry( HeaderEntry *entry, FILE *stream ) {
-	fprintf( stream, "Header Entry\n" );
-	fprintf( stream, "    name : %s\n", entry->header );
-	fprintf( stream, "selected : %s\n", entry->selected ? "yes" : "no" );
 }
 
 /*
@@ -377,7 +371,7 @@ static void addrharvest_del_email( gchar *name, gchar *str ) {
 	gint lenn, lenr;
 
 	lenr = strlen( str );
-	while( p = strcasestr( name, str )  ) {
+	while((p = strcasestr( name, str )) != NULL) {
 		lenn = strlen( p );
 		memmove( p, p + lenr, lenn );
 	}
@@ -527,7 +521,7 @@ static void addrharvest_parse_address(
 	gint bufLen;
 
 	/* Search for an address */
-	while( atCh = addrharvest_find_at( hdrBuf ) ) {
+	while((atCh = addrharvest_find_at( hdrBuf )) != NULL) {
 		/* Find addres string */
 		addrharvest_find_address( hdrBuf, atCh, &bp, &ep );
 

@@ -435,7 +435,6 @@ static void prefs_scoring_set_list(void)
 	ScoringProp *prop;
 	GSList * cur;
 	gchar * scoring_str;
-	gchar * tmp;
 	GSList * prefs_scoring;
 
 	if (cur_item == NULL)
@@ -524,8 +523,6 @@ static void prefs_scoring_condition_define(void)
 	cond_str = gtk_entry_get_text(GTK_ENTRY(scoring.cond_entry));
 
 	if (*cond_str != '\0') {
-		gchar * tmp;
-		
 		matchers = matcher_parser_get_cond(cond_str);
 		if (matchers == NULL)
 			alertpanel_error(_("Match string is not valid."));
@@ -547,7 +544,6 @@ static void prefs_scoring_register_cb(void)
 	gchar * score_str;
 	ScoringProp * prop;
 	gint score;
-	gchar * tmp;
 
 	cond_str = gtk_entry_get_text(GTK_ENTRY(scoring.cond_entry));
 	if (*cond_str == '\0') {
@@ -587,7 +583,6 @@ static void prefs_scoring_substitute_cb(void)
 	gchar * score_str;
 	ScoringProp * prop;
 	gint score;
-	gchar * tmp;
 
 	if (!clist->selection) return;
 
@@ -698,7 +693,6 @@ static void prefs_scoring_select(GtkCList *clist, gint row, gint column,
 				GdkEvent *event)
 {
 	ScoringProp * prop;
-	gchar * tmp;
 
 	gchar * scoring_str;
 

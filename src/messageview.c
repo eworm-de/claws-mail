@@ -48,6 +48,7 @@
 #include "alertpanel.h"
 #include "send.h"
 #include "pgptext.h"
+#include "menu.h"
 
 static void messageview_change_view_type(MessageView	*messageview,
 					 MessageType	 type);
@@ -183,7 +184,6 @@ static gint disposition_notification_queue(PrefsAccount * account,
 	FolderItem *queue;
 	gchar *tmp;
 	FILE *fp, *src_fp;
-	GSList *cur;
 	gchar buf[BUFFSIZE];
 	gint num;
 
@@ -571,17 +571,6 @@ static void key_pressed(GtkWidget *widget, GdkEventKey *event,
 {
 	if (event && event->keyval == GDK_Escape && messageview->window)
 		gtk_widget_destroy(messageview->window);
-}
-
-static void messageview_toggle_view(MessageView *messageview)
-{
-	MainWindow *mainwin = messageview->mainwin;
-	GtkItemFactory *ifactory;
-	
-	if (!mainwin) return;
-	
-	ifactory = gtk_item_factory_from_widget(mainwin->menubar);
-	menu_toggle_toggle(ifactory, "/View/Expand Summary View");
 }
 
 void messageview_toggle_view_real(MessageView *messageview)

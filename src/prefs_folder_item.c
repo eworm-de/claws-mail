@@ -37,6 +37,8 @@
 #include "manage_window.h"
 #include "utils.h"
 #include "addr_compl.h"
+#include "prefs_scoring.h"
+#include "gtkutils.h"
 
 PrefsFolderItem tmp_prefs;
 

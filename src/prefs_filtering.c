@@ -316,7 +316,6 @@ static void prefs_filtering_create(void)
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
 
-	GtkWidget *dummy;
 
 	GList *combo_items;
 	gint i;
@@ -759,7 +758,6 @@ static void prefs_filtering_set_list(void)
 	FilteringProp *prop;
 	GSList * cur;
 	gchar * filtering_str;
-	gchar * tmp;
 	GSList * prefs_filtering;
 
 	if (cur_item == NULL)
@@ -839,9 +837,6 @@ static void prefs_filtering_condition_define(void)
 	cond_str = gtk_entry_get_text(GTK_ENTRY(filtering.cond_entry));
 
 	if (*cond_str != '\0') {
-		gchar * tmp;
-		
-		/* tmp = cond_str; */
 		matchers = matcher_parser_get_cond(cond_str);
 		if (matchers == NULL)
 			alertpanel_error(_("Match string is not valid."));
@@ -863,13 +858,12 @@ static FilteringProp * prefs_filtering_dialog_to_filtering(void)
 	gchar * cond_str;
 	FilteringProp * prop;
 	FilteringAction * action;
-	gchar * tmp;
 	gint list_id;
 	gint action_id;
 	gint action_type;
 	gint account_id;
 	gchar * destination;
-	gint labelcolor;
+	gint labelcolor = 0;
 	
 	cond_str = gtk_entry_get_text(GTK_ENTRY(filtering.cond_entry));
 	if (*cond_str == '\0') {
@@ -1104,7 +1098,6 @@ static void prefs_filtering_select(GtkCList *clist, gint row, gint column,
 				GdkEvent *event)
 {
 	FilteringProp * prop;
-	gchar * tmp;
 	gchar * filtering_str;
 
 	if (row == 0) {

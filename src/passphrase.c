@@ -293,7 +293,7 @@ static int free_passphrase(gpointer _unused)
 }
 
 const char*
-gpgmegtk_passphrase_cb (void *opaque, const char *desc, void *r_hd)
+gpgmegtk_passphrase_cb (void *opaque, const char *desc, void **r_hd)
 {
     struct passphrase_cb_info_s *info = opaque;
     GpgmeCtx ctx = info ? info->c : NULL;

@@ -840,7 +840,7 @@ void folderview_rescan_tree(Folder *folder)
 	window = label_window_create(_("Rescanning folder tree..."));
 
 	folder_set_ui_func(folder, folderview_scan_tree_func, NULL);
-	folder->scan_tree(folder);
+	folder_scan_tree(folder);
 	folder_set_ui_func(folder, NULL, NULL);
 
 	folder_write_list();
@@ -866,7 +866,7 @@ void folderview_rescan_all(void)
 
 		if (!folder->scan_tree) continue;
 		folder_set_ui_func(folder, folderview_scan_tree_func, NULL);
-		folder->scan_tree(folder);
+		folder_scan_tree(folder);
 		folder_set_ui_func(folder, NULL, NULL);
 	}
 

@@ -49,6 +49,8 @@
 #include "prefs_common.h"
 #include "account.h"
 #include "prefs_account.h"
+#include "filtering.h"
+#include "scoring.h"
 #include "prefs_folder_item.h"
 #include "procheader.h"
 
@@ -69,8 +71,7 @@ static void folder_get_persist_prefs_recursive
 					(GNode *node, GHashTable *pptable);
 static gboolean persist_prefs_free	(gpointer key, gpointer val, gpointer data);
 void folder_item_read_cache		(FolderItem *item);
-void folder_item_write_cache		(FolderItem *item);
-
+void folder_item_free_cache		(FolderItem *item);
 
 Folder *folder_new(FolderType type, const gchar *name, const gchar *path)
 {
@@ -386,7 +387,9 @@ gboolean folder_tree_destroy_func(GNode *node, gpointer data) {
 
 void folder_tree_destroy(Folder *folder)
 {
-	/* TODO: destroy all FolderItem before */
+	prefs_scoring_clear();
+	prefs_filtering_clear();
+
 	g_node_traverse(folder->node, G_POST_ORDER, G_TRAVERSE_ALL, -1, folder_tree_destroy_func, NULL);
 	g_node_destroy(folder->node);
 
@@ -484,6 +487,32 @@ void folder_write_list(void)
 
 	if (prefs_write_close(pfile) < 0)
 		g_warning("failed to write folder list.\n");
+}
+
+gboolean folder_scan_tree_func(GNode *node, gpointer data)
+{
+	GHashTable *pptable = (GHashTable *)data;
+	FolderItem *item = (FolderItem *)node->data;
+	
+	folder_item_restore_persist_prefs(item, pptable);
+}
+
+void folder_scan_tree(Folder *folder)
+{
+	GHashTable *pptable;
+	
+	if(!folder->scan_tree)
+		return;
+	
+	pptable = folder_persist_prefs_new(folder);
+	folder_tree_destroy(folder);
+
+	folder->scan_tree(folder);
+	
+	g_node_traverse(folder->node, G_POST_ORDER, G_TRAVERSE_ALL, -1, folder_scan_tree_func, pptable);
+	folder_persist_prefs_free(pptable);
+
+	prefs_matcher_read_config();
 }
 
 struct TotalMsgCount
@@ -927,7 +956,7 @@ gint folder_item_scan(FolderItem *item)
 	Folder *folder;
 	GSList *folder_list, *cache_list, *elem, *new_list = NULL;
 	gint i;
-	guint min = 0xffffffff, max = 0, cache_max = 0, maxgetcount = 0;
+	guint min = 0xffffffff, max = 0, cache_max = 0;
 	FolderScanInfo *folderscaninfo;
 	guint newcnt = 0, unreadcnt = 0, totalcnt = 0;
 	
@@ -1006,8 +1035,8 @@ gint folder_item_scan(FolderItem *item)
 		if( (folderscaninfo[i] & IN_FOLDER) && 
 		   !(folderscaninfo[i] & IN_CACHE) && 
 		    (folder->type != F_NEWS ||
-			((prefs_common.max_articles == 0) || (num > (max - prefs_common.max_articles))) &&
-			(num > cache_max))
+			(((prefs_common.max_articles == 0) || (num > (max - prefs_common.max_articles))) &&
+			(num > cache_max)))
 		    ) {
 			new_list = g_slist_prepend(new_list, GINT_TO_POINTER(num));
 			debug_print(_("Remembered message %d for fetching\n"), num);
@@ -1071,7 +1100,6 @@ gint folder_item_scan(FolderItem *item)
 		}
 	} else if (folder->fetch_msginfo) {
 		for(elem = new_list; elem != NULL; elem = g_slist_next(elem)) {
-			MsgFlags flags;
 			MsgInfo *msginfo;
 			guint num;
 
@@ -1151,7 +1179,9 @@ void folder_find_expired_caches(FolderItem *item, gpointer data)
 void folder_item_free_cache(FolderItem *item)
 {
 	g_return_if_fail(item != NULL);
-	g_return_if_fail(item->cache != NULL);
+	
+	if(item->cache == NULL)
+		return;
 	
 	folder_item_write_cache(item);
 	msgcache_destroy(item->cache);
@@ -1246,7 +1276,7 @@ MsgInfo *folder_item_fetch_msginfo(FolderItem *item, gint num)
 	if(!item->cache)
 		folder_item_read_cache(item);
 	
-	if(msginfo = msgcache_get_msg(item->cache, num))
+	if((msginfo = msgcache_get_msg(item->cache, num)) != NULL)
 		return msginfo;
 	
 	g_return_val_if_fail(folder->fetch_msginfo, NULL);
@@ -1338,7 +1368,6 @@ gint folder_item_move_msg(FolderItem *dest, MsgInfo *msginfo)
 {
 	Folder *folder;
 	gint num;
-	gchar * filename;
 	Folder * src_folder;
 
 	g_return_val_if_fail(dest != NULL, -1);
@@ -1421,7 +1450,6 @@ gint folder_item_move_msgs_with_dest(FolderItem *dest, GSList *msglist)
 	Folder *folder;
 	FolderItem * item;
 	GSList * l;
-	gchar * filename;
 	gint num;
 
 	g_return_val_if_fail(dest != NULL, -1);
@@ -1506,8 +1534,6 @@ gint folder_item_copy_msg(FolderItem *dest, MsgInfo *msginfo)
 {
 	Folder *folder;
 	gint num;
-	gchar * filename;
-	Folder * src_folder;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msginfo != NULL, -1);
@@ -1572,7 +1598,6 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 	Folder *folder;
 	gint num;
 	GSList * l;
-	gchar * filename;
 
 	g_return_val_if_fail(dest != NULL, -1);
 	g_return_val_if_fail(msglist != NULL, -1);
@@ -2170,7 +2195,6 @@ static void folder_create_processing_folder(void)
 {
 #define PROCESSING_FOLDER ".processing"	
 	Folder	   *tmpparent;
-	FolderItem *tmpfolder;
 	gchar      *tmpname;
 
 	tmpparent = folder_get_default_folder();

@@ -22,6 +22,7 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 #include <sys/stat.h>
 #ifdef WIN32
 #include <w32lib.h>

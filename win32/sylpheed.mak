@@ -112,6 +112,7 @@ CLEAN :
 	-@erase "$(INTDIR)\mgutils.obj"
 	-@erase "$(INTDIR)\mh.obj"
 	-@erase "$(INTDIR)\mimeview.obj"
+	-@erase "$(INTDIR)\msgcache.obj"
 	-@erase "$(INTDIR)\mutt.obj"
 	-@erase "$(INTDIR)\news.obj"
 	-@erase "$(INTDIR)\nntp.obj"
@@ -295,6 +296,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\mgutils.obj" \
 	"$(INTDIR)\mh.obj" \
 	"$(INTDIR)\mimeview.obj" \
+	"$(INTDIR)\msgcache.obj" \
 	"$(INTDIR)\mutt.obj" \
 	"$(INTDIR)\news.obj" \
 	"$(INTDIR)\nntp.obj" \
@@ -534,6 +536,8 @@ CLEAN :
 	-@erase "$(INTDIR)\mh.sbr"
 	-@erase "$(INTDIR)\mimeview.obj"
 	-@erase "$(INTDIR)\mimeview.sbr"
+	-@erase "$(INTDIR)\msgcache.obj"
+	-@erase "$(INTDIR)\msgcache.sbr"
 	-@erase "$(INTDIR)\mutt.obj"
 	-@erase "$(INTDIR)\mutt.sbr"
 	-@erase "$(INTDIR)\news.obj"
@@ -774,6 +778,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\mgutils.sbr" \
 	"$(INTDIR)\mh.sbr" \
 	"$(INTDIR)\mimeview.sbr" \
+	"$(INTDIR)\msgcache.sbr" \
 	"$(INTDIR)\mutt.sbr" \
 	"$(INTDIR)\news.sbr" \
 	"$(INTDIR)\nntp.sbr" \
@@ -915,6 +920,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\mgutils.obj" \
 	"$(INTDIR)\mh.obj" \
 	"$(INTDIR)\mimeview.obj" \
+	"$(INTDIR)\msgcache.obj" \
 	"$(INTDIR)\mutt.obj" \
 	"$(INTDIR)\news.obj" \
 	"$(INTDIR)\nntp.obj" \
@@ -2350,6 +2356,24 @@ SOURCE=..\src\mimeview.c
 
 
 "$(INTDIR)\mimeview.obj"	"$(INTDIR)\mimeview.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=..\src\msgcache.c
+
+!IF  "$(CFG)" == "sylpheed - Win32 Release"
+
+
+"$(INTDIR)\msgcache.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
+
+
+"$(INTDIR)\msgcache.obj"	"$(INTDIR)\msgcache.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

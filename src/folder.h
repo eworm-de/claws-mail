@@ -300,6 +300,7 @@ void   folder_add		(Folder		*folder);
 GList *folder_get_list		(void);
 gint   folder_read_list		(void);
 void   folder_write_list	(void);
+void   folder_scan_tree		(Folder *folder);
 void   folder_update_op_count		(void);
 void   folder_func_to_all_folders	(FolderItemFunc function,
 					 gpointer data);
@@ -362,6 +363,7 @@ const PersistPrefs *folder_get_persist_prefs
 
 void folder_item_restore_persist_prefs	(FolderItem *item, GHashTable *pptable);
 void folder_clean_cache_memory		();
-void folder_item_free_cache(FolderItem *item);
+void folder_item_write_cache		(FolderItem *item);
+void folder_item_set_default_flags	(FolderItem *dest, MsgFlags *flags);
 
 #endif /* __FOLDER_H__ */

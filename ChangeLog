@@ -1,3 +1,13 @@
+2002-07-02
+
+	* src/prefs_common.[ch]
+	  src/inc.c: added an option to inhibit receive error dialog.
+
+2002-07-01
+
+	* src/account.c: account_find_from_address(): support multiple
+	  addresses in header.
+
 2002-06-28
 
 	* src/gtksctree.[ch]: changed GtkSCTree::anchor_row from gint to

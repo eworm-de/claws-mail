@@ -1038,58 +1038,6 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
 static void set_toolbar_style(Compose *compose);
 
-static gchar *procmime_get_file_name(MimeInfo *mimeinfo)
-{
-	gchar *base;
-	gchar *filename;
-
-	g_return_val_if_fail(mimeinfo != NULL, NULL);
-
-	base = mimeinfo->filename ? mimeinfo->filename
-		: mimeinfo->name ? mimeinfo->name : NULL;
-
-	if (MIME_TEXT_HTML == mimeinfo->mime_type && base == NULL){
-		filename = g_strdup_printf("%s%smimetmp.%08x.html",
-					   get_mime_tmp_dir(),
-					   G_DIR_SEPARATOR_S,
-					   (gint)mimeinfo);
-		return filename;
-	}
-	else {
-		base = base ? base : "";
-		base = g_basename(base);
-		if (*base == '\0') {
-			filename = g_strdup_printf("%s%smimetmp.%08x",
-						   get_mime_tmp_dir(),
-						   G_DIR_SEPARATOR_S,
-						   (gint)mimeinfo);
-			return filename;
-		}
-	}
-
-	filename = g_strconcat(get_mime_tmp_dir(), G_DIR_SEPARATOR_S,
-			       base, NULL);
-
-	return filename;
-}
-
-static gchar *mime_extract_file(gchar *source, MimeInfo *partinfo)
-{
-	gchar *filename;
-
-	if (!partinfo) return NULL;
-
-	filename = procmime_get_file_name(partinfo);
-
-	if (procmime_get_part(filename, source, partinfo) < 0)
-		alertpanel_error
-			(_("Can't get the part of multipart message."));
-
-	return filename;
-}
-
-
-
 #define INSERT_FW_HEADER(var, hdr) \
 if (msginfo->var && *msginfo->var) { \
 	gtk_stext_insert(text, NULL, NULL, NULL, hdr, -1); \
@@ -1367,8 +1315,6 @@ GList *compose_get_compose_list(void)
 void compose_entry_append(Compose *compose, const gchar *address,
 			  ComposeEntryType type)
 {
-	GtkEntry *entry;
-	const gchar *text;
 	gchar *header;
 
 	if (!address || *address == '\0') return;
@@ -1971,9 +1917,6 @@ static void compose_reedit_set_entry(Compose *compose, MsgInfo *msginfo)
 
 static void compose_exec_sig(Compose *compose, gchar *sigfile)
 {
-	FILE *tmpfp;
-	pid_t thepid;
-	gchar *sigtext;
 	FILE  *sigprg;
 	gchar  *buf;
 	size_t buf_len = 128;
@@ -2512,7 +2455,7 @@ static guint ins_quote(GtkSText *text, guint indent_len,
 		       guint prev_line_pos, guint text_len,
 		       gchar *quote_fmt)
 {
-	guint i, ins_len;
+	guint i, ins_len = 0;
 	gchar ch;
 
 	if (indent_len) {
@@ -3519,7 +3462,6 @@ static gint compose_queue_sub(Compose *compose, gint *msgnum, FolderItem **item,
 	GSList *cur;
 	gchar buf[BUFFSIZE];
 	gint num;
-	MsgFlags flag = {0, 0};
         static gboolean lock = FALSE;
 	PrefsAccount *mailac = NULL, *newsac = NULL;
 	
@@ -4261,36 +4203,6 @@ static void compose_generate_msgid(Compose *compose, gchar *buf, gint len)
 	g_free(addr);
 }
 
-static void compose_add_entry_field(GtkWidget *table, GtkWidget **hbox,
-				    GtkWidget **entry, gint *count,
-				    const gchar *label_str,
-				    gboolean is_addr_entry)
-{
-	GtkWidget *label;
-
-	if (GTK_TABLE(table)->nrows < (*count) + 1)
-		gtk_table_resize(GTK_TABLE(table), (*count) + 1, 2);
-
-	*hbox = gtk_hbox_new(FALSE, 0);
-	label = gtk_label_new
-		(prefs_common.trans_hdr ? gettext(label_str) : label_str);
-	gtk_box_pack_end(GTK_BOX(*hbox), label, FALSE, FALSE, 0);
-	gtk_table_attach(GTK_TABLE(table), *hbox, 0, 1, *count, (*count) + 1,
-			 GTK_FILL, 0, 2, 0);
-	*entry = gtk_entry_new_with_max_length(MAX_ENTRY_LENGTH);
-	gtk_table_attach
-		(GTK_TABLE(table), *entry, 1, 2, *count, (*count) + 1, GTK_FILL | GTK_EXPAND, GTK_SHRINK, 0, 0);
-#if 0 /* NEW COMPOSE GUI */
-	if (GTK_TABLE(table)->nrows > (*count) + 1)
-		gtk_table_set_row_spacing(GTK_TABLE(table), *count, 4);
-#endif
-
-	if (is_addr_entry)
-		address_completion_register_entry(GTK_ENTRY(*entry));
-
-	(*count)++;
-}
-
 static void compose_create_header_entry(Compose *compose) 
 {
 	gchar *headers[] = {"To:", "Cc:", "Bcc:", "Newsgroups:", "Reply-To:", "Followup-To:", NULL};
@@ -4647,8 +4559,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	GtkWidget *ruler;
 	GtkWidget *scrolledwin;
 	GtkWidget *text;
-
-	GtkWidget *table;
 
 	UndoMain *undostruct;
 
@@ -5307,7 +5217,7 @@ static void compose_set_priority_cb(gpointer data,
 static void compose_update_priority_menu_item(Compose * compose)
 {
 	GtkItemFactory *ifactory;
-	GtkWidget *menuitem;
+	GtkWidget *menuitem = NULL;
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 	
@@ -6542,7 +6452,6 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	FolderItem *draft;
 	gchar *tmp;
 	gint msgnum;
-	MsgFlags flag = {0, 0};
 	static gboolean lock = FALSE;
 	MsgInfo *newmsginfo;
 	
@@ -6794,13 +6703,6 @@ static void compose_allsel_cb(Compose *compose)
 	    GTK_WIDGET_HAS_FOCUS(compose->focused_editable))
 		gtk_editable_select_region
 			(GTK_EDITABLE(compose->focused_editable), 0, -1);
-}
-
-static void compose_move_beginning_of_line_cb(Compose *compose)
-{
-	if (compose->focused_editable &&
-		GTK_WIDGET_HAS_FOCUS(compose->focused_editable))
-		gtk_stext_move_beginning_of_line(GTK_STEXT(compose->focused_editable));
 }
 
 static void compose_gtk_stext_action_cb(Compose *compose, ComposeCallGtkSTextAction action)

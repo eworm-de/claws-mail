@@ -279,6 +279,4 @@ void procmsg_msginfo_unset_flags	(MsgInfo *msginfo,
 					 MsgPermFlags perm_flags,
 					  MsgTmpFlags tmp_flags);
 
-void procmsg_msginfo_write_flags	(MsgInfo *msginfo);
-
 #endif /* __PROCMSG_H__ */

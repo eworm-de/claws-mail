@@ -22,6 +22,8 @@
 #  include "config.h"
 #endif
 
+#include <string.h>
+
 #include "intl.h"
 #include "string_match.h"
 

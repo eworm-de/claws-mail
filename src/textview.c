@@ -684,7 +684,6 @@ static void textview_show_ertf(TextView *textview, FILE *fp,
 {
 	ERTFParser *parser;
 	gchar *str;
-	gchar* url = NULL;
 
 	parser = ertf_parser_new(fp, conv);
 	g_return_if_fail(parser != NULL);
@@ -1728,7 +1727,10 @@ static gint textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 	return TRUE;
 }
 
-static gint show_url_timeout_cb(TextView    *textview ){
+static gint show_url_timeout_cb(gpointer data)
+{
+	TextView *textview = (TextView *)data;
+	
 	if (textview->messageview->mainwin)
 	  	if (textview->show_url_msgid)
 			gtk_statusbar_remove(GTK_STATUSBAR(
@@ -1805,7 +1807,6 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 					if (event->button == 3) {
 #endif
 						gchar *fromname, *fromaddress;
-						GdkEventButton tmpev;	
 						
 						/* extract url */
 						fromaddress = g_strdup(uri->uri + 7);

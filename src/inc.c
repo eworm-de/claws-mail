@@ -267,6 +267,7 @@ static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 		inc_spool_account(account);
 		return 1;
 	}
+	return 0;
 }
 
 void inc_all_account_mail(MainWindow *mainwin, gboolean notify)
@@ -554,7 +555,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		}
 
 		if (pop3_state->error_val == PS_AUTHFAIL) {
-			if(!prefs_common.noerrorpanel) {
+			if(!prefs_common.no_recv_err_panel) {
 				if((prefs_common.recv_dialog_mode == RECV_DIALOG_ALWAYS) ||
 				    ((prefs_common.recv_dialog_mode == RECV_DIALOG_ACTIVE) && focus_window)) {
 					manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
@@ -571,7 +572,6 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		/* CLAWS: perform filtering actions on dropped message */
 		if (global_processing != NULL) {
 			FolderItem *processing, *inbox;
-			Folder *folder;
 			MsgInfo *msginfo;
 			GSList *msglist, *msglist_element;
 
@@ -636,7 +636,7 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		num++;
 	}
 
-	if (error_num && !prefs_common.noerrorpanel) {
+	if (error_num && !prefs_common.no_recv_err_panel) {
 		if (inc_dialog->show_dialog)
 			manage_window_focus_in(inc_dialog->dialog->window,
 					       NULL, NULL);
@@ -732,7 +732,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	if ((sockinfo = sock_connect(server, port)) == NULL) {
 		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
 			    server, port);
-		if(!prefs_common.noerrorpanel) {
+		if(!prefs_common.no_recv_err_panel) {
 			if((prefs_common.recv_dialog_mode == RECV_DIALOG_ALWAYS) ||
 			    ((prefs_common.recv_dialog_mode == RECV_DIALOG_ACTIVE) && focus_window)) {
 				manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
@@ -1055,9 +1055,9 @@ static void inc_put_error(IncState istate)
 {
 	switch (istate) {
 	case INC_ERROR:
-		if(!prefs_common.noerrorpanel) {
-			alertpanel_error(_("Error occurred while processing mail."));
-		}
+		if (!prefs_common.no_recv_err_panel)
+			alertpanel_error
+				(_("Error occurred while processing mail."));
 		break;
 	case INC_NOSPACE:
 		alertpanel_error(_("No disk space left."));
@@ -1120,8 +1120,6 @@ static gint inc_spool(void)
 static void inc_spool_account(PrefsAccount *account)
 {
 	FolderItem *inbox;
-	FolderItem *dropfolder;
-	gint val;
 
 	if (account->inbox) {
 		inbox = folder_find_item_from_path(account->inbox);
@@ -1141,7 +1139,6 @@ static void inc_all_spool(void)
 	if (!list) return;
 
 	for (; list != NULL; list = list->next) {
-		IncSession *session;
 		PrefsAccount *account = list->data;
 
 		if ((account->protocol == A_LOCAL) &&

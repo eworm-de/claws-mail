@@ -198,7 +198,7 @@ gint xmlprops_save_file( XmlProperty *props ) {
 static void xmlprops_print_vis( gpointer key, gpointer value, gpointer data ) {
 	FILE *stream = ( FILE * ) data;
 
-	fprintf( stream, "-\tname/value:\t%s / %s\n", key, value );
+	fprintf( stream, "-\tname/value:\t%s / %s\n", (char *)key, (char *)value );
 }
 
 void xmlprops_print( XmlProperty *props, FILE *stream ) {
@@ -292,7 +292,7 @@ gint xmlprops_load_file( XmlProperty *props ) {
 void xmlprops_set_property(
 		XmlProperty *props, const gchar *name, const gchar *value )
 {
-	gchar *key;
+	gchar *key = NULL;
 	gchar *val;
 
 	g_return_if_fail( props != NULL );
@@ -388,7 +388,6 @@ void xmlprops_get_property_s(
 gint xmlprops_get_property_i( XmlProperty *props, const gchar *name ) {
 	gchar *val;
 	gchar *endptr;
-	gchar buffer[32];
 	gint value;
 
 	value = 0;

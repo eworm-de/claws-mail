@@ -430,7 +430,7 @@ AddressCache *addrindex_get_cache( AddressIndex *addrIndex, const gchar *cacheID
  * Enter: addrIndex Address index.
  *        ds        Data source.
  */
-static addrindex_hash_add_cache( AddressIndex *addrIndex, AddressDataSource *ds ) {
+static void addrindex_hash_add_cache( AddressIndex *addrIndex, AddressDataSource *ds ) {
 	gchar *cacheID;
 
 	cacheID = addrindex_get_cache_id( addrIndex, ds );
