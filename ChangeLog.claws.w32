@@ -1,3 +1,9 @@
+2004-12-21 [thorsten]	0.9.13cvs20.6
+
+	* src/prefs_common.c
+		fix: add "attach_save_directory" to OS-specific settings
+		Thanks to Thomas Gilgin for the patch
+
 2004-12-19 [thorsten]	0.9.13cvs20.5
 
 	* src/prefs_common.c

@@ -12,3 +12,4 @@
 ( cvs diff -u -r 1.118.2.76 -r 1.118.2.77 src/prefs_common.c; cvs diff -u -r 1.2.2.3 -r 1.2.2.4 src/prefs_ext_prog.c; cvs diff -u -r 1.1.2.13 -r 1.1.2.14 src/prefs_gtk.c; cvs diff -u -r 1.1.2.15 -r 1.1.2.16 src/common/defs.h; ) > 0.9.13cvs20.3.patchset
 ( cvs diff -u -r 1.16.2.43 -r 1.16.2.44 src/prefs_actions.c; cvs diff -u -r 1.5.2.8 -r 1.5.2.9 src/common/plugin.c; ) > 0.9.13cvs20.4.patchset
 ( cvs diff -u -r 1.118.2.77 -r 1.118.2.78 src/prefs_common.c; cvs diff -u -r 1.5.2.9 -r 1.5.2.10 src/common/plugin.c; ) > 0.9.13cvs20.5.patchset
+( cvs diff -u -r 1.118.2.78 -r 1.118.2.79 src/prefs_common.c; ) > 0.9.13cvs20.6.patchset

@@ -237,6 +237,10 @@ static PrefParam param_os_specific[] = {
 	{"mime_open_command", "gedit '%s'",
 	 &prefs_common.mime_open_cmd, P_STRING, NULL, NULL, NULL},
 
+	/* Message */
+	{"attach_save_directory", NULL,
+	 &prefs_common.attach_save_dir, P_STRING, NULL, NULL, NULL},
+
 	/* Interface */
 	{"pixmap_theme_path", DEFAULT_PIXMAP_THEME, 
 	 &prefs_common.pixmap_theme_path, P_STRING,
@@ -676,7 +680,11 @@ static PrefParam param[] = {
 	 &message.chkbtn_attach_desc,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"attach_save_directory", NULL,
+#ifdef WIN32
+	 &prefs_unix.attach_save_dir,   P_STRING, NULL, NULL, NULL},
+#else
 	 &prefs_common.attach_save_dir, P_STRING, NULL, NULL, NULL},
+#endif
 
 	/* MIME viewer */
 	{"mime_image_viewer", "display '%s'",
