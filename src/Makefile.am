@@ -99,6 +99,7 @@ sylpheed_SOURCES = \
 	imap.c imap.h \
 	xml.c xml.h \
 	html.c html.h \
+	enriched.c enriched.h \
 	procmime.c procmime.h \
 	rfc2015.c rfc2015.h \
 	passphrase.c passphrase.h \
