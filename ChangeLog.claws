@@ -1,3 +1,10 @@
+2002-09-24 [colin]	0.8.3claws17
+
+	* src/procmime.c
+		Do not display name or filename for attachments
+		with an application/pgp-signature type
+		(security flaw, see bug 537413)
+
 2002-09-23 [colin]	0.8.3claws16
 
 	* src/editaddress.c
