@@ -2888,13 +2888,17 @@ static gboolean check_permission(SummaryView *summaryview, MsgInfo * msginfo)
 				from_name =
 					g_strdup_printf("%s",
 							account->address);
-
-		if (g_strcasecmp(from_name, msginfo->from) == 0) {
+			
+			if (g_strcasecmp(from_name, msginfo->from) == 0) {
+				g_free(from_name);
+				found = TRUE;
+				break;
+			}
 			g_free(from_name);
-			found = TRUE;
-			break;
 		}
-		g_free(from_name);
+
+		if (!found) {
+			alertpanel_error(_("You're not the author of the article\n"));
 		}
 		
 		return found;

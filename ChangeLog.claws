@@ -1,3 +1,8 @@
+2002-03-05 [hoa]	
+
+	* src/summaryview.c
+		dialog box pops up if the article can't be deleted.
+
 2002-03-04 [paul]	
 	
 	* po/pt_BR.po
@@ -8,6 +13,9 @@
 	* removed ac/gpgme.m4
 		to avoid autogen common problem
 		developers have to install gpgme development package now
+
+	* src/compose.c
+		encoding to 7bit or 8bit is enabled.
 
 2002-03-03 [alfons]	0.7.2claws29
 
