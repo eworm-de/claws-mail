@@ -587,6 +587,13 @@ void gtk_sctree_select (GtkSCTree *sctree, GtkCTreeNode *node)
 		   -1, 0);
 }
 
+void gtk_sctree_select_with_state (GtkSCTree *sctree, GtkCTreeNode *node, int state)
+{
+	select_row(sctree, 
+		   g_list_position(GTK_CLIST(sctree)->row_list, (GList *)node),
+		   -1, state);
+}
+
 void gtk_sctree_unselect_all (GtkSCTree *sctree)
 {
 	gtk_clist_unselect_all(GTK_CLIST(sctree));

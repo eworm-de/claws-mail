@@ -59,6 +59,9 @@ GtkWidget *gtk_sctree_new_with_titles	(gint		 columns,
 					 gchar		*titles[]);
 void gtk_sctree_select			(GtkSCTree	*sctree,
 					 GtkCTreeNode	*node);
+void gtk_sctree_select_with_state	(GtkSCTree	*sctree,
+					 GtkCTreeNode	*node,
+					 int		 state);
 void gtk_sctree_unselect_all		(GtkSCTree	*sctree);
 
 void gtk_sctree_set_anchor_row		(GtkSCTree	*sctree,
