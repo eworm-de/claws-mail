@@ -86,6 +86,7 @@
 #include "matcher.h"
 #include "matcher_parser.h"
 #include "hooks.h"
+#include "description_window.h"
 
 #define SUMMARY_COL_MARK_WIDTH		10
 #define SUMMARY_COL_UNREAD_WIDTH	13
@@ -467,6 +468,64 @@ static const gchar *const col_label[N_SUMMARY_COLS] = {
 	N_("L")		/* S_COL_LOCKED	 */
 };
 
+/*
+ * Strings describing how to use Extended Search
+ * 
+ * When adding new lines, remember to put 2 strings for each line
+ */
+static gchar *search_descr_strings[] = {
+	"a",	 N_("all messages"),
+	"ag #",  N_("messages whose age is greather than #"),
+	"al #",  N_("messages whose age is greather than #"),
+	"b S",	 N_("messages which contain S in the message body"),
+	"B S",	 N_("messages which contain S in the whole message"),
+	"c S",	 N_("messages carbon-copied to S"),
+	"C S",	 N_("message is either to: or cc: to S"),
+	"D",	 N_("deleted messages"), /** how I can filter deleted messages **/
+	"e S",	 N_("messages which contain S in the Sender field"),
+	"E S",	 N_("true if execute \"S\" succeeds"),
+	"f S",	 N_("messages originating from user S"),
+	"F",	 N_("forwarded messages"),
+	"h S",	 N_("messages which contain header S"),
+	"i S",	 N_("messages which contain S in Message-Id header"),
+	"I S",	 N_("messages which contain S in inreplyto header"),
+	"L",	 N_("locked messages"),
+	"n S",	 N_("messages which are in newsgroup S"),
+	"N",	 N_("new messages"),
+	"O",	 N_("old messages"),
+	"r",	 N_("messages which have been replied to"),
+	"R",	 N_("read messages"),
+	"s S",	 N_("messages which contain S in subject"),
+	"se #",  N_("messages whose score is equal to #"),
+	"sg #",  N_("messages whose score is greater than #"),
+	"sl #",  N_("messages whose score is lower than #"),
+	"Se #",  N_("messages whose size is equal to #"),
+	"Sg #",  N_("messages whose size is greater than #"),
+	"Ss #",  N_("messages whose size is smaller than #"),
+	"t S",	 N_("messages which have been sent to S"),
+	"T",	 N_("marked marked"),
+	"U",	 N_("unread messages"),
+	"x S",	 N_("messages which contain S in References header"),
+	"y S",	 N_("messages which contain S in X-Label header"),
+	 "",	 "" ,
+	"&",	 N_("logical AND operator"),
+	"|",	 N_("logical OR operator"),
+	"! or ~",	N_("logical NOT operator"),
+	"%",	 N_("case sensitive search"),
+	NULL,	 NULL 
+};
+ 
+static DescriptionWindow search_descr = {
+	NULL, 
+	2,
+	N_("Extended Search symbols"),
+	search_descr_strings
+};
+	
+static void search_description_cb (GtkWidget *widget) {
+	description_window_create(&search_descr);
+};
+
 SummaryView *summary_create(void)
 {
 	SummaryView *summaryview;
@@ -486,6 +545,8 @@ SummaryView *summary_create(void)
 	GtkWidget *search_type_opt;
 	GtkWidget *search_type;
 	GtkWidget *search_string;
+	GtkWidget *search_hbbox;
+	GtkWidget *search_description;
 	GtkWidget *menuitem;
 	GtkWidget *toggle_search;
 	GtkTooltips *search_tip;
@@ -590,6 +651,12 @@ SummaryView *summary_create(void)
 	
 	gtk_box_pack_start(GTK_BOX(hbox_search), search_string, FALSE, FALSE, 2);
 	
+	gtkut_button_set_create(&search_hbbox, &search_description, _("Extended Symbols"),
+				NULL, NULL, NULL, NULL);
+	gtk_signal_connect(GTK_OBJECT(search_description), "clicked",
+			   GTK_SIGNAL_FUNC(search_description_cb), NULL);
+	gtk_box_pack_start(GTK_BOX(hbox_search), search_hbbox, FALSE, FALSE, 2);
+				
 	gtk_widget_show(search_string);
 	gtk_widget_show(hbox_search);
 
@@ -633,6 +700,7 @@ SummaryView *summary_create(void)
 	summaryview->search_type_opt = search_type_opt;
 	summaryview->search_type = search_type;
 	summaryview->search_string = search_string;
+	summaryview->search_description = search_description;
 	summaryview->msginfo_update_callback_id =
 		hooks_register_hook(MSGINFO_UPDATE_HOOKLIST, summary_update_msg, (gpointer) summaryview);
 
@@ -4724,6 +4792,13 @@ static void summary_searchtype_changed(GtkMenuItem *widget, gpointer data)
 	prefs_common.summary_quicksearch_type = GPOINTER_TO_INT(gtk_object_get_user_data(
 				   GTK_OBJECT(GTK_MENU_ITEM(gtk_menu_get_active(
 				   GTK_MENU(sw->search_type))))));
+
+	/* Show extended search description button, only when Extended is selected */
+	if (prefs_common.summary_quicksearch_type == S_SEARCH_EXTENDED) {
+		gtk_widget_show(sw->search_description);
+	} else {
+		gtk_widget_hide(sw->search_description);
+	}
 
 	if (gtk_entry_get_text(GTK_ENTRY(sw->search_string)))
 	 	summary_show(sw, sw->folder_item);

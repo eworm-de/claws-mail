@@ -1,3 +1,13 @@
+2003-01-06 [Ivan Francolin Martinez (ivanfm@users.sourceforge.net)]	0.8.8claws58
+
+	* src/quote_fmt.c
+	* src/summaryview.[ch]
+	* src/gtk/Makefile.am
+	* src/gtk/description_window.[ch]	** NEW **
+		use a generic window to display syntax descriptions
+		currently used in quote_fmt and summaryview (new description
+		for extended quick search)
+
 2003-01-06 [paul]	0.8.8claws57
 
 	* sync with 0.8.8cvs1

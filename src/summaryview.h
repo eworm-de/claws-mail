@@ -108,6 +108,7 @@ struct _SummaryView
 	GtkWidget *search_type_opt;
 	GtkWidget *search_type;
 	GtkWidget *search_string;
+	GtkWidget *search_description;
 
 	GtkItemFactory *popupfactory;
 
