@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML>
 <HEAD>
- <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
+ <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.21">
  <TITLE>Sylpheed User's Manual: The menu options of Sylpheed.</TITLE>
  <LINK HREF="sylpheed-7.html" REL=next>
  <LINK HREF="sylpheed-5.html" REL=previous>
@@ -12,60 +12,64 @@
 <A HREF="sylpheed-5.html">Previous</A>
 <A HREF="sylpheed.html#toc6">Contents</A>
 <HR>
-<H2><A NAME="s6">6. The menu options of Sylpheed.</A></H2>
+<H2><A NAME="s6">6.</A> <A HREF="sylpheed.html#toc6">The menu options of Sylpheed.</A></H2>
 
 <P>The menu in Sylpheed is the primary entry to all the things 
 you can do with Sylpheed. The menu structure gives you following 
-options:
-<P>
-<H2><A NAME="ss6.1">6.1 File menu</A>
+options:</P>
+
+<H2><A NAME="ss6.1">6.1</A> <A HREF="sylpheed.html#toc6.1">File menu</A>
 </H2>
 
 <P>
 <UL>
-<LI>Add mailbox: this option lets you add a new MH mail-directory. 
+<LI><I>Add mailbox:</I> this option lets you add a new MH mail-directory. 
 It will generate IN, OUT, QUEUE, DRAFT and TRASH mailfolders 
 inside the new mailbox.</LI>
-<LI>Rescan folder tree: rescans the entire tree of existing mailboxes 
-to reflect the correct state (usually won't be necessary).</LI>
-<LI>Folder: lets you add, rename or delete a mailfolder.
+<LI><I>Check for new messages in all folders:</I> rescans the entire tree 
+of existing mailboxes to reflect the correct state (usually 
+won't be necessary).</LI>
+<LI><I>Folder:</I> lets you add, rename or delete a mailfolder.
 <UL>
-<LI>Create new folder: to create a new folder. You must select
+<LI><I>Create new folder:</I> to create a new folder. You must select
 the top level node of the folder tree of a sub folder before
 using this menu entry, in order to define the location of the
 new folder to create.</LI>
-<LI>Rename folder: change the name of the selected folder.</LI>
-<LI>Delete folder: delete the selected folder (also delete the
+<LI><I>Rename folder:</I> change the name of the selected folder.</LI>
+<LI><I>Delete folder:</I> delete the selected folder (also delete the
 messages contained in the selected folder).</LI>
 </UL>
 </LI>
-<LI>Import mbox file...: lets you import an mbox file 
+<LI><I>Import mbox file...:</I> lets you import an mbox file 
 (like created by Pine) into an MH mailbox.</LI>
-<LI>Export to mbox file: lets you export an MH mailbox to an mbox file.</LI>
-<LI>Empty trash: obviously, this will empty the trash folder.</LI>
-<LI>Save as: lets you save the selected e-mail to a plain textfile 
+<LI><I>Export to mbox file:</I> lets you export an MH mailbox to an mbox file.</LI>
+<LI><I>Empty trash:</I> obviously, this will empty the trash folder.</LI>
+<LI><I>Save as:</I> lets you save the selected e-mail to a plain textfile 
 on disk.</LI>
-<LI>Print: lets you print the selected e-mail to a printer.</LI>
-<LI>Exit: ends Sylpheed.</LI>
+<LI><I>Print:</I> lets you print the selected e-mail to a printer.</LI>
+<LI><I>Exit:</I> ends Sylpheed.</LI>
 </UL>
-<H2><A NAME="ss6.2">6.2 Edit menu</A>
+</P>
+<H2><A NAME="ss6.2">6.2</A> <A HREF="sylpheed.html#toc6.2">Edit menu</A>
 </H2>
 
 <P>
 <UL>
-<LI>copy: lets you copy the selected text to a buffer, 
+<LI><I>copy:</I> lets you copy the selected text to a buffer, 
 from where you can paste it into a different place. 
 Shortcut: Ctrl-C</LI>
-<LI>select all: selects all the text in the current window. 
+<LI><I>select all:</I> selects all the text in the current window. 
 Shortcut: Ctrl-A</LI>
-<LI>Find in current message: searches a string in the current message.
+<LI><I>select thread:</I> selects all the messages of the current thread.</LI>
+<LI><I>Find in current message:</I> searches a string in the current message.
 Shortcut: Ctrl-F</LI>
-<LI>search messages: searches a message based on its  To, From, Subject
+<LI><I>search messages:</I> searches a message based on its  To, From, Subject
 header fields or body content. Start searching from the selected
 message, in the selected folder. 
 Shortcut: Shift-Ctrl-F</LI>
 </UL>
-<H2><A NAME="ss6.3">6.3 View menu</A>
+</P>
+<H2><A NAME="ss6.3">6.3</A> <A HREF="sylpheed.html#toc6.3">View menu</A>
 </H2>
 
 <P>The view menu allows you to change the way that Sylpheed appears. 
@@ -73,70 +77,69 @@ You can set different windows separately (folder view, messages etc.),
 enable or disable the statusbar and so on.
 It contains also the commands to toggle the display of some parts
 of the current message, or sort the messsages in the selected folder
-based on different attributes.
+based on different attributes.</P>
 <P>
 <UL>
-<LI>Show or hide: let you control the parts of the Sylpheed user interface 
+<LI><I>Show or hide:</I> let you control the parts of the Sylpheed user interface 
 you want to display.
 <UL>
-<LI>Folder tree: not implemented yet</LI>
-<LI>Message view: show or hide the message pane. When hidden, the
+<LI><I>Folder tree:</I> not implemented yet</LI>
+<LI><I>Message view:</I> show or hide the message pane. When hidden, the
 messages are displayed in a separate window. To read a message
 double click in the summary pane. The message is then opened in
 a new window. You can close this new window by pressing the escape
 key.</LI>
-<LI>Toolbar: sets how you want to see the toolbar. Icons and text, 
+<LI><I>Toolbar:</I> sets how you want to see the toolbar. Icons and text, 
 or one of these.
 <UL>
-<LI>Icon and Text: show icons and text in the toolbar.</LI>
-<LI>Icon: only display the icons, do not display the text
+<LI><I>Icon and Text:</I> show icons and text in the toolbar.</LI>
+<LI><I>Icon:</I> only display the icons, do not display the text
 below them.</LI>
-<LI>Text: only the text, hide the icons.</LI>
-<LI>None: hide the toolbar.</LI>
+<LI><I>Text:</I> only the text, hide the icons.</LI>
+<LI><I>None:</I> hide the toolbar.</LI>
 </UL>
 </LI>
-<LI>Status bar: show it or hide it.</LI>
+<LI><I>Status bar:</I> show it or hide it.</LI>
 </UL>
 </LI>
-<LI>Separate folder tree: selects between having the folder tree 
+<LI><I>Separate folder tree:</I> selects between having the folder tree 
 attached to the main window, or floating separately.</LI>
-<LI>Separate message view: selects between having the selected 
+<LI><I>Separate message view:</I> selects between having the selected 
 message in the summary pane attached to the main window, or 
 floating separately.</LI>
-<LI>Toggle summary view: show or hide the message pane by expanding the
-summary view down to the bottom of the Sylpheed window.
-Shortcut: v</LI>
-<LI>Sort: controls the way the messages are sorted in the selected
+<LI><I>Sort:</I> controls the way the messages are sorted in the selected
 folder. Each option sorts the messages in descending order (the
 bigger one being on the top of the summary pane), and can be
 reversed by selecting the same menu entry a second time (each
 time you select the same menu entry the order is reversed).
 <UL>
-<LI>Sort by number: sort the message based on their MH number.</LI>
-<LI>Sort by size: sort the message on their size.</LI>
-<LI>Sort by date: sort the messages based on their date.</LI>
-<LI>Sort by from: the messages are sorted by their sender address
+<LI><I>Sort by number:</I> sort the message based on their MH number.</LI>
+<LI><I>Sort by size:</I> sort the message on their size.</LI>
+<LI><I>Sort by date:</I> sort the messages based on their date.</LI>
+<LI><I>Sort by from:</I> the messages are sorted by their sender address
 (From field, sorted alphabetically).</LI>
-<LI>Sort by subject: the messages are sorted by their subject
+<LI><I>Sort by recipient:</I> the messages are sorted by their recipient
 (sorted alphabetically).</LI>
-<LI>Sort by color label: sort the messages based on their color.
+<LI><I>Sort by subject:</I> the messages are sorted by their subject
+(sorted alphabetically).</LI>
+<LI><I>Sort by color label:</I> sort the messages based on their color.
 Read the context menu description below to find how to assign
 colors to messages.</LI>
-<LI>Sort by mark: separate marked and unmarked messages. Read the 
+<LI><I>Sort by mark:</I> separate marked and unmarked messages. Read the 
 context menu description below to find how to mark messages.</LI>
-<LI>Sort by unread: separate read and unread messages.</LI>
-<LI>Sort by attachment: separate messages with and without attachment.</LI>
-<LI>Don't sort: do not sort the messages.</LI>
-<LI>Ascending: sort the messages in ascending order. If the field used
+<LI><I>Sort by unread:</I> separate read and unread messages.</LI>
+<LI><I>Sort by attachment:</I> separate messages with and without attachment.</LI>
+<LI><I>Don't sort:</I> do not sort the messages.</LI>
+<LI><I>Ascending:</I> sort the messages in ascending order. If the field used
 to sort the messages is displayed in the summary view, a little
 arrow on the right side of the corresponding summay column header
 reflects the sort order you select from the menu.</LI>
-<LI>Descending: sort the messages in descending order.</LI>
-<LI>Attract by subject: move close to each other the messages
+<LI><I>Descending:</I> sort the messages in descending order.</LI>
+<LI><I>Attract by subject:</I> move close to each other the messages
 having the same subject (or a close subject).</LI>
 </UL>
 </LI>
-<LI>Thread view: turn the threaded view on or off. When turned on the
+<LI><I>Thread view:</I> turn the threaded view on or off. When turned on the
 messages of the same thread (the same discussion generated by replying
 to each other mail) are grouped as a tree representing the discussion
 flow. Each reply being linked to its orignal message. Each branch can
@@ -145,37 +148,37 @@ The threads are based on the In-Reply-To and Reference fields of the
 mail header, so never start a new conversation by replying to an
 old message, this will add your new mail to the old unrelated thread.
 Shortcut: Ctrl-T</LI>
-<LI>Expand all threads: if the threaded view is selected, expand all the
+<LI><I>Expand all threads:</I> if the threaded view is selected, expand all the
 threads in the opened folder.</LI>
-<LI>Collapse all threads: if the threaded view is selected, collapse all the
+<LI><I>Collapse all threads:</I> if the threaded view is selected, collapse all the
 threads in the opened folder.</LI>
-<LI>Set display item: use it to change the list of items to display
+<LI><I>Set display item:</I> use it to change the list of items to display
 in the summary view. This setting can also be changed through
 the common preferences.</LI>
-<LI>Go to: use it to navigate from message to message based on the
+<LI><I>Go to:</I> use it to navigate from message to message based on the
 sub-menu criterias.
 <UL>
-<LI>Prev. message: go to the previous message in the current
+<LI><I>Prev. message:</I> go to the previous message in the current
 folder.
 Shortcut: P</LI>
-<LI>Next message: go to the next message in the current
+<LI><I>Next message:</I> go to the next message in the current
 folder.
 Shortcut: N</LI>
-<LI>Prev. unread: go to the previous unread message.
+<LI><I>Prev. unread:</I> go to the previous unread message.
 Shortcut: Shift-P</LI>
-<LI>Next unread: go to the next unread message.
+<LI><I>Next unread:</I> go to the next unread message.
 Shortcut: Shift-N</LI>
-<LI>Prev. new: go to the previous new message.</LI>
-<LI>Next new: go to the next new message.</LI>
-<LI>Prev. marked: go to the previous marked message.</LI>
-<LI>Next marked: go to the next marked message.</LI>
-<LI>Prev. labeled: go to the previous labeled message.</LI>
-<LI>Next labeled: go to the next labeled message.</LI>
-<LI>Other folder: change the current folder. Opens a new window
+<LI><I>Prev. new:</I> go to the previous new message.</LI>
+<LI><I>Next new:</I> go to the next new message.</LI>
+<LI><I>Prev. marked:</I> go to the previous marked message.</LI>
+<LI><I>Next marked:</I> go to the next marked message.</LI>
+<LI><I>Prev. labeled:</I> go to the previous labeled message.</LI>
+<LI><I>Next labeled:</I> go to the next labeled message.</LI>
+<LI><I>Other folder:</I> change the current folder. Opens a new window
 with the folder tree, and open the selected folder.</LI>
 </UL>
 </LI>
-<LI>Code set: allows you to select what codeset you want to use 
+<LI><I>Code set:</I> allows you to select what codeset you want to use 
 for your e-mails. This codeset will be used when sending
 mails. Note Sylpheed will always try to use the more compatible
 codeset based on the characters used in your message, so unless
@@ -184,146 +187,159 @@ will be defined as 7bits ASCII even if you have selected the
 ISO-8859-1 character set.
 The auto-detect option let Sylpheed automatically detect the
 character set based on the content of the messages.</LI>
-<LI>Open in new window: open the selected message in a new window.
+<LI><I>Open in new window:</I> open the selected message in a new window.
 This new window can be closed by pressing the escape key.
 Shortcut: Ctrl-Alt-N</LI>
-<LI>Message source: opens a new window and display the complete
+<LI><I>Message source:</I> opens a new window and display the complete
 source of the message in it (without any formatting and with
 all the header fields).
 Shortcut: Ctrl-U</LI>
-<LI>Show all header: toggles on and off the display of the complete
+<LI><I>Show all header:</I> toggles on and off the display of the complete
 message header.
 Shortcut: Ctrl-H</LI>
-<LI>Update summary: update the Sylpheed window.
+<LI><I>Update summary:</I> update the Sylpheed window.
 Shortcut: Ctrl-Alt-U</LI>
 </UL>
-<H2><A NAME="ss6.4">6.4 Message menu</A>
+</P>
+<H2><A NAME="ss6.4">6.4</A> <A HREF="sylpheed.html#toc6.4">Message menu</A>
 </H2>
 
-<P>Here you find the following options:
+<P>Here you find the following options:</P>
 <P>
 <UL>
-<LI>Get new mail: this will collect all new mail for your 
+<LI><I>Get new mail:</I> this will collect all new mail for your 
 default mail-identity.
 Shortcut: Ctrl-I</LI>
-<LI>Get from all accounts: Sylpheed will poll all defined 
+<LI><I>Get from all accounts:</I> Sylpheed will poll all defined 
 mail-identities for new mail.
 Shortcut: Shift-Ctrl-I</LI>
-<LI>Cancel receiving: stop the new mails reception.</LI>
-<LI>Send queued messages: all the messages that you put into 
+<LI><I>Cancel receiving:</I> stop the new mails reception.</LI>
+<LI><I>Send queued messages:</I> all the messages that you put into 
 the "Queue" folder will now be sent off.</LI>
-<LI>Compose new message: allows you to write a new e-mail 
+<LI><I>Compose new message:</I> allows you to write a new e-mail 
 message.
 Shortcut: Ctrl-M</LI>
-<LI>Reply: an e-mail message will be created with the sender 
+<LI><I>Reply:</I> an e-mail message will be created with the sender 
 of the selected message in the summary pane as recipient. 
 Depending on the settings, your signature will be added 
 to the mail, and the original mail text will be quoted.
 If a part of the original mail is selected, only this
 part will be quoted in the reply.
 Shortcut: Ctrl-R</LI>
-<LI>Reply to all: as Reply, but the recipients will be all 
+<LI><I>Reply to</I> 
+<UL>
+<LI><I>all:</I> as Reply, but the recipients will be all 
 e-mail addresses in the original messages (including 
 the ones in the cc: part).
 Shortcut: Shift-Ctrl-R</LI>
+<LI><I>sender:</I> as Reply.</LI>
+<LI><I>Mailing list:</I> reply to the mailing list. To use
+when replying to a mailing list (unless you want to reply
+only to the poster of the message).
+Shortcut: Ctrl-L</LI>
+</UL>
+</LI>
 <LI>Reply to sender: as Reply, but the recipient is the address
 defined in the Sender header field (not the Reply-To address).</LI>
-<LI>Forward: a message will be created with the original 
+<LI><I>Forward:</I> a message will be created with the original 
 message in the summary pane as text. You can then 
 enter a recipient e-mail address, edit the text if 
 you want, and send it.
 Shortcut: Ctrl-Alt-F</LI>
-<LI>Forward as attachment: as Forward, but the message 
+<LI><I>Forward as attachment:</I> as Forward, but the message 
 text will sent along as a separate textfile.
 Shortcut: Shift-Ctrl-Alt-F</LI>
-<LI>Redirect: re-send the selected message to someone else. Compared
+<LI><I>Redirect:</I> re-send the selected message to someone else. Compared
 to a forward, the message is not marked as forwarded, and the sender
 is the original mail sender.</LI>
-<LI>Re-edit: lets you open all already sent message in
+<LI><I>Re-edit:</I> lets you open all already sent message in
 edition mode to re-send it.</LI>
-<LI>Move: lets you move the message to a different folder. 
+<LI><I>Move:</I> lets you move the message to a different folder. 
 You can select the destination folder from a browse-window.</LI>
-<LI>Copy: as Move, only that the message is copied to the 
+<LI><I>Copy:</I> as Move, only that the message is copied to the 
 new folder, instead of moved.
 Shortcut: Shift-Ctrl-O</LI>
-<LI>Delete: lets you delete the message that is selected 
+<LI><I>Delete:</I> lets you delete the message that is selected 
 in the summary pane.
 Shortcut: Ctrl-D</LI>
-<LI>Mark: Gives a submenu: Mark/Unmark/Mark as read/Unmark 
-as read. When you mark messages, you can do a specific 
+<LI><I>Mark:</I> Gives a submenu: <I>Mark/Unmark/Mark as read/Unmark 
+as read</I>. When you mark messages, you can do a specific 
 action (e.g. move, delete) on all of the marked messages. 
 You can unmark messages that you mistakenly marked. 
 The other options do as they say, they mark or unmark 
 a message as read, and mark all read, marks all the messages
 of the current folder as read.</LI>
 </UL>
+</P>
 <P>A note on functions like Move, Copy and Delete: if you did not 
 specify to execute the commands immediately (in the configuration), 
-you will have to select the "Execute" command. This is a button 
-in the toolbar, and can also be found in the Summary menu.
-<H2><A NAME="ss6.5">6.5 Tool menu</A>
+you will have to select the <I>Execute</I> command. This is a button 
+in the toolbar, and can also be found in the Summary menu.</P>
+<H2><A NAME="ss6.5">6.5</A> <A HREF="sylpheed.html#toc6.5">Tool menu</A>
 </H2>
 
 <P>In the Tool menu are grouped the filters control, address book
-access and log window control.
+access and log window control.</P>
 <P>
 <UL>
-<LI>Address book: opens the address book window.
+<LI><I>Address book:</I> opens the address book window.
 Shortcut: Shift-Ctrl-A</LI>
-<LI>Add sender to address book: adds the sender of the selected
+<LI><I>Add sender to address book:</I> adds the sender of the selected
 message to one of your address books. When selected a window
 opens to let you select the target address book.</LI>
-<LI>Filter messages: apply the filter rules to the messages
+<LI><I>Filter messages:</I> apply the filter rules to the messages
 of the inbox.</LI>
-<LI>Create filter rule: create a new filter rule based on the
+<LI><I>Create filter rule:</I> create a new filter rule based on the
 selected message.
 <UL>
-<LI>Automatically: open the filter rules creation window
+<LI><I>Automatically:</I> open the filter rules creation window
 to define a new rule.</LI>
-<LI>By From: opens the filter rules creation window and
+<LI><I>By From:</I> opens the filter rules creation window and
 fills the filter settings fields to build a filter based
 on the sender of the selected message.</LI>
-<LI>By To: opens the filter rules creation window and
+<LI><I>By To:</I> opens the filter rules creation window and
 fills the filter settings fields to build a filter based
 on the receiver of the selected message.</LI>
-<LI>By Subject: opens the filter rules creation window and
+<LI><I>By Subject:</I> opens the filter rules creation window and
 fills the filter settings fields to build a filter based
 on the subject of the selected message.</LI>
 </UL>
 </LI>
-<LI>Delete duplicated messages: This will remove messages from the 
+<LI><I>Actions:</I> this menu is empty until you define some actions (see the
+configuration menu description).</LI>
+<LI><I>Delete duplicated messages:</I> This will remove messages from the 
 active folder that were sent twice to you. For example you 
 received a message directly and through a mailing list at 
 the same time.</LI>
-<LI>Actions: this menu is empty until you define some actions (see the
-configuration menu description).</LI>
-<LI>Execute: execute all the pending move, delete, and copy commands.
+<LI><I>Execute:</I> execute all the pending move, delete, and copy commands.
 Only if execute immediately is off in the common preferences.
 Shortcut: X</LI>
-<LI>Log window: opens the log window. In the log window, you 
+<LI><I>Log window:</I> opens the log window. In the log window, you 
 can see what Sylpheed is doing. Keeping track of things 
 in that way is very good when you suspect there is something 
 wrong. You can paste the info of the log window into an 
-e-mail and send it to the developer or the mailing list.</LI>
+e-mail and send it to the developer or the mailing list.
+Shortcut: Shift-Ctrl-L</LI>
 </UL>
-<P>
+</P>
+
 <P>In the log window, you can see what Sylpheed is doing. Keeping 
 track of things in that way is very good when you suspect there 
 is something wrong. You can paste the info of the log window 
-into an e-mail and send it to the developer or the mailing list.
-<H2><A NAME="ss6.6">6.6 Configuration menu</A>
+into an e-mail and send it to the developer or the mailing list.</P>
+<H2><A NAME="ss6.6">6.6</A> <A HREF="sylpheed.html#toc6.6">Configuration menu</A>
 </H2>
 
 <P>In the Configuration menu, clearly, you can set up Sylpheed 
-the way you want it to work and react.
+the way you want it to work and react.</P>
 <P>
 <UL>
-<LI>Common preferences: in this option you will be 
+<LI><I>Common preferences:</I> in this option you will be 
 presented a dialog in which you can select a number 
 of tabs. Each tab represents a specific set of settings 
 in Sylpheed. In the next chapter, these dialog options 
 are explained in more detail.</LI>
-<LI>Filter setting: this option shows you a dialog in which you 
+<LI><I>Filter setting:</I> this option shows you a dialog in which you 
 can set up the filtering rules that you want Sylpheed 
 to process on receiving new e-mails. You first specify 
 on which part(s) of the e-mail Sylpheed has to check, 
@@ -334,24 +350,24 @@ possible through a browser window that comes up when you
 press "Select..."
 <P>You can choose not to receive the e-mail. Note that 
 this will leave the message on the mailserver of your 
-provider, the message will not be removed!
+provider, the message will not be removed!</P>
 <P>When you press the "Register" button, the filter 
 rule is added to the list of rules. Do you select 
 "Substitute", then the selected rule is replaced by the 
 information of the setting entered. "Delete" in the end 
-will delete the selected filtering rule.
+will delete the selected filtering rule.</P>
 <P>Please note that you can set up two selections for a rule, 
 which can be "OR'd" or "AND'd". OR means that one of the 
 two selections will have to match for the rule to be 
 executed. AND means that both selections have to match 
-before an action is performed.
+before an action is performed.</P>
 <P>To the right of the selection rules you see buttons 
 called UP and DOWN. You can move rules up and down in 
 the list. This will often trigger different behaviour 
 in the selections, so consider the order in which 
-you set the rules.
+you set the rules.</P>
 </LI>
-<LI>Template: let your create a new message template.
+<LI><I>Template:</I> let your create a new message template.
 When composing a new message you can then used one
 of the defined templates and insert it (or use it to
 completely replace the content of your mail).
@@ -360,17 +376,17 @@ that are replaced when the template is used in order
 to create a dynamic text. Use the symbols button on
 the templates definition window to see the list of
 the available symbols.</LI>
-<LI>Actions: let your create new commands to be added to the
+<LI><I>Actions:</I> let your create new commands to be added to the
 'Tools/Actions' menu. An action is a command that processes
 the select part of a message, the message body or the complete
 message file. It can be a background process, used as a filter
 (reads, modifies and replaces a message),...</LI>
-<LI>Preferences for current account: here you can set the 
+<LI><I>Preferences for current account:</I> here you can set the 
 specifics for the account you are currently using. 
 Should mail be deleted after fetching, what is the 
 server it comes from, etc. Basically it is the same 
 dialog form as shown in setting up a new account.</LI>
-<LI>Create new account: here you name the account (each 
+<LI><I>Create new account:</I> here you name the account (each 
 account has a recognizable name), you set up your name 
 and e-mail address etc. You set up the type of server 
 you access (POP4, IMAP4, local mailbox, newsserver) 
@@ -381,12 +397,12 @@ your messages. In COMPOSE you can point to a specific
 signature file, and in ADVANCED you can set up alternate 
 ports for the server, if these exist. (Do not mess 
 with these unless you are sure you have to!!)</LI>
-<LI>Edit accounts: here you can select one of the accounts 
+<LI><I>Edit accounts:</I> here you can select one of the accounts 
 you created, from a list, and edit the information about 
 them. Note that you cannot edit an account for which 
 you are writing a message at the same time. This to 
 ensure data integrity.</LI>
-<LI>Change current account: here you can select what 
+<LI><I>Change current account:</I> here you can select what 
 account you want to use, to write a message.
 If you have enabled the status bar (in the view menu),
 the name of the current account is shown in the bottom
@@ -394,29 +410,30 @@ right corner of the Sylpheed window (in the status bar)
 and can be changed by a click on it (then a menu appears
 and lists all your accounts).</LI>
 </UL>
-<P>
-<H2><A NAME="ss6.7">6.7 Help menu</A>
+</P>
+
+<H2><A NAME="ss6.7">6.7</A> <A HREF="sylpheed.html#toc6.7">Help menu</A>
 </H2>
 
 <P>This menu lets you look at the manual and FAQ of Sylpheed, 
-and you can also see the "about" info, who wrote Sylpheed.
-<P>
-<P>
-<H2><A NAME="ss6.8">6.8 Context menu</A>
+and you can also see the "about" info, who wrote Sylpheed.</P>
+
+
+<H2><A NAME="ss6.8">6.8</A> <A HREF="sylpheed.html#toc6.8">Context menu</A>
 </H2>
 
 <P>You can pull up context menus (through clicking button2) for 
 the folder tree and the summary pane. (windows users: button2 
-is the right mouse button.)
+is the right mouse button.)</P>
 <P>In the folder view you can add, rename and remove folders 
 through the context menu. You can also set the folder
 properties (define the selected folder as an inbox, outbox,
-trash, ...).
+trash, ...).</P>
 <P>In the message summary you can do a host of things from the 
 context menu, like viewing message headers, opening a message 
 in a separate window (also possible by double clicking on a 
-message) etc...
-<P>
+message) etc...</P>
+
 <HR>
 <A HREF="sylpheed-7.html">Next</A>
 <A HREF="sylpheed-5.html">Previous</A>

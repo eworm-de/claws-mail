@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML>
 <HEAD>
- <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
+ <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.21">
  <TITLE>Sylpheed User's Manual: Installation.</TITLE>
  <LINK HREF="sylpheed-5.html" REL=next>
  <LINK HREF="sylpheed-3.html" REL=previous>
@@ -12,9 +12,9 @@
 <A HREF="sylpheed-3.html">Previous</A>
 <A HREF="sylpheed.html#toc4">Contents</A>
 <HR>
-<H2><A NAME="s4">4. Installation.</A></H2>
+<H2><A NAME="s4">4.</A> <A HREF="sylpheed.html#toc4">Installation.</A></H2>
 
-<H2><A NAME="ss4.1">4.1 Required environment</A>
+<H2><A NAME="ss4.1">4.1</A> <A HREF="sylpheed.html#toc4.1">Required environment</A>
 </H2>
 
 <P>To succesfully compile Sylpheed, you need at least:
@@ -30,6 +30,7 @@ Note: it is reported that Sun C will not compile Sylpheed.</LI>
 </UL>
 
 Optionally you need:
+<A NAME="option_libraries"></A> 
 <UL>
 <LI>
 <A HREF="http://sourceforge.net/project/showfiles.php?group_id=2">Imlib</A>
@@ -59,8 +60,9 @@ and
 (for Palm addressbook use)</LI>
 <LI>the equivalent of GTK+-devel and Xfree86-devel. (Otherwise ./configure will fail.)</LI>
 </UL>
-<P>Notice: Sylpheed may be unstable depending on the environment. Please use the newest version of libraries if possible.
-<H2><A NAME="ss4.2">4.2 Environments known as valid for Sylpheed</A>
+</P>
+<P>Notice: Sylpheed may be unstable depending on the environment. Please use the newest version of libraries if possible.</P>
+<H2><A NAME="ss4.2">4.2</A> <A HREF="sylpheed.html#toc4.2">Environments known as valid for Sylpheed</A>
 </H2>
 
 <P>
@@ -126,6 +128,7 @@ and
 <LI>ASP Linux 7.2 (glibc 2.2.4)</LI>
 <LI>Redmond Linux (Lycoris)</LI>
 </UL>
+</P>
 <P>
 <UL>
 <LI>FreeBSD release 3.2</LI>
@@ -147,6 +150,7 @@ and
 <LI>OpenBSD 3.0</LI>
 <LI>BSD/OS 4.0.1 </LI>
 </UL>
+</P>
 <P>
 <UL>
 <LI>Solaris 2.5</LI>
@@ -164,11 +168,13 @@ and
 <LI>SCO UnixWare 7</LI>
 <LI>Mac OS X 10.1.3 (Darwin 5.3) + XDarwin (without XLocale support) + libxpg4 </LI>
 </UL>
+</P>
 <P>
 <UL>
 <LI>Windows (MSVC + GTK+ for win32), in progress</LI>
 </UL>
-<H2><A NAME="ss4.3">4.3 Nuts and bolts of installation</A>
+</P>
+<H2><A NAME="ss4.3">4.3</A> <A HREF="sylpheed.html#toc4.3">Nuts and bolts of installation</A>
 </H2>
 
 <P>
@@ -182,34 +188,75 @@ and
 <LI>Run ./configure to check your environment and create the installation make files </LI>
 <LI>Run the 'make' program which will compile the sources. Do not proceed with this step if there are fatal errors in the previous step. Fatal errors indicate that things are missing in order to compile Sylpheed properly. </LI>
 </UL>
-<P>If the make process has completed, run "make install" (as root), to install the program and the supportfiles
-<H2><A NAME="ss4.4">4.4 Installation on Linux using RPM</A>
-</H2>
+</P>
+<P>If the make process has completed, run "make install" (as root), to install the program and the supportfiles</P>
 
-<P>As root, run the "rpm -ivh " command on the RPM file you downloaded. As soon as this process is complete you can run Sylpheed as user. 
-<H2><A NAME="ss4.5">4.5 Installation on Debian Linux</A>
-</H2>
+<H3><A NAME="compile_sylpheed"></A> Compiling Sylpheed with options</H3>
 
-<P>With an internet connection :
-<P>apt-get install sylpheed (to install it with a internet connection)
-<P>Without internet connection, fetch the debian package for example on
-<A HREF="http://packages.debian.org/unstable/mail/sylpheed.html">http://packages.debian.org/unstable/mail/sylpheed.html</A><P>dpkg -i sylpheedx.x.x-1i386.deb
-<P>dpkg --install sylpheedx.x.x-1i386.deb
-<H2><A NAME="ss4.6">4.6 Installation on FreeBSD</A>
-</H2>
-
-<P>using the /stand/sysinstall tool (it is a menu-based interface) :
-<P>run "/stand/sysinstall" as root
-<P>in the main menu choose "Configure" -> "Packages" -> "mail", then "sylpheed" then, back to the "Packages" list, choose "Install"
-<P>Using the ports
-<P>Get the sylpheed port on :
+<P>You can choose to compile Sylpheed with some optional features enabled.
+Use <I>./configure --help</I> to list configuration syntax and options.</P>
+<P>The following optional features can be enabled:</P>
 <P>
-<A HREF="ftp://ftp.freebsd.org/pub/FreeBSD/ports/i386/packages-4.3-release/mail">ftp://ftp.freebsd.org/pub/FreeBSD/ports/i386/packages-4.3-release/mail</A><P>then, as root: pkg-add sylpheed-0.x.x.tgz
-<P>using the ports with compiling:
+<UL>
+<LI><I>Jpilot</I>: to use you PDA addressbook with Sylpheed. You will
+need the <I>Jpilot</I> library (and <I>pilot-link</I>, too).
+Enable this option with the <I>--enable-jpilot</I> configure switch.</LI>
+<LI><I>GnuPG</I>: Sylpheed can encrypt and sign your messages (also decrypt
+and verify the signatures of the incoming messages) using GnuPG.
+GnuPG follows the OpenPGP standard and is compatible with PGP.
+To enable this feature, you need to install GnuPG and GPGME (interface
+library to GnuPG).
+Enable this option with the <I>--enable-gpgme</I> configure switch.</LI>
+<LI><I>LDAP</I>: Sylpheed can connect to a LDAP server in order to
+query mail addresses. To enable this feature you will need the
+OpenLDAP library.
+Enable this option with the <I>--enable-ldap</I> configure switch.</LI>
+<LI><I>X-Faces</I>: you can create a small picture (of your face, or
+of anything else) that will be sent in the header of your mails.
+This option is enabled if the compface library is found and
+can be disabled using the <I>--disable-compface</I> configure switch.</LI>
+<LI>Images can appear "inline" (embedded in the message window, without
+the need of an external viewer) if Sylpheed is compiled
+with either the <I>gdk-pixbuf</I> or the <I>imlib</I> library.
+You can choose the library (if both are installed) by using the
+<I>--disable-gdk-pixbuf</I> or <I>--disable-imlib</I> configure switch.</LI>
+</UL>
+</P>
+<P>All these features require additional libraries and tools that may not be part
+of your distribution. You can find them at the addresses listed at the beginning
+of this chapter, 
+<A HREF="#option_libraries">here</A>.</P>
+
+<H2><A NAME="ss4.4">4.4</A> <A HREF="sylpheed.html#toc4.4">Installation on Linux using RPM</A>
+</H2>
+
+<P>As root, run the "rpm -ivh " command on the RPM file you downloaded. As soon as this process is complete you can run Sylpheed as user. </P>
+<H2><A NAME="ss4.5">4.5</A> <A HREF="sylpheed.html#toc4.5">Installation on Debian Linux</A>
+</H2>
+
+<P>With an internet connection :</P>
+<P>apt-get install sylpheed (to install it with a internet connection)</P>
+<P>Without internet connection, fetch the debian package for example on
+<A HREF="http://packages.debian.org/unstable/mail/sylpheed.html">http://packages.debian.org/unstable/mail/sylpheed.html</A></P>
+<P>dpkg -i sylpheedx.x.x-1i386.deb</P>
+<P>dpkg --install sylpheedx.x.x-1i386.deb</P>
+<H2><A NAME="ss4.6">4.6</A> <A HREF="sylpheed.html#toc4.6">Installation on FreeBSD</A>
+</H2>
+
+<P>using the /stand/sysinstall tool (it is a menu-based interface) :</P>
+<P>run "/stand/sysinstall" as root</P>
+<P>in the main menu choose "Configure" -> "Packages" -> "mail", then "sylpheed" then, back to the "Packages" list, choose "Install"</P>
+<P>Using the ports</P>
+<P>Get the sylpheed port on :</P>
+<P>
+<A HREF="ftp://ftp.freebsd.org/pub/FreeBSD/ports/i386/packages-4.3-release/mail">ftp://ftp.freebsd.org/pub/FreeBSD/ports/i386/packages-4.3-release/mail</A></P>
+<P>then, as root: pkg-add sylpheed-0.x.x.tgz</P>
+<P>using the ports with compiling:</P>
 <P>first, update your port, fetch it on 
-<A HREF="http://www.freebsd.org/ports/mail.html">http://www.freebsd.org/ports/mail.html</A><P>cd /usr/ports/mail/sylpheed
-<P>make
-<P>If it succeeds, type "make install"
+<A HREF="http://www.freebsd.org/ports/mail.html">http://www.freebsd.org/ports/mail.html</A></P>
+<P>cd /usr/ports/mail/sylpheed</P>
+<P>make</P>
+<P>If it succeeds, type "make install"</P>
 <P>In case it fails, fetch the required package if necessary
 (on the same page), put the package file in /usr/ports/distfiles/
 then :
@@ -218,8 +265,9 @@ then :
 <LI>make</LI>
 <LI>make install</LI>
 </UL>
-<P>Need a more up-to-date version ?
-<P>Just use the Unix standard method (see "Nuts and bolts of installation")
+</P>
+<P>Need a more up-to-date version ?</P>
+<P>Just use the Unix standard method (see "Nuts and bolts of installation")</P>
 <HR>
 <A HREF="sylpheed-5.html">Next</A>
 <A HREF="sylpheed-3.html">Previous</A>
