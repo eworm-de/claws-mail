@@ -1,5 +1,10 @@
 2001-06-18 [paul]
 
+        * src/prefs_account.c
+                UI stuff: More changes to the English
+
+2001-06-18 [paul]
+
         * src/pixmaps/stock_news_compose.xpm: new file
         * src/Makefile.am
         * src/mainwindow.c

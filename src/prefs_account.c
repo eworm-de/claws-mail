@@ -890,10 +890,10 @@ static void prefs_account_receive_create(void)
 	PACK_CHECK_BUTTON (vbox2, rmmail_chkbtn,
 			   _("Remove messages on server when received"));
 	PACK_CHECK_BUTTON (vbox2, getall_chkbtn,
-			   _("Receive all messages on server"));
+			   _("Download all messages on server"));
 	PACK_CHECK_BUTTON
 		(vbox2, recvatgetall_chkbtn,
-		 _("`Receive all' checks for new mail on this account"));
+		 _("`Get all' checks for new mail on this account"));
 	PACK_CHECK_BUTTON (vbox2, filter_on_recv_chkbtn,
 			   _("Filter messages on receiving"));
 
