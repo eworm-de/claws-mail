@@ -1,3 +1,13 @@
+2004-02-27 [alfons]	0.9.9claws35
+
+	* src/compose.[ch]
+		Explicitly remove draft timeout to fix nasty race between 
+		compose_send_cb() (which destroys the compose window) and 
+		compose_defer_auto_save_draft() (which expects compose 
+		window to exist). Should fix Keith's and Fred Malton's
+		bug report (#128, "crash after complaining about character
+		set conversion")
+
 2004-02-27 [luke]	0.9.9claws34
 	
 	* src/folder.c

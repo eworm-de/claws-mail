@@ -207,6 +207,8 @@ struct _Compose
 	gchar *redirect_filename;
 	
 	gboolean remove_references;
+
+	guint draft_timeout_tag;
 };
 
 struct _AttachInfo

@@ -5255,6 +5255,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	compose->exteditor_pid     = -1;
 	compose->exteditor_readdes = -1;
 	compose->exteditor_tag     = -1;
+	compose->draft_timeout_tag = -1;
 
 #if USE_ASPELL
 	menu_set_sensitive(ifactory, "/Spelling", FALSE);
@@ -6404,6 +6405,11 @@ static void compose_send_cb(gpointer data, guint action, GtkWidget *widget)
 			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
 			return;
 	
+	if (compose->draft_timeout_tag != -1) { /* CLAWS: disable draft timeout */
+		gtk_timeout_remove(compose->draft_timeout_tag);
+		compose->draft_timeout_tag = -1;
+	}
+
 	compose_allow_user_actions (compose, FALSE);
 	compose->sending = TRUE;
 	val = compose_send(compose);
@@ -7224,11 +7230,13 @@ static void text_inserted(GtkWidget *widget, const gchar *text,
 
 	if (prefs_common.autosave && 
 	    gtk_stext_get_length(GTK_STEXT(widget)) % prefs_common.autosave_length == 0)
-		gtk_timeout_add(500, (GtkFunction) compose_defer_auto_save_draft, compose);
+		compose->draft_timeout_tag = gtk_timeout_add
+			(500, (GtkFunction) compose_defer_auto_save_draft, compose);
 }
 
 static gint compose_defer_auto_save_draft(Compose *compose)
 {
+	compose->draft_timeout_tag = -1;
 	compose_draft_cb((gpointer)compose, 2, NULL);
 	return FALSE;
 }
