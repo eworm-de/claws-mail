@@ -1,3 +1,10 @@
+2002-09-18 [alfons]	0.8.2claws58
+
+	* src/compose.c
+		:%sno/if(/if (/gc
+		:%sno/for(/for (/gc
+		(beautify a little bit)
+
 2002-09-18 [christoph]	0.8.2claws57
 
 	* src/pine.c
