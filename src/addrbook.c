@@ -2043,19 +2043,16 @@ static gboolean addrbook_chkread_tree( AddressBookFile *book, XMLFile *file ) {
 	}
 
 	attr = xml_get_current_tag_attr(file);
-	// addrbook_show_attribs( attr );
+	/* addrbook_show_attribs( attr ); */
 
 	retVal = TRUE;
 	for (;;) {
 		if (! file->level ) break;
-		// Get item tag
+		/* Get item tag */
 		if( xml_parse_next_tag( file ) ) {
 			longjmp( book->jumper, 1 );
 		}
-		// Get next tag (person, group or folder)
-		if( xml_parse_next_tag( file ) ) {
-			longjmp( book->jumper, 1 );
-		}
+		/* Get next tag (person, group or folder) */
 		if( xml_compare_tag( file, AB_ELTAG_PERSON ) ) {
 			addrbook_chkparse_person( book, file );
 		}
@@ -2064,10 +2061,6 @@ static gboolean addrbook_chkread_tree( AddressBookFile *book, XMLFile *file ) {
 		}
 		else if( xml_compare_tag( file, AB_ELTAG_FOLDER ) ) {
 			addrbook_chkparse_folder( book, file );
-		}
-		else {
-			// Item not recognized
-			retVal = FALSE;
 		}
 	}
 	return retVal;
@@ -2092,7 +2085,7 @@ gint addrbook_test_read_file( AddressBookFile *book, gchar *fileName ) {
 	if( file ) {
 		book->retVal = MGU_BAD_FORMAT;
 		if( setjmp( book->jumper ) ) {
-			// printf( "Caught Ya!!!\n" );
+			/* printf( "Caught Ya!!!\n" ); */
 			xml_close_file( file );
 			return book->retVal;
 		}

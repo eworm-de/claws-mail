@@ -1,3 +1,11 @@
+2001-09-24 [match]
+	* src/ldif.[ch], src/importldif.[ch], addressbook.c
+		import LDIF files.
+	* src/addrcache.[ch], addrindex.[ch]
+		small update for future
+	* src/addrbook.c
+		fix test XML file.
+
 2001-09-24 [melvin]
 	* src/gtkspell.[ch]
 		added 'Learn from mistakes' option
