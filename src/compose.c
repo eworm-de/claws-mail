@@ -4660,8 +4660,8 @@ static void compose_convert_header(gchar *dest, gint len, gchar *src,
 	g_return_if_fail(dest != NULL);
 
 	if (len < 1) return;
-	
-	tmpstr = conv_codeset_strdup(src, CS_UTF_8, conv_get_outgoing_charset_str());
+
+	tmpstr = strdup(src);
 
 	subst_char(tmpstr, '\n', ' ');
 	subst_char(tmpstr, '\r', ' ');

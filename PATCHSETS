@@ -62,3 +62,4 @@
 ( cvs diff -u -r 1.15.2.2 -r 1.15.2.3 src/codeconv.h; ) > 0.9.12cvs33.6.patchset
 ( cvs diff -u -r 1.274.2.10 -r 1.274.2.11 src/mainwindow.c; ) > 0.9.12cvs33.7.patchset
 ( cvs diff -u -r 1.65.2.8 -r 1.65.2.9 src/codeconv.c; ) > 0.9.12cvs33.8.patchset
+( cvs diff -u -r 1.65.2.9 -r 1.65.2.10 src/codeconv.c; cvs diff -u -r 1.382.2.29 -r 1.382.2.30 src/compose.c; ) > 0.9.12cvs33.9.patchset

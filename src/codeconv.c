@@ -1511,9 +1511,8 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 		mimesep_enc = "?Q?";
 	}
 
-	cur_encoding = conv_get_current_charset_str();
-	if (!strcmp(cur_encoding, CS_US_ASCII))
-		cur_encoding = CS_ISO_8859_1;
+	cur_encoding = CS_UTF_8; /* gtk2 */
+
 	out_encoding = conv_get_outgoing_charset_str();
 	if (!strcmp(out_encoding, CS_US_ASCII))
 		out_encoding = CS_ISO_8859_1;
