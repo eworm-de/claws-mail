@@ -141,7 +141,9 @@ void headerview_init(HeaderView *headerview)
 	GtkStyle *style; \
  \
 	style = gtk_style_copy(gtk_widget_get_style(headerview->wid)); \
-	style->font = boldfont; \
+	if (boldfont) { \
+		style->font = boldfont; \
+        } \
 	gtk_widget_set_style(headerview->wid, style); \
 }
 
