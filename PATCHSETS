@@ -23,3 +23,4 @@
 ( cvs diff -u -r 1.430 -r 1.431 src/compose.c; ) > 0.9.12cvs34.patchset
 ( cvs diff -u -r 1.65 -r 1.66 src/pop.c; ) > 0.9.12cvs35.patchset
 ( cvs diff -u -r 1.24 -r 1.25 src/msgcache.c; ) > 0.9.12cvs36.patchset
+( cvs diff -u -r 1.25 -r 1.26 src/msgcache.c; ) > 0.9.12cvs37.patchset
