@@ -1,3 +1,25 @@
+2004-07-16
+
+	* src/pop.[ch]: pop3_getrange_uidl_recv(): relaxed invalid UIDL
+	  checking.
+
+2004-07-16
+
+	* src/account.[ch]
+	  src/main.c
+	  src/prefs.[ch]
+	  src/prefs_account.[ch]
+	  src/prefs_common.[ch]: unified *_{save,write}_config() to
+	  *_write_config().
+
+2004-06-30
+
+	* src/procheader.c:
+	  procheader_get_one_field()
+	  procheader_get_unfolded_line(): fixed a bug that unfolding was
+	  broken if the sequence 'SP CR LF' appeared (thanks to NOGUCHI,
+	  Takuya).
+
 2004-06-23
 
 	* src/prefs_common.c: made the default of confirm_on_exit FALSE.

@@ -1,3 +1,91 @@
+2004-07-16 [paul]	0.9.12cvs26
+	
+	* src/gtk/quicksearch.c
+	* src/compose.c
+	* src/customheader.c
+	* src/messageview.c
+	* src/news.c
+	* src/prefs_account.c
+	* src/prefs_display_header.c
+	* src/procheader.c
+		replace "Message-Id" with "Message-ID"
+
+2004-07-16 [paul]	0.9.12cvs25
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/account.c
+	* src/account.h
+	* src/folder_item_prefs.c
+	* src/main.c
+	* src/pop.c
+	* src/pop.h
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_gtk.c
+	* src/prefs_gtk.h
+		sync with main 0.9.12cvs1
+
+2004-07-15 [colin]	0.9.12cvs24
+
+	* src/folder.c
+		Disable GPG signature check during
+		folder move and scan 
+	(Closes Bug 521 Signature checking slows down Folder-Move)
+
+2004-07-14 [christoph]	0.9.12cvs23
+
+	* src/pgpmime.c
+		add missing fclose
+
+	* src/procmime.c
+		add checks if fopen really worked
+
+2004-07-14 [colin]	0.9.12cvs22
+
+	* src/pop.c
+	* src/common/partial_download.c
+		Update includes
+
+2004-07-14 [colin]	0.9.12cvs21
+
+	* src/folder.c
+	* src/inc.c
+	* src/matcher.c
+	* src/matcher.h
+	* src/matcher_parser_parse.y
+	* src/messageview.c
+	* src/msgcache.c
+	* src/noticeview.c
+	* src/noticeview.h
+	* src/pop.c
+	* src/pop.h
+	* src/prefs_matcher.c
+	* src/procheader.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/summaryview.c
+	* src/common/Makefile.am
+	* src/common/defs.h
+	* src/gtk/quicksearch.c
+	* src/common/partial_download.c ** NEW FILES **
+	* src/common/partial_download.h ** NEW FILES **
+		Partial downloading of pop3 mails
+
+2004-07-13 [christoph]	0.9.12cvs20
+
+	* src/mimeview.c
+		use "button_release_event" instead of "button_press_event",
+		because executing event callbacks while the button is still
+		pressed is not good and causes problems
+
+2004-07-12 [colin]	0.9.12cvs19
+
+	* src/gtk/quicksearch.c
+		Fix a missing status update in quicksearch
+
 2004-07-08 [colin]	0.9.12cvs18
 
 	* src/common/smtp.h
@@ -38,6 +126,9 @@
 	* src/toolbar.c
 		enable next unread button in empty folders if next folder
 		dialog is not disabled
+
+	(Closes Feature Request [ 755800 ] "next" button enabled in empty
+	 folders)
 
 2004-07-06 [colin]	0.9.12cvs12
 

@@ -1,3 +1,26 @@
+2004-07-16 [paul]	0.9.12cvs26.1
+	
+	* src/gtk/quicksearch.c
+	* src/account.c
+	* src/account.h
+	* src/compose.c
+	* src/customheader.c
+	* src/folder_item_prefs.c
+	* src/main.c
+	* src/messageview.c
+	* src/news.c
+	* src/pop.c
+	* src/pop.h
+	* src/prefs_account.c
+	* src/prefs_account.h
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_display_header.c
+	* src/prefs_gtk.c
+	* src/prefs_gtk.h
+	* src/procheader.c
+		sync with 0.9.12cvs26 HEAD	
+
 2004-07-15 [colin]	0.9.12cvs18.14
 
 	* src/folder.c

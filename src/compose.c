@@ -3432,7 +3432,7 @@ static gint compose_redirect_write_headers(Compose *compose, FILE *fp)
 	/* Resent-Message-ID */
 	if (compose->account->gen_msgid) {
 		compose_generate_msgid(buf, sizeof(buf));
-		fprintf(fp, "Resent-Message-Id: <%s>\n", buf);
+		fprintf(fp, "Resent-Message-ID: <%s>\n", buf);
 		compose->msgid = g_strdup(buf);
 	}
 
@@ -4403,7 +4403,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	/* Message-ID */
 	if (compose->account->gen_msgid) {
 		compose_generate_msgid(buf, sizeof(buf));
-		fprintf(fp, "Message-Id: <%s>\n", buf);
+		fprintf(fp, "Message-ID: <%s>\n", buf);
 		compose->msgid = g_strdup(buf);
 	}
 

@@ -190,8 +190,8 @@ if (!(func)) \
 	return; \
 } \
 
-void prefs_save_config(PrefParam *param, const gchar *label,
-		       const gchar *rcfile)
+void prefs_write_config(PrefParam *param, const gchar *label,
+		        const gchar *rcfile)
 {
 	FILE *orig_fp;
 	PrefFile *pfile;

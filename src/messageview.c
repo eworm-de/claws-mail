@@ -627,7 +627,7 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 
 	/* Message ID */
 	generate_msgid(account->address, buf, sizeof buf);
-	fprintf(fp, "Message-Id: <%s>\n", buf);
+	fprintf(fp, "Message-ID: <%s>\n", buf);
 
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmp, "fclose");

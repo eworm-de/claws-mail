@@ -597,7 +597,7 @@ void prefs_account_read_config(PrefsAccount *ac_prefs, const gchar *label)
 	prefs_custom_header_read_config(ac_prefs);
 }
 
-void prefs_account_save_config_all(GList *account_list)
+void prefs_account_write_config_all(GList *account_list)
 {
 	GList *cur;
 	gchar *rcpath;
@@ -1361,7 +1361,7 @@ static void prefs_account_send_create(void)
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
 
 	PACK_CHECK_BUTTON (vbox2, date_chkbtn, _("Add Date"));
-	PACK_CHECK_BUTTON (vbox2, msgid_chkbtn, _("Generate Message-Id"));
+	PACK_CHECK_BUTTON (vbox2, msgid_chkbtn, _("Generate Message-ID"));
 
 	hbox = gtk_hbox_new (FALSE, 12);
 	gtk_widget_show (hbox);

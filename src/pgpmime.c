@@ -172,6 +172,7 @@ static gint pgpmime_check_signature(MimeInfo *mimeinfo)
 	gpgme_data_release(sigdata);
 	gpgme_data_release(textdata);
 	g_string_free(textstr, TRUE);
+	fclose(fp);
 	
 	return 0;
 }

@@ -107,7 +107,7 @@ gboolean custom_header_is_allowed(const gchar *header)
 	    strcasecmp(header, "From")         != 0 &&
 	    strcasecmp(header, "To")           != 0 &&
 	 /* strcasecmp(header, "Sender")       != 0 && */
-	    strcasecmp(header, "Message-Id")   != 0 &&
+	    strcasecmp(header, "Message-ID")   != 0 &&
 	    strcasecmp(header, "In-Reply-To")  != 0 &&
 	    strcasecmp(header, "References")   != 0 &&
 	    strcasecmp(header, "Mime-Version") != 0 &&

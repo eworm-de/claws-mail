@@ -1,3 +1,25 @@
+2004-07-16
+
+	* src/pop.[ch]: pop3_getrange_uidl_recv(): 無効な UIDL のチェックを
+	  緩めた。
+
+2004-07-16
+
+	* src/account.[ch]
+	  src/main.c
+	  src/prefs.[ch]
+	  src/prefs_account.[ch]
+	  src/prefs_common.[ch]: *_{save,write}_config() を *_write_config()
+	  に統一。
+
+2004-06-30
+
+	* src/procheader.c:
+	  procheader_get_one_field()
+	  procheader_get_unfolded_line(): シーケンス 'SP CR LF' が出現
+	  したときに折り返し解除処理が正しく動作しないバグを修正
+	  (NOGUCHI, Takuya さん thanks)。
+
 2004-06-23
 
 	* src/prefs_common.c: confirm_on_exit のデフォルトを FALSE にした。

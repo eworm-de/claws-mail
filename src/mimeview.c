@@ -219,7 +219,7 @@ MimeView *mimeview_create(MainWindow *mainwin)
 
 	g_signal_connect(G_OBJECT(ctree), "tree_select_row",
 			 G_CALLBACK(mimeview_selected), mimeview);
-	g_signal_connect(G_OBJECT(ctree), "button_press_event",
+	g_signal_connect(G_OBJECT(ctree), "button_release_event",
 			 G_CALLBACK(mimeview_button_pressed), mimeview);
 	g_signal_connect(G_OBJECT(ctree), "key_press_event",
 			 G_CALLBACK(mimeview_key_pressed), mimeview);
@@ -1336,7 +1336,7 @@ static gboolean icon_clicked_cb (GtkWidget *button, GdkEventButton *event, MimeV
 			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button),
 						     TRUE);
 	} else {
-		g_signal_stop_emission_by_name(G_OBJECT(button), "button_press_event");
+		g_signal_stop_emission_by_name(G_OBJECT(button), "button_release_event");
 	}
 
 	part_button_pressed(mimeview, event, partinfo);
@@ -1589,7 +1589,7 @@ static void icon_list_append_icon (MimeView *mimeview, MimeInfo *mimeinfo)
 	gtk_tooltips_set_tip(mimeview->tooltips, button, tip, NULL);
 	g_free(tip);
 	gtk_widget_show_all(button);
-	g_signal_connect(G_OBJECT(button), "button_press_event", 
+	g_signal_connect(G_OBJECT(button), "button_release_event", 
 			 G_CALLBACK(icon_clicked_cb), mimeview);
 	g_signal_connect(G_OBJECT(button), "key_press_event", 
 			 G_CALLBACK(icon_key_pressed), mimeview);

@@ -995,6 +995,10 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 		procmime_decode_content(mimeinfo);
 
 	fp = fopen(mimeinfo->filename, "rb");
+	if (fp == NULL) {
+		FILE_OP_ERROR(mimeinfo->filename, "fopen");
+		return;
+	}
 	fseek(fp, mimeinfo->offset, SEEK_SET);
 	procheader_get_header_fields(fp, hentry);
 	if (hentry[0].body != NULL)
@@ -1063,6 +1067,10 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 		procmime_decode_content(mimeinfo);
 
 	fp = fopen(mimeinfo->filename, "rb");
+	if (fp == NULL) {
+		FILE_OP_ERROR(mimeinfo->filename, "fopen");
+		return;
+	}
 	fseek(fp, mimeinfo->offset, SEEK_SET);
 	while ((p = fgets(buf, sizeof(buf), fp)) != NULL) {
 		if (ftell(fp) > (mimeinfo->offset + mimeinfo->length))

@@ -101,7 +101,7 @@ static gchar *defaults[] =
 	"X-Newsreader",
 	"User-Agent",
 	"-Received",
-	"-Message-Id",
+	"-Message-ID",
 	"-In-Reply-To",
 	"-References",
 	"-Mime-Version",

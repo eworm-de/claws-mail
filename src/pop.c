@@ -251,10 +251,11 @@ static gint pop3_getrange_uidl_recv(Pop3Session *session, const gchar *data,
 		p = newline + 1;
 		if (p < lastp && *p == '\n') p++;
 
-		if (sscanf(buf, "%d %" Xstr(IDLEN) "s", &num, id) != 2)
-			return -1;
-		if (num <= 0 || num > session->count)
-			return -1;
+		if (sscanf(buf, "%d %" Xstr(IDLEN) "s", &num, id) != 2 ||
+		    num <= 0 || num > session->count) {
+			log_warning(_("invalid UIDL response: %s\n"), buf);
+			continue;
+		}
 
 		session->msg[num].uidl = g_strdup(id);
 

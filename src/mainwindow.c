@@ -1479,7 +1479,7 @@ void main_window_get_size(MainWindow *mainwin)
 		prefs_common.msgview_height = allocation->height;
 	}
 
-	debug_print("summaryview size: %d x %d\n",
+/*	debug_print("summaryview size: %d x %d\n",
 		    prefs_common.summaryview_width,
 		    prefs_common.summaryview_height);
 	debug_print("folderview size: %d x %d\n",
@@ -1487,7 +1487,7 @@ void main_window_get_size(MainWindow *mainwin)
 		    prefs_common.folderview_height);
 	debug_print("messageview size: %d x %d\n",
 		    prefs_common.msgview_width,
-		    prefs_common.msgview_height);
+		    prefs_common.msgview_height); */
 }
 
 void main_window_get_position(MainWindow *mainwin)

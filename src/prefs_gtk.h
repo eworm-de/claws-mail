@@ -138,7 +138,7 @@ void prefs_read_config		(PrefParam	*param,
 				 const gchar	*rcfile);
 void prefs_config_parse_one_line(PrefParam	*param,
 				 const gchar	*buf);
-void prefs_save_config		(PrefParam	*param,
+void prefs_write_config		(PrefParam	*param,
 				 const gchar	*label,
 				 const gchar	*rcfile);
 gint prefs_write_param		(PrefParam	*param,
