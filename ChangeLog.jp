@@ -1,3 +1,20 @@
+2001-11-23
+
+	* src/compose.c
+	  src/gtkutils.[ch]: 新しい自動改行機能をマージ。
+	  gtkut_text_str_compare_n()
+	  gtkut_text_str_compare()
+	  gtkut_text_is_uri_string(): claws ブランチの GtkSText から
+	  バックポートし、修正。
+	* src/prefs_template.c
+	  src/template.[ch]: テンプレートに Subject を追加。
+
+2001-11-22
+
+	* src/compose.c: compose_write_headers(): 括弧を付け忘れて無効な
+	  カスタムヘッダを生成していたのを修正(野呂さん thanks)。
+	  Sender: カスタムヘッダを許可。
+
 2001-11-20
 
 	* src/procheader.c: procheader_date_parse(): RFC 非準拠の Date

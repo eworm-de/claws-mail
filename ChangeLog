@@ -1,3 +1,20 @@
+2001-11-23
+
+	* src/compose.c
+	  src/gtkutils.[ch]: merged the new wrapping function.
+	  gtkut_text_str_compare_n()
+	  gtkut_text_str_compare()
+	  gtkut_text_is_uri_string(): backport from the GtkSText in the
+	  claws branch, and made modification.
+	* src/prefs_template.c
+	  src/template.[ch]: added Subject to the template.
+
+2001-11-22
+
+	* src/compose.c: compose_write_headers(): added missing parenthesis
+	  that generated invalid custom header (thanks to Masaaki Noro).
+	  Allow Sender: custom header.
+
 2001-11-20
 
 	* src/procheader.c: procheader_date_parse(): workaround for

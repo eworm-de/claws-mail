@@ -26,6 +26,7 @@ typedef struct _Template	Template;
 
 struct _Template {
 	gchar *name;
+	gchar *subject;
 	gchar *value;
 };
 

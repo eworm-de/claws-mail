@@ -270,6 +270,57 @@ gboolean gtkut_text_match_string(GtkText *text, gint pos, wchar_t *wcs,
 		return FALSE;
 }
 
+guint gtkut_text_str_compare_n(GtkText *text, guint pos1, guint pos2,
+			       guint len, guint text_len)
+{
+	guint i;
+	GdkWChar ch1, ch2;
+
+	for (i = 0; i < len && pos1 + i < text_len && pos2 + i < text_len; i++) {
+		ch1 = GTK_TEXT_INDEX(text, pos1 + i);
+		ch2 = GTK_TEXT_INDEX(text, pos2 + i);
+		if (ch1 != ch2)
+			break;
+	}
+
+	return i;
+}
+
+guint gtkut_text_str_compare(GtkText *text, guint start_pos, guint text_len,
+			     const gchar *str)
+{
+	wchar_t *wcs;
+	guint len;
+	gboolean result;
+
+	if (!str) return 0;
+
+	wcs = strdup_mbstowcs(str);
+	if (!wcs) return 0;
+	len = wcslen(wcs);
+
+	if (len > text_len - start_pos)
+		result = FALSE;
+	else
+		result = gtkut_text_match_string(text, start_pos, wcs, len,
+						 TRUE);
+
+	g_free(wcs);
+
+	return result ? len : 0;
+}
+
+gboolean gtkut_text_is_uri_string(GtkText *text,
+				  guint start_pos, guint text_len)
+{
+	if (gtkut_text_str_compare(text, start_pos, text_len, "http://") ||
+	    gtkut_text_str_compare(text, start_pos, text_len, "ftp://")  ||
+	    gtkut_text_str_compare(text, start_pos, text_len, "https://"))
+		return TRUE;
+
+	return FALSE;
+}
+
 void gtkut_widget_disable_theme_engine(GtkWidget *widget)
 {
 	GtkStyle *style, *new_style;

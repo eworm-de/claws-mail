@@ -105,6 +105,18 @@ gboolean gtkut_text_match_string	(GtkText	*text,
 					 wchar_t	*wcs,
 					 gint		 len,
 					 gboolean	 case_sens);
+guint gtkut_text_str_compare_n		(GtkText	*text,
+					 guint		 pos1,
+					 guint		 pos2,
+					 guint		 len,
+					 guint		 text_len);
+guint gtkut_text_str_compare		(GtkText	*text,
+					 guint		 start_pos,
+					 guint		 text_len,
+					 const gchar	*str);
+gboolean gtkut_text_is_uri_string	(GtkText	*text,
+					 guint		 start_pos,
+					 guint		 text_len);
 
 void gtkut_widget_disable_theme_engine	(GtkWidget	*widget);
 void gtkut_widget_wait_for_draw		(GtkWidget	*widget);

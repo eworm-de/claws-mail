@@ -134,6 +134,8 @@ static void compose_toolbar_create		(Compose	*compose,
 static GtkWidget *compose_account_option_menu_create
 						(Compose	*compose);
 static void compose_set_template_menu		(Compose	*compose);
+static void compose_template_apply		(Compose	*compose,
+						 Template	*tmpl);
 static void compose_destroy			(Compose	*compose);
 
 static void compose_entries_set			(Compose	*compose,
@@ -743,9 +745,8 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	gtk_editable_set_position(GTK_EDITABLE(text), 0);
 	gtk_stext_set_point(text, 0);
 
-	if (quote && prefs_common.linewrap_quote) {
+	if (quote && prefs_common.linewrap_quote)
 		compose_wrap_line_all(compose);
-	}
 
 	gtk_stext_thaw(text);
 	gtk_widget_grab_focus(compose->text);
@@ -2065,11 +2066,11 @@ compose_end:
 }
 
 /* return indent length */
-static guint get_indent_length(GtkSText *text, guint start_pos,
-			       guint text_len) {
+static guint get_indent_length(GtkSText *text, guint start_pos, guint text_len)
+{
 	gint indent_len = 0;
 	gint i, ch_len;
-	gchar cbuf[MB_CUR_MAX];
+	gchar cbuf[MB_LEN_MAX];
 
 	for (i = start_pos; i < text_len; i++) {
 		if (text->use_wchar)
@@ -2091,11 +2092,11 @@ static guint get_indent_length(GtkSText *text, guint start_pos,
 	return indent_len;
 }
 
-/* insert quotation string when line was wrapped, we know these
-   are single byte characters */
+/* insert quotation string when line was wrapped */
 static guint ins_quote(GtkSText *text, guint quote_len, guint indent_len,
 		       guint prev_line_pos, guint text_len,
-		       gchar *quote_fmt) {
+		       gchar *quote_fmt)
+{
 	guint i, ins_len;
 	gchar ch;
 
@@ -2119,18 +2120,17 @@ static guint ins_quote(GtkSText *text, guint quote_len, guint indent_len,
 /* Darko: used when I debug wrapping */
 void dump_text(GtkSText *text, int pos, int tlen, int breakoncr)
 {
-    int i;
-    char ch;
+	int i;
+	char ch;
 
-    printf("%d [", pos);
-    for (i = pos; i < tlen; i++)
-    {
-        ch = GTK_STEXT_INDEX(text, i);
-        if (breakoncr && ch == '\n')
-            break;
-        printf("%c", ch);
-    }
-    printf("]\n");
+	printf("%d [", pos);
+	for (i = pos; i < tlen; i++) {
+		ch = GTK_STEXT_INDEX(text, i);
+		if (breakoncr && ch == '\n')
+			break;
+		printf("%c", ch);
+	}
+	printf("]\n");
 }
 #endif
 
@@ -2151,18 +2151,18 @@ static void compose_wrap_line_all(Compose *compose)
 	gtk_stext_freeze(text);
 
 	/* make text buffer contiguous */
-	gtk_stext_compact_buffer(text);
+	/* gtk_stext_compact_buffer(text); */
 
 	tlen = gtk_stext_get_length(text);
 
 	for (; cur_pos < tlen; cur_pos++) {
 		/* mark position of new line - needed for quotation wrap */
 		if (linewrap_quote && is_new_line) {
-			qlen = gtkstext_str_strcmp(text, cur_pos, tlen, qfmt);
+			qlen = gtkut_text_str_compare
+				(text, cur_pos, tlen, qfmt);
 			is_new_line = 0;
-			if (qlen) {
+			if (qlen)
 				i_len = get_indent_length(text, cur_pos, tlen);
-			}
 			else
 				i_len = 0;
 			p_pos = cur_pos;
@@ -2211,8 +2211,8 @@ static void compose_wrap_line_all(Compose *compose)
 			/* if it's just quotation + newline skip it */
 			if (i_len && (cur_pos + 1 < tlen)) {
 				/* check if text at new line matches indent */
-				ilen =  gtkstext_strncmp(text, cur_pos + 1,
-							 p_pos, i_len, tlen);
+				ilen =  gtkut_text_str_compare_n
+					(text, cur_pos + 1, p_pos, i_len, tlen);
 				if (cur_pos + ilen < tlen) {
 					if (text->use_wchar)
 						clen = wctomb(cb, (wchar_t)GTK_STEXT_INDEX(text, cur_pos + ilen + 1));
@@ -2241,20 +2241,19 @@ static void compose_wrap_line_all(Compose *compose)
 				/* if text starts with quote fmt or with
 				   indent string, delete them */
 				if (i_len) {
-					ilen =  gtkstext_strncmp(text, cur_pos,
-								 p_pos, i_len,
-								 tlen);
+					ilen =  gtkut_text_str_compare_n
+						(text, cur_pos, p_pos, i_len,
+						 tlen);
 					if (ilen) {
 						gtk_stext_forward_delete(text,
 									 ilen);
 						tlen -= ilen;
 					}
-				}
-				else if (qlen) {
-					if (gtkstext_str_strcmp(text, cur_pos,
-							        tlen, qfmt)) {
-						gtk_stext_forward_delete(text,
-								 qlen);
+				} else if (qlen) {
+					if (gtkut_text_str_compare
+					    (text, cur_pos, tlen, qfmt)) {
+						gtk_stext_forward_delete
+							(text, qlen);
 						tlen -= qlen;
 					}
 				}
@@ -2271,8 +2270,8 @@ static void compose_wrap_line_all(Compose *compose)
 				if ((cur_pos != line_pos) &&
 				    ((clen > 1) || isalnum(cb[0]))) {
 					gtk_stext_insert(text, NULL, NULL,
-							 NULL, " ", 1);
-					gtk_stext_compact_buffer(text);
+							NULL, " ", 1);
+					/* gtk_text_compact_buffer(text); */
 					tlen++;
 				}
 
@@ -2321,7 +2320,8 @@ static void compose_wrap_line_all(Compose *compose)
 #endif
 			/* force wrapping if it is one long word but not URL */
 			if (p_pos + i_len == line_pos)
-                        	if (!is_url_string(text, line_pos, tlen))
+                        	if (!gtkut_text_is_uri_string
+				    (text, line_pos, tlen))
 					line_pos = cur_pos - 1;
 #ifdef WRAP_DEBUG
 			printf("new line_pos=%d\n", line_pos);
@@ -2336,7 +2336,8 @@ static void compose_wrap_line_all(Compose *compose)
 			}
                         if (clen == 1 && isspace(*cbuf)) {
 				if (p_pos + i_len != line_pos ||
-                            	    !is_url_string(text, line_pos, tlen)) {
+                            	    !gtkut_text_is_uri_string
+					(text, line_pos, tlen)) {
 					gtk_stext_set_point(text, line_pos);
 					gtk_stext_backward_delete(text, 1);
 					tlen--;
@@ -2349,7 +2350,7 @@ static void compose_wrap_line_all(Compose *compose)
 
 			/* if it is URL at beginning of line don't wrap */
 			if (p_pos + i_len == line_pos &&
-                            is_url_string(text, line_pos, tlen)) {
+			    gtkut_text_is_uri_string(text, line_pos, tlen)) {
 #ifdef WRAP_DEBUG
 				printf("found URL at ");
 				dump_text(text, line_pos, tlen, 1);
@@ -2360,7 +2361,7 @@ static void compose_wrap_line_all(Compose *compose)
 			/* insert CR */
 			gtk_stext_set_point(text, line_pos);
 			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
-			gtk_stext_compact_buffer(text);
+			/* gtk_stext_compact_buffer(text); */
 			tlen++;
 			cur_pos++;
 			line_pos++;
@@ -2374,19 +2375,16 @@ static void compose_wrap_line_all(Compose *compose)
 			/* should we insert quotation ? */
 			if (linewrap_quote && qlen) {
 				/* only if line is not already quoted  */
-				if (!gtkstext_str_strcmp(text, line_pos,
-							 tlen, qfmt)) {
+				if (!gtkut_text_str_compare
+					(text, line_pos, tlen, qfmt)) {
 					guint ins_len;
 
 					if (line_pos - p_pos > i_len) {
-						ins_len = ins_quote(text,
-								    qlen,
-								    i_len,
-								    p_pos,
-								    tlen,
-								    qfmt);
+						ins_len = ins_quote
+							(text, qlen, i_len,
+							 p_pos, tlen, qfmt);
 
-						gtk_stext_compact_buffer(text);
+						/* gtk_stext_compact_buffer(text); */
 						tlen += ins_len;
 					}
 
@@ -2416,6 +2414,86 @@ static void compose_wrap_line_all(Compose *compose)
 
 	gtk_stext_thaw(text);
 }
+
+#if 0
+static void compose_wrap_line_all(Compose *compose)
+{
+	GtkText *text = GTK_STEXT(compose->text);
+	guint text_len;
+	guint line_pos = 0, cur_pos = 0;
+	gint line_len = 0, cur_len = 0;
+	gint ch_len;
+	gchar cbuf[MB_LEN_MAX];
+
+	gtk_stext_freeze(text);
+
+	text_len = gtk_stext_get_length(text);
+
+	for (; cur_pos < text_len; cur_pos++) {
+		if (text->use_wchar)
+			ch_len = wctomb
+				(cbuf, (wchar_t)GTK_STEXT_INDEX(text, cur_pos));
+		else {
+			cbuf[0] = GTK_STEXT_INDEX(text, cur_pos);
+			ch_len = 1;
+		}
+
+		if (ch_len == 1 && *cbuf == '\n') {
+			line_pos = cur_pos + 1;
+			line_len = cur_len = 0;
+			continue;
+		}
+
+		if (ch_len < 0) {
+			cbuf[0] = '\0';
+			ch_len = 1;
+		}
+
+		if (ch_len == 1 && isspace(*cbuf)) {
+			line_pos = cur_pos + 1;
+			line_len = cur_len + ch_len;
+		}
+
+		if (cur_len + ch_len > prefs_common.linewrap_len &&
+		    line_len > 0) {
+			gint tlen;
+
+			if (text->use_wchar)
+				tlen = wctomb(cbuf, (wchar_t)GTK_STEXT_INDEX(text, line_pos - 1));
+			else {
+				cbuf[0] = GTK_STEXT_INDEX(text, line_pos - 1);
+				tlen = 1;
+			}
+			if (tlen == 1 && isspace(*cbuf)) {
+				gtk_stext_set_point(text, line_pos);
+				gtk_stext_backward_delete(text, 1);
+				text_len--;
+				cur_pos--;
+				line_pos--;
+				cur_len--;
+				line_len--;
+			}
+
+			gtk_stext_set_point(text, line_pos);
+			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
+			text_len++;
+			cur_pos++;
+			line_pos++;
+			cur_len = cur_len - line_len + ch_len;
+			line_len = 0;
+			continue;
+		}
+
+		if (ch_len > 1) {
+			line_pos = cur_pos + 1;
+			line_len = cur_len + ch_len;
+		}
+		cur_len += ch_len;
+	}
+
+	gtk_stext_thaw(text);
+}
+#endif
 
 static void compose_set_title(Compose *compose)
 {
@@ -3528,21 +3606,23 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		     cur = cur->next) {
 			CustomHeader *chdr = (CustomHeader *)cur->data;
 
-			if (strcasecmp(chdr->name, "Date")         		!= 0 &&
-			    strcasecmp(chdr->name, "From")         		!= 0 &&
-			    strcasecmp(chdr->name, "To")           		!= 0 &&
-			    strcasecmp(chdr->name, "Sender")       		!= 0 &&
-			    strcasecmp(chdr->name, "Message-Id")   		!= 0 &&
-			    strcasecmp(chdr->name, "In-Reply-To")  		!= 0 &&
-			    strcasecmp(chdr->name, "References")   		!= 0 &&
-			    strcasecmp(chdr->name, "Mime-Version") 		!= 0 &&
-			    strcasecmp(chdr->name, "Content-Type") 		!= 0 &&
-			    strcasecmp(chdr->name, "Content-Transfer-Encoding") != 0)
+			if (strcasecmp(chdr->name, "Date")         != 0 &&
+			    strcasecmp(chdr->name, "From")         != 0 &&
+			    strcasecmp(chdr->name, "To")           != 0 &&
+			 /* strcasecmp(chdr->name, "Sender")       != 0 && */
+			    strcasecmp(chdr->name, "Message-Id")   != 0 &&
+			    strcasecmp(chdr->name, "In-Reply-To")  != 0 &&
+			    strcasecmp(chdr->name, "References")   != 0 &&
+			    strcasecmp(chdr->name, "Mime-Version") != 0 &&
+			    strcasecmp(chdr->name, "Content-Type") != 0 &&
+			    strcasecmp(chdr->name, "Content-Transfer-Encoding")
+			    != 0) {
 				compose_convert_header
 					(buf, sizeof(buf),
 					 chdr->value ? chdr->value : "",
 					 strlen(chdr->name) + 2);
-			fprintf(fp, "%s: %s\n", chdr->name, buf);
+				fprintf(fp, "%s: %s\n", chdr->name, buf);
+			}
 		}
 	}
 
@@ -4557,29 +4637,33 @@ void compose_reflect_prefs_all(void)
 	}
 }
 
-static void compose_template_apply(Compose *compose, const gchar *tmpl_str)
+static void compose_template_apply(Compose *compose, Template *tmpl)
 {
 	gchar *qmark;
 	gchar *parsed_str;
 
-	if (!tmpl_str) return;
+	if (!tmpl || !tmpl->value) return;
 
 	gtk_stext_freeze(GTK_STEXT(compose->text));
+        
+	if (tmpl->subject)
+		gtk_entry_set_text(GTK_ENTRY(compose->subject_entry),
+				   tmpl->subject);
 
 	if (compose->replyinfo == NULL) {
 		MsgInfo dummyinfo;
 
 		memset(&dummyinfo, 0, sizeof(MsgInfo));
-		parsed_str = compose_quote_fmt(compose, &dummyinfo, tmpl_str,
-					       NULL);
+		parsed_str = compose_quote_fmt(compose, &dummyinfo,
+					       tmpl->value, NULL);
 	} else {
 		if (prefs_common.quotemark && *prefs_common.quotemark)
 			qmark = prefs_common.quotemark;
 		else
 			qmark = "> ";
 
-		parsed_str = compose_quote_fmt(compose, compose->replyinfo, tmpl_str,
-					       qmark);
+		parsed_str = compose_quote_fmt(compose, compose->replyinfo,
+					       tmpl->value, qmark);
 	}
 
 	if (parsed_str && prefs_common.auto_sig)
@@ -5566,7 +5650,7 @@ static void compose_template_activate_cb(GtkWidget *widget, gpointer data)
 	tmpl = gtk_object_get_data(GTK_OBJECT(widget), "template");
 	g_return_if_fail(tmpl != NULL);
 
-	compose_template_apply(compose, tmpl->value);
+	compose_template_apply(compose, tmpl);
 }
 
 static void compose_ext_editor_cb(gpointer data, guint action,

@@ -42,6 +42,7 @@ static struct Templates {
 	GtkWidget *ok_btn;
 	GtkWidget *clist_tmpls;
 	GtkWidget *entry_name;
+	GtkWidget *entry_subject;
 	GtkWidget *text_value;
 } templates;
 
@@ -90,6 +91,7 @@ static void prefs_template_window_create(void)
 	GtkWidget       *hbox1;
 	GtkWidget         *label1;
 	GtkWidget         *entry_name;
+	GtkWidget         *entry_subject;
 	GtkWidget       *scroll2;
 	GtkWidget         *text_value;
 	GtkWidget     *vbox2;
@@ -141,6 +143,22 @@ static void prefs_template_window_create(void)
 	entry_name = gtk_entry_new();
 	gtk_widget_show(entry_name);
 	gtk_box_pack_start(GTK_BOX(hbox1), entry_name, TRUE, TRUE, 0);
+
+	/* hbox for a label and subject entry */
+	hbox1 = gtk_hbox_new(FALSE, 8);
+	gtk_widget_show(hbox1);
+	gtk_box_pack_start(GTK_BOX(vbox1), hbox1, FALSE, FALSE, 0);
+	gtk_container_set_border_width(GTK_CONTAINER(hbox1), 2);
+
+	/* self-documenting */
+	label1 = gtk_label_new(_("Subject"));
+	gtk_widget_show(label1);
+	gtk_box_pack_start(GTK_BOX(hbox1), label1, FALSE, FALSE, 0);
+
+	/* holds subject */
+	entry_subject = gtk_entry_new();
+	gtk_widget_show(entry_subject);
+	gtk_box_pack_start(GTK_BOX(hbox1), entry_subject, TRUE, TRUE, 0);
 
 	/* template content */
 	scroll2 = gtk_scrolled_window_new(NULL, NULL);
@@ -249,6 +267,7 @@ static void prefs_template_window_create(void)
 	templates.ok_btn = ok_btn;
 	templates.clist_tmpls = clist_tmpls;
 	templates.entry_name = entry_name;
+	templates.entry_subject = entry_subject;
 	templates.text_value = text_value;
 }
 
@@ -339,12 +358,15 @@ static void prefs_template_select_cb(GtkCList *clist, gint row, gint column,
 	Template tmpl_def;
 
 	tmpl_def.name = _("Template");
+	tmpl_def.subject = "";
 	tmpl_def.value = "";
 
 	if (!(tmpl = gtk_clist_get_row_data(clist, row)))
 		tmpl = &tmpl_def;
 
 	gtk_entry_set_text(GTK_ENTRY(templates.entry_name), tmpl->name);
+	gtk_entry_set_text(GTK_ENTRY(templates.entry_subject),
+			   tmpl->subject ? tmpl->subject : "");
 	
 	gtk_text_freeze(GTK_TEXT(templates.text_value));
 	gtk_text_set_point(GTK_TEXT(templates.text_value), 0);
@@ -377,6 +399,7 @@ static gint prefs_template_clist_set_row(gint row)
 	Template *tmpl;
 	Template *tmp_tmpl;
 	gchar *name;
+	gchar *subject;
 	gchar *value;
 	gchar *title[1];
 
@@ -384,11 +407,14 @@ static gint prefs_template_clist_set_row(gint row)
 
 	name = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_name),
 				      0, -1);
+	subject = gtk_editable_get_chars(GTK_EDITABLE(templates.entry_subject),
+				      0, -1);
 	value = gtk_editable_get_chars(GTK_EDITABLE(templates.text_value),
 				       0, -1);
 
 	tmpl = g_new(Template, 1);
 	tmpl->name = name;
+	tmpl->subject = subject;
 	tmpl->value = value;
 
 	title[0] = name;
