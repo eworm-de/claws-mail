@@ -253,42 +253,20 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		return TRUE;
 
 	case MATCHACTION_FORWARD:
-		account = account_find_from_id(action->account_id);
-		compose = compose_forward(account, info, FALSE, NULL);
-		if (compose->account->protocol == A_NNTP)
-			compose_entry_append(compose, action->destination,
-					     COMPOSE_NEWSGROUPS);
-		else
-			compose_entry_append(compose, action->destination,
-					     COMPOSE_TO);
-
-		val = compose_send(compose);
-		if (val == 0) {
-			gtk_widget_destroy(compose->window);
-			return TRUE;
-		}
-
-		gtk_widget_destroy(compose->window);
-		return FALSE;
-
 	case MATCHACTION_FORWARD_AS_ATTACHMENT:
-
 		account = account_find_from_id(action->account_id);
-		compose = compose_forward(account, info, TRUE, NULL);
-		if (compose->account->protocol == A_NNTP)
-			compose_entry_append(compose, action->destination,
-					     COMPOSE_NEWSGROUPS);
-		else
-			compose_entry_append(compose, action->destination,
-					     COMPOSE_TO);
+		compose = compose_forward(account, info,
+			action->type == MATCHACTION_FORWARD ? FALSE : TRUE,
+			NULL, TRUE);
+		compose_entry_append(compose, action->destination,
+				     compose->account->protocol == A_NNTP
+					    ? COMPOSE_NEWSGROUPS
+					    : COMPOSE_TO);
 
 		val = compose_send(compose);
-		if (val == 0) {
-			gtk_widget_destroy(compose->window);
-			return TRUE;
-		}
 		gtk_widget_destroy(compose->window);
-		return FALSE;
+
+		return val == 0 ? TRUE : FALSE;
 
 	case MATCHACTION_REDIRECT:
 		account = account_find_from_id(action->account_id);
@@ -300,13 +278,9 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 					     COMPOSE_TO);
 
 		val = compose_send(compose);
-		if (val == 0) {
-			gtk_widget_destroy(compose->window);
-			return TRUE;
-		}
-
 		gtk_widget_destroy(compose->window);
-		return FALSE;
+		
+		return val == 0 ? TRUE : FALSE;
 
 	case MATCHACTION_EXECUTE:
 		cmd = matching_build_command(action->unesc_destination, info);

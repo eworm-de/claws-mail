@@ -882,7 +882,7 @@ void compose_reply_mode(ComposeMode mode, GSList *msginfo_list, gchar *body)
 	case COMPOSE_FORWARD_INLINE:
 		/* check if we reply to more than one Message */
 		if (list_len == 1) {
-			compose_forward(NULL, msginfo, FALSE, body);
+			compose_forward(NULL, msginfo, FALSE, body, FALSE);
 			break;
 		} 
 		/* more messages FALL THROUGH */
@@ -1021,7 +1021,8 @@ if (msginfo->var && *msginfo->var) { \
 }
 
 Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
-			 gboolean as_attach, const gchar *body)
+			 gboolean as_attach, const gchar *body,
+			 gboolean no_extedit)
 {
 	Compose *compose;
 	GtkSText *text;
@@ -1131,7 +1132,7 @@ Compose *compose_forward(PrefsAccount *account, MsgInfo *msginfo,
 #endif
 	gtk_widget_grab_focus(compose->header_last->entry);
 
-	if (prefs_common.auto_exteditor)
+	if (!no_extedit && prefs_common.auto_exteditor)
 		compose_exec_ext_editor(compose);
 	
 	/*save folder*/

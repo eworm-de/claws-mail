@@ -1202,7 +1202,7 @@ static void reply_cb(gpointer data, guint action, GtkWidget *widget)
 		}
 		break;
 	case COMPOSE_FORWARD_INLINE:
-		compose_forward(NULL, msginfo, FALSE, text);
+		compose_forward(NULL, msginfo, FALSE, text, FALSE);
 		break;
 	case COMPOSE_FORWARD_AS_ATTACH:
 		compose_forward_multiple(NULL, mlist);

@@ -1,3 +1,14 @@
+2003-10-20 [paul]	0.9.6claws36
+
+	* src/compose.[ch]
+	  src/filtering.c
+	  src/messageview.c
+	  	fix crash when using Forward in Filtering when
+		external editor option is set
+		
+		Patch submitted by Simon 'corecode' Schubert
+	        <corecode@corecode.ath.cx> 
+
 2003-10-20 [paul]	0.9.6claws35
 
 	* src/pixmaps/mime_gpg_expired.xpm	** REMOVED **
