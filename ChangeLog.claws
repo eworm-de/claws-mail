@@ -30,7 +30,8 @@
 	* src/compose.c
 		last header entry should default to "To:" or
 		"Newsgroups:" and not copy the last entry line
-		in a new compose window (closes bug #472686)
+		in a new compose window
+		(closes bug #472686, #470792)
 
 2001-10-19 [paul]	0.6.3claws25
 
@@ -194,7 +195,7 @@
 		fixed memory leak and broken octal display
 	* src/filesel.c
 		fixed segfault caused by lost filename
-		workaround
+		workaround (closes bug #469551)
 
 2001-10-10 [paul]	0.6.3claws6
 
