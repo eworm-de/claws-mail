@@ -1922,12 +1922,11 @@ static void compose_insert_sig(Compose *compose)
 
 	if (compose->account && compose->account->sig_path)
 		sigfile = g_strdup(compose->account->sig_path);
-	else {
+	else
 		sigfile = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
 				      DEFAULT_SIGNATURE, NULL);
-	}
 
-	if (!is_file_or_fifo_exist(sigfile) & (sigfile[0] != '|')) {
+	if (!is_file_or_fifo_exist(sigfile) && sigfile[0] != '|') {
 		g_free(sigfile);
 		return;
 	}
@@ -1941,13 +1940,9 @@ static void compose_insert_sig(Compose *compose)
 	}
 
 	if (sigfile[0] == '|')
-	{
 		compose_exec_sig(compose, sigfile);
-	}
 	else
-	{
 		compose_insert_file(compose, sigfile);
-	}
 	g_free(sigfile);
 }
 
