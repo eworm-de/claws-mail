@@ -93,7 +93,6 @@ struct _SummaryView
 	GtkWidget *toggle_arrow;
 	GtkWidget *popupmenu;
 	GtkWidget *colorlabel_menu;
-	GtkWidget *colorlabel_menu_item;
 
 	GtkItemFactory *popupfactory;
 

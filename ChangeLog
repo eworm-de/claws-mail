@@ -1,3 +1,20 @@
+2001-08-29
+
+	* src/compose.c: compose_queue(): added AID: to the queueing header.
+	* src/send.c: send_message_queue(): look for AID: header, and use
+	  the server specified in the account instead of SSV: header.
+
+2001-08-28
+
+	* applied the XML string table patch from Alfons Hoogervorst that
+	  stores strings in a hash table and minimizes memory allocations
+	  (thanks!).
+	* src/stringtable.[ch]: new.
+	  removed all G and g_ prefix from type and function names since
+	  they're not official GLib symbol names.
+	  string_table_insert_string(): fixed a bug that might refer to an
+	  invalid pointer on lookup, and also made a bit of optimization.
+
 2001-08-27
 
 	* merged the color label feature from the claws branch (thanks to
@@ -7,6 +24,10 @@
 	* src/summaryview.[ch]: added color label support.
 	* src/procmsg.h: added color label flags to the permanent flags.
 	* updated to gettext 0.10.39.
+	* src/summaryview.[ch]: put the color label menu item to ItemFactory.
+	* sylpheed.desktop: added for GNOME.
+	* configure.in: added AC_MSG_CHECKING() for some options.
+	  Output the configuration results when configure is finished.
 
 2001-08-27
 

@@ -140,7 +140,8 @@ enum
 {
 	Q_SENDER     = 0,
 	Q_SMTPSERVER = 1,
-	Q_RECIPIENTS = 2
+	Q_RECIPIENTS = 2,
+	Q_ACCOUNT_ID = 3
 };
 
 static gint send_message_with_command(GSList *to_list, gchar * mailcmd,
@@ -191,6 +192,7 @@ gint send_message_queue(const gchar *file)
 	static HeaderEntry qentry[] = {{"S:",   NULL, FALSE},
 				       {"SSV:", NULL, FALSE},
 				       {"R:",   NULL, FALSE},
+				       {"AID:", NULL, FALSE},
 				       {NULL,   NULL, FALSE}};
 	FILE *fp;
 	gint val;
@@ -199,6 +201,7 @@ gint send_message_queue(const gchar *file)
 	GSList *to_list = NULL;
 	gchar buf[BUFFSIZE];
 	gint hnum;
+	PrefsAccount *ac = NULL;
 
 	g_return_val_if_fail(file != NULL, -1);
 
@@ -221,22 +224,27 @@ gint send_message_queue(const gchar *file)
 		case Q_RECIPIENTS:
 			to_list = address_list_append(to_list, p);
 			break;
+		case Q_ACCOUNT_ID:
+			ac = account_find_from_id(atoi(p));
+			break;
 		default:
 		}
 	}
 
-	if (!to_list || !from || !server) {
+	if (!to_list || !from) {
 		g_warning(_("Queued message header is broken.\n"));
 		val = -1;
 	} else {
 		gushort port;
 		gchar *domain;
-		PrefsAccount *ac;
 
-		ac = account_find_from_smtp_server(from, server);
 		if (!ac) {
-			g_warning(_("Account not found. Using current account...\n"));
-			ac = cur_account;
+			ac = account_find_from_smtp_server(from, server);
+			if (!ac) {
+				g_warning(_("Account not found. "
+					    "Using current account...\n"));
+				ac = cur_account;
+			}
 		}
 
 		if (ac) {
@@ -250,12 +258,12 @@ gint send_message_queue(const gchar *file)
 			domain = ac->set_domain ? ac->domain : NULL;
 #if USE_SSL
 			val = send_message_smtp
-				(to_list, from, server, port, domain,
+				(to_list, from, ac->smtp_server, port, domain,
 				 ac->userid, ac->passwd, ac->use_smtp_auth,
 				 ac->ssl_smtp, fp);
 #else
 			val = send_message_smtp
-				(to_list, from, server, port, domain,
+				(to_list, from, ac->smtp_server, port, domain,
 				 ac->userid, ac->passwd, ac->use_smtp_auth, fp);
 #endif
 		} else {

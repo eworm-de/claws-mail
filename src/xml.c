@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999,2000 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2001 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,40 @@
 #include <ctype.h>
 
 #include "xml.h"
+#include "main.h"
 #include "utils.h"
+
+#define SPARSE_MEMORY
+/* if this is defined all attr.names and tag.names are stored
+ * in a hash table */
+#if defined(SPARSE_MEMORY)
+#include "stringtable.h" 
+
+static StringTable *xml_string_table;
+
+static void xml_string_table_create(void)
+{
+	if (xml_string_table == NULL)
+		xml_string_table = string_table_new();
+}
+#define XML_STRING_ADD(str) \
+	string_table_insert_string(xml_string_table, (str))
+#define XML_STRING_FREE(str) \
+	string_table_free_string(xml_string_table, (str))
+
+#define XML_STRING_TABLE_CREATE() \
+	xml_string_table_create()
+
+#else /* !SPARSE_MEMORY */
+
+#define XML_STRING_ADD(str) \
+	g_strdup(str)
+#define XML_STRING_FREE(str) \
+	g_free(str)
+
+#define XML_STRING_TABLE_CREATE()
+
+#endif /* SPARSE_MEMORY */
 
 static void xml_free_tag	(XMLTag		*tag);
 static gint xml_get_parenthesis	(XMLFile	*file,
@@ -35,6 +68,8 @@ XMLFile *xml_open_file(const gchar *path)
 	XMLFile *newfile;
 
 	g_return_val_if_fail(path != NULL, NULL);
+
+	XML_STRING_TABLE_CREATE();
 
 	newfile = g_new(XMLFile, 1);
 
@@ -114,6 +149,12 @@ GNode *xml_parse_file(const gchar *path)
 	node = xml_build_tree(file, NULL, file->level);
 
 	xml_close_file(file);
+
+#if defined(SPARSE_MEMORY)
+	if (debug_mode)
+		string_table_get_stats(xml_string_table);
+#endif
+
 	return node;
 }
 
@@ -181,11 +222,11 @@ gint xml_parse_next_tag(XMLFile *file)
 
 	while (*bufp != '\0' && !isspace(*bufp)) bufp++;
 	if (*bufp == '\0') {
-		tag->tag = g_strdup(buf);
+		tag->tag = XML_STRING_ADD(buf);
 		return 0;
 	} else {
 		*bufp++ = '\0';
-		tag->tag = g_strdup(buf);
+		tag->tag = XML_STRING_ADD(buf);
 	}
 
 	/* parse attributes ( name=value ) */
@@ -224,9 +265,9 @@ gint xml_parse_next_tag(XMLFile *file)
 		xml_unescape_str(attr_value);
 
 		attr = g_new(XMLAttr, 1);
-		attr->name  = g_strdup(attr_name);
+		attr->name  = XML_STRING_ADD(attr_name);
 		attr->value = g_strdup(attr_value);
-		tag->attr = g_list_append(tag->attr, attr);
+		tag->attr   = g_list_append(tag->attr, attr);
 	}
 
 	return 0;
@@ -345,7 +386,7 @@ XMLTag *xml_copy_tag(XMLTag *tag)
 	GList *list;
 
 	new_tag = g_new(XMLTag, 1);
-	new_tag->tag = g_strdup(tag->tag);
+	new_tag->tag = XML_STRING_ADD(tag->tag);
 	new_tag->attr = NULL;
 	for (list = tag->attr; list != NULL; list = list->next) {
 		attr = xml_copy_attr((XMLAttr *)list->data);
@@ -360,7 +401,7 @@ XMLAttr *xml_copy_attr(XMLAttr *attr)
 	XMLAttr *new_attr;
 
 	new_attr = g_new(XMLAttr, 1);
-	new_attr->name  = g_strdup(attr->name);
+	new_attr->name  = XML_STRING_ADD(attr->name);
 	new_attr->value = g_strdup(attr->value);
 
 	return new_attr;
@@ -475,10 +516,10 @@ static void xml_free_tag(XMLTag *tag)
 {
 	if (!tag) return;
 
-	g_free(tag->tag);
+	XML_STRING_FREE(tag->tag);
 	while (tag->attr != NULL) {
 		XMLAttr *attr = (XMLAttr *)tag->attr->data;
-		g_free(attr->name);
+		XML_STRING_FREE(attr->name);
 		g_free(attr->value);
 		g_free(attr);
 		tag->attr = g_list_remove(tag->attr, tag->attr->data);

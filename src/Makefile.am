@@ -80,6 +80,7 @@ sylpheed_SOURCES = \
 	sigstatus.c sigstatus.h \
 	simple-gettext.c \
 	manual.c manual.h \
+	stringtable.c stringtable.h \
 	gtkstext.c gtkstext.h \
 	scoring.c scoring.h \
 	prefs_folder_item.c prefs_folder_item.h \

@@ -1,7 +1,9 @@
-[desktop Entry]
+[Desktop Entry]
 Name=Sylpheed
-Comment=Sylpheed Mail
+Name[ja]=Sylpheed
+Comment=E-Mail client
+Comment[ja]=電子メールクライアント
 Exec=sylpheed
 Icon=sylpheed.png
 Terminal=0
-Type=Application
+Type=Internet

@@ -11,7 +11,7 @@ MINOR_VERSION=5
 MICRO_VERSION=3
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws5
+EXTRA_VERSION=claws6
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl
@@ -102,31 +102,33 @@ dnl GPGME is used to support OpenPGP
 AC_ARG_ENABLE(gpgme,
 	[  --enable-gpgme          Enable GnuPG support using GPGME [default=no]],
 	[ac_cv_enable_gpgme=$enableval], [ac_cv_enable_gpgme=no])
+AC_MSG_CHECKING([whether to use GPGME])
 if test $ac_cv_enable_gpgme = yes; then
-	AM_PATH_GPGME(0.2.1, AC_DEFINE(USE_GPGME), [use_gpgme=no])
-fi
-
-dnl Use OpenSSL for SSL connections 
-AC_MSG_CHECKING([whether to use ssl])
-AC_ARG_ENABLE(ssl,
-	[  --enable-ssl            Enable SSL support using OpenSSL [default=no]],
-	[ac_cv_enable_ssl=$enableval], [ac_cv_enable_ssl=no])
-if test $ac_cv_enable_ssl = yes; then
 	AC_MSG_RESULT(yes)
+	AM_PATH_GPGME(0.2.1, AC_DEFINE(USE_GPGME), [use_gpgme=no
+						    ac_cv_enable_gpgme=no])
 else
 	AC_MSG_RESULT(no)
 fi
 
+dnl Check for OpenSSL
+AC_ARG_ENABLE(ssl,
+	[  --enable-ssl            Enable SSL support using OpenSSL [default=no]],
+	[ac_cv_enable_ssl=$enableval], [ac_cv_enable_ssl=no])
+AC_MSG_CHECKING([whether to use OpenSSL])
 if test $ac_cv_enable_ssl = yes; then
-	AC_MSG_CHECKING([whether to openssl is available])
-	LIBS="$LIBS -lssl"
+	AC_MSG_RESULT(yes)
+	AC_MSG_CHECKING([if openssl is available])
+	LIBS="$LIBS -lssl -lcrypto"
 	AC_TRY_LINK([
 #include <openssl/opensslv.h>
-],	[ return(OPENSSL_VERSION_NUMBER); ],
+],	[ return OPENSSL_VERSION_NUMBER; ],
 	[ AC_MSG_RESULT(yes)
 	  AC_DEFINE(USE_SSL) ],
-	[ AC_MSG_RESULT(no) 
+	[ AC_MSG_RESULT(no)
 	  LIBS="$ac_save_LIBS" ])
+else
+	AC_MSG_RESULT(no)
 fi
 
 dnl Check for X-Face support
@@ -134,7 +136,7 @@ AC_ARG_ENABLE(compface,
 	[  --disable-compface      Do not use compface (X-Face)],
 	[ac_cv_disable_compface=disable], [ac_cv_disable_compface=no])
 if test "$ac_cv_disable_compface" = no; then
-	AC_CHECK_LIB(compface, uncompface)
+	AC_CHECK_LIB(compface, uncompface,,[ac_cv_disable_compface=disable])
 fi
 
 dnl for JPilot support in addressbook
@@ -205,13 +207,13 @@ AC_ARG_ENABLE(jconv,
 	[  --disable-jconv         Do not use libjconv],
 	[ac_cv_disable_jconv=disable], [ac_cv_disable_jconv=no])
 if test "$ac_cv_disable_jconv" = no; then
-	AC_CHECK_LIB(jconv, jconv_alloc_conv)
+	AC_CHECK_LIB(jconv, jconv_alloc_conv,,[ac_cv_disable_jconv=disable])
 fi
 
 AC_CHECK_LIB(xpg4, setlocale)
 dnl AC_CHECK_LIB(kcc, KCC_filter)
 
-dnl for GThread support
+dnl for GThread support (currently disabled)
 dnl AC_ARG_ENABLE(threads,
 dnl	[  --enable-threads        Enable multithread support [default=no]],
 dnl	[use_threads=$enableval], [use_threads=no])
@@ -236,7 +238,9 @@ AC_ARG_ENABLE(ipv6,
 	[ac_cv_enableipv6=$enableval], [ac_cv_enableipv6=no])
 
 dnl automated checks for IPv6 support.
+AC_MSG_CHECKING([whether to use IPv6])
 if test x"$ac_cv_enableipv6" = xyes; then
+	AC_MSG_RESULT(yes)
 	AC_MSG_CHECKING([for IPv6 support])
 	AC_CACHE_VAL(ac_cv_ipv6,[
 		AC_TRY_COMPILE([#define INET6
@@ -248,7 +252,12 @@ if test x"$ac_cv_enableipv6" = xyes; then
 	AC_MSG_RESULT($ac_cv_ipv6)
 	if test $ac_cv_ipv6 = yes; then
 		AC_DEFINE(INET6)
+	else
+		AC_MSG_WARN(*** IPv6 will not be supported ***)
+		ac_cv_enableipv6=no
 	fi
+else
+	AC_MSG_RESULT(no)
 fi
 
 dnl check if gdk / gtk was compiled with USE_XIM
@@ -318,6 +327,39 @@ po/Makefile.in
 libkcc/Makefile
 src/Makefile
 manual/Makefile
-manual/ja/Makefile
 manual/en/Makefile
+manual/ja/Makefile
 ])
+
+dnl Output the configuration summary
+echo ""
+echo "$PACKAGE $VERSION"
+echo ""
+if test "$ac_cv_disable_gdk_pixbuf" = no; then
+	echo "gdk-pixbuf : yes"
+	echo "gdk_imlib  : no"
+else
+	echo "gdk-pixbuf : no"
+	if test "$ac_cv_disable_imlib" = no; then
+		echo "gdk_imlib  : yes"
+	else
+		echo "gdk_imlib  : no"
+	fi
+fi
+echo "GPGME      : $ac_cv_enable_gpgme"
+echo "OpenSSL    : $ac_cv_enable_ssl"
+if test "$ac_cv_disable_compface" = no; then
+	echo "compface   : yes"
+else
+	echo "compface   : no"
+fi
+if test "$ac_cv_disable_jconv" = no; then
+	echo "libjconv   : yes"
+else
+	echo "libjconv   : no"
+fi
+echo "IPv6       : $ac_cv_enableipv6"
+echo ""
+echo "The binary will be installed in $prefix/bin"
+echo ""
+echo "Configure finished, type 'make' to build."

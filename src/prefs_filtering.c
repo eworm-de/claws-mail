@@ -48,7 +48,7 @@
 #include "folder.h"
 #include "filtering.h"
 #include "addr_compl.h"
-#include "labelcolors.h"
+#include "colorlabel.h"
 
 static struct Filtering {
 	GtkWidget *window;

@@ -1,3 +1,19 @@
+2001-08-29
+
+	* src/compose.c: compose_queue(): キューイングヘッダに AID: を追加。
+	* src/send.c: send_message_queue(): AID: ヘッダを探し、 SSV: の
+	  代わりにアカウントで指定されたサーバを使用するようにした。
+
+2001-08-28
+
+	* 文字列をハッシュテーブルに保存し、メモリ確保を最小化する Alfons
+	  Hoogervorst さんからの XML string table パッチを適用(thanks!)。
+	* src/stringtable.[ch]: 新規。
+	  official な GLib のシンボル名ではないため型と関数名から全ての
+	  G と g_ プレフィクスを削除。
+	  string_table_insert_string(): 検索時に無効なポインタを参照する
+	  可能性のあったバグを修正し、また少し最適化した。
+
 2001-08-27
 
 	* claws ブランチからカラーラベル機能をマージ(Satoshi Nagayasu さん
@@ -7,6 +23,11 @@
 	* src/summaryview.[ch]: カラーラベルに対応。
 	* src/procmsg.h: 永続フラグにカラーラベルフラグを追加。
 	* gettext 0.10.39 に更新。
+	* src/summaryview.[ch]: カラーラベルのメニュー項目を ItemFactory
+	  に置いた。
+	* sylpheed.desktop: GNOME 用に追加。
+	* configure.in: いくつかのオプションに AC_MSG_CHECKING() を追加。
+	  configure が完了したときに設定結果を出力するようにした。
 
 2001-08-27
 

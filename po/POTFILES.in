@@ -6,6 +6,7 @@ src/alertpanel.c
 src/automaton.c
 src/base64.c
 src/codeconv.c
+src/colorlabel.c
 src/compose.c
 src/editjpilot.c
 src/editldap.c
@@ -26,7 +27,6 @@ src/imap.c
 src/import.c
 src/inc.c
 src/inputdialog.c
-src/labelcolors.c
 src/logwindow.c
 src/main.c
 src/mainwindow.c

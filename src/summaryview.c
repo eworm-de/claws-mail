@@ -363,6 +363,7 @@ static GtkItemFactoryEntry summary_popup_entries[] =
 #endif	
 	{N_("/_Mark/Ignore thread"),	NULL, summary_ignore_thread, 0, NULL},
 	{N_("/_Mark/Unignore thread"),	NULL, summary_unignore_thread, 0, NULL},
+	{N_("/Color la_bel"),		NULL, NULL, 		0, NULL},
 
 	{N_("/---"),			NULL, NULL,		0, "<Separator>"},
 	{N_("/_Reply"),			NULL, summary_reply_cb,	COMPOSE_REPLY, NULL},
@@ -1037,14 +1038,27 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 	}
 
 	if (summaryview->folder_item->folder->type != F_NEWS) {
-		if (summaryview->folder_item->stype != F_TRASH)
-			menu_set_sensitive(ifactory, "/Delete", TRUE);
 		menu_set_sensitive(ifactory, "/Move...", TRUE);
 		menu_set_sensitive(ifactory, "/Copy...", TRUE);
+		if (summaryview->folder_item->stype != F_TRASH)
+			menu_set_sensitive(ifactory, "/Delete", TRUE);
 	}
 
-	gtk_widget_set_sensitive(summaryview->colorlabel_menu_item, TRUE);
 	menu_set_sensitive(ifactory, "/Execute", TRUE);
+
+        menu_set_sensitive(ifactory, "/Mark", TRUE);
+	menu_set_sensitive(ifactory, "/Mark/Mark",   TRUE);
+	menu_set_sensitive(ifactory, "/Mark/Unmark", TRUE);
+
+	menu_set_sensitive(ifactory, "/Mark/Mark as unread", TRUE);
+	menu_set_sensitive(ifactory, "/Mark/Mark as read",   TRUE);
+#if MARK_ALL_READ
+	menu_set_sensitive(ifactory, "/Mark/Mark all read", TRUE);
+#endif
+	menu_set_sensitive(ifactory, "/Mark/Ignore thread",   TRUE);
+	menu_set_sensitive(ifactory, "/Mark/Unignore thread", TRUE);
+
+	menu_set_sensitive(ifactory, "/Color label", TRUE);
 
 	sens = (selection == SUMMARY_SELECTED_MULTIPLE) ? FALSE : TRUE;
 	menu_set_sensitive(ifactory, "/Reply",			  sens);
@@ -1063,19 +1077,6 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 
 	menu_set_sensitive(ifactory, "/Save as...", sens);
 	menu_set_sensitive(ifactory, "/Print...",   TRUE);
-
-	menu_set_sensitive(ifactory, "/Mark", TRUE);
-
-	menu_set_sensitive(ifactory, "/Mark/Mark",   TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Unmark", TRUE);
-
-	menu_set_sensitive(ifactory, "/Mark/Mark as unread", TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Mark as read",   TRUE);
-#if MARK_ALL_READ	
-	menu_set_sensitive(ifactory, "/Mark/Mark all read", TRUE);
-#endif	
-	menu_set_sensitive(ifactory, "/Mark/Ignore thread",   TRUE);
-	menu_set_sensitive(ifactory, "/Mark/Unignore thread", TRUE);
 
 	menu_set_sensitive(ifactory, "/Select all", TRUE);
 
@@ -3441,7 +3442,7 @@ static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
 
 /* color label */
 
-#define LABEL_COLORS_ELEMS colorlabel_get_color_count()
+#define N_COLOR_LABELS colorlabel_get_color_count()
 
 static void summary_colorlabel_menu_item_activate_cb(GtkWidget *widget,
 						     gpointer data)
@@ -3477,7 +3478,7 @@ void summary_set_colorlabel_color(GtkCTree *ctree, GtkCTreeNode *node,
 		prev_style = ctree_style;
 	style = gtk_style_copy(prev_style);
 
-	if (color_index < 0 || color_index >= LABEL_COLORS_ELEMS) {
+	if (color_index < 0 || color_index >= N_COLOR_LABELS) {
 		color_index = 0;
 		color.red = ctree_style->fg[GTK_STATE_NORMAL].red;
 		color.green = ctree_style->fg[GTK_STATE_NORMAL].green;
@@ -3516,11 +3517,11 @@ void summary_set_colorlabel(SummaryView *summaryview, guint labelcolor,
 					     labelcolor);
 }
 
-static void summary_colorlabel_menu_item_activate_item_cb(GtkMenuItem *label_menu_item,
+static void summary_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_item,
 							  gpointer data)
 {
 	SummaryView *summaryview;
-	GtkMenuShell *label_menu;
+	GtkMenuShell *menu;
 	GtkCheckMenuItem **items;
 	gint n;
 	GList *cur, *sel;
@@ -3531,18 +3532,18 @@ static void summary_colorlabel_menu_item_activate_item_cb(GtkMenuItem *label_men
 	sel = GTK_CLIST(summaryview->ctree)->selection;
 	if (!sel) return;
 
-	label_menu = GTK_MENU_SHELL(summaryview->colorlabel_menu);
-	g_return_if_fail(label_menu != NULL);
+	menu = GTK_MENU_SHELL(summaryview->colorlabel_menu);
+	g_return_if_fail(menu != NULL);
 
-	Xalloca(items, (LABEL_COLORS_ELEMS + 1) * sizeof(GtkWidget *), return);
+	Xalloca(items, (N_COLOR_LABELS + 1) * sizeof(GtkWidget *), return);
 
 	/* NOTE: don't return prematurely because we set the "dont_toggle"
 	 * state for check menu items */
-	gtk_object_set_data(GTK_OBJECT(label_menu), "dont_toggle",
+	gtk_object_set_data(GTK_OBJECT(menu), "dont_toggle",
 			    GINT_TO_POINTER(1));
 
 	/* clear items. get item pointers. */
-	for (n = 0, cur = label_menu->children; cur != NULL; cur = cur->next) {
+	for (n = 0, cur = menu->children; cur != NULL; cur = cur->next) {
 		if (GTK_IS_CHECK_MENU_ITEM(cur->data)) {
 			gtk_check_menu_item_set_state
 				(GTK_CHECK_MENU_ITEM(cur->data), FALSE);
@@ -3551,50 +3552,47 @@ static void summary_colorlabel_menu_item_activate_item_cb(GtkMenuItem *label_men
 		}
 	}
 
-	if (n == (LABEL_COLORS_ELEMS + 1)) {
+	if (n == (N_COLOR_LABELS + 1)) {
 		/* iterate all messages and set the state of the appropriate
 		 * items */
 		for (; sel != NULL; sel = sel->next) {
 			MsgInfo *msginfo;
-			gint menu_item;
+			gint clabel;
 
 			msginfo = gtk_ctree_node_get_row_data
 				(GTK_CTREE(summaryview->ctree),
 				 GTK_CTREE_NODE(sel->data));
 			if (msginfo) {
-				menu_item = MSG_GET_COLORLABEL_VALUE(msginfo->flags);
-				if (!items[menu_item]->active)
+				clabel = MSG_GET_COLORLABEL_VALUE(msginfo->flags);
+				if (!items[clabel]->active)
 					gtk_check_menu_item_set_state
-						(items[menu_item], TRUE);
+						(items[clabel], TRUE);
 			}
 		}
 	} else
 		g_warning("invalid number of color elements (%d)\n", n);
 
 	/* reset "dont_toggle" state */
-	gtk_object_set_data(GTK_OBJECT(label_menu), "dont_toggle",
+	gtk_object_set_data(GTK_OBJECT(menu), "dont_toggle",
 			    GINT_TO_POINTER(0));
 }
 
 static void summary_colorlabel_menu_create(SummaryView *summaryview)
 {
-	const gint LABEL_MENU_POS = 5;
-	GtkWidget *label_menu_item;
-	GtkWidget *label_menu;
+	GtkWidget *label_menuitem;
+	GtkWidget *menu;
 	GtkWidget *item;
 	gint i;
 
-	label_menu_item = gtk_menu_item_new_with_label(_("Color label"));
-	gtk_menu_insert(GTK_MENU(summaryview->popupmenu), label_menu_item,
-			LABEL_MENU_POS);
-	gtk_signal_connect(GTK_OBJECT(label_menu_item), "activate",
+	label_menuitem = gtk_item_factory_get_item(summaryview->popupfactory,
+						   "/Color label");
+	gtk_signal_connect(GTK_OBJECT(label_menuitem), "activate",
 			   GTK_SIGNAL_FUNC(summary_colorlabel_menu_item_activate_item_cb),
 			   summaryview);
 
-	gtk_widget_show(label_menu_item);
-	summaryview->colorlabel_menu_item = label_menu_item;
+	gtk_widget_show(label_menuitem);
 
-	label_menu = gtk_menu_new();
+	menu = gtk_menu_new();
 
 	/* create sub items. for the menu item activation callback we pass the
 	 * index of label_colors[] as data parameter. for the None color we
@@ -3602,7 +3600,7 @@ static void summary_colorlabel_menu_create(SummaryView *summaryview)
 	 * can always get back the SummaryView pointer. */
 
 	item = gtk_check_menu_item_new_with_label(_("None"));
-	gtk_menu_append(GTK_MENU(label_menu), item);
+	gtk_menu_append(GTK_MENU(menu), item);
 	gtk_signal_connect(GTK_OBJECT(item), "activate",
 			   GTK_SIGNAL_FUNC(summary_colorlabel_menu_item_activate_cb),
 			   GUINT_TO_POINTER(0));
@@ -3610,13 +3608,13 @@ static void summary_colorlabel_menu_create(SummaryView *summaryview)
 	gtk_widget_show(item);
 
 	item = gtk_menu_item_new();
-	gtk_menu_append(GTK_MENU(label_menu), item);
+	gtk_menu_append(GTK_MENU(menu), item);
 	gtk_widget_show(item);
 
 	/* create pixmap/label menu items */
-	for (i = 0; i < LABEL_COLORS_ELEMS; i++) {
+	for (i = 0; i < N_COLOR_LABELS; i++) {
 		item = colorlabel_create_check_color_menu_item(i);
-		gtk_menu_append(GTK_MENU(label_menu), item);
+		gtk_menu_append(GTK_MENU(menu), item);
 		gtk_signal_connect(GTK_OBJECT(item), "activate",
 				   GTK_SIGNAL_FUNC(summary_colorlabel_menu_item_activate_cb),
 				   GUINT_TO_POINTER(i + 1));
@@ -3625,9 +3623,9 @@ static void summary_colorlabel_menu_create(SummaryView *summaryview)
 		gtk_widget_show(item);
 	}
 
-	gtk_widget_show(label_menu);
-	gtk_menu_item_set_submenu(GTK_MENU_ITEM(label_menu_item), label_menu);
-	summaryview->colorlabel_menu = label_menu;
+	gtk_widget_show(menu);
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(label_menuitem), menu);
+	summaryview->colorlabel_menu = menu;
 }
 
 /* callback functions */

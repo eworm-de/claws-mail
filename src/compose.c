@@ -2353,6 +2353,8 @@ static gint compose_queue(Compose *compose, const gchar *file)
 	for (cur = compose->to_list->next; cur != NULL; cur = cur->next)
 		fprintf(fp, ",<%s>", (gchar *)cur->data);
 	fprintf(fp, "\n");
+	/* Sylpheed account ID */
+	fprintf(fp, "AID:%d\n", compose->account->account_id);
 	fprintf(fp, "\n");
 
 	while (fgets(buf, sizeof(buf), src_fp) != NULL) {
