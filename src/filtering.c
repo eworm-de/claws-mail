@@ -279,7 +279,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info)
 		info->score = action->score;
 		return TRUE;
 
-	case MATCHACTION_ADD_SCORE:
+	case MATCHACTION_CHANGE_SCORE:
 		info->score += action->score;
 		return TRUE;
 
@@ -431,7 +431,7 @@ gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *act
 		g_snprintf(dest, destlen, "%s %d", command_str, action->labelcolor);
 		return dest;  
 
-	case MATCHACTION_ADD_SCORE:
+	case MATCHACTION_CHANGE_SCORE:
 	case MATCHACTION_SET_SCORE:
 		g_snprintf(dest, destlen, "%s %d", command_str, action->score);
 		return dest;  

@@ -119,7 +119,7 @@ typedef enum Action_ {
 	ACTION_REDIRECT,
 	ACTION_EXECUTE,
 	ACTION_COLOR,
-	ACTION_ADD_SCORE,
+	ACTION_CHANGE_SCORE,
 	ACTION_SET_SCORE,
 	ACTION_HIDE,
 	ACTION_STOP,
@@ -144,7 +144,7 @@ static struct {
 	{ N_("Redirect"),		ACTION_REDIRECT },
 	{ N_("Execute"),		ACTION_EXECUTE	},
 	{ N_("Color"),			ACTION_COLOR	},
-	{ N_("(In/de)crease score"),	ACTION_ADD_SCORE},
+	{ N_("Change score"),		ACTION_CHANGE_SCORE},
 	{ N_("Set score"),		ACTION_SET_SCORE},
 	{ N_("Hide"),		        ACTION_HIDE	},
 	{ N_("Stop filter"),		ACTION_STOP	},
@@ -714,8 +714,8 @@ static gint prefs_filtering_action_get_matching_from_action(Action action_id)
 		return MATCHACTION_HIDE;
 	case ACTION_STOP:
 		return MATCHACTION_STOP;
-	case ACTION_ADD_SCORE:
-		return MATCHACTION_ADD_SCORE;
+	case ACTION_CHANGE_SCORE:
+		return MATCHACTION_CHANGE_SCORE;
 	case ACTION_SET_SCORE:
 		return MATCHACTION_SET_SCORE;
 	default:
@@ -778,7 +778,7 @@ static FilteringAction * prefs_filtering_action_dialog_to_action(gboolean alert)
 			gtk_option_menu_get_menu(GTK_OPTION_MENU(filtering_action.color_optmenu)));
 		destination = NULL;	
 		break;
-        case ACTION_ADD_SCORE:
+        case ACTION_CHANGE_SCORE:
         case ACTION_SET_SCORE:
 		score_str = gtk_entry_get_text(GTK_ENTRY(filtering_action.dest_entry));
 		if (*score_str == '\0') {
@@ -1018,9 +1018,9 @@ static void prefs_filtering_action_select(GtkCList *clist,
 				     ACTION_COLOR);
 		gtk_option_menu_set_history(GTK_OPTION_MENU(filtering_action.color_optmenu), action->labelcolor);     
 		break;
-	case MATCHACTION_ADD_SCORE:
+	case MATCHACTION_CHANGE_SCORE:
 		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
-				     ACTION_ADD_SCORE);
+				     ACTION_CHANGE_SCORE);
 		break;
 	case MATCHACTION_SET_SCORE:
 		gtk_list_select_item(GTK_LIST(filtering_action.action_type_list),
@@ -1344,7 +1344,7 @@ static void prefs_filtering_action_type_select(GtkList *list,
 		gtk_widget_show(filtering_action.color_label);
 		gtk_widget_hide(filtering_action.score_label);
 		break;
-	case ACTION_ADD_SCORE:
+	case ACTION_CHANGE_SCORE:
 	case ACTION_SET_SCORE:
 		gtk_widget_show(filtering_action.account_label);
 		gtk_widget_set_sensitive(filtering_action.account_label, FALSE);

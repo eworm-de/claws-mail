@@ -198,7 +198,7 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	rowcount++;
 
 	/* Enable processing at startup */
-	checkbtn_enable_processing = gtk_check_button_new_with_label(_("Processing on startup: "));
+	checkbtn_enable_processing = gtk_check_button_new_with_label(_("Process at startup"));
 	gtk_widget_show(checkbtn_enable_processing);
 	gtk_table_attach(GTK_TABLE(table), checkbtn_enable_processing, 0, 2, 
 			 rowcount, rowcount + 1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);
@@ -209,7 +209,7 @@ void prefs_folder_item_general_create_widget_func(PrefsPage * page_,
 	rowcount++;
 
 	/* Check folder for new mail */
-	checkbtn_newmailcheck = gtk_check_button_new_with_label(_("Scan for new mail: "));
+	checkbtn_newmailcheck = gtk_check_button_new_with_label(_("Scan for new mail"));
 	gtk_widget_show(checkbtn_newmailcheck);
 	gtk_table_attach(GTK_TABLE(table), checkbtn_newmailcheck, 0, 2,
 					 rowcount, rowcount+1, GTK_SHRINK | GTK_FILL, GTK_FILL, 0, 0);

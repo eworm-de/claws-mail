@@ -1361,7 +1361,7 @@ static void prefs_account_send_create(void)
 	gtk_container_set_border_width (GTK_CONTAINER (vbox2), 8);
 
 	PACK_CHECK_BUTTON (vbox2, date_chkbtn, _("Add Date"));
-	PACK_CHECK_BUTTON (vbox2, msgid_chkbtn, _("Generate Message-ID"));
+	PACK_CHECK_BUTTON (vbox2, msgid_chkbtn, _("Generate Message-Id"));
 
 	hbox = gtk_hbox_new (FALSE, 12);
 	gtk_widget_show (hbox);

@@ -1,3 +1,32 @@
+2003-12-12 [paul]	0.9.7claws39
+
+	general clean up
+	
+	* configure.ac
+		correct and clean up './configure --help' info
+	
+	* src/plugins/clamav/clamav_plugin.c
+	  src/plugins/spamassassin/spamassassin.c
+	  	correct plugin_desc(), works with LOCAL, IMAP, and
+		POP accounts
+		
+	* src/filtering.c
+	  src/matcher.[ch]
+	  src/matcher_parser_parse.y
+	  src/prefs_filtering_action.c
+	  	use 'Change Score' instead of '(In/De)crease score'.
+		use *CHANGE_SCORE* instead of *ADD_SCORE*
+	 
+	 * src/mainwindow.c
+	 	hyphenate: 'Pre-processing', 'Post-processing'
+		
+	* src/prefs_account.c
+		change 'Generate Message-ID' to 'Generate Message-Id'
+		
+	* src/prefs_folder_item.c
+		change 'Processing on startup:' to 'Process at startup'
+		change 'Scan for new mail:' to 'Scan for new mail'
+		
 2003-12-11 [christoph]	0.9.7claws38
 
 	* src/crash.c

@@ -236,7 +236,7 @@ int matcher_parserwrap(void)
 %token MATCHER_LOCKED MATCHER_NOT_LOCKED
 %token MATCHER_COLORLABEL MATCHER_NOT_COLORLABEL
 %token MATCHER_IGNORE_THREAD MATCHER_NOT_IGNORE_THREAD
-%token MATCHER_ADD_SCORE MATCHER_SET_SCORE
+%token MATCHER_CHANGE_SCORE MATCHER_SET_SCORE
 %token MATCHER_STOP MATCHER_HIDE
 
 %start file
@@ -348,7 +348,7 @@ filtering_action_list
                         
                         first_action = action_list->data;
                         
-                        if (first_action->type == MATCHACTION_ADD_SCORE)
+                        if (first_action->type == MATCHACTION_CHANGE_SCORE)
                                 prefs_filtering = &pre_global_processing;
                 }
         }
@@ -1005,12 +1005,12 @@ MATCHER_EXECUTE MATCHER_STRING
 	color = strtol($2, NULL, 10);
 	action = filteringaction_new(action_type, 0, NULL, color, 0);
 }
-| MATCHER_ADD_SCORE MATCHER_INTEGER
+| MATCHER_CHANGE_SCORE MATCHER_INTEGER
 {
         gint score = 0;
         
         score = strtol($2, NULL, 10);
-	action = filteringaction_new(MATCHACTION_ADD_SCORE, 0,
+	action = filteringaction_new(MATCHACTION_CHANGE_SCORE, 0,
 				     NULL, 0, score);
 }
 /* backward compatibility */
@@ -1019,7 +1019,7 @@ MATCHER_EXECUTE MATCHER_STRING
         gint score = 0;
         
         score = strtol($2, NULL, 10);
-	action = filteringaction_new(MATCHACTION_ADD_SCORE, 0,
+	action = filteringaction_new(MATCHACTION_CHANGE_SCORE, 0,
 				     NULL, 0, score);
 }
 | MATCHER_SET_SCORE MATCHER_INTEGER

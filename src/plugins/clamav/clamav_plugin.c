@@ -226,8 +226,8 @@ const gchar *plugin_name(void)
 
 const gchar *plugin_desc(void)
 {
-	return _("This plugin uses Clam AntiVirus to scan all message attachments "
-	       "that are received from a POP account.\n"
+	return _("This plugin uses Clam AntiVirus to scan all messages that are "
+	       "received from an IMAP, LOCAL or POP account.\n"
 	       "\n"
 	       "When a message attachment is found to contain a virus it can be "
 	       "deleted or saved in a specially designated folder.\n"

@@ -11,7 +11,7 @@ MINOR_VERSION=9
 MICRO_VERSION=7
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=38
+EXTRA_VERSION=39
 if test $EXTRA_VERSION -eq 0; then
     VERSION=${MAJOR_VERSION}.${MINOR_VERSION}.${MICRO_VERSION}claws
 else
@@ -414,7 +414,7 @@ PLUGINS=""
 
 dnl --- Trayicon ---
 AC_ARG_ENABLE(trayicon-plugin,
-	[  --enable-trayicon-plugin   System Tray Icon [default=no]],
+	[  --disable-trayicon-plugin         Do not build System Tray Icon plugin],
 	[ac_cv_enable_trayicon_plugin=$enableval], [ac_cv_enable_trayicon_plugin=yes])
 if test x"$ac_cv_enable_trayicon_plugin" = xyes; then
 	PLUGINS="trayicon $PLUGINS"
@@ -423,7 +423,7 @@ AM_CONDITIONAL(BUILD_TRAYICON_PLUGIN, test x"$ac_cv_enable_trayicon_plugin" = xy
 
 dnl --- SpamAssassin ---
 AC_ARG_ENABLE(spamassassin-plugin,
-	[  --enable-spamassassin-plugin    Build SpamAssassin plugin [default=no]],
+	[  --enable-spamassassin-plugin      Build SpamAssassin plugin [default=no]],
 	[ac_cv_enable_spamassassin_plugin=$enableval], [ac_cv_enable_spamassassin_plugin=no])
 if test x"$ac_cv_enable_spamassassin_plugin" = xyes; then
 	AC_SPAMASSASSIN
@@ -433,7 +433,7 @@ AM_CONDITIONAL(BUILD_SPAMASSASSIN_PLUGIN, test x"$ac_cv_enable_spamassassin_plug
 
 dnl --- MathML Viewer ---
 AC_ARG_ENABLE(mathml-viewer-plugin,
-	[  --enable-mathml-viewer-plugin    Build MathML-Viewer plugin [default=no]],
+	[  --disable-mathml-viewer-plugin    Do not build MathML-Viewer plugin],
 	[ac_cv_enable_mathml_viewer_plugin=$enableval], [ac_cv_enable_mathml_viewer_plugin=yes])
 if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
 	PKG_CHECK_MODULES(GTK_MATH_VIEW, gtkmathview >= 0.4.2 gtkmathview < 0.5, :, ac_cv_enable_mathml_viewer_plugin=no)
@@ -449,14 +449,14 @@ AM_CONDITIONAL(BUILD_MATHML_VIEWER_PLUGIN, test x"$ac_cv_enable_mathml_viewer_pl
 
 dnl --- Image Viewer ---
 AC_ARG_ENABLE(image-viewer-plugin,
-	[  --disable-image-viewer-plugin   Do not build image viewer plugin],
+	[  --disable-image-viewer-plugin     Do not build image viewer plugin],
 	[ac_cv_enable_image_viewer_plugin=$enableval], [ac_cv_enable_image_viewer_plugin=yes])
 if test x"$ac_cv_enable_image_viewer_plugin" = xyes; then
 	AC_ARG_ENABLE(gdk-pixbuf,
-		[  --disable-gdk-pixbuf    Do not use gdk-pixbuf],
+		[  --disable-gdk-pixbuf              Do not use gdk-pixbuf],
 		[ac_cv_enable_gdk_pixbuf=$enableval], [ac_cv_enable_gdk_pixbuf=yes])
 	AC_ARG_ENABLE(imlib,
-		[  --disable-imlib         Do not use imlib],
+		[  --disable-imlib                   Do not use imlib],
 		[ac_cv_enable_imlib=$enableval], [ac_cv_enable_imlib=yes])
 
 	if test "$ac_cv_enable_gdk_pixbuf" = yes; then
@@ -482,7 +482,7 @@ AM_CONDITIONAL(BUILD_IMAGE_VIEWER_PLUGIN, test x"$ac_cv_enable_image_viewer_plug
 
 dnl --- Dillo Viewer ---
 AC_ARG_ENABLE(dillo-viewer-plugin,
-	[  --enable-dillo-viewer-plugin   Build Dillo plugin for html mail rendering [default=no]],
+	[  --disable-dillo-viewer-plugin     Do not build Dillo plugin for html mail rendering],
 	[ac_cv_enable_dillo_viewer_plugin=$enableval], [ac_cv_enable_dillo_viewer_plugin=yes])
 if test x"$ac_cv_enable_dillo_viewer_plugin" = xyes; then
 	PLUGINS="dillo-viewer $PLUGINS"
@@ -491,7 +491,7 @@ AM_CONDITIONAL(BUILD_DILLO_VIEWER_PLUGIN, test x"$ac_cv_enable_dillo_viewer_plug
 
 dnl --- Demo ---
 AC_ARG_ENABLE(demo-plugin,
-	[  --enable-demo-plugin    Build demo plugin [default=no]],
+	[  --enable-demo-plugin              Build demo plugin [default=no]],
 	[ac_cv_enable_demo_plugin=$enableval], [ac_cv_enable_demo_plugin=no])
 if test x"$ac_cv_enable_demo_plugin" = xyes; then
 	PLUGINS="demo $PLUGINS"
@@ -500,7 +500,7 @@ AM_CONDITIONAL(BUILD_DEMO_PLUGIN, test x"$ac_cv_enable_demo_plugin" = xyes)
 
 dnl --- ClamAV ---
 AC_ARG_ENABLE(clamav-plugin,
-	[  --enable-clamav-plugin    Build Clam AntiVirus plugin [default=no]],
+	[  --disable-clamav-plugin           Do not build Clam AntiVirus plugin],
 	[ac_cv_enable_clamav_plugin=$enableval], [ac_cv_enable_clamav_plugin=yes])
 if test x"$ac_cv_enable_clamav_plugin" = xyes; then
 	AC_CHECK_LIB(clamav, cl_scanfile, clamav_lib=-lclamav, ac_cv_enable_clamav_plugin=no)
