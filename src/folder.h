@@ -33,10 +33,11 @@ typedef struct _IMAPFolder	IMAPFolder;
 typedef struct _NewsFolder	NewsFolder;
 typedef struct _FolderItem	FolderItem;
 
+#include "prefs_folder_item.h"
+
 #include "prefs_account.h"
 #include "session.h"
 #include "procmsg.h"
-#include "prefs_folder_item.h"
 
 #define FOLDER(obj)		((Folder *)obj)
 #define FOLDER_TYPE(obj)	(FOLDER(obj)->type)

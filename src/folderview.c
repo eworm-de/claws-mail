@@ -2352,7 +2352,9 @@ static void folderview_processing_cb(FolderView *folderview, guint action,
 	prefs_filtering_open(item);
 }
 
-static void folderview_property_cb(FolderView *folderview, guint action, GtkWidget *widget) {
+static void folderview_property_cb(FolderView *folderview, guint action, 
+				   GtkWidget *widget) 
+{
 	GtkCTree *ctree = GTK_CTREE(folderview->ctree);
 	FolderItem *item;
 
@@ -2362,10 +2364,11 @@ static void folderview_property_cb(FolderView *folderview, guint action, GtkWidg
 	g_return_if_fail(item != NULL);
 	g_return_if_fail(item->folder != NULL);
 
-	prefs_folder_item_create(item);
+	prefs_folder_item_create(folderview, item);
 }
 
-void folderview_set_target_folder_color(gint color_op) {
+void folderview_set_target_folder_color(gint color_op) 
+{
 	gint firstone = 1;
 	GList *list;
 	FolderView *folderview;

@@ -1,3 +1,17 @@
+2001-12-23 [alfons]	0.6.6claws12
+
+	* src/Makefile.am
+	* src/summaryview.c
+	* src/string_match.[ch]		** NEW **
+	* src/folderview.[ch]
+	* src/headerview.h
+	* src/folder.[ch]
+	* src/prefs_folder_item.[ch]
+		add subject simplification to strip out strings from
+		a subject line (esp. handy for mailing lists). 
+		(original patch by by Thomas Link <t.link.tmp200101@gmx.net>,
+		but slightly changed things for better integration.)
+
 2001-12-23 [alfons]	0.6.6claws11
 
 	* src/mainwindow.c

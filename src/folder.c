@@ -42,6 +42,7 @@
 #include "account.h"
 #include "prefs_account.h"
 #include "mbox_folder.h"
+#include "prefs_folder_item.h"
 
 #include <sys/stat.h>
 #include <sys/types.h>

@@ -81,6 +81,7 @@
 #include "scoring.h"
 #include "prefs_folder_item.h"
 #include "filtering.h"
+#include "string_match.h"
 
 #define STATUSBAR_PUSH(mainwin, str) \
 { \
@@ -240,6 +241,9 @@ static void summary_unthread_for_exec		(SummaryView	*summaryview);
 static void summary_unthread_for_exec_func	(GtkCTree	*ctree,
 						 GtkCTreeNode	*node,
 						 gpointer	 data);
+
+void summary_simplify_subject(SummaryView *summaryview, gchar * rexp,
+			      GSList * mlist);
 
 void summary_processing(SummaryView *summaryview, GSList * mlist);
 static void summary_filter_func		(GtkCTree		*ctree,
@@ -801,6 +805,14 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 		}
 		g_slist_free(mlist);
 		mlist = not_killed;
+	}
+
+	if (item->prefs->enable_simplify_subject
+	    && item->prefs->simplify_subject_regexp != NULL
+	    && strlen(item->prefs->simplify_subject_regexp) != 0) {
+		summary_simplify_subject(summaryview, 
+					 item->prefs->simplify_subject_regexp,
+					 mlist);
 	}
 
 	STATUSBAR_POP(summaryview->mainwin);
@@ -3597,6 +3609,16 @@ static void summary_unthread_for_exec_func(GtkCTree *ctree, GtkCTreeNode *node,
 		next_child = GTK_CTREE_ROW(child)->sibling;
 		gtk_ctree_move(ctree, child, NULL, sibling);
 		child = next_child;
+	}
+}
+
+void summary_simplify_subject(SummaryView *summaryview, gchar * rexp,
+			      GSList * mlist)
+{
+	GSList * cur;
+	for(cur = mlist ; cur != NULL ; cur = cur->next) {
+		MsgInfo * msginfo = (MsgInfo *) cur->data;
+		string_remove_all_matches(msginfo->subject, rexp, 0, 0);
 	}
 }
 

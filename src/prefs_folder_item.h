@@ -47,6 +47,8 @@ struct _PrefsFolderItem {
 	gboolean request_return_receipt;
 	gboolean enable_default_to;
 	gchar *default_to;
+	gboolean enable_simplify_subject;
+	gchar *simplify_subject_regexp;
 	gboolean enable_folder_chmod;
 	gint folder_chmod;
 	gboolean enable_default_account;
@@ -55,6 +57,10 @@ struct _PrefsFolderItem {
 };
 
 typedef struct _PrefsFolderItem PrefsFolderItem;
+
+/* CLAWS: due a messed up circular header references using 
+ * void *. but this is *REALLY* a folderview */ 
+void prefs_folder_item_create (void *folderview, FolderItem *item); 
 
 void prefs_folder_item_read_config(FolderItem * item);
 void prefs_folder_item_save_config(FolderItem * item);

@@ -124,7 +124,8 @@ sylpheed_SOURCES = \
 	quote_fmt_parse.y quote_fmt.h \
 	gtkspell.c gtkspell.h gtkxtext.h \
 	matcher_parser_lex.l matcher_parser_lex.h \
-	matcher_parser_parse.y matcher_parser.h
+	matcher_parser_parse.y matcher_parser.h \
+	string_match.h string_match.c
 
 BUILT_SOURCES = \
 	quote_fmt_lex.c \
