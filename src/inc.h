@@ -25,6 +25,7 @@
 #endif
 
 #include <glib.h>
+#include <time.h>
 
 #include "mainwindow.h"
 #include "progressdialog.h"
@@ -92,6 +93,8 @@ struct _Pop3State
 	GSList *uidl_todelete_list;
 	
 	gboolean uidl_is_valid;
+
+	time_t current_time;
 
 	gint error_val;
 	IncState inc_state;

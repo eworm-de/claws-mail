@@ -27,6 +27,7 @@
 #include <stdarg.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <time.h>
 
 #include "intl.h"
 #include "pop.h"
@@ -41,29 +42,44 @@
 #  include "ssl.h"
 #endif
 
-#define LOOKUP_NEXT_MSG() \
-	for (;;) { \
-		gint size = state->msg[state->cur_msg].size; \
-		gboolean size_limit_over = \
-		    (state->ac_prefs->enable_size_limit && \
-		     state->ac_prefs->size_limit > 0 && \
-		     size > state->ac_prefs->size_limit * 1024); \
- \
-		if (size_limit_over) \
-			log_print(_("POP3: Skipping message %d (%d bytes)\n"), \
-				  state->cur_msg, size); \
- \
-		if (size == 0 || state->msg[state->cur_msg].received || \
-		    size_limit_over) { \
-			if (size > 0) \
-				state->cur_total_bytes += size; \
-			if (state->cur_msg == state->count) \
-				return POP3_LOGOUT_SEND; \
-			else \
-				state->cur_msg++; \
-		} else \
-			break; \
-	}
+#define LOOKUP_NEXT_MSG()							\
+{										\
+	Pop3MsgInfo *msg;							\
+	PrefsAccount *ac = state->ac_prefs;					\
+	gint size;								\
+	gboolean size_limit_over;						\
+										\
+	for (;;) {								\
+		msg = &state->msg[state->cur_msg];				\
+		size = msg->size;						\
+		size_limit_over =						\
+		    (ac->enable_size_limit &&					\
+		     ac->size_limit > 0 &&					\
+		     size > ac->size_limit * 1024);				\
+										\
+		if (ac->rmmail &&						\
+		    msg->recv_time != 0 &&					\
+		    state->current_time - msg->recv_time >=			\
+		    ac->msg_leave_time * 24 * 60 * 60) {			\
+			log_print(_("POP3: Deleting expired message %d\n"),	\
+				  state->cur_msg);				\
+			return POP3_DELETE_SEND;				\
+		}								\
+										\
+		if (size_limit_over)						\
+			log_print(_("POP3: Skipping message %d (%d bytes)\n"),	\
+				  state->cur_msg, size);			\
+										\
+		if (size == 0 || msg->received || size_limit_over) {		\
+			state->cur_total_bytes += size;				\
+			if (state->cur_msg == state->count)			\
+				return POP3_LOGOUT_SEND;			\
+			else							\
+				state->cur_msg++;				\
+		} else								\
+			break;							\
+	}									\
+}
 
 static gint pop3_ok(SockInfo *sock, gchar *argbuf);
 static void pop3_gen_send(SockInfo *sock, const gchar *format, ...);
@@ -79,16 +95,14 @@ gint pop3_greeting_recv(SockInfo *sock, gpointer data)
 	gchar buf[POPBUFSIZE];
 
 	if (pop3_ok(sock, buf) == PS_SUCCESS) {
+		state->greeting = g_strdup(buf);
 #if USE_SSL
-		if (state->ac_prefs->ssl_pop == SSL_STARTTLS) {
-			state->greeting = g_strdup(buf);
+		if (state->ac_prefs->ssl_pop == SSL_STARTTLS)
 			return POP3_STLS_SEND;
-		}
 #endif
-		if (state->ac_prefs->protocol == A_APOP) {
-			state->greeting = g_strdup(buf);
+		if (state->ac_prefs->protocol == A_APOP)
 			return POP3_GETAUTH_APOP_SEND;
-		} else
+		else
 			return POP3_GETAUTH_USER_SEND;
 	} else
 		return -1;
@@ -110,9 +124,9 @@ gint pop3_stls_recv(SockInfo *sock, gpointer data)
 	if ((ok = pop3_ok(sock, NULL)) == PS_SUCCESS) {
 		if (!ssl_init_socket_with_method(sock, SSL_METHOD_TLSv1))
 			return -1;
-		if (state->ac_prefs->protocol == A_APOP) {
+		if (state->ac_prefs->protocol == A_APOP)
 			return POP3_GETAUTH_APOP_SEND;
-		} else
+		else
 			return POP3_GETAUTH_USER_SEND;
 	} else if (ok == PS_PROTOCOL) {
 		log_warning(_("can't start TLS session\n"));
@@ -164,9 +178,8 @@ gint pop3_getauth_pass_recv(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 
-	if (pop3_ok(sock, NULL) == PS_SUCCESS) 
+	if (pop3_ok(sock, NULL) == PS_SUCCESS)
 		return POP3_GETRANGE_STAT_SEND;
-	
 	else {
 		log_warning(_("error occurred on authentication\n"));
 		state->error_val = PS_AUTHFAIL;
@@ -211,9 +224,8 @@ gint pop3_getauth_apop_recv(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
 
-	if (pop3_ok(sock, NULL) == PS_SUCCESS) 
+	if (pop3_ok(sock, NULL) == PS_SUCCESS)
 		return POP3_GETRANGE_STAT_SEND;
-
 	else {
 		log_warning(_("error occurred on authentication\n"));
 		state->error_val = PS_AUTHFAIL;
@@ -304,7 +316,8 @@ gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 	gint next_state;
 
 	if (!state->uidl_table) new = TRUE;
-	if (state->ac_prefs->getall)
+	if (state->ac_prefs->getall ||
+	    (state->ac_prefs->rmmail && state->ac_prefs->msg_leave_time == 0))
 		get_all = TRUE;
 
 	if (pop3_ok(sock, NULL) != PS_SUCCESS) {
@@ -320,6 +333,7 @@ gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 
 	while (sock_gets(sock, buf, sizeof(buf)) >= 0) {
 		gint num;
+		time_t recv_time;
 
 		if (buf[0] == '.') break;
 		if (sscanf(buf, "%d %" Xstr(IDLEN) "s", &num, id) != 2)
@@ -328,18 +342,19 @@ gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 
 		state->msg[num].uidl = g_strdup(id);
 
-		if (state->uidl_table) {
-			if (!get_all &&
-			    g_hash_table_lookup(state->uidl_table, id) != NULL)
-				state->msg[num].received = TRUE;
-			else {
-				if (new == FALSE) {
-					state->cur_msg = num;
-					new = TRUE;
-				}
-			}
-		}
+		if (!state->uidl_table) continue;
 
+		recv_time = (time_t)g_hash_table_lookup(state->uidl_table, id);
+		state->msg[num].recv_time = recv_time;
+
+		if (!get_all && recv_time != 0)
+			state->msg[num].received = TRUE;
+
+		if (new == FALSE &&
+		    (get_all || recv_time == 0 || state->ac_prefs->rmmail)) {
+			state->cur_msg = num;
+			new = TRUE;
+		}
 		if (should_delete(buf, (Pop3State *) state))
 			state->uidl_todelete_list = g_slist_append
 					(state->uidl_todelete_list, g_strdup(buf));		
@@ -380,7 +395,7 @@ static gboolean should_delete(const char *uidl, gpointer data)
 
 	if (NULL != (sdate = g_hash_table_lookup(state->uidl_table, answer[1]))) {
 		tdate    = atoi(sdate);
-		keep_for = atoi(state->ac_prefs->leave_time); /* FIXME: leave time should be an int */
+		keep_for = atoi(state->ac_prefs->msg_leave_time); /* FIXME: leave time should be an int */
 
 		g_date_clear(&curdate, 1);
 		g_date_set_time(&curdate, time(NULL));
@@ -490,8 +505,6 @@ gint pop3_retr_recv(SockInfo *sock, gpointer data)
 	const gchar *file;
 	gint ok, drop_ok;
 	gint next_state;
-	int keep_for;
-	
 	if ((ok = pop3_ok(sock, NULL)) == PS_SUCCESS) {
 		if (recv_write_to_file(sock, (file = get_tmp_file())) < 0) {
 			if (state->inc_state == INC_SUCCESS)
@@ -510,13 +523,12 @@ gint pop3_retr_recv(SockInfo *sock, gpointer data)
 		state->cur_total_bytes += state->msg[state->cur_msg].size;
 		state->cur_total_num++;
 
-		keep_for = (state->ac_prefs && state->ac_prefs->leave_time) ? 
-			   atoi(state->ac_prefs->leave_time) : 0;
-
-		if (drop_ok == 0 && state->ac_prefs->rmmail && keep_for == 0)
-			return POP3_DELETE_SEND;
-
 		state->msg[state->cur_msg].received = TRUE;
+		state->msg[state->cur_msg].recv_time = state->current_time;
+
+		if (state->ac_prefs->rmmail &&
+		    state->ac_prefs->msg_leave_time == 0)
+			return POP3_DELETE_SEND;
 
 		if (state->cur_msg < state->count) {
 			state->cur_msg++;

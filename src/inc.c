@@ -31,6 +31,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
@@ -447,6 +448,7 @@ static Pop3State *inc_pop3_state_new(PrefsAccount *account)
 	state->uidl_todelete_list = NULL;
 	state->uidl_table = inc_get_uidl_table(account);
 	state->inc_state = INC_SUCCESS;
+	state->current_time = time(NULL);
 
 	return state;
 }
@@ -808,50 +810,44 @@ static GHashTable *inc_get_uidl_table(PrefsAccount *ac_prefs)
 	gchar *path;
 	FILE *fp;
 	gchar buf[IDLEN + 3];
-	GDate curdate;
-	gchar **data;
+	gchar uidl[IDLEN + 3];
+	time_t recv_time;
+	time_t now;
 
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-			   "uidl-", ac_prefs->recv_server,
+			   "uidl", G_DIR_SEPARATOR_S, ac_prefs->recv_server,
 			   "-", ac_prefs->userid, NULL);
-			   
 	if ((fp = fopen(path, "rb")) == NULL) {
 		if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
 		g_free(path);
-		return NULL;
+		path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
+				   "uidl-", ac_prefs->recv_server,
+				   "-", ac_prefs->userid, NULL);
+		if ((fp = fopen(path, "rb")) == NULL) {
+			if (ENOENT != errno) FILE_OP_ERROR(path, "fopen");
+			g_free(path);
+			return NULL;
+		}
+		g_free(path);
 	}
-	g_free(path);
 
 	table = g_hash_table_new(g_str_hash, g_str_equal);
 
-	g_date_clear(&curdate, 1);
-
-	/*
-	 * NOTE: g_date_set_time() has to be called inside this 
-	 * loop, because a day change may happen??? That right?
-	 */
+	now = time(NULL);
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		strretchomp(buf);
-		
-		/* data[0] will contain uidl
-		 * data[1] will contain day of retrieval */
-
-		/* 
-		 * FIXME: convoluted implementation. need to find
-		 * a better way to split the string.
-		 */
-		if (strchr(buf, '\t')) {
-			data = g_strsplit(buf, "\t", 2);
-			if (data) {
-				g_hash_table_insert(table, g_strdup(data[0]), g_strdup(data[1]));
-				g_strfreev(data);
-			}	
-		} else {
-			g_date_set_time(&curdate, time(NULL));	
-			g_hash_table_insert(table, g_strdup(buf), 
-					    g_strdup_printf("%d", g_date_day_of_year(&curdate)));
-		}			    
+		recv_time = 0;
+		if (sscanf(buf, "%s\t%ld", uidl, &recv_time) != 2) {
+			if (sscanf(buf, "%s", uidl) != 1)
+				continue;
+			else
+				recv_time = now;
+		}
+		if (recv_time == 0)
+			recv_time = 1;
+		g_hash_table_insert(table, g_strdup(uidl),
+				    GINT_TO_POINTER(recv_time));
 	}
 
 	fclose(fp);
@@ -862,64 +858,28 @@ static void inc_write_uidl_list(Pop3State *state)
 {
 	gchar *path;
 	FILE *fp;
+	Pop3MsgInfo *msg;
 	gint n;
-	GDate curdate;
-	const char *sdate;
-	int tdate;
 
-	if (!state->uidl_is_valid)
-		return;
-	
+	if (!state->uidl_is_valid) return;
+
 	path = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-			   "uidl-", state->ac_prefs->recv_server,
-			   "-", state->user, NULL);
+			   "uidl", G_DIR_SEPARATOR_S,
+			   state->ac_prefs->recv_server,
+			   "-", state->ac_prefs->userid, NULL);
 	if ((fp = fopen(path, "wb")) == NULL) {
 		FILE_OP_ERROR(path, "fopen");
 		g_free(path);
 		return;
 	}
 
-	g_date_clear(&curdate, 1);
-
 	for (n = 1; n <= state->count; n++) {
-		if (state->msg[n].uidl && state->msg[n].received &&
-		    !state->msg[n].deleted) {
-			if (fputs(state->msg[n].uidl, fp) == EOF) {
-				FILE_OP_ERROR(path, "fputs");
-				break;
-			}
-			if (fputc('\t', fp) == EOF) {
-				FILE_OP_ERROR(path, "fputc");
-				break;
-			}
-			
-			/*
-			 * NOTE: need to set time to watch for day changes??
-			 */
-			g_date_set_time(&curdate, time(NULL));
-
-			if (NULL != (sdate = g_hash_table_lookup(state->uidl_table, state->msg[n].uidl))) {
-				tdate = sdate != NULL ? atoi(sdate) : g_date_day_of_year(&curdate);
-				if (fprintf(fp, "%3d", tdate) == EOF) {
-					FILE_OP_ERROR(path, "fprintf");
-					break;
-				}
-			} else {
-				if (fprintf(fp, "%d", g_date_day_of_year(&curdate)) == EOF) {
-					FILE_OP_ERROR(path, "fputs");
-					break;
-				}
-			}
-
-			if (fputc('\n', fp) == EOF) {
-				FILE_OP_ERROR(path, "fputc");
-				break;
-			}		
-		}
+		msg = &state->msg[n];
+		if (msg->uidl && msg->received && !msg->deleted)
+			fprintf(fp, "%s\t%ld\n", msg->uidl, msg->recv_time);
 	}
 
-	if (fclose(fp) == EOF) 
-		FILE_OP_ERROR(path, "fclose");
+	if (fclose(fp) == EOF) FILE_OP_ERROR(path, "fclose");
 	g_free(path);
 }
 
@@ -1021,11 +981,13 @@ void inc_progress_update(Pop3State *state, Pop3Phase phase)
 			 (gfloat)(state->cur_total_bytes) /
 			 (gfloat)(state->total_bytes));
 		break;
-#if 0
 	case POP3_DELETE_SEND:
-		progress_dialog_set_label(dialog, _("Deleting message"));
+		if (state->msg[state->cur_msg].recv_time < state->current_time) {
+			g_snprintf(buf, sizeof(buf), _("Deleting message %d"),
+				   state->cur_msg);
+			progress_dialog_set_label(dialog, buf);
+		}
 		break;
-#endif
 	case POP3_LOGOUT_SEND:
 		progress_dialog_set_label(dialog, _("Quitting"));
 		break;

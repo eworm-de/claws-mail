@@ -211,6 +211,7 @@ int main(int argc, char *argv[])
 	MAKE_DIR_IF_NOT_EXIST(get_imap_cache_dir());
 	MAKE_DIR_IF_NOT_EXIST(get_news_cache_dir());
 	MAKE_DIR_IF_NOT_EXIST(get_mime_tmp_dir());
+	MAKE_DIR_IF_NOT_EXIST(RC_DIR G_DIR_SEPARATOR_S "uidl");
 
 	if (is_file_exist(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log")) {
 		if (rename(RC_DIR G_DIR_SEPARATOR_S "sylpheed.log",

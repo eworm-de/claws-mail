@@ -1,3 +1,43 @@
+2002-06-17
+
+	* po/zh_TW.Big5.po: クラッシュを起こすミスを修正。
+
+2002-06-15
+
+	* version 0.7.8
+
+2002-06-13
+
+	* src/inc.c: inc_get_uidl_table(): 無効な時間がハッシュテーブルに
+	  挿入される可能性のあるバグを修正。
+	  inc_write_uidl_list(): 少しコードを整理。
+	* src/mainwindow.c: main_window_get_current_state():
+	  空フォルダでの状態を実行不可にした。
+	* src/summaryview.c: summary_sort():
+	  空フォルダでソートしないようにした。
+	* src/pop.c: 少しコードを整理。
+
+2002-06-12
+
+	* src/prefs_account.c: CREATE_RADIO_BUTTONS(): typo を修正し、
+	  ラジオボタンの挙動を修正。
+
+2002-06-11
+
+	* POP3 で「N 日後にメッセージを削除」機能を実装。
+	* src/inc.[ch]:
+	  inc_get_uidl_table()
+	  inc_write_uidl_list(): UIDL リストファイルの位置を RC_DIR/uidl-*
+	  から RC_DIR/uidl/* に移動。各 UIDL に受信時刻を追加。
+	  src/main.c: main(): RC_DIR/uidl/ ディレクトリを作成。
+	  src/pop.[ch]: LOOKUP_NEXT_MSG(): ここで期限切れメッセージを削除。
+	  Pop3MsgInfo に recv_time を追加。
+	  src/prefs_account.[ch]: メッセージを残す日数のオプションを追加。
+
+2002-06-09
+
+	* version 0.7.7
+
 2002-06-07
 
 	* src/folder.c: folder_set_missing_folders(): 特別フォルダのタイプ
