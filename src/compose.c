@@ -2633,27 +2633,29 @@ static gboolean compose_get_line_break_pos(GtkTextBuffer *buffer,
 	return do_break;
 }
 
-static gboolean is_sig_separator(Compose *compose, GtkTextBuffer *textbuf, guint start_pos) 
+static gboolean is_sig_separator(Compose *compose, GtkTextBuffer *textbuf, GtkTextIter *iter) 
 {
 	char *text = NULL;
-	GtkTextIter iter; 
+	GtkTextIter start = *iter;
 	GtkTextIter end_iter;
+	int start_pos = gtk_text_iter_get_offset(&start);
+
 	if (!compose->account->sig_sep)
 		return FALSE;
 	
-	gtk_text_buffer_get_iter_at_offset(textbuf, &iter, start_pos+1);
 	gtk_text_buffer_get_iter_at_offset(textbuf, &end_iter,
-		start_pos+strlen(compose->account->sig_sep)+1);
+		start_pos+strlen(compose->account->sig_sep));
 
-	if (!strcmp(gtk_text_iter_get_text(&iter, &end_iter),
+	/* check sig separator */
+	if (!strcmp(gtk_text_iter_get_text(&start, &end_iter),
 			compose->account->sig_sep)) {
-		/* check \n */
-		gtk_text_buffer_get_iter_at_offset(textbuf, &iter,
-			start_pos+strlen(compose->account->sig_sep)+1);
+		/* check end of line (\n) */
+		gtk_text_buffer_get_iter_at_offset(textbuf, &start,
+			start_pos+strlen(compose->account->sig_sep));
 		gtk_text_buffer_get_iter_at_offset(textbuf, &end_iter,
-			start_pos+strlen(compose->account->sig_sep)+2);
+			start_pos+strlen(compose->account->sig_sep)+1);
 
-		if (!strcmp(gtk_text_iter_get_text(&iter, &end_iter),"\n"));
+		if (!strcmp(gtk_text_iter_get_text(&start, &end_iter),"\n"));
 			return TRUE;
 		
 
@@ -2662,7 +2664,8 @@ static gboolean is_sig_separator(Compose *compose, GtkTextBuffer *textbuf, guint
 	return FALSE;
 }
 
-static gboolean compose_join_next_line(GtkTextBuffer *buffer,
+static gboolean compose_join_next_line(Compose *compose,
+				       GtkTextBuffer *buffer,
 				       GtkTextIter *iter,
 				       const gchar *quote_str)
 {
@@ -2697,6 +2700,10 @@ static gboolean compose_join_next_line(GtkTextBuffer *buffer,
 		gtk_text_buffer_delete(buffer, &iter_, &end);
 	}
 
+	/* don't join if next line is sig separator */
+	if (is_sig_separator(compose, buffer, &iter_))
+		return FALSE;
+
 	/* delete linebreak and extra spaces */
 	prev = cur = iter_;
 	while (gtk_text_iter_backward_char(&cur)) {
@@ -2713,6 +2720,7 @@ static gboolean compose_join_next_line(GtkTextBuffer *buffer,
 		gtk_text_iter_forward_char(&cur);
 		next = cur;
 	}
+	
 	if (!gtk_text_iter_equal(&prev, &next)) {
 		GtkTextMark *mark;
 
@@ -2827,7 +2835,7 @@ static void compose_wrap_paragraph(Compose *compose, GtkTextIter *par_iter)
 						       quote_str, -1);
 
 			iter = break_pos;
-			compose_join_next_line(buffer, &iter, quote_str);
+			compose_join_next_line(compose, buffer, &iter, quote_str);
 
 			/* move iter to current line start */
 			gtk_text_iter_set_line_offset(&iter, 0);

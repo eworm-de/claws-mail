@@ -1,3 +1,8 @@
+2005-02-27 [colin]	1.0.1cvs19.3
+
+	* src/compose.c
+		Don't auto-join the signature separator.
+
 2005-02-26 [colin]	1.0.1cvs19.2
 
 	* src/summaryview.c
