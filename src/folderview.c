@@ -2633,12 +2633,12 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 	GtkAdjustment *pos = gtk_scrolled_window_get_vadjustment(
 				GTK_SCROLLED_WINDOW(folderview->scrolledwin));
 	gfloat vpos = pos->value;
-	
+
 	if (gtk_clist_get_selection_info
 		(GTK_CLIST(widget), x - 24, y - 24, &row, &column)) {
-		if (y > height - 24 && height + vpos < total_height) {
+		if (y > height - 24 && height + vpos < total_height)
 			gtk_adjustment_set_value(pos, (vpos+5 > height ? height : vpos+5));
-		}
+
 		if (y < 24 && y > 0)
 			gtk_adjustment_set_value(pos, (vpos-5 < 0 ? 0 : vpos-5));
 
