@@ -2260,7 +2260,8 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 		}
 
 		if (account_find_from_address(addr)) {
-			addr = summary_complete_address(msginfo->to); 
+			addr = summary_complete_address(msginfo->to);
+			g_free(to);
 			to   = g_strconcat("-->", addr == NULL ? msginfo->to : addr, NULL);
 			text[col_pos[S_COL_FROM]] = to;
 		}
