@@ -941,8 +941,8 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	compose = compose_create(account, COMPOSE_REPLY);
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 
-	menu_set_active(ifactory, "/Message/Remove references", FALSE);
-	menu_set_sensitive(ifactory, "/Message/Remove references", TRUE);
+	menu_set_active(ifactory, "/Options/Remove references", FALSE);
+	menu_set_sensitive(ifactory, "/Options/Remove references", TRUE);
 
 	compose->replyinfo = procmsg_msginfo_get_full_info(msginfo);
 	if (!compose->replyinfo)

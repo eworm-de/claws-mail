@@ -1,3 +1,13 @@
+2004-10-19 [christoph]	0.9.12cvs130
+
+	* src/compose.c
+		fix wrong menu entry path
+
+	(Closes Bug 626 crashes after clicking 'reply' or 'reply to all')
+
+	* src/gtk/menu.c
+		add extra check for missing menu entries
+
 2004-10-19 [christoph]	0.9.12cvs129
 
 	* src/compose.c
