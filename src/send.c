@@ -456,7 +456,9 @@ static gint send_message_data(SendProgressDialog *dialog, SockInfo *sock,
 
 			for (;;) {
 				next = fgetc(fp);
-				if (next != ' ' && next != '\t') {
+				if (next == EOF)
+					break;
+				else if (next != ' ' && next != '\t') {
 					ungetc(next, fp);
 					break;
 				}
@@ -467,10 +469,10 @@ static gint send_message_data(SendProgressDialog *dialog, SockInfo *sock,
 			}
 		} else {
 			SEND_EXIT_IF_ERROR(sock_puts(sock, buf));
+			if (buf[0] == '\0')
+				break;
 		}
 	}
-
-	SEND_EXIT_IF_ERROR(sock_write(sock, "\r\n", 2));
 
 	/* output body part */
 	while (fgets(buf, sizeof(buf), fp) != NULL) {

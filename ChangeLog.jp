@@ -1,3 +1,12 @@
+2001-09-03
+
+	* version 0.6.1
+
+2001-09-03
+
+	* src/send.c: send_message_data(): ボディパートを正しく処理しな
+	  かったバグを修正。
+
 2001-09-02
 
 	* src/inc.[ch]: inc_autocheck_(un)lock() を inc_(un)lock() に変更。
@@ -7,6 +16,8 @@
 	  src/prefs_common.c
 	  src/prefs_account.c: inc_autocheck_timer_{remove,set}() の代わりに
 	  inc_lock() と inc_unlock() を用いるようにした。
+	* src/summaryview.c: summary_set_colorlabel_color(): 視認性のために
+	  ラベル色と選択前景色との平均をとるようにした。
 
 2001-09-01
 

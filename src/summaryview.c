@@ -3478,7 +3478,11 @@ void summary_set_colorlabel_color(GtkCTree *ctree, GtkCTreeNode *node,
 			style = gtk_style_copy(ctree_style);
 		color = colorlabel_get_color(color_index);
 		style->fg[GTK_STATE_NORMAL] = color;
-		style->fg[GTK_STATE_SELECTED] = color;
+		/* get the average of label color and selected fg color
+		   for visibility */
+		style->fg[GTK_STATE_SELECTED].red   = (color.red   + ctree_style->fg[GTK_STATE_SELECTED].red  ) / 2;
+		style->fg[GTK_STATE_SELECTED].green = (color.green + ctree_style->fg[GTK_STATE_SELECTED].green) / 2;
+		style->fg[GTK_STATE_SELECTED].blue  = (color.blue  + ctree_style->fg[GTK_STATE_SELECTED].blue ) / 2;
 	}
 
 	gtk_ctree_node_set_row_style(ctree, node, style);

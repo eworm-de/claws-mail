@@ -32,7 +32,6 @@
 #  include <sys/param.h>
 #endif
 
-/* #define PROG_VERSION		"Sylpheed version "VERSION */
 #define INBOX_DIR		"inbox"
 #define OUTBOX_DIR		"outbox"
 #define QUEUE_DIR		"queue"

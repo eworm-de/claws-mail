@@ -1,3 +1,12 @@
+2001-09-03
+
+	* version 0.6.1
+
+2001-09-03
+
+	* src/send.c: send_message_data(): fixed a bug that didn't process
+	  body part correctly.
+
 2001-09-02
 
 	* src/inc.[ch]: changed inc_autocheck_(un)lock() to inc_(un)lock().
@@ -6,6 +15,8 @@
 	  src/prefs_common.c
 	  src/prefs_account.c: use inc_lock() and inc_unlock() instead of
 	  inc_autocheck_timer_{remove,set}().
+	* src/summaryview.c: summary_set_colorlabel_color(): get the average
+	  of label color and selected fg color for visibility.
 
 2001-09-01
 
