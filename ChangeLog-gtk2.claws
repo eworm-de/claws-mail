@@ -1,3 +1,8 @@
+2004-08-31 [colin]	0.9.12cvs85.1
+
+	* src/folder.c
+		Sync with HEAD
+
 2004-08-31 [colin]	0.9.12cvs84.4
 
 	* src/summary_search.c
