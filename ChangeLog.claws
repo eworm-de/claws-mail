@@ -1,3 +1,8 @@
+2001-12-08 [hoa]	0.6.5claws64
+
+	* src/folder.c
+		fixed a bug about the .processing folder name while filtering
+
 2001-12-07 [alfons]	0.6.5claws63
 
 	* src/folderview.c 

@@ -43,6 +43,9 @@
 #include "prefs_account.h"
 #include "mbox_folder.h"
 
+#include <sys/stat.h>
+#include <sys/types.h>
+
 static GList *folder_list = NULL;
 
 static void folder_init		(Folder		*folder,
@@ -1558,18 +1561,24 @@ static void folder_create_processing_folder(void)
 	Folder	   *tmpparent;
 	FolderItem *tmpfolder;
 	gchar      *tmpname;
+	struct stat s;
 
 	tmpparent = folder_get_default_folder();
 	g_assert(tmpparent);
 	debug_print("tmpparentroot %s\n", LOCAL_FOLDER(tmpparent)->rootpath);
-	tmpname = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
-			      LOCAL_FOLDER(tmpparent)->rootpath,
-			      G_DIR_SEPARATOR_S, PROCESSING_FOLDER,
-			      NULL);
+	if (LOCAL_FOLDER(tmpparent)->rootpath[0] == '/')
+		tmpname = g_strconcat(LOCAL_FOLDER(tmpparent)->rootpath,
+				      G_DIR_SEPARATOR_S, PROCESSING_FOLDER,
+				      NULL);
+	else
+		tmpname = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
+				      LOCAL_FOLDER(tmpparent)->rootpath,
+				      G_DIR_SEPARATOR_S, PROCESSING_FOLDER,
+				      NULL);
 
 	processing_folder = folder_new(F_MH, "PROCESSING", LOCAL_FOLDER(tmpparent)->rootpath);
 	g_assert(processing_folder);
-			      
+
 	if (!is_dir_exist(tmpname)) {
 		debug_print("*TMP* creating %s\n", tmpname);
 		processing_folder_item = processing_folder->create_folder(processing_folder,
