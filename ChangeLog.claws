@@ -1,3 +1,17 @@
+2002-03-08 [paul]	0.7.3claws2
+
+	* faq/en/sylpheed-faq*
+	  faq/es/sylpheed-faq*
+	  faq/fr/sylpheed-faq*
+		update the FAQs
+
+	* manual/fr/.cvsignore
+	  manual/fr/Makefilea.am
+	  manual/fr/sylpheed*
+	  src/mainwindow.c
+	  src/manual.[ch]
+		add the French manual
+
 2002-03-07 [paul]	0.7.3claws1
 
 	* sync with sylpheed 0.7.3cvs4

@@ -20,6 +20,19 @@ sylpheed-w32 (http://www.gnupg.org/cvs-access.html)
 
 	Werner Koch		<wk@gnupg.org>
 
+sylpheed documentation (http://sylpheeddoc.sourceforge.net)
+
+	François Barriere 	<barriere.francois@libertysurf.fr>
+	Martin Bretschneider 	<martin.bretschneider@gmx.de>
+	Hoa viet Dinh		<dinh.viet.hoa@free.fr>
+	Melvin Hadasht		<melvin.hadasht@free.fr>
+	Paul Kater		<paul@nlpagan.net>
+	Ricardo Mones Lastra 	<mones@aic.uniovi.es>
+	Jens Oberender		<j.obi@troja.net>
+	Marcelo Ramos 		<mramos@montevideo.com.uy>
+	Guido Rudolphi		<rudolphi@netmon.ch>
+	Nick Selby
+
 user manuals
 
 	Yoichi Imai (Japanese)	<yoichi@silver-forest.com>
@@ -120,4 +133,3 @@ contributors (beside the above; based on Changelog)
 	Bob Forsman
 	Ville Skyttä
 	Colin Leroy
-	Wilbert Berendsen

@@ -8,7 +8,7 @@ MINOR_VERSION=7
 MICRO_VERSION=3
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws1
+EXTRA_VERSION=claws2
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -347,16 +347,17 @@ Makefile
 sylpheed.spec
 intl/Makefile
 ac/Makefile
-faq/Makefile
-faq/en/Makefile
-faq/es/Makefile
-faq/fr/Makefile
 po/Makefile.in
 libkcc/Makefile
 src/version.h
 src/Makefile
+faq/Makefile
+faq/en/Makefile
+faq/es/Makefile
+faq/fr/Makefile
 manual/Makefile
 manual/en/Makefile
+manual/fr/Makefile
 manual/ja/Makefile
 tools/Makefile
 ])
