@@ -1,3 +1,25 @@
+* eud2gc.py
+
+  WHAT IT DOES
+
+  This python-script is a quick hack to convert an Eudora (v.3?) addressbook
+  to vCard (GnomeCard) format.
+
+  HOW TO USE IT
+
+  You may do whatever you want with it! (Also regarding copying)
+
+  However, the script is intended to use like this:
+
+  			eud2gc.py <Eudora-addressbook-file> <Gnomecard-file>
+
+  Be carefull not to overwrite your original GnomeCard.gcrd!
+  (But of course you might want to add the converted stuff to it)
+
+  Copyleft some time long ago (around 1999?) by Jeroen Versteeg
+  (j.m.versteeg@student.utwente.nl)
+
+-----------------------------------------------------------------------
 
 * filter_conv.pl
 
@@ -83,3 +105,5 @@
   Any problems, contact Rod Senra <rodrigo.senra@ic.unicamp.br>
 
 -----------------------------------------------------------------------
+
+
