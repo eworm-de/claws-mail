@@ -829,7 +829,7 @@ rfc2015_encrypt (const char *file, GSList *recp_list, gboolean ascii_armored)
     GpgmeRecipients rset = NULL;
     size_t nread;
     int mime_version_seen = 0;
-    char *boundary = generate_mime_boundary ();
+    char *boundary = generate_mime_boundary ("Encrypt");
 
     /* Create the list of recipients */
     rset = gpgmegtk_recipient_selection (recp_list);
@@ -1161,7 +1161,7 @@ rfc2015_sign (const char *file, GSList *key_list)
     GpgmeData sigdata = NULL;
     size_t nread;
     int mime_version_seen = 0;
-    char *boundary = generate_mime_boundary ();
+    char *boundary = generate_mime_boundary ("Signature");
     char *micalg = NULL;
     char *siginfo;
 

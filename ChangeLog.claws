@@ -1,3 +1,10 @@
+2003-09-11 [christoph]	0.9.5claws4
+
+	* src/compose.c
+	* src/rfc2015.c
+	* src/common/utils.h
+		fix last sync
+
 2003-09-11 [paul]	0.9.5claws3
 
 	* sync with 0.9.5cvs4

@@ -427,6 +427,6 @@ gint g_stricase_equal	(gconstpointer gptr1, gconstpointer gptr2);
 gint g_int_compare	(gconstpointer a, gconstpointer b);
 
 gchar *generate_msgid		(const gchar *address, gchar *buf, gint len);
-gchar *generate_mime_boundary	(void);
+gchar *generate_mime_boundary	(const gchar *prefix);
 
 #endif /* __UTILS_H__ */

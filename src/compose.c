@@ -4287,7 +4287,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 	/* MIME */
 	fprintf(fp, "Mime-Version: 1.0\n");
 	if (compose_use_attach(compose)) {
-		compose->boundary = generate_mime_boundary();
+		compose->boundary = generate_mime_boundary(NULL);
 		fprintf(fp,
 			"Content-Type: multipart/mixed;\n"
 			" boundary=\"%s\"\n", compose->boundary);
