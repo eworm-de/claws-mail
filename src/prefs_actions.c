@@ -998,6 +998,14 @@ void update_compose_actions_menu(GtkItemFactory *ifactory,
 			    compose);
 }
 
+void actions_execute(MainWindow *mainwin, 
+		     guint action_nb,
+		     GtkWidget *widget)
+{
+	mainwin_actions_execute_cb(mainwin, action_nb, widget);
+}
+
+
 static void update_actions_menu(GtkItemFactory *ifactory,
 				gchar *branch_path,
 				gpointer callback,

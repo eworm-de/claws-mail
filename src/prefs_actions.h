@@ -31,4 +31,8 @@ void update_compose_actions_menu	(GtkItemFactory	*ifactory,
 					 Compose	*compose);
 void prefs_actions_open			(MainWindow	*mainwin);
 
+void actions_execute                    (MainWindow     *mainwin, 
+					 guint          action_nb,
+					 GtkWidget      *widget);
+
 #endif /* __ACTIONS_H__ */
