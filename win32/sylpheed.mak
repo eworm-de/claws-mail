@@ -170,6 +170,7 @@ CLEAN :
 	-@erase "$(INTDIR)\uuencode.obj"
 	-@erase "$(INTDIR)\vc60.idb"
 	-@erase "$(INTDIR)\vcard.obj"
+	-@erase "$(INTDIR)\w32_mailcap.obj"
 	-@erase "$(INTDIR)\xml.obj"
 	-@erase "$(INTDIR)\xmlprops.obj"
 	-@erase "$(OUTDIR)\sylpheed.exe"
@@ -352,6 +353,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\utils.obj" \
 	"$(INTDIR)\uuencode.obj" \
 	"$(INTDIR)\vcard.obj" \
+	"$(INTDIR)\w32_mailcap.obj" \
 	"$(INTDIR)\xml.obj" \
 	"$(INTDIR)\xmlprops.obj" \
 	"$(INTDIR)\sylpheed.res" \
@@ -650,6 +652,8 @@ CLEAN :
 	-@erase "$(INTDIR)\vc60.pdb"
 	-@erase "$(INTDIR)\vcard.obj"
 	-@erase "$(INTDIR)\vcard.sbr"
+	-@erase "$(INTDIR)\w32_mailcap.obj"
+	-@erase "$(INTDIR)\w32_mailcap.sbr"
 	-@erase "$(INTDIR)\xml.obj"
 	-@erase "$(INTDIR)\xml.sbr"
 	-@erase "$(INTDIR)\xmlprops.obj"
@@ -833,6 +837,7 @@ BSC32_SBRS= \
 	"$(INTDIR)\utils.sbr" \
 	"$(INTDIR)\uuencode.sbr" \
 	"$(INTDIR)\vcard.sbr" \
+	"$(INTDIR)\w32_mailcap.sbr" \
 	"$(INTDIR)\xml.sbr" \
 	"$(INTDIR)\xmlprops.sbr"
 
@@ -975,6 +980,7 @@ LINK32_OBJS= \
 	"$(INTDIR)\utils.obj" \
 	"$(INTDIR)\uuencode.obj" \
 	"$(INTDIR)\vcard.obj" \
+	"$(INTDIR)\w32_mailcap.obj" \
 	"$(INTDIR)\xml.obj" \
 	"$(INTDIR)\xmlprops.obj" \
 	"$(INTDIR)\sylpheed.res" \
@@ -3368,6 +3374,24 @@ SOURCE=..\src\vcard.c
 
 
 "$(INTDIR)\vcard.obj"	"$(INTDIR)\vcard.sbr" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
+SOURCE=..\src\w32_mailcap.c
+
+!IF  "$(CFG)" == "sylpheed - Win32 Release"
+
+
+"$(INTDIR)\w32_mailcap.obj" : $(SOURCE) "$(INTDIR)"
+	$(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ELSEIF  "$(CFG)" == "sylpheed - Win32 Debug"
+
+
+"$(INTDIR)\w32_mailcap.obj"	"$(INTDIR)\w32_mailcap.sbr" : $(SOURCE) "$(INTDIR)"
 	$(CPP) $(CPP_PROJ) $(SOURCE)
 
 

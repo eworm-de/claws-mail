@@ -37,9 +37,10 @@
 #include <gtk/gtkselection.h>
 #include <stdio.h>
 #ifdef WIN32
-#include <w32lib.h>
+# include <w32lib.h>
+# include "w32_mailcap.h"
 #else
-#include <unistd.h>
+# include <unistd.h>
 #endif
 
 #include "intl.h"
@@ -891,15 +892,17 @@ static void mimeview_launch(MimeView *mimeview)
 		return;
 	}
 
-	open_cmd = g_malloc(MAX_PATH);
-	FindExecutable(filename, NULL, open_cmd);
-	if (!(open_cmd && *open_cmd)){
-		g_free(open_cmd);
-		open_cmd = NULL;
-	} else {
-		gchar *p = g_strdup(open_cmd);
-		open_cmd = g_strconcat("\"", p, "\"", " \"%s\"", NULL);
-		g_free(p);
+	if ( (open_cmd=g_strdup(w32_mailcap_lookup(partinfo->name)))==NULL) {
+		open_cmd = g_malloc(MAX_PATH);
+		FindExecutable(partinfo->name, NULL, open_cmd);
+		if (!(open_cmd && *open_cmd)){
+			g_free(open_cmd);
+			open_cmd = NULL;
+		} else {
+			gchar *p = g_strdup(open_cmd);
+			open_cmd = g_strconcat("\"", p, "\"", " \"%s\"", NULL);
+			g_free(p);
+		}
 	}
 
 	mimeview_view_file(filename, partinfo, open_cmd);

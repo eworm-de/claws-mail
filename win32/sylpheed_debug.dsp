@@ -621,6 +621,10 @@ SOURCE=..\src\vcard.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\w32_mailcap.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\xml.c
 # End Source File
 # Begin Source File
@@ -1074,6 +1078,10 @@ SOURCE=..\src\uuencode.h
 # Begin Source File
 
 SOURCE=..\src\vcard.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\w32_mailcap.h
 # End Source File
 # Begin Source File
 

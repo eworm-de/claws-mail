@@ -1117,16 +1117,18 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 			: mimeinfo->name ? mimeinfo->name : "mimetmp";
 #ifdef WIN32
 		{
-			gchar *p;
+			gchar *p, *nbase, *end;
 			int len;
 
-			base = g_strdup(base);
-			locale_from_utf8(&base);
-
-			len = strlen(base) * 2;
-			p = g_malloc(len);
-			conv_anytoeuc(p, len, base);
+			nbase = g_strdup(base);
+			if ( g_utf8_validate(base, strlen(base), &end) )
+				locale_from_utf8(&nbase);
 			g_free(base);
+
+			len = strlen(nbase) * 2;
+			p = g_malloc(len);
+			conv_anytoeuc(p, len, nbase);
+			g_free(nbase);
 			base = g_strdup(g_basename(p));
 			conv_anytojis(p, len, base);
 			/* XXX:tm differences to conv_anytojis()?

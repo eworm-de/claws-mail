@@ -36,11 +36,12 @@
 #include <string.h>
 #include <ctype.h>
 #ifdef WIN32
- #include <sys/stat.h>
- #include <w32lib.h>
- #include "utils.h"
+# include <sys/stat.h>
+# include <w32lib.h>
+# include "utils.h"
+# include "w32_mailcap.h"
 #else
- #include <unistd.h>
+# include <unistd.h>
 #endif
 #include <time.h>
 #include <sys/types.h>
@@ -298,12 +299,12 @@ int main(int argc, char *argv[])
 				      "rename");
 	}
 
- #ifdef WIN32
+#ifdef WIN32
 	/*XXX:tm */
  	prefs_common_init_config();
 	start_mswin_helper();
-
- #endif
+	w32_mailcap_create();
+#endif
  
 	prefs_common_init();
 	prefs_common_read_config();
@@ -416,6 +417,7 @@ int main(int argc, char *argv[])
 	WSACleanup();
 
 	unlink_tempfiles();
+	w32_mailcap_free();
 #endif
 
 	return 0;

@@ -161,4 +161,9 @@
 #  define S_IRWXO	(_S_IREAD|_S_IWRITE|_S_IEXEC)
 #endif
 
+#ifdef WIN32
+#  define W32_MAILCAP_NAME "mailcap.win32"
+#endif /* WIN32 */
+
+
 #endif /* __DEFS_H__ */

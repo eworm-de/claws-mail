@@ -1,0 +1,50 @@
+REGEDIT4
+
+[HKEY_CLASSES_ROOT\mailto]
+@="URL:MailTo-Protokoll"
+"URL Protocol"=""
+"EditFlags"=hex:02,00,00,00
+
+[HKEY_CLASSES_ROOT\mailto\DefaultIcon]
+@="C:\\Sylpheed\\bin\\sylpheed.exe,0"
+
+[HKEY_CLASSES_ROOT\mailto\shell]
+
+[HKEY_CLASSES_ROOT\mailto\shell\open]
+
+[HKEY_CLASSES_ROOT\mailto\shell\open\command]
+@="C:\\Sylpheed\\bin\\sylpheed.exe --compose \"%1\""
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail]
+@="Sylpheed"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail\Sylpheed]
+@="Sylpheed"
+"DLLPath"=""
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail\Sylpheed\Protocols]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail\Sylpheed\Protocols\mailto]
+@="URL:MailTo-Protokoll"
+"URL Protocol"=""
+"EditFlags"=hex:02,00,00,00
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail\Sylpheed\Protocols\mailto\DefaultIcon]
+@="C:\\Sylpheed\\bin\\sylpheed.exe"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail\Sylpheed\Protocols\mailto\shell]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail\Sylpheed\Protocols\mailto\shell\open]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail\Sylpheed\Protocols\mailto\shell\open\command]
+@="C:\\Sylpheed\\bin\\sylpheed.exe --compose \"%1\""
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail\Sylpheed\shell]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail\Sylpheed\shell\open]
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\Mail\Sylpheed\shell\open\command]
+@="C:\\Sylpheed\\bin\\sylpheed.exe"
+
+
+

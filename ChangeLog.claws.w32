@@ -1,3 +1,20 @@
+2002-07-09 [thorsten]	0.7.8claws55-2
+
+	* src/procmime.c
+		fix: memory leak
+	* win32/default-mailer.reg
+		add: sylpheed as default mailto: handler
+	* src/w32_mailcap.[ch]
+	* src/defs.h
+	* src/main.c
+	* src/mimeview.c
+	* win32/mailcap.win32
+	* win32/sylpheed.dsp
+	* win32/sylpheed_debug.dsp
+	* win32/sylpheed.mak
+	* win32/sylpheed_debug.mak
+		add: simple substitute for mailcap
+
 2002-07-08 [thorsten]	0.7.8claws55-1
 
 	* src/mh.c
