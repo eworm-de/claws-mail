@@ -141,7 +141,7 @@ static ToolbarAction t_action[] =
 {
 	{ "A_RECEIVE_ALL",   N_("Receive Mail on all Accounts"),    toolbar_inc_all_cb        },
 	{ "A_RECEIVE_CUR",   N_("Receive Mail on current Account"), toolbar_inc_cb            },
-	{ "A_SEND_QUEUD",    N_("Send Queued Message(s)"),          toolbar_send_cb           },
+	{ "A_SEND_QUEUED",   N_("Send Queued Message(s)"),          toolbar_send_cb           },
 	{ "A_COMPOSE_EMAIL", N_("Compose Email"),                   toolbar_compose_cb        },
 	{ "A_REPLY_MESSAGE", N_("Reply to Message"),                toolbar_reply_cb          },
 	{ "A_REPLY_SENDER",  N_("Reply to Sender"),                 toolbar_reply_to_sender_cb},
@@ -291,7 +291,7 @@ void toolbar_set_default_toolbar(void)
 		{ A_RECEIVE_CUR,   STOCK_PIXMAP_MAIL_RECEIVE,         _("Get")     },
 		{ A_RECEIVE_ALL,   STOCK_PIXMAP_MAIL_RECEIVE_ALL,     _("Get All") },
 		{ A_SEPARATOR,     0,                                 ("")         }, 
-		{ A_SEND_QUEUD,    STOCK_PIXMAP_MAIL_SEND_QUEUE,      _("Send")    },
+		{ A_SEND_QUEUED,   STOCK_PIXMAP_MAIL_SEND_QUEUE,      _("Send")    },
 		{ A_COMPOSE_EMAIL, STOCK_PIXMAP_MAIL_COMPOSE,         _("Email")   },
 		{ A_SEPARATOR,     0,                                 ("")         },
 		{ A_REPLY_MESSAGE, STOCK_PIXMAP_MAIL_REPLY,           _("Reply")   }, 
@@ -867,7 +867,7 @@ void toolbar_create(MainWindow *mainwin,
 		case A_RECEIVE_CUR:
 			mainwin->toolbar->get_btn = item;
 			break;
-		case A_SEND_QUEUD:
+		case A_SEND_QUEUED:
 			mainwin->toolbar->send_btn = item; 
 			break;
 		case A_COMPOSE_EMAIL:
