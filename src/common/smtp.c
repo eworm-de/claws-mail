@@ -140,11 +140,18 @@ gint smtp_connect(SMTPSession *session, const gchar *server, gushort port,
 	else
 		val = smtp_helo(session, domain);
 	if (val != SM_OK) {
-		log_warning(_("Error occurred while sending HELO\n"));
+		log_warning(use_esmtp?	_("Error occurred while sending EHLO\n"):
+					_("Error occurred while sending HELO\n"));
 		return val;
 	}
 
 #if USE_OPENSSL
+	/* if we have a user to authenticate and no auth methods, but starttls,
+	   try to starttls */
+	if (ssl_type == SSL_NONE && avail_auth_type == SMTPAUTH_TLS_AVAILABLE 
+	    && user != NULL)
+		ssl_type = SSL_STARTTLS;
+
 	if (ssl_type == SSL_STARTTLS) {
 		val = smtp_starttls(session);
 		if (val != SM_OK) {
@@ -321,6 +328,9 @@ gint smtp_ehlo(SMTPSession *session, const gchar *hostname,
 					*avail_auth_type |= SMTPAUTH_CRAM_MD5;
 				if (strcasestr(p, "DIGEST-MD5"))
 					*avail_auth_type |= SMTPAUTH_DIGEST_MD5;
+			} else if (g_strncasecmp(p, "STARTTLS", 8) == 0) {
+				p += 9;
+				*avail_auth_type |= SMTPAUTH_TLS_AVAILABLE;
 			}
 		} else if ((buf[0] == '1' || buf[0] == '2' || buf[0] == '3') &&
 		    (buf[3] == ' ' || buf[3] == '\0'))

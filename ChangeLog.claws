@@ -1,3 +1,46 @@
+2003-02-18 [paul]	0.8.10claws25
+
+	* src/select-keys.c
+		add a 'List all keys' button to key selection dialog
+
+2003-02-18 [colin]	0.8.10claws24
+	
+	* src/stock_pixmap.c
+		fix compile error
+
+2003-02-18 [colin]	0.8.10claws23
+
+	* src/common/smtp.[ch]
+	  src/prefs_account.c
+		Try to starttls if it seems to be the only
+		way to authenticate a user
+
+2003-02-18 [paul]	0.8.10claws22
+
+	* src/Makefile.am
+	  src/folderview.c
+	  src/stock_pixmap.[ch]
+	  src/pixmaps/drafts_close.xpm	** NEW FILE **
+	  src/pixmaps/drafts_open.xpm	** NEW FILE **
+	  	as a Drafts folder is a special folder allow it to have
+		its own unique icons
+
+2003-02-18 [colin]	0.8.10claws21
+
+	* src/imap.c
+		Fix port selection when using starttls
+
+2003-02-18 [paul]	0.8.10claws20
+
+	* src/mainwindow.c
+	  src/prefs_common.[ch]
+	  	make blue the default new mail colour
+
+2003-02-18 [paul]	0.8.10claws19
+
+	* sync with 0.8.10cvs14
+		see ChangeLog 2003-02-18
+
 2003-02-17 [jens]       0.8.10claws18
 
         * src/common/md5.c

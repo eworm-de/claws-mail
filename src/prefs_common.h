@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -190,6 +190,9 @@ struct _PrefsCommon
 	gint msgwin_width;
 	gint msgwin_height;
 
+	gint sourcewin_width;
+	gint sourcewin_height;
+
 	gint compose_width;
 	gint compose_height;
 
@@ -270,6 +273,7 @@ struct _PrefsCommon
 	gboolean ssl_ask_unknown_valid;
 #endif
 #endif
+
 	/* Memory cache*/
 	gint cache_max_mem_usage;
 	gint cache_min_keep_time;
@@ -279,7 +283,7 @@ struct _PrefsCommon
 	gboolean work_offline;
 	
 	gint summary_quicksearch_type;
-
+	gint color_new;
 };
 
 extern PrefsCommon prefs_common;

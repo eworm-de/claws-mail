@@ -1796,7 +1796,7 @@ static void prefs_account_ssl_create(void)
 
 	CREATE_RADIO_BUTTONS(vbox5,
 			     smtp_nossl_radiobtn,
-			     _("Don't use SSL"),
+			     _("Don't use SSL (or STARTTLS only if necessary)"),
 			     SSL_NONE,
 			     smtp_ssltunnel_radiobtn,
 			     _("Use SSL for SMTP connection"),

@@ -1,3 +1,13 @@
+2003-02-18
+
+	* src/prefs_common.[ch]
+	  src/sourcewindow.c: ソースウィンドウのサイズを記憶するようにした。
+	* src/md5.c: gcc 3.1 でのコンパイルの問題を修正。
+
+2003-02-17
+
+	* src/about.c: about_create(): 著作件表示を修正。
+
 2003-02-17
 
 	* src/colorlabel.c: カラーラベルの矩形に pixmap を使わず、矩形を

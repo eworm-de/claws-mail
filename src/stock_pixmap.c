@@ -92,6 +92,8 @@
 #include "pixmaps/notice_note.xpm"
 #include "pixmaps/quicksearch.xpm"
 #include "pixmaps/gpg_signed.xpm"
+#include "pixmaps/drafts_close.xpm"
+#include "pixmaps/drafts_open.xpm"
 
 typedef struct _StockPixmapData	StockPixmapData;
 
@@ -184,6 +186,8 @@ static StockPixmapData pixmaps[] =
 	{notice_note_xpm			, NULL, NULL, "notice_note",  "  "},
 	{quicksearch_xpm			, NULL, NULL, "quicksearch",  "  "},
 	{gpg_signed_xpm				, NULL, NULL, "gpg_signed", "  "},
+	{drafts_close_xpm			, NULL, NULL, "drafts_close", "  "},
+	{drafts_open_xpm			, NULL, NULL, "drafts_open", "  "},
 	{sylpheed_logo_xpm			, NULL, NULL, "sylpheed_logo", "  "},
 };
 

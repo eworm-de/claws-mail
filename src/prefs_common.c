@@ -679,6 +679,10 @@ static PrefParam param[] = {
 	 NULL, NULL, NULL},
 	{"messagewin_height", "540", &prefs_common.msgwin_height, P_INT,
 	 NULL, NULL, NULL},
+	{"sourcewin_width", "600", &prefs_common.sourcewin_width, P_INT,
+	 NULL, NULL, NULL},
+	{"sourcewin_height", "500", &prefs_common.sourcewin_height, P_INT,
+	 NULL, NULL, NULL},
 	{"compose_width", "600", &prefs_common.compose_width, P_INT,
 	 NULL, NULL, NULL},
 	{"compose_height", "560", &prefs_common.compose_height, P_INT,
@@ -884,6 +888,9 @@ static PrefParam param[] = {
 	{"cache_max_mem_usage", "4096", &prefs_common.cache_max_mem_usage, P_INT,
 	 NULL, NULL, NULL},
 	{"cache_min_keep_time", "15", &prefs_common.cache_min_keep_time, P_INT,
+	 NULL, NULL, NULL},
+
+	{"color_new", "179", &prefs_common.color_new, P_INT,
 	 NULL, NULL, NULL},
 
 	{NULL, NULL, NULL, P_OTHER, NULL, NULL, NULL}

@@ -504,8 +504,8 @@ Session *imap_session_new(const PrefsAccount *account)
 	SSLType ssl_type;
 
 	port = account->set_imapport ? account->imapport
-		: account->ssl_imap ? IMAPS_PORT : IMAP4_PORT;
-	ssl_type = account->ssl_imap ? TRUE : FALSE;	
+		: account->ssl_imap == SSL_TUNNEL ? IMAPS_PORT : IMAP4_PORT;
+	ssl_type = account->ssl_imap;	
 #else
 	port = account->set_imapport ? account->imapport
 		: IMAP4_PORT;

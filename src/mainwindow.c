@@ -902,8 +902,8 @@ MainWindow *main_window_create(SeparateType type)
 	summaryview->color_dim.red = summaryview->color_dim.green =
 		summaryview->color_dim.blue = COLOR_DIM;
 
-	folderview->color_new.red = (guint16)55000;
-	folderview->color_new.green = folderview->color_new.blue = 15000;
+	gtkut_convert_int_to_gdk_color(prefs_common.color_new,
+				       &folderview->color_new);
 
 	gtkut_convert_int_to_gdk_color(prefs_common.tgt_folder_col,
 				       &folderview->color_op);

@@ -131,6 +131,10 @@ static GdkPixmap *newxpm;
 static GdkBitmap *newxpmmask;
 static GdkPixmap *unreadxpm;
 static GdkBitmap *unreadxpmmask;
+static GdkPixmap *draftsxpm;
+static GdkBitmap *draftsxpmmask;
+static GdkPixmap *draftsopenxpm;
+static GdkBitmap *draftsopenxpmmask;
 
 static void folderview_select_node	 (FolderView	*folderview,
 					  GtkCTreeNode	*node);
@@ -543,6 +547,8 @@ void folderview_init(FolderView *folderview)
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_QUEUE_CLOSE_HRM, &queuehrmxpm, &queuehrmxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_QUEUE_OPEN, &queueopenxpm, &queueopenxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_QUEUE_OPEN_HRM, &queueopenhrmxpm, &queueopenhrmxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DRAFTS_CLOSE, &draftsxpm, &draftsxpmmask);
+	stock_pixmap_gdk(ctree, STOCK_PIXMAP_DRAFTS_OPEN, &draftsopenxpm, &draftsopenxpmmask);
 
 	/* CLAWS: titles for "New" and "Unread" show new & unread pixmaps
 	 * instead text (text overflows making them unreadable and ugly) */
@@ -1165,15 +1171,10 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 				item->name);
 		break;
 	case F_DRAFT:
-		xpm = folderxpm;
-		mask = folderxpmmask;
-		if (item->hide_read_msgs) {
-			openxpm = folderopenhrmxpm;
-			openmask = folderopenhrmxpmmask;
-		} else {
-			openxpm = folderopenxpm;
-			openmask = folderopenxpmmask;
-		}
+		xpm = draftsxpm;
+		mask = draftsxpmmask;
+		openxpm = draftsopenxpm;
+		openmask = draftsopenxpmmask;
 		name = g_strdup(FOLDER_IS_LOCAL(item->folder) &&
 				!strcmp2(item->name, DRAFT_DIR) ? _("Drafts") :
 				item->name);

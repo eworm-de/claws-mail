@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,8 @@
 #include "gtkutils.h"
 #include "prefs_common.h"
 
+static void source_window_size_alloc_cb	(GtkWidget	*widget,
+					 GtkAllocation	*allocation);
 static void source_window_destroy_cb	(GtkWidget	*widget,
 					 SourceWindow	*sourcewin);
 static void key_pressed			(GtkWidget	*widget,
@@ -64,7 +66,11 @@ SourceWindow *source_window_create(void)
 	gtk_window_set_title(GTK_WINDOW(window), _("Source of the message"));
 	gtk_window_set_wmclass(GTK_WINDOW(window), "source_window", "Sylpheed");
 	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, FALSE);
-	gtk_widget_set_usize(window, 600, 500);
+	gtk_widget_set_usize(window, prefs_common.sourcewin_width,
+			     prefs_common.sourcewin_height);
+	gtk_signal_connect(GTK_OBJECT(window), "size_allocate",
+			   GTK_SIGNAL_FUNC(source_window_size_alloc_cb),
+			   sourcewin);
 	gtk_signal_connect(GTK_OBJECT(window), "destroy",
 			   GTK_SIGNAL_FUNC(source_window_destroy_cb),
 			   sourcewin);
@@ -141,8 +147,23 @@ void source_window_show_msg(SourceWindow *sourcewin, MsgInfo *msginfo)
 
 void source_window_append(SourceWindow *sourcewin, const gchar *str)
 {
+	gchar *out;
+	gint len;
+
+	len = strlen(str) + 1;
+	Xalloca(out, len, return);
+	conv_localetodisp(out, len, str);
 	gtk_text_insert(GTK_TEXT(sourcewin->text), msgfont, NULL, NULL,
-			str, -1);
+			out, -1);
+}
+
+static void source_window_size_alloc_cb(GtkWidget *widget,
+					GtkAllocation *allocation)
+{
+	g_return_if_fail(allocation != NULL);
+
+	prefs_common.sourcewin_width  = allocation->width;
+	prefs_common.sourcewin_height = allocation->height;
 }
 
 static void source_window_destroy_cb(GtkWidget *widget,
