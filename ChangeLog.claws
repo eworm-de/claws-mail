@@ -1,3 +1,9 @@
+2002-11-13 [keith] 0.8.5claws143
+
+    * src/imap.c
+        Fix problem moving or copying between
+        IMAP folders
+
 2002-11-13 [colin]	0.8.5claws142
 
 	* src/matcher_parser_parse.y
