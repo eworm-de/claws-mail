@@ -1,5 +1,37 @@
 Changes of Sylpheed
 
+* 0.7.7
+
+    * The 'Redirect' (aka Bounce) feature has been implemented.
+    * IMAP4 / POP3 STARTTLS command has been enabled.
+    * NNTP over SSL has been enabled.
+    * The sorting order of the summary view became persistent.
+    * The 'Expand / Collapse all threads' feature have been added.
+    * The sorting order of the folder tree became case insensitive.
+    * The common / account preferences button has been removed from the
+      toolbar.
+    * Some fixes and improvements for MIME view have been made.
+    * The behavior of 'Folder tree' and 'Message view' toggle menu have been
+      fixed.
+    * The behavior of address completion has been fixed.
+    * A bug in the header MIME encoding routine on Japanese locale has been
+      fixed.
+    * Some other bugfixes have been made.
+
+* 0.7.6
+
+    * The manual and FAQ have been updated, and German and Italian FAQ have
+      been added.
+    * IMAP shared folder has been supported.
+    * 'Create filter rule' has been added to the context menu.
+    * Only newsgroup names longer than specified length are abbreviated.
+    * 'Get all' doesn't check for new messages on IMAP or News account by
+      default.
+    * Minor improvements to the folder property dialog have been made.
+    * Special characters like parentheses can be used in password for IMAP
+      accounts now.
+    * Some crash bugs and other minor bugs have been fixed.
+
 * 0.7.5
 
     * The license has been modified so that it will be compatible with

@@ -1,3 +1,8 @@
+2002-06-08 [paul]	0.7.6claws32
+
+	* sync with 0.7.6cvs25
+		see ChangeLog 2002-06-07
+
 2002-06-05 [paul]	0.7.6claws31
 
 	* src/mainwindow.c

@@ -1,3 +1,9 @@
+2002-06-07
+
+	* src/folder.c: folder_set_missing_folders(): 特別フォルダのタイプ
+	  が変更された場合、起動時にそれらが増殖するバグを修正。
+	* src/folderview.c: folderview_remove_mailbox_cb(): ラベルを修正。
+
 2002-06-04
 
 	* src/compose.c: compose_reply(), compose_forward(): lockup を起こす
