@@ -55,8 +55,10 @@ echo -e -n $log
 echo "--8<----------"
 if [ -f ChangeLog-gtk2.claws ]; then
 	chlog="ChangeLog-gtk2.claws"
-else
+elif [ -f ChangeLog.claws ]; then
 	chlog="ChangeLog.claws"
+else
+	chlog="ChangeLog"
 fi
 echo -n "Is it ok (write to $chlog) [y/N]?"
 read ans
