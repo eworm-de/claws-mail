@@ -25,6 +25,8 @@
 #  include "config.h"
 #endif
 
+#if USE_ASPELL
+
 #include "defs.h"
 
 #include <stdio.h>
@@ -398,6 +400,7 @@ void prefs_spelling_init(void)
 	page->page.create_widget = prefs_spelling_create_widget;
 	page->page.destroy_widget = prefs_spelling_destroy_widget;
 	page->page.save_page = prefs_spelling_save;
+	page->page.weight = 50.0;
 	prefs_gtk_register_page((PrefsPage *) page);
 	prefs_spelling = page;
 }
@@ -407,3 +410,5 @@ void prefs_spelling_done(void)
 	prefs_gtk_unregister_page((PrefsPage *) prefs_spelling);
 	g_free(prefs_spelling);
 }
+
+#endif /* USE_ASPELL */

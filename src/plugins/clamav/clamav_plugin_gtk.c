@@ -243,6 +243,7 @@ gint plugin_init(gchar **error)
 	clamav_page.page.create_widget = clamav_create_widget_func;
 	clamav_page.page.destroy_widget = clamav_destroy_widget_func;
 	clamav_page.page.save_page = clamav_save_func;
+	clamav_page.page.weight = 35.0;
 	
 	prefs_gtk_register_page((PrefsPage *) &clamav_page);
 

@@ -1152,6 +1152,8 @@ gint imap_close(Folder *folder, FolderItem *item)
 	IMAPSession *session;
 
 	g_return_val_if_fail(folder != NULL, -1);
+	g_return_val_if_fail(item != NULL, -1);
+	g_return_val_if_fail(item->path != NULL, -1);
 
 	session = imap_session_get(folder);
 	if (!session) return -1;

@@ -193,6 +193,7 @@ EXPORTS
 	addressbook_edit_person 
 	addressbook_edit_vcard 
 	addressbook_exp_html 
+	addressbook_exp_ldif 
 	addressbook_export_to_file 
 	addressbook_format_address 
 	addressbook_get_target_compose 
@@ -472,6 +473,7 @@ EXPORTS
 	colorlabel_get_color_menu_active_item 
 	colorlabel_get_color_text 
 	colorsel_select_color_rgb 
+	compare_func 
 	complete_address 
 	compose_create_attach 
 	compose_draft 
@@ -612,6 +614,23 @@ EXPORTS
 	exporthtml_set_path 
 	exporthtml_set_stylesheet 
 	exporthtml_test_dir 
+	exportldif_create 
+	exportldif_create_dir 
+	exportldif_free 
+	exportldif_get_create_msg 
+	exportldif_load_settings 
+	exportldif_parse_filespec 
+	exportldif_print 
+	exportldif_process 
+	exportldif_save_settings 
+	exportldif_set_exclude_email 
+	exportldif_set_file_ldif 
+	exportldif_set_output_dir 
+	exportldif_set_path 
+	exportldif_set_rdn 
+	exportldif_set_suffix 
+	exportldif_set_use_dn 
+	exportldif_test_dir 
 	extract_address 
 	extract_list_id_str 
 	extract_parenthesis 

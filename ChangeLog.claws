@@ -1,3 +1,31 @@
+2003-08-10 [alfons]	0.9.4claws17
+
+	* src/summaryview.c
+		make `Select All' sensitive too
+
+2003-08-10 [christoph]	0.9.4claws16
+
+	* src/imap.c
+		add more checks in imap_close
+
+2003-08-09 [alfons]	0.9.4claws15
+
+	* src/prefs_spelling.c
+		no spell checking UI if not requested
+
+2003-08-09 [alfons]	0.9.4claws14
+
+	* src/gtk/prefswindow.c
+		make it compile
+
+2003-08-09 [christoph]	0.9.4claws13
+
+	* src/prefs_spelling.c
+	* src/gtk/prefswindow.[ch]
+	* src/plugins/clamav/clamav_plugin_gtk.c
+	* src/plugins/spamassassin/spamassassin_gtk.c
+		sort prefs pages by heighest weight in tree
+
 2003-08-09 [paul]	0.9.4claws12
 
 	* sync with 0.9.4cvs6
