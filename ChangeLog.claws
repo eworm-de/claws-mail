@@ -1,3 +1,8 @@
+2004-08-05 [christoph]	0.9.12cvs44
+
+	* src/folder.c
+		fix FolderItem's message counts after rebuilding a cache
+
 2004-08-05 [paul]	0.9.12cvs43
 
 	* ChangeLog

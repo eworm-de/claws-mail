@@ -1998,10 +1998,33 @@ void folder_item_read_cache(FolderItem *item)
 		mark_file = folder_item_get_mark_file(item);
 		item->cache = msgcache_read_cache(item, cache_file);
 		if (!item->cache) {
+			MsgInfoList *list, *cur;
+			guint newcnt = 0, unreadcnt = 0, unreadmarkedcnt = 0;
+			MsgInfo *msginfo;
+
 			item->cache = msgcache_new();
 			folder_item_scan_full(item, TRUE);
-		}
-		msgcache_read_mark(item->cache, mark_file);
+
+			msgcache_read_mark(item->cache, mark_file);
+
+			list = msgcache_get_msg_list(item->cache);
+			for (cur = list; cur != NULL; cur = g_slist_next(cur)) {
+				msginfo = cur->data;
+
+				if (MSG_IS_NEW(msginfo->flags))
+					newcnt++;
+				if (MSG_IS_UNREAD(msginfo->flags))
+					unreadcnt++;
+				if (MSG_IS_UNREAD(msginfo->flags) && procmsg_msg_has_marked_parent(msginfo))
+					unreadmarkedcnt++;
+			}
+			item->new_msgs = newcnt;
+		        item->unread_msgs = unreadcnt;
+			item->unreadmarked_msgs = unreadmarkedcnt;
+			procmsg_msg_list_free(list);
+		} else
+			msgcache_read_mark(item->cache, mark_file);
+
 		g_free(cache_file);
 		g_free(mark_file);
 	} else {
