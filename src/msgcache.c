@@ -239,8 +239,9 @@ gint msgcache_get_memory_usage(MsgCache *cache)
 	guint32 idata; \
 	size_t ni; \
  \
-	if (sizeof(idata) != (ni = fread(&idata, 1, sizeof(idata), fp))) { \
-		g_warning("read_int: Cache data corrupted, read %d of %d at offset %d\n", ni, sizeof(idata), ftell(fp)); \
+	if ((ni = fread(&idata, 1, sizeof(idata), fp)) != sizeof(idata)) { \
+		g_warning("read_int: Cache data corrupted, read %d of %d at " \
+			  "offset %d\n", ni, sizeof(idata), ftell(fp)); \
 		procmsg_msginfo_free(msginfo); \
 		error = TRUE; \
 		break; \
@@ -323,39 +324,43 @@ static FILE *msgcache_open_data_file(const gchar *file, gint version,
 	return fp;
 }
 
-static gint 
-msgcache_read_cache_data_str(FILE *fp, gchar **str, StringConverter *conv)
+static gint msgcache_read_cache_data_str(FILE *fp, gchar **str, 
+					 StringConverter *conv)
 {
-    gchar *tmpstr = NULL;
-    size_t ni;
-    guint32 len;
+	gchar *tmpstr = NULL;
+	size_t ni;
+	guint32 len;
 
-    *str = NULL;
-    if (sizeof(len) != (ni = fread(&len, 1, sizeof(len), fp))
-	|| len > G_MAXINT) {
-	g_warning("read_data_str: Cache data (len) corrupted, read %d of %d bytes at offset %d\n", 
-		ni, sizeof(len), ftell(fp));
-	return -1;
-    }
-    if (0 == len)
+	*str = NULL;
+	if ((ni = fread(&len, 1, sizeof(len), fp) != sizeof(len)) ||
+	    len > G_MAXINT) {
+		g_warning("read_data_str: Cache data (len) corrupted, read %d "
+			  "of %d bytes at offset %d\n", ni, sizeof(len), 
+			  ftell(fp));
+		return -1;
+	}
+
+	if (len == 0)
+		return 0;
+
+	tmpstr = g_malloc(len + 1);
+
+	if ((ni = fread(tmpstr, 1, len, fp)) != len) {
+		g_warning("read_data_str: Cache data corrupted, read %d of %d "
+			  "bytes at offset %d\n", 
+			  ni, len, ftell(fp));
+		g_free(tmpstr);
+		return -1;
+	}
+	tmpstr[len] = 0;
+
+	if (conv != NULL) {
+		*str = conv->convert(conv, tmpstr);
+		g_free(tmpstr);
+	} else 
+		*str = tmpstr;
+
 	return 0;
-    tmpstr = g_malloc(len + 1);
-
-    if (len != (ni = fread(tmpstr, 1, len, fp))) {
-	g_warning("read_data_str: Cache data corrupted, read %d of %d bytes at offset %d\n", 
-		ni, len, ftell(fp));
-	g_free(tmpstr);
-	return -1;
-    }
-    tmpstr[len] = 0;
-
-    if (conv != NULL) {
-	    *str = conv->convert(conv, tmpstr);
-	    g_free(tmpstr);
-    } else 
-	    *str = tmpstr;
-
-    return 0;
 }
 
 gchar *strconv_strdup_convert(StringConverter *conv, gchar *srcstr)
