@@ -1,3 +1,71 @@
+2002-10-11 [colin]	0.8.5claws21
+
+	* src/mainwindow.c
+		Make space work (better) when no mail is selected
+
+2002-10-11 [colin]	0.8.5claws20
+
+	* src/inc.c
+	  src/news.c
+		fix warnings
+
+2002-10-11 [colin]	0.8.5claws19
+
+	* src/mainwindow.c
+		revert 0.8.5claws6 changes as i couldn't get to
+		anything satisfying
+
+2002-10-11 [melvin]	0.8.5claws18
+
+	* src/compose.c
+		Removed buggy and unused macro (should have been committed in
+		0.8.5claws17)
+
+2002-10-11 [melvin]	0.8.5claws17
+
+	* src/compose.c
+		Fixed memory leak from bug #622040 (thanks to Martin Kluge)
+
+2002-10-11 [thorsten]	0.8.5claws16 
+
+	* src/folderview.c
+		remove rescan warning
+
+2002-10-11 [colin]	0.8.5claws15 
+
+	* src/procheader.c
+		fix a segfault that happens if conv_unmime_header
+		fails (should be better to find out why it fails)
+
+2002-10-11 [christoph]	0.8.5claws14
+
+	* src/summaryview.c
+		update folderview stats after ignore/unignore thread
+
+2002-10-11 [hoa]	0.8.5claws13
+
+	* src/quote_fmt_parse.y
+		Fixed a yacc/bison syntax error
+	* src/matcher.c
+		Escaping of string is fixed.
+
+2002-10-11 [colin]	0.8.5claws12
+
+	* src/imageview.c
+		Resize images to fit
+
+2002-10-11 [paul]	0.8.5claws11
+
+	* po/es.po
+		updated by Ricardo Mones Lastra
+
+2002-10-10 [alfons]	0.8.5claws10
+
+	* src/compose.c
+		allow dropping files by "moving" files from a file manager,
+		not only by the more cumbersome "copying". the latter 
+		mostly implies holding down the Control button
+
 2002-10-10 [christoph]	0.8.5claws9
 
 	* src/summaryview.c

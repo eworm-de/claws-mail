@@ -4783,7 +4783,7 @@ GtkWidget *compose_create_attach(Compose *compose)
 	/* drag and drop */
 	gtk_drag_dest_set(attach_clist,
 			  GTK_DEST_DEFAULT_ALL, compose_mime_types, 1,
-			  GDK_ACTION_COPY);
+			  GDK_ACTION_COPY | GDK_ACTION_MOVE);
 	gtk_signal_connect(GTK_OBJECT(attach_clist), "drag_data_received",
 			   GTK_SIGNAL_FUNC(compose_attach_drag_received_cb),
 			   compose);
@@ -5064,7 +5064,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 
 	/* drag and drop */
 	gtk_drag_dest_set(text, GTK_DEST_DEFAULT_ALL, compose_mime_types, 1,
-			  GDK_ACTION_COPY);
+			  GDK_ACTION_COPY | GDK_ACTION_MOVE);
 	gtk_signal_connect(GTK_OBJECT(text), "drag_data_received",
 			   GTK_SIGNAL_FUNC(compose_insert_drag_received_cb),
 			   compose);
@@ -7467,9 +7467,6 @@ static void text_activated(GtkWidget *widget, Compose *compose)
 	compose_send_control_enter(compose);
 }
 
-#define EDITABLE_LENGTH(x) \
-	strlen(gtk_editable_get_chars(x,0,-1))
-
 static void text_inserted(GtkWidget *widget, const gchar *text,
 			  gint length, gint *position, Compose *compose)
 {
@@ -7507,7 +7504,7 @@ static void text_inserted(GtkWidget *widget, const gchar *text,
 
 	
 	if (prefs_common.autosave && 
-	    EDITABLE_LENGTH(editable) % prefs_common.autosave_length == 0)
+	    gtk_stext_get_length(GTK_STEXT(widget)) % prefs_common.autosave_length == 0)
 		compose_draft_cb((gpointer)compose, 1, NULL);
 }
 

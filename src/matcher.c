@@ -140,7 +140,7 @@ gchar *matcher_escape_str(const gchar *str)
 		return NULL;
 
 	for (escape = 0, walk = str; *walk; walk++)
-		if (*walk == '\'' || *walk == '\"')
+		if (*walk == '\\' || *walk == '\'' || *walk == '\"')
 			escape++;
 
 	if (!escape)
@@ -148,7 +148,7 @@ gchar *matcher_escape_str(const gchar *str)
 	
 	reswalk = res = g_new0(gchar, (walk - str) + escape + 1);
 	for (walk = str; *walk; walk++, reswalk++) {
-		if (*walk == '\'' || *walk == '\"')
+		if (*walk == '\\' || *walk == '\'' || *walk == '\"')
 			*reswalk++ = '\\';
 		*reswalk = *walk;
 	}
@@ -173,9 +173,7 @@ gchar *matcher_unescape_str(gchar *str)
 			*dst++ = *src;
 		else {
 			src++;
-			if (*src == '\\')
-				*dst++ = '\\';				/* insert backslash */
-			else if (*src == 'n')				/* insert control characters */
+                        if (*src == 'n')   /* insert control characters */
 				*dst++ = '\n';
 			else if (*src == 'r') 
 				*dst++ = '\r';
@@ -187,7 +185,8 @@ gchar *matcher_unescape_str(gchar *str)
 				*dst++ = '\b';
 			else if (*src == 'f')
 				*dst++ = '\f';
-			else if (*src == '\'' || *src == '\"')		/* insert \' or \" */
+			else if (*src == '\\' || *src == '\'' || *src == '\"')
+                                /* insert \\, \' or \" */
 				*dst++ = *src;
 			else {
 				/* FIXME: should perhaps escape character... */
@@ -278,12 +277,13 @@ static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 		if (!prop->preg && (prop->error == 0)) {
 			prop->preg = g_new0(regex_t, 1);
 			/* if regexp then don't use the escaped string */
+                        printf("%s\n", prop->expr);
 #ifdef WIN32
-			str1 = g_strdup(prop->expr);
+			str1 = g_strdup(prop->unesc_expr);
 			locale_from_utf8(&str1);
 			if (regcomp(prop->preg, str1,
 #else
-			if (regcomp(prop->preg, prop->expr,
+			if (regcomp(prop->preg, prop->unesc_expr,
 #endif
 				    REG_NOSUB | REG_EXTENDED
 				    | ((prop->matchtype == MATCHTYPE_REGEXPCASE)

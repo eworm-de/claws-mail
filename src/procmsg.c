@@ -1117,7 +1117,6 @@ MsgInfo *procmsg_msginfo_get_full_info(MsgInfo *msginfo)
 #endif
 
 	return full_msginfo;
-
 }
 
 void procmsg_msginfo_free(MsgInfo *msginfo)

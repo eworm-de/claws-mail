@@ -396,6 +396,7 @@ Header * procheader_parse_header(gchar * buf)
 	gchar tmp[BUFFSIZE];
 	gchar *p = buf;
 	Header * header;
+	gchar *backup;
 
 	if ((*buf == ':') || (*buf == ' '))
 		return NULL;
@@ -406,18 +407,20 @@ Header * procheader_parse_header(gchar * buf)
 			header->name = g_strndup(buf, p - buf + 1);
 			p++;
 			while (*p == ' ' || *p == '\t') p++;
- #ifdef WIN32
- /*XXX:tm */
- 				{
- 					gchar *hdr = g_strdup("X-Face");
- 					if (strcasecmp(header->name, hdr))
- 						conv_unmime_header(tmp, sizeof(tmp), p, NULL);
- 					g_free(hdr);
- 				}
- #else				
+#ifdef WIN32
+			{
+				gchar *hdr = g_strdup("X-Face");
+				if (strcasecmp(header->name, hdr))
+					conv_unmime_header(tmp, sizeof(tmp), p, NULL);
+				g_free(hdr);
+			}
+#else				
 			conv_unmime_header(tmp, sizeof(tmp), p, NULL);
- #endif
-			header->body = g_strdup(tmp);
+#endif
+			if(tmp == NULL) 
+				header->body = g_strdup(p);
+			else	
+				header->body = g_strdup(tmp);
 			return header;
 		}
 	}

@@ -223,8 +223,8 @@ static void summary_execute_delete_func	(GtkCTree		*ctree,
 					 gpointer		 data);
 
 static void summary_thread_init		(SummaryView		*summaryview);
-static void summary_ignore_thread	(SummaryView  *summaryview);
-static void summary_unignore_thread	(SummaryView *summaryview);
+static void summary_ignore_thread	(SummaryView  		*summaryview);
+static void summary_unignore_thread	(SummaryView 		*summaryview);
 
 static void summary_unthread_for_exec		(SummaryView	*summaryview);
 static void summary_unthread_for_exec_func	(GtkCTree	*ctree,
@@ -5191,6 +5191,7 @@ static void summary_ignore_thread(SummaryView *summaryview)
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next) {
 		gtk_ctree_pre_recursive(ctree, GTK_CTREE_NODE(cur->data), GTK_CTREE_FUNC(summary_ignore_thread_func), summaryview);
 	}
+	folderview_update_items_when_required(FALSE);
 
 	summary_status_show(summaryview);
 }
@@ -5222,6 +5223,7 @@ static void summary_unignore_thread(SummaryView *summaryview)
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next) {
 		gtk_ctree_pre_recursive(ctree, GTK_CTREE_NODE(cur->data), GTK_CTREE_FUNC(summary_unignore_thread_func), summaryview);
 	}
+	folderview_update_items_when_required(FALSE);
 
 	summary_status_show(summaryview);
 }
