@@ -641,15 +641,16 @@ static void prefs_toolbar_create(void)
 	GtkWidget *label_file;
 	GtkWidget *label_text;
 	GtkWidget *label_action;
-	GtkWidget *toolbar;
+
+	GtkWidget *btn_vbox;
 	GtkWidget *up_btn;
 	GtkWidget *down_btn;
-	GtkWidget *icon_wid;
-	gchar *titles[N_DISPLAYED_ITEMS_COLS];
 
 	GtkWidget *confirm_area;
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
+
+	gchar *titles[N_DISPLAYED_ITEMS_COLS];
 
 	debug_print(_("Creating custom toolbar window...\n"));
 
@@ -790,25 +791,17 @@ static void prefs_toolbar_create(void)
 	gtk_clist_column_titles_show (GTK_CLIST (clist_set));
 	gtk_widget_set_usize (clist_set, 225, 120);
 
-	toolbar = gtk_toolbar_new (GTK_ORIENTATION_VERTICAL, GTK_TOOLBAR_BOTH);
-	gtk_box_pack_start (GTK_BOX (hbox_bottom), toolbar, FALSE, FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (toolbar), 5);
+	btn_vbox = gtk_vbox_new (FALSE, 8);
+	gtk_widget_show (btn_vbox);
+	gtk_box_pack_start (GTK_BOX (hbox_bottom), btn_vbox, FALSE, FALSE, 5);
 
-	icon_wid = stock_pixmap_widget(hbox_bottom, STOCK_PIXMAP_UP_ARROW);
-	up_btn = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
-					     GTK_TOOLBAR_CHILD_BUTTON,
-					     NULL,
-					     NULL,
-					     _("Up"), NULL,
-					     icon_wid, NULL, NULL);
+	up_btn = gtk_button_new_with_label (_("Up"));
+	gtk_widget_show (up_btn);
+	gtk_box_pack_start (GTK_BOX (btn_vbox), up_btn, FALSE, FALSE, 2);
 
-	icon_wid = stock_pixmap_widget(hbox_bottom, STOCK_PIXMAP_DOWN_ARROW);
-	down_btn = gtk_toolbar_append_element (GTK_TOOLBAR (toolbar),
-					       GTK_TOOLBAR_CHILD_BUTTON,
-					       NULL,
-					       NULL,
-					       _("Down"), NULL,
-					       icon_wid, NULL, NULL);
+	down_btn = gtk_button_new_with_label (_("Down"));
+	gtk_widget_show (down_btn);
+	gtk_box_pack_start (GTK_BOX (btn_vbox), down_btn, FALSE, FALSE, 0);
 
 	gtkut_button_set_create(&confirm_area, &ok_btn, _("OK"),
 				&cancel_btn, _("Cancel"), NULL, NULL);
@@ -817,26 +810,22 @@ static void prefs_toolbar_create(void)
 	gtk_widget_grab_default (ok_btn);
 
 	gtk_signal_connect(GTK_OBJECT(ok_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_toolbar_ok), 
-			   NULL);
+			   GTK_SIGNAL_FUNC(prefs_toolbar_ok), NULL);
 	gtk_signal_connect(GTK_OBJECT(cancel_btn), "clicked",
-			   GTK_SIGNAL_FUNC(prefs_toolbar_cancel), 
-			   NULL);
+			   GTK_SIGNAL_FUNC(prefs_toolbar_cancel), NULL);
 	gtk_signal_connect(GTK_OBJECT (clist_set), "select_row",
 			   GTK_SIGNAL_FUNC (prefs_toolbar_select_row_set),
 			   NULL);
 	gtk_signal_connect(GTK_OBJECT (clist_icons), "select_row",
 			   GTK_SIGNAL_FUNC (prefs_toolbar_select_row_icons),
 			   NULL);
-	gtk_signal_connect(GTK_OBJECT (down_btn), "clicked",
-			   GTK_SIGNAL_FUNC (prefs_toolbar_down),
-			   NULL);
-	gtk_signal_connect(GTK_OBJECT (up_btn), "clicked",
-			   GTK_SIGNAL_FUNC (prefs_toolbar_up),
-			   NULL);
 	gtk_signal_connect(GTK_OBJECT(combo_list), "selection-changed",
 			   GTK_SIGNAL_FUNC(prefs_toolbar_selection_changed),
 			   NULL);
+	gtk_signal_connect(GTK_OBJECT (up_btn), "clicked",
+			   GTK_SIGNAL_FUNC (prefs_toolbar_up), NULL);
+	gtk_signal_connect(GTK_OBJECT (down_btn), "clicked",
+			   GTK_SIGNAL_FUNC (prefs_toolbar_down), NULL);
 	
 	mtoolbar.window           = window;
 	mtoolbar.clist_icons      = clist_icons;
