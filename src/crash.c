@@ -305,7 +305,7 @@ static void crash_debug(unsigned long crash_pid,
 	pipe(choutput);
 
 	if (0 == (pid = fork())) {
-		char *argp[9];
+		char *argp[10];
 		char **argptr = argp;
 		gchar *filespec = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, DEBUGGERRC, NULL);
 
@@ -315,6 +315,7 @@ static void crash_debug(unsigned long crash_pid,
 		/*
 		 * setup debugger to attach to crashed sylpheed
 		 */
+		*argptr++ = "gdb"; 
 		*argptr++ = "--nw";
 		*argptr++ = "--nx";
 		*argptr++ = "--quiet";
@@ -490,18 +491,19 @@ static void crash_handler(int sig)
 
 	if (0 == (pid = fork())) {
 		char buf[50];
-		char *args[4];
+		char *args[5];
 	
 		/*
 		 * probably also some other parameters (like GTK+ ones).
 		 * also we pass the full startup dir and the real command
 		 * line typed in (argv0)
 		 */
-		args[0] = "--debug";
-		args[1] = "--crash";
+		args[0] = argv0; 
+		args[1] = "--debug";
+		args[2] = "--crash";
 		sprintf(buf, "%ld,%d,%s", getppid(), sig, argv0);
-		args[2] = buf;
-		args[3] = NULL;
+		args[3] = buf;
+		args[4] = NULL;
 
 		chdir(startup_dir);
 		setgid(getgid());
