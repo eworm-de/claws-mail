@@ -1,3 +1,8 @@
+2003-02-18 [paul]	0.8.10claws19
+
+	* sync with 0.8.10cvs14
+		see ChangeLog 2003-02-18
+
 2003-02-17 [jens]       0.8.10claws18
 
         * src/common/md5.c

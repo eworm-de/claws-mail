@@ -1,3 +1,13 @@
+2003-02-18
+
+	* src/prefs_common.[ch]
+	  src/sourcewindow.c: remember the size of source window.
+	* src/md5.c: fixed a compile problem with gcc 3.3.
+
+2003-02-17
+
+	* src/about.c: about_create(): modified the copyright notice.
+
 2003-02-17
 
 	* src/colorlabel.c: don't use pixmaps for label color rect but draw
