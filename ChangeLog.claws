@@ -1,3 +1,14 @@
+2002-11-04 [paul]	0.8.5claws70
+
+	* sylpheed-128x128.png
+	  sylpheed-64x64.png
+	  sylpheed.png
+	  	replace with pngcrushed icons. Submitted by Nicolas Kaiser,
+		<nikai@users.sourceforge.net>
+		
+	* po/bg.po
+		updated by George Danchev
+
 2002-11-03 [thorsten]	0.8.5claws69
 
 	* src/main.c
