@@ -1,12 +1,21 @@
+2002-09-22 [colin]	0.8.3claws1
+
+	* src/mimeview.[ch]
+		Made mimeview_check_signature() public
+	* src/textview.c
+		Made GPG signatures verifiable by clicking
+		the [application/pgp-signature] in the Text
+		view
+
 2002-09-22 [paul]	0.8.3claws
 
-	*po/bg.po
-	 po/en_GB.po
-	 po/es.po
-	 po/it.po
-	 po/pl.po
-	 po/pt_BR.po
-	 po/sr.po
+	* po/bg.po
+	  po/en_GB.po
+	  po/es.po
+	  po/it.po
+	  po/pl.po
+	  po/pt_BR.po
+	  po/sr.po
 	 	updated translations, submitted by George Danchev,
 		me, Ricardo Mones Lastra, Alessandro Maestri,
 		Witold Wladyslaw Wojciech Wilk, Fabio Jr.Beneditto 

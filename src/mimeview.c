@@ -108,9 +108,6 @@ static void mimeview_open_with		(MimeView	*mimeview);
 static void mimeview_view_file		(const gchar	*filename,
 					 MimeInfo	*partinfo,
 					 const gchar	*cmdline);
-#if USE_GPGME
-static void mimeview_check_signature	(MimeView	*mimeview);
-#endif
 
 static GtkItemFactoryEntry mimeview_popup_entries[] =
 {
@@ -1061,7 +1058,7 @@ static void mimeview_update_signature_info(MimeView *mimeview)
 	}
 }
 
-static void mimeview_check_signature(MimeView *mimeview)
+void mimeview_check_signature(MimeView *mimeview)
 {
 	MimeInfo *mimeinfo;
 	FILE *fp;

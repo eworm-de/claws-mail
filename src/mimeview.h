@@ -72,6 +72,9 @@ void mimeview_show_message	(MimeView	*mimeview,
 				 const gchar	*file);
 void mimeview_destroy		(MimeView	*mimeview);
 
+#if USE_GPGME
+void mimeview_check_signature	(MimeView 	*mimeview);
+#endif
 void mimeview_pass_key_press_event	(MimeView	*mimeview,
 					 GdkEventKey	*event);
 
