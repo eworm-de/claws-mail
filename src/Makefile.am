@@ -91,6 +91,7 @@ sylpheed_SOURCES = \
 	quote_fmt_parse.y quote_fmt.h
 
 EXTRA_DIST = \
+	quote_fmt_parse.h \
 	pixmaps/clip.xpm \
 	pixmaps/deleted.xpm \
 	pixmaps/dir-close.xpm \
@@ -118,6 +119,7 @@ EXTRA_DIST = \
 	pixmaps/stock_mail_compose.xpm \
 	pixmaps/stock_mail_reply.xpm \
 	pixmaps/stock_mail_reply_to_all.xpm \
+	pixmaps/stock_mail_reply_to_author.xpm \
 	pixmaps/stock_mail_forward.xpm \
 	pixmaps/stock_preferences.xpm \
 	pixmaps/stock_properties.xpm \

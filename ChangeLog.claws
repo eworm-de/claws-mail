@@ -1,3 +1,8 @@
+2001-06-08 [sergey]
+
+	* src/Makefile.am: fix for "make dist": added quote_fmt_parse.h
+	and pixmaps/stock_mail_reply_to_author.xpm to EXTRA_DIST.
+
 2001-06-08
 
         0.4.99claws7
