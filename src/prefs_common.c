@@ -2092,7 +2092,7 @@ static void prefs_interface_create(void)
 	interface.checkbtn_openunread     = checkbtn_openunread;
 	interface.checkbtn_openinbox      = checkbtn_openinbox;
 	interface.checkbtn_immedexec      = checkbtn_immedexec;
-//	interface.optmenu_recvdialog	  = recvdialog_optmenu;
+	interface.optmenu_recvdialog	  = optmenu_recvdialog;
 	interface.checkbtn_addaddrbyclick = checkbtn_addaddrbyclick;
 	interface.checkbtn_confonexit     = checkbtn_confonexit;
 	interface.checkbtn_cleanonexit    = checkbtn_cleanonexit;
