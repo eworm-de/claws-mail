@@ -1,3 +1,16 @@
+2002-05-31 [paul]	0.7.6claws26
+
+	* sync with 0.7.6cvs20
+		see ChangeLog 2002-05-29 and 2002-05-30
+
+2002-05-31 [paul]	0.7.6claws25
+
+	* src/imap.c
+		hopefully fix last buggy sync
+
+	* README.claws
+		correct typo in 'Actions' examples
+
 2002-05-29 [paul]	0.7.6claws24
 
 	* sync with 0.7.6cvs18
