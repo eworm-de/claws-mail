@@ -1,3 +1,10 @@
+2003-01-26 [melvin]	0.8.9claws12
+
+	* src/description_window.c
+		Allow resizing of the window
+		Allow automatic horizontal scroll bar
+		Do not vertically expand and fill
+
 2003-01-26 [christoph]	0.8.9claws11
 
 	* src/Makefile.am
