@@ -4,7 +4,7 @@
 		Fix possible double free, avoid putting 8k on the stack
 	* src/html.c
 	* src/html.h
-		Fix links spanning over lines, add some entities
+		Fix links with tags inside, add some entities
 	* AUTHORS
 		Both patches by Rich Coe <Richard.Coe@med.ge.com>
 
