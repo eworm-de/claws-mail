@@ -412,7 +412,6 @@ gboolean procheader_headername_equal(char * hdr1, char * hdr2)
 
 Header * procheader_parse_header(gchar * buf)
 {
-	gchar tmp[BUFFSIZE];
 	gchar *p = buf;
 	Header * header;
 
@@ -425,11 +424,7 @@ Header * procheader_parse_header(gchar * buf)
 			header->name = g_strndup(buf, p - buf + 1);
 			p++;
 			while (*p == ' ' || *p == '\t') p++;
-			conv_unmime_header(tmp, sizeof(tmp), p, NULL);
-			if(tmp == NULL) 
-				header->body = g_strdup(p);
-			else	
-				header->body = g_strdup(tmp);
+                        header->body = conv_unmime_header(p, NULL);
 			return header;
 		}
 	}
@@ -582,9 +577,9 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			     gboolean full, gboolean decrypted)
 {
 	MsgInfo *msginfo;
-	gchar buf[BUFFSIZE], tmp[BUFFSIZE];
+	gchar buf[BUFFSIZE];
 	gchar *reference = NULL;
-	gchar *p;
+	gchar *p, *tmp;
 	gchar *hp;
 	HeaderEntry *hentry;
 	gint hnum;
@@ -622,12 +617,11 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			break;
 		case H_FROM:
 			if (msginfo->from) break;
-			conv_unmime_header(tmp, sizeof(tmp), hp, NULL);
-			msginfo->from = g_strdup(tmp);
-			msginfo->fromname = procheader_get_fromname(tmp);
+                        msginfo->from = conv_unmime_header(hp, NULL);
+			msginfo->fromname = procheader_get_fromname(msginfo->from);
 			break;
 		case H_TO:
-			conv_unmime_header(tmp, sizeof(tmp), hp, NULL);
+                        tmp = conv_unmime_header(hp, NULL);
 			if (msginfo->to) {
 				p = msginfo->to;
 				msginfo->to =
@@ -635,9 +629,10 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 				g_free(p);
 			} else
 				msginfo->to = g_strdup(tmp);
+                        g_free(tmp);                                
 			break;
 		case H_CC:
-			conv_unmime_header(tmp, sizeof(tmp), hp, NULL);
+                        tmp = conv_unmime_header(hp, NULL);
 			if (msginfo->cc) {
 				p = msginfo->cc;
 				msginfo->cc =
@@ -645,6 +640,7 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 				g_free(p);
 			} else
 				msginfo->cc = g_strdup(tmp);
+                        g_free(tmp);                                
 			break;
 		case H_NEWSGROUPS:
 			if (msginfo->newsgroups) {
@@ -657,8 +653,7 @@ static MsgInfo *parse_stream(void *data, gboolean isstring, MsgFlags flags,
 			break;
 		case H_SUBJECT:
 			if (msginfo->subject) break;
-			conv_unmime_header(tmp, sizeof(tmp), hp, NULL);
-			msginfo->subject = g_strdup(tmp);
+                        msginfo->subject = conv_unmime_header(hp, NULL);
 			break;
 		case H_MSG_ID:
 			if (msginfo->msgid) break;

@@ -1,3 +1,18 @@
+2005-03-18 [paul]	1.0.3cvs2.4
+
+	* src/addrharvest.c
+	* src/codeconv.c
+	* src/codeconv.h
+	* src/compose.c
+	* src/news.c
+	* src/procheader.c
+	* src/procmime.c
+	* src/unmime.c
+	* src/unmime.h
+		fix buffer overflow, CAN-2005-0667, see
+		http://secunia.com/advisories/14491/
+		Patch by Alfons
+
 2005-03-17 [colin]	1.0.3cvs2.3
 
 	* src/prefs_fonts.c

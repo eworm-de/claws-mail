@@ -1227,6 +1227,7 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 	guint content_start, i;
 	FILE *fp;
 	gint mime_major, mime_minor;
+        gchar *tmp;
 
 	procmime_decode_content(mimeinfo);
 
@@ -1237,12 +1238,21 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 	}
 	fseek(fp, mimeinfo->offset, SEEK_SET);
 	procheader_get_header_fields(fp, hentry);
-	if (hentry[0].body != NULL)
-		conv_unmime_header_overwrite(hentry[0].body);
-	if (hentry[2].body != NULL)
-		conv_unmime_header_overwrite(hentry[2].body);
-	if (hentry[4].body != NULL)
-		conv_unmime_header_overwrite(hentry[4].body);
+	if (hentry[0].body != NULL) {
+                tmp = conv_unmime_header(hentry[0].body, NULL);
+                g_free(hentry[0].body);
+                hentry[0].body = tmp;
+        }                
+	if (hentry[2].body != NULL) {
+                tmp = conv_unmime_header(hentry[2].body, NULL);
+                g_free(hentry[2].body);
+                hentry[2].body = tmp;
+        }                
+	if (hentry[4].body != NULL) {
+                tmp = conv_unmime_header(hentry[4].body, NULL);
+                g_free(hentry[4].body);
+                hentry[4].body = tmp;
+        }                
 	content_start = ftell(fp);
 	fclose(fp);
 
@@ -1287,7 +1297,7 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 				{"Content-Disposition:",
 				                   NULL, TRUE},
 				{NULL,		   NULL, FALSE}};
-	gchar *p;
+	gchar *p, *tmp;
 	gchar *boundary;
 	gint boundary_len = 0, lastoffset = -1, i;
 	gchar buf[BUFFSIZE];
@@ -1329,12 +1339,21 @@ void procmime_parse_multipart(MimeInfo *mimeinfo)
 				hentry[i].body = NULL;
 			}
 			procheader_get_header_fields(fp, hentry);
-			if (hentry[0].body != NULL)
-				conv_unmime_header_overwrite(hentry[0].body);
-			if (hentry[2].body != NULL)
-				conv_unmime_header_overwrite(hentry[2].body);
-			if (hentry[4].body != NULL)
-				conv_unmime_header_overwrite(hentry[4].body);
+                        if (hentry[0].body != NULL) {
+                                tmp = conv_unmime_header(hentry[0].body, NULL);
+                                g_free(hentry[0].body);
+                                hentry[0].body = tmp;
+                        }                
+                        if (hentry[2].body != NULL) {
+                                tmp = conv_unmime_header(hentry[2].body, NULL);
+                                g_free(hentry[2].body);
+                                hentry[2].body = tmp;
+                        }                
+                        if (hentry[4].body != NULL) {
+                                tmp = conv_unmime_header(hentry[4].body, NULL);
+                                g_free(hentry[4].body);
+                                hentry[4].body = tmp;
+                        }                
 			lastoffset = ftell(fp);
 		}
 	}

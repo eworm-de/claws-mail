@@ -21,6 +21,8 @@
 #  include "config.h"
 #endif
 
+#include "defs.h"
+
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <string.h>
@@ -1541,37 +1543,33 @@ const gchar *conv_get_current_locale(void)
 	return cur_locale;
 }
 
-void conv_unmime_header_overwrite(gchar *str)
+gchar *conv_unmime_header(const gchar *str, const gchar *default_encoding)
 {
-	gchar *buf;
-	gint buflen;
+	gchar buf[BUFFSIZE];
 
-	buflen = strlen(str) * 2 + 1;
-	Xalloca(buf, buflen, return);
+	if (is_ascii_str(str))
+	        return unmime_header(str);
+
+	if (default_encoding) {
+		gchar *utf8_buf;
+
+		utf8_buf = conv_codeset_strdup
+			(str, default_encoding, CS_INTERNAL);
+		if (utf8_buf) {
+			gchar *decoded_str;
+
+			decoded_str = unmime_header(utf8_buf);
+			g_free(utf8_buf);
+			return decoded_str;
+		}
+	}
 
 	if (conv_get_locale_charset() == C_EUC_JP)
-		conv_anytodisp(buf, buflen, str);
+		conv_anytodisp(buf, sizeof(buf), str);
 	else
-		conv_localetodisp(buf, buflen, str);
+		conv_localetodisp(buf, sizeof(buf), str);
 
-	unmime_header(str, buf);
-}
-
-void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
-			const gchar *charset)
-{
-	gchar *buf;
-	gint buflen;
-
-	buflen = strlen(str) * 2 + 1;
-	Xalloca(buf, buflen, return);
-
-	if (conv_get_locale_charset() == C_EUC_JP)
-		conv_anytodisp(buf, buflen, str);
-	else
-		conv_localetodisp(buf, buflen, str);
-
-	unmime_header(outbuf, buf);
+	return unmime_header(buf);
 }
 
 #define MAX_LINELEN		76

@@ -555,8 +555,10 @@ static void addrharvest_parse_address(
 				name = "";
 			}
 			else {
-				name = buffer;
-				conv_unmime_header_overwrite(name);
+                                gchar *tmp = conv_unmime_header(buffer, NULL);
+                                strncpy2(buffer, tmp, sizeof buffer);
+                                name = buffer;
+                                g_free(tmp);
 			}
 
 			/* Insert into address book */
