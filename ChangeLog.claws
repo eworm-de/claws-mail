@@ -1,3 +1,13 @@
+2004-12-03 [paul]
+
+	* src/pixmaps/dir_close.xpm
+	* src/pixmaps/dir_open.xpm
+	* src/pixmaps/drafts_close.xpm
+	* src/pixmaps/drafts_open.xpm
+	* src/pixmaps/group.xpm
+	* src/pixmaps/unread.xpm
+		update icons (sync with main (adjust hue))	
+
 2004-12-02 [paul]	0.9.12cvs180
 
 	* ChangeLog
