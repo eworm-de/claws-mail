@@ -102,10 +102,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
 	debug_print("Filtering message %d\n", msginfo->msgnum);
 
-	/* remember old locale and set it to C */
-	Xstrdup_a(oldlocale, setlocale(LC_ALL, NULL), return FALSE);
-	setlocale(LC_ALL, "C");
-
 	if (lookup_host(config.hostname, config.port, &addr) != EX_OK) {
 		debug_print("failed to look up spamd host\n");
 		return FALSE;
@@ -139,7 +135,6 @@ static gboolean mail_filtering_hook(gpointer source, gpointer data)
 
 	message_cleanup(&m);
 	fclose(fp);
-	setlocale(LC_ALL, oldlocale);
 
 	if (is_spam) {
 		debug_print("message is spam\n");

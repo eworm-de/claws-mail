@@ -1,3 +1,15 @@
+2003-07-17 [christoph]	0.9.3claws20
+
+	* src/common/session.c
+		fix opening of SSL connections
+
+	* src/plugins/image_viewer/Makefile.am
+		add OPENSSL_CFLAGS (we should find a better solution to remove
+		this dependencies if they are not required)
+
+	* src/plugins/spamassassin/spamassassin.c
+		remove setlocale workaround (fixed in libspamc)
+
 2003-07-17 [alfons]	0.9.3claws19
 
 	* src/common/hooks.[ch]

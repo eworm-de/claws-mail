@@ -134,7 +134,7 @@ static gint session_connect_cb(SockInfo *sock, gpointer data)
 
 	session->sock = sock;
 
-#if USE_SSL
+#if USE_OPENSSL
 	if (session->ssl_type == SSL_TUNNEL) {
 		sock_set_nonblocking_mode(sock, FALSE);
 		if (!ssl_init_socket(sock)) {
