@@ -1,3 +1,8 @@
+2003-09-01
+
+	* src/compose.c: compose_write_headers(): MIME 境界の ':' も '_' に
+	  置換するようにした(broken なサーバへの対処として)。
+
 2003-08-28
 
 	* src/imap.c: imap_scan_tree_recursive(): コンパイルエラーを修正。

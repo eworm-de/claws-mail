@@ -4290,6 +4290,7 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		get_rfc822_date(buf, sizeof(buf));
 		subst_char(buf, ' ', '_');
 		subst_char(buf, ',', '_');
+		subst_char(buf, ':', '_');
 		compose->boundary = g_strdup_printf("Multipart_%s_%08x",
 						    buf, (guint)compose);
 		fprintf(fp,

@@ -1,3 +1,8 @@
+2003-09-01
+
+	* src/compose.c: compose_write_headers(): also replace ':' in the
+	  MIME boundary with '_' (as a workaround for broken servers).
+
 2003-08-28
 
 	* src/imap.c: imap_scan_tree_recursive(): fixed compile error.
