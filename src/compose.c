@@ -2237,6 +2237,8 @@ static guint get_indent_length(GtkSText *text, guint start_pos, guint text_len)
 			if (is_indent == FALSE && !isupper(cbuf[0]))
 				goto out;
 			if (is_indent == TRUE) {
+				if (alnum_cnt > 0 && cb[0] != '>')
+					goto out;
 				alnum_cnt = 0;
 				state = WAIT_FOR_SPACE;
 			} else {
