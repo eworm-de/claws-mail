@@ -53,7 +53,8 @@
 #endif
 
 #define BUFFSIZE	8192
-#define IO_TIMEOUT	60
+
+guint io_timeout = 60;
 
 static gint sock_connect_with_timeout	(gint			 sock,
 					 const struct sockaddr	*serv_addr,
@@ -72,6 +73,12 @@ static gint sock_connect_by_getaddrinfo	(const gchar	*hostname,
 static SockInfo *sockinfo_from_fd(const gchar *hostname,
 				  gushort port,
 				  gint sock);
+
+gint sock_set_io_timeout(guint sec)
+{
+	io_timeout = sec;
+	return 0;
+}
 
 gint fd_connect_unix(const gchar *path)
 {
@@ -188,16 +195,18 @@ static gint fd_check_io(gint fd, GIOCondition cond)
 	struct timeval timeout;
 	fd_set fds;
 
-	timeout.tv_sec  = IO_TIMEOUT;
+	timeout.tv_sec  = io_timeout;
 	timeout.tv_usec = 0;
 
 	FD_ZERO(&fds);
 	FD_SET(fd, &fds);
 
 	if (cond == G_IO_IN) {
-		select(fd + 1, &fds, NULL, NULL, &timeout);
+		select(fd + 1, &fds, NULL, NULL,
+		       io_timeout > 0 ? &timeout : NULL);
 	} else {
-		select(fd + 1, NULL, &fds, NULL, &timeout);
+		select(fd + 1, NULL, &fds, NULL,
+		       io_timeout > 0 ? &timeout : NULL);
 	}
 
 	if (FD_ISSET(fd, &fds)) {
@@ -245,7 +254,6 @@ struct hostent *my_gethostbyname(const gchar *hostname)
 {
 	struct hostent *hp;
 	void (*prev_handler)(gint);
-	guint timeout_secs = IO_TIMEOUT;
 
 	alarm(0);
 	prev_handler = signal(SIGALRM, timeout_handler);
@@ -256,7 +264,7 @@ struct hostent *my_gethostbyname(const gchar *hostname)
 		errno = 0;
 		return NULL;
 	}
-	alarm(timeout_secs);
+	alarm(io_timeout);
 
 	if ((hp = gethostbyname(hostname)) == NULL) {
 		alarm(0);
@@ -298,7 +306,6 @@ static gint sock_connect_by_hostname(gint sock, const gchar *hostname,
 {
 	struct hostent *hp;
 	struct sockaddr_in ad;
-	guint timeout_secs = IO_TIMEOUT;
 
 	memset(&ad, 0, sizeof(ad));
 	ad.sin_family = AF_INET;
@@ -321,7 +328,7 @@ static gint sock_connect_by_hostname(gint sock, const gchar *hostname,
 	}
 
 	return sock_connect_with_timeout(sock, (struct sockaddr *)&ad,
-					 sizeof(ad), timeout_secs);
+					 sizeof(ad), io_timeout);
 }
 
 #else /* INET6 */
@@ -329,7 +336,6 @@ static gint sock_connect_by_getaddrinfo(const gchar *hostname, gushort	port)
 {
 	gint sock = -1, gai_error;
 	struct addrinfo hints, *res, *ai;
-	guint timeout_secs = IO_TIMEOUT;
 	gchar port_str[6];
 
 	memset(&hints, 0, sizeof(hints));
@@ -353,7 +359,7 @@ static gint sock_connect_by_getaddrinfo(const gchar *hostname, gushort	port)
 			continue;
 
 		if (sock_connect_with_timeout
-			(sock, ai->ai_addr, ai->ai_addrlen, timeout_secs) == 0)
+			(sock, ai->ai_addr, ai->ai_addrlen, io_timeout) == 0)
 			break;
 
 		close(sock);
@@ -772,23 +778,4 @@ gint sock_close(SockInfo *sock)
 gint fd_close(gint fd)
 {
 	return close(fd);
-}
-
-gint sock_input_add(SockInfo *sock,
-		    GIOCondition condition,
-		    GIOFunc function,
-		    gpointer data)
-{
-	GIOChannel *channel;
-	guint result;
-
-	g_return_val_if_fail(sock != NULL, -1);
-
-	channel = g_io_channel_unix_new(sock->sock);
-	/* :WK: We have to change some things here becuse most likey
-	   function() does take SockInfo * and not an gint */
-	result = g_io_add_watch(channel, condition, function, data);
-	g_io_channel_unref(channel);
-
-	return result;
 }

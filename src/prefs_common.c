@@ -51,6 +51,7 @@
 #include "gtkutils.h"
 #include "alertpanel.h"
 #include "folder.h"
+#include "socket.h"
 #include "filesel.h"
 #include "folderview.h"
 #include "stock_pixmap.h"
@@ -224,6 +225,7 @@ static struct Other {
 	GtkWidget *printcmd_entry;
 	GtkWidget *exteditor_combo;
 	GtkWidget *exteditor_entry;
+
 	GtkWidget *checkbtn_addaddrbyclick;
 	GtkWidget *checkbtn_confonexit;
 	GtkWidget *checkbtn_cleanonexit;
@@ -237,6 +239,8 @@ static struct Other {
 #endif
 #endif
 
+	GtkWidget *spinbtn_iotimeout;
+	GtkObject *spinbtn_iotimeout_adj;
 } other;
 
 static struct MessageColorButtons {
@@ -809,6 +813,9 @@ static PrefParam param[] = {
 	{"summary_quicksearch_type", "0", &prefs_common.summary_quicksearch_type, P_INT,
 	 NULL, NULL, NULL},
 
+	{"io_timeout_secs", "60", &prefs_common.io_timeout_secs,
+	 P_INT, &other.spinbtn_iotimeout,
+	 prefs_set_data_from_spinbtn, prefs_set_spinbtn},
 	{"hide_score", "-9999", &prefs_common.kill_score, P_INT,
 	 NULL, NULL, NULL},
 	{"important_score", "1", &prefs_common.important_score, P_INT,
@@ -2824,6 +2831,11 @@ static void prefs_other_create(void)
 	GtkWidget *checkbtn_cleanonexit;
 	GtkWidget *checkbtn_askonclean;
 	GtkWidget *checkbtn_warnqueued;
+
+	GtkWidget *label_iotimeout;
+	GtkWidget *spinbtn_iotimeout;
+	GtkObject *spinbtn_iotimeout_adj;
+
 #if 0
 #ifdef USE_OPENSSL
 	GtkWidget *frame_ssl;
@@ -2983,6 +2995,27 @@ static void prefs_other_create(void)
 	PACK_CHECK_BUTTON (vbox_exit, checkbtn_warnqueued,
 			   _("Warn if there are queued messages"));
 
+	hbox1 = gtk_hbox_new (FALSE, 8);
+	gtk_widget_show (hbox1);
+	gtk_box_pack_start (GTK_BOX (vbox1), hbox1, FALSE, FALSE, 0);
+
+	label_iotimeout = gtk_label_new (_("Socket I/O timeout:"));
+	gtk_widget_show (label_iotimeout);
+	gtk_box_pack_start (GTK_BOX (hbox1), label_iotimeout, FALSE, FALSE, 0);
+
+	spinbtn_iotimeout_adj = gtk_adjustment_new (60, 0, 1000, 1, 10, 10);
+	spinbtn_iotimeout = gtk_spin_button_new
+		(GTK_ADJUSTMENT (spinbtn_iotimeout_adj), 1, 0);
+	gtk_widget_show (spinbtn_iotimeout);
+	gtk_box_pack_start (GTK_BOX (hbox1), spinbtn_iotimeout,
+			    FALSE, FALSE, 0);
+	gtk_widget_set_usize (spinbtn_iotimeout, 64, -1);
+	gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinbtn_iotimeout), TRUE);
+
+	label_iotimeout = gtk_label_new (_("second(s)"));
+	gtk_widget_show (label_iotimeout);
+	gtk_box_pack_start (GTK_BOX (hbox1), label_iotimeout, FALSE, FALSE, 0);
+
 	other.uri_combo = uri_combo;
 	other.uri_entry = uri_entry;
 	other.printcmd_entry = printcmd_entry;
@@ -2999,6 +3032,9 @@ static void prefs_other_create(void)
 	other.checkbtn_cleanonexit = checkbtn_cleanonexit;
 	other.checkbtn_askonclean  = checkbtn_askonclean;
 	other.checkbtn_warnqueued  = checkbtn_warnqueued;
+
+	other.spinbtn_iotimeout     = spinbtn_iotimeout;
+	other.spinbtn_iotimeout_adj = spinbtn_iotimeout_adj;
 	
 #if 0
 #ifdef USE_OPENSSL
@@ -4204,6 +4240,7 @@ static void prefs_common_apply(void)
 		update_pixmap_theme = FALSE;
 	
 	prefs_set_data_from_dialog(param);
+	sock_set_io_timeout(prefs_common.io_timeout_secs);
 	
 	if (update_pixmap_theme)
 	{

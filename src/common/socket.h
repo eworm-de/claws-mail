@@ -61,6 +61,8 @@ struct _SockInfo
 #endif
 };
 
+gint sock_set_io_timeout		(guint sec);
+
 gint sock_set_nonblocking_mode		(SockInfo *sock, gboolean nonblock);
 gboolean sock_is_nonblocking_mode	(SockInfo *sock);
 
@@ -78,12 +80,6 @@ gint sock_gets		(SockInfo *sock, gchar *buf, gint len);
 gchar *sock_getline	(SockInfo *sock);
 gint sock_puts		(SockInfo *sock, const gchar *buf);
 gint sock_close		(SockInfo *sock);
-
-/* wrapper functions */
-gint sock_input_add	  (SockInfo		*sock,
-			   GIOCondition		 condition,
-			   GIOFunc	 	 function,
-			   gpointer		 data);
 
 /* Functions to directly work on FD.  They are needed for pipes */
 gint fd_connect_unix	(const gchar *path);

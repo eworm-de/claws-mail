@@ -1,5 +1,12 @@
 2003-05-26
 
+	* src/socket.[ch]:
+	  sock_set_io_timeout(): new. It sets the timeout interval.
+	  sock_gdk_input_add(): removed since it's not used anymore.
+	* src/prefs_common.[ch]: added an option to set the timeout parameter.
+
+2003-05-26
+
 	* src/action.c: fixed a bug that didn't hidden user string in
 	  create_io_dialog() (thanks to Markus Amersdorfer).
 	  Removed ChildInfo::type and added Children::action_type.
