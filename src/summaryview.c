@@ -993,7 +993,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			     || MSG_IS_LOCKED(msginfo->flags)
 			     || CURRENTLY_DISPLAYED(msginfo))
 			     && !MSG_IS_IGNORE_THREAD(msginfo->flags))
-			    not_killed = g_slist_append(not_killed, msginfo);
+			    not_killed = g_slist_prepend(not_killed, msginfo);
 			else
 				procmsg_msginfo_free(msginfo);
 		}
@@ -1046,12 +1046,12 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			}
 			if (search_type != S_SEARCH_EXTENDED) {
 				if (searched_header && strcasestr(searched_header, search_string) != NULL)
-					not_killed = g_slist_append(not_killed, msginfo);
+					not_killed = g_slist_prepend(not_killed, msginfo);
 				else
 					procmsg_msginfo_free(msginfo);
 			} else {
 				if ((tmp_list != NULL) && matcherlist_match(tmp_list, msginfo))
-					not_killed = g_slist_append(not_killed, msginfo);
+					not_killed = g_slist_prepend(not_killed, msginfo);
 				else
 					procmsg_msginfo_free(msginfo);
 			}
@@ -1077,7 +1077,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 			MsgInfo * msginfo = (MsgInfo *) cur->data;
 
 			if (msginfo->score > kill_score)
-				not_killed = g_slist_append(not_killed, msginfo);
+				not_killed = g_slist_prepend(not_killed, msginfo);
 			else
 				procmsg_msginfo_free(msginfo);
 		}
@@ -2264,7 +2264,6 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 	} else {
 		gchar *text[N_SUMMARY_COLS];
 
-		mlist = g_slist_reverse(mlist);
 		for (; mlist != NULL; mlist = mlist->next) {
 			msginfo = (MsgInfo *)mlist->data;
 
@@ -2284,7 +2283,6 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 					     msginfo->subject,
 					     node);
 		}
-		mlist = g_slist_reverse(mlist);
 	}
 
 	if (prefs_common.enable_hscrollbar &&

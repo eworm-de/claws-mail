@@ -151,7 +151,7 @@ static void add_address1(const char *str, address_entry *ae)
 	g_strdown(ce1->string);
 	ce1->ref = ae;
 
-	g_completion_list = g_list_append(g_completion_list, ce1);
+	g_completion_list = g_list_prepend(g_completion_list, ce1);
 }
 
 /* add_address() - adds address to the completion list. this function looks
@@ -170,7 +170,7 @@ static gint add_address(const gchar *name, const gchar *address, const gchar *al
 	ae->name    = g_strdup(name);
 	ae->address = g_strdup(address);		
 
-	g_address_list 	  = g_list_append(g_address_list,    ae);
+	g_address_list 	  = g_list_prepend(g_address_list,    ae);
 
 	add_address1(name, ae);
 	add_address1(address, ae);
@@ -183,6 +183,8 @@ static gint add_address(const gchar *name, const gchar *address, const gchar *al
  */ 
 static void read_address_book(void) {	
 	addressbook_load_completion( add_address );
+	g_address_list = g_list_reverse(g_address_list);
+	g_completion_list = g_list_reverse(g_completion_list);
 }
 
 /* start_address_completion() - returns the number of addresses 
