@@ -1,3 +1,10 @@
+2003-04-15 [paul]	0.8.11claws92
+
+	* src/summaryview.[ch]
+		add /Mark/Lock and /Mark/Unlock to the pop-up
+		menu. Patch submitted by Ivan Francolin Martinez
+		<ivanfm@users.sourceforge.net>
+
 2003-04-15 [paul]	0.8.11claws91
 
 	* sync with 0.8.11cvs24
