@@ -25,7 +25,6 @@
 #endif
 
 #include <glib.h>
-#include "gtkstext.h"
 
 #include <string.h> /* for strlen */
 #include <stdlib.h> /* for mbstowcs */
@@ -33,6 +32,7 @@
 #include "undo.h"
 #include "utils.h"
 #include "prefs_common.h"
+#include "gtkstext.h"
 
 typedef struct _UndoInfo UndoInfo;
 

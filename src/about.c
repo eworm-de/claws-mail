@@ -45,6 +45,7 @@
 #include "prefs_common.h"
 #include "utils.h"
 #include "version.h"
+#include "gtkutils.h"
 
 static GtkWidget *window;
 

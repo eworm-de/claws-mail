@@ -44,6 +44,7 @@
 #include "base64.h"
 #include "utils.h"
 #include "prefs_common.h"
+#include "unmime.h"
 
 typedef enum
 {

@@ -40,6 +40,7 @@
 #  include <wctype.h>
 #endif
 
+#include "addressbook.h"
 #include "addr_compl.h"
 #include "utils.h"
 
