@@ -2109,7 +2109,7 @@ static void folderview_rename_folder_cb(FolderView *folderview, guint action,
 
 	if (item->folder->klass->rename_folder(item->folder, item, new_folder) < 0) {
 		alertpanel_error(_("The folder could not be renamed.\n"
-				   "The new folder name could not be allowed."));
+				   "The new folder name is not allowed."));
 		return;
 	}
 

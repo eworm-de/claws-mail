@@ -1,3 +1,19 @@
+2004-03-28 [paul]	0.9.10claws33
+
+	* src/common/nntp.c
+	  src/common/smtp.c
+	  src/folder.c
+	  src/imap.c
+	  src/inc.c
+	  src/news.c
+	  src/pop.c
+	  	revise 'translatable string' policy:
+	  	don't translate debug_print() or log_print(),
+		translate log_message() and log_warning()
+	
+	* po/zh_CN.po
+		update submitted by Hansom Young
+
 2004-03-25 [alfons]	0.9.10claws32
 
 	* src/prefs_common.c

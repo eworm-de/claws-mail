@@ -147,14 +147,14 @@ static gint pop3_getauth_apop_send(Pop3Session *session)
 	session->state = POP3_GETAUTH_APOP;
 
 	if ((start = strchr(session->greeting, '<')) == NULL) {
-		log_warning("Required APOP timestamp not found "
-			    "in greeting\n");
+		log_warning(_("Required APOP timestamp not found "
+			    "in greeting\n"));
 		session->error_val = PS_PROTOCOL;
 		return -1;
 	}
 
 	if ((end = strchr(start, '>')) == NULL || end == start + 1) {
-		log_warning("Timestamp syntax error in greeting\n");
+		log_warning(_("Timestamp syntax error in greeting\n"));
 		session->error_val = PS_PROTOCOL;
 		return -1;
 	}
@@ -180,7 +180,7 @@ static gint pop3_getrange_stat_send(Pop3Session *session)
 static gint pop3_getrange_stat_recv(Pop3Session *session, const gchar *msg)
 {
 	if (sscanf(msg, "%d %d", &session->count, &session->total_bytes) != 2) {
-		log_warning("POP3 protocol error\n");
+		log_warning(_("POP3 protocol error\n"));
 		session->error_val = PS_PROTOCOL;
 		return -1;
 	} else {
@@ -207,7 +207,7 @@ static gint pop3_getrange_last_recv(Pop3Session *session, const gchar *msg)
 	gint last;
 
 	if (sscanf(msg, "%d", &last) == 0) {
-		log_warning("POP3 protocol error\n");
+		log_warning(_("POP3 protocol error\n"));
 		session->error_val = PS_PROTOCOL;
 		return -1;
 	} else {
@@ -624,16 +624,17 @@ static Pop3State pop3_lookup_next(Pop3Session *session)
 		    msg->recv_time != RECV_TIME_KEEP &&
 		    session->current_time - msg->recv_time >=
 		    ac->msg_leave_time * 24 * 60 * 60) {
-			log_print("POP3: Deleting expired message %d\n",
-				  session->cur_msg);
+			log_message
+				(_("POP3: Deleting expired message %d\n"),
+				   session->cur_msg);
 			pop3_delete_send(session);
 			return POP3_DELETE;
 		}
 
 		if (size_limit_over)
-			log_print
-				("POP3: Skipping message %d (%d bytes)\n",
-				  session->cur_msg, size);
+			log_message
+				(_("POP3: Skipping message %d (%d bytes)\n"),
+				   session->cur_msg, size);
 
 		if (size == 0 || msg->received || size_limit_over) {
 			session->cur_total_bytes += size;
@@ -663,32 +664,32 @@ static Pop3ErrorValue pop3_ok(Pop3Session *session, const gchar *msg)
 		    strstr(msg + 4, "Lock") ||
 		    strstr(msg + 4, "LOCK") ||
 		    strstr(msg + 4, "wait")) {
-			log_warning("mailbox is locked\n");
+			log_warning(_("mailbox is locked\n"));
 			ok = PS_LOCKBUSY;
 		} else if (strcasestr(msg + 4, "timeout")) {
-			log_warning("session timeout\n");
+			log_warning(_("session timeout\n"));
 			ok = PS_ERROR;
 		} else {
 			switch (session->state) {
 #if USE_OPENSSL
 			case POP3_STLS:
-				log_warning("can't start TLS session\n");
+				log_warning(_("can't start TLS session\n"));
 				ok = PS_ERROR;
 				break;
 #endif
 			case POP3_GETAUTH_USER:
 			case POP3_GETAUTH_PASS:
 			case POP3_GETAUTH_APOP:
-				log_warning("error occurred on authentication\n");
+				log_warning(_("error occurred on authentication\n"));
 				ok = PS_AUTHFAIL;
 				break;
 			case POP3_GETRANGE_LAST:
 			case POP3_GETRANGE_UIDL:
-				log_warning("command not supported\n");
+				log_warning(_("command not supported\n"));
 				ok = PS_NOTSUPPORTED;
 				break;
 			default:
-				log_warning("error occurred on POP3 session\n");
+				log_warning(_("error occurred on POP3 session\n"));
 				ok = PS_ERROR;
 			}
 		}

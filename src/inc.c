@@ -750,7 +750,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 	g_free(buf);
 
 	if (session_connect(SESSION(pop3_session), server, port) < 0) {
-		log_warning("Can't connect to POP3 server: %s:%d\n",
+		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
 			    server, port);
 		if(!prefs_common.no_recv_err_panel) {
 			if((prefs_common.recv_dialog_mode == RECV_DIALOG_ALWAYS) ||
@@ -1202,7 +1202,7 @@ static void inc_cancel(IncProgressDialog *dialog)
 
 	session->inc_state = INC_CANCEL;
 
-	log_message("Incorporation cancelled\n");
+	log_message(_("Incorporation cancelled\n"));
 }
 
 gboolean inc_is_active(void)
