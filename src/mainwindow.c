@@ -1749,6 +1749,10 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 
 		mainwin->win.sep_none.hpaned = hpaned;
 		mainwin->win.sep_none.vpaned = vpaned;
+		
+		/* remove headerview if not in prefs */
+		headerview_set_visibility(mainwin->messageview->headerview,
+					  prefs_common.display_header_pane);
 		break;
 	case SEPARATE_FOLDER:
 		vpaned = gtk_vpaned_new();
@@ -1787,6 +1791,11 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		 * lose track of its visibility state */
 		if (!noticeview_is_visible(mainwin->messageview->noticeview)) 
 			gtk_widget_hide(GTK_WIDGET_PTR(mainwin->messageview->noticeview));
+		
+		/* remove headerview if not in prefs */
+		headerview_set_visibility(mainwin->messageview->headerview,
+					  prefs_common.display_header_pane);
+		
 		break;
 	case SEPARATE_MESSAGE:
 		hpaned = gtk_hpaned_new();
