@@ -1,3 +1,11 @@
+2003-04-30 [paul]	0.8.11claws126
+
+	* src/plugins/trayicon/trayicon.c
+		add description
+		
+	* src/mimeview.c
+		be more descriptive
+
 2003-04-30 [paul]	0.8.11claws125
 
 	* configure.ac

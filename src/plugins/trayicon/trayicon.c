@@ -181,7 +181,12 @@ const gchar *plugin_name()
 
 const gchar *plugin_desc()
 {
-	return "";
+	return "This plugin places a mailbox icon in the system tray that "
+	       "indicates if you have new or unread mail.\n"
+	       "\n"
+	       "The mailbox is empty if you have no unread mail, otherwise "
+	       "it contains a letter. A tooltip shows new, unread and total "
+	       "number of messages.";
 }
 
 const gchar *plugin_type()
