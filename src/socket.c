@@ -310,6 +310,43 @@ static gint sock_connect_with_timeout(gint sock,
 	return ret;
 }
 
+struct hostent *my_gethostbyname(const gchar *hostname)
+{
+	struct hostent *hp;
+	void (*prev_handler)(gint);
+	guint timeout_secs = IO_TIMEOUT;
+
+#ifndef WIN32
+	alarm(0);
+	prev_handler = signal(SIGALRM, timeout_handler);
+	if (sigsetjmp(jmpenv, 1)) {
+		alarm(0);
+		signal(SIGALRM, prev_handler);
+		fprintf(stderr, "%s: host lookup timed out.\n", hostname);
+		errno = 0;
+		return NULL;
+	}
+	alarm(timeout_secs);
+#endif
+
+	if ((hp = gethostbyname(hostname)) == NULL) {
+#ifndef WIN32
+		alarm(0);
+		signal(SIGALRM, prev_handler);
+#endif
+		fprintf(stderr, "%s: unknown host.\n", hostname);
+		errno = 0;
+		return NULL;
+	}
+
+#ifndef WIN32
+	alarm(0);
+	signal(SIGALRM, prev_handler);
+#endif
+
+	return hp;
+}
+
 #ifndef INET6
 static gint my_inet_aton(const gchar *hostname, struct in_addr *inp)
 {
@@ -343,35 +380,12 @@ static gint sock_connect_by_hostname(gint sock, const gchar *hostname,
 	ad.sin_port = htons(port);
 
 	if (!my_inet_aton(hostname, &ad.sin_addr)) {
-		void (*prev_handler)(gint);
-
-#ifndef WIN32
-		alarm(0);
-		prev_handler = signal(SIGALRM, timeout_handler);
-		if (sigsetjmp(jmpenv, 1)) {
-			alarm(0);
-			signal(SIGALRM, prev_handler);
-			fprintf(stderr, "%s: host lookup timed out.\n", hostname);
-			errno = 0;
-			return -1;
-		}
-		alarm(timeout_secs);
-#endif
-		
-		if ((hp = gethostbyname(hostname)) == NULL) {
-#ifndef WIN32
-			alarm(0);
-			signal(SIGALRM, prev_handler);
-#endif
+		if ((hp = my_gethostbyname(hostname)) == NULL) {
 			fprintf(stderr, "%s: unknown host.\n", hostname);
 			errno = 0;
 			return -1;
 		}
 
-#ifndef WIN32
-		alarm(0);
-		signal(SIGALRM, prev_handler);
-#endif
 		if (hp->h_length != 4 && hp->h_length != 8) {
 			fprintf(stderr, "illegal address length received for host %s\n", hostname);
 			errno = 0;

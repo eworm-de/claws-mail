@@ -1,3 +1,15 @@
+2002-08-07
+
+	* src/socket.[ch]: fixed the linking failure when IPv6 is enabled.
+	* src/select-keys.c: modified key selection dialog.
+
+2002-08-07
+
+	* src/socket.[ch]: my_gethostbyname(): new.
+	* src/utils.c: get_domain_name(): return FQDN instead of short
+	  hostname (thanks to Bob Woodside).
+	* src/template.c: made the debug messages less verbose.
+
 2002-08-06
 
 	* src/prefs_common.[ch]: removed obsolete default sign key setting.

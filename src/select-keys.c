@@ -44,6 +44,7 @@
 #include "utils.h"
 #include "gtkutils.h"
 #include "inputdialog.h"
+#include "manage_window.h"
 
 #define DIM(v) (sizeof(v)/sizeof((v)[0]))
 #define DIMof(type,member)   DIM(((type *)0)->member)
@@ -125,7 +126,7 @@ gpgmegtk_recipient_selection (GSList *recp_names)
     struct select_keys_s sk;
     GpgmeError err;
 
-    memset ( &sk, 0, sizeof sk);
+    memset (&sk, 0, sizeof sk);
 
     err = gpgme_recipients_new (&sk.rset);
     if (err) {
@@ -260,12 +261,12 @@ create_dialog (struct select_keys_s *sk)
     GtkWidget *scrolledwin;
     GtkWidget *clist;
     GtkWidget *label;
-    GtkWidget *other_btn, *select_btn, *cancel_btn;
+    GtkWidget *select_btn, *cancel_btn, *other_btn;
     const char *titles[N_COL_TITLES];
 
     g_assert (!sk->window);
     window = gtk_window_new (GTK_WINDOW_DIALOG);
-    gtk_widget_set_usize (window, 500, 320);
+    gtk_widget_set_usize (window, 520, 280);
     gtk_container_set_border_width (GTK_CONTAINER (window), 8);
     gtk_window_set_title (GTK_WINDOW (window), _("Select Keys"));
     gtk_window_set_modal (GTK_WINDOW (window), TRUE);
@@ -273,6 +274,7 @@ create_dialog (struct select_keys_s *sk)
                         GTK_SIGNAL_FUNC (delete_event_cb), sk);
     gtk_signal_connect (GTK_OBJECT (window), "key_press_event",
                         GTK_SIGNAL_FUNC (key_pressed_cb), sk);
+    MANAGE_WINDOW_SIGNALS_CONNECT (window);
 
     vbox = gtk_vbox_new (FALSE, 8);
     gtk_container_add (GTK_CONTAINER (window), vbox);
@@ -282,11 +284,9 @@ create_dialog (struct select_keys_s *sk)
     label = gtk_label_new ( "" );
     gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
 
-
     hbox = gtk_hbox_new (FALSE, 8);
     gtk_box_pack_start (GTK_BOX (vbox), hbox, TRUE, TRUE, 0);
     gtk_container_set_border_width (GTK_CONTAINER (hbox), 2);
-
 
     scrolledwin = gtk_scrolled_window_new (NULL, NULL);
     gtk_box_pack_start (GTK_BOX (hbox), scrolledwin, TRUE, TRUE, 0);
@@ -302,10 +302,10 @@ create_dialog (struct select_keys_s *sk)
 
     clist = gtk_clist_new_with_titles (N_COL_TITLES, (char**)titles);
     gtk_container_add (GTK_CONTAINER (scrolledwin), clist);
-    gtk_clist_set_column_width (GTK_CLIST(clist), COL_ALGO,      40);
-    gtk_clist_set_column_width (GTK_CLIST(clist), COL_KEYID,     60);
-    gtk_clist_set_column_width (GTK_CLIST(clist), COL_NAME,     100);
-    gtk_clist_set_column_width (GTK_CLIST(clist), COL_EMAIL,    100);
+    gtk_clist_set_column_width (GTK_CLIST(clist), COL_ALGO,      72);
+    gtk_clist_set_column_width (GTK_CLIST(clist), COL_KEYID,     76);
+    gtk_clist_set_column_width (GTK_CLIST(clist), COL_NAME,     130);
+    gtk_clist_set_column_width (GTK_CLIST(clist), COL_EMAIL,    130);
     gtk_clist_set_column_width (GTK_CLIST(clist), COL_VALIDITY,  20);
     gtk_clist_set_selection_mode (GTK_CLIST(clist), GTK_SELECTION_BROWSE);
     gtk_signal_connect (GTK_OBJECT(GTK_CLIST(clist)->column[COL_NAME].button),
@@ -319,24 +319,24 @@ create_dialog (struct select_keys_s *sk)
     gtk_box_pack_end (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
     gtkut_button_set_create (&bbox, 
-                             &other_btn,  _("Other"),
                              &select_btn, _("Select"),
-                             &cancel_btn, _("Cancel"));
+                             &cancel_btn, _("Cancel"),
+                             &other_btn,  _("Other"));
     gtk_box_pack_end (GTK_BOX (hbox), bbox, FALSE, FALSE, 0);
     gtk_widget_grab_default (select_btn);
 
-    gtk_signal_connect (GTK_OBJECT (other_btn), "clicked",
-                        GTK_SIGNAL_FUNC (other_btn_cb), sk);
     gtk_signal_connect (GTK_OBJECT (select_btn), "clicked",
                         GTK_SIGNAL_FUNC (select_btn_cb), sk);
     gtk_signal_connect (GTK_OBJECT(cancel_btn), "clicked",
                         GTK_SIGNAL_FUNC (cancel_btn_cb), sk);
-    
+    gtk_signal_connect (GTK_OBJECT (other_btn), "clicked",
+                        GTK_SIGNAL_FUNC (other_btn_cb), sk);
 
     vbox2 = gtk_vbox_new (FALSE, 4);
     gtk_box_pack_start (GTK_BOX (hbox), vbox2, FALSE, FALSE, 0);
 
     gtk_widget_show_all (window);
+
     sk->window = window;
     sk->toplabel = GTK_LABEL (label);
     sk->clist  = GTK_CLIST (clist);
@@ -346,8 +346,9 @@ create_dialog (struct select_keys_s *sk)
 static void
 open_dialog (struct select_keys_s *sk)
 {
-    if ( !sk->window )
+    if (!sk->window)
         create_dialog (sk);
+    manage_window_set_transient (GTK_WINDOW (sk->window));
     sk->okay = 0;
     sk->sort_column = N_COL_TITLES; /* use an invalid value */
     sk->sort_type = GTK_SORT_ASCENDING;
@@ -441,7 +442,7 @@ other_btn_cb (GtkWidget *widget, gpointer data)
 
     g_return_if_fail (sk);
     uid = input_dialog ( _("Add key"),
-                         _("Enter another user or key ID\n"),
+                         _("Enter another user or key ID:"),
                          NULL );
     if (!uid)
         return;

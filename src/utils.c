@@ -29,14 +29,8 @@
 #include <ctype.h>
 #include <errno.h>
 #ifdef WIN32
- #include <w32lib.h>
- #include <process.h>
- #include <fcntl.h>
-#else
- #include <netdb.h>
- #include <unistd.h>
- #include <sys/wait.h>
- #include <dirent.h>
+# include <process.h>
+# include <fcntl.h>
 #endif
 
 #if (HAVE_WCTYPE_H && HAVE_WCHAR_H)
@@ -51,6 +45,7 @@
 
 #include "intl.h"
 #include "utils.h"
+#include "socket.h"
 #include "statusbar.h"
 #include "logwindow.h"
 #ifdef WIN32
@@ -1507,26 +1502,25 @@ gchar *get_tmp_file(void)
 gchar *get_domain_name(void)
 {
 	static gchar *domain_name = NULL;
-        struct hostent *myfqdn = NULL;
 
 	if (!domain_name) {
-		gchar buf[BUFFSIZE] = "";
+		gchar buf[128] = "";
+		struct hostent *hp;
 
 		if (gethostname(buf, sizeof(buf)) < 0) {
 			perror("gethostname");
-			strcpy(buf, "unknown");
-		}  else  {
-                myfqdn = gethostbyname(buf);
-                if (myfqdn != NULL)  {
-                  memset(buf, '\0', strlen(buf));
-                  strcpy(buf, myfqdn->h_name);
-                  }  else  {
-                  perror("gethostbyname");
-                  strcpy(buf, "unknown");
-                  }
-                }
+			domain_name = "unknown";
+		} else {
+			buf[sizeof(buf) - 1] = '\0';
+			if ((hp = my_gethostbyname(buf)) == NULL) {
+				perror("gethostbyname");
+				domain_name = g_strdup(buf);
+			} else {
+				domain_name = g_strdup(hp->h_name);
+			}
+		}
 
-		domain_name = g_strdup(buf);
+		debug_print("domain name = %s\n", domain_name);
 	}
 
 	return domain_name;
