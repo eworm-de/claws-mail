@@ -113,3 +113,4 @@
 ( cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/passphrase.c; cvs diff -u -r 1.6 -r 1.7 src/plugins/pgpmime/pgpmime.c; cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/prefs_gpg.c; cvs diff -u -r 0 -r 1 src/plugins/pgpmime/prefs_gpg.glade; cvs diff -u -r 1.1 -r 1.2 src/plugins/pgpmime/prefs_gpg.h; cvs diff -u -r 1.4 -r 1.5 src/plugins/pgpmime/sgpgme.c; ) > 0.9.12cvs128.patchset
 ( cvs diff -u -r 1.446 -r 1.447 src/compose.c; cvs diff -u -r 1.54 -r 1.55 src/common/utils.c; ) > 0.9.12cvs129.patchset
 ( cvs diff -u -r 1.447 -r 1.448 src/compose.c; cvs diff -u -r 1.9 -r 1.10 src/gtk/menu.c; ) > 0.9.12cvs130.patchset
+( cvs diff -u -r 1.448 -r 1.449 src/compose.c; ) > 0.9.12cvs131.patchset
