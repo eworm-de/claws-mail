@@ -1,3 +1,8 @@
+2002-10-04 [paul]	0.8.3claws44
+
+	* configure.in
+		sync the LDAP detection from 0.8.5
+
 2002-10-02 [christoph]	0.8.3claws43
 
 	* po/de.po
