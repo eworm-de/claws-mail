@@ -1,3 +1,9 @@
+2003-04-29 [darko]	0.8.11claws123
+
+	* src/gtk/gtkstext.h
+		include wchar.h if it is available, fixes compilation
+		on HP-UX systems
+
 2003-04-29 [melvin]	0.8.11claws122
 
 	* src/prefs_actions.c
