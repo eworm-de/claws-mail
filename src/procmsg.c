@@ -190,7 +190,6 @@ static GNode *subject_relation_lookup(GRelation *relation, MsgInfo *msginfo)
 			/* best node should be the oldest in the found nodes */
 			/* parent node must not be older then msginfo */
 			if ((relation_msginfo->date_t < msginfo->date_t) &&
-			    (relation_msginfo->msgnum < msginfo->msgnum) &&
 			    ((best_msginfo == NULL) ||
 			     (best_msginfo->date_t > relation_msginfo->date_t)))
 				match = TRUE;

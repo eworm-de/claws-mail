@@ -1,3 +1,9 @@
+2003-01-10 [alfons]	0.9.8claws28
+
+	* src/procmsg.c
+		we should not prefer lowest message number while threading 
+		(introduced in previous commit)
+
 2003-01-10 [alfons]	0.9.8claws27
 
 	* src/procmsg.c
