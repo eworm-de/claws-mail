@@ -1,3 +1,12 @@
+2002-11-27 [colin]	0.8.6claws20
+
+	* src/folder.c
+		recursive move now deletes src each subfolder after 
+		having moved it
+	* src/folderview.c
+		Use identifier instead of path during dnd (enables
+		IMAP folder dnd)
+
 2002-11-27 [paul]	0.8.6claws19
 
 	* src/main.c

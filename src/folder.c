@@ -1565,11 +1565,13 @@ FolderItem *folder_item_move_recursive (FolderItem *src, FolderItem *dest)
 	while (srcnode != NULL) {
 		if (srcnode && srcnode->data) {
 			next_item = (FolderItem*) srcnode->data;
+			srcnode = srcnode->next;
 			if (folder_item_move_recursive(next_item, new_item) == NULL)
 				return NULL;
 		}
-		srcnode = srcnode->next;
 	}
+	src->folder->remove_folder(src->folder, src);
+
 	return new_item;
 }
 
@@ -1617,7 +1619,6 @@ gint folder_item_move_to(FolderItem *src, FolderItem *dest, FolderItem **new_ite
 	}
 	
 	/* update rules */
-	src->folder->remove_folder(src->folder, src);
 	src_node = g_node_find(src->folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, src);
 	if (src_node) 
 		g_node_destroy(src_node);
