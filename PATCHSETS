@@ -234,3 +234,4 @@
 ( cvs diff -u -r 1.471 -r 1.472 src/compose.c; ) > 1.0.0cvs24.patchset
 ( cvs diff -u -r 1.130 -r 1.131 src/messageview.c; ) > 1.0.0cvs25.patchset
 ( cvs diff -u -r 1.14 -r 1.15 src/common/plugin.c; ) > 1.0.0cvs26.patchset
+( cvs diff -u -r 1.2 -r 1.3 src/partial_download.c; ) > 1.0.0cvs27.patchset

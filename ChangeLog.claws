@@ -1,3 +1,8 @@
+2005-02-05 [thorsten]	1.0.0cvs27
+
+	* src/partial_download.c
+		fix buf overflow
+
 2005-02-03 [colin]	1.0.0cvs26
 
 	* src/common/plugin.c

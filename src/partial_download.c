@@ -233,7 +233,7 @@ static int partial_uidl_mark_mail(MsgInfo *msginfo, int download)
 		goto bail;
 	}
 	
-	while ((len = fread(buf, sizeof(gchar), sizeof(buf), fp)) > 0) {
+	while ((len = fread(buf, sizeof(gchar), sizeof(buf)-1, fp)) > 0) {
 		buf[len]='\0';
 		if (start) {
 			start = FALSE;
