@@ -1,3 +1,22 @@
+2001-11-25 [alfons]	0.6.5claws34
+
+	EXPERIMENTAL!!! Please checkout the last stable version using: 
+	  
+	% cvs update -r LAST_STABLE -dRAP
+
+	(Or help us testing this stuff.)
+
+	* src/filtering.c		(1.14)
+	* src/filtering.h		(1.6)
+	* src/inc.c			(1.28)
+	* src/matcher.c			(1.20)
+	* src/mbox.c			(1.9)
+	* src/procmsg.h			(1.14)
+	* src/summaryview.c		(1.59)
+	* src/summaryview.h		(dunno)
+		revert/merge/sync to as it was before commit 
+		on Thu, 19 Jul 2001 10:15:51 -0700.
+
 2001-11-25 [hoa]	0.6.5claws33
 
 	* src/main.c

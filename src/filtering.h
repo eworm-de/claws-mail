@@ -63,8 +63,6 @@ void filter_msginfo_move_or_delete(GSList * filtering_list, MsgInfo * info,
 				   GHashTable *folder_table);
 void filter_message(GSList * filtering_list, FolderItem * item,
 		    gint msgnum, GHashTable *folder_table);
-void filter_incoming_message(FolderItem *default_folder, const gchar *file_name, 
-			     GHashTable *folder_table);
 
 gchar * filteringaction_to_string(gchar *dest, gint destlen, FilteringAction * action);
 void prefs_filtering_write_config(void);

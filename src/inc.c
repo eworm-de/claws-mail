@@ -136,22 +136,6 @@ static void inc_finished(MainWindow *mainwin, gboolean new_messages)
 
 	if (prefs_common.scan_all_after_inc)
 		folderview_update_all_node();
-	/* XXX: major problems right here. if we change marks after
-	 * incorporation of mail, folderview_select() rewrites it
-	 * right under our nose. folderview_select() eventually
-	 * calls summary_show(), which rewrites the cache twice:
-	 * one for the previously selected FolderItem*, and one
-	 * for the newly selected FolderItem* 
-	 *
-	 * since filtering also allows changing mark files, 
-	 * i've solved this by using a global variable (in 
-	 * SummmaryView*). a better solution is to use the folder
-	 * hash table, and see whether the newly and currently 
-	 * selected FolderItem* where updated by the filtering. */
-
-	mainwin->summaryview->filtering_happened = TRUE;
-
-	/* XXX: filtering_happened is reset by summary_show() */
 
 	if (!new_messages && !prefs_common.scan_all_after_inc) return;
 
@@ -898,7 +882,7 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 	FolderItem *dropfolder;
 	gint val;
 	gint msgnum;
-	
+
 	if (state->ac_prefs->inbox) {
 		inbox = folder_find_item_from_path(state->ac_prefs->inbox);
 		if (!inbox)
@@ -934,16 +918,18 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 		g_hash_table_insert(state->folder_table, dropfolder,
 				    GINT_TO_POINTER(1));
 	}
-
-	if (global_processing == NULL || !state->ac_prefs->filter_on_recv) {
-		if ((msgnum = folder_item_add_msg(dropfolder, file, TRUE)) < 0) {
-			unlink(file);
-			return -1;
-		}
+	
+	if ((msgnum = folder_item_add_msg(dropfolder, file, TRUE)) < 0) {
+		unlink(file);
+		return -1;
 	}
-	else {
-		filter_incoming_message(dropfolder, file, state->folder_table);
-        }		
+
+	if (global_processing != NULL) { 
+		/* new filtering */
+		if (state->ac_prefs->filter_on_recv)
+			filter_message(global_processing, dropfolder, msgnum,
+				       state->folder_table);
+	}
 
 	return 0;
 }

@@ -377,10 +377,6 @@ static gint summary_cmp_by_label	(GtkCList		*clist,
 					 gconstpointer		 ptr1,
 					 gconstpointer		 ptr2);
 
-#if MARK_ALL_READ
-static void summary_mark_all_read (SummaryView *summaryview);					 
-#endif
-
 GtkTargetEntry summary_drag_types[1] =
 {
 	{"text/plain", GTK_TARGET_SAME_APP, TARGET_DUMMY}
@@ -712,11 +708,6 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item,
 		}
    		folder_update_op_count();
 	}
-	else if (!summaryview->filtering_happened) {
-		summary_write_cache(summaryview);
-	}
-
-	summaryview->filtering_happened = FALSE;
 
 	summaryview->folderview->opened = selected_node;
 
@@ -2152,7 +2143,7 @@ static void summary_set_header(SummaryView *summaryview, gchar *text[],
 	text[col_pos[S_COL_SCORE]]  = itos_buf(col_score, msginfo->threadscore);
 #else
 	text[col_pos[S_COL_SCORE]]  = itos_buf(col_score, msginfo->score);
-#endif
+#endif	
 
 	if (msginfo->date_t) {
 		procheader_date_get_localtime(date_modified,

@@ -85,8 +85,6 @@ typedef enum
 	MSG_IMAP	= 1 << 19,
 	MSG_NEWS	= 1 << 20,
 
-	MSG_FILTERING   = 1 << 25,	/* claws: re/set by filtering */
-
 	MSG_MIME	= 1 << 29,
 
 	MSG_CACHED	= 1 << 31
@@ -132,7 +130,6 @@ typedef enum
 /* Claws related flags */
 #define MSG_IS_REALLY_DELETED(msg)	(((msg).perm_flags & MSG_REALLY_DELETED) != 0)
 #define MSG_IS_IGNORE_THREAD(msg)	(((msg).perm_flags & MSG_IGNORE_THREAD) != 0)
-#define MSG_IS_FILTERING(msg)		(((msg).tmp_flags  & MSG_FILTERING) != 0)
 
 
 #define WRITE_CACHE_DATA_INT(n, fp) \

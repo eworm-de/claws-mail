@@ -17,20 +17,33 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* 
- * initital	Hoa		initial
- * 07/16/01	Alfons		fix bugs
- * 07/18/01	Alfons		rewrite things
- */
-
-/* 07/18/01 (alfons) 
+/* (alfons) - Just a quick note of how this filtering module works on 
+ * new (arriving) messages.
  * 
- * filter_message() is no longer the entry point for filtering. it's
- * replaced with filter_incoming_message() which does not trust
- * on MsgInfo's from a folder. instead it directly works with
- * the temporary file.  
- * updating the mark file is a lot easier now, because we can do that
- * right after a call to folder_item_add_msg(). 
+ * 1) as an initialization step, code in inc.c and mbox.c set up the 
+ *    drop folder to the inbox (see inc.c and mbox.c).
+ *
+ * 2) the message is actually being copied to the drop folder using
+ *    folder_item_add_msg(dropfolder, file, TRUE). this function
+ *    eventually calls mh->add_msg(). however, the important thing
+ *    about this function is, is that the folder is not yet updated
+ *    to reflect the copy. i don't know about the validity of this
+ *    assumption, however, the filtering code assumes this and
+ *    updates the marks itself.
+ *
+ * 3) technically there's nothing wrong with the matcher (the 
+ *    piece of code which matches search strings). there's
+ *    one gotcha in procmsg.c:procmsg_get_message_file(): it
+ *    only reads a message file based on a MsgInfo. for design
+ *    reasons the filtering system should read directly from
+ *    a file (based on the file's name).
+ *
+ * 4) after the matcher sorts out any matches, it looks at the
+ *    action. this part again pushes the folder system design
+ *    to its limits. based on the assumption in 2), the matcher
+ *    knows the message has not been added to the folder system yet.
+ *    it can happily update mark files, and in fact it does.
+ * 
  */ 
 
 #include "defs.h"
@@ -51,6 +64,19 @@
 #define PREFSBUFSIZE		1024
 
 GSList * global_processing = NULL;
+
+#define STRLEN_WITH_CHECK(expr) \
+        strlen_with_check(#expr, __LINE__, expr)
+	        
+static inline gint strlen_with_check(const gchar *expr, gint fline, const gchar *str)
+{
+        if (str) 
+		return strlen(str);
+	else {
+	        debug_print("%s(%d) - invalid string %s\n", __FILE__, fline, expr);
+	        return 0;
+	}
+}
 
 FilteringAction * filteringaction_new(int type, int account_id,
 				      gchar * destination,
@@ -126,19 +152,6 @@ static gboolean filteringaction_update_mark(MsgInfo * info)
 	return FALSE;
 }
 
-static inline gint strlen_with_check(const gchar *expr, gint fline, const gchar *str)
-{
-	if (str) 
-		return strlen(str);
-	else {
-		debug_print("%s(%d) - invalid string %s\n", __FILE__, fline, expr);
-		return 0;
-	}
-}
-
-#define STRLEN_WITH_CHECK(expr) \
-	strlen_with_check(#expr, __LINE__, expr)
-	
 static gchar * filteringaction_execute_command(gchar * cmd, MsgInfo * info)
 {
 	gchar * s = cmd;
@@ -182,11 +195,7 @@ static gchar * filteringaction_execute_command(gchar * cmd, MsgInfo * info)
 				size += STRLEN_WITH_CHECK(info->references) - 2;
 				break;
 			case 'F': /* file */
-				if (MSG_IS_FILTERING(info->flags))
-					filename = g_strdup((gchar *)info->folder);
-				else
-					filename = folder_item_fetch_msg(info->folder, info->msgnum);
-				
+				filename = folder_item_fetch_msg(info->folder, info->msgnum);
 				if (filename == NULL) {
 					g_warning(_("filename is not set"));
 					return NULL;
@@ -288,8 +297,6 @@ static gchar * filteringaction_execute_command(gchar * cmd, MsgInfo * info)
 			s++;
 		}
 	}
-
-	g_free(filename);
 	return processed_cmd;
 }
 
@@ -392,9 +399,6 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 
 	case MATCHACTION_MARK:
 		MSG_SET_PERM_FLAGS(info->flags, MSG_MARKED);
-		debug_print("*** MARKING message %d, in folder %s, \"%s\"\n",
-			    info->msgnum, info->folder->name,
-			    info->subject ? info->subject : "<none>");
 		filteringaction_update_mark(info);
 
 		CHANGE_FLAGS(info);
@@ -621,416 +625,6 @@ void filter_message(GSList * filtering_list, FolderItem * item,
 
 	filter_msginfo(filtering_list, msginfo, folder_table);
 }
-
-
-/******************************************************************************/
-
-/* revised filtering system.  
- * 
- * 07/18/01	alfons		initial revisement
- */
-
-/* (alfons)
- * 
- * the revised filtering system does not rely on a message being "registered"
- * in one of sylpheed's folders. it now uses the file sylpheed created on
- * incorporation of mail. 
- * i do use MsgInfo data; that's needed by the matcher, but for the rest
- * the MsgInfo is not really used. */
- 
-
-/* add_mark() - adds a mark for a file */
-static void add_mark(FolderItem *folder, gint msgnum, MsgPermFlags flags)
-{
-	gchar * dest_path;
-	FILE * fp;
-
-	if (folder->folder->type == F_MH) {
-		dest_path = folder_item_get_path(folder);
-		if (!is_dir_exist(dest_path))
-			make_dir_hier(dest_path);
-		
-		if (dest_path == NULL) {
-			g_warning(_("Can't open mark file.\n"));
-			return;
-		}
-		
-		if ((fp = procmsg_open_mark_file(dest_path, TRUE))
-		    == NULL) {
-			g_warning(_("Can't open mark file.\n"));
-			return;
-		}
-
-		/* TODO: straight from procmsg.c:procmsg_write_flags()
-		 * should update this when mark file version changes */
-#if MARK_VERSION == 2		 
-		WRITE_CACHE_DATA_INT(msgnum, fp);
-		WRITE_CACHE_DATA_INT(flags, fp);
-#else
-#error should rewrite the above for new  mark version	
-		/* paste the source code of procmsg.c:procmsg_write_flags() */
-#endif
-		fclose(fp);
-		return;
-	}
-	return;
-}
-
-/* prepare_destination() - prepares destination folder by registering it 
- * in the global folder table (if not already there). it returns TRUE if
- * successful. it also returns the FolderItem for the destination */
-static gboolean prepare_destination(const gchar *destination, FolderItem **item, 
-				    GHashTable *folder_table)
-{
-	gint val;
-	FolderItem *result;
-
-	result = folder_find_item_from_identifier(destination);
-	if (!result)
-		return FALSE;
-	if (folder_table) {
-		*item = result;
-		val = GPOINTER_TO_INT(g_hash_table_lookup(folder_table, *item));
-		if (val == 0) {
-			folder_item_scan(*item);
-			g_hash_table_insert(folder_table, *item, GINT_TO_POINTER(1));
-		}
-	}
-	return TRUE;
-}
-
-/* filter_incoming_perform_actions() - performs actions on incoming
- * message. this function handles updating marks a little bit smarter;
- * remember that marks can only be appended. */
-static gboolean filter_incoming_perform_actions(FolderItem *default_folder, 
-						MsgInfo    *msginfo,
-						GHashTable *folder_table)
-{
-	/* matching actions for msginfo */
-	struct matching_action {
-		FilteringAction 	*action;
-		struct matching_action	*next;
-	};
-
-	struct matching_action  ma_head = { NULL, NULL };
-	struct matching_action *ma_tail = &ma_head;
-
-	/* need this for the forwarding stuff */
-	PrefsAccount *account;
-	Compose      *compose;
-	MsgFlags      tmp;
-	gchar        *fwd_msg_name;
-	gint	      val;
-	MsgInfo	     *fwd_msg;
-
-	MsgFlags     markflags = { 0, 0 };
-
-	/* use the global prefs_filtering list */
-	GSList *     list = global_processing;
-
-	/* things we get after having added a message to a folder */
-	FolderItem  *dest_folder;
-	gint         msgnum;
-	
-	/* after performing certain action, we may have to copy 
-	 * the message to inbox too */
-	gboolean     copy_to_inbox_too = TRUE;
-	
-	/* filename is only put in msginfo->folder if MSG_FILTERING is set. */
-	const gchar *filename = (gchar *) msginfo->folder;
-	
-	MsgPermFlags flags;
-	gboolean     stop;
-	gchar	     *cmd;
-
-	/* build list of matching actions */
-	for (; list != NULL; list = g_slist_next(list)) {
-		FilteringProp *prop = (FilteringProp *)	list->data;
-		
-		if (!matcherlist_match(prop->matchers, msginfo))
-			continue;
-
-		if (NULL == (ma_tail->next = alloca(sizeof(struct matching_action)))) {
-			debug_print(_("action allocation error\n"));
-			break;
-		}
-
-		debug_print("*** action %d\n", prop->action->type);
-
-		ma_tail->action = prop->action;
-		ma_tail->next->action = NULL;
-		ma_tail->next->next = NULL;
-		ma_tail = ma_tail->next;
-	}
-
-	debug_print("*** collecting marks\n");		
-	
-	/* collect all marks */
-	for (ma_tail = &ma_head, stop = FALSE; ma_tail->action && !stop; ma_tail = ma_tail->next) {
-		switch (ma_tail->action->type) {
-		
-		case MATCHACTION_MARK:
-			MSG_SET_PERM_FLAGS(markflags, MSG_MARKED);
-			break;
-			
-		case MATCHACTION_UNMARK:
-			MSG_UNSET_PERM_FLAGS(markflags, MSG_MARKED);
-			break;
-		
-		case MATCHACTION_MARK_AS_READ:
-			MSG_UNSET_PERM_FLAGS(markflags, MSG_UNREAD);
-			break;
-
-		case MATCHACTION_MARK_AS_UNREAD:			
-			MSG_SET_PERM_FLAGS(markflags, MSG_UNREAD);
-			break;
-
-		case MATCHACTION_COLOR:
-			MSG_SET_COLORLABEL_VALUE(markflags, ma_tail->action->labelcolor);
-			break;
-
-		/* UNCONTINUABLE */
-		case MATCHACTION_FORWARD:
-		case MATCHACTION_FORWARD_AS_ATTACHMENT:
-		case MATCHACTION_BOUNCE:
-		case MATCHACTION_MOVE:
-		case MATCHACTION_DELETE:
-			stop = TRUE;
-			break;
-		
-		default:
-			break;
-		}
-	}
-
-
-	/* msgnum & dest_folder should have valid values after a succesful
-	 * drop; in this case there is a MsgInfo available */
-	msgnum      = -1;
-	dest_folder = NULL;
-
-	debug_print("*** performing actions\n"); 
-	
-	for (ma_tail = &ma_head ; ma_tail->action; ma_tail = ma_tail->next) {
-
-		/* there are variables you have to use when defining new actions:
-		 *
-		 * copy_to_inbox_too - if the original message should be copied to the inbox 
-		 *                     (default_folder) too.
-		 * 
-		 * also note that after dropping it to a folder (folder_item_add_msg()) you have
-		 * to mark the message, just to make sure any defined mark actions are applied. */
-		 
-#define ACTION	(ma_tail->action->type) 
-
-		/* C O N T I N U A B L E */
-
-		if (MATCHACTION_COPY == ACTION) {
-			debug_print("*** performing copy\n");
-			copy_to_inbox_too = TRUE;
-			if (!prepare_destination(ma_tail->action->destination, &dest_folder, folder_table)) {
-				debug_print("Rule failed: unknown destination %s\n", ma_tail->action->destination);
-				continue; /* try next action */
-			}
-			if (0 > (msgnum = folder_item_add_msg(dest_folder, filename, FALSE))) {
-				debug_print(_("Rule failed: could not copy to folder %s\n"),
-					    ma_tail->action->destination);
-				continue; /* try next action */	    
-			}   
-			flags = msginfo->flags.perm_flags | markflags.perm_flags;
-			add_mark(dest_folder, msgnum, flags);
-		}		
-		else if (MATCHACTION_EXECUTE == ACTION) {
-			debug_print("*** performing exec\n");
-			copy_to_inbox_too = TRUE;
-			
-			/* matching_build_command() knows about filtering */
-			cmd = matching_build_command(ma_tail->action->destination, msginfo);
-			if (cmd) { 
-				system(cmd);
-				g_free(cmd);
-			}
-			else
-				debug_print(_("Rule failed: no command line\n"));
-		} 
-
-		/* U N C O N T I N U A B L E */
-		
-		else if (MATCHACTION_FORWARD == ACTION
-			 || MATCHACTION_FORWARD_AS_ATTACHMENT == ACTION) {
-			debug_print("*** performing forward\n");
-
-			/* forwarding messages is complicated because there's currently no 
-			 * way to forward a message using "filenames"; you can only forward
-			 * a message if you have its MsgInfo. this means we have to drop
-			 * the message first */ 
-			if (0 > (msgnum = folder_item_add_msg(default_folder, filename, FALSE))) {
-				debug_print(_("Rule failed: could not forward\n"));
-				copy_to_inbox_too = TRUE;
-				continue;
-			}
-				
-			flags = msginfo->flags.perm_flags | markflags.perm_flags;
-			flags |= MSG_FORWARDED;
-			add_mark(default_folder, msgnum, flags);
-
-			/* grab the dropped message */
-			fwd_msg_name = folder_item_fetch_msg(default_folder, msgnum);
-
-			tmp.perm_flags = tmp.tmp_flags = 0;
-			fwd_msg = procheader_parse(fwd_msg_name, tmp, TRUE);
-
-			fwd_msg->folder = default_folder;
-			fwd_msg->msgnum = msgnum;
-
-			/* do the compose_XXX stuff */
-			account = account_find_from_id(ma_tail->action->account_id);
-			compose = compose_forward(account, fwd_msg, ACTION == MATCHACTION_FORWARD ? FALSE : TRUE);
-			if (compose->account->protocol == A_NNTP)
-				compose_entry_append(compose, ma_tail->action->destination,
-						     COMPOSE_NEWSGROUPS);
-			else
-				compose_entry_append(compose, ma_tail->action->destination,
-						     COMPOSE_TO);
-
-			compose_send(compose);
-
-			procmsg_msginfo_free(fwd_msg);
-			
-			gtk_widget_destroy(compose->window);
-			break;
-		}			
-		else if (MATCHACTION_BOUNCE == ACTION) {
-			if (0 > (msgnum = folder_item_add_msg(default_folder, filename, FALSE))) {
-				debug_print(_("Rule failed: could not forward\n"));
-				copy_to_inbox_too = TRUE;
-				continue;
-			}
-				
-			/* grab the dropped message */
-			fwd_msg_name = folder_item_fetch_msg(default_folder, msgnum);
-
-			fwd_msg = procheader_parse(fwd_msg_name, tmp, TRUE);
-
-			fwd_msg->folder = default_folder;
-			fwd_msg->msgnum = msgnum;
-
-			/* do the compose_XXX stuff */
-			account = account_find_from_id(ma_tail->action->account_id);
-			compose = compose_bounce(account, fwd_msg);
-			if (compose->account->protocol == A_NNTP)
-				break;
-			else
-				compose_entry_append(compose, ma_tail->action->destination,
-						     COMPOSE_TO);
-
-			compose_send(compose);
-
-			procmsg_msginfo_free(fwd_msg);
-			
-			gtk_widget_destroy(compose->window);
-			break;
-		}			
-		else if (MATCHACTION_DELETE == ACTION) {
-			debug_print("*** performing delete\n");
-			copy_to_inbox_too = FALSE;
-
-			/* drop to Trash */
-			dest_folder = folder_get_default_trash();
-			msgnum = folder_item_add_msg(dest_folder, filename, FALSE);
-			if (msgnum < 0) {
-				debug_print(_("Rule failed: could not move to trash"));
-				copy_to_inbox_too = TRUE;	    
-			}
-			else {
-				flags = msginfo->flags.perm_flags | markflags.perm_flags;
-				add_mark(dest_folder, msgnum, flags);
-			}
-			break;				
-		}
-		else if (MATCHACTION_MOVE == ACTION) {
-			debug_print("*** performing move\n");
-			copy_to_inbox_too = FALSE;
-			
-			if (!prepare_destination(ma_tail->action->destination, &dest_folder, folder_table)) {
-				copy_to_inbox_too = TRUE;
-				break;
-			}
-				
-			msgnum = folder_item_add_msg(dest_folder, filename, FALSE);
-			if (msgnum < 0) {
-				debug_print(_("Rule failed: could not move to folder %s\n"),
-					    ma_tail->action->destination);
-				copy_to_inbox_too = TRUE;					   
-				break;
-			}   
-			
-			flags = msginfo->flags.perm_flags | markflags.perm_flags;
-			add_mark(dest_folder, msgnum, flags);
-			break;
-		}
-	}
-
-	/* may need to copy it to inbox too */
-	if (copy_to_inbox_too) {
-		debug_print("*** performing inbox copy\n");
-		msgnum = folder_item_add_msg(default_folder, filename, TRUE);
-		if (msgnum < 0) {
-			debug_print(_("error copying incoming file %s to inbox\n"), 
-				    filename);
-			return FALSE;				    
-		}
-		flags = msginfo->flags.perm_flags | markflags.perm_flags;
-		add_mark(default_folder, msgnum, flags);
-	}
-	else {
-		debug_print("*** unlinking\n");
-		if (unlink(filename) < 0) 
-			debug_print(_("error deleting incoming message file\n"));
-	}
-
-#undef ACTION
-
-	return TRUE;
-}
-
-static void filter_incoming_msginfo(FolderItem *default_folder, MsgInfo *msginfo, 
-				    GHashTable *folder_table)
-{
-	filter_incoming_perform_actions(default_folder, msginfo, folder_table);	
-}
-
-/* filter_incoming_message() - tries to apply a filter on one incoming message.
- * it also handles the case when there's no filter match */
-void filter_incoming_message(FolderItem *default_folder, const gchar *file_name, 
-			     GHashTable *folder_table)
-{
-	MsgInfo *msginfo;
-	MsgFlags msgflags = { 0, 0 };
-	
-	/* make an "uncomplete" msginfo. it's incomplete because it doesn't
-	 * have a message number / folder yet. */
-	if (NULL == (msginfo = procheader_parse(file_name, msgflags, TRUE))) {
-		g_warning(_("error filtering incoming message %s\n"), 
-			  file_name);
-		return;		
-	}
-
-	/* let matcher know that this is a message that has no
-	 * valid body data yet. */
-	MSG_SET_TMP_FLAGS(msginfo->flags, MSG_FILTERING);
-	msginfo->folder = (FolderItem *) g_strdup(file_name); /* actually storing a pointer to a string */
-	msginfo->msgnum = 0;
-
-	filter_incoming_msginfo(default_folder, msginfo, folder_table);
-
-	g_free(msginfo->folder);
-	procmsg_msginfo_free(msginfo);
-}
-
-/****************************************************************************/
-
-
 
 gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *action)
 {

@@ -161,9 +161,6 @@ private:
 	SummarySortType sort_mode;
 	GtkSortType sort_type;
 
-	/* tell filtering happened recently */
-	gboolean filtering_happened;
-
 };
 
 SummaryView	*summary_create(void);
