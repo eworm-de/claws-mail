@@ -49,7 +49,6 @@ src/mh.c
 src/mimeview.c
 src/msgcache.c
 src/news.c
-src/nntp.c
 src/passphrase.c
 src/pop.c
 src/prefs.c
@@ -76,15 +75,16 @@ src/select-keys.c
 src/send.c
 src/setup.c
 src/sigstatus.c
-src/smtp.c
 src/sourcewindow.c
-src/ssl_certificate.c
 src/ssl_manager.c
 src/string_match.c
 src/summaryview.c
 src/summary_search.c
-src/template.c
 src/textview.c
 src/toolbar.c
+src/common/nntp.c
+src/common/smtp.c
 src/common/ssl.c
+src/common/ssl_certificate.c
+src/common/template.c
 src/common/utils.c
