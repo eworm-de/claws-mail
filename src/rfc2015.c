@@ -476,7 +476,7 @@ int rfc2015_is_encrypted (MimeInfo *mimeinfo)
         return 0;
     if (g_strcasecmp (mimeinfo->content_type, "multipart/encrypted"))
         return 0;
-    /* fixme: we should schek the protocol parameter */
+    /* fixme: we should check the protocol parameter */
     return 1;
 }
 
@@ -932,9 +932,10 @@ failure:
 /* 
  * plain contains an entire mime object.  Sign it and return an
  * GpgmeData object with the signature of it or NULL in case of error.
+ * r_siginfo returns an XML object with information about the signature.
  */
 static GpgmeData
-pgp_sign (GpgmeData plain, GSList *key_list)
+pgp_sign (GpgmeData plain, GSList *key_list, char **r_siginfo)
 {
     GSList *p;
     GpgmeCtx ctx = NULL;
@@ -942,6 +943,7 @@ pgp_sign (GpgmeData plain, GSList *key_list)
     GpgmeData sig = NULL;
     struct passphrase_cb_info_s info;
 
+    *r_siginfo = NULL;
     memset (&info, 0, sizeof info);
 
     err = gpgme_new (&ctx);
@@ -970,6 +972,8 @@ pgp_sign (GpgmeData plain, GSList *key_list)
     if (err)
 	goto leave;
     err = gpgme_op_sign (ctx, plain, sig, GPGME_SIG_MODE_DETACH);
+    if (!err)
+        *r_siginfo = gpgme_get_op_info (ctx, 0);
 
 leave:
     if (err) {
@@ -985,6 +989,67 @@ leave:
     gpgme_release (ctx);
     return sig;
 }
+
+/*
+ * Find TAG in XML and return a pointer into xml set just behind the
+ * closing angle.  Return NULL if not found. 
+ */
+static const char *
+find_xml_tag (const char *xml, const char *tag)
+{
+    int taglen = strlen (tag);
+    const char *s = xml;
+ 
+    while ( (s = strchr (s, '<')) ) {
+        s++;
+        if (!strncmp (s, tag, taglen)) {
+            const char *s2 = s + taglen;
+            if (*s2 == '>' || isspace (*(const unsigned char*)s2) ) {
+                /* found */
+                while (*s2 && *s2 != '>') /* skip attributes */
+                    s2++;
+                /* fixme: do need to handle angles inside attribute vallues? */
+                return *s2? (s2+1):NULL;
+            }
+        }
+        while (*s && *s != '>') /* skip to end of tag */
+            s++;
+    }
+    return NULL;
+}
+
+
+/*
+ * Extract the micalg from an GnupgOperationInfo XML container.
+ */
+const char *
+extract_micalg (char *xml)
+{
+    const char *s;
+
+    s = find_xml_tag (xml, "GnupgOperationInfo");
+    if (s) {
+        const char *s_end = find_xml_tag (s, "/GnupgOperationInfo");
+        s = find_xml_tag (s, "signature");
+        if (s && s_end && s < s_end) {
+            const char *s_end2 = find_xml_tag (s, "/signature");
+            if (s_end2 && s_end2 < s_end) {
+                s = find_xml_tag (s, "micalg");
+                if (s && s < s_end2) {
+                    s_end = strchr (s, '<');
+                    if (s_end) {
+                        char *p = g_malloc (s_end - s + 1);
+                        memcpy (p, s, s_end - s);
+                        p[s_end-s] = 0;
+                        return p;
+                    }
+                }
+            }
+        }
+    }
+    return NULL;
+}
+
 
 /*
  * Sign the file and replace its content with the signed one.
@@ -1003,6 +1068,8 @@ rfc2015_sign (const char *file, GSList *key_list)
     size_t nread;
     int mime_version_seen = 0;
     char *boundary = create_boundary ();
+    char *micalg = NULL;
+    char *siginfo;
 
     /* Open the source file */
     if ((fp = fopen(file, "rb")) == NULL) {
@@ -1072,7 +1139,11 @@ rfc2015_sign (const char *file, GSList *key_list)
         goto failure;
     }
 
-    sigdata = pgp_sign (plain, key_list);
+    sigdata = pgp_sign (plain, key_list, &siginfo); 
+    if (siginfo) {
+	micalg = extract_micalg (siginfo);
+	free (siginfo);
+    }
     if (!sigdata) 
         goto failure;
 
@@ -1110,8 +1181,10 @@ rfc2015_sign (const char *file, GSList *key_list)
     if (!mime_version_seen) 
         fputs ("MIME-Version: 1\r\n", fp);
     fprintf (fp, "Content-Type: multipart/signed; "
-		 "protocol=\"application/pgp-signature\";\r\n"
-		 " boundary=\"%s\"\r\n", boundary );
+             "protocol=\"application/pgp-signature\";\r\n");
+    if (micalg)
+        fprintf (fp, " micalg=%s;", micalg );
+    fprintf (fp, " boundary=\"%s\"\r\n", boundary );
 
     /* Part 1: signed material */
     fprintf (fp, "\r\n--%s\r\n", boundary);
@@ -1161,6 +1234,7 @@ rfc2015_sign (const char *file, GSList *key_list)
     gpgme_data_release (plain);
     gpgme_data_release (sigdata);
     g_free (boundary);
+    g_free (micalg);
     return 0;
 
 failure:
@@ -1170,6 +1244,7 @@ failure:
     gpgme_data_release (plain);
     gpgme_data_release (sigdata);
     g_free (boundary);
+    g_free (micalg);
     return -1; /* error */
 }
 
