@@ -24,6 +24,7 @@ EXPORTS
 	action_get_type 
 	action_update_compose_menu 
 	action_update_mainwin_menu 
+	action_update_msgview_menu 
 	actions_execute 
 	add_history 
 	addrbook_add_address_list 
@@ -1096,7 +1097,9 @@ EXPORTS
 	messageview_destroy 
 	messageview_get_current_textview 
 	messageview_get_msgview_list 
+	messageview_get_selected_mime_part 
 	messageview_get_selection 
+	messageview_get_window_list 
 	messageview_init 
 	messageview_is_visible 
 	messageview_quote_color_set 
@@ -1131,6 +1134,7 @@ EXPORTS
 	mimeview_check_signature 
 	mimeview_create 
 	mimeview_destroy 
+	mimeview_get_selected_part 
 	mimeview_init 
 	mimeview_pass_key_press_event 
 	mimeview_register_viewer_factory 
@@ -1213,13 +1217,6 @@ EXPORTS
 	passcrypt_decrypt 
 	passcrypt_encrypt 
 	path_cmp 
-	pgptext_check_signature 
-	pgptext_decrypt_message 
-	pgptext_encrypt 
-	pgptext_find_signature 
-	pgptext_has_signature 
-	pgptext_is_encrypted 
-	pgptext_sign 
 	pine_create 
 	pine_find_file 
 	pine_free 
@@ -1580,6 +1577,8 @@ EXPORTS
 	stock_pixmap_themes_list_new 
 	stock_pixmap_widget 
 	stop_mswin_helper 
+	str_case_equal 
+	str_case_hash 
 	str_open_as_stream 
 	str_write_to_file 
 	strcasestr 
@@ -1633,6 +1632,7 @@ EXPORTS
 	summary_filter_open 
 	summary_find_next_important_score 
 	summary_find_prev_important_score 
+	summary_get_selected_msg_list 
 	summary_get_selection 
 	summary_get_selection_type 
 	summary_harvest_address 
@@ -1786,6 +1786,7 @@ EXPORTS
 	w32_aspell_loaded 
 	w32_aspell_null 
 	w32_debug_message_write_to_file 
+	w32_get_exec_dir 
 	w32_log_handler 
 	w32_mailcap_create 
 	w32_mailcap_free 
@@ -1793,6 +1794,7 @@ EXPORTS
 	w32_mailcap_list 
 	w32_mailcap_list_search 
 	w32_mailcap_lookup 
+	w32_move_to_exec_dir 
 	w32_parse_path 
 	w32_read_mailcap 
 	wcscasestr 

@@ -207,7 +207,7 @@ int main(int argc, char *argv[])
 		w32_log_handler, NULL);
 #endif
 
-	if(!sylpheed_init(&argc, &argv)) {
+	if (!sylpheed_init(&argc, &argv)) {
 		return 0;
 	}
 
@@ -598,10 +598,12 @@ static void initial_processing(FolderItem *item, gpointer data)
 
 static void draft_all_messages(void)
 {
-	GList * compose_list = compose_get_compose_list();
-	GList * elem = NULL;
-	if(compose_list) {
-		for (elem = compose_list; elem != NULL && elem->data != NULL; elem = elem->next) {
+	GList *compose_list = compose_get_compose_list();
+	GList *elem = NULL;
+	
+	if (compose_list) {
+		for (elem = compose_list; elem != NULL && elem->data != NULL; 
+		     elem = elem->next) {
 			Compose *c = (Compose*)elem->data;
 			compose_draft(c);
 		}
@@ -610,10 +612,25 @@ static void draft_all_messages(void)
 
 void clean_quit(void)	
 {
+	/*!< Good idea to have the main window stored in a 
+	 *   static variable so we can check that variable
+	 *   to see if we're really allowed to do things
+	 *   that actually the spawner is supposed to 
+	 *   do (like: sending mail, composing messages).
+	 *   Because, really, if we're the spawnee, and
+	 *   we touch GTK stuff, we're hosed. See the 
+	 *   next fixme. */
+
+	/* FIXME: Use something else to signal that we're
+	 * in the original spawner, and not in a spawned
+	 * child. */
+	if (!static_mainwindow) 
+		return;
+		
 	draft_all_messages();
 
-	if (prefs_common.warn_queued_on_exit)
-	{	/* disable the popup */ 
+	if (prefs_common.warn_queued_on_exit) {	
+		/* disable the popup */ 
 		prefs_common.warn_queued_on_exit = FALSE;	
 		app_will_exit(NULL, static_mainwindow);
 		prefs_common.warn_queued_on_exit = TRUE;

@@ -448,10 +448,6 @@ SOURCE=..\src\passphrase.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\src\pgptext.c
-# End Source File
-# Begin Source File
-
 SOURCE=..\src\pine.c
 # End Source File
 # Begin Source File
@@ -1037,10 +1033,6 @@ SOURCE=..\src\common\passcrypt.h
 # Begin Source File
 
 SOURCE=..\src\passphrase.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\src\pgptext.h
 # End Source File
 # Begin Source File
 

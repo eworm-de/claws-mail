@@ -24,6 +24,7 @@
 #include <gtk/gtkitemfactory.h>
 
 #include "mainwindow.h"
+#include "messageview.h"
 #include "compose.h"
 
 typedef enum
@@ -52,6 +53,8 @@ void actions_execute                    (gpointer       data,
 
 void action_update_mainwin_menu	(GtkItemFactory	*ifactory, 
 				 MainWindow	*mainwin);
+void action_update_msgview_menu	(GtkItemFactory	*ifactory,
+				 MessageView	*msgview);
 void action_update_compose_menu	(GtkItemFactory	*ifactory, 
 				 Compose	*compose);
 

@@ -31,6 +31,7 @@ typedef struct _MessageView		MessageView;
 #include "mimeview.h"
 #include "noticeview.h"
 #include "procmsg.h"
+#include "procmime.h"
 #include "toolbar.h"
 
 typedef enum
@@ -78,10 +79,12 @@ void messageview_show				(MessageView	*messageview,
 						 gboolean	 all_headers);
 void messageview_clear				(MessageView	*messageview);
 void messageview_destroy			(MessageView	*messageview);
+
 void messageview_quote_color_set		(void);
 void messageview_set_font			(MessageView	*messageview);
 
 TextView *messageview_get_current_textview	(MessageView	*messageview);
+MimeInfo *messageview_get_selected_mime_part	(MessageView	*messageview);
 
 void messageview_copy_clipboard			(MessageView	*messageview);
 void messageview_select_all			(MessageView	*messageview);

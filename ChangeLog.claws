@@ -1,3 +1,43 @@
+2003-04-23 [paul]	0.8.11claws108
+
+	* sync with 0.8.11cvs33
+		see ChangeLog 2003-04-23
+
+2003-04-22 [paul]	0.8.11claws107
+
+	* src/Makefile.am
+	  src/messageview.c
+	  src/mimeview.c
+	  src/pgptext.[ch]	** REMOVED **
+	  	remove pgptext.[ch] as its not used any more
+
+2003-04-22 [paul]	0.8.11claws106
+
+	* sync with 0.8.11cvs31
+		see ChangeLog 2003-04-21 and 2003-04-22
+
+2003-04-21 [alfons]	0.8.11claws105
+
+	* src/main.c
+		No access to GTK structures if we're a spawned child
+		(and clean up code a little bit...) Should fix #126.
+
+2003-04-21 [melvin]	0.8.11claws104
+
+	* src/plugins/dillo_viewer/README
+		Improved slightly the text.
+
+2003-04-21 [melvin]	0.8.11claws103
+
+	* src/plugins/dillo_viewer/README *** NEW ***
+		Added a README file for the Dillo plugin
+
+2003-04-20 [paul]
+
+	* tools/README
+	  tools/outlook2sylpheed.pl
+	  	updated and improved by Ricardo Mones Lastra
+
 2003-04-18 [oliver]	0.8.11claws102
 
 	* src/inc.c 

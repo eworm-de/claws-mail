@@ -184,7 +184,7 @@ void session_child_thread(void *data)
 	close(pipe_fds2[0]);
 #endif
 
-	g_print("child: connecting to %s:%d ...\n", server, port);
+	debug_print("session: child: connecting to %s:%d ...\n", server, port);
 
 	if ((sock = sock_connect(server, port)) == NULL) {
 		session_send_msg(session, SESSION_MSG_ERROR,
@@ -202,7 +202,7 @@ void session_child_thread(void *data)
 	}
 #endif
 
-	g_print("child: connected\n");
+	debug_print("session: child: connected\n");
 
 	session->sock = sock;
 	session->state = SESSION_RECV;
@@ -226,7 +226,7 @@ void session_child_thread(void *data)
 #endif
 	session_close(session);
 
-	g_print("child: disconnected\n");
+	debug_print("session: child: disconnected\n");
 
 	_exit(0);
 }
@@ -243,7 +243,8 @@ void session_child_thread(void *data)
  */
 gint session_disconnect(Session *session)
 {
-	g_print("%s: session_disconnect()\n", session->child_pid == 0 ? "child" : "parent");
+	debug_print("session: %s: session_disconnect()\n",
+		    session->child_pid == 0 ? "child" : "parent");
 	session_send_msg(session, SESSION_MSG_CONTROL, "DISCONNECT");
 	return 0;
 }
@@ -258,7 +259,7 @@ void session_destroy(Session *session)
 	g_return_if_fail(session != NULL);
 	g_return_if_fail(session->destroy != NULL);
 
-	g_print("session_destroy()\n");
+	debug_print("session: session_destroy()\n");
 	session_close(session);
 	g_print("$$$ session_destroy() session->destroy called\n");
 	session->destroy(session);
@@ -319,7 +320,8 @@ static gint session_close(Session *session)
 {
 	g_return_val_if_fail(session != NULL, -1);
 
-	g_print("%s: session_close()\n", session->child_pid == 0 ? "child" : "parent");
+	debug_print("session: %s: session_close()\n",
+		    session->child_pid == 0 ? "child" : "parent");
 
 	if (session->read_tag > 0) {
 		g_source_remove(session->read_tag);
@@ -393,7 +395,6 @@ gint session_send_msg(Session *session, SessionMsgType type, const gchar *msg)
 	}
 
 	str = g_strdup_printf("%s %s\n", prefix, msg);
-	/* g_print("%s: sending message: %s", session->child_pid == 0 ? "child" : "parent", str); */
 	size = strlen(str);
 
 	while (size > 0) {
@@ -447,7 +448,9 @@ static gchar *session_recv_msg(Session *session)
 		if (str[size - 2] == '\n') {
 			str[size - 2] = '\0';
 
-			g_print("%s: received message: %s\n", session->child_pid == 0 ? "child" : "parent", str);
+			debug_print("session: %s: received message: %s\n",
+				    session->child_pid == 0 ?
+				    "child" : "parent", str);
 
 			break;
 		}
@@ -504,7 +507,9 @@ gint session_send_data(Session *session, const guchar *data, guint size)
 			return -1;
 		}
 		size -= bytes_written;
-		g_print("%s: sent %d bytes of data\n", session->child_pid == 0 ? "child" : "parent", bytes_written);
+		debug_print("session: %s: sent %d bytes of data\n",
+			    session->child_pid == 0 ? "child" : "parent",
+			    bytes_written);
 	}
 
 	return 0;
@@ -551,7 +556,9 @@ static guchar *session_read_data(Session *session, guint size)
 		}
 		size -= bytes_read;
 		cur += bytes_read;
-		g_print("%s: received %d bytes of data\n", session->child_pid == 0 ? "child" : "parent", bytes_read);
+		debug_print("session: %s: received %d bytes of data\n",
+			    session->child_pid == 0 ? "child" : "parent",
+			    bytes_read);
 	}
 
 	return data;
@@ -638,7 +645,9 @@ static guchar *session_recv_data_from_sock(Session *session, guint size)
 			g_free(data);
 			return NULL;
 		}
-		g_print("child: received %d bytes of data from sock\n", bytes_read);
+		debug_print("session: child: "
+			    "received %d bytes of data from sock\n",
+			    bytes_read);
 		left -= bytes_read;
 		cur += bytes_read;
 		total_read_len += bytes_read;
@@ -892,7 +901,6 @@ gboolean session_child_input(Session *session)
 	if ((msg = session_recv_msg(session)) == NULL) {
 		session_send_msg(session, SESSION_MSG_ERROR,
 				 "receiving message failed.");
-		session_close(session);
 		session->state = SESSION_ERROR;
 		return FALSE;
 	}
@@ -907,7 +915,6 @@ gboolean session_child_input(Session *session)
 		if (!str) {
 			session_send_msg(session, SESSION_MSG_ERROR,
 					 "receiving message failed.");
-			session_close(session);
 			session->state = SESSION_ERROR;
 			g_free(msg);
 			return FALSE;
@@ -924,7 +931,6 @@ gboolean session_child_input(Session *session)
 		if (!send_data) {
 			session_send_msg(session, SESSION_MSG_ERROR,
 					 "sending data failed.");
-			session_close(session);
 			session->state = SESSION_ERROR;
 			g_free(msg);
 			return FALSE;
@@ -933,7 +939,6 @@ gboolean session_child_input(Session *session)
 		if (session_send_data_to_sock(session, send_data, size) < 0) {
 			session_send_msg(session, SESSION_MSG_ERROR,
 					 "sending data failed.");
-			session_close(session);
 			session->state = SESSION_ERROR;
 			g_free(send_data);
 			g_free(msg);
@@ -956,13 +961,11 @@ gboolean session_child_input(Session *session)
 		if (!recv_data) {
 			session_send_msg(session, SESSION_MSG_ERROR,
 					 "receiving data failed.");
-			session_close(session);
 			session->state = SESSION_ERROR;
 			g_free(msg);
 			return FALSE;
 		}
 		if (session_send_data(session, recv_data, size) < 0) {
-			session_close(session);
 			session->state = SESSION_ERROR;
 			g_free(recv_data);
 			g_free(msg);
@@ -978,7 +981,6 @@ gboolean session_child_input(Session *session)
 			if (!str) {
 				session_send_msg(session, SESSION_MSG_ERROR,
 						 "receiving message failed.");
-				session_close(session);
 				session->state = SESSION_ERROR;
 				g_free(msg);
 				return FALSE;
@@ -993,7 +995,6 @@ gboolean session_child_input(Session *session)
 							 SSL_METHOD_TLSv1)) {
 				session_send_msg(session, SESSION_MSG_ERROR,
 						 "can't start TLS session.");
-				session_close(session);
 				session->state = SESSION_ERROR;
 				g_free(msg);
 				return FALSE;
@@ -1013,7 +1014,6 @@ gboolean session_child_input(Session *session)
 		} else {
 			session_send_msg(session, SESSION_MSG_ERROR,
 					 "wrong control message.");
-			session_close(session);
 			session->state = SESSION_ERROR;
 			g_free(msg);
 			return FALSE;
@@ -1023,7 +1023,6 @@ gboolean session_child_input(Session *session)
 	default:
 		session_send_msg(session, SESSION_MSG_ERROR,
 				 "error received from parent.");
-		session_close(session);
 		session->state = SESSION_ERROR;
 		g_free(msg);
 		return FALSE;

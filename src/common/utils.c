@@ -139,6 +139,25 @@ void hash_free_value_mem(GHashTable *table)
 	g_hash_table_foreach(table, hash_free_value_mem_func, NULL);
 }
 
+gint str_case_equal(gconstpointer v, gconstpointer v2)
+{
+	return strcasecmp((const gchar *)v, (const gchar *)v2) == 0;
+}
+
+guint str_case_hash(gconstpointer key)
+{
+	const gchar *p = key;
+	guint h = *p;
+
+	if (h) {
+		h = tolower(h);
+		for (p += 1; *p != '\0'; p++)
+			h = (h << 5) - h + tolower(*p);
+	}
+
+	return h;
+}
+
 void ptr_array_free_strings(GPtrArray *array)
 {
 	gint i;
@@ -3299,11 +3318,16 @@ time_t remote_tzoffset_sec(const gchar *zone)
 	} else if (!strncmp(zone, "UT" , 2) ||
 		   !strncmp(zone, "GMT", 2)) {
 		remoteoffset = 0;
-	} else if (strlen(zone3) == 3 &&
-		   (p = strstr(ustzstr, zone3)) != NULL &&
-		   (p - ustzstr) % 3 == 0) {
-		iustz = ((gint)(p - ustzstr) / 3 + 1) / 2 - 8;
-		remoteoffset = iustz * 3600;
+	} else if (strlen(zone3) == 3) {
+		for (p = ustzstr; *p != '\0'; p += 3) {
+			if (!strncasecmp(p, zone3, 3)) {
+				iustz = ((gint)(p - ustzstr) / 3 + 1) / 2 - 8;
+				remoteoffset = iustz * 3600;
+				break;
+			}
+		}
+		if (*p == '\0')
+			return -1;
 	} else if (strlen(zone3) == 1) {
 		switch (zone[0]) {
 		case 'Z': remoteoffset =   0; break;
@@ -3334,7 +3358,8 @@ time_t remote_tzoffset_sec(const gchar *zone)
 		default:  remoteoffset =   0; break;
 		}
 		remoteoffset = remoteoffset * 3600;
-	}
+	} else
+		return -1;
 
 	return remoteoffset;
 }

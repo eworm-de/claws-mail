@@ -319,11 +319,6 @@ static void html_get_parenthesis	(HTMLParser	*parser,
 					 gchar		*buf,
 					 gint		 len);
 
-#if 0
-static gint g_str_case_equal		(gconstpointer	 v,
-					 gconstpointer	 v2);
-static guint g_str_case_hash		(gconstpointer	 key);
-#endif
 
 HTMLParser *html_parser_new(FILE *fp, CodeConverter *conv)
 {
@@ -787,25 +782,3 @@ static void html_get_parenthesis(HTMLParser *parser, gchar *buf, gint len)
 	g_strstrip(buf);
 	parser->bufp = p + 1;
 }
-
-/* these hash functions were taken from gstring.c in glib */
-#if 0
-static gint g_str_case_equal(gconstpointer v, gconstpointer v2)
-{
-	return strcasecmp((const gchar *)v, (const gchar *)v2) == 0;
-}
-
-static guint g_str_case_hash(gconstpointer key)
-{
-	const gchar *p = key;
-	guint h = *p;
-
-	if (h) {
-		h = tolower(h);
-		for (p += 1; *p != '\0'; p++)
-			h = (h << 5) - h + tolower(*p);
-	}
-
-	return h;
-}
-#endif

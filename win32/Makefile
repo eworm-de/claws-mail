@@ -280,7 +280,6 @@ OBJECTS= \
 	noticeview.o \
 	passcrypt.o \
 	passphrase.o \
-	pgptext.o \
 	pine.o \
 	plugin.o \
 	pluginwindow.o \
@@ -586,7 +585,6 @@ nntp.o: 	nntp.c nntp.h
 noticeview.o:	noticeview.c noticeview.h 
 passcrypt.o: 	passcrypt.c passcrypt.h
 passphrase.o: 	passphrase.c passphrase.h
-pgptext.o: 	pgptext.c pgptext.h
 pine.o: 	pine.c pine.h
 plugin.o: 	plugin.c plugin.h
 pluginwindow.o: 	pluginwindow.c pluginwindow.h

@@ -196,6 +196,8 @@ Address book conversion
   	Sylpheed XML address book.
 
   HOW TO USE IT
+  	For text files:
+	--------------
   	You must export Outlook Express contact list as TXT file, choosing
   	only "Name" and "Address" fields to export.
 
@@ -205,9 +207,27 @@ Address book conversion
 
 		outlook2sylpheed.pl fullpathname
 
+	For csv files:
+	-------------
+	You must export Outlook contact list as CSV file, choosing ALL the
+	fields available for exporting.
+
+	You must exit Sylpheed before converting the contact list.
+
+	From the command line, execute the following:
+
+		outlook2sylpheed.pl --csv fullpathname
+
   LIMITATIONS
-	Only works with fields described above. If you have more complex
-  	examples send them to me, and I'll try to enhance the script.
+	For text files only works with fields described above. If you have 
+	more complex examples send them to me, and I'll try to enhance the 
+	script.
+
+	For csv files you must export all fields (but only non empty fields
+	are added to the created Sylpheed address book) and the number of
+	fields expected is harcoded. Look for the $nboffields variable in
+	the script and change its value if you are sure you exported all
+	fields and script gives the 'unknown csv file format' error.
 
   Contact: Ricardo Mones Lastra <mones@aic.uniovi.es>
 

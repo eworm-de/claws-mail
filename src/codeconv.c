@@ -1183,25 +1183,6 @@ static GHashTable *conv_get_charset_to_str_table(void)
 	return table;
 }
 
-static gint str_case_equal(gconstpointer v, gconstpointer v2)
-{
-	return strcasecmp((const gchar *)v, (const gchar *)v2) == 0;
-}
-
-static guint str_case_hash(gconstpointer key)
-{
-	const gchar *p = key;
-	guint h = *p;
-
-	if (h) {
-		h = tolower(h);
-		for (p += 1; *p != '\0'; p++)
-			h = (h << 5) - h + tolower(*p);
-	}
-
-	return h;
-}
-
 static GHashTable *conv_get_charset_from_str_table(void)
 {
 	static GHashTable *table;
