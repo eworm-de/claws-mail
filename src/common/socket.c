@@ -316,13 +316,19 @@ static gboolean sock_dispatch(GSource *source, GSourceFunc callback,
 {
 	SockInfo *sock = ((SockSource *)source)->sock;
 
-	return sock->callback(sock, sock->condition, user_data);
+	if (!sock || !sock->callback || !sock->data)
+		return FALSE;
+
+	return sock->callback(sock, sock->condition, sock->data);
 }
 
 static gboolean sock_watch_cb(GIOChannel *source, GIOCondition condition,
 			      gpointer data)
 {
 	SockInfo *sock = (SockInfo *)data;
+
+	if (!sock || !sock->callback || !sock->data)
+		return FALSE;
 
 	return sock->callback(sock, condition, sock->data);
 }

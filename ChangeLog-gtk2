@@ -1,3 +1,11 @@
+2003-12-04 Colin Leroy <colin@colino.net>
+	* src/compose.c
+		Fix event handlers on header fields
+	* src/common/socket.c
+	  src/common/session.c
+		Fix segfault with callback (SSL)
+		Fix end of session 
+
 2003-10-06 Thorsten Maerz <torte@netztorte.de>
 
 	* Fix compile bug in src/compose.c

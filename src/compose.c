@@ -461,9 +461,9 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				  gboolean followup_and_reply_to,
 				  const gchar *body);
 
-void compose_headerentry_changed_cb	   (GtkWidget	       *entry,
+gboolean compose_headerentry_changed_cb	   (GtkWidget	       *entry,
 					    ComposeHeaderEntry *headerentry);
-void compose_headerentry_key_press_event_cb(GtkWidget	       *entry,
+gboolean compose_headerentry_key_press_event_cb(GtkWidget	       *entry,
 					    GdkEventKey        *event,
 					    ComposeHeaderEntry *headerentry);
 
@@ -7296,7 +7296,7 @@ static void compose_toggle_remove_refs_cb(gpointer data, guint action,
 		compose->remove_references = FALSE;
 }
 
-void compose_headerentry_key_press_event_cb(GtkWidget *entry,
+gboolean compose_headerentry_key_press_event_cb(GtkWidget *entry,
 					    GdkEventKey *event,
 					    ComposeHeaderEntry *headerentry)
 {
@@ -7324,25 +7324,26 @@ void compose_headerentry_key_press_event_cb(GtkWidget *entry,
 			gtk_widget_grab_focus(headerentry->compose->subject_entry);
 		}
 	}
-
+	return FALSE;
 }
 
-void compose_headerentry_changed_cb(GtkWidget *entry,
+gboolean compose_headerentry_changed_cb(GtkWidget *entry,
 				    ComposeHeaderEntry *headerentry)
 {
 	if (strlen(gtk_entry_get_text(GTK_ENTRY(entry))) != 0) {
 		headerentry->compose->header_list =
 			g_slist_append(headerentry->compose->header_list,
 				       headerentry);
+		
 		compose_create_header_entry(headerentry->compose);
-		gtk_signal_disconnect_by_func
-			(GTK_OBJECT(entry),
-			 GTK_SIGNAL_FUNC(compose_headerentry_changed_cb),
-			 headerentry);
+		gtk_signal_disconnect_by_data
+			(GTK_OBJECT(entry), headerentry);
+		
 		/* Automatically scroll down */
 		compose_show_first_last_header(headerentry->compose, FALSE);
 		
 	}
+	return FALSE;
 }
 
 static void compose_show_first_last_header(Compose *compose, gboolean show_first)

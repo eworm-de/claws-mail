@@ -437,6 +437,11 @@ static gboolean session_read_msg_cb(SockInfo *source, GIOCondition condition,
 		read_len = sock_read(session->sock, session->read_buf,
 				     SESSION_BUFFSIZE - 1);
 
+		if (read_len == -1 && session->state == SESSION_DISCONNECTED) {
+			g_warning ("sock_read: session disconnected\n");
+			return FALSE;
+		}
+		
 		if (read_len == 0) {
 			g_warning("sock_read: received EOF\n");
 			session->state = SESSION_EOF;
