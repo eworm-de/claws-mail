@@ -151,6 +151,8 @@ TextView *textview_create(void)
 	/* create GtkText widgets for single-byte and multi-byte character */
 	text_sb = gtk_text_new(NULL, NULL);
 	text_mb = gtk_text_new(NULL, NULL);
+	GTK_TEXT(text_sb)->default_tab_width = 8;
+	GTK_TEXT(text_mb)->default_tab_width = 8;
 	gtk_widget_show(text_sb);
 	gtk_widget_show(text_mb);
 	gtk_text_set_word_wrap(GTK_TEXT(text_sb), TRUE);

@@ -2991,6 +2991,7 @@ static Compose *compose_create(PrefsAccount *account)
 			    (GTK_SCROLLED_WINDOW(scrolledwin)),
 			    gtk_scrolled_window_get_vadjustment
 			    (GTK_SCROLLED_WINDOW(scrolledwin)));
+	GTK_STEXT(text)->default_tab_width = 8;
 	gtk_stext_set_editable(GTK_STEXT(text), TRUE);
 	if (prefs_common.smart_wrapping) {	
 		gtk_stext_set_word_wrap(GTK_STEXT(text), TRUE);

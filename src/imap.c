@@ -212,6 +212,10 @@ static gchar *strchr_cpy			(const gchar	*src,
 						 gchar		 ch,
 						 gchar		*dest,
 						 gint		 len);
+static gchar *get_quoted			(const gchar	*src,
+						 gchar		 ch,
+						 gchar		*dest,
+						 gint		 len);
 static gchar *search_array_contain_str		(GPtrArray	*array,
 						 gchar		*str);
 static void imap_path_separator_subst		(gchar		*str,
@@ -1437,7 +1441,7 @@ static gchar *imap_parse_atom(SockInfo *sock, gchar *src,
 	} else if (*cur_pos == '\"') {
 		gchar *p;
 
-		p = strchr_cpy(cur_pos + 1, '\"', dest, dest_len);
+		p = get_quoted(cur_pos, '\"', dest, dest_len);
 		cur_pos = p ? p : cur_pos + 2;
 	} else if (*cur_pos == '{') {
 		gchar buf[32];
@@ -2256,6 +2260,30 @@ static gchar *strchr_cpy(const gchar *src, gchar ch, gchar *dest, gint len)
 	dest[MIN(tmp - src, len - 1)] = '\0';
 
 	return tmp + 1;
+}
+
+static gchar *get_quoted(const gchar *src, gchar ch, gchar *dest, gint len)
+{
+	const gchar *p = src;
+	gint n = 0;
+
+	g_return_val_if_fail(*p == ch, NULL);
+
+	*dest = '\0';
+	p++;
+
+	while (*p != '\0' && *p != ch) {
+		if (n < len - 1) {
+			if (*p == '\\' && *(p + 1) != '\0')
+				p++;
+			*dest++ = *p++;
+		} else
+			p++;
+		n++;
+	}
+
+	*dest = '\0';
+	return (gchar *)(*p == ch ? p + 1 : p);
 }
 
 static gchar *search_array_contain_str(GPtrArray *array, gchar *str)

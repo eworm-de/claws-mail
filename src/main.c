@@ -263,7 +263,10 @@ int main(int argc, char *argv[])
 	account_read_config_all();
 	account_save_config_all();
 
-	if (folder_read_list() < 0) setup(mainwin);
+	if (folder_read_list() < 0) {
+		setup(mainwin);
+		folder_write_list();
+	}
 	account_set_missing_folder();
 	folderview_set(folderview);
 

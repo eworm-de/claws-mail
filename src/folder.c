@@ -310,8 +310,11 @@ gint folder_read_list(void)
 {
 	GNode *node;
 	XMLNode *xmlnode;
+	gchar *path;
 
-	node = xml_parse_file(folder_get_list_path());
+	path = folder_get_list_path();
+	if (!is_file_exist(path)) return -1;
+	node = xml_parse_file(path);
 	if (!node) return -1;
 
 	xmlnode = node->data;

@@ -1,3 +1,10 @@
+2001-08-01 [paul]
+
+	* configure.in
+		change to 0.5.1claws4
+
+	* sync with sylpheed 0.5.1cvs7
+
 2001-07-31 [alfons]
 
 	* src/prefs_common.c, src/prefs_common.h, 

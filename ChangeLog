@@ -1,3 +1,20 @@
+2001-08-01
+
+	* src/mimeview.c: mimeview_view_file(): added -x option to the
+	  metamail to prevent the suspention of the main process.
+	  mimeview_button_pressed(): deactivate `Open' menu item if
+	  content-type is application/octet-stream.
+
+2001-07-31
+
+	* src/imap.c: imap_parse_atom(): parse escaped characters properly.
+	  get_quoted(): new. It handles the escape character '\'.
+	* src/folder.c: folder_read_list(): don't output warning if
+	  folderlist.xml doesn't exist.
+	* src/main.c: main(): write folder list after setup.
+	* src/textview.c: textview_create()
+	  src/compose.c: compose_create(): set default tab width to 8.
+
 2001-07-29
 
 	* src/prefs_common.c: date_format_select_row(): fixed a bug that
