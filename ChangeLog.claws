@@ -1,4 +1,9 @@
-2002-08-25 [alfons]	0.8.1claws112
+2002-08-24 [paul]	0.8.2claws113
+
+	* sync with 0.8.1cvs30
+		see ChangeLog 2002-08-23
+
+2002-08-24 [alfons]	0.8.1claws112
 
 	* src/summaryview.c
 		remove unnecessary allocations for search bar fixing leaks

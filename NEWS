@@ -21,7 +21,7 @@ Changes of Sylpheed
     * The '--attach' command line option has been implemented.
     * Automatic cache expiration for News has been implemented.
     * Time stamp has been added to the log messages.
-    * Temporary files are created in home directory.
+    * Temporary files are created under ~/.sylpheed/tmp/.
     * Folder and summary view refresh on incorporation has been fixed.
     * The correct FQDN will be returned to server.
     * Some major memory leaks have been fixed.
