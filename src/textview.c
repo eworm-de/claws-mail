@@ -564,17 +564,17 @@ void textview_show_mime_part(TextView *textview, MimeInfo *partinfo)
 
 	gtk_stext_freeze(text);
 
-	TEXT_INSERT(_("To save this part, pop up the context menu with "));
-	TEXT_INSERT(_("right click and select `Save as...', "));
-	TEXT_INSERT(_("or press `y' key.\n\n"));
+	TEXT_INSERT(_("The following can be performed on this part by "));
+	TEXT_INSERT(_("right-clicking the icon or list item:\n"));
 
-	TEXT_INSERT(_("To display this part as a text message, select "));
-	TEXT_INSERT(_("`Display as text', or press `t' key.\n\n"));
-
-	TEXT_INSERT(_("To open this part with external program, select "));
-	TEXT_INSERT(_("`Open' or `Open with...', "));
-	TEXT_INSERT(_("or double-click, or click the center button, "));
-	TEXT_INSERT(_("or press `l' key."));
+	TEXT_INSERT(_("    To save select 'Save as...' (Shortcut key: 'y')\n"));
+	TEXT_INSERT(_("    To display as text select 'Display as text' "));
+	TEXT_INSERT(_("(Shortcut key: 't')\n"));
+	TEXT_INSERT(_("    To open with an external program select 'Open' "));
+	TEXT_INSERT(_("(Shortcut key: 'l'),\n"));
+	TEXT_INSERT(_("    (alternately double-click, or click the middle "));
+	TEXT_INSERT(_("mouse button),\n"));
+	TEXT_INSERT(_("    or 'Open with...' (Shortcut key: 'o')\n"));
 
 	gtk_stext_thaw(text);
 }

@@ -1,3 +1,8 @@
+2003-11-24 [paul]	0.9.6claws89
+
+	* src/textview.c
+		textview_show_mime_part(): rewrite text hint
+
 2003-11-22 [paul]	0.9.6claws88
 
 	* sync with 0.9.7cvs5
