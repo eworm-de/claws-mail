@@ -1612,6 +1612,8 @@ void folder_item_restore_persist_prefs(FolderItem *item, GHashTable *pptable)
 	item->threaded  = pp->threaded;
 	item->ret_rcpt  = pp->ret_rcpt;
 	item->hide_read_msgs = pp->hide_read_msgs;
+	item->sort_key  = pp->sort_key;
+	item->sort_type = pp->sort_type;
 }
 
 static void folder_get_persist_prefs_recursive(GNode *node, GHashTable *pptable)
@@ -1633,6 +1635,8 @@ static void folder_get_persist_prefs_recursive(GNode *node, GHashTable *pptable)
 		pp->threaded  = item->threaded;
 		pp->ret_rcpt  = item->ret_rcpt;	
 		pp->hide_read_msgs = item->hide_read_msgs;
+		pp->sort_key  = item->sort_key;
+		pp->sort_type = item->sort_type;
 		g_hash_table_insert(pptable, item->path, pp);
 	}		
 
