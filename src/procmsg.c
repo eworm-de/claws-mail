@@ -140,7 +140,7 @@ static gboolean procmsg_ignore_node(GNode *node, gpointer data)
 /* return the reversed thread tree */
 GNode *procmsg_get_thread_tree(GSList *mlist)
 {
-	GNode *root, *parent, *node, *next;
+	GNode *root, *parent, *node, *next, *last;
 	GHashTable *msgid_table;
 	GHashTable *subject_table;
 	MsgInfo *msginfo;
@@ -185,11 +185,11 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 			else {
 				/* replace if msg in table is older than current one 
 				 * can add here more stuff. */
-				if ( ((MsgInfo*)(found_subject->data))->date_t >
-				     ((MsgInfo*)(node->data))->date_t )  {
+                                if ( ((MsgInfo*)(found_subject->data))->date_t > 
+                                     ((MsgInfo*)(node->data))->date_t )  {
 					subject_table_remove_clean(subject_table, (gchar *) subject);
 					subject_table_insert_clean(subject_table, (gchar *) subject, node);
-				}	
+				} 
 			}
 		}
 	}
@@ -213,6 +213,7 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 				g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1, procmsg_ignore_node, NULL);
 			}
 		}
+		last = node; /* CLAWS: need to have the last one for subject threading */
 		node = next;
 	}
 
@@ -221,10 +222,12 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 	 * circular reference from a node that has already been threaded by IN-REPLY-TO
 	 * but is also in the subject line hash table */
 	if (prefs_common.thread_by_subject) {
-		for (node = root->children; node != NULL; ) {
-			next = node->next;
+		for (node = last; node && node != NULL;) {
+			next = node->prev;
 			msginfo = (MsgInfo *) node->data;
-			parent = subject_table_lookup(subject_table, msginfo->subject);
+			subject = msginfo->subject + subject_get_reply_prefix_length(msginfo->subject);
+			parent = subject_table_lookup_clean(subject_table, (gchar *) subject);
+			
 			/* the node may already be threaded by IN-REPLY-TO,
 			   so go up in the tree to find the parent node */
 			if (parent != NULL) {
@@ -232,10 +235,15 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 					parent = NULL;
 				if (parent == node)
 					parent = NULL;
-				/* check if the message should be added to this thread */
-				if (parent && abs(((MsgInfo *)parent->data)->date_t - msginfo->date_t) > 
-						prefs_common.thread_by_subject_max_age * 3600 * 24)
+				/* Make new thread parent if too old compared to previous one; probably
+				 * breaks ignoring threads for subject threading. This still isn't
+				 * accurate because the tree isn't sorted by date. */	
+				if (parent && abs(difftime(msginfo->date_t, ((MsgInfo *)parent->data)->date_t)) >
+						prefs_common.thread_by_subject_max_age * 3600 * 24) {
+					subject_table_remove_clean(subject_table, (gchar *) subject);
+					subject_table_insert_clean(subject_table, (gchar *) subject, node);
 					parent = NULL;
+				}
 			}
 
 			if (parent) {
