@@ -75,7 +75,9 @@ foreach $folderlist (@folderlist) { ## remove old newsgroups directory trees
 	if ($wegotnews && $folderlist !~ m/<\/folder>\n/) {
                 if ($folderlist =~ m/<folderitem type="normal"/) {
                 	$folderlist =~ s/<folderitem type="normal" name="[A-Z0-9.]+" path="//i;
-               		$folderlist =~ s/" threaded="[0-1]+" mtime="[0-9]+" new="[0-9]+" unread="[0-9]+" total="[0-9]+" \/>//;
+               		$folderlist =~ s/" threaded="[0-1]+//;
+			$folderlist =~ s/" hidereadmsgs="[0-1]+//;
+			$folderlist =~ s/" mtime="[0-9]+" new="[0-9]+" unread="[0-9]+" total="[0-9]+" \/>//;
                         $folderlist =~ s/ +//;
                         chomp $folderlist;
                         $saw{$folderlist}++;
