@@ -1704,7 +1704,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		main_window_cursor_normal(folderview->mainwin);
 		STATUSBAR_POP(folderview->mainwin);
 
-		alertpanel_error(_("Folder cound not be opened."));
+		alertpanel_error(_("Folder could not be opened."));
 
 		return;
         }

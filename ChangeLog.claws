@@ -1,3 +1,13 @@
+2002-11-10 [jens]	0.8.5claws118
+
+	* src/folder.c
+	* src/folderview.c
+		corrected some typing
+	* po/de.po
+		updated german translation
+	* sylpheed.spec.in
+		cleaned up specfile and adjusted it for claws
+
 2002-11-10 [colin]	0.8.5claws117
 
 	* src/summaryview.c

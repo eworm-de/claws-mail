@@ -1598,7 +1598,7 @@ FolderItem *folder_item_move_to(FolderItem *src, FolderItem *dest)
 	}
 	debug_print("moving \"%s\" to \"%s\"\n", phys_srcpath, phys_dstpath);
 	if ((tmp = folder_item_move_recursive(src, dest)) == NULL) {
-		alertpanel_error(_("Move failed !"));
+		alertpanel_error(_("Move failed!"));
 		return NULL;
 	}
 	
@@ -1608,7 +1608,7 @@ FolderItem *folder_item_move_to(FolderItem *src, FolderItem *dest)
 	if (src_node) 
 		g_node_destroy(src_node);
 	else
-		debug_print("can't remove node: is null !\n");
+		debug_print("can't remove node: it's null!\n");
 	/* not to much worry if remove fails, move has been done */
 	
 	debug_print("updating rules ....\n");
