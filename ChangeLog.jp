@@ -1,3 +1,11 @@
+2002-03-28
+
+	* src/messageview.c: messageview_show(): メモリリークを修正。
+	* src/summaryview.c: summary_save_as(): コピーに失敗したらエラー
+	  ダイアログを表示。
+	* src/about.c: about_show(): すでにウィンドウが開いているときに
+	  アクティブにするようにした。
+
 2002-03-27
 
 	* src/compose.c: Subject が空のときは送信前に確認ダイアログを表示。

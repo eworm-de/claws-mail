@@ -386,7 +386,11 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 	if (!mimeinfo) return;
 
 	file = procmsg_get_message_file_path(msginfo);
-	g_return_if_fail(file != NULL);
+	if (!file) {
+		g_warning("can't get message file path.\n");
+		procmime_mimeinfo_free(mimeinfo);
+		return;
+	}
 
 	/* FIXME - doesn't tmpmsginfo->flags have the value
 	 * of msginfo->flags after procheader_parse()???

@@ -1,3 +1,11 @@
+2002-03-28
+
+	* src/messageview.c: messageview_show(): fixed a memory leak.
+	* src/summaryview.c: summary_save_as(): show error dialog if copy
+	  failed.
+	* src/about.c: about_show(): make the window active if it is already
+	  open.
+
 2002-03-27
 
 	* src/compose.c: show confirmation dialog before sending if Subject
