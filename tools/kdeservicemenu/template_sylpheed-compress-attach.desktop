@@ -6,24 +6,44 @@ ServiceTypes=all/all
 
 [Desktop Action TarAndAttach]
 Name=Attach as Tar Archive
+Name[de]=Als Tar-Archiv anhängen
+Name[es]=Adjuntar como Archivo Tar
 Name[fr]=Joindre comme Archive Tar
+Name[it]=Allega come file tar
+Name[pt_BR]=Anexar como arquivo Tar
+Name[sk]=Pripoji» ako archív Tar
 Icon=sylpheed
 Exec=SCRIPT_PATH tar %F
 
 [Desktop Action TarBzipAndAttach]
 Name=Attach as Bzipped Tar Archive
-Name[fr]=Joindre comme Archive Tar Bzipp�e
+Name[de]=Als BZip Tar-Archiv anhängen
+Name[es]=Adjuntar como Archivo Tar Bzipeado
+Name[fr]=Joindre comme Archive Tar Bzippée
+Name[it]=Allega come file tar.bz
+Name[pt_BR]=Anexar como arquivo Tar compactado com BZip
+Name[sk]=Pripoji» ako Bzip-om komprimovaný archív Tar
 Icon=sylpheed
 Exec=SCRIPT_PATH tar.bz2 %F
 
 [Desktop Action TarGzipAndAttach]
 Name=Attach as Gzipped Tar Archive
-Name[fr]=Joindre comme Archive Tar Gzipp�e
+Name[de]=Als Gzip Tar-Archiv anhängen
+Name[es]=Adjuntar como Archivo Tar Gzipeado
+Name[fr]=Joindre comme Archive Tar Gzippée
+Name[it]=Allega come file tar.gz
+Name[pt_BR]=Anexar como arquivo Tar compactado com GZip
+Name[sk]=Pripoji» ako Gzip-om komprimovaný archív Tar
 Icon=sylpheed
 Exec=SCRIPT_PATH tar.gz %F
 
 [Desktop Action ZipAndAttach]
 Name=Attach as Zip Archive
+Name[de]=Als Zip-Archiv anhängen
+Name[es]=Adjuntar como Archivo Zip
 Name[fr]=Joindre comme Archive Zip
+Name[it]=Allega come file zip
+Name[pt_BR]=Anexar como arquivo Zip
+Name[sk]=Pripoji» ako archív Zip
 Icon=sylpheed
 Exec=SCRIPT_PATH zip %F

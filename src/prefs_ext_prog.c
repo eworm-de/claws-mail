@@ -121,8 +121,8 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_table_attach(GTK_TABLE (table2), uri_label, 0, 1, 0, 1,
                     	 (GtkAttachOptions) (GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 2);
-	gtk_label_set_justify(GTK_LABEL (hint_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC (hint_label), 1, 0.5);
+	gtk_label_set_justify(GTK_LABEL (uri_label), GTK_JUSTIFY_RIGHT);
+	gtk_misc_set_alignment(GTK_MISC (uri_label), 1, 0.5);
 
 	uri_combo = gtk_combo_new ();
 	gtk_widget_show (uri_combo);
@@ -150,8 +150,8 @@ void prefs_ext_prog_create_widget(PrefsPage *_page, GtkWindow *window,
 	gtk_table_attach(GTK_TABLE (table2), printcmd_label, 0, 1, 1, 2,
                     	 (GtkAttachOptions) (GTK_FILL),
                     	 (GtkAttachOptions) (0), 0, 2);
-	gtk_label_set_justify(GTK_LABEL (hint_label), GTK_JUSTIFY_RIGHT);
-	gtk_misc_set_alignment(GTK_MISC (hint_label), 1, 0.5);
+	gtk_label_set_justify(GTK_LABEL (printcmd_label), GTK_JUSTIFY_RIGHT);
+	gtk_misc_set_alignment(GTK_MISC (printcmd_label), 1, 0.5);
 
 	printcmd_entry = gtk_entry_new ();
 	gtk_widget_show (printcmd_entry);

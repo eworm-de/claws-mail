@@ -1,3 +1,19 @@
+2004-11-03 [paul]	0.9.12cvs138
+
+	* po/POTFILES.in
+		add 'src/plugins/pgpmime/prefs_gpg.c'.
+		Patch submitted by Fabien Vantard
+
+	* src/prefs_ext_prog.c
+		fix typos. Patch submitted by Fabien Vantard
+
+	* tools/kdeservicemenu/template_sylpheed-attach-files.desktop
+	* tools/kdeservicemenu/template_sylpheed-compress-attach.desktop
+		add German, Spanish, Italian, Brazilian Portuguese,
+		and Slovak translations. Submitted by Thomas Gilgin,
+		J. José del Río 'partymola', Andrea Spadaccini,
+		Frederico Goncalves Guimaraes, and Andrej Kacian
+
 2004-11-01 [christoph]	0.9.12cvs137
 
 	* src/procmime.c
