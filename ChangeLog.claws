@@ -1,3 +1,8 @@
+2005-01-08 [colin]	0.9.13cvs30
+
+	* src/prefs_filtering_action.c
+		Plug leak - patch by Alfons
+
 2005-01-07 [paul]	0.9.13cvs29
 
 	* ChangeLog

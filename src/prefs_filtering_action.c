@@ -1035,6 +1035,7 @@ static void prefs_filtering_action_select(GtkCList *clist,
 				     ACTION_HIDE);
 		break;
 	}
+	filteringaction_free(action);
 }
 
 /*!
