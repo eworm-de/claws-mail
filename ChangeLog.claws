@@ -107,7 +107,10 @@
 
 2003-09-17 [hoa]	0.9.5claws18
 	
-	* changed the keyword used for command execution in condition
+	* src/matcher.[ch]
+	  src/matcher_parser_parse.y
+	  src/prefs_matcher.c
+		changed the keyword used for command execution in condition
 		keyword is changed from "execute" to "test"
 		so that it is not the same as the one used for action.
 		This will fix a bug when using filtering dialog.
@@ -207,8 +210,6 @@
 	* src/rfc2015.c
 	  src/common/utils.h
 		more sync'ing from 0.9.5cvs2
-
-	fixes bug 197 'Header lines encrypted by GPG'
 
 2003-09-11 [christoph]	0.9.5claws4
 
