@@ -1,3 +1,9 @@
+2003-06-19 [paul]	0.9.0claws49
+
+	* src/compose.c
+		fix Bug #136 'Nonprovided quotation marks crash claws'
+		patch submitted by P. Pêkala <c0rn@gazeta.pl>
+
 2003-06-19 [alfons]	0.9.0claws48
 
 	* src/prefs_common.[ch]

@@ -2373,6 +2373,10 @@ static guint get_indent_length(GtkSText *text, guint start_pos, guint text_len)
 	gboolean is_space;
 	gboolean is_indent;
 
+	if (prefs_common.quote_chars == NULL) {
+		return 0 ;
+	}
+
 	for (i = start_pos; i < text_len; i++) {
 		GET_CHAR(i, cbuf, ch_len);
 		if (ch_len > 1)
