@@ -573,13 +573,28 @@ void folderview_init(FolderView *folderview)
 	gtk_clist_set_column_widget(GTK_CLIST(ctree),COL_NEW,hbox_new);
 	gtk_clist_set_column_widget(GTK_CLIST(ctree),COL_UNREAD,hbox_unread);
 			
-
-
-	if (!normalfont)
-		normalfont = gtkut_font_load(NORMAL_FONT);
-	if (!boldfont)
-		boldfont = gtkut_font_load(BOLD_FONT);
-
+	if (!normalfont) {
+		if (gtkut_font_load(NORMAL_FONT) == NULL) {
+			GtkStyle *style = gtk_style_new();
+			normalfont = style->font;
+			gdk_font_ref(normalfont);
+			gtk_style_unref(style);
+		} 
+		else 
+			normalfont = gtkut_font_load(NORMAL_FONT);
+	}
+	
+	if (!boldfont) {
+		if (gtkut_font_load(BOLD_FONT) == NULL) {
+			GtkStyle *style = gtk_style_new();
+			boldfont = style->font;
+			gdk_font_ref(boldfont);
+			gtk_style_unref(style);
+		}
+		else
+			boldfont = gtkut_font_load(BOLD_FONT);
+	}
+	
 	if (!bold_style) {
 		bold_style = gtk_style_copy(gtk_widget_get_style(ctree));
 		bold_style->font = boldfont;

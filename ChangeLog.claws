@@ -1,3 +1,11 @@
+2003-03-06 [paul]	0.8.10claws93
+
+	* src/folderview.c
+		if configured font can't be loaded fall back to gtk
+		default. (with thanks to Christoph)
+		
+		closes long-standing bug 15 'Crashes on startup'
+
 2003-03-06 [paul]	0.8.10claws92
 
 	* src/compose.c
