@@ -1,3 +1,9 @@
+2003-10-03 [christoph]	0.9.6claws3
+
+	* src/send_message.c
+		fix missing format string bug found by
+		Georgi Guninski <guninski@guninski.com>
+
 2003-10-03 [paul]	0.9.6claws2
 
 	* po/zh_CN.po
