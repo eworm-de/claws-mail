@@ -1,3 +1,9 @@
+2001-07-03 [christoph]
+
+	* src/addressbook.c
+		fixed address book broken by address book
+		for VCard, JPilot, LDAP
+
 2001-07-03 [alfons]
 
 	* src/matcher.c

@@ -391,7 +391,7 @@ void addressbook_open(Compose *target)
 	} else
 		gtk_widget_hide(addrbook.window);
 
-	gtk_widget_show(addrbook.window);
+	gtk_widget_show_all(addrbook.window);
 
 	addressbook_set_target_compose(target);
 }
