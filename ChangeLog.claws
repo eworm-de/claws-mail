@@ -1,3 +1,9 @@
+2004-12-07 [thorsten]	0.9.13cvs1
+
+	* src/procmime.c
+		[Bug 650] reply button causes crash
+		Patch partly by David Relson
+
 2004-12-06 [paul]	0.9.13
 
 	0.9.13 released
