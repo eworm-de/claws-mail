@@ -1,3 +1,12 @@
+2002-06-13 [melvin]	0.7.6claws43
+
+	* README.claws
+		Corrected action example (verifying clearsigned mail).
+	* src/prefs_account.c
+		Corrected typo.
+	* src/prefs_common.c
+		Removed incorrect line that generated a Gtk-CRITICAL msg.
+
 2002-06-12 [alfons]	0.7.6claws42
 
 	* src/summaryview.c

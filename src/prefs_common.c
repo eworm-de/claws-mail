@@ -1822,8 +1822,6 @@ static void prefs_compose_create(void)
 	gtk_container_add (GTK_CONTAINER (frame_msgwrap), vbox_linewrap);
 	gtk_container_set_border_width (GTK_CONTAINER (vbox_linewrap), 8);
 
-	gtk_box_pack_start (GTK_BOX (vbox1), vbox_linewrap, FALSE, FALSE, 0);
-
 	hbox3 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox3);
 	gtk_box_pack_start (GTK_BOX (vbox_linewrap), hbox3, FALSE, FALSE, 0);

@@ -1095,7 +1095,7 @@ static void prefs_account_receive_create(void)
 	PACK_CHECK_BUTTON (vbox2, sd_filter_on_recv_chkbtn,
 			   _("Use filtering rules with Selective Download"));
 	PACK_CHECK_BUTTON (vbox2, sd_rmmail_chkbtn,
-			   _("Remove Mail after downloading with Selective Download"));
+			   _("Remove mail after downloading with Selective Download"));
 
 	hbox1 = gtk_hbox_new (FALSE, 8);
 	gtk_widget_show (hbox1);
