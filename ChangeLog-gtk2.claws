@@ -1,3 +1,8 @@
+2004-12-08 [colin]	0.9.13cvs8.1
+
+	* src/quote_fmt_parse.y
+		Sync with HEAD
+
 2004-12-08 [colin]	0.9.13cvs7.1
 
 	* src/matcher_parser_parse.y
