@@ -190,3 +190,4 @@
 ( cvs diff -u -r 1.83.2.20 -r 1.83.2.21 src/mimeview.c; ) > 0.9.12cvs118.1.patchset
 ( cvs diff -u -r 1.274.2.20 -r 1.274.2.21 src/mainwindow.c; cvs diff -u -r 1.94.2.30 -r 1.94.2.31 src/messageview.c; cvs diff -u -r 1.103.2.9 -r 1.103.2.10 src/prefs_common.h; cvs diff -u -r 1.49.2.8 -r 1.49.2.9 src/procmime.c; cvs diff -u -r 1.17.2.3 -r 1.17.2.4 src/procmime.h; cvs diff -u -r 1.96.2.18 -r 1.96.2.19 src/textview.c; cvs diff -u -r 1.1.4.5 -r 1.1.4.6 src/gtk/gtksctree.c; ) > 0.9.12cvs119.1.patchset
 ( cvs diff -u -r 1.1.4.6 -r 1.1.4.7 src/gtk/gtksctree.c; ) > 0.9.12cvs119.2.patchset
+( cvs diff -u -r 1.1.4.7 -r 1.1.4.8 src/gtk/gtksctree.c; cvs diff -u -r 1.395.2.33 -r 1.395.2.34 src/summaryview.c; ) > 0.9.12cvs119.3.patchset
