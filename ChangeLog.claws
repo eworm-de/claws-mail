@@ -1,3 +1,9 @@
+2005-02-21 [colin]	1.0.1cvs15
+
+	* src/compose.c
+		Fix signing/encrypting still on after
+		privacy system has been disabled
+
 2005-02-18 [colin]	1.0.1cvs14
 
 	* src/quote_fmt_lex.l
