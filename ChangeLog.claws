@@ -1,3 +1,13 @@
+2003-01-13 [paul]	0.8.8claws94
+
+	* src/messageview.c
+	  src/toolbar.c
+	  	fixes to the Message View toolbar and menu:
+		fix non-functioning Forward button
+		make Reply button consider default_reply_list
+		remove 'Follow-up...' menu entry
+		add 'Forward' and 'Redirect' menu entries
+
 2003-01-13 [melvin]	0.8.8claws93
 
 	* src/inc.c
@@ -48,7 +58,7 @@
 2003-01-12 [paul]	0.8.8claws86
 
 	* sync with 0.8.8cvs5
-		see ChangeLog 2002-01-13 (!)
+		see ChangeLog 2003-01-13 (!)
 
 2003-01-12 [alfons]	0.8.8claws85
 

@@ -154,7 +154,10 @@ static GtkItemFactoryEntry messageview_entries[] =
 	{N_("/_Message/Repl_y to/_sender"),	NULL, messageview_menubar_cb, COMPOSE_REPLY_TO_SENDER, NULL},
 	{N_("/_Message/Repl_y to/mailing _list"),
 						"<control>L", messageview_menubar_cb, COMPOSE_REPLY_TO_LIST, NULL},
-	{N_("/_Message/Follow-up and reply to"),NULL, messageview_menubar_cb, COMPOSE_FOLLOWUP_AND_REPLY_TO, NULL},
+/*	{N_("/_Message/Follow-up and reply to"),NULL, messageview_menubar_cb, COMPOSE_FOLLOWUP_AND_REPLY_TO, NULL}, */
+	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Message/_Forward"),		"<control><alt>F", messageview_menubar_cb, COMPOSE_FORWARD, NULL},
+	{N_("/_Message/Redirect"),		NULL, messageview_menubar_cb, COMPOSE_REDIRECT, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/_Delete"),		"<control>D", delete_msgview_cb,  0, NULL},
 	
