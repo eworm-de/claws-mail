@@ -1,3 +1,9 @@
+2003-03-13 [colin]	0.8.11claws9
+
+	* src/compose.c
+		Remove leading emtpy lines from quoted text
+		before quoting it
+
 2003-03-13 [melvin]	0.8.11claws8
 
 	* src/prefs_actions.c

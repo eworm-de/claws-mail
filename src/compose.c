@@ -1668,7 +1668,8 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	gchar *buf;
 	gchar *p, *lastp;
 	gint len;
-
+	gchar *trimmed_body = body;
+	
 	if (!msginfo)
 		msginfo = &dummyinfo;
 
@@ -1685,7 +1686,11 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 	}
 
 	if (fmt && *fmt != '\0') {
-		quote_fmt_init(msginfo, quote_str, body);
+		while (trimmed_body && strlen(trimmed_body) > 1
+			&& trimmed_body[0]=='\n')
+			*trimmed_body++;
+
+		quote_fmt_init(msginfo, quote_str, trimmed_body);
 		quote_fmt_scan_string(fmt);
 		quote_fmt_parse();
 
