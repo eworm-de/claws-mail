@@ -366,7 +366,9 @@ int main(int argc, char *argv[])
 		main_window_toggle_work_offline(mainwin, FALSE);
 	
 	static_mainwindow = mainwin;
+	statusbar_puts_all("Ready");
 	gtk_main();
+	statusbar_pop_all();
 
 	addressbook_destroy();
 

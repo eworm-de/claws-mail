@@ -1,3 +1,25 @@
+2002-12-06 [christoph]	0.8.6claws68
+
+	* src/editgroup.c
+		This patch changes the 'Edit Group Details' dialog to
+		allow extended selections in either pane, so that
+		addresses can be added or removed from a group more
+		quickly and easily. (it actually is a net decrease in
+		file size, as some unnecessary functions have been
+		removed). 
+		(patch submitted by Luke Plant <lukeplant@users.sourceforge.net>)
+
+2002-12-06 [christoph]	0.8.6claws67
+
+	* src/Makefile.am
+	* src/template.[ch]		** REMOVE **
+	* src/common/Makefile.am
+	* src/common/template.[ch]	** NEW **
+		move template files to common directory
+
+	* src/nntp.c
+		add missing log.h include
+
 2002-12-06 [melvin]	0.8.6claws66
 
 	* src/prefs_actions.c
