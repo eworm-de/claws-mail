@@ -2433,10 +2433,11 @@ static gchar *folder_get_list_path(void)
 #ifdef WIN32
 #define PUT_ESCAPE_STR(fp, attr, str)			\
 {							\
-	gchar *p_str;					\
-	p_str = g_strdup(str);				\
+	gchar *p_str = p_str = g_strdup(str);		\
+	fputs(" " attr "=\"", fp);			\
 	locale_from_utf8(&p_str);			\
 	xml_file_put_escape_str(fp, p_str);		\
+	fputs("\"", fp);				\
 	g_free(p_str);					\
 }
 #else
