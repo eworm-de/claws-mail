@@ -1,3 +1,11 @@
+2001-12-06 [alfons]	0.6.5claws55
+
+	* src/filtering.[ch]
+	* src/inc.c
+		revise filtering a little bit more, and make sure
+		messages are delivered to the appropriate inbox
+		(perhaps set per account)
+
 2001-12-06 [paul]	0.6.5claws54
 
 	* sync with sylpheed 0.6.5cvs22

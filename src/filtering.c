@@ -509,12 +509,11 @@ static gboolean filteringprop_apply(FilteringProp * filtering, MsgInfo * info,
 		return FALSE;
 }
 
-void filter_msginfo(GSList * filtering_list, MsgInfo * info,
-		    GHashTable *folder_table)
+static void filter_msginfo(GSList * filtering_list, FolderItem *inbox,
+			   MsgInfo * info, GHashTable *folder_table)
 {
 	GSList		*l;
 	gboolean	 result;
-	FolderItem	*inbox;
 	
 	if (info == NULL) {
 		g_warning(_("msginfo is not set"));
@@ -531,9 +530,6 @@ void filter_msginfo(GSList * filtering_list, MsgInfo * info,
 	if (!result) {
 		gint val;
 
-		inbox = folder_get_default_inbox();
-		g_assert(inbox);
-		
 		if (folder_item_move_msg(inbox, info) == -1) {
 			debug_print(_("*** Could not drop message in inbox; still in .processing\n"));
 			return;
@@ -573,12 +569,13 @@ void filter_msginfo_move_or_delete(GSList * filtering_list, MsgInfo * info,
 	}
 }
 
-void filter_message(GSList * filtering_list, FolderItem * item,
+void filter_message(GSList *filtering_list, FolderItem *inbox,
 		    gint msgnum, GHashTable *folder_table)
 {
-	MsgInfo * msginfo;
-	gchar * filename;
+	MsgInfo *msginfo;
+	gchar *filename;
 	MsgFlags  msgflags = { 0, 0 };
+	FolderItem *item = folder_get_default_processing();
 
 	if (item == NULL) {
 		g_warning(_("folderitem not set"));
@@ -604,7 +601,7 @@ void filter_message(GSList * filtering_list, FolderItem * item,
 	msginfo->folder = item;
 	msginfo->msgnum = msgnum;
 
-	filter_msginfo(filtering_list, msginfo, folder_table);
+	filter_msginfo(filtering_list, inbox, msginfo, folder_table);
 }
 
 gchar *filteringaction_to_string(gchar *dest, gint destlen, FilteringAction *action)

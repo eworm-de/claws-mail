@@ -882,8 +882,8 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 	FolderItem *dropfolder;
 	gint val;
 	gint msgnum;
-	FolderItem *filtering_folder = folder_get_default_processing();
 
+	/* get default inbox (perhaps per account) */
 	if (state->ac_prefs->inbox) {
 		inbox = folder_find_item_from_path(state->ac_prefs->inbox);
 		if (!inbox)
@@ -908,8 +908,8 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 		} else
 			dropfolder = inbox;
 	} else {
-		/* new filtering */
-		dropfolder = filtering_folder;
+		/* CLAWS: new filtering */
+		dropfolder = folder_get_default_processing();
 	}
 
 	val = GPOINTER_TO_INT(g_hash_table_lookup
@@ -920,15 +920,16 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 				    GINT_TO_POINTER(1));
 	}
 	
+	/* add msg file to drop folder */
 	if ((msgnum = folder_item_add_msg(dropfolder, file, TRUE)) < 0) {
 		unlink(file);
 		return -1;
 	}
 
+	/* CLAWS: perform filtering actions on dropped message */
 	if (global_processing != NULL) { 
-		/* new filtering */
 		if (state->ac_prefs->filter_on_recv)
-			filter_message(global_processing, dropfolder, msgnum,
+			filter_message(global_processing, inbox, msgnum,
 				       state->folder_table);
 	}
 
