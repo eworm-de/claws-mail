@@ -508,6 +508,8 @@ gboolean folder_scan_tree_func(GNode *node, gpointer data)
 	FolderItem *item = (FolderItem *)node->data;
 	
 	folder_item_restore_persist_prefs(item, pptable);
+
+	return FALSE;
 }
 
 void folder_scan_tree(Folder *folder)
@@ -879,33 +881,35 @@ gchar *folder_get_path(Folder *folder)
 
 	g_return_val_if_fail(folder != NULL, NULL);
 
-	if (FOLDER_TYPE(folder) == F_MH)
-		path = g_strdup(LOCAL_FOLDER(folder)->rootpath);
-	else if (FOLDER_TYPE(folder) == F_MBOX) {
-		path = mbox_get_virtual_path(folder);
-		if (path == NULL)
-			return NULL;
-		path = g_strconcat(get_mbox_cache_dir(),
-					  G_DIR_SEPARATOR_S, path, NULL);
-		return path;
-	}
-	else if (FOLDER_TYPE(folder) == F_IMAP) {
-		g_return_val_if_fail(folder->account != NULL, NULL);
-		path = g_strconcat(get_imap_cache_dir(),
-				   G_DIR_SEPARATOR_S,
-				   folder->account->recv_server,
-				   G_DIR_SEPARATOR_S,
-				   folder->account->userid,
-				   NULL);
-	} else if (FOLDER_TYPE(folder) == F_NEWS) {
-		g_return_val_if_fail(folder->account != NULL, NULL);
-		path = g_strconcat(get_news_cache_dir(),
-				   G_DIR_SEPARATOR_S,
-				   folder->account->nntp_server,
-				   NULL);
-	} else
-		path = NULL;
+	switch(FOLDER_TYPE(folder)) {
 
+		case F_MH:
+			path = g_strdup(LOCAL_FOLDER(folder)->rootpath);
+			break;
+
+		case F_IMAP:
+			g_return_val_if_fail(folder->account != NULL, NULL);
+			path = g_strconcat(get_imap_cache_dir(),
+					   G_DIR_SEPARATOR_S,
+					   folder->account->recv_server,
+					   G_DIR_SEPARATOR_S,
+					   folder->account->userid,
+					   NULL);
+			break;
+
+		case F_NEWS:
+			g_return_val_if_fail(folder->account != NULL, NULL);
+			path = g_strconcat(get_news_cache_dir(),
+					   G_DIR_SEPARATOR_S,
+					   folder->account->nntp_server,
+					   NULL);
+			break;
+
+		default:
+			path = NULL;
+			break;
+	}
+	
 	return path;
 }
 
@@ -916,30 +920,41 @@ gchar *folder_item_get_path(FolderItem *item)
 
 	g_return_val_if_fail(item != NULL, NULL);
 
-	folder_path = folder_get_path(item->folder);
-	g_return_val_if_fail(folder_path != NULL, NULL);
+	if(FOLDER_TYPE(item->folder) != F_MBOX) {
+		folder_path = folder_get_path(item->folder);
+		g_return_val_if_fail(folder_path != NULL, NULL);
 
 #ifdef WIN32
-	if (folder_path[0] == G_DIR_SEPARATOR || folder_path[1] == ':') {
+		if (folder_path[0] == G_DIR_SEPARATOR || folder_path[1] == ':') {
 #else
-	if (folder_path[0] == G_DIR_SEPARATOR) {
+		if (folder_path[0] == G_DIR_SEPARATOR) {
 #endif
-		if (item->path)
-			path = g_strconcat(folder_path, G_DIR_SEPARATOR_S,
-					   item->path, NULL);
-		else
-			path = g_strdup(folder_path);
-	} else {
-		if (item->path)
-			path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
-					   folder_path, G_DIR_SEPARATOR_S,
-					   item->path, NULL);
-		else
-			path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
-					   folder_path, NULL);
-	}
+			if (item->path)
+				path = g_strconcat(folder_path, G_DIR_SEPARATOR_S,
+						   item->path, NULL);
+			else
+				path = g_strdup(folder_path);
+		} else {
+			if (item->path)
+				path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
+						   folder_path, G_DIR_SEPARATOR_S,
+						   item->path, NULL);
+			else
+				path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
+						   folder_path, NULL);
+		}
 
-	g_free(folder_path);
+		g_free(folder_path);
+	} else {
+		gchar *itempath;
+
+		itempath = mbox_get_virtual_path(item);
+		if (itempath == NULL)
+			return NULL;
+		path = g_strconcat(get_mbox_cache_dir(),
+					  G_DIR_SEPARATOR_S, itempath, NULL);
+		g_free(itempath);
+	}
 	return path;
 }
 

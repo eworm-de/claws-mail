@@ -11,7 +11,7 @@ AC_DEFUN(GNUPG_CHECK_TYPEDEF,
     ], gnupg_cv_typedef_$1=yes, gnupg_cv_typedef_$1=no )])
     AC_MSG_RESULT($gnupg_cv_typedef_$1)
     if test "$gnupg_cv_typedef_$1" = yes; then
-        AC_DEFINE($2)
+        AC_DEFINE($2, 1, $3)
     fi
   ])
 

@@ -669,6 +669,8 @@ static gboolean account_delete_references_func(GNode *node, gpointer data)
 	item->prefs->enable_default_account = FALSE;
 	item->prefs->default_account = 0;
 	prefs_folder_item_save_config(item);
+
+	return FALSE;
 }
 
 static void account_delete(void)

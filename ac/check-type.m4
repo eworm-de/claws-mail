@@ -22,6 +22,6 @@ int a = sizeof($1);
 ], sylpheed_cv_type_$1=yes, sylpheed_cv_type_$1=no)])dnl
 AC_MSG_RESULT($sylpheed_cv_type_$1)
 if test $sylpheed_cv_type_$1 = no; then
-  AC_DEFINE($1, $2)
+  AC_DEFINE($1, $2, $4)
 fi
 ])

@@ -161,13 +161,6 @@ void addrclip_add_item(
 	}
 }
 
-static void addrclip_print( AddrSelectItem *item, FILE *stream ) {
-	fprintf( stream, "Select Record\n" );
-	fprintf( stream, "obj type: %d\n", item->objectType );
-	fprintf( stream, "     uid: %s\n", item->uid );
-	fprintf( stream, "---\n" );
-}
-
 /*
 * Show clipboard contents.
 * Enter: clipBoard Clipboard.
@@ -282,79 +275,6 @@ static GList *addrclip_cache_add_person(
 	}
 
 	return copyList;
-}
-
-/*
- * Paste unattached email into cache.
- * Enter: cache    Address cache to paste into.
- *        folder   Folder to store
- *        email    EMail to add.
- *        copyList List of email addresses pasted.
- * Return: Update list of email addresses pasted.
- */
-static GList *addrclip_cache_add_email(
-	AddressCache *cache, ItemFolder *folder, ItemEMail *email,
-	GList *copyList )
-{
-	ItemPerson *newPerson;
-	ItemEMail *newEMail;
-	AddrClip_EMail *em;
-
-	/* Create a person */
-	newPerson = addritem_create_item_person();
-	addritem_person_set_common_name( newPerson, "" );
-	addrcache_id_person( cache, newPerson );
-	addrcache_folder_add_person( cache, folder, newPerson );
-
-	/* Copy email addresses */
-	newEMail = addritem_copy_item_email( email );
-	addrcache_id_email( cache, newEMail );
-	addrcache_person_add_email( cache, newPerson, newEMail );
-
-	/* Take a copy of the original */
-	em = g_new0( AddrClip_EMail, 1 );
-	em->original = email;
-	em->copy = newEMail;
-	copyList = g_list_append( copyList, em );
-
-	return copyList;
-}
-
-/*
- * Test whether specified E-Mail address object is already in clipboard and
- * owned by an ItemPerson objects.
- * Enter: email  E-Mail to test.
- * Return: TRUE if duplicate found.
- */
-static gboolean addrclip_test_email(
-	AddressClipboard *clipBoard, ItemEMail *testEMail )
-{
-	ItemPerson *person;
-	ItemEMail *email;
-	GList *node, *nodeMail;
-	AddrSelectItem *item;
-	AddrItemObject *aio;
-	AddressCache *cache;
-
-	node = clipBoard->objectList;
-	while( node ) {
-		item = node->data;
-		cache = addrindex_get_cache( clipBoard->addressIndex, item->cacheID );
-		aio = addrcache_get_object( cache, item->uid );
-		if( aio ) {
-			if( ADDRITEM_TYPE(aio) == ITEMTYPE_PERSON ) {
-				person = ( ItemPerson * ) aio;
-				nodeMail = person->listEMail;
-				while( nodeMail ) {
-					email = nodeMail->data;
-					if( email == testEMail ) return TRUE;
-					nodeMail = g_list_next( nodeMail );
-				}
-			}
-		}
-		node = g_list_next( node );
-	}
-	return FALSE;
 }
 
 /*
@@ -973,7 +893,7 @@ static gint addrclip_person_move_email(
 	GList *node;
 
 	cnt = 0;
-	while( node = fromPerson->listEMail ) {
+	while( (node = fromPerson->listEMail) != NULL ) {
 		ItemEMail *email;
 
 		email = node->data;

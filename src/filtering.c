@@ -262,8 +262,9 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 		return TRUE;
 
 	default:
-		return FALSE;
+		break;
 	}
+	return FALSE;
 }
 
 static gboolean filtering_match_condition(FilteringProp *filtering, MsgInfo *info)
@@ -275,7 +276,6 @@ static gboolean filtering_apply_rule(FilteringProp *filtering, MsgInfo *info,
 				     GHashTable *foldertable)
 {
 	gboolean result;
-	gchar    actionstr;
 	gchar    buf[50];
 
 	if (FALSE == (result = filteringaction_apply(filtering->action, info, foldertable))) {

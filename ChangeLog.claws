@@ -1,3 +1,37 @@
+2002-09-29 [thorsten]	0.8.3claws36
+
+	* src/compose.c
+	  src/prefs_folder_item.[ch]
+		add default_reply_to folder option (closes patch 581044)
+
+2002-09-29 [christoph]	0.8.3claws35
+
+	* acconfig.h	** REMOVED **
+	* configure.in
+	* ac/aspell.m4
+	* ac/check-type.m4
+	* ac/gnupg-check-typedef.m4
+		fix autoheader 2.50 warning
+
+2002-09-29 [christoph]	0.8.3claws34
+
+	* major code cleanup (part 2)
+	
+		- unused variables removed
+		- unused functions removed
+		- uninitialized variables checked
+		- missing return statements added
+		- missing function return types added
+		- added parentheses around assignment
+	          when suggested by gcc
+
+2002-09-29 [alfons]	0.8.3claws33
+
+	* src/logwindow.c
+		log_window_clear(): only bracket gtk_text_forward_delete() 
+		with gtk_text_freeze() / gtk_text_thaw() (see if this
+		works around GTK text bug)
+
 2002-09-29 [paul]	0.8.3claws32
 
 	* po/bg.po
@@ -8,9 +42,9 @@
 2002-09-27 [christoph]	0.8.3claws31
 
 	* doc-src/readme.txt
-	* doc-src/rfc1806.txt
-	* doc-src/rfc2183.txt
-	* doc-src/rfc2980.txt
+	* doc-src/rfc1806.txt	** REMOVED **
+	* doc-src/rfc2183.txt	** NEW FILE **
+	* doc-src/rfc2980.txt	** NEW FILE **
 		update rfcs
 
 2002-09-27 [melvin]	0.8.3claws30
