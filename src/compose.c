@@ -5774,36 +5774,27 @@ static void select_account(Compose * compose, PrefsAccount * ac)
 		gtk_widget_queue_resize(compose->table_vbox);
 #endif
 #if USE_GPGME
-		if (ac->default_sign) {
-			ifactory = gtk_item_factory_from_widget(compose->menubar);
+		ifactory = gtk_item_factory_from_widget(compose->menubar);
 			menu_set_sensitive(ifactory,
 					   "/Message/Sign", TRUE);
-			menuitem = gtk_item_factory_get_item(ifactory, "/Message/Sign");
-			gtk_check_menu_item_set_active
-				(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
-		} else {
-			ifactory = gtk_item_factory_from_widget(compose->menubar);
-			menu_set_sensitive(ifactory,
-					   "/Message/Sign", TRUE);
-			menuitem = gtk_item_factory_get_item(ifactory, "/Message/Sign");
-			gtk_check_menu_item_set_active
-				(GTK_CHECK_MENU_ITEM(menuitem), FALSE);
-		}
-		if (ac->default_encrypt) {
-			ifactory = gtk_item_factory_from_widget(compose->menubar);
 			menu_set_sensitive(ifactory,
 					   "/Message/Encrypt", TRUE);
-			menuitem = gtk_item_factory_get_item(ifactory, "/Message/Encrypt");
+
+			menuitem = gtk_item_factory_get_item(ifactory, "/Message/Sign");
+		if (ac->default_sign)
 			gtk_check_menu_item_set_active
 				(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
-		} else {
-			ifactory = gtk_item_factory_from_widget(compose->menubar);
-			menu_set_sensitive(ifactory,
-					   "/Message/Encrypt", TRUE);
-			menuitem = gtk_item_factory_get_item(ifactory, "/Message/Encrypt");
+		else
 			gtk_check_menu_item_set_active
 				(GTK_CHECK_MENU_ITEM(menuitem), FALSE);
-		}
+
+			menuitem = gtk_item_factory_get_item(ifactory, "/Message/Encrypt");
+		if (ac->default_encrypt)
+			gtk_check_menu_item_set_active
+				(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
+		else
+			gtk_check_menu_item_set_active
+				(GTK_CHECK_MENU_ITEM(menuitem), FALSE);
 #endif /* USE_GPGME */
 
 }

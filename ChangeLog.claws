@@ -1,3 +1,8 @@
+2002-03-14 [paul]	0.7.4claws7
+
+	* src/compose.c
+		clean up the last commit (ahem)
+
 2002-03-14 [paul]	0.7.4claws6
 
 	* src/compose.c
