@@ -1,3 +1,11 @@
+2002-12-21 [paul]	0.8.6claws122
+
+	* src/addrbook.c
+		fix bug [643638] where if a person is in one or more
+		addressbook groups editing that person's email 
+		address results in removal from those groups.
+		Patch submitted by Luke Plant.
+
 2002-12-20 [christoph]	0.8.6claws121
 
 	* src/common/utils.c

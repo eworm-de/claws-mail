@@ -1214,18 +1214,23 @@ void addrbook_update_address_list(
 	listGroup = addrcache_get_group_for_person( book->addressCache, person );
 	if( listGroup ) {
 		GHashTable *hashEMail;
+		GHashTable *hashEMailAlias;
 		GList *nodeGrp;
 
 		/* Load hash table with new address entries */
 		hashEMail = g_hash_table_new( g_str_hash, g_str_equal );
+		hashEMailAlias = g_hash_table_new( g_str_hash, g_str_equal );
 	   	node = listEMail;
 		while( node ) {
 			ItemEMail *email = node->data;
 			gchar *addr = g_strdup( email->address );
-
+			gchar *alias = email->obj.name ;
 			g_strdown( addr );
 			if( ! g_hash_table_lookup( hashEMail, addr ) ) {
 				g_hash_table_insert( hashEMail, addr, email );
+			}
+			if ( *alias != '\0' && ! g_hash_table_lookup( hashEMailAlias, alias ) ) {
+				g_hash_table_insert( hashEMailAlias, alias, email );
 			}
 			node = g_list_next( node );
 		}
@@ -1246,16 +1251,27 @@ void addrbook_update_address_list(
 				if( ADDRITEM_PARENT(emailGrp) == ADDRITEM_OBJECT(person) ) {
 					/* Found an email address for this person */
 					ItemEMail *emailNew = NULL;
-					gchar *addr = g_strdup( emailGrp->address );
-
+ 					gchar *addr = g_strdup( emailGrp->address );
+					gchar *alias = emailGrp->obj.name;
 					g_strdown( addr );
 					emailNew = ( ItemEMail * )
 						g_hash_table_lookup( hashEMail, addr );
 					g_free( addr );
+					/* If no match by e-mail, try to match by e-mail alias */
+					if( ! emailNew && *alias != '\0' ) {
+						emailNew = ( ItemEMail * )
+							g_hash_table_lookup( hashEMailAlias, alias);
+					}
+					
 					if( emailNew ) {
 						/* Point to this entry */
 						nodeGrpEM->data = emailNew;
 					}
+					else if(g_hash_table_size(hashEMail)==1) {
+						/* If the person has just one e-mail address, then 
+						   change e-mail address in group list */
+						nodeGrpEM->data = listEMail->data;
+					} 
 					else {
 						/* Mark for removal */
 						listRemove = g_list_append( listRemove, emailGrp );
@@ -1285,6 +1301,8 @@ void addrbook_update_address_list(
 			hashEMail, ( GHRFunc ) addrbook_free_simple_hash_vis, NULL );
 		g_hash_table_destroy( hashEMail );
 		hashEMail = NULL;
+		g_hash_table_destroy( hashEMailAlias );
+		hashEMailAlias = NULL;
 		g_list_free( listGroup );
 		listGroup = NULL;
 	}
