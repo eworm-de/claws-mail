@@ -711,9 +711,12 @@ PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs)
 				     _("Preferences for new account"));
 		gtk_widget_hide(dialog.apply_btn);
 	} else {
+		gchar *title;
 		prefs_set_dialog(param);
-		gtk_window_set_title(GTK_WINDOW(dialog.window),
-				     _("Account preferences"));
+		title = g_strdup_printf (_("%s - Account preferences"),
+				ac_prefs->account_name);
+		gtk_window_set_title(GTK_WINDOW(dialog.window), title);
+		g_free (title);
 		gtk_widget_show(dialog.apply_btn);
 	}
 

@@ -1,3 +1,19 @@
+2004-05-04 [paul]	0.9.10claws54
+
+	* src/inc.c
+		Display account_name in statusbar when retrieving
+		messages from a pop account
+	* src/prefs_account.c
+		display account name in title of prefs_account
+		window
+	* src/prefs_folder_item.c
+		display folder name in title of prefs_folder window
+
+	all 3 patches submitted by Fabien Vantard
+
+	* AUTHORS
+		add Fabien Vantard
+
 2004-05-04 [paul]	0.9.10claws53
 
 	* src/prefs_actions.c

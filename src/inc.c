@@ -859,8 +859,9 @@ static void inc_progress_dialog_set_label(IncProgressDialog *inc_dialog,
 	case POP3_GETAUTH_PASS:
 	case POP3_GETAUTH_APOP:
 		progress_dialog_set_label(dialog, _("Authenticating..."));
-		statusbar_print_all(_("Retrieving messages from %s..."),
-				    SESSION(session)->server);
+		statusbar_print_all(_("Retrieving messages from %s (%s) ..."),
+				    SESSION(session)->server,
+				    session->ac_prefs->account_name);
 		break;
 	case POP3_GETRANGE_STAT:
 		progress_dialog_set_label

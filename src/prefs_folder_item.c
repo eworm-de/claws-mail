@@ -787,12 +787,18 @@ static GSList *prefs_pages = NULL;
 
 void prefs_folder_item_open(FolderItem *item)
 {
+	gchar *id, *title;
+
 	if (prefs_pages == NULL) {
 		register_general_page();
 		register_compose_page();
 	}
 
-	prefswindow_open(_("Settings for folder"), prefs_pages, item);
+	id = folder_item_get_identifier (item);
+	title = g_strdup_printf (_("%s - Settings for folder"), id);
+	g_free (id);
+	prefswindow_open(title, prefs_pages, item);
+	g_free (title);
 }
 
 void prefs_folder_item_register_page(PrefsPage *page)
