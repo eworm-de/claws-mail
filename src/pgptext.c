@@ -199,6 +199,7 @@ int pgptext_is_encrypted (MimeInfo *mimeinfo, MsgInfo *msginfo)
 	if (mimeinfo->mime_type != MIME_TEXT) {
 		if ((fp = fopen(file, "rb")) == NULL) {
 			FILE_OP_ERROR(file, "fopen");
+			g_free(file);
 			return 0;
 		}
 		/* skip headers */
@@ -224,6 +225,7 @@ int pgptext_is_encrypted (MimeInfo *mimeinfo, MsgInfo *msginfo)
 	} else {
 		if ((fp = fopen(file, "rb")) == NULL) {
 			FILE_OP_ERROR(file, "fopen");
+			g_free(file);
 			return 0;
 		}
 		/* skip headers */

@@ -1,3 +1,9 @@
+2002-09-22 [alfons]	0.8.2claws65
+
+	* src/procmsg.c
+	* src/pgptext.c
+		no furry valgrinds have been used to plug these memleaks
+
 2002-09-20 [paul]	0.8.2claws64
 
 	* sync with 0.8.3cvs4
