@@ -546,9 +546,8 @@ GNode *procmsg_get_thread_tree(GSList *mlist)
 
 		if (msginfo->inreplyto)
 			parent = g_hash_table_lookup(msgid_table, msginfo->inreplyto);
-		if (parent == NULL)
+		if (parent == NULL && !subject_is_reply(msginfo->subject))
 			parent = subject_table_lookup(subject_table, msginfo->subject);
-
 		
 		if (parent && parent != node) {
 			g_node_unlink(node);

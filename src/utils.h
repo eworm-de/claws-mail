@@ -322,5 +322,7 @@ void * subject_table_lookup(GHashTable *subject_table, gchar * subject);
 void subject_table_insert(GHashTable *subject_table, gchar * subject,
 			  void * data);
 void subject_table_remove(GHashTable *subject_table, gchar * subject);
+gboolean subject_is_reply(const gchar *subject);
+
 
 #endif /* __UTILS_H__ */

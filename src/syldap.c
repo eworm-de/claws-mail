@@ -675,7 +675,7 @@ gint syldap_read_data( SyldapServer *ldapServer ) {
 		/* TODO: really necessary to call gdk_threads_XXX()??? gtk_idle_add()
 		 * should do this - could someone check the GTK sources please? */
 		gdk_threads_enter();
-		ldapServer->idleId = gtk_idle_add(syldap_display_search_results, ldapServer);
+		ldapServer->idleId = gtk_idle_add((GtkFunction)syldap_display_search_results, ldapServer);
 		gdk_threads_leave();
 	}
 

@@ -2313,3 +2313,12 @@ void subject_table_remove(GHashTable *subject_table, gchar * subject)
 	else
 		g_hash_table_remove(subject_table, subject);
 }
+
+gboolean subject_is_reply(const gchar *subject)
+{
+	/* XXX: just simply here so someone can handle really
+	 * advanced Re: detection like "Re[4]", "ANTW:" or
+	 * Re: Re: Re: Re: Re: Re: Re: Re:" stuff. */
+	if (subject == NULL) return FALSE;
+	else return 0 == g_strcasecmp(subject, "Re: ");
+}
