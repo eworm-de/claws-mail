@@ -1,3 +1,8 @@
+2001-11-14 [alfons]	0.6.5claws14
+
+	* src/session.h
+		add things from main branch to make claws compile
+
 2001-11-14 [paul]	0.6.5claws13
 
 	* merge with SYNC-B4-REL and sync with sylpheed 0.6.5cvs5

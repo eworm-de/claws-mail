@@ -21,6 +21,7 @@
 #define __SESSION_H__
 
 #include <glib.h>
+#include <time.h>
 
 #include "socket.h"
 
@@ -48,6 +49,8 @@ struct _Session
 
 	gboolean connected;
 	SessionPhase phase;
+
+	time_t last_access_time;
 
 	gpointer data;
 };
