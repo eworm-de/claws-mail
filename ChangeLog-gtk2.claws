@@ -1,3 +1,10 @@
+2004-07-15 [colin]	0.9.12cvs18.14
+
+	* src/folder.c
+		Disable GPG signature check during
+		folder move and scan
+	(Closes Bug 521 Signature checking slows down Folder-Move)
+
 2004-07-14 [colin]	0.9.12cvs18.13
 
 	* src/common/partial_download.c

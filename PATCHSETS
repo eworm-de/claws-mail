@@ -27,3 +27,4 @@
 ( cvs diff -u -r 1.213.2.8 -r 1.213.2.9 src/folder.c; cvs diff -u -r 1.94.2.19 -r 1.94.2.20 src/messageview.c; cvs diff -u -r 1.56.2.15 -r 1.56.2.16 src/pop.c; cvs diff -u -r 1.17.2.10 -r 1.17.2.11 src/pop.h; cvs diff -u -r 1.150.2.6 -r 1.150.2.7 src/procmsg.c; cvs diff -u -r 1.395.2.17 -r 1.395.2.18 src/summaryview.c; cvs diff -u -r 1.24.2.2 -r 1.24.2.3 src/common/Makefile.am; echo new files src/common/partial_download.c src/common/partial_download.h; ) > 0.9.12cvs18.11.patchset
 ( cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/common/partial_download.c; cvs diff -u -r 1.1.2.1 -r 1.1.2.2 src/common/partial_download.h; ) > 0.9.12cvs18.12.patchset
 ( cvs diff -u -r 1.1.2.2 -r 1.1.2.3 src/common/partial_download.c; ) > 0.9.12cvs18.13.patchset
+( cvs diff -u -r 1.213.2.9 -r 1.213.2.10 src/folder.c; ) > 0.9.12cvs18.14.patchset
