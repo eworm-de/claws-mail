@@ -2737,7 +2737,6 @@ static void compose_wrap_line_all(Compose *compose)
 
 static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 {
-#if 0
 	GtkTextView *text = GTK_TEXT_VIEW(compose->text);
 	GtkTextBuffer *textbuf = gtk_text_view_get_buffer(text);
 	GtkTextIter iter, end_iter;
@@ -2854,7 +2853,10 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 				dump_text(text, line_pos, tlen, 1);
 #endif
 				/* move beginning of line if we are on LF */
-				GET_CHAR(line_pos, cb, clen);
+				gtk_text_buffer_get_iter_at_offset(textbuf,
+								   &iter,
+								   line_pos);
+				GET_CHAR(&iter, cb, clen);
 				if (clen == 1 && *cb == '\n')
 					line_pos++;
 #ifdef WRAP_DEBUG
@@ -2894,30 +2896,41 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 #endif
 			/* force wrapping if it is one long word but not URL */
 			if (line_pos - p_pos <= i_len)
-                        	if (!gtk_stext_is_uri_string
-				    (text, line_pos, tlen))
+                        	if (!gtkut_text_buffer_is_uri_string
+				    (textbuf, line_pos, tlen))
 					line_pos = cur_pos - 1;
 #ifdef WRAP_DEBUG
 			g_print("new line_pos=%d\n", line_pos);
 #endif
 
-			GET_CHAR(line_pos - 1, cbuf, clen);
+			gtk_text_buffer_get_iter_at_offset(textbuf,
+							   &iter,
+							   line_pos - 1);
+			GET_CHAR(&iter, cbuf, clen);
 
 			/* if next character is space delete it */
 			if (clen == 1 && isspace(*(guchar *)cbuf)) {
 				if (p_pos + i_len != line_pos ||
-                            	    !gtk_stext_is_uri_string
-					(text, line_pos, tlen)) {
-					STEXT_FREEZE();
+                            	    !gtkut_text_buffer_is_uri_string
+					(textbuf, line_pos, tlen)) {
 					/* workaround for correct cursor
 					   position */
 					if (set_editable_pos == FALSE) {
-						editable_pos = gtk_editable_get_position(GTK_EDITABLE(text));
+						GtkTextMark *ins = gtk_text_buffer_get_insert(textbuf);
+						gtk_text_buffer_get_iter_at_mark(textbuf, &iter, ins);
+						editable_pos = gtk_text_iter_get_offset(&iter);
 						if (editable_pos == line_pos)
 							set_editable_pos = TRUE;
 					}
-					gtk_stext_set_point(text, line_pos);
-					gtk_stext_backward_delete(text, 1);
+					gtk_text_buffer_get_iter_at_offset(textbuf,
+							   &iter,
+							   line_pos-1);
+					gtk_text_buffer_get_iter_at_offset(textbuf,
+							   &end_iter,
+							   line_pos);
+					gtk_text_buffer_delete(textbuf, &iter, &end_iter);
+					//gtk_stext_set_point(text, line_pos);
+					//gtk_stext_backward_delete(text, 1);
 					tlen--;
 					cur_pos--;
 					line_pos--;
@@ -2928,7 +2941,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 
 			/* if it is URL at beginning of line don't wrap */
 			if (p_pos + i_len == line_pos &&
-			    gtk_stext_is_uri_string(text, line_pos, tlen)) {
+			    gtkut_text_buffer_is_uri_string(textbuf, line_pos, tlen)) {
 #ifdef WRAP_DEBUG
 				g_print("found URL at ");
 				dump_text(text, line_pos, tlen, 1);
@@ -2937,10 +2950,13 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 			}
 
 			/* insert CR */
-			STEXT_FREEZE();
-			gtk_stext_set_point(text, line_pos);
-			gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
-			gtk_stext_compact_buffer(text);
+			gtk_text_buffer_get_iter_at_offset(textbuf,
+							   &iter,
+							   line_pos);
+			gtk_text_buffer_insert(textbuf, &iter, "\n", 1);
+			//gtk_stext_set_point(text, line_pos);
+			//gtk_stext_insert(text, NULL, NULL, NULL, "\n", 1);
+			//gtk_stext_compact_buffer(text);
 			tlen++;
 			line_pos++;
 			/* for loop will increase it */
@@ -2961,13 +2977,15 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 			/* should we insert quotation ? */
 			if (linewrap_quote && i_len) {
 				/* only if line is not already quoted  */
-				if (!gtk_stext_str_compare
-					(text, line_pos, tlen, qfmt)) {
+				if (!gtkut_text_buffer_str_compare
+					(textbuf, line_pos, tlen, qfmt)) {
 					guint ins_len;
-
+					
+					gtk_text_buffer_get_iter_at_offset(textbuf, &iter, line_pos);
+					
 					if (line_pos - p_pos > i_len) {
 						ins_len = ins_quote
-							(text, i_len, p_pos,
+							(textbuf, &iter, i_len, p_pos,
 							 tlen, qfmt);
 						tlen += ins_len;
 					}
@@ -2992,7 +3010,6 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 		gtk_text_buffer_get_iter_at_offset(textbuf, &iter, editable_pos);
 		gtk_text_buffer_place_cursor(textbuf, &iter);
 	}
-#endif
 }
 
 #undef GET_CHAR
