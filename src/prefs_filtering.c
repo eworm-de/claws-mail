@@ -79,7 +79,8 @@ static struct Filtering {
 /* widget creating functions */
 static void prefs_filtering_create		(void);
 
-static void prefs_filtering_set_dialog	(void);
+static void prefs_filtering_set_dialog	(const gchar *header,
+					 const gchar *key);
 static void prefs_filtering_set_list	(void);
 
 /* callback functions */
@@ -233,7 +234,9 @@ static gchar * action_text [] = {
 	N_("Delete on Server")
 };
 
-void prefs_filtering_open(FolderItem * item)
+void prefs_filtering_open(FolderItem * item,
+			  const gchar *header,
+			  const gchar *key)
 {
 	if (prefs_rc_is_readonly(FILTERING_RC))
 		return;
@@ -249,7 +252,7 @@ void prefs_filtering_open(FolderItem * item)
 
 	cur_item = item;
 
-	prefs_filtering_set_dialog();
+	prefs_filtering_set_dialog(header, key);
 
 	gtk_widget_show(filtering.window);
 
@@ -692,16 +695,20 @@ void prefs_filtering_delete_path(const gchar *path)
 	prefs_matcher_write_config();
 }
 
-static void prefs_filtering_set_dialog(void)
+static void prefs_filtering_set_dialog(const gchar *header, const gchar *key)
 {
 	GtkCList *clist = GTK_CLIST(filtering.cond_clist);
 	GSList *cur;
 	GSList * prefs_filtering;
+	gchar *cond_str[1];
+	gint row;
 	
 	gtk_clist_freeze(clist);
 	gtk_clist_clear(clist);
 
-	prefs_filtering_clist_set_row(-1, NULL);
+	cond_str[0] = _("(New)");
+	row = gtk_clist_append(clist, cond_str);
+	gtk_clist_set_row_data(clist, row, NULL);
 
 	if (cur_item == NULL)
 		prefs_filtering = global_processing;
@@ -711,13 +718,26 @@ static void prefs_filtering_set_dialog(void)
 	for(cur = prefs_filtering ; cur != NULL ; cur = g_slist_next(cur)) {
 		FilteringProp * prop = (FilteringProp *) cur->data;
 
-		prefs_filtering_clist_set_row(-1, prop);
+		cond_str[0] = filteringprop_to_string(prop);
+		subst_char(cond_str[0], '\t', ':');
+		row = gtk_clist_append(clist, cond_str);
+		gtk_clist_set_row_data(clist, row, prop);
+
+		g_free(cond_str[0]);
 	}
 
 	prefs_filtering_update_hscrollbar();
 	gtk_clist_thaw(clist);
 
 	prefs_filtering_reset_dialog();
+
+	if (header && key) {
+		gchar *match_str = g_strconcat(header, " ",
+			get_matchparser_tab_str(MATCHTYPE_MATCHCASE),
+			" \"", key, "\"", NULL);
+		gtk_entry_set_text(GTK_ENTRY(filtering.cond_entry), match_str);
+		g_free(match_str);
+	}
 }
 
 static void prefs_filtering_reset_dialog(void)

@@ -2935,7 +2935,7 @@ static void prefs_scoring_open_cb(MainWindow *mainwin, guint action,
 static void prefs_filtering_open_cb(MainWindow *mainwin, guint action,
 				    GtkWidget *widget)
 {
-	prefs_filtering_open(NULL);
+	prefs_filtering_open(NULL, NULL, NULL);
 }
 
 static void prefs_template_open_cb(MainWindow *mainwin, guint action,

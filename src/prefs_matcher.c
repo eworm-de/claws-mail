@@ -381,7 +381,7 @@ static void prefs_matcher_create(void)
 	gtkut_combo_set_items (GTK_COMBO (header_combo),
 			       "Subject", "From", "To", "Cc", "Reply-To",
 			       "Sender", "X-ML-Name", "X-List", "X-Sequence",
-			       "X-Mailer",
+			       "X-Mailer","X-BeenThere",
 			       NULL);
 	gtk_table_attach (GTK_TABLE (table1), header_combo, 1, 2, 1, 2,
 			  0, 0, 0, 0);

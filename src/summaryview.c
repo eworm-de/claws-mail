@@ -3935,29 +3935,57 @@ static void summary_filter_func(GtkCTree *ctree, GtkCTreeNode *node,
 
 void summary_filter_open(SummaryView *summaryview, PrefsFilterType type)
 {
-	static HeaderEntry hentry[] = {{"List-Id:",        NULL, FALSE},
+	static HeaderEntry hentry[] = {{"X-BeenThere:",    NULL, FALSE},
 				       {"X-ML-Name:",      NULL, FALSE},
 				       {"X-List:",         NULL, FALSE},
 				       {"X-Mailing-list:", NULL, FALSE},
+				       {"List-Id:",        NULL, FALSE},
 				       {NULL,              NULL, FALSE}};
+
+	static gchar *header_strs[] = {"From", "from", "To", "to", "Subject", "subject"};
+
+	static gchar *hentry_strs[]   = {"X-BeenThere", "X-ML-Name", "X-List",
+					 "X-Mailing-List", "List-Id",
+					 "header \"X-BeenThere\"", "header \"X-ML-Name\"",
+					 "header \"X-List\"", "header \"X-Mailing-List\"",
+					 "header \"List-Id\""};
 	enum
 	{
-		H_LIST_ID        = 0,
+		H_X_BEENTHERE	 = 0,
 		H_X_ML_NAME      = 1,
 		H_X_LIST         = 2,
-		H_X_MAILING_LIST = 3
+		H_X_MAILING_LIST = 3,
+		H_LIST_ID	 = 4
+	};
+
+	enum
+	{
+		H_FROM    = 0,
+		H_TO      = 2,
+		H_SUBJECT = 4
 	};
 
 	MsgInfo *msginfo;
 	gchar *header = NULL;
 	gchar *key = NULL;
 	FILE *fp;
+	int header_offset;
+	int hentry_offset;
 
 	if (!summaryview->selected) return;
 
 	msginfo = gtk_ctree_node_get_row_data(GTK_CTREE(summaryview->ctree),
 					      summaryview->selected);
 	if (!msginfo) return;
+
+	if (global_processing) {
+		header_offset = 1;
+		hentry_offset = 5;
+	}
+	else {
+		header_offset = 0;
+		hentry_offset = 0;
+	}
 
 	switch (type) {
 	case FILTER_BY_NONE:
@@ -3967,50 +3995,58 @@ void summary_filter_open(SummaryView *summaryview, PrefsFilterType type)
 		procheader_get_header_fields(fp, hentry);
 		fclose(fp);
 
-		if (hentry[H_LIST_ID].body != NULL) {
-			header = "List-Id";
-			Xstrdup_a(key, hentry[H_LIST_ID].body, );
+		if (hentry[H_X_BEENTHERE].body != NULL) {
+			header = hentry_strs[H_X_BEENTHERE + hentry_offset];
+			Xstrdup_a(key, hentry[H_X_BEENTHERE].body, );
 		} else if (hentry[H_X_ML_NAME].body != NULL) {
-			header = "X-ML-Name";
+			header = hentry_strs[H_X_ML_NAME + hentry_offset];
 			Xstrdup_a(key, hentry[H_X_ML_NAME].body, );
 		} else if (hentry[H_X_LIST].body != NULL) {
-			header = "X-List";
+			header = hentry_strs[H_X_LIST + hentry_offset];
 			Xstrdup_a(key, hentry[H_X_LIST].body, );
 		} else if (hentry[H_X_MAILING_LIST].body != NULL) {
-			header = "X-Mailing-list";
+			header = hentry_strs[H_X_MAILING_LIST + hentry_offset];
 			Xstrdup_a(key, hentry[H_X_MAILING_LIST].body, );
+		} else if (hentry[H_LIST_ID].body != NULL) {
+			header = hentry_strs[H_LIST_ID + hentry_offset];
+			Xstrdup_a(key, hentry[H_LIST_ID].body, );
 		} else if (msginfo->subject) {
-			header = "Subject";
+			header = header_strs[H_SUBJECT + header_offset];
 			key = msginfo->subject;
 		}
 
-		g_free(hentry[H_LIST_ID].body);
-		hentry[H_LIST_ID].body = NULL;
+		g_free(hentry[H_X_BEENTHERE].body);
+		hentry[H_X_BEENTHERE].body = NULL;
 		g_free(hentry[H_X_ML_NAME].body);
 		hentry[H_X_ML_NAME].body = NULL;
 		g_free(hentry[H_X_LIST].body);
 		hentry[H_X_LIST].body = NULL;
 		g_free(hentry[H_X_MAILING_LIST].body);
 		hentry[H_X_MAILING_LIST].body = NULL;
+		g_free(hentry[H_LIST_ID].body);
+		hentry[H_LIST_ID].body = NULL;
 
 		break;
 	case FILTER_BY_FROM:
-		header = "From";
+		header = header_strs[H_FROM + header_offset];
 		key = msginfo->from;
 		break;
 	case FILTER_BY_TO:
-		header = "To";
+		header = header_strs[H_TO + header_offset];
 		key = msginfo->to;
 		break;
 	case FILTER_BY_SUBJECT:
-		header = "Subject";
+		header = header_strs[H_SUBJECT + header_offset];
 		key = msginfo->subject;
 		break;
 	default:
 		break;
 	}
 
-	prefs_filter_open(header, key);
+	if (global_processing)
+		prefs_filtering_open(NULL, header, key);
+	else
+		prefs_filter_open(header, key);
 }
 
 void summary_reply(SummaryView *summaryview, ComposeMode mode)
