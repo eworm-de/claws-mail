@@ -2834,11 +2834,15 @@ gint imap_cmd_envelope(SockInfo *sock, guint32 first_uid, guint32 last_uid)
 		for (elem = headers; elem->name != NULL; ++elem) {
 			gint namelen = strlen(elem->name);
 
-			while(namelen && (elem->name[namelen - 1] == ' ' ||
-				elem->name[namelen - 1] == ':'))
+			/* Header fields ending with space are not rfc822 headers */
+			if (elem->name[namelen - 1] == ' ')
+				continue;
+
+			/* strip : at the of header field */
+			if(elem->name[namelen - 1] == ':')
 				namelen--;
 			
-			if (namelen == 0)
+			if (namelen <= 0)
 				continue;
 
 			g_string_sprintfa(header_fields, "%s%.*s",
@@ -3279,6 +3283,11 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 	g_free(cmdbuf);
 	ok = imap_cmd_ok(SESSION(session)->sock, argbuf);
 	if (ok != IMAP_SUCCESS) {
+		if (ok == IMAP_SOCKET) {
+			session_destroy((Session *)session);
+			((RemoteFolder *)folder)->session = NULL;
+		}
+
 		ptr_array_free_strings(argbuf);
 		g_ptr_array_free(argbuf, TRUE);
 		return -1;

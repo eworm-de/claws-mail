@@ -1,7 +1,19 @@
+2003-03-05 [christoph]	0.8.10claws84
+
+	* src/imap.c
+		don't ask imap server for non rfc822 headers
+
+	(closes bug 71 IMAP FETCH asks for FROM header field twice)
+
+	* src/imap.c
+		destroy session on socket error to allow reconnecting
+
 2003-03-05 [christoph]	0.8.10claws83
 
 	* configure.ac
 		fix building with gnome when no prefix is set
+
+	(closes bug 66 Gnome directory is set to NONE)
 
 2003-03-05 [paul]	0.8.10claws82
 
@@ -15,6 +27,8 @@
 		  message number
 		o remove some code for single message copy and move
 		  operations and use functions for multiple messages
+
+	(closes bug 63 Strange behaviour MOVING messages from MH to IMAP)
 
 	* src/news.c
 		remove unused include
