@@ -1,5 +1,25 @@
 Changes of Sylpheed
 
+* 0.8.6
+
+    * Per-folder account setting has been implemented.
+    * Per-folder default To / Cc / Bcc / Reply-To setting on composition
+      has been implemented.
+    * The status of signature is now indicated using different colors.
+    * Reply-To header now has priority over List-Post header on list-reply.
+    * Multiple deletion of IMAP4 messages has been optimized.
+    * A workaround for the problem that couldn't display 8-bit characters in
+      C or POSIX locale has been made.
+    * The B-encoding of headers on locales other than Japanese (when not
+      using libjconv) has been enabled.
+    * 'Rescan folder tree' has been renamed to 'Rebuild folder tree'.
+    * The redundant error messages of code conversion failure has been
+      prohibited.
+    * The cancellation of POP3 session has been fixed.
+    * The error detection of POP3 has been improved.
+    * The LDAP library detection of configure script has been fixed once more.
+    * Other minor bugfixes and code cleanups have been made.
+
 * 0.8.5
 
     * Many fatal errors which will lead to crash in message catalogs have

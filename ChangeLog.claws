@@ -1,18 +1,23 @@
-2002-11-14 [colin]	0.8.5claws155
+2002-11-15 [paul]
+
+	* NEWS
+		sync with 0.8.6 release
+
+2002-11-15 [colin]	0.8.5claws155
 
 	* src/folder.[ch]
 	  src/folderview.c
 		Fix error handling of folder_item_move_to()
 		(thanks to Alfons!)
 
-2002-11-14 [colin]	0.8.5claws154
+2002-11-15 [colin]	0.8.5claws154
 
 	* src/folder.[ch]
 	  src/folderview.c
 		folder_item_move_to() sets an error message instead
 		of having GUI stuff in folder.c
 
-2002-11-14 [colin]	0.8.5claws153
+2002-11-15 [colin]	0.8.5claws153
 
 	* src/procmsg.[ch]
 		Implemented a callback for MsgInfo updates, 
