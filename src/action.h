@@ -53,13 +53,13 @@ void actions_execute		(gpointer	data,
 				 gint		source);
 
 void action_update_mainwin_menu	(GtkItemFactory	*ifactory,
-				 const gchar	*branch_path,
+				 gchar		*branch_path,
 				 MainWindow	*mainwin);
 void action_update_msgview_menu	(GtkItemFactory	*ifactory,
-				 const gchar	*branch_path,
+				 gchar		*branch_path,
 				 MessageView	*msgview);
 void action_update_compose_menu	(GtkItemFactory	*ifactory,
-				 const gchar	*branch_path,
+				 gchar		*branch_path,
 				 Compose	*compose);
 
 #endif /* __ACTION_H__ */

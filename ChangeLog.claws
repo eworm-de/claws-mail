@@ -1,7 +1,7 @@
 2004-06-04 [christoph]	0.9.11cvs3
 
 	* src/account.c
-	* src/action.c
+	* src/action.[ch]
 	* src/addressbook.c
 	* src/addrindex.h
 	* src/folder.h
