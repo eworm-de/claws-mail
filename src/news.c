@@ -484,6 +484,15 @@ static void news_delete_all_article(FolderItem *item)
 	debug_print(_("done.\n"));
 }
 
+/*
+  news_get_group_list returns a strings list.
+  These strings are the names of the newsgroups of a server.
+  item is the FolderItem of the news server.
+  The names of the newsgroups are cached into a file so that
+  when the function is called again, there is no need to make
+  a request to the server.
+ */
+
 GSList * news_get_group_list(FolderItem *item)
 {
 	gchar *path, *filename;
@@ -546,6 +555,10 @@ GSList * news_get_group_list(FolderItem *item)
 
 	return group_list;
 }
+
+/*
+  remove the cache file of the names of the newsgroups.
+ */
 
 void news_reset_group_list(FolderItem *item)
 {

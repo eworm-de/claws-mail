@@ -260,6 +260,11 @@ static gint nntp_gen_recv(gint sock, gchar *buf, gint size)
 	return NN_SUCCESS;
 }
 
+/*
+  nntp_list sends the command "LIST" to the news server,
+  a function is needed to read the newsgroups list.
+ */
+
 gint nntp_list(gint sock)
 {
 	GList * result = NULL;
