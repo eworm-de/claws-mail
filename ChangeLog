@@ -1,8 +1,16 @@
+2001-11-20
+
+	* src/addrbook.c: removed redundant functions, and fixed generation
+	  of spurious address book file names.
+	* src/addrindex.c: V-Card -> vCard.
+
 2001-11-19
 
 	* src/textview.c: get_email_part(): replaced isalnum() with
 	  the macro IS_ASCII_ALNUM() which restricts the range of
 	  characters to 7bit ASCII (thanks to Shimamoto).
+	* src/utils.c: remote_tzoffset_sec(): workaround for malformed
+	  timezone offset.
 
 2001-11-18
 

@@ -2027,16 +2027,16 @@ time_t remote_tzoffset_sec(const gchar *zone)
 	gchar *p;
 	gchar c;
 	gint iustz;
-	gint h, m;
+	gint offset;
 	time_t remoteoffset;
 
 	strncpy(zone3, zone, 3);
 	zone3[3] = '\0';
 	remoteoffset = 0;
 
-	if (sscanf(zone, "%c%2d%2d", &c, &h, &m) == 3 &&
+	if (sscanf(zone, "%c%d", &c, &offset) == 2 &&
 	    (c == '+' || c == '-')) {
-		remoteoffset = ((h * 60) + m) * 60;
+		remoteoffset = ((offset / 100) * 60 + (offset % 100)) * 60;
 		if (c == '-')
 			remoteoffset = -remoteoffset;
 	} else if (!strncmp(zone, "UT" , 2) ||
