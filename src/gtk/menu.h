@@ -71,8 +71,6 @@ void menu_set_sensitive_all	(GtkMenuShell		*menu_shell,
 void menu_set_active		(GtkItemFactory		*ifactory,
 				 const gchar		*path,
 				 gboolean		 is_active);
-void menu_toggle_active		(GtkItemFactory		*ifactory,
-				 const gchar		*path);
 void menu_button_position	(GtkMenu		*menu,
 				 gint			*x,
 				 gint			*y,
