@@ -2198,7 +2198,7 @@ static gchar *imap_get_flag_str(IMAPFlags flags)
 	if (IMAP_IS_DELETED(flags))	g_string_append(str, "\\Deleted ");
 	if (IMAP_IS_DRAFT(flags))	g_string_append(str, "\\Draft");
 
-	if (str->str[str->len - 1] == ' ')
+	if (str->len > 0 && str->str[str->len - 1] == ' ')
 		g_string_truncate(str, str->len - 1);
 
 	ret = str->str;

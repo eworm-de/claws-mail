@@ -1,3 +1,8 @@
+2003-07-28 [paul]	0.9.3claws63
+
+	* sync with 0.9.4cvs1
+		see ChangeLog 2003-07-28
+
 2003-07-27 [alfons]	0.9.3claws62
 
 	* src/mimeview.c
