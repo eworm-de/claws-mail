@@ -1,3 +1,8 @@
+2002-09-27 [melvin]	0.8.3claws30
+
+	* ac/aspell.m4
+		Fixed typo which could break linking
+
 2002-09-27 [melvin]	0.8.3claws29
 
 	* ac/aspell.m4
