@@ -1,3 +1,10 @@
+2005-01-17 [colin]	0.9.13cvs36.2
+
+	* src/compose.c
+		Fix DnD inserting twice. While at it,
+		add DnD support for text/plain in the
+		body, and add support in the headers.
+
 2005-01-16 [colin]	0.9.13cvs36.1
 
 	* ChangeLog

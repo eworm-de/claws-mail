@@ -452,7 +452,19 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 					     guint		 info,
 					     guint		 time,
 					     gpointer		 user_data);
+static void compose_header_drag_received_cb (GtkWidget		*widget,
+					     GdkDragContext	*drag_context,
+					     gint		 x,
+					     gint		 y,
+					     GtkSelectionData	*data,
+					     guint		 info,
+					     guint		 time,
+					     gpointer		 user_data);
 
+static gboolean compose_drag_drop	    (GtkWidget *widget,
+					     GdkDragContext *drag_context,
+					     gint x, gint y,
+					     guint time, gpointer user_data);
 #if 0
 static void to_activated		(GtkWidget	*widget,
 					 Compose	*compose);
@@ -666,7 +678,9 @@ static GtkItemFactoryEntry compose_entries[] =
 
 static GtkTargetEntry compose_mime_types[] =
 {
-	{"text/uri-list", 0, 0}
+	{"text/uri-list", 0, 0},
+	{"text/plain", 0, 0},
+	{"STRING", 0, 0}
 };
 
 static gboolean compose_put_existing_to_front(MsgInfo *info)
@@ -4445,6 +4459,18 @@ static void compose_create_header_entry(Compose *compose)
 			 G_CALLBACK(compose_grab_focus_before_cb), compose);
 	g_signal_connect_after(G_OBJECT(entry), "grab_focus",
 			 G_CALLBACK(compose_grab_focus_cb), compose);
+			 
+	/* email dnd */
+	gtk_drag_dest_set(entry, GTK_DEST_DEFAULT_ALL, compose_mime_types, 
+			  sizeof(compose_mime_types)/sizeof(compose_mime_types[0]),
+			  GDK_ACTION_COPY | GDK_ACTION_MOVE);
+	g_signal_connect(G_OBJECT(entry), "drag_data_received",
+			 G_CALLBACK(compose_header_drag_received_cb),
+			 entry);
+	g_signal_connect(G_OBJECT(entry), "drag-drop",
+			 G_CALLBACK(compose_drag_drop),
+			 compose);
+	
 	address_completion_register_entry(GTK_ENTRY(entry));
 
         headerentry->compose = compose;
@@ -4662,10 +4688,14 @@ GtkWidget *compose_create_attach(Compose *compose)
 
 	/* drag and drop */
 	gtk_drag_dest_set(attach_clist,
-			  GTK_DEST_DEFAULT_ALL, compose_mime_types, 1,
+			  GTK_DEST_DEFAULT_ALL, compose_mime_types, 
+			  sizeof(compose_mime_types)/sizeof(compose_mime_types[0]),
 			  GDK_ACTION_COPY | GDK_ACTION_MOVE);
 	g_signal_connect(G_OBJECT(attach_clist), "drag_data_received",
 			 G_CALLBACK(compose_attach_drag_received_cb),
+			 compose);
+	g_signal_connect(G_OBJECT(attach_clist), "drag-drop",
+			 G_CALLBACK(compose_drag_drop),
 			 compose);
 
 	compose->attach_scrwin = attach_scrwin;
@@ -4940,10 +4970,14 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 			 G_CALLBACK(text_inserted), compose);
 
 	/* drag and drop */
-	gtk_drag_dest_set(text, GTK_DEST_DEFAULT_ALL, compose_mime_types, 1,
+	gtk_drag_dest_set(text, GTK_DEST_DEFAULT_ALL, compose_mime_types, 
+			  sizeof(compose_mime_types)/sizeof(compose_mime_types[0]),
 			  GDK_ACTION_COPY | GDK_ACTION_MOVE);
 	g_signal_connect(G_OBJECT(text), "drag_data_received",
 			 G_CALLBACK(compose_insert_drag_received_cb),
+			 compose);
+	g_signal_connect(G_OBJECT(text), "drag-drop",
+			 G_CALLBACK(compose_drag_drop),
 			 compose);
 	gtk_widget_show_all(vbox);
 
@@ -7132,15 +7166,27 @@ static void compose_attach_drag_received_cb (GtkWidget		*widget,
 {
 	Compose *compose = (Compose *)user_data;
 	GList *list, *tmp;
+	
+	if (gdk_atom_name(data->type) && !strcmp(gdk_atom_name(data->type), "text/uri-list")) {
+		list = uri_list_extract_filenames((const gchar *)data->data);
+		for (tmp = list; tmp != NULL; tmp = tmp->next)
+			compose_attach_append
+				(compose, (const gchar *)tmp->data,
+				 (const gchar *)tmp->data, NULL);
+		if (list) compose_changed_cb(NULL, compose);
+		list_free_strings(list);
+		g_list_free(list);
+	}
+}
 
-	list = uri_list_extract_filenames((const gchar *)data->data);
-	for (tmp = list; tmp != NULL; tmp = tmp->next)
-		compose_attach_append
-			(compose, (const gchar *)tmp->data,
-			 (const gchar *)tmp->data, NULL);
-	if (list) compose_changed_cb(NULL, compose);
-	list_free_strings(list);
-	g_list_free(list);
+static gboolean compose_drag_drop(GtkWidget *widget,
+				  GdkDragContext *drag_context,
+				  gint x, gint y,
+				  guint time, gpointer user_data)
+{
+	/* not handling this signal makes compose_insert_drag_received_cb
+	 * called twice */
+	return TRUE;					 
 }
 
 static void compose_insert_drag_received_cb (GtkWidget		*widget,
@@ -7155,11 +7201,56 @@ static void compose_insert_drag_received_cb (GtkWidget		*widget,
 	Compose *compose = (Compose *)user_data;
 	GList *list, *tmp;
 
-	list = uri_list_extract_filenames((const gchar *)data->data);
-	for (tmp = list; tmp != NULL; tmp = tmp->next)
-		compose_insert_file(compose, (const gchar *)tmp->data);
-	list_free_strings(list);
-	g_list_free(list);
+	/* strangely, testing data->type == gdk_atom_intern("text/uri-list", TRUE)
+	 * does not work */
+	if (gdk_atom_name(data->type) && !strcmp(gdk_atom_name(data->type), "text/uri-list")) {
+		list = uri_list_extract_filenames((const gchar *)data->data);
+		for (tmp = list; tmp != NULL; tmp = tmp->next) {
+				compose_insert_file(compose, (const gchar *)tmp->data);
+		}
+		list_free_strings(list);
+		g_list_free(list);
+		gtk_drag_finish(drag_context, TRUE, FALSE, time);
+		return;
+	} else {
+		gchar *tmpfile = get_tmp_file();
+		str_write_to_file((const gchar *)data->data, tmpfile);
+		compose_insert_file(compose, tmpfile);
+		unlink(tmpfile);
+		g_free(tmpfile);
+		gtk_drag_finish(drag_context, TRUE, FALSE, time);
+		return;
+	}
+	gtk_drag_finish(drag_context, TRUE, FALSE, time);
+}
+
+static void compose_header_drag_received_cb (GtkWidget		*widget,
+					     GdkDragContext	*drag_context,
+					     gint		 x,
+					     gint		 y,
+					     GtkSelectionData	*data,
+					     guint		 info,
+					     guint		 time,
+					     gpointer		 user_data)
+{
+	GtkEditable *entry = (GtkEditable *)user_data;
+	gchar *email = (gchar *)data->data;
+
+	/* strangely, testing data->type == gdk_atom_intern("text/plain", TRUE)
+	 * does not work */
+
+	if (!strncmp(email, "mailto:", strlen("mailto:"))) {
+		gchar decoded[strlen(email)];
+		int start = 0;
+
+		email += strlen("mailto:");
+		decode_uri(decoded, email); /* will fit */
+		gtk_editable_delete_text(entry, 0, -1);
+		gtk_editable_insert_text(entry, decoded, strlen(decoded), &start);
+		gtk_drag_finish(drag_context, TRUE, FALSE, time);
+		return;
+	}
+	gtk_drag_finish(drag_context, TRUE, FALSE, time);
 }
 
 #if 0 /* NEW COMPOSE GUI */
