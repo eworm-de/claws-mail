@@ -1,3 +1,9 @@
+2003-08-01 [luke]	0.9.3claws85
+	* src/mainwindow.c
+		o fixed visibility of icons/mimeview after toggling separate
+		  message/folder view (factored out some similar code too).
+
+
 2003-07-31 [alfons]	0.9.3claws84
 
 	* src/mimeview.c

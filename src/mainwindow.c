@@ -1810,10 +1810,6 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 				     prefs_common.mainwin_height);
 		gtk_widget_show_all(vpaned);
 
-		/* CLAWS: previous "gtk_widget_show_all" makes noticeview
-		 * lose track of its visibility state */
-		if (!noticeview_is_visible(mainwin->messageview->noticeview)) 
-			gtk_widget_hide(GTK_WIDGET_PTR(mainwin->messageview->noticeview));
 
 		mainwin->win.sep_none.hpaned = hpaned;
 		mainwin->win.sep_none.vpaned = vpaned;
@@ -1855,11 +1851,6 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 
 		gtk_widget_show_all(folderwin);
 		
-		/* CLAWS: previous "gtk_widget_show_all" makes noticeview
-		 * lose track of its visibility state */
-		if (!noticeview_is_visible(mainwin->messageview->noticeview)) 
-			gtk_widget_hide(GTK_WIDGET_PTR(mainwin->messageview->noticeview));
-		
 		/* remove headerview if not in prefs */
 		headerview_set_visibility(mainwin->messageview->headerview,
 					  prefs_common.display_header_pane);
@@ -1891,10 +1882,6 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 
 		gtk_widget_show_all(messagewin);
 		
-		/* CLAWS: previous "gtk_widget_show_all" makes noticeview
-		 * lose track of its visibility state */
-		if (!noticeview_is_visible(mainwin->messageview->noticeview)) 
-			gtk_widget_hide(GTK_WIDGET_PTR(mainwin->messageview->noticeview));
 		break;
 	case SEPARATE_BOTH:
 		gtk_box_pack_start(GTK_BOX(vbox_body),
@@ -1917,12 +1904,17 @@ static void main_window_set_widgets(MainWindow *mainwin, SeparateType type)
 		gtk_widget_show_all(folderwin);
 		gtk_widget_show_all(messagewin);
 
-		/* CLAWS: previous "gtk_widget_show_all" makes noticeview
-		 * lose track of its visibility state */
-		if (!noticeview_is_visible(mainwin->messageview->noticeview)) 
-			gtk_widget_hide(GTK_WIDGET_PTR(mainwin->messageview->noticeview));
 		break;
 	}
+
+	/* CLAWS: previous "gtk_widget_show_all" makes noticeview
+	 * and mimeview icon list/ctree lose track of their visibility states */
+	if (!noticeview_is_visible(mainwin->messageview->noticeview)) 
+		gtk_widget_hide(GTK_WIDGET_PTR(mainwin->messageview->noticeview));
+	if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(mainwin->messageview->mimeview->mime_toggle)))
+		gtk_widget_hide(mainwin->messageview->mimeview->icon_mainbox);
+	else 
+		gtk_widget_hide(mainwin->messageview->mimeview->ctree_mainbox);
 
 	/* rehide quick search if necessary */
 	if (!prefs_common.show_searchbar)
