@@ -529,6 +529,8 @@ static void vcard_read_file( VCardFile *cardFile ) {
 			g_free( tagname );
 			g_free( tagtype );
 		}
+		g_free( line );
+		line = NULL;
 	}
 
 	/* Free lists */
@@ -736,6 +738,8 @@ gint vcard_test_read_file( const gchar *fileSpec ) {
 				g_free( tagname );
 				g_free( tagtype );
 			}
+			g_free( line );
+			line = NULL;
 		}
 		vcard_close_file( cardFile );
 	}
