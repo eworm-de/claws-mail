@@ -1023,42 +1023,17 @@ void conv_unmime_header_overwrite(gchar *str)
 
 	cur_charset = conv_get_current_charset();
 
-#if HAVE_LIBJCONV
-	Xstrdup_a(buf, str, return);
 	outlen = strlen(str) + 1;
-	UnMimeHeaderConv(buf, str, outlen);
+	Xalloca(buf, outlen, return);
+	unmime_header(buf, str);
 #ifdef WIN32
-	if (cur_charset == C_EUC_JP || cur_charset == C_SHIFT_JIS) {
+	if (cur_charset == C_EUC_JP || cur_charset == C_SHIFT_JIS)
 #else
-	if (cur_charset == C_EUC_JP) {
+	if (cur_charset == C_EUC_JP)
 #endif
-		gchar *tmp;
-		gint len;
-
-		len = strlen(str) * 2 + 1;
-		Xalloca(tmp, len, return);
-		conv_jistodisp(tmp, len, str);
-		strncpy2(str, tmp, outlen);
-	}
-#else
-#ifdef WIN32
-	if (cur_charset == C_EUC_JP || cur_charset == C_SHIFT_JIS) {
-#else
-	if (cur_charset == C_EUC_JP) {
-#endif
-		gchar *tmp;
-		gint len;
-
-		Xstrdup_a(buf, str, return);
-		outlen = strlen(str) + 1;
-		UnMimeHeader(buf);
-		len = strlen(buf) * 2 + 1;
-		Xalloca(tmp, len, {strncpy2(str, buf, outlen); return;});
-		conv_anytodisp(tmp, len, buf);
-		strncpy2(str, tmp, outlen);
-	} else
-		UnMimeHeader(str);
-#endif
+		conv_jistodisp(str, outlen, buf);
+	else
+		strncpy2(str, buf, outlen);
 }
 
 void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
@@ -1068,26 +1043,17 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 	CharSet cur_charset;
 
 	cur_charset = conv_get_current_charset();
-	Xstrdup_a(buf, str, return);
 
-#if HAVE_LIBJCONV
-	UnMimeHeaderConv(buf, outbuf, outlen);
-#else
-	UnMimeHeader(buf);
-	strncpy2(outbuf, buf, outlen);
-#endif
 #ifdef WIN32
 	if (cur_charset == C_EUC_JP || cur_charset == C_SHIFT_JIS) {
 #else
 	if (cur_charset == C_EUC_JP) {
 #endif
-		gint len;
-
-		len = strlen(outbuf) * 2 + 1;
-		Xalloca(buf, len, return);
-		conv_anytodisp(buf, len, outbuf);
-		strncpy2(outbuf, buf, outlen);
-	}
+		Xalloca(buf, outlen, return);
+		unmime_header(buf, str);
+		conv_jistodisp(outbuf, outlen, buf);
+	} else
+		unmime_header(outbuf, str);
 }
 
 #define MAX_ENCLEN	75

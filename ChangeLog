@@ -1,3 +1,14 @@
+2002-07-10
+
+	* src/codeconv.c
+	  src/procmime.c
+	  src/unmime.[ch]: rewritten the MIME decode routines.
+	  unmime_header()
+	  unmime_quoted_printable_line(): new.
+	* src/procheader.c:
+	  procheader_get_one_field()
+	  procheader_get_unfolded_line(): remove also CR.
+
 2002-07-08
 
 	* libkcc: removed from the source tree.
