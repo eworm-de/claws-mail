@@ -1,6 +1,6 @@
-libdir = $(PLUGINDIR)
+plugindir = $(pkglibdir)/plugins
 
-lib_LTLIBRARIES = demo.la
+plugin_LTLIBRARIES = demo.la
 
 demo_la_SOURCES = \
 	demo.c

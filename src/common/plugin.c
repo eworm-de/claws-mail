@@ -113,6 +113,8 @@ gint plugin_load(const gchar *filename, gchar **error)
 
 	plugins = g_slist_append(plugins, plugin);
 
+	debug_print("Plugin %s (from file %s) loaded\n", plugin->name, plugin->filename);
+
 	return 0;
 }
 

@@ -1,3 +1,11 @@
+2002-12-26 [christoph]	0.8.8claws4
+
+	* src/common/plugin.c
+		add a little debug output
+	* configure.in
+	* src/plugins/demo/Makefile.am
+		better use of automake
+
 2002-12-26 [christoph]	0.8.8claws3
 
 	* src/Makefile.am
