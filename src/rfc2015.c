@@ -174,7 +174,7 @@ sig_status_with_name (GpgmeSigStat status)
         result = _("Good signature from \"%s\"");
         break;
       case GPGME_SIG_STAT_BAD:
-        result = _("BAD signature  from \"%s\"");
+        result = _("BAD signature from \"%s\"");
         break;
       case GPGME_SIG_STAT_NOKEY:
         result = _("No public key to verify the signature");
@@ -245,7 +245,7 @@ sig_status_full (GpgmeCtx ctx)
 			strftime (ctime_str, sizeof (ctime_str), "%c", 
 				  ctime_val);
 			g_string_sprintfa (str,
-					   _("Signature made %s\n"),
+					   _("Signature made at %s\n"),
 					   ctime_str);
 		}
 		err = gpgme_get_sig_key (ctx, sig_idx, &key);
@@ -865,7 +865,7 @@ rfc2015_encrypt (const char *file, GSList *recp_list, gboolean ascii_armored)
 
     if (ascii_armored) {
         fprintf(fp, 
-            "Content-Type: text/plain; charset=us-ascii\r\n"
+            "Content-Type: text/plain; charset=US-ASCII\r\n"
             "Content-Transfer-Encoding: 7bit\r\n"  
             "\r\n");
     } else {
@@ -904,10 +904,9 @@ rfc2015_encrypt (const char *file, GSList *recp_list, gboolean ascii_armored)
     /* and the final boundary */
     if (!ascii_armored) {
         fprintf (fp,
-	        "\r\n"
-	        "--%s--\r\n"
-	        "\r\n",
-            boundary);
+		 "\r\n"
+		 "--%s--\r\n",
+	         boundary);
     }
     fflush (fp);
     if (ferror (fp)) {
@@ -1179,15 +1178,17 @@ rfc2015_sign (const char *file, GSList *key_list)
     header = NULL;
 
     if (!mime_version_seen) 
-        fputs ("MIME-Version: 1\r\n", fp);
+        fputs ("MIME-Version: 1.0\r\n", fp);
     fprintf (fp, "Content-Type: multipart/signed; "
              "protocol=\"application/pgp-signature\";\r\n");
     if (micalg)
-        fprintf (fp, " micalg=%s;", micalg );
-    fprintf (fp, " boundary=\"%s\"\r\n", boundary );
+        fprintf (fp, " micalg=\"%s\";", micalg);
+    fprintf (fp, " boundary=\"%s\"\r\n", boundary);
 
     /* Part 1: signed material */
-    fprintf (fp, "\r\n--%s\r\n", boundary);
+    fprintf (fp, "\r\n"
+                 "--%s\r\n",
+                 boundary);
     err = gpgme_data_rewind (plain);
     if (err) {
         debug_print ("gpgme_data_rewind on plain failed: %s\n",
@@ -1203,7 +1204,9 @@ rfc2015_sign (const char *file, GSList *key_list)
     }
 
     /* Part 2: signature */
-    fprintf (fp, "\r\n--%s\r\n", boundary);
+    fprintf (fp, "\r\n"
+                 "--%s\r\n",
+                 boundary);
     fputs ("Content-Type: application/pgp-signature\r\n"
 	   "\r\n", fp);
 
@@ -1223,7 +1226,9 @@ rfc2015_sign (const char *file, GSList *key_list)
     }
 
     /* Final boundary */
-    fprintf (fp, "\r\n--%s--\r\n\r\n", boundary);
+    fprintf (fp, "\r\n"
+                 "--%s--\r\n",
+                 boundary);
     fflush (fp);
     if (ferror (fp)) {
         FILE_OP_ERROR (file, "fwrite");

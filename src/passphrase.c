@@ -44,7 +44,7 @@
 #include "passphrase.h"
 #include "prefs_common.h"
 #include "manage_window.h"
-
+#include "utils.h"
 
 static int grab_all = 0;
 
@@ -158,14 +158,14 @@ passphrase_mbox (const gchar *desc)
         if ( gdk_pointer_grab ( window->window, TRUE, 0,
                                 NULL, NULL, GDK_CURRENT_TIME)) {
             XUngrabServer ( GDK_DISPLAY() );
-            g_message ("OOPS: Could not grab mouse\n");
+            g_warning ("OOPS: Could not grab mouse\n");
             gtk_widget_destroy (window);
             return NULL;
         }
         if ( gdk_keyboard_grab( window->window, FALSE, GDK_CURRENT_TIME )) {
             gdk_pointer_ungrab (GDK_CURRENT_TIME);
             XUngrabServer ( GDK_DISPLAY() );
-            g_message ("OOPS: Could not grab keyboard\n");
+            g_warning ("OOPS: Could not grab keyboard\n");
             gtk_widget_destroy (window);
             return NULL;
         }
@@ -273,7 +273,7 @@ static int free_passphrase(gpointer _unused)
         munlock(last_pass, strlen(last_pass));
         g_free(last_pass);
         last_pass = NULL;
-        g_message("%% passphrase removed");
+        debug_print("%% passphrase removed");
     }
     
     return FALSE;
@@ -295,25 +295,25 @@ gpgmegtk_passphrase_cb (void *opaque, const char *desc, void **r_hd)
         return g_strdup(last_pass);
 
     gpgmegtk_set_passphrase_grab (prefs_common.passphrase_grab);
-    g_message ("%% requesting passphrase for `%s': ", desc );
+    debug_print ("%% requesting passphrase for `%s': ", desc);
     pass = passphrase_mbox (desc);
     gpgmegtk_free_passphrase();
     if (!pass) {
-        g_message ("%% cancel passphrase entry");
+        debug_print ("%% cancel passphrase entry");
         gpgme_cancel (ctx);
     }
     else {
         if (prefs_common.store_passphrase) {
             last_pass = g_strdup(pass);
             if (mlock(last_pass, strlen(last_pass)) == -1)
-                g_message("%% locking passphrase failed");
+                debug_print("%% locking passphrase failed");
 
             if (prefs_common.store_passphrase_timeout > 0) {
                 gtk_timeout_add(prefs_common.store_passphrase_timeout*60*1000,
                                 free_passphrase, NULL);
             }
         }
-        g_message ("%% sending passphrase");
+        debug_print ("%% sending passphrase");
     }
 
     return pass;

@@ -3102,7 +3102,8 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	chars = gtk_editable_get_chars(GTK_EDITABLE(compose->text), 0, -1);
 	len = strlen(chars);
 	if (is_ascii_str(chars)) {
-		buf = g_strdup(chars);
+		buf = chars;
+		chars = NULL;
 		out_codeset = CS_US_ASCII;
 		encoding = ENC_7BIT;
 	} else {
@@ -3136,7 +3137,8 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 				unlink(file);
 				return -1;
 			} else {
-				buf = g_strdup(chars);
+				buf = chars;
+				chars = NULL;
 			}
 		}
 	}
@@ -3200,6 +3202,16 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 	}
 
 #if USE_GPGME
+	if (is_draft)
+		return 0;
+
+	if (compose->use_signing || compose->use_encryption) {
+		if (canonicalize_file_replace(file) < 0) {
+			unlink(file);
+			return -1;
+		}
+	}
+
 	if (compose->use_signing) {
 		GSList *key_list;
 

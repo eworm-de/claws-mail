@@ -333,6 +333,9 @@ gint copy_file			(const gchar	*src,
 				 const gchar	*dest);
 gint move_file			(const gchar	*src,
 				 const gchar	*dest);
+gint canonicalize_file		(const gchar	*src,
+				 const gchar	*dest);
+gint canonicalize_file_replace	(const gchar	*file);
 gint change_file_mode_rw	(FILE		*fp,
 				 const gchar	*file);
 FILE *my_tmpfile		(void);

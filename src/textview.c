@@ -478,6 +478,12 @@ static void textview_add_part(TextView *textview, MimeInfo *mimeinfo, FILE *fp)
 
 	gtk_stext_freeze(text);
 
+#if USE_GPGME
+	if (mimeinfo->sigstatus)
+		g_snprintf(buf, sizeof(buf), "\n[%s (%s)]\n",
+			   mimeinfo->content_type, mimeinfo->sigstatus);
+	else
+#endif
 	if (mimeinfo->filename || mimeinfo->name)
 		g_snprintf(buf, sizeof(buf), "\n[%s  %s (%d bytes)]\n",
 			   mimeinfo->filename ? mimeinfo->filename :
