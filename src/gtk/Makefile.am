@@ -4,6 +4,7 @@ libsylpheedgtk_la_SOURCES = \
 	about.c about.h \
 	colorlabel.c colorlabel.h \
 	description_window.c description_window.h \
+	filesel.c filesel.h \
 	gtkutils.c gtkutils.h \
 	gtkshruler.c gtkshruler.h \
 	gtksctree.c gtksctree.h \

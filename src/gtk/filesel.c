@@ -26,7 +26,7 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkeditable.h>
 
-#include "main.h"
+#include "sylpheed.h"
 #include "filesel.h"
 #include "manage_window.h"
 #include "gtkutils.h"
@@ -70,7 +70,7 @@ gchar *filesel_select_file(const gchar *title, const gchar *file)
 	}
 
 	if (!cwd)
-		cwd = g_strconcat(startup_dir, G_DIR_SEPARATOR_S, NULL);
+		cwd = g_strconcat(sylpheed_get_startup_dir(), G_DIR_SEPARATOR_S, NULL);
 
 	gtk_file_selection_set_filename(GTK_FILE_SELECTION(filesel), cwd);
 
@@ -133,7 +133,7 @@ GList *filesel_select_multiple_files(const gchar *title, const gchar *file)
 	}
 
 	if (!cwd)
-		cwd = g_strconcat(startup_dir, G_DIR_SEPARATOR_S, NULL);
+		cwd = g_strconcat(sylpheed_get_startup_dir(), G_DIR_SEPARATOR_S, NULL);
 
 	gtk_file_selection_set_filename(GTK_FILE_SELECTION(filesel), cwd);
 

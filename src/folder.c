@@ -1271,6 +1271,21 @@ gint folder_item_scan(FolderItem *item)
 	return 0;
 }
 
+static gboolean folder_scan_all_items_func(GNode *node, gpointer data)
+{
+	FolderItem *item = node->data;
+
+	folder_item_scan(item);
+
+	return FALSE;
+}
+
+void folder_scan_all_items(Folder * folder)
+{
+	g_node_traverse(folder->node, G_PRE_ORDER,
+			G_TRAVERSE_ALL, -1, folder_scan_all_items_func, NULL);
+}
+
 static void folder_item_scan_foreach_func(gpointer key, gpointer val,
 					  gpointer data)
 {

@@ -83,7 +83,6 @@
 #include "crash.h"
 
 gchar *prog_version;
-gchar *startup_dir;
 #ifdef CRASH_DIALOG
 gchar *argv0;
 #endif
@@ -169,7 +168,6 @@ int main(int argc, char *argv[])
 	}
 
 	prog_version = PROG_VERSION;
-	startup_dir = g_get_current_dir();
 #ifdef CRASH_DIALOG
 	argv0 = g_strdup(argv[0]);
 #endif
@@ -403,7 +401,7 @@ static void parse_cmd_opt(int argc, char *argv[])
 				if (!cmd.attach_files)
 					cmd.attach_files = g_ptr_array_new();
 				if (*p != G_DIR_SEPARATOR)
-					file = g_strconcat(startup_dir,
+					file = g_strconcat(sylpheed_get_startup_dir(),
 							   G_DIR_SEPARATOR_S,
 							   p, NULL);
 				else

@@ -17,5 +17,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-gboolean sylpheed_init	(int *argc, char ***argv);
-void sylpheed_done	();
+gboolean sylpheed_init			(int *argc, char ***argv);
+void sylpheed_done			();
+const gchar *sylpheed_get_startup_dir	();

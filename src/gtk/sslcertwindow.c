@@ -29,7 +29,7 @@
 #include "intl.h"
 #include "ssl_certificate.h"
 #include "utils.h"
-#include "../alertpanel.h"
+#include "alertpanel.h"
 #include "hooks.h"
 
 static void toggle_cert_cb(GtkWidget	*widget,

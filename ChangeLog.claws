@@ -1,3 +1,18 @@
+2003-06-07 [christoph]	0.9.0claws20
+
+	* src/Makefile.am
+	* src/crash.c
+	* src/export.c
+	* src/filesel.[ch]		** REMOVE **
+	* src/folder.c
+	* src/main.[ch]
+	* src/common/sylpheed.[ch]
+	* src/gtk/Makefile.am
+	* src/gtk/filesel.[ch]		** NEW **
+	* src/gtk/pluginwindow.c
+	* src/gtk/sslcertwindow.c
+		move filesel.[ch] to gtk directory
+
 2003-06-07 [alfons]	0.9.0claws19
 
 	* src/filesel.c

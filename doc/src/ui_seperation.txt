@@ -48,3 +48,5 @@ gtkutils.[ch]		gtk/gtkutils.[ch]	ok
 about.[ch]		gtk/about.[ch]		ok
 
 colorlabel.[ch]		gtk/colorlabel.[ch]	ok
+
+filesel.[ch]		gtk/filesel.[ch]	ok

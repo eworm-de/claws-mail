@@ -62,7 +62,6 @@ sylpheed_SOURCES = \
 	addrgather.c addrgather.h \
 	exporthtml.c exporthtml.h \
 	exphtmldlg.c exphtmldlg.h \
-	filesel.c filesel.h \
 	foldersel.c foldersel.h \
 	statusbar.c statusbar.h \
 	logwindow.c logwindow.h \

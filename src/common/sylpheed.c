@@ -36,6 +36,7 @@
 #include "plugin.h"
 
 static gboolean sylpheed_initialized = FALSE;
+static gchar *startup_dir;
 
 /**
  * Parse program parameters and remove all parameters
@@ -84,6 +85,8 @@ gboolean sylpheed_init(int *argc, char ***argv)
 	if (sylpheed_initialized)
 		return TRUE;
 
+	startup_dir = g_get_current_dir();
+
 	parse_parameter(argc, argv);
 
 	setlocale(LC_ALL, "");
@@ -118,4 +121,9 @@ void sylpheed_done()
 #if USE_OPENSSL
 	ssl_done();
 #endif
+}
+
+const gchar *sylpheed_get_startup_dir()
+{
+	return startup_dir;
 }
