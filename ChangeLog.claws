@@ -199,7 +199,7 @@
 		fix crash when installing wrong theme and output an
 		error message
 
-2003-02-16 [christoph]	0.9.9claws16
+2004-02-16 [christoph]	0.9.9claws16
 
 	* src/compose.c
 	* src/stock_pixmap.[ch]
@@ -207,18 +207,18 @@
 	* src/pixmaps/linewrapcurrent.xpm		** NEW **
 		add "Wrap current paragraph" to compose toolbar
 
-2003-02-15 [alfons]	0.9.9claws15
+2004-02-15 [alfons]	0.9.9claws15
 
 	* src/folderview.c
 		refine previous commit to make sure other hook functions
 		get their grab of the pie too
 
-2003-02-15 [alfons]	0.9.9claws14
+2004-02-15 [alfons]	0.9.9claws14
 
 	* src/folderview.c
 		fix sync breakage so we don't pass invalid pointer types
 
-2003-02-15 [match]	0.9.9claws13
+2004-02-15 [match]	0.9.9claws13
 
 	* src/ldapquery.[ch]
 	* src/ldapserver.h
@@ -235,7 +235,7 @@
 	* src/compose.[ch]
 		add send mail from addressbook.
 
-2003-02-15 [christoph]	0.9.9claws12
+2004-02-15 [christoph]	0.9.9claws12
 
 	* src/folderutils.c
 		skip deleting when duplist is empty
@@ -245,28 +245,28 @@
 	* src/summaryview.[ch]
 		call folderutils_delete_duplicates() from mainwindow code
 
-2003-02-15 [alfons]	0.9.9claws11
+2004-02-15 [alfons]	0.9.9claws11
 	
 	* src/common/utils.c
 		add prefix for italian ms o(e) 
 
-2003-02-14 [paul]	0.9.9claws10
+2004-02-14 [paul]	0.9.9claws10
 
 	* src/foldersel.c
 		fix updating of the folder view when creating a
 		new folder
 
-2003-02-13 [paul]	0.9.9claws9
+2004-02-13 [paul]	0.9.9claws9
 
 	* src/plugins/clamav/clamav_plugin.c
 		remove GUI code
 
-2003-02-13 [paul]	0.9.9claws8
+2004-02-13 [paul]	0.9.9claws8
 
 	* sync with 0.9.9cvs9
 		see ChangeLog 2004-02-09, 2004-02-10, 2004-02-12
 
-2003-02-13 [alfons]	0.9.9claws7
+2004-02-13 [alfons]	0.9.9claws7
 
 	* src/common/utils.c
 		fix wrong type of argument for ctype functions (pass unsigned
