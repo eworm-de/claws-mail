@@ -195,7 +195,7 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 	MsgCache *cache;
 	FILE *fp;
 	MsgInfo *msginfo;
-/*	MsgFlags default_flags; */
+	MsgTmpFlags tmp_flags = 0;
 	gchar file_buf[BUFFSIZE];
 	gint ver;
 	guint num;	/* XXX:tm initialized ? */
@@ -218,6 +218,12 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 		debug_print("Cache version is different. Discarding it.\n");
 		fclose(fp);
 		return NULL;
+	}
+
+	if (item->stype == F_QUEUE) {
+		tmp_flags |= MSG_QUEUED;
+	} else if (item->stype == F_DRAFT) {
+		tmp_flags |= MSG_DRAFT;
 	}
 
 	cache = msgcache_new();
@@ -245,11 +251,8 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 		READ_CACHE_DATA(msginfo->references, fp);
 		READ_CACHE_DATA(msginfo->xref, fp);
 
-/*
-		MSG_SET_PERM_FLAGS(msginfo->flags, default_flags.perm_flags);
-		MSG_SET_TMP_FLAGS(msginfo->flags, default_flags.tmp_flags);
-*/
 		msginfo->folder = item;
+		msginfo->flags.tmp_flags |= tmp_flags;
 
 		g_hash_table_insert(cache->msgnum_table, &msginfo->msgnum, msginfo);
 		if(msginfo->msgid)

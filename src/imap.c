@@ -998,7 +998,8 @@ gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 	}
 
 	dir = folder_item_get_path(item);
-	remove_numbered_files(dir, uid, uid);
+	if (is_dir_exist(dir))
+		remove_numbered_files(dir, uid, uid);
 	g_free(dir);
 
 	return IMAP_SUCCESS;
@@ -1043,7 +1044,8 @@ gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 	}
 
 	dir = folder_item_get_path(item);
-	remove_all_numbered_files(dir);
+	if (is_dir_exist(dir))
+		remove_all_numbered_files(dir);
 	g_free(dir);
 
 	return IMAP_SUCCESS;
@@ -1689,7 +1691,8 @@ static GSList *imap_delete_cached_messages(GSList *mlist, FolderItem *item,
 		    first_uid, last_uid);
 
 	dir = folder_item_get_path(item);
-	remove_numbered_files(dir, first_uid, last_uid);
+	if (is_dir_exist(dir))
+		remove_numbered_files(dir, first_uid, last_uid);
 	g_free(dir);
 
 	for (cur = mlist; cur != NULL; ) {
@@ -1721,7 +1724,8 @@ static void imap_delete_all_cached_messages(FolderItem *item)
 	debug_print("Deleting all cached messages...\n");
 
 	dir = folder_item_get_path(item);
-	remove_all_numbered_files(dir);
+	if (is_dir_exist(dir))
+		remove_all_numbered_files(dir);
 	g_free(dir);
 
 	debug_print("done.\n");

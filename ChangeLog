@@ -1,3 +1,10 @@
+2002-09-10
+
+	* src/summaryview.c: summary_show(): refresh even if open_inbox_on_inc
+	  is set (to avoid summary refresh problem).
+	* src/imap.c: removed warnings by checking the existence of directory
+	  before calling remove*_numbered_files().
+
 2002-09-06
 
 	* src/prefs_common.c: corrected English.

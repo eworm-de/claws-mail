@@ -1,3 +1,48 @@
+2002-09-10 [christoph]	0.8.2claws36
+
+	* src/compose.c
+		compose_redirect should not use compose_generic_new
+		because that does more stuff than expected including
+		opening the external editor
+		(closes bug "[ 526608 ] bounced messages appear blank
+		 in editor")
+
+2002-09-10 [christoph]	0.8.2claws35
+
+	* src/folder.c
+		fix problem with too large message number range
+		causing a crash in folder_item_scan
+
+2002-09-10 [paul]	0.8.2claws34
+
+	* sync with 0.8.2cvs13
+		see ChangeLog 2002-09-10
+
+2002-09-10 [christoph]	0.8.2claws33
+
+	* src/msgcache.c
+		set MsgInfo TmpFlags for queue and draft folders
+		(closes bug "[ 591676 ] Queue ignore MIME on restart")
+
+2002-09-10 [paul]	0.8.2claws32
+
+	* AUTHORS
+	  po/bg.po	** NEW FILE **
+		new Bulgarian translation submitted by
+		George Danchev <danchev@spnet.net>
+		
+	* tools/Makefile.am
+	  tools/README
+	  tools/tb2sylpheed	** NEW FILE **
+	  	add script that converts an addressbook exported
+		from The Bat! into a Sylpheed addressbook. Submitted
+		by Urke MMI <urke-kg@eunet.yu>
+
+2002-09-10 [paul]	0.8.2claws31
+
+	* sync with 0.8.2cvs12
+		see ChangeLog 2002-09-10
+
 2002-09-06 [paul]	0.8.2claws30
 
 	* src/prefs_common.c

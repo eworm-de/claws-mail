@@ -8,7 +8,7 @@ MINOR_VERSION=8
 MICRO_VERSION=2
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws30
+EXTRA_VERSION=claws36
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -70,7 +70,7 @@ case "$target" in
 esac
 
 dnl for gettext
-ALL_LINGUAS="cs de el en_GB es fr hr it ja ko nl pl pt_BR ru sr sv"
+ALL_LINGUAS="bg cs de el en_GB es fr hr it ja ko nl pl pt_BR ru sr sv"
 AM_GNU_GETTEXT
 dnl AC_CHECK_FUNC(gettext, AC_CHECK_LIB(intl, gettext))
 localedir='${prefix}/${DATADIRNAME}/locale'

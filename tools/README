@@ -262,6 +262,30 @@
 
 -----------------------------------------------------------------------
 
+* tb2sylpheed
+
+  WHAT IT DOES
+  
+  This perl script will convert an addressbook exported from The Bat! into 
+  a Sylpheed addressbook.
+
+  HOW TO USE IT
+
+  (You must run sylpheed at least once before running this script.)
+
+  If Sylpheed is running, close it.
+
+  Export The Bat! Address Book to CSV file format with all fields 
+  selected to YES and then start:
+
+  tb2sylpheed --tbfile=/full/path/to/thebat/addressbook.csv
+ 
+  The Bat! addressbook data will now be contained in Sylpheed's
+  addressbook, under the name 'The Bat! Address Book'.
+
+  Any questions, comments or problems, contact Urke MMI <urke@gmx.net>  
+
+-----------------------------------------------------------------------
 * update-po
 
   WHAT IT DOES

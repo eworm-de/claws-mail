@@ -6,7 +6,7 @@ if not %1x==x%1 goto process
 
 echo Creating translations:
 if not exist locale mkdir locale
-for %%i in ( cs de el en_GB es fr hr it ja ko nl pl pt_BR ru sv ) do call %0 %%i
+for %%i in ( bg cs de el en_GB es fr hr it ja ko nl pl pt_BR ru sv ) do call %0 %%i
 echo Done. Copy "locale" folder to your sylpheed directory.
 goto end
 
