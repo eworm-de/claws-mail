@@ -22,14 +22,8 @@
 #include <glib.h>
 #include <gpgme.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 GpgmeRecipients gpgmegtk_recipient_selection (GSList *recp_names);
 
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* GPGMEGTK_SELECT_KEYS_H */

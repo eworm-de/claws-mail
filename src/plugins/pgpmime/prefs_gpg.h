@@ -17,10 +17,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef struct GPGConfig GPGConfig;
 typedef struct GPGAccountConfig GPGAccountConfig;
 
@@ -30,15 +26,7 @@ typedef enum {
 	SIGN_KEY_CUSTOM,
 } SignKeyType;
 
-#ifdef __cplusplus
-}
-#endif
-
 #include "prefs_account.h"
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 struct GPGConfig
 {
@@ -62,7 +50,3 @@ struct GPGConfig *prefs_gpg_get_config(void);
 struct GPGAccountConfig *prefs_gpg_account_get_config(PrefsAccount *account);
 void prefs_gpg_account_set_config(PrefsAccount *account, GPGAccountConfig *config);
 void prefs_gpg_account_free_config(GPGAccountConfig *config);
-
-#ifdef __cplusplus
-}
-#endif

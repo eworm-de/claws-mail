@@ -5,7 +5,7 @@ plugin_LTLIBRARIES = pgpmime.la
 pgpmime_la_SOURCES = \
 	passphrase.c \
 	plugin.c \
-	pgpmime.cpp \
+	pgpmime.c \
 	prefs_gpg.c \
 	select-keys.c \
 	sgpgme.c

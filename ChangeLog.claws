@@ -1,3 +1,19 @@
+2005-02-18 [colin]	1.0.1cvs12
+
+	* src/Makefile.am
+	* src/privacy.c		** RE-ADDED **
+	* src/privacy.cpp	** REMOVED **
+	* src/privacy.h
+	* src/plugins/pgpmime/Makefile.am
+	* src/plugins/pgpmime/passphrase.h
+	* src/plugins/pgpmime/pgpmime.c		** RE-ADDED **
+	* src/plugins/pgpmime/pgpmime.cpp	** REMOVED **
+	* src/plugins/pgpmime/pgpmime.h
+	* src/plugins/pgpmime/prefs_gpg.h
+	* src/plugins/pgpmime/select-keys.h
+	* src/plugins/pgpmime/sgpgme.h
+		Revert huge API breakage.
+
 2005-02-16 [christoph]	1.0.1cvs11
 
 	* src/mh.c

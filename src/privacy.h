@@ -20,6 +20,7 @@
 #ifndef PRIVACY_H
 #define PRIVACY_H
 
+typedef struct _PrivacySystem PrivacySystem;
 typedef struct _PrivacyData PrivacyData;
 
 typedef enum {
@@ -35,9 +36,8 @@ typedef enum {
 #include "procmime.h"
 #include "prefs_account.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
+void privacy_register_system			(PrivacySystem *system);
+void privacy_unregister_system			(PrivacySystem *system);
 
 void privacy_free_privacydata			(PrivacyData *);
 
@@ -64,42 +64,35 @@ gboolean privacy_encrypt			(const gchar  *system,
 						 MimeInfo     *mimeinfo,
 						 const gchar  *encdata);
 
+struct _PrivacySystem {
+	/** Identifier for the PrivacySystem that can use in config files */
+	gchar		 *id;
+	/** Human readable name for the PrivacySystem for the user interface */
+	gchar		 *name;
+
+	void		 (*free_privacydata)	(PrivacyData *data);
+
+	gboolean	 (*is_signed)		(MimeInfo *mimeinfo);
+	gint		 (*check_signature)	(MimeInfo *mimeinfo);
+	SignatureStatus	 (*get_sig_status)	(MimeInfo *mimeinfo);
+	gchar		*(*get_sig_info_short)	(MimeInfo *mimeinfo);
+	gchar		*(*get_sig_info_full)	(MimeInfo *mimeinfo);
+
+	gboolean	 (*is_encrypted)	(MimeInfo *mimeinfo);
+	MimeInfo	*(*decrypt)		(MimeInfo *mimeinfo);
+
+	gboolean	   can_sign;
+	gboolean	 (*sign)		(MimeInfo *mimeinfo,
+						 PrefsAccount *account);
+
+	gboolean	   can_encrypt;
+	gchar		*(*get_encrypt_data)	(GSList *recp_names);
+	gboolean	 (*encrypt)		(MimeInfo *mimeinfo,
+						 const gchar *encrypt_data);
+};
+
 struct _PrivacyData {
-	void		*system;
+	PrivacySystem	*system;
 };
-
-#ifdef __cplusplus
-}
-
-class PrivacySystem {
-        public:
-        virtual const gchar             *getId() = 0;
-        virtual const gchar             *getName() = 0;
-
-        virtual void             freePrivacyData        (PrivacyData *);
-
-        virtual gboolean         isSigned               (MimeInfo *);
-        virtual gint             checkSignature         (MimeInfo *);
-        virtual SignatureStatus  getSigStatus           (MimeInfo *);
-        virtual gchar           *getSigInfoShort        (MimeInfo *);
-        virtual gchar           *getSigInfoFull         (MimeInfo *);
-
-        virtual gboolean         isEncrypted            (MimeInfo *);
-        virtual MimeInfo        *decrypt                (MimeInfo *);
-
-	virtual gboolean 	 canSign		();
-	virtual gboolean	 sign			(MimeInfo *mimeinfo,
-							 PrefsAccount *account);
-
-	virtual gboolean	 canEncrypt		();
-	virtual gchar		*getEncryptData		(GSList *recp_names);
-	virtual gboolean	 encrypt		(MimeInfo *mimeinfo,
-							 const gchar *encrypt_data);
-};
-
-void privacy_register_system                   (PrivacySystem *system);
-void privacy_unregister_system                 (PrivacySystem *system);
-
-#endif /* __cplusplus */
 
 #endif /* PRIVACY_H */

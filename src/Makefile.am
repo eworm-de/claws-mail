@@ -100,7 +100,7 @@ sylpheed_SOURCES = \
 	prefs_themes.c \
 	prefs_toolbar.c \
 	prefs_wrapping.c \
-	privacy.cpp \
+	privacy.c \
 	procheader.c \
 	procmime.c \
 	procmsg.c \

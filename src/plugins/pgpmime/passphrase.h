@@ -22,10 +22,6 @@
 #include <glib.h>
 #include <gpgme.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 struct passphrase_cb_info_s {
     GpgmeCtx c;
     int did_it;
@@ -34,9 +30,5 @@ struct passphrase_cb_info_s {
 void gpgmegtk_set_passphrase_grab (gint yesno);
 const char* gpgmegtk_passphrase_cb(void *opaque, const char *desc, void **r_hd);
 void gpgmegtk_free_passphrase (void);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* GPGMEGTK_PASSPHRASE_H */

@@ -24,10 +24,6 @@
 
 #include "privacy.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 void sgpgme_init(void);
 void sgpgme_done(void);
 
@@ -46,9 +42,5 @@ GpgmeData sgpgme_decrypt_verify		(GpgmeData cipher, GpgmeSigStat *status,
 					 GpgmeCtx ctx);
 gchar *sgpgme_get_encrypt_data		(GSList *recp_names);
 gboolean sgpgme_setup_signers		(GpgmeCtx ctx, PrefsAccount *account);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* SGPGME_H */

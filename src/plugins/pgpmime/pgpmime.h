@@ -20,44 +20,7 @@
 #ifndef PGPMIME_H
 #define PGPMIME_H 1
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 void pgpmime_init(void);
 void pgpmime_done(void);
-
-#ifdef __cplusplus
-}
-
-class PGPMIME: public PrivacySystem {
-        public:
-                                 PGPMIME                ();
-
-	virtual const gchar	*getId			();
-	virtual const gchar	*getName		();
-
-        virtual void             freePrivacyData        (PrivacyData *);
-
-        virtual gboolean         isSigned               (MimeInfo *);
-        virtual gint             checkSignature         (MimeInfo *);
-        virtual SignatureStatus  getSigStatus           (MimeInfo *);
-        virtual gchar           *getSigInfoShort        (MimeInfo *);
-        virtual gchar           *getSigInfoFull         (MimeInfo *);
-
-        virtual gboolean         isEncrypted            (MimeInfo *);
-        virtual MimeInfo        *decrypt                (MimeInfo *);
-
-	virtual gboolean 	 canSign		();
-	virtual gboolean	 sign			(MimeInfo *mimeinfo,
-							 PrefsAccount *account);
-
-	virtual gboolean	 canEncrypt		();
-	virtual gchar		*getEncryptData		(GSList *recp_names);
-	virtual gboolean	 encrypt		(MimeInfo *mimeinfo,
-							 const gchar *encrypt_data);
-};
-
-#endif
 
 #endif /* PGPMIME_H */
