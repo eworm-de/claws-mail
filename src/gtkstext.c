@@ -4266,7 +4266,9 @@ static void move_cursor_to_display_row_up(GtkSText *text)
 
 	/* top of buffer */
 	if (mark.index == 0) {
-		XDEBUG ( ("%s(%d) top of buffer", __FILE__, __LINE__) );	
+		/* this is a quick fix */
+		XDEBUG ( ("%s(%d) top of buffer", __FILE__, __LINE__) );
+		gtk_stext_set_position_X(GTK_EDITABLE(text), 0);		
 		return;
 	}
 
