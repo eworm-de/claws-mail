@@ -891,6 +891,7 @@ EXPORTS
 	imap_folder_new 
 	imap_get_msg_list 
 	imap_get_msginfo 
+	imap_get_msginfos 
 	imap_get_num_list 
 	imap_is_msg_changed 
 	imap_move_msg 
@@ -1388,6 +1389,7 @@ EXPORTS
 	procheader_get_header_fields 
 	procheader_get_header_list 
 	procheader_get_header_list_from_file 
+	procheader_get_headernames 
 	procheader_get_one_field 
 	procheader_get_unfolded_line 
 	procheader_header_array_destroy 

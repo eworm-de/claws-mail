@@ -1,3 +1,74 @@
+2003-02-22 [thorsten]	0.8.10claws43
+
+	* src/mimeview.c
+	  src/prefs_common.[ch]
+	  src/procmime.[ch]
+	  	do not use description as attachment name
+
+2003-02-22 [alfons]	0.8.10claws42
+
+	* src/summaryview.c
+		freeze/thaw folder item updates when changing color labels,
+		and put a wait cursors on
+
+2003-02-22 [thorsten]	0.8.10claws41
+
+	* src/mimeview.c
+		save-all fixes: crash if invoked on multipart container,
+		mimeinfo access, pathseparators, error dialog
+
+2003-02-21 [alfons]	0.8.10claws40
+
+	* src/prefs_gtk.c
+		remove unused var
+
+2003-02-21 [colin]	0.8.10claws39
+
+	* src/send.c
+		Fix smtp logging
+
+2003-02-21 [colin]	0.8.10claws38
+
+	* src/summaryview.c
+		Freeze/thaw folderItem updates when filtering messages 
+		via Tools/Filter messages
+
+2003-02-21 [paul]	0.8.10claws37
+
+	* src/compose.c
+		revert commit 0.8.10claws26, there are ulterior motives
+		for users to set a Reply-To header when posting to
+		newsgroups
+
+2003-02-21 [paul]	0.8.10claws36
+
+	* sync with 0.8.10cvs17
+		see ChangeLog 2003-02-21
+
+2003-02-20 [christoph]	0.8.10claws35
+
+	* src/imap.c
+		IMAP UID fetch speedup using SEARCH
+
+	Patch submitted by Simon 'corecode' Schubert <corecode@corecode.ath.cx>
+
+	* src/imap.c
+		fix problem with UIDs in IMAP UID cache that no longer existed
+
+2003-02-20 [christoph]	0.8.10claws34
+
+	* src/imap.c
+	* src/procheader.c
+	* src/procheader.h
+		IMAP header fetch speedup (fetch only headers cached in MsgInfo)
+
+	Patch submitted by Simon 'corecode' Schubert <corecode@corecode.ath.cx>
+
+	* src/imap.c
+		Rewrite imap_cmd_gen_recv use sock_getline instead
+		of sock_gets to avoid problems with too long reply
+		lines
+    
 2003-02-20 [colin]	0.8.10claws33
 	
 	* src/prefs_account.c
@@ -14309,3 +14380,4 @@
 	* autogen.sh: Added "--enable-maintainer-mode". [sergey]
 
 	* sync with recent sylpheed cvs. Untested though. [alfons]
+

@@ -1,3 +1,18 @@
+2003-02-21
+
+	* src/codeconv.c: conv_iconv_strdup(): try to skip invalid characters
+	  and continue conversion.
+
+2003-02-21
+
+	* src/summaryview.c: summary_selected(): always update widget
+	  sensitivity.
+
+2003-02-20
+
+	* src/utils.c: tzoffset_sec(): fixed a bug that displayed wrong
+	  date in timezones more than GMT+12 or less than GMT-12.
+
 2003-02-18
 
 	* src/prefs_common.[ch]

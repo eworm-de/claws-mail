@@ -1,3 +1,18 @@
+2003-02-21
+
+	* src/codeconv.c: conv_iconv_strdup(): 無効な文字をスキップして
+	  変換を続けるようにした。
+
+2003-02-21
+
+	* src/summaryview.c: summary_selected(): ウィジェットのセンシティ
+	  ビティを常に更新するようにした。
+
+2003-02-20
+
+	* src/utils.c: tzoffset_sec(): GMT+12 より大きいまたは GMT-12 より
+	  小さいタイムゾーンで誤った日付を表示していたバグを修正。
+
 2003-02-18
 
 	* src/prefs_common.[ch]

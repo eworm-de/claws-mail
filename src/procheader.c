@@ -504,53 +504,58 @@ enum
 	H_RETURN_RECEIPT_TO = 16
 };
 
+static HeaderEntry hentry_full[] = {{"Date:",		NULL, FALSE},
+				   {"From:",		NULL, TRUE},
+				   {"To:",		NULL, TRUE},
+				   {"Cc:",		NULL, TRUE},
+				   {"Newsgroups:",	NULL, TRUE},
+				   {"Subject:",		NULL, TRUE},
+				   {"Message-Id:",	NULL, FALSE},
+				   {"References:",	NULL, FALSE},
+				   {"In-Reply-To:",	NULL, FALSE},
+				   {"Content-Type:",	NULL, FALSE},
+				   {"Seen:",		NULL, FALSE},
+				   {"Status:",          NULL, FALSE},
+				   {"X-Status:",        NULL, FALSE},
+				   {"From ",		NULL, FALSE},
+				   {"X-Face:",		NULL, FALSE},
+				   {"Disposition-Notification-To:", NULL, FALSE},
+				   {"Return-Receipt-To:", NULL, FALSE},
+				   {NULL,		NULL, FALSE}};
+
+static HeaderEntry hentry_short[] = {{"Date:",		NULL, FALSE},
+				    {"From:",		NULL, TRUE},
+				    {"To:",		NULL, TRUE},
+				    {"Cc:",		NULL, TRUE},
+				    {"Newsgroups:",	NULL, TRUE},
+				    {"Subject:",	NULL, TRUE},
+				    {"Message-Id:",	NULL, FALSE},
+				    {"References:",	NULL, FALSE},
+				    {"In-Reply-To:",	NULL, FALSE},
+				    {"Content-Type:",	NULL, FALSE},
+				    {"Seen:",		NULL, FALSE},
+				    {"Status:",		NULL, FALSE},
+				    {"X-Status:",	NULL, FALSE},
+				    {"From ",		NULL, FALSE},
+				    {NULL,		NULL, FALSE}};
+
+const HeaderEntry* procheader_get_headernames(gboolean full)
+{
+	return full ? hentry_full : hentry_short;
+}
+
 MsgInfo *procheader_parse_stream(FILE *fp, MsgFlags flags, gboolean full, 
 				 gboolean decrypted)
 {
-	static HeaderEntry hentry_full[] = {{"Date:",		NULL, FALSE},
-					   {"From:",		NULL, TRUE},
-					   {"To:",		NULL, TRUE},
-					   {"Cc:",		NULL, TRUE},
-					   {"Newsgroups:",	NULL, TRUE},
-					   {"Subject:",		NULL, TRUE},
-					   {"Message-Id:",	NULL, FALSE},
-					   {"References:",	NULL, FALSE},
-					   {"In-Reply-To:",	NULL, FALSE},
-					   {"Content-Type:",	NULL, FALSE},
-					   {"Seen:",		NULL, FALSE},
-					   {"Status:",          NULL, FALSE},
-					   {"X-Status:",        NULL, FALSE},
-					   {"From ",		NULL, FALSE},
-					   {"X-Face:",		NULL, FALSE},
-					   {"Disposition-Notification-To:", NULL, FALSE},
-					   {"Return-Receipt-To:", NULL, FALSE},
-					   {NULL,		NULL, FALSE}};
-
-	static HeaderEntry hentry_short[] = {{"Date:",		NULL, FALSE},
-					    {"From:",		NULL, TRUE},
-					    {"To:",		NULL, TRUE},
-					    {"Cc:",		NULL, TRUE},
-					    {"Newsgroups:",	NULL, TRUE},
-					    {"Subject:",	NULL, TRUE},
-					    {"Message-Id:",	NULL, FALSE},
-					    {"References:",	NULL, FALSE},
-					    {"In-Reply-To:",	NULL, FALSE},
-					    {"Content-Type:",	NULL, FALSE},
-					    {"Seen:",		NULL, FALSE},
-					    {"Status:",		NULL, FALSE},
-					    {"X-Status:",	NULL, FALSE},
-					    {"From ",		NULL, FALSE},
-					    {NULL,		NULL, FALSE}};
-
 	MsgInfo *msginfo;
 	gchar buf[BUFFSIZE], tmp[BUFFSIZE];
 	gchar *reference = NULL;
 	gchar *p;
 	gchar *hp;
-	HeaderEntry *hentry;
+	const HeaderEntry *hentry;
 	gint hnum;
 
-	hentry = full ? hentry_full : hentry_short;
+	hentry = procheader_get_headernames(full);
 
 	if (MSG_IS_QUEUED(flags) || MSG_IS_DRAFT(flags)) {
 		while (fgets(buf, sizeof(buf), fp) != NULL)

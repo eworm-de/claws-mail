@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -4045,6 +4045,8 @@ void summary_filter(SummaryView *summaryview)
 
 	summary_lock(summaryview);
 
+	folder_item_update_freeze();
+	
 	debug_print("filtering...");
 	STATUSBAR_PUSH(summaryview->mainwin, _("Filtering..."));
 	main_window_cursor_wait(summaryview->mainwin);
@@ -4073,6 +4075,7 @@ void summary_filter(SummaryView *summaryview)
 		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
 	}
 
+	folder_item_update_thaw();
 	debug_print("done.\n");
 	STATUSBAR_POP(summaryview->mainwin);
 	main_window_cursor_normal(summaryview->mainwin);
@@ -4401,9 +4404,13 @@ void summary_set_colorlabel(SummaryView *summaryview, guint labelcolor,
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GList *cur;
 
+	main_window_cursor_wait(summaryview->mainwin);
+	folder_item_update_freeze();
 	for (cur = GTK_CLIST(ctree)->selection; cur != NULL; cur = cur->next)
 		summary_set_row_colorlable(summaryview,
 					   GTK_CTREE_NODE(cur->data), labelcolor);
+	folder_item_update_thaw();
+	main_window_cursor_normal(summaryview->mainwin);
 }
 
 static void summary_colorlabel_menu_item_activate_item_cb(GtkMenuItem *menu_item,
@@ -4949,12 +4956,15 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 	if (summaryview->display_msg ||
 	    (prefs_common.show_msg_with_cursor_key &&
 	     messageview_is_visible(summaryview->messageview))) {
-		summary_display_msg(summaryview, row);
 		summaryview->display_msg = FALSE;
-	} else {
-		summary_set_menu_sensitive(summaryview);
-		toolbar_main_set_sensitive(summaryview->mainwin);
+		if (summaryview->displayed != row) {
+			summary_display_msg(summaryview, row);
+			return;
+		}
 	}
+
+	summary_set_menu_sensitive(summaryview);
+	toolbar_main_set_sensitive(summaryview->mainwin);
 }
 
 static void summary_col_resized(GtkCList *clist, gint column, gint width,

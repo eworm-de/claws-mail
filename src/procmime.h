@@ -98,6 +98,7 @@ struct _MimeInfo
 
 	gchar *content_disposition;
 	gchar *filename;
+	gchar *description;
 
 	glong fpos;
 	guint size;

@@ -221,6 +221,8 @@ struct _PrefsCommon
 	gboolean show_other_header;
 	GSList *disphdr_list;
 
+	gboolean attach_desc;
+
 	/* MIME viewer */
 	gchar *mime_image_viewer;
 	gchar *mime_audio_player;
