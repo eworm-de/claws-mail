@@ -116,6 +116,11 @@ N_("Personal address")
 #define DISP_OLD_COMMON       _("Common address")
 #define DISP_OLD_PERSONAL     _("Personal address")
 
+/**
+ * Singleton object.
+ */
+static AddressIndex *_addressIndex_ = NULL;
+
 /*
  * Define attribute name-value pair.
  */
@@ -572,7 +577,7 @@ static void addrindex_free_cache_hash( GHashTable *table ) {
 	g_hash_table_destroy( table );
 }
 
-/*
+/**
  * Remove data source from internal hashtable.
  * \param addrIndex Address index.
  * \param ds        Data source to remove.
@@ -590,32 +595,44 @@ static void addrindex_hash_remove_cache(
 	}
 }
 
-/*
- * Create a new address index.
+/**
+ * Create a new address index. This is created as a singleton object.
  * \return Initialized address index object.
  */
 AddressIndex *addrindex_create_index( void ) {
-	AddressIndex *addrIndex = g_new0( AddressIndex, 1 );
+	AddressIndex *index;
 
-	ADDRITEM_TYPE(addrIndex) = ITEMTYPE_INDEX;
-	ADDRITEM_ID(addrIndex) = NULL;
-	ADDRITEM_NAME(addrIndex) = g_strdup( "Address Index" );
-	ADDRITEM_PARENT(addrIndex) = NULL;
-	ADDRITEM_SUBTYPE(addrIndex) = 0;
-	addrIndex->filePath = NULL;
-	addrIndex->fileName = NULL;
-	addrIndex->retVal = MGU_SUCCESS;
-	addrIndex->needsConversion = FALSE;
-	addrIndex->wasConverted = FALSE;
-	addrIndex->conversionError = FALSE;
-	addrIndex->interfaceList = NULL;
-	addrIndex->lastType = ADDR_IF_NONE;
-	addrIndex->dirtyFlag = FALSE;
-	addrIndex->hashCache = g_hash_table_new( g_str_hash, g_str_equal );
-	addrIndex->loadedFlag = FALSE;
-	addrIndex->searchOrder = NULL;
-	addrindex_build_if_list( addrIndex );
-	return addrIndex;
+	if( _addressIndex_ == NULL ) {
+		index = g_new0( AddressIndex, 1 );
+		ADDRITEM_TYPE(index) = ITEMTYPE_INDEX;
+		ADDRITEM_ID(index) = NULL;
+		ADDRITEM_NAME(index) = g_strdup( "Address Index" );
+		ADDRITEM_PARENT(index) = NULL;
+		ADDRITEM_SUBTYPE(index) = 0;
+		index->filePath = NULL;
+		index->fileName = NULL;
+		index->retVal = MGU_SUCCESS;
+		index->needsConversion = FALSE;
+		index->wasConverted = FALSE;
+		index->conversionError = FALSE;
+		index->interfaceList = NULL;
+		index->lastType = ADDR_IF_NONE;
+		index->dirtyFlag = FALSE;
+		index->hashCache = g_hash_table_new( g_str_hash, g_str_equal );
+		index->loadedFlag = FALSE;
+		index->searchOrder = NULL;
+		addrindex_build_if_list( index );
+		_addressIndex_ = index;
+	}
+	return _addressIndex_;
+}
+
+/**
+ * Return reference to address index.
+ * \return Address index object.
+ */
+AddressIndex *addrindex_get_object( void ) {
+	return _addressIndex_;
 }
 
 /**
@@ -671,18 +688,16 @@ GList *addrindex_get_interface_list( AddressIndex *addrIndex ) {
 
 /**
  * Perform any other initialization of address index.
- * \param addrIndex Address index.
  */
-void addrindex_initialize( AddressIndex *addrIndex ) {
+void addrindex_initialize( void ) {
 	qrymgr_initialize();
-	addrcompl_initialize( addrIndex );
+	addrcompl_initialize();
 }
 
 /**
  * Perform any other teardown of address index.
- * \param addrIndex Address index.
  */
-void addrindex_teardown( AddressIndex *addrIndex ) {
+void addrindex_teardown( void ) {
 	addrcompl_teardown();
 	qrymgr_teardown();
 }
@@ -738,6 +753,8 @@ void addrindex_free_index( AddressIndex *addrIndex ) {
 	addrIndex->loadedFlag = FALSE;
 
 	g_free( addrIndex );
+	addrIndex = NULL;
+	_addressIndex_ = NULL;
 }
 
 /**
@@ -1055,7 +1072,7 @@ static void addrindex_write_fragment(
 	}
 }
 
-/*
+#if 0
 static void addrindex_print_fragment_r(
 		const AddressIfFragment *fragment, FILE *stream, gint lvl )
 {
@@ -1084,7 +1101,7 @@ static void addrindex_print_fragment_r(
 static void addrindex_print_fragment( const AddressIfFragment *fragment, FILE *stream ) {
 	addrindex_print_fragment_r( fragment, stream, 0 );
 }
-*/
+#endif
 
 /**
  * Read/parse address index file, creating a data source for a regular
@@ -2456,174 +2473,60 @@ GList *addrindex_ds_get_all_groups( AddressDataSource *ds ) {
 */
 
 /**
- * Current query ID. This is incremented for each query created.
- */
-static gint _currentQueryID_ = 0;
-
-/*
- * Variables for the search that is being performed.
- */
-static gchar *_searchTerm_ = NULL;
-static gpointer _searchTarget_ = NULL;
-static AddrSearchCallbackFunc *_searchCallback_ = NULL;
-
-/**
- * Setup or register the search that will be performed.
- * \param addrIndex  Address index object.
- * \param searchTerm Search term. A private copy will be made.
- * \param target     Target object that will receive data.
- * \param callBack   Callback function.
+ * Setup or register the dynamic search that will be performed. The search
+ * is registered with the query manager.
+ *
+ * \param searchTerm    Search term. A private copy will be made.
+ * \param callBackEntry Callback function that should be called when
+ * 			each entry is received.
+ * \param callBackEnd   Callback function that should be called when
+ * 			search has finished running.
  * \return ID allocated to query that will be executed.
  */
 gint addrindex_setup_search(
-	AddressIndex *addrIndex, const gchar *searchTerm,
-	const gpointer target, AddrSearchCallbackFunc callBack )
+	const gchar *searchTerm, void *callBackEnd, void *callBackEntry )
 {
+	QueryRequest *req;
 	gint queryID;
 
-	/* printf( "search term ::%s::\n", searchTerm ); */
-	g_free( _searchTerm_ );
-	_searchTerm_ = g_strdup( searchTerm );
+	/* Set up a dynamic address query */
+	req = qrymgr_add_request( searchTerm, callBackEnd, callBackEntry );
+	queryID = req->queryID;
+	qryreq_set_search_type( req, ADDRSEARCH_DYNAMIC );
 
-	queryID = ++_currentQueryID_;
-	_searchTarget_ = target;
-	_searchCallback_ = callBack;
-	/* printf( "query ID ::%d::\n", queryID ); */
+	/* printf( "***> query ID ::%d::\n", queryID ); */
 	return queryID;
 }
 
 #ifdef USE_LDAP
-/**
- * LDAP callback entry point for each address entry found.
- * \param qry       LDAP query.
- * \param listEMail List of Item EMail objects found.
- */
-static void addrindex_ldap_entry_cb( LdapQuery *qry, GList *listEMail ) {
-	/*
-	GList *node;
-
-	printf( "\naddrindex::addrindex_ldap_entry_cb ::%s::\n", qry->queryName );
-	node = listEMail;
-	while( node ) {
-		ItemEMail *email = node->data;
-		printf( "\temail ::%s::\n", email->address );
-		node = g_list_next( node );
-	}
-	*/
-	if( _searchCallback_ ) {
-		( _searchCallback_ ) ( qry->queryID, listEMail, _searchTarget_ );
-	}
-	g_list_free( listEMail );
-}
-
-/**
- * LDAP callback entry point for completion of search.
- * \param qry LDAP query.
- */
-static void addrindex_ldap_end_cb( LdapQuery *qry ) {
-	/* printf( "\naddrindex::addrindex_ldap_end_cb ::%s::\n", qry->queryName ); */
-}
-
-/**
- * Return results of previous query.
- * \param folder.
- * \return List of ItemEMail objects.
- */
-static void addrindex_ldap_use_previous(
-	const ItemFolder *folder, const gint queryID )
-{
-	GList *listEMail;
-	GList *node;
-	GList *nodeEM;
-
-	listEMail = NULL;
-	if( _searchCallback_ ) {
-		node = folder->listPerson;
-		while( node ) {
-			AddrItemObject *aio = node->data;
-			if( aio &&  aio->type == ITEMTYPE_PERSON ) {
-				ItemPerson *person = node->data;
-				nodeEM = person->listEMail;
-				while( nodeEM ) {
-					ItemEMail *email = nodeEM->data;
-					nodeEM = g_list_next( nodeEM );
-					listEMail = g_list_append( listEMail, email );
-				}
-			}
-			node = g_list_next( node );
-		}
-		( _searchCallback_ ) ( queryID, listEMail, _searchTarget_ );
-		g_list_free( listEMail );
-	}
-}
 
 /*
- * Function prototype (not in header file or circular reference encountered!)
+ * Function prototypes (not in header file or circular reference errors are
+ * encountered!)
  */
-LdapQuery *ldapsvr_locate_query( LdapServer *server, const gchar *searchTerm );
-
-/**
- * Construct an LDAP query and initiate an LDAP dynamic search.
- * \param server  LDAP server object.
- * \param queryID ID of search query to be executed.
- */
-static void addrindex_search_ldap( LdapServer *server, const gint queryID ) {
-	LdapQuery *qry;
-	gchar *name;
-
-	if( ! server->searchFlag ) return;
-
-	/* Retire any aged queries */
-	ldapsvr_retire_query( server );
-
-	/* Test whether any queries for the same term exist */
-	qry = ldapsvr_locate_query( server, _searchTerm_ );
-	if( qry ) {
-		ItemFolder *folder = qry->folder;
-
-		/* Touch query to ensure it hangs around for a bit longer */
-		ldapqry_touch( qry );
-		if( folder ) {
-			addrindex_ldap_use_previous( folder, queryID );
-			return;
-		}
-	}
-
-	/* Construct a query */
-	qry = ldapqry_create();
-	ldapqry_set_query_id( qry, queryID );
-	ldapqry_set_search_value( qry, _searchTerm_ );
-	ldapqry_set_query_type( qry, LDAPQUERY_DYNAMIC );
-	ldapqry_set_callback_entry( qry, addrindex_ldap_entry_cb );
-	ldapqry_set_callback_end( qry, addrindex_ldap_end_cb );
-
-	/* Name the query */
-	name = g_strdup_printf( "Search for '%s'", _searchTerm_ );
-	ldapqry_set_name( qry, name );
-	g_free( name );
-
-	ldapsvr_add_query( server, qry );
-	ldapsvr_execute_query( server, qry );
-}
+LdapQuery *ldapsvr_new_dynamic_search( 
+		LdapServer *server, QueryRequest *req );
+LdapQuery *ldapsvr_new_explicit_search(
+		LdapServer *server, QueryRequest *req, ItemFolder *folder );
 
 #endif
 
 /**
- * Perform the previously registered search.
- * \param  addrIndex  Address index object.
- * \param  queryID    ID of search query to be executed.
+ * Execute the previously registered dynamic search.
+ *
+ * \param  req Address query object to execute.
  * \return <i>TRUE</i> if search started successfully, or <i>FALSE</i> if
  *         failed.
  */
-gboolean addrindex_start_search( AddressIndex *addrIndex, const gint queryID ) {
+static gboolean addrindex_start_dynamic( QueryRequest *req ) {
 	AddressInterface *iface;
 	AddressDataSource *ds;
 	GList *nodeIf;
 	GList *nodeDS;
 	gint type;
 
-	/* printf( "addrindex_start_search::%d::\n", queryID ); */
-	nodeIf = addrIndex->searchOrder;
+	/* printf( "addrindex_start_dynamic::%d::\n", req->queryID ); */
+	nodeIf = _addressIndex_->searchOrder;
 	while( nodeIf ) {
 		iface = nodeIf->data;
 		nodeIf = g_list_next( nodeIf );
@@ -2631,7 +2534,6 @@ gboolean addrindex_start_search( AddressIndex *addrIndex, const gint queryID ) {
 		if( ! iface->useInterface ) {
 			continue;
 		}
-
 		if( ! iface->externalQuery ) {
 			continue;
 		}
@@ -2643,8 +2545,22 @@ gboolean addrindex_start_search( AddressIndex *addrIndex, const gint queryID ) {
 			nodeDS = g_list_next( nodeDS );
 #ifdef USE_LDAP
 			if( type == ADDR_IF_LDAP ) {
-				LdapServer *server = ds->rawDataSource;
-				addrindex_search_ldap( server, queryID );
+				LdapServer *server;
+				LdapQuery *qry;
+
+				server = ds->rawDataSource;
+				if( ! server->searchFlag ) {
+					continue;
+				}
+				if( ldapsvr_reuse_previous( server, req ) ) {
+					continue;
+				}
+
+				/* Start a new dynamic search */
+				qry = ldapsvr_new_dynamic_search( server, req );
+				if( qry ) {
+					ldapsvr_execute_query( server, qry );
+				}
 			}
 #endif
 		}
@@ -2654,230 +2570,193 @@ gboolean addrindex_start_search( AddressIndex *addrIndex, const gint queryID ) {
 
 /**
  * Stop the previously registered search.
- * \param addrIndex Address index object.
+ *
  * \param queryID ID of search query to stop.
  */
-void addrindex_stop_search( AddressIndex *addrIndex, const gint queryID ){
-#ifdef USE_LDAP
-	AddressInterface *iface;
-	AddressDataSource *ds;
-	GList *nodeIf;
-	GList *nodeDS;
-	gint type;
+void addrindex_stop_search( const gint queryID ){
+	QueryRequest *req;
+	AddrQueryObject *aqo;
+	GList *node;
 
+	/* printf( "addrindex_stop_search/queryID=%d\n", queryID ); */
 	/* If query ID does not match, search has not been setup */
-	/* if( queryID != _queryID_ ) return; */
-
-	/* printf( "addrindex_stop_search::%d::\n", queryID ); */
-	nodeIf = addrIndex->searchOrder;
-	while( nodeIf ) {
-		iface = nodeIf->data;
-		nodeIf = g_list_next( nodeIf );
-
-		if( ! iface->useInterface ) {
-			continue;
-		}
-
-		type = iface->type;
-		nodeDS = iface->listSource;
-		while( nodeDS ) {
-			ds = nodeDS->data;
-			nodeDS = g_list_next( nodeDS );
-			if( type == ADDR_IF_LDAP ) {
-				LdapServer *server = ds->rawDataSource;
-				ldapsvr_stop_all_query( server );
-			}
-		}
-	}
-#endif
-}
-
-#ifdef USE_LDAP
-/**
- * LDAP callback entry point for completion of search.
- * \param qry LDAP query.
- */
-static void addrindex_ldap_end_static_cb( LdapQuery *qry ) {
-	AddrQuery *addrQry;
-	gint queryID;
-	AddrQueryType queryType;
-	AddrSearchStaticFunc *callBack;
-
-	queryID = qry->queryID;
-	queryType = qry->queryType;
-	addrQry = qrymgr_find_query( queryID );
-	if( addrQry == NULL ) {
+	req = qrymgr_find_request( queryID );
+	if( req == NULL ) {
 		return;
 	}
-	callBack = addrQry->callBack;
 
-	/* Delete query */
-	qrymgr_delete_query( queryID );
-
-	/* Execute callback function */
-	callBack( queryID, queryType, qry->retVal );
-}
+	/* Stop all queries that were associated with request */
+	node = req->queryList;
+	while( node ) {
+		aqo = node->data;
+#ifdef USE_LDAP
+		if( aqo->queryType == ADDRQUERY_LDAP ) {
+			LdapQuery *qry = ( LdapQuery * ) aqo;
+			ldapqry_set_stop_flag( qry, TRUE );
+		}
 #endif
+		node->data = NULL;
+		node = g_list_next( node );
+	}
+
+	/* Delete query request */
+	qrymgr_delete_request( queryID );
+}
 
 /**
- * Setup the explicit search that will be performed. The search is registered with
- * the query manager.
+ * Setup or register the explicit search that will be performed. The search is
+ * registered with the query manager.
  *
- * \param  ds          Data source to search.
- * \param  searchTerm  Search term to locate.
- * \param  folder      Folder to receive search results; may be NULL.
- * \param  callbackEnd Function to call when search has terminated.
+ * \param  ds            Data source to search.
+ * \param  searchTerm    Search term to locate.
+ * \param  folder        Folder to receive search results; may be NULL.
+ * \param  callbackEnd   Function to call when search has terminated.
+ * \param  callbackEntry Function to called for each entry processed.
  * \return ID allocated to query that will be executed.
  */
-gint addrindex_setup_static_search(
+gint addrindex_setup_explicit_search(
 	AddressDataSource *ds, const gchar *searchTerm, ItemFolder *folder,
-	void *callbackEnd )
+	void *callBackEnd, void *callBackEntry )
 {
-	AddrQuery *addrQry;
+	QueryRequest *req;
 	gint queryID;
 	gchar *name;
-
-	queryID = ++_currentQueryID_;
 
 	/* Name the query */
 	name = g_strdup_printf( "Search '%s'", searchTerm );
 
-	/* Set up a generic address query */
-	addrQry = qrymgr_add_query( queryID, searchTerm, callbackEnd, NULL );
+	/* Set up query request */
+	req = qrymgr_add_request( searchTerm, callBackEnd, callBackEntry );
+	qryreq_set_search_type( req, ADDRSEARCH_EXPLICIT );
+	queryID = req->queryID;
 
 	if( ds->type == ADDR_IF_LDAP ) {
 #ifdef USE_LDAP
 		LdapServer *server;
-		LdapQuery *qry;
 
 		server = ds->rawDataSource;
-
-		/* Construct a query */
-		qry = ldapqry_create();
-		ldapqry_set_query_id( qry, queryID );
-		ldapqry_set_name( qry, name );
-		ldapqry_set_search_value( qry, searchTerm );
-		ldapqry_set_query_type( qry, LDAPQUERY_STATIC );
-		ldapqry_set_callback_end( qry, addrindex_ldap_end_static_cb );
-
-		/* Specify folder type and back reference */
-		qry->folder = folder;
-		folder->folderType = ADDRFOLDER_LDAP_QUERY;
-		folder->folderData = ( gpointer ) qry;
-
-		/* Setup server */
-		ldapsvr_add_query( server, qry );
-
-		/* Set up generic query */
-		addrqry_set_query_type( addrQry, ADDRQUERY_LDAP );
-		addrqry_set_server( addrQry, server );
-		addrqry_set_query( addrQry, qry );
+		ldapsvr_new_explicit_search( server, req, folder );
 #endif
 	}
 	else {
-		qrymgr_delete_query( queryID );
+		qrymgr_delete_request( queryID );
 		queryID = 0;
 	}
-
 	g_free( name );
 
 	return queryID;
 }
 
 /**
- * Perform the previously registered explicit search.
- * \param  queryID    ID of search query to be executed.
- * \param  idleID     Idler ID.
+ * Execute the previously registered explicit search.
+ *
+ * \param  req Address query request object to execute.
  * \return <i>TRUE</i> if search started successfully, or <i>FALSE</i> if
  *         failed.
  */
-gboolean addrindex_start_static_search( const gint queryID, const guint idleID )
-{
+static gboolean addrindex_start_explicit( QueryRequest *req ) {
 	gboolean retVal;
-	AddrQuery *addrQry;
+	AddrQueryObject *aqo;
 
 	retVal = FALSE;
-	addrQry = qrymgr_find_query( queryID );
-	if( addrQry == NULL ) {
-		return retVal;
-	}
 
-	if( addrQry->queryType == ADDRQUERY_LDAP ) {
+	/* Note: there should only be one query in the list. */
+	aqo = req->queryList->data;
 #ifdef USE_LDAP
+	if( aqo->queryType == ADDRQUERY_LDAP ) {
 		LdapServer *server;
 		LdapQuery *qry;
 
-		server = ( LdapServer * ) addrQry->serverObject;
-		qry = ( LdapQuery * ) addrQry->queryObject;
-
-		/* Retire any aged queries */
-		ldapsvr_retire_query( server );
+		qry = ( LdapQuery * ) aqo;
+		server = qry->server;
 
 		/* Start the search */
-		ldapsvr_execute_query( server, qry );
 		retVal = TRUE;
+		ldapsvr_execute_query( server, qry );
+	}
 #endif
+	return retVal;
+}
+
+/**
+ * Start the previously registered search.
+ *
+ * \param  queryID    ID of search query to be executed.
+ * \return <i>TRUE</i> if search started successfully, or <i>FALSE</i> if
+ *         failed.
+ */
+gboolean addrindex_start_search( const gint queryID ) {
+	gboolean retVal;
+	QueryRequest *req;
+	AddrSearchType searchType;
+
+	retVal = FALSE;
+	/* printf( "addrindex_start_search/queryID=%d\n", queryID ); */
+	req = qrymgr_find_request( queryID );
+	if( req == NULL ) {
+		return retVal;
 	}
 
-	if( retVal ) {
-		addrqry_set_idle_id( addrQry, idleID );
+	searchType = req->searchType;
+	if( searchType == ADDRSEARCH_DYNAMIC ) {
+		retVal = addrindex_start_dynamic( req );
+	}
+	else if( searchType == ADDRSEARCH_EXPLICIT ) {
+		retVal = addrindex_start_explicit( req );
 	}
 
 	return retVal;
 }
 
 /**
- * Read all address books that do not support dynamic queries.
- * \param addrIndex Address index object.
+ * Remove results (folder and data) for specified data source and folder.
+ * \param ds     Data source to process.
+ * \param folder Results folder to remove.
  */
-void addrindex_read_all( AddressIndex *addrIndex ) {
-	AddressInterface *iface;
-	AddressDataSource *ds;
-	GList *nodeIf;
-	GList *nodeDS;
+void addrindex_remove_results( AddressDataSource *ds, ItemFolder *folder ) {
+	AddrBookBase *adbase;
+	AddressCache *cache;
+	gint queryID = 0;
 
-	nodeIf = addrIndex->searchOrder;
-	while( nodeIf ) {
-		iface = nodeIf->data;
-		nodeIf = g_list_next( nodeIf );
+	/* Test for folder */
+	if( folder->folderType != ADDRFOLDER_QUERY_RESULTS ) return;
+	adbase = ( AddrBookBase * ) ds->rawDataSource;
+	if( adbase == NULL ) return;
+	cache = adbase->addressCache;
 
-		if( ! iface->useInterface ) {
-			continue;
-		}
-		if( iface->externalQuery ) {
-			continue;
-		}
-		nodeDS = iface->listSource;
-		while( nodeDS ) {
-			ds = nodeDS->data;
-			nodeDS = g_list_next( nodeDS );
+	/* Hide folder to prevent re-display */
+	addritem_folder_set_hidden( folder, TRUE );
 
-			/* Read address book */
-			if( addrindex_ds_get_modify_flag( ds ) ) {
-				addrindex_ds_read_data( ds );
-				continue;
-			}
+	if( ds->type == ADDR_IF_LDAP ) {
+#ifdef USE_LDAP
+		LdapQuery  *qry;
 
-			if( ! addrindex_ds_get_read_flag( ds ) ) {
-				addrindex_ds_read_data( ds );
-				continue;
-			}
-		}
+		qry = ( LdapQuery * ) folder->folderData;
+		queryID = ADDRQUERY_ID(qry);
+		ldapquery_remove_results( qry );
+#endif
 	}
-	addrIndex->loadedFlag = TRUE;
+
+	/* Delete query request */
+	if( queryID > 0 ) {
+		qrymgr_delete_request( queryID );
+	}
 }
+
+/* **********************************************************************
+* Address completion stuff.
+* ***********************************************************************
+*/
 
 /**
  * This function is used by the address completion function to load
  * addresses for all non-external address book interfaces.
  *
- * \param addrIndex Address index object.
  * \param callBackFunc Function to be called when an address is
  *                     to be loaded.
  * \return <i>TRUE</i> if data loaded, <i>FALSE</i> if address index not loaded.
  */
 gboolean addrindex_load_completion(
-		AddressIndex *addrIndex,
 		gint (*callBackFunc) ( const gchar *, const gchar *, const gchar * ) )
 {
 	AddressDataSource *ds;
@@ -2886,9 +2765,7 @@ gboolean addrindex_load_completion(
 	GList *nodeM;
 	gchar *sName, *sAddress, *sAlias, *sFriendly;
 
-	if( addrIndex == NULL ) return FALSE;
-
-	nodeIf = addrindex_get_interface_list( addrIndex );
+	nodeIf = addrindex_get_interface_list( _addressIndex_ );
 	while( nodeIf ) {
 		AddressInterface *iface = nodeIf->data;
 

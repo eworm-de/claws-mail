@@ -40,7 +40,7 @@
 #  include <wctype.h>
 #endif
 
-#include "addressbook.h"
+#include "addrindex.h"
 #include "addr_compl.h"
 #include "utils.h"
 #include <pthread.h>
@@ -63,11 +63,6 @@
  * any of those words).
  */ 
 	
-/**
- * Reference to address index.
- */
-static AddressIndex *_addressIndex_ = NULL;
-
 /**
  * address_entry - structure which refers to the original address entry in the
  * address book .
@@ -210,7 +205,7 @@ static gint add_address(const gchar *name, const gchar *address, const gchar *al
  * Read address book, creating all entries in the completion index.
  */ 
 static void read_address_book(void) {	
-	addrindex_load_completion( _addressIndex_, add_address );
+	addrindex_load_completion( add_address );
 	g_address_list = g_list_reverse(g_address_list);
 	g_completion_list = g_list_reverse(g_completion_list);
 }
@@ -609,6 +604,9 @@ static CompletionWindow *addrcompl_create_window( void ) {
  * \param cw Window to destroy.
  */
 static void addrcompl_destroy_window( CompletionWindow *cw ) {
+	/* Stop all searches currently in progress */
+	addrindex_stop_search( _queryID_ );
+
 	/* Remove idler function... or application may not terminate */
 	if( _completionIdleID_ != 0 ) {
 		gtk_idle_remove( _completionIdleID_ );
@@ -762,17 +760,15 @@ static void addrcompl_add_entry( CompletionWindow *cw, gchar *address ) {
 static gboolean addrcompl_idle( gpointer data ) {
 	GList *node;
 	gchar *address;
-	CompletionWindow *cw;
 
 	/* Process all entries in display queue */
 	pthread_mutex_lock( & _completionMutex_ );
 	if( _displayQueue_ ) {
-		cw = data;
 		node = _displayQueue_;
 		while( node ) {
 			address = node->data;
 			/* printf( "address ::: %s :::\n", address ); */
-			addrcompl_add_entry( cw, address );
+			addrcompl_add_entry( _compWindow_, address );
 			g_free( address );
 			node = g_list_next( node );
 		}
@@ -787,35 +783,34 @@ static gboolean addrcompl_idle( gpointer data ) {
 /**
  * Callback entry point. The background thread (if any) appends the address
  * list to the display queue.
+ * \param sender     Sender of query.
  * \param queryID    Query ID of search request.
  * \param listEMail  List of zero of more email objects that met search
  *                   criteria.
- * \param target     Target object to received data.
+ * \param data       Query data.
  */
-static gint addrcompl_callback(
-	gint queryID, GList *listEMail, gpointer target )
+static gint addrcompl_callback_entry(
+	gpointer sender, gint queryID, GList *listEMail, gpointer data )
 {
 	GList *node;
 	gchar *address;
 
-	/* printf( "addrcompl_callback::queryID=%d\n", queryID ); */
+	/* printf( "addrcompl_callback_entry::queryID=%d\n", queryID ); */
 	pthread_mutex_lock( & _completionMutex_ );
-	if( target ) {
-		if( queryID == _queryID_ ) {
-			/* Append contents to end of display queue */
-			node = listEMail;
-			while( node ) {
-				ItemEMail *email = node->data;
+	if( queryID == _queryID_ ) {
+		/* Append contents to end of display queue */
+		node = listEMail;
+		while( node ) {
+			ItemEMail *email = node->data;
 
-				address = addritem_format_email( email );
-				/* printf( "\temail/address ::%s::\n", address ); */
-				_displayQueue_ = g_list_append( _displayQueue_, address );
-				node = g_list_next( node );
-			}
+			address = addritem_format_email( email );
+			/* printf( "\temail/address ::%s::\n", address ); */
+			_displayQueue_ = g_list_append( _displayQueue_, address );
+			node = g_list_next( node );
 		}
 	}
+	g_list_free( listEMail );
 	pthread_mutex_unlock( & _completionMutex_ );
-	/* printf( "addrcompl_callback...done\n" ); */
 
 	return 0;
 }
@@ -845,9 +840,8 @@ static void addrcompl_add_queue( gchar *address ) {
 
 /**
  * Load list with entries from local completion index.
- * \param cw Completion window.
  */
-static void addrcompl_load_local( CompletionWindow *cw ) {
+static void addrcompl_load_local( void ) {
 	guint count = 0;
 
 	for (count = 0; count < get_completion_count(); count++) {
@@ -871,19 +865,19 @@ static void addrcompl_start_search( void ) {
 
 	/* Setup the search */
 	_queryID_ = addrindex_setup_search(
-		_addressIndex_, searchTerm, _compWindow_, addrcompl_callback );
+		searchTerm, NULL, addrcompl_callback_entry );
 	g_free( searchTerm );
 	/* printf( "addrcompl_start_search::queryID=%d\n", _queryID_ ); */
 
 	/* Load local stuff */
-	addrcompl_load_local( _compWindow_ );
+	addrcompl_load_local();
 
 	/* Sit back and wait until something happens */
 	_completionIdleID_ =
-		gtk_idle_add( ( GtkFunction ) addrcompl_idle, _compWindow_ );
+		gtk_idle_add( ( GtkFunction ) addrcompl_idle, NULL );
 	/* printf( "addrindex_start_search::queryID=%d\n", _queryID_ ); */
 
-	addrindex_start_search( _addressIndex_, _queryID_ );
+	addrindex_start_search( _queryID_ );
 }
 
 /**
@@ -1387,12 +1381,8 @@ static gboolean completion_window_key_press(GtkWidget *widget,
 
 /**
  * Setup completion object.
- * \param addrIndex Address index object.
  */
-void addrcompl_initialize( AddressIndex *addrIndex ) {
-	g_return_if_fail( addrIndex != NULL );
-	_addressIndex_ = addrIndex;
-
+void addrcompl_initialize( void ) {
 	/* printf( "addrcompl_initialize...\n" ); */
 	if( ! _compWindow_ ) {
 		_compWindow_ = addrcompl_create_window();
@@ -1414,7 +1404,6 @@ void addrcompl_teardown( void ) {
 	}
 	_displayQueue_ = NULL;
 	_completionIdleID_ = 0;
-	_addressIndex_ = NULL;
 	/* printf( "addrcompl_teardown...done\n" ); */
 }
 

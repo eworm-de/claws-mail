@@ -23,11 +23,9 @@
 
 #include <gtk/gtk.h>
 
-#include "addrindex.h"
-
 gint start_address_completion		(void);
 guint complete_address			(const gchar *str);
-gchar *get_complete_address		(gint        index);
+gchar *get_complete_address		(gint index);
 gint invalidate_address_completion	(void);
 gint end_address_completion		(void);
 
@@ -37,7 +35,7 @@ void address_completion_register_entry	(GtkEntry  *entry);
 void address_completion_unregister_entry(GtkEntry  *entry);
 void address_completion_end		(GtkWidget *mainwindow);
 
-void addrcompl_initialize	( AddressIndex *addrIndex );
+void addrcompl_initialize	( void );
 void addrcompl_teardown		( void );
 
 #endif /* __ADDR_COMPL_H__ */

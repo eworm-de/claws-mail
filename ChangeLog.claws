@@ -1,3 +1,25 @@
+2003-11-01 [match]	0.9.6claws63
+
+	* po/POTFILES.in
+	* src/Makefile.am
+	* src/addr_compl.[ch]
+	* src/addrbook.c
+	* src/addrcache.[ch]
+	* src/addrdefs.h	** NEW **
+	* src/addressbook.c
+	* src/addressitem.h
+	* src/addrindex.[ch]
+	* src/addritem.h
+	* src/addrquery.[ch]
+	* src/ldapquery.[ch]
+	* src/ldapserver.[ch]
+		refactor LDAP query mechanism.
+
+	* src/browseldap.[ch]	** NEW **
+	* src/ldaplocate.[ch]	** NEW **
+		add feature to browse LDAP entry that was retrieved using
+		an explicit LDAP search.
+
 2003-11-01 [alfons]	0.9.6claws62
 
 	* src/prefs_gtk.c

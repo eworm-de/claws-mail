@@ -1721,6 +1721,11 @@ ItemGroup *addrbook_add_group_list(AddressBookFile *book, ItemFolder *folder,
  */
 ItemFolder *addrbook_add_new_folder(AddressBookFile *book, ItemFolder *parent)
 {
+	g_return_val_if_fail(book != NULL, NULL);
+	return addrcache_add_new_folder( book->addressCache, parent );
+}
+#if 0
+{
 	ItemFolder *folder = NULL;
 	ItemFolder *p = parent;
 
@@ -1741,6 +1746,7 @@ ItemFolder *addrbook_add_new_folder(AddressBookFile *book, ItemFolder *parent)
 	}
 	return folder;
 }
+#endif
 
 /**
  * Update address book attribute list for specified person. Note: The existing

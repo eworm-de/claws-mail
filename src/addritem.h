@@ -50,7 +50,7 @@ typedef enum {
 	ADDRFOLDER_ROOT,
 	ADDRFOLDER_REGULAR,
 	ADDRFOLDER_CATEGORY,
-	ADDRFOLDER_LDAP_QUERY
+	ADDRFOLDER_QUERY_RESULTS
 } AddressFolderType;
 
 typedef struct _AddrItemObject AddrItemObject;

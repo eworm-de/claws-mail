@@ -310,7 +310,7 @@ void ldapsvr_print_data( LdapServer *server, FILE *stream ) {
 	node = server->listQuery;
 	while( node ) {
 		LdapQuery *qry = node->data;
-		fprintf( stream, "    query: %2d : %s\n", i, qry->queryName );
+		fprintf( stream, "    query: %2d : %s\n", i, ADDRQUERY_NAME(qry) );
 		i++;
 		node = g_list_next( node );
 	}
@@ -356,8 +356,9 @@ void ldapsvr_execute_query( LdapServer *server, LdapQuery *qry ) {
 	ldapqry_initialize();
 
 	/* Perform query */	
-	/* printf( "ldapsvr_execute_query::reading with thread...\n" ); */
+	/* printf( "ldapsvr_execute_query::checking query...\n" ); */
 	if( ldapqry_check_search( qry ) ) {
+		/* printf( "ldapsvr_execute_query::reading with thread...\n" ); */
 		ldapqry_read_data_th( qry );
 		/*
 		if( qry->retVal == LDAPRC_SUCCESS ) {
@@ -380,7 +381,7 @@ void ldapsvr_stop_query_id( LdapServer *server, const gint queryID ) {
 	node = server->listQuery;
 	while( node ) {
 		LdapQuery *qry = node->data;
-		if( qry->queryID == queryID ) {
+		if( ADDRQUERY_ID(qry) == queryID ) {
 			/* Notify thread to stop */
 			ldapqry_set_stop_flag( qry, TRUE );
 		}
@@ -431,7 +432,8 @@ void ldapsvr_cancel_all_query( LdapServer *server ) {
  * \param searchTerm Search term to locate.
  * \return Query object, or <i>NULL</i> if none found.
  */
-LdapQuery *ldapsvr_locate_query( LdapServer *server, const gchar *searchTerm )
+static LdapQuery *ldapsvr_locate_query(
+	const LdapServer *server, const gchar *searchTerm )
 {
 	LdapQuery *incomplete = NULL;
 	GList *node;	
@@ -442,7 +444,7 @@ LdapQuery *ldapsvr_locate_query( LdapServer *server, const gchar *searchTerm )
 	/* Search backwards for query */
 	while( node ) {
 		LdapQuery *qry = node->data;
-		if( g_strcasecmp( qry->searchValue, searchTerm ) == 0 ) {
+		if( g_strcasecmp( ADDRQUERY_SEARCHVALUE(qry), searchTerm ) == 0 ) {
 			if( qry->agedFlag ) continue;
 			if( qry->completed ) {
 				/* Found */
@@ -458,7 +460,12 @@ LdapQuery *ldapsvr_locate_query( LdapServer *server, const gchar *searchTerm )
 }
 
 /**
- * Retire aged queries. Only dynamic queries are retired.
+ * Retire aged queries. Only the following queries are retired:
+ *
+ * a) Dynamic queries.
+ * b) Explicit searches that have a hidden folders.
+ * c) Locate searches that have a hidden folder.
+ *
  * \param server LdapServer.
  */
 void ldapsvr_retire_query( LdapServer *server ) {
@@ -467,6 +474,7 @@ void ldapsvr_retire_query( LdapServer *server ) {
 	GList *listQuery;
 	gint maxAge;
 	LdapControl *ctl;
+	ItemFolder *folder;
 
 	/* printf( "ldapsvr_retire_query\n" ); */
 	g_return_if_fail( server != NULL );
@@ -480,14 +488,18 @@ void ldapsvr_retire_query( LdapServer *server ) {
 		LdapQuery *qry = node->data;
 
 		node = g_list_next( node );
-		if( qry->queryType == LDAPQUERY_STATIC ) continue;
+		folder = ADDRQUERY_FOLDER(qry);
+		if( folder == NULL ) continue;
+		if( ! folder->isHidden ) {
+			if( ADDRQUERY_SEARCHTYPE(qry) == ADDRSEARCH_EXPLICIT ) continue;
+			if( ADDRQUERY_SEARCHTYPE(qry) == ADDRSEARCH_LOCATE ) continue;
+		}
 
-		/* Only dynamic queries are retired */
 		ldapqry_age( qry, maxAge );
 		if( qry->agedFlag ) {
 			/* Delete folder associated with query */
 			/*
-			printf( "deleting folder... ::%s::\n", qry->queryName );
+			printf( "deleting folder... ::%s::\n", ADDRQUERY_NAME(qry) );
 			*/
 			ldapqry_delete_folder( qry );
 			listDelete = g_list_append( listDelete, qry );
@@ -509,6 +521,176 @@ void ldapsvr_retire_query( LdapServer *server ) {
 
 	/* Free up deletion list */
 	g_list_free( listDelete );
+}
+
+/**
+ * Return results of a previous query by executing callback for each address
+ * contained in specified folder.
+ * 
+ * \param folder  Address book folder to process.
+ * \param req Address query request object.
+ */
+static void ldapsvr_previous_query(
+	const ItemFolder *folder, const QueryRequest *req, AddrQueryObject *aqo )
+{
+	AddrSearchCallbackEntry *callBack;
+	GList *listEMail;
+	GList *node;
+	GList *nodeEM;
+	gpointer sender;
+
+	sender = aqo;
+	callBack = ( AddrSearchCallbackEntry * ) req->callBackEntry;
+	if( callBack ) {
+		listEMail = NULL;
+		node = folder->listPerson;
+		while( node ) {
+			AddrItemObject *aio = node->data;
+			if( aio &&  aio->type == ITEMTYPE_PERSON ) {
+				ItemPerson *person = node->data;
+				nodeEM = person->listEMail;
+				while( nodeEM ) {
+					ItemEMail *email = nodeEM->data;
+
+					nodeEM = g_list_next( nodeEM );
+					listEMail = g_list_append( listEMail, email );
+				}
+			}
+			node = g_list_next( node );
+		}
+		( callBack ) ( sender, req->queryID, listEMail, NULL );
+		/* // g_list_free( listEMail ); */
+	}
+}
+
+/**
+ * Reuse search results from a previous LDAP query. If there is a query that
+ * has the same search term as specified in the query request, then the query
+ * will be reused.
+ *
+ * \param server  LDAP server object.
+ * \param req Address query object.
+ * \return <i>TRUE</i> if previous query was used.
+ */
+gboolean ldapsvr_reuse_previous( const LdapServer *server, const QueryRequest *req ) {
+	LdapQuery *qry;
+	gchar *searchTerm;
+	ItemFolder *folder;
+
+	g_return_val_if_fail( server != NULL, FALSE );
+	g_return_val_if_fail( req != NULL, FALSE );
+
+	searchTerm = req->searchTerm;
+
+	/* Test whether any queries for the same term exist */
+	qry = ldapsvr_locate_query( server, searchTerm );
+	if( qry ) {
+		/* Touch query to ensure it hangs around for a bit longer */
+		ldapqry_touch( qry );
+		folder = ADDRQUERY_FOLDER(qry);
+		if( folder ) {
+			ldapsvr_previous_query( folder, req, ADDRQUERY_OBJECT(qry) );
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+/**
+ * Construct a new LdapQuery object that will be used to perform an dynamic
+ * search request.
+ *
+ * \param server LdapServer.
+ * \param req    Query request.
+ * \return LdapQuery object, or <i>NULL</i> if none created.
+ */
+LdapQuery *ldapsvr_new_dynamic_search( LdapServer *server, QueryRequest *req )
+{
+	LdapQuery *qry;
+	gchar *name;
+	gchar *searchTerm;
+
+	g_return_val_if_fail( server != NULL, NULL );
+	g_return_val_if_fail( req != NULL, NULL );
+
+	/* Retire any aged queries */
+	/* // ldapsvr_retire_query( server ); */
+
+	searchTerm = req->searchTerm;
+
+	/* Construct a query */
+	qry = ldapqry_create();
+	ldapqry_set_query_id( qry, req->queryID );
+	ldapqry_set_search_value( qry, searchTerm );
+	ldapqry_set_search_type( qry, ADDRSEARCH_DYNAMIC );
+	ldapqry_set_callback_entry( qry, req->callBackEntry );
+	ldapqry_set_callback_end( qry, req->callBackEnd );
+
+	/* Name the query */
+	name = g_strdup_printf( "Search for '%s'", searchTerm );
+	ldapqry_set_name( qry, name );
+	g_free( name );
+
+	/* Add query to request */
+	qryreq_add_query( req, ADDRQUERY_OBJECT(qry) );
+
+	/* Now start the search */
+	ldapsvr_add_query( server, qry );
+
+	return qry;	
+}
+
+/**
+ * Construct a new LdapQuery object that will be used to perform an explicit
+ * search request.
+ *
+ * \param server LdapServer.
+ * \param req    Query request.
+ * \param folder Folder that will be used to contain search results; may be NULL.
+ * \return LdapQuery object, or <i>NULL</i> if none created.
+ */
+LdapQuery *ldapsvr_new_explicit_search(
+		LdapServer *server, QueryRequest *req, ItemFolder *folder )
+{
+	LdapQuery *qry;
+	gchar *searchTerm;
+	gchar *name;
+
+	g_return_val_if_fail( server != NULL, NULL );
+	g_return_val_if_fail( req != NULL, NULL );
+	searchTerm = req->searchTerm;
+
+	/* Retire any aged queries */
+	/* // ldapsvr_retire_query( server ); */
+
+	/* Name the query */
+	name = g_strdup_printf( "Explicit search for '%s'", searchTerm );
+
+	/* Construct a query */
+	qry = ldapqry_create();
+	ldapqry_set_query_id( qry, req->queryID );
+	ldapqry_set_name( qry, name );
+	ldapqry_set_search_value( qry, searchTerm );
+	ldapqry_set_search_type( qry, ADDRSEARCH_EXPLICIT );
+	ldapqry_set_callback_end( qry, req->callBackEnd );
+	ldapqry_set_callback_entry( qry, req->callBackEntry );
+
+	if( folder ) {
+		/* Specify folder type and back reference */
+		ADDRQUERY_FOLDER(qry) = folder;
+		folder->folderType = ADDRFOLDER_QUERY_RESULTS;
+		folder->folderData = ( gpointer ) qry;
+	}
+
+	/* Setup server */
+	ldapsvr_add_query( server, qry );
+
+	/* Set up query request */
+	qryreq_add_query( req, ADDRQUERY_OBJECT(qry) );
+
+	g_free( name );
+
+	return qry;
 }
 
 #endif	/* USE_LDAP */

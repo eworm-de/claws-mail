@@ -170,4 +170,7 @@ ItemPerson *addrcache_add_contact	( AddressCache *cache,
 					  const gchar *address,
 					  const gchar *remarks ); 
 
+ItemFolder *addrcache_add_new_folder	( AddressCache *cache,
+					  ItemFolder *parent );
+
 #endif /* __ADDRCACHE_H__ */

@@ -18,6 +18,7 @@ sylpheed_SOURCES = \
 	addrquery.c \
 	addrselect.c \
 	alertpanel.c \
+	browseldap.c \
 	codeconv.c \
 	compose.c \
 	crash.c \
@@ -53,6 +54,7 @@ sylpheed_SOURCES = \
 	inputdialog.c \
 	jpilot.c \
 	ldapctrl.c \
+	ldaplocate.c \
 	ldapquery.c \
 	ldapserver.c \
 	ldaputil.c \
@@ -130,6 +132,7 @@ sylpheedinclude_HEADERS = \
 	addrcache.h \
 	addrclip.h \
 	addr_compl.h \
+	addrdefs.h \
 	addressadd.h \
 	addressbook.h \
 	addressitem.h \
@@ -140,6 +143,7 @@ sylpheedinclude_HEADERS = \
 	addrquery.h \
 	addrselect.h \
 	alertpanel.h \
+	browseldap.h \
 	codeconv.h \
 	compose.h \
 	crash.h \
@@ -175,6 +179,7 @@ sylpheedinclude_HEADERS = \
 	inputdialog.h \
 	jpilot.h \
 	ldapctrl.h \
+	ldaplocate.h \
 	ldapquery.h \
 	ldapserver.h \
 	ldaputil.h \
