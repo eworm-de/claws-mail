@@ -167,6 +167,22 @@ MimeInfo *procmime_mimeinfo_next(MimeInfo *mimeinfo)
 	return NULL;
 }
 
+#if 0
+void procmime_dump_mimeinfo(MimeInfo *mimeinfo)
+{
+	gint i;
+
+	g_print("\n");
+
+	for (; mimeinfo != NULL; mimeinfo = procmime_mimeinfo_next(mimeinfo)) {
+		for (i = 0; i < mimeinfo->level; i++)
+			g_print("  ");
+		g_print("%s%s\n", mimeinfo->main ? "sub: " : "",
+			mimeinfo->content_type);
+	}
+}
+#endif
+
 MimeInfo *procmime_scan_message(MsgInfo *msginfo)
 {
 	FILE *fp;
@@ -174,22 +190,21 @@ MimeInfo *procmime_scan_message(MsgInfo *msginfo)
 
 	g_return_val_if_fail(msginfo != NULL, NULL);
 
+#if USE_GPGME
+	if ((fp = procmsg_open_message_decrypted(msginfo, &mimeinfo)) == NULL)
+		return NULL;
+#else
 	if ((fp = procmsg_open_message(msginfo)) == NULL) return NULL;
 	mimeinfo = procmime_scan_mime_header(fp);
+#endif
 
 	if (mimeinfo) {
-		if (mimeinfo->mime_type != MIME_MULTIPART) {
-			if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0)
-				perror("fseek");
-		}
-		if (mimeinfo->mime_type != MIME_TEXT)
+		mimeinfo->size = get_left_file_size(fp);
+		if (mimeinfo->mime_type == MIME_MULTIPART ||
+		    mimeinfo->mime_type == MIME_MESSAGE_RFC822)
 			procmime_scan_multipart_message(mimeinfo, fp);
 	}
 
-#if USE_GPGME
-        if (prefs_common.auto_check_signatures)
-		rfc2015_check_signature(mimeinfo, fp);
-#endif
 	fclose(fp);
 
 	return mimeinfo;
@@ -202,10 +217,10 @@ void procmime_scan_multipart_message(MimeInfo *mimeinfo, FILE *fp)
 	gint boundary_len = 0;
 	gchar buf[BUFFSIZE];
 	glong fpos, prev_fpos;
-	gint npart;
 
 	g_return_if_fail(mimeinfo != NULL);
-	g_return_if_fail(mimeinfo->mime_type != MIME_TEXT);
+	g_return_if_fail(mimeinfo->mime_type == MIME_MULTIPART ||
+			 mimeinfo->mime_type == MIME_MESSAGE_RFC822);
 
 	if (mimeinfo->mime_type == MIME_MULTIPART) {
 		g_return_if_fail(mimeinfo->boundary != NULL);
@@ -229,40 +244,34 @@ void procmime_scan_multipart_message(MimeInfo *mimeinfo, FILE *fp)
 		return;
 	}
 
-	for (npart = 0;; npart++) {
+	for (;;) {
 		MimeInfo *partinfo;
 		gboolean eom = FALSE;
 
 		prev_fpos = fpos;
 		debug_print("prev_fpos: %ld\n", fpos);
 
-		partinfo = procmime_scan_mime_header(fp);
-		if (!partinfo) break;
-		procmime_mimeinfo_insert(mimeinfo, partinfo);
-
-		if (partinfo->mime_type == MIME_MULTIPART) {
-			if (partinfo->level < 8)
-				procmime_scan_multipart_message(partinfo, fp);
-		} else if (partinfo->mime_type == MIME_MESSAGE_RFC822) {
+		if (mimeinfo->mime_type == MIME_MESSAGE_RFC822) {
 			MimeInfo *sub;
 
-			partinfo->sub = sub = procmime_scan_mime_header(fp);
+			mimeinfo->sub = sub = procmime_scan_mime_header(fp);
 			if (!sub) break;
 
-			sub->level = partinfo->level + 1;
-			sub->parent = partinfo;
-			sub->main = partinfo;
+			sub->level = mimeinfo->level + 1;
+			sub->parent = mimeinfo->parent;
+			sub->main = mimeinfo;
 
-			if (sub->level < 8) {
-				if (sub->mime_type == MIME_MULTIPART) {
-					procmime_scan_multipart_message
-						(sub, fp);
-				} else if (sub->mime_type == MIME_MESSAGE_RFC822) {
-					fseek(fp, sub->fpos, SEEK_SET);
-					procmime_scan_multipart_message
-						(sub, fp);
-				}
-			}
+			partinfo = sub;
+		} else {
+			partinfo = procmime_scan_mime_header(fp);
+			if (!partinfo) break;
+			procmime_mimeinfo_insert(mimeinfo, partinfo);
+		}
+
+		if (partinfo->mime_type == MIME_MULTIPART ||
+		    partinfo->mime_type == MIME_MESSAGE_RFC822) {
+			if (partinfo->level < 8)
+				procmime_scan_multipart_message(partinfo, fp);
 		}
 
 		/* look for next boundary */
@@ -287,7 +296,8 @@ void procmime_scan_multipart_message(MimeInfo *mimeinfo, FILE *fp)
 		debug_print("partinfo->size: %d\n", partinfo->size);
 		if (partinfo->sub && !partinfo->sub->sub &&
 		    !partinfo->sub->children) {
-			partinfo->sub->size = fpos - partinfo->sub->fpos - strlen(buf);
+			partinfo->sub->size =
+				fpos - partinfo->sub->fpos - strlen(buf);
 			debug_print("partinfo->sub->size: %d\n",
 				    partinfo->sub->size);
 		}

@@ -279,7 +279,6 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 {
 	GtkCTree *ctree = GTK_CTREE(mimeview->ctree);
 	GtkCTreeNode *node;
-	gchar buf[BUFFSIZE];
 	FILE *fp;
 
 	mimeview_clear(mimeview);
@@ -290,26 +289,17 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 
 	mimeview->mimeinfo = mimeinfo;
 
-	if ((fp = fopen(file, "rb")) == NULL) {
-		FILE_OP_ERROR(file, "fopen");
-		return;
-	}
 	mimeview->file = g_strdup(file);
 
-	/* skip MIME part headers */
-	if (mimeinfo->mime_type == MIME_MULTIPART) {
-		if (fseek(fp, mimeinfo->fpos, SEEK_SET) < 0)
-			perror("fseek");
-		while (fgets(buf, sizeof(buf), fp) != NULL)
-			if (buf[0] == '\r' || buf[0] == '\n') break;
-	}
-
-	procmime_scan_multipart_message(mimeinfo, fp);
 #if USE_GPGME
-	if ((prefs_common.auto_check_signatures)
-	    && (gpg_started))
+	if (prefs_common.auto_check_signatures && gpg_started) {
+		if ((fp = fopen(file, "rb")) == NULL) {
+			FILE_OP_ERROR(file, "fopen");
+			return;
+		}
 		rfc2015_check_signature(mimeinfo, fp);
-	else
+		fclose(fp);
+	} else
 		set_unchecked_signature(mimeinfo);
 #endif
 
@@ -332,7 +322,6 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 		     partinfo->mime_type == MIME_TEXT_HTML))
 			break;
 	}
-	fclose(fp);
 	textview_show_message(mimeview->messageview->textview, mimeinfo, file);
 
 	if (!node)
@@ -376,27 +365,25 @@ static void mimeview_set_multipart_tree(MimeView *mimeview,
 					MimeInfo *mimeinfo,
 					GtkCTreeNode *parent)
 {
-	GtkCTreeNode *current = parent;
+	GtkCTreeNode *node;
 
 	g_return_if_fail(mimeinfo != NULL);
 
-	if (!mimeinfo->sub && mimeinfo->parent)
-		current = mimeview_append_part(mimeview, mimeinfo, parent);
-	if (mimeinfo->sub && !mimeinfo->sub->children &&
-	    mimeinfo->sub->mime_type != MIME_TEXT &&
-	    mimeinfo->sub->mime_type != MIME_TEXT_HTML) {
-		mimeview_append_part(mimeview, mimeinfo->sub, parent);
-		return;
-	}
-
-	if (mimeinfo->sub)
-		mimeview_set_multipart_tree(mimeview, mimeinfo->sub, current);
-
 	if (mimeinfo->children)
-		mimeview_set_multipart_tree(mimeview, mimeinfo->children, current);
+		mimeinfo = mimeinfo->children;
 
-	if (mimeinfo->next)
-		mimeview_set_multipart_tree(mimeview, mimeinfo->next, parent);
+	while (mimeinfo != NULL) {
+		node = mimeview_append_part(mimeview, mimeinfo, parent);
+
+		if (mimeinfo->children)
+			mimeview_set_multipart_tree(mimeview, mimeinfo, node);
+		else if (mimeinfo->sub &&
+			 mimeinfo->sub->mime_type != MIME_TEXT &&
+			 mimeinfo->sub->mime_type != MIME_TEXT_HTML)
+			mimeview_set_multipart_tree(mimeview, mimeinfo->sub,
+						    node);
+		mimeinfo = mimeinfo->next;
+	}
 }
 
 static gchar *get_part_name(MimeInfo *partinfo)

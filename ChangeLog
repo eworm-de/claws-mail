@@ -1,3 +1,26 @@
+2003-05-07
+
+	* src/compose.c: compose_insert_sig(): fixed a crash when signature
+	  string contains illegal sequence.
+	* src/utils.[ch]: changed get_wcs_len() to get_mbs_len() for accuracy.
+
+2003-05-07
+
+	* major refactoring of MIME structure.
+	* src/procmime.c: procmime_scan_message(): decrypt message if
+	  gpgme is enabled. Create multipart tree only if content-type is
+	  multipart/* or message/rfc822.
+	  procmime_scan_multipart_message(): fixed the scanning of
+	  message/rfc822 part.
+	* src/action.c: parse_append_msgpart()
+	  src/messageview.c: messageview_show()
+	  src/mimeview.c: mimeview_show_message(): use procmime_scan_message()
+	  instead of procmsg_open_message() and procmime_scan_mime_header().
+	  mimeview_set_multipart_tree(): conform to the new MIME structure.
+	* src/textview.c: textview_show_part(): removed unnecessary check.
+	* src/procmsg.c: procmsg_open_message_decrypted(): fixed the file
+	  pointer when decryption failed.
+
 2003-05-06
 
 	* src/ssl.c: ssl_init_socket_with_method(): replaced log_warning()

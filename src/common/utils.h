@@ -216,7 +216,7 @@ gint wcsncasecmp		(const wchar_t *s1,
 				 size_t		n);
 wchar_t *wcscasestr		(const wchar_t *haystack,
 				 const wchar_t *needle);
-gint get_wcs_len		(const gchar	*s);
+gint get_mbs_len		(const gchar	*s);
 
 gboolean is_next_nonascii	(const guchar *s);
 gint get_next_word_len		(const gchar *s);

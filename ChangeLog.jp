@@ -1,3 +1,27 @@
+2003-05-07
+
+	* src/compose.c: compose_insert_sig(): 署名文字列に不正なシーケンス
+	  が含まれるときのクラッシュを修正。
+	* src/utils.[ch]: 正確さのため get_wcs_len() を get_mbs_len() に変更。
+
+2003-05-07
+
+	* MIME 構造の大きなリファクタリング。
+	* src/procmime.c: procmime_scan_message(): gpgme が有効のときは
+	  メッセージを復号化するようにした。 content-type が multipart/*
+	  または message/rfc822 の場合のみマルチパートツリーを作成。
+	  procmime_scan_multipart_message(): message/rfc822 パートの走査
+	  を修正。
+	* src/action.c: parse_append_msgpart()
+	  src/messageview.c: messageview_show()
+	  src/mimeview.c: mimeview_show_message(): procmsg_open_message() と
+	  procmime_scan_mime_header() の代わりに procmime_scan_message()
+	  を使用。
+	  mimeview_set_multipart_tree(): 新しい MIME 構造に対応。
+	* src/textview.c: textview_show_part(): 不要なチェックを削除。
+	* src/procmsg.c: procmsg_open_message_decrypted(): 復号化に失敗した
+	  場合のファイルポインタを修正。
+
 2003-05-06
 
 	* src/ssl.c: ssl_init_socket_with_method(): log_warning() を

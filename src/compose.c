@@ -1913,9 +1913,14 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 
 		pos = gtkut_stext_find(text, 0, tmp, TRUE);
 		if (pos != -1) {
-			gtk_stext_set_point(text, pos);
-			len = get_wcs_len(tmp);
-			gtk_stext_forward_delete(text, len);
+			len = get_mbs_len(tmp);
+			if (len >= 0) {
+				gtk_stext_set_point(text, pos);
+				gtk_stext_forward_delete(text, len);
+			} else {
+				len = gtk_stext_get_length(text);
+				gtk_stext_set_point(text, len);
+			}
 		} else {
 			len = gtk_stext_get_length(text);
 			gtk_stext_set_point(text, len);

@@ -488,7 +488,7 @@ wchar_t *wcscasestr(const wchar_t *haystack, const wchar_t *needle)
 	return NULL;
 }
 
-gint get_wcs_len(const gchar *s)
+gint get_mbs_len(const gchar *s)
 {
 	const gchar *p = s;
 	gint mb_len;

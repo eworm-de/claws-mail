@@ -400,6 +400,7 @@ FILE *procmsg_open_message_decrypted(MsgInfo *msginfo, MimeInfo **mimeinfo)
 {
 	FILE *fp;
 	MimeInfo *mimeinfo_;
+	glong fpos;
 
 	g_return_val_if_fail(msginfo != NULL, NULL);
 
@@ -419,7 +420,9 @@ FILE *procmsg_open_message_decrypted(MsgInfo *msginfo, MimeInfo **mimeinfo)
 	}
 
 	if (MSG_IS_ENCRYPTED(msginfo->flags) &&
-	    (!msginfo->plaintext_file || msginfo->decryption_failed)) {
+	    !msginfo->plaintext_file &&
+	    !msginfo->decryption_failed) {
+		fpos = ftell(fp);
 		rfc2015_decrypt_message(msginfo, mimeinfo_, fp);
 		if (msginfo->plaintext_file &&
 		    !msginfo->decryption_failed) {
@@ -432,6 +435,9 @@ FILE *procmsg_open_message_decrypted(MsgInfo *msginfo, MimeInfo **mimeinfo)
 				fclose(fp);
 				return NULL;
 			}
+		} else {
+			if (fseek(fp, fpos, SEEK_SET) < 0)
+				perror("fseek");
 		}
 	}
 
