@@ -255,3 +255,4 @@
 ( cvs diff -u -r 1.476 -r 1.477 src/compose.c; ) > 1.0.1cvs15.patchset
 ( cvs diff -u -r 1.477 -r 1.478 src/compose.c; cvs diff -u -r 1.177 -r 1.178 src/procmsg.c; ) > 1.0.1cvs16.patchset
 ( cvs diff -u -r 1.478 -r 1.479 src/compose.c; ) > 1.0.1cvs17.patchset
+( cvs diff -u -r 1.134 -r 1.135 src/messageview.c; ) > 1.0.1cvs18.patchset

@@ -1,3 +1,8 @@
+2005-02-24 [colin]	1.0.1cvs18
+
+	* src/messageview.c
+		Don't send out receipts if offline. Ask.
+
 2005-02-23 [colin]	1.0.1cvs17
 
 	* src/compose.c

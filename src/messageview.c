@@ -668,6 +668,12 @@ static gint disposition_notification_send(MsgInfo *msginfo)
 		return -1;
 	}
 	
+	if (prefs_common.work_offline)
+		if (alertpanel(_("Offline warning"), 
+			       _("You're working offline. Override?"),
+			       _("Yes"), _("No"), NULL) != G_ALERTDEFAULT)
+			return 0;
+
 	/* send it */
 	path = folder_item_fetch_msg(queue, num);
 	ok = procmsg_send_message_queue(path);
