@@ -1,3 +1,9 @@
+2004-01-21 [christoph]	0.9.8claws42
+
+	* src/folderview.c
+		set ctree widget style, otherwise GTK does not use the
+		the correct vertical size for the list items
+
 2004-01-21 [alfons]	0.9.8claws41
 
 	* src/summaryview.c

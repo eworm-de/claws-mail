@@ -604,6 +604,8 @@ void folderview_init(FolderView *folderview)
 			normal_style->font = normalfont;
 		normal_color_style = gtk_style_copy(normal_style);
 		normal_color_style->fg[GTK_STATE_NORMAL] = folderview->color_new;
+
+		gtk_widget_set_style(ctree, normal_style);
 	}
 
 	if (!bold_style) {
