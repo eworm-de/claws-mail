@@ -1,3 +1,15 @@
+2003-01-12 [alfons]	0.8.8claws89
+
+	* AUTHORS
+		add Christian Mertes
+	* src/common/utils.[ch]
+		g_stricase_hash(), g_stricase_equal(): functions for 
+		case insensitive hash tables
+	* src/textview.c
+		use top level domain names to validate email address, based
+		on a patch by Christian Mertes (thanks!), but changed 
+		implementation to use a hash table 
+
 2003-01-12 [paul]	0.8.8claws88
 
 	* po/bg.po

@@ -403,4 +403,7 @@ const gchar * line_has_quote_char_last	(const gchar *str,
 /* used in extended search */
 gchar * expand_search_string	(const gchar *str);
 
+guint g_stricase_hash	(gconstpointer gptr);
+gint g_stricase_equal	(gconstpointer gptr1, gconstpointer gptr2);
+
 #endif /* __UTILS_H__ */

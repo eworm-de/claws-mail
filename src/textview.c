@@ -781,6 +781,63 @@ static gchar *make_uri_string(const gchar *bp, const gchar *ep)
 #define IS_ASCII_ALNUM(ch)	(isascii(ch) && isalnum(ch))
 #define IS_QUOTE(ch) ((ch) == '\'' || (ch) == '"')
 
+static GHashTable *create_domain_tab(void)
+{
+	static const gchar *toplvl_domains [] = {
+	    "museum", "aero",
+	    "arpa", "coop", "info", "name", "biz", "com", "edu", "gov",
+	    "int", "mil", "net", "org", "ac", "ad", "ae", "af", "ag",
+	    "ai", "al", "am", "an", "ao", "aq", "ar", "as", "at", "au",
+	    "aw", "az", "ba", "bb", "bd", "be", "bf", "bg", "bh", "bi",
+	    "bj", "bm", "bn", "bo", "br", "bs", "bt", "bv", "bw", "by",
+	    "bz", "ca", "cc", "cd", "cf", "cg", "ch", "ci", "ck", "cl",
+	    "cm", "cn", "co", "cr", "cu", "cv", "cx", "cy", "cz", "de",
+	    "dj", "dk", "dm", "do", "dz", "ec", "ee", "eg", "eh", "er",
+	    "es", "et", "fi", "fj", "fk", "fm", "fo", "fr", "ga", "gd",
+	    "ge", "gf", "gg", "gh", "gi", "gl", "gm", "gn", "gp", "gq",
+	    "gr", "gs", "gt", "gu", "gw", "gy", "hk", "hm", "hn", "hr",
+	    "ht", "hu", "id", "ie", "il", "im", "in", "io", "iq", "ir",
+	    "is", "it", "je", "jm", "jo", "jp", "ke", "kg", "kh", "ki",
+	    "km", "kn", "kp", "kr", "kw", "ky", "kz", "la", "lb", "lc",
+	    "li", "lk", "lr", "ls", "lt", "lu", "lv", "ly", "ma", "mc",
+	    "md", "mg", "mh", "mk", "ml", "mm", "mn", "mo", "mp", "mq",
+	    "mr", "ms", "mt", "mu", "mv", "mw", "mx", "my", "mz", "na",
+	    "nc", "ne", "nf", "ng", "ni", "nl", "no", "np", "nr", "nu",
+	    "nz", "om", "pa", "pe", "pf", "pg", "ph", "pk", "pl", "pm",
+	    "pn", "pr", "ps", "pt", "pw", "py", "qa", "re", "ro", "ru",
+	    "rw", "sa", "sb", "sc", "sd", "se", "sg", "sh", "si", "sj",
+	    "sk", "sl", "sm", "sn", "so", "sr", "st", "sv", "sy", "sz",
+	    "tc", "td", "tf", "tg", "th", "tj", "tk", "tm", "tn", "to",
+	    "tp", "tr", "tt", "tv", "tw", "tz", "ua", "ug", "uk", "um",
+	    "us", "uy", "uz", "va", "vc", "ve", "vg", "vi", "vn", "vu",
+            "wf", "ws", "ye", "yt", "yu", "za", "zm", "zw" 
+	};
+	gint n;
+	GHashTable *htab = g_hash_table_new(g_stricase_hash, g_stricase_equal);
+	
+	g_return_val_if_fail(htab, NULL);
+	for (n = 0; n < sizeof toplvl_domains / sizeof toplvl_domains[0]; n++) 
+		g_hash_table_insert(htab, (gpointer) toplvl_domains[n], (gpointer) toplvl_domains[n]);
+	return htab;
+}
+
+static gboolean is_toplvl_domain(GHashTable *tab, const gchar *first, const gchar *last)
+{
+	const gint MAX_LVL_DOM_NAME_LEN = 6;
+	gchar buf[MAX_LVL_DOM_NAME_LEN + 1];
+	const gchar *m = buf + MAX_LVL_DOM_NAME_LEN + 1;
+	register gchar *p;
+	
+	if (last - first > MAX_LVL_DOM_NAME_LEN || first > last)
+		return FALSE;
+
+	for (p = buf; p < m &&  first < last; *p++ = *first++)
+		;
+	*p = 0;
+
+	return g_hash_table_lookup(tab, buf) != NULL;
+}
+
 /* get_email_part() - retrieves an email address. Returns TRUE if succesful */
 static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 			       const gchar **bp, const gchar **ep)
@@ -790,6 +847,9 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 	gboolean result = FALSE;
 	const gchar *bp_ = NULL;
 	const gchar *ep_ = NULL;
+	static GHashTable *dom_tab;
+	const gchar *last_dot = NULL;
+	const gchar *prelast_dot = NULL;
 
 	/* the informative part of the email address (describing the name
 	 * of the email address owner) may contain quoted parts. the
@@ -801,6 +861,10 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 	g_return_val_if_fail(scanpos != NULL, FALSE);
 	g_return_val_if_fail(bp != NULL, FALSE);
 	g_return_val_if_fail(ep != NULL, FALSE);
+
+	if (!dom_tab)
+		dom_tab = create_domain_tab();
+	g_return_val_if_fail(dom_tab, FALSE);	
 
 	/* scan start of address */
 	for (bp_ = scanpos - 1; bp_ >= start && IS_RFC822_CHAR(*bp_); bp_--)
@@ -814,18 +878,36 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 	if (bp_ != scanpos) {
 		/* scan end of address */
 		for (ep_ = scanpos + 1; *ep_ && IS_RFC822_CHAR(*ep_); ep_++)
-			;
+			if (*ep_ == '.') {
+				prelast_dot = last_dot;
+				last_dot = ep_;
+		 		if (*(last_dot + 1) == '.') {
+					if (prelast_dot == NULL)
+	        				return FALSE;
+					last_dot = prelast_dot;
+					break;
+				}
+			}
 
 		/* TODO: really should terminate with an alnum? */
 		for (; ep_ > scanpos && !IS_ASCII_ALNUM(*ep_); --ep_)
 			;
 		ep_++;
 
-		if (ep_ > scanpos + 1) {
-			*ep = ep_;
-			*bp = bp_;
+		if (last_dot == NULL)
+			return FALSE;
+
+		if (last_dot >= ep_)
+			last_dot = prelast_dot;
+		if (last_dot == NULL)
+			return FALSE;
+		last_dot++;
+	
+		if (is_toplvl_domain(dom_tab, last_dot, ep_))
 			result = TRUE;
-		}
+
+		*ep = ep_;
+		*bp = bp_;
 	}
 
 	if (!result) return FALSE;
