@@ -94,13 +94,11 @@ static void create_dillo_prefs_page(PrefsPage *page,
         GtkWidget *label;
 
         vbox = gtk_vbox_new(FALSE, 3);
-        gtk_widget_ref(vbox);
         gtk_container_set_border_width(GTK_CONTAINER(vbox), 3);
         gtk_widget_show(vbox);
         
         local_checkbox = gtk_check_button_new_with_label
 				("Don't Follow Links in Mails");
-        gtk_widget_ref(local_checkbox);
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(local_checkbox),
                                      dillo_prefs.local);
         gtk_box_pack_start(GTK_BOX(vbox), local_checkbox, FALSE, FALSE, 0);
@@ -112,7 +110,6 @@ static void create_dillo_prefs_page(PrefsPage *page,
         gtk_widget_show(label);
 
         full_checkbox = gtk_check_button_new_with_label("Full Screen Mode");
-        gtk_widget_ref(full_checkbox);
         gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(full_checkbox),
                                       dillo_prefs.full);
         gtk_box_pack_start(GTK_BOX(vbox), full_checkbox, FALSE, FALSE, 0);
