@@ -1,3 +1,10 @@
+2002-10-28 [melvin]	0.8.5claws59
+
+	* src/prefs_actions.c
+		Fixed bug #627322 where MIME parts were not always
+		correctly passed to a %p action
+		Display an error dialog when message filename is not found.
+
 2002-10-28 [melvin]	0.8.5claws58
 
 	* src/prefs_common.c
@@ -741,25 +748,25 @@
 		actions callback from compose toolbar
 	* src/folderview.c
 		remove include toolbar.h
-		
+
 2002-09-22 [oliver]	0.8.3claws7
 	
 	* src/prefs_toolbar.[ch]
 		custom toolbar for compose
 		- generic prefs_toolbar handles both
 		  Mainwin's toolbar as well as Compose toolbar		
-		
+
 2002-09-22 [oliver]	0.8.3claws6
 	
 	* src/toolbar.[ch]
 		custom toolbar for compose
 		restructure toolbar.[ch]
-		
+
 2002-09-22 [oliver]	0.8.3claws5
 
 	* src/compose.[ch]
 		custom toolbar for compose
-		
+
 2002-09-22 [oliver]	0.8.3claws4
 	
 	* src/mainwindow.[ch]
