@@ -1,3 +1,10 @@
+2001-07-10 [christoph]
+
+	* src/inc.c
+		add destination folder to table of
+		folders that need to be updated after
+		incorporation
+
 2001-07-10 [alfons]
 
 	* folder.[ch]

@@ -1052,6 +1052,8 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 	unlock_mbox(mbox, lockfd, LOCK_FLOCK);
 
 	if (folder_table) {
+		g_hash_table_insert(folder_table, dest,
+				    GINT_TO_POINTER(1));
 		folder_item_scan_foreach(folder_table);
 		folderview_update_item_foreach(folder_table);
 		g_hash_table_destroy(folder_table);
