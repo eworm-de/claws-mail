@@ -783,6 +783,7 @@ MainWindow *main_window_create(SeparateType type)
 	GtkWidget *menuitem;
 	gint i;
 	guint n_menu_entries;
+	gboolean hide_messageview = FALSE;
 
 	static GdkGeometry geometry;
 
@@ -979,7 +980,8 @@ MainWindow *main_window_create(SeparateType type)
 	debug_print("done.\n");
 
 	messageview->visible = prefs_common.msgview_visible;
-
+	hide_messageview = !messageview->visible;
+	
 	main_window_set_widgets(mainwin, type);
 
 	gtk_signal_connect(GTK_OBJECT(window), "size_allocate",
@@ -1070,6 +1072,9 @@ MainWindow *main_window_create(SeparateType type)
 	/* init work_offline */
 	if (prefs_common.work_offline)
 		online_switch_clicked (GTK_BUTTON(online_switch), mainwin);
+
+	if (mainwin->type == SEPARATE_NONE && hide_messageview)
+		main_window_toggle_message_view(mainwin);
 
 	return mainwin;
 }
