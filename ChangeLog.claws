@@ -1,15 +1,7 @@
-2004-03-19 [paul]	0.9.10claws20
+2004-03-20 [paul]	0.9.10claws20
 
-	* src/common/nntp.c
-	  src/common/smtp.c
-	  src/common/ssl.c
-	  src/folder.c
-	  src/imap.c
-	  src/inc.c
-	  src/news.c
-	  src/pop.c
-	  	don't translate strings in debug_print(), log_print(),
-		log_message(),  and log_warning()
+	* sync with 0.9.10cvs7
+		see ChangeLog 2004-03-19
 
 2004-03-19 [alfons]	0.9.10claws19
 

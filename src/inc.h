@@ -58,7 +58,8 @@ struct _IncProgressDialog
 
 	gboolean show_dialog;
 
-	guint timer_id;
+	guint progress_timer_id;
+	guint folder_timer_id;
 
 	GList *queue_list;	/* list of IncSession */
 	gint cur_row;
@@ -71,6 +72,8 @@ struct _IncSession
 
 	GHashTable *folder_table;	/* table of destination folders */
 	GHashTable *tmp_folder_table;	/* for progressive update */
+
+	gint cur_total_bytes;
 
 	gpointer data;
 };
