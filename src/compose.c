@@ -455,7 +455,7 @@ static void text_inserted		(GtkWidget	*widget,
 					 Compose	*compose);
 static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				  gboolean to_all, gboolean to_ml,
-				  gboolean ignore_replyto,
+				  gboolean to_sender,
 				  gboolean followup_and_reply_to,
 				  const gchar *body);
 
@@ -786,25 +786,25 @@ Compose *compose_new_followup_and_replyto(PrefsAccount *account,
 */
 
 void compose_reply(MsgInfo *msginfo, gboolean quote, gboolean to_all,
-		   gboolean to_ml, gboolean ignore_replyto, 
+		   gboolean to_ml, gboolean to_sender, 
 		   const gchar *body)
 {
 	compose_generic_reply(msginfo, quote, to_all, to_ml, 
-			      ignore_replyto, FALSE, body);
+			      to_sender, FALSE, body);
 }
 
 void compose_followup_and_reply_to(MsgInfo *msginfo, gboolean quote,
 				   gboolean to_all,
-				   gboolean ignore_replyto,
+				   gboolean to_sender,
 				   const gchar *body)
 {
 	compose_generic_reply(msginfo, quote, to_all, FALSE, 
-			      ignore_replyto, TRUE, body);
+			      to_sender, TRUE, body);
 }
 
 static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 				  gboolean to_all, gboolean to_ml,
-				  gboolean ignore_replyto,
+				  gboolean to_sender,
 				  gboolean followup_and_reply_to,
 				  const gchar *body)
 {
@@ -820,7 +820,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	
 	g_return_if_fail(account != NULL);
 
-	if (ignore_replyto && account->protocol == A_NNTP &&
+	if (to_sender && account->protocol == A_NNTP &&
 	    !followup_and_reply_to) {
 		reply_account =
 			account_find_from_address(account->address);
@@ -856,7 +856,7 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 
 	if (compose_parse_header(compose, msginfo) < 0) return;
 	compose_reply_set_entry(compose, msginfo, to_all, to_ml, 
-				ignore_replyto, followup_and_reply_to);
+				to_sender, followup_and_reply_to);
 	compose_show_first_last_header(compose, TRUE);
 
 	text = GTK_STEXT(compose->text);
@@ -1629,7 +1629,7 @@ static gchar *compose_quote_fmt(Compose *compose, MsgInfo *msginfo,
 
 static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 				    gboolean to_all, gboolean to_ml,
-				    gboolean ignore_replyto,
+				    gboolean to_sender,
 				    gboolean followup_and_reply_to)
 {
 	GSList *cc_list = NULL;
@@ -1641,13 +1641,13 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 	g_return_if_fail(compose->account != NULL);
 	g_return_if_fail(msginfo != NULL);
 
-	if (compose->account->protocol != A_NNTP || followup_and_reply_to) {
+	if (compose->account->protocol != A_NNTP) {
 		if (!compose->replyto && to_ml && compose->ml_post
 		    && !(msginfo->folder && msginfo->folder->prefs->enable_default_reply_to))
 			compose_entry_append(compose,
 					   compose->ml_post,
 					   COMPOSE_TO);
-		else if (!(to_all || ignore_replyto)
+		else if (!(to_all || to_sender)
 			 && msginfo->folder
 			 && msginfo->folder->prefs->enable_default_reply_to) {
 			compose_entry_append(compose,
@@ -1655,31 +1655,37 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 			    COMPOSE_TO);
 		} else
 			compose_entry_append(compose,
-				 (compose->replyto && !ignore_replyto)
+				 (compose->replyto && !to_sender)
 				 ? compose->replyto
 				 : msginfo->from ? msginfo->from : "",
 				 COMPOSE_TO);
 	} else {
-		if (ignore_replyto)
+		if (to_sender || (compose->followup_to && 
+			strncmp(compose->followup_to, "poster\n", 7)))
 			compose_entry_append
-				(compose, msginfo->from ? msginfo->from : "",
+				(compose, 
+				 ((compose->replyto && !to_sender)
+		    		 ? compose->replyto
+		    		 : msginfo->from ? msginfo->from : ""),
 				 COMPOSE_TO);
-		else {
-			if (compose->followup_to && !strncmp(compose->followup_to, "poster", 6)) {
-				compose_entry_append
-					(compose,
-					((compose->replyto && !ignore_replyto)
-				     	? compose->replyto
-				     	: msginfo->from ? msginfo->from : ""),
-					COMPOSE_TO);				
-			} else {
-				compose_entry_append
-					(compose,
-					 compose->followup_to ? compose->followup_to
-					 : compose->newsgroups ? compose->newsgroups
-					 : "",
-					 COMPOSE_NEWSGROUPS);
-			}
+				 
+		else if (followup_and_reply_to || to_all) {
+			compose_entry_append
+		    		(compose,
+		    		 (compose->replyto
+		    		 ? compose->replyto
+		    		 : msginfo->from ? msginfo->from : ""),
+		    		 COMPOSE_TO);				
+		
+			compose_entry_append
+				(compose,
+			 	 compose->newsgroups ? compose->newsgroups : "",
+			 	 COMPOSE_NEWSGROUPS);
+		} else {
+			compose_entry_append
+				(compose,
+			 	 compose->newsgroups ? compose->newsgroups : "",
+			 	 COMPOSE_NEWSGROUPS);
 		}
 	}
 
@@ -4044,7 +4050,8 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 
 	/* Program version and system info */
 	/* uname(&utsbuf); */
-	if (g_slist_length(compose->to_list) && !IS_IN_CUSTOM_HEADER("X-Mailer")) {
+	if (g_slist_length(compose->to_list) && !IS_IN_CUSTOM_HEADER("X-Mailer") &&
+	    !compose->newsgroup_list) {
 		fprintf(fp, "X-Mailer: %s (GTK+ %d.%d.%d; %s)\n",
 			prog_version,
 			gtk_major_version, gtk_minor_version, gtk_micro_version,

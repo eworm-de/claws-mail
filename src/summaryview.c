@@ -4144,7 +4144,7 @@ void summary_reply(SummaryView *summaryview, ComposeMode mode)
 	case COMPOSE_FOLLOWUP_AND_REPLY_TO:
 		compose_followup_and_reply_to(msginfo,
 					      prefs_common.reply_with_quote,
-					      FALSE, TRUE, text);
+					      FALSE, FALSE, text);
 		break;
 	case COMPOSE_REPLY_TO_SENDER_WITH_QUOTE:
 		compose_reply(msginfo, TRUE, FALSE, FALSE, TRUE, text);

@@ -1,3 +1,14 @@
+2003-02-13 [paul]	0.8.10claws7
+
+	* src/compose.[ch]
+	  src/summaryview.c
+	  	fix 'Follow-up and Reply-to' so that it creates a reply to
+		the newsgroup and the sender. If the message has the keyword
+		'poster' in the Followup-To header, all replies go to the
+		sender, re: RFC 1036, Section 2.2.3
+		rename all instances of 'ignore_replyto' to 'to_sender', both
+		were previously used, now we use just one.
+
 2003-02-13 [paul]	0.8.10claws6
 
 	* sync with 0.8.10cvs9
