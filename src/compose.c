@@ -4072,9 +4072,9 @@ static gint compose_write_headers_from_headerlist(Compose *compose,
 	if (write_header) {
 		gchar *buf;
 
-		buf = g_new0(gchar, headerstr->len * 2);
+		buf = g_new0(gchar, headerstr->len * 4);
 		compose_convert_header
-			(buf, headerstr->len * 2, headerstr->str,
+			(buf, headerstr->len * 4, headerstr->str,
 			strlen(header) + 2, TRUE);
 		fprintf(fp, "%s: %s\n", header, buf);
 		g_free(buf);

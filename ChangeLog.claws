@@ -1,3 +1,8 @@
+2003-09-20 [christoph]	0.9.5claws21
+
+	* src/compose.c
+		increase temp buffer size when writing headers
+
 2003-09-19 [darko]	0.9.5claws20
 
 	* src/compose.c
