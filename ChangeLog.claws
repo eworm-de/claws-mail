@@ -1,9 +1,17 @@
+2001-11-26 [paul]	0.6.5claws38
+
+	* src/mainwindow.c
+        	remove '/Message/Add Sender to address book' from 
+                main_window_set_menu_sensitive(), prevent debug warning
+                add 'Message/Mark/Mark all read' to mainwin_entries[]
+
 2001-11-26 [paul]	0.6.5claws37
 
 	* src/summaryview.c
         	fix 'recurring unread state' bug 
 
-	* tools/README, tools/filter_conv.pl
+	* tools/README 
+        * tools/filter_conv.pl
         	read name of top level mailbox from folderlist.xml
                 and presume nothing about its name       	
 

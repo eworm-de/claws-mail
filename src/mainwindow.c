@@ -550,6 +550,7 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/_Mark/Mark as unr_ead"),	NULL, mark_as_unread_cb, 0, NULL},
 	{N_("/_Message/_Mark/Mark as rea_d"),
 						NULL, mark_as_read_cb, 0, NULL},
+	{N_("/_Message/_Mark/Mark all read"),	NULL, mark_all_read_cb, 0, NULL},                                                
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/Open in new _window"),	"<shift><control>N", open_msg_cb, 0, NULL},
 
@@ -1353,7 +1354,6 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Copy...", M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Message/Delete" , M_TARGET_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Message/Mark"   , M_TARGET_EXIST},
-		{"/Message/Add sender to address book", M_SINGLE_TARGET_EXIST},
 
 		{"/Summary/Delete duplicated messages", M_MSG_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Summary/Filter messages"           , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
