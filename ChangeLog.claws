@@ -1,3 +1,9 @@
+2003-02-10 [paul]	0.8.9claws51
+
+	* sylpheed.spec.in
+		correct --enable-openssl
+		Fix submitted by Sergei Astanin <asita@users.sourceforge.net>
+
 2003-02-09 [martin]	0.8.9claws50
 
 	* src/prefs_matcher.c

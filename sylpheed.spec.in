@@ -54,7 +54,7 @@ CFLAGS="$RPM_OPT_FLAGS" ./configure \
                 --enable-ldap \
                 --enable-ipv6 \
                 --enable-gpgme \
-                --enable-ssl \
+                --enable-openssl \
                 --enable-jpilot \
                 --enable-aspell
 make
