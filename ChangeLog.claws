@@ -1,3 +1,21 @@
+2001-05-15 [hoa]
+
+	* src/Makefile.am
+		added filtering.[ch]
+	* src/inc.c
+		using filering.[ch] instead of filter.[ch]
+	* src/main.c
+		reading new filtering configuration
+	* src/matcher.[ch]
+		added some filtering actions
+		and fixed a bug for headers and mail body matching
+	* src/mbox.c
+		using filering.[ch] instead of filter.[ch]
+	* src/mh.c
+		handling invalid MsgInfo in mh_copy_msg() and mh_move_msg()
+	* src/summaryview.c
+		some fixes for filtering
+
 2001-05-14 [hiroyuki]
 
 	* src/send.c: fixed some weird indentations.
