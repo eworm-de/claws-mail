@@ -1,3 +1,56 @@
+2004-10-29 [paul]
+
+	* tools/kdeservicemenu/template_sylpheed-attach-files.desktop
+	* tools/kdeservicemenu/template_sylpheed-compress-attach.desktop
+		add French translations, submitted by Fabien Vantard
+
+2004-10-28 [christoph]	0.9.12cvs135
+
+	* doc/src/rfc2231.txt				** NEW **
+	* src/procmime.c
+	* src/common/quoted-printable.c
+	* src/common/utils.[ch]
+		implement RFC2231's parameter decoding
+
+2004-10-27 [paul]
+
+	* tools/kdeservicemenu/README
+	* tools/kdeservicemenu/install.sh
+	* tools/kdeservicemenu/sylpheed-kdeservicemenu.pl
+	* tools/kdeservicemenu/template_sylpheed-attach-files.desktop
+	* tools/kdeservicemenu/template_sylpheed-compress-attach.desktop
+		output files to /tmp instead of littering the
+		current dir
+		add uninstall function
+		refactor
+
+2004-10-26 [christoph]	0.9.12cvs134
+
+	* src/procmime.c
+		better check if parameters have to be in quoted string
+
+2004-10-25 [paul]
+
+	* tools/kdeservicemenu/README
+	* tools/kdeservicemenu/install.sh
+	* tools/kdeservicemenu/sylpheed-kdeservicemenu.pl
+	* tools/kdeservicemenu/template_sylpheed-attach-files.desktop
+	* tools/kdeservicemenu/template_sylpheed-compress-attach.desktop
+		add files for Sylpheed Service Menu in Konqueror
+
+2004-10-22 [paul]	0.9.12cvs133
+
+	* src/compose.c
+	* src/prefs_common.c
+	* src/prefs_common.h
+	* src/prefs_wrapping.c
+		remove 'smart wrapping'
+
+2004-10-21 [colin]	0.9.12cvs132
+
+	* src/compose.c
+		Remove extraneous separator in Options
+
 2004-10-21 [colin]	0.9.12cvs131
 
 	* src/compose.c

@@ -20,6 +20,7 @@ EXTRA_TOOLS = \
 	sylprint.pl \
 	sylprint.rc \
 	tb2sylpheed \
+	textviewer.sh \
         update-po \
 	uudec \
 	vcard2xml.py
@@ -28,6 +29,11 @@ EXTRA_DIST = \
 	README \
 	README.sylprint \
 	multiwebsearch.conf \
+	kdeservicemenu/README \
+	kdeservicemenu/install.sh \
+	kdeservicemenu/sylpheed-kdeservicemenu.pl \
+	kdeservicemenu/template_sylpheed-attach-files.desktop \
+	kdeservicemenu/template_sylpheed-compress-attach.desktop \
 	$(EXTRA_TOOLS)
 
 MAKE_EXE = chmod u+x $(EXTRA_TOOLS)
