@@ -281,10 +281,8 @@ static NNTPSession *news_session_get(Folder *folder)
 	g_return_val_if_fail(FOLDER_CLASS(folder) == &news_class, NULL);
 	g_return_val_if_fail(folder->account != NULL, NULL);
 
-	if (prefs_common.work_offline) {
-		g_print("offline mode\n");
+	if (prefs_common.work_offline)
 		return NULL;
-	}
 
 	if (!rfolder->session) {
 		rfolder->session = news_session_new_for_folder(folder);

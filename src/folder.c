@@ -1855,7 +1855,7 @@ static void add_msginfo_to_cache(FolderItem *item, MsgInfo *newmsginfo, MsgInfo 
 	folder_item_update_freeze();
 	msgcache_add_msg(item->cache, newmsginfo);
 	copy_msginfo_flags(flagsource, newmsginfo);
-	folder_item_update(item, F_ITEM_UPDATE_CONTENT);
+	folder_item_update(item,  F_ITEM_UPDATE_MSGCNT | F_ITEM_UPDATE_CONTENT);
 	folder_item_update_thaw();
 }
 

@@ -1,3 +1,64 @@
+2003-12-15
+
+	* version 0.9.8a
+
+2003-12-15
+
+	* src/procmsg.c: procmsg_open_data_file(): set buffer if DATA_READ
+	  is specified and a buffer is given.
+	  procmsg_open_cache_file_with_buffer(): new.
+	  procmsg_read_cache(): fixed a bug that called setvbuf() after an
+	  file I/O which caused buffer read error.
+
+2003-12-12
+
+	* version 0.9.8
+
+2003-12-12
+
+	* configure.in: enable IPv6 support by default.
+
+2003-12-11
+
+	* src/inc.c: inc_mail(), inc_all_account_mail(): ask user to switch
+	  to online when in offline mode.
+	* src/mainwindow.h: added main_window_toggle_online().
+
+2003-12-11
+
+	* src/foldersel.c
+	  src/folderview.[ch]
+	  src/mainwindow.c
+	  src/stock_pixmap.[ch]
+	  src/pixmap/dir-noselect.xpm: made no-select folders display with
+	  dim icon and string.
+	* src/Makefile.am: added offline.xpm, online.xpm, and
+	  dir-noselect.xpm to EXTRA_DIST.
+
+2003-12-11
+
+	* src/folder.h: added macro FOLDER_ITEM_CAN_ADD().
+	* src/folderview.c: folderview_drag_motion_cb(): code cleanup.
+	  folderview_drag_received_cb(): don't accept at no_select folder or
+	  from itself.
+	* src/foldersel.c: made folders on which no_select flag is set not
+	  selectable.
+
+2003-12-10
+
+	* src/imap.c: imap_do_copy_msgs(), imap_remove_msgs(): code cleanup.
+	  set MSG_INVALID flag when messages are deleted.
+	* src/mh.c: mh_do_move_msgs(), mh_remove_msg(): set MSG_INVALID flag
+	  when messages are deleted.
+	* src/procmsg.[ch]:
+	  procmsg_move_messages()
+	  procmsg_copy_messages(): return error status.
+	  Added MSG_INVALID to MsgTmpFlags.
+	* src/summaryview.c: summary_execute(): detect errors and only remove
+	  nodes that are invalidated.
+	  summary_unthread_for_exec(): fixed a bug that didn't remove nodes
+	  in collapsed trees.
+
 2003-12-06
 
 	* src/mainwindow.[ch]: added online switch button to the statusbar,
