@@ -3,17 +3,17 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed-claws.pot\n"
 "POT-Creation-Date: 2002-07-21 06:55+0100\n"
-"PO-Revision-Date: 2002-07-23 06:55+0500\n"
-"Last-Translator: Botalov Vyacheslav <botalov_v@upr.uralkaly.ru>\n"
-"Language-Team: Russian <ru@li.org>\n"
+"PO-Revision-Date: 2002-07-23 08:57+0100\n"
+"Last-Translator: Paul Mangan <claws@thewildbeast,co,uk>\n"
+"Language-Team: British English <en@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=koi8-r\n"
+"Content-Type: text/plain; charset=KOI8-R\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
 
 #: src/about.c:89
 msgid "About"
@@ -41,7 +41,6 @@ msgstr ""
 "(на ваше усмотрение).\n"
 "\n"
 
-
 #: src/about.c:220
 msgid ""
 "This program is distributed in the hope that it will be useful, but WITHOUT "
@@ -65,7 +64,6 @@ msgstr ""
 "Вам следует получить копию 'GNU General Public License' вместе с "
 "этой программой; если ее нет, напишите в 'Free Software Foundation, Inc.':"
 "59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-
 
 #. Button panel
 #: src/about.c:233 src/addressadd.c:239 src/addrgather.c:505
@@ -2597,7 +2595,7 @@ msgstr "невозможно создать '%s'\n"
 #: src/imap.c:1262
 #, c-format
 msgid "Can't create '%s' under INBOX\n"
-msgstr "невозможно создать '%s' под папкой 'Входящие'"
+msgstr "невозможно создать '%s' под папкой 'Входящие\n"
 
 #: src/imap.c:1325
 msgid "can't create mailbox: LIST failed\n"
@@ -5487,7 +5485,7 @@ msgstr "Перенос в сообщении на"
 #: src/prefs_common.c:1836
 msgid "characters"
 msgstr "символе"
-        
+
 #: src/prefs_common.c:1844
 msgid "Wrap quotation"
 msgstr "Перенос цитат"
@@ -7275,10 +7273,8 @@ msgid "No unread message found. Search from the end?"
 msgstr "Нет непрочитанных сообщений. Поиск с конца?"
 
 #: src/summaryview.c:1141 src/summaryview.c:1185
-msgid ""
-"Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"
-msgstr ""
-"Внутренняя ошибка: неожиданное значение для prefs_common.next_unread_msg_dialog\n"
+msgid "Internal error: unexpected value for prefs_common.next_unread_msg_dialog\n"
+msgstr "Внутренняя ошибка: неожиданное значение для prefs_common.next_unread_msg_dialog\n"
 
 #: src/summaryview.c:1149
 msgid "No unread messages."
@@ -7410,17 +7406,17 @@ msgstr "Сообщение %s/%d помечено\n"
 #: src/summaryview.c:2711
 #, c-format
 msgid "Message %d is locked\n"
-msgstr "Сообщение %d блокировано\n""
+msgstr "Сообщение %d блокировано\n"
 
 #: src/summaryview.c:2741
 #, c-format
 msgid "Message %d is marked as read\n"
-msgstr "Сообщение %d помечено как прочитанное\n""
+msgstr "Сообщение %d помечено как прочитанное\n"
 
 #: src/summaryview.c:2796
 #, c-format
 msgid "Message %d is marked as unread\n"
-msgstr "Сообщение %d помечено как непрочитанное\n""
+msgstr "Сообщение %d помечено как непрочитанное\n"
 
 #: src/summaryview.c:2853
 msgid "You're not the author of the article\n"
@@ -7549,7 +7545,7 @@ msgstr "Сообщение %d в помечено для игнорирования\n"
 #: src/summaryview.c:5062
 #, c-format
 msgid "Message %d is marked as unignore thread\n"
-msgstr "Сообщение %d в помечено для неигнорирования"
+msgstr "Сообщение %d в помечено для неигнорирования\n"
 
 #: src/summaryview.c:5178
 #, c-format
@@ -7676,3 +7672,4 @@ msgstr "Перенос файла: файл %s уже есть."
 #, c-format
 msgid "Open URI command line is invalid: `%s'"
 msgstr "Команда открытия URI неверна: `%s'"
+
