@@ -511,7 +511,7 @@ static MimeViewer *get_viewer_for_content_type(MimeView *mimeview, const gchar *
 static MimeViewer *get_viewer_for_mimeinfo(MimeView *mimeview, MimeInfo *partinfo)
 {
 	gchar *content_type = NULL;
-	MimeViewer *viewer;
+	MimeViewer *viewer = NULL;
 
 	if ((partinfo->mime_type == MIME_APPLICATION_OCTET_STREAM) &&
 	    (partinfo->name != NULL)) {
@@ -520,8 +520,10 @@ static MimeViewer *get_viewer_for_mimeinfo(MimeView *mimeview, MimeInfo *partinf
 		content_type = g_strdup(partinfo->content_type);
 	}
 
-	viewer = get_viewer_for_content_type(mimeview, content_type);
-	g_free(content_type);
+	if (content_type != NULL) {
+		viewer = get_viewer_for_content_type(mimeview, content_type);
+		g_free(content_type);
+	}
 
 	return viewer;
 }

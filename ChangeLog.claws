@@ -1,3 +1,8 @@
+2003-03-26 [christoph]	0.8.11claws49
+
+	* src/mimeview.c
+		fix mime type guessing when no mime type is found for a file
+
 2003-03-25 [christoph]	0.8.11claws48
 
 	* src/mimeview.c
