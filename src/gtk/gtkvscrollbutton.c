@@ -85,6 +85,9 @@ static void gtk_vscrollbutton_remove_timer	(GtkVScrollbutton *scrollbutton);
 
 static gint gtk_real_vscrollbutton_timer	(GtkVScrollbutton *scrollbutton);
 
+static void gtk_vscrollbutton_set_sensitivity   (GtkAdjustment    *adjustment,
+						 GtkVScrollbutton *scrollbutton);
+
 GtkType gtk_vscrollbutton_get_type(void)
 {
     static GtkType vscrollbutton_type = 0;
@@ -159,6 +162,14 @@ GtkWidget *gtk_vscrollbutton_new(GtkAdjustment *adjustment)
     vscrollbutton = GTK_WIDGET(gtk_type_new(gtk_vscrollbutton_get_type()));
     gtk_vscrollbutton_set_adjustment(GTK_VSCROLLBUTTON(vscrollbutton),
 				     adjustment);
+    gtk_signal_connect(GTK_OBJECT(GTK_VSCROLLBUTTON(vscrollbutton)->adjustment),
+		       "value_changed",
+		       GTK_SIGNAL_FUNC
+		       (gtk_vscrollbutton_set_sensitivity), vscrollbutton);
+    gtk_signal_connect(GTK_OBJECT(GTK_VSCROLLBUTTON(vscrollbutton)->adjustment),
+		       "changed",
+		       GTK_SIGNAL_FUNC
+		       (gtk_vscrollbutton_set_sensitivity), vscrollbutton);
     return vscrollbutton;
 }
 
@@ -225,6 +236,7 @@ static gint gtk_vscrollbutton_button_release(GtkWidget *widget,
 
 	scrollbutton->button = 0;
 	gtk_vscrollbutton_remove_timer(scrollbutton);
+	gtk_vscrollbutton_set_sensitivity(scrollbutton->adjustment, scrollbutton);
     }
     return TRUE;
 }
@@ -352,4 +364,16 @@ static gint gtk_real_vscrollbutton_timer(GtkVScrollbutton *scrollbutton)
     GDK_THREADS_LEAVE();
     return_val = gtk_vscrollbutton_scroll(scrollbutton);
     return return_val;
+}
+
+static void gtk_vscrollbutton_set_sensitivity   (GtkAdjustment    *adjustment,
+						 GtkVScrollbutton *scrollbutton)
+{
+	if (!GTK_WIDGET_REALIZED(GTK_WIDGET(scrollbutton))) return;
+	if (scrollbutton->button != 0) return; /* not while something is pressed */
+	
+	gtk_widget_set_sensitive(scrollbutton->upbutton, 
+				 (adjustment->value > adjustment->lower));
+	gtk_widget_set_sensitive(scrollbutton->downbutton, 
+				 (adjustment->value <  (adjustment->upper - adjustment->page_size)));
 }
