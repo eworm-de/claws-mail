@@ -1,3 +1,9 @@
+2002-12-09 [colin]	0.8.6claws86
+
+	* src/ssl.c
+		Try to open the cert.pem database and 
+		issue a warning if it isn't there
+
 2002-12-09 [colin]	0.8.6claws85
 
 	* src/common/ssl_certificate.c
