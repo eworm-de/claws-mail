@@ -36,9 +36,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "utils.h"
 #include "md5.h"
-
 
 /****************
  * Rotate a 32 bit integer by n bytes

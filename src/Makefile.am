@@ -89,7 +89,6 @@ sylpheed_SOURCES = \
 	gtkutils.c gtkutils.h \
 	codeconv.c codeconv.h \
 	unmime.c unmime.h \
-	md5.c md5.h \
 	ssl_certificate.c ssl_certificate.h \
 	ssl_manager.c ssl_manager.h \
 	automaton.c automaton.h \

@@ -42,7 +42,7 @@
 #include <gtk/gtkselection.h>
 #include <gtk/gtksignal.h>
 
-#include "compose.h"
+/* #include "compose.h" */
 #include "gtkstext.h"
 #include "gtkutils.h"
 

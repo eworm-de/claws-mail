@@ -1,13 +1,14 @@
 noinst_LTLIBRARIES = libsylpheedcommon.la
 
 libsylpheedcommon_la_SOURCES = \
-	utils.c utils.h \
-	hooks.c hooks.h \
 	base64.c base64.h \
-	uuencode.c uuencode.h \
+	hooks.c hooks.h \
+	log.c log.h \
+	md5.c md5.h \
 	socket.c socket.h \
 	ssl.c ssl.h \
-	log.c log.h
+	utils.c utils.h \
+	uuencode.c uuencode.h
 
 INCLUDES = \
 	$(GLIB_CFLAGS)

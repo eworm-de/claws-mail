@@ -1,3 +1,14 @@
+2002-12-03 [christoph]	0.8.6claws56
+
+	* src/Makefile.am
+	* src/md5.[ch]			** REMOVE **
+	* srm/common/Makefile.am
+	* src/common/md5.[ch]		** NEW **
+		move md5 files to common directory
+
+	* src/gtkstext.c
+		remove not required #include
+
 2002-12-03 [sergey]	0.8.6claws55
 
 	* src/gtkutils.c
