@@ -17,35 +17,6 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-/* (alfons) - Just a quick note of how this filtering module works on 
- * new (arriving) messages.
- * 
- * 1) as an initialization step, code in inc.c and mbox.c set up the 
- *    drop folder to the inbox (see inc.c and mbox.c).
- *
- * 2) the message is actually being copied to the drop folder using
- *    folder_item_add_msg(dropfolder, file, TRUE). this function
- *    eventually calls mh->add_msg(). however, the important thing
- *    about this function is, is that the folder is not yet updated
- *    to reflect the copy. i don't know about the validity of this
- *    assumption, however, the filtering code assumes this and
- *    updates the marks itself.
- *
- * 3) technically there's nothing wrong with the matcher (the 
- *    piece of code which matches search strings). there's
- *    one gotcha in procmsg.c:procmsg_get_message_file(): it
- *    only reads a message file based on a MsgInfo. for design
- *    reasons the filtering system should read directly from
- *    a file (based on the file's name).
- *
- * 4) after the matcher sorts out any matches, it looks at the
- *    action. this part again pushes the folder system design
- *    to its limits. based on the assumption in 2), the matcher
- *    knows the message has not been added to the folder system yet.
- *    it can happily update mark files, and in fact it does.
- * 
- */ 
-
 #include "defs.h"
 #include <ctype.h>
 #include <string.h>
@@ -128,188 +99,6 @@ void filteringprop_free(FilteringProp * prop)
 	g_free(prop);
 }
 
-/* filteringaction_update_mark() - updates a mark for a message. note that
- * the message should not have been moved or copied. remember that the
- * procmsg_open_mark_file(PATH, TRUE) actually _appends_ a new record.
- */
-static gboolean filteringaction_update_mark(MsgInfo * info)
-{
-	gchar * dest_path;
-	FILE * fp;
-
-	if (info->folder->folder->type == F_MH) {
-		dest_path = folder_item_get_path(info->folder);
-		if (!is_dir_exist(dest_path))
-			make_dir_hier(dest_path);
-		
-		if (dest_path == NULL) {
-			g_warning(_("Can't open mark file.\n"));
-			return FALSE;
-		}
-		
-		if ((fp = procmsg_open_mark_file(dest_path, TRUE))
-		    == NULL) {
-			g_warning(_("Can't open mark file.\n"));
-			return FALSE;
-		}
-		
-		procmsg_write_flags(info, fp);
-		fclose(fp);
-		return TRUE;
-	}
-	return FALSE;
-}
-
-#if 0
-static gchar * filteringaction_execute_command(gchar * cmd, MsgInfo * info)
-{
-	gchar * s = cmd;
-	gchar * filename = NULL;
-	gchar * processed_cmd;
-	gchar * p;
-	gint size;
-
-	matcher_unescape_str(cmd);
-
-	size = strlen(cmd) + 1;
-	while (*s != '\0') {
-		if (*s == '%') {
-			s++;
-			switch (*s) {
-			case '%':
-				size -= 1;
-				break;
-			case 's': /* subject */
-				size += STRLEN_WITH_CHECK(info->subject) - 2;
-				break;
-			case 'f': /* from */
-				size += STRLEN_WITH_CHECK(info->from) - 2;
-				break;
-			case 't': /* to */
-				size += STRLEN_WITH_CHECK(info->to) - 2;
-				break;
-			case 'c': /* cc */
-				size += STRLEN_WITH_CHECK(info->cc) - 2;
-				break;
-			case 'd': /* date */
-				size += STRLEN_WITH_CHECK(info->date) - 2;
-				break;
-			case 'i': /* message-id */
-				size += STRLEN_WITH_CHECK(info->msgid) - 2;
-				break;
-			case 'n': /* newsgroups */
-				size += STRLEN_WITH_CHECK(info->newsgroups) - 2;
-				break;
-			case 'r': /* references */
-				size += STRLEN_WITH_CHECK(info->references) - 2;
-				break;
-			case 'F': /* file */
-				filename = folder_item_fetch_msg(info->folder, info->msgnum);
-				if (filename == NULL) {
-					g_warning(_("filename is not set"));
-					return NULL;
-				}
-				else
-					size += strlen(filename) - 2;
-				break;
-			}
-			s++;
-		}
-		else s++;
-	}
-
-
-	processed_cmd = g_new0(gchar, size);
-	s = cmd;
-	p = processed_cmd;
-
-	while (*s != '\0') {
-		if (*s == '%') {
-			s++;
-			switch (*s) {
-			case '%':
-				*p = '%';
-				p++;
-				break;
-			case 's': /* subject */
-				if (info->subject != NULL)
-					strcpy(p, info->subject);
-				else
-					strcpy(p, "(none)");
-				p += strlen(p);
-				break;
-			case 'f': /* from */
-				if (info->from != NULL)
-					strcpy(p, info->from);
-				else
-					strcpy(p, "(none)");
-				p += strlen(p);
-				break;
-			case 't': /* to */
-				if (info->to != NULL)
-					strcpy(p, info->to);
-				else
-					strcpy(p, "(none)");
-				p += strlen(p);
-				break;
-			case 'c': /* cc */
-				if (info->cc != NULL)
-					strcpy(p, info->cc);
-				else
-					strcpy(p, "(none)");
-				p += strlen(p);
-				break;
-			case 'd': /* date */
-				if (info->date != NULL)
-					strcpy(p, info->date);
-				else
-					strcpy(p, "(none)");
-				p += strlen(p);
-				break;
-			case 'i': /* message-id */
-				if (info->msgid != NULL)
-					strcpy(p, info->msgid);
-				else
-					strcpy(p, "(none)");
-				p += strlen(p);
-				break;
-			case 'n': /* newsgroups */
-				if (info->newsgroups != NULL)
-					strcpy(p, info->newsgroups);
-				else
-					strcpy(p, "(none)");
-				p += strlen(p);
-				break;
-			case 'r': /* references */
-				if (info->references != NULL)
-					strcpy(p, info->references);
-				else
-					strcpy(p, "(none)");
-				p += strlen(p);
-				break;
-			case 'F': /* file */
-				strcpy(p, filename);
-				p += strlen(p);
-				break;
-			default:
-				*p = '%';
-				p++;
-				*p = *s;
-				p++;
-				break;
-			}
-			s++;
-		}
-		else {
-			*p = *s;
-			p++;
-			s++;
-		}
-	}
-	return processed_cmd;
-}
-#endif
-
 /*
   fitleringaction_apply
   runs the action on one MsgInfo
@@ -341,6 +130,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 			return FALSE;
 		
 		if (folder_item_move_msg(dest_folder, info) == -1) {
+			debug_print("*** could not move message\n");
 			return FALSE;
 		}	
 
@@ -475,14 +265,7 @@ static gboolean filteringaction_apply(FilteringAction * action, MsgInfo * info,
 /* filteringprop_apply() - runs the action on one MsgInfo if it matches the 
  * criterium. certain actions can be followed by other actions. in this
  * case the function returns FALSE. if an action can not be followed
- * by others, the function returns TRUE.
- *
- * remember that this is because of the fact that msg flags are always
- * _appended_ to mark files. currently sylpheed does not insert messages 
- * at a certain index. 
- * now, after having performed a certain action, the MsgInfo is still
- * valid for the message. in *this* case the function returns FALSE.
- */
+ * by others, the function returns TRUE. */
 static gboolean filteringprop_apply(FilteringProp * filtering, MsgInfo * info,
 				    GHashTable *folder_table)
 {
