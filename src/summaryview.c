@@ -4464,7 +4464,7 @@ static void summary_searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 static void summary_searchtype_changed(GtkWidget *widget, GdkEventAny *event,
 				SummaryView *summaryview)
 {
-	if (strlen(gtk_entry_get_text(GTK_ENTRY(summaryview->search_string))) > 0)
+	if (gtk_entry_get_text(GTK_ENTRY(summaryview->search_string)))
 	 	summary_show(summaryview, summaryview->folder_item);
 }
 
