@@ -1,3 +1,8 @@
+2004-02-12 [paul]	0.9.9claws4
+
+	* sync with 0.9.9cvs4
+		see ChangeLog 2004-02-04, 2004-02-05, and 2004-02-06
+
 2004-02-11 [luke]	0.9.9claws3
 	* src/mimeview.c
 		remove redundant check introduced in 0.9.9claws1

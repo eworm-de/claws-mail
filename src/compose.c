@@ -3531,7 +3531,6 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 
 	/* get all composed text */
 	chars = gtk_editable_get_chars(GTK_EDITABLE(compose->text), 0, -1);
-	len = strlen(chars);
 	if (is_ascii_str(chars)) {
 		buf = chars;
 		chars = NULL;

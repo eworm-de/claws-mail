@@ -1022,6 +1022,20 @@ FolderItem *folder_find_item_from_path(const gchar *path)
 	return d[1];
 }
 
+FolderItem *folder_find_child_item_by_name(FolderItem *item, const gchar *name)
+{
+	GNode *node;
+	FolderItem *child;
+
+	for (node = item->node->children; node != NULL; node = node->next) {
+		child = FOLDER_ITEM(node->data);
+		if (strcmp2(g_basename(child->path), name) == 0)
+			return child;
+	}
+
+	return NULL;
+}
+
 FolderClass *folder_get_class_from_string(const gchar *str)
 {
 	GSList *classlist;

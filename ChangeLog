@@ -1,3 +1,30 @@
+2004-02-06
+
+	* src/folderview.[ch]: code cleanup.
+	  folderview_append_item(): new. It appends the folder to the folder
+	  view.
+	* src/foldersel.c: foldersel_new_folder(): use
+	  folderview_append_item().
+
+2004-02-06
+
+	* src/foldersel.c: implemented 'create new folder' function.
+	* src/folder.[ch]: folder_find_child_item_by_name(): new.
+	* src/utils.h: AUTORELEASE_STR(): convert malloc'd string into
+	  auto-release (alloca'd) one.
+
+2004-02-05
+
+	* src/folderview.c: put together folderview_new_imap_folder_cb() into
+	  folderview_new_folder_cb().
+
+2004-02-04
+
+	* src/compose.c: compose_write_to_file(): removed redundant strlen()
+	  (thanks to Alfons).
+	* src/textview.c: textview_button_pressed(): select correct account
+	  when address is clicked.
+
 2004-01-29
 
 	* version 0.9.9
