@@ -403,14 +403,15 @@ static gboolean imap_rename_folder_func		(GNode		*node,
 						 gpointer	 data);
 static gint imap_get_num_list			(Folder 	*folder,
 						 FolderItem 	*item,
-						 GSList	       **list);
+						 GSList	       **list,
+						 gboolean	*old_uids_valid);
 static GSList *imap_get_msginfos		(Folder		*folder,
 						 FolderItem	*item,
 						 GSList		*msgnum_list);
 static MsgInfo *imap_get_msginfo 		(Folder 	*folder,
 						 FolderItem 	*item,
 						 gint 		 num);
-static gboolean imap_check_msgnum_validity	(Folder 	*folder,
+static gboolean imap_scan_required		(Folder 	*folder,
 						 FolderItem 	*item);
 static void imap_change_flags			(Folder 	*folder,
 						 FolderItem 	*item,
@@ -444,7 +445,7 @@ FolderClass imap_class =
 	NULL,
 	NULL,
 	NULL,
-	imap_check_msgnum_validity,
+	imap_scan_required,
 
 	/* Message functions */
 	imap_get_msginfo,
@@ -2383,6 +2384,9 @@ static gint imap_status(IMAPSession *session, IMAPFolder *folder,
 
 	*messages = *recent = *uid_next = *uid_validity = *unseen = 0;
 
+	if (path == NULL)
+		return -1;
+
 	argbuf = g_ptr_array_new();
 
 	real_path = imap_get_real_path(folder, path);
@@ -3570,11 +3574,11 @@ static gint get_list_of_uids(Folder *folder, IMAPFolderItem *item, GSList **msgn
 	return nummsgs;
 }
 
-gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
+gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list, gboolean *old_uids_valid)
 {
 	IMAPFolderItem *item = (IMAPFolderItem *)_item;
 	IMAPSession *session;
-	gint ok, nummsgs = 0, exists, recent, unseen, uid_val, uid_next;
+	gint ok, nummsgs = 0, exists, recent, uid_val, uid_next, unseen;
 	GSList *uidlist;
 	gchar *dir;
 	gboolean selected_folder;
@@ -3595,12 +3599,32 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 		if (ok != IMAP_SUCCESS)
 			return -1;
 		exists = session->exists;
+
+		*old_uids_valid = TRUE;
 	} else {
 		ok = imap_status(session, IMAP_FOLDER(folder), item->item.path,
 				 &exists, &recent, &uid_next, &uid_val, &unseen);
 		if (ok != IMAP_SUCCESS)
 			return -1;
+
+		if(item->item.mtime == uid_val)
+			*old_uids_valid = TRUE;
+		else {
+			*old_uids_valid = FALSE;
+
+			debug_print("Freeing imap uid cache\n");
+			item->lastuid = 0;
+			g_slist_free(item->uid_list);
+			item->uid_list = NULL;
+		
+    			item->item.mtime = uid_val;
+
+			imap_delete_all_cached_messages((FolderItem *)item);
+		}
 	}
+
+	if (!selected_folder)
+		item->uid_next = uid_next;
 
 	/* If old uid_next matches new uid_next we can be sure no message
 	   was added to the folder */
@@ -3623,8 +3647,6 @@ gint imap_get_num_list(Folder *folder, FolderItem *_item, GSList **msgnum_list)
 			item->uid_list = NULL;
 		}
 	}
-	if (!selected_folder)
-		item->uid_next = uid_next;
 
 	if (exists == 0) {
 		*msgnum_list = NULL;
@@ -3767,37 +3789,43 @@ MsgInfo *imap_get_msginfo(Folder *folder, FolderItem *item, gint uid)
 	return msginfo;
 }
 
-gboolean imap_check_msgnum_validity(Folder *folder, FolderItem *_item)
+gboolean imap_scan_required(Folder *folder, FolderItem *_item)
 {
 	IMAPSession *session;
 	IMAPFolderItem *item = (IMAPFolderItem *)_item;
 	gint ok, exists = 0, recent = 0, unseen = 0;
-	guint32 uid_next, uid_validity = 0;
+	guint32 uid_next, uid_val = 0;
+	gboolean selected_folder;
 	
 	g_return_val_if_fail(folder != NULL, FALSE);
 	g_return_val_if_fail(item != NULL, FALSE);
 	g_return_val_if_fail(item->item.folder != NULL, FALSE);
 	g_return_val_if_fail(FOLDER_CLASS(item->item.folder) == &imap_class, FALSE);
 
+	if (item->item.path == NULL)
+		return FALSE;
+
 	session = imap_session_get(folder);
 	g_return_val_if_fail(session != NULL, FALSE);
 
-	ok = imap_status(session, IMAP_FOLDER(folder), item->item.path,
-			 &exists, &recent, &uid_next, &uid_validity, &unseen);
-	if (ok != IMAP_SUCCESS)
-		return FALSE;
+	selected_folder = (session->mbox != NULL) &&
+			  (!strcmp(session->mbox, item->item.path));
+	if (selected_folder) {
+		ok = imap_cmd_noop(session);
+		if (ok != IMAP_SUCCESS)
+			return FALSE;
 
-	if(item->item.mtime == uid_validity)
-		return TRUE;
+		if (session->folder_content_changed)
+			return TRUE;
+	} else {
+		ok = imap_status(session, IMAP_FOLDER(folder), item->item.path,
+				 &exists, &recent, &uid_next, &uid_val, &unseen);
+		if (ok != IMAP_SUCCESS)
+			return FALSE;
 
-	debug_print("Freeing imap uid cache\n");
-	item->lastuid = 0;
-	g_slist_free(item->uid_list);
-	item->uid_list = NULL;
-		
-	item->item.mtime = uid_validity;
-
-	imap_delete_all_cached_messages((FolderItem *)item);
+		if ((uid_next != item->uid_next) || (exists < item->item.total_msgs))
+			return TRUE;
+	}
 
 	return FALSE;
 }

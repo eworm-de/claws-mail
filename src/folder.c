@@ -1014,7 +1014,7 @@ static gint folder_sort_folder_list(gconstpointer a, gconstpointer b)
 
 gint folder_item_open(FolderItem *item)
 {
-	if(((FOLDER_TYPE(item->folder) == F_IMAP) && !item->no_select) || (FOLDER_TYPE(item->folder) == F_NEWS)) {
+	if((item->folder->klass->scan_required != NULL) && (item->folder->klass->scan_required(item->folder, item))) {
 		folder_item_scan_full(item, TRUE);
 	}
 
@@ -1078,7 +1078,7 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	GSList *newmsg_list = NULL;
 	guint newcnt = 0, unreadcnt = 0, totalcnt = 0, unreadmarkedcnt = 0;
 	guint cache_max_num, folder_max_num, cache_cur_num, folder_cur_num;
-	gboolean update_flags = 0;
+	gboolean update_flags = 0, old_uids_valid = FALSE;
     
 	g_return_val_if_fail(item != NULL, -1);
 	if (item->path == NULL) return -1;
@@ -1091,13 +1091,12 @@ gint folder_item_scan_full(FolderItem *item, gboolean filtering)
 	debug_print("Scanning folder %s for cache changes.\n", item->path);
 
 	/* Get list of messages for folder and cache */
-	if (folder->klass->get_num_list(item->folder, item, &folder_list) < 0) {
+	if (folder->klass->get_num_list(item->folder, item, &folder_list, &old_uids_valid) < 0) {
 		debug_print("Error fetching list of message numbers\n");
 		return(-1);
 	}
 
-	if (!folder->klass->check_msgnum_validity || 
-	    folder->klass->check_msgnum_validity(folder, item)) {
+	if (old_uids_valid) {
 		if (!item->cache)
 			folder_item_read_cache(item);
 		cache_list = msgcache_get_msg_list(item->cache);

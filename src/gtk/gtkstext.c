@@ -5555,9 +5555,12 @@ draw_line (GtkSText* text,
 	    pixels_remaining -= running_offset;
 	  
 	  space_width = MARK_CURRENT_TEXT_FONT(text, &mark)->char_widths[' '];
-	  
-	  spaces_avail = pixels_remaining / space_width;
-	  spaces_avail = MIN (spaces_avail, tab_mark.to_next_tab);
+	  if (space_width > 0) {
+	    spaces_avail = pixels_remaining / space_width;
+	    spaces_avail = MIN (spaces_avail, tab_mark.to_next_tab);
+	  } else {
+	    spaces_avail = 0;
+	  }
 
 	  draw_bg_rect (text, &mark, running_offset, pixel_start_height,
 			spaces_avail * space_width, LINE_HEIGHT (*lp), TRUE);

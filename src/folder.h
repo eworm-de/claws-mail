@@ -196,15 +196,16 @@ struct _FolderClass
 						 FolderItem	*item);
 	gint	 	(*get_num_list)		(Folder		*folder,
 						 FolderItem	*item,
-						 GSList	       **list);
+						 GSList	       **list,
+						 gboolean	*old_uids_valid);
 	void     	(*update_mark)		(Folder		*folder,
 						 FolderItem	*item);
 	void    	(*finished_copy)        (Folder 	*folder,
 						 FolderItem 	*item);
 	void    	(*finished_remove)      (Folder 	*folder,
-						 FolderItem * item);
-	gboolean	(*check_msgnum_validity)(Folder 	*folder,
-						 FolderItem * item);
+						 FolderItem 	*item);
+	gboolean	(*scan_required)	(Folder 	*folder,
+						 FolderItem 	*item);
 
 	/* Message functions */
 	MsgInfo 	*(*get_msginfo)		(Folder		*folder,

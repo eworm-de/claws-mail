@@ -68,8 +68,9 @@ static gchar * mbox_get_new_path(FolderItem * parent, gchar * name);
 static gchar * mbox_get_folderitem_name(gchar * name);
 
 static MsgInfo *mbox_get_msginfo(Folder *folder, FolderItem *item, gint num);
-static gint mbox_get_num_list(Folder *folder, FolderItem *item, GSList **list);
-static gboolean mbox_check_msgnum_validity(Folder *folder, FolderItem *item);
+static gint mbox_get_num_list(Folder *folder, FolderItem *item,
+			      GSList **list, gboolean *old_uids_valid);
+static gboolean mbox_scan_required(Folder *folder, FolderItem *item);
 static gchar *mbox_folder_get_path(Folder *folder, FolderItem *item);
 
 FolderClass mbox_class =
@@ -96,7 +97,7 @@ FolderClass mbox_class =
 	NULL,
 	NULL,
 	NULL,
-	mbox_check_msgnum_validity,
+	mbox_scan_required,
 
 	/* Message functions */
 	mbox_get_msginfo,
@@ -2077,17 +2078,29 @@ gint mbox_remove_folder(Folder *folder, FolderItem *item)
 	return 0;
 }
 
-gint mbox_get_num_list(Folder *folder, FolderItem *item, GSList **mlist)
+gint mbox_get_num_list(Folder *folder, FolderItem *item, GSList **mlist, gboolean *old_uids_valid)
 {
 	GList * l;
 	FILE * fp;
 	gchar * mbox_path;
+	mboxcache * old_cache;
 	gint nummsgs = 0;
+	struct stat s;
 
 	mbox_path = mbox_folder_get_path(folder, item);
-
 	if (mbox_path == NULL)
 		return -1;
+
+	old_cache = mbox_cache_get_mbox(mbox_path);
+	*old_uids_valid = TRUE;
+	if (old_cache != NULL) {
+		if (stat(mbox_path, &s) < 0) {
+			FILE_OP_ERROR(mbox_path, "stat");
+		} else if (old_cache->mtime == s.st_mtime) {
+			debug_print("Folder is not modified.\n");
+			*old_uids_valid = FALSE;
+		}
+	}
 
 	mbox_purge_deleted(mbox_path);
 
@@ -2167,15 +2180,14 @@ MsgInfo *mbox_get_msginfo(Folder *folder, FolderItem *item, gint num)
 	return msginfo;
 }
 
-gboolean mbox_check_msgnum_validity(Folder *folder, FolderItem *item)
+gboolean mbox_scan_required(Folder *folder, FolderItem *item)
 {
 	mboxcache * old_cache;
 	gboolean scan_new = TRUE;
 	struct stat s;
 	gchar *filename;
 
-	filename = mbox_folder_get_path(folder, item);
-	
+	filename = mbox_folder_get_path(folder, item);	
 	old_cache = mbox_cache_get_mbox(filename);
 
 	if (old_cache != NULL) {

@@ -65,7 +65,7 @@ static gboolean mh_is_msg_changed(Folder * folder,
 				  FolderItem * item, MsgInfo * msginfo);
 
 static gint mh_get_num_list(Folder * folder,
-			    FolderItem * item, GSList ** list);
+			    FolderItem * item, GSList ** list, gboolean *old_uids_valid);
 static void mh_scan_tree(Folder * folder);
 
 static gint mh_create_tree(Folder * folder);
@@ -191,7 +191,7 @@ void mh_get_last_num(Folder *folder, FolderItem *item)
 	item->last_num = max;
 }
 
-gint mh_get_num_list(Folder *folder, FolderItem *item, GSList **list)
+gint mh_get_num_list(Folder *folder, FolderItem *item, GSList **list, gboolean *old_uids_valid)
 {
 
 	gchar *path;
@@ -203,6 +203,8 @@ gint mh_get_num_list(Folder *folder, FolderItem *item, GSList **list)
 	g_return_val_if_fail(item != NULL, -1);
 
 	debug_print("mh_get_last_num(): Scanning %s ...\n", item->path);
+
+	*old_uids_valid = TRUE;
 
 	path = folder_item_get_path(item);
 	g_return_val_if_fail(path != NULL, -1);
