@@ -4661,7 +4661,7 @@ static void compose_convert_header(gchar *dest, gint len, gchar *src,
 
 	if (len < 1) return;
 
-	tmpstr = strdup(src);
+	tmpstr = g_strdup(src);
 
 	subst_char(tmpstr, '\n', ' ');
 	subst_char(tmpstr, '\r', ' ');
