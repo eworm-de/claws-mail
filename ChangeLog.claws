@@ -1,3 +1,8 @@
+2002-11-11 [colin]	0.8.5claws125
+	
+	* src/ssl_certificate.c
+		Fixed leak
+
 2002-11-11 [colin]	0.8.5claws124
 
 	* src/ssl.c

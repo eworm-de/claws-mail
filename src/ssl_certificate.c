@@ -97,18 +97,24 @@ static void ssl_certificate_save (SSLCertificate *cert)
 
 static char* ssl_certificate_to_string(SSLCertificate *cert)
 {
-	char *ret;
+	char *ret, *issuer, *subject, *fingerprint;
 	int j;
 	unsigned int n;
 	unsigned char md[EVP_MAX_MD_SIZE];	
 		
 	X509_digest(cert->x509_cert, EVP_md5(), md, &n);
-			
+	issuer = X509_NAME_oneline(X509_get_issuer_name(cert->x509_cert), 0, 0);
+	subject = X509_NAME_oneline(X509_get_subject_name(cert->x509_cert), 0, 0);
+	fingerprint = readable_fingerprint(md, (int)n);		
 	ret = g_strdup_printf("  Issuer: %s\n  Subject: %s\n  Fingerprint: %s",
-				X509_NAME_oneline(X509_get_issuer_name(cert->x509_cert), 0, 0),
-				X509_NAME_oneline(X509_get_subject_name(cert->x509_cert), 0, 0),
-				readable_fingerprint(md, (int)n));
+				issuer, subject, fingerprint);
 
+	if (issuer)
+		g_free(issuer);
+	if (subject)
+		g_free(subject);
+	if (fingerprint)
+		g_free(fingerprint);
 	return ret;
 }
 	
