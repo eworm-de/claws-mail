@@ -1,3 +1,23 @@
+2003-01-21 [paul]	0.8.8claws123
+
+	* po/bg.po
+		updated by George Danchev
+		
+	* src/about.c
+		its now 2003
+		
+	* src/toolbar.c
+		don't translate 'Separator'
+		
+	* src/plugins/spamassassin/Makefile.am
+		add aspell to CPPFLAGS
+		
+	* src/plugins/spamassassin/spamassassin.c
+	  src/plugins/spamassassin/spamassassin_gtk.c
+	  	set correct default for spamassassin_receive_spam
+	  	slightly re-word descriptions and some
+		other minor changes
+
 2003-01-19 [alfons]	0.8.8claws122
 		
 	* src/mimeview.c
