@@ -548,8 +548,10 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 	case MIME_IMAGE:
 		if (prefs_common.display_img)
 			mimeview_show_image_part(mimeview, partinfo);
-		else
+		else {
+			mimeview_change_view_type(mimeview, MIMEVIEW_TEXT);
 			textview_show_mime_part(mimeview->textview, partinfo);
+		}
 		break;
 #endif
 	default:
