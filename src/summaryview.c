@@ -264,9 +264,8 @@ static void summary_key_pressed		(GtkWidget		*ctree,
 static void summary_searchbar_pressed	(GtkWidget		*ctree,
 					 GdkEventKey		*event,
 					 SummaryView		*summaryview);
-static void summary_searchtype_changed	(GtkWidget		*ctree,
-					 GdkEventAny		*event,
-					 SummaryView		*summaryview);
+static void summary_searchtype_changed	(GtkMenuItem 		*widget, 
+					 gpointer 		 data);
 static void summary_open_row		(GtkSCTree		*sctree,
 					 SummaryView		*summaryview);
 static void summary_tree_expanded	(GtkCTree		*ctree,
@@ -878,7 +877,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		gchar *searched_header = NULL;
 		
 		not_killed = NULL;
-		g_strdown(search_string);
+		if(search_string)
+			g_strdown(search_string);
 
 		for(cur = mlist ; cur != NULL ; cur = g_slist_next(cur)) {
 			MsgInfo * msginfo = (MsgInfo *) cur->data;
@@ -895,9 +895,9 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 				default:
 					printf("bug in search_type (=%d)\n",search_type);
 			}
-			
-			g_strdown(searched_header);
-			if (searched_header != NULL
+			if (searched_header) 
+				g_strdown(searched_header);
+			if (searched_header 
 			    && strstr(searched_header, search_string) != NULL)
 				not_killed = g_slist_append(not_killed, msginfo);
 			else
@@ -4465,11 +4465,11 @@ static void summary_searchbar_pressed(GtkWidget *widget, GdkEventKey *event,
 	 	summary_show(summaryview, summaryview->folder_item);
 }
 
-static void summary_searchtype_changed(GtkWidget *widget, GdkEventAny *event,
-				SummaryView *summaryview)
+static void summary_searchtype_changed(GtkMenuItem *widget, gpointer data)
 {
-	if (gtk_entry_get_text(GTK_ENTRY(summaryview->search_string)))
-	 	summary_show(summaryview, summaryview->folder_item);
+	SummaryView *sw = (SummaryView *)data;
+	if (gtk_entry_get_text(GTK_ENTRY(sw->search_string)))
+	 	summary_show(sw, sw->folder_item);
 }
 
 static void summary_open_row(GtkSCTree *sctree, SummaryView *summaryview)
