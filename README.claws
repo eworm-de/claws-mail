@@ -17,7 +17,8 @@ Summary:
    * simplify subject string
 4. How to contribute
 5. How to request features
-6. History
+6. Installing Claws from CVS
+7. History
 
 
 
@@ -265,11 +266,6 @@ are hardly noticable, but deserve mentioning:
     to the 'pkgdatadir' and run 'make-ispell-pwli'.  You may need to
     su root.
 
-
-There are a lot more options. If you find one, don't hesitate to
-mention it.
-
-
 * simplify subject string
     It is possible to remove parts of string from the subject line.
     Example: [Sylpheed-claws-users] This is a test
@@ -279,6 +275,10 @@ mention it.
     regexp for the above is: \[Sylpheed-claws-(devel|users)\]
     Another example for the Sylpheed mailing list (not claws!) is:
     \[sylpheed:[0-9]{5}\]
+
+There are a lot more options. If you find one, don't hesitate to
+mention it.
+
 
 
 4. How to contribute
