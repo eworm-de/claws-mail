@@ -5737,8 +5737,12 @@ msgstr ", "
 msgid "%s%d copied"
 msgstr "%s%d kopiert"
 
-#: src/summaryview.c:1670
-msgid " item(s) selected"
+#: src/summaryview.c:1710
+msgid " item selected"
+msgstr " Eintrag gewählt"
+
+#: src/summaryview.c:1712
+msgid " items selected"
 msgstr " Einträge gewählt"
 
 #: src/summaryview.c:1681
