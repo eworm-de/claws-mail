@@ -1,3 +1,23 @@
+2004-07-28 [paul]	0.9.12cvs37.4
+
+	* src/addressbook.c
+	* src/compose.c
+	* src/foldersel.c
+	* src/mainwindow.c
+	* src/messageview.c
+	* src/sourcewindow.c
+	* src/gtk/logwindow.c
+		remove gtk_window_set_wmclass()
+		
+	* src/prefs_filtering.c
+	* src/prefs_filtering_action.c
+	* src/prefs_fonts.c
+	* src/prefs_gtk.c
+	* src/prefs_matcher.c
+	* src/ssl_manager.c
+	* src/gtk/prefswindow.c
+		replace gtk_window_position()
+
 2004-07-28 [colin]	0.9.12cvs37.3
 
 	* src/alertpanel.c

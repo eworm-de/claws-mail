@@ -71,7 +71,7 @@ static void prefs_font_select(GtkButton *button, GtkEntry *entry)
 	if (!font_sel_win) {
 		font_sel_win = gtk_font_selection_dialog_new
 			(_("Font selection"));
-		gtk_window_position(GTK_WINDOW(font_sel_win),
+		gtk_window_set_position(GTK_WINDOW(font_sel_win),
 				    GTK_WIN_POS_CENTER);
 		g_signal_connect(G_OBJECT(font_sel_win), "delete_event",
 				 G_CALLBACK(gtk_widget_hide_on_delete),

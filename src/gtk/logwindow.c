@@ -61,7 +61,6 @@ LogWindow *log_window_create(void)
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Protocol log"));
-	gtk_window_set_wmclass(GTK_WINDOW(window), "log_window", "Sylpheed");
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 	gtk_widget_set_size_request(window, 520, 400);
 	g_signal_connect(G_OBJECT(window), "delete_event",

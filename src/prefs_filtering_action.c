@@ -267,7 +267,7 @@ static void prefs_filtering_action_create(void)
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width(GTK_CONTAINER(window), 8);
-	gtk_window_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 	gtk_window_set_resizable(GTK_WINDOW(window), TRUE);
 
