@@ -3,7 +3,7 @@
 	* src/folder.[ch]
 	* src/folderview.c
 		add functions to open and close a folder
-		o opending call execute scanning for remote folders
+		o opending will execute scanning for remote folders
 		  and processing
 		o closing will unset new flag for messages
 
