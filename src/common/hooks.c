@@ -28,7 +28,7 @@
 
 static GHashTable *hooklist_table;
 
-GHookList *hooks_get_hooklist(gchar *hooklist_name)
+GHookList *hooks_get_hooklist(const gchar *hooklist_name)
 {
 	GHookList *hooklist;
 
@@ -46,7 +46,7 @@ GHookList *hooks_get_hooklist(gchar *hooklist_name)
 	return hooklist;
 }
 
-guint hooks_register_hook(gchar *hooklist_name,
+guint hooks_register_hook(const gchar *hooklist_name,
 			  SylpheedHookFunction hook_func,
 			  gpointer userdata)
 {
@@ -72,7 +72,7 @@ guint hooks_register_hook(gchar *hooklist_name,
 	return hook->hook_id;
 }
 
-void hooks_unregister_hook(gchar *hooklist_name,
+void hooks_unregister_hook(const gchar *hooklist_name,
 			   guint hook_id)
 {
 	GHookList *hooklist;
@@ -108,7 +108,7 @@ static void hooks_marshal(GHook *hook, gpointer data)
 	}
 }
 
-gboolean hooks_invoke(gchar *hooklist_name,
+gboolean hooks_invoke(const gchar *hooklist_name,
 		  gpointer source)
 {
 	GHookList *hooklist;

@@ -1,9 +1,15 @@
+2003-07-30 [alfons]	0.9.3claws79
+
+	* src/common/hooks[.ch]
+		const correctness
+
 2003-07-30 [darko]	0.9.3claws78
 
 	* src/summaryview.c
 		make it compile again
 
 2003-07-30 [luke]	0.9.3claws77
+
 	* src/crash.c
 	* src/main.c
         	o added/moved signal handlers for SIGTERM (normal kill command) 
