@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -407,6 +407,79 @@ static GtkItemFactoryEntry addressbook_list_popup_entries[] =
 	{N_("/---"),		NULL, NULL, 0, "<Separator>"},
 	{N_("/Pa_ste Address"),	NULL, addressbook_clip_paste_address_cb,     0, NULL}
 };
+
+/**
+ * Structure of error message table.
+ */
+typedef struct _ErrMsgTableEntry ErrMsgTableEntry;
+struct _ErrMsgTableEntry {
+	gint	code;
+	gchar	*description;
+};
+
+static gchar *_errMsgUnknown_ = N_( "Unknown" );
+
+/**
+ * Lookup table of error messages for general errors. Note that a NULL
+ * description signifies the end of the table.
+ */
+static ErrMsgTableEntry _lutErrorsGeneral_[] = {
+	{ MGU_SUCCESS,		N_("Success") },
+	{ MGU_BAD_ARGS,		N_("Bad arguments") },
+	{ MGU_NO_FILE,		N_("File not specified") },
+	{ MGU_OPEN_FILE,	N_("Error opening file") },
+	{ MGU_ERROR_READ,	N_("Error reading file") },
+	{ MGU_EOF,		N_("End of file encountered") },
+	{ MGU_OO_MEMORY,	N_("Error allocating memory") },
+	{ MGU_BAD_FORMAT,	N_("Bad file format") },
+	{ MGU_ERROR_WRITE,	N_("Error writing to file") },
+	{ MGU_OPEN_DIRECTORY,	N_("Error opening directory") },
+	{ MGU_NO_PATH,      	N_("No path specified") },
+	{ 0,			NULL }
+};
+
+#ifdef USE_LDAP
+/**
+ * Lookup table of error messages for LDAP errors.
+ */
+static ErrMsgTableEntry _lutErrorsLDAP_[] = {
+	{ MGU_SUCCESS,		N_("Success") },
+	{ MGU_LDAP_CONNECT,	N_("Error connecting to LDAP server") },
+	{ MGU_LDAP_INIT,	N_("Error initializing LDAP") },
+	{ MGU_LDAP_BIND,	N_("Error binding to LDAP server") },
+	{ MGU_LDAP_SEARCH,	N_("Error searching LDAP database") },
+	{ MGU_LDAP_TIMEOUT,	N_("Timeout performing LDAP operation") },
+	{ MGU_LDAP_CRITERIA,	N_("Error in LDAP search criteria") },
+	{ MGU_LDAP_CRITERIA,	N_("Error in LDAP search criteria") },
+	{ MGU_LDAP_NOENTRIES,	N_("No LDAP entries found for search criteria") },
+	{ 0,			NULL }
+};
+#endif
+
+/**
+ * Lookup message for specified error code.
+ * \param lut  Lookup table.
+ * \param code Code to lookup.
+ * \return Description associated to code.
+ */
+static gchar *addressbook_err2string( ErrMsgTableEntry lut[], gint code ) {
+        gchar *desc = NULL;
+        ErrMsgTableEntry entry;
+        gint i;
+
+        for( i = 0; ; i++ ) {
+                entry = lut[ i ];
+                if( entry.description == NULL ) break;
+                if( entry.code == code ) {
+                        desc = entry.description;
+                        break;
+                }
+        }
+        if( ! desc ) {
+		desc = _errMsgUnknown_;
+        }
+        return desc;
+}
 
 void addressbook_open(Compose *target)
 {
@@ -816,6 +889,7 @@ static void addressbook_ds_status_message( AddressDataSource *ds, gchar *msg ) {
 static void addressbook_ds_show_message( AddressDataSource *ds ) {
 	gint retVal;
 	gchar *name;
+	gchar *desc;
 	*addressbook_msgbuf = '\0';
 	if( ds ) {
 		name = addrindex_ds_get_name( ds );
@@ -825,10 +899,10 @@ static void addressbook_ds_show_message( AddressDataSource *ds ) {
 				    sizeof(addressbook_msgbuf), "%s", name );
 		}
 		else {
+			desc = addressbook_err2string( _lutErrorsGeneral_, retVal );
 			g_snprintf( addressbook_msgbuf, 
-				    sizeof(addressbook_msgbuf), "%s: %s", name,
-				    mgu_error2string( retVal ) );
-		}
+			    sizeof(addressbook_msgbuf), "%s: %s", name, desc );
+			}
 	}
 	addressbook_status_show( addressbook_msgbuf );
 }
@@ -3182,6 +3256,7 @@ static void addressbook_new_ldap_cb( gpointer data, guint action, GtkWidget *wid
 
 static void addressbook_ldap_show_message( SyldapServer *svr ) {
 	gchar *name;
+	gchar *desc;
 	*addressbook_msgbuf = '\0';
 	if( svr ) {
 		name = syldap_get_name( svr );
@@ -3197,10 +3272,11 @@ static void addressbook_ldap_show_message( SyldapServer *svr ) {
 					    name );
 			}
 			else {
+				desc = addressbook_err2string(
+						_lutErrorsLDAP_, svr->retVal );
 				g_snprintf( addressbook_msgbuf,
 					    sizeof(addressbook_msgbuf),
-					    "%s: %s", name,
-					    mgu_error2string( svr->retVal ) );
+					    "%s: %s", name, desc );
 			}
 		}
 	}

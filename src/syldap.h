@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001-2002 Match Grun
+ * Copyright (C) 2001-2003 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,14 @@
 #define SYLDAP_ATTR_SURNAME    "sn"
 #define SYLDAP_ATTR_EMAIL      "mail"
 #define SYLDAP_ATTR_UID        "uid"
+
+#define MGU_LDAP_CONNECT   -51
+#define MGU_LDAP_INIT      -52
+#define MGU_LDAP_BIND      -53
+#define MGU_LDAP_SEARCH    -54
+#define MGU_LDAP_TIMEOUT   -55
+#define MGU_LDAP_CRITERIA  -56
+#define MGU_LDAP_NOENTRIES -57
 
 typedef struct _SyldapServer SyldapServer;
 struct _SyldapServer {

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001 Match Grun
+ * Copyright (C) 2001-2003 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
  */
 
 /*
- * General functions for create common address book entries.
+ * Definitions for generic functions.
  */
 
 #include <glib.h>
@@ -109,52 +109,6 @@ gchar *mgu_list_coalesce( GSList *list ) {
 		node = g_slist_next( node );
 	}
 	return buf;
-}
-
-struct mgu_error_entry {
-	gint	e_code;
-	gchar	*e_reason;
-};
-
-static const struct mgu_error_entry mgu_error_list[] = {
-	{ MGU_SUCCESS,		"Success" },
-	{ MGU_BAD_ARGS,		"Bad arguments" },
-	{ MGU_NO_FILE,		"File not specified" },
-	{ MGU_OPEN_FILE,	"Error opening file" },
-	{ MGU_ERROR_READ,	"Error reading file" },
-	{ MGU_EOF,		"End of file encountered" },
-	{ MGU_OO_MEMORY,	"Error allocating memory" },
-	{ MGU_BAD_FORMAT,	"Bad file format" },
-	{ MGU_LDAP_CONNECT,	"Error connecting to LDAP server" },
-	{ MGU_LDAP_INIT,	"Error initializing LDAP" },
-	{ MGU_LDAP_BIND,	"Error binding to LDAP server" },
-	{ MGU_LDAP_SEARCH,	"Error searching LDAP database" },
-	{ MGU_LDAP_TIMEOUT,	"Timeout performing LDAP operation" },
-	{ MGU_LDAP_CRITERIA,	"Error in LDAP search criteria" },
-	{ MGU_LDAP_CRITERIA,	"Error in LDAP search criteria" },
-	{ MGU_LDAP_NOENTRIES,	"No LDAP entries found for search criteria" },
-	{ MGU_ERROR_WRITE,	"Error writing to file" },
-	{ MGU_OPEN_DIRECTORY,	"Error opening directory" },
-	{ MGU_NO_PATH,      	"No path specified" },
-	{ -999,			NULL }
-};
-
-static const struct mgu_error_entry *mgu_error_find( gint err ) {
-	gint i;
-	for ( i = 0; mgu_error_list[i].e_code != -999; i++ ) {
-		if ( err == mgu_error_list[i].e_code )
-			return & mgu_error_list[i];
-	}
-	return NULL;
-}
-
-/*
-* Return error message for specified error code.
-*/
-gchar *mgu_error2string( gint err ) {
-	const struct mgu_error_entry *e;
-	e = mgu_error_find( err );
-	return ( e != NULL ) ? e->e_reason : "Unknown error";
 }
 
 /*
@@ -349,6 +303,112 @@ void mgu_str_ltc2space( gchar *str, gchar chlead, gchar chtail ) {
 		as++;
 	}
 	return;
+}
+
+/*
+ * Return reference to longest entry in the specified linked list.
+ * It is assumed that the list contains only gchar objects.
+ * Enter:  list List of gchar strings to examine.
+ * Return: Reference to longest entry, or NULL if nothing found.
+ */
+gchar *mgu_slist_longest_entry( GSList *list ) {
+	GSList *node;
+	gchar *name = NULL;
+	gint iLen = 0, iLenT = 0;
+
+	node = list;
+	while( node ) {
+		if( name == NULL ) {
+			name = node->data;
+			iLen = strlen( name );
+		}
+		else {
+			iLenT = strlen( node->data );
+			if( iLenT > iLen ) {
+				name = node->data;
+				iLen = iLenT;
+			}
+		}
+		node = g_slist_next( node );
+	}
+	return name;
+}	
+
+/*
+ * Return reference to longest entry in the specified linked list.
+ * It is assumed that the list contains only gchar objects.
+ * Enter:  list List of gchar strings to examine.
+ * Return: Reference to longest entry, or NULL if nothing found.
+ */
+gchar *mgu_list_longest_entry( GList *list ) {
+	GList *node;
+	gchar *name = NULL;
+	gint iLen = 0, iLenT = 0;
+
+	node = list;
+	while( node ) {
+		if( name == NULL ) {
+			name = node->data;
+			iLen = strlen( name );
+		}
+		else {
+			iLenT = strlen( node->data );
+			if( iLenT > iLen ) {
+				name = node->data;
+				iLen = iLenT;
+			}
+		}
+		node = g_list_next( node );
+	}
+	return name;
+}	
+
+/*
+ * Test whether string appears in list of strings, ignoring case. NULL or empty
+ * strings will be ignored.
+ * Enter: list List to process.
+ *        str  String to test.
+ * Return: TRUE if string is unique.
+ */
+gboolean mgu_slist_test_unq_nc( GSList *list, gchar *str ) {
+	GSList *node;
+
+	if( str ) {
+		if( strlen( str ) > 0 ) {
+			node = list;
+			while( node ) {
+				if( g_strcasecmp( str, node->data ) == 0 )
+					return FALSE;
+				node = g_slist_next( node );
+			}
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+/*
+ * Test whether string appears in list of strings, ignoring case. NULL or empty
+ * strings will be ignored.
+ * Enter: list List to process.
+ *        str  String to test.
+ * Return: TRUE if string is unique.
+ */
+gboolean mgu_list_test_unq_nc( GList *list, gchar *str ) {
+	GList *node;
+
+	if( str ) {
+		if( strlen( str ) > 0 ) {
+			node = list;
+			while( node ) {
+				if( g_strcasecmp( str, node->data ) == 0 )
+					return FALSE;
+				node = g_list_next( node );
+			}
+			return TRUE;
+		}
+	}
+	return FALSE;
 }
 
 /*

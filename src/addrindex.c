@@ -572,7 +572,7 @@ void addrindex_print_index( AddressIndex *addrIndex, FILE *stream ) {
 	fprintf( stream, "AddressIndex:\n" );
 	fprintf( stream, "\tfile path: '%s'\n", addrIndex->filePath );
 	fprintf( stream, "\tfile name: '%s'\n", addrIndex->fileName );
-	fprintf( stream, "\t   status: %d : '%s'\n", addrIndex->retVal, mgu_error2string( addrIndex->retVal ) );
+	fprintf( stream, "\t   status: %d\n",   addrIndex->retVal );
 	fprintf( stream, "\tconverted: '%s'\n", addrIndex->wasConverted ? "yes" : "no" );
 	fprintf( stream, "\tcvt error: '%s'\n", addrIndex->conversionError ? "yes" : "no" );
 	fprintf( stream, "\t---\n" );

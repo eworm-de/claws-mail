@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001 Match Grun
+ * Copyright (C) 2001-2003 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
  */
 
 /*
- * General definitions for common address book entries.
+ * Definitions for generic functions.
  */
 
 #ifndef __MGUTILS_H__
@@ -36,13 +36,6 @@
 #define MGU_EOF            -5
 #define MGU_OO_MEMORY      -6
 #define MGU_BAD_FORMAT     -7
-#define MGU_LDAP_CONNECT   -8
-#define MGU_LDAP_INIT      -9
-#define MGU_LDAP_BIND      -10
-#define MGU_LDAP_SEARCH    -11
-#define MGU_LDAP_TIMEOUT   -12
-#define MGU_LDAP_CRITERIA  -13
-#define MGU_LDAP_NOENTRIES -14
 #define MGU_ERROR_WRITE    -15
 #define MGU_OPEN_DIRECTORY -16
 #define MGU_NO_PATH        -17
@@ -53,7 +46,6 @@ void mgu_print_dlist		( GList *list, FILE *stream );
 void mgu_free_list		( GSList *list );
 void mgu_free_dlist		( GList *list );
 gchar *mgu_list_coalesce	( GSList *list );
-gchar *mgu_error2string		( gint err );
 gchar *mgu_replace_string	( gchar *str, const gchar *value );
 void mgu_clear_slist		( GSList *list );
 void mgu_clear_list		( GList *list );
@@ -62,5 +54,14 @@ GList *mgu_parse_string		( gchar *line, const gint maxTokens,
 				  gint *tokenCnt );
 void mgu_str_unescape		( gchar *str );
 void mgu_str_ltc2space		( gchar *str, gchar chlead, gchar chtail );
+gchar *mgu_slist_longest_entry	( GSList *list );
+gchar *mgu_list_longest_entry	( GList *list );
+gboolean mgu_slist_test_unq_nc	( GSList *list, gchar *str );
+gboolean mgu_list_test_unq_nc	( GList *list, gchar *str );
 
 #endif /* __MGUTILS_H__ */
+
+/*
+* End of Source.
+*/
+

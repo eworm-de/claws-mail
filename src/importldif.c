@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 2001 Match Grun
+ * Copyright (C) 2001-2003 Match Grun
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,11 +100,69 @@ static LdifFile *_ldifFile_ = NULL;
 static GdkPixmap *markxpm;
 static GdkBitmap *markxpmmask;
 
+/**
+ * Structure of error message table.
+ */
+typedef struct _ErrMsgTableEntry ErrMsgTableEntry;
+struct _ErrMsgTableEntry {
+	gint	code;
+	gchar	*description;
+};
+
+static gchar *_errMsgUnknown_ = N_( "Unknown" );
+
+/**
+ * Lookup table of error messages for general errors. Note that a NULL
+ * description signifies the end of the table.
+ */
+static ErrMsgTableEntry _lutErrorsLDIF_[] = {
+	{ MGU_SUCCESS,		N_("Success") },
+	{ MGU_BAD_ARGS,		N_("Bad arguments") },
+	{ MGU_NO_FILE,		N_("File not specified") },
+	{ MGU_OPEN_FILE,	N_("Error opening file") },
+	{ MGU_ERROR_READ,	N_("Error reading file") },
+	{ MGU_EOF,		N_("End of file encountered") },
+	{ MGU_OO_MEMORY,	N_("Error allocating memory") },
+	{ MGU_BAD_FORMAT,	N_("Bad file format") },
+	{ MGU_ERROR_WRITE,	N_("Error writing to file") },
+	{ MGU_OPEN_DIRECTORY,	N_("Error opening directory") },
+	{ MGU_NO_PATH,      	N_("No path specified") },
+	{ 0,			NULL }
+};
+
+/**
+ * Lookup message for specified error code.
+ * \param lut  Lookup table.
+ * \param code Code to lookup.
+ * \return Description associated to code.
+ */
+static gchar *imp_ldif_err2string( ErrMsgTableEntry lut[], gint code ) {
+        gchar *desc = NULL;
+        ErrMsgTableEntry entry;
+        gint i;
+
+        for( i = 0; ; i++ ) {
+                entry = lut[ i ];
+                if( entry.description == NULL ) break;
+                if( entry.code == code ) {
+                        desc = entry.description;
+                        break;
+                }
+        }
+        if( ! desc ) {
+		desc = _errMsgUnknown_;
+        }
+        return desc;
+}
+
 static void imp_ldif_status_show( gchar *msg ) {
 	if( impldif_dlg.statusbar != NULL ) {
-		gtk_statusbar_pop( GTK_STATUSBAR(impldif_dlg.statusbar), impldif_dlg.status_cid );
+		gtk_statusbar_pop( GTK_STATUSBAR(impldif_dlg.statusbar),
+			impldif_dlg.status_cid );
 		if( msg ) {
-			gtk_statusbar_push( GTK_STATUSBAR(impldif_dlg.statusbar), impldif_dlg.status_cid, msg );
+			gtk_statusbar_push(
+				GTK_STATUSBAR(impldif_dlg.statusbar),
+				impldif_dlg.status_cid, msg );
 		}
 	}
 }
@@ -176,7 +234,9 @@ static void imp_ldif_load_fields( LdifFile *ldf ) {
 			row = gtk_clist_append( clist, text );
 			gtk_clist_set_row_data( clist, row, rec );
 			if( rec->selected )
-				gtk_clist_set_pixmap( clist, row, FIELD_COL_SELECT, markxpm, markxpmmask );
+				gtk_clist_set_pixmap(
+					clist, row, FIELD_COL_SELECT, markxpm,
+					markxpmmask );
 			impldif_dlg.rowCount++;
 		}
 		node = g_list_next( node );
@@ -186,7 +246,10 @@ static void imp_ldif_load_fields( LdifFile *ldf ) {
 	ldif_set_accessed( ldf, FALSE );
 }
 
-static void imp_ldif_field_list_selected( GtkCList *clist, gint row, gint column, GdkEvent *event, gpointer data ) {
+static void imp_ldif_field_list_selected(
+		GtkCList *clist, gint row, gint column, GdkEvent *event,
+		gpointer data )
+{
 	Ldif_FieldRec *rec = gtk_clist_get_row_data( clist, row );
 
 	impldif_dlg.rowIndSelect = row;
@@ -194,7 +257,8 @@ static void imp_ldif_field_list_selected( GtkCList *clist, gint row, gint column
 	if( rec ) {
 		gtk_label_set_text( GTK_LABEL(impldif_dlg.name_ldif), rec->tagName );
 		if( rec->userName )
-			gtk_entry_set_text( GTK_ENTRY(impldif_dlg.name_attrib), rec->userName );
+			gtk_entry_set_text(
+				GTK_ENTRY(impldif_dlg.name_attrib), rec->userName );
 		gtk_toggle_button_set_active(
 			GTK_TOGGLE_BUTTON( impldif_dlg.check_select),
 			rec->selected );
@@ -202,12 +266,15 @@ static void imp_ldif_field_list_selected( GtkCList *clist, gint row, gint column
 	gtk_widget_grab_focus(impldif_dlg.name_attrib);
 }
 
-static void imp_ldif_field_list_toggle( GtkCList *clist, GdkEventButton *event, gpointer data ) {
+static void imp_ldif_field_list_toggle(
+		GtkCList *clist, GdkEventButton *event, gpointer data )
+{
 	if( ! event ) return;
 	if( impldif_dlg.rowIndSelect < 0 ) return;
 	if( event->button == 1 ) {
 		if( event->type == GDK_2BUTTON_PRESS ) {
-			Ldif_FieldRec *rec = gtk_clist_get_row_data( clist, impldif_dlg.rowIndSelect );
+			Ldif_FieldRec *rec = gtk_clist_get_row_data(
+				clist, impldif_dlg.rowIndSelect );
 			if( rec ) {
 				rec->selected = ! rec->selected;
 				imp_ldif_update_row( clist );
@@ -226,13 +293,16 @@ static void imp_ldif_modify_pressed( GtkWidget *widget, gpointer data ) {
 	rec = gtk_clist_get_row_data( clist, impldif_dlg.rowIndSelect );
 
 	g_free( rec->userName );
-	rec->userName = gtk_editable_get_chars( GTK_EDITABLE(impldif_dlg.name_attrib), 0, -1 );
-	rec->selected = gtk_toggle_button_get_active( GTK_TOGGLE_BUTTON( impldif_dlg.check_select) );
+	rec->userName = gtk_editable_get_chars(
+				GTK_EDITABLE(impldif_dlg.name_attrib), 0, -1 );
+	rec->selected = gtk_toggle_button_get_active(
+				GTK_TOGGLE_BUTTON( impldif_dlg.check_select) );
 	imp_ldif_update_row( clist );
 	gtk_clist_select_row( clist, row, 0 );
 	gtk_label_set_text( GTK_LABEL(impldif_dlg.name_ldif), "" );
 	gtk_entry_set_text( GTK_ENTRY(impldif_dlg.name_attrib), "" );
-	gtk_toggle_button_set_active( GTK_TOGGLE_BUTTON( impldif_dlg.check_select), FALSE );
+	gtk_toggle_button_set_active(
+		GTK_TOGGLE_BUTTON( impldif_dlg.check_select), FALSE );
 }
 
 /*
@@ -341,7 +411,7 @@ static void imp_ldif_finish_show() {
 		sMsg = _( "LDIF file imported successfully." );
 	}
 	else {
-		sMsg = mgu_error2string( _ldifFile_->retVal );
+		sMsg = imp_ldif_err2string( _lutErrorsLDIF_, _ldifFile_->retVal );
 	}
 	imp_ldif_status_show( sMsg );
 	gtk_widget_grab_focus(impldif_dlg.btnCancel);
@@ -590,33 +660,40 @@ static void imp_ldif_page_fields( gint pageNum, gchar *pageLbl ) {
 	/* First row */
 	top = 0;
 	label = gtk_label_new(_("LDIF Field"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
+	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
+		GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
 	name_ldif = gtk_label_new( "" );
 	gtk_misc_set_alignment(GTK_MISC(name_ldif), 0.01, 0.5);
-	gtk_table_attach(GTK_TABLE(table), name_ldif, 1, 3, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_table_attach(GTK_TABLE(table), name_ldif, 1, 3, top, (top + 1),
+		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
 	/* Second row */
 	++top;
 	label = gtk_label_new(_("Attribute"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
+	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
+		GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
 	name_attrib = gtk_entry_new();
-	gtk_table_attach(GTK_TABLE(table), name_attrib, 1, 3, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_table_attach(GTK_TABLE(table), name_attrib, 1, 3, top, (top + 1),
+		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
 	/* Next row */
 	++top;
 	label = gtk_label_new(_("Select"));
-	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1), GTK_FILL, 0, 0, 0);
+	gtk_table_attach(GTK_TABLE(table), label, 0, 1, top, (top + 1),
+		GTK_FILL, 0, 0, 0);
 	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5);
 
 	check_select = gtk_check_button_new();
-	gtk_table_attach(GTK_TABLE(table), check_select, 1, 2, top, (top + 1), GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+	gtk_table_attach(GTK_TABLE(table), check_select, 1, 2, top, (top + 1),
+		GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
 
 	buttonMod = gtk_button_new_with_label( _("Modify"));
-	gtk_table_attach(GTK_TABLE(table), buttonMod, 2, 3, top, (top + 1), GTK_FILL, 0, 3, 0);
+	gtk_table_attach(GTK_TABLE(table), buttonMod, 2, 3, top, (top + 1),
+		GTK_FILL, 0, 3, 0);
 
 	gtk_widget_show_all(vbox);
 
@@ -651,7 +728,8 @@ static void imp_ldif_page_finish( gint pageNum, gchar *pageLbl ) {
 	gtk_widget_show( label );
 	gtk_notebook_set_tab_label(
 		GTK_NOTEBOOK( impldif_dlg.notebook ),
-		gtk_notebook_get_nth_page( GTK_NOTEBOOK( impldif_dlg.notebook ), pageNum ), label );
+		gtk_notebook_get_nth_page( GTK_NOTEBOOK( impldif_dlg.notebook ), pageNum ),
+		label );
 
 	table = gtk_table_new(3, 2, FALSE);
 	gtk_box_pack_start(GTK_BOX(vbox), table, FALSE, FALSE, 0);
