@@ -232,3 +232,4 @@
 ( cvs diff -u -r 1.257 -r 1.258 src/folderview.c; ) > 1.0.0cvs22.patchset
 ( cvs diff -u -r 1.258 -r 1.259 src/folderview.c; ) > 1.0.0cvs23.patchset
 ( cvs diff -u -r 1.471 -r 1.472 src/compose.c; ) > 1.0.0cvs24.patchset
+( cvs diff -u -r 1.130 -r 1.131 src/messageview.c; ) > 1.0.0cvs25.patchset
