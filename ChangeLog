@@ -1,3 +1,8 @@
+2004-05-12
+
+	* src/procmsg.[ch]: fixed the type of integer value in cache data
+	  to g(u)int32.
+
 2004-05-11
 
 	* src/nntp.c: nntp_get_article(): ignore the protocol error of
