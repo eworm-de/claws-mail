@@ -28,7 +28,6 @@
 #include <string.h>
 #include <ctype.h>
 #include <errno.h>
-#include <netdb.h>
 
 #if (HAVE_WCTYPE_H && HAVE_WCHAR_H)
 #  include <wchar.h>
@@ -45,6 +44,7 @@
 
 #include "intl.h"
 #include "utils.h"
+#include "socket.h"
 #include "statusbar.h"
 #include "logwindow.h"
 
@@ -1471,26 +1471,25 @@ gchar *get_tmp_file(void)
 gchar *get_domain_name(void)
 {
 	static gchar *domain_name = NULL;
-        struct hostent *myfqdn = NULL;
 
 	if (!domain_name) {
-		gchar buf[BUFFSIZE] = "";
+		gchar buf[128] = "";
+		struct hostent *hp;
 
 		if (gethostname(buf, sizeof(buf)) < 0) {
 			perror("gethostname");
-			strcpy(buf, "unknown");
-		}  else  {
-                myfqdn = gethostbyname(buf);
-                if (myfqdn != NULL)  {
-                  memset(buf, '\0', strlen(buf));
-                  strcpy(buf, myfqdn->h_name);
-                  }  else  {
-                  perror("gethostbyname");
-                  strcpy(buf, "unknown");
-                  }
-                }
+			domain_name = "unknown";
+		} else {
+			buf[sizeof(buf) - 1] = '\0';
+			if ((hp = my_gethostbyname(buf)) == NULL) {
+				perror("gethostbyname");
+				domain_name = g_strdup(buf);
+			} else {
+				domain_name = g_strdup(hp->h_name);
+			}
+		}
 
-		domain_name = g_strdup(buf);
+		debug_print("domain name = %s\n", domain_name);
 	}
 
 	return domain_name;

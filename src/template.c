@@ -40,8 +40,6 @@ static Template *template_load(gchar *filename)
 	gchar buf[BUFFSIZE];
 	gint bytes_read;
 
-	debug_print(_("%s:%d loading template from %s\n"), __FILE__, __LINE__, filename);
-
 	if ((fp = fopen(filename, "rb")) == NULL) {
 		FILE_OP_ERROR(filename, "fopen");
 		return NULL;
@@ -115,7 +113,8 @@ GSList *template_read_config(void)
 	GSList *tmpl_list = NULL;
 
 	path = get_template_dir();
-	debug_print(_("%s:%d reading templates dir %s\n"), __FILE__, __LINE__, path);
+	debug_print("%s:%d reading templates dir %s\n",
+		    __FILE__, __LINE__, path);
 
 	if (!is_dir_exist(path)) {
 		if (make_dir(path) < 0)
@@ -131,11 +130,10 @@ GSList *template_read_config(void)
 		if (*de->d_name == '.') continue;
 
 		filename = g_strconcat(path, G_DIR_SEPARATOR_S, de->d_name, NULL);
-		debug_print(_("%s:%d found file %s\n"), __FILE__, __LINE__, filename);
 
 		if (stat(filename, &s) != 0 || !S_ISREG(s.st_mode) ) {
-			debug_print(_("%s:%d %s is not an ordinary file\n"), 
-			            __FILE__, __LINE__, filename);
+			debug_print("%s:%d %s is not an ordinary file\n",
+				    __FILE__, __LINE__, filename);
 			continue;
 		}
 
@@ -157,6 +155,8 @@ void template_write_config(GSList *tmpl_list)
 	Template *tmpl;
 	FILE *fp;
 	gint tmpl_num;
+
+	debug_print("%s:%d writing templates\n", __FILE__, __LINE__);
 
 	path = get_template_dir();
 
@@ -187,16 +187,13 @@ void template_write_config(GSList *tmpl_list)
 			return;
 		}
 
-		debug_print(_("%s:%d writing template \"%s\" to %s\n"),
-		            __FILE__, __LINE__, tmpl->name, filename);
 		fprintf(fp, "Name: %s\n", tmpl->name);
 		if (tmpl->subject && *tmpl->subject != '\0')
 			fprintf(fp, "Subject: %s\n", tmpl->subject);
 		if (tmpl->to && *tmpl->to != '\0')
 			fprintf(fp, "To: %s\n", tmpl->to);
 		fputs("\n", fp);
-		fwrite(tmpl->value, sizeof(gchar) * strlen(tmpl->value), 1,
-		       fp);
+		fwrite(tmpl->value, sizeof(gchar) * strlen(tmpl->value), 1, fp);
 		fclose(fp);
 	}
 }

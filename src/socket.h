@@ -26,6 +26,7 @@
 
 #include <glib.h>
 #include <gdk/gdk.h> /* ugly, just needed for the GdkInputCondition et al. */
+#include <netdb.h>
 
 typedef struct _SockInfo	SockInfo;
 
@@ -63,7 +64,8 @@ struct _SockInfo
 gint sock_set_nonblocking_mode		(SockInfo *sock, gboolean nonblock);
 gboolean sock_is_nonblocking_mode	(SockInfo *sock);
 
-SockInfo *sock_connect_nb		(const gchar *hostname, gushort port);
+struct hostent *my_gethostbyname	(const gchar *hostname);
+
 SockInfo *sock_connect			(const gchar *hostname, gushort port);
 SockInfo *sock_connect_cmd		(const gchar *hostname, const gchar *tunnelcmd);
 

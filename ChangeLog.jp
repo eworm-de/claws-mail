@@ -1,3 +1,15 @@
+2002-08-07
+
+	* src/socket.[ch]: IPv6 が有効な場合にリンクに失敗するのを修正。
+	* src/select-keys.c: キー選択ダイアログを修正。
+
+2002-08-07
+
+	* src/socket.[ch]: my_gethostbyname(): 新規。
+	* src/utils.c: get_domain_name(): 短いホスト名の代わりに FQDN を
+	  返すようにした(Bob Woodside さん thanks)。
+	* src/template.c: デバッグメッセージの冗長度を下げた。
+
 2002-08-06
 
 	* src/prefs_common.[ch]: obsolete なデフォルト署名鍵の設定を削除。
