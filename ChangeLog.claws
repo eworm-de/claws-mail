@@ -1,3 +1,15 @@
+2002-09-19 [paul]	0.8.2claws59
+
+	* src/prefs_folder_item.c
+		revert to Darko's original alignment of colour
+		selector button
+		add a colon to folder_color label
+		
+	* src/compose.c
+		add Colin's patch (with Hiro's modifications) to 
+		force BASE64 encoding for 8-bit text when signing
+		(sync with 0.8.3cvs2)
+
 2002-09-18 [alfons]	0.8.2claws58
 
 	* src/compose.c

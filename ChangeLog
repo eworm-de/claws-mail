@@ -1,3 +1,13 @@
+2002-09-19
+
+	* src/compose.c: compose_write_to_file(): force BASE64 encoding for
+	  8-bit text when signing (thanks to Colin Leroy).
+
+2002-09-16
+
+	* src/prefs_common.c: prefs_send_create(): fixed the charset string
+	  for Cyrillic (Windows-1251).
+
 2002-09-15
 
 	* version 0.8.3

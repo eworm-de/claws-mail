@@ -3285,6 +3285,13 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 			out_codeset = CS_ISO_8859_1;
 		encoding = procmime_get_encoding_for_charset(out_codeset);
 
+#if USE_GPGME
+		if (!is_draft &&
+		    compose->use_signing && !compose->account->clearsign &&
+		    encoding == ENC_8BIT)
+			encoding = ENC_BASE64;
+#endif
+
 		src_codeset = conv_get_current_charset_str();
 		/* if current encoding is US-ASCII, set it the same as
 		   outgoing one to prevent code conversion failure */
