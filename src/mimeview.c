@@ -42,7 +42,8 @@
 #else
 # include <unistd.h>
 #endif
-
+#include <fnmatch.h>
+ 
 #include "intl.h"
 #include "main.h"
 #include "mimeview.h"
@@ -133,6 +134,9 @@ static GtkTargetEntry mimeview_mime_types[] =
 	{"text/uri-list", 0, 0}
 };
 
+GSList *mimeviewer_factories;
+GSList *mimeviews;
+
 MimeView *mimeview_create(void)
 {
 	MimeView *mimeview;
@@ -220,6 +224,8 @@ MimeView *mimeview_create(void)
 	mimeview->popupmenu    = popupmenu;
 	mimeview->popupfactory = popupfactory;
 	mimeview->type         = -1;
+
+	mimeviews = g_slist_prepend(mimeviews, mimeview);
 
 	return mimeview;
 }
@@ -356,9 +362,19 @@ void mimeview_show_message(MimeView *mimeview, MimeInfo *mimeinfo,
 
 void mimeview_destroy(MimeView *mimeview)
 {
+	GSList *cur;
+	
+	for (cur = mimeview->viewers; cur != NULL; cur = g_slist_next(cur)) {
+		MimeViewer *viewer = (MimeViewer *) cur->data;
+		viewer->destroy_viewer(viewer);
+	}
+	g_slist_free(mimeview->viewers);
+
 	procmime_mimeinfo_free_all(mimeview->mimeinfo);
 	g_free(mimeview->file);
 	g_free(mimeview);
+
+	mimeviews = g_slist_remove(mimeviews, mimeview);
 }
 
 static void mimeview_set_multipart_tree(MimeView *mimeview,
@@ -514,13 +530,66 @@ static void mimeview_show_image_part(MimeView *mimeview, MimeInfo *partinfo)
 	g_free(filename);
 }
 
+static MimeViewer *get_viewer_for_content_type(MimeView *mimeview, const gchar *content_type)
+{
+	GSList *cur;
+	MimeViewerFactory *factory = NULL;
+	MimeViewer *viewer = NULL;
+	
+	for (cur = mimeviewer_factories; cur != NULL; cur = g_slist_next(cur)) {
+		MimeViewerFactory *curfactory = cur->data;
+
+		if(!fnmatch(curfactory->content_type, content_type, 0)) {
+			factory = curfactory;
+			break;
+		}
+	}
+	if (factory == NULL)
+		return NULL;
+
+	for (cur = mimeview->viewers; cur != NULL; cur = g_slist_next(cur)) {
+		MimeViewer *curviewer = cur->data;
+		
+		if (curviewer->factory == factory)
+			return curviewer;
+	}
+	viewer = factory->create_viewer();
+	mimeview->viewers = g_slist_append(mimeview->viewers, viewer);
+
+	return viewer;
+}
+
+static gboolean mimeview_show_part(MimeView *mimeview, MimeInfo *partinfo)
+{
+	MimeViewer *viewer;
+	
+	viewer = get_viewer_for_content_type(mimeview, partinfo->content_type);
+	if (viewer == NULL) {
+		if (mimeview->mimeviewer != NULL)
+			mimeview->mimeviewer->clear_viewer(mimeview->mimeviewer);
+		mimeview->mimeviewer = NULL;
+		return FALSE;
+	}
+
+	if (mimeview->mimeviewer != viewer) {
+		if (mimeview->mimeviewer != NULL)
+			mimeview->mimeviewer->clear_viewer(mimeview->mimeviewer);
+		mimeview->mimeviewer = viewer;
+		mimeview_change_view_type(mimeview, MIMEVIEW_VIEWER);
+	}
+	viewer->show_mimepart(viewer, mimeview->file, partinfo);
+
+	return TRUE;
+}
+
 static void mimeview_change_view_type(MimeView *mimeview, MimeViewType type)
 {
 	TextView  *textview  = mimeview->textview;
 	ImageView *imageview = mimeview->imageview;
 	GList *children;
 
-	if (mimeview->type == type) return;
+	if ((mimeview->type != MIMEVIEW_VIEWER) && 
+	    (mimeview->type == type)) return;
 
 	children = gtk_container_children(GTK_CONTAINER(mimeview->mime_vbox));
 	if (children) {
@@ -537,6 +606,10 @@ static void mimeview_change_view_type(MimeView *mimeview, MimeViewType type)
 	case MIMEVIEW_TEXT:
 		gtk_container_add(GTK_CONTAINER(mimeview->mime_vbox),
 				  GTK_WIDGET_PTR(textview));
+		break;
+	case MIMEVIEW_VIEWER:
+		gtk_container_add(GTK_CONTAINER(mimeview->mime_vbox),
+				  GTK_WIDGET(mimeview->mimeviewer->get_widget(mimeview->mimeviewer)));
 		break;
 	default:
 		return;
@@ -555,6 +628,8 @@ static void mimeview_clear(MimeView *mimeview)
 	gtk_clist_clear(clist);
 	textview_clear(mimeview->textview);
 	imageview_clear(mimeview->imageview);
+	if (mimeview->mimeviewer != NULL)
+		mimeview->mimeviewer->clear_viewer(mimeview->mimeviewer);
 
 	mimeview->opened = NULL;
 
@@ -585,38 +660,40 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 	
 	mimeview->textview->default_text = FALSE;
 	
-	switch (partinfo->mime_type) {
-	case MIME_TEXT:
-	case MIME_TEXT_HTML:
-	case MIME_TEXT_ENRICHED:
-	case MIME_MESSAGE_RFC822:
-	case MIME_MULTIPART:
-		mimeview_show_message_part(mimeview, partinfo);
+	if (!mimeview_show_part(mimeview, partinfo)) {
+		switch (partinfo->mime_type) {
+		case MIME_TEXT:
+		case MIME_TEXT_HTML:
+		case MIME_TEXT_ENRICHED:
+		case MIME_MESSAGE_RFC822:
+		case MIME_MULTIPART:
+			mimeview_show_message_part(mimeview, partinfo);
 		
-		break;
+			break;
 #if (HAVE_GDK_PIXBUF || HAVE_GDK_IMLIB)
-	case MIME_IMAGE:
-		mimeview->textview->default_text = TRUE;	
-		if (prefs_common.display_img)
-			mimeview_show_image_part(mimeview, partinfo);
-		else {
+		case MIME_IMAGE:
+			mimeview->textview->default_text = TRUE;	
+			if (prefs_common.display_img)
+				mimeview_show_image_part(mimeview, partinfo);
+			else {
+				mimeview_change_view_type(mimeview, MIMEVIEW_TEXT);
+				textview_show_mime_part(mimeview->textview, partinfo);
+			}
+			break;
+#endif
+		default:
+			mimeview->textview->default_text = TRUE;	
 			mimeview_change_view_type(mimeview, MIMEVIEW_TEXT);
-			textview_show_mime_part(mimeview->textview, partinfo);
-		}
-		break;
-#endif
-	default:
-		mimeview->textview->default_text = TRUE;	
-		mimeview_change_view_type(mimeview, MIMEVIEW_TEXT);
 #if USE_GPGME
-		if (g_strcasecmp(partinfo->content_type,
-				 "application/pgp-signature") == 0)
-			textview_show_signature_part(mimeview->textview,
-						     partinfo);
-		else
+			if (g_strcasecmp(partinfo->content_type,
+					 "application/pgp-signature") == 0)
+				textview_show_signature_part(mimeview->textview,
+							     partinfo);
+			else
 #endif
-			textview_show_mime_part(mimeview->textview, partinfo);
-		break;
+				textview_show_mime_part(mimeview->textview, partinfo);
+			break;
+		}
 	}
 }
 
@@ -1197,3 +1274,36 @@ void mimeview_check_signature(MimeView *mimeview)
 			      mimeview->file);
 }
 #endif /* USE_GPGME */
+
+void mimeview_register_viewer_factory(MimeViewerFactory *factory)
+{
+	mimeviewer_factories = g_slist_append(mimeviewer_factories, factory);
+}
+
+static gint cmp_viewer_by_factroy(gconstpointer a, gconstpointer b)
+{
+	return ((MimeViewer *) a)->factory == (MimeViewerFactory *) b ? 0 : -1;
+}
+
+void mimeview_unregister_viewer_factory(MimeViewerFactory *factory)
+{
+	GSList *mimeview_list, *viewer_list;
+
+	for (mimeview_list = mimeviews; mimeview_list != NULL; mimeview_list = g_slist_next(mimeview_list)) {
+		MimeView *mimeview = (MimeView *) mimeview_list->data;
+		
+		if (mimeview->mimeviewer && mimeview->mimeviewer->factory == factory) {
+			mimeview_change_view_type(mimeview, MIMEVIEW_TEXT);
+			mimeview->mimeviewer = NULL;
+		}
+
+		while ((viewer_list = g_slist_find_custom(mimeview->viewers, factory, cmp_viewer_by_factroy)) != NULL) {
+			MimeViewer *mimeviewer = (MimeViewer *) viewer_list->data;
+
+			mimeviewer->destroy_viewer(mimeviewer);
+			mimeview->viewers = g_slist_remove(mimeview->viewers, mimeviewer);
+		}
+	}
+
+	mimeviewer_factories = g_slist_remove(mimeviewer_factories, factory);
+}

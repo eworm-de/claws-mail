@@ -1172,7 +1172,11 @@ EXPORTS
 	mimeview_destroy 
 	mimeview_init 
 	mimeview_pass_key_press_event 
+	mimeview_register_viewer_factory 
 	mimeview_show_message 
+	mimeview_unregister_viewer_factory 
+	mimeviewer_factories 
+	mimeviews 
 	mkstemp 
 	move_file 
 	msgcache_add_msg 

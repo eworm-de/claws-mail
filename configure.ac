@@ -11,7 +11,7 @@ MINOR_VERSION=8
 MICRO_VERSION=11
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws11
+EXTRA_VERSION=claws18
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -395,6 +395,28 @@ if test x"$ac_cv_enable_spamassassin_plugin" = xyes; then
 	AC_DEFINE(USE_SPAMASSASSIN, 1, Define if you use the SpamAssassin plugin)
 fi
 
+AC_ARG_ENABLE(mathml-viewer-plugin,
+	[  --enable-mathml-viewer-plugin    Build MarhML-Viewer plugin [default=no]],
+	[ac_cv_enable_mathml_viewer_plugin=$enableval], [ac_cv_enable_mathml_viewer_plugin=no])
+AM_CONDITIONAL(BUILD_MATHML_VIEWER_PLUGIN, test x"$ac_cv_enable_mathml_viewer_plugin" = xyes)
+if test x"$ac_cv_enable_mathml_viewer_plugin" = xyes; then
+	GTK_MATH_VIEW_CFLAGS=$( gtkmathview-config --cflags )
+	GTK_MATH_VIEW_LIBS=$( gtkmathview-config --libs )
+	AC_SUBST(GTK_MATH_VIEW_CFLAGS)
+	AC_SUBST(GTK_MATH_VIEW_LIBS)
+
+	PLUGINS="mathml-viewer $PLUGINS"
+fi
+
+AC_ARG_ENABLE(dillo-viewer-plugin,
+	[  --enable-dillo-viewer-plugin   Build Dillo plugin for html mail rendering [default=no]],
+	[ac_cv_enable_dillo_plugin=$enableval], [ac_cv_enable_dillo_plugin=no])
+AM_CONDITIONAL(BUILD_DILLO_VIEWER_PLUGIN, test x"$ac_cv_enable_dillo_plugin" = xyes)
+if test x"$ac_cv_enable_dillo_plugin" = xyes; then
+	PLUGINS="dillo $PLUGINS"
+fi
+
+
 dnl ****************************
 dnl ** Final configure output **
 dnl ****************************
@@ -413,6 +435,8 @@ src/gtk/Makefile
 src/plugins/Makefile
 src/plugins/demo/Makefile
 src/plugins/spamassassin/Makefile
+src/plugins/mathml_viewer/Makefile
+src/plugins/dillo_viewer/Makefile
 faq/Makefile
 faq/de/Makefile
 faq/en/Makefile

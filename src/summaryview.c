@@ -945,10 +945,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		messageview_clear(summaryview->messageview);
 
 	buf = NULL;
-	if (!item || !item->path || !item->parent || item->no_select ||
-	    (FOLDER_TYPE(item->folder) == F_MH &&
-	     ((buf = folder_item_get_path(item)) == NULL ||
-	      change_dir(buf) < 0))) {
+	if (!item || !item->path || !item->parent || item->no_select) {
 		g_free(buf);
 		debug_print("empty folder\n\n");
 		summary_set_hide_read_msgs_menu(summaryview, FALSE);
@@ -3736,9 +3733,6 @@ static void summary_execute_delete(SummaryView *summaryview)
 	GSList *cur;
 
 	trash = summaryview->folder_item->folder->trash;
-	if (FOLDER_TYPE(summaryview->folder_item->folder) == F_MH) {
-		g_return_if_fail(trash != NULL);
-	}
 
 	/* search deleting messages and execute */
 	gtk_ctree_pre_recursive

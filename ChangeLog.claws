@@ -1,3 +1,65 @@
+2003-03-16 [christoph]	0.8.11claws18
+
+	* src/mimeview.c
+	* src/plugins/dillo_viewer/dillo_viewer.c
+	* src/plugins/mathml_viewer/mathml_viewer.c
+		make unregistering of MimeViewerFactorys possible
+
+2003-03-16 [alfons]	0.8.11claws17
+
+	* configure.ac
+		correct typo
+
+2003-03-16 [melvin]	0.8.11claws16
+
+	* src/plugins/dillo_viewer.c
+		Fixed bug where it was not possible to view more than
+		one text/html attachment per message (bug discovered
+		by Christoph Hohmann).
+
+2003-03-15 [melvin]	0.8.11claws15
+
+	* src/prefs_actions.c
+		Fixed compilation warnings.
+
+2003-03-15 [melvin]	0.8.11claws14
+
+	* src/plugins/Makefile.am
+	* src/plugins/dillo_viewer/.cvsignore			** NEW **
+	* src/plugins/dillo_viewer/Makefile.am			** NEW **
+	* src/plugins/dillo_viewer/dillo_viewer.c		** NEW **
+		Added a html mail viewer plugin that uses Dillo v0.7.0 or
+		newer (http://dillo.auriga.wearlab.de/).
+
+2003-03-15 [christoph]	0.8.11claws13
+
+	* src/imap.c
+		don't query imap folder for attributes because we already
+		for them from imap_status
+
+	* src/mimeview.[ch]
+		add support for plugable MimeViewers (unloading Viewers
+		not yet complete)
+
+	* src/plugins/Makefile.am
+	* src/plugins/mathml_viewer/.cvsignore		** NEW **
+	* src/plugins/mathml_viewer/Makefile.am		** NEW **
+	* src/plugins/mathml_viewer/mathml_viewer.c	** NEW **
+		add MathML Viewer (Content-Type text/mathml) using GtkMathView
+		widget from http://helm.cs.unibo.it/mml-widget/
+
+2003-03-14 [christoph]	0.8.11claws12
+
+	* src/folder.[ch]
+		o error return code's should better be negative
+		o replace printf with debug_print
+
+	* src/imap.c
+		improve IMAP folder scan by checking UID-NEXT
+
+	* src/summaryview.c
+		remove check that are unnecessary in my opinion
+
 2003-03-13 [christoph]	0.8.11claws11
 
 	* src/folder.[ch]
