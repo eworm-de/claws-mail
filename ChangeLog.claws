@@ -1,3 +1,8 @@
+2003-06-26 [christoph]	0.9.0claws66
+
+	* src/folder.c
+		freeze folder updates while a folder is scanned
+
 2003-06-26 [darko]	0.9.0claws65
 
 	* src/ldapserver.c
