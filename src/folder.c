@@ -231,6 +231,11 @@ static gboolean folder_item_remove_func(GNode *node, gpointer data)
 {
 	FolderItem *item = FOLDER_ITEM(node->data);
 
+	if (item->cache != NULL) {
+		msgcache_destroy(item->cache);
+		item->cache = NULL;
+	}
+
 	folder_item_destroy(item);
 	return FALSE;
 }

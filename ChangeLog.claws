@@ -1,3 +1,9 @@
+2003-09-06 [christoph]	0.9.4claws66
+
+	* src/folder.c
+		destroy folder's MsgCache if FolderItem is removed to make sure
+		it is not saved when the FolderItem is destroyed
+
 2003-09-06 [christoph]	0.9.4claws65
 
 	* src/plugins/clamav/clamav_plugin.c
