@@ -915,10 +915,12 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		if (quicksearch_changed) {
 			/* only scan subfolders when quicksearch changed,
 			 * not when search is the same and folder changed */
+			main_window_cursor_wait(summaryview->mainwin);
 			quicksearch_reset_cur_folder_item(summaryview->quicksearch);
 			quicksearch_search_subfolders(summaryview->quicksearch, 
 					      summaryview->folderview,
 					      summaryview->folder_item);
+			main_window_cursor_normal(summaryview->mainwin);
 		}
 		
 		g_slist_free(mlist);

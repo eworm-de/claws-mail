@@ -1,3 +1,8 @@
+2005-01-21 [colin]	1.0.0cvs7
+
+	* src/summaryview.c
+		Set cursor to wait while looking in subfolders
+
 2005-01-21 [colin]	1.0.0cvs6
 
 	* src/summaryview.c
