@@ -20,7 +20,7 @@
 ################################################################################
 
 # DEBUGVERSION: set to 1 to include debugging symbols
-DEBUGVERSION=1
+DEBUGVERSION=0
 
 # GCCVERSION: set to 3 if using gcc3.x (-fnative-struct | -mms-bitfields)
 GCCVERSION=2
@@ -30,6 +30,9 @@ CYGWIN=0
 
 # CROSS: Cross comilation prefix
 #CROSS=i586-mingw32msvc-
+
+# PLUGINS: Plugins that should be built
+PLUGINS=demo.dll spamassassin.dll spamassassin_gtk.dll
 
 ################################################################################
 # directory strucure as in README-w32.txt
@@ -61,11 +64,11 @@ SRCDIR_ESC	=\.\.\/src\/
 ifeq ($(DEBUGVERSION),1)
 	DEBUGFLAG=-g
 	DEBUGDEF=-D_DEBUG
-	APPNAME=sylpheed_d.exe
+	APPNAME=sylpheed_d
 else
 	NOCONSOLE=-mwindows
-	OPTIMIZATION=-O3
-	APPNAME=sylpheed.exe
+#	OPTIMIZATION=-O3
+	APPNAME=sylpheed
 endif
 
 ifeq ($(GCCVERSION),3)
@@ -95,7 +98,7 @@ RM=rm
 
 ###
 
-VPATH=$(SRCDIR):$(SRCDIR)/common:$(SRCDIR)/gtk:$(PODIR):$(LIBJCONVDIR):$(SRCDIR)/plugins/demo
+VPATH=$(SRCDIR):$(SRCDIR)/common:$(SRCDIR)/gtk:$(PODIR):$(LIBJCONVDIR):$(SRCDIR)/plugins/demo:$(SRCDIR)/plugins/spamassassin
 DEFINES=-DHAVE_CONFIG_H -DHAVE_BYTE_TYPEDEF $(DEBUGDEF)
 EXTRALIBS=-lwsock32
 RESOURCE=appicon
@@ -265,6 +268,7 @@ OBJECTS= \
 	pgptext.o \
 	pine.o \
 	plugin.o \
+	pluginwindow.o \
 	pop.o \
 	prefs.o \
 	prefs_account.o \
@@ -280,6 +284,7 @@ OBJECTS= \
 	prefs_summary_column.o \
 	prefs_template.o \
 	prefs_toolbar.o \
+	prefswindow.o \
 	procheader.o \
 	procmime.o \
 	procmsg.o \
@@ -330,19 +335,100 @@ OBJECTS= \
 
 all: version bisonfiles compile translation
 
-compile: $(APPNAME)
+compile: $(APPNAME).dll $(APPNAME).exe $(PLUGINS)
 version: $(VERSION_H)
 bisonfiles: $(QUOTE_FMT_TARGETS) $(MATCHER_PARSER_TARGETS)
 translation: $(MOFILES)
 
-$(APPNAME): $(OBJECTS) $(RESOURCE).o
-	$(CC) $(NOCONSOLE) $(FLAGS) $(OBJECTS) $(RESOURCE).o $(EXTRALIBS) $(LIBS) -o $(APPNAME)
+### plugins
+
+PLGDEFINES=-DHAVE_CONFIG_H -D_FINDDATA_T_DEFINED
+PLGINCLUDE=-I. -I../src/common -I../../../include/glib-2.0 -I../../../lib/glib-2.0/include -I../../w32lib/src
+
+### spamassassin
+
+spamassassin.o:	spamassassin.c spamassassin.h
+libspamc.o:	libspamc.c libspamc.h
+#utils.o:	utils.c utils.h
+libspamc_utils.o:	libspamc_utils.c $(SRCDIR)/plugins/spamassassin/utils.h
+libspamc_utils.c:
+	cp $(SRCDIR)/plugins/spamassassin/utils.c libspamc_utils.c
+
+spamassassin_LIBS = $(APPNAME).dll -lwsock32 $(EXTRALIBS) $(LIBS)
+spamassassin_OBJECTS = \
+	spamassassin.o \
+	libspamc.o \
+	libspamc_utils.o
+
+spamassassin.dll: libspamc_utils.c $(spamassassin_OBJECTS)
+	dlltool -D $@ -z $@.def --export-all-symbols --exclude-symbols WinMain@16 $(spamassassin_OBJECTS)
+	$(CC) -mdll $(CFLAGS) -o junk.tmp -Wl,--base-file,$@.base $(spamassassin_OBJECTS) $(spamassassin_LIBS)
+	dlltool --dllname $@ --base-file $@.base --output-exp $@.exp --def $@.def
+	$(CC) -mdll $(CFLAGS) -o $@ $(spamassassin_OBJECTS) -Wl,$@.exp $(spamassassin_LIBS)
+	-rm $@.def $@.base $@.exp $@.lib junk.tmp
+	#$(CC) -shared $? $(APPNAME).dll -lwsock32 /dev/lib/libglib-2.0.dll.a -o $@
+spamassassin_clean:
+	-rm $(spamassassin_OBJECTS) libspamc_utils.c
+
+### spamassassin (gui)
+
+spamassassin_gtk.o:	spamassassin_gtk.c spamassassin.h
+
+spamassassin_gtk_LIBS = $(APPNAME).dll spamassassin.dll $(EXTRALIBS) $(LIBS)
+spamassassin_gtk_OBJECTS = \
+	spamassassin_gtk.o
+
+spamassassin_gtk.dll: $(spamassassin_gtk_OBJECTS)
+	-rm $@.def $@.base $@.exp $@.lib junk.tmp
+	dlltool -D $@ -z $@.def --export-all-symbols --exclude-symbols WinMain@16 $(spamassassin_gtk_OBJECTS)
+	$(CC) -mdll $(CFLAGS) -o junk.tmp -Wl,--base-file,$@.base $(spamassassin_gtk_OBJECTS) $(spamassassin_gtk_LIBS)
+	dlltool --dllname $@ --base-file $@.base --output-exp $@.exp --def $@.def
+	$(CC) -mdll $(CFLAGS) -o $@ $(spamassassin_gtk_OBJECTS) -Wl,$@.exp $(spamassassin_gtk_LIBS)
+	#$(CC) -shared $? $(APPNAME).dll spamassassin.dll $(LIBDIR)/intl.lib /dev/lib/libglib-2.0.dll.a /dev/lib/libgtk.dll.a -o $@
+spamassassin_gtk_clean:
+	-rm $(spamassassin_gtk_OBJECTS)
+
+### demo plugin
+
+demo.o:	demo.c
+	$(CC) -c $(PLGDEFINES) $(PLGINCLUDE) $< -o demo.o
+demo.dll:	demo.o hooks.o
+	$(CC) -shared demo.o $(APPNAME).dll /dev/lib/libglib-2.0.dll.a -o $@
+demo_clean:
+	-rm demo.o
+
+### sylpheed.dll (main)
+
+$(APPNAME).dll: $(OBJECTS) $(APPNAME).dll.def $(APPNAME).dll.base $(APPNAME).dll.exp #$(APPNAME).dll.lib
+	$(CC) -mdll $(FLAGS) -o $@ $(OBJECTS) -Wl,$@.exp $(EXTRALIBS) $(LIBS)
+$(APPNAME).dll.def:
+	dlltool -D $(APPNAME).dll -z $@ --export-all-symbols --exclude-symbols WinMain@16 $(OBJECTS)
+$(APPNAME).dll.base:
+	$(CC) -mdll $(FLAGS) -o junk.tmp -Wl,--base-file,$@ $(OBJECTS) $(EXTRALIBS) $(LIBS)
+$(APPNAME).dll.exp:
+	dlltool --dllname $(APPNAME).dll --base-file $(APPNAME).dll.base --output-exp $@ --def $(APPNAME).dll.def
+$(APPNAME).dll.lib:
+	dlltool -D main.dll -d main.def -l $@
+
+### sylpheed.exe (loader)
+
+w32_loader.o:	w32_loader.c
+
+loader_OBJECTS=	w32_loader.o
+
+$(APPNAME).exe: $(loader_OBJECTS) $(RESOURCE).o
+	$(CC) $(NOCONSOLE) $(FLAGS) -L. -l$(APPNAME) $? $(EXTRALIBS) $(LIBS) -o $@
+
 $(RESOURCE).o: $(RESOURCE).rc
 	$(RESCOMP) $< $@
+
+### version number
 
 $(VERSION_H): $(CONFIGURE_IN) $(VERSION_H_IN)
 	echo Version: $(PACKAGE) $(VERSION)
 	$(SED) -e "s/@PACKAGE@/$(PACKAGE)/;s/@VERSION@/$(VERSION)/;" $(VERSION_H_IN) > $@
+
+### translations
 
 %.mo: $(PODIR)/%.po
 	@# change Content-Type to "utf-8" (needed for unix msgfmt)
@@ -353,6 +439,8 @@ $(VERSION_H): $(CONFIGURE_IN) $(VERSION_H_IN)
 	$(MSGFMT) -o $@ $(*F)-utf8.po
 	@# cleanup
 	@-$(RM) $(*F)-tmp.po $(*F)-utf8.po
+
+### parser generated
 
 %_lex.c: $(SRCDIR)/%_lex.l
 	$(FLEX) $(SRCDIR)/$(*F)_lex.l
@@ -366,10 +454,13 @@ $(VERSION_H): $(CONFIGURE_IN) $(VERSION_H_IN)
 %_lex.l %_parse.y:
 	@echo dummy:$@
 
-clean:
+### cleanup
+
+clean: demo_clean spamassassin_clean spamassassin_gtk_clean
 	-$(RM) *.o $(APPNAME)
 	-$(RM) $(LEX_YY_C) $(Y_TAB_C) $(Y_TAB_H)
 	-$(CD) $(SRCDIR); $(RM) $(QUOTE_FMT_TARGETS) $(MATCHER_PARSER_TARGETS)
+	
 
 ### dependencies
 # sylpheed
@@ -455,6 +546,7 @@ passphrase.o: 	passphrase.c passphrase.h
 pgptext.o: 	pgptext.c pgptext.h
 pine.o: 	pine.c pine.h
 plugin.o: 	plugin.c plugin.h
+pluginwindow.o: 	pluginwindow.c pluginwindow.h
 pop.o: 	pop.c pop.h
 prefs.o: 	prefs.c prefs.h
 prefs_account.o: 	prefs_account.c prefs_account.h
@@ -470,6 +562,7 @@ prefs_scoring.o: 	prefs_scoring.c prefs_scoring.h
 prefs_summary_column.o: 	prefs_summary_column.c prefs_summary_column.h
 prefs_template.o: 	prefs_template.c prefs_template.h
 prefs_toolbar.o: 	prefs_toolbar.c prefs_toolbar.h
+prefswindow.o: 	prefswindow.c prefswindow.h
 procheader.o: 	procheader.c procheader.h
 procmime.o: 	procmime.c procmime.h
 procmsg.o: 	procmsg.c procmsg.h
