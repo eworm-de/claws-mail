@@ -787,6 +787,8 @@ gboolean procheader_date_parse_to_tm(const gchar *src, struct tm *t, char *zone)
 	t->tm_yday = 0;
 	t->tm_isdst = -1;
 
+	mktime(t);
+
 	return TRUE;
 }
 
