@@ -31,10 +31,6 @@
 #  include <locale.h>
 #endif
 
-#if HAVE_ICONV
-#  include <iconv.h>
-#endif
-
 #include "intl.h"
 #include "codeconv.h"
 #include "unmime.h"
@@ -784,7 +780,6 @@ void conv_code_converter_destroy(CodeConverter *conv)
 gint conv_convert(CodeConverter *conv, gchar *outbuf, gint outlen,
 		  const gchar *inbuf)
 {
-#if HAVE_ICONV
 	if (conv->code_conv_func != conv_noconv)
 		conv->code_conv_func(outbuf, outlen, inbuf);
 	else {
@@ -798,9 +793,6 @@ gint conv_convert(CodeConverter *conv, gchar *outbuf, gint outlen,
 			g_free(str);
 		}
 	}
-#else /* !HAVE_ICONV */
-	conv->code_conv_func(outbuf, outlen, inbuf);
-#endif
 
 	return 0;
 }
@@ -822,11 +814,7 @@ gchar *conv_codeset_strdup(const gchar *inbuf,
 		return g_realloc(buf, strlen(buf) + 1);
 	}
 
-#if HAVE_ICONV
 	return conv_iconv_strdup(inbuf, src_code, dest_code);
-#else
-	return g_strdup(inbuf);
-#endif /* HAVE_ICONV */
 }
 
 CodeConvFunc conv_get_code_conv_func(const gchar *src_charset_str,
@@ -914,25 +902,20 @@ CodeConvFunc conv_get_code_conv_func(const gchar *src_charset_str,
 	return code_conv;
 }
 
-#if HAVE_ICONV
 gchar *conv_iconv_strdup(const gchar *inbuf,
-			 const gchar *src_code, const gchar *dest_code)
+			 const gchar *isrc_code, const gchar *idest_code)
 {
-	iconv_t cd;
-	const gchar *inbuf_p;
+	/* presumably GLib 2's function handles the conversion details,
+	 * whether iconv is sitting below, or something else */
 	gchar *outbuf;
-	gchar *outbuf_p;
-	size_t in_size;
-	size_t in_left;
-	size_t out_size;
-	size_t out_left;
-	size_t n_conv;
-	size_t len;
-
-	if (!src_code)
-		src_code = conv_get_outgoing_charset_str();
-	if (!dest_code)
-		dest_code = conv_get_current_charset_str();
+	gsize read_len, written_len;
+	gchar *src_code = conv_get_outgoing_charset_str();
+	gchar *dest_code = conv_get_current_charset_str();
+	
+	if (isrc_code)
+		src_code = isrc_code;
+	if (idest_code)
+		dest_code = idest_code;
 
 	/* don't convert if current codeset is US-ASCII */
 	if (!strcasecmp(dest_code, CS_US_ASCII))
@@ -942,70 +925,19 @@ gchar *conv_iconv_strdup(const gchar *inbuf,
 	if (!strcasecmp(src_code, dest_code))
 		return g_strdup(inbuf);
 
-	cd = iconv_open(dest_code, src_code);
-	if (cd == (iconv_t)-1)
-		return NULL;
+	/* FIXME: unchecked inbuf? Can't see at this level. */
+	outbuf = g_convert(inbuf, strlen(inbuf), dest_code, src_code,
+		           &read_len, &written_len, NULL);
 
-	inbuf_p = inbuf;
-	in_size = strlen(inbuf);
-	in_left = in_size;
-	out_size = (in_size + 1) * 2;
-	outbuf = g_malloc(out_size);
-	outbuf_p = outbuf;
-	out_left = out_size;
-
-#define EXPAND_BUF()				\
-{						\
-	len = outbuf_p - outbuf;		\
-	out_size *= 2;				\
-	outbuf = g_realloc(outbuf, out_size);	\
-	outbuf_p = outbuf + len;		\
-	out_left = out_size - len;		\
+	if (outbuf == NULL && strcasecmp(src_code, CS_ISO_8859_15)) 
+		/* also try iso-8859-15 */
+		outbuf = conv_iconv_strdup(inbuf, CS_ISO_8859_15, idest_code);
+	if (outbuf == NULL)
+		g_warning(_("Valid locale type set? (Currently: %s to %s)\n"),
+			  src_code, dest_code);
+	
+	return outbuf;			   
 }
-
-	while ((n_conv = iconv(cd, (ICONV_CONST gchar **)&inbuf_p, &in_left,
-			       &outbuf_p, &out_left)) == (size_t)-1) {
-		if (EILSEQ == errno) {
-			inbuf_p++;
-			in_left--;
-			if (out_left == 0) {
-				EXPAND_BUF();
-			}
-			*outbuf_p++ = SUBST_CHAR;
-			out_left--;
-		} else if (EINVAL == errno) {
-			break;
-		} else if (E2BIG == errno) {
-			EXPAND_BUF();
-		} else {
-			g_warning("conv_iconv_strdup(): %s\n",
-				  g_strerror(errno));
-			break;
-		}
-	}
-
-	while ((n_conv = iconv(cd, NULL, NULL, &outbuf_p, &out_left)) ==
-	       (size_t)-1) {
-		if (E2BIG == errno) {
-			EXPAND_BUF();
-		} else {
-			g_warning("conv_iconv_strdup(): %s\n",
-				  g_strerror(errno));
-			break;
-		}
-	}
-
-#undef EXPAND_BUF
-
-	len = outbuf_p - outbuf;
-	outbuf = g_realloc(outbuf, len + 1);
-	outbuf[len] = '\0';
-
-	iconv_close(cd);
-
-	return outbuf;
-}
-#endif /* HAVE_ICONV */
 
 static const struct {
 	CharSet charset;
@@ -1408,15 +1340,6 @@ CharSet conv_get_outgoing_charset(void)
 			}
 		}
 	}
-
-#if !HAVE_ICONV
-	/* encoding conversion without iconv() is only supported
-	   on Japanese locale for now */
-	if (out_charset == C_ISO_2022_JP)
-		return out_charset;
-	else
-		return conv_get_current_charset();
-#endif
 
 	return out_charset;
 }
