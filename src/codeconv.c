@@ -1385,8 +1385,11 @@ gboolean conv_is_multibyte_encoding(CharSet encoding)
 
 const gchar *conv_get_current_locale(void)
 {
-	const gchar *cur_locale;
+	static const gchar *cur_locale = NULL;
 
+	if (cur_locale != NULL)
+		return cur_locale;
+	
 	cur_locale = g_getenv("LC_ALL");
 	if (!cur_locale || !strlen(cur_locale)) 
 		cur_locale = g_getenv("LC_CTYPE");
@@ -1395,8 +1398,11 @@ const gchar *conv_get_current_locale(void)
 	if (!cur_locale || !strlen(cur_locale)) 
 		cur_locale = setlocale(LC_CTYPE, NULL);
 
-/*	debug_print("current locale: %s\n",
-		    cur_locale ? cur_locale : "(none)"); */
+	if (cur_locale && strlen(cur_locale)) {
+		gchar *tmp = g_strdup(cur_locale);
+		cur_locale = g_strdup(tmp);
+		g_free(tmp);
+	}
 
 	return cur_locale;
 }
@@ -1432,11 +1438,10 @@ void conv_unmime_header_overwrite(gchar *str)
 void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 			const gchar *charset)
 {
-	CharSet cur_charset;
 	const gchar *locale;
 
-	cur_charset = conv_get_current_charset();
-
+	memset(outbuf, 0, outlen);
+	
 #warning FIXME_GTK2
 /* Should we always ensure to convert? */
 	locale = conv_get_current_locale();
@@ -1449,16 +1454,18 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 		Xalloca(buf, buflen, return);
 		conv_anytodisp(buf, buflen, str);
 		unmime_header(outbuf, buf);
-	} else if (g_utf8_validate(str, -1, NULL)) {
-		unmime_header(outbuf, str);
 	} else {
-		gchar *buf;
-		gint buflen;
-		const gchar *src_codeset, *dest_codeset;
-		src_codeset = conv_get_current_charset_str();
-		dest_codeset = CS_UTF_8;
-		buf = conv_codeset_strdup(str, src_codeset, dest_codeset);
-		unmime_header(outbuf, buf);
+		gchar *tmp;
+		unmime_header(outbuf, str);
+		if (outbuf && !g_utf8_validate(outbuf, -1, NULL)) {
+			tmp = conv_codeset_strdup(outbuf,
+					conv_get_current_charset_str(),
+					CS_UTF_8);
+			if (tmp) {
+				strncpy(outbuf, tmp, outlen-1);
+				g_free(tmp);
+			}
+		}
 	}
 }
 
