@@ -23,6 +23,7 @@
 
 #include <string.h>
 #include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
 
 #include "intl.h"
 #include "utils.h"
@@ -92,7 +93,7 @@ static gboolean ctree_select_row(GtkCTree *ctree, GList *node, gint column, gpoi
 	while (page->path[i + 1] != 0)
 		i++;
 	labeltext = page->path[i];
-	
+
 	gtk_label_set_text(GTK_LABEL(prefswindow->pagelabel), labeltext);
 
 	pagenum = gtk_notebook_page_num(GTK_NOTEBOOK(prefswindow->notebook),
@@ -202,6 +203,24 @@ gint compare_func(GtkCList *clist, gconstpointer ptr1, gconstpointer ptr2)
 	return prefsnode1->treeweight > prefsnode2->treeweight ? -1 : 
 	       prefsnode1->treeweight < prefsnode2->treeweight ?  1 : 
 							          0;
+}
+
+static void prefswindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
+				    gpointer data)
+{
+	if (event) {
+		switch (event->keyval) {
+			case GDK_Escape :
+				cancel_button_released(NULL, data);
+				break;
+			case GDK_Return : 
+			case GDK_KP_Enter :
+				ok_button_released(NULL, data);
+				break;
+			default:
+				break;
+		}
+	}
 }
 
 void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer data, GtkDestroyNotify func)
@@ -321,6 +340,7 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer dat
 	gtk_clist_set_column_max_width(GTK_CLIST(prefswindow->ctree), 0, optsize);
 	gtk_clist_set_compare_func(GTK_CLIST(prefswindow->ctree), compare_func);
 	gtk_ctree_sort_recursive(GTK_CTREE(prefswindow->ctree), NULL);
+	gtk_widget_grab_focus(GTK_WIDGET(prefswindow->ctree));
 
 	gtkut_button_set_create(&prefswindow->confirm_area,
 				&prefswindow->ok_btn,		_("OK"),
@@ -339,6 +359,8 @@ void prefswindow_open_full(const gchar *title, GSList *prefs_pages, gpointer dat
 			 G_CALLBACK(apply_button_released), prefswindow);
 	g_signal_connect(G_OBJECT(prefswindow->window), "delete_event", 
 			 G_CALLBACK(window_closed), prefswindow);
+	g_signal_connect(G_OBJECT(prefswindow->window), "key_press_event",
+			   G_CALLBACK(prefswindow_key_pressed), &(prefswindow->window));
 
 	gtk_widget_show(prefswindow->window);
 }
@@ -347,4 +369,3 @@ void prefswindow_open(const gchar *title, GSList *prefs_pages, gpointer data)
 {
 	prefswindow_open_full(title, prefs_pages, data, NULL);
 }
-
