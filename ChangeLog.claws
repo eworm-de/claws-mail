@@ -1,3 +1,9 @@
+2004-06-03 [paul]	0.9.11cvs2
+
+	* src/msgcache.c
+		sync with main 0.9.11cvs1: "changed gint32 to
+	  	guint32 for some platforms"
+
 2004-06-02 [christoph]	0.9.11cvs1
 
 	* src/common/ssl.c

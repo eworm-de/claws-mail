@@ -305,10 +305,10 @@ static gint msgcache_read_cache_data_str(FILE *fp, gchar **str)
 {
 	gchar buf[BUFFSIZE];
 	gint ret = 0;
-	gint32 len;
+	guint32 len;
 
 	if (fread(&len, sizeof(len), 1, fp) == 1) {
-		if (len < 0)
+		if (len > G_MAXINT)
 			ret = -1;
 		else {
 			gchar *tmp = NULL;
