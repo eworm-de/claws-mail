@@ -1,3 +1,11 @@
+2003-09-02 [thorsten]	0.9.4claws39-1
+
+	* src/compose.c
+		cleanup, glib warning (watched unused pipe fd)
+	* src/main.c
+		fix: avoid console window on actions		
+		fix: remove tmp dir contents each startup
+
 2003-08-26 [thorsten]	0.9.4claws28-1
 
 	* src/action.c

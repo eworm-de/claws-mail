@@ -184,13 +184,18 @@ int main(int argc, char *argv[])
 	FolderView *folderview;
 #ifdef WIN32
 	guint log_hid,gtklog_hid, gdklog_hid;
-#endif
+	HWND hWndConsole;
 
-#ifdef WIN32
 #ifdef _DEBUG
 	debug_set_mode(TRUE) ;
 #else
 	debug_set_mode(FALSE) ;
+	/* avoid consoles popping up on actions */
+	AllocConsole();
+	SetConsoleTitle("sylpheed_hidden_console");
+	while ((hWndConsole=FindWindow(NULL, "sylpheed_hidden_console")) == 0)
+		Sleep(1);
+	ShowWindow(hWndConsole, SW_HIDE);
 #endif
 	log_hid = g_log_set_handler(NULL, 
 		G_LOG_LEVEL_MASK |
@@ -399,6 +404,9 @@ int main(int argc, char *argv[])
 		debug_print("Sylpheed crashed, checking for new messages in local folders\n");
 		folderview_check_new(NULL);
 	}
+#ifdef WIN32
+	remove_all_files(get_tmp_dir());
+#endif
 	/* make the crash-indicator file */
 	str_write_to_file("foo", get_crashfile_name());
 

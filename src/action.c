@@ -768,14 +768,22 @@ static ChildInfo *fork_child(gchar *cmd, const gchar *msg_str,
 		= chld_err[1] = chld_status[0] = chld_status[1] = -1;
 
 #ifdef WIN32
+#define MKVERSION(a, b, c, d) (a << 24 | b << 16 | c << 8 | d)
 	pid = 0;
 	pipe(chld_status);
-	child_argv = strsplit_with_quote(cmd, " ", 1024);
-	// strip enclosing quotes (argv[0] is already unquoted)
-	for (tmp_argv=child_argv+1; *tmp_argv; tmp_argv++) {
-		gint len=strlen(*tmp_argv);
-		memmove(*tmp_argv, *(tmp_argv)+1, len-1);
-		*(*(tmp_argv)+len-2) = '\0';
+	/* glib-2.2.2 has different quoting style */
+	if (MKVERSION(glib_major_version, glib_minor_version,
+		      glib_micro_version, glib_interface_age)
+	  < MKVERSION(2, 2, 2, 0))
+		child_argv = g_strsplit(cmd, " ", 1024);
+	else { /* new glib */
+		child_argv = strsplit_with_quote(cmd, " ", 1024);
+		// strip enclosing quotes (argv[0] is already unquoted)
+		for (tmp_argv=child_argv+1; *tmp_argv; tmp_argv++) {
+			gint len=strlen(*tmp_argv);
+			memmove(*tmp_argv, *(tmp_argv)+1, len-1);
+			*(*(tmp_argv)+len-2) = '\0';
+		}
 	}
 	if (g_spawn_async_with_pipes((const gchar *)NULL,
 				     child_argv,

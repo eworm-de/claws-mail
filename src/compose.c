@@ -6119,9 +6119,7 @@ static void compose_exec_ext_editor(Compose *compose)
 	tmp = g_strdup_printf("%s%ctmpmsg.%08x", get_tmp_dir(),
 			      G_DIR_SEPARATOR, (gint)compose);
 
-#ifdef WIN32 /* instead of forking, create a gtk_timeout object for each external application */
-	{
-#else
+#ifndef WIN32 /* instead of forking, create a gtk_timeout object for each external application */
 	if (pipe(pipe_fds) < 0) {
 		perror("pipe");
 		g_free(tmp);
@@ -6145,24 +6143,16 @@ static void compose_exec_ext_editor(Compose *compose)
 
 		compose_set_ext_editor_sensitive(compose, FALSE);
 
+#ifndef WIN32
 		compose->exteditor_tag =
 			gdk_input_add(pipe_fds[0], GDK_INPUT_READ,
 				      compose_input_cb, compose);
-#ifdef WIN32
-	}	{
-#else
 	} else {	/* process-monitoring process */
+#else /* WIN32 */
+	{
 #endif
 
 		pid_t pid_ed;
-
-#ifndef WIN32
-		if (setpgid(0, 0))
-			perror("setpgid");
-
-		/* close the read side of the pipe */
-		close(pipe_fds[0]);
-#endif
 
 #ifdef WIN32
 		if (compose_write_body_to_file(compose, tmp) < 0) {
@@ -6176,6 +6166,11 @@ static void compose_exec_ext_editor(Compose *compose)
 
 		pid_ed = compose_exec_ext_editor_real(tmp,compose);
 #else
+		if (setpgid(0, 0))
+			perror("setpgid");
+
+		/* close the read side of the pipe */
+		close(pipe_fds[0]);
 		if (compose_write_body_to_file(compose, tmp) < 0) {
 			fd_write_all(pipe_fds[1], "2\n", 2);
 			_exit(1);
