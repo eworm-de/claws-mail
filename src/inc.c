@@ -431,6 +431,8 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 
 		inc_progress_dialog_clear(inc_dialog);
 
+		gtk_clist_moveto(clist, num, 0, 1.0, 0.0);
+
 		pop3_state->user = g_strdup(pop3_state->ac_prefs->userid);
 		if (pop3_state->ac_prefs->passwd)
 			pop3_state->pass =

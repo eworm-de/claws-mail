@@ -11,7 +11,11 @@
 	* src/procmsg.c
 	* src/summaryview.c
 		fixed new/unread message count with ignored
-		threads
+		threads (2 commits, first didn't notice no
+		longer needed decreasing)
+	* src/inc.c
+		readded scrolling of progress dialog
+		(lost in sync)
 
 2001-08-24 [paul]
 

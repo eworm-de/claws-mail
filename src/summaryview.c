@@ -1911,11 +1911,6 @@ static void summary_set_ctree_from_list(SummaryView *summaryview,
 			if(parent) {
 				parentinfo = gtk_ctree_node_get_row_data(ctree, parent);
 				if(!MSG_IS_IGNORE_THREAD(msginfo->flags) && parentinfo && MSG_IS_IGNORE_THREAD(parentinfo->flags)) {
-					if (MSG_IS_NEW(msginfo->flags))
-						summaryview->newmsgs--;
-					if (MSG_IS_UNREAD(msginfo->flags))
-						summaryview->unread--;
-
 					MSG_SET_PERM_FLAGS(msginfo->flags, MSG_IGNORE_THREAD);
 				}
 			}
