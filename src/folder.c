@@ -2011,10 +2011,10 @@ gint folder_item_remove_msgs(FolderItem *item, GSList *msglist)
 	Folder *folder;
 	gint ret = 0;
 
-	folder = item->folder;
-
 	g_return_val_if_fail(item != NULL, -1);
-	
+	folder = item->folder;
+	g_return_val_if_fail(folder != NULL, -1);
+
 	if (!item->cache) folder_item_read_cache(item);
 
 	if (folder->remove_msgs) {

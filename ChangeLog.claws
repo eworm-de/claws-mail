@@ -1,3 +1,9 @@
+2002-11-14 [christoph]	0.8.5claws151
+
+	* src/folder.c
+		fix wrong position of NULL pointer check found
+		by Sergey
+
 2002-11-14 [christoph]	0.8.5claws150
 
 	* src/folder.c
