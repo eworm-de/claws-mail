@@ -1,5 +1,11 @@
 Changes of Sylpheed
 
+* 0.9.10
+
+    * A new folder can be created in the folder selection dialog now.
+    * The folder view is now updated progressively when receiving.
+    * Statasbar has been added to the message view window.
+
 * 0.9.9
 
     * Word wrapping on multibyte locales has been improved.

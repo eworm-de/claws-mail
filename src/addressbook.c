@@ -1515,7 +1515,7 @@ static void addressbook_list_selected(GtkCList *clist, gint row, gint column,
 		/* Handle double click */
 		if (prefs_common.add_address_by_click &&
 		    addrbook.target_compose)
-			addressbook_to_clicked(NULL, NULL);
+			addressbook_to_clicked(NULL, GINT_TO_POINTER(COMPOSE_TO));
 		else
 			addressbook_edit_address_cb(NULL, 0, NULL);
 	}

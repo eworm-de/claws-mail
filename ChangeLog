@@ -1,3 +1,20 @@
+2004-02-19
+
+	* src/addressbook.c: addressbook_list_selected(): corrected its
+	  argument.
+	* src/imageview.[ch]: keep original image data in ImageView, and
+	  enabled the toggle of resizing.
+	* src/messageview.[ch]
+	  src/mimeview.[ch]: handle ImageView in MimeView instead of
+	  MessageView.
+
+2004-02-16
+
+	* src/imap.c
+	  src/news.c
+	  src/summaryview.c: removed statusbar_pop_all() from imap.c and
+	  news.c (do it in summaryview.c).
+
 2004-02-12
 
 	* src/inc.[ch]
@@ -5933,7 +5950,7 @@
 
 	* src/alertpanel.c: alertpanel_create(): fixed truncated message.
 	* src/rfc2015.c: rfc2015_decrypt_message(): fixed the case problem
-	  of content-type (thanks to René Rebe for the patch).
+	  of content-type (thanks to Ren?Rebe for the patch).
 	* src/codeconv.c: code_get_code_conv_func(): fixed the ISO-8859-1
 	  detection.
 	* src/prefs_common.c: prefs_send_create(): made some more character

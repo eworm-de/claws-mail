@@ -1,3 +1,19 @@
+2004-02-19
+
+	* src/addressbook.c: addressbook_list_selected(): 引数を修正。
+	* src/imageview.[ch]: 元の画像データを ImageView に保持し、
+	  リサイズの切り替えができるようにした。
+	* src/messageview.[ch]
+	  src/mimeview.[ch]: MessageView でなく MimeView で ImageView を
+	  扱うようにした。
+
+2004-02-16
+
+	* src/imap.c
+	  src/news.c
+	  src/summaryview.c: imap.c と news.c から statusbar_pop_all() を
+	  除去(summaryview.c 内で実行)。
+
 2004-02-12
 
 	* src/inc.[ch]

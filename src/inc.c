@@ -617,8 +617,6 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 		folder_item_scan(processing);
 		msglist = folder_item_get_msg_list(processing);
 
-		folder_item_update_freeze();
-
 		/* process messages */
 		for(msglist_element = msglist; msglist_element != NULL; msglist_element = msglist_element->next) {
 			msginfo = (MsgInfo *) msglist_element->data;
@@ -627,8 +625,6 @@ static gint inc_start(IncProgressDialog *inc_dialog)
 			procmsg_msginfo_free(msginfo);
 		}
 		g_slist_free(msglist);
-
-		folder_item_update_thaw();
 
 		statusbar_pop_all();
 

@@ -1,3 +1,15 @@
+2004-02-20 [paul]	0.9.9.claws24
+
+	* src/addressbook.c
+	  	sync with 0.9.9cvs11, see ChangeLog 2004-02-19
+		
+	* src/inc.c
+		complete sync with 0.9.9cvs9's 'update folderview
+		progressively'
+		
+	* configure.ac
+		require gettext >= 0.12.1
+
 2004-02-17 [match]	0.9.9claws23
 
 	* src/compose.c
@@ -154,7 +166,7 @@
 2003-02-13 [paul]	0.9.9claws8
 
 	* sync with 0.9.9cvs9
-		see ChangeLog 2003-02-09, 2004-02-10, 2004-02-12
+		see ChangeLog 2004-02-09, 2004-02-10, 2004-02-12
 
 2003-02-13 [alfons]	0.9.9claws7
 
