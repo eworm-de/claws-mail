@@ -986,6 +986,7 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent, I
 	listAttrib = edit_person_build_attrib_list();
 	if( cancelled ) {
 		addritem_free_list_email( listEMail );
+		addritem_free_list_attribute( listAttrib );
 		gtk_clist_clear( GTK_CLIST(personeditdlg.clist_email) );
 		gtk_clist_clear( GTK_CLIST(personeditdlg.clist_attrib) );
 		return NULL;
@@ -993,7 +994,7 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent, I
 
 	cn = gtk_editable_get_chars( GTK_EDITABLE(personeditdlg.entry_name), 0, -1 );
 	if( person ) {
-		/* Update email/attribute list */
+		/* Update email/attribute list for existing person */
 		addrbook_update_address_list( abf, person, listEMail );
 		addrbook_update_attrib_list( abf, person, listAttrib );
 	}
@@ -1008,8 +1009,10 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent, I
 			addrbook_add_attrib_list( abf, person, listAttrib );
 		}
 	}
+	listEMail = NULL;
+	listAttrib = NULL;
 
-	if( !cancelled ) {
+	if( ! cancelled ) {
 		/* Set person stuff */
 		gchar *name;
 		addritem_person_set_common_name( person, cn );
@@ -1024,8 +1027,6 @@ ItemPerson *addressbook_edit_person( AddressBookFile *abf, ItemFolder *parent, I
 		g_free( name );
 	}
 	g_free( cn );
-
-	listEMail = NULL;
 
 	gtk_clist_clear( GTK_CLIST(personeditdlg.clist_email) );
 	gtk_clist_clear( GTK_CLIST(personeditdlg.clist_attrib) );

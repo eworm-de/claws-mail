@@ -1180,9 +1180,11 @@ ItemEMail *addrbook_move_email_after( AddressBookFile *book, ItemPerson *person,
 }
 
 /*
-* Hash table visitor function.
+* Hash table visitor function for deletion of hashtable entries.
 */
-static gboolean addrbook_free_simple_hash_vis( gpointer *key, gpointer *value, gpointer *data ) {
+static gboolean addrbook_free_simple_hash_vis(
+	gpointer *key, gpointer *value, gpointer *data )
+{
 	g_free( key );
 	key = NULL;
 	value = NULL;
@@ -1193,36 +1195,22 @@ static gboolean addrbook_free_simple_hash_vis( gpointer *key, gpointer *value, g
 * Update address book email list for specified person.
 * Enter: book      Address book.
 *        person    Person to update.
-*        listEMail New list of email addresses.
+*        listEMail List of new email addresses.
 * Note: The existing email addresses are replaced with the new addresses. Any references
 * to old addresses in the groups are re-linked to the new addresses. All old addresses
 * linked to the person are removed.
 */
-void addrbook_update_address_list( AddressBookFile *book, ItemPerson *person, GList *listEMail ) {
+void addrbook_update_address_list(
+	AddressBookFile *book, ItemPerson *person, GList *listEMail )
+{
 	GList *node;
-	GList *oldData;
+	GList *listDelete;
 	GList *listGroup;
 
 	g_return_if_fail( book != NULL );
 	g_return_if_fail( person != NULL );
 
-	/* Remember old list */
-	oldData = person->listEMail;
-
-	/* Attach new address list to person. */
-   	node = listEMail;
-	while( node ) {
-		ItemEMail *email = node->data;
-		if( ADDRITEM_ID(email) == NULL ) {
-			/* Allocate an ID */
-			addrcache_id_email( book->addressCache, email );
-		}
-		ADDRITEM_PARENT(email) = ADDRITEM_OBJECT(person);
-		node = g_list_next( node );
-	}
-	person->listEMail = listEMail;
-
-	/* Get groups where person's email is listed */
+	/* Get groups where person's existing email addresses are listed */
 	listGroup = addrcache_get_group_for_person( book->addressCache, person );
 	if( listGroup ) {
 		GHashTable *hashEMail;
@@ -1234,6 +1222,7 @@ void addrbook_update_address_list( AddressBookFile *book, ItemPerson *person, GL
 		while( node ) {
 			ItemEMail *email = node->data;
 			gchar *addr = g_strdup( email->address );
+
 			g_strdown( addr );
 			if( ! g_hash_table_lookup( hashEMail, addr ) ) {
 				g_hash_table_insert( hashEMail, addr, email );
@@ -1253,12 +1242,15 @@ void addrbook_update_address_list( AddressBookFile *book, ItemPerson *person, GL
 			nodeGrpEM = groupEMail;
 			while( nodeGrpEM ) {
 				ItemEMail *emailGrp = ( ItemEMail * ) nodeGrpEM->data;
+
 				if( ADDRITEM_PARENT(emailGrp) == ADDRITEM_OBJECT(person) ) {
 					/* Found an email address for this person */
 					ItemEMail *emailNew = NULL;
 					gchar *addr = g_strdup( emailGrp->address );
+
 					g_strdown( addr );
-					emailNew = ( ItemEMail * ) g_hash_table_lookup( hashEMail, addr );
+					emailNew = ( ItemEMail * )
+						g_hash_table_lookup( hashEMail, addr );
 					g_free( addr );
 					if( emailNew ) {
 						/* Point to this entry */
@@ -1281,23 +1273,63 @@ void addrbook_update_address_list( AddressBookFile *book, ItemPerson *person, GL
 				nodeGrpEM = g_list_next( nodeGrpEM );
 			}
 
+			g_list_free( listRemove );
+
 			/* Move on to next group */
 			nodeGrp = g_list_next( nodeGrp );
 
 		}
 
 		/* Clear hash table */
-		g_hash_table_foreach_remove( hashEMail, ( GHRFunc ) addrbook_free_simple_hash_vis, NULL );
+		g_hash_table_foreach_remove(
+			hashEMail, ( GHRFunc ) addrbook_free_simple_hash_vis, NULL );
 		g_hash_table_destroy( hashEMail );
 		hashEMail = NULL;
 		g_list_free( listGroup );
 		listGroup = NULL;
 	}
+
+	/* Remove old addresses from person and cache */
+	listDelete = NULL;
+	node = person->listEMail;
+	while( node ) {
+		ItemEMail *email = node->data;
+
+		if( addrcache_person_remove_email( book->addressCache, person, email ) ) {
+			addrcache_remove_email( book->addressCache, email );
+		}
+		listDelete = g_list_append( listDelete, email );
+		node = person->listEMail;
+	}
+
+	/* Add new address entries */
+   	node = listEMail;
+	while( node ) {
+		ItemEMail *email = node->data;
+
+		if( ADDRITEM_ID(email) == NULL ) {
+			/* Allocate an ID for new address */
+			addrcache_id_email( book->addressCache, email );
+		}
+		addrcache_person_add_email( book->addressCache, person, email );
+		node = g_list_next( node );
+	}
+
 	addrcache_set_dirty( book->addressCache, TRUE );
 
-	/* Free up old data */
-	addritem_free_list_email( oldData );
-	oldData = NULL;
+	/* Free up memory */
+	g_list_free( listEMail );
+	listEMail = NULL;
+
+	node = listDelete;
+	while( node ) {
+		ItemEMail *email = node->data;
+
+		addritem_free_item_email( email );
+		node = g_list_next( node );
+	}
+	g_list_free( listDelete );
+	listDelete = NULL;
 
 }
 

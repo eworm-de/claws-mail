@@ -161,9 +161,12 @@ void addrcache_refresh( AddressCache *cache ) {
 */
 static gint addrcache_free_item_vis( gpointer key, gpointer value, gpointer data ) {
 	AddrItemObject *obj = ( AddrItemObject * ) value;
+
 	if( ADDRITEM_TYPE(obj) == ITEMTYPE_PERSON ) {
-		/* Free person and their email */
 		addritem_free_item_person( ( ItemPerson * ) obj );
+	}
+	else if( ADDRITEM_TYPE(obj) == ITEMTYPE_EMAIL ) {
+		addritem_free_item_email( ( ItemEMail * ) obj );
 	}
 	else if( ADDRITEM_TYPE(obj) == ITEMTYPE_GROUP ) {
 		addritem_free_item_group( ( ItemGroup * ) obj );
@@ -955,11 +958,15 @@ void addrcache_person_move_email(
 		ItemEMail *found;
 		found = addritem_person_remove_email( person, email );
 		if( found ) {
+			/*
 			if( person->listEMail ) {
 				person->listEMail = g_list_remove( person->listEMail, found );
 				addritem_person_add_email( target, found );
 				cache->dirtyFlag = TRUE;
 			}
+			*/
+			addritem_person_add_email( target, found );
+			cache->dirtyFlag = TRUE;
 		}
 	}
 }
