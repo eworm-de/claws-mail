@@ -1,4 +1,13 @@
-2003-08-01 [christoph]	0.9.3claws88
+2003-08-01 [christoph]	0.9.3claws89
+
+	* configure.ac
+		o try to build all plugins (except spamassassin) by default
+		o don't build a plugin if a dependency check fails
+
+	* src/common/hooks.c
+		fix warning
+
+2003-08-01 [match]	0.9.3claws88
 
 	* src/importldif.c
 		allow single click field selection. document code.
