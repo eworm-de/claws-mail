@@ -1,7 +1,7 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
  * 
- * Copyright (c) 2000 by Alfons Hoogervorst <alfons@proteus.demon.nl>
+ * Copyright (c) 2000-2003 by Alfons Hoogervorst <alfons@proteus.demon.nl>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,33 +22,17 @@
 #define __ADDR_COMPL_H__
 
 gint start_address_completion		(void);
-gint invalidate_address_completion	(void);
-
-guint complete_address			(const gchar	*str);
-
-gchar *get_address_from_edit		(GtkEntry	*entry,
-					 gint		*start_pos);
-void replace_address_in_edit		(GtkEntry	*entry,
-					 const gchar	*newtext,
-					 gint		 start_pos);
-
-gchar *get_complete_address		(gint		 index);
-
-gchar *get_next_complete_address	(void);
-gchar *get_prev_complete_address	(void);
-guint get_completion_count		(void);
-
-gboolean is_completion_pending		(void);
-
-void clear_completion_cache		(void);
-
+guint complete_address			(const gchar *str);
+gchar *get_complete_address		(gint        index);
 gint end_address_completion		(void);
 
 /* ui functions */
+void address_completion_start		(GtkWidget *mainwindow);
+void address_completion_register_entry	(GtkEntry  *entry);
+void address_completion_unregister_entry(GtkEntry  *entry);
+void address_completion_end		(GtkWidget *mainwindow);
 
-void address_completion_start	(GtkWidget *mainwindow);
-void address_completion_register_entry	(GtkEntry *entry);
-void address_completion_unregister_entry (GtkEntry *entry);
-void address_completion_end	(GtkWidget *mainwindow);
+void addrcompl_initialize	( void );
+void addrcompl_teardown		( void );
 
 #endif /* __ADDR_COMPL_H__ */

@@ -485,6 +485,7 @@ ItemGroup *addressbook_edit_group( AddressBookFile *abf, ItemFolder *parent, Ite
 	name = gtk_editable_get_chars( GTK_EDITABLE(groupeditdlg.entry_name), 0, -1 );
 	addritem_group_set_name( group, name );
 	g_free( name );
+	addrbook_invalidate( abf );
 
 	listEMail = NULL;
 	return group;
@@ -528,6 +529,7 @@ ItemFolder *addressbook_edit_folder( AddressBookFile *abf, ItemFolder *parent, I
 	}
 	addritem_folder_set_name( folder, name );
 	g_free( name );
+	addrbook_invalidate( abf );
 	return folder;
 }
 

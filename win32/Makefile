@@ -183,6 +183,7 @@ LIBS= \
 	$(LIBDIR)/ssleay32.lib \
 	$(LIBDIR)/RSAglue.lib \
 	$(LIBDIR)/libcrypt.lib \
+	$(LIBDIR)/pthreadVC.lib \
 	$(FNMATCHDIR)/fnmatch.lib \
 	$(GPGMEDIR)/gpgme.lib \
 	$(LIBCOMPFACEDIR)/libcompface.lib \
@@ -195,6 +196,7 @@ OBJECTS= \
 	addr_compl.o \
 	addrbook.o \
 	addrcache.o \
+	addrcindex.o \
 	addrclip.o \
 	addressadd.o \
 	addressbook.o \
@@ -249,6 +251,10 @@ OBJECTS= \
 	info.o \
 	inputdialog.o \
 	jpilot.o \
+	ldapctrl.o \
+	ldapquery.o \
+	ldapserver.o \
+	ldaputil.o \
 	ldif.o \
 	log.o \
 	logwindow.o \
@@ -503,6 +509,7 @@ account.o: 	account.c account.h
 addr_compl.o: 	addr_compl.c addr_compl.h
 addrbook.o: 	addrbook.c addrbook.h
 addrcache.o: 	addrcache.c addrcache.h
+addrcindex.o: 	addrcindex.c addrcindex.h
 addrclip.o: 	addrclip.c addrclip.h
 addressadd.o: 	addressadd.c addressadd.h
 addressbook.o: 	addressbook.c addressbook.h
@@ -554,6 +561,10 @@ importpine.o: 	importpine.c importpine.h
 inc.o: 	inc.c inc.h
 inputdialog.o: 	inputdialog.c inputdialog.h
 jpilot.o: 	jpilot.c jpilot.h
+ldapctrl.o: 	ldapctrl.c ldapctrl.h
+ldapquery.o: 	ldapquery.c ldapquery.h
+ldapserver.o: 	ldapserver.c ldapserver.h
+ldaputil.o: 	ldaputil.c ldaputil.h
 ldif.o: 	ldif.c ldif.h
 log.o:	log.c log.h
 logwindow.o: 	logwindow.c logwindow.h

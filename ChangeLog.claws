@@ -1,3 +1,39 @@
+2003-03-17 [paul]	0.8.11claws21
+
+	* src/gtk/about.c
+		remove 'Compiled-plugins' section.
+		
+	* src/plugins/dillo_viewer/dillo_viewer.c
+		slight change to description text
+
+2003-03-16 [match]	0.8.11claws20
+	* src/ldapserver.[ch]		** NEW **
+	* src/ldapctrl.[ch]		** NEW **
+	* src/ldapquery.[ch]		** NEW **
+	* src/ldaputil.[ch]		** NEW **
+	* src/addrcindex.[ch]		** NEW **
+	* src/addrquery.h		** NEW **
+	* src/addritem.[ch]
+	* src/addrcache.[ch]
+	* src/addrindex.[ch]
+	* src/addr_compl.[ch]
+	* src/addressbook.[ch]
+	* src/addrbook.[ch]
+	* src/editgroup.c
+	* src/editaddress.c
+	* src/editldap.c
+	* src/editldap_basedn.c
+	* src/vcard.c
+	* src/jpilot.c
+	* src/Makefile.am
+		included dynamic LDAP queries. improved address
+		completion.
+
+2003-03-16 [paul]	0.8.11claws19
+
+	* tools/multiwebsearch.pl
+		fix a fatal typo
+
 2003-03-16 [christoph]	0.8.11claws18
 
 	* src/mimeview.c

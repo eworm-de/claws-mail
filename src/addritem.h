@@ -45,6 +45,14 @@ typedef enum {
 	ITEMTYPE_DATASOURCE
 } ItemObjectType;
 
+typedef enum {
+	ADDRFOLDER_NONE,
+	ADDRFOLDER_ROOT,
+	ADDRFOLDER_REGULAR,
+	ADDRFOLDER_CATEGORY,
+	ADDRFOLDER_LDAP_QUERY
+} AddressFolderType;
+
 typedef struct _AddrItemObject AddrItemObject;
 struct _AddrItemObject {
 	ItemObjectType type;
@@ -89,6 +97,8 @@ struct _ItemFolder {
 	GList    *listFolder;	/* List of contained (child) folders */
 	GList    *listPerson;	/* List of contained persons */
 	GList    *listGroup;	/* List of contained (child) groups */
+	AddressFolderType folderType;	/* Folder type */
+	gpointer *folderData;		/* Pointer to folder's data */
 };
 
 typedef struct _ItemGroup ItemGroup;

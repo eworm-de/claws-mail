@@ -79,6 +79,9 @@ AddressCache *addrcache_create() {
 	cache->rootFolder = addritem_create_item_folder();
 	cache->rootFolder->isRoot = TRUE;
 	ADDRITEM_PARENT(cache->rootFolder) = NULL;
+
+	cache->searchIndex = NULL;
+
 	return cache;
 }
 
@@ -220,7 +223,9 @@ static void addrcache_free_all_folders( ItemFolder *parent ) {
 void addrcache_clear( AddressCache *cache ) {
 	g_return_if_fail( cache != NULL );
 
-	/* printf( "...addrcache_clear :%s:\n", cache->name ); */
+	/* Clear completion index */
+	addrcindex_clear( cache->searchIndex );
+
 	/* Free up folders and hash table */
 	addrcache_free_all_folders( cache->rootFolder );
 	addrcache_free_item_hash( cache->itemHash );
@@ -247,6 +252,10 @@ void addrcache_clear( AddressCache *cache ) {
 void addrcache_free( AddressCache *cache ) {
 	g_return_if_fail( cache != NULL );
 
+	/* Free completion index */
+	addrcindex_free( cache->searchIndex );
+	cache->searchIndex = NULL;
+
 	cache->dirtyFlag = FALSE;
 	addrcache_free_all_folders( cache->rootFolder );
 	addrcache_free_item_hash( cache->itemHash );
@@ -261,6 +270,7 @@ void addrcache_free( AddressCache *cache ) {
 	cache->cacheID = NULL;
 	g_free( cache->name );
 	cache->name = NULL;
+
 	g_free( cache );
 }
 
@@ -1367,6 +1377,84 @@ ItemPerson *addrcache_add_contact( AddressCache *cache, ItemFolder *folder, cons
 	return person;
 }
 
+/**
+ * Clear address completion index.
+ * \param cache Cache.
+ */
+void addrcache_clear_index( AddressCache *cache ) {
+	g_return_if_fail( cache != NULL );
+	addrcindex_clear( cache->searchIndex );
+}
+
+/**
+ * Control creation of an address completion index.
+ * \param cache Cache.
+ * \param value Set to <i>TRUE</i> to create an index, or <i>FALSE</i> to
+ *              destroy index.
+ */
+void addrcache_use_index( AddressCache *cache, gboolean value ) {
+	g_return_if_fail( cache != NULL );
+
+	if( value ) {
+		if( cache->searchIndex ) {
+			addrcindex_clear( cache->searchIndex );
+		}
+		else {
+			cache->searchIndex = addrcindex_create();
+		}
+	}
+	else {
+		addrcindex_free( cache->searchIndex );
+		cache->searchIndex = NULL;
+	}
+}
+
+/*
+ * Load completion callback function.
+ */
+static void addrcache_load_index_cb( gpointer key, gpointer value, gpointer data ) {
+	AddrItemObject *obj = ( AddrItemObject * ) value;
+
+	if( ADDRITEM_TYPE(obj) == ITEMTYPE_PERSON ) {
+		ItemPerson *person = ( ItemPerson * ) obj;
+		AddrCacheIndex *index = data;
+		addrcindex_add_person( index, person );
+	}
+}
+
+/**
+ * Rebuild address completion index with all persons in cache.
+ * \param cache Cache.
+ */
+void addrcache_build_index( AddressCache *cache ) {
+	g_return_if_fail( cache != NULL );
+
+	if( cache->searchIndex == NULL ) return;
+
+	/* Clear index */
+	addrcindex_clear( cache->searchIndex );
+
+	/* Now load up */	
+	g_hash_table_foreach(
+		cache->itemHash, addrcache_load_index_cb, cache->searchIndex );
+	addrcindex_validate( cache->searchIndex );
+
+	/* addrcindex_print( cache->searchIndex, stdout ); */
+}
+
+/**
+ * Invalidate the address cache. This will cause index to be rebuilt.
+ * \param cache Cache.
+ */
+void addrcache_invalidate( AddressCache *cache ) {
+	g_return_if_fail( cache != NULL );
+
+	if( cache->searchIndex == NULL ) return;
+	addrcindex_invalidate( cache->searchIndex );
+}
+
 /*
 * End of Source.
 */
+
+

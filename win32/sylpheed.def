@@ -46,6 +46,7 @@ EXPORTS
 	addrbook_get_root_folder 
 	addrbook_get_status 
 	addrbook_guess_next_file 
+	addrbook_invalidate 
 	addrbook_item_get_bookfile 
 	addrbook_move_email_after 
 	addrbook_move_email_before 
@@ -81,8 +82,10 @@ EXPORTS
 	addrcache_add_folder 
 	addrcache_add_group 
 	addrcache_add_person 
+	addrcache_build_index 
 	addrcache_check_file 
 	addrcache_clear 
+	addrcache_clear_index 
 	addrcache_create 
 	addrcache_dump_hash 
 	addrcache_find_root_folder 
@@ -126,6 +129,7 @@ EXPORTS
 	addrcache_id_folder 
 	addrcache_id_group 
 	addrcache_id_person 
+	addrcache_invalidate 
 	addrcache_mark_file 
 	addrcache_next_id 
 	addrcache_person_add_email 
@@ -146,6 +150,7 @@ EXPORTS
 	addrcache_set_modified 
 	addrcache_set_name 
 	addrcache_set_read_flag 
+	addrcache_use_index 
 	addrclip_add 
 	addrclip_add_item 
 	addrclip_clear 
@@ -160,6 +165,8 @@ EXPORTS
 	addrclip_paste_person_copy 
 	addrclip_paste_person_cut 
 	addrclip_set_index 
+	addrcompl_initialize 
+	addrcompl_teardown 
 	address_completion_end 
 	address_completion_register_entry 
 	address_completion_start 
@@ -184,11 +191,16 @@ EXPORTS
 	addressbook_imp_ldif 
 	addressbook_imp_mutt 
 	addressbook_imp_pine 
-	addressbook_load_completion 
 	addressbook_open 
+	addressbook_quick_search_list 
+	addressbook_quick_search_single 
+	addressbook_read_all 
 	addressbook_read_file 
 	addressbook_refresh 
 	addressbook_set_target_compose 
+	addressbook_setup_search 
+	addressbook_start_search 
+	addressbook_stop_search 
 	addressbook_type2item 
 	addrgather_dlg_execute 
 	addrgather_dlg_status_show 
@@ -225,15 +237,22 @@ EXPORTS
 	addrindex_get_datasource 
 	addrindex_get_interface 
 	addrindex_get_interface_list 
+	addrindex_get_loaded 
 	addrindex_index_add_datasource 
 	addrindex_index_remove_datasource 
 	addrindex_print_index 
+	addrindex_quick_search_list 
+	addrindex_quick_search_single 
+	addrindex_read_all 
 	addrindex_read_data 
 	addrindex_save_all_books 
 	addrindex_save_data 
 	addrindex_set_dirty 
 	addrindex_set_file_name 
 	addrindex_set_file_path 
+	addrindex_setup_search 
+	addrindex_start_search 
+	addrindex_stop_search 
 	addrindex_write_to 
 	addritem_attrib_set_id 
 	addritem_attrib_set_name 
@@ -441,7 +460,6 @@ EXPORTS
 	change_dir 
 	change_file_mode_rw 
 	clean_quit 
-	clear_completion_cache 
 	close_log_file 
 	colorlabel_changed 
 	colorlabel_create_check_color_menu_item 
@@ -730,11 +748,9 @@ EXPORTS
 	g_stricase_equal 
 	g_stricase_hash 
 	get_abbrev_newsgroup_name 
-	get_address_from_edit 
 	get_aspell_dict_info_list 
 	get_aspell_module_info_list 
 	get_complete_address 
-	get_completion_count 
 	get_domain_name 
 	get_file_size 
 	get_file_size_as_crlf 
@@ -749,9 +765,7 @@ EXPORTS
 	get_mbox_cache_dir 
 	get_mime_tmp_dir 
 	get_news_cache_dir 
-	get_next_complete_address 
 	get_next_word_len 
-	get_prev_complete_address 
 	get_quote_level 
 	get_rc_dir 
 	get_rfc822_date 
@@ -942,9 +956,7 @@ EXPORTS
 	input_dialog_combo 
 	input_dialog_query_password 
 	input_dialog_with_invisible 
-	invalidate_address_completion 
 	is_ascii_str 
-	is_completion_pending 
 	is_dir_exist 
 	is_file_entry_exist 
 	is_header_line 
@@ -1543,7 +1555,6 @@ EXPORTS
 	remove_space 
 	renderer_read_config 
 	renderer_write_config 
-	replace_address_in_edit 
 	rfc2015_check_signature 
 	rfc2015_clearsign 
 	rfc2015_create_signers_list 

@@ -112,6 +112,10 @@ SOURCE=..\src\addrcache.c
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\addrcindex.c
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\addrclip.c
 # End Source File
 # Begin Source File
@@ -325,6 +329,22 @@ SOURCE=..\src\inputdialog.c
 # Begin Source File
 
 SOURCE=..\src\jpilot.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\ldapctrl.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\ldapquery.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\ldapserver.c
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\ldaputil.c
 # End Source File
 # Begin Source File
 
@@ -728,6 +748,14 @@ SOURCE=..\src\addrcache.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\addrcindex.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\addrquery.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\addressadd.h
 # End Source File
 # Begin Source File
@@ -917,6 +945,22 @@ SOURCE=..\libjconv\jconv.h
 # Begin Source File
 
 SOURCE=..\src\jpilot.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\ldapctrl.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\ldapquery.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\ldapserver.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\ldaputil.h
 # End Source File
 # Begin Source File
 
@@ -1302,6 +1346,10 @@ SOURCE=..\..\..\lib\ssleay32.lib
 # Begin Source File
 
 SOURCE=..\..\..\lib\libcrypt.lib
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\..\lib\pthreadVC.lib
 # End Source File
 # End Target
 # End Project

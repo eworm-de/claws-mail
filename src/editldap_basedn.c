@@ -41,7 +41,7 @@
 
 #include "intl.h"
 #include "prefs_common.h"
-#include "syldap.h"
+#include "ldaputil.h"
 #include "mgutils.h"
 #include "gtkutils.h"
 #include "manage_window.h"
@@ -237,16 +237,21 @@ static void edit_ldap_bdn_create(void) {
 	ldapedit_basedn.ok_btn     = ok_btn;
 	ldapedit_basedn.cancel_btn = cancel_btn;
 	ldapedit_basedn.statusbar  = statusbar;
-	ldapedit_basedn.status_cid = gtk_statusbar_get_context_id( GTK_STATUSBAR(statusbar), "Edit LDAP Select Base DN" );
+	ldapedit_basedn.status_cid =
+		gtk_statusbar_get_context_id(
+			GTK_STATUSBAR(statusbar), "Edit LDAP Select Base DN" );
 }
 
-void edit_ldap_bdn_load_data( const gchar *hostName, const gint iPort, const gint tov, const gchar* bindDN,
-	       const gchar *bindPW ) {
+void edit_ldap_bdn_load_data(
+	const gchar *hostName, const gint iPort, const gint tov,
+	const gchar* bindDN, const gchar *bindPW )
+{
 	gchar *sHost;
 	gchar *sMsg = NULL;
 	gchar sPort[20];
 	gboolean flgConn;
 	gboolean flgDN;
+	GList *baseDN = NULL;
 
 	edit_ldap_bdn_status_show( "" );
 	gtk_clist_clear(GTK_CLIST(ldapedit_basedn.basedn_list));
@@ -258,9 +263,9 @@ void edit_ldap_bdn_load_data( const gchar *hostName, const gint iPort, const gin
 	gtk_label_set_text(GTK_LABEL(ldapedit_basedn.port_label), sPort);
 	if( *sHost != '\0' ) {
 		/* Test connection to server */
-		if( syldap_test_connect_s( sHost, iPort ) ) {
+		if( ldaputil_test_connect( sHost, iPort ) ) {
 			/* Attempt to read base DN */
-			GList *baseDN = syldap_read_basedn_s( sHost, iPort, bindDN, bindPW, tov );
+			baseDN = ldaputil_read_basedn( sHost, iPort, bindDN, bindPW, tov );
 			if( baseDN ) {
 				GList *node = baseDN;
 				gchar *text[2] = { NULL, NULL };
