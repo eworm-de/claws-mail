@@ -1481,6 +1481,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	GtkWidget *compose_type_arrow;
 	GtkWidget *compose_box;
 	GtkWidget *compose_label;
+	GtkTooltips *tooltips;
 
 	toolbar = gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL,
 				  GTK_TOOLBAR_BOTH);
@@ -1525,7 +1526,10 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 
 	compose_mail_btn = gtk_button_new();
 	gtk_widget_show(compose_mail_btn);
-
+	tooltips = gtk_tooltips_new();
+	gtk_tooltips_set_tip(tooltips, compose_mail_btn, 
+						 _("Compose email message"),
+						 _("email"));
 	compose_box = gtk_vbox_new(0, 0);
 	gtk_widget_show(compose_box);
 	
@@ -1533,7 +1537,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	CREATE_TOOLBAR_ICON(stock_mail_compose_xpm);
 	gtk_box_pack_start(GTK_BOX(compose_box), icon_wid, FALSE, FALSE, 0);
 
-	compose_label = gtk_label_new(_("Compose email"));
+	compose_label = gtk_label_new(_("Email"));
 	gtk_widget_show(compose_label);
 	gtk_box_pack_start(GTK_BOX(compose_box), compose_label, FALSE, FALSE, 0);
 	
@@ -1546,7 +1550,10 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 
 	compose_news_btn = gtk_button_new();
 	gtk_widget_show(compose_news_btn);
-
+	tooltips = gtk_tooltips_new();
+	gtk_tooltips_set_tip(tooltips, compose_news_btn,
+						 _("Compose news article"),
+						 _("news"));
 	compose_box = gtk_vbox_new(0, 0);
 	gtk_widget_show(compose_box);
 	
@@ -1554,7 +1561,7 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 	CREATE_TOOLBAR_ICON(stock_news_compose_xpm);
 	gtk_box_pack_start(GTK_BOX(compose_box), icon_wid, FALSE, FALSE, 0);
 
-	compose_label = gtk_label_new(_("Compose news"));
+	compose_label = gtk_label_new(_("News"));
 	gtk_widget_show(compose_label);
 	gtk_box_pack_start(GTK_BOX(compose_box), compose_label, FALSE, FALSE, 0);
 	
@@ -1600,17 +1607,6 @@ static void main_window_toolbar_create(MainWindow *mainwin,
 
 	gtk_toolbar_append_widget(GTK_TOOLBAR(toolbar), compose_type_btn,
 		NULL, NULL);
-
-#if 0
-	CREATE_TOOLBAR_ICON(stock_news_compose_xpm);
-	compose_news_btn = gtk_toolbar_append_item(GTK_TOOLBAR(toolbar),
-					      _("Compose news"),
-					      _("Compose a news message"),
-					      "New",
-					      icon_wid,
-					      toolbar_compose_news_cb,
-					      mainwin);
-#endif						  
 
 	gtk_toolbar_append_space(GTK_TOOLBAR(toolbar));
 	
@@ -1748,7 +1744,7 @@ static void toolbar_popup_compose_type_cb	(GtkWidget	*widget,
 	
 	compose_menu = gtk_menu_new();
 	
-	compose_item = gtk_menu_item_new_with_label(_("E-Mail message"));
+	compose_item = gtk_menu_item_new_with_label(_("Email message"));
 	gtk_widget_show(compose_item);
 	gtk_menu_append(GTK_MENU(compose_menu), compose_item);
 	gtk_signal_connect(GTK_OBJECT(compose_item), "activate",

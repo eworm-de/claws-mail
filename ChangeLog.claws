@@ -10,8 +10,8 @@
 2001-06-24 [alfons]
 
 	* src/mainwindow.[ch]
-		Implemented Leandro's compose mail / news toolbar. Two
-		sets of buttons for different toolbar modes.
+		added composite compose mail / news button (an idea by Leandro
+		Pereira <leandro@linuxmag.com.br>)
 
 2001-06-24 [paul]
 
