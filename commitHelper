@@ -10,7 +10,7 @@ if [ "$1" == "--syncgtk2" ]; then
 fi;
 args=`echo $@`
 
-head -16 configure.ac | grep VERSION= > /tmp/commitTool.tmp
+head -n 16 configure.ac | grep VERSION= > /tmp/commitTool.tmp
 source /tmp/commitTool.tmp
 if [ -z "$EXTRA_GTK2_VERSION" ]; then
 	EXTRA_VERSION=`echo $EXTRA_VERSION | awk -F'.' '{for (i=1;i<NF;i++){printf $i"."};printf $NF+1}'`
