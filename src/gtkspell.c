@@ -325,12 +325,11 @@ int set_path_and_dict(GtkPspell *gtkpspell, PspellConfig *config,
 	if (temppath[strlen(temppath)-1] == G_DIR_SEPARATOR) 
 		temppath[strlen(temppath)-1]= 0;
 	if (temppath) {
-		pspell_config_replace(config, "rem-word-list-path", temppath);
 		pspell_config_replace(config, "add-word-list-path", temppath);
+		debug_print(_("Pspell config: added path %s\n"), pspell_config_retrieve(config, "word-list-path"));
+		if (pspell_config_error_number(config))
+			debug_print(_("Pspell config: %s\n"), pspell_config_error_message(config));
 	}
-	debug_print(_("Pspell config: added path %s\n"), pspell_config_retrieve(config, "word-list-path"));
-	if (pspell_config_error_number(config))
-		debug_print(_("Pspell config: %s\n"), pspell_config_error_message(config));
 	if (language) 
 		pspell_config_replace(config, "language-tag", language);
 	if (spelling) 
@@ -342,13 +341,13 @@ int set_path_and_dict(GtkPspell *gtkpspell, PspellConfig *config,
 
 	switch(gtkpspell->mode) {
 	case PSPELL_FASTMODE: 
-		pspell_config_replace(config, "sug_mode", "fast");
+		pspell_config_replace(config, "sug-mode", "fast");
 		break;
 	case PSPELL_NORMALMODE: 
-		pspell_config_replace(config, "sug_mode", "normal");
+		pspell_config_replace(config, "sug-mode", "normal");
 		break;
 	case PSPELL_BADSPELLERMODE: 
-		pspell_config_replace(config, "sug_mode", "bad-spellers");
+		pspell_config_replace(config, "sug-mode", "bad-spellers");
 		break;
 	}
   
@@ -465,10 +464,19 @@ static void menu_change_dict(GtkWidget *w, GtkPspell *gtkpspell)
 	/* Dict is simply the menu label */
 
 	gtk_label_get(GTK_LABEL(GTK_BIN(w)->child), (gchar **) &thelabel);
+
+	if (!strcmp2(thelabel, _("None")))
+			return;
+
 	thedict = g_strdup(thelabel);
 
 	/* Set path, dict, (and sug_mode ?) */
-	gtkpspell_set_path_and_dict(gtkpspell, gtkpspell->path, thedict);
+	if(!gtkpspell_set_path_and_dict(gtkpspell, gtkpspell->path, thedict)) {
+		/* FIXME : try to handle this very special case */
+		debug_print("Pspell: Attempt to change to a non existant dict. I will crash after closing compose window.\n");
+		gtkpspell_detach(gtkpspell);
+		gtkpspell = gtkpspell_delete(gtkpspell);
+	}
 	g_free(thedict);
 }
 
