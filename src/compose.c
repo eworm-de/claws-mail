@@ -4955,6 +4955,12 @@ static void compose_destroy(Compose *compose)
 	if (addressbook_get_target_compose() == compose)
 		addressbook_set_target_compose(NULL);
 
+#if USE_PSPELL
+        if (compose->gtkpspell) {
+	        gtkpspell_delete(compose->gtkpspell);
+        }
+#endif
+
 	prefs_common.compose_width = compose->scrolledwin->allocation.width;
 	prefs_common.compose_height = compose->window->allocation.height;
 
@@ -5970,11 +5976,6 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 			return;
 		}
 	}
-#if USE_PSPELL
-        if (compose->gtkpspell) {
-	        gtkpspell_delete(compose->gtkpspell);
-        }
-#endif
 	gtk_widget_destroy(compose->window);
 }
 

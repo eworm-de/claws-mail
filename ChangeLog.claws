@@ -1,3 +1,9 @@
+2002-01-16 [melvin]	0.7.0claws7
+
+	* src/compose.c
+		fixed a long standingspell checker bug which could 
+		cause a crash after sending a message.
+
 2001-01-16 [paul]	0.7.0claws6
 
 	* sync with sylpheed 0.7.0cvs7
