@@ -684,6 +684,9 @@ static void compose_generic_reply(MsgInfo *msginfo, gboolean quote,
 	
 	/* select the account for the whole folder (IMAP / NNTP) */
 	if (!account)
+		/* FIXME: this is not right, because folder may be nested. we should
+		 * ascend the tree until we find a parent with proper account 
+		 * information */
 		account = msginfo->folder->folder->account;
 
 	/* select account by to: and cc: header if enabled */

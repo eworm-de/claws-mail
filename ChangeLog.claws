@@ -1,3 +1,11 @@
+2001-12-26 [alfons]	0.6.6claws22
+	
+	* src/textview.c
+		make reply-on-click work with the account of the selected folder
+	* src/compose.c
+		put a fixme here to remind me to fix finding correct default
+		account for nested folders
+
 2001-12-25 [alfons]	0.6.6claws21
 
 	* src/summaryview.c

@@ -49,6 +49,7 @@
 #include "compose.h"
 #include "addressbook.h"
 #include "displayheader.h"
+#include "account.h"
 
 #define FONT_LOAD(font, s) \
 { \
@@ -1492,8 +1493,18 @@ static gint textview_button_released(GtkWidget *widget, GdkEventButton *event,
 						g_free(fromaddress);
 						g_free(fromname);
 					} else {
+						PrefsAccount *account = NULL;
+						FolderItem   *folder_item;
+
+						if (textview->messageview && textview->messageview->mainwin 
+						&&  textview->messageview->mainwin->summaryview 
+						&&  textview->messageview->mainwin->summaryview->folder_item) {
+							folder_item = textview->messageview->mainwin->summaryview->folder_item;
+							if (folder_item->prefs && folder_item->prefs->enable_default_account)
+								account = account_find_from_id(folder_item->prefs->default_account);
+						}
 						compose_new_with_recipient
-							(NULL, uri->uri + 7);
+							(account, uri->uri + 7);
 					}
 				} else {
 					open_uri(uri->uri,
