@@ -1,3 +1,11 @@
+2002-10-07 [christoph]	0.8.3claws52
+
+	* src/folder.[ch]
+	* src/folderview.c
+	* src/mainwindow.c
+		fix new folder ghost message bug
+		(closes bug [ 619722 ] wrong count for newly created folders)
+
 2002-10-07 [christoph]	0.8.3claws51
 
 	* src/compose.c
