@@ -114,9 +114,9 @@ GtkWidget *cert_presenter(SSLCertificate *cert)
 	frame_signer = gtk_frame_new(_("Signer"));
 	frame_status = gtk_frame_new(_("Status"));
 	
-	owner_table = gtk_table_new(3, 2, FALSE);
-	signer_table = gtk_table_new(3, 2, FALSE);
-	status_table = gtk_table_new(2, 2, FALSE);
+	owner_table = GTK_TABLE(gtk_table_new(3, 2, FALSE));
+	signer_table = GTK_TABLE(gtk_table_new(3, 2, FALSE));
+	status_table = GTK_TABLE(gtk_table_new(2, 2, FALSE));
 	
 	label = gtk_label_new(_("Name: "));
 	gtk_misc_set_alignment (GTK_MISC (label), 1, 0.5);
