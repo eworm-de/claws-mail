@@ -21,3 +21,7 @@ defs.h			common/defs.h		ok
 md5.[ch]		common/md5.[ch]		ok
 
 gtksctree.[ch]		gtk/gtksctree.[ch]	ok
+
+template.[ch]		common/template.[ch]	ok
+
+nntp.[ch]		common/nntp.[ch]	ok

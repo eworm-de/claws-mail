@@ -100,7 +100,6 @@ sylpheed_SOURCES = \
 	inc.c inc.h \
 	import.c import.h \
 	export.c export.h \
-	nntp.c nntp.h \
 	news.c news.h \
 	imap.c imap.h \
 	xml.c xml.h \

@@ -1,3 +1,11 @@
+2002-12-07 [christoph]	0.8.6claws70
+
+	* src/Makefile.am
+	* src/nntp.[ch]			** REMOVE **
+	* src/common/Makefile.am
+	* src/common/nntp.[ch]		** NEW **
+		move nntp files to common directory
+
 2002-12-07 [christoph]	0.8.6claws69
 
 	* src/procmsg.[ch]

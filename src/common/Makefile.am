@@ -5,6 +5,7 @@ libsylpheedcommon_la_SOURCES = \
 	hooks.c hooks.h \
 	log.c log.h \
 	md5.c md5.h \
+	nntp.c nntp.h \
 	socket.c socket.h \
 	ssl.c ssl.h \
 	template.c template.h \
