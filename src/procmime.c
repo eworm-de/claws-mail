@@ -792,8 +792,8 @@ static GList *procmime_get_mime_type_list(void)
 	gchar *p, *delim;
 	MimeType *mime_type;
 
-	if ((fp = fopen("/etc/mime.types", "r")) == NULL) {
-		FILE_OP_ERROR("/etc/mime.types", "fopen");
+	if ((fp = fopen(SYSCONFDIR "/mime.types", "r")) == NULL) {
+		FILE_OP_ERROR(SYSCONFDIR "/mime.types", "fopen");
 		return NULL;
 	}
 

@@ -1,3 +1,13 @@
+2001-06-18 [alfons]
+
+	* src/Makefile.am,
+	  src/procmime.c
+		added --sysconfdir to CPPFLAGS for pointing to the correct
+		location of mime.types. 
+
+		NOTE: make sure you use --sysconfdir when running ./autogen.sh
+		or ./configure!
+
 2001-06-18 [hoa]
 
 	* src/summaryview.c
