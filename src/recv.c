@@ -100,15 +100,10 @@ gint recv_write(SockInfo *sock, FILE *fp)
 {
 	gchar buf[BUFFSIZE];
 	gint len;
-	gboolean nb;
-
-	nb = sock_is_nonblocking_mode(sock);
-	if (nb) sock_set_nonblocking_mode(sock, FALSE);
 
 	for (;;) {
 		if (sock_gets(sock, buf, sizeof(buf)) < 0) {
 			g_warning(_("error occurred while retrieving data.\n"));
-			if (nb) sock_set_nonblocking_mode(sock, TRUE);
 			return -1;
 		}
 
@@ -137,8 +132,6 @@ gint recv_write(SockInfo *sock, FILE *fp)
 		}
 	}
 
-	if (nb) sock_set_nonblocking_mode(sock, TRUE);
-
 	if (!fp) return -1;
 
 	return 0;
@@ -147,12 +140,8 @@ gint recv_write(SockInfo *sock, FILE *fp)
 gint recv_bytes_write(SockInfo *sock, glong size, FILE *fp)
 {
 	gchar *buf;
-	gboolean nb;
 	glong count = 0;
 	gchar *prev, *cur;
-
-	nb = sock_is_nonblocking_mode(sock);
-	if (nb) sock_set_nonblocking_mode(sock, FALSE);
 
 	Xalloca(buf, size, return -1);
 
@@ -160,10 +149,8 @@ gint recv_bytes_write(SockInfo *sock, glong size, FILE *fp)
 		gint read_count;
 
 		read_count = sock_read(sock, buf + count, size - count);
-		if (read_count < 0) {
-			if (nb) sock_set_nonblocking_mode(sock, TRUE);
+		if (read_count < 0)
 			return -1;
-		}
 		count += read_count;
 	} while (count < size);
 
@@ -178,7 +165,6 @@ gint recv_bytes_write(SockInfo *sock, glong size, FILE *fp)
 		    fwrite("\n", sizeof(gchar), 1, fp) == EOF) {
 			perror("fwrite");
 			g_warning(_("Can't write to file.\n"));
-			if (nb) sock_set_nonblocking_mode(sock, TRUE);
 			return -1;
 		}
 
@@ -194,11 +180,9 @@ gint recv_bytes_write(SockInfo *sock, glong size, FILE *fp)
 					size - (prev - buf), fp) == EOF) {
 		perror("fwrite");
 		g_warning(_("Can't write to file.\n"));
-		if (nb) sock_set_nonblocking_mode(sock, TRUE);
 		return -1;
 	}
 
-	if (nb) sock_set_nonblocking_mode(sock, TRUE);
 	return 0;
 }
 

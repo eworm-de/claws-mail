@@ -230,7 +230,6 @@ gint pop3_getrange_uidl_send(SockInfo *sock, gpointer data)
 gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
-	gboolean nb;
 	gboolean new = FALSE;
 	gchar buf[POPBUFSIZE];
 	gchar id[IDLEN + 1];
@@ -238,9 +237,6 @@ gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 	if (pop3_ok(sock, NULL) != PS_SUCCESS) return POP3_GETRANGE_LAST_SEND;
 
 	if (!state->id_table) new = TRUE;
-
-	nb = sock_is_nonblocking_mode(sock);
-	if (nb && (sock_set_nonblocking_mode(sock, FALSE) < 0)) return -1;
 
 	while (sock_gets(sock, buf, sizeof(buf)) >= 0) {
 		gint num;
@@ -264,8 +260,6 @@ gint pop3_getrange_uidl_recv(SockInfo *sock, gpointer data)
 				(state->id_list, g_strdup(id));
 	}
 
-	if (nb && (sock_set_nonblocking_mode(sock, TRUE) < 0)) return -1;
-
 	if (new == TRUE)
 		return POP3_GETSIZE_LIST_SEND;
 	else
@@ -282,16 +276,12 @@ gint pop3_getsize_list_send(SockInfo *sock, gpointer data)
 gint pop3_getsize_list_recv(SockInfo *sock, gpointer data)
 {
 	Pop3State *state = (Pop3State *)data;
-	gboolean nb;
 	gchar buf[POPBUFSIZE];
 
 	if (pop3_ok(sock, NULL) != PS_SUCCESS) return POP3_LOGOUT_SEND;
 
 	state->sizes = g_new0(gint, state->count + 1);
 	state->cur_total_bytes = 0;
-
-	nb = sock_is_nonblocking_mode(sock);
-	if (nb && (sock_set_nonblocking_mode(sock, FALSE) < 0)) return -1;
 
 	while (sock_gets(sock, buf, sizeof(buf)) >= 0) {
 		gint num, size;
@@ -305,8 +295,6 @@ gint pop3_getsize_list_recv(SockInfo *sock, gpointer data)
 		if (num < state->cur_msg)
 			state->cur_total_bytes += size;
 	}
-
-	if (nb && (sock_set_nonblocking_mode(sock, TRUE) < 0)) return -1;
 
 	return POP3_RETR_SEND;
 }
@@ -473,19 +461,11 @@ static void pop3_gen_send(SockInfo *sock, const gchar *format, ...)
 
 static gint pop3_gen_recv(SockInfo *sock, gchar *buf, gint size)
 {
-	gboolean nb;
-
-	nb = sock_is_nonblocking_mode(sock);
-
-	if (nb && (sock_set_nonblocking_mode(sock, FALSE) < 0))
-		return PS_SOCKET;
 	if (sock_gets(sock, buf, size) < 0) {
 		return PS_SOCKET;
 	} else {
 		strretchomp(buf);
 		log_print("POP3< %s\n", buf);
-		if (nb && (sock_set_nonblocking_mode(sock, TRUE) < 0))
-			return PS_SOCKET;
 
 		return PS_SUCCESS;
 	}

@@ -513,7 +513,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 #if USE_THREADS
 	if ((sockinfo = sock_connect_with_thread(server, port)) == NULL) {
 #else
-	if ((sockinfo = sock_connect_nb(server, port)) == NULL) {
+	if ((sockinfo = sock_connect(server, port)) == NULL) {
 #endif
 		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
 			    server, port);

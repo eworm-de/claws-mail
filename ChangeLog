@@ -1,3 +1,17 @@
+2001-05-03
+
+	* src/inc.c
+	  src/pop.c
+	  src/recv.c: removed non-blocking socket mode support since it
+	  does nothing.
+
+2001-05-02
+
+	* src/utils.h: made u32 the typedef of guint32.
+	  added BIG_ENDIAN_HOST macro that is used by md5.c.
+	* src/md5.c: renamed md5c.c. Fixed the indentation. Fixed a bug
+	  that didn't calculate MD5 correctly on big endian machines.
+
 2001-05-01
 
 	* version 0.4.65

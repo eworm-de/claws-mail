@@ -45,7 +45,7 @@ sylpheed_SOURCES = \
 	unmime.c unmime.h \
 	base64.c base64.h \
 	uuencode.c uuencode.h \
-	md5c.c md5.h \
+	md5.c md5.h \
 	rfc822.c rfc822.h \
 	socket.c socket.h \
 	automaton.c automaton.h \
@@ -97,6 +97,9 @@ EXTRA_DIST = \
 	pixmaps/trash.xpm \
 	pixmaps/unread.xpm \
 	pixmaps/linewrap.xpm \
+	pixmaps/continue.xpm \
+	pixmaps/complete.xpm \
+	pixmaps/error.xpm \
 	pixmaps/stock_mail.xpm \
 	pixmaps/stock_mail_attach.xpm \
 	pixmaps/stock_mail_receive.xpm \

@@ -38,7 +38,6 @@
 #  include <wchar.h>
 #endif
 
-
 /* The AC_CHECK_SIZEOF() in configure fails for some machines.
  * we provide some fallback values here */
 #if !SIZEOF_UNSIGNED_SHORT
@@ -56,16 +55,15 @@
 
 #ifndef HAVE_U32_TYPEDEF
   #undef u32	    /* maybe there is a macro with this name */
-  #if SIZEOF_UNSIGNED_INT == 4
-    typedef unsigned int u32;
-  #elif SIZEOF_UNSIGNED_LONG == 4
-    typedef unsigned long u32;
-  #else
-    #error no typedef for u32
-  #endif
+  typedef guint32 u32;
   #define HAVE_U32_TYPEDEF
 #endif
 
+#ifndef BIG_ENDIAN_HOST
+  #if (G_BYTE_ORDER == G_BIG_ENDIAN)
+    #define BIG_ENDIAN_HOST 1
+  #endif
+#endif
 
 #define CHDIR_RETURN_IF_FAIL(dir) \
 { \

@@ -258,6 +258,7 @@ static gint sock_connect_by_getaddrinfo(const gchar *hostname, gushort	port)
 }
 #endif /* !INET6 */
 
+#if 0
 SockInfo *sock_connect_nb(const gchar *hostname, gushort port)
 {
 	gint sock;
@@ -297,6 +298,7 @@ SockInfo *sock_connect_nb(const gchar *hostname, gushort port)
 	sockinfo->state = CONN_ESTABLISHED;
 	return sockinfo;
 }
+#endif
 
 SockInfo *sock_connect(const gchar *hostname, gushort port)
 {
@@ -426,7 +428,7 @@ gint fd_write(gint fd, const gchar *buf, gint len)
 	return wrlen;
 }
 
-gint fd_gets(gint fd, gchar *buf, gint len)
+static gint fd_gets(gint fd, gchar *buf, gint len)
 {
 	gchar *newline, *bp = buf;
 	gint n;
@@ -454,7 +456,6 @@ gint sock_gets(SockInfo *sock, gchar *buf, gint len)
 
 	return fd_gets(sock->sock, buf, len);
 }
-		
 
 gint sock_puts(SockInfo *sock, const gchar *buf)
 {
@@ -481,15 +482,15 @@ gint sock_peek(SockInfo *sock)
 
 gint sock_close(SockInfo *sock)
 {
-	gint rc;
+	gint ret;
 
 	if (!sock)
 		return 0;
 
-	rc = fd_close(sock->sock); 
+	ret = fd_close(sock->sock); 
 	g_free(sock->hostname);
 	g_free(sock);
-	return rc;
+	return ret;
 }
 
 gint fd_close(gint fd)
