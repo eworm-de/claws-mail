@@ -1,3 +1,23 @@
+2002-11-25 [colin]	0.8.6claws3
+
+	* src/ssl_certificate.[ch]
+		Allow checking a certificate without a DNS
+		lookup
+		Allow to forget a cert (by deleting it)
+		Make ssl_certificate_destroy_public
+	* src/ssl_manager.[ch] ** NEW FILES **
+		Gui to manage (display/remove) certificates
+	* src/prefs_common.[ch]
+		Add a pref to allow silent acceptation of
+		trusted certificates or not (based on the
+		"I want to know what's going on" principle)
+	* src/mainwindow.c
+		Add SSL manager in Tools menu
+	* src/Makefile.am
+		Add the new files to the build
+	* po/POTFILES.in
+		Add ssl_manager.c to translations
+
 2002-11-25 [colin]	0.8.6claws2
 
 	* src/summaryview.[ch]

@@ -17,34 +17,13 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __SSL_CERTIFICATE_H__
-#define __SSL_CERTIFICATE_H__
+#ifndef SSL_MANAGER_H
+#define SSL_MANAGER_H
+#ifdef USE_SSL
+#include "mainwindow.h"
 
-#ifdef HAVE_CONFIG_H
-#  include "config.h"
+void ssl_manager_create (void); 
+void ssl_manager_open 	(MainWindow *mainwin); 
+
 #endif
-
-#if USE_SSL
-
-#include <openssl/ssl.h>
-#include <openssl/objects.h>
-#include <glib.h>
-
-typedef struct _SSLCertificate SSLCertificate;
-
-struct _SSLCertificate
-{
-	X509 *x509_cert;
-	gchar *host;
-	gushort port;
-};
-
-SSLCertificate *ssl_certificate_find (gchar *host, gushort port);
-SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, gboolean lookup);
-gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port);
-char* ssl_certificate_to_string(SSLCertificate *cert);
-void ssl_certificate_destroy(SSLCertificate *cert);
-void ssl_certificate_delete_from_disk(SSLCertificate *cert);
-
-#endif /* USE_SSL */
-#endif /* SSL_CERTIFICATE_H */
+#endif

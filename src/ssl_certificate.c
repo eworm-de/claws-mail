@@ -32,12 +32,16 @@
 #include "prefs_common.h"
 #include "socket.h"
 
-static void ssl_certificate_destroy(SSLCertificate *cert);
 static char *ssl_certificate_check_signer (X509 *cert); 
+static SSLCertificate *ssl_certificate_new_lookup(X509 *x509_cert, gchar *host, gushort port, gboolean lookup);
 
 static char * get_fqdn(char *host)
 {
 	struct hostent *hp;
+
+	if (host == NULL || strlen(host) == 0)
+		return g_strdup("");
+
 	hp = my_gethostbyname(host);
 	if (hp == NULL)
 		return g_strdup(host); /*caller should free*/
@@ -69,6 +73,11 @@ static char * readable_fingerprint(unsigned char *src, int len)
 
 SSLCertificate *ssl_certificate_new(X509 *x509_cert, gchar *host, gushort port)
 {
+	return ssl_certificate_new_lookup(x509_cert, host, port, TRUE);
+}
+
+static SSLCertificate *ssl_certificate_new_lookup(X509 *x509_cert, gchar *host, gushort port, gboolean lookup)
+{
 	SSLCertificate *cert = g_new0(SSLCertificate, 1);
 	
 	if (host == NULL || x509_cert == NULL) {
@@ -76,7 +85,10 @@ SSLCertificate *ssl_certificate_new(X509 *x509_cert, gchar *host, gushort port)
 		return NULL;
 	}
 	cert->x509_cert = X509_dup(x509_cert);
-	cert->host = get_fqdn(host);
+	if (lookup)
+		cert->host = get_fqdn(host);
+	else
+		cert->host = g_strdup(host);
 	cert->port = port;
 	return cert;
 }
@@ -202,7 +214,9 @@ char* ssl_certificate_to_string(SSLCertificate *cert)
 	
 void ssl_certificate_destroy(SSLCertificate *cert) 
 {
-	g_return_if_fail(cert != NULL);
+	if (cert == NULL)
+		return;
+
 	if (cert->x509_cert)
 		X509_free(cert->x509_cert);
 	if (cert->host)	
@@ -211,7 +225,25 @@ void ssl_certificate_destroy(SSLCertificate *cert)
 	cert = NULL;
 }
 
+void ssl_certificate_delete_from_disk(SSLCertificate *cert)
+{
+	gchar *buf;
+	gchar *file;
+	buf = g_strdup_printf("%d", cert->port);
+	file = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
+			  "certs", G_DIR_SEPARATOR_S,
+			  cert->host, ".", buf, ".cert", NULL);
+	unlink (file);
+	g_free(buf);
+	g_free(file);
+}
+
 SSLCertificate *ssl_certificate_find (gchar *host, gushort port)
+{
+	return ssl_certificate_find_lookup (host, port, TRUE);
+}
+
+SSLCertificate *ssl_certificate_find_lookup (gchar *host, gushort port, gboolean lookup)
 {
 	gchar *file;
 	gchar *buf;
@@ -220,7 +252,11 @@ SSLCertificate *ssl_certificate_find (gchar *host, gushort port)
 	X509 *tmp_x509;
 	FILE *fp;
 
-	fqdn_host = get_fqdn(host);
+	if (lookup)
+		fqdn_host = get_fqdn(host);
+	else
+		fqdn_host = g_strdup(host);
+
 	buf = g_strdup_printf("%d", port);
 	file = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, 
 			  "certs", G_DIR_SEPARATOR_S,
@@ -236,7 +272,7 @@ SSLCertificate *ssl_certificate_find (gchar *host, gushort port)
 	
 	
 	if ((tmp_x509 = d2i_X509_fp(fp, 0)) != NULL) {
-		cert = ssl_certificate_new(tmp_x509, fqdn_host, port);
+		cert = ssl_certificate_new_lookup(tmp_x509, fqdn_host, port, lookup);
 		X509_free(tmp_x509);
 	}
 	fclose(fp);
@@ -310,8 +346,25 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 
 	if (known_cert == NULL) {
 		gint val;
-		gchar *err_msg, *cur_cert_str;
+		gchar *err_msg, *cur_cert_str, *sig_status;
 		
+		sig_status = ssl_certificate_check_signer(x509_cert);
+
+		if (sig_status == NULL && !prefs_common.ssl_ask_unknown_valid) {
+			/* trust and accept silently if hostnames match */
+			char *buf; /* don't free buf ! */
+			if (X509_NAME_get_text_by_NID(X509_get_subject_name(x509_cert), 
+				       NID_commonName, buf, 100) >= 0)
+				if (!strcmp(buf, current_cert->host)) {
+					g_free(sig_status);
+					ssl_certificate_save(current_cert);
+					ssl_certificate_destroy(current_cert);
+					return TRUE;		
+				}
+		}
+
+		g_free(sig_status);
+
 		cur_cert_str = ssl_certificate_to_string(current_cert);
 		
 		err_msg = g_strdup_printf(_("%s presented an unknown SSL certificate:\n%s"),
@@ -344,10 +397,8 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 	}
 	else if (!ssl_certificate_compare (current_cert, known_cert)) {
 		gint val;
-		gchar *err_msg, *known_cert_str, *cur_cert_str, *sig_status;
+		gchar *err_msg, *known_cert_str, *cur_cert_str;
 		
-		sig_status = ssl_certificate_check_signer(x509_cert);
-
 		known_cert_str = ssl_certificate_to_string(known_cert);
 		cur_cert_str = ssl_certificate_to_string(current_cert);
 		err_msg = g_strdup_printf(_("%s's SSL certificate changed !\nWe have saved this one:\n%s\n\nIt is now:\n%s\n\nThis could mean the server answering is not the known one."),
@@ -356,8 +407,6 @@ gboolean ssl_certificate_check (X509 *x509_cert, gchar *host, gushort port)
 					  cur_cert_str);
 		g_free (cur_cert_str);
 		g_free (known_cert_str);
-		if (sig_status)
-			g_free (sig_status);
 
 		if (prefs_common.no_recv_err_panel) {
 			log_error(_("%s\n\nMail won't be retrieved on this account until you save the certificate.\n(Uncheck the \"%s\" preference).\n"),
