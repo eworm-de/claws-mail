@@ -5294,6 +5294,7 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 
 	folderview_unselect(summaryview->folderview);
 	folderview_select(summaryview->folderview, summaryview->folder_item);
+	summary_set_column_titles(summaryview);
 }
 
 /*

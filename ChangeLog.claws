@@ -1,3 +1,24 @@
+2003-12-30 [paul]	0.9.8claws13
+
+	* po/POTFILES.in
+	  src/common/defs.h
+	  src/Makefile.am
+	  src/main.c
+	  src/prefs_common.c
+	  src/prefs_themes.[ch]	** NEW FILES **
+	  	redesign and move Icon Theme selector to
+		the new prefs window
+	  
+	* src/stock_pixmap.c
+		fix the old bug where icons are not always
+		updated when changing themes
+	
+	* src/summaryview.c
+		fix bug where the icons on the title row
+		of the summary view were not updated
+	
+	all patches submitted by Ricardo Mones Lastra
+
 2003-12-30 [hoa]	0.9.8claws12
 
 	* src/folder.c
