@@ -1912,6 +1912,9 @@ static void prefs_interface_create(void)
 		(vbox2, checkbtn_addaddrbyclick,
 		 _("Add address to destination when double-clicked"));
 
+	PACK_CHECK_BUTTON (vbox2, checkbtn_returnreceipt,
+			   _("Send return receipt on request"));
+
 	PACK_FRAME (vbox1, frame_exit, _("On exit"));
 
 	vbox_exit = gtk_vbox_new (FALSE, VSPACING_NARROW);
@@ -1934,9 +1937,6 @@ static void prefs_interface_create(void)
 
 	PACK_CHECK_BUTTON (vbox_exit, checkbtn_warnqueued,
 			   _("Warn if there are queued messages"));
-
-	PACK_CHECK_BUTTON (vbox_exit, checkbtn_returnreceipt,
-			   _("Send return receipt on request"));
 
 	interface.checkbtn_emacs          = checkbtn_emacs;
 	interface.checkbtn_openunread     = checkbtn_openunread;

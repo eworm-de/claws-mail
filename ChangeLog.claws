@@ -5,6 +5,8 @@
 	the panel is already on screen.
 	* src/prefs_customheader.c (prefs_custom_header_delete_cb): treat
 	closing the alert window by ESC as "No".
+	* src/prefs_common.c (prefs_interface_create): moved return
+	receipt check button to the correct place.
 
 2001-03-13 [alfons]
 
