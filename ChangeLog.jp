@@ -1,5 +1,11 @@
 2004-11-11
 
+	* src/pixmaps/complete.xpm
+	  src/pixmaps/continue.xpm: CList の行に合うようにより小さなサイズ
+	  にした。
+
+2004-11-11
+
 	* src/statusbar.c: statusbar_create(): 自動的に伸長しないように
 	  ウィジェットの幅を1に指定。
 	* src/utils.[ch]: trim_string_before(): 指定した長さを超える先頭の

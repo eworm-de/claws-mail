@@ -1,5 +1,11 @@
 2004-11-11
 
+	* src/pixmaps/complete.xpm
+	  src/pixmaps/continue.xpm: made them smaller size to fit CList
+	  row.
+
+2004-11-11
+
 	* src/statusbar.c: statusbar_create(): set the width of widget to 1
 	  not to expand automatically.
 	* src/utils.[ch]: trim_string_before(): trim beginning characters
