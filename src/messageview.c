@@ -808,6 +808,7 @@ static void messageview_update_all(MessageView *msgview)
 		MsgInfo *msginfo_list = (MsgInfo*)msgview->msginfo;
 		
 		g_return_if_fail(msginfo != NULL);
+		g_return_if_fail(msginfo_list);
 
 		if (msginfo->msgnum == msginfo_list->msgnum)
 			messageview_update(msgview);

@@ -1,3 +1,10 @@
+2003-09-03 [alfons]	0.9.4claws62
+
+	* src/messageview.c
+		deleting a message in a message view frees its msginfo, make 
+		messageview_update_all() aware of that (should fix bug #293,
+		"deleting message caused crash")
+
 2003-09-03 [melvin]	0.9.4claws61
 
 	* src/action.c
