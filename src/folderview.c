@@ -445,7 +445,7 @@ FolderView *folderview_create(void)
 		sizeof(folderview_mbox_popup_entries[0]);
 	mbox_popup = menu_create_items(folderview_mbox_popup_entries,
 				       n_entries,
-				       "<MailFolder>", &mbox_factory,
+				       "<MboxFolder>", &mbox_factory,
 				       folderview);
 
 	gtk_signal_connect(GTK_OBJECT(ctree), "key_press_event",
@@ -1360,6 +1360,7 @@ void folderview_rename_folder(FolderView *folderview)
 	switch (FOLDER_TYPE(item->folder)) {
 	case F_MBOX:
 		folderview_rename_mbox_folder_cb(folderview, 0, NULL);
+		break;
 	case F_MH:
 	case F_MAILDIR:
 	case F_IMAP:
