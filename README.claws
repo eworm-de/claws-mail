@@ -4,7 +4,9 @@ README.claws
 Summary:
 
 1. What is Sylpheed Claws?
-2. Switching to Claws
+2. Switching between Sylpheed Claws and Sylpheed
+   * From Sylpheed to Sylpheed Claws
+   * From Sylpheed Claws to Sylpheed
 3. Things Claws does different
    * auto address replacement in summary view
    * manual selection of MIME types for attachments
@@ -15,6 +17,9 @@ Summary:
    * spell checking (with installation instructions)
 4. How to contribute
 5. How to request features
+6. History
+
+
 
 1. What is Sylpheed Claws?
 --------------------------
@@ -31,43 +36,62 @@ For brevity Sylpheed Claws is referred to as Claws, and Sylpheed as either
 Sylpheed or Main.
 
 
-2. Switching to Claws
----------------------
 
-From the user perspective Claws is just a fancy Sylpheed, so it uses the
-same sylpheed setting files located in ~/.sylpheed.
+2. Switching between Sylpheed Claws and Sylpheed
+------------------------------------------------
 
-It's always a good idea to back up all files in ~/.sylpheed in case
-you want to switch back to Sylpheed. (You don't have to backup the
-directories.)
+  From Sylpheed to Sylpheed Claws	
+  -------------------------------
 
-There are some things that frequently come up when switching to Claws:
+  From the user perspective Claws is just a fancy Sylpheed, so it uses the
+  same sylpheed setting files located in ~/.sylpheed.
 
+  It's always a good idea to back up all files in ~/.sylpheed in case
+  you want to switch back to Sylpheed. (You don't have to backup the
+  directories.)
 
-* When replying, the original sender's text is not quoted anymore.
-
-  Claws has a different quote format handler. Add either %Q or %q to the
-  quote format text. Also click the button "Description of symbols"
-  for more quotation symbols.
+  There are some things that frequently come up when switching to Claws:
 
 
-* Why does the advanced filtering system not work?
+  * When replying, the original sender's text is not quoted anymore.
 
-  Claws uses the new filtering system as soon as you define a new rule for it.
-  Your old sylpheed filter rules will not be used. In subdirectory tools/ of
-  the distribution there is a Perl script called filter_conv.pl which convers
-  old filter rules to the claws filtering system.
+    Claws has a different quote format handler. Add either %Q or %q to the
+    quote format text. Also click the button "Description of symbols"
+    for more quotation symbols.
+
+
+  * Why does the advanced filtering system not work?
+
+    Claws uses the new filtering system as soon as you define a new rule for it.
+    Your old sylpheed filter rules will not be used. In subdirectory tools/ of
+    the distribution there is a Perl script called filter_conv.pl which convers
+    old filter rules to the claws filtering system.
   
 
-* What happened to the compose email and compose news buttons? 
+  * What happened to the compose email and compose news buttons? 
 
-  There's a composite button for both composing mail and news. You can toggle
-  between composing mail and news by clicking on the button with the triangle.
+    There's a composite button for both composing mail and news. You can toggle
+    between composing mail and news by clicking on the button with the triangle.
 
 
-* And to the Preferences and Execute buttons?
+  * And to the Preferences and Execute buttons?
 
-  Sorry, they're not there.
+    Sorry, they're not there.
+
+
+  From Sylpheed Claws to Sylpheed
+  -------------------------------
+
+  Moving from Claws to Sylpheed is also simple. Sylpheed should neglect the things
+  Claws put in the settings files. This also means that the old rules will work
+  again. 
+
+  If you want to switch back to Claws at a later time, make sure you back up at least
+  ~/.sylpheed/filteringrc (the Claws filtering rules), and ~/.sylpheed/sylpheedrc 
+  (which may have some claws specific settings).
+
+  When switching back to Sylpheed you will not lose messages or message flags (color
+  labels, read / unread status of messages). 
 
 
 
@@ -236,6 +260,7 @@ There are a lot more options. If you find one, don't hesitate to
 mention it.
 
 
+
 4. How to contribute
 --------------------
 
@@ -265,6 +290,7 @@ a long time to stabilize, send a mail to Paul Mangan. We can probably
 arrange access to the Claws branch.
 
 
+
 5. How to request features
 --------------------------
 
@@ -275,3 +301,11 @@ and rejected for whatever reason.  You might want to go ahead and
 hack a patch for it. (That would be very cool!) Another
 possibility is to use the Feature Request Tracker at the
 sourceforge project page.
+
+
+
+6. History
+----------
+
+TODO
+

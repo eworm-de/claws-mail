@@ -1,3 +1,13 @@
+2001-11-05 [alfons]	0.6.4claws26
+	
+	* README.claws
+		Claws -> Sylpheed (vice versa)
+
+	* src/compose.c
+		:%s/gtk_text/gtk_stext/g
+		:%s/GTK_TEXT/GTK_STEXT/g
+		(thanks to Jonathan Ware for spotting this)
+
 2001-11-04 [christoph]	0.6.4claws25
 
 	* src/summaryview.c
