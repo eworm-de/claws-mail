@@ -665,13 +665,13 @@ static IMAPSession *imap_session_get(Folder *folder)
 			/* Check if this is the first try to establish a
 			   connection, if yes we don't try to reconnect */
 			if (rfolder->session == NULL) {
-				log_warning(_("Connecting %s failed"),
+				log_warning("Connecting %s failed",
 					    folder->account->recv_server);
 				session_destroy(SESSION(session));
 				session = NULL;
 			} else {
-				log_warning(_("IMAP4 connection to %s has been"
-					      " disconnected. Reconnecting...\n"),
+				log_warning("IMAP4 connection to %s has been"
+					    " disconnected. Reconnecting...\n",
 					    folder->account->recv_server);
 				session_destroy(SESSION(session));
 				/* Clear folders session to make imap_session_get create
@@ -710,7 +710,7 @@ static IMAPSession *imap_session_new(const PrefsAccount *account)
 #endif
 
 	if (account->set_tunnelcmd) {
-		log_message(_("creating tunneled IMAP4 connection\n"));
+		log_message("creating tunneled IMAP4 connection\n");
 #if USE_OPENSSL
 		if ((imap_sock = imap_open_tunnel(account->recv_server, 
 						  account->tunnelcmd,
@@ -723,7 +723,7 @@ static IMAPSession *imap_session_new(const PrefsAccount *account)
 	} else {
 		g_return_val_if_fail(account->recv_server != NULL, NULL);
 
-		log_message(_("creating IMAP4 connection to %s:%d ...\n"),
+		log_message("creating IMAP4 connection to %s:%d ...\n",
 			    account->recv_server, port);
 		
 #if USE_OPENSSL
@@ -762,7 +762,7 @@ static IMAPSession *imap_session_new(const PrefsAccount *account)
 
 		ok = imap_cmd_starttls(session);
 		if (ok != IMAP_SUCCESS) {
-			log_warning(_("Can't start TLS session.\n"));
+			log_warning("Can't start TLS session.\n");
 			session_destroy(SESSION(session));
 			return NULL;
 		}
@@ -1096,7 +1096,7 @@ static gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 		(IMAP_SESSION(REMOTE_FOLDER(folder)->session),
 		&numlist, IMAP_FLAG_DELETED, TRUE);
 	if (ok != IMAP_SUCCESS) {
-		log_warning(_("can't set deleted flags: %d\n"), uid);
+		log_warning("can't set deleted flags: %d\n", uid);
 		return ok;
 	}
 
@@ -1110,7 +1110,7 @@ static gint imap_remove_msg(Folder *folder, FolderItem *item, gint uid)
 		g_free(uidstr);
 	}
 	if (ok != IMAP_SUCCESS) {
-		log_warning(_("can't expunge\n"));
+		log_warning("can't expunge\n");
 		return ok;
 	}
 
@@ -1144,13 +1144,13 @@ static gint imap_remove_all_msg(Folder *folder, FolderItem *item)
 	imap_gen_send(session, "STORE 1:* +FLAGS.SILENT (\\Deleted)");
 	ok = imap_cmd_ok(session, NULL);
 	if (ok != IMAP_SUCCESS) {
-		log_warning(_("can't set deleted flags: 1:*\n"));
+		log_warning("can't set deleted flags: 1:*\n");
 		return ok;
 	}
 
 	ok = imap_cmd_expunge(session, NULL);
 	if (ok != IMAP_SUCCESS) {
-		log_warning(_("can't expunge\n"));
+		log_warning("can't expunge\n");
 		return ok;
 	}
 
@@ -1186,7 +1186,7 @@ static gint imap_close(Folder *folder, FolderItem *item)
 
 		ok = imap_cmd_close(session);
 		if (ok != IMAP_SUCCESS)
-			log_warning(_("can't close folder\n"));
+			log_warning("can't close folder\n");
 
 		g_free(session->mbox);
 		session->mbox = NULL;
@@ -1238,7 +1238,7 @@ static gint imap_scan_tree(Folder *folder)
 		ok = imap_cmd_list(session, NULL, real_path, argbuf);
 		if (ok != IMAP_SUCCESS ||
 		    search_array_str(argbuf, "LIST ") == NULL) {
-			log_warning(_("root folder %s does not exist\n"), real_path);
+			log_warning("root folder %s does not exist\n", real_path);
 			g_ptr_array_free(argbuf, TRUE);
 			g_free(real_path);
 
@@ -1417,7 +1417,7 @@ static GSList *imap_parse_list(IMAPFolder *folder, IMAPSession *session,
 
 	for (;;) {
 		if (sock_gets(SESSION(session)->sock, buf, sizeof(buf)) <= 0) {
-			log_warning(_("error occurred while getting LIST.\n"));
+			log_warning("error occurred while getting LIST.\n");
 			break;
 		}
 		strretchomp(buf);
@@ -1425,7 +1425,7 @@ static GSList *imap_parse_list(IMAPFolder *folder, IMAPSession *session,
 			log_print("IMAP4< %s\n", buf);
 			if (sscanf(buf, "%*d %16s", buf) < 1 ||
 			    strcmp(buf, "OK") != 0)
-				log_warning(_("error occurred while getting LIST.\n"));
+				log_warning("error occurred while getting LIST.\n");
 				
 			break;
 		}
@@ -1653,7 +1653,7 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 		ok = imap_cmd_list(session, NULL, imap_path,
 				   argbuf);
 		if (ok != IMAP_SUCCESS) {
-			log_warning(_("can't create mailbox: LIST failed\n"));
+			log_warning("can't create mailbox: LIST failed\n");
 			g_free(imap_path);
 			g_free(dirpath);
 			ptr_array_free_strings(argbuf);
@@ -1675,7 +1675,7 @@ static FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,
 		if (!exist) {
 			ok = imap_cmd_create(session, imap_path);
 			if (ok != IMAP_SUCCESS) {
-				log_warning(_("can't create mailbox\n"));
+				log_warning("can't create mailbox\n");
 				g_free(imap_path);
 				g_free(dirpath);
 				return NULL;
@@ -1750,7 +1750,7 @@ static gint imap_rename_folder(Folder *folder, FolderItem *item,
 
 	ok = imap_cmd_rename(session, real_oldpath, real_newpath);
 	if (ok != IMAP_SUCCESS) {
-		log_warning(_("can't rename mailbox: %s to %s\n"),
+		log_warning("can't rename mailbox: %s to %s\n",
 			    real_oldpath, real_newpath);
 		g_free(real_oldpath);
 		g_free(newpath);
@@ -1812,7 +1812,7 @@ static gint imap_remove_folder(Folder *folder, FolderItem *item)
 
 	ok = imap_cmd_delete(session, path);
 	if (ok != IMAP_SUCCESS) {
-		log_warning(_("can't delete mailbox\n"));
+		log_warning("can't delete mailbox\n");
 		g_free(path);
 		return -1;
 	}
@@ -1850,7 +1850,7 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 
 		if (imap_cmd_envelope(session, imapset)
 		    != IMAP_SUCCESS) {
-			log_warning(_("can't get envelope\n"));
+			log_warning("can't get envelope\n");
 			continue;
 		}
 
@@ -1858,7 +1858,7 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 
 		for (;;) {
 			if ((tmp = sock_getline(SESSION(session)->sock)) == NULL) {
-				log_warning(_("error occurred while getting envelope.\n"));
+				log_warning("error occurred while getting envelope.\n");
 				g_string_free(str, TRUE);
 				break;
 			}
@@ -1880,7 +1880,7 @@ static GSList *imap_get_uncached_messages(IMAPSession *session,
 			msginfo = imap_parse_envelope
 				(SESSION(session)->sock, item, str);
 			if (!msginfo) {
-				log_warning(_("can't parse envelope: %s\n"), str->str);
+				log_warning("can't parse envelope: %s\n", str->str);
 				continue;
 			}
 			if (item->stype == F_QUEUE) {
@@ -1936,7 +1936,7 @@ static SockInfo *imap_open_tunnel(const gchar *server,
 	SockInfo *sock;
 
 	if ((sock = sock_connect_cmd(server, tunnelcmd)) == NULL) {
-		log_warning(_("Can't establish IMAP4 session with: %s\n"),
+		log_warning("Can't establish IMAP4 session with: %s\n",
 			    server);
 		return NULL;
 	}
@@ -1958,14 +1958,14 @@ static SockInfo *imap_open(const gchar *server, gushort port)
 	SockInfo *sock;
 
 	if ((sock = sock_connect(server, port)) == NULL) {
-		log_warning(_("Can't connect to IMAP4 server: %s:%d\n"),
+		log_warning("Can't connect to IMAP4 server: %s:%d\n",
 			    server, port);
 		return NULL;
 	}
 
 #if USE_OPENSSL
 	if (ssl_type == SSL_TUNNEL && !ssl_init_socket(sock)) {
-		log_warning(_("Can't establish IMAP4 session with: %s:%d\n"),
+		log_warning("Can't establish IMAP4 session with: %s:%d\n",
 			    server, port);
 		sock_close(sock);
 		return NULL;
@@ -2055,7 +2055,7 @@ static void imap_parse_namespace(IMAPSession *session, IMAPFolder *folder)
 	
 	if (imap_cmd_namespace(session, &ns_str)
 	    != IMAP_SUCCESS) {
-		log_warning(_("can't get namespace\n"));
+		log_warning("can't get namespace\n");
 		return;
 	}
 
@@ -2489,7 +2489,7 @@ static gint imap_select(IMAPSession *session, IMAPFolder *folder,
 	ok = imap_cmd_select(session, real_path,
 			     exists, recent, unseen, uid_validity);
 	if (ok != IMAP_SUCCESS)
-		log_warning(_("can't select folder: %s\n"), real_path);
+		log_warning("can't select folder: %s\n", real_path);
 	else {
 		session->mbox = g_strdup(path);
 		session->folder_content_changed = FALSE;
@@ -2629,7 +2629,7 @@ static gint imap_cmd_authenticate(IMAPSession *session, const gchar *user,
 	sock_puts(SESSION(session)->sock, response64);
 	ok = imap_cmd_ok(session, NULL);
 	if (ok != IMAP_SUCCESS)
-		log_warning(_("IMAP4 authentication failed.\n"));
+		log_warning("IMAP4 authentication failed.\n");
 
 	return ok;
 }
@@ -2646,7 +2646,7 @@ static gint imap_cmd_login(IMAPSession *session,
 
 	ok = imap_cmd_ok(session, NULL);
 	if (ok != IMAP_SUCCESS)
-		log_warning(_("IMAP4 login failed.\n"));
+		log_warning("IMAP4 login failed.\n");
 
 	return ok;
 }
@@ -2964,14 +2964,14 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 
 	ok = imap_gen_recv(session, &ret);
 	if (ok != IMAP_SUCCESS || ret[0] != '+' || ret[1] != ' ') {
-		log_warning(_("can't append %s to %s\n"), file, destfolder_);
+		log_warning("can't append %s to %s\n", file, destfolder_);
 		g_free(ret);
 		fclose(fp);
 		return IMAP_ERROR;
 	}
 	g_free(ret);
 
-	log_print("IMAP4> %s\n", _("(sending file...)"));
+	log_print("IMAP4> %s\n", "(sending file...)");
 
 	while (fgets(buf, sizeof(buf), fp) != NULL) {
 		strretchomp(buf);
@@ -3013,7 +3013,7 @@ static gint imap_cmd_append(IMAPSession *session, const gchar *destfolder,
 		ok = imap_cmd_ok(session, NULL);
 
 	if (ok != IMAP_SUCCESS)
-		log_warning(_("can't append message to %s\n"),
+		log_warning("can't append message to %s\n",
 			    destfolder_);
 
 	return ok;
@@ -3095,7 +3095,7 @@ static gint imap_cmd_copy(IMAPSession *session, const gchar *seq_set,
 		ok = imap_cmd_ok(session, NULL);
 
 	if (ok != IMAP_SUCCESS)
-		log_warning(_("can't copy %s to %s\n"), seq_set, destfolder_);
+		log_warning("can't copy %s to %s\n", seq_set, destfolder_);
 
 	return ok;
 }
@@ -3145,7 +3145,7 @@ static gint imap_cmd_store(IMAPSession *session, IMAPSet seq_set,
 	imap_gen_send(session, "UID STORE %s %s", seq_set, sub_cmd);
 
 	if ((ok = imap_cmd_ok(session, NULL)) != IMAP_SUCCESS) {
-		log_warning(_("error while imap command: STORE %s %s\n"),
+		log_warning("error while imap command: STORE %s %s\n",
 			    seq_set, sub_cmd);
 		return ok;
 	}
@@ -3162,7 +3162,7 @@ static gint imap_cmd_expunge(IMAPSession *session, IMAPSet seq_set)
 	else	
 		imap_gen_send(session, "EXPUNGE");
 	if ((ok = imap_cmd_ok(session, NULL)) != IMAP_SUCCESS) {
-		log_warning(_("error while imap command: EXPUNGE\n"));
+		log_warning("error while imap command: EXPUNGE\n");
 		return ok;
 	}
 
@@ -3175,7 +3175,7 @@ static gint imap_cmd_close(IMAPSession *session)
 
 	imap_gen_send(session, "CLOSE");
 	if ((ok = imap_cmd_ok(session, NULL)) != IMAP_SUCCESS)
-		log_warning(_("error while imap command: CLOSE\n"));
+		log_warning("error while imap command: CLOSE\n");
 
 	return ok;
 }

@@ -2251,7 +2251,7 @@ FolderItem *folder_item_move_recursive(FolderItem *src, FolderItem *dest)
 		new_item->folder = dest->folder;
 
 	/* move messages */
-	log_message(_("Moving %s to %s...\n"), 
+	log_message("Moving %s to %s...\n", 
 			src->name, new_item->path);
 	folder_item_move_msgs(new_item, mlist);
 	
