@@ -1,3 +1,10 @@
+2002-01-14 [paul]
+
+	* tools/filter_conv.pl
+		allow for Boolean Op and case-sensitivity
+		this file is included in the release and tagged
+		'rel_0_7_0'
+
 2002-01-13 [paul]	0.7.0claws
 
 	* release 0.7.0, with cvs tag 'rel_0_7_0'
