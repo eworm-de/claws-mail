@@ -2406,13 +2406,13 @@ static void prefs_account_set_string_from_optmenu(PrefParam *pparam)
 	g_return_if_fail(*pparam->widget != NULL);
 
 	menu = gtk_option_menu_get_menu(GTK_OPTION_MENU(*pparam->widget));
-	menuitem = gtk_menu_get_active(menu);
+	menuitem = gtk_menu_get_active(GTK_MENU(menu));
 	if (menuitem == NULL)
 		return;
 
 	str = (gchar **) pparam->data;
         g_free(*str);
-	*str = g_strdup(gtk_object_get_user_data(menuitem));
+	*str = g_strdup(gtk_object_get_user_data(GTK_OBJECT(menuitem)));
 }
 
 static void prefs_account_set_optmenu_from_string(PrefParam *pparam)

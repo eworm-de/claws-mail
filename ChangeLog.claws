@@ -1,3 +1,10 @@
+2004-11-12 [paul]	0.9.12cvs146
+
+	* src/prefs_account.c
+	* src/procmime.c
+	* src/procmime.h
+		fix sync breakage 
+
 2004-11-12 [paul]
 
 	* src/pixmaps/complete.xpm

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2004 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,9 @@
 
 typedef struct _MimeType	MimeType;
 typedef struct _MimeInfo	MimeInfo;
+
+#include "procmsg.h"
+#include "utils.h"
 
 typedef enum
 {
@@ -189,10 +192,10 @@ FILE *procmime_get_first_text_content	(MsgInfo	*msginfo);
 gboolean procmime_find_string_part	(MimeInfo	*mimeinfo,
 					 const gchar	*filename,
 					 const gchar	*str,
-					 gboolean	 case_sens);
+					 StrFindFunc	 find_func);
 gboolean procmime_find_string		(MsgInfo	*msginfo,
 					 const gchar	*str,
-					 gboolean	 case_sens);
+					 StrFindFunc	 find_func);
 
 gchar *procmime_get_tmp_file_name	(MimeInfo	*mimeinfo);
 
