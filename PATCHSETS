@@ -177,3 +177,4 @@
 ( cvs diff -u -r 1.25 -r 1.26 src/quote_fmt_parse.y ) > 0.9.13cvs5.patchset
 ( cvs diff -u -r 1.129 -r 1.130 src/textview.c; ) > 0.9.13cvs6.patchset
 ( cvs diff -u -r 1.36 -r 1.37 src/matcher_parser_parse.y; cvs diff -u -r 1.28 -r 1.29 src/msgcache.c; cvs diff -u -r 1.48 -r 1.49 src/prefs_matcher.c; cvs diff -u -r 1.60 -r 1.61 src/procheader.c; cvs diff -u -r 1.88 -r 1.89 src/matcher.c; cvs diff -u -r 1.17 -r 1.18 src/common/defs.h; ) > 0.9.13cvs7.patchset
+( cvs diff -u -r 1.26 -r 1.27 src/quote_fmt_parse.y ) > 0.9.13cvs8.patchset
