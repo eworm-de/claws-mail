@@ -1,3 +1,10 @@
+2002-11-08 [colin]	0.8.5claws96
+
+	* src/folder.c
+	  src/folderview.c
+		Fix segfaults, call me stupido
+	
+
 2002-11-08 [colin]	0.8.5claws95
 
 	*src/folder.c

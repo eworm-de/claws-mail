@@ -1494,7 +1494,8 @@ FolderItem *folder_item_move_to(FolderItem *src, FolderItem *dest)
 	FolderItem *tmp = dest->parent;
 	char * srcpath, * dstpath;
 	char * phys_srcpath, * phys_dstpath;
-
+	GNode *src_node;
+	
 	while (tmp) {
 		if (tmp == src) {
 			alertpanel_error(_("Can't move a folder to one of its children."));
@@ -1542,6 +1543,11 @@ FolderItem *folder_item_move_to(FolderItem *src, FolderItem *dest)
 						NULL));
 
 	src->folder->remove_folder(src->folder, src);
+	src_node = g_node_find(src->folder->node, G_PRE_ORDER, G_TRAVERSE_ALL, src);
+	if (src_node) 
+		g_node_destroy(src_node);
+	else
+		printf("can't remove node: is null !\n");
 	/* not to much worry if remove fails, move has been done */
 	
 	folder_write_list();

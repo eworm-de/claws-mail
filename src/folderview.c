@@ -1262,6 +1262,21 @@ void folderview_update_item(FolderItem *item, gboolean update_summary)
 	}
 }
 
+static folderview_update_item_recursive (FolderItem *item, gboolean update_summary)
+{
+	GNode *node = item->folder->node;	
+	node = g_node_find(node, G_PRE_ORDER, G_TRAVERSE_ALL, item);
+	node = node->children;
+	folderview_update_item(item, update_summary);
+	while (node != NULL) {
+		if (node && node->data) {
+			FolderItem *next_item = (FolderItem*) node->data;
+			folderview_update_item(next_item, update_summary);
+		}
+		node = node->next;
+	}
+}
+
 void folderview_update_items_when_required(gboolean update_summary)
 {
 	GList *list;
@@ -2691,10 +2706,12 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		
 		folderview_create_folder_node_recursive(folderview, new_item);
 		folderview_update_item(src_parent, TRUE);
-		folderview_update_item(new_item, TRUE);
+		folderview_update_item_recursive(new_item, TRUE);
 		STATUSBAR_PUSH(folderview->mainwin, _("Done."));
 		main_window_cursor_normal(folderview->mainwin);
 		summary_clear_all(folderview->summaryview);
+		folderview->opened = NULL;
+		folderview->selected = NULL;
 		if (new_item)
 			folderview_select(folderview, new_item);
 	}
