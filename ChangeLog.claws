@@ -1,3 +1,16 @@
+2003-07-03 [christoph]	0.9.0claws76
+
+	* src/folder.[ch]
+	* src/imap.c
+	* src/mbox_folder.c
+	* src/mh.c
+	* src/news.c
+		move folder_item_get_path() stuff into a folder virtual function
+
+	* src/procmsg.c
+		use folder_item_fetch_msg() to get message and do not contruct
+		the filename from path and number
+
 2003-07-03 [paul]	0.9.0claws75
 
 	* sync with 0.9.2cvs12
@@ -48,6 +61,8 @@
 
 	* src/folder.c
 		freeze folder updates while a folder is scanned
+
+	(closes Bug 185 New message counter)
 
 2003-06-26 [darko]	0.9.0claws65
 

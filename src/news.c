@@ -107,6 +107,9 @@ GSList *news_get_msginfos		 (Folder 	*folder,
 
 gint news_post_stream			 (Folder 	*folder, 
 					  FILE 		*fp);
+static gchar *news_folder_get_path	 (Folder	*folder);
+gchar *news_item_get_path		 (Folder	*folder,
+					  FolderItem	*item);
 
 FolderClass news_class =
 {
@@ -123,6 +126,7 @@ FolderClass news_class =
 	/* FolderItem functions */
 	NULL,
 	NULL,
+	news_item_get_path,
 	NULL,
 	NULL,
 	NULL,
@@ -164,7 +168,7 @@ void news_folder_destroy(Folder *folder)
 {
 	gchar *dir;
 
-	dir = folder_get_path(folder);
+	dir = news_folder_get_path(folder);
 	if (is_dir_exist(dir))
 		remove_dir_recursive(dir);
 	g_free(dir);
@@ -701,6 +705,48 @@ gint news_cancel_article(Folder * folder, MsgInfo * msginfo)
 	g_free(tmp);
 
 	return 0;
+}
+
+static gchar *news_folder_get_path(Folder *folder)
+{
+	gchar *folder_path;
+
+        g_return_val_if_fail(folder->account != NULL, NULL);
+
+        folder_path = g_strconcat(get_news_cache_dir(),
+                                  G_DIR_SEPARATOR_S,
+                                  folder->account->nntp_server,
+                                  NULL);
+	return folder_path;
+}
+
+gchar *news_item_get_path(Folder *folder, FolderItem *item)
+{
+	gchar *folder_path, *path;
+
+	g_return_val_if_fail(folder != NULL, NULL);
+	g_return_val_if_fail(item != NULL, NULL);
+	folder_path = news_folder_get_path(folder);
+
+        g_return_val_if_fail(folder_path != NULL, NULL);
+        if (folder_path[0] == G_DIR_SEPARATOR) {
+                if (item->path)
+                        path = g_strconcat(folder_path, G_DIR_SEPARATOR_S,
+                                           item->path, NULL);
+                else
+                        path = g_strdup(folder_path);
+        } else {
+                if (item->path)
+                        path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
+                                           folder_path, G_DIR_SEPARATOR_S,
+                                           item->path, NULL);
+                else
+                        path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
+                                           folder_path, NULL);
+        }
+        g_free(folder_path);
+
+	return path;
 }
 
 gint news_get_num_list(Folder *folder, FolderItem *item, GSList **msgnum_list)

@@ -182,6 +182,8 @@ struct _FolderClass
 	FolderItem	*(*item_new)		(Folder		*folder);
 	void	 	(*item_destroy)		(Folder		*folder,
 						 FolderItem	*item);
+	gchar		*(*item_get_path)	(Folder		*folder,
+						 FolderItem	*item);
 	FolderItem 	*(*create_folder)	(Folder		*folder,
 						 FolderItem	*parent,
 						 const gchar	*name);
@@ -394,7 +396,6 @@ FolderItem *folder_get_default_processing (void);
 void folder_set_missing_folders		(void);
 void folder_unref_account_all		(PrefsAccount	*account);
 
-gchar *folder_get_path			(Folder		*folder);
 gchar *folder_item_get_path		(FolderItem	*item);
 
 gint   folder_item_open			(FolderItem	*item);

@@ -859,83 +859,15 @@ void folder_unref_account_all(PrefsAccount *account)
 
 #undef CREATE_FOLDER_IF_NOT_EXIST
 
-gchar *folder_get_path(Folder *folder)
-{
-	gchar *path;
-
-	g_return_val_if_fail(folder != NULL, NULL);
-
-	switch(FOLDER_TYPE(folder)) {
-
-		case F_MH:
-			path = g_strdup(LOCAL_FOLDER(folder)->rootpath);
-			break;
-
-		case F_IMAP:
-			g_return_val_if_fail(folder->account != NULL, NULL);
-			path = g_strconcat(get_imap_cache_dir(),
-					   G_DIR_SEPARATOR_S,
-					   folder->account->recv_server,
-					   G_DIR_SEPARATOR_S,
-					   folder->account->userid,
-					   NULL);
-			break;
-
-		case F_NEWS:
-			g_return_val_if_fail(folder->account != NULL, NULL);
-			path = g_strconcat(get_news_cache_dir(),
-					   G_DIR_SEPARATOR_S,
-					   folder->account->nntp_server,
-					   NULL);
-			break;
-
-		default:
-			path = NULL;
-			break;
-	}
-	
-	return path;
-}
-
 gchar *folder_item_get_path(FolderItem *item)
 {
-	gchar *folder_path;
-	gchar *path;
+	Folder *folder;
 
 	g_return_val_if_fail(item != NULL, NULL);
+	folder = item->folder;
+	g_return_val_if_fail(folder != NULL, NULL);
 
-	if(FOLDER_TYPE(item->folder) != F_MBOX) {
-		folder_path = folder_get_path(item->folder);
-		g_return_val_if_fail(folder_path != NULL, NULL);
-
-		if (folder_path[0] == G_DIR_SEPARATOR) {
-			if (item->path)
-				path = g_strconcat(folder_path, G_DIR_SEPARATOR_S,
-						   item->path, NULL);
-			else
-				path = g_strdup(folder_path);
-		} else {
-			if (item->path)
-				path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
-						   folder_path, G_DIR_SEPARATOR_S,
-						   item->path, NULL);
-			else
-				path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
-						   folder_path, NULL);
-		}
-
-		g_free(folder_path);
-	} else {
-		gchar *itempath;
-
-		itempath = mbox_get_virtual_path(item);
-		if (itempath == NULL)
-			return NULL;
-		path = g_strconcat(get_mbox_cache_dir(),
-					  G_DIR_SEPARATOR_S, itempath, NULL);
-		g_free(itempath);
-	}
-	return path;
+	return folder->klass->item_get_path(folder, item);
 }
 
 void folder_item_set_default_flags(FolderItem *dest, MsgFlags *flags)
@@ -2478,7 +2410,7 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 		fprintf(fp, "<folder type=\"%s\"", folder->klass->idstr);
 		if (folder->name)
 			PUT_ESCAPE_STR(fp, "name", folder->name);
-		if (FOLDER_TYPE(folder) == F_MH || FOLDER_TYPE(folder) == F_MBOX)
+		if (FOLDER_TYPE(folder) == F_MH || FOLDER_TYPE(folder) == F_MBOX || FOLDER_TYPE(folder) == F_MAILDIR)
 			PUT_ESCAPE_STR(fp, "path",
 				       LOCAL_FOLDER(folder)->rootpath);
 		if (item->collapsed && node->children)

@@ -385,6 +385,9 @@ static void imap_change_flags			(Folder 	*folder,
 						 FolderItem 	*item,
 						 MsgInfo 	*msginfo,
 						 MsgPermFlags 	newflags);
+static gchar *imap_folder_get_path		(Folder		*folder);
+static gchar *imap_item_get_path		(Folder		*folder,
+						 FolderItem	*item);
 
 FolderClass imap_class =
 {
@@ -401,6 +404,7 @@ FolderClass imap_class =
 	/* FolderItem functions */
 	imap_folder_item_new,
 	imap_folder_item_destroy,
+	imap_item_get_path,
 	imap_create_folder,
 	imap_rename_folder,
 	imap_remove_folder,
@@ -442,7 +446,7 @@ void imap_folder_destroy(Folder *folder)
 {
 	gchar *dir;
 
-	dir = folder_get_path(folder);
+	dir = imap_folder_get_path(folder);
 	if (is_dir_exist(dir))
 		remove_dir_recursive(dir);
 	g_free(dir);
@@ -1237,6 +1241,52 @@ static FolderItem *imap_create_special_folder(Folder *folder,
 		new_item->stype = stype;
 
 	return new_item;
+}
+
+static gchar *imap_folder_get_path(Folder *folder)
+{
+	gchar *folder_path;
+
+	g_return_val_if_fail(folder != NULL, NULL);
+        g_return_val_if_fail(folder->account != NULL, NULL);
+
+        folder_path = g_strconcat(get_imap_cache_dir(),
+                                  G_DIR_SEPARATOR_S,
+                                  folder->account->recv_server,
+                                  G_DIR_SEPARATOR_S,
+                                  folder->account->userid,
+                                  NULL);
+
+	return folder_path;
+}
+
+static gchar *imap_item_get_path(Folder *folder, FolderItem *item)
+{
+	gchar *folder_path, *path;
+
+	g_return_val_if_fail(folder != NULL, NULL);
+	g_return_val_if_fail(item != NULL, NULL);
+	folder_path = imap_folder_get_path(folder);
+
+	g_return_val_if_fail(folder_path != NULL, NULL);
+        if (folder_path[0] == G_DIR_SEPARATOR) {
+                if (item->path)
+                        path = g_strconcat(folder_path, G_DIR_SEPARATOR_S,
+                                           item->path, NULL);
+                else
+                        path = g_strdup(folder_path);
+        } else {
+                if (item->path)
+                        path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
+                                           folder_path, G_DIR_SEPARATOR_S,
+                                           item->path, NULL);
+                else
+                        path = g_strconcat(get_home_dir(), G_DIR_SEPARATOR_S,
+                                           folder_path, NULL);
+        }
+        g_free(folder_path);
+
+	return path;
 }
 
 FolderItem *imap_create_folder(Folder *folder, FolderItem *parent,

@@ -336,17 +336,14 @@ void procmsg_copy_messages(GSList *mlist)
 
 gchar *procmsg_get_message_file_path(MsgInfo *msginfo)
 {
-	gchar *path, *file;
+	gchar *file;
 
 	g_return_val_if_fail(msginfo != NULL, NULL);
 
 	if (msginfo->plaintext_file)
 		file = g_strdup(msginfo->plaintext_file);
 	else {
-		path = folder_item_get_path(msginfo->folder);
-		file = g_strconcat(path, G_DIR_SEPARATOR_S,
-				   itos(msginfo->msgnum), NULL);
-		g_free(path);
+		file = folder_item_fetch_msg(msginfo->folder, msginfo->msgnum);
 	}
 
 	return file;
