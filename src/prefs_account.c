@@ -2260,7 +2260,6 @@ static void prefs_account_edit_custom_header(void)
 	prefs_custom_header_open(&tmp_ac_prefs);
 }
 
-#if USE_GPGME || USE_OPENSSL
 static void prefs_account_enum_set_data_from_radiobtn(PrefParam *pparam)
 {
 	GtkRadioButton *radiobtn;
@@ -2298,8 +2297,6 @@ static void prefs_account_enum_set_radiobtn(PrefParam *pparam)
 		group = group->next;
 	}
 }
-
-#endif /* USE_GPGME || USE_OPENSSL */
 
 #if USE_GPGME
 static void prefs_account_gnupg_inline_warning(GtkWidget *widget)

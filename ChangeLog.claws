@@ -1,3 +1,8 @@
+2003-03-02 [paul]	0.8.10claws69
+
+	* src/prefs_account.c
+		fix compile error
+
 2003-03-01 [thorsten]	0.8.10claws68
 
 	* po/el.po
