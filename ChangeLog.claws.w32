@@ -1,3 +1,13 @@
+2003-02-02 [thorsten]	0.8.9claws-34-1
+
+	* src/codeconv.c
+	  src/gtkstext.c
+		fix: reserve 6 byte for utf8 conv.
+	* src/compose.c
+	  	fix: force iso-8859-15 if euro is used
+	* src/main.c
+		fix: remove log handler (warning)
+	
 2003-02-02 [thorsten]	0.8.9claws-32-1
 
 	* src/utils.c

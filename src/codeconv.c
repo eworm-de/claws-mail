@@ -1356,7 +1356,7 @@ void conv_X_any_to_disp(gchar *buf, gint len){
 	gchar *tmp;
 	gint p_len;
 
-	p_len = len * 2;
+	p_len = len * 6;
 	tmp = g_malloc(p_len);
 	conv_anytoeuc(tmp, p_len, buf);
 	conv_unreadable_eucjp(tmp);

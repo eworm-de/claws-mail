@@ -3427,12 +3427,12 @@ static gint compose_write_to_file(Compose *compose, const gchar *file,
 
 		out_codeset = conv_get_outgoing_charset_str();
 		if (!strcasecmp(out_codeset, CS_US_ASCII))
-#ifdef WIN32
-			if (strrchr(chars, 0x80)) /* euro */
-				out_codeset = CS_ISO_8859_15;
-			else
-#endif
 			out_codeset = CS_ISO_8859_1;
+#ifdef WIN32
+		if (!strncasecmp(out_codeset, "ISO-8859-",9)
+			&& strrchr(chars, 0x80)) /* euro */
+			out_codeset = CS_ISO_8859_15;
+#endif
 
 		if (prefs_common.encoding_method == CTE_BASE64)
 			encoding = ENC_BASE64;

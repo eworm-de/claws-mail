@@ -447,9 +447,9 @@ int main(int argc, char *argv[])
 
 #ifdef WIN32
 	stop_mswin_helper();
+	g_log_remove_handler("Gtk", gtklog_hid);
+	g_log_remove_handler("Gdk", gdklog_hid);
 	g_log_remove_handler(NULL, log_hid);
-	g_log_remove_handler(NULL, gtklog_hid);
-	g_log_remove_handler(NULL, gdklog_hid);
 
 	/* De-Initialize WinSock Library. */
 	WSACleanup();

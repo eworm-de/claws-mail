@@ -1089,7 +1089,7 @@ gtk_stext_insert (GtkSText    *text,
 #ifdef WIN32
 	{
 		int nWritten;
-		int maxlen = (length+1)*2 ;
+		int maxlen = (length+1)*6 ;
 		gchar *p_chars = g_malloc0(maxlen);
 		p_chars = g_locale_to_utf8( chars_nt , length , NULL , &nWritten , NULL );
 		if (p_chars)
