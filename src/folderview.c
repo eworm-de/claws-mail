@@ -975,10 +975,12 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 	gchar *str;
 	gboolean add_unread_mark;
 	gboolean use_bold, use_color;
-	gboolean hide_read_msgs = item->hide_read_msgs;
+	gboolean hide_read_msgs = FALSE;
 	
 	item = gtk_ctree_node_get_row_data(ctree, node);
 	g_return_if_fail(item != NULL);
+
+	hide_read_msgs = item->hide_read_msgs;
 
 	item->hide_read_msgs |= quicksearch_is_active(folderview->summaryview->quicksearch);
 	

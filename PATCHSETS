@@ -36,3 +36,4 @@
 ( cvs diff -u -r 1.207.2.7 -r 1.207.2.8 src/folderview.c; cvs diff -u -r 1.274.2.9 -r 1.274.2.10 src/mainwindow.c; cvs diff -u -r 1.83.2.11 -r 1.83.2.12 src/mimeview.c; cvs diff -u -r 1.395.2.20 -r 1.395.2.21 src/summaryview.c; cvs diff -u -r 1.1.2.10 -r 1.1.2.11 src/gtk/quicksearch.c; cvs diff -u -r 1.1.2.3 -r 1.1.2.4 src/gtk/quicksearch.h; ) > 0.9.12cvs30.2.patchset
 ( cvs diff -u -r 1.382.2.21 -r 1.382.2.22 src/compose.c; ) > 0.9.12cvs30.3.patchset
 ( cvs diff -u -r 1.382.2.22 -r 1.382.2.23 src/compose.c; ) > 0.9.12cvs30.3.patchset
+( cvs diff -u -r 1.207.2.8 -r 1.207.2.9 src/folderview.c; ) > 0.9.12cvs30.4.patchset
