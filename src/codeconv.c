@@ -1063,14 +1063,16 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 		return;						\
 	}							\
 								\
-	if (cond) {						\
+	if ((cond) && *srcp) {					\
 		if (destp > dest && isspace(*(destp - 1)))	\
 			destp--;				\
 		else if (isspace(*srcp))			\
 			srcp++;					\
-		*destp++ = '\n';				\
-		*destp++ = ' ';					\
-		left = MAX_LINELEN - 1;				\
+		if (*srcp) {					\
+			*destp++ = '\n';			\
+			*destp++ = ' ';				\
+			left = MAX_LINELEN - 1;			\
+		}						\
 	}							\
 }
 

@@ -4174,7 +4174,7 @@ static void compose_convert_header(gchar *dest, gint len, gchar *src,
 
 	if (len < 1) return;
 
-	remove_return(src);
+	g_strchomp(src);
 
 	conv_encode_header(dest, len, src, header_len);
 }

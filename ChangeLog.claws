@@ -1,3 +1,8 @@
+2003-01-06 [paul]	0.8.8claws57
+
+	* sync with 0.8.8cvs1
+		see ChangeLog 2003-01-06
+
 2003-01-06 [christoph]	0.8.8claws56
 
 	* src/mainwindow.c
