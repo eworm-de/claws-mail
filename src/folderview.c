@@ -166,6 +166,9 @@ static void folderview_update_tree_cb	(FolderView	*folderview,
 					 guint		 action,
 					 GtkWidget	*widget);
 
+static void mark_all_read_cb            (FolderView    *folderview,
+                                         guint           action,
+                                         GtkWidget      *widget);
 static void folderview_new_folder_cb	(FolderView	*folderview,
 					 guint		 action,
 					 GtkWidget	*widget);
@@ -248,6 +251,8 @@ static GtkItemFactoryEntry folderview_mbox_popup_entries[] =
 
 static GtkItemFactoryEntry folderview_mail_popup_entries[] =
 {
+	{N_("/Mark all _read"),		NULL, mark_all_read_cb, 0, NULL},
+	{N_("/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/Create _new folder..."),	NULL, folderview_new_folder_cb,    0, NULL},
 	{N_("/_Rename folder..."),	NULL, folderview_rename_folder_cb, 0, NULL},
 	{N_("/_Delete folder"),		NULL, folderview_delete_folder_cb, 0, NULL},
@@ -569,6 +574,13 @@ void folderview_select(FolderView *folderview, FolderItem *item)
 
 	if (old_selected != node)
 		folder_update_op_count();
+}
+
+static void mark_all_read_cb(FolderView *folderview, guint action,
+                             GtkWidget *widget)
+{
+	if (!folderview->selected) return;
+       	summary_mark_all_read(folderview->summaryview);
 }
 
 static void folderview_select_node(FolderView *folderview, GtkCTreeNode *node)
@@ -1307,6 +1319,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	FolderItem *item;
 	Folder *folder;
 	GtkWidget *popup;
+	gboolean mark_all_read   = FALSE;
 	gboolean new_folder      = FALSE;
 	gboolean rename_folder   = FALSE;
 	gboolean delete_folder   = FALSE;
@@ -1363,7 +1376,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 		if (item->parent == NULL)
 			update_tree = remove_tree = TRUE;
 		else
-			search_folder = TRUE;
+			mark_all_read = search_folder = TRUE;
 		if (FOLDER_IS_LOCAL(folder) || FOLDER_TYPE(folder) == F_IMAP || FOLDER_TYPE(folder) == F_MBOX) {
 			if (item->parent == NULL)
 				update_tree = rescan_tree = TRUE;
@@ -1379,6 +1392,8 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 			if (item->parent != NULL)
 				delete_folder = folder_scoring = folder_processing = TRUE;
 		}
+		if (item->unread < 1) 
+			mark_all_read = FALSE;
 	}
 
 #define SET_SENS(factory, name, sens) \
@@ -1387,6 +1402,7 @@ static void folderview_button_pressed(GtkWidget *ctree, GdkEventButton *event,
 	if (FOLDER_IS_LOCAL(folder)) {
 		popup = folderview->mail_popup;
 		menu_set_insensitive_all(GTK_MENU_SHELL(popup));
+		SET_SENS(mail_factory, "/Mark all read", mark_all_read);
 		SET_SENS(mail_factory, "/Create new folder...", new_folder);
 		SET_SENS(mail_factory, "/Rename folder...", rename_folder);
 		SET_SENS(mail_factory, "/Delete folder", delete_folder);

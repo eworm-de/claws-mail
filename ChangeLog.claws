@@ -1,10 +1,18 @@
-2001-01-25 [alfons]	0.7.0claws28
+2002-01-26 [paul]	0.7.0claws29
+
+	* src/folderview.c
+	  src/summaryview.c
+		move 'Mark all read' from summary view to folder view
+		menu. (adapted from) patch submitted by Jeremy Andrews,
+		<lists@kerneltrap.com>
+
+2002-01-25 [alfons]	0.7.0claws28
 
 	* src/gtkstext.c
 		put the gtk class name back so GtkSText adapts the 
 		settings of GtkText
 
-2001-01-25 [alfons]	0.7.0claws27
+2002-01-25 [alfons]	0.7.0claws27
 
 	* src/folderview.c 
 		assimilate Ricardo's patch that shows pixmaps instead of
@@ -16,7 +24,7 @@
 	* src/Makefile.am
 		add $(GPGME_CFLAGS) to INCLUDES so that gpgme can 
 		be found in non-standard locations. 
-		Closes Patch #507976, submitted by Stoyen Genov.
+		Closes Patch #507976, submitted by Stoyan Genov, <sdg@rila.bg>
 
 2002-01-25 [paul]	0.7.0claws25
 
