@@ -2163,14 +2163,17 @@ void summary_sort(SummaryView *summaryview,
 		cmp_func = (GtkCListCompareFunc)summary_cmp_by_locked;
 		break;
 	case SORT_BY_NONE:
-		cmp_func = NULL;
-		return;
+		break;
 	default:
 		return;
 	}
 
 	summaryview->sort_key = sort_key;
 	summaryview->sort_type = sort_type;
+
+	/* allow fallback to don't sort */
+	if (summaryview->sort_key == SORT_BY_NONE)
+		return;
 
 	summary_set_column_titles(summaryview);
 	summary_set_menu_sensitive(summaryview);

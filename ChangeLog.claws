@@ -1,3 +1,8 @@
+2003-12-11 [darko]	0.9.7claws34
+
+	* src/summaryview.c
+		allow reverting to default sort mode (no sort)
+
 2003-12-10 [hoa]	0.9.7claws33
 
 	* src/matcher.c
