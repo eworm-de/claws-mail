@@ -1,3 +1,8 @@
+2004-11-12 [colin]	0.9.12cvs146.3
+
+	* src/textview.c
+		Some coding style fixes
+
 2004-11-12 [colin]	0.9.12cvs146.2
 
 	* src/codeconv.c

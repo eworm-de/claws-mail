@@ -480,8 +480,8 @@ static void recursive_add_parts(TextView *textview, GNode *node)
                 prefered_body = NULL;
                 prefered_score = 0;
                 
-                for(iter = g_node_first_child(node) ; iter != NULL ;
-                    iter = g_node_next_sibling(iter)) {
+                for (iter = g_node_first_child(node) ; iter != NULL ;
+                     iter = g_node_next_sibling(iter)) {
                         int score;
                         MimeInfo * submime;
                         
@@ -506,8 +506,8 @@ static void recursive_add_parts(TextView *textview, GNode *node)
                 }
         }
         else {
-                for(iter = g_node_first_child(node) ; iter != NULL ;
-                    iter = g_node_next_sibling(iter)) {
+                for (iter = g_node_first_child(node) ; iter != NULL ;
+                     iter = g_node_next_sibling(iter)) {
                         recursive_add_parts(textview, iter);
                 }
         }
@@ -2005,13 +2005,13 @@ static gboolean textview_get_uri_range(TextView *textview,
 	GtkTextIter _start_iter, _end_iter;
 
 	_end_iter = *iter;
-	if(!gtk_text_iter_forward_to_tag_toggle(&_end_iter, tag)) {
+	if (!gtk_text_iter_forward_to_tag_toggle(&_end_iter, tag)) {
 		debug_print("Can't find end");
 		return FALSE;
 	}
 
 	_start_iter = _end_iter;
-	if(!gtk_text_iter_backward_to_tag_toggle(&_start_iter, tag)) {
+	if (!gtk_text_iter_backward_to_tag_toggle(&_start_iter, tag)) {
 		debug_print("Can't find start.");
 		return FALSE;
 	}
