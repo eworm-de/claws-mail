@@ -31,7 +31,8 @@ typedef struct _Session	Session;
 
 typedef enum {
 	SESSION_IMAP,
-	SESSION_NEWS
+	SESSION_NEWS,
+	SESSION_SMTP
 } SessionType;
 
 typedef enum {

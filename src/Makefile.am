@@ -94,7 +94,6 @@ sylpheed_SOURCES = \
 	automaton.c automaton.h \
 	session.c session.h \
 	smtp.c smtp.h \
-	esmtp.c esmtp.h \
 	pop.c pop.h \
 	mh.c mh.h \
 	mbox.c mbox.h \

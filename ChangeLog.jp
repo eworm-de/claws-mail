@@ -1,3 +1,24 @@
+2002-04-09
+
+	* src/prefs_account.c
+	  src/smtp.[ch]: OpenSSL 有効時にコンパイルできないバグを修正。
+
+2002-04-09
+
+	* src/smtp.[ch]
+	  src/send.c
+	  src/session.[ch]: SMTP プロトコル処理の最初の再構成。
+	  SMTPSession: 新規クラス。 Session のサブクラス。
+	  smtp_session_new(): send_smtp_open() をこの関数に移動。
+	  smtp_from(): SMTP AUTH の呼び出しを smtp_auth() に移動。
+	  smtp_auth(): SMTP AUTH メソッドにサーバの応答を使用。
+	  smtp_ehlo(): サーバの応答を読み、認証タイプのフラグをセット。
+	  smtp_helo(): EHLO コマンドを分離。
+	  smtp_ok(): バッファが指定されていれば最後のサーバの応答を返す
+	  ようにした。
+	* src/esmtp.[ch]: smtp.[ch] にマージ。
+	* src/imap.c: imap_session_destroy_all(): session_destroy() を使用。
+
 2002-04-08
 
 	* src/imap.c: imap_open(): IMAP4 セッションが確立できない場合警告

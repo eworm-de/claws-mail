@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2001 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2002 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,11 +20,23 @@
 #ifndef __SMTP_H__
 #define __SMTP_H__
 
+#ifdef HAVE_CONFIG_H
+#  include "config.h"
+#endif
+
 #include <glib.h>
 
 #include "socket.h"
+#if USE_SSL
+#  include "ssl.h"
+#endif
+#include "session.h"
 
-#define	SMTPBUFSIZE		256
+typedef struct _SMTPSession	SMTPSession;
+
+#define SMTP_SESSION(obj)	((SMTPSession *)obj)
+
+#define MSGBUFSIZE		8192
 
 #define	SM_OK			0
 #define	SM_ERROR		128
@@ -35,14 +47,62 @@
 #define	ESMTP_SIZE		0x02
 #define	ESMTP_ETRN		0x04
 
-gint smtp_helo(SockInfo *sock, const gchar *hostname, gboolean esmtp);
-gint smtp_from(SockInfo *sock, const gchar *from, const gchar *userid,
-	       const gchar *passwd, gboolean use_smtp_auth);
-gint smtp_rcpt(SockInfo *sock, const gchar *to);
-gint smtp_data(SockInfo *sock);
-gint smtp_rset(SockInfo *sock);
-gint smtp_quit(SockInfo *sock);
-gint smtp_eom(SockInfo *sock);
-gint smtp_ok(SockInfo *sock);
+#if USE_SSL
+typedef enum
+{
+	SSL_SMTP_NONE,
+	SSL_SMTP_TUNNEL,
+	SSL_SMTP_STARTTLS
+} SSLSMTPType;
+#endif
+
+typedef enum
+{
+	SMTPAUTH_LOGIN      = 1 << 0,
+	SMTPAUTH_CRAM_MD5   = 1 << 1,
+	SMTPAUTH_DIGEST_MD5 = 1 << 2
+} SMTPAuthType;
+
+struct _SMTPSession
+{
+	Session session;
+
+	SMTPAuthType avail_auth_type;
+	gchar *user;
+	gchar *pass;
+};
+
+#if USE_SSL
+Session *smtp_session_new	(const gchar	*server,
+				 gushort	 port,
+				 const gchar	*domain,
+				 const gchar	*user,
+				 const gchar	*pass,
+				 SSLSMTPType	 ssl_type);
+#else
+Session *smtp_session_new	(const gchar	*server,
+				 gushort	 port,
+				 const gchar	*domain,
+				 const gchar	*user,
+				 const gchar	*pass);
+#endif
+void smtp_session_destroy	(SMTPSession	*session);
+
+gint smtp_from			(SMTPSession	*session,
+				 const gchar	*from);
+gint smtp_auth			(SMTPSession	*session);
+
+gint smtp_ehlo			(SockInfo	*sock,
+				 const gchar	*hostname,
+				 SMTPAuthType	*avail_auth_type);
+
+gint smtp_helo			(SockInfo	*sock,
+				 const gchar	*hostname);
+gint smtp_rcpt			(SockInfo	*sock,
+				 const gchar	*to);
+gint smtp_data			(SockInfo	*sock);
+gint smtp_rset			(SockInfo	*sock);
+gint smtp_quit			(SockInfo	*sock);
+gint smtp_eom			(SockInfo	*sock);
 
 #endif /* __SMTP_H__ */

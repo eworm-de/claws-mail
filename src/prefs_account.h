@@ -29,6 +29,7 @@
 typedef struct _PrefsAccount	PrefsAccount;
 
 #include "folder.h"
+#include "smtp.h"
 
 #ifdef USE_GPGME
 #  include "rfc2015.h"
@@ -59,14 +60,6 @@ typedef enum {
 	SIGN_KEY_CUSTOM
 } SignKeyType;
 #endif /* USE_GPGME */
-
-#if USE_SSL
-typedef enum {
-	SSL_SMTP_NONE,
-	SSL_SMTP_TUNNEL,
-	SSL_SMTP_STARTTLS
-} SSLSMTPType;
-#endif /* USE_SSL */
 
 struct _PrefsAccount
 {

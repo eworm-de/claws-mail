@@ -1,3 +1,24 @@
+2002-04-09
+
+	* src/prefs_account.c
+	  src/smtp.[ch]: fixed a bug that didn't complie with OpenSSL enabled.
+
+2002-04-09
+
+	* src/smtp.[ch]
+	  src/send.c
+	  src/session.[ch]: first reorganization of SMTP protocol handling.
+	  SMTPSession: new class which is a sub class of Session.
+	  smtp_session_new(): moved send_smtp_open() into this function.
+	  smtp_from(): moved SMTP AUTH calls into smtp_auth().
+	  smtp_auth(): use server response for SMTP AUTH method.
+	  smtp_ehlo(): read server response and set auth type flags.
+	  smtp_helo(): separated EHLO command.
+	  smtp_ok(): return the last server response if the buffer is
+	  specified.
+	* src/esmtp.[ch]: merged into smtp.[ch].
+	* src/imap.c: imap_session_destroy_all(): use session_destroy().
+
 2002-04-08
 
 	* src/imap.c: imap_open(): show warning message if IMAP4 session

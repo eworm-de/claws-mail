@@ -463,7 +463,7 @@ void imap_session_destroy_all(void)
 		IMAPSession *session = (IMAPSession *)session_list->data;
 
 		imap_cmd_logout(SESSION(session)->sock);
-		imap_session_destroy(session);
+		session_destroy(SESSION(session));
 	}
 }
 

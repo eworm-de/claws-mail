@@ -39,7 +39,6 @@
 #include "socket.h"
 #include "ssl.h"
 #include "smtp.h"
-#include "esmtp.h"
 #include "prefs_common.h"
 #include "prefs_account.h"
 #include "account.h"
@@ -61,14 +60,6 @@ struct _SendProgressDialog
 	gboolean cancelled;
 };
 
-#if USE_SSL
-static SockInfo *send_smtp_open	(const gchar *server, gushort port,
-				 const gchar *domain, gboolean use_smtp_auth,
-				 SSLSMTPType ssl_type);
-#else
-static SockInfo *send_smtp_open	(const gchar *server, gushort port,
-				 const gchar *domain, gboolean use_smtp_auth);
-#endif
 
 static gint send_message_data	(SendProgressDialog *dialog, SockInfo *sock,
 				 FILE *fp, gint size);
@@ -257,7 +248,8 @@ gint send_message_local(const gchar *command, FILE *fp)
 #define EXIT_IF_CANCELLED() \
 { \
 	if (dialog->cancelled) { \
-		sock_close(smtp_sock); \
+		if (session) \
+			session_destroy(session); \
 		send_progress_dialog_destroy(dialog); \
 		return -1; \
 	} \
@@ -268,7 +260,8 @@ gint send_message_local(const gchar *command, FILE *fp)
 	EXIT_IF_CANCELLED(); \
 	if (!(f)) { \
 		log_warning("Error occurred while %s\n", s); \
-		sock_close(smtp_sock); \
+		if (session) \
+			session_destroy(session); \
 		send_progress_dialog_destroy(dialog); \
 		return -1; \
 	} \
@@ -282,7 +275,7 @@ gint send_message_local(const gchar *command, FILE *fp)
 	if ((ok = (f)) != SM_OK) { \
 		log_warning("Error occurred while %s\n", s); \
 		if (ok == SM_AUTHFAIL) { \
-			log_warning("SMTP AUTH failed\n"); \
+			log_warning(_("SMTP AUTH failed\n")); \
 			if (ac_prefs->tmp_pass) { \
 				g_free(ac_prefs->tmp_pass); \
 				ac_prefs->tmp_pass = NULL; \
@@ -292,9 +285,9 @@ gint send_message_local(const gchar *command, FILE *fp)
 				ac_prefs->tmp_smtp_pass = NULL; \
 			} \
 		} \
-		if (smtp_quit(smtp_sock) != SM_OK) \
-			log_warning("Error occurred while sending QUIT\n"); \
-		sock_close(smtp_sock); \
+		if (smtp_quit(session->sock) != SM_OK) \
+			log_warning(_("Error occurred while sending QUIT\n")); \
+		session_destroy(session); \
 		send_progress_dialog_destroy(dialog); \
 		return -1; \
 	} \
@@ -303,8 +296,8 @@ gint send_message_local(const gchar *command, FILE *fp)
 gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 			      FILE *fp)
 {
-	SockInfo *smtp_sock = NULL;
 	SendProgressDialog *dialog;
+	Session *session = NULL;
 	GtkCList *clist;
 	const gchar *text[3];
 	gchar buf[BUFFSIZE];
@@ -376,14 +369,14 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 	GTK_EVENTS_FLUSH();
 
 #if USE_SSL
-	SEND_EXIT_IF_ERROR((smtp_sock = send_smtp_open
+	SEND_EXIT_IF_ERROR((session = smtp_session_new
 				(ac_prefs->smtp_server, port, domain,
-				 ac_prefs->use_smtp_auth, ac_prefs->ssl_smtp)),
+				 user, pass, ac_prefs->ssl_smtp)),
 			   "connecting to server");
 #else
-	SEND_EXIT_IF_ERROR((smtp_sock = send_smtp_open
+	SEND_EXIT_IF_ERROR((session = smtp_session_new
 				(ac_prefs->smtp_server, port, domain,
-				 ac_prefs->use_smtp_auth)),
+				 user, pass)),
 			   "connecting to server");
 #endif
 
@@ -392,33 +385,33 @@ gint send_message_smtp(PrefsAccount *ac_prefs, GSList *to_list,
 	GTK_EVENTS_FLUSH();
 
 	SEND_EXIT_IF_NOTOK
-		(smtp_from(smtp_sock, ac_prefs->address, user, pass,
-			   ac_prefs->use_smtp_auth),
+		(smtp_from(SMTP_SESSION(session), ac_prefs->address),
 		 "sending MAIL FROM");
 
 	progress_dialog_set_label(dialog->dialog, _("Sending RCPT TO..."));
 	GTK_EVENTS_FLUSH();
 
 	for (cur = to_list; cur != NULL; cur = cur->next)
-		SEND_EXIT_IF_NOTOK(smtp_rcpt(smtp_sock, (gchar *)cur->data),
+		SEND_EXIT_IF_NOTOK(smtp_rcpt(session->sock, (gchar *)cur->data),
 				   "sending RCPT TO");
 
 	progress_dialog_set_label(dialog->dialog, _("Sending DATA..."));
 	GTK_EVENTS_FLUSH();
 
-	SEND_EXIT_IF_NOTOK(smtp_data(smtp_sock), "sending DATA");
+	SEND_EXIT_IF_NOTOK(smtp_data(session->sock), "sending DATA");
 
 	/* send main part */
-	SEND_EXIT_IF_ERROR(send_message_data(dialog, smtp_sock, fp, size) == 0,
-			   "sending data");
+	SEND_EXIT_IF_ERROR
+		(send_message_data(dialog, session->sock, fp, size) == 0,
+		 "sending data");
 
 	progress_dialog_set_label(dialog->dialog, _("Quitting..."));
 	GTK_EVENTS_FLUSH();
 
-	SEND_EXIT_IF_NOTOK(smtp_eom(smtp_sock), "terminating data");
-	SEND_EXIT_IF_NOTOK(smtp_quit(smtp_sock), "sending QUIT");
+	SEND_EXIT_IF_NOTOK(smtp_eom(session->sock), "terminating data");
+	SEND_EXIT_IF_NOTOK(smtp_quit(session->sock), "sending QUIT");
 
-	sock_close(smtp_sock);
+	session_destroy(session);
 	send_progress_dialog_destroy(dialog);
 
 	return 0;
@@ -522,80 +515,6 @@ static gint send_message_data(SendProgressDialog *dialog, SockInfo *sock,
 #undef EXIT_IF_CANCELLED
 #undef SEND_EXIT_IF_ERROR
 #undef SEND_DIALOG_UPDATE
-
-#if USE_SSL
-static SockInfo *send_smtp_open(const gchar *server, gushort port,
-				const gchar *domain, gboolean use_smtp_auth,
-				SSLSMTPType ssl_type)
-#else
-static SockInfo *send_smtp_open(const gchar *server, gushort port,
-				const gchar *domain, gboolean use_smtp_auth)
-#endif
-{
-	SockInfo *sock;
-	gint val;
-
-	g_return_val_if_fail(server != NULL, NULL);
-
-	if ((sock = sock_connect(server, port)) == NULL) {
-		log_warning(_("Can't connect to SMTP server: %s:%d\n"),
-			    server, port);
-		return NULL;
-	}
-
-#if USE_SSL
-	if (ssl_type == SSL_SMTP_TUNNEL && !ssl_init_socket(sock)) {
-		log_warning(_("SSL connection failed"));
-		sock_close(sock);
-		return NULL;
-	}
-#endif
-
-	if (smtp_ok(sock) != SM_OK) {
-		log_warning(_("Error occurred while connecting to %s:%d\n"),
-			    server, port);
-		sock_close(sock);
-		return NULL;
-	}
-
-#if USE_SSL
-	val = smtp_helo(sock, domain ? domain : get_domain_name(),
-			use_smtp_auth || ssl_type == SSL_SMTP_STARTTLS);
-#else
-	val = smtp_helo(sock, domain ? domain : get_domain_name(),
-			use_smtp_auth);
-#endif
-
-	if (val != SM_OK) {
-		log_warning(_("Error occurred while sending HELO\n"));
-		sock_close(sock);
-		return NULL;
-	}
-
-#if USE_SSL
-	if (ssl_type == SSL_SMTP_STARTTLS) {
-		val = esmtp_starttls(sock);
-		if (val != SM_OK) {
-			log_warning(_("Error occurred while sending STARTTLS\n"));
-			sock_close(sock);
-			return NULL;
-		}
-		if (!ssl_init_socket_with_method(sock, SSL_METHOD_TLSv1)) {
-			sock_close(sock);
-			return NULL;
-		}
-		val = esmtp_ehlo(sock, domain ? domain : get_domain_name());
-		if (val != SM_OK) {
-			log_warning(_("Error occurred while sending EHLO\n"));
-			sock_close(sock);
-			return NULL;
-		}
-	}
-#endif
-
-	return sock;
-}
-
 
 static SendProgressDialog *send_progress_dialog_create(void)
 {

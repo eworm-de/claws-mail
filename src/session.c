@@ -22,6 +22,7 @@
 #include "session.h"
 #include "imap.h"
 #include "news.h"
+#include "smtp.h"
 
 void session_destroy(Session *session)
 {
@@ -33,6 +34,9 @@ void session_destroy(Session *session)
 		break;
 	case SESSION_NEWS:
 		news_session_destroy(NNTP_SESSION(session));
+		break;
+	case SESSION_SMTP:
+		smtp_session_destroy(SMTP_SESSION(session));
 		break;
 	default:
 		break;
