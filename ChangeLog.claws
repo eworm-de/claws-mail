@@ -77,6 +77,8 @@
 	* src/procmime.c
 		sync with main 1.0.3
 		see ChangeLog 2005-02-28, 2005-03-02, and 2005-03-04
+		fix buffer overflow, CAN-2005-0667, see
+		http://secunia.com/advisories/14491/
 
 2005-02-27 [paul]	1.0.1cvs20
 
