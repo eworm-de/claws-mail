@@ -9,8 +9,7 @@ image_viewer_la_SOURCES = \
 
 image_viewer_la_LDFLAGS = \
 	-avoid-version -module \
-	$(GTK_LIBS) \
-	$(GDK_PIXBUF_LIBS)
+	$(GTK_LIBS) 
 
 INCLUDES = \
 	-I../.. \

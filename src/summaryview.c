@@ -558,10 +558,7 @@ SummaryView *summary_create(void)
 	/* quick search */
 	quicksearch = quicksearch_new();
 	gtk_box_pack_start(GTK_BOX(vbox), quicksearch_get_widget(quicksearch), FALSE, FALSE, 0);
-	if (prefs_common.show_searchbar)
-		quicksearch_show(quicksearch);
-	else
-		quicksearch_hide(quicksearch);
+
 	quicksearch_set_execute_callback(quicksearch, quicksearch_execute_cb, summaryview);
 
   	g_signal_connect (G_OBJECT(toggle_search), "toggled",
@@ -603,6 +600,11 @@ SummaryView *summary_create(void)
 
 	gtk_widget_show(vbox);
 
+	if (prefs_common.show_searchbar)
+		quicksearch_show(quicksearch);
+	else
+		quicksearch_hide(quicksearch);
+	
 	return summaryview;
 }
 
