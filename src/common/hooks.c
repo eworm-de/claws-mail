@@ -41,7 +41,7 @@ GHookList *hooks_get_hooklist(const gchar *hooklist_name)
 	
 	hooklist = g_new0(GHookList, 1);
 	g_hook_list_init(hooklist, sizeof(GHook));
-	g_hash_table_insert(hooklist_table, (gchar *) hooklist_name, hooklist);
+	g_hash_table_insert(hooklist_table, g_strdup(hooklist_name), hooklist);
 	
 	return hooklist;
 }

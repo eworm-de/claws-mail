@@ -1,3 +1,9 @@
+2003-08-02 [christoph]	0.9.3claws90
+
+	* src/common/hooks.c
+		fix crash when pointer stored in hash table could get invalid
+		when a plugin is unloaded
+
 2003-08-01 [christoph]	0.9.3claws89
 
 	* configure.ac
