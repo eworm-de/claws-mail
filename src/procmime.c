@@ -482,12 +482,10 @@ void procmime_scan_content_description(MimeInfo *mimeinfo,
 	blen = strlen(buf) + 1;
 	Xalloca(tmp, blen, return);
 	conv_unmime_header(tmp, blen, buf, NULL);
-	g_free(mimeinfo->name);
-	mimeinfo->name = NULL;
 	/*pgp signatures should NOT have a name */
 	if (mimeinfo->content_type 
 	&&  strcasecmp(mimeinfo->content_type, "application/pgp-signature"))
-		mimeinfo->name = g_strdup(tmp);
+		mimeinfo->description = g_strdup(tmp);
 }
 
 void procmime_scan_subject(MimeInfo *mimeinfo,

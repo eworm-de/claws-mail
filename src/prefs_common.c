@@ -189,6 +189,8 @@ static struct Message {
 
 	GtkWidget *chkbtn_display_img;
 	GtkWidget *chkbtn_resize_image;
+
+	GtkWidget *chkbtn_attach_desc;
 } message;
 
 #if USE_GPGME
@@ -691,6 +693,10 @@ static PrefParam param[] = {
 
 	{"show_other_header", "FALSE", &prefs_common.show_other_header, P_BOOL,
 	 NULL, NULL, NULL},
+
+	{"attach_desc", "TRUE", &prefs_common.attach_desc, P_BOOL,
+	 &message.chkbtn_attach_desc,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
 
 	/* MIME viewer */
 	{"mime_image_viewer", "display '%s'",
@@ -2334,6 +2340,8 @@ static void prefs_message_create(void)
 	GtkWidget *chkbtn_display_img;
 	GtkWidget *chkbtn_resize_image;
 
+	GtkWidget *chkbtn_attach_desc;
+
 	vbox1 = gtk_vbox_new (FALSE, VSPACING);
 	gtk_widget_show (vbox1);
 	gtk_container_add (GTK_CONTAINER (dialog.notebook), vbox1);
@@ -2468,6 +2476,10 @@ static void prefs_message_create(void)
 	PACK_CHECK_BUTTON(vbox3, chkbtn_resize_image,
 			  _("Resize attached images"));
 
+	PACK_CHECK_BUTTON(vbox3, chkbtn_attach_desc,
+			  _("Show attachment descriptions (rather than names)"));
+
+
 	message.chkbtn_enablecol   = chkbtn_enablecol;
 	message.button_edit_col    = button_edit_col;
 	message.chkbtn_mbalnum     = chkbtn_mbalnum;
@@ -2483,6 +2495,8 @@ static void prefs_message_create(void)
 
 	message.chkbtn_display_img  = chkbtn_display_img;
 	message.chkbtn_resize_image = chkbtn_resize_image;
+
+	message.chkbtn_attach_desc  = chkbtn_attach_desc;
 }
 
 #if USE_GPGME

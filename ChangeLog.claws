@@ -1,3 +1,10 @@
+2003-02-22 [thorsten]	0.8.10claws43
+
+	* src/mimeview.c
+	  src/prefs_common.[ch]
+	  src/procmime.[ch]
+	  	do not use description as attachment name
+
 2003-02-22 [alfons]	0.8.10claws42
 
 	* src/summaryview.c

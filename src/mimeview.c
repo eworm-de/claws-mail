@@ -389,6 +389,20 @@ static gchar *get_part_name(MimeInfo *partinfo)
 		return partinfo->name;
 	else if (partinfo->filename)
 		return partinfo->filename;
+	else if (partinfo->description)
+		return partinfo->description;
+	else
+		return "";
+}
+
+static gchar *get_part_description(MimeInfo *partinfo)
+{
+	if (partinfo->description)
+		return partinfo->description;
+	else if (partinfo->name)
+		return partinfo->name;
+	else if (partinfo->filename)
+		return partinfo->filename;
 	else
 		return "";
 }
@@ -404,7 +418,10 @@ static GtkCTreeNode *mimeview_append_part(MimeView *mimeview,
 	str[COL_MIMETYPE] =
 		partinfo->content_type ? partinfo->content_type : "";
 	str[COL_SIZE] = to_human_readable(partinfo->size);
-	str[COL_NAME] = get_part_name(partinfo);
+	if (prefs_common.attach_desc)
+		str[COL_NAME] = get_part_description(partinfo);
+	else
+		str[COL_NAME] = get_part_name(partinfo);
 
 	node = gtk_ctree_insert_node(ctree, parent, NULL, str, 0,
 				     NULL, NULL, NULL, NULL,
