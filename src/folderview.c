@@ -2554,10 +2554,7 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 		node = gtk_ctree_node_nth(GTK_CTREE(widget), row);
 		item = gtk_ctree_node_get_row_data(GTK_CTREE(widget), node);
 		src_item = folderview->summaryview->folder_item;
-		/* FIXME: Dragging on a "root folder" (ie, ~/Mail) should be
-		   possible when the source is the folderview. Requires hacking
-		   folder_item_move_to() because there's no identifier for these
-		   folders. */
+
 		if (item && item->folder && item->path &&
 		    src_item && src_item != item) {
 			switch (item->folder->type) {
@@ -2568,7 +2565,13 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 			default:
 				break;
 			}
+		} else if (item && item->folder && folder_item_get_path(item) &&
+			   src_item && src_item != item) {
+			/* a root folder - acceptable only from folderview */
+			if (item->folder->type == F_MH || item->folder->type == F_IMAP)
+				acceptable = TRUE;
 		}
+			
 	}
 
 	if (acceptable) {
@@ -2620,6 +2623,13 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 		node = gtk_ctree_node_nth(GTK_CTREE(widget), row);
 		item = gtk_ctree_node_get_row_data(GTK_CTREE(widget), node);
 		src_item = folderview->summaryview->folder_item;
+		
+		/* re-check (due to acceptable possibly set for folder moves */
+		if (!(item && item->folder && item->path &&
+		      src_item && src_item != item && 
+		      (item->folder->type == F_MH || item->folder->type == F_IMAP))) {
+			return;
+		}
 		if (item && src_item) {
 			switch (drag_context->action) {
 				case GDK_ACTION_COPY:
@@ -2659,6 +2669,7 @@ static void folderview_drag_received_cb(GtkWidget        *widget,
 			return;
 		buf = g_strdup_printf(_("Moving %s to %s..."), src_item->name, item->name);
 		STATUSBAR_PUSH(folderview->mainwin, buf);
+		g_free(buf);
 		main_window_cursor_wait(folderview->mainwin);
 		if ((new_item = folder_item_move_to(src_item, item)) != NULL)
 			gtk_drag_finish(drag_context, TRUE, TRUE, time);

@@ -1480,6 +1480,7 @@ FolderItem *folder_item_move_to(FolderItem *src, FolderItem *dest)
 	FolderItem *tmp = dest->parent;
 	char * srcpath, * dstpath;
 	char * phys_srcpath, * phys_dstpath;
+
 	while (tmp) {
 		if (tmp == src) {
 			alertpanel_error(_("Can't move a folder to one of its children."));
@@ -1493,6 +1494,10 @@ FolderItem *folder_item_move_to(FolderItem *src, FolderItem *dest)
 	srcpath = folder_item_get_identifier(src);
 	dstpath = folder_item_get_identifier(dest);
 	
+	if(dstpath == NULL && dest->folder && dest->parent == NULL) {
+		/* dest can be a root folder */
+		dstpath = folder_get_identifier(dest->folder);
+	}
 	if (srcpath == NULL || dstpath == NULL) {
 		printf("Can't get identifiers\n");
 		return NULL;
@@ -1500,7 +1505,7 @@ FolderItem *folder_item_move_to(FolderItem *src, FolderItem *dest)
 
 	phys_srcpath = folder_item_get_path(src);
 	phys_dstpath = g_strconcat(folder_item_get_path(dest),G_DIR_SEPARATOR_S,g_basename(srcpath),NULL);
-	
+
 	if (src->parent == dest) {
 		alertpanel_error(_("Source and destination are the same."));
 		g_free(srcpath);
