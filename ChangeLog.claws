@@ -1,4 +1,12 @@
-2002-02-06 |melvin]	0.7.0claws52
+2002-02-06 [melvin]	0.7.0claws53
+
+	* src/prefs_common.[ch]
+	* src/gtkspell.[ch]
+	* src/compose.c
+		Made possible to switch quickly to last used dictionary
+		which makes checking bilingual documents easier.
+
+2002-02-06 [melvin]	0.7.0claws52
 	
 	* po/POTFILES.in
 		Added forgotten new file src/prefs_actions.c

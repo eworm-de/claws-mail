@@ -97,6 +97,7 @@ struct _PrefsCommon
 	gint misspelled_col;
 	gint pspell_sugmode;
 	gboolean check_while_typing;
+	gboolean use_alternate;
 #endif
         
 	/* Display */

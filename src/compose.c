@@ -4678,6 +4678,7 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 					  conv_get_current_charset_str(),
 					  prefs_common.misspelled_col,
 					  prefs_common.check_while_typing,
+					  prefs_common.use_alternate,
 					  GTK_STEXT(text));
 		if (!gtkpspell) {
 			alertpanel_error(_("Spell checker could not be started.\n%s"), gtkpspellcheckers->error_message);

@@ -65,6 +65,7 @@ typedef void (*ContCheckFunc)	(gpointer *gtkpspell);
 #define GTKPSPELLWORDSIZE 1024
 typedef struct _GtkPspell {
 	GtkPspeller	*gtkpspeller;
+	GtkPspeller	*alternate_speller;
 	gchar 		 theword[GTKPSPELLWORDSIZE];
 	gint  		 start_pos;
 	gint  		 end_pos;
@@ -72,6 +73,7 @@ typedef struct _GtkPspell {
 	gint		 end_check_pos;
 	gboolean	 misspelled;
 	gboolean	 check_while_typing;
+	gboolean	 use_alternate;
 
 	ContCheckFunc 	 continue_check; 
 #if 0
@@ -108,6 +110,7 @@ GtkPspell*		gtkpspell_new			(const gchar *dictionary,
 							 const gchar *encoding,
 							 gint  misspelled_color,
 							 gboolean check_while_typing,  
+							 gboolean use_alternate,  
 							 GtkSText *gtktext);
 
 void 			gtkpspell_delete		(GtkPspell *gtkpspell); 
