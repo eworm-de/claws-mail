@@ -2300,13 +2300,52 @@ static void summary_display_msg(SummaryView *summaryview, GtkCTreeNode *row)
 	summary_display_msg_full(summaryview, row, FALSE, FALSE);
 }
 
+static void msginfo_mark_as_read (SummaryView *summaryview, MsgInfo *msginfo,
+				      GtkCTreeNode *row)
+{
+	g_return_if_fail(summaryview != NULL);
+	g_return_if_fail(msginfo != NULL);
+	g_return_if_fail(row != NULL);
+
+	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags) 
+	&& procmsg_msg_has_marked_parent(msginfo))
+		summaryview->unreadmarked--;
+	if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
+		procmsg_msginfo_unset_flags
+			(msginfo, MSG_NEW | MSG_UNREAD, 0);
+		summary_set_row_marks(summaryview, row);
+		gtk_clist_thaw(GTK_CLIST(summaryview->ctree));
+		summary_status_show(summaryview);
+	}
+}
+
+typedef struct  {
+	MsgInfo *msginfo;
+	SummaryView *summaryview;
+	GtkCTreeNode *row;
+} MarkAsReadData;
+
+static int msginfo_mark_as_read_timeout(void *data)
+{
+	MarkAsReadData *mdata = (MarkAsReadData *)data;
+	if (!mdata)
+		return FALSE;
+	
+	if (mdata->msginfo == summary_get_selected_msg(mdata->summaryview))
+		msginfo_mark_as_read(mdata->summaryview, mdata->msginfo,
+				     mdata->row); 
+
+	g_free(mdata);
+
+	return FALSE;	
+}
+
 static void summary_display_msg_full(SummaryView *summaryview,
 				     GtkCTreeNode *row,
 				     gboolean new_window, gboolean all_headers)
 {
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	MsgInfo *msginfo;
-	MsgFlags flags;
 	gint val;
 
 	if (!new_window) {
@@ -2346,19 +2385,16 @@ static void summary_display_msg_full(SummaryView *summaryview,
 		gtkut_ctree_node_move_if_on_the_edge(ctree, row);
 	}
 
-	if (val == 0 &&
-	    (new_window || !prefs_common.mark_as_read_on_new_window)) {
-		if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags) 
-		&& procmsg_msg_has_marked_parent(msginfo))
-			summaryview->unreadmarked--;
-		if (MSG_IS_NEW(msginfo->flags) || MSG_IS_UNREAD(msginfo->flags)) {
-			procmsg_msginfo_unset_flags
-				(msginfo, MSG_NEW | MSG_UNREAD, 0);
-			summary_set_row_marks(summaryview, row);
-			gtk_clist_thaw(GTK_CLIST(ctree));
-			summary_status_show(summaryview);
-			
-			flags = msginfo->flags;
+	if (val == 0) {
+		if (prefs_common.mark_as_read_delay) {
+			MarkAsReadData *data = g_new0(MarkAsReadData, 1);
+			data->summaryview = summaryview;
+			data->msginfo = msginfo;
+			data->row = row;
+			gtk_timeout_add(prefs_common.mark_as_read_delay * 1000,
+				msginfo_mark_as_read_timeout, data);
+		} else if (new_window || !prefs_common.mark_as_read_on_new_window) {
+			msginfo_mark_as_read(summaryview, msginfo, row);
 		}
 	}
 
