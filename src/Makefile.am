@@ -75,7 +75,7 @@ sylpheed_SOURCES = \
 	gtkstext.c gtkstext.h \
 	grouplist_dialog.c grouplist_dialog.h \
 	headers.c headers.h \
-	prefs_headers.c prefs_header.h
+	prefs_headers.c prefs_headers.h
 
 EXTRA_DIST = \
 	pixmaps/clip.xpm \
