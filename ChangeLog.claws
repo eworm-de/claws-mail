@@ -1,3 +1,18 @@
+2001-07-09 [alfons]
+
+	* AUTHORS
+		add Match Grun
+
+	* configure.in
+		fix incorrect description of --enable-ldap parameter
+
+	* src/about.c
+		show build parameters for LDAP and JPilot
+
+	* src/summaryview.c
+		revert Christoph's bugfix for selecting next unread message, 
+		because folder stats aren't updated correctly
+
 2001-07-08 [hoa]
 
 	* src/filtering.c
@@ -10,6 +25,7 @@
 	* src/scoring.c
 		bugfix of the config file parser
 
+>>>>>>> 1.205
 2001-07-08 [alfons]
 
 	* src/Makefile.am

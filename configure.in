@@ -124,7 +124,7 @@ fi
 
 dnl for LDAP support in addressbook
 AC_ARG_ENABLE(ldap,
-	[  --enable-ldap         Enable JPilot support [default=no]],
+	[  --enable-ldap         Enable LDAP support [default=no]],
 	[ac_cv_enable_ldap=$enableval], [ac_cv_enable_ldap=no])
 
 AC_MSG_CHECKING([whether to use ldap])

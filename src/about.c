@@ -147,6 +147,12 @@ static void about_create(void)
 #if USE_GPGME
 		   " GPGME"
 #endif
+#if USE_LDAP
+		   " LDAP"
+#endif
+#if USE_JPILOT
+		   " JPilot"
+#endif
 	"");
 
 	label = gtk_label_new(buf);

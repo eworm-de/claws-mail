@@ -1102,7 +1102,11 @@ void summary_select_next_unread(SummaryView *summaryview)
 	if (node) {
 		gtk_sctree_unselect_all(GTK_SCTREE(ctree));
 		gtk_sctree_select(GTK_SCTREE(ctree), node);
-		gtk_ctree_node_moveto(ctree, node, -1, 0.5, 0.0);
+
+		/* BUGFIX: select next unread message 
+		 * REVERT: causes incorrect folder stats
+		 * gtk_ctree_node_moveto(ctree, node, -1, 0.5, 0.0); 
+		 */
 
 		if (summaryview->displayed == node)
 			summaryview->displayed = NULL;
