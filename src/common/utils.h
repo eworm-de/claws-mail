@@ -213,9 +213,8 @@ gint wcsncasecmp		(const wchar_t *s1,
 wchar_t *wcscasestr		(const wchar_t *haystack,
 				 const wchar_t *needle);
 
-gboolean is_next_nonascii	(const wchar_t *s);
-gboolean is_next_mbs		(const wchar_t *s);
-wchar_t *find_wspace		(const wchar_t *s);
+gboolean is_next_nonascii	(const guchar *s);
+gint get_next_word_len		(const gchar *s);
 
 /* functions for string parsing */
 gint subject_compare			(const gchar	*s1,

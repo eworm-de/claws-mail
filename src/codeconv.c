@@ -41,10 +41,11 @@
 
 #include "intl.h"
 #include "codeconv.h"
+#include "unmime.h"
 #include "base64.h"
+#include "quoted-printable.h"
 #include "utils.h"
 #include "prefs_common.h"
-#include "unmime.h"
 
 typedef enum
 {
@@ -1049,417 +1050,168 @@ void conv_unmime_header(gchar *outbuf, gint outlen, const gchar *str,
 		unmime_header(outbuf, str);
 }
 
-#define MAX_ENCLEN	75
 #define MAX_LINELEN	76
+#define MIMESEP_BEGIN	"=?"
+#define MIMESEP_END	"?="
 
 #define B64LEN(len)	((len) / 3 * 4 + ((len) % 3 ? 4 : 0))
 
-#if HAVE_LIBJCONV
-void conv_encode_header(gchar *dest, gint len, const gchar *src,
-			gint header_len)
-{
-	wchar_t *wsrc;
-	wchar_t *wsrcp;
-	gchar *destp;
-	size_t line_len, mimehdr_len, mimehdr_begin_len;
-	gchar *mimehdr_init = "=?";
-	gchar *mimehdr_end = "?=";
-	gchar *mimehdr_enctype = "?B?";
-	const gchar *mimehdr_charset;
-
-	/* g_print("src = %s\n", src); */
-	mimehdr_charset = conv_get_outgoing_charset_str();
-
-	/* convert to wide-character string */
-	wsrcp = wsrc = strdup_mbstowcs(src);
-	if (!wsrc) {
-		g_warning("Can't convert string to wide characters.\n");
-		strncpy2(dest, src, len);
-		return;
-	}
-
-	mimehdr_len = strlen(mimehdr_init) + strlen(mimehdr_end) +
-		strlen(mimehdr_charset) + strlen(mimehdr_enctype);
-	mimehdr_begin_len = strlen(mimehdr_init) +
-		strlen(mimehdr_charset) + strlen(mimehdr_enctype);
-	line_len = header_len;
-	destp = dest;
-	*dest = '\0';
-
-	while (*wsrcp) {
-		wchar_t *wp, *wtmp, *wtmpp;
-		gint nspc = 0;
-		gboolean str_is_non_ascii;
-
-		/* irresponsible buffer overrun check */
-		if ((len - (destp - dest)) < (MAX_LINELEN + 1) * 2) break;
-
-		/* encode string including space
-		   if non-ASCII string follows */
-		if (is_next_nonascii(wsrcp)) {
-			wp = wsrcp;
-			while ((wp = find_wspace(wp)) != NULL)
-				if (!is_next_nonascii(wp)) break;
-			str_is_non_ascii = TRUE;
-		} else {
-			wp = find_wspace(wsrcp);
-			str_is_non_ascii = FALSE;
-		}
-
-		if (wp != NULL) {
-			wtmp = wcsndup(wsrcp, wp - wsrcp);
-			wsrcp = wp + 1;
-			while (iswspace(wsrcp[nspc])) nspc++;
-		} else {
-			wtmp = wcsdup(wsrcp);
-			wsrcp += wcslen(wsrcp);
-		}
-
-		wtmpp = wtmp;
-
-		do {
-			gint tlen = 0;
-			gchar *tmp; /* internal codeset */
-			gchar *raw; /* converted, but not base64 encoded */
-			register gchar *tmpp;
-			gint raw_len;
-
-			tmpp = tmp = g_malloc(wcslen(wtmpp) * MB_CUR_MAX + 1);
-			*tmp = '\0';
-			raw = g_strdup("");
-			raw_len = 0;
-
-			while (*wtmpp != (wchar_t)0) {
-				gint mbl;
-				gint dummy;
-				gchar *raw_new = NULL;
-				int raw_new_len = 0;
-				const gchar *src_codeset;
-
-				mbl = wctomb(tmpp, *wtmpp);
-				if (mbl == -1) {
-					g_warning("invalid wide character\n");
-					wtmpp++;
-					continue;
-				}
-				/* g_free(raw); */
-				src_codeset = conv_get_current_charset_str();
-				/* printf ("tmp = %s, tlen = %d, mbl\n",
-					tmp, tlen, mbl); */
-				if (jconv_alloc_conv(tmp, tlen + mbl,
-						     &raw_new, &raw_new_len,
-						     &src_codeset, 1,
-						     &dummy, mimehdr_charset)
-				    != 0) {
-					g_warning("can't convert\n");
-					tmpp[0] = '\0';
-					wtmpp++;
-					continue;
-				}
-				if (str_is_non_ascii) {
-					gint dlen = mimehdr_len +
-						B64LEN(raw_len);
-					if ((line_len + dlen +
-					     (*(wtmpp + 1) ? 0 : nspc) +
-					     (line_len > 1 ? 1 : 0))
-					    > MAX_LINELEN) {
-						g_free(raw_new);
-						if (tlen == 0) {
-							*destp++ = '\n';
-							*destp++ = ' ';
-							line_len = 1;
-							continue;
-						} else {
-							*tmpp = '\0';
-							break;
-						}
-					}
-				} else if ((line_len + tlen + mbl +
-					    (*(wtmpp + 1) ? 0 : nspc) +
-					    (line_len > 1 ? 1 : 0))
-					   > MAX_LINELEN) {
-					g_free(raw_new);
-					if (1 + tlen + mbl +
-					    (*(wtmpp + 1) ? 0 : nspc)
-					    >= MAX_LINELEN) {
-						*tmpp = '\0';
-						break;
-					}
-					*destp++ = '\n';
-					*destp++ = ' ';
-					line_len = 1;
-					continue;
-				}
-
-				tmpp += mbl;
-				*tmpp = '\0';
-
-				tlen += mbl;
-
-				g_free(raw);
-				raw = raw_new;
-				raw_len = raw_new_len;
-
-				wtmpp++;
-			}
-			/* g_print("tmp = %s, tlen = %d, mb_seqlen = %d\n",
-				tmp, tlen, mb_seqlen); */
-
-			if (tlen == 0 || raw_len == 0) {
-				g_free(tmp);
-				g_free(raw);
-				continue;
-			}
-
-			if (line_len > 1 && destp > dest) {
-				*destp++ = ' ';
-				*destp = '\0';
-				line_len++;
-			}
-
-			if (str_is_non_ascii) {
-				g_snprintf(destp, len - strlen(dest), "%s%s%s",
-					   mimehdr_init, mimehdr_charset,
-					   mimehdr_enctype);
-				destp += mimehdr_begin_len;
-				line_len += mimehdr_begin_len;
-
-				base64_encode(destp, raw, raw_len);
-				line_len += strlen(destp);
-				destp += strlen(destp);
-
-				strcpy(destp, mimehdr_end);
-				destp += strlen(mimehdr_end);
-				line_len += strlen(mimehdr_end);
-			} else {
-				strcpy(destp, tmp);
-				line_len += strlen(destp);
-				destp += strlen(destp);
-			}
-
-			g_free(tmp);
-			g_free(raw);
-			/* g_print("line_len = %d\n\n", line_len); */
-		} while (*wtmpp != (wchar_t)0);
-
-		while (iswspace(*wsrcp)) {
-			gint mbl;
-
-			mbl = wctomb(destp, *wsrcp++);
-			if (mbl != -1) {
-				destp += mbl;
-				line_len += mbl;
-			}
-		}
-		*destp = '\0';
-
-		g_free(wtmp);
-	}
-
-	g_free(wsrc);
-
-	/* g_print("dest = %s\n", dest); */
+#define LBREAK_IF_REQUIRED(cond)				\
+{								\
+	if (len - (destp - dest) < MAX_LINELEN) {		\
+		*destp = '\0';					\
+		return;						\
+	}							\
+								\
+	if (cond) {						\
+		if (destp > dest && isspace(*(destp - 1)))	\
+			destp--;				\
+		*destp++ = '\n';				\
+		*destp++ = ' ';					\
+		left = MAX_LINELEN - 1;				\
+	}							\
 }
-#else /* !HAVE_LIBJCONV */
-
-#define JIS_SEQLEN	3
 
 void conv_encode_header(gchar *dest, gint len, const gchar *src,
 			gint header_len)
 {
-	wchar_t *wsrc;
-	wchar_t *wsrcp;
-	gchar *destp;
-	size_t line_len, mimehdr_len, mimehdr_begin_len;
-	gchar *mimehdr_init = "=?";
-	gchar *mimehdr_end = "?=";
-	gchar *mimehdr_enctype = "?B?";
-	const gchar *mimehdr_charset;
-	gboolean do_conv = FALSE;
+	const gchar *cur_encoding;
+	const gchar *out_encoding;
+	gint mimestr_len;
+	gchar *mimesep_enc;
+	gint left;
+	const gchar *srcp = src;
+	gchar *destp = dest;
+	gboolean use_base64;
 
-	/* g_print("src = %s\n", src); */
-	mimehdr_charset = conv_get_outgoing_charset_str();
-	if (strcmp(mimehdr_charset, "ISO-2022-JP") == 0)
-		do_conv = TRUE;
-	else if (strcmp(mimehdr_charset, "US-ASCII") == 0)
-		mimehdr_charset = "ISO-8859-1";
-
-	/* convert to wide-character string */
-	wsrcp = wsrc = strdup_mbstowcs(src);
-	if (!wsrc) {
-		g_warning("Can't convert string to wide characters.\n");
-		strncpy2(dest, src, len);
-		return;
+	if (MB_CUR_MAX > 1) {
+		use_base64 = TRUE;
+		mimesep_enc = "?B?";
+	} else {
+		use_base64 = FALSE;
+		mimesep_enc = "?Q?";
 	}
 
-	mimehdr_len = strlen(mimehdr_init) + strlen(mimehdr_end) +
-		      strlen(mimehdr_charset) + strlen(mimehdr_enctype);
-	mimehdr_begin_len = strlen(mimehdr_init) +
-			    strlen(mimehdr_charset) + strlen(mimehdr_enctype);
-	line_len = header_len;
-	destp = dest;
-	*dest = '\0';
+	cur_encoding = conv_get_current_charset_str();
+	out_encoding = conv_get_outgoing_charset_str();
+	if (!strcmp(out_encoding, "US-ASCII"))
+		out_encoding = "ISO-8859-1";
 
-	while (*wsrcp) {
-		wchar_t *wp, *wtmp, *wtmpp;
-		gint nspc = 0;
-		gboolean str_is_non_ascii;
+	mimestr_len = strlen(MIMESEP_BEGIN) + strlen(out_encoding) +
+		strlen(mimesep_enc) + strlen(MIMESEP_END);
 
-		/* irresponsible buffer overrun check */
-		if ((len - (destp - dest)) < (MAX_LINELEN + 1) * 2) break;
+	left = MAX_LINELEN - header_len;
 
-		/* encode string including space
-		   if non-ASCII string follows */
-		if (is_next_nonascii(wsrcp)) {
-			wp = wsrcp;
-			while ((wp = find_wspace(wp)) != NULL)
-				if (!is_next_nonascii(wp)) break;
-			str_is_non_ascii = TRUE;
-		} else {
-			wp = find_wspace(wsrcp);
-			str_is_non_ascii = FALSE;
+	while (*srcp) {
+		LBREAK_IF_REQUIRED(left <= 0);
+
+		while (isspace(*srcp)) {
+			*destp++ = *srcp++;
+			left--;
+			LBREAK_IF_REQUIRED(left <= 0);
 		}
 
-		if (wp != NULL) {
-			wtmp = wcsndup(wsrcp, wp - wsrcp);
-			wsrcp = wp + 1;
-			while (iswspace(wsrcp[nspc])) nspc++;
-		} else {
-			wtmp = wcsdup(wsrcp);
-			wsrcp += wcslen(wsrcp);
+		/* output as it is if the next word is ASCII string */
+		if (!is_next_nonascii(srcp)) {
+			gint word_len;
+
+			word_len = get_next_word_len(srcp);
+			LBREAK_IF_REQUIRED(left < word_len);
+			while(*srcp && !isspace(*srcp)) {
+				*destp++ = *srcp++;
+				left--;
+				LBREAK_IF_REQUIRED(left <= 0);
+			}
+
+			continue;
 		}
 
-		wtmpp = wtmp;
+		while (1) {
+			gint mb_len = 0;
+			gint cur_len = 0;
+			gchar *part_str;
+			gchar *out_str;
+			gchar *enc_str;
+			const gchar *p = srcp;
+			gint out_str_len;
+			gint out_enc_str_len;
+			gint mime_block_len;
+			gboolean cont = FALSE;
 
-		do {
-			gint prev_mbl = 1, tlen = 0, mb_seqlen = 0;
-			gchar *tmp;
-			register gchar *tmpp;
+			while (*p != '\0') {
+				if (isspace(*p) && !is_next_nonascii(p + 1))
+					break;
 
-			tmpp = tmp = g_malloc(wcslen(wtmpp) * MB_CUR_MAX + 1);
-			*tmp = '\0';
-
-			while (*wtmpp != (wchar_t)0) {
-				gint mbl;
-
-				mbl = wctomb(tmpp, *wtmpp);
-				if (mbl == -1) {
-					g_warning("invalid wide character\n");
-					wtmpp++;
-					continue;
+				mb_len = mblen(p, MB_CUR_MAX);
+				if (mb_len < 0) {
+					g_warning("invalid multibyte character encountered\n");
+					break;
 				}
 
-				/* length of KI + KO */
-				if (do_conv && prev_mbl == 1 && mbl == 2)
-					mb_seqlen += JIS_SEQLEN * 2;
+				Xstrndup_a(part_str, srcp, cur_len + mb_len, );
+				out_str = conv_codeset_strdup
+					(part_str, cur_encoding, out_encoding);
+				out_str_len = strlen(out_str);
 
-				if (str_is_non_ascii) {
-					gint dlen = mimehdr_len +
-						B64LEN(tlen + mb_seqlen + mbl);
-
-					if ((line_len + dlen +
-					     (*(wtmpp + 1) ? 0 : nspc) +
-					     (line_len > 1 ? 1 : 0))
-					    > MAX_LINELEN) {
-						if (tlen == 0) {
-							*destp++ = '\n';
-							*destp++ = ' ';
-							line_len = 1;
-							mb_seqlen = 0;
-							continue;
-						} else {
-							*tmpp = '\0';
-							break;
-						}
-					}
-				} else if ((line_len + tlen + mbl +
-					    (*(wtmpp + 1) ? 0 : nspc) +
-					    (line_len > 1 ? 1 : 0))
-					   > MAX_LINELEN) {
-					if (1 + tlen + mbl +
-					    (*(wtmpp + 1) ? 0 : nspc)
-					    >= MAX_LINELEN) {
-						*tmpp = '\0';
-						break;
-					}
-					*destp++ = '\n';
-					*destp++ = ' ';
-					line_len = 1;
-					continue;
-				}
-
-				tmpp += mbl;
-				*tmpp = '\0';
-
-				tlen += mbl;
-				prev_mbl = mbl;
-
-				wtmpp++;
-			}
-			/* g_print("tmp = %s, tlen = %d, mb_seqlen = %d\n",
-				tmp, tlen, mb_seqlen); */
-
-			if (tlen == 0) {
-				g_free(tmp);
-				continue;
-			}
-
-			if (line_len > 1 && destp > dest) {
-				*destp++ = ' ';
-				*destp = '\0';
-				line_len++;
-			}
-
-			if (str_is_non_ascii) {
-				gchar *raw;
-
-				raw = g_new(gchar, tlen + mb_seqlen + 1);
-				if (do_conv)
-					conv_euctojis(raw, tlen + mb_seqlen + 1,
-						      tmp);
+				if (use_base64)
+					out_enc_str_len = B64LEN(out_str_len);
 				else
-					strcpy(raw, tmp);
-				g_snprintf(destp, len - strlen(dest), "%s%s%s",
-					   mimehdr_init, mimehdr_charset,
-					   mimehdr_enctype);
-				destp += mimehdr_begin_len;
-				line_len += mimehdr_begin_len;
+					out_enc_str_len =
+						qp_get_q_encoding_len(out_str);
 
-				base64_encode(destp, raw, strlen(raw));
-				line_len += strlen(destp);
-				destp += strlen(destp);
+				g_free(out_str);
 
-				strcpy(destp, mimehdr_end);
-				destp += strlen(mimehdr_end);
-				line_len += strlen(mimehdr_end);
-
-				g_free(raw);
-			} else {
-				strcpy(destp, tmp);
-				line_len += strlen(destp);
-				destp += strlen(destp);
+				if (mimestr_len + out_enc_str_len <= left) {
+					cur_len += mb_len;
+					p += mb_len;
+				} else if (cur_len == 0) {
+					LBREAK_IF_REQUIRED(1);
+					continue;
+				} else {
+					cont = TRUE;
+					break;
+				}
 			}
 
-			g_free(tmp);
-			/* g_print("line_len = %d\n\n", line_len); */
-		} while (*wtmpp != (wchar_t)0);
+			if (cur_len > 0) {
+				Xstrndup_a(part_str, srcp, cur_len, );
+				out_str = conv_codeset_strdup
+					(part_str, cur_encoding, out_encoding);
+				out_str_len = strlen(out_str);
 
-		while (iswspace(*wsrcp)) {
-			gint mbl;
+				if (use_base64)
+					out_enc_str_len = B64LEN(out_str_len);
+				else
+					out_enc_str_len =
+						qp_get_q_encoding_len(out_str);
 
-			mbl = wctomb(destp, *wsrcp++);
-			if (mbl != -1) {
-				destp += mbl;
-				line_len += mbl;
+				Xalloca(enc_str, out_enc_str_len + 1, );
+				if (use_base64)
+					base64_encode(enc_str, out_str, out_str_len);
+				else
+					qp_q_encode(enc_str, out_str);
+
+				g_free(out_str);
+
+				/* output MIME-encoded string block */
+				mime_block_len = mimestr_len + strlen(enc_str);
+				g_snprintf(destp, mime_block_len + 1,
+					   MIMESEP_BEGIN "%s%s%s" MIMESEP_END,
+					   out_encoding, mimesep_enc, enc_str);
+				destp += mime_block_len;
+				srcp += cur_len;
+
+				left -= mime_block_len;
 			}
+
+			LBREAK_IF_REQUIRED(cont);
+
+			if (cur_len == 0)
+				break;
 		}
-		*destp = '\0';
-
-		g_free(wtmp);
 	}
 
-	g_free(wsrc);
-
-	/* g_print("dest = %s\n", dest); */
+	*destp = '\0';
 }
-#endif /* HAVE_LIBJCONV */
+
+#undef LBREAK_IF_REQUIRED

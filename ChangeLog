@@ -1,3 +1,21 @@
+2002-12-13
+
+	* src/codeconv.c: conv_encode_header(): reimplemented the routine
+	  of MIME header encoding. And use Q-encoding method if the current
+	  locale is single-byte one.
+	* src/utils.[ch]: is_next_nonascii(): take multi-byte string instead
+	  of wide-character string. Consider control codes as non-ASCII.
+	  get_next_word_len(): new. It returns the length of next word.
+	  is_next_mbs(), find_wspace(): removed.
+	* src/quoted-printable.[ch]: new.
+	  qp_decode_line(): decodes one QP line.
+	  qp_decode_q_encoding(): decodes Q-encoded string in MIME header.
+	  qp_get_q_encoding_len(): returns the length when a string is
+	  Q-encoded.
+	  qp_q_encode(): Q-encode a string (RFC 2047).
+	* src/unmime.c: moved the functions for quoted-printable to
+	  quoted-printable.c.
+
 2002-12-05
 
 	* src/send.c: send_message_local(): escape line that only have one

@@ -1,3 +1,22 @@
+2002-12-13
+
+	* src/codeconv.c: conv_encode_header(): MIME ヘッダエンコーディング
+	  のルーチンを再実装。現在の locale がシングルバイトであれば
+	  Q 符号化を使用するようにした。
+	* src/utils.[ch]: is_next_nonascii(): ワイドキャラクタ文字列の代わり
+	  にマルチバイト文字列をとるようにした。コントロールコードを非
+	  ASCII とみなすようにした。
+	  get_next_word_len(): 新規。次の単語の長さを返す。
+	  is_next_mbs(), find_wspace(): 削除。
+	* src/quoted-printable.[ch]: 新規。
+	  qp_decode_line(): QP 行を1行デコードする。
+	  qp_decode_q_encoding(): MIME ヘッダ中の Q 符号化された文字列を
+	  デコードする。
+	  qp_get_q_encoding_len(): 文字列を Q 符号化したときの長さを返す。
+	  qp_q_encode(): 文字列を Q 符号化する(RFC 2047)。
+	* src/unmime.c: quoted-printable 関連の関数を quoted-printable.c
+	  に移動。
+
 2002-12-05
 
 	* src/send.c: send_message_local(): ドット1文字だけの行をエスケープ

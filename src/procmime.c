@@ -33,6 +33,7 @@
 #include "procmime.h"
 #include "procheader.h"
 #include "base64.h"
+#include "quoted-printable.h"
 #include "uuencode.h"
 #include "unmime.h"
 #include "html.h"
@@ -611,7 +612,7 @@ FILE *procmime_decode_content(FILE *outfp, FILE *infp, MimeInfo *mimeinfo)
 		       (!boundary ||
 			!IS_BOUNDARY(buf, boundary, boundary_len))) {
 			gint len;
-			len = unmime_quoted_printable_line(buf);
+			len = qp_decode_line(buf);
 			fwrite(buf, len, 1, outfp);
 		}
 	} else if (mimeinfo->encoding_type == ENC_BASE64) {
