@@ -1,3 +1,8 @@
+2004-10-03 [colin]	0.9.12cvs120
+
+	* src/summaryview.c
+		Fix bug #602
+
 2004-10-02 [colin]	0.9.12cvs119
 
 	* src/mainwindow.c

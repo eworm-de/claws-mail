@@ -102,3 +102,4 @@
 ( cvs diff -u -r 1.126 -r 1.127 src/mimeview.c; ) > 0.9.12cvs117.patchset
 ( cvs diff -u -r 1.127 -r 1.128 src/mimeview.c; ) > 0.9.12cvs118.patchset
 ( cvs diff -u -r 1.310 -r 1.311 src/mainwindow.c; cvs diff -u -r 1.124 -r 1.125 src/messageview.c; cvs diff -u -r 1.114 -r 1.115 src/prefs_common.h; cvs diff -u -r 1.84 -r 1.85 src/procmime.c; cvs diff -u -r 1.29 -r 1.30 src/procmime.h; cvs diff -u -r 1.123 -r 1.124 src/textview.c; ) > 0.9.12cvs119.patchset
+( cvs diff -u -r 1.446 -r 1.447 src/summaryview.c; ) > 0.9.12cvs120.patchset

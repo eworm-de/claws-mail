@@ -1236,9 +1236,16 @@ static void summary_set_menu_sensitive(SummaryView *summaryview)
 void summary_select_prev_unread(SummaryView *summaryview)
 {
 	GtkCTreeNode *node;
+	gboolean skip_cur = FALSE;
+	
+	if (summaryview->displayed 
+	&&  summaryview->selected == summaryview->displayed) {
+		debug_print("skipping cur\n");
+		skip_cur = TRUE;
+	}
 
 	node = summary_find_prev_flagged_msg
-		(summaryview, summaryview->selected, MSG_UNREAD, TRUE);
+		(summaryview, summaryview->selected, MSG_UNREAD, skip_cur);
 
 	if (!node) {
 		AlertValue val = 0;
@@ -1275,9 +1282,16 @@ void summary_select_next_unread(SummaryView *summaryview)
 {
 	GtkCTreeNode *node = summaryview->selected;
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
+	gboolean skip_cur = FALSE;
+	
+	if (summaryview->displayed 
+	&&  summaryview->selected == summaryview->displayed) {
+		debug_print("skipping cur\n");
+		skip_cur = TRUE;
+	}
 
 	node = summary_find_next_flagged_msg
-		(summaryview, node, MSG_UNREAD, TRUE);
+		(summaryview, node, MSG_UNREAD, skip_cur);
 	
 	if (node)
 		summary_select_node(summaryview, node, TRUE, FALSE);
