@@ -725,10 +725,6 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 
 	gtk_stext_thaw(text);
 
-	/* workaround for initial XIM problem */
-	gtk_widget_grab_focus(compose->text);
-	gtkut_widget_wait_for_draw(compose->text);
-
 	if (account->protocol != A_NNTP) {
 		if (mailto && *mailto != '\0') {
 			compose_entries_set(compose, mailto);

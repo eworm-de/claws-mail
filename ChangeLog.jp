@@ -1,3 +1,8 @@
+2002-09-27
+
+	* src/compose.c: compose_new(): 効果が無く、ハングを引き起こすだけ
+	  であるため XIM の workaround を削除。
+
 2002-09-26
 
 	* src/compose.[ch]: compose_reply(): ML への返信用のフラグを追加。
