@@ -1,3 +1,11 @@
+2005-03-20 [colin]	1.0.3cvs6
+
+	* src/common/plugin.c
+		Check that plugin isn't already loaded
+	* src/procheader.c
+		Fix buffer overflow (security issue)
+		Both patches by Alfons
+
 2005-03-20 [paul]	1.0.3cvs5
 
 	* src/compose.c
