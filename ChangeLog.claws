@@ -1,3 +1,9 @@
+2002-08-13 [alfons]	0.8.1claws56
+
+	* src/claws.c
+		o implement 'save crash log'
+		o some tweaks
+
 2002-08-11 [melvin]	0.8.1claws55
 
 	* src/main.c

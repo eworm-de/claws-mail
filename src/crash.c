@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <time.h>
 
 #include <errno.h>
 #include <fcntl.h>
@@ -42,6 +43,7 @@
 #include "crash.h"
 #include "utils.h"
 #include "prefs.h"
+#include "filesel.h"
 #include "version.h"
 
 #if 0
@@ -56,14 +58,16 @@
  * to be possible.
  */
 
-static void crash_handler			(int sig);
-static gboolean is_crash_dialog_allowed		(void);
-static void crash_debug				(unsigned long crash_pid, GString *string);
-static gboolean crash_create_debugger_file	(void);
+static void		 crash_handler			(int sig);
+static gboolean		 is_crash_dialog_allowed	(void);
+static void		 crash_debug			(unsigned long crash_pid, GString *string);
+static gboolean		 crash_create_debugger_file	(void);
+static void		 crash_save_crash_log		(GtkButton *, const gchar *);
 
-static const gchar *get_compiled_in_features	(void);
-static const gchar *get_lib_version		(void);
-static const gchar *get_operating_system	(void);
+static const gchar	*get_compiled_in_features	(void);
+static const gchar	*get_lib_version		(void);
+static const gchar	*get_operating_system		(void);
+
 
 /***/
 
@@ -91,6 +95,7 @@ static GtkWidget *crash_dialog_new(const gchar *text, const gchar *debug_output)
 	GtkWidget *pixwid;
 	GdkPixmap *pix;
 	GdkBitmap *msk;
+	gchar	  *crash_report;
 
 	window1 = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_container_set_border_width(GTK_CONTAINER(window1), 5);
@@ -134,19 +139,20 @@ static GtkWidget *crash_dialog_new(const gchar *text, const gchar *debug_output)
 				       GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 
 	text1 = gtk_text_new(NULL, NULL);
+	gtk_text_set_editable(GTK_TEXT(text1), FALSE);
 	gtk_widget_show(text1);
 	gtk_container_add(GTK_CONTAINER(scrolledwindow1), text1);
+	
+	crash_report = g_strdup_printf(
+		_("Sylpheed version %s\nGTK+ version %d.%d.%d\nFeatures:%s\nOperating system: %s\nC Library: %s\n--\n%s"),
+		VERSION,
+		gtk_major_version, gtk_minor_version, gtk_micro_version,
+		get_compiled_in_features(),
+		get_operating_system(),
+		get_lib_version(),
+		debug_output);
 
-	gtk_text_insert(GTK_TEXT(text1), NULL, NULL, NULL,
-			g_strdup_printf(
-				_("Sylpheed version %s\nGTK+ version %d.%d.%d\nFeatures: %s\nOperating system: %s\nC Library: %s\n--\n%s"),
-				VERSION,
-				gtk_major_version, gtk_minor_version, gtk_micro_version,
-				get_compiled_in_features(),
-				get_operating_system(),
-				get_lib_version(),
-				debug_output),
-			-1);
+	gtk_text_insert(GTK_TEXT(text1), NULL, NULL, NULL, crash_report, -1);
 
 	hbuttonbox3 = gtk_hbutton_box_new();
 	gtk_widget_show(hbuttonbox3);
@@ -175,6 +181,9 @@ static GtkWidget *crash_dialog_new(const gchar *text, const gchar *debug_output)
 			   GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
 	gtk_signal_connect(GTK_OBJECT(button3),   "clicked",
 			   GTK_SIGNAL_FUNC(gtk_main_quit), NULL);
+	gtk_signal_connect(GTK_OBJECT(button4), "clicked",
+			   GTK_SIGNAL_FUNC(crash_save_crash_log),
+			   crash_report);
 
 	gtk_widget_show(window1);
 
@@ -267,6 +276,25 @@ static gboolean crash_create_debugger_file(void)
 }
 
 /*
+ *\brief	saves crash log to a file
+ */
+static void crash_save_crash_log(GtkButton *button, const gchar *text)
+{
+	time_t timer;
+	struct tm *lt;
+	char buf[100];
+	gchar *filename;
+
+	timer = time(NULL);
+	lt = localtime(&timer);
+	strftime(buf, sizeof buf, "sylpheed-crash-log-%y-%m-%d-%H-%M-%S.txt", lt);
+	if (NULL != (filename = filesel_select_file(_("Save crash information"), buf))
+	&&  *filename)
+		str_write_to_file(text, filename);
+	g_free(filename);	
+}
+
+/*
  *\brief	launches debugger and attaches it to crashed sylpheed
  */
 static void crash_debug(unsigned long crash_pid, GString *string)
@@ -345,8 +373,7 @@ static void crash_debug(unsigned long crash_pid, GString *string)
  */
 static const gchar *get_compiled_in_features(void)
 {
-	return g_strdup_printf(
-		   _("Compiled-in features:%s"),
+	return g_strdup_printf("%s",
 #if HAVE_GDK_IMLIB
 		   " gdk_imlib"
 #endif
@@ -385,6 +412,9 @@ static const gchar *get_compiled_in_features(void)
 
 /***/
 
+/*
+ *\brief	library version
+ */
 static const gchar *get_lib_version(void)
 {
 #if defined(__GNU_LIBRARY__)
@@ -396,6 +426,9 @@ static const gchar *get_lib_version(void)
 
 /***/
 
+/*
+ *\brief	operating system
+ */
 static const gchar *get_operating_system(void)
 {
 #if HAVE_SYS_UTSNAME_H
@@ -420,9 +453,7 @@ static const gchar *get_operating_system(void)
  */
 static gboolean is_crash_dialog_allowed(void)
 {
-	return getenv("KDE_DEBUG") || 
-	       !getenv("GNOME_DISABLE_CRASH_DIALOG") ||
-	       !getenv("SYLPHEED_NO_CRASH");
+	return !getenv("SYLPHEED_NO_CRASH");
 }
 
 /*
@@ -465,7 +496,7 @@ static void crash_handler(int sig)
 
 		setgid(getgid());
 		setuid(getuid());
-#if 0
+#if 0 
 		execvp("/alfons/Projects/sylpheed-claws/src/sylpheed", args);
 #else
 		execvp("sylpheed", args);
