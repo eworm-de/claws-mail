@@ -4,6 +4,7 @@
 	* src/messageview.c
 	* src/mimeview.[ch]
 	* src/stock_pixmap.[ch]
+	* src/pixmaps/messageview_text.xpm		** NEW **
 		move mimeview tabs to the right side and use icons
 		instead of text to save some space
 
