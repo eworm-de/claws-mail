@@ -1,10 +1,18 @@
+2002-07-21 [alfons]	0.7.8claws90
+
+	* src/messageview.c
+	* src/noticeview.[ch]
+		o fix bug notice view being displayed when going to empty folder 
+		  (noticed by Christoph)
+		o allow RRR to be sent when restarting sylpheed, or changing folder 
+		  (noticed by Thorsten)
+
 2002-07-21 [thorsten]	0.7.8claws89
 
 	* src/mimeview.c
 		Included save_all patch from Xaview FACQ
 		added support for pathnames
 
-	
 2002-07-21 [alfons]	0.7.8claws88
 
 	* po/POTFILES.in

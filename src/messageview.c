@@ -290,10 +290,8 @@ static gint disposition_notification_send(MsgInfo * msginfo)
 	gchar * to;
 
 	if ((!msginfo->returnreceiptto) && 
-	    (!msginfo->dispositionnotificationto))
+	    (!msginfo->dispositionnotificationto)) 
 		return -1;
-
-	procmsg_msginfo_unset_flags(msginfo, MSG_RETRCPT_PENDING, 0);
 
 	/* write to temporary file */
 	g_snprintf(tmp, sizeof(tmp), "%s%ctmpmsg%d",
@@ -334,7 +332,6 @@ static gint disposition_notification_send(MsgInfo * msginfo)
 	notification_convert_header(buf, sizeof(buf), msginfo->subject,
 				    strlen("Subject: "));
 	fprintf(fp, "Subject: Disposition notification: %s\n", buf);
-	debug_print("HEADER: Subject Disposition notification: %s\n", buf);
 
 	if (fclose(fp) == EOF) {
 		FILE_OP_ERROR(tmp, "fclose");
@@ -390,7 +387,7 @@ void messageview_show(MessageView *messageview, MsgInfo *msginfo,
 
 	file = procmsg_get_message_file_path(msginfo);
 	if (!file) {
-		g_warning("can't get message file path.\n");
+		g_warning(_("can't get message file path.\n"));
 		procmime_mimeinfo_free(mimeinfo);
 		return;
 	}
@@ -460,6 +457,7 @@ void messageview_clear(MessageView *messageview)
 	headerview_clear(messageview->headerview);
 	textview_clear(messageview->textview);
 	imageview_clear(messageview->imageview);
+	noticeview_hide(messageview->noticeview);
 }
 
 void messageview_destroy(MessageView *messageview)
@@ -472,6 +470,7 @@ void messageview_destroy(MessageView *messageview)
 	textview_destroy(messageview->textview);
 	imageview_destroy(messageview->imageview);
 	mimeview_destroy(messageview->mimeview);
+	noticeview_destroy(messageview->noticeview);
 
 	g_free(messageview);
 
@@ -620,8 +619,23 @@ static void return_receipt_show(NoticeView *noticeview, MsgInfo *msginfo)
 
 static void return_receipt_send_clicked(NoticeView *noticeview, MsgInfo *msginfo)
 {
-	if (disposition_notification_send(msginfo) >= 0) 
+	MsgInfo *tmpmsginfo;
+	gchar *file;
+
+	file = procmsg_get_message_file_path(msginfo);
+	if (!file) {
+		g_warning(_("can't get message file path.\n"));
+		return;
+	}
+
+	tmpmsginfo = procheader_parse_file(file, msginfo->flags, TRUE, TRUE);
+	if (disposition_notification_send(tmpmsginfo) >= 0) {
+		procmsg_msginfo_unset_flags(msginfo, MSG_RETRCPT_PENDING, 0);
 		noticeview_hide(noticeview);
+	}		
+
+	procmsg_msginfo_free(tmpmsginfo);
+	g_free(file);
 }
 
 

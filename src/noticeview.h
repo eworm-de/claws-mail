@@ -36,6 +36,7 @@ struct _NoticeView
 };
 
 NoticeView	*noticeview_create	(void);
+void		 noticeview_destroy	(NoticeView	*noticeview);
 void		 noticeview_init	(NoticeView	*noticeview);
 void		 noticeview_set_icon	(NoticeView	*noticeview,
 					 GtkWidget	*icon);
