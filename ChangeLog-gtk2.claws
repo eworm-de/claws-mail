@@ -1,3 +1,13 @@
+2005-02-21 [paul]	1.0.1cvs15.2
+
+	* po/Makefile.in.in
+	* src/compose.c
+	* src/summaryview.c
+	* src/textview.c
+	* src/common/utils.c
+	* src/common/utils.h
+		sync with main (revision 117)
+
 2005-02-20 [colin]	1.0.1cvs151
 
 	* src/common/defs.h

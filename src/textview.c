@@ -145,9 +145,9 @@ static gint textview_key_pressed		(GtkWidget	*widget,
 static gboolean textview_motion_notify		(GtkWidget	*widget,
 						 GdkEventMotion	*motion,
 						 TextView	*textview);
-static gboolean textview_leave_notify		(GtkWidget	*widget,
+static gboolean textview_leave_notify		(GtkWidget	  *widget,
 						 GdkEventCrossing *event,
-						 TextView	*textview);
+						 TextView	  *textview);
 static gboolean textview_visibility_notify	(GtkWidget	*widget,
 						 GdkEventVisibility *event,
 						 TextView	*textview);
@@ -260,18 +260,14 @@ TextView *textview_create(void)
 
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
 
-	g_signal_connect(G_OBJECT(text), "key_press_event",
-			 G_CALLBACK(textview_key_pressed),
-			 textview);
-	g_signal_connect(G_OBJECT(text), "motion_notify_event",
-			 G_CALLBACK(textview_motion_notify),
-			 textview);
-	g_signal_connect(G_OBJECT(text), "leave_notify_event",
-			 G_CALLBACK(textview_leave_notify),
-			 textview);
-	g_signal_connect(G_OBJECT(text), "visibility_notify_event",
-			 G_CALLBACK(textview_visibility_notify),
-			 textview);
+	g_signal_connect(G_OBJECT(text), "key-press-event",
+			 G_CALLBACK(textview_key_pressed), textview);
+	g_signal_connect(G_OBJECT(text), "motion-notify-event",
+			 G_CALLBACK(textview_motion_notify), textview);
+	g_signal_connect(G_OBJECT(text), "leave-notify-event",
+			 G_CALLBACK(textview_leave_notify), textview);
+	g_signal_connect(G_OBJECT(text), "visibility-notify-event",
+			 G_CALLBACK(textview_visibility_notify), textview);
 
 	gtk_widget_show(scrolledwin);
 
