@@ -1,3 +1,8 @@
+2004-07-18 [colin]	0.9.12cvs32.2
+
+	* src/compose.c
+		Save attachment status when drafting
+
 2004-07-18 [colin]	0.9.12cvs32.1
 
 	* src/gtk/filesel.c

@@ -49,3 +49,4 @@
 ( cvs diff -u -r 1.1.4.1 -r 1.1.4.2 src/gtk/logwindow.c; ) > 0.9.12cvs31.10.patchset
 ( cvs diff -u -r 1.56.2.19 -r 1.56.2.20 src/pop.c; ) > 0.9.12cvs31.11.patchset
 ( cvs diff -u -r 1.2.2.7 -r 1.2.2.8 src/gtk/filesel.c; ) > 0.9.12cvs31.12.patchset
+( cvs diff -u -r 1.382.2.26 -r 1.382.2.27 src/compose.c; ) > 0.9.12cvs32.2.patchset
