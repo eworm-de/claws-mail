@@ -408,6 +408,11 @@ int gtkpspell_set_path_and_dict(GtkPspell * gtkpspell, guchar * path,
 /* Returns an allocated string */  
 guchar *gtkpspell_get_dict(GtkPspell *gtkpspell)
 {
+/* Number of dashes in a dictionary name + 1 (for trailing null)
+ * needed when rebuilding dictionary name 
+ */
+#define DASHES_IN_DICTNAME 3+1
+
 	guchar *dict;
 	guchar *language;
 	guchar *spelling;
@@ -421,8 +426,8 @@ guchar *gtkpspell_get_dict(GtkPspell *gtkpspell)
 	jargon   = g_strdup(pspell_config_retrieve(gtkpspell->config, "jargon"  ));
 	len      = strlen(language) + strlen(spelling) + strlen(jargon);
 
-	if (len + 4 < BUFSIZE) {
-		dict = g_new(char,len + 4);
+	if (len + DASHES_IN_DICTNAME < BUFSIZE) {
+		dict = g_new(char,len + DASHES_IN_DICTNAME);
 		strcpy(dict, language);
 		if (spelling) {
 			strcat(dict, "-");
