@@ -2348,12 +2348,11 @@ static void summary_display_msg_full(SummaryView *summaryview,
 	}
 	g_free(filename);
 
-/* NOT NEEDED ANYMORE
 	if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->newmsgs--;
 	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->unread--;
-*/
+
 	procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
 	summary_set_row_marks(summaryview, row);
 	gtk_clist_thaw(GTK_CLIST(ctree));
@@ -2730,12 +2729,12 @@ static void summary_mark_row_as_read(SummaryView *summaryview,
 	MsgInfo *msginfo;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
-/* NOT NEEDED ANYMORE
+
 	if (MSG_IS_NEW(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->newmsgs--;
 	if (MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->unread--;
-*/
+
 	procmsg_msginfo_unset_flags(msginfo, MSG_NEW | MSG_UNREAD, 0);
 	summary_set_row_marks(summaryview, row);
 	debug_print(_("Message %d is marked as read\n"),
@@ -2786,10 +2785,9 @@ static void summary_mark_row_as_unread(SummaryView *summaryview,
 		procmsg_msginfo_unset_flags(msginfo, MSG_DELETED, 0);
 		summaryview->deleted--;
 	}
-/* NOT NEEDED ANYMORE
+
 	if (!MSG_IS_UNREAD(msginfo->flags) && !MSG_IS_IGNORE_THREAD(msginfo->flags))
 		summaryview->unread++;
-*/
 
 	procmsg_msginfo_unset_flags(msginfo, MSG_REPLIED | MSG_FORWARDED, 0);
 	procmsg_msginfo_set_flags(msginfo, MSG_UNREAD, 0);
@@ -5018,12 +5016,12 @@ static void summary_ignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpoin
 	MsgInfo *msginfo;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
-/* NOT NEEDED ANYMORE
+
 	if (MSG_IS_NEW(msginfo->flags))
 		summaryview->newmsgs--;
 	if (MSG_IS_UNREAD(msginfo->flags))
 		summaryview->unread--;
-*/
+
 	procmsg_msginfo_set_flags(msginfo, MSG_IGNORE_THREAD, 0);
 
 	summary_set_row_marks(summaryview, row);
@@ -5050,12 +5048,12 @@ static void summary_unignore_thread_func(GtkCTree *ctree, GtkCTreeNode *row, gpo
 	MsgInfo *msginfo;
 
 	msginfo = gtk_ctree_node_get_row_data(ctree, row);
-/* NOT NEEDED ANYMORE
+
 	if (MSG_IS_NEW(msginfo->flags))
 		summaryview->newmsgs++;
 	if (MSG_IS_UNREAD(msginfo->flags))
 		summaryview->unread++;
-*/
+
 	procmsg_msginfo_unset_flags(msginfo, MSG_IGNORE_THREAD, 0);
 
 	summary_set_row_marks(summaryview, row);
