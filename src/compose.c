@@ -5938,8 +5938,8 @@ static void compose_toggle_attach_cb(gpointer data, guint action,
 	if (GTK_CHECK_MENU_ITEM(widget)->active) {
 		gtk_widget_ref(compose->edit_vbox);
 
-		gtk_container_remove(GTK_CONTAINER(compose->vbox2),
-				     compose->edit_vbox);
+		gtkut_container_remove(GTK_CONTAINER(compose->vbox2),
+		 		       compose->edit_vbox);
 		gtk_paned_add2(GTK_PANED(compose->paned), compose->edit_vbox);
 		gtk_box_pack_start(GTK_BOX(compose->vbox2), compose->paned,
 				   TRUE, TRUE, 0);
@@ -5953,10 +5953,10 @@ static void compose_toggle_attach_cb(gpointer data, guint action,
 		gtk_widget_ref(compose->paned);
 		gtk_widget_ref(compose->edit_vbox);
 
-		gtk_container_remove(GTK_CONTAINER(compose->vbox2),
-				     compose->paned);
-		gtk_container_remove(GTK_CONTAINER(compose->paned),
-				     compose->edit_vbox);
+		gtkut_container_remove(GTK_CONTAINER(compose->vbox2),
+		  		       compose->paned);
+		gtkut_container_remove(GTK_CONTAINER(compose->paned),
+		  		       compose->edit_vbox);
 		gtk_box_pack_start(GTK_BOX(compose->vbox2),
 				   compose->edit_vbox, TRUE, TRUE, 0);
 

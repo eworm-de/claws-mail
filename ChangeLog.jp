@@ -1,3 +1,16 @@
+2001-12-11
+
+	* src/gtkutils.[ch]: gtkut_container_remove(): 新規。 Gtk{Text,Entry}
+	  のバグへの対処のための gtk_container_remove() のラッパー
+	  (Sergey Vlasov さん thanks)。
+	* src/compose.c
+	  src/mainwindow.c
+	  src/messageview.c
+	  src/mimeview.c
+	  src/summaryview.c
+	  src/textview.c: gtk_container_remove() を gtkut_container_remove()
+	  で置換し、以前の部分的な修正を削除。
+
 2001-12-09
 
 	* src/prefs_account.c: prefs_account_apply(): 「ローカル」で

@@ -447,14 +447,14 @@ static void mimeview_change_view_type(MimeView *mimeview, MimeViewType type)
 
 	switch (type) {
 	case MIMEVIEW_IMAGE:
-		gtk_container_remove(GTK_CONTAINER(mimeview->vbox),
-				     GTK_WIDGET_PTR(textview));
+		gtkut_container_remove(GTK_CONTAINER(mimeview->vbox),
+		  		       GTK_WIDGET_PTR(textview));
 		gtk_container_add(GTK_CONTAINER(mimeview->vbox),
 				  GTK_WIDGET_PTR(imageview));
 		break;
 	case MIMEVIEW_TEXT:
-		gtk_container_remove(GTK_CONTAINER(mimeview->vbox),
-				     GTK_WIDGET_PTR(imageview));
+		gtkut_container_remove(GTK_CONTAINER(mimeview->vbox),
+		  		       GTK_WIDGET_PTR(imageview));
 		gtk_container_add(GTK_CONTAINER(mimeview->vbox),
 				  GTK_WIDGET_PTR(textview));
 		break;

@@ -472,9 +472,7 @@ static void messageview_change_view_type(MessageView *messageview,
 	if (messageview->type == type) return;
 
 	if (type == MVIEW_MIME) {
-		gtk_editable_claim_selection(GTK_EDITABLE(textview->text),
-					     FALSE, GDK_CURRENT_TIME);
-		gtk_container_remove
+		gtkut_container_remove
 			(GTK_CONTAINER(GTK_WIDGET_PTR(messageview)),
 			 GTK_WIDGET_PTR(textview));
 		gtk_box_pack_start(GTK_BOX(messageview->vbox),
@@ -483,18 +481,16 @@ static void messageview_change_view_type(MessageView *messageview,
 				  GTK_WIDGET_PTR(textview));
 		mimeview->type = MIMEVIEW_TEXT;
 	} else if (type == MVIEW_TEXT) {
-		gtk_editable_claim_selection(GTK_EDITABLE(textview->text),
-					     FALSE, GDK_CURRENT_TIME);
-		gtk_container_remove
+		gtkut_container_remove
 			(GTK_CONTAINER(GTK_WIDGET_PTR(messageview)),
 			 GTK_WIDGET_PTR(mimeview));
 
 		if (mimeview->vbox == GTK_WIDGET_PTR(textview)->parent) {
-			gtk_container_remove(GTK_CONTAINER(mimeview->vbox),
-					     GTK_WIDGET_PTR(textview));
+			gtkut_container_remove(GTK_CONTAINER(mimeview->vbox),
+			 		       GTK_WIDGET_PTR(textview));
 		} else {
-			gtk_container_remove(GTK_CONTAINER(mimeview->vbox),
-					     GTK_WIDGET_PTR(imageview));
+			gtkut_container_remove(GTK_CONTAINER(mimeview->vbox),
+			  		       GTK_WIDGET_PTR(imageview));
 		}
 
 		gtk_box_pack_start(GTK_BOX(messageview->vbox),

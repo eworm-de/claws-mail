@@ -1109,11 +1109,11 @@ void main_window_separation_change(MainWindow *mainwin, SeparateType type)
 	gtk_widget_ref(folder_wid);
 	gtk_widget_ref(summary_wid);
 	gtk_widget_ref(message_wid);
-	gtk_container_remove
+	gtkut_container_remove
 		(GTK_CONTAINER(folder_wid->parent), folder_wid);
-	gtk_container_remove
+	gtkut_container_remove
 		(GTK_CONTAINER(summary_wid->parent), summary_wid);
-	gtk_container_remove
+	gtkut_container_remove
 		(GTK_CONTAINER(message_wid->parent), message_wid);
 
 	/* clean containers */

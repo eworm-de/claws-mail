@@ -28,6 +28,8 @@
 #include <gdk/gdk.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkwidget.h>
+#include <gtk/gtkcontainer.h>
+#include <gtk/gtkeditable.h>
 #include <gtk/gtkctree.h>
 #include <gtk/gtkcombo.h>
 #include "gtkstext.h"
@@ -99,6 +101,9 @@ void gtkut_clist_set_focus_row		(GtkCList	*clist,
 
 void gtkut_combo_set_items		(GtkCombo	*combo,
 					 const gchar	*str1, ...);
+
+void gtkut_container_remove		(GtkContainer	*container,
+					 GtkWidget	*widget);
 
 gboolean gtkut_text_match_string	(GtkSText	*text,
 					 gint		 pos,

@@ -958,10 +958,8 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 		GtkWidget *parent;
 
 		parent = textview->scrolledwin_mb->parent;
-		gtk_editable_claim_selection(GTK_EDITABLE(textview->text_mb),
-					     FALSE, GDK_CURRENT_TIME);
-		gtk_container_remove(GTK_CONTAINER(parent),
-				     textview->scrolledwin_mb);
+		gtkut_container_remove(GTK_CONTAINER(parent),
+				       textview->scrolledwin_mb);
 		gtk_container_add(GTK_CONTAINER(parent),
 				  textview->scrolledwin_sb);
 
@@ -971,10 +969,8 @@ void textview_set_font(TextView *textview, const gchar *codeset)
 		GtkWidget *parent;
 
 		parent = textview->scrolledwin_sb->parent;
-		gtk_editable_claim_selection(GTK_EDITABLE(textview->text_sb),
-					     FALSE, GDK_CURRENT_TIME);
-		gtk_container_remove(GTK_CONTAINER(parent),
-				     textview->scrolledwin_sb);
+		gtkut_container_remove(GTK_CONTAINER(parent),
+				       textview->scrolledwin_sb);
 		gtk_container_add(GTK_CONTAINER(parent),
 				  textview->scrolledwin_mb);
 

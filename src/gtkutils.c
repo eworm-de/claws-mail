@@ -248,6 +248,46 @@ void gtkut_combo_set_items(GtkCombo *combo, const gchar *str1, ...)
 	g_list_free(combo_items);
 }
 
+/*
+ * Walk through the widget tree and disclaim the selection from all currently
+ * realized GtkEditable widgets.
+ */
+static void gtkut_check_before_remove(GtkWidget *widget, gpointer unused)
+{
+	g_return_if_fail(widget != NULL);
+
+	if (!GTK_WIDGET_REALIZED(widget))
+		return; /* all nested widgets must be unrealized too */
+	if (GTK_IS_CONTAINER(widget))
+		gtk_container_forall(GTK_CONTAINER(widget),
+				     gtkut_check_before_remove, NULL);
+	if (GTK_IS_EDITABLE(widget))
+		gtk_editable_claim_selection(GTK_EDITABLE(widget),
+					     FALSE, GDK_CURRENT_TIME);
+}
+
+/*
+ * Wrapper around gtk_container_remove to work around a bug in GtkText and
+ * GtkEntry (in all GTK+ versions up to and including at least 1.2.10).
+ *
+ * The problem is that unrealizing a GtkText or GtkEntry widget which has the
+ * active selection completely messes up selection handling, leading to
+ * non-working selections and crashes.  Removing a widget from its container
+ * implies unrealizing it and all its child widgets; this triggers the bug if
+ * the removed widget or any of its children is GtkText or GtkEntry.  As a
+ * workaround, this function walks through the widget subtree before removing
+ * and disclaims the selection from all GtkEditable widgets found.
+ *
+ * A similar workaround may be needed for gtk_widget_reparent(); currently it
+ * is not necessary because Sylpheed does not use gtk_widget_reparent() for
+ * GtkEditable widgets or containers holding such widgets.
+ */
+void gtkut_container_remove(GtkContainer *container, GtkWidget *widget)
+{
+	gtkut_check_before_remove(widget, NULL);
+	gtk_container_remove(container, widget);
+}
+
 gboolean gtkut_text_match_string(GtkSText *text, gint pos, wchar_t *wcs,
 				 gint len, gboolean case_sens)
 {

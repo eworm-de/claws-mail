@@ -1,3 +1,16 @@
+2001-12-11
+
+	* src/gtkutils.[ch]: gtkut_container_remove(): new. It's a wrapper
+	  of gtk_container_remove() for workaround of a bug in
+	  Gtk{Text,Entry} (thanks to Sergey Vlasov).
+	* src/compose.c
+	  src/mainwindow.c
+	  src/messageview.c
+	  src/mimeview.c
+	  src/summaryview.c
+	  src/textview.c: replaced gtk_container_remove() with
+	  gtkut_container_remove(), and removed previous partial fix.
+
 2001-12-09
 
 	* src/prefs_account.c: prefs_account_apply(): fixed a bug that

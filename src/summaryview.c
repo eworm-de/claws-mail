@@ -2362,10 +2362,7 @@ static void summary_toggle_view(SummaryView *summaryview)
 		summaryview->msg_is_toggled_on = FALSE;
 		summaryview->displayed = NULL;
 		gtk_widget_ref(vpaned);
-		gtk_editable_claim_selection
-			(GTK_EDITABLE(summaryview->messageview->textview->text),
-			 FALSE, GDK_CURRENT_TIME);
-		gtk_container_remove(GTK_CONTAINER(container), vpaned);
+		gtkut_container_remove(GTK_CONTAINER(container), vpaned);
 		gtk_widget_reparent(GTK_WIDGET_PTR(summaryview), container);
 		gtk_arrow_set(GTK_ARROW(summaryview->toggle_arrow),
 			      GTK_ARROW_UP, GTK_SHADOW_OUT);

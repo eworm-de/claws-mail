@@ -1,3 +1,8 @@
+2001-12-11 [paul]	0.6.5claws74
+
+	* sync with sylpheed 0.6.5cvs25
+		see ChangeLog entry 2001-12-11
+
 2001-12-10 [alfons]	0.6.5claws73
 
 	* src/matcher.c
