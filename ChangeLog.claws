@@ -11,7 +11,8 @@
 
 	* src/imap.c
 		Try and fix bug 577 (session->last_access_time is broken since 
-		sync with main 0.9.12cvs2)
+		sync with main 0.9.12cvs2). 
+		Patch by Stephan Sachse <whiteman@teg-clan.de>
 
 2004-08-23 [paul]
 
