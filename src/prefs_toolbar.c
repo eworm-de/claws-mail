@@ -641,9 +641,16 @@ static void prefs_toolbar_create(void)
 	GtkWidget *cancel_btn;
 
 	window = gtk_window_new (GTK_WINDOW_DIALOG);
-	gtk_window_set_title (GTK_WINDOW (window), _("Customize Toolbar"));
-	//gtk_widget_set_usize (window, 400, 500);
-	gtk_widget_realize (window);
+
+	gtk_container_set_border_width(GTK_CONTAINER (window), 8);
+	gtk_window_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+	gtk_window_set_modal(GTK_WINDOW(window), TRUE);
+	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, TRUE);
+
+
+	gtk_window_set_title (GTK_WINDOW (window), _("Customize toolbar"));
+	gtk_widget_set_usize (window, 450, -1); 
+	gtk_widget_realize (window); 
 
 	main_vbox = gtk_vbox_new (FALSE, 0);
 
@@ -678,7 +685,7 @@ static void prefs_toolbar_create(void)
 	gtk_clist_set_column_width (GTK_CLIST (clist_icons), 0, 35);
 	gtk_clist_set_column_width (GTK_CLIST (clist_icons), 1, 200);
 	gtk_clist_column_titles_hide (GTK_CLIST (clist_icons));
-	gtk_widget_set_usize (clist_icons, 300, 150);
+	gtk_widget_set_usize (clist_icons, 225, 100); 
 	
 	/* icon description */
 	hbox_icon_text = gtk_hbox_new (TRUE, 5);
@@ -755,7 +762,7 @@ static void prefs_toolbar_create(void)
 	
 	scrolledwindow_clist_set = gtk_scrolled_window_new (NULL, NULL);
 	gtk_box_pack_start (GTK_BOX (hbox_bottom), scrolledwindow_clist_set, TRUE, TRUE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow_clist_set), 5);
+	gtk_container_set_border_width (GTK_CONTAINER (scrolledwindow_clist_set), 1);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow_clist_icon), 
 					GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	
@@ -766,7 +773,7 @@ static void prefs_toolbar_create(void)
 	gtk_clist_set_column_width (GTK_CLIST (clist_set), 2, 80);
 	gtk_clist_set_column_width (GTK_CLIST (clist_set), 3, 80);
 	gtk_clist_column_titles_show (GTK_CLIST (clist_set));
-	gtk_widget_set_usize (clist_set, 300, 200);
+	gtk_widget_set_usize (clist_set, 225, 120);
 
 	label_icon = gtk_label_new (_("Pixmap"));
 	gtk_clist_set_column_widget (GTK_CLIST (clist_set), 0, label_icon);
