@@ -20,3 +20,4 @@
 ( cvs diff -u -r 1.243 -r 1.244 src/folderview.c; ) > 0.9.12cvs31.patchset
 ( cvs diff -u -r 1.64 -r 1.65 src/pop.c; ) > 0.9.12cvs32.patchset
 ( cvs diff -u -r 1.106 -r 1.107 src/folder.h; cvs diff -u -r 1.244 -r 1.245 src/folderview.c; cvs diff -u -r 1.440 -r 1.441 src/summaryview.c; ) > 0.9.12cvs33.patchset
+( cvs diff -u -r 1.430 -r 1.431 src/compose.c; ) > 0.9.12cvs34.patchset

@@ -6431,6 +6431,10 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	if (newmsginfo) {
 		procmsg_msginfo_unset_flags(newmsginfo, ~0, ~0);
 		procmsg_msginfo_set_flags(newmsginfo, 0, MSG_DRAFT);
+		if (compose_use_attach(compose))
+			procmsg_msginfo_set_flags(newmsginfo, 0,
+						  MSG_HAS_ATTACHMENT);
+
 		procmsg_msginfo_free(newmsginfo);
 	}
 	

@@ -1,3 +1,8 @@
+2004-07-19 [colin]	0.9.12cvs34
+
+	* src/compose.c
+		Save attachment status when drafting
+
 2004-07-19 [colin]	0.9.12cvs33
 
 	* src/folder.h
