@@ -86,9 +86,7 @@ Select the plugin that you want and click 'OK'
     own mails. Preferences are found in '/Configuration/Preferences/
     Privacy/GPG'.
     Uses GnuPG/GPGME, <http://www.gnupg.org/gpgme.html>
-    Relies upon the standard configure option:
-    	--enable-gpgme
-   	
+
   o SpamAssassin
     Enables the scanning of incoming mail received from a POP,
     IMAP or LOCAL account using SpamAssassin. It can optionally 

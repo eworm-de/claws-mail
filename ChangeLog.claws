@@ -1,3 +1,15 @@
+2004-12-06 [paul]	0.9.13
+
+	0.9.13 released
+
+2004-12-06 [paul]
+
+	* po/sk.po
+		updated by Andrej Kacian
+	* INSTALL
+	* README.claws
+		updated
+	
 2004-12-06 [christoph]
 
 	* configure.ac
