@@ -1,3 +1,22 @@
+2002-07-10 [christoph]	0.7.8claws58
+
+	* src/folder.[ch]
+	* src/msgcache.[ch]
+		Added message-id table to the cache in memory
+		and functions to msgcache.c and folder.c to
+		fetch MsgInfos by message id
+	* src/compose.c
+	* src/procmsg.c
+		store folder and message-id of message replying
+		to in queue header and set reply flag after sending
+		(Closes bug #469498)
+
+2002-07-10 [paul]	0.7.8claws57
+
+	* AUTHORS
+	  man/sylpheed.1.gz
+		add Martin to the list of authors
+
 2002-07-09 [martin]	0.7.8claws56
 	* src/gtksctree.c
 		Added gtk_ctree_last_visible(), tree_update_level(),

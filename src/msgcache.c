@@ -30,6 +30,7 @@
 
 struct _MsgCache {
 	GHashTable	*msgnum_table;
+	GHashTable	*msgid_table;
 	guint		 memusage;
 	time_t		 last_access;
 };
@@ -39,7 +40,8 @@ MsgCache *msgcache_new()
 	MsgCache *cache;
 	
 	cache = g_new0(MsgCache, 1),
-	cache->msgnum_table = g_hash_table_new(NULL, NULL);
+	cache->msgnum_table = g_hash_table_new(g_int_hash, g_int_equal);
+	cache->msgid_table = g_hash_table_new(g_str_hash, g_str_equal);
 	cache->last_access = time(NULL);
 
 	return cache;
@@ -56,6 +58,7 @@ void msgcache_destroy(MsgCache *cache)
 	g_return_if_fail(cache != NULL);
 
 	g_hash_table_foreach_remove(cache->msgnum_table, msgcache_msginfo_free_func, NULL);
+	g_hash_table_destroy(cache->msgid_table);
 	g_hash_table_destroy(cache->msgnum_table);
 	g_free(cache);
 }
@@ -68,7 +71,9 @@ void msgcache_add_msg(MsgCache *cache, MsgInfo *msginfo)
 	g_return_if_fail(msginfo != NULL);
 
 	newmsginfo = procmsg_msginfo_new_ref(msginfo);
-	g_hash_table_insert(cache->msgnum_table, GINT_TO_POINTER(msginfo->msgnum), newmsginfo);
+	g_hash_table_insert(cache->msgnum_table, &newmsginfo->msgnum, newmsginfo);
+	if(newmsginfo->msgid != NULL)
+		g_hash_table_insert(cache->msgid_table, newmsginfo->msgid, newmsginfo);
 	cache->memusage += procmsg_msginfo_memusage(msginfo);
 	cache->last_access = time(NULL);
 
@@ -82,13 +87,15 @@ void msgcache_remove_msg(MsgCache *cache, guint msgnum)
 	g_return_if_fail(cache != NULL);
 	g_return_if_fail(msgnum > 0);
 
-	msginfo = (MsgInfo *) g_hash_table_lookup(cache->msgnum_table, GINT_TO_POINTER(msgnum));
+	msginfo = (MsgInfo *) g_hash_table_lookup(cache->msgnum_table, &msgnum);
 	if(!msginfo)
 		return;
 
 	cache->memusage -= procmsg_msginfo_memusage(msginfo);
+	if(msginfo->msgid)
+		g_hash_table_remove(cache->msgid_table, msginfo->msgid);
+	g_hash_table_remove(cache->msgnum_table, &msginfo->msgnum);
 	procmsg_msginfo_free(msginfo);
-	g_hash_table_remove(cache->msgnum_table, GINT_TO_POINTER(msgnum));
 	cache->last_access = time(NULL);
 
 	debug_print(_("Cache size: %d messages, %d byte\n"), g_hash_table_size(cache->msgnum_table), cache->memusage);
@@ -101,15 +108,18 @@ void msgcache_update_msg(MsgCache *cache, MsgInfo *msginfo)
 	g_return_if_fail(cache != NULL);
 	g_return_if_fail(msginfo != NULL);
 
-	oldmsginfo = g_hash_table_lookup(cache->msgnum_table, GINT_TO_POINTER(msginfo->msgnum));
+	oldmsginfo = g_hash_table_lookup(cache->msgnum_table, &msginfo->msgnum);
 	if(msginfo) {
-		g_hash_table_remove(cache->msgnum_table, GINT_TO_POINTER(oldmsginfo->msgnum));
+		g_hash_table_remove(cache->msgid_table, oldmsginfo->msgid);
+		g_hash_table_remove(cache->msgnum_table, &oldmsginfo->msgnum);
 		procmsg_msginfo_free(oldmsginfo);
 	}
 	cache->memusage -= procmsg_msginfo_memusage(oldmsginfo);
 
 	newmsginfo = procmsg_msginfo_new_ref(msginfo);
-	g_hash_table_insert(cache->msgnum_table, GINT_TO_POINTER(msginfo->msgnum), newmsginfo);
+	g_hash_table_insert(cache->msgnum_table, &newmsginfo->msgnum, newmsginfo);
+	if(newmsginfo->msgid)
+		g_hash_table_insert(cache->msgid_table, newmsginfo->msgid, newmsginfo);
 	cache->memusage += procmsg_msginfo_memusage(newmsginfo);
 	cache->last_access = time(NULL);
 	
@@ -241,7 +251,9 @@ MsgCache *msgcache_read_cache(FolderItem *item, const gchar *cache_file)
 */
 		msginfo->folder = item;
 
-		g_hash_table_insert(cache->msgnum_table, GINT_TO_POINTER(msginfo->msgnum), msginfo);
+		g_hash_table_insert(cache->msgnum_table, &msginfo->msgnum, msginfo);
+		if(msginfo->msgid)
+			g_hash_table_insert(cache->msgid_table, msginfo->msgid, msginfo);
 		cache->memusage += procmsg_msginfo_memusage(msginfo);
 	}
 	fclose(fp);
@@ -281,7 +293,7 @@ void msgcache_read_mark(MsgCache *cache, const gchar *mark_file)
 		while (fread(&num, sizeof(num), 1, fp) == 1) {
 			if (fread(&perm_flags, sizeof(perm_flags), 1, fp) != 1) break;
 
-			msginfo = g_hash_table_lookup(cache->msgnum_table, GUINT_TO_POINTER(num));
+			msginfo = g_hash_table_lookup(cache->msgnum_table, &num);
 			if(msginfo) {
 				msginfo->flags.perm_flags = perm_flags;
 			}
@@ -407,12 +419,26 @@ MsgInfo *msgcache_get_msg(MsgCache *cache, guint num)
 
 	g_return_val_if_fail(cache != NULL, NULL);
 
-	msginfo = g_hash_table_lookup(cache->msgnum_table, GINT_TO_POINTER(num));
+	msginfo = g_hash_table_lookup(cache->msgnum_table, &num);
 	if(!msginfo)
 		return NULL;
 	cache->last_access = time(NULL);
 	
 	return procmsg_msginfo_new_ref(msginfo);
+}
+
+MsgInfo *msgcache_get_msg_by_id(MsgCache *cache, const gchar *msgid)
+{
+	MsgInfo *msginfo;
+	
+	g_return_val_if_fail(cache != NULL, NULL);
+
+	msginfo = g_hash_table_lookup(cache->msgid_table, msgid);
+	if(!msginfo)
+		return NULL;
+	cache->last_access = time(NULL);
+	
+	return procmsg_msginfo_new_ref(msginfo);	
 }
 
 static void msgcache_get_msg_list_func(gpointer key, gpointer value, gpointer user_data)
