@@ -1,3 +1,9 @@
+2001-10-29 [paul]
+
+	* po/de.po, po/es.po, po/pt_BR/po
+		updated translations, submitted by Jens Oberender,
+		Ricardo Mones Lastra, and Fabio Junior Beneditto
+
 2001-10-29 [darko]
 
 	* src/compose.c
