@@ -1,3 +1,10 @@
+2001-05-25 [darko]
+
+	* src/headerview.c
+		fix segfault with invalid bold font
+	* src/summaryview.c
+		correctly display summary stats after row is marked
+
 2001-05-23 [sergey]
 
 	* src/codeconv.c (conv_get_code_conv_func): fix for ISO-8859-*
