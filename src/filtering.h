@@ -21,23 +21,20 @@ struct _FilteringProp {
 
 typedef struct _FilteringProp FilteringProp;
 
-extern GSList * global_filtering;
+extern GSList * prefs_filtering;
 
 
 FilteringAction * filteringaction_new(int type, int account_id,
 				      gchar * destination);
 void filteringaction_free(FilteringAction * action);
-/*
 FilteringAction * filteringaction_parse(gchar ** str);
-*/
 
 FilteringProp * filteringprop_new(MatcherList * matchers,
 				  FilteringAction * action);
 void filteringprop_free(FilteringProp * prop);
 
-/*
 FilteringProp * filteringprop_parse(gchar ** str);
-*/
+
 
 void filter_msginfo(GSList * filtering_list, MsgInfo * info,
 		    GHashTable *folder_table);
@@ -50,7 +47,5 @@ gchar * filteringaction_to_string(FilteringAction * action);
 void prefs_filtering_write_config(void);
 void prefs_filtering_read_config(void);
 gchar * filteringprop_to_string(FilteringProp * prop);
-
-void prefs_filtering_clear();
 
 #endif

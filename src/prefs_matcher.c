@@ -45,7 +45,6 @@
 #include "gtkutils.h"
 #include "alertpanel.h"
 #include "folder.h"
-#include "matcher_parser.h"
 
 static struct Matcher {
 	GtkWidget *window;
@@ -672,6 +671,7 @@ static MatcherList * prefs_matcher_get_list(void)
 	gchar * matcher_str;
 	MatcherProp * prop;
 	gint row = 1;
+	gchar * tmp;
 	gboolean bool_and;
 	GSList * matcher_list;
 	MatcherList * matchers;
@@ -682,9 +682,10 @@ static MatcherList * prefs_matcher_get_list(void)
 				  row, 0, &matcher_str)) {
 
 		if (strcmp(matcher_str, _("(New)")) != 0) {
-			prop = matcher_parser_get_prop(matcher_str);
+			tmp = matcher_str;
+			prop = matcherprop_parse(&tmp);
 			
-			if (prop == NULL)
+			if (tmp == NULL)
 				break;
 			
 			matcher_list = g_slist_append(matcher_list, prop);
@@ -702,74 +703,74 @@ static MatcherList * prefs_matcher_get_list(void)
 static gint prefs_matcher_get_criteria_from_matching(gint matching_id)
 {
 	switch(matching_id) {
-	case MATCHCRITERIA_ALL:
+	case MATCHING_ALL:
 		return CRITERIA_ALL;
-	case MATCHCRITERIA_NOT_UNREAD:
-	case MATCHCRITERIA_UNREAD:
+	case MATCHING_NOT_UNREAD:
+	case MATCHING_UNREAD:
 		return CRITERIA_UNREAD;
-	case MATCHCRITERIA_NOT_NEW:
-	case MATCHCRITERIA_NEW:
+	case MATCHING_NOT_NEW:
+	case MATCHING_NEW:
 		return CRITERIA_NEW;
-	case MATCHCRITERIA_NOT_MARKED:
-	case MATCHCRITERIA_MARKED:
+	case MATCHING_NOT_MARKED:
+	case MATCHING_MARKED:
 		return CRITERIA_MARKED;
-	case MATCHCRITERIA_NOT_DELETED:
-	case MATCHCRITERIA_DELETED:
+	case MATCHING_NOT_DELETED:
+	case MATCHING_DELETED:
 		return CRITERIA_DELETED;
 		break;
-	case MATCHCRITERIA_NOT_REPLIED:
-	case MATCHCRITERIA_REPLIED:
+	case MATCHING_NOT_REPLIED:
+	case MATCHING_REPLIED:
 		return CRITERIA_REPLIED;
-	case MATCHCRITERIA_NOT_FORWARDED:
-	case MATCHCRITERIA_FORWARDED:
+	case MATCHING_NOT_FORWARDED:
+	case MATCHING_FORWARDED:
 		return CRITERIA_FORWARDED;
-	case MATCHCRITERIA_NOT_SUBJECT:
-	case MATCHCRITERIA_SUBJECT:
+	case MATCHING_NOT_SUBJECT:
+	case MATCHING_SUBJECT:
 		return CRITERIA_SUBJECT;
-	case MATCHCRITERIA_NOT_FROM:
-	case MATCHCRITERIA_FROM:
+	case MATCHING_NOT_FROM:
+	case MATCHING_FROM:
 		return CRITERIA_FROM;
-	case MATCHCRITERIA_NOT_TO:
-	case MATCHCRITERIA_TO:
+	case MATCHING_NOT_TO:
+	case MATCHING_TO:
 		return CRITERIA_TO;
-	case MATCHCRITERIA_NOT_CC:
-	case MATCHCRITERIA_CC:
+	case MATCHING_NOT_CC:
+	case MATCHING_CC:
 		return CRITERIA_CC;
-	case MATCHCRITERIA_NOT_NEWSGROUPS:
-	case MATCHCRITERIA_NEWSGROUPS:
+	case MATCHING_NOT_NEWSGROUPS:
+	case MATCHING_NEWSGROUPS:
 		return CRITERIA_NEWSGROUPS;
-	case MATCHCRITERIA_NOT_INREPLYTO:
-	case MATCHCRITERIA_INREPLYTO:
+	case MATCHING_NOT_INREPLYTO:
+	case MATCHING_INREPLYTO:
 		return CRITERIA_INREPLYTO;
-	case MATCHCRITERIA_NOT_REFERENCES:
-	case MATCHCRITERIA_REFERENCES:
+	case MATCHING_NOT_REFERENCES:
+	case MATCHING_REFERENCES:
 		return CRITERIA_REFERENCES;
-	case MATCHCRITERIA_NOT_TO_AND_NOT_CC:
-	case MATCHCRITERIA_TO_OR_CC:
+	case MATCHING_NOT_TO_AND_NOT_CC:
+	case MATCHING_TO_OR_CC:
 		return CRITERIA_TO_OR_CC;
-	case MATCHCRITERIA_NOT_BODY_PART:
-	case MATCHCRITERIA_BODY_PART:
+	case MATCHING_NOT_BODY_PART:
+	case MATCHING_BODY_PART:
 		return CRITERIA_BODY_PART;
-	case MATCHCRITERIA_NOT_MESSAGE:
-	case MATCHCRITERIA_MESSAGE:
+	case MATCHING_NOT_MESSAGE:
+	case MATCHING_MESSAGE:
 		return CRITERIA_MESSAGE;
 		break;
-	case MATCHCRITERIA_NOT_HEADERS_PART:
-	case MATCHCRITERIA_HEADERS_PART:
+	case MATCHING_NOT_HEADERS_PART:
+	case MATCHING_HEADERS_PART:
 		return CRITERIA_HEADERS_PART;
-	case MATCHCRITERIA_NOT_HEADER:
-	case MATCHCRITERIA_HEADER:
+	case MATCHING_NOT_HEADER:
+	case MATCHING_HEADER:
 		return CRITERIA_HEADER;
-	case MATCHCRITERIA_AGE_GREATER:
+	case MATCHING_AGE_GREATER:
 		return CRITERIA_AGE_GREATER;
-	case MATCHCRITERIA_AGE_LOWER:
+	case MATCHING_AGE_LOWER:
 		return CRITERIA_AGE_LOWER;
-	case MATCHCRITERIA_SCORE_GREATER:
+	case MATCHING_SCORE_GREATER:
 		return CRITERIA_SCORE_GREATER;
-	case MATCHCRITERIA_SCORE_LOWER:
+	case MATCHING_SCORE_LOWER:
 		return CRITERIA_SCORE_LOWER;
-	case MATCHCRITERIA_NOT_EXECUTE:
-	case MATCHCRITERIA_EXECUTE:
+	case MATCHING_NOT_EXECUTE:
+	case MATCHING_EXECUTE:
 		return CRITERIA_EXECUTE;
 		break;
 	default:
@@ -781,53 +782,53 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 {
 	switch (criteria_id) {
 	case CRITERIA_ALL:
-		return MATCHCRITERIA_ALL;
+		return MATCHING_ALL;
 	case CRITERIA_UNREAD:
-		return MATCHCRITERIA_UNREAD;
+		return MATCHING_UNREAD;
 	case CRITERIA_NEW:
-		return MATCHCRITERIA_NEW;
+		return MATCHING_NEW;
 	case CRITERIA_MARKED:
-		return MATCHCRITERIA_MARKED;
+		return MATCHING_MARKED;
 	case CRITERIA_DELETED:
-		return MATCHCRITERIA_DELETED;
+		return MATCHING_DELETED;
 	case CRITERIA_REPLIED:
-		return MATCHCRITERIA_REPLIED;
+		return MATCHING_REPLIED;
 	case CRITERIA_FORWARDED:
-		return MATCHCRITERIA_FORWARDED;
+		return MATCHING_FORWARDED;
 	case CRITERIA_SUBJECT:
-		return MATCHCRITERIA_SUBJECT;
+		return MATCHING_SUBJECT;
 	case CRITERIA_FROM:
-		return MATCHCRITERIA_FROM;
+		return MATCHING_FROM;
 	case CRITERIA_TO:
-		return MATCHCRITERIA_TO;
+		return MATCHING_TO;
 	case CRITERIA_CC:
-		return MATCHCRITERIA_CC;
+		return MATCHING_CC;
 	case CRITERIA_TO_OR_CC:
-		return MATCHCRITERIA_TO_OR_CC;
+		return MATCHING_TO_OR_CC;
 	case CRITERIA_NEWSGROUPS:
-		return MATCHCRITERIA_NEWSGROUPS;
+		return MATCHING_NEWSGROUPS;
 	case CRITERIA_INREPLYTO:
-		return MATCHCRITERIA_INREPLYTO;
+		return MATCHING_INREPLYTO;
 	case CRITERIA_REFERENCES:
-		return MATCHCRITERIA_REFERENCES;
+		return MATCHING_REFERENCES;
 	case CRITERIA_AGE_GREATER:
-		return MATCHCRITERIA_AGE_GREATER;
+		return MATCHING_AGE_GREATER;
 	case CRITERIA_AGE_LOWER:
-		return MATCHCRITERIA_AGE_LOWER;
+		return MATCHING_AGE_LOWER;
 	case CRITERIA_SCORE_GREATER:
-		return MATCHCRITERIA_SCORE_GREATER;
+		return MATCHING_SCORE_GREATER;
 	case CRITERIA_SCORE_LOWER:
-		return MATCHCRITERIA_SCORE_LOWER;
+		return MATCHING_SCORE_LOWER;
 	case CRITERIA_HEADER:
-		return MATCHCRITERIA_HEADER;
+		return MATCHING_HEADER;
 	case CRITERIA_HEADERS_PART:
-		return MATCHCRITERIA_HEADERS_PART;
+		return MATCHING_HEADERS_PART;
 	case CRITERIA_BODY_PART:
-		return MATCHCRITERIA_BODY_PART;
+		return MATCHING_BODY_PART;
 	case CRITERIA_MESSAGE:
-		return MATCHCRITERIA_MESSAGE;
+		return MATCHING_MESSAGE;
 	case CRITERIA_EXECUTE:
-		return MATCHCRITERIA_EXECUTE;
+		return MATCHING_EXECUTE;
 	default:
 		return -1;
 	}
@@ -836,44 +837,44 @@ static gint prefs_matcher_get_matching_from_criteria(gint criteria_id)
 static gint prefs_matcher_not_criteria(gint matcher_criteria)
 {
 	switch(matcher_criteria) {
-	case MATCHCRITERIA_UNREAD:
-		return MATCHCRITERIA_NOT_UNREAD;
-	case MATCHCRITERIA_NEW:
-		return MATCHCRITERIA_NOT_NEW;
-	case MATCHCRITERIA_MARKED:
-		return MATCHCRITERIA_NOT_MARKED;
-	case MATCHCRITERIA_DELETED:
-		return MATCHCRITERIA_NOT_DELETED;
-	case MATCHCRITERIA_REPLIED:
-		return MATCHCRITERIA_NOT_REPLIED;
-	case MATCHCRITERIA_FORWARDED:
-		return MATCHCRITERIA_NOT_FORWARDED;
-	case MATCHCRITERIA_SUBJECT:
-		return MATCHCRITERIA_NOT_SUBJECT;
-	case MATCHCRITERIA_FROM:
-		return MATCHCRITERIA_NOT_FROM;
-	case MATCHCRITERIA_TO:
-		return MATCHCRITERIA_NOT_TO;
-	case MATCHCRITERIA_CC:
-		return MATCHCRITERIA_NOT_CC;
-	case MATCHCRITERIA_TO_OR_CC:
-		return MATCHCRITERIA_NOT_TO_AND_NOT_CC;
-	case MATCHCRITERIA_NEWSGROUPS:
-		return MATCHCRITERIA_NOT_NEWSGROUPS;
-	case MATCHCRITERIA_INREPLYTO:
-		return MATCHCRITERIA_NOT_INREPLYTO;
-	case MATCHCRITERIA_REFERENCES:
-		return MATCHCRITERIA_NOT_REFERENCES;
-	case MATCHCRITERIA_HEADER:
-		return MATCHCRITERIA_NOT_HEADER;
-	case MATCHCRITERIA_HEADERS_PART:
-		return MATCHCRITERIA_NOT_HEADERS_PART;
-	case MATCHCRITERIA_MESSAGE:
-		return MATCHCRITERIA_NOT_MESSAGE;
-	case MATCHCRITERIA_EXECUTE:
-		return MATCHCRITERIA_NOT_EXECUTE;
-	case MATCHCRITERIA_BODY_PART:
-		return MATCHCRITERIA_NOT_BODY_PART;
+	case MATCHING_UNREAD:
+		return MATCHING_NOT_UNREAD;
+	case MATCHING_NEW:
+		return MATCHING_NOT_NEW;
+	case MATCHING_MARKED:
+		return MATCHING_NOT_MARKED;
+	case MATCHING_DELETED:
+		return MATCHING_NOT_DELETED;
+	case MATCHING_REPLIED:
+		return MATCHING_NOT_REPLIED;
+	case MATCHING_FORWARDED:
+		return MATCHING_NOT_FORWARDED;
+	case MATCHING_SUBJECT:
+		return MATCHING_NOT_SUBJECT;
+	case MATCHING_FROM:
+		return MATCHING_NOT_FROM;
+	case MATCHING_TO:
+		return MATCHING_NOT_TO;
+	case MATCHING_CC:
+		return MATCHING_NOT_CC;
+	case MATCHING_TO_OR_CC:
+		return MATCHING_NOT_TO_AND_NOT_CC;
+	case MATCHING_NEWSGROUPS:
+		return MATCHING_NOT_NEWSGROUPS;
+	case MATCHING_INREPLYTO:
+		return MATCHING_NOT_INREPLYTO;
+	case MATCHING_REFERENCES:
+		return MATCHING_NOT_REFERENCES;
+	case MATCHING_HEADER:
+		return MATCHING_NOT_HEADER;
+	case MATCHING_HEADERS_PART:
+		return MATCHING_NOT_HEADERS_PART;
+	case MATCHING_MESSAGE:
+		return MATCHING_NOT_MESSAGE;
+	case MATCHING_EXECUTE:
+		return MATCHING_NOT_EXECUTE;
+	case MATCHING_BODY_PART:
+		return MATCHING_NOT_BODY_PART;
 	default:
 		return matcher_criteria;
 	}
@@ -936,15 +937,15 @@ static MatcherProp * prefs_matcher_dialog_to_matcher()
 
 	if (use_regexp) {
 		if (case_sensitive)
-			matchtype = MATCHTYPE_REGEXP;
+			matchtype = MATCHING_REGEXP;
 		else
-			matchtype = MATCHTYPE_REGEXPCASE;
+			matchtype = MATCHING_REGEXPCASE;
 	}
 	else {
 		if (case_sensitive)
-			matchtype = MATCHTYPE_MATCH;
+			matchtype = MATCHING_MATCH;
 		else
-			matchtype = MATCHTYPE_MATCHCASE;
+			matchtype = MATCHING_MATCHCASE;
 	}
 
 	header = NULL;
@@ -1120,8 +1121,9 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 		return;
 	}
 
-	prop = matcher_parser_get_prop(matcher_str);
-	if (prop == NULL)
+	tmp = matcher_str;
+	prop = matcherprop_parse(&tmp);
+	if (tmp == NULL)
 		return;
 
 	criteria = prefs_matcher_get_criteria_from_matching(prop->criteria);
@@ -1130,66 +1132,66 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 				     criteria);
 
 	switch(prop->criteria) {
-	case MATCHCRITERIA_NOT_UNREAD:
-	case MATCHCRITERIA_NOT_NEW:
-	case MATCHCRITERIA_NOT_MARKED:
-	case MATCHCRITERIA_NOT_DELETED:
-	case MATCHCRITERIA_NOT_REPLIED:
-	case MATCHCRITERIA_NOT_FORWARDED:
-	case MATCHCRITERIA_NOT_SUBJECT:
-	case MATCHCRITERIA_NOT_FROM:
-	case MATCHCRITERIA_NOT_TO:
-	case MATCHCRITERIA_NOT_CC:
-	case MATCHCRITERIA_NOT_NEWSGROUPS:
-	case MATCHCRITERIA_NOT_INREPLYTO:
-	case MATCHCRITERIA_NOT_REFERENCES:
-	case MATCHCRITERIA_NOT_TO_AND_NOT_CC:
-	case MATCHCRITERIA_NOT_BODY_PART:
-	case MATCHCRITERIA_NOT_MESSAGE:
-	case MATCHCRITERIA_NOT_HEADERS_PART:
-	case MATCHCRITERIA_NOT_HEADER:
+	case MATCHING_NOT_UNREAD:
+	case MATCHING_NOT_NEW:
+	case MATCHING_NOT_MARKED:
+	case MATCHING_NOT_DELETED:
+	case MATCHING_NOT_REPLIED:
+	case MATCHING_NOT_FORWARDED:
+	case MATCHING_NOT_SUBJECT:
+	case MATCHING_NOT_FROM:
+	case MATCHING_NOT_TO:
+	case MATCHING_NOT_CC:
+	case MATCHING_NOT_NEWSGROUPS:
+	case MATCHING_NOT_INREPLYTO:
+	case MATCHING_NOT_REFERENCES:
+	case MATCHING_NOT_TO_AND_NOT_CC:
+	case MATCHING_NOT_BODY_PART:
+	case MATCHING_NOT_MESSAGE:
+	case MATCHING_NOT_HEADERS_PART:
+	case MATCHING_NOT_HEADER:
 		negative_cond = TRUE;
 		break;
 	}
 	
 	switch(prop->criteria) {
-	case MATCHCRITERIA_ALL:
+	case MATCHING_ALL:
 		break;
 
-	case MATCHCRITERIA_NOT_SUBJECT:
-	case MATCHCRITERIA_NOT_FROM:
-	case MATCHCRITERIA_NOT_TO:
-	case MATCHCRITERIA_NOT_CC:
-	case MATCHCRITERIA_NOT_TO_AND_NOT_CC:
-	case MATCHCRITERIA_NOT_NEWSGROUPS:
-	case MATCHCRITERIA_NOT_INREPLYTO:
-	case MATCHCRITERIA_NOT_REFERENCES:
-	case MATCHCRITERIA_NOT_HEADERS_PART:
-	case MATCHCRITERIA_NOT_BODY_PART:
-	case MATCHCRITERIA_NOT_MESSAGE:
-	case MATCHCRITERIA_SUBJECT:
-	case MATCHCRITERIA_FROM:
-	case MATCHCRITERIA_TO:
-	case MATCHCRITERIA_CC:
-	case MATCHCRITERIA_TO_OR_CC:
-	case MATCHCRITERIA_NEWSGROUPS:
-	case MATCHCRITERIA_INREPLYTO:
-	case MATCHCRITERIA_REFERENCES:
-	case MATCHCRITERIA_HEADERS_PART:
-	case MATCHCRITERIA_BODY_PART:
-	case MATCHCRITERIA_MESSAGE:
+	case MATCHING_NOT_SUBJECT:
+	case MATCHING_NOT_FROM:
+	case MATCHING_NOT_TO:
+	case MATCHING_NOT_CC:
+	case MATCHING_NOT_TO_AND_NOT_CC:
+	case MATCHING_NOT_NEWSGROUPS:
+	case MATCHING_NOT_INREPLYTO:
+	case MATCHING_NOT_REFERENCES:
+	case MATCHING_NOT_HEADERS_PART:
+	case MATCHING_NOT_BODY_PART:
+	case MATCHING_NOT_MESSAGE:
+	case MATCHING_SUBJECT:
+	case MATCHING_FROM:
+	case MATCHING_TO:
+	case MATCHING_CC:
+	case MATCHING_TO_OR_CC:
+	case MATCHING_NEWSGROUPS:
+	case MATCHING_INREPLYTO:
+	case MATCHING_REFERENCES:
+	case MATCHING_HEADERS_PART:
+	case MATCHING_BODY_PART:
+	case MATCHING_MESSAGE:
 		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), prop->expr);
 		break;
 
-	case MATCHCRITERIA_AGE_GREATER:
-	case MATCHCRITERIA_AGE_LOWER:
-	case MATCHCRITERIA_SCORE_GREATER:
-	case MATCHCRITERIA_SCORE_LOWER:
+	case MATCHING_AGE_GREATER:
+	case MATCHING_AGE_LOWER:
+	case MATCHING_SCORE_GREATER:
+	case MATCHING_SCORE_LOWER:
 		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), itos(prop->value));
 		break;
 
-	case MATCHCRITERIA_NOT_HEADER:
-	case MATCHCRITERIA_HEADER:
+	case MATCHING_NOT_HEADER:
+	case MATCHING_HEADER:
 		gtk_entry_set_text(GTK_ENTRY(matcher.header_entry), prop->header);
 		gtk_entry_set_text(GTK_ENTRY(matcher.value_entry), prop->expr);
 		break;
@@ -1201,22 +1203,22 @@ static void prefs_matcher_select(GtkCList *clist, gint row, gint column,
 		gtk_list_select_item(GTK_LIST(matcher.predicate_list), 0);
 
 	switch(prop->matchtype) {
-	case MATCHTYPE_MATCH:
+	case MATCHING_MATCH:
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn), FALSE);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn), TRUE);
 		break;
 
-	case MATCHTYPE_MATCHCASE:
+	case MATCHING_MATCHCASE:
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn), FALSE);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn), FALSE);
 		break;
 
-	case MATCHTYPE_REGEXP:
+	case MATCHING_REGEXP:
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn), TRUE);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn), TRUE);
 		break;
 
-	case MATCHTYPE_REGEXPCASE:
+	case MATCHING_REGEXPCASE:
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.regexp_chkbtn), TRUE);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(matcher.case_chkbtn), FALSE);
 		break;

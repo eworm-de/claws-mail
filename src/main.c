@@ -83,10 +83,6 @@ gboolean debug_mode = FALSE;
 static gint lock_socket = -1;
 static gint lock_socket_tag = 0;
 
-#if USE_SSL
-SSL_CTX *ssl_ctx;
-#endif
-
 static struct Cmd {
 	gboolean receive;
 	gboolean receive_all;
@@ -237,27 +233,12 @@ int main(int argc, char *argv[])
 	gpgme_register_idle(idle_function_for_gpgme);
 #endif
 
-#if USE_SSL
-	{
-		SSL_METHOD *meth;
-		
-		SSLeay_add_ssl_algorithms();
-		meth = SSLv2_client_method();
-		SSL_load_error_strings();
-		ssl_ctx = SSL_CTX_new(meth);
-		if(ssl_ctx == NULL) {
-			debug_print(_("SSL disabled\n"));
-		} else {
-			debug_print(_("SSL loaded: \n"));
-		}
-	}
-#endif
-
 	prefs_common_save_config();
 	prefs_filter_read_config();
 	prefs_filter_write_config();
 	prefs_display_header_read_config();
 	prefs_display_header_write_config();
+	prefs_filtering_read_config();
 
 	gtkut_widget_init();
 
@@ -278,7 +259,6 @@ int main(int argc, char *argv[])
 	account_set_missing_folder();
 	folderview_set(folderview);
 
-	prefs_filtering_read_config();
 	prefs_scoring_read_config();
 
 	inc_autocheck_timer_init(mainwin);
@@ -297,12 +277,6 @@ int main(int argc, char *argv[])
 	signal(SIGPIPE, SIG_IGN);
 
 	gtk_main();
-
-#if USE_SSL
-	if(ssl_ctx) {
-		SSL_CTX_free(ssl_ctx);
-	}
-#endif
 
 	return 0;
 }

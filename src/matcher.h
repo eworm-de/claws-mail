@@ -7,11 +7,8 @@
 #include <glib.h>
 #include "procmsg.h"
 
-/*
 enum {
-*/
 	/* msginfo flags */
-/*
 	MATCHING_ALL,
 	MATCHING_UNREAD,
 	MATCHING_NOT_UNREAD,
@@ -25,9 +22,8 @@ enum {
 	MATCHING_NOT_REPLIED,
 	MATCHING_FORWARDED,
 	MATCHING_NOT_FORWARDED,
-*/
+
 	/* msginfo headers */
-/*
 	MATCHING_SUBJECT,
 	MATCHING_NOT_SUBJECT,
 	MATCHING_FROM,
@@ -48,9 +44,8 @@ enum {
 	MATCHING_NOT_REFERENCES,
 	MATCHING_SCORE_GREATER,
 	MATCHING_SCORE_LOWER,
-*/
+
 	/* file content */
-/*
 	MATCHING_HEADER,
 	MATCHING_NOT_HEADER,
 	MATCHING_MESSAGE,
@@ -61,13 +56,11 @@ enum {
 	MATCHING_NOT_BODY_PART,
 	MATCHING_EXECUTE,
 	MATCHING_NOT_EXECUTE,
-*/
+
 	/* scoring */
-/*
 	MATCHING_SCORE,
-*/
+
 	/* filtering */
-/*
 	MATCHING_ACTION_MOVE,
 	MATCHING_ACTION_COPY,
 	MATCHING_ACTION_DELETE,
@@ -77,15 +70,13 @@ enum {
 	MATCHING_ACTION_MARK_AS_UNREAD,
 	MATCHING_ACTION_FORWARD,
 	MATCHING_ACTION_FORWARD_AS_ATTACHMENT,
-*/
 	/* MATCHING_ACTION_EXECUTE, */
-/*
+
 	MATCHING_MATCH,
 	MATCHING_REGEXP,
 	MATCHING_MATCHCASE,
 	MATCHING_REGEXPCASE
 };
-*/
 
 struct _MatcherProp {
 	int matchtype;
@@ -112,27 +103,21 @@ MatcherProp * matcherprop_new(gint criteria, gchar * header,
 			      gint matchtype, gchar * expr,
 			      int age);
 void matcherprop_free(MatcherProp * prop);
-/*
 MatcherProp * matcherprop_parse(gchar ** str);
-*/
 
 gboolean matcherprop_match(MatcherProp * prop, MsgInfo * info);
 
 MatcherList * matcherlist_new(GSList * matchers, gboolean bool_and);
 void matcherlist_free(MatcherList * cond);
-/*
 MatcherList * matcherlist_parse(gchar ** str);
-*/
 
 gboolean matcherlist_match(MatcherList * cond, MsgInfo * info);
 
-/*
 gint matcher_parse_keyword(gchar ** str);
 gint matcher_parse_number(gchar ** str);
 gboolean matcher_parse_boolean_op(gchar ** str);
 gchar * matcher_parse_regexp(gchar ** str);
 gchar * matcher_parse_str(gchar ** str);
-*/
 gchar * matcherprop_to_string(MatcherProp * matcher);
 gchar * matcherlist_to_string(MatcherList * matchers);
 gchar * matching_build_command(gchar * cmd, MsgInfo * info);

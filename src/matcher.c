@@ -7,7 +7,6 @@
 #include "procheader.h"
 #include "matcher.h"
 #include "intl.h"
-#include "matcher_parser.h"
 
 struct _MatchParser {
 	gint id;
@@ -16,112 +15,88 @@ struct _MatchParser {
 
 typedef struct _MatchParser MatchParser;
 
-static MatchParser matchcriteria_str_tab[] = {
+static MatchParser matchparser_tab[] = {
 	/* msginfo flags */
-	{MATCHCRITERIA_ALL, "all"},
-	{MATCHCRITERIA_UNREAD, "unread"},
-	{MATCHCRITERIA_NOT_UNREAD, "~unread"},
-	{MATCHCRITERIA_NEW, "new"},
-	{MATCHCRITERIA_NOT_NEW, "~new"},
-	{MATCHCRITERIA_MARKED, "marked"},
-	{MATCHCRITERIA_NOT_MARKED, "~marked"},
-	{MATCHCRITERIA_DELETED, "deleted"},
-	{MATCHCRITERIA_NOT_DELETED, "~deleted"},
-	{MATCHCRITERIA_REPLIED, "replied"},
-	{MATCHCRITERIA_NOT_REPLIED, "~replied"},
-	{MATCHCRITERIA_FORWARDED, "forwarded"},
-	{MATCHCRITERIA_NOT_FORWARDED, "~forwarded"},
+	{MATCHING_ALL, "all"},
+	{MATCHING_UNREAD, "unread"},
+	{MATCHING_NOT_UNREAD, "~unread"},
+	{MATCHING_NEW, "new"},
+	{MATCHING_NOT_NEW, "~new"},
+	{MATCHING_MARKED, "marked"},
+	{MATCHING_NOT_MARKED, "~marked"},
+	{MATCHING_DELETED, "deleted"},
+	{MATCHING_NOT_DELETED, "~deleted"},
+	{MATCHING_REPLIED, "replied"},
+	{MATCHING_NOT_REPLIED, "~replied"},
+	{MATCHING_FORWARDED, "forwarded"},
+	{MATCHING_NOT_FORWARDED, "~forwarded"},
 
 	/* msginfo headers */
-	{MATCHCRITERIA_SUBJECT, "subject"},
-	{MATCHCRITERIA_NOT_SUBJECT, "~subject"},
-	{MATCHCRITERIA_FROM, "from"},
-	{MATCHCRITERIA_NOT_FROM, "~from"},
-	{MATCHCRITERIA_TO, "to"},
-	{MATCHCRITERIA_NOT_TO, "~to"},
-	{MATCHCRITERIA_CC, "cc"},
-	{MATCHCRITERIA_NOT_CC, "~cc"},
-	{MATCHCRITERIA_TO_OR_CC, "to_or_cc"},
-	{MATCHCRITERIA_NOT_TO_AND_NOT_CC, "~to_or_cc"},
-	{MATCHCRITERIA_AGE_GREATER, "age_greater"},
-	{MATCHCRITERIA_AGE_LOWER, "age_lower"},
-	{MATCHCRITERIA_NEWSGROUPS, "newsgroups"},
-	{MATCHCRITERIA_NOT_NEWSGROUPS, "~newsgroups"},
-	{MATCHCRITERIA_INREPLYTO, "inreplyto"},
-	{MATCHCRITERIA_NOT_INREPLYTO, "~inreplyto"},
-	{MATCHCRITERIA_REFERENCES, "references"},
-	{MATCHCRITERIA_NOT_REFERENCES, "~references"},
-	{MATCHCRITERIA_SCORE_GREATER, "score_greater"},
-	{MATCHCRITERIA_SCORE_LOWER, "score_lower"},
+	{MATCHING_SUBJECT, "subject"},
+	{MATCHING_NOT_SUBJECT, "~subject"},
+	{MATCHING_FROM, "from"},
+	{MATCHING_NOT_FROM, "~from"},
+	{MATCHING_TO, "to"},
+	{MATCHING_NOT_TO, "~to"},
+	{MATCHING_CC, "cc"},
+	{MATCHING_NOT_CC, "~cc"},
+	{MATCHING_TO_OR_CC, "to_or_cc"},
+	{MATCHING_NOT_TO_AND_NOT_CC, "~to_or_cc"},
+	{MATCHING_AGE_GREATER, "age_greater"},
+	{MATCHING_AGE_LOWER, "age_lower"},
+	{MATCHING_NEWSGROUPS, "newsgroups"},
+	{MATCHING_NOT_NEWSGROUPS, "~newsgroups"},
+	{MATCHING_INREPLYTO, "inreplyto"},
+	{MATCHING_NOT_INREPLYTO, "~inreplyto"},
+	{MATCHING_REFERENCES, "references"},
+	{MATCHING_NOT_REFERENCES, "~references"},
+	{MATCHING_SCORE_GREATER, "score_greater"},
+	{MATCHING_SCORE_LOWER, "score_lower"},
 
 	/* content have to be read */
-	{MATCHCRITERIA_HEADER, "header"},
-	{MATCHCRITERIA_NOT_HEADER, "~header"},
-	{MATCHCRITERIA_HEADERS_PART, "headers_part"},
-	{MATCHCRITERIA_NOT_HEADERS_PART, "~headers_part"},
-	{MATCHCRITERIA_MESSAGE, "message"},
-	{MATCHCRITERIA_NOT_MESSAGE, "~message"},
-	{MATCHCRITERIA_BODY_PART, "body_part"},
-	{MATCHCRITERIA_NOT_BODY_PART, "~body_part"},
-	{MATCHCRITERIA_EXECUTE, "execute"},
-	{MATCHCRITERIA_NOT_EXECUTE, "~execute"}
-};
+	{MATCHING_HEADER, "header"},
+	{MATCHING_NOT_HEADER, "~header"},
+	{MATCHING_HEADERS_PART, "headers_part"},
+	{MATCHING_NOT_HEADERS_PART, "~headers_part"},
+	{MATCHING_MESSAGE, "message"},
+	{MATCHING_NOT_MESSAGE, "~message"},
+	{MATCHING_BODY_PART, "body_part"},
+	{MATCHING_NOT_BODY_PART, "~body_part"},
+	{MATCHING_EXECUTE, "execute"},
+	{MATCHING_NOT_EXECUTE, "~execute"},
 
-static MatchParser matchtype_str_tab[] = {
 	/* match type */
-	{MATCHTYPE_MATCHCASE, "matchcase"},
-	{MATCHTYPE_MATCH, "match"},
-	{MATCHTYPE_REGEXPCASE, "regexpcase"},
-	{MATCHTYPE_REGEXP, "regexp"}
-};
-
-static MatchParser matchaction_str_tab[] = {
-	/* actions */
-	{MATCHACTION_SCORE, "score"},
+	{MATCHING_MATCHCASE, "matchcase"},
+	{MATCHING_MATCH, "match"},
+	{MATCHING_REGEXPCASE, "regexpcase"},
+	{MATCHING_REGEXP, "regexp"},
 
 	/* actions */
-	{MATCHACTION_MOVE, "move"},
-	{MATCHACTION_COPY, "copy"},
-	{MATCHACTION_DELETE, "delete"},
-	{MATCHACTION_MARK, "mark"},
-	{MATCHACTION_UNMARK, "unmark"},
-	{MATCHACTION_MARK_AS_READ, "mark_as_read"},
-	{MATCHACTION_MARK_AS_UNREAD, "mark_as_unread"},
-	{MATCHACTION_FORWARD, "forward"},
-	{MATCHACTION_FORWARD_AS_ATTACHMENT, "forward_as_attachment"},
-	{MATCHCRITERIA_EXECUTE, "execute"}
+	{MATCHING_SCORE, "score"},
+
+	/* actions */
+	{MATCHING_ACTION_MOVE, "move"},
+	{MATCHING_ACTION_COPY, "copy"},
+	{MATCHING_ACTION_DELETE, "delete"},
+	{MATCHING_ACTION_MARK, "mark"},
+	{MATCHING_ACTION_UNMARK, "unmark"},
+	{MATCHING_ACTION_MARK_AS_READ, "mark_as_read"},
+	{MATCHING_ACTION_MARK_AS_UNREAD, "mark_as_unread"},
+	{MATCHING_ACTION_FORWARD, "forward"},
+	{MATCHING_ACTION_FORWARD_AS_ATTACHMENT, "forward_as_attachment"},
+	/*	{MATCHING_EXECUTE, "execute"}, */
 };
 
-gchar * get_matchparser_str(MatchParser * tab, gint size, gint id)
+gchar * get_matchparser_tab_str(gint id)
 {
 	gint i;
 
-	for(i = 0 ; i < size ; i++) {
-		if (tab[i].id == id)
-			return tab[i].str;
+	for(i = 0 ; i < (int) (sizeof(matchparser_tab) / sizeof(MatchParser)) ;
+	    i++) {
+		if (matchparser_tab[i].id == id)
+			return matchparser_tab[i].str;
 	}
 	return NULL;
-}
-
-gchar * get_matchcriteria_str(gint id)
-{
-	return get_matchparser_str(matchcriteria_str_tab,
-				   (int) (sizeof(matchcriteria_str_tab) /
-					  sizeof(MatchParser)), id);
-}
-
-gchar * get_matchtype_str(gint id)
-{
-	return get_matchparser_str(matchtype_str_tab,
-				   (int) (sizeof(matchtype_str_tab) /
-					  sizeof(MatchParser)), id);
-}
-
-gchar * get_matchaction_str(gint id)
-{
-	return get_matchparser_str(matchaction_str_tab,
-				   (int) (sizeof(matchaction_str_tab) /
-					  sizeof(MatchParser)), id);
 }
 
 
@@ -145,7 +120,6 @@ static gboolean matcher_is_blank(gchar ch)
 
 /* parse for one condition */
 
-/*
 MatcherProp * matcherprop_parse(gchar ** str)
 {
 	MatcherProp * prop;
@@ -164,10 +138,10 @@ MatcherProp * matcherprop_parse(gchar ** str)
 	}
 
 	switch (key) {
-	case MATCHCRITERIA_AGE_LOWER:
-	case MATCHCRITERIA_AGE_GREATER:
-	case MATCHCRITERIA_SCORE_LOWER:
-	case MATCHCRITERIA_SCORE_GREATER:
+	case MATCHING_AGE_LOWER:
+	case MATCHING_AGE_GREATER:
+	case MATCHING_SCORE_LOWER:
+	case MATCHING_SCORE_GREATER:
 		value = matcher_parse_number(&tmp);
 		if (tmp == NULL) {
 			* str = NULL;
@@ -179,51 +153,51 @@ MatcherProp * matcherprop_parse(gchar ** str)
 
 		return prop;
 
-	case MATCHCRITERIA_ALL:
-	case MATCHCRITERIA_UNREAD:
-	case MATCHCRITERIA_NOT_UNREAD:
-	case MATCHCRITERIA_NEW:
-	case MATCHCRITERIA_NOT_NEW:
-	case MATCHCRITERIA_MARKED:
-	case MATCHCRITERIA_NOT_MARKED:
-	case MATCHCRITERIA_DELETED:
-	case MATCHCRITERIA_NOT_DELETED:
-	case MATCHCRITERIA_REPLIED:
-	case MATCHCRITERIA_NOT_REPLIED:
-	case MATCHCRITERIA_FORWARDED:
-	case MATCHCRITERIA_NOT_FORWARDED:
+	case MATCHING_ALL:
+	case MATCHING_UNREAD:
+	case MATCHING_NOT_UNREAD:
+	case MATCHING_NEW:
+	case MATCHING_NOT_NEW:
+	case MATCHING_MARKED:
+	case MATCHING_NOT_MARKED:
+	case MATCHING_DELETED:
+	case MATCHING_NOT_DELETED:
+	case MATCHING_REPLIED:
+	case MATCHING_NOT_REPLIED:
+	case MATCHING_FORWARDED:
+	case MATCHING_NOT_FORWARDED:
 		prop = matcherprop_new(key, NULL, 0, NULL, 0);
 		*str = tmp;
 
 		return prop;
 
-	case MATCHCRITERIA_SUBJECT:
-	case MATCHCRITERIA_NOT_SUBJECT:
-	case MATCHCRITERIA_FROM:
-	case MATCHCRITERIA_NOT_FROM:
-	case MATCHCRITERIA_TO:
-	case MATCHCRITERIA_NOT_TO:
-	case MATCHCRITERIA_CC:
-	case MATCHCRITERIA_NOT_CC:
-	case MATCHCRITERIA_TO_OR_CC:
-	case MATCHCRITERIA_NOT_TO_AND_NOT_CC:
-	case MATCHCRITERIA_NEWSGROUPS:
-	case MATCHCRITERIA_NOT_NEWSGROUPS:
-	case MATCHCRITERIA_INREPLYTO:
-	case MATCHCRITERIA_NOT_REFERENCES:
-	case MATCHCRITERIA_REFERENCES:
-	case MATCHCRITERIA_NOT_INREPLYTO:
-	case MATCHCRITERIA_MESSAGE:
-	case MATCHCRITERIA_NOT_MESSAGE:
-	case MATCHCRITERIA_EXECUTE:
-	case MATCHCRITERIA_NOT_EXECUTE:
-	case MATCHCRITERIA_HEADERS_PART:
-	case MATCHCRITERIA_NOT_HEADERS_PART:
-	case MATCHCRITERIA_BODY_PART:
-	case MATCHCRITERIA_NOT_BODY_PART:
-	case MATCHCRITERIA_HEADER:
-	case MATCHCRITERIA_NOT_HEADER:
-		if ((key == MATCHCRITERIA_HEADER) || (key == MATCHCRITERIA_NOT_HEADER)) {
+	case MATCHING_SUBJECT:
+	case MATCHING_NOT_SUBJECT:
+	case MATCHING_FROM:
+	case MATCHING_NOT_FROM:
+	case MATCHING_TO:
+	case MATCHING_NOT_TO:
+	case MATCHING_CC:
+	case MATCHING_NOT_CC:
+	case MATCHING_TO_OR_CC:
+	case MATCHING_NOT_TO_AND_NOT_CC:
+	case MATCHING_NEWSGROUPS:
+	case MATCHING_NOT_NEWSGROUPS:
+	case MATCHING_INREPLYTO:
+	case MATCHING_NOT_REFERENCES:
+	case MATCHING_REFERENCES:
+	case MATCHING_NOT_INREPLYTO:
+	case MATCHING_MESSAGE:
+	case MATCHING_NOT_MESSAGE:
+	case MATCHING_EXECUTE:
+	case MATCHING_NOT_EXECUTE:
+	case MATCHING_HEADERS_PART:
+	case MATCHING_NOT_HEADERS_PART:
+	case MATCHING_BODY_PART:
+	case MATCHING_NOT_BODY_PART:
+	case MATCHING_HEADER:
+	case MATCHING_NOT_HEADER:
+		if ((key == MATCHING_HEADER) || (key == MATCHING_NOT_HEADER)) {
 			header = matcher_parse_str(&tmp);
 			if (tmp == NULL) {
 				* str = NULL;
@@ -240,8 +214,8 @@ MatcherProp * matcherprop_parse(gchar ** str)
 		}
 
 		switch(match) {
-		case MATCHCRITERIA_REGEXP:
-		case MATCHCRITERIA_REGEXPCASE:
+		case MATCHING_REGEXP:
+		case MATCHING_REGEXPCASE:
 			expr = matcher_parse_regexp(&tmp);
 			if (tmp == NULL) {
 				if (header)
@@ -254,8 +228,8 @@ MatcherProp * matcherprop_parse(gchar ** str)
 			g_free(expr);
 
 			return prop;
-		case MATCHCRITERIA_MATCH:
-		case MATCHCRITERIA_MATCHCASE:
+		case MATCHING_MATCH:
+		case MATCHING_MATCHCASE:
 			expr = matcher_parse_str(&tmp);
 			if (tmp == NULL) {
 				if (header)
@@ -443,7 +417,6 @@ gchar * matcher_parse_str(gchar ** str)
 	*str += dest - dup + 2;
 	return g_strdup(start);
 }
-*/
 
 /* **************** data structure allocation **************** */
 
@@ -497,14 +470,13 @@ static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 		return FALSE;
 
 	switch(prop->matchtype) {
-	case MATCHTYPE_REGEXPCASE:
-	case MATCHTYPE_REGEXP:
+	case MATCHING_REGEXPCASE:
+	case MATCHING_REGEXP:
 		if (!prop->preg && (prop->error == 0)) {
 			prop->preg = g_new0(regex_t, 1);
 			if (regcomp(prop->preg, prop->expr,
 				    REG_NOSUB | REG_EXTENDED
-				    | ((prop->matchtype ==
-					MATCHTYPE_REGEXPCASE)
+				    | ((prop->matchtype == MATCHING_REGEXPCASE)
 				    ? REG_ICASE : 0)) != 0) {
 				prop->error = 1;
 				g_free(prop->preg);
@@ -518,10 +490,10 @@ static gboolean matcherprop_string_match(MatcherProp * prop, gchar * str)
 		else
 			return FALSE;
 
-	case MATCHTYPE_MATCH:
+	case MATCHING_MATCH:
 		return (strstr(str, prop->expr) != NULL);
 
-	case MATCHTYPE_MATCHCASE:
+	case MATCHING_MATCHCASE:
 		str2 = alloca(strlen(prop->expr) + 1);
 		strcpy(str2, prop->expr);
 		g_strup(str2);
@@ -559,79 +531,79 @@ gboolean matcherprop_match(MatcherProp * prop, MsgInfo * info)
 	time_t t;
 
 	switch(prop->criteria) {
-	case MATCHCRITERIA_ALL:
+	case MATCHING_ALL:
 		return 1;
-	case MATCHCRITERIA_UNREAD:
+	case MATCHING_UNREAD:
 		return MSG_IS_UNREAD(info->flags);
-	case MATCHCRITERIA_NOT_UNREAD:
+	case MATCHING_NOT_UNREAD:
 		return !MSG_IS_UNREAD(info->flags);
-	case MATCHCRITERIA_NEW:
+	case MATCHING_NEW:
 		return MSG_IS_NEW(info->flags);
-	case MATCHCRITERIA_NOT_NEW:
+	case MATCHING_NOT_NEW:
 		return !MSG_IS_NEW(info->flags);
-	case MATCHCRITERIA_MARKED:
+	case MATCHING_MARKED:
 		return MSG_IS_MARKED(info->flags);
-	case MATCHCRITERIA_NOT_MARKED:
+	case MATCHING_NOT_MARKED:
 		return !MSG_IS_MARKED(info->flags);
-	case MATCHCRITERIA_DELETED:
+	case MATCHING_DELETED:
 		return MSG_IS_DELETED(info->flags);
-	case MATCHCRITERIA_NOT_DELETED:
+	case MATCHING_NOT_DELETED:
 		return !MSG_IS_DELETED(info->flags);
-	case MATCHCRITERIA_REPLIED:
+	case MATCHING_REPLIED:
 		return MSG_IS_REPLIED(info->flags);
-	case MATCHCRITERIA_NOT_REPLIED:
+	case MATCHING_NOT_REPLIED:
 		return !MSG_IS_REPLIED(info->flags);
-	case MATCHCRITERIA_FORWARDED:
+	case MATCHING_FORWARDED:
 		return MSG_IS_FORWARDED(info->flags);
-	case MATCHCRITERIA_NOT_FORWARDED:
+	case MATCHING_NOT_FORWARDED:
 		return !MSG_IS_FORWARDED(info->flags);
-	case MATCHCRITERIA_SUBJECT:
+	case MATCHING_SUBJECT:
 		return matcherprop_string_match(prop, info->subject);
-	case MATCHCRITERIA_NOT_SUBJECT:
+	case MATCHING_NOT_SUBJECT:
 		return !matcherprop_string_match(prop, info->subject);
-	case MATCHCRITERIA_FROM:
+	case MATCHING_FROM:
 		return matcherprop_string_match(prop, info->from);
-	case MATCHCRITERIA_NOT_FROM:
+	case MATCHING_NOT_FROM:
 		return !matcherprop_string_match(prop, info->from);
-	case MATCHCRITERIA_TO:
+	case MATCHING_TO:
 		return matcherprop_string_match(prop, info->to);
-	case MATCHCRITERIA_NOT_TO:
+	case MATCHING_NOT_TO:
 		return !matcherprop_string_match(prop, info->to);
-	case MATCHCRITERIA_CC:
+	case MATCHING_CC:
 		return matcherprop_string_match(prop, info->cc);
-	case MATCHCRITERIA_NOT_CC:
+	case MATCHING_NOT_CC:
 		return !matcherprop_string_match(prop, info->cc);
-	case MATCHCRITERIA_TO_OR_CC:
+	case MATCHING_TO_OR_CC:
 		return matcherprop_string_match(prop, info->to)
 			|| matcherprop_string_match(prop, info->cc);
-	case MATCHCRITERIA_NOT_TO_AND_NOT_CC:
+	case MATCHING_NOT_TO_AND_NOT_CC:
 		return !(matcherprop_string_match(prop, info->to)
 		|| matcherprop_string_match(prop, info->cc));
-	case MATCHCRITERIA_AGE_GREATER:
+	case MATCHING_AGE_GREATER:
 		t = time(NULL);
 		return ((t - info->date_t) / (60 * 60 * 24)) >= prop->value;
-	case MATCHCRITERIA_AGE_LOWER:
+	case MATCHING_AGE_LOWER:
 		t = time(NULL);
 		return ((t - info->date_t) / (60 * 60 * 24)) <= prop->value;
-	case MATCHCRITERIA_SCORE_GREATER:
+	case MATCHING_SCORE_GREATER:
 		return info->score >= prop->value;
-	case MATCHCRITERIA_SCORE_LOWER:
+	case MATCHING_SCORE_LOWER:
 		return info->score <= prop->value;
-	case MATCHCRITERIA_NEWSGROUPS:
+	case MATCHING_NEWSGROUPS:
 		return matcherprop_string_match(prop, info->newsgroups);
-	case MATCHCRITERIA_NOT_NEWSGROUPS:
+	case MATCHING_NOT_NEWSGROUPS:
 		return !matcherprop_string_match(prop, info->newsgroups);
-	case MATCHCRITERIA_INREPLYTO:
+	case MATCHING_INREPLYTO:
 		return matcherprop_string_match(prop, info->inreplyto);
-	case MATCHCRITERIA_NOT_INREPLYTO:
+	case MATCHING_NOT_INREPLYTO:
 		return !matcherprop_string_match(prop, info->inreplyto);
-	case MATCHCRITERIA_REFERENCES:
+	case MATCHING_REFERENCES:
 		return matcherprop_string_match(prop, info->references);
-	case MATCHCRITERIA_NOT_REFERENCES:
+	case MATCHING_NOT_REFERENCES:
 		return !matcherprop_string_match(prop, info->references);
-	case MATCHCRITERIA_EXECUTE:
+	case MATCHING_EXECUTE:
 		return matcherprop_match_execute(prop, info);
-	case MATCHCRITERIA_NOT_EXECUTE:
+	case MATCHING_NOT_EXECUTE:
 		return !matcherprop_match_execute(prop, info);
 	default:
 		return 0;
@@ -643,7 +615,6 @@ gboolean matcherprop_match(MatcherProp * prop, MsgInfo * info)
 
 /* parse for a list of conditions */
 
-/*
 MatcherList * matcherlist_parse(gchar ** str)
 {
 	gchar * tmp;
@@ -696,7 +667,6 @@ MatcherList * matcherlist_parse(gchar ** str)
 
 	return cond;
 }
-*/
 
 MatcherList * matcherlist_new(GSList * matchers, gboolean bool_and)
 {
@@ -744,14 +714,14 @@ static gboolean matcherprop_match_one_header(MatcherProp * matcher,
 	Header *header;
 
 	switch(matcher->criteria) {
-	case MATCHCRITERIA_HEADER:
-	case MATCHCRITERIA_NOT_HEADER:
+	case MATCHING_HEADER:
+	case MATCHING_NOT_HEADER:
 		header = procheader_parse_header(buf);
 		if (!header)
 			return FALSE;
 		if (procheader_headername_equal(header->name,
 						matcher->header)) {
-			if (matcher->criteria == MATCHCRITERIA_HEADER)
+			if (matcher->criteria == MATCHING_HEADER)
 				result = matcherprop_string_match(matcher, header->body);
 			else
 				result = !matcherprop_string_match(matcher, header->body);
@@ -762,11 +732,11 @@ static gboolean matcherprop_match_one_header(MatcherProp * matcher,
 			procheader_header_free(header);
 		}
 		break;
-	case MATCHCRITERIA_HEADERS_PART:
-	case MATCHCRITERIA_MESSAGE:
+	case MATCHING_HEADERS_PART:
+	case MATCHING_MESSAGE:
 		return matcherprop_string_match(matcher, buf);
-	case MATCHCRITERIA_NOT_MESSAGE:
-	case MATCHCRITERIA_NOT_HEADERS_PART:
+	case MATCHING_NOT_MESSAGE:
+	case MATCHING_NOT_HEADERS_PART:
 		return !matcherprop_string_match(matcher, buf);
 	}
 	return FALSE;
@@ -780,10 +750,10 @@ static gboolean matcherprop_match_one_header(MatcherProp * matcher,
 static gboolean matcherprop_criteria_headers(MatcherProp * matcher)
 {
 	switch(matcher->criteria) {
-	case MATCHCRITERIA_HEADER:
-	case MATCHCRITERIA_NOT_HEADER:
-	case MATCHCRITERIA_HEADERS_PART:
-	case MATCHCRITERIA_NOT_HEADERS_PART:
+	case MATCHING_HEADER:
+	case MATCHING_NOT_HEADER:
+	case MATCHING_HEADERS_PART:
+	case MATCHING_NOT_HEADERS_PART:
 		return TRUE;
 	default:
 		return FALSE;
@@ -793,8 +763,8 @@ static gboolean matcherprop_criteria_headers(MatcherProp * matcher)
 static gboolean matcherprop_criteria_message(MatcherProp * matcher)
 {
 	switch(matcher->criteria) {
-	case MATCHCRITERIA_MESSAGE:
-	case MATCHCRITERIA_NOT_MESSAGE:
+	case MATCHING_MESSAGE:
+	case MATCHING_NOT_MESSAGE:
 		return TRUE;
 	default:
 		return FALSE;
@@ -856,8 +826,8 @@ static gboolean matcherlist_match_headers(MatcherList * matchers, FILE * fp)
 static gboolean matcherprop_criteria_body(MatcherProp * matcher)
 {
 	switch(matcher->criteria) {
-	case MATCHCRITERIA_BODY_PART:
-	case MATCHCRITERIA_NOT_BODY_PART:
+	case MATCHING_BODY_PART:
+	case MATCHING_NOT_BODY_PART:
 		return TRUE;
 	default:
 		return FALSE;
@@ -872,11 +842,11 @@ static gboolean matcherprop_criteria_body(MatcherProp * matcher)
 static gboolean matcherprop_match_line(MatcherProp * matcher, gchar * line)
 {
 	switch(matcher->criteria) {
-	case MATCHCRITERIA_BODY_PART:
-	case MATCHCRITERIA_MESSAGE:
+	case MATCHING_BODY_PART:
+	case MATCHING_MESSAGE:
 		return matcherprop_string_match(matcher, line);
-	case MATCHCRITERIA_NOT_BODY_PART:
-	case MATCHCRITERIA_NOT_MESSAGE:
+	case MATCHING_NOT_BODY_PART:
+	case MATCHING_NOT_MESSAGE:
 		return !matcherprop_string_match(matcher, line);
 	}
 	return FALSE;
@@ -1025,41 +995,41 @@ gboolean matcherlist_match(MatcherList * matchers, MsgInfo * info)
 		MatcherProp * matcher = (MatcherProp *) l->data;
 
 		switch(matcher->criteria) {
-		case MATCHCRITERIA_ALL:
-		case MATCHCRITERIA_UNREAD:
-		case MATCHCRITERIA_NOT_UNREAD:
-		case MATCHCRITERIA_NEW:
-		case MATCHCRITERIA_NOT_NEW:
-		case MATCHCRITERIA_MARKED:
-		case MATCHCRITERIA_NOT_MARKED:
-		case MATCHCRITERIA_DELETED:
-		case MATCHCRITERIA_NOT_DELETED:
-		case MATCHCRITERIA_REPLIED:
-		case MATCHCRITERIA_NOT_REPLIED:
-		case MATCHCRITERIA_FORWARDED:
-		case MATCHCRITERIA_NOT_FORWARDED:
-		case MATCHCRITERIA_SUBJECT:
-		case MATCHCRITERIA_NOT_SUBJECT:
-		case MATCHCRITERIA_FROM:
-		case MATCHCRITERIA_NOT_FROM:
-		case MATCHCRITERIA_TO:
-		case MATCHCRITERIA_NOT_TO:
-		case MATCHCRITERIA_CC:
-		case MATCHCRITERIA_NOT_CC:
-		case MATCHCRITERIA_TO_OR_CC:
-		case MATCHCRITERIA_NOT_TO_AND_NOT_CC:
-		case MATCHCRITERIA_AGE_GREATER:
-		case MATCHCRITERIA_AGE_LOWER:
-		case MATCHCRITERIA_NEWSGROUPS:
-		case MATCHCRITERIA_NOT_NEWSGROUPS:
-		case MATCHCRITERIA_INREPLYTO:
-		case MATCHCRITERIA_NOT_INREPLYTO:
-		case MATCHCRITERIA_REFERENCES:
-		case MATCHCRITERIA_NOT_REFERENCES:
-		case MATCHCRITERIA_SCORE_GREATER:
-		case MATCHCRITERIA_SCORE_LOWER:
-		case MATCHCRITERIA_EXECUTE:
-		case MATCHCRITERIA_NOT_EXECUTE:
+		case MATCHING_ALL:
+		case MATCHING_UNREAD:
+		case MATCHING_NOT_UNREAD:
+		case MATCHING_NEW:
+		case MATCHING_NOT_NEW:
+		case MATCHING_MARKED:
+		case MATCHING_NOT_MARKED:
+		case MATCHING_DELETED:
+		case MATCHING_NOT_DELETED:
+		case MATCHING_REPLIED:
+		case MATCHING_NOT_REPLIED:
+		case MATCHING_FORWARDED:
+		case MATCHING_NOT_FORWARDED:
+		case MATCHING_SUBJECT:
+		case MATCHING_NOT_SUBJECT:
+		case MATCHING_FROM:
+		case MATCHING_NOT_FROM:
+		case MATCHING_TO:
+		case MATCHING_NOT_TO:
+		case MATCHING_CC:
+		case MATCHING_NOT_CC:
+		case MATCHING_TO_OR_CC:
+		case MATCHING_NOT_TO_AND_NOT_CC:
+		case MATCHING_AGE_GREATER:
+		case MATCHING_AGE_LOWER:
+		case MATCHING_NEWSGROUPS:
+		case MATCHING_NOT_NEWSGROUPS:
+		case MATCHING_INREPLYTO:
+		case MATCHING_NOT_INREPLYTO:
+		case MATCHING_REFERENCES:
+		case MATCHING_NOT_REFERENCES:
+		case MATCHING_SCORE_GREATER:
+		case MATCHING_SCORE_LOWER:
+		case MATCHING_EXECUTE:
+		case MATCHING_NOT_EXECUTE:
 			if (matcherprop_match(matcher, info)) {
 				if (!matchers->bool_and) {
 					return TRUE;
@@ -1098,16 +1068,16 @@ static void matcherprop_print(MatcherProp * matcher)
 	}
 
 	switch (matcher->matchtype) {
-	case MATCHCRITERIA_MATCH:
+	case MATCHING_MATCH:
 		printf("match\n");
 		break;
-	case MATCHCRITERIA_REGEXP:
+	case MATCHING_REGEXP:
 		printf("regexp\n");
 		break;
-	case MATCHCRITERIA_MATCHCASE:
+	case MATCHING_MATCHCASE:
 		printf("matchcase\n");
 		break;
-	case MATCHCRITERIA_REGEXPCASE:
+	case MATCHING_REGEXPCASE:
 		printf("regexpcase\n");
 		break;
 	}
@@ -1140,73 +1110,96 @@ gchar * matcherprop_to_string(MatcherProp * matcher)
 	gchar * out;
 
 	criteria_str = NULL;
-
-	criteria_str = get_matchcriteria_str(matcher->criteria);
-
+	for(i = 0 ; i < (int) (sizeof(matchparser_tab) / sizeof(MatchParser)) ;
+	    i++) {
+		if (matchparser_tab[i].id == matcher->criteria)
+			criteria_str = matchparser_tab[i].str;
+	}
 	if (criteria_str == NULL)
 		return NULL;
 
 	switch(matcher->criteria) {
-	case MATCHCRITERIA_AGE_GREATER:
-	case MATCHCRITERIA_AGE_LOWER:
-	case MATCHCRITERIA_SCORE_GREATER:
-	case MATCHCRITERIA_SCORE_LOWER:
+	case MATCHING_AGE_GREATER:
+	case MATCHING_AGE_LOWER:
+	case MATCHING_SCORE_GREATER:
+	case MATCHING_SCORE_LOWER:
 		return g_strdup_printf("%s %i", criteria_str, matcher->value);
 		break;
-	case MATCHCRITERIA_ALL:
-	case MATCHCRITERIA_UNREAD:
-	case MATCHCRITERIA_NOT_UNREAD:
-	case MATCHCRITERIA_NEW:
-	case MATCHCRITERIA_NOT_NEW:
-	case MATCHCRITERIA_MARKED:
-	case MATCHCRITERIA_NOT_MARKED:
-	case MATCHCRITERIA_DELETED:
-	case MATCHCRITERIA_NOT_DELETED:
-	case MATCHCRITERIA_REPLIED:
-	case MATCHCRITERIA_NOT_REPLIED:
-	case MATCHCRITERIA_FORWARDED:
-	case MATCHCRITERIA_NOT_FORWARDED:
+	case MATCHING_ALL:
+	case MATCHING_UNREAD:
+	case MATCHING_NOT_UNREAD:
+	case MATCHING_NEW:
+	case MATCHING_NOT_NEW:
+	case MATCHING_MARKED:
+	case MATCHING_NOT_MARKED:
+	case MATCHING_DELETED:
+	case MATCHING_NOT_DELETED:
+	case MATCHING_REPLIED:
+	case MATCHING_NOT_REPLIED:
+	case MATCHING_FORWARDED:
+	case MATCHING_NOT_FORWARDED:
 		return g_strdup(criteria_str);
 	}
 
 	matchtype_str = NULL;
-
-	matchtype_str = get_matchtype_str(matcher->matchtype);
+	for(i = 0 ; i < (int) (sizeof(matchparser_tab) / sizeof(MatchParser)) ;
+	    i++) {
+		if (matchparser_tab[i].id == matcher->matchtype)
+			matchtype_str = matchparser_tab[i].str;
+	}
 
 	if (matchtype_str == NULL)
 		return NULL;
 
-	count = 0;
-	for(p = matcher->expr; *p != 0 ; p++)
-		if ((*p == '\"') || (*p == '\\')) count ++;
-	
-	expr_str = g_new(char, strlen(matcher->expr) + count + 1);
-	
-	for(p = matcher->expr, out = expr_str ; *p != 0 ; p++, out++) {
-		switch (*p) {
-		case '\"':
-		case '\\':
-			*out = '\\'; out++;
-			*out = *p;
-			break;
-		default:
-			*out = *p;
-		}
-	}
-	* out = '\0';
-	
-	if (matcher->header)
-		matcher_str =
-			g_strdup_printf("%s \"%s\" %s \"%s\"",
-					criteria_str, matcher->header,
-					matchtype_str, expr_str);
-	else
-		matcher_str =
-			g_strdup_printf("%s %s \"%s\"", criteria_str,
-					matchtype_str, expr_str);
-	
-	g_free(expr_str);
+	switch (matcher->matchtype) {
+	case MATCHING_MATCH:
+	case MATCHING_MATCHCASE:
+		count = 0;
+		for(p = matcher->expr; *p != 0 ; p++)
+			if (*p == '\"') count ++;
 		
+		expr_str = g_new(char, strlen(matcher->expr) + count + 1);
+
+		for(p = matcher->expr, out = expr_str ; *p != 0 ; p++, out++) {
+			if (*p == '\"') {
+				*out = '\\'; out++;
+				*out = '\"';
+			}
+			else
+				*out = *p;
+		}
+		* out = '\0';
+
+		if (matcher->header)
+			matcher_str =
+				g_strdup_printf("%s \"%s\" %s \"%s\"",
+					   criteria_str, matcher->header,
+					   matchtype_str, expr_str);
+		else
+			matcher_str =
+				g_strdup_printf("%s %s \"%s\"", criteria_str,
+						matchtype_str, expr_str);
+		
+		g_free(expr_str);
+		
+		break;
+
+	case MATCHING_REGEXP:
+	case MATCHING_REGEXPCASE:
+
+		if (matcher->header)
+			matcher_str =
+				g_strdup_printf("%s \"%s\" %s /%s/",
+						criteria_str, matcher->header,
+						matchtype_str, matcher->expr);
+		else
+			matcher_str =
+				g_strdup_printf("%s %s /%s/", criteria_str,
+						matchtype_str, matcher->expr);
+
+		break;
+	}
+
 	return matcher_str;
 }
 
@@ -1389,3 +1382,14 @@ gchar * matching_build_command(gchar * cmd, MsgInfo * info)
 	}
 	return processed_cmd;
 }
+
+
+/* ************************************************************ */
+
+/*
+static void matcher_parse		(gchar * str)
+{
+	matcher_parser_scan_string(str);
+	matcher_parserparse();
+}
+*/

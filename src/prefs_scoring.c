@@ -46,7 +46,6 @@
 #include "alertpanel.h"
 #include "folder.h"
 #include "scoring.h"
-#include "matcher_parser.h"
 
 static struct Scoring {
 	GtkWidget *window;
@@ -441,6 +440,7 @@ static void prefs_scoring_set_list(void)
 	ScoringProp *prop;
 	GSList * cur;
 	gchar * scoring_str;
+	gchar * tmp;
 	GSList * prefs_scoring;
 
 	if (cur_item == NULL)
@@ -457,7 +457,8 @@ static void prefs_scoring_set_list(void)
 	while (gtk_clist_get_text(GTK_CLIST(scoring.cond_clist),
 				  row, 0, &scoring_str)) {
 		if (strcmp(scoring_str, _("(New)")) != 0) {
-			prop = matcher_parser_get_scoring(scoring_str);
+			tmp = scoring_str;
+			prop = scoringprop_parse(&tmp);
 			if (prop != NULL)
 				prefs_scoring = g_slist_append(prefs_scoring,
 							       prop);
@@ -529,9 +530,11 @@ static void prefs_scoring_condition_define(void)
 	cond_str = gtk_entry_get_text(GTK_ENTRY(scoring.cond_entry));
 
 	if (*cond_str != '\0') {
-		matchers = matcher_parser_get_cond(cond_str);
-
-		if (matchers == NULL)
+		gchar * tmp;
+		
+		tmp = cond_str;
+		matchers = matcherlist_parse(&tmp);
+		if (tmp == NULL)
 			alertpanel_error(_("Match string is not valid."));
 	}
 
@@ -551,6 +554,7 @@ static void prefs_scoring_register_cb(void)
 	gchar * score_str;
 	ScoringProp * prop;
 	gint score;
+	gchar * tmp;
 
 	cond_str = gtk_entry_get_text(GTK_ENTRY(scoring.cond_entry));
 	if (*cond_str == '\0') {
@@ -565,9 +569,10 @@ static void prefs_scoring_register_cb(void)
 	}
 
 	score = atoi(score_str);
-	cond = matcher_parser_get_cond(cond_str);
+	tmp = cond_str;
+	cond = matcherlist_parse(&tmp);
 
-	if (cond == NULL) {
+	if (tmp == NULL) {
 		alertpanel_error(_("Match string is not valid."));
 		return;
 	}
@@ -590,6 +595,7 @@ static void prefs_scoring_substitute_cb(void)
 	gchar * score_str;
 	ScoringProp * prop;
 	gint score;
+	gchar * tmp;
 
 	if (!clist->selection) return;
 
@@ -609,9 +615,10 @@ static void prefs_scoring_substitute_cb(void)
 	}
 
 	score = atoi(score_str);
-	cond = matcher_parser_get_cond(cond_str);
+	tmp = cond_str;
+	cond = matcherlist_parse(&tmp);
 
-	if (cond) {
+	if (tmp == NULL) {
 		alertpanel_error(_("Match string is not valid."));
 		return;
 	}
@@ -694,6 +701,7 @@ static void prefs_scoring_select(GtkCList *clist, gint row, gint column,
 				GdkEvent *event)
 {
 	ScoringProp * prop;
+	gchar * tmp;
 
 	gchar * scoring_str;
 
@@ -706,8 +714,9 @@ static void prefs_scoring_select(GtkCList *clist, gint row, gint column,
 				row, 0, &scoring_str))
 		return;
 
-	prop = matcher_parser_get_scoring(scoring_str);
-	if (prop == NULL)
+	tmp = scoring_str;
+	prop = scoringprop_parse(&tmp);
+	if (tmp == NULL)
 		return;
 
 	prefs_scoring_select_set_dialog(prop);

@@ -11,14 +11,12 @@
 #include "scoring.h"
 #include "prefs.h"
 #include "folder.h"
-#include "matcher_parser.h"
 
 #define PREFSBUFSIZE		1024
 
 
 GSList * global_scoring;
 
-/*
 ScoringProp * scoringprop_parse(gchar ** str)
 {
 	gchar * tmp;
@@ -62,7 +60,7 @@ ScoringProp * scoringprop_parse(gchar ** str)
 	* str = tmp;
 	return scoring;
 }
-*/
+
 
 ScoringProp * scoringprop_new(MatcherList * matchers, int score)
 {
@@ -199,7 +197,7 @@ gchar * scoringprop_to_string(ScoringProp * prop)
 		return NULL;
 
 	score_str = itos(prop->score);
-	scoring_str = g_strconcat(list_str, " score ", score_str, "\n", NULL);
+	scoring_str = g_strconcat(list_str, " score ", score_str, NULL);
 	g_free(list_str);
 
 	return scoring_str;
@@ -267,7 +265,7 @@ static gboolean prefs_scoring_free_func(GNode *node, gpointer data)
 	return FALSE;
 }
 
-void prefs_scoring_clear()
+static void prefs_scoring_clear()
 {
 	GList * cur;
 
@@ -287,38 +285,11 @@ void prefs_scoring_read_config(void)
 {
 	gchar *rcpath;
 	FILE *fp;
-
-	prefs_scoring_clear();
-
-	debug_print(_("Reading scoring configuration...\n"));
-
-	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S,
-			     SCORING_RC, NULL);
-	if ((fp = fopen(rcpath, "r")) == NULL) {
-		if (ENOENT != errno) FILE_OP_ERROR(rcpath, "fopen");
-		g_free(rcpath);
-		return;
-	}
-
-	matcher_parserlineno = 1;
-	matcher_parserrestart(fp);
-	if (matcher_parserparse() != 0) {
-		prefs_scoring_clear();
-	}
-	g_free(rcpath);
-	fclose(fp);
-}
-
-/*
-void prefs_scoring_read_config(void)
-{
-	gchar *rcpath;
-	FILE *fp;
 	gchar buf[PREFSBUFSIZE];
 	GSList * prefs_scoring = NULL;
 	FolderItem * item = NULL;
 
-	debug_print(_("Reading scoring configuration...\n"));
+	debug_print(_("Reading headers configuration...\n"));
 
 	rcpath = g_strconcat(get_rc_dir(), G_DIR_SEPARATOR_S, SCORING_RC, NULL);
 	if ((fp = fopen(rcpath, "r")) == NULL) {
@@ -369,9 +340,7 @@ void prefs_scoring_read_config(void)
 							       scoring);
 			}
 			else {
-*/
 				/* debug */
-/*
 				g_warning(_("syntax error : %s\n"), buf);
 			}
 		}
@@ -384,7 +353,6 @@ void prefs_scoring_read_config(void)
 
  	fclose(fp);
 }
-*/
 
 static void prefs_scoring_write(FILE * fp, GSList * prefs_scoring)
 {
@@ -396,8 +364,9 @@ static void prefs_scoring_write(FILE * fp, GSList * prefs_scoring)
 
 		prop = (ScoringProp *) cur->data;
 		scoring_str = scoringprop_to_string(prop);
-		if (fputs(scoring_str, fp) == EOF) {
-			FILE_OP_ERROR("scoring config", "fputs");
+		if (fputs(scoring_str, fp) == EOF ||
+		    fputc('\n', fp) == EOF) {
+			FILE_OP_ERROR("scoring config", "fputs || fputc");
 			g_free(scoring_str);
 			return;
 		}

@@ -262,10 +262,7 @@ static IncProgressDialog *inc_progress_dialog_create(void)
 			   GTK_SIGNAL_FUNC(inc_cancel), dialog);
 	gtk_signal_connect(GTK_OBJECT(progress->window), "delete_event",
 			   GTK_SIGNAL_FUNC(gtk_true), NULL);
-	if((prefs_common.receive_dialog == RECVDIALOG_ALWAYS) ||
-	    ((prefs_common.receive_dialog == RECVDIALOG_WINDOW_ACTIVE) && focus_window)) {
-		manage_window_set_transient(GTK_WINDOW(progress->window));
-	}
+	manage_window_set_transient(GTK_WINDOW(progress->window));
 
 	progress_dialog_set_value(progress, 0.0);
 
@@ -404,11 +401,8 @@ static void inc_start(IncProgressDialog *inc_dialog)
 			pass = input_dialog_with_invisible(_("Input password"),
 							   message, NULL);
 			g_free(message);
-			if((prefs_common.receive_dialog == RECVDIALOG_ALWAYS) ||
-			    ((prefs_common.receive_dialog == RECVDIALOG_WINDOW_ACTIVE) && focus_window)) {
-				manage_window_focus_in(inc_dialog->mainwin->window,
-						       NULL, NULL);
-			}
+			manage_window_focus_in(inc_dialog->mainwin->window,
+					       NULL, NULL);
 			if (pass) {
 				pop3_state->ac_prefs->tmp_pass = g_strdup(pass);
 				pop3_state->pass = pass;
@@ -436,10 +430,7 @@ static void inc_start(IncProgressDialog *inc_dialog)
 
 		if (pop3_state->error_val == PS_AUTHFAIL) {
 			if(!prefs_common.noerrorpanel) {
-				if((prefs_common.receive_dialog == RECVDIALOG_ALWAYS) ||
-				    ((prefs_common.receive_dialog == RECVDIALOG_WINDOW_ACTIVE) && focus_window)) {
-					manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
-				}
+				manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
 				alertpanel_error
 					(_("Authorization for %s on %s failed"),
 					 pop3_state->user,
@@ -448,11 +439,8 @@ static void inc_start(IncProgressDialog *inc_dialog)
 		}
 
 		statusbar_pop_all();
-		if((prefs_common.receive_dialog == RECVDIALOG_ALWAYS) ||
-		    ((prefs_common.receive_dialog == RECVDIALOG_WINDOW_ACTIVE) && focus_window)) {
-			manage_window_focus_in(inc_dialog->mainwin->window, NULL, NULL);
-		}
-		
+		manage_window_focus_in(inc_dialog->mainwin->window, NULL, NULL);
+
 		folder_item_scan_foreach(pop3_state->folder_table);
 		folderview_update_item_foreach(pop3_state->folder_table);
 
@@ -537,13 +525,8 @@ static IncState inc_pop3_session_do(IncSession *session)
 	atm->num = POP3_GREETING_RECV;
 
 	server = pop3_state->ac_prefs->recv_server;
-#if USE_SSL
-	port = pop3_state->ac_prefs->set_popport ?
-		pop3_state->ac_prefs->popport : (pop3_state->ac_prefs->pop_ssl ? 995 : 110);
-#else
 	port = pop3_state->ac_prefs->set_popport ?
 		pop3_state->ac_prefs->popport : 110;
-#endif
 
 	buf = g_strdup_printf(_("Connecting to POP3 server: %s ..."), server);
 	log_message("%s\n", buf);
@@ -559,10 +542,7 @@ static IncState inc_pop3_session_do(IncSession *session)
 		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
 			    server, port);
 		if(!prefs_common.noerrorpanel) {
-			if((prefs_common.receive_dialog == RECVDIALOG_ALWAYS) ||
-			    ((prefs_common.receive_dialog == RECVDIALOG_WINDOW_ACTIVE) && focus_window)) {
-				manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
-			}
+			manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
 			alertpanel_error(_("Can't connect to POP3 server: %s:%d"),
 					 server, port);
 			manage_window_focus_out(inc_dialog->dialog->window, NULL, NULL);
@@ -577,66 +557,6 @@ static IncState inc_pop3_session_do(IncSession *session)
 	 * to the sock structure - implement a reference counter?? */
 	pop3_state->sockinfo = sockinfo;
 	atm->help_sock = sockinfo;
-
-#ifdef USE_SSL
-	if(pop3_state->ac_prefs->pop_ssl) {
-		X509 *server_cert;
-
-		if(ssl_ctx == NULL) {
-			log_warning(_("SSL not available\n"));
-
-			pop3_automaton_terminate(NULL, atm);
-			automaton_destroy(atm);
-
-			return INC_ERROR;
-		}
-
-		sockinfo->ssl = SSL_new(ssl_ctx);
-		if(sockinfo->ssl == NULL) {
-			log_warning(_("Error creating ssl context\n"));
-
-			pop3_automaton_terminate(NULL, atm);
-			automaton_destroy(atm);
-
-			return INC_ERROR;
-		}
-		SSL_set_fd(sockinfo->ssl, sockinfo->sock);
-		if(SSL_connect(sockinfo->ssl) == -1) {
-			log_warning(_("SSL connect failed\n"));
-
-			pop3_automaton_terminate(NULL, atm);
-			automaton_destroy(atm);
-
-			return INC_ERROR;
-		}
-		
-		/* Get the cipher */
-
-		log_print(_("SSL connection using %s\n"), SSL_get_cipher(sockinfo->ssl));
-  
-		/* Get server's certificate (note: beware of dynamic allocation) */
-
-		if((server_cert = SSL_get_peer_certificate(sockinfo->ssl)) != NULL) {
-			char *str;
-			
-			log_print(_("Server certificate:\n"));
-  
-			if((str = X509_NAME_oneline(X509_get_subject_name (server_cert),0,0)) != NULL) {
-				log_print(_("  Subject: %s\n"), str);
-				free(str);
-			}
-			
-			if((str = X509_NAME_oneline(X509_get_issuer_name  (server_cert),0,0)) != NULL) {
-				log_print(_("  Issuer: %s\n"), str);
-				free(str);
-			}
-
-			X509_free(server_cert);
-		}
-	} else {
-		sockinfo->ssl = NULL;
-	}
-#endif
 
 	recv_set_ui_func(inc_pop3_recv_func, session);
 
@@ -658,13 +578,6 @@ static IncState inc_pop3_session_do(IncSession *session)
 	pthread_join(sockinfo->connect_thr, NULL);
 */	
 #endif
-
-#if USE_SSL
-	if(sockinfo->ssl) {
-		SSL_free(sockinfo->ssl);
-	}
-#endif
-
 	automaton_destroy(atm);
 
 	return pop3_state->inc_state;
@@ -766,10 +679,7 @@ static gint connection_check_cb(Automaton *atm)
 		log_warning(_("Can't connect to POP3 server: %s:%d\n"),
 			    sockinfo->hostname, sockinfo->port);
 		if(!prefs_common.noerrorpanel) {
-			if((prefs_common.receive_dialog == RECVDIALOG_ALWAYS) ||
-			    ((prefs_common.receive_dialog == RECVDIALOG_WINDOW_ACTIVE) && focus_window)) {
-				manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
-			}
+			manage_window_focus_in(inc_dialog->dialog->window, NULL, NULL);
 			alertpanel_error(_("Can't connect to POP3 server: %s:%d"),
 					 sockinfo->hostname, sockinfo->port);
 			manage_window_focus_out(inc_dialog->dialog->window, NULL, NULL);
@@ -892,7 +802,7 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 		return -1;
 	}
 
-	if (global_filtering == NULL) {
+	if (prefs_filtering == NULL) {
 		/* old filtering */
 		if (state->ac_prefs->filter_on_recv) {
 			dropfolder =
@@ -922,10 +832,10 @@ gint inc_drop_message(const gchar *file, Pop3State *state)
 		return -1;
 	}
 
-	if (global_filtering != NULL) {
+	if (prefs_filtering != NULL) {
 		/* new filtering */
 		if (state->ac_prefs->filter_on_recv) {
-			filter_message(global_filtering, dropfolder, msgnum,
+			filter_message(prefs_filtering, dropfolder, msgnum,
 				       state->folder_table);
 		}
 	}
@@ -1052,8 +962,6 @@ static gint get_spool(FolderItem *dest, const gchar *mbox)
 	unlock_mbox(mbox, lockfd, LOCK_FLOCK);
 
 	if (folder_table) {
-		g_hash_table_insert(folder_table, dest,
-				    GINT_TO_POINTER(1));
 		folder_item_scan_foreach(folder_table);
 		folderview_update_item_foreach(folder_table);
 		g_hash_table_destroy(folder_table);
