@@ -293,6 +293,14 @@ static void next_unread_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 
+static void next_marked_cb	 (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
+
+static void prev_marked_cb	 (MainWindow	*mainwin,
+				  guint		 action,
+				  GtkWidget	*widget);
+
 static void goto_folder_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
@@ -482,6 +490,8 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Summary/_Prev message"),		NULL, prev_cb, 0, NULL},
 	{N_("/_Summary/_Next message"),		NULL, next_cb, 0, NULL},
 	{N_("/_Summary/N_ext unread message"),	NULL, next_unread_cb, 0, NULL},
+	{N_("/_Summary/Prev marked message"),	NULL, prev_marked_cb, 0, NULL},
+	{N_("/_Summary/Next marked message"),	NULL, next_marked_cb, 0, NULL},
 	{N_("/_Summary/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Summary/_Go to other folder"),	"<alt>G", goto_folder_cb, 0, NULL},
 	{N_("/_Summary/---"),			NULL, NULL, 0, "<Separator>"},
@@ -1989,6 +1999,18 @@ static void next_unread_cb(MainWindow *mainwin, guint action,
 			   GtkWidget *widget)
 {
 	summary_select_next_unread(mainwin->summaryview);
+}
+
+static void next_marked_cb(MainWindow *mainwin, guint action,
+			   GtkWidget *widget)
+{
+	summary_select_next_marked(mainwin->summaryview);
+}
+
+static void prev_marked_cb(MainWindow *mainwin, guint action,
+			   GtkWidget *widget)
+{
+	summary_select_prev_marked(mainwin->summaryview);
 }
 
 static void goto_folder_cb(MainWindow *mainwin, guint action,

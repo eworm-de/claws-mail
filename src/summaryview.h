@@ -147,6 +147,8 @@ void summary_clear_list		  (SummaryView		*summaryview);
 void summary_clear_all		  (SummaryView		*summaryview);
 
 void summary_select_next_unread	  (SummaryView		*summaryview);
+void summary_select_next_marked   (SummaryView		*summaryview);
+void summary_select_prev_marked   (SummaryView		*summaryview);
 void summary_select_by_msgnum	  (SummaryView		*summaryview,
 				   guint		 msgnum);
 guint summary_get_current_msgnum  (SummaryView		*summaryview);
