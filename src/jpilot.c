@@ -136,6 +136,16 @@ typedef struct {
 	int size;
 } buf_rec;
 
+/* Shamelessly copied from JPilot (libplugin.h) */
+typedef struct {
+   unsigned long header_len;
+   unsigned long header_version;
+   unsigned long rec_len;
+   unsigned long unique_id;
+   unsigned long rt; /* Record Type */
+   unsigned char attrib;
+} PC3RecordHeader;
+
 /*
 * Create new pilot file object.
 */
@@ -151,6 +161,8 @@ JPilotFile *jpilot_create() {
 	pilotFile->labelInd = NULL;
 	pilotFile->retVal = MGU_SUCCESS;
 	pilotFile->accessFlag = FALSE;
+	pilotFile->havePC3 = FALSE;
+	pilotFile->pc3ModifyTime = 0;
 	return pilotFile;
 }
 
@@ -193,19 +205,6 @@ ItemFolder *jpilot_get_root_folder( JPilotFile *pilotFile ) {
 gchar *jpilot_get_name( JPilotFile *pilotFile ) {
 	g_return_val_if_fail( pilotFile != NULL, NULL );
 	return pilotFile->name;
-}
-
-/*
-* Test whether file was modified since last access.
-* Return: TRUE if file was modified.
-*/
-gboolean jpilot_get_modified( JPilotFile *pilotFile ) {
-	g_return_val_if_fail( pilotFile != NULL, FALSE );
-	return addrcache_check_file( pilotFile->addressCache, pilotFile->path );
-}
-gboolean jpilot_get_accessed( JPilotFile *pilotFile ) {
-	g_return_val_if_fail( pilotFile != NULL, FALSE );
-	return pilotFile->accessFlag;
 }
 
 /*
@@ -282,6 +281,102 @@ GList *jpilot_get_custom_labels( JPilotFile *pilotFile ) {
 }
 
 /*
+ * Return filespec of PC3 file corresponding to JPilot PDB file.
+ * Note: Filespec should be g_free() when done.
+ */
+static gchar *jpilot_get_pc3_file( JPilotFile *pilotFile ) {
+	gchar *fileSpec, *r;
+	gint i, len, pos;
+
+	if( pilotFile == NULL ) return NULL;
+	if( pilotFile->path == NULL ) return NULL;
+
+	fileSpec = g_strdup( pilotFile->path );
+	len = strlen( fileSpec );
+	pos = -1;
+	r = NULL;
+	for( i = len; i > 0; i-- ) {
+		if( *(fileSpec + i) == '.' ) {
+			pos = i + 1;
+			r = fileSpec + pos;
+			break;
+		}
+	}
+	if( r ) {
+		if( len - pos == 3 ) {
+			*r++ = 'p'; *r++ = 'c'; *r = '3';
+			return fileSpec;
+		}
+	}
+	g_free( fileSpec );
+	return NULL;
+}
+
+/*
+* Save PC3 file time to cache.
+* return: TRUE if time marked.
+*/
+static gboolean jpilot_mark_files( JPilotFile *pilotFile ) {
+	gboolean retVal = FALSE;
+	struct stat filestat;
+	gchar *pcFile;
+
+	/* Mark PDB file cache */
+	retVal = addrcache_mark_file( pilotFile->addressCache, pilotFile->path );
+
+	/* Now mark PC3 file */
+	pilotFile->havePC3 = FALSE;
+	pilotFile->pc3ModifyTime = 0;
+	pcFile = jpilot_get_pc3_file( pilotFile );
+	if( pcFile == NULL ) return retVal;
+	if( 0 == lstat( pcFile, &filestat ) ) {
+		pilotFile->havePC3 = TRUE;
+		pilotFile->pc3ModifyTime = filestat.st_mtime;
+		retVal = TRUE;
+	}
+	g_free( pcFile );
+	return retVal;
+}
+
+/*
+* Check whether JPilot PDB or PC3 file has changed by comparing
+* with cached data.
+* return: TRUE if file has changed.
+*/
+static gboolean jpilot_check_files( JPilotFile *pilotFile ) {
+	gboolean retVal = TRUE;
+	struct stat filestat;
+	gchar *pcFile;
+
+	/* Check main file */
+	if( addrcache_check_file( pilotFile->addressCache, pilotFile->path ) ) return TRUE;
+
+	/* Test PC3 file */
+	if( ! pilotFile->havePC3 ) return FALSE;
+	pcFile = jpilot_get_pc3_file( pilotFile );
+	if( pcFile == NULL ) return FALSE;
+
+	if( 0 == lstat( pcFile, &filestat ) ) {
+		if( filestat.st_mtime == pilotFile->pc3ModifyTime ) retVal = FALSE;
+	}
+	g_free( pcFile );
+	return retVal;
+}
+
+/*
+* Test whether file was modified since last access.
+* Return: TRUE if file was modified.
+*/
+gboolean jpilot_get_modified( JPilotFile *pilotFile ) {
+	g_return_val_if_fail( pilotFile != NULL, FALSE );
+	return jpilot_check_files( pilotFile );
+}
+gboolean jpilot_get_accessed( JPilotFile *pilotFile ) {
+	g_return_val_if_fail( pilotFile != NULL, FALSE );
+	return pilotFile->accessFlag;
+}
+
+/*
 * Free up pilot file object by releasing internal memory.
 */
 void jpilot_free( JPilotFile *pilotFile ) {
@@ -299,6 +394,8 @@ void jpilot_free( JPilotFile *pilotFile ) {
 	pilotFile->addressCache = NULL;
 	pilotFile->readMetadata = FALSE;
 	pilotFile->accessFlag = FALSE;
+	pilotFile->havePC3 = FALSE;
+	pilotFile->pc3ModifyTime = 0;
 
 	/* Now release file object */
 	g_free( pilotFile );
@@ -337,6 +434,9 @@ void jpilot_print_file( JPilotFile *pilotFile, FILE *stream ) {
 	}
 
 	addrcache_print( pilotFile->addressCache, stream );
+	fprintf( stream, "  ret val: %d\n", pilotFile->retVal );
+	fprintf( stream, " have pc3: %s\n", pilotFile->havePC3 ? "yes" : "no" );
+	fprintf( stream, " pc3 time: %d\n", pilotFile->pc3ModifyTime );
 	addritem_print_item_folder( pilotFile->addressCache->rootFolder, stream );
 }
 
@@ -363,6 +463,8 @@ void jpilot_print_short( JPilotFile *pilotFile, FILE *stream ) {
 		node = g_list_next( node );
 	}
 	addrcache_print( pilotFile->addressCache, stream );
+	fprintf( stream, " have pc3: %s\n", pilotFile->havePC3 ? "yes" : "no" );
+	fprintf( stream, " pc3 time: %d\n", pilotFile->pc3ModifyTime );
 }
 
 /* Shamelessly copied from JPilot (libplugin.c) */
@@ -376,7 +478,7 @@ unsigned int i, n;
 }
 
 /* Shamelessly copied from JPilot (utils.c) */
-/*These next 2 functions were copied from pi-file.c in the pilot-link app */
+/* These next 2 functions were copied from pi-file.c in the pilot-link app */
 /* Exact value of "Jan 1, 1970 0:00:00 GMT" - "Jan 1, 1904 0:00:00 GMT" */
 #define PILOT_TIME_DELTA (unsigned)(2082844800)
 
@@ -413,8 +515,8 @@ static int raw_header_to_header(RawDBHeader *rdbh, DBHeader *dbh) {
 }
 
 /* Shamelessly copied from JPilot (libplugin.c) */
-/*returns 1 if found */
-/*        0 if eof */
+/* returns 1 if found */
+/*         0 if eof */
 static int find_next_offset( mem_rec_header *mem_rh, long fpos,
 	unsigned int *next_offset, unsigned char *attrib, unsigned int *unique_id )
 {
@@ -475,7 +577,7 @@ static int jpilot_free_db_list( GList **br_list ) {
 }
 
 /* Shamelessly copied from JPilot (libplugin.c) */
-/* Read file size. */
+/* Read file size */
 static int jpilot_get_info_size( FILE *in, int *size ) {
 	RawDBHeader rdbh;
 	DBHeader dbh;
@@ -485,7 +587,6 @@ static int jpilot_get_info_size( FILE *in, int *size ) {
 	fseek(in, 0, SEEK_SET);
 	fread(&rdbh, sizeof(RawDBHeader), 1, in);
 	if (feof(in)) {
-		/* fprintf( stderr, "error reading file in 'jpilot_get_info_size'\n" ); */
 		return MGU_EOF;
 	}
 
@@ -511,8 +612,10 @@ static int jpilot_get_info_size( FILE *in, int *size ) {
 	return MGU_SUCCESS;
 }
 
-/* Read address file into address list. Based on JPilot's */
-/* libplugin.c (jp_get_app_info) */
+/*
+ * Read address file into address list. Based on JPilot's
+ * libplugin.c (jp_get_app_info)
+ */
 static gint jpilot_get_file_info( JPilotFile *pilotFile, unsigned char **buf, int *buf_size ) {
 	FILE *in;
  	int num;
@@ -530,19 +633,16 @@ static gint jpilot_get_file_info( JPilotFile *pilotFile, unsigned char **buf, in
 	if( pilotFile->path ) {
 		in = fopen( pilotFile->path, "r" );
 		if( !in ) {
-			/* fprintf( stderr, "can't open %s\n", pilotFile->path ); */
 			return MGU_OPEN_FILE;
 		}
 	}
 	else {
-		/* fprintf( stderr, "file not specified\n" ); */
 		return MGU_NO_FILE;
 	}
 
 	num = fread( &rdbh, sizeof( RawDBHeader ), 1, in );
 	if( num != 1 ) {
 	  	if( ferror(in) ) {
-  			/* fprintf( stderr, "error reading %s\n", pilotFile->path ); */
 			fclose(in);
 			return MGU_ERROR_READ;
 		}
@@ -564,7 +664,6 @@ static gint jpilot_get_file_info( JPilotFile *pilotFile, unsigned char **buf, in
 	fseek(in, dbh.app_info_offset, SEEK_SET);
 	*buf = ( char * ) malloc(rec_size);
 	if (!(*buf)) {
-		/* fprintf( stderr, "jpilot_get_file_info(): Out of memory\n" ); */
 		fclose(in);
 		return MGU_OO_MEMORY;
 	}
@@ -573,7 +672,6 @@ static gint jpilot_get_file_info( JPilotFile *pilotFile, unsigned char **buf, in
 		if (ferror(in)) {
 			fclose(in);
 			free(*buf);
-			/* fprintf( stderr, "Error reading %s\n", pilotFile->path ); */
 			return MGU_ERROR_READ;
 		}
 	}
@@ -584,85 +682,164 @@ static gint jpilot_get_file_info( JPilotFile *pilotFile, unsigned char **buf, in
 	return MGU_SUCCESS;
 }
 
-#define	FULLNAME_BUFSIZE   256
-#define	EMAIL_BUFSIZE      256
-/* Read address file into address cache. Based on JPilot's */
-/* jp_read_DB_files (from libplugin.c) */
-static gint jpilot_read_file( JPilotFile *pilotFile ) {
-	FILE *in;
-	gchar *buf;
-	gint num_records, recs_returned, i, num;
-	guint offset, prev_offset, next_offset, rec_size;
-	gint out_of_order;
-	glong fpos;  /*file position indicator */
-	guchar attrib;
-	guint unique_id;
-	gint cat_id = 0;
+/* Shamelessly copied from JPilot (libplugin.c) */
+static int unpack_header(PC3RecordHeader *header, unsigned char *packed_header) {
+	unsigned char *p;
+	unsigned long l;
+
+	p = packed_header;
+
+	memcpy(&l, p, sizeof(l));
+	header->header_len=ntohl(l);
+	p+=sizeof(l);
+
+	memcpy(&l, p, sizeof(l));
+	header->header_version=ntohl(l);
+	p+=sizeof(l);
+
+	memcpy(&l, p, sizeof(l));
+	header->rec_len=ntohl(l);
+	p+=sizeof(l);
+
+	memcpy(&l, p, sizeof(l));
+	header->unique_id=ntohl(l);
+	p+=sizeof(l);
+
+	memcpy(&l, p, sizeof(l));
+	header->rt=ntohl(l);
+	p+=sizeof(l);
+
+	memcpy(&(header->attrib), p, sizeof(unsigned char));
+	p+=sizeof(unsigned char);
+
+	return 0;
+}
+
+/* Shamelessly copied from JPilot (libplugin.c) */
+static int read_header(FILE *pc_in, PC3RecordHeader *header) {
+	unsigned long l, len;
+	unsigned char packed_header[256];
+	int num;
+
+	num = fread(&l, sizeof(l), 1, pc_in);
+	if (feof(pc_in)) {
+		return -1;
+	}      
+	if (num!=1) {
+		return num;
+	}
+	memcpy(packed_header, &l, sizeof(l));
+	len=ntohl(l);
+	if (len > 255) {
+		return -1;
+	}
+	num = fread(packed_header+sizeof(l), len-sizeof(l), 1, pc_in);
+	if (feof(pc_in)) {
+		return -1;
+	}      
+	if (num!=1) {
+		return num;
+	}
+	unpack_header(header, packed_header);
+	return 1;
+}
+
+/* Read next record from PC3 file. Based on JPilot's
+ * pc_read_next_rec (libplugin.c) */
+static gint jpilot_read_next_pc( FILE *in, buf_rec *br ) {
+	PC3RecordHeader header;
+	int rec_len, num;
+	char *record;
+   
+	if(feof(in)) {
+	 	return MGU_EOF;
+	}
+	num = read_header(in, &header);
+	if (num < 1) {
+		if (ferror(in)) {
+	 		return MGU_ERROR_READ;
+		}
+		if (feof(in)) {
+	 		return MGU_EOF;
+		}
+	}
+	rec_len = header.rec_len;
+	record = malloc(rec_len);
+	if (!record) {
+		return MGU_OO_MEMORY;
+	}
+	num = fread(record, rec_len, 1, in);
+	if (num != 1) {
+		if (ferror(in)) {
+			free(record);
+	 		return MGU_ERROR_READ;
+		}
+	}
+	br->rt = header.rt;
+	br->unique_id = header.unique_id;
+	br->attrib = header.attrib;
+	br->buf = record;
+	br->size = rec_len;
+
+	return MGU_SUCCESS;
+}
+
+/*
+ * Read address file into a linked list. Based on JPilot's
+ * jp_read_DB_files (from libplugin.c)
+ */
+static gint jpilot_read_db_files( JPilotFile *pilotFile, GList **records ) {
+	FILE *in, *pc_in;
+	char *buf;
+	GList *temp_list;
+	int num_records, recs_returned, i, num, r;
+	unsigned int offset, prev_offset, next_offset, rec_size;
+	int out_of_order;
+	long fpos;  /*file position indicator */
+	unsigned char attrib;
+	unsigned int unique_id;
 	mem_rec_header *mem_rh, *temp_mem_rh, *last_mem_rh;
 	record_header rh;
 	RawDBHeader rdbh;
 	DBHeader dbh;
-	gint retVal;
-	struct Address addr;
-	struct AddressAppInfo *ai;
-	gchar **addrEnt;
-	gint inum, k;
-	gchar fullName[ FULLNAME_BUFSIZE ];
-	gchar bufEMail[ EMAIL_BUFSIZE ];
-	gchar* extID;
-	ItemPerson *person;
-	ItemEMail *email;
-	gint *indPhoneLbl;
-	gchar *labelEntry;
-	GList *node;
-	ItemFolder *folderInd[ JPILOT_NUM_CATEG ];
+	buf_rec *temp_br;
+	gchar *pcFile;
 
-	retVal = MGU_SUCCESS;
 	mem_rh = last_mem_rh = NULL;
+	*records = NULL;
 	recs_returned = 0;
 
-	/* Pointer to address metadata. */
-	ai = & pilotFile->addrInfo;
-
-	/* Open file for read */
-	if( pilotFile->path ) {
-		in = fopen( pilotFile->path, "r" );
-		if( !in ) {
-			/* fprintf( stderr, "can't open %s\n", pilotFile->path ); */
-			return MGU_OPEN_FILE;
-		}
+	if( pilotFile->path == NULL ) {
+	 	return MGU_BAD_ARGS;
 	}
-	else {
-		/* fprintf( stderr, "file not specified\n" ); */
-		return MGU_NO_FILE;
+	
+	in = fopen( pilotFile->path, "r" );
+	if (!in) {
+	 	return MGU_OPEN_FILE;
 	}
 
 	/* Read the database header */
 	num = fread(&rdbh, sizeof(RawDBHeader), 1, in);
 	if (num != 1) {
 		if (ferror(in)) {
-			/* fprintf( stderr, "error reading '%s'\n", pilotFile->path ); */
 			fclose(in);
 			return MGU_ERROR_READ;
 		}
 		if (feof(in)) {
-	 		return MGU_EOF;
-	 	}
+			return MGU_EOF;
+		}
 	}
-
 	raw_header_to_header(&rdbh, &dbh);
 
-	/*Read each record entry header */
+	/* Read each record entry header */
 	num_records = dbh.number_of_records;
 	out_of_order = 0;
 	prev_offset = 0;
-
+   
 	for (i=1; i<num_records+1; i++) {
-		num = fread( &rh, sizeof( record_header ), 1, in );
+		num = fread(&rh, sizeof(record_header), 1, in);
 		if (num != 1) {
 			if (ferror(in)) {
-				/* fprintf( stderr, "error reading '%s'\n", pilotFile->path ); */
-				retVal = MGU_ERROR_READ;
 				break;
 			}
 			if (feof(in)) {
@@ -675,38 +852,30 @@ static gint jpilot_read_file( JPilotFile *pilotFile ) {
 			out_of_order = 1;
 		}
 		prev_offset = offset;
-
 		temp_mem_rh = (mem_rec_header *)malloc(sizeof(mem_rec_header));
 		if (!temp_mem_rh) {
-			/* fprintf( stderr, "jpilot_read_db_file(): Out of memory 1\n" ); */
-			retVal = MGU_OO_MEMORY;
 			break;
 		}
-
 		temp_mem_rh->next = NULL;
 		temp_mem_rh->rec_num = i;
 		temp_mem_rh->offset = offset;
 		temp_mem_rh->attrib = rh.attrib;
 		temp_mem_rh->unique_id = (rh.unique_ID[0]*256+rh.unique_ID[1])*256+rh.unique_ID[2];
-
 		if (mem_rh == NULL) {
 			mem_rh = temp_mem_rh;
 			last_mem_rh = temp_mem_rh;
-		}
-		else {
+		} else {
 			last_mem_rh->next = temp_mem_rh;
 			last_mem_rh = temp_mem_rh;
 		}
-
-	}	/* for( ;; ) */
+	}
 
 	temp_mem_rh = mem_rh;
 
 	if (num_records) {
 		if (out_of_order) {
 			find_next_offset(mem_rh, 0, &next_offset, &attrib, &unique_id);
-		}
-		else {
+		} else {
 			if (mem_rh) {
 				next_offset = mem_rh->offset;
 				attrib = mem_rh->attrib;
@@ -714,32 +883,15 @@ static gint jpilot_read_file( JPilotFile *pilotFile ) {
 			}
 		}
 		fseek(in, next_offset, SEEK_SET);
-
-		/* Build array of pointers to categories; */
-		i = 0;
-		node = addrcache_get_list_folder( pilotFile->addressCache );
-		while( node ) {
-			if( i < JPILOT_NUM_CATEG ) {
-				folderInd[i] = node->data;
-			}
-			node = g_list_next( node );
-			i++;
-		}
-
-		/* Now go load all records		 */
 		while(!feof(in)) {
-			/* struct CategoryAppInfo *cat = &ai->category; */
-
 			fpos = ftell(in);
 			if (out_of_order) {
 				find_next_offset(mem_rh, fpos, &next_offset, &attrib, &unique_id);
-			}
-			else {
+			} else {
 				next_offset = 0xFFFFFF;
 				if (temp_mem_rh) {
 					attrib = temp_mem_rh->attrib;
 					unique_id = temp_mem_rh->unique_id;
-      					cat_id = attrib & 0x0F;
 					if (temp_mem_rh->next) {
 						temp_mem_rh = temp_mem_rh->next;
 						next_offset = temp_mem_rh->offset;
@@ -747,125 +899,275 @@ static gint jpilot_read_file( JPilotFile *pilotFile ) {
 				}
 			}
 			rec_size = next_offset - fpos;
-
-			buf = ( char * ) malloc(rec_size);
+			buf = malloc(rec_size);
 			if (!buf) break;
 			num = fread(buf, rec_size, 1, in);
 			if ((num != 1)) {
 				if (ferror(in)) {
-					/* fprintf( stderr, "Error reading %s 5\n", pilotFile ); */
 					free(buf);
-					retVal = MGU_ERROR_READ;
 					break;
 				}
 			}
 
-			/* Retrieve address */
-			inum = unpack_Address( & addr, buf, rec_size );
-			if( inum > 0 ) {
-				addrEnt = addr.entry;
-
-				*fullName = *bufEMail = '\0';
-				if( addrEnt[ IND_LABEL_FIRSTNAME ] ) {
-					strcat( fullName, addrEnt[ IND_LABEL_FIRSTNAME ] );
-				}
-
-				if( addrEnt[ IND_LABEL_LASTNAME ] ) {
-					strcat( fullName, " " );
-					strcat( fullName, addrEnt[ IND_LABEL_LASTNAME ] );
-				}
-				g_strchug( fullName );
-				g_strchomp( fullName );
-
-				person = addritem_create_item_person();
-				addritem_person_set_common_name( person, fullName );
-				addritem_person_set_first_name( person, addrEnt[ IND_LABEL_FIRSTNAME ] );
-				addritem_person_set_last_name( person, addrEnt[ IND_LABEL_LASTNAME ] );
-				addrcache_id_person( pilotFile->addressCache, person );
-
-				extID = g_strdup_printf( "%d", unique_id );
-				addritem_person_set_external_id( person, extID );
-				g_free( extID );
-				extID = NULL;
-
-				/* Add entry for each email address listed under phone labels. */
-				indPhoneLbl = addr.phoneLabel;
-				for( k = 0; k < JPILOT_NUM_ADDR_PHONE; k++ ) {
-					gint ind;
-					ind = indPhoneLbl[k];
-					/*
-					fprintf( stdout, "%d : %d : %20s : %s\n", k, ind,
-						ai->phoneLabels[ind], addrEnt[3+k] );
-					*/
-					if( indPhoneLbl[k] == IND_PHONE_EMAIL ) {
-						labelEntry = addrEnt[ OFFSET_PHONE_LABEL + k ];
-						if( labelEntry ) {
-							strcpy( bufEMail, labelEntry );
-							g_strchug( bufEMail );
-							g_strchomp( bufEMail );
-
-							email = addritem_create_item_email();
-							addritem_email_set_address( email, bufEMail );
-							addrcache_id_email( pilotFile->addressCache, email );
-							addrcache_person_add_email(
-								pilotFile->addressCache, person, email );
-						}
-					}
-				}
-
-				/* Add entry for each custom label */
-				node = pilotFile->labelInd;
-				while( node ) {
-					gint ind;
-					ind = GPOINTER_TO_INT( node->data );
-					if( ind > -1 ) {
-						/*
-						fprintf( stdout, "%d : %20s : %s\n", ind, ai->labels[ind],
-							addrEnt[ind] );
-						*/
-						labelEntry = addrEnt[ind];
-						if( labelEntry ) {
-							strcpy( bufEMail, labelEntry );
-							g_strchug( bufEMail );
-							g_strchomp( bufEMail );
-
-							email = addritem_create_item_email();
-							addritem_email_set_address( email, bufEMail );
-							addritem_email_set_remarks( email, ai->labels[ind] );
-							addrcache_id_email( pilotFile->addressCache, email );
-							addrcache_person_add_email(
-								pilotFile->addressCache, person, email );
-						}
-
-					}
-
-					node = g_list_next( node );
-				}
-
-				if( person->listEMail ) {
-					if( cat_id > -1 && cat_id < JPILOT_NUM_CATEG ) {
-						/* Add to specified category */
-						addrcache_folder_add_person(
-							pilotFile->addressCache, folderInd[cat_id], person );
-					}
-					else {
-						/* Add to root folder */
-						addrcache_add_person( pilotFile->addressCache, person );
-					}
-				}
-				else {
-					addritem_free_item_person( person );
-					person = NULL;
-				}
-
+			temp_br = malloc(sizeof(buf_rec));
+			if (!temp_br) {
+				break;
 			}
+			temp_br->rt = PALM_REC;
+			temp_br->unique_id = unique_id;
+			temp_br->attrib = attrib;
+			temp_br->buf = buf;
+			temp_br->size = rec_size;
+
+			*records = g_list_append(*records, temp_br);
+	 
 			recs_returned++;
 		}
 	}
 	fclose(in);
- 	free_mem_rec_header(&mem_rh);
+	free_mem_rec_header(&mem_rh);
+
+	/* Read the PC3 file, if present */
+	pcFile = jpilot_get_pc3_file( pilotFile );
+	if( pcFile == NULL ) return MGU_SUCCESS;
+	pc_in = fopen( pcFile, "r");
+	g_free( pcFile );
+
+	if( pc_in==NULL ) {
+		return MGU_SUCCESS;
+	}
+
+	while( ! feof( pc_in ) ) {
+		temp_br = malloc(sizeof(buf_rec));
+		if (!temp_br) {
+			break;
+		}
+		r = jpilot_read_next_pc( pc_in, temp_br );
+		if ( r != MGU_SUCCESS ) {
+			free(temp_br);
+			break;
+		}
+		if ((temp_br->rt!=DELETED_PC_REC)
+			&&(temp_br->rt!=DELETED_PALM_REC)
+			&&(temp_br->rt!=MODIFIED_PALM_REC)
+			&&(temp_br->rt!=DELETED_DELETED_PALM_REC)) {
+				*records = g_list_append(*records, temp_br);
+				recs_returned++;
+		}
+		if ((temp_br->rt==DELETED_PALM_REC) || (temp_br->rt==MODIFIED_PALM_REC)) {
+			temp_list=*records;
+			if (*records) {
+				while(temp_list->next) {
+					temp_list=temp_list->next;
+				}
+			}
+			for (; temp_list; temp_list=temp_list->prev) {
+				if (((buf_rec *)temp_list->data)->unique_id == temp_br->unique_id) {
+					((buf_rec *)temp_list->data)->rt = temp_br->rt;
+				}
+			}
+		}
+	}
+	fclose(pc_in);
+
+	return MGU_SUCCESS;
+}
+
+#define	FULLNAME_BUFSIZE   256
+#define	EMAIL_BUFSIZE      256
+/*
+ * Unpack address, building new data inside cache.
+ */
+static void jpilot_load_address( JPilotFile *pilotFile, buf_rec *buf, ItemFolder *folderInd[] ) {
+	struct Address addr;
+	gchar **addrEnt;
+	gint num, k;
+	gint cat_id = 0;
+	guint unique_id;
+	guchar attrib;
+	gchar fullName[ FULLNAME_BUFSIZE ];
+	gchar bufEMail[ EMAIL_BUFSIZE ];
+	ItemPerson *person;
+	ItemEMail *email;
+	gint *indPhoneLbl;
+	gchar *labelEntry;
+	GList *node;
+	gchar* extID;
+	struct AddressAppInfo *ai;
+
+	/* Retrieve address */
+	num = unpack_Address( & addr, buf->buf, buf->size );
+	if( num > 0 ) {
+		addrEnt = addr.entry;
+		attrib = buf->attrib;
+		unique_id = buf->unique_id;
+	      	cat_id = attrib & 0x0F;
+
+		*fullName = *bufEMail = '\0';
+		if( addrEnt[ IND_LABEL_FIRSTNAME ] ) {
+			strcat( fullName, addrEnt[ IND_LABEL_FIRSTNAME ] );
+		}
+
+		if( addrEnt[ IND_LABEL_LASTNAME ] ) {
+			strcat( fullName, " " );
+			strcat( fullName, addrEnt[ IND_LABEL_LASTNAME ] );
+		}
+		g_strchug( fullName );
+		g_strchomp( fullName );
+
+		person = addritem_create_item_person();
+		addritem_person_set_common_name( person, fullName );
+		addritem_person_set_first_name( person, addrEnt[ IND_LABEL_FIRSTNAME ] );
+		addritem_person_set_last_name( person, addrEnt[ IND_LABEL_LASTNAME ] );
+		addrcache_id_person( pilotFile->addressCache, person );
+
+		extID = g_strdup_printf( "%d", unique_id );
+		addritem_person_set_external_id( person, extID );
+		g_free( extID );
+		extID = NULL;
+
+		/* Pointer to address metadata. */
+		ai = & pilotFile->addrInfo;
+
+		/* Add entry for each email address listed under phone labels. */
+		indPhoneLbl = addr.phoneLabel;
+		for( k = 0; k < JPILOT_NUM_ADDR_PHONE; k++ ) {
+			gint ind;
+			ind = indPhoneLbl[k];
+			/*
+			* fprintf( stdout, "%d : %d : %20s : %s\n", k, ind,
+			* ai->phoneLabels[ind], addrEnt[3+k] );
+			*/
+			if( indPhoneLbl[k] == IND_PHONE_EMAIL ) {
+				labelEntry = addrEnt[ OFFSET_PHONE_LABEL + k ];
+				if( labelEntry ) {
+					strcpy( bufEMail, labelEntry );
+					g_strchug( bufEMail );
+					g_strchomp( bufEMail );
+
+					email = addritem_create_item_email();
+					addritem_email_set_address( email, bufEMail );
+					addrcache_id_email( pilotFile->addressCache, email );
+					addrcache_person_add_email(
+						pilotFile->addressCache, person, email );
+				}
+			}
+		}
+
+		/* Add entry for each custom label */
+		node = pilotFile->labelInd;
+		while( node ) {
+			gint ind;
+			ind = GPOINTER_TO_INT( node->data );
+			if( ind > -1 ) {
+				/*
+				* fprintf( stdout, "%d : %20s : %s\n", ind, ai->labels[ind],
+				* addrEnt[ind] );
+				*/
+				labelEntry = addrEnt[ind];
+				if( labelEntry ) {
+					strcpy( bufEMail, labelEntry );
+					g_strchug( bufEMail );
+					g_strchomp( bufEMail );
+
+					email = addritem_create_item_email();
+					addritem_email_set_address( email, bufEMail );
+					addritem_email_set_remarks( email, ai->labels[ind] );
+					addrcache_id_email( pilotFile->addressCache, email );
+					addrcache_person_add_email(
+						pilotFile->addressCache, person, email );
+				}
+
+			}
+
+			node = g_list_next( node );
+		}
+
+		if( person->listEMail ) {
+			if( cat_id > -1 && cat_id < JPILOT_NUM_CATEG ) {
+				/* Add to specified category */
+				addrcache_folder_add_person(
+					pilotFile->addressCache, folderInd[cat_id], person );
+			}
+			else {
+				/* Add to root folder */
+				addrcache_add_person( pilotFile->addressCache, person );
+			}
+		}
+		else {
+			addritem_free_item_person( person );
+			person = NULL;
+		}
+	}
+}
+
+/*
+ * Free up address list.
+ */
+static void jpilot_free_addrlist( GList *records ) {
+	GList *node;
+	buf_rec *br;
+
+	node = records;
+	while( node ) {
+		br = node->data;
+		free( br );
+		node->data = NULL;
+		node = g_list_next( node );
+	}
+
+	/* Free up list */
+	g_list_free( records );
+}
+
+/*
+ * Read address file into address cache.
+ */
+static gint jpilot_read_file( JPilotFile *pilotFile ) {
+	gint retVal, i;
+	GList *records = NULL;
+	GList *node;
+	buf_rec *br;
+	ItemFolder *folderInd[ JPILOT_NUM_CATEG ];
+
+	retVal = jpilot_read_db_files( pilotFile, &records );
+	if( retVal != MGU_SUCCESS ) {
+		jpilot_free_addrlist( records );
+		return retVal;
+	}
+
+	/* Build array of pointers to categories */
+	i = 0;
+	node = addrcache_get_list_folder( pilotFile->addressCache );
+	while( node ) {
+		if( i < JPILOT_NUM_CATEG ) {
+			folderInd[i] = node->data;
+		}
+		node = g_list_next( node );
+		i++;
+	}
+
+	/* Load all addresses, free up old stuff as we go */
+	node = records;
+	while( node ) {
+		br = node->data;
+		if( ( br->rt != DELETED_PC_REC ) &&
+		    ( br->rt != DELETED_PALM_REC ) &&
+		    ( br->rt != MODIFIED_PALM_REC ) &&
+		    ( br->rt != DELETED_DELETED_PALM_REC ) ) {
+			jpilot_load_address( pilotFile, br, folderInd );
+		}
+		free( br );
+		node->data = NULL;
+		node = g_list_next( node );
+	}
+
+	/* Free up list */
+	g_list_free( records );
+
 	return retVal;
 }
+
 
 /*
 * Read metadata from file.
@@ -893,7 +1195,9 @@ static gint jpilot_read_metadata( JPilotFile *pilotFile ) {
 		free(buf);
 	}
 	if( num <= 0 ) {
-		/* fprintf( stderr, "error reading '%s'\n", pilotFile->path ); */
+		/*
+		fprintf( stderr, "error reading '%s'\n", pilotFile->path );
+		*/
 		pilotFile->retVal = MGU_ERROR_READ;
 		return pilotFile->retVal;
 	}
@@ -1117,18 +1421,19 @@ static void jpilot_remove_empty( JPilotFile *pilotFile ) {
 	g_list_free( remList );
 }
 
-/* ============================================================================================ */
 /*
+* ============================================================================================
 * Read file into list. Main entry point
 * Return: TRUE if file read successfully.
+* ============================================================================================
 */
-/* ============================================================================================ */
 gint jpilot_read_data( JPilotFile *pilotFile ) {
 	g_return_val_if_fail( pilotFile != NULL, -1 );
 
 	pilotFile->retVal = MGU_SUCCESS;
 	pilotFile->accessFlag = FALSE;
-	if( addrcache_check_file( pilotFile->addressCache, pilotFile->path ) ) {
+
+	if( jpilot_check_files( pilotFile ) ) {
 		addrcache_clear( pilotFile->addressCache );
 		jpilot_read_metadata( pilotFile );
 		if( pilotFile->retVal == MGU_SUCCESS ) {
@@ -1137,7 +1442,7 @@ gint jpilot_read_data( JPilotFile *pilotFile ) {
 			pilotFile->retVal = jpilot_read_file( pilotFile );
 			if( pilotFile->retVal == MGU_SUCCESS ) {
 				jpilot_remove_empty( pilotFile );
-				addrcache_mark_file( pilotFile->addressCache, pilotFile->path );
+				jpilot_mark_files( pilotFile );
 				pilotFile->addressCache->modified = FALSE;
 				pilotFile->addressCache->dataRead = TRUE;
 			}
