@@ -1753,6 +1753,9 @@ static void catch_output(gpointer data, gint source, GdkInputCondition cond)
 		for (i = 0; i < c; i++)
 			child_info->output = g_string_append_c(
 					child_info->output, buf[i]);
-		child_info->new_out = TRUE;
+		if (c > 0)
+			child_info->new_out = TRUE;
+			
+		
 	}
 }
