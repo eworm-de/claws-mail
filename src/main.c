@@ -503,6 +503,15 @@ void app_will_exit(GtkWidget *widget, gpointer data)
 	if (prefs_common.clean_on_exit)
 		main_window_empty_trash(mainwin, prefs_common.ask_on_clean);
 
+	/* save prefs for opened folder */
+	if(mainwin->folderview->opened)
+	{
+		FolderItem *item;
+
+		item = gtk_ctree_node_get_row_data(GTK_CTREE(mainwin->folderview->ctree), mainwin->folderview->opened);
+		summary_save_prefs_to_folderitem(mainwin->folderview->summaryview, item);
+	}
+
 	/* save all state before exiting */
 	folder_write_list();
 	folder_func_to_all_folders(save_all_caches, NULL);

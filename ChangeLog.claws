@@ -1,3 +1,13 @@
+2002-08-20 [christoph]	0.8.1claws86
+
+	* src/folderview.c
+	* src/main.c
+	* src/summaryview.[ch]
+		more summaryview/folderitem seperation for
+		sort_key and sort_type
+	* src/procmsg.c
+		added missing return statement
+
 2002-08-20 [colin]	0.8.1claws85
 
         * src/summaryview.[ch]

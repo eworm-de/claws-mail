@@ -133,6 +133,8 @@ struct _SummaryView
 
 	/* summaryview prefs */
 	gint important_score;
+	FolderSortKey sort_key;
+	FolderSortType sort_type;
 
 	/* Extra data for summaryview */
 	regex_t *simplify_subject_preg;
@@ -259,13 +261,18 @@ void summary_set_column_order	  (SummaryView		*summaryview);
 void processing_apply();
 #endif
 
-void summary_toggle_show_read_messages (SummaryView *summaryview);
+void summary_toggle_show_read_messages
+				  (SummaryView *summaryview);
 
-void summary_toggle_view_real	(SummaryView	*summaryview);
+void summary_toggle_view_real	  (SummaryView	*summaryview);
 
-void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview);
+void summary_reflect_prefs_pixmap_theme
+                                  (SummaryView *summaryview);
 
-void summary_harvest_address(SummaryView *summaryview);
-void summary_set_prefs_from_folderitem(SummaryView *summaryview, FolderItem *item);
+void summary_harvest_address      (SummaryView *summaryview);
+void summary_set_prefs_from_folderitem
+                                  (SummaryView *summaryview, FolderItem *item);
+void summary_save_prefs_to_folderitem
+                                  (SummaryView *summaryview, FolderItem *item);
 
 #endif /* __SUMMARY_H__ */

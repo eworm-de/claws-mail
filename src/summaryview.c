@@ -656,7 +656,11 @@ void summary_init(SummaryView *summaryview)
 	gtk_widget_show(pixmap);
 	summaryview->folder_pixmap = pixmap;
 
-	/* Init Summaryview prefs */
+	/* Init summaryview prefs */
+	summaryview->sort_key = SORT_BY_NONE;
+	summaryview->sort_type = SORT_ASCENDING;
+
+	/* Init summaryview extra data */
 	summaryview->simplify_subject_preg = NULL;
 
 	summary_clear_list(summaryview);
@@ -930,11 +934,8 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 
 	g_slist_free(mlist);
 
-	folderview_update_msg_num(summaryview->folderview,
-				  summaryview->folderview->opened);
-
-	if (item->sort_key != SORT_BY_NONE)
-		summary_sort(summaryview, item->sort_key, item->sort_type);
+	if (summaryview->sort_key != SORT_BY_NONE)
+		summary_sort(summaryview, summaryview->sort_key, summaryview->sort_type);
 
 	gtk_signal_handler_unblock_by_data(GTK_OBJECT(ctree), summaryview);
 
@@ -961,7 +962,7 @@ gboolean summary_show(SummaryView *summaryview, FolderItem *item)
 		}
 	} else {
 		/* select first unread message */
-		if (item->sort_key == SORT_BY_SCORE)
+		if (summaryview->sort_key == SORT_BY_SCORE)
 			node = summary_find_next_important_score(summaryview,
 								 NULL);
 		else
@@ -1834,7 +1835,6 @@ static void summary_set_column_titles(SummaryView *summaryview)
 	SummaryColumnType type;
 	gboolean single_char;
 	GtkJustification justify;
-	FolderItem *item = summaryview->folder_item;
 
 	static FolderSortKey sort_by[N_SUMMARY_COLS] = {
 		SORT_BY_MARK,
@@ -1905,9 +1905,9 @@ static void summary_set_column_titles(SummaryView *summaryview)
 			gtk_box_pack_start(GTK_BOX(hbox), label,
 					   FALSE, FALSE, 0);
 
-		if (item && item->sort_key == sort_by[type]) {
+		if (summaryview->sort_key == sort_by[type]) {
 			arrow = gtk_arrow_new
-				(item->sort_type == SORT_ASCENDING
+				(summaryview->sort_type == SORT_ASCENDING
 				 ? GTK_ARROW_DOWN : GTK_ARROW_UP,
 				 GTK_SHADOW_IN);
 			if (justify == GTK_JUSTIFY_RIGHT)
@@ -1929,9 +1929,6 @@ void summary_sort(SummaryView *summaryview,
 	GtkCTree *ctree = GTK_CTREE(summaryview->ctree);
 	GtkCList *clist = GTK_CLIST(summaryview->ctree);
 	GtkCListCompareFunc cmp_func = NULL;
-	FolderItem *item = summaryview->folder_item;
-
-	if (!item || !item->path || !item->parent || item->no_select) return;
 
 	switch (sort_key) {
 	case SORT_BY_MARK:
@@ -1977,8 +1974,8 @@ void summary_sort(SummaryView *summaryview,
 		return;
 	}
 
-	item->sort_key = sort_key;
-	item->sort_type = sort_type;
+	summaryview->sort_key = sort_key;
+	summaryview->sort_type = sort_type;
 
 	summary_set_column_titles(summaryview);
 	summary_set_menu_sensitive(summaryview);
@@ -4594,13 +4591,9 @@ static void summary_create_filter_cb(SummaryView *summaryview,
 static void summary_sort_by_column_click(SummaryView *summaryview,
 					 FolderSortKey sort_key)
 {
-	FolderItem *item = summaryview->folder_item;
-
-	if (!item) return;
-
-	if (item->sort_key == sort_key)
+	if (summaryview->sort_key == sort_key)
 		summary_sort(summaryview, sort_key,
-			     item->sort_type == SORT_ASCENDING
+			     summaryview->sort_type == SORT_ASCENDING
 			     ? SORT_DESCENDING : SORT_ASCENDING);
 	else
 		summary_sort(summaryview, sort_key, SORT_ASCENDING);
@@ -5160,6 +5153,16 @@ void summary_set_prefs_from_folderitem(SummaryView *summaryview, FolderItem *ite
 	if(item->prefs && item->prefs->simplify_subject_regexp && 
 	   item->prefs->simplify_subject_regexp[0] && item->prefs->enable_simplify_subject)
 		summaryview->simplify_subject_preg = summary_compile_simplify_regexp(item->prefs->simplify_subject_regexp);
+
+	/* Sorting */
+	summaryview->sort_key = item->sort_key;
+	summaryview->sort_type = item->sort_type;
+}
+
+void summary_save_prefs_to_folderitem(SummaryView *summaryview, FolderItem *item)
+{
+	item->sort_key = summaryview->sort_key;
+	item->sort_type = summaryview->sort_type;
 }
 
 /*

@@ -1659,6 +1659,7 @@ static void folderview_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		
 		olditem = gtk_ctree_node_get_row_data(ctree, folderview->opened);
 		folder_item_write_cache(olditem);
+		summary_save_prefs_to_folderitem(folderview->summaryview, olditem);
 	}
 
 	/* CLAWS: set compose button type: news folder items 
