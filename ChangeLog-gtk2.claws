@@ -1,3 +1,13 @@
+2004-09-17 [paul]	0.9.12cvs102.1
+
+	* ChangeLog
+	* ChangeLog.claws
+	* ChangeLog.jp
+	* configure.ac
+	* src/inc.c
+		sync with HEAD
+
+
 2004-09-17 [colin]	0.9.12cvs101.1
 
 	* ChangeLog.claws
