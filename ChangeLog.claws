@@ -1,3 +1,8 @@
+2001-06-24 [christoph]
+
+	* src/prefs_common.c
+		bug fix in font selection
+
 2001-06-24 [alfons]
 
 	* src/mainwindow.[ch]

@@ -183,6 +183,7 @@ static struct MessageColorButtons {
 
 static GtkWidget *quote_desc_win;
 static GtkWidget *font_sel_win;
+static guint font_sel_conn_id; 
 static GtkWidget *quote_color_win;
 static GtkWidget *color_dialog;
 
@@ -2723,17 +2724,22 @@ static void prefs_font_select(GtkButton *button, GtkEntry *entry)
 			(GTK_OBJECT(font_sel_win), "key_press_event",
 			 GTK_SIGNAL_FUNC(prefs_font_selection_key_pressed),
 			 NULL);
-		gtk_signal_connect
-			(GTK_OBJECT(GTK_FONT_SELECTION_DIALOG(font_sel_win)->ok_button),
-			 "clicked",
-			 GTK_SIGNAL_FUNC(prefs_font_selection_ok),
-			 entry);
 		gtk_signal_connect_object
 			(GTK_OBJECT(GTK_FONT_SELECTION_DIALOG(font_sel_win)->cancel_button),
 			 "clicked",
 			 GTK_SIGNAL_FUNC(gtk_widget_hide_on_delete),
 			 GTK_OBJECT(font_sel_win));
 	}
+
+	if(font_sel_conn_id) {
+		gtk_signal_disconnect(GTK_OBJECT(GTK_FONT_SELECTION_DIALOG(font_sel_win)->ok_button), font_sel_conn_id);
+	}
+	font_sel_conn_id = gtk_signal_connect
+		(GTK_OBJECT(GTK_FONT_SELECTION_DIALOG(font_sel_win)->ok_button),
+	         "clicked",
+		 GTK_SIGNAL_FUNC(prefs_font_selection_ok),
+		 entry);
+	printf("%i\n", font_sel_conn_id);
 
 	font_name = gtk_editable_get_chars(GTK_EDITABLE(entry), 0, -1);
 	gtk_font_selection_dialog_set_font_name(GTK_FONT_SELECTION_DIALOG(font_sel_win), font_name);
