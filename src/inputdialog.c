@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,6 +52,7 @@ typedef enum
 } InputDialogType;
 
 static gboolean ack;
+static gboolean fin;
 
 static InputDialogType type;
 
@@ -230,7 +231,10 @@ static gchar *input_dialog_open(const gchar *title, const gchar *message,
 	gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
 	manage_window_set_transient(GTK_WINDOW(dialog));
 
-	gtk_main();
+	ack = fin = FALSE;
+
+	while (fin == FALSE)
+		gtk_main_iteration();
 
 	manage_window_focus_out(dialog, NULL, NULL);
 	gtk_widget_hide(dialog);
@@ -283,19 +287,19 @@ static void input_dialog_set(const gchar *title, const gchar *message,
 static void ok_clicked(GtkWidget *widget, gpointer data)
 {
 	ack = TRUE;
-	gtk_main_quit();
+	fin = TRUE;
 }
 
 static void cancel_clicked(GtkWidget *widget, gpointer data)
 {
 	ack = FALSE;
-	gtk_main_quit();
+	fin = TRUE;
 }
 
 static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data)
 {
 	ack = FALSE;
-	gtk_main_quit();
+	fin = TRUE;
 
 	return TRUE;
 }
@@ -304,18 +308,18 @@ static void key_pressed(GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
 	if (event && event->keyval == GDK_Escape) {
 		ack = FALSE;
-		gtk_main_quit();
+		fin = TRUE;
 	}
 }
 
 static void entry_activated(GtkEditable *editable)
 {
 	ack = TRUE;
-	gtk_main_quit();
+	fin = TRUE;
 }
 
 static void combo_activated(GtkEditable *editable)
 {
 	ack = TRUE;
-	gtk_main_quit();
+	fin = TRUE;
 }

@@ -1,3 +1,53 @@
+2003-06-07 [thorsten]	0.9.0claws18
+
+	* po/de.po
+		fix typos
+
+2003-06-07 [alfons]	0.9.0claws17
+
+	* configure.ac
+	* src/mimeview.c
+		detect apache mishap in which case don't include fnmatch.h
+		if regex.h is already included
+
+2003-06-06 [christoph]	0.9.0claws16
+
+	* configure.ac
+	* src/mimeview.h
+		add check for fnmatch.h and include it when available
+
+	* src/mimeview.[ch]
+		fix wrong case sensitivity of Content-Types
+
+	* src/gtk/Makefile.am
+		need the same include paths in gtk directory as in
+		common directory because .h files in common can
+		include files from these directories, when included
+		in gtk's .h or .c files
+
+2003-06-06 [alfons]	0.9.0claws15
+
+	* src/mimeview.c
+	* src/summaryview.c
+		make it compile again because of regex.h / fnmatch.h 
+		include problems (related to recent mime stuff, can
+		someone check this?)
+
+2003-06-06 [thorsten]	0.9.0claws14
+
+	* src/folderview.c
+		possible use of uninitialized pointer while dragging
+
+2003-06-06 [paul]	0.9.0claws13
+
+	* src/compose.c
+		fix bug where the insert sig button would be effective
+		only when auto_sig was set
+
+2003-06-06 [paul]	0.9.0claws12
+
+	* sync with 0.9.2 release
+
 2003-06-02 [paul]	0.9.0claws11
 
 	* sync with 0.9.1cvs1

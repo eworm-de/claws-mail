@@ -1,3 +1,10 @@
+2003-06-06
+
+	* src/filesel.c
+	  src/foldersel.c
+	  src/inputdialog.c: use gtk_main_iteration() instead of gtk_main()
+	  to prevent abort when a button is double-clicked.
+
 2003-06-02
 
 	* src/addr_compl.c: invalidate_address_completion(): check if

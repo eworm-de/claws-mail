@@ -1,3 +1,10 @@
+2003-06-06
+
+	* src/filesel.c
+	  src/foldersel.c
+	  src/inputdialog.c: ボタンがダブルクリックされたときに終了してしまう
+	  のを防ぐために gtk_main() の代わりに gtk_main_iteration() を使用。
+
 2003-06-02
 
 	* src/addr_compl.c: invalidate_address_completion(): g_completion_list

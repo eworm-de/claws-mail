@@ -44,12 +44,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#ifdef WIN32
-#else
-# include <unistd.h>
-#endif
-#include <sys/stat.h>
-#include <regex.h>
 
 #include "intl.h"
 #include "main.h"

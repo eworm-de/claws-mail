@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@
 
 static GtkWidget *filesel;
 static gboolean filesel_ack;
+static gboolean filesel_fin;
 static gchar *filesel_oldfilename;
 
 static void filesel_create(const gchar *title, gboolean multiple_files);
@@ -83,7 +84,10 @@ gchar *filesel_select_file(const gchar *title, const gchar *file)
 
 	gtk_widget_show(filesel);
 
-	gtk_main();
+	filesel_ack = filesel_fin = FALSE;
+
+	while (filesel_fin == FALSE)
+		gtk_main_iteration();
 
 	if (filesel_ack) {
 		gchar *str;
@@ -210,13 +214,13 @@ static void filesel_create(const gchar *title, gboolean multiple_files)
 static void filesel_ok_cb(GtkWidget *widget, gpointer data)
 {
 	filesel_ack = TRUE;
-	gtk_main_quit();
+	filesel_fin = TRUE;
 }
 
 static void filesel_cancel_cb(GtkWidget *widget, gpointer data)
 {
 	filesel_ack = FALSE;
-	gtk_main_quit();
+	filesel_fin = TRUE;
 }
 
 static gint delete_event(GtkWidget *widget, GdkEventAny *event, gpointer data)

@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,7 @@ static GtkWidget *cancel_button;
 static FolderItem *folder_item;
 
 static gboolean cancelled;
+static gboolean finished;
 
 static void foldersel_create	(void);
 static void foldersel_init	(void);
@@ -126,9 +127,10 @@ FolderItem *foldersel_folder_sel(Folder *cur_folder,
 	gtk_widget_grab_focus(ok_button);
 	gtk_widget_grab_focus(ctree);
 
-	cancelled = FALSE;
+	cancelled = finished = FALSE;
 
-	gtk_main();
+	while (finished == FALSE)
+		gtk_main_iteration();
 
 	gtk_widget_hide(window);
 	gtk_entry_set_text(GTK_ENTRY(entry), "");
@@ -344,13 +346,13 @@ static void foldersel_ok(GtkButton *button, gpointer data)
 		folder_item = gtk_ctree_node_get_row_data
 			(GTK_CTREE(ctree), GTK_CTREE_NODE(list->data));
 
-	gtk_main_quit();
+	finished = TRUE;
 }
 
 static void foldersel_cancel(GtkButton *button, gpointer data)
 {
 	cancelled = TRUE;
-	gtk_main_quit();
+	finished = TRUE;
 }
 
 static void foldersel_activated(void)

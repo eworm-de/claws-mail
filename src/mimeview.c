@@ -39,11 +39,14 @@
 #ifdef WIN32
 # include <w32lib.h>
 # include "w32_mailcap.h"
-#else
-# include <unistd.h>
 #endif
+
+#ifndef HAVE_APACHE_FNMATCH
+/* kludge: apache's fnmatch clashes with <regex.h>, don't include
+ * fnmatch.h */
 #include <fnmatch.h>
- 
+#endif
+
 #include "intl.h"
 #include "main.h"
 #include "mimeview.h"
@@ -503,6 +506,17 @@ static MimeViewer *get_viewer_for_content_type(MimeView *mimeview, const gchar *
 	GSList *cur;
 	MimeViewerFactory *factory = NULL;
 	MimeViewer *viewer = NULL;
+
+/*
+ * FNM_CASEFOLD is a GNU extension
+ * if its not defined copy the string to the stack and
+ * convert the copy to lower case
+ */
+#ifndef FNM_CASEFOLD
+#define FNM_CASEFOLD 0
+	Xstrdup_a(content_type, content_type, return NULL);
+	g_strdown((gchar *)content_type);
+#endif
 	
 	for (cur = mimeviewer_factories; cur != NULL; cur = g_slist_next(cur)) {
 		MimeViewerFactory *curfactory = cur->data;
@@ -510,7 +524,7 @@ static MimeViewer *get_viewer_for_content_type(MimeView *mimeview, const gchar *
 
 		while (curfactory->content_types[i] != NULL) {
 			debug_print("%s\n", curfactory->content_types[i]);
-			if(!fnmatch(curfactory->content_types[i], content_type, 0)) {
+			if(!fnmatch(curfactory->content_types[i], content_type, FNM_CASEFOLD)) {
 				factory = curfactory;
 				break;
 			}

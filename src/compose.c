@@ -2042,7 +2042,7 @@ static void compose_insert_sig(Compose *compose, gboolean replace)
 
 	g_free(compose->sig_str);
 	compose->sig_str = compose_get_signature_str(compose);
-	if (!compose->sig_str || !compose->account->auto_sig)
+	if (!compose->sig_str || (replace && !compose->account->auto_sig))
 		compose->sig_str = g_strdup("");
 
 	gtk_stext_insert(text, NULL, NULL, NULL, compose->sig_str, -1);
