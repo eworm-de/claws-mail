@@ -1,3 +1,10 @@
+2004-02-12 [alfons]	0.9.9claws6
+
+	* src/compose.[ch]
+		don't select text in header entry when composing to a 
+		default address, but rather give the header entry a
+		different color / style (same as the folder new color)
+
 2004-02-12 [alfons]	0.9.9claws5
 
 	* src/plugins/clamav/clamav_plugin.c

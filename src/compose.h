@@ -259,7 +259,7 @@ void compose_entry_append		(Compose	  *compose,
 					 const gchar	  *address,
 					 ComposeEntryType  type);
 
-void compose_entry_select		(Compose	  *compose,
+void compose_entry_mark_default_to	(Compose	  *compose,
 					 const gchar	  *address);
 
 gint compose_send			(Compose	  *compose);
