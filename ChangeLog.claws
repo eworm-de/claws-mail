@@ -1,3 +1,9 @@
+2002-10-21 [alfons]	0.8.5claws48
+
+	* src/foldersel.c
+		folder view in folder selection dialog reflects state of
+		folder view in main window
+
 2002-10-18 [alfons]	0.8.5claws47
 
 	* src/mbox.c
