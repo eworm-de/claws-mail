@@ -119,11 +119,11 @@ static void new_folder_cb(FolderView *folderview, guint action,
 				  _("Input the name of new folder:"),
 				  _("NewFolder"));
 	if (!new_folder) return;
-	AUTORELEASE_STR(new_folder, {g_free(new_folder); return;});
-
 #ifdef WIN3
 	locale_from_utf8(&new_folder);
 #endif
+	AUTORELEASE_STR(new_folder, {g_free(new_folder); return;});
+
 	p = strchr(new_folder, G_DIR_SEPARATOR);
 	if (p) {
 		alertpanel_error(_("`%c' can't be included in folder name."),
@@ -235,11 +235,11 @@ static void rename_folder_cb(FolderView *folderview, guint action,
 	g_free(message);
 	g_free(name);
 	if (!new_folder) return;
-	AUTORELEASE_STR(new_folder, {g_free(new_folder); return;});
-
 #ifdef WIN32
 	locale_from_utf8(&new_folder);
 #endif
+	AUTORELEASE_STR(new_folder, {g_free(new_folder); return;});
+
 	if (strchr(new_folder, G_DIR_SEPARATOR) != NULL) {
 		alertpanel_error(_("`%c' can't be included in folder name."),
 				 G_DIR_SEPARATOR);
