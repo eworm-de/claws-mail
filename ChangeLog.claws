@@ -1,3 +1,8 @@
+2005-01-31 [colin]	1.0.0cvs24
+
+	* src/compose.c
+		Fix MsgInfo reference leak
+
 2005-01-28 [colin]	1.0.0cvs23
 
 	* src/folderview.c
