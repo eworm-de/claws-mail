@@ -165,4 +165,5 @@ GtkWidget *gtkut_account_menu_new	(GList			*ac_list,
 
 void gtkut_set_widget_bgcolor_rgb	(GtkWidget 	*widget,
 					 guint 		 rgbvalue);
+GtkWidget *gtkut_get_focused_child	(GtkContainer 	*parent);
 #endif /* __GTKUTILS_H__ */

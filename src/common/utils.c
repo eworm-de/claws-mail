@@ -1145,9 +1145,9 @@ void subst_chars(gchar *str, gchar *orig, gchar subst)
 void subst_for_filename(gchar *str)
 {
 #ifdef WIN32
-	subst_chars(str, " \t\r\n\"/\\:()", '_');
+	subst_chars(str, " \t\r\n\"/\\:", '_');
 #else
-	subst_chars(str, " \t\r\n\"/\\", '_');
+	subst_chars(str, " \t\r\n\"'/\\", '_');
 #endif
 }
 

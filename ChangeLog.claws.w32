@@ -1,3 +1,21 @@
+2004-12-17 [thorsten]	0.9.13cvs20.1
+
+	* ChangeLog
+	* ChangeLog.claws
+	* ChangeLog.jp
+	* NEWS
+	* PATCHSETS
+	* configure.ac
+	* po/ru.po
+	* src/action.c
+	* src/compose.c
+	* src/syldap.c
+	* src/common/utils.c
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+	* src/gtk/prefswindow.c
+		sync 0.9.13cvs20
+
 2004-12-13 [thorsten]	0.9.13cvs15.1
 
 	* ChangeLog.claws

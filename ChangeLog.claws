@@ -1,3 +1,44 @@
+2004-12-17 [thorsten]	0.9.13cvs20
+
+	* src/compose.c
+		protect trailing spaces when signing message
+
+2004-12-16 [paul]	0.9.13cvs19
+
+	* ChangeLog
+	* ChangeLog.jp
+	* NEWS
+	* src/compose.c
+	* src/syldap.c
+		sync with main 1.0.0rc
+		see ChangeLog 2004-12-15
+
+2004-12-14 [colin]	0.9.13cvs18
+
+	* src/gtk/prefswindow.c
+		Fix build. Sorry :)
+
+2004-12-14 [colin]	0.9.13cvs17
+
+	* src/gtk/gtkutils.c
+	* src/gtk/gtkutils.h
+	* src/gtk/prefswindow.c
+		Catch Enter in prefswindow while in text
+		widget. Patch by Alfons.
+
+2004-12-14 [paul]	0.9.13cvs16
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/action.c
+	* src/compose.c
+	* src/common/utils.c
+		sync with main, see ChangeLog entries 2004-12-10
+		and 2004-12-13
+
+	* po/ru.po
+		updated by Pavlo Bohmat
+
 2004-12-13 [thorsten]	0.9.13cvs15
 
 	* src/plugins/spamassassin/libspamc.c

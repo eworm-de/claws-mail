@@ -1,3 +1,61 @@
+2004-12-16
+
+	* INSTALL
+	  INSTALL.jp: updated the confirmation list.
+
+2004-12-15
+
+	* version 1.0.0rc
+
+2004-12-15
+
+	* src/compose.c: compose_wrap_line_all_full(): fixed the logic of
+	  space insertion.
+
+2004-12-15
+
+	* manual/ja/sylpheed.sgml: updated.
+
+2004-12-15
+
+	* src/addrbook.c
+	  src/addressbook.c
+	  src/addrindex.c
+	  src/jpilot.c
+	  src/ldif.c
+	  src/syldap.c
+	  src/vcard.c: removed '... defined but not used' warnings.
+
+2004-12-13
+
+	* src/compose.c: compose_wrap_line_all_full(): only insert space
+	  when joining lines if the first character of the next line is not
+	  space, or it's a boundary between multi- and single-byte characters.
+
+2004-12-13
+
+	* src/action.c: parse_append_filename(): escape special characters
+	  (thanks to IWAMOTO Kouichi).
+	* src/utils.c: subst_for_filename(): also substitute single quote.
+
+2004-12-10
+
+	* src/compose.c: compose_wrap_line_all_full(): fixed joining line
+	  problem when the first character of the next line is not
+	  alphanumeric.
+
+2004-12-09
+
+	* src/main.c: send_queue()
+	  src/mainwindow.c: send_queue_cb()
+	  src/compose.c: compose_send(), compose_send_later_cb(): ask user
+	  to switch to online if in offline mode when sending.
+
+2004-12-08
+
+	* src/imap.c: applied bitlength_clean_up.imap.c.patch that fixes the
+	  integer length problem on 64-bit platforms (thanks to Alfons).
+
 2004-12-03
 
 	* version 1.0.0beta4

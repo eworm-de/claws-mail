@@ -1,5 +1,14 @@
 Changes of Sylpheed
 
+* 1.0.0rc
+
+    * The IMAP4 parser has been fixed for 64-bit platforms.
+    * Users are now asked to switch to online mode when sending in offline.
+    * The line-joining problem of auto-wrapping has been fixed.
+    * Special characters are now properly escaped when executing action
+      commands.
+    * Some compiler warnings have been removed.
+
 * 1.0.0beta4
 
     * The Japanese manual has been updated.
