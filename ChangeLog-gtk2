@@ -1,3 +1,10 @@
+2004-02-22 Thorsten Maerz <torte@netztorte.de>
+	* src/prefs_themes.c
+		utf8 conversion for theme info
+
+2004-02-21 Thorsten Maerz <torte@netztorte.de>
+	* sync 0.9.9claws
+
 2004-02-14 Thorsten Maerz <torte@netztorte.de>
 	* src/grouplistdialog.c
 		allow multiple selections without ctrl key

@@ -33,6 +33,7 @@
 
 #include "intl.h"
 #include "utils.h"
+#include "codeconv.h"
 #include "prefs_common.h"
 #include "prefs_gtk.h"
 
@@ -557,16 +558,30 @@ static void prefs_themes_update_buttons(const ThemesData *tdata)
 		gtk_widget_set_sensitive(theme->btn_remove, can_rem);
 }
 
+/* placeholders may already be utf8 (i18n) */
+#define SET_LABEL_TEXT_UTF8(label, text)				\
+{									\
+	gchar *tmpstr;							\
+									\
+	if (!g_utf8_validate(text, -1, NULL))				\
+		tmpstr = conv_codeset_strdup(text,			\
+			conv_get_current_charset_str(),	CS_UTF_8);	\
+	else								\
+		tmpstr = g_strdup(text);				\
+									\
+	gtk_label_set_text(GTK_LABEL(label), tmpstr);			\
+	g_free(tmpstr);							\
+}
 static void prefs_themes_display_theme_info(ThemesData *tdata, const ThemeInfo *info)
 {
 	ThemesPage *theme = tdata->page;
 	gchar *save_prefs_path;
 	gint   i;
-	
-	gtk_label_set_text(GTK_LABEL(theme->name), info->name);
-	gtk_label_set_text(GTK_LABEL(theme->author), info->author);
-	gtk_label_set_text(GTK_LABEL(theme->url), info->url);	
-	gtk_label_set_text(GTK_LABEL(theme->status), info->status);
+
+	SET_LABEL_TEXT_UTF8(theme->name,	info->name);
+	SET_LABEL_TEXT_UTF8(theme->author,	info->author);
+	SET_LABEL_TEXT_UTF8(theme->url,		info->url);
+	SET_LABEL_TEXT_UTF8(theme->status,	info->status);
 
 	save_prefs_path = prefs_common.pixmap_theme_path;
 	prefs_common.pixmap_theme_path = tdata->displayed;
@@ -580,6 +595,7 @@ static void prefs_themes_display_theme_info(ThemesData *tdata, const ThemeInfo *
 
 	prefs_themes_update_buttons(tdata);
 }
+#undef SET_LABEL_TEXT_UTF8
 
 static void prefs_themes_display_global_stats(const ThemesData *tdata)
 {
