@@ -28,8 +28,10 @@ foreach $folderlist (@folderlist) {
 	unless ($mailbox) {
 		if ($folderlist =~ m/<folder type="mh"/) {
       			$folderlist =~ s/<folder type="mh" name="//;
-                	$folderlist =~ s/" path="[A-Z0-9]+">\n//ig;
-                	$folderlist =~ s/^ +//;
+                	$folderlist =~ s/" path="[A-Z0-9]+"//ig;
+			$folderlist =~ s/ collapsed="1"//;
+			$folderlist =~ s/>\n//ig;
+			$folderlist =~ s/^ +//;
                 	$mailbox = $folderlist;
         	}
 	}
@@ -108,7 +110,7 @@ foreach $filterrc (@filterrc) {
 		 $split_lines[0] eq "X-ML-Name" || $split_lines[0] eq "X-List" ||
 		 $split_lines[0] eq "X-Sequence" || $split_lines[0] eq "X-Mailer" ||
 		 $split_lines[0] eq "Cc") {
-		$WRITE_THIS .= "$predicate_one"."header $split_lines[0] $match_type \"$split_lines[1]\"";
+		$WRITE_THIS .= "$predicate_one"."header \"$split_lines[0]\" $match_type \"$split_lines[1]\"";
 	}
 	if ($split_lines[8] eq "n\n") {
 		$WRITE_THIS .= " delete";
@@ -146,7 +148,7 @@ sub sort_data {
 		 $split_lines[0] eq "X-ML-Name" || $split_lines[0] eq "X-List" ||
 		 $split_lines[0] eq "X-Sequence" || $split_lines[0] eq "X-Mailer" ||
 		 $split_lines[0] eq "Cc") {
-		$WRITE_THIS .= "$predicate_one"."header $split_lines[0] $match_type \"$split_lines[1]\" $operator ";
+		$WRITE_THIS .= "$predicate_one"."header \"$split_lines[0]\" $match_type \"$split_lines[1]\" $operator ";
 	}
 
 	if ($split_lines[3] eq "To") {
@@ -161,7 +163,7 @@ sub sort_data {
 		 $split_lines[3] eq "X-ML-Name" || $split_lines[3] eq "X-List" ||
 		 $split_lines[3] eq "X-Sequence" || $split_lines[3] eq "X-Mailer" ||
 		 $split_lines[3] eq "Cc") {
-		$WRITE_THIS .= "$predicate_two"."header $split_lines[3] $match_type \"$split_lines[4]\"";
+		$WRITE_THIS .= "$predicate_two"."header \"$split_lines[3]\" $match_type \"$split_lines[4]\"";
 	} 
 
 }
