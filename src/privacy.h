@@ -26,25 +26,27 @@ typedef struct _PrivacyData PrivacyData;
 typedef enum {
 	SIGNATURE_UNCHECKED,
 	SIGNATURE_OK,
+	SIGNATURE_WARN,
 	SIGNATURE_INVALID,
+	SIGNATURE_CHECK_FAILED,
 } SignatureStatus;
 
 #include <glib.h>
 
 #include "procmime.h"
 
-void privacy_register_system		(PrivacySystem *system);
-void privacy_unregister_system		(PrivacySystem *system);
+void privacy_register_system			(PrivacySystem *system);
+void privacy_unregister_system			(PrivacySystem *system);
 
-void privacy_free_privacydata		(PrivacyData *);
+void privacy_free_privacydata			(PrivacyData *);
 
-gboolean privacy_mimeinfo_is_signed	(MimeInfo *);
-const gchar *privacy_get_signer		(MimeInfo *);
-SignatureStatus privacy_check_signature	(MimeInfo *);
+gboolean privacy_mimeinfo_is_signed		(MimeInfo *);
+gint privacy_mimeinfo_check_signature		(MimeInfo *);
+SignatureStatus privacy_mimeinfo_get_sig_status	(MimeInfo *);
 
 #if 0 /* NOT YET */
-gboolean privacy_mimeinfo_is_encrypted	(MimeInfo *);
-gint privacy_decrypt			(MimeInfo *);
+gboolean privacy_mimeinfo_is_encrypted		(MimeInfo *);
+gint privacy_decrypt				(MimeInfo *);
 #endif
 
 struct _PrivacySystem {
@@ -53,8 +55,10 @@ struct _PrivacySystem {
 	void		 (*free_privacydata)	(PrivacyData *);
 
 	gboolean	 (*is_signed)		(MimeInfo *);
-	const gchar	*(*get_signer)		(MimeInfo *);
-	SignatureStatus	 (*check_signature)	(MimeInfo *);
+	gint		 (*check_signature)	(MimeInfo *);
+	SignatureStatus	 (*get_sig_status)	(MimeInfo *);
+	const gchar	*(*get_sig_info_short)	(MimeInfo *);
+	const gchar	*(*get_sig_info_full)	(MimeInfo *);
 
 	/* NOT YET */
 	gboolean	 (*is_encrypted)	(MimeInfo *);

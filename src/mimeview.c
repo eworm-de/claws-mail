@@ -616,6 +616,55 @@ void mimeview_clear(MimeView *mimeview)
 	icon_list_clear(mimeview);
 }
 
+static void check_signature_cb(GtkWidget *widget, gpointer user_data);
+
+static void update_signature_noticeview(MimeView *mimeview, MimeInfo *mimeinfo)
+{
+	if (privacy_mimeinfo_is_signed(mimeinfo)) {
+		gchar *text = NULL, *button_text = NULL;
+		GtkSignalFunc func = NULL;
+
+		switch (privacy_mimeinfo_get_sig_status(mimeinfo)) {
+		case SIGNATURE_UNCHECKED:
+			text = _("This part of the message has been signed");
+			button_text = _("Check");
+			func = check_signature_cb;
+			break;
+		case SIGNATURE_OK:
+		case SIGNATURE_WARN:
+			text = _("Signature is ok");
+			break;
+		case SIGNATURE_INVALID:
+			text = _("The signature of this part is invalid");
+			break;
+		case SIGNATURE_CHECK_FAILED:
+			text = _("Checking the signature failed");
+			button_text = _("Check again");
+			func = check_signature_cb;
+		default:
+			break;
+		}
+		noticeview_set_text(mimeview->siginfoview, text);
+		noticeview_set_button_text(mimeview->siginfoview, button_text);
+		noticeview_set_button_press_callback(
+			mimeview->siginfoview,
+			func,
+			(gpointer) mimeview);
+		noticeview_show(mimeview->siginfoview);
+	} else {
+		noticeview_hide(mimeview->siginfoview);
+	}
+}
+
+static void check_signature_cb(GtkWidget *widget, gpointer user_data)
+{
+	MimeView *mimeview = (MimeView *) user_data;
+	MimeInfo *mimeinfo = mimeview_get_selected_part(mimeview);
+	
+	privacy_mimeinfo_check_signature(mimeinfo);
+	update_signature_noticeview(mimeview, mimeinfo);
+}
+
 static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 			      MimeView *mimeview)
 {
@@ -637,12 +686,7 @@ static void mimeview_selected(GtkCTree *ctree, GtkCTreeNode *node, gint column,
 	
 	mimeview->textview->default_text = FALSE;
 
-	if (privacy_mimeinfo_is_signed(partinfo)) {
-		noticeview_set_text(mimeview->siginfoview, "Signed Part");
-		noticeview_show(mimeview->siginfoview);
-	} else {
-		noticeview_hide(mimeview->siginfoview);
-	}
+	update_signature_noticeview(mimeview, partinfo);
 
 	if (!mimeview_show_part(mimeview, partinfo)) {
 		switch (partinfo->type) {

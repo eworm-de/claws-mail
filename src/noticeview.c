@@ -86,7 +86,6 @@ NoticeView *noticeview_create(MainWindow *mainwin)
 	gtk_signal_connect(GTK_OBJECT(widget), "clicked", 
 			   GTK_SIGNAL_FUNC(noticeview_button_pressed),
 			   (gpointer) noticeview);
-	gtk_widget_show(widget);
 	gtk_box_pack_start(GTK_BOX(hbox), widget, FALSE, FALSE, 4);
 	
 	noticeview->vbox   = vbox;
@@ -136,8 +135,13 @@ void noticeview_set_text(NoticeView *noticeview, const char *text)
 void noticeview_set_button_text(NoticeView *noticeview, const char *text)
 {
 	g_return_if_fail(noticeview);
-	gtk_label_set_text
-		(GTK_LABEL(GTK_BIN(noticeview->button)->child), text);
+
+	if (text != NULL) {
+		gtk_label_set_text
+			(GTK_LABEL(GTK_BIN(noticeview->button)->child), text);
+		gtk_widget_show(noticeview->button);
+	} else
+		gtk_widget_hide(noticeview->button);
 }
 
 void noticeview_set_button_press_callback(NoticeView	*noticeview,
@@ -154,4 +158,3 @@ static void noticeview_button_pressed(GtkButton *button, NoticeView *noticeview)
 		noticeview->press(noticeview, noticeview->user_data);
 	}
 }
-

@@ -74,7 +74,8 @@
 #include "plugin.h"
 
 #if USE_GPGME
-#  include "rfc2015.h"
+#  include "sgpgme.h"
+#  include "pgpmime.h"
 #endif
 #if USE_OPENSSL
 #  include "ssl.h"
@@ -246,7 +247,8 @@ int main(int argc, char *argv[])
 	prefs_common_read_config();
 
 #if USE_GPGME
-	rfc2015_init();
+	sgpgme_init();
+	pgpmime_init();
 #endif
 
 	prefs_fonts_init();
@@ -359,7 +361,8 @@ int main(int argc, char *argv[])
 	addressbook_destroy();
 
 #ifdef USE_GPGME
-	rfc2015_done();
+	pgpmime_done();
+	sgpgme_done();
 #endif
 
 	prefs_fonts_done();

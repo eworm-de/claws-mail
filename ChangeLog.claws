@@ -1,3 +1,15 @@
+2003-10-17 [christoph]  0.9.6claws32
+
+	* src/Makefile.am
+	* src/main.c
+	* src/mimeview.c
+	* src/noticeview.c
+	* src/pgpmime.[ch]				** NEW **
+	* src/privacy.[ch]
+	* src/rfc2015.c
+	* src/sgpgme.c					** NEW **
+		reimplement PGP/Mime signature checking (unfinished)
+
 2003-10-15 [christoph]  0.9.6claws31
 
 	* src/procmime.[ch]
