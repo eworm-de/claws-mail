@@ -1,3 +1,7 @@
+2003-10-14 [luke]	0.9.6claws25
+	* src/mimeview.c
+		fix a navigation bug (stupid typo of mine)
+
 2003-10-14 [christoph]	0.9.6claws24
 
 	* src/textview.c
