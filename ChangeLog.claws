@@ -1,3 +1,8 @@
+2004-02-24 [luke]
+	* tools/textviewer.sh
+		tweaks from Johann Koenig, recognition of shell
+		scripts in particular
+
 2004-02-24 [paul]	0.9.9claws28
 
 	* sync with 0.9.9cvs13
