@@ -1241,7 +1241,7 @@ static void inc_notify_cmd(gint new_msgs, gboolean notify)
 	else
 		buf = g_strdup(prefs_common.newmail_notify_cmd);
 
-	system(buf);
+	execute_command_line(buf, TRUE);
 
 	g_free(buf);
 }
