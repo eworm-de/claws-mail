@@ -4943,10 +4943,6 @@ static Compose *compose_create(PrefsAccount *account, ComposeMode mode)
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(text), TRUE);
 	clipboard = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
 	gtk_text_buffer_add_selection_clipboard(buffer, clipboard);
-	clipboard = gtk_clipboard_get(GDK_SELECTION_SECONDARY);
-	gtk_text_buffer_add_selection_clipboard(buffer, clipboard);
-	clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
-	gtk_text_buffer_add_selection_clipboard(buffer, clipboard);
 	
 	gtk_container_add(GTK_CONTAINER(scrolledwin), text);
 

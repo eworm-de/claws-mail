@@ -1,3 +1,8 @@
+2005-02-11 [colin]	1.0.1cvs4.3
+
+	* src/compose.c
+		revert 1.0.0cvs28.2, it doesn't work that well.
+
 2005-02-11 [paul]	1.0.1cvs4.2
 
 	* po/Makefile.in.in
