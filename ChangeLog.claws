@@ -1,3 +1,8 @@
+2002-11-30 [christoph]	0.8.6claws45
+
+	* ac/aspell.m4
+		remove conf.aspelltest if the version check fails
+
 2002-11-30 [christoph]	0.8.6claws44
 
 	* autogen.sh

@@ -88,7 +88,7 @@ main ()
  return 0;
 }
         ],, no_aspell=yes,[echo $ac_n "cross compiling; assumed OK... $ac_c"])
-	rm -f conftest.c
+        rm -f conf.aspelltest
 	if test "x$no_aspell" = x ; then
            AC_MSG_RESULT(yes)
            AC_MSG_CHECKING(for GNU/aspell dictionaries location)
@@ -100,7 +100,6 @@ main ()
            ac_save_LIBS="$LIBS"
            CFLAGS="$CFLAGS $ASPELL_CFLAGS"
            LIBS="$LIBS $ASPELL_LIBS"
-           rm -f conf.aspelltest
            AC_TRY_RUN([
 #include <stdio.h>
 #include <stdlib.h>
