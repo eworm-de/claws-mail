@@ -46,6 +46,7 @@ typedef enum
 
 struct _MimeView
 {
+	GtkWidget *hbox;
 	GtkWidget *paned;
 	GtkWidget *notebook;
 	GtkWidget *vbox;
