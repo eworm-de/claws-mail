@@ -61,10 +61,6 @@ AddressBookFile *addrbook_create_book()
 	book->tempList = NULL;
 	book->tempHash = NULL;
 	book->addressCache->modified = TRUE;
-
-	/* We want to use an address completion index */
-	addrcache_use_index( book->addressCache, TRUE );
-
 	return book;
 }
 
@@ -192,6 +188,7 @@ void addrbook_free_book(AddressBookFile *book)
 	g_return_if_fail(book != NULL);
 
 	/* Clear cache */
+	addrcache_clear(book->addressCache);
 	addrcache_free(book->addressCache);
 
 	/* Free up internal objects */
@@ -511,22 +508,17 @@ static void addrbook_parse_member(AddressBookFile *book, XMLFile *file,
 {
 	GList *attr;
 	gchar *name, *value;
-	gchar *eid = NULL;
-	/* gchar *pid = NULL; */
+	gchar *pid = NULL, *eid = NULL;
 	ItemEMail *email = NULL;
 
 	attr = xml_get_current_tag_attr(file);
 	while (attr) {
 		name = ((XMLAttr *)attr->data)->name;
 		value = ((XMLAttr *)attr->data)->value;
-		/*
 		if (strcmp(name, AB_ATTAG_PID) == 0)
 			pid = g_strdup(value);
 		else if (strcmp(name, AB_ATTAG_EID) == 0)
 			eid = g_strdup(value);
-		*/
-		if( strcmp( name, AB_ATTAG_EID ) == 0 )
-			eid = g_strdup( value );
 		attr = g_list_next(attr);
 	}
 	/* email = addrcache_get_email( book->addressCache, pid, eid ); */
@@ -883,9 +875,6 @@ gint addrbook_read_data(AddressBookFile *book)
 		book->addressCache->modified = FALSE;
 		book->addressCache->dataRead = TRUE;
 		addrcache_set_dirty(book->addressCache, FALSE);
-
-		/* Build address completion index */
-		addrcache_build_index( book->addressCache );
 	}
 	return book->retVal;
 }
@@ -1976,36 +1965,27 @@ GList *addrbook_get_all_persons(AddressBookFile *book)
 	return addrcache_get_all_persons(book->addressCache);
 }
 
-/**
- * Add person and address data to address book.
- * \param  book    Address book.
- * \param  folder  Folder where to add person, or NULL for root folder.
- * \param  name    Common name.
- * \param  address EMail address.
- * \param  remarks Remarks.
- * \return Person added. Do not <b>*NOT*</b> to use the
- *         <code>addrbook_free_xxx()</code> functions... this will destroy
- *         the address book data.
- */
+/* Add person and address data to address book.
+   Enter: book      Address book.
+          folder    Folder where to add person, or NULL for root folder.
+          name      Common name.
+          address   EMail address.
+          remarks   Remarks.
+   Return: Person added. Do not *NOT* to use the addrbook_free_xxx() functions...
+   this will destroy the address book data */
 ItemPerson *addrbook_add_contact(AddressBookFile *book, ItemFolder *folder, 
 				 const gchar *name,const gchar *address, 
 				 const gchar *remarks)
 {
-	ItemPerson *person;
-
 	g_return_val_if_fail(book != NULL, NULL);
-	person = addrcache_add_contact(
-			book->addressCache, folder, name, address, remarks );
-	addrcache_invalidate( book->addressCache );
-	return person;
+	return addrcache_add_contact(book->addressCache, folder, name, address, 
+				     remarks);
 }
 
-/**
- * Return file name for next address book file.
- * \param  book Address book.
- * \return File name, or <i>NULL</i> if could not create. This should be
- *         <code>g_free()</code> when done.
- */
+/* Return file name for next address book file.
+   Enter:  book Address book.
+   Return: File name, or NULL if could not create. This should be g_free()
+           when done */
 gchar *addrbook_guess_next_file(AddressBookFile *book)
 {
 	gchar *newFile = NULL;
@@ -2020,18 +2000,3 @@ gchar *addrbook_guess_next_file(AddressBookFile *book)
 	fileList = NULL;
 	return newFile;
 }
-
-/**
- * Invalidate the address book data. This will cause index to be rebuilt.
- * \param book Address book.
- */
-void addrbook_invalidate( AddressBookFile *book ) {
-	g_return_if_fail( book != NULL );
-	addrcache_invalidate( book->addressCache );
-}
-
-/*
-* End of Source.
-*/
-
-

@@ -187,22 +187,6 @@ static void read_address_book(void) {
 	g_completion_list = g_list_reverse(g_completion_list);
 }
 
-/* should clear up anything after complete_address() */
-void clear_completion_cache(void)
-{
-	if (is_completion_pending()) {
-		if (g_completion_prefix)
-			g_free(g_completion_prefix);
-
-		if (g_completion_addresses) {
-			g_slist_free(g_completion_addresses);
-			g_completion_addresses = NULL;
-		}
-
-		g_completion_count = g_completion_next = 0;
-	}
-}
-
 /* start_address_completion() - returns the number of addresses 
  * that should be matched for completion.
  */
@@ -428,6 +412,22 @@ guint get_completion_count(void)
 		return g_completion_count;
 	else
 		return 0;
+}
+
+/* should clear up anything after complete_address() */
+void clear_completion_cache(void)
+{
+	if (is_completion_pending()) {
+		if (g_completion_prefix)
+			g_free(g_completion_prefix);
+
+		if (g_completion_addresses) {
+			g_slist_free(g_completion_addresses);
+			g_completion_addresses = NULL;
+		}
+
+		g_completion_count = g_completion_next = 0;
+	}
 }
 
 gboolean is_completion_pending(void)

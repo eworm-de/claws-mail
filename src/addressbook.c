@@ -85,7 +85,7 @@
 
 #ifdef USE_LDAP
 #include <pthread.h>
-#include "ldapserver.h"
+#include "syldap.h"
 #include "editldap.h"
 
 #define ADDRESSBOOK_LDAP_BUSYMSG "Busy"
@@ -313,7 +313,7 @@ static void addressbook_folder_remove_node	(GtkCTree *clist,
 						 GtkCTreeNode *node);
 
 #ifdef USE_LDAP
-static void addressbook_ldap_show_message	( LdapServer *server );
+static void addressbook_ldap_show_message	(SyldapServer *server);
 #endif
 
 /* LUT's and IF stuff */
@@ -2484,11 +2484,9 @@ static void addressbook_load_group( GtkCTree *clist, ItemGroup *itemGroup ) {
 	}
 }
 
-static void addressbook_folder_load_one_person(
-		GtkCTree *clist, ItemPerson *person,
-		AddressTypeControlItem *atci,
-		AddressTypeControlItem *atciMail )
-{
+static void addressbook_folder_load_one_person( GtkCTree *clist, ItemPerson *person,  
+						AddressTypeControlItem *atci, AddressTypeControlItem *atciMail) {
+	
 	GtkCTreeNode *nodePerson = NULL;
 	GtkCTreeNode *nodeEMail = NULL;
 	gchar *text[N_COLS];
@@ -2580,10 +2578,8 @@ static void addressbook_folder_remove_node( GtkCTree *clist, GtkCTreeNode *node 
 	addrbook.listSelected = NULL;
 	gtk_ctree_remove_node( clist, node );
 	addressbook_menubar_set_sensitive( FALSE );
-	addressbook_menuitem_set_sensitive(
-		gtk_ctree_node_get_row_data(
-			GTK_CTREE(clist), addrbook.treeSelected ),
-		addrbook.treeSelected );
+	addressbook_menuitem_set_sensitive( gtk_ctree_node_get_row_data( 
+						GTK_CTREE(clist), addrbook.treeSelected ), addrbook.treeSelected );
 }
 
 static void addressbook_folder_refresh_one_person( GtkCTree *clist, ItemPerson *person ) {
@@ -2793,10 +2789,8 @@ static void addressbook_set_clist( AddressObject *obj ) {
 			/* Load root folder */
 			ItemFolder *rootFolder = NULL;
 			rootFolder = addrindex_ds_get_root_folder( ds );
-			addressbook_folder_load_person(
-				ctreelist, addrindex_ds_get_root_folder( ds ) );
-			addressbook_folder_load_group(
-				ctreelist, addrindex_ds_get_root_folder( ds ) );
+			addressbook_folder_load_person( ctreelist, addrindex_ds_get_root_folder( ds ) );
+			addressbook_folder_load_group( ctreelist, addrindex_ds_get_root_folder( ds ) );
 		}
 	}
 	else {
@@ -2861,8 +2855,7 @@ AdapterDSource *addressbook_create_ds_adapter( AddressDataSource *ds,
 }
 
 void addressbook_ads_set_name( AdapterDSource *adapter, gchar *value ) {
-	ADDRESS_OBJECT_NAME(adapter) =
-		mgu_replace_string( ADDRESS_OBJECT_NAME(adapter), value );
+	ADDRESS_OBJECT_NAME(adapter) = mgu_replace_string( ADDRESS_OBJECT_NAME(adapter), value );
 }
 
 /*
@@ -2893,10 +2886,8 @@ static void addressbook_load_tree( void ) {
 					ds = nodeDS->data;
 					newNode = NULL;
 					name = addrindex_ds_get_name( ds );
-					ads = addressbook_create_ds_adapter(
-							ds, atci->objectType, name );
-					newNode = addressbook_add_object(
-							node, ADDRESS_OBJECT(ads) );
+					ads = addressbook_create_ds_adapter( ds, atci->objectType, name );
+					newNode = addressbook_add_object( node, ADDRESS_OBJECT(ads) );
 					nodeDS = g_list_next( nodeDS );
 				}
 				gtk_ctree_expand( ctree, node );
@@ -3121,8 +3112,7 @@ static GtkCTreeNode *addressbook_node_add_group( GtkCTreeNode *node, AddressData
 * Return: Inserted node.
 */
 static GtkCTreeNode *addressbook_node_add_folder(
-		GtkCTreeNode *node, AddressDataSource *ds,
-		ItemFolder *itemFolder, AddressObjectType otype )
+		GtkCTreeNode *node, AddressDataSource *ds, ItemFolder *itemFolder, AddressObjectType otype )
 {
 	GtkCTree *ctree = GTK_CTREE(addrbook.ctree);
 	GtkCTreeNode *newNode = NULL;
@@ -3323,36 +3313,43 @@ static void addressbook_new_ldap_cb( gpointer data, guint action, GtkWidget *wid
 	}
 }
 
-static void addressbook_ldap_show_message( LdapServer *svr ) {
+static void addressbook_ldap_show_message( SyldapServer *svr ) {
 	gchar *name;
 	gchar *desc;
 	*addressbook_msgbuf = '\0';
 	if( svr ) {
-		name = ldapsvr_get_name( svr );
-		if( svr->retVal == MGU_SUCCESS ) {
+		name = syldap_get_name( svr );
+		if( svr->busyFlag ) {
 			g_snprintf( addressbook_msgbuf,
-				    sizeof(addressbook_msgbuf), "%s",
-				    name );
+				    sizeof(addressbook_msgbuf), "%s: %s", name,
+				    ADDRESSBOOK_LDAP_BUSYMSG );
 		}
 		else {
-			desc = addressbook_err2string(
-					_lutErrorsLDAP_, svr->retVal );
-			g_snprintf( addressbook_msgbuf,
-				    sizeof(addressbook_msgbuf),
-				    "%s: %s", name, desc );
+			if( svr->retVal == MGU_SUCCESS ) {
+				g_snprintf( addressbook_msgbuf,
+					    sizeof(addressbook_msgbuf), "%s",
+					    name );
+			}
+			else {
+				desc = addressbook_err2string(
+						_lutErrorsLDAP_, svr->retVal );
+				g_snprintf( addressbook_msgbuf,
+					    sizeof(addressbook_msgbuf),
+					    "%s: %s", name, desc );
+			}
 		}
 	}
 	addressbook_status_show( addressbook_msgbuf );
 }
 
-static void addressbook_ldap_show_results( LdapServer *server ) {
+static void addressbook_ldap_show_results( SyldapServer *sls ) {
 	GtkCTree *ctree = GTK_CTREE(addrbook.ctree);
 	AddressObject *obj;
 	AdapterDSource *ads = NULL;
 	AddressDataSource *ds = NULL;
 	AddressInterface *iface = NULL;
 
-	if( server == NULL ) return;
+	if( sls == NULL ) return;
 	if( ! addrbook.treeSelected ) return;
 	if( GTK_CTREE_ROW( addrbook.treeSelected )->level == 1 ) return;
 
@@ -3361,18 +3358,18 @@ static void addressbook_ldap_show_results( LdapServer *server ) {
 	if( obj->type == ADDR_DATASOURCE ) {
 		ads = ADAPTER_DSOURCE(obj);
 		if( ads->subType == ADDR_LDAP ) {
-			LdapServer *ldapSvr;
+			SyldapServer *server;
 
 			ds = ads->dataSource;
 			if( ds == NULL ) return;
 			iface = ds->interface;
 			if( ! iface->haveLibrary ) return;
 			server = ds->rawDataSource;
-			if( ldapSvr == server ) {
+			if( server == sls ) {
 				/* Read from cache */
 				gtk_widget_show_all(addrbook.window);
 				addressbook_set_clist( obj );
-				addressbook_ldap_show_message( server );
+				addressbook_ldap_show_message( sls );
 				gtk_widget_show_all(addrbook.window);
 				gtk_entry_set_text( GTK_ENTRY(addrbook.entry), "" );
 			}
@@ -3380,27 +3377,24 @@ static void addressbook_ldap_show_results( LdapServer *server ) {
 	}
 }
 
-static gint _idleID_ = 0;
-static gchar *_tempMessage_ = "Busy searching LDAP...";
-
 /*
  * LDAP idle function. This function is called during UI idle time while
  * an LDAP search is in progress.
  * Enter: data Reference to LDAP server object.
  */
 static void addressbook_ldap_idle( gpointer data ) {
-}
+	SyldapServer *server;
 
-/*
- * LDAP search completion function.
- */
-static void addressbook_ldap_idle_end( void ) {
-	/* Server has completed search - remove from idle list */
-	printf( "addressbook_ldap_idle_end... completed" );
-	if( _idleID_ != 0 ) {
-		gtk_idle_remove( _idleID_ );
+	server = ( SyldapServer * ) data;	
+	if( ! server->busyFlag ) {
+		/* Server has completed search - remove from idle list */
+		gtk_idle_remove( server->idleId );
+
+		/* Process callback and free up the thread */
+		addressbook_ldap_show_results( server );
+		g_free( server->thread );
+		server->thread = NULL;
 	}
-	_idleID_ = 0;
 }
 
 /*
@@ -3411,26 +3405,21 @@ static void addressbook_ldap_idle_end( void ) {
 static void addressbook_ldap_lookup( AdapterDSource *ads, gchar *sLookup ) {
 	AddressDataSource *ds = NULL;
 	AddressInterface *iface = NULL;
-	LdapServer *server;
+	SyldapServer *server;
 
-	printf( "addressbook_ldap_lookup/Searching for '%s'\n", sLookup );
 	ds = ads->dataSource;
 	if( ds == NULL ) return;
 	iface = ds->interface;
 	if( ! iface->haveLibrary ) return;
 	server = ds->rawDataSource;
 	if( server ) {
-		printf( "addressbook_ldap_lookup/Starting.../1\n" );
+		syldap_cancel_read( server );
 		if( *sLookup == '\0' || strlen( sLookup ) < 1 ) return;
-
-		/* Setup a query */
-		printf( "addressbook_ldap_lookup/Starting.../2\n" );
-
-		/* Sit back and wait for something to happen */
-		_idleID_ = gtk_idle_add(
-			( GtkFunction ) addressbook_ldap_idle, NULL );
-		addrindex_search_ldap_noid( server, sLookup, addressbook_ldap_idle_end  );
-		addressbook_status_show( _tempMessage_ );
+		syldap_set_search_value( server, sLookup );
+		server->idleId = gtk_idle_add(
+			( GtkFunction ) addressbook_ldap_idle, server );
+		syldap_read_data_th( server );
+		addressbook_ldap_show_message( server );
 	}
 }
 #endif

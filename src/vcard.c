@@ -53,10 +53,6 @@ VCardFile *vcard_create() {
 	cardFile->file = NULL;
 	cardFile->path = NULL;
 	cardFile->bufptr = cardFile->buffer;
-
-	/* We want to use an address completion index */
-	addrcache_use_index( cardFile->addressCache, TRUE );
-
 	return cardFile;
 }
 
@@ -151,6 +147,7 @@ void vcard_free( VCardFile *cardFile ) {
 	if( cardFile->file ) fclose( cardFile->file );
 
 	/* Clear cache */
+	addrcache_clear( cardFile->addressCache );
 	addrcache_free( cardFile->addressCache );
 
 	/* Free internal stuff */
@@ -560,9 +557,6 @@ gint vcard_read_data( VCardFile *cardFile ) {
 			addrcache_mark_file( cardFile->addressCache, cardFile->path );
 			cardFile->addressCache->modified = FALSE;
 			cardFile->addressCache->dataRead = TRUE;
-
-			/* Build address completion index */
-			addrcache_build_index( cardFile->addressCache );
 		}
 	}
 	return cardFile->retVal;
