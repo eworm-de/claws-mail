@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
 
 #include "intl.h"
 #include "plugin.h"
@@ -60,21 +61,24 @@ static void set_plugin_list(PluginWindow *pluginwindow)
 	gchar *text[1];
 	gint row;
 	GtkCList *clist = GTK_CLIST(pluginwindow->plugin_list);
-	
+
 	plugins = plugin_get_list();
 	gtk_clist_freeze(clist);
 	gtk_clist_clear(clist);
 	gtk_editable_delete_text(GTK_EDITABLE(pluginwindow->plugin_desc), 0, -1);
 	gtk_widget_set_sensitive(pluginwindow->unload_btn, FALSE);
-	
+
 	for(cur = plugins; cur != NULL; cur = g_slist_next(cur)) {
 		Plugin *plugin = (Plugin *) cur->data;
-		
+
 		text[0] = (gchar *) plugin_get_name(plugin);
 		row = gtk_clist_append(clist, text);
 		gtk_clist_set_row_data(clist, row, plugin);
 	}
 	gtk_clist_thaw(clist);
+
+	if (pluginwindow->selected_plugin == NULL)
+		gtk_clist_select_row (clist, 0, -1);
 }
 
 static void select_row_cb(GtkCList *clist, gint row, gint column,
@@ -84,7 +88,7 @@ static void select_row_cb(GtkCList *clist, gint row, gint column,
 	GtkEditable *plugin_desc = GTK_EDITABLE(pluginwindow->plugin_desc);
 	const gchar *text;
 	gint pos = 0;
-	
+
 	plugin = (Plugin *) gtk_clist_get_row_data(clist, row);
 	pluginwindow->selected_plugin = plugin;
 
@@ -107,9 +111,10 @@ static void unselect_row_cb(GtkCList * clist, gint row, gint column,
 static void unload_cb(GtkButton *button, PluginWindow *pluginwindow)
 {
 	Plugin *plugin = pluginwindow->selected_plugin;
-	
+
 	g_return_if_fail(plugin != NULL);
 	plugin_unload(plugin);
+	pluginwindow->selected_plugin = NULL;
 	set_plugin_list(pluginwindow);
 }
 
@@ -138,6 +143,34 @@ static void load_cb(GtkButton *button, PluginWindow *pluginwindow)
 	}
 
 	set_plugin_list(pluginwindow);		
+}
+
+static void pluginwindow_key_pressed(GtkWidget *widget, GdkEventKey *event,
+				     PluginWindow *pluginwindow)
+{
+	if (event) {
+		switch (event->keyval) {
+			case GDK_Escape : 
+			case GDK_Return : 
+			case GDK_KP_Enter :
+				close_cb(NULL, pluginwindow);
+				break;
+			case GDK_Insert : 
+			case GDK_KP_Insert :
+			case GDK_KP_Add : 
+			case GDK_plus :
+				load_cb(NULL, pluginwindow);
+				break;
+			case GDK_Delete : 
+			case GDK_KP_Delete :
+			case GDK_KP_Subtract : 
+			case GDK_minus :
+				unload_cb(NULL, pluginwindow);
+				break;
+			default :
+				break;
+		}
+	}
 }
 
 void pluginwindow_create()
@@ -186,6 +219,8 @@ void pluginwindow_create()
 	gtk_container_add(GTK_CONTAINER(scrolledwindow2), plugin_list);
 	gtk_clist_set_column_width(GTK_CLIST(plugin_list), 0, 80);
 	gtk_clist_column_titles_show(GTK_CLIST(plugin_list));
+	gtk_clist_set_selection_mode(GTK_CLIST (plugin_list), GTK_SELECTION_BROWSE);
+	gtk_widget_grab_focus(GTK_WIDGET(plugin_list));
 
 	label12 = gtk_label_new(_("Plugins"));
 	gtk_widget_show(label12);
@@ -256,6 +291,8 @@ void pluginwindow_create()
 			   GTK_SIGNAL_FUNC(select_row_cb), pluginwindow);
 	gtk_signal_connect(GTK_OBJECT(plugin_list), "unselect-row",
 			   GTK_SIGNAL_FUNC(unselect_row_cb), pluginwindow);
+	gtk_signal_connect(GTK_OBJECT(window), "key_press_event",
+			   GTK_SIGNAL_FUNC(pluginwindow_key_pressed), pluginwindow);
 
 	pluginwindow->window = window;
 	pluginwindow->plugin_list = plugin_list;

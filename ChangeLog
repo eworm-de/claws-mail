@@ -1,3 +1,93 @@
+2004-12-03
+
+	* version 1.0.0beta4
+
+2004-12-03
+
+	* src/pixmaps/regular.xpm: removed unused icon.
+	* README
+	  README.jp: updated.
+
+2004-12-02
+
+	* src/pop.c: pop3_write_msg_to_file(): don't convert single CRs to
+	  LFs (thanks to Alfons).
+	* src/utils.[ch]: my_memmem(): original implementation of memmem().
+
+2004-12-01
+
+	* manual/ja/sylpheed.sgml: updated for the latest version.
+
+2004-12-01
+
+	* src/pixmaps/unread.xpm: adjusted the hue of image.
+
+2004-12-01
+
+	* src/filter.c: removed C99 '//' comments.
+
+2004-11-30
+
+	* src/pixmaps/dir-close.xpm
+	  src/pixmaps/dir-open.xpm
+	  src/pixmaps/dir-noselect.xpm
+	  src/pixmaps/group.xpm: adjusted the hue of images.
+
+2004-11-29
+
+	* src/pixmaps/dir-close.xpm
+	  src/pixmaps/dir-open.xpm
+	  src/pixmaps/dir-noselect.xpm
+	  src/pixmaps/group.xpm: replaced with new images.
+
+2004-11-29
+
+	* src/pixmaps/folder.xpm: removed.
+
+2004-11-26
+
+	* src/summaryview.c: changed one-letter column titles to icons.
+	* src/pixmaps/mail.xpm: new.
+
+2004-11-26
+
+	* src/summaryview.c: summary_execute(): pop summary statusbar message.
+
+2004-11-26
+
+	* src/prefs_common.c: added Web browser commands.
+
+2004-11-26
+
+	* manual/ja/sylpheed.sgml: updated for the latest version.
+	* manual/ja/Makefile.am: added target 'update-html'.
+
+2004-11-22
+
+	* INSTALL
+	  INSTALL.jp: updated the confirmation list.
+
+2004-11-19
+
+	* src/jpilot.c: unify the coding style.
+	* src/mainwindow.c: fixed duplicated accelerator.
+
+2004-11-18
+
+	* src/procmsg.c: write_mark_func(): fixed bad cast on the system that
+	  sizeof(gpointer) != guint.
+
+2004-11-18
+
+	* src/mainwindow.c: fixed English (trashes -> trash).
+	* src/prefs_common.c: prefs_keybind_apply_clicked(): updated menu
+	  strings.
+
+2004-11-18
+
+	* src/mainwindow.c: changed the menu label "Empty trash" to
+	  "Empty all trashes".
+
 2004-11-16
 
 	* version 1.0.0beta3

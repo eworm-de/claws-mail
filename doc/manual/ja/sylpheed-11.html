@@ -1,55 +1,81 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML>
 <HEAD>
- <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
- <TITLE>Sylpheed User's Manual: 他メール(メール保存形式)からSylpheed(MHフォルダ形式)への移行</TITLE>
+ <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.21">
+ <TITLE>Sylpheed User's Manual: アドレス帳</TITLE>
  <LINK HREF="sylpheed-12.html" REL=next>
  <LINK HREF="sylpheed-10.html" REL=previous>
  <LINK HREF="sylpheed.html#toc11" REL=contents>
 </HEAD>
 <BODY>
-<A HREF="sylpheed-12.html">Next</A>
-<A HREF="sylpheed-10.html">Previous</A>
-<A HREF="sylpheed.html#toc11">Contents</A>
+<A HREF="sylpheed-12.html">次のページ</A>
+<A HREF="sylpheed-10.html">前のページ</A>
+<A HREF="sylpheed.html#toc11">目次へ</A>
 <HR>
-<H2><A NAME="s11">11. 他メール(メール保存形式)からSylpheed(MHフォルダ形式)への移行</A></H2>
+<H2><A NAME="s11">11.</A> <A HREF="sylpheed.html#toc11">アドレス帳</A></H2>
 
-<H2><A NAME="mbox-inport"></A> <A NAME="ss11.1">11.1 mbox形式のメッセージファイルの取り込み</A>
+<P>アドレス帳は、"ツール＞アドレス帳"などによって起動できます。</P>
+<H2><A NAME="ss11.1">11.1</A> <A HREF="sylpheed.html#toc11.1">アドレスの登録・削除</A>
 </H2>
 
-<P>ファイルメニューからmboxファイルをインポートを選択し、
-インポートファイルにはインポートしたいmbox形式のメールボックスを選択します。
-<P>インポート先には選択したメールボックスを展開するフォルダを指定し
-OKを押せばインポートされます。
-mbox形式は、"mbox"というファイルの他にもNetscape Messengerの&nbsp;/nsmailの下のファ
-イル、KMailの&nbsp;/Mail以下のファイル等にも利用されているので、そのファイルを利用
-することで移行できます。
-<P>ただし、KMailは添付ファイルを別ファイルにしてしまう仕様があるらしく、
-添付ファイルがある場合、正しくコンバートすることができません。
-<H2><A NAME="ss11.2">11.2 Windowsのメーラ(Becky!やAL-Mail, Outlook Express4等)からの移行</A>
+<P>アドレス帳を開いた後、アドレスを登録したいフォルダを"共有アドレス"や
+"個人用アドレス"などが書かれたリストの中から選択します。
+その後、
+<UL>
+<LI>メニューより"アドレス＞新規アドレス"</LI>
+<LI>追加ボタンを押す</LI>
+<LI>アドレス表示部分の
+<A HREF="sylpheed-6.html#context-menu">コンテキストメニュー</A>より"新規アドレス"</LI>
+</UL>
+
+のいずれかを行うことで追加
+<A HREF="sylpheed-6.html#dialog">ダイアログ</A>が現れるので、それぞれの項目を入力した後OKを押せば
+登録されます。</P>
+<P>また登録されたアドレスを選択後、
+<UL>
+<LI>メニューより"アドレス＞編集"</LI>
+<LI>
+<A HREF="sylpheed-6.html#context-menu">コンテキストメニュー</A>より"編集"</LI>
+<LI>編集ボタンを押す</LI>
+</UL>
+
+のいずれかを行えば編集ダイアログを表示でき、OKを押せば更新されます。</P>
+<P>同じく登録されたアドレスを選択後、
+<UL>
+<LI>メニューより"アドレス＞削除"</LI>
+<LI>
+<A HREF="sylpheed-6.html#context-menu">コンテキストメニュー</A>より"削除"</LI>
+<LI>削除ボタンを押す</LI>
+</UL>
+
+のいずれかを行えばアドレス帳からそのアドレスを削除することができます。</P>
+<H2><A NAME="ss11.2">11.2</A> <A HREF="sylpheed.html#toc11.2">フォルダとグループ</A>
 </H2>
 
-<P>Windows用フリーソフトウェアである
-<A HREF="http://www.digico-m.com/shin1/">MailExp</A>を利用して
-"標準UNIX From形式のメールボックス"にエクスポートします。
-その後そのファイルを移動しそのファイルを
-<A HREF="#mbox-inport">mbox形式としてインポート</A>します。
-MailExpはとても多くのメーラからのインポートが可能です。
-<H2><A NAME="ss11.3">11.3 Outlook Express 5のdbx形式からの移行</A>
+
+
+
+
+<H2><A NAME="address-combo"></A> <A NAME="ss11.3">11.3</A> <A HREF="sylpheed.html#toc11.3">メッセージ作成ウィンドウとの連携</A>
 </H2>
 
-<P>Outlook Express 5の形式はMailExpではサポートしていないので
-<A HREF="http://www02.so-net.ne.jp/~home/oe5conv/">OE5Conv</A>を利用して
-mbox形式へエクスポートした後、そのファイルを
-<A HREF="#mbox-inport">mbox形式としてインポート</A>します。
-<H2><A NAME="ss11.4">11.4 NMail4(NTool)からの移行</A>
-</H2>
+<P>
+<A HREF="sylpheed-10.html#message-create">メッセージの作成</A>画面で、
+<UL>
+<LI>メニューで"ツール＞アドレス帳"</LI>
+<LI>"アドレス"ボタンをクリック</LI>
+</UL>
 
-<P>GTK+/GNOMEのメーラであるNmailからの移行は、
-<A HREF="http://www.enjoy.ne.jp/~gm/program/nmail4tosylpheed/index-ja.html">Nmail4 to Sylpheed</A>が公開されていますのでそちらを参照ください。
+することでアドレス帳画面を出すことができ、
+そこでアドレスやグループを選択して"宛先"(あるいは"To:"), "Cc:", "Bcc:"ボタンを押せば
+それぞれ宛先, Cc, Bccにアドレスが追加されます。</P>
+<P>複数選択してボタンを押して同時にたくさん追加することも可能ですし、
+一度3つのどれかのボタンを押した後、
+また別のアドレスを選択してボタンを押せば
+前に追加したアドレスの次に選択したアドレスが追加されます。</P>
 <HR>
-<A HREF="sylpheed-12.html">Next</A>
-<A HREF="sylpheed-10.html">Previous</A>
-<A HREF="sylpheed.html#toc11">Contents</A>
+<A HREF="sylpheed-12.html">次のページ</A>
+<A HREF="sylpheed-10.html">前のページ</A>
+<A HREF="sylpheed.html#toc11">目次へ</A>
 </BODY>
 </HTML>

@@ -1,3 +1,159 @@
+2004-12-06 [paul]	0.9.13
+
+	0.9.13 released
+
+2004-12-06 [paul]
+
+	* po/sk.po
+		updated by Andrej Kacian
+	* INSTALL
+	* README.claws
+		updated
+	
+2004-12-06 [christoph]
+
+	* configure.ac
+		move GPGME check to PGP/MIME plugin checks
+
+2004-12-06 [colin]	0.9.12cvs187
+
+	* src/compose.c
+		X-Sylpheed-Gnupg-Mode -> X-Sylpheed-Privacy-System
+
+2004-12-06 [paul]	0.9.12cvs186
+
+	* INSTALL
+	* README.claws
+		updated
+	* po/es.po
+	* po/fr.po
+	* po/it.po
+	* po/ja.po
+	* po/pt_BR.po
+	* po/zh_CN.po
+		updated by Ricardo Mones Lastra, Fabien Vantard, Andrea 
+		Spadaccini, Rui Hirokawa, Frederico Goncalves Guimaraes,
+		and Yang Guilong
+
+2004-12-05 [paul]	0.9.12cvs185
+
+	* INSTALL
+	* Makefile.am
+	* README.claws
+		update
+	* TODO.claws 	**REMOVED**
+		removed, use the wiki instead
+	* tools/Makefile.am
+	* tools/README
+		remove newscache_conv.pl from the release package
+		and notes as it is broken and not currently maintained
+	* tools/filter_conv.pl
+		use --config-dir to find claws' config dir
+	* tools/kdeservicemenu/README
+	* tools/kdeservicemenu/template_sylpheed-attach-files.desktop
+	* tools/kdeservicemenu/template_sylpheed-compress-attach.desktop
+		make a top-level menu entry
+
+2004-12-04 [paul]	0.9.12cvs184
+
+	* src/addrharvest.c
+		conv_unmime_header_overwrite(name)
+
+2004-12-04 [colin]	0.9.12cvs183
+
+	* src/compose.c
+		Fix saving of compose window position
+		when sending mail. Patch by Alfons.
+
+2004-12-04 [paul]	0.9.12cvs182
+
+	* ChangeLog
+	* ChangeLog.jp
+	* INSTALL
+	* NEWS
+	* README
+	* README.jp
+	* doc/manual/ja/Makefile.am
+	* doc/manual/ja/sylpheed-1.html
+	* doc/manual/ja/sylpheed-10.html
+	* doc/manual/ja/sylpheed-11.html
+	* doc/manual/ja/sylpheed-12.html
+	* doc/manual/ja/sylpheed-13.html
+	* doc/manual/ja/sylpheed-14.html
+	* doc/manual/ja/sylpheed-15.html
+	* doc/manual/ja/sylpheed-16.html
+	* doc/manual/ja/sylpheed-17.html
+	* doc/manual/ja/sylpheed-18.html
+	* doc/manual/ja/sylpheed-19.html
+	* doc/manual/ja/sylpheed-2.html
+	* doc/manual/ja/sylpheed-20.html
+	* doc/manual/ja/sylpheed-3.html
+	* doc/manual/ja/sylpheed-4.html
+	* doc/manual/ja/sylpheed-5.html
+	* doc/manual/ja/sylpheed-6.html
+	* doc/manual/ja/sylpheed-7.html
+	* doc/manual/ja/sylpheed-8.html
+	* doc/manual/ja/sylpheed-9.html
+	* doc/manual/ja/sylpheed.html
+	* doc/manual/ja/sylpheed.sgml
+	* src/Makefile.am
+	* src/procmime.c
+	* src/pixmaps/regular.xpm **REMOVED**
+		sync with main 1.0.0beta4, including: "canonicalize text files
+		before encoding to BASE64, and uncanonicalize after decoding
+		to conform with RFC 2045" 
+
+2004-12-03 [christoph]	0.9.12cvs181
+
+	* src/compose.c
+		build the Privacy System menu without GtkItemFactory to
+		allow '/' in Privacy System names
+
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/plugin.c
+		Update description and change Privacy System name
+
+2004-12-03 [paul]
+
+	* src/pixmaps/dir_close.xpm
+	* src/pixmaps/dir_open.xpm
+	* src/pixmaps/drafts_close.xpm
+	* src/pixmaps/drafts_open.xpm
+	* src/pixmaps/group.xpm
+	* src/pixmaps/unread.xpm
+		update icons (sync with main (adjust hue))	
+
+2004-12-02 [paul]	0.9.12cvs180
+
+	* ChangeLog
+	* ChangeLog.jp
+	* src/Makefile.am
+	* src/pop.c
+	* src/common/utils.c
+	* src/common/utils.h
+	* src/pixmaps/folder.xpm **REMOVED**
+		sync with main
+		fixes bug 644 'extra CRs in subject line break filtering' 
+
+2004-12-02 [colin]	0.9.12cvs179
+
+	* src/compose.c
+		Prevent duplicate edition of queued
+		and drafted mails
+
+2004-12-02 [colin]	0.9.12cvs178
+
+	* src/compose.c
+		Fix quote linewrapping ignoring pref
+		Patch by Alfons
+
+2004-11-30 [colin]	0.9.12cvs177
+
+	* src/gtk/prefswindow.c
+	* src/gtk/pluginwindow.c
+		Add shortcut keys to prefs window
+		and plugin window. Patch by Fabien Vantard.
+
 2004-11-29 [colin]	0.9.12cvs176
 
 	* src/folderview.c

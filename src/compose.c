@@ -442,9 +442,8 @@ static void compose_toggle_sign_cb	(gpointer	 data,
 static void compose_toggle_encrypt_cb	(gpointer	 data,
 					 guint		 action,
 					 GtkWidget	*widget);
-static void compose_set_privacy_system_cb(gpointer        data,
-                                        guint           action,
-                                        GtkWidget      *widget);
+static void compose_set_privacy_system_cb(GtkWidget      *widget,
+					  gpointer        data);
 static void compose_update_privacy_system_menu_item(Compose * compose);
 static void activate_privacy_system     (Compose *compose, 
                                          PrefsAccount *account);
@@ -528,6 +527,8 @@ static void compose_check_forwards_go	   (Compose *compose);
 static gboolean compose_send_control_enter	(Compose	*compose);
 static gint compose_defer_auto_save_draft	(Compose	*compose);
 static PrefsAccount *compose_guess_forward_account_from_msginfo	(MsgInfo *msginfo);
+
+static void compose_close	(Compose *compose);
 
 #ifdef WIN32
 static gint ext_editor_timeout_cb(Compose *compose);
@@ -669,7 +670,7 @@ static GtkItemFactoryEntry compose_entries[] =
 #endif
 	{N_("/_Options"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Options/Privacy System"),		NULL, NULL,   0, "<Branch>"},
-	{N_("/_Options/Privacy System/None"),	NULL, compose_set_privacy_system_cb,   0, "<RadioItem>"},
+	{N_("/_Options/Privacy System/None"),	NULL, NULL,   0, "<RadioItem>"},
 	{N_("/_Options/Si_gn"),   	NULL, compose_toggle_sign_cb   , 0, "<ToggleItem>"},
 	{N_("/_Options/_Encrypt"),	NULL, compose_toggle_encrypt_cb, 0, "<ToggleItem>"},
 	{N_("/_Options/---"),		NULL,		NULL,	0, "<Separator>"},
@@ -695,6 +696,29 @@ static GtkTargetEntry compose_mime_types[] =
 {
 	{"text/uri-list", 0, 0}
 };
+
+static gboolean compose_put_existing_to_front(MsgInfo *info)
+{
+	GList *compose_list = compose_get_compose_list();
+	GList *elem = NULL;
+	
+	if (compose_list) {
+		for (elem = compose_list; elem != NULL && elem->data != NULL; 
+		     elem = elem->next) {
+			Compose *c = (Compose*)elem->data;
+
+			if (!c->targetinfo || !c->targetinfo->msgid ||
+			    !info->msgid)
+			    	continue;
+
+			if (!strcmp(c->targetinfo->msgid, info->msgid)) {
+				gtkut_window_popup(c->window);
+				return TRUE;
+			}
+		}
+	}
+	return FALSE;
+}
 
 Compose *compose_new(PrefsAccount *account, const gchar *mailto,
 		     GPtrArray *attach_files)
@@ -1242,6 +1266,9 @@ void compose_reedit(MsgInfo *msginfo)
 
 	g_return_if_fail(msginfo != NULL);
 	g_return_if_fail(msginfo->folder != NULL);
+
+	if (compose_put_existing_to_front(msginfo)) 
+		return;
 
         if (msginfo->folder->stype == F_QUEUE || msginfo->folder->stype == F_DRAFT) {
 		gchar queueheader_buf[BUFFSIZE];
@@ -2762,7 +2789,7 @@ static void compose_wrap_line_all_full(Compose *compose, gboolean autowrap)
 	gint ch_len;
 	gboolean is_new_line = TRUE, do_delete = FALSE;
 	guint i_len = 0;
-	gboolean linewrap_quote = TRUE;
+	gboolean linewrap_quote = prefs_common.linewrap_quote;
 	gboolean set_editable_pos = FALSE;
 	gint editable_pos = 0;
 	gboolean frozen = FALSE;
@@ -3234,7 +3261,7 @@ gint compose_send(Compose *compose)
 
 	if (prefs_common.send_dialog_mode != SEND_DIALOG_ALWAYS) {
 		compose->sending = FALSE;
-		gtk_widget_destroy(compose->window);
+		compose_close(compose);
 		/* No more compose access in the normal codepath 
 		 * after this point! */
 	}
@@ -3267,7 +3294,7 @@ gint compose_send(Compose *compose)
 		folder_item_remove_msg(folder, msgnum);
 		folder_item_scan(folder);
 		if (prefs_common.send_dialog_mode == SEND_DIALOG_ALWAYS)
-			gtk_widget_destroy(compose->window);
+			compose_close(compose);
 	} else {
 		alertpanel_error(_("The message was queued but could not be "
 				   "sent.\nUse \"Send queued messages\" from "
@@ -5182,14 +5209,17 @@ static void compose_update_priority_menu_item(Compose * compose)
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(menuitem), TRUE);
 }	
 
-static void compose_set_privacy_system_cb(gpointer data,
-				          guint action,
-				          GtkWidget *widget)
+static void compose_set_privacy_system_cb(GtkWidget *widget, gpointer data)
 {
 	Compose *compose = (Compose *) data;
 	gchar *systemid;
 	GtkItemFactory *ifactory;
 	gboolean can_sign = FALSE, can_encrypt = FALSE;
+
+	g_return_if_fail(GTK_IS_CHECK_MENU_ITEM(widget));
+
+	if (!GTK_CHECK_MENU_ITEM(widget)->active)
+		return;
 
 	systemid = gtk_object_get_data(GTK_OBJECT(widget), "privacy_system");
 	g_free(compose->privacy_system);
@@ -5200,6 +5230,8 @@ static void compose_set_privacy_system_cb(gpointer data,
 		can_sign = privacy_system_can_sign(systemid);
 		can_encrypt = privacy_system_can_encrypt(systemid);
 	}
+
+	debug_print("activated privacy system: %s\n", systemid != NULL ? systemid : "None");
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 	menu_set_sensitive(ifactory, "/Options/Sign", can_sign);
@@ -5285,18 +5317,18 @@ void compose_update_actions_menu(Compose *compose)
 void compose_update_privacy_systems_menu(Compose *compose)
 {
 	static gchar *branch_path = "/Options/Privacy System";
+	static gboolean connected = FALSE;
 	GtkItemFactory *ifactory;
 	GtkWidget *menuitem;
-	gchar *menu_path;
 	GSList *systems, *cur;
 	GList *amenu;
-	GtkItemFactoryEntry ifentry = {NULL, NULL, NULL, 0, "<Branch>"};
 	GtkWidget *widget;
+	GtkWidget *system_none;
+	GSList *group;
 
 	ifactory = gtk_item_factory_from_widget(compose->menubar);
 
 	/* remove old entries */
-	ifentry.path = branch_path;
 	menuitem = gtk_item_factory_get_widget(ifactory, branch_path);
 	g_return_if_fail(menuitem != NULL);
 
@@ -5307,26 +5339,29 @@ void compose_update_privacy_systems_menu(Compose *compose)
 		amenu = alist;
 	}
 
-	ifentry.accelerator     = NULL;
-	ifentry.callback_action = 0;
-	ifentry.callback        = compose_set_privacy_system_cb;
-	ifentry.item_type       = "/Options/Privacy System/None";
+	system_none = gtk_item_factory_get_widget(ifactory,
+		"/Options/Privacy System/None");
+	if (!connected) {
+		gtk_signal_connect(GTK_OBJECT(system_none), "activate",
+			GTK_SIGNAL_FUNC(compose_set_privacy_system_cb), compose);
+		connected = TRUE;
+	}
 
 	systems = privacy_get_system_ids();
 	for (cur = systems; cur != NULL; cur = g_slist_next(cur)) {
 		gchar *systemid = cur->data;
 
-		menu_path = g_strdup_printf("%s/%s", branch_path,
-					    privacy_system_get_name(systemid));
-		ifentry.path = menu_path;
-		gtk_item_factory_create_item(ifactory, &ifentry, compose, 1);
-		widget = gtk_item_factory_get_widget(ifactory, menu_path);
-
+		group = gtk_radio_menu_item_group(GTK_RADIO_MENU_ITEM(system_none));
+		widget = gtk_radio_menu_item_new_with_label(group,
+			privacy_system_get_name(systemid));
 		gtk_object_set_data_full(GTK_OBJECT(widget), "privacy_system",
 				         g_strdup(systemid), g_free);
+		gtk_signal_connect(GTK_OBJECT(widget), "activate",
+			GTK_SIGNAL_FUNC(compose_set_privacy_system_cb), compose);
 
+		gtk_menu_append(GTK_MENU(system_none->parent), widget);
+		gtk_widget_show(widget);
 		g_free(systemid);
-		g_free(menu_path);
 	}
 	g_slist_free(systems);
 }
@@ -6388,7 +6423,8 @@ static void compose_send_later_cb(gpointer data, guint action,
 	gint val;
 
 	val = compose_queue_sub(compose, NULL, NULL, TRUE);
-	if (!val) gtk_widget_destroy(compose->window);
+	if (!val) 
+		compose_close(compose);
 }
 
 void compose_draft (gpointer data) 
@@ -6439,7 +6475,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 	fprintf(fp, "X-Sylpheed-Sign:%d\n", compose->use_signing);
 	fprintf(fp, "X-Sylpheed-Encrypt:%d\n", compose->use_encryption);
-	fprintf(fp, "X-Sylpheed-Gnupg-Mode:%s\n", compose->privacy_system);
+	fprintf(fp, "X-Sylpheed-Privacy-System:%s\n", compose->privacy_system);
 	fprintf(fp, "\n");
 
 	if (compose_write_to_file(compose, fp, COMPOSE_WRITE_FOR_STORE) < 0) {
@@ -6481,7 +6517,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	lock = FALSE;
 
 	if (action == COMPOSE_QUIT_EDITING)
-		gtk_widget_destroy(compose->window);
+		compose_close(compose);
 	else {
 		struct stat s;
 		gchar *path;
@@ -6623,10 +6659,7 @@ static void compose_close_cb(gpointer data, guint action, GtkWidget *widget)
 		}
 	}
 
-#ifdef WIN32
-	if (compose->window)
-#endif
-	gtk_widget_destroy(compose->window);
+	compose_close(compose);
 }
 
 static void compose_address_cb(gpointer data, guint action, GtkWidget *widget)
@@ -7253,6 +7286,20 @@ static PrefsAccount *compose_guess_forward_account_from_msginfo(MsgInfo *msginfo
 	}
 	
 	return account;
+}
+
+static void compose_close(Compose *compose)
+{
+	gint x, y;
+
+	g_return_if_fail(compose);
+#ifdef WIN32
+	g_return_if_fail(compose->window);
+#endif
+	gtkut_widget_get_uposition(compose->window, &x, &y);
+	prefs_common.compose_x = x;
+	prefs_common.compose_y = y;
+	gtk_widget_destroy(compose->window);
 }
 
 /**

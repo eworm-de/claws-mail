@@ -1,155 +1,71 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <HTML>
 <HEAD>
- <META NAME="GENERATOR" CONTENT="SGML-Tools 1.0.9">
- <TITLE>Sylpheed User's Manual: 情報</TITLE>
+ <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.21">
+ <TITLE>Sylpheed User's Manual: FAQ</TITLE>
  <LINK HREF="sylpheed-17.html" REL=next>
  <LINK HREF="sylpheed-15.html" REL=previous>
  <LINK HREF="sylpheed.html#toc16" REL=contents>
 </HEAD>
 <BODY>
-<A HREF="sylpheed-17.html">Next</A>
-<A HREF="sylpheed-15.html">Previous</A>
-<A HREF="sylpheed.html#toc16">Contents</A>
+<A HREF="sylpheed-17.html">次のページ</A>
+<A HREF="sylpheed-15.html">前のページ</A>
+<A HREF="sylpheed.html#toc16">目次へ</A>
 <HR>
-<H2><A NAME="s16">16. 情報</A></H2>
+<H2><A NAME="s16">16.</A> <A HREF="sylpheed.html#toc16">FAQ</A></H2>
 
-<P>
-<H2><A NAME="ss16.1">16.1 Sylpheed 関連サイト</A>
+
+<H2><A NAME="ss16.1">16.1</A> <A HREF="sylpheed.html#toc16.1">ニュースのメッセージ未読情報について</A>
 </H2>
 
-<P>
-<H3>Sylpheed オフィシャルWebサイト</H3>
+<P>Q. Sylpheedでは同じMessageの未読情報を異なるフォルダ間で管理してくれないのでしょうか?</P>
 
-<P>Sylpheed オフィシャルWebサイトの場所は、
-<A HREF="http://sylpheed.good-day.net/">http://sylpheed.good-day.net/</A>
-です。
-<H3>Sylpheed 最新版入手先</H3>
-
-<P>
-<A HREF="http://sylpheed.good-day.net/sylpheed/">http://sylpheed.good-day.net/sylpheed/</A>から入手できます。
-<P>
-<H3>rpmの入手先</H3>
-
-<P>
-<A HREF="http://members.linuxstart.com/~sunnyone/mylinux/sylpheed.html">http://members.linuxstart.com/~sunnyone/mylinux/sylpheed.html</A><P>でほとんどのRedHat Package Manager(rpm)を利用したLinux Distributionに対応できると思われる
-rpmがあります。それぞれのDistribution用のものが用意されている場合でこれを利用してもほとんど問題ないでしょう。
-多分最新です。
-<P>各Distribution用としては、
-<A HREF="http://vinelinux.org/">Vine Linux</A>用にVine Plus、
-<A HREF="http://www.kondara.org/">Kondara MNU/Linux</A>用にKondara-Zooなどが存在します。
-<H3>Debian Packageの入手先</H3>
-
-<P>Debian JPのwoody-jpに存在します。
-<H3>FreeBSD portsの入手先</H3>
-
-<H2><A NAME="Sylpheed-ML"></A> <A NAME="ss16.2">16.2 メーリングリスト</A>
+<P>A. 現在のSylpheedは未読情報はフォルダ単位で管理しているため、
+ニュースグループごとに未読情報は変わって来てしまいます。</P>
+<H2><A NAME="ss16.2">16.2</A> <A HREF="sylpheed.html#toc16.2">メニューなどのフォント変更について</A>
 </H2>
 
-<P>Sylpheed メーリングリストは good-day.net で運用されることになりました。
-<P>Sylpheed に関する全般的な話題を扱うメーリングリストです。日本語
-(
-<A HREF="sylpheed-jp@good-day.net">sylpheed-jp@good-day.net</A>) と
-英語 (
-<A HREF="sylpheed@good-day.net">sylpheed@good-day.net</A>) の2種類があります。
-<P>以下は 
-<A HREF="sylpheed-jp@good-day.net">sylpheed-jp@good-day.net</A> を例に説明しますが、 
-<A HREF="sylpheed@good-day.net">sylpheed@good-day.net</A> の場合は適宜読み替えてください 
-(sylpheed-jp → sylpheed, sylpheed-jp-ctl → sylpheed-ctl)。
-<P>
-<H3>参加方法</H3>
+<P>Q. メッセージ本文のフォントは
+<A HREF="sylpheed-15.html#font-config">全般の設定から変更</A>
+できましたが、サマリやメニューなどのフォントは変更できないのでしょうか?</P>
 
-<P>
-<P>
+<P>A. できます。$HOME/.sylpheed/gtkrcファイルを置いてください。
 <PRE>
-subscribe あなたの氏名
+style "Sylpheed-Widget-font" {
+       fontset = "-adobe-helvetica-medium-r-normal-*-12-*-*-*-*-*-iso8859-1,\
+                  -alias-fixed-medium-r-normal--12-*-*-*-*-*-jisx0208.1983-0"
+}
+class "GtkWidget" style "Sylpheed-Widget-font"
 </PRE>
 
-と本文に書いたメールを
-<A HREF="sylpheed-jp-ctl@good-day.net">sylpheed-jp-ctl@good-day.net</A> 宛に送信してください。
-名前は半角英数字(ローマ字)が期待されています。
-また全角スペースなどのコードがあるとエラーになります。
-<P>その一度めの登録リクエストに対し次のようなフレーズ(この数字はあくまでも例です)
-<PRE>
-confirm 84682771 Anne Shirley
-</PRE>
-
-を含む『このメーリングリストに登録をしてもよいか?』という確認を求めるメールを一
-度返します。
-これは「勝手にメーリングリストへ登録されてしまう」等のいたずらへの予防策です。
-<P>あなたがこのメーリングリストへの参加確認のメールを受けとったなら、
-<PRE>
-confirm パスワード(数字) あなたの名前
-</PRE>
-
-このフレーズを含むメールをもう一度登録用のアドレス 
-<A HREF="sylpheed-jp-ctl@good-day.net">sylpheed-jp-ctl@good-day.net</A>
-へ送信して下さい。そうするとあなたの確認が得られたとみなし、サーバはあなたを登
-録します。
-<P>投稿先は 
-<A HREF="sylpheed-jp@good-day.net">sylpheed-jp@good-day.net</A> です。
-<P>注意: もし、
-<PRE>
-confirm パスワード(数字) あなたの名前
-</PRE>
-
-のメールをなくしてしまったとか、分からなくなってきたので最初からやりなおしたい
-という場合は、「最初から」、つまり
-<PRE>
-subscribe Anne Shirley
-</PRE>
-
-を送ることからやり直して下さい。
-<P>
-<H3>退会方法</H3>
-
-<P>
-<PRE>
-unsubscribe
-</PRE>
-
-と本文に書いたメールを 
-<A HREF="sylpheed-jp-ctl@good-day.net">sylpheed-jp-ctl@good-day.net</A> 宛に送信してください。
-<P>過去ログは
-<A HREF="http://www.tmtm.org/sylpheed/ml/">http://www.tmtm.org/sylpheed/ml/</A>から入手できます。
-<H2><A NAME="ss16.3">16.3 Anonymous CVS</A>
+というようなファイルです。</P>
+<H2><A NAME="ss16.3">16.3</A> <A HREF="sylpheed.html#toc16.3">ショートカットキーのキーバインドの変更</A>
 </H2>
 
-<P>Sylpheedの開発にはCVSが利用されています。
-CVSの説明に関しては、
-<A HREF="http://kahori.com/j-cvsbook/">http://kahori.com/j-cvsbook/</A>などのサイトや書籍を参考にしてください。
-<P>CVSから最新のSylpheedを入手するには,
-環境変数CVSROOTに:pserver:anonymous@sylpheed.good-day.net:/cvsroot/sylpheedをセットします。
-(cvsの-dオプションで直接指定する場合は必要ありません)
-<PRE>
-csh系:
-        setenv CVSROOT :pserver:anonymous@sylpheed.good-day.net:/cvsroot/sylpheed
-sh系(bashなど):
-        export CVSROOT=':pserver:anonymous@sylpheed.good-day.net:/cvsroot/sylpheed'
-</PRE>
-<P>その後、
-<PRE>
-$ cvs login
-CVS password: [enter]
-</PRE>
+<P>Q. ショートカットキーのキーバインドの変更は出来ますか?</P>
 
-でログインします。passwordは無しです。
-<P>適当なディレクトリに移動し、
-<PRE>
-$ cvs -z3 checkout sylpheed
-</PRE>
+<P>A. メニューに設定されている項目に関してはできます。
+メニューで変更したい項目にカーソルを合わせてから、その部分で変更したいキーを押せば、
+割り当てられます。Backspaceキーを押せば、消すことができます。
+変更は保存されます。</P>
+<H2><A NAME="ss16.4">16.4</A> <A HREF="sylpheed.html#toc16.4">返信マークについて</A>
+</H2>
 
-でカレントディレクトリ以下にsylpheedというソースツリーが作成されます。
-<P>最新のソースツリーにアップデートするには、
-<PRE>
-$ cvs -z3 update
-</PRE>
+<P>Q. 返信をやめたのに返信マークが残ってしまいます。消えないのでしょうか。</P>
+<P>A. 現在の仕様では消えません。一度メッセージを未読にしてから読んだことにすることで消すことはできます。</P>
+<H2><A NAME="ss16.5">16.5</A> <A HREF="sylpheed.html#toc16.5">サマリビューの下に表示される画像について</A>
+</H2>
 
-を実行してください。
+<P>Q. ヘッダが表示されている部分に小さな画像が表示されていますが、これは何でしょうか。
+また、どのようにしたら挿入できるのでしょうか。</P>
+<P>A. これは、X-Faceといいます。
+<A HREF="sylpheed-8.html#Account-Config">アカウントの設定</A>のユーザ定義ヘッダで、
+X-Faceヘッダフィールドに登録すれば相手側に環境があれば表示されることが可能です。</P>
 <P>
+<A HREF="http://www.dairiki.org/xface/">http://www.dairiki.org/xface/</A>のサイトで既存の画像ファイルをX-Faceフォーマットに変換することができます。</P>
 <HR>
-<A HREF="sylpheed-17.html">Next</A>
-<A HREF="sylpheed-15.html">Previous</A>
-<A HREF="sylpheed.html#toc16">Contents</A>
+<A HREF="sylpheed-17.html">次のページ</A>
+<A HREF="sylpheed-15.html">前のページ</A>
+<A HREF="sylpheed.html#toc16">目次へ</A>
 </BODY>
 </HTML>

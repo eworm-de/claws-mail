@@ -2,19 +2,14 @@ SUBDIRS = m4 po src tools config intl doc
 
 EXTRA_DIST = \
 	ChangeLog.claws \
-	ChangeLog.jp \
 	README.claws \
-	README.jp \
 	sylpheed-128x128.png \
 	sylpheed-64x64.png \
 	sylpheed-claws.pc.in \
 	sylpheed.desktop \
 	sylpheed.png \
 	sylpheed.spec \
-	sylpheed.spec.in \
-	TODO \
-	TODO.claws \
-	TODO.jp
+	sylpheed.spec.in
 
 if SYLPHEED_GNOME
 pixmapdir=$(gnomedatadir)/pixmaps

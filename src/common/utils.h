@@ -248,6 +248,10 @@ gchar *strtailchomp	(gchar		*str,
 gchar *strcrchomp	(gchar		*str);
 gchar *strcasestr	(const gchar	*haystack,
 			 const gchar	*needle);
+gpointer my_memmem	(gconstpointer	 haystack,
+			 size_t		 haystacklen,
+			 gconstpointer	 needle,
+			 size_t		 needlelen);
 gchar *strncpy2		(gchar		*dest,
 			 const gchar	*src,
 			 size_t		 n);

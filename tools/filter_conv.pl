@@ -20,7 +20,12 @@ use strict;
 #  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #  *
 
-chdir($ENV{ HOME } . "/.sylpheed") or die("You don't appear to have Sylpheed installed\n");
+my $old_config_dir = "$ENV{HOME}/.sylpheed";
+my $config_dir = `sylpheed --config-dir`;
+chomp $config_dir;
+
+chdir($ENV{ HOME } . "/$config_dir")
+	or die("You don't appear to have Sylpheed-Claws installed\n");
 
 ###############################################################################
 
@@ -32,7 +37,8 @@ my @new_filters = ("[global]\n");
 
 my $mailbox;
 
-open(FOLDERLIST, "<folderlist.xml") or die("Can't find 'folderlist.xml'\n");
+open(FOLDERLIST, "<$old_config_dir/folderlist.xml")
+	or die("Can't find '$old_config_dir/folderlist.xml'\n");
   while (<FOLDERLIST>) {
     if (m/<folder type="mh" name="([^"]+)" path="[^"]+"/) {
       $mailbox = $1;
@@ -43,7 +49,8 @@ close FOLDERLIST;
 
 ###############################################################################
 
-open(FILTERRC, "<filterrc") or die("Can't find your old filter rules ('filterrc')\n");
+open(FILTERRC, "<$old_config_dir/filterrc")
+	or die("Can't find your old filter rules ('$old_config_dir/filterrc')\n");
   while (<FILTERRC>) {
     chomp();
 
@@ -155,9 +162,11 @@ open(MATCHERRC, ">>matcherrc");
   print MATCHERRC @new_filters;
 close(MATCHERRC);
 
-rename("filterrc", "filterrc.old");
+print "Converted $#new_filters filters\n";
 
+if ($old_config_dir eq $config_dir) {
+	rename("filterrc", "filterrc.old");
+	print "Renamed your old filter rules ('filterrc' to 'filterrc.old')\n";
+}
 ###############################################################################
 
-print "Converted $#new_filters filters\n";
-print "Renamed your old filter rules ('filterrc' to 'filterrc.old')\n";

@@ -14,7 +14,6 @@ EXTRA_TOOLS = \
 	maildir2sylpheed.pl \
 	multiwebsearch.pl \
 	nautilus2sylpheed.sh \
-	newscache_clean.pl \
 	outlook2sylpheed.pl \
 	sylpheed-switcher \
 	sylprint.pl \
@@ -23,15 +22,15 @@ EXTRA_TOOLS = \
 	textviewer.sh \
         update-po \
 	uudec \
-	vcard2xml.py
+	vcard2xml.py \
+	kdeservicemenu/install.sh \
+	kdeservicemenu/sylpheed-kdeservicemenu.pl
 
 EXTRA_DIST = \
 	README \
 	README.sylprint \
 	multiwebsearch.conf \
 	kdeservicemenu/README \
-	kdeservicemenu/install.sh \
-	kdeservicemenu/sylpheed-kdeservicemenu.pl \
 	kdeservicemenu/template_sylpheed-attach-files.desktop \
 	kdeservicemenu/template_sylpheed-compress-attach.desktop \
 	$(EXTRA_TOOLS)

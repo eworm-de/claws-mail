@@ -9,8 +9,8 @@ rem set AUTOSRC=\cygwin\src\sylpheed-claws-w32\sylpheed-claws-head\sylpheed-claw
 set SRC=..\..\src
 set PATCHES=..\patches
 
-deltree /y src
-deltree /y empty
+rd /s /q src
+rd /s /q empty
 mkdir src
 mkdir empty
 
@@ -24,8 +24,8 @@ copy %AUTOSRC%\quote_fmt_parse.h	src	> NUL
 
 diff -urN empty src > %PATCHES%\%GENERATED%
 
-deltree /y src
-deltree /y empty
+rd /s /q src
+rd /s /q empty
 
 set GENERATED=
 set AUTOSRC=

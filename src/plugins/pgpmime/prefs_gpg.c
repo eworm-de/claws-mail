@@ -286,7 +286,7 @@ static void prefs_gpg_account_create_widget_func(PrefsPage *_page,
 	frame1 = gtk_frame_new(_("Sign key"));
 	gtk_widget_show(frame1);
 	gtk_box_pack_start(GTK_BOX(vbox), frame1, FALSE, FALSE, 0);
-	gtk_frame_set_label_align(GTK_FRAME(frame1), 4.84288e-08, 0.5);
+	gtk_frame_set_label_align(GTK_FRAME(frame1), 0.0, 0.5);
 
 	table1 = gtk_table_new(4, 3, FALSE);
 	gtk_widget_show(table1);

@@ -1,3 +1,94 @@
+2004-12-03
+
+	* version 1.0.0beta4
+
+2004-12-03
+
+	* src/pixmaps/regular.xpm: 未使用のアイコンを削除。
+	* README
+	  README.jp: 更新。
+
+2004-12-02
+
+	* src/pop.c: pop3_write_msg_to_file(): 単体の CR を LF に変換しない
+	  ようにした(Alfons さん thanks)。
+	* src/utils.[ch]: my_memmem(): my_memmem() を独自実装。
+
+2004-12-01
+
+	* manual/ja/sylpheed.sgml: 最新版に追従。
+
+2004-12-01
+
+	* src/pixmaps/unread.xpm: 色合いを調整。
+
+2004-12-01
+
+	* src/filter.c: C99 '//' コメントを削除。
+
+2004-11-30
+
+	* src/pixmaps/dir-close.cpm
+	  src/pixmaps/dir-open.xpm
+	  src/pixmaps/dir-noselect.xpm
+	  src/pixmaps/group.xpm: 色合いを調整。
+
+2004-11-29
+
+	* src/pixmaps/dir-close.cpm
+	  src/pixmaps/dir-open.xpm
+	  src/pixmaps/dir-noselect.xpm
+	  src/pixmaps/group.xpm: 新しい画像で置き換えた。
+
+2004-11-29
+
+	* src/pixmaps/folder.xpm: 削除。
+
+2004-11-26
+
+	* src/summaryview.c: 1文字のカラムタイトルをアイコンに変更。
+	* src/pixmaps/mail.xpm: 新規。
+
+2004-11-26
+
+	* src/summaryview.c: summary_execute(): サマリのステータスバー
+	  メッセージを pop するようにした。
+
+2004-11-26
+
+	* src/prefs_common.c: Web ブラウザコマンドを追加。
+
+2004-11-26
+
+	* manual/ja/sylpheed.sgml: 最新版に追従。
+	* manual/ja/Makefile.am: ターゲット 'update-html' を追加。
+
+2004-11-22
+
+	* INSTALL
+	  INSTALL.jp: 動作確認リストを更新。
+
+2004-11-19
+
+	* src/jpilot.c: コーディングスタイルを統一。
+	* src/mainwindow.c: 重複するアクセラレータを修正。
+
+2004-11-18
+
+	* src/procmsg.c: write_mark_func(): sizeof(gpointer) != guint となる
+	  システムでの誤ったキャストを修正。
+
+2004-11-18
+
+	* src/mainwindow.c: 英語を修正(trashes -> trash)。
+	* src/prefs_common.c: prefs_keybind_apply_clicked(): メニュー文字列
+	  を更新。
+
+2004-11-18
+
+	* src/mainwindow.c: メニューラベル「ごみ箱を空にする」を「すべての
+	  ごみ箱を空にする」に変更。
+
 2004-11-16
 
 	* version 1.0.0beta3
