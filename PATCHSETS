@@ -92,3 +92,4 @@
 ( cvs diff -u -r 1.71 -r 1.73 src/addressbook.c; ) > 0.9.12cvs107.patchset
 ( cvs diff -u -r 1.73 -r 1.74 src/addressbook.c; ) > 0.9.12cvs108.patchset
 ( cvs diff -u -r 1.306 -r 1.307 src/mainwindow.c; ) > 0.9.12cvs109.patchset
+( cvs diff -u -r 1.246 -r 1.247 src/folderview.c; cvs diff -u -r 1.307 -r 1.308 src/mainwindow.c; ) > 0.9.12cvs110.patchset
