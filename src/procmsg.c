@@ -850,6 +850,7 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 	MEMBCOPY(size);
 	MEMBCOPY(mtime);
 	MEMBCOPY(date_t);
+
 	MEMBCOPY(flags);
 
 	MEMBDUP(fromname);
@@ -874,6 +875,7 @@ MsgInfo *procmsg_msginfo_copy(MsgInfo *msginfo)
 
 	MEMBCOPY(score);
 	MEMBCOPY(threadscore);
+	MEMBDUP(plaintext_file);
 
 	return newmsginfo;
 }
@@ -955,6 +957,8 @@ void procmsg_msginfo_free(MsgInfo *msginfo)
 	g_free(msginfo->partial_recv);
 	g_free(msginfo->account_server);
 	g_free(msginfo->account_login);
+	
+	g_free(msginfo->plaintext_file);
 
 	g_free(msginfo);
 }

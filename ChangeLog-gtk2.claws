@@ -1,3 +1,17 @@
+2004-08-27 [colin]	0.9.12cvs83.1
+
+	* ChangeLog
+	* ChangeLog.claws
+	* ChangeLog.jp
+	* src/mh.c
+	* src/procheader.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/common/utils.c
+	* src/gtk/menu.h
+	* po/
+		Sync with HEAD 0.9.12cvs83
+
 2004-08-26 [colin]	0.9.12cvs82.4
 
 	* src/codeconv.c

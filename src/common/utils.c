@@ -3051,6 +3051,7 @@ gchar *file_read_stream_to_str(FILE *fp)
 gint execute_async(gchar *const argv[])
 {
 	pid_t pid;
+	gint status;
 
 	if ((pid = fork()) < 0) {
 		perror("fork");
@@ -3075,14 +3076,18 @@ gint execute_async(gchar *const argv[])
 		_exit(0);
 	}
 
-	waitpid(pid, NULL, 0);
+	waitpid(pid, &status, 0);
 
-	return 0;
+	if (WIFEXITED(status))
+		return WEXITSTATUS(status);
+	else
+		return -1;
 }
 
 gint execute_sync(gchar *const argv[])
 {
 	pid_t pid;
+	gint status;
 
 	if ((pid = fork()) < 0) {
 		perror("fork");
@@ -3096,9 +3101,12 @@ gint execute_sync(gchar *const argv[])
 		_exit(1);
 	}
 
-	waitpid(pid, NULL, 0);
+	waitpid(pid, &status, 0);
 
-	return 0;
+	if (WIFEXITED(status))
+		return WEXITSTATUS(status);
+	else
+		return -1;
 }
 
 gint execute_command_line(const gchar *cmdline, gboolean async)
@@ -3106,12 +3114,15 @@ gint execute_command_line(const gchar *cmdline, gboolean async)
 	gchar **argv;
 	gint ret;
 
+	debug_print("executing: %s\n", cmdline);
+
 	argv = strsplit_with_quote(cmdline, " ", 0);
 
 	if (async)
 		ret = execute_async(argv);
 	else
 		ret = execute_sync(argv);
+
 	g_strfreev(argv);
 
 	return ret;
@@ -3208,11 +3219,12 @@ gint open_uri(const gchar *uri, const gchar *cmdline)
 		g_snprintf(buf, sizeof(buf), cmdline, encoded_uri);
 	else {
 		if (cmdline)
-			g_warning("Open URI command line is invalid: `%s'",
+			g_warning("Open URI command line is invalid "
+				  "(there must be only one '%%s'): %s",
 				  cmdline);
 		g_snprintf(buf, sizeof(buf), DEFAULT_BROWSER_CMD, encoded_uri);
 	}
-	
+
 	execute_command_line(buf, TRUE);
 
 	return 0;

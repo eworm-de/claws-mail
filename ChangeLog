@@ -1,3 +1,75 @@
+2004-08-27
+
+	* src/prefs_filter.c: auto-scroll when a new rule is added.
+	  open edit dialog when a rule is double-clicked.
+	  prefs_filter_copy_cb(): implemented.
+	* src/prefs_filter_edit.c: implemented action "Stop rule evaluation".
+
+2004-08-26
+
+	* src/filter.[ch]
+	  src/inc.c
+	  src/mbox.c
+	  src/prefs_filter_edit.c
+	  src/summaryview.c: renamed FilterResult to FilterInfo, and added
+	  account to its members.
+	  Implemented command test, size, age, account, and on-receive
+	  condition.
+	* src/mh.c
+	  src/procheader.c: procheader_parse_file(): also get file size and
+	  timestamp.
+	* src/utils.c:
+	  execute_async()
+	  execute_sync()
+	  execute_command_line(): return exit status.
+
+2004-08-26
+
+	* src/filter.[ch]
+	  src/inc.c: save all types of performed actions.
+	  filter_rule_rename_dest_path(): modified for the new system.
+	  filter_rule_delete_action_by_dest_path(): delete actions that
+	  matches with a path.
+	* src/mbox.c: proc_mbox(): ignore FLT_ACTION_NOT_RECEIVE.
+	* src/prefs_filter.c: prefs_filter_delete_path(): modified for the new
+	  system.
+	* src/summaryview.c:
+	  summary_filter()
+	  summary_filter_func(): modified for the new system.
+
+2004-08-25
+
+	* src/filter.[ch]: implemented message body match.
+	* src/procmime.[ch]:
+	  procmime_find_string_part()
+	  procmime_find_string(): take function pointer for matching.
+	* src/procmsg.[ch]: added file_path (which is only used for temporary
+	  messages) to MsgInfo.
+	  procmsg_msginfo_copy()
+	  procmsg_msginfo_free(): handle extra members.
+	* src/summary_search.c: modified for procmime_find_string().
+	* src/summaryview.c: filter_apply_local() -> filter_apply_msginfo().
+	* src/utils.[ch]: added function for string match.
+	* src/compose.c
+	  src/undo.c: removed redundant debug messages.
+
+2004-08-24
+
+	* implemented the new filtering system (still in progress).
+	* src/defs.h
+	  src/filter.[ch]: implemented reading/writing of filter XML data.
+	* src/prefs_filter.[ch]
+	  src/prefs_filter_edit.[ch]: implemented UI for the new filtering
+	  system.
+	* src/inc.c
+	  src/main.c
+	  src/mbox.c
+	  src/pop.c
+	  src/summaryview.c: modified for the new filtering system.
+	* src/menu.h: MENUITEM_ADD(): create separator if label is NULL.
+	* src/procheader.[ch]: added some utility functions.
+	* src/utils.c: open_uri(): modified warning message.
+
 2004-08-09
 
 	* src/main.c: removed parsing of "./gtkrc".
@@ -53,7 +125,7 @@
 
 2004-06-23
 
-	* src/compose.[ch]: autowrap can be switchd on/off from the compose
+	* src/compose.[ch]: autowrap can be switched on/off from the compose
 	  window.
 
 2004-06-17

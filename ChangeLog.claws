@@ -1,3 +1,91 @@
+2004-08-27 [paul]	0.9.12cvs83
+
+	* src/mh.c
+	* src/procheader.c
+	* src/procmsg.c
+	* src/procmsg.h
+	* src/common/utils.c
+	* src/gtk/menu.h
+		sync with main 0.9.12cvs6, see ChangeLog
+		2004-08-24, 2004-08-25, 2004-08-26
+
+
+2004-08-26 [paul]
+
+	* po/ja.po
+		updated by Rui Hirokawa
+
+2004-08-25 [colin]	0.9.12cvs82
+
+	* src/plugins/pgpmime/pgpmime.c
+		Fix leak on non-combined encrypted messages
+
+2004-08-25 [colin]	0.9.12cvs81
+
+	* src/plugins/pgpmime/pgpmime.c
+	* src/plugins/pgpmime/sgpgme.c
+	* src/plugins/pgpmime/sgpgme.h
+		Handle combined encryption/signature
+
+2004-08-24 [colin]	0.9.12cvs80
+
+	* src/folder.c
+		Set mime flags on non multipart messages too
+
+2004-08-23 [christoph]	0.9.12cvs79
+
+	* src/compose.c
+		create message header in memory as GString before writing it
+		to the message file
+
+2004-08-23 [colin]	0.9.12cvs78
+
+	* src/rfc2015.c
+	* src/rfc2015.h
+	* src/compose.c
+		Fix (again) bug 197: inline encryption broken
+
+2004-08-23 [paul]
+
+	* po/zh_CN.po
+		updated by Hansom Young
+
+2004-08-23 [paul]
+
+	* 0.9.12a released
+
+2004-08-23 [colin]	0.9.12cvs77
+
+	* src/imap.c
+		Try and fix bug 577 (session->last_access_time is broken since 
+		sync with main 0.9.12cvs2). 
+		Patch by Stephan Sachse <whiteman@teg-clan.de>
+
+2004-08-23 [paul]
+
+	* po/es.po
+	* po/fr.po
+	* po/pl.po
+	* po/pt_BR.po
+	* po/sk.po
+	* po/sr.po
+		update translations. submitted by Ricardo
+		Mones Lastra, Fabien Vantard, Emilian Nowak,
+		Frederico Goncalves Guimaraes, Andrej Kacian,
+		Urke MMI
+
+2004-08-22 [paul]	0.9.12cvs76
+
+	* src/plugins/trayicon/trayicon.c
+		fix formatting bug in trayicon_popup_menu_entries[]
+
+
+2004-08-22 [paul]	0.9.12cvs75
+
+	* m4/Makefile.am
+		remove reference to openssl.m4
+
+
 2004-08-21 [colin]	0.9.12cvs74
 
 	* src/compose.c
