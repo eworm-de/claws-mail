@@ -656,10 +656,10 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Message/_Delete"),		"<control>D", delete_cb,  0, NULL},
 	{N_("/_Message/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Message/_Mark"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Message/_Mark/_Mark"),		NULL, mark_cb,   0, NULL},
+	{N_("/_Message/_Mark/_Mark"),		"<shift>asterisk", mark_cb, 0, NULL},
 	{N_("/_Message/_Mark/_Unmark"),		"U", unmark_cb, 0, NULL},
 	{N_("/_Message/_Mark/---"),		NULL, NULL, 0, "<Separator>"},
-	{N_("/_Message/_Mark/Mark as unr_ead"),	NULL, mark_as_unread_cb, 0, NULL},
+	{N_("/_Message/_Mark/Mark as unr_ead"),	"<shift>exclam", mark_as_unread_cb, 0, NULL},
 	{N_("/_Message/_Mark/Mark as rea_d"),
 						NULL, mark_as_read_cb, 0, NULL},
 	{N_("/_Message/_Mark/Mark all _read"),	NULL, mark_all_read_cb, 0, NULL},
@@ -1591,12 +1591,13 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Message/Delete" 		  , M_TARGET_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 		{"/Message/Mark"   		  , M_TARGET_EXIST},
 
-		{"/Tools/Delete duplicated messages", M_MSG_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 		{"/Tools/Add sender to address book", M_SINGLE_TARGET_EXIST},
 		{"/Tools/Filter messages"           , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Tools/Create filter rule"        , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 		{"/Tools/Execute"                   , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Tools/Actions"		    , M_MSG_EXIST},
+		{"/Tools/Delete duplicated messages", M_MSG_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
+
 		{"/Configuration", M_UNLOCKED},
 
 		{NULL, 0}

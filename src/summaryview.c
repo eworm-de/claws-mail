@@ -1681,11 +1681,16 @@ static void summary_status_show(SummaryView *summaryview)
 		n_selected++;
 	}
 
-	gtk_label_set(GTK_LABEL(summaryview->statlabel_folder),
-		      summaryview->folder_item &&
-		      summaryview->folder_item->folder->type == F_NEWS
-		      ? g_basename(summaryview->folder_item->path)
-		      : summaryview->folder_item->path);
+	if (summaryview->folder_item->folder->type == F_NEWS) {
+		gchar *group;
+		group = get_abbrev_newsgroup_name
+			(g_basename(summaryview->folder_item->path));
+		gtk_label_set(GTK_LABEL(summaryview->statlabel_folder), group);
+		g_free(group);
+	} else {
+		gtk_label_set(GTK_LABEL(summaryview->statlabel_folder),
+			      summaryview->folder_item->path);
+	}
 
 	if (summaryview->deleted)
 		del = g_strdup_printf(_("%d deleted"), summaryview->deleted);

@@ -1,3 +1,56 @@
+2002-03-23
+
+	* src/compose.c
+	  src/mainwindow.c
+	  src/prefs_common.c: 'Tool' メニューを 'Tools' に変更。
+	  '重複メッセージを削除' を 'ツール' の下に移動。
+
+2002-03-23
+
+	* src/folderview.c: SET_SPECIAL_FOLDER(): 移動時に同じ親を保つように
+	  した。
+	* src/imap.c: imap_create_special_folder(): フォルダの作成に失敗した
+	  ときにクラッシュするバグを修正し、 INBOX の下へフォルダの作成を
+	  再度試みるようにした。
+	  imap_scan_tree_recursive(): namespace プレフィクスが INBOX の場合
+	  はそれを自動的に追加しないようにした。 INBOX の下の特別フォルダも
+	  探すようにした。
+	* src/foldersel.c: SET_SPECIAL_FOLDER(): 移動時に同じ親を保つように
+	  した。
+
+2002-03-23
+
+	* src/utils.[ch]: get_abbrev_newsgroup_name(): 新規。省略された
+	  ニュースグループ名を返す。
+	* src/folderview.c: folderview_update_node(): name と path が一致
+	  する場合ニュースグループを省略名で表示。
+	* src/summaryview.c: summary_status_show(): ニュースグループを省略名
+	  で表示。
+
+2002-03-23
+
+	* src/foldersel.c
+	  src/folderview.c: ラベル 'Draft' を 'Drafts' に変更。
+	* src/imap.c: ディレクトリ名 'Draft' を 'Drafts' に変更。
+	  imap_create_missing_folders(): Queue フォルダの draft への誤った
+	  代入を修正。
+
+2002-03-22
+
+	* IMAP サーバ上の送信控 / 草稿 / 送信待ちフォルダを有効にした。
+	* src/compose.c: compose_queue(), compose_draft_cb(): 存在すれば
+	  アカウントの送信待ち、草稿フォルダを使用するようにした。
+	  src/imap.[ch]:
+	  imap_create_trash(): 削除。
+	  imap_create_special_folder(): 新規。imap_create_trash() を一般化。
+	  imap_create_missing_folders(): 足りないフォルダを自動的に作成。
+	  imap_is_msg_changed(): ダミーのメソッドを追加。
+	  imap_scan_tree_recursive(): 送信控、草稿、送信待ちフォルダも探す
+	  ようにした。少しコードを整理。
+	  imap_parse_envelope(): ヌルストリングをチェック。
+	  src/procmsg.c: procmsg_read_cache(): IMAP フォルダのメッセージに
+	  F_QUEUE と F_DRAFT フラグを追加。
+
 2002-03-20
 
 	* src/compose.c: compose_send(): アカウントの送信控フォルダが存在

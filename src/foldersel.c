@@ -227,7 +227,7 @@ static gboolean foldersel_gnode_func(GtkCTree *ctree, guint depth,
 		name = _("Trash");
 		break;
 	case F_DRAFT:
-		name = _("Draft");
+		name = _("Drafts");
 		break;
 	default:
 		name = item->name;
@@ -268,20 +268,21 @@ static void foldersel_expand_func(GtkCTree *ctree, GtkCTreeNode *node,
 #define SET_SPECIAL_FOLDER(item) \
 { \
 	if (item) { \
-		GtkCTreeNode *node_, *sibling; \
+		GtkCTreeNode *node_, *parent, *sibling; \
  \
 		node_ = gtk_ctree_find_by_row_data \
 			(GTK_CTREE(ctree), node, item); \
 		if (!node_) \
 			g_warning("%s not found.\n", item->path); \
 		else { \
-			if (!prev) \
-				sibling = GTK_CTREE_ROW(node)->children; \
-			else \
+			parent = GTK_CTREE_ROW(node_)->parent; \
+			if (prev && parent == GTK_CTREE_ROW(prev)->parent) \
 				sibling = GTK_CTREE_ROW(prev)->sibling; \
+			else \
+				sibling = GTK_CTREE_ROW(parent)->children; \
 			if (node_ != sibling) \
 				gtk_ctree_move(GTK_CTREE(ctree), \
-					       node_, node, sibling); \
+					       node_, parent, sibling); \
 		} \
  \
 		prev = node_; \

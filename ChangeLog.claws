@@ -1,3 +1,8 @@
+2002-03-23 [paul]	0.7.4claws36
+
+	* sync with 0.7.4cvs16
+		see ChangeLog entries 2002-03-23
+
 2002-03-22 [christoph]	0.7.4claws35
 
 	* src/quote_fmt_parse.y

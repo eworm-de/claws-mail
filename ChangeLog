@@ -1,3 +1,56 @@
+2002-03-23
+
+	* src/compose.c
+	  src/mainwindow.c
+	  src/prefs_common.c: changed 'Tool' menu to 'Tools'.
+	  Moved 'Delete duplicated messages' under 'Tools'.
+
+2002-03-23
+
+	* src/folderview.c: SET_SPECIAL_FOLDER(): keep the same parent
+	  when moving.
+	* src/imap.c: imap_create_special_folder(): fixed a crash bug
+	  when folder creation failed, and re-try to create folders under
+	  INBOX.
+	  imap_scan_tree_recursive(): don't automatically add namespace
+	  prefix if it's INBOX. Search also under the INBOX for special
+	  folders.
+	* src/foldersel.c: SET_SPECIAL_FOLDER(): keep the same parent
+	  when moving.
+
+2002-03-23
+
+	* src/utils.[ch]: get_abbrev_newsgroup_name(): new. It returns the
+	  abbreviated newsgroup name.
+	* src/folderview.c: folderview_update_node(): display newsgroups
+	  with abbreviated name if name and path is the same.
+	* src/summaryview.c: summary_status_show(): show the newsgroup with
+	  abbreviated name.
+
+2002-03-23
+
+	* src/foldersel.c
+	  src/folderview.c: changed the label 'Draft' to 'Drafts'.
+	* src/imap.c: changed the directory name 'Draft' to 'Drafts'.
+	  imap_create_missing_folders(): fixed the wrong assignment of
+	  Queue folder to draft.
+
+2002-03-22
+
+	* enabled Sent / Draft / Queue folders on IMAP server.
+	* src/compose.c: compose_queue(), compose_draft_cb(): use account's
+	  queue and draft folder if they exist.
+	  src/imap.[ch]:
+	  imap_create_trash(): removed.
+	  imap_create_special_folder(): new. Generalized imap_create_trash().
+	  imap_create_missing_folders(): automatically create missing folders.
+	  imap_is_msg_changed(): added the dummy method.
+	  imap_scan_tree_recursive(): search also Sent, Draft and Queue
+	  folders. Minor code cleanups.
+	  imap_parse_envelope(): check for null strings.
+	  src/procmsg.c: procmsg_read_cache(): add F_QUEUE or F_DRAFT flag
+	  for messages on IMAP folder.
+
 2002-03-20
 
 	* src/compose.c: compose_send(): use account's outbox folder

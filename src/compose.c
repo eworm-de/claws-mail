@@ -3298,9 +3298,12 @@ static gint compose_queue(Compose *compose, gint *msgnum, FolderItem **item)
 		g_free(tmp2);
 		return -1;
 	}
-						
-	/* queue message */
-	queue = folder_get_default_queue();
+
+	if (compose->account->folder &&
+	    FOLDER(compose->account->folder)->queue)
+		queue = FOLDER(compose->account->folder)->queue;
+	else
+		queue = folder_get_default_queue();
 
 	folder_item_scan(queue);
 	queue_path = folder_item_get_path(queue);
@@ -5853,7 +5856,11 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 
 	if (lock) return;
 
-	draft = folder_get_default_draft();
+	if (compose->account && compose->account->folder &&
+	    FOLDER(compose->account->folder)->draft)
+		draft = FOLDER(compose->account->folder)->draft;
+	else
+		draft = folder_get_default_draft();
 	g_return_if_fail(draft != NULL);
 
 	lock = TRUE;
@@ -5868,7 +5875,7 @@ static void compose_draft_cb(gpointer data, guint action, GtkWidget *widget)
 	}
 
 	folder_item_scan(draft);
-	if ((msgnum = folder_item_add_msg(draft, tmp, TRUE)) <= 0) {
+	if ((msgnum = folder_item_add_msg(draft, tmp, TRUE)) < 0) {
 		unlink(tmp);
 		g_free(tmp);
 		lock = FALSE;

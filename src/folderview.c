@@ -1042,7 +1042,7 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 			openxpm = folderopenxpm;
 			openmask = folderopenxpmmask;
 		}
-		name = g_strdup(_("Draft"));
+		name = g_strdup(_("Drafts"));
 		break;
 	default:
 		if (item->hide_read_msgs) {
@@ -1070,8 +1070,13 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 				name = "";
 			}
 			name = g_strconcat(item->name, name, NULL);
-		} else
-			name = g_strdup(item->name);
+		} else {
+			if (item->folder->type == F_NEWS &&
+			    !strcmp2(item->name, item->path))
+				name = get_abbrev_newsgroup_name(item->path);
+			else
+				name = g_strdup(item->name);
+		}
 	}
 
 	if (!GTK_CTREE_ROW(node)->expanded &&
@@ -1227,18 +1232,19 @@ static void folderview_expand_func(GtkCTree *ctree, GtkCTreeNode *node,
 #define SET_SPECIAL_FOLDER(ctree, item) \
 { \
 	if (item) { \
-		GtkCTreeNode *node, *sibling; \
+		GtkCTreeNode *node, *parent, *sibling; \
  \
 		node = gtk_ctree_find_by_row_data(ctree, root, item); \
 		if (!node) \
 			g_warning("%s not found.\n", item->path); \
 		else { \
-			if (!prev) \
-				sibling = GTK_CTREE_ROW(root)->children; \
-			else \
+			parent = GTK_CTREE_ROW(node)->parent; \
+			if (prev && parent == GTK_CTREE_ROW(prev)->parent) \
 				sibling = GTK_CTREE_ROW(prev)->sibling; \
+			else \
+				sibling = GTK_CTREE_ROW(parent)->children; \
 			if (node != sibling) \
-				gtk_ctree_move(ctree, node, root, sibling); \
+				gtk_ctree_move(ctree, node, parent, sibling); \
 		} \
  \
 		prev = node; \

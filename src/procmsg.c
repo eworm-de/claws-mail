@@ -181,13 +181,14 @@ GSList *procmsg_read_cache(FolderItem *item, gboolean scan_file)
 
 	default_flags.perm_flags = MSG_NEW|MSG_UNREAD;
 	default_flags.tmp_flags = MSG_CACHED;
-	if (type == F_MH) {
+	if (type == F_MH || type == F_IMAP) {
 		if (item->stype == F_QUEUE) {
 			MSG_SET_TMP_FLAGS(default_flags, MSG_QUEUED);
 		} else if (item->stype == F_DRAFT) {
 			MSG_SET_TMP_FLAGS(default_flags, MSG_DRAFT);
 		}
-	} else if (type == F_IMAP) {
+	}
+	if (type == F_IMAP) {
 		MSG_SET_TMP_FLAGS(default_flags, MSG_IMAP);
 	} else if (type == F_NEWS) {
 		MSG_SET_TMP_FLAGS(default_flags, MSG_NEWS);

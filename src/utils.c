@@ -1123,6 +1123,31 @@ gchar **strsplit_with_quote(const gchar *str, const gchar *delim,
 	return str_array;
 }
 
+gchar *get_abbrev_newsgroup_name(const gchar *group)
+{
+	gchar *abbrev_group;
+	gchar *ap;
+	const gchar *p = group;
+
+	abbrev_group = ap = g_malloc(strlen(group) + 1);
+
+	while (*p) {
+		while (*p == '.')
+			*ap++ = *p++;
+		if (strchr(p, '.')) {
+			*ap++ = *p++;
+			while (*p != '.') p++;
+			*ap++ = *p++;
+		} else {
+			strcpy(ap, p);
+			return abbrev_group;
+		}
+	}
+
+	*ap = '\0';
+	return abbrev_group;
+}
+
 GList *uri_list_extract_filenames(const gchar *uri_list)
 {
 	GList *result = NULL;

@@ -276,6 +276,8 @@ gchar **strsplit_with_quote		(const gchar	*str,
 					 const gchar	*delim,
 					 gint		 max_tokens);
 
+gchar *get_abbrev_newsgroup_name	(const gchar	*group);
+
 GList *uri_list_extract_filenames	(const gchar	*uri_list);
 void decode_uri				(gchar		*decoded_uri,
 					 const gchar	*encoded_uri);

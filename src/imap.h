@@ -123,6 +123,9 @@ gint imap_remove_msg			(Folder		*folder,
 					 gint		 uid);
 gint imap_remove_all_msg		(Folder		*folder,
 					 FolderItem	*item);
+gboolean imap_is_msg_changed		(Folder		*folder,
+					 FolderItem	*item,
+					 MsgInfo	*msginfo);
 
 void imap_scan_folder			(Folder		*folder,
 					 FolderItem	*item);
