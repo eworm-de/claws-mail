@@ -1,3 +1,8 @@
+2002-11-26 [paul]	0.8.6claws13
+
+	* src/compose.c
+		this time commit the correct file
+
 2002-11-26 [paul]	0.8.6claws12
 
 	* sync with 0.8.6cvs11
