@@ -1658,7 +1658,7 @@ static void prefs_matcher_ok(void)
 	MatcherProp *matcherprop;
 	AlertValue val;
 	gchar *matcher_str;
-	gchar *str;
+	gchar *str = NULL;
 	gint row = 1;
 
 	matchers = prefs_matcher_get_list();

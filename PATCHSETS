@@ -68,3 +68,4 @@
 ( cvs diff -u -r 1.441 -r 1.442 ChangeLog; cvs diff -u -r 1.436 -r 1.437 ChangeLog.jp; cvs diff -u -r 1.85 -r 1.86 src/mh.c; cvs diff -u -r 1.58 -r 1.59 src/procheader.c; cvs diff -u -r 1.165 -r 1.166 src/procmsg.c; cvs diff -u -r 1.69 -r 1.70 src/procmsg.h; cvs diff -u -r 1.51 -r 1.52 src/common/utils.c; cvs diff -u -r 1.7 -r 1.8 src/gtk/menu.h; ) > 0.9.12cvs83.patchset
 ( cvs diff -u -r 1.124 -r 1.125 src/mimeview.c; ) > 0.9.12cvs84.patchset
 ( cvs diff -u -r 1.257 -r 1.258 src/folder.c; ) > 0.9.12cvs85.patchset
+( cvs diff -u -r 1.70 -r 1.71 src/filtering.c; cvs diff -u -r 1.206 -r 1.207 src/imap.c; cvs diff -u -r 1.47 -r 1.48 src/prefs_matcher.c; cvs diff -u -r 1.35 -r 1.36 src/stock_pixmap.c; ) > 0.9.12cvs86.patchset

@@ -2441,7 +2441,7 @@ static gint imap_set_message_flags(IMAPSession *session,
 {
 	gchar *cmd;
 	gchar *flag_str;
-	gint ok;
+	gint ok = 0;
 	GSList *seq_list, *cur;
 	IMAPSet imapset;
 
@@ -3923,7 +3923,7 @@ GSList *imap_get_msginfos(Folder *folder, FolderItem *item, GSList *msgnum_list)
 		startnum = lastnum = GPOINTER_TO_INT(sorted_list->data);
 
 		for (elem = sorted_list;; elem = g_slist_next(elem)) {
-			guint num;
+			guint num = 0;
 
 			if (elem)
 				num = GPOINTER_TO_INT(elem->data);

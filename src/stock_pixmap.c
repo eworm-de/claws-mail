@@ -420,8 +420,8 @@ static gboolean pixmap_with_overlay_expose_event_cb(GtkWidget *widget, GdkEventE
 {
 	GdkDrawable *drawable = widget->window;	
 	GdkGC *gc_pix;
-	gint left;
-	gint top;
+	gint left = 0;
+	gint top = 0;
 
 	g_return_val_if_fail(data->base_pixmap != NULL, FALSE);
 	g_return_val_if_fail(data->base_mask != NULL, FALSE);
