@@ -189,3 +189,4 @@
 ( cvs diff -u -r 1.7 -r 1.8 src/gtk/gtkutils.c; cvs diff -u -r 1.6 -r 1.7 src/gtk/gtkutils.h; cvs diff -u -r 1.18 -r 1.19 src/gtk/prefswindow.c; ) > 0.9.13cvs17.patchset
 ( cvs diff -u -r 1.19 -r 1.20 src/gtk/prefswindow.c; ) > 0.9.13cvs18.patchset
 ( cvs diff -u -r 1.450 -r 1.451 ChangeLog; cvs diff -u -r 1.445 -r 1.446 ChangeLog.jp; cvs diff -u -r 1.53 -r 1.54 NEWS; cvs diff -u -r 1.464 -r 1.465 src/compose.c; cvs diff -u -r 1.16 -r 1.17 src/syldap.c; ) > 0.9.13cvs19.patchset
+( cvs diff -u -r 1.465 -r 1.466 src/compose.c; ) > 0.9.13cvs20.patchset

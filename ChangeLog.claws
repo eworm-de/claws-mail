@@ -1,3 +1,8 @@
+2004-12-17 [thorsten]	0.9.13cvs20
+
+	* src/compose.c
+		protect trailing spaces when signing message
+
 2004-12-16 [paul]	0.9.13cvs19
 
 	* ChangeLog

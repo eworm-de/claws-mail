@@ -3465,6 +3465,10 @@ static gint compose_write_to_file(Compose *compose, FILE *fp, gint action)
 	mimetext->subtype = g_strdup("plain");
 	g_hash_table_insert(mimetext->typeparameters, g_strdup("charset"),
 			    g_strdup(out_codeset));
+	/* protect trailing spaces when signing message */
+	if (action == COMPOSE_WRITE_FOR_SEND && compose->use_signing && 
+	    privacy_system_can_sign(compose->privacy_system))
+		encoding = ENC_QUOTED_PRINTABLE;
 	if (encoding != ENC_UNKNOWN)
 		procmime_encode_content(mimetext, encoding);
 
