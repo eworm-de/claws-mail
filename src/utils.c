@@ -2161,17 +2161,20 @@ FILE *str_open_as_stream(const gchar *str)
 gint execute_async(gchar *const argv[])
 {
 #ifdef WIN32
+	gint n,len=0;
 	gchar *fullname;
 	gchar **parsed_argv;
-	gchar *cmd,*parsed_cmd;
-	gint n;
 
-	cmd = g_strjoinv(" ",argv);
-	parsed_cmd = w32_parse_path(cmd);
-	parsed_argv = strsplit_with_quote(parsed_cmd, " ", -1);
-	
-	fullname = g_strdup(parsed_argv[0]);
-	strcpy(parsed_argv[0],g_path_get_basename (parsed_argv[0]));
+	fullname = w32_parse_path(argv[0]);
+	len = strlen(fullname);
+	for (n=1; argv[n]; len+=strlen(argv[n++]));
+	parsed_argv=g_new0(char*, len);
+
+	parsed_argv[0]=g_strdup_printf("\"%s\"",fullname);
+
+	for (n=1; argv[n]; n++)
+		parsed_argv[n]=g_strdup(argv[n]);
+
 	if (spawnvp(P_NOWAIT, fullname, parsed_argv) < 0) {
 		gchar *p_fullname = g_strdup_printf(_("Cannot execute\n%s"),fullname);
 		locale_to_utf8(&p_fullname);
@@ -2180,10 +2183,8 @@ gint execute_async(gchar *const argv[])
 		return -1;
 	}
 
-	for(n=0;parsed_argv[n];n++)
-		g_free(parsed_argv[n]);
-	g_free(cmd);
-	g_free(parsed_cmd);
+	for(n=0; parsed_argv[n]; g_free(parsed_argv[n++]));
+	g_free(parsed_argv);
 	g_free(fullname);
 #else
 	pid_t pid;
@@ -2220,18 +2221,21 @@ gint execute_async(gchar *const argv[])
 gint execute_sync(gchar *const argv[])
 {
 #ifdef WIN32
+	gint n,len=0;
 	gchar *fullname;
 	gchar **parsed_argv;
-	gchar *cmd,*parsed_cmd;
-	gint n;
 
-	cmd = g_strjoinv(" ",argv);
-	parsed_cmd= w32_parse_path(cmd);
-	parsed_argv = strsplit_with_quote(parsed_cmd, " ", -1);
-	
-	fullname = g_strdup(argv[0]);
-	strcpy(argv[0],g_path_get_basename (argv[0]));
-	if (spawnvp(P_WAIT, fullname, argv) < 0) {
+	fullname = w32_parse_path(argv[0]);
+	len = strlen(fullname);
+	for (n=1; argv[n]; len+=strlen(argv[n++]));
+	parsed_argv=g_new0(char*, len);
+
+	parsed_argv[0]=g_strdup_printf("\"%s\"",fullname);
+
+	for (n=1; argv[n]; n++)
+		parsed_argv[n]=g_strdup(argv[n]);
+
+	if (spawnvp(P_WAIT, fullname, parsed_argv) < 0) {
 		gchar *p_fullname = g_strdup_printf(_("Cannot execute\n%s"),fullname);
 		locale_to_utf8(&p_fullname);
 		g_warning(p_fullname);
@@ -2239,10 +2243,8 @@ gint execute_sync(gchar *const argv[])
 		return -1;
 	}
 
-	for(n=0;parsed_argv[n];n++)
-		g_free(parsed_argv[n]);
-	g_free(cmd);
-	g_free(parsed_cmd);
+	for(n=0; parsed_argv[n]; g_free(parsed_argv[n++]));
+	g_free(parsed_argv);
 	g_free(fullname);
 #else
 	pid_t pid;
@@ -2823,7 +2825,7 @@ gchar *w32_parse_path(gchar* const src)
 	ExpandEnvironmentStrings("%ProgramFiles%",winprg,BUFSIZE);
 	ExpandEnvironmentStrings("%TEMP%",wintmp,BUFSIZE);
 	GetWindowsDirectory(windir,BUFSIZE);
-	GetSystemDirectory(wintmp,BUFSIZE);
+	GetSystemDirectory(winsys,BUFSIZE);
 
 	for (cur=src;cur[0];cur++) {
 		if (cur[0] == '?')

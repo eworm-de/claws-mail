@@ -1,3 +1,10 @@
+2002-07-07 [thorsten]	0.7.8claws52-1
+
+	* src/utils.[ch]
+	* src/compose.c
+	* src/prefs_common.c
+		fix: quoting and path substitution for ext. apps
+
 2002-07-05 [thorsten]	0.7.8claws48-3
 
 	* src/procmsg.h
