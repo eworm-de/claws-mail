@@ -5238,7 +5238,6 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_IGNORETHREAD, &ignorethreadxpm, &ignorethreadxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_CLIP_KEY, &clipkeyxpm, &clipkeyxpmmask);
 	stock_pixmap_gdk(ctree, STOCK_PIXMAP_KEY, &keyxpm, &keyxpmmask);
-	stock_pixmap_gdk(ctree, STOCK_PIXMAP_KEY, &keyxpm, &keyxpmmask);
 
 	pixmap = stock_pixmap_widget(summaryview->hbox, STOCK_PIXMAP_DIR_OPEN);
 	gtk_box_pack_start(GTK_BOX(summaryview->hbox), pixmap, FALSE, FALSE, 4);

@@ -1,3 +1,8 @@
+2002-09-29 [colin]	0.8.3claws39
+
+	* src/summaryview.c
+		Fix an unwanted copy/paste
+
 2002-09-29 [colin]	0.8.3claws38
 
 	* src/mainwindow.c
