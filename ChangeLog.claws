@@ -1,3 +1,8 @@
+2001-10-26 [alfons]
+
+	* src/utils.h
+		change prototype of strstr2() that Christoph forgot about
+
 2001-10-26 [christoph]	0.6.4claws10
 
 	* src/account.c

@@ -143,7 +143,7 @@ gchar *to_human_readable	(off_t	      size);
 /* alternative string functions */
 gint strcmp2		(const gchar	*s1,
 			 const gchar	*s2);
-gint strstr2		(const gchar	*s1,
+gchar *strstr2		(const gchar	*s1,
 			 const gchar	*s2);
 gint path_cmp		(const gchar	*s1,
 			 const gchar	*s2);
