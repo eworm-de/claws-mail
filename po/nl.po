@@ -153,7 +153,7 @@ msgstr ""
 msgid "Name"
 msgstr "Naam"
 
-#: src/account.c:448 src/prefs_account.c:753
+#: src/account.c:448 src/prefs_account.c:751
 msgid "Protocol"
 msgstr "Protocol"
 
@@ -1015,7 +1015,7 @@ msgid "Creating compose window...\n"
 msgstr "Venster \"Bericht opstellen\" wordt aangemaakt...\n"
 
 #. header labels and entries
-#: src/compose.c:4158 src/prefs_account.c:1055 src/prefs_customheader.c:191
+#: src/compose.c:4158 src/prefs_account.c:1053 src/prefs_customheader.c:191
 #: src/prefs_filter.c:257 src/prefs_matcher.c:146
 msgid "Header"
 msgstr "Header"
@@ -1428,7 +1428,7 @@ msgstr "Wachttijd (sec)"
 msgid "Maximum Entries"
 msgstr "Maximum"
 
-#: src/editldap.c:461 src/prefs_account.c:590
+#: src/editldap.c:461 src/prefs_account.c:588
 msgid "Basic"
 msgstr "Algemeen"
 
@@ -1485,7 +1485,7 @@ msgid "Exporting file:"
 msgstr "Doelbestand:"
 
 #: src/export.c:172 src/export.c:178 src/import.c:176 src/import.c:182
-#: src/prefs_account.c:978 src/prefs_filter.c:362
+#: src/prefs_account.c:976 src/prefs_filter.c:362
 msgid " Select... "
 msgstr "Selecteer..."
 
@@ -3191,7 +3191,7 @@ msgid "Writing matcher configuration...\n"
 msgstr "Matcherconfiguratie wordt opgeslagen...\n"
 
 #: src/matcher.c:1135 src/matcher.c:1146 src/prefs.c:139 src/prefs.c:167
-#: src/prefs.c:212 src/prefs_account.c:449 src/prefs_account.c:463
+#: src/prefs.c:212 src/prefs_account.c:447 src/prefs_account.c:461
 #: src/prefs_customheader.c:388 src/prefs_customheader.c:434
 #: src/prefs_display_header.c:417 src/prefs_display_header.c:442
 #: src/prefs_filter.c:533 src/prefs_filter.c:557
@@ -3699,306 +3699,306 @@ msgstr "geen permissie - %s\n"
 msgid "Apply"
 msgstr "Toepassen"
 
-#: src/prefs_account.c:497
+#: src/prefs_account.c:495
 msgid "Opening account preferences window...\n"
 msgstr "Venster accountvoorkeuren wordt geopend...\n"
 
-#: src/prefs_account.c:524
+#: src/prefs_account.c:522
 #, c-format
 msgid "Account%d"
 msgstr "Account%d"
 
-#: src/prefs_account.c:537
+#: src/prefs_account.c:535
 msgid "Preferences for new account"
 msgstr "Voorkeuren voor nieuw account"
 
-#: src/prefs_account.c:542
+#: src/prefs_account.c:540
 msgid "Account preferences"
 msgstr "Algemene voorkeuren"
 
-#: src/prefs_account.c:570
+#: src/prefs_account.c:568
 msgid "Creating account preferences window...\n"
 msgstr "Venster accountvoorkeuren wordt geopend...\n"
 
-#: src/prefs_account.c:592 src/prefs_account.c:1332 src/prefs_common.c:891
+#: src/prefs_account.c:590 src/prefs_account.c:1330 src/prefs_common.c:891
 msgid "Receive"
 msgstr "Ontvangen"
 
-#: src/prefs_account.c:596 src/prefs_common.c:895
+#: src/prefs_account.c:594 src/prefs_common.c:895
 msgid "Compose"
 msgstr "Opstellen"
 
-#: src/prefs_account.c:599 src/prefs_common.c:904
+#: src/prefs_account.c:597 src/prefs_common.c:904
 msgid "Privacy"
 msgstr "Privacy"
 
-#: src/prefs_account.c:603
+#: src/prefs_account.c:601
 msgid "SSL"
 msgstr "SSL"
 
-#: src/prefs_account.c:606
+#: src/prefs_account.c:604
 msgid "Advanced"
 msgstr "Geavanceerd"
 
-#: src/prefs_account.c:684
+#: src/prefs_account.c:682
 msgid "Name of this account"
 msgstr "Naam van dit account"
 
-#: src/prefs_account.c:693
+#: src/prefs_account.c:691
 msgid "Set as default"
 msgstr "Instellen als hoofdaccount "
 
-#: src/prefs_account.c:697
+#: src/prefs_account.c:695
 msgid "Personal information"
 msgstr "Persoonlijke informatie"
 
-#: src/prefs_account.c:706
+#: src/prefs_account.c:704
 msgid "Full name"
 msgstr "Volledige naam"
 
-#: src/prefs_account.c:712
+#: src/prefs_account.c:710
 msgid "Mail address"
 msgstr "E-mail adres"
 
-#: src/prefs_account.c:718
+#: src/prefs_account.c:716
 msgid "Organization"
 msgstr "Organisatie"
 
-#: src/prefs_account.c:742
+#: src/prefs_account.c:740
 msgid "Server information"
 msgstr "Serverinformatie"
 
-#: src/prefs_account.c:763
+#: src/prefs_account.c:761
 msgid "POP3 (normal)"
 msgstr "POP3 (normaal)"
 
-#: src/prefs_account.c:765
+#: src/prefs_account.c:763
 msgid "POP3 (APOP auth)"
 msgstr "POP3 (APOP identificatie)"
 
-#: src/prefs_account.c:767 src/prefs_account.c:997
+#: src/prefs_account.c:765 src/prefs_account.c:995
 msgid "IMAP4"
 msgstr "IMAP4"
 
-#: src/prefs_account.c:769
+#: src/prefs_account.c:767
 msgid "News (NNTP)"
 msgstr "Nieuws (NNTP)"
 
-#: src/prefs_account.c:771
+#: src/prefs_account.c:769
 msgid "None (local)"
 msgstr "Niets (lokaal)"
 
-#: src/prefs_account.c:791
+#: src/prefs_account.c:789
 msgid "This server requires authentication"
 msgstr "Deze server vereist identificatie"
 
-#: src/prefs_account.c:835
+#: src/prefs_account.c:833
 msgid "News server"
 msgstr "Nieuwsserver"
 
-#: src/prefs_account.c:841
+#: src/prefs_account.c:839
 msgid "Server for receiving"
 msgstr "Server om van te ontvangen"
 
-#: src/prefs_account.c:847
+#: src/prefs_account.c:845
 msgid "Local mailbox file"
 msgstr "Lokale mailbox"
 
 #. gtk_table_set_row_spacing (GTK_TABLE (serv_table), 2, 0);
-#: src/prefs_account.c:854
+#: src/prefs_account.c:852
 msgid "SMTP server (send)"
 msgstr "SMTP server (zenden)"
 
-#: src/prefs_account.c:862
+#: src/prefs_account.c:860
 msgid "Use mail command rather than SMTP server"
 msgstr "Gebruik mail opdracht ipv SMTP"
 
-#: src/prefs_account.c:871
+#: src/prefs_account.c:869
 msgid "command to send mails"
 msgstr "opdracht voor versturen berichten"
 
 #. gtk_table_set_row_spacing (GTK_TABLE (serv_table), 2, 0);
-#: src/prefs_account.c:878 src/prefs_account.c:1101
+#: src/prefs_account.c:876 src/prefs_account.c:1099
 msgid "User ID"
 msgstr "Gebruikersnaam"
 
-#: src/prefs_account.c:884 src/prefs_account.c:1115
+#: src/prefs_account.c:882 src/prefs_account.c:1113
 msgid "Password"
 msgstr "Wachtwoord"
 
-#: src/prefs_account.c:946
+#: src/prefs_account.c:944
 msgid "POP3"
 msgstr "POP3"
 
-#: src/prefs_account.c:954
+#: src/prefs_account.c:952
 msgid "Remove messages on server when received"
 msgstr "Verwijder berichten op de server wanneer ze worden opgehaald"
 
-#: src/prefs_account.c:956
+#: src/prefs_account.c:954
 msgid "Download all messages on server"
 msgstr "Haal alle berichten op"
 
-#: src/prefs_account.c:959
+#: src/prefs_account.c:957
 msgid "`Get all' checks for new mail on this account"
 msgstr "'Alles ophalen' haalt de e-mail voor dit account op"
 
-#: src/prefs_account.c:961
+#: src/prefs_account.c:959
 msgid "Filter messages on receiving"
 msgstr "Filter de berichten bij het ophalen"
 
-#: src/prefs_account.c:969
+#: src/prefs_account.c:967
 msgid "Default inbox"
 msgstr "Standaard inbox"
 
-#: src/prefs_account.c:992
+#: src/prefs_account.c:990
 msgid "(Unfiltered messages will be stored in this folder)"
 msgstr "(ongefilterde berichten gaan in deze folder)"
 
-#: src/prefs_account.c:1008
+#: src/prefs_account.c:1006
 msgid "IMAP server directory"
 msgstr "IMAP server directory"
 
-#: src/prefs_account.c:1062
+#: src/prefs_account.c:1060
 msgid "Add Date header field"
 msgstr "Datum veld toevoegen aan header"
 
-#: src/prefs_account.c:1063
+#: src/prefs_account.c:1061
 msgid "Generate Message-ID"
 msgstr "Bericht-ID aanmaken"
 
-#: src/prefs_account.c:1070
+#: src/prefs_account.c:1068
 msgid "Add user-defined header"
 msgstr "Voeg een door de gebruiker gespecificeerde header toe"
 
-#: src/prefs_account.c:1072 src/prefs_common.c:1956 src/prefs_common.c:1981
+#: src/prefs_account.c:1070 src/prefs_common.c:1956 src/prefs_common.c:1981
 msgid " Edit... "
 msgstr "Bewerken"
 
-#: src/prefs_account.c:1082
+#: src/prefs_account.c:1080
 msgid "Authentication"
 msgstr "Identificatie"
 
-#: src/prefs_account.c:1090
+#: src/prefs_account.c:1088
 msgid "SMTP Authentication (SMTP AUTH)"
 msgstr "SMTP identificatie (SMTP AUTH)"
 
-#: src/prefs_account.c:1130
+#: src/prefs_account.c:1128
 msgid "Authenticate with POP3 before sending"
 msgstr "Identificatie met POP3 voor het verzenden"
 
-#: src/prefs_account.c:1167
+#: src/prefs_account.c:1165
 msgid "Signature file"
 msgstr "Bestand met handtekening"
 
-#: src/prefs_account.c:1175
+#: src/prefs_account.c:1173
 msgid "Automatically set the following addresses"
 msgstr "Automatisch volgende adressen instellen"
 
-#: src/prefs_account.c:1184 src/prefs_matcher.c:143
+#: src/prefs_account.c:1182 src/prefs_matcher.c:143
 msgid "Cc"
 msgstr "Cc"
 
-#: src/prefs_account.c:1197
+#: src/prefs_account.c:1195
 msgid "Bcc"
 msgstr "Bcc"
 
-#: src/prefs_account.c:1210
+#: src/prefs_account.c:1208
 msgid "Reply-To"
 msgstr "Antwoorden naar"
 
-#: src/prefs_account.c:1251
+#: src/prefs_account.c:1249
 msgid "Sign key"
 msgstr "Signeersleutel"
 
-#: src/prefs_account.c:1259
+#: src/prefs_account.c:1257
 msgid "Use default GnuPG key"
 msgstr "Gebruik standaard GnuPG sleutel"
 
-#: src/prefs_account.c:1268
+#: src/prefs_account.c:1266
 msgid "Select key by your email address"
 msgstr "Selecteer sleutel naar e-mail adres"
 
-#: src/prefs_account.c:1277
+#: src/prefs_account.c:1275
 msgid "Specify key manually"
 msgstr "Specificeer sleutel zelf"
 
-#: src/prefs_account.c:1293
+#: src/prefs_account.c:1291
 msgid "User or key ID:"
 msgstr "Gebruikers- of sleutel-ID:"
 
-#: src/prefs_account.c:1340
+#: src/prefs_account.c:1338
 msgid "Use SSL for POP3 connection"
 msgstr "Gebruik SSL voor POP3-verbinding"
 
-#: src/prefs_account.c:1342
+#: src/prefs_account.c:1340
 msgid "Use SSL for IMAP4 connection"
 msgstr "Gebruik SSL voor IMAP4-verbinding"
 
-#: src/prefs_account.c:1344
+#: src/prefs_account.c:1342
 msgid "Send (SMTP)"
 msgstr "Verzenden (SMTP)"
 
-#: src/prefs_account.c:1352
+#: src/prefs_account.c:1350
 msgid "Don't use SSL"
 msgstr "Gebruik geen SSL"
 
-#: src/prefs_account.c:1361
+#: src/prefs_account.c:1359
 msgid "Use SSL for SMTP connection"
 msgstr "Gebruik SSL voor SMTP-verbinding"
 
-#: src/prefs_account.c:1370
+#: src/prefs_account.c:1368
 msgid "Use STARTTLS command to start SSL session"
 msgstr "Gebruik STARTTLS voor starten SSL sessie"
 
-#: src/prefs_account.c:1432
+#: src/prefs_account.c:1430
 msgid "Specify SMTP port"
 msgstr "Eigen SMTP poort"
 
-#: src/prefs_account.c:1438
+#: src/prefs_account.c:1436
 msgid "Specify POP3 port"
 msgstr "Eigen POP3 poort"
 
-#: src/prefs_account.c:1444
+#: src/prefs_account.c:1442
 msgid "Specify IMAP4 port"
 msgstr "Geef IMAP4 poort"
 
-#: src/prefs_account.c:1450
+#: src/prefs_account.c:1448
 msgid "Specify NNTP port"
 msgstr "Geef NNTP poort"
 
-#: src/prefs_account.c:1455
+#: src/prefs_account.c:1453
 msgid "Specify domain name"
 msgstr "Geef domeinnaam"
 
-#: src/prefs_account.c:1512
+#: src/prefs_account.c:1510
 msgid "Mail address is not entered."
 msgstr "E-mail adres is niet ingevoerd."
 
-#: src/prefs_account.c:1517
+#: src/prefs_account.c:1515
 msgid "SMTP server is not entered."
 msgstr "SMTP server is niet ingevoerd."
 
-#: src/prefs_account.c:1522
+#: src/prefs_account.c:1520
 msgid "User ID is not entered."
 msgstr "Gebruikersnaam is niet ingevoerd."
 
-#: src/prefs_account.c:1527
+#: src/prefs_account.c:1525
 msgid "POP3 server is not entered."
 msgstr "POP3 server is niet ingevoerd."
 
-#: src/prefs_account.c:1532
+#: src/prefs_account.c:1530
 msgid "IMAP4 server is not entered."
 msgstr "IMAP4 server is niet ingevoerd."
 
-#: src/prefs_account.c:1537
+#: src/prefs_account.c:1535
 msgid "NNTP server is not entered."
 msgstr "NNTP server is niet ingevoerd."
 
-#: src/prefs_account.c:1543
+#: src/prefs_account.c:1541
 msgid "local mailbox filename is not entered."
 msgstr "naam lokale mailbox niet ingevoerd."
 
-#: src/prefs_account.c:1549
+#: src/prefs_account.c:1547
 msgid "mail command is not entered."
 msgstr "geen mail opdracht ingevoerd"
 
