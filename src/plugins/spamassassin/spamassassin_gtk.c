@@ -1,6 +1,6 @@
 /*
  * Sylpheed -- a GTK+ based, lightweight, and fast e-mail client
- * Copyright (C) 1999-2002 Hiroyuki Yamamoto and the Sylpheed-Claws Team
+ * Copyright (C) 1999-2003 Hiroyuki Yamamoto and the Sylpheed-Claws Team
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -138,7 +138,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page, GtkWindow *window
 	gtk_widget_show(hostname);
 	gtk_box_pack_start(GTK_BOX(hbox1), hostname, TRUE, TRUE, 0);
 
-	label5 = gtk_label_new(_(":"));
+	label5 = gtk_label_new(":");
 	gtk_widget_show(label5);
 	gtk_box_pack_start(GTK_BOX(hbox1), label5, FALSE, FALSE, 0);
 	gtk_misc_set_padding(GTK_MISC(label5), 8, 0);
@@ -185,7 +185,7 @@ static void spamassassin_create_widget_func(PrefsPage * _page, GtkWindow *window
 			 (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
 			 (GtkAttachOptions) (0), 0, 0);
 
-	button4 = gtk_button_new_with_label(_("..."));
+	button4 = gtk_button_new_with_label("...");
 	gtk_widget_show(button4);
 	gtk_table_attach(GTK_TABLE(table1), button4, 2, 3, 4, 5,
 			 (GtkAttachOptions) (GTK_SHRINK | GTK_FILL),
@@ -284,13 +284,13 @@ const gchar *plugin_desc()
 	return "This plugin provides a Preferences page for the SpamAssassin "
 	       "plugin.\n"
 	       "\n"
-	       "You will find the options in the Preferences window under "
-	       "Filtering/SpamAssassin.\n"
+	       "You will find the options in the Other Preferences window "
+	       "under Filtering/SpamAssassin.\n"
 	       "\n"
 	       "With this plugin you can enable the filtering, change the "
-	       "SpamAssassin server's host  and port, the maximum size that "
-	       "a message is allowed to have (if the message is larger it "
-	       "will not be checked), set the option if spam mails "
-	       "should be received at all (default) and select the folder "
-	       "where spam mails will be saved.\n";
+	       "SpamAssassin server host and port, set the maximum size of "
+	       "messages to be checked, (if the message is larger it will "
+	       "not be checked), configure whether spam mail should be received "
+	       "(default: Yes) and select the folder where spam mail will be "
+	       "saved.\n";
 }
