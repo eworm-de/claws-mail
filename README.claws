@@ -13,8 +13,10 @@ Summary:
    * sharing mail folders
    * default to address for folders
    * threading mode per folder
-   * spell checking (with installation instructions)
    * simplify subject string
+   * pixmap themes
+   * user definable actions
+   * spell checking (with installation instructions)
 4. How to contribute
 5. How to request features
 6. Installing Claws from CVS
@@ -119,6 +121,18 @@ are hardly noticable, but deserve mentioning:
   (NOTE: this is also a shoot-yourself-in-the-foot-setting! If you want
    to send a private mail, don't have a folder selected with this setting
    set.)
+
+* pixmap themes
+  To use different icon sets you need to create a directory: 
+	mkdir ~/.sylpheed/themes
+  Icon sets should be placed in this directory in their own sub-directory. 
+  They are then selectable from Pixmap Theme on the Interface tab of Commmon
+  Preferences. 
+
+* user definable actions
+  Actions can be executed on message text view, or on the message's file.
+  To configure new actions use Configuartion->Actions. Your actions are
+  then available from Edit->Actions in the main window and compose window.
 
 * Spell checker for Sylpheed-Claws
   
