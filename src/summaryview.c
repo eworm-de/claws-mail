@@ -2245,6 +2245,11 @@ gboolean summary_insert_gnode_func(GtkCTree *ctree, guint depth, GNode *gnode,
 	SET_TEXT(S_COL_SUBJECT);
 
 #undef SET_TEXT
+#ifdef WIN32
+	g_free(text[col_pos[S_COL_SUBJECT]]);
+	g_free(text[col_pos[S_COL_FROM]]);
+	g_free(text[col_pos[S_COL_DATE]]);
+#endif
 
 	GTKUT_CTREE_NODE_SET_ROW_DATA(cnode, msginfo);
 	summary_set_marks_func(ctree, cnode, summaryview);
