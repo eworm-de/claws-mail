@@ -1,3 +1,8 @@
+2002-05-25 [paul]	0.7.6claws18
+
+	* tools/README
+		add description of kmail2sylpheed.pl
+
 2002-05-25 [paul]	0.7.6claws17
 
 	* tools/kmail2sylpheed.pl	** NEW FILE **
