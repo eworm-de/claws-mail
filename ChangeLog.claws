@@ -1,3 +1,8 @@
+2003-12-22 [christoph]	0.9.8claws7
+
+	* src/prefs_account.[ch]
+		add "SMTP only" accounts
+
 2003-12-20 [melvin]	0.9.8claws6
 
 	* src/action.[ch]

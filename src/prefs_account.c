@@ -717,11 +717,6 @@ PrefsAccount *prefs_account_open(PrefsAccount *ac_prefs)
 		gtk_widget_show(dialog.apply_btn);
 	}
 
-	if (ac_prefs->protocol != A_LOCAL) {
-		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
-		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
-	}
-
 	pop_bfr_smtp_tm_set_sens (NULL, NULL);
 	
 	gtk_widget_show(dialog.window);
@@ -943,7 +938,9 @@ static void prefs_account_basic_create(void)
 	SET_ACTIVATE (menuitem);
 	MENUITEM_ADD (optmenu_menu, menuitem, _("News (NNTP)"), A_NNTP);
 	SET_ACTIVATE (menuitem);
-	MENUITEM_ADD (optmenu_menu, menuitem, _("None (local)"), A_LOCAL);
+	MENUITEM_ADD (optmenu_menu, menuitem, _("Local mbox file"), A_LOCAL);
+	SET_ACTIVATE (menuitem);
+	MENUITEM_ADD (optmenu_menu, menuitem, _("None (SMTP only)"), A_NONE);
 	SET_ACTIVATE (menuitem);
 
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (optmenu), optmenu_menu);
@@ -2239,7 +2236,10 @@ static gint prefs_account_apply(void)
 		alertpanel_error(_("Mail address is not entered."));
 		return -1;
 	}
-	if ((protocol == A_POP3 || protocol == A_APOP || (protocol == A_LOCAL && !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(basic.mailcmd_chkbtn)))) &&
+	if (((protocol == A_POP3) || 
+	     (protocol == A_APOP) || 
+	     (protocol == A_LOCAL && !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(basic.mailcmd_chkbtn))) || 
+	     (protocol == A_NONE)) &&
            *gtk_entry_get_text(GTK_ENTRY(basic.smtpserv_entry)) == '\0') {
 		alertpanel_error(_("SMTP server is not entered."));
 		return -1;
@@ -2387,11 +2387,12 @@ static void prefs_account_protocol_set_optmenu(PrefParam *pparam)
 		-1, /* A_RPOP  */
 		2,  /* A_IMAP4 */
 		3,  /* A_NNTP  */
-		4   /* A_LOCAL */
+		4,  /* A_LOCAL */
+		5,  /* A_NONE  */
 	};
 
 	protocol = *((RecvProtocol *)pparam->data);
-	if (protocol < 0 || protocol > A_LOCAL) return;
+	if (protocol < 0 || protocol > A_NONE) return;
 	if (list_order[protocol] < 0) return;
 	gtk_option_menu_set_history(optmenu, list_order[protocol]);
 
@@ -2737,6 +2738,83 @@ static void prefs_account_protocol_activated(GtkMenuItem *menuitem)
 		gtk_widget_show(advanced.tunnelcmd_entry);
 		gtk_widget_show(advanced.imapdir_label);
 		gtk_widget_show(advanced.imapdir_entry);
+		break;
+	case A_NONE:
+		gtk_widget_hide(basic.nntpserv_label);
+		gtk_widget_hide(basic.nntpserv_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+					   0, 0);
+		gtk_widget_set_sensitive(basic.nntpauth_chkbtn, FALSE);
+		gtk_widget_hide(basic.nntpauth_chkbtn);
+
+		gtk_widget_set_sensitive(basic.nntpauth_onconnect_chkbtn, FALSE);
+		gtk_widget_hide(basic.nntpauth_onconnect_chkbtn);
+
+  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+					   1, 0);
+		gtk_widget_set_sensitive(basic.recvserv_label, FALSE);
+		gtk_widget_set_sensitive(basic.recvserv_entry, FALSE);
+		gtk_widget_hide(basic.recvserv_label);
+		gtk_widget_hide(basic.recvserv_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+					   2, VSPACING_NARROW);
+		gtk_widget_show(basic.smtpserv_label);
+		gtk_widget_show(basic.smtpserv_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+					   4, VSPACING_NARROW);
+		gtk_widget_hide(basic.localmbox_label);
+		gtk_widget_hide(basic.localmbox_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+					   3, 0);
+		gtk_widget_hide(basic.mailcmd_label);
+		gtk_widget_hide(basic.mailcmd_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+					   6, 0);
+		gtk_widget_hide(basic.mailcmd_chkbtn);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+					   5, 0);
+		gtk_widget_hide(basic.uid_label);
+		gtk_widget_hide(basic.pass_label);
+		gtk_widget_hide(basic.uid_entry);
+		gtk_widget_hide(basic.pass_entry);
+  		gtk_table_set_row_spacing (GTK_TABLE (basic.serv_table),
+					   7, VSPACING_NARROW);
+
+		gtk_widget_set_sensitive(basic.uid_label,  FALSE);
+		gtk_widget_set_sensitive(basic.pass_label, FALSE);
+		gtk_widget_set_sensitive(basic.uid_entry,  FALSE);
+		gtk_widget_set_sensitive(basic.pass_entry, FALSE);
+		gtk_widget_set_sensitive(receive.pop3_frame, FALSE);
+		gtk_widget_hide(receive.pop3_frame);
+		gtk_widget_hide(receive.imap_frame);
+		gtk_widget_hide(receive.frame_maxarticle);
+		gtk_widget_set_sensitive(receive.recvatgetall_chkbtn, FALSE);
+
+		gtk_widget_set_sensitive(basic.smtpserv_entry, TRUE);
+		gtk_widget_set_sensitive(basic.smtpserv_label, TRUE);
+
+		/* update pop_before_smtp sensitivity */
+		gtk_widget_set_sensitive(p_send.pop_bfr_smtp_chkbtn, FALSE);
+		pop_bfr_smtp_tm_set_sens(NULL, NULL);
+		
+		gtk_toggle_button_set_active
+			(GTK_TOGGLE_BUTTON(receive.recvatgetall_chkbtn), FALSE);
+
+#if USE_OPENSSL
+		gtk_widget_hide(ssl.pop_frame);
+		gtk_widget_hide(ssl.imap_frame);
+		gtk_widget_hide(ssl.nntp_frame);
+		gtk_widget_show(ssl.send_frame);
+#endif
+		gtk_widget_hide(advanced.popport_hbox);
+		gtk_widget_hide(advanced.imapport_hbox);
+		gtk_widget_hide(advanced.nntpport_hbox);
+		gtk_widget_hide(advanced.crosspost_chkbtn);
+		gtk_widget_hide(advanced.crosspost_colormenu);
+		gtk_widget_hide(advanced.tunnelcmd_chkbtn);
+		gtk_widget_hide(advanced.tunnelcmd_entry);
+		gtk_widget_hide(advanced.imapdir_label);
+		gtk_widget_hide(advanced.imapdir_entry);
 		break;
 	case A_POP3:
 	default:
