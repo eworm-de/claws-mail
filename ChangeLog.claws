@@ -1,3 +1,18 @@
+2003-12-19 [paul]	0.9.7claws51
+
+	* po/en_GB.po
+	  po/es.po
+	  po/ja.po
+	  po/pl.po
+	  po/sk.po
+	  po/zh_CN.po
+	  	update translations. submitted by me, Ricardo Mones
+		Lastra, Rui Hirokawa, Emil Nowak, Andrej Kacian,
+		Hansom Young
+		
+	* src/folder_item_prefs.c
+		'enable_processing' set to FALSE by default
+
 2003-12-18 [melvin]	0.9.7claws50
 
 	* po/fr.po
