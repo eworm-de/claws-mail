@@ -1680,7 +1680,6 @@ static void folderview_property_cb(FolderView *folderview, guint action,
 	if (folder_item_parent(item) == NULL && item->folder->account)
 		account_open(item->folder->account);
 	else {
-		printf("open prefs...\n");
 		prefs_folder_item_open(item);
 	}
 }
