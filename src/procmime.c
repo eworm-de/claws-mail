@@ -981,7 +981,6 @@ void procmime_parse_message_rfc822(MimeInfo *mimeinfo)
 	content_start = ftell(fp);
 	fclose(fp);
 
-	g_strstrip(hentry[5].body);
 	if ((hentry[5].body != NULL) &&
 	    (sscanf(hentry[5].body, "%d.%d", &mime_major, &mime_minor) == 2) &&
 	    (mime_major == 1) && (mime_minor == 0)) {

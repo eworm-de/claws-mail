@@ -1,3 +1,11 @@
+2004-01-25 [alfons]	0.9.8claws49
+
+	* src/procmime.c
+		remove g_strstrip(); prevents a NULL pointer deref, and isn't
+		necessary anyway, because *scanf() functions neglect white
+		space in the input. 
+		Fixes bug #425, "sylpheed 0.9.8claws42 crashes on some messages."
+
 2004-01-25 [paul]	0.9.8claws48
 
 	src/prefs_ext_prog.c
