@@ -81,16 +81,16 @@ static GdkPixmap *checkboxoffxpmmask;
 
 static void account_edit_create		(void);
 
-static void account_edit_prefs		(void);
-static void account_delete		(void);
-static void account_clone		(void);
+static void account_edit_prefs		(GtkWidget *widget, gpointer data);
+static void account_delete		(GtkWidget *widget, gpointer data);
+static void account_clone		(GtkWidget *widget, gpointer data);
 
-static void account_up			(void);
-static void account_down		(void);
+static void account_up			(GtkWidget *widget, gpointer data);
+static void account_down		(GtkWidget *widget, gpointer data);
 
-static void account_set_default		(void);
+static void account_set_default		(GtkWidget *widget, gpointer data);
 
-static void account_edit_close		(void);
+static void account_edit_close		(GtkWidget *widget, gpointer data);
 
 static gint account_delete_event	(GtkWidget	*widget,
 					 GdkEventAny	*event,
@@ -698,7 +698,7 @@ static void account_edit_create(void)
 	edit_account.close_btn = close_btn;
 }
 
-static void account_edit_prefs(void)
+static void account_edit_prefs(GtkWidget *widget, gpointer data)
 {
 	GtkCList *clist = GTK_CLIST(edit_account.clist);
 	PrefsAccount *ac_prefs;
@@ -739,7 +739,7 @@ static gboolean account_delete_references_func(GNode *node, gpointer data)
 #define ACP_FDUP(fld) ac_clon->fld = ((ac_prefs->fld) != NULL)?\
 				     g_strdup(ac_prefs->fld): NULL
 #define ACP_FASSIGN(fld) ac_clon->fld = ac_prefs->fld
-static void account_clone(void)
+static void account_clone(GtkWidget *widget, gpointer data)
 {
 	GtkCList *clist = GTK_CLIST(edit_account.clist);
 	gint row;
@@ -886,7 +886,7 @@ static void account_clone(void)
 #undef ACP_FDUP
 #undef ACP_FASSIGN
 
-static void account_delete(void)
+static void account_delete(GtkWidget *widget, gpointer data)
 {
 	GtkCList *clist = GTK_CLIST(edit_account.clist);
 	PrefsAccount *ac_prefs;
@@ -927,7 +927,7 @@ static void account_delete(void)
 	}
 }
 
-static void account_up(void)
+static void account_up(GtkWidget *widget, gpointer data)
 {
 	GtkCList *clist = GTK_CLIST(edit_account.clist);
 	gint row;
@@ -939,7 +939,7 @@ static void account_up(void)
 		gtk_clist_row_move(clist, row, row - 1);
 }
 
-static void account_down(void)
+static void account_down(GtkWidget *widget, gpointer data)
 {
 	GtkCList *clist = GTK_CLIST(edit_account.clist);
 	gint row;
@@ -951,7 +951,7 @@ static void account_down(void)
 		gtk_clist_row_move(clist, row, row + 1);
 }
 
-static void account_set_default(void)
+static void account_set_default(GtkWidget *widget, gpointer data)
 {
 	GtkCList *clist = GTK_CLIST(edit_account.clist);
 	gint row;
@@ -969,7 +969,7 @@ static void account_set_default(void)
 	main_window_reflect_prefs_all();
 }
 
-static void account_edit_close(void)
+static void account_edit_close(GtkWidget *widget, gpointer data)
 {
 	account_list_set();
 	account_write_config_all();
@@ -991,7 +991,7 @@ static void account_edit_close(void)
 static gint account_delete_event(GtkWidget *widget, GdkEventAny *event,
 				 gpointer data)
 {
-	account_edit_close();
+	account_edit_close(NULL, NULL);
 	return TRUE;
 }
 
@@ -999,7 +999,7 @@ static void account_selected(GtkCList *clist, gint row, gint column,
 			     GdkEvent *event, gpointer data)
 {
 	if (event && event->type == GDK_2BUTTON_PRESS) {
-		account_edit_prefs();
+		account_edit_prefs(NULL, NULL);
 		return;
 	}
 
@@ -1026,7 +1026,7 @@ static void account_key_pressed(GtkWidget *widget, GdkEventKey *event,
 				gpointer data)
 {
 	if (event && event->keyval == GDK_Escape)
-		account_edit_close();
+		account_edit_close(NULL, NULL);
 }
 
 /* set one CList row or add new row */
