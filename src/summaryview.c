@@ -5046,6 +5046,8 @@ void summary_reflect_prefs_pixmap_theme(SummaryView *summaryview)
 	gtk_widget_show(pixmap);
 	summaryview->folder_pixmap = pixmap; 
 
+	summary_write_cache(summaryview);
+
 	folderview_unselect(summaryview->folderview);
 	folderview_select(summaryview->folderview, summaryview->folder_item);
 }

@@ -1,3 +1,13 @@
+2002-02-16 [carsten]	0.7.1claws7
+	* src/mainwindow.[ch]
+	  src/summaryview.c
+	  src/prefs_common.c
+	  	fixes for pixmap theming code:
+			- recently changed mail attributes shouldn't get
+			  lost any longer
+			- theme is only reloaded iff another theme was
+			  selected
+
 2002-02-16 [paul]	0.7.1claws6
 
 	* sync with sylpheed 0.7.2 release

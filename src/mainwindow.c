@@ -1077,6 +1077,11 @@ static void main_window_menu_callback_unblock(MainWindow *mainwin)
 
 void main_window_reflect_prefs_all(void)
 {
+	main_window_reflect_prefs_all_real(FALSE);
+}
+
+void main_window_reflect_prefs_all_real(gboolean pixmap_theme_changed)
+{
 	GList *cur;
 	MainWindow *mainwin;
 
@@ -1088,14 +1093,17 @@ void main_window_reflect_prefs_all(void)
 		main_window_set_toolbar_sensitive(mainwin);
 
 		/* pixmap themes */
-		gtk_container_remove(GTK_CONTAINER(mainwin->handlebox), GTK_WIDGET(mainwin->toolbar));
-		mainwin->toolbar = NULL;
-		main_window_toolbar_create(mainwin, mainwin->handlebox);
-		set_toolbar_style(mainwin);
-		activate_compose_button(mainwin, prefs_common.toolbar_style, mainwin->compose_btn_type);
-		folderview_reflect_prefs_pixmap_theme(mainwin->folderview);
-		summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
-
+		if (pixmap_theme_changed)
+		{
+			gtk_container_remove(GTK_CONTAINER(mainwin->handlebox), GTK_WIDGET(mainwin->toolbar));
+			mainwin->toolbar = NULL;
+			main_window_toolbar_create(mainwin, mainwin->handlebox);
+			set_toolbar_style(mainwin);
+			activate_compose_button(mainwin, prefs_common.toolbar_style, mainwin->compose_btn_type);
+			folderview_reflect_prefs_pixmap_theme(mainwin->folderview);
+			summary_reflect_prefs_pixmap_theme(mainwin->summaryview);
+		}
+		
 		summary_redisplay_msg(mainwin->summaryview);
 		headerview_set_visibility(mainwin->messageview->headerview,
 					  prefs_common.display_header_pane);
