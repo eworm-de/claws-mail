@@ -219,7 +219,6 @@ struct _FolderItem
 
 	gchar *name;
 	gchar *path;
-	PrefsAccount *account;
 
 	time_t mtime;
 
@@ -250,6 +249,10 @@ struct _FolderItem
 
 	Folder *folder;
 
+	PrefsAccount *account;
+
+	gboolean apply_sub;
+	
 	GSList *mark_queue;
 
 	gpointer data;

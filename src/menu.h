@@ -25,6 +25,7 @@
 #include <gtk/gtkitemfactory.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenushell.h>
+#include <gtk/gtkoptionmenu.h>
 
 #define MENUITEM_ADD(menu, menuitem, label, data) \
 { \
@@ -69,5 +70,9 @@ void menu_button_position	(GtkMenu		*menu,
 				 gint			*x,
 				 gint			*y,
 				 gpointer		 user_data);
+
+gint menu_find_option_menu_index(GtkOptionMenu		*optmenu,
+				 gpointer		 data,
+				 GCompareFunc		 func);
 
 #endif /* __MENU_H__ */

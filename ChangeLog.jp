@@ -1,5 +1,18 @@
 2002-10-04
 
+	* src/account.[ch]: account_find_from_item(): 新規。
+	* src/compose.c:
+	  compose_reply(), compose_forward(), compose_redirect()
+	  src/mainwindow.c: compose_cb(): 作成時に最適なアカウントを選択
+	  するようにした。
+	* src/folder.[ch]: FolderItem::apply_sub を追加。
+	* src/menu.[ch]: menu_find_option_menu_index(): 新規。指定した
+	  データを含むオプションメニューのインデックスを検索する。
+	* src/prefs_folder_item(): 作成タブと、フォルダアカウントの設定を
+	  追加。
+
+2002-10-04
+
 	* configure.in: lber ライブラリの検出に $LDAP_LIBS を追加。
 
 2002-10-03

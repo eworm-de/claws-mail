@@ -4092,30 +4092,20 @@ static void prefs_common_charset_set_data_from_optmenu(PrefParam *pparam)
 
 static void prefs_common_charset_set_optmenu(PrefParam *pparam)
 {
-	GList *cur;
 	GtkOptionMenu *optmenu = GTK_OPTION_MENU(*pparam->widget);
-	GtkWidget *menu;
-	GtkWidget *menuitem;
-	gchar *charset;
-	gint n = 0;
+	gint index;
 
 	g_return_if_fail(optmenu != NULL);
 	g_return_if_fail(*((gchar **)pparam->data) != NULL);
 
-	menu = gtk_option_menu_get_menu(optmenu);
-	for (cur = GTK_MENU_SHELL(menu)->children;
-	     cur != NULL; cur = cur->next) {
-		menuitem = GTK_WIDGET(cur->data);
-		charset = gtk_object_get_user_data(GTK_OBJECT(menuitem));
-		if (!strcmp(charset, *((gchar **)pparam->data))) {
-			gtk_option_menu_set_history(optmenu, n);
-			return;
-		}
-		n++;
+	index = menu_find_option_menu_index(optmenu, *((gchar **)pparam->data),
+					    (GCompareFunc)strcmp);
+	if (index >= 0)
+		gtk_option_menu_set_history(optmenu, index);
+	else {
+		gtk_option_menu_set_history(optmenu, 0);
+		prefs_common_charset_set_data_from_optmenu(pparam);
 	}
-
-	gtk_option_menu_set_history(optmenu, 0);
-	prefs_common_charset_set_data_from_optmenu(pparam);
 }
 
 static void prefs_common_recv_dialog_set_data_from_optmenu(PrefParam *pparam)

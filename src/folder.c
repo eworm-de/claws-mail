@@ -206,7 +206,6 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 	item->stype = F_NORMAL;
 	item->name = g_strdup(name);
 	item->path = g_strdup(path);
-	item->account = NULL;
 	item->mtime = 0;
 	item->new = 0;
 	item->unread = 0;
@@ -221,6 +220,8 @@ FolderItem *folder_item_new(Folder *folder, const gchar *name, const gchar *path
 	item->opened    = FALSE;
 	item->parent = NULL;
 	item->folder = NULL;
+	item->account = NULL;
+	item->apply_sub = FALSE;
 	item->mark_queue = NULL;
 	item->data = NULL;
 
@@ -1897,7 +1898,8 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	const gchar *path = NULL;
 	PrefsAccount *account = NULL;
 	gboolean no_sub = FALSE, no_select = FALSE, collapsed = FALSE, 
-		 threaded = TRUE, ret_rcpt = FALSE, hidereadmsgs = FALSE;
+		 threaded = TRUE, apply_sub = FALSE;
+	gboolean ret_rcpt = FALSE, hidereadmsgs = FALSE; /* CLAWS */
 	FolderSortKey sort_key = SORT_BY_NONE;
 	FolderSortType sort_type = SORT_ASCENDING;
 	gint new = 0, unread = 0, total = 0;
@@ -1934,11 +1936,7 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 			name = attr->value;
 		else if (!strcmp(attr->name, "path"))
 			path = attr->value;
-		else if (!strcmp(attr->name, "account_id")) {
-			account = account_find_from_id(atoi(attr->value));
-			if (!account) g_warning("account_id: %s not found\n",
-						attr->value);
-		} else if (!strcmp(attr->name, "mtime"))
+		else if (!strcmp(attr->name, "mtime"))
 			mtime = strtoul(attr->value, NULL, 10);
 		else if (!strcmp(attr->name, "new"))
 			new = atoi(attr->value);
@@ -1988,12 +1986,16 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 				sort_type = SORT_ASCENDING;
 			else
 				sort_type = SORT_DESCENDING;
-		}
+		} else if (!strcmp(attr->name, "account_id")) {
+			account = account_find_from_id(atoi(attr->value));
+			if (!account) g_warning("account_id: %s not found\n",
+						attr->value);
+		} else if (!strcmp(attr->name, "apply_sub"))
+			apply_sub = *attr->value == '1' ? TRUE : FALSE;
 	}
 
 	item = folder_item_new(folder, name, path);
 	item->stype = stype;
-	item->account = account;
 	item->mtime = mtime;
 	item->new = new;
 	item->unread = unread;
@@ -2016,7 +2018,8 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	case F_TRASH:  folder->trash  = item; break;
 	default:       break;
 	}
-
+	item->account = account;
+	item->apply_sub = apply_sub;
 	prefs_folder_item_read_config(item);
 
 	node->data = item;
@@ -2034,7 +2037,8 @@ static gboolean folder_read_folder_func(GNode *node, gpointer data)
 	const gchar *name = NULL;
 	const gchar *path = NULL;
 	PrefsAccount *account = NULL;
-	gboolean collapsed = FALSE, threaded = TRUE, ret_rcpt = FALSE;
+	gboolean collapsed = FALSE, threaded = TRUE, apply_sub = FALSE;
+	gboolean ret_rcpt = FALSE; /* CLAWS */
 
 	if (g_node_depth(node) != 2) return FALSE;
 	g_return_val_if_fail(node->data != NULL, FALSE);
@@ -2065,14 +2069,16 @@ static gboolean folder_read_folder_func(GNode *node, gpointer data)
 			name = attr->value;
 		else if (!strcmp(attr->name, "path"))
 			path = attr->value;
+		else if (!strcmp(attr->name, "collapsed"))
+			collapsed = *attr->value == '1' ? TRUE : FALSE;
+		else if (!strcmp(attr->name, "threaded"))
+			threaded = *attr->value == '1' ? TRUE : FALSE;
 		else if (!strcmp(attr->name, "account_id")) {
 			account = account_find_from_id(atoi(attr->value));
 			if (!account) g_warning("account_id: %s not found\n",
 						attr->value);
-		} else if (!strcmp(attr->name, "collapsed"))
-			collapsed = *attr->value == '1' ? TRUE : FALSE;
-		else if (!strcmp(attr->name, "threaded"))
-			threaded = *attr->value == '1' ? TRUE : FALSE;
+		} else if (!strcmp(attr->name, "apply_sub"))
+			apply_sub = *attr->value == '1' ? TRUE : FALSE;
 		else if (!strcmp(attr->name, "reqretrcpt"))
 			ret_rcpt = *attr->value == '1' ? TRUE : FALSE;
 	}
@@ -2088,6 +2094,8 @@ static gboolean folder_read_folder_func(GNode *node, gpointer data)
 	folder_add(folder);
 	FOLDER_ITEM(node->data)->collapsed = collapsed;
 	FOLDER_ITEM(node->data)->threaded  = threaded;
+	FOLDER_ITEM(node->data)->account   = account;
+	FOLDER_ITEM(node->data)->apply_sub = apply_sub;
 	FOLDER_ITEM(node->data)->ret_rcpt  = ret_rcpt;
 
 	g_node_traverse(node, G_PRE_ORDER, G_TRAVERSE_ALL, -1,
@@ -2143,11 +2151,13 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 				(fp, LOCAL_FOLDER(folder)->rootpath);
 			fputs("\"", fp);
 		}
+		if (item->collapsed && node->children)
+			fputs(" collapsed=\"1\"", fp);
 		if (folder->account)
 			fprintf(fp, " account_id=\"%d\"",
 				folder->account->account_id);
-		if (item->collapsed && node->children)
-			fputs(" collapsed=\"1\"", fp);
+		if (item->apply_sub)
+			fputs(" apply_sub=\"1\"", fp);
 		if (item->ret_rcpt) 
 			fputs(" reqretrcpt=\"1\"", fp);
 	} else {
@@ -2163,9 +2173,7 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 			xml_file_put_escape_str(fp, item->path);
 			fputs("\"", fp);
 		}
-		if (item->account)
-			fprintf(fp, " account_id=\"%d\"",
-				item->account->account_id);
+		
 		if (item->no_sub)
 			fputs(" no_sub=\"1\"", fp);
 		if (item->no_select)
@@ -2195,6 +2203,12 @@ static void folder_write_list_recursive(GNode *node, gpointer data)
 		fprintf(fp,
 			" mtime=\"%lu\" new=\"%d\" unread=\"%d\" total=\"%d\"",
 			item->mtime, item->new, item->unread, item->total);
+			
+		if (item->account)
+			fprintf(fp, " account_id=\"%d\"",
+				item->account->account_id);
+		if (item->apply_sub)
+			fputs(" apply_sub=\"1\"", fp);
 	}
 
 	if (node->children) {

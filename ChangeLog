@@ -1,5 +1,18 @@
 2002-10-04
 
+	* src/account.[ch]: account_find_from_item(): new.
+	* src/compose.c:
+	  compose_reply(), compose_forward(), compose_redirect()
+	  src/mainwindow.c: compose_cb(): select optimal account when
+	  composing.
+	* src/folder.[ch]: added FolderItem::apply_sub.
+	* src/menu.[ch]: menu_find_option_menu_index(): new. It finds the
+	  index of option menu which contains the specified data.
+	* src/prefs_folder_item(): added Compose tab, and the setting of
+	  folder account.
+
+2002-10-04
+
 	* configure.in: added $LDAP_LIBS for lber library detection.
 
 2002-10-03

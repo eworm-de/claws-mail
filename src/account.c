@@ -169,6 +169,33 @@ void account_save_config_all(void)
 	prefs_account_save_config_all(account_list);
 }
 
+/*
+ * account_find_all_from_address:
+ * @ac_list: initial list of accounts. NULL to create a new one.
+ * Accounts found in the @address will be appended to this list.
+ * @address: Email address string.
+ *
+ * Find all the mail (not news) accounts within the specified address.
+ *
+ * Return value: the original accounts list with the found accounts appended.
+ */
+GList *account_find_all_from_address(GList *ac_list, const gchar *address)
+{
+	GList *cur;
+	PrefsAccount *ac;
+
+	if (address == NULL)
+		return ac_list;
+
+	for (cur = account_list; cur != NULL; cur = cur->next) {
+		ac = (PrefsAccount *)cur->data;
+		if (ac->protocol != A_NNTP && ac->address &&
+		    strcasestr(address, ac->address) != NULL)
+			ac_list = g_list_append(ac_list, ac);
+	}
+	return ac_list;
+}
+	
 PrefsAccount *account_find_from_smtp_server(const gchar *address,
 					    const gchar *smtp_server)
 {
@@ -227,33 +254,29 @@ PrefsAccount *account_find_from_id(gint id)
 	return NULL;
 }
 
-/*
- * account_find_all_from_address:
- * @ac_list: initial list of accounts. NULL to create a new one.
- * Accounts found in the @address will be appended to this list.
- * @address: Email address string.
- *
- * Find all the mail (not news) accounts within the specified address.
- *
- * Return value: the original accounts list with the found accounts appended.
- */
-GList *account_find_all_from_address(GList *ac_list, const gchar *address)
+PrefsAccount *account_find_from_item(FolderItem *item)
 {
-	GList *cur;
 	PrefsAccount *ac;
 
-	if (address == NULL)
-		return ac_list;
+	g_return_val_if_fail(item != NULL, NULL);
 
-	for (cur = account_list; cur != NULL; cur = cur->next) {
-		ac = (PrefsAccount *)cur->data;
-		if (ac->protocol != A_NNTP && ac->address &&
-		    strcasestr(address, ac->address) != NULL)
-			ac_list = g_list_append(ac_list, ac);
+	ac = item->account;
+	if (!ac) {
+		FolderItem *cur_item = item->parent;
+		while (cur_item != NULL) {
+			if (cur_item->account && cur_item->apply_sub) {
+				ac = cur_item->account;
+				break;
+			}				
+			cur_item = cur_item->parent;
+		}
 	}
-	return ac_list;
+	if (!ac)
+		ac = item->folder->account;
+
+	return ac;
 }
-	
+
 void account_set_menu(void)
 {
 	main_window_set_account_menu(account_list);

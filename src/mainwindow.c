@@ -3101,28 +3101,35 @@ void send_queue_cb(MainWindow *mainwin, guint action, GtkWidget *widget)
 void compose_mail_cb(MainWindow *mainwin, guint action,
 			    GtkWidget *widget)
 {
-	PrefsAccount * ac;
-	GList * list;
-	GList * cur;
+	PrefsAccount *ac = NULL;
+	FolderItem *item = mainwin->summaryview->folder_item;	
+        GList * list;
+        GList * cur;
 
-	if (mainwin->summaryview->folder_item) {
-		ac = mainwin->summaryview->folder_item->folder->account;
+	if (item) {
+		ac = account_find_from_item(item);
 		if (ac && ac->protocol != A_NNTP) {
-			compose_new_with_folderitem(ac, mainwin->summaryview->folder_item);
+			compose_new_with_folderitem(ac, item);		/* CLAWS */
 			return;
 		}
 	}
 
-	if(cur_account && (cur_account->protocol != A_NNTP)) {
-		compose_new_with_folderitem(cur_account, mainwin->summaryview->folder_item);
+	/*
+	 * CLAWS - use current account
+	 */
+	if (cur_account && (cur_account->protocol != A_NNTP)) {
+		compose_new_with_folderitem(cur_account, item);
 		return;
 	}
 
+	/*
+	 * CLAWS - just get the first one
+	 */
 	list = account_get_list();
-	for(cur = list ; cur != NULL ; cur = g_list_next(cur)) {
+	for (cur = list ; cur != NULL ; cur = g_list_next(cur)) {
 		ac = (PrefsAccount *) cur->data;
 		if (ac->protocol != A_NNTP) {
-			compose_new_with_folderitem(ac, mainwin->summaryview->folder_item);
+			compose_new_with_folderitem(ac, item);
 			return;
 		}
 	}
