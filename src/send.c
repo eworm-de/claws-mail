@@ -122,13 +122,14 @@ gint send_message_queue(const gchar *file)
 				       {"AID:", NULL, FALSE},
 				       {NULL,   NULL, FALSE}};
 	FILE *fp;
-	gint val;
+	gint val = 0;
 	gchar *from = NULL;
 	gchar *server = NULL;
 	GSList *to_list = NULL;
 	gchar buf[BUFFSIZE];
 	gint hnum;
-	PrefsAccount *ac = NULL;
+	glong fpos;
+	PrefsAccount *ac = NULL, *mailac = NULL, *newsac = NULL;
 
 	g_return_val_if_fail(file != NULL, -1);
 
@@ -159,36 +160,59 @@ gint send_message_queue(const gchar *file)
 		}
 	}
 
-	if (!to_list || !from) {
+	if (((!ac || (ac && ac->protocol != A_NNTP)) && !to_list) || !from) {
 		g_warning(_("Queued message header is broken.\n"));
 		val = -1;
-	} else if (ac && ac->use_mail_command && ac->mail_command &&
-		   (*ac->mail_command)) {
-		val = send_message_local(ac->mail_command, fp);
 	} else if (prefs_common.use_extsend && prefs_common.extsend_cmd) {
 		val = send_message_local(prefs_common.extsend_cmd, fp);
 	} else {
-		if (!ac) {
+		if (ac && ac->protocol == A_NNTP) {
+			newsac = ac;
+
+			/* search mail account */
+			mailac = account_find_from_address(from);
+			if (!mailac) {
+				if (cur_account &&
+				    cur_account->protocol != A_NNTP)
+					mailac = cur_account;
+				else {
+					mailac = account_get_default();
+					if (mailac->protocol == A_NNTP)
+						mailac = NULL;
+				}
+			}
+		} else if (ac) {
+			mailac = ac;
+		} else {
 			ac = account_find_from_smtp_server(from, server);
 			if (!ac) {
 				g_warning(_("Account not found. "
 					    "Using current account...\n"));
 				ac = cur_account;
+				if (ac && ac->protocol != A_NNTP)
+					mailac = ac;
 			}
 		}
 
-		if (ac)
-			val = send_message_smtp(ac, to_list, fp);
-		else {
-			PrefsAccount tmp_ac;
+		fpos = ftell(fp);
+		if (to_list) {
+			if (mailac)
+				val = send_message_smtp(mailac, to_list, fp);
+			else {
+				PrefsAccount tmp_ac;
 
-			g_warning(_("Account not found.\n"));
+				g_warning(_("Account not found.\n"));
 
-			memset(&tmp_ac, 0, sizeof(PrefsAccount));
-			tmp_ac.address = from;
-			tmp_ac.smtp_server = server;
-			tmp_ac.smtpport = SMTP_PORT;
-			val = send_message_smtp(&tmp_ac, to_list, fp);
+				memset(&tmp_ac, 0, sizeof(PrefsAccount));
+				tmp_ac.address = from;
+				tmp_ac.smtp_server = server;
+				tmp_ac.smtpport = SMTP_PORT;
+				val = send_message_smtp(&tmp_ac, to_list, fp);
+			}
+		}
+		if (val == 0 && newsac) {
+			fseek(fp, fpos, SEEK_SET);
+			val = news_post_stream(FOLDER(newsac->folder), fp);
 		}
 	}
 

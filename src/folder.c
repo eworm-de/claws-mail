@@ -530,6 +530,16 @@ void folder_scan_tree(Folder *folder)
 	prefs_matcher_read_config();
 }
 
+FolderItem *folder_create_folder(FolderItem *parent, const gchar *name)
+{
+	FolderItem *new_item;
+
+	new_item = parent->folder->create_folder(parent->folder, parent, name);
+	new_item->cache = msgcache_new();
+
+	return new_item;
+}
+
 struct TotalMsgCount
 {
 	guint new;
@@ -1793,7 +1803,7 @@ gint folder_item_copy_msgs_with_dest(FolderItem *dest, GSList *msglist)
 
 	/* Read cache for dest folder */
 	if (!dest->cache) folder_item_read_cache(dest);
-	
+
 	/* 
 	 * Fetch new MsgInfos for new messages in dest folder,
 	 * add them to the msgcache and update folder message counts

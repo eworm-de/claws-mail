@@ -1,3 +1,49 @@
+2002-10-04
+
+	* configure.in: lber ライブラリの検出に $LDAP_LIBS を追加。
+
+2002-10-03
+
+	* version 0.8.5
+
+2002-10-03
+
+	* src/procmsg.c: procmsg_msginfo_get_full_info(): メモリリークを
+	  修正し、エラーチェックを追加。
+
+2002-10-03
+
+	* src/compose.[ch]: フラグ Compose::use_newsgroups を追加し、
+	  Compose::orig_account を削除。
+	  compose_check_for_valid_recipient(): 有効なエントリのみをチェック。
+	  compose_write_headers()
+	  compose_redirect_write_headers(): エントリが有効になっている場合
+	  のみ Newsgroups ヘッダを追加。
+	  compose_send(): ニュースアカウントからメールアカウントを見つける
+	  方法を From アドレスをマッチさせるように変更。
+	* src/send.c: send_message_queue(): ニュースメッセージの送信待機
+	  を有効にした。
+	* src/news.[ch]: news_post_stream(): 新規。
+
+2002-10-03
+
+	* configure.in: lber を先にチェックし、 ldap のチェック時に
+	  $LDAP_LIBS を使用。
+
+2002-10-02
+
+	* po/*.po: クラッシュを引き起こす多くのフォーマット文字列のミス
+	  を修正(Sergey Vlasov さん thanks)。
+
+2002-10-02
+
+	* src/procheader.c: procheader_parse_stream(): 完全パースの対象
+	  に Cc ヘッダを追加。
+	* src/procmsg.[ch]: procmsg_msginfo_get_full_info(): 新規。指定
+	  された情報から完全なメッセージ情報を返す。
+	* src/compose.c: compose_reply(), compose_forward(): Cc ヘッダの
+	  ために完全なメッセージ情報を得るようにした。
+
 2002-10-02
 
 	* src/inc.c: inc_account_mail(), inc_all_account_mail(): IMAP4 と

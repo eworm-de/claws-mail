@@ -1,3 +1,49 @@
+2002-10-04
+
+	* configure.in: added $LDAP_LIBS for lber library detection.
+
+2002-10-03
+
+	* version 0.8.5
+
+2002-10-03
+
+	* src/procmsg.c: procmsg_msginfo_get_full_info(): fixed a memory
+	  leak, and added error checking.
+
+2002-10-03
+
+	* src/compose.[ch]: added a flag Compose::use_newsgroups, and
+	  removed Compose::orig_account.
+	  compose_check_for_valid_recipient(): check only enabled entries.
+	  compose_write_headers()
+	  compose_redirect_write_headers(): add Newsgroups header only
+	  when the entry is enabled.
+	  compose_send(): modified the method of finding a mail account
+	  from a news account so that it tries to match the From address.
+	* src/send.c: send_message_queue(): enabled the queueing of news
+	  messages.
+	* src/news.[ch]: news_post_stream(): new.
+
+2002-10-03
+
+	* configure.in: check lber first and use $LDAP_LIBS on the check
+	  for ldap.
+
+2002-10-02
+
+	* po/*.po: fixed many typos of format strings which will lead to
+	  crash (thanks to Sergey Vlasov).
+
+2002-10-02
+
+	* src/procheader.c: procheader_parse_stream(): added Cc header
+	  to the target for full parsing.
+	* src/procmsg.[ch]: procmsg_msginfo_get_full_info(): new. It
+	  returns the full message information from the given information.
+	* src/compose.c: compose_reply(), compose_forward(): get full
+	  message information for Cc header.
+
 2002-10-02
 
 	* src/inc.c: inc_account_mail(), inc_all_account_mail(): update

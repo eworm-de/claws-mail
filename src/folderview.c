@@ -1902,7 +1902,7 @@ static void folderview_new_folder_cb(FolderView *folderview, guint action,
 		return;
 	}
 
-	new_item = item->folder->create_folder(item->folder, item, new_folder);
+	new_item = folder_create_folder(item, new_folder);
 	if (!new_item) {
 		alertpanel_error(_("Can't create the folder `%s'."), name);
 		g_free(new_folder);
@@ -1958,7 +1958,7 @@ static void folderview_new_mbox_folder_cb(FolderView *folderview, guint action,
 		return;
 	}
 
-	new_item = item->folder->create_folder(item->folder, item, new_folder);
+	new_item = folder_create_folder(item, new_folder);
 	g_free(new_folder);
 	if (!new_item) return;
 
@@ -2305,7 +2305,7 @@ static void folderview_new_imap_folder_cb(FolderView *folderview, guint action,
 		return;
 	}
 
-	new_item = item->folder->create_folder(item->folder, item, new_folder);
+	new_item = folder_create_folder(item, new_folder);
 	if (!new_item) {
 		alertpanel_error(_("Can't create the folder `%s'."), name);
 		g_free(new_folder);

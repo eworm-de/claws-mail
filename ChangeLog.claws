@@ -1,3 +1,58 @@
+2002-10-07 [christoph]	0.8.3claws52
+
+	* src/folder.[ch]
+	* src/folderview.c
+	* src/mainwindow.c
+		fix new folder ghost message bug
+		(closes bug [ 619722 ] wrong count for newly created folders)
+
+2002-10-07 [christoph]	0.8.3claws51
+
+	* src/compose.c
+		fix news posting problem
+
+2002-10-07 [melvin]	0.8.3claws50
+
+	* po/fr.po
+		Updated French translation
+
+2002-10-05 [christoph]	0.8.3claws49
+
+	* src/gtkstext.c
+		check if line_start_cache is set in gtk_stext_update_text
+		(closes bug [ 618119 ] crash while doing search in folder)
+
+2002-10-05 [christoph]	0.8.3claws48
+
+	* src/imap.c
+	* src/news.c
+	* src/utils.c
+	* src/utils.h
+		implement cache cleanups for claws' folder system
+		(closes bug [ 595916 ] imapcache not cleaned up)
+
+2002-10-05 [melvin]	0.8.3claws47
+
+	* src/prefs_actions.c
+		Made the help text more clear for the %p token
+
+2002-10-04 [paul]	0.8.3claws46
+
+	* sync with 0.8.5
+		see ChangeLog 2002-10-02 and 2002-10-03
+
+2002-10-04 [christoph]	0.8.3claws45
+
+	* src/inc.c
+		fix segfault caused by pop before smtp
+		call to inc_account_mail with NULL
+		pointer for mainwin
+
+2002-10-04 [paul]	0.8.3claws44
+
+	* configure.in
+		sync the LDAP detection from 0.8.5cvs1
+
 2002-10-02 [christoph]	0.8.3claws43
 
 	* po/de.po

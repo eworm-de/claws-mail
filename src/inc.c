@@ -243,7 +243,10 @@ static gint inc_account_mail(PrefsAccount *account, MainWindow *mainwin)
 	IncProgressDialog *inc_dialog;
 	IncSession *session;
 	gchar *text[3];
-	FolderItem *item = mainwin->summaryview->folder_item;
+	FolderItem *item;
+	
+	if(mainwin && mainwin->summaryview)
+		item = mainwin->summaryview->folder_item;
 
 	switch (account->protocol) {
 	case A_IMAP4:

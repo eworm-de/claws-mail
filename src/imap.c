@@ -3162,6 +3162,7 @@ GSList *imap_get_num_list(Folder *folder, FolderItem *_item)
 	guint32 uid_validity = 0;
 	GPtrArray *argbuf;
 	gchar *cmdbuf = NULL;
+	gchar *dir;
 	
 	g_return_val_if_fail(folder != NULL, NULL);
 	g_return_val_if_fail(item != NULL, NULL);
@@ -3208,6 +3209,11 @@ GSList *imap_get_num_list(Folder *folder, FolderItem *_item)
 			}
 		}
 	}
+
+	dir = folder_item_get_path((FolderItem *)item);
+	debug_print("removing old messages from %s\n", dir);
+	remove_numbered_files_not_in_list(dir, msgnum_list);
+	g_free(dir);
 
 	return msgnum_list;
 }

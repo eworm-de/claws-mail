@@ -358,7 +358,7 @@ static void prefs_actions_create(MainWindow *mainwin)
 		   "   & to run command asynchronously\n"
 		   " Use %f for message file name\n"
 		   "   %F for the list of the file names of selected messages\n"
-		   "   %p for the selected message part."));
+		   "   %p for the selected message MIME part."));
 	gtk_misc_set_alignment(GTK_MISC(help_label), 0, 0.5);
 	gtk_label_set_justify(GTK_LABEL(help_label), GTK_JUSTIFY_LEFT);
 	gtk_widget_show(help_label);

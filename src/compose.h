@@ -162,6 +162,7 @@ struct _Compose
 	gboolean use_cc;
 	gboolean use_bcc;
 	gboolean use_replyto;
+	gboolean use_newsgroups;
 	gboolean use_followupto;
 	gboolean use_attach;
 
@@ -180,7 +181,6 @@ struct _Compose
 	GSList *newsgroup_list;
 
 	PrefsAccount *account;
-	PrefsAccount *orig_account;
 
 	UndoMain *undostruct;
 
