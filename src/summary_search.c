@@ -98,7 +98,7 @@ static void summary_search_create(SummaryView *summaryview)
 	window = gtk_window_new (GTK_WINDOW_DIALOG);
 	gtk_window_set_title (GTK_WINDOW (window), _("Search"));
 	gtk_widget_set_usize (window, 450, -1);
-	//gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+	/*gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);*/
 	gtk_window_set_policy(GTK_WINDOW(window), FALSE, TRUE, TRUE);
 	gtk_container_set_border_width (GTK_CONTAINER (window), 8);
 	gtk_signal_connect(GTK_OBJECT(window), "delete_event",

@@ -67,7 +67,7 @@ gint esmtp_auth(SockInfo *sock, SMTPAuthType authtype,
 	guchar hexdigest[33];
 	gchar *challenge, *response, *response64;
 	gint challengelen;
-	//const gchar delimiters[]=" ";
+	/* const gchar delimiters[]=" "; */
 	gchar *token;
 
 	switch (authtype) {

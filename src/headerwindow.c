@@ -88,8 +88,10 @@ HeaderWindow *header_window_create(void)
 
 void header_window_init(HeaderWindow *headerwin)
 {
-	//if (!normalfont)
-	//	normalfont = gdk_fontset_load(NORMAL_FONT);
+	/*
+	if (!normalfont)
+		normalfont = gdk_fontset_load(NORMAL_FONT);
+	*/	
 	if (!boldfont)
 		boldfont = gdk_fontset_load(BOLD_FONT);
 }

@@ -2249,7 +2249,7 @@ gtk_stext_key_press (GtkWidget   *widget,
 		break;
 	case GDK_Down:      
 		move_cursor_to_display_row_down(text);
-//		move_cursor_ver (text, +1); 
+/*		move_cursor_ver (text, +1);  */
 		break;
 	case GDK_Left:
 	  if (event->state & GDK_CONTROL_MASK)

@@ -2197,7 +2197,7 @@ static void prefs_quote_colors_dialog_create(void)
 	GtkWidget *uri_label;
 	GtkWidget *hbbox;
 	GtkWidget *ok_btn;
-	//GtkWidget *cancel_btn;
+	/*GtkWidget *cancel_btn;*/
 	GtkWidget *recycle_colors_btn;
 	GtkWidget *frame_colors;
 

@@ -574,7 +574,9 @@ static IncState inc_pop3_session_do(IncSession *session)
 	recv_set_ui_func(NULL, NULL);
 
 #if USE_THREADS
-	//pthread_join(sockinfo->connect_thr, NULL);
+/*
+	pthread_join(sockinfo->connect_thr, NULL);
+*/	
 #endif
 	automaton_destroy(atm);
 
@@ -669,7 +671,7 @@ static gint connection_check_cb(Automaton *atm)
 	IncProgressDialog *inc_dialog = state->session->data;
 	SockInfo *sockinfo = state->sockinfo;
 
-	//g_print("connection check\n");
+	/* g_print("connection check\n"); */
 
 	if (sockinfo->state == CONN_LOOKUPFAILED ||
 	    sockinfo->state == CONN_FAILED) {
@@ -778,6 +780,7 @@ void inc_progress_update(Pop3State *state, Pop3Phase phase)
 		progress_dialog_set_label(dialog, _("Quitting"));
 		break;
 	default:
+		break;
 	}
 }
 
@@ -852,6 +855,7 @@ static void inc_put_error(IncState istate)
 		alertpanel_error(_("No disk space left."));
 		break;
 	default:
+		break;
 	}
 }
 
@@ -865,7 +869,7 @@ static void inc_cancel(GtkWidget *widget, gpointer data)
 	if (sockinfo->state == CONN_READY ||
 	    sockinfo->state == CONN_LOOKUPSUCCESS) {
 		pthread_cancel(sockinfo->connect_thr);
-		//pthread_kill(sockinfo->connect_thr, SIGINT);
+		/* pthread_kill(sockinfo->connect_thr, SIGINT); */
 		g_print("connection was cancelled.\n");
 	}
 #endif

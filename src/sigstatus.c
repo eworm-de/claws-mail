@@ -234,6 +234,7 @@ const char *gpgmegtk_sig_status_to_string(GpgmeSigStat status)
                 result = _("Error verifying the signature");
                 break;
 	default:
+		break;
         }
 
         return result;

@@ -833,10 +833,12 @@ static void folderview_update_node(FolderView *folderview, GtkCTreeNode *node)
 				name = " (News)"; break;
 			default:
 				name = "";
+				break;
 			}
 			name = g_strconcat(item->name, name, NULL);
 		} else
 			name = g_strdup(item->name);
+		break;			
 	}
 
 	if (!GTK_CTREE_ROW(node)->expanded &&
@@ -1299,6 +1301,7 @@ static void folderview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		BREAK_ON_MODIFIER_KEY();
 		summary_pass_key_press_event(folderview->summaryview, event);
 	default:
+		break;
 	}
 }
 
@@ -1396,6 +1399,7 @@ static void folderview_col_resized(GtkCList *clist, gint column, gint width,
 		prefs_common.folder_col_total = width;
 		break;
 	default:
+		break;
 	}
 }
 
@@ -2048,6 +2052,7 @@ static gboolean folderview_drag_motion_cb(GtkWidget      *widget,
 				    acceptable = TRUE;
 				break;
 			default:
+				break;
 			}
 		}
 	}

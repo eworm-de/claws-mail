@@ -268,7 +268,7 @@ void procmime_scan_multipart_message(MimeInfo *mimeinfo, FILE *fp)
 
 		if (eom) break;
 	}
-	//g_message ("** at " __PRETTY_FUNCTION__ ":%d:", __LINE__);
+	/*g_message ("** at " __PRETTY_FUNCTION__ ":%d:", __LINE__);*/
 }
 
 void procmime_scan_encoding(MimeInfo *mimeinfo, const gchar *encoding)

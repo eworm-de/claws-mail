@@ -499,11 +499,12 @@ gint subject_compare(const gchar *s1, const gchar *s2)
 	if (!*str1 || !*str2) return -1;
 
 	retval = strcmp(str1, str2);
-	//if (retval == 0)
-	//	g_print("\ns1 = %s\ns2 = %s\n"
-	//		"str1 = %s\nstr2 = %s\nmatched.\n",
-	//		s1, s2, str1, str2);
-
+	/*
+	if (retval == 0)
+		g_print("\ns1 = %s\ns2 = %s\n"
+			"str1 = %s\nstr2 = %s\nmatched.\n",
+			s1, s2, str1, str2);
+	*/
 	return retval;
 }
 
@@ -1429,7 +1430,7 @@ gint remove_dir_recursive(const gchar *dir)
 	struct dirent *d;
 	gchar *prev_dir;
 
-	//g_print("dir = %s\n", dir);
+	/*g_print("dir = %s\n", dir);*/
 
 	if (stat(dir, &s) < 0) {
 		FILE_OP_ERROR(dir, "stat");
@@ -1447,7 +1448,7 @@ gint remove_dir_recursive(const gchar *dir)
 	}
 
 	prev_dir = g_get_current_dir();
-	//g_print("prev_dir = %s\n", prev_dir);
+	/*g_print("prev_dir = %s\n", prev_dir);*/
 
 	if (!path_cmp(prev_dir, dir)) {
 		g_free(prev_dir);
@@ -1482,7 +1483,7 @@ gint remove_dir_recursive(const gchar *dir)
 			continue;
 		}
 
-		//g_print("removing %s\n", d->d_name);
+		/*g_print("removing %s\n", d->d_name);*/
 
 		if (S_ISDIR(s.st_mode)) {
 			if (remove_dir_recursive(d->d_name) < 0) {

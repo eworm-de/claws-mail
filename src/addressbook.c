@@ -324,7 +324,7 @@ static void addressbook_create(gboolean show)
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(window), _("Address book"));
 	gtk_widget_set_usize(window, ADDRESSBOOK_WIDTH, ADDRESSBOOK_HEIGHT);
-	//gtk_container_set_border_width(GTK_CONTAINER(window), BORDER_WIDTH);
+	/* gtk_container_set_border_width(GTK_CONTAINER(window), BORDER_WIDTH); */
 	gtk_window_set_policy(GTK_WINDOW(window), TRUE, TRUE, TRUE);
 	gtk_widget_realize(window);
 
@@ -839,7 +839,7 @@ static void addressbook_entry_changed(GtkWidget *widget)
 	gint len;
 	gint row;
 
-	//if (clist->selection && clist->selection->next) return;
+	/* if (clist->selection && clist->selection->next) return; */
 
 	str = gtk_entry_get_text(entry);
 	if (*str == '\0') {

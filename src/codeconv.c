@@ -774,7 +774,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 	gchar *mimehdr_enctype = "?B?";
 	const gchar *mimehdr_charset;
 
-	//g_print("src = %s\n", src);
+	/* g_print("src = %s\n", src); */
 	mimehdr_charset = conv_get_outgoing_charset_str();
 
 	/* convert to wide-character string */
@@ -784,7 +784,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 		strlen(mimehdr_charset) + strlen(mimehdr_enctype);
 	mimehdr_begin_len = strlen(mimehdr_init) +
 		strlen(mimehdr_charset) + strlen(mimehdr_enctype);
-	//line_len = 1;
+	/* line_len = 1; */
 	line_len = header_len;
 	destp = dest;
 	*dest = '\0';
@@ -847,8 +847,8 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 				}
 				/* g_free(raw); */
 				src_codeset = conv_get_current_charset_str();
-				//printf ("tmp = %s, tlen = %d, mbl\n",
-				//      tmp, tlen, mbl);
+				/* printf ("tmp = %s, tlen = %d, mbl\n", 
+				        tmp, tlen, mbl); */
 				if (jconv_alloc_conv(tmp, tlen + mbl,
 						     &raw_new, &raw_new_len,
 						     &src_codeset, 1,
@@ -907,8 +907,10 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 
 				wtmpp++;
 			}
-			//g_print("tmp = %s, tlen = %d, mb_seqlen = %d\n",
-			//      tmp, tlen, mb_seqlen);
+			/*
+			  g_print("tmp = %s, tlen = %d, mb_seqlen = %d\n",
+			        tmp, tlen, mb_seqlen);
+			*/				
 
 			if (tlen == 0 || raw_len == 0) {
 				g_free(tmp);
@@ -944,7 +946,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 
 			g_free(tmp);
 			g_free(raw);
-			//g_print("line_len = %d\n\n", line_len);
+			/* g_print("line_len = %d\n\n", line_len); */
 		} while (*wtmpp != (wchar_t)0);
 
 		while (iswspace(*wsrcp)) {
@@ -963,7 +965,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 
 	g_free(wsrc);
 
-	//g_print("dest = %s\n", dest);
+	/g_print("dest = %s\n", dest);
 }
 #else /* !HAVE_LIBJCONV */
 
@@ -981,7 +983,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 	gchar *mimehdr_enctype = "?B?";
 	const gchar *mimehdr_charset;
 
-	//g_print("src = %s\n", src);
+	/* g_print("src = %s\n", src); */
 	mimehdr_charset = conv_get_outgoing_charset_str();
 	if (strcmp(mimehdr_charset, "ISO-2022-JP") != 0) {
 		/* currently only supports Japanese */
@@ -996,7 +998,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 		      strlen(mimehdr_charset) + strlen(mimehdr_enctype);
 	mimehdr_begin_len = strlen(mimehdr_init) +
 			    strlen(mimehdr_charset) + strlen(mimehdr_enctype);
-	//line_len = 1;
+	/* line_len = 1; */
 	line_len = header_len;
 	destp = dest;
 	*dest = '\0';
@@ -1097,8 +1099,9 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 
 				wtmpp++;
 			}
-			//g_print("tmp = %s, tlen = %d, mb_seqlen = %d\n",
-			//	tmp, tlen, mb_seqlen);
+			/* g_print("tmp = %s, tlen = %d, mb_seqlen = %d\n",
+				tmp, tlen, mb_seqlen);
+			*/				
 
 			if (tlen == 0) {
 				g_free(tmp);
@@ -1139,7 +1142,7 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 			}
 
 			g_free(tmp);
-			//g_print("line_len = %d\n\n", line_len);
+			/* g_print("line_len = %d\n\n", line_len); */
 		} while (*wtmpp != (wchar_t)0);
 
 		while (iswspace(*wsrcp)) {
@@ -1158,6 +1161,6 @@ void conv_encode_header(gchar *dest, gint len, const gchar *src,
 
 	g_free(wsrc);
 
-	//g_print("dest = %s\n", dest);
+	/* g_print("dest = %s\n", dest); */
 }
 #endif /* HAVE_LIBJCONV */

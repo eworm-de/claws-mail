@@ -1409,6 +1409,7 @@ static void prefs_account_protocol_set_optmenu(PrefParam *pparam)
 		break;
 		*/
 	default:
+		break;
 	}
 
 	menu = gtk_option_menu_get_menu(optmenu);

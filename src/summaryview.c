@@ -586,7 +586,7 @@ GtkCTreeNode * summary_find_next_important_score(SummaryView *summaryview,
 	GtkCTreeNode *best_node = NULL;
 
 	if (current_node)
-		//node = current_node;
+		/*node = current_node;*/
 		node = GTK_CTREE_NODE_NEXT(current_node);
 	else
 		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
@@ -617,7 +617,7 @@ GtkCTreeNode * summary_find_prev_important_score(SummaryView *summaryview,
 	GtkCTreeNode *best_node = NULL;
 
 	if (current_node)
-		//node = current_node;
+		/*node = current_node;*/
 		node = GTK_CTREE_NODE_PREV(current_node);
 	else
 		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
@@ -1101,7 +1101,7 @@ static GtkCTreeNode *summary_find_next_unread_msg(SummaryView *summaryview,
 
 	if (current_node)
 		node = current_node;
-		//node = GTK_CTREE_NODE_NEXT(current_node);
+		/*node = GTK_CTREE_NODE_NEXT(current_node);*/
 	else
 		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list);
 
@@ -1180,7 +1180,7 @@ static GtkCTreeNode *summary_find_prev_unread_msg(SummaryView *summaryview,
 
 	if (current_node)
 		node = current_node;
-		//node = GTK_CTREE_NODE_PREV(current_node);
+		/*node = GTK_CTREE_NODE_PREV(current_node);*/
 	else
 		node = GTK_CTREE_NODE(GTK_CLIST(ctree)->row_list_end);
 
@@ -1484,7 +1484,7 @@ void summary_sort(SummaryView *summaryview, SummarySortType type)
 	gtk_ctree_sort_node(ctree, NULL);
 
 	gtk_ctree_node_moveto(ctree, summaryview->selected, -1, 0.5, 0);
-	//gtkut_ctree_set_focus_row(ctree, summaryview->selected);
+	/*gtkut_ctree_set_focus_row(ctree, summaryview->selected);*/
 
 	prefs_folder_item_set_config(summaryview->folder_item,
 				     summaryview->sort_type,
@@ -3063,6 +3063,7 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		gtk_widget_grab_focus(summaryview->folderview->ctree);
 		return;
 	default:
+		break;
 	}
 
 	if (!summaryview->selected) {
@@ -3169,6 +3170,7 @@ static void summary_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		summary_save_as(summaryview);
 		break;
 	default:
+		break;
 	}
 }
 
@@ -3225,6 +3227,7 @@ static void summary_selected(GtkCTree *ctree, GtkCTreeNode *row,
 		}
 		break;
 	default:
+		break;
 	}
 
 	if (summaryview->display_msg)
@@ -3265,6 +3268,7 @@ static void summary_col_resized(GtkCList *clist, gint column, gint width,
 		prefs_common.summary_col_subject = width;
 		break;
 	default:
+		break;
 	}
 }
 

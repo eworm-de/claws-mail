@@ -238,6 +238,7 @@ void folder_destroy(Folder *folder)
 		news_folder_destroy(NEWS_FOLDER(folder));
 		break;
 	default:
+		break;
 	}
 
 	folder_tree_destroy(folder);
@@ -977,6 +978,7 @@ static void folder_init(Folder *folder, FolderType type, const gchar *name)
 
 		break;
 	default:
+		break;
 	}
 
 	switch (type) {
@@ -990,6 +992,7 @@ static void folder_init(Folder *folder, FolderType type, const gchar *name)
 		REMOTE_FOLDER(folder)->session = NULL;
 		break;
 	default:
+		break;
 	}
 }
 
@@ -1102,6 +1105,7 @@ static gboolean folder_build_tree(GNode *node, gpointer data)
 	case F_QUEUE:  folder->queue  = item; break;
 	case F_TRASH:  folder->trash  = item; break;
 	default:
+		break;
 	}
 
 	prefs_folder_item_read_config(item);

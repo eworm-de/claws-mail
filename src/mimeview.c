@@ -72,7 +72,7 @@ static void mimeview_show_message_part		(MimeView	*mimeview,
 static void mimeview_show_image_part		(MimeView	*mimeview,
 						 MimeInfo	*partinfo);
 static void mimeview_change_view_type		(MimeView	*mimeview,
-						 ContentType	 type);
+						 MimeViewType	 type);
 static void mimeview_clear			(MimeView	*mimeview);
 
 static void mimeview_selected		(GtkCTree	*ctree,
@@ -637,6 +637,7 @@ static void mimeview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 		mimeview_launch(mimeview);
 		return;
 	default:
+		break;
 	}
 
 	if (!mimeview->messageview->mainwin) return;

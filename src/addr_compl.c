@@ -47,7 +47,7 @@
 #include "main.h"
 
 #define LOG_MESSAGE \
-	debug_mode == 0 ? (debug_mode == debug_mode) : (void)debug_print 
+	debug_mode == 0 ? (debug_mode == debug_mode) : debug_print 
 
 /* How it works:
  *
@@ -438,7 +438,7 @@ gchar *get_prev_complete_address(void)
 
 guint get_completion_count(void)
 {
-	if (is_completion_pending)
+	if (is_completion_pending())
 		return g_completion_count;
 	else
 		return 0;

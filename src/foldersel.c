@@ -163,10 +163,12 @@ static void foldersel_create(void)
 	gtk_ctree_set_indent(GTK_CTREE(ctree), CTREE_INDENT);
 	GTK_WIDGET_UNSET_FLAGS(GTK_CLIST(ctree)->column[0].button,
 			       GTK_CAN_FOCUS);
-	//gtk_signal_connect(GTK_OBJECT(ctree), "tree_select_row",
-	//		   GTK_SIGNAL_FUNC(foldersel_selected), NULL);
+	/*			       
+	gtk_signal_connect(GTK_OBJECT(ctree), "tree_select_row",
+			   GTK_SIGNAL_FUNC(foldersel_selected), NULL);
 	gtk_signal_connect(GTK_OBJECT(ctree), "select_row",
 			   GTK_SIGNAL_FUNC(foldersel_selected), NULL);
+	*/
 
 	entry = gtk_entry_new();
 	gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);

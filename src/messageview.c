@@ -146,7 +146,7 @@ void messageview_init(MessageView *messageview)
 	textview_init(messageview->textview);
 	imageview_init(messageview->imageview);
 	mimeview_init(messageview->mimeview);
-	//messageview_set_font(messageview);
+	/*messageview_set_font(messageview);*/
 }
 
 static void notification_convert_header(gchar *dest, gint len, gchar *src,

@@ -639,6 +639,7 @@ MsgInfo *procheader_file_parse(FILE * fp, MsgFlags flags,
 			msginfo->fromspace = g_strdup(hp);
 			break;
 		default:
+			break;
 		}
 	}
 	msginfo->inreplyto = reference;

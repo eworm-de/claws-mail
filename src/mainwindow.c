@@ -1268,6 +1268,7 @@ void main_window_popup(MainWindow *mainwin)
 		gdk_window_raise(widget->window);
 		break;
 	default:
+		break;
 	}
 }
 

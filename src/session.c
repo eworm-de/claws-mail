@@ -35,6 +35,7 @@ void session_destroy(Session *session)
 		news_session_destroy(NNTP_SESSION(session));
 		break;
 	default:
+		break;
 	}
 
 	g_free(session->server);

@@ -206,8 +206,8 @@ static void alertpanel_create(const gchar *title,
 			   hbox, TRUE, TRUE, 16);
 
 	/* title label */
-	//pixmapwid = create_pixmapwid(dialog, GNUstep_xpm);
-	//gtk_box_pack_start(GTK_BOX(hbox), pixmapwid, FALSE, FALSE, 16);
+	/* pixmapwid = create_pixmapwid(dialog, GNUstep_xpm); */
+	/* gtk_box_pack_start(GTK_BOX(hbox), pixmapwid, FALSE, FALSE, 16); */
 	label = gtk_label_new(title);
 	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 16);
 	style = gtk_style_copy(gtk_widget_get_style(label));

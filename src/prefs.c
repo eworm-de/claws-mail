@@ -130,6 +130,7 @@ void prefs_config_parse_one_line(PrefParam *param, const gchar *buf)
 				(gushort)atoi(value);
 			break;
 		default:
+			break;
 		}
 	}
 }
@@ -416,6 +417,7 @@ void prefs_set_default(PrefParam *param)
 				*((gushort *)param[i].data) = 0;
 			break;
 		default:
+			break;
 		}
 	}
 }
@@ -434,6 +436,7 @@ void prefs_free(PrefParam *param)
 			g_free(*((gchar **)param[i].data));
 			break;
 		default:
+			break;
 		}
 	}
 }
@@ -577,6 +580,7 @@ void prefs_set_dialog_to_default(PrefParam *param)
 			tmpparam.data = &enum_data;
 			break;
 		case P_OTHER:
+			break;
 		}
 		tmpparam.widget_set_func(&tmpparam);
 		g_free(str_data);
