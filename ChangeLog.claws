@@ -1,3 +1,11 @@
+2003-09-11 [alfons]	0.9.5claws7
+
+	* src/mainwindow.c
+		make default message view, opened by View | Separate message 
+		view, look like a claws message view (which includes a menu
+		bar and a toolbar)
+		(fixes bug #298, "message view loses tool bar")	
+
 2003-09-11 [christoph]	0.9.5claws6
 
 	* src/folderview.c
