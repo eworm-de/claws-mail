@@ -136,6 +136,8 @@ gchar *procmime_get_tmp_file_name	(MimeInfo	*mimeinfo);
 
 gchar *procmime_get_mime_type		(const gchar	*filename);
 
+GList *procmime_get_mime_type_list	(void);
+
 EncodingType procmime_get_encoding_for_charset	(const gchar	*charset);
 const gchar *procmime_get_encoding_str		(EncodingType	 encoding);
 

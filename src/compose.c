@@ -3638,6 +3638,7 @@ static void compose_attach_property_create(gboolean *cancelled)
 	GtkWidget *hbbox;
 	GtkWidget *ok_btn;
 	GtkWidget *cancel_btn;
+	GList     *mime_type_list, *strlist;
 
 	debug_print("Creating attach_property window...\n");
 
@@ -3662,7 +3663,32 @@ static void compose_attach_property_create(gboolean *cancelled)
 	gtk_table_set_row_spacings(GTK_TABLE(table), 8);
 	gtk_table_set_col_spacings(GTK_TABLE(table), 8);
 
-	SET_LABEL_AND_ENTRY(_("MIME type"), mimetype_entry, 0);
+	label = gtk_label_new(_("MIME type")); 
+	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 0, (0 + 1), 
+			 GTK_FILL, 0, 0, 0); 
+	gtk_misc_set_alignment(GTK_MISC(label), 0, 0.5); 
+	mimetype_entry = gtk_combo_new(); 
+	gtk_table_attach(GTK_TABLE(table), mimetype_entry, 1, 2, 0, (0 + 1), 
+			 GTK_EXPAND|GTK_SHRINK|GTK_FILL, 0, 0, 0);
+			 
+	/* stuff with list */
+	mime_type_list = procmime_get_mime_type_list();
+	strlist = NULL;
+	for (; mime_type_list != NULL; mime_type_list = mime_type_list->next) {
+		MimeType *type = (MimeType *) mime_type_list->data;
+		strlist = g_list_append(strlist, 
+				g_strdup_printf("%s/%s",
+					type->type, type->sub_type));
+	}
+	
+	gtk_combo_set_popdown_strings(GTK_COMBO(mimetype_entry), strlist);
+
+	for (mime_type_list = strlist; mime_type_list != NULL; 
+		mime_type_list = mime_type_list->next)
+		g_free(mime_type_list->data);
+	g_list_free(strlist);
+			 
+	mimetype_entry = GTK_COMBO(mimetype_entry)->entry;			 
 
 	label = gtk_label_new(_("Encoding"));
 	gtk_table_attach(GTK_TABLE(table), label, 0, 1, 1, 2,

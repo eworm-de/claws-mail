@@ -44,8 +44,6 @@
 #endif
 
 static GHashTable *procmime_get_mime_type_table	(void);
-static GList *procmime_get_mime_type_list	(void);
-
 
 MimeInfo *procmime_mimeinfo_new(void)
 {
@@ -805,13 +803,16 @@ static GHashTable *procmime_get_mime_type_table(void)
 	return table;
 }
 
-static GList *procmime_get_mime_type_list(void)
+GList *procmime_get_mime_type_list(void)
 {
 	GList *list = NULL;
 	FILE *fp;
 	gchar buf[BUFFSIZE];
 	gchar *p, *delim;
 	MimeType *mime_type;
+
+	if (mime_type_list) 
+		return mime_type_list;
 
 	if ((fp = fopen(SYSCONFDIR "/mime.types", "r")) == NULL) {
 		FILE_OP_ERROR(SYSCONFDIR "/mime.types", "fopen");
