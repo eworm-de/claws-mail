@@ -2285,6 +2285,17 @@ static void compose_wrap_line_all(Compose *compose)
 			ch_len = 1;
 		}
 
+		/* fix line length for tabs */
+		if (ch_len == 1 && *cbuf == '\t') {
+			guint tab_width = text->default_tab_width;
+			guint tab_offset = line_len % tab_width;
+
+			if (tab_offset) {
+				line_len += tab_width - tab_offset - 1;
+				cur_len = line_len;
+			}
+		}
+
 		if (ch_len == 1 && *cbuf == '\n') {
 			gint clen;
 			guint ilen;

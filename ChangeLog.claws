@@ -1,3 +1,10 @@
+2001-10-12 [darko]	0.6.3claws9
+
+	* README.claws
+		describe quotation wrapping
+	* src/compose.c
+		don't treat tab as space to calculate line length properly
+
 2001-10-11 [alfons]
 
 	* README.claws

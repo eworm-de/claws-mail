@@ -99,6 +99,11 @@ are hardly noticable, but deserve mentioning:
   the path in the text entry. You can select the default dictionary.
   When composing, use the right-button click.
 
+* quotation wrapping
+  Quotation is wrapped like VIM would wrap it (at least that was the
+  goal). To enable this feature go to Common preferences->Compose and
+  make sure Wrap quotation is enabled. The text is automatically
+  wrapped when you reply to an e-mail if this feature is enabled.
 
 There are a lot more options. If you find one, don't hesitate to
 mention it.
