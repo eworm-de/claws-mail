@@ -1,8 +1,14 @@
-2002-11-13 [keith] 0.8.5claws143
+2002-11-13 [alfons]	0.8.5claws144
 
-    * src/imap.c
-        Fix problem moving or copying between
-        IMAP folders
+	* src/folder.c
+		folder_item_close(): only mark messages unread
+		when a folder has new messages 
+
+2002-11-13 [keith]	0.8.5claws143
+
+	* src/imap.c
+		Fix problem moving or copying between
+		IMAP folders
 
 2002-11-13 [colin]	0.8.5claws142
 
