@@ -36,6 +36,7 @@
 #include "uuencode.h"
 #include "unmime.h"
 #include "html.h"
+#include "enriched.h"
 #include "codeconv.h"
 #include "utils.h"
 #include "prefs_common.h"
@@ -641,7 +642,8 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 	g_return_val_if_fail(mimeinfo != NULL, NULL);
 	g_return_val_if_fail(infp != NULL, NULL);
 	g_return_val_if_fail(mimeinfo->mime_type == MIME_TEXT ||
-			     mimeinfo->mime_type == MIME_TEXT_HTML, NULL);
+			     mimeinfo->mime_type == MIME_TEXT_HTML ||
+			     mimeinfo->mime_type == MIME_TEXT_ENRICHED, NULL);
 
 	if (fseek(infp, mimeinfo->fpos, SEEK_SET) < 0) {
 		perror("fseek");
@@ -686,6 +688,17 @@ FILE *procmime_get_text_content(MimeInfo *mimeinfo, FILE *infp)
 		}
 		html_parser_destroy(parser);
 		conv_code_converter_destroy(conv);
+	} else if (mimeinfo->mime_type == MIME_TEXT_ENRICHED) {
+		ERTFParser *parser;
+		CodeConverter *conv;
+
+		conv = conv_code_converter_new(src_codeset);
+		parser = ertf_parser_new(tmpfp, conv);
+		while ((str = ertf_parse(parser)) != NULL) {
+			fputs(str, outfp);
+		}
+		ertf_parser_destroy(parser);
+		conv_code_converter_destroy(conv);
 	}
 
 	if (conv_fail)
@@ -719,9 +732,11 @@ FILE *procmime_get_first_text_content(MsgInfo *msginfo)
 		partinfo = procmime_mimeinfo_next(partinfo);
 	if (!partinfo) {
 		partinfo = mimeinfo;
-		while (partinfo && partinfo->mime_type != MIME_TEXT_HTML)
+		while (partinfo && partinfo->mime_type != MIME_TEXT_HTML &&
+				partinfo->mime_type != MIME_TEXT_ENRICHED)
 			partinfo = procmime_mimeinfo_next(partinfo);
 	}
+	
 
 	if (partinfo)
 		outfp = procmime_get_text_content(partinfo, infp);
@@ -742,7 +757,8 @@ gboolean procmime_find_string_part(MimeInfo *mimeinfo, const gchar *filename,
 
 	g_return_val_if_fail(mimeinfo != NULL, FALSE);
 	g_return_val_if_fail(mimeinfo->mime_type == MIME_TEXT ||
-			     mimeinfo->mime_type == MIME_TEXT_HTML, FALSE);
+			     mimeinfo->mime_type == MIME_TEXT_HTML ||
+			     mimeinfo->mime_type == MIME_TEXT_ENRICHED, FALSE);
 	g_return_val_if_fail(str != NULL, FALSE);
 
 	if ((infp = fopen(filename, "r")) == NULL) {
@@ -791,7 +807,8 @@ gboolean procmime_find_string(MsgInfo *msginfo, const gchar *str,
 	for (partinfo = mimeinfo; partinfo != NULL;
 	     partinfo = procmime_mimeinfo_next(partinfo)) {
 		if (partinfo->mime_type == MIME_TEXT ||
-		    partinfo->mime_type == MIME_TEXT_HTML) {
+		    partinfo->mime_type == MIME_TEXT_HTML ||
+		    partinfo->mime_type == MIME_TEXT_ENRICHED) {
 			if (procmime_find_string_part
 				(partinfo, filename, str, case_sens) == TRUE) {
 				found = TRUE;
@@ -838,6 +855,8 @@ ContentType procmime_scan_mime_type(const gchar *mime_type)
 
 	if (!strncasecmp(mime_type, "text/html", 9))
 		type = MIME_TEXT_HTML;
+	else if (!strncasecmp(mime_type, "text/enriched", 13))
+		type = MIME_TEXT_ENRICHED;
 	else if (!strncasecmp(mime_type, "text/", 5))
 		type = MIME_TEXT;
 	else if (!strncasecmp(mime_type, "message/rfc822", 14))
