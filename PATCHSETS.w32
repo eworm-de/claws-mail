@@ -14,3 +14,4 @@
 ( cvs diff -u -r 1.118.2.77 -r 1.118.2.78 src/prefs_common.c; cvs diff -u -r 1.5.2.9 -r 1.5.2.10 src/common/plugin.c; ) > 0.9.13cvs20.5.patchset
 ( cvs diff -u -r 1.118.2.78 -r 1.118.2.79 src/prefs_common.c; ) > 0.9.13cvs20.6.patchset
 ( cvs diff -u -r 1.1.2.48 -r 1.1.2.49 src/common/utils.c; ) > 0.9.13cvs20.7.patchset
+( cvs diff -u -r 1.62.2.42 -r 1.62.2.43 AUTHORS; cvs diff -u -r 1.187.2.127 -r 1.187.2.128 ChangeLog; cvs diff -u -r 1.892.2.244 -r 1.892.2.245 ChangeLog.claws; cvs diff -u -r 1.183.2.126 -r 1.183.2.127 ChangeLog.jp; cvs diff -u -r 1.19.2.29 -r 1.19.2.30 NEWS; cvs diff -u -r 1.159.2.7 -r 1.159.2.8 PATCHSETS; cvs diff -u -r 1.13.2.105 -r 1.13.2.106 configure.ac; cvs diff -u -r 1.38.2.24 -r 1.38.2.25 src/account.c; cvs diff -u -r 1.2.2.17 -r 1.2.2.18 src/action.c; ) > 0.9.13cvs23.1.patchset

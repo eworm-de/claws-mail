@@ -1,3 +1,30 @@
+2004-12-24
+
+	* version 1.0.0
+
+2004-12-22
+
+	* src/account.c: account_delete(): 対応するフォルダが選択されている
+	  ときにリモートアカウントを削除した時にクラッシュするのを修正
+	  (Debian BTS #284483)。
+
+2004-12-21
+
+	* NEWS, TODO, TODO.jp: 更新。
+	* manual/ja/sylpheed.sgml: 更新。
+
+2004-12-17
+
+	* src/action.c: parse_append_filename(): 全ての特殊文字を引用符なしに
+	  エスケープするようにした(IWAMOTO Kouichi さんと Yoichi Imai さん
+	  thanks)。
+	* AUTHORS: 更新。
+
+2004-12-16
+
+	* INSTALL
+	  INSTALL.jp: 動作確認リストを更新。
+
 2004-12-15
 
 	* version 1.0.0rc
