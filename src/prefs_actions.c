@@ -207,8 +207,10 @@ static void catch_status		(gpointer data,
 
 void prefs_actions_open(MainWindow *mainwin)
 {
+#if 0
 	if (prefs_rc_is_readonly(ACTIONS_RC))
 		return;
+#endif
 	inc_lock();
 
 	if (!actions.window)
@@ -927,7 +929,7 @@ static void prefs_actions_select	(GtkCList	*clist,
 	
 	strncpy(buf, action, PREFSBUFSIZE - 1);
 	buf[PREFSBUFSIZE - 1] = 0x00;
-	cmd = strstr2(buf, ": ");
+	cmd = strstr(buf, ": ");
 
 	if (cmd && cmd[2])
 		ENTRY_SET_TEXT(actions.cmd_entry, &cmd[2]);
@@ -1010,23 +1012,18 @@ static void update_actions_menu(GtkItemFactory *ifactory,
 	gchar *menu_path;
 	GSList *cur;
 	gchar *action, *action_p;
-	GtkWidget *menu;
-	
-	GtkItemFactoryEntry ifentry = {
-		NULL, NULL, NULL, 0, "<Branch>"};
+	GList *amenu;
+	GtkItemFactoryEntry ifentry = {NULL, NULL, NULL, 0, "<Branch>"};
+
 	ifentry.path = branch_path;
-	menuitem = gtk_item_factory_get_item(ifactory, branch_path);	
-	g_return_if_fail(menuitem);
-	/* FIXME: is there a better way to remove unknown submenu items? */
-	/* Deleting and recreating the parent looses the translation */
-	menu = GTK_WIDGET(GTK_MENU_ITEM(menuitem)->submenu);
-	if (GTK_MENU_SHELL(menu)->children) {
-		GList *amenu, *alist;
-		for (amenu = (GTK_MENU_SHELL(menu)->children); amenu; ) {
-			alist = amenu->next;
-			gtk_widget_destroy(GTK_WIDGET(amenu->data));
-			amenu = alist;
-		}
+	menuitem = gtk_item_factory_get_widget(ifactory, branch_path);	
+	g_return_if_fail(menuitem != NULL);
+
+	amenu = GTK_MENU_SHELL(menuitem)->children;
+	while (amenu != NULL) {
+		GList *alist = amenu->next;
+		gtk_widget_destroy(GTK_WIDGET(amenu->data));
+		amenu = alist;
 	}
 
 	ifentry.accelerator     = NULL;

@@ -413,27 +413,27 @@ static void create_filter_cb	 (MainWindow	*mainwin,
 				  guint		 action,
 				  GtkWidget	*widget);
 
-static void prefs_common_open_cb (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void prefs_filter_open_cb (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void prefs_scoring_open_cb (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void prefs_filtering_open_cb (MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
-static void prefs_account_open_cb(MainWindow	*mainwin,
-				  guint		 action,
-				  GtkWidget	*widget);
+static void prefs_common_open_cb	(MainWindow	*mainwin,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void prefs_filter_open_cb	(MainWindow	*mainwin,
+					 guint		 action,
+					 GtkWidget	*widget);
 static void prefs_template_open_cb	(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
 static void prefs_actions_open_cb	(MainWindow	*mainwin,
 					 guint		 action,
 					 GtkWidget	*widget);
+static void prefs_account_open_cb	(MainWindow	*mainwin,
+					 guint		 action,
+					 GtkWidget	*widget);
+static void prefs_scoring_open_cb 	(MainWindow	*mainwin,
+				  	 guint		 action,
+				  	 GtkWidget	*widget);
+static void prefs_filtering_open_cb (MainWindow	*mainwin,
+				  	 guint		 action,
+				  	 GtkWidget	*widget);
 
 static void new_account_cb	 (MainWindow	*mainwin,
 				  guint		 action,
@@ -725,12 +725,12 @@ static GtkItemFactoryEntry mainwin_entries[] =
 	{N_("/_Tools/_Create filter rule/by _Subject"),
 						NULL, create_filter_cb, FILTER_BY_SUBJECT, NULL},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Tools/Actio_ns"),			NULL, NULL, 0, "<Branch>"},
-	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
-	{N_("/_Tools/E_xecute"),			"X", execute_summary_cb, 0, NULL},
+	{N_("/_Tools/Actio_ns"),		NULL, NULL, 0, "<Branch>"},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/Delete du_plicated messages"),
 						NULL, delete_duplicated_cb,   0, NULL},
+	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
+	{N_("/_Tools/E_xecute"),		"X", execute_summary_cb, 0, NULL},
 	{N_("/_Tools/---"),			NULL, NULL, 0, "<Separator>"},
 	{N_("/_Tools/_Log window"),		"<control>L", log_window_show_cb, 0, NULL},
 
@@ -1066,7 +1066,7 @@ MainWindow *main_window_create(SeparateType type)
 
 	main_window_set_toolbar_sensitive(mainwin);
 
-	/* Create actions menu */
+	/* create actions menu */
 	update_mainwin_actions_menu(ifactory, mainwin);
 
 	/* show main window */
@@ -1724,8 +1724,8 @@ void main_window_set_menu_sensitive(MainWindow *mainwin)
 		{"/Tools/Harvest addresses"	    , M_UNLOCKED},
 		{"/Tools/Filter messages"           , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
 		{"/Tools/Create filter rule"        , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
+		{"/Tools/Actions"                   , M_SINGLE_TARGET_EXIST|M_UNLOCKED},
 		{"/Tools/Execute"                   , M_MSG_EXIST|M_EXEC|M_UNLOCKED},
-		{"/Tools/Actions"		    , M_MSG_EXIST},
 		{"/Tools/Delete duplicated messages", M_MSG_EXIST|M_ALLOW_DELETE|M_UNLOCKED},
 
 		{"/Configuration", M_UNLOCKED},

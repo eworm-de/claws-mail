@@ -1128,7 +1128,10 @@ gchar *procmime_get_tmp_file_name(MimeInfo *mimeinfo)
 			conv_anytoeuc(p, len, base);
 			g_free(base);
 			base = g_strdup(g_basename(p));
-			conv_anytosjis(p, len, base);
+			conv_anytojis(p, len, base);
+			/* XXX:tm differences to conv_anytojis()?
+			 * conv_anytosjis(p, len, base);
+			 */
 			g_free(base);
 			base = g_strdup(p);
 			g_free(p);

@@ -1,3 +1,15 @@
+2002-07-05
+
+	* src/prefs_actions.[ch]: merged the 'Actions' feature from claws.
+	  update_actions_menu(): simplified the menu deletion.
+	* src/mainwindow.c: added 'Actions' menu to Tools and Configuration.
+
+2002-07-04
+
+	* src/codeconv.[ch]: implemented conv_jistoeuc(), conv_euctojis(),
+	  conv_sjistoeuc(), and conv_guess_encoding(). Removed the dependency
+	  to libkcc.
+
 2002-07-04
 
 	* configure.in: added check for strchr.
