@@ -1681,13 +1681,17 @@ static void compose_reply_set_entry(Compose *compose, MsgInfo *msginfo,
 			 	 compose->followup_to ? compose->followup_to :
 			 	 compose->newsgroups ? compose->newsgroups : "",
 			 	 COMPOSE_NEWSGROUPS);
-		} else {
+		} 
+		else if (compose->replyto) 
+			compose_entry_append
+		    		(compose,compose->replyto,
+		    		 COMPOSE_TO);						
+		else 
 			compose_entry_append
 				(compose,
 			 	 compose->followup_to ? compose->followup_to :
 			 	 compose->newsgroups ? compose->newsgroups : "",
 			 	 COMPOSE_NEWSGROUPS);
-		}
 	}
 
 	if (msginfo->subject && *msginfo->subject) {

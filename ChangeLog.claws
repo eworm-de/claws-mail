@@ -1,3 +1,8 @@
+2003-02-19 [paul]	0.8.10claws26
+
+	* src/compose.c
+		fix bug [688596] Reply-to header in news
+
 2003-02-18 [paul]	0.8.10claws25
 
 	* src/select-keys.c
