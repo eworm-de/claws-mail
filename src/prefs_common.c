@@ -217,6 +217,7 @@ static struct Privacy {
 
 static struct Interface {
 	/* GtkWidget *checkbtn_emacs; */
+	GtkWidget *checkbtn_show_msg_with_cursor;
 	GtkWidget *checkbtn_openunread;
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
@@ -768,7 +769,10 @@ static PrefParam param[] = {
 
 	/* {"emulate_emacs", "FALSE", &prefs_common.emulate_emacs, P_BOOL,
 	 NULL, NULL, NULL}, */
-
+	{"show_message_with_cursor_key", "FALSE",
+	 &prefs_common.show_msg_with_cursor_key,
+	 P_BOOL, &Xinterface.checkbtn_show_msg_with_cursor,
+	 prefs_set_data_from_toggle, prefs_set_toggle},
 	{"open_unread_on_enter", "FALSE", &prefs_common.open_unread_on_enter,
 	 P_BOOL, &Xinterface.checkbtn_openunread,
 	 prefs_set_data_from_toggle, prefs_set_toggle},
@@ -2672,6 +2676,7 @@ static void prefs_interface_create(void)
 	GtkWidget *vbox2;
 	GtkWidget *vbox3;
 	/* GtkWidget *checkbtn_emacs; */
+	GtkWidget *checkbtn_show_msg_with_cursor;
 	GtkWidget *checkbtn_openunread;
 	GtkWidget *checkbtn_openinbox;
 	GtkWidget *checkbtn_immedexec;
@@ -2712,6 +2717,10 @@ static void prefs_interface_create(void)
 			     "Emacs-based mailer"));
 	gtk_label_set_justify (GTK_LABEL (GTK_BIN (checkbtn_emacs)->child),
 			       GTK_JUSTIFY_LEFT);   */
+
+	PACK_CHECK_BUTTON
+		(vbox2, checkbtn_show_msg_with_cursor,
+		 _("Open message when cursor keys are pressed on summary"));
 
 	PACK_CHECK_BUTTON
 		(vbox2, checkbtn_openunread,
@@ -2848,15 +2857,17 @@ static void prefs_interface_create(void)
 
 	stock_pixmap_themes_list_free(avail_pixmap_themes);
 
-	/* Xinterface.checkbtn_emacs          = checkbtn_emacs; */
-	Xinterface.checkbtn_openunread         = checkbtn_openunread;
-	Xinterface.checkbtn_openinbox          = checkbtn_openinbox;
-	Xinterface.checkbtn_immedexec          = checkbtn_immedexec;
-	Xinterface.optmenu_recvdialog	      = optmenu_recvdialog;
-	Xinterface.checkbtn_addaddrbyclick     = checkbtn_addaddrbyclick;
-	Xinterface.optmenu_nextunreadmsgdialog = optmenu_nextunreadmsgdialog;
+	/* interface.checkbtn_emacs          = checkbtn_emacs; */
+	Xinterface.checkbtn_show_msg_with_cursor
+						= checkbtn_show_msg_with_cursor;
+	Xinterface.checkbtn_openunread		= checkbtn_openunread;
+	Xinterface.checkbtn_openinbox		= checkbtn_openinbox;
+	Xinterface.checkbtn_immedexec		= checkbtn_immedexec;
+	Xinterface.optmenu_recvdialog		= optmenu_recvdialog;
+	Xinterface.checkbtn_addaddrbyclick	= checkbtn_addaddrbyclick;
+	Xinterface.optmenu_nextunreadmsgdialog	= optmenu_nextunreadmsgdialog;
 	Xinterface.combo_pixmap_theme		= combo_pixmap_theme;
- 	Xinterface.entry_pixmap_theme		= entry_pixmap_theme;
+	Xinterface.entry_pixmap_theme		= entry_pixmap_theme;
 }
 
 static void prefs_other_create(void)

@@ -1,3 +1,29 @@
+2002-06-28
+
+	* src/gtksctree.[ch]: changed GtkSCTree::anchor_row from gint to
+	  GtkCTreeNode* so that it won't become invalid after the row move.
+	  Removed dependency to gtkutils.c.
+	* src/prefs_common.[ch]
+	  src/summaryview.c: summary_selected(): added an option to show
+	  message when cursor keys are pressed on summary view.
+
+2002-06-28
+
+	* configure.in
+	  src/Makefile.am
+	  src/compose.c: changed "host_alias" to "target_alias" so that it
+	  shows the correct system name on cross-compiling (thanks to
+	  Patrice Mandin).
+
+2002-06-27
+
+	* src/prefs_account.[ch]: added the option menu to force an
+	  authentication method for SMTP AUTH.
+	* src/send.c
+	  src/smtp.[ch]: smtp_from(), smtp_auth(): added an argument to
+	  specify the authentication method for SMTP AUTH.
+	  smtp_ehlo(): allow AUTH responses that don't comply with the RFC.
+
 2002-06-25
 
 	* src/prefs_common.[ch]

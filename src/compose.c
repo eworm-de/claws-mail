@@ -166,7 +166,8 @@ static GList *compose_list = NULL;
 
 Compose *compose_generic_new			(PrefsAccount	*account,
 						 const gchar	*to,
-						 FolderItem	*item);
+						 FolderItem	*item,
+						 gboolean	keep_original);
 
 static Compose *compose_create			(PrefsAccount	*account,
 						 ComposeMode	 mode);
@@ -690,7 +691,7 @@ static GtkTargetEntry compose_mime_types[] =
 
 Compose *compose_new(PrefsAccount *account)
 {
-	return compose_generic_new(account, NULL, NULL);
+	return compose_generic_new(account, NULL, NULL, FALSE);
 }
 
 Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
@@ -699,7 +700,7 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 	gchar *filename;
 	GtkItemFactory *ifactory;
 	
-	c = compose_generic_new(account, NULL, NULL);
+	c = compose_generic_new(account, NULL, NULL, TRUE);
 
 	filename = procmsg_get_message_file(msginfo);
 	if (filename == NULL)
@@ -759,15 +760,15 @@ Compose *compose_redirect(PrefsAccount *account, MsgInfo *msginfo)
 
 Compose *compose_new_with_recipient(PrefsAccount *account, const gchar *mailto)
 {
-	return compose_generic_new(account, mailto, NULL);
+	return compose_generic_new(account, mailto, NULL, FALSE);
 }
 
 Compose *compose_new_with_folderitem(PrefsAccount *account, FolderItem *item)
 {
-	return compose_generic_new(account, NULL, item);
+	return compose_generic_new(account, NULL, item, FALSE);
 }
 
-Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderItem *item)
+Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderItem *item, gboolean keep_original)
 {
 	Compose *compose;
 	GtkSText *text;
@@ -788,7 +789,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	text = GTK_STEXT(compose->text);
 	gtk_stext_freeze(text);
 
-	if (prefs_common.auto_sig)
+	if (prefs_common.auto_sig && !keep_original)
 		compose_insert_sig(compose);
 	gtk_editable_set_position(GTK_EDITABLE(text), 0);
 	gtk_stext_set_point(text, 0);
@@ -838,7 +839,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	if(grab_focus_on_last)
 		gtk_widget_grab_focus(compose->header_last->entry);
 
-	if (prefs_common.auto_exteditor)
+	if (prefs_common.auto_exteditor && !keep_original)
 		compose_exec_ext_editor(compose);
 
         return compose;
@@ -4107,14 +4108,14 @@ static gint compose_write_headers(Compose *compose, FILE *fp,
 		fprintf(fp, "X-Mailer: %s (GTK+ %d.%d.%d; %s)\n",
 			prog_version,
 			gtk_major_version, gtk_minor_version, gtk_micro_version,
-			HOST_ALIAS);
+			TARGET_ALIAS);
 			/* utsbuf.sysname, utsbuf.release, utsbuf.machine); */
 	}
 	if (g_slist_length(compose->newsgroup_list) && !IS_IN_CUSTOM_HEADER("X-Newsreader")) {
 		fprintf(fp, "X-Newsreader: %s (GTK+ %d.%d.%d; %s)\n",
 			prog_version,
 			gtk_major_version, gtk_minor_version, gtk_micro_version,
-			HOST_ALIAS);
+			TARGET_ALIAS);
 			/* utsbuf.sysname, utsbuf.release, utsbuf.machine); */
 	}
 

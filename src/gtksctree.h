@@ -23,7 +23,7 @@ struct _GtkSCTree {
 	GtkCTree ctree;
 
 	/* The anchor row for range selections */
-	gint anchor_row;
+	GtkCTreeNode *anchor_row;
 
 	/* Mouse button and position saved on button press */
 	gint dnd_press_button;

@@ -2,8 +2,6 @@
  * This program is based on gtkflist.c
  */
 
-#include "utils.h"
-#include "gtkutils.h"
 #include "gtksctree.h"
 
 
@@ -144,7 +142,7 @@ gtk_sctree_class_init (GtkSCTreeClass *klass)
 static void
 gtk_sctree_init (GtkSCTree *sctree)
 {
-	sctree->anchor_row = -1;
+	sctree->anchor_row = NULL;
 
 	/* GtkCTree does not specify pointer motion by default */
 	gtk_widget_add_events (GTK_WIDGET (sctree), GDK_POINTER_MOTION_MASK);
@@ -165,17 +163,22 @@ row_is_selected(GtkSCTree *sctree, gint row)
 static void
 select_range (GtkSCTree *sctree, gint row)
 {
+	gint prev_row;
 	gint min, max;
 	gint i;
 
-	if (sctree->anchor_row == -1)
-		sctree->anchor_row = row;
+	if (sctree->anchor_row == NULL) {
+		prev_row = row;
+		sctree->anchor_row = gtk_ctree_node_nth(GTK_CTREE(sctree), row);
+	} else
+		prev_row = g_list_position(GTK_CLIST(sctree)->row_list,
+					   (GList *)sctree->anchor_row);
 
-	if (row < sctree->anchor_row) {
+	if (row < prev_row) {
 		min = row;
-		max = sctree->anchor_row;
+		max = prev_row;
 	} else {
-		min = sctree->anchor_row;
+		min = prev_row;
 		max = row;
 	}
 	for (i = min; i <= max; i++)
@@ -198,11 +201,16 @@ select_row (GtkSCTree *sctree, gint row, gint col, guint state)
 		   (GTK_CLIST(sctree)->selection_mode != GTK_SELECTION_BROWSE);
 
 	gtk_clist_freeze (GTK_CLIST (sctree));
-	gtkut_clist_set_focus_row(GTK_CLIST(sctree), row);
+	GTK_CLIST(sctree)->focus_row = row;
+	GTK_CLIST_CLASS(GTK_OBJECT(sctree)->klass)->refresh(GTK_CLIST(sctree));
 	if (!additive)
 		gtk_clist_unselect_all (GTK_CLIST (sctree));
 
 	if (!range) {
+		GtkCTreeNode *node;
+
+		node = gtk_ctree_node_nth (GTK_CTREE(sctree), row);
+
 		/*No need to manage overlapped list*/
 		if (additive) {
 			if (row_is_selected(sctree, row))
@@ -210,17 +218,13 @@ select_row (GtkSCTree *sctree, gint row, gint col, guint state)
 			else
 				gtk_signal_emit_by_name
 					(GTK_OBJECT (sctree),
-					 "tree_select_row",
-					 gtk_ctree_node_nth (GTK_CTREE(sctree), row),
-					 col);
+					 "tree_select_row", node, col);
 		} else {
 			gtk_signal_emit_by_name
 				(GTK_OBJECT (sctree),
-				 "tree_select_row",
-				 gtk_ctree_node_nth (GTK_CTREE(sctree), row),
-				 col);
+				 "tree_select_row", node, col);
 		}
-		sctree->anchor_row = row;
+		sctree->anchor_row = node;
 	} else
 		select_range (sctree, row);
 	gtk_clist_thaw (GTK_CLIST (sctree));
@@ -487,7 +491,7 @@ gtk_sctree_clear (GtkCList *clist)
 	g_return_if_fail (GTK_IS_SCTREE (clist));
 
 	sctree = GTK_SCTREE (clist);
-	sctree->anchor_row = -1;
+	sctree->anchor_row = NULL;
 
 	if (((GtkCListClass *)parent_class)->clear)
 		(* ((GtkCListClass *)parent_class)->clear) (clist);
@@ -499,14 +503,12 @@ gtk_sctree_clear (GtkCList *clist)
 static void 
 gtk_sctree_collapse (GtkCTree *ctree, GtkCTreeNode *node)
 {
-	GtkSCTree *sctree;
-
 	g_return_if_fail (ctree != NULL);
 	g_return_if_fail (GTK_IS_SCTREE (ctree));
 
         (* parent_class->tree_collapse) (ctree, node);
-	sctree = GTK_SCTREE (ctree);
-	sctree->anchor_row = GTK_CLIST(ctree)->focus_row;
+	GTK_SCTREE(ctree)->anchor_row =
+		gtk_ctree_node_nth(ctree, GTK_CLIST(ctree)->focus_row);
 }
 
 GtkWidget *gtk_sctree_new_with_titles (gint columns, 
@@ -526,13 +528,13 @@ void  gtk_sctree_select (GtkSCTree *sctree,
 			 GtkCTreeNode *node)
 {
 	select_row(sctree, 
-		   gtkut_ctree_get_nth_from_node(GTK_CTREE(sctree),node),
+		   g_list_position(GTK_CLIST(sctree)->row_list, (GList *)node),
 		   -1, 0);
 }
 
 void  gtk_sctree_unselect_all (GtkSCTree *sctree)
 {
 	gtk_clist_unselect_all(GTK_CLIST(sctree));
-	sctree->anchor_row = -1;
+	sctree->anchor_row = NULL;
 }
 

@@ -382,7 +382,7 @@
 
 /* Others */
 #define HAVE_DOSISH_SYSTEM	1
-#define HOST_ALIAS			"Win32"
+#define TARGET_ALIAS			"Win32"
 #define MANUALDIR			"doc\\manual"
 #define SYSCONFDIR			"etc"
 #define LOCALEDIR			"locale"

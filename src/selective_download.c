@@ -658,16 +658,16 @@ static void sd_window_create(MainWindow *mainwin)
 	gtk_table_attach (GTK_TABLE (table), bottom_hbox, 0, 1, 1, 2,
 			  (GtkAttachOptions) (GTK_FILL),
 			  (GtkAttachOptions) (GTK_FILL), 0, 0);
-	
-	show_old_chkbtn = gtk_check_button_new_with_label("Show only old Messages"); 
-	gtk_box_pack_start(GTK_BOX(bottom_hbox), show_old_chkbtn, FALSE, FALSE, 0); 
-	
-	gtk_signal_connect(GTK_OBJECT(show_old_chkbtn), "toggled", 
-			   GTK_SIGNAL_FUNC(sd_action_cb), GUINT_TO_POINTER(CHECKBTN)); 
+
+	show_old_chkbtn = gtk_check_button_new_with_label("Show only old Messages");
+	gtk_box_pack_start(GTK_BOX(bottom_hbox), show_old_chkbtn, FALSE, FALSE, 0);
+
+	gtk_signal_connect(GTK_OBJECT(show_old_chkbtn), "toggled",
+			   GTK_SIGNAL_FUNC(sd_action_cb), GUINT_TO_POINTER(CHECKBTN));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(show_old_chkbtn), FALSE);
-	GTK_WIDGET_UNSET_FLAGS(show_old_chkbtn, GTK_CAN_FOCUS);							
-			   
-	expand_label = gtk_label_new (_(" "));
+	GTK_WIDGET_UNSET_FLAGS(show_old_chkbtn, GTK_CAN_FOCUS);
+
+	expand_label = gtk_label_new (" ");
 	gtk_box_pack_start (GTK_BOX (bottom_hbox), expand_label, TRUE, TRUE, 0);
 	
 	fixed_label = gtk_label_new (_(" contains "));
@@ -711,7 +711,7 @@ static void sd_window_create(MainWindow *mainwin)
 	
 	from_label = gtk_label_new (_("From"));
 	gtk_clist_set_column_widget (GTK_CLIST (clist), 1, from_label);
-	
+
 	subject_label = gtk_label_new (_("Subject"));
 	gtk_clist_set_column_widget (GTK_CLIST (clist), 2, subject_label);
 	
