@@ -1,3 +1,10 @@
+2001-11-26 [darko]	0.6.5claws36
+
+	* src/gtkstext.[ch]
+		removed functions that are now in gtkutils.c
+		use gtkut_text_is_uri_string() from gtkutils.c
+	* fix my comment on 2001-11-23 (missing gtkutils.[ch])
+
 2001-11-26 [paul]	0.6.5claws35
 
 	* sync with sylpheed 0.6.5cvs16
@@ -76,6 +83,7 @@
 
 	* src/compose.c
 		wrapping on send improvements
+	* src/gtkutils.[ch]
 		fix for GtkSText after last sync with main branch
 		GTK_TEXT -> GTK_STEXT
 

@@ -249,13 +249,6 @@ void	   gtk_stext_set_wrap_rmargin (GtkSText *text, gint rmargin);
 
 void	   gtk_stext_set_cursor_type  (GtkSText *text, GtkSTextCursorType cursor_type);
 
-/* SYLPHEED */
-guint	   is_url_string (GtkSText *text, guint start_pos, guint text_len);
-guint	   gtkstext_strncmp (GtkSText *text, guint pos1, guint pos2,
-			     guint text_len, guint len);
-guint	   gtkstext_str_strcmp (GtkSText *text, guint start_pos,
-			  	guint text_len, gchar *str);
-
 #define GTK_STEXT_INDEX(t, index)	(((t)->use_wchar) \
 	? ((index) < (t)->gap_position ? (t)->text.wc[index] : \
 					(t)->text.wc[(index)+(t)->gap_size]) \
