@@ -17,31 +17,37 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 #
 ############################################################################
-# Script Name: launch_phoenix
+# Script Name: launch_firebird
 # Author: Mohammed Sameer <Uniball@linux-egypt.org>
-# Script Version: 0.1
-# Script Purpose: Check for a running phoenix process and and open a new tab 
-#                 with a given URL or execute phoenix with that URL
-# Usage: preferences->other->web browser-> "launch_phoenix "%s""
+# Script Version: 0.2
+# Script Purpose: Check for a running firebird process and and open a new 
+#		  tab with a given URL or execute firebird with that URL
+# Usage: preferences->other->web browser-> "launch_firebird "%s""
+############################################################################
+# Version 0.2, June 2003, Paul Mangan <claws@thewildbeast.co.uk>
+# Changes: renamed and edited to reflect the browser's name change from
+# 'phoenix' to 'firebird'.
 ############################################################################
 
 URL=$*
+# name of binary (change it if necessary):
+FIREBIRD=mozilla-firebird
 
-phoenix_running()
+firebird_running()
 {
-phoenix -remote "openurl($URL,new-tab)"
+$FIREBIRD -remote "openurl($URL,new-tab)"
 }
-phoenix_new()
+firebird_new()
 {
-phoenix $URL
+$FIREBIRD $URL
 }
 
 
-STR=`phoenix -remote "ping()" 2>&1 | grep No`
+STR=`$FIREBIRD -remote "ping()" 2>&1 | grep No`
 #echo $STR
 if [[ "$STR" == "No running window found." ]]; then
-phoenix_new;
+firebird_new;
 else
-phoenix_running;
+firebird_running;
 fi
 

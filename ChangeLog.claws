@@ -1,3 +1,10 @@
+2003-06-18 [paul]
+
+	* tools/launch_phoenix		** REMOVED **
+	  tools/launch_firebird		** NEW **
+	  	renamed and edited to reflect the browser's name change from
+		'phoenix' to 'firebird'
+
 2003-06-18 [paul]	0.9.0claws42
 
 	* sync with 0.9.2cvs2
