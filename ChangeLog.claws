@@ -1,3 +1,8 @@
+2004-11-23 [colin]	0.9.12cvs162
+
+	* src/msgcache.c
+		HEAD needs this leak fix too
+
 2004-11-22 [luke]	0.9.12cvs161
 
 	* src/gtk/gtkstext.c

@@ -144,3 +144,4 @@
 ( cvs diff -u -r 1.231 -r 1.232 src/prefs_common.c; ) > 0.9.12cvs159.patchset
 ( cvs diff -u -r 1.6 -r 1.7 src/prefs_themes.c; ) > 0.9.12cvs160.patchset
 ( cvs diff -u -r 1.6 -r 1.7 src/gtk/gtkstext.c; ) > 0.9.12cvs161.patchset
+( cvs diff -u -r 1.27 -r 1.28 src/msgcache.c; ) > 0.9.12cvs162.patchset
