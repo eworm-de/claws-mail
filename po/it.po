@@ -6,14 +6,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sylpheed-claws\n"
-"POT-Creation-Date: 2005-01-16 05:22+0000\n"
+"Report-Msgid-Bugs-To: twb@users.sourceforge.net\n"
+"POT-Creation-Date: 2005-01-17 11:44+0000\n"
 "PO-Revision-Date: 2005-01-16 13:14+0100\n"
 "Last-Translator: Andrea Spadaccini <lupin85@email.it>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
 
 #: src/account.c:309
 msgid ""
@@ -57,7 +57,7 @@ msgstr "Server"
 #: src/editaddress.c:856 src/prefs_actions.c:221 src/prefs_customheader.c:234
 #: src/prefs_display_header.c:275 src/prefs_display_header.c:330
 #: src/prefs_filtering_action.c:449 src/prefs_filtering.c:280
-#: src/prefs_matcher.c:560 src/prefs_template.c:216 src/prefs_toolbar.c:769
+#: src/prefs_matcher.c:560 src/prefs_template.c:216 src/prefs_toolbar.c:773
 msgid "Add"
 msgstr "Aggiungi"
 
@@ -76,14 +76,14 @@ msgstr " Clona "
 #: src/account.c:654 src/prefs_actions.c:284 src/prefs_customheader.c:289
 #: src/prefs_display_header.c:294 src/prefs_filtering_action.c:503
 #: src/prefs_filtering.c:342 src/prefs_matcher.c:642
-#: src/prefs_summary_column.c:289 src/prefs_toolbar.c:830
+#: src/prefs_summary_column.c:289 src/prefs_toolbar.c:834
 msgid "Down"
 msgstr "Giù"
 
 #: src/account.c:660 src/prefs_actions.c:278 src/prefs_customheader.c:283
 #: src/prefs_display_header.c:288 src/prefs_filtering_action.c:497
 #: src/prefs_filtering.c:336 src/prefs_matcher.c:636
-#: src/prefs_summary_column.c:285 src/prefs_toolbar.c:826
+#: src/prefs_summary_column.c:285 src/prefs_toolbar.c:830
 msgid "Up"
 msgstr "Su"
 
@@ -591,7 +591,7 @@ msgstr "Nome:"
 #: src/prefs_actions.c:234 src/prefs_display_header.c:281
 #: src/prefs_display_header.c:337 src/prefs_filtering_action.c:135
 #: src/prefs_filtering_action.c:462 src/prefs_filtering.c:293
-#: src/prefs_matcher.c:573 src/prefs_template.c:229 src/prefs_toolbar.c:781
+#: src/prefs_matcher.c:573 src/prefs_template.c:229 src/prefs_toolbar.c:785
 #: src/ssl_manager.c:92 src/toolbar.c:383 src/toolbar.c:476
 msgid "Delete"
 msgstr "Elimina"
@@ -1520,7 +1520,7 @@ msgstr "Codifica"
 msgid "Path"
 msgstr "Percorso"
 
-#: src/compose.c:5557 src/prefs_toolbar.c:808
+#: src/compose.c:5557 src/prefs_toolbar.c:812
 msgid "File name"
 msgstr "Nome file"
 
@@ -3202,7 +3202,9 @@ msgstr "impossibile creare la mailbox\n"
 
 #: src/imap.c:1720
 msgid "New folder name must not contain the namespace path separator"
-msgstr "Il nuovo nome della cartella non deve contenere il separatore di path del namespace"
+msgstr ""
+"Il nuovo nome della cartella non deve contenere il separatore di path del "
+"namespace"
 
 #: src/imap.c:1752
 #, c-format
@@ -3787,7 +3789,7 @@ msgstr "Sessione terminata in time out"
 #: src/inc.c:1156
 #, c-format
 msgid "Connection to %s:%d timed out."
-msgstr "Connessione a %s:5 fallita"
+msgstr "Connessione a %s:%d fallita"
 
 #: src/inc.c:1191
 msgid "Incorporation cancelled\n"
@@ -6393,7 +6395,8 @@ msgid "Message"
 msgstr "Messaggio"
 
 #: src/prefs_common.c:986
-msgid "External programs"
+#, fuzzy
+msgid "External program"
 msgstr "Programmi esterni"
 
 #: src/prefs_common.c:995
@@ -7118,7 +7121,7 @@ msgid "Info ..."
 msgstr "Info ..."
 
 #: src/prefs_filtering_action.c:455 src/prefs_filtering.c:286
-#: src/prefs_matcher.c:566 src/prefs_template.c:222 src/prefs_toolbar.c:775
+#: src/prefs_matcher.c:566 src/prefs_template.c:222 src/prefs_toolbar.c:779
 msgid "  Replace  "
 msgstr "  Rimpiazza  "
 
@@ -7870,55 +7873,55 @@ msgstr "Configurazione toolbar composizione messaggio"
 msgid "Message view toolbar configuration"
 msgstr "Configurazione toolbar vista messaggio"
 
-#: src/prefs_toolbar.c:620
+#: src/prefs_toolbar.c:624
 msgid "Sylpheed Action"
 msgstr "Azione di Sylpheed"
 
-#: src/prefs_toolbar.c:629
+#: src/prefs_toolbar.c:633
 msgid "Toolbar text"
 msgstr "Testo della toolbar"
 
-#: src/prefs_toolbar.c:682
+#: src/prefs_toolbar.c:686
 msgid "Available toolbar icons"
 msgstr "Icone di toolbar disponibili"
 
-#: src/prefs_toolbar.c:737
+#: src/prefs_toolbar.c:741
 msgid "Event executed on click"
 msgstr "Esecuzione evento al click"
 
-#: src/prefs_toolbar.c:787
+#: src/prefs_toolbar.c:791
 msgid " Default "
 msgstr " Predefinito "
 
-#: src/prefs_toolbar.c:794
+#: src/prefs_toolbar.c:798
 msgid "Displayed toolbar items"
 msgstr "Voci di toolbar visualizzate"
 
-#: src/prefs_toolbar.c:807
+#: src/prefs_toolbar.c:811
 msgid "Icon"
 msgstr "Icona"
 
-#: src/prefs_toolbar.c:809
+#: src/prefs_toolbar.c:813
 msgid "Icon text"
 msgstr "Testo icona"
 
-#: src/prefs_toolbar.c:810
+#: src/prefs_toolbar.c:814
 msgid "Mapped event"
 msgstr "Eventi mappati"
 
-#: src/prefs_toolbar.c:875 src/prefs_toolbar.c:888 src/prefs_toolbar.c:901
+#: src/prefs_toolbar.c:879 src/prefs_toolbar.c:892 src/prefs_toolbar.c:905
 msgid "Customize Toolbars"
 msgstr "Personalizzazione Toolbar"
 
-#: src/prefs_toolbar.c:876
+#: src/prefs_toolbar.c:880
 msgid "Main Window"
 msgstr "Finestra principale"
 
-#: src/prefs_toolbar.c:889
+#: src/prefs_toolbar.c:893
 msgid "Message Window"
 msgstr "Finestra messaggio"
 
-#: src/prefs_toolbar.c:902
+#: src/prefs_toolbar.c:906
 msgid "Compose Window"
 msgstr "Finestra di composizione"
 
