@@ -491,8 +491,8 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 	/* more complex than the uri part because we need to scan back and forward starting from
 	 * the scan position. */
 	gboolean result = FALSE;
-	const gchar *bp_;
-	const gchar *ep_;
+	const gchar *bp_ = NULL;
+	const gchar *ep_ = NULL;
 
 	g_return_val_if_fail(start != NULL, FALSE);
 	g_return_val_if_fail(scanpos != NULL, FALSE);
@@ -534,9 +534,9 @@ static gboolean get_email_part(const gchar *start, const gchar *scanpos,
 			/* the informative part of the email address (describing the name
 			 * of the email address owner) may contain quoted parts. the
 			 * closure stack stores the last encountered quotes. */
-			char	closure_stack[128];
-			char   *ptr = closure_stack;
-#define FULL_STACK()	((ptr - closure_stack) >= sizeof closure_stack) 
+			gchar	closure_stack[128];
+			gchar   *ptr = closure_stack;
+#define FULL_STACK()	((size_t) (ptr - closure_stack) >= sizeof closure_stack) 
 #define IN_STACK()		(ptr > closure_stack)
 /* has underrun check */
 #define POP_STACK()		if(IN_STACK()) --ptr		
@@ -692,7 +692,7 @@ static void textview_make_clickable_parts(TextView *textview,
 		if (scanpos) {
 			/* check if URI can be parsed */
 			if (parser[last_index].parse(linebuf, scanpos, &bp, &ep)
-			    && (ep - bp - 1) > strlen(parser[last_index].needle)) {
+			    && (size_t) (ep - bp - 1) > strlen(parser[last_index].needle)) {
 					ADD_TXT_POS(bp, ep, last_index);
 					walk = ep;
 			} else
@@ -936,7 +936,9 @@ static GPtrArray *textview_scan_header(TextView *textview, FILE *fp)
 	GPtrArray *headers, *sorted_headers;
 	GSList *disphdr_list;
 	Header *header;
-	gint i;
+	guint i;
+
+	textview = textview;
 
 	g_return_val_if_fail(fp != NULL, NULL);
 
@@ -986,7 +988,7 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 {
 	GtkText *text = GTK_TEXT(textview->text);
 	Header *header;
-	gint i;
+	guint i;
 
 	g_return_if_fail(headers != NULL);
 
@@ -998,7 +1000,7 @@ static void textview_show_header(TextView *textview, GPtrArray *headers)
 
 		gtk_text_insert(text, textview->boldfont, NULL, NULL,
 				header->name, -1);
-		gtk_text_insert(text, textview->boldfont, NULL, NULL, ":", 2);
+		gtk_text_insert(text, textview->boldfont, NULL, NULL, " ", 1);
 
 		if (procheader_headername_equal(header->name, "Subject") ||
 		    procheader_headername_equal(header->name, "From")    ||
@@ -1206,6 +1208,8 @@ static void textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 {
 	SummaryView *summaryview = NULL;
 
+	widget = widget;
+
 	if (!event) return;
 	if (textview->messageview->mainwin)
 		summaryview = textview->messageview->mainwin->summaryview;
@@ -1247,6 +1251,7 @@ static void textview_key_pressed(GtkWidget *widget, GdkEventKey *event,
 static void textview_button_pressed(GtkWidget *widget, GdkEventButton *event,
 				    TextView *textview)
 {
+	widget = widget;
 	if (event &&
 	    ((event->button == 1 && event->type == GDK_2BUTTON_PRESS) 
 		|| event->button == 2

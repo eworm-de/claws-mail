@@ -1,3 +1,9 @@
+2001-05-08 [alfons]
+
+	* src/textview.c: 
+		fixed a bug in textview_show_header(), which displayed two colons (':');
+		cleaned up some warnings
+
 2001-05-08 [hoa]
 
 	* src/Makefile.am
