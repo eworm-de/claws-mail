@@ -1,3 +1,23 @@
+2003-05-20
+
+	* src/compose.c:
+	  compose_insert_sig()
+	  compose_get_signature_str(): include separator in signature string.
+	  Don't insert separator if signature file is not found.
+	  Disabled use of implicit default signature path (~/.signature) when
+	  sig_path is NULL.
+
+
+2003-05-20
+
+	* src/codeconv.c
+	  src/gtkshruler.c
+	  src/news.c
+	  src/procmsg.c
+	  src/quote_fmt_parse.y
+	  src/smtp.c: suppress warnings that gcc-3.3 issues.
+	  src/stringtable.c: use string_entry_free().
+
 2003-05-19
 
 	* src/compose.c: compose_insert_sig(): fixed the bug that always
