@@ -287,7 +287,7 @@ static PrefParam param[] = {
 	{"password", NULL, &tmp_ac_prefs.passwd, P_PASSWORD,
 	 &basic.pass_entry, prefs_set_data_from_entry, prefs_set_entry},
 
-	{"inbox", "inbox", &tmp_ac_prefs.inbox, P_STRING,
+	{"inbox", "#mh/Mailbox/inbox", &tmp_ac_prefs.inbox, P_STRING,
 	 &receive.inbox_entry, prefs_set_data_from_entry, prefs_set_entry},
 
 	/* Receive */
