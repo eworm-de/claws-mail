@@ -160,6 +160,8 @@ SummarySelection summary_get_selection_type	(SummaryView	*summaryview);
 
 void summary_select_prev_unread	  (SummaryView		*summaryview);
 void summary_select_next_unread	  (SummaryView		*summaryview);
+void summary_select_prev_new	  (SummaryView		*summaryview);
+void summary_select_next_new	  (SummaryView		*summaryview);
 void summary_select_prev_marked	  (SummaryView		*summaryview);
 void summary_select_next_marked	  (SummaryView		*summaryview);
 void summary_select_prev_labeled  (SummaryView		*summaryview);

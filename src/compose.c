@@ -771,6 +771,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 {
 	Compose *compose;
 	GtkSText *text;
+	GtkItemFactory *ifactory;
 	gboolean grab_focus_on_last = TRUE;
 
 	if (item && item->prefs && item->prefs->enable_default_account)
@@ -780,6 +781,8 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	g_return_val_if_fail(account != NULL, NULL);
 
 	compose = compose_create(account, COMPOSE_NEW);
+	ifactory = gtk_item_factory_from_widget(compose->menubar);
+
 	compose->replyinfo = NULL;
 
 	text = GTK_STEXT(compose->text);
@@ -796,6 +799,7 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 	gtk_widget_grab_focus(compose->text);
 	gtkut_widget_wait_for_draw(compose->text);
 
+
 	if (account->protocol != A_NNTP) {
 		if (mailto) {
 			compose_entries_set(compose, mailto);
@@ -806,15 +810,17 @@ Compose *compose_generic_new(PrefsAccount *account, const gchar *mailto, FolderI
 			grab_focus_on_last = FALSE;
 		}
 		if (item && item->ret_rcpt) {
-			GtkItemFactory *ifactory;
-		
-			ifactory = gtk_item_factory_from_widget(compose->menubar);
 			menu_set_toggle(ifactory, "/Message/Request Return Receipt", TRUE);
 		}
 	} else {
 		if (mailto) {
 			compose_entry_append(compose, mailto, COMPOSE_NEWSGROUPS);
 		}
+		/*
+		 * CLAWS: just don't allow return receipt request, even if the user
+		 * may want to send an email. simple but foolproof.
+		 */
+		menu_set_sensitive(ifactory, "/Message/Request Return Receipt", FALSE); 
 	}
 	compose_show_first_last_header(compose, TRUE);
 

@@ -8,7 +8,7 @@ MINOR_VERSION=7
 MICRO_VERSION=8
 INTERFACE_AGE=0
 BINARY_AGE=0
-EXTRA_VERSION=claws19
+EXTRA_VERSION=claws27
 VERSION=$MAJOR_VERSION.$MINOR_VERSION.$MICRO_VERSION$EXTRA_VERSION
 
 dnl set $target
@@ -165,22 +165,41 @@ else
 fi
 
 dnl for LDAP support in addressbook
-dnl no check for libraries; dynamically loaded
 AC_ARG_ENABLE(ldap,
 	[  --enable-ldap           Enable LDAP support [default=no]],
 	[ac_cv_enable_ldap=$enableval], [ac_cv_enable_ldap=no])
 AC_MSG_CHECKING([whether to use LDAP])
 if test "$ac_cv_enable_ldap" = yes; then
 	AC_MSG_RESULT(yes)
+
+	dnl check for available libraries, and pull them in
+	AC_CHECK_LIB(resolv, res_query, LDAP_LIBS="$LDAP_LIBS -lresolv")
+	AC_CHECK_LIB(socket, bind, LDAP_LIBS="$LDAP_LIBS -lsocket")
+	AC_CHECK_LIB(nsl, gethostbyaddr, LDAP_LIBS="$LDAP_LIBS -lnsl")
+	AC_CHECK_LIB(lber, ber_get_tag, LDAP_LIBS="$LDAP_LIBS -llber")
+
+	dnl we need libpthread for sylpheed ldap,  until we find
+	dnl a better way to handle ldap requests asynchronously...
+	AC_CHECK_LIB(pthread, pthread_create, LDAP_LIBS="$LDAP_LIBS -lpthread")
+
+	dnl the check for the headers 
 	AC_CHECK_HEADERS(ldap.h lber.h pthread.h,
-			 [ AC_DEFINE(USE_LDAP) ],
+			 [ ac_cv_enable_ldap=yes ],
 			 [ ac_cv_enable_ldap=no ])
-	AC_MSG_CHECKING([whether ldap is available])
+	AC_MSG_CHECKING([whether ldap headers were detected])
 	AC_MSG_RESULT($ac_cv_enable_ldap)
 
 	if test "$ac_cv_enable_ldap" = yes; then
-		CFLAGS="$CFLAGS `$GLIB_CONFIG --cflags gthread`"
-		LIBS="$LIBS -lldap -llber -lpthread -lresolv `$GLIB_CONFIG --libs gthread`"
+		AC_CHECK_LIB(ldap, ldap_open, [ 
+				ac_cv_enable_ldap=yes
+				CFLAGS="$CFLAGS `$GLIB_CONFIG --cflags gthread`"
+				LDAP_LIBS="$LDAP_LIBS -lldap `$GLIB_CONFIG --libs gthread`"
+				AC_DEFINE(USE_LDAP)
+				AC_SUBST(LDAP_LIBS)
+				], 
+				[ ac_cv_enable_ldap=no ], $LDAP_LIBS )
+		AC_MSG_CHECKING([whether ldap libs were detected])
+		AC_MSG_RESULT($ac_cv_enable_ldap)
 	fi
 else
 	AC_MSG_RESULT(no)

@@ -9,6 +9,7 @@ EXTRA_TOOLS = \
 	sylpheed-switcher \
 	sylprint.pl \
 	sylprint.rc \
+        update-po \
 	uudec
 
 EXTRA_DIST = \
